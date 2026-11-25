@@ -81,8 +81,7 @@ theorem idemKO : StatIdemKO := by
     rw [← hsum]
     exact Finset.sum_congr rfl fun i _ => mul_comm _ _
   obtain ⟨i0, hi0⟩ : ∃ i0, IsUnit (e i0 i0) := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hmem : ∑ i, e i i ∈ IsLocalRing.maximalIdeal O :=
       Ideal.sum_mem _ fun i _ => (IsLocalRing.mem_maximalIdeal _).2 (mem_nonunits_iff.2 (hcon i))
     rw [htr] at hmem
@@ -460,9 +459,9 @@ theorem splitPts : StatSplitPts := by
   have hle : PT.natDegree ≤ t := by
     rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
     intro N hN
-    rw [hcoef, if_neg (by omega)]
+    rw [hcoef, ite_eq_right (by omega)]
   have hone : PT.coeff t = 1 := by
-    rw [hcoef, if_pos le_rfl]
+    rw [hcoef, ite_eq_left le_rfl]
     refine Subtype.ext (funext fun x => ?_)
     have := (hmonP x).coeff_natDegree
     rw [hdegP] at this

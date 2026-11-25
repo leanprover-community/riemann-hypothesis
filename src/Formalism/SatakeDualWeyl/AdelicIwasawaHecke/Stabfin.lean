@@ -204,8 +204,7 @@ theorem sf_bound {F E : Type} [Field F] [Field E] [Algebra F E] (σ : E →ₐ[F
   have hN : Complex.normSq (τ ((J * g) i j)) = ‖τ ((J * g) i j)‖ ^ 2 := Complex.normSq_eq_norm_sq _
   rw [hN] at key
   have h1 : ‖τ ((J * g) i j)‖ ^ 2 ≤ ta * tb := by
-    by_contra hneg
-    push_neg at hneg
+    by_contra! hneg
     have h6 : s * tw < 0 := by
       rw [← key]
       nlinarith

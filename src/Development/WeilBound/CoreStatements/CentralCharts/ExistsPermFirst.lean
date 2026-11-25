@@ -44,10 +44,6 @@ def NChart (A : FinHolAtlas n X) (U : Set X) (L : LocPot X) (s : X → X → ℂ
     (ψ.symm t ∈ bdry s ↔ ∃ i : Fin n, (i : ℕ) < a ∧ t i = 0) ∧
     (ψ.symm t ∉ bdry s → logR a t ≤ rW L s (ψ.symm t) + M)
 
-theorem exists_perm_first (S : Finset (Fin n)) :
-    ∃ σ : Equiv.Perm (Fin n), ∀ i, i ∈ S ↔ ((σ i : Fin n) : ℕ) < S.card := by
-  apply Formalism.UG.P.satake_exists_perm
-
 def scalePerm (δ : ℝ) (hδ : 0 < δ) (σ : Equiv.Perm (Fin n)) : (Fin n → ℂ) ≃L[ℂ] (Fin n → ℂ) :=
   LinearEquiv.toContinuousLinearEquiv
     { toFun := fun t i => (δ : ℂ) * t (σ i)
@@ -80,7 +76,7 @@ theorem exists_nchart (A : FinHolAtlas n X) (L : LocPot X) (s : X → X → ℂ)
   have hδ : 0 < min δ' 1 := lt_min hδ' one_pos
   have hδ1 : min δ' 1 ≤ 1 := min_le_right _ _
   have hδδ' : min δ' 1 ≤ δ' := min_le_left _ _
-  obtain ⟨σ, hσ⟩ := exists_perm_first S
+  obtain ⟨σ, hσ⟩ := Formalism.UG.P.satake_exists_perm S
   let Lδ := scalePerm (min δ' 1) hδ σ
   let ψ := φ.transHomeomorph Lδ.toHomeomorph.symm
   have hψs : ∀ t, ψ.symm t = φ.symm (Lδ t) := fun t => rfl
@@ -136,8 +132,8 @@ theorem exists_nchart (A : FinHolAtlas n X) (L : LocPot X) (s : X → X → ℂ)
           _ = ∑ i : Fin n, (if i ∈ S then Real.log (1 / ‖t (σ i)‖ ^ 2) else 0) :=
               Finset.sum_congr rfl fun i _ => by
                 by_cases hi : i ∈ S
-                · rw [if_pos ((hσ i).1 hi), if_pos hi]
-                · rw [if_neg (fun h => hi ((hσ i).2 h)), if_neg hi]
+                · rw [ite_eq_left ((hσ i).1 hi), ite_eq_left hi]
+                · rw [ite_eq_right (fun h => hi ((hσ i).2 h)), ite_eq_right hi]
           _ = ∑ i ∈ S, Real.log (1 / ‖t (σ i)‖ ^ 2) := by
               rw [Finset.sum_ite_mem, Finset.univ_inter]
       rw [hsum]

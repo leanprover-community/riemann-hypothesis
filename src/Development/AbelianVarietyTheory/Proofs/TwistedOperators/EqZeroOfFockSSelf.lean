@@ -163,11 +163,6 @@ theorem length_psiPar (D : D7) (C : ℝ) (τ : D.what₂.Tau) : (rowEntries D C 
 
 end GlobalTheory.RowReal.WeightsX
 
-namespace GlobalTheory.RowReal
-
-open GlobalTheory.SignedHC GlobalTheory.RowReal.WeightsX
-
-end GlobalTheory.RowReal
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ChiGridHighestWeightEqCompactChainParameter =====
@@ -207,7 +202,7 @@ theorem hwVec_eq_ten (n : ℕ) (lam : ι → ℕ → ℤ) (lam' : ι → DomWeig
   have hs0 := s.isLt
   split_ifs with hs
   · congr 1
-    simp only [Formalism.GradedWeylDivisibility.nuNext, DomWeight.natW, DomWeight.detShift, dif_pos hs, dif_pos (show 0 < n by omega), hl]
+    simp only [Formalism.GradedWeylDivisibility.nuNext, DomWeight.natW, DomWeight.detShift, dite_eq_left hs, dite_eq_left (show 0 < n by omega), hl]
     have a1 := (lam' τ).anti (show s ≤ (⟨s.val + 1, hs⟩ : Fin n) by simp [Fin.le_def])
     have a2 := (lam' τ).anti (show (⟨s.val + 1, hs⟩ : Fin n) ≤ ⟨n - 1, by omega⟩ by simp [Fin.le_def]; omega)
     rw [hl, hl] at a1 a2
@@ -216,7 +211,7 @@ theorem hwVec_eq_ten (n : ℕ) (lam : ι → ℕ → ℤ) (lam' : ι → DomWeig
   · have hs' : s.val = n - 1 := by omega
     have h0 : (lam' τ).natW s = 0 := by
       have e : s = ⟨n - 1, by omega⟩ := Fin.ext hs'
-      simp only [DomWeight.natW, DomWeight.detShift, dif_pos (show 0 < n by omega), e]
+      simp only [DomWeight.natW, DomWeight.detShift, dite_eq_left (show 0 < n by omega), e]
       simp
     rw [h0, Nat.zero_sub, pow_zero]
 
@@ -242,7 +237,6 @@ private theorem map_conj_blockAct {ι : Type} [Fintype ι] {n : ℕ} (U : ι →
   next p q hp hq =>
     simp only [map_add (f := _), hp, hq]
   next p v hp =>
-    set_option synthInstance.maxHeartbeats 100000 in
       simp only [map_mul, hp, map_X, Formalism.L2.DIV.blockAct_X, map_sum, map_C, Matrix.map_apply]
 
 theorem fockS_conj_trAct (n : ℕ) (g : ι → GL (Fin n) ℂ) (F F' : Formalism.L2.DIV.Pol ℂ ι n) :
@@ -437,7 +431,7 @@ theorem detTwK_inv_invTrK (n : ℕ) (lam : ι → ℕ → ℤ) (lam' : ι → Do
   · subst hn
     simp
   · congr 1
-    simp only [DomWeight.detShift, dif_pos hn]
+    simp only [DomWeight.detShift, dite_eq_left hn]
     exact hl τ _
 
 end General3
@@ -562,7 +556,6 @@ theorem rowComp_zero (g : Gc D.what₂.Tau (rowSizes D)) :
   rfl
 
 
-set_option maxHeartbeats 1000000 in
 theorem coefPsi (W : G.Weil) (h0 : PosOnb W (.top 0)) :
     ∃ A : weylSub ((rowSizes D).nR (0 : Fin ((rowSizes D).m + 1))) (psiWt (rowEntries D sc.cGap)) ≃ₗ[ℂ]
         Module.Dual ℂ (GlobalTheory.IndefiniteRowSideFullHecke.LevelPlusSubgroup.coefPlus G W.θ).W,

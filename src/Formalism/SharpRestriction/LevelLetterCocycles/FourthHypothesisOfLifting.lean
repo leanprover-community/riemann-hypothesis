@@ -14,17 +14,6 @@ namespace Formalism.MainNotions.PairedCharacterCondition.RT
 open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal
   Polynomial CategoryTheory Formalism.MainNotions.PairedCharacterCondition
 
-section Reps
-
-open Formalism.IrreducibleCountingLemmas.TYPES (RepIso)
-
-variable {Γ : Type} [Group Γ]
-
-variable {V W U : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
-  [AddCommGroup U] [Module ℂ U]
-
-end Reps
-
 section Blocks
 
 open Formalism.IrreducibleCountingLemmas.TYPES
@@ -101,14 +90,6 @@ section HC
 
 open Formalism.IrreducibleCountingLemmas.TYPES
 
-def HCBody {g : ℕ} (L : LzData g) : Prop :=
-  ∀ (a b : ℕ) (τ : L.Irr a) (τ' : L.Irr b),
-    (∀ σ, L.cons (L.hc τ τ') σ → L.lab σ = L.lab τ * L.lab τ') ∧
-    (IsCoprime (L.lab τ) (L.lab τ') →
-      (∃ σ, L.hc τ τ' = L.ofIrr σ) ∧
-      ∀ (τ₁ : L.Irr a) (τ₁' : L.Irr b), L.lab τ₁ = L.lab τ →
-        L.lab τ₁' = L.lab τ' → L.hc τ₁ τ₁' = L.hc τ τ' → τ₁ = τ ∧ τ₁' = τ')
-
 variable {g : ℕ} [Fact g.Prime] {C : LabelConv (ZMod g)} {O : LabelMap (ZMod g) C} {L : LzData g}
 
 end HC
@@ -119,19 +100,7 @@ open Formalism.IrreducibleCountingLemmas.TYPES
 
 variable {D : D7}
 
-def AdmHarishChandraTypes (P : Pend D) : Prop :=
-  ∀ k : Fin 2,
-    haveI : Fact (D.host.g k).Prime := ⟨D.host.g_prime k⟩
-    ∀ (C : LabelConv (ZMod (D.host.g k))) (O : LabelMap (ZMod (D.host.g k)) C),
-      Nonempty (LzTie O (P.lz k)) → HCBody (P.lz k)
-
 end Row
-
-section Refute
-
-open Formalism.IrreducibleCountingLemmas.TYPES
-
-end Refute
 
 section DZ
 
@@ -175,7 +144,7 @@ theorem ktyTie_of_spec (P : Pend D) : KtyTie P := by
 theorem idem_mul_eSer (P : Pend D) (k : Fin 2) (τ : (P.lz k).Irr D.R.r) :
     (P.lz k).idem τ * D.ntypes.eSer k ((P.lz k).lab τ) = (P.lz k).idem τ := by
   rw [P.eSer_eq, Finset.mul_sum, Finset.sum_eq_single τ]
-  · rw [if_pos rfl, (P.lz k).idem_idem τ]
+  · rw [ite_eq_left rfl, (P.lz k).idem_idem τ]
   · intro σ _ hne
     split_ifs
     · exact (P.lz k).idem_orth τ σ (fun h => hne h.symm)
@@ -184,14 +153,6 @@ theorem idem_mul_eSer (P : Pend D) (k : Fin 2) (τ : (P.lz k).Irr D.R.r) :
     exact absurd (Finset.mem_univ τ) h
 
 end DZ
-
-section TY
-
-open Formalism.MainNotions.SumRepresentations.At
-
-variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} (N : NData R H what₂) (A : NAut N)
-
-end TY
 
 end Formalism.MainNotions.PairedCharacterCondition.RT
 

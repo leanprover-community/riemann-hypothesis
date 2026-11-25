@@ -799,11 +799,11 @@ theorem _root_.GlobalTheory.DegCnt.NFGeom.isCompl [FiniteDimensional K V] :
 
       rw [map_sub, map_sub, map_smulₛₗ, _root_.Formalism.HermitianLatticeCounting.P.pairing_isotropicSpan_lastVector _ (_root_.Formalism.HermitianLatticeCounting.P.e_mem_X _ b), smul_zero, sub_zero, hp2, map_sum,
       Finset.sum_eq_single_of_mem b (Finset.mem_filter.2 ⟨Finset.mem_univ _, hb⟩)]
-      · rw [map_smulₛₗ, N.ist_e _ _ hb, if_pos rfl, starRingEnd_apply,
+      · rw [map_smulₛₗ, N.ist_e _ _ hb, ite_eq_left rfl, starRingEnd_apply,
           star_star, smul_eq_mul, mul_one, sub_self]
       · intro a ha hab
         rw [map_smulₛₗ, N.ist_e _ _ (Finset.mem_filter.1 ha).2,
-          if_neg (fun h => hab h.symm), smul_zero]
+          ite_eq_right (fun h => hab h.symm), smul_zero]
     have hii : H.B N.F.z (v - p2 - s • N.F.z) = 0 := by
 
       rw [map_sub, map_sub, map_smulₛₗ, hp2, map_sum]
@@ -877,11 +877,11 @@ theorem _root_.GlobalTheory.DegCnt.NFGeom.finrank_Wt [FiniteDimensional K V] :
     intro g i
 
     rw [map_sum, Finset.sum_eq_single i]
-    · rw [map_smulₛₗ, N.ist_e _ _ i.2, if_pos rfl, smul_eq_mul, mul_one,
+    · rw [map_smulₛₗ, N.ist_e _ _ i.2, ite_eq_left rfl, smul_eq_mul, mul_one,
         starRingEnd_apply]
     · intro a _ hai
       rw [map_smulₛₗ, N.ist_e _ _ a.2,
-        if_neg (fun h => hai (Subtype.ext h).symm), smul_zero]
+        ite_eq_right (fun h => hai (Subtype.ext h).symm), smul_zero]
     · intro h
       exact absurd (Finset.mem_univ i) h
   have hIst : N.Ist = Submodule.span K (Set.range
@@ -985,8 +985,7 @@ theorem _root_.GlobalTheory.DegCnt.NF.geometry : ∀ (K V : Type) [Field K]
     intro τ x hx
     have hx' : (x : V) ≠ 0 := fun h => hx (Subtype.ext h)
     exact _root_.GlobalTheory.DegCnt.NFGeom.Wt_pos N τ x.2 hx'
-  · by_contra h
-    push_neg at h
+  · by_contra! h
     have hT0 : N.T = 0 := by omega
     apply N.F.hT
     rw [N.hT, hT0, Nat.cast_zero]

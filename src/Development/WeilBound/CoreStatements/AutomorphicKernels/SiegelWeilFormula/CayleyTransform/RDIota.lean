@@ -42,9 +42,6 @@ section Iota
 
 variable (d : SD σ)
 
-theorem incM_mul {p : Type} [Fintype p] (M N : Matrix p p E) : incM F (M * N) = incM F M * incM F N :=
-  Matrix.map_mul (f := inclR (F := F) (AF F))
-
 theorem incM_one {p : Type} [DecidableEq p] : incM F (1 : Matrix p p E) = 1 :=
   Matrix.map_one _ (map_zero _) (map_one _)
 

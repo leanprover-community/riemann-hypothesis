@@ -115,7 +115,7 @@ def dpstUrEquiv : DpstUr P (resQ ρ) ≃ₗ[↥(MaximalUnramifiedExtension l)] D
   toFun x := toUr P ρ ⟨((toUr P (resQ ρ)).symm x).1, (mem_Dpst_resQ P ρ _).mp ((toUr P (resQ ρ)).symm x).2⟩
   invFun x := toUr P (resQ ρ) ⟨((toUr P ρ).symm x).1, (mem_Dpst_resQ P ρ _).mpr ((toUr P ρ).symm x).2⟩
   map_add' _ _ := rfl
-  map_smul' c x := Subtype.ext (mulV_resQ P (LL := LL) c _)
+  map_smul' c _ := Subtype.ext (mulV_resQ P (LL := LL) c _)
   left_inv _ := rfl
   right_inv _ := rfl
 

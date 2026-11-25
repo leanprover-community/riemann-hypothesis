@@ -137,13 +137,13 @@ theorem vc_genV (E : Fin n → Fin n → Module.End ℂ M) (lam : Fin n → ℝ)
       ∑ d ∈ univ.filter (fun d => t < d), tensV E t d (Pi.single d φ) := by
   funext e
   rw [Pi.sub_apply, vc_eeV_single, Finset.sum_apply]
-  simp only [vc_tensV_single, Pi.add_apply, if_true, Pi.smul_apply, Pi.single_apply]
+  simp only [vc_tensV_single, Pi.add_apply, ite_true, Pi.smul_apply, Pi.single_apply]
   rw [Finset.sum_add_distrib, Finset.sum_ite_eq, Finset.sum_const]
   rcases lt_trichotomy e t with h | rfl | h
   · simp [h.ne, hlow t e h, not_lt.mpr h.le]
   · have hc : (univ.filter fun d : Fin n => e < d).card = n - 1 - e := by
       rw [filter_lt_eq_Ioi, Fin.card_Ioi]
-    simp only [if_true, lt_irrefl, Finset.mem_filter, Finset.mem_univ, true_and, if_false, zero_add, hc, hd]
+    simp only [ite_true, lt_irrefl, Finset.mem_filter, Finset.mem_univ, true_and, ite_false, zero_add, hc, hd]
     rw [← Nat.cast_smul_eq_nsmul ℂ, ← sub_smul]
     congr 1
     have he : 1 + (e : ℕ) ≤ n := by have := e.isLt; omega
@@ -159,13 +159,13 @@ theorem vc_genVd (E : Fin n → Fin n → Module.End ℂ M) (lam : Fin n → ℝ
       -∑ d ∈ univ.filter (fun d => d < t), tensVd E d t (Pi.single d φ) := by
   funext e
   rw [Pi.sub_apply, vc_eeVd_single, Pi.neg_apply, Finset.sum_apply]
-  simp only [vc_tensVd_single, Pi.sub_apply, if_true, Pi.smul_apply, Pi.single_apply]
+  simp only [vc_tensVd_single, Pi.sub_apply, ite_true, Pi.smul_apply, Pi.single_apply]
   rw [Finset.sum_sub_distrib, Finset.sum_ite_eq, Finset.sum_const]
   rcases lt_trichotomy e t with h | rfl | h
   · simp [h.ne, h]
   · have hc : (univ.filter fun d : Fin n => d < e).card = e := by
       rw [filter_gt_eq_Iio, Fin.card_Iio]
-    simp only [if_true, lt_irrefl, Finset.mem_filter, Finset.mem_univ, true_and, if_false, zero_sub, hc, hd,
+    simp only [ite_true, lt_irrefl, Finset.mem_filter, Finset.mem_univ, true_and, ite_false, zero_sub, hc, hd,
       neg_neg]
     rw [← Nat.cast_smul_eq_nsmul ℂ, ← neg_smul, ← sub_smul]
     congr 1

@@ -597,8 +597,6 @@ theorem norm_fsv_sub_one_pow (σ t : ℂ) : ‖(fsv σ t - 1) ^ 3‖ ≤ 8 := by
   calc ‖fsv σ t - 1‖ ^ 3 ≤ 2 ^ 3 := pow_le_pow_left₀ (norm_nonneg _) this 3
     _ = 8 := by norm_num
 
-
-
 theorem decayUnif_of (hRH : KB.RadHead) (hHT : KB.HeadTop) (hWDF : WaveDiffForm) : DecayUnif := by
   intro hP Cb
   obtain ⟨CcF, hFL⟩ := Formalism.FourierDecayAlt.P.limit_of_module_forms Cb
@@ -786,8 +784,6 @@ namespace Formalism.FourierDecayAlt.P.StandardPairingDecay
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Matrix Filter Topology
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 def OnOldBound : Prop :=
   ∀ (k ρ : ℕ) (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
     [InnerProductSpace ℂ Wq] (Bs : B.RealPlaceData k ρ Wp Wq) (w : List C.Letter) (m : ℕ),
@@ -795,10 +791,6 @@ def OnOldBound : Prop :=
       (x : Wd.Ix (Fin (KB.plusW ys w).length) → B.Mat k ρ → (Wq →L[ℂ] Wp)) (c : ℝ),
       (∀ e, B.CCle (A + 3 * ((m + 1 : ℕ) : ℝ)) m (x e) c) →
       ∀ e, B.CCle A m (KB.onOld (PBO.mDiff Bs σ w) ys x e) (K * ‖σ‖ ^ 3 * c)
-
-theorem plusW_length (ys : List ℝ) (w : List C.Letter) : (KB.plusW ys w).length = ys.length + w.length := by
-  rw [Formalism.FourierDecayAlt.P.PBD.plusW_eq]
-  simp
 
 theorem waveDiffForm_of (hO : OnOldBound) : PBO.WaveDiffForm := by
   intro _hP Cb
@@ -863,7 +855,7 @@ theorem waveDiffForm_of (hO : OnOldBound) : PBO.WaveDiffForm := by
     simp only [D.cutF, hhn]
     rw [smul_comm]
   set w' := KB.plusW ys w with hw'
-  have hw'len : w'.length ≤ N + 3 := by rw [hw', plusW_length]; omega
+  have hw'len : w'.length ≤ N + 3 := by rw [hw', Formalism.FourierDecayAlt.P.PBF.len_plusW]; omega
   have hN₂w : w'.length ≤ N₂ := by omega
   have hc : P.r - j = P.r - D.ptSize h := by rw [hh.2]
   have hQ := fun e => hSQ Cs le_rfl P.k P.r Wp Wq p.T χ (A - 1) N₂ P rfl rfl hk2 hχ hA' ε hε j hj w' hN₂w h hc hh e
@@ -1139,8 +1131,6 @@ namespace Formalism.FourierDecayAlt.P.StandardPairingDecay
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Matrix
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 section one
 
 variable {k ρ : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
@@ -1176,13 +1166,13 @@ theorem waveL_sub_one_ccle (Bs : B.RealPlaceData k ρ Wp Wq) (w : List C.Letter)
       have hp : (3 : ℝ) ^ (l :: w).length = 3 * 3 ^ w.length := by rw [hlen, pow_succ, mul_comm]
       simp only [KB.uInv]
       by_cases he : e 0 = 0
-      · rw [if_pos he]
+      · rw [ite_eq_left he]
         have hxe : x e = x (Fin.cons (0 : Fin 2) (fun a => e a.succ)) := by
           conv_lhs => rw [hce, he]
         refine ⟨JCx2.pd_ccle_mono_c ih0.1 (by rw [hp]; linarith [mul_nonneg h3 hc]), ?_⟩
         rw [hxe]
         exact JCx2.pd_ccle_mono_c ih0.2 (by rw [hp]; linarith [mul_nonneg (mul_nonneg h3 hσ0) hc])
-      · rw [if_neg he]
+      · rw [ite_eq_right he]
         have he1 : e 0 = 1 := by
           rcases Fin.exists_fin_two.1 ⟨e 0, rfl⟩ with h | h
           · exact absurd h he
@@ -1271,8 +1261,6 @@ noncomputable section
 namespace Formalism.FourierDecayAlt.P.StandardPairingDecay
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Matrix
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem bound_on_earlier_region : OnOldBound := by
   intro k ρ Wp Wq _ _ _ _ Bs w m

@@ -218,7 +218,7 @@ theorem natW_dual_wtOf_le (n : ℕ) (E : Finset ℚ) (M : ℝ) (hM : 0 ≤ M) (h
   have hn : 0 < n := a.pos
   have hrev : Fin.rev (⟨n - 1, by omega⟩ : Fin n) = ⟨0, hn⟩ := by ext; simp; omega
   have key : (wtOf n E).dual.natW a = ((wtOf n E).w ⟨0, hn⟩ - (wtOf n E).w a.rev).toNat := by
-    simp only [DomWeight.natW, DomWeight.detShift, DomWeight.dual, dif_pos hn, hrev]
+    simp only [DomWeight.natW, DomWeight.detShift, DomWeight.dual, dite_eq_left hn, hrev]
     congr 1; ring
   have hd : (((wtOf n E).w ⟨0, hn⟩ - (wtOf n E).w a.rev : ℤ) : ℝ) ≤ 2 * M + 1 := by
     unfold wtOf
@@ -243,17 +243,6 @@ theorem natW_dual_wtOf_le (n : ℕ) (E : Finset ℚ) (M : ℝ) (hM : 0 ≤ M) (h
   rw [c, Int.toNat_eq_max]
   push_cast
   exact max_le (by push_cast at hd; exact hd) (by linarith)
-
-end GlobalTheory.GridWtBound
-
-namespace GlobalTheory.GridWtBound
-
-theorem extend_bounds {n : ℕ} (d : ℕ) (f : Fin n → ℚ) (h : ℝ) (hh : 0 ≤ h)
-    (hf : ∀ i, 0 ≤ ((f i : ℚ) : ℝ) ∧ ((f i : ℚ) : ℝ) ≤ h) (j : ℕ) :
-    0 ≤ ((GridData.extend d f j : ℤ) : ℝ) ∧ ((GridData.extend d f j : ℤ) : ℝ) ≤ h :=
-  GlobalTheory.KerConjMean.TopSizes.extend_bounds d f h hh hf j
-
-variable {D : D7}
 
 end GlobalTheory.GridWtBound
 
@@ -402,7 +391,7 @@ theorem abs_entry_le {D : D7} (large₂ : SizeData₂ D) (hs : GlobalTheory.Inde
   have hScb : large₂.Sc ≤ large₂.sc.b := by nlinarith
 
   have hv : ∀ j, 0 ≤ ((GridData.extend 2 (D.hc τ).v j : ℤ) : ℝ) ∧ ((GridData.extend 2 (D.hc τ).v j : ℤ) : ℝ) ≤ large₂.Sc :=
-    GlobalTheory.GridWtBound.extend_bounds 2 _ _ hSc.le fun l => large₂.cloud_v τ l
+    GlobalTheory.KerConjMean.TopSizes.extend_bounds 2 _ _ hSc.le fun l => large₂.cloud_v τ l
   have hbl : ∀ l : Fin D.R.m, 0 ≤ (((D.hc τ).b l : ℚ) : ℝ) ∧ (((D.hc τ).b l : ℚ) : ℝ) ≤ 4 * large₂.sc.b := fun l => by
     obtain ⟨h1, h2⟩ := hbe τ l
     have h3 := (D.hc τ).gap_be l
@@ -416,8 +405,8 @@ theorem abs_entry_le {D : D7} (large₂ : SizeData₂ D) (hs : GlobalTheory.Inde
     have ht : (0 : ℚ) ≤ D.R.t := Nat.cast_nonneg _
     have h4 : 0 ≤ (D.hc τ).e l := by linarith
     exact ⟨by exact_mod_cast h4, h2⟩
-  have hb := GlobalTheory.GridWtBound.extend_bounds 1 _ _ (by linarith) hbl
-  have he := GlobalTheory.GridWtBound.extend_bounds 1 _ _ (by linarith) hel
+  have hb := GlobalTheory.KerConjMean.TopSizes.extend_bounds 1 _ _ (by linarith) hbl
+  have he := GlobalTheory.KerConjMean.TopSizes.extend_bounds 1 _ _ (by linarith) hel
   have htb : (D.R.t : ℝ) ≤ 8 * large₂.sc.b := by
     obtain ⟨h1, h2⟩ := hbe τ ⟨0, by have := D.R.two_le_m; omega⟩
     have h3 := (D.hc τ).gap_be ⟨0, by have := D.R.two_le_m; omega⟩
@@ -480,13 +469,6 @@ theorem abs_entry_le {D : D7} (large₂ : SizeData₂ D) (hs : GlobalTheory.Inde
   calc |(y : ℝ) + (((if Odd (i + D.R.m) then -(1 / 2) else 0 : ℚ)) : ℝ)|
       ≤ |(y : ℝ)| + |(((if Odd (i + D.R.m) then -(1 / 2) else 0 : ℚ)) : ℝ)| := abs_add_le _ _
     _ ≤ 14 * large₂.sc.b := by linarith
-
-theorem pow_le_exp_posLog (x : ℝ) (g : ℕ) : x ^ g ≤ Real.exp (g * Real.posLog x) :=
-  GlobalTheory.KerConjMean.pow_le_exp_posLog x g
-
-theorem max_pow_le_exp_posLog (A : ℝ) (hA : 0 < A) (d : ℕ) :
-    max 1 A⁻¹ ^ d ≤ Real.exp (d * Real.posLog A⁻¹) :=
-  GlobalTheory.KerConjMean.max_pow_le_exp_posLog A hA d
 
 theorem rowSizes : BigC fun {D} _ _ _ _ _ _ _ _ _ _ _ _ ch _ b =>
     ∀ i τ a, ((wt ch.G (.grid i D.R.m) τ).natW a : ℝ) ≤ 29 * b := by
@@ -595,7 +577,7 @@ theorem row_jets (hI : GlobalTheory.NormSum.Inp D) (hDict : DictAt ch) {Φ β d}
   obtain ⟨t', ht'⟩ := (hI.t0Ex _ _ ch.S.Z.crv).2 Qbar ρ' hdata.2.1 hdata.2.2
   have htc : GL3Theta.IsTwoTorsionPointUnkilled D (lamConj Qbar ρ' (lamOf D D.host.ccK ch.S.Z.δ)) (tc D ch.S.Z.δ ch.S.Z.t0 ρ) := by
     rw [hlam, hL] at ht' ⊢
-    unfold tc; rw [dif_pos ⟨t', ht'⟩]; exact Exists.choose_spec _
+    unfold tc; rw [dite_eq_left ⟨t', ht'⟩]; exact Exists.choose_spec _
   have hev := even_rank_mul ch.G i i.2
   obtain ⟨harea, hcoef, hdiff, hgr⟩ := GlobalTheory.ConjGrowth.conj_growth D hI _ _ _ ch.S.Z.crv ch.S.Z.pt0 _ _ _ hev
     (ch.S.Z.e0_is _ hp) Ls Lt hLs hLt κ hκ _ n r s hk hs hr ρ' _ htc
@@ -619,8 +601,8 @@ theorem row_jets (hI : GlobalTheory.NormSum.Inp D) (hDict : DictAt ch) {Φ β d}
   have e2 : (ρ' : Qbar →+* ℂ).comp (barQ.comp (embQ D)) = σ.comp (starRingEnd D.what₂.LL) := RingHom.ext fun x => by
     have h1 := hρ' _ (embLL_mem D ch.S.Z.δ ch.S.Z.t0 (starRingEnd _ x))
     unfold TaylorLogMetric.liftM at h1
-    rw [dif_pos (embLL_mem D ch.S.Z.δ ch.S.Z.t0 (starRingEnd _ x)), hρ,
-      dif_pos (show D.what₂.embLL (starRingEnd _ x) ∈ Qbar from (embQ D (starRingEnd _ x)).2)] at h1
+    rw [dite_eq_left (embLL_mem D ch.S.Z.δ ch.S.Z.t0 (starRingEnd _ x)), hρ,
+      dite_eq_left (show D.what₂.embLL (starRingEnd _ x) ∈ Qbar from (embQ D (starRingEnd _ x)).2)] at h1
     refine Eq.trans (congrArg ρ' (Subtype.ext ?_)) h1
     exact (D.starLL_cx x).symm
   have key := jetOp_transport _ _ _ hW.2 (barQ.comp (embQ D)) ((algebraMap Qbar ℂ).comp barQ) (ρ' : Qbar →+* ℂ) J u (f u) (by
@@ -638,7 +620,7 @@ theorem row_jets (hI : GlobalTheory.NormSum.Inp D) (hDict : DictAt ch) {Φ β d}
   congr 2
   funext m
   rw [applyAt0_tr D hdiff, _root_.GlobalTheory.FockPos.applyAt0_monomial', htay]
-  simp only [J, Finsupp.prod, map_mul, map_natCast, StandardLatticesGL3.cj, TaylorLogMetric.liftM, dif_pos (hcoef _)]
+  simp only [J, Finsupp.prod, map_mul, map_natCast, StandardLatticesGL3.cj, TaylorLogMetric.liftM, dite_eq_left (hcoef _)]
   push_cast
   rfl
 
@@ -662,13 +644,6 @@ open IsDedekindDomain NumberField Matrix GlobalTheory.ChiGrid GlobalTheory.FunOb
 open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.SumSize GlobalTheory.KerConjMean
 noncomputable section
 namespace GlobalTheory.KerConjRow
-section Jets
-open Formalism.L2.Ker
-end Jets
-section Row
-variable {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 T : Type} {A : FamIn D.what₂.LL Γ Pl0 T D.R.m}
-  {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat D A Ks} (ch : Choice R)
-end Row
 theorem conjugate_row_mem_kernel : _root_.GlobalTheory.FunPr.ThetaLocalInputs → (∀ D, GlobalTheory.NormSum.Inp D) → DictK → DepthK → ∀ C1 : ℝ, 0 < C1 →
     BigC fun _ ch C b => ConjRowAt ch C b C1 := by
   intro _ hInp hDict _ C1 hC1
@@ -783,15 +758,6 @@ theorem conjugate_row_mem_kernel : _root_.GlobalTheory.FunPr.ThetaLocalInputs �
 end GlobalTheory.KerConjRow
 end
 end
-
-section
-open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
-open IsDedekindDomain NumberField Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim GlobalTheory.TestLat
-open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.SumSize GlobalTheory.KerConjMean
-
-theorem _root_.GlobalTheory.T.conjRowAt_of_dict_depth : _root_.GlobalTheory.FunPr.ThetaLocalInputs → (∀ D, GlobalTheory.NormSum.Inp D) → DictK → DepthK → ∀ C1 : ℝ, 0 < C1 → BigC fun _ ch C b => ConjRowAt ch C b C1 := by
-  first | exact @_root_.GlobalTheory.KerConjRow.conjugate_row_mem_kernel
-end
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.ConjugateRowBoundOfDictionary =====
@@ -810,9 +776,9 @@ namespace GlobalTheory.KerConjMean
 theorem kernel_conj_mean_pairing_standard_KType : _root_.GlobalTheory.FunPr.ThetaLocalInputs → (∀ D, GlobalTheory.NormSum.Inp D) → DictK → DepthK → PairStdK := by
   intro hP hI hD hDp
   obtain ⟨C1, hC1, hmean⟩ := GlobalTheory.T.exists_const_mean_logArea_logThetaNorm_le
-  obtain ⟨F1, k1⟩ := _root_.GlobalTheory.T.kernel_conjugation_average hP hI hD hDp C1 hC1
+  obtain ⟨F1, k1⟩ := _root_.GlobalTheory.KerConjMean.conj_top_degree_in_kernel_mean hP hI hD hDp C1 hC1
   obtain ⟨F2, k2⟩ := _root_.GlobalTheory.KerConjMean.ratTopAt_big
-  obtain ⟨F3, k3⟩ := _root_.GlobalTheory.T.conjRowAt_of_dict_depth hP hI hD hDp C1 hC1
+  obtain ⟨F3, k3⟩ := _root_.GlobalTheory.KerConjRow.conjugate_row_mem_kernel hP hI hD hDp C1 hC1
   obtain ⟨F4, k4⟩ := _root_.GlobalTheory.KerConjMean.ratRowAt_big
   refine ⟨max (max F1 F2) (max F3 F4), fun CF hCF => ?_⟩
   obtain ⟨C01, l1⟩ := k1 CF (by simp only [max_le_iff] at hCF; exact hCF.1.1)

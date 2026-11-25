@@ -170,14 +170,4 @@ theorem lev_chi_eq_one (hA : A.Is) (i : ℕ) (hi : i ≤ B.R.m) (β : Ch i) (κ 
 
 end TwDat.Is
 
-section Pin
-variable {A : TwDat I l Z u a Ch} {ψ : AddChar (AF (I.rec7 l Z).host.F) ℂ} {θ : InfFam (I.rec7 l Z)}
-    {x : ∀ j, DefSp ((I.rec7 l Z).sp.X j)} {vac : ∀ j, WO ((I.rec7 l Z).sp.X j) ((I.rec7 l Z).sp.X (j + 1)) → ℂ} {c₀ : ℕ → ℂ}
-    {kom : ∀ j, Om ((I.rec7 l Z).sp.X j) ((I.rec7 l Z).sp.X (j + 1))}
-    {dd : ∀ j, Ch j → Ch (j + 1) → WO ((I.rec7 l Z).sp.X j) ((I.rec7 l Z).sp.X (j + 1)) →₀ ℂ}
-    {w : ∀ j, Ch j → Ch (j + 1) → ℂ} {Ram : ∀ j, Set (ColT I l u a j)}
-    {rd : ∀ j, Ch j → ColT I l u a j → (I.chain l u a).Y j → GA (I.rec7 l Z) ((I.rec7 l Z).sp.X j) → ℂ} {cK : ℕ → ℂ}
-
-end Pin
-
 end GlobalTheory.AdForm

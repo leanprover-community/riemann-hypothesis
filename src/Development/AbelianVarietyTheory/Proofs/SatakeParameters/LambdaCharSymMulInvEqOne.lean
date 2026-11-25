@@ -1,46 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -172,7 +132,7 @@ theorem fIdx_zero (k₀ n s : ℕ) : fIdx k₀ 0 n s = s := by
 theorem fPos_zero {k₀ n l : ℕ} (h : l < n) : fPos k₀ 0 n l = l := by
   unfold fPos; split_ifs <;> omega
 
-theorem scE_lt {n l : ℕ} (ex : ℕ → ℕ) (h : l < n) : scE n ex l = 0 := if_pos h
+theorem scE_lt {n l : ℕ} (ex : ℕ → ℕ) (h : l < n) : scE n ex l = 0 := ite_eq_left h
 
 omit [NumberField E] [StarRing E] in
 theorem entB_zero (k₀ n : ℕ) (ex : ℕ → ℕ) (g : HomE E (n + 0) (n + 0)) {p p' : ℕ} (hp : p < n) (hp' : p' < n) :
@@ -203,7 +163,7 @@ theorem mat_intAt {k₀ rS r t n : ℕ} {g : Sp E (n + 0) ≃ₗ[E] Sp E (n + 0)
   have h3 := h2 ⟨p, hp⟩
   rw [scE_lt _ hp, zpow_zero, inv_one, one_mul] at h3
   unfold mat atN
-  rw [dif_pos (show p < n + 0 from hp)]
+  rw [dite_eq_left (show p < n + 0 from hp)]
   exact h3
 
 theorem mat_col (hq : q ≠ 0) (hP : (q : 𝓞 E) ∈ P.asIdeal) {k₀ rS r t n : ℕ} (hr : k₀ + rS < r) (hn : r ≤ n)
@@ -219,11 +179,11 @@ theorem mat_col (hq : q ≠ 0) (hP : (q : 𝓞 E) ∈ P.asIdeal) {k₀ rS r t n 
   rw [mem_sclLat] at h1
   have h2 := h1 ⟨l, hl⟩
   simp only [] at h2
-  rw [scE_lt _ hl, fPos_zero hl, if_pos h, zero_add, zpow_one] at h2
+  rw [scE_lt _ hl, fPos_zero hl, ite_eq_left h, zero_add, zpow_one] at h2
   obtain ⟨h3, h4⟩ := of_inv_mul P hq hP h2
   have e2 : mat g l p' = (g (eN E (n + 0) p') - eN E (n + 0) p') ⟨l, hl⟩ + if l = p' then 1 else 0 := by
     unfold mat atN
-    rw [dif_pos (show l < n + 0 from hl), Pi.sub_apply]
+    rw [dite_eq_left (show l < n + 0 from hl), Pi.sub_apply]
     exact (sub_add_cancel _ _).symm
   rw [e2, reduction_add h3 (intAt_ite _), h4, zero_add]
   split_ifs
@@ -246,19 +206,19 @@ theorem mat_blk (hq : q ≠ 0) (hP : (q : 𝓞 E) ∈ P.asIdeal) {k₀ rS r t n 
     intro x
     have hx : x.1 < n := x.2
     by_cases hxl : x.1 = l'
-    · rw [scE_lt _ hx, fPos_zero hx, if_neg (by rw [key]; omega), zero_add, zpow_zero, inv_one, one_mul]
+    · rw [scE_lt _ hx, fPos_zero hx, ite_eq_right (by rw [key]; omega), zero_add, zpow_zero, inv_one, one_mul]
       exact intAt_ite _
     · unfold eN
-      rw [if_neg hxl, mul_zero]
+      rw [ite_eq_right hxl, mul_zero]
       exact intAt_zero P
   have h1 := (hg.2.1 (r + i * t) ⟨i, rfl⟩ _).2 h0
   unfold flagS at h1
   rw [mem_sclLat] at h1
   have h2 := h1 ⟨l, hl⟩
   simp only [] at h2
-  rw [scE_lt _ hl, fPos_zero hl, if_pos ((key l).2 h), zero_add, zpow_one] at h2
+  rw [scE_lt _ hl, fPos_zero hl, ite_eq_left ((key l).2 h), zero_add, zpow_one] at h2
   unfold mat atN
-  rw [dif_pos (show l < n + 0 from hl)]
+  rw [dite_eq_left (show l < n + 0 from hl)]
   exact (of_inv_mul P hq hP h2).2
 
 theorem redP_superdiag {k₀ rS r t n : ℕ} (hr : k₀ + rS < r) (hn : r ≤ n)

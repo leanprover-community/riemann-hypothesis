@@ -197,7 +197,7 @@ theorem latDeg_standard_basis {n : ℕ} (h : n = r) (v : Fin n → Fin r → K)
         have hl' : ¬ l = Fin.cast h i := hl
         simp [hl']
       · simp
-    · rw [if_neg hij]
+    · rw [ite_eq_right hij]
       refine Finset.sum_eq_zero fun l _ => ?_
       by_cases hl : l = finCongr h i
       · have : l ≠ finCongr h j := by

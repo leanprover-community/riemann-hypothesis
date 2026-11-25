@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceEstimates.EvalMD
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ShiftedGeneratorEqIteSmulAdd
 public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 import Mathlib.RingTheory.PiTensorProduct
@@ -132,18 +133,7 @@ theorem prod_expand {X : Type*} [Fintype X] :
     ∀ (t : ℕ) (c : Fin t → X → ℂ) (B : Fin t → X → A),
       (List.ofFn fun j => ∑ x, c j x • B j x).prod =
         ∑ φ : Fin t → X, (∏ j, c j (φ j)) • (List.ofFn fun j => B j (φ j)).prod := by
-  intro t
-  induction t with
-  | zero => intro c B; simp
-  | succ t ih =>
-    intro c B
-    rw [List.ofFn_succ, List.prod_cons, ih (fun j => c j.succ) (fun j => B j.succ), Finset.sum_mul]
-    rw [← (Fin.consEquiv fun _ : Fin (t + 1) => X).sum_comp, Fintype.sum_prod_type]
-    refine Finset.sum_congr rfl fun x _ => ?_
-    rw [Finset.mul_sum]
-    refine Finset.sum_congr rfl fun φ _ => ?_
-    simp only [Fin.consEquiv, Equiv.coe_fn_mk, Fin.prod_univ_succ, Fin.cons_zero, Fin.cons_succ, List.ofFn_succ,
-      List.prod_cons, smul_mul_smul_comm]
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.Lap.EvalC.prod_ofFn_sum <;> assumption
 
 theorem rowsum_det {t : ℕ} (P : Matrix (Fin n) (Fin n) ℂ) (e : Fin t ≃ Fin n) (α : Fin t → Fin n) :
     ∑ σ : Equiv.Perm (Fin t), ((Equiv.Perm.sign σ : ℤ) : ℂ) * ∏ j, P (α j) (e (σ j)) =

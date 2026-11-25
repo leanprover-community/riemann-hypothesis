@@ -24,16 +24,14 @@ variable {K F : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberFi
 private theorem mem_pow_vF_of_ne_zero {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) {a : 𝓞 F} (ha : a ≠ 0) :
     a ∈ 𝔭 ^ vF 𝔭 a ∧ a ∉ 𝔭 ^ (vF 𝔭 a + 1) := by
   have hex : ∃ j, a ∉ 𝔭 ^ j := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have hi : a ∈ ⨅ i : ℕ, 𝔭 ^ i := (Submodule.mem_iInf _).mpr h
     rw [Ideal.iInf_pow_eq_bot_of_isDomain 𝔭 h𝔭.ne_top] at hi
     exact ha ((Submodule.mem_bot _).mp hi)
   obtain ⟨j, hj⟩ := hex
   have hbdd : BddAbove {e : ℕ | a ∈ 𝔭 ^ e} := by
     refine ⟨j, fun e he => ?_⟩
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     exact hj (Ideal.pow_le_pow_right hlt.le he)
   refine ⟨Nat.sSup_mem ⟨0, by simp⟩ hbdd, fun h => ?_⟩
   have hc := le_csSup hbdd (show vF 𝔭 a + 1 ∈ {e : ℕ | a ∈ 𝔭 ^ e} from h)

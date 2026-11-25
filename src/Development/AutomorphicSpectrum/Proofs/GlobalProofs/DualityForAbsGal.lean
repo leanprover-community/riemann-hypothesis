@@ -19,8 +19,6 @@ open CategoryTheory MonoidalCategory GroundTheory.ProfCoh ReciprocityTheory.Gal 
 
 namespace GlobalTheory.CompanionTheory.Hypotheses₂
 
-attribute [local instance 2000] Rep.hV2
-
 theorem dualityFor_absGal (p : ℕ) [Fact p.Prime] (K : IntermediateField ℚ_[p] (PadicAlgCl p))
     (hK : FiniteDimensional ℚ_[p] K) (l : ℕ) [Fact l.Prime] (r : ℕ)
     (χ : (PadicAlgCl p ≃ₐ[K] PadicAlgCl p) →* (ZMod (l ^ r))ˣ)

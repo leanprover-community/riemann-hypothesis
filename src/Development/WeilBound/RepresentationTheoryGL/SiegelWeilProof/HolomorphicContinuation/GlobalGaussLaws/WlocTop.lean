@@ -264,8 +264,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doublin
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace PositivityTheory.Rg.Sw.Glob.GaussH
 
 variable {D : D7} {n : ℕ}
@@ -320,8 +318,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace PositivityTheory.Rg.Sw.Glob
 
@@ -416,8 +412,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doublin
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace PositivityTheory.Rg.Sw.Glob.GaussH
 
 variable {n : ℕ}
@@ -501,8 +495,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doublin
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace PositivityTheory.Rg.Sw.Glob.NbarH
 
 variable {m n : ℕ}
@@ -551,8 +543,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace PositivityTheory.Rg.Sw.Glob
 
@@ -647,8 +637,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doublin
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace PositivityTheory.Rg.Sw.Glob.VacK
 
 open PositivityTheory.Rg.Sw PositivityTheory.Rg.Sw.Glob PositivityTheory.Rg.Sw.Glob.VacS PositivityTheory.Rg.Sw.Glob.VacB PositivityTheory.Rg.Sw.Glob.VacC
@@ -664,16 +652,16 @@ theorem prodF {m n : ℕ} (t : ℝ) (ε : Fin m → Bool) (φ : Fin n → ℝ) :
       else (∏ j, Complex.exp (Complex.I * (φ j : ℂ)))⁻¹ := by
     intro a
     by_cases h : epsT t ε a = true
-    · rw [if_pos h]
+    · rw [ite_eq_left h]
       refine Finset.prod_congr rfl fun j _ => ?_
-      simp only [rhoT, if_pos h]
+      simp only [rhoT, ite_eq_left h]
       rw [show Complex.I * (φ j : ℂ) = (φ j : ℂ) * Complex.I by ring, Complex.exp_mul_I, ← Complex.ofReal_cos,
         ← Complex.ofReal_sin]
       push_cast
       ring
-    · rw [if_neg h, ← Finset.prod_inv_distrib]
+    · rw [ite_eq_right h, ← Finset.prod_inv_distrib]
       refine Finset.prod_congr rfl fun j _ => ?_
-      simp only [rhoT, if_neg h]
+      simp only [rhoT, ite_eq_right h]
       rw [← Complex.exp_neg, show -(Complex.I * (φ j : ℂ)) = (-(φ j : ℂ)) * Complex.I by ring, Complex.exp_mul_I,
         Complex.cos_neg, Complex.sin_neg, ← Complex.ofReal_cos, ← Complex.ofReal_sin]
       push_cast
@@ -712,20 +700,10 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doublin
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace PositivityTheory.Rg.Sw.Glob
 
 open PositivityTheory.Rg.Sw.Glob.VacS PositivityTheory.Rg.Sw.Glob.VacB PositivityTheory.Rg.Sw.Glob.VacC PositivityTheory.Rg.Sw.Glob.VacE PositivityTheory.Rg.Sw.Glob.VacF
   PositivityTheory.Rg.Sw.Glob.VacG PositivityTheory.Rg.Sw.Glob.VacH PositivityTheory.Rg.Sw.Glob.VacI PositivityTheory.Rg.Sw.Glob.VacJ PositivityTheory.Rg.Sw.Glob.VacK
-
-private theorem cnt_true_add_cnt_false {m : ℕ} (ε : Fin m → Bool) : cnt ε true + cnt ε false = m := by
-  unfold cnt
-  rw [Finset.card_filter, Finset.card_filter, ← Finset.sum_add_distrib]
-  have h : ∀ a : Fin m, ((if ε a = true then 1 else 0) + (if ε a = false then 1 else 0) : ℕ) = 1 := by
-    intro a
-    cases ε a <;> simp
-  simp only [h, Finset.sum_const, Finset.card_univ, Fintype.card_fin, smul_eq_mul, mul_one]
 
 theorem vacK_of : GZSch → LawN → LawNbar → LocMul → LNe → VacK := by
   intro hGZ hN hNb hLM hLNe
@@ -774,7 +752,7 @@ theorem vacK_of : GZSch → LawN → LawNbar → LocMul → LNe → VacK := by
     rw [Matrix.det_mul, Matrix.det_conjTranspose, Matrix.det_one] at h
     exact eq_inv_of_mul_eq_one_left h
   have hm : (V.rank : ℤ) = ((cnt (epsT (tLoc l τ) ε) true + cnt (epsT (tLoc l τ) ε) false : ℕ) : ℤ) := by
-    rw [cnt_true_add_cnt_false]
+    rw [PositivityTheory.Rg.Sw.Glob.LocLawH.cnt_add]
   have hX : (∏ j, Complex.exp (Complex.I * (φ j : ℂ))) ≠ 0 :=
     Finset.prod_ne_zero_iff.mpr fun j _ => Complex.exp_ne_zero _
   have hXinv : ∏ j, Complex.exp (-(Complex.I * (φ j : ℂ))) = (∏ j, Complex.exp (Complex.I * (φ j : ℂ)))⁻¹ := by

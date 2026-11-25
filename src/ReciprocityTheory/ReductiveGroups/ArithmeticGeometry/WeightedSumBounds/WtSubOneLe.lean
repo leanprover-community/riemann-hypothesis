@@ -173,8 +173,7 @@ theorem lg_agree (G : LogFGL v d) {p : ℕ} (hp : p.Prime) {γ : Fin d → Fin d
   by_cases hpow : ∃ m, j = p ^ m
   · obtain ⟨m, rfl⟩ := hpow
     have hmn : m < n := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact absurd hj (not_lt.mpr (Nat.pow_le_pow_right hp.pos h))
     have hrel := congrFun (ptx_rel G p hγ hdet ga m) a
     change G.lc p ga m a = _
@@ -191,7 +190,7 @@ theorem lg_agree (G : LogFGL v d) {p : ℕ} (hp : p.Prime) {γ : Fin d → Fin d
         omega
       apply Finset.sum_eq_zero
       intro b _
-      rw [if_neg]
+      rw [ite_eq_right]
       intro hd
       have hle : s ≤ m := by
         first
@@ -203,9 +202,9 @@ theorem lg_agree (G : LogFGL v d) {p : ℕ} (hp : p.Prime) {γ : Fin d → Fin d
     have hsm : s ≤ m := Nat.lt_succ_iff.mp (Finset.mem_range.mp hs)
     apply Finset.sum_congr rfl
     intro b _
-    rw [if_pos (pow_dvd_pow p hsm), Nat.pow_div hsm hp.pos]
+    rw [ite_eq_left (pow_dvd_pow p hsm), Nat.pow_div hsm hp.pos]
     rfl
-  · push_neg at hpow
+  · push Not at hpow
     rw [hga a j hpow]
     symm
     apply Finset.sum_eq_zero
@@ -235,7 +234,7 @@ theorem coeff_lg_pcurve_top (G : LogFGL v d) {p : ℕ} (hp : p.Prime)
   have hsn : s ≤ n := (Finset.mem_range.mp hs).le
   apply Finset.sum_congr rfl
   intro b _
-  rw [if_pos (pow_dvd_pow p hsn), Nat.pow_div hsn hp.pos]
+  rw [ite_eq_left (pow_dvd_pow p hsn), Nat.pow_div hsn hp.pos]
   rfl
 
 private theorem exists_subring_mem_iff_isIntV : ∃ S : Subring C, ∀ x, x ∈ S ↔ IsIntV v x :=
@@ -292,8 +291,7 @@ private theorem lgCurve_const_zero (G : LogFGL v d) (a : Fin d) :
   · subst he
     rw [coeff_zero_eq_constantCoeff_apply, G.lg_const a, zero_smul]
   · obtain ⟨s, hs⟩ : ∃ s, e s ≠ 0 := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       exact he (Finsupp.ext hcon)
     rw [Finsupp.prod, Finset.prod_eq_zero (Finsupp.mem_support_iff.mpr hs) (by simp [hs]),
       map_zero, smul_zero]
@@ -471,7 +469,7 @@ theorem exists_average (G : LogFGL v d) {p : ℕ} (hp : p.Prime) {ζ : C}
   have h1 := lgCurve_expC G hp0 (fun b => (hδ b).1) c
   rw [hεδ] at h1
   have h2 := congrArg (PowerSeries.coeff (p * j)) h1
-  rw [hlgε, if_pos (dvd_mul_right p j), hexpand, if_pos (dvd_mul_right p j),
+  rw [hlgε, ite_eq_left (dvd_mul_right p j), hexpand, ite_eq_left (dvd_mul_right p j),
     Nat.mul_div_cancel_left j hp.pos] at h2
   exact h2.symm
 

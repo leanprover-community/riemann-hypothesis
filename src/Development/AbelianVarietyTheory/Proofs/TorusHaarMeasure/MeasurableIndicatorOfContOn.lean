@@ -176,14 +176,14 @@ theorem measurable_indicator_of_contOn {α : Type} [TopologicalSpace α] [Measur
   · have h : U.domRestrict (U.indicator f) = U.domRestrict f := by
       funext x
       show U.indicator f (x : α) = f x
-      rw [Set.indicator_apply, if_pos x.2]
+      rw [Set.indicator_apply, ite_eq_left x.2]
     rw [h]
     exact hf.restrict.measurable
   · have h : Uᶜ.domRestrict (U.indicator f) = fun _ => 0 := by
       funext x
       have hx : (x : α) ∉ U := x.2
       show U.indicator f (x : α) = 0
-      rw [Set.indicator_apply, if_neg hx]
+      rw [Set.indicator_apply, ite_eq_right hx]
     rw [h]
     exact measurable_const
 
@@ -246,15 +246,14 @@ theorem vanish_off : (MeasInvStatement (E := E)) → (VanishAtSStatement (E := E
         rwa [lact_one_frame'] at h
       simp only [Set.indicator_of_mem hxU, Set.indicator_of_mem hxbU, p1, p3, hψi x hx b hb]
     · have hxbU : rmul x b ∉ U := fun h => hxU ((hUinv x hx b hb).1 h)
-      simp only [Set.indicator_apply, if_neg hxU, if_neg hxbU]
+      simp only [Set.indicator_apply, ite_eq_right hxU, ite_eq_right hxbU]
   have hL : ∫⁻ z, φ (cpt X x0 z) ∂muF X x0 < ⊤ := by
     refine lt_of_le_of_lt (lintegral_mono fun z => ?_) hint
     rw [hφ]
     by_cases hz : cpt X x0 z ∈ U
     · have hzO : z ∈ OmF X x0 := hz.1
       have hzδ : δ ≤ ‖z‖ := by
-        by_contra h
-        push_neg at h
+        by_contra! h
         exact hz.2 (cpt_mem_satBall X x0 δ (mem_closedBall_zero_iff.mpr h.le))
       simp only [Set.indicator_of_mem hz]
       rw [hχ z hzδ, ← hPF z hzO, zero_sub, norm_neg, pnorm_eq X la P, mul_pow,
@@ -273,7 +272,7 @@ theorem vanish_off : (MeasInvStatement (E := E)) → (VanishAtSStatement (E := E
       rw [mul_assoc]
       first
       | exact le_div_self (by positivity) hka0 hka1
-    · simp only [Set.indicator_apply, if_neg hz]
+    · simp only [Set.indicator_apply, ite_eq_right hz]
       simp
   have hR : ∫⁻ z, φ (cpt X x1 z) ∂muF X x1 < ⊤ := by
     rw [← hMI r X x0 x1 ho0 ho1 φ hφm hφinv]

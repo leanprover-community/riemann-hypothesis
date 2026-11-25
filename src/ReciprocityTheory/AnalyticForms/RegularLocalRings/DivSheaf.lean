@@ -144,8 +144,7 @@ theorem mem_support_iff_stalkId {W : Scheme.{0}} (G : W.IdealSheafData) (x : W) 
   constructor
   · intro h htop
     obtain ⟨f, hf, hu⟩ : ∃ f ∈ G.ideal ⟨U', hU'⟩, IsUnit (W.presheaf.germ U' x hxU' f) := by
-      by_contra hno
-      push_neg at hno
+      by_contra! hno
       have hle : Ideal.map (W.presheaf.germ U' x hxU').hom (G.ideal ⟨U', hU'⟩) ≤
           IsLocalRing.maximalIdeal _ := by
         rw [Ideal.map_le_iff_le_comap]

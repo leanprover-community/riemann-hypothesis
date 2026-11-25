@@ -27,7 +27,7 @@ theorem polProj_mem (L2 : Letters N) (x : MvPolynomial (Fin N × Fin r) ℚ_[p])
 theorem polProj_id (L2 : Letters N) {x : MvPolynomial (Fin N × Fin r) ℚ_[p]} (hx : x ∈ Pol p r L2) :
     polProj p r L2 x = x := by
   rw [pol_iff] at hx
-  rw [polProj, weightedHomogeneousComponent_of_mem hx, if_pos rfl]
+  rw [polProj, weightedHomogeneousComponent_of_mem hx, ite_eq_left rfl]
 
 theorem polProj_glAct (LL L2 : Letters N) (j : ℕ) (c d : Fin r) (x : MvPolynomial (Fin N × Fin r) ℚ_[p]) :
     polProj p r L2 (glAct p LL j c d x) = glAct p LL j c d (polProj p r L2 x) :=

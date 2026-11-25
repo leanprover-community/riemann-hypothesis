@@ -78,8 +78,6 @@ open GlobalTheory.FinLatF NumberField IsDedekindDomain Formalism.MainNotions.Glo
   Formalism.IndefR.DatumF MeasureTheory GlobalTheory.FinWeil
 noncomputable section
 namespace GlobalTheory.FinLatHeis
-end GlobalTheory.FinLatHeis
-namespace GlobalTheory.FinLatHeis
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {nS nT : ℕ}
   {JS : Matrix (Fin nS) (Fin nS) E} {JT : Matrix (Fin nT) (Fin nT) E} {ξ₀ : E} {ψ : AddChar (AF F) ℂ}
 variable {hc : HeisClosedF σ JS JT ξ₀ ψ} {Λ : Submodule (𝓞 E) (Matrix (Fin nT) (Fin nS) E)} {w : 𝓞 E} {lam : ℕ →* ℂ}

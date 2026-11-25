@@ -69,10 +69,10 @@ theorem pairC_le_sum {s r : ℕ} {A : ℕ} {Ai Ci : Fin s → ℕ} {mu : Fin (2 
       rw [← h2, ← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl fun l _ => ?_
       by_cases h1 : l.val < i
-      · rw [if_pos (by omega), if_pos h1, if_neg (fun h => by rw [h] at h1; simp at h1)]; ring
+      · rw [ite_eq_left (by omega), ite_eq_left h1, ite_eq_right (fun h => by rw [h] at h1; simp at h1)]; ring
       · by_cases h3 : l.val = i
-        · rw [if_pos (by omega), if_neg h1, if_pos (Fin.ext h3)]; ring
-        · rw [if_neg (by omega), if_neg h1, if_neg (fun h => h3 (by rw [h]))]; ring
+        · rw [ite_eq_left (by omega), ite_eq_right h1, ite_eq_left (Fin.ext h3)]; ring
+        · rw [ite_eq_right (by omega), ite_eq_right h1, ite_eq_right (fun h => h3 (by rw [h]))]; ring
     show ((pairC mu (i + 1) : ℤ) : ℝ) ≤ _
     rw [eC, e]
     have hOr : (0 : ℝ) ≤ ((pairO mu Ai ⟨i, by omega⟩ : ℤ) : ℝ) := by exact_mod_cast hO
@@ -93,7 +93,6 @@ theorem pairU_at {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ}
 
   have hdich := (coarse_degree_alternative le_rfl hs j (digitBlock rz ry) hd i).2 hi
   set Ai := (clA C0 CE1 CE2 X j rz ry i : ℝ) with hAi
-  have hdich' : ((X.seg C0 CE1 CE2 j).A0 X.p : ℝ) < Ai * (1 - X.de C0 Cde) := hdich
 
   have hn4 := coarse_degree_prefix_sum hs le_rfl j rz ry hd i
   have hc := pairC_le_sum hP.1 i

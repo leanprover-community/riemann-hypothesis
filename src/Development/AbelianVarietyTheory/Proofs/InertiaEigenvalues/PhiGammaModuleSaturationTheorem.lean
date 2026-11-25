@@ -73,8 +73,7 @@ theorem exists_indep_span {Q : Type} [AddCommGroup Q] [Module k⸨X⸩ Q] [Modul
   haveI : Module.Finite k⟦X⟧ P := Module.Finite.iff_fg.mpr hP
   haveI : NoZeroSMulDivisors k⟦X⟧ Q := by
     refine ⟨fun {c x} h => ?_⟩
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have hc : algebraMap k⟦X⟧ k⸨X⸩ c ≠ 0 := by
       intro h0
       exact hne.1 ((IsFractionRing.injective k⟦X⟧ k⸨X⸩) (by rw [h0, map_zero]))
@@ -290,11 +289,6 @@ open GlobalTheory.PhiGam
 open scoped LaurentSeries PowerSeries
 namespace GlobalTheory.PhiGam.Sat
 variable {k : Type} [Field k]
-
-section
-variable {V : Type} [AddCommGroup V] [Module k⸨X⸩ V] [Module k V] {l n : ℕ} {R : RingPG k l}
-
-end
 
 variable {V : Type} [AddCommGroup V] [Module k⸨X⸩ V] [Module k⟦X⟧ V] [IsScalarTower k⟦X⟧ k⸨X⸩ V]
   {W : Type} [AddCommGroup W] [Module k⸨X⸩ W] [Module k⟦X⟧ W] [IsScalarTower k⟦X⟧ k⸨X⸩ W]

@@ -86,7 +86,6 @@ private theorem dualMap_mem_scale_dualLat_of_maps_to_scale {O Kf V0 V1 : Type} [
   · rw [smul_smul, mul_inv_cancel₀ (mul_ne_zero ht hd), one_smul]
 
 
-set_option maxHeartbeats 1000000 in
 theorem cloudBAt_of_rho {p n' : ℕ} {W Qq O Kf : Type} [CommRing W] [IsDomain W] [IsDiscreteValuationRing W] [Field Qq]
     [Algebra W Qq] [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field Kf] [Algebra O Kf]
     {ι : Qq →+* Kf} {σ : Qq ≃+* Qq} {j : W →+* O} {w : O} (hS : HidaSetting p n' W Qq O Kf ι σ j w) (hBP : BePerfect)
@@ -148,8 +147,7 @@ theorem cloudBAt_of_rho {p n' : ℕ} {W Qq O Kf : Type} [CommRing W] [IsDomain W
   set xx := ∑ x, c x • S x with hxx
   have hxre : xx ∈ Re p ι σ w r lam0 e := Submodule.sum_mem _ (fun x _ => Submodule.smul_mem _ _ (hSre x))
   obtain ⟨β, hβ⟩ : ∃ β, ρ β xx ∉ scale ((algebraMap O Kf w) ^ ((2 * κ + 1 : ℕ) : ℤ)) (Re p ι σ w r (flW (m := m) (dT TT lam0)) e) := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     exact hc (by simpa using h5 xx hxre hne)
   have desc : ∀ N : ℕ, ∀ v, v ∈ Re p ι σ w r (flW (m := m) (dT TT lam0)) e →
       v ∉ scale ((algebraMap O Kf w) ^ (N : ℤ)) (Re p ι σ w r (flW (m := m) (dT TT lam0)) e) →

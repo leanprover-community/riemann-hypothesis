@@ -82,7 +82,7 @@ theorem cr_C_wt (E : GLOps n K V) (hR : SatisfiesGLRelations E) (mu : Fin n → 
       (2 : K) • E b a (E a b x) + ((mu a : K) - (mu b : K)) • x := by
     intro a b
     rw [v2rep_comm E hR a b b a x]
-    simp only [if_true, hx' a, hx' b, sub_smul, two_smul]
+    simp only [ite_true, hx' a, hx' b, sub_smul, two_smul]
     abel
   rw [e0, _root_.UpperTheory.Reformulated.B.DoubleSumDiagonalOffDiagonal.main, Finset.sum_congr rfl fun a _ => e1 a]
   have e3 : ∀ a b : Fin n, (if a < b then E a b (E b a x) + E b a (E a b x) else 0) =
@@ -270,7 +270,6 @@ theorem cr_Pos_zero_or {β : Fin n → ℤ} (h : β ∈ cr_Pos n) : β = 0 ∨ 0
     have e : (∑ i : Fin n, ((i : ℕ) : ℤ) * rootW a b i) = ((a : ℕ) : ℤ) - ((b : ℕ) : ℤ) := by
       simp [rootW, mul_sub, Finset.sum_sub_distrib, Pi.single_apply]
     rw [e]
-    have hab' : (a : ℕ) < (b : ℕ) := hab
     omega
   | zero => left; rfl
   | add x y _ _ hx hy =>

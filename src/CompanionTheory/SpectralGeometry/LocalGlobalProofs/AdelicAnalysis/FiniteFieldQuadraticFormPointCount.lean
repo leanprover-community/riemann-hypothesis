@@ -43,20 +43,11 @@ theorem quadForm_add (h2 : (2 : k) ≠ 0) {B : Matrix ι ι k} (hB : B.IsSymm) (
 
 theorem sum_char_dot (ψ : AddChar k ℂ) (hψ : ψ ≠ 1) {w : ι → k} (hw : w ≠ 0) :
     ∑ y : ι → k, ψ (y ⬝ᵥ w) = 0 := by
-  obtain ⟨i, hi⟩ := Function.ne_iff.mp hw
-  obtain ⟨c, hc⟩ := (AddChar.ne_one_iff).mp hψ
-  have hi' : w i ≠ 0 := hi
-  have he : (Pi.single i (c / w i) : ι → k) ⬝ᵥ w = c := by
-    rw [single_dotProduct]
-    field_simp
-  have hS : ψ c * ∑ y : ι → k, ψ (y ⬝ᵥ w) = ∑ y : ι → k, ψ (y ⬝ᵥ w) := by
-    rw [Finset.mul_sum]
-    refine Fintype.sum_equiv (Equiv.addRight (Pi.single i (c / w i) : ι → k)) _ _ ?_
-    intro x
-    rw [Equiv.coe_addRight, add_dotProduct, he, AddChar.map_add_eq_mul, mul_comm]
-  have h0 : (ψ c - 1) * ∑ y : ι → k, ψ (y ⬝ᵥ w) = 0 := by
-    rw [sub_mul, hS, one_mul, sub_self]
-  exact (mul_eq_zero.mp h0).resolve_left (sub_ne_zero.mpr hc)
+  let L := dotProductBilin k k w
+  have hL : L ≠ 0 := fun h => hw (dotProduct_eq_zero_iff.mp fun y => DFunLike.congr_fun h y)
+  simp_rw [dotProduct_comm _ w]
+  exact AddChar.sum_eq_zero_of_ne_one
+    ((AddChar.compAddMonoidHom_injective_left L.toAddMonoidHom (LinearMap.surjective hL)).ne hψ)
 
 theorem gauss_mul_conj (ψ : AddChar k ℂ) (hψ : ψ ≠ 1) (h2 : (2 : k) ≠ 0) {B : Matrix ι ι k}
     (hB : B.IsSymm) (hdet : B.det ≠ 0) {t : k} (ht : t ≠ 0) :

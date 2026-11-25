@@ -29,11 +29,4 @@ theorem isHolTo_const {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] {Y :
 
 end ThetaHol
 
-section Main
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
-  {Xo : Moduli Dw l} {c : Coeff l} {σ : c.F →+* ℂ} {r : ℕ}
-
-end Main
-
 end ReciprocityTheory.ChartRestriction.G.PullbackSections

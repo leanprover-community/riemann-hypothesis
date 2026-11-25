@@ -51,14 +51,6 @@ theorem approx_pow_two (hN : KeyNewton) (a : ℕ) (b c : ℤ) (d : ℕ) (ha : 0 
     rw [he]
     exact hw₂
 
-private theorem le_two_pow_self (n : ℕ) : n ≤ 2 ^ n := by
-  induction n with
-  | zero => simp
-  | succ k ih =>
-    have hpos : 0 < 2 ^ k := pow_pos (by norm_num) k
-    rw [pow_succ]
-    omega
-
 theorem keyRep_of (hS : KeyStart) (hN : KeyNewton) (hE : KeyExact) : KeyRep := by
   intro a b c d ha hd lam hlam hadm m _ _ Λ hsd hgen hi₁ hi₂ l hl x y hxy T i₀ hi₀ hT
   have h : KeyHyps a b c d ha hd lam hlam m Λ l x y T i₀ :=
@@ -66,6 +58,6 @@ theorem keyRep_of (hS : KeyStart) (hN : KeyNewton) (hE : KeyExact) : KeyRep := b
   obtain ⟨w, hw⟩ := hS a b c d ha hd lam hlam m Λ l x y T i₀ h
   obtain ⟨K₀, hK⟩ := hE a b c d ha hd lam hlam m Λ l x y T i₀ h
   obtain ⟨w', hw'⟩ := approx_pow_two hN a b c d ha hd lam hlam m Λ l x y T i₀ h w hw K₀
-  exact hK (2 ^ K₀) (le_two_pow_self K₀) w' hw'
+  exact hK (2 ^ K₀) Nat.lt_two_pow_self.le w' hw'
 
 end PI.UnitaryGroupMassFormula.UnimodLocStd

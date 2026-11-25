@@ -8,8 +8,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNb
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.HodgeMetric

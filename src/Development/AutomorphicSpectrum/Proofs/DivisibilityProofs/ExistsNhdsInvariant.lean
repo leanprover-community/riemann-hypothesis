@@ -204,11 +204,6 @@ theorem pure_update_mem
 
 end Pure
 
-section Tensor
-
-
-end Tensor
-
 section Main
 
 attribute [local instance] Classical.propDecidable

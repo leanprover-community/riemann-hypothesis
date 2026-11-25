@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.IndexEmbeddingBijective
 public import Formalism.FormalDegreeBessel.StatementG
 import Mathlib.Tactic.TypeStar
 import Formalism.HermitianCurvature.OperatorsCommuteTranslations
@@ -97,7 +98,7 @@ theorem herm_bvec_sum (k r : ℕ) (yb : Fin (2 * r + k + 1) → ℂ) (hyb : inWb
       · exact absurd (Fin.ext (by simp only [Fin.val_mk]; omega)) h
     · intro b _ hb
       split_ifs with h
-      · exact absurd (Fin.ext (by simp only [Fin.ext_iff, Fin.val_mk] at h ⊢; omega)) hb
+      · exact absurd (Fin.ext (by simp only [Fin.ext_iff] at h ⊢; omega)) hb
       · exact mul_zero _
     · intro h
       exact absurd (Finset.mem_univ _) h
@@ -135,10 +136,6 @@ theorem hpk_star (k r : ℕ) (p q : Fin (2 * r + k + 1)) : star (Hpk k r p q) = 
 
 theorem herm_swap (k r : ℕ) (v w : Fin (2 * r + k + 1) → ℂ) :
     herm (Hpk k r) v w = star (herm (Hpk k r) w v) := by
-  unfold herm
-  have hH : (Hpk k r)ᴴ = Hpk k r := by
-    ext p q
-    rw [conjTranspose_apply, hpk_star]
-  rw [star_dotProduct v (Hpk k r *ᵥ w), star_star, star_mulVec, hH, dotProduct_mulVec]
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.Xi.FormulaFAux.herm_symm <;> assumption
 
 end Formalism.FourierDecayAlt.P.SignAntidiagonal

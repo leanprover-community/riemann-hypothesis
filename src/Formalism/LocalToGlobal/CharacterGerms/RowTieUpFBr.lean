@@ -75,9 +75,6 @@ omit [CommRing S] in
 
 end Formalism.L2.FormalSeriesBounds.MapFB
 
-namespace Formalism.L2.FormalSeriesBounds
-
-end Formalism.L2.FormalSeriesBounds
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -202,13 +199,6 @@ theorem frobSum_conj_all {d : ℕ} {l : ℕ} (hl : 1 < l) (n j j' : ℕ) (q : ZM
   ring
 
 end Sum
-
-section Core
-
-variable {C : Type} [Field C] [CharZero C] {V : VF C} {OE : Type} [CommRing OE] [StarRing OE] {dd : ℕ} {d : ℕ} [NeZero d]
-  {I : Fin 2 → Type} [∀ g, Fintype (I g)]
-
-end Core
 
 end UpFBr
 

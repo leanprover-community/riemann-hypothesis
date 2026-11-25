@@ -6,6 +6,7 @@ import Mathlib.Analysis.Matrix.Normed
 public import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.Topology.UniformSpace.Matrix
 import Formalism.HermitianCurvature.StatementB
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.TwoByOneBlock
 
 @[expose] public section
 
@@ -22,12 +23,10 @@ section expo
 
 variable {n : ℕ}
 
-set_option backward.isDefEq.respectTransparency false in
 theorem exp_intertwine (Y Z H : Matrix (Fin n) (Fin n) ℂ) (h : Y * H = H * Z) :
     NormedSpace.exp Y * H = H * NormedSpace.exp Z := by
   apply GlobalTheory.RightDerivSmooth.exp_intertwine <;> assumption
 
-set_option backward.isDefEq.respectTransparency false in
 theorem exp_mem_UH (H Y : Matrix (Fin n) (Fin n) ℂ) (hY : Yᴴ * H + H * Y = 0) :
     NormedSpace.exp Y ∈ Formalism.QuantumDeterminants.UH H := by
   show (NormedSpace.exp Y)ᴴ * H * NormedSpace.exp Y = H
@@ -39,12 +38,7 @@ theorem exp_mem_UH (H Y : Matrix (Fin n) (Fin n) ℂ) (hY : Yᴴ * H + H * Y = 0
 
 theorem UH_mul (H a b : Matrix (Fin n) (Fin n) ℂ) (ha : a ∈ Formalism.QuantumDeterminants.UH H) (hb : b ∈ Formalism.QuantumDeterminants.UH H) :
     a * b ∈ Formalism.QuantumDeterminants.UH H := by
-  have ha' : aᴴ * H * a = H := ha
-  have hb' : bᴴ * H * b = H := hb
-  show (a * b)ᴴ * H * (a * b) = H
-  calc (a * b)ᴴ * H * (a * b) = bᴴ * (aᴴ * H * a) * b := by
-        simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-    _ = H := by rw [ha', hb']
+  apply _root_.Formalism.FourierDecayAlt.P.TwoByOneBlock.UH_mul <;> assumption
 
 theorem lie_smul (H X : Matrix (Fin n) (Fin n) ℂ) (hX : Xᴴ * H + H * X = 0) (c : ℝ) :
     ((c : ℂ) • X)ᴴ * H + H * ((c : ℂ) • X) = 0 := by

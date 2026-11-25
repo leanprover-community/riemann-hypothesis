@@ -47,8 +47,7 @@ theorem exists_unit_wedge {Ω E : Type} [Field Ω] [AddCommGroup E] [Module Ω E
       w = exteriorPower.ιMulti Ω p b} = Submodule.span R {ω}) :
     ∃ (b : Fin p → E) (r : R), (∀ i, b i ∈ A) ∧ IsUnit r ∧
       exteriorPower.ιMulti Ω p b = (r : Ω) • ω := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   let N : Submodule R (⋀[Ω]^p E) :=
     Submodule.map (LinearMap.toSpanSingleton R (⋀[Ω]^p E) ω) (IsLocalRing.maximalIdeal R)
   have hle : Submodule.span R {w : ⋀[Ω]^p E | ∃ b : Fin p → E, (∀ i, b i ∈ A) ∧

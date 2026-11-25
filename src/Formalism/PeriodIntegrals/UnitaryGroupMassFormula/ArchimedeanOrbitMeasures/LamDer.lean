@@ -143,8 +143,7 @@ theorem lamDet_of (hB : BetaIso) (hM : MuBridge) (hN : NuBridge) (hD : DKForm) (
       exact (NeZero.ne (volume : Measure (EuclideanSpace ℝ κ))) h1
     rw [h1, smul_smul, ENNReal.inv_mul_cancel hc0 ENNReal.ofReal_ne_top, one_smul]
   have hcν : 0 < cν := by
-    by_contra hneg
-    push_neg at hneg
+    by_contra! hneg
     have h1 : νinf.map Tc = (νinf.map eH).map Th := by
       rw [Measure.map_map Th.continuous.measurable eH.continuous.measurable]
       congr 1

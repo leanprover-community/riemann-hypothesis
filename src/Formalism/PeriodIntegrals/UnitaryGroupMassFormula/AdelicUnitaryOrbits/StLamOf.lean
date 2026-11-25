@@ -211,8 +211,7 @@ theorem quadGen : QuadGen := by
   haveI : FiniteDimensional F E := Module.finite_of_finrank_eq_succ hfin
   haveI : CharZero E := charZero_of_injective_algebraMap (algebraMap F E).injective
   obtain ⟨e, he⟩ : ∃ e : E, e ∉ (algebraMap F E).range := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have hle : Module.finrank F E ≤ 1 := by
       refine finrank_le_one (1 : E) fun w => ?_
       obtain ⟨c, hc⟩ := h w

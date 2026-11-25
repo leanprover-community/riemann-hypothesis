@@ -184,8 +184,8 @@ theorem framepf_φA_ι_entry (M : ℕ) (lam : O) (K : Matrix (Fin Bs.r) (Fin Bs.
   by_cases h : j = k
   · subst h
     rw [Matrix.one_apply_eq, mul_one, framepf_ι_C π' (c - 1) (hπ0 _), map_mul,
-      Formalism.MainNotions.LiftingTheory.wmap_φA_letE, AlgHom.commutes, if_pos rfl, mul_comm]
-  · rw [Matrix.one_apply_ne h, mul_zero, framepf_ι_zero π' (c - 1) hπ0, map_zero, if_neg h]
+      Formalism.MainNotions.LiftingTheory.wmap_φA_letE, AlgHom.commutes, ite_eq_left rfl, mul_comm]
+  · rw [Matrix.one_apply_ne h, mul_zero, framepf_ι_zero π' (c - 1) hπ0, map_zero, ite_eq_right h]
 
 include hπ0 in
 theorem framepf_φA_ι_matmul (F H : Matrix (Fin Bs.r) (Fin Bs.r) (PowerSeries O)) (j k : Fin Bs.r) :
@@ -263,7 +263,7 @@ theorem framepf_αβ_core (Bs : FramepfBas W T) (hT : IsCrys PD T.ρ) (π' Eπ :
       exact Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun j _ => by ring
     rw [this]
     simp only [hRP, mul_add, Finset.sum_add_distrib, mul_ite, mul_zero, Finset.sum_ite_eq,
-      Finset.mem_univ, if_true, Finset.mul_sum]
+      Finset.mem_univ, ite_true, Finset.mul_sum]
     congr 1
     · rw [mul_left_comm, mul_comm (a m), hac]
     · exact Finset.sum_congr rfl fun k _ => by ring
@@ -355,7 +355,7 @@ theorem framepf_βα_core (Bs : FramepfBas W T) (π' Eπ : LetA O n) (h' M : ℕ
       exact Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun j _ => by ring
     rw [this]
     simp only [hPR, mul_add, Finset.sum_add_distrib, mul_ite, mul_zero, Finset.sum_ite_eq,
-      Finset.mem_univ, if_true, Finset.mul_sum]
+      Finset.mem_univ, ite_true, Finset.mul_sum]
     congr 1
     · linear_combination (algebraMap O (LetA O n) lam * a j) * hee
     · exact Finset.sum_congr rfl fun k _ => by ring

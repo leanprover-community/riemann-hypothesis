@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.TraceFormulaEigenvalues.TraceBlocks
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SymmetricPowerTransfer.GlobalUnitaryForms.FibAbs
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -104,18 +105,7 @@ private theorem fib_abs {O I : Type} {P : I → Type} (F : ∀ i, P i → O) (S 
 
 private theorem rel_smul {H X : Type} [Group H] [MulAction H X] (H₀ : Subgroup H) (hn : H₀.Normal) (h : H) (x : X) :
     H₀.relIndex (stabilizer H (h • x)) = H₀.relIndex (stabilizer H x) := by
-  have h0 : H₀.map (MulAut.conj h).toMonoidHom = H₀ := by
-    ext z
-    constructor
-    · rintro ⟨y, hy, rfl⟩
-      exact hn.conj_mem y hy h
-    · intro hz
-      refine ⟨h⁻¹ * z * h, ?_, ?_⟩
-      · simpa using hn.conj_mem z hz h⁻¹
-      · simp [mul_assoc]
-  rw [stabilizer_smul_eq_stabilizer_map_conj]
-  conv_lhs => rw [← h0]
-  exact Subgroup.relIndex_map_map_of_injective _ _ (MulAut.conj h).injective
+  apply _root_.UpperTheory.V.Z.Sym.Tf.rel_smul <;> assumption
 
 private theorem out_mk {H X : Type} [Group H] [MulAction H X] (x : X) :
     ∃ h : H, (Quotient.mk (orbitRel H X) x).out = h • x := by

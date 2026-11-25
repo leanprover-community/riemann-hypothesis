@@ -41,7 +41,6 @@ theorem ModG_map {γ : S.V ≃ₗ[E] S.V} {Λ : Submodule (𝓞 E) S.V} {g : ℕ
 
 theorem frameAct_map {γ : S.V ≃ₗ[E] S.V} {n : ℕ} (f : Fin n → S.V) (ξ : Matrix (Fin n) (Fin n) (𝓞 E))
     (b : Fin n) : frameAct (fun i => γ (f i)) ξ b = γ (frameAct f ξ b) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp only [frameAct, map_sum, map_smul]
 
 theorem frame_mapL' {T : E} {γ : S.V ≃ₗ[E] S.V} (hγ : γ ∈ Formalism.HermitianLatticesTheory.isom S.hT) (F : LFlag S r T) :

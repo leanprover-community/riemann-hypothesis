@@ -14,7 +14,6 @@ public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCoh
 @[expose] public section
 
 set_option linter.unusedVariables false
-set_option backward.isDefEq.respectTransparency false
 
 open CategoryTheory GlobalTheory.EtC
 

@@ -18,9 +18,4 @@ def ListTailLog.Statement : Prop :=
       (∀ j, IsBoundedPotForm A R.Yo R.r Om C₁ (th j) (u j)) →
       TailLogBound A R.Yo R.r (fun j => potForm (th j) (u j)) CE
 
-section Inhabitants
-
-
-end Inhabitants
-
 end GroundTheory.Heights₂.Heights.AnalyticLimit

@@ -52,10 +52,7 @@ open scoped TensorProduct
 namespace GlobalTheory.EtaTildeOddParity
 
 theorem isEta_sq (D : D7) (η : (AF D.host.F)ˣ →* Circle) (h : IsEta D η) (a : (AF D.host.F)ˣ) : η a ^ 2 = 1 := by
-  obtain ⟨-, -, hnorm, -⟩ := h
-  have hn := hnorm (idF D a)
-  rw [Formalism.L2.Theta.norm_idF, map_pow] at hn
-  exact hn
+  exact Formalism.L2.Theta.eta_sq h a
 
 private theorem hasInfQ_half_of_isEtaT (D : D7) (χ : Formalism.L2.Host.HChar D.host.E) (h : Formalism.L2.Host.IsEtaT D.host χ) :
     χ.HasInfQ (tauE D) (fun _ => 1 / 2) := by

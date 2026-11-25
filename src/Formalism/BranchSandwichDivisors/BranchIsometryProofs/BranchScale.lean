@@ -109,8 +109,8 @@ lemma bs_abel (n : ℕ) (x : Fin n → ℤ) :
         rw [Finset.sum_filter, ← Finset.sum_sub_distrib]
         refine Finset.sum_congr rfl fun a _ => ?_
         by_cases h : k < a.val
-        · rw [if_pos h, if_neg (by omega)]; ring
-        · rw [if_neg h, if_pos (by omega)]; ring
+        · rw [ite_eq_left h, ite_eq_right (by omega)]; ring
+        · rw [ite_eq_right h, ite_eq_left (by omega)]; ring
 
 lemma bs_height_le (n : ℕ) (x y : Fin n → ℕ)
     (h1 : ∀ k : ℕ, (∑ a : Fin n with a.val < k, x a) ≤ ∑ a : Fin n with a.val < k, y a)
@@ -254,7 +254,7 @@ lemma rad_rowDiv (H : BsForm sg D) (p : MvPolynomial (Fin n × Fin n) ℂ) (hp :
     rfl
   have := congrArg (fun p => _root_.AddMonoidAlgebra.coeff (M := ℕ) p k) hP0
   simp only [hP, Polynomial.finsetSum_coeff, Polynomial.coeff_monomial_apply, Finset.sum_ite_eq',
-    if_pos hk, Polynomial.coeff_zero] at this
+    ite_eq_left hk, Polynomial.coeff_zero] at this
   exact this
 
 theorem eq_zero (H : BsForm sg D) (hsg : Antitone sg)

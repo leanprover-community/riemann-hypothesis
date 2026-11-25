@@ -150,7 +150,7 @@ theorem heckeVec_eq_of_isCompAlong {L : Type} [Field L] [NumberField L] [IsCMFie
           refine Finset.sum_congr rfl fun c _ => ?_
           rw [map_smul, hfi]
       _ = lam • fi i v := by rw [e2, map_smul]
-  have hφZ := mem_of_mem_iSup ((RU L n).comp (locU n w).subtype) (σ.comp p) hirr fi hfi _ Z hZ φ
+  have hφZ := GlobalTheory.InvariantSupremum.fixed_mem_of_mem_iSup_range ((RU L n).comp (locU n w).subtype) (σ.comp p) hirr fi hfi _ Z hZ φ
     (fun k hk => hfix k hk) hmem
   rw [hT]
   exact ((hZ' φ).1 hφZ).2
@@ -178,7 +178,7 @@ theorem heckeVec_divInd {D : D7} [IsCMField D.host.E] {V : HSp D}
   let g : GA D V → locU V.rank P := fun γ =>
     if h : (cj j h₀).symm γ ∈ locU V.rank P then ⟨_, h⟩ else 1
   have hg : ∀ γ ∈ R, (g γ : UA D.host.E V.rank) = (cj j h₀).symm γ := fun γ hγ => by
-    simp only [g, dif_pos (h1 γ hγ).1]
+    simp only [g, dite_eq_left (h1 γ hγ).1]
   have e : (fun x : locU V.rank P => divInd (Ov D.host.E P) d (((cLoc P).comp (locU V.rank P).subtype) x)) =
       Set.indicator {x : locU V.rank P | HasDiv (Ov D.host.E P) d (cLoc P x.val)} 1 := by
     funext x

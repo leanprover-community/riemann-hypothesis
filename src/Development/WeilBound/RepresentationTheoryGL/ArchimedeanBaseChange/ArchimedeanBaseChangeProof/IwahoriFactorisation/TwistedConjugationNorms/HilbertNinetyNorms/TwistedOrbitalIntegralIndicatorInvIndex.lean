@@ -151,13 +151,6 @@ theorem twOrb_indicator_eq_inv_index [TopologicalSpace G] [IsTopologicalGroup G]
       exact hne (hq q h)
     rw [h0, mul_zero]
 
-theorem rep_mk_eq (θ : G →* G) (x : G) :
-    ∃ g : G, TwCl.rep (Quot.mk (fun x y : G => ∃ g, y = g⁻¹ * x * θ g) x : TwCl θ) = g⁻¹ * x * θ g := by
-  have e : Quot.mk (fun x y : G => ∃ g, y = g⁻¹ * x * θ g)
-      (Quot.out (Quot.mk (fun x y : G => ∃ g, y = g⁻¹ * x * θ g) x)) =
-      Quot.mk (fun x y : G => ∃ g, y = g⁻¹ * x * θ g) x := Quot.out_eq _
-  exact (GlobalTheory.BCT.StTwTens.twRel_equiv θ).symm ((GlobalTheory.BCT.StTwTens.twRel_equiv θ).eqvGen_iff.1 (Quot.eqvGen_exact e))
-
 theorem clSum_eq_single (θ : G →* G) [TopologicalSpace G] (K : Subgroup G) (S : Set G) (wt f : G → ℂ) (δ0 : G)
     (hS0 : ∀ g : G, g⁻¹ * δ0 * θ g ∈ S)
     (hinv : ∀ g : G, wt (g⁻¹ * δ0 * θ g) * twOrb θ K (g⁻¹ * δ0 * θ g) f = wt δ0 * twOrb θ K δ0 f)
@@ -176,8 +169,8 @@ theorem clSum_eq_single (θ : G →* G) [TopologicalSpace G] (K : Subgroup G) (S
       rw [hg]
       exact (Quot.sound ⟨g, rfl⟩).symm
     · exact hne rfl
-  · obtain ⟨g, hg⟩ := rep_mk_eq θ δ0
-    rw [hg, if_pos (hS0 g), hinv g]
+  · obtain ⟨g, hg⟩ := GlobalTheory.BCT.ClSumParam.rep_mk θ δ0
+    rw [hg, ite_eq_left (hS0 g), hinv g]
 
 end Gen
 

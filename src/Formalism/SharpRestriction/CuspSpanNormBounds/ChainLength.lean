@@ -21,17 +21,6 @@ section LocalTheory
 open Formalism.MainNotions.S.Loc MeasureTheory ComplexConjugate
 
 
-def FamilyVolumeFourth {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
-    {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
-    (M : Model F E) (r k n : ℕ) (C : ℝ) : Prop :=
-  ∀ (ϖ : 𝒪[F]), Irreducible ϖ →
-  ∀ (V : Type) [AddCommGroup V] [Module E V] (H : HermSp M V), Module.finrank E V = n →
-  (∀ (t : Term V M r), H.IsGeneric t →
-    |H.dens ϖ t.abelian₂ (H.gram (H.MMfam t)) - 1| ≤
-      C * (2 * (r : ℝ) + 2) * (Nat.card 𝓀[F] : ℝ) ^ (-((k : ℤ) - 2 * r - 2))) ∧
-  (∀ (t₁ t₂ : Term V M r), H.IsGeneric t₁ → H.IsGeneric t₂ → H.IsScalarPair t₁ t₂ →
-    H.dens ϖ t₁.abelian₂ (H.gram (H.MMfam t₁)) = H.dens ϖ t₂.abelian₂ (H.gram (H.MMfam t₂)))
-
 end LocalTheory
 
 def adm6 (D : Formalism.BasicNotions.D7) : Prop :=
@@ -58,11 +47,5 @@ def Gfin (δ : ∀ p, (D.s.atP p).Fp) (M : ∀ p : PlF D, Loc.Model (D.s.atP p).
   (∀ (a s : ℕ) (t : D.host.E), t ≠ 0 → 1 ≤ a → 1 ≤ s → a + s - 1 ≤ D.R.rS + 1 →
     (Function.mulSupport fun p => (M p).modK (blkMod δ T T' p a s t)).Finite) ∧
   (∀ w w' : Point D.host.E (D.R.rS + 1), (Function.mulSupport fun p => KtopP M δ T T' p w w').Finite)
-
-section Family
-
-variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) {Y : ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, TermTie (Fm.D x i)}
-
-end Family
 
 end Formalism.MainNotions.JointEigenvalueBoundsFromAnyDatum

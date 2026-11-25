@@ -57,10 +57,10 @@ theorem pStep_reads (Ψ : Type) (N j : ℕ) (keep : Ψ × Fin N → Prop) (q : P
     by_cases hc : b < x ∧ ((x : ℕ) < N - j ↔ (b : ℕ) < N - j)
     · rw [dite_eq_left hc]
       unfold cExt
-      refine dif_neg ?_
+      refine dite_eq_right ?_
       rintro ⟨i', hk', hp', hb', hx'⟩
       exact hx' (stepCols_subset_of_le hj
         (hmin i' (Finset.mem_filter.mpr ⟨Finset.mem_univ _, hk', hp', hb'⟩)) hmb hb' hx)
-    · rw [_root_.dite_eq_right hc, if_neg hxb]
+    · rw [_root_.dite_eq_right hc, ite_eq_right hxb]
 
 end GlobalTheory.CompanionTheory.Ar.PB.PFl.SmallStep

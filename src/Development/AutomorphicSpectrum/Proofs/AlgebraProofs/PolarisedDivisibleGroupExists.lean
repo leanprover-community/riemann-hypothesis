@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.CoreStatements.HomogeneousNonvanishing.Imports
 public import Mathlib.LinearAlgebra.DFinsupp
 public import Mathlib.LinearAlgebra.TensorProduct.Defs
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.PairingExtends
@@ -29,7 +30,7 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NormSmulLeOn
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.
--- Members: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsBisRest, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DivisibleGroupFromTower, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DivisibleGroupTowerCompatibilityStatement, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DivisibleGroupTowerDualStatement, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DivisibleGroupTowerFreeStatement, Development.WeilBound.CoreStatements.HodgeTatePoints.GiFree, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PolarisedLatticeTowerExists, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DvdMulOfGroupLikeVal, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.TateMapDualHomBidual, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PolarisedDivisibleGroupExists
+-- Members: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsBisRest, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DivisibleGroupTowerCompatibilityStatement, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DivisibleGroupTowerDualStatement, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DivisibleGroupTowerFreeStatement, Development.WeilBound.CoreStatements.HodgeTatePoints.GiFree, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PolarisedLatticeTowerExists, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DvdMulOfGroupLikeVal, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.TateMapDualHomBidual, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PolarisedDivisibleGroupExists
 
 -- ===== clump member: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsBisRest =====
 -- clump-header: {"m": "Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsBisRest", "h": "module\n\npublic import Mathlib.LinearAlgebra.DFinsupp\npublic import Mathlib.LinearAlgebra.TensorProduct.Defs\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
@@ -57,23 +58,6 @@ theorem UpperTheory.Reformulated.B.DYlb6.main :
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsBisRest =====
-
--- ===== clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DivisibleGroupFromTower =====
--- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DivisibleGroupFromTower", "h": "module\n\npublic import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.PairingExtends\npublic import Development.WeilBound.CoreStatements.HodgeTatePoints.Twpdiv\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.SplitTori.SplitTorusAff\n\n"}
-section -- clump:auto
-@[expose] public section
-
-open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct NumberField GlobalTheory GlobalTheory.PDivGroup GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.BT GlobalTheory.CompanionTheory.Ar.HT ReciprocityTheory.ChartRestriction.G.Semi
-
-namespace GlobalTheory.CompanionTheory.Ar.HT
-
-theorem tower_pdiv_exists : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [IsDomain O] [Algebra O C] (hv : v.Integers O) (hp : v (p : C) < 1) (hO : IsAdicComplete (Ideal.span {(p : O)}) O) (La : Type) [AddCommGroup La] [Module.Free ℤ La] [Module.Finite ℤ La] (L : Type) [AddCommGroup L] [Module O L] (X : OrdTower p O La L), ∃ (G : PDivGroup p O) (e : ∀ n, G.A n ≃ₐ[O] X.A n) (τ : La →+ G.Tate), X.Realises G e τ ∧ G.height = Module.finrank ℤ La ∧ ∃ j : ℤ_[p] ⊗[ℤ] La ≃ₗ[ℤ_[p]] G.Tate, ∀ a, j (1 ⊗ₜ a) = τ a :=
-  @PositivityTheory.HtPt.Twpdiv.tower_pdiv
-
-end GlobalTheory.CompanionTheory.Ar.HT
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DivisibleGroupFromTower =====
 
 -- ===== clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DivisibleGroupTowerCompatibilityStatement =====
 -- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DivisibleGroupTowerCompatibilityStatement", "h": "module\n\npublic import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.PairingExtends\npublic import Development.WeilBound.CoreStatements.HodgeTatePoints.Twpdiv\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.SplitTori.SplitTorusAff\n\n"}
@@ -567,17 +551,17 @@ theorem exists_diag {C : Type} [Field C] {v : Valuation C NNReal} {O : Type} [Co
   · rw [hφg, hPA]
     change (if (j : ℕ) < m then a j else 0) ∣ _
     by_cases h : (j : ℕ) < m
-    · rw [if_pos h]
+    · rw [ite_eq_left h]
       refine Finset.dvd_sum fun l _ => ?_
       split_ifs
       · exact dvd_mul_right _ _
       · simp
     · have h0 : ∑ l : Fin m, (if (l : ℕ) = (j : ℕ) then a j else 0) * Q⁻¹ l k = 0 :=
-        Finset.sum_eq_zero fun l _ => by rw [if_neg (fun hl : (l : ℕ) = j => h (hl ▸ l.2)), zero_mul]
+        Finset.sum_eq_zero fun l _ => by rw [ite_eq_right (fun hl : (l : ℕ) = j => h (hl ▸ l.2)), zero_mul]
       rw [h0]
       exact dvd_zero _
   · by_cases h : (j : ℕ) < m
-    · simp only [if_pos h]
+    · simp only [ite_eq_left h]
       let x : F := ∑ k, Q k ⟨j, h⟩ • g k
       have hx : x ∈ Submodule.span O (Set.range g) :=
         Submodule.sum_mem _ fun k _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨k, rfl⟩)
@@ -590,12 +574,12 @@ theorem exists_diag {C : Type} [Field C] {v : Valuation C NNReal} {O : Type} [Co
         rw [h1, hD]
       have hxe : a j • e j = x := by
         rw [hsum x, Finset.sum_eq_single j]
-        · rw [hφx, if_pos rfl]
+        · rw [hφx, ite_eq_left rfl]
         · intro i _ hij
-          rw [hφx, if_neg fun hh => hij (Fin.ext hh.symm), zero_smul]
+          rw [hφx, ite_eq_right fun hh => hij (Fin.ext hh.symm), zero_smul]
         · simp
       rwa [hxe]
-    · simp only [if_neg h, zero_smul]
+    · simp only [ite_eq_right h, zero_smul]
       exact zero_mem _
 
 end Diag
@@ -934,7 +918,7 @@ theorem pairing_dual_bidual (G : PDivGroup p O) (t : G.Tate) (χ : G.dual.Tate) 
 
 theorem algebraMap_injective [IsDomain O] [Algebra ℤ_[p] O] (hp : (p : O) ≠ 0) :
     Function.Injective (algebraMap ℤ_[p] O) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro a ha
   by_contra h
   have h2 := congrArg (algebraMap ℤ_[p] O) (PadicInt.unitCoeff_spec h)
@@ -1070,7 +1054,7 @@ end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.TateMapDualHomBidual =====
 
 -- ===== clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PolarisedDivisibleGroupExists =====
--- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PolarisedDivisibleGroupExists", "h": "module\n\npublic import Development.AutomorphicSpectrum.Statements.GeometryStatements.IsPolLatticePlane\npublic import Development.AutomorphicSpectrum.PublishedTheorems.Algebra₂.FarguesHodgeTate\npublic import Mathlib.LinearAlgebra.BilinearForm.TensorProduct\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConvEqOneOfForallPairing\npublic import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsBisRest\npublic import Mathlib.FieldTheory.IsAlgClosed.Basic\npublic import Mathlib.NumberTheory.Padics.PadicIntegers\npublic import Mathlib.RingTheory.Henselian\npublic import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.CompleteIntegersProperties\npublic import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.PairingExtends\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DivisibleGroupFromTower\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DivisibleGroupTowerCompatibilityStatement\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DivisibleGroupTowerDualStatement\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DivisibleGroupTowerFreeStatement\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PolarisedLatticeTowerExists\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.TateMapDualHomBidual\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.RegularLocalRing.Defs\nimport Mathlib.RingTheory.SimpleRing.Principal\nimport Mathlib.RingTheory.Valuation.Integral\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Development.WeilBound.CoreStatements.HodgeTatePoints.ExistsBialgHom\nimport Development.WeilBound.CoreStatements.HodgeTatePoints.Twomega\n\n"}
+-- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PolarisedDivisibleGroupExists", "h": "module\n\npublic import Development.AutomorphicSpectrum.Statements.GeometryStatements.IsPolLatticePlane\npublic import Development.AutomorphicSpectrum.PublishedTheorems.Algebra₂.FarguesHodgeTate\npublic import Mathlib.LinearAlgebra.BilinearForm.TensorProduct\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConvEqOneOfForallPairing\npublic import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsBisRest\npublic import Mathlib.FieldTheory.IsAlgClosed.Basic\npublic import Mathlib.NumberTheory.Padics.PadicIntegers\npublic import Mathlib.RingTheory.Henselian\npublic import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.CompleteIntegersProperties\npublic import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.PairingExtends\npublic import Development.WeilBound.CoreStatements.HodgeTatePoints.Twpdiv\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DivisibleGroupTowerCompatibilityStatement\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DivisibleGroupTowerDualStatement\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DivisibleGroupTowerFreeStatement\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PolarisedLatticeTowerExists\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.TateMapDualHomBidual\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.RegularLocalRing.Defs\nimport Mathlib.RingTheory.SimpleRing.Principal\nimport Mathlib.RingTheory.Valuation.Integral\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Development.WeilBound.CoreStatements.HodgeTatePoints.ExistsBialgHom\nimport Development.WeilBound.CoreStatements.HodgeTatePoints.Twomega\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -1310,33 +1294,8 @@ theorem baseChange_alt {R A W : Type} [CommRing R] [CommRing A] [Algebra R A] [A
 theorem baseChange_perfect {R W : Type} [CommRing R] [AddCommGroup W] [Module.Free ℤ W]
     [Module.Finite ℤ W] (B : LinearMap.BilinForm ℤ W) (h : ∀ x, B x x = 0) (hb : Function.Bijective B) :
     Function.Bijective (LinearMap.BilinForm.baseChange R B) := by
-  classical
-  have hs : ∀ x y, B x y = - B y x := fun x y => by
-    have := h (x + y)
-    simp only [map_add (f := _), LinearMap.add_apply, h, zero_add, add_zero] at this
-    exact eq_neg_of_add_eq_zero_right this
-  let b := Module.finBasis ℤ W
-  let bR := Algebra.TensorProduct.basis R b
-  have hbR : ∀ i, bR i = 1 ⊗ₜ b i := fun i => by simp [bR]
-  choose d hd using fun i => hb.2 (b.coord i)
-  have hdb : ∀ i k, B (d i) (b k) = if k = i then 1 else 0 := fun i k => by
-    rw [hd]; simp [Module.Basis.coord_apply, Finsupp.single_apply]
-  constructor
-  · rw [injective_iff_map_eq_zero]
-    intro x hx
-    refine bR.ext_elem fun k => ?_
-    have h1 := LinearMap.congr_fun hx (1 ⊗ₜ d k)
-    rw [← bR.sum_repr x] at h1
-
-    simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, hbR,
-    LinearMap.BilinForm.baseChange_tmul, hs (b _), hdb] at h1
-    simpa [Finset.sum_ite_eq] using h1
-  · intro f
-    refine ⟨∑ i, f (1 ⊗ₜ b i) • ((1 : R) ⊗ₜ[ℤ] d i), bR.ext fun k => ?_⟩
-
-    simp only [map_sum, map_smul, LinearMap.sum_apply, LinearMap.smul_apply, hbR,
-    LinearMap.BilinForm.baseChange_tmul, hdb]
-    simp [Finset.sum_ite_eq]
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.UnimodularBaseChange.bijective_baseChange <;> assumption
 
 theorem span_gen_baseChange {R O W T : Type} [CommRing R] [CommRing O] [Algebra R O] [AddCommGroup W]
     [AddCommGroup T] [Module R T] (j : R ⊗[ℤ] W ≃ₗ[R] T) :
@@ -1472,7 +1431,7 @@ theorem exists_HTPoint : FarguesHodgeTate → ∀ (p : ℕ) [Fact p.Prime] (C : 
   obtain ⟨alg⟩ := (_root_.GlobalTheory.CompanionTheory.Ar.HT.padicComplete_integers_structure p C v O hv hp hO).1
   letI := alg
   obtain ⟨ρ, T, e, h1, h2, h3, h4, h5, h6, h7, h8⟩ := _root_.GlobalTheory.CompanionTheory.Ar.HT.free_on_lift p C v O hv hp hO E c La EF N u hu
-  obtain ⟨G, ee, τ, hre, hheight, j, hj⟩ := _root_.GlobalTheory.CompanionTheory.Ar.HT.tower_pdiv_exists p C v O hv hp hO La L X
+  obtain ⟨G, ee, τ, hre, hheight, j, hj⟩ := _root_.PositivityTheory.HtPt.Twpdiv.tower_pdiv p C v O hv hp hO La L X
   obtain ⟨lam, hlam⟩ := PositivityTheory.HtPt.Twpol.tower_pol p C v O hv hp hO La L X G ee τ hre EF ζ hprim hcomp hpair
   obtain ⟨jj, hder, hjj⟩ := PositivityTheory.HtPt.Twomega.tower_omega p C v O hv hp hO La L X G ee τ hre
   have hend := (GlobalTheory.T.divisible_group_tower_compatibility p C v O hv hp hO La L X G ee τ hre).1

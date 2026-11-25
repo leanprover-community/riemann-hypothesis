@@ -42,11 +42,11 @@ private theorem coeff_pd_eq_coeff_add_single_mul (i : XZ (Bool × H) N0 N1) (Q :
   · rw [MvPolynomial.pderiv_monomial, MvPolynomial.coeff_monomial, MvPolynomial.coeff_monomial]
     by_cases h : s = ν + Finsupp.single i 1
     · subst h
-      rw [if_pos (add_tsub_cancel_right _ _), if_pos rfl]
+      rw [ite_eq_left (add_tsub_cancel_right _ _), ite_eq_left rfl]
       simp
-    · rw [if_neg h, zero_mul]
+    · rw [ite_eq_right h, zero_mul]
       by_cases h2 : s - Finsupp.single i 1 = ν
-      · rw [if_pos h2]
+      · rw [ite_eq_left h2]
         have hsi : s i = 0 := by
           by_contra hne
           apply h
@@ -57,7 +57,7 @@ private theorem coeff_pd_eq_coeff_add_single_mul (i : XZ (Bool × H) N0 N1) (Q :
           · subst hj; omega
           · omega
         simp [hsi]
-      · rw [if_neg h2]
+      · rw [ite_eq_right h2]
   · simp only [map_add (f := _), MvPolynomial.coeff_add, hp, hq, add_mul]
 
 theorem coeff_lapT (t : H) (Q : PolyXZ H N0 N1) (ν : XZ (Bool × H) N0 N1 →₀ ℕ) :
@@ -119,10 +119,10 @@ theorem sum_ind (t t' : H) (a : Fin N0) (b : Fin N1) :
     (∑ a' : Fin N0, ∑ b' : Fin N1, if (t', a', b') = (t, a, b) then 1 else 0 : ℕ) = if t' = t then 1 else 0 := by
   by_cases ht : t' = t
   · subst ht
-    rw [if_pos rfl, Finset.sum_eq_single a, Finset.sum_eq_single b]
+    rw [ite_eq_left rfl, Finset.sum_eq_single a, Finset.sum_eq_single b]
     all_goals first
       | (simp; done)
-  · rw [if_neg ht]
+  · rw [ite_eq_right ht]
     exact Finset.sum_eq_zero fun a' _ => Finset.sum_eq_zero fun b' _ => by simp [ht]
 
 theorem bal_up (n n' : H → ℕ) (t : H) (hn : ∀ s, n s = n' s + if s = t then 1 else 0) (a : Fin N0)
@@ -160,19 +160,19 @@ theorem fact_up (k : ZV H N0 N1 →₀ ℕ) (t : H) (a : Fin N0) (b : Fin N1) :
       ((up k t a b) ((true, x.1), x.2.1, x.2.2)).factorial = (k ((true, x.1), x.2.1, x.2.2)).factorial := by
     intro x hx
     have hne : ¬ (x.1, x.2.1, x.2.2) = (t, a, b) := by simpa using hx
-    rw [up_apply_true, if_neg hne, add_zero]
+    rw [up_apply_true, ite_eq_right hne, add_zero]
   rw [Finset.prod_congr rfl h1]
   try dsimp only
-  rw [up_apply_true, if_pos rfl, Nat.factorial_succ]
+  rw [up_apply_true, ite_eq_left rfl, Nat.factorial_succ]
   ring
 
 private theorem up_zF (κ : ZV H N0 N1 →₀ ℕ) (t : H) (a : Fin N0) (b : Fin N1) :
     up κ t a b (zF t a b) = κ (zF t a b) + 1 := by
-  rw [up_apply_false, if_pos rfl]
+  rw [up_apply_false, ite_eq_left rfl]
 
 private theorem up_zT (κ : ZV H N0 N1 →₀ ℕ) (t : H) (a : Fin N0) (b : Fin N1) :
     up κ t a b (zT t a b) = κ (zT t a b) + 1 := by
-  rw [up_apply_true, if_pos rfl]
+  rw [up_apply_true, ite_eq_left rfl]
 
 private theorem succ_mul_succ_mul_mul_eq_of_mul_succ_eq (x y A A0 B B0 R d1 d2 : ℕ) (e1 : A * (x + 1) = A0 * d1) (e2 : B * (y + 1) = B0 * d2) :
     (y + 1) * (x + 1) * (A * (B * R)) = A0 * (B0 * R) * d1 * d2 := by
@@ -198,7 +198,7 @@ theorem binom_up {c κ : ZV H N0 N1 →₀ ℕ} {t : H} {a : Fin N0} {b : Fin N1
     intro v hv
     have hvT := Finset.ne_of_mem_erase hv
     have hvF := Finset.ne_of_mem_erase (Finset.mem_of_mem_erase hv)
-    simp only [up, Finsupp.add_apply, Finsupp.single_apply, if_neg (Ne.symm hvF), if_neg (Ne.symm hvT),
+    simp only [up, Finsupp.add_apply, Finsupp.single_apply, ite_eq_right (Ne.symm hvF), ite_eq_right (Ne.symm hvT),
       add_zero]
   unfold binomF
   rw [← Finset.mul_prod_erase c.support (fun v => (c v).choose (up κ t a b v)) hF,
@@ -240,7 +240,7 @@ private theorem up_le_of_le_of_lt_zF_of_lt_zT {c κ : ZV H N0 N1 →₀ ℕ} {t 
     · subst h2
       rw [up_zT]
       omega
-    · simp only [up, Finsupp.add_apply, Finsupp.single_apply, if_neg (Ne.symm h1), if_neg (Ne.symm h2)]
+    · simp only [up, Finsupp.add_apply, Finsupp.single_apply, ite_eq_right (Ne.symm h1), ite_eq_right (Ne.symm h2)]
       omega
 
 theorem term_eq (μ : XZ (Bool × H) N0 N1 →₀ ℕ) (m : XV H N0 →₀ ℕ) (κ : ZV H N0 N1 →₀ ℕ) (n n' : H → ℕ)
@@ -258,14 +258,14 @@ theorem term_eq (μ : XZ (Bool × H) N0 N1 →₀ ℕ) (m : XV H N0 →₀ ℕ) 
         (xpart μ = m ∧ κ ≤ zpart μ ∧ Bal N0 N1 n (zpart μ - κ)) :=
       ⟨fun h => ⟨h.1, hκ, hB.2 h.2.2⟩, fun h => ⟨h.1, hup, hB.1 h.2.2⟩⟩
     by_cases h : xpart μ = m ∧ κ ≤ zpart μ ∧ Bal N0 N1 n (zpart μ - κ)
-    · rw [if_pos (hiff.2 h), if_pos h]
+    · rw [ite_eq_left (hiff.2 h), ite_eq_left h]
       exact_mod_cast wv_up hup (h.2.2.1 t a b)
-    · rw [if_neg (fun h' => h (hiff.1 h')), if_neg h, mul_zero]
+    · rw [ite_eq_right (fun h' => h (hiff.1 h')), ite_eq_right h, mul_zero]
   · have hn1 : ¬ (xpart μ = m ∧ up κ t a b ≤ zpart μ ∧ Bal N0 N1 n' (zpart μ - up κ t a b)) :=
       fun h' => hup h'.2.1
-    rw [if_neg hn1, mul_zero]
+    rw [ite_eq_right hn1, mul_zero]
     by_cases h : xpart μ = m ∧ κ ≤ zpart μ ∧ Bal N0 N1 n (zpart μ - κ)
-    · rw [if_pos h]
+    · rw [ite_eq_left h]
       obtain ⟨-, hκ, hb⟩ := h
       have hFG : (zpart μ - κ) (zF t a b) = (zpart μ - κ) (zT t a b) := hb.1 t a b
       have e1 : (zpart μ - κ) (zF t a b) = zpart μ (zF t a b) - κ (zF t a b) := Finsupp.tsub_apply _ _ _
@@ -274,7 +274,7 @@ theorem term_eq (μ : XZ (Bool × H) N0 N1 →₀ ℕ) (m : XV H N0 →₀ ℕ) 
         by_contra hne
         exact hup (up_le_of_le_of_lt_zF_of_lt_zT hκ (by omega) (by omega))
       rw [h0, Nat.cast_zero, mul_zero]
-    · rw [if_neg h]
+    · rw [ite_eq_right h]
 
 theorem mono_step (μ : XZ (Bool × H) N0 N1 →₀ ℕ) (m : XV H N0 →₀ ℕ) (κ : ZV H N0 N1 →₀ ℕ) (n n' : H → ℕ)
     (t : H) (hn : ∀ s, n s = n' s + if s = t then 1 else 0) :
@@ -284,14 +284,14 @@ theorem mono_step (μ : XZ (Bool × H) N0 N1 →₀ ℕ) (m : XV H N0 →₀ ℕ
   simp only [term_eq μ m κ n n' t hn]
   unfold wt
   by_cases h : xpart μ = m ∧ κ ≤ zpart μ ∧ Bal N0 N1 n (zpart μ - κ)
-  · simp only [if_pos h]
+  · simp only [ite_eq_left h]
     have hs := h.2.2.2 t
-    rw [hn t, if_pos rfl] at hs
+    rw [hn t, ite_eq_left rfl] at hs
     have hs' : (∑ a : Fin N0, ∑ b : Fin N1, ((zpart μ - κ) (zT t a b) : ℤ)) = (n' t : ℤ) + 1 := by
       exact_mod_cast hs
     simp only [← Finset.mul_sum, hs']
     ring
-  · simp only [if_neg h, mul_zero, Finset.sum_const_zero]
+  · simp only [ite_eq_right h, mul_zero, Finset.sum_const_zero]
 
 theorem acon_step (P : PolyXZ H N0 N1) (m : XV H N0 →₀ ℕ) (κ : ZV H N0 N1 →₀ ℕ) (n n' : H → ℕ) (t : H)
     (hn : ∀ s, n s = n' s + if s = t then 1 else 0) :
@@ -325,10 +325,10 @@ private theorem prod_factorial_eq_succ_mul_of_update (n n' : H → ℕ) (s : H) 
     ← Finset.mul_prod_erase Finset.univ (fun u => ((n' u).factorial : ℤ)) (Finset.mem_univ s)]
   have h1 : ∀ u ∈ (Finset.univ : Finset H).erase s, ((n u).factorial : ℤ) = ((n' u).factorial : ℤ) := by
     intro u hu
-    rw [hn u, if_neg (Finset.ne_of_mem_erase hu), add_zero]
+    rw [hn u, ite_eq_right (Finset.ne_of_mem_erase hu), add_zero]
   rw [Finset.prod_congr rfl h1]
   try dsimp only
-  rw [hn s, if_pos rfl, Nat.factorial_succ]
+  rw [hn s, ite_eq_left rfl, Nat.factorial_succ]
   push_cast
   ring
 
@@ -371,12 +371,12 @@ theorem bridge_list (L : List H) (P : PolyXZ H N0 N1) (m : XV H N0 →₀ ℕ) (
       · rintro rfl
         simp [xpart, zpart]
     rw [Finset.sum_eq_single (Finsupp.sumFinsuppEquivProdFinsupp.symm (m, κ))]
-    · rw [if_pos ((key _).2 rfl)]
+    · rw [ite_eq_left ((key _).2 rfl)]
       simp [zpart, binomF]
     · intro μ _ hne
-      rw [if_neg (fun h => hne ((key μ).1 h))]
+      rw [ite_eq_right (fun h => hne ((key μ).1 h))]
     · intro hν
-      rw [if_pos ((key _).2 rfl)]
+      rw [ite_eq_left ((key _).2 rfl)]
       have h0 : AddMonoidAlgebra.coeff P (Finsupp.sumFinsuppEquivProdFinsupp.symm (m, κ)) = 0 := by
         by_contra h
         exact hν (MvPolynomial.mem_support_iff.2 h)
@@ -503,11 +503,11 @@ theorem cPr_le_ctD (D : D7) (u : D.what₂.Word) (i : ℕ) (nu : Pl D → YoungD
 
   have hr : ∀ z r, r < D.R.N i → DV.nuRow D u (i + 1) (tauPl D z) r = ((nu z).rowLen r : ℝ) := by
     intro z r hr'
-    rw [hrow z r, if_pos hr']
+    rw [hrow z r, ite_eq_left hr']
   have hz : ∀ z r, D.R.N i ≤ r → (nu z).rowLen r = 0 := by
     intro z r hr'
     have hz0 := hrow z r
-    rw [if_neg (by omega)] at hz0
+    rw [ite_eq_right (by omega)] at hz0
     exact_mod_cast hz0
   have hsum := card_cells_eq_sum_rowLen (nu (false, t)) (D.R.N i) (hz _)
   have habs : nuAbs D u (i + 1) (tauPl D (false, t)) = ((nu (false, t)).cells.card : ℝ) := by
@@ -676,26 +676,26 @@ theorem expand_gen {H : Type} [Fintype H] [DecidableEq H] {N0 N1 p : ℕ} [Fact 
     simp only [applyAt0, MvPolynomial.coeff_sum, MvPolynomial.coeff_monomial]
     refine Finset.sum_congr rfl fun μ hμ => ?_
     by_cases hx : xpart μ = m
-    · rw [if_pos hx, mul_assoc, fcoeff_mul, Finset.mul_sum]
+    · rw [ite_eq_left hx, mul_assoc, fcoeff_mul, Finset.mul_sum]
       rw [← Finset.sum_subset (Finset.subset_biUnion_of_mem (fun μ => Finset.Iic (zpart μ)) hμ)
         (fun κ2 _ hn => by
           simp only [T]
-          rw [if_neg]
+          rw [ite_eq_right]
           exact fun h => hn (Finset.mem_Iic.2 h.2.1))]
       refine Finset.sum_congr rfl fun κ2 hκ2 => ?_
       have hle : κ2 ≤ zpart μ := Finset.mem_Iic.1 hκ2
       rw [hE]
       simp only [T]
       by_cases hb : ∀ t a b, (zpart μ - κ2) ((false, t), a, b) = (zpart μ - κ2) ((true, t), a, b)
-      · rw [if_pos hb, if_pos ⟨hx, hle, hb⟩]
+      · rw [ite_eq_left hb, ite_eq_left ⟨hx, hle, hb⟩]
         ring
-      · rw [if_neg hb, if_neg (fun h => hb h.2.2)]
+      · rw [ite_eq_right hb, ite_eq_right (fun h => hb h.2.2)]
         ring
-    · rw [if_neg hx]
+    · rw [ite_eq_right hx]
       symm
       refine Finset.sum_eq_zero fun κ2 _ => ?_
       simp only [T]
-      rw [if_neg]
+      rw [ite_eq_right]
       exact fun h => hx h.1
   have hR : (∑ κ2 ∈ P.support.biUnion (fun μ => Finset.Iic (zpart μ)),
         ∑ n ∈ Fintype.piFinset (fun _ : H => Finset.range (P.totalDegree + 1)),
@@ -711,13 +711,13 @@ theorem expand_gen {H : Type} [Fintype H] [DecidableEq H] {N0 N1 p : ℕ} [Fact 
     · have hB : Bal N0 N1 (fun t => ∑ a : Fin N0, ∑ b : Fin N1, (zpart μ - κ2) ((true, t), a, b))
           (zpart μ - κ2) := And.intro hQ.2.2 fun t => rfl
       rw [Finset.sum_eq_single (fun t => ∑ a : Fin N0, ∑ b : Fin N1, (zpart μ - κ2) ((true, t), a, b))]
-      · rw [if_pos ⟨hQ.1, hQ.2.1, hB⟩]
+      · rw [ite_eq_left ⟨hQ.1, hQ.2.1, hB⟩]
         simp only [T]
-        rw [if_pos hQ]
+        rw [ite_eq_left hQ]
         push_cast
         simp only [Finset.prod_mul_distrib, Finset.prod_pow_eq_pow_sum] <;> ring
       · intro n _ hn
-        rw [if_neg, Int.cast_zero, mul_zero]
+        rw [ite_eq_right, Int.cast_zero, mul_zero]
         rintro ⟨_, _, hB'⟩
         exact hn (funext fun t => (hB'.2 t).symm)
       · intro hn
@@ -725,9 +725,9 @@ theorem expand_gen {H : Type} [Fintype H] [DecidableEq H] {N0 N1 p : ℕ} [Fact 
         exact hn (Fintype.mem_piFinset.2 fun t =>
           Finset.mem_range.2 (Nat.lt_succ_of_le (prof_le_totalDegree P μ hμ κ2 t)))
     · simp only [T]
-      rw [if_neg hQ]
+      rw [ite_eq_right hQ]
       refine Finset.sum_eq_zero fun n _ => ?_
-      rw [if_neg, Int.cast_zero, mul_zero]
+      rw [ite_eq_right, Int.cast_zero, mul_zero]
       rintro ⟨h1, h2, hB'⟩
       exact hQ ⟨h1, h2, hB'.1⟩
   rw [hL, hR, Finset.sum_comm]
@@ -834,7 +834,7 @@ theorem cc_zero (S : ℂ_[p]) (ut : H → ℂ_[p]) :
 
   rw [map_sum]
   refine Finset.sum_eq_zero fun j _ => ?_
-  rw [← MvPowerSeries.coeff_zero_eq_constantCoeff_apply, MvPowerSeries.coeff_monomial, if_neg]
+  rw [← MvPowerSeries.coeff_zero_eq_constantCoeff_apply, MvPowerSeries.coeff_monomial, ite_eq_right]
   intro h
   have h2 := DFunLike.congr_fun h (vX false j)
   simp [eJ, vX] at h2
@@ -864,9 +864,9 @@ theorem coeff_pow (S : ℂ_[p]) (ut : H → ℂ_[p]) (κ : ZV H N0 N1 →₀ ℕ
   simp only [hterm, MvPowerSeries.coeff_monomial]
   split_ifs with h
   · rw [Finset.sum_eq_single (fun j => κ (vX true j))]
-    · rw [if_pos ((eK_eq_iff _ _).2 ⟨h.1, rfl⟩)]
+    · rw [ite_eq_left ((eK_eq_iff _ _).2 ⟨h.1, rfl⟩)]
     · intro k _ hk
-      rw [if_neg]
+      rw [ite_eq_right]
       intro he
       exact hk ((eK_eq_iff k κ).1 he).2
     · intro hn'
@@ -875,7 +875,7 @@ theorem coeff_pow (S : ℂ_[p]) (ut : H → ℂ_[p]) (κ : ZV H N0 N1 →₀ ℕ
       rw [Finset.mem_piAntidiag]
       exact ⟨h.2, fun i _ => Finset.mem_univ i⟩
   · refine Finset.sum_eq_zero fun k hk => ?_
-    rw [if_neg]
+    rw [ite_eq_right]
     intro he
     apply h
     obtain ⟨h1, h2⟩ := (eK_eq_iff k κ).1 he
@@ -895,7 +895,7 @@ theorem pExpCoeff : PExpCoeff := by
   simp only [ExponentialCoefficients.coeff_pow, PowerSeries.coeff_exp, smul_eq_mul]
   split_ifs with hbal
   · rw [finsum_eq_single _ (∑ j, κ (ExponentialCoefficients.vX true j)) ?_]
-    · rw [if_pos ⟨hbal, rfl⟩]
+    · rw [ite_eq_left ⟨hbal, rfl⟩]
       have hκ : (κ.prod fun _ k => (k.factorial : ℂ_[p])) =
           ∏ j : ExponentialCoefficients.JI H N0 N1, ((κ (ExponentialCoefficients.vX true j)).factorial : ℂ_[p]) ^ 2 := by
         rw [Finsupp.prod_fintype _ _ (fun _ => by simp)]
@@ -924,12 +924,12 @@ theorem pExpCoeff : PExpCoeff := by
       have hMne := right_ne_zero_of_mul hD
       field_simp
     · intro d hd
-      rw [if_neg, mul_zero]
+      rw [ite_eq_right, mul_zero]
       rintro ⟨_, h⟩
       exact hd h.symm
   · rw [finsum_eq_zero_of_forall_eq_zero, mul_zero]
     intro d
-    rw [if_neg, mul_zero]
+    rw [ite_eq_right, mul_zero]
     rintro ⟨h, _⟩
     exact hbal h
 
@@ -1529,7 +1529,7 @@ theorem dRow_dRow_minorXZ_eq_zero (H : Type) (N0 N1 : ℕ) (t : H) (row k : ℕ)
         (MvPolynomial.X (Sum.inl ((true, t), (i : ℕ), a)) : PolyXZ H N0 N1) *
           MvPolynomial.X (Sum.inr ((true, t), a, I k'))) r c)) = y := by
       funext r
-      rw [Matrix.of_apply, hE, if_pos hc]
+      rw [Matrix.of_apply, hE, ite_eq_left hc]
     rw [hcol, minorAff_derDet]
     refine Finset.sum_eq_zero fun l _ => ?_
     by_cases hl : l = c
@@ -1541,15 +1541,15 @@ theorem dRow_dRow_minorXZ_eq_zero (H : Type) (N0 N1 : ℕ) (t : H) (row k : ℕ)
       · apply Matrix.det_zero_of_column_eq hl
         intro r
         simp only [Matrix.updateCol_self, Matrix.updateCol_ne hl, Matrix.updateCol_ne (Ne.symm hl),
-          Matrix.of_apply, hE, if_pos hIl]
+          Matrix.of_apply, hE, ite_eq_left hIl]
       · apply Matrix.det_eq_zero_of_column_eq_zero l
         intro r
-        simp only [Matrix.updateCol_self, Matrix.updateCol_ne hl, Matrix.of_apply, hE, if_neg hIl]
+        simp only [Matrix.updateCol_self, Matrix.updateCol_ne hl, Matrix.of_apply, hE, ite_eq_right hIl]
   · have hcol : (fun r => dRow (N0 := N0) t row b' (Matrix.of (fun i k' : Fin k => ∑ a : Fin N0,
         (MvPolynomial.X (Sum.inl ((true, t), (i : ℕ), a)) : PolyXZ H N0 N1) *
           MvPolynomial.X (Sum.inr ((true, t), a, I k'))) r c)) = fun _ => 0 := by
       funext r
-      rw [Matrix.of_apply, hE, if_neg hc]
+      rw [Matrix.of_apply, hE, ite_eq_right hc]
     rw [hcol]
     convert map_zero (dRow (N0 := N0) t row b)
     exact Matrix.det_eq_zero_of_column_eq_zero c fun r => Matrix.updateCol_self
@@ -1629,12 +1629,6 @@ open Classical
 namespace PI.EntAtD.W
 
 open PI.EntAtD
-
-section Ker
-
-variable {A : Type} [CommRing A] (D : Derivation ℤ A A)
-
-end Ker
 
 private theorem derivation_prod_eq_zero_of_forall' {R A ι : Type} [CommRing R] [CommRing A] [Algebra R A]
     (D : Derivation R A A) (s : Finset ι) (f : ι → A) (h : ∀ i ∈ s, D (f i) = 0) :

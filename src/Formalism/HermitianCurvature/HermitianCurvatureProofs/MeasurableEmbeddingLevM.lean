@@ -14,8 +14,6 @@ namespace Formalism.FourierDecayAlt.P.PBH
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {k ρ : ℕ}
 
 def projM (y : Mt k (1 + ρ)) : Mt k ρ := fun a b => y ⟨a.val + 1, by omega⟩ ⟨b.val + 1, by omega⟩
@@ -86,9 +84,3 @@ theorem pairAt_tr {t : ℂ} (ht : t ≠ 0) {μ : Measure (Mt k (1 + ρ))} {μs :
 end pair
 
 end Formalism.FourierDecayAlt.P.PBH
-
-namespace Formalism.FourierDecayAlt.P
-
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P.PBH
-
-end Formalism.FourierDecayAlt.P

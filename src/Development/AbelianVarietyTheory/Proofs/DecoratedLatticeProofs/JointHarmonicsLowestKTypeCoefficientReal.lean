@@ -88,7 +88,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.AdelicScalar GlobalTheory.IndefiniteRowSideFullHecke.TwistedLevelValues
 
 open Formalism.IndefR.FWT GlobalTheory.HolDict
@@ -106,7 +105,7 @@ theorem holShape_signs_first : ∀ (D : D7) (σ : D.what₂.LL →+* ℂ), (∀ 
     fun τ => GlobalTheory.IndefiniteRowSideFullHecke.HolomorphicLowestType.pW_add_qW i τ
   have hp : ∀ ρ, Formalism.IndefR.Links.parAt (Wc D i) σ ρ =
       Formalism.L2.NTheta.holPar _ _ (Formalism.IndefR.Links.kapAt (Wc D i) σ ρ) := fun ρ => by
-    unfold Formalism.IndefR.Links.parAt; rw [if_pos (hσ ρ)]
+    unfold Formalism.IndefR.Links.parAt; rw [ite_eq_left (hσ ρ)]
   have ho : ∀ ρ, Odd (((Wc D i).sig (tauE D ρ)).1 + ((Wc D i).sig (tauE D ρ)).2) := fun ρ => by
     rw [hpq ρ, hrk]; exact Formalism.L2.NTheta.odd_r _
   have hentL : ∀ ρ (c : Fin ((Wc D i).sig (tauE D ρ)).1),
@@ -229,7 +228,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.AdelicScalar GlobalTheory.IndefiniteRowSideFullHecke.TwistedLevelValues
 
 noncomputable section
@@ -505,7 +503,6 @@ noncomputable section
 
 open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.FWT GlobalTheory.HolDict
 open scoped TensorProduct InnerProductSpace ContDiff ComplexOrder
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DefLift GlobalTheory.RawLift
 
 namespace GlobalTheory.FockKillAdapted
@@ -546,7 +543,7 @@ theorem exists_coef {BS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.rank) ℂ
     · simp only [h1, h3, Complex.ofReal_neg, Complex.ofReal_one, star_neg, star_one]; norm_num
   have hom1 : ∀ W a c b d, omDir S T τ (W * unitMap (BS τ) B' a c) τ (unitMap (BS τ) B' b d) =
       if c = d then o W b a else 0 := fun W a c b d => by
-    rw [omDir, if_pos rfl, trace_unitMap (hB τ)]
+    rw [omDir, ite_eq_left rfl, trace_unitMap (hB τ)]
     split_ifs <;> simp [o]
   have hJ : ∀ (W : Matrix (Fin T.rank) (Fin T.rank) ℂ) (u : Matrix (Fin T.rank) (Fin S.rank) ℂ),
       cplxO 1 (cart M τ) (W * u) = Complex.I • (cart M τ * W) * u := fun W u => by
@@ -561,14 +558,14 @@ theorem exists_coef {BS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.rank) ℂ
     simp only [o, Matrix.neg_mul, Matrix.neg_apply, mul_neg, Complex.neg_re]
   clear_value o
   refine ⟨fun a b => if p ≤ (a : ℕ) ∧ (b : ℕ) < p then
-    2 * (o X a b + Complex.I * o (Complex.I • (cart M τ * X)) a b) else 0, fun a b h => if_neg h, ?_⟩
+    2 * (o X a b + Complex.I * o (Complex.I • (cart M τ * X)) a b) else 0, fun a b h => ite_eq_right h, ?_⟩
   rintro a c b d _ rfl _ rfl
   rw [hJ', hJ, hJ, hJ'', hom1, hom1, hom1, oneg]
   by_cases e3 : c = d
   swap
   · simp [e3, Ne.symm e3]
   subst e3
-  simp only [if_true]
+  simp only [ite_true]
   have z1 := ozero _ ha
   have z2 := ozero _ (anti_I ha)
   have s1 := osym _ lX a b
@@ -582,8 +579,8 @@ theorem exists_coef {BS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.rank) ℂ
   rw [e]
   by_cases ha' : (a : ℕ) < p <;> by_cases hb' : (b : ℕ) < p
   · simp [z1 b a (by simp [ha', hb']), z2 b a (by simp [ha', hb'])]
-  · rw [if_neg (by omega), if_pos (by omega), zero_add]
-  · rw [if_pos (by omega), if_neg (by omega), add_zero]
+  · rw [ite_eq_right (by omega), ite_eq_left (by omega), zero_add]
+  · rw [ite_eq_left (by omega), ite_eq_right (by omega), add_zero]
   · simp [z1 b a (by simp [ha', hb']), z2 b a (by simp [ha', hb'])]
 
 end GlobalTheory.FockKillAdapted
@@ -640,25 +637,25 @@ theorem gen_kill (hψ : IsStdChar D ψ (-1)) (hθ : IsInfFam θ) {BS : D.what₂
     refine congrArg₂ (· + ·) rfl (congrArg (· • g) ?_)
     by_cases e1 : τ₁ = τ
     swap
-    · simp only [if_neg e1, ite_self, mul_zero, zero_mul, add_zero]
+    · simp only [ite_eq_right e1, ite_self, mul_zero, zero_mul, add_zero]
     by_cases e2 : τ₂ = τ
     swap
     · simp [e2, omDir, Ne.symm e2]
     subst e1
     subst e2
     have := hν a c b d _ rfl _ rfl
-    simp only [if_true]
+    simp only [ite_true]
     by_cases e3 : c = d
-    · simp only [if_pos e3, if_pos e3.symm] at this ⊢
+    · simp only [ite_eq_left e3, ite_eq_left e3.symm] at this ⊢
       linear_combination ((fockScale D τ₂ : ℂ)⁻¹ * (fockScale D τ₂ : ℂ)⁻¹ * (-(4 * π * Complex.I))) * this
-    · simp only [if_neg e3, if_neg (Ne.symm e3)] at this ⊢
+    · simp only [ite_eq_right e3, ite_eq_right (Ne.symm e3)] at this ⊢
       linear_combination ((fockScale D τ₂ : ℂ)⁻¹ * (fockScale D τ₂ : ℂ)⁻¹ * (-(4 * π * Complex.I))) * this
   · exact fun i _ h => gen_aPlus hψ hθ hX hY _ _ _ h
   · intro i
     rw [hv, hv, smul_zero, add_zero, smul_zero]
   · refine (congrArg _ ?_).trans (map_zero _)
     simp only [Fintype.sum_prod_type, ite_smul, zero_smul, Finset.sum_ite_irrel, Finset.sum_const_zero,
-      Finset.sum_ite_eq', Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      Finset.sum_ite_eq', Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     refine Finset.sum_eq_zero fun a _ => ?_
     rw [Finset.sum_comm]
     refine Finset.sum_eq_zero fun b _ => ?_
@@ -734,7 +731,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.AdelicScalar GlobalTheory.IndefiniteRowSideFullHecke.TwistedLevelValues
 
 namespace GlobalTheory.LabAtRealPlace
@@ -796,7 +792,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.AdelicScalar GlobalTheory.IndefiniteRowSideFullHecke.TwistedLevelValues
 
 theorem _root_.GlobalTheory.T.labelAtRealPlace_eq_embedding_over_reflexField : ∀ (D : D7) (σ : D.what₂.LL →+* ℂ) (s : ℂ ≃+* ℂ), IsEmbOverK D σ s → ∀ ρ, Formalism.IndefR.Links.labE σ (Formalism.IndefR.Links.lab σ ρ) = tauE D ρ := by
@@ -814,7 +809,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.AdelicScalar GlobalTheory.IndefiniteRowSideFullHecke.TwistedLevelValues
 
 namespace GlobalTheory.CoefSchur
@@ -1033,7 +1027,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx
 open scoped TensorProduct InnerProductSpace
 open GlobalTheory.LiftRows
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.AdelicScalar GlobalTheory.IndefiniteRowSideFullHecke.TwistedLevelValues
 
 noncomputable section

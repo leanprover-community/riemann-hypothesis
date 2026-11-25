@@ -23,13 +23,6 @@ def TailLogOfMass.Statement : Prop :=
     TailMassBound A Yo r (fun i => potForm th (u i)) CE →
     TailLogBound A Yo r (fun i => potForm th (u i)) (shellConst D * CE)
 
-section Inhabitants
-
-open ReciprocityTheory.AnForm (levi)
-open ReciprocityTheory.AnForm.M.PLC (locDens_congr_phi mInt_congr_phi)
-
-end Inhabitants
-
 end
 
 end GroundTheory.Heights₂.Heights.AnalyticLimit

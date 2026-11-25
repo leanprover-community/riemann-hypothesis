@@ -26,11 +26,11 @@ theorem levels_eq [Fintype (PtsG G la)] (Q : LocalPointData G la) (T : ℕ) (c :
   split_ifs with hj
   · unfold LocalPointData.Net vEt
     rw [finsum_eq_sum_of_fintype]
-    simp only [if_pos hj]
+    simp only [ite_eq_left hj]
     rw [Finset.mul_sum, Finset.mul_sum]
     refine Finset.sum_congr rfl fun ζ _ => ?_
     ring
   · unfold vEt
-    simp only [if_neg hj, mul_zero, Finset.sum_const_zero]
+    simp only [ite_eq_right hj, mul_zero, Finset.sum_const_zero]
 
 end Formalism.MainNotions.Gaps.EtaleWeightGaps

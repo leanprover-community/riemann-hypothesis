@@ -395,10 +395,7 @@ open IsDedekindDomain NumberField
 open GlobalTheory.RegSch (ikS projS Lvl)
 open PositivityTheory.Rg.Rsw PositivityTheory.Rg.Rsw.L
 open GlobalTheory.CompanionTheory.ColumnSplitting
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.fundamental_domain_property : Dom := by
-  first | exact @GlobalTheory.CompanionTheory.ColumnSplitting.dom
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FundamentalDomainPropertyStatement =====

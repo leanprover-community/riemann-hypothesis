@@ -163,11 +163,6 @@ theorem locModel_fracField_algEquiv : ∀ {K κ : Type} [Field K] [Field κ] [Al
   have hbij : Function.Bijective ψ := by
     refine ⟨ψ.toRingHom.injective, fun f => ?_⟩
     obtain ⟨a, b, hb, e⟩ := hsurj f
-    have hb' : (b : K) ≠ 0 := by
-      intro h
-      apply hb
-      have : b = 0 := Subtype.ext h
-      rw [this, map_zero]
     refine ⟨(a : K) / b, ?_⟩
     change φ ((a : K) / b) = f
     rw [map_div₀]

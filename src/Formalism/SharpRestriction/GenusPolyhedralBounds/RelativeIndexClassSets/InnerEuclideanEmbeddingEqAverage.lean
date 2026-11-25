@@ -27,7 +27,7 @@ theorem inner_euclideanEmbedding_eq_average (σ : B.KO →+* ℂ) (F G : B.Cusp 
       rw [← Complex.ofReal_mul, Nt.cf_sq]
     rw [hc, Finset.mul_sum]
     refine Finset.sum_congr rfl fun y _ => ?_
-    simp only [Nt.goodRowsProjector_apply_eq_sum, if_true, RCLike.inner_apply, map_mul, Complex.conj_ofReal]
+    simp only [Nt.goodRowsProjector_apply_eq_sum, ite_true, RCLike.inner_apply, map_mul, Complex.conj_ofReal]
     ring
   · intro τ _ h
     simp [Nt.goodRowsProjector_apply_eq_sum, h]

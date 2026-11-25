@@ -137,14 +137,6 @@ theorem casK_intertw {V : Type} [AddCommGroup V] [Module ℂ V] {ρ : Ix r s →
     rw [h a b hab, h b a (sameBlock_symm' hab)]
   · simp
 
-private theorem posC_props_and_sameBlock_trichotomy {r s : ℕ} (a b : Ix r s) :
-    (posC a b → sameBlock a b) ∧ (posC a b → a ≠ b) ∧ (posC a b → ¬ posC b a) ∧
-      (sameBlock a b → a = b ∨ posC a b ∨ posC b a) := by
-  rcases a with a | a <;> rcases b with b | b <;>
-    simp only [posC, sameBlock, ne_eq, Sum.inl.injEq, Sum.inr.injEq, reduceCtorEq,
-      not_false_eq_true, true_implies, false_implies, implies_true, and_true, true_and,
-      or_false, not_lt] <;> omega
-
 theorem local_of (act : Mat r s →ₗ[ℂ] Module.End ℂ M) (hL : IsLie act) (La : Ix r s → ℚ)
     {A : Type} [NormedAddCommGroup A] [InnerProductSpace ℂ A] [FiniteDimensional ℂ A]
     (ρ : Ix r s → Ix r s → Module.End ℂ A) (ι : A →ₗ[ℂ] M) (f : A)
@@ -170,7 +162,7 @@ theorem local_of (act : Mat r s →ₗ[ℂ] Module.End ℂ M) (hL : IsLie act) (
     if h : sameBlock a b then (ρ a b).restrict (fun x hx => hBK a b h x hx) else 0
   have hρ0 : ∀ a b, sameBlock a b → ∀ v : B, ((ρ0 a b v : B) : A) = ρ a b v := by
     intro a b h v
-    simp only [ρ0, dif_pos h, LinearMap.restrict_apply]
+    simp only [ρ0, dite_eq_left h, LinearMap.restrict_apply]
   have hcas0 : casK ρ0 = ((c0 : ℝ) : ℂ) • 1 := by
     refine LinearMap.ext fun v => Subtype.ext ?_
     have := casK_intertw (ρ := ρ0) (ρ' := ρ) B.subtype (fun a b h v => hρ0 a b h v) v

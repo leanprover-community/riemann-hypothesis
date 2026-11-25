@@ -39,7 +39,7 @@ lemma isEllipticFunction_weierstrassP : IsEllipticFunction L ℘[L] :=
 lemma weierstrassP_eq_zpow_mul {z : ℂ} (hz : z ≠ 0) :
     ℘[L] z = z ^ (-2 : ℤ) * (z ^ 2 * L.weierstrassPExcept 0 z + 1) := by
   have h := L.ite_eq_one_sub_sq_mul_weierstrassP 0 L.lattice.zero_mem z
-  rw [if_neg hz] at h
+  rw [ite_eq_right hz] at h
   have h' : z ^ 2 * ℘[L] z = z ^ 2 * L.weierstrassPExcept 0 z + 1 := by
     simpa using h
   have h2 : z ^ (-2 : ℤ) * z ^ 2 = 1 := by

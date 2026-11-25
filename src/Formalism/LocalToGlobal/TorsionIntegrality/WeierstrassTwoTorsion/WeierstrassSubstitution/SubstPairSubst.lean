@@ -85,7 +85,7 @@ theorem coeff_one_subst {f s : R⟦X⟧} (hs : constantCoeff s = 0) :
     · exact absurd rfl hd
     · rw [mul_pow]
       show coeff (d + 1 + 1) f • coeff 1 (X ^ (d + 1 + 1) * t ^ (d + 1 + 1)) = 0
-      rw [coeff_X_pow_mul', if_neg (show ¬ (d + 1 + 1 ≤ 1) by omega), smul_zero]
+      rw [coeff_X_pow_mul', ite_eq_right (show ¬ (d + 1 + 1 ≤ 1) by omega), smul_zero]
 
 end Tools
 
@@ -177,10 +177,10 @@ theorem iSerSpec' : ISerSpec.{u} :=
   iSerSpec_of w_series_spec w_series_factorization invariant_differential_units unit_flow chartFlowNegation
 
 theorem log_cc : constantCoeff (logSer W) = 0 := by
-  rw [logSer, integ, ← coeff_zero_eq_constantCoeff_apply, coeff_mk, if_pos rfl]
+  rw [logSer, integ, ← coeff_zero_eq_constantCoeff_apply, coeff_mk, ite_eq_left rfl]
 
 theorem log_one : coeff 1 (logSer W) = 1 := by
-  rw [logSer, integ, coeff_mk, if_neg one_ne_zero]
+  rw [logSer, integ, coeff_mk, ite_eq_right one_ne_zero]
   simp only [Nat.sub_self, coeff_zero_eq_constantCoeff_apply, CurveSer.om_cc, Nat.cast_one, div_one]
 
 theorem log_inj {a b : K⟦X⟧} (ha : constantCoeff a = 0) (hb : constantCoeff b = 0)

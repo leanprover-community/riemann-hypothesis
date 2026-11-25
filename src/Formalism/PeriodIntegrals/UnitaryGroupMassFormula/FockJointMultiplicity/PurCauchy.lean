@@ -92,7 +92,7 @@ theorem elim_step {m n : ℕ} (ι : Fin (m + 1) × Fin (n + 1) → σ) (hι : Fu
       by_cases hv : ∃ x, ι x = v
       · obtain ⟨x, rfl⟩ := hv
         exact fill_ι hι M y x
-      · push_neg at hv
+      · push Not at hv
         exact fill_not ι M y v hv
     have h1 : aeval (fill ι M1 y) f = aeval (fill ι M y) f :=
       aeval_fill_sub_multiple_of_zeroth_line ι hι f (fun b hb => hf.1 0 b hb) M y 0 (Finset.univ.erase 0) (by simp)
@@ -209,8 +209,7 @@ variable {σ : Type*}
 
 theorem exists_support_of_killS {S : Set σ} {P : MvPolynomial σ ℂ} (h : aeval (killS S) P ≠ 0) :
     ∃ e ∈ P.support, ∀ v ∈ S, e v = 0 := by
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   apply h
   conv_lhs => rw [P.as_sum]
 
@@ -233,7 +232,7 @@ theorem aeval_killS_free {S : Set σ} {Q : MvPolynomial σ ℂ} (h : ∀ e ∈ Q
   congr 1
   refine Finset.prod_congr rfl fun v hv => ?_
   have hvS : v ∉ S := fun hvS => (Finsupp.mem_support_iff.mp hv) (h e he v hvS)
-  simp only [killS, if_neg hvS]
+  simp only [killS, ite_eq_right hvS]
 
 private theorem pderiv_eq_zero_of_forall_support_apply_eq_zero {v : σ} {Q : MvPolynomial σ ℂ} (h : ∀ e ∈ Q.support, e v = 0) :
     pderiv v Q = 0 := by
@@ -291,27 +290,23 @@ theorem cauchyHW_of (hA : HypAnti) (hS : HypShape) (hD : HypDiag) (hF : HypFree)
       exact absurd (Finset.mem_univ i) h
   have hrowlt : ∀ i : Fin m, (i : ℕ) < n := by
     intro i
-    by_contra hi
-    push_neg at hi
+    by_contra! hi
     have h0 : α i = 0 := by
       rw [← (hsum e heP).1 i]
       exact Finset.sum_eq_zero fun k _ => hoff i k (by have := k.isLt; omega)
     exact (hα i).ne' h0
   have hcollt : ∀ k : Fin n, (k : ℕ) < m := by
     intro k
-    by_contra hk
-    push_neg at hk
+    by_contra! hk
     have h0 : β k = 0 := by
       rw [← (hsum e heP).2 k]
       exact Finset.sum_eq_zero fun i _ => hoff i k (by have := i.isLt; omega)
     exact (hβ k).ne' h0
   have hmn : m = n := by
     apply le_antisymm
-    · by_contra h
-      push_neg at h
+    · by_contra! h
       exact lt_irrefl n (hrowlt ⟨n, h⟩)
-    · by_contra h
-      push_neg at h
+    · by_contra! h
       exact lt_irrefl m (hcollt ⟨m, h⟩)
   have hanti : Antitone α := hA τ m n ι hι α P hP hrow fun e he i => (hsum e he).1 i
   refine ⟨hmn, hanti, fun i k h => (hrowsum i k h).trans (hcolsum i k h).symm, ?_⟩

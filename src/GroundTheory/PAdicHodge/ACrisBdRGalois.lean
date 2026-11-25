@@ -69,7 +69,6 @@ theorem mk_dpow_eq_zero {x : AInf K p} (hx : x ∈ RingHom.ker (fontaineTheta (n
   ring
 
 
-set_option maxHeartbeats 2000000 in
 theorem iotaQ_log {x : AInf K p} (hx : x ∈ RingHom.ker (fontaineTheta (normInteger K) p)) (m : ℕ) :
     iotaQ K p m (log hx) = Ideal.Quotient.mk (kerAway K p ^ m)
       (∑ n ∈ Finset.range m, (logTermZero hx n : Localization.Away (p : AInf K p))) := by

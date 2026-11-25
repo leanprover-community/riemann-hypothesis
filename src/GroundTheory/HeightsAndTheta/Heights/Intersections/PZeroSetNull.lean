@@ -32,10 +32,6 @@ def ZeroSetNull.Statement : Prop :=
 
 end Statements
 
-section Inhabit
-
-end Inhabit
-
 end
 
 end GroundTheory.Heights₂.Heights.Inter

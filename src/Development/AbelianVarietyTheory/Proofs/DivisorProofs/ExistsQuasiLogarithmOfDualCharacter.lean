@@ -74,8 +74,6 @@ import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsCounit
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
@@ -195,8 +193,6 @@ section -- clump:auto
 
 open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat GlobalTheory.FormalCalc
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.QLog.Chart
@@ -208,8 +204,7 @@ variable {p : ℕ} {O : Type} [CommRing O] {G : PDivGroup p O} {d : ℕ}
 theorem exists_eq_add_single {α : Fin d →₀ ℕ} (h : α ≠ 0) :
     ∃ (i : Fin d) (β : Fin d →₀ ℕ), α = β + Finsupp.single i 1 ∧ α.degree = β.degree + 1 := by
   obtain ⟨i, hi⟩ : ∃ i, α i ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact h (Finsupp.ext hc)
   have hle : Finsupp.single i 1 ≤ α := by
     intro j
@@ -281,7 +276,7 @@ theorem dUnit_ev_of_two (n : ℕ) (f : MvPowerSeries (Fin d) O)
       · exact hf v (by omega)
       · rfl
     exact c.dUnit_ev_monomial n h2 _
-  · rw [map_sub, MvPolynomial.coeff_coe, hP, coeff_trunc', if_pos, sub_self]
+  · rw [map_sub, MvPolynomial.coeff_coe, hP, coeff_trunc', ite_eq_left, sub_self]
     intro j
     exact ((Finsupp.le_degree j α).trans hα.le)
 
@@ -316,7 +311,7 @@ theorem dlog_eq_sum_lin [Fact p.Prime] (χ : G.dual.Tate) (u : MvPowerSeries (Fi
     rw [Finset.sum_eq_single i]
     · simp
     · intro j _ hj
-      rw [if_neg]
+      rw [ite_eq_right]
       intro h
       exact hj ((Finsupp.single_left_inj one_ne_zero).1 h).symm
     · simp
@@ -326,7 +321,7 @@ theorem dlog_eq_sum_lin [Fact p.Prime] (χ : G.dual.Tate) (u : MvPowerSeries (Fi
 
       rw [hg, map_sum]
       refine Finset.sum_eq_zero fun i _ => ?_
-      rw [map_smul, coeff_X, if_neg, smul_zero]
+      rw [map_smul, coeff_X, ite_eq_right, smul_zero]
       intro h
       have := congrArg (fun a : Fin d →₀ ℕ => a i) h
       simp at this
@@ -339,7 +334,7 @@ theorem dlog_eq_sum_lin [Fact p.Prime] (χ : G.dual.Tate) (u : MvPowerSeries (Fi
     obtain ⟨i, β, rfl, hdeg⟩ := exists_eq_add_single hne
     have hβ : β = 0 := (Finsupp.degree_eq_zero_iff β).1 (by omega)
     subst hβ
-    rw [zero_add, map_sub, map_sub, hcg, coeff_one, if_neg, sub_zero]
+    rw [zero_add, map_sub, map_sub, hcg, coeff_one, ite_eq_right, sub_zero]
     · exact sub_self _
     · intro h
       have := congrArg (fun a : Fin d →₀ ℕ => a i) h
@@ -364,8 +359,6 @@ section -- clump:auto
 @[expose] public section
 
 open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -488,8 +481,6 @@ section -- clump:auto
 @[expose] public section
 
 open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat GlobalTheory.FormalCalc
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -721,8 +712,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 open MvPowerSeries GlobalTheory GlobalTheory.QLog
 
 namespace GlobalTheory.QLog.LogDiff
@@ -738,7 +727,7 @@ theorem dIn_log : ∀ (B Q : Type) [CommRing B] [CommRing Q] [Algebra B Q] [Alge
   · exact ⟨0, trivial, by simp [h]⟩
   · refine ⟨(-1) ^ (α i + 1), trivial, ?_⟩
     have h' : ((α i : ℕ) : ℚ) ≠ 0 := Nat.cast_ne_zero.2 h
-    rw [if_neg h, ← map_natCast (algebraMap ℚ Q), ← map_mul, mul_div_cancel₀ _ h']
+    rw [ite_eq_right h, ← map_natCast (algebraMap ℚ Q), ← map_mul, mul_div_cancel₀ _ h']
     simp
 
 end GlobalTheory.QLog.LogDiff
@@ -876,8 +865,6 @@ section -- clump:auto
 
 open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat GlobalTheory.FormalCalc
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.QLogPeriod
@@ -918,8 +905,6 @@ section -- clump:auto
 @[expose] public section
 
 open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat GlobalTheory.FormalCalc WittVector
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -1083,8 +1068,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat GlobalTheory.FormalCalc
@@ -1164,13 +1147,13 @@ theorem GlobalTheory.CharLog.exists_log_char_period : ∀ (p : ℕ) [Fact p.Prim
     by_cases h : α = 0
     · subst h
       change F.θ (if (0 : Fin d →₀ ℕ) = 0 then 1 else g0 0) = _
-      rw [if_pos rfl, map_one, coeff_zero_eq_constantCoeff_apply, hu0]
+      rw [ite_eq_left rfl, map_one, coeff_zero_eq_constantCoeff_apply, hu0]
     · change F.θ (if α = 0 then 1 else g0 α) = _
-      rw [if_neg h, hg0]
+      rw [ite_eq_right h, hg0]
   have hg1 : constantCoeff g = 1 := by
     rw [← coeff_zero_eq_constantCoeff_apply]
     change (if (0 : Fin d →₀ ℕ) = 0 then 1 else g0 0) = 1
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
   have hlin : ∀ i, lin (formalLog (map (algebraMap F.B F.Q) g)) i =
       algebraMap F.B F.Q (coeff (Finsupp.single i 1) g) := fun i => by
     rw [_root_.GlobalTheory.FormalCalc.lin_formalLog F.Q d _ (by rw [constantCoeff_map, hg1, map_one]) i, lin, coeff_map]

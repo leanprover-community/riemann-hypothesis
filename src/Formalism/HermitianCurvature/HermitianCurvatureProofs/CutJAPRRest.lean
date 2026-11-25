@@ -79,7 +79,7 @@ theorem up_idx (P : M.Par) {j l : ℕ} (hl : l ∈ Finset.Icc 1 (P.k - 1)) {π �
   have h2 : l - 1 + 1 = l := by omega
   by_contra hne
   have hne' : ¬ l = j := fun e => hne e.symm
-  simp only [h2, if_true, hne', if_false] at h1 h3
+  simp only [h2, ite_true, hne', ite_false] at h1 h3
   omega
 
 theorem up_det (P : M.Par) {j : ℕ} {σ σ' ρ : M.Ty P} (h : M.Up P j σ σ') (h' : M.Up P j σ ρ) : σ' = ρ := by
@@ -125,7 +125,7 @@ theorem algebraic_shift_holds : AlgSS := by
       intro σ σ' h
       by_cases hσ : σ' = ρ
       · subst hσ; simp [h]
-      · rw [Pi.single_eq_of_ne hσ, if_neg]
+      · rw [Pi.single_eq_of_ne hσ, ite_eq_right]
         intro h'
         exact hσ (up_det P h h'))
     calc d.κ (Pi.single ρ 1) * (d.SS j * d.κ fun σ => M.xEx P {j} σ Y) * d.κ (Pi.single π 1)
@@ -142,7 +142,7 @@ theorem algebraic_shift_holds : AlgSS := by
             simp [hn, hjl]
   have hQ : d.QQ Y 1 0 = d.L.GG * d.x Y * d.L.l0 Y + d.weightedSumBis Y := rfl
   rw [hQ, mul_add, add_mul, t1, zero_add, Q.NFData.weightedSumBis, Finset.mul_sum, Finset.sum_mul,
-    Finset.sum_congr rfl t2, Finset.sum_ite_eq', if_pos hl]
+    Finset.sum_congr rfl t2, Finset.sum_ite_eq', ite_eq_left hl]
 
 end Formalism.FourierDecayAlt.P.CutMP.JA.SSn.Rep.Core.TC.PR
 end -- clump:auto
@@ -194,7 +194,7 @@ theorem polynomial_radial_base_holds : PolynomialRadialAtSectionOfPhaseInvarianc
   have hLine := Gauge.GC.gauge_kappa_line_holds Wp Wq P Bs X d hGT Qr hKP ζ₁ hζ₁
   obtain ⟨Eπ, hEπF, hEπQ, hEπn, hEπsp⟩ := hLine π
   obtain ⟨Eρ, hEρF, hEρQ, hEρn, hEρsp⟩ := hLine ρ
-  have hQQr : ∀ σ, (Qr σ).comp (Qr σ) = Qr σ := fun σ => by rw [hKP.1 σ σ, if_pos rfl]
+  have hQQr : ∀ σ, (Qr σ).comp (Qr σ) = Qr σ := fun σ => by rw [hKP.1 σ σ, ite_eq_left rfl]
 
   have hval : ∀ (Ψ : Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π') (c : Fin P.r → ℂ), c ∈ OmX P.r →
       ∀ ζ ∈ Gauge.GC.Ann P, (Ψ : Q.Fn P.k P.r (Wq →L[ℂ] Wp)) c (NF.muZ P.k P.r Bs.μsec ζ) ∈
@@ -549,8 +549,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.JA.SSn.Rep.Core.TC.PR.CP
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem radial_coefficient_commutation : RcComm := by
   intro k r E _ _ D f _ hf Z₁ Z₂ h₁ h₂ g hg
   exact Qx5.RZ_comm hf hg h₁ h₂
@@ -574,8 +572,6 @@ open scoped ContDiff
 namespace Formalism.FourierDecayAlt.P.CutMP.JA.SSn.Rep.Core.TC.PR.CP
 
 noncomputable section
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 variable {k r : ℕ} {i : Fin (r + 1)}
 
@@ -750,8 +746,6 @@ open scoped ContDiff
 namespace Formalism.FourierDecayAlt.P.CutMP.JA.SSn.Rep.Core.TC.PR.CP
 
 noncomputable section
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem radial_coefficient_smoothness : RcSmooth := by
   intro k r E _ _ D f f' _ hf hf' Z hZ
@@ -1216,7 +1210,7 @@ theorem kappa_line_holds : KapLine := by
   have hfix : ∀ σ, (Pr σ ν).comp (Xf.comp (Qs σ)) = Xf.comp (Qs σ) := by
     intro σ
     have hE : (Xf.comp (Qs σ)).comp (Qs σ) = Xf.comp (Qs σ) := by
-      rw [ContinuousLinearMap.comp_assoc, hK.1 σ σ, if_pos rfl]
+      rw [ContinuousLinearMap.comp_assoc, hK.1 σ σ, ite_eq_left rfl]
     have hEeig := (Gauge.GC.lie_eigenvalue_holds Wp Wq P Bs X d hH Qs hK ζ hζT _ hFr' σ _ (hfib σ)).1 hE
     ext v
     rw [ContinuousLinearMap.comp_apply]
@@ -1236,7 +1230,7 @@ theorem kappa_line_holds : KapLine := by
   rw [ContinuousLinearMap.comp_finsetSum, Finset.sum_eq_single ρ]
   · exact hfix ρ
   · intro σ _ hσ
-    rw [← hfix σ, ← ContinuousLinearMap.comp_assoc, hPP ρ σ, if_neg (Ne.symm hσ), ContinuousLinearMap.zero_comp]
+    rw [← hfix σ, ← ContinuousLinearMap.comp_assoc, hPP ρ σ, ite_eq_right (Ne.symm hσ), ContinuousLinearMap.zero_comp]
   · intro h
     exact absurd (Finset.mem_univ ρ) h
 
@@ -1810,12 +1804,12 @@ theorem core (hAlg : TW.TWNeAlg) {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerPr
     by_cases hj : j = i₀
     · subst hj
       have e : ((i₀ : Fin n) : ℕ) + 1 = l := by rw [hi₀]; show l - 1 + 1 = l; omega
-      rw [Function.update_self, if_pos e]
+      rw [Function.update_self, ite_eq_left e]
       push_cast
       rw [hlabπ i₀]
       ring
     · have e : ¬ ((j : ℕ) + 1 = l) := fun h => hj (Fin.ext (by rw [hi₀]; show (j : ℕ) = l - 1; omega))
-      rw [Function.update_of_ne hj, if_neg e, hlabπ j]
+      rw [Function.update_of_ne hj, ite_eq_right e, hlabπ j]
       ring
   obtain ⟨hbπ, hbπ', hcpπ⟩ := TW.labels2 hOK π L L' hL2 hL2' Mπ hlabπ
   obtain ⟨hbρ, hbρ', hcpρ⟩ := TW.labels2 hOK ρ L L' hL2 hL2' _ hlabρ

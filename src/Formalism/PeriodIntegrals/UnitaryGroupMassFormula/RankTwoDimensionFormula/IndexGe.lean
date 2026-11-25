@@ -89,7 +89,7 @@ theorem gamma_one_eq_card (hU : UniSub) (TR : TypedRed X) :
         (Formalism.L2.SG.GGMirabolic.cardU (TR.Fq v) D.R.k : ℝ) : ℝ) : ℂ) := by
     intro v
     have hp : Formalism.L2.SG.GGMirabolic.psiNat (TR.psi0 v) (1 : GL (Fin D.R.k) (TR.Fq v)) = 1 := by
-      rw [Formalism.L2.SG.GGMirabolic.psiNat, if_pos Formalism.L2.SG.GGMirabolic.isUni_one, Formalism.L2.SG.GGMirabolic.psiU]
+      rw [Formalism.L2.SG.GGMirabolic.psiNat, ite_eq_left Formalism.L2.SG.GGMirabolic.isUni_one, Formalism.L2.SG.GGMirabolic.psiU]
       convert AddChar.map_zero_eq_one (TR.psi0 v)
       unfold Formalism.L2.SG.GGMirabolic.superdiag
       apply Finset.sum_eq_zero

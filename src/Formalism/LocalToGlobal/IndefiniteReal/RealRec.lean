@@ -102,16 +102,4 @@ structure RealRec (Q : RealT Rc P Dcf Spf Zscf S Ks) : Type 1 where
   mjRead : Formalism.IndefR.RecTie.MjRead Q.Rl.toRealDat Q.F.lv2 tupT hm hTop hinj IL (fun i => (P.A3.indefDown P.S0).dW i)
     (fun i y => P.I.jW i y) (jDT Q)
 
-namespace RealRec
-
-variable {Q : RealT Rc P Dcf Spf Zscf S Ks} (Qr : RealRec Q)
-
-end RealRec
-
-namespace RealRec
-
-variable {Q : RealT Rc P Dcf Spf Zscf S Ks}
-
-end RealRec
-
 end Formalism.IndefR

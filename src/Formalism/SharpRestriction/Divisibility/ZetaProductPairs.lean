@@ -54,14 +54,6 @@ def Lpair (q : ℝ) (t : ℕ) (x : ℂ) : ℂ :=
 
 end Local
 
-section Family
-
-variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (A : TH.ProvA)
-  (GF : ∀ x (i : Fm.Ix x), Formalism.MainNotions.product_first_zeroth_parts.Th22 (Fm.D x i))
-  (XF : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), Loc (Fm.D x i) (Fm.ex x hx i).th)
-
-end Family
-
 end Formalism.MainNotions.ZetaProductPairs
 
 end

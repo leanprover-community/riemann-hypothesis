@@ -120,7 +120,7 @@ theorem linIndep_of_orth {C : Submodule ℂ A} {ip : A → A → ℂ} (hp : Pete
     split_ifs with hij
     · rw [hij]
     · rw [horth j i (Ne.symm hij), mul_zero]
-  rw [Finset.sum_congr rfl hterm, Finset.sum_ite_eq' s j, if_pos hj] at h0
+  rw [Finset.sum_congr rfl hterm, Finset.sum_ite_eq' s j, ite_eq_left hj] at h0
   have hne : ip (x j) (x j) ≠ 0 := by
     intro h
     have := hp.pos (x j) (hx j)

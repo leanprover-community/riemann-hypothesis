@@ -375,9 +375,9 @@ theorem indexChange_uniformizer (v : HeightOneSpectrum R) (i : Fin d) {ϖ t : R}
       by_cases hk : k = i
       · subst hk
         refine ⟨1, ?_⟩
-        rw [hupdi, map_smul, hf, if_pos rfl, Algebra.smul_def, mul_one, mul_one]
+        rw [hupdi, map_smul, hf, ite_eq_left rfl, Algebra.smul_def, mul_one, mul_one]
       · refine ⟨0, ?_⟩
-        rw [hupdk k hk, hf, if_neg hk]; simp
+        rw [hupdk k hk, hf, ite_eq_right hk]; simp
     | zero => exact ⟨0, by simp⟩
     | add x y _ _ hx hy =>
       obtain ⟨u, hu⟩ := hx
@@ -398,7 +398,7 @@ theorem indexChange_uniformizer (v : HeightOneSpectrum R) (i : Fin d) {ϖ t : R}
     intro r hr
     obtain ⟨s, hs, hsr⟩ := hr
     obtain ⟨u, hu⟩ := hcoord _ hsr
-    rw [smul_smul, map_smul, hf, if_pos rfl, Algebra.smul_def, mul_one] at hu
+    rw [smul_smul, map_smul, hf, ite_eq_left rfl, Algebra.smul_def, mul_one] at hu
     have h2 : s * r = ϖ * u := IsFractionRing.injective R K hu
     have hmem : s * r ∈ p := by
       rw [h2]

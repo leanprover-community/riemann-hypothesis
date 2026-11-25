@@ -528,8 +528,7 @@ namespace WordTransvectionCongruences
 variable {L : Type} [Field L] [NumberField L] {N : ℕ}
 
 theorem exists_third {N : ℕ} (hN : 3 ≤ N) (i j : Fin N) : ∃ k : Fin N, k ≠ i ∧ k ≠ j := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have hsub : (Finset.univ : Finset (Fin N)) ⊆ {i, j} := by
     intro k _
     by_cases hk : k = i
@@ -577,7 +576,7 @@ theorem mem_parahoricTimesPrincipalCongruence_iff (π : 𝓞 L) (hπ : (π : L) 
   · obtain ⟨rfl, rfl⟩ := hab
     simp [h, hi', hj]
     field_simp
-  · simp only [hab, if_false, add_zero]
+  · simp only [hab, ite_false, add_zero]
     split_ifs <;> simp_all
 
 theorem comm_mem {G : Subgroup (SpecialLinearGroup (Fin N) L)} {i j k : Fin N} (hik : i ≠ k) (hkj : k ≠ j)

@@ -7,45 +7,7 @@ public import Formalism.LocalRingCardinality.SpanPowerMembership.Spaces
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.MemberDatumOfFlagTie
 public import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.AdelicDataRowMeasureScaleTrivialTuple
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Stdform
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.HeightProofs.IsSplitIdemIff, Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsBesPosOfBesselTied
@@ -205,14 +167,6 @@ def theta (ψ : AddChar (AF D.host.F) ℂ) (Om : GA D A → WA L A → ℂ) (n :
 
 end FJDat
 
-section Comparison₂
-
-variable {X : ThetaX D} {T : ThetaTied D X}
-
-variable {A B : HSp D} {ι : A.V →ₗ[D.host.E] B.V}
-
-end Comparison₂
-
 namespace FJDat
 
 variable {L A B : HSp D} {ι : A.V →ₗ[D.host.E] B.V} (d : FJDat L A B ι)
@@ -243,20 +197,12 @@ theorem isAniso_of_posDef {V : HSp D} (hs : V.SigOK) (hp : V.IsPosDef) : IsAniso
   simp only [map_sum, map_mul, h3, map_zero, Complex.zero_re] at h4
   exact h2.ne' h4
 
-section Realises
-
-open GlobalTheory.Mem.Th (Realises WeilFun Tow RecFun InfF)
-
-variable {θ : InfF D} {Bt : BesselTied D X T Wl} {Wf : WeilFun D Wl.ψ} {Tw : Tow D} {Rc : RecFun D θ Wl.ψ}
-
-end Realises
-
 end Comparison₂
 
 def negLine (D : D7) : HSp D := Examples₂.stdSpace Examples₂.star_isIntegral 1 (fun _ => true) 0 1
 
 theorem negLine_gram (D : D7) (i j) : (negLine D).gram i j = -1 :=
-  (Examples₂.stdSpace_gram_apply Examples₂.star_isIntegral 1 (fun _ => true) 0 1 i j).trans (if_pos (Subsingleton.elim _ _))
+  (Examples₂.stdSpace_gram_apply Examples₂.star_isIntegral 1 (fun _ => true) 0 1 i j).trans (ite_eq_left (Subsingleton.elim _ _))
 
 theorem isNegLine_negLine (D : D7) : IsNegLine (negLine D) := by
   refine ⟨rfl, fun τ => ?_, fun _ => rfl⟩

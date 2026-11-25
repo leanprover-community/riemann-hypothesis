@@ -338,7 +338,6 @@ private theorem etale_isoRangeOpens_inv_comp_map {X Y : Scheme.{u}} {k : Type u}
     (hW : IsOpenImmersion (W.ι ≫ γ)) {m : ℕ} (c : EtaleChart (γ ≫ q) V m) :
     AlgebraicGeometry.Etale ((isoRangeOpens γ W hW).inv ≫ X.homOfLE hWV ≫ c.map) := by
   have : AlgebraicGeometry.Etale c.map := c.isEtale
-  have : IsOpenImmersion (isoRangeOpens γ W hW).inv := inferInstance
   infer_instance
 
 private noncomputable def etaleChartOnRangeOpens {X Y : Scheme.{u}} {k : Type u} [Field k]
@@ -674,7 +673,6 @@ theorem isMarked_balancedTunedIdeal_of_isStrictPullbackBlowupSeq (hinv : ComapIs
           (D.comp i ((MaxContactFunctoriality.coverBlowupSequence hinv Afam T h.valid).le_toSequenceOfBlowups_length hi))) :
     d.IsMarked T.structMap (MaxContactCoverData.balancedTunedIdeal T h.valid)
       (MaxContactCoverData.tunedMult T) T.boundary := by
-  have : AlgebraicGeometry.Flat (MaxContactCoverData.coverMap T h.valid) := inferInstance
   have D : StrictPullbackBlowupSeq (MaxContactCoverData.coverMap T h.valid)
       (MaxContactFunctoriality.coverBlowupSequence hinv Afam T h.valid).toMarkedSequenceOfBlowups.toSequenceOfBlowups d.toSequenceOfBlowups :=
     hpb.toStrictPullbackBlowupSeq

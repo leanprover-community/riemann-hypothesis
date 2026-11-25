@@ -2,6 +2,7 @@ module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeReferenceFrame.PPAssemble
 import Mathlib.RingTheory.PiTensorProduct
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeReferenceFrame.StarMemAp
 
 @[expose] public section
 
@@ -44,16 +45,7 @@ theorem hG_sub_right (x y y' : Fin I.n → I.E) : hG I x (y - y') = hG I x y - h
   rw [sub_eq_add_neg, hG_add_right, hG_neg_right, ← sub_eq_add_neg]
 
 theorem hG_symm (x y : Fin I.n → I.E) : hG I y x = star (hG I x y) := by
-  have hJ : ∀ a b, star (I.J b a) = I.J a b := by
-    intro a b
-    have h : Formalism.UG.cT (starRingEnd I.E) I.J = I.J := I.J_herm
-    have h2 := congrFun (congrFun h a) b
-    simpa [Formalism.UG.cT, starRingEnd_apply] using h2
-  simp only [hG, Formalism.UG.hform, starRingEnd_apply, star_sum, star_mul', star_star]
-  conv_rhs => rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
-  rw [hJ a b]
-  ring
+  apply _root_.PI.ScRefExists.WF.hG_symm <;> assumption
 
 private theorem mem_Ap_lemma (p : ℕ) (x : I.E) :
     x ∈ Ap I p ↔ ∃ s : ℕ, Nat.Coprime s p ∧ ∃ a : 𝓞 I.E, (s : I.E) * x = (a : I.E) :=

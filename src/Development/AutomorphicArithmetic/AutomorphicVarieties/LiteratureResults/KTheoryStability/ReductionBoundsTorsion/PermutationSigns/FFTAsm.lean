@@ -65,21 +65,21 @@ theorem fT_perm' (σ : Equiv.Perm (Fin q)) (w : Fin q → InfinitePlace L) (Y : 
       if (∀ i, (x i).1 = w i) then ∏ i, blk (fun v => mat (Y i) v) (x i) (x (σ i)) else 0 := by
     intro x
     by_cases h : ∀ i, (x i).1 = w i
-    · rw [if_pos h, Finset.sum_eq_single (x ∘ σ)]
-      · rw [if_pos ⟨h, rfl⟩]
+    · rw [ite_eq_left h, Finset.sum_eq_single (x ∘ σ)]
+      · rw [ite_eq_left ⟨h, rfl⟩]
         rfl
       · intro J _ hJ
-        rw [if_neg (fun hh => hJ hh.2)]
+        rw [ite_eq_right (fun hh => hJ hh.2)]
       · intro hh
         exact absurd (Finset.mem_univ _) hh
     · simp [h]
   rw [Finset.sum_congr rfl (fun x _ => hin x)]
   rw [sum_place w _ (fun _ => Iff.rfl)]
   by_cases hw : ∀ i, w (σ i) = w i
-  · rw [if_pos hw]
+  · rw [ite_eq_left hw]
     simp [blk, ent, hw]
-  · rw [if_neg hw]
-    push_neg at hw
+  · rw [ite_eq_right hw]
+    push Not at hw
     obtain ⟨i, hi⟩ := hw
     simp only [ContinuousMultilinearMap.zero_apply]
     apply Finset.sum_eq_zero
@@ -143,8 +143,8 @@ theorem fft_of (hC : Cplx) (h1 : PlacePermOperatorBicommutantSpan) (h2 : PlacePe
   simp only [hf, ContinuousAlternatingMap.sum_apply, ContinuousAlternatingMap.smul_apply, AT,
     ContinuousMultilinearMap.alternatization_apply_apply, Fintype.sum_prod_type, Fintype.sum_bool,
     smul_eq_mul, Units.smul_def, zsmul_eq_mul, ContinuousAlternatingMap.sum_apply,
-    ContinuousAlternatingMap.add_apply, ContinuousAlternatingMap.smul_apply, if_true, Bool.false_eq_true,
-    if_false]
+    ContinuousAlternatingMap.add_apply, ContinuousAlternatingMap.smul_apply, ite_true, Bool.false_eq_true,
+    ite_false]
   rw [Finset.mul_sum]
   simp_rw [Finset.mul_sum]
   rw [Finset.sum_comm]

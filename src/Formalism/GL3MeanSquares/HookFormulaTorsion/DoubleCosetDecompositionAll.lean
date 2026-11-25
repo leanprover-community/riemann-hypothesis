@@ -67,11 +67,6 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F] {R : Type} [CommRing R
 end T1
 end Formalism.HermitianLattices.OneDimInversion
 
-namespace Formalism.HermitianLattices.RamifiedLatticeOperators
-open Formalism.LogVandermondeBounds.product_first_zeroth_parts Formalism.HermitianLattices.OneDimInversion
-
-end Formalism.HermitianLattices.RamifiedLatticeOperators
-
 namespace Formalism.HermitianLattices.OneDimInversion
 
 section Orb
@@ -311,10 +306,6 @@ theorem lemmaB_length_statement : LemmaB'_length := by
 
 end Formalism.HermitianLattices.RamifiedLatticeOperators
 
-namespace Formalism.HermitianLattices.RamifiedLatticeOperators
-open Formalism.HermitianLattices.OneDimInversion
-
-end Formalism.HermitianLattices.RamifiedLatticeOperators
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Formalism.GL3MeanSquares.HookFormulaTorsion.DoubleCosetDecompositionAll =====

@@ -323,7 +323,7 @@ private theorem neg_one_lt_discrep_of_mult_lt_and_le {k : Type} [Field k] [CharZ
         have : (0 : ℤ) ≤ (m : ℤ) * F := mul_nonneg (by positivity) hFn
         have : (0 : ℤ) < m := by exact_mod_cast hm
         linarith
-      · push_neg at hz
+      · push Not at hz
         obtain ⟨j0, hj0, hne⟩ := hz
         have hpos : ∀ j ∈ J, 0 ≤ ((m : ℤ) - d j) * E.ord (u j) := fun j hj =>
           mul_nonneg (by linarith [hd j hj]) (ho j hj)
@@ -414,8 +414,7 @@ theorem kltAt_lcAt_iff_of_isLogRes : ∀ (k : Type) [Field k] [CharZero k] (X : 
   · rw [IsLogEqn.kltAt_iff hn hlm.ne_zero hlm.pos hL]
     constructor
     · intro H w hw
-      by_contra hlt
-      push_neg at hlt
+      by_contra! hlt
       have hne : (pullCart s G - m • K).mult w ≠ 0 := by
         have : (0 : ℤ) < m := by exact_mod_cast hlm.pos
         omega
@@ -433,8 +432,7 @@ theorem kltAt_lcAt_iff_of_isLogRes : ∀ (k : Type) [Field k] [CharZero k] (X : 
   · rw [IsLogEqn.lcAt_iff hn hlm.ne_zero hlm.pos hL]
     constructor
     · intro H w hw
-      by_contra hlt
-      push_neg at hlt
+      by_contra! hlt
       have hne : (pullCart s G - m • K).mult w ≠ 0 := by
         have : (0 : ℤ) < m := by exact_mod_cast hlm.pos
         omega

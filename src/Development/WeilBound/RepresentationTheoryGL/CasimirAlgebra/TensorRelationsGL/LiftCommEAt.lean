@@ -37,7 +37,7 @@ theorem Om_apply (E : Fin n → Fin n → Module.End ℂ M) (p : P) (f : TV n M 
   rw [Finset.sum_eq_single (I p)]
   · simp
   · intro b _ hb
-    rw [if_neg (Ne.symm hb), map_zero]
+    rw [ite_eq_right (Ne.symm hb), map_zero]
   · simp
 
 omit [Fintype P] [DecidableEq P] in

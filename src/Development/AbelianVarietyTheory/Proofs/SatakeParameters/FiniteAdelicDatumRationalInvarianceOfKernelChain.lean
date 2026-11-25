@@ -19,48 +19,8 @@ public import Formalism.LocalToGlobal.Columns.ChainTopTilQK
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.IntegralGLSuccEmbeddingMemParahoricTimesPrincipa
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsUnitaryAutColumnFieldOfStandardUnitaryMatr
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.OrthonormalCoordsConjUnitaryStandardForm
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
-import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ColInst
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -137,8 +97,6 @@ namespace GlobalTheory.TwV.Model
 
 open NumberField IsDedekindDomain Matrix Formalism.BasicNotions Formalism.UG Formalism.L2.Col Formalism.L2.PairingIndexBounds.F Formalism.MainNotions.G.KAat Formalism.L2.Forms Formalism.L2.Ker Formalism.MainNotions Formalism.L2.DIV Formalism.MainNotions.G GlobalTheory.TwU GlobalTheory.TwV
 open scoped TensorProduct
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : G.Inst D L} {Gl : G.LatInst D} {Kc : G.Consts} {Y : DivX D} {cX : ExtraC}
   {ex : Extra D L hT Gi Gl Kc Y cX} {t : KerEntTied ex} {u : D.what₂.Word} {μ : D.what₂.Tup} {St : ChainCharts D u μ}
@@ -293,7 +251,7 @@ theorem sameCoset_pass (hX : X.Ok) (hPr : Pr.Ok) {n : ℕ} (P : rowSG Pr sel mu)
     SameCoset sel mu cst P (k.1 v) y0 ↔ SameCoset sel mu cst P v y0 := by
   by_cases hP : P.1 ∈ Pr.vGs
   · unfold SameCoset
-    simp only [if_pos hP]
+    simp only [ite_eq_left hP]
     have hk : k⁻¹ ∈ GlobalTheory.TopStep.prinCong n P.1 1 :=
       GlobalTheory.CplCosetPt.mem_prinCong_one_of_redGL (GlobalTheory.TopStep.qOf_notMem_sq hX hPr hP) _ (by rw [map_inv, hr, inv_one])
     exact GlobalTheory.CplCosetPt.sameCoset_loc P.1 0 1 1 k.1 1 k⁻¹ k.2 (one_mem _) hk (by simp) (by omega) y0 (hy0 hP)
@@ -345,14 +303,14 @@ theorem coset_mem_ybSet (p : ChPt (R := R) sel mu u j) (y0 : rowSG Pr sel mu →
     have hs := hy P l
     have h0 := hy0 P l
     by_cases hP : P.1 ∈ Pr.vGs
-    · simp only [if_pos hP, pow_zero, inv_one, one_mul, pow_one] at hs h0 ⊢
+    · simp only [ite_eq_left hP, pow_zero, inv_one, one_mul, pow_one] at hs h0 ⊢
       simp only [_root_.zpow_neg, zpow_one, inv_inv]
       have e : ((qOf P.1 : ℕ) : X.E) * (frsF sel mu p P).symm y l =
           ((qOf P.1 : ℕ) : X.E) * ((frsF sel mu p P).symm y - y0 P) l + ((qOf P.1 : ℕ) : X.E) * y0 P l := by
         simp only [Pi.sub_apply]; ring
       rw [e]
       exact (hqI.mul hs).add h0
-    · simp only [if_neg hP] at hs h0 ⊢
+    · simp only [ite_eq_right hP] at hs h0 ⊢
       simp only [_root_.zpow_neg, zpow_natCast, inv_inv]
       have e : ((qOf P.1 : ℕ) : X.E) ^ cst.M * (frsF sel mu p P).symm y l =
           (((qOf P.1 : ℕ) : X.E) ^ cst.M * ((qOf P.1 : ℕ) : X.E) ^ cst.M) *
@@ -379,8 +337,6 @@ theorem unitV_det_one {E K : Type} [Field E] [NumberField E] [StarRing E] [Field
   rw [GlobalTheory.TopStep.unitV_congr χ (b := 1) ?_, GlobalTheory.Mem.Col2.IdxEx.Cong.unitV_one]
   rw [(GlobalTheory.TopStep.det_glint k).2, GlobalTheory.TopStep.reduction_one₂, ← GlobalTheory.TopStep.redGL_val, hr]
   simp
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem xiPt_cpl_smul : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a =>
     ∀ i (hi : i + 1 ≤ D.R.m), i = t.m2 → ∀ β β' (x : UA D i (Nat.le_of_succ_le hi)) (x' : UA D (i + 1) hi) p p',
@@ -427,7 +383,7 @@ theorem xiPt_cpl_smul : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU 
   rw [Finset.prod_eq_one fun P _ => hprod P, mul_one] at law
   simp only [Finset.prod_const_one, inv_one, mul_one, Units.val_one, one_mul] at law
   unfold xiPt
-  rw [dite_eq_right (lt_irrefl _), if_pos rfl, dite_eq_right (lt_irrefl _), if_pos rfl, hC]
+  rw [dite_eq_right (lt_irrefl _), ite_eq_left rfl, dite_eq_right (lt_irrefl _), ite_eq_left rfl, hC]
   exact law
 
 end Main
@@ -444,7 +400,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Matrix Formalism.BasicNotions Formalism.UG Formalism.MainNotions Formalism.L2.Col Formalism.L2.Ker Formalism.L2.DIV Formalism.L2.PairingIndexBounds.F Formalism.MainNotions.G.KAat Formalism.L2.Forms Formalism.MainNotions.G GlobalTheory.TwU GlobalTheory.TwV
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 namespace GlobalTheory.TopRat
@@ -503,7 +458,7 @@ theorem xiPt_top_smul : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU 
   have hn1 : ¬ (t.m2 + 1 < t.m2) := by omega
   have hn2 : t.m2 + 1 ≠ t.m2 := by omega
   unfold xiPt
-  rw [dite_eq_right hn1, if_neg hn2, dite_eq_right hn1, if_neg hn2, XiTop_eq, XiTop_eq]
+  rw [dite_eq_right hn1, ite_eq_right hn2, dite_eq_right hn1, ite_eq_right hn2, XiTop_eq, XiTop_eq]
   congr 1
   · exact phiT_smul t.X.K p.deco p'.deco g 1 g' 1 w
   · have hX : t.X.Ok := hPin.fields.ok
@@ -535,7 +490,7 @@ theorem xiPt_top_smul : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU 
       have hy0P : ∀ l, IntAt P.1 ((qOf P.1 : t.X.E) * A.y0 β P l) := by
         intro l
         have h := hy0 P l
-        simpa only [hP, if_true, pow_one] using h
+        simpa only [hP, ite_true, pow_one] using h
       have key1 : ∀ (F1 : Sp t.X.E (D.R.N (t.m2 + 1)) ≃ₗ[t.X.E] Sp t.X.E (D.R.N (t.m2 + 1))) (u1 u0 : Sp t.X.E (D.R.N (t.m2 + 1))),
           F1 = g.1 * frsF t.sel (t.tup μ) p P * κ.1 →
           SameCoset t.sel (t.tup μ) (t.cst μ) P (F1.symm u1) (y0At A (t.m2 + 1) (Nat.le_of_succ_le hi) β P) →
@@ -546,7 +501,7 @@ theorem xiPt_top_smul : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU 
               (inFr (frsF t.sel (t.tup μ) p P) (frsF t.sel (t.tup μ) p' P) w) ((frsF t.sel (t.tup μ) p P).symm u0) := by
         rintro F1 u1 u0 rfl h1 h2
         unfold SameCoset at h1 h2
-        simp only [hP, if_true, pow_zero, inv_one, one_mul, hyy] at h1 h2
+        simp only [hP, ite_true, pow_zero, inv_one, one_mul, hyy] at h1 h2
         have e1 : inFr (g.1 * frsF t.sel (t.tup μ) p P * κ.1) (g'.1 * frsF t.sel (t.tup μ) p' P * κ'.1)
             (g'.1.toLinearMap ∘ₗ w ∘ₗ g.1.symm.toLinearMap) =
             κ'.1.symm.toLinearMap ∘ₗ inFr (frsF t.sel (t.tup μ) p P) (frsF t.sel (t.tup μ) p' P) w ∘ₗ κ.1.toLinearMap := by
@@ -594,7 +549,7 @@ theorem xiPt_top_smul : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU 
     · have hy0P : ∀ l, IntAt P.1 ((qOf P.1 : t.X.E) ^ (t.cst μ).M * A.y0 β P l) := by
         intro l
         have h := hy0 P l
-        simpa only [hP, if_false] using h
+        simpa only [hP, ite_false] using h
       have hqM : (qOf P.1 : t.X.E) ^ (t.cst μ).M ≠ 0 := pow_ne_zero _ hq0
       have key2 : ∀ (F1 : Sp t.X.E (D.R.N (t.m2 + 1)) ≃ₗ[t.X.E] Sp t.X.E (D.R.N (t.m2 + 1))) (u1 u0 : Sp t.X.E (D.R.N (t.m2 + 1))),
           F1 = g.1 * frsF t.sel (t.tup μ) p P →
@@ -606,7 +561,7 @@ theorem xiPt_top_smul : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU 
               (inFr (frsF t.sel (t.tup μ) p P) (frsF t.sel (t.tup μ) p' P) w) ((frsF t.sel (t.tup μ) p P).symm u0) := by
         rintro F1 u1 u0 rfl h1 h2
         unfold SameCoset at h1 h2
-        simp only [hP, if_false, hyy] at h1 h2
+        simp only [hP, ite_false, hyy] at h1 h2
         have e1 : inFr (g.1 * frsF t.sel (t.tup μ) p P) (g'.1 * frsF t.sel (t.tup μ) p' P)
             (g'.1.toLinearMap ∘ₗ w ∘ₗ g.1.symm.toLinearMap) = inFr (frsF t.sel (t.tup μ) p P) (frsF t.sel (t.tup μ) p' P) w := by
           refine LinearMap.ext fun v => ?_
@@ -708,14 +663,14 @@ theorem red_pass_one {u : Pr.Word} {j : ℕ} {Λ : LevFam X.E X.K (R.N j) Pr.vGs
   · have e : κ P = passG ((g, 1, 1) : FrmG Λ Θ) p ⟨P.1, hP⟩ := by
       apply Subtype.ext
       unfold frsF at h
-      simp only [dif_pos hP] at h
+      simp only [dite_eq_left hP] at h
       show (κ P).1 = ((((g, 1, 1) : FrmG Λ Θ) • p).deco.1.liftFr ⟨P.1, hP⟩)⁻¹ * g.1 * p.deco.1.liftFr ⟨P.1, hP⟩
       rw [h, Subgroup.coe_inv]
       group
     rw [e]
     exact redGL_passG ((g, 1, 1) : FrmG Λ Θ) p ⟨P.1, hP⟩
   · unfold frsF at h
-    simp only [dif_neg hP] at h
+    simp only [dite_eq_right hP] at h
     have h1 : ((κ P)⁻¹).1 = 1 := by
       have h' : g.1 * (p.fr ⟨P.1, (Finset.mem_union.mp P.2).resolve_left hP⟩ * ((κ P)⁻¹).1) =
           g.1 * (p.fr ⟨P.1, (Finset.mem_union.mp P.2).resolve_left hP⟩ * 1) := by
@@ -771,7 +726,7 @@ theorem xiPt_rat : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a =>
         (g'.1.toLinearMap ∘ₗ w ∘ₗ g.1.symm.toLinearMap) = xiPt A i hi β β' p p' w) := by
   intro D L hT Gi Gl Kc Y cX ex t u μ St A dtU a hP _hT i hi hlt β β' x x' p p' _hp _hp' g g' w
   unfold xiPt
-  rw [dif_pos hlt, dif_pos hlt]
+  rw [dite_eq_left hlt, dite_eq_left hlt]
   exact GlobalTheory.RatEntry.xiEntry_rat hP.fields.ok t.pr_ok hP.sel ⟨hP.avoid.2, hP.avoid.1⟩ (t.idx_ok μ) hlt _ _ g g' p p' w
 
 end GlobalTheory.RatEntry
@@ -876,8 +831,6 @@ open scoped TensorProduct
 noncomputable section
 
 namespace GlobalTheory.TwLatRat
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem seam_lat_gmap {D : D7} {X : Fields} (s : Seam D X) {n : ℕ} (g : Sp X.E n ≃ₗ[X.E] Sp X.E n)
     (N : Submodule (𝓞 X.E) (Sp X.E n)) : s.lat (Formalism.HermitianLatticesTheory.gmap g N) = mvL (seamGL s g) (s.lat N) := by

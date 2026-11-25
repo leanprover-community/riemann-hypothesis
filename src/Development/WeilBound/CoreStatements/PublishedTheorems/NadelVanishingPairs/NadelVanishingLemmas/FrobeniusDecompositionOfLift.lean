@@ -305,8 +305,7 @@ theorem logCartier_rounding_family : ∀ (K : Type) [Field K] (p : ℕ) [Fact p.
   · intro ha
     subst ha
     exact (hT y0).2.1 η (hη y0)
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+  · rw [map_sum]
     simp_rw [_root_.GlobalTheory.cartierMap_smul_logWedge K p n x γ hγ]
     rw [← hQη]
     have h2 := hhom η
@@ -449,10 +448,10 @@ private theorem logAt_le_chartForms_of_isLogChart {X : Scheme.{0}} [IsIntegral X
     intro k b hb
     by_cases hk : k ∈ J
     · have h1 : dK (x k : X.functionField) = (x k : X.functionField) • frame x J k := by
-        rw [frame, if_pos hk, _root_.GlobalTheory.LogDR.StabD.dK_unit]
+        rw [frame, ite_eq_left hk, _root_.GlobalTheory.LogDR.StabD.dK_unit]
       rw [h1, smul_smul]
       exact hfr k _ ((locRing y).mul_mem hb (hch.mem k))
-    · have h1 : dK (x k : X.functionField) = frame x J k := by rw [frame, if_neg hk]
+    · have h1 : dK (x k : X.functionField) = frame x J k := by rw [frame, ite_eq_right hk]
       rw [h1]
       exact hfr k b hb
   rw [_root_.GlobalTheory.LogDR.ChartStalk.dlog_mul, dlog_prod_zpow]
@@ -468,7 +467,7 @@ private theorem logAt_le_chartForms_of_isLogChart {X : Scheme.{0}} [IsIntegral X
     exact sum_mem fun k _ => by
       rw [smul_smul]
       exact hdK k _ ((locRing y).mul_mem huiA (hcf k))
-  · have h1 : dlog (x k) = (1 : X.functionField) • frame x J k := by rw [frame, if_pos hk, one_smul]
+  · have h1 : dlog (x k) = (1 : X.functionField) • frame x J k := by rw [frame, ite_eq_left hk, one_smul]
     rw [h1]
     exact hfr k 1 (locRing y).one_mem
 
@@ -491,9 +490,9 @@ private theorem chartForms_le_logAt_of_isLogChart {X : Scheme.{0}} [IsIntegral X
       refine (hc.logUnit y hy (x k)).2 ⟨1, fun i => if i = k then 1 else 0, ⟨1, isUnit_one, by simp⟩, ?_⟩
       rw [one_mul, Finset.prod_eq_single k (fun b _ hb => by simp [hb]) (fun h => absurd hk h)]
       simp
-    rw [frame, if_pos hk, ← one_smul X.functionField (dlog (x k))]
+    rw [frame, ite_eq_left hk, ← one_smul X.functionField (dlog (x k))]
     exact AddSubgroup.subset_closure ⟨1, (locRing y).one_mem, _, ⟨x k, hlu, rfl⟩, rfl⟩
-  · rw [frame, if_neg hk]
+  · rw [frame, ite_eq_right hk]
     obtain ⟨u, hu, b, hb, hd⟩ := exists_unitAt_dK_eq_smul_dlog_of_regAt (mem_locRing.1 ((hc.chart y hy).mem k))
     rw [hd]
     exact AddSubgroup.subset_closure ⟨b, mem_locRing.2 hb, _, ⟨u, logUnit_of_unitAt Z hu, rfl⟩, rfl⟩
@@ -525,7 +524,7 @@ private theorem isEqn_smul_add_sum_smul {X : Scheme.{0}} [IsIntegral X] {C : Typ
     · simp
     · have hj0 : j0 ∈ J := (hJ j0).2 ⟨c, hc⟩
       simp only [Option.some.injEq, Option.elim_some]
-      rw [Finset.prod_ite_eq J j0 (fun j => x j ^ r c), if_pos hj0]
+      rw [Finset.prod_ite_eq J j0 (fun j => x j ^ r c), ite_eq_left hj0]
   rw [hprod]
   exact (ht.nsmul p).add (hs _)
 

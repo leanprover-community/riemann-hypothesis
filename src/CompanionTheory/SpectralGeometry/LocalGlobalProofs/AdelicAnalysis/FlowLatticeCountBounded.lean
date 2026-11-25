@@ -52,8 +52,7 @@ lemma sizeTup_ratTup_pos {d M n : ℕ} (b : Module.Basis (Fin d) F E) (X : Fin n
   obtain ⟨a, ha⟩ := Function.ne_iff.mp hX
   obtain ⟨i, hi⟩ := Function.ne_iff.mp ha
   obtain ⟨k, hk⟩ : ∃ k, b.repr (X a i) k ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hi (b.repr.map_eq_zero_iff.mp (Finsupp.ext h))
   obtain ⟨v⟩ : Nonempty (InfinitePlace F) := inferInstance
   set Y := projInf (ratTup (AF F) X : Fin n → Fin M → AF F ⊗[F] E) with hY

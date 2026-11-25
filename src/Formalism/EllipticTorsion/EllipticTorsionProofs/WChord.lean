@@ -310,16 +310,16 @@ lemma coeff_Wi (w : PowerSeries K) (i : Fin 2) (e : Fin 2 →₀ ℕ) :
     | simp only [MvPowerSeries.coeff_X_pow]
   split_ifs with h
   · rw [finsum_eq_single _ (e i)]
-    · rw [if_pos h, smul_eq_mul, mul_one]
+    · rw [ite_eq_left h, smul_eq_mul, mul_one]
     · intro d hd
-      rw [if_neg, smul_zero]
+      rw [ite_eq_right, smul_zero]
       intro h'
       apply hd
       rw [h']
       simp
   · have hz : ∀ d : ℕ, (coeff d w • if e = Finsupp.single i d then (1 : K) else 0) = 0 := by
       intro d
-      rw [if_neg, smul_zero]
+      rw [ite_eq_right, smul_zero]
       intro h'
       apply h
       rw [h']
@@ -370,7 +370,7 @@ lemma L_X (i j : Fin 2) : (L i) (MvPowerSeries.X j : MvPowerSeries (Fin 2) K) = 
   · subst h
     simp
   · have h' : Finsupp.single i 1 ≠ Finsupp.single j 1 := fun e => h (Finsupp.single_left_injective one_ne_zero e)
-    rw [if_neg h', if_neg h]
+    rw [ite_eq_right h', ite_eq_right h]
 
 lemma mul_vanishing_order_two {φ : MvPowerSeries (Fin 2) K} (h0 : cc φ = 0) (h1 : ∀ i, (L i) φ = 0)
     (ψ : MvPowerSeries (Fin 2) K) : cc (φ * ψ) = 0 ∧ ∀ i, (L i) (φ * ψ) = 0 := by
@@ -582,7 +582,7 @@ lemma weq_iff (W : WeierstrassCurve K) (s v : MvPowerSeries (Fin 2) K) :
 lemma X_ne : (MvPowerSeries.X 0 : MvPowerSeries (Fin 2) K) ≠ MvPowerSeries.X 1 := by
   intro h
   have := congrArg (MvPowerSeries.coeff (Finsupp.single 0 1)) h
-  rw [MvPowerSeries.coeff_X, MvPowerSeries.coeff_X, if_pos rfl, if_neg] at this
+  rw [MvPowerSeries.coeff_X, MvPowerSeries.coeff_X, ite_eq_left rfl, ite_eq_right] at this
   · exact one_ne_zero this
   · intro h'
     exact absurd (Finsupp.single_left_injective one_ne_zero h') (by decide)

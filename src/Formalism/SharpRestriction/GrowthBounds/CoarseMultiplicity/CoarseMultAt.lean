@@ -26,9 +26,9 @@ theorem val_digit {D : Formalism.BasicNotions.D7} (h52 : Formalism.MainNotions.C
   have hlt : ∀ k, ρ' k < p ^ (t' k + 1) := by
     intro k
     by_cases hk : odd k
-    · simp only [hρ', ht', if_pos hk]
+    · simp only [hρ', ht', ite_eq_left hk]
       rw [← (hodd k hk).1]; exact (hodd k hk).2
-    · simp only [hρ', ht', if_neg hk]
+    · simp only [hρ', ht', ite_eq_right hk]
       exact pow_pos hp.pos _
   obtain ⟨hunit, -, -⟩ := h2 σ t' ρ' hlt
   set e' : σ → ℕ := fun v => if odd v then μ v else 0 with he'
@@ -42,11 +42,11 @@ theorem val_digit {D : Formalism.BasicNotions.D7} (h52 : Formalism.MainNotions.C
     refine Finset.prod_congr rfl fun v _ => ?_
     by_cases hv : odd v
     · have := h1 (t' v) (ρ' v) (e' v) (hlt v)
-      simp only [hρ', ht', he', if_pos hv] at this ⊢
+      simp only [hρ', ht', he', ite_eq_left hv] at this ⊢
       rw [(hodd v hv).1, this]
       ring
     · have := h1 (t' v) (ρ' v) (e' v) (hlt v)
-      simp only [hρ', ht', he', if_neg hv] at this ⊢
+      simp only [hρ', ht', he', ite_eq_right hv] at this ⊢
       rw [(hend v hv).1, (hend v hv).2]
       simp only [zero_add, mul_zero, Nat.factorial_zero, Nat.cast_one, pow_zero, one_mul, mul_one, zero_add] at this ⊢
       rw [← this]

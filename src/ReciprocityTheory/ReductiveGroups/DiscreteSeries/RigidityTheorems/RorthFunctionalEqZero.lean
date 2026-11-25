@@ -93,15 +93,7 @@ theorem rorth_actM_smul {M : Type*} [AddCommGroup M] [Module ℂ M]
 theorem rorth_actM_single {M : Type*} [AddCommGroup M] [Module ℂ M]
     (E : Fin n → Fin n → Module.End ℂ M) (a b : Fin n) :
     actM E (Matrix.single a b (1 : ℂ)) = E a b := by
-  unfold actM
-  rw [Finset.sum_eq_single a, Finset.sum_eq_single b]
-  · simp [Matrix.single_apply_same]
-  · intro b' _ hb; rw [Matrix.single_apply_of_col_ne _ _ (Ne.symm hb), zero_smul]
-  · simp
-  · intro a' _ ha
-    refine Finset.sum_eq_zero fun b' _ => ?_
-    rw [Matrix.single_apply_of_row_ne (Ne.symm ha), zero_smul]
-  · simp
+  exact ReciprocityTheory.ChartRestriction.DS.actM_single' E a b
 
 theorem rorth_mem_UJset {ε : Fin n → Bool} {k : Matrix (Fin n) (Fin n) ℂ} (hk : k ∈ Kset ε) :
     k ∈ UJset ε := by

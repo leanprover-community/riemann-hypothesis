@@ -70,7 +70,7 @@ theorem restr_setTau_low (j : ℤ) (b : ℤ → ℕ) (e : Fin r → ℕ) (x : �
     X.restr j b x = X.restr j (X.setTau j b e) x := by
   unfold Dat.restr Dat.setTau
   have : ¬ (X.F.fr j 0 ≤ x ∧ x ≤ X.F.fr j (r - 1)) := fun h => by omega
-  simp only [this, if_false]
+  simp only [this, ite_false]
 
 theorem restr_setTau_tau (hX : X.Hyp p K) (j : ℤ) (b : ℤ → ℕ) (e : Fin r → ℕ) (i' : Fin r) :
     X.restr j (X.setTau j b e) (X.F.fr j i'.val) = e i' := by
@@ -86,10 +86,10 @@ theorem restr_setTau_tau (hX : X.Hyp p K) (j : ℤ) (b : ℤ → ℕ) (e : Fin r
     unfold Frames.IsW
     omega
   unfold Dat.restr Dat.setTau
-  rw [if_pos hlate, if_pos ⟨a2, a3⟩, Finset.sum_eq_single i']
+  rw [ite_eq_left hlate, ite_eq_left ⟨a2, a3⟩, Finset.sum_eq_single i']
   · simp
   · intro i _ hne
-    rw [if_neg]
+    rw [ite_eq_right]
     intro h
     exact hne (fr_injective X.F hV j h).symm
   · intro h; exact absurd (Finset.mem_univ _) h
@@ -226,10 +226,8 @@ theorem restMon_of (C₀ : ℝ) (h61 : BetaRatioBound C₀) (h21 : TauDegreeOnPa
       rw [hcst]
       refine mul_le_mul_of_nonneg_left ?_ (by positivity)
       have hQr : (0 : ℝ) < (Q : ℝ) := by exact_mod_cast hQpos
-      have hYp : (0 : ℝ) < X.Y := by linarith
       have : 2 * (r : ℝ) * (be : ℝ) / Q ≤ (r : ℝ) / (2 * X.Y) := by
         rw [div_le_div_iff₀ hQr (by positivity)]
-        have hr0 : (0 : ℝ) ≤ (r : ℝ) := Nat.cast_nonneg _
         nlinarith
       linarith
     have h2 : (Fintype.piFinset fun i' : Fin r =>

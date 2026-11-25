@@ -248,7 +248,6 @@ theorem sigR_inclR (e : E) : sigR F σ (inclR F e) = inclR F (σ e) := by
 theorem hform_inclR (J : Matrix (Fin n) (Fin n) E) (a b : Fin n → E) :
     Formalism.UG.hform (sigR F σ) (JR F J) (fun i => inclR F (a i)) (fun i => inclR F (b i)) =
       inclR F (Formalism.UG.hform (σ : E →+* E) J a b) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp [Formalism.UG.hform, JR, map_sum, map_mul, sigR_inclR]
 
 theorem trBase_tmul (w : Fld P) : trBase P F (1 ⊗ₜ w) = inclR F (Algebra.trace E (Fld P) w) := by

@@ -1,5 +1,7 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialModelIsometry.LowerInv
+import Formalism.SharpRestriction.CuspSpanNormBounds.StarVecMulDM
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HighestWeightUniqueness.UnitaryOfBlockWMem
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
 public import Formalism.HermitianCurvature.FrameExists2
@@ -22,19 +24,12 @@ namespace Formalism.FourierDecayAlt.P
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Qr Formalism.FourierDecayAlt.P.QrD
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 namespace QrCap
 
 variable {k r : ℕ}
 
 theorem inWb_bvec_wI (j : Fin (k + 1)) : inWb k r (bvec (wI k r j)) := by
-  intro i hi
-  unfold bvec
-  rw [Pi.single_apply, if_neg]
-  rintro rfl
-  simp [wI] at hi
-  omega
+  apply _root_.Formalism.MainNotions.FrameBoundFromBesselTorus.inWb_bvec_wI <;> assumption
 
 def fr (k r : ℕ) (g : Mx k r) : Fin k → Fin (2 * r + k + 1) → ℂ := fun a => g *ᵥ bvec (wI k r a.castSucc)
 
@@ -51,22 +46,22 @@ theorem fr_frame (hgU : g ∈ UH (Hpk k r))
     rw [Qx8.herm_UH hgU, Qx8.herm_wI]
     by_cases h : a = b
     · subst h
-      rw [if_pos rfl, if_pos rfl, if_neg (Fin.castSucc_lt_last a).ne]
-    · rw [if_neg (fun e => h (Fin.castSucc_injective _ e)), if_neg h]
+      rw [ite_eq_left rfl, ite_eq_left rfl, ite_eq_right (Fin.castSucc_lt_last a).ne]
+    · rw [ite_eq_right (fun e => h (Fin.castSucc_injective _ e)), ite_eq_right h]
   · rw [List.mem_singleton] at hv
     subst hv
     unfold fr
-    rw [← hgz, Qx8.herm_UH hgU, Qx8.herm_smul_right', Qx8.herm_wI, if_neg (Fin.castSucc_lt_last a).ne, mul_zero]
+    rw [← hgz, Qx8.herm_UH hgU, Qx8.herm_smul_right', Qx8.herm_wI, ite_eq_right (Fin.castSucc_lt_last a).ne, mul_zero]
 
 theorem sig_wI (j : Fin (k + 1)) : GBasic.sig k r (wI k r j) = wI k r j := by
   have := j.isLt
   unfold GBasic.sig
-  rw [if_neg (by simp only [wI]; omega)]
+  rw [ite_eq_right (by simp only [wI]; omega)]
 
 theorem sgn_wI_cs (j : Fin k) : GBasic.sgn k r (wI k r j.castSucc) = 1 := by
   have := j.isLt
   unfold GBasic.sgn
-  rw [if_neg (by simp only [wI, Fin.val_castSucc]; omega)]
+  rw [ite_eq_right (by simp only [wI, Fin.val_castSucc]; omega)]
 
 theorem herm_fr (hgU : g ∈ UH (Hpk k r)) (v : Fin (2 * r + k + 1) → ℂ) (b : Fin k) :
     herm (Hpk k r) v (fr k r g b) = (g⁻¹ *ᵥ v) (wI k r b.castSucc) := by
@@ -124,14 +119,14 @@ theorem sum_single (θ : Fin k → ℝ) :
   simp only [Matrix.smul_apply, Matrix.single_apply, smul_eq_mul, mul_ite, mul_one, mul_zero]
   by_cases hij : i = j
   · subst hij
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     unfold dθ
     by_cases hin : r ≤ i.val ∧ i.val < r + k
     · rw [dite_eq_left hin, Finset.sum_eq_single ⟨i.val - r, by omega⟩]
-      · rw [if_pos]
+      · rw [ite_eq_left]
         constructor <;> (apply Fin.ext; simp only [wI, Fin.val_castSucc]; omega)
       · intro c _ hc
-        rw [if_neg]
+        rw [ite_eq_right]
         rintro ⟨h1, -⟩
         apply hc
         apply Fin.ext
@@ -143,17 +138,17 @@ theorem sum_single (θ : Fin k → ℝ) :
     · rw [dite_eq_right hin]
       apply Finset.sum_eq_zero
       intro c _
-      rw [if_neg]
+      rw [ite_eq_right]
       rintro ⟨h1, -⟩
       apply hin
       have := congrArg Fin.val h1
       have := c.isLt
       simp only [wI, Fin.val_castSucc] at *
       omega
-  · rw [if_neg hij]
+  · rw [ite_eq_right hij]
     apply Finset.sum_eq_zero
     intro c _
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro ⟨h1, h2⟩
     exact hij (h1.symm.trans h2)
 
@@ -169,24 +164,24 @@ theorem diag_exp_blockW (θ : Fin k → ℝ) :
       unfold PI.HwUniqW.InB at hi hj
       by_cases hij : i = j
       · subst hij
-        rw [if_pos rfl, if_pos rfl, Pi.coe_exp]
+        rw [ite_eq_left rfl, ite_eq_left rfl, Pi.coe_exp]
         unfold dθ
         rw [dite_eq_left hi, ← Complex.exp_eq_exp_ℂ]
-      · rw [if_neg hij, if_neg]
+      · rw [ite_eq_right hij, ite_eq_right]
         intro h
         apply hij
         apply Fin.ext
         have := congrArg Fin.val h
         simp only at this
         omega
-    · rw [PI.HwUniqW.blockW_in_out _ hi hj, if_neg (PI.HwUniqW.ne_of_inB hi hj)]
+    · rw [PI.HwUniqW.blockW_in_out _ hi hj, ite_eq_right (PI.HwUniqW.ne_of_inB hi hj)]
   · rw [PI.HwUniqW.blockW_out _ hi]
     by_cases hij : i = j
     · subst hij
-      rw [if_pos rfl, if_pos rfl, Pi.coe_exp]
+      rw [ite_eq_left rfl, ite_eq_left rfl, Pi.coe_exp]
       unfold dθ
       rw [dite_eq_right (show ¬ (r ≤ i.val ∧ i.val < r + k) from hi), NormedSpace.exp_zero]
-    · rw [if_neg hij, if_neg hij]
+    · rw [ite_eq_right hij, ite_eq_right hij]
 
 theorem torus {g : Mx k r} (hgU : g ∈ UH (Hpk k r)) (θ : Fin k → ℝ) :
     NormedSpace.exp (∑ c : Fin k, ((θ c : ℂ) * Complex.I) • unitB (Hpk k r) (fr k r g) c c) =
@@ -202,19 +197,7 @@ theorem torus {g : Mx k r} (hgU : g ∈ UH (Hpk k r)) (θ : Fin k → ℝ) :
   rw [hs, Matrix.exp_conj _ _ hu, Matrix.exp_diagonal, diag_exp_blockW]
 
 theorem Dg_mem (θ : Fin k → ℝ) : Dg θ ∈ PI.UpqRep.Kset (PI.UpqRep.allPos k) := by
-  refine ⟨?_, ?_⟩
-  · rw [Matrix.mem_unitaryGroup_iff']
-    unfold Dg
-    rw [Matrix.star_eq_conjTranspose, Matrix.diagonal_conjTranspose, Matrix.diagonal_mul_diagonal,
-      ← Matrix.diagonal_one]
-    congr 1
-    funext a
-    rw [Pi.star_apply, Complex.star_def, ← Complex.exp_conj, ← Complex.exp_add]
-    have e : (starRingEnd ℂ) ((θ a : ℂ) * Complex.I) + (θ a : ℂ) * Complex.I = 0 := by
-      rw [map_mul, Complex.conj_ofReal, Complex.conj_I]
-      ring
-    rw [e, Complex.exp_zero]
-  · rw [PI.HwUniqW.Jm_allPos, Matrix.mul_one, Matrix.one_mul]
+  apply _root_.PI.WMI.lowerInv_torus_mem <;> assumption
 
 theorem blockW_uh {h : Matrix (Fin k) (Fin k) ℂ} (hh : hᴴ * h = 1) :
     PI.UpqRep.blockW k r h ∈ UH (Hpk k r) := by
@@ -231,7 +214,7 @@ theorem blockW_fix (h : Matrix (Fin k) (Fin k) ℂ) {l : Fin (2 * r + k + 1)} (h
   by_cases hi : PI.HwUniqW.InB k r i
   · rw [PI.HwUniqW.blockW_in_out _ hi hl]
     simp only [bvec, Pi.single_apply]
-    rw [if_neg (PI.HwUniqW.ne_of_inB hi hl)]
+    rw [ite_eq_right (PI.HwUniqW.ne_of_inB hi hl)]
   · rw [PI.HwUniqW.blockW_out _ hi]
     simp only [bvec, Pi.single_apply]
 

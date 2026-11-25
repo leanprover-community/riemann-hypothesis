@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.KTheoryStability.HomologicalStability.LinkExactnessStability.ExistsSplitSeqLinkInOrthogonalEqLinkIn
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.SubClosed
 
 @[expose] public section
@@ -11,22 +12,7 @@ namespace GlobalTheory.SeqCx
 theorem mem_splitSeq_iff_pairwise (R : Type) [CommRing R] (n : ℕ) (l : List ((Fin n → R) × (Fin n → R))) :
     l ∈ splitSeq R n ↔ (∀ y ∈ l, y.2 ⬝ᵥ y.1 = 1) ∧
       l.Pairwise fun y z => y.2 ⬝ᵥ z.1 = 0 ∧ z.2 ⬝ᵥ y.1 = 0 := by
-  simp only [splitSeq, Set.mem_setOf_eq, List.pairwise_iff_get]
-  constructor
-  · intro h
-    refine ⟨fun y hy => ?_, fun i j hij => ⟨?_, ?_⟩⟩
-    · obtain ⟨i, rfl⟩ := List.get_of_mem hy
-      simpa using h i i
-    · simpa [hij.ne] using h i j
-    · simpa [hij.ne'] using h j i
-  · rintro ⟨h1, h2⟩ i j
-    rcases lt_trichotomy i j with hij | rfl | hij
-    · rw [if_neg hij.ne]
-      exact (h2 i j hij).1
-    · rw [if_pos rfl]
-      exact h1 _ (List.get_mem _ _)
-    · rw [if_neg hij.ne']
-      exact (h2 j i hij).2
+  apply _root_.GlobalTheory.SeqCx.RowLink.mem_splitSeq_iff <;> assumption
 
 theorem splitSeq_sublist_closed (R : Type) [CommRing R] (n : ℕ) : SubClosed (splitSeq R n) := by
   intro l hl l' hs

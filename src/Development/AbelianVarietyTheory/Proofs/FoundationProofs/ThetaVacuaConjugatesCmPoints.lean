@@ -107,7 +107,7 @@ theorem lamConj_eq_closure_pair : ∀ (D : D7), admG1 D → ∀ (cc : Ideal (�
     intro h0
     apply hd
     have := congrArg (fun y : M => (y : ℂ)) h0
-    simp only [TaylorLogMetric.liftM, dif_pos h2, dif_pos h3] at this
+    simp only [TaylorLogMetric.liftM, dite_eq_left h2, dite_eq_left h3] at this
     exact this
   obtain ⟨L', ha, hb⟩ := hex _ _ hne
   obtain ⟨e2, e3, -, -, -, hun, -⟩ :=

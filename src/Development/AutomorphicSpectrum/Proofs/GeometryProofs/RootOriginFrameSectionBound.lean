@@ -9,6 +9,7 @@ public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedMod
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.DefiniteFormStabilizerFiniteAwayFromP
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.ArakelovInstances.IsStrictDom
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.LiftFactorization
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TestValueEqConstMulReadingSecZ
 
 @[expose] public section
 
@@ -35,24 +36,7 @@ theorem evalAt_bor_zpow [Fintype ι] (h : BorChart pts mapR borR) (e : ι → �
     (S : Type) [CommRing S] [Algebra K S] (t : ι → Sˣ)
     (y y' : pts S) (hy : FromTest pts mapR y) (hy' : FromTest pts mapR y') (hb : borR t y y') :
     evalAt pts mapR f y' = ((∏ i, t i ^ e i : Sˣ) : S) * evalAt pts mapR f y := by
-  unfold evalAt
-  rw [dite_eq_left hy, dite_eq_left hy']
-  apply eq_of_locM (K := K)
-  intro m hm
-  obtain ⟨A, u, c, c', B, uB, uB', tB, π, π', cB, hc, hc', hπ, hπ', hbB, e1, e2, e3⟩ := h S t y y' hb m
-  rw [map_mul, chartAt_val hf hc' hy'.choose_spec.choose_spec.choose_spec,
-    chartAt_val hf hc hy.choose_spec.choose_spec.choose_spec, ← e1, ← e2, AlgHom.comp_apply, AlgHom.comp_apply,
-    ← hf A B π u uB hπ, ← hf A B π' u uB' hπ', hw B tB uB uB' hbB, map_mul]
-  congr 1
-  have key : ∀ i, Units.map cB.toRingHom.toMonoidHom (tB i) = Units.map (locM K m).toRingHom.toMonoidHom (t i) :=
-    fun i => Units.ext (by simpa using e3 i)
-  have h1 : cB ((∏ i, tB i ^ e i : (B.R)ˣ) : B.R) =
-      ((Units.map cB.toRingHom.toMonoidHom (∏ i, tB i ^ e i) : (Localization.AtPrime m)ˣ) : Localization.AtPrime m) := rfl
-  have h2 : locM K m ((∏ i, t i ^ e i : Sˣ) : S) =
-      ((Units.map (locM K m).toRingHom.toMonoidHom (∏ i, t i ^ e i) : (Localization.AtPrime m)ˣ) :
-        Localization.AtPrime m) := rfl
-  rw [h1, h2, map_prod, map_prod]
-  simp_rw [map_zpow, key]
+  apply _root_.GlobalTheory.evalAt_borR_of_borChart_int <;> assumption
 
 end IntWeight
 
@@ -73,7 +57,7 @@ def absHom (p : ℕ) [hp : Fact p.Prime] (la : HeightOneSpectrum (𝓞 c.F)) (T 
     · simp [absT, hx]
     by_cases hy : y = 0
     · simp [absT, hy]
-    simp only [absT, if_neg hx, if_neg hy, if_neg (mul_ne_zero hx hy)]
+    simp only [absT, ite_eq_right hx, ite_eq_right hy, ite_eq_right (mul_ne_zero hx hy)]
     rw [← Real.rpow_add hp0, vV_mul hx hy]
     congr 1
     push_cast
@@ -98,7 +82,7 @@ theorem absT_of_nval {p : ℕ} [hp : Fact p.Prime] {la : HeightOneSpectrum (𝓞
     exact_mod_cast hs
   have hag : absT p la T e g = (p : ℝ) ^ (-s) := by
     unfold absT
-    rw [if_neg hg0]
+    rw [ite_eq_right hg0]
     congr 1
     rw [← div_div, hv]
     field_simp

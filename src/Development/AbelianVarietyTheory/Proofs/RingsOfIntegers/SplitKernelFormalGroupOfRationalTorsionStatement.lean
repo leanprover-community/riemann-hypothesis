@@ -75,7 +75,6 @@ section Completion
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing
 open ReciprocityTheory.ChartRestriction.G.Chart GlobalTheory.JetSer MvPowerSeries
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ (PS Pt ev comp1)
-attribute [local instance] Over.cartesianMonoidalCategory
 
 variable {V : Type} [CommRing V] {G : Over (Spec (CommRingCat.of V))} [GrpObj G] {d : ℕ}
 
@@ -427,7 +426,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ GlobalTheory.PtTie
 open ReciprocityTheory.ChartRestriction.G.TB (dAct dLin)
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.PlaceInt
 
 theorem pow_eq_one_iff_of_push {S S' W : Scheme.{0}} {g : S' ⟶ S} {t : W ⟶ S} {t' : W ⟶ S'} {A : Over S}
@@ -558,7 +556,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.MainNotions.ModuliIntegralCharts.H1
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ GlobalTheory.PtTie
 open ReciprocityTheory.ChartRestriction.G.TB (dAct dLin)
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.PlaceInt
 
 end -- clump:auto

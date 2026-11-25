@@ -3,6 +3,7 @@ module
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PrimitiveFrobeniusFixed.IsAdmissiblePrimeListNil
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PrimitiveFrobeniusFixed.AdmProd
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PrimitiveFrobeniusFixed.DerBasic
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.PrimitiveFrobeniusFixed.DerBasic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PrimitiveFrobeniusFixed.GalBasic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.KummerTheory.DvdOfIne
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PrimitiveFrobeniusFixed.PlaceBasic
@@ -26,20 +27,10 @@ private theorem di_mem {N : ℕ} {g : G ℚ Ω} : g ∈ fixMu ℚ Ω N ↔ ∀ x
 
 private theorem di_der_mul (τ : ℕ → G ℚ Ω) (L : List ℕ) (u v : Ω) :
     der τ L (u * v) = der τ L u * der τ L v := by
-  induction L with
-  | nil => rfl
-  | cons q L ih =>
-    show der1 q (τ q) (der τ L (u * v)) = der1 q (τ q) (der τ L u) * der1 q (τ q) (der τ L v)
-    rw [ih]
-    simp only [der1, map_mul, mul_pow, Finset.prod_mul_distrib]
+  apply _root_.der_mul <;> assumption
 
 private theorem di_der_one (τ : ℕ → G ℚ Ω) (L : List ℕ) : der τ L (1 : Ω) = 1 := by
-  induction L with
-  | nil => rfl
-  | cons q L ih =>
-    show der1 q (τ q) (der τ L 1) = 1
-    rw [ih]
-    simp [der1]
+  apply _root_.der_one <;> assumption
 
 private theorem di_der_inv (τ : ℕ → G ℚ Ω) (L : List ℕ) (u : Ω) :
     der τ L u⁻¹ = (der τ L u)⁻¹ := by
@@ -645,13 +636,6 @@ private theorem der_div (τ : ℕ → G ℚ Ω) (L : List ℕ) (u v : Ω) : der 
   | nil => rfl
   | cons q L ih => simp only [der, ih, der1, map_div₀, div_pow, Finset.prod_div_distrib]
 
-private theorem der_pow (τ : ℕ → G ℚ Ω) (L : List ℕ) (u : Ω) (k : ℕ) : der τ L (u ^ k) = der τ L u ^ k := by
-  induction L with
-  | nil => rfl
-  | cons q L ih =>
-    simp only [der, ih, der1, map_pow, ← Finset.prod_pow]
-    exact Finset.prod_congr rfl fun i _ => by rw [← pow_mul, ← pow_mul, mul_comm]
-
 private theorem der_prod (τ : ℕ → G ℚ Ω) (L : List ℕ) (S : Finset ℕ) (f : ℕ → Ω) :
     der τ L (∏ i ∈ S, f i) = ∏ i ∈ S, der τ L (f i) := by
   induction L with
@@ -777,12 +761,12 @@ theorem UpperTheory.V.ML.kolStep :
   replace hstep := hstep q hq.one_le (wfix _ hτN)
   have hnrm : nrm q (τ q) (der τ L (x (q * n))) = (der τ L (x n) / φ⁻¹ (der τ L (x n))) ^ s n q := by
     have h1 := congrArg (der τ L) (hs.norm n q hq hadm' (τ q) hτFn hτq.2 φ hφP)
-    rw [der_pow, der_div, ← ycomm, nrm, der_prod] at h1
+    rw [UpperTheory.V.ML.di_der_pow, der_div, ← ycomm, nrm, der_prod] at h1
     rw [← h1, nrm]
     exact Finset.prod_congr rfl fun i _ => wcomm _
   have hcong : ∀ B : ValuationSubring Ω, Over B q →
       Pr B (der τ L (x (q * n)) / φ⁻¹ (der τ L (x n)) ^ s n q) := by
-    rw [ycomm, ← der_pow, ← der_div]
+    rw [ycomm, ← UpperTheory.V.ML.di_der_pow, ← der_div]
     refine pr_der τ L fun B hB => pr_of_sub ?_ (hs.cong n q hq hadm' φ hφP B hB)
     rw [map_pow, unit_gal (hs.unit n hadm) _ B (hAr B hB), one_pow]
   have hhom := (kolHom Ω M F n a hFn hMF ζ hζ δ hδ _ y0 yfix κ hκ).1
@@ -1307,7 +1291,7 @@ theorem UpperTheory.V.ML.nuSysEx :
   let τ : ℕ → G ℚ Ω := fun q => if h : q.Prime then Classical.choose (ineTau Ω q h).2 else 1
   have hτ : ∀ q, q.Prime → IsTau q (τ q) := by
     intro q hq
-    simp only [τ, dif_pos hq]
+    simp only [τ, dite_eq_left hq]
     exact Classical.choose_spec (ineTau Ω q hq).2
   have hkol : ∀ L, AdmL l F r L → ∃ κ : G ℚ Ω → ZMod (l ^ m), IsKol (l ^ m) F L.prod ζ g0 (a0 : ZMod (l ^ m)).val (der τ L ((fun d => opP g0 (a0 : ZMod (l ^ m)).val (X d) ^ (2 * N₀ * d)) L.prod)) κ := by
     intro L hL
@@ -1318,7 +1302,7 @@ theorem UpperTheory.V.ML.nuSysEx :
   let κ : List ℕ → G ℚ Ω → ZMod (l ^ m) := fun L => if h : AdmL l F r L then Classical.choose (hkol L h) else 0
   have hκ : ∀ L (h : AdmL l F r L), IsKol (l ^ m) F L.prod ζ g0 (a0 : ZMod (l ^ m)).val (der τ L ((fun d => opP g0 (a0 : ZMod (l ^ m)).val (X d) ^ (2 * N₀ * d)) L.prod)) (κ L) := by
     intro L h
-    simp only [κ, dif_pos h]
+    simp only [κ, dite_eq_left h]
     exact Classical.choose_spec (hkol L h)
   have hchiO : ∀ (g : G ℚ Ω) (k : ℕ), Pows (l ^ m) k g → ∃ e : O, ((chiO ℚ Ω l O g : Oˣ) : O) = k + (l : O) ^ m * e := by
     intro g k hg

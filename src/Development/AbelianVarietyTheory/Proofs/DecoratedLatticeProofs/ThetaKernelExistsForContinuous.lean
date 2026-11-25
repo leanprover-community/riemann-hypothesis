@@ -74,7 +74,3 @@ theorem theta_sum {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D} {ι : Type*} (s
     exact GlobalTheory.LocMod.LinSpace.isThetaFunO_add (GlobalTheory.LocMod.LinSpace.isThetaFunO_smul _ (hf i)) ih
 
 end GlobalTheory.Core.Rk.Collect
-
-namespace GlobalTheory.Core.Rk.Collect
-
-end GlobalTheory.Core.Rk.Collect

@@ -1134,7 +1134,7 @@ theorem relIndex_endL (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF :
     rw [LinearMap.toMatrix_apply b b, hba j, map_smul, h2, map_smul, Finsupp.smul_apply, map_sum,
     Finsupp.finsetSum_apply]
     simp only [map_smul, Basis.repr_self, Finsupp.smul_apply, Finsupp.single_apply, smul_eq_mul, mul_ite,
-      mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     field_simp [heK i, hc0K]
   let φA : (V →ₗ[K] V) →+ Matrix (Fin (finrank K V)) (Fin (finrank K V)) K :=
     (LinearMap.toMatrix a a).toLinearMap.toAddMonoidHom
@@ -1354,8 +1354,7 @@ private theorem exists_int_add_star_eq_one_of_isCMUnram (hK : Formalism.Hermitia
       algebraMap F K (algebraMap (𝓞 F) F x) := fun x => rfl
   let tr : 𝓞 K → K := fun θ => algebraMap (𝓞 K) K θ + star (algebraMap (𝓞 K) K θ)
   show ∃ θ : 𝓞 K, tr θ = 1
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   let I : Ideal (𝓞 F) :=
     { carrier := {a | ∃ θ : 𝓞 K, tr θ = algebraMap F K (algebraMap (𝓞 F) F a)}
       add_mem' := by

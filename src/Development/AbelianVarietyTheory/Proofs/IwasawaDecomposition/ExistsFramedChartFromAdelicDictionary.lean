@@ -66,7 +66,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC GlobalTheory.Mem.Col2.TopCh GlobalTheory.Mem.ColAd Matrix
 open scoped TensorProduct
-attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -157,7 +156,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC GlobalTheory.Mem.Col2.TopCh GlobalTheory.Mem.ColAd Matrix
 open scoped TensorProduct
-attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -190,13 +188,13 @@ theorem exists_K1_isPtOf : ∀ (F E : Type) [Field F] [NumberField F] [Field E] 
       have ho := hoff P.1 (Or.inl P.2)
       rw [c3 _ ho.1 ho.2, ← hp.deco]
       simp only [decoRaw]
-      rw [if_pos (le_locP _ _ hv), e]
+      rw [ite_eq_left (le_locP _ _ hv), e]
       exact PtExist.hasRes_redA _ ((mem_globLat g v).1 hv i)
     · rw [← hN] at hv
       have ho := hoff P.1 (Or.inr P.2)
       rw [c3 _ ho.1 ho.2, ← hp.deco]
       simp only [decoRaw]
-      rw [if_pos (le_locP _ _ hv)]
+      rw [ite_eq_left (le_locP _ _ hv)]
       exact PtExist.hasRes_redA _ ((mem_globLat g v).1 hv i)
     · rw [c2 _ P.2, ptFr_of_mem p (hQ P.1 P.2).2.1 P.2]
       rfl
@@ -220,7 +218,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC GlobalTheory.Mem.Col2.TopCh GlobalTheory.Mem.ColAd Matrix
 open scoped TensorProduct
-attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.StepLevelShrink
 
@@ -268,24 +265,24 @@ theorem exists_stepLevel_shrink : ∀ (F E : Type) [Field F] [NumberField F] [Fi
       Uloc_le := by
         intro v
         by_cases hq : v ∈ Qv
-        · rw [if_pos hq]
+        · rw [ite_eq_left hq]
           rintro _ ⟨y, hy, rfl⟩
           exact S.Uloc_le v ((hSU y (hAU hy)).2 v)
-        · rw [if_neg hq]
+        · rw [ite_eq_right hq]
           exact S.Uloc_le v
       Uloc_lev := by
         intro v
         by_cases hq : v ∈ Qv
-        · rw [if_pos hq]
+        · rw [ite_eq_left hq]
           rintro _ ⟨y, hy, rfl⟩
           exact S.Uloc_lev v ((hSU y (hAU hy)).2 v)
-        · rw [if_neg hq]
+        · rw [ite_eq_right hq]
           exact S.Uloc_lev v
       Uloc_hyp := by
         intro v hv hT
         have hb : v ∉ bad := fun h => hv (Or.inl h)
         have hq : v ∉ Qv := fun h => hv (Or.inr (Finset.mem_coe.2 h))
-        simp only [if_neg hq]
+        simp only [ite_eq_right hq]
         exact S.Uloc_hyp v hb hT
       fM := S.fM
       fM_acg := S.fM_acg
@@ -298,7 +295,7 @@ theorem exists_stepLevel_shrink : ∀ (F E : Type) [Field F] [NumberField F] [Fi
       UlocAlt := by
         intro v h
         have hq : v ∉ Qv := fun hq => hQT v hq h
-        simp only [if_neg hq]
+        simp only [ite_eq_right hq]
         exact S.UlocAlt v h
       U := A
       U_eq := by
@@ -307,24 +304,24 @@ theorem exists_stepLevel_shrink : ∀ (F E : Type) [Field F] [NumberField F] [Fi
         · intro hx
           refine ⟨(hSU x (hAU hx)).1, fun v => ?_⟩
           by_cases hq : v ∈ Qv
-          · simp only [if_pos hq]
+          · simp only [ite_eq_left hq]
             exact ⟨x, hx, rfl⟩
-          · simp only [if_neg hq]
+          · simp only [ite_eq_right hq]
             exact (hSU x (hAU hx)).2 v
         · rintro ⟨hP, hv⟩
           have hxS : x ∈ S.U := by
             refine (S.U_eq x).2 ⟨hP, fun v => ?_⟩
             have h1 := hv v
             by_cases hq : v ∈ Qv
-            · simp only [if_pos hq] at h1
+            · simp only [ite_eq_left hq] at h1
               obtain ⟨y, hy, hyx⟩ := h1
               rw [← hyx]
               exact (hSU y (hAU hy)).2 v
-            · simp only [if_neg hq] at h1
+            · simp only [ite_eq_right hq] at h1
               exact h1
           refine hloc x hxS fun v hq => ?_
           have h1 := hv v
-          simp only [if_pos hq] at h1
+          simp only [ite_eq_left hq] at h1
           obtain ⟨y, hy, hyx⟩ := h1
           exact ⟨y, hy, hyx.symm⟩
       U_compact := by
@@ -360,7 +357,7 @@ theorem exists_stepLevel_shrink : ∀ (F E : Type) [Field F] [NumberField F] [Fi
           hψ x (fun v hv => hx v (Or.inr (Finset.mem_coe.2 hv))), one_mul] }
   refine ⟨L, rfl, rfl, fun v hv => by
     show (if v ∈ Qv then A.map (bc (prV (E := E) v)) else S.Uloc v) = S.Uloc v
-    exact if_neg hv, ?_⟩
+    exact ite_eq_right hv, ?_⟩
   intro x x' x'' h1 h2
   show S.chi (Subgroup.inclusion hAU x) * ψ x = S.chi x' * ψ x''
   have e1 : Subgroup.inclusion hAU x = x' := Subtype.ext h1
@@ -379,7 +376,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC GlobalTheory.Mem.Col2.TopCh GlobalTheory.Mem.ColAd Matrix
 open scoped TensorProduct
-attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto
@@ -395,7 +391,6 @@ noncomputable section
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC GlobalTheory.Mem.Col2.TopCh GlobalTheory.Mem.ColAd Matrix
 open scoped TensorProduct Topology
 
-attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 attribute [local instance] rlt_top rlt_topRing
 
 namespace GlobalTheory.Mem.Col2.TopCh
@@ -528,7 +523,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC GlobalTheory.Mem.Col2.TopCh GlobalTheory.Mem.ColAd Matrix
 open scoped TensorProduct
-attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.Mem.Col2.TopCh
 
@@ -577,7 +571,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC GlobalTheory.Mem.Col2.TopCh GlobalTheory.Mem.ColAd Matrix
 open scoped TensorProduct
-attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 

@@ -62,9 +62,7 @@ section -- clump:auto
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.ZH Classical
-attribute [local instance] SplitExt.free SplitExt.finite MvPolynomial.gradedAlgebra
 
 noncomputable section
 namespace GlobalTheory.ZH.IntegralSum
@@ -167,7 +165,7 @@ theorem exists_coef_secLin {R : Type} [CommRing R] [IsDomain R] (D : DegPre R) (
         (ht : ⊤ ≤ x ⁻¹ᵁ U) (a : Γ(X, U)ˣ) :
         toStkA z (valF x U a.val) = (gm x z U a).val := by
       have hz : x z ∈ U := ht trivial
-      rw [valF, dif_pos ht, gm, dif_pos hz]
+      rw [valF, dite_eq_left ht, gm, dite_eq_left hz]
       show ((Sp F).presheaf.germ ⊤ z trivial).hom ((Scheme.ΓSpecIso (CommRingCat.of F)).inv.hom
           ((Scheme.ΓSpecIso (CommRingCat.of F)).hom.hom _)) = _
       rw [Iso.hom_inv_id_apply]
@@ -199,9 +197,7 @@ section -- clump:auto
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.ZH Classical
-attribute [local instance] SplitExt.free SplitExt.finite MvPolynomial.gradedAlgebra
 
 noncomputable section
 namespace GlobalTheory.ZH.IntegralSum
@@ -313,9 +309,7 @@ section -- clump:auto
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.ZH Classical
-attribute [local instance] SplitExt.free SplitExt.finite MvPolynomial.gradedAlgebra
 
 end -- clump:auto
 end -- clump:auto

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.HyperspecialFixesAllChainVacuaAtInertPrime
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ReadingsExistRow
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnitaryOnTheta
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.NormalFam
@@ -108,24 +109,7 @@ theorem exists_nonSplit {P : Pl D.host.E} (hP : Formalism.DivisionValues.conjPl 
 theorem isHalf_of_mem {S T : HSp D} {LS : Set (Fin S.rank → D.host.E)} {LT : Set (Fin T.rank → D.host.E)}
     {v : HeightOneSpectrum (𝓞 D.host.F)} {ε : AF D.host.F} (hε : IsPlaceIdem D v ε) {u : WO S T}
     (hu : u ∈ latO S T LS LT fun w => w = v) : IsHalf (algebraMap (AF D.host.F) (AE D) ε) u := by
-  obtain ⟨β, rfl, h1, h0⟩ := hε
-  intro i j
-  induction hu using AddSubgroup.closure_induction with
-  | mem w hw =>
-    obtain ⟨α, hα, hP, a, ha, s, hs, t, ht, rfl⟩ := hw
-    have hβα : β * α = α := FiniteAdeleRing.ext _ fun w => by
-      change evalV D.host.F w (β * α) = evalV D.host.F w α
-      rw [map_mul]
-      by_cases hw : w = v
-      · subst hw; rw [h1, one_mul]
-      · rw [hP w hw, mul_zero]
-    change (pairA D.host.F 0 β ⊗ₜ[D.host.F] (1 : D.host.E)) * (_ ⊗ₜ _) = _ ⊗ₜ _
-    rw [Algebra.TensorProduct.tmul_mul_tmul, one_mul]
-    congr 1
-    exact Prod.ext (mul_zero _) hβα
-  | zero => exact mul_zero _
-  | add x x' _ _ h h' => rw [Matrix.add_apply, mul_add, h, h']
-  | neg x _ h => rw [Matrix.neg_apply, mul_neg, h]
+  first | exact _root_.GlobalTheory.VacFixInert.isHalf_of_mem' | exact @_root_.GlobalTheory.VacFixInert.isHalf_of_mem' | apply _root_.GlobalTheory.VacFixInert.isHalf_of_mem' <;> assumption
 
 theorem vacFix_of_unrPl (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (χS χT : (AE D)ˣ →* Circle)
     (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)) (P : Pl D.host.E) (hW : IsWeilDatumO ψ S T χS χT om)

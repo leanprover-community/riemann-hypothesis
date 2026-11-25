@@ -39,7 +39,7 @@ theorem sum_inner_change {E F ι κ : Type*} [NormedAddCommGroup E] [InnerProduc
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [Finset.sum_comm]
   simp only [← Finset.sum_mul, he, orthonormal_iff_ite.mp b.orthonormal, ite_mul, one_mul, zero_mul,
-    Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 theorem parseval_single {C' V' : Type*} [Fintype C'] [NormedAddCommGroup V']
     [InnerProductSpace ℂ V'] [FiniteDimensional ℂ V']

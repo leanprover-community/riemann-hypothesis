@@ -113,14 +113,4 @@ theorem rDSCoordAdj_of_p (hp : RDSPAdj) : RDSCoordAdj := by
   · rw [hcb]; exact C1.2
   · rw [hcbi]; exact C2.2
 
-section IpLin
-
-variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
-  [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] [FiniteDimensional ℂ Wp]
-  {π : Mx k r → (Wp →L[ℂ] Wp)} {π' : Mx k r → (Wq →L[ℂ] Wq)}
-
-open scoped Matrix.Norms.Elementwise
-
-end IpLin
-
 end Formalism.FourierDecayAlt.P.CutSE

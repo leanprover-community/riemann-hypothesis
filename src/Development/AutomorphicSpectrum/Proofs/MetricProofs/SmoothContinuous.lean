@@ -177,7 +177,7 @@ theorem clampT_le {T : ℝ} (t : ℝ) : clampT T t ≤ T := by
   · exact le_rfl
 
 theorem clampT_eq {T t : ℝ} (h0 : 0 < t) (h1 : t ≤ T) : clampT T t = t := by
-  unfold clampT; rw [if_pos ⟨h0, h1⟩]
+  unfold clampT; rw [ite_eq_left ⟨h0, h1⟩]
 
 def avgSys {e : ℕ} {σ : Type} (S : AnSys e σ) (c : S.X → S.X) (C T : ℝ)
     (hreg : ∀ a, IsRegFamily S.A S.Θ S.L S.s (S.th a) (S.ph a)
@@ -307,7 +307,7 @@ theorem conj_of_flagAn [Fintype Ψ] {M : FlagModel y Ψ N j} {n d : ℕ} {BM : B
   have hreg : ∀ a, ∃ C' t' : ℝ, IsRegFamily FA.S.A FA.S.Θ FA.S.L FA.S.s (FA.S.th a) (FA.S.ph a)
         (fun t y' => (FA.S.phT a t y' + FA.S.phT a t (c y')) / 2) C' t' ∧
       IsRegFamilyC2 FA.S.A FA.S.s (FA.S.ph a) fun t y' => (FA.S.phT a t y' + FA.S.phT a t (c y')) / 2 :=
-    fun a => _root_.GlobalTheory.CompanionTheory.Ar.PB.an_conj_symmetrise (d + 1) FA.S.X FA.S.A FA.S.Θ FA.S.L FA.S.s FA.S.nb FA.S.m FA.S.W FA.S.potL FA.S.sec
+    fun a => _root_.PositivityTheory.Xgp.t_an_conj (d + 1) FA.S.X FA.S.A FA.S.Θ FA.S.L FA.S.s FA.S.nb FA.S.m FA.S.W FA.S.potL FA.S.sec
       FA.S.snc FA.S.norm_le FA.S.potΘ FA.S.posΘ c hcont hinv hanal hcb hcr (FA.S.th a) (FA.S.ph a) (FA.S.phT a)
       FA.S.C FA.S.t₀ (FA.S.sing a).1 (hth a) (hphall a) (FA.S.reg a) (FA.S.c2 a)
   choose Cf tf hregf hc2f using hreg

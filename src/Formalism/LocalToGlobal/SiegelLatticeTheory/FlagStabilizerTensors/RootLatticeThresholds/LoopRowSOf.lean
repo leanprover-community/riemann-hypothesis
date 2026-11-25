@@ -44,8 +44,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions Form
 
 namespace Formalism.L2.SG.LoopsTies
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 structure ConcAt0 (D : D7) (T : TermTie D) where
   X : HidaSetting D
   Y : Full X
@@ -136,18 +134,6 @@ theorem loop_evaluation_threshold_zero (hLC : PN.LoopCores) (hSub : PB.SubFamily
 
 end TransportedAlt
 
-section Fam5
-
-variable {eps : ℝ} (Fm : FamP eps) (C1 : ℝ)
-  (X : ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, HidaSetting (Fm.D x i))
-  (Y : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), Full (X x hx i))
-  (hF : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), FinX (Y x hx i))
-  (hI : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), SIso (Fm.D x i).s (sOf (hF x hx i)))
-  (hCT : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), ConcTie (X x hx i) (Y x hx i))
-
-
-end Fam5
-
 end Formalism.L2.SG.LoopsTies
 end -- clump:auto
 end -- clump:auto
@@ -168,12 +154,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions Form
 
 namespace Formalism.L2.SG.LoopsTies
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-section ThrS
-
-end ThrS
-
 section Point
 
 variable {D : D7} (X : HidaSetting D) (Y : Full X) (hF : FinX Y) (hI : SIso D.s (sOf hF)) (hCT : ConcTie X Y)
@@ -187,8 +167,6 @@ theorem hOf : TieHyp (wOf X) hI :=
       (Formalism.MainNotions.BridgeLemma.tie_Tu_pos D u)
       (Formalism.L2.SG.Pf.WittFlags.RowRepsIso_holds D ((wOf X).δ u) ((wOf X).isom u) (X.Fu u) (Y.what₂ u) (Y.rowsOK u))
     pairs := Formalism.L2.SG.Pf.pairTiesAll_holds _ _ Y hF (wOf X) hI }
-
-def aOf : AmpDat X := Classical.choose (Formalism.L2.SG.Pf.KernelOfEmbedding.pvalForm_holds (wOf X) hI hCT.2.2.2.2.1)
 
 end Point
 
@@ -281,16 +259,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions Form
   Formalism.L2.SG.ThmSOwn
 
 namespace Formalism.L2.SG.LoopsTies
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-section SelQ
-
-variable {𝒞 : FamClass} (sel : SSel 𝒞)
-
-variable {eps : ℝ} (Fm : FamP eps) (hc : 𝒞 Fm)
-
-end SelQ
 
 section Closed
 

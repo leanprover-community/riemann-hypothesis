@@ -94,7 +94,7 @@ private theorem coeff_pr_X_X (i j : Fin 3) (hij : i ≠ j) (f : MvPowerSeries (F
   simp only [hprod, MvPowerSeries.coeff_monomial, smul_eq_mul, mul_ite, mul_one, mul_zero]
   split_ifs with h
   · rw [finsum_eq_single _ (Finsupp.single 0 (e i) + Finsupp.single 1 (e j)) (fun d hd => by
-      rw [if_neg]
+      rw [ite_eq_right]
       intro h'
       apply hd
       have hi := congrArg (fun f => f i) h'
@@ -106,10 +106,10 @@ private theorem coeff_pr_X_X (i j : Fin 3) (hij : i ≠ j) (f : MvPowerSeries (F
       · simp [hj])]
     have e0 : (Finsupp.single (0 : Fin 2) (e i) + Finsupp.single 1 (e j) : Fin 2 →₀ ℕ) 0 = e i := by simp
     have e1 : (Finsupp.single (0 : Fin 2) (e i) + Finsupp.single 1 (e j) : Fin 2 →₀ ℕ) 1 = e j := by simp
-    rw [if_pos (by rw [e0, e1]; exact h)]
+    rw [ite_eq_left (by rw [e0, e1]; exact h)]
   · rw [finsum_eq_zero_of_forall_eq_zero]
     intro d
-    rw [if_neg]
+    rw [ite_eq_right]
     intro h'
     apply h
     rw [h']
@@ -155,18 +155,18 @@ theorem mu_exists {S : Subring ℂ_[p]} {wq : PowerSeries ℂ_[p]} (hwq : ∀ n,
     have hidx : ∀ a b : ℕ, a = b → PowerSeries.coeff a (wser wq) = PowerSeries.coeff b (wser wq) :=
       fun a b h => by rw [h]
     by_cases h1 : e 1 = 0 <;> by_cases h2 : e 2 = 0
-    · rw [if_pos h1, if_pos h2, if_neg (by omega), if_neg (by omega), sub_self, sub_eq_zero]
+    · rw [ite_eq_left h1, ite_eq_left h2, ite_eq_right (by omega), ite_eq_right (by omega), sub_self, sub_eq_zero]
       apply hidx
       simp [h1, h2]
-    · rw [if_pos h1, if_neg h2, if_pos (by omega), if_neg (by omega), sub_zero, sub_zero]
+    · rw [ite_eq_left h1, ite_eq_right h2, ite_eq_left (by omega), ite_eq_right (by omega), sub_zero, sub_zero]
       apply hidx
       simp [Finsupp.tsub_apply, h1]
       omega
-    · rw [if_neg h1, if_pos h2, if_neg (by omega), if_pos (by omega), zero_sub, zero_sub, neg_inj]
+    · rw [ite_eq_right h1, ite_eq_left h2, ite_eq_right (by omega), ite_eq_left (by omega), zero_sub, zero_sub, neg_inj]
       apply hidx
       simp [Finsupp.tsub_apply, h2]
       omega
-    · rw [if_neg h1, if_neg h2, if_pos (by omega), if_pos (by omega), sub_self, eq_comm, sub_eq_zero]
+    · rw [ite_eq_right h1, ite_eq_right h2, ite_eq_left (by omega), ite_eq_left (by omega), sub_self, eq_comm, sub_eq_zero]
       apply hidx
       simp [Finsupp.tsub_apply]
       omega

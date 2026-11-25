@@ -100,8 +100,6 @@ theorem norm_le_one_iff (y : ↥B.LL.1) : ‖(y : Om l)‖ ≤ 1 ↔ ∃ n : O, 
   · rintro ⟨n, rfl⟩
     exact (B.eO n).2
 
-theorem toLL_inj : Function.Injective B.toLL := fun _ _ h => B.eO.injective (Subtype.ext h)
-
 theorem exists_frac (y : ↥B.LL.1) : ∃ n d : O, d ≠ 0 ∧ B.toLL d * y = B.toLL n := by
   by_cases h : ‖(y : Om l)‖ ≤ 1
   · obtain ⟨n, hn⟩ := (norm_le_one_iff B y).1 h

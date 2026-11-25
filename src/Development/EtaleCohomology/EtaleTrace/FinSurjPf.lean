@@ -6,7 +6,6 @@ public import Development.EtaleCohomology.EtaleTrace.LCoverCut
 
 noncomputable section
 open CategoryTheory Limits AlgebraicGeometry MvPolynomial
-attribute [local instance] MvPolynomial.gradedAlgebra
 
 namespace LateralTheory.EtaleTrace.Cov
 

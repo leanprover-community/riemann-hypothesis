@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.Saturated
 import Mathlib.Tactic.Linter.Style
 
@@ -349,11 +350,7 @@ theorem isotropicSpan_orthogonal_anisotropicVector (F : LFlag S r T) : F.fl.z �
   exact hT_span_left (by rintro _ ⟨a, rfl⟩; exact F.fl.z_orth a)
 
 theorem X_le_orth_sat (F : LFlag S r T) : Xsp F ≤ orth S (Xsp F) := by
-  intro v hv
-  rw [mem_orth']
-  refine hT_span_left ?_
-  rintro _ ⟨a, rfl⟩
-  exact hT_span_right (fun x hx => by obtain ⟨b, rfl⟩ := hx; exact F.fl.e_iso a b) v hv
+  apply _root_.Formalism.MainNotions.LatticeGluingRadicals.c_X_iso <;> assumption
 
 theorem frame_last_sat (F : LFlag S r T) : frame F (Fin.last r) = F.fl.z := by
   simp [frame, FlagG.fvec]
@@ -1080,12 +1077,6 @@ theorem automorphism_induces_lattice_map (u : D.what₂.Word) (F0 : FlagG (VS D)
 
 end D7
 
-section D7
-
-variable {D : D7}
-
-end D7
-
 section Int
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ} {T T' : E}
@@ -1197,11 +1188,5 @@ theorem eq_of_locP {A B : Submodule (𝓞 E) S.V}
   exact le_antisymm (key A B h) (key B A fun P => (h P).symm)
 
 end Int
-
-section D7
-
-variable (D : D7)
-
-end D7
 
 end Formalism.L2.SG.Pf

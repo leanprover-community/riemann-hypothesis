@@ -38,16 +38,7 @@ private theorem bijective_of_bijective_smul_transport {X X' Y Y' : Type*}
     (eX : X ≃ X') (eY : Y ≃+ Y') (c : ZMod n) (hc : IsUnit c)
     (hbij : Function.Bijective F) (hF' : ∀ x y, F' (eX x) (eY y) = c * F x y) :
     Function.Bijective F' := by
-  have hF : Function.Bijective fun x => c • F x := by
-    refine ⟨fun x x' h => hbij.1 (AddMonoidHom.ext fun y => ?_), fun χ => ?_⟩
-    · have e := DFunLike.congr_fun h y
-      simp only [AddMonoidHom.smul_apply, smul_eq_mul] at e
-      exact hc.mul_left_cancel e
-    · obtain ⟨x, hx⟩ := hbij.2 ((hc.unit⁻¹ : (ZMod n)ˣ) • χ)
-      refine ⟨x, AddMonoidHom.ext fun y => ?_⟩
-      have e := DFunLike.congr_fun hx y
-      simp only [AddMonoidHom.smul_apply, smul_eq_mul, Units.smul_def] at e ⊢
-      rw [e, ← mul_assoc, IsUnit.mul_val_inv, one_mul]
+  have hF : Function.Bijective fun x => c • F x := hc.smul_bijective.comp hbij
   refine bijective_of_bijective_comp hF eX.symm.bijective (γ := eY.symm.toAddMonoidHom) eY.symm.bijective
     fun x' y' => ?_
   simpa only [Equiv.apply_symm_apply, AddEquiv.apply_symm_apply, AddEquiv.coe_toAddMonoidHom,

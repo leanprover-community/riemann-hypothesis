@@ -51,7 +51,6 @@ theorem Nm_le_Sc (P : ParameterChoice' D L) : (5 : ℝ) ≤ (D.R.k : ℝ) ∧ (D
   have hND : (D.R.N D.R.m : ℝ) ≤ (D.s.Del : ℝ) := by
     have := mul_le_mul_of_nonneg_left hm10 hN0
     linarith
-  have hD : (5 : ℝ) ≤ (D.s.Del : ℝ) := by linarith
   have hkD : 5 * (D.s.Del : ℝ) ≤ (D.R.k : ℝ) * (D.s.Del : ℝ) := mul_le_mul_of_nonneg_right hk (by linarith)
   refine ⟨hk, ?_, ?_⟩ <;> rw [L.Sc_eq] <;> nlinarith
 
@@ -132,7 +131,7 @@ def MeanEx (X : Inst D L) (K : Consts) : Prop :=
 
 theorem inWin_sizeData (L : SizeData₂ D) : InWin L (aL L) (bL L) := by
   intro t ht
-  simp only [aL, bL, dif_pos ht]
+  simp only [aL, bL, dite_eq_left ht]
   exact ⟨(L.aT_win _).1, (L.aT_win _).2, L.bT_ge _⟩
 
 def AdmFam {eps : ℝ} (Fm : FamP eps) (K : Consts) (X : ∀ x (i : Fm.Ix x), Inst (Fm.D x i) (Fm.L x i))

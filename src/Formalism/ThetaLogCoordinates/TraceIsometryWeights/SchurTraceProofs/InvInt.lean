@@ -48,13 +48,13 @@ theorem Om_eq_pow (E : ι → ι → Module.End K W) (S : Finset ι) (z : ι) (q
 theorem GlRel.commF {E : ι → ι → Module.End K W} (h : GlRel E) {z i j : ι} (hi : i ≠ z) (hj : j ≠ z) :
     Commute (E z i) (E z j) := by
   have := h z i z j
-  simp only [hi, hj, if_false, sub_self] at this
+  simp only [hi, hj, ite_false, sub_self] at this
   exact sub_eq_zero.mp this
 
 theorem GlRel.commE {E : ι → ι → Module.End K W} (h : GlRel E) {z i j : ι} (hi : i ≠ z) (hj : j ≠ z) :
     Commute (E i z) (E j z) := by
   have := h i z j z
-  simp only [Ne.symm hi, Ne.symm hj, if_false, sub_self] at this
+  simp only [Ne.symm hi, Ne.symm hj, ite_false, sub_self] at this
   exact sub_eq_zero.mp this
 
 theorem Om_insert {E : ι → ι → Module.End K W} (h : GlRel E) {S : Finset ι} {z i : ι} (hz : z ∉ insert i S)

@@ -45,9 +45,9 @@ theorem cas_shift (S : Finset P) (s : ℂ) (f : TV n ℂ P) :
       tE S 0 i j (tE S 0 j i f) - if i = j then (s • tE S 0 i i f + s • tE S 0 i i f - (s * s) • f) else 0 := by
     intro i j
     by_cases h : i = j
-    · subst h; simp only [if_true, map_sub, map_smul, smul_sub, smul_smul]; abel
-    · rw [if_neg h, if_neg (Ne.symm h), if_neg h]; simp
-  simp only [h1, Finset.sum_sub_distrib, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    · subst h; simp only [ite_true, map_sub, map_smul, smul_sub, smul_smul]; abel
+    · rw [ite_eq_right h, ite_eq_right (Ne.symm h), ite_eq_right h]; simp
+  simp only [h1, Finset.sum_sub_distrib, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   rw [Finset.sum_add_distrib, ← Finset.smul_sum, tE_diag_sum]
   simp only [LinearMap.sum_apply, Module.End.mul_apply, Finset.sum_const, Finset.card_univ, Fintype.card_fin]
   module

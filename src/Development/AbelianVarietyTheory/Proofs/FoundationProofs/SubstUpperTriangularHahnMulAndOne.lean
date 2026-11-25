@@ -72,12 +72,8 @@ theorem exp_mem_range_of_isAlgClosed (x : ℚ) :
   haveI : NeZero x.den := ⟨x.den_nz⟩
   obtain ⟨ζ, hζ⟩ := HasEnoughRootsOfUnity.exists_primitiveRoot Ω x.den
   have hζ' := hζ.map_of_injective ε.injective
-  have hw : Complex.exp (2 * Real.pi * Complex.I * (x : ℂ)) ^ x.den = 1 := by
-    rw [← Complex.exp_nat_mul]
-    have hx : (x : ℂ) * (x.den : ℂ) = (x.num : ℂ) := by exact_mod_cast Rat.mul_den_eq_num x
-    have : (x.den : ℂ) * (2 * Real.pi * Complex.I * (x : ℂ)) = (x.num : ℂ) * (2 * Real.pi * Complex.I) := by
-      rw [← hx]; ring
-    rw [this]; exact Complex.exp_int_mul_two_pi_mul_I _
+  have hw : Complex.exp (2 * Real.pi * Complex.I * (x : ℂ)) ^ x.den = 1 :=
+    (Complex.isPrimitiveRoot_exp_rat x).pow_eq_one
   obtain ⟨i, -, hi⟩ := hζ'.eq_pow_of_pow_eq_one hw
   exact ⟨ζ ^ i, by rw [map_pow]; exact hi⟩
 
@@ -99,25 +95,19 @@ section Coeff
 
 variable {R : Type*} [CommRing R]
 
-alias cm_coeff := _root_.GlobalTheory.CyclotomicQExpansion.Api.coeff_cm
-
-theorem cm_mul (c : ℚ → R) (hc : ∀ r s, c (r + s) = c r * c s) (φ ψ : HahnSeries ℚ R) :
-    cm c (φ * ψ) = cm c φ * cm c ψ := by
-  apply GlobalTheory.UlCusp.cm_mul_of_char <;> assumption
-
 theorem cm_one (c : ℚ → R) (hc : c 0 = 1) : cm c (1 : HahnSeries ℚ R) = 1 := by
   ext r
-  rw [cm_coeff, HahnSeries.coeff_one]
+  rw [GlobalTheory.CyclotomicQExpansion.Api.coeff_cm, HahnSeries.coeff_one]
   split_ifs with h
   · subst h; rw [hc, mul_one]
   · rw [mul_zero]
 
 theorem scale_mul {a : ℚ} (ha : 0 < a) (φ ψ : HahnSeries ℚ R) : scale a (φ * ψ) = scale a φ * scale a ψ := by
-  simp only [scale, dif_pos ha]
+  simp only [scale, dite_eq_left ha]
   exact HahnSeries.embDomain_mul _ (fun x y => by simp [mul_add]) φ ψ
 
 theorem scale_one {a : ℚ} (ha : 0 < a) : scale a (1 : HahnSeries ℚ R) = 1 := by
-  simp only [scale, dif_pos ha]
+  simp only [scale, dite_eq_left ha]
   exact HahnSeries.embDomain_one _ (by simp)
 
 end Coeff
@@ -130,7 +120,7 @@ theorem sub_mul_and_one : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClos
     intro r s; rw [← eOm_add]; congr 1; ring
   have h0 : eOm ε (0 * b / d) = 1 := by rw [zero_mul, zero_div, eOm_zero]
   refine ⟨?_, ?_⟩
-  · simp only [sub]; rw [cm_mul _ hc, scale_mul h]
+  · simp only [sub]; rw [GlobalTheory.UlCusp.cm_mul_of_char _ hc, scale_mul h]
   · simp only [sub]; rw [cm_one _ h0, scale_one h]
 
 end GlobalTheory.CyclotomicQExpansion

@@ -434,7 +434,7 @@ theorem index_sqSub_real_dvd_two {F : Type} [Field F] (σ : F →+* ℝ) : (sqSu
   by_cases h : ∀ x : Fˣ, x ∈ sqSub σ
   · rw [show sqSub σ = ⊤ from eq_top_iff.mpr fun x _ => h x, Subgroup.index_top]
     exact one_dvd 2
-  · push_neg at h
+  · push Not at h
     obtain ⟨a, ha⟩ := h
     have hne : ∀ x : Fˣ, σ (x : F) ≠ 0 := fun x => (x.isUnit.map σ).ne_zero
     have hmem : ∀ x : Fˣ, x ∈ sqSub σ ↔ 0 ≤ σ (x : F) := fun x =>

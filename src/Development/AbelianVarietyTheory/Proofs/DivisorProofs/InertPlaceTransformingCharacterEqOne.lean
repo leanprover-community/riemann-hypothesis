@@ -94,7 +94,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels MeasureTheory GlobalTheory.LatVac GlobalTheory.InertLagChar
 open scoped TensorProduct Matrix GlobalTheory.VacAny
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 namespace GlobalTheory.InertLagInd
@@ -181,9 +180,9 @@ theorem diagW_box_indicator : ∀ (F : Type) [Field F] [NumberField F] (v : Pl (
       simp
     · rw [Set.indicator_of_notMem (fun h => hw2 (Set.mem_prod.1 h).2)]
       obtain ⟨i, hi⟩ : ∃ i, w.2 i ∉ v.adicCompletionIntegers F := by
-        by_contra h; push_neg at h; exact hw2 ((hmem _).2 h)
+        by_contra h; push Not at h; exact hw2 ((hmem _).2 h)
       obtain ⟨y, hy, hne⟩ : ∃ y ∈ v.adicCompletionIntegers F, psiLoc ψ v (w.2 i * y) ≠ 1 := by
-        by_contra h; push_neg at h; exact hi ((hψ _).1 h)
+        by_contra h; push Not at h; exact hi ((hψ _).1 h)
       have ha : Pi.single i y ∈ S := (hmem _).2 fun k => by
         rw [Pi.single_apply]; split_ifs
         · exact hy
@@ -227,7 +226,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels MeasureTheory GlobalTheory.LatVac GlobalTheory.InertVacLag GlobalTheory.InertLagChar
 open scoped TensorProduct Matrix GlobalTheory.VacAny
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 noncomputable section
 namespace GlobalTheory.InertLagChar
 
@@ -361,7 +359,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels MeasureTheory GlobalTheory.LatVac GlobalTheory.InertVacLag GlobalTheory.InertLagChar
 open scoped TensorProduct Matrix GlobalTheory.VacAny
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 
@@ -471,8 +468,7 @@ theorem exists_scalar_inv_at : ∀ (F E : Type) [Field F] [NumberField F] [Field
     · exact_mod_cast sub_eq_zero.1 h
     · exact absurd h (mul_ne_zero two_ne_zero hξ0)
   obtain ⟨m, hm⟩ : ∃ m : ℕ, ¬ gv.charpoly.IsRoot (ι (lam m)) := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact Set.infinite_range_of_injective (hι.comp hlam) (hfin.subset (by rintro _ ⟨m, rfl⟩; exact hcon m))
   set l := lam m with hl
   have hl1 : l ≠ 1 := by
@@ -575,7 +571,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels MeasureTheory GlobalTheory.LatVac GlobalTheory.InertVacLag GlobalTheory.InertLagChar
 open scoped TensorProduct Matrix GlobalTheory.VacAny
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.NormAtPlace
 
@@ -618,7 +613,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels MeasureTheory GlobalTheory.LatVac GlobalTheory.InertVacLag GlobalTheory.InertLagChar
 open scoped TensorProduct Matrix GlobalTheory.VacAny
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 
@@ -794,7 +788,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels MeasureTheory GlobalTheory.LatVac GlobalTheory.InertVacLag GlobalTheory.InertLagChar
 open scoped TensorProduct Matrix GlobalTheory.VacAny
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 theorem GlobalTheory.integral_indicator_preimage_injective_ne_zero : ∀ (F : Type) [Field F] [NumberField F] (v : Pl (F := F)) (κ : Type) [Fintype κ],
     ∀ (N : ℕ) (ν : @Measure (Fin N → Fv F v) (borel _)), @Measure.IsAddHaarMeasure _ _ _ (borel _) ν →
@@ -838,7 +831,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels MeasureTheory GlobalTheory.LatVac GlobalTheory.InertVacLag GlobalTheory.InertLagChar
 open scoped TensorProduct Matrix GlobalTheory.VacAny
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 namespace GlobalTheory.LagIntTransl
@@ -909,7 +901,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels MeasureTheory GlobalTheory.LatVac GlobalTheory.InertVacLag GlobalTheory.InertLagChar
 open scoped TensorProduct Matrix GlobalTheory.VacAny
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 theorem _root_.GlobalTheory.T.isotropicIntegral_invariant_heisenberg_first_vars : ∀ (F : Type) [Field F] [NumberField F] (v : Pl (F := F)) (κ : Type) [Fintype κ] (ψ : AddChar (Fv F v) ℂ) (μ : @Measure (κ → Fv F v) (borel _)), @Measure.IsAddHaarMeasure _ _ _ (borel _) μ →
     ∀ (N : ℕ) (ν : @Measure (Fin N → Fv F v) (borel _)), @Measure.IsAddHaarMeasure _ _ _ (borel _) ν →
@@ -928,7 +919,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels MeasureTheory GlobalTheory.LatVac GlobalTheory.InertVacLag GlobalTheory.InertLagChar
 open scoped TensorProduct Matrix GlobalTheory.VacAny
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 
@@ -1129,7 +1119,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels MeasureTheory GlobalTheory.LatVac GlobalTheory.InertVacLag GlobalTheory.InertLagChar
 open scoped TensorProduct Matrix GlobalTheory.VacAny
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 namespace GlobalTheory.InertLagChar.LinForm
 
 theorem hasCompactSupport_comp_of_leftInverse {X Y M : Type} [TopologicalSpace X] [TopologicalSpace Y] [T2Space X]
@@ -1224,7 +1213,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels MeasureTheory GlobalTheory.LatVac GlobalTheory.InertVacLag GlobalTheory.InertLagChar
 open scoped TensorProduct Matrix GlobalTheory.VacAny
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.BoxAct
 
@@ -1291,7 +1279,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels MeasureTheory GlobalTheory.LatVac GlobalTheory.InertVacLag GlobalTheory.InertLagChar
 open scoped TensorProduct Matrix GlobalTheory.VacAny
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 theorem _root_.GlobalTheory.T.localProduct_acts_of_adelicProduct_acts_first : ∀ (F : Type) [Field F] [NumberField F] (v : Pl (F := F)) (κ κ' : Type) [Fintype κ] [Fintype κ']
     (T : ((κ → AF F) → ℂ) → (κ → AF F) → ℂ) (Td : ((κ ⊕ κ' → AF F) → ℂ) → (κ ⊕ κ' → AF F) → ℂ),
@@ -1310,12 +1297,7 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels MeasureTheory GlobalTheory.LatVac GlobalTheory.InertVacLag GlobalTheory.InertLagChar
 open scoped TensorProduct Matrix GlobalTheory.VacAny
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-theorem _root_.GlobalTheory.T.normalizedAbsDet_mul_integral_comp_mulVec_finitePlace : ∀ (F : Type) [Field F] [NumberField F] (v : Pl (F := F)) (N : ℕ) (ν : @Measure (Fin N → Fv F v) (borel _)),
-    @Measure.IsAddHaarMeasure _ _ _ (borel _) ν → ∀ (T : GL (Fin N) (Fv F v)) (f : (Fin N → Fv F v) → ℂ),
-      ((GlobalTheory.SplitWeil.nabs (Fv F v) (Matrix.GeneralLinearGroup.det T) : ℝ) : ℂ) * ∫ y, f (T.val *ᵥ y) ∂ν = ∫ y, f y ∂ν := by
-  first | exact @GlobalTheory.InertLagChar.nabs_det_mul_integral_comp_mulVec
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormalizedAbsDetMulIntegralCompMulVecFinitePlaceStatement =====
@@ -1327,7 +1309,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels MeasureTheory GlobalTheory.LatVac GlobalTheory.InertVacLag GlobalTheory.InertLagChar
 open scoped TensorProduct Matrix GlobalTheory.VacAny
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.InertLagLevi
 
@@ -1456,7 +1437,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels MeasureTheory GlobalTheory.LatVac GlobalTheory.InertVacLag GlobalTheory.InertLagChar
 open scoped TensorProduct Matrix GlobalTheory.VacAny
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 theorem _root_.GlobalTheory.T.siegelParabolic_leviInverse_quotient_det_norm : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (n : ℕ) (J : Matrix (Fin n) (Fin n) E), J.det ≠ 0 →
     ∀ (v : Pl (F := F)) (p : UG (cA σ) (dbl (incM F J))) (t : GL (Fin n) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E))), At (evFin F v) ((p.1.1 : Matrix (Fin n ⊕ Fin n) (Fin n ⊕ Fin n) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E))) - 1) →
@@ -1476,15 +1456,9 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels MeasureTheory GlobalTheory.LatVac GlobalTheory.InertVacLag GlobalTheory.InertLagChar
 open scoped TensorProduct Matrix GlobalTheory.VacAny
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 namespace GlobalTheory.InertLagChar
-
-theorem box_mem_SB {k : Type} [CommRing k] [TopologicalSpace k] [T2Space k] {κ κ' : Type}
-    {φ₁ : (κ → k) → ℂ} {φ₂ : (κ' → k) → ℂ} (h₁ : φ₁ ∈ SB (κ → k)) (h₂ : φ₂ ∈ SB (κ' → k)) :
-    boxFun φ₁ φ₂ ∈ SB (κ ⊕ κ' → k) := by
-  apply _root_.GlobalTheory.BoxSpan.boxFun_mem_SB' <;> assumption
 
 def boxL {k κ κ' : Type} [CommRing k] (φ₂ : (κ' → k) → ℂ) : ((κ → k) → ℂ) →ₗ[ℂ] ((κ ⊕ κ' → k) → ℂ) where
   toFun φ := boxFun φ φ₂
@@ -1530,7 +1504,7 @@ theorem Scales.unique {κ : Type} [Fintype κ] {v : Pl (F := F)} {Λ : ((κ → 
     {Φ : (κ → Fv F v) → ℂ} (hΦ : Φ ∈ SB (κ → Fv F v)) (h0 : Λ Φ ≠ 0) : a = a' := by
   obtain ⟨Φ₁, -, hA₁, e₁⟩ := h Φ hΦ
   obtain ⟨Φ₂, -, hA₂, e₂⟩ := h' Φ hΦ
-  have e : Φ₁ = Φ₂ := GlobalTheory.T.eq_of_componentTensorAdelicFunction_eq v Φ Φ₁ Φ₂ hΦ fun r hr => (hA₁ r hr).symm.trans (hA₂ r hr)
+  have e : Φ₁ = Φ₂ := GlobalTheory.TensUniq.eq_of_tens_eq v Φ Φ₁ Φ₂ hΦ fun r hr => (hA₁ r hr).symm.trans (hA₂ r hr)
   rw [e, e₂] at e₁
   exact (mul_right_cancel₀ h0 e₁).symm
 
@@ -1565,7 +1539,7 @@ theorem scales_of_box {κ : Type} [Fintype κ] {v : Pl (F := F)} (ψ : AddChar (
     simp only [tens, h1, evFin_liftV]
     field_simp
   have key := _root_.GlobalTheory.BoxSpan.boxSpan_ker F v κ κ ψ hψ hψ1 (Λ ∘ₗ S - a • Λ) (fun φ₁ h₁ φ₂ h₂ => by
-    obtain ⟨Φ₁, -, hA⟩ := hex _ (box_mem_SB h₁ h₂)
+    obtain ⟨Φ₁, -, hA⟩ := hex _ (GlobalTheory.BoxSpan.boxFun_mem_SB' h₁ h₂)
     simp only [LinearMap.sub_apply, LinearMap.smul_apply, smul_eq_mul, LinearMap.comp_apply]
     rw [← hS _ (_root_.GlobalTheory.BoxSpan.boxFun_mem_SB' h₁ h₂) Φ₁ hA, hbox φ₁ h₁ φ₂ h₂ Φ₁ hA, sub_self])
   intro Φ hΦ
@@ -1601,7 +1575,7 @@ theorem char_eq_one : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numb
     haveI : BorelSpace (Fin N → Fv F v) := ⟨rfl⟩
     exact ⟨Measure.addHaar, inferInstance⟩
   obtain ⟨φ₀, hφ₀, c₁, hc₁, U, hUo, hUc, hU0, hU⟩ := _root_.GlobalTheory.InertLagInd.diagW_box_indicator F v _ B.ψ hunr h2 μ hμ
-  have hSB := _root_.GlobalTheory.DiagWSB.diagW_mem_SB F v _ _ hψc hψ1 μ hμ _ (box_mem_SB hφ₀ hφ₀) c₁ hc₁ U hUo hUc hU0 hU
+  have hSB := _root_.GlobalTheory.DiagWSB.diagW_mem_SB F v _ _ hψc hψ1 μ hμ _ (GlobalTheory.BoxSpan.boxFun_mem_SB' hφ₀ hφ₀) c₁ hc₁ U hUo hUc hU0 hU
   obtain ⟨Λ, hΛ⟩ := _root_.GlobalTheory.InertLagChar.lagInt_linForm F v _ _ hψc μ hμ N ν hν j hj hSB
   have hΛ0 : Λ (boxFun φ₀ φ₀) ≠ 0 := by
     rw [hΛ _ (_root_.GlobalTheory.BoxSpan.boxFun_mem_SB' hφ₀ hφ₀), lagInt]
@@ -1625,9 +1599,9 @@ theorem char_eq_one : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numb
       rw [smul_smul, ← smul_eq_mul, at_liftV v _ t ht, zero_smul])
     have hu' : u = ζ y * Cᵀ := by rw [hy, Matrix.smul_mul, ← hz, smul_of_at hu]
     have hA' := GlobalTheory.VacBridge.rho_acts_locCo G.M'.co B.ψ v u hu φ
-    have e : φ₁ = _ := GlobalTheory.T.eq_of_componentTensorAdelicFunction_eq v φ _ _ hφ fun r hr => (hA r hr).symm.trans (hA' r hr)
+    have e : φ₁ = _ := GlobalTheory.TensUniq.eq_of_tens_eq v φ _ _ hφ fun r hr => (hA r hr).symm.trans (hA' r hr)
     show Λ (boxFun φ₁ φ₂) = Λ (boxFun φ φ₂)
-    rw [hΛ _ (box_mem_SB hφ₁ hφ₂), hΛ _ (box_mem_SB hφ hφ₂), e, hu', (hζ y).2]
+    rw [hΛ _ (GlobalTheory.BoxSpan.boxFun_mem_SB' hφ₁ hφ₂), hΛ _ (GlobalTheory.BoxSpan.boxFun_mem_SB' hφ hφ₂), e, hu', (hζ y).2]
     exact GlobalTheory.T.isotropicIntegral_invariant_heisenberg_first_vars F v _ _ μ hμ N ν hν j hiso y φ φ₂
   obtain ⟨φt, hφt, hline⟩ := _root_.GlobalTheory.InertLagUniq.exists_test F E σ a' (a + a') G.V' G.W G.M' B.ψ v hunr m C hC
   have hlt : l φt ≠ 0 := fun h => by
@@ -1694,7 +1668,7 @@ theorem char_eq_one : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numb
     have hexp : ((Fintype.card (Fin (a + a')) : ℝ) / 2) = (m : ℝ) := by
       rw [Fintype.card_fin, hdm]; push_cast; ring
     rw [hχ, hmod, hexp, Real.rpow_natCast, ← hpow, ← hdT, Circle.coe_one, one_mul] at hpt'
-    rw [hΛ _ hΦ₁, hΛ _ hΦ, one_mul, lagInt, lagInt, ← GlobalTheory.T.normalizedAbsDet_mul_integral_comp_mulVec_finitePlace F v N ν hν T (fun y => diagW (psiAt B.ψ v) μ Φ (j y)),
+    rw [hΛ _ hΦ₁, hΛ _ hΦ, one_mul, lagInt, lagInt, ← GlobalTheory.InertLagChar.nabs_det_mul_integral_comp_mulVec F v N ν hν T (fun y => diagW (psiAt B.ψ v) μ Φ (j y)),
       ← integral_const_mul]
     refine congrArg _ (funext fun y => ?_)
     set_option backward.isDefEq.respectTransparency false in

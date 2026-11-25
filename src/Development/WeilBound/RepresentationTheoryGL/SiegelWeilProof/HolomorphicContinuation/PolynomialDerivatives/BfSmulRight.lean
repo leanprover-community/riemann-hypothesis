@@ -123,18 +123,18 @@ theorem gf_X_mul (k : τ) (p q : MvPolynomial τ ℂ) : gf w (X k * p) q = κ * 
   · rw [X, monomial_mul, one_mul, pderiv_monomial, gf_monomial, gf_monomial]
     by_cases h : Finsupp.single k 1 + s = t
     · subst h
-      rw [if_pos rfl, if_pos (add_tsub_cancel_left _ _).symm, hw]
+      rw [ite_eq_left rfl, ite_eq_left (add_tsub_cancel_left _ _).symm, hw]
       simp only [Finsupp.add_apply, Finsupp.single_eq_same]
       push_cast; ring
-    · rw [if_neg h]
+    · rw [ite_eq_right h]
       by_cases h' : s = t - Finsupp.single k 1
-      · rw [if_pos h']
+      · rw [ite_eq_left h']
         have : t k = 0 := by
           by_contra h0
           apply h
           rw [h', add_tsub_cancel_of_le (Finsupp.single_le_iff.mpr (Nat.one_le_iff_ne_zero.mpr h0))]
         simp [this]
-      · rw [if_neg h']; ring
+      · rw [ite_eq_right h']; ring
   · rw [mul_add, gf_add_left, gf_add_left, h1, h2, mul_add]
   · rw [gf_add_right, map_add (f := _), gf_add_right, h1, h2, mul_add]
 
@@ -144,20 +144,20 @@ theorem gf_pderiv (k : τ) (p q : MvPolynomial τ ℂ) : κ * gf w (pderiv k p) 
   · rw [X, monomial_mul, one_mul, pderiv_monomial, gf_monomial, gf_monomial]
     by_cases h : s = Finsupp.single k 1 + t
     · subst h
-      rw [if_pos rfl, if_pos (add_tsub_cancel_left _ _), hw, add_tsub_cancel_left]
+      rw [ite_eq_left rfl, ite_eq_left (add_tsub_cancel_left _ _), hw, add_tsub_cancel_left]
       simp only [Finsupp.add_apply, Finsupp.single_eq_same, star_mul]
       push_cast
       simp only [Complex.star_def, Complex.conj_natCast, map_add (f := _), map_one]
       ring
-    · rw [if_neg h]
+    · rw [ite_eq_right h]
       by_cases h' : s - Finsupp.single k 1 = t
-      · rw [if_pos h']
+      · rw [ite_eq_left h']
         have : s k = 0 := by
           by_contra h0
           apply h
           rw [← h', add_tsub_cancel_of_le (Finsupp.single_le_iff.mpr (Nat.one_le_iff_ne_zero.mpr h0))]
         simp [this]
-      · rw [if_neg h']; ring
+      · rw [ite_eq_right h']; ring
   · rw [map_add (f := _), gf_add_left, gf_add_left, ← h1, ← h2, mul_add]
   · rw [gf_add_right, mul_add, mul_add, gf_add_right, h1, h2]
 
@@ -190,12 +190,6 @@ theorem gf_pos (hs : ∀ s, star (w s) = w s) (hp : ∀ s, 0 < (w s).re) (p : Mv
   refine Finset.sum_pos' (fun t _ => ?_) ⟨s, hmem, ?_⟩
   · rw [key]; exact mul_nonneg (Complex.normSq_nonneg _) (hp t).le
   · rw [key]; exact mul_pos (Complex.normSq_pos.mpr hs0) (hp s)
-
-omit [Fintype τ] in
-theorem pderiv_X' (v u : τ) : pderiv v (X u : MvPolynomial τ ℂ) = if v = u then 1 else 0 := by
-  rw [pderiv_X]; by_cases h : v = u
-  · subst h; simp
-  · simp [Ne.symm h, h]
 
 theorem der_expand (D : Derivation ℂ (MvPolynomial τ ℂ) (MvPolynomial τ ℂ)) (p : MvPolynomial τ ℂ) :
     D p = ∑ v, D (X v) * pderiv v p := by
@@ -241,12 +235,6 @@ theorem bf_eq (w : (τ →₀ ℕ) → ℂ) (S : Finset (τ →₀ ℕ)) {p q : 
     (hq : q.support ⊆ S) : bf w p q = ∑ s ∈ S, p.coeff s * q.coeff s * w s := by
   rw [bf_eq_gf, gf_eq w S ((support_map_subset (starRingEnd ℂ) p).trans hp) hq]
   simp only [coeff_map, ← Complex.star_def, star_star]
-
-theorem bf_add_left (w : (τ →₀ ℕ) → ℂ) (p p' q : MvPolynomial τ ℂ) : bf w (p + p') q = bf w p q + bf w p' q := by
-  rw [bf_eq_gf, map_add, gf_add_left, ← bf_eq_gf, ← bf_eq_gf]
-
-theorem bf_add_right (w : (τ →₀ ℕ) → ℂ) (p q q' : MvPolynomial τ ℂ) : bf w p (q + q') = bf w p q + bf w p q' := by
-  rw [bf_eq_gf, gf_add_right, ← bf_eq_gf, ← bf_eq_gf]
 
 theorem bf_monomial (w : (τ →₀ ℕ) → ℂ) (s t : τ →₀ ℕ) (a b : ℂ) :
     bf w (monomial s a) (monomial t b) = if s = t then a * b * w s else 0 := by

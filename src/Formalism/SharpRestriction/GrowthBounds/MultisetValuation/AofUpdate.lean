@@ -194,15 +194,15 @@ theorem ZL_bound {Y : Pend X} (hfr : IsFractionRing X.G.O X.G.Kf) (hL : LinD X) 
         · by_cases hi : i0 v = 0
           · left
             refine ⟨hi, Or.inr ?_⟩
-            simp only [hgQ, hv, hi, and_self, if_true]
+            simp only [hgQ, hv, hi, and_self, ite_true]
             linarith [h1 v hv]
           · right
             refine ⟨by omega, hr v, ?_⟩
-            simp only [hgQ, hv, hi, and_false, if_false, sub_zero]
+            simp only [hgQ, hv, hi, and_false, ite_false, sub_zero]
             exact h1 v hv
         · left
           refine ⟨h0 v hv, Or.inl ?_⟩
-          simp only [hgQ, hv, false_and, if_false, sub_zero]
+          simp only [hgQ, hv, false_and, ite_false, sub_zero]
           exact h2 v hv
       have hTt := form_of_place hF hE j hj i0 vs gQ hnd hr h0 hP G' hG'
       have hsum : ∑ v, gQ v = ∑ v, gP v - Aof X i0 vs := by

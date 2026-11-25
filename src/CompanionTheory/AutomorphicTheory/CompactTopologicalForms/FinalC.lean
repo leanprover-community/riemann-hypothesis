@@ -117,17 +117,6 @@ end
 
 end Formalism.FourierDecayAlt.P.CutBP.CompactFormNormalFormDomination
 
-namespace Formalism.FourierDecayAlt.P.CutBPEq.CompactFormNormalFormDomination
-
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.TBB Formalism.QuantumDeterminants Formalism.FourierDecayAlt.P.CutBP Formalism.FourierDecayAlt.P.CutBP2 Formalism.FourierDecayAlt.P.CutBP.CompactFormNormalFormDomination MeasureTheory
-open scoped ENNReal
-
-noncomputable section
-
-
-end
-
-end Formalism.FourierDecayAlt.P.CutBPEq.CompactFormNormalFormDomination
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: CompanionTheory.AutomorphicTheory.CompactTopologicalForms.FinalS =====
@@ -661,13 +650,13 @@ theorem ew_snoc (p : KB.Pl P Wp Wq) (F : B.Mat P.k P.r → (Wq →L[ℂ] Wp)) (w
           KB.levW P (P.r + 1) c := by
         rw [hlast, hTT]
         rw [hT, hT'] at hc2
-        simp only [C.nAux, KB.levW, B2.zWeight, if_pos hc2.le]
-        rw [if_pos ⟨by omega, trivial⟩]
+        simp only [C.nAux, KB.levW, B2.zWeight, ite_eq_left hc2.le]
+        rw [ite_eq_left ⟨by omega, trivial⟩]
         simp
       have hlev : 0 ≤ KB.levW P (P.r + 1) c := by
         rw [← hfac, hlast]
         simp only [C.nAux]
-        rw [if_pos ⟨by omega, trivial⟩]
+        rw [ite_eq_left ⟨by omega, trivial⟩]
         have : 0 ≤ Complex.normSq c - TBB.TTp p := by
           unfold TBB.TTp; linarith
         simpa using pow_nonneg this _
@@ -676,7 +665,7 @@ theorem ew_snoc (p : KB.Pl P Wp Wq) (F : B.Mat P.k P.r → (Wq →L[ℂ] Wp)) (w
   · have hfac : C.nAux P.k P.r (D.ptGG (TBB.TTp p) (h ++ [(1, c)])) (fun _ _ => 1) (1 + j) [(1, c)] =
         KB.levW P (j + 1) c := by
       simp only [C.nAux, KB.levW]
-      rw [if_neg (by omega), if_neg (by omega)]
+      rw [ite_eq_right (by omega), ite_eq_right (by omega)]
       have e : 1 + j + 1 - 1 = j + 1 := by omega
       rw [e]
       simp only [one_mul, mul_one, Nat.cast_one]
@@ -684,7 +673,7 @@ theorem ew_snoc (p : KB.Pl P Wp Wq) (F : B.Mat P.k P.r → (Wq →L[ℂ] Wp)) (w
       ring
     have hlev : 0 ≤ KB.levW P (j + 1) c := by
       simp only [KB.levW]
-      rw [if_neg (by omega)]
+      rw [ite_eq_right (by omega)]
       exact zpow_nonneg (norm_nonneg _) _
     rw [hfac, Real.mul_self_sqrt (mul_nonneg hA hlev)]
     ring

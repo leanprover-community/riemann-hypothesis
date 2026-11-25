@@ -66,12 +66,12 @@ theorem levΛ_Ui (h0 : constantCoeff (W.lev c ζ Eπ) = 0) (h1 : coeff 1 (W.lev 
 
 theorem ev_of_lt (a : LetA O n) {i : ℤ} (hi : i + h' < 0) : ev W c ζ Eπ h' a i = 0 := by
   unfold ev
-  rw [if_neg (by omega)]
+  rw [ite_eq_right (by omega)]
 
 theorem ev_eq (a : LetA O n) {i : ℤ} (hi : 0 ≤ i + h') :
     ev W c ζ Eπ h' a i = coeff (i + h').toNat (W.lev c ζ a * Ui W c ζ Eπ h') := by
   unfold ev
-  rw [if_pos hi]
+  rw [ite_eq_left hi]
 
 theorem ev_add (a b : LetA O n) (i : ℤ) :
     ev W c ζ Eπ h' (a + b) i = ev W c ζ Eπ h' a i + ev W c ζ Eπ h' b i := by
@@ -106,7 +106,7 @@ theorem ev_letE (a : LetA O n) (i : ℤ) :
 
 private theorem coeff_lev_pow_eq_zero_of_lt (h0 : constantCoeff (W.lev c ζ Eπ) = 0) (j : ℕ) (hj : j < h') :
     coeff j (W.lev c ζ (Eπ ^ h')) = 0 := by
-  rw [levΛ_eq h0, PowerSeries.coeff_X_pow_mul', if_neg (by omega)]
+  rw [levΛ_eq h0, PowerSeries.coeff_X_pow_mul', ite_eq_right (by omega)]
 
 private theorem coeff_lev_eq_sum_coeff_lev_pow_mul_ev (h0 : constantCoeff (W.lev c ζ Eπ) = 0) (h1 : coeff 1 (W.lev c ζ Eπ) ≠ 0)
     (a : LetA O n) (i : ℕ) :

@@ -594,11 +594,11 @@ theorem th_move (g : (I.stp u a i).G b) (g' : (I.stp u a (i + 1)).G b') (z : VCx
   have s1 : (I.chain l u a).sSharp i = fun τ => ez τ - ((B.R.N (i + 1) / 2 : ℕ) : ℤ) := funext fun τ => by
     apply Int.cast_injective (α := ℚ)
     rw [Int.cast_sub, _root_.GlobalTheory.CharVal.half_N, ← hez]
-    exact (congrArg _ (dif_pos hi)).trans (floor_sub_half _ _ _)
+    exact (congrArg _ (dite_eq_left hi)).trans (floor_sub_half _ _ _)
   have s2 : (I.chain l u a).sDiv i = fun τ => ez τ - ((B.R.N i / 2 : ℕ) : ℤ) := funext fun τ => by
     apply Int.cast_injective (α := ℚ)
     rw [Int.cast_sub, _root_.GlobalTheory.CharVal.half_N, ← hez]
-    exact (congrArg _ (dif_pos hi)).trans (floor_sub_half _ _ _)
+    exact (congrArg _ (dite_eq_left hi)).trans (floor_sub_half _ _ _)
   have d1 : ∀ {n : ℕ} (γ : UF B.fields.E n) (s : B.fields.Tau → ℤ), detPow B.fields.emb B.embLL (ufGL B.fields.E n γ) s =
       ∏ τ, B.fields.embC I.A.σ₀ τ ((LinearEquiv.det γ.1 : B.fields.Eˣ) : B.fields.E) ^ s τ := fun γ s => by
     rw [detPow, TE.det_ufGL]

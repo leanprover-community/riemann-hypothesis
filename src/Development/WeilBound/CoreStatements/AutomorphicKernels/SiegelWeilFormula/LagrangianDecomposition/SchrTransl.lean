@@ -32,8 +32,7 @@ theorem adelicSchwartz_pointValues_admitted_alt : ∀ (F : Type) [Field F] [Numb
     simp [pureA, mul_comm]
   · obtain ⟨φ, hφ, hne⟩ := GlobalTheory.ThetaSumNe.exists_mem_schA_thetaSum_ne_zero F κ
     have : ∃ ξ : κ → F, φ (fun i => algebraMap F (AF F) (ξ i)) ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hne (by simp [thetaSum, h])
     obtain ⟨ξ, hξ⟩ := this
     refine ⟨(φ (fun i => algebraMap F (AF F) (ξ i)))⁻¹ • schr ψ ((fun i => algebraMap F (AF F) (ξ i)), 0) φ,

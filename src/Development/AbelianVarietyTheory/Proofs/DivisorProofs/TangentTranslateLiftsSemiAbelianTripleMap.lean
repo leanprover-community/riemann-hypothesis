@@ -49,7 +49,6 @@ import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedPointReduc
 
 open AlgebraicGeometry CategoryTheory Limits NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.LogKS Formalism.L2.Pj
-attribute [local instance] Over.cartesianMonoidalCategory
 open MonoidalCategory CartesianMonoidalCategory MonObj
 
 namespace GlobalTheory.TransLift

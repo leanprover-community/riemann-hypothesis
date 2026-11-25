@@ -338,11 +338,11 @@ private def extendIsoFamilySucc {A B : ℕ → Scheme.{u}} (N : ℕ) (e : ∀ i 
 
 private theorem extendIsoFamilySucc_of_le {A B : ℕ → Scheme.{u}} (N : ℕ)
     (e : ∀ i : ℕ, i ≤ N → (A i ≅ B i)) (x : A (N + 1) ≅ B (N + 1)) {i : ℕ} {hi : i ≤ N + 1}
-    (h : i ≤ N) : extendIsoFamilySucc N e x i hi = e i h := dif_pos h
+    (h : i ≤ N) : extendIsoFamilySucc N e x i hi = e i h := dite_eq_left h
 
 private theorem extendIsoFamilySucc_self {A B : ℕ → Scheme.{u}} (N : ℕ)
     (e : ∀ i : ℕ, i ≤ N → (A i ≅ B i)) (x : A (N + 1) ≅ B (N + 1)) {hi : N + 1 ≤ N + 1} :
-    extendIsoFamilySucc N e x (N + 1) hi = x := dif_neg (Nat.not_succ_le_self N)
+    extendIsoFamilySucc N e x (N + 1) hi = x := dite_eq_right (Nat.not_succ_le_self N)
 
 private theorem exists_compatible_isos_of_le {g : W ⟶ Y} {t₁ t₂ : SequenceOfBlowups W} {s₁ s₂ : SequenceOfBlowups Y} {L : ℕ}
     {γ₁ : ∀ i : ℕ, i ≤ L → (t₁.schemeAt i ⟶ s₁.schemeAt i)}

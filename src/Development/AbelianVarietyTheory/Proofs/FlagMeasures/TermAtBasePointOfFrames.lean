@@ -77,22 +77,22 @@ theorem tri_of_adapt {T : D.host.E} (g : GV D) (F G : LFlag (D.sp.Y 0) D.R.rS T)
   refine ⟨fun a b => (if a = b then 1 else 0) + (if h : a.val < D.R.rS then l b ⟨a.val, h⟩ else 0), ⟨?_, ?_⟩, ?_⟩
   · intro a b hba
     dsimp only
-    rw [if_neg (ne_of_gt hba), zero_add]
+    rw [ite_eq_right (ne_of_gt hba), zero_add]
     split_ifs with h'
     · exact hz b _ (by show ¬ a.val < b.val; have := Fin.lt_def.1 hba; omega)
     · rfl
   · intro a
     dsimp only
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     split_ifs with h'
     · rw [hz a _ (by simp), add_zero]
     · rw [add_zero]
   · intro b
     rw [Formalism.L2.SG.Saturated.frame_mapL]
     simp only [add_smul, Finset.sum_add_distrib, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true]
+      Finset.mem_univ, ite_true]
     rw [Fin.sum_univ_castSucc]
-    simp only [Fin.coe_castSucc, Fin.is_lt, dif_pos, Fin.val_last, lt_irrefl, dif_neg, not_false_eq_true,
+    simp only [Fin.coe_castSucc, Fin.is_lt, dite_eq_left, Fin.val_last, lt_irrefl, dite_eq_right, not_false_eq_true,
       zero_smul, add_zero, frame_castSucc, Fin.eta]
     have e := hx b
     rw [Finsupp.linearCombination_apply, Finsupp.sum_fintype _ _ (by simp)] at e

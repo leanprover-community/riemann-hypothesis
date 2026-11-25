@@ -891,7 +891,7 @@ theorem thick_iff (D : D7) (T2 : Finset D.R.A) (u0 : D.R.A)
     unfold Formalism.HC.Frame.tau2 gOfM thickPl
     refine Prod.ext (Prod.ext ?_ rfl) rfl
     show (-1 : ℤˣ) = if (1 : ZMod 2) = 0 then 1 else -1
-    rw [if_neg (by decide)]
+    rw [ite_eq_right (by decide)]
   · rintro ⟨s, hs, hγ⟩
     refine ⟨D.R.dig s, (hT2 _).2 ⟨s, hs, rfl⟩, ?_⟩
     unfold Formalism.HC.Frame.tau2 gOfM at hγ
@@ -902,7 +902,7 @@ theorem thick_iff (D : D7) (T2 : Finset D.R.A) (u0 : D.R.A)
       have h0 : ρ.1.2 = 0 := by
         have : ∀ z : ZMod 2, z ≠ 1 → z = 0 := by decide
         exact this _ hne
-      rw [if_pos h0] at hA
+      rw [ite_eq_left h0] at hA
       exact absurd hA (by decide)
     have h11 : ρ.1.1 = 0 := hρ
     unfold thickPl
@@ -1584,8 +1584,4 @@ theorem size_windows_of_thick_set {eps : ℝ} (Fm : FamP eps) (hT2 : ThickSetEve
 end Formalism.MainNotions.Lnk
 
 end
-
-namespace Formalism.MainNotions
-
-end Formalism.MainNotions
 

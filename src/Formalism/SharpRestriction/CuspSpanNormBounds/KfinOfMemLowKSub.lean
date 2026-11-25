@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.HCReprodM
 public import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.SmoothVectorsTranslateUnitary
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LeadMinorK
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LowestKTypeMultiplicity
@@ -26,28 +27,7 @@ theorem finset_sup_kstable {n : ℕ} (ε : Fin n → Bool) (τ : Matrix (Fin n) 
     (s : Finset (Submodule ℂ H)) (hs : ∀ S ∈ s, FiniteDimensional ℂ S ∧ IsKStableOn ε τ S) :
     FiniteDimensional ℂ ↥(s.sup (id : Submodule ℂ H → Submodule ℂ H)) ∧
       IsKStableOn ε τ (s.sup (id : Submodule ℂ H → Submodule ℂ H)) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty =>
-    refine ⟨?_, ?_⟩
-    · show FiniteDimensional ℂ ↥(⊥ : Submodule ℂ H)
-      infer_instance
-    · intro g _ v hv
-      simp only [Finset.sup_empty, Submodule.mem_bot] at hv
-      simp [hv]
-  | insert a s ha ih =>
-    have hA := hs a (Finset.mem_insert_self a s)
-    have hS := ih (fun S hS' => hs S (Finset.mem_insert_of_mem hS'))
-    rw [Finset.sup_insert]
-    have := hA.1
-    have := hS.1
-    refine ⟨?_, ?_⟩
-    · simp only [id]
-      infer_instance
-    · intro g hg v hv
-      obtain ⟨x, hx, y, hy, rfl⟩ := Submodule.mem_sup.1 hv
-      rw [map_add (f := _)]
-      exact Submodule.add_mem_sup (hA.2 g hg x hx) (hS.2 g hg y hy)
+  apply _root_.Formalism.L2.SG.HCReprodM.finsetSup_kstable <;> assumption
 
 theorem kfin_of_mem_lowKSub {n : ℕ} {ε : Fin n → Bool} {lam : Fin n → ℝ}
     {τ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} {w : H} (hw : w ∈ lowKSub ε lam τ) :

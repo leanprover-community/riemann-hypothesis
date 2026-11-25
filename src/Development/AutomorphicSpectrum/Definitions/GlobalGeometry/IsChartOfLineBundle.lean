@@ -16,11 +16,6 @@ variable {E E' : Type} [AddCommGroup E] [Module Ω E] [AddCommGroup E'] [Module 
 
 variable {ξ : Spec (CommRingCat.of Ω) ⟶ X}
 
-section Deg
-variable {K : Type} [Fintype K] {ι : K → Type}
-
-end Deg
-
 section Pull
 variable {X' : Scheme.{0}} {Ω' : Type} [Field Ω'] {ξ' : Spec (CommRingCat.of Ω') ⟶ X'}
 
@@ -68,9 +63,5 @@ theorem dominates_regAt {f : X' ⟶ X} {i : Ω →+* Ω'} (h : Dominates ξ' ξ 
   exact ⟨f.stalkMap q s, congrArg (fun g => g.hom s) e⟩
 
 end Pull
-
-section Int
-
-end Int
 
 end GlobalTheory.CompanionTheory.Ar.LatModel

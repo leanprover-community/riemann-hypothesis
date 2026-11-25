@@ -36,13 +36,7 @@ theorem height_map_add_one_le_of_mem_nonZeroDivisors {B : Type*} [CommRing B] [I
   obtain ⟨l, hlast, hlen⟩ := Order.exists_series_of_height_eq_coe (⟨_, hP'⟩ : PrimeSpectrum (B ⧸ I))
     (by rw [← PrimeSpectrum.height_eq_orderHeight]; exact hn)
   let f : PrimeSpectrum (B ⧸ I) → PrimeSpectrum B := PrimeSpectrum.comap (Ideal.Quotient.mk I)
-  have hf : StrictMono f := by
-    refine Monotone.strictMono_of_injective (fun a b hab => ?_) (fun a b hab => ?_)
-    · rw [← PrimeSpectrum.asIdeal_le_asIdeal] at hab ⊢
-      exact Ideal.comap_mono hab
-    · ext1
-      have := congrArg PrimeSpectrum.asIdeal hab
-      exact Ideal.comap_injective_of_surjective _ Ideal.Quotient.mk_surjective this
+  have hf : StrictMono f := RingHom.strictMono_comap_of_surjective Ideal.Quotient.mk_surjective
   let L := l.map f hf
   have hyhead : y ∈ L.head.asIdeal := by
     change y ∈ (l.head.asIdeal).comap (Ideal.Quotient.mk I)

@@ -1,5 +1,7 @@
 module
 
+import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.LowVanishFockOfLowVanish
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsGoodPlace
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.UnitaryConjugation
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsAddEquivSymplecticCoordsOrientedModel
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.BlkGLMem
@@ -102,7 +104,6 @@ open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.Ind
 open GlobalTheory.Grid GlobalTheory.Doubling GlobalTheory.ChainFr GlobalTheory.IndefiniteRowSideFullHecke.MatchingAdjoints
 open scoped TensorProduct nonZeroDivisors GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.SquareComm GlobalTheory.SquareAgree
 
 noncomputable section
@@ -223,30 +224,7 @@ variable {D : D7}
 
 open scoped ComplexOrder in
 theorem fr_cart_isCartanInv {V : HSp D} (A : Fr V) (τ : D.what₂.Tau) : IsCartanInv (gramAt D V τ) (A.cart τ) := by
-  have h1 : A.fr τ * (A.fr τ)⁻¹ = 1 := Matrix.mul_nonsing_inv _ ((Matrix.isUnit_iff_isUnit_det _).1 (A.fr_unit τ))
-  have h2 : (A.fr τ)⁻¹ * A.fr τ = 1 := mul_eq_one_comm.1 h1
-  have hJ := Formalism.REAL.Jm_mul_self (A.ε τ)
-  have hJ' := Formalism.REAL.Jm_conjTranspose (A.ε τ)
-  have hG : gramAt D V τ * A.cart τ = (A.fr τ)ᴴ * A.fr τ := by
-    rw [← A.fr_gram τ]; unfold Fr.cart
-    calc _ = (A.fr τ)ᴴ * (Formalism.REAL.Jm (A.ε τ) * (A.fr τ * (A.fr τ)⁻¹) * Formalism.REAL.Jm (A.ε τ)) * A.fr τ := by
-          simp only [Matrix.mul_assoc]
-      _ = _ := by rw [h1, Matrix.mul_one, hJ, Matrix.mul_one]
-  have hs : A.cart τ * A.cart τ = 1 := by
-    unfold Fr.cart
-    calc _ = (A.fr τ)⁻¹ * (Formalism.REAL.Jm (A.ε τ) * (A.fr τ * (A.fr τ)⁻¹) * Formalism.REAL.Jm (A.ε τ)) * A.fr τ := by
-          simp only [Matrix.mul_assoc]
-      _ = _ := by rw [h1, Matrix.mul_one, hJ, Matrix.mul_one, h2]
-  refine ⟨hs, ?_, ?_⟩
-  · have hGh : (gramAt D V τ)ᴴ = gramAt D V τ := by
-      rw [← A.fr_gram τ]; simp [Matrix.conjTranspose_mul, hJ', Matrix.mul_assoc]
-    have h3 : (A.cart τ)ᴴ * gramAt D V τ = gramAt D V τ * A.cart τ := by
-      have := congrArg Matrix.conjTranspose hG
-      rw [Matrix.conjTranspose_mul, hGh, Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose] at this
-      rw [this, hG]
-    rw [h3, Matrix.mul_assoc, hs, Matrix.mul_one]
-  · rw [hG]
-    exact Matrix.PosDef.conjTranspose_mul_self _ (Matrix.mulVec_injective_of_isUnit (A.fr_unit τ))
+  first | exact _root_.GlobalTheory.ChainFr.Model.isCartanInv_cart | exact @_root_.GlobalTheory.ChainFr.Model.isCartanInv_cart | apply _root_.GlobalTheory.ChainFr.Model.isCartanInv_cart <;> assumption
 
 theorem herm_dual (S : HSp D) (y : Fin S.rank → D.host.E) :
     y ∈ GlobalTheory.TripleSpaceW.conjSub (GlobalTheory.PlaceModel.latFrame S) ↔
@@ -317,10 +295,7 @@ theorem mem_skLat (S : HSp D) {d : ℕ} (e : Fin S.rank ≃ Fin d) (y : Fin d �
   rw [Submodule.mem_map_equiv]
   rfl
 
-theorem AA_ne : D.host.AA ≠ 0 := fun h => by
-  have := Formalism.IndefR.Fin.factPrincipalDatum D.R D.host
-  rw [h, mul_zero, zero_mul, zero_mul] at this
-  exact zero_ne_one this
+theorem AA_ne : D.host.AA ≠ 0 := GlobalTheory.SkewLat.DualPair.AA_ne
 
 theorem skLat_isLattice (S : HSp D) {d : ℕ} (e : Fin S.rank ≃ Fin d) : Submodule.IsLattice D.host.E (skLat S e) := by
   have hL := GlobalTheory.SkewLat.PairLatLattice.scLat_isLattice (_root_.GlobalTheory.SkewLat.DualPair.AA_ne (D := D)) (GlobalTheory.PlaceModel.isSelfDualC_latFrame S).1
@@ -534,7 +509,6 @@ open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.Ind
 open GlobalTheory.Grid GlobalTheory.Doubling GlobalTheory.ChainFr GlobalTheory.IndefiniteRowSideFullHecke.MatchingAdjoints
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.SquareComm GlobalTheory.SquareAgree
 
 noncomputable section
@@ -542,42 +516,12 @@ noncomputable section
 namespace GlobalTheory.TripleBaseChars
 
 theorem exists_placeIdem (D : D7) (v : HeightOneSpectrum (𝓞 D.host.F)) : ∃ ε, IsPlaceIdem D v ε :=
-  ⟨_, GlobalTheory.AdelicU.singleFin v 1, rfl, GlobalTheory.AdelicU.evalV_singleFin_self v 1,
-    fun _ h => GlobalTheory.AdelicU.evalV_singleFin_ne h 1⟩
+  GlobalTheory.IdemSupport.exists_placeIdem v
 
 theorem exists_good_place (D : D7) (P₀ : Finset (HeightOneSpectrum (𝓞 D.host.F))) :
     ∃ v₁ : HeightOneSpectrum (𝓞 D.host.F), v₁ ∉ P₀ ∧ GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.SplitsFully D.host.E v₁ ∧
       Nonempty (D.host.E →ₐ[D.host.F] Fv D.host.F v₁) := by
-  classical
-  have hn : D.host.QS ≠ 0 := D.host.QS_pos.ne'
-  have hq : D.host.q ≠ 0 := D.host.hyp.1.ne_zero
-  have hd : D.host.d ≠ 0 := D.host.hyp.2.1.ne_zero
-  have hm : D.host.QS * D.host.q * D.host.d ≠ 0 := by positivity
-  obtain ⟨p, hp, hlt, hc⟩ := Nat.exists_prime_gt_modEq_one (∑ u ∈ P₀, Ideal.absNorm u.asIdeal) hm
-  obtain ⟨h1, -, -⟩ := GlobalTheory.HostSplit.split_completely_of_modEq_one D.R D.host p hp hc
-  have h : (Ideal.primesOver (Ideal.span {(p : ℤ)}) (𝓞 D.host.E)).ncard = Module.finrank ℚ D.host.E := by
-    rw [← GlobalTheory.HostSplit.ncard_placesOver _ hp]
-    exact h1
-  obtain ⟨v, hv⟩ := GlobalTheory.SplitChoice.exists_place_over D.host.F hp
-  have hnot : ∀ u ∈ P₀, u ≠ v := by
-    intro u hu e
-    refine GlobalTheory.SplitChoice.natCast_notMem_of_absNorm_lt u hp ?_ (e ▸ hv)
-    have := Finset.single_le_sum (f := fun u : HeightOneSpectrum (𝓞 D.host.F) => Ideal.absNorm u.asIdeal)
-      (fun _ _ => Nat.zero_le _) hu
-    omega
-  refine ⟨v, fun hv0 => hnot v hv0 rfl, ?_, ?_⟩
-  · have hmax : (Ideal.span {(p : ℤ)}).IsMaximal :=
-      PrincipalIdealRing.isMaximal_of_irreducible (Nat.prime_iff_prime_int.1 hp).irreducible
-    have hle : Ideal.span {(p : ℤ)} ≤ v.asIdeal.under ℤ := by
-      rw [Ideal.span_singleton_le_iff_mem, Ideal.under_def, Ideal.mem_comap]
-      simpa using hv
-    have hunder : v.asIdeal.under ℤ = Ideal.span {(p : ℤ)} :=
-      (hmax.eq_of_le (Ideal.IsPrime.under ℤ v.asIdeal).ne_top hle).symm
-    unfold GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.SplitsFully
-    rw [hunder]
-    exact h
-  · rw [GlobalTheory.AdelicU.nonempty_split_iff (GlobalTheory.AdelicU.isCMExt_host D)]
-    exact GlobalTheory.GoodPlace.ncard_primesOver_eq_two (GlobalTheory.AdelicU.isCMExt_host D).2.2.1 hp h v hv
+  first | exact _root_.GlobalTheory.TripleDarboux.exists_good_place | exact @_root_.GlobalTheory.TripleDarboux.exists_good_place | apply _root_.GlobalTheory.TripleDarboux.exists_good_place <;> assumption
 
 theorem exists_base_chars : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (W W₁ X : HSp D) (α β : (AE D)ˣ →* Circle), IsTriple W W₁ X α β →
     ∀ ωA : WRep W X, IsWeil ψ true W X β (β / α) ωA →
@@ -692,7 +636,6 @@ open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.Ind
 open GlobalTheory.Grid GlobalTheory.Doubling GlobalTheory.ChainFr GlobalTheory.IndefiniteRowSideFullHecke.MatchingAdjoints
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.SquareComm GlobalTheory.SquareAgree
 
 noncomputable section
@@ -792,7 +735,6 @@ open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.Ind
 open GlobalTheory.Grid GlobalTheory.Doubling GlobalTheory.ChainFr GlobalTheory.IndefiniteRowSideFullHecke.MatchingAdjoints
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.SquareComm GlobalTheory.SquareAgree
 
 theorem _root_.GlobalTheory.T.exists_placewise_seesaw_triple_over_hermitian : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D), IsInfFam θ →

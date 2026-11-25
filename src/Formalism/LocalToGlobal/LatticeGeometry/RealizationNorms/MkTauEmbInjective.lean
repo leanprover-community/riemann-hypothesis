@@ -18,16 +18,6 @@ open NumberField NumberField.InfinitePlace Module Matrix
 
 noncomputable section
 
-namespace Formalism.L2.Geo.Rec.DualLatticeEmbeddings
-
-variable {K : Type} [Field K] [NumberField K] {n : ℕ}
-
-variable [StarRing K]
-
-variable [_root_.NumberField.IsTotallyComplex K]
-
-end Formalism.L2.Geo.Rec.DualLatticeEmbeddings
-
 
 noncomputable section
 

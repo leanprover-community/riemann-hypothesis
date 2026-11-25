@@ -388,8 +388,8 @@ theorem invRevT_eq {R : Type} [CommRing R] (g : GL (Fin a) R) :
   rw [eq_mul_inv_iff_mul_eq]
   refine Units.ext (Matrix.ext fun i k => ?_)
   change ∑ l, (g⁻¹).val l i * (if k = l.rev then 1 else 0) = ∑ l, (if l = i.rev then 1 else 0) * (g⁻¹).val k.rev l.rev
-  rw [Finset.sum_eq_single k.rev (fun b _ hb => by rw [if_neg (fun e => hb (by rw [e, Fin.rev_rev])), mul_zero]) (by simp),
-    Finset.sum_eq_single i.rev (fun b _ hb => by rw [if_neg hb, zero_mul]) (by simp)]
+  rw [Finset.sum_eq_single k.rev (fun b _ hb => by rw [ite_eq_right (fun e => hb (by rw [e, Fin.rev_rev])), mul_zero]) (by simp),
+    Finset.sum_eq_single i.rev (fun b _ hb => by rw [ite_eq_right hb, zero_mul]) (by simp)]
   simp
 
 theorem thetaGL_locGL (c : E ≃+* E) (w : HeightOneSpectrum (𝓞 E)) (g : GL (Fin a) ((conjSrc c w).adicCompletion E)) :

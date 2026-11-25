@@ -59,9 +59,3 @@ theorem FrameOK_map {T' : D.host.E} {γ : (VS D).V ≃ₗ[D.host.E] (VS D).V} (h
   exact (XS_map hγ F'.fl).symm
 
 end PI.RepsIndep.Tr
-
-namespace PI.RepsIndep
-
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.UniformConstantsAndStatements
-
-end PI.RepsIndep

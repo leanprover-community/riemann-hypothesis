@@ -61,7 +61,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Form
 open IsDedekindDomain NumberField GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim
 open Formalism.L2.Host (HChar)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RowEx MeasureTheory
 
 noncomputable section
@@ -205,7 +204,7 @@ theorem exists_root_alg {θ : InfFam D} (hθ : IsInfFam θ) (V : HSp D) (hV : �
     rw [show ((∏ τ, ν (x τ) : Circle) : ℂ) = ∏ τ, (ν (x τ) : ℂ) from map_prod Circle.coeHom _ _]
     refine prod_mem fun τ _ => ?_
     obtain ⟨a, n, -, -, h⟩ := hc τ
-    rw [h θ hθ (x τ) (hx1 τ) (fun τ' h' => by rw [hx2, if_neg h']), hx2, if_pos rfl, hw2]
+    rw [h θ hθ (x τ) (hx1 τ) (fun τ' h' => by rw [hx2, ite_eq_right h']), hx2, ite_eq_left rfl, hw2]
     simp only [Complex.ofReal_one, div_one]
     exact zpow_mem (hwA τ) n
 
@@ -284,7 +283,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Form
 open IsDedekindDomain NumberField GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim
 open Formalism.L2.Host (HChar)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RowEx MeasureTheory
 
 theorem _root_.GlobalTheory.T.realPoint_acts_on_vacuum_by_algebraicScalar : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil}

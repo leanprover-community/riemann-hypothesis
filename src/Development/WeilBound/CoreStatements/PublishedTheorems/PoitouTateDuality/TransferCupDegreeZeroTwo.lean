@@ -12,8 +12,6 @@ open CategoryTheory MonoidalCategory TensorProduct GroundTheory.ProfCoh Reciproc
 
 namespace PositivityTheory.Lit1.PTN
 
-attribute [local instance 2000] Rep.hV2
-
 theorem transfer_cup_degree_zero_two {Lv Hv : Type} [Group Lv] [TopologicalSpace Lv] [IsTopologicalGroup Lv]
     [Group Hv] [TopologicalSpace Hv] [IsTopologicalGroup Hv] (ev : Hv ≃* Lv)
     (hevc : Continuous ev.toMonoidHom) {R : Type} [CommRing R] {M M' P : Type}

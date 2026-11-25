@@ -416,7 +416,7 @@ theorem exists_coset (M q : ℕ) (hM : 0 < M) (hq : q.Prime) (hqM : Nat.Coprime 
     set c : ZMod q := ((m 1 0 : ℤ) : ZMod q) with hc
     set d : ZMod q := ((m 1 1 : ℤ) : ZMod q) with hd
     have hac : a ≠ 0 ∨ c ≠ 0 := by
-      by_contra hcon; push_neg at hcon
+      by_contra hcon; push Not at hcon
       exact hdiv ⟨(hz _).mpr hcon.1, (hz _).mpr hcon.2⟩
     obtain ⟨t, ht1, ht2⟩ : ∃ t : ZMod q, b = a * t * (M : ZMod q) ∧ d = c * t * (M : ZMod q) := by
       rcases hac with ha0 | hc0
@@ -462,7 +462,7 @@ theorem reps_distinct (M q : ℕ) (hq : q.Prime) (hqM : Nat.Coprime q M) (σ : S
   have e11 := E 1 1
   unfold reps at e00 e01 e10 e11
   by_cases hi : (i : ℕ) < q <;> by_cases hk : (k : ℕ) < q <;>
-    simp only [hi, hk, if_true, if_false] at e00 e01 e10 e11 <;>
+    simp only [hi, hk, ite_true, ite_false] at e00 e01 e10 e11 <;>
     simp [Matrix.mul_apply, Fin.sum_univ_two] at e00 e01 e10 e11
   ·
     have hdv : (q : ℤ) ∣ ((i : ℕ) - (k : ℕ) : ℤ) * M := ⟨(g : Matrix (Fin 2) (Fin 2) ℤ) 0 1, by
@@ -751,11 +751,7 @@ theorem finiteDimensional_adjoin_map {F K L : Type} [Field F] [Field K] [Field L
     rw [← h1]
     exact ⟨e, e.2, rfl⟩
   let g : E →+* E' :=
-    { toFun := fun e => ⟨algebraMap K L e, hmem e⟩
-      map_one' := by ext; simp
-      map_mul' := by intros; ext; simp
-      map_zero' := by ext; simp
-      map_add' := by intros; ext; simp }
+    (((IsScalarTower.toAlgHom F K L).comp E.val).codRestrict E'.toSubalgebra hmem).toRingHom
   letI : Algebra E E' := g.toAlgebra
   haveI : IsScalarTower E E' L := IsScalarTower.of_algebraMap_eq (fun _ => rfl)
   haveI : Module.Finite E L := Module.Finite.trans K L
@@ -806,7 +802,7 @@ theorem core {F K L : Type} [Field F] [IsAlgClosed F] [Field K] [Field L] [Algeb
   obtain ⟨d, hd⟩ := IsAlgClosed.exists_pow_nat_eq c hl.pos
   have hcval : V.valuation c = 1 := by
     rw [val_eq_one_iff, ValuationSubring.mem_nonunits_iff_or]
-    push_neg
+    push Not
     exact ⟨hcV, hc0, hciV⟩
   have hcW : W'.valuation (algebraMap F L c) = 1 :=
     (val_eq_one_iff_of_mem_iff (algebraMap F L) hFL c).2 hcval
@@ -831,8 +827,7 @@ theorem core {F K L : Type} [Field F] [IsAlgClosed F] [Field K] [Field L] [Algeb
     have := congrArg (Polynomial.aeval y) (X_pow_sub_one_eq_prod hl.pos hζ₀)
     simpa [map_prod] using this
   obtain ⟨ζ, hζm, hζ⟩ : ∃ ζ ∈ nthRootsFinset l (1 : F), W'.valuation (y - algebraMap F L ζ) < 1 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have : 1 ≤ W'.valuation (y ^ l - 1) := by
       rw [hprod, map_prod]; exact Finset.one_le_prod' hne
     exact absurd hy1 (not_lt.2 this)
@@ -947,14 +942,6 @@ section -- clump:auto
 
 open scoped MatrixGroups TensorProduct
 open Matrix GlobalTheory.KZ
-
-namespace GlobalTheory.KZ
-
-theorem Tower.jK_transcendental {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} (X : Tower Ω ε) :
-    Transcendental Ω X.jK := by
-  apply GlobalTheory.K4.jK_transcendental
-
-end GlobalTheory.KZ
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FoundationProofs.TowerJInvariantTranscendental =====
@@ -982,8 +969,7 @@ theorem exists_root_of_unity_close_of_pow_close : ∀ {Ω K : Type} [Field Ω] [
   have hx : x ^ N - 1 = (p.roots.map (fun a => x - algebraMap Ω K a)).prod := by
     have := congrArg (Polynomial.aeval x) hs
     simpa [p, map_multiset_prod, Multiset.map_map, Function.comp_def] using this
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   refine (not_lt.mpr ?_) hv
   rw [hx, map_multiset_prod, Multiset.map_map]
   refine Multiset.one_le_prod_of_one_le ?_
@@ -1095,7 +1081,7 @@ theorem kronecker_ratio_reduces_to_const : ∀ {Ω : Type} [Field Ω] [Algebra �
   have hF : ∀ σ : SL(2, ℤ), X.sl (ofSL σ) (f : X.K) = F (red σ) := by
     intro σ
     have h : ∃ σ', red σ' = red σ := ⟨σ, rfl⟩
-    have e : F (red σ) = X.sl (ofSL h.choose) (f : X.K) := dif_pos h
+    have e : F (red σ) = X.sl (ofSL h.choose) (f : X.K) := dite_eq_left h
     have hσ' : red h.choose = red σ := h.choose_spec
     have hγ : σ * h.choose⁻¹ ∈ CongruenceSubgroup.Gamma M := by
       have : σ * h.choose⁻¹ ∈ red.ker := by
@@ -1242,10 +1228,6 @@ theorem lev_sl {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} (X : 
 end GlobalTheory.KZ.ESFun
 
 namespace GlobalTheory.KZ.ESFun
-theorem jTr : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} (X : Tower Ω ε), Transcendental Ω X.jK := _root_.GlobalTheory.KZ.Tower.jK_transcendental
-end GlobalTheory.KZ.ESFun
-
-namespace GlobalTheory.KZ.ESFun
 
 theorem prod_mem_Un {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} (X : Tower Ω ε) (m : ℕ) {ι : Type}
     (t : Finset ι) (u : ι → X.Kˣ) (h : ∀ i ∈ t, u i ∈ X.Un m) : (∏ i ∈ t, u i) ∈ X.Un m := by
@@ -1269,7 +1251,7 @@ theorem eichler_shimura_kummer : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [Is
   obtain ⟨L, hL, hjL, hfd⟩ := _root_.GlobalTheory.KZ.LevelField.exists_level_field ε X hε hj M hM
   have htr : Transcendental Ω (⟨X.jK, hjL⟩ : L) := by
     intro halg
-    exact jTr X (by simpa using halg.algHom L.val)
+    exact GlobalTheory.K4.jK_transcendental X (by simpa using halg.algHom L.val)
   obtain ⟨R, hR⟩ := _root_.GlobalTheory.KZ.FinLev.finite_mod_powers ε X hε hj M (l ^ n) hM (pow_pos hlpos n)
   have key : ∀ r : X.Kˣ, ∃ S : Finset ℕ, (∀ γ ∈ CongruenceSubgroup.Gamma M, X.sl (ofSL γ) (r : X.K) = r) →
       (¬ ∃ c : Ω, c ≠ 0 ∧ ∃ u : X.Kˣ, (∀ γ ∈ CongruenceSubgroup.Gamma M, X.sl (ofSL γ) (u : X.K) = u) ∧

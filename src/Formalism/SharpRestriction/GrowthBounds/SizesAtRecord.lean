@@ -32,7 +32,6 @@ theorem DII_arith (x DII Np N1 r k lb n' c c0 b' : ℝ) (hx : 500 ≤ x) (hNp0 :
     have a3 : k ^ 2 ≤ (x ^ 6) ^ 2 := pow_le_pow_left₀ hk0 hk 2
     have e3 : x ^ 3 ≤ x ^ 12 := pow_le_pow_right₀ hx1 (by norm_num)
     have e5 : x ^ 5 ≤ x ^ 12 := pow_le_pow_right₀ hx1 (by norm_num)
-    have e6 : (x ^ 6) ^ 2 = x ^ 12 := by ring
     linarith
   have hS0 : 0 ≤ N1 ^ 3 + r ^ 5 + k ^ 2 :=
     add_nonneg (add_nonneg (pow_nonneg hN10 3) (pow_nonneg hr0 5)) (sq_nonneg k)
@@ -272,10 +271,10 @@ theorem windows_at {D : D7} (L : SizeData₂ D) (K : Consts) (hK : K.Nonneg) (hS
     (Finset.mem_filter.mp hs).2
   have haw : ∀ s (hs : s ∈ topsPos D p t0), wPos D p t0 (aL L) s = L.aT ⟨_, hmem s hs⟩ := by
     intro s hs
-    simp only [wPos, aL, dif_pos (hmem s hs)]
+    simp only [wPos, aL, dite_eq_left (hmem s hs)]
   have hbw : ∀ s (hs : s ∈ topsPos D p t0), wPos D p t0 (bL L) s = L.bT ⟨_, hmem s hs⟩ := by
     intro s hs
-    simp only [wPos, bL, dif_pos (hmem s hs)]
+    simp only [wPos, bL, dite_eq_left (hmem s hs)]
   refine ⟨fun s hs => ⟨?_, ?_⟩, fun s hs => ⟨?_, ?_, ?_⟩⟩
   · rw [haw s hs]
     obtain ⟨h1, h2⟩ := L.aT_win ⟨_, hmem s hs⟩
@@ -490,7 +489,6 @@ theorem numII_ev (eps : ℝ) (K : Consts) (hK : K.Nonneg) (C31 : ℝ) (h31 : 0 <
       unfold c0num
       linarith only [hb0, hcG]
     have hQ0 : 0 < Qp L.sc p := pow_pos hpp (Gp L.sc)
-    have hlp0 : 0 ≤ Real.log p := Real.log_nonneg hp1.le
     have hlp : Real.log p ≤ 38 * Real.log L.sc.x := by
       have h1 : (p : ℝ) ≤ L.sc.x ^ 38 := by
         calc (p : ℝ) ≤ (D.R.k : ℝ) ^ 2 * L.sc.x ^ 26 := hp0'.le
@@ -505,12 +503,10 @@ theorem numII_ev (eps : ℝ) (K : Consts) (hK : K.Nonneg) (C31 : ℝ) (h31 : 0 <
       unfold Qp
       rw [Real.log_pow]
       have hG := Pf.Gp_le L.sc hxe
-      have hx8 : 0 ≤ L.sc.x ^ (L.sc.eps / 8) := Real.rpow_nonneg hx0.le _
       calc (Gp L.sc : ℝ) * Real.log p
           ≤ (Pf.cGE L.sc.eps * Real.log L.sc.x * L.sc.x ^ (L.sc.eps / 8)) * (38 * Real.log L.sc.x) := by gcongr
         _ = (38 * Pf.cGE L.sc.eps * Real.log L.sc.x) * (1 * Real.log L.sc.x) * L.sc.x ^ (L.sc.eps / 8) := by ring
         _ ≤ L.sc.x ^ (L.sc.eps / 96) * L.sc.x ^ (L.sc.eps / 96) * L.sc.x ^ (L.sc.eps / 8) := by
-            have q1 : 0 ≤ 1 * Real.log L.sc.x := mul_nonneg zero_le_one (zero_le_one.trans lx1)
             gcongr
         _ = L.sc.x ^ (L.sc.eps / 8 + L.sc.eps / 48) := by
             rw [← Real.rpow_add hx0, ← Real.rpow_add hx0]
@@ -604,7 +600,6 @@ theorem hypIIAt_ev (eps ez : ℝ) (hez0 : 0 < ez) (K : Consts) (hK : K.Nonneg) (
   have hL2u : L2 D L.sc < goodU L.sc.delta1 := Pf.second_level_lt_good_of_log L hS hxe f3
   have hGp : 3 * (Gp L.sc : ℝ) ≤ L.sc.x ^ (L.sc.eps / 4) := by
     have hG := Pf.Gp_le L.sc hxe
-    have hx8 : 0 ≤ L.sc.x ^ (L.sc.eps / 8) := Real.rpow_nonneg hx0.le _
     calc 3 * (Gp L.sc : ℝ) ≤ 3 * (Pf.cGE L.sc.eps * Real.log L.sc.x * L.sc.x ^ (L.sc.eps / 8)) := by gcongr
       _ = (3 * Pf.cGE L.sc.eps * Real.log L.sc.x) * L.sc.x ^ (L.sc.eps / 8) := by ring
       _ ≤ L.sc.x ^ (L.sc.eps / 8) * L.sc.x ^ (L.sc.eps / 8) := by gcongr

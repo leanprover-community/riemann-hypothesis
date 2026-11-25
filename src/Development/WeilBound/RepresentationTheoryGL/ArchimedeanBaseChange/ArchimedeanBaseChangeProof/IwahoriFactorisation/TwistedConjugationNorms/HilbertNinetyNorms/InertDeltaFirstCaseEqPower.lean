@@ -95,7 +95,7 @@ omit [IsCMField E] in
 theorem delta_inert (w : Pl E) (hw : ¬ IsSplitAt w) (μ : (w.adicCompletion E)ˣ →* ℂˣ)
     (Q₁ Q₂ : (w.adicCompletion E)[X]) :
     delta w μ Q₁ Q₂ = (-qh w) ^ (-ordL (resultant Q₁ Q₂)) := by
-  rw [delta, if_neg hw, absHalf_eq, neg_eq_neg_one_mul (qh w), mul_zpow]
+  rw [delta, ite_eq_right hw, absHalf_eq, neg_eq_neg_one_mul (qh w), mul_zpow]
   congr 1
   rw [zpow_neg, ← inv_zpow, inv_neg, inv_one]
 

@@ -43,7 +43,7 @@ theorem inv_contract (S : HSp D) (a : Fin S.rank) (v : Fin S.rank → D.host.E) 
     _ = ∑ k, (S.gram⁻¹ * S.gram) a k * v k := by simp only [Matrix.mul_apply]
     _ = v a := by
         rw [h1]
-        simp only [Matrix.one_apply, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+        simp only [Matrix.one_apply, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 def rk1 (S T : HSp D) (c : D.host.E) (s : Fin S.rank → D.host.E) (t : Fin T.rank → D.host.E) :
     Matrix (Fin T.rank) (Fin S.rank) D.host.E :=

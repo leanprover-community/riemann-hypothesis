@@ -185,8 +185,7 @@ abbrev fn (v : σ → A) : σ → Γ(Sp A, ⊤) := fun i => (Scheme.ΓSpecIso (C
 
 theorem noZero_of_span {W : T.Opens} {f : σ → Γ(T, W)} (h : Ideal.span (Set.range f) = ⊤) : NoZero f := by
   intro t ht
-  by_contra hn
-  push_neg at hn
+  by_contra! hn
   have : Ideal.span (Set.range f) ≤
       (IsLocalRing.maximalIdeal _).comap (T.presheaf.germ W t ht).hom :=
     Ideal.span_le.2 (by rintro _ ⟨i, rfl⟩; exact hn i)

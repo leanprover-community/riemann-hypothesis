@@ -38,7 +38,6 @@ open GlobalTheory.FlagMod.LowRank (ECh Proj str pm)
 open MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G.PullbackSections (TanM tv mkT tanM_ext tv_mem actR)
 open GlobalTheory GlobalTheory.CompHS Matrix
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem initSpan_eq_of_tri {R N : Type} [CommRing R] [AddCommGroup N] [Module R N] {m : ℕ} {v v' : Fin m → N}
     {B : Matrix (Fin m) (Fin m) R} (hB : B.BlockTriangular id) (hu : ∀ i, IsUnit (B i i))
@@ -289,7 +288,6 @@ open CategoryTheory TopologicalSpace Limits NumberField ReciprocityTheory.ChartR
 open GlobalTheory.FlagMod.LowRank (ECh Proj str pm)
 open MonoidalCategory CartesianMonoidalCategory MonObj
 open GlobalTheory GlobalTheory.CompHS
-attribute [local instance] Over.cartesianMonoidalCategory
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
   {Xo : Moduli Dw l} {c : Coeff l} {Y : Model Xo c (RingHom.id c.F)} {S : Type} [CommRing S]

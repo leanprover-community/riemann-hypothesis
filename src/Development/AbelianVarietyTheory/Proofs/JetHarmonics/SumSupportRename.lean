@@ -163,7 +163,7 @@ theorem dofN_inCol (F : Fin d → PS k 2 d) (b : Fin n) (u : Fin d → k) (f : P
   rw [← inColHom_apply b (∑ _, _), map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
 
-  rw [map_mul, map_sum, pderiv_inCol, if_pos rfl, inColHom_apply]
+  rw [map_mul, map_sum, pderiv_inCol, ite_eq_left rfl, inColHom_apply]
   congr 1
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [map_mul, inColHom_apply, inColHom_apply, inCol_C, ev_axis]
@@ -174,7 +174,7 @@ theorem pderiv_prod_out (b : Fin n) (j : Fin d) (g : Fin n → PS k 1 d) (s : Fi
   | empty => simp
   | insert c s hc ih =>
     rw [Finset.mem_insert, not_or] at hs
-    rw [Finset.prod_insert hc, Derivation.leibniz, ih hs.2, pderiv_inCol, if_neg (Ne.symm hs.1)]
+    rw [Finset.prod_insert hc, Derivation.leibniz, ih hs.2, pderiv_inCol, ite_eq_right (Ne.symm hs.1)]
     simp
 
 theorem dofN_mul_out (F : Fin d → PS k 2 d) (b : Fin n) (u : Fin d → k) (f G : PS k n d)
@@ -195,7 +195,7 @@ theorem dofN_prod (F : Fin d → PS k 2 d) (c : Fin n) (u : Fin d → k) (g : Fi
   congr 1
   · simp [colD]
   · refine Finset.prod_congr rfl fun b hb => ?_
-    rw [colD, if_neg (Finset.ne_of_mem_erase hb).symm]
+    rw [colD, ite_eq_right (Finset.ne_of_mem_erase hb).symm]
     rfl
 
 theorem iter_prod (F : Fin d → PS k 2 d) (c : Fin n) (u : Fin d → k) (r : ℕ) (g : Fin n → PS k 1 d) :

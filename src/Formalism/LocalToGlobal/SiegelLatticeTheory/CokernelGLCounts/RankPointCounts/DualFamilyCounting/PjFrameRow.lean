@@ -212,18 +212,18 @@ theorem gram_sv (u v) (c d : Fin (D.R.k + 1)) : hJ (X.B.I.ε v) (sv X u v c) (sv
   induction c using Fin.lastCases with
   | last =>
     induction d using Fin.lastCases with
-    | last => rw [sv_last, frame_real_z_z_eq_neg, if_pos rfl, Fin.snoc_last]
+    | last => rw [sv_last, frame_real_z_z_eq_neg, ite_eq_left rfl, Fin.snoc_last]
     | cast d =>
-      rw [sv_last, sv_cs, fX_zw, if_neg (fun h => Fin.castSucc_ne_last d h.symm)]
+      rw [sv_last, sv_cs, fX_zw, ite_eq_right (fun h => Fin.castSucc_ne_last d h.symm)]
   | cast c =>
     induction d using Fin.lastCases with
     | last =>
-      rw [sv_last, sv_cs, hJ_swap, fX_zw, star_zero, if_neg (Fin.castSucc_ne_last c)]
+      rw [sv_last, sv_cs, hJ_swap, fX_zw, star_zero, ite_eq_right (Fin.castSucc_ne_last c)]
     | cast d =>
       rw [sv_cs, sv_cs, fX_ww]
       by_cases h : c = d
       · subst h; simp
-      · rw [if_neg h, if_neg (fun h' => h (Fin.castSucc_injective _ h'))]
+      · rw [ite_eq_right h, ite_eq_right (fun h' => h (Fin.castSucc_injective _ h'))]
 
 theorem gram_M (u w v) : (Mco X u w v)ᴴ * Gu u * Mco X u w v = Gu w := by
   ext c d

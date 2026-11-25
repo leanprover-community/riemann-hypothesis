@@ -395,8 +395,7 @@ theorem exists_maximal_not_mem {R B : Type} [CommRing R] [CommRing B] (u : R →
   haveI : IsJacobsonRing (B ⧸ p.map u) := hq.isJacobsonRing
   have hj : (⊥ : Ideal (B ⧸ p.map u)).jacobson = ⊥ :=
     IsJacobsonRing.out inferInstance Ideal.isPrime_bot.isRadical
-  by_contra h
-  push_neg at h
+  by_contra! h
   have hmem : Ideal.Quotient.mk (p.map u) g ∈ (⊥ : Ideal (B ⧸ p.map u)).jacobson := by
     refine (Ideal.mem_sInf).2 ?_
     rintro J ⟨-, hJ⟩
@@ -652,9 +651,6 @@ namespace GlobalTheory.CompanionTheory.Ar.Sl.Reg
 
 section Helpers
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
-
 open ReciprocityTheory.ChartRestriction.G.Out in
 theorem exists_root_through {V : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V]
     (G : Over (Sp V)) [GrpObj G] [IsCommMonObj G] [Smooth G.hom] [IsSeparated G.hom] [QuasiCompact G.hom]
@@ -906,7 +902,7 @@ theorem isClosed_of_maximal (G : Over (Sp (𝓞 L))) [LocallyOfFiniteType G.hom]
   exact Set.image_singleton.symm
 
 instance isDominant_spMap_field {K C : Type} [Field K] [Field C] (e : K →+* C) : IsDominant (spMap e) :=
-  ⟨Function.Surjective.denseRange fun z => ⟨default, Subsingleton.elim (α := PrimeSpectrum K) _ _⟩⟩
+  ⟨Function.Surjective.denseRange fun _ => ⟨default, Subsingleton.elim (α := PrimeSpectrum K) _ _⟩⟩
 
 theorem point_bound (D : PPData H L) (n : ℕ) (s : Out.H0 D.t.PP.L n) (d : 𝓞 L) (hd : d ≠ 0)
     (Hy : ∀ (K : Type) [Field K] [NumberField K] (c : 𝓞 L →+* K) (y : Over.mk (spMap c) ⟶ D.t.G) (N : ℕ) (T : K),

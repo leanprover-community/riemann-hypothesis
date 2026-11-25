@@ -1377,7 +1377,7 @@ theorem errorTerm_nonneg (O : OnObj S P c) (hPg : LeafPage O) (hSz : LeafSizes O
   · unfold errGood
     have hl : (0 : ℝ) ≤ (l : ℝ) := Nat.cast_nonneg l
     by_cases hY : (l : ℝ) ≤ O.Y
-    · rw [if_pos hY]
+    · rw [ite_eq_left hY]
       have e1 : 0 ≤ O.A1 j / (l : ℝ) := div_nonneg hA1 hl
       have e2 : 0 ≤ O.Akw j * O.th l := mul_nonneg hAkw (hth l).1
       have e3 : 0 ≤ O.T * O.ad l := mul_nonneg hT (hth l).2
@@ -1386,7 +1386,7 @@ theorem errorTerm_nonneg (O : OnObj S P c) (hPg : LeafPage O) (hSz : LeafSizes O
         · exact div_nonneg hAkw (by positivity)
         · exact le_rfl
       linarith
-    · rw [if_neg hY]
+    · rw [ite_eq_right hY]
 
 
 
@@ -1408,27 +1408,27 @@ theorem bad_sum (O : OnObj S P c) (hPg : LeafPage O) (hSz : LeafSizes O) (hX : L
     exact ⟨hqd, hq1s⟩
   have eg1 : O.errP j O.g1 = 4 * O.T + 4 * O.f * O.rr ^ 2 := by
     unfold OnObj.errP
-    rw [if_pos (Or.inl rfl : O.g1 = O.g1 ∨ O.g1 = O.g2)]
+    rw [ite_eq_left (Or.inl rfl : O.g1 = O.g1 ∨ O.g1 = O.g2)]
   have eg2 : O.errP j O.g2 = 4 * O.T + 4 * O.f * O.rr ^ 2 := by
     unfold OnObj.errP
-    rw [if_pos (Or.inr rfl : O.g2 = O.g1 ∨ O.g2 = O.g2)]
+    rw [ite_eq_left (Or.inr rfl : O.g2 = O.g1 ∨ O.g2 = O.g2)]
   have eq1 : O.errP j O.q1 = 2 * (O.sB j + O.T + 1) := by
     unfold OnObj.errP
-    rw [if_neg (show ¬(O.q1 = O.g1 ∨ O.q1 = O.g2) from fun h => h.elim hqg1 hqg2), if_neg hq1s,
-      if_pos (Or.inl rfl : O.q1 = O.q1 ∨ O.q1 = O.dd)]
+    rw [ite_eq_right (show ¬(O.q1 = O.g1 ∨ O.q1 = O.g2) from fun h => h.elim hqg1 hqg2), ite_eq_right hq1s,
+      ite_eq_left (Or.inl rfl : O.q1 = O.q1 ∨ O.q1 = O.dd)]
     unfold OnObj.β
-    rw [if_neg hqd]
+    rw [ite_eq_right hqd]
     ring
   have edd : O.errP j O.dd = 2 * (O.sB j + O.T + 1) + 4 * (O.f * O.k * O.bp) := by
     unfold OnObj.errP
-    rw [if_neg (show ¬(O.dd = O.g1 ∨ O.dd = O.g2) from fun h => h.elim hdg1 hdg2), if_neg hdds,
-      if_pos (Or.inr rfl : O.dd = O.q1 ∨ O.dd = O.dd)]
+    rw [ite_eq_right (show ¬(O.dd = O.g1 ∨ O.dd = O.g2) from fun h => h.elim hdg1 hdg2), ite_eq_right hdds,
+      ite_eq_left (Or.inr rfl : O.dd = O.q1 ∨ O.dd = O.dd)]
     unfold OnObj.β
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
   have es : ∀ p ∈ O.sm, O.errP j p = 2 * O.sC j + 2 * O.T + 2 := by
     intro p hp
     unfold OnObj.errP
-    rw [if_neg (show ¬(p = O.g1 ∨ p = O.g2) by rintro (rfl | rfl); exacts [hg1s hp, hg2s hp]), if_pos hp]
+    rw [ite_eq_right (show ¬(p = O.g1 ∨ p = O.g2) by rintro (rfl | rfl); exacts [hg1s hp, hg2s hp]), ite_eq_left hp]
   have hsm : ∑ p ∈ O.sm, Real.log (p : ℝ) * O.errP j p =
       (∑ p ∈ O.sm, Real.log (p : ℝ)) * (2 * O.sC j + 2 * O.T + 2) := by
     rw [Finset.sum_mul]
@@ -1536,23 +1536,23 @@ theorem on_core (N : IndefNum Bs) (O : OnObj S P c) (CE : ℝ) (hRk : RankRows S
     have dc := depth_cases (O.e0 w j) (O.e0 (conjPl w) j) (N.F0 w j)
     unfold OnObj.errl OnObj.errP
     by_cases hl : plc w = O.g1 ∨ plc w = O.g2
-    · rw [if_pos hl]
-      have hg : O.gq w = 2 * O.f * O.rr ^ 2 := if_pos hl
+    · rw [ite_eq_left hl]
+      have hg : O.gq w = 2 * O.f * O.rr ^ 2 := ite_eq_left hl
       obtain ⟨a, b, c⟩ := hL w hw hl j
       have := dc.2.2.2.2 O.T (O.nn w j) (O.nn (conjPl w) j) (O.gq w) a b c
       rw [hg] at this ⊢
       linarith
-    · rw [if_neg hl]
-      have hg : O.gq w = 0 := if_neg hl
+    · rw [ite_eq_right hl]
+      have hg : O.gq w = 0 := ite_eq_right hl
       rw [hg]
       by_cases h2' : plc w ∈ O.sm
-      · rw [if_pos h2']
+      · rw [ite_eq_left h2']
         obtain ⟨a, b, c⟩ := h2p w hw h2' j
         have := dc.2.2.2.1 (O.sC j) O.T a b c
         linarith
-      · rw [if_neg h2']
+      · rw [ite_eq_right h2']
         by_cases hr : plc w = O.q1 ∨ plc w = O.dd
-        · rw [if_pos hr]
+        · rw [ite_eq_left hr]
           obtain ⟨a, b, cq, cd⟩ := hR w hw hr j
           have hβ : -(2 * O.β (plc w)) ≤ N.F0 w j ∧ N.F0 w j ≤ 0 := by
             unfold OnObj.β
@@ -1561,19 +1561,19 @@ theorem on_core (N : IndefNum Bs) (O : OnObj S P c) (CE : ℝ) (hRk : RankRows S
             · rw [cq (hr.resolve_right hd)]; norm_num
           have := dc.2.2.1 (O.sB j) O.T (O.β (plc w)) a b hβ.1 hβ.2
           linarith
-        · rw [if_neg hr]
+        · rw [ite_eq_right hr]
           have hng : ¬ (plc w ∈ O.sm ∨ plc w = O.q1 ∨ plc w = O.dd ∨ plc w = O.g1 ∨ plc w = O.g2) := by
             rintro (h | h | h | h | h)
             exacts [h2' h, hr (Or.inl h), hr (Or.inr h), hl (Or.inl h), hl (Or.inr h)]
           have hgg := hgood w hw hng j
           unfold errGood
           by_cases hy' : (plc w : ℝ) ≤ O.Y
-          · rw [if_pos hy']
+          · rw [ite_eq_left hy']
             obtain ⟨a, b⟩ := hgg.1 hy'
             have := dc.1 (O.aE j (plc w)) a b
             show _ ≤ 2 * O.aE j (plc w) + 2
             linarith
-          · rw [if_neg hy']
+          · rw [ite_eq_right hy']
             obtain ⟨a, b, c⟩ := hgg.2 (lt_of_not_ge hy')
             have := dc.2.1 a b c
             linarith
@@ -1606,7 +1606,7 @@ theorem on_core (N : IndefNum Bs) (O : OnObj S P c) (CE : ℝ) (hRk : RankRows S
         obtain ⟨a, b, c, d, f⟩ := hB
         exact ⟨by rintro (h | h); exacts [a h, b h], f, by rintro (h | h); exacts [c h, d h]⟩
       unfold OnObj.errP
-      rw [if_neg hB'.1, if_neg hB'.2.1, if_neg hB'.2.2]
+      rw [ite_eq_right hB'.1, ite_eq_right hB'.2.1, ite_eq_right hB'.2.2]
       exact le_rfl
 
   have hRb : ∀ j, ∀ S' : Finset (HeightOneSpectrum (𝓞 K)),

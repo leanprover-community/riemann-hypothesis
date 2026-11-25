@@ -148,8 +148,6 @@ open scoped TensorProduct
 open GlobalTheory.FunObj GlobalTheory.ChiGrid GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.StdFrames Formalism.L2.DIV
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun
 open ValuativeRel
 open scoped GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
@@ -207,7 +205,7 @@ theorem evFin_symp {σ : E →ₐ[F] E} (hcm : IsCMExt F E σ) {n d : ℕ} (X : 
     unfold GlobalTheory.WeilM.hTens
     simp only [Finset.smul_sum, ← smul_mul_assoc, h, zero_mul, Finset.sum_const_zero, mul_zero]
   unfold GlobalTheory.WeilM.symp
-  rw [GlobalTheory.T.adelicTrace_supportedAtSplitPlace hcm v t _ hz, GlobalTheory.LatVac.evFin_liftV]
+  rw [GlobalTheory.SplitAdeleTrace.trace_at_split hcm v t _ hz, GlobalTheory.LatVac.evFin_liftV]
   rw [pairM_comm (GlobalTheory.FlipMatch.coY σ X Y t b c x), GlobalTheory.FlipMatch.coX, GlobalTheory.FlipMatch.coX, GlobalTheory.FlipMatch.coY,
     GlobalTheory.FlipMatch.coY, pairM_chart, pairM_chart]
 

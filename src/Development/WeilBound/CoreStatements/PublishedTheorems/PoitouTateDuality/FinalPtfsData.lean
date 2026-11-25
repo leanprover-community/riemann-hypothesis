@@ -16,8 +16,6 @@ open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh GroundTheo
 
 namespace PositivityTheory.Lit1.PTN
 
-attribute [local instance 2000] Rep.hV2
-
 structure FoundData (Kf : FiniteSubfield) [NumberField Kf.1] [IsAlgClosure Kf.1 (AlgebraicClosure ℚ)]
     (S : Finset (HeightOneSpectrum (𝓞 Kf.1))) (l r : ℕ) [Fact l.Prime] (ζ : AlgebraicClosure ℚ)
     (Av : S → ValuationSubring (AlgebraicClosure ℚ))

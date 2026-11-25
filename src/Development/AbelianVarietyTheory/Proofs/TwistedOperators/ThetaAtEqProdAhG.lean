@@ -111,7 +111,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.FWT Formalism.L2.Pj Formalism.IndefR.Datum ReciprocityTheory.ChartRestriction.G.PullbackSections ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 noncomputable section
 
 namespace GlobalTheory.AHPhase
@@ -215,7 +214,7 @@ theorem perFr_add' (X : Data E r) (y : Frame X.Ψ r) (v w : Fin r → E) (τ : E
   · simp
 
 def pvHom (W : UnfAt U k x) : (Fin r → E) →+ (Fin W.g → ℂ) :=
-  AddMonoidHom.mk' (pv W) fun v w => funext fun j => perFr_add' _ _ _ _ _ _
+  AddMonoidHom.mk' (pv W) fun _ _ => funext fun _ => perFr_add' _ _ _ _ _ _
 
 theorem pv_nsmul (W : UnfAt U k x) (N : ℕ) (v : Fin r → E) : pv W ((N : E) • v) = (N : ℂ) • pv W v := by
   have h1 : (N : E) • v = N • v := by rw [Nat.cast_smul_eq_nsmul]

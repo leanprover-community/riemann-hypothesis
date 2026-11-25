@@ -169,9 +169,7 @@ theorem herm_rat (S : HSp D) (z : Fin S.rank → D.host.E) :
   rfl
 
 theorem rat_mulVec {m n : ℕ} (M : Matrix (Fin m) (Fin n) D.host.E) (z : Fin n → D.host.E) :
-    (rat M : Mx D m n) *ᵥ ratV z = ratV (M *ᵥ z) := by
-  funext i
-  exact (RingHom.map_mulVec (incA D) M z i).symm
+    (rat M : Mx D m n) *ᵥ ratV z = ratV (M *ᵥ z) := (GlobalTheory.MixPer.ratV_mulVec M z).symm
 
 theorem ratV_smul {n : ℕ} (a : D.host.E) (z : Fin n → D.host.E) : (ratV (a • z) : Fin n → AE D) = incA D a • ratV z := by
   funext i

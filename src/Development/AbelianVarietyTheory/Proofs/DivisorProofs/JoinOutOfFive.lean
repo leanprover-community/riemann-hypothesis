@@ -124,13 +124,6 @@ open NumberField IsDedekindDomain GlobalTheory.CMVal GlobalTheory.LatVal GlobalT
 
 namespace GlobalTheory.LatAlgebraic
 
-theorem natAbs_discr_of_finrank_one (F : Type) [Field F] [NumberField F] (h : Module.finrank ℚ F = 1) :
-    (discr F).natAbs = 1 := by
-  have hb : (⊥ : Subalgebra ℚ F) = ⊤ := Subalgebra.bot_eq_top_of_finrank_eq_one h
-  let e : ℚ ≃ₐ[ℚ] F := (Algebra.botEquiv ℚ F).symm.trans ((Subalgebra.equivOfEq _ _ hb).trans Subalgebra.topEquiv)
-  rw [← NumberField.discr_eq_discr_of_algEquiv (f := e), NumberField.discr_rat]
-  rfl
-
 theorem two_le_finrank {E : Type} [Field E] [NumberField E] [IsCMField E] (h : UnramFin E) :
     2 ≤ Module.finrank ℚ (maximalRealSubfield E) := by
   apply _root_.GlobalTheory.LatConjOne.two_le_finrank_of_unramFin <;> assumption
@@ -602,8 +595,8 @@ theorem latAlg_of_siegelKlingen : GlobalTheory.Published.SiegelKlingenDeligneRib
     exact τ.im_pos.ne' h2
   obtain ⟨n, N, L, hn, hN, hN2, hL, hLΛ⟩ := GlobalTheory.RoadE.exists_level E (algebraMap K E θ) (condQ 𝔣 Q) y 2 hc0 hθF (by norm_num)
   have hN2' : 2 ≤ N := Nat.le_of_dvd hN hN2
-  haveI : NeZero N := ⟨by omega⟩
-  haveI : Fact (1 < N) := ⟨by omega⟩
+  have : NeZero N := ⟨by omega⟩
+  have : Fact (1 < N) := ⟨by omega⟩
   let y₁ : Fin 2 → ZMod N := ![1, 0]
   have hy₁ : y₁ ≠ 0 := by
     intro h
@@ -755,7 +748,7 @@ theorem dvd_discr_of_sq {E : Type} [Field E] [NumberField E] {d : ℕ} (hd : d.P
   obtain ⟨P, hPmax, hPd⟩ := Ideal.exists_le_maximal (Ideal.span {(d : 𝓞 E)})
     ((Ideal.span_singleton_ne_top (not_isUnit_natCast hd)))
   have hdP : (d : 𝓞 E) ∈ P := hPd (Ideal.mem_span_singleton_self _)
-  haveI := hPmax.isPrime
+  have := hPmax.isPrime
   have he := (GlobalTheory.Mem.RaySplit.not_dvd_discr_iff_ramificationIdx E hd).1 h P hPmax.isPrime hdP
   apply GlobalTheory.Mem.RaySplit.not_mem_sq hd hdP he
   have hWP : W ∈ P := hPmax.isPrime.mem_of_pow_mem 2 (by rw [hW]; exact P.neg_mem hdP)
@@ -780,7 +773,7 @@ theorem ne_d_of_c_eq_zero {E : Type} [Field E] [NumberField E] {I : Type} [Finty
   rintro rfl
   obtain ⟨w, hw, -⟩ := hF.2.2.2.2.2.2.2
   have hdd := dvd_discr_of_sq hF.1 hw
-  haveI : Fact l.Prime := ⟨hF.1⟩
+  have : Fact l.Prime := ⟨hF.1⟩
   unfold c_vp at hc
   split_ifs at hc with hv
   · obtain ⟨v, hlv, hvf⟩ := hv
@@ -826,7 +819,7 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ClassZetaValuationBounds (ValGe_vp 
 theorem latIntUnr : GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates.Statement → JetInt → LatIntUnr := by
   intro hSt hJ E _ _ _ _ I _ d φ s hF hs z hz 𝔣 Λ h𝔣 hΛ l hl Q hQ hQl y hy hc κ S hS
   classical
-  haveI : Fact l.Prime := ⟨hl⟩
+  have : Fact l.Prime := ⟨hl⟩
   have hld : l ≠ d := ne_d_of_c_eq_zero hF h𝔣 hc
   rw [_root_.GlobalTheory.LadicDenom.valGe_iff_forall_sz]
   intro lam
@@ -850,7 +843,7 @@ theorem latIntUnr : GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates.
   have hp : ∀ i, Sz l lam 0 (a i * b i * (Real.sqrt d : ℝ) / (2 * Real.pi))⁻¹ := by
     intro i
     have := (hab i).2.2.2
-    rwa [hc, if_neg hld, add_zero] at this
+    rwa [hc, ite_eq_right hld, add_zero] at this
   have hsd : ((Real.sqrt d : ℝ) : ℂ) ≠ 0 := by
     have : (0 : ℝ) < Real.sqrt d := Real.sqrt_pos.2 (by exact_mod_cast hF.1.pos)
     exact_mod_cast this.ne'
@@ -894,7 +887,7 @@ theorem latIntUnr : GlobalTheory.IndefiniteRowSideFullHecke.DefiningCoordinates.
     refine GlobalTheory.LatValRam.sz_neg_one_pow_mul _ (GlobalTheory.LatValRam.sz_mono (GlobalTheory.LatValRam.sz_mul hTg (GlobalTheory.LatValRam.sz_prod Finset.univ
       (fun i => ((κ i : ℕ) : ℝ) * 0 + ((2 * s + 2 * κ i : ℕ) : ℝ) * (a0 𝔣 l : ℝ)) _
       (fun i _ => GlobalTheory.LatValRam.sz_mul (GlobalTheory.LatValRam.sz_pow (hp i) _) (GlobalTheory.LatValRam.sz_pow (hab i).2.2.1 _)))) (le_of_eq ?_))
-    simp only [betaBound_vp, n_vp, if_pos hc, Formalism.PairingDivisionLocalBalance.wtM, Formalism.PairingDivisionLocalBalance.absK]
+    simp only [betaBound_vp, n_vp, ite_eq_left hc, Formalism.PairingDivisionLocalBalance.wtM, Formalism.PairingDivisionLocalBalance.absK]
     push_cast
     simp only [mul_zero, zero_add, add_mul, Finset.sum_add_distrib, ← Finset.sum_mul, ← Finset.mul_sum, Finset.sum_const,
       Finset.card_univ, nsmul_eq_mul]
@@ -964,7 +957,6 @@ theorem expansion_of_jetInt : JetInt → Expansion := by
     rw [div_mul_eq_div_div, div_eq_mul_inv (_ / _)]
   rw [e]
   refine sz_mono ?_ (GlobalTheory.LatValRam.sz_mul h1 h2)
-  have hK : (0 : ℝ) ≤ ((∑ i, κ i : ℕ) : ℝ) := Nat.cast_nonneg _
   split_ifs <;> nlinarith
 
 end GlobalTheory.JetExp

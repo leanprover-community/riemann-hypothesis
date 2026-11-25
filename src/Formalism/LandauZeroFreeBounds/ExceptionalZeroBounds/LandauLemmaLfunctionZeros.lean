@@ -57,11 +57,12 @@ lemma landau_lemma_lfunction_zeros (hLL : LandauLocal3) {C : ℝ}
   have hbound : ∀ z ∈ Metric.closedBall z₀ (11 / 20),
       ‖DirichletCharacter.LFunction χ z‖ ≤ M * ‖DirichletCharacter.LFunction χ z₀‖ := by
     intro z hz
-    have hre := re_ge_of_mem_closedBall hz
-    rw [hz₀re] at hre
-    have h1 := hC q χ hχ z (by linarith)
-    have hn := norm_le_norm_add_of_mem_closedBall' hz
-    have hn0 := norm_disc_center_le s.im
+    have hre : z₀.re - z.re ≤ 11 / 20 := by
+      exact (Complex.re_le_norm (z₀ - z)).trans (mem_closedBall_iff_norm'.mp hz)
+    have h1 := hC q χ hχ z (by linarith [hz₀re])
+    have hn := norm_le_of_mem_closedBall hz
+    have hn0 : ‖z₀‖ ≤ 21 / 20 + |s.im| := by
+      simpa [hz₀, abs_of_pos (by norm_num : (0 : ℝ) < 21 / 20)] using Complex.norm_le_abs_re_add_abs_im z₀
     have hq0 : (0 : ℝ) ≤ q := by positivity
     have hz1 : 1 + ‖z‖ ≤ 2 * (|s.im| + 2) := by linarith [abs_nonneg s.im]
     have hY : 0 ≤ (|C| + 1) * q * (2 * (|s.im| + 2)) := by positivity

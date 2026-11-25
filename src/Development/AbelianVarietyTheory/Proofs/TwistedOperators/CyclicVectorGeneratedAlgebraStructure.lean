@@ -98,7 +98,7 @@ theorem coe_aeval_gen (M : Matrix n n A) (p : A[X]) :
 
 def actOn (M : Matrix n n A) (v : n → A) : genAlg M →ₗ[A] (n → A) where
   toFun l := (l : Matrix n n A) *ᵥ v
-  map_add' a b := Matrix.add_mulVec _ _ _
+  map_add' _ _ := Matrix.add_mulVec _ _ _
   map_smul' c a := Matrix.smul_mulVec c (a : Matrix n n A) v
 
 theorem actOn_bijective {M : Matrix n n A} {v : n → A} (h : IsUnit (krylov M v).det) :

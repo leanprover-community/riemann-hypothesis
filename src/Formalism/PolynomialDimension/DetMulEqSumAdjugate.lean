@@ -144,8 +144,7 @@ theorem graphMinor : Formalism.CountingSumsFrames.GraphMinor := by
     rw [h0, Matrix.mulVec_zero] at h1
     exact (smul_eq_zero.mp h1.symm).resolve_left hA
   obtain ⟨i, hi⟩ : ∃ i, Matrix.mulVec (H.submatrix id (Fin.castLE h)).adjugate (fun m => H m c) i ≠ 0 := by
-    by_contra hh
-    push_neg at hh
+    by_contra! hh
     exact hw (funext hh)
   refine ⟨i, c, hc, ?_⟩
   rw [submatrix_swapCol, ← Matrix.cramer_apply, Matrix.cramer_eq_adjugate_mulVec]

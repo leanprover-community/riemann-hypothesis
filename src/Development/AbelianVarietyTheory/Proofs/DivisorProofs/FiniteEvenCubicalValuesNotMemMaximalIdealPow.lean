@@ -252,7 +252,6 @@ theorem posquad_finite : ∀ (X : Type) [AddCommGroup X] [Module.Finite ℤ X] (
     linarith
   have Bbound : ∀ a s, |B a s| ≤ q a + q s := by
     intro a s
-    have h1 : B a s = q (a + s) - q a - q s := rfl
     have h2 : B (-a) s = q (-a + s) - q (-a) - q s := rfl
     have h3 : B (-a) s = - B a s := by
       rw [← L_apply, ← L_apply, map_neg]
@@ -309,7 +308,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
 namespace GlobalTheory.QuadTend

@@ -74,7 +74,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RawLift
 
 open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting GlobalTheory.PlaceTensor
@@ -176,7 +175,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RawLift
 
 
@@ -193,7 +191,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RawLift
 
 noncomputable section
@@ -372,8 +369,7 @@ theorem GlobalTheory.ThetaIrred.orth_heis_translates : ∀ (D : D7) (ψ : AddCha
   · exact Or.inr he0
   left
   obtain ⟨y, hy⟩ : ∃ y, e y ≠ 0 := by
-    by_contra hn
-    push_neg at hn
+    by_contra! hn
     exact he0 (funext hn)
   funext x
   rcases key (y - x) x with h0 | h0
@@ -397,7 +393,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RawLift
 
 
@@ -414,7 +409,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RawLift
 
 noncomputable section
@@ -664,7 +658,7 @@ theorem lev (hψ : IsStdChar D ψ (-1)) (hθ : IsInfFam θ)
       have e3 := Ψl (ψ (symplOH S T w (-w))) f 0 (heisO ψ S T w e) hf C.zero_mem hwC
       rw [add_zero, z0, add_zero, ← e1, e2] at e3
       exact (mul_eq_zero.1 e3.symm).resolve_left (star_ne_zero.2 (GlobalTheory.ThetaSchurBdd.psi_ne_zero hψ _))
-    · push_neg at hA
+    · push Not at hA
       obtain ⟨u, hu, h0, hne1⟩ := hA
       have e1 : thetaIP μ 𝓕 h (heisO ψ S T w e) =
           thetaIP μ 𝓕 (heisO ψ S T u h) (heisO ψ S T u (heisO ψ S T w e)) :=
@@ -701,7 +695,7 @@ theorem GlobalTheory.VacSchurFin.vacSchur : ∀ (D : D7) (ψ : AddChar (AF D.hos
       (GlobalTheory.VacSchurFin.mem_vacSub.2 ⟨h0t, fun u hu h => l₀ u (m hu).1 h, h0v⟩) h0ne f g
       (GlobalTheory.VacSchurFin.mem_vacSub.2 ⟨hf, fun u hu h => l₁ u (m hu).2.1 h, vf⟩)
       (GlobalTheory.VacSchurFin.mem_vacSub.2 ⟨hg, fun u hu h => l₂ u (m hu).2.2 h, vg⟩)
-  · push_neg at hV
+  · push Not at hV
     refine ⟨0, fun f g hf hg vf vg => ?_⟩
     have hf0 : f = 0 := hV f hf vf
     subst hf0

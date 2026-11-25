@@ -369,8 +369,7 @@ open Formalism.REAL Formalism.MainNotions.S PositivityTheory.UnitaryDecompositio
 
 theorem irr : Irr := by
   intro m ε K _ _ σ hU hI u w hu hw
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hJ : PI.UpqRep.Jm ε * PI.UpqRep.Jm ε = 1 := by
     unfold PI.UpqRep.Jm
     rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
@@ -523,7 +522,7 @@ theorem phiEq : PhiEq := by
   refine ⟨fun l => ?_, fun h => ?_⟩
   · show P (ap (E (e (Sum.inl l)) (zi e)) η) ∈ _
     unfold ap
-    rw [dif_pos hη]
+    rw [dite_eq_left hη]
     exact hsm _ (Subtype.coe_prop _)
   · have hgU : emb e (um h) ∈ UJset ε := (embU hF h).2
     have hgiU : emb e (um h⁻¹) ∈ UJset ε := (embU hF h⁻¹).2
@@ -544,11 +543,11 @@ theorem phiEq : PhiEq := by
     funext c0
     show P (ap (E (e (Sum.inl c0)) (zi e)) (π (emb e (um h)) η)) =
       ∑ d, (um h)⁻¹ d c0 • σ (um h) (P (ap (E (e (Sum.inl d)) (zi e)) η))
-    simp only [ap, dif_pos hη, dif_pos hπη]
+    simp only [ap, dite_eq_left hη, dite_eq_left hπη]
     have hc := hS.conj _ hgiU (e (Sum.inl c0)) (zi e) ⟨π (emb e (um h)) η, hπη⟩ ⟨η, hη⟩ (hcomp1 η).symm
     rw [hinv] at hc
     simp only [emb_row, mul_ite, mul_one, mul_zero, ite_smul, zero_smul, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true] at hc
+      Finset.mem_univ, ite_true] at hc
     have hc2 := congrArg (fun y => P (π (emb e (um h)) y)) hc
 
     simp only [hcomp2, map_sum, map_smul] at hc2
@@ -629,8 +628,7 @@ theorem nonvan (hKey : KeyId) {N : ℕ} {ε : Fin (N + 2) → Bool} {ε' : Fin (
   have hK : ∀ v : S, cG • f v = -∑ c : Fin (N + 1),
       (Th E' (-mσ j)) (fun l => f ((E (ι l) z) ((E z (ι c)) v))) c :=
     fun v => hKey S S' N E E' ι z f hS.gl hιinj hιz hf (-mσ j) cG (fun x => hcapπ _ x) hw0 v
-  by_contra hno
-  push_neg at hno
+  by_contra! hno
   let lift : (Fin (N + 1) → H') → Fin (N + 1) → S' := fun y l =>
     if h : y l ∈ S' then ⟨y l, h⟩ else 0
   have hlift : ∀ y ∈ SmT ε' σ, ∀ l, ((lift y l : S') : H') = y l := by
@@ -830,14 +828,14 @@ theorem pj_words {N : ℕ} {ε : Fin (N + 2) → Bool} {ε' : Fin (N + 1) → Bo
     let X0 : Fin (N + 1) → S := fun a => E (ι a) z ζ'
     let x : Fin (N + 1) → S' := fun c => f (X0 c)
     have hco' : co x = phi E e P ζ := funext fun c => by
-      simp only [co, x, X0, phi, ap, dif_pos hζ]
+      simp only [co, x, X0, phi, ap, dite_eq_left hζ]
       rfl
     have hT : T l ζ' = Th (fun a b => E (ι a) (ι b)) w X0 l := by
       rw [Th_apply]
       simp only [T, LinearMap.sum_apply, LinearMap.smul_apply, Module.End.mul_apply]
       rfl
     have h1 : P (ap (d⁻¹ • T l) ζ) = d⁻¹ • (f (Th (fun a b => E (ι a) (ι b)) w X0 l) : H') := by
-      simp only [ap, dif_pos hζ, LinearMap.smul_apply, Submodule.coe_smul, map_smul]
+      simp only [ap, dite_eq_left hζ, LinearMap.smul_apply, Submodule.coe_smul, map_smul]
       rw [hT]
       rfl
     have h2 := (thMap S S' N (fun a b => E (ι a) (ι b)) E' f hf w X0 l).1
@@ -901,8 +899,7 @@ theorem stepM_of (hKey : KeyId) (hZ : Zero) (hPhi : PhiEq) (hIrr : Irr) :
   have hφ₀ := (hPhi (N + 1) ε ε' e H H' π σ S E P hG.fits hS hUπ hP η₀ hη₀).1
   have hx₀ := X.p_sm j hj _ hφ₀
   obtain ⟨l, hl⟩ : ∃ l, X.p j (phi E e P η₀) l ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (funext h)
   have hy := smT_single (hx₀ l) l
   have hform := X.form j hj _ hφ₀ _ hy

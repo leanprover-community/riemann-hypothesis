@@ -83,14 +83,14 @@ theorem cc_Ar_of {n' m : ℕ} (TT : Finset (Fin n')) (X : Fin n' → Fin (m + 1)
     unfold lamAt
     by_cases hs : s ∈ TT
     · obtain ⟨h1, h2⟩ := h s hs
-      simp only [hs, if_true]
+      simp only [hs, ite_true]
       split_ifs
       · exact ⟨h1, h2⟩
       · simp only [Fin.rev_zero, Fin.rev_last]
         rw [h1, h2]
         simp
     · have := h0 s hs
-      simp only [hs, if_false]
+      simp only [hs, ite_false]
       split_ifs <;> simp [this]
   constructor
   · unfold Ar

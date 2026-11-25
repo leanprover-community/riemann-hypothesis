@@ -263,12 +263,12 @@ theorem det_famL_mul (hfin : Module.finrank F E = 2) (g : Fv F v) (θ Δ : Fv F 
   rcases lt_trichotomy i j with h | h | h
   · have h1 : ¬ j < i := not_lt.2 h.le
     have h2 : j ≠ i := h.ne'
-    simp only [famL, if_pos h, if_neg h1, if_neg h2, hs, LinearMap.det_id, mul_one]
+    simp only [famL, ite_eq_left h, ite_eq_right h1, ite_eq_right h2, hs, LinearMap.det_id, mul_one]
   · subst h
-    simp only [famL, lt_irrefl, if_false, if_true, ha, sq]
+    simp only [famL, lt_irrefl, ite_false, ite_true, ha, sq]
   · have h1 : ¬ i < j := not_lt.2 h.le
     have h2 : i ≠ j := h.ne'
-    simp only [famL, if_pos h, if_neg h1, if_neg h2, hs, LinearMap.det_id, one_mul]
+    simp only [famL, ite_eq_left h, ite_eq_right h1, ite_eq_right h2, hs, LinearMap.det_id, one_mul]
 
 theorem det_bigL_sq (hfin : Module.finrank F E = 2) (g : Fv F v) (θ Δ : Fv F v ⊗[F] E)
     (hθ : Algebra.trace (Fv F v) (Fv F v ⊗[F] E) θ = 1) (hΔ : Algebra.trace (Fv F v) (Fv F v ⊗[F] E) Δ = 0)
@@ -416,21 +416,21 @@ theorem hermBox_eq
     obtain ⟨i, j⟩ := p
     obtain ⟨hO, hup, hdg⟩ := h i j
     rcases lt_trichotomy i j with hij | hij | hij
-    · simp only [ctr, pSet, if_pos hij, Set.mem_setOf_eq]
+    · simp only [ctr, pSet, ite_eq_left hij, Set.mem_setOf_eq]
       exact hup hij
     · subst hij
-      simp only [ctr, pSet, lt_irrefl, if_false, if_true, Set.mem_setOf_eq]
+      simp only [ctr, pSet, lt_irrefl, ite_false, ite_true, Set.mem_setOf_eq]
       refine ⟨Submodule.sub_mem _ hO (Formalism.L2.SG.Pf.NcVal.TrW.mul_mem v (hc.2 i i) hθO), ?_⟩
       rw [diag_key σ v htr hθ _ _ (hc.1 i i).symm]
       exact hdg rfl
     · have h1 : ¬ i < j := not_lt.2 hij.le
       have h2 : i ≠ j := hij.ne'
-      simp only [ctr, pSet, if_neg h1, if_neg h2, sub_zero]
+      simp only [ctr, pSet, ite_eq_right h1, ite_eq_right h2, sub_zero]
       exact hO
   · intro h i j
     have hp := h (i, j)
     rcases lt_trichotomy i j with hij | hij | hij
-    · simp only [ctr, pSet, if_pos hij, Set.mem_setOf_eq] at hp
+    · simp only [ctr, pSet, ite_eq_left hij, Set.mem_setOf_eq] at hp
       have hO : Y (i, j) ∈ OEv (E := E) v := by
         have e : Y (i, j) = sc (E := E) v (g : Fv F v) * ((Y (i, j) - c i j) * sc (E := E) v (g : Fv F v)⁻¹) +
             c i j := by
@@ -440,7 +440,7 @@ theorem hermBox_eq
         exact Submodule.add_mem _ (Formalism.L2.SG.Pf.NcVal.TrW.mul_mem v hgO hp) (hc.2 i j)
       exact ⟨hO, fun _ => hp, fun h => absurd h hij.ne⟩
     · subst hij
-      simp only [ctr, pSet, lt_irrefl, if_false, if_true, Set.mem_setOf_eq] at hp
+      simp only [ctr, pSet, lt_irrefl, ite_false, ite_true, Set.mem_setOf_eq] at hp
       have hO : Y (i, i) ∈ OEv (E := E) v := by
         rw [← sub_add_cancel (Y (i, i)) (c i i * θ)]
         exact Submodule.add_mem _ hp.1 (Formalism.L2.SG.Pf.NcVal.TrW.mul_mem v (hc.2 i i) hθO)
@@ -449,7 +449,7 @@ theorem hermBox_eq
       exact hp.2
     · have h1 : ¬ i < j := not_lt.2 hij.le
       have h2 : i ≠ j := hij.ne'
-      simp only [ctr, pSet, if_neg h1, if_neg h2, sub_zero] at hp
+      simp only [ctr, pSet, ite_eq_right h1, ite_eq_right h2, sub_zero] at hp
       exact ⟨hp, fun h => absurd h h1, fun h => absurd h h2⟩
 
 theorem hermBox_meas (hfin : Module.finrank F E = 2)
@@ -527,8 +527,6 @@ namespace Formalism.L2.SG.Pf.NcVal
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.LocVol Formalism.L2.SG.TypedSets Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes MeasureTheory
   NumberField IsDedekindDomain
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem volUHermBox_holds {D : D7} (X : HidaSetting D) (ψ : AddChar (AF X.B.I.F) ℂ) : VolUHermBox X ψ := by
   intro hψ hs v hv
   obtain ⟨hg, -, hd⟩ := VolUT.typ_arith X v hv
@@ -601,8 +599,6 @@ noncomputable section
 namespace Formalism.L2.SG.Pf.NcVal
 
 open Formalism.BasicNotions Formalism.L2.SG.HidaSetting Formalism.L2.SG.LocVol Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem volTypV_holds {D : D7} (X : HidaSetting D) (u u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) :
     VolTypV X u u' ψ :=

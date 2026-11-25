@@ -4,42 +4,7 @@ public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership
 public import Formalism.LocalToGlobal.Columns.RowFormsLemmas
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TensorMapDescent
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SpanMapNabKDelK
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
@@ -173,9 +138,6 @@ def toMtP : MtildeV W Ch sel mu P →ₛₗ[σ] MtP W Ch sel mu P σ := toCForm 
 
 theorem toMtilde_injective : Function.Injective (toMtP W Ch sel mu P σ) := toCForm_injective σ W.sgTrue _ _
 
-def rowKH : Subgroup (FrmG (rowTyG Ch P) (levQX R sel mu)) :=
-  (rowTyK Ch).grp.comap ((rowTyG Ch P).grp.subtype.comp ((MonoidHom.fst _ _).comp (MonoidHom.snd _ _)))
-
 end Rows
 
 section Per
@@ -188,7 +150,7 @@ def idxTop : Idx sel mu L R.m := ⟨none, by simp⟩
 
 
 variable (R) in
-theorem ysAt_m : ysAt R sel mu cst R.m = Ys.triv X _ := if_neg (Nat.succ_ne_self _)
+theorem ysAt_m : ysAt R sel mu cst R.m = Ys.triv X _ := ite_eq_right (Nat.succ_ne_self _)
 
 def topPt (u : Pr.Word) (p : ChPt (R := R) sel mu u R.m) :
     PtY (Pr.vT u) Pr.vGs (QE sel (mu : Chr X.F X.E X.K)) (ysAt R sel mu cst R.m) :=
@@ -205,15 +167,6 @@ variable (u : Pr.Word)
   (rho' : ∀ i (b : Idx sel mu L (i + 1)), (stepAt sel mu cst L (topLev Ch sel mu cst P) u (i + 1)).D b → ℂ) (cD : X.Tau → ℂ)
   (Th : ∀ i (b : Idx sel mu L i) (b' : Idx sel mu L (i + 1)), (stepAt sel mu cst L (topLev Ch sel mu cst P) u i).D b →
     (stepAt sel mu cst L (topLev Ch sel mu cst P) u (i + 1)).D b' → Formalism.L2.Ker.VCx X.Tau (R.N i) (R.N (i + 1)) → ℂ)
-
-section Gen
-
-variable (H : Subgroup (FrmG (rowTyG Ch P) (levQX R sel mu))) (σ : X.K →+* ℂ)
-
-variable {H} {Λ' : LevFam X.E X.K (R.N R.m - 1) Pr.vGs} (hH : IsSubLev (rowTyG Ch P) Λ' (levQX R sel mu) H)
-  (hd : Disjoint Pr.vGs (QE sel (mu : Chr X.F X.E X.K)))
-
-end Gen
 
 variable (σ : X.K →+* ℂ)
 

@@ -86,8 +86,8 @@ theorem law_iff (L : PeriodPair) (Λ : AddSubgroup ℂ) (h : ∀ z, z ∈ Λ ↔
         Real.pi * latticeForm L ω ω / 2) * G z := by
   have hs : (if ω / 2 ∈ Λ then (1 : ℂ) else -1) = sigmaSign L ω := by
     by_cases hw : ω / 2 ∈ Λ
-    · rw [if_pos hw, sigmaSign_of_mem L ((h _).1 hw)]
-    · rw [if_neg hw, sigmaSign_of_notMem L (fun hh => hw ((h _).2 hh))]
+    · rw [ite_eq_left hw, sigmaSign_of_mem L ((h _).1 hw)]
+    · rw [ite_eq_right hw, sigmaSign_of_notMem L (fun hh => hw ((h _).2 hh))]
   have hU : U1 Λ ω G z = G (z + ω) *
       (Complex.exp (Real.pi * latticeForm L z ω + Real.pi * latticeForm L ω ω / 2))⁻¹ := by
     unfold U1

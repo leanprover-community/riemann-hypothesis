@@ -116,9 +116,6 @@ theorem reduceAlongHypersurface_isomorphic_of_isMaxContactHypersurface
     (hH'snc : InStrictNormalCrossingPosition S.structMap [H']) :
     (MaxContactReduction.reduceAlongHypersurface hinv T (lowerDimensionalFamily A T) S H).toMarkedSequenceOfBlowups.toSequenceOfBlowups.Isomorphic
       (MaxContactReduction.reduceAlongHypersurface hinv T (lowerDimensionalFamily A T) S H').toMarkedSequenceOfBlowups.toSequenceOfBlowups := by
-  have hsmid : AlgebraicGeometry.Smooth (𝟙 S.scheme) := inferInstance
-  have hflid : AlgebraicGeometry.Flat (𝟙 S.scheme) := inferInstance
-  have hsuid : AlgebraicGeometry.Surjective (𝟙 S.scheme) := inferInstance
   have hft2 : AlgebraicGeometry.LocallyOfFiniteType S.structMap := hv.locallyOfFiniteType
   have hpb : LowerDimReductionPullback.pullbackTriple S (𝟙 S.scheme) = S := by
     simp [LowerDimReductionPullback.pullbackTriple, MarkedIdealWithBoundary.pullbackAlong]
@@ -426,8 +423,6 @@ private theorem isPullback_of_faithfullyFlat_covers {X Y : Scheme.{u}} (h : Y �
   have := hs₂
   have hfc : AlgebraicGeometry.Flat (c₂ ≫ h) :=
     CategoryTheory.MorphismProperty.comp_mem _ c₂ h inferInstance inferInstance
-  have hflfst : AlgebraicGeometry.Flat (Limits.pullback.fst (c₂ ≫ h) c₁) := inferInstance
-  have hsufst : AlgebraicGeometry.Surjective (Limits.pullback.fst (c₂ ≫ h) c₁) := inferInstance
   have hw : IsStrictPullbackBlowupSeq h (s₁.baseChange h) s₁ :=
     isStrictPullbackSequenceOfBlowups_baseChange s₁ h
   refine (IsStrictPullbackBlowupSeq.isPullbackSequenceOfBlowups_withoutIsoBlowups hw).of_isomorphic ?_
@@ -468,7 +463,6 @@ private theorem smooth_pullback_fst_snd_and_surjective_fst {X Y : Scheme.{u}} (h
     AlgebraicGeometry.Smooth (Limits.pullback.fst (c₂ ≫ h) c₁) ∧
       AlgebraicGeometry.Smooth (Limits.pullback.snd (c₂ ≫ h) c₁) ∧
         AlgebraicGeometry.Surjective (Limits.pullback.fst (c₂ ≫ h) c₁) := by
-  have hcc : AlgebraicGeometry.Smooth (c₂ ≫ h) := inferInstance
   exact ⟨inferInstance, inferInstance, inferInstance⟩
 
 private theorem smoothPullbackTriple_eq_dropTrivialBoundary (S : MarkedIdealWithBoundary.{u}) {X' : Scheme.{u}}
@@ -505,7 +499,6 @@ private theorem orderAt_coverTriple_le_mult (hstar0 : _root_.FunctorialResolutio
   have hsm : AlgebraicGeometry.Smooth S.structMap := hv.smooth
   have hft : AlgebraicGeometry.LocallyOfFiniteType S.structMap := hv.locallyOfFiniteType
   have hcz : CharZero S.base := hv.charZero
-  have hnoe : IsNoetherianRing S.base := inferInstance
   have hsmc : AlgebraicGeometry.Smooth (MaxContactCoverData.coverMap S hv) :=
     MaxContactCoverData.smooth_coverMap_of_isAdmissible S hv
   have hs : 1 ≤ MaxContactCoverData.tunedMult S := hcv.one_le_mult

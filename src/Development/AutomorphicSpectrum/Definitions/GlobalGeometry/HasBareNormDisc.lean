@@ -33,14 +33,6 @@ variable {G : Over S} [GrpObj G]
 def IsCombAt {x : Sp R ⟶ S} {n : ℕ} (c : Fin n → R) (v : Fin n → (epsAt x ⟶ G)) (w : epsAt x ⟶ G) : Prop :=
   ∃ u : Fin n → (epsAt x ⟶ G), (∀ i, (u i).left = spMap (epsScaleR (c i)) ≫ (v i).left) ∧ w = (List.ofFn u).prod
 
-def IsEigAt {O : Type} [CommRing O] (act : OAct O G) (x : Sp R ⟶ S) (χ : O →+* R) (v : epsAt x ⟶ G) : Prop :=
-  spMap (TrivSqZeroExt.fstHom R R R).toRingHom ≫ v.left = (1 : Over.mk x ⟶ G).left ∧
-    ∀ a, (v ≫ act.act a).left = spMap (epsScaleR (χ a)) ≫ v.left
-
-def IsEigBasis {O : Type} [CommRing O] (act : OAct O G) (x : Sp R ⟶ S) (χ : O →+* R) {n : ℕ}
-    (v : Fin n → (epsAt x ⟶ G)) : Prop :=
-  (∀ i, IsEigAt act x χ (v i)) ∧ ∀ w, IsEigAt act x χ w → ∃! c : Fin n → R, IsCombAt c v w
-
 end Lie
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H}
@@ -52,17 +44,7 @@ def embF (c : Coeff l) (τ : E →+* ℂ) : 𝓞 E →+* c.F where
   map_zero' := Subtype.ext (by simp)
   map_add' a b := Subtype.ext (by simp)
 
-def embFc (c : Coeff l) (τ : E →+* ℂ) : 𝓞 E →+* c.F := (embF c τ).comp (H.bar : 𝓞 E →+* 𝓞 E)
-
 variable {Xo : Moduli D l} {c : Coeff l}
-
-def cpt (Y : Model Xo c (RingHom.id c.F)) (U : (Xo.XF c).Opens) : Set Y.X :=
-  closure (Y.j '' (U : Set (Xo.XF c)))
-
-def IsFrame (Y : Model Xo c (RingHom.id c.F)) (U : (Xo.XF c).Opens) (τ : E →+* ℂ) {R : Type} [CommRing R]
-    (j : c.F →+* R) (x : Sp R ⟶ Y.X) (v : Fin D.p → (epsAt x ⟶ Y.t.G)) (w : Fin D.q → (epsAt x ⟶ Y.t.G)) : Prop :=
-  x ≫ Y.s = spMap j ∧ Set.range x ⊆ cpt Y U ∧
-    IsEigBasis Y.t.act x (j.comp (embF c τ)) v ∧ IsEigBasis Y.t.act x (j.comp (embFc c τ)) w
 
 end GlobalTheory.IndefiniteRowSideFullHecke.EigenbasisGramSquares
 end -- clump:auto

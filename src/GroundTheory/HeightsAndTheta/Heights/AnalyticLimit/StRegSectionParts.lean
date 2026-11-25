@@ -151,11 +151,6 @@ def BdComparison.Statement : Prop :=
     (φ : Fin R.n → X → ℝ), IsBdMetric R φ → ∀ c : ℝ,
     ∃ B : ℝ, ∀ y ∈ R.Yo, |R.r y - rSec (bdPot R φ c) (bdSec R) y| ≤ B
 
-section Inhabitants
-
-
-end Inhabitants
-
 end
 
 end GroundTheory.Heights₂.Heights.AnalyticLimit

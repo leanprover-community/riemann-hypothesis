@@ -53,12 +53,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.SplitResidueCard
 
-theorem absNorm_eq_of_ncard {E : Type} [Field E] [NumberField E] {p : ℕ} (hp : p.Prime)
-    (h : {v : HeightOneSpectrum (𝓞 E) | ((p : ℕ) : 𝓞 E) ∈ v.asIdeal}.ncard = Module.finrank ℚ E)
-    {w : Ideal (𝓞 E)} (hwp : w.IsPrime) (hw : ((p : ℕ) : 𝓞 E) ∈ w) :
-    Ideal.absNorm w = p := by
-  apply GlobalTheory.LevDesc.absNorm_eq_of_split <;> assumption
-
 theorem card_quotient_of_ncard {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     {p : ℕ} (hp : p.Prime)
     (h : {v : HeightOneSpectrum (𝓞 E) | ((p : ℕ) : 𝓞 E) ∈ v.asIdeal}.ncard = Module.finrank ℚ E)
@@ -71,7 +65,7 @@ theorem card_quotient_of_ncard {F E : Type} [Field F] [NumberField F] [Field E] 
     have h1 : ((p : ℕ) : 𝓞 F) ∈ w.under (𝓞 F) := by rw [← hwo.over]; exact hv
     simpa using (show algebraMap (𝓞 F) (𝓞 E) (p : 𝓞 F) ∈ w from h1)
   have hN : Nat.card (𝓞 E ⧸ w) = p := by
-    rw [← absNorm_eq_of_ncard hp h hwm.isPrime hw, Ideal.absNorm_apply, Submodule.cardQuot_apply]
+    rw [← GlobalTheory.LevDesc.absNorm_eq_of_split hp h hwm.isPrime hw, Ideal.absNorm_apply, Submodule.cardQuot_apply]
   have hd : Nat.card (𝓞 F ⧸ v.asIdeal) ∣ p := by
     rw [← hN]
     exact AddSubgroup.card_dvd_of_injective (algebraMap (𝓞 F ⧸ v.asIdeal) (𝓞 E ⧸ w)).toAddMonoidHom

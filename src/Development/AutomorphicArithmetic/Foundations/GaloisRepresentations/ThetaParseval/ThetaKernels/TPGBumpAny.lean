@@ -135,7 +135,7 @@ private theorem vmv_mem_pk {X : Spc F E n} {W : Spc F E d} {z : Fin n → AE F E
     (fun p h => by convert neg_mem h; ext i j; simp [vecMulVec_apply]) hz
   refine lat_ind_pk (p := fun y => vecMulVec (fun i => a • inclR (AF F) (x i)) y ∈ latAtV X W v)
     (fun a' h1' h2' y hy => AddSubgroup.subset_closure ⟨a * a', at_mulA_pk h1 a', by rw [map_mul]; exact mul_mem h2 h2',
-      x, hx, y, hy, by ext i j; simp [vecMulVec_apply, incM, smul_mul_smul_comm]; rw [mul_comm a a', mul_smul]⟩)
+      x, hx, y, hy, by ext i j; simp [vecMulVec_apply, incM]; rw [mul_comm a a', mul_smul]⟩)
     (by convert zero_mem (latAtV X W v); ext i j; simp [vecMulVec_apply])
     (fun p q h h' => by convert add_mem h h'; ext i j; simp [vecMulVec_apply, mul_add])
     (fun p h => by convert neg_mem h; ext i j; simp [vecMulVec_apply]) hy
@@ -150,7 +150,7 @@ private theorem gam_ind_pk {X : Spc F E n} {W : Spc F E d} {p : Matrix (Fin n) (
       (fun j => sg v 1 • inclR (AF F) (y j)) := by
     ext i j
     have e1 : a * sg v 1 = a := by rw [mul_comm]; exact at_self_pk h1
-    simp [vecMulVec_apply, incM, smul_mul_smul_comm, e1]; rw [← mul_smul, mul_comm (sg v 1) a, e1]
+    simp [vecMulVec_apply, incM]; rw [← mul_smul, mul_comm (sg v 1) a, e1]
   rw [e]
   exact gen _ (AddSubgroup.subset_closure ⟨a, h1, h2, x, hx, rfl⟩) _
     (AddSubgroup.subset_closure ⟨sg v 1, at_sg 1, by rw [ev_sg]; exact one_mem _, y, hy, rfl⟩)
@@ -188,12 +188,8 @@ private theorem core_pk {A : Type} [CommRing A] (S : Subring A) (s : A →+* A) 
     rw [← Matrix.transpose_mul, ← Matrix.map_mul, hΓG, Matrix.map_one _ (map_zero _) (map_one _), Matrix.transpose_one]
   have hTΓ : T * Γ = -1 := by rw [← neg_neg (T * Γ), ← Matrix.mul_neg, ← hsk]; exact congrArg Neg.neg hTQ
   have mapT : T.map s = G'ᵀ := Matrix.ext fun i j => by simp [T, ss]
-  have he2 : e * e = e := by
-    have : e * (e + s e) = e := by rw [h1, mul_one]
-    rwa [mul_add, h2, add_zero] at this
-  have hs2 : s e * s e = s e := by
-    have : s e * (e + s e) = s e := by rw [h1, mul_one]
-    rwa [mul_add, mul_comm, h2, zero_add] at this
+  have he2 : e * e = e := by linear_combination e * h1 - h2
+  have hs2 : s e * s e = s e := by linear_combination s e * h1 - h2
   have h2' : s e * e = 0 := by rw [mul_comm, h2]
   refine ⟨e • E₁ᵀ + s e • (E₂ᵀ * T), e • E₁ + s e • (Q * E₂),
     fun i j => add_mem (mul_mem he (intE f₁ j i)) (mul_mem (hS _ he) (by
@@ -321,7 +317,7 @@ private theorem exists_isoW_inert_pk {σ : E →ₐ[F] E} {B : Base F E} {W : Sp
     rw [Matrix.transpose_transpose, show Yᵀ.map (piE h) = a.1.submatrix id f by rw [Matrix.transpose_map, eY]; rfl] at e
     refine e.trans (Matrix.ext fun i j => (congrFun (congrFun hg (f i)) (f j)).trans ?_)
     have := i.2; have := j.2
-    rw [Matrix.smul_apply]; simp only [antiJ, Matrix.of_apply, f, Fin.val_castLE]; rw [ite_eq_right (by omega)]; simp
+    rw [Matrix.smul_apply]; simp only [antiJ, f, Fin.val_castLE]; rw [ite_eq_right (by omega)]; simp
   · obtain ⟨_, h4⟩ := (mem_latW_iff hw h W z).1 hz
     rw [← Matrix.mulVec_transpose]
     refine mem_Oh_pk (fun u hu => congrFun (at_mulVec_left (at_transpose hR) z u hu) j) ((mem_intLoc_iff hw h _).2 ?_)
@@ -451,17 +447,17 @@ private theorem sep_dual_pk {F : Type} [Field F] [NumberField F] (v : HeightOneS
   obtain ⟨b, hb⟩ := (IsPrincipalIdealRing.principal I).principal
   have hbI : b ∈ I := by rw [hb]; exact Submodule.mem_span_singleton_self b
   have hmem : ∀ o, o ∈ I ↔ ∃ t : O, o = t * b := fun o => by rw [hb, Submodule.mem_span_singleton]; simp [eq_comm]
+  have hin : ∀ x hx, (⟨_, key x hx⟩ : O) ∈ I := fun x hx y hy => by
+    simpa [hx0, mul_assoc, mul_inv_cancel_left₀] using hx y hy
   have hb0 : (b : Fv F v) ≠ 0 := fun h0 => by
     have h0' : b = 0 := by exact_mod_cast h0
-    have hin : (⟨_, key 1 ha⟩ : O) ∈ I := fun y hy => by simpa [hx0, mul_assoc, mul_inv_cancel_left₀] using ha y hy
-    obtain ⟨t, ht⟩ := (hmem _).1 hin; rw [h0', mul_zero] at ht
+    obtain ⟨t, ht⟩ := (hmem _).1 (hin 1 ha); rw [h0', mul_zero] at ht
     have := congrArg Subtype.val ht; simp [hx0] at this
   let c : Fv F v := x₀ * b
   have hc0 : c ≠ 0 := mul_ne_zero hx0 hb0
   have hc : ∀ x, (∀ y ∈ O, ψ₀ (x * y) = 1) ↔ c⁻¹ * x ∈ O := fun x =>
     ⟨fun hx => by
-      have hin : (⟨_, key x hx⟩ : O) ∈ I := fun y hy => by simpa [hx0, mul_assoc, mul_inv_cancel_left₀] using hx y hy
-      obtain ⟨t, ht⟩ := (hmem _).1 hin
+      obtain ⟨t, ht⟩ := (hmem _).1 (hin x hx)
       have h2 : x₀⁻¹ * x = t * b := by simpa using congrArg Subtype.val ht
       rw [show c⁻¹ * x = t by dsimp [c]; rw [mul_inv, mul_comm x₀⁻¹, mul_assoc, h2]; field_simp]; exact t.2,
      fun hx y hy => by

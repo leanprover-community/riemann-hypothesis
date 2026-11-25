@@ -244,8 +244,6 @@ section -- clump:auto
 
 open CategoryTheory AlgebraicGeometry NumberField MvPolynomial GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.HT ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundles
 
-set_option backward.isDefEq.respectTransparency false
-
 namespace PositivityTheory.HtPt.Gh
 
 open GlobalTheory.CompanionTheory.Ar.LieTangent

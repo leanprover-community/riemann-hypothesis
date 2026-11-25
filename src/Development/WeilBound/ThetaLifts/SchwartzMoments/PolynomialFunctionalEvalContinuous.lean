@@ -85,7 +85,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open GlobalTheory.Grid GlobalTheory.Doubling GlobalTheory.ChainFr GlobalTheory.IndefiniteRowSideFullHecke.MatchingAdjoints GlobalTheory.SquareComm
 open scoped TensorProduct ComplexConjugate GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -275,8 +274,7 @@ theorem apply_eq_zero (h : NADual V χ μ) {T : (V → ℂ) → (V → ℂ)}
         simp only [Set.mem_setOf_eq, Set.mem_compl_iff, add_sub_cancel] at this
         exact this hs
       have hz : ∃ z ∈ perp χ L, χ z (s - x) ≠ 1 := by
-        by_contra hcon
-        push_neg at hcon
+        by_contra! hcon
         exact hsL (hpp fun z hz => hcon z hz)
       obtain ⟨z, hzL, hzne⟩ := hz
       have hzne' : χ (s - x) z ≠ 1 := by rwa [hsymm]
@@ -368,7 +366,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain MeasureTheory Filter Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun
 open scoped TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.CompanionTheory.Ar.RT.Inj
 
 open scoped SchwartzMap LineDeriv

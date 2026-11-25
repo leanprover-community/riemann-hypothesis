@@ -183,14 +183,14 @@ def actL (V : HSp D) (β : GL (Fin V.rank) (EAf D)) (L : LevDat D.host.E ℂ V.r
   map_add' F F' := by
     funext h
     by_cases hk : ∃ κ, IsLevelLift V β L g0 κ
-    · simp only [actG0, dif_pos hk, Pi.add_apply, mul_add]
-    · simp only [actG0, dif_neg hk, Pi.add_apply, Pi.zero_apply, add_zero]
+    · simp only [actG0, dite_eq_left hk, Pi.add_apply, mul_add]
+    · simp only [actG0, dite_eq_right hk, Pi.add_apply, Pi.zero_apply, add_zero]
   map_smul' c F := by
     funext h
     by_cases hk : ∃ κ, IsLevelLift V β L g0 κ
-    · simp only [actG0, dif_pos hk, Pi.smul_apply, smul_eq_mul, RingHom.id_apply]
+    · simp only [actG0, dite_eq_left hk, Pi.smul_apply, smul_eq_mul, RingHom.id_apply]
       rw [mul_left_comm]
-    · simp only [actG0, dif_neg hk, Pi.smul_apply, Pi.zero_apply, smul_zero]
+    · simp only [actG0, dite_eq_right hk, Pi.smul_apply, Pi.zero_apply, smul_zero]
 
 def gaL {G : Type} [Group G] [Fintype G] (V : HSp D) (β : GL (Fin V.rank) (EAf D)) (L : LevDat D.host.E ℂ V.rank)
     (eG : G ≃* G0 L.Pg L.r) (c : G → ℂ) : (GA D V → ℂ) →ₗ[ℂ] (GA D V → ℂ) :=

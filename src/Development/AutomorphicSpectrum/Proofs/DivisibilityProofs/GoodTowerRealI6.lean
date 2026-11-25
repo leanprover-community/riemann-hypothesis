@@ -726,9 +726,9 @@ theorem exists_hermLine_of_local_smooth : ∀ (K : Type) [Fintype K] (ι : K →
       Real.contDiff_exp.comp_contDiffOn
         (hg.comp_contDiffOn GlobalTheory.CompanionTheory.Ar.Flat.PlaceWeightSmooth.prMap_contDiffOn)
     refine h1.congr fun z hz => ?_
-    exact if_pos hz
+    exact ite_eq_left hz
   · have h2 : (CExt.expLine ι g).h z = Real.exp (g (GlobalTheory.CompanionTheory.Ar.Flat.PlaceWeightSmooth.prMap z)) :=
-      if_pos hz.1
+      ite_eq_left hz.1
     rw [h2, Real.log_exp, hgu z hz]
 
 end GlobalTheory.CompanionTheory.Ar.PB
@@ -1337,8 +1337,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top
 open GroundTheory.Heights₂.Heights.LowerBoundFree (ComponentData ComponentSetting degMu ArLimExists slX)
 
-theorem _root_.GlobalTheory.CompanionTheory.Relay.good_tower_real_I6 : Given → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] [IsAbelianGalois ℚ E] (H : Host E) (D : Datum H) (Xo : ∀ l : Level H, Moduli D l) (l : Level H) (c : Coeff l) (Y : Model (Xo l) c (algebraMap (𝓞 c.F) c.F)) [DecidableEq (CMType H)] (T : RootTower (CMType H) (D.p + D.q)) (o : GoodOrigin Y T) (II : IntersectionSystem), IsGlobal Xo l c Y → o.Extra → IsFullIntersectionSystem II → 1 ≤ D.p → 1 ≤ D.q → (realOf o.toTowerOrigin).RefLinked II := by
-  first | exact @RootFieldNumerics.global_model_real_tower_smooth
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.GoodTowerRealI6 =====

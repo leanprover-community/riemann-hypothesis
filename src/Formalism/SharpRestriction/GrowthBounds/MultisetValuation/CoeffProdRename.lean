@@ -86,8 +86,7 @@ theorem coeff_prod_atP (g : ∀ v, MvPowerSeries (ι v) K) (n : (Σ v, ι v) →
     apply hne
     have hall : ∀ v, ∃ m, l v = eqv.symm (Pi.single v m) := by
       intro v
-      by_contra hv
-      push_neg at hv
+      by_contra! hv
       exact hprod (Finset.prod_eq_zero (Finset.mem_univ v) (coeff_atP_eq_zero v (g v) (l v) hv))
     choose m hm using hall
     have hn : n = eqv.symm m := by
@@ -110,7 +109,7 @@ private theorem coe_rename_sigma_mk_eq_atP (v : Pl) (p : MvPolynomial (ι v) K) 
       rw [AddEquiv.symm_apply_eq, eqv_embDomain]
     rw [h2]
     exact MvPolynomial.coeff_rename_embDomain (Function.Embedding.sigmaMk v) p m
-  · push_neg at h
+  · push Not at h
     rw [coeff_atP_eq_zero v _ d h]
     apply MvPolynomial.coeff_rename_eq_zero
     intro u hu

@@ -27,7 +27,7 @@ theorem congrP_iff_inP (𝔭 : Ideal (𝓞 F)) (k : ℕ) (a b : K) : CongrP 𝔭
   have e : ∀ t : 𝓞 F, jK (ι t) = algebraMap F K (t : F) := fun t => rfl
   simp only [CongrP, InP, e]
 
-theorem jK_inj : Function.Injective (jK) := fun a b hab => RingOfIntegers.ext hab
+theorem jK_inj : Function.Injective (jK) := fun _ _ hab => RingOfIntegers.ext hab
 
 theorem InP.add {𝔭 : Ideal (𝓞 F)} [h𝔭 : 𝔭.IsPrime] {k : ℕ} {a b : K} (ha : InP 𝔭 k a)
     (hb : InP 𝔭 k b) : InP 𝔭 k (a + b) := by

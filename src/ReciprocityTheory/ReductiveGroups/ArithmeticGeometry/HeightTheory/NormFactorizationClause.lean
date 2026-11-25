@@ -38,9 +38,9 @@ theorem finsum_liesOver_eq_finsum_good (c : ι) (p : Ideal (KTp K d.D d.N)) (g :
   refine finsum_congr fun w => ?_
   by_cases hG : w ∈ d.GoodP c p
   · have hO : w ∈ d.OverP c p := hG.1
-    simp only [finsum_eq_if, if_pos hO, if_pos hG]
+    simp only [finsum_eq_if, ite_eq_left hO, ite_eq_left hG]
     rfl
-  · simp only [finsum_eq_if, if_neg hG]
+  · simp only [finsum_eq_if, ite_eq_right hG]
     split_ifs with hO
     · have h0 : d.Wres c w g = 0 := by
         by_contra hne
@@ -213,8 +213,7 @@ theorem key_degree (hd : d.AxH 𝒜) (h : d.S1) (c : ι) (r : Ω c) (hr : r ≠ 
     refine (hy _ hne).1.subset ?_
     rintro p ⟨hp, hsum⟩
     refine ⟨hp, ?_⟩
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hsum
     refine finsum_eq_zero_of_forall_eq_zero fun w => ?_
     by_cases hw : w ∈ d.GoodP c p
@@ -223,8 +222,7 @@ theorem key_degree (hd : d.AxH 𝒜) (h : d.S1) (c : ι) (r : Ω c) (hr : r ≠ 
     · simp [finsum_eq_if, hw]
   intro p hp hn0 s hs
   have hex : ∃ w, w ∈ d.GoodP c p := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     apply hn0
     refine finsum_eq_zero_of_forall_eq_zero fun w => ?_
     simp [finsum_eq_if, hne w]
@@ -283,8 +281,7 @@ theorem use₈ (hd : d.AxH 𝒜) (h : d.S1) (c : ι) (r : Ω c) (hr : r ≠ 0) :
   refine (hy _ hne).1.subset ?_
   rintro p ⟨hp, hsum⟩
   refine ⟨hp, ?_⟩
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   apply hsum
   refine finsum_eq_zero_of_forall_eq_zero fun w => ?_
   classical

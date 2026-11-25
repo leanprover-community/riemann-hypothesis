@@ -136,14 +136,8 @@ theorem monic_of_shifted_prod {V : Type} [AddCommGroup V] [Module ℂ V] {c : �
   rwa [Polynomial.aeval_subalgebra_coe] at this
 
 theorem commute_of_mem_adjoin {A : Type} [Ring A] [Algebra ℂ A] {T : Set A} {x w : A}
-    (h : ∀ t ∈ T, Commute t x) (hw : w ∈ Algebra.adjoin ℂ T) : Commute w x := by
-  have hle : Algebra.adjoin ℂ T ≤ Subalgebra.centralizer ℂ ({x} : Set A) := by
-    refine Algebra.adjoin_le fun t ht => ?_
-    rw [SetLike.mem_coe, Subalgebra.mem_centralizer_iff]
-    rintro _ rfl
-    exact (h t ht).symm.eq
-  have : Commute x w := (Subalgebra.mem_centralizer_iff ℂ).1 (hle hw) x rfl
-  exact this.symm
+    (h : ∀ t ∈ T, Commute t x) (hw : w ∈ Algebra.adjoin ℂ T) : Commute w x :=
+  (Algebra.commute_of_mem_adjoin_of_forall_mem_commute hw fun t ht => (h t ht).symm).symm
 
 theorem map_qdet_eq_map_blocks {W Q : Type} [AddCommGroup W] [Module ℂ W] [AddCommGroup Q]
     [Module ℂ Q] {c N : ℕ} (n : Fin c → ℕ) (h : ∑ i, n i = N)
@@ -217,7 +211,7 @@ theorem monic_relations_along_block : ∀ (W Q : Type) [AddCommGroup W] [Module 
     · refine GlobalTheory.CompanionTheory.CTFin.CapComm.commute_qdet_of (fun a b => ?_) u
       have := hX (GlobalTheory.SmGL.stdBlocks n h ⟨j, p⟩) (GlobalTheory.SmGL.stdBlocks n h ⟨j, q⟩)
         (GlobalTheory.SmGL.stdBlocks n h ⟨i, a⟩) (GlobalTheory.SmGL.stdBlocks n h ⟨i, b⟩)
-      rw [if_neg (hne _ _ _ _ hji), if_neg (hne _ _ _ _ (Ne.symm hji)), sub_self] at this
+      rw [ite_eq_right (hne _ _ _ _ hji), ite_eq_right (hne _ _ _ _ (Ne.symm hji)), sub_self] at this
       exact sub_eq_zero.1 this
   have hSR : ∀ x ∈ Sm, ∀ i u, Commute x (Rr i u) := fun x hx i u =>
     commute_of_mem_adjoin (hTR i u) hx

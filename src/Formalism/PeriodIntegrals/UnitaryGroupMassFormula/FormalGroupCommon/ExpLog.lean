@@ -7,6 +7,7 @@ public import Mathlib.NumberTheory.Padics.Complex
 public import Mathlib.RingTheory.PowerSeries.Log
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FormalGroupSplitting.ExpCongruenceExtendsToSum
 import Mathlib.RingTheory.SimpleRing.Principal
+import Formalism.DropLevelBounds.ConstantCoeffVanishing.UbintConstantCoeffEqZero
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FormalGroupSplitting.AddPreservesExpCongruence, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FormalGroupCommon.ExpLog
@@ -28,37 +29,13 @@ theorem deg_eq (α : σ →₀ ℕ) : (α.sum fun _ k => k) = Finsupp.degree α 
 
 private theorem coeff_pow_eq_zero_of_degree_lt_formal_group_splitting {f : MvPowerSeries σ K} (hf : constantCoeff f = 0) :
     ∀ (n : ℕ) {α : σ →₀ ℕ}, Finsupp.degree α < n → coeff α (f ^ n) = 0 := by
-  classical
-  intro n
-  induction n with
-  | zero => intro α h; exact absurd h (Nat.not_lt_zero _)
-  | succ n ih =>
-    intro α h
-    rw [pow_succ, coeff_mul]
-    refine Finset.sum_eq_zero fun p hp => ?_
-    rw [Finset.HasAntidiagonal.mem_antidiagonal] at hp
-    by_cases h2 : p.2 = 0
-    · rw [h2, coeff_zero_eq_constantCoeff_apply, hf, mul_zero]
-    · have hd : Finsupp.degree p.1 + Finsupp.degree p.2 = Finsupp.degree α := by
-        rw [← hp, map_add (f := _)]
-      have h2' : 0 < Finsupp.degree p.2 := by
-        rw [Nat.pos_iff_ne_zero]
-        intro h0
-        exact h2 ((Finsupp.degree_eq_zero_iff _).mp h0)
-      rw [ih (by omega), zero_mul]
+  intros
+  apply _root_.Formalism.IncomingBounds.thmPExp_coeff_pow_eq_zero <;> assumption
 
 theorem coeff_pow_mul_pow_eq_zero {f g : MvPowerSeries σ K} (hf : constantCoeff f = 0)
     (hg : constantCoeff g = 0) {i j : ℕ} {α : σ →₀ ℕ} (h : Finsupp.degree α < i + j) :
     coeff α (f ^ i * g ^ j) = 0 := by
-  classical
-  rw [coeff_mul]
-  refine Finset.sum_eq_zero fun p hp => ?_
-  rw [Finset.HasAntidiagonal.mem_antidiagonal] at hp
-  have hd : Finsupp.degree p.1 + Finsupp.degree p.2 = Finsupp.degree α := by
-    rw [← hp, map_add (f := _)]
-  by_cases h1 : Finsupp.degree p.1 < i
-  · rw [coeff_pow_eq_zero_of_degree_lt_formal_group_splitting hf i h1, zero_mul]
-  · rw [coeff_pow_eq_zero_of_degree_lt_formal_group_splitting hg j (by omega), mul_zero]
+  apply _root_.Formalism.IncomingBounds.thmPExp_coeff_pow_mul_pow_eq_zero <;> assumption
 
 theorem coeff_pow_eq_zero' {f : MvPowerSeries σ K} (hf : constantCoeff f = 0) {n : ℕ}
     {α : σ →₀ ℕ} (h : Finsupp.degree α < n) : coeff α (f ^ n) = 0 := by
@@ -203,10 +180,10 @@ theorem derivative_log_eq : PowerSeries.derivative (R := K) (PowerSeries.log K) 
   ext n
   rcases n with _ | n
   · rw [mul_add, mul_one, map_add (f := _), PowerSeries.coeff_zero_mul_X, add_zero, PowerSeries.coeff_mk,
-      PowerSeries.coeff_one, if_pos rfl]
+      PowerSeries.coeff_one, ite_eq_left rfl]
     simp
   · rw [mul_add, mul_one, map_add (f := _), PowerSeries.coeff_succ_mul_X, PowerSeries.coeff_mk,
-      PowerSeries.coeff_mk, PowerSeries.coeff_one, if_neg (Nat.succ_ne_zero n)]
+      PowerSeries.coeff_mk, PowerSeries.coeff_one, ite_eq_right (Nat.succ_ne_zero n)]
     simp [pow_succ]
 
 theorem exp_subst_log :
@@ -252,7 +229,7 @@ theorem logS_eq_subst {σ : Type} {F : MvPowerSeries σ ℂ_[p]} (hF : constantC
   · refine Finset.sum_congr rfl fun n _ => ?_
     rcases Nat.eq_zero_or_pos n with rfl | hn
     · simp
-    · rw [if_neg hn.ne', PowerSeries.coeff_log, if_neg hn.ne', smul_eq_mul]
+    · rw [ite_eq_right hn.ne', PowerSeries.coeff_log, ite_eq_right hn.ne', smul_eq_mul]
       simp only [map_div₀, map_pow, map_neg, map_one, map_natCast]
       ring
   · intro n hn

@@ -47,8 +47,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.BaseChangeUnits.CycCOfCyclic
 
-set_option backward.isDefEq.respectTransparency false
-
 @[expose] public section
 
 

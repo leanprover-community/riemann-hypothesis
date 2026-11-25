@@ -75,7 +75,7 @@ theorem star_single (i : Fin ρ) (b : D.host.E) : star (Pi.single i b : Fin ρ �
 theorem pair_e (i : Fin ρ) (b : D.host.E) (y : Fin S.rank → D.host.E) :
     star (d.e *ᵥ Pi.single i b) ⬝ᵥ (S.gram *ᵥ y) = star b * (d.qY *ᵥ y) i := by
   rw [pair_decomp d]
-  simp only [Matrix.mulVec_mulVec, qX_e, wittDecomposition_coreProj_mul_e_eq_zero, qY_e, Matrix.one_mulVec, Matrix.zero_mulVec, star_zero,
+  simp only [Matrix.mulVec_mulVec, GlobalTheory.MixPer.qX_e, wittDecomposition_coreProj_mul_e_eq_zero, qY_e, Matrix.one_mulVec, Matrix.zero_mulVec, star_zero,
     zero_dotProduct, add_zero, zero_add, star_single, single_dotProduct]
 
 theorem pair_e' (i : Fin ρ) (c : D.host.E) (y : Fin S.rank → D.host.E) :
@@ -95,8 +95,7 @@ theorem decomp (y : Fin S.rank → D.host.E) : y = d.e *ᵥ (d.qX *ᵥ y) + d.i�
     d.sum_eq_one_rat, Matrix.one_mulVec]
 
 theorem exists_ne_zero {𝔟 : FI D} (h : 𝔟 ≠ 0) : ∃ b ∈ 𝔟, b ≠ 0 := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   exact h (FractionalIdeal.eq_zero_iff.2 hc)
 
 theorem dualC_le_span {𝔟 : FI D} (h : 𝔟 ≠ 0) : ∃ γ : D.host.E, dualC 𝔟 ≤ Submodule.span (𝓞 D.host.E) {γ} := by
@@ -176,9 +175,5 @@ theorem isSelfDualC_splitL (h𝔟 : ∀ i, 𝔟 i ≠ 0) (hL₀ : IsSelfDualC S�
       rwa [pair_e] at this
 
 end GlobalTheory.SeeSaw.SplitLat
-
-namespace GlobalTheory.SeeSaw
-
-end GlobalTheory.SeeSaw
 
 end

@@ -220,10 +220,10 @@ theorem classNumber_mul_regulator_le_sqrt_discr_rpow :
     · rintro ⟨⟨h0, hle⟩, hc⟩
       have hI : I ∈ nonZeroDivisors (Ideal (𝓞 K)) := mem_nonZeroDivisors_of_ne_zero h0
       refine ⟨hI, ?_, hle⟩
-      simpa only [cls, dif_pos hI] using hc
+      simpa only [cls, dite_eq_left hI] using hc
     · rintro ⟨hI, hc, hle⟩
       refine ⟨⟨nonZeroDivisors.ne_zero hI, hle⟩, ?_⟩
-      simpa only [cls, dif_pos hI] using hc
+      simpa only [cls, dite_eq_left hI] using hc
   have h2 : ∀ I ∈ T, g I ≤ Y ^ s * (Ideal.absNorm I : ℝ) ^ (-s) := by
     intro I hI
     obtain ⟨h0, hle⟩ := (hmem I).1 hI

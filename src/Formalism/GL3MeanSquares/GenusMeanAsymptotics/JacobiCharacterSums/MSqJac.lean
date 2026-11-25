@@ -130,16 +130,16 @@ theorem jacobi_class_congr {m₀ N q q' : ℕ} (h8 : 8 ∣ m₀) (hN : 0 < N) (h
   have hpq : p < q := by omega
   have hpq' : p < q' := by omega
   by_cases hpm : p ∣ m₀
-  · rw [if_neg (fun h => h.2 hpm), if_neg (fun h => h.2 hpm), mul_one, mul_one,
+  · rw [ite_eq_right (fun h => h.2 hpm), ite_eq_right (fun h => h.2 hpm), mul_one, mul_one,
       jacobi_prime_in h8 hpP hpm hq hq' hqq hpq hpq']
   · have hsq : ∀ r : ℕ, r.Prime → p < r → jacobiSym (p : ℤ) r ^ 2 = 1 := fun r hr hpr =>
       jacobiSym.sq_one (gcd_prime_lt hpP hr hpr).1
     obtain ⟨k, hk | hk⟩ := Nat.even_or_odd' (N.factorization p)
     · have hnodd : ¬ Odd (N.factorization p) := Nat.not_odd_iff_even.mpr ⟨k, by omega⟩
-      rw [if_neg (fun h => hnodd h.1), if_neg (fun h => hnodd h.1), mul_one, mul_one, hk, pow_mul, pow_mul,
+      rw [ite_eq_right (fun h => hnodd h.1), ite_eq_right (fun h => hnodd h.1), mul_one, mul_one, hk, pow_mul, pow_mul,
         hsq q hq hpq, hsq q' hq' hpq', one_pow]
     · have hodd : Odd (N.factorization p) := ⟨k, hk⟩
-      rw [if_pos ⟨hodd, hpm⟩, if_pos ⟨hodd, hpm⟩, hk, pow_succ, pow_succ, pow_mul, pow_mul,
+      rw [ite_eq_left ⟨hodd, hpm⟩, ite_eq_left ⟨hodd, hpm⟩, hk, pow_succ, pow_succ, pow_mul, pow_mul,
         hsq q hq hpq, hsq q' hq' hpq', one_pow, one_mul, one_mul]
       exact jacobi_prime_out h8 hpP hpm hq hq' hqq hpq hpq'
 

@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.SigZeroCayley
 import Formalism.SharpRestriction.CuspSpanNormBounds.NonemptyParameterModels.AmpTensorDSdNonemptyOfSubsingleton
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
@@ -52,7 +53,7 @@ lemma obj_PJP_apply (k r : ℕ) (i j : Fin (2 * r + k + 1)) :
   simp only [mul_diagonal, conjTranspose_apply, obj_PU_star]
   unfold obj_PU
   simp only [add_mul, mul_add, Finset.sum_add_distrib, ite_mul, mul_ite,
-    zero_mul, mul_zero, Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    zero_mul, mul_zero, Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   rw [Hpk_eq]
   have hi := i.isLt
   have hs' := sig_val k r i
@@ -71,7 +72,7 @@ lemma obj_PJP_apply (k r : ℕ) (i j : Fin (2 * r + k + 1)) :
     · have h1 : ¬ i = j := fun h => hji h.symm
       have h2 : ¬ i = sig k r j := fun h => hjs ((eq_sig_iff k r i j).1 h)
       have h3 : ¬ sig k r j = sig k r i := fun h => hji ((sig_inj k r j i).1 h)
-      rw [if_neg h1, if_neg hjs, if_neg h2, if_neg h3, if_neg hjs]
+      rw [ite_eq_right h1, ite_eq_right hjs, ite_eq_right h2, ite_eq_right h3, ite_eq_right hjs]
       norm_num
 
 lemma obj_PP_apply (k r : ℕ) (i j : Fin (2 * r + k + 1)) :
@@ -81,7 +82,7 @@ lemma obj_PP_apply (k r : ℕ) (i j : Fin (2 * r + k + 1)) :
   simp only [conjTranspose_apply, obj_PU_star]
   unfold obj_PU
   simp only [add_mul, mul_add, Finset.sum_add_distrib, ite_mul, mul_ite,
-    zero_mul, mul_zero, Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    zero_mul, mul_zero, Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   rw [Matrix.one_apply]
   have hi := i.isLt
   have hs' := sig_val k r i
@@ -100,7 +101,7 @@ lemma obj_PP_apply (k r : ℕ) (i j : Fin (2 * r + k + 1)) :
     · have h1 : ¬ i = j := fun h => hji h.symm
       have h2 : ¬ i = sig k r j := fun h => hjs ((eq_sig_iff k r i j).1 h)
       have h3 : ¬ sig k r j = sig k r i := fun h => hji ((sig_inj k r j i).1 h)
-      rw [if_neg h1, if_neg hjs, if_neg h2, if_neg h3, if_neg h1]
+      rw [ite_eq_right h1, ite_eq_right hjs, ite_eq_right h2, ite_eq_right h3, ite_eq_right h1]
       norm_num
 
 lemma obj_PU_cayley (k r : ℕ) : IsCayleyU k r (epsK k r) (obj_PU k r) := by
@@ -162,7 +163,7 @@ lemma obj_count (k r : ℕ) (hk : 1 ≤ k) :
   | succ r ih =>
     have e : 2 * (r + 1) + k + 1 = (2 * r + k + 1) + 1 + 1 := by ring
     rw [e, Finset.range_add_one, Finset.range_add_one, Finset.filter_insert, Finset.filter_insert,
-      if_neg (by omega), if_pos (by omega), Finset.card_insert_of_notMem (by simp), ih]
+      ite_eq_right (by omega), ite_eq_left (by omega), Finset.card_insert_of_notMem (by simp), ih]
     ring
 
 lemma obj_card_fin (n : ℕ) (p : ℕ → Prop) [DecidablePred p] :
@@ -214,14 +215,7 @@ theorem obj_isHCParam_u (R : Formalism.BasicNotions.Ranks) (P : Formalism.BasicN
 
 open Formalism.MainNotions.CayleySignature in
 theorem exists_isCayleyU_eps48 (k r : ℕ) (hk : 1 ≤ k) : ∃ P, IsCayleyU k r (eps48 k r) P := by
-  apply obj_cayleyU_of_card
-  have e : (Finset.univ.filter fun i => eps48 k r i = true) =
-      Finset.univ.filter (fun i : Fin (2 * r + k + 1) => i.val < k - 1 ∨ (i.val - (k - 1)) % 2 = 0) := by
-    apply Finset.filter_congr
-    intro i _
-    unfold eps48
-    by_cases h : i.val < k - 1 <;> simp [h]
-  rw [e, obj_card_fin (2 * r + k + 1) (fun i => i < k - 1 ∨ (i - (k - 1)) % 2 = 0), obj_count k r hk]
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.exists_cayley_unitary <;> assumption
 
 
 end obj

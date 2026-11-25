@@ -5,8 +5,6 @@ public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermFunPf
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace Formalism.MainNotions.ModuliIntegralCharts.H1
@@ -32,8 +30,7 @@ theorem mem_orig_pow_of_coeff (n : ℕ) (p : MvPolynomial ι R) (h : ∀ e, e.de
   rw [p.as_sum]
   refine Ideal.sum_mem _ (fun e he => ?_)
   have hn : n ≤ e.degree := by
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     exact (mem_support_iff.mp he) (h e hlt)
   exact Ideal.pow_le_pow_right hn (monomial_mem_orig_pow e _)
 

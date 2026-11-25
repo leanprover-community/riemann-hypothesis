@@ -4,16 +4,12 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.IsExpChart
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace Formalism.MainNotions.ModuliIntegralCharts.H1
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor NumberField Formalism.L2.Pj
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 section Defs
 

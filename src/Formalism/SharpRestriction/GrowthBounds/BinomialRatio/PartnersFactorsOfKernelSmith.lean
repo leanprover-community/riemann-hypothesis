@@ -89,8 +89,8 @@ theorem blockDiag_of_smith {p : ℕ} {w : O} (hw : Irreducible w) (h2 : w ^ 2 = 
     rw [segForm_smul_right]
     by_cases hil : i = l
     · subst hil
-      rw [if_pos rfl, hcz]
-    · rw [if_neg hil, horth _ _ (fun h => hil (he h)), mul_zero]
+      rw [ite_eq_left rfl, hcz]
+    · rw [ite_eq_right hil, horth _ _ (fun h => hil (he h)), mul_zero]
 
 end Gen
 
@@ -234,8 +234,7 @@ open Classical in
 theorem prim_div {w : O} (hw : Irreducible w) {n : ℕ} (a : Fin n → O) (ha : a ≠ 0) :
     ∃ (k : ℕ) (a' : Fin n → O), (∀ i, a i = w ^ k * a' i) ∧ ∃ i0, IsUnit (a' i0) := by
   obtain ⟨j, hj⟩ : ∃ j, a j ≠ 0 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     exact ha (funext hne)
   let S := Finset.univ.filter fun i => a i ≠ 0
   have hS : S.Nonempty := ⟨j, by simp [S, hj]⟩

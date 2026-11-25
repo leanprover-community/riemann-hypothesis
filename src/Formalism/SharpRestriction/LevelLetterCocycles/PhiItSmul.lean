@@ -1,5 +1,6 @@
 module
 
+import Formalism.DistinguishedUnitIdeals.DistinguishedOrderProofs.SplittingOfPositiveLevel
 public import Formalism.SharpRestriction.LevelLetterCocycles.CoordHomMapTrace
 public import Formalism.DistinguishedUnitIdeals.FrobeniusCoboundedArc
 
@@ -46,11 +47,7 @@ variable (L : Formalism.ExponentWindows.E.Lat Bs n V)
 
 theorem phiIt_smul' (i : ZMod n) (k : ℕ) (a : PowerSeries O) (x : V) :
     L.phiIt i k (a • x) = (⇑Bs.φ)^[k] a • L.phiIt i k x := by
-  induction k with
-  | zero => rfl
-  | succ k ih =>
-    rw [Formalism.ExponentWindows.E.Lat.phiIt, ih, L.φ_semi, Function.iterate_succ_apply']
-    rfl
+  apply _root_.Formalism.ExponentWindows.E.S1.phiIt_smul <;> assumption
 
 theorem phiIt_N (hh : ℕ) (h5 : ∀ i, L.P5M i hh) (k : ℕ) :
     ∃ Pr ∈ PsM Bs, ∀ i, ∀ x ∈ L.N i, Pr • L.phiIt i k x ∈ L.N (i + (k : ZMod n)) := by
@@ -124,9 +121,9 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
 theorem prod_pad {R : Type} [CommMonoid R] (F : ℕ → R) (k : ℕ → ℕ) {m m' : ℕ} (h : m ≤ m') :
     ∏ s ∈ Finset.range m', F s ^ (if s < m then k s else 0) = ∏ s ∈ Finset.range m, F s ^ k s := by
   rw [← Finset.prod_subset (Finset.range_subset_range.2 h)]
-  · exact Finset.prod_congr rfl fun s hs => by rw [if_pos (Finset.mem_range.1 hs)]
+  · exact Finset.prod_congr rfl fun s hs => by rw [ite_eq_left (Finset.mem_range.1 hs)]
   · intro s _ hs
-    rw [if_neg (fun h' => hs (Finset.mem_range.2 h')), pow_zero]
+    rw [ite_eq_right (fun h' => hs (Finset.mem_range.2 h')), pow_zero]
 
 theorem isPs_one : IsPs W (1 : LetA O n) := ⟨fun _ => 0, 0, by simp⟩
 

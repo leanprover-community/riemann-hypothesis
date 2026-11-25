@@ -387,11 +387,11 @@ lemma defect_e (i : ι) (J : ι →₀ ℕ) (hJ : ∀ j ∈ J.support, i ≤ j) 
     suffices h : defect c δ (zv J v) (e j) (e i) = 0 by rw [h, smul_zero]
     rcases lt_trichotomy i j with h | rfl | h
     · rw [defect_apply, comm_high hce hf i J hJ _ fun k hk => by
-        rw [hce, if_neg (hk.trans_lt h).ne]]
+        rw [hce, ite_eq_right (hk.trans_lt h).ne]]
       abel
     · simp [defect_apply]
     · rw [defect_swap, defect_apply, comm_high hce hf j J (fun k hk => h.le.trans (hJ k hk)) _
-        fun k hk => by rw [hce, if_neg (hk.trans_lt h).ne]]
+        fun k hk => by rw [hce, ite_eq_right (hk.trans_lt h).ne]]
       abel
 
 omit hce hf [LinearOrder ι] in
@@ -692,10 +692,6 @@ def cls (v : V) : Ug p q →ₗ[ℂ] Ind act :=
 theorem cls_apply (v : V) (u : Ug p q) :
     cls act v u = (indRel act).mkQ (TensorProduct.tmul ℂ u v) := rfl
 
-private lemma indF_le_indFlt_of_lt {j k : ℕ} (h : j < k) : indF act j ≤ indFlt act k := by
-  unfold indFlt
-  exact le_iSup₂_of_le (f := fun i (_ : i < k) => indF act i) j h le_rfl
-
 private lemma cls_prodU_mem_indF (v : V) (l : List (Mat p q)) :
     cls act v (prodU l) ∈ indF act l.length :=
   Submodule.subset_span ⟨prodU l, Submodule.subset_span ⟨l, le_rfl, rfl⟩, v, cls_apply act v _⟩
@@ -705,7 +701,7 @@ theorem cls_mem_of_below (v : V) {k : ℕ} {u : Ug p q} (hu : u ∈ below p q k)
   have hle : below p q k ≤ (indFlt act k).comap (cls act v) := by
     refine Submodule.span_le.mpr ?_
     rintro _ ⟨l, hl, rfl⟩
-    exact indF_le_indFlt_of_lt act hl (cls_prodU_mem_indF act v l)
+    exact GlobalTheory.InducedPBW.Onto.le_indFlt act hl (cls_prodU_mem_indF act v l)
   exact hle hu
 
 theorem cls_mul_kc (v : V) (u : Ug p q) {Y : Mat p q} (hY : IsKC Y) :
@@ -725,7 +721,7 @@ theorem cls_mem_of_kc (v : V) (l l' : List (Mat p q)) {Y : Mat p q} (hY : IsKC Y
       rw [prodU_append, prodU_cons]
       simp [prodU]
     rw [e, cls_mul_kc act v _ hY]
-    refine indF_le_indFlt_of_lt act (j := (l ++ l').length) ?_ (cls_prodU_mem_indF act _ _)
+    refine GlobalTheory.InducedPBW.Onto.le_indFlt act (j := (l ++ l').length) ?_ (cls_prodU_mem_indF act _ _)
     simp only [List.length_append]
     omega
   have e : cls act v (prodU (l ++ Y :: l')) =
@@ -798,7 +794,7 @@ private lemma sum_unitP_apply (x : Mat p q) (c d : Ix p q) :
 
 private lemma isKC_sub_sum_unitP (x : Mat p q) : IsKC (x - ∑ ab : PIx p q, x ab.1.1 ab.1.2 • unitP ab) := by
   intro c d h
-  rw [Matrix.sub_apply, sum_unitP_apply, if_neg h, sub_self]
+  rw [Matrix.sub_apply, sum_unitP_apply, ite_eq_right h, sub_self]
 
 theorem mixed_mem (v : V) (l : List (Mat p q)) : ∀ a : List (PIx p q),
     cls act v (prodU (a.map unitP) * prodU l) -
@@ -901,12 +897,6 @@ theorem pLin_unitP (ab : PIx p q) : pLin (unitP ab) = MvPolynomial.X ab := by
   · intro hab
     exact absurd (Finset.mem_univ ab) hab
 
-theorem ug_comm (Y Z : Mat p q) :
-    ugι p q (Y * Z - Z * Y) = ugι p q Y * ugι p q Z - ugι p q Z * ugι p q Y := by
-  have hl := (UniversalEnvelopingAlgebra.ι ℂ : Mat p q →ₗ⁅ℂ⁆ Ug p q).map_lie Y Z
-  rw [Ring.lie_def, Ring.lie_def] at hl
-  simpa [ugι] using hl
-
 theorem kOnS_X (Y : Mat p q) (ab : PIx p q) :
     kOnS Y (MvPolynomial.X ab) = pLin (Y * unitP ab - unitP ab * Y) := by
   change MvPolynomial.mkDerivation ℂ (fun c : PIx p q => pLin (Y * Eab c.1.1 c.1.2 - Eab c.1.1 c.1.2 * Y))
@@ -967,7 +957,7 @@ theorem comm_mem (h : SymbolCongr act) (Y : Mat p q) (v : V) (a : List (PIx p q)
     rw [← cls_apply, ← cls_apply] at h1
     simp only [List.map_append, List.map_cons, List.map_nil, List.prod_append, List.prod_cons,
       List.prod_nil, mul_one, List.length_append, List.length_cons, List.length_nil, zero_add,
-      List.length_map, ug_comm, map_pLin, pLin_unitP] at h1 h2 ⊢
+      List.length_map, GlobalTheory.InducedPBW.Symbol.ug_bracket, map_pLin, pLin_unitP] at h1 h2 ⊢
     rw [← kOnS_X] at h1
     rw [show b.length + 1 + a.length = b.length + (a.length + 1) by omega] at h2
     rw [kOnS_mul, mul_commutator_mul_expand, mul_leibniz_comm, map_add (f := _), map_add (f := _), map_add (f := _)]
@@ -1348,7 +1338,7 @@ lemma eq_zero_of_mem {k : ℕ} {z : MvPolynomial (PIx p q) ℂ ⊗[ℂ] V} (h1 :
     have hm : (monomial α (1 : ℂ)) ∈ homogeneousSubmodule (PIx p q) ℂ α.degree :=
       (mem_homogeneousSubmodule _ _).mpr (isHomogeneous_monomial 1 rfl)
     simp only [SetLike.mem_coe, LinearMap.mem_ker, zv, TensorProduct.mk_apply,
-      LinearMap.rTensor_tmul, homogeneousComponent_of_mem hm, if_neg (Nat.ne_of_gt hα),
+      LinearMap.rTensor_tmul, homogeneousComponent_of_mem hm, ite_eq_right (Nat.ne_of_gt hα),
       TensorProduct.zero_tmul]
   have h3 := hkill h2
   rw [LinearMap.mem_ker, hfix] at h3

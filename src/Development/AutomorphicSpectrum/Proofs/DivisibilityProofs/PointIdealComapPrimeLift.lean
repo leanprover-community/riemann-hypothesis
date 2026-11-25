@@ -284,7 +284,7 @@ theorem exists_pow_chartMonomial_mul_sub_map_mem {y : (Σ k, ι k) → Ω} (hA :
     have h := (pointIdeal A y).add_mem ((pointIdeal A y).mul_mem_left (s ^ m) hg)
       ((pointIdeal A y).mul_mem_left (s ^ n) hk)
     convert h using 1
-    simp only [map_add (f := _), map_mul, map_pow, hs, ← hsdef]
+    simp only [map_add (f := _), map_mul, map_pow, hs]
     ring
   | mul_X p i hp =>
     obtain ⟨n, g, hg⟩ := hp

@@ -37,6 +37,7 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntAEMulMem
 
 @[expose] public section
 
@@ -63,10 +64,6 @@ theorem exists_nat_mul_isIntegral' (e : D.host.E) : ∃ n : ℕ, 0 < n ∧ IsInt
   rw [zsmul_eq_mul] at h
   refine IsIntegral.mul ?_ h
   simpa using (isIntegral_algebraMap (R := ℤ) (A := D.host.E) (x := y))
-
-theorem mul_mem_intAE' {x y : Af D.host.F ⊗[D.host.F] D.host.E} (hx : x ∈ intAE D) (hy : y ∈ intAE D) :
-    x * y ∈ intAE D := by
-  first | exact _root_.GlobalTheory.SplitHecke.HeckeComp.mul_mem_intAE | exact @_root_.GlobalTheory.SplitHecke.HeckeComp.mul_mem_intAE | apply _root_.GlobalTheory.SplitHecke.HeckeComp.mul_mem_intAE <;> assumption
 
 theorem natCast_mem_intAE (n : ℕ) : (n : Af D.host.F ⊗[D.host.F] D.host.E) ∈ intAE D := by
   rw [Algebra.TensorProduct.natCast_def]
@@ -97,7 +94,7 @@ theorem exists_natCast_mul_mem_intAE (z : Af D.host.F ⊗[D.host.F] D.host.E) :
           (n₁ : Af D.host.F ⊗[D.host.F] D.host.E) * ((n₂ : Af D.host.F ⊗[D.host.F] D.host.E) * y) := by
       push_cast; ring
     rw [e1]
-    exact add_mem (mul_mem_intAE' (natCast_mem_intAE n₂) hx) (mul_mem_intAE' (natCast_mem_intAE n₁) hy)
+    exact add_mem (GlobalTheory.IntegralAdeleProducts.intAE_mul_mem (F := D.host.F) (E := D.host.E) (natCast_mem_intAE n₂) hx) (GlobalTheory.IntegralAdeleProducts.intAE_mul_mem (F := D.host.F) (E := D.host.E) (natCast_mem_intAE n₁) hy)
 
 theorem exists_natCast_mul_mem_intAt {P : Pl D → Prop} {a : AE D} (ha : a ∈ idAt D P) :
     ∃ n : ℕ, 0 < n ∧ (n : AE D) * a ∈ intAt D P := by
@@ -109,10 +106,10 @@ theorem intAt_add {P : Pl D → Prop} {a b : AE D} (ha : a ∈ intAt D P) (hb : 
   ⟨add_mem ha.1 hb.1, by rw [map_add]; exact add_mem ha.2 hb.2⟩
 
 theorem intAt_mul {P : Pl D → Prop} {a b : AE D} (ha : a ∈ intAt D P) (hb : b ∈ intAt D P) : a * b ∈ intAt D P :=
-  ⟨Ideal.mul_mem_left _ _ hb.1, by rw [map_mul]; exact mul_mem_intAE' ha.2 hb.2⟩
+  ⟨Ideal.mul_mem_left _ _ hb.1, by rw [map_mul]; exact GlobalTheory.IntegralAdeleProducts.intAE_mul_mem (F := D.host.F) (E := D.host.E) ha.2 hb.2⟩
 
 theorem intAt_natCast_mul {P : Pl D → Prop} {a : AE D} (n : ℕ) (ha : a ∈ intAt D P) : (n : AE D) * a ∈ intAt D P :=
-  ⟨Ideal.mul_mem_left _ _ ha.1, by rw [map_mul, map_natCast]; exact mul_mem_intAE' (natCast_mem_intAE n) ha.2⟩
+  ⟨Ideal.mul_mem_left _ _ ha.1, by rw [map_mul, map_natCast]; exact GlobalTheory.IntegralAdeleProducts.intAE_mul_mem (F := D.host.F) (E := D.host.E) (natCast_mem_intAE n) ha.2⟩
 
 theorem intAt_sum {P : Pl D → Prop} {ι : Type} (s : Finset ι) (f : ι → AE D) (h : ∀ i ∈ s, f i ∈ intAt D P) :
     ∑ i ∈ s, f i ∈ intAt D P := by

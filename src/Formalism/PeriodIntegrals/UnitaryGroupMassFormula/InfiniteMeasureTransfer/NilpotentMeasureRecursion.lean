@@ -360,7 +360,7 @@ theorem nsub_iff {r : ℕ} (g : HI I) (e f : Fin r → Fin I.n → I.E) (z : Fin
           exact hu a
         · simp [Bv]
       have h3 := (mem_spanR_iff (I := I) e _ _).1 (h2 _ hx) v
-      rw [thV_lin_sub, hw v, if_pos rfl, span_univ_eq] at h3
+      rw [thV_lin_sub, hw v, ite_eq_left rfl, span_univ_eq] at h3
       exact h3
   · intro h
     refine (show _ ∧ _ from ⟨fun b => ?_, fun w hw => ?_⟩)

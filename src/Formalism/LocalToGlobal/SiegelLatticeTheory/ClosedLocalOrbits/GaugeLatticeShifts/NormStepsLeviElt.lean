@@ -143,7 +143,7 @@ theorem frame_BD (h : IsDualFrame X u η b d) : rowM X.B.I b * colM X.B.I d = si
   rw [rowM_mul_colM, hA_symm, h.2.2.2.2.2.2.2.1 j i, Matrix.smul_apply, Matrix.one_apply, smul_eq_mul]
   by_cases hij : i = j
   · subst hij; simp
-  · rw [if_neg (Ne.symm hij), if_neg hij]; simp
+  · rw [ite_eq_right (Ne.symm hij), ite_eq_right hij]; simp
 
 theorem Mk_inv (h : IsDualFrame X u η b d) (C C' : Matrix (Fin D.R.k) (Fin D.R.k) (X.B.I.E ⊗[X.B.I.F] Af X.B.I.F))
     (h1 : η • (C * C') = η • (1 : Matrix (Fin D.R.k) (Fin D.R.k) _)) :
@@ -186,7 +186,7 @@ theorem hA_sum_smul (x : VA X.B.I) {k : ℕ} (w : Fin k → X.B.I.E ⊗[X.B.I.F]
   simp only [LinearMap.map_smul, hL_apply, smul_eq_mul]
 
 theorem resT_of_mem (v : TR.Pl) {x : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F} (hx : x ∈ IntAf X.B.I.F X.B.I.E) :
-    resT TR v x = TR.res v ⟨x, hx⟩ := dif_pos hx
+    resT TR v x = TR.res v ⟨x, hx⟩ := dite_eq_left hx
 
 theorem resT_add (v : TR.Pl) {x y : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F} (hx : x ∈ IntAf X.B.I.F X.B.I.E)
     (hy : y ∈ IntAf X.B.I.F X.B.I.E) : resT TR v (x + y) = resT TR v x + resT TR v y := by
@@ -339,7 +339,7 @@ theorem levi_element_exists : LeviElt TR u := by
     have e3 : ∀ m, resT TR v (hA X.B.I (d m) (X.bw j)) = if m = j then 1 else 0 := fun m =>
       resT_zmod TR v (hi1 m) (m = j) (hcong m j).2
     simp only [e2, e3, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.sum_ite_eq, Finset.mem_univ,
-      if_true]
+      ite_true]
     rw [Matrix.sub_apply, resT_sub TR v (hC i j).1 (one_int i j), Matrix.one_apply]
     split_ifs
     · rw [resT_one]; ring

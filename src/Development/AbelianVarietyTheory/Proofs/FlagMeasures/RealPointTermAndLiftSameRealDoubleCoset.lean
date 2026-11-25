@@ -79,7 +79,7 @@ theorem bvec_supSub' (a : ℕ) (b : Fin D.R.rS) (hb : b.val < a) :
   rw [Formalism.L2.SG.RealObj.InfCut.JacobianCoordinates.JL.SetCorrespondence.mem_supSub]
   intro i hi
   simp only [Formalism.QuantumDeterminants.bvec]
-  rw [Pi.single_apply, if_neg]
+  rw [Pi.single_apply, ite_eq_right]
   intro h
   have h' : i.val = b.val := congrArg Fin.val h
   omega

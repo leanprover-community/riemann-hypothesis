@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.TheoremPIntegralOfPlaces
 public import Formalism.HermitianCurvature.StatementTBB
 public import Mathlib.Analysis.InnerProductSpace.Adjoint
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TriangleInequalityAtPlace
@@ -71,13 +72,13 @@ variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [Norm
 lemma ew_not_loc (p : KB.Pl P Wp Wq) (F : B.Mat P.k P.r → (Wq →L[ℂ] Wp)) {γ : C.LPt}
     (hγ : ¬ D.IsLocPt γ (P.r + 1)) : Ew p (fun _ => 1) F (P.r + 1) [] γ = 0 := by
   unfold Ew NP KB.Pl.RR D.RRplace
-  rw [dif_neg (fun h => hγ h.1)]
+  rw [dite_eq_right (fun h => hγ h.1)]
   simp
 
 lemma V_zero (p : KB.Pl P Wp Wq) (F : B.Mat P.k P.r → (Wq →L[ℂ] Wp)) {γ : C.LPt}
     (hγ : ¬ (D.IsLocPt γ (P.r + 1) ∧ 0 < Gp p γ)) : p.V F γ = 0 := by
   unfold KB.Pl.V D.vecV
-  exact dif_neg hγ
+  exact dite_eq_right hγ
 
 lemma ew_zero_of (p : KB.Pl P Wp Wq) (F : B.Mat P.k P.r → (Wq →L[ℂ] Wp)) {γ : C.LPt}
     (hγ : ¬ (D.IsLocPt γ (P.r + 1) ∧ 0 < Gp p γ)) : Ew p (fun _ => 1) F (P.r + 1) [] γ = 0 := by
@@ -104,25 +105,7 @@ theorem orbJ_smul_ae {k r : ℕ} (Ds : B.RealPlaceData k r Wp Wq) (γ : B.Mat k 
     (F G : B.Mat k r → (Wq →L[ℂ] Wp)) (c : ℂ) (hc : c ≠ 0)
     (hae : ∀ᵐ q ∂Ds.μSS, D.orbIntegrand Ds γ G q = c • D.orbIntegrand Ds γ F q) :
     D.orbJ Ds γ μR G = c • D.orbJ Ds γ μR F := by
-  classical
-  have hP : (fun θ => D.IsNormCut Ds γ μR θ ∧ Integrable (fun q => θ q • D.orbIntegrand Ds γ G q) Ds.μSS) =
-      (fun θ => D.IsNormCut Ds γ μR θ ∧ Integrable (fun q => θ q • D.orbIntegrand Ds γ F q) Ds.μSS) := by
-    funext θ
-    apply propext
-    refine and_congr_right fun _ => ?_
-    rw [integrable_congr (hae.mono fun q hq => by
-      show θ q • D.orbIntegrand Ds γ G q = c • (θ q • D.orbIntegrand Ds γ F q)
-      rw [hq, smul_comm])]
-    exact integrable_fun_smul_iff hc _
-  unfold D.orbJ
-  simp only [smul_dite, smul_zero]
-  refine TBBx2.choose_dite_congr (E := Wq →L[ℂ] Wp) _ _ hP
-    (fun θ => ∫ q, θ q • D.orbIntegrand Ds γ G q ∂Ds.μSS)
-    (fun θ => c • ∫ q, θ q • D.orbIntegrand Ds γ F q ∂Ds.μSS) fun θ _ => ?_
-  rw [← integral_smul]
-  exact integral_congr_ae (hae.mono fun q hq => by
-    show θ q • D.orbIntegrand Ds γ G q = c • (θ q • D.orbIntegrand Ds γ F q)
-    rw [hq, smul_comm])
+  apply _root_.Formalism.FourierDecayAlt.P.JCx1.needs.orbJ_smul_of_ae <;> assumption
 
 theorem vec_Gpow (p : KB.Pl P Wp Wq) (F : B.Mat P.k P.r → (Wq →L[ℂ] Wp)) (p₀ : ℕ) {γ : C.LPt}
     (_hγ : D.IsLocPt γ (P.r + 1)) (hG : 0 < Gp p γ) :
@@ -344,7 +327,3 @@ end reg
 end
 
 end Formalism.FourierDecayAlt.P.TBBx4
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

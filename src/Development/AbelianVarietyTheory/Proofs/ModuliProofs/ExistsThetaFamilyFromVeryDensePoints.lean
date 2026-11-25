@@ -81,12 +81,6 @@ theorem dense_of_veryDense {R : Type} [CommRing R] {P : Set (Ideal R)} (h : Very
   obtain ⟨p, hp, hp', -, hf⟩ := h q.asIdeal f q.isPrime hq
   exact ⟨⟨p, hp'⟩, hf, hp⟩
 
-theorem basis_pow {G : Type} [CommGroup G] {r k l : ℕ} (hk : k ≠ 0) (hl : l ≠ 0) (y : Fin r → G)
-    (hy : ∀ i, y i ^ (k * l) = 1)
-    (h : ∀ z : G, z ^ (k * l) = 1 → ∃! c : Fin r → ZMod (k * l), ∏ i, y i ^ (c i).val = z)
-    (z : G) (hz : z ^ k = 1) : ∃! c : Fin r → ZMod k, ∏ i, (y i ^ l) ^ (c i).val = z := by
-  apply _root_.GlobalTheory.ZM.NearBuild.Fibre.basis_pow <;> assumption
-
 variable {S S' : Scheme.{0}}
 
 variable {A : Over S'} {Z : Over S} {x : S' ⟶ S} {φ : A.left ⟶ Z.left}

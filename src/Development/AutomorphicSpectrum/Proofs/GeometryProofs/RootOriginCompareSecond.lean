@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordsAtSmul
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ArchBetween
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.TowerOrigin
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.BadExists
@@ -70,17 +71,8 @@ end Forms
 theorem coordsAt_smul {X' : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X'} {K : Type}
     {ι : K → Type} {y : (Σ k, ι k) → Ω} {z : Spec (CommRingCat.of ℂ) ⟶ X'} {w : (Σ k, ι k) → ℂ}
     (h : CoordsAt ξ y z w) {c : K → ℂ} (hc : ∀ k, c k ≠ 0) : CoordsAt ξ y z (fun p => c p.1 * w p) := by
-  refine ⟨fun k => ?_, fun k a ha => ?_⟩
-  · obtain ⟨a, ha⟩ := h.1 k
-    exact ⟨a, (isUnit_iff_ne_zero.2 (hc k)).mul ha⟩
-  · have ha' : IsUnit (w ⟨k, a⟩) := isUnit_iff_ne_zero.2 (right_ne_zero_of_mul ha.ne_zero)
-    obtain ⟨hy, hr⟩ := h.2 k a ha'
-    refine ⟨hy, fun i => ?_⟩
-    obtain ⟨r, h1, h2⟩ := hr i
-    refine ⟨r, h1, ?_⟩
-    show c k * w ⟨k, i⟩ = r * (c k * w ⟨k, a⟩)
-    rw [h2]
-    ring
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.coordsAt_smul <;> assumption
 
 section Origin
 

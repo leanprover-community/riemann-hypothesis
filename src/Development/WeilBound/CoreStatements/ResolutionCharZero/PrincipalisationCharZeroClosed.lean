@@ -112,44 +112,13 @@ theorem linearIndependent_toCotangent_of_span {A : Type*} [CommRing A] [IsLocalR
       (fun i => (IsLocalRing.maximalIdeal A).toCotangent ⟨y i, hy i⟩ :
         Fin d → IsLocalRing.CotangentSpace A) := by
   classical
-  have key : ∀ (b : A), b ∈ Ideal.span (Set.range y) →
-      ∀ (hb : b ∈ IsLocalRing.maximalIdeal A),
-        (IsLocalRing.maximalIdeal A).toCotangent ⟨b, hb⟩ ∈
-          Submodule.span (IsLocalRing.ResidueField A)
-            (Set.range (fun i => (IsLocalRing.maximalIdeal A).toCotangent ⟨y i, hy i⟩ :
-              Fin d → IsLocalRing.CotangentSpace A)) := by
-    intro b hb0
-    have hb' : b ∈ Submodule.span A (Set.range y) := hb0
-    clear hb0
-    induction hb' using Submodule.span_induction with
-    | mem z hz =>
-        obtain ⟨i, rfl⟩ := hz
-        intro hz'
-        exact Submodule.subset_span ⟨i, rfl⟩
-    | zero =>
-        intro hz'
-        have h0 : (⟨(0 : A), hz'⟩ : IsLocalRing.maximalIdeal A) = 0 := rfl
-        rw [h0, map_zero]
-        exact Submodule.zero_mem _
-    | add z z' hz hz' ihz ihz' =>
-        intro hbb
-        have hzm : z ∈ IsLocalRing.maximalIdeal A := by rw [← hspan]; exact hz
-        have hzm' : z' ∈ IsLocalRing.maximalIdeal A := by rw [← hspan]; exact hz'
-        have hsum : (⟨z + z', hbb⟩ : IsLocalRing.maximalIdeal A) = ⟨z, hzm⟩ + ⟨z', hzm'⟩ := rfl
-        rw [hsum, map_add (f := _)]
-        exact Submodule.add_mem _ (ihz hzm) (ihz' hzm')
-    | smul c z hz ih =>
-        intro hbb
-        have hzm : z ∈ IsLocalRing.maximalIdeal A := by rw [← hspan]; exact hz
-        have hsm : (⟨c • z, hbb⟩ : IsLocalRing.maximalIdeal A) = c • ⟨z, hzm⟩ := rfl
-        rw [hsm, map_smul, ← IsScalarTower.algebraMap_smul (IsLocalRing.ResidueField A) c]
-        exact Submodule.smul_mem _ _ (ih hzm)
-  have hspanY : ⊤ ≤ Submodule.span (IsLocalRing.ResidueField A)
-      (Set.range (fun i => (IsLocalRing.maximalIdeal A).toCotangent ⟨y i, hy i⟩ :
-        Fin d → IsLocalRing.CotangentSpace A)) := by
-    intro v _
-    obtain ⟨⟨b, hb⟩, rfl⟩ := Ideal.toCotangent_surjective (IsLocalRing.maximalIdeal A) v
-    exact key b (by rw [hspan]; exact hb) hb
+  let generators : Fin d → IsLocalRing.maximalIdeal A := fun i => ⟨y i, hy i⟩
+  have hgen : Submodule.span A (Set.range generators) = ⊤ := by
+    apply Submodule.map_injective_of_injective (Submodule.injective_subtype (IsLocalRing.maximalIdeal A))
+    rw [Submodule.map_span, ← Set.range_comp', Submodule.map_top, Submodule.range_subtype]
+    exact hspan
+  have hspanY := (IsLocalRing.CotangentSpace.span_image_eq_top_iff (s := Set.range generators)).2 hgen
+  rw [← Set.range_comp'] at hspanY
   have hcard0 : ((d : ℕ) : WithBot ℕ∞) =
       ((Module.finrank (IsLocalRing.ResidueField A) (IsLocalRing.CotangentSpace A) : ℕ) :
         WithBot ℕ∞) :=
@@ -158,7 +127,7 @@ theorem linearIndependent_toCotangent_of_span {A : Type*} [CommRing A] [IsLocalR
       Module.finrank (IsLocalRing.ResidueField A) (IsLocalRing.CotangentSpace A) := by
     rw [Fintype.card_fin]
     exact_mod_cast hcard0
-  exact linearIndependent_of_top_le_span_of_card_eq_finrank hspanY hcard
+  exact linearIndependent_of_top_le_span_of_card_eq_finrank hspanY.ge hcard
 
 theorem linearIndependent_one_tmul_of_toCotangent {A : Type*} [CommRing A] [IsLocalRing A] {ι : Type*}
     (y : ι → IsLocalRing.maximalIdeal A)
@@ -271,8 +240,8 @@ theorem exists_coords_containing (k : Type*) [CommRing k] (ι : Type*) [Fintype 
       (∀ x : {j : ι // ¬ (j ∈ Jst)}, w (x : ι) = s (e x)) := by
     refine ⟨fun j => if hj : j ∈ Jst then EtaleCoordinates.coord k ι S j else s (e ⟨j, hj⟩),
       fun j hj => ?_, fun x => ?_⟩
-    · exact dif_pos hj
-    · exact dif_neg x.2
+    · exact dite_eq_left hj
+    · exact dite_eq_right x.2
   have hbasisApply : ∀ x : Fin h ⊕ {j : ι // j ∈ Jst},
       B x = (1 : IsLocalRing.ResidueField A) ⊗ₜ[A]
         KaehlerDifferential.D k A (algebraMap S A (w (τ x))) := by
@@ -681,7 +650,7 @@ theorem exists_labels {X : Scheme.{0}} {k : Type} [Field k] [CharZero k] {p : X 
       exact hyC
     have hxC : x ∉ (C : Set X) := by
       intro hxC
-      have h' : lab C = some (Classical.choose (hcomp C hC hxC)) := dif_pos ⟨hC, hxC⟩
+      have h' : lab C = some (Classical.choose (hcomp C hC hxC)) := dite_eq_left ⟨hC, hxC⟩
       rw [h'] at hnone
       cases hnone
     apply hyW.2
@@ -799,20 +768,20 @@ theorem gBoundary : PositivityTheory.ResPlug.WeightsCompactStabilizer.GBoundary 
     · intro i hi i' hi' s hs hs'
       simp only [List.length_map] at hi hi'
       dsimp only at hs hs'
-      rw [dif_pos hi] at hs
-      rw [dif_pos hi'] at hs'
+      rw [dite_eq_left hi] at hs
+      rw [dite_eq_left hi'] at hs'
       have := h1 _ (Finset.mem_toList.mp (List.getElem_mem hi)) _
         (Finset.mem_toList.mp (List.getElem_mem hi')) s hs hs'
       exact (hnd.getElem_inj_iff).mp this
     · intro i hi hnone
       simp only [List.length_map] at hi
       dsimp only at hnone
-      rw [dif_pos hi] at hnone
+      rw [dite_eq_left hi] at hnone
       simpa using h2 _ (Finset.mem_toList.mp (List.getElem_mem hi)) hnone
     · intro i hi s hs
       simp only [List.length_map] at hi
       dsimp only at hs
-      rw [dif_pos hi] at hs
+      rw [dite_eq_left hi] at hs
       simpa using h3 _ (Finset.mem_toList.mp (List.getElem_mem hi)) s hs
   · rw [← hcov]
     ext y

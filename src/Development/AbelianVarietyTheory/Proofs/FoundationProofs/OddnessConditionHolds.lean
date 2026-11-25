@@ -78,13 +78,6 @@ noncomputable section
 
 namespace GlobalTheory.NormSum.LocAgree
 
-theorem exists_int_mul (D : D7) {N : ℕ} (q : ℕ) (k : GA D N) (h : TrivAt D q (k : GL (Fin N) (AE D))) :
-    ∃ s : ℕ, Nat.Coprime s q ∧
-      (∀ i j, (s : AE D) * ((k : GL (Fin N) (AE D)) : Matrix (Fin N) (Fin N) (AE D)) i j ∈ OhE D) ∧
-      ∀ i j, (s : AE D) * (((k : GL (Fin N) (AE D))⁻¹ : GL (Fin N) (AE D)) :
-        Matrix (Fin N) (Fin N) (AE D)) i j ∈ OhE D := by
-  apply GlobalTheory.InertParity.LengthSign.exists_int_mul <;> assumption
-
 theorem pt_nsmul (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) {N N' : ℕ} (m : ℕ)
     (z : Matrix (Fin N') (Fin N) D.host.E) :
     pt D (tor0 D cc δ) δ ((m : D.host.E) • z) = m • pt D (tor0 D cc δ) δ z := by
@@ -137,8 +130,8 @@ end GlobalTheory.NormSum.LocAgree
 open GlobalTheory.NormSum.LocAgree in
 theorem GlobalTheory.NormSum.La_agree_of_trivAt : ∀ (D : D7), admG1 D → ∀ (cc : Ideal (𝓞 D.host.K)) (δ : ℂ), cc ≠ ⊥ → ∀ (N N' q : ℕ) (h k : GA D N) (h' k' : GA D N') (L₁ L₂ : Submodule (𝓞 D.host.E) (Fin N → D.host.E)) (L₁' L₂' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)), TrivAt D q (k : GL (Fin N) (AE D)) → TrivAt D q (k' : GL (Fin N') (AE D)) → Moves D (h : GL (Fin N) (AE D)) L₁ → Moves D (h' : GL (Fin N') (AE D)) L₁' → Moves D ((h * k : GA D N) : GL (Fin N) (AE D)) L₂ → Moves D ((h' * k' : GA D N') : GL (Fin N') (AE D)) L₂' → (∀ x ∈ La D (tor0 D cc δ) L₁ L₁', ∃ m : ℕ, Nat.Coprime m q ∧ m • x ∈ La D (tor0 D cc δ) L₂ L₂') ∧ (∀ x ∈ La D (tor0 D cc δ) L₂ L₂', ∃ m : ℕ, Nat.Coprime m q ∧ m • x ∈ La D (tor0 D cc δ) L₁ L₁') := by
   intro D hG cc δ hc N N' q h k h' k' L₁ L₂ L₁' L₂' hk hk' h₁ h₁' h₂ h₂'
-  obtain ⟨s, hsq, hs, hsi⟩ := exists_int_mul D q k hk
-  obtain ⟨s', hsq', hs', hsi'⟩ := exists_int_mul D q k' hk'
+  obtain ⟨s, hsq, hs, hsi⟩ := GlobalTheory.InertParity.LengthSign.exists_int_mul D q k hk
+  obtain ⟨s', hsq', hs', hsi'⟩ := GlobalTheory.InertParity.LengthSign.exists_int_mul D q k' hk'
   refine ⟨fun x hx => ⟨s * s', Nat.Coprime.mul_left hsq hsq', ?_⟩,
     fun x hx => ⟨s * s', Nat.Coprime.mul_left hsq hsq', ?_⟩⟩
   · refine smul_mem_La D hG cc δ hc h (h * k) h' (h' * k') h₁ h₁' h₂ h₂' s s' ?_ ?_ x hx
@@ -735,7 +728,7 @@ theorem UnitAt.mul {p : ℕ} [Fact p.Prime] {lam : Qbar →+* ℂ_[p]} {a b : �
   obtain ⟨ha, ha'⟩ := ha
   obtain ⟨hb, hb'⟩ := hb
   refine ⟨mul_mem ha hb, ?_⟩
-  simp only [lamC, ha, hb, mul_mem ha hb, dif_pos] at ha' hb' ⊢
+  simp only [lamC, ha, hb, mul_mem ha hb, dite_eq_left] at ha' hb' ⊢
   have : (⟨a * b, mul_mem ha hb⟩ : Qbar) = ⟨a, ha⟩ * ⟨b, hb⟩ := rfl
   rw [this, map_mul, norm_mul, ha', hb', one_mul]
 
@@ -743,14 +736,14 @@ theorem UnitAt.zpow {p : ℕ} [Fact p.Prime] {lam : Qbar →+* ℂ_[p]} {a : ℂ
     UnitAt lam (a ^ k) := by
   obtain ⟨ha, ha'⟩ := ha
   refine ⟨zpow_mem ha k, ?_⟩
-  simp only [lamC, ha, zpow_mem ha k, dif_pos] at ha' ⊢
+  simp only [lamC, ha, zpow_mem ha k, dite_eq_left] at ha' ⊢
   have : (⟨a ^ k, zpow_mem ha k⟩ : Qbar) = ⟨a, ha⟩ ^ k := rfl
   rw [this, map_zpow₀, norm_zpow, ha', one_zpow]
 
 theorem unitAt_neg_one {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) : UnitAt lam (-1) := by
   have h : (-1 : ℂ) ∈ Qbar := neg_mem (one_mem _)
   refine ⟨h, ?_⟩
-  simp only [lamC, h, dif_pos]
+  simp only [lamC, h, dite_eq_left]
   have : (⟨-1, h⟩ : Qbar) = -1 := rfl
   rw [this, map_neg, map_one, norm_neg, norm_one]
 

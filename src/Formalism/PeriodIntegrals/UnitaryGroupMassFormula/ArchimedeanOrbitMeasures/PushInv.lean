@@ -2,6 +2,7 @@ module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.PushCut
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MassComputations.SplitG
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.T2SpaceTensorProductFiniteExtension
 
 @[expose] public section
 
@@ -27,14 +28,7 @@ instance isTopologicalRing_tensP : IsTopologicalRing (R ⊗[F] E) :=
 
 theorem exists_homeomorph_tensP :
     ∃ (ι : Type) (_ : Fintype ι), Nonempty (R ⊗[F] E ≃ₜ (ι → R)) := by
-  classical
-  let b := Module.Free.chooseBasis R (R ⊗[F] E)
-  let e : (R ⊗[F] E) ≃ₗ[R] (Module.Free.ChooseBasisIndex R (R ⊗[F] E) → R) := b.equivFun
-  refine ⟨Module.Free.ChooseBasisIndex R (R ⊗[F] E), inferInstance, ⟨?_⟩⟩
-  exact
-    { toEquiv := e.toEquiv
-      continuous_toFun := IsModuleTopology.continuous_of_linearMap e.toLinearMap
-      continuous_invFun := IsModuleTopology.continuous_of_linearMap e.symm.toLinearMap }
+  apply _root_.PI.AprimeInfT.exists_homeomorph_tens <;> assumption
 
 instance secondCountable_tensP [SecondCountableTopology R] :
     SecondCountableTopology (R ⊗[F] E) := by

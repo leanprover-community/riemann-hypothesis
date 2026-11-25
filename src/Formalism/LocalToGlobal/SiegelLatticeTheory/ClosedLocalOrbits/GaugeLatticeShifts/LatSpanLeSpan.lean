@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PairCorankPositivity.EqZeroOfMulVec
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SaturatedPf
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.PoincareConstantEq
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.WittExtensionTheorem
@@ -336,18 +337,7 @@ theorem flagG_ext {T : E} {F1 F2 : FlagG S r T} (he : F1.e = F2.e) (hz : F1.z = 
 
 theorem gram_fvec {T : E} (F : FlagG S r T) (i j : Fin (r + 1)) :
     S.hT (F.fvec i) (F.fvec j) = if i = Fin.last r ∧ j = Fin.last r then -T else 0 := by
-  refine Fin.lastCases ?_ (fun a => ?_) i <;> refine Fin.lastCases ?_ (fun b => ?_) j
-  · simp [FlagG.fvec, F.z_norm]
-  · have h := F.z_orth b
-    rw [← S.herm.eq] at h
-    simp only [FlagG.fvec, Fin.snoc_last, Fin.snoc_castSucc]
-    rw [if_neg (fun h' => (Fin.castSucc_lt_last b).ne h'.2)]
-    have h2 := congrArg (starRingEnd E) h
-    simpa using h2
-  · simp only [FlagG.fvec, Fin.snoc_last, Fin.snoc_castSucc]
-    rw [if_neg (fun h' => (Fin.castSucc_lt_last a).ne h'.1), F.z_orth a]
-  · simp only [FlagG.fvec, Fin.snoc_castSucc]
-    rw [if_neg (fun h' => (Fin.castSucc_lt_last a).ne h'.1), F.e_iso a b]
+  apply _root_.PI.PairCorankPos.W.gram_fvec <;> assumption
 
 theorem fvec_li {T : E} (hT : T ≠ 0) (F : FlagG S r T) : LinearIndependent E F.fvec := by
   unfold FlagG.fvec

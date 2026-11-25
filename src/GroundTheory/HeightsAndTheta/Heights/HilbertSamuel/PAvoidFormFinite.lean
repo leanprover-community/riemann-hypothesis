@@ -192,7 +192,7 @@ theorem exists_pow_mem {S : Set (MRingOver ℂ ι)} {G : MRingOver ℂ ι}
       have hS : ∀ s ∈ S, eval x s = 0 := fun s hs =>
         hxJ s (Ideal.subset_span (Set.mem_insert_of_mem _ hs))
       have hnc : ¬ ∀ k, ∃ i, x ⟨k, i⟩ ≠ 0 := fun hc => hcone x hc hS hG
-      push_neg at hnc
+      push Not at hnc
       obtain ⟨k, hk⟩ := hnc
       have h0 : eval x (monomial (spike c (fun _ => 1)) (1 : ℂ)) = 0 := by
         rw [eval_spike]
@@ -224,8 +224,7 @@ theorem rel_one {S : Set (MRingOver ℂ ι)} {G : MRingOver ℂ ι} {e : K → �
   refine ⟨r * ∑ k, Fintype.card (ι k), fun M hM μ hμ => ?_⟩
   have hc : ∀ k, ∃ i, r ≤ μ ⟨k, i⟩ := by
     intro k
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have h1 : bdeg μ k ≤ Fintype.card (ι k) * r := by
       calc bdeg μ k = ∑ i, μ ⟨k, i⟩ := rfl
         _ ≤ ∑ _i : ι k, r := Finset.sum_le_sum fun i _ => (hne i).le
@@ -262,8 +261,8 @@ theorem rel_one {S : Set (MRingOver ℂ ι)} {G : MRingOver ℂ ι} {e : K → �
     rw [add_mul, one_mul, Nat.add_sub_cancel]
   refine ⟨cmp (M • e) a, isMultiHomog_cmp _ _, fun z hz => ?_⟩
   have h1 : monomial μ (1 : ℂ) = cmp ((M + 1) • e) (a * G) + cmp ((M + 1) • e) s := by
-    rw [← map_add (f := _), ← hμa, cmp_of_homog (isMultiHomog_monomial μ 1), if_pos hμ]
-  rw [h1, map_add (f := _), cmp_mul hG, if_pos heD, hDe, map_mul, eval_cmp_eq_zero hS hz hs, add_zero]
+    rw [← map_add (f := _), ← hμa, cmp_of_homog (isMultiHomog_monomial μ 1), ite_eq_left hμ]
+  rw [h1, map_add (f := _), cmp_mul hG, ite_eq_left heD, hDe, map_mul, eval_cmp_eq_zero hS hz hs, add_zero]
 
 theorem rel_direct {S : Set (MRingOver ℂ ι)} {G : MRingOver ℂ ι} {e : K → ℕ} (hG : IsMultiHomog G e)
     {N₀ M : ℕ} (hM : M ≤ N₀) (μ : (Σ k, ι k) →₀ ℕ) (hμ : bdeg μ = M • e) :
@@ -399,10 +398,10 @@ theorem isMultiHomog_X (k : K) (a : ι k) :
   by_cases h : k' = k
   · subst h
     simp [bdeg, Finsupp.single_apply]
-  · simp only [if_neg h, bdeg]
+  · simp only [ite_eq_right h, bdeg]
     symm
     refine Finset.sum_eq_zero fun i _ => ?_
-    rw [Finsupp.single_apply, if_neg]
+    rw [Finsupp.single_apply, ite_eq_right]
     intro h'
     exact h (congrArg Sigma.fst h').symm
 
@@ -412,8 +411,7 @@ theorem exists_sep {e : K → ℕ} (he : ∀ k, 1 ≤ e k) {z w : (Σ k, ι k) �
     ∃ Q : MRingOver ℂ ι, IsMultiHomog Q e ∧ eval w Q = 0 ∧ eval z Q ≠ 0 := by
   classical
   have hmin : ∃ k a b, z ⟨k, a⟩ * w ⟨k, b⟩ ≠ z ⟨k, b⟩ * w ⟨k, a⟩ := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     apply hn
     choose i hi using hw
     refine ⟨fun k => z ⟨k, i k⟩ / w ⟨k, i k⟩, fun k h0 => ?_, ?_⟩

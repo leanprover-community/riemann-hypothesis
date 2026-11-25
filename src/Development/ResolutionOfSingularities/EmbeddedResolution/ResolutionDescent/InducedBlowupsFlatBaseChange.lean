@@ -256,7 +256,6 @@ theorem reindex_lt_reindex_succ (F : ChartFlatBaseChange S S') (j : ℕ) (hj : j
 
 theorem strictTransformComparison_comp_strictTransformToBase (F : ChartFlatBaseChange S S') (j : ℕ) (hj : j ≤ S'.length) :
     F.strictTransformComparison j hj ≫ S.strictTransformToBase (F.reindex j) = S'.strictTransformToBase j ≫ F.baseMap := by
-  have : CategoryTheory.Mono S.emb := inferInstance
   have key : (F.strictTransformComparison j hj ≫ S.strictTransformToBase (F.reindex j)) ≫ S.emb
       = (S'.strictTransformToBase j ≫ F.baseMap) ≫ S.emb := by
     calc (F.strictTransformComparison j hj ≫ S.strictTransformToBase (F.reindex j)) ≫ S.emb
@@ -1161,7 +1160,6 @@ theorem strictTransformComparison_succ_comp_strictTransformMapOfLE (F : ChartFla
     (hσ : F.reindex j ≤ F.reindex (j + 1)) :
     F.strictTransformComparison (j + 1) (Nat.succ_le_of_lt hj) ≫ S.strictTransformMapOfLE hσ =
       S'.strictTransformMap j ≫ F.strictTransformComparison j (le_of_lt hj) := by
-  have : Mono (S.strictTransformι (F.reindex j)) := inferInstance
   rw [← cancel_mono (S.strictTransformι (F.reindex j))]
   have e1 : (F.strictTransformComparison (j + 1) (Nat.succ_le_of_lt hj) ≫ S.strictTransformMapOfLE hσ) ≫
         S.strictTransformι (F.reindex j)

@@ -438,18 +438,18 @@ theorem wa_main {K : Type} [Field K] [NumberField K] {r : ℕ} (S : HermForm K r
         simp only [waExt_zero, waExt_last, waExt_mid, Fin.val_zero, Fin.val_last, Fin.val_succ,
           Fin.val_castSucc] <;>
         try simp only [true_and]
-      · rw [hxx, if_neg (by omega), if_neg (by omega)]
-      · rw [hxy, if_pos (by omega)]
+      · rw [hxx, ite_eq_right (by omega), ite_eq_right (by omega)]
+      · rw [hxy, ite_eq_left (by omega)]
       · have := j.2
-        rw [(hmem j).2.1, if_neg (by omega), if_neg (by omega)]
-      · rw [hyx, if_pos (by omega)]
-      · rw [hyy, if_neg (by omega), if_neg (by omega)]
+        rw [(hmem j).2.1, ite_eq_right (by omega), ite_eq_right (by omega)]
+      · rw [hyx, ite_eq_left (by omega)]
+      · rw [hyy, ite_eq_right (by omega), ite_eq_right (by omega)]
       · have := j.2
-        rw [(hmem j).2.2, if_neg (by omega), if_neg (by omega)]
+        rw [(hmem j).2.2, ite_eq_right (by omega), ite_eq_right (by omega)]
       · have := i.2
-        rw [hbx, if_neg (by omega), if_neg (by omega)]
+        rw [hbx, ite_eq_right (by omega), ite_eq_right (by omega)]
       · have := i.2
-        rw [hby, if_neg (by omega), if_neg (by omega)]
+        rw [hby, ite_eq_right (by omega), ite_eq_right (by omega)]
       · have := i.2
         have := j.2
         rw [hgram', wa_witt_apply]
@@ -477,8 +477,8 @@ theorem wa_main {K : Type} [Field K] [NumberField K] {r : ℕ} (S : HermForm K r
       have := i.2
       by_cases hij : i = j
       · subst hij
-        rw [if_neg (by omega), if_pos ⟨rfl, by omega, by omega⟩]
-      · rw [hbo i j hij, if_neg (by omega), if_neg (fun h => hij (Fin.ext h.1))]
+        rw [ite_eq_right (by omega), ite_eq_left ⟨rfl, by omega, by omega⟩]
+      · rw [hbo i j hij, ite_eq_right (by omega), ite_eq_right (fun h => hij (Fin.ext h.1))]
     · have hz : ∀ k, S.h (b k) (∑ i, t i • b i) = t k * S.h (b k) (b k) := fun k => by
         rw [wa_sum_right, Finset.sum_eq_single k
           (fun i _ hik => by rw [hbo k i (Ne.symm hik), mul_zero]) (by simp)]
@@ -520,12 +520,12 @@ theorem wa_witt_ker {K : Type} [Field K] (r m : ℕ) (g : Fin r → K)
   · have h := hv j
     rw [Finset.sum_eq_single j] at h
     · simp only [wittMat, Matrix.of_apply] at h
-      rw [if_neg (by omega), if_pos ⟨trivial, hmid.1, hmid.2⟩] at h
+      rw [ite_eq_right (by omega), ite_eq_left ⟨trivial, hmid.1, hmid.2⟩] at h
       exact (mul_eq_zero.1 h).resolve_right (hg j hmid.1 hmid.2)
     · intro i _ hij
       have hi := i.isLt
       simp only [wittMat, Matrix.of_apply]
-      rw [if_neg, if_neg, mul_zero]
+      rw [ite_eq_right, ite_eq_right, mul_zero]
       · rintro ⟨h1, -⟩
         exact hij h1.symm
       · rintro ⟨h1, h2⟩
@@ -540,12 +540,12 @@ theorem wa_witt_ker {K : Type} [Field K] (r m : ℕ) (g : Fin r → K)
       have hc : (p : ℕ) + j + 1 = r ∧ ((p : ℕ) < m ∨ (j : ℕ) < m) := by
         rw [hpv]
         omega
-      rw [if_pos hc, mul_one] at h
+      rw [ite_eq_left hc, mul_one] at h
       exact h
     · intro i _ hij
       have hi := i.isLt
       simp only [wittMat, Matrix.of_apply]
-      rw [if_neg, if_neg, mul_zero]
+      rw [ite_eq_right, ite_eq_right, mul_zero]
       · rintro ⟨-, h2, h3⟩
         rw [hpv] at h2 h3
         omega
@@ -575,7 +575,7 @@ theorem wittBasis_holds : WittBasisStatement := by
   have hgmid : ∀ k : Fin r, m ≤ (k : ℕ) → (k : ℕ) + m < r → g k ≠ 0 := by
     intro k hk1 hk2 hgk
     have ht := hg (Pi.single k 1) (fun i hi => by
-      rw [Pi.single_apply, if_neg]
+      rw [Pi.single_apply, ite_eq_right]
       rintro rfl
       omega) (by
       rw [Finset.sum_eq_single k]
@@ -653,7 +653,7 @@ theorem sdd_factor {n : ℕ} {A : Matrix (Fin n) (Fin n) ℂ} (hA : A.PosDef) :
 theorem sdd_star_self_eig {n : ℕ} {D : Matrix (Fin n) (Fin n) ℂ} (hD : D.IsHermitian) (i : Fin n) :
     star (⇑(hD.eigenvectorBasis i)) ⬝ᵥ (⇑(hD.eigenvectorBasis i)) = 1 := by
   have h := orthonormal_iff_ite.mp hD.eigenvectorBasis.orthonormal i i
-  rw [if_pos rfl, PiLp.inner_apply] at h
+  rw [ite_eq_left rfl, PiLp.inner_apply] at h
   rw [← h]
   simp only [dotProduct, Pi.star_apply, RCLike.inner_apply]
   refine Finset.sum_congr rfl fun x _ => ?_
@@ -1066,9 +1066,9 @@ theorem sdd_gram_step {K : Type} [Field K] [NumberField K] {r e k₀ k₁ : ℕ}
       rw [← hcb j]; rfl
     by_cases hl : e ≤ (l : ℕ)
     · have hz : ∀ i, b₀ i l = 0 := fun i => hcutz i l hl
-      rw [if_pos hl, hE]
+      rw [ite_eq_left hl, hE]
       simp [embM, Matrix.mul_apply, hb1, hl, hz]
-    · rw [if_neg hl]
+    · rw [ite_eq_right hl]
       simp [embM, hb1, hl]
   have hquad : ∀ v : Fin k₁ → ℂ, (star v ⬝ᵥ (((embM σ b₁)ᴴ * D * embM σ b₁) *ᵥ v)).re ≤
       (star v ⬝ᵥ ((Eᴴ * D * E) *ᵥ v)).re :=

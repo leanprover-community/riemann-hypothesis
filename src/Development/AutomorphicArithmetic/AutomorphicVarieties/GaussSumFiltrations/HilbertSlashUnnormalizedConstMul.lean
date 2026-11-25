@@ -32,7 +32,7 @@ theorem det_inv_apply (v : InfinitePlace F) (h : GL (Fin 2) (InfinitePlace F →
 theorem denom_cmp_mul (v : InfinitePlace F) (h h' : GL (Fin 2) (InfinitePlace F → ℝ)) (hh' : Pos h') (z : ℍ) :
     denom (cmp v h * cmp v h') z = denom (cmp v h) ((cmp v h' • z : ℍ) : ℂ) * denom (cmp v h') z := by
   have hp : 0 < ((cmp v h').det : ℝ) := by rw [cmp_det]; exact hh' v
-  rw [denom_cocycle_σ, σ, if_pos hp]
+  rw [denom_cocycle_σ, σ, ite_eq_left hp]
   rfl
 
 theorem act_mul (h h' : GL (Fin 2) (InfinitePlace F → ℝ)) (z : Hn F) : act (h * h') z = act h (act h' z) := by

@@ -875,7 +875,7 @@ private theorem lev_rk {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω
   haveI : Algebra.IsAlgebraic ℚ Ω := IsAlgClosure.isAlgebraic
   haveI : Module.IsTorsionFree E Ω := DivisionSemiring.to_moduleIsTorsionFree
   haveI : IsAlgClosure E Ω := ⟨IsAlgClosure.isAlgClosed ℚ, Algebra.IsAlgebraic.tower_top (K := ℚ) E⟩
-  obtain ⟨r, hr⟩ := _root_.UpperTheory.V.FW.ferreroWashington l E (by rw [if_neg h2]; exact hζ)
+  obtain ⟨r, hr⟩ := _root_.UpperTheory.V.FW.ferreroWashington l E (by rw [ite_eq_right h2]; exact hζ)
   refine ⟨r, fun n => ?_⟩
   let K' := Kum.Fn E Ω l n
   obtain ⟨hcyc, -, -⟩ := Kum.fnCyc E Ω l n
@@ -1341,8 +1341,7 @@ theorem UpperTheory.V.GC.b1 :
           change A.valuation (algebraMap F Ω ((x * y : 𝓞 F) : F)) < 1 at hxy
           change A.valuation (algebraMap F Ω (x : F)) < 1 ∨ A.valuation (algebraMap F Ω (y : F)) < 1
           simp only [map_mul] at hxy
-          by_contra h
-          push_neg at h
+          by_contra! h
           have hx1 : A.valuation (algebraMap F Ω (x : F)) = 1 := le_antisymm (hOk x) h.1
           have hy1 : A.valuation (algebraMap F Ω (y : F)) = 1 := le_antisymm (hOk y) h.2
           rw [hx1, hy1, one_mul] at hxy

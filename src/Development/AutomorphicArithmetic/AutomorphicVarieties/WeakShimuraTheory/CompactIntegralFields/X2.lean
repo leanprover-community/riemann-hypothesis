@@ -1063,7 +1063,7 @@ theorem UpperTheory.V.Ws.exists_iwasawaRank_bound_of_ferreroWashington :
     erw [cyclotomicCharacter.toZModPow] at h
     exact h
   have hμ : ∃ ζ : K, IsPrimitiveRoot ζ (if l = 2 then 4 else l) := by
-    rw [if_neg hl2]
+    rw [ite_eq_right hl2]
     have := (muIff Ω K (l ^ 1)).2 (by
       rw [hgal]
       intro σ hσ

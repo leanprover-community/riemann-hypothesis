@@ -172,7 +172,7 @@ theorem generically_regular_quotient_of_finiteType_int :
   intro B _ _ p hp
   by_cases h : ∀ a : ℤ, algebraMap ℤ B a ∈ p → a = 0
   · exact _root_.GlobalTheory.prime_generically_regular_quotient ℤ B p h
-  push_neg at h
+  push Not at h
   obtain ⟨a, ha, ha0⟩ := h
   have hP : (p.comap (algebraMap ℤ B)) ≠ ⊥ := by
     intro hb

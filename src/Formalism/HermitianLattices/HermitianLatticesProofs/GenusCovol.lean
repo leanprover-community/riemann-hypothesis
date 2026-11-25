@@ -407,7 +407,7 @@ theorem genusCovol_dualBasis (h : V →ₗ⋆[K] V →ₗ[K] K) (N : ℕ)
         intro k
         rw [inner_sum]
         simp_rw [← Int.cast_smul_eq_zsmul ℝ, real_inner_smul_right, hbv, hRdelta]
-        simp only [mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+        simp only [mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
         simp only [bR, Basis.ofZLatticeBasis_apply, ← hmι, ← hb, hc]
         simp
       rw [e]

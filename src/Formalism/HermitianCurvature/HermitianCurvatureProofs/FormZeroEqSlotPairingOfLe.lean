@@ -157,7 +157,3 @@ theorem Lw_qw (q : ℂ → ℂ) (ys : List ℝ) (w : List C.Letter) :
 end
 
 end Formalism.FourierDecayAlt.P.PBF
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

@@ -87,7 +87,7 @@ abbrev phiZ (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω] [Algebra (O0 p) Ω] 
   (algebraMap (O0 p) Ω).comp (algebraMap ℤ_[p] (O0 p))
 
 theorem phiZ_injective [CharZero Ω] : Function.Injective (phiZ p Ω) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro c hc
   by_contra h0
   rw [PadicInt.unitCoeff_spec h0, map_mul, map_pow, map_natCast] at hc
@@ -630,8 +630,7 @@ theorem q_not_pow : ∀ (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω] [Algebra
     linear_combination -(φ g * φ g) * hEb
   have hc' := (Fintype.linearIndependent_iff.1 hli) c hc
   have : ∃ i, f i ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     apply hb0
     have : φ g * b = 0 := by rw [hrep]; simp [hall]
     rcases mul_eq_zero.1 this with h0 | h0

@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ConjEMemHostFIff
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Decomp
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Inertia
@@ -168,14 +169,7 @@ theorem tower_dvd_QSq : 2 ^ (φ.e + 2) ∣ H.QS * H.q := H.tower_dvd.trans (dvd_
 theorem QSq_dvd : H.QS * H.q ∣ H.condN := dvd_mul_right _ _
 
 theorem cop_QSq_d : Nat.Coprime (H.QS * H.q) H.d := by
-  have hqd : H.q ≠ H.d := by
-    intro h
-    have h1 := H.hyp.2.2.1
-    have h2 := H.hyp.2.2.2.1
-    rw [h] at h1
-    omega
-  have hq : Nat.Coprime H.q H.d := (Nat.coprime_primes H.hyp.1 H.hyp.2.1).mpr hqd
-  exact Nat.Coprime.mul_left (Nat.Coprime.coprime_mul_left_right H.QS_coprime) hq
+  apply _root_.Formalism.HC.HostRaw.coprime_QSq_d <;> assumption
 
 theorem split_QSq (l : ℕ) (hl : l.Prime) (hl2 : l ≠ 2) (h : l ∣ H.QS * H.q) : jacobiSym (-(H.d : ℤ)) l = 1 := by
   rcases (Nat.Prime.dvd_mul hl).mp h with h1 | h1

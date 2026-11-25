@@ -29,12 +29,6 @@ lemma sig_sig (k r : ℕ) (i : Fin (2 * r + k + 1)) : sig k r (sig k r i) = i :=
 
 def sgn (k r : ℕ) (i : Fin (2 * r + k + 1)) : ℂ := if i.val = r + k then -1 else 1
 
-lemma sgn_sig (k r : ℕ) (i : Fin (2 * r + k + 1)) : sgn k r (sig k r i) = sgn k r i := by
-  have hi := i.isLt
-  unfold sgn
-  rw [sig_val]
-  split_ifs <;> first | rfl | (exfalso; omega)
-
 lemma Hpk_eq (k r : ℕ) (i j : Fin (2 * r + k + 1)) :
     Hpk k r i j = if j = sig k r i then sgn k r i else 0 := by
   have hi := i.isLt
@@ -65,38 +59,38 @@ lemma sgn_eI (k r : ℕ) (a : Fin r) : sgn k r (eI k r a) = 1 := by
   have ha := a.isLt
   have h1 : (eI k r a).val = a.val := rfl
   unfold sgn
-  rw [h1, if_neg (by omega)]
+  rw [h1, ite_eq_right (by omega)]
 
 lemma sgn_esI (k r : ℕ) (a : Fin r) : sgn k r (esI k r a) = 1 := by
   have ha := a.isLt
   have h1 : (esI k r a).val = 2 * r + k - a.val := rfl
   unfold sgn
-  rw [h1, if_neg (by omega)]
+  rw [h1, ite_eq_right (by omega)]
 
 lemma Hpk_mul_eI (k r : ℕ) (M : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) (a : Fin r)
     (j : Fin (2 * r + k + 1)) : (Hpk k r * M) (eI k r a) j = M (esI k r a) j := by
   rw [Matrix.mul_apply, Finset.sum_eq_single (sig k r (eI k r a))]
-  · rw [Hpk_eq, if_pos rfl, sgn_eI, sig_eI, one_mul]
+  · rw [Hpk_eq, ite_eq_left rfl, sgn_eI, sig_eI, one_mul]
   · intro l _ hl
-    rw [Hpk_eq, if_neg hl, zero_mul]
+    rw [Hpk_eq, ite_eq_right hl, zero_mul]
   · intro h
     exact absurd (Finset.mem_univ _) h
 
 lemma Hpk_mul_esI (k r : ℕ) (M : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) (b : Fin r)
     (j : Fin (2 * r + k + 1)) : (Hpk k r * M) (esI k r b) j = M (eI k r b) j := by
   rw [Matrix.mul_apply, Finset.sum_eq_single (sig k r (esI k r b))]
-  · rw [Hpk_eq, if_pos rfl, sgn_esI, sig_esI, one_mul]
+  · rw [Hpk_eq, ite_eq_left rfl, sgn_esI, sig_esI, one_mul]
   · intro l _ hl
-    rw [Hpk_eq, if_neg hl, zero_mul]
+    rw [Hpk_eq, ite_eq_right hl, zero_mul]
   · intro h
     exact absurd (Finset.mem_univ _) h
 
 lemma mul_Hpk_eI (k r : ℕ) (M : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) (a : Fin r)
     (i : Fin (2 * r + k + 1)) : (M * Hpk k r) i (eI k r a) = M i (esI k r a) := by
   rw [Matrix.mul_apply, Finset.sum_eq_single (esI k r a)]
-  · rw [Hpk_eq, if_pos (sig_esI k r a).symm, sgn_esI, mul_one]
+  · rw [Hpk_eq, ite_eq_left (sig_esI k r a).symm, sgn_esI, mul_one]
   · intro l _ hl
-    rw [Hpk_eq, if_neg, mul_zero]
+    rw [Hpk_eq, ite_eq_right, mul_zero]
     intro h
     apply hl
     have h2 := congrArg (sig k r) h
@@ -125,7 +119,7 @@ lemma zhat_lo (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ)
     Zhat k r z z' g a.castSucc b.castSucc = herm (Hpk k r) (g *ᵥ bvec (eI k r b)) (bvec (eI k r a)) := by
   have ha : (a.castSucc : Fin (r + 1)).val < r := by simp
   have hb : (b.castSucc : Fin (r + 1)).val < r := by simp
-  simp only [Zhat, fvec, dif_pos ha, dif_pos hb]
+  simp only [Zhat, fvec, dite_eq_left ha, dite_eq_left hb]
   rfl
 
 lemma inv_eq (k r : ℕ) (g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) (hg : g ∈ UH (Hpk k r)) :

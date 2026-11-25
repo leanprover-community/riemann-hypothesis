@@ -72,8 +72,6 @@ theorem swSection_eq_swSec {D : D7} (A B : HSp D) (ν : Measure (WO A B)) (𝓕 
   funext g
   simp only [GlobalTheory.SiegelFormula.swSection, GlobalTheory.SiegelFormula.valZero, swSec, GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero.evZero, lagr_eq_lagr]
 
-alias isHeckeCharacter_inv_of_isHeckeCharacter := _root_.GlobalTheory.WeilChange.hecke_inv
-
 end GlobalTheory.Core.Rk.IP
 
 namespace GlobalTheory.Core.Rk.IP
@@ -93,7 +91,7 @@ theorem siegelWeilAll_of_hypotheses : GlobalTheory.Published.WeilRepresentationU
       · rw [h]; omega
       · exact h
     exact hIch D ψ A B hab hb h3 χB omh homh a hmaj hI θ sS sB hθ hS hB hKc ν 𝓕 hcov mH hmH φ hF
-  · push_neg at hb
+  · push Not at hb
     obtain ⟨-, hW2⟩ := hWeil D A B mH hmH ha hwitt'
     obtain ⟨hint, hser⟩ := hW2 ψ χB omh homh φ hφ
     refine ⟨hint, ?_⟩
@@ -107,7 +105,7 @@ theorem siegelWeilAll_of_hypotheses : GlobalTheory.Published.WeilRepresentationU
       rw [this]
       have : (2 * A.rank : ℝ) < B.rank := by exact_mod_cast hb
       linarith
-    have hv := GlobalTheory.Eis.SphConv.eisValueAt_flat hI hmem (GlobalTheory.Eis.sphConv D A a hI) (isHeckeCharacter_inv_of_isHeckeCharacter homh.hecT) hre
+    have hv := GlobalTheory.Eis.SphConv.eisValueAt_flat hI hmem (GlobalTheory.Eis.sphConv D A a hI) (GlobalTheory.WeilChange.hecke_inv homh.hecT) hre
     have he : GlobalTheory.Eis.eis A (swSec A B omh ν 𝓕 φ) = ThetaMean.thetaMean omh mH φ := by
       funext g
       rw [← swSection_eq_swSec]

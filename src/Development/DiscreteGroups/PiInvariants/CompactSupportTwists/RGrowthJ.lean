@@ -82,8 +82,6 @@ open scoped Classical
 
 namespace DiscreteGroups.T1.G
 
-attribute [local instance] borelH
-
 theorem kerSplit_lInt_sub {E : Type} [Field E] [NumberField E] [IsCMField E] {a b : ℕ} {ι : Type} [Fintype ι]
     (D : Dom E a b) (k₁ k₂ : H E a b → ι → Hs (ι := ι) D) (τ : ℝ)
     (U V : Hs (ι := ι) D →L[ℂ] Hs (ι := ι) D) (x : H E a b) :

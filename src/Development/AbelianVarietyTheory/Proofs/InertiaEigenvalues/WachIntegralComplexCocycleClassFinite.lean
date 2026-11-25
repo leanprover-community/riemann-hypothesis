@@ -265,7 +265,7 @@ theorem mem_N_of_div {r : ℕ} (b : Fin r → W.DD T) (hbN : ∀ j, b j ∈ W.N 
     refine ⟨fun i => (if i = j then 1 else 0) + letπ * w i, ?_, fun i => ?_⟩
     · rw [sub_eq_iff_eq_add'.1 hyeq]
       simp only [add_smul, Finset.sum_add_distrib, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq',
-        Finset.mem_univ, if_true, Finset.smul_sum, smul_smul]
+        Finset.mem_univ, ite_true, Finset.smul_sum, smul_smul]
     · rw [add_sub_cancel_left]
       exact Ideal.mul_mem_right _ _ (Ideal.subset_span rfl)
   choose Γc hΓeq hΓmem using hΓ

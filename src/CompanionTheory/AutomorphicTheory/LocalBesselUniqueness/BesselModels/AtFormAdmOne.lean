@@ -69,7 +69,7 @@ theorem smooth_admissible_form_one_side : CompanionTheory.Lime.BM.AtFormAdmOneOf
     refine DDSmoothness.l2_norm_scaling _ _ (l v) _ _ hNv (hae.mono fun g hg => ?_)
     rw [hI v hv _ (PI.UnitaryGroupMassFormula.CapelliEig.smooth_right_action k r ε lam H σ hσ x hx _ hg)]
     simp only [ContinuousLinearMap.smulRight_apply, innerSL_apply_apply]
-  · push_neg at hnz
+  · push Not at hnz
     have h0 := hZ hIn k r ε lam h H σ w0 Wp z c u π μW μN μG νq hS hnz
     have h0D := hZD hIn k r ε lam h H σ w0 Wp z c u π μW μN μG νq hS hnz
     refine ⟨fun _ => 0, DDSmoothness.bessel_zero, fun x hx v hv => ⟨hBC1 x hx v hv, ?_⟩,
@@ -134,7 +134,7 @@ theorem discrete_form_one_side : CompanionTheory.Lime.BM.DDFormOneOfSteps := by
     refine l2_norm_scaling _ _ (l v) _ _ hNv (hae.mono fun g hg => ?_)
     rw [hid _ (PI.UnitaryGroupMassFormula.CapelliEig.smooth_right_action k r ε lam H σ hσ x (hsm x hx) _ hg) v hv]
     simp only [ContinuousLinearMap.smulRight_apply, innerSL_apply_apply]
-  · push_neg at hnz
+  · push Not at hnz
     refine ⟨fun _ => 0, bessel_zero, fun x hx v hv => ⟨hBC1 x (hsm x hx) v (Or.inl hv), ?_⟩,
       fun x _ _ v _ => by simp⟩
     show be z c π σ μW μN x v = _

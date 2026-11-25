@@ -24,8 +24,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.JDAToda
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P.Qx5 Formalism.FourierDecayAlt.P.Qx2 Formalism.FourierDecayAlt.P.PBN Formalism.FourierDecayAlt.P.PBN.MC
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
 
@@ -125,17 +123,17 @@ theorem minorCell_of {k r : ℕ} (Bs : B.RealPlaceData k r Wp Wq) {J : Mx k r �
       intro f₁ f₂ h c hc
       have hi' := ih f₁ f₂ h
       by_cases hi : i < r
-      · simp only [Q.vAB, dif_pos hi]
+      · simp only [Q.vAB, dite_eq_left hi]
         refine ⟨?_, ?_⟩
         · simp only [Pi.add_apply, Pi.sub_apply, Pi.smul_apply, cOp]
           have hev : (Q.vAB r y i).1 f₁ =ᶠ[nhds c] (Q.vAB r y i).1 f₂ := by
             filter_upwards [(Formalism.FourierDecayAlt.P.Qx3.isOpen_OmX r).mem_nhds hc] with c' hc'
             exact (hi' c' hc').1
-          simp only [pOp, wirt, if_pos hc, hev.fderiv_eq]
+          simp only [pOp, wirt, ite_eq_left hc, hev.fderiv_eq]
           rw [(hi' c hc).1, (hi' c hc).2]
         · simp only [ciOp]
           rw [(hi' c hc).1]
-      · simp only [Q.vAB, dif_neg hi]
+      · simp only [Q.vAB, dite_eq_right hi]
         exact hi' c hc
   have eR : Q.crd (Q.vAB r y r).1 (Q.resG k r (Fin.last r) J) x.1 x.2 =
       (Q.vAB r y r).1 (fun c' => Q.resG k r (Fin.last r)
@@ -175,8 +173,6 @@ end Formalism.FourierDecayAlt.P.CutMP.JDAToda
 namespace Formalism.FourierDecayAlt.P.CutMP
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem jda_capelli_toda_proof : JDACapToda := by
   intro Wp Wq _ _ _ _ _ _ P Bs hpl hk y J hJ c hc g hg hcg

@@ -131,8 +131,6 @@ noncomputable section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory
   CartesianMonoidalCategory MonObj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.IndefiniteRowSideFullHecke.TranslatedLineGenerators
 
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.IndefiniteRowSideFullHecke.TorusPointForms
@@ -145,29 +143,7 @@ def scal : F →+* Γ(Spec (CommRingCat.of F), ⊤) := (Scheme.ΓSpecIso (CommRi
 def trPt (b : TF (R := R) F ⟶ D.P.A) : D.BF F ⟶ D.BF F :=
   lift (fst _ _) (padd D.P.A (D.prB F) (fst _ _ ≫ b))
 
-abbrev lineAt (k : ℕ) (b : TF (R := R) F ⟶ D.P.A) : LB (TF (R := R) F).left :=
-  LB.LinComb D.P.L (K := PUnit) (fun _ => b.left) (fun _ => (k : ℤ))
-
-def LineGen (k : ℕ) (b : TF (R := R) F ⟶ D.P.A) : Type :=
-  {t : LB.Gen (lineAt D F k b) // t.IsGen}
-
-def phφ (b : TF (R := R) F ⟶ D.P.A) (y α : D.X) : Fin 4 ⊕ Fin 4 → ((D.BF F).left ⟶ D.P.A.left) :=
-  Sum.elim (D.famφ F (α + y)) (fun i => (trPt D F b).left ≫ D.famφ F α i)
-
-def phMult (k : ℕ) (g : GtPt D F) (t : LineGen D F k g.base) (α : D.X) :=
-  LB.mulGen D.P.L _ _ _ _
-    (LB.mulGen D.P.L _ _ _ _ (g.form α) (LB.invGen D.P.L _ _ t.1))
-    (GeneratorPullback.powGen D.P.L _ _ (LB.pullGen D.P.L _ _ D.rig (toUnit (TF (R := R) F)).left) k)
-
 variable {D F}
-
-def IsPh {k : ℕ} (p : QPair D F k) (t : LineGen D F k p.1.2.base) (s s' : Fam D F k) : Prop :=
-  ∀ α : D.X, ∃ u : LB.Gen (LB.LinComb D.P.L (phφ D F p.1.2.base p.1.1 α) (DegPre.deltaε k)),
-    u.IsGen ∧
-    LB.Gen.Corr D.P.L _ _ _ _ (LB.pullGen D.P.L _ _ u (D.zF F).left) (phMult D F k p.1.2 t α) ∧
-    GeneratorPullback.SecRel D.P.L (D.famφ F (α + p.1.1)) (DegPre.famε k) (s'.s (α + p.1.1))
-      (D.famφ F α) (DegPre.famε k) (s.s α) (trPt D F p.1.2.base).left
-      (phφ D F p.1.2.base p.1.1 α) (DegPre.deltaε k) u
 
 def FamSmul {k : ℕ} (c : F) (s s' : Fam D F k) : Prop :=
   ∀ α j, (s'.s α).f j = liftFun D.P.A (T := TF (R := R) F) _ (scal F c) * (s.s α).f j
@@ -196,21 +172,6 @@ structure IsLinBij {k : ℕ} (E : SecA F P k → Fam D F k → Prop) : Prop wher
   smul : ∀ (c : F) σ σ' s s', E σ s → E σ' s' →
     (∀ j, σ'.f j = liftFun P.A (T := TKF R F) _ (scal F c) * σ.f j) → FamSmul c s s'
 
-def Intertwines {k : ℕ} (E : SecA F P k → Fam D F k → Prop)
-    (θ : ThetaGrp P.A P.L (k : ℤ) (TKF R F)) (p : QPair D F k) (t : LineGen D F k p.1.2.base) :
-    Prop :=
-  ∀ σ σ' s s', E σ s → E σ' s' → (IsActOf P.A P.L (k : ℤ) θ σ σ' ↔ IsPh p t s s')
-
-def IsImage {k : ℕ} (E : SecA F P k → Fam D F k → Prop) (p : QPair D F k)
-    (x : TKF R F ⟶ P.A) : Prop :=
-  1 ≤ k ∧ D.TauBimult ∧ IsLinBij E ∧ x ^ k = 1 ∧
-    (∀ θ : ThetaGrp P.A P.L (k : ℤ) (TKF R F), θ.pt = x → ∃ t, Intertwines E θ p t) ∧
-    (∀ t, ∃ θ : ThetaGrp P.A P.L (k : ℤ) (TKF R F), θ.pt = x ∧ Intertwines E θ p t)
-
-def IsImageQ {k : ℕ} (E : SecA F P k → Fam D F k → Prop) (a : Qk D F k)
-    (x : TKF R F ⟶ P.A) : Prop :=
-  ∀ p : QPair D F k, Qk.mk p = a → IsImage E p x
-
 variable (D F)
 
 variable (P)
@@ -231,8 +192,6 @@ noncomputable section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory
   CartesianMonoidalCategory MonObj
 open scoped CategoryTheory.Obj
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.GtPointsCompare
 
@@ -426,8 +385,6 @@ noncomputable section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory
   CartesianMonoidalCategory MonObj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.PhiOperatorCompare
 
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.Geo.Tor
@@ -484,7 +441,6 @@ section -- clump:auto
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry IsLocalRing
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.DVR
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT
 
 namespace GlobalTheory.UT.WeilAbelianPart
@@ -604,8 +560,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.LowDat.GradedTate
 
 theorem exists_tateIso_of_perp {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} (Dw D' : Datum H)
@@ -644,16 +598,16 @@ theorem exists_tateIso_of_perp {E : Type} [Field E] [NumberField E] [IsCMField E
   · split_ifs with hn
     · rw [map_smul, hlin n hn]
     · exact (hact c).symm
-  · simp only [if_pos hn]
+  · simp only [ite_eq_left hn]
     exact (hko n hn).1
-  · simp only [if_pos hn]
+  · simp only [ite_eq_left hn]
     exact (hko n hn).2
-  · simp only [if_pos hn, if_pos (Nat.mul_pos hn hm)]
+  · simp only [ite_eq_left hn, ite_eq_left (Nat.mul_pos hn hm)]
     exact htow n m hn hm _
-  · simp only [if_pos hn]
+  · simp only [ite_eq_left hn]
     exact hiso'' n hn w w'
   · show _ = if 0 < n then b n (s (f a)) else 1
-    rw [if_pos hn]
+    rw [ite_eq_left hn]
     obtain ⟨w, hw⟩ := ((hko n hn).2 _).1 (hpow n hn a)
     obtain ⟨c, hc⟩ := TorsIsometry.exists_eq_nsmul_of_dvd D'.EF D'.unimod n (f a - w) fun w' => by
       have h₁ := hiso' n hn a w'
@@ -746,7 +700,7 @@ theorem exists_gradedTateIso : ∀ {E : Type} [Field E] [NumberField E] [IsCMFie
       have e : unitOn (c * c) = unitOn c * unitOn c := map_mul _ _ _
       exact mul_eq_left.1 (huniq n 1 y _ _ (e ▸ h₁) h))
     (fun n hn a a' => by
-      simp only [dif_pos hn]
+      simp only [dite_eq_left hn]
       have h := (TorusExt.qkAdd_iff hB _ _ _).1
         ((TorusExt.qkAdd_iff_of_equiv hB (hq n hn a) (hq n hn a') (I.add n hn a a')).2 (hq n hn (a + a')))
       rw [← eq_of_equiv hB hn h (by
@@ -754,7 +708,7 @@ theorem exists_gradedTateIso : ∀ {E : Type} [Field E] [NumberField E] [IsCMFie
         rw [hy, hy, hy, add_zero])]
       exact TorusExt.add_b _ _)
     (fun n hn c a => by
-      simp only [dif_pos hn]
+      simp only [dite_eq_left hn]
       have h := (TorusExt.qkAct_iff hB hG P.oD _ _ _).1
         ((TorusExt.qkAct_iff_of_equiv hB hG P.oD (hq n hn a) (I.lin n hn c a)).2 (hq n hn (c • a)))
       rw [← eq_of_equiv hB hn h (by
@@ -762,18 +716,18 @@ theorem exists_gradedTateIso : ∀ {E : Type} [Field E] [NumberField E] [IsCMFie
         rw [hy, hy, smul_zero])]
       exact TorusExt.gtSmul_b hG P.oD _ _)
     (fun n hn a => by
-      simp only [dif_pos hn]
+      simp only [dite_eq_left hn]
       exact b_pow hB _ (hy n hn a))
     (fun n m hn hm a => by
-      simp only [dif_pos hn, dif_pos (Nat.mul_pos hn hm)]
+      simp only [dite_eq_left hn, dite_eq_left (Nat.mul_pos hn hm)]
       obtain ⟨r, r₁, r₂, r₃⟩ := I.tower n m hn hm a
       exact b_tower hB hn (hq _ _ a) (hy _ _ a) r₁ r₂ r₃ (hq n hn a) (hy n hn a))
     (fun n hn a a' => by
-      simp only [dif_pos hn]
+      simp only [dite_eq_left hn]
       exact (UT.WeilAbelianPart.weilQkIs_iff_weilIs_abelianPart hL R _ hR.1 P.D F n hn _ _ (hy n hn a) (hy n hn a')
         _).1 (PhiOperatorCompare.weilQkIs_of_equiv hB (hq n hn a) (hq n hn a') (I.isom n hn a a')))
   refine ⟨I', h₁, fun n hn a r hr hr₀ => ?_⟩
-  rw [← h₂ n hn a, dif_pos hn, eq_of_equiv hB hn
+  rw [← h₂ n hn a, dite_eq_left hn, eq_of_equiv hB hn
     (TorusExt.equiv_trans hB (TorusExt.equiv_symm hB hr) (hq n hn a)) (hr₀.trans (hy n hn a).symm)]
 
 end GlobalTheory.LowDat.GradedTate
@@ -793,9 +747,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
-
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -811,8 +762,6 @@ noncomputable section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.LowDat
 
@@ -830,8 +779,8 @@ theorem exists_tateIso_toA : ∀ {E : Type} [Field E] [NumberField E] [IsCMField
   choose f f₁ f₂ f₃ f₄ f₅ f₆ using hT F
   obtain ⟨ev, ev0, evp⟩ : ∃ ev : ℕ → D.La → (TFK (R := R) F ⟶ P.A.A), (∀ a, ev 0 a = 1) ∧
       ∀ n (hn : 0 < n) a, ev n a = f n hn (I.ev n a) :=
-    ⟨fun n a => if hn : 0 < n then f n hn (I.ev n a) else 1, fun a => dif_neg (lt_irrefl 0),
-      fun n hn a => dif_pos hn⟩
+    ⟨fun n a => if hn : 0 < n then f n hn (I.ev n a) else 1, fun a => dite_eq_right (lt_irrefl 0),
+      fun n hn a => dite_eq_left hn⟩
   have add : ∀ n a b, ev n (a + b) = ev n a * ev n b := fun n a b => by
     rcases Nat.eq_zero_or_pos n with rfl | hn
     · rw [ev0, ev0, ev0, _root_.one_mul]
@@ -885,9 +834,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
-
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -903,8 +849,6 @@ noncomputable section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.LowDat.Uniq
 
@@ -1081,8 +1025,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.LowDat
 
 theorem mono_jK_of_domain (R : Type) [CommRing R] [IsDomain R] : Mono (jK R) := by
@@ -1207,9 +1149,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
-
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -1225,8 +1164,6 @@ noncomputable section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.LowDat
 
@@ -1343,7 +1280,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.LieRankSum
 
@@ -1397,7 +1333,6 @@ section -- clump:auto
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 namespace GlobalTheory.UnifDvrCompare
@@ -1464,8 +1399,6 @@ noncomputable section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.LowDat.LowObj
 
@@ -1660,10 +1593,10 @@ theorem finrank_eq_of_detCond (D : Datum H) {S : Scheme.{0}} (P : PolAV S) (act 
         rw [← map_neg, ← hb]; rfl
       rw [e]
       by_cases hτ : τ H.rt = ρ
-      · refine ⟨by rw [if_pos hτ]; exact (h τ).1 hτ, ?_⟩
-        rw [if_pos hτ, if_neg (by rw [hτ]; exact h0.symm)]
-      · refine ⟨by rw [if_neg hτ]; exact (h τ).2 hτ, ?_⟩
-        rw [if_neg hτ, if_pos (by rw [(sq_eq_sq_iff_eq_or_eq_neg.1 hs).resolve_left hτ, neg_neg]), add_comm])
+      · refine ⟨by rw [ite_eq_left hτ]; exact (h τ).1 hτ, ?_⟩
+        rw [ite_eq_left hτ, ite_eq_right (by rw [hτ]; exact h0.symm)]
+      · refine ⟨by rw [ite_eq_right hτ]; exact (h τ).2 hτ, ?_⟩
+        rw [ite_eq_right hτ, ite_eq_left (by rw [(sq_eq_sq_iff_eq_or_eq_neg.1 hs).resolve_left hτ, neg_neg]), add_comm])
   have := D.fin
   have := D.proj
   have : Module.Finite ℤ D.La := Module.Finite.trans (𝓞 E) D.La

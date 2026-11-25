@@ -251,7 +251,6 @@ def logOne : oneUnits v →* Multiplicative (𝓞 L ⧸ v.asIdeal) where
     congr 1
     refine resInt_eq v ?_
     rw [Subgroup.coe_mul, Units.val_mul, map_add (f := _)]
-    have h0 : unifC v ≠ 0 := Units.ne_zero _
     have hx : Valued.v (((x : (v.adicCompletion L)ˣ) : v.adicCompletion L) - 1) < 1 := x.2
     have hy := val_div_le v y.2
     generalize ((x : (v.adicCompletion L)ˣ) : v.adicCompletion L) = s at *

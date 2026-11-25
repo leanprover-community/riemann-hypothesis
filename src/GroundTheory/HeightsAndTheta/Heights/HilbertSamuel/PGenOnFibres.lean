@@ -403,8 +403,7 @@ theorem cechD_zero_eq_zero {M : Type} [AddCommGroup M] [Module (MRingOver S ι) 
   have hne : ∀ k, (I.1 k).Nonempty := I.2.1
   have hsum : ∑ k, ((I.1 k).card - 1) = 1 := I.2.2
   obtain ⟨k0, hk0ne⟩ : ∃ k0, (I.1 k0).card - 1 ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     rw [Finset.sum_eq_zero fun k _ => hc k] at hsum
     exact absurd hsum (by norm_num)
   have hsplit := Finset.add_sum_erase Finset.univ (fun k => (I.1 k).card - 1) (Finset.mem_univ k0)
@@ -534,7 +533,7 @@ theorem secCoch_mem {s : Ω} {a : K → ℤ} (hs : s ∈ chartLat y a 1) :
     · obtain ⟨k, i, hi, h0⟩ := hz
       haveI := subsingleton_loc (S := S) hi h0
       exact Subsingleton.elim _ _
-    · push_neg at hz
+    · push Not at hz
       have hJc : ∀ k, y ⟨k, cellChart J k⟩ ≠ 0 := fun k => hz k _ (hJ k (cellChart_mem J k))
       have hJc' : ∀ k, y ⟨k, cellChart J' k⟩ ≠ 0 := fun k => hz k _ (hJ' k (cellChart_mem J' k))
       rw [cellRes_of_le (cellMon_mono hJ), cellRes_of_le (cellMon_mono hJ')]
@@ -549,7 +548,7 @@ theorem generatedV_idealOver {a : K → ℤ} {n : ℕ} {w : Fin n → Ω} (hw : 
   · obtain ⟨k, h0⟩ := hz
     haveI := subsingleton_loc (S := S) (cellChart_mem I k) h0
     exact ⟨0, Fin.elim0, Fin.elim0, fun j => j.elim0, fun j => j.elim0, Subsingleton.elim _ _⟩
-  · push_neg at hz
+  · push Not at hz
     obtain ⟨u, hu, hsum⟩ := hg (cellChart I) hz
     have hU : ∀ j, ∃ x, IsRep y S (KH.cellMon S I.1) x (cellChart I)
         (u j * ∏ k, y ⟨k, cellChart I k⟩ ^ (-a k)) (-a) := by

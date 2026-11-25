@@ -246,7 +246,7 @@ theorem r1sRestC_of (hFr : PowerSeriesFrobeniusCongruence) (hRo : RootsOfUnityPr
   have hμ0 : V.l • ee V.l 1 = ee (V.l ^ 2) V.l := by rw [smul_ee, mul_one, sq]
   have one0 : ∀ i j : ℕ, j ≠ 0 → coeff (ee i j) (1 : MvPowerSeries (Fin 2) C) = 0 := by
     intro i j hj
-    rw [MvPowerSeries.coeff_one, if_neg (ee_ne hj)]
+    rw [MvPowerSeries.coeff_one, ite_eq_right (ee_ne hj)]
 
   have cAa : coeff (ee V.l 1) Aa = PowerSeries.coeff V.l (phi X V.l ζ γ δ fun i => PowerSeries.coeff 1 (z i)) := by
     rw [hAa, hEx C (aC z) 1 le_rfl (aK z 1 le_rfl (low1 z cz)).1 V.l 1 (by omega), one0 _ _ one_ne_zero, zero_add,

@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ThetaSetupStructureMapComp
 public import Development.AbelianVarietyTheory.Definitions.Divisors.NotOrdGeOfNotMem
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TraitExistsAfterFiniteExtensionOfCompleteDVRStatement
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsDiscreteValuationRingIntegralClosure
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsCompleteDvrFiniteSubalgebra
 import Mathlib.Algebra.Order.Floor.Extended

@@ -90,8 +90,7 @@ theorem exists_flag_frame (τ : Ψ) {z : (Σ k, ι k) → L} (hz : IsPt y z) {F 
       exact mul_div_mul_left _ _ hdet
     have hO : ∀ I, η * minorIJ h I (stepCols N j i) ∈ regO y z := fun I => by
       by_cases hI : IsStepRows N j i I
-      · set_option synthInstance.maxHeartbeats 100000 in
-          rw [← dual_sum i (fun m I => am (F.u ⟨k, m⟩ I)) (fun I m => am (F.u' I ⟨k, m⟩)) (fun I I' h1 h2 => by
+      · rw [← dual_sum i (fun m I => am (F.u ⟨k, m⟩ I)) (fun I m => am (F.u' I ⟨k, m⟩)) (fun I I' h1 h2 => by
             have := congrArg am (hF.2.2.1 (τ, i) k hk I I' h1 h2)
             rw [map_sum] at this
             simp only [map_mul] at this

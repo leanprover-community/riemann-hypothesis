@@ -20,7 +20,7 @@ theorem blkIdx_replicate_of_le (t j i : ℕ) (h : j * t ≤ i) : blkIdx (List.re
     rw [List.replicate_succ]
     simp only [blkIdx]
     rw [Nat.add_mul, one_mul] at h
-    rw [if_neg (by omega), ih (i - t) (by omega)]
+    rw [ite_eq_right (by omega), ih (i - t) (by omega)]
 
 theorem blkIdx_replicate_lt (t j i : ℕ) (h : i < j * t) : blkIdx (List.replicate j t) i < j := by
   induction j generalizing i with
@@ -125,11 +125,11 @@ theorem uMat_diag (P : Fin n → Fin n → Prop) [∀ i j, Decidable (P i j)] (f
 
 theorem uMat_pos {P : Fin n → Fin n → Prop} [∀ i j, Decidable (P i j)] (f : {p : Fin n × Fin n // P p.1 p.2} → κ) {i j : Fin n}
     (hne : i ≠ j) (h : P i j) : uMat P f i j = f ⟨(i, j), h⟩ := by
-  simp only [uMat, if_neg hne, dif_pos h]
+  simp only [uMat, ite_eq_right hne, dite_eq_left h]
 
 theorem uMat_neg {P : Fin n → Fin n → Prop} [∀ i j, Decidable (P i j)] (f : {p : Fin n × Fin n // P p.1 p.2} → κ) {i j : Fin n}
     (hne : i ≠ j) (h : ¬ P i j) : uMat P f i j = 0 := by
-  simp only [uMat, if_neg hne, dif_neg h]
+  simp only [uMat, ite_eq_right hne, dite_eq_right h]
 
 theorem uMat_det {P : Fin n → Fin n → Prop} [∀ i j, Decidable (P i j)] (hP : ∀ i j, P i j → i < j)
     (f : {p : Fin n × Fin n // P p.1 p.2} → κ) : (uMat P f).det = 1 := by
@@ -209,10 +209,10 @@ theorem HK_conj_diagEmb {r : ℕ} (h : r ≤ n) {bl : List ℕ} (g : GL (Fin r) 
     simp only [diagMat]
     have hi : ¬ i.val < r := by
       intro hi
-      have h0 : coarse r bl i.val = 0 := by simp only [coarse, blkIdx, if_pos hi]
+      have h0 : coarse r bl i.val = 0 := by simp only [coarse, blkIdx, ite_eq_left hi]
       have hij' : coarse r bl j.val < coarse r bl i.val := hij
       omega
-    rw [dif_neg (fun hc => hi hc.1)]
+    rw [dite_eq_right (fun hc => hi hc.1)]
     exact Matrix.one_apply_ne (fun e => by subst e; exact lt_irrefl _ hij)
   unfold HK at hM ⊢
   rw [Subgroup.mem_map] at hM ⊢
@@ -234,10 +234,10 @@ theorem lamK_conj_diagEmb (χ : ℕ → κˣ →* Kˣ) {r : ℕ} (h : r ≤ n) {
     simp only [diagMat]
     have hi : ¬ i.val < r := by
       intro hi
-      have h0 : coarse r bl i.val = 0 := by simp only [coarse, blkIdx, if_pos hi]
+      have h0 : coarse r bl i.val = 0 := by simp only [coarse, blkIdx, ite_eq_left hi]
       have hij' : coarse r bl j.val < coarse r bl i.val := hij
       omega
-    rw [dif_neg (fun hc => hi hc.1)]
+    rw [dite_eq_right (fun hc => hi hc.1)]
     exact Matrix.one_apply_ne (fun e => by subst e; exact lt_irrefl _ hij)
   have e : Subgroup.inclusion (HK_le_blockUT n κ r bl) ⟨diagEmb κ h g * M.1 * (diagEmb κ h g)⁻¹, HK_conj_diagEmb h g M.2⟩ =
       ⟨diagEmb κ h g, hD⟩ * Subgroup.inclusion (HK_le_blockUT n κ r bl) M * ⟨diagEmb κ h g, hD⟩⁻¹ := rfl
@@ -283,7 +283,7 @@ theorem blkDet_diagEmb {s : ℕ} (h : s ≤ n) (β : ℕ → ℕ) (c : ℕ) (hc 
       by_contra hh
       exact hc _ (by omega) j.2
     simp only [Matrix.toSquareBlock_def, Matrix.of_apply, Matrix.submatrix_apply, diagMat]
-    rw [dif_pos ⟨hi, hj⟩]
+    rw [dite_eq_left ⟨hi, hj⟩]
     rfl
   rw [hb, Matrix.det_submatrix_equiv_self]
 
@@ -321,24 +321,24 @@ theorem uniUT_eq_HPar {r : ℕ} (h : r ≤ n) (bl : List ℕ) : uniUT n κ r bl 
     intro i j hij
     have hij' : fine r bl j.val < fine r bl i.val := hij
     by_cases hi : i.val < r
-    · have hfi : fine r bl i.val = i.val := by simp only [fine, if_pos hi]
+    · have hfi : fine r bl i.val = i.val := by simp only [fine, ite_eq_left hi]
       have hj : j.val < r := by
         by_contra hj
-        have hfj : fine r bl j.val = r + blkIdx bl (j.val - r) := by simp only [fine, if_neg hj]
+        have hfj : fine r bl j.val = r + blkIdx bl (j.val - r) := by simp only [fine, ite_eq_right hj]
         omega
-      have hfj : fine r bl j.val = j.val := by simp only [fine, if_pos hj]
+      have hfj : fine r bl j.val = j.val := by simp only [fine, ite_eq_left hj]
       exact h1 (i := ⟨i.val, hi⟩) (j := ⟨j.val, hj⟩)
-        (show fine r [] j.val < fine r [] i.val by simp only [fine, if_pos hi, if_pos hj]; omega)
+        (show fine r [] j.val < fine r [] i.val by simp only [fine, ite_eq_left hi, ite_eq_left hj]; omega)
     · apply hB
       show coarse r bl j.val < coarse r bl i.val
-      have hfi : fine r bl i.val = r + blkIdx bl (i.val - r) := by simp only [fine, if_neg hi]
-      have hci : coarse r bl i.val = blkIdx bl (i.val - r) + 1 := by simp only [coarse, blkIdx, if_neg hi]
+      have hfi : fine r bl i.val = r + blkIdx bl (i.val - r) := by simp only [fine, ite_eq_right hi]
+      have hci : coarse r bl i.val = blkIdx bl (i.val - r) + 1 := by simp only [coarse, blkIdx, ite_eq_right hi]
       rw [hci]
       by_cases hj : j.val < r
-      · have hcj : coarse r bl j.val = 0 := by simp only [coarse, blkIdx, if_pos hj]
+      · have hcj : coarse r bl j.val = 0 := by simp only [coarse, blkIdx, ite_eq_left hj]
         omega
-      · have hfj : fine r bl j.val = r + blkIdx bl (j.val - r) := by simp only [fine, if_neg hj]
-        have hcj : coarse r bl j.val = blkIdx bl (j.val - r) + 1 := by simp only [coarse, blkIdx, if_neg hj]
+      · have hfj : fine r bl j.val = r + blkIdx bl (j.val - r) := by simp only [fine, ite_eq_right hj]
+        have hcj : coarse r bl j.val = blkIdx bl (j.val - r) + 1 := by simp only [coarse, blkIdx, ite_eq_right hj]
         omega
 
 theorem HK_eq_HPar {r : ℕ} (h : r ≤ n) (bl : List ℕ) : HK n κ r bl = HPar n κ h bl ⊥ := by
@@ -351,8 +351,8 @@ theorem HK_eq_HPar {r : ℕ} (h : r ≤ n) (bl : List ℕ) : HK n κ r bl = HPar
     apply Units.ext
     ext i j
     show restr h (M.1 : Matrix (Fin n) (Fin n) κ) i j = (1 : Matrix (Fin r) (Fin r) κ) i j
-    have hi0 : coarse r bl (Fin.castLE h i).val = 0 := by simp only [coarse, blkIdx, Fin.coe_castLE, if_pos i.2]
-    have hj0 : coarse r bl (Fin.castLE h j).val = 0 := by simp only [coarse, blkIdx, Fin.coe_castLE, if_pos j.2]
+    have hi0 : coarse r bl (Fin.castLE h i).val = 0 := by simp only [coarse, blkIdx, Fin.coe_castLE, ite_eq_left i.2]
+    have hj0 : coarse r bl (Fin.castLE h j).val = 0 := by simp only [coarse, blkIdx, Fin.coe_castLE, ite_eq_left j.2]
     have hk := congrFun (congrFun hM ⟨Fin.castLE h i, hi0⟩) ⟨Fin.castLE h j, hj0⟩
     rw [blkHom_apply] at hk
     have hk' : restr h (M.1 : Matrix (Fin n) (Fin n) κ) i j = (1 : Matrix {x : Fin n // coarse r bl x.val = 0} {x : Fin n // coarse r bl x.val = 0} κ) ⟨Fin.castLE h i, hi0⟩ ⟨Fin.castLE h j, hj0⟩ := hk
@@ -363,10 +363,10 @@ theorem HK_eq_HPar {r : ℕ} (h : r ≤ n) (bl : List ℕ) : HK n κ r bl = HPar
     rw [blkHom_apply]
     have hi : (i.1 : Fin n).val < r := by
       by_contra hh
-      exact absurd i.2 (by simp only [coarse, blkIdx, if_neg hh]; omega)
+      exact absurd i.2 (by simp only [coarse, blkIdx, ite_eq_right hh]; omega)
     have hj : (j.1 : Fin n).val < r := by
       by_contra hh
-      exact absurd j.2 (by simp only [coarse, blkIdx, if_neg hh]; omega)
+      exact absurd j.2 (by simp only [coarse, blkIdx, ite_eq_right hh]; omega)
     have hk := congrArg (fun X : GL (Fin r) κ => (X : Matrix (Fin r) (Fin r) κ) ⟨i.1.val, hi⟩ ⟨j.1.val, hj⟩) hM
     have hk' : (M.1 : Matrix (Fin n) (Fin n) κ) i.1 j.1 = (1 : Matrix (Fin r) (Fin r) κ) ⟨i.1.val, hi⟩ ⟨j.1.val, hj⟩ := hk
     rw [hk']

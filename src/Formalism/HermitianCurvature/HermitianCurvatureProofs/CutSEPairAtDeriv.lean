@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSEOuterLeib
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSELeib
 import Aesop.Main
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.MeasurableOfContinuousOnZero
@@ -103,14 +104,14 @@ variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} [Normed
 theorem dT_apply (X : ActualOps k r z z' π π') (l : Fin r) (Φ : RadSp k r z z' π π') {x : Fin r → ℂ}
     (hx : x ∈ OmX r) (g : Mx k r) :
     (dT X l Φ : Fn k r (Wq →L[ℂ] Wp)) x g = Formalism.QuantumDeterminants.wirt l (fun x' => (Φ : Fn k r (Wq →L[ℂ] Wp)) x' g) x := by
-  simp only [dT, Module.End.mul_apply, ActualOps.op_apply, crd, opL, ciOp, pOp, if_pos hx]
+  simp only [dT, Module.End.mul_apply, ActualOps.op_apply, crd, opL, ciOp, pOp, ite_eq_left hx]
   rw [smul_smul, inv_mul_cancel₀ (hx l), one_smul]
 
 theorem dTb_apply (X : ActualOps k r z z' π π') (l : Fin r) (Φ : RadSp k r z z' π π') {x : Fin r → ℂ}
     (hx : x ∈ OmX r) (g : Mx k r) :
     (dTb X l Φ : Fn k r (Wq →L[ℂ] Wp)) x g = Formalism.QuantumDeterminants.wirtBar l (fun x' => (Φ : Fn k r (Wq →L[ℂ] Wp)) x' g) x := by
   have hs : star (x l) ≠ 0 := by simpa using hx l
-  simp only [dTb, Module.End.mul_apply, ActualOps.op_apply, crd, opL, cbiOp, pbOp, if_pos hx]
+  simp only [dTb, Module.End.mul_apply, ActualOps.op_apply, crd, opL, cbiOp, pbOp, ite_eq_left hx]
   rw [smul_smul, inv_mul_cancel₀ hs, one_smul]
 
 theorem slice_hasFDerivAt (X : ActualOps k r z z' π π') (l : Fin r) (Φ : RadSp k r z z' π π') (y : Fin r → ℂ)
@@ -207,16 +208,7 @@ theorem hsInner_hasFDerivAt {φ ψ : ℂ → (Wq →L[ℂ] Wp)} {a1 b1 a2 b2 : W
   ring
 
 theorem norm_wl_le' (A B : ℂ) : ‖wl A B‖ ≤ ‖A‖ + ‖B‖ := by
-  unfold wl
-  refine (norm_add_le _ _).trans (add_le_add ?_ ?_)
-  · calc ‖A • ContinuousLinearMap.id ℝ ℂ‖ ≤ ‖A‖ * ‖ContinuousLinearMap.id ℝ ℂ‖ := norm_smul_le _ _
-      _ ≤ ‖A‖ * 1 := mul_le_mul_of_nonneg_left ContinuousLinearMap.norm_id_le (norm_nonneg _)
-      _ = ‖A‖ := mul_one _
-  · calc ‖B • Complex.conjCLE.toContinuousLinearMap‖
-        ≤ ‖B‖ * ‖(Complex.conjCLE.toContinuousLinearMap : ℂ →L[ℝ] ℂ)‖ := norm_smul_le _ _
-      _ ≤ ‖B‖ * 1 := mul_le_mul_of_nonneg_left
-          (ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun x => by simp) (norm_nonneg _)
-      _ = ‖B‖ := mul_one _
+  apply _root_.Formalism.FourierDecayAlt.P.CutSE.norm_wl_le <;> assumption
 
 theorem pairAt_off (μ : Measure (Mt k r)) (Φ Ψ : RadSp k r z z' π π') (x : Fin r → ℂ) (hx : x ∉ OmX r) :
     pairAt μ Φ Ψ x = 0 := by

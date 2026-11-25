@@ -87,7 +87,7 @@ theorem contr (E₁ E₂ : Fin n → Fin n → Module.End ℂ M) {m : ℕ} (c : 
     have hpj : p ≠ j := Finset.ne_of_mem_erase hp
     simp only [Function.update_of_ne hpj]
     rw [Finset.sum_ite_eq]
-    simp only [Finset.mem_univ, if_true]
+    simp only [Finset.mem_univ, ite_true]
     congr 1
     funext x
     by_cases hxp : x = p
@@ -111,7 +111,7 @@ theorem trace_rel (E₁ E₂ : Fin n → Fin n → Module.End ℂ M) {m : ℕ} (
   funext I
   have key : ∑ a, tE Finset.univ (fun a b => E₁ a b + E₂ a b) a a ξ I = ∑ a, (if a = a then c • ξ else 0) I :=
     Finset.sum_congr rfl fun a _ => congrFun (hX a a) _
-  simp only [tE_apply, Finset.sum_add_distrib, LinearMap.add_apply, if_true] at key
+  simp only [tE_apply, Finset.sum_add_distrib, LinearMap.add_apply, ite_true] at key
   rw [Finset.sum_comm] at key
   have h3 : ∀ p : Fin m, ∑ a, (if I p = a then ξ (Function.update I p a) else 0) = ξ I := by
     intro p

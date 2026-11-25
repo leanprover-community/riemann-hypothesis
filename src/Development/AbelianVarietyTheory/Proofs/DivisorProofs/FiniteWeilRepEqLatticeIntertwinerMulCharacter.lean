@@ -76,7 +76,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix GlobalTheory.WeilParts
 open scoped TensorProduct Kronecker ComplexOrder
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.unitaryAdelicCharacter_trivial_of_local : ∀ (D : D7) (V : HSp D) (ν : GA D V →* Circle), Continuous ν → (∀ g ∈ GinfC V, ν g = 1) → (∀ e, IsSplitIdem D e → ∀ g, SuppAt e V g → ν g = 1) → (∀ v ε, NonSplitAt D v ε → ∀ g, SuppPl ε V g → ν g = 1) → ∀ g, ν g = 1 := by
   first | exact @GlobalTheory.LocalGlobalChar.eq_one_of_local
@@ -93,7 +92,6 @@ noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix GlobalTheory.WeilParts GlobalTheory.FinWeil GlobalTheory.FinWeilO GlobalTheory.FockCompare GlobalTheory.VacUnique GlobalTheory.RatAut
 open scoped TensorProduct Kronecker ComplexOrder Topology
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.FinWeilForm
 
@@ -192,8 +190,7 @@ theorem exists_vacuum (hψ : IsStdChar D ψ (-1)) {w : 𝓞 D.host.E} {lam : ℕ
       ∀ u ∈ (latO S T ΛS ΛT fun w => w = v), heisO ψ S T u f = f := by
   obtain ⟨f, f0, hf⟩ := exists_theta hψ S T
   obtain ⟨e, he, e0⟩ : ∃ e, Fixes (opF hψ.1 S T w) (latF S T ΛS ΛT) e ∧ e ≠ 0 := by
-    by_contra hn
-    push_neg at hn
+    by_contra! hn
     have : (⊤ : Submodule ℂ (thetaSub ψ S T)) ≤ ⊥ := by
       rw [← h.span, Submodule.span_le]
       rintro _ ⟨x, e, he, rfl⟩

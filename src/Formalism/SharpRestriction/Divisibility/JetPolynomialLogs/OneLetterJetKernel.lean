@@ -1,5 +1,6 @@
 module
 
+import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.EGaussK
 public import Formalism.SharpRestriction.Divisibility.JetPolynomialLogs.DworkPowerSeriesWeights
 public import Mathlib.RingTheory.MvPowerSeries.Rename
 import Formalism.GaussJetBounds.GaussJetProofs.ConstantCoeffAevalLinP
@@ -32,15 +33,15 @@ theorem jetLogG_eq_entLog (l d N0 N1 : ℕ) [Fact l.Prime] [NeZero d] (v : ZV d 
   rw [hdeg]
   refine Finset.sum_congr rfl fun e _ => ?_
   by_cases h : m = Finsupp.single (v.1 - 2 * (e : ZMod d), v.2.1, v.2.2) ((l ^ 2) ^ e)
-  · rw [if_pos (by exact h), if_pos h]
-  · rw [if_neg (by exact h), if_neg h]
+  · rw [ite_eq_left (by exact h), ite_eq_left h]
+  · rw [ite_eq_right (by exact h), ite_eq_right h]
 
 theorem cc_jetLogG (l d : ℕ) [Fact l.Prime] {β : Type*} (v : ZMod d × β) :
     MvPowerSeries.constantCoeff (Formalism.BasicNotions.jetLogG l d v) = 0 := by
   rw [← MvPowerSeries.coeff_zero_eq_constantCoeff_apply]
   show (∑ e ∈ Finset.range (Formalism.BasicNotions.JetTdeg (0 : ZMod d × β →₀ ℕ) + 1), _) = 0
   refine Finset.sum_eq_zero fun e _ => ?_
-  rw [if_neg]
+  rw [ite_eq_right]
   intro h
   exact pow_ne_zero _ (pow_ne_zero _ (Fact.out : l.Prime).ne_zero) (Finsupp.single_eq_zero.mp h.symm)
 
@@ -156,8 +157,8 @@ theorem subst_pr_jetLogG (l : ℕ) [Fact l.Prime] (N0 N1 : ℕ) (v : V1 N0 N1) :
       (Finsupp.embDomain (prEquiv N0 N1).toEmbedding m = Finsupp.single v.2 ((l ^ 2) ^ e)) := by
     rw [hs, Finsupp.embDomain_inj]
   by_cases h : m = Finsupp.single (v.1 - 2 * (e : ZMod 1), v.2) ((l ^ 2) ^ e)
-  · rw [if_pos (by exact h), if_pos (hiff.mp h)]
-  · rw [if_neg (by exact h), if_neg (fun h' => h (hiff.mpr h'))]
+  · rw [ite_eq_left (by exact h), ite_eq_left (hiff.mp h)]
+  · rw [ite_eq_right (by exact h), ite_eq_right (fun h' => h (hiff.mpr h'))]
 
 theorem constant_coeff_zero_of_vanishing_alt (l d : ℕ) [Fact l.Prime] [NeZero d] {be : MvPowerSeries (ZMod d) ℂ_[l]}
     (h3 : product_zeroth_first_parts.B3 l d be) : MvPowerSeries.constantCoeff be = 0 := by
@@ -325,7 +326,7 @@ theorem applyAt0_eq_jet (Th : MvPowerSeries (Lt × Fin N0 × Fin N1) ℂ_[l])
   classical
   refine MvPolynomial.induction_on' P (fun μ c => ?_) (fun p q hp hq => ?_)
   · rw [applyAt0_eq_sum N0 N1 l Th _ {μ} MvPolynomial.support_monomial_subset, Finset.sum_singleton,
-      MvPolynomial.coeff_monomial, if_pos rfl, psi_monomial, OrbMul.jetPairPoly_monomial,
+      MvPolynomial.coeff_monomial, ite_eq_left rfl, psi_monomial, OrbMul.jetPairPoly_monomial,
       mul_comm (MvPolynomial.monomial _ (c : ℂ_[l])), MvPolynomial.C_mul_monomial]
     congr 1
     rw [DworkPowerSeriesWeights.mfact, Nat.cast_finsuppProd]
@@ -387,15 +388,8 @@ theorem jetPairPoly_subst_CX {K : Type} [Field K] {σ ι : Type} [Finite ι]
     (P : MvPolynomial ι (MvPolynomial σ K)) (D : ℕ) (hP : P.IsHomogeneous D) (Th : MvPowerSeries ι K) (ep : K) :
     jetPairPoly P (MvPowerSeries.subst (fun v => MvPowerSeries.C ep * (MvPowerSeries.X v : MvPowerSeries ι K)) Th) =
       MvPolynomial.C (ep ^ D) * jetPairPoly P Th := by
-  unfold jetPairPoly
-  rw [Finset.mul_sum]
-  refine Finset.sum_congr rfl fun κ hκ => ?_
-  have hd : κ.degree = D := by
-    by_contra h
-    exact (MvPolynomial.mem_support_iff.mp hκ) (hP.coeff_eq_zero h)
-  rw [coeff_subst_CX, hd, show ((DworkPowerSeriesWeights.mfact κ : ℕ) : K) * (ep ^ D * MvPowerSeries.coeff κ Th) =
-    ep ^ D * (((DworkPowerSeriesWeights.mfact κ : ℕ) : K) * MvPowerSeries.coeff κ Th) by ring, MvPolynomial.C_mul]
-  ring
+  intros
+  apply _root_.Formalism.InvariantFactorPaths.G7.DeterminantJetScaling.jetPairPoly_scale <;> assumption
 
 def frIdx {Lt : Type} {N0 : ℕ} : Lt × Fin N0 × Fin N0 → Lt × ℕ × Fin N0 := fun v => (v.1, (v.2.1 : ℕ), v.2.2)
 
@@ -500,7 +494,7 @@ theorem apply_at_zero_eq_jet_pair (Th : MvPowerSeries (ZMod 1 × Fin N0 × Fin N
   rw [subst_pr_eq_rename]
   refine MvPolynomial.induction_on' P (fun μ c => ?_) (fun p q hp hq => ?_)
   · rw [applyAt0_eq_sum N0 N1 l Th _ {μ} MvPolynomial.support_monomial_subset, Finset.sum_singleton,
-      MvPolynomial.coeff_monomial, if_pos rfl, jet_map_monomial, OrbMul.jetPairPoly_monomial,
+      MvPolynomial.coeff_monomial, ite_eq_left rfl, jet_map_monomial, OrbMul.jetPairPoly_monomial,
       mul_comm (MvPolynomial.monomial _ (c : ℂ_[l])), MvPolynomial.C_mul_monomial,
       MvPowerSeries.coeff_embDomain_rename]
     congr 1

@@ -213,9 +213,6 @@ open scoped ComplexOrder
 
 namespace PositivityTheory.Xgf.EigenspaceComposition
 
-theorem epi_spMap {K L : Type} [Field K] [Field L] (a : K →+* L) : Epi (spMap a) := by
-  apply GlobalTheory.CompanionTheory.Ar.HtEnd.epiSp
-
 theorem one_left' {S : Scheme.{0}} (G : Over S) [GrpObj G] (Y : Over S) :
     (1 : Y ⟶ G).left = Y.hom ≫ (η[G] : 𝟙_ (Over S) ⟶ G).left := by
   rw [Hom.one_def, Over.comp_left]
@@ -236,7 +233,7 @@ private theorem isTanAt_base_change_iff {S : Scheme.{0}} (G : Over S) [GrpObj G]
     apply RingHom.ext
     intro a
     simp [dualMap]
-  haveI := EigenspaceComposition.epi_spMap f
+  haveI := GlobalTheory.CompanionTheory.Ar.HtEnd.epiSp f
   show _ = (1 : Over.mk x' ⟶ G).left ↔ _ = (1 : Over.mk x ⟶ G).left
   rw [EigenspaceComposition.one_left', EigenspaceComposition.one_left', hw, ← Category.assoc, key, Category.assoc]
   simp only [Over.mk_hom, hx, Category.assoc]
@@ -274,7 +271,7 @@ theorem tangent_vectors_base_change : ∀ (E : Type) [Field E] [NumberField E] [
     rw [hv'eq, hveq, ((lie_model_eigenvectors_action S F t.G x _ M).2 _ t.act ρ τ hρ).2 n u,
       ((lie_model_eigenvectors_action S F' t.G x' _ M').2 _ t.act ρ' (f.comp τ) hρ').2 n (fun k => f ∘ u k)]
     exact EigenspaceComposition.core (τ := τ) hc u
-  · push_neg at hT
+  · push Not at hT
     obtain ⟨k, hk⟩ := hT
     constructor
     · intro h

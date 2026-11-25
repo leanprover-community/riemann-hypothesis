@@ -30,57 +30,13 @@ public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentation
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.WeightCharacters.ExpBasic
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.WeightCharacters.KaplFin
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.WeightCharacters.TopOf
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
 import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
-import Mathlib.Tactic.Polynomial.Basic
 import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 import Formalism.GradedWeylDivisibility.FinalC
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.SeparatingAlgebras.EllGrp
 import Formalism.PadicSubsetSums.StableGradedCounts.ZBrauerNesbittAlg
-import Mathlib.RingTheory.PicardGroup
-import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Algebra.Order.Star.Int
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsSplitAtOfIsSplitPl
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.WeightCharacters.EmbProjHolds
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.WeightCharacters.NeatLev
@@ -649,7 +605,7 @@ theorem UpperTheory.Gal.Wt.famEx_of : NeatLev → EllC → Twist → TwistBd →
   rw [famOf_apply, hv, hnM]
   have e : (F q₀).1 (b g i) g - ∑ q, pev (P q) (φ (ℓ g)) * delta ν ((φ (c q))⁻¹ * φ (ℓ g)) * (F q).1 (b g i) g =
       ∑ q, ((if q = q₀ then 1 else 0) - pev (P q) (φ (ℓ g)) * delta ν (φ ((c q)⁻¹ * ℓ g))) * (F q).1 (b g i) g := by
-    simp only [sub_mul, Finset.sum_sub_distrib, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true, hδ]
+    simp only [sub_mul, Finset.sum_sub_distrib, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true, hδ]
 
   rw [e, map_sum]
   refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg hε.le fun q _ => ?_
@@ -659,14 +615,14 @@ theorem UpperTheory.Gal.Wt.famEx_of : NeatLev → EllC → Twist → TwistBd →
   by_cases hq : q = q₀
   · subst hq
     have hb3 := hb2 _ hε' h1
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     have e2 : 1 - pev (P q) (φ (ℓ g)) * delta ν (φ ((c q)⁻¹ * ℓ g)) =
         -((pev (P q) (φ (ℓ g)) - 1) * delta ν (φ ((c q)⁻¹ * ℓ g)) + (delta ν (φ ((c q)⁻¹ * ℓ g)) - 1)) := by ring
     rw [e2, map_neg, norm_neg, map_add (f := _)]
     refine (IsUltrametricDist.norm_add_le_max _ _).trans (max_le ?_ hb3)
     rw [map_mul, norm_mul]
     exact (mul_le_mul h2 hb1 (norm_nonneg _) hε').trans_eq (mul_one _)
-  · rw [if_neg hq, zero_sub, map_neg, norm_neg, map_mul, norm_mul]
+  · rw [ite_eq_right hq, zero_sub, map_neg, norm_neg, map_mul, norm_mul]
     exact (mul_le_mul (h3 q hq) hb1 (norm_nonneg _) hε').trans_eq (mul_one _)
 end -- clump:auto
 end -- clump:auto
@@ -802,8 +758,7 @@ theorem famOff_holds : FamOff := by
   obtain ⟨y₁, y₂, v₀, hv₀⟩ := hne
   set v := InfinitePlace.mk τ' with hv
   obtain ⟨e, he⟩ : ∃ e, B y₁ y₂ (GlobalTheory.CoefIrred.tenMul W e) ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have h1 : B y₁ y₂ = 0 := by
       apply (Formalism.L2.DIV.bVV ℂ W).ext
       intro i
@@ -980,8 +935,7 @@ theorem famSum_of : ExpBasic → EvLem → TorFacts → QR → WtBd → EmbProj 
       rw [← (hx z).2, ← hp _ (hx z).1 _ (hBU _ _ _), hB.inf (x z)]
       rfl
   · obtain ⟨y, v', hv'⟩ : ∃ y v', B 1 y v' ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       obtain ⟨u, b, hb, rfl⟩ := hQR a y₁
       obtain ⟨x', -, h2⟩ := hxu u
       have e1 := hB.inf x' 1 ((cEmb τ x'.1)⁻¹ * y₂) (W.rep x'⁻¹ v)
@@ -1281,7 +1235,7 @@ private theorem tor_entry_mem_expLe_one_expGe_zero (h : ExpBasic) (a k : ℕ) (A
     by_cases hl : (l:ℕ) < k
     · convert (hmon ((A : Matrix (Fin a) (Fin a) ℂ) i l * (B : Matrix (Fin a) (Fin a) ℂ) l j) 1).1 using 1
       funext z
-      simp only [hl, if_true, zpow_one]
+      simp only [hl, ite_true, zpow_one]
       ring
     · convert (hmono 0 1 (by norm_num)).1
         (hconst ((A : Matrix (Fin a) (Fin a) ℂ) i l * (B : Matrix (Fin a) (Fin a) ℂ) l j)).1 using 1
@@ -1292,7 +1246,7 @@ private theorem tor_entry_mem_expLe_one_expGe_zero (h : ExpBasic) (a k : ℕ) (A
     · convert (hmono 0 1 (by norm_num)).2
         (hmon ((A : Matrix (Fin a) (Fin a) ℂ) i l * (B : Matrix (Fin a) (Fin a) ℂ) l j) 1).2 using 1
       funext z
-      simp only [hl, if_true, zpow_one]
+      simp only [hl, ite_true, zpow_one]
       ring
     · convert (hconst ((A : Matrix (Fin a) (Fin a) ℂ) i l * (B : Matrix (Fin a) (Fin a) ℂ) l j)).2 using 1
       funext z
@@ -1786,7 +1740,7 @@ private theorem isOpen_subgroupOf {E : Type} [Field E] [NumberField E] [IsCMFiel
 theorem twistBd_of : Twist → TwistBd := by
   intro hT E _ _ _ l _ ι a C hC ℓ hℓ W f X b hb
   classical
-  obtain ⟨C₀, hC₀, hf⟩ := UpperTheory.Gal.Gen.levelEx_holds E a W f
+  obtain ⟨C₀, hC₀, hf⟩ := _root_.UpperTheory.Gal.Gen.levelEx_pf E a W f
   have hHo := isOpen_subgroupOf hC hC₀
   haveI : CompactSpace C := isCompact_iff_compactSpace.1 hC.compact
   haveI : Finite (C ⧸ C₀.subgroupOf C) := Subgroup.quotient_finite_of_isOpen _ hHo

@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.CuspSpanNormBounds.BesselShellMomentBounds
 public import Formalism.HermitianCurvature.BesselNonvanishingReduction
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UhMeasurableSet
@@ -24,12 +25,7 @@ local notation "MX" => Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ
 local notation "UHk" => Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r)
 
 theorem uh_meas : MeasurableSet {x : Formalism.QuantumDeterminants.Mt k r | Matrix.of x ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r)} := by
-  have hc : Continuous (fun x : Formalism.QuantumDeterminants.Mt k r =>
-      ((Matrix.of x)ᴴ * Formalism.QuantumDeterminants.Hpk k r * Matrix.of x : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)) := by
-    refine continuous_pi fun i => continuous_pi fun j => ?_
-    simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, Matrix.of_apply]
-    fun_prop
-  exact (isClosed_eq hc continuous_const).measurableSet
+  apply _root_.Formalism.MainNotions.BesselShellMomentBounds.measurableSet_UH <;> assumption
 
 end UnipotentHaarMeasurability
 

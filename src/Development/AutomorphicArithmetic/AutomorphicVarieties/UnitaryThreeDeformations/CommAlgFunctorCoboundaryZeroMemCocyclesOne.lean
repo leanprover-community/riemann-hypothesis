@@ -7,58 +7,10 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThre
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.DefNorm
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.EntInMulRight
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.ZetaReducibleRepEqSubInvAndIsUnit
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.AdicCompletion.Noetherian
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.DualNumber
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -103,8 +55,8 @@ private theorem map_eq_zero_of_cc {O A σ : Type} [CommRing O] [CommRing A] [Fin
     rw [map_sum]
     simp only [hq]
     by_cases h : n ≠ 0
-    · simp [dif_pos h]
-    · simp only [dif_neg h, Finset.sum_const_zero]
+    · simp [dite_eq_left h]
+    · simp only [dite_eq_right h, Finset.sum_const_zero]
       push Not at h
       subst h
       simpa using hp
@@ -146,7 +98,7 @@ private theorem exists_norm {G C : Type} [Group G] [CommRing C] (η : G →* ℤ
     simpa using this
   have hcc : ∀ a b, γ c a b = γ c b.rev a.rev := fun a b => by
     have := congrFun (congrFun (hc c c) a) b
-    rw [hM.csq, h1, Matrix.add_apply, adRep_baseLift_apply, if_neg hne, hM.Ψc] at this
+    rw [hM.csq, h1, Matrix.add_apply, adRep_baseLift_apply, ite_eq_right hne, hM.Ψc] at this
     simp only [_root_.one_zpow, Units.val_one, one_mul, Matrix.zero_apply] at this
     linear_combination -this
   obtain ⟨hz, hu⟩ := zeta_reducible_rep_eq_sub_inv_and_isUnit η Ψ c g₁ hM
@@ -168,20 +120,20 @@ private theorem exists_norm {G C : Type} [Group G] [CommRing C] (η : G →* ℤ
       rwa [this])
     fin_cases a <;> fin_cases b <;> simp [Fin.rev] at e1 e2 e3 <;> simp [hs, ht, e1, e2, e3]
   · ext a b
-    rw [Pi.sub_apply, cob, Matrix.sub_apply, Matrix.sub_apply, adRep_baseLift_apply, if_neg hne, hM.Ψc]
+    rw [Pi.sub_apply, cob, Matrix.sub_apply, Matrix.sub_apply, adRep_baseLift_apply, ite_eq_right hne, hM.Ψc]
     have e := hcc a b
     fin_cases a <;> fin_cases b <;> simp [Fin.rev] at e ⊢ <;>
       first | linear_combination (-γ c 0 0) * hw2 | linear_combination (-γ c 0 2) * hw2 | linear_combination (-γ c 1 1) * hw2 | linear_combination (-γ c 2 0) * hw2 | linear_combination e | linear_combination e - γ c 0 0 * hw2
   · have w0 : wt 0 1 = 1 := by decide
     have w1 : wt1 1 = 0 := by decide
     simp only [zvar, diagonal_rep_matrix_eq, Matrix.sub_apply, Matrix.mul_diagonal, Pi.sub_apply,
-      cob, adRep_baseLift_apply, hηs, hM.ηg, if_true, hΨs, w0, w1, zpow_one, zpow_zero, Units.val_one]
+      cob, adRep_baseLift_apply, hηs, hM.ηg, ite_true, hΨs, w0, w1, zpow_one, zpow_zero, Units.val_one]
     simp only [Matrix.of_apply, Matrix.cons_val, ← hp, ← hq]
     linear_combination (-(γ g₁ 0 1 - γ (gstar c g₁) 0 1)) * hv + (p - q) * hs
   · have w0 : wt 1 0 = -1 := by decide
     have w1 : wt1 0 = 1 := by decide
     simp only [zvar, diagonal_rep_matrix_eq, Matrix.sub_apply, Matrix.mul_diagonal, Pi.sub_apply,
-      cob, adRep_baseLift_apply, hηs, hM.ηg, if_true, hΨs, w0, w1, zpow_one, _root_.zpow_neg_one, inv_inv]
+      cob, adRep_baseLift_apply, hηs, hM.ηg, ite_true, hΨs, w0, w1, zpow_one, _root_.zpow_neg_one, inv_inv]
     simp only [Matrix.of_apply, Matrix.cons_val, ← hp, ← hq]
     linear_combination (-(γ g₁ 1 0 * p - γ (gstar c g₁) 1 0 * q)) * hv - (p - q) * ht
 
@@ -232,7 +184,7 @@ private theorem commAlgFunctorCoboundaryZero_mem_cocyclesOne (hF : F.Ok) (j : �
     rw [amitsur_d0_apply, sub_eq_zero]
     apply val_ext
     ext a b
-    rw [gRep_val, adRep_baseLift_apply, if_pos h1]
+    rw [gRep_val, adRep_baseLift_apply, ite_eq_left h1]
     by_cases hab : wt a b = j
     · rw [hab.trans e', zpow_zero, Units.val_one, one_mul]
     · have : Y.val a b = 0 := Y.2 a b hab

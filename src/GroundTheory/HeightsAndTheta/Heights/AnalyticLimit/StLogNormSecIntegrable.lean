@@ -15,9 +15,4 @@ def LogNormSecIntegrable.Statement : Prop :=
     (s : X → X → ℂ), IsPotential A L → IsSection A L s → Dense (secOpen s) →
     ∀ Φ : Fin D → LocPot X, (∀ i, IsPotential A (Φ i)) → MIntegrable A Φ (logNormSec L s)
 
-section Inhabitants
-
-
-end Inhabitants
-
 end GroundTheory.Heights₂.Heights.AnalyticLimit

@@ -17,8 +17,6 @@ import Mathlib.Tactic.TypeStar
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 namespace GordanCones
 
 def toQ {n : ℕ} (v : Fin n → ℤ) : Fin n → ℚ := fun i => (v i : ℚ)
@@ -32,8 +30,6 @@ end -- clump:auto
 -- clump-header: {"m": "Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GordanIntegerMultiple.ExistsIntMultiple", "h": "module\n\npublic import Formalism.UnipotentAdelicQuotients.GordanCones\npublic import Mathlib.Algebra.Ring.Rat\npublic import Mathlib.Data.Matrix.Mul\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Rat\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Tactic.TypeStar\nimport Mathlib.Topology.Sheaves.Init\npublic import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset\n\n"}
 section -- clump:auto
 @[expose] public section
-
-set_option autoImplicit false
 
 namespace GordanGenProof
 
@@ -77,15 +73,15 @@ theorem mem_gcone_insert {n : ℕ} {ι : Type*} [DecidableEq ι] {s : Finset ι}
     · rcases Finset.mem_insert.1 hi with h | h
       · subst h
         show 0 ≤ (if i = i then t else c i)
-        rw [if_pos rfl]
+        rw [ite_eq_left rfl]
         exact ht
       · show 0 ≤ (if i = w then t else c i)
-        rw [if_neg (ne_of_mem_of_not_mem h hw)]
+        rw [ite_eq_right (ne_of_mem_of_not_mem h hw)]
         exact hc i h
     · show x = ∑ j ∈ insert w s, (if j = w then t else c j) • f j
-      rw [Finset.sum_insert hw, if_pos rfl]
+      rw [Finset.sum_insert hw, ite_eq_left rfl]
       have hs : ∑ j ∈ s, (if j = w then t else c j) • f j = ∑ j ∈ s, c j • f j :=
-        Finset.sum_congr rfl fun j hj => by rw [if_neg (ne_of_mem_of_not_mem hj hw)]
+        Finset.sum_congr rfl fun j hj => by rw [ite_eq_right (ne_of_mem_of_not_mem hj hw)]
       rw [hs, ← hx]
       abel
 
@@ -107,8 +103,7 @@ theorem fm_scalar {κ : Type*} (P : Finset κ) (u c : κ → ℚ) :
         rw [mul_left_comm, mul_inv_cancel₀ hp, mul_one]⟩
     have key : ∀ p ∈ P, ∀ q ∈ P, 0 < c p → c q < 0 → b p ≤ b q := by
       intro p hp q hq hcp hcq
-      by_contra hlt
-      push_neg at hlt
+      by_contra! hlt
       have e1 : c p * b p * c q = -u p * c q := by rw [eb p hcp.ne']
       have e2 : c q * b q * c p = -u q * c p := by rw [eb q hcq.ne]
       have hm := mul_pos (mul_pos hcp (neg_pos.2 hcq)) (sub_pos.2 hlt)
@@ -134,7 +129,7 @@ theorem fm_scalar {κ : Type*} (P : Finset κ) (u c : κ → ℚ) :
         rw [Finset.mem_filter] at hp0
         exact ⟨p0, hp0.1, hp0.2, fun p hp hc => hm p (Finset.mem_filter.2 ⟨hp, hc⟩)⟩
       exact ⟨b p0, good _ hmax (fun q hq hcq => key p0 hp0 q hq hcp0 hcq)⟩
-    · push_neg at hL
+    · push Not at hL
       by_cases hU : ∃ q ∈ P, c q < 0
       · obtain ⟨q0, hq0, hcq0, hmin⟩ : ∃ q0 ∈ P, c q0 < 0 ∧ ∀ q ∈ P, c q < 0 → b q0 ≤ b q := by
           obtain ⟨q, hq, hc⟩ := hU
@@ -143,7 +138,7 @@ theorem fm_scalar {κ : Type*} (P : Finset κ) (u c : κ → ℚ) :
           rw [Finset.mem_filter] at hq0
           exact ⟨q0, hq0.1, hq0.2, fun q hq hc => hm q (Finset.mem_filter.2 ⟨hq, hc⟩)⟩
         exact ⟨b q0, good _ (fun p hp hcp => absurd hcp (not_lt.2 (hL p hp))) hmin⟩
-      · push_neg at hU
+      · push Not at hU
         exact ⟨0, good 0 (fun p hp hcp => absurd hcp (not_lt.2 (hL p hp)))
           (fun q hq hcq => absurd hcq (not_lt.2 (hU q hq)))⟩
 

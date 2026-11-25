@@ -17,14 +17,8 @@ open GlobalTheory.Doubling (absE)
 namespace PositivityTheory.SiegelWeilFormula.Kdil
 
 theorem iteratedDeriv_mul_const' (f : ℂ → ℂ) (c : ℂ) :
-    ∀ r : ℕ, iteratedDeriv r (fun z => f z * c) = fun z => iteratedDeriv r f z * c := by
-  intro r
-  induction r with
-  | zero => simp
-  | succ r ih =>
-    rw [iteratedDeriv_succ, ih, iteratedDeriv_succ]
-    funext z
-    exact deriv_mul_const_field _
+    ∀ r : ℕ, iteratedDeriv r (fun z => f z * c) = fun z => iteratedDeriv r f z * c :=
+  fun _ => funext fun _ => iteratedDeriv_mul_const_field f c
 
 end PositivityTheory.SiegelWeilFormula.Kdil
 

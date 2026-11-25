@@ -113,7 +113,6 @@ theorem finH_mul' {E : Type} [Field E] [NumberField E] [IsCMField E] {a b : ℕ}
 attribute [local instance] borelG borelF borelH
 
 theorem convMul_holds : Tail.ConvMul := by
-  set_option synthInstance.maxHeartbeats 400000 in
   intro E _ _ _ B A ψ ψ' U F hψ hψ' hU hF
   have := B.hν
   have : BorelSpace (Hf E B.a B.b) := ⟨rfl⟩
@@ -175,7 +174,7 @@ theorem fmOneOf_holds : FmOneOf := by
       exact hw₀P (this ▸ hwP)
     have hQ : Quiet S P B e L (Sum.inl ⟨w₀, hw₀⟩) F := by
       refine ⟨fun w hwP hw x y hxy' => ?_, fun j hj p x y hxe => ?_⟩
-      · rw [hD w hwP, if_neg hxy']
+      · rw [hD w hwP, ite_eq_right hxy']
       · have hx : x = y := hxy x y fun w => hxe w fun h => hne w.1 w.2 h
         subst hx
         rcases j with ⟨w, hwS⟩ | ⟨w, hwS, hwsp⟩
@@ -193,7 +192,7 @@ theorem fmOneOf_holds : FmOneOf := by
       cases heq
     have hQ : Quiet S P B e L (Sum.inr ⟨w₀, hw₀, hsp⟩) F := by
       refine ⟨fun w hwP hw x y hxy' => ?_, fun j hj p x y hxe => ?_⟩
-      · rw [hD w hwP, if_neg hxy']
+      · rw [hD w hwP, ite_eq_right hxy']
       · have hx : x = y := hxy x y fun w => hxe w fun h => hne w.1 w.2 h
         subst hx
         rcases j with ⟨w, hwS⟩ | ⟨w, hwS, hwsp⟩

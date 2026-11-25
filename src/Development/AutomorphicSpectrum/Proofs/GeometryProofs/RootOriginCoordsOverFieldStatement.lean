@@ -65,6 +65,7 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersecti
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.IsFieldIntersection
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.RationalSections.IsRatSectionOn
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedF
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.LocalHolomorphicSectionOfPotential
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.GeometryProofs.DegreeReindexedCoords, Development.AutomorphicSpectrum.Proofs.GeometryProofs.FlatOnLogResolutionCorr, Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeCompDescentFifth, Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeCompDescentFirst, Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeCompDescentThird, Development.AutomorphicSpectrum.Proofs.GeometryProofs.HolomorphicDegreeComposition, Development.WeilBound.CoreStatements.PluriharmonicCharts.X_line_conj, Development.AutomorphicSpectrum.Proofs.MetricProofs.ConjugationInvariantHermitianMetric, Development.AutomorphicSpectrum.Proofs.GeometryProofs.PositiveHomogeneousPotential, Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginCoordsOverField, Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginCoordsOverFieldStatement
@@ -293,7 +294,7 @@ theorem exists_isRatio : ∀ (X : Scheme.{0}) (Ω Ω₀ : Type) [Field Ω] [Fiel
   have hψ : ∀ w ∈ mcPts (mCoordIdeal y), ∀ t, IsCmp i y₀ y bk bx a a₀ e e₀ w t → ψ w = t := by
     intro w hm t ht
     have h : ∃ t, IsCmp i y₀ y bk bx a a₀ e e₀ w t := ⟨t, ht⟩
-    simp only [ψ, dif_pos h]
+    simp only [ψ, dite_eq_left h]
     exact isCmp_unique hT hy hm h.choose_spec ht
   refine ⟨fun w => ‖ψ w‖, fun w hm => ?_, fun w hm => ?_, fun w hm s hs => ?_, fun w hm => ?_, ?_⟩
   · obtain ⟨t, ht⟩ := hex w hm
@@ -925,12 +926,6 @@ section -- clump:auto
 
 open MvPolynomial MeasureTheory Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
 
-namespace GlobalTheory.CompanionTheory.Ar.PB
-
-theorem exists_conjInvariant_line_averaged : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (A : HermLine ι), IsSmoothHerm A → ∃ B : HermLine ι, B.a = A.a ∧ IsSmoothHerm B ∧ IsConjInvariantH B ∧ ∀ z : (Σ k, ι k) → ℂ, (∀ k, ∃ i, z ⟨k, i⟩ ≠ 0) → Real.log (B.h z) = (Real.log (A.h z) + Real.log (A.h fun p => starRingEnd ℂ (z p))) / 2 :=
-  @PositivityTheory.Xgp.t_line_conj
-
-end GlobalTheory.CompanionTheory.Ar.PB
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.MetricProofs.ConjugationInvariantHermitianMetric =====
@@ -968,16 +963,7 @@ theorem conj_mem_mcPts {P : Ideal (MRing J)} {z : (Σ k, J k) → ℂ} (hz : z �
 
 theorem continuousOn_of_holoOn {e : ℕ} {X : Type} [TopologicalSpace X] (A : FinHolAtlas e X) {U : Set X}
     {g : X → ℂ} (h : A.HoloOn U g) : ContinuousOn g U := by
-  intro y hy
-  obtain ⟨j, hj⟩ := A.cover y
-  have hc := (A.chart j).continuousAt hj
-  have hsy : (A.chart j).symm (A.chart j y) = y := (A.chart j).left_inv hj
-  have han : ContinuousAt (g ∘ (A.chart j).symm) (A.chart j y) :=
-    (h j _ ⟨(A.chart j).map_source hj, by simpa [hsy] using hy⟩).continuousAt
-  have hcomp : ContinuousAt ((g ∘ (A.chart j).symm) ∘ (A.chart j)) y := ContinuousAt.comp han hc
-  refine (hcomp.congr ?_).continuousWithinAt
-  filter_upwards [(A.chart j).open_source.mem_nhds hj] with w hw
-  simp [(A.chart j).left_inv hw]
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Giv.SecPot.holoOn_continuousOn' <;> assumption
 
 theorem analyticAt_lift {P Jd : Ideal (MRing J)} {D : ℕ} (R : AnLogRes P Jd D) (x : R.X) (j : Fin R.A.n)
     {t : Fin D → ℂ} (ht : t ∈ (R.A.chart j).target) (hx : (R.A.chart j).symm t ∈ R.U x) :
@@ -1108,7 +1094,7 @@ theorem exists_flat_line : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, F
     have h1 := hpt x
     rw [e, (H.tensor B).smul c z hc, hT₀a, hsm z hz c hc] at h1
     exact mul_left_cancel₀ hne h1
-  obtain ⟨T, hTa, hTs, hTc, hT⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.exists_conjInvariant_line_averaged K J (H.tensor B) hT₀s
+  obtain ⟨T, hTa, hTs, hTc, hT⟩ := _root_.PositivityTheory.Xgp.t_line_conj K J (H.tensor B) hT₀s
   have hTφ : ∀ z ∈ mcPts P, T.h z = φ z := by
     intro z hz
     have hc := conj_mem_mcPts hz
@@ -1336,8 +1322,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-alias _root_.GlobalTheory.T.root_origin_coords_over_field :=
-  GlobalTheory.CompanionTheory.Ar.root_model_on_cover
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginCoordsOverFieldStatement =====

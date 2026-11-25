@@ -224,7 +224,7 @@ theorem exists_traceDual : ∀ (E : Type) [Field E] [NumberField E], ∃ (N : �
       intro s
       have := h3 (ω.coord s) (α * ω s)
       simp only [Module.Basis.coord_apply, Module.Basis.repr_self, Finsupp.single_apply, ite_smul,
-        one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true] at this
+        one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at this
       rw [← this, mul_comm (θ s), mul_assoc]
 
     rw [mul_sub, map_sub, Finset.mul_sum, map_sum, mul_comm α (_ : 𝓞 E), ← nsmul_eq_mul, map_nsmul,
@@ -248,7 +248,7 @@ namespace GlobalTheory.PointStepCompare
 
 open NumberField IsLocalRing ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR
 open GlobalTheory.IndefiniteRowSideFullHecke.PairingFromOuterAgreement
-open GlobalTheory.IndefiniteRowSideFullHecke.BalancedHermitianSpace (Bil leastExponent IsIntegralFn IsPositiveFn IsBalancedSpace evalSum)
+open GlobalTheory.IndefiniteRowSideFullHecke.BalancedHermitianSpace (Bil IsIntegralFn IsPositiveFn IsBalancedSpace evalSum)
 
 section Lattice
 

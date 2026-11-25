@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TransportedWeylLatticeHermitianDuality
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaModuloX.Skeleton
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaModuloX.ModLatticeAbsoluteValue
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaModuloX.PositiveWeightHolds
@@ -84,32 +85,11 @@ theorem mem_localization_of_smul_mem' (p : Ideal (𝓞 E)) [p.IsPrime] (L : Subm
 
 theorem mem_of_locP (N : Submodule (𝓞 E) V) (x : V)
     (h : ∀ P : HeightOneSpectrum (𝓞 E), x ∈ (haveI := P.isPrime; Formalism.HermitianLatticesTheory.localization₂ P.asIdeal N)) : x ∈ N := by
-
-  let I : Ideal (𝓞 E) := Submodule.comap (LinearMap.toSpanSingleton (𝓞 E) V x) N
-  have hmem : ∀ r : 𝓞 E, r ∈ I ↔ r • x ∈ N := fun r => by
-    show (LinearMap.toSpanSingleton (𝓞 E) V x) r ∈ N ↔ r • x ∈ N
-    rw [LinearMap.toSpanSingleton_apply]
-  by_contra hx
-  have hIt : I ≠ ⊤ := by
-    intro hI
-    apply hx
-    have h1 : (1 : 𝓞 E) ∈ I := by rw [hI]; exact Submodule.mem_top
-    have h2 := (hmem 1).1 h1
-    rwa [one_smul] at h2
-  obtain ⟨M, hM, hIM⟩ := Ideal.exists_le_maximal I hIt
-  have hMb : M ≠ ⊥ := by
-    intro hb
-    rw [hb] at hM
-    exact NumberField.RingOfIntegers.not_isField E (Ring.isField_iff_maximal_bot.mpr hM)
-  obtain ⟨s, hs, hsx⟩ : ∃ s ∈ M.primeCompl, s • x ∈ N :=
-    h ⟨M, hM.isPrime, hMb⟩
-  exact hs (hIM ((hmem s).2 hsx))
+  apply _root_.GlobalTheory.TransDual.mem_of_forall_locP <;> assumption
 
 end Loc
 
 section D7
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem lattice_sub_orthogonal_holds : XLamSub := by
   intro D u u' F0 Λ hΛ y x hx
@@ -316,8 +296,6 @@ end Gen
 
 section D7
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem betaIndep_of (D : D7) (u u' : D.what₂.Word) (h : PI.ScalPairs.BetaL D u u') :
     PI.ScalPairs.BetaFree D u u' := by
   intro hg F0 Λ hR x y hx hy β₁ β₂ h1 h2
@@ -338,8 +316,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem scalPairs_betaFree (D : Formalism.BasicNotions.D7) (u u' : D.what₂.Word) : PI.ScalPairs.BetaFree D u u' :=
   PI.UnitaryGroupMassFormula.BetaIndep.betaIndep_of D u u' (beta_mod_iota_surjective D u u')
 end -- clump:auto
@@ -350,8 +326,6 @@ end -- clump:auto
 -- clump-header: {"m": "Formalism.PeriodIntegrals.OrbitalBoundsConclusion.DCRelEquiv", "h": "module\n\npublic import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermDef\npublic import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RelativeEquivalence.DCRelEquivAllHolds\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
 section -- clump:auto
 @[expose] public section
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem term_eq_iff_relation (D : Formalism.BasicNotions.D7) (u u' : D.what₂.Word) : Formalism.L2.SG.TermDef.TermEqIff D u u' := by
   intro F0 Λ _
@@ -489,10 +463,9 @@ theorem charSum {F : Type} [Field F] [Fintype F] (ψ₀ : AddChar F ℂ) (hψ : 
   · subst hν
     simp
   · obtain ⟨i, hi⟩ : ∃ i, ν i ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hν (funext h)
-    exact Finset.prod_eq_zero (Finset.mem_univ i) (if_neg hi)
+    exact Finset.prod_eq_zero (Finset.mem_univ i) (ite_eq_right hi)
 
 theorem charOrth : CharOrth := by
   intro F _ _ m ψ₀ hψ r s
@@ -563,8 +536,7 @@ open Classical
 theorem rowExists : RowExists := by
   intro F _ _ n r hr
   obtain ⟨k, hk⟩ : ∃ k, r k ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hr (funext h)
   set σ : Equiv.Perm (Fin (n + 1)) := Equiv.swap k (Fin.last n) with hσ
   set A : Matrix (Fin (n + 1)) (Fin (n + 1)) F :=
@@ -820,7 +792,7 @@ theorem convScalar_of (h1 : RepGamConj) (h2 : RepGamComm) (h3 : QIdem) (h4 : Gen
   have hu : IsUni k (1 : GL (Fin k) F) :=
     ⟨fun i => by simp, fun i j hij => by simp [Matrix.one_apply_ne (ne_of_gt hij)]⟩
   have hpsi1 : psiNat ψ₀ (1 : GL (Fin k) F) = 1 := by
-    simp only [psiNat, if_pos hu, psiU]
+    simp only [psiNat, ite_eq_left hu, psiU]
     have hs : superdiag k ((1 : GL (Fin k) F) : Matrix (Fin k) (Fin k) F) = 0 := by
       unfold superdiag
       refine Finset.sum_eq_zero fun i _ => Finset.sum_eq_zero fun j _ => ?_
@@ -913,10 +885,10 @@ theorem whit_sgn_projQ (ψ₀ : AddChar F ℂ) (π : Representation ℂ (GL (Fin
     intro x
     rw [pi_sgn_mul]
     by_cases hx : IsUni k x
-    · rw [hℓ _ (isUni_sgn_conj hx), ← mul_assoc, if_pos hx]
+    · rw [hℓ _ (isUni_sgn_conj hx), ← mul_assoc, ite_eq_left hx]
       unfold psiNat
-      rw [if_pos hx, mul_comm (psiU ψ₀ x), psiU_sgn_conj]
-    · unfold psiNat; rw [if_neg hx, if_neg hx, zero_mul, zero_mul]
+      rw [ite_eq_left hx, mul_comm (psiU ψ₀ x), psiU_sgn_conj]
+    · unfold psiNat; rw [ite_eq_right hx, ite_eq_right hx, zero_mul, zero_mul]
   unfold projQ
 
   simp only [LinearMap.smul_apply, LinearMap.sum_apply, map_smul, map_sum, smul_eq_mul]
@@ -942,12 +914,10 @@ theorem generic_iff_criterion : GenericIff := by
     rw [← this, LinearMap.zero_apply]
   · intro hQ
     obtain ⟨v, hv⟩ : ∃ v, projQ ψ₀ π v ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hQ (LinearMap.ext h)
     obtain ⟨f, hf⟩ : ∃ f : Module.Dual ℂ V, f (projQ ψ₀ π v) ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hv ((Module.forall_dual_apply_eq_zero_iff ℂ _).1 h)
     refine ⟨f ∘ₗ (projQ ψ₀ π ∘ₗ π (sgn k)), ?_, isWhit_of_dual ψ₀ π f⟩
     intro h0
@@ -972,7 +942,7 @@ theorem intertwiner_rank_le_one : RankLeOne := by
       rw [Submodule.mem_span_singleton]
       exact ⟨c, hc.symm⟩
     exact (Submodule.finrank_mono hle).trans (finrank_span_singleton hne).le
-  · push_neg at h
+  · push Not at h
     rw [(Submodule.eq_bot_iff _).2 h, finrank_bot]
     omega
 

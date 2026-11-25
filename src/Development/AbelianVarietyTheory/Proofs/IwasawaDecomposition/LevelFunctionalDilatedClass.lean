@@ -37,6 +37,7 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LevelFunctionalLevelVectorLaws
 
 @[expose] public section
 
@@ -67,15 +68,7 @@ variable {E K : Type} [Field E] [NumberField E] [Field K] {n : ℕ} {S : GStep E
 
 theorem fv_mk (h : A.Ok T) (P : ST) (c : S.Cl) (x : A.N c.1 (S.rep c)) :
     A.fv P c (Submodule.Quotient.mk x) = A.f c.1 (S.rep c) P x := by
-  have hex : ∃ φ : Module.Dual (Res P.1) (A.lv P c), ∀ x : A.N c.1 (S.rep c),
-      φ (Submodule.Quotient.mk x) = A.f c.1 (S.rep c) P x :=
-    exists_red_dual P.1.asIdeal
-      { toFun := fun x : A.N c.1 (S.rep c) => A.f c.1 (S.rep c) P x
-        map_add' := fun x y => h.f_add _ _ P x x.2 y y.2
-        map_smul' := fun a x => h.f_smul _ _ P a x x.2 }
-  unfold TDat.fv
-  rw [dite_eq_left hex]
-  exact hex.choose_spec x
+  apply _root_.GlobalTheory.Mem.Col2.TDat.fv_mk <;> assumption
 
 theorem exists_act_equiv (h : A.Ok T) (b : S.β) (g : S.G b) (d : S.D b) (M : Submodule (𝓞 E) (Fin n → E))
     (hM : A.N b (g • d) = M) :

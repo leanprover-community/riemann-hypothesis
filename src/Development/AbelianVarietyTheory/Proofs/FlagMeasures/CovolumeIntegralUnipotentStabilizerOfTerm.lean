@@ -349,9 +349,9 @@ theorem flag_step (F : LFlag S r T) (n : S.V ≃ₗ[E] S.V) {a : Matrix (Fin (r 
       show k'.1 < j
       have : k'.1 < i.1 := hki
       omega
-    · rw [if_pos hk, hk, (ha _ _).2 rfl, sub_self, zero_smul]
+    · rw [ite_eq_left hk, hk, (ha _ _).2 rfl, sub_self, zero_smul]
       exact Submodule.zero_mem _
-    · rw [if_neg (ne_of_gt hk), (ha _ _).1 hk, sub_self, zero_smul]
+    · rw [ite_eq_right (ne_of_gt hk), (ha _ _).1 hk, sub_self, zero_smul]
       exact Submodule.zero_mem _
   have hle : Xflag F (j + 1) ≤ (Xflag F j).comap ((n : S.V →ₗ[E] S.V) - LinearMap.id) := by
     show Submodule.span E (F.fl.e '' {i | i.1 < j + 1}) ≤ _
@@ -410,7 +410,7 @@ theorem gramM_det (F : LFlag S r T) (F' : LFlag S r T') : (gramM F F').det = (-1
 
 theorem diag_cast (t : E) (c : Fin (r + 1) → E) (i : Fin r) :
     ((diagonal fun a : Fin (r + 1) => if a = Fin.last r then t else 0) *ᵥ c) i.castSucc = 0 := by
-  rw [Matrix.mulVec_diagonal, if_neg (Fin.castSucc_ne_last i), zero_mul]
+  rw [Matrix.mulVec_diagonal, ite_eq_right (Fin.castSucc_ne_last i), zero_mul]
 
 private lemma cancel_lemma {N : Type} [Fintype N] [DecidableEq N] {Mx : Matrix N N E} (hM : Mx.det ≠ 0)
     {w w' : N → E} (h : Mx *ᵥ w = Mx *ᵥ w') : w = w' := by
@@ -701,7 +701,7 @@ theorem Dr1_ne_zero {T' : ℕ} (F : LFlag S r T) (F' : LFlag S r (T' : E)) (τ :
       rw [show S.hT y y = S.hT (∑ b, w b • frame F' b) y by rw [← hy], e]
       simp only [dotProduct, Pi.star_apply, h1]
       rw [Finset.sum_eq_single (Fin.last r)]
-      · rw [if_pos rfl]; ring
+      · rw [ite_eq_left rfl]; ring
       · intro c _ hc; simp [hc]
       · simp
     rw [hyy, map_mul, map_mul, hτ, map_neg, map_natCast] at hp
@@ -716,8 +716,6 @@ theorem Dr1_ne_zero {T' : ℕ} (F : LFlag S r T) (F' : LFlag S r (T' : E)) (τ :
     linarith
 
 end Det
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem frame_mem_of_XS (D : D7) (Λ : LatV D) {T : D.host.E} (F : LFlag (D.sp.Y 0) D.R.rS T) (hz : F.fl.z ∈ Λ)
     (hX : XLam Λ F = XS D F.fl) (b : Fin (D.R.rS + 1)) : frame F b ∈ Λ := by
@@ -837,7 +835,6 @@ section -- clump:auto
 
 open NumberField Module Matrix Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.Cnt GlobalTheory.LoopC
 open scoped ENNReal Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.congruence_stabU_from_integral_unipotent_isometry : ∀ (D : D7) (u u' : D.what₂.Word) (F0 : Fb D u) (Λ : LatV D), Stand D u u' → IsBase D u F0 → IsRowLat D F0 Λ → ∀ F' : FlagU D u', IsTermF D Λ (lf D F0) F' → ∃ I : Ideal (𝓞 D.host.E), I ≠ ⊥ ∧ (Ideal.absNorm I : ℝ) ≤ (∏ τ, ‖embS D τ (Gval (lf D F0) F')‖) ^ 4 * ∏ τ, ‖embS D τ (Dr1 (lf D F0) F')‖ ^ 2 ∧ ∀ a ∈ GlobalTheory.LoopV.stabU (ZhatL (lf D F0) F'), GlobalTheory.LoopV.EntIn I (a - 1) → ∃ n ∈ NLam Λ (lf D F0) ∩ NLam Λ F', ∀ c, n (frame F' c) = ∑ i, a i c • frame F' i := by
   first | exact @GlobalTheory.LoopV.Cong.congruence_mem
@@ -852,7 +849,6 @@ section -- clump:auto
 
 open NumberField Module Matrix Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.Cnt GlobalTheory.LoopC
 open scoped ENNReal Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.LoopC.CovTerm
 
@@ -884,7 +880,7 @@ theorem lm_cons (t : K) (s : ℕ) (bs : List (K × ℕ)) (l : ℕ) :
       have hj := j.2
       simp only [Matrix.submatrix_apply, finSumFinEquiv_apply_left, Matrix.of_apply, Fin.val_castAdd,
         ptEntry.eq_2, Matrix.fromBlocks_apply₁₁, id, Matrix.diagonal_apply, Fin.revPerm_apply,
-        Fin.ext_iff, Fin.val_rev, hi, hj, and_self, if_true]
+        Fin.ext_iff, Fin.val_rev, hi, hj, and_self, ite_true]
       exact if_congr (by omega) rfl rfl
     · have hi := i.2
       simp [ptEntry.eq_2]
@@ -909,7 +905,7 @@ theorem prodMaxOneNorm_cons (t : K) (s : ℕ) (bs : List (K × ℕ)) (n : ℕ) :
     intro i hi
     have hi' := Finset.mem_range.1 hi
     rw [Finset.prod_eq_single (s - 1 - i)]
-    · rw [ptEntry.eq_2, if_pos (by omega), if_pos (by omega)]
+    · rw [ptEntry.eq_2, ite_eq_left (by omega), ite_eq_left (by omega)]
     · intro j _ hj
       rw [ptEntry.eq_2]
       split_ifs with h1 h2 h3
@@ -925,7 +921,7 @@ theorem prodMaxOneNorm_cons (t : K) (s : ℕ) (bs : List (K × ℕ)) (n : ℕ) :
       simp [ptEntry.eq_2]
     · intro j hj
       have hj' := Finset.mem_range.1 hj
-      rw [ptEntry.eq_2, if_neg (by omega), if_neg (by omega)]
+      rw [ptEntry.eq_2, ite_eq_right (by omega), ite_eq_right (by omega)]
       simp
 
 noncomputable def gg2 (x : ℝ) : ℝ := max 1 x * max 1 x⁻¹
@@ -995,11 +991,11 @@ theorem minor_pt_le {N : ℕ} (p : Point K N) (t : ℕ) (I J : Fin t → Fin N) 
     refine Finset.prod_congr rfl fun i _ => ?_
     rw [Finset.prod_range, Finset.prod_eq_single (σ i)]
     · have := hw i (σ i)
-      rw [if_pos rfl] at this
+      rw [ite_eq_left rfl] at this
       rw [← this]; rfl
     · intro j _ hj
       have := hw i j
-      rw [if_neg hj] at this
+      rw [ite_eq_right hj] at this
       have h0 : ptEntry p.1 i j = 0 := this
       simp [h0]
     · simp

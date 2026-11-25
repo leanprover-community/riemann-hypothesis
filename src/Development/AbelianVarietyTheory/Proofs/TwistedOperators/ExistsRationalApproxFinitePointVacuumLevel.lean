@@ -55,8 +55,6 @@ noncomputable section
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes NumberField IsDedekindDomain
 open scoped TensorProduct
 
-set_option synthInstance.maxHeartbeats 400000
-
 namespace GlobalTheory.FinApprox
 
 variable {D : D7}

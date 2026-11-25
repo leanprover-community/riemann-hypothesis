@@ -113,11 +113,6 @@ namespace Line
 
 end Line
 
-section FS
-
-
-end FS
-
 section Reg
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
@@ -132,28 +127,7 @@ structure WeightReg (ι : K → Type) [∀ k, Fintype (ι k)] where
     ∀ z : (Σ b, ι b) → ℂ, (∀ b, ∃ i, z ⟨b, i⟩ ≠ 0) → (reg t A').h z = k * (reg t A).h z
 
 
-open GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.HeightsSet in
-def weightRegRef : WeightReg (PBlk 2) where
-  reg _ A := (HermLine.ofMetrics (fun k => fsMetric (ι := PBlk 2 k)) A.a).tensor
-    (constLine (A.h (fun _ => 1) / (HermLine.ofMetrics (fun k => fsMetric (ι := PBlk 2 k)) A.a).h (fun _ => 1))
-      (div_pos (A.pos _ fun _ => ⟨0, one_ne_zero⟩)
-        ((HermLine.ofMetrics (fun k => fsMetric (ι := PBlk 2 k)) A.a).pos _ fun _ => ⟨0, one_ne_zero⟩)))
-  deg _ A := by simp [HermLine.tensor, constLine, HermLine.ofMetrics]
-  smooth _ A _ := ReciprocityTheory.ChartRestriction.G.Geo.isSmoothHerm_tensor (Inter.isSmoothHerm_ofMetrics_fs _) (isSmoothHerm_constLine _ _)
-  shift _ A A' k hk ha hh z _ := by
-    have h1 := hh (fun _ => 1) fun _ => ⟨0, one_ne_zero⟩
-    simp only [HermLine.tensor, constLine, ha, h1]
-    ring
-
 end Reg
-
-section Heights
-
-variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
-  {II : IntersectionSystem} {Ψ : Type} [Fintype Ψ] {Ω : Type} [Field Ω] [Algebra ℚ Ω]
-  {E : Ψ → Type} [∀ τ, AddCommGroup (E τ)] [∀ τ, Module Ω (E τ)]
-
-end Heights
 
 end GroundTheory.Heights₂.Heights.LowerBoundFree
 end -- clump:auto
@@ -206,21 +180,6 @@ theorem inter_constLine_eq [Nonempty K] (I : Ideal (MRing ι) → (n : ℕ) → 
   ring
 
 end Curve
-
-section Point
-
-def ptIdeal : Ideal (MRing (PBlk 2)) := orbitIdeal samplePoint
-
-end Point
-
-section Shift
-
-
-end Shift
-
-section Main
-
-end Main
 
 end GroundTheory.Heights₂.Heights.LowerBoundFree
 end -- clump:auto

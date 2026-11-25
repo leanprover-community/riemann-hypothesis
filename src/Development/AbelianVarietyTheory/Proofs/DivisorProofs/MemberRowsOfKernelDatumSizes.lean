@@ -25,66 +25,19 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KernelHalfCh
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LastMapNorm
 public import Formalism.LocalToGlobal.Divisibility.NumbersLink
 public import Development.AbelianVarietyTheory.Definitions.Divisors.KerSizes
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Presheaf
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.TopPlaceLogTheta
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsClassSumPairingFormsLat
 import Formalism.LocalToGlobal.Divisibility.FramesLemmas
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Tactic.ReduceModChar
 import Formalism.LocalToGlobal.GlobalTheory.HLatOpsP
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.Tactic.Polynomial.Basic
 import Formalism.LocalToGlobal.Columns.AlgebraMapMemMaximalIdealPowIff
 import Formalism.LocalToGlobal.Divisibility.CoefMod
 import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
-import Mathlib.RingTheory.PicardGroup
 import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Algebra.Order.Star.Rat
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.BranchSandwichDivisors.DivFromPassageAndNorm
 import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LClosedeqLemmas
-import Mathlib.Algebra.Ring.IsFormallyReal
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ColsInIsometry, Development.AbelianVarietyTheory.Proofs.DivisorProofs.DatFramedOfGramPosDef, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsHtNumsOfKerSideLastSide, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsInvFrameOfPosDef, Development.AbelianVarietyTheory.Proofs.DivisorProofs.FamFramedOfPos, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCbData, Development.AbelianVarietyTheory.Proofs.DivisorProofs.OpNormAtPairingSqLeOfValueBound, Development.AbelianVarietyTheory.Proofs.DivisorProofs.KerChainMatricesWithNormBounds, Development.AbelianVarietyTheory.Proofs.DivisorProofs.LastSideLogBound, Development.AbelianVarietyTheory.Proofs.DivisorProofs.OrthNormLogBound, Development.AbelianVarietyTheory.Proofs.DivisorProofs.LastMapHalfRecNumsOfLogLevelPrimeLe, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ColumnsMemberRowsOfLogLevelLe, Development.AbelianVarietyTheory.Proofs.DivisorProofs.OfNumReads, Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemberRowsOfKernelDatumSizes
@@ -1173,9 +1126,6 @@ end GlobalTheory.ColRows.LastSideProof
 
 namespace GlobalTheory.ColRows.LastSideProof
 
-theorem uW_first (N : NumDatum) (δ : Code N) (z : RPl N.R) (h : 0 < N.R.k) : N.uW δ z ⟨0, h⟩ = (N.hc z).u ⟨0, h⟩ := by
-  simp [NumDatum.uW]
-
 theorem uW_last (N : NumDatum) (δ : Code N) (z : RPl N.R) (h : N.R.k - 1 < N.R.k) :
     N.uW δ z ⟨N.R.k - 1, h⟩ = (N.hc z).u ⟨N.R.k - 1, h⟩ := by
   unfold NumDatum.uW
@@ -1409,7 +1359,7 @@ theorem lastSide_of_logT_le : ∀ (CY CT : ℝ) (N : NumDatum) (X : Fields) (Pr 
   have hrow : ∀ z, (W.hc u (pl z)).v = (N.hc z).v ∧ (W.hc u (pl z)).b = (N.hc z).b ∧ (W.hc u (pl z)).e = (N.hc z).e := fun z =>
     ⟨congrArg RowPar.v (hWT.2.2 z).1, congrArg RowPar.b (hWT.2.2 z).1, congrArg RowPar.e (hWT.2.2 z).1⟩
   have hu0 : ∀ z, (W.hc u (pl z)).u ⟨0, by omega⟩ = (N.hc z).u ⟨0, by omega⟩ := fun z =>
-    ((hWT.2.2 z).2 _).trans (uW_first N δ z _)
+    ((hWT.2.2 z).2 _).trans (Formalism.L2.DIV.NumDatum.uW_zero N δ z _)
   have hul : ∀ z, (W.hc u (pl z)).u ⟨N.R.k - 1, by omega⟩ = (N.hc z).u ⟨N.R.k - 1, by omega⟩ := fun z =>
     ((hWT.2.2 z).2 _).trans (uW_last N δ z _)
   have hlam1 : ∀ z, lam1 z = (((N.hc z).u ⟨0, by omega⟩ : ℚ) : ℝ) - ((N.R.k : ℝ) - 1) / 2 -

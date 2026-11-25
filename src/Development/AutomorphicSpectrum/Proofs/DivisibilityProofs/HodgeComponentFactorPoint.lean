@@ -5,6 +5,7 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodge
 public import Mathlib.AlgebraicGeometry.Morphisms.UniversallyInjective
 import Mathlib.Tactic.Linter.Style
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeCptInteriorGeneric
 
 @[expose] public section
 
@@ -73,23 +74,9 @@ theorem eq_genPt_of_specializes {X : Scheme.{0}} {Ω : Type} [Field Ω] (ξ : Sp
     Subsingleton.elim (α := PrimeSpectrum _) _ _
   rw [this, Scheme.fromSpecStalk_closedPoint]
 
-theorem mem_of_dense_of_noGen {P : Type} [TopologicalSpace P] [TopologicalSpace.NoetherianSpace P] [QuasiSober P]
-    {U : Set P} (hU : IsOpen U) (hd : Dense U) {y : P} (hy : ∀ y', y' ⤳ y → y' = y) : y ∈ U := by
-  apply PositivityTheory.HtPt.Ml.mem_of_dense_of_max <;> assumption
-
 theorem noetherianSpace_baseChange {X : Scheme.{0}} {O F : Type} [CommRing O] [Field F] {s : X ⟶ Sp O}
     (hs : IsProjOver s) (β : O →+* F) : TopologicalSpace.NoetherianSpace ↥(pullback s (spMap β)) := by
-  obtain ⟨N, i, hi, rfl⟩ := hs
-  have := isProper_str O N
-  have : IsProper (i ≫ PSpace.str O N) := inferInstance
-  have hl : LocallyOfFiniteType (pullback.snd (i ≫ PSpace.str O N) (spMap β)) := inferInstance
-  have hq : QuasiCompact (pullback.snd (i ≫ PSpace.str O N) (spMap β)) := inferInstance
-  have : IsLocallyNoetherian (pullback (i ≫ PSpace.str O N) (spMap β)) :=
-    LocallyOfFiniteType.isLocallyNoetherian (pullback.snd _ _)
-  have : CompactSpace ↥(pullback (i ≫ PSpace.str O N) (spMap β)) :=
-    QuasiCompact.compactSpace_of_compactSpace (pullback.snd _ _)
-  have : IsNoetherian (pullback (i ≫ PSpace.str O N) (spMap β)) := {}
-  infer_instance
+  apply _root_.GlobalTheory.CompanionTheory.Ar.HodgeBasic.noetherianSpace_pullback <;> assumption
 
 theorem gen_open : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H)
     (Xo : Moduli D l) (c : Coeff l) (O : Type) [CommRing O] (β : O →+* c.F) (Y : Model Xo c β) (S : Finset ℕ)
@@ -131,7 +118,7 @@ theorem gen_open : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : H
   have := noetherianSpace_baseChange Y.proj β
   have := Y.jQ_open
   have hy0 : y0 ∈ Set.range Y.jQ :=
-    mem_of_dense_of_noGen Y.jQ.isOpenEmbedding.isOpen_range Y.jQ_dense hmax
+    PositivityTheory.HtPt.Ml.mem_of_dense_of_max Y.jQ.isOpenEmbedding.isOpen_range Y.jQ_dense hmax
   have hrange : Set.range z ⊆ Set.range Y.jQ := by
     rintro _ ⟨p, rfl⟩
     have : p = IsLocalRing.closedPoint A.Ω₀ := Subsingleton.elim (α := PrimeSpectrum A.Ω₀) _ _

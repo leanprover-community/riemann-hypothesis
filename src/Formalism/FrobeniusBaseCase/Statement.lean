@@ -70,12 +70,6 @@ structure Data (k : Type*) [Field k] (Z : Type*) (C : Type*) where
 
   g_supp : ∀ c, lev c + 1 < Kn i → ∀ b, lev b ≠ lev c + 1 → g c b = 0
 
-namespace Data
-
-variable [Fintype Z] [Fintype C] (D : Data k Z C)
-
-end Data
-
 end
 
 end Formalism.BaseCaseIdentities

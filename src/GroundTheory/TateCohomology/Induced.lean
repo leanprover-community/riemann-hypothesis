@@ -127,7 +127,7 @@ theorem sum_coindBotProj (f : coind (⊥ : Subgroup G).subtype B) :
   rw [Fintype.sum_eq_single x⁻¹]
   · simp
   · intro g hg
-    rw [Pi.single_apply, if_neg]
+    rw [Pi.single_apply, ite_eq_right]
     exact fun h => hg (eq_inv_of_mul_eq_one_right h)
 
 theorem isZero_tateCohomology_coind_bot (n : ℤ) :

@@ -39,60 +39,15 @@ import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.ExistsF
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRing
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC
 import GroundTheory.AutomorphicForms.ReductionMeasure
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.TensTop
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.PushInv
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.PushLF
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.DensFibV
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.TopoAF
 import GroundTheory.GlobalFields.LocalFieldAtPlace
 import GroundTheory.LocalFields.LocalFourierHaar
-import Mathlib.Topology.Connected.Separation
-import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CovolumeOneEulerProductMeasureExists, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EulerProductMeasureCovolumeOne, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ISupFiniteProductTailLimit, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeStabilizerVolumeAlmostAll, Development.WeilBound.RepresentationTheoryGL.SiegelWeil.ArchimedeanSiegelWeil.PlaceIntegrals.ZeroBlockCoefficientRankIncrease
@@ -523,8 +478,8 @@ theorem pureL_act {d M n : ℕ} (b : Module.Basis (Fin d) F E) (σ : E →ₐ[F]
       rw [← Finset.prod_subset hSS fun v hv hvS => ?_]
       · refine Finset.prod_congr rfl fun v hv => ?_
         rw [hfin]
-        simp only [if_pos hv]
-      · simp only [if_neg hvS]
+        simp only [ite_eq_left hv]
+      · simp only [ite_eq_right hvS]
         rw [Set.indicator_of_mem (hA v (Finset.mem_sdiff.2 ⟨hv, hvS⟩))]
         rfl
     · push Not at hA
@@ -535,7 +490,7 @@ theorem pureL_act {d M n : ℕ} (b : Module.Basis (Fin d) F E) (σ : E →ₐ[F]
         rw [hfin] at this
         exact hvl this
       rw [Set.indicator_of_notMem hY, Finset.prod_eq_zero (Finset.mem_sdiff.1 hv).1
-        (by simp only [if_neg (Finset.mem_sdiff.1 hv).2]; rw [Set.indicator_of_notMem hvl])]
+        (by simp only [ite_eq_right (Finset.mem_sdiff.1 hv).2]; rw [Set.indicator_of_notMem hvl])]
       simp
   · have hY : actW (AF F) σ Jp h X ∉ intOff b S := by
       intro hm
@@ -641,9 +596,9 @@ theorem inner_pure : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numbe
   have mv : ∀ v, Measurable (fv v) := fun v => by
     rw [hfv]
     by_cases hv : v ∈ S
-    · simp only [hv, if_true]
+    · simp only [hv, ite_true]
       exact (hφ v).comp (measurable_actW σ hCM _ (hLv v) _ _)
-    · simp only [hv, if_false]
+    · simp only [hv, ite_false]
       exact (measurable_one.indicator
         (GlobalTheory.CompanionTheory.Hypotheses₂.OneV.DxEuler.measurableSet_latV σ hCM b _ _ v)).comp
         (measurable_actW σ hCM _ (hLv v) _ _)
@@ -665,11 +620,11 @@ theorem inner_pure : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numbe
   have i2 : ∀ v, ∫⁻ Y, ∫⁻ a, fv v (consA a Y) ∂(coordW (Fv F v) b (lam v) 1 n) ∂(m v) =
       (if v ∈ S then Ψ v else G v) (actW (Fv F v) σ (hypOne J) (p v h) (e0 _ M)) := fun v => by
     by_cases hv : v ∈ S
-    · rw [if_pos hv, hΨ v (p v h), hfv]
-      simp only [hv, if_true]
+    · rw [ite_eq_left hv, hΨ v (p v h), hfv]
+      simp only [hv, ite_true]
       rfl
-    · rw [if_neg hv, hG v (p v h), hfv]
-      simp only [hv, if_false]
+    · rw [ite_eq_right hv, hG v (p v h), hfv]
+      simp only [hv, ite_false]
       rfl
   rw [i1, Finset.prod_congr rfl (fun v _ => i2 v)]
   have hmemP : actW (AF F) σ (hypOne J) h (e0 _ M) ∈

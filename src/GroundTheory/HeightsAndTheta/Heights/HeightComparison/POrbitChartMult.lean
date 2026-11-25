@@ -71,7 +71,7 @@ theorem isUnit_prod_X_pow (m : Ideal O) [hm : m.IsPrime] (a : ι → ℕ) :
   have hnot : (∏ k, X k ^ a k : MvPolynomial ι O) ∉ fibO ι m := by
     intro h
     have h' := MvPolynomial.mem_map_C_iff.mp h (Finsupp.equivFunOnFinite.symm a)
-    rw [prod_X_pow_eq_monomial_fintype, coeff_monomial, if_pos rfl] at h'
+    rw [prod_X_pow_eq_monomial_fintype, coeff_monomial, ite_eq_left rfl] at h'
     exact hm.ne_top ((Ideal.eq_top_iff_one _).mpr h')
   exact IsLocalization.map_units (locB ι m) (⟨∏ k, X k ^ a k, hnot⟩ : (fibO ι m).primeCompl)
 
@@ -82,7 +82,7 @@ theorem isUnit_C_locB (m : Ideal O) [m.IsPrime] (u : m.primeCompl) :
   classical
   have hnot : (C (u : O) : MvPolynomial ι O) ∉ fibO ι m := fun h ↦ u.2 (by
     have h' := MvPolynomial.mem_map_C_iff.mp h 0
-    rwa [coeff_C, if_pos rfl] at h')
+    rwa [coeff_C, ite_eq_left rfl] at h')
   exact IsLocalization.map_units (locB ι m) (⟨C (u : O), hnot⟩ : (fibO ι m).primeCompl)
 
 

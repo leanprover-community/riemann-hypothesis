@@ -12,8 +12,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar Filter Topology Metric
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.LieFrameIndep
@@ -70,7 +68,7 @@ theorem linearIndependent_values {Ω C E EC : Type} [Field Ω] [Field C] [AddCom
       exact Finset.sum_comm
     have hz : ∑ j, (((∑ k, a i k * d k j : A) : Ω) - if i = j then 1 else 0) • c j = 0 := by
       simp only [sub_smul, Finset.sum_sub_distrib, ite_smul, one_smul, zero_smul,
-        Finset.sum_ite_eq, Finset.mem_univ, if_true]
+        Finset.sum_ite_eq, Finset.mem_univ, ite_true]
       rw [sub_eq_zero]
       exact hexp
     have := Fintype.linearIndependent_iff.1 hc _ hz j

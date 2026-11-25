@@ -89,8 +89,6 @@ open GlobalTheory.Chain.IoLift
 
 namespace GlobalTheory.Chain.IoLift.Factor
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem kerLe_finset {A B Z₁ Z₂ σ : Type} [AddCommMonoid Z₁] [AddCommMonoid Z₂] {q₁ : A → B → Z₁} {q₂ : A → B → Z₂}
     (h : KerLe q₁ q₂) (s : Finset σ) (a : σ → A) (b : σ → B) (h0 : ∑ r ∈ s, q₁ (a r) (b r) = 0) :
     ∑ r ∈ s, q₂ (a r) (b r) = 0 := by
@@ -221,8 +219,6 @@ open scoped TensorProduct InnerProductSpace Classical
 
 namespace GlobalTheory.Chain.IoLift
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Algebra
 
 variable {ι : Type} {P Y K : ι → Type} [∀ i, AddCommGroup (P i)] [∀ i, Module ℂ (P i)] [∀ i, AddCommGroup (Y i)]
@@ -243,11 +239,11 @@ variable [Fintype ι]
 theorem eq_zero_of_isContr (i : ι) {x : ⨂[ℂ] j, K j} (h : ∀ L, IsContr i L → L x = 0) : x = 0 := by
   obtain ⟨z, rfl⟩ := _root_.GlobalTheory.TensorContraction.mem_range_map ι K (fun j => if j = i then ⊥ else ⊤) x fun j L hL => by
     by_cases e : j = i
-    · subst e; rw [if_pos rfl, h L hL]; exact zero_mem _
-    · rw [if_neg e]; trivial
+    · subst e; rw [ite_eq_left rfl, h L hL]; exact zero_mem _
+    · rw [ite_eq_right e]; trivial
   refine LinearMap.congr_fun (g := 0) (PiTensorProduct.ext (MultilinearMap.ext fun v => ?_)) z
   have := (v i).2
-  simp only [if_true, Submodule.mem_bot] at this
+  simp only [ite_true, Submodule.mem_bot] at this
   simp only [LinearMap.compMultilinearMap_apply, PiTensorProduct.map_tprod, LinearMap.zero_apply]
   exact MultilinearMap.map_coord_zero _ i this
 

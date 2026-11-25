@@ -137,7 +137,7 @@ private theorem cr_set [CharP (ResidueField O) l] (k : GalLink η Ψ σ g₁ B M
     · exact he ⟨v, h1⟩
     · exact h2 ▸ hA0
     · exact isPlaceOver_placeOf Ω v
-  have hAv : A v0 = A0 := by simp only [A, dif_neg fun h => hMv (hlv _ h), if_true]
+  have hAv : A v0 = A0 := by simp only [A, dite_eq_right fun h => hMv (hlv _ h), ite_true]
   choose w hw using fun v => (Base.places L Ω l (A v)).1 (ne_top (hA v))
   have hfin : {v : W.Plc (W.Lp L) | ((M : ℕ) : 𝓞 (W.Lp L)) ∈ v.asIdeal ∧ ((l : ℕ) : 𝓞 (W.Lp L)) ∉ v.asIdeal}.Finite :=
     (Ideal.finite_factors (I := Ideal.span {((M : ℕ) : 𝓞 (W.Lp L))}) (fun h => hM (Nat.cast_eq_zero.1 (Ideal.span_singleton_eq_bot.1 h)))).subset fun v hv =>
@@ -159,7 +159,7 @@ private theorem cr_set [CharP (ResidueField O) l] (k : GalLink η Ψ σ g₁ B M
             p_ne := fun h => hpM' (h ▸ hlM)
             p_unr := fun h => hpM ((Int.natCast_dvd.1 h).mul_left _)
             norm_v0_eq_one := hn
-            split := ?_ }, ⟨⟨hlM, hΨ, hcσ, fun u => hfin.mem_toFinset, e, fun v => dif_pos v.2, ?_, ?_, ?_⟩⟩⟩
+            split := ?_ }, ⟨⟨hlM, hΨ, hcσ, fun u => hfin.mem_toFinset, e, fun v => dite_eq_left v.2, ?_, ?_, ?_⟩⟩⟩
   · rintro v (h | h | rfl)
     · exact cr_split k _ ((natCast_place (hA v) M).2 (hlv v h))
     · exact cr_split k _ ((natCast_place (hA v) M).2 (hfin.mem_toFinset.1 h).1)

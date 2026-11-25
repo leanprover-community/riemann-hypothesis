@@ -1,5 +1,7 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.MatExtBvec
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.RankOneLeviComm
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.OppositeWeylSubgroupClosed
 public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
 import Mathlib.Tactic.Linter.HaveILetI
@@ -93,9 +95,9 @@ theorem closedN : ClosedN := by
       simp
     · intro l _ hlc
       by_cases hl : min c.val r ≤ l.val
-      · rw [hz c hc l hl, if_neg hlc, mul_zero]
+      · rw [hz c hc l hl, ite_eq_right hlc, mul_zero]
       · have hjl : j ≠ l := fun h => by rw [h] at hj; exact hl hj
-        rw [hy l (by omega) j (by omega), if_neg hjl, zero_mul]
+        rw [hy l (by omega) j (by omega), ite_eq_right hjl, zero_mul]
     · intro h
       exact absurd (Finset.mem_univ c) h
   have invQ : ∀ y : Mat k r, IsUnit y.det → (∀ c : Fin (2 * r + k + 1), c.val ≤ r + k → ∀ j : Fin (2 * r + k + 1), min c.val r ≤ j.val →
@@ -114,9 +116,9 @@ theorem closedN : ClosedN := by
         simpa using h1
       · intro l _ hlc
         by_cases hl : min c.val r ≤ l.val
-        · rw [hy c hc l hl, if_neg hlc, mul_zero]
+        · rw [hy c hc l hl, ite_eq_right hlc, mul_zero]
         · have hjl : j ≠ l := fun h => by rw [h] at hj; exact hl hj
-          rw [ih l.val (by omega) l rfl (by omega) j (by omega), if_neg hjl, zero_mul]
+          rw [ih l.val (by omega) l rfl (by omega) j (by omega), ite_eq_right hjl, zero_mul]
       · intro h
         exact absurd (Finset.mem_univ c) h
     intro c hc j hj
@@ -179,7 +181,7 @@ theorem shellInt : ShellInt := by
         linarith
       · obtain ⟨n, hn⟩ : ∃ n, m0 = n + 1 := ⟨m0 - 1, by omega⟩
         have hmin := Nat.find_min hex (show n < m0 by omega)
-        push_neg at hmin
+        push Not at hmin
         rw [hn, pow_succ]
         linarith
     calc ENNReal.ofReal (N x ^ (-A)) ≤ ENNReal.ofReal (((2:ℝ) ^ m0 / 2) ^ (-A)) :=
@@ -283,38 +285,10 @@ theorem lev_n (k r' : ℕ) (g : Mat k r') (p q : Fin (2 * (1 + r') + k + 1)) (hp
   split_ifs <;> first | rfl
 
 theorem lev_one (k r' : ℕ) : ιLev k 1 r' 1 = 1 := by
-  ext p q
-  by_cases hp : mid k r' p
-  · by_cases hq : mid k r' q
-    · obtain ⟨s, rfl⟩ := (mid_iff k r' p).1 hp
-      obtain ⟨t, rfl⟩ := (mid_iff k r' q).1 hq
-      rw [lev_mm, Matrix.one_apply, Matrix.one_apply]
-      simp only [(levPos_inj k r').eq_iff]
-    · rw [lev_mn k r' _ p q hp hq, Matrix.one_apply, if_neg]
-      rintro rfl; exact hq hp
-  · rw [lev_n k r' _ p q hp, Matrix.one_apply]
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.Xi.BL.io_one <;> assumption
 
 theorem lev_mul (k r' : ℕ) (g h : Mat k r') : ιLev k 1 r' (g * h) = ιLev k 1 r' g * ιLev k 1 r' h := by
-  ext p q
-  rw [Matrix.mul_apply]
-  by_cases hp : mid k r' p
-  · obtain ⟨s, rfl⟩ := (mid_iff k r' p).1 hp
-    rw [← Fintype.sum_of_injective (levPos k 1 r') (levPos_inj k r')
-      (fun u => g s u * ιLev k 1 r' h (levPos k 1 r' u) q)
-      (fun l => ιLev k 1 r' g (levPos k 1 r' s) l * ιLev k 1 r' h l q)
-      (fun l hl => by
-        simp only [lev_mn k r' g _ l (mid_levPos k r' s) (fun hm => hl ((mid_iff k r' l).1 hm)),
-          zero_mul])
-      (fun u => by simp only [lev_mm])]
-    by_cases hq : mid k r' q
-    · obtain ⟨t, rfl⟩ := (mid_iff k r' q).1 hq
-      simp only [lev_mm, Matrix.mul_apply]
-    · have hz : ∀ (g' : Mat k r') (u : Fin (2 * r' + k + 1)), ιLev k 1 r' g' (levPos k 1 r' u) q = 0 :=
-        fun g' u => lev_mn k r' g' _ q (mid_levPos k r' u) hq
-      simp only [hz, mul_zero, Finset.sum_const_zero]
-  · rw [lev_n k r' _ p q hp]
-    simp only [lev_n k r' g p _ hp, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ,
-      if_true, lev_n k r' h p q hp]
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.Xi.StepA.lev_mul <;> assumption
 
 def blk (k r' : ℕ) (x : Mat k (1 + r')) : Mat k r' := Matrix.of fun s t => x (levPos k 1 r' s) (levPos k 1 r' t)
 

@@ -7,8 +7,6 @@ public import Development.WeilBound.CoreStatements.AutomorphicKernels.Eisenstein
 
 @[expose] public section
 
-set_option linter.unusedSectionVars false
-
 noncomputable section
 
 open scoped TensorProduct NNReal Matrix

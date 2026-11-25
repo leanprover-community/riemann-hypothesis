@@ -12,8 +12,6 @@ open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.BcB.E
 
 namespace PositivityTheory.Rg.BcB.F
 
-attribute [local instance] borelH
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {a b : ℕ}
 
 def cutTrD (D : Dom E a b) (τ : ℝ) (φ : H E a b → ℂ) : ℂ :=

@@ -70,8 +70,6 @@ noncomputable section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory
   CartesianMonoidalCategory MonObj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.IndefiniteRowSideFullHecke.ThetaSectionsClosedFibre
 
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out
@@ -88,14 +86,6 @@ def Generates (s : LB.Sec N) : Prop :=
 
 end General
 
-section Theta
-
-variable {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} {D : DegData R I}
-  {A : PolAV (Spec (CommRingCat.of (FractionRing R)))}
-  {G : Over (Spec (CommRingCat.of R))} [GrpObj G] [IsCommMonObj G]
-
-end Theta
-
 end GlobalTheory.IndefiniteRowSideFullHecke.ThetaSectionsClosedFibre
 end -- clump:auto
 end -- clump:auto
@@ -111,7 +101,6 @@ noncomputable section
 
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open scoped CategoryTheory.Obj
 
 namespace GlobalTheory.ThetaCompare

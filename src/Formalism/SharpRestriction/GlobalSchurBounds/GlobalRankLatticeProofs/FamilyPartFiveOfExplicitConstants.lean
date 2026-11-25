@@ -29,14 +29,12 @@ theorem ra_cond {D : D7} (L : SizeData₂ D) (S : SizesAt L) (hx : 3 ≤ L.sc.x)
   simp only [SizeQD] at hQD
   obtain ⟨hq1, -, -, hd1, -, -, hr1, hr2⟩ := hQD
   have hq : (1 : ℝ) ≤ D.host.q := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have h6 : Real.log (D.host.q : ℝ) ≤ 0 := Real.log_nonpos (Nat.cast_nonneg _) hc.le
     have h7 : 0 < L.sc.x ^ (L.sc.ez / 6) := Real.rpow_pos_of_pos hx0 _
     linarith
   have hd : (1 : ℝ) ≤ D.host.d := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have h6 : Real.log (D.host.d : ℝ) ≤ 0 := Real.log_nonpos (Nat.cast_nonneg _) hc.le
     have h7 : 0 < L.sc.x ^ (L.sc.ez / 5 - L.sc.ez / 100) := Real.rpow_pos_of_pos hx0 _
     linarith

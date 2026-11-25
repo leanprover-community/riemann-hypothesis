@@ -17,11 +17,6 @@ namespace Formalism.F
 
 universe u
 
-theorem linearIndependent_coe_basis' {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-    [FiniteDimensional ℝ E] (L : Submodule ℤ E) [DiscreteTopology L] {ι : Type*} [Fintype ι]
-    (e : Basis ι ℤ L) : LinearIndependent ℝ (fun i => (e i : E)) :=
-  linearIndependent_coe_basis L e
-
 theorem gram_intMatrix_eq_map {m : ℕ} {κ : Type*} [Fintype κ] [DecidableEq κ] (M : Matrix (Fin m) κ ℤ) :
     Matrix.gram ℝ (fun j => (WithLp.toLp 2 (fun i => (M i j : ℝ)) : EuclideanSpace ℝ (Fin m)))
       = (Int.castRingHom ℝ).mapMatrix (M.transpose * M) := by

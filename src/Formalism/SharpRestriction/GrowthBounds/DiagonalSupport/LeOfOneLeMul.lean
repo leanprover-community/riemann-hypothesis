@@ -100,14 +100,14 @@ theorem kapFl_le {p n' m : ℕ} (hp : 2 ≤ p) {TT : Finset (Fin n')} {lam0 : Fi
   have hoff : ∀ s : Fin n', s ∈ (Finset.univ : Finset (Fin n')) → s ∉ TT →
       ((m + 1 : ℕ) : ℝ) * ((Nat.log p (dT TT lam0 s) : ℕ) : ℝ) = 0 := by
     intro s _ hs
-    have e : dT TT lam0 s = 0 := by unfold dT; rw [if_neg hs]
+    have e : dT TT lam0 s = 0 := by unfold dT; rw [ite_eq_right hs]
     rw [e]
     simp
   have hon : ∀ s ∈ TT, ((m + 1 : ℕ) : ℝ) * ((Nat.log p (dT TT lam0 s) : ℕ) : ℝ) ≤
       ((m + 1 : ℕ) : ℝ) * (2 * Real.logb p a) := by
     intro s hs
     apply mul_le_mul_of_nonneg_left _ (by linarith)
-    have e : dT TT lam0 s = flatDeg lam0 s := by unfold dT; rw [if_pos hs]
+    have e : dT TT lam0 s = flatDeg lam0 s := by unfold dT; rw [ite_eq_left hs]
     rw [e]
     obtain ⟨b1, b2⟩ := hfd s hs
     have l1 : ((Nat.log p (flatDeg lam0 s) : ℕ) : ℝ) ≤ Real.logb p (flatDeg lam0 s : ℝ) :=
@@ -154,7 +154,7 @@ theorem numAt_of (hk : m + 1 = r + K) (hF : FramesOK TT L₁ L₂ N₁ G' F) (hp
       rwa [hF.1] at this
     have e := hBk.2 x
     have e2 : dT TT lam0 (posOf n' (posTL F x)) = flatDeg lam0 (posOf n' (posTL F x)) := by
-      unfold dT; rw [if_pos htop]
+      unfold dT; rw [ite_eq_left htop]
     rw [e2] at e
     have e3 : lowP F p x * Dt.d x ≤ flatDeg lam0 (posOf n' (posTL F x)) := by
       rw [hdd]
@@ -214,8 +214,6 @@ theorem numStep_of : ∃ C₁ : ℝ, 0 < C₁ ∧ ∀ C : ℝ, C₁ ≤ C → �
   have h11' : 8 * ((Dp : ℝ) + 1) ≤ (cStar : ℝ) := by exact_mod_cast h11
   have hcP : 80 * ((TT.card : ℝ) * ((m + 1 : ℕ) : ℝ) ^ 2 * Real.logb p a) <
       ((cPrime n' r TT.card c0 cpp cStar : ℕ) : ℝ) := by
-    have e : C * (TT.card : ℝ) * ((m + 1 : ℕ) : ℝ) ^ 2 * Real.logb p a =
-        C * ((TT.card : ℝ) * ((m + 1 : ℕ) : ℝ) ^ 2 * Real.logb p a) := by ring
     have e2 : 10 * ((TT.card : ℝ) * ((m + 1 : ℕ) : ℝ) ^ 2 * Real.logb p a) ≤
         C * ((TT.card : ℝ) * ((m + 1 : ℕ) : ℝ) ^ 2 * Real.logb p a) :=
       mul_le_mul_of_nonneg_right hC10 (by linarith [hnb.one_le_Lg])

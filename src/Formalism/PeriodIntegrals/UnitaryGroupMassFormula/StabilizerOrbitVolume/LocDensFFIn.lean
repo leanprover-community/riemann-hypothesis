@@ -77,8 +77,7 @@ private theorem card_le_of_pow_eq_mul_add {L : Type} [Field L] (n : ℕ) (hn : 1
 
 private theorem exists_algebraMap_eq_of_frobenius_fixed (d : K) (hd : d ^ Fintype.card k = d) :
     ∃ d0 : k, algebraMap k K d0 = d := by
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have hq : 1 < Fintype.card k := Fintype.one_lt_card
   have hdS : d ∉ Finset.univ.image (algebraMap k K) := by
     simp only [Finset.mem_image, Finset.mem_univ, true_and, not_exists]
@@ -102,7 +101,7 @@ theorem frob_of_ne (σ : K ≃ₐ[k] K) (h2 : finrank k K = 2) (hne : σ ≠ Alg
   by_cases hx : ∃ a : k, algebraMap k K a = x
   · obtain ⟨a, rfl⟩ := hx
     rw [AlgEquiv.commutes, ← map_pow, FiniteField.pow_card]
-  push_neg at hx
+  push Not at hx
   have hq : x ^ Fintype.card k ≠ x := fun h => by
     obtain ⟨a, ha⟩ := exists_algebraMap_eq_of_frobenius_fixed x h
     exact hx a ha
@@ -193,8 +192,7 @@ theorem card_norm_fiber (σ : K ≃ₐ[k] K) (hfrob : ∀ x, σ x = x ^ Fintype.
       simp only [F, Finset.mem_filter, Finset.mem_univ, true_and]
       exact zero_pow (by omega)
     refine le_antisymm (hfib d) ?_
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have key : ∑ y ∈ F.erase 0, c y < ∑ _y ∈ F.erase 0, (Fintype.card k + 1) :=
       Finset.sum_lt_sum (fun y _ => hfib y) ⟨d, Finset.mem_erase.mpr ⟨hd0, hdF⟩, hlt⟩
     rw [Finset.sum_const, smul_eq_mul, Finset.card_erase_of_mem h0F] at key

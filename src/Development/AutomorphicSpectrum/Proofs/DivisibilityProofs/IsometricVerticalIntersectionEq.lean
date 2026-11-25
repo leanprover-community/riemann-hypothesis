@@ -108,7 +108,7 @@ theorem change_line : ∀ (K : Type) [Fintype K] [DecidableEq K] (ι : K → Typ
     by_cases hpW : (C ((p : ℕ) : ℤ) : MvPolynomial (Σ k, ι k) ℤ) ∈ W
     · rw [divCycle_eq_off hunit (fun hWp q hq => not_mem_of_mem hWp
         (fun h : p = q => hp (by rw [h]; exact hq)) hpW)]
-    · simp only [if_neg hpW, mul_zero]
+    · simp only [ite_eq_right hpW, mul_zero]
   have vert : (∑ᶠ p : Nat.Primes, Real.log (p : ℕ) * (vertAt p P (T.f ()) (List.ofFn fun j => (L j).a) : ℝ)) -
       (∑ᶠ p : Nat.Primes, Real.log (p : ℕ) * (vertAt p P (T.g ()) (List.ofFn fun j => (L j).a) : ℝ)) =
       ∑ p ∈ S, Real.log (p : ℕ) * ((vertAt p P (T.f ()) (List.ofFn fun j => (L j).a) : ℝ) -

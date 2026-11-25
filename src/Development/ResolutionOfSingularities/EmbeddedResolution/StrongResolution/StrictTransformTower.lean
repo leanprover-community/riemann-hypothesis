@@ -167,11 +167,10 @@ theorem detachedCoprod_succ_hom_ext (i : ℕ) {T : Scheme.{u}}
 theorem detachedToCoprod_succ_of_lt (s i : ℕ) (h : s < i) :
     S.detachedToCoprod s (i + 1) (Nat.lt_succ_of_lt h) = S.detachedToCoprod s i h ≫ S.detachedCoprodInl i := by
   have hne : ¬ (s = i) := by omega
-  exact dif_neg hne
+  exact dite_eq_right hne
 
 theorem detachedToCoprod_self (i : ℕ) :
     S.detachedToCoprod i (i + 1) (Nat.lt_succ_self i) = S.detachedCoprodInr i := by
-  set_option backward.isDefEq.respectTransparency false in
     simp [detachedToCoprod, detachedCoprodInr_eq]
 
 theorem detachedCoprod_hom_ext (i : ℕ) {T : Scheme.{u}} {f g : S.detachedCoprod i ⟶ T}
@@ -305,9 +304,6 @@ theorem comapAmbientCenter_le_centerOffDetached (i : ℕ) :
   rw [h]
   exact Scheme.IdealSheafData.le_map_iff_comap_le.mpr le_rfl
 
-private theorem hom_comp_base_apply {A B C : Scheme.{u}} (f : A ⟶ B) (g : B ⟶ C)
-    (x : ↥A) : ⇑(f ≫ g).base x = ⇑g.base (⇑f.base x) := rfl
-
 theorem support_centerOffDetached_subset_preimage (i : ℕ) :
     ((S.centerOffDetached i).support : Set ↥(S.strictTransform i)) ⊆
       ⇑(S.strictTransformι i).base ⁻¹' ((S.ambientCenter i).support : Set ↥(S.schemeAt i)) := by
@@ -326,7 +322,7 @@ theorem support_centerOffDetached_subset_preimage (i : ℕ) :
         (S.ambientCenter i).subschemeι).base z =
       ⇑((S.centerOffDetached i).subschemeι ≫ S.strictTransformι i).base z := by
     rw [hu]
-  rw [hom_comp_base_apply, hom_comp_base_apply] at key
+  rw [Scheme.Hom.comp_apply, Scheme.Hom.comp_apply] at key
   rw [← Scheme.IdealSheafData.range_subschemeι]
   exact ⟨_, key⟩
 

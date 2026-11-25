@@ -11,8 +11,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.SmoothTransferRegularity
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 def FamOK {d : ℕ} (O : Set (Fin d → ℝ)) (P : WOp d) (m : ℕ) : Prop :=
   ∀ t ∈ P, t.2.length ≤ m ∧ ∀ V ∈ t.2, ContDiffOn ℝ ∞ V O
 

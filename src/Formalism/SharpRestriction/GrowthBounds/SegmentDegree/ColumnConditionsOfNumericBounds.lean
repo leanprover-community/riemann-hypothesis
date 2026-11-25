@@ -80,17 +80,17 @@ theorem vg_DlSeg (hev : ∀ x' ∈ X.toLate j, ∀ i, Even (X.row j x' i)) (x : 
     (fun x' => if x' = x then (X.sg p K j x : ℤ) else 0) (fun x' hx' => by
       by_cases hxx : x' = x
       · subst hxx
-        rw [if_pos rfl]
+        rw [ite_eq_left rfl]
         have h1 : ((1 : ℤ) : WithTop ℤ) ≤ valS LZ S (X.detPl R j x') := by
           unfold Dat.detPl valS
           rw [sDegs_det LZ S _ (X.row j x') hinj (fun i => ⟨hS i, by simp [LZ, hev x' hx' i]⟩)]
           simp
         have := vg_pow D hV S h1 (X.sg p K j x')
         simpa using this
-      · rw [if_neg hxx]
+      · rw [ite_eq_right hxx]
         have := vg_pow D hV S (vg_det D hV (R := R) S (X.row j x') (hev x' hx')) (X.sg p K j x')
         simpa [Dat.detPl] using this)
-  rw [Finset.sum_ite_eq' (X.toLate j) x, if_pos hx] at h
+  rw [Finset.sum_ite_eq' (X.toLate j) x, ite_eq_left hx] at h
   exact h
 
 theorem vg_Aw (hev : ∀ x' ∈ X.toLate j, ∀ i, Even (X.row j x' i)) (x : ℤ) (hx : x ∈ X.toLate j)
@@ -161,18 +161,18 @@ theorem column_conditions_of_numeric_bounds (D : Formalism.BasicNotions.D7) (hV 
   have vle := vg_Aw D hV X p K (R := FF O) j e {y | y ≤ segE X.F j i} hev _ hxl hinj (fun a => (hlt a).le) P1.mu I'
     (P1.mu i.succ (lastIdx r)) (by rw [sA1]; exact (u1.2 i.succ).1)
   refine ⟨fun he => ⟨?_, ?_⟩, fun he => ⟨?_, ?_⟩, ?_⟩
-  · rw [hM, if_pos he]
+  · rw [hM, ite_eq_left he]
     exact lg_Gw D hV X p K j e _ P2.mu I'' _ (by rw [sG3]; exact (u2.2 i.succ).2)
   · refine le_trans (WithTop.coe_le_coe.mpr ?_) vlt
-    rw [hM, if_pos he]
+    rw [hM, ite_eq_left he]
     unfold Dat.mg
     have hce := (cE he).1
     rw [hm0] at hce
     exact int_ineq _ _ _ _ _ _ _ _ (Int.natCast_nonneg _) hce n0' n1'
-  · rw [hM, if_neg he]
+  · rw [hM, ite_eq_right he]
     exact lg_Gw D hV X p K j e _ P2.mu I'' _ (by rw [sG4]; exact (u2.2 i.castSucc).2)
   · refine le_trans (WithTop.coe_le_coe.mpr ?_) vle
-    rw [hM, if_neg he]
+    rw [hM, ite_eq_right he]
     unfold Dat.mg
     have hce := (cO he).1
     rw [hm0] at hce
@@ -182,8 +182,6 @@ theorem column_conditions_of_numeric_bounds (D : Formalism.BasicNotions.D7) (hV 
     have hQ : (0 : ℝ) ≤ ((p : ℝ) ^ X.Rj p K j) := by positivity
     have n0r : (X.dS K j e : ℝ) + (X.dV K j e : ℝ) ≤ (((r : ℝ) + K) * X.Ns) * (p : ℝ) ^ X.Rj p K j := by
       exact_mod_cast n0
-    have hdV : (0 : ℝ) ≤ (X.dV K j e : ℝ) := Nat.cast_nonneg _
-    have hs : (0 : ℝ) ≤ (X.sg p K j (segE X.F j i) : ℝ) := Nat.cast_nonneg _
     push_cast at n2
     have := mul_le_mul_of_nonneg_left cR hQ
     nlinarith

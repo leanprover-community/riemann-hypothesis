@@ -6,8 +6,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Heights₂.Heights
 
 namespace RestTerms
@@ -102,18 +100,6 @@ open MvPolynomial Finset
 
 noncomputable section
 
-section Deriv
-
-variable {σ ι : Type*}
-
-end Deriv
-
-section Indices
-
-variable {f r a : ℕ}
-
-end Indices
-
 section Rest
 
 variable (f r a : ℕ) (c : SmallBlock)
@@ -138,12 +124,6 @@ end
 end Flag
 
 open MvPolynomial
-
-namespace Flag
-
-open MvPolynomial Finset
-
-end Flag
 
 end RestTerms
 

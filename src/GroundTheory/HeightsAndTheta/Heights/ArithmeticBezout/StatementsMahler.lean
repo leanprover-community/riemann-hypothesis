@@ -189,10 +189,6 @@ def ChowFormCycleSmul.Statement : Prop :=
   ∀ (F : Type) [Field F] (n k m : ℕ) (Z : ProjCycle F n) (f : MvPolynomial (Fin k × Fin n) F),
     IsChowFormCycle Z k f → IsChowFormCycle (m • Z) k (f ^ m)
 
-namespace MahlerInhabit
-
-end MahlerInhabit
-
 end
 
 end GroundTheory.Heights₂.Heights

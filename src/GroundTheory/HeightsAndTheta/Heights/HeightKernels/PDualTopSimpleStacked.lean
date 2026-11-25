@@ -452,7 +452,7 @@ theorem DualTopSimpleStacked.proof (hAI3 : Inter.PushforwardArithIntersection.St
       subst hk
       simp only [rest, Equiv.swap_self, Equiv.refl_apply, mix, Fin.coe_castSucc, Fin.val_last]
       have hm : (m : ℕ) < n := by have := m.isLt; omega
-      rw [if_pos hm]
+      rw [ite_eq_left hm]
       rfl
     · apply hone
       have hkn : (k : ℕ) < n := Fin.val_lt_last hk
@@ -460,10 +460,10 @@ theorem DualTopSimpleStacked.proof (hAI3 : Inter.PushforwardArithIntersection.St
       have hcs : Fin.castSucc (⟨k, hkn⟩ : Fin n) = k := Fin.ext rfl
       simp only [rest, hcs, Equiv.swap_apply_left, mix, Fin.val_last]
       have : ¬ (n < (k : ℕ)) := by omega
-      rw [if_neg this]
+      rw [ite_eq_right this]
       rfl
   rw [Finset.sum_congr rfl fun k _ => hstep k, Finset.sum_ite_eq' Finset.univ (Fin.last n),
-    if_pos (Finset.mem_univ _)] at htel
+    ite_eq_left (Finset.mem_univ _)] at htel
   have hg : geomDeg (grassIdeal 1 1 (n + 1 - 1)) (fsMulti (plBlocks 1 1 (n + 1 - 1))) (1 * 1 * (n + 1 - 1)) = 1 := by
     have h := geomDeg_proj_eq_one hGF hII (n + 1 - 1)
     rwa [show 1 * 1 * (n + 1 - 1) = n + 1 - 1 by ring]

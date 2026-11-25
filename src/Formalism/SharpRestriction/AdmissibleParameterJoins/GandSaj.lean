@@ -32,19 +32,19 @@ theorem sumFE_atG_le {K : Consts} {lev : LevelData D} {Xe : ErrX D} {ce : ErrC} 
   have hFj : ∀ j ∈ SizeData₂.lifts D, L.F j w = FTypeG D j := by
     intro j hj
     rw [hF j hj w]
-    exact if_pos hg
+    exact ite_eq_left hg
   have hEj : ∀ j ∈ SizeData₂.lifts D, L.E u j w = vDG D u w + EatG L Xe ce i u j w := by
     intro j hj
     rw [hE.edef u j hj w]
     unfold Eval vDG
     dsimp only
-    rw [if_neg hw]
+    rw [ite_eq_right hw]
     fin_cases i
     · have h0 : D.what₂.places.resChar w = D.host.g 0 := hwi
-      rw [if_pos h0]
+      rw [ite_eq_left h0]
       rfl
     · have h1 : D.what₂.places.resChar w = D.host.g 1 := hwi
-      rw [if_neg (by rw [h1]; exact D.host.g_ne.symm), if_pos h1]
+      rw [ite_eq_right (by rw [h1]; exact D.host.g_ne.symm), ite_eq_left h1]
       rfl
   have hvD : 0 ≤ vDG D u w := Nat.cast_nonneg _
   set A : ℝ := (D.R.f : ℝ) * (Nm D ^ 2 + (D.R.m : ℝ) ^ 2 * L.etaSz) with hA

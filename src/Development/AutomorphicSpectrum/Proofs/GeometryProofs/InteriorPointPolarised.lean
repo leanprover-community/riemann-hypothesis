@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GoodPointOrConjugate
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ContDiffUncentre
 import Mathlib.Tactic.Linter.Style
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
@@ -19,15 +20,7 @@ namespace GlobalTheory.CompanionTheory.Ar.HodgeMetric
 
 theorem injective_ringOfIntegers_toComplex {F : Type} [Field F] [NumberField F] (g : 𝓞 F →+* ℂ) :
     Function.Injective g := by
-  rw [RingHom.injective_iff_ker_eq_bot]
-  apply Ideal.eq_bot_of_comap_eq_bot (R := ℤ)
-  have h : Ideal.comap (algebraMap ℤ (𝓞 F)) (RingHom.ker g) = RingHom.ker (g.comp (algebraMap ℤ (𝓞 F))) :=
-    RingHom.comap_ker _ _
-  change Ideal.comap (algebraMap ℤ (𝓞 F)) (RingHom.ker g) = ⊥
-  rw [h, (RingHom.injective_iff_ker_eq_bot _).1]
-  have e : g.comp (algebraMap ℤ (𝓞 F)) = Int.castRingHom ℂ := RingHom.ext_int _ _
-  rw [e]
-  exact Int.cast_injective
+  apply _root_.GlobalTheory.CompanionTheory.Ar.QuotUnif.Dich.ringOfIntegers_hom_injective <;> assumption
 
 theorem exists_comp_eq_of_ringOfIntegers {F : Type} [Field F] [NumberField F] (g : 𝓞 F →+* ℂ) :
     ∃ g' : F →+* ℂ, g'.comp (algebraMap (𝓞 F) F) = g :=

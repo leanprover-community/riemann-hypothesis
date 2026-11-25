@@ -420,12 +420,8 @@ theorem free_smul {a : S} {x : SlopeTestRemainingChoices S A} (c : K) (hx : Free
   fun i j => (hx i j).smul_right c
 
 theorem freeOf_J_matrix (a : S) : FreeOf2 a (YangianSpanCharacter.T.J (SlopeTestRemainingChoices S A)) := by
-  intro i j
-  fin_cases i <;> fin_cases j
-  · exact free_zero a
-  · exact free_one a
-  · exact free_neg (free_one a)
-  · exact free_zero a
+  intros
+  apply _root_.Formalism.FourierDecayAlt.P.Wd9.freeOf_J_matrix <;> assumption
 
 theorem freeOf2_mul {a : S} {M N : M2 (SlopeTestRemainingChoices S A)} (hM : FreeOf2 a M) (hN : FreeOf2 a N) :
     FreeOf2 a (M * N) := by
@@ -926,8 +922,8 @@ theorem word_transfer_mem_entrywise (QQ : ℂ → M2 A) (w : List (Letter ℂ S)
     exact io_mem (hQ a b)
   | cons l w ih =>
     by_cases hp : l.plus
-    · rw [TTw, if_pos hp]; exact entries_mem_mul ih (reflection_entries_mem _ _)
-    · rw [TTw, if_neg hp]; exact entries_mem_mul (reflection_transpose_entries_mem _ _) ih
+    · rw [TTw, ite_eq_left hp]; exact entries_mem_mul ih (reflection_entries_mem _ _)
+    · rw [TTw, ite_eq_right hp]; exact entries_mem_mul (reflection_transpose_entries_mem _ _) ih
 
 theorem rrw_mem_at (QQ : ℂ → M2 A) (w : List (Letter ℂ S)) (hw : ∀ l ∈ w, ∀ a b, QQ l.pt a b ∈ 𝒜) :
     RRw QQ w ∈ entSub 𝒜 := by

@@ -59,7 +59,7 @@ theorem absE_eq_prod_norm_fstA_sndA (F E : Type) [Field F] [NumberField F] [IsTo
     NNReal.toRealHom.toMonoidHom.map_finprod hf]
   congr 1
   refine Finset.prod_congr rfl fun w _ => ?_
-  rw [InfinitePlace.mult, if_pos (IsTotallyReal.isReal w), pow_one, coe_nnnorm]
+  rw [InfinitePlace.mult, ite_eq_left (IsTotallyReal.isReal w), pow_one, coe_nnnorm]
   rfl
 
 end GlobalTheory

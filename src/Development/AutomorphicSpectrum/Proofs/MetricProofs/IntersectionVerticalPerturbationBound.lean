@@ -91,7 +91,7 @@ theorem geoNum_nonneg (hK : ReciprocityTheory.ChartRestriction.G.ArakelovGeometr
     classical
     have hm0 : m = 0 := by
       by_contra h
-      exact (mem_support_iff.1 hm) (by rw [coeff_C, if_neg (Ne.symm h)])
+      exact (mem_support_iff.1 hm) (by rw [coeff_C, ite_eq_right (Ne.symm h)])
     simp [hm0]
   have hnh : ¬ IsHorizontal W := fun h => hnot W h (by rwa [map_natCast])
   obtain ⟨h1, h2, h3⟩ := (GlobalTheory.CompanionTheory.Ar.PB.Known.divSuppArith K ι P D (oneLine (ι := ι)) (C (p : ℤ)) W hP hsec hW).2 hnh
@@ -146,7 +146,7 @@ theorem PositivityTheory.Xgp.t_lemma_v : Inputs → ∀ (II : IntersectionSystem
   rw [← sub_mul]
   by_cases hW : charOf W ∈ T
   · refine le_trans ?_ (Finset.single_le_sum (hterm W) hW)
-    rw [if_neg (PositivityTheory.Xgp.lemma_v.not_isHorizontal (hT _ hW).1.ne_zero), abs_mul, abs_mul,
+    rw [ite_eq_right (PositivityTheory.Xgp.lemma_v.not_isHorizontal (hT _ hW).1.ne_zero), abs_mul, abs_mul,
       abs_of_nonneg (Real.log_natCast_nonneg _), ← (hpos W _ hW).2]
     refine (mul_le_mul_of_nonneg_right (hin W hW)
       (mul_nonneg (abs_nonneg _) (Real.log_natCast_nonneg _))).trans (le_of_eq ?_)
@@ -163,13 +163,6 @@ section -- clump:auto
 @[expose] public section
 
 open MvPolynomial MeasureTheory Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
-
-namespace GlobalTheory.CompanionTheory.Ar.PB
-
-theorem lemma_v_lines : Inputs → ∀ (II : IntersectionSystem), IsFullIntersectionSystem II → ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (P : Ideal (MRing ι)) (D : ℕ) (L : Fin D → HermLine ι) (A B : HermLine ι) (T : Finset ℕ) (α : ℕ → ℝ), IsArithVar P (D + 1) → (∀ j, IsSmoothHerm (L j)) → IsSmoothHerm A → IsSmoothHerm B → (∀ p ∈ T, p.Prime ∧ 0 ≤ α p) → VertClose P T α A B → (∀ p ∈ T, ∀ j, NefAt P p (L j).a) → |II K ι P (D + 1) (Fin.snoc L A) - II K ι P (D + 1) (Fin.snoc L B)| ≤ (∑ p ∈ T, α p * Real.log p) * ptsIntegral P (pot L) fun _ => 1 :=
-  @PositivityTheory.Xgp.t_lemma_v
-
-end GlobalTheory.CompanionTheory.Ar.PB
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.MetricProofs.IntersectionVerticalPerturbationBound =====

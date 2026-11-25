@@ -27,8 +27,6 @@ namespace GroundTheory.ProfCoh
 
 open NumberField IsDedekindDomain CategoryTheory GroundTheory.Global FiniteSubfield
 
-attribute [local instance 2000] Rep.hV2
-
 section Fixed
 
 variable {k G : Type*} [CommRing k] [Group G] [TopologicalSpace G]

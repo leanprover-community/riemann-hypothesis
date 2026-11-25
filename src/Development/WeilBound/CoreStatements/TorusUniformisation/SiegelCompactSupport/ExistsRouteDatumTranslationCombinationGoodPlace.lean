@@ -51,12 +51,6 @@ def ch (B : V →L[ℝ] T →L[ℝ] ℝ) (l : V) (t : T) : ℂ := Complex.exp (2
 
 end Torus
 
-section Cube
-
-variable {ι : Type} [Fintype ι]
-
-end Cube
-
 end PositivityTheory.Member.ZakTransform.Z
 end
 end
@@ -189,17 +183,6 @@ namespace S
 section Real
 open Complex
 open scoped Real ContDiff
-
-theorem zero_of_ball (n : ℕ) (T : SchwartzMap (Fin n → ℝ) ℂ →L[ℂ] ℂ)
-    (hχ : ∀ (i : Fin n) (f g : SchwartzMap (Fin n → ℝ) ℂ), (∀ x, g x = cexp (2 * π * I * x i) * f x) → T g = T f)
-    (f : SchwartzMap (Fin n → ℝ) ℂ) (hf : tsupport (f : (Fin n → ℝ) → ℂ) ⊆ Metric.ball 0 1) (h0 : f 0 = 0) : T f = 0 :=
-  PositivityTheory.RL.Delta.zero_of_ball n T hχ f hf h0
-
-theorem eq_delta (n : ℕ) (T : SchwartzMap (Fin n → ℝ) ℂ →L[ℂ] ℂ)
-    (hχ : ∀ (t : ℝ) (i : Fin n) (f g : SchwartzMap (Fin n → ℝ) ℂ),
-      (∀ x, g x = cexp (2 * π * I * (t * x i : ℝ)) * f x) → T g = T f) :
-    ∃ a : ℂ, ∀ f : SchwartzMap (Fin n → ℝ) ℂ, T f = a * f 0 :=
-  PositivityTheory.RL.Delta.eq_delta n T hχ
 
 theorem eq_delta' {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
     (T : SchwartzMap V ℂ →L[ℂ] ℂ)
@@ -348,8 +331,6 @@ open NumberField IsDedekindDomain MeasureTheory Matrix Formalism.MainNotions.Glo
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (pure tens SInf evI At Rest Acts piW)
 open GlobalTheory.EmbChart (atPlace atPlace_mul_right evFin_atPlace)
 open scoped GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels TensorProduct
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 namespace PositivityTheory.Member.ZakTransform
@@ -524,7 +505,7 @@ theorem exists_box {W : Set (κ → Af F)} (hW : W ∈ 𝓝 0) : ∃ K h h', ((b
     exact ⟨K, fun x hx => hst (hK hx)⟩
   choose K hK using this
   refine ⟨fun u => if u ∈ I then K u ⊓ intV κ u else intV κ u, ?_, fun u => ?_, fun y hy => ?_⟩
-  · filter_upwards [hI.compl_mem_cofinite] with u hu using if_neg hu
+  · filter_upwards [hI.compl_mem_cofinite] with u hu using ite_eq_right hu
   · simp only
     split_ifs
     · exact inf_le_right
@@ -537,7 +518,7 @@ theorem exists_box {W : Set (κ → Af F)} (hW : W ∈ 𝓝 0) : ∃ K h h', ((b
       · exact this
     refine hs (a := fun u => ⟨_, h1 u⟩) fun u hu => hK u _ ?_
     have := hy u
-    simp only [if_pos hu] at this
+    simp only [ite_eq_left hu] at this
     exact this.1
 
 theorem mem_span_pf {g : (κ → Af F) → ℂ} (hg : g ∈ SB (κ → Af F)) :
@@ -1082,22 +1063,6 @@ theorem evalPoints_add {κ : Type} (w w' : (κ → AF F) × (κ → AF F)) : evP
 
 end PartB
 
-section PartA
-open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.MainNotions.StandardLattice GlobalTheory.ChiGrid GlobalTheory.FunObj
-open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation (skewGram mulG colV adjV₁ incM boxB IsDatumB)
-open Formalism.IndefR.Datum.Brg (GG GI cA_inc GG_herm GI_GG)
-open scoped ContDiff
-
-variable {D : D7}
-
-end PartA
-
-section Datum
-open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.MainNotions.StandardLattice GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.StdFrames
-open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation (boxB IsDatumB)
-
-end Datum
-
 end PositivityTheory.Member.ZakTransform
 end
 end
@@ -1106,5 +1071,3 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open IsDedekindDomain NumberField MeasureTheory Matrix
 open scoped TensorProduct
 open GlobalTheory.FunObj GlobalTheory.ChiGrid GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.StdFrames Formalism.L2.DIV
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField

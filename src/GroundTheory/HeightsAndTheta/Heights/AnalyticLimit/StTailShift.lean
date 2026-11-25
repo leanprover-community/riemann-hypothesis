@@ -19,9 +19,4 @@ def TailShift.Statement : Prop :=
     (∀ j, ∀ y ∈ (A.chart j).target, (A.chart j).symm y ∈ Yo → 0 ≤ locDens A T j y) →
     TailLogBound A Yo r' T CE → TailLogBound A Yo r T CE'
 
-section Inhabitants
-
-
-end Inhabitants
-
 end GroundTheory.Heights₂.Heights.AnalyticLimit

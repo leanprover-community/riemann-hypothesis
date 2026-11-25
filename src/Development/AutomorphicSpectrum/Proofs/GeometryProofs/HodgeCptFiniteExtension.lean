@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.XChartNoethFrac
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GlueApplyOfNotInFibre
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeInnerProductOnSpan
@@ -50,15 +51,8 @@ variable {K K' : Type} [Fintype K] [Fintype K'] {J : K → Type} {J' : K' → Ty
 
 theorem ratio_update [DecidableEq K] (d : ∀ k, J k) (k : K) (e : J k) (h0 : ∏ l, y ⟨l, d l⟩ ≠ 0) :
     (∏ l, y ⟨l, Function.update d k e l⟩) / ∏ l, y ⟨l, d l⟩ = y ⟨k, e⟩ / y ⟨k, d k⟩ := by
-  have h1 : ∏ l, y ⟨l, Function.update d k e l⟩ = y ⟨k, e⟩ * ∏ l ∈ Finset.univ.erase k, y ⟨l, d l⟩ := by
-    rw [← Finset.mul_prod_erase Finset.univ (fun l => y ⟨l, Function.update d k e l⟩) (Finset.mem_univ k),
-      Function.update_self]
-    congr 1
-    exact Finset.prod_congr rfl fun l hl => by rw [Function.update_of_ne (Finset.ne_of_mem_erase hl)]
-  have h2 : ∏ l, y ⟨l, d l⟩ = y ⟨k, d k⟩ * ∏ l ∈ Finset.univ.erase k, y ⟨l, d l⟩ :=
-    (Finset.mul_prod_erase Finset.univ (fun l => y ⟨l, d l⟩) (Finset.mem_univ k)).symm
-  rw [h2] at h0 ⊢
-  rw [h1, mul_div_mul_right _ _ (right_ne_zero_of_mul h0)]
+  intros
+  apply _root_.PositivityTheory.Xgn.A_chart_noeth_frac.ratio_eq <;> assumption
 
 theorem coordsAt_pull (hd : GlobalTheory.CompanionTheory.Ar.Dominates ξ' ξ f i) (hg' : IsCptGen ξ')
     (hcov : ∀ p : Cpt ξ, ∃ c, InChart ξ (fun c' : ∀ k, J k => ∏ k, y ⟨k, c' k⟩) c p)
@@ -344,7 +338,7 @@ theorem grNorm_down (m : SABMap t' t f) (hξ' : IsCptGen ξ') (hd : GlobalTheory
   have hφ : ∀ a : regAt ξ' p', ValAt ξ' z (a : Ω') (φ a) := fun a =>
     ⟨hq, eA.symm a, congrArg Subtype.val (eA.apply_symm_apply a), rfl⟩
   let val : Li' → Vz := fun e => if he : e ∈ M'.lat p' then ev ⟨e, he⟩ else 0
-  have hval : ∀ e (he : e ∈ M'.lat p'), val e = ev ⟨e, he⟩ := fun e he => dif_pos he
+  have hval : ∀ e (he : e ∈ M'.lat p'), val e = ev ⟨e, he⟩ := fun e he => dite_eq_left he
   have h0 : val 0 = 0 := by
     rw [hval 0 (zero_mem _)]
     exact map_zero ev

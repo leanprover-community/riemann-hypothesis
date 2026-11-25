@@ -11,6 +11,8 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Continuo
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.AbsoluteConvergence.DenseCell
+import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.AbsoluteConvergence.InGBlocks
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CountableOfNumberField, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousLowG, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LowerMulJG, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StripOpenRealDiscs, Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.DilationDecomposition.Bridge
@@ -79,20 +81,10 @@ theorem continuous_lowG : Continuous (lowG : ℝ → GR n) := by
       ((continuous_lowU : Continuous (lowU : ℝ → M2 n)).comp continuous_neg)⟩
   exact h.subtype_mk _
 
-theorem JJ_mul_JJ : JJ n * JJ n = -1 := by
-  rw [JJ, fromBlocks_multiply, ← fromBlocks_one, fromBlocks_neg]
-  simp
+theorem JJ_mul_JJ : JJ n * JJ n = -1 := PositivityTheory.Rg.Sw.AbsSt.DF.JJ_mul_self
 
 theorem mul_JJ_mul_conj {M : M2 n} (h : InG M) : M * JJ n * Mᴴ = JJ n := by
-  have h1 : (JJ n * Mᴴ * JJ n) * M = -1 := by
-    calc (JJ n * Mᴴ * JJ n) * M = JJ n * (Mᴴ * JJ n * M) := by simp only [Matrix.mul_assoc]
-      _ = -1 := by rw [h, JJ_mul_JJ]
-  have h2 : (-(JJ n * Mᴴ * JJ n)) * M = 1 := by rw [Matrix.neg_mul, h1, neg_neg]
-  have h3 : M * (-(JJ n * Mᴴ * JJ n)) = 1 := mul_eq_one_comm.1 h2
-  calc M * JJ n * Mᴴ = (M * (-(JJ n * Mᴴ * JJ n))) * JJ n := by
-        simp only [Matrix.mul_neg, Matrix.neg_mul, Matrix.mul_assoc, JJ_mul_JJ]
-        simp
-    _ = JJ n := by rw [h3, Matrix.one_mul]
+  apply _root_.PositivityTheory.Rg.Sw.AbsSt.IwaPf.inG_rows <;> assumption
 
 theorem lower_symm {A B C D : Matrix (Fin n) (Fin n) ℂ} (h : InG (fromBlocks A B C D)) :
     C * Dᴴ = D * Cᴴ := by
@@ -151,27 +143,7 @@ theorem lower_mul_lowG (y : GR n) (t : ℝ) :
   simp [lowU, fromBlocks_multiply]
 
 theorem dense_bigCell : ∀ n : ℕ, Dense {y : GR n | ((mR y).toBlocks₂₁).det ≠ 0} := by
-  intro n y
-  have hP : detPoly (mR y).toBlocks₂₁ (mR y).toBlocks₂₂ ≠ 0 := by
-    intro h
-    apply det_lower_I_ne y
-    rw [← eval_detPoly, h, Polynomial.eval_zero]
-  have hfin : {t : ℝ | (detPoly (mR y).toBlocks₂₁ (mR y).toBlocks₂₂).eval (t : ℂ) = 0}.Finite :=
-    (Polynomial.finite_setOf_isRoot hP).preimage Complex.ofReal_injective.injOn
-  have hcl : IsClosed ({t : ℝ | (detPoly (mR y).toBlocks₂₁ (mR y).toBlocks₂₂).eval (t : ℂ) = 0} \ {0}) :=
-    (hfin.subset Set.diff_subset).isClosed
-  have hnh := hcl.isOpen_compl.mem_nhds (x := (0 : ℝ)) (by simp)
-  have ht : Tendsto (fun t : ℝ => y * lowG t) (𝓝[≠] 0) (𝓝 y) := by
-    have hc : Continuous (fun t : ℝ => y * lowG t) := continuous_const.mul continuous_lowG
-    have := hc.tendsto 0
-    simp only [lowG_zero, mul_one] at this
-    exact this.mono_left nhdsWithin_le_nhds
-  refine mem_closure_of_tendsto ht ?_
-  filter_upwards [nhdsWithin_le_nhds hnh, self_mem_nhdsWithin] with t h1 h2
-  show ((mR (y * lowG t)).toBlocks₂₁).det ≠ 0
-  rw [lower_mul_lowG, ← eval_detPoly]
-  intro h3
-  exact h1 ⟨h3, h2⟩
+  apply _root_.PositivityTheory.Rg.Sw.AbsSt.DF.dense_cell <;> assumption
 
 end GlobalTheory.CompanionTheory.BigCell
 end -- clump:auto

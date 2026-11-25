@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.PfLvBasisPhi
 import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.AlgebraMapMemInvariants
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArcLiftingSetup
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocalizationQuotientSeparatedDvd
@@ -33,15 +34,8 @@ variable (W : LocWach PD LL O v n)
 
 theorem φVB_inj {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V] :
     Function.Injective (φVB PD (LL := LL) (V := V)) := by
-  have h : ∀ y, φVB PD (LL := LL) (V := V) y = ((PD.φ.toLinearMap.restrictScalars Qp).lTensor V) y := fun y => by
-    induction y using TensorProduct.induction_on with
-    | zero => simp
-    | tmul x b => simp [φVB]
-    | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
-  have hi : Function.Injective (PD.φ.toLinearMap.restrictScalars Qp) := PD.φ_inj
-  intro a b hab
-  rw [h, h] at hab
-  exact Module.Flat.lTensor_preserves_injective_linearMap _ hi hab
+  intros
+  apply _root_.Formalism.MainNotions.N.Ln03.Pf.lvBasis_φ_inj <;> assumption
 
 theorem crisMap_φ {V V' : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
     [AddCommGroup V'] [Module LL V'] [Module Qp V'] [IsScalarTower Qp LL V'] (f : V →ₗ[LL] V') (x : V ⊗[Qp] B) :
@@ -73,7 +67,7 @@ theorem dv_eq_sum (T : LocLat G Qp LL O) (e : ℕ) {d : ℕ} (b : Fin d → W.DD
     dv W T e b c₀ = ∑ m, c₀ m • dv W T e b (Pi.single m 1) := by
   unfold dv
   refine Finset.sum_congr rfl fun m _ => ?_
-  rw [Finset.sum_eq_single m (fun m' _ hm' => by simp [Pi.single_apply, hm']) (by simp)]
+  rw [Finset.sum_eq_single m (fun m' _ hm' => by simp [hm']) (by simp)]
   simp
 
 theorem dvO_lin (T : LocLat G Qp LL O) (e : ℕ) {d : ℕ} (b : Fin d → W.DD T) {I : Type} (s : Finset I)
@@ -131,8 +125,7 @@ theorem avg_props {T : LocLat G Qp LL O} (a : ZMod n) {z : W.DD T} (hz : z ∈ W
     (∑ δ ∈ W.DelF, W.γD T δ z) ∈ W.NΔ T ∧
       (letE a : LetA O n) • (∑ δ ∈ W.DelF, W.γD T δ z) = ∑ δ ∈ W.DelF, W.γD T δ z := by
   refine ⟨⟨Submodule.sum_mem _ fun δ _ => W.N_Γ T δ z hz, fun δ' hδ' => ?_⟩, ?_⟩
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+  · rw [map_sum]
     refine Finset.sum_nbij' (δ' * ·) (δ'⁻¹ * ·) (fun g hg => TypesA.delF_mul W hδ' hg)
       (fun g hg => TypesA.delF_mul W (TypesA.delF_inv W hδ') hg) (fun g _ => by simp) (fun g _ => by simp)
       (fun g _ => ?_)

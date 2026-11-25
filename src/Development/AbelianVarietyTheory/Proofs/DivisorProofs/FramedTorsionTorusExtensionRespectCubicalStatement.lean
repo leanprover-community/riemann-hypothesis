@@ -253,7 +253,6 @@ section -- clump:auto
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.CoordLinear
 
@@ -687,7 +686,6 @@ open GlobalTheory.Poinc.Sep
 
 open GlobalTheory.Poinc.Tors
 
-set_option backward.isDefEq.respectTransparency false
 
 namespace GlobalTheory.GenericCube
 

@@ -34,15 +34,7 @@ abbrev RhoFam (D : D7) : Type := ∀ i : D.nd.Loc, D.nd.X i → (GE D.nd →* GL
 
 theorem placesOver_finite (E : Type) [Field E] [NumberField E] (p : ℕ) (hp : p ≠ 0) :
     (placesOver E p).Finite := by
-  have hp' : ((p : ℕ) : 𝓞 E) ≠ 0 := Nat.cast_ne_zero.mpr hp
-  have hI : Ideal.span {((p : ℕ) : 𝓞 E)} ≠ 0 := by
-    rw [Ne, Ideal.zero_eq_bot, Ideal.span_singleton_eq_bot]
-    exact hp'
-  refine (Ideal.finite_factors hI).subset ?_
-  intro v hv
-  show v.asIdeal ∣ Ideal.span {((p : ℕ) : 𝓞 E)}
-  rw [Ideal.dvd_span_singleton]
-  exact hv
+  apply _root_.Formalism.MainNotions.placesOver_finite_av <;> assumption
 
 def CG (constantFirstHub : ℝ) (Q : MvPolynomial (Fin 3) ℕ) : ℝ :=
   max (max constantFirstHub ((∑ m ∈ Q.support, Q.coeff m : ℕ) : ℝ)) (max (Q.totalDegree : ℝ) 1)

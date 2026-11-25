@@ -696,8 +696,7 @@ theorem eig_sum_zero {K V O I : Type} [Field K] [AddCommGroup V] [Module K V] [C
       intro s hs
       have hne : s ≠ t := fun e => ht (e ▸ hs)
       obtain ⟨a, ha⟩ : ∃ a, σ s a ≠ σ t a := by
-        by_contra h
-        push_neg at h
+        by_contra! h
         exact hne (hσ (RingHom.ext h))
       have hg : ∑ u ∈ A, (σ u a - σ t a) • f u = 0 := by
         have e : ∑ u ∈ A, (σ u a - σ t a) • f u =

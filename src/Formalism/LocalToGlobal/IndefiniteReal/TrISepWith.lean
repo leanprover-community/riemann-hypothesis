@@ -46,9 +46,9 @@ def hkCan {G Pl0 I0 T : Type} [Group G] [Fintype G] (A3 : FamIn3 D.what₂.LL G 
   ev_inj p p' h := by
     have h2 := congrFun h p
     dsimp only at h2
-    rw [if_pos rfl] at h2
+    rw [ite_eq_left rfl] at h2
     by_contra hne
-    rw [if_neg (fun h' => hne h'.symm)] at h2
+    rw [ite_eq_right (fun h' => hne h'.symm)] at h2
     exact one_ne_zero h2
 
 def errCan {K : Type} [Field K] [NumberField K] [StarRing K] {Bs : DefBase K} {Df : DefSide Bs} (S : IndefData Df)

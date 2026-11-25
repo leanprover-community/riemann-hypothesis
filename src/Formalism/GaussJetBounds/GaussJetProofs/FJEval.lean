@@ -2,7 +2,6 @@ module
 
 public import Formalism.GaussJetBounds.FrameJetEval
 public import Formalism.GaussJetBounds.GaussJetProofs.ConstantCoeffAevalLinP
-import Mathlib.Tactic.Lemma
 
 @[expose] public section
 
@@ -167,7 +166,7 @@ lemma sum_frameM_row (x : ZMod d × Fin N0 × Fin N0 → K) (s : ZMod d) (i : Fi
     by_cases h : t = s ∧ c = b
     · obtain ⟨rfl, rfl⟩ := h
       simp
-    · rw [if_neg (fun hh => h ⟨hh.1.symm, hh.2.symm⟩), if_neg h]
+    · rw [ite_eq_right (fun hh => h ⟨hh.1.symm, hh.2.symm⟩), ite_eq_right h]
       simp
 
 end Change

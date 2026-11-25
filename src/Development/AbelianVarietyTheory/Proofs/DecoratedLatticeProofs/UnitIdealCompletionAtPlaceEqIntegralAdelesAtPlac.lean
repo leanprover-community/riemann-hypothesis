@@ -88,7 +88,7 @@ theorem mul_finIncl_mem (v : Pl D) (t : Af D.host.F ⊗[D.host.F] D.host.E) (ht 
       · exact one_mem _
       · exact zero_mem _
     · intro w hw
-      rw [map_mul, GlobalTheory.SelfDualAt.evalV_indP, if_neg hw, zero_mul]
+      rw [map_mul, GlobalTheory.SelfDualAt.evalV_indP, ite_eq_right hw, zero_mul]
     · exact (FractionalIdeal.mem_one_iff _).2 ⟨x, rfl⟩
     · rw [finIncl_tmul, Algebra.TensorProduct.algebraMap_apply, Algebra.algebraMap_self, RingHom.id_apply,
         Algebra.TensorProduct.tmul_mul_tmul, one_mul]

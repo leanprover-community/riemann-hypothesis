@@ -56,7 +56,6 @@ open scoped CategoryTheory.Obj
 open ReciprocityTheory.AnForm.R GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.Poinc.Sep
 open GlobalTheory.UT ReciprocityTheory.ChartRestriction.G.DVR
 
-set_option backward.isDefEq.respectTransparency false
 
 namespace GlobalTheory.Poinc.FrameIndep
 

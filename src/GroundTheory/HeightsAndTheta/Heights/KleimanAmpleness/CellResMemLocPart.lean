@@ -50,7 +50,7 @@ theorem cellRes_mk {M : Type} [AddCommGroup M] [Module (MRingOver S ι) M] {J I 
     (h : cellMon S J ≤ cellMon S I) (m : M) (t : cellMon S J) :
     cellRes S M J I (LocalizedModule.mk m t) = LocalizedModule.mk m ⟨t.1, h t.2⟩ := by
   unfold cellRes
-  rw [dif_pos h, IsLocalizedModule.mk_eq_mk', IsLocalizedModule.liftOfLE_mk', ← IsLocalizedModule.mk_eq_mk']
+  rw [dite_eq_left h, IsLocalizedModule.mk_eq_mk', IsLocalizedModule.liftOfLE_mk', ← IsLocalizedModule.mk_eq_mk']
 
 
 open Classical in
@@ -66,13 +66,6 @@ theorem cechD_apply {M : Type} [AddCommGroup M] [Module (MRingOver S ι) M] (n :
   split_ifs <;> rfl
 
 end Cells
-
-section Point
-
-variable {F : Type} [Field F] {K : Type} [Fintype K] [LinearOrder K] {ι : K → Type} [∀ k, Fintype (ι k)]
-  [∀ k, LinearOrder (ι k)] {Ω : Type} [Field Ω] [Algebra F Ω] {y : (Σ k, ι k) → Ω}
-
-end Point
 
 end CechPointVanish
 

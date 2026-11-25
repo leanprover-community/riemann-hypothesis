@@ -7,8 +7,6 @@ import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomology
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 
@@ -16,10 +14,6 @@ noncomputable section
 open CategoryTheory AlgebraicGeometry Limits GlobalTheory.LogCris DividedPowers
 
 namespace CrystallineSemistableComparison.Pb.Kap
-
-namespace LevelChangeComparison
-
-end LevelChangeComparison
 
 variable {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ_[l] (PadicAlgCl l)}
 
@@ -31,10 +25,6 @@ def nmLevA : NMor (S.L (m + 1)).γ M.p (κA (OK l K) (S.L (m + 1)).I) (S.L m).γ
 
 def nmLevB : NMor (S.L (m + 1)).γB M.q (κA K (S.L (m + 1)).IB) (S.L m).γB M.q (κA K (S.L m).IB) (S.dB m) :=
   nmK (S.L (m + 1)).γB (S.L m).γB M.q M.q (S.dB m) (hS.ddpB m) (hS.dK m) (𝟙 M.gen) (Category.id_comp _)
-
-namespace LevelChangeComparison
-
-end LevelChangeComparison
 
 end
 

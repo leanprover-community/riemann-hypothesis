@@ -149,7 +149,6 @@ section -- clump:auto
 
 open scoped Classical ENNReal
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.Unfold
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 noncomputable section
 
 namespace GlobalTheory.Sloc.OneDim
@@ -349,7 +348,7 @@ theorem xLam_eq_span : ∀ {E : Type} [Field E] [NumberField E] [StarRing E] (S 
     fun a => exists_section G.fl Λ (J a) (hJ a) a (h3 a)
   choose e' he'X he'c he'Λ using hsec
   refine ⟨e', fun a => ?_, ?_⟩
-  · have hea : G.fl.coefX (G.fl.e a) a = 1 := by rw [coefX_e, if_pos rfl]
+  · have hea : G.fl.coefX (G.fl.e a) a = 1 := by rw [coefX_e, ite_eq_left rfl]
     have h := sub_smul_mem G.fl a (he'X a) (e_mem G.fl a) hea
     rwa [he'c a, one_smul] at h
   · apply le_antisymm
@@ -419,7 +418,7 @@ theorem locStd_exists_flag_coef_one : ∀ {F : Type} [Field F] [ValuativeRel F] 
     · rw [hiso]
       exact zero_mem _
     · simp only [Formalism.MainNotions.S.LocNG.FrameD.prF, hes, hiso, ite_smul, one_smul, zero_smul,
-        Finset.sum_ite_eq, Finset.mem_univ, if_true, Finset.sum_const_zero, sub_self,
+        Finset.sum_ite_eq, Finset.mem_univ, ite_true, Finset.sum_const_zero, sub_self,
         ZeroMemClass.coe_zero]
     · rw [map_zero]
       exact L.zero_mem
@@ -429,7 +428,7 @@ theorem locStd_exists_flag_coef_one : ∀ {F : Type} [Field F] [ValuativeRel F] 
     induction hw using Submodule.span_induction with
     | mem x hx =>
       obtain ⟨b, hb, rfl⟩ := hx
-      rw [hes, if_neg (Fin.ne_of_val_ne (Nat.ne_of_lt hb))]
+      rw [hes, ite_eq_right (Fin.ne_of_val_ne (Nat.ne_of_lt hb))]
     | zero => exact H.h_zero_left _
     | add x y _ _ hx hy => rw [H.h_add_left, hx, hy, add_zero]
     | smul c x _ hx => rw [H.h_smul_left, hx, mul_zero]
@@ -446,7 +445,7 @@ theorem locStd_exists_flag_coef_one : ∀ {F : Type} [Field F] [ValuativeRel F] 
   · have := (Fr.Fj (a.val + 1)).add_mem (hmono hdiff) hmem
     simpa using this
   · have hsplit : n (Fr.e a) = (n (Fr.e a) - Fr.e a) + Fr.e a := by abel
-    rw [hsplit, H.h_add_left, hperp _ hdiff, hes, if_pos rfl, zero_add]
+    rw [hsplit, H.h_add_left, hperp _ hdiff, hes, ite_eq_left rfl, zero_add]
 
 end GlobalTheory
 end -- clump:auto
@@ -473,7 +472,7 @@ theorem h_es_eq_zero_of_mem_Fj {F : Type} [Field F] [ValuativeRel F] [Topologica
     have hb' : b.val < a.val := hb
     have hba : b ≠ a := fun h => by subst h; exact lt_irrefl _ hb'
     unfold Formalism.MainNotions.S.LocNG.FrameD.e
-    rw [Fr.h_es b a, if_neg hba]
+    rw [Fr.h_es b a, ite_eq_right hba]
   | zero => exact H.h_zero_left _
   | add x y _ _ hx hy => rw [H.h_add_left, hx, hy, add_zero]
   | smul c x _ hx => rw [H.h_smul_left, hx, mul_zero]
@@ -520,7 +519,6 @@ section -- clump:auto
 
 open scoped Classical ENNReal
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.Unfold
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.FlagBaseChange
 
@@ -532,7 +530,7 @@ theorem isUnit_frFac {D : D7} {T : D.host.E} (G : LFlag (D.sp.Y 0) D.R.rS T) (Z 
   subst hA
   have hb := h4 b b
   dsimp only at hb
-  rw [if_pos rfl, (locH Z p).h_smul_left] at hb
+  rw [ite_eq_left rfl, (locH Z p).h_smul_left] at hb
   exact ⟨⟨_, _, hb, (mul_comm _ _).trans hb⟩, rfl⟩
 
 theorem span_bcP_Xa_eq_Fj : ∀ (D : D7) (T : D.host.E) (G : LFlag (D.sp.Y 0) D.R.rS T) (Z : LocDat D) (A : ∀ p : PlF D, LocNG.FrameD (locH Z p) D.R.rS), (∀ p, (A p).f = fun a => frFac Z.δ p a • baseChange₂ D p (frame G a)) → ∀ (p : PlF D) (j : ℕ), Submodule.span (D.s.atP p).Ep (baseChange₂ D p '' (G.fl.Xa j : Set (VS D).V)) = (A p).Fj j := by
@@ -588,7 +586,6 @@ section -- clump:auto
 
 open scoped Classical ENNReal
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.Unfold
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.RowLatXS
 
@@ -607,19 +604,19 @@ theorem scaled_local_coef_eq :
     intro b
     have h1 := (A p).h_es b b
     rw [hA p] at h1
-    rw [if_pos rfl, (locH Z p).h_smul_left] at h1
+    rw [ite_eq_left rfl, (locH Z p).h_smul_left] at h1
     exact isUnit_iff_exists_inv.mpr ⟨_, by simpa [frame, Formalism.MainNotions.S.FlagG.fvec, Fin.snoc_castSucc] using h1⟩
   have hzero : ∀ b : Fin D.R.rS, b ≠ a → (locH Z p).h (baseChange₂ D p (G.fl.e b)) ((A p).es a) = 0 := by
     intro b hb
     have h1 := hes b
-    rw [if_neg hb] at h1
+    rw [ite_eq_right hb] at h1
     exact (hunit b).mul_right_eq_zero.mp h1
 
   have hxs : x ∈ Submodule.span D.host.E (Set.range G.fl.e) := hx
   have hexp : x = ∑ b, G.fl.coefX x b • G.fl.e b := by
     have h2 := G.fl.e_indep.linearCombination_repr ⟨x, hxs⟩
     rw [Finsupp.linearCombination_apply, Finsupp.sum_fintype _ _ (by simp)] at h2
-    simp only [Formalism.MainNotions.S.FlagG.coefX, dif_pos hxs]
+    simp only [Formalism.MainNotions.S.FlagG.coefX, dite_eq_left hxs]
     exact h2.symm
 
   have hsum : ∀ (s : Finset (Fin D.R.rS)) (v : Fin D.R.rS → Vp D p) (y : Vp D p),
@@ -634,7 +631,7 @@ theorem scaled_local_coef_eq :
     rw [map_sum]
     exact Finset.sum_congr rfl fun b _ => baseChange_smul₂ p _ _
   rw [hbc, hsum, Finset.mul_sum, Finset.sum_eq_single a]
-  · rw [(locH Z p).h_smul_left, mul_left_comm, hes a, if_pos rfl, mul_one]
+  · rw [(locH Z p).h_smul_left, mul_left_comm, hes a, ite_eq_left rfl, mul_one]
   · intro b _ hb
     rw [(locH Z p).h_smul_left, hzero b hb, mul_zero, mul_zero]
   · intro h; exact absurd (Finset.mem_univ a) h
@@ -666,7 +663,6 @@ section -- clump:auto
 
 open scoped Classical ENNReal
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.Unfold
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.RowLatXS
 
@@ -799,8 +795,6 @@ open scoped Classical ENNReal
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full
   Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.Unfold
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace GlobalTheory.RowLatXS
 
 theorem xlam_eq_span_scaled : ∀ (D : D7) (T : D.host.E) (G : LFlag (D.sp.Y 0) D.R.rS T) (Z : LocDat D) (A : ∀ p : PlF D, LocNG.FrameD (locH Z p) D.R.rS), (∀ p, (A p).f = fun a => frFac Z.δ p a • baseChange₂ D p (frame G a)) → ∀ Λ : LV D, Submodule.IsLattice D.host.E Λ → (∀ p, ∃ n ∈ (A p).N, ∃ L, (A p).IsInner L ∧ lattice₂ D Z.M p Λ = LocNG.img n ((A p).LamStd L)) → ∃ e' : Fin D.R.rS → (VS D).V, (∀ a, e' a - G.fl.e a ∈ G.fl.Xa a.val) ∧ XLam Λ G = Submodule.span (𝓞 D.host.E) {y | ∃ (a : Fin D.R.rS) (x : D.host.E), x ∈ (ddS D ^ (-((D.R.rS : ℤ) - (a : ℕ))) : FractionalIdeal (nonZeroDivisors (𝓞 D.host.E)) D.host.E) ∧ y = x • e' a} := by
@@ -845,7 +839,6 @@ section -- clump:auto
 
 open scoped Classical ENNReal
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.Unfold
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto

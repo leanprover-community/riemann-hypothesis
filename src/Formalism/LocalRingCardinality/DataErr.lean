@@ -140,7 +140,7 @@ def EatX {D : D7} (L : SizeData₂ D) (c : ErrC) (j p : ℕ) : ℝ :=
       c.c6 * (D.R.f : ℝ) * Nm D ^ 2 * Real.logb p L.sc.a
   else 0
 
-theorem EatX_of_not {D : D7} (L : SizeData₂ D) (c : ErrC) (j : ℕ) {p : ℕ} (h : ¬ IsCs D p) : EatX L c j p = 0 := if_neg h
+theorem EatX_of_not {D : D7} (L : SizeData₂ D) (c : ErrC) (j : ℕ) {p : ℕ} (h : ¬ IsCs D p) : EatX L c j p = 0 := ite_eq_right h
 
 def EatI {D : D7} (L : SizeData₂ D) (K : Consts) (c : ErrC) (j p : ℕ) : ℝ :=
   max 0 ((∑ z ∈ kindA D p, FOrb D j p z) / (nP D p : ℝ)) +
@@ -181,7 +181,7 @@ theorem Eval_above {D : D7} (L : SizeData₂ D) (X : ErrX D) (K : Consts) (c : E
   have h3 : ¬ ((IsResidueClassZero D (D.what₂.places.resChar w) ∨ IsSg D (D.what₂.places.resChar w)) ∧
       (D.what₂.places.resChar w : ℝ) ≤ L.sc.X'' D.R.n) := fun h => absurd h.2 (not_le.2 hX)
   unfold Eval
-  simp only [if_neg h0, if_neg h1, if_neg hT, if_neg h2, if_neg h3]
+  simp only [ite_eq_right h0, ite_eq_right h1, ite_eq_right hT, ite_eq_right h2, ite_eq_right h3]
   simp
   rw [Nat.padicValNat_def]
   exact multiplicity_eq_zero_of_not_dvd hG

@@ -87,7 +87,6 @@ open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
 open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.InertFrameLoc
 
 
@@ -279,7 +278,6 @@ open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
 open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.InertFrameLoc
 
 namespace GlobalTheory.InertFrameLoc
@@ -327,7 +325,6 @@ open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
 open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.InertFrameLoc
 
 namespace GlobalTheory.InertFrameLoc
@@ -514,7 +511,6 @@ open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
 open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.InertFrameLoc
 
 
@@ -600,7 +596,6 @@ open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
 open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.InertFrameLoc
 
 namespace GlobalTheory.InertFrameSympl
@@ -741,7 +736,6 @@ open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
 open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.InertFrameLoc
 
 namespace GlobalTheory.InertTwo
@@ -775,7 +769,6 @@ open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
 open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.InertFrameLoc
 
 
@@ -867,8 +860,8 @@ theorem om_mem_span_uPt : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : H
     fun n i j => by
       rw [Matrix.one_apply, Matrix.one_apply]
       by_cases hij : i = j
-      · rw [if_pos hij, if_pos hij.symm, σ.map_one]
-      · rw [if_neg hij, if_neg (Ne.symm hij), σ.map_zero]
+      · rw [ite_eq_left hij, ite_eq_left hij.symm, σ.map_one]
+      · rw [ite_eq_right hij, ite_eq_right (Ne.symm hij), σ.map_zero]
   have hLP : LocPair ϖ0 σ q δ (1 : GL (Fin S.rank) (LP D w)) (1 : GL (Fin T.rank) (LP D w)) ψ' ρ ω := by
     refine ⟨hU0, odd_of_v_two hU0 h2, one_mem _, one_mem _, hone _, hone _, hδ, p1, p2, ?_, fun x y => ?_, ?_,
       fun g g' x => ?_, fun g g' hg hg' s hs => ?_⟩
@@ -926,7 +919,6 @@ open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
 open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.InertFrameLoc
 
@@ -1012,7 +1004,6 @@ open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
 open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto

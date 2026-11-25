@@ -226,9 +226,3 @@ theorem temperate_exp : Function.HasTemperateGrowth (fun t : ℝ => cexp (I * t)
 variable {κ : Type} [Fintype κ]
 
 end GlobalTheory.CompanionTheory.OM.SchDiff
-
-namespace GlobalTheory.CompanionTheory.OM
-
-open SchDiff
-
-end GlobalTheory.CompanionTheory.OM

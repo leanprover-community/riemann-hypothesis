@@ -174,7 +174,7 @@ theorem om_pure (hA : ActsEx) (hV : VacFixX) {B : Base F E} {M : Model σ X W} {
       have := (pureAct F _ v (om (partU (idem_mul_self v) k, 1)) f₁ (fun v => if v ∈ S then φ₁ v else φ v)
         (fun u => by split_ifs; exacts [(h₁ u).1, hSB u])
         (std _ fun u hu => by split_ifs; exacts [hvac u hu, hT u hu])).2.2 (φ₁ v) (by
-          simp only [if_neg hv]; exact (h₁ v).2)
+          simp only [ite_eq_right hv]; exact (h₁ v).2)
       rw [this]
       congr 1
       funext u
@@ -243,11 +243,11 @@ theorem pureFac_of (hA : ActsEx) (hO : ArchOp) (hU : ArchUniq) (hV : VacFixX) (h
     funext v
     split_ifs with hv
     · rw [part_shift hC (idem_mul_self v) (hlf v), hkf' v, opF_eq (hSB v) (sb2 v) (acts_comp (om_pres hP _) (h₁ v).2 (a2 v))]
-    · rw [off v hv, if_pos (hall v hv)]
+    · rw [off v hv, ite_eq_left (hall v hv)]
   · push Not at hall
     obtain ⟨v, hv, hn⟩ := hall
     rw [zero_smul]
-    refine pure_zero _ _ ?_ v (by rw [off v hv, if_neg hn])
+    refine pure_zero _ _ ?_ v (by rw [off v hv, ite_eq_right hn])
     filter_upwards [ev2, hC.good₁.std] with t a b
     rw [a, (hE.vac t).1, b]
 

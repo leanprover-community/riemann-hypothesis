@@ -256,8 +256,7 @@ theorem exists_notMem_of_sol {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) {H
     (hn : n ∉ 𝔭 ^ (v + 1)) (hk : d + v + 1 ≤ k) (hc : d + v + 1 ≤ 2 * (c + 1)) {x : m → 𝓞 K}
     (hx : fm H x x - ι n ∈ extP K 𝔭 ^ k) : ∃ j, (star x ᵥ* H) j ∉ extP K 𝔭 ^ (c + 1) := by
   have hF : IsFixF K F := Fact.out
-  by_contra hall
-  push_neg at hall
+  by_contra! hall
   have h1 : ∀ i, ι D * star (x i) ∈ extP K 𝔭 ^ (c + 1) := by
     intro i
     have h2 := vecMul_mem hall H.adjugate i

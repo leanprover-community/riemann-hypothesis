@@ -28,7 +28,7 @@ theorem hEmbGL_val (g : GL (Fin k) A) :
     ((hEmbGL r k g : GL (Idx r k) A) : Matrix (Idx r k) (Idx r k) A) = hEmb r (g : Matrix (Fin k) (Fin k) A) := rfl
 
 theorem hEmbGL_injective : Function.Injective (hEmbGL (A := A) r k) :=
-  fun g h e => Units.ext (MassDataIdxStIm.hEmb_inj (congrArg Units.val e))
+  fun _ _ e => Units.ext (MassDataIdxStIm.hEmb_inj (congrArg Units.val e))
 
 theorem hEmb_sub_one_mem_iff (I : Ideal A) (B : Matrix (Fin k) (Fin k) A) :
     (∀ a b, (hEmb r B - 1) a b ∈ I) ↔ ∀ i j, (B - 1) i j ∈ I := by

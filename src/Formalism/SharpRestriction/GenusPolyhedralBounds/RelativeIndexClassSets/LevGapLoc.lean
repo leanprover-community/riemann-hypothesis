@@ -308,20 +308,6 @@ variable {R : Ranks} (H : Host R)
 
 end HostSplit
 
-section IwGen
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-
-variable {k : ℕ} (P : Par F E k)
-
-end IwGen
-
-section IwHost
-
-variable {R : Ranks} (H : Host R)
-
-end IwHost
-
 section FM
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
@@ -392,12 +378,6 @@ theorem fm_mem_latS {n : Type} [Fintype n] [DecidableEq n] (v : HeightOneSpectru
 variable {k : ℕ} (P : Par F E k)
 
 end FM
-
-section Final
-
-variable {R : Ranks} (H : Host R)
-
-end Final
 
 end Formalism.MainNotions.Gaps.LG
 

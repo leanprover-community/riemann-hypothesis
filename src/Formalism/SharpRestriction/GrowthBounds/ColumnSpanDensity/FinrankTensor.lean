@@ -37,25 +37,11 @@ private theorem choose_succ_eq_choose_mul_div (A m : ℕ) :
 
 theorem prodA (m A : ℕ) :
     ∏ j : Fin m, (((A : ℚ) + ((j : ℕ) : ℚ) + 1) / (((j : ℕ) : ℚ) + 1)) = ((A + m).choose m : ℚ) := by
-  induction m with
-  | zero => simp
-  | succ m ih =>
-    rw [Fin.prod_univ_castSucc]
-    simp only [Fin.coe_castSucc, Fin.val_last]
-    rw [ih, choose_add_succ_succ_eq_choose_mul_div]
-    ring
+  apply _root_.Formalism.MainNotions.ColumnSystems.Pf.prodUp <;> assumption
 
 theorem prodB (m B : ℕ) :
     ∏ j : Fin m, (((B : ℚ) + (m : ℚ) - ((j : ℕ) : ℚ)) / ((m : ℚ) - ((j : ℕ) : ℚ))) = ((B + m).choose m : ℚ) := by
-  rw [← prodA m B, ← Equiv.prod_comp Fin.revPerm]
-  refine Finset.prod_congr rfl fun j _ => ?_
-  have hj := j.isLt
-  have hr : (((Fin.revPerm j : Fin m) : ℕ) : ℚ) = (m : ℚ) - ((j : ℕ) : ℚ) - 1 := by
-    rw [Fin.revPerm_apply, Fin.val_rev, Nat.cast_sub (by omega)]
-    push_cast
-    ring
-  rw [hr]
-  congr 1 <;> ring
+  apply _root_.Formalism.MainNotions.ColumnSystems.Pf.prodDown <;> assumption
 
 theorem weylDim_const (m : ℕ) (d : ℤ) : weylDim m (fun _ => d) = 1 := by
   unfold weylDim
@@ -76,7 +62,7 @@ private theorem weylDim_cons_eq_prod_mul (n : ℕ) (a : ℤ) (lam : Fin n → �
   · rw [Fin.prod_univ_succ]
     simp only [lt_self_iff_false, ↓reduceIte, one_mul]
     refine Finset.prod_congr rfl fun j _ => ?_
-    rw [if_pos (Fin.succ_pos j)]
+    rw [ite_eq_left (Fin.succ_pos j)]
     simp only [Fin.cons_zero, Fin.cons_succ, Fin.val_succ, Fin.val_zero]
     push_cast
     congr 1 <;> ring
@@ -95,10 +81,10 @@ private theorem weylDim_snoc_eq_mul_prod (n : ℕ) (lam : Fin n → ℤ) (b : �
       weylDim n lam * ∏ i : Fin n, (((lam i - b : ℤ) : ℚ) + (n : ℚ) - ((i : ℕ) : ℚ)) / ((n : ℚ) - ((i : ℕ) : ℚ)) := by
   unfold weylDim
   have h1 : ∀ g : Fin (n + 1) → ℚ, (∏ j : Fin (n + 1), if Fin.last n < j then g j else 1) = 1 :=
-    fun g => Finset.prod_eq_one fun j _ => if_neg (not_lt.mpr (Fin.le_last j))
+    fun g => Finset.prod_eq_one fun j _ => ite_eq_right (not_lt.mpr (Fin.le_last j))
   rw [Fin.prod_univ_castSucc, h1, mul_one, ← Finset.prod_mul_distrib]
   refine Finset.prod_congr rfl fun i _ => ?_
-  rw [Fin.prod_univ_castSucc, if_pos (Fin.castSucc_lt_last i)]
+  rw [Fin.prod_univ_castSucc, ite_eq_left (Fin.castSucc_lt_last i)]
   congr 1
   · refine Finset.prod_congr rfl fun j _ => ?_
     simp only [Fin.snoc_castSucc, Fin.coe_castSucc, Fin.castSucc_lt_castSucc_iff]
@@ -120,7 +106,7 @@ theorem weylDim_hwt_eq (m A B : ℕ) : weylDim (m + 2) (hwt m A B) = (dimHar (m 
   rw [Nat.cast_sub hle, Nat.cast_mul, choose_add_succ_succ_eq_choose_mul_div A m, choose_add_succ_succ_eq_choose_mul_div B m]
   split_ifs with h
   · rcases h with rfl | rfl <;> push_cast <;> field_simp <;> ring
-  · push_neg at h
+  · push Not at h
     rw [Nat.cast_mul, show A - 1 + (m + 1) = A + m by omega, show B - 1 + (m + 1) = B + m by omega,
       choose_succ_eq_choose_mul_div A m, choose_succ_eq_choose_mul_div B m]
     field_simp

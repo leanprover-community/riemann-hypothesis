@@ -282,7 +282,6 @@ theorem dv_Arow_newer (hV : F.Valid L₁ N₁) (hn : Even n') (hr : 1 ≤ r) (x 
 theorem dv_Arow_ge (hV : F.Valid L₁ N₁) (hn : Even n') (hr : 1 ≤ r) (j x : ℤ) (hx : F.fr (j - 1) (r - 1) < x)
     (l : ℕ) (hl : l < r) : F.fr (j - 1) 0 ≤ Arow F x l := by
   by_contra hc
-  have hc' : Arow F x l < F.fr (j - 1) 0 := not_le.1 hc
   have hex : ∀ i : Fin r, ∃ l' : Fin l, F.fr (j - 1) i.val = Arow F x l'.val := by
     intro i
     have h1 := frame_row_monotone F L₁ N₁ hV (j - 1) i.val i.2
@@ -517,7 +516,7 @@ theorem dv_segment (hE : FieldMultidegreeDivisibility) (hV : F.Valid L₁ N₁) 
         unfold otherVectorDegree
         apply Finset.sum_eq_zero
         intro a _
-        rw [if_neg]
+        rw [ite_eq_right]
         rintro ⟨h1, _, h3⟩
         apply h3
         have h4 : eL F j a < (nonW F j).min' hne := by rw [← hi0]; exact (dv_eL_lt F j a i0).2 h1

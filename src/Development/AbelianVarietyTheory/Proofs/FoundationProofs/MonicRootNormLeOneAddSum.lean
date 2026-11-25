@@ -69,7 +69,7 @@ theorem monic_root_norm_le_one_add_sum :
   have hS : 0 ≤ ∑ j, ‖s j‖ := Finset.sum_nonneg (fun j _ => norm_nonneg _)
   by_cases hy : ‖y‖ ≤ 1
   · linarith
-  push_neg at hy
+  push Not at hy
   cases n with
   | zero => simp at h
   | succ m =>

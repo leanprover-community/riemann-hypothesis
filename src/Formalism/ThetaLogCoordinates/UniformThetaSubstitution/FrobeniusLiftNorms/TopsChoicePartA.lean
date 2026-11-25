@@ -61,7 +61,7 @@ theorem coeff_single_variable_series {K ι : Type} [Field K] [DecidableEq ι] (x
   rw [finsum_eq_single _ (n x)]
   · simp
   · intro d hd
-    rw [if_neg, mul_zero]
+    rw [ite_eq_right, mul_zero]
     intro h
     apply hd
     rw [h]
@@ -83,13 +83,13 @@ theorem coeff_product_single_variables {K ι : Type} [Field K] {x y : ι} (hxy :
     · by_cases hb : b = Finsupp.single y (b y)
       · exfalso
         apply hne
-        have hbx : b x = 0 := by rw [hb, Finsupp.single_apply, if_neg hxy.symm]
-        have hay : a y = 0 := by rw [ha, Finsupp.single_apply, if_neg hxy]
+        have hbx : b x = 0 := by rw [hb, Finsupp.single_apply, ite_eq_right hxy.symm]
+        have hay : a y = 0 := by rw [ha, Finsupp.single_apply, ite_eq_right hxy]
         have hx : n x = a x := by rw [← hab, Finsupp.add_apply, hbx, add_zero]
         have hy : n y = b y := by rw [← hab, Finsupp.add_apply, hay, zero_add]
         rw [hx, hy, ← ha, ← hb]
-      · rw [if_neg hb, mul_zero]
-    · rw [if_neg ha, zero_mul]
+      · rw [ite_eq_right hb, mul_zero]
+    · rw [ite_eq_right ha, zero_mul]
   · intro h
     exfalso
     apply h
@@ -144,9 +144,9 @@ theorem sum_range_ite_unique {M : Type} [AddCommMonoid M] (N : ℕ) (P : ℕ →
     (c : ℕ → M) (j0 : ℕ) (h0 : j0 < N) (hP : P j0) (hu : ∀ j, P j → j = j0) :
     (∑ j ∈ range N, if P j then c j else 0) = c j0 := by
   rw [Finset.sum_eq_single j0]
-  · rw [if_pos hP]
+  · rw [ite_eq_left hP]
   · intro b _ hb
-    rw [if_neg (fun h => hb (hu b h))]
+    rw [ite_eq_right (fun h => hb (hu b h))]
   · intro h
     exact absurd (Finset.mem_range.mpr h0) h
 
@@ -161,12 +161,11 @@ theorem coeff_lgF_ne_zero {K : Type} [Field K] {p n : ℕ}
     (h : PowerSeries.coeff n (lgF K p) ≠ 0) : ∃ j, n = (p ^ 2) ^ j := by
   unfold lgF at h
   rw [PowerSeries.coeff_mk] at h
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   apply h
   apply Finset.sum_eq_zero
   intro i _
-  rw [if_neg (hc i)]
+  rw [ite_eq_right (hc i)]
 
 theorem coeff_g0F_of (K : Type) [Field K] {p : ℕ} (hp : 2 ≤ p) (j : ℕ) :
     PowerSeries.coeff (p * (p ^ 2) ^ j) (g0F K p) = ((p : K) ^ (j + 1))⁻¹ := by
@@ -179,12 +178,11 @@ theorem coeff_g0F_ne_zero {K : Type} [Field K] {p n : ℕ}
     (h : PowerSeries.coeff n (g0F K p) ≠ 0) : ∃ j, n = p * (p ^ 2) ^ j := by
   unfold g0F at h
   rw [PowerSeries.coeff_mk] at h
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   apply h
   apply Finset.sum_eq_zero
   intro i _
-  rw [if_neg (hc i)]
+  rw [ite_eq_right (hc i)]
 
 def AA (K : Type) [Field K] (p : ℕ) (x y : Fin 2) : MvPowerSeries (Fin 2) K :=
   fun n => ∑ i ∈ range (n x + 1), ∑ j ∈ range (n y + 1),
@@ -201,9 +199,9 @@ theorem coeff_AA_of (K : Type) [Field K] {p : ℕ} (hp : 2 ≤ p) {x y : Fin 2} 
   simp only [AA]
   rw [Finset.sum_eq_single i]
   · rw [Finset.sum_eq_single j]
-    · rw [if_pos ⟨hij, hx, hy⟩]
+    · rw [ite_eq_left ⟨hij, hx, hy⟩]
     · intro b _ hb
-      refine if_neg ?_
+      refine ite_eq_right ?_
       rintro ⟨_, _, h⟩
       exact hb (ppowq_inj hp (h.symm.trans hy))
     · intro hj
@@ -211,7 +209,7 @@ theorem coeff_AA_of (K : Type) [Field K] {p : ℕ} (hp : 2 ≤ p) {x y : Fin 2} 
   · intro b _ hb
     apply Finset.sum_eq_zero
     intro c _
-    refine if_neg ?_
+    refine ite_eq_right ?_
     rintro ⟨_, h, _⟩
     exact hb (powq_inj hp (h.symm.trans hx))
   · intro hi
@@ -222,14 +220,13 @@ theorem coeff_AA_ne_zero {K : Type} [Field K] {p : ℕ} {x y : Fin 2} {n : Fin 2
     ∃ i j, i ≤ j ∧ n x = (p ^ 2) ^ i ∧ n y = p * (p ^ 2) ^ j := by
   change AA K p x y n ≠ 0 at h
   simp only [AA] at h
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   apply h
   apply Finset.sum_eq_zero
   intro i _
   apply Finset.sum_eq_zero
   intro j _
-  refine if_neg ?_
+  refine ite_eq_right ?_
   rintro ⟨h1, h2, h3⟩
   exact hc i j h1 h2 h3
 
@@ -264,7 +261,7 @@ theorem g_zero_relation_holds : OddLogRelation := by
     rw [PowerSeries.coeff_C_mul, PowerSeries.coeff_expand]
     by_cases hc : ∃ j, n = p * (p ^ 2) ^ j
     · obtain ⟨j, rfl⟩ := hc
-      rw [coeff_g0F_of K hp, if_pos (Dvd.intro _ rfl), Nat.mul_div_cancel_left _ (by omega),
+      rw [coeff_g0F_of K hp, ite_eq_left (Dvd.intro _ rfl), Nat.mul_div_cancel_left _ (by omega),
         coeff_lgF_pow K hp, pow_succ, mul_inv, mul_comm]
     · have h1 : PowerSeries.coeff n (g0F K p) = 0 := by
         by_contra h
@@ -297,13 +294,13 @@ theorem g_zero_relation_holds : OddLogRelation := by
           have h2 : (p ^ 2) ^ (k + 1) = (p ^ 2) ^ 0 → k + 1 = 0 := powq_inj hp
           intro h
           exact absurd (h2 (by simpa using h)) (by omega)
-        rw [if_neg h1, sub_zero, powq_succ, if_pos (Dvd.intro _ rfl),
+        rw [ite_eq_right h1, sub_zero, powq_succ, ite_eq_left (Dvd.intro _ rfl),
           Nat.mul_div_cancel_left _ (by omega), coeff_g0F_of K hp]
     · have h1 : PowerSeries.coeff n (lgF K p) = 0 := by
         by_contra h
         exact hc (coeff_lgF_ne_zero h)
       have h2 : n ≠ 1 := fun h => hc ⟨0, by simpa using h⟩
-      rw [h1, if_neg h2, sub_zero]
+      rw [h1, ite_eq_right h2, sub_zero]
       split_ifs with hd
       · obtain ⟨m, rfl⟩ := hd
         rw [Nat.mul_div_cancel_left _ (by omega)]

@@ -99,9 +99,3 @@ def IsTopUnit (X : Tower Ω ε) (M : ℕ) (f : X.K) : Prop :=
       (⟨f, hf⟩ : topL X M)⁻¹ ∈ FunctionField.ringOfIntegers Ω (topL X M)
 
 end GlobalTheory.K4.TopUnits
-
-namespace GlobalTheory.K4
-
-open GlobalTheory.KZ
-
-end GlobalTheory.K4

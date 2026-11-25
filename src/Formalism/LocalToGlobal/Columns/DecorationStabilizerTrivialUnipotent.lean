@@ -1,5 +1,6 @@
 module
 
+import all Formalism.LocalToGlobal.Columns.DecoFin
 public import Formalism.LocalToGlobal.Columns.StdLatUnimodular
 public import Formalism.LocalToGlobal.Columns.GenericUnipotentCharacter
 public import Formalism.GL3MeanSquares.HookFormulaTorsion.LengthQuotientBoundGeneral
@@ -373,10 +374,6 @@ theorem stab0 [IsDomain O] [IsNoetherianRing O] [Module.IsTorsionFree O V]
 
 end NF
 
-section Checks
-
-end Checks
-
 section Definite
 
 open NumberField
@@ -461,45 +458,6 @@ theorem Deco.Ok.isFrameMod {d : Deco E n ST SG} (hd : d.Ok) (w : SG) :
       ker := hd.be_ker w
       onto := hd.be_surj w }
 
-private theorem isFullLattice_of_unimodular {L : Submodule (𝓞 E) (Sp E n)}
-    (hL : Submodule.IsLattice E L) (hu : IsUnimodular (hStd E n) L) :
-    Submodule.IsFullLattice E L := by
-  let := hL
-  refine { span_eq_top := ?_ }
-  let W := Submodule.span E (L : Set (Sp E n))
-  change W = ⊤
-  by_contra h
-  let e : Sp E n ≃ₗ⋆[E] Sp E n := starLinearEquiv E
-  let g : Sp E n →ₗ[E] Module.Dual E W :=
-    (LinearMap.domRestrict' W).comp ((hStd E n).comp e.toLinearMap)
-  have hdim : finrank E (Module.Dual E W) < finrank E (Sp E n) := by
-    rw [Subspace.dual_finrank_eq]
-    exact Submodule.finrank_lt h
-  obtain ⟨x, hx, hx₀⟩ :=
-    Submodule.exists_mem_ne_zero_of_ne_bot (LinearMap.ker_ne_bot_of_finrank_lt (f := g) hdim)
-  -- Every multiple of the orthogonal vector lies in the self-dual lattice.
-  have hsmul (a : E) : a • e x ∈ L := by
-    rw [← hu]
-    simp only [dual, Formalism.E.hdual, Submodule.mem_iInf, Submodule.mem_comap,
-      LinearMap.restrictScalars_apply]
-    intro y hy
-    have hs : hStd E n y (a • e x) = star (hStd E n (a • e x) y) := by
-      simp only [hStd, LinearMap.mk₂'ₛₗ_apply, star_sum, star_mul', star_star]
-      exact Finset.sum_congr rfl fun i _ => mul_comm _ _
-    rw [hs]
-    apply Submodule.mem_one.mpr
-    refine ⟨0, ?_⟩
-    have hxy : hStd E n (e x) y = 0 :=
-      congrArg (fun f : Module.Dual E W => f ⟨y, Submodule.subset_span hy⟩) (LinearMap.mem_ker.mp hx)
-    simp [LinearMap.map_smulₛₗ, LinearMap.smul_apply, hxy]
-  let i : E →ₗ[𝓞 E] L :=
-    ((LinearMap.toSpanSingleton E _ (e x)).restrictScalars (𝓞 E)).codRestrict L hsmul
-  let : Module.Finite (𝓞 E) L := Module.Finite.iff_fg.mpr hL.fg
-  let : Module.Finite (𝓞 E) E := Module.Finite.of_injective i fun a b hab =>
-    smul_left_injective E (fun hzero => hx₀ (e.map_eq_zero_iff.mp hzero)) (congrArg Subtype.val hab)
-  exact RingOfIntegers.not_isField E
-    (isField_of_isIntegral_of_isField (IsFractionRing.injective (𝓞 E) E) (Field.toIsField E))
-
 theorem Deco.stab0 (hpos : ∀ x : Sp E n, x ≠ 0 → 0 < Algebra.trace ℚ E (hStd E n x x))
     {d : Deco E n ST SG} (hd : d.Ok) {ga : Sp E n ≃ₗ[E] Sp E n} (hga : ga ∈ UF E n)
     {h : GLG (E := E) (n := n) (SG := SG)} (hN : (d.act ga h).N = d.N) (hbe : (d.act ga h).be = d.be)
@@ -513,7 +471,7 @@ theorem Deco.stab0 (hpos : ∀ x : Sp E n, x ≠ 0 → 0 < Algebra.trace ℚ E (
     simp only [Deco.act, LinearEquiv.symm_apply_apply] at this
     exact this.symm
   have h1 : ga = 1 := by
-    refine isometry_unipotent_mod_eq_one (hStd E n) hStd_isSymm hpos (isFullLattice_of_unimodular hd.lat hd.uni)
+    refine isometry_unipotent_mod_eq_one (hStd E n) hStd_isSymm hpos (_root_.Formalism.L2.Col.full_lattice_of_unimodular hd.lat hd.uni)
       (w := w.1.asIdeal) w.1.isPrime.ne_top hg hgw (by rwa [Module.finrank_fin_fun]) hga ?_
     exact unipMod_of_frame (hd.isFrameMod w) hN hu (fun y _ => hb w y)
   refine ⟨h1, ?_⟩

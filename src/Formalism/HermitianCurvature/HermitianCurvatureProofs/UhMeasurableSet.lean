@@ -80,7 +80,7 @@ theorem ae_UH_of_quot {μG μS νq : Measure (Formalism.QuantumDeterminants.Mt k
       · have hsB : s ∉ Bᶜ := fun h => h hs
         rw [Set.indicator_of_notMem hsB]
         exact zero_le
-    · rw [Set.indicator_apply, if_neg hx, mul_zero]
+    · rw [Set.indicator_apply, ite_eq_right hx, mul_zero]
       exact zero_le
   have h0 : μS Bᶜ * νq B = 0 := by
     rw [← lintegral_indicator_one hBm, ← lintegral_const_mul _ (measurable_one.indicator hBm)]

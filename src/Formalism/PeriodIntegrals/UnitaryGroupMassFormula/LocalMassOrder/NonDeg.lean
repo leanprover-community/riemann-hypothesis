@@ -8,6 +8,7 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassOrder.SelfDual
 public import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassType.IsClosedCongruenceSubgroup
 
 @[expose] public section
 
@@ -40,30 +41,10 @@ section HR
 variable (σ : E →ₐ[F] E) {n : ℕ} (J : Matrix (Fin n) (Fin n) E) (v : HeightOneSpectrum (𝓞 F))
 
 theorem continuous_sigR : Continuous (sigR (Fv F v) σ) := by
-  let f : (Fv F v ⊗[F] E) →ₗ[Fv F v] (Fv F v ⊗[F] E) :=
-    TensorProduct.AlgebraTensorModule.map (LinearMap.id) σ.toLinearMap
-  have hf : ∀ x, f x = sigR (Fv F v) σ x := by
-    intro x
-    induction x using TensorProduct.induction_on with
-    | zero => simp
-    | tmul a b => simp [f, sigR]
-    | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
-  have : Continuous f := IsModuleTopology.continuous_of_linearMap f
-  exact (funext hf) ▸ this
+  apply _root_.PI.LocMassTypM.continuous_sigR <;> assumption
 
 theorem isClosed_HR : IsClosed (HR (Fv F v) σ J : Set (GL (Fin n) (Fv F v ⊗[F] E))) := by
-  have := LocMassOrdSF.t2_tensor_product (F := F) (E := E) (Fv F v)
-  have hset : (HR (Fv F v) σ J : Set (GL (Fin n) (Fv F v ⊗[F] E))) =
-      {g : GL (Fin n) (Fv F v ⊗[F] E) | Formalism.UG.cT (sigR (Fv F v) σ)
-        (g : Matrix (Fin n) (Fin n) (Fv F v ⊗[F] E)) * JR (Fv F v) J *
-        (g : Matrix (Fin n) (Fin n) (Fv F v ⊗[F] E)) = JR (Fv F v) J} := rfl
-  rw [hset]
-  have hv : Continuous (fun g : GL (Fin n) (Fv F v ⊗[F] E) =>
-      (g : Matrix (Fin n) (Fin n) (Fv F v ⊗[F] E))) := Units.continuous_val
-  refine isClosed_eq ?_ continuous_const
-  refine Continuous.matrix_mul (Continuous.matrix_mul ?_ continuous_const) hv
-  unfold Formalism.UG.cT
-  exact (hv.matrix_map (continuous_sigR σ v)).matrix_transpose
+  apply _root_.PI.LocMassTypM.isClosed_HR <;> assumption
 
 end HR
 

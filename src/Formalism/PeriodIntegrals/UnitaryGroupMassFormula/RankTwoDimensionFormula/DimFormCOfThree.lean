@@ -31,7 +31,7 @@ theorem orbitCount : OrbitCount := by
               ((Finset.mem_filter.mp (Finset.mem_coe.mp hj)).2).symm
             obtain ⟨hγ, κ, hκ, he⟩ := (key j i0 hj').choose_spec
             rw [Finset.mem_coe, Set.Finite.mem_toFinset]
-            simp only [g, dif_pos hj']
+            simp only [g, dite_eq_left hj']
             exact hΓ i0 j _ hγ κ hκ he
           · intro j hj j' hj' hgg
             have h1 : DoubleCoset.mk Γ K (t i0) = DoubleCoset.mk Γ K (t j) :=
@@ -40,7 +40,7 @@ theorem orbitCount : OrbitCount := by
               ((Finset.mem_filter.mp (Finset.mem_coe.mp hj')).2).symm
             obtain ⟨-, κ, hκ, he⟩ := (key j i0 h1).choose_spec
             obtain ⟨-, κ', hκ', he'⟩ := (key j' i0 h2).choose_spec
-            simp only [g, dif_pos h1, dif_pos h2] at hgg
+            simp only [g, dite_eq_left h1, dite_eq_left h2] at hgg
             apply hK
             rw [he, he', hgg]
             have e1 : ((key j' i0 h2).choose * t i0 * κ)⁻¹ * ((key j' i0 h2).choose * t i0 * κ') = κ⁻¹ * κ' := by

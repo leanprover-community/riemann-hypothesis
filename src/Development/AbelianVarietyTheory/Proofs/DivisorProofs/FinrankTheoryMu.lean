@@ -685,7 +685,7 @@ theorem mvPowerSeries_algHom_isNilpotent_of_constantCoeff_zero :
   have hd : (X i : MvPowerSeries σ k) ∣ g i := by
     rw [X_dvd_iff]
     intro m hm
-    rw [hg, if_neg]
+    rw [hg, ite_eq_right]
     intro h
     rcases hc m with ⟨-, h1⟩ | ⟨j, h1, h2⟩
     · rw [h1] at h; cases h
@@ -1029,12 +1029,6 @@ theorem exists_katz_etDual : ∀ (p : ℕ) [Fact p.Prime] (Bc : GlobalTheory.Die
   choose G₀ G₁ i₀ q₀ i₁ q₁ hc he h₀ h₁ hs using
     fun (k : Type) [Field k] [CharP k p] [PerfectRing k p] (G : PDivGroup p k) =>
       GlobalTheory.PDivGroup.exists_isConn_isEt_splitting p k G
-  have rz : ∀ (k : Type) [Field k] [CharP k p] [PerfectRing k p] (X Y : PDivGroup p k),
-      rigExtMap (0 : X ⟶ Y) = 0 := by
-    intro k _ _ _ X Y
-    have h := (rigExtMap_add_and_natCast_smul_id p k (CharP.cast_eq_zero k p) X Y).1 0 0
-    rw [add_zero] at h
-    simpa using h
   let D : Base p (fun _ _ _ => True) :=
   { M := fun {k} _ _ _ G _ =>
       ModuleCat.of (WittVector p k) (Bc.M (G₀ k G) (hc k G) × Be.M (G₁ k G) (he k G))

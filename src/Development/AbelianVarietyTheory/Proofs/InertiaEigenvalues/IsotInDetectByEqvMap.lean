@@ -100,8 +100,7 @@ theorem isotIn_detect_by_eqv_map : ∀ (D : D7) {n : ℕ} (A : Type) [AddCommGro
       by_contra hyK'; exact h4 (hKm ⟨h1, h2, hyK'⟩ h3)
   obtain ⟨Φ, ⟨hΦ, hΦC⟩, hΦK⟩ : ∃ Φ : π.S →ₗ[ℂ] A, (principalLevelFrame.IsEqvA ρ π Φ ∧ LinearMap.range Φ ≤ C) ∧
       ¬ LinearMap.range Φ ≤ K := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hyK ((iSup₂_le fun Φ hΦ => hcon Φ hΦ : principalLevelFrame.isotIn (D := D) ρ C π ≤ K) hy)
   have hΦK' : ∀ f, Φ f ∈ K → f = 0 := (atom K hKSt Φ hΦ).resolve_left hΦK
   have hyK2 : y ∈ K ⊔ LinearMap.range Φ := grow _ (sup_le hKN (rangeLe Φ hΦ hΦC))
@@ -120,7 +119,7 @@ theorem isotIn_detect_by_eqv_map : ∀ (D : D7) {n : ℕ} (A : Type) [AddCommGro
     apply hyK; rw [← hsum, hf', map_zero, add_zero]; exact hk
   let Ψ : (K × π.S) →ₗ[ℂ] A := K.subtype.coprod Φ
   have hΨ : Function.Injective Ψ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     rintro ⟨k, f⟩ h0
     simp only [Ψ, LinearMap.coprod_apply, Submodule.subtype_apply] at h0
     have hneg : Φ f = -(k : A) := eq_neg_iff_add_eq_zero.2 (by rw [add_comm]; exact h0)

@@ -5,50 +5,8 @@ public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.I
 public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.AwayToSectionFromZero
 public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 public import Mathlib.Tactic.ENatToNat
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 public import Mathlib.RingTheory.MvPolynomial.Ideal
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ProjDehomA
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.PsbLb
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsSmulEqMapOfIsCompactOfIsQuasiSeparated
@@ -148,9 +106,6 @@ theorem resG_formOn (h : V ≤ U) (hf : f.IsHomogeneous n) :
 
 theorem ratioOn_mul_ratioOn : ratioOn U i hi j * ratioOn U j hj k = ratioOn U i hi k :=
   frac_mul_eq (by ring)
-
-theorem ratioUnit_self {hi' : U ≤ chart R N i} : ratioUnit U i i hi hi' = 1 :=
-  Units.ext (ratioOn_self (hi := hi))
 
 theorem ratioUnit_mul_ratioUnit :
     ratioUnit U i j hi hj * ratioUnit U j k hj hk = ratioUnit U i k hi hk :=
@@ -605,15 +560,6 @@ theorem baseChangeIso_isGen : (baseChangeIso N φ).IsGen := by
 
 theorem lbIso_pull_O1 : LBIso ((O1 R N).pull (baseChange N φ)) (O1 R' N) :=
   ⟨baseChangeIso N φ, baseChangeIso_isGen N φ⟩
-
-theorem baseChangeIso_coord (k i : Fin (N + 1)) (j : PUnit → Fin (N + 1)) :
-    resG _ (inf_le_left : (O1 R' N).U i ⊓ ((O1 R N).pull (baseChange N φ)).U j ≤ _) ((coord R' N k).f i) =
-      ((baseChangeIso N φ).s (i, j)).val *
-        resG _ (inf_le_right.trans (LB.wchart_le (O1 R N) (fun _ => baseChange N φ) j PUnit.unit))
-          (((baseChange N φ).app ((O1 R N).U (j PUnit.unit))).hom ((coord R N k).f (j PUnit.unit))) := by
-  have e := baseChange_app_ratioOn φ (le_refl (chart R N (j PUnit.unit))) k
-  exact (ratioOn_mul_ratioOn (hi := inf_le_left)
-    (hj := inf_le_right.trans (pull_O1_chart N φ j).le)).symm.trans (congrArg (_ * resG _ _ ·) e.symm)
 
 theorem baseChange_comp {R'' : Type} [CommRing R''] (ψ : R' →+* R'') :
     baseChange N (ψ.comp φ) = baseChange N ψ ≫ baseChange N φ := by

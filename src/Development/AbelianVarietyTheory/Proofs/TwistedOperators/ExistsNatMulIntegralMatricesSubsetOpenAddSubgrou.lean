@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.StrongApproximation.DenseRangeFiniteAdele
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.QuotientHeightLowerBoundShortIsotropicVector
 public import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
 public import Mathlib.RingTheory.PicardGroup
@@ -63,44 +64,7 @@ theorem exists_small_of_mem_nhds {t : Set (FiniteAdeleRing R K)}
     (ht : t ∈ nhds (0 : FiniteAdeleRing R K)) :
     ∃ r : R, r ≠ 0 ∧ ∀ y : FiniteAdeleRing R K,
       (∀ v : HeightOneSpectrum R, Valued.v (y v) ≤ v.intValuation r) → y ∈ t := by
-  classical
-  have hAopen : ∀ v : HeightOneSpectrum R,
-      IsOpen (v.adicCompletionIntegers K : Set (v.adicCompletion K)) :=
-    fun v => Valued.isOpen_valuationSubring _
-  let z0 : ∀ v : HeightOneSpectrum R, (v.adicCompletionIntegers K : Set (v.adicCompletion K)) :=
-    fun v => ⟨0, (v.adicCompletionIntegers K).zero_mem⟩
-  let t' : Set (RestrictedProduct (fun v : HeightOneSpectrum R => v.adicCompletion K)
-          (fun v => (v.adicCompletionIntegers K : Set (v.adicCompletion K))) Filter.cofinite) := t
-  have h1' : t' ∈
-      nhds (RestrictedProduct.structureMap (fun v : HeightOneSpectrum R => v.adicCompletion K)
-        (fun v => (v.adicCompletionIntegers K : Set (v.adicCompletion K))) Filter.cofinite z0) := ht
-  rw [RestrictedProduct.nhds_eq_map_structureMap hAopen, Filter.mem_map, nhds_pi,
-    Filter.mem_pi'] at h1'
-  obtain ⟨I, u, hu, hIu⟩ := h1'
-  have hW : ∀ v, ∃ W : Set (v.adicCompletion K), W ∈ nhds (0 : v.adicCompletion K) ∧
-      ∀ y : v.adicCompletion K, (hy : y ∈ (v.adicCompletionIntegers K : Set (v.adicCompletion K))) →
-        y ∈ W → (⟨y, hy⟩ : (v.adicCompletionIntegers K : Set (v.adicCompletion K))) ∈ u v := by
-    intro v
-    obtain ⟨W, hW, hWu⟩ := (mem_nhds_subtype _ (z0 v) (u v)).mp (hu v)
-    exact ⟨W, hW, fun y hy hyW => hWu hyW⟩
-  choose W hW0 hWu using hW
-  obtain ⟨r, hr, hsmall⟩ :=
-    PI.UnipApproxD.IntegersDenseFiniteAdeles.exists_small_finset (R := R) (K := K) I W (fun v _ => hW0 v)
-  refine ⟨r, hr, fun y hy => ?_⟩
-  have hint : ∀ v : HeightOneSpectrum R,
-      y v ∈ (v.adicCompletionIntegers K : Set (v.adicCompletion K)) := by
-    intro v
-    rw [SetLike.mem_coe, mem_adicCompletionIntegers]
-    exact (hy v).trans (v.intValuation_le_one r)
-  let z : ∀ v : HeightOneSpectrum R, (v.adicCompletionIntegers K : Set (v.adicCompletion K)) :=
-    fun v => ⟨y v, hint v⟩
-  have hz : z ∈ Set.pi (↑I) u := fun v hv => hWu v _ (hint v) (hsmall v hv _ (hy v))
-  have hmem := hIu hz
-  have e : RestrictedProduct.structureMap (fun v : HeightOneSpectrum R => v.adicCompletion K)
-        (fun v => (v.adicCompletionIntegers K : Set (v.adicCompletion K))) Filter.cofinite z = y := by
-    ext v; rfl
-  rw [← e]
-  exact hmem
+  first | exact _root_.ReciprocityTheory.ChartRestriction.G.SA.nhds_zero_int | exact @_root_.ReciprocityTheory.ChartRestriction.G.SA.nhds_zero_int | apply _root_.ReciprocityTheory.ChartRestriction.G.SA.nhds_zero_int <;> assumption
 
 end GlobalTheory.OpenSubAdele
 

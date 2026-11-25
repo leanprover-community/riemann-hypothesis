@@ -33,7 +33,7 @@ theorem herm_zero_of_trace {ζ : B.Mat k r} (hζ : B.inLie k r ζ) (u v : Fin (2
 
 theorem herm_w (x : Fin (2 * r + k + 1) → ℂ) (i : Fin (2 * r + k + 1)) (h1 : r ≤ i.val) (h2 : i.val ≤ r + k) :
     herm (Hpk k r) x (bvec i) = if i.val = r + k then -x i else x i := by
-  rw [_root_.PI.StabPairsW.herm_bvec, hpk_mulVec, if_neg (by omega)]
+  rw [_root_.PI.StabPairsW.herm_bvec, hpk_mulVec, ite_eq_right (by omega)]
 
 theorem inWb_sub {u v : Fin (2 * r + k + 1) → ℂ} (hu : inWb k r u) (hv : inWb k r v) : inWb k r (u - v) := by
   intro i hi; simp [hu i hi, hv i hi]
@@ -44,8 +44,8 @@ theorem hpk_mulVec_wb {u : Fin (2 * r + k + 1) → ℂ} (hu : inWb k r u) (i : F
     (Hpk k r *ᵥ u) i = sg (k := k) (r := r) i * u i := by
   rw [hpk_mulVec, sg]
   by_cases h : i.val < r ∨ r + k < i.val
-  · rw [if_pos h, hu i h, hu ⟨2 * r + k - i.val, by omega⟩ (by simp; omega), mul_zero]
-  · rw [if_neg h]
+  · rw [ite_eq_left h, hu i h, hu ⟨2 * r + k - i.val, by omega⟩ (by simp; omega), mul_zero]
+  · rw [ite_eq_right h]
     split_ifs <;> ring
 
 def KI (k r : ℕ) : Fin (2 * r + k + 1) := ⟨r + k, by omega⟩

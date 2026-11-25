@@ -43,8 +43,8 @@ theorem lowOp_Xd (c d : Ix r s) (l l' : Ln p q r s) (P : Pol p q r s) :
   · simp only [h, ↓reduceIte]
     have hc : pderiv ((a, c) : Ln p q r s) (pderiv ((a, d) : Ln p q r s) (pderiv l' P)) =
         pderiv l' (pderiv ((a, c) : Ln p q r s) (pderiv ((a, d) : Ln p q r s) P)) := by
-      rw [PI.FockOneDegW.Core.pd_comm ((a, d) : Ln p q r s) l' P,
-        PI.FockOneDegW.Core.pd_comm ((a, c) : Ln p q r s) l' (pderiv ((a, d) : Ln p q r s) P)]
+      rw [MvPolynomial.pderiv_comm ((a, d) : Ln p q r s) l' P,
+        MvPolynomial.pderiv_comm ((a, c) : Ln p q r s) l' (pderiv ((a, d) : Ln p q r s) P)]
     rw [dd_X_mul, hc]
     abel
   · simp [h]
@@ -147,7 +147,7 @@ theorem lowOp_negOp (c d : Ix r s) (hcd : ¬ sameBlock c d) (a b : Ix p q) (hab 
         · rfl
         · exact (not_both c d hcd b h' h).elim
       rw [← hba]
-      simp [h, hbc, Ne.symm hcd', PI.FockOneDegW.Core.pd_comm ((b, d) : Ln p q r s) ((a, c) : Ln p q r s) P]
+      simp [h, hbc, Ne.symm hcd', MvPolynomial.pderiv_comm ((b, d) : Ln p q r s) ((a, c) : Ln p q r s) P]
     · rw [← hba]
       simp [h]
   · intro e _ hec

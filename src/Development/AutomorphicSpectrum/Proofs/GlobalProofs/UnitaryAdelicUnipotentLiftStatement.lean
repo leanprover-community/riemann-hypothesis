@@ -15,7 +15,6 @@ section -- clump:auto
 
 open NumberField Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Matrix
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Published GlobalTheory.Published.AutFin GlobalTheory.StdPar GlobalTheory.ThK.SmoothLev GlobalTheory.CompanionTheory.Hypotheses₂.ConstFin GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart
 open GlobalTheory.UAut GlobalTheory.AdelicU GlobalTheory.SiegelSet
 
@@ -387,8 +386,7 @@ theorem glPart_eq_range : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [
   obtain ⟨Φ, jj, _, _, _, _, hι⟩ := hemb
   have hB : block T k = Set.range (bIdx h) := block_eq h hk hd hT hl
   have hT1 : ∀ k' ∈ T, k'.val + 1 ≤ l ∨ l + d ≤ k'.val + 1 := fun k' hk' => by
-    by_contra c
-    push_neg at c
+    by_contra! c
     exact hT k' (by omega) (by omega) hk'
   have hblk : ∀ g, IsBlockPoint σ J X Y h (ι g) := fun g => ⟨_, _, hι g⟩
   refine le_antisymm (fun m hm => ?_) ?_
@@ -415,7 +413,6 @@ section -- clump:auto
 
 open NumberField Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Matrix
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Published GlobalTheory.Published.AutFin GlobalTheory.StdPar GlobalTheory.ThK.SmoothLev GlobalTheory.CompanionTheory.Hypotheses₂.ConstFin GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart
 open GlobalTheory.UAut GlobalTheory.AdelicU GlobalTheory.SiegelSet
 

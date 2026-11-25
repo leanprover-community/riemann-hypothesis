@@ -12,6 +12,7 @@ import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.GenericFibreKerTarget
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.IsFieldIntersection
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.RationalSections.IsRatSectionOn
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockGraphFibreRatio
 
 @[expose] public section
 
@@ -37,18 +38,7 @@ theorem exists_ratAlgHom_complex (A : Type) [CommRing A] [Nontrivial A] [Algebra
 
 theorem aeval_eq_zero_of_mem_mCoordIdeal {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
     {Ω : Type} [Field Ω] {x : (Σ k, ι k) → Ω} {f : MRing ι} (hf : f ∈ mCoordIdeal x) : aeval x f = 0 := by
-  have h0 : mConeMap x f = 0 := hf
-  have e : ((MvPolynomial.eval fun _ : K => (1 : Ω)).comp (mConeMap x).toRingHom) =
-      (aeval x : MRing ι →ₐ[ℤ] Ω).toRingHom := by
-    apply MvPolynomial.ringHom_ext
-    · intro r
-      simp
-    · intro p
-      simp [mConeMap]
-  have := congrArg (fun g => g f) e
-  simp only [RingHom.comp_apply] at this
-  have h1 : (aeval x : MRing ι →ₐ[ℤ] Ω) f = (MvPolynomial.eval fun _ : K => (1 : Ω)) ((mConeMap x) f) := this.symm
-  rw [h1, h0, map_zero]
+  apply _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.BlockGraphFibreRatio.aeval_eq_zero_of_mem <;> assumption
 
 theorem mcPts_mCoordIdeal_nonempty (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Ω : Type) [Field Ω]
     [CharZero Ω] (x : (Σ k, ι k) → Ω) (hx : ∀ k, ∃ i, x ⟨k, i⟩ ≠ 0) : (mcPts (mCoordIdeal x)).Nonempty := by

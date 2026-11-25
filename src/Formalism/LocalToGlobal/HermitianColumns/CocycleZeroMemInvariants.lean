@@ -68,7 +68,7 @@ structure AtT (D : D7) (u : D.what₂.Word)
 
   prk : ∀ i v (c : (D.mem u).C.cls i), Lk D u (Pv v) i c →+ (D.fm u).lk i v c
 
-  upG : ∀ i (v : (D.mem u).A.vT) (c : (D.mem u).C.cls i), Ld D u i c → GX D i
+  upG : ∀ i (_ : (D.mem u).A.vT) (c : (D.mem u).C.cls i), Ld D u i c → GX D i
 
   dnG : ∀ i v (c : (D.mem u).C.cls i), Module.Dual ((D.mem u).A.Fv v) ((D.fm u).lk i v c) → GX D i
 

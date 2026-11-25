@@ -291,7 +291,7 @@ theorem exists_sep {P : M.Par} (hP : P.OK) :
   apply hY
   simp only [Finset.mem_biUnion, Finset.mem_univ, true_and]
   refine ⟨(σ, σ'), ?_⟩
-  rw [if_neg hss, Multiset.mem_toFinset, Polynomial.mem_roots (hne σ σ' hss), Polynomial.IsRoot.def,
+  rw [ite_eq_right hss, Multiset.mem_toFinset, Polynomial.mem_roots (hne σ σ' hss), Polynomial.IsRoot.def,
     Polynomial.eval_sub, cb_eval_xPoly, cb_eval_xPoly, sub_eq_zero]
   exact h
 

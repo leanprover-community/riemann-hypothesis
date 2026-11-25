@@ -613,8 +613,6 @@ namespace Formalism.L2.SG.FixedDecomposition
 
 open PI.SchurPlaces PI.SchurPlaces.Geo Formalism.L2.SG.KappaOffDiagonal Formalism.L2.SG.TermOp.Vanish
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def FixedDecompositionZero : Prop :=
   ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word)
     (t : GTerm X u u' (X.Fu u) (X.Fu u') (Y.what₂ u) (Y.what₂ u')), t.relevant → t.G = 0 →
@@ -631,7 +629,7 @@ theorem coef_smat (G : Matrix (Fin k) (Fin k) ℂ) (y : Fin n → ℂ) :
     (fun d => hJ ε (wf d) (smat (Formalism.REAL.Jm ε) wf G *ᵥ y)) = G *ᵥ fun d => hJ ε (wf d) y := by
   funext d
   rw [smat_apply, hJ_add_right, hJ_sum_right]
-  simp only [hJ_smul_right, hon, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true,
+  simp only [hJ_smul_right, hon, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true,
     sub_mulVec, one_mulVec, Pi.sub_apply]
   ring
 
@@ -820,8 +818,8 @@ theorem Xs_le_E : spanAt X v (lf D (X.Fu u)).fl.X ≤
 theorem hJ_F_E (a b : Fin D.R.rS) :
     hJ (X.B.I.ε v) (rvc X v (X.fY a)) (rvc X v (X.eX b)) = if b = a then 1 else 0 := by
   split_ifs with h
-  · exact hJ_rvc_one X v (by rw [Formalism.L2.SG.Pf.hT_f_e, if_pos h])
-  · exact hJ_rvc_zero X v (by rw [Formalism.L2.SG.Pf.hT_f_e, if_neg h])
+  · exact hJ_rvc_one X v (by rw [Formalism.L2.SG.Pf.hT_f_e, ite_eq_left h])
+  · exact hJ_rvc_zero X v (by rw [Formalism.L2.SG.Pf.hT_f_e, ite_eq_right h])
 
 theorem hJ_F_Z (a : Fin D.R.rS) : hJ (X.B.I.ε v) (rvc X v (X.fY a)) (rvc X v (X.zu u)) = 0 :=
   hJ_rvc_zero X v (X.zu_orth u a).2
@@ -898,7 +896,7 @@ theorem dec {wt : Fin D.R.k → Fin X.B.I.n → ℂ} (hwt : ∀ b, X.wfr u v b -
     ring
   have hF2 : ∀ a, hJ (X.B.I.ε v) (rvc X v (X.fY a)) w2 = 0 := fun a => by
     rw [hw2, hw1, hJ_sub_right, hJ_sub_right, hJ_sum_right, hJ_smul_right, hJ_F_Z]
-    simp only [hJ_smul_right, hJ_F_E, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true, hα]
+    simp only [hJ_smul_right, hJ_F_E, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true, hα]
     ring
   have hZ2 : hJ (X.B.I.ε v) (rvc X v (X.zu u)) w2 = 0 := by
     rw [hw2, hJ_sub_right, hJ_smul_right, hc, mul_assoc, inv_mul_cancel₀ (hJ_Z_Z X v), mul_one, sub_self]
@@ -932,7 +930,7 @@ theorem rad {wt : Fin D.R.k → Fin X.B.I.n → ℂ} (hwt : ∀ b, X.wfr u v b -
   have hsV : s ∈ spanAt X v (fixedSubspaceOfRepresentative X q) := span_le_span_fixedSubspace X q v hs
   have hd : ∀ b, hJ (X.B.I.ε v) (wt b) w = d b := fun b => by
     rw [hdec, hJ_add_right, hJ_add_right, hwtV b s hsV, hJ_smul_right, hwtV b _ hZV, hJ_sum_right]
-    simp only [hJ_smul_right, hon, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    simp only [hJ_smul_right, hon, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     ring
   have hc : c = 0 := by
     have h0 := hw _ (Formalism.L2.SG.CovariantRepresentation.zu_mem_fixedSubspaceOfRepresentative q)
@@ -970,7 +968,7 @@ theorem hJ_sum_sum {n k : ℕ} (ε : Fin n → Bool) (wf : Fin k → Fin n → �
   rw [hJ_sum_left]
   refine Finset.sum_congr rfl fun c _ => ?_
   rw [hJ_smul_left, hJ_sum_right]
-  simp only [hJ_smul_right, hon, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [hJ_smul_right, hon, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 theorem smat_wt {n k : ℕ} (ε : Fin n → Bool) (wf : Fin k → Fin n → ℂ)
     (hon : ∀ a b, hJ ε (wf a) (wf b) = if a = b then 1 else 0) (G : Matrix (Fin k) (Fin k) ℂ) (b : Fin k) :
@@ -983,7 +981,7 @@ theorem smat_wt {n k : ℕ} (ε : Fin n → Bool) (wf : Fin k → Fin n → ℂ)
   show wf b + ∑ c, (G - 1) c b • wf c = ∑ c, G c b • wf c
   have e : ∑ c, (G - 1) c b • wf c = ∑ c, G c b • wf c - wf b := by
     simp only [Matrix.sub_apply, sub_smul, Finset.sum_sub_distrib, Matrix.one_apply,
-      ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   rw [e]; abel
 
 theorem fixedDecompositionZero_holds : FixedDecompositionZero := by
@@ -1207,8 +1205,6 @@ def CovariantRepresentationZero : Prop :=
         (OO (Formalism.L2.SG.ProjRows.muInf X.B.I) Ω (X.Wu u) (X.Wu u') t.pt.1).comp
           (X.piU u' (t.pt.1⁻¹ * h * t.pt.1)))
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem covariantRepZero_of_lemmaV (hA : AvgCore) (hU : GinfUnimod) (hN : NLamNinf) (hC : ChiTrivialC) (hG : PsiInfChar)
     (h1 : RClosedC) (h2 : RODiscreteC) (h3 : RCocompactC) :
     CovariantRepresentationZero := by
@@ -1352,7 +1348,7 @@ theorem kppOffC_of_steps0 (hFold : FoldOKC) (hFE : FundExistsC) (hOI : OOIntAllC
     by_contra hne
     have h1 : (Y.tO u u').G t = 1 := by
       show Gt t = 1
-      unfold Gt; rw [if_neg hne]
+      unfold Gt; rw [ite_eq_right hne]
     rw [h1] at hG; exact one_ne_zero hG
   show op (Y.cs u) (Y.cs u') (Y.FN u) (Y.FN u') t = 0
   unfold op

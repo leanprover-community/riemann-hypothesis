@@ -780,7 +780,7 @@ theorem exists_inv {n : ℕ} (T : LocLat G Qp LL O) (b : Module.Basis (Fin n) (L
     have e1 : ∑ m, (∑ j, c k j * PA m j - if m = k then W.Q ^ h * (letE i : LetA O f) else 0) •
         (b m : W.DD T) = 0 := by
       simp only [sub_smul, Finset.sum_sub_distrib, ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ,
-        if_true, Finset.sum_smul, mul_smul]
+        ite_true, Finset.sum_smul, mul_smul]
       rw [← hc k, sub_eq_zero, Finset.sum_comm]
       refine Finset.sum_congr rfl fun j _ => ?_
       rw [hφ, Finset.smul_sum]
@@ -948,7 +948,7 @@ theorem exists_equiv {L : Type} [Field L] {n : ℕ} (B : Mx L n (n + 1)) (C : Mx
     ∃ e : (Fin (n + 1) → L) ≃ₗ[L] (Fin n → L) × (Fin 1 → L), ∀ v, e v = (B.mulVec v, C.mulVec v) := by
   let φ : (Fin (n + 1) → L) →ₗ[L] (Fin n → L) × (Fin 1 → L) := (Matrix.toLin' B).prod (Matrix.toLin' C)
   have hi : Function.Injective φ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro v hv
     exact h v (congrArg Prod.fst hv) (congrArg Prod.snd hv)
   exact ⟨φ.linearEquivOfInjective hi (by simp), fun v => rfl⟩
@@ -1027,7 +1027,7 @@ theorem mat_identity {S M M' : Type} [CommRing S] [AddCommGroup M] [Module S M] 
 
   simp only [hv, hv', hY, map_sum, map_smul, Finset.sum_apply', Finsupp.smul_apply,
   Module.Basis.repr_self, Finsupp.single_apply, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-  Finset.mem_univ, if_true] at h
+  Finset.mem_univ, ite_true] at h
   simp only [Matrix.mul_apply]
   rw [Finset.sum_congr rfl (fun m _ => mul_comm (G' r m) (X m k)), ← h]
   exact Finset.sum_congr rfl fun m _ => mul_comm _ _

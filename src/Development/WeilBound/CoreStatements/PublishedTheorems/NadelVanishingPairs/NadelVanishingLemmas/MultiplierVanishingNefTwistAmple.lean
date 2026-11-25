@@ -1201,7 +1201,7 @@ theorem vanishing_ample_snc_cartier : ∀ (k : Type) [Field k] [CharZero k] (Y :
         rw [(hD l).2 (w j) (fun h => hl (hw h.symm)), smul_zero]
       · intro h
         exact absurd (Finset.mem_univ j) h
-    · push_neg at hz
+    · push Not at hz
       rw [Finset.sum_eq_zero fun j _ => by rw [(hD j).2 z (hz j), smul_zero], sub_zero]
       by_contra hne
       obtain ⟨j, hj⟩ := hBw z (CartierDiv.coheight_eq_one_of_mult_ne_zero hne)

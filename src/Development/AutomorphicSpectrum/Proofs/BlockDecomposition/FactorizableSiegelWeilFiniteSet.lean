@@ -139,16 +139,6 @@ theorem isCompact_box (S : Finset (HeightOneSpectrum (𝓞 F))) (C : ∀ v : Hei
 
 end Box
 
-section Main
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E]
-
-variable {d M : ℕ} (b : Module.Basis (Fin d) F E) (S : Finset (HeightOneSpectrum (𝓞 F)))
-  (A : ∀ v : HeightOneSpectrum (𝓞 F), Set (Fin 1 → Fin M → Fv F v ⊗[F] E))
-
-
-end Main
-
 end GlobalTheory.CompanionTheory.Hypotheses₂.OneV.Coef.PureSB
 
 namespace GlobalTheory.CompanionTheory.Hypotheses₂.OneV.Coef

@@ -121,7 +121,6 @@ open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM
 open scoped CategoryTheory.Obj
 open GlobalTheory.Poinc
 open MonObj
-attribute [local instance] Over.cartesianMonoidalCategory
 noncomputable section
 namespace GlobalTheory.UnifField
 
@@ -255,7 +254,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.TorRef GlobalTheory.PolDeg
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.AnForm.R GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.Poinc.Sep
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.RigLBIso
 
@@ -389,7 +387,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.ZH
 open scoped CategoryTheory.Obj
 open GlobalTheory.Poinc Formalism.L2.Pj
-attribute [local instance] Over.cartesianMonoidalCategory
 open Classical
 
 namespace GlobalTheory.TwoUnifTors
@@ -543,7 +540,6 @@ open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM
 open scoped CategoryTheory.Obj
 open GlobalTheory.Poinc
 open MonObj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.PolIsoDescent
 
@@ -676,7 +672,6 @@ open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM
 open scoped CategoryTheory.Obj
 open GlobalTheory.Poinc
 open MonObj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.PolLift
 
@@ -709,7 +704,6 @@ open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM
 open scoped CategoryTheory.Obj
 open GlobalTheory.Poinc
 open MonObj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem _root_.GlobalTheory.T.polarisedAbelianPoint_lifts_through_intermediate_pullback : ∀ {S₀ S₁ S₂ : Scheme.{0}} (f₁ : S₁ ⟶ S₀) (f₂ : S₂ ⟶ S₁) (A : PolAV S₀) (B : PolAV S₁) (P : PolAV S₂) (b : B.A.left ⟶ A.A.left) (a : P.A.left ⟶ A.A.left), IsGrpPullback B.A A.A f₁ b → IsGrpPullback P.A A.A (f₂ ≫ f₁) a → ∃ c : P.A.left ⟶ B.A.left, c ≫ b = a ∧ c ≫ B.A.hom = P.A.hom ≫ f₂ ∧ IsGrpPullback P.A B.A f₂ c ∧ (LBIso P.L (A.L.pull a) → LBIso B.L (A.L.pull b) → LBIso P.L (B.L.pull c)) := by
   first | exact @GlobalTheory.PolLift.lift_of_pullback_comp
@@ -724,7 +718,6 @@ section -- clump:auto
 
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Out.Inh
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.PolTest
 
@@ -750,7 +743,6 @@ open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM
 open scoped CategoryTheory.Obj
 open GlobalTheory.Poinc
 open MonObj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.PolDim
 
@@ -779,7 +771,6 @@ open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM
 open scoped CategoryTheory.Obj
 open GlobalTheory.Poinc
 open MonObj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 
@@ -858,7 +849,6 @@ open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM
 open scoped CategoryTheory.Obj
 open GlobalTheory.Poinc
 open MonObj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem GlobalTheory.UnifTorsK.psiNormAt_pull : ∀ (p : ℕ) [Fact p.Prime] (V V' : Type) [CommRing V] [IsDomain V] [IsLocalRing V] [CommRing V'] [IsDomain V'] [IsLocalRing V'] [Algebra (FractionRing V) (PadicAlgCl p)] [Algebra (FractionRing V') (PadicAlgCl p)] (φ : V →+* V'), (∀ v : V, algebraMap (FractionRing V) (PadicAlgCl p) (algebraMap V _ v) = algebraMap (FractionRing V') (PadicAlgCl p) (algebraMap V' _ (φ v))) → (∀ v : V', ‖algebraMap (FractionRing V') (PadicAlgCl p) (algebraMap V' _ v)‖ ≤ 1) → ∀ (D : DegPre V) (D' : DegPre V') (hD : IsPullDeg φ D D') (χ : D'.X) (r : ℝ), GlobalTheory.UnifTorsK.PsiNormAt p D (hD.xe χ) r ↔ GlobalTheory.UnifTorsK.PsiNormAt p D' χ r := by
   intro p _ V V' _ _ _ _ _ _ _ _ φ hφ hn D D' hD χ r
@@ -1001,7 +991,6 @@ open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM
 open scoped CategoryTheory.Obj
 open GlobalTheory.Poinc
 open MonObj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 end -- clump:auto
 end -- clump:auto
@@ -1021,12 +1010,6 @@ open MonObj
 attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.UnifTorsK
-
-theorem spComp {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : B →+* C) (g : A →+* B) :
-    spMap f ≫ spMap g = spMap (f.comp g) := by
-  unfold spMap
-  rw [← Spec.map_comp]
-  rfl
 
 theorem bc {S S' : Scheme.{0}} (f : S' ⟶ S) (P : PolAV S) : ∃ (P' : PolAV S') (φ : P'.A.left ⟶ P.A.left),
     P'.g = P.g ∧ IsGrpPullback P'.A P.A f φ ∧ LBIso P'.L (P.L.pull φ) := by
@@ -1075,7 +1058,7 @@ theorem main : ∀ {o Ω o' Ω' : Type} [CommRing o] [Field Ω] [Algebra o Ω] [
     ha.congr (by rw [_root_.Formalism.L2.Pj.spMap_comp_ring, hcp₀]) rfl
   have hpa' : IsGrpPullback P₀.A u'.A.A
       (spMap (algebraMap (FractionRing W₀) (PadicAlgCl p)) ≫ spMap φK₀') a' :=
-    ha'.congr (by rw [spComp, hcp₀']) rfl
+    ha'.congr (by rw [ReciprocityTheory.ChartRestriction.G.PullbackSections.spMap_comp_spMap, hcp₀']) rfl
   obtain ⟨c₁, hc₁b, hc₁h, hc₁, hc₁L⟩ := GlobalTheory.T.polarisedAbelianPoint_lifts_through_intermediate_pullback (spMap φK₀)
     (spMap (algebraMap (FractionRing W₀) (PadicAlgCl p))) u.A B₁ P₀ b₁ a hb₁ hpa
   obtain ⟨c₂, hc₂b, hc₂h, hc₂, hc₂L⟩ := GlobalTheory.T.polarisedAbelianPoint_lifts_through_intermediate_pullback (spMap φK₀')
@@ -1116,7 +1099,7 @@ theorem main : ∀ {o Ω o' Ω' : Type} [CommRing o] [Field Ω] [Algebra o Ω] [
     rw [← RingHom.comp_assoc, hαcp, hcp₀']
 
   obtain ⟨C, ψ₁, hgC, hψ₁, hLψ₁⟩ := bc (spMap (αK.comp φK₀)) u.A
-  have hψ₁' : IsGrpPullback C.A u.A.A (spMap αK ≫ spMap φK₀) ψ₁ := hψ₁.congr (spComp _ _).symm rfl
+  have hψ₁' : IsGrpPullback C.A u.A.A (spMap αK ≫ spMap φK₀) ψ₁ := hψ₁.congr (ReciprocityTheory.ChartRestriction.G.PullbackSections.spMap_comp_spMap _ _).symm rfl
   obtain ⟨χ, hχb, -, hχ, hχL⟩ := GlobalTheory.T.polarisedAbelianPoint_lifts_through_intermediate_pullback (spMap φK₀) (spMap αK) u.A B₁ C b₁ ψ₁ hb₁ hψ₁'
   have hLχ := hχL hLψ₁ hLb₁
   obtain ⟨χ₂, hχ₂, hLχ₂, hd⟩ :=
@@ -1213,7 +1196,6 @@ open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM
 open scoped CategoryTheory.Obj
 open GlobalTheory.Poinc
 open MonObj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 end -- clump:auto
 end -- clump:auto

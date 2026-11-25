@@ -4,6 +4,7 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankP
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CovolumeFrames.StepGramH
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CovolumeFrames.StepSize
 import Mathlib.Tactic.Linter.Style
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsGlobalSetting
 
 @[expose] public section
 
@@ -42,7 +43,7 @@ theorem covol_eq_covolBy_w (hV : Formalism.L2.SG.Pf.NcWeil.VolStabW F E σ M J) 
     exact ⟨fun h => h.1, fun h => ⟨h, x.2⟩⟩
   have hex' : ∃ 𝓕 : Set (stabT (AF F) σ J X0),
       IsFundamentalDomain (ratOf (K := stabT (AF F) σ J X0)) 𝓕 μ' := ⟨G', by rw [← hr]; exact hG'⟩
-  simp only [covol, covolBy, dif_pos hex']
+  simp only [covol, covolBy, dite_eq_left hex']
   split_ifs with h
   · exact congrArg ENNReal.toReal ((hB.2 h.choose h.choose_spec).2 hex'.choose
       (by rw [hr]; exact hex'.choose_spec))
@@ -51,12 +52,7 @@ theorem covol_eq_covolBy_w (hV : Formalism.L2.SG.Pf.NcWeil.VolStabW F E σ M J) 
 end GenW
 
 theorem stepSizeW : ∀ {D : D7} (X : HidaSetting D), 4 * D.R.rS + 5 ≤ X.B.I.n := by
-  intro D X
-  rw [X.n_eq]
-  have h1 := D.R.m_add_three_le_k
-  have h2 := D.R.two_le_m
-  simp only [Formalism.BasicNotions.Ranks.r, Formalism.BasicNotions.Ranks.rS]
-  omega
+  apply _root_.GlobalTheory.CmHermitianRankFrames.four_mul_add_five_le_rank <;> assumption
 
 theorem inVolumesAt_of_w
     (hV : ∀ {D : D7} (X : HidaSetting D),

@@ -145,13 +145,13 @@ private theorem Jpq_equiv_apply_eq_ite_sign {n p q : ℕ} (d : Fin n → ℝ) (e
   unfold Formalism.UG.Jpq
   by_cases hij : i = j
   · subst hij
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     have hi := he i
     revert hi
     generalize e i = x
     rcases x with a | a <;> intro hi <;> simp_all
   · have hne : e i ≠ e j := fun h => hij (e.injective h)
-    rw [if_neg hij]
+    rw [ite_eq_right hij]
     revert hne
     generalize e i = x
     generalize e j = y
@@ -169,11 +169,11 @@ private theorem conjTranspose_mul_diagonal_mul_inv_sqrt_eq_Jpq {n p q : ℕ} (d 
   · rw [Matrix.mul_diagonal, Matrix.conjTranspose_apply, hC, hC]
     simp only [↓reduceIte]
     by_cases hab : e.symm a = e.symm b
-    · rw [if_pos hab.symm, if_pos hab, hab]
+    · rw [ite_eq_left hab.symm, ite_eq_left hab, hab]
       exact star_inv_sqrt_abs_mul_mul_inv_sqrt_abs_eq_sign _ (hd _)
-    · rw [if_neg (Ne.symm hab), if_neg hab, star_zero, zero_mul, zero_mul]
+    · rw [ite_eq_right (Ne.symm hab), ite_eq_right hab, star_zero, zero_mul, zero_mul]
   · intro i _ hi
-    rw [hC i b, if_neg hi, mul_zero]
+    rw [hC i b, ite_eq_right hi, mul_zero]
   · intro h
     exact absurd (Finset.mem_univ _) h
 
@@ -192,13 +192,13 @@ private theorem conjTranspose_mul_Jpq_mul_sqrt_eq_diagonal {n p q : ℕ} (d : Fi
       · subst hij
         simp only [↓reduceIte]
         exact star_sqrt_abs_mul_sign_mul_sqrt_abs_eq _ (hd _)
-      · rw [if_neg hij, if_neg hij, mul_zero, zero_mul]
+      · rw [ite_eq_right hij, ite_eq_right hij, mul_zero, zero_mul]
     · intro b _ hb
-      rw [Matrix.conjTranspose_apply, hB, if_neg hb, star_zero, zero_mul]
+      rw [Matrix.conjTranspose_apply, hB, ite_eq_right hb, star_zero, zero_mul]
     · intro h
       exact absurd (Finset.mem_univ _) h
   · intro a _ ha
-    rw [hB a j, if_neg ha, mul_zero]
+    rw [hB a j, ite_eq_right ha, mul_zero]
   · intro h
     exact absurd (Finset.mem_univ _) h
 
@@ -284,8 +284,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.Mem.ThModel
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem orthEx (D : D7) : OrthEx D := by
@@ -322,7 +320,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta GlobalTheory.Mem.Th MeasureTheory IsDedekindDomain NumberField Matrix
 open Formalism.L2.Host Formalism.IndefR.Links
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.Mem.AntiChar
 
@@ -619,7 +616,6 @@ noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta GlobalTheory.Mem.Th MeasureTheory IsDedekindDomain NumberField Matrix
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.PosOneData
 
@@ -648,8 +644,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open scoped TensorProduct
 
 namespace GlobalTheory.Mem.Th
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
@@ -737,14 +731,6 @@ def RealisedExE (D : D7) : Prop := ∀ θ : InfF D, IsInfFam θ → ∀ ψ, IsSt
     ∃ (X : ThetaX D) (T : ThetaTied D X) (W : WeilTied D X T) (B : BesselTied D X T W) (h : W.ψ = ψ),
       RealisesE (θ := θ) B (h ▸ Wf) Tw (h ▸ Rc)
 
-section Lift
-
-variable {θ : InfF D} {X : ThetaX D} {T : ThetaTied D X} {W : WeilTied D X T} {B : BesselTied D X T W}
-  {Wf : WeilFun D W.ψ} {Tw : Tow D} {Rc : RecFun D θ W.ψ}
-
-
-end Lift
-
 namespace RealisesE
 
 variable {θ : InfF D} {X : ThetaX D} {T : ThetaTied D X} {W : WeilTied D X T} {B : BesselTied D X T W}
@@ -752,25 +738,6 @@ variable {θ : InfF D} {X : ThetaX D} {T : ThetaTied D X} {W : WeilTied D X T} {
 
 include h
 
-theorem eq_of_isInfFam {θ' : InfF D} (h' : IsInfFam θ') : θ' = θ :=
-  ((GlobalTheory.AutFunCompare.isInfFam_iff θ').1 h').trans ((GlobalTheory.AutFunCompare.isInfFam_iff θ).1 h.inf).symm
-
-theorem afTiedSm : ThetaSmoothnessCondition T := ⟨⟨θ, h.inf⟩, fun _ h' V _ => by rw [h.eq_of_isInfFam h']; exact h.forms V⟩
-
-theorem formSub : FormSub D := fun θ' h' V φ => by
-  rw [h.eq_of_isInfFam h']
-  refine ⟨fun hφ => ?_, fun hφ => Submodule.subset_span hφ⟩
-  have : AFs θ V ≤ LinearMap.range (T.ev V) := Submodule.span_le.2 (by rw [LinearMap.coe_range, h.forms V])
-  have h2 : φ ∈ Set.range (T.ev V) := this hφ
-  rwa [h.forms V] at h2
-
-theorem typTied (ht : TypAdd D) : TypTied T := ⟨⟨θ, h.inf⟩, fun _ h' V hV P hP => by
-  intros
-  rename_i F
-  rw [h.eq_of_isInfFam h', h.typ, mem_TypS h.formSub ht h.inf hV hP]
-  have : T.ev V F ∈ Set.range (T.ev V) := ⟨F, rfl⟩
-  rw [h.forms V] at this
-  exact ⟨fun k => k.2, fun k => ⟨this, k⟩⟩⟩
 
 theorem petC_eq (V : HSp D) : T.petC V = Rc.petC V := by
   unfold ThetaTied.petC RecFun.petC; rw [h.petF, h.petR]

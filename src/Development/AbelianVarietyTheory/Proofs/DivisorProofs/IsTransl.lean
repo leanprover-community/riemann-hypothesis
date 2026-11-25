@@ -68,8 +68,6 @@ noncomputable section
 
 open MonoidalCategory CartesianMonoidalCategory MonObj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.CechKS
 
 open GlobalTheory.DeRham

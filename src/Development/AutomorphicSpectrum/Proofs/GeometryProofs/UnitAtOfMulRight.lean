@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CharZeroIffNonzeroUnits
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsSncPatchRat
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsIntersectionFamily
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtIsLocalRingIsFractionRingStalk
@@ -171,15 +172,7 @@ theorem not_unitAt_add (hξ : IsCptGen ξ) {p : Cpt ξ} {a b : Ω} (ha : a ∈ r
 variable [CharZero Ω]
 
 theorem Char0.unitAt_natCast {p : Cpt ξ} (hp : Char0 ξ p) {m : ℕ} (hm : m ≠ 0) : unitAt ξ p (m : Ω) := by
-  induction m using Nat.recOnMul with
-  | zero => exact absurd rfl hm
-  | one => simpa using unitAt_one ξ p
-  | prime r hr =>
-    have := hp r hr
-    simpa [InFibre] using this
-  | mul a b ha hb =>
-    rw [Nat.cast_mul]
-    exact unitAt_mul (ha (left_ne_zero_of_mul hm)) (hb (right_ne_zero_of_mul hm))
+  apply _root_.GlobalTheory.CompanionTheory.Ar.SncBase.CharTie.unit_natCast <;> assumption
 
 theorem Char0.algebraMap_mem {p : Cpt ξ} (hp : Char0 ξ p) (r : ℚ) : algebraMap ℚ Ω r ∈ regAt ξ p := by
   have e : algebraMap ℚ Ω r = (r.num : Ω) * ((r.den : Ω))⁻¹ := by

@@ -90,7 +90,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
-attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.Mem.Col2.TC
 
@@ -110,13 +109,10 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
-attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
 namespace GlobalTheory.Mem.Col2.TC.ChTw
-
-
 
 theorem match_base_trivQ : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (u : B.Word) (a : I.ι) (Q : Finset (HeightOneSpectrum (𝓞 B.host.F))) (i : ℕ), i ≤ B.R.m → ∀ (Ch0 : Type) (chOf0 : (I.stp u I.mu0 i).Cl → Ch0) (Lb0 : Ch0 → Submodule (𝓞 B.host.E) (Fin (B.R.N i) → B.host.E)) (U0 : Ch0 → Subgroup (GA B (B.R.N i))) (chi0 : ∀ β, U0 β →* ℂˣ) (y0 : (I.stp u I.mu0 i).Cl → GA B (B.R.N i)) (st0 : ∀ c, (I.stp u I.mu0 i).Stab c → GL (Fin (B.R.N i)) B.host.E) (k0 : Ch0 → GA B (B.R.N i)), 1 ≤ i → i < B.R.m → (∀ v, v ∈ Q ↔ I.UnderQ a v) → I.Reads u I.mu0 i chOf0 Lb0 U0 chi0 y0 st0 k0 → ∃ (g : Chart I u a i → Ch0) (k : Chart I u a i → GA B (B.R.N i)), AdmK I u a i k ∧ (∀ β (v : HeightOneSpectrum (𝓞 B.host.F)), I.UnderQ a v → bc (prV (E := B.host.E) v) (k β) = 1) ∧ ∀ β, ∃ c, chartOf I u a i c = β ∧ ∃ c0, chOf0 c0 = g β ∧ ∀ x : GA B (B.R.N i), (∀ v ∈ Q, bc (prV (E := B.host.E) v) x = 1) → (∀ κ, LocMv I u a i c ((k β)⁻¹ * x * k β) κ → ∃ κ0, LocMv I u I.mu0 i c0 ((k0 (g β))⁻¹ * x * k0 (g β)) κ0 ∧ (I.stp u a i).chr c.1 κ = (I.stp u I.mu0 i).chr c0.1 κ0) ∧ (∀ κ0, LocMv I u I.mu0 i c0 ((k0 (g β))⁻¹ * x * k0 (g β)) κ0 → ∃ κ, LocMv I u a i c ((k β)⁻¹ * x * k β) κ) := by
   intro B X I hI hP l u a Q i hi Ch0 chOf0 Lb0 U0 chi0 y0 st0 k0 h1 h2 hQ hR0
@@ -136,8 +132,6 @@ theorem match_base_trivQ : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok 
   rw [e]
   refine hs _ fun v hv => ?_
   rw [map_mul, map_mul, hx v hv, mul_one, map_inv, inv_mul_cancel]
-
-
 
 theorem charts_match_trivQ : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)) (u : B.Word) (a : I.ι) (Q : Finset (HeightOneSpectrum (𝓞 (I.rec7 l Z).host.F))) (i : ℕ) (hi : i ≤ B.R.m) (Ch0 : Type) (chOf0 : (I.stp u I.mu0 i).Cl → Ch0) (K0 : ∀ β : Ch0, LevelChart (I.rec7 l Z) (B.T u) (badG (I.rec7 l Z)) i hi (fun c : {c // chOf0 c = β} => (I.chain l u I.mu0).stab i c.1) (fun c => latCrd (I.rec7 l Z) i hi (I.latAt u I.mu0 i c.1))), 1 ≤ i → i < B.R.m → (∀ v, v ∈ Q ↔ I.UnderQ a v) → I.ReadsK l Z u I.mu0 i hi chOf0 K0 → ∃ (g : Chart I u a i → Ch0) (k : Chart I u a i → GA B (B.R.N i)), AdmK I u a i k ∧ (∀ β (v : HeightOneSpectrum (𝓞 B.host.F)), I.UnderQ a v → bc (prV (E := B.host.E) v) (k β) = 1) ∧ ∀ (K : ∀ β : Chart I u a i, LevelChart (I.rec7 l Z) (B.T u) (badQ (I.rec7 l Z) Q) i hi (fun c : {c // chartOf I u a i c = β} => (I.chain l u a).stab i c.1) (fun c => latCrd (I.rec7 l Z) i hi (I.latAt u a i c.1))), I.Reads u a i (chartOf I u a i) (fun β => (K β).lev.Lb) (fun β => (K β).lev.U) (fun β => (K β).lev.chi) (fun c => ((K (chartOf I u a i c)).y ⟨c, rfl⟩).1) (fun c s => ((K (chartOf I u a i c)).stabI ⟨c, rfl⟩ s).1) k → ∀ β, (∀ κ : (K β).lev.U, (∀ v ∈ Q, bc (prV (E := (I.rec7 l Z).host.E) v) κ.1 = 1) → ∃ h' : κ.1 ∈ (K0 (g β)).lev.U, (K β).lev.chi κ = (K0 (g β)).lev.chi ⟨κ.1, h'⟩) ∧ ∀ κ' : (K0 (g β)).lev.U, (∀ v ∈ Q, bc (prV (E := (I.rec7 l Z).host.E) v) κ'.1 = 1) → κ'.1 ∈ (K β).lev.U := by
   intro B X I hI hP l Z u a Q i hi Ch0 chOf0 K0 h1 h2 hQ hR0
@@ -179,8 +173,6 @@ theorem charts_match_trivQ : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.O
     obtain ⟨κ, hl⟩ := (hx κ'.1 hκ').2 κ0 hl0
     exact (reads_of_locMv I hI hK c κ'.1 κ hl).1
 
-
-
 theorem charts_tuple_trivQ : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)), ∀ (u : B.Word) (a : I.ι) (Q : Finset (HeightOneSpectrum (𝓞 (I.rec7 l Z).host.F))) (i : ℕ) (hi : i ≤ B.R.m) (Ch0 : Type) (chOf0 : (I.stp u I.mu0 i).Cl → Ch0) (K0 : ∀ β : Ch0, LevelChart (I.rec7 l Z) (B.T u) (badG (I.rec7 l Z)) i hi (fun c : {c // chOf0 c = β} => (I.chain l u I.mu0).stab i c.1) (fun c => latCrd (I.rec7 l Z) i hi (I.latAt u I.mu0 i c.1))), 1 ≤ i → i < B.R.m → (∀ v, v ∈ Q ↔ I.UnderQ a v) → I.ReadsK l Z u I.mu0 i hi chOf0 K0 → ∃ (Ch : Type) (_ : Finite Ch) (chOf : (I.stp u a i).Cl → Ch) (K : ∀ β : Ch, LevelChart (I.rec7 l Z) (B.T u) (badQ (I.rec7 l Z) Q) i hi (fun c : {c // chOf c = β} => (I.chain l u a).stab i c.1) (fun c => latCrd (I.rec7 l Z) i hi (I.latAt u a i c.1))) (g : Ch → Ch0), (∃ k : Ch → GA B (B.R.N i), I.Reads u a i chOf (fun β => (K β).lev.Lb) (fun β => (K β).lev.U) (fun β => (K β).lev.chi) (fun c => ((K (chOf c)).y ⟨c, rfl⟩).1) (fun c s => ((K (chOf c)).stabI ⟨c, rfl⟩ s).1) k ∧ ∀ β (v : HeightOneSpectrum (𝓞 B.host.F)), I.UnderQ a v → bc (prV (E := B.host.E) v) (k β) = 1) ∧ ∀ β, (∀ v, v ∉ Q → (K β).lev.Uloc v = (K0 (g β)).lev.Uloc v) ∧ (∃ n : ℕ, 0 < n ∧ ∀ κ, (K β).lev.chi κ ^ n = 1) ∧ ∀ (κ : (K β).lev.U) (κ' : (K0 (g β)).lev.U), κ.1 = κ'.1 → (∀ v ∈ Q, bc (prV (E := (I.rec7 l Z).host.E) v) κ.1 = 1) → (K β).lev.chi κ = (K0 (g β)).lev.chi κ' := by
   intro B X I hok hpins l Z u a Q i hi Ch0 chOf0 K0 h1 h2 hQ hR
   obtain ⟨g, k, hk, hkQ, hC⟩ := charts_match_trivQ I hok hpins l Z u a Q i hi Ch0 chOf0 K0 h1 h2 hQ hR
@@ -210,7 +202,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
-attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.Mem.Col2.TC
 
@@ -236,10 +227,7 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
-attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.nonempty_classMap_above_lastStep : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → ∀ (u : B.Word) (a : I.ι) (i : ℕ), B.R.m < i → Nonempty ((I.stp u a i).Cl → (I.stp u I.mu0 i).Cl) := by
-  first | exact @GlobalTheory.Mem.Col2.TC.nonempty_clDown
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NonemptyClassMapAboveLastStepStatement =====
@@ -250,13 +238,7 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
-attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.not_twistPlace_referenceTuple : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), ColIn.Ok I → ∀ v : HeightOneSpectrum (𝓞 B.host.F), ¬ I.UnderQ I.mu0 v := by
-  intro B X I _ v ⟨P, hP, _⟩
-  have hEmpty : P ∈ (∅ : Finset (HeightOneSpectrum (𝓞 B.fields.E))) :=
-    I.twistPrimes_reference_tuple_eq_empty ▸ hP
-  simp at hEmpty
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NotTwistPlaceReferenceTupleStatement =====
@@ -267,7 +249,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
-attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -332,8 +313,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
 attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.twistPlaces_prime_to_levelAndTypePrimes : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → I.Laws → ∀ (u : B.Word) (a : I.ι) (v : HeightOneSpectrum (𝓞 B.host.F)), I.UnderQ a v → ((B.T u : ℕ) : 𝓞 B.host.F) ∉ v.asIdeal ∧ ∀ j, ((B.host.g j : ℕ) : 𝓞 B.host.F) ∉ v.asIdeal := by
-  first | exact @GlobalTheory.Mem.Col2.TC.underQ_prime_to_bad
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TwistPlacesPrimeToLevelAndTypePrimesStatement =====
@@ -344,15 +323,12 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
-attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 namespace GlobalTheory.Mem.Col2.TC
 open scoped TensorProduct
 section
 variable {B : Base} {X : PreX B.toPre} (I : TC B X) (l : I.Laws) (Z : Later B (I.cols l))
-
-
 
 set_option genInjectivity false in
 set_option genSizeOfSpec false in
@@ -379,7 +355,6 @@ structure TwStep (H : Formalism.L2.Herm.HermColsCh (I.rec7 l Z)) (F : ∀ u, For
   offU : ∀ h1 hm β v, v ∉ Q → (lev h1 hm β).Uloc v = (H.lev u i h1 hm (gOf β)).Uloc v
   offL : ∀ h1 hm β, (lev h1 hm β).Lb = (H.lev u i h1 hm (gOf β)).Lb
   offK : ∀ h1 (h2 : i + 1 ≤ B.R.m) β v, v ∉ Q → (K h1 (le_of_succ_m h2) β).lev.Uloc v = ((F u).ch i h1 h2 (gOf β)).lev.Uloc v
-  uniq : i = B.R.m → Nonempty (Unique Ch)
   chiFin : a ≠ I.mu0 → ∀ h1 hm β, ∃ n : ℕ, 0 < n ∧ ∀ κ, (K h1 hm β).lev.chi κ ^ n = 1
   chiC : ∀ h1 (h2 : i + 1 ≤ B.R.m) β (κ : (K h1 (le_of_succ_m h2) β).lev.U) (κ' : ((F u).ch i h1 h2 (gOf β)).lev.U), κ.1 = κ'.1 →
     (∀ v ∈ Q, bc (prV (E := (I.rec7 l Z).host.E) v) κ.1 = 1) → (K h1 (le_of_succ_m h2) β).lev.chi κ = ((F u).ch i h1 h2 (gOf β)).lev.chi κ'
@@ -403,7 +378,6 @@ theorem twStep_out {H : Formalism.L2.Herm.HermColsCh (I.rec7 l Z)} {F : ∀ u, F
      offU := fun h1 hm => absurd ⟨h1, hm⟩ hout
      offL := fun h1 hm => absurd ⟨h1, hm⟩ hout
      offK := fun h1 h2 => absurd ⟨h1, le_of_succ_m h2⟩ hout
-     uniq := fun e => (hout ⟨(one_le_m B.R).trans e.ge, e.le⟩).elim
      chiFin := fun _ h1 hm => absurd ⟨h1, hm⟩ hout
      chiC := fun h1 h2 => absurd ⟨h1, le_of_succ_m h2⟩ hout }⟩
 
@@ -448,7 +422,6 @@ def twStep_mk (hok : I.Ok) (pins : TC.Pins B X) {H : Formalism.L2.Herm.HermColsC
     (hLb : ∀ β, (K β).lev.Lb = reL (rankN (I.rec7 l Z) i hmi) (H.lev u i h1i hmi (g β)).Lb)
     (hU : ∀ β v, v ∉ Q → (K β).lev.Uloc v = ((H.lev u i h1i hmi (g β)).Uloc v).map (reGL (rankN (I.rec7 l Z) i hmi) _).toMonoidHom)
     (hK : ∀ h1 (h2 : i + 1 ≤ B.R.m) β v, v ∉ Q → (K β).lev.Uloc v = ((F u).ch i h1 h2 (g β)).lev.Uloc v)
-    (hu : i = B.R.m → Nonempty (Unique Ch))
     (hF : a ≠ I.mu0 → ∀ β, ∃ n : ℕ, 0 < n ∧ ∀ κ, (K β).lev.chi κ ^ n = 1)
     (hC : ∀ h1 (h2 : i + 1 ≤ B.R.m) β (κ : (K β).lev.U) (κ' : ((F u).ch i h1 h2 (g β)).lev.U), κ.1 = κ'.1 →
       (∀ v ∈ Q, bc (prV (E := (I.rec7 l Z).host.E) v) κ.1 = 1) → (K β).lev.chi κ = ((F u).ch i h1 h2 (g β)).lev.chi κ') :
@@ -461,7 +434,7 @@ def twStep_mk (hok : I.Ok) (pins : TC.Pins B X) {H : Formalism.L2.Herm.HermColsC
       have h1 : (K β).lev.Uloc v = _ := (hx β).choose_spec.choose_spec.2.Uloc_eq v
       rw [hU β v hv] at h1
       exact Subgroup.map_injective (reGL (rankN (I.rec7 l Z) i hmi) _).injective h1.symm,
-    offL := fun _ _ β => (hx β).choose_spec.choose_spec.1, offK := hK, uniq := hu,
+    offL := fun _ _ β => (hx β).choose_spec.choose_spec.1, offK := hK,
     chiFin := fun h _ _ => hF h, chiC := hC }
 
 theorem reads_lb_eq {u : B.Word} {a a' : I.ι} {i : ℕ} {hi : i ≤ B.R.m} {bad bad' : Set (HeightOneSpectrum (𝓞 B.host.F))} {Ch Ch' : Type}
@@ -483,7 +456,7 @@ theorem twStep_mid (hok : I.Ok) (pins : TC.Pins B X) {H : Formalism.L2.Herm.Herm
     (hQ : ∀ v, v ∈ Q ↔ I.UnderQ a v)
     (hF : ∀ u, I.StdF l Z u (F u)) (hC : CarH H F) : Nonempty (TwStep I l Z H F Q u a i) := by
   have hoff : ∀ v ∈ Q, ((B.T u : ℕ) : 𝓞 (_root_.GlobalTheory.Mem.assemble _ _ Z.W Z.V Z.S Z.N Z.G).host.F) ∉ v.asIdeal ∧ ∀ j, (((_root_.GlobalTheory.Mem.assemble _ _ Z.W Z.V Z.S Z.N Z.G).host.g j : ℕ) : 𝓞 (_root_.GlobalTheory.Mem.assemble _ _ Z.W Z.V Z.S Z.N Z.G).host.F) ∉ v.asIdeal :=
-    fun v hv => GlobalTheory.T.twistPlaces_prime_to_levelAndTypePrimes I hok l u a v ((hQ v).1 hv)
+    fun v hv => GlobalTheory.Mem.Col2.TC.underQ_notMem I hok l u a v ((hQ v).1 hv)
   have hi : i ≤ B.R.m := le_of_succ_m h2
   by_cases ha : a = I.mu0
   · subst ha
@@ -492,8 +465,8 @@ theorem twStep_mid (hok : I.Ok) (pins : TC.Pins B X) {H : Formalism.L2.Herm.Herm
         (fun c : {c // H.chOf u i c = β} => (I.chain l u I.mu0).stab i c.1) (fun c => latCrd (I.rec7 l Z) i hi (I.latAt u I.mu0 i c.1)) :=
       fun β => chartWiden Set.subset_union_left ((F u).ch i h1 h2 β)
     refine ⟨twStep_mk hok pins u I.mu0 i h1 hi hoff (H.Ch u i) (H.ChFin u i) (H.chOf u i) id K hr0
-      (fun _ => hr0.elim fun k hk => ⟨k, hk, fun _ v hv => absurd hv (GlobalTheory.T.not_twistPlace_referenceTuple I hok v)⟩) (fun β => ?_) (fun β v _ => ?_) (fun _ _ β v _ => rfl)
-      (fun e => by omega) (fun h => absurd rfl h) (fun _ _ β κ κ' e _ => ?_)⟩
+      (fun _ => hr0.elim fun k hk => ⟨k, hk, fun _ v hv => absurd hv (GlobalTheory.Mem.Col2.TC.not_underQ_mu0 I hok v)⟩) (fun β => ?_) (fun β v _ => ?_) (fun _ _ β v _ => rfl)
+      (fun h => absurd rfl h) (fun _ _ β κ κ' e _ => ?_)⟩
     · exact (hC.carC u i h1 h2 β).Lb_eq
     · exact (hC.carC u i h1 h2 β).Uloc_eq v
     · exact congrArg ((F u).ch i h1 h2 β).lev.chi (Subtype.ext e)
@@ -502,7 +475,7 @@ theorem twStep_mid (hok : I.Ok) (pins : TC.Pins B X) {H : Formalism.L2.Herm.Herm
     have hr : I.ReadsK l Z u a i hi chOf K := hrQ.elim fun k hk => ⟨k, hk.1⟩
     have hoU : ∀ β v, v ∉ Q → (K β).lev.Uloc v = ((F u).ch i h1 h2 (g β)).lev.Uloc v := fun β v hv => (hp β).1 v hv
     refine ⟨twStep_mk hok pins u a i h1 hi hoff Ch fin chOf g K hr (fun _ => hrQ) (fun β => ?_) (fun β v hv => ?_) (fun _ _ β v hv => hoU β v hv)
-      (fun e => by omega) (fun _ β => (hp β).2.1) (fun _ _ β κ κ' e hv => (hp β).2.2 κ κ' e hv)⟩
+      (fun _ β => (hp β).2.1) (fun _ _ β κ κ' e hv => (hp β).2.2 κ κ' e hv)⟩
     · exact (reads_lb_eq (K := K) (K' := (F u).ch i h1 h2)
         hr ((hF u).mid i h1 h2) β (g β)).trans (hC.carC u i h1 h2 (g β)).Lb_eq
     · exact (hoU β v hv).trans ((hC.carC u i h1 h2 (g β)).Uloc_eq v)
@@ -525,7 +498,7 @@ theorem twStep_top (hok : I.Ok) (pins : TC.Pins B X) {H : Formalism.L2.Herm.Herm
     (hQ : ∀ v, v ∈ Q ↔ I.UnderQ a v)
     (hF : ∀ u, I.StdF l Z u (F u)) (hC : CarH H F) : ∃ S : TwStep I l Z H F Q u a B.R.m, TopP S := by
   have hoff : ∀ v ∈ Q, ((B.T u : ℕ) : 𝓞 (_root_.GlobalTheory.Mem.assemble _ _ Z.W Z.V Z.S Z.N Z.G).host.F) ∉ v.asIdeal ∧ ∀ j, (((_root_.GlobalTheory.Mem.assemble _ _ Z.W Z.V Z.S Z.N Z.G).host.g j : ℕ) : 𝓞 (_root_.GlobalTheory.Mem.assemble _ _ Z.W Z.V Z.S Z.N Z.G).host.F) ∉ v.asIdeal :=
-    fun v hv => GlobalTheory.T.twistPlaces_prime_to_levelAndTypePrimes I hok l u a v ((hQ v).1 hv)
+    fun v hv => GlobalTheory.Mem.Col2.TC.underQ_notMem I hok l u a v ((hQ v).1 hv)
   have h1m : 1 ≤ B.R.m := one_le_m B.R
   have hr0 := (hF u).ends B.R.m le_rfl (Or.inr rfl)
   have hno := Nat.not_succ_le_self B.R.m
@@ -539,7 +512,7 @@ theorem twStep_top (hok : I.Ok) (pins : TC.Pins B X) {H : Formalism.L2.Herm.Herm
     let S := twStep_mk (F := F) hok pins u I.mu0 B.R.m h1m le_rfl hoff
       Unit inferInstance (fun _ => ()) (fun _ => chM H u) K hr (fun h2 => (hno h2).elim)
       (fun _ => (hC.carM u).Lb_eq) (fun _ v _ => (hC.carM u).Uloc_eq v)
-      (fun _ h2 => (hno h2).elim) (fun _ => ⟨inferInstance⟩)
+      (fun _ h2 => (hno h2).elim)
       (fun h => (h rfl).elim) (fun _ h2 => (hno h2).elim)
     exact ⟨S, ⟨fun h => (h rfl).elim, fun h => (h rfl).elim⟩⟩
   · obtain ⟨K1, hk, htop, hoU, hfin, -⟩ := _root_.GlobalTheory.Mem.Col2.TC.chart_twm I hok pins l Z u a Q ((F u).cls B.R.m le_rfl (Or.inr rfl)) hQ hr0
@@ -553,11 +526,9 @@ theorem twStep_top (hok : I.Ok) (pins : TC.Pins B X) {H : Formalism.L2.Herm.Herm
       Unit inferInstance (fun _ => ()) (fun _ => chM H u) K1 hr (fun h2 => (hno h2).elim)
       (fun β => (hLb β).trans (hC.carM u).Lb_eq)
       (fun _ v hv => (hoU v hv).trans ((hC.carM u).Uloc_eq v))
-      (fun _ h2 => (hno h2).elim) (fun _ => ⟨inferInstance⟩)
+      (fun _ h2 => (hno h2).elim)
       (fun _ _ => hfin) (fun _ h2 => (hno h2).elim)
     exact ⟨S, ⟨fun _ _ _ => htop, fun _ _ => hk⟩⟩
-
-
 
 set_option genInjectivity false in
 set_option genSizeOfSpec false in
@@ -581,7 +552,7 @@ theorem twPack_ex (hok : I.Ok) (pins : TC.Pins B X) {H : Formalism.L2.Herm.HermC
       · by_cases h3 : i = B.R.m
         · subst h3
           exact (twStep_top hok pins u a hQ hF hC).elim fun S _ => ⟨S⟩
-        · obtain ⟨f⟩ := GlobalTheory.T.nonempty_classMap_above_lastStep I hok u a i (by omega)
+        · obtain ⟨f⟩ := GlobalTheory.Mem.Col2.TC.nonempty_clDown I hok u a i (by omega)
           exact twStep_out u a i (by omega) (fun c => H.chOf u i (f c))
   obtain ⟨Sm, hSm⟩ := twStep_top (F := F) (Q := Q) hok pins u a hQ hF hC
   let St : ∀ i, TwStep I l Z H F Q u a i := Function.update (fun i => (ex i).some) B.R.m Sm
@@ -595,7 +566,7 @@ theorem twPack_ex (hok : I.Ok) (pins : TC.Pins B X) {H : Formalism.L2.Herm.HermC
       refine ((St (B.R.m - 1)).K h1 (Nat.sub_le _ _) β).lev.chi_triv κ fun v hv => ?_
       rcases hv with hv | hv
       · exact hκ v hv
-      · exact absurd (ha ▸ (hQ v).1 hv) (GlobalTheory.T.not_twistPlace_referenceTuple I hok v)
+      · exact absurd (ha ▸ (hQ v).1 hv) (GlobalTheory.Mem.Col2.TC.not_underQ_mu0 I hok v)
     · obtain ⟨n, hn, h⟩ := (St (B.R.m - 1)).chiFin ha h1 (Nat.sub_le _ _) β
       exact ⟨n, hn, fun κ _ => h κ⟩
   obtain ⟨J⟩ := _root_.GlobalTheory.Mem.Col2.TwistLevel.exists_levJ_cosets I hok pins l Z H.Ch H.chOf F u a Q h1 (St (B.R.m - 1)).Ch (St (B.R.m - 1)).fin (St (B.R.m - 1)).chOf
@@ -603,68 +574,24 @@ theorem twPack_ex (hok : I.Ok) (pins : TC.Pins B X) {H : Formalism.L2.Herm.HermC
     (fun β v hv => (St (B.R.m - 1)).offK h1 h2 β v hv) (fun β κ κ' e hv => (St (B.R.m - 1)).chiC h1 h2 β κ κ' e hv)
   exact ⟨⟨St, hSt ▸ hSm, J⟩⟩
 
-theorem reL_inj {a b : ℕ} (h : a = b) {E : Type} [Field E] [NumberField E] {L L' : Submodule (𝓞 E) (Fin a → E)}
-    (e : reL h L = reL h L') : L = L' :=
-  Submodule.map_injective_of_injective (f := (reV h E : (Fin a → E) →ₗ[E] (Fin b → E)).restrictScalars (𝓞 E)) (reV h E).injective e
-
-def stab0Equiv (u : B.Word) (a : I.ι) (c : (I.stp u I.mu0 0).Cl) (c' : (I.stp u a 0).Cl) : (I.stp u I.mu0 0).Stab c ≃* (I.stp u a 0).Stab c' :=
-  have h0 : Subsingleton ((I.stp u I.mu0 0).Stab c) := ⟨fun x y => Subtype.ext
-    (((l.lev u I.mu0).free0 c.1 x.1 _ x.2).trans ((l.lev u I.mu0).free0 c.1 y.1 _ y.2).symm)⟩
-  have h1 : Subsingleton ((I.stp u a 0).Stab c') := ⟨fun x y => Subtype.ext
-    (((l.lev u a).free0 c'.1 x.1 _ x.2).trans ((l.lev u a).free0 c'.1 y.1 _ y.2).symm)⟩
-  { toFun := fun _ => 1
-    invFun := fun _ => 1
-    left_inv := fun _ => Subsingleton.elim _ _
-    right_inv := fun _ => Subsingleton.elim _ _
-    map_mul' := fun _ _ => Subsingleton.elim _ _ }
-
-
-
 def twT {H : Formalism.L2.Herm.HermColsCh (I.rec7 l Z)} {F : ∀ u, FormsTiedSym (I.rec7 l Z) u (H.Ch u) (H.chOf u)}
     {inQ : I.ι → HeightOneSpectrum (𝓞 (I.rec7 l Z).host.F) → Prop}
     (Q : I.ι → Finset (HeightOneSpectrum (𝓞 (I.rec7 l Z).host.F))) (hQ : ∀ a v, v ∈ Q a ↔ inQ a v)
     (p : ∀ u a, TwPack (I := I) (l := l) (Z := Z) H F (Q a) u a) : Formalism.L2.Herm.TwChTied (I.rec7 l Z) inQ where
   eCls0 u μ := I.eCls0 l u μ
-  eStab0 u μ c := stab0Equiv (l := l) u μ c _
   eY _ _ _ _ := Equiv.refl _
-  de_eq _ _ _ _ _ _ := rfl
-  twisted_character_eq u μ φ c y := by
-    show φ ((I.eCls0 l u μ).symm (I.eCls0 l u μ c)) y = φ c y
-    exact congrArg (fun c' => φ c' y) (Equiv.symm_apply_apply _ c)
   Q := Q
   Q_iff := hQ
   Ch u μ i := ((p u μ).St i).Ch
   ChFin u μ i := ((p u μ).St i).fin
-  Ch_m u μ := ((p u μ).St B.R.m).uniq rfl
   chOf u μ i := ((p u μ).St i).chOf
   lev u μ i h1 hm β := ((p u μ).St i).lev h1 hm β
   lat u μ i := I.latAt u μ i
   cls u μ _ i h1 hm β := ((p u μ).St i).cls h1 hm β
   levJ u μ _ := (p u μ).J.levJ
   Yb u μ _ := (p u μ).J.Yb
-  YbFin u μ _ := (p u μ).J.YbFin
   YbAct u μ _ := (p u μ).J.YbAct
   yb u μ _ := (p u μ).J.yb
-  yb_orbit u μ _ := (p u μ).J.yb_orbit
-  levJ_Lb u μ h β := by
-    have e1 := (((p u μ).St (B.R.m - 1)).car h (Nat.sub_le _ _) β).Lb_eq
-    have e2 := (p u μ).J.lb β
-    rw [e1] at e2
-    exact reL_inj _ e2
-  levJ_le u μ h β := by
-    have e1 := (((p u μ).St (B.R.m - 1)).car h (Nat.sub_le _ _) β).U_eq
-    have e2 := (p u μ).J.le β
-    rw [e1] at e2
-    exact (Subgroup.map_le_map_iff_of_injective (reGL (rankN (I.rec7 l Z) (B.R.m - 1) (Nat.sub_le _ _)) _).injective).1 e2
-  levJ_stab u μ h β κ := by
-    have e1 := (((p u μ).St (B.R.m - 1)).car h (Nat.sub_le _ _) β).U_eq
-    have e2 := (p u μ).J.stab β κ
-    rw [e1] at e2
-    exact (Subgroup.mem_map_iff_mem (f := (reGL (rankN (I.rec7 l Z) (B.R.m - 1) (Nat.sub_le _ _)) _).toMonoidHom)
-      (reGL (rankN (I.rec7 l Z) (B.R.m - 1) (Nat.sub_le _ _)) _).injective).symm.trans e2
-  DGam_one _ _ := rfl
-
-
 
 def twJ {H : Formalism.L2.Herm.HermColsCh (I.rec7 l Z)} {F : ∀ u, FormsTiedSym (I.rec7 l Z) u (H.Ch u) (H.chOf u)}
     {inQ : I.ι → HeightOneSpectrum (𝓞 (I.rec7 l Z).host.F) → Prop}
@@ -693,8 +620,6 @@ theorem idY_twYS {inQ : I.ι → HeightOneSpectrum (𝓞 (I.rec7 l Z).host.F) �
   · exact (hF u).eY i hi h y
   · exact (hF u).eYC i (by omega) (by omega) y
 
-
-
 def twW (hok : I.Ok) (pins : TC.Pins B X) (l0 : I.Law0 l) {H : Formalism.L2.Herm.HermColsCh (I.rec7 l Z)}
     {F : ∀ u, FormsTiedSym (I.rec7 l Z) u (H.Ch u) (H.chOf u)} (hF : ∀ u, I.StdF l Z u (F u))
     {inQ : I.ι → HeightOneSpectrum (𝓞 (I.rec7 l Z).host.F) → Prop}
@@ -722,8 +647,6 @@ def twJS {H : Formalism.L2.Herm.HermColsCh (I.rec7 l Z)} {F : ∀ u, FormsTiedSy
 
 end
 
-
-
 theorem tw_chains : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)), ∀ (l0 : I.Law0 l) (inQ : I.ι → HeightOneSpectrum (𝓞 (I.rec7 l Z).host.F) → Prop) (H : Formalism.L2.Herm.HermColsCh (I.rec7 l Z)) (F : ∀ u, FormsTiedSym (I.rec7 l Z) u (H.Ch u) (H.chOf u)), (∀ a v, inQ a v ↔ I.UnderQ a v) → (∀ u, I.StdF l Z u (F u) ∧ I.StdLvC l Z u (F u)) → CarH H F → (∀ u j v h, (F u).glevJ.fr j v h = 1) → ∃ (T : Formalism.L2.Herm.TwChTied (I.rec7 l Z) inQ) (J : Formalism.L2.Herm.TwChJointS T H) (W : TwFormsTiedS (I.rec7 l Z) (I.tw l l0 Z) T J F), Formalism.L2.Herm.TwChMu0 T ∧ I.StdW l Z l0 W ∧ Nonempty (SymmetricTwistedJointForms T F) := by
   intro B X I hok pins l Z l0 inQ H F hin hF hC hJ
   have hF' : ∀ u, I.StdF l Z u (F u) := fun u => (hF u).1
@@ -736,7 +659,7 @@ theorem tw_chains : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.
   let p := fun u a => (P u a).some
   choose A hA hA' using fun u a => GlobalTheory.Mem.Col2.TwAtStd.twAtT_exists I hok pins l Z l0 u a
   have hoff : ∀ (u : B.Word) a, ∀ v ∈ Q a, ((B.T u : ℕ) : 𝓞 (I.rec7 l Z).host.F) ∉ v.asIdeal ∧ ∀ j, (((I.rec7 l Z).host.g j : ℕ) : 𝓞 (I.rec7 l Z).host.F) ∉ v.asIdeal :=
-    fun u a v hv => GlobalTheory.T.twistPlaces_prime_to_levelAndTypePrimes I hok l u a v ((hQ a v).1 hv)
+    fun u a v hv => GlobalTheory.Mem.Col2.TC.underQ_notMem I hok l u a v ((hQ a v).1 hv)
   refine ⟨twT Q hQ' p, twJ Q hQ' p hoff, twW hok pins l0 hF' Q hQ' p hoff A, ⟨fun u i hi => Equiv.ext fun y => rfl,
     fun u => Equiv.ext fun c => GlobalTheory.T.eCls0_mu0_eq_self I hok l u c⟩, ⟨fun _ _ => rfl, fun _ _ _ _ => rfl, fun _ _ _ => rfl, hA, ?_,
     fun u a _ i h1 hm => ((p u a).St i).reads h1 hm, fun u a ha h1 β => (p u a).top.top ha h1 β,
@@ -745,7 +668,6 @@ theorem tw_chains : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.
   show ((A u a).eFv v).symm ((F u).atT.res ((A u a).eVT v) r) = _
   rw [(hF' u).res]
   exact ((A u a).eFv v).symm_apply_eq.2 (hA' u a v r).symm
-
 
 end GlobalTheory.Mem.Col2.TC
 end
@@ -759,10 +681,7 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
-attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.trueColumnChoice_twistedChains_formsClasses : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)), ∀ (l0 : I.Law0 l) (inQ : I.ι → HeightOneSpectrum (𝓞 (I.rec7 l Z).host.F) → Prop) (H : Formalism.L2.Herm.HermColsCh (I.rec7 l Z)) (F : ∀ u, FormsTiedSym (I.rec7 l Z) u (H.Ch u) (H.chOf u)), (∀ a v, inQ a v ↔ I.UnderQ a v) → (∀ u, I.StdF l Z u (F u) ∧ I.StdLvC l Z u (F u)) → CarH H F → (∀ u j v h, (F u).glevJ.fr j v h = 1) → ∃ (T : Formalism.L2.Herm.TwChTied (I.rec7 l Z) inQ) (J : Formalism.L2.Herm.TwChJointS T H) (W : TwFormsTiedS (I.rec7 l Z) (I.tw l l0 Z) T J F), Formalism.L2.Herm.TwChMu0 T ∧ I.StdW l Z l0 W ∧ Nonempty (SymmetricTwistedJointForms T F) := by
-  first | exact @GlobalTheory.Mem.Col2.TC.tw_chains
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnChoiceTwistedChainsFormsClassesStatement =====
@@ -773,11 +692,8 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
-attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.Mem.Col2.TC
-
-
 
 theorem tw_ties_with_points : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)), ∀ (l0 : I.Law0 l) (inQ : I.ι → HeightOneSpectrum (𝓞 (I.rec7 l Z).host.F) → Prop) (H : Formalism.L2.Herm.HermColsCh (I.rec7 l Z)) (F : ∀ u, FormsTiedSym (I.rec7 l Z) u (H.Ch u) (H.chOf u)), (∀ a v, inQ a v ↔ I.UnderQ a v) → (∀ u, I.StdF l Z u (F u) ∧ I.StdLvC l Z u (F u)) → CarH H F → ∃ (T : Formalism.L2.Herm.TwChTied (I.rec7 l Z) inQ) (J : Formalism.L2.Herm.TwChJointS T H) (W : TwFormsTiedS (I.rec7 l Z) (I.tw l l0 Z) T J F), Formalism.L2.Herm.TwChMu0 T ∧ I.StdW l Z l0 W ∧ Nonempty (SymmetricTwistedJointForms T F) ∧
     (∀ u a (ha : a ≠ I.mu0) (h1 : 1 ≤ B.R.m), ∃ k, I.Reads u a B.R.m (T.chOf u a B.R.m) (fun β => (W.ch u a ha B.R.m h1 le_rfl β).lev.Lb)
@@ -788,7 +704,7 @@ theorem tw_ties_with_points : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.
         IsExt (I.rec7 l Z) (z0 X u) (inclE (F := (I.rec7 l Z).host.F) (FiniteAdeleRing (𝓞 (I.rec7 l Z).host.F) (I.rec7 l Z).host.F)) g'.1 g.1 →
         PtOf (g * k β) (tilF I.sel (I.tup a) u d)) := by
   intro B X I hI hP l Z l0 inQ H F hQ hF hH
-  obtain ⟨T, J, W, h0, hW, hJ⟩ := GlobalTheory.T.trueColumnChoice_twistedChains_formsClasses I hI hP l Z l0 inQ H F hQ hF hH (fun u => (hF u).2.2)
+  obtain ⟨T, J, W, h0, hW, hJ⟩ := GlobalTheory.Mem.Col2.TC.tw_chains I hI hP l Z l0 inQ H F hQ hF hH (fun u => (hF u).2.2)
   exact ⟨T, J, W, h0, hW, hJ, fun u a ha h1 => hW.topk u a ha h1⟩
 
 end GlobalTheory.Mem.Col2.TC
@@ -802,7 +718,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
-attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.trueColumnChoice_exists_chainData_with_basePoints : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)), ∀ (l0 : I.Law0 l) (inQ : I.ι → HeightOneSpectrum (𝓞 (I.rec7 l Z).host.F) → Prop) (H : Formalism.L2.Herm.HermColsCh (I.rec7 l Z)) (F : ∀ u, FormsTiedSym (I.rec7 l Z) u (H.Ch u) (H.chOf u)), (∀ a v, inQ a v ↔ I.UnderQ a v) → (∀ u, I.StdF l Z u (F u) ∧ I.StdLvC l Z u (F u)) → CarH H F → ∃ (T : Formalism.L2.Herm.TwChTied (I.rec7 l Z) inQ) (J : Formalism.L2.Herm.TwChJointS T H) (W : TwFormsTiedS (I.rec7 l Z) (I.tw l l0 Z) T J F), Formalism.L2.Herm.TwChMu0 T ∧ I.StdW l Z l0 W ∧ Nonempty (SymmetricTwistedJointForms T F) ∧
     (∀ u a (ha : a ≠ I.mu0) (h1 : 1 ≤ B.R.m), ∃ k, I.Reads u a B.R.m (T.chOf u a B.R.m) (fun β => (W.ch u a ha B.R.m h1 le_rfl β).lev.Lb)

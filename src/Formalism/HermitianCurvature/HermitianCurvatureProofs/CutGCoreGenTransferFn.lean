@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SquareIntegrableGammaZetabarInv
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGenTransferCut
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGaugeVLem
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedA
@@ -23,25 +24,14 @@ theorem smInv_mem (f : MA.SmQ r TT) (hf : ∀ q, (f : MA.Qp r TT → ℂ) q ≠ 
   have hsm : ContDiffOn ℝ MA.sm (MA.ext (f : MA.Qp r TT → ℂ)) (MA.Qset r TT) := f.2
   have hne : ∀ x ∈ MA.Qset r TT, MA.ext (f : MA.Qp r TT → ℂ) x ≠ 0 := by
     intro x hx
-    simp only [MA.ext, dif_pos hx]
+    simp only [MA.ext, dite_eq_left hx]
     exact hf _
   show ContDiffOn ℝ MA.sm (MA.ext (fun q => ((f : MA.Qp r TT → ℂ) q)⁻¹)) (MA.Qset r TT)
-  exact (hsm.inv hne).congr fun x hx => by simp only [Pi.inv_apply, MA.ext, dif_pos hx]
+  exact (hsm.inv hne).congr fun x hx => by simp only [Pi.inv_apply, MA.ext, dite_eq_left hx]
 
 theorem inverse_apply (f : MA.SmQ r TT) (hf : ∀ q, (f : MA.Qp r TT → ℂ) q ≠ 0) (q : MA.Qp r TT) :
     ((Ring.inverse f : MA.SmQ r TT) : MA.Qp r TT → ℂ) q = ((f : MA.Qp r TT → ℂ) q)⁻¹ := by
-  obtain ⟨g, hg⟩ : ∃ g : MA.SmQ r TT, ∀ q, (g : MA.Qp r TT → ℂ) q = ((f : MA.Qp r TT → ℂ) q)⁻¹ :=
-    ⟨⟨_, smInv_mem f hf⟩, fun _ => rfl⟩
-  have hfg : f * g = 1 := by
-    apply Subtype.ext
-    funext q'
-    show (f : MA.Qp r TT → ℂ) q' * (g : MA.Qp r TT → ℂ) q' = 1
-    rw [hg, mul_inv_cancel₀ (hf q')]
-  have hu : IsUnit f := ⟨⟨f, g, hfg, by rw [mul_comm]; exact hfg⟩, rfl⟩
-  have hinv : Ring.inverse f = g := by
-    calc Ring.inverse f = Ring.inverse f * (f * g) := by rw [hfg, mul_one]
-      _ = g := by rw [← mul_assoc, Ring.inverse_mul_cancel f hu, one_mul]
-  rw [hinv, hg]
+  apply _root_.Formalism.FourierDecayAlt.P.MAx2.Adj.inv_val <;> assumption
 
 theorem coordQ_vz (q : MA.Qp r TT) : ((MA.coordQ (r := r) (TT := TT) M.vz : MA.SmQ r TT) : MA.Qp r TT → ℂ) q = q.1.2 := by
   show MA.coordE (M.vz (r := r)) q.1 = q.1.2
@@ -86,7 +76,7 @@ theorem trR_unit (P : M.Par) (Bs : B.RealPlaceData P.k P.r Wp Wq) (e : M.Ty P �
   by_cases hu : u ∈ MA.smSub P.r P.TT
   · have hmul : (fun q => (φ : MA.Qp P.r P.TT → ℂ) q * u q) ∈ MA.smSub P.r P.TT :=
       (MA.smSub P.r P.TT).mul_mem φ.2 hu
-    rw [dif_pos hmul, dif_pos hu]
+    rw [dite_eq_left hmul, dite_eq_left hu]
     rfl
   · have hmul : (fun q => (φ : MA.Qp P.r P.TT → ℂ) q * u q) ∉ MA.smSub P.r P.TT := by
       intro hm

@@ -363,7 +363,6 @@ theorem letter_dictionary_bounds (h41 : TopCountLowerBounds 1088) : LetterDictio
     rw [le_div_iff₀ (hPpos _)]
     refine le_trans ?_ (cb i).1
     refine mul_le_mul_of_nonneg_right ?_ (hPpos _).le
-    have h1 : 0 ≤ Dat.k (r := r) K ^ 2 * (X.Ns : ℝ) := by positivity
     nlinarith [Bs.Y1]
   have H : HypT (segN X.F j) (segN X.F j - r) r K (segLL X.F j)
       (fun i => X.Bdeg p K j (X.restr j b) (segE X.F j i)) od
@@ -418,7 +417,6 @@ theorem letter_dictionary_bounds (h41 : TopCountLowerBounds 1088) : LetterDictio
       have h6 : 9 / 10 * (X.a / P') ≤ (X.a' p K (posOf n' (segE X.F j i')) : ℝ) / P' := by
         rw [← mul_div_assoc]
         exact div_le_div_of_nonneg_right (cb i').2.1 hP'0.le
-      have h7 : 0 < X.a / P' := div_pos ha0 hP'0
       linarith
     · have hr3 : (r : ℝ) ≤ X.Ns := by
         have : r ≤ X.Ns := by omega
@@ -443,11 +441,9 @@ theorem letter_dictionary_bounds (h41 : TopCountLowerBounds 1088) : LetterDictio
         le_trans (Bup l hl) (div_le_div_of_nonneg_left (by linarith) (by positivity) hPP)
       have h2 : 4 * (X.a / P') / (p : ℝ) = 2 * (2 * X.a / (P' * (p : ℝ))) := by field_simp; ring
       rw [h2]
-      have h3 : 0 ≤ 2 * X.a / (P' * (p : ℝ)) := by positivity
       linarith
     · unfold Dat.La
       have : (0 : ℝ) < X.CLa := by linarith
-      have h6 : (0 : ℝ) < X.Ns := by linarith
       have : (0 : ℝ) < Real.log X.a := by linarith
       positivity
   refine ⟨segN X.F j - r, od, H, ?_, ?_, ?_, final_num hX hLa hk _ hNNs⟩
@@ -483,14 +479,14 @@ theorem letter_dictionary_bounds (h41 : TopCountLowerBounds 1088) : LetterDictio
       show _ ≤ ((X.Bdeg p K j (X.restr j b) (segE X.F j (od i)) : ℕ) : ℝ)
       unfold Dat.Bdeg
       by_cases hW : X.F.IsW j (segE X.F j (od i))
-      · rw [if_pos hW, if_pos hW]
+      · rw [ite_eq_left hW, ite_eq_left hW]
         have := Int.self_le_toNat (X.Bw p K j (segE X.F j (od i)) - (X.m0 K : ℤ))
         exact_mod_cast this
-      · rw [if_neg hW, if_neg hW]
+      · rw [ite_eq_right hW, ite_eq_right hW]
     · intro hE
       refine le_trans (g2 ((comb_vec X.F j i).2 hE)) ?_
       unfold Dat.oc
-      rw [if_pos hE, hXi, ← hoe]
+      rw [ite_eq_left hE, hXi, ← hoe]
       have h1 := Bup (od i) hodn
       have h2 : (p : ℝ) ^ (-((X.F.dist j (segE X.F j (od i)) : ℤ) + (X.Rj p K j : ℤ))) =
           1 / (p : ℝ) ^ (X.F.dist j (segE X.F j (od i)) + X.Rj p K j) := by
@@ -499,8 +495,6 @@ theorem letter_dictionary_bounds (h41 : TopCountLowerBounds 1088) : LetterDictio
       have h3 : 4 * X.a * (1 / (p : ℝ) ^ (X.F.dist j (segE X.F j (od i)) + X.Rj p K j)) =
           2 * (2 * X.a / (p : ℝ) ^ (X.F.dist j (segE X.F j (od i)) + X.Rj p K j)) := by ring
       rw [h3]
-      have h1' : ((X.Bdeg p K j (X.restr j b) (segE X.F j (od i)) : ℕ) : ℝ) ≤
-          2 * X.a / (p : ℝ) ^ (X.F.dist j (segE X.F j (od i)) + X.Rj p K j) := h1
       linarith
     · intro hE
       have hv : (segLL X.F j).vec i = false := by
@@ -509,7 +503,7 @@ theorem letter_dictionary_bounds (h41 : TopCountLowerBounds 1088) : LetterDictio
         | false => rfl
       refine le_trans (g3 hv) ?_
       unfold Dat.oc
-      rw [if_neg hE, hXi, add_zero]
+      rw [ite_eq_right hE, hXi, add_zero]
   · unfold rkA
     push_cast
     have hpt : ∀ i : Fin (segN X.F j),
@@ -522,17 +516,17 @@ theorem letter_dictionary_bounds (h41 : TopCountLowerBounds 1088) : LetterDictio
       intro i
       by_cases h1 : i.val < r
       · have hW := (dict_w hV i).2 h1
-        rw [if_pos (by omega), if_neg (by omega), if_pos h1, one_mul]
+        rw [ite_eq_left (by omega), ite_eq_right (by omega), ite_eq_left h1, one_mul]
         unfold Dat.Bdeg
-        rw [if_pos hW, dict_wE hV i h1]
+        rw [ite_eq_left hW, dict_wE hV i h1]
       · by_cases h2 : i.val < segN X.F j - r
         · have hW : ¬ X.F.IsW j (segE X.F j i) := fun h => h1 ((dict_w hV i).1 h)
           have hlate : segE X.F j i ∈ X.toLate j := by
             unfold Dat.toLate; rw [Finset.mem_filter]; exact ⟨segE_mem X.F j i, hW⟩
-          rw [if_pos h2, if_pos ⟨by omega, h2⟩, if_neg h1, mul_one]
+          rw [ite_eq_left h2, ite_eq_left ⟨by omega, h2⟩, ite_eq_right h1, mul_one]
           unfold Dat.Bdeg Dat.restr
-          rw [if_neg hW, if_pos hlate]
-        · rw [if_neg h2, if_neg (by omega), if_neg h1]; simp
+          rw [ite_eq_right hW, ite_eq_left hlate]
+        · rw [ite_eq_right h2, ite_eq_right (by omega), ite_eq_right h1]; simp
     have hL : (∏ i : Fin (segN X.F j), ((if i.val < segN X.F j - r then
           (Nat.choose (X.Bdeg p K j (X.restr j b) (segE X.F j i) + (r + K) - 1) (r + K - 1) : ℕ) else 1 : ℕ) : ℝ)) =
         (∏ x ∈ X.F.LLset j, ((Nat.choose (b x + (r + K) - 1) (r + K - 1) : ℕ) : ℝ)) *

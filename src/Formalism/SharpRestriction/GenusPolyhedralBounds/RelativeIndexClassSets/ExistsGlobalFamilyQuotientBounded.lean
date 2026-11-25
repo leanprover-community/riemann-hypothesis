@@ -115,12 +115,4 @@ theorem exists_global_family_quotient_bounded {X : PJ D B P j} {ka wL wF : Weigh
   obtain ⟨e, he, hsup⟩ := hex
   exact ⟨fun i => ⟨e i, hM (hSh (he i))⟩, rfl, fun i => hSh (he i), hsup, fun i => (hshort _ (he i)).trans hbe⟩
 
-section Unchanged
-
-variable {X : PJ D B P j} {ka wL wF : WeightFamilies.Wt D j} (G0 : GlobalFamilyData X ka wL wF) (rq : ℕ) (th : Fin rq → B.Mlat j ka)
-
-variable {G0} {la : HeightOneSpectrum (𝓞 B.KO)} (Q : LocalPointData G0 la)
-
-end Unchanged
-
 end Formalism.MainNotions.Gaps.EtaleWeightGaps

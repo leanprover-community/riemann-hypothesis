@@ -98,8 +98,7 @@ theorem sum_norm_sq_le [FiniteDimensional ℂ E] (b : OrthonormalBasis ι ℂ V)
     have h1 := adjoint_sq_sq_le l ((stdOrthonormalBasis ℂ E).orthonormal.1 k)
     set u := LinearMap.adjoint l (stdOrthonormalBasis ℂ E k)
     have h2 := h u
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have hpos : 0 < ‖u‖ ^ 2 := lt_of_le_of_lt hC hlt
     have h3 : (‖u‖ ^ 2) ^ 2 ≤ ‖l u‖ ^ 2 := by gcongr
     nlinarith

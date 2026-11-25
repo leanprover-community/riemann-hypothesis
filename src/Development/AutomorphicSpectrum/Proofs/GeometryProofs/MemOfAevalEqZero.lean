@@ -3,6 +3,7 @@ module
 import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.CurveVerticalPointChart
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsPowSubMemSpanOfIsUnitModOfIsAlgClosed
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.RationalSections.IsRatSectionOn
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSectionBounded
 
 @[expose] public section
 
@@ -45,26 +46,7 @@ theorem homog_C (n : ℤ) : IsMultiHomog (C n : MRing ι) (0 : K → ℕ) := by
   simp
 
 theorem homog_X [DecidableEq K] (p : Σ k, ι k) : IsMultiHomog (X p : MRing ι) (Pi.single p.1 1) := by
-  classical
-  rcases p with ⟨k0, i0⟩
-  intro m hm k
-  rw [X] at hm
-  rw [Finset.mem_singleton.mp (support_monomial_subset hm)]
-  by_cases hk : k = k0
-  · subst hk
-    rw [Finset.sum_eq_single i0]
-    · simp
-    · intro i _ hi
-      rw [Finsupp.single_apply, if_neg]
-      intro h
-      exact hi (sigma_mk_injective h).symm
-    · simp
-  · rw [Pi.single_eq_of_ne hk]
-    apply Finset.sum_eq_zero
-    intro i _
-    rw [Finsupp.single_apply, if_neg]
-    intro h
-    exact hk (congrArg Sigma.fst h).symm
+  apply _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBounded.homog_X <;> assumption
 
 def cMon (c : ∀ k, ι k) (m : K → ℕ) : MRing ι := ∏ k, X ⟨k, c k⟩ ^ m k
 

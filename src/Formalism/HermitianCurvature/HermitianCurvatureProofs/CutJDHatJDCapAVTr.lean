@@ -46,12 +46,6 @@ theorem capa_actA_pb (l : Fin P.r) (f : M.Ty P → MA.SmQ P.r P.TT) :
   rw [actA_sc]
   rfl
 
-theorem capa_actA_cb (l : Fin P.r) (f : M.Ty P → MA.SmQ P.r P.TT) :
-    MA.actA P (MA.cbA P (MA.DQ P) l) f = fun ρ => MA.coordQ (TT := P.TT) (M.vcb l) * f ρ := by
-  show MA.actA P (MA.sc P (MA.DQ P) _) f = _
-  rw [actA_sc]
-  rfl
-
 theorem capa_actA_cbi (l : Fin P.r) (f : M.Ty P → MA.SmQ P.r P.TT) :
     MA.actA P (MA.cbiA P (MA.DQ P) l) f = fun ρ => Ring.inverse (MA.coordQ (TT := P.TT) (M.vcb l)) * f ρ := by
   show MA.actA P (MA.sc P (MA.DQ P) _) f = _
@@ -96,7 +90,7 @@ theorem capa_vab_ind (hpl : Q.IsPlace P Bs.z Bs.z' Bs.π Bs.π') (hk : 2 ≤ P.k
     have hv : Q.vAB (E := Wq →L[ℂ] Wp) P.r Y (i + 1) =
         (fun f => Y • (Q.vAB P.r Y i).1 f + pOp ⟨i, h⟩ ((Q.vAB P.r Y i).1 f) -
           cOp ⟨i, h⟩ ((Q.vAB P.r Y i).2 f), fun f => ciOp ⟨i, h⟩ ((Q.vAB P.r Y i).1 f)) := by
-      simp only [Q.vAB, dif_pos h]
+      simp only [Q.vAB, dite_eq_left h]
     have e0 : Q.crd (Q.cmp (Q.vAB P.r Y (i + 1)) 0) Φ =
         Y • ΦA + Q.crd (pOp ⟨i, h⟩) ΦA - Q.crd (cOp ⟨i, h⟩) ΦB := by
       rw [hv]; rfl
@@ -154,7 +148,7 @@ theorem capa_vabm_ind (hpl : Q.IsPlace P Bs.z Bs.z' Bs.π Bs.π') (hk : 2 ≤ P.
     have hv : vABm (X := Wq →L[ℂ] Wp) P.r Y (i + 1) =
         (fun f => Y • (vABm P.r Y i).1 f - pbOp ⟨i, h⟩ ((vABm P.r Y i).1 f) -
           cbOp ⟨i, h⟩ ((vABm P.r Y i).2 f), fun f => cbiOp ⟨i, h⟩ ((vABm P.r Y i).1 f)) := by
-      simp only [vABm, dif_pos h]
+      simp only [vABm, dite_eq_left h]
     have e0 : Q.crd (Q.cmp (vABm P.r Y (i + 1)) 0) Φ =
         Y • ΦA - Q.crd (pbOp ⟨i, h⟩) ΦA - Q.crd (cbOp ⟨i, h⟩) ΦB := by
       rw [hv]; rfl
@@ -177,7 +171,7 @@ theorem capa_vabm_ind (hpl : Q.IsPlace P Bs.z Bs.z' Bs.π Bs.π') (hk : 2 ≤ P.
         trR_sub _ _ _ _ (fun ρ => smR hpl hk he (famR_smul hA _) ρ) (fun ρ => smR hpl hk he hpA ρ), trR_smul,
         trR_pb hpl hk he hA, tc, tA, tB, capaVpM_succ P L Y i h, capa_Tvl_mul_0, hpb, hcb, actA_add, actA_mul,
         actA_mul, actA_neg, sub_eq_add_neg ((algebraMap ℂ (MA.A P (MA.DQ P))) Y), actA_add, actA_algebraMap, actA_neg,
-        capa_actA_pb, capa_actA_cb, sub_eq_add_neg, sub_eq_add_neg]
+        capa_actA_pb, Formalism.FourierDecayAlt.P.CutMP.drtr_actA_cb, sub_eq_add_neg, sub_eq_add_neg]
     · rw [e1]; exact hciA
     · rw [e1, tci, tA, capaVpM_succ P L Y i h, capa_Tvl_mul_1, actA_mul, hcbi, capa_actA_cbi]
 

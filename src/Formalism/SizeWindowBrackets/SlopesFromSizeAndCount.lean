@@ -91,31 +91,7 @@ structure Rows {I : Type} {m : ℕ} (F : Fam I m) where
 namespace Fam6
 variable {I : Type} {m : ℕ} (F : Fam I m)
 
-def FoAll : ℝ :=
-  ∑ j, ∑ᶠ z : HeightOneSpectrum (𝓞 F.K), lw z * (if plOf z ∈ F.S then ramE (plOf z) * F.Fj j (plOf z) else 0)
-
-def EAll (u : I) (j : Fin m) : ℝ :=
-  ∑ᶠ z : HeightOneSpectrum (𝓞 F.K), lw z * (if plOf z ∈ F.S then ramE (plOf z) * F.Ej u j (plOf z) else 0)
-
-def sMean [Fintype I] : ℝ := WeightedMeanLemmas.sF F.du (fun u => muDef (F.b u) (F.X u) (F.N' u)) F.h
-
 end Fam6
-
-section Defs
-variable {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H] {W : H → Type} [∀ u0, Fintype (W u0)] {m : ℕ}
-
-def budgetAtPoint (H : Type) [Fintype H] (G : Glob) (m : ℕ) : ℝ :=
-  (2 * (Fintype.card H : ℝ)) * (m : ℝ) * Real.exp (G.x ^ G.ε) * G.x ^ G.ε
-
-def NcTx (G : Glob) (T2 : Finset H) : ℝ :=
-  (T2.card : ℝ) * G.k * bTx G.x G.ε * G.x ^ G.ε / ((Fintype.card H : ℝ) * ((Fintype.card H : ℝ) * G.x ^ (-G.ε)))
-
-def topPhi (H : Type) [AddCommGroup H] [Fintype H] [DecidableEq H] : H ↪ PhiSet (H := H) :=
-  ⟨fun t => ⟨topPl t, Finset.mem_filter.2 ⟨Finset.mem_univ _, rfl⟩⟩, fun _ _ h => congrArg (fun z => z.1.2) h⟩
-
-def aPhi (a : H → ℝ) : PhiSet (H := H) → ℝ := fun ρ => a ρ.1.2
-
-end Defs
 
 namespace Fam6
 variable {I : Type} {m : ℕ} (F : Fam I m)
@@ -241,8 +217,6 @@ section DefsC
 variable {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H] {W : H → Type} [∀ u0, Fintype (W u0)] {m : ℕ}
 
 end DefsC
-
-def E8 (x ε : ℝ) : ℝ := Real.exp (-(x ^ (ε / 8)))
 
 def E7 (x ε : ℝ) : ℝ := Real.exp (-(x ^ (ε / 7)))
 

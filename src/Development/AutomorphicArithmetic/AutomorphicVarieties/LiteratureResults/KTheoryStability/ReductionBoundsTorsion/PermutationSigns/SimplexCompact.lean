@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.KTheoryStability.ReductionBoundsTorsion.IteratedHeckeBounds.HkIterContOn
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.KTheoryStability.ReductionBoundsTorsion.PermutationSigns.PadMHerm
 public import Mathlib.Analysis.Matrix.Order
 import Mathlib.RingTheory.Etale.Weakly
@@ -134,18 +135,8 @@ theorem ext_zero {q : ℕ} (h : HS L N) : ext (0 : HS L N [⋀^Fin q]→L[ℝ] �
 
 open ComplexOrder in
 theorem convex_pos : Convex ℝ (Pos L N) := by
-  intro x hx y hy a b ha hb hab
-  simp only [Pos, Set.mem_setOf_eq] at *
-  intro w
-  have hm : mat (a • x + b • y) w = (a : ℂ) • mat x w + (b : ℂ) • mat y w := by simp [mat]
-  rw [hm]
-  rcases ha.lt_or_eq with ha' | ha'
-  · exact (Matrix.PosDef.smul (hx w) (Complex.zero_lt_real.mpr ha')).add_posSemidef
-      ((hy w).posSemidef.smul (Complex.zero_le_real.mpr hb))
-  · subst ha'
-    have hb1 : b = 1 := by linarith
-    subst hb1
-    simpa using hy w
+ intros
+ apply @_root_.PositivityTheory.KB.JoinReconstruction.pos_convex <;> assumption
 
 theorem simplex_mem {q : ℕ} {y : Fin (q + 1) → HS L N} (hy : ∀ j, y j ∈ Pos L N) {t : Fin q → ℝ}
     (ht : (∀ j, 0 ≤ t j) ∧ ∑ j, t j ≤ 1) : y 0 + ∑ j, t j • (y j.succ - y 0) ∈ Pos L N := by

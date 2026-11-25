@@ -131,7 +131,7 @@ private lemma summable_vonMangoldt_mul_rpow_neg {σ : ℝ} (hσ : 1 < σ) :
   rw [LSeries.norm_term_eq]
   rcases eq_or_ne n 0 with rfl | hn
   · simp
-  · rw [if_neg hn, Complex.ofReal_re, Complex.norm_real, Real.norm_of_nonneg vonMangoldt_nonneg,
+  · rw [ite_eq_right hn, Complex.ofReal_re, Complex.norm_real, Real.norm_of_nonneg vonMangoldt_nonneg,
       Real.rpow_neg (Nat.cast_nonneg n), div_eq_mul_inv]
 
 open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology in
@@ -200,7 +200,7 @@ theorem _root_.GlobalTheory.SmallDiscZeros.few_zeros : ∃ C : ℝ, 0 < C ∧ �
   refine ⟨hTfin, ?_⟩
   set G : ℝ := ∑' n : ℕ, vonMangoldt n * (n : ℝ) ^ (-(1 + r)) with hG
   have hG_le : G ≤ 1 / r + C := by
-    rw [derSeries_one_eq_tsum_vonMangoldt, if_pos rfl] at hbound₁
+    rw [derSeries_one_eq_tsum_vonMangoldt, ite_eq_left rfl] at hbound₁
     have hP : (1 : ℂ) / (((1 + r : ℝ) : ℂ) + (0 : ℝ) * I - 1) ^ (0 + 1) = ((1 / r : ℝ) : ℂ) := by
       push_cast; ring
     rw [hP] at hbound₁
@@ -661,7 +661,7 @@ theorem _root_.GlobalTheory.Lin.NonPrimeVonMangoldt.summable_nonPrime_vonMangold
     · exact vonMangoldt_nonneg
   · obtain ⟨⟨p, hp⟩, k⟩ := pk
     have hnp : ¬ (p ^ (k + 2)).Prime := Nat.Prime.not_prime_pow (by omega)
-    simp only [Function.comp_apply, hF, hg_def, if_neg hnp]
+    simp only [Function.comp_apply, hF, hg_def, ite_eq_right hnp]
     rw [vonMangoldt_apply_pow (by omega), vonMangoldt_apply_prime hp, Nat.cast_pow]
     exact log_div_pow_add_two_rpow_three_quarters_le _ (by exact_mod_cast hp.two_le) k
 
@@ -808,7 +808,7 @@ lemma pointwise (c : ℕ → ℂ) (hc : ∀ n, ‖c n‖ ≤ 1) {r δ : ℝ} (hr
     calc _ ≤ Λ n / n * (δ ^ k * Real.exp (-(r * Real.log n / 2))) := by gcongr
       _ = _ := by ring_nf
   by_cases hp : n.Prime
-  · simp only [hp, if_true, zero_div, mul_zero, add_zero]
+  · simp only [hp, ite_true, zero_div, mul_zero, add_zero]
     split_ifs with hm
     · rw [primesIoc, Finset.mem_filter, Finset.mem_Ioc, Nat.le_floor_iff (Real.exp_pos _).le] at hm
       rw [Real.log_exp]
@@ -842,7 +842,7 @@ lemma pointwise (c : ℕ → ℂ) (hc : ∀ n, ‖c n‖ ≤ 1) {r δ : ℝ} (hr
         linarith
   · have hm : n ∉ primesIoc (Real.exp (δ / 3 * K / r)) (Real.exp (32 / δ * K / r)) := by
       rw [primesIoc, Finset.mem_filter]; exact fun h => hp h.2
-    simp only [hp, hm, if_false, sub_zero]
+    simp only [hp, hm, ite_false, sub_zero]
     refine (key _ hpw).trans (le_add_of_nonneg_of_le (by positivity) ?_)
     have e : (3 / 4 : ℝ) = 1 + (-1 / 4) := by norm_num
     rw [e, rpow_form n hn]
@@ -876,11 +876,11 @@ lemma series_le (c : ℕ → ℂ) (hc : ∀ n, ‖c n‖ ≤ 1) {r δ : ℝ} (hr
     (f := fun n : ℕ => if n ∈ primesIoc (Real.exp (δ / 3 * K / r)) (Real.exp (32 / δ * K / r)) then
         (Real.log n : ℂ) * c n / n *
           ((pw k (r * Real.log n) - pw k (r * Real.log (Real.exp (32 / δ * K / r))) : ℝ) : ℂ)
-        else 0) (fun n hn => if_neg hn)
+        else 0) (fun n hn => ite_eq_right hn)
   have h := norm_tsum_le_of_close hP.summable ((hs.mul_left (δ ^ k)).add (hq.mul_left ((4 * r) ^ k)))
     (pointwise c hc hr hδ K k h1 h2)
   rw [hP.tsum_eq, (hs.mul_left _).tsum_add (hq.mul_left _), tsum_mul_left, tsum_mul_left,
-    Finset.sum_congr rfl (fun n hn => if_pos hn)] at h
+    Finset.sum_congr rfl (fun n hn => ite_eq_left hn)] at h
   refine le_of_eq_of_le ?_ h
   simp_rw [← term_eq]
   rw [tsum_mul_left, norm_mul, norm_pow, Complex.norm_real, Real.norm_of_nonneg hr.le, derSeries]
@@ -1652,7 +1652,7 @@ theorem layers {ι : Type*} (s : Finset ι) (w δ : ι → ℝ) (hw : ∀ i, 0 �
         rw [Finset.mem_range, Nat.floor_lt h0]
         have := mul_le_mul_of_nonneg_left (by linarith : δ i - η ≤ e) hL.le; linarith
       have := Finset.single_le_sum hnn hm
-      rw [if_pos] at this
+      rw [ite_eq_left] at this
       · have h3 : Real.exp (-(L * δ i)) ≤ Real.exp (-(L * η) - ⌊L * (δ i - η)⌋₊) :=
           Real.exp_le_exp.2 (by linarith)
         have := mul_le_mul_of_nonneg_left h3 hwi; linarith

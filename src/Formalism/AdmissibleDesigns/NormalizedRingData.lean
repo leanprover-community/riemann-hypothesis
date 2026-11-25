@@ -346,7 +346,7 @@ theorem exists_sigma (hj : Function.Injective (algebraMap O O')) (hX : DistinctE
     let α' : ℕ → O := fun i => if h : i < t then b i h else 0
     have hα' : ∀ i, i < t → algebraMap O O' (α' i) = (D'.rr i : D'.X' → O') y' := by
       intro i hi
-      simp only [α', dif_pos hi]
+      simp only [α', dite_eq_left hi]
       exact hb i hi
     have hPinj : Function.Injective
         (Polynomial.map ((algebraMap O' (FractionRing O')).comp (algebraMap O O'))) :=

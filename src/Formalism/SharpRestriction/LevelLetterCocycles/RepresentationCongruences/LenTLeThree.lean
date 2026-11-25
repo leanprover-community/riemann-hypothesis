@@ -105,8 +105,7 @@ theorem sum_lenT (hne : ∃ i, ¬ th i) :
     constructor
     · intro hi
       refine ⟨e i, ?_, ?_⟩
-      · by_contra hlt
-        push_neg at hlt
+      · by_contra! hlt
         have h1 : e i - lenT th c < e i := by omega
         have h2 := he2 i _ h1
         have h3 : i + ((e i - lenT th c : ℕ) : ZMod n) + 1 = c - (lenT th c : ZMod n) + 1 := by
@@ -120,8 +119,7 @@ theorem sum_lenT (hne : ∃ i, ¬ th i) :
         · apply he3
           have e4 : c - (k : ZMod n) + (k : ZMod n) + 1 = c + 1 := by ring
           rw [e4]; exact hc.2
-        · by_contra hlt
-          push_neg at hlt
+        · by_contra! hlt
           apply he1 (c - (k : ZMod n))
           have hth := hLt (k - e (c - (k : ZMod n))) (by omega) (by omega)
           have e5 : c - (k : ZMod n) + ((e (c - (k : ZMod n)) : ℕ) : ZMod n) + 1 =
@@ -141,8 +139,7 @@ theorem sum_lenT (hne : ∃ i, ¬ th i) :
 theorem lenT_le_three (c : ZMod n) (hc : ¬ th (c + 1))
     (halt : ∀ i, ¬ (th i ∧ th (i + 1) ∧ th (i + 2))) : lenT th c ≤ 3 := by
   obtain ⟨-, -, -, hlt⟩ := lenT_spec th c hc
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have a1 := hlt 1 le_rfl (by omega)
   have a2 := hlt 2 (by norm_num) (by omega)
   have a3 := hlt 3 (by norm_num) (by omega)
@@ -158,8 +155,7 @@ theorem lenT_le_three (c : ZMod n) (hc : ¬ th (c + 1))
 theorem lenT_le_R (c : ZMod n) (hc : ¬ th (c + 1)) (R : ℕ)
     (hone : ∀ i, ¬ ∀ u : ℕ, u < R → th (i + (u : ZMod n))) : lenT th c ≤ R := by
   obtain ⟨-, -, -, hlt⟩ := lenT_spec th c hc
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   apply hone (c - (R : ZMod n) + 1)
   intro u hu
   have hth := hlt (R - u) (by omega) (by omega)
@@ -306,7 +302,7 @@ theorem arcBasic_core [NeZero n] [Fintype (K →ₐ[Qp] LL)]
       by_cases hT : Formalism.MainNotions.TruncatedSeriesCountingBounds.Thick b η size i
       · have hex' : ∃ i, Formalism.MainNotions.TruncatedSeriesCountingBounds.Thick b η size i := ⟨i, hT⟩
         unfold Formalism.MainNotions.TruncatedSeriesCountingBounds.hB
-        rw [if_pos hex']
+        rw [ite_eq_left hex']
         have := hT.2
         omega
       · have := hthin i hT
@@ -384,7 +380,7 @@ theorem arcSetup_of [NeZero n] [Fintype (K →ₐ[Qp] LL)] [FiniteDimensional Qp
     by_cases hT : Formalism.MainNotions.TruncatedSeriesCountingBounds.Thick b η size i
     · have hex' : ∃ i, Formalism.MainNotions.TruncatedSeriesCountingBounds.Thick b η size i := ⟨i, hT⟩
       unfold Formalism.MainNotions.TruncatedSeriesCountingBounds.hB
-      rw [if_pos hex']
+      rw [ite_eq_left hex']
       have := hT.2
       omega
     · have := hthin i hT
@@ -415,11 +411,11 @@ theorem arcSetup_of [NeZero n] [Fintype (K →ₐ[Qp] LL)] [FiniteDimensional Qp
     have hsi := hηs i
     rw [Set.mem_Icc, hMi' i, hhi' i]
     by_cases hu : up i = true
-    · rw [if_pos hu] at hm
-      rw [if_pos hu, if_pos hu]
+    · rw [ite_eq_left hu] at hm
+      rw [ite_eq_left hu, ite_eq_left hu]
       rcases hm with hm | hm <;> rw [Set.mem_Icc] at hm <;> constructor <;> omega
-    · rw [if_neg hu] at hm
-      rw [if_neg hu, if_neg hu]
+    · rw [ite_eq_right hu] at hm
+      rw [ite_eq_right hu, ite_eq_right hu]
       rcases hm with hm | hm <;> rw [Set.mem_Icc] at hm <;> constructor <;> omega
   have hW1 : Win W A T₁ := by
     unfold Formalism.MainNotions.ArcLiftingSetup.Win

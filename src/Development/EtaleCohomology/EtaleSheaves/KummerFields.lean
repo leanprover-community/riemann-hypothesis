@@ -535,7 +535,6 @@ theorem powCof_mul {A : Type*} [CommRing A] (u v : A) (q : ℕ) : powCof u v q *
 
 theorem powCof_map {A B : Type*} [CommRing A] [CommRing B] (φ : A →+* B) (u v : A) (q : ℕ) :
     φ (powCof u v q) = powCof (φ u) (φ v) q := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp [powCof, map_sum, map_mul, map_pow]
 
 theorem powCof_self {A : Type*} [CommRing A] (v : A) (q : ℕ) : powCof v v q = (q : A) * v ^ (q - 1) := by

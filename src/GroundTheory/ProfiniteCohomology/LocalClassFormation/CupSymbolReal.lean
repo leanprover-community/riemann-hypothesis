@@ -12,7 +12,7 @@ namespace GroundTheory.ProfCoh
 
 open CategoryTheory groupCohomology IntermediateField GroundTheory.GroupCoh
 
-attribute [local instance 2000] Rep.hV2 Submodule.module Submodule.Quotient.module
+attribute [local instance 2000] Submodule.module Submodule.Quotient.module
 
 section Comparison
 
@@ -254,7 +254,7 @@ noncomputable def quadraticChar (h2 : Module.finrank F Ω ≤ 2) : Additive Gal(
       omega
     have hxy : Additive.toMul (x + y) = 1 := by
       rw [toMul_add, ← eq_of_ne_one_of_card_eq_two hcard hx hy, ← sq, ← hcard, pow_card_eq_one]
-    simp only [hxy, hx, hy, if_true, if_false]
+    simp only [hxy, hx, hy, ite_true, ite_false]
     exact QZ.mk_half_add_mk_half.symm
   continuous_toFun := continuous_of_discreteTopology
 
@@ -266,7 +266,7 @@ theorem quadraticChar_injective (h2 : Module.finrank F Ω ≤ 2) :
   by_contra hne
   have h1 : Additive.toMul x ≠ 1 := fun h => hne (by rw [show x = Additive.ofMul 1 from h ▸ rfl, ofMul_one])
   change (if Additive.toMul x = 1 then 0 else QZ.mk (1 / 2)) = 0 at hx
-  rw [if_neg h1] at hx
+  rw [ite_eq_right h1] at hx
   exact QZ.mk_half_ne_zero hx
 
 noncomputable def quadraticInv (h2 : Module.finrank F Ω ≤ 2)

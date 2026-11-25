@@ -250,8 +250,8 @@ theorem scalar_of_triangular_moves_open :
     have hc : Continuous pert := by
       apply continuous_pi; intro σ; apply continuous_pi; intro a; apply continuous_pi; intro c
       by_cases h : σ = τ ∧ c = 0
-      · simp only [pert, h, and_self, if_true]; fun_prop
-      · simp only [pert, h, if_false]; fun_prop
+      · simp only [pert, h, and_self, ite_true]; fun_prop
+      · simp only [pert, h, ite_false]; fun_prop
     have h0 : pert 0 = x0 := by funext σ a c; simp [pert]
     have hO : IsOpen (pert ⁻¹' W) := hW.preimage hc
     obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.mp hO 0 (by simp [h0, hx0])
@@ -289,7 +289,7 @@ theorem scalar_of_triangular_moves_open :
     have := hq (Pi.single i 1 + Pi.single j 1) i j
     have hji : j ≠ i := Ne.symm hij
     rw [Matrix.mulVec_add] at this
-    simp only [Pi.add_apply, hsv, Pi.single_apply, hij, hji, if_true, if_false, mul_one, add_zero, zero_add, hoff i j hij, hoff j i hji] at this
+    simp only [Pi.add_apply, hsv, Pi.single_apply, hij, hji, ite_true, ite_false, mul_one, add_zero, zero_add, hoff i j hij, hoff j i hji] at this
     exact this
   refine ⟨(m : Matrix (Fin (n+1)) (Fin (n+1)) E) 0 0, ?_⟩
   ext i j
@@ -320,8 +320,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.Ind
 open ReciprocityTheory.ChartRestriction.G.PullbackSections.PfModelLatA GlobalTheory.ShareOn
 
 namespace GlobalTheory.ShareOn
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem movesAt_of_movesAt_open : ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts} {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ} (p : PtAt ex Csz), More p → ∀ (r : TwoRuns p.T p.P.Gp) (h : RunsOk (fw2 p) r), OwnPin r → ∀ (i : Fin D.R.m) (v : HeightOneSpectrum (𝓞 D.what₂.LL)) (γ : LaMod (p.T.Q.Dw ((i : ℕ) + 1)) p.T.Q.l ≃ₗ[𝓞 D.host.E] LaMod (p.T.Q.Dw ((i : ℕ) + 1)) p.T.Q.l) (k k' k'' : (uAt r v i).Comp) (a c : GL (Fin D.R.r) D.host.E) (hma : GlobalTheory.LevelCusp.IsMatch ((uAt r v i).X k) ((uAt r v i).X k') a) (hmc : GlobalTheory.LevelCusp.IsMatch ((uAt r v i).X k) ((uAt r v i).X k'') c) (W : Set (Frame ((uAt r v i).X k).Ψ D.R.r)), IsOpen W → W.Nonempty → W ⊆ ((uAt r v i).X k).dom → (∀ (z : Frame ((uAt r v i).X k).Ψ D.R.r) (hz : z ∈ ((uAt r v i).X k).dom), z ∈ W → MovesAt p r i v γ k k' a hma z hz ∧ MovesAt p r i v γ k k'' c hmc z hz) → ∀ (x : Frame ((uAt r v i).X k).Ψ D.R.r) (hx : x ∈ ((uAt r v i).X k).dom), MovesAt p r i v γ k k'' c hmc x hx → MovesAt p r i v γ k k' a hma x hx := by
   intro D L hT Gi Gl Kc Y cX ex Csz p _ r h _ i v γ k k' k'' a c hma hmc W hWo hWn hWd hW x hx hcx
@@ -550,8 +548,6 @@ namespace GlobalTheory.ShareOn
 
 open scoped Matrix
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
   {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ}
 
@@ -752,8 +748,6 @@ open ReciprocityTheory.ChartRestriction.G.PullbackSections.PfModelLatA GlobalThe
 
 namespace GlobalTheory.ShareOn
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem movesAt_of_dense : ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts} {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ} (p : PtAt ex Csz), More p → ∀ (r : TwoRuns p.T p.P.Gp) (h : RunsOk (fw2 p) r), OwnPin r → ∀ (i : Fin D.R.m) (v : HeightOneSpectrum (𝓞 D.what₂.LL)), ∀ (γ : LaMod (p.T.Q.Dw ((i : ℕ) + 1)) p.T.Q.l ≃ₗ[𝓞 D.host.E] LaMod (p.T.Q.Dw ((i : ℕ) + 1)) p.T.Q.l) (k k' : (uAt r v i).Comp) (a : GL (Fin D.R.r) D.host.E) (hm : GlobalTheory.LevelCusp.IsMatch ((uAt r v i).X k) ((uAt r v i).X k') a) (O : Set (Frame ((uAt r v i).X k).Ψ D.R.r)), IsOpen O → O.Nonempty → O ⊆ ((uAt r v i).X k).dom → O ⊆ closure {x | ∃ hx : x ∈ ((uAt r v i).X k).dom, MovesAt p r i v γ k k' a hm x hx} → ∀ (x : Frame ((uAt r v i).X k).Ψ D.R.r) (hx : x ∈ ((uAt r v i).X k).dom), MovesAt p r i v γ k k' a hm x hx := by
   intro D L hT Gi Gl Kc Y cX ex Csz p hp r h hr i v γ k k' a hm O hO hOn hOd hOc x hx
   obtain ⟨o, ho⟩ := hOn
@@ -782,8 +776,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.Ind
 open ReciprocityTheory.ChartRestriction.G.PullbackSections.PfModelLatA GlobalTheory.ShareOn
 
 namespace GlobalTheory.ShareOn
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem exists_transp_all : ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts} {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ} (p : PtAt ex Csz), More p → ∀ (r : TwoRuns p.T p.P.Gp) (h : RunsOk (fw2 p) r), OwnPin r → ∀ (i : Fin D.R.m) (v : HeightOneSpectrum (𝓞 D.what₂.LL)), ∃ ψ : ∀ k : (uAt r v i).Comp, LaMod (p.T.Q.Dw ((i : ℕ) + 1)) p.T.Q.l ≃ₗ[𝓞 D.host.E] latQ p r i v k, ∀ (γ : LaMod (p.T.Q.Dw ((i : ℕ) + 1)) p.T.Q.l ≃ₗ[𝓞 D.host.E] LaMod (p.T.Q.Dw ((i : ℕ) + 1)) p.T.Q.l) (k : (uAt r v i).Comp), ∃ (k' : (uAt r v i).Comp) (a : GL (Fin D.R.r) D.host.E), IsTransp p r i v ψ γ k k' a := by
   intro D L hT Gi Gl Kc Y cX ex Csz p hp r h hr i v

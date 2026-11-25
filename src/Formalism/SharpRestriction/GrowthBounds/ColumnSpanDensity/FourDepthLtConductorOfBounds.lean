@@ -19,9 +19,7 @@ theorem dle_abs (CA CH N ns N1 k Y L lg la u0 k1 Dp : ℝ) (hCA : 0 < CA) (hCH :
       N * k1 ≤ Dp := by
   have hN0 : 0 ≤ N := by linarith
   have hk0 : 0 ≤ k := by linarith
-  have hY0 : 0 ≤ Y := by linarith
   have hL0 : 0 ≤ L := by linarith
-  have hN10 : 0 ≤ N1 := by linarith
   have hY2 : 1 ≤ Y ^ 2 := one_le_pow₀ hY
   have hNL : 0 ≤ N * L := mul_nonneg hN0 hL0
   have hk2 : k ^ 2 ≤ Y ^ 2 * k ^ 3 := by
@@ -55,7 +53,6 @@ theorem dle_abs (CA CH N ns N1 k Y L lg la u0 k1 Dp : ℝ) (hCA : 0 < CA) (hCH :
     calc 4 * (2 * N * k * la) ≤ 4 * (2 * N * k * (2 * L)) := by gcongr
       _ = 16 * (N * k * L) := by ring
       _ ≤ 16 * P := by linarith
-  have hkL : 0 ≤ k * L := mul_nonneg hk0 hL0
   have t4 : 4 * N * u0 ≤ 16 * P := by
     have h1 : u0 ≤ 4 * (k * L) := by
       have h2 : (k + 1) * lg ≤ (k + 1) * (3 * L) := by gcongr
@@ -70,7 +67,6 @@ theorem dle_abs (CA CH N ns N1 k Y L lg la u0 k1 Dp : ℝ) (hCA : 0 < CA) (hCH :
     have h1 : k1 ≤ 4 * (k ^ 2 * L) := by
       have h2 : (k - 1) ^ 2 ≤ k ^ 2 := by nlinarith
       have h3 : (k - 1) ^ 2 * lg ≤ k ^ 2 * (3 * L) := by
-        have h0 : (0 : ℝ) ≤ (k - 1) ^ 2 := by positivity
         gcongr
       have h4 : 1 ≤ k ^ 2 * L := one_le_mul_of_one_le_of_one_le (by nlinarith) hL
       linarith
@@ -109,7 +105,6 @@ theorem logs_of {K : Cst} {CH : ℝ} {X : Dat} (B : Base K CH X) :
     have := B.hkp
     unfold Dat.k at this
     linarith
-  have hm0 : (0 : ℝ) ≤ X.m := by positivity
   have hsq : X.ar ^ 2 = X.ar * X.ar := by ring
   have h10 : 10 * X.ar ≤ X.ar ^ 2 := by
     rw [hsq]
@@ -143,8 +138,6 @@ theorem D1nn_of {K : Cst} (hK : K.Pos) {CH : ℝ} {X : Dat} (B : Base K CH X) : 
   rw [D0_eq_numSeg_mul_add]
   have hCA : 0 < K.CA := hK.2.2.1
   have hk : 0 ≤ X.k := by linarith [B.hk5]
-  have hY : 0 ≤ X.Y := by linarith [B.hY]
-  have hlg : 0 ≤ lgA X.p X.a X.m := by linarith
   positivity
 
 theorem dle_of {K : Cst} (hK : K.Pos) {CH : ℝ} (hCH : K.TLP ≤ CH) {X : Dat} (h : X.Hyp K.C₀ CH) (B : Base K CH X) :
@@ -153,7 +146,6 @@ theorem dle_of {K : Cst} (hK : K.Pos) {CH : ℝ} (hCH : K.TLP ≤ CH) {X : Dat} 
   have hD : CH * X.N * X.Y ^ 2 * ((X.N₁ : ℝ) ^ 5 + X.k ^ 3) * Real.logb X.p X.ar ≤ X.Dp :=
     h.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1
   have hlg0 : 0 ≤ lgA X.p X.a X.m := by linarith
-  have hk : 0 ≤ X.k := by linarith [B.hk5]
   have hu : (X.u0c : ℝ) ≤ (X.k + 1) * lgA X.p X.a X.m + 1 := by
     unfold Dat.u0c
     have : (0 : ℝ) ≤ ((X.m : ℝ) + 2) * lgA X.p X.a X.m := by positivity
@@ -185,7 +177,6 @@ theorem four_depth_lt_conductor_of_bounds {K : Cst} {X : Dat} (hd : 2 * X.D1 K +
     push_cast
     have : (0 : ℝ) ≤ 2 * (X.N : ℝ) * X.ccl + 2 * (X.n' : ℝ) * X.ccl := by positivity
     linarith
-  have h4 : (0 : ℝ) ≤ X.Dp := by positivity
   linarith
 
 theorem k_le_G {K : Cst} {CH : ℝ} {X : Dat} (B : Base K CH X) :
@@ -200,7 +191,6 @@ theorem k_le_G {K : Cst} {CH : ℝ} {X : Dat} (B : Base K CH X) :
     _ = _ := by ring
 
 theorem Nccl_le (X : Dat) : (X.N : ℝ) * X.ccl ≤ (X.cStar : ℝ) + X.N * X.ccl + X.n' * X.ccl := by
-  have h1 : (0 : ℝ) ≤ X.cStar := by positivity
   have h2 : (0 : ℝ) ≤ (X.n' : ℝ) * X.ccl := by positivity
   linarith
 
@@ -218,7 +208,6 @@ theorem eps_of {K : Cst} {CH : ℝ} (hCH : K.TLP ≤ CH) {X : Dat} (B : Base K C
 theorem ccl_le_b {K : Cst} {CH : ℝ} (hCH : K.TLP ≤ CH) {X : Dat} (B : Base K CH X) : (X.ccl : ℝ) ≤ X.b' := by
   have h108 : (108 : ℝ) ≤ CH := le_trans (le_trans (le_max_left _ _) (le_max_left _ _)) hCH
   have h := B.hsz X.k ((X.N : ℝ) * X.ccl) (by linarith [B.hk5]) (k_le_G B) (by positivity) (Nccl_le X)
-  have hc0 : (0 : ℝ) ≤ X.ccl := by positivity
   have h1 : (1 : ℝ) * 1 * (1 * X.ccl) ≤ CH * X.k * ((X.N : ℝ) * X.ccl) := by
     have a1 : (1 : ℝ) ≤ CH := by linarith
     have a2 : (1 : ℝ) ≤ X.k := by linarith [B.hk5]

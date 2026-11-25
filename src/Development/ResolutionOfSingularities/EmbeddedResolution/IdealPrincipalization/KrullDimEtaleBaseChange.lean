@@ -192,9 +192,6 @@ private theorem ringKrullDim_le_of_isLocalization_etale {A B R S : Type u} [Comm
   have : IsLocalHom (algebraMap R S) := hlocal
   have : IsScalarTower A B S := IsScalarTower.of_algebraMap_eq fun _ => rfl
   have : IsScalarTower A R S := IsScalarTower.of_algebraMap_eq fun a => (hcomm a).symm
-  have : Algebra.FormallyUnramified A B := inferInstance
-  have : Algebra.FiniteType A B := inferInstance
-  have : Algebra.EssFiniteType A B := inferInstance
   have : Algebra.FormallyUnramified B S := Algebra.FormallyUnramified.of_isLocalization (M := MB)
   have : Algebra.EssFiniteType B S := Algebra.EssFiniteType.of_isLocalization S MB
   have : Algebra.FormallyUnramified A S := Algebra.FormallyUnramified.comp A B S
@@ -239,8 +236,6 @@ theorem topologicalKrullDim_le_of_etale {V P : Scheme.{u}} (f : V ⟶ P)
   refine topologicalKrullDim_le_of_forall_ringKrullDim_stalk_le V
     (topologicalKrullDim ↥P) ?_
   intro y
-  have : IsNoetherianRing (V.presheaf.stalk y) := inferInstance
-  have : IsNoetherianRing (P.presheaf.stalk (f.base y)) := inferInstance
   exact le_trans (ringKrullDim_stalk_le_of_etale_of_isNoetherianRing f y)
     (ringKrullDim_stalk_le_topologicalKrullDim P (f.base y))
 

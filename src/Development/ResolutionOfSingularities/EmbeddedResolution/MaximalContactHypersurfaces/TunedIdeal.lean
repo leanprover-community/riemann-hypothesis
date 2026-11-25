@@ -250,7 +250,7 @@ private theorem mul_derivIdeal_prod_le {A : Type*} [CommRing A] {R : Type*} [Com
           have hq1 : (∏ j ∈ Finset.range n, derivIdealIterate A j J ^ (if j = n then e else c j))
               = ∏ j ∈ Finset.range n, derivIdealIterate A j J ^ c j :=
             Finset.prod_congr rfl fun j hj => by
-              rw [if_neg (Nat.ne_of_lt (Finset.mem_range.mp hj))]
+              rw [ite_eq_right (Nat.ne_of_lt (Finset.mem_range.mp hj))]
           have hq2 : derivIdealIterate A n J ^ (if n = n then e else c n)
               = derivIdealIterate A n J ^ e := by simp
           have hprod : (∏ j ∈ Finset.range (n + 1),

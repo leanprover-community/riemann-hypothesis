@@ -63,7 +63,6 @@ namespace GlobalTheory.HilbFam
 variable {F : Type} [Field F] [NumberField F]
 
 
-set_option autoImplicit false in
 open NumberField UpperHalfPlane in
 open scoped Classical MatrixGroups nonZeroDivisors in
 variable {F : Type} [Field F] [NumberField F] in

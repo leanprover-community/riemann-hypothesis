@@ -41,10 +41,4 @@ instance lc_Fv : LocallyCompactSpace (Fv F v) :=
 
 end Local
 
-section Box1
-
-variable {F : Type} [Field F] [NumberField F]
-
-end Box1
-
 end PI.VolStabSW.DeterminantAdmissible

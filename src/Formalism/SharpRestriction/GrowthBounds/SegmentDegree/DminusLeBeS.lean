@@ -52,12 +52,6 @@ open Finset
 
 namespace Formalism.InvariantFactorPaths.BranchingDimensions
 
-section Digits
-
-variable {I1 I2 : Type}
-
-end Digits
-
 section Residue
 
 def cnt (T Q r c : ℕ) : ℕ :=
@@ -113,16 +107,16 @@ lemma cnt_one (T Q c : ℕ) (hT : T ≤ Q) : cnt T Q 1 c = if c % Q < T then 1 e
   unfold cnt
   rw [Finset.card_filter, step]
   by_cases h : c % Q < T
-  · rw [if_pos h, Finset.sum_eq_single (⟨c % Q, h⟩ : Fin T)]
+  · rw [ite_eq_left h, Finset.sum_eq_single (⟨c % Q, h⟩ : Fin T)]
     · simp
     · intro b _ hb
-      exact if_neg (fun e => hb (Fin.ext e))
+      exact ite_eq_right (fun e => hb (Fin.ext e))
     · intro hn
       exact absurd (Finset.mem_univ _) hn
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     apply Finset.sum_eq_zero
     intro a _
-    exact if_neg (fun e => h (lt_of_eq_of_lt e.symm a.isLt))
+    exact ite_eq_right (fun e => h (lt_of_eq_of_lt e.symm a.isLt))
 
 private theorem eq_of_add_pred_mul_mod_eq_of_lt (Q c a b : ℕ) (hQ : 1 ≤ Q) (ha : a < Q) (hb : b < Q)
     (h : (c + (Q - 1) * a) % Q = (c + (Q - 1) * b) % Q) : a = b := by
@@ -237,10 +231,6 @@ theorem residueClassLowerBound : ResidueClassLowerBound := by
     exact le_trans hle (Nat.cast_nonneg _)
 
 end Residue
-
-section Exact
-
-end Exact
 
 end Formalism.InvariantFactorPaths.BranchingDimensions
 end -- clump:auto
@@ -376,7 +366,6 @@ theorem tau_degree_on_path_bound : TauDegreeOnPathBound := by
   have h4 := dminus_le_beS X p K hX j b μ dd hP i.val
   have h5 : μ i.castSucc = μ ⟨i.val, by omega⟩ := rfl
   rw [h2, h5] at h1
-  have h4' : (T.dminus (segLL X.F j) dd i.val : ℤ) ≤ (X.beS p K j b : ℤ) := by exact_mod_cast h4
   have : (dd i : ℤ) ≤ 2 * (X.beS p K j b : ℤ) := by linarith
   exact_mod_cast this
 

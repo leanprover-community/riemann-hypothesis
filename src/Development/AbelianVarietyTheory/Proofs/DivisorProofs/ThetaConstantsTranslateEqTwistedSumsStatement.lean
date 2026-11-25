@@ -368,8 +368,6 @@ open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM
 open scoped CategoryTheory.Obj
 open GlobalTheory.UT ReciprocityTheory.ChartRestriction.G.DVR GlobalTheory.ZH GlobalTheory.Poinc
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.GSep.MemberModel
 
 variable {I : Type} {X₁ : GSet} {z₁ : X₁.M.Z} {act : I → (X₁.ρ.P.A ⟶ X₁.ρ.P.A)}
@@ -527,8 +525,8 @@ theorem twist_resid : ∀ (I : Type) (X₁ : GlobalTheory.GSep.GSet) (z₁ : X�
     · subst h0
       have ha : a ∈ X₁.S.HH X₁.M z₁ := (_root_.GlobalTheory.GSep.mem_HH_iff_yy_zero I X₁ z₁ act x₀ hx₀ V ev Y t δ 𝔪 a).2 h
       have h1 : eStd X₁.S.g _ τ a = 0 := hτ a ha
-      simp only [wt', if_pos rfl, h1, smul_zero]
-    · simp only [wt', if_neg h0]
+      simp only [wt', ite_eq_left rfl, h1, smul_zero]
+    · simp only [wt', ite_eq_right h0]
       exact hwt a mu h
   have hh : X₁.M.stalkHom z₁ (s * u * r) = algebraMap X₁.o₁ X₁.Ω₁ (X₁.S.ζ ^ e) * X₁.S.th (lab c + τ) / X₁.S.th x₀ := by
     rw [map_mul, map_mul, hs, hu, hr]
@@ -795,7 +793,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.TorRef GlobalTheory.PolDeg
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.AnForm.R GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.Poinc.Sep
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT ReciprocityTheory.ChartRestriction.G.DVR
 
 noncomputable section
@@ -847,7 +844,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.TorRef GlobalTheory.PolDeg
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.AnForm.R GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.Poinc.Sep
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT ReciprocityTheory.ChartRestriction.G.DVR
 
 end -- clump:auto

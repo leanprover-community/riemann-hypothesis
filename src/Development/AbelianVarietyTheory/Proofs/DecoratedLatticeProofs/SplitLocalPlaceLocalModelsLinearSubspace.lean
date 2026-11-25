@@ -60,11 +60,8 @@ theorem heisO_zero' (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (u : WO S T) 
     heisO ψ S T u 0 = 0 := by
   funext w; simp [heisO]
 
-theorem isThetaFunO_zero (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) : IsThetaFunO ψ S T 0 := {
-  quasi := by intro γ w; simp
-  level := ⟨⊤, isOpen_univ, fun u _ _ => heisO_zero' ψ S T u⟩
-  cont := continuous_const
-  smooth := by intro k L _ _ w; exact contDiff_const }
+theorem isThetaFunO_zero (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) : IsThetaFunO ψ S T 0 :=
+  GlobalTheory.OrientedHeis.theta_zero
 
 alias isThetaFunO_add := _root_.GlobalTheory.OrientedHeis.theta_add
 

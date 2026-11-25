@@ -41,7 +41,7 @@ open Filter Topology NumberField IsDedekindDomain Matrix GlobalTheory.WeilM Glob
   GlobalTheory.CompanionTheory.Ar.RT.Move GlobalTheory.LatVac PositivityTheory.KCo GlobalTheory.ThK
 open scoped TensorProduct
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField Classical.propDecidable
+attribute [local instance] Classical.propDecidable
 
 theorem kill_set {X : Type} [TopologicalSpace X] (N : Submodule ℂ (X → ℂ)) (Z : Set X)
     (h : ∀ Y ∉ Z, ∃ (m : X → ℂ) (c : ℂ), IsLocallyConstant m ∧ m Y ≠ c ∧ ∀ Φ ∈ SB X, (fun y => (m y - c) * Φ y) ∈ N) :
@@ -250,7 +250,7 @@ namespace PositivityTheory.ThKCT.So
 open Filter Topology NumberField IsDedekindDomain Matrix GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
   GlobalTheory.CompanionTheory.Ar.RT.Move GlobalTheory.LatVac PositivityTheory.KCo GlobalTheory.ThK
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField Classical.propDecidable
+attribute [local instance] Classical.propDecidable
 
 theorem two_rows {k : Type} [Field k] {n d : ℕ} (C : Matrix (Fin n) (Fin d) k) (x y : Fin n → k) (w : Fin d → k)
     (hx : x ≠ 0) (hi : ∀ a b : k, a • x + b • y = 0 → b = 0)
@@ -378,7 +378,7 @@ namespace PositivityTheory.ThKCT
 open Filter Topology NumberField IsDedekindDomain Matrix GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
   GlobalTheory.CompanionTheory.Ar.RT.Move GlobalTheory.LatVac PositivityTheory.KCo GlobalTheory.ThK So
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField Classical.propDecidable
+attribute [local instance] Classical.propDecidable
 
 
 theorem soEv_of (hL : LinEx) (hLow : Low) : SoEv := by

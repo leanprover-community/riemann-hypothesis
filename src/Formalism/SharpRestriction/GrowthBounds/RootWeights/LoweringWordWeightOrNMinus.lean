@@ -19,8 +19,6 @@ namespace Formalism.MainNotions.G.GLWeightTheory
 
 open Formalism.MainNotions.G Formalism.MainNotions.CovariantDegrees
 
-attribute [local instance 100] LieRing.ofAssociativeRing
-
 variable {n : ℕ} {K V : Type*} [Field K] [AddCommGroup V] [Module K V]
 
 theorem mem_weightSpace_iff_diag_eigen {E : GLOps n K V} {mu : Fin n → ℤ} {x : V} :
@@ -36,20 +34,20 @@ theorem weight_zero_lowering_kills_raising [CharZero K] [FiniteDimensional K V] 
   have rAA : ∀ y, E a a (E b a y) = E b a (E a a y) - E b a y := by
     intro y
     have h := LinearMap.congr_fun (hE.1 a a b a) y
-    rw [if_neg hab, if_pos rfl, LinearMap.sub_apply, LinearMap.sub_apply, LinearMap.zero_apply,
+    rw [ite_eq_right hab, ite_eq_left rfl, LinearMap.sub_apply, LinearMap.sub_apply, LinearMap.zero_apply,
       zero_sub] at h
     rw [sub_eq_add_neg]
     exact sub_eq_iff_eq_add'.mp h
   have rBB : ∀ y, E b b (E b a y) = E b a (E b b y) + E b a y := by
     intro y
     have h := LinearMap.congr_fun (hE.1 b b b a) y
-    rw [if_pos rfl, if_neg hab, LinearMap.sub_apply, LinearMap.sub_apply, LinearMap.zero_apply,
+    rw [ite_eq_left rfl, ite_eq_right hab, LinearMap.sub_apply, LinearMap.sub_apply, LinearMap.zero_apply,
       sub_zero] at h
     exact sub_eq_iff_eq_add'.mp h
   have rEF : ∀ y, E a b (E b a y) = E b a (E a b y) + (E a a y - E b b y) := by
     intro y
     have h := LinearMap.congr_fun (hE.1 a b b a) y
-    rw [if_pos rfl, if_pos rfl, LinearMap.sub_apply, LinearMap.sub_apply] at h
+    rw [ite_eq_left rfl, ite_eq_left rfl, LinearMap.sub_apply, LinearMap.sub_apply] at h
     exact sub_eq_iff_eq_add'.mp h
   have hstep : ∀ j : ℕ, E b a ((⇑(E b a))^[j] v) = (⇑(E b a))^[j+1] v :=
     fun j => (Function.iterate_succ_apply' _ j v).symm
@@ -80,8 +78,7 @@ theorem weight_zero_lowering_kills_raising [CharZero K] [FiniteDimensional K V] 
       push_cast
       module
   have hex : ∃ k : ℕ, (⇑(E b a))^[k+1] v = 0 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have hli : LinearIndependent K (fun k : ℕ => (⇑(E b a))^[k+1] v) := by
       refine Module.End.eigenvectors_linearIndependent' (E a a)
         (fun k : ℕ => -(((k+1 : ℕ) : K))) ?_ _ ?_

@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSB
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.BesselUnitNorm.BesselNormSteps.BesselLine.OpNormLeOneOfIso
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.BesselUnitNorm.BesselNormSteps.BesselLine.ConvGrp
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.BesselUnitNorm.BesselLine
@@ -46,13 +47,7 @@ theorem uh_inv_eq {a : Mx k r} (ha : a ∈ UH (Hpk k r)) : a⁻¹ = Hpk k r * a�
   exact Matrix.inv_eq_left_inv h1
 
 theorem isClosed_uw (z : Fin (2 * r + k + 1) → ℂ) : IsClosed {x : Mt k r | Matrix.of x ∈ UWset k r z} := by
-  have hc : Continuous (fun x : Mt k r => (Matrix.of x : Mx k r)) := continuous_id
-  simp only [UWset, UH, Set.mem_setOf_eq, Set.setOf_and, Set.setOf_forall]
-  refine (isClosed_eq ((hc.matrix_conjTranspose.matrix_mul continuous_const).matrix_mul hc)
-    continuous_const).inter ((isClosed_iInter fun a => (isClosed_eq
-      (hc.matrix_mulVec continuous_const) continuous_const).inter (isClosed_eq
-      (hc.matrix_mulVec continuous_const) continuous_const)).inter
-    (isClosed_eq (hc.matrix_mulVec continuous_const) continuous_const))
+  apply _root_.Formalism.MainNotions.BridgeCSB.isClosed_UW <;> assumption
 
 theorem piInv_aesm {z : Fin (2 * r + k + 1) → ℂ} {Wp : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [FiniteDimensional ℂ Wp] {π : Mx k r → (Wp →L[ℂ] Wp)} (hπc : ∀ x : Wp, ContinuousOn (fun g => π g x) (UWset k r z))

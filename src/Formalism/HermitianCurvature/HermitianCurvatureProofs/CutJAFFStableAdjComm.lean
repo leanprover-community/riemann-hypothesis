@@ -185,8 +185,6 @@ open scoped ComplexConjugate
 
 namespace Formalism.FourierDecayAlt.P.CutMP.JA.FFS.AC
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq]
 
@@ -233,8 +231,6 @@ end Formalism.FourierDecayAlt.P.CutMP.JA.FFS.AC
 namespace Formalism.FourierDecayAlt.P.CutMP.JA.FFS
 
 open Formalism.FourierDecayAlt.P.CutMP.JA.FFS.AC
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem hermitian_curvature_adjoint_integral : AdjIntAsm := by
   intro hU hF k r Wp Wq _ _ _ _ _ _ D Θ hs hc f hf hfc hfs p hp φ hφ hφc hφs
@@ -336,7 +332,7 @@ theorem integrable_nn {μ : Measure (Mt k r)} (hμ : B.IsHaarOn (B.GV k r) μ) {
     rw [Set.indicator_of_mem hg']
     exact hM _ ⟨hgK, hg⟩
   · have hg' : g ∉ (Matrix.of ⁻¹' K : Set (Mt k r)) := hgK
-    simp only [Set.indicator, hg', if_false, hAz _ hgK, norm_zero, zero_mul, le_refl]
+    simp only [Set.indicator, hg', ite_false, hAz _ hgK, norm_zero, zero_mul, le_refl]
 
 end Formalism.FourierDecayAlt.P.CutMP.JA.FFS.AC
 
@@ -393,8 +389,6 @@ section -- clump:auto
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt MeasureTheory
 
 namespace Formalism.FourierDecayAlt.P.CutMP.JA.FFS.AC
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 variable {k r : ℕ}
 
@@ -482,8 +476,6 @@ end Formalism.FourierDecayAlt.P.CutMP.JA.FFS.AC
 
 namespace Formalism.FourierDecayAlt.P.CutMP.JA.FFS.AC
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {k r : ℕ}
 
 theorem sgsM_left (p : B.SS k r) (hp1 : IsUnit (Matrix.of p.1.1 : B.Mat k r).det)
@@ -518,8 +510,6 @@ end Formalism.FourierDecayAlt.P.CutMP.JA.FFS.AC
 namespace Formalism.FourierDecayAlt.P.CutMP.JA.FFS
 
 open Formalism.FourierDecayAlt.P.CutMP.JA.FFS.AC
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem unitary_rho_holds : RhoUni := by
   intro k r Wp Wq _ _ _ _ _ _ D p hp

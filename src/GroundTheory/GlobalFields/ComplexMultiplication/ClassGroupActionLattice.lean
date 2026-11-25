@@ -60,7 +60,7 @@ theorem mem_cmRing {z : ℂ} : z ∈ cmRing σ ↔ ∃ a : 𝓞 K, σ (algebraMa
 
 def cmRingEquiv : 𝓞 K ≃+* cmRing σ :=
   RingEquiv.ofBijective (σ.comp (algebraMap (𝓞 K) K)).rangeRestrict
-    ⟨fun a b h ↦ (FaithfulSMul.algebraMap_injective (𝓞 K) K) (σ.injective (congrArg Subtype.val h)),
+    ⟨fun _ _ h ↦ (FaithfulSMul.algebraMap_injective (𝓞 K) K) (σ.injective (congrArg Subtype.val h)),
       (σ.comp (algebraMap (𝓞 K) K)).rangeRestrict_surjective⟩
 
 section Quadratic
@@ -69,8 +69,7 @@ variable (hK : finrank ℚ K = 2) [_root_.NumberField.IsTotallyComplex K]
 include hK
 
 theorem exists_rat_eq_of_im_eq_zero {x : K} (hx : (σ x).im = 0) : ∃ q : ℚ, algebraMap ℚ K q = x := by
-  by_contra hq
-  push_neg at hq
+  by_contra! hq
   have hind : LinearIndependent ℚ ![1, x] := by
     rw [LinearIndependent.pair_iff]
     intro s t hst
@@ -100,8 +99,7 @@ theorem exists_rat_eq_of_im_eq_zero {x : K} (hx : (σ x).im = 0) : ∃ q : ℚ, 
   exact InfinitePlace.isComplex_mk_iff.mp (IsTotallyComplex.isComplex _) hR
 
 theorem exists_ringOfIntegers_not_rat : ∃ θ : 𝓞 K, ∀ q : ℚ, algebraMap ℚ K q ≠ algebraMap (𝓞 K) K θ := by
-  by_contra hall
-  push_neg at hall
+  by_contra! hall
   have hsurj : ∀ x : K, ∃ q : ℚ, algebraMap ℚ K q = x := by
     intro x
     obtain ⟨a, b, -, rfl⟩ := IsFractionRing.div_surjective (A := 𝓞 K) x

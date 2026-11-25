@@ -124,11 +124,4 @@ theorem hermForm_act (hP : IsPeriod D ty P) (hc1 : ∀ x y, (hermForm Hm (P x) (
 
 end Compat
 
-section Frame
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
-  {Xo : Moduli Dw l} {c : Coeff l} {σ : c.F →+* ℂ} {r : ℕ}
-
-end Frame
-
 end ReciprocityTheory.ChartRestriction.G.PullbackSections.AnFrameC

@@ -45,15 +45,6 @@ theorem spMap_genMap_fromSpecStalk (p : Cpt ξ) : spMap (genMap ξ p) ≫ X.from
   exact (congrArg (Spec.map (Scheme.stalkClosedPointTo ξ) ≫ ·) h₁).trans
     (Scheme.Spec_stalkClosedPointTo_fromSpecStalk ξ)
 
-theorem dualMap_comp_algebraMap {R R' : Type} [CommRing R] [CommRing R'] (k : R →+* R') :
-    (dualMap k).comp (algebraMap R (DualNumber R)) = (algebraMap R' (DualNumber R')).comp k := by
-  ext r <;> simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl]
-
-theorem spec_dualMap_comp {R R' : Type} [CommRing R] [CommRing R'] (k : R →+* R') :
-    Spec.map (CommRingCat.ofHom (dualMap k)) ≫ Spec.map (CommRingCat.ofHom (algebraMap R (DualNumber R))) =
-      Spec.map (CommRingCat.ofHom (algebraMap R' (DualNumber R'))) ≫ Spec.map (CommRingCat.ofHom k) := by
-  rw [← Spec.map_comp, ← Spec.map_comp, ← CommRingCat.ofHom_comp, ← CommRingCat.ofHom_comp, dualMap_comp_algebraMap]
-
 theorem isFractionRing_stalk (h : IsCptGen ξ) (p : Cpt ξ) :
     letI := (genMap ξ p).toAlgebra
     IsFractionRing (X.presheaf.stalk p.1) Ω := by
@@ -77,8 +68,8 @@ theorem isHTFormOver_move (hψ : IsGrpPullback G₀ G x ψ) (hψ' : IsGrpPullbac
     (tie : ∀ e, ∃ v : epsAt (𝟙 (Sp Ω)) ⟶ GΩ, v.left ≫ φ = (M.pt e).left ∧ v.left ≫ φ' = (M'.pt e).left)
     (N : ℕ) (w : Module.Dual Ω E) (h : M.IsHTFormOver N x k w) : M'.IsHTFormOver N x k w := by
   obtain ⟨hd, T, _, Γ, i, L, _, _, M₀, j, χ, w₀, ht, hj, hHT, hw⟩ := h
-  obtain ⟨i₀, hi₀, ht₀⟩ := (_root_.GlobalTheory.CompanionTheory.Ar.torsionAlong_iff_pullback_torsion R T Γ X x G G₀ ψ N hψ).1 i ht
-  have ht' := (_root_.GlobalTheory.CompanionTheory.Ar.torsionAlong_iff_pullback_torsion R T Γ X x G' G₀ ψ' N hψ').2 i₀ ht₀
+  obtain ⟨i₀, hi₀, ht₀⟩ := (_root_.PositivityTheory.UnitarySelfGeneration.isTorsionAlong_iff_of_isGrpPullback R T Γ X x G G₀ ψ N hψ).1 i ht
+  have ht' := (_root_.PositivityTheory.UnitarySelfGeneration.isTorsionAlong_iff_of_isGrpPullback R T Γ X x G' G₀ ψ' N hψ').2 i₀ ht₀
   obtain ⟨M₀₀, hM₀⟩ := (GlobalTheory.CompanionTheory.Ar.LieMove.main R X x G G₀ ψ L hψ).1 M₀
   obtain ⟨M₀', hM₀'⟩ := (GlobalTheory.CompanionTheory.Ar.LieMove.main R X x G' G₀ ψ' L hψ').2 M₀₀
   refine ⟨hd, T, _, Γ, i₀ ≫ ψ', L, _, _, M₀', j, χ, w₀, ht', ?_, ?_, hw⟩
@@ -92,7 +83,7 @@ theorem isHTFormOver_move (hψ : IsGrpPullback G₀ G x ψ) (hψ' : IsGrpPullbac
         dsimp at a b
         rw [Category.assoc, Category.assoc, a, hκ, ← Category.assoc (Over.Hom.left v), b]
         simp only [Category.comp_id]
-        exact spec_dualMap_comp k
+        exact GlobalTheory.CompanionTheory.Ar.LieTangent.spec_dual_alg k
     rw [← hM₀' e, ← Category.assoc, key, Category.assoc, e₂, hv']
   · obtain ⟨s, hs, hsv⟩ := hHT
     refine ⟨s, hs, fun e => ?_⟩
@@ -107,7 +98,7 @@ theorem isHTFormOver_move (hψ : IsGrpPullback G₀ G x ψ) (hψ' : IsGrpPullbac
         dsimp at a b
         rw [Category.assoc, Category.assoc, a, b, ← Category.assoc v, h₁]
         simp only [Category.comp_id]
-        rw [spec_dualMap_comp, CommRingCat.ofHom_comp, Spec.map_comp]
+        rw [GlobalTheory.CompanionTheory.Ar.LieTangent.spec_dual_alg, CommRingCat.ofHom_comp, Spec.map_comp]
     rw [← Category.assoc, key, Category.assoc, hM₀']
 
 theorem isHTFormOver_of_dvr [IsDomain R] [IsDiscreteValuationRing R]
@@ -207,7 +198,7 @@ end torsion
 theorem htOm_eq_of_dvr : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (B : Type) [CommRing B] (b : Base l B) (g : HostAut H) (X : Scheme.{0}) (Ω : Type) [Field Ω] [CharZero Ω] (ξ : Sp Ω ⟶ X) (s : Sp Ω ⟶ Sp B) (o : Obj D l b s) (t t' : SAB H X) (m : SABMap o.t t ξ) (m' : SABMap (twistSAB o.t g) t' ξ) (V : Type) [AddCommGroup V] [Module Ω V] (M : LieModel t.G ξ V) (M' : LieModel t'.G ξ V) (n : ℕ) (q : Cpt ξ), IsCptGen ξ → 0 < n → FullTorsion t.G ξ n → (∀ e, ∃ v : epsAt (𝟙 (Sp Ω)) ⟶ o.t.G, v.left ≫ m.φ = (M.pt e).left ∧ v.left ≫ m'.φ = (M'.pt e).left) → (∃ _ : IsDomain (X.presheaf.stalk q.1), IsDiscreteValuationRing (X.presheaf.stalk q.1)) → M'.htOm t'.PP.L n q = M.htOm t.PP.L n q := by
   intro E _ _ _ H D l B _ b g X Ω _ _ ξ s o t t' m m' V _ _ M M' n q hξ hn hf hv hq
   obtain ⟨a⟩ := PositivityTheory.UnitarySelfGeneration.tw_iso E H D g
-  have hok := _root_.GlobalTheory.CompanionTheory.Ar.TwistOk.twOK_obj E H D l B b (Sp Ω) s o g a
+  have hok := _root_.PositivityTheory.UnitarySelfGeneration.tw_ok E H D l B b (Sp Ω) s o g a
   have hf' : FullTorsion t'.G ξ n := fullTorsion_of_common_fibre (G₀ := o.t.G) m.cart m'.cart hf
   obtain ⟨hd, hdvr⟩ := id hq
   have hic : IsIntegrallyClosed (X.presheaf.stalk q.1) := inferInstance
@@ -220,7 +211,6 @@ theorem htOm_eq_of_dvr : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
 end GlobalTheory.CompanionTheory.Ar.OmDvrK
 
 namespace PositivityTheory.UnitarySelfGeneration
-
 
 theorem lattice_stalk_dvr_twisted_models : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (B : Type) [CommRing B] (b : Base l B) (g : HostAut H) (X : Scheme.{0}) (Ω : Type) [Field Ω] [CharZero Ω] (ξ : Sp Ω ⟶ X) (s : Sp Ω ⟶ Sp B) (o : Obj D l b s) (t t' : SAB H X) (m : SABMap o.t t ξ) (m' : SABMap (twistSAB o.t g) t' ξ) (V : Type) [AddCommGroup V] [Module Ω V] (M : LieModel t.G ξ V) (M' : LieModel t'.G ξ V) (n : ℕ) (q : Cpt ξ), IsCptGen ξ → 0 < n → FullTorsion t.G ξ n → (∀ e, ∃ v : epsAt (𝟙 (Sp Ω)) ⟶ o.t.G, v.left ≫ m.φ = (M.pt e).left ∧ v.left ≫ m'.φ = (M'.pt e).left) → (∃ _ : IsDomain (X.presheaf.stalk q.1), IsDiscreteValuationRing (X.presheaf.stalk q.1)) → M'.htOm t'.PP.L n q = M.htOm t.PP.L n q :=
   @GlobalTheory.CompanionTheory.Ar.OmDvrK.htOm_eq_of_dvr

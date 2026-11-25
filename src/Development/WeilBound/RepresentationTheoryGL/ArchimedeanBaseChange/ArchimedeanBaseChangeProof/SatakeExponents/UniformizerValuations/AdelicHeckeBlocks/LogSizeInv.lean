@@ -38,7 +38,7 @@ theorem adjVal_spec (h2 : MultAlg) {n : ℕ} (μ : Measure (G n)) [μ.IsHaarMeas
   have hex : ∃ val₁, IsMult μ (M v) (adjK k v) val₁ T ∧ ∀ χ, IsHerm χ → val₁ χ = starRingEnd ℂ (val v χ) := by
     obtain ⟨-, -, h, -⟩ := h2 n μ (M v) (k v) (k v) (val v) (val v) T T hk hk
     exact h
-  have e : adjVal μ k val T v = hex.choose := dif_pos hex
+  have e : adjVal μ k val T v = hex.choose := dite_eq_left hex
   rw [e]
   exact hex.choose_spec
 
@@ -47,7 +47,7 @@ variable (B : Block E)
 theorem opOf_eq (h1 : OpEx) {Φ : Matrix B.I B.I (H E B.a B.b → ℂ)} {T : B.Hb →L[ℂ] B.Hb} (hΦ : IsTestM Φ)
     (hT : IsROp B.D Φ T) : B.opOf Φ = T := by
   have hex : ∃ T, IsROp B.D Φ T := ⟨T, hT⟩
-  have e : B.opOf Φ = hex.choose := dif_pos hex
+  have e : B.opOf Φ = hex.choose := dite_eq_left hex
   rw [e]
   exact ((h1 E B.a B.b B.D B.I).1 Φ hΦ).unique hex.choose_spec hT
 
@@ -57,7 +57,7 @@ theorem test (h3 : TensTest) (t : PT B) (ht : t.Ok) : IsTestM t.Φ := by
 
 theorem rop (h1 : OpEx) (h3 : TensTest) (t : PT B) (ht : t.Ok) : IsROp B.D t.Φ t.op := by
   have hex := ((h1 E B.a B.b B.D B.I).1 t.Φ (test B h3 t ht)).exists
-  have e : B.opOf t.Φ = hex.choose := dif_pos hex
+  have e : B.opOf t.Φ = hex.choose := dite_eq_left hex
   show IsROp B.D t.Φ (B.opOf t.Φ)
   rw [e]
   exact hex.choose_spec
@@ -72,12 +72,10 @@ theorem mulOk (h2 : MultAlg) (h4 : TensMul) (t t' : PT B) (ht : t.Ok) (ht' : t'.
   · intro x y g hg
     have hg' : ∑ z, ∫ h, t.ψ x z h * t'.ψ z y (h⁻¹ * g) ∂B.ν ≠ 0 := hg
     obtain ⟨z, hz⟩ : ∃ z, ∫ h, t.ψ x z h * t'.ψ z y (h⁻¹ * g) ∂B.ν ≠ 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hg' (Finset.sum_eq_zero fun z _ => hc z)
     obtain ⟨h, hh⟩ : ∃ h, t.ψ x z h * t'.ψ z y (h⁻¹ * g) ≠ 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hz (by simp [hc])
     have s1 := ht.size x z h (left_ne_zero_of_mul hh)
     have s2 := ht'.size z y (h⁻¹ * g) (right_ne_zero_of_mul hh)

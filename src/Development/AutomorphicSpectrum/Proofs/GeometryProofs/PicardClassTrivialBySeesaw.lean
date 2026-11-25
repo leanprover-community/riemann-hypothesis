@@ -13,7 +13,6 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRin
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CechPic
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 
@@ -229,7 +228,7 @@ theorem pic_inj : ∀ (k : Type) [Field k] [IsAlgClosed k] (G : Over (Sp k)) [Gr
   obtain ⟨f, hf⟩ := exists_unit_weight T.i T.q hiq ((proj T.q Y).left ≫ 𝟙 _)
     (lift (𝟙 T.B) (toUnit T.B ≫ y₀)).left y₀ (by
       rw [Category.comp_id, ← Over.comp_left, ← Over.comp_left, sec, lift_proj]
-      simp [comp_lift, toUnit_unique (T.q ≫ toUnit T.B) (toUnit G)]) hN u hu s hs χ hw
+      simp [comp_lift]) hN u hu s hs χ hw
   obtain ⟨t, ht⟩ := exists_gen_of_weight T.i T.q ker hN u hu χ hw f hf
   have h := (cls_eq_zero_iff (pull_isLB hN (𝟙 _))).2 ⟨t, ht⟩
   rwa [cls_pull hN, pull_id] at h

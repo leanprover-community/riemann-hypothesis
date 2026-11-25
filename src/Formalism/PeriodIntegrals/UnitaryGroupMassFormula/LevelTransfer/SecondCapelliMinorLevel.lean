@@ -4,6 +4,7 @@ public import Formalism.HermitianCurvature.StatementQ
 public import Formalism.FormalDegreeBessel.FinalG
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelTransfer.LzConjTranspose
 import Mathlib.Tactic.TypeStar
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelLiftBasics.LevelGroupUnitaryHermitian
 
 @[expose] public section
 
@@ -15,26 +16,11 @@ namespace PIQnLT
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {k i r' : ℕ}
 
 theorem mulVec_liftVec (M : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) (v : Fin (2 * r' + k + 1) → ℂ) :
     ιLev k i r' M *ᵥ liftVec k i r' v = liftVec k i r' (M *ᵥ v) := by
-  funext p
-  by_cases hp : i ≤ p.val ∧ p.val < 2 * r' + k + 1 + i
-  · obtain ⟨a, rfl⟩ : ∃ a, levPos k i r' a = p :=
-      ⟨⟨p.val - i, by omega⟩, Fin.ext (by show p.val - i + i = p.val; omega)⟩
-    rw [liftVec_lev]
-    simp only [Matrix.mulVec, dotProduct]
-    rw [sum_lev]
-    · simp only [ιLev_lev, liftVec_lev]
-    · intro q hq
-      rw [liftVec_out _ _ hq, mul_zero]
-  · rw [liftVec_out _ _ hp]
-    simp only [Matrix.mulVec, dotProduct, ιLev_out M p _ hp, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq,
-      Finset.mem_univ, if_true]
-    exact liftVec_out _ _ hp
+  apply _root_.PI.QnLevBasicsW.mulVec_lift <;> assumption
 
 theorem hpk_mulVec_liftVec (v : Fin (2 * r' + k + 1) → ℂ) :
     Hpk k (i + r') *ᵥ liftVec k i r' v = liftVec k i r' (Hpk k r' *ᵥ v) := by
@@ -78,7 +64,7 @@ theorem bvec_lev (q : Fin (2 * r' + k + 1)) : bvec (levPos k i r' q) = liftVec k
     simp only [bvec, Pi.single_apply, lev_inj.eq_iff]
   · rw [liftVec_out _ _ hp]
     simp only [bvec, Pi.single_apply]
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro rfl
     exact hp (lev_in q)
 

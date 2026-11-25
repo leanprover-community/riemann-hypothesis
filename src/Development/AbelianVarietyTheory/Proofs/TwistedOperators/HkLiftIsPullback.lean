@@ -52,8 +52,6 @@ noncomputable section
 
 namespace GlobalTheory.HeckeEx
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
   {Xo : Moduli Dw l} {P : Ideal (𝓞 E)} {p i : ℕ}
 

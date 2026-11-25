@@ -234,8 +234,7 @@ theorem c_frob (hK : Module.finrank ℚ K = 2) (c : K →+* K) (hc : ∃ x, c x 
     · exact Or.inl (sub_eq_zero.mp h)
     · exact Or.inr (sub_eq_zero.mp h)
   have hex : ∃ y : (𝓞 K ⧸ Ideal.span {(p : 𝓞 K)}), y ^ p ≠ y := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     haveI := finite_quot (K := K) (p := p) hK
     letI := Fintype.ofFinite (𝓞 K ⧸ Ideal.span {(p : 𝓞 K)})
     letI : Field (𝓞 K ⧸ Ideal.span {(p : 𝓞 K)}) := Ideal.Quotient.field _

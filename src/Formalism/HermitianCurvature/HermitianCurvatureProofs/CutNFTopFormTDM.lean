@@ -109,7 +109,7 @@ theorem topDMeasCpt_of_parts (h1 : TypeNormMeas) (h2 : VecVGPos) (h3 : DopCC) (h
   have hl : D.IsLocPt (TBB.bigPt P.r c) (P.r + 1) := Formalism.FourierDecayAlt.P.PBJ.Dens.isLocPt_bigPt c hc
   show g c = topD p X w c
   unfold topD TBB.Ew TBB.NP KB.Pl.RR D.RRplace
-  rw [dite_eq_left ⟨hl, hl⟩, dite_eq_right (by omega), if_pos rfl, if_neg hw0]
+  rw [dite_eq_left ⟨hl, hl⟩, dite_eq_right (by omega), ite_eq_left rfl, ite_eq_right hw0]
   unfold Top.topOf
   simp only [hg]
   congr 3

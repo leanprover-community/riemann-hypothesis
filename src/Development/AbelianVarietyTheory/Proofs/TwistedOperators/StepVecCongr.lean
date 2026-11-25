@@ -71,7 +71,7 @@ theorem r_le_colY {T : Type} (L : LevCh D T) (j : ℕ) : D.R.r ≤ (columnBlock 
   · exact r_le_Y 0
   · by_cases h : j + 1 < D.R.m
     · rw [colY_lt L h]; exact r_le_Y _
-    · rw [show columnBlock L (j + 1) = ⟨D.sp.X', L.ΛX⟩ from if_neg h]; exact r_le_X
+    · rw [show columnBlock L (j + 1) = ⟨D.sp.X', L.ΛX⟩ from ite_eq_right h]; exact r_le_X
 
 def colDat {T : Type} (L : LevCh D T) (t : T) (j : ℕ) : LevDat D.host.E ℂ (columnBlock L j).sp.rank :=
   Formalism.IndefR.Lev.datY _ D.R.r D.R.t j (r_le_colY L j) L.Pg (L.Q t) (LevelP.triv L.Pg D.R.r ℂ) L.chi (L.xiR t) Formalism.IndefR.Lev.Frm.B

@@ -11,6 +11,7 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.L
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.TensTop
 import Mathlib.Tactic.Linter.HaveILetI
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.HRAddSmul
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalJacobianType.ContinuousPsiVOf
 
 @[expose] public section
 
@@ -60,13 +61,7 @@ theorem dV_ne_zero : dV v ≠ 0 := by
   · exact one_ne_zero
 
 theorem psiV_zero (ψ : AddChar (AF F) ℂ) : psiV F ψ v 0 = 1 := by
-  have hs : singleV F v (0 : Fv F v) = 0 := by
-    have h := SdUniqW.singleV_add v (0 : Fv F v) 0
-    rw [add_zero] at h
-    simpa using h
-  rw [psiV, hs]
-  convert AddChar.map_zero_eq_one ψ
-  rfl
+  apply _root_.PI.UnitaryGroupMassFormula.LocJacTyp.Sd.psiV_zero <;> assumption
 
 theorem unif_ne_zero {ϖ : Fv F v} (h : IsUnif v ϖ) : ϖ ≠ 0 := by
   intro h0
@@ -154,7 +149,7 @@ theorem sdVolH_of_top (a : ℕ) (hC : CondV σ J ψ v) (hT : TopH σ v a) (hD : 
   have hϖ0 := unif_ne_zero v hϖ
   have hd0 := dV_ne_zero v
   have hνsd : SdHerm F E σ (Fv F v) (psiV F ψ v) a (dT σ ψ v a) := by
-    simp only [dT, dif_pos hν]
+    simp only [dT, dite_eq_left hν]
     exact hν.choose_spec
   have := hνsd.1
   set ν := dT σ ψ v a with hνdef

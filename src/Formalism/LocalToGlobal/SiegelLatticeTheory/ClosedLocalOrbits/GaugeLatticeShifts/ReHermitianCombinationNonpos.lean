@@ -1,5 +1,7 @@
 module
 
+
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SaturatedPf
 import Formalism.LocalToGlobal.SubmoduleMembership
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermDef
 public import Lemmata.GeneralBFactThirdForm.Imports
@@ -7,7 +9,6 @@ public import Mathlib.LinearAlgebra.LinearIndependent.BaseChange
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.Corank
-
 @[expose] public section
 
 noncomputable section
@@ -140,13 +141,7 @@ theorem orth_anti {U U' : Submodule E S.V} (h : U ≤ U') : orth S U' ≤ orth S
 
 theorem form_span_left {s : Set S.V} {v : S.V} (hs : ∀ x ∈ s, S.hT x v = 0) :
     ∀ x ∈ Submodule.span E s, S.hT x v = 0 := by
-  intro x hx
-  have hle : Submodule.span E s ≤ LinearMap.ker (S.hT v) := by
-    rw [Submodule.span_le]
-    intro y hy
-    simp only [SetLike.mem_coe, LinearMap.mem_ker]
-    exact S.herm.eq_iff.1 (hs y hy)
-  exact S.herm.eq_iff.1 (hle hx)
+  apply _root_.Formalism.L2.SG.Pf.hT_span_left <;> assumption
 
 theorem flag_form_zero {T : E} (F : FlagG S r T) : ∀ x ∈ F.Xplus, ∀ v ∈ F.X, S.hT x v = 0 := by
   have hX : ∀ b ∈ F.X, ∀ i, S.hT (F.e i) b = 0 := fun b hb i => by
@@ -431,11 +426,5 @@ theorem posW_holds (D : D7) : PosW D := by
   exact_mod_cast key' ▸ hpos
 
 end PosWPf
-
-section Final
-
-open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.TermDef Formalism.L2.SG.Corank
-
-end Final
 
 end Formalism.L2.SG.Pf

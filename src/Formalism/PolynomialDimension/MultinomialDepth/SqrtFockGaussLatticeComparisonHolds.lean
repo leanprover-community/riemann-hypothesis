@@ -136,7 +136,7 @@ theorem xFactorial_add_diagExponent (m : XY k →₀ ℕ) (i : Fin k) (n : ℕ) 
     have : i ≠ j := (Finset.ne_of_mem_erase hj).symm
     simp [diagExponent_inl, this]
   rw [h1]
-  simp only [Finsupp.add_apply, diagExponent_inl, if_true]
+  simp only [Finsupp.add_apply, diagExponent_inl, ite_true]
   rw [factorial_add_eq_descFactorial_mul, mul_assoc]
 
 def h3e (K : Type) [Field K] {k : ℕ} (i : Fin k) : Module.End K (PolXY K k) :=
@@ -564,15 +564,14 @@ theorem glAct_hXY {K : Type} [Field K] {k : ℕ} (g : GL (Fin k) K) : glAct g (h
         rw [map_sum, Finset.sum_mul]
         exact Finset.sum_congr rfl fun i _ => by rw [map_mul]; ring
     _ = ∑ i : Fin k, X (Sum.inl i) * X (Sum.inr i) := by
-        simp only [hm, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+        simp only [hm, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem glAct_inv_glAct {K : Type} [Field K] {k : ℕ} (g : GL (Fin k) K) (f : PolXY K k) :
     glAct g⁻¹ (glAct g f) = f := by
   have key : (glAct g⁻¹).comp (glAct g) = AlgHom.id K (PolXY K k) := by
     apply MvPolynomial.algHom_ext
     rintro (i | i)
-    · set_option synthInstance.maxHeartbeats 100000 in
-        simp only [AlgHom.comp_apply, AlgHom.id_apply, glAct_X_inl, map_sum, map_mul,
+    · simp only [AlgHom.comp_apply, AlgHom.id_apply, glAct_X_inl, map_sum, map_mul,
         MvPolynomial.algHom_C, MvPolynomial.algebraMap_eq]
       have hm : ∀ l : Fin k, C (∑ j : Fin k, (g : Matrix (Fin k) (Fin k) K) i j *
           ((g⁻¹ : GL (Fin k) K) : Matrix (Fin k) (Fin k) K) j l) = (if i = l then 1 else 0 : PolXY K k) := by
@@ -587,7 +586,7 @@ theorem glAct_inv_glAct {K : Type} [Field K] {k : ℕ} (g : GL (Fin k) K) (f : P
             simp only [map_sum, Finset.sum_mul, map_mul, mul_assoc, Finset.mul_sum]
             rw [Finset.sum_comm]
         _ = X (Sum.inl i) := by
-          simp only [hm, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+          simp only [hm, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     · set_option synthInstance.maxHeartbeats 100000 in
         simp only [AlgHom.comp_apply, AlgHom.id_apply, glAct_X_inr, map_sum, map_mul,
         MvPolynomial.algHom_C, MvPolynomial.algebraMap_eq, inv_inv]
@@ -611,7 +610,7 @@ theorem glAct_inv_glAct {K : Type} [Field K] {k : ℕ} (g : GL (Fin k) K) (f : P
             simp only [map_sum, Finset.sum_mul, map_mul, mul_assoc, Finset.mul_sum]
             rw [Finset.sum_comm]
         _ = X (Sum.inr i) := by
-          simp only [hm, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+          simp only [hm, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   have h2 := congrArg (fun φ => φ f) key
   simpa using h2
 
@@ -707,7 +706,7 @@ theorem multinomial_factorization_le (p : ℕ) {ι : Type} [DecidableEq ι] (s :
     rcases s.eq_empty_or_nonempty with hs | hs
     · subst hs
       simp [Nat.multinomial_singleton]
-    · rw [Nat.multinomial_insert ha, Finset.sum_insert ha, Finset.card_insert_eq_ite, if_neg ha]
+    · rw [Nat.multinomial_insert ha, Finset.sum_insert ha, Finset.card_insert_eq_ite, ite_eq_right ha]
       have hc : (f a + ∑ i ∈ s, f i).choose (f a) ≠ 0 := (Nat.choose_pos (Nat.le_add_right _ _)).ne'
       have hm : Nat.multinomial s f ≠ 0 := (Nat.multinomial_pos _ _).ne'
       rw [Nat.factorization_mul hc hm, Finsupp.add_apply]
@@ -1058,12 +1057,12 @@ theorem h_mul_eq_zero_of_deg {K : Type} [Field K] {k A B : ℕ} (hAB : A = 0 ∨
     · have hle : m (Sum.inl i) ≤ xDeg m :=
         Finset.single_le_sum (f := fun j => m (Sum.inl j)) (fun _ _ => Nat.zero_le _) (Finset.mem_univ i)
       have hmi : m (Sum.inl i) = 0 := by omega
-      rw [mul_assoc, MvPolynomial.coeff_X_mul', if_neg (by simpa [Finsupp.mem_support_iff] using hmi)]
+      rw [mul_assoc, MvPolynomial.coeff_X_mul', ite_eq_right (by simpa [Finsupp.mem_support_iff] using hmi)]
     · have hle : m (Sum.inr i) ≤ yDeg m :=
         Finset.single_le_sum (f := fun j => m (Sum.inr j)) (fun _ _ => Nat.zero_le _) (Finset.mem_univ i)
       have hmi : m (Sum.inr i) = 0 := by omega
       rw [mul_comm (X (Sum.inl i)) (X (Sum.inr i)), mul_assoc, MvPolynomial.coeff_X_mul',
-        if_neg (by simpa [Finsupp.mem_support_iff] using hmi)]
+        ite_eq_right (by simpa [Finsupp.mem_support_iff] using hmi)]
 
 theorem harQuot_of (H1 : HarProj) (H2 : GaussProj) : HarQuot := by
   intro K _ _ k A B p O g hk hp hR

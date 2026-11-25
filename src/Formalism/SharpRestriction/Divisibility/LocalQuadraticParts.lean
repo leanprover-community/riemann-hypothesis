@@ -23,18 +23,6 @@ def nTT (D : D7) : ℝ := (D.host.TT.card : ℝ)
 
 def UsedT (D : D7) (μ : D.what₂.Tup) : Prop := μ = D.what₂.mu0 ∨ ∃ w, μ = D.what₂.muAt w
 
-def PeterssonBoundAtEmbedding (D : D7) (Z : DivX D) (A : AmbForm D (RowSide.sharp D)) (s : D.what₂.LL →+* ℂ) : Prop :=
-  ∀ (x : D.div.RR.V) (q : (A.MtH D.what₂.mu0).V), A.jAmb D.what₂.mu0 q ∈ D.what₂.V0 D.what₂.mu0 →
-    D.jEE x = D.what₂.iota D.what₂.mu0 (A.jAmb D.what₂.mu0 q) →
-    Z.kapR s * Real.exp (⨅ σ : Fin D.what₂.Drows, ∑ j ∈ SizeData₂.lifts D, Z.logLam j (D.what₂.ft σ) s) *
-        qn A (InfinitePlace.mk s) q ^ 2 ≤
-      Formalism.HermitianLatticesTheory.normAt D.div.RR.b D.div.RR.X (InfinitePlace.mk s) x ^ 2 ∧
-    Formalism.HermitianLatticesTheory.normAt D.div.RR.b D.div.RR.X (InfinitePlace.mk s) x ^ 2 ≤
-      Z.kapR s * Real.exp (⨆ σ : Fin D.what₂.Drows, ∑ j ∈ SizeData₂.lifts D, Z.logLam j (D.what₂.ft σ) s) *
-        qn A (InfinitePlace.mk s) q ^ 2
-
-def PeterssonBoundAllEmbeddings (D : D7) (Z : DivX D) (A : AmbForm D (RowSide.sharp D)) : Prop := ∀ s, PeterssonBoundAtEmbedding D Z A s
-
 /-- For each admissible column and each row in both the integral row lattice
 and `V0`, the period lies in the image of the number field. A nonzero period
 has additive valuation at least the floor of the ramification-scaled forced

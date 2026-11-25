@@ -47,8 +47,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Sp spMap epsR IsTangent)
 open ReciprocityTheory.ChartRestriction.G.Semi (mulN)
 open GlobalTheory.DeRham (spOver spOver_comp)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory
 
 namespace PDiv

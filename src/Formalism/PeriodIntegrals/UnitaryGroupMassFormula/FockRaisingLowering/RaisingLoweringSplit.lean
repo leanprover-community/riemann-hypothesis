@@ -49,8 +49,8 @@ theorem plus_eq (R L : Module.End ℂ (MvPolynomial σ ℂ))
     intro d
     have hmem := hR d _ (homogeneousComponent_mem d P)
     rw [LinearMap.add_apply, map_add (f := _), hL, hc_hc,
-      if_neg (show ¬ (d + 2 + 2 = d) by omega), map_zero, add_zero,
-      homogeneousComponent_of_mem hmem, if_pos rfl]
+      ite_eq_right (show ¬ (d + 2 + 2 = d) by omega), map_zero, add_zero,
+      homogeneousComponent_of_mem hmem, ite_eq_left rfl]
   have hsupp : (Function.support fun d => R (homogeneousComponent d P)) ⊆
       ↑(Finset.range (P.totalDegree + 1)) := by
     intro d hd
@@ -72,7 +72,7 @@ private theorem apply_homogeneousComponent_eq_zero_of_lt_two (L : Module.End ℂ
     (Q : MvPolynomial σ ℂ) (k : ℕ) (hk : k < 2) : L (homogeneousComponent k Q) = 0 := by
   apply eq_zero_of_hc
   intro e
-  rw [hL, hc_hc, if_neg (show ¬ (e + 2 = k) by omega), map_zero]
+  rw [hL, hc_hc, ite_eq_right (show ¬ (e + 2 = k) by omega), map_zero]
 
 theorem minus_eq (R L : Module.End ℂ (MvPolynomial σ ℂ))
     (hR : ∀ (d : ℕ) (P : MvPolynomial σ ℂ), P ∈ homog σ d → R P ∈ homog σ (d + 2))
@@ -84,7 +84,7 @@ theorem minus_eq (R L : Module.End ℂ (MvPolynomial σ ℂ))
       L (homogeneousComponent (d + 2) P) := by
     intro d
     have hmem := hR (d + 2) _ (homogeneousComponent_mem (d + 2) P)
-    rw [LinearMap.add_apply, map_add (f := _), hL, hc_hc, if_pos rfl,
+    rw [LinearMap.add_apply, map_add (f := _), hL, hc_hc, ite_eq_left rfl,
       homogeneousComponent_of_mem hmem]
     split_ifs with hc
     · exact absurd hc (by omega)

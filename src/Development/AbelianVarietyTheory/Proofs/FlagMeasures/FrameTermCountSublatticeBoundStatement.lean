@@ -180,8 +180,6 @@ end General
 
 section Record
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable (D : D7)
 
 theorem hT_zero_symm {E : Type} [Field E] [NumberField E] [StarRing E] (S : HSpace E) {x y : S.V}
@@ -496,7 +494,6 @@ section -- clump:auto
 
 open NumberField Module Matrix Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.Cnt GlobalTheory.LoopC
 open scoped ENNReal Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto
@@ -558,8 +555,6 @@ theorem orth_frame_of_mem_Thp {Λ : Submodule (𝓞 E) S.V} {F : LFlag S r T} {F
     exact Submodule.mem_sup_left (Submodule.mem_sup_right ⟨he a, Submodule.subset_span ⟨a, rfl⟩⟩)
 
 end Gen
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable (D : D7)
 
@@ -704,7 +699,7 @@ theorem cntCl_ExSet_le : ∀ (D : D7) (u u' : D.what₂.Word) (F0 : Fb D u) (Λ 
     refine this.trans (le_of_eq ?_)
     exact map_sum ENat.toENNRealRingHom _ _
   refine h2.trans ((Finset.sum_le_card_nsmul _ _ _ fun φ hφ =>
-    GlobalTheory.T.card_integral_frames_fixed_lift_le D u u' F0 Λ hst hb hrow hsp P φ Z s De Q hs1 hsk (hreps φ hφ) hsub hQ).trans ?_)
+    _root_.GlobalTheory.LoopC.FixedLift.card_frames_le D u u' F0 Λ hst hb hrow hsp P φ Z s De Q hs1 hsk (hreps φ hφ) hsub hQ).trans ?_)
   have hnn : 0 ≤ NT D u ^ (2 * D.R.rS) * De ^ D.R.rS := le_trans (Nat.cast_nonneg _) hcard
   rw [frB, ENNReal.ofReal_mul hnn, nsmul_eq_mul]
   gcongr
@@ -852,7 +847,7 @@ theorem exists_elem (θ : 𝓞 E) (hθ : (θ : E) + star (θ : E) = 1) (hΛ : Fo
   have hwX : w ∈ Xsp F := Xflag_le_X _ hw
   have hσb : ∀ x ∈ Xflag F b, S.hT σ x = 0 := by
     refine ext_Xflag (S.hT σ) 0 b fun a ha => ?_
-    rw [hσ, if_neg (fun h => by rw [h] at ha; exact lt_irrefl _ ha)]
+    rw [hσ, ite_eq_right (fun h => by rw [h] at ha; exact lt_irrefl _ ha)]
     rfl
   have hww : S.hT w w = 0 := iso_X S F hwX hwX
   have hwσ : S.hT w σ = 0 := by rw [herm S, hσb w hw, star_zero]
@@ -881,9 +876,9 @@ theorem exists_elem (θ : 𝓞 E) (hθ : (θ : E) + star (θ : E) = 1) (hΛ : Fo
   · intro x hx
     rw [hap x ((mem_orth S).1 hx w hwX), sub_sub_cancel_left]
     exact Submodule.neg_mem _ (Submodule.smul_mem _ _ hwX)
-  · rw [hap _ (X_orth_frame hwX b), hσ, if_pos rfl]
+  · rw [hap _ (X_orth_frame hwX b), hσ, ite_eq_left rfl]
   · intro j hj
-    rw [hap _ (X_orth_frame hwX j), hσ, if_neg hj]; simp
+    rw [hap _ (X_orth_frame hwX j), hσ, ite_eq_right hj]; simp
 
 theorem exists_col (θ : 𝓞 E) (hθ : (θ : E) + star (θ : E) = 1) (hlat : Submodule.IsLattice E Λ)
     (hΛ : Formalism.HermitianLatticesTheory.IsUnimodular S.hT Λ) (hT : T ≠ 0)
@@ -930,16 +925,16 @@ theorem exists_cols (w : Fin (r + 1) → S.V) (hw : ∀ b : Fin (r + 1), w b ∈
         rcases lt_trichotomy b.val k with hb | hb | hb
         · have : m (w b) = w b := ext_Xflag (m : S.V →ₗ[E] S.V) LinearMap.id b
             (fun a ha => e2 a fun h => by rw [h] at ha; exact lt_asymm ha hb) _ (hw b)
-          rw [if_pos hb, if_pos (by omega), map_add (f := _), this, e2 b fun h => by rw [h] at hb; exact lt_irrefl _ hb]
+          rw [ite_eq_left hb, ite_eq_left (by omega), map_add (f := _), this, e2 b fun h => by rw [h] at hb; exact lt_irrefl _ hb]
         · have : b = ⟨k, hk⟩ := Fin.ext hb
-          rw [if_neg (by omega), if_pos (by omega), add_zero, this, e1]
-        · rw [if_neg (by omega), if_neg (by omega), add_zero,
+          rw [ite_eq_right (by omega), ite_eq_left (by omega), add_zero, this, e1]
+        · rw [ite_eq_right (by omega), ite_eq_right (by omega), add_zero,
             e2 b fun h => by rw [h] at hb; exact lt_irrefl _ hb]
       · refine ⟨n, hn, fun b => ?_⟩
         have := b.2
-        rw [h1, if_pos (by omega), if_pos (by omega)]
+        rw [h1, ite_eq_left (by omega), ite_eq_left (by omega)]
   obtain ⟨n, hn, h1⟩ := key (r + 1)
-  exact ⟨n, hn, fun b => by rw [h1, if_pos b.2]⟩
+  exact ⟨n, hn, fun b => by rw [h1, ite_eq_left b.2]⟩
 
 theorem exists_frame_op (θ : 𝓞 E) (hθ : (θ : E) + star (θ : E) = 1) (hlat : Submodule.IsLattice E Λ)
     (hΛ : Formalism.HermitianLatticesTheory.IsUnimodular S.hT Λ) (hT : T ≠ 0)
@@ -1141,8 +1136,6 @@ theorem mem_Hp_iff {T' : E} {G : LFlag S r T'} (hF : F.zt = F.fl.z) (hG : G.zt =
     exact fun y hy => (Submodule.span_le (p := K)).2 this hy
 
 end Gen
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem ddS_ne_zero (D : D7) : ddS D ≠ 0 := by
   unfold ddS
@@ -1416,8 +1409,6 @@ theorem Zhat_mapFlag {F : LFlag S r T} (G : LFlag S r T') {n : S.V ≃ₗ[E] S.V
 
 end Gen
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem main : ∀ (D : D7) (u u' : D.what₂.Word) (F0 : Fb D u) (Λ : LatV D), Stand D u u' → IsBase D u F0 → IsRowLat D F0 Λ → ∀ (P : LatW D) (Z : GramM D) (s : ℕ) (De Q : ℝ), 1 ≤ s → s ≤ D.R.k → SubOK D (L0X D Λ (lf D F0)) P s De → QOK D u u' Z Q → (cntFr D Λ (lf D F0) ((Tu D u' : ℕ) : D.host.E) Z P : ℝ≥0∞) ≤ ENNReal.ofReal (frB D s (NT D u) De Q) := by
   intro D u u' F0 Λ hS hB hR P Z s De Q hs hk hP hQ
   obtain ⟨n, ⟨hn, hf, ho⟩, hsp, hR'⟩ := GlobalTheory.T.exists_frameFixing_isometry_split_rowLattice D u F0 Λ hB hR hS.2.1.one_lt.le
@@ -1503,7 +1494,6 @@ section -- clump:auto
 
 open NumberField Module Matrix Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.Cnt GlobalTheory.LoopC
 open scoped ENNReal Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto

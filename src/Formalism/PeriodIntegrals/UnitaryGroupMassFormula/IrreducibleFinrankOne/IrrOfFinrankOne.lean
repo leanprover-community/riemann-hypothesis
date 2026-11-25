@@ -152,7 +152,7 @@ theorem absIrr_isIrr [Fintype G] {K : Type} [Field K] [CharZero K] (σ : K →+*
   letI : Invertible (Nat.card G : AlgebraicClosure K) :=
     invertibleOfNonzero (by exact_mod_cast Nat.card_pos.ne')
   have horth := Representation.char_orthonormal ρ ρ
-  rw [if_pos ⟨Representation.Equiv.refl ρ⟩] at horth
+  rw [ite_eq_left ⟨Representation.Equiv.refl ρ⟩] at horth
   have hne : (Nat.card G : AlgebraicClosure K) ≠ 0 := by exact_mod_cast Nat.card_pos.ne'
   rw [inv_mul_eq_one₀ hne] at horth
   have := congrArg τ horth

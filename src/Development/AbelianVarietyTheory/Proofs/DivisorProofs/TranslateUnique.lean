@@ -59,7 +59,6 @@ open GlobalTheory.KS (rsT pbT C1 IsCoc IsCob)
 open GlobalTheory.LogKS (IsField)
 open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.LogKSChart GlobalTheory.Heat
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 
@@ -100,7 +99,7 @@ def smulFld {Z : Scheme.{0}} {W : Z.Opens} (c : Γ(Z, W)) (d : Fld Z) : Fld Z :=
   fun O f => if h : O ≤ W then resG Z h c * d O f else 0
 
 theorem smulFld_of_le {Z : Scheme.{0}} {W O : Z.Opens} (h : O ≤ W) (c : Γ(Z, W)) (d : Fld Z) (f : Γ(Z, O)) :
-    smulFld c d O f = resG Z h c * d O f := dif_pos h
+    smulFld c d O f = resG Z h c * d O f := dite_eq_left h
 
 theorem isField_smul {Z : Scheme.{0}} {W : Z.Opens} (c : Γ(Z, W)) {d : Fld Z} (hd : IsField W d) :
     IsField W (smulFld c d) := by
@@ -211,7 +210,7 @@ theorem exists_invField (U : X.affineOpens) {v : Sp (DualNumber Γ(X, U.1)) ⟶ 
   have htr : ∀ (S : Type) [CommRing S] (g : Sp S ⟶ t.G.left), ⊤ ≤ g ⁻¹ᵁ (t.G.hom ⁻¹ᵁ U.1) →
       ∃ φ : Γ(X, U.1) →+* S, g ≫ t.G.hom = spMap φ ≫ chart U ∧ IsTranslate t φ g v (tr S g) := by
     intro S _ g h
-    simp only [tr, dif_pos h]
+    simp only [tr, dite_eq_left h]
     exact ⟨_, (exists_translate U hv g h).choose_spec.choose_spec⟩
   have hex : ∀ (O : t.G.left.Opens) (f : Γ(t.G.left, O)), ∃ s : Γ(t.G.left, O), O ≤ t.G.hom ⁻¹ᵁ U.1 →
       ∀ (S : Type) [CommRing S] (g : Sp S ⟶ t.G.left), ⊤ ≤ g ⁻¹ᵁ O → valR g O s = (valR (tr S g) O f).snd := by

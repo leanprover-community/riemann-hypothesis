@@ -58,13 +58,6 @@ theorem alp_last {F : Type} [Field F] [NumberField F] (v : HeightOneSpectrum (�
 
 variable {D : D7} (X : HidaSetting D) (u' : D.what₂.Word)
 
-theorem host_star_conj : Formalism.BasicNotions.bridge_star := by
-  intro R H x
-  have := H.isCMField_hostE
-  apply H.φ₀.injective
-  change H.φ₀ (NumberField.IsCMField.complexConj H.E x) = H.φ₀ (H.conj x)
-  rw [NumberField.IsCMField.complexEmbedding_complexConj, Formalism.HC.HostAx.conjE_apply]
-
 theorem sig_apply (a : X.B.I.E) : X.B.I.cm.sig a = star a := rfl
 
 theorem hE_crdOf (x y : (VS D).V) :
@@ -113,12 +106,12 @@ theorem hT_zero_or (v : PlX X) (a b : Fin (D.R.rS + 1 + D.R.rS)) :
     · left; exact (hs.eq_iff).1 (X.zu_orth u' b).2
     · by_cases h : i = b
       · right; subst h; exact mul_inv_cancel₀ (alp_ne_zero v _ _)
-      · left; rw [X.ef, if_neg h]
+      · left; rw [X.ef, ite_eq_right h]
   · refine Fin.lastCases ?_ (fun j => ?_) b <;> simp only [Fin.snoc_last, Fin.snoc_castSucc]
     · left; exact (X.zu_orth u' a).2
     · by_cases h : j = a
       · right; subst h; exact inv_mul_cancel₀ (alp_ne_zero v _ _)
-      · left; refine (hs.eq_iff).1 ?_; rw [X.ef, if_neg h]
+      · left; refine (hs.eq_iff).1 ?_; rw [X.ef, ite_eq_right h]
   · left; exact X.ff a b
 
 theorem omVGram_holds : OmVGram X u' := by

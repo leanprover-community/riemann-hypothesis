@@ -1,5 +1,6 @@
 module
 
+import all ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.Numerics
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CasValK
 public import Mathlib.Analysis.InnerProductSpace.JointEigenspace
 public import Mathlib.Analysis.InnerProductSpace.Spectrum
@@ -223,12 +224,7 @@ theorem sqrt_nsq_add_le (x y : Fin n → ℝ) : √(nsq (x + y)) ≤ √(nsq x) 
 
 theorem sqrt_nsq_sum_le {ι : Type*} (s : Finset ι) (f : ι → Fin n → ℝ) :
     √(nsq (∑ i ∈ s, f i)) ≤ ∑ i ∈ s, √(nsq (f i)) := by
-  classical
-  refine Finset.induction_on s ?_ ?_
-  · simp [nsq, dot]
-  · intro a s ha ih
-    rw [Finset.sum_insert ha, Finset.sum_insert ha]
-    exact (sqrt_nsq_add_le _ _).trans (add_le_add le_rfl ih)
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.sqrt_nsq_sum_le <;> assumption
 
 theorem sqrt_nsq_add_ncSum_le {j : ℕ} {ω : Fin n → ℝ} (hω : IsNCSum ε j ω)
     (x : Fin n → ℝ) :

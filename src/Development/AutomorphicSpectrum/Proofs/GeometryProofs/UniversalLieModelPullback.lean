@@ -1,5 +1,7 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComponentSpecializationTangentComb
+
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsFlatAnIffIsConstMul
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
 import Mathlib.Tactic.Linter.Style
@@ -25,18 +27,7 @@ private theorem one_left_eq_of_isGrpPullback {S S' : Scheme} {G' : Over S'} [Grp
     {f : S' ⟶ S} {φ : G'.left ⟶ G.left} (h : IsGrpPullback G' G f φ) (T : Over S')
     (g : T.left ⟶ S) (hg : g = T.hom ≫ f) :
     (1 : Over.mk g ⟶ G).left = (1 : T ⟶ G').left ≫ φ := by
-  subst hg
-  let o : Over.mk (T.hom ≫ f) ⟶ G := Over.homMk ((1 : T ⟶ G').left ≫ φ)
-    (by rw [Category.assoc, h.1.w, ← Category.assoc, Over.w]; rfl)
-  have hm : (o * o).left = o.left := by
-    rw [mul_left_eq_of_isGrpPullback h T _ rfl 1 1 o o rfl rfl, _root_.mul_one]
-    rfl
-  have ho : o * o = o := Over.OverMorphism.ext hm
-  have ho1 : o = 1 := by
-    have := congrArg (· * o⁻¹) ho
-    simpa [_root_.mul_assoc] using this
-  rw [← ho1]
-  rfl
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Flat.Rep.grpPull_one <;> assumption
 
 private theorem specMap_fstHom_comp_algebraMap_eq_id (R : Type) [CommRing R] :
     Spec.map (CommRingCat.ofHom (TrivSqZeroExt.fstHom R R R).toRingHom) ≫

@@ -238,7 +238,7 @@ theorem be_ab (i0 : K0 p →+* ℂ_[p]) (be : MvPowerSeries (Fin 2) (K0 p)) (ep 
       fin_cases i
       · simp [h]
       · simp
-    rw [if_pos e1, h, zero_add, Nat.choose_zero_right, Nat.cast_one, one_mul]
+    rw [ite_eq_left e1, h, zero_add, Nat.choose_zero_right, Nat.cast_one, one_mul]
     split_ifs with h2
     · have : n 1 = 0 := by rw [h2]; simp
       rw [this, hψ0]; ring
@@ -248,7 +248,7 @@ theorem be_ab (i0 : K0 p →+* ℂ_[p]) (be : MvPowerSeries (Fin 2) (K0 p)) (ep 
       fin_cases i
       · simp
       · simp [h]
-    rw [if_pos e1, h, add_zero, Nat.choose_self, Nat.cast_one, one_mul]
+    rw [ite_eq_left e1, h, add_zero, Nat.choose_self, Nat.cast_one, one_mul]
     split_ifs with h2
     · have : n 0 = 0 := by rw [h2]; simp
       rw [this, hψ0]; ring
@@ -330,8 +330,7 @@ theorem pair_mem_W2pair {α : WW p} (hα : (Formalism.MainNotions.FormalGroupSys
   set S := ∑ i ∈ Finset.Iic n, WittVector.teichmuller p
     (((_root_.frobeniusEquiv (kb p) p).symm ^ i) (α.coeff i)) * (p : WW p) ^ i with hS
   refine ⟨pairHom p S, ?_, ?_⟩
-  · set_option synthInstance.maxHeartbeats 100000 in
-    rw [hS, map_sum]
+  · rw [hS, map_sum]
     refine Subring.sum_mem _ fun i _ => ?_
     rw [map_mul, map_pow, map_natCast]
     refine Subring.mul_mem _ (teich_mem ?_) (Subring.pow_mem _ (natCast_mem _ p) i)

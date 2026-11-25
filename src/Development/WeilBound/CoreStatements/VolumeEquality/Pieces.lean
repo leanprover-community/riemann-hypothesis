@@ -232,7 +232,7 @@ theorem exists_sheets (h1 : HolNull) (h2 : ChartMeets) (h3 : RootBranches) (h4 :
   have : Nonempty (Fin B.np) := ⟨k₀⟩
   have : Nonempty (Fin Or.deg) := ⟨i₀⟩
   obtain ⟨e⟩ : Nonempty (ℕ ≃ Fin B.np × ℕ × Fin Or.deg) := nonempty_equiv_of_countable
-  have hT : ∀ {k t}, t ∈ T k → nSheets Or B U k = Or.deg := fun ht => if_pos ⟨_, ht.1, ht.2⟩
+  have hT : ∀ {k t}, t ∈ T k → nSheets Or B U k = Or.deg := fun ht => ite_eq_left ⟨_, ht.1, ht.2⟩
   refine ⟨⟨⟨k₀, (hT (hWs k₀ m₀ (disjointed_subset _ _ ht₀.2))).symm ▸ Or.cover.1⟩, fun m => (e m).1, fun m => Wk (e m).1 (e m).2.1,
     fun m => FF (e m).1 ∩ disjointed (Wk (e m).1) (e m).2.1, fun m t => w (e m).1 t (θ (e m).1 (e m).2.1 (e m).2.2 t),
     fun m => z (e m).1 (e m).2.1 (e m).2.2, ⟨fun m => hWo _ _, fun m => ?_, fun m t ht => ?_, fun m t ht t' ht' h => ?_,
@@ -281,7 +281,7 @@ theorem exists_sheets (h1 : HolNull) (h2 : ChartMeets) (h3 : RootBranches) (h4 :
       rw [this, Function.Injective.encard_image (fun i i' h => by simpa using h), hT e2]
       simp
     · refine ae_of_all _ fun t _ => ?_
-      rw [nSheets, if_neg hk, Nat.cast_zero, Set.encard_eq_zero]
+      rw [nSheets, ite_eq_right hk, Nat.cast_zero, Set.encard_eq_zero]
       refine Set.eq_empty_of_forall_notMem ?_
       rintro m ⟨rfl, h⟩
       exact hk ⟨t, hWs _ _ (disjointed_subset _ _ h.2)⟩

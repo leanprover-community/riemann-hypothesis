@@ -16,8 +16,6 @@ open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCate
   AlgebraicGeometry
 open scoped CategoryTheory.Obj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace ReciprocityTheory.ChartRestriction.G.Out.GtBCPf
 
 open Semi Geo.Tor PullGtPf

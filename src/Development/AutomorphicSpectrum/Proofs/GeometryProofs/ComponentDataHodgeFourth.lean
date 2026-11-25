@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.CoreStatements.HodgeTatePoints.CiEigVal
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsPeriodAtRestrict
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
@@ -32,17 +33,8 @@ theorem valAt_diff {X : Scheme.{0}} {Ω : Type} [Field Ω] {G : Over X} [GrpObj 
     {R : Type} [CommRing R] [IsLocalRing R] {z : Spec (CommRingCat.of R) ⟶ X} {f : G ⟶ G} [IsMonHom f]
     {A : L →ₗ[Ω] L} (hA : M.IsDiffOf f A) {e : L} {w : epsAt z ⟶ G} (h : M.ValAt z e w) :
     M.ValAt z (A e) (w ≫ f) := by
-  obtain ⟨h1, v, hv, hw⟩ := h
-  refine ⟨h1, v ≫ f, ⟨?_, ?_⟩, ?_⟩
-  · change _ ≫ (v ≫ f).left = _
-    simp only [Over.comp_left]
-    rw [← Category.assoc, hv.1]
-    exact congrArg CommaMorphism.left (one_comp f)
-  · change (M.pt (A e)).left = _ ≫ (v ≫ f).left
-    rw [hA e]
-    simp only [Over.comp_left, ← Category.assoc, hv.2]
-  · change (w ≫ f).left = _ ≫ (v ≫ f).left
-    simp only [Over.comp_left, ← Category.assoc, hw]
+  intros
+  apply _root_.PositivityTheory.HtPt.Ci.lieValAt_end <;> assumption
 
 theorem conj_ne_of_sq {x : ℂ} {d : ℕ} (hd : 0 < d) (hx : x ^ 2 = -(d : ℂ)) : starRingEnd ℂ x ≠ x := by
   intro h

@@ -4,9 +4,3 @@ public import Formalism.SharpRestriction.Divisibility.PrimeDegreeVariant
 public import Formalism.LocalToGlobal.Divisibility.BrJoint
 
 @[expose] public section
-
-namespace GlobalTheory.LvT.BuiltChain
-
-theorem branching_ok : Formalism.MainNotions.PrimeDegreeVariant.Conclusion6 := Formalism.L2.DIV.BrJ.branching_interlacing_pairs
-
-end GlobalTheory.LvT.BuiltChain

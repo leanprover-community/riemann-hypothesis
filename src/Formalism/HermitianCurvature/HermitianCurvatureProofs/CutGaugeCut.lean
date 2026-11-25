@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SquareIntegrableGammaZetabarInv
 public import Formalism.HermitianCurvature.StatementMA
 public import Formalism.HermitianCurvature.StatementNF
 
@@ -165,15 +166,7 @@ theorem actA_sum {ι : Type} (s : Finset ι) (x : ι → MA.A P (MA.DQ P)) (f : 
 
 theorem actA_mul (x y : MA.A P (MA.DQ P)) (f : M.Ty P → MA.SmQ P.r P.TT) :
     MA.actA P (x * y) f = MA.actA P x (MA.actA P y f) := by
-  funext π
-  simp only [MA.actA, Matrix.mul_apply, fst_sum, fst_mul]
-  have h1 : ∀ π'' : M.Ty P, (∑ j, (x π j).1 * (y j π'').1) (f π'') =
-      ∑ j, (x π j).1 ((y j π'').1 (f π'')) := fun π'' =>
-    op_sum_apply P Finset.univ (fun j => (x π j).1 * (y j π'').1) (f π'')
-  have h2 : ∀ π' : M.Ty P, (x π π').1 (∑ π'', (y π' π'').1 (f π'')) =
-      ∑ π'', (x π π').1 ((y π' π'').1 (f π'')) := fun π' => map_sum (x π π').1 _ _
-  exact (Finset.sum_congr rfl fun π'' _ => h1 π'').trans
-    (Finset.sum_comm.trans (Finset.sum_congr rfl fun π' _ => (h2 π').symm))
+  apply _root_.Formalism.FourierDecayAlt.P.MAx2.R2.act_mul <;> assumption
 
 theorem toSm_of_mem {u : MA.Qp P.r P.TT → ℂ} (h : u ∈ MA.smSub P.r P.TT) : MA.toSm P u = ⟨u, h⟩ := by
   simp [MA.toSm, h]

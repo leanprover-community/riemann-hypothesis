@@ -107,8 +107,7 @@ variable {n : ℕ} {K V : Type*} [Field K] [CharZero K] [AddCommGroup V] [Module
 theorem dual_weightVector_apply_eq_zero_of_ne_neg (E : GLOps n K V) {nu' nu : Fin n → ℤ} {φ : Module.Dual K V} {x : V}
     (hφ : φ ∈ weightSp (dualOps E) nu') (hx : x ∈ weightSp E nu) (hne : nu' ≠ -nu) : φ x = 0 := by
   obtain ⟨a, ha⟩ : ∃ a, nu' a ≠ -nu a := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (funext fun a => by rw [h a, Pi.neg_apply])
   have e1 := wt_apply_lemma_3 hx a
   have e2 := wt_apply_lemma_3 hφ a
@@ -168,7 +167,7 @@ theorem stableLattice_weight_decomposition [CharZero (KK O)] (E : GLOps n (KK O)
     · intro h
       exact absurd hnu h
   let g : (Fin n → ℤ) →₀ V := Finsupp.onFinset F (fun mu => if mu ∈ F then f mu else 0)
-    (by intro a ha; by_contra h; exact ha (if_neg h))
+    (by intro a ha; by_contra h; exact ha (ite_eq_right h))
   refine ⟨g, fun nu => ?_, fun nu => ?_, ?_⟩
   · simp only [g, Finsupp.onFinset_apply]
     split_ifs with h
@@ -181,7 +180,7 @@ theorem stableLattice_weight_decomposition [CharZero (KK O)] (E : GLOps n (KK O)
     · exact Submodule.zero_mem _
   · show _ = g.sum fun _ v => v
     rw [Finsupp.onFinset_sum _ (fun _ => rfl)]
-    exact Finset.sum_congr rfl fun mu hmu => (if_pos hmu).symm
+    exact Finset.sum_congr rfl fun mu hmu => (ite_eq_left hmu).symm
 
 theorem integral_dual_preserved_by_integralMonoid [CharZero (KK O)] (E : GLOps n (KK O) V) (hE : (⨆ mu : Fin n → ℤ, weightSp E mu) = ⊤)
     (M : Submodule O V) (hM : UZStable (O := O) E M) {u' : Module.End (KK O) (Module.Dual (KK O) V)}

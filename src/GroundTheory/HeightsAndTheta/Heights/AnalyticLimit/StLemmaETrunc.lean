@@ -21,9 +21,4 @@ def LemmaETrunc.Statement : Prop :=
       (∀ x, -(C₁ * Real.log R + 2) ≤ v x ∧ v x ≤ 0) ∧
       ∃ c : ℝ, ∀ x ∈ Yo, r x < R → v x = u x + c
 
-section Inhabitants
-
-
-end Inhabitants
-
 end GroundTheory.Heights₂.Heights.AnalyticLimit

@@ -63,8 +63,7 @@ theorem eventually_iSup_eq_monomial_left (c : ℕ → ℝ) (h0 : ∀ n, 0 ≤ c 
     (hρ : 0 < ρ) (hρ1 : ρ < 1) (hG : (⨆ n, c n * ρ ^ n) ≠ 0) :
     ∃ i, ∀ᶠ r in 𝓝[≤] ρ, (⨆ n, c n * r ^ n) = c i * r ^ i := by
   obtain ⟨j, hj⟩ : ∃ j, 0 < c j := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hG
     have : ∀ n, c n = 0 := fun n => le_antisymm (h n) (h0 n)
     simp [this]

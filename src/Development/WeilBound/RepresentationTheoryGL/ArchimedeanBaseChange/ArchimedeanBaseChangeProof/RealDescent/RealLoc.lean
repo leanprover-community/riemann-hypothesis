@@ -39,10 +39,6 @@ def piM (g : Mat n) : U →L[ℂ] U := if h : IsUnit g then π h.unit else 0
 
 def IsInvT (E : KMod n) (t : (E.V →L[ℂ] ℂ) →L[ℂ] U) : Prop := ∀ k ξ, t (ξ ∘L E.ρ k⁻¹) = π (uG k) (t ξ)
 
-def HasInf (χ : Inf n) : Prop :=
-  ∀ S : Submodule ℂ U, FiniteDimensional ℂ S → (∀ k, ∀ v ∈ S, π (uG k) v ∈ S) → ∀ v ∈ S, ∀ w,
-    ContDiffOn ℝ ∞ (fun g => ⟪w, piM π g v⟫_ℂ) (GLs n) ∧ IsEig χ fun g => ⟪w, piM π g v⟫_ℂ
-
 end
 
 end PositivityTheory.RgBcC.Real

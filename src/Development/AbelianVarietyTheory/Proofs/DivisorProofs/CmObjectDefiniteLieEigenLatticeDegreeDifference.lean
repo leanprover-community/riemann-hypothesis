@@ -289,8 +289,7 @@ theorem idx_mul_map_bar_eq : ∀ (E : Type) [Field E] [NumberField E] (bar : �
       simp
     obtain ⟨k, hk0, hk⟩ := bdd_of_fg hfg
     obtain ⟨i, hi⟩ : ∃ i, w i ≠ 0 := by
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       exact hw0 (funext hne)
     have hdi : d i ≠ 0 := fun h => hi (by rw [← hbd i, h, map_zero])
     have hkE : (k : E) ≠ 0 := by exact_mod_cast hk0
@@ -1143,7 +1142,7 @@ theorem idealSt_zero : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H
     Submodule.FG.of_le (LieLattice.lieLat_fg_and_span_eq_top K _ FP).1
       (Submodule.span_mono fun c ⟨u, hu, _⟩ => ⟨u, hu⟩)
   have hrk : latRank K (FP.eigLat (X.A true).t.act τ) = 1 := by
-    rw [(GlobalTheory.CM.EigDec.eigen_decomposition E H K ρ (X.A true) FP 1 0 X.split X.typeP X.ρ_sq).1 τ, if_pos hτ]
+    rw [(GlobalTheory.CM.EigDec.eigen_decomposition E H K ρ (X.A true) FP 1 0 X.split X.typeP X.ρ_sq).1 τ, ite_eq_left hτ]
   rw [subP, hdesc FP FB MP hMP τ hτ τE hτE]
   exact _root_.GlobalTheory.IdxTensor.idx_image_eq_map E K τ τE hτE p _ _ _ MP Λ hfgA hrk (fun a => hinj (.inl a))
     (iSupIndep.comp hind (f := fun a : Fin p => ((Sum.inl a : Fin p ⊕ Fin 0), τ)) fun a b e => by simpa using e)
@@ -1185,10 +1184,6 @@ theorem latRank_iSup {K V ι : Type} [Field K] [NumberField K] [AddCommGroup V] 
     first
     | exact hi.dfinsupp_lsum_injective
   rw [← DirectSum.range_coeLinearMap, LinearMap.finrank_range_of_inj hinj, Module.finrank_directSum]
-
-end GlobalTheory.FlatCore.CMDiff
-
-namespace GlobalTheory.FlatCore.CMDiff
 
 end GlobalTheory.FlatCore.CMDiff
 
@@ -1311,8 +1306,7 @@ theorem deg_iSup_map_of_gram : ∀ (K : Type) [Field K] [NumberField K] (W V : T
   haveI : FiniteDimensional K (Submodule.span K (ℓ : Set W)) :=
     Module.finite_of_finrank_pos (by rw [hr]; norm_num)
   obtain ⟨c, hcℓ, hc0⟩ : ∃ c ∈ ℓ, c ≠ 0 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have h0 : Submodule.span K (ℓ : Set W) = ⊥ := by
       rw [Submodule.span_eq_bot]; intro x hx; exact hne x hx
     rw [h0, finrank_bot] at hr; exact zero_ne_one hr
@@ -1408,15 +1402,6 @@ open NumberField
 
 namespace GlobalTheory
 
-theorem ringOfIntegers_ringHom_injective {E K : Type} [Field E] [NumberField E] [Field K] [NumberField K]
-    (σ : 𝓞 E →+* 𝓞 K) : Function.Injective σ := by
-  rw [RingHom.injective_iff_ker_eq_bot]
-  apply Ideal.eq_bot_of_comap_eq_bot (R := ℤ)
-  rw [eq_bot_iff]
-  intro n hn
-  rw [Ideal.mem_comap, RingHom.mem_ker] at hn
-  simpa using hn
-
 theorem sum_log_norm_embeddings {K : Type} [Field K] [NumberField K] (y : K) :
     ∑ s : K →+* ℂ, Real.log ‖s y‖ = Real.log |((Algebra.norm ℚ y : ℚ) : ℝ)| := by
   by_cases hy : y = 0
@@ -1435,7 +1420,7 @@ theorem mean_log_norm_embeddings_ringHom :
     Real.log |((Algebra.norm ℚ (x : E) : ℚ) : ℝ)| / Module.finrank ℚ E := by
   intro E K _ _ _ _ σ x
   have hinj : Function.Injective ((algebraMap (𝓞 K) K).comp σ) :=
-    (RingOfIntegers.coe_injective).comp (ringOfIntegers_ringHom_injective σ)
+    (RingOfIntegers.coe_injective).comp (GlobalTheory.CM.ringOfIntegers_hom_injective σ)
   let τ : E →+* K := IsFractionRing.lift hinj
   have hτ : τ (x : E) = (σ x : K) := IsFractionRing.lift_algebraMap hinj x
   letI : Algebra E K := τ.toAlgebra
@@ -1588,8 +1573,8 @@ theorem deg_images : CMCurve → ThetaUnifAV → Out.Laws → HomExtDvr → ∀ 
   obtain ⟨-, -, hinj, hind, -⟩ := Indep.letters_independent hU hL E H K ρ σ₁ p q X FA FB M hM
   have hrP := (_root_.GlobalTheory.CM.EigDec.eigen_decomposition E H K ρ (X.A true) FP 1 0 X.split X.typeP X.ρ_sq).1 τ
   have hrQ := (_root_.GlobalTheory.CM.EigDec.eigen_decomposition E H K ρ (X.A false) FQ 0 1 X.split X.typeM X.ρ_sq).1 (τ.comp (H.bar : 𝓞 E →+* 𝓞 E))
-  rw [if_pos hτ] at hrP
-  rw [if_neg (by rw [hτ']; exact hne)] at hrQ
+  rw [ite_eq_left hτ] at hrP
+  rw [ite_eq_right (by rw [hτ']; exact hne)] at hrQ
   have hΩP : 2 * deg hP (FP.eigLat (X.A true).t.act τ) = (logOm E χ).re := by
     have := hD E H χ hχ K ρ (X.A true) X.split X.ρ_sq X.typeP FP hP hhP τ hτ
     rw [← this, Complex.ofReal_re]
@@ -1673,8 +1658,8 @@ theorem cmDiff_definite : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
     have : (2 : 𝓞 K) * ρ = 0 := by linear_combination -e
     exact hρ ((mul_eq_zero.1 this).resolve_left two_ne_zero)
   have hdec := (GlobalTheory.CM.EigDec.eigen_decomposition E H K ρ X.B F p 0 X.split X.typeB X.ρ_sq).1
-  have hrkP : latRank K (F.eigLat X.B.t.act τ) = p := by rw [hdec, if_pos hτ]
-  have hrkQ : latRank K (F.eigLat X.B.t.act τb) = 0 := by rw [hdec, if_neg hne]
+  have hrkP : latRank K (F.eigLat X.B.t.act τ) = p := by rw [hdec, ite_eq_left hτ]
+  have hrkQ : latRank K (F.eigLat X.B.t.act τb) = 0 := by rw [hdec, ite_eq_right hne]
   have hfg : ∀ σ, (F.eigLat X.B.t.act σ).FG := fun σ =>
     Submodule.FG.of_le (LieLattice.lieLat_fg_and_span_eq_top K _ F).1
       (Submodule.span_mono fun c ⟨u, hu, _⟩ => ⟨u, hu⟩)

@@ -59,7 +59,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice IsDedekindDomain NumberField Matrix Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ConjTwist GlobalTheory.GalTw ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open Classical
 
@@ -96,28 +95,28 @@ theorem datum_eq_tensorHalf {D : D7} {S T : HSp D} (βS : GL (Fin S.rank) (EAf D
   have hc : cA D (eg + eQ) = cA D eQ + cA D eg := by rw [map_add (f := _), add_comm]
   by_cases hx : IsHalf (cA D (eg + eQ)) x
   · have hx' : IsHalf (cA D eQ + cA D eg) x := hc ▸ hx
-    rw [if_pos hx', mul_one]
+    rw [ite_eq_left hx', mul_one]
     by_cases hi : IsIntM (frMapAdj S T βS βT x)
     · obtain ⟨i1, i2⟩ := (hA x hx).1 hi
       obtain ⟨r1, r2⟩ := hB x hx hi
       have c1 : IsHalf (cA D (eg + eQ)) x ∧ IsIntM (frMapAdj S T βS βT x) := ⟨hx, hi⟩
       have c2 : IsHalf (cA D eQ) (cA D eQ • x) ∧ IsIntM (frMapAdj S T βS βT (cA D eQ • x)) := ⟨hcQ x, i2⟩
       have c3 : IsHalf (cA D eg) (cA D eg • x) ∧ IsIntM (frMapAdj S T βS βT (cA D eg • x)) := ⟨hcg x, i1⟩
-      rw [if_pos c1, if_pos c2, if_pos c3, mul_comm]
+      rw [ite_eq_left c1, ite_eq_left c2, ite_eq_left c3, mul_comm]
       congr 1
       · exact GlobalTheory.PlaceVec.omegaQ_congr Q _ ξ _ fun PP hPP => (r2 PP hPP).symm
       · exact GlobalTheory.PlaceVec.omegaK_congr Pg fun PP hPP => (r1 PP hPP).symm
     · have c1 : ¬ (IsHalf (cA D (eg + eQ)) x ∧ IsIntM (frMapAdj S T βS βT x)) := fun h => hi h.2
-      rw [if_neg c1]
+      rw [ite_eq_right c1]
       have := mt (hA x hx).2 hi
       rcases not_and_or.1 this with h | h
       · have c3 : ¬ (IsHalf (cA D eg) (cA D eg • x) ∧ IsIntM (frMapAdj S T βS βT (cA D eg • x))) := fun h' => h h'.2
-        rw [if_neg c3, mul_zero]
+        rw [ite_eq_right c3, mul_zero]
       · have c2 : ¬ (IsHalf (cA D eQ) (cA D eQ • x) ∧ IsIntM (frMapAdj S T βS βT (cA D eQ • x))) := fun h' => h h'.2
-        rw [if_neg c2, zero_mul]
+        rw [ite_eq_right c2, zero_mul]
   · have c1 : ¬ (IsHalf (cA D (eg + eQ)) x ∧ IsIntM (frMapAdj S T βS βT x)) := fun h => hx h.1
     have hx' : ¬ IsHalf (cA D eQ + cA D eg) x := hc ▸ hx
-    rw [if_neg c1, if_neg hx', mul_zero]
+    rw [ite_eq_right c1, ite_eq_right hx', mul_zero]
 
 end GlobalTheory.TwoStepModel
 

@@ -60,7 +60,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 open GlobalTheory.DownLift.SplitCoef
@@ -215,7 +214,7 @@ theorem rdAdj_read : ∀ (D : D7) (S T : HSp D) (βS : GL (Fin S.rank) (Formalis
     ext i j
     have e1 := congrFun (congrFun hz i) j
     simp only [rdAdj, Matrix.map_apply] at e1
-    simp only [Matrix.map_apply, redM, dif_pos (hI' i j)]
+    simp only [Matrix.map_apply, redM, dite_eq_left (hI' i j)]
     exact hred ⟨_, hI' i j⟩ (z i j) e1.symm
 
 end GlobalTheory.DownLift.ReadAdj
@@ -234,7 +233,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 open GlobalTheory.DownLift.SplitCoef

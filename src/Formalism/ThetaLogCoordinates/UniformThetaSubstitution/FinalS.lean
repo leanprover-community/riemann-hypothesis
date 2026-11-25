@@ -185,7 +185,7 @@ theorem subst_zero_pderiv {τ : Type} (G : MvPowerSeries (Fin 2) K)
     have hm1 : m = Finsupp.single 1 (m 1) := by
       ext i
       fin_cases i <;> simp [hm]
-    rw [map_sub, coeff_pderiv, coeff_single_variable_series, if_pos hm1, hm, fLin, PowerSeries.coeff_mk,
+    rw [map_sub, coeff_pderiv, coeff_single_variable_series, ite_eq_left hm1, hm, fLin, PowerSeries.coeff_mk,
       add_comm (Finsupp.single 0 1), ← hm1]
     simp
   obtain ⟨Q, hQ⟩ := hd
@@ -474,7 +474,7 @@ theorem StepI_of (h1 : LemmaOne) (hF : FirstDeriv) (hC : CobLin) : StepI := by
         rw [fLin, PowerSeries.coeff_mk] at h
         obtain ⟨-, -, hc⟩ := hS _ h
         simp only [Finsupp.add_apply, Finsupp.single_apply] at hc
-        simp only [if_true, Fin.isValue, one_ne_zero, zero_ne_one, if_false, add_zero,
+        simp only [ite_true, Fin.isValue, one_ne_zero, zero_ne_one, ite_false, add_zero,
           zero_add] at hc
         apply hj
         have h3 : p * 1 ≡ p * (p * j) [MOD p ^ 2 - 1] := hc.mul_left p
@@ -900,9 +900,9 @@ theorem coeff_include_three_mul (g : MvPowerSeries (Fin 2) K) (e : Fin 2 →₀ 
   rw [include_three_eq_rename]
   by_cases h : j = m
   · subst h
-    rw [if_pos rfl, MvPowerSeries.X_pow_eq, ext3, MvPowerSeries.coeff_add_mul_monomial, mul_one]
+    rw [ite_eq_left rfl, MvPowerSeries.X_pow_eq, ext3, MvPowerSeries.coeff_add_mul_monomial, mul_one]
     exact MvPowerSeries.coeff_embDomain_rename (Fin.castSuccEmb (n := 2)) g e
-  · rw [if_neg h, MvPowerSeries.coeff_mul]
+  · rw [ite_eq_right h, MvPowerSeries.coeff_mul]
     apply Finset.sum_eq_zero
     rintro ⟨a, b⟩ hab
     replace hab : a + b = ext3 e m := by simpa using hab
@@ -1005,18 +1005,6 @@ theorem coeff_partial_coboundary {F : MvPowerSeries (Fin 2) K} (hF : MvPowerSeri
 
 end Slice
 
-section Norm
-
-variable {K : Type} [NormedField K] [IsUltrametricDist K]
-
-end Norm
-
-section Top
-
-variable {K : Type} [Field K]
-
-end Top
-
 section Additive
 
 variable {K : Type} [Field K]
@@ -1025,7 +1013,7 @@ theorem coeff_one_lgF {p : ℕ} (hp : 2 ≤ p) : PowerSeries.coeff 1 (lgF K p) =
   rw [lgF, PowerSeries.coeff_mk, Finset.sum_range_succ, Finset.sum_range_one]
   have h4 : 4 ≤ p ^ 2 := by nlinarith
   have hne : (1 : ℕ) ≠ (p ^ 2) ^ 1 := by rw [pow_one]; omega
-  rw [if_neg hne, if_pos (by rw [pow_zero]), pow_zero, inv_one, add_zero]
+  rw [ite_eq_right hne, ite_eq_left (by rw [pow_zero]), pow_zero, inv_one, add_zero]
 
 theorem swap_two_eq_rename (H : MvPowerSeries (Fin 2) K) :
     swap2 H = MvPowerSeries.rename (Equiv.swap (0 : Fin 2) 1).toEmbedding H := by
@@ -1058,14 +1046,14 @@ theorem coeff_lgF_odd {p : ℕ} (hp : 2 ≤ p) (i : ℕ) :
   rw [lgF, PowerSeries.coeff_mk]
   apply Finset.sum_eq_zero
   intro j _
-  rw [if_neg (pow_parity hp i j)]
+  rw [ite_eq_right (pow_parity hp i j)]
 
 theorem coeff_g0F_even {p : ℕ} (hp : 2 ≤ p) (i : ℕ) :
     PowerSeries.coeff ((p ^ 2) ^ i) (g0F K p) = 0 := by
   rw [g0F, PowerSeries.coeff_mk]
   apply Finset.sum_eq_zero
   intro j _
-  rw [if_neg (fun h => pow_parity hp j i h.symm)]
+  rw [ite_eq_right (fun h => pow_parity hp j i h.symm)]
 
 end Additive
 
@@ -1113,9 +1101,9 @@ theorem LemmaTwo_of (h1 : LemmaOne) (hL : LawSymm) : LemmaTwo := by
   have lg_pow : ∀ k : ℕ, PowerSeries.coeff ((p ^ 2) ^ k) (lgF K p) = ((p : K) ^ k)⁻¹ := by
     intro k
     rw [lgF, PowerSeries.coeff_mk, Finset.sum_eq_single k]
-    · rw [if_pos rfl]
+    · rw [ite_eq_left rfl]
     · intro j _ hj
-      rw [if_neg]
+      rw [ite_eq_right]
       intro h
       exact hj (Nat.pow_right_injective hpp h).symm
     · intro hk
@@ -1127,9 +1115,9 @@ theorem LemmaTwo_of (h1 : LemmaOne) (hL : LawSymm) : LemmaTwo := by
   have g0_pow : ∀ k : ℕ, PowerSeries.coeff (p * (p ^ 2) ^ k) (g0F K p) = ((p : K) ^ (k + 1))⁻¹ := by
     intro k
     rw [g0F, PowerSeries.coeff_mk, Finset.sum_eq_single k]
-    · rw [if_pos rfl]
+    · rw [ite_eq_left rfl]
     · intro j _ hj
-      rw [if_neg]
+      rw [ite_eq_right]
       intro h
       exact hj (Nat.pow_right_injective hpp (Nat.eq_of_mul_eq_mul_left (by omega) h)).symm
     · intro hk
@@ -1144,7 +1132,7 @@ theorem LemmaTwo_of (h1 : LemmaOne) (hL : LawSymm) : LemmaTwo := by
     rw [lgF, PowerSeries.coeff_mk]
     apply Finset.sum_eq_zero
     intro j _
-    rw [if_neg (hm j)]
+    rw [ite_eq_right (hm j)]
   have g01 : PowerSeries.coeff 1 (g0F K p) = 0 := by
     have := LemTwo.coeff_g0F_even (K := K) hp2 0
     rwa [pow_zero] at this
@@ -1271,7 +1259,7 @@ theorem LemmaTwo_of (h1 : LemmaOne) (hL : LawSymm) : LemmaTwo := by
     · obtain ⟨l, hl⟩ := hm
       rw [hl, hD l, lg_pow l]
       ring
-    · push_neg at hm
+    · push Not at hm
       rw [hC m hm, lg_zero m hm]
       ring
   have e : 0 * PowerSeries.coeff i (g0F K p) + β m * PowerSeries.coeff i (lgF K p) + PowerSeries.coeff i (R m) -
@@ -1392,7 +1380,7 @@ theorem order_sub_lin {F : MvPowerSeries (Fin 2) K} (hF0 : MvPowerSeries.constan
     subst hd0
     have : MvPowerSeries.coeff (0 : Fin 2 →₀ ℕ) F = 0 := by
       rw [MvPowerSeries.coeff_zero_eq_constantCoeff_apply]; exact hF0
-    rw [this, if_neg, if_neg]
+    rw [this, ite_eq_right, ite_eq_right]
     · simp
     · intro h; have := congrArg (fun e => e 1) h; simp at this
     · intro h; have := congrArg (fun e => e 0) h; simp at this
@@ -1404,7 +1392,7 @@ theorem order_sub_lin {F : MvPowerSeries (Fin 2) K} (hF0 : MvPowerSeries.constan
         · simpa using h
         · simp; omega
       subst this
-      rw [if_pos rfl, if_neg]
+      rw [ite_eq_left rfl, ite_eq_right]
       · simp
       · intro h; have := congrArg (fun e => e 1) h; simp at this
     · have : d = Finsupp.single 1 1 := by
@@ -1412,7 +1400,7 @@ theorem order_sub_lin {F : MvPowerSeries (Fin 2) K} (hF0 : MvPowerSeries.constan
         · simp; omega
         · simp; omega
       subst this
-      rw [if_pos rfl, if_neg]
+      rw [ite_eq_left rfl, ite_eq_right]
       · simp
       · intro h; have := congrArg (fun e => e 1) h; simp at this
 
@@ -1456,7 +1444,7 @@ theorem coeff_lin_pow (n i : ℕ) (hi : i ≤ n) :
   · intro m _ hm
     rw [← map_natCast (MvPowerSeries.C (σ := Fin 2) (R := K)), MvPowerSeries.coeff_mul_C,
       MvPowerSeries.X_pow_eq, MvPowerSeries.X_pow_eq, MvPowerSeries.monomial_mul_monomial,
-      MvPowerSeries.coeff_monomial, if_neg, zero_mul]
+      MvPowerSeries.coeff_monomial, ite_eq_right, zero_mul]
     intro h
     apply hm
     have := congrArg (fun e => e 0) h
@@ -1498,13 +1486,13 @@ theorem norm_coeff_mul_choose {F : MvPowerSeries (Fin 2) K}
   have e0 : e 0 = i := by simp [he]
   have e1 : e 1 = n - i := by simp [he]
   have h0 : MvPowerSeries.coeff e (at1 0 h) = 0 := by
-    rw [coeff_single_variable_series, if_neg]
+    rw [coeff_single_variable_series, ite_eq_right]
     intro hh
     have := congrArg (fun u => u 1) hh
     simp [e1] at this
     omega
   have h1 : MvPowerSeries.coeff e (at1 1 h) = 0 := by
-    rw [coeff_single_variable_series, if_neg]
+    rw [coeff_single_variable_series, ite_eq_right]
     intro hh
     have := congrArg (fun u => u 0) hh
     simp [e0] at this

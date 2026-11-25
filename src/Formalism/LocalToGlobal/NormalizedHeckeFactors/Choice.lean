@@ -44,9 +44,6 @@ theorem avRec_subset_avD (D : D7) (Av : TwAv D) (i : D.ntw.Tw) : AvRec D ⊆ avD
   unfold avD
   exact Finset.mem_union_left _ hv
 
-def placesOverQ0 (D : D7) : Finset (PlE D.host) :=
-  (placesOver_finite_av D.host.E (AbsolutelyIrreducibleSpan.q0 D) (Host.leastSplitAuxiliaryPrimeThetaChain_spec D).1.ne_zero).toFinset
-
 def avOver (D : D7) (s : Finset ℕ) : Finset (PlE D.host) :=
   (Set.Finite.biUnion (s := ((s.filter (· ≠ 0) : Finset ℕ) : Set ℕ)) (t := fun p => placesOver D.host.E p)
     (Finset.finite_toSet _) fun p hp => placesOver_finite_av _ p (Finset.mem_filter.1 hp).2).toFinset
@@ -139,12 +136,6 @@ theorem emb0_mem_maximalIdeal_iff_val_pos_of_sidePl (D : D7) (w : D.what₂.plac
     rw [hsum] at this
     exact lt_irrefl _ this
 
-
-section Vac
-
-variable (D : D7)
-
-end Vac
 
 end Formalism.L2
 

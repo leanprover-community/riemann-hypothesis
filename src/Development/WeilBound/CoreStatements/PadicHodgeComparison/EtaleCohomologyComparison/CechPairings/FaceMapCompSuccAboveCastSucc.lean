@@ -15,7 +15,6 @@ import Mathlib.Tactic.Linter.Style
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory Opposite CrystallineSemistableComparison CrystallineSemistableComparison.CH
 universe w w' w'' t t' v u v' u' v'' u''
 
@@ -186,7 +185,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory Opposite CrystallineSemistableComparison CrystallineSemistableComparison.CH
 universe w w' w'' t t' v u v' u' v'' u''
 
@@ -219,9 +217,9 @@ theorem combN {M : Type*} [AddCommGroup M] (n : ℕ) (Q : ℕ → ℕ → M) (hQ
     rw [← Finset.sum_range_add_sum_Ico _ hi']
     congr 1
     · refine Finset.sum_congr rfl fun j hj => ?_
-      simp at hj; rw [if_pos (by omega)]
+      simp at hj; rw [ite_eq_left (by omega)]
     · refine Finset.sum_congr rfl fun j hj => ?_
-      simp at hj; rw [if_neg (by omega)]
+      simp at hj; rw [ite_eq_right (by omega)]
   have h2 : ∑ i ∈ range (n+2), ∑ k ∈ range (n+3), (-1:ℤ)^(i+k) • Q i k =
       ∑ i ∈ range (n+2), ∑ k ∈ range i, (-1:ℤ)^(i+k) • Q i k + ∑ i ∈ range (n+2), (Q i i - Q i (i+1)) +
       ∑ i ∈ range (n+2), ∑ k ∈ Ico (i+2) (n+3), (-1:ℤ)^(i+k) • Q i k := by
@@ -298,8 +296,8 @@ theorem tm_d (m' : Mor F F' σ) {G : C' ⥤ C} (η : G ⟶ m'.G) {n k : ℕ} (s 
   have hs : ∀ i : Fin (k+2), Monotone (a ∘ i.succAbove) ∧ Monotone (b ∘ i.succAbove) := fun i =>
     ⟨ha.comp (Fin.strictMono_succAbove i).monotone, hb.comp (Fin.strictMono_succAbove i).monotone⟩
   unfold tm
-  rw [dif_pos ⟨ha, hb⟩]
-  simp only [dif_pos (hs _)]
+  rw [dite_eq_left ⟨ha, hb⟩]
+  simp only [dite_eq_left (hs _)]
   change m'.τ _ ((F.map _).hom (∑ i : Fin (k+2), (-1:ℤ)^(i:ℕ) • (F.map (toLast i (ch s ha hb ⋙ Th η))).hom (f (face i (ch s ha hb ⋙ Th η))))) = _
 
   rw [map_sum, map_sum]
@@ -321,7 +319,7 @@ theorem tm_face (m' : Mor F F' σ) {G : C' ⥤ C} (η : G ⟶ m'.G) {n k : ℕ} 
   unfold tm
   by_cases h : Monotone a ∧ Monotone b
   · have h' : Monotone (j.succAbove ∘ a) ∧ Monotone b := ⟨(Fin.strictMono_succAbove j).monotone.comp h.1, h.2⟩
-    rw [dif_pos h, dif_pos h', ← m'.nat]
+    rw [dite_eq_left h, dite_eq_left h', ← m'.nat]
     erw [Fmc]
     rw [← cylinder_map_upper η _ (𝟙 _), ← Functor.map_comp]
     congr 5
@@ -366,7 +364,7 @@ theorem map_self {n : ℕ} (s : ComposableArrows C' n) (i : Fin (n+1)) (h : i �
 theorem tm_top (m' : Mor F F' σ) {G : C' ⥤ C} (η : G ⟶ m'.G) {n : ℕ} (s : ComposableArrows C' n) (f : Cn F n) :
     tm m' η s f id (fun _ => 1) = m'.pullC n f s := by
   unfold tm
-  rw [dif_pos ⟨monotone_id, monotone_const⟩]
+  rw [dite_eq_left ⟨monotone_id, monotone_const⟩]
   have e : ch s monotone_id (monotone_const (β := Fin 2) (c := 1)) ⋙ Th η = s ⋙ m'.G := by
     refine CategoryTheory.Functor.ext (fun _ => rfl) (fun i j φ => ?_)
     simp only [eqToHom_refl, Category.id_comp, Category.comp_id]
@@ -382,7 +380,7 @@ theorem tm_bot (m m' : Mor F F' σ) (η : m.G ⟶ m'.G) (hτ : ∀ T x, m'.τ T 
     {n : ℕ} (s : ComposableArrows C' n) (f : Cn F n) :
     tm m' η s f id (fun _ => 0) = m.pullC n f s := by
   unfold tm
-  rw [dif_pos ⟨monotone_id, monotone_const⟩]
+  rw [dite_eq_left ⟨monotone_id, monotone_const⟩]
   have e : ch s monotone_id (monotone_const (β := Fin 2) (c := 0)) ⋙ Th η = s ⋙ m.G := by
     refine CategoryTheory.Functor.ext (fun _ => rfl) (fun i j φ => ?_)
     simp only [eqToHom_refl, Category.id_comp, Category.comp_id]
@@ -489,7 +487,7 @@ theorem combF {M : Type*} [AddCommGroup M] (n : ℕ) (T : (Fin (n+2) → Fin (n+
     T ((⟨i, h.1⟩ : Fin (n+2)).predAbove ∘ (⟨k, h.2⟩ : Fin (n+3)).succAbove)
       (bb (⟨i, h.1⟩ : Fin (n+2)) ∘ (⟨k, h.2⟩ : Fin (n+3)).succAbove) else 0
   have hQ : ∀ (i : Fin (n+2)) (k : Fin (n+3)), Q i k = T (i.predAbove ∘ k.succAbove) (bb i ∘ k.succAbove) :=
-    fun i k => by simp only [Q, dif_pos (And.intro i.2 k.2)]
+    fun i k => by simp only [Q, dite_eq_left (And.intro i.2 k.2)]
   have key := combN n Q (fun i hi => by
     have e1 := hQ (⟨i, hi⟩ : Fin (n+1)).castSucc (⟨i, hi⟩ : Fin (n+1)).succ.castSucc
     have e2 := hQ (⟨i, hi⟩ : Fin (n+1)).succ (⟨i, hi⟩ : Fin (n+1)).succ.castSucc

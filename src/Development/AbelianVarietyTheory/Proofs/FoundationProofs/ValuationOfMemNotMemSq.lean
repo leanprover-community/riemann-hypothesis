@@ -225,7 +225,7 @@ theorem chiAt_eq_val (hσ : IsCMExt F E σ) {χ : (AE F E)ˣ →* Circle} {P : H
 
 theorem chiAt_eq_zero (hσ : IsCMExt F E σ) {χ : (AE F E)ˣ →* Circle} {P : HeightOneSpectrum (𝓞 E)}
     (h : ¬ UnrAt χ P) : chiAt σ χ P = 0 :=
-  dif_neg fun hc => h ((isUnramAt_iff_unrAt hσ χ P).1 hc.1)
+  dite_eq_right fun hc => h ((isUnramAt_iff_unrAt hσ χ P).1 hc.1)
 
 theorem lfac_eq_locL (hσ : IsCMExt F E σ) (χ : (AE F E)ˣ →* Circle) (P : HeightOneSpectrum (𝓞 E)) (s : ℂ) :
     lfac σ χ P s = locL (charFam χ) P s := by

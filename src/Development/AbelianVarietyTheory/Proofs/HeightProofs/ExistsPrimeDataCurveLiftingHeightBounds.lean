@@ -81,43 +81,7 @@ public import Development.AbelianVarietyTheory.Proofs.HeightProofs.HeightInequal
 import Formalism.LocalToGlobal.ProjectiveLattices.CurveSec
 import Formalism.LocalToGlobal.ProjectiveLattices.LiftSec
 import Formalism.LocalToGlobal.ProjectiveLattices.SecPtRed
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.LowerBoundConstAtLargeMultipleNumericalBounds
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.SupBoundPageRows
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Linter.Style
@@ -135,11 +99,9 @@ import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.GenericRegularity.FiniteReducedSection
 import Development.AbelianVarietyTheory.Proofs.GenericRegularity.FinrankHostDivTwo
 import Formalism.LocalToGlobal.ProjectiveLattices.CurveLocInst
-import Mathlib.Tactic.ENatToNat
 import Development.AbelianVarietyTheory.Definitions.UpperBounds.PhRec
 import Formalism.LocalToGlobal.ProjectiveLattices.CompTieA
 import Mathlib.Tactic.Monotonicity.Lemmas
-import Mathlib.Tactic.Polynomial.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsRealisationPrimeDataCurveLiftingStatement, Development.AbelianVarietyTheory.Proofs.HeightProofs.AuxiliaryCuspFormConstantMonotone, Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsUnitOfVVEqZero, Development.AbelianVarietyTheory.Proofs.JetHarmonics.ConjCmHostRootNeSelf, Development.AbelianVarietyTheory.BlockTheory.HeightDefect.FrameNormRestrictedDensity, Development.AbelianVarietyTheory.Proofs.HeightProofs.NotRestrDensityRescale, Development.AbelianVarietyTheory.Proofs.HeightProofs.SupCLeISupGeneric, Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.ChosenFormsRestrictBasisFunctionField, Development.AbelianVarietyTheory.Proofs.HeightProofs.HeightInequalitiesIndefiniteLiftIndex, Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsPrimeDataCurveLiftingHeightBounds
@@ -293,15 +255,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj GlobalTheory.Reg
 
 namespace GlobalTheory.HeightTop.Ties
-
-section
-
-open ReciprocityTheory.ChartRestriction.G.T0 GlobalTheory.Height.OrderTieGuards
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
-  {l : Level H} {Xo : Moduli Dw l} {c : Coeff l}
-
-end
 
 theorem exists_frameShift_ordTies : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l), 1 ≤ Dw.p + Dw.q → (∀ p : ℕ, p.Prime → l.GoodAt p) → l.A = 1 → ∀ [Fintype (Comp Xo c)] (h : GenFrEx Xo c), ∃ δ : ∀ Z : Comp Xo c, AddValuation (Om Z) (WithTop ℤ) → Ix Dw → ℤ, OrdTieQ h δ ∧ OrdTieQZ h δ ∧ (∀ (PY : HeightOneSpectrum (𝓞 c.F) → Type) (lies : ∀ la (T' : CDVR) (ι : c.F →+* T'.Fr), IntFr Xo c T' ι → PY la → Prop), LiesTotal Xo c (trivialClassCondition Xo c) PY lies → OrdTieOn h δ (trivialClassCondition Xo c) PY lies ∧ OrdTie h δ (trivialClassCondition Xo c) PY lies) ∧ ∀ d : ReciprocityTheory.ChartRestriction.G.T0.Data c.F (Comp Xo c) (fun Z => Om Z) (WTZ E) (fun Z => AC Z), DivFin d → FrShFin d δ := by
   intro E _ _ _ H Dw l Xo c hpq hgood hA _ h
@@ -507,19 +460,6 @@ theorem eq_wsmul_iff (h : LawsCore T) {j : ℕ} (ka wL : WeightFamilies.Wt D j) 
       push_cast
       rfl
 
-section Density
-
-variable (h : LawsCore T) (j : ℕ) (hG : GenFrEx (T.Q.Xo j) T.Q.c) (fn : FrameNorms T j) (yP : GenericFrames T j)
-  (ka : WeightFamilies.Wt D j)
-
-end Density
-
-section Separate
-
-variable {j : ℕ}
-
-end Separate
-
 end GlobalTheory.LowerBoundCompare
 end -- clump:auto
 end -- clump:auto
@@ -553,7 +493,6 @@ namespace GlobalTheory.HeightTop.Generic
 
 open Formalism.BasicNotions Formalism.MainNotions
 
-alias supPTGe_of_fnPin := GlobalTheory.HeightDefinite.Generic.supPTGe_of_fnPin
 alias exists_frame := GlobalTheory.HeightDefinite.Generic.exists_frame
 
 theorem nrmTieU_of_fnPin (D : D7) (T : Core D) (h : LawsCore T) (j : ℕ) (hj : InR D j)
@@ -790,7 +729,7 @@ theorem heights_indefinite :
   let wR : Fin (N + 1) → T.R j := fun k => (G.w (eN k)).1
   let jc : Comp (T.Q.Xo j) T.Q.c → Fin (N + 1) := fun Z => eN.symm (k0 Z)
   let wsize : WTZ D.host.E → ℝ := fun g => if g = wtZ (wtA wL) wL.n then wL.size else wF.size
-  have hsL : wsize (wtZ (wtA wL) wL.n) = wL.size := if_pos rfl
+  have hsL : wsize (wtZ (wtA wL) wL.n) = wL.size := ite_eq_left rfl
   have hsF : wsize (wtZ (wtA wF) wF.n) = wF.size := by
     by_cases e : wtZ (wtA wF) wF.n = wtZ (wtA wL) wL.n
     · have e1 : wF = wL := by
@@ -800,7 +739,7 @@ theorem heights_indefinite :
         · have : (wF.n : ℤ) = wL.n := congrArg Prod.snd e
           exact_mod_cast this
       rw [e, hsL, e1]
-    · exact if_neg e
+    · exact ite_eq_right e
   have hwb : ∀ Z, evC hG Z (wR (jc Z)) ≠ 0 := fun Z => by
     simp only [wR, jc, Equiv.apply_symm_apply]
     exact hk0 Z
@@ -911,7 +850,7 @@ theorem heights_indefinite :
   have iLAM : d.HtLAM := htLAM_of h.toLawsCore j hG δ fn yP (WeightFamilies.dimY D j) N 0 G.iet (WeightAlgebra.g0 D) c (wtA wL, wL.n) (wtA wF, wF.n) (wtA wL, wL.n) (0, 1) (wtA (wEt D j G.iet), (wEt D j G.iet).n) (wtA w1, w1.n) (wtA w2, w2.n) wR jc G.del (fun i => (G.th' i).1) 0 Fin.elim0 (wtA wL, wL.n) 0 Fin.elim0 ∅ G.et.1 t1.1 t2.1 (nuOf T.Q.c fun la => nus la / (ramOverZ la : ℝ)) (fun _ _ _ => 0) wsize (WeightAlgebra.DF wL : ℝ) PN' 1 1 PP0' 1 Gc PI4' Pet tableLineDegreeFive tableLineDegreeTwo Prw POb 0 0
     large₂ CL AL (wsmul d.n96 wL) hgt hkaZ hLAM
     (prodInLat_of_wtZ h.toLawsCore j hj wR wL _ _ (fun k => ⟨G.w (eN k), hTW.2.1 _, rfl⟩) hn1 hkaZ)
-    (Generic.supPTGe_of_fnPin D T.toCore h.toLawsCore j hj fn hpin hG yP hyP _) (by
+    (GlobalTheory.HeightDefinite.Generic.supPTGe_of_fnPin D T.toCore h.toLawsCore j hj fn hpin hG yP hyP _) (by
       show LamConst j large₂ CL AL _ PP0' d.n96 (wsize (wtZ (wtA wL) wL.n))
       rw [hsL]; exact hLC)
   have hlog := fun (w : WeightFamilies.Wt D j) (F : (recB h.toLawsCore).Cusp j w) (σ : T.Q.c.F →+* ℂ) =>

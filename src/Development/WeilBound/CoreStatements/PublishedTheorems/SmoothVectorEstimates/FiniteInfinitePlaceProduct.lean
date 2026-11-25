@@ -75,8 +75,8 @@ theorem eq_one (ν : HChar L) (h : ∀ᶠ w in cofinite, ν.val w = 1) : ν = 1 
       intro v
       rw [finprod_eq_if]
       by_cases hv : v ∈ S
-      · rw [if_neg (not_not.mpr hv)]
-      · rw [if_pos hv, (hS v hv).2, _root_.one_zpow]
+      · rw [ite_eq_right (not_not.mpr hv)]
+      · rw [ite_eq_left hv, (hS v hv).2, _root_.one_zpow]
     rw [hf, mul_one] at h0
     exact h0
   have key : ∀ p : ((v : S) → (v.1.adicCompletion L)ˣ) ×

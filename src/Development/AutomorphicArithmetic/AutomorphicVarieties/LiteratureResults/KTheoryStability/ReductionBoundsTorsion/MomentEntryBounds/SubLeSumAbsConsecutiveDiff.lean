@@ -94,13 +94,13 @@ theorem sub_le_sum_abs_consecutive_diff {N : ℕ} (s : Fin N → ℝ) (i j : Fin
     · rw [Finset.sum_eq_single ⟨(a : ℕ) + 1, ha⟩]
       · simp [ha, hf, a.2]
       · intro b _ hb
-        rw [if_neg]
+        rw [ite_eq_right]
         intro e
         exact hb (Fin.ext e)
       · simp
-    · rw [if_neg ha]
+    · rw [ite_eq_right ha]
       refine Finset.sum_eq_zero fun b _ => ?_
-      rw [if_neg]
+      rw [ite_eq_right]
       intro e
       exact ha (e ▸ b.2)
   rw [hW, ← hfs i, ← hfs j]
@@ -124,7 +124,7 @@ theorem sub_le_sum_abs_consecutive_diff {N : ℕ} (s : Fin N → ℝ) (i j : Fin
     refine (Finset.sum_le_sum fun k hk => ?_).trans
       (Finset.sum_le_sum_of_subset_of_nonneg hsub fun k _ _ => by split_ifs <;> simp)
     · simp only [Finset.mem_Ico] at hk
-      rw [if_pos (by omega)]
+      rw [ite_eq_left (by omega)]
   rcases le_total (i : ℕ) j with h | h
   · exact (le_abs_self _).trans (key i j h j.2)
   · refine le_trans ?_ (key j i h i.2)

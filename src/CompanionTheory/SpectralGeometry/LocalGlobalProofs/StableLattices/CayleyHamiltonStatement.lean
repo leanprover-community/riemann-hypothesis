@@ -83,9 +83,9 @@ theorem polF_Tm {n : ℕ} (E : Fin n → Fin n → A) (c : ℂ) (a b : Fin n) :
     PolF fun y : ℂ => Tm E (y + c) a b := by
   unfold Tm
   by_cases hab : a = b
-  · simp only [hab, if_true]
+  · simp only [hab, ite_true]
     exact (polF_alg c).add (polF_const _)
-  · simp only [hab, if_false]
+  · simp only [hab, ite_false]
     exact (polF_const _).add (polF_const _)
 
 theorem polF_qdet {n : ℕ} (E : Fin n → Fin n → A) (c : ℂ) : PolF fun y : ℂ => qdet E (y + c) := by

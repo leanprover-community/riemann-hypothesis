@@ -72,7 +72,7 @@ theorem zpow_smul_mem_H0_colSpan_of_mem_colSpan_mul (O Kf : Type) [CommRing O] [
   have hgD : IsUnit (g * lb_D (m + 1) r (algebraMap O Kf w)).det := by
     rw [Matrix.det_mul]; exact hg.mul (lb_D_det _ _ _ hw)
   unfold H0 at hF ⊢
-  rw [if_pos hlam] at hF ⊢
+  rw [ite_eq_left hlam] at hF ⊢
   have h1 : F ∈ nablaLTw O Kf m lam (g * lb_D (m + 1) r (algebraMap O Kf w)) :=
     (iInf₂_le _ ⟨hgD, rfl⟩ : _ ≤ nablaLTw O Kf m lam (g * lb_D (m + 1) r (algebraMap O Kf w))) hF
   have h2 := P_rev O Kf hinj m r lam w hw g hg F h1
@@ -105,11 +105,6 @@ theorem edgeLat_RS (e : Edge R.W R.Qq (m + 1)) (he : IsEdge p n' 1 e) :
   have hw : c ≠ 0 := R.w_ne
   have hpK : (p : R.Kf) = c ^ 2 := R.p_eq
   have hpK0 : (p : R.Kf) ≠ 0 := by rw [hpK]; exact pow_ne_zero _ hw
-  have hpQ0 : (p : R.Qq) ≠ 0 := by
-    intro h0
-    apply hpK0
-    have := congrArg R.ι h0
-    simpa using this
   set dK : Fin (m + 1) → R.Kf := fun a => if a.val < 1 then c⁻¹ else 1 with hdK
   set dQ : Fin (m + 1) → R.Qq := fun a => if a.val < 1 then ((p : R.Qq))⁻¹ else 1 with hdQ
   have hDD : ∀ s, la_tw R.ι R.σ s (g * Matrix.diagonal dQ) =
@@ -187,14 +182,14 @@ theorem edgeLat_RS (e : Edge R.W R.Qq (m + 1)) (he : IsEdge p n' 1 e) :
         show c⁻¹ • twistVec R.ι R.σ s
           ((p : R.W) • fun i => (g * Matrix.diagonal dQ) i j) i = (gK * Matrix.diagonal dK) i j
         rw [tw_p R, Matrix.mul_diagonal, Matrix.mul_diagonal, smul_eq_mul, hgK, lb_tw_apply]
-        simp only [hdQ, hdK, hj, if_true, map_mul, map_inv₀, map_natCast]
+        simp only [hdQ, hdK, hj, ite_true, map_mul, map_inv₀, map_natCast]
         field_simp
     · apply Submodule.mem_sup_left
       apply Submodule.subset_span
       refine ⟨fun i => g i j, ?_, ?_⟩
       · rw [hsrc]; exact Submodule.subset_span ⟨j, rfl⟩
       · funext i
-        simp only [twistVec, Matrix.mul_diagonal, hdK, hj, if_false, mul_one, lb_tw_apply]
+        simp only [twistVec, Matrix.mul_diagonal, hdK, hj, ite_false, mul_one, lb_tw_apply]
 
 end RSLat
 

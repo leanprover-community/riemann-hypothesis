@@ -370,10 +370,6 @@ variable [HopfAlgebra V H] [IsFractionRing V K] (J : Ideal (K ⊗[V] H)) [J.IsHo
 
 end HopfClosure
 
-section Surjections
-
-end Surjections
-
 section Examples
 
 end Examples

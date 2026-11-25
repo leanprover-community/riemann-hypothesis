@@ -99,11 +99,6 @@ theorem Bd_rat_neg (a : Fin N → F) (u : Fin N → AF F) (ξ : Fin N → F) :
   rw [add_neg_cancel, Bd_rat_zero] at h
   exact (neg_eq_of_add_eq_zero_right h.symm).symm
 
-theorem Bd_rat_rat (a : Fin N → F) (η ξ : Fin N → F) :
-    Bd (AF F) a (rat η) (rat ξ) = algebraMap F (AF F) (Bd F a η ξ) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [Bd, rat, map_sum, map_mul]
-
 theorem cont_Bd (a : Fin N → F) (w : Fin N → AF F) : Continuous fun u : Fin N → AF F => Bd (AF F) a u w := by
   unfold Bd
   exact continuous_finsetSum _ fun l _ => (continuous_const.mul (continuous_apply l)).mul continuous_const
@@ -118,7 +113,7 @@ theorem psi_conj (hψ : IsCharAF F ψ) (x : AF F) : conj (ψ x) = ψ (-x) := by
 
 theorem chi_periodic (hψ : IsCharAF F ψ) (ξ η : Fin N → F) (u : Fin N → AF F) :
     chi ψ a ξ (rat η + u) = chi ψ a ξ u := by
-  rw [chi, chi, Bd_add_left, Bd_rat_rat, neg_add, AddChar.map_add_eq_mul, ← map_neg, hψ.2.2.1, one_mul]
+  rw [chi, chi, Bd_add_left, GlobalTheory.SWQ.Bd_rat_rat, neg_add, AddChar.map_add_eq_mul, ← map_neg, hψ.2.2.1, one_mul]
 
 theorem periodic_of (hL : ∀ u, u ∈ Lat F N ↔ ∃ ξ, u = rat ξ) {f : (Fin N → AF F) → ℂ}
     (hf : ∀ ξ u, f (rat ξ + u) = f u) : ∀ g ∈ Lat F N, ∀ u, f (g + u) = f u := by
@@ -311,8 +306,7 @@ theorem eq_zero_of (ψ : AddChar (AF F) ℂ) (a : Fin N → F) (hψ : IsCharAF F
       rw [QuotientAddGroup.eq, show -x + x' = -(x - x') by abel]
       exact neg_mem h
     obtain ⟨ξ, hξ⟩ : ∃ ξ, ψ (-(Bd (AF F) a (x - x') (rat ξ))) ≠ 1 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hnot (mem_of_chi hann ha _ h)
     refine ⟨chiC a hL hψ ξ, ⟨chiC a hL hψ ξ, Submodule.subset_span ⟨ξ, rfl⟩, rfl⟩, ?_⟩
     intro heq
@@ -455,7 +449,6 @@ variable {F : Type} [Field F] [NumberField F] {N : ℕ}
 
 theorem bd_rat_add (a : Fin N → F) (η ξ : Fin N → F) (u : Fin N → AF F) :
     Bd (AF F) a (rat η + u) (rat ξ) = algebraMap F (AF F) (Bd F a η ξ) + Bd (AF F) a u (rat ξ) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp only [Bd, rat, Pi.add_apply, map_sum, map_mul, mul_add, add_mul, Finset.sum_add_distrib,
     Algebra.algebraMap_self, RingHom.id_apply]
 

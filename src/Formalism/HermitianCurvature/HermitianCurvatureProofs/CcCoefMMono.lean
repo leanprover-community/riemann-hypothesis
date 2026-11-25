@@ -37,8 +37,6 @@ namespace Formalism.FourierDecayAlt.P.LastBlockContinuity
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.P.JCTx6 Formalism.FourierDecayAlt.P.JCTx6.Pos Formalism.FourierDecayAlt.P.PBE
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem continuous_unipotent_vector_scalar (n : ℕ) (v : G.UT (n + 1) → ℂ) : Continuous (fun t : ℂ => Zv n t v) := by
   show Continuous (fun t : ℂ => fun i j => (G.ptLong (n + 1) t * G.upper v) i j)
   have h : Continuous (fun t : ℂ => (G.ptLong (n + 1) t * G.upper v : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ)) := by
@@ -397,8 +395,6 @@ namespace Formalism.FourierDecayAlt.P.LastBlockContinuity
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem xs_eq_phi {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq]
     (T : D.LevTower k r Wp Wq) (χ : ℝ → ℝ) (ε : ℝ) (i : ℕ) (hi : i ≤ r) (w : List C.Letter)
@@ -427,11 +423,11 @@ theorem xs_eq_phi {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProdu
     intro q
     rw [hspec q, Formalism.FourierDecayAlt.P.Dx2.SL.partner_append (n + 1) t h0 q.val (by have := q.isLt; omega)]
     by_cases h1 : q.val < D.ptSize h0
-    · rw [if_pos h1]
+    · rw [ite_eq_left h1]
       have e : Fin.cast hP q = Fin.castAdd (n + 1) ⟨q.val, h1⟩ := Fin.ext rfl
       rw [e, Formalism.FourierDecayAlt.P.Dx2.SL.blockPerm_castAdd]
       exact hspec' ⟨q.val, h1⟩
-    · rw [if_neg h1]
+    · rw [ite_eq_right h1]
       have e : Fin.cast hP q = Fin.natAdd (D.ptSize h0) ⟨q.val - D.ptSize h0, by have := q.isLt; omega⟩ :=
         Fin.ext (by simp; omega)
       rw [e, Formalism.FourierDecayAlt.P.Dx2.SL.blockPerm_natAdd]
@@ -443,10 +439,10 @@ theorem xs_eq_phi {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProdu
     simp only [D.ptDiag]
     rw [Formalism.FourierDecayAlt.P.Dx2.SL.scal_append (n + 1) t h0 q.val (by have := q.isLt; omega)]
     by_cases h1 : q.val < D.ptSize h0
-    · rw [if_pos h1]
+    · rw [ite_eq_left h1]
       have e : Fin.cast hP q = Fin.castAdd (n + 1) ⟨q.val, h1⟩ := Fin.ext rfl
       rw [e, Formalism.FourierDecayAlt.P.Dx2.SL.dP, Fin.addCases_left]; rfl
-    · rw [if_neg h1]
+    · rw [ite_eq_right h1]
       have e : Fin.cast hP q = Fin.natAdd (D.ptSize h0) ⟨q.val - D.ptSize h0, by have := q.isLt; omega⟩ :=
         Fin.ext (by simp; omega)
       rw [e, Formalism.FourierDecayAlt.P.Dx2.SL.dP, Fin.addCases_right]

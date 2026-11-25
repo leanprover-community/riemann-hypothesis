@@ -118,11 +118,6 @@ theorem eta_holds {E : Type} [Field E] [NumberField E] [IsCMField E] : EtaStatem
 
 end ReciprocityTheory.ChartRestriction.G.AR.Up.EtaPf
 
-namespace ReciprocityTheory.ChartRestriction.G.AR.Up
-
-open NumberField
-
-end ReciprocityTheory.ChartRestriction.G.AR.Up
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.EtaStatementHolds =====
@@ -437,9 +432,9 @@ theorem vanish_other (hV : VanishAtSStatement (E := E)) (hM : MeasInvStatement (
     intro x hx b hb
     have hiff := Nset_sat X x1 hdec hlast (δ / 2) hx hb
     by_cases hxN : x ∈ Nset X Δ zOf (δ / 2)
-    · rw [Set.indicator_apply, Set.indicator_apply, if_pos (hiff.2 hxN), if_pos hxN,
+    · rw [Set.indicator_apply, Set.indicator_apply, ite_eq_left (hiff.2 hxN), ite_eq_left hxN,
         gφ_rmul X hR hBE hssec hx hb]
-    · rw [Set.indicator_apply, Set.indicator_apply, if_neg (fun h => hxN (hiff.1 h)), if_neg hxN]
+    · rw [Set.indicator_apply, Set.indicator_apply, ite_eq_right (fun h => hxN (hiff.1 h)), ite_eq_right hxN]
 
   obtain ⟨c1, hc1, hc1le⟩ := rhs_bound X x1 Xa Fl P (Nset X Δ zOf (δ / 2)) (δ / 2) hρ hcb hN1
   have hfin := lhs_finite X x0 ho Xa Fl ψ C0 hψb bb hbb ε hε hnull F hI P hPF

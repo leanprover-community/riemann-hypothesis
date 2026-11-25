@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.GlobalFields.TateThesis.IdeleMeasure
 public import Formalism.HermitianCurvature.StatementG
 public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
 import Mathlib.Algebra.Module.StablyFree.Basic
@@ -196,15 +197,7 @@ namespace Formalism.FourierDecayAlt.P.G9
 
 theorem map_mul_vol (α : ℂ) (hα : α ≠ 0) :
     Measure.map (fun ρ : ℂ => α * ρ) (volume : Measure ℂ) = ENNReal.ofReal ((‖α‖ ^ 2)⁻¹) • volume := by
-  have hdet : LinearMap.det (LinearMap.mulLeft ℝ α) = ‖α‖ ^ 2 := by
-    have h1 := Algebra.norm_complex_apply α
-    rw [Algebra.norm_apply] at h1
-    rw [← Complex.normSq_eq_norm_sq, ← h1]
-    rfl
-  have h := Measure.map_linearMap_addHaar_eq_smul_addHaar (volume : Measure ℂ)
-    (f := LinearMap.mulLeft ℝ α) (by rw [hdet]; positivity)
-  rw [hdet, abs_of_nonneg (by positivity)] at h
-  exact h
+  apply _root_.GroundTheory.Global.map_mul_left_volume_complex <;> assumption
 
 theorem integral_comp_mul (α : ℂ) (hα : α ≠ 0) (G : ℂ → ℂ) :
     ∫ ξ : ℂ, G (α * ξ) = ((‖α‖ ^ 2)⁻¹ : ℝ) • ∫ η : ℂ, G η := by

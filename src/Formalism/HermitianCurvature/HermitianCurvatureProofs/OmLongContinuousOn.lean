@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.StandardPairingDecay
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.KloostDensOfParts
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BudgetTopConvergence
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSetting
@@ -247,26 +248,7 @@ variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace �
 theorem vecV_eq_zero_of_lt (Bs : B.RealPlaceData k r Wp Wq) (ν' : Fin (2 * r + k + 1) → ℂ) (m₀ : B.Mat k r) (q : C.LPt)
     {F : B.Mat k r → (Wq →L[ℂ] Wp)} {ε : ℝ} (hF : ∀ g ∈ B.GV k r, F g ≠ 0 → ε ≤ Gf k r Bs.z Bs.z' g)
     (hq : D.ptG (Tz k r Bs.z * Tz k r Bs.z') r q < ε) : D.vecV Bs ν' m₀ F q = 0 := by
-  unfold D.vecV
-  by_cases hq' : D.IsLocPt q (r + 1) ∧ 0 < D.ptG (Tz k r Bs.z * Tz k r Bs.z') r q
-  · simp only [dif_pos hq']
-    by_cases h' : ∃ γ ∈ B.GV k r, Zhat k r Bs.z Bs.z' γ = D.ptMatN q (r + 1) ∧ D.IsDFrame Bs ν' m₀ γ
-    · simp only [dif_pos h']
-      have hγ := h'.choose_spec.1
-      have hGq := P.ptG_spec k r Bs.z Bs.z' q h'.choose hq'.1 h'.choose_spec.2.1
-      have hlt : Gf k r Bs.z Bs.z' h'.choose < ε := by rw [← hGq]; exact hq
-      have e := P.JCx1.needs.orbJ_smul_of_ae Bs h'.choose
-        (D.muR Bs h'.choose (hq'.1.2 ▸ D.ptPerm q)) F F 0 (by
-        filter_upwards [P.B5.ae_inSS Bs] with p hp
-        have hz : F (B.sgs p h'.choose) = 0 := by
-          by_contra hne
-          have := hF _ (P.B7.sgs_mem Bs hp hγ) hne
-          rw [P.JCx1.needs.gf_sgs Bs hp] at this
-          linarith
-        simp [D.orbIntegrand, B.rho, hz])
-      rw [e, zero_smul]
-    · simp only [dif_neg h']
-  · simp only [dif_neg hq']
+  apply _root_.Formalism.FourierDecayAlt.P.PBO.vecV_zero_small <;> assumption
 
 end zero
 

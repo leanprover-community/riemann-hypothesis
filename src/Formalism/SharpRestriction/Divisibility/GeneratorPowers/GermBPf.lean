@@ -19,8 +19,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.MainNotions.ModuliIntegralCharts.H1.GermD
 open Formalism.MainNotions.ModuliIntegralCharts.H1.GermFun
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section Pts
 
 variable {S : Type} [CommRing S] (d : ℕ)
@@ -488,7 +486,7 @@ theorem ex_ad (hch : IsChartG t x0 d F act tg uvec x) (i0 : t.PP.L.ι) (hi0 : (e
     have h0 := hu.symm.trans hu1
     rw [psJet, ← map_one (Ideal.Quotient.mk _), Ideal.Quotient.eq] at h0
     have h1 := coeff_eq_zero_of_mem h0 (e := 0) (by simp)
-    rw [MvPolynomial.coeff_sub, sub_eq_zero, MvPolynomial.coeff_one, if_pos rfl] at h1
+    rw [MvPolynomial.coeff_sub, sub_eq_zero, MvPolynomial.coeff_one, ite_eq_left rfl] at h1
     exact h1
   exact ⟨ad, hadc, had⟩
 

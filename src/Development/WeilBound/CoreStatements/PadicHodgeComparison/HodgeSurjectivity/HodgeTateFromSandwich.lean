@@ -4,8 +4,6 @@ public import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSur
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 open CategoryTheory Limits AlgebraicGeometry GlobalTheory.LogCris
@@ -15,9 +13,6 @@ namespace CrystallineSemistableComparison.Onto
 open Pb HT
 
 variable {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ_[l] (PadicAlgCl l)}
-
-def SqEx2 : Prop := ∀ (l : ℕ) [Fact l.Prime] (K : IntermediateField ℚ_[l] (PadicAlgCl l)) [FiniteDimensional ℚ_[l] K] (M : Model l K)
-  (d : ℕ), 1 ≤ d → M.Sm → SmoothOfRelativeDimension (d + 1) M.p → Nonempty (Sq M (d + 1))
 
 def DiagEt2 : Prop := ∀ (l : ℕ) [Fact l.Prime] (K : IntermediateField ℚ_[l] (PadicAlgCl l)) [FiniteDimensional ℚ_[l] K] (M : Model l K)
   (d : ℕ), 1 ≤ d → M.Sm → SmoothOfRelativeDimension (d + 1) M.p → ∀ (S : Sq M (d + 1)) (r : E.Roots l) (v : S.Y.T 2), IsEtaleFirstChernUntwisted r S.D v →

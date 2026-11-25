@@ -135,8 +135,6 @@ open Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.KappaOffDiag
 
 namespace GlobalTheory.TypeAsm
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem termAmplitudeFactor_nonneg {D : D7} (large₂ : SizeData₂ D) (CH Cs C : ℝ) (hC : 0 ≤ C) (j : ℕ) (δ : ℕ → D.host.E) :
     0 ≤ k2a large₂ CH Cs C j δ := by
   have hb : 0 < large₂.sc.b := Real.exp_pos _
@@ -208,7 +206,6 @@ noncomputable section
 open scoped Classical
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full
   Formalism.L2.SG.LocWSOf Formalism.MainNotions.S.Cnt Formalism.L2.SG.KappaOffDiagonal Formalism.MainNotions.LatticeGluingRadicals
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.TypeAsm
 open Formalism.HermitianLatticeCounting.S6
@@ -392,7 +389,6 @@ section -- clump:auto
 
 open scoped Classical ENNReal Pointwise
 open MeasureTheory Matrix NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.LocWSOf Formalism.MainNotions.S.Cnt Formalism.L2.SG.KappaOffDiagonal Formalism.MainNotions.KappaEndpoints Formalism.L2.SG.RowsConc GlobalTheory.TypeAsm
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.PairsRow
 
@@ -456,12 +452,6 @@ theorem mem_pmap (s : V ≃ₗ[K] V) (Γ : Submodule (𝓞 K) (V × V)) (p : V �
     simpa using hq
   · intro h
     exact ⟨_, h, by ext <;> simp⟩
-
-theorem gmap_injective (s : V ≃ₗ[K] V) : Function.Injective (Formalism.HermitianLatticesTheory.gmap (R := 𝓞 K) s) := by
-  intro M M' h
-  ext x
-  have := congrArg (s x ∈ ·) h
-  simpa [Formalism.HermitianLattices.Ext.L3.RankOne.mem_gmap] using this
 
 theorem pmap_injective (s : V ≃ₗ[K] V) : Function.Injective (pmap s) := by
   intro Γ Γ' h
@@ -603,7 +593,7 @@ theorem tr_injective (s : V ≃ₗ[K] V) : Function.Injective (tr (K := K) s) :=
   rintro ⟨⟨a1, a2⟩, ⟨b1, b2⟩, η⟩ ⟨⟨a1', a2'⟩, ⟨b1', b2'⟩, η'⟩ h
   simp only [tr, Prod.mk.injEq] at h
   obtain ⟨⟨e1, e2⟩, ⟨e3, e4⟩, e5⟩ := h
-  simp only [gmap_injective s e1, pmap_injective s e2, gmap_injective s e3, pmap_injective s e4,
+  simp only [Formalism.HermitianLattices.Ext.L3.gmap_injective s e1, pmap_injective s e2, Formalism.HermitianLattices.Ext.L3.gmap_injective s e3, pmap_injective s e4,
     mul_left_cancel (mul_right_cancel e5)]
 
 theorem tr_mapsTo {s : V ≃ₗ[K] V} (hs : s ∈ isomGrp H) (g : ℕ) (L : Submodule (𝓞 K) V) (j x x' : ℕ) :
@@ -646,7 +636,6 @@ section -- clump:auto
 
 open scoped Classical ENNReal Pointwise
 open MeasureTheory Matrix NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.LocWSOf Formalism.MainNotions.S.Cnt Formalism.L2.SG.KappaOffDiagonal Formalism.MainNotions.KappaEndpoints Formalism.L2.SG.RowsConc GlobalTheory.TypeAsm
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.TypeAsm
 
@@ -720,7 +709,6 @@ section -- clump:auto
 
 open scoped Classical ENNReal Pointwise
 open MeasureTheory Matrix NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.LocWSOf Formalism.MainNotions.S.Cnt Formalism.L2.SG.KappaOffDiagonal Formalism.MainNotions.KappaEndpoints Formalism.L2.SG.RowsConc GlobalTheory.TypeAsm
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.TypeAsm.PairsLab
 
@@ -1160,7 +1148,6 @@ section -- clump:auto
 
 open scoped Classical ENNReal Pointwise
 open MeasureTheory Matrix NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.LocWSOf Formalism.MainNotions.S.Cnt Formalism.L2.SG.KappaOffDiagonal Formalism.MainNotions.KappaEndpoints Formalism.L2.SG.RowsConc GlobalTheory.TypeAsm
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.TypeAsm.PairsSum
 
@@ -1256,7 +1243,6 @@ open scoped Classical ENNReal Pointwise
 open MeasureTheory Matrix NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full
   Formalism.L2.SG.LocWSOf Formalism.MainNotions.S.Cnt Formalism.L2.SG.KappaOffDiagonal Formalism.MainNotions.KappaEndpoints Formalism.L2.SG.RowsConc
 namespace GlobalTheory.TypeAsm
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace PairsPf
 
 theorem massC_nonneg {D : D7} {X : HidaSetting D} (Y : Full X) (u : D.what₂.Word) : 0 ≤ massC Y u := by

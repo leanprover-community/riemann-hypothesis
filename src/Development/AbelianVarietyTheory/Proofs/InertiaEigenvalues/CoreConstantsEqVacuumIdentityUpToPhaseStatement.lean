@@ -77,7 +77,6 @@ open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open GlobalTheory.SingleDatum GlobalTheory.CoverRead
 open scoped TensorProduct Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open GlobalTheory.LevelSeries
 
@@ -113,7 +112,7 @@ theorem actO_mem_of_rat (V W : HSp D) (hV : V.gram = 1) (LV : Set (Fin V.rank �
     refine AddSubgroup.subset_closure ⟨α, hα, h0, a, ha, d *ᵥ s, hd s hs, t, ht, ?_⟩
     ext i j
     simp only [hV, Matrix.mul_apply, Matrix.of_apply, Matrix.map_apply, Matrix.conjTranspose_apply, Matrix.one_apply, mul_ite,
-      mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true, Matrix.mulVec, dotProduct, star_sum, star_mul',
+      mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true, Matrix.mulVec, dotProduct, star_sum, star_mul',
       Finset.mul_sum, TensorProduct.tmul_sum]
     refine Finset.sum_congr rfl fun l _ => ?_
     change _ * ((1 : AF D.host.F) ⊗ₜ[D.host.F] _) = _
@@ -298,7 +297,7 @@ theorem baseCc_of_framePin : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 
     have h := hb.1 a a'
     rw [hS.1] at h
     simp only [Matrix.one_apply, mul_ite, mul_one, mul_zero, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ,
-      if_true] at h
+      ite_true] at h
     rw [Matrix.one_apply, ← h, Matrix.mul_apply]
     rfl
   obtain ⟨k1, k2⟩ := mulVec_mem_of_basis (R.ΛV i) b hbb (SetLike.coe_injective h5) (SetLike.coe_injective (h1.trans hb.2))
@@ -366,7 +365,6 @@ open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open GlobalTheory.SingleDatum GlobalTheory.CoverRead
 open scoped TensorProduct Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open GlobalTheory.LevelSeries
 

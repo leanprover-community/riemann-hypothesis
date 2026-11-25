@@ -1746,13 +1746,11 @@ theorem exists_fw : ∀ (B B' : Base) (f : Fr B.toPre) (f' : Fr B'.toPre) (T : T
     eq_of_heq ((hm' _).trans (LevExt.idc_heq (a := Z) (a' := Z') hPre (hmu0 ⟨i'.1, hm0 ▸ i'.2⟩ i' rfl)
       (z.lev.is.mu0 ⟨i'.1, hm0 ▸ i'.2⟩) (hL'.is.mu0 i')).symm)
   have hRS' : RSideW z Wt' (setMu0 R' m) := by
-    set_option backward.isDefEq.lazyProjDelta false in
     exact hRS
   obtain ⟨κ', v₀', fw', h1, h2, h3⟩ := exists_fw_mu B B' f f' T T' w w' hPre Z hX Wt z Z' hX' Wt' core' alg' halg hcore hlaws Xg tr
     (setMu0 R' m) hRS' hm ι hι
   have h3' : ∀ (i : Fin (w.st Z).toD7.R.m) (i' : Fin (w'.st Z').toD7.R.m), (i : ℕ) = i' → ∀ φ φ', HEq φ' φ →
       CrdOver ι (z.geo.fw.e i φ : (z.R.FW i).WK).1 ((fwBack R' m h fw').e i' φ' : (R'.FW i').WK).1 := by
-    set_option backward.isDefEq.lazyProjDelta false in
     exact h3
   exact ⟨κ', v₀', fwBack R' m h fw', h1, h2, h3'⟩
 

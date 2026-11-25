@@ -41,8 +41,8 @@ theorem finsum_classes {β γ : Type*} [DecidableEq γ] (K : β → Prop) (hfin 
 
   have hcl : ∀ d ∈ DC, F d b = if d = key b then f b else 0 := fun d _ => by
     by_cases hd : d = key b
-    · rw [if_pos hd, hF1 d b hK hd.symm]
-    · rw [if_neg hd, hF0 d b (fun h => hd h.2.symm)]
+    · rw [ite_eq_left hd, hF1 d b hK hd.symm]
+    · rw [ite_eq_right hd, hF0 d b (fun h => hd h.2.symm)]
   rw [Finset.sum_congr rfl hcl, Finset.sum_ite_eq']
   split_ifs <;> omega
 
@@ -111,7 +111,7 @@ theorem digit_sum (m P g : ℕ) (hP : 0 < P) : ∑ ρ ∈ dset m P g, sd m ((g -
 theorem symDim_nat (m g : ℕ) : symDim (m + 1) (g : ℤ) = sd m g := by
   unfold symDim sd
   have h1 : ¬ ((g : ℤ) < 0) := by omega
-  rw [if_neg h1]
+  rw [ite_eq_right h1]
   first
     | rw [Int.toNat_natCast]
   congr 1
@@ -181,9 +181,9 @@ theorem segLow_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ} (h : LowAt C0 CYb Cde C
         blockRank O X.p X.m (X.seg C0 CE1 CE2 j) (segATop X.TT X.aT j) (segAPlus X.TT X.aT j) m b else 0)
       (fun b => if Kept X.p X.m (X.seg C0 CE1 CE2 j) (segATop X.TT X.aT j) b then
         blockRank O X.p X.m (X.seg C0 CE1 CE2 j) (segATop X.TT X.aT j) (segAPlus X.TT X.aT j) m b else 0)
-      (fun d b hK hk => by subst hk; exact if_pos ⟨hK, rfl, rfl⟩)
-      (fun d b hn => if_neg fun ⟨hK, h1, h2⟩ => hn ⟨hK, Prod.ext h1 h2⟩)
-      (fun b hK => if_pos hK) (fun b hK => if_neg hK)
+      (fun d b hK hk => by subst hk; exact ite_eq_left ⟨hK, rfl, rfl⟩)
+      (fun d b hn => ite_eq_right fun ⟨hK, h1, h2⟩ => hn ⟨hK, Prod.ext h1 h2⟩)
+      (fun b hK => ite_eq_left hK) (fun b hK => ite_eq_right hK)
   rw [← hsum, Nat.cast_sum, Finset.mul_sum]
   calc ∑ d ∈ ((Fintype.piFinset fun i => dset X.m ((X.seg C0 CE1 CE2 j).P X.p i) ((X.seg C0 CE1 CE2 j).bTop i)) ×ˢ
       (Fintype.piFinset fun i => dset X.m ((X.seg C0 CE1 CE2 j).P X.p i) ((segATop X.TT X.aT j) i))), lowFac C0 CE1 CE2 X j ⌈m⌉₊ * (mmB C0 CE1 CE2 X j d.1 d.2 : ℝ)

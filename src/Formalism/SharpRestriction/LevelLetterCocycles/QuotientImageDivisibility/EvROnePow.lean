@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemTranslationInvariantSubfieldIffExponents
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.XAddOneMonic
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
@@ -62,10 +63,6 @@ end SlopeTestRemainingChoices
 
 theorem exists_prim {F : Type} [Field F] [IsAlgClosed F] [CharZero F] (N : ℕ) (hN : 0 < N) :
     ∃ ζ : F, IsPrimitiveRoot ζ N := by
-  haveI : NeZero (N : F) := ⟨Nat.cast_ne_zero.mpr hN.ne'⟩
-  obtain ⟨ζ, hζ⟩ := IsAlgClosed.exists_root (Polynomial.cyclotomic N F) (by
-    rw [Polynomial.degree_cyclotomic]
-    exact_mod_cast (Nat.totient_pos.2 hN).ne')
-  exact ⟨ζ, Polynomial.isRoot_cyclotomic_iff.mp hζ⟩
+  apply _root_.GlobalTheory.Glue.KTExp.exists_prim_root_of_isAlgClosed <;> assumption
 
 end Formalism.MainNotions.N.Pv.LocalLengthBound.LB

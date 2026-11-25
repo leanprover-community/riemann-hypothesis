@@ -74,7 +74,7 @@ theorem finrank_le_pow_of_aeval_surjective {n d : ℕ} {K A : Type*} [Field K] [
       have : e (fun i => ⟨m i, hm i⟩) = m := by
         ext i; simp [e]
       simp only [v, this]
-    · push_neg at hm
+    · push Not at hm
       obtain ⟨i, hi⟩ := hm
       have h0 : MvPolynomial.aeval (R := K) x (MvPolynomial.monomial m 1) = 0 := by
         rw [MvPolynomial.aeval_monomial, map_one, one_mul, Finsupp.prod]

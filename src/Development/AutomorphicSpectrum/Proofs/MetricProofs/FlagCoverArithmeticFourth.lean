@@ -1,5 +1,7 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar
+
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsPeriodOn
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PtsOverPt
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.GenFibreChartDeg
@@ -54,19 +56,7 @@ theorem imageZ_mCoordIdeal {κ : K → K'} {v : (Σ k, ι k) → Σ k, ι' k} (h
 
 theorem mCoordIdeal_map {Ω₁ : Type} [Field Ω₁] (φ : Ω →+* Ω₁) (x : (Σ k, ι k) → Ω) :
     mCoordIdeal (fun q => φ (x q)) = mCoordIdeal x := by
-  have key : ∀ g : MRing ι, mConeMap (fun q => φ (x q)) g = MvPolynomial.map φ (mConeMap x g) := by
-    intro g
-    induction g using MvPolynomial.induction_on with
-    | C a => simp [mConeMap]
-    | add p q hp hq => simp only [map_add (f := _), hp, hq]
-    | mul_X p n hp =>
-      simp only [map_mul, hp]
-      congr 1
-      simp [mConeMap]
-  ext f
-  show mConeMap _ f = 0 ↔ mConeMap x f = 0
-  rw [key]
-  exact (MvPolynomial.map_injective φ φ.injective).eq_iff' (map_zero _)
+  apply _root_.GroundTheory.Heights₂.Heights.CoordinateConeArithVar.mCoordIdeal_comp <;> assumption
 
 theorem exists_isArithVar [CharZero Ω] [Nonempty K] (y : (Σ k, ι k) → Ω) (hy : ∀ k, ∃ i, y ⟨k, i⟩ ≠ 0) :
     ∃ n : ℕ, IsArithVar (mCoordIdeal y) (n + 1) := by

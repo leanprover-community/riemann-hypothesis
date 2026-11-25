@@ -67,8 +67,6 @@ local elab "exact_by_kernel " term:term : tactic =>
     | .ok false => throwError "expected{indentExpr target}\nbut the term has type{indentExpr actual}"
     | .error error => throwError (error.toMessageData (← getOptions))
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {B : Base} {C : Cols B} {a : Late B C} (c : Refill a) {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type}
 variable {Ks : Type} [Field Ks] [NumberField Ks] [iK : Algebra Ks a.D.what₂.LL]
 
@@ -278,8 +276,6 @@ local elab "exact_by_kernel " term:term : tactic =>
     | .ok true => pure value
     | .ok false => throwError "expected{indentExpr target}\nbut the term has type{indentExpr actual}"
     | .error error => throwError (error.toMessageData (← getOptions))
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {B : Base} {C : Cols B} {a : Late B C} (c : Refill a) {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type}
 variable {Ks : Type} [Field Ks] [NumberField Ks] [iK : Algebra Ks a.D.what₂.LL]

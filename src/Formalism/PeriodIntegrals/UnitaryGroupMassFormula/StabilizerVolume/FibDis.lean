@@ -92,9 +92,6 @@ def DisintStep : Prop :=
         ∀ S : Set X, IsCompact S → ∫ v in f ⁻¹' (ι '' S), φ v ∂μ = ∫ b in S, ∫ v, φ v ∂(fib b) ∂ν) →
       ∀ φ : V → ENNReal, Measurable φ → ∫⁻ v in U, φ v ∂μ = ∫⁻ b, ∫⁻ v, φ v ∂(fib b) ∂ν
 
-theorem fibOfDens_of (hDis : DisintStep) : FibOfDens :=
-  _root_.PI.VolStabSW.Glue.fibOfDens_of hDis
-
 end PI.VolStabS.Glue
 end -- clump:auto
 end -- clump:auto

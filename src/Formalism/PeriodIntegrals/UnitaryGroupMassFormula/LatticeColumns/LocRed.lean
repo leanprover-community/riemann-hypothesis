@@ -37,17 +37,6 @@ def LocRedParts : Prop :=
     X.MeasTie hb → X.LevelSubgroupNormalized → ∀ p : TypX X,
       MassDataIdxSteps.StResZ X p ∧ HLatGL X u p ∧ HKerIn X hb u p ∧ HImU X hb u p
 
-private theorem isUnit_of_isUnit_map_of_surjective {R S : Type*} [CommRing R] [IsLocalRing R] [CommRing S] [Nontrivial S]
-    (f : R →+* S) (hf : Function.Surjective f) (r : R) (hr : IsUnit (f r)) : IsUnit r := by
-  obtain ⟨v, hv⟩ := hr
-  obtain ⟨y, hy⟩ := hf (↑v⁻¹ : S)
-  rcases IsLocalRing.isUnit_or_isUnit_one_sub_self (r * y) with h | h
-  · exact isUnit_of_mul_isUnit_left h
-  · exfalso
-    have h2 := h.map f
-    rw [map_sub, map_one, map_mul, ← hv, hy, Units.mul_inv, sub_self] at h2
-    exact not_isUnit_zero h2
-
 private theorem generalLinearGroup_map_surjective_of_surjective {R S m : Type*} [CommRing R] [IsLocalRing R] [CommRing S] [Fintype m]
     [DecidableEq m] (f : R →+* S) (hf : Function.Surjective f) :
     Function.Surjective (Matrix.GeneralLinearGroup.map (n := m) f) := by
@@ -61,7 +50,7 @@ private theorem generalLinearGroup_map_surjective_of_surjective {R S m : Type*} 
       ext i j
       exact hg _
     have hdet : IsUnit M.det := by
-      apply isUnit_of_isUnit_map_of_surjective f hf
+      apply (IsLocalHom.of_surjective f hf).map_nonunit
       rw [RingHom.map_det, hM]
       exact (Matrix.isUnit_iff_isUnit_det _).mp A.isUnit
     refine ⟨((Matrix.isUnit_iff_isUnit_det M).mpr hdet).unit, ?_⟩

@@ -63,13 +63,6 @@ namespace GlobalTheory.IndefiniteRowSideFullHecke.PlacePartEigenLifts
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open ReciprocityTheory.ChartRestriction.G.TB
 
-section Types
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {l : Level H}
-variable (c : Coeff l) (la : HeightOneSpectrum (𝓞 c.F))
-
-end Types
-
 section Parts
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
@@ -207,14 +200,6 @@ theorem bound_all_iff_bound_prod (C : IntegralChartA3 Xo c T io y) (e k : ℕ) {
 
 end Values
 
-section Lifts
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
-variable {Xo : Moduli Dw l} {c : Coeff l} [StarRing (𝓞 E)]
-variable {T : CDVR} {io : c.F →+* T.Fr} {y : IntFr Xo c T io}
-
-end Lifts
-
 end GlobalTheory.RamChartCmp
 end -- clump:auto
 end -- clump:auto
@@ -230,7 +215,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.MainNotions.ModuliIntegralCharts.H1
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ GlobalTheory.PtTie
 open ReciprocityTheory.ChartRestriction.G.TB (dAct dLin)
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.PlaceInt
 
 namespace GlobalTheory.PlaceInt

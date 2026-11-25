@@ -9,6 +9,7 @@ import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.CompactGap
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.InstFintypeSumElim
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
+import Development.AbelianVarietyTheory.Proofs.GenericRegularity.LinearDisjointAlgebraicClosure
 
 @[expose] public section
 
@@ -24,30 +25,7 @@ theorem linearDisjoint_algebraicClosure {F Ω L : Type} [Field F] [CharZero F] [
     [Algebra F Ω] [Algebra Ω L] [Algebra F L] [IsScalarTower F Ω L]
     (h : ∀ a : Ω, IsAlgebraic F a → a ∈ Set.range (algebraMap F Ω)) :
     (algebraicClosure F L).LinearDisjoint Ω := by
-  have : Algebra.IsIntegral F (algebraicClosure F L).toSubalgebra :=
-    (algebraicClosure.isAlgebraic F L).isIntegral
-  refine Subalgebra.LinearDisjoint.of_linearDisjoint_finite_left _ _ fun B hB _ => ?_
-  have halg : B.IsAlgebraic := fun x hx => (mem_algebraicClosure_iff (F := F)).1 (hB hx)
-  let M : IntermediateField F L := halg.toIntermediateField
-  haveI : FiniteDimensional F M := ‹Module.Finite F B›
-  change M.LinearDisjoint Ω
-  obtain ⟨θ, hθ⟩ := Field.exists_primitive_element F M
-  have hi : IsIntegral F (θ : L) := (Algebra.IsIntegral.isIntegral (R := F) θ).map M.val
-  have e : F⟮(θ : L)⟯ = M := by
-    have := congrArg (IntermediateField.lift (F := M)) hθ
-    simpa using this
-  rw [← e]
-  refine IntermediateField.LinearDisjoint.of_basis_left
-    (IntermediateField.adjoin.powerBasis hi).basis ?_
-  have hd := GlobalTheory.CompanionTheory.Ar.Cmp.RegularTensor.natDegree_minpoly_eq_of_closed (k := F) (F := Ω) h hi
-  have hl := linearIndependent_pow (K := Ω) (θ : L)
-  rw [hd] at hl
-  have he : (F⟮(θ : L)⟯.val ∘ (IntermediateField.adjoin.powerBasis hi).basis) =
-      fun i : Fin (IntermediateField.adjoin.powerBasis hi).dim => (θ : L) ^ (i : ℕ) := by
-    funext i
-    simp
-  rw [he]
-  exact hl
+  apply _root_.GlobalTheory.GeomConn.linearDisjoint_algebraicClosure <;> assumption
 
 theorem linearIndependent_of_closed {F Ω L : Type} [Field F] [CharZero F] [Field Ω] [Field L]
     [Algebra F Ω] [Algebra Ω L] [Algebra F L] [IsScalarTower F Ω L]

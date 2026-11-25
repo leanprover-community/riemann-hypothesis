@@ -421,24 +421,6 @@ def closedThreshold (hC : Formalism.L2.SG.RowsConc.KppOffC) (l : List ℝ) : ℝ
 
 end Family
 
-section Family2
-
-open Formalism.L2.SG.Full
-
-variable (C0 : ℝ)
-
-end Family2
-
-section ClosedE
-
-end ClosedE
-
-section FamilyE
-
-variable (C0 : ℝ)
-
-end FamilyE
-
 section Sel
 
 def SSelF {eps : ℝ} (Fm : FamP eps) :=

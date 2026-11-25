@@ -206,7 +206,7 @@ theorem separates_of_shuffle_count : ∀ (I S : Type 1) (A : Type) [DecidableEq 
       rw [hy, Finsupp.finsetSum_apply, Finset.sum_eq_single i]
       · simp
       · intro j _ hji
-        rw [Finsupp.single_apply, if_neg]
+        rw [Finsupp.single_apply, ite_eq_right]
         exact fun h => hji (hp h)
       · intro h
         exact absurd (Finset.mem_univ i) h
@@ -219,8 +219,7 @@ theorem separates_of_shuffle_count : ∀ (I S : Type 1) (A : Type) [DecidableEq 
     have hc0 : P.coeff m ≠ 0 := left_ne_zero_of_mul hm0
     have hx0 : Ψ.symm (MvPolynomial.monomial m 1) (p i) ≠ 0 := right_ne_zero_of_mul hm0
     have hout : ∃ Δ ∈ m.support, Δ ∉ U := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hc0 (hcoef m h)
     obtain ⟨w, hw⟩ := hne i
     exact hw (K2 m hout (p i) hx0 w)

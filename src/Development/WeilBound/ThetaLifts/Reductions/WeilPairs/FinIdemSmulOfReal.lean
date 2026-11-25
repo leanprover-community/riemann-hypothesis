@@ -26,9 +26,6 @@ alias piWF_iotaVF := _root_.PositivityTheory.ThKW.TauSpanIdentities.piWF_iotaVF
 
 alias finIdem_add_iota := _root_.PositivityTheory.ThKW.TauSpanIdentities.finIdem_add_iota
 
-theorem infRatF_injective (B : Base F E) : Function.Injective (infRatF (nS := nS) (nT := nT) (tauB B)) :=
-  TauSpanIdentities.infRatF_injective B
-
 end PositivityTheory.ThKW
 
 end

@@ -3,6 +3,8 @@ module
 public import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicUnimodularity.ExistsNatLocal
 public import Lemmata.NatMulIsIntegral.ExistsNatMulIsIntegral
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLatticeBasisHermitianSpace
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IntegralExtensionFiniteAdelesBasicProperties
 
 @[expose] public section
 
@@ -29,18 +31,7 @@ theorem exists_gen {E : Type} [Field E] [NumberField E] {n : ℕ}
 
 theorem exists_nat_E {E : Type} [Field E] [NumberField E] (e : E) :
     ∃ c : ℕ, 0 < c ∧ ∃ t : 𝓞 E, (c : E) * e = algebraMap (𝓞 E) E t := by
-  obtain ⟨⟨a, ⟨d, hd⟩⟩, h⟩ := IsLocalization.surj (nonZeroDivisors (𝓞 E)) e
-  have hd0 : d ≠ 0 := nonZeroDivisors.ne_zero hd
-  obtain ⟨c, hc⟩ := Ideal.mem_span_singleton'.mp (Ideal.absNorm_mem (Ideal.span {d}))
-  refine ⟨Ideal.absNorm (Ideal.span {d}), ?_, c * a, ?_⟩
-  · rw [Nat.pos_iff_ne_zero, Ne, Ideal.absNorm_eq_zero_iff, Ideal.span_singleton_eq_bot]
-    exact hd0
-  · have h1 : ((Ideal.absNorm (Ideal.span {d}) : ℕ) : E) =
-        algebraMap (𝓞 E) E c * algebraMap (𝓞 E) E d := by
-      rw [← map_mul, hc, map_natCast]
-    simp only at h
-    rw [h1, map_mul, ← h]
-    ring
+  apply _root_.GlobalTheory.CoordinateBasisBounds.nat_mul_integral <;> assumption
 
 theorem common_nat {ι : Type} [Fintype ι] (P : ι → ℕ → Prop)
     (hP : ∀ i N M, P i N → P i (N * M)) (h : ∀ i, ∃ N, 0 < N ∧ P i N) :
@@ -193,34 +184,7 @@ theorem mulVec_lam {L : Submodule (𝓞 E) (Fin n → E)} (hm : ∀ i, m i ∈ L
 end T
 
 theorem exists_nat_R (r : E ⊗[F] Af F) : ∃ N : ℕ, 0 < N ∧ (N : E ⊗[F] Af F) * r ∈ IntAf F E := by
-  induction r using TensorProduct.induction_on with
-  | zero => exact ⟨1, one_pos, by simp⟩
-  | tmul e a =>
-    obtain ⟨c, hc0, t, ht⟩ := exists_nat_E e
-    obtain ⟨N, hN0, hN⟩ := exists_nat_adele a
-    refine ⟨c * N, Nat.mul_pos hc0 hN0, ?_⟩
-    have e1 : ((c * N : ℕ) : E ⊗[F] Af F) * (e ⊗ₜ[F] a) =
-        ((algebraMap (𝓞 E) E t) ⊗ₜ[F] (1 : Af F)) * incA F E ((N : Af F) * a) := by
-      calc ((c * N : ℕ) : E ⊗[F] Af F) * (e ⊗ₜ[F] a) = (c * N) • (e ⊗ₜ[F] a) :=
-            (nsmul_eq_mul _ _).symm
-        _ = (c • e) ⊗ₜ[F] (N • a) := by
-            rw [← TensorProduct.smul_tmul', TensorProduct.tmul_smul, mul_smul]
-        _ = ((c : E) * e) ⊗ₜ[F] ((N : Af F) * a) := by rw [nsmul_eq_mul, nsmul_eq_mul]
-        _ = _ := by
-            rw [ht]
-            simp [Algebra.TensorProduct.tmul_mul_tmul, Algebra.TensorProduct.includeRight_apply]
-    rw [e1]
-    exact mul_mem (left_mem t) (incA_mem (fun v => hN v))
-  | add x y hx hy =>
-    obtain ⟨N1, h1, hx⟩ := hx
-    obtain ⟨N2, h2, hy⟩ := hy
-    refine ⟨N2 * N1, Nat.mul_pos h2 h1, ?_⟩
-    have e1 : ((N2 * N1 : ℕ) : E ⊗[F] Af F) * (x + y) =
-        (N2 : E ⊗[F] Af F) * ((N1 : E ⊗[F] Af F) * x) +
-          (N1 : E ⊗[F] Af F) * ((N2 : E ⊗[F] Af F) * y) := by
-      push_cast; ring
-    rw [e1]
-    exact add_mem (mul_mem (natCast_mem _ _) hx) (mul_mem (natCast_mem _ _) hy)
+  apply _root_.GlobalTheory.St.G.IntAd.exists_nat_denom <;> assumption
 
 theorem exists_nat_L {L : Submodule (𝓞 E) (Fin n → E)}
     {z : Fin n → E} (hz : z ∈ Submodule.span E (L : Set (Fin n → E))) :

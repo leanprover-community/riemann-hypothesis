@@ -13,7 +13,7 @@ noncomputable section
 namespace SheetDecomposition.One
 
 open AlgebraicGeometry CategoryTheory Filter Topology Metric
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.TB.ValAt GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Flat
+open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.TB.ValAt GlobalTheory.CompanionTheory.Ar
 
 theorem isHolTo_mono {X : Scheme.{0}} {n : ℕ} {B T : Set (Fin n → ℂ)} {y : (Fin n → ℂ) → (Sp ℂ ⟶ X)}
     (hy : IsHolTo B y) (hT : IsOpen T) (h : T ⊆ B) : IsHolTo T y := by

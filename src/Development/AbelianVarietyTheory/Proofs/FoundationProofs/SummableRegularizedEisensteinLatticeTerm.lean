@@ -145,7 +145,7 @@ theorem second_diff_inv_pow : ∀ j : ℕ, ∃ C : ℝ, ∀ z a b : ℂ, z ≠ 0
       rw [e3] at L
       gcongr)
     (convex_closedBall z _)
-    (by simp [Metric.mem_closedBall, dist_eq_norm]; positivity)
+    (by simp [Metric.mem_closedBall]; positivity)
     (by simpa [Metric.mem_closedBall, dist_eq_norm] using (by linarith : ‖b‖ ≤ ‖z‖ / 4))
   have eq : (z ^ j)⁻¹ - ((z + a) ^ j)⁻¹ - ((z + b) ^ j)⁻¹ + ((z + a + b) ^ j)⁻¹ = -(g (z + b) - g z) := by
     simp only [hg, zpow_neg, zpow_natCast]

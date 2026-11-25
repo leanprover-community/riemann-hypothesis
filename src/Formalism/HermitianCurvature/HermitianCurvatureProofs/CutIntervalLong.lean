@@ -57,8 +57,7 @@ private lemma exp_le_succ_div_self_le_exp_of_le_abs {z dl : ℝ} (hdl : 8 ≤ dl
           ≤ Real.exp (-2 * (1 / dl)) * Real.exp (2 * (1 / dl)) := mul_le_mul_of_nonneg_left hexp hpos.le
         _ = 1 := hone
     have h3 : Real.exp (-2 * (1 / dl)) ≤ 1 - 1 / dl := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       have h4 : (1 - 1 / dl) * (1 + 2 * (1 / dl)) < Real.exp (-2 * (1 / dl)) * (1 + 2 * (1 / dl)) :=
         mul_lt_mul_of_pos_right hc (by positivity)
       nlinarith [mul_nonneg hx0.le (by linarith : (0 : ℝ) ≤ 1 - 2 * (1 / dl))]
@@ -272,14 +271,14 @@ theorem node_far (hB : KB.IsLeadingFormSetting Cb Cc S p f χ A₀) (v : Fin S.f
     simpa using key 0 (by simp)
   intro e he
   rcases hy with ⟨rfl, a', ha', -, hya'⟩ | ⟨rfl, hy1, hsep⟩
-  · rw [if_neg (by decide)]
+  · rw [ite_eq_right (by decide)]
     rcases hz' with ⟨n, hn, hzn⟩ | hz1
     · have h := PBD.sep_grid S hG v hya' hzn (by omega) (e := 0) (by simp) he
       simpa using h
     · have h := (hG v).2.2.2.2.1 (PBD.nodeOf z) hz1 a' y hya' e he 0 (by simp)
       rw [abs_sub_comm] at h
       simpa using h
-  · rw [if_pos rfl]
+  · rw [ite_eq_left rfl]
     rcases hz' with ⟨n, -, hzn⟩ | hz1
     · have h := (hG v).2.2.2.2.1 y hy1 n (PBD.nodeOf z) hzn 0 (by simp) e he
       have h8 : (S.Ntop : ℝ) ^ 2 / 8 ≤ (S.Ntop : ℝ) ^ 2 + 1 := by
@@ -366,9 +365,9 @@ theorem node_bound (hB : KB.IsLeadingFormSetting Cb Cc S p f χ A₀) (v : Fin S
   refine ⟨lt_of_lt_of_le hpos hlo', ?_⟩
   have hmem1 : if one then y ∈ (S.G.place (S.pl v)).cutIntervalLong S.l S.G.N else y ∈ (S.G.place (S.pl v)).cutI S.l := by
     rcases hy with ⟨rfl, -⟩ | ⟨rfl, h1, -⟩
-    · rw [if_neg (by decide)]
+    · rw [ite_eq_right (by decide)]
       exact hcut
-    · rw [if_pos rfl, ← ntop_eq_N' S]
+    · rw [ite_eq_left rfl, ← ntop_eq_N' S]
       exact ((hG v).2.2.1 y h1).1
   have hcore := core_le_supA hB v one y hmem1
   have hc0 : 0 ≤ (S.G.place (S.pl v)).core S.de S.de' S.T S.T' y := Real.sqrt_nonneg _

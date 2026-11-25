@@ -3,10 +3,7 @@ module
 public import Formalism.GaussJetBounds.StatementM
 public import Mathlib.Analysis.Normed.Field.Instances
 public import Mathlib.RingTheory.Valuation.ExtendToLocalization
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Lemma
 
 @[expose] public section
 

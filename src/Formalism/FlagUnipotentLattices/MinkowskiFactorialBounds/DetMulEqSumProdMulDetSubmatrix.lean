@@ -82,15 +82,15 @@ theorem leadingMinorColumnReplace : CramerUpper := by
   have hrow : ∀ j, A c j = if j = c then 1 else 0 := by
     intro j
     rcases lt_trichotomy j c with h | h | h
-    · rw [if_neg h.ne]; exact hU0 _ _ (by simpa using h)
+    · rw [ite_eq_right h.ne]; exact hU0 _ _ (by simpa using h)
     · subst h; simp [hA, hU1]
-    · rw [if_neg h.ne']; exact hc j h
+    · rw [ite_eq_right h.ne']; exact hc j h
   have hadj : ∀ k, A.adjugate c k = if k = c then 1 else 0 := by
     intro k
     have h1 : (A * A.adjugate) c k = (1 : Matrix (Fin l) (Fin l) R) c k := by
       rw [Matrix.mul_adjugate, hAdet, one_smul]
     rw [Matrix.mul_apply] at h1
-    simp only [hrow, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true] at h1
+    simp only [hrow, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h1
     rw [h1, Matrix.one_apply]
     simp only [eq_comm]
   have e2 : (A.updateCol c u).det = u c := by
@@ -308,11 +308,11 @@ theorem unitriangularReduction : UnipotentReduce := by
         refine ⟨n', ?_, ?_, ?_, ?_⟩
         · intro i
           by_cases hi : i = s
-          · subst hi; rw [hn's, if_neg (lt_irrefl _), h1]
+          · subst hi; rw [hn's, ite_eq_right (lt_irrefl _), h1]
           · rw [hn'ne i i hi, h1]
         · intro i j hji
           by_cases hi : i = s
-          · subst hi; rw [hn's, if_neg (not_lt.2 hji.le), h0 _ _ hji]
+          · subst hi; rw [hn's, ite_eq_right (not_lt.2 hji.le), h0 _ _ hji]
           · rw [hn'ne i j hi, h0 _ _ hji]
         · intro i j
           by_cases hi : i = s
@@ -324,7 +324,7 @@ theorem unitriangularReduction : UnipotentReduce := by
           rw [hmul]
           by_cases his : i = s
           · subst his
-            rw [hu1, hn's, if_pos hij]
+            rw [hu1, hn's, ite_eq_left hij]
             have hsplit : (u * n) s j = n s j +
                 ∑ k ∈ Finset.univ.filter (fun k => s < k), u s k * n k j := by
               rw [Matrix.mul_apply, ← Finset.sum_filter_add_sum_filter_not Finset.univ (fun k => s < k)]
@@ -400,7 +400,7 @@ theorem normMinorMonomialLe : MonomialMinor := by
         by_contra hπ
         exact hne (huniq π π₀ hπ h₀)
       · simp
-    · push_neg at hex
+    · push Not at hex
       rw [Finset.sum_eq_zero fun π _ => hex π]; linarith
   · obtain ⟨a, b, hab, hne⟩ : ∃ a b, I a = I b ∧ a ≠ b := by
       simpa [Function.Injective] using hI

@@ -110,10 +110,10 @@ theorem GlobalTheory.PoinAut.continuous_coef : ∀ (D : D7) (θ : InfFam D), IsI
   by_cases hg : Lev.finE V g ∈ K
   · refine hR.continuousAt.congr ?_
     filter_upwards [hK.mem_nhds (show g ∈ ((K.comap (Lev.finE V) : Subgroup (GA D V)) : Set (GA D V)) from hg)] with y hy
-    exact (if_pos hy).symm
+    exact (ite_eq_left hy).symm
   · refine (continuous_const (y := (0 : ℂ))).continuousAt.congr ?_
     filter_upwards [hcl.isOpen_compl.mem_nhds (show g ∈ (((K.comap (Lev.finE V) : Subgroup (GA D V)) : Set (GA D V)))ᶜ from hg)] with y hy
-    exact (if_neg hy).symm
+    exact (ite_eq_right hy).symm
 
 namespace GlobalTheory.PoinAut
 
@@ -168,7 +168,7 @@ theorem GlobalTheory.PoinAut.poin_aut : ∀ (D : D7) (θ : InfFam D), IsInfFam �
   haveI := Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.Unfold.topGroupHA D.sp.cm.sig V.gram
   set K := congLev D.sp.cm V.gram Λ 𝔪 with hKdef
   set N := 2 * V.rank ^ 2 + 1 with hN
-  obtain ⟨C₀, A₀, hI⟩ := GlobalTheory.T.poincareSeries_unitary_absolutelyConvergent_moderateGrowth D θ hθ V Λ hΛ c
+  obtain ⟨C₀, A₀, hI⟩ := _root_.GlobalTheory.PoinCount.poincare_count D θ hθ V Λ hΛ c
   have hopen : IsOpen ((K.comap (Lev.finE V) : Subgroup (GA D V)) : Set (GA D V)) :=
     (congLev_open_compact V (Formalism.IndefR.Fin.PDA.selfDual_isFullLattice V Λ hΛ) h𝔪).1
   have hKtop : ∀ y, y ∈ K → y ∈ congLev D.sp.cm V.gram Λ ⊤ := fun y hy => by
@@ -206,7 +206,7 @@ theorem GlobalTheory.PoinAut.poin_aut : ∀ (D : D7) (θ : InfFam D), IsInfFam �
     · have h2 : Lev.finE V (c * (γ : GA D V) * g) ∈ K := by
         have := K.mul_mem h1 (K.inv_mem hu)
         rwa [map_mul, mul_inv_cancel_right] at this
-      rw [htdef, if_pos (hKtop _ h2)]
+      rw [htdef, ite_eq_left (hKtop _ h2)]
       exact hCb _ _
     · rw [norm_zero]
       exact mul_nonneg (mul_nonneg hC (hP0 u)) (ht0 g γ)

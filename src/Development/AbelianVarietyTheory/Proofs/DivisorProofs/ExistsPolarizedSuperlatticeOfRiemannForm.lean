@@ -164,7 +164,7 @@ theorem dualSubmoduleToDual_surjective (B : LinearMap.BilinForm ℝ V) (hB : B.N
 
   simp only [hbΛ, hy, map_sum, LinearMap.sum_apply, map_zsmul, LinearMap.smul_apply,
   LinearMap.BilinForm.apply_dualBasis_left, smul_ite, smul_zero, zsmul_eq_mul, mul_one,
-  Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   congr 2
   exact Subtype.ext (hbΛ j).symm
 

@@ -246,7 +246,6 @@ theorem nkM_smul (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) {𝔭 : Id
         star (fun i => rd K 𝔭 k (vF 𝔭 c) (x i)) ⬝ᵥ
             (H.map (Ideal.Quotient.mk (extP K 𝔭 ^ (k - vF 𝔭 c))) *ᵥ
               fun i => rd K 𝔭 k (vF 𝔭 c) (x i)) := by
-      set_option synthInstance.maxHeartbeats 100000 in
         simp only [dotProduct, Matrix.mulVec, map_sum, map_mul, Pi.star_apply, rd_star,
         Matrix.map_apply, rd_mk]
     rw [map_smul_mk, Matrix.smul_mulVec, dotProduct_smul, smul_eq_mul, map_mul, map_mul,

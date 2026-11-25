@@ -17,8 +17,6 @@ namespace Formalism.FourierDecayAlt.P.SandwichRhoAction
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 lemma deriv_comp_of_leftInv {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup F]
     [NormedSpace ℝ F] (L : E →L[ℝ] F) (M : F →L[ℝ] E) (hML : ∀ x, M (L x) = x) (φ : ℝ → E) (t : ℝ) :
     deriv (fun s => L (φ s)) t = L (deriv φ t) := by

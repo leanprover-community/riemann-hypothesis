@@ -221,8 +221,7 @@ theorem casimir_mul_pos {O : Type} [Ring O] {r : ℕ} (x : Module.Basis (Fin r) 
     rw [e]
     exact adjugate_posDef h1
   have hy0 : ∃ i, y i ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hu
     calc u = (∑ i, x.repr 1 i • x i) * u := by rw [x.sum_repr, one_mul]
       _ = ∑ i, x.repr 1 i • y i := by rw [Finset.sum_mul]; simp only [hy, smul_mul_assoc]
@@ -299,8 +298,7 @@ theorem trace_comp_pos_of_adjoint {V : Type} [AddCommGroup V] [Module ℝ V] [Fi
     · simp [h]
     · exact (hp _ h).le
   obtain ⟨i, hi⟩ : ∃ i, T' (b i) ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hT'
     exact b.toBasis.ext (fun i => by simpa using h i)
   exact Finset.sum_pos' (fun i _ => hnn i) ⟨i, Finset.mem_univ _, hp _ hi⟩
@@ -770,7 +768,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.UPel.HT
 
-attribute [local instance] Over.cartesianMonoidalCategory
 noncomputable section
 
 namespace GlobalTheory.UPel.HT.LevPull

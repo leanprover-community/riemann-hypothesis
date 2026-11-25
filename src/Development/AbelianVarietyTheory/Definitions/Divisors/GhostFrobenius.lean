@@ -58,7 +58,6 @@ variable (p O) in
 def ghost (n : ℕ) (a : Ainf p O) : O :=
   fontaineTheta O p ((WittVector.frobenius : Ainf p O →+* Ainf p O)^[n] a)
 
-set_option autoImplicit false in
 open WittVector Ideal CategoryTheory Opposite in
 variable {p : ℕ} [Fact p.Prime] {O : Type} [CommRing O] [Fact ¬IsUnit (p : O)]
   [IsAdicComplete (span {(p : O)}) O] in
@@ -66,7 +65,6 @@ theorem _root_.GlobalTheory.PDivLat.ghost_add (n : ℕ) (a b : _root_.GlobalTheo
     _root_.GlobalTheory.PDivLat.ghost p O n (a + b) = _root_.GlobalTheory.PDivLat.ghost p O n a + _root_.GlobalTheory.PDivLat.ghost p O n b := by
   simp only [_root_.GlobalTheory.PDivLat.ghost, iterate_map_add, map_add (f := _)]
 
-set_option autoImplicit false in
 open WittVector Ideal CategoryTheory Opposite in
 variable {p : ℕ} [Fact p.Prime] {O : Type} [CommRing O] [Fact ¬IsUnit (p : O)]
   [IsAdicComplete (span {(p : O)}) O] in
@@ -74,7 +72,6 @@ theorem _root_.GlobalTheory.PDivLat.ghost_mul (n : ℕ) (a b : _root_.GlobalTheo
     _root_.GlobalTheory.PDivLat.ghost p O n (a * b) = _root_.GlobalTheory.PDivLat.ghost p O n a * _root_.GlobalTheory.PDivLat.ghost p O n b := by
   simp only [_root_.GlobalTheory.PDivLat.ghost, iterate_map_mul, map_mul]
 
-set_option autoImplicit false in
 open WittVector Ideal CategoryTheory Opposite in
 variable {p : ℕ} [Fact p.Prime] {O : Type} [CommRing O] [Fact ¬IsUnit (p : O)]
   [IsAdicComplete (span {(p : O)}) O] in

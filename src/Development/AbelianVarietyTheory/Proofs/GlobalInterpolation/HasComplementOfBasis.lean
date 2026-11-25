@@ -122,8 +122,8 @@ theorem hasComplement_of_basis (W : HSpace E) {n : ℕ} (b : Module.Basis (Fin (
     intro i v
     conv_lhs => rw [← b.sum_repr v]
 
-    rw [map_sum, Finset.sum_eq_single i (fun j _ hj => by rw [map_smul, hb, if_neg hj.symm, smul_zero])
-    (by simp), map_smul, hb, if_pos rfl, smul_eq_mul, mul_comm]
+    rw [map_sum, Finset.sum_eq_single i (fun j _ hj => by rw [map_smul, hb, ite_eq_right hj.symm, smul_zero])
+    (by simp), map_smul, hb, ite_eq_left rfl, smul_eq_mul, mul_comm]
   have hperp : ∀ v, v ∈ perp W (b k) ↔ b.repr v k = 0 := by
     intro v
     change W.hT (b k) v = 0 ↔ _

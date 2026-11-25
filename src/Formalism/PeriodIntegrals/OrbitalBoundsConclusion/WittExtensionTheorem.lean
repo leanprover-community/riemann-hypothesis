@@ -27,8 +27,7 @@ theorem anisotropic' : Anisotropic := by
   unfold Anisotropic
   intro K V _ _ _ _ _ B hB U hU
   obtain ⟨x, hx, y, hy, hxy⟩ := hU
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hz : x + star (B x y) • y ∈ U := U.add_mem hx (U.smul_mem _ hy)
   have h0 := hcon _ hz
   have hxx := hcon x hx
@@ -122,7 +121,7 @@ theorem one_vector_holds : OneVector := by
   intro K V _ _ _ _ _ B hB x y hxy hx0
   by_cases ha : B (x - y) x ≠ 0
   · exact oneVector_generic B hB x y hxy ha
-  · push_neg at ha
+  · push Not at ha
     have hyx : B y x = B x x := by
       have h : B (x - y) x = B x x - B y x := by simp only [map_sub, LinearMap.sub_apply]
       rw [h] at ha
@@ -247,8 +246,7 @@ theorem enlarge_step [FiniteDimensional K V] (B : V →ₗ⋆[K] V →ₗ[K] K)
   classical
 
   obtain ⟨φ0, hφ0⟩ : ∃ φ : Module.Dual K V, φ r ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hr0 ((Module.forall_dual_apply_eq_zero_iff K r).1 h)
   set φ : V →ₗ[K] K := (φ0 r)⁻¹ • φ0 with hφdef
   have hφr : φ r = 1 := by simp [hφdef, hφ0]

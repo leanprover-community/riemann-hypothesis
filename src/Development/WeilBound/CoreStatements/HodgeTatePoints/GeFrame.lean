@@ -34,8 +34,7 @@ theorem frame_expand {σ : E →+* K} {m j k : ℕ}
   have hx1 : ∃ y₁ ∈ D.omHT σ, D.q σ (x - ∑ a, t a • (fun l => g l (Sum.inr a))) = ((p : A) ^ m) • y₁ := by
     refine ⟨y - ∑ a, t a • yM a, ?_, ?_⟩
     · exact Submodule.sub_mem _ hy (Submodule.sum_mem _ fun a _ => Submodule.smul_mem _ _ (hyM a))
-    · set_option synthInstance.maxHeartbeats 100000 in
-        rw [← qL_apply, map_sub, map_sum]
+    · rw [← qL_apply, map_sub, map_sum]
       simp only [map_smul, qL_apply, hq, e, smul_add, Finset.sum_add_distrib, smul_sub, Finset.smul_sum]
       simp only [smul_comm (t _) ((p : A) ^ m)]
       abel

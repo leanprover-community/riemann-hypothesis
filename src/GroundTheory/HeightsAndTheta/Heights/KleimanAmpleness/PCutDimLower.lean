@@ -26,16 +26,16 @@ section CutDimLowerAux
 variable {S : Type u} [CommRing S] {Ω : Type w} [Field Ω] [Algebra S Ω] {N : ℕ}
   {x : Fin (N + 1) → Ω}
 
-theorem exists_monos_mul_mem_twistMod_all (L : LineBundle S x) (I : Chart x) (y : Ω)
-    (hy : ∀ δ ∈ L.sub I, y * δ ∈ chartRing S x I) :
+theorem exists_monos_mul_mem_twistMod_all_subFamily (D : SubFamily S x Ω) (hfg : ∀ K, (D.sub K).FG)
+    (I : Chart x) (y : Ω) (hy : ∀ δ ∈ D.sub I, y * δ ∈ chartRing S x I) :
     ∃ U ∈ monos (S := S) I.1, ∃ dU : ℕ, U.IsHomogeneous dU ∧
-      ∀ (K : Chart x), ∀ δ ∈ L.sub K, aeval x U * (y * δ) ∈ twistMod S x (dU : ℤ) K := by
+      ∀ (K : Chart x), ∀ δ ∈ D.sub K, aeval x U * (y * δ) ∈ twistMod S x (dU : ℤ) K := by
   classical
-  have hyU := mul_mem_chartRing_union L.toSubFamily I
-  choose G hG using fun K => L.fg K
+  have hyU := mul_mem_chartRing_union D I
+  choose G hG using hfg
   have hgen : ∀ p : Σ K : Chart x, (G K : Set Ω),
       y * (p.2 : Ω) ∈ chartRing S x (chartUnion I p.1) := fun p =>
-    hyU p.1 y hy _ (L.mono p.1 (chartUnion I p.1)
+    hyU p.1 y hy _ (D.mono p.1 (chartUnion I p.1)
       (show p.1.1 ⊆ (chartUnion I p.1).1 from Finset.subset_union_right) _
       (by rw [← hG p.1]; exact Submodule.subset_span p.2.2))
   choose u hu d hd hud using fun p : (Σ K : Chart x, (G K : Set Ω)) =>
@@ -67,6 +67,12 @@ theorem exists_monos_mul_mem_twistMod_all (L : LineBundle S x) (I : Chart x) (y 
     rw [chartRing_smul_def, show aeval x U * (y * ((a : Ω) * b)) = (a : Ω) * (aeval x U * (y * b)) by ring,
       ← chartRing_smul_def]
     exact Submodule.smul_mem _ a hb
+
+theorem exists_monos_mul_mem_twistMod_all (L : LineBundle S x) (I : Chart x) (y : Ω)
+    (hy : ∀ δ ∈ L.sub I, y * δ ∈ chartRing S x I) :
+    ∃ U ∈ monos (S := S) I.1, ∃ dU : ℕ, U.IsHomogeneous dU ∧
+      ∀ (K : Chart x), ∀ δ ∈ L.sub K, aeval x U * (y * δ) ∈ twistMod S x (dU : ℤ) K :=
+  exists_monos_mul_mem_twistMod_all_subFamily L.toSubFamily L.fg I y hy
 
 end CutDimLowerAux
 

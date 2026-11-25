@@ -212,7 +212,6 @@ theorem lg_le_four (p r n : ℕ) (a : ℝ) (hp : 2 ≤ p) (hr : 1 ≤ r) (hpa : 
   unfold lg
   have hp1 : (1 : ℝ) < p := by exact_mod_cast hp
   have hr1 : (1 : ℝ) ≤ r := by exact_mod_cast hr
-  have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
   have hpos : (0 : ℝ) < (n : ℝ) + r := by linarith
   have ha : (0 : ℝ) < a := by linarith
   have h1 : Real.logb p ((n : ℝ) + r) ≤ Real.logb p (a ^ 3) := Real.logb_le_logb_of_le hp1 hpos hn
@@ -343,7 +342,6 @@ theorem sizes_le (Dt : SignedChainData p O r J) (N k : ℕ) (a : ℝ) (hp : 2 �
       _ ≤ N := by rw [← hcTL]; exact hcardR
   refine ⟨hkp0, ?_⟩
   unfold SignedChainData.Dm SignedChainData.Dl
-  have hJr0 : (0 : ℝ) ≤ (J : ℝ) * ((r : ℝ) - 1) := mul_nonneg (Nat.cast_nonneg _) (by linarith)
   have hD1 : ((∑ j, Dt.nch j : ℕ) : ℝ) * Dt.eP ≤ N * (4 * (k : ℝ) ^ 2 * Real.logb p a) :=
     mul_le_mul hnch heP heP0 hN0
   have hD2 : (J : ℝ) * ((r : ℝ) - 1) * Dt.eP ≤ N * (4 * (k : ℝ) ^ 2 * Real.logb p a) :=

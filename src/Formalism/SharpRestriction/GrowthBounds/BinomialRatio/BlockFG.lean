@@ -87,7 +87,7 @@ private theorem smithMatrix_lemma {O : Type} [CommRing O] [IsDomain O] [IsPrinci
   · have hEa : E (Sum.inl a) = snf.f a := rfl
     rw [hEa] at hij
     rw [hB1, hx, snf.snf a, map_smul, Module.Basis.repr_self, Finsupp.smul_apply,
-      Finsupp.single_apply, if_neg hij.symm, smul_zero]
+      Finsupp.single_apply, ite_eq_right hij.symm, smul_zero]
   · rw [hK _ (hB2 l), map_zero, Finsupp.zero_apply]
 
 theorem smithMatrix {O : Type} [CommRing O] [IsDomain O] [IsPrincipalIdealRing O] (n : ℕ)
@@ -251,11 +251,11 @@ theorem smithData_seg {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationR
     fun b => if Kept p r S aTop b then blockLat O p r S aTop aPlus m b else ⊥
   have hMfg : ∀ b, Module.Finite O (M b) := fun b => by
     by_cases hb : Kept p r S aTop b
-    · have e : M b = blockLat O p r S aTop aPlus m b := if_pos hb
+    · have e : M b = blockLat O p r S aTop aPlus m b := ite_eq_left hb
       rw [e]; exact hFG b
-    · have e : M b = ⊥ := if_neg hb
+    · have e : M b = ⊥ := ite_eq_right hb
       rw [e]; infer_instance
-  have hM0 : ∀ b, b ∉ T → M b = ⊥ := fun b hb => if_neg fun h => hb ((hmemT b).2 h)
+  have hM0 : ∀ b, b ∉ T → M b = ⊥ := fun b hb => ite_eq_right fun h => hb ((hmemT b).2 h)
   choose n al be hmem horth hli hsa hsb using fun b => smith_block (M b) (hMfg b)
   let ι := Σ b : {b // b ∈ T}, Fin (n b.1)
   let ev : ι ≃ Fin (Fintype.card ι) := Fintype.equivFin ι
@@ -386,8 +386,6 @@ theorem fg_inter {p : ℕ} (S : UniformizedDVR p O) (h2 : S.w ^ 2 = (p : O)) {σ
       map_smul' := fun o F => by funext μ; simp }
   have hΦN : ∀ F ∈ Λ, Φ F ∈ N := by
     intro F hF
-    have hw0 : algebraMap O (KK O) (S.w ^ 1) ≠ 0 := by
-      rw [map_ne_zero_iff _ (IsFractionRing.injective O (KK O))]; exact pow_ne_zero _ S.w_irr.ne_zero
     choose a ha using fun μ => bb_coeff S h2 sp F hF.2 μ
     have : Φ F = ∑ μ : Sμ, a μ • gen μ := by
       funext μ

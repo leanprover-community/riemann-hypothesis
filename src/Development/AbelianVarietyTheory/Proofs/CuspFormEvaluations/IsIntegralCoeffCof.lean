@@ -12,49 +12,8 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.ThClassPinsRec
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.MemNabStdOfDetMulIntegral
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.MemOfForallLocP
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IsHarmonicProdOfDisjointColumns
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Monotonicity.Lemmas
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
@@ -211,7 +170,7 @@ def lead {n : ℕ} (M : Matrix (Fin n) (Fin n) R) (k : ℕ) : R :=
 theorem lead_zero {n : ℕ} (M : Matrix (Fin n) (Fin n) R) : lead M 0 = 1 := by simp [lead]
 
 theorem lead_self {n : ℕ} (M : Matrix (Fin n) (Fin n) R) : lead M n = M.det := by
-  simp only [lead, le_refl, dif_pos]; rfl
+  simp only [lead, le_refl, dite_eq_left]; rfl
 
 theorem jacobi_rev [IsDomain R] {n k : ℕ} (h : k + 1 ≤ n) (M : Matrix (Fin n) (Fin n) R) (hM : M.det ≠ 0)
     (r c : Fin (k + 1) → Fin n) (hr : ∀ s, (r s : ℕ) = n - 1 - s) (hc : ∀ b, (c b : ℕ) = n - (k + 1) + b) :
@@ -223,7 +182,7 @@ theorem jacobi_rev [IsDomain R] {n k : ℕ} (h : k + 1 ≤ n) (M : Matrix (Fin n
   have e1 : (M.submatrix (finSumFinEquiv (m := j) (n := k + 1)) finSumFinEquiv).toBlocks₁₁.det =
       lead M (j + (k + 1) - 1 - k) := by
     have : j + (k + 1) - 1 - k = j := by omega
-    rw [this, lead, dif_pos (by omega)]
+    rw [this, lead, dite_eq_left (by omega)]
     rfl
   have e2 : (Matrix.of fun s b => M.adjugate (r s) (c b)) =
       ((M.adjugate.submatrix (finSumFinEquiv (m := j) (n := k + 1)) finSumFinEquiv).toBlocks₂₂).submatrix
@@ -263,7 +222,7 @@ theorem prod_steps {n : ℕ} (L : ℕ → R) (hL : L 0 = 1) (A B : ℕ → ℕ) 
   rcases n with _ | m
   · simp [hL]
   have hd : lam.detShift = s + A m - B 0 := by
-    rw [DomWeight.detShift, dif_pos (Nat.succ_pos m), hw]; simp
+    rw [DomWeight.detShift, dite_eq_left (Nat.succ_pos m), hw]; simp
   have hs := sum_mul_step B hB (m + 1)
   rw [Finset.sum_range_succ _ (m + 1), hBn] at hs
   have he : (((∑ i ∈ Finset.range (m + 1), B i : ℕ) : ℤ) + lam.detShift - s).toNat =
@@ -277,7 +236,7 @@ theorem prod_steps {n : ℕ} (L : ℕ → R) (hL : L 0 = 1) (A B : ℕ → ℕ) 
       (A i - A (i + 1)) + (B (m - 1 - i) - B (m - 1 - i + 1)) := by
     intro i
     have hi := i.isLt
-    rw [Formalism.GradedWeylDivisibility.nuNext, dif_pos (by simpa using hi)]
+    rw [Formalism.GradedWeylDivisibility.nuNext, dite_eq_left (by simpa using hi)]
     simp only [DomWeight.natW, hd, hw, Fin.val_castSucc]
     have e1 : m + 1 - 1 - (i : ℕ) = m - 1 - i + 1 := by omega
     have e2 : m + 1 - 1 - ((i : ℕ) + 1) = m - 1 - i := by omega
@@ -321,7 +280,7 @@ theorem prod_cut {R : Type} [CommRing R] (f : ℕ → R) (a : ℕ → ℕ) {m n 
   rw [Fin.prod_univ_eq_prod_range (fun i => f i ^ (a i - if i + 1 < m then a (i + 1) else 0)) m,
     ← Finset.prod_subset (Finset.range_subset_range.2 h)]
   · refine Finset.prod_congr rfl fun i hi => ?_
-    simp only [cut, Finset.mem_range.1 hi, if_true]
+    simp only [cut, Finset.mem_range.1 hi, ite_true]
   · intro i _ hi
     have : ¬ i < m := by simpa using hi
     simp [cut, this]
@@ -329,7 +288,7 @@ theorem prod_cut {R : Type} [CommRing R] (f : ℕ → R) (a : ℕ → ℕ) {m n 
 theorem sum_cut (a : ℕ → ℕ) {m n : ℕ} (h : m ≤ n) : ∑ i : Fin m, a i = ∑ i ∈ Finset.range n, cut a m i := by
   rw [Fin.sum_univ_eq_sum_range a m, ← Finset.sum_subset (Finset.range_subset_range.2 h)]
   · refine Finset.sum_congr rfl fun i hi => ?_
-    simp only [cut, Finset.mem_range.1 hi, if_true]
+    simp only [cut, Finset.mem_range.1 hi, ite_true]
   · intro i _ hi
     have : ¬ i < m := by simpa using hi
     simp [cut, this]
@@ -350,7 +309,7 @@ theorem blockEmb_extremal {Ix : Type} (K : Type) [Field K] {n : ℕ} (t : Ix) (l
       ∏ i : Fin n, lead (gen K n t) (i + 1) ^ (lam.natW i - Formalism.GradedWeylDivisibility.nuNext lam.natW i) := by
   rw [extremal, Formalism.GradedWeylDivisibility.hw, map_prod]
   refine Finset.prod_congr rfl fun i _ => ?_
-  rw [map_pow, Formalism.GradedWeylDivisibility.lpMinor, AlgHom.map_det, lead, dif_pos (by omega)]
+  rw [map_pow, Formalism.GradedWeylDivisibility.lpMinor, AlgHom.map_det, lead, dite_eq_left (by omega)]
   congr 2
   ext s b
   simp [Formalism.GradedWeylDivisibility.blockEmb, gen]
@@ -386,7 +345,7 @@ theorem prod_types {R : Type} [CommMonoid R] (h : IsEnum H pl) (f : (E →+* ℂ
 theorem cof_X_type (h : IsEnum H pl) (R : Type) [CommRing R] (t : Ix) (i : Fin (Dw.mult (pl t))) (b : Fin n)
     (hi : (i : ℕ) < n) : cof Dw pl R n (X ⟨pl t, i, b⟩) = gen R n t b ⟨i, hi⟩ := by
   have hex : ∃ t', pl t' = pl t := ⟨t, rfl⟩
-  rw [cof, aeval_X, dif_pos hi, dif_pos hex, h.1 hex.choose_spec]
+  rw [cof, aeval_X, dite_eq_left hi, dite_eq_left hex, h.1 hex.choose_spec]
 
 theorem cof_X_conj (h : IsEnum H pl) (R : Type) [CommRing R] (t : Ix)
     (i : Fin (Dw.mult (ComplexEmbedding.conjugate (pl t)))) (b : Fin n) (hi : (i : ℕ) < n) :
@@ -394,7 +353,7 @@ theorem cof_X_conj (h : IsEnum H pl) (R : Type) [CommRing R] (t : Ix)
   have hno : ¬ ∃ t', pl t' = ComplexEmbedding.conjugate (pl t) := fun hh => not_inPsi_conj h t ((h.2 _).2 hh)
   have hex : ∃ t', ComplexEmbedding.conjugate (pl t') = ComplexEmbedding.conjugate (pl t) := ⟨t, rfl⟩
   have : hex.choose = t := h.1 ((ComplexEmbedding.involutive_conjugate E).injective hex.choose_spec)
-  rw [cof, aeval_X, dif_pos hi, dite_eq_right hno, dif_pos hex, this]
+  rw [cof, aeval_X, dite_eq_left hi, dite_eq_right hno, dite_eq_left hex, this]
 
 theorem mult_le (hn : Dw.p + Dw.q ≤ n) (σ : E →+* ℂ) : Dw.mult σ ≤ n := by
   rw [Datum.mult]; split_ifs <;> omega
@@ -423,16 +382,16 @@ theorem cof_pG : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Rec
   rw [blockEmb_extremal, degC, ← key, map_prod, map_prod]
   refine PM.mul (PM.prod _ fun i _ => ?_) (PM.prod _ fun i _ => ?_)
   · have hi : (i : ℕ) + 1 ≤ n := by have := i.isLt; omega
-    rw [map_pow, dif_pos hi, if_pos ((h.2 _).2 ⟨t, rfl⟩)]
+    rw [map_pow, dite_eq_left hi, ite_eq_left ((h.2 _).2 ⟨t, rfl⟩)]
     refine PM.pow ?_ _
-    rw [minorPolynomial, AlgHom.map_det, lead, dif_pos hi, ← Matrix.det_transpose]
+    rw [minorPolynomial, AlgHom.map_det, lead, dite_eq_left hi, ← Matrix.det_transpose]
     convert PM.rfl' _ using 2
     ext u b : 2
     simp only [Matrix.of_apply, Matrix.transpose_apply, AlgHom.mapMatrix_apply, Matrix.map_apply]
     rw [cof_X_type Dw h _ _ _ _ (by have := b.isLt; simp only; omega)]
     rfl
   · have hi : (i : ℕ) + 1 ≤ n := by have := i.isLt; omega
-    rw [map_pow, dif_pos hi, if_neg (not_inPsi_conj h t)]
+    rw [map_pow, dite_eq_left hi, ite_eq_right (not_inPsi_conj h t)]
     refine PM.pow ?_ _
     rw [minorPolynomial, AlgHom.map_det]
     convert jacobi_rev hi (gen c.F n t) (gen_det_ne_zero _ _ _) (fun u => Fin.rev (Fin.castLE hi u))
@@ -633,7 +592,7 @@ theorem rename_pG [Fintype {τ : E →+* ℂ // InPsi H τ}] (hn : Dw.p + Dw.q �
       (if InPsi H t.1 then minorPolynomial c t.1 i.val hi (Fin.castLE h)
         else minorPolynomial c t.1 i.val hi (fun b => Fin.cast (by omega) (Fin.natAdd (n - (i.val + 1)) b)))
       else 0) ^ aStep Dw a t.1 i.val) = _
-    rw [dite_eq_left hi', if_pos t.2, map_pow, rename_minorP_of_mem Dw c hn t.2]
+    rw [dite_eq_left hi', ite_eq_left t.2, map_pow, rename_minorP_of_mem Dw c hn t.2]
     congr 1
     rw [aStep, diffOf, mult_of_mem Dw t.2]
     split_ifs <;> rfl
@@ -648,7 +607,7 @@ theorem rename_pG [Fintype {τ : E →+* ℂ // InPsi H τ}] (hn : Dw.p + Dw.q �
         else minorPolynomial c (ComplexEmbedding.conjugate t.1) i.val hi
           (fun b => Fin.cast (by omega) (Fin.natAdd (n - (i.val + 1)) b)))
       else 0) ^ aStep Dw a (ComplexEmbedding.conjugate t.1) i.val) = _
-    rw [dite_eq_left hi', if_neg h₀, map_pow, rename_minorP_conjugate Dw c hn t.2, ← mul_pow]
+    rw [dite_eq_left hi', ite_eq_right h₀, map_pow, rename_minorP_conjugate Dw c hn t.2, ← mul_pow]
     congr 1
     have hq : Dw.mult (ComplexEmbedding.conjugate t.1) = Dw.q := mult_conjEmb_of_mem Dw t.2
     rw [aStep, diffOf, hq]
@@ -838,7 +797,7 @@ theorem exists_ioLFRec : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
       rw [Matrix.det_mul, Matrix.det_one] at this
       exact IsUnit.of_mul_eq_one_right _ this
     rw [gaStar_conj_eq_letAct E H Dw n Ix pl he hn l c ga h hga]
-    simp only [dif_pos h, rhoM]
+    simp only [dite_eq_left h, rhoM]
     set g := invTrK (embGL (fun t => embF c (pl t)) (Matrix.nonsingInvUnit ga h)) with hg
     refine hu _ _ (Submodule.smul_mem _ _ (hstab g _ (hφ F).1)) ?_
     have h1 := heq g _ (hφ F).1 (e • F.1) (Submodule.smul_mem _ _ F.2) (by rw [(hφ F).2, mul_smul_comm])

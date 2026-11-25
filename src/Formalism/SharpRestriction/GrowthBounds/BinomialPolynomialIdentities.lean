@@ -200,7 +200,6 @@ theorem reflectedWeight_half_eq_lowestWeight (mu : Fin n → ℤ) : reflectedWei
   split_ifs with h
   · rfl
   · have h1 := Fin.val_rev c
-    have h2 := c.2
     have : Fin.rev c = c := by
       apply Fin.ext
       omega
@@ -224,7 +223,7 @@ theorem dividedPower_eq_zero_of_annihilated (E : GLOps n (KK O) V) (a b : Fin n)
 theorem dividedPower_reverse_dividedPower_eq_self [CharZero (KK O)] {E : GLOps n (KK O) V} (hE : IsGLRep E) {a b : Fin n} (hab : a ≠ b)
     {nu : Fin n → ℤ} {y : V} (hy : y ∈ weightSp E nu) (h0 : E a b y = 0) (k : ℕ) (hk : nu a - nu b = (k : ℤ)) :
     divPowE E a b k (divPowE E b a k y) = y := by
-  rw [raise_lower_dividedPower_binomial hE hab hy k k, Finset.sum_range_succ, Finset.sum_eq_zero, zero_add, if_pos le_rfl]
+  rw [raise_lower_dividedPower_binomial hE hab hy k k, Finset.sum_range_succ, Finset.sum_eq_zero, zero_add, ite_eq_left le_rfl]
   · rw [Nat.sub_self, dividedPower_zero_apply, dividedPower_zero_apply]
     have : nu a - nu b + (k : ℤ) - (k : ℤ) = (k : ℤ) := by rw [hk]; ring
     rw [this]
@@ -233,7 +232,7 @@ theorem dividedPower_reverse_dividedPower_eq_self [CharZero (KK O)] {E : GLOps n
     rw [h1, Int.cast_one, one_smul]
   · intro j hj
     have hj' : j < k := Finset.mem_range.1 hj
-    rw [if_pos hj'.le, dividedPower_eq_zero_of_annihilated E a b h0 (by omega), map_zero, smul_zero]
+    rw [ite_eq_left hj'.le, dividedPower_eq_zero_of_annihilated E a b h0 (by omega), map_zero, smul_zero]
 
 theorem reflectedWeight_succ_eq_add_root {mu : Fin n → ℤ} {t : ℕ} (a : Fin n) (ha : a.val = t) (ht : 2 * (t + 1) ≤ n) (k : ℕ)
     (hk : mu a - mu (Fin.rev a) = (k : ℤ)) :
@@ -249,12 +248,12 @@ theorem reflectedWeight_succ_eq_add_root {mu : Fin n → ℤ} {t : ℕ} (a : Fin
       intro h
       have := congrArg Fin.val h
       omega
-    rw [if_neg e1, if_pos rfl, if_neg (by omega), if_pos (by omega)]
+    rw [ite_eq_right e1, ite_eq_left rfl, ite_eq_right (by omega), ite_eq_left (by omega)]
     linarith
   · by_cases h2 : c = Fin.rev a
     · subst h2
-      rw [if_pos rfl, if_neg h1, Fin.rev_rev, if_neg (by rw [Fin.rev_rev] at hr; omega),
-        if_pos (by rw [Fin.rev_rev] at hr; omega)]
+      rw [ite_eq_left rfl, ite_eq_right h1, Fin.rev_rev, ite_eq_right (by rw [Fin.rev_rev] at hr; omega),
+        ite_eq_left (by rw [Fin.rev_rev] at hr; omega)]
       linarith
     · have h1' : c.val ≠ t := fun h => h1 (Fin.ext (h.trans ha.symm))
       have h2' : (Fin.rev c).val ≠ t := by
@@ -262,7 +261,7 @@ theorem reflectedWeight_succ_eq_add_root {mu : Fin n → ℤ} {t : ℕ} (a : Fin
         apply h2
         apply Fin.ext
         omega
-      rw [if_neg h2, if_neg h1]
+      rw [ite_eq_right h2, ite_eq_right h1]
       have e : (c.val < t ∨ (Fin.rev c).val < t) ↔ (c.val < t + 1 ∨ (Fin.rev c).val < t + 1) := by omega
       simp only [e]
       ring
@@ -290,10 +289,10 @@ theorem exists_integral_reflected_weight_vector [CharZero (KK O)] {E : GLOps n (
     obtain ⟨k, hk⟩ : ∃ k : ℕ, mu a - mu (Fin.rev a) = (k : ℤ) := ⟨(mu a - mu (Fin.rev a)).toNat, by omega⟩
     have hna : reflectedWeight mu t a = mu a := by
       unfold reflectedWeight
-      rw [if_neg (by omega)]
+      rw [ite_eq_right (by omega)]
     have hnb : reflectedWeight mu t (Fin.rev a) = mu (Fin.rev a) := by
       unfold reflectedWeight
-      rw [if_neg (by rw [Fin.rev_rev]; omega)]
+      rw [ite_eq_right (by rw [Fin.rev_rev]; omega)]
     refine ⟨divPowE E (Fin.rev a) a k y, ?_, ?_, ?_, u * divPowE E a (Fin.rev a) k, ?_, ?_⟩
     · exact delta_integral_enveloping_stable E v _ (Or.inl ⟨_, _, k, hab.symm, rfl⟩) y hyD
     · rw [← reflectedWeight_succ_eq_add_root a hat ht k hk]
@@ -304,7 +303,7 @@ theorem exists_integral_reflected_weight_vector [CharZero (KK O)] {E : GLOps n (
       have hrc := Fin.val_rev c
       have hcomm : ∀ x, E c (Fin.rev c) (E (Fin.rev a) a x) = E (Fin.rev a) a (E c (Fin.rev c) x) := by
         intro x
-        rw [gl_rep_commutation_apply hE c (Fin.rev c) (Fin.rev a) a x, if_neg, if_neg, add_zero, sub_zero]
+        rw [gl_rep_commutation_apply hE c (Fin.rev c) (Fin.rev a) a x, ite_eq_right, ite_eq_right, add_zero, sub_zero]
         · intro h
           have := congrArg Fin.val h
           omega
@@ -497,9 +496,9 @@ theorem dualOperators_iSup_weightSpace_eq_top [CharZero K] [FiniteDimensional K 
   · have h1 : E a a (B j) = ((ν' a : ℤ) : K) • B j := hwt _ _ hj a
     have h2 : E a a (B j) = ((ν a : ℤ) : K) • B j := hwt _ _ (by rw [hBj, hij]; exact hν) a
     have hK : ((ν' a : ℤ) : K) = ν a := smul_left_injective K (B.ne_zero j) (h1.symm.trans h2)
-    rw [if_pos hij, hK]
+    rw [ite_eq_left hij, hK]
     simp
-  · rw [if_neg hij]
+  · rw [ite_eq_right hij]
     simp
 
 theorem dualOperators_isGLRep [CharZero K] [FiniteDimensional K V] (E : GLOps n K V) (hE : IsGLRep E) : IsGLRep (dualOps E) := ⟨dualOperators_commutator_relation E hE.1, fun _ => ⟨⊤, inferInstance, Submodule.mem_top, fun _ _ _ _ => Submodule.mem_top⟩,
@@ -538,11 +537,11 @@ theorem highestWeightSpace_eq_span_highestWeightVector [CharZero (KK O)] {E : GL
     rw [h]
     rcases eq_or_ne c a with rfl | hca <;> rcases eq_or_ne b c with rfl | hbc
     · simp
-    · simp only [if_true, if_neg hbc, LinearMap.zero_apply, sub_zero, Pi.add_apply,
+    · simp only [ite_true, ite_eq_right hbc, LinearMap.zero_apply, sub_zero, Pi.add_apply,
         Pi.sub_apply, Pi.single_eq_same, Pi.single_eq_of_ne hbc.symm, Int.cast_add, Int.cast_one, add_smul,
         one_smul]
       abel
-    · simp only [if_true, if_neg hca, LinearMap.zero_apply, zero_sub, Pi.add_apply,
+    · simp only [ite_true, ite_eq_right hca, LinearMap.zero_apply, zero_sub, Pi.add_apply,
         Pi.sub_apply, Pi.single_eq_same, Pi.single_eq_of_ne hca, add_zero, Int.cast_sub, Int.cast_one, sub_smul,
         one_smul]
       abel
@@ -629,7 +628,7 @@ theorem highestWeightSpace_eq_span_highestWeightVector [CharZero (KK O)] {E : GL
         intro ν
         simp only [Pi.add_apply, Pi.sub_apply, mul_sub, mul_add, Finset.sum_add_distrib,
           Finset.sum_sub_distrib, Pi.single_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-          Finset.mem_univ, if_true]
+          Finset.mem_univ, ite_true]
       have hpos : ((b : ℕ) : ℤ) < ((a : ℕ) : ℤ) := by
         have := Fin.lt_def.1 hab
         omega

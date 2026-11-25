@@ -14,8 +14,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.SmoothTransferRegularity
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem nd_deriv_smul_const {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] (φ : ℝ → ℂ) (v : E) :
     deriv (fun t => φ t • v) 0 = deriv φ 0 • v := by
   by_cases hφ : DifferentiableAt ℝ φ 0

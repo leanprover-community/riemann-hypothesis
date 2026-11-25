@@ -123,7 +123,7 @@ theorem ind_mem_of_stable (h : IsBichar χ) (hL : L ≤ X) (hL' : L' ≤ Y) (hLL
     funext t
     by_cases ht : t ∈ K
     · simp [ind, ht, a1 t ht, h0]
-    · rw [ind, if_neg ht, Pi.smul_apply]
+    · rw [ind, ite_eq_right ht, Pi.smul_apply]
       by_cases hz : Φ t = 0
       · rw [a2 t hz, smul_zero]
       · obtain ⟨r, hr, u, hu, e⟩ := hR2' _ (h3 t hz)
@@ -141,8 +141,8 @@ theorem ind_mem_of_stable (h : IsBichar χ) (hL : L ≤ X) (hL' : L' ≤ Y) (hLL
   refine hle (mem_of_finite_cosets (K := K)
     (Submodule.subset_span ⟨0, zero_mem _, 0, zero_mem _, (wave_zero h).symm⟩) hR.toFinset _ (fun t ht => ?_)
     (fun u hu t => ind_add L t (hKL hu)) fun t ht => ?_)
-  · exact hL (by by_contra hh; exact ht (if_neg hh))
-  · obtain ⟨r, hr, u, hu, e⟩ := hR' t (by by_contra hh; exact ht (if_neg hh))
+  · exact hL (by by_contra hh; exact ht (ite_eq_right hh))
+  · obtain ⟨r, hr, u, hu, e⟩ := hR' t (by by_contra hh; exact ht (ite_eq_right hh))
     exact ⟨r, hR.mem_toFinset.2 hr, k • u, ⟨u, hu, rfl⟩, e⟩
 
 theorem equivariant_of_wave {V : Type} [AddCommGroup V] [Module ℂ V] (h : IsBichar χ)

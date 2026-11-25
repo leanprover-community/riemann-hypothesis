@@ -164,8 +164,7 @@ theorem exists_small_not_conj {E : Type} [Field E] [CharZero E] (K : Intermediat
   have key : ∀ u : ℤ, (u = t ∨ u = -t) → ‖j (((B + u : 𝓞 K) : K) : E)‖ < 1 →
       1 ≤ ‖j (c (((B + u : 𝓞 K) : K) : E))‖ := by
     intro u hu h1
-    by_contra h2
-    push_neg at h2
+    by_contra! h2
     have e2 : c (((B + u : 𝓞 K) : K) : E) = -(s : E) + (u : E) := by
       rw [hcoe, map_add (f := _), map_intCast, hc']
     have hsum : j (((B + u : 𝓞 K) : K) : E) + j (c (((B + u : 𝓞 K) : K) : E)) = (((2 * u : ℤ)) : ℂ_[q]) := by
@@ -190,10 +189,9 @@ theorem exists_small_not_conj {E : Type} [Field E] [CharZero E] (K : Intermediat
   have hpl : ‖((-(t ^ 2 + d) : ℤ) : ℂ_[q])‖ < 1 := (norm_intCast_lt_one_iff q _).2 (dvd_neg.2 ht)
   by_cases h1 : ‖j (((B + t : 𝓞 K) : K) : E)‖ < 1
   · exact ⟨B + t, h1, key t (Or.inl rfl) h1⟩
-  · push_neg at h1
+  · push Not at h1
     have h2 : ‖j (((B + (-t : ℤ) : 𝓞 K) : K) : E)‖ < 1 := by
-      by_contra h2
-      push_neg at h2
+      by_contra! h2
       rw [← hprod, norm_mul] at hpl
       nlinarith
     exact ⟨B + (-t : ℤ), h2, key (-t) (Or.inr rfl) h2⟩

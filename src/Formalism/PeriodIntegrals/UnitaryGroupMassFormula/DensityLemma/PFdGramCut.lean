@@ -7,21 +7,9 @@ import Formalism.HermitianCurvature.BigCellVanishingOfCommute
 
 open MeasureTheory Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.C6
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 noncomputable section
 
 namespace PI.UnitaryGroupMassFormula.DLm.Gram
-
-section
-variable {k r : ℕ}
-
-end
-
-section
-variable {W : Type} [NormedAddCommGroup W] [InnerProductSpace ℂ W] [FiniteDimensional ℂ W]
-
-end
 
 section
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [FiniteDimensional ℂ Wp]

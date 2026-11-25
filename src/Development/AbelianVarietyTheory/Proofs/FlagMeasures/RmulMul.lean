@@ -242,7 +242,7 @@ theorem exists_rep (L : LocE F E) (δ : E) (R : Set E)
     let k : Fin N := ⟨N - 1 - m, by omega⟩
     choose r hrR hr using fun j => hR (w k j) (hwδ k j)
     let c : Fin N → E := fun j => if k < j then r j - w k j else 0
-    have hc0 : ∀ j, j ≤ k → c j = 0 := fun j hj => if_neg (not_lt.2 hj)
+    have hc0 : ∀ j, j ≤ k → c j = 0 := fun j hj => ite_eq_right (not_lt.2 hj)
     have hc1 : ∀ j, c j ∈ L.O := fun j => by
       simp only [c]
       split_ifs
@@ -255,7 +255,7 @@ theorem exists_rep (L : LocE F E) (δ : E) (R : Set E)
       by_cases hik : i = k
       · subst hik
         rw [hw.2, one_mul]
-        simp only [c, if_pos hij]
+        simp only [c, ite_eq_left hij]
         simpa using hrR j
       · have h2 : i.val ≠ N - 1 - m := fun h => hik (Fin.ext h)
         have h3 : k < i := by
@@ -426,7 +426,7 @@ theorem exists_reps (L : LocE F E) (t : E) (m : ℕ) (hm : m ≠ 0)
   · rintro _ ⟨x, rfl⟩
     refine ⟨⟨fun i j h => ?_, fun i => ?_⟩, fun i j => ?_⟩
     · simp only [lift]
-      rw [dite_eq_right (not_lt_of_gt h), if_neg (ne_of_gt h)]
+      rw [dite_eq_right (not_lt_of_gt h), ite_eq_right (ne_of_gt h)]
     · simp [lift]
     · simp only [lift]
       split_ifs
@@ -487,7 +487,7 @@ theorem exists_section (L : LocE F E) (N : ℕ) :
       ∀ u, ∃ A, IsUni A ∧ IsIntM L A ∧ u = s (coset L u) * A := by
   refine ⟨fun C => if h : ∃ u, C = coset L u then h.choose else 0, fun u => ?_⟩
   have h : ∃ v, coset L u = coset L v := ⟨u, rfl⟩
-  simp only [dif_pos h]
+  simp only [dite_eq_left h]
   have h1 : u ∈ coset L u := by
     refine ⟨1, ⟨fun i j hij => Matrix.one_apply_ne (ne_of_gt hij), fun i => Matrix.one_apply_eq i⟩,
       fun i j => ?_, (mul_one u).symm⟩

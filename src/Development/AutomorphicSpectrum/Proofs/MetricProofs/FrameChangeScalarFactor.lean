@@ -31,7 +31,7 @@ theorem unitCols_col (I' C : Finset (Fin N)) (e : I'.card = C.card) (a : Fin N) 
   rw [Finset.sum_eq_single t]
   · simp
   · intro s _ hs
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro ⟨_, h⟩
     exact hs ((C.orderEmbOfFin rfl).injective h).symm
   · simp
@@ -40,13 +40,13 @@ theorem minor_unitCols (I' C J : Finset (Fin N)) (e : I'.card = C.card) :
     minorIJ (unitCols I' C e : Matrix (Fin N) (Fin N) R) J C = if J = I' then 1 else 0 := by
   by_cases hJ : J = I'
   · subst hJ
-    rw [if_pos rfl, minorIJ, dite_eq_left e]
+    rw [ite_eq_left rfl, minorIJ, dite_eq_left e]
     have : (unitCols J C e : Matrix (Fin N) (Fin N) R).submatrix (J.orderEmbOfFin e) (C.orderEmbOfFin rfl) = 1 := by
       ext s t
       rw [Matrix.submatrix_apply, unitCols_col, Matrix.one_apply]
       simp
     rw [this, Matrix.det_one]
-  · rw [if_neg hJ, minorIJ]
+  · rw [ite_eq_right hJ, minorIJ]
     split_ifs with e'
     · have hns : ¬ J ⊆ I' := fun hs => hJ (Finset.eq_of_subset_of_card_le hs (by rw [e, e']))
       obtain ⟨a, haJ, haI⟩ := Finset.not_subset.1 hns
@@ -54,7 +54,7 @@ theorem minor_unitCols (I' C J : Finset (Fin N)) (e : I'.card = C.card) :
         rw [Finset.range_orderEmbOfFin]; exact haJ
       obtain ⟨s, rfl⟩ := hr
       refine Matrix.det_eq_zero_of_row_eq_zero s fun t => ?_
-      rw [Matrix.submatrix_apply, unitCols_col, if_neg]
+      rw [Matrix.submatrix_apply, unitCols_col, ite_eq_right]
       intro h
       exact haI (h ▸ Finset.orderEmbOfFin_mem _ _ _)
     · rfl
@@ -63,7 +63,7 @@ theorem unitCols_blockDiag {j : ℕ} (I' C : Finset (Fin N)) (e : I'.card = C.ca
     (hs : ∀ a ∈ I', ∀ b ∈ C, ((a : ℕ) < N - j ↔ (b : ℕ) < N - j)) :
     IsBlockDiag j (unitCols I' C e : Matrix (Fin N) (Fin N) R) := fun a b h => by
   simp only [unitCols, Matrix.of_apply]
-  refine Finset.sum_eq_zero fun s _ => if_neg ?_
+  refine Finset.sum_eq_zero fun s _ => ite_eq_right ?_
   rintro ⟨rfl, rfl⟩
   exact h (hs _ (Finset.orderEmbOfFin_mem _ _ _) _ (Finset.orderEmbOfFin_mem _ _ _))
 
@@ -125,10 +125,10 @@ theorem plucker_change_of_frame : ∀ (K : Type) [Fintype K] (ι : K → Type) [
   have hm : ∀ I, minorIJ ((F₁.T p.1)⁻¹ * F₂.T p.1 * unitCols I' (stepCols N j p.2) hI'.1) I (stepCols N j p.2) =
       minorIJ ((F₁.T p.1)⁻¹ * F₂.T p.1) I I' := fun I => by
     rw [(_root_.GlobalTheory.CompanionTheory.Ar.PB.MinorCalc.minors_main M.Ω N j p.2 hj).1]
-    simp only [minor_unitCols, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [minor_unitCols, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   have hr : ∑ I, F₂.u ⟨k, m⟩ I * minorIJ (unitCols I' (stepCols N j p.2) hI'.1) I (stepCols N j p.2) =
       F₂.u ⟨k, m⟩ I' := by
-    simp only [minor_unitCols, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [minor_unitCols, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   simp only [hm] at e1
   rw [hr] at e2
   rw [div_mul_eq_mul_div, eq_div_iff (mul_ne_zero hd₂ hA₁)]

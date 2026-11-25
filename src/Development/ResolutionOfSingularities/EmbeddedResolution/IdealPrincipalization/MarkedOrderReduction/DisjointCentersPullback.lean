@@ -17,10 +17,6 @@ namespace FunctorialResolution.EmbeddedResolution
 
 namespace SequenceOfBlowupsPullback
 
-private theorem base_comp_apply {A B C : Scheme.{u}} (f : A ⟶ B) (g : B ⟶ C) (x : ↥A) :
-    (f ≫ g).base x = g.base (f.base x) := by
-  simp
-
 private theorem eqToHom_base_trans {A B C : Scheme.{u}} (h : A = B) (h' : B = C)
     (x : ↥A) : (eqToHom h').base ((eqToHom h).base x) = (eqToHom (h.trans h')).base x := by
   subst h
@@ -673,7 +669,7 @@ private theorem exists_mem_support_center_append {X : Scheme.{u}} (s : BlowupSeq
       refine Scheme.IdealSheafData.mem_support_comap.mpr ?_
       rw [AlgebraicGeometry.Scheme.hom_inv_apply]
       exact hz
-    · rw [BlowupSequenceData.projectionToBase_append_of_le_length s n (le_refl s.length), base_comp_apply,
+    · rw [BlowupSequenceData.projectionToBase_append_of_le_length s n (le_refl s.length), Scheme.Hom.comp_apply,
         eqToHom_base_trans, eqToHom_base_self, BlowupSequenceData.projectionToBase_zero]
   · obtain ⟨k, rfl⟩ : ∃ k : ℕ, i = k + 1 := ⟨i - 1, by omega⟩
     intro z hz
@@ -688,7 +684,7 @@ private theorem exists_mem_support_center_append {X : Scheme.{u}} (s : BlowupSeq
       refine Scheme.IdealSheafData.mem_support_comap.mpr ?_
       rw [eqToHom_base_trans]
       exact eqToHom_base_mem_support_center n hsub.symm _ z hz
-    · rw [BlowupSequenceData.projectionToBase_append_of_length_lt s n hgt, base_comp_apply, base_comp_apply,
+    · rw [BlowupSequenceData.projectionToBase_append_of_length_lt s n hgt, Scheme.Hom.comp_apply, Scheme.Hom.comp_apply,
         eqToHom_base_trans, projectionToBase_base_eqToHom_base n hsub.symm]
 
 private theorem disjoint_centers_lastMap_of_append {X X' : Scheme.{u}} (φ : X' ⟶ X) (s' : BlowupSequenceData X')
@@ -705,8 +701,8 @@ private theorem disjoint_centers_lastMap_of_append {X X' : Scheme.{u}} (φ : X' 
   have hw : c.lastMap ≫ s.toSequenceOfBlowups.projectionToBase s.toSequenceOfBlowups.length
       = s'.toSequenceOfBlowups.projectionToBase s'.toSequenceOfBlowups.length ≫ φ := c.isPullback_lastMap.w
   have h0 := congrArg (fun f : s'.toSequenceOfBlowups.schemeAt s'.toSequenceOfBlowups.length ⟶ X => f.base y) hw
-  have hA := base_comp_apply c.lastMap (s.toSequenceOfBlowups.projectionToBase s.toSequenceOfBlowups.length) y
-  have hB := base_comp_apply (s'.toSequenceOfBlowups.projectionToBase s'.toSequenceOfBlowups.length) φ y
+  have hA := Scheme.Hom.comp_apply c.lastMap (s.toSequenceOfBlowups.projectionToBase s.toSequenceOfBlowups.length) y
+  have hB := Scheme.Hom.comp_apply (s'.toSequenceOfBlowups.projectionToBase s'.toSequenceOfBlowups.length) φ y
   have h1 : (s.toSequenceOfBlowups.projectionToBase s.toSequenceOfBlowups.length).base (c.lastMap.base y)
       = φ.base ((s'.toSequenceOfBlowups.projectionToBase s'.toSequenceOfBlowups.length).base y) :=
     hA.symm.trans (h0.trans hB)

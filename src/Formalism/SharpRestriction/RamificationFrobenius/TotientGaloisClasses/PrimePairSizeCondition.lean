@@ -56,12 +56,6 @@ structure HType extends KSet where
   Ct : ℝ
   t_le : ∀ x : ℝ, 1 ≤ x → (t x : ℝ) ≤ x ^ Ct
 
-namespace HType
-
-variable (T : HType)
-
-end HType
-
 namespace HostRaw
 
 variable {φ : Frame} (H : HostRaw φ)

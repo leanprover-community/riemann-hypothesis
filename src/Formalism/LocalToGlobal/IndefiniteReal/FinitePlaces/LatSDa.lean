@@ -32,8 +32,6 @@ open scoped TensorProduct
 
 namespace Formalism.IndefR.Fin.VacEx
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def IsDyIdem (v : HeightOneSpectrum (𝓞 D.host.F)) (e : AE D) : Prop :=
@@ -45,12 +43,6 @@ theorem fstA_pairA (x : Ainf D.host.F) (y : Af D.host.F) : fstA D.host.F (pairA 
 theorem sndA_pairA (x : Ainf D.host.F) (y : Af D.host.F) : sndA D.host.F (pairA D.host.F x y) = y := rfl
 
 
-
-section Sym
-
-variable (S T : HSp D)
-
-end Sym
 
 section Phi
 
@@ -87,14 +79,6 @@ theorem open_neighbourhood_set_eq (Λ : AddSubgroup (WO S T)) :
 
 end Phi
 
-section Lat
-
-variable (S T : HSp D)
-
-variable {S T}
-
-end Lat
-
 end Formalism.IndefR.Fin.VacEx
 end -- clump:auto
 end -- clump:auto
@@ -115,12 +99,6 @@ open scoped TensorProduct
 
 
 namespace Formalism.IndefR.Fin.VacEx
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-section Gen
-
-end Gen
 
 variable {D : D7}
 
@@ -175,8 +153,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 
 namespace Formalism.IndefR.Eqv
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 def PhiM (m n : ℕ) (x : Mx D m n) : Fin m → Fin n → Fin (nE D) → AF D.host.F :=
@@ -206,8 +182,6 @@ open scoped TensorProduct
 set_option synthInstance.maxHeartbeats 160000
 
 namespace Formalism.IndefR.Fin
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
@@ -279,8 +253,7 @@ def lsdE (i : Fin T.rank) (j : Fin S.rank) (β : Af D.host.F) (e : D.host.E) : W
   Matrix.of fun i' j' => if i' = i ∧ j' = j then pairA D.host.F 0 β ⊗ₜ[D.host.F] e else 0
 
 theorem lsd_AA_ne : ∃ c : D.host.E, c ∈ D.host.AA ∧ c ≠ 0 := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   have h0 : D.host.AA = 0 := by
     ext x
     rw [FractionalIdeal.mem_zero_iff]
@@ -341,7 +314,7 @@ theorem lsd_mem (hΛS : IsSelfDualC S ΛS) (hΛT : IsSelfDualC T ΛT) :
       hinv]
     by_cases h : j' = j
     · subst h; simp
-    · rw [if_neg (Ne.symm h), if_neg h, mul_zero]
+    · rw [ite_eq_right (Ne.symm h), ite_eq_right h, mul_zero]
   convert hmem using 1
   ext i' j'
   simp only [lsdE, Matrix.of_apply]
@@ -355,7 +328,7 @@ theorem lsd_mem (hΛS : IsSelfDualC S ΛS) (hΛT : IsSelfDualC T ΛT) :
   by_cases hi : i' = i
   · by_cases hj : j' = j
     · subst hi; subst hj
-      rw [if_pos ⟨rfl, rfl⟩, if_pos rfl, if_pos rfl, jF_tmul, Algebra.TensorProduct.tmul_mul_tmul, mul_one]
+      rw [ite_eq_left ⟨rfl, rfl⟩, ite_eq_left rfl, ite_eq_left rfl, jF_tmul, Algebra.TensorProduct.tmul_mul_tmul, mul_one]
       rw [show (y : D.host.E) * (c * (dT i' : D.host.E) * star (dS j' : D.host.E)) =
         algebraMap D.host.F D.host.E (R : D.host.F) * Module.finBasis D.host.F D.host.E k by
           have hD := hD0 i' j'
@@ -365,8 +338,8 @@ theorem lsd_mem (hΛS : IsSelfDualC S ΛS) (hΛT : IsSelfDualC T ΛT) :
           have h2 : star (dS j' : D.host.E) ≠ 0 := by rw [Ne, star_eq_zero]; exact hdS' j'
           rw [← hy']; field_simp]
       exact lsd_tmul_eq _ _ _
-    · rw [if_neg (fun h => hj h.2), if_neg hj, mul_zero, TensorProduct.tmul_zero, mul_zero]
-  · rw [if_neg (fun h => hi h.1), if_neg hi, mul_zero, zero_mul, TensorProduct.tmul_zero, mul_zero]
+    · rw [ite_eq_right (fun h => hj h.2), ite_eq_right hj, mul_zero, TensorProduct.tmul_zero, mul_zero]
+  · rw [ite_eq_right (fun h => hi h.1), ite_eq_right hi, mul_zero, zero_mul, TensorProduct.tmul_zero, mul_zero]
 
 
 open Formalism.IndefR.PHeisFC in
@@ -425,7 +398,7 @@ theorem latO_isOpen (hΛS : IsSelfDualC S ΛS) (hΛT : IsSelfDualC T ΛT) :
     simp only [Matrix.sum_apply, map_sum, lsdE_finPart]
     rw [Finset.sum_eq_single i (fun b _ hb => by simp [Ne.symm hb]) (by simp),
       Finset.sum_eq_single j (fun b _ hb => by simp [Ne.symm hb]) (by simp)]
-    simp only [and_self, if_true]
+    simp only [and_self, ite_true]
     rw [sub_eq_zero]
     refine Finset.sum_congr rfl fun k _ => ?_
     have hgk : algebraMap D.host.F (Af D.host.F) (R : D.host.F) * g i j k w =
@@ -521,7 +494,7 @@ theorem lsd_decomp (Y : WO S T) (hY : ∀ i j, infPart D (Y i j) = 0) :
   simp only [Matrix.sum_apply, lsdE, Matrix.of_apply]
   rw [Finset.sum_eq_single i (fun b _ hb => by simp [Ne.symm hb]) (by simp),
     Finset.sum_eq_single j (fun b _ hb => by simp [Ne.symm hb]) (by simp)]
-  simp only [and_self, if_true]
+  simp only [and_self, ite_true]
   calc
     _ = ∑ k, cE D.host.F D.host.E (Y i j) k ⊗ₜ[D.host.F] Module.finBasis D.host.F D.host.E k := VacEx.expand_cE _
     _ = _ := Finset.sum_congr rfl fun k _ => by rw [← lsd_cE_of_inf _ (hY i j) k]

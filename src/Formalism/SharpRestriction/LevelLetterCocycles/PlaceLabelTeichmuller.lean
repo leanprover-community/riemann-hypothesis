@@ -11,6 +11,7 @@ import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import ReciprocityTheory.GaloisValuations.GlobalA
 import Formalism.SharpRestriction.Divisibility.PrimeDegreeVariant
 import Mathlib.Tactic.Linter.HaveILetI
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NeZeroOfMemRoots
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.LevelLetterCocycles.PrimesEffectiveChebotarev, Formalism.SharpRestriction.LevelLetterCocycles.PlaceLabelTeichmuller
@@ -164,9 +165,9 @@ theorem tens_one : tens (fun i => (1 : MonoidAlgebra ℂ (G i))) = 1 := by
   by_cases hg : g = 1
   · subst hg
     simp
-  · rw [if_neg (Ne.symm hg)]
+  · rw [ite_eq_right (Ne.symm hg)]
     obtain ⟨i, hi⟩ := Function.ne_iff.mp hg
-    exact Finset.prod_eq_zero (Finset.mem_univ i) (if_neg (Ne.symm hi))
+    exact Finset.prod_eq_zero (Finset.mem_univ i) (ite_eq_right (Ne.symm hi))
 
 theorem sum_tens {P : ι → Type} [∀ i, Fintype (P i)] [DecidableEq ι]
     (E : ∀ i, P i → MonoidAlgebra ℂ (G i)) :
@@ -233,15 +234,15 @@ theorem mapDomain_mulSingle (i : ι) (a : MonoidAlgebra ℂ (G i)) :
     · intro j hj
       rw [Pi.mulSingle_eq_of_ne hj]
       first | rw [Function.update_of_ne hj]
-      rw [h1, if_pos rfl]
-  · push_neg at hg
+      rw [h1, ite_eq_left rfl]
+  · push Not at hg
     obtain ⟨j, hj, hgj⟩ := hg
     rw [Finsupp.mapDomain_notin_range]
     · symm
       refine Finset.prod_eq_zero (Finset.mem_univ j) ?_
       first | rw [Function.update_of_ne hj]
       rw [h1]
-      exact if_neg (Ne.symm hgj)
+      exact ite_eq_right (Ne.symm hgj)
     · rintro ⟨h, rfl⟩
       exact hgj (Pi.mulSingle_eq_of_ne hj h)
 
@@ -360,9 +361,9 @@ theorem onC_eGood (hid : ∀ i p, E i p * E i p = E i p) (hcen : ∀ i p a, E i 
       exact absurd (Finset.mem_univ _) hl
   constructor
   · intro hg
-    rw [hmain, if_pos hg]
+    rw [hmain, ite_eq_left hg]
   · intro hg
-    rw [hmain, if_neg hg]
+    rw [hmain, ite_eq_right hg]
 
 end Good
 
@@ -540,16 +541,7 @@ theorem mem_rootSet_iff (f : (ZMod g)[X]) (x : Formalism.CyclotomicNorms.Fbar g)
 
 theorem root_ne_zero {f : (ZMod g)[X]} (h0 : f.coeff 0 ≠ 0) {x : Formalism.CyclotomicNorms.Fbar g}
     (hx : x ∈ Formalism.CyclotomicNorms.rootsBar f) : x ≠ 0 := by
-  intro hx0
-  subst hx0
-  unfold Formalism.CyclotomicNorms.rootsBar at hx
-  have hne : f.map (algebraMap (ZMod g) (Formalism.CyclotomicNorms.Fbar g)) ≠ 0 := by
-    intro h
-    rw [h] at hx
-    simp at hx
-  have hr := (Polynomial.mem_roots hne).mp hx
-  rw [Polynomial.IsRoot.def, ← Polynomial.coeff_zero_eq_eval_zero, Polynomial.coeff_map] at hr
-  exact h0 ((map_eq_zero_iff _ (algebraMap (ZMod g) (Formalism.CyclotomicNorms.Fbar g)).injective).mp hr)
+  apply _root_.GlobalTheory.SerSys.LabLoc.ne_zero_of_mem_roots <;> assumption
 
 def bigM (g N : ℕ) : ℕ := ∏ d ∈ Finset.Icc 1 N, (g ^ d - 1)
 

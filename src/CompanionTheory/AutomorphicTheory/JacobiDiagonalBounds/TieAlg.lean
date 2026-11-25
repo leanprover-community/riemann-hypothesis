@@ -282,7 +282,7 @@ theorem ofWord_rel {R : SRel A A'} (hR : R.InvClosed) {L : LevelData A r} {L' : 
     have hf' := frame_of_recursive_word A' S r L' st' w hSL' hs' h0'
     refine ⟨⟨h0', hsl, hre, h.inv ▸ hY, h.inv ▸ hY1, by rw [← h.inv, ← h.q]; exact hq'⟩, ?_⟩
     by_cases hp : l.plus = true
-    · simp only [ofWord, hp, if_true]
+    · simp only [ofWord, hp, ite_true]
       exact plus_rel hL h hf hf' _ hre hY hY1
     · simp only [ofWord, hp] at hq' ⊢
       exact minus_rel hL h hf hf' _ hre hY hq'.1

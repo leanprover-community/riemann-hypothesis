@@ -212,7 +212,7 @@ theorem heckeL_ne_zero [_root_.NumberField.IsTotallyComplex E] {I : Type} [Finty
   have hW : μ.rootNumber ≠ 0 := left_ne_zero_of_mul_eq_one μ.rootNumber_mul_rootNumber_inv
   refine mul_ne_zero (mul_ne_zero (μ.discrNormConductor_cpow_ne_zero _) (inv_ne_zero ?_)) ?_
   · refine Finset.prod_ne_zero_iff.2 fun w _ => ?_
-    rw [HeckeCharacter.infiniteGamma, if_neg (not_isReal_iff_isComplex.2 (hc' w)), ht, hw, Gammaℂ_def]
+    rw [HeckeCharacter.infiniteGamma, ite_eq_right (not_isReal_iff_isComplex.2 (hc' w)), ht, hw, Gammaℂ_def]
     refine mul_ne_zero (mul_ne_zero two_ne_zero ?_) (Gamma_ne_zero_of_re_pos ?_)
     · rw [Ne, cpow_eq_zero_iff, not_and_or]
       exact Or.inl (mul_ne_zero two_ne_zero (ofReal_ne_zero.2 Real.pi_ne_zero))

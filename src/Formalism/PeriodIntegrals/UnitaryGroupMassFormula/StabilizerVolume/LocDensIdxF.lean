@@ -68,10 +68,10 @@ theorem psi_surj (k0 : Fin 2) (hσ : ∀ x, σ (σ x) = x)
     rw [crdS_eq]
     show cr b v (M i j) k ∈ _
     rcases lt_trichotomy i j with h | rfl | h
-    · simp only [M, if_pos h]
+    · simp only [M, ite_eq_left h]
       rw [hY]
       fin_cases k <;> simp
-    · simp only [M, lt_irrefl, if_false]
+    · simp only [M, lt_irrefl, ite_false]
       rw [hDk]
       have e : (g (i, i) : Fv F v) / u * algebraMap F (Fv F v) (b.repr 1 k)
           = (g (i, i) : Fv F v) * algebraMap F (Fv F v) (b.repr 1 k / b.repr 1 k0) := by
@@ -79,7 +79,7 @@ theorem psi_surj (k0 : Fin 2) (hσ : ∀ x, σ (σ x) = x)
         ring
       rw [e]
       exact mul_mem (g _).2 (hu k)
-    · simp only [M, if_neg (lt_asymm h), if_pos h]
+    · simp only [M, ite_eq_right (lt_asymm h), ite_eq_left h]
       rw [cr_sig]
       refine sum_mem fun l _ => mul_mem (hC k l) ?_
       rw [hY]
@@ -91,19 +91,19 @@ theorem psi_surj (k0 : Fin 2) (hσ : ∀ x, σ (σ x) = x)
   split_ifs with h1 h2
   · apply Subtype.ext
     show cr b v (M i j) 0 = _
-    simp only [M, if_pos h1]
+    simp only [M, ite_eq_left h1]
     rw [hY]
     simp
   · apply Subtype.ext
     show cr b v (M j i) 1 = _
-    simp only [M, if_pos h2]
+    simp only [M, ite_eq_left h2]
     rw [hY]
     simp
   · have hij : i = j := le_antisymm (not_lt.mp h2) (not_lt.mp h1)
     subst hij
     apply Subtype.ext
     show cr b v (M i i) k0 = _
-    simp only [M, lt_irrefl, if_false]
+    simp only [M, lt_irrefl, ite_false]
     rw [hDk, ← hu_def]
     exact div_mul_cancel₀ _ hu0
 
@@ -179,12 +179,12 @@ theorem comap_eq (k0 k1 : Fin 2) (hk : k0 ≠ k1) (ρ : F)
     rw [hps]
     obtain ⟨i, j⟩ := q
     rcases lt_trichotomy i j with hij | hij | hij
-    · simp only [psi, AddMonoidHom.coe_mk, ZeroHom.coe_mk, if_pos hij]
+    · simp only [psi, AddMonoidHom.coe_mk, ZeroHom.coe_mk, ite_eq_left hij]
       exact h i j 0
     · subst hij
-      simp only [psi, AddMonoidHom.coe_mk, ZeroHom.coe_mk, lt_irrefl, if_false]
+      simp only [psi, AddMonoidHom.coe_mk, ZeroHom.coe_mk, lt_irrefl, ite_false]
       exact h i i k0
-    · simp only [psi, AddMonoidHom.coe_mk, ZeroHom.coe_mk, if_neg (not_lt.2 hij.le), if_pos hij]
+    · simp only [psi, AddMonoidHom.coe_mk, ZeroHom.coe_mk, ite_eq_right (not_lt.2 hij.le), ite_eq_left hij]
       exact h j i 1
   · intro h
     have h' : ∀ q, Valued.v ((psi b v σ a k0 S q : v.adicCompletionIntegers F) : Fv F v) < 1 :=
@@ -193,11 +193,11 @@ theorem comap_eq (k0 k1 : Fin 2) (hk : k0 ≠ k1) (ρ : F)
       intro i j hij k
       fin_cases k
       · have := h' (i, j)
-        simp only [psi, AddMonoidHom.coe_mk, ZeroHom.coe_mk, if_pos hij] at this
+        simp only [psi, AddMonoidHom.coe_mk, ZeroHom.coe_mk, ite_eq_left hij] at this
         exact this
       · have := h' (j, i)
-        simp only [psi, AddMonoidHom.coe_mk, ZeroHom.coe_mk, if_neg (not_lt.2 hij.le),
-          if_pos hij] at this
+        simp only [psi, AddMonoidHom.coe_mk, ZeroHom.coe_mk, ite_eq_right (not_lt.2 hij.le),
+          ite_eq_left hij] at this
         exact this
     intro i j k
     rcases lt_trichotomy i j with hij | hij | hij
@@ -205,7 +205,7 @@ theorem comap_eq (k0 k1 : Fin 2) (hk : k0 ≠ k1) (ρ : F)
     · subst hij
       have hd : Valued.v (crdS b v σ a S i i k0) < 1 := by
         have := h' (i, i)
-        simp only [psi, AddMonoidHom.coe_mk, ZeroHom.coe_mk, lt_irrefl, if_false] at this
+        simp only [psi, AddMonoidHom.coe_mk, ZeroHom.coe_mk, lt_irrefl, ite_false] at this
         exact this
       have hfx := hfix (fun l => crdS b v σ a S i i l) (by
         funext m

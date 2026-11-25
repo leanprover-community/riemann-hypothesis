@@ -45,17 +45,17 @@ theorem pmat_ne (R : Type) [CommRing R] [Nontrivial R] {n' r k : ℕ} (hrk : r �
     · subst hli
       have hx : x (A l, Fin.castLE hrk l) = 1 := by
         simp only [x]
-        rw [if_pos ⟨l, rfl, rfl⟩]
-      rw [hx, one_pow, if_pos rfl]
+        rw [ite_eq_left ⟨l, rfl, rfl⟩]
+      rw [hx, one_pow, ite_eq_left rfl]
     · have hx : x (A l, Fin.castLE hrk i) = 0 := by
         simp only [x]
-        rw [if_neg]
+        rw [ite_eq_right]
         rintro ⟨l', h1, h2⟩
         apply hli
         have e1 : l' = l := hA h1
         have e2 : l' = i := Fin.ext (by simpa using congrArg Fin.val h2)
         rw [← e1, e2]
-      rw [hx, zero_pow (hP l), if_neg hli]
+      rw [hx, zero_pow (hP l), ite_eq_right hli]
   have h2 := congrArg (MvPolynomial.eval x) h
   rw [RingHom.map_det, hev, Matrix.det_one, map_zero] at h2
   exact one_ne_zero h2
@@ -80,18 +80,18 @@ theorem subst_Del (w : O) (F : Frames n' r) {L₁ N₁ : ℕ} (hV : F.Valid L₁
     subst p n' O w n' r g (Del p n' O F g j) = map (algebraMap O (KK O))
       (pmat O hrk (fun l => posOf n' (F.fr j l.val)) (fun l => p ^ (zF F j - F.fr j l.val).toNat)).det := by
   have hIc := first_columns_card (k := k) hrk
-  simp only [Del, minorI, dif_pos hIc, Ifirst_emb hrk]
+  simp only [Del, minorI, dite_eq_left hIc, Ifirst_emb hrk]
   rw [AlgHom.map_det, RingHom.map_det]
   congr 1
   ext l i
   have hE := (hV.2.2.2.2.1 j l.val l.2).2
   have hnn : ¬ IsNormal r ((posOf n' (F.fr j l.val), Fin.castLE hrk i) : TV n' k) := by
     simp only [IsNormal]
-    rw [if_pos ((posOf_even hn _).mpr hE)]
+    rw [ite_eq_left ((posOf_even hn _).mpr hE)]
     simp only [Fin.coe_castLE, not_le]
     exact i.2
   simp only [AlgHom.mapMatrix_apply, RingHom.mapMatrix_apply, Matrix.map_apply, Matrix.of_apply, twRow, pmat,
-    map_pow, subst_xg w r hg hn _ hE, newVar, if_neg hnn, map_X]
+    map_pow, subst_xg w r hg hn _ hE, newVar, ite_eq_right hnn, map_X]
 
 theorem subst_Dtop' (w : O) (F : Frames n' r) {L₁ N₁ : ℕ} (hV : F.Valid L₁ N₁) (hn : Even n') (hr : 1 ≤ r)
     (hrk : r ≤ k) {g : Matrix (Fin k) (Fin k) (WF p n')} (hg : IsGLW g) (s : ℤ) :
@@ -150,7 +150,6 @@ theorem fr_pos_inj {TT : Finset (Fin n')} {L₁ L₂ N₁ G' : ℕ} {F : Frames 
     (hG : G' ≤ n') (j : ℤ) : Function.Injective (fun l : Fin r => posOf n' (F.fr j l.val)) := by
   intro a b hab
   have hV := hF.2.1
-  have ha := a.2
   have hb := b.2
   have hmono := hV.2.2.1 j
   have hprev : F.fr (j - 1) (r - 1) < F.fr j 0 := by
@@ -324,7 +323,6 @@ private theorem isWeightedHomogeneous_aeval_of_homogeneous {σ K M : Type} [Comm
     (f : σ → MvPolynomial σ K) (hf : ∀ v, IsWeightedHomogeneous w (f v) (w v)) {P : MvPolynomial σ K} {e : M}
     (hP : IsWeightedHomogeneous w P e) : IsWeightedHomogeneous w (aeval f P) e := by
   classical
-  set_option synthInstance.maxHeartbeats 100000 in
     rw [P.as_sum, map_sum]
   apply IsWeightedHomogeneous.sum
   intro m hm

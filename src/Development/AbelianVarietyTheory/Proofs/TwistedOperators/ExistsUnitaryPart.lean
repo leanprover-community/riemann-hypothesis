@@ -248,8 +248,8 @@ theorem exists_idem_set {T : Set (Pl D.host.E)} (hT : OnePlaceOver T) :
     intro Q
     rw [hzs]
     by_cases hQ : Q ∈ T
-    · rw [if_pos hQ]; exact Formalism.L2.DIV.idemAd_pos hQ
-    · rw [if_neg hQ]; exact Formalism.L2.DIV.idemAd_neg hQ
+    · rw [ite_eq_left hQ]; exact Formalism.L2.DIV.idemAd_pos hQ
+    · rw [ite_eq_right hQ]; exact Formalism.L2.DIV.idemAd_neg hQ
   have hzz : z * z = z := hΦ.ext' (by rw [map_mul, hz0, mul_zero]) (fun Q => by
     rw [ev_mul, hzQ]; split_ifs <;> simp)
   have hconjT : ∀ Q ∈ T, cP Q ∉ T := fun Q hQ hc => hT Q hQ (cP Q) hc ((isConjPl_iff Q _).2 rfl)
@@ -264,7 +264,7 @@ theorem exists_idem_set {T : Set (Pl D.host.E)} (hT : OnePlaceOver T) :
       have h0 : z * cA D e = 0 := hΦ.ext' (by rw [map_mul, hce.1, mul_zero, map_zero]) (fun Q' => by
         rw [ev_mul, ev_zero, hzQ]
         by_cases hQ' : Q' = cP Q
-        · subst hQ'; rw [if_neg (hconjT Q hQ), zero_mul]
+        · subst hQ'; rw [ite_eq_right (hconjT Q hQ), zero_mul]
         · rw [hce.2.2 Q' hQ', mul_zero])
       have h1 : cA D z * e = 0 := by
         have := congrArg (cA D) h0
@@ -299,7 +299,7 @@ theorem exists_idem_set {T : Set (Pl D.host.E)} (hT : OnePlaceOver T) :
     have hze : z * e = e := hΦ.ext' (by rw [map_mul, hd.1, mul_zero]) (fun Q => by
       rw [ev_mul]
       by_cases hQ : Q = P
-      · subst hQ; rw [hzQ, if_pos hP, one_mul]
+      · subst hQ; rw [hzQ, ite_eq_left hP, one_mul]
       · rw [hd.2.2 Q hQ, mul_zero])
     have hmul : p * q = q := Subtype.ext (by
       show finSw D z * (q : EAf D) = q

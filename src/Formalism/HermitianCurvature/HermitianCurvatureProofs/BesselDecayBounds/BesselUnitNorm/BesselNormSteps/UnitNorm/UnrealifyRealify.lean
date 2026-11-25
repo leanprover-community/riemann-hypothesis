@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.SigIntIntegrable
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Formalism.FormalDegreeBessel.FinalG
@@ -270,29 +271,10 @@ theorem isClosed_UH (k r : ℕ) : IsClosed (UH (Hpk k r)) := by
   exact isClosed_eq (by fun_prop) continuous_const
 
 theorem isClosed_N (k r : ℕ) : IsClosed (Nset k r) := by
-  have h1 : IsClosed {g : Mx k r | ∀ (a : Fin r) (i : Fin (2 * r + k + 1)), a.val ≤ i.val →
-      g i (eI k r a) = if i = eI k r a then 1 else 0} := by
-    simp only [Set.ofPred_forall]
-    refine isClosed_iInter fun a => isClosed_iInter fun i => isClosed_iInter fun _ => ?_
-    exact isClosed_eq (continuous_id.matrix_elem _ _) continuous_const
-  have h2 : IsClosed {g : Mx k r | ∀ i j : Fin (2 * r + k + 1), r ≤ j.val → j.val ≤ r + k → r ≤ i.val →
-      g i j = if i = j then 1 else 0} := by
-    simp only [Set.ofPred_forall]
-    refine isClosed_iInter fun i => isClosed_iInter fun j => isClosed_iInter fun _ => isClosed_iInter fun _ =>
-      isClosed_iInter fun _ => ?_
-    exact isClosed_eq (continuous_id.matrix_elem _ _) continuous_const
-  exact (isClosed_UH k r).inter (h1.inter h2)
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.Mult1.TopH.n_closed <;> assumption
 
 theorem isClosed_UW (z : Fin (2 * r + k + 1) → ℂ) : IsClosed (UWset k r z) := by
-  have h1 : IsClosed {g : Mx k r | ∀ a : Fin r, g *ᵥ bvec (eI k r a) = bvec (eI k r a) ∧
-      g *ᵥ bvec (esI k r a) = bvec (esI k r a)} := by
-    simp only [Set.ofPred_forall, Set.ofPred_and]
-    refine isClosed_iInter fun a => IsClosed.inter ?_ ?_
-    · exact isClosed_eq (continuous_id.matrix_mulVec continuous_const) continuous_const
-    · exact isClosed_eq (continuous_id.matrix_mulVec continuous_const) continuous_const
-  have h2 : IsClosed {g : Mx k r | g *ᵥ z = z} :=
-    isClosed_eq (continuous_id.matrix_mulVec continuous_const) continuous_const
-  exact (isClosed_UH k r).inter (h1.inter h2)
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.Mult1.TopH.uw_closed <;> assumption
 
 theorem continuous_of : Continuous (fun x : Mt k r => (Matrix.of x : Mx k r)) := continuous_id
 

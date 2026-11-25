@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.DerivativeProdSubEval
 public import Formalism.SharpRestriction.LevelLetterCocycles.DualLemmaOfDeterminant
 public import Formalism.SharpRestriction.LevelLetterCocycles.LengthCokerLe
 public import Formalism.SharpRestriction.LevelLetterCocycles.LemmaDN0OfAdmits
@@ -34,16 +35,7 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
 
 theorem qp_unit (hπu : IsUnit (algebraMap (LetA O n) W.EE W.π₀)) :
     IsUnit (algebraMap (LetA O n) W.EE (Formalism.MainNotions.LiftingTheory.qp W)) := by
-  have := W.EE_complete
-  obtain ⟨u, hu⟩ := hπu
-  have hj := (Ideal.mem_jacobson_bot.mp (IsAdicComplete.le_jacobson_bot _
-    (Ideal.mem_span_singleton_self ((PD.p : ℕ) : W.EE)))) (↑u⁻¹ : W.EE)
-  have : algebraMap (LetA O n) W.EE (Formalism.MainNotions.LiftingTheory.qp W) =
-      (u : W.EE) * (((PD.p : ℕ) : W.EE) * ↑u⁻¹ + 1) := by
-    rw [Formalism.MainNotions.LiftingTheory.qp, map_add (f := _), ← hu, map_natCast]
-    rw [mul_add, mul_one, mul_comm ((PD.p : ℕ) : W.EE), ← mul_assoc, Units.mul_inv, one_mul, add_comm]
-  rw [this]
-  exact u.isUnit.mul hj
+  apply _root_.Formalism.MainNotions.RamifiedCoefficientChains.S9.isUnit_q_of_uniformizer_unit <;> assumption
 
 end
 
@@ -213,7 +205,7 @@ def DetAlg : Prop :=
   ∀ (d : ℕ) (T₁ T₂ : LocLat G Qp LL O) (F : LatHom T₁.L T₂.L) (b : ZMod n → ℕ) (S η m : ℕ),
     SetCS W d T₁ T₂ F b S η m → ∀ i ∈ evens n d,
       ∀ (e' : Fin (finrank LL T₂.V) → W.DD T₂) (m' : ℕ) (u : Fin m' → ℤ)
-        (had : AdaptData W T₂ i (b i + S) η m e' m' u) (σ : ℕ) (Z : Matrix _ _ (PowerSeries O)),
+        (_ : AdaptData W T₂ i (b i + S) η m e' m' u) (σ : ℕ) (Z : Matrix _ _ (PowerSeries O)),
         σ ≤ 2 * ⌊cD PD.p (hpar n b S + η)⌋₊ →
         (∀ m₁ k, PowerSeries.constantCoeff (Z m₁ k) = if m₁ = k then ((PD.p : ℕ) : O) ^ σ else 0) →
         (∀ (j : Fin m') (hmr : m' ≤ finrank LL T₂.V),

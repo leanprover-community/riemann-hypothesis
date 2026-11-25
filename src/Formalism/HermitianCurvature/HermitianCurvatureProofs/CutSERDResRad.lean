@@ -76,7 +76,7 @@ theorem radial_residue_formula : RDResRad := by
   have hmem : Φ0 ∈ RadSp P.k P.r z z' π π' := by
     refine ⟨?_, ?_, ?_⟩
     · intro x hx
-      exact if_neg hx
+      exact ite_eq_right hx
     · intro x₀ hx₀
       obtain ⟨U, F, hU, hxU, hF, hag⟩ :=
         Rad.sf_resG hS x₀ ⟨hx₀.1, (hin x₀ hx₀).2⟩ hx₀.2.1
@@ -87,13 +87,13 @@ theorem radial_residue_formula : RDResRad := by
       intro x hx hg
       have hxD : x ∈ DomR P.k P.r z z' := ⟨hx.2.1, hg, hx.2.2⟩
       show (if (x.1, x.2) ∈ DomR P.k P.r z z' then _ else _) = _
-      rw [if_pos hxD]
+      rw [ite_eq_left hxD]
       exact hag x hx.1 hg
     · intro x hx h hh h' hh'
       have hx' := Rad.domR_uw hx hh hh'
       show (if (x.1, h * x.2 * h') ∈ DomR P.k P.r z z' then _ else _) =
         π h ∘SL (if (x.1, x.2) ∈ DomR P.k P.r z z' then _ else _) ∘SL π' h'
-      rw [if_pos hx', if_pos hx]
+      rw [ite_eq_left hx', ite_eq_left hx]
       simp only [resG]
       rw [show wCell P.k P.r (Fin.last P.r) x.1 * (h * x.2 * h') =
           h * (wCell P.k P.r (Fin.last P.r) x.1 * x.2) * h' by
@@ -102,6 +102,6 @@ theorem radial_residue_formula : RDResRad := by
       simp [ContinuousLinearMap.smul_comp]
   refine ⟨⟨Φ0, hmem⟩, fun x hx => ?_⟩
   show (if (x.1, x.2) ∈ DomR P.k P.r z z' then _ else _) = _
-  rw [if_pos hx]
+  rw [ite_eq_left hx]
 
 end Formalism.FourierDecayAlt.P.CutSE

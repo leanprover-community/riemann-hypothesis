@@ -1,5 +1,7 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PeriodLatticeOnPuncturedDisc
+
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.ClopenCondOnto
 public import Mathlib.LinearAlgebra.BilinearMap
 public import Mathlib.LinearAlgebra.Dimension.Finrank
@@ -34,7 +36,7 @@ open Matrix Metric GroundTheory.Heights₂.Heights.Regular
 
 theorem P_injective {n a g : ℕ} {Λ : Type} [AddCommGroup Λ] (L : LogPeriods n a g Λ)
     {w : Fin n → ℂ} (hw : w ∈ logCover L.a_le) : Function.Injective (L.P w) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro x hx
   apply L.unimod.1
   refine LinearMap.ext fun y => ?_
@@ -147,36 +149,21 @@ theorem single_re (c k : Fin n) :
 
 theorem shift_mem (h : a ≤ n) (i : Fin a) {w : Fin n → ℂ} (hw : w ∈ logCover h) :
     w + Pi.single (Fin.castLE h i) (2 * Real.pi * Complex.I) ∈ logCover h := by
-  refine ⟨fun j => ?_, fun k hk => ?_⟩
-  · rw [Pi.add_apply, Complex.add_re, single_re, add_zero]
-    exact hw.1 j
-  · have hne : k ≠ Fin.castLE h i := by
-      intro e
-      have : k.val = i.val := by rw [e]; rfl
-      omega
-    rw [Pi.add_apply, Pi.single_eq_of_ne hne, add_zero]
-    exact hw.2 k hk
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Flat.QuotLoc.add_single_mem_logCover <;> assumption
 
 theorem expCover_shift (h : a ≤ n) (i : Fin a) (w : Fin n → ℂ) :
     expCover a (w + Pi.single (Fin.castLE h i) (2 * Real.pi * Complex.I)) = expCover a w := by
-  funext k
-  unfold expCover
-  by_cases hk : k = Fin.castLE h i
-  · have : k.val < a := by rw [hk]; exact i.2
-    subst hk
-    simp only [this, if_true, Pi.add_apply, Pi.single_eq_same]
-    rw [Complex.exp_add, Complex.exp_two_pi_mul_I, mul_one]
-  · simp [Pi.single_eq_of_ne hk]
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Flat.QuotLoc.expCover_add_single <;> assumption
 
 theorem exists_seq (h : a ≤ n) : ∃ u : ℕ → Fin n → ℂ, (∀ m, u m ∈ logCover h) ∧
     Tendsto (fun m => expCover a (u m)) atTop (𝓝 0) := by
   refine ⟨fun m k => if k.val < a then -((m : ℂ) + 1) else (((m : ℂ) + 2))⁻¹, fun m => ⟨fun j => ?_, fun k hk => ?_⟩, ?_⟩
   · have : (Fin.castLE h j).val < a := j.2
-    simp only [this, if_true, Complex.neg_re, Complex.add_re, Complex.natCast_re, Complex.one_re]
+    simp only [this, ite_true, Complex.neg_re, Complex.add_re, Complex.natCast_re, Complex.one_re]
     have : (0 : ℝ) ≤ m := Nat.cast_nonneg m
     linarith
   · have : ¬ k.val < a := by omega
-    simp only [this, if_false, norm_inv]
+    simp only [this, ite_false, norm_inv]
     have h2 : ‖(m : ℂ) + 2‖ = (m : ℝ) + 2 := by
       have : (m : ℂ) + 2 = ((m + 2 : ℕ) : ℂ) := by push_cast; ring
       rw [this, Complex.norm_natCast]; push_cast; ring
@@ -187,13 +174,13 @@ theorem exists_seq (h : a ≤ n) : ∃ u : ℕ → Fin n → ℂ, (∀ m, u m �
     intro k
     simp only [expCover, Pi.zero_apply]
     by_cases hk : k.val < a
-    · simp only [hk, if_true]
+    · simp only [hk, ite_true]
       rw [tendsto_zero_iff_norm_tendsto_zero]
       simp only [Complex.norm_exp, Complex.neg_re, Complex.add_re, Complex.natCast_re, Complex.one_re]
       refine Real.tendsto_exp_atBot.comp ?_
       refine tendsto_neg_atTop_atBot.comp ?_
       exact tendsto_atTop_add_const_right _ _ tendsto_natCast_atTop_atTop
-    · simp only [hk, if_false]
+    · simp only [hk, ite_false]
       rw [tendsto_zero_iff_norm_tendsto_zero]
       have h2 : ∀ m : ℕ, ‖((m : ℂ) + 2)⁻¹‖ = ((m : ℝ) + 2)⁻¹ := by
         intro m

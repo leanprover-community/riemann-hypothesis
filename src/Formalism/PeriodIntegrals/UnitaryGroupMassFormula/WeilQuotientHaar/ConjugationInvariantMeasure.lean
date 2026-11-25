@@ -20,8 +20,7 @@ theorem ennreal_eq_one_of_mul {a b : ℝ≥0∞} (h0 : b ≠ 0) (ht : b ≠ ⊤)
 
 theorem ennreal_le_one_of_pow_le {d M : ℝ≥0∞} (hdt : d ≠ ⊤) (hM : M ≠ ⊤)
     (h : ∀ k : ℕ, d ^ k ≤ M) : d ≤ 1 := by
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   lift d to NNReal using hdt
   lift M to NNReal using hM
   have h1 : (1 : NNReal) < d := by exact_mod_cast hlt

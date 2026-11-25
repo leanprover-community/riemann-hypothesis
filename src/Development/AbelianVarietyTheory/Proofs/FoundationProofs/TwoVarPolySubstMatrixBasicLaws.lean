@@ -60,15 +60,7 @@ open MvPolynomial
 variable {R : Type} [CommRing R]
 
 theorem polySlash_mul (m m' : Matrix (Fin 2) (Fin 2) ℤ) (p : MvPolynomial (Fin 2) R) :
-    slP (m * m') p = slP m' (slP m p) := by
-  have h : (slP (R := R) (m * m')) = (slP m').comp (slP m) := by
-    apply MvPolynomial.algHom_ext
-    intro i
-    simp only [AlgHom.comp_apply, _root_.GlobalTheory.KZ.Betti.slP_X, map_add (f := _), map_smul, Matrix.mul_apply, Fin.sum_univ_two]
-    push_cast
-    simp only [smul_add, add_smul, smul_smul]
-    abel
-  rw [h]; rfl
+    slP (m * m') p = slP m' (slP m p) := (GlobalTheory.KZ.Betti.polySlash_polySlash m m' p).symm
 
 theorem polySlash_isHomogeneous (m : Matrix (Fin 2) (Fin 2) ℤ) (w : ℕ) (p : MvPolynomial (Fin 2) R)
     (hp : p.IsHomogeneous w) : (slP m p).IsHomogeneous w := by

@@ -55,13 +55,6 @@ def LocX.Red {βT : GL (Fin D.sp.X'.rank) (Lev.EAf D)} {PP : Pl D.host.E} (l : L
     b'.val = GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum.framePos _ _ j → ∀ z : 𝓞 D.host.E, Ideal.Quotient.mk PP.asIdeal z = g.val a' b' →
       valuation l.k ((x : GL (Fin D.R.k ⊕ Fin (l.s + 1)) l.k).val i j - (ofSplit l.q).pr (z : D.host.E)) < 1
 
-structure SymRead (l : ∀ PP : (pk W).Pg, LocX a (pk W).βX PP.1) (S : ∀ PP, SymData (l PP).k (l PP).s D.R.k) : Prop where
-  char : ∀ PP, (ofSplit (l PP).q).IsChar (pk W).ψ (S PP).ψ
-  mu : ∀ PP j, 1 ≤ j → j ≤ D.R.m → (ofSplit (l PP).q).IsComp (Lift.chrStep (pk W).mu0 (pk W).eta j).1⁻¹ ((S PP).μ j)
-  grp : ∀ g : ∀ PP : (pk W).Pg, GL (Fin D.R.r) (kP PP.1), g ∈ (lvP W).H ↔ ∀ PP, ∃ x, (l PP).Red (S PP) x (g PP)
-  chr : ∀ (g : ∀ PP : (pk W).Pg, GL (Fin D.R.r) (kP PP.1)) (hg : g ∈ (lvP W).H) (x : ∀ PP, (S PP).P.J),
-    (∀ PP, (l PP).Red (S PP) (x PP) (g PP)) → (lvP W).chi ⟨g, hg⟩ = ∏ PP, (S PP).P.lam (x PP)
-
 end GlobalTheory.Fam
 
 end

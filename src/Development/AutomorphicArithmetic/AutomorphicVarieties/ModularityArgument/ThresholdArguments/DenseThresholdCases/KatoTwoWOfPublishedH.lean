@@ -475,7 +475,7 @@ private theorem eq_one_of_root {x : WD h} (hu : x.unr) (t : Ine (F := E) A) {z :
     (hz : (x.charPol (ineIncl h t)).IsRoot z) : z = 1 := by
   obtain ⟨m, b, rfl⟩ := x.exists_rep
   rw [WD.unr_mk] at hu
-  haveI : Module.Free ℂ (Fin m → ℂ) := Module.Free.of_basis (Pi.basisFun ℂ (Fin m))
+  have : Module.Free ℂ (Fin m → ℂ) := Module.Free.of_basis (Pi.basisFun ℂ (Fin m))
   rw [WD.charPol_mk, hu.2 t, ← Module.End.hasEigenvalue_iff_isRoot_charpoly] at hz
   obtain ⟨v, hv⟩ := hz.exists_hasEigenvector
   have h3 := hv.apply_eq_smul
@@ -486,7 +486,7 @@ open UpperTheory.V.Z.Kato.WeilSphericalRecords.SphericalReciprocity in
 theorem UpperTheory.V.Z.Kato.WeilSphericalRecords.recSph_alt :
     _root_.UpperTheory.V.Af.Hypotheses' → RecSph := by
   intro _ E Ω _ _ _ _ _ A w h rc ⟨a, ha, L⟩ n σ hP hlev
-  haveI : CharZero (w.adicCompletion E) := charZero_of_injective_algebraMap (algebraMap E _).injective
+  have : CharZero (w.adicCompletion E) := charZero_of_injective_algebraMap (algebraMap E _).injective
   have hxu : (rc (IrrGL.of σ.ρ σ.smooth σ.irred)).unr := by
     have h0 := unr_of_level hlev
     rwa [algNorm, L.nu, WD.unr_tw] at h0
@@ -744,8 +744,8 @@ open UpperTheory.V.Z.Kato.WeilSphericalRecords.TwistWitness in
 theorem UpperTheory.V.Z.Kato.WeilSphericalRecords.twWit_alt :
     _root_.UpperTheory.V.Af.Hypotheses' → _root_.UpperTheory.V.Z.Win.AIsoTwAlt → TwWit := by
   intro P hI l _ Ω _ _ _ ι n W M φ hM hφ hW K _ _ _ _ _ _ hK hirr
-  haveI : Algebra.IsAlgebraic ℚ K := inferInstance
-  haveI : IsAlgClosure K Ω :=
+  have : Algebra.IsAlgebraic ℚ K := inferInstance
+  have : IsAlgClosure K Ω :=
     ⟨IsAlgClosure.isAlgClosed ℚ, (IsAlgClosure.isAlgebraic (R := ℚ) (K := Ω)).tower_top K⟩
   rw [comp_tw] at hirr ⊢
   have hW' := hW K hK (irr_of_tw _ _ hirr)
@@ -823,7 +823,7 @@ theorem isRoot_charPol_wdAt :
   have hψc : ∀ i, Continuous fun s => (ψ i s : Qbar l) := fun i => by
     refine ((hκc i).mul (hεc.zpow₀ (-m i) fun s => Or.inl (Units.ne_zero _))).congr fun s => ?_
     simp [ψ]
-  haveI := hV.finite
+  have := hV.finite
   have T := UpperTheory.weilDeligne_triangularizable F Ω l ι w A h O Bw hj L n _ ρ κL μ htri (fun i hi σ y => by
     refine (UpperTheory.cyclotomicWeilChar_properties F Ω l ι w A h O Bw hj L (κL i) (χL i) (m i) ?_ ⟨K', fun g hg => ?_⟩ (fun g hg => ?_) hi σ y).trans ?_
     · refine ((hκc i).comp Bw.e_symm_cont).congr fun g => ?_
@@ -885,8 +885,8 @@ private theorem tri_avg {G : Type} [Group G] [Finite G] {n : ℕ} (R : G →* Ma
     (hR : ∀ g i j, j < i → R g i j = 0) :
     ∃ P : Matrix (Fin n) (Fin n) ℂ, IsUnit P.det ∧ ∀ g, R g * P = P * Matrix.diagonal (fun i => R g i i) := by
   classical
-  letI := Fintype.ofFinite G
-  haveI : Nonempty G := ⟨1⟩
+  let := Fintype.ofFinite G
+  have : Nonempty G := ⟨1⟩
   have hm : ∀ g h i, R (g * h) i i = R g i i * R h i i := fun g h i => by
     rw [map_mul]; exact tri_mul_diag _ _ (hR g) (hR h) i
   refine ⟨∑ h, R h * Matrix.diagonal (fun i => R h⁻¹ i i), ?_, fun g => ?_⟩
@@ -915,8 +915,8 @@ private theorem tri_avg {G : Type} [Group G] [Finite G] {n : ℕ} (R : G →* Ma
 theorem tridiagonal_weil_deligne : UpperTheory.V.Af.Wd.TriDiag := by
   intro W I _ _ _ n ρ d hfin ⟨b, hb⟩
   let G := ρ.toHomUnits.range
-  haveI : Finite G := by
-    haveI : Finite (Set.range ρ) := hfin
+  have : Finite G := by
+    have : Finite (Set.range ρ) := hfin
     refine Finite.of_injective (fun g : G => (⟨(g.1 : End ℂ W), ?_⟩ : Set.range ρ)) ?_
     · obtain ⟨s, hs⟩ := g.2
       exact ⟨s, by rw [← hs]; rfl⟩
@@ -973,8 +973,7 @@ theorem UpperTheory.weilDeligne_monodromy_upperTriangular :
     apply (LinearMap.toMatrix b b).injective
     rw [← hBdef, h, map_zero]
   have hex : ∃ i j, B i j ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hB0 (Matrix.ext h)
   classical
   have hJ : (Finset.univ.filter fun j => ∃ i, B i j ≠ 0).Nonempty := by
@@ -1083,7 +1082,7 @@ theorem UpperTheory.V.Af.weil_deligne_above_of_printed_results :
   have hψc : ∀ i, Continuous fun s => (ψ i s : Qbar l) := fun i => by
     refine ((hκc i).mul (hεc.zpow₀ (-m i) fun s => Or.inl (Units.ne_zero _))).congr fun s => ?_
     simp [ψ]
-  haveI := hV.finite
+  have := hV.finite
   have T := UpperTheory.weilDeligne_triangularizable F Ω l ι w A h O Bw hj L n _ ρ κL μ htri (fun i hi σ y => by
     refine (UpperTheory.cyclotomicWeilChar_properties F Ω l ι w A h O Bw hj L (κL i) (χL i) (m i) ?_ ⟨K', fun g hg => ?_⟩ (fun g hg => ?_) hi σ y).trans ?_
     · refine ((hκc i).comp Bw.e_symm_cont).congr fun g => ?_
@@ -1447,9 +1446,9 @@ private theorem polar_of_lift (hP : _root_.UpperTheory.V.Af.Hypotheses') {K Ω :
     (ι : Qbar l ≃+* ℂ) (r : G ℚ Ω →* GL (Fin 2) (Qbar l)) (wt : ℤ) (θ : G ℚ Ω →* (Qbar l)ˣ) (π : TR.CuspSub ℚ 2)
     (Q : CuspSub K 2) (hBC : Br.IsBC0 π Q) (hC : AttC ι (r.comp (Bc.res ℚ Ω K)) Q) (hθ : IsCycWt l wt θ) (hd : DualTw r θ) :
     ∃ χ, GlobalTheory.ContraPair.PolarizedPair Q χ := by
-  haveI : IsScalarTower ℚ (maximalRealSubfield K) Ω := IsScalarTower.of_algebraMap_eq' (RingHom.ext_rat _ _)
+  have : IsScalarTower ℚ (maximalRealSubfield K) Ω := IsScalarTower.of_algebraMap_eq' (RingHom.ext_rat _ _)
   have : Algebra.IsAlgebraic (maximalRealSubfield K) K := Algebra.IsAlgebraic.tower_top (K := ℚ) _
-  haveI : IsAlgClosure (maximalRealSubfield K) Ω :=
+  have : IsAlgClosure (maximalRealSubfield K) Ω :=
     ⟨IsAlgClosure.isAlgClosed K, Algebra.IsAlgebraic.trans (maximalRealSubfield K) K Ω⟩
   have hθ' : IsCycWt l (wt + (((2 : ℕ) : ℤ) - 1))
       (θ.comp (Bc.res ℚ Ω (maximalRealSubfield K)) * cycBar (maximalRealSubfield K) Ω l ^ (((2 : ℕ) : ℤ) - 1)) := by
@@ -1605,9 +1604,6 @@ theorem exists_rep_alt (P : _root_.UpperTheory.V.Af.Hypotheses') [IsAlgClosure �
   · filter_upwards [ev_not_mem f.M f.pos.ne'] with w hwM
     exact hsat w (not_dvd_of_not_mem hwM)
 end GlobalTheory.Ord2.SrcForm
-namespace GlobalTheory.Ord2
-open TwDet SrcForm
-end GlobalTheory.Ord2
 end
 end
 end
@@ -1632,7 +1628,7 @@ open UpperTheory.V.Af.Nf CongruenceSubgroup GlobalTheory.CuspRep Neutral.B1 Form
 private theorem level_zero_eq_maximal_compact (w : HeightOneSpectrum (𝓞 ℚ)) : UpperTheory.V.Sd.K1 w 0 = GlobalTheory.LFun.KGL w (n := 2) := by
   ext g
   refine ⟨fun ⟨k, _, e⟩ => ⟨k, e⟩, fun ⟨k, e⟩ => ⟨k, ?_, e⟩⟩
-  haveI : Subsingleton (w.adicCompletionIntegers ℚ ⧸ IsLocalRing.maximalIdeal (w.adicCompletionIntegers ℚ) ^ 0) :=
+  have : Subsingleton (w.adicCompletionIntegers ℚ ⧸ IsLocalRing.maximalIdeal (w.adicCompletionIntegers ℚ) ^ 0) :=
     Ideal.Quotient.subsingleton_iff.2 (by simp)
   exact Subsingleton.elim _ _
 private theorem locGL_comm' {v w : HeightOneSpectrum (𝓞 ℚ)} (h : v ≠ w) (g : GL (Fin 2) (v.adicCompletion ℚ))
@@ -1723,7 +1719,7 @@ theorem not_dvd_level_of_satake_hecke_poly_cofinite : _root_.UpperTheory.V.Af.Hy
     fun z g' => hω z x.1 x.2 g'
   obtain ⟨χ, hχ⟩ := UpperTheory.V.Br.charOf _ hN ω x.1 hx0' hone hfix hc
   obtain ⟨f, hf, hL⟩ := UpperTheory.V.Br.deadel k _ hN χ ω hχ x.1 hcusp ⟨hwt, hlo, hone⟩ hfix hc
-  haveI : NeZero (g.M / normV w) := ⟨by omega⟩
+  have : NeZero (g.M / normV w) := ⟨by omega⟩
   have hf0 : f ≠ 0 := by
     rintro rfl
     refine hx0' (Subtype.ext (funext fun g' => ?_))

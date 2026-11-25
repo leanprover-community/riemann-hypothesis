@@ -42,14 +42,14 @@ theorem exists_flags_good : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k,
     refine ⟨fun k => if hk : ∀ p, M.blk p ≠ some k then (basePart M.blk z ⟨⟨k, hk⟩, F.c ⟨k, hk⟩⟩)⁻¹ else 1,
       fun k => ?_, fun k => ?_, fun p k hp => ?_⟩
     · by_cases hk : ∀ p, M.blk p ≠ some k
-      · simp only [dif_pos hk]
+      · simp only [dite_eq_left hk]
         exact inv_ne_zero (hch ⟨k, hk⟩)
-      · simp only [dif_neg hk]
+      · simp only [dite_eq_right hk]
         exact one_ne_zero
-    · simp only [dif_pos k.2]
+    · simp only [dite_eq_left k.2]
       exact inv_mul_cancel₀ (hch k)
     · have hk : ¬ ∀ p, M.blk p ≠ some k := fun h => h p hp
-      simp only [dif_neg hk]
+      simp only [dite_eq_right hk]
   let z₁ : (Σ k, ι k) → ℂ := fun q => c q.1 * z q
   have hz₁ : z₁ ∈ mcPts (mCoordIdeal y) :=
     mcPts_smul (CoordinateConeArithVar.isMultiHomogIdeal y) c hc hz

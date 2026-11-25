@@ -217,11 +217,4 @@ theorem isSchwartzBruhat_iff {d : ℕ} (b : Module.Basis (Fin d) F E)
 
 end Coords
 
-section Main
-
-open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.Published.SiegelOneVector GlobalTheory.CompanionTheory.Hypotheses₂.OneV
-open scoped TensorProduct
-
-end Main
-
 end GlobalTheory.CompanionTheory.Hypotheses₂.OneV.FouCoord

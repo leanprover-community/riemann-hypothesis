@@ -101,16 +101,16 @@ theorem mem_extSub_span_depth {R : Type} [CommRing R] [Algebra F R] {r : ℕ} {C
   have e : Submodule.span E ((fun k => vecOf V (Cᵀ k)) '' {j | d j < i}) = colSpan V C' := by
     refine le_antisymm (Submodule.span_mono ?_) (Submodule.span_le.2 ?_)
     · rintro _ ⟨j, hj, rfl⟩
-      exact ⟨j, congrArg (vecOf V) (funext fun a => if_pos hj)⟩
+      exact ⟨j, congrArg (vecOf V) (funext fun a => ite_eq_left hj)⟩
     · rintro _ ⟨j, rfl⟩
       by_cases hj : d j < i
-      · exact Submodule.subset_span ⟨j, hj, congrArg (vecOf V) (funext fun a => (if_pos hj).symm)⟩
-      · have : C'ᵀ j = 0 := funext fun a => if_neg hj
+      · exact Submodule.subset_span ⟨j, hj, congrArg (vecOf V) (funext fun a => (ite_eq_left hj).symm)⟩
+      · have : C'ᵀ j = 0 := funext fun a => ite_eq_right hj
         simp [this, vecOf]
   rw [e, AutFunCompare.mem_extSub_colSpan]
   constructor
   · rintro ⟨a, rfl⟩
-    refine ⟨fun j => if d j < i then a j else 0, fun j hj => if_neg (not_lt.2 hj), funext fun b => ?_⟩
+    refine ⟨fun j => if d j < i then a j else 0, fun j hj => ite_eq_right (not_lt.2 hj), funext fun b => ?_⟩
     simp only [Matrix.mulVec, dotProduct, Matrix.map_apply]
     refine Finset.sum_congr rfl fun j _ => ?_
     by_cases hj : d j < i <;> simp [C', hj]

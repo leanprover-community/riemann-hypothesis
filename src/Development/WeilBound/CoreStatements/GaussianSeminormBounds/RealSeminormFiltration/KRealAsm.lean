@@ -184,8 +184,7 @@ theorem exists_prodForm_ne (y : ⨂[ℂ] i, V i) (hy : y ≠ 0) : ∃ ℓ : ∀ 
   let b := fun i => Module.Basis.ofVectorSpace ℂ (V i)
   let B := Basis.piTensorProduct b
   obtain ⟨α, hα⟩ : ∃ α, B.repr y α ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hy
     apply B.repr.injective
     ext α
@@ -199,9 +198,9 @@ theorem exists_prodForm_ne (y : ⨂[ℂ] i, V i) (hy : y ≠ 0) : ∃ ℓ : ∀ 
     by_cases h : β = α
     · subst h; simp
     · obtain ⟨i, hi⟩ := Function.ne_iff.1 h
-      rw [Finsupp.single_apply, if_neg h]
+      rw [Finsupp.single_apply, ite_eq_right h]
       symm
-      exact Finset.prod_eq_zero (Finset.mem_univ i) (by rw [Finsupp.single_apply, if_neg hi])
+      exact Finset.prod_eq_zero (Finset.mem_univ i) (by rw [Finsupp.single_apply, ite_eq_right hi])
   rw [← e]
   simpa using hα
 
@@ -535,9 +534,6 @@ section Helpers
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι] {V W : ι → Type} [∀ i, AddCommGroup (V i)] [∀ i, Module ℂ (V i)]
   [∀ i, AddCommGroup (W i)] [∀ i, Module ℂ (W i)]
-
-theorem atPl_eq (w : ι) (L : Module.End ℂ (V w)) :
-    atPl w L = PiTensorProduct.mapMultilinear ℂ V V (Function.update (fun i => (LinearMap.id : V i →ₗ[ℂ] V i)) w L) := rfl
 
 theorem map_surj (p : ∀ i, V i →ₗ[ℂ] W i) (hp : ∀ i, Function.Surjective (p i)) :
     Function.Surjective (PiTensorProduct.map p) := by

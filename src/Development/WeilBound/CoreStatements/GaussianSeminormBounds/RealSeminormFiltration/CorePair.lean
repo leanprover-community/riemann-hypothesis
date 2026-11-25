@@ -64,9 +64,9 @@ theorem fockAct1_Eab_inr_inl_eq_zero_of_mem_Jset {p q r : ℕ} {x : Pol p q r 0}
   rw [PI.FJM.leftOffDiagonalActionFormula p q r 0 _ _ (by simp)]
   simp only [PI.FJM.rai1, PI.FJM.lapB, PI.FJM.dd, LinearMap.sum_apply, Fintype.sum_sum_type,
     Finset.univ_eq_empty, Finset.sum_empty, add_zero, Module.End.mul_apply, raiB, lowB, linePos] at h ⊢
-  simp only [Bool.false_eq_true, if_false, if_true, LinearMap.neg_apply, Finset.sum_neg_distrib, neg_eq_zero]
+  simp only [Bool.false_eq_true, ite_false, ite_true, LinearMap.neg_apply, Finset.sum_neg_distrib, neg_eq_zero]
   rw [← h]
-  exact Finset.sum_congr rfl fun k _ => PI.FockOneDegW.Core.pd_comm _ _ _
+  exact Finset.sum_congr rfl fun k _ => MvPolynomial.pderiv_comm _ _ _
 
 theorem cross_y {p q s : ℕ} {y : Pol p q 0 s} (hy : y ∈ Jset p q 0 s) (i : Fin p) (j : Fin q) :
     fockAct1 p q 0 s (Eab (.inl i) (.inr j)) y = 0 := by
@@ -74,7 +74,7 @@ theorem cross_y {p q s : ℕ} {y : Pol p q 0 s} (hy : y ∈ Jset p q 0 s) (i : F
   rw [PI.FJM.leftOffDiagonalActionFormula p q 0 s _ _ (by simp)]
   simp only [PI.FJM.rai1, PI.FJM.lapA, PI.FJM.dd, LinearMap.sum_apply, Fintype.sum_sum_type,
     Finset.univ_eq_empty, Finset.sum_empty, zero_add, Module.End.mul_apply, raiB, lowB, linePos] at h ⊢
-  simp only [Bool.false_eq_true, if_false, if_true, LinearMap.neg_apply, Finset.sum_neg_distrib, neg_eq_zero]
+  simp only [Bool.false_eq_true, ite_false, ite_true, LinearMap.neg_apply, Finset.sum_neg_distrib, neg_eq_zero]
   exact h
 
 theorem pair_of {p q r s : ℕ} (c0 u v u' v' : ℚ) (h1 : u' + cPair 0 s = c0 - (u + cPair r 0))

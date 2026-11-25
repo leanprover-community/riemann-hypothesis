@@ -140,7 +140,7 @@ theorem blockChar_eq_inv_detDD : ∀ {L : Type} [Field L] [NumberField L] [IsCMF
     have hn : ∀ x : Fin t, ¬ ((Fin.natAdd r x : Fin (r + t)) : ℕ) < r := by intro x; simp
     simp only [e, Matrix.transpose_apply, Matrix.submatrix_apply, Matrix.of_apply, Equiv.coe_fn_mk, Units.val_mul,
       hdinv, hd, Matrix.mul_diagonal, Matrix.diagonal_mul, hb]
-    rw [if_neg (hn _), if_neg (hn _), mul_comm ϖ, mul_inv_cancel_right₀ hϖ0]
+    rw [ite_eq_right (hn _), ite_eq_right (hn _), mul_comm ϖ, mul_inv_cancel_right₀ hϖ0]
   have hc : c (NG.detDD s r (d * b * d⁻¹)) =
       (((Matrix.GeneralLinearGroup.map c.toRingHom a)⁻¹ : GL (Fin (r + t)) (s.w.adicCompletion L)).val.submatrix
         (Fin.natAdd r) (Fin.natAdd r)).det := by

@@ -108,7 +108,7 @@ theorem kerMeas_holds : KerMeas := by
   have h1 : ∀ y, ¬ (∃ g : GI X, g • x0 = y) → sect X u' y = 1 := by
     intro y hy
     unfold sect
-    exact dif_neg hy
+    exact dite_eq_right hy
   exact PI.AprimeInfK.ker_meas (G := GI X) x0 hc ν (sect X u') hs h1
 
 end PI.AprimeInfW

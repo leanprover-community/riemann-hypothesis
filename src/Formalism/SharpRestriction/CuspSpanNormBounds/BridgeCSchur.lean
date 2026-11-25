@@ -101,7 +101,7 @@ theorem schur_selfAdjoint (𝒰 : Set (H →L[ℂ] H))
         exact h3
       by_cases h1 : |s - t| / 2 ≤ |x - s|
       · rw [max_eq_left (show |s - t| / 2 - |x - s| ≤ 0 by linarith), zero_mul]
-      · push_neg at h1
+      · push Not at h1
         rw [max_eq_left (show |s - t| / 2 - |x - t| ≤ 0 by linarith), mul_zero]
     · show max 0 (|s - t| / 2 - |s - s|) ≠ 0
       rw [sub_self, abs_zero, sub_zero, max_eq_right hδ.le]
@@ -441,8 +441,7 @@ theorem equiv_of_intertwiner (h : SqRep μ ρ) (h' : SqRep μ ρ')
     push_cast
     exact e1.symm
   obtain ⟨w₀, hw₀⟩ : ∃ w, B w ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hB (ContinuousLinearMap.ext hcon)
   have hw₀' : w₀ ≠ 0 := fun h0 => hw₀ (by rw [h0, map_zero])
   obtain ⟨r, hr, hBr⟩ : ∃ r : ℝ, 0 < r ∧ ∀ w, ‖B w‖ = r * ‖w‖ := by

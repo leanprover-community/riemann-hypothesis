@@ -25,8 +25,6 @@ private theorem hder_entry {n : ℕ} (X : Mat n) (t : ℝ) (i j : Fin n) :
   have hL := ((Matrix.entryLinearMap ℝ ℂ i j).toContinuousLinearMap).hasFDerivAt (x := NormedSpace.exp (t • X))
   exact hL.comp_hasDerivAt t h
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem UpperTheory.RealTr.basic :
     ∀ n : ℕ, IsOpen (GLs n) ∧ (∀ g : Mat n, g ∈ GLs n ↔ IsUnit g) ∧ (∀ X : Mat n, NormedSpace.exp X ∈ GLs n) ∧
       (∀ (X g : Mat n) (t : ℝ), HasDerivAt (fun s : ℝ => g * NormedSpace.exp (s • X)) (g * NormedSpace.exp (t • X) * X) t) ∧
@@ -41,7 +39,7 @@ theorem UpperTheory.RealTr.basic :
   have hval : ∀ {U : Type} [NormedAddCommGroup U] [InnerProductSpace ℂ U] (π : G n →* (U →L[ℂ] U)) (g : G n),
       piM π g.val = π g := by
     intro U _ _ π g
-    simp only [piM, dif_pos g.isUnit]
+    simp only [piM, dite_eq_left g.isUnit]
     congr 1
     exact Units.ext rfl
   refine ⟨?_, hmem, ?_, ?_, ?_⟩

@@ -80,7 +80,7 @@ theorem vabs_ind (hpl : Q.IsPlace P Bs.z Bs.z' Bs.π Bs.π') (hk : 2 ≤ P.k) (h
     have hv : Q.vABs (E := Wq →L[ℂ] Wp) P.r (Y : ℂ) (i + 1) =
         (fun f => (Q.vABs P.r (Y : ℂ) i).1 ((Y : ℂ) • f - pbOp l f) - (Q.vABs P.r (Y : ℂ) i).2 (cbOp l f),
           fun f => (Q.vABs P.r (Y : ℂ) i).1 (cbiOp l f)) := by
-      simp only [Q.vABs, dif_pos h, hl]
+      simp only [Q.vABs, dite_eq_left h, hl]
     set Ψ := (Y : ℂ) • Φ - Q.crd (pbOp l) Φ with hΨ
     have hpb : FamR P Bs Dc (Q.crd (pbOp l) Φ) := famR_opL hΦ l 3
     have hcb : FamR P Bs Dc (Q.crd (cbOp l) Φ) := famR_opL hΦ l 4

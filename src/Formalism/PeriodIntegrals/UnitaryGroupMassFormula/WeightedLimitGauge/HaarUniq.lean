@@ -33,9 +33,9 @@ theorem hpk_row (i m : Fin (2 * r + k + 1)) :
 theorem hpk_mul_apply (A : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)
     (i j : Fin (2 * r + k + 1)) : (Hpk k r * A) i j = sgn k r i * A (tau k r i) j := by
   rw [Matrix.mul_apply, Finset.sum_eq_single (tau k r i)]
-  · rw [hpk_row, if_pos rfl]
+  · rw [hpk_row, ite_eq_left rfl]
   · intro m _ hm
-    rw [hpk_row, if_neg hm, zero_mul]
+    rw [hpk_row, ite_eq_right hm, zero_mul]
   · intro h
     exact absurd (Finset.mem_univ _) h
 
@@ -44,11 +44,6 @@ theorem tau_tau (i : Fin (2 * r + k + 1)) : tau k r (tau k r i) = i := by
   apply Fin.ext
   simp only
   split_ifs <;> omega
-
-theorem sgn_tau (i : Fin (2 * r + k + 1)) : sgn k r (tau k r i) = sgn k r i := by
-  unfold sgn tau
-  simp only
-  split_ifs <;> first | rfl | (exfalso; omega)
 
 theorem sgn_mul_self (i : Fin (2 * r + k + 1)) : sgn k r i * sgn k r i = 1 := by
   unfold sgn

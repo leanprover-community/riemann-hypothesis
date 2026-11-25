@@ -23,7 +23,7 @@ theorem tauE_ne_conj (τ ρ : D.what₂.Tau) : tauE D τ ≠ (starRingEnd ℂ).c
   have e1 : (D.eTau τ).1.1.2 = ((D.eTau ρ).1 * D.R.cc).1.2 :=
     congrArg (fun g : D.R.GG => g.1.2) (Formalism.IndefR.Conj.emb_injective h)
   have hc := Formalism.IndefR.Conj.snd_side (D := D) false
-  simp only [Bool.false_eq_true, if_false] at hc
+  simp only [Bool.false_eq_true, ite_false] at hc
   rw [show ((D.eTau ρ).1 * D.R.cc).1.2 = (D.eTau ρ).1.1.2 * (D.R.cc).1.2 from rfl] at e1
   rw [(Formalism.HC.Frame.mem_Psi_iff _).1 (D.eTau τ).2, (Formalism.HC.Frame.mem_Psi_iff _).1 (D.eTau ρ).2, one_mul, hc] at e1
   exact absurd e1 (by decide)

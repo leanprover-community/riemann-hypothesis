@@ -19,51 +19,6 @@ public import Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorem
 public import Mathlib.MeasureTheory.Order.Group.Lattice
 public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 public import Mathlib.MeasureTheory.Integral.ExpDecay
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.IteratedDerivLaplace, Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.LandauCoeff, Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.LandauDichotomy, Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.LandauGrowthContra, Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.LandauNearest, Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.LandauPoleAsym, Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.LandauPoleReLe, Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.kernelIntegral, Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.landauTails, Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.LandauKernelMax, Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.landauWindowIneq, Development.AutomorphicArithmetic.DedekindLFunctions.LandauTheorems.landauWindow
@@ -290,7 +245,7 @@ theorem landau_dichotomy {Z : Set ℂ} (hiso : ∀ z : ℂ, 0 < z.re → ∀ᶠ 
     · left
       exact ⟨dist ρs (σ : ℂ), hdle, hball, hex⟩
     · right
-      push_neg at hex
+      push Not at hex
       set d := dist ρs (σ : ℂ) with hd
       have hreal : ∀ w ∈ F, dist w (σ : ℂ) = d → w = ((σ - d : ℝ) : ℂ) :=
         fun w hw he => eq_ofReal_sub_of_dist_le_of_le_sub_re (le_of_eq he) (hex w hw.1)
@@ -523,7 +478,7 @@ theorem landau_pole_asym {Φ : ℂ → ℂ} {z ρ c : ℂ} {r r' : ℝ} (hρ : �
     by_cases hsρ : s = ρ
     · rw [hsρ]
       simp [G]
-    · simp only [G, if_neg hsρ]
+    · simp only [G, ite_eq_right hsρ]
       rw [hs (Set.mem_compl_singleton_iff.mpr hsρ)]
       ring
   have hGd : DifferentiableOn ℂ G (Metric.ball z r) := by
@@ -536,7 +491,7 @@ theorem landau_pole_asym {Φ : ℂ → ℂ} {z ρ c : ℂ} {r r' : ℝ} (hρ : �
       have hloc : G =ᶠ[𝓝 s] fun t => Φ t - c / (t - ρ) := by
         filter_upwards [hopen.mem_nhds hmem] with t ht
         have htρ : t ≠ ρ := ht.2
-        simp only [G, if_neg htρ]
+        simp only [G, ite_eq_right htρ]
       have hd' : DifferentiableAt ℂ (fun t => Φ t - c / (t - ρ)) s :=
         hΦ.sub ((differentiableAt_const c).div
           (differentiableAt_id.sub (differentiableAt_const ρ)) (sub_ne_zero.mpr hsρ))
@@ -549,7 +504,7 @@ theorem landau_pole_asym {Φ : ℂ → ℂ} {z ρ c : ℂ} {r r' : ℝ} (hρ : �
   have hloc : Φ =ᶠ[𝓝 z] G + fun s => c * (s - ρ)⁻¹ := by
     filter_upwards [hopen.mem_nhds hmemz] with t ht
     have htρ : t ≠ ρ := ht.2
-    simp only [Pi.add_apply, G, if_neg htρ, div_eq_mul_inv]
+    simp only [Pi.add_apply, G, ite_eq_right htρ, div_eq_mul_inv]
     ring
   have hGc : ContDiffAt ℂ k G z :=
     (hGd.contDiffOn Metric.isOpen_ball).contDiffAt

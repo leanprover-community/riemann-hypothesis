@@ -396,7 +396,7 @@ private theorem unitB_mulVec_bvec_eq_zero_of_not_inV {k r m : ℕ} {i : Fin (r +
       rintro rfl
       omega
     simp only [Hpk, hne, and_false, ↓reduceIte]
-    rw [if_neg (by omega), if_neg (by omega)]
+    rw [ite_eq_right (by omega), ite_eq_right (by omega)]
   have hherm : herm (Hpk k r) (bvec p) (Bs b) = 0 := by
     unfold herm
     simp only [dotProduct, hcol]

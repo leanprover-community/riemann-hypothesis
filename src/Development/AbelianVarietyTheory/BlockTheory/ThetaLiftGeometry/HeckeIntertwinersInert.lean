@@ -72,13 +72,6 @@ def IsInertDC (R : RealDat D A Ks) (t : T) (PP : Pl D.host.E) (x : Bridge.Gf D.s
 abbrev InertIx (R : RealDat D A Ks) (t : T) : Type :=
   {a : Pl D.host.E × Bridge.Gf D.sp.X' × Finset (Bridge.Gf D.sp.X') // IsInertDC R t a.1 a.2.1 a.2.2}
 
-section Fam
-
-variable (R : RealDat D A Ks) {I : T → Type} (lab : ∀ t, I t → InertIx R t)
-  (hE : ∀ t, (A.ok t × ℕ) ⊕ I t → Module.End ℂ R.HE.H)
-
-end Fam
-
 end GlobalTheory.IndefiniteRowSideFullHecke.HeckeIntertwinersInert
 
 end

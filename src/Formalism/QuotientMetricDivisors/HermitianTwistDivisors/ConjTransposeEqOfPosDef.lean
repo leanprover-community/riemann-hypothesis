@@ -32,15 +32,9 @@ theorem map_inv_field {F : Type} [Field F] (f : K →+* F) {ι : Type} [Fintype 
     rw [Matrix.nonsing_inv_apply_not_isUnit _ h, Matrix.nonsing_inv_apply_not_isUnit _ h',
       Matrix.map_zero _ f.map_zero]
 
-theorem conjTranspose_map (σ : K →+* ℂ) (hσ : ∀ a : K, σ (star a) = starRingEnd ℂ (σ a))
-    {m n : Type} (A : Matrix m n K) : Aᴴ.map σ = (A.map σ)ᴴ := by
-  ext i j
-  rw [Matrix.map_apply, Matrix.conjTranspose_apply, Matrix.conjTranspose_apply, Matrix.map_apply, hσ]
-  rfl
-
 theorem conjTranspose_eq_of_posDef [NumberField K] (v0 : InfinitePlace K) (hv0 : IsConjAt v0)
     {n : ℕ} (H : Matrix (Fin n) (Fin n) K) (hH : (H.map v0.embedding).PosDef) : Hᴴ = H := by
-  have h1 := conjTranspose_map v0.embedding hv0 H
+  have h1 := Matrix.conjTranspose_map (A := H) v0.embedding hv0
   have h2 : (H.map v0.embedding)ᴴ = H.map v0.embedding := hH.isHermitian
   ext i j
   have h3 := congrFun (congrFun (h1.trans h2) i) j
@@ -74,7 +68,7 @@ theorem gram_determinant_quotient_metric : GramDeterminantQuotientMetric := by
   have hΓmap : (quotGram P H).map v0.embedding = ((XQ v0)⁻¹)ᴴ * (XQ v0)⁻¹ := by
     rw [(hQ v0).2]
     unfold quotGram
-    rw [map_inv_field, Matrix.map_mul, Matrix.map_mul, map_inv_field, conjTranspose_map v0.embedding hv0]
+    rw [map_inv_field, Matrix.map_mul, Matrix.map_mul, map_inv_field, Matrix.conjTranspose_map v0.embedding hv0]
   refine ⟨?_, ?_⟩
   · unfold gramR
     rw [← Matrix.det_conjTranspose, gramMat_conjTranspose _ hΓ e]

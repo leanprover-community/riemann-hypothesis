@@ -126,7 +126,7 @@ theorem exists_contragredient {G X κ : Type} [Group G] [TopologicalSpace G] [Ad
           refine Finset.sum_congr rfl fun q _ => ?_
           ring
       _ = ∑ p, y p * starRingEnd ℂ (x p) := by
-          simp only [horth, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+          simp only [horth, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
           exact Finset.sum_congr rfl fun p _ => mul_comm _ _
   · intro x
     have hfun : (fun g => ρ g x) = fun g => WithLp.toLp 2 (fun q => ∑ p, x p * starRingEnd ℂ (B.repr (T g (B p)) q)) := by

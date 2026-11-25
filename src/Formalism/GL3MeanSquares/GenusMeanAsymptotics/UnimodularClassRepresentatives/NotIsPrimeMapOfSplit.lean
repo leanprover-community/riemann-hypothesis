@@ -31,14 +31,12 @@ theorem comap_eq_comap_iff (hσ : ∀ x, σ (σ x) = x) (hfix : ∀ x, σ x = x 
     P.comap ι = Q.comap ι ↔ Q = P ∨ Q = P.comap σ := by
   constructor
   · intro h
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have hP' : (P.comap σ).IsMaximal := comap_isMaximal_invol hσ hP
 
     have hout : ∀ R : Ideal B, R.IsMaximal → Q ≠ R → ∃ y ∈ Q, y ∉ R := by
       intro R hR hQR
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hQR (hQ.eq_of_le hR.ne_top hc)
     obtain ⟨y, hyQ, hyP⟩ := hout P hP hne.1
     obtain ⟨z, hzQ, hzP'⟩ := hout _ hP' hne.2

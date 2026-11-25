@@ -98,8 +98,7 @@ theorem kaehler_atPrime_of_away (K A : Type) [Field K] [CommRing A] [Algebra K A
       Module.Finite (Localization.AtPrime P) Ω[Localization.AtPrime P⁄K] ∧
       Module.finrank (Localization.AtPrime P) Ω[Localization.AtPrime P⁄K] = D := by
   obtain ⟨t, ht, htP⟩ : ∃ t ∈ s, t ∉ P := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact (‹P.IsPrime›).ne_top (top_le_iff.1 (hs ▸ Ideal.span_le.2 hc))
   have hle : Submonoid.powers t ≤ P.primeCompl := by
     rintro _ ⟨n, rfl⟩
@@ -406,7 +405,7 @@ theorem point_coords (K : Type) [Field K] [CharZero K] (D : ℕ) (Y : Scheme.{0}
     have hwU : w ∈ U.1 := Y.basicOpen_le s hw
     have h1 : w ∉ Y.basicOpen (∏ j ∈ J, f j) := (hset.subset ⟨hwU, hwT⟩).2
     rw [mem_basicOpen_prod] at h1
-    push_neg at h1
+    push Not at h1
     obtain ⟨j, hj, hwj⟩ := h1 hwU
     refine ⟨hw, σ.symm (e j), (hσ _).2 (by rw [Equiv.apply_symm_apply]; exact Finset.mem_map_of_mem e hj), ?_⟩
     rw [Equiv.apply_symm_apply, hr _ _ hw, hxe]; exact hwj
@@ -449,13 +448,6 @@ section -- clump:auto
 @[expose] public section
 
 open AlgebraicGeometry CategoryTheory Limits ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.AnForm.R ReciprocityTheory.ChartRestriction.G.Geo.ResK
-
-namespace GlobalTheory.CompanionTheory.Geo.SncCoordsSide
-
-theorem coordsStatement_side : ReciprocityTheory.ChartRestriction.G.Geo.ResK.CoordsStatement :=
-  GlobalTheory.CompanionTheory.Geo.SncCoords.coordsStatement
-
-end GlobalTheory.CompanionTheory.Geo.SncCoordsSide
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordsStatement =====

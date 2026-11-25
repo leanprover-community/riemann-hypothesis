@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.WhittakerVanishingImpliesZero
 public import Formalism.HermitianCurvature.StatementG
 public import Mathlib.Data.Nat.Choose.Multinomial
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdditiveCharacterPsi
@@ -223,15 +224,7 @@ namespace Formalism.FourierDecayAlt.P.PhaseFunctionDerivatives
 open Formalism.FourierDecayAlt.G
 
 theorem b_pow_sub_one (ω : ℂ) (hω : ‖ω‖ = 1) (i : ℕ) : ‖ω ^ i - 1‖ ≤ i * ‖ω - 1‖ := by
-  induction i with
-  | zero => simp
-  | succ i ih =>
-    have e : ω ^ (i + 1) - 1 = ω * (ω ^ i - 1) + (ω - 1) := by ring
-    rw [e]
-    refine (norm_add_le _ _).trans ?_
-    rw [norm_mul, hω, one_mul]
-    push_cast
-    linarith
+  apply _root_.Formalism.FourierDecayAlt.P.WhittakerVanishingImpliesZero.norm_pow_sub_one_le <;> assumption
 
 theorem b_root_sep (s : ℕ) (hs : 0 < s) (z z' : ℂ) (hz : z ≠ 0) (h : z' ^ s = z ^ s) (hne : z' ≠ z) :
     ‖z‖ ≤ s * ‖z' - z‖ := by
@@ -611,9 +604,9 @@ theorem d_entries {m : ℕ} (t σ ρ₁ : ℂ) (ρ' : Fin m → ℂ) (x : UT (m 
   have h3 : ‖B‖ ≤ T := ((norm_snd_le _).trans (norm_snd_le _)).trans hco
   refine ⟨fun i j => ?_, fun i => (norm_le_pi_norm B i).trans h3, ?_, fun k => ?_, ?_⟩
   · by_cases hij : i < j
-    · simp only [strictUpper, Matrix.of_apply, hij, dif_pos]
+    · simp only [strictUpper, Matrix.of_apply, hij, dite_eq_left]
       exact (norm_le_pi_norm x _).trans h2
-    · simp only [strictUpper, Matrix.of_apply, hij, dif_neg, not_false_iff, norm_zero]
+    · simp only [strictUpper, Matrix.of_apply, hij, dite_eq_right, not_false_iff, norm_zero]
       exact hT
   · simpa using (norm_le_pi_norm (Fin.cons ρ₁ ρ' : Fin (m + 1) → ℂ) 0).trans h1
   · simpa using (norm_le_pi_norm (Fin.cons ρ₁ ρ' : Fin (m + 1) → ℂ) k.succ).trans h1

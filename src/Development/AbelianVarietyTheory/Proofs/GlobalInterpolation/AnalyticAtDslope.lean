@@ -103,19 +103,11 @@ theorem expand_zero {φ h : ℂ → ℂ} {m : ℂ} {u : ℝ} (hu : 0 < u)
   field_simp [show s ≠ 0 from hs0]
   ring
 
-theorem analyticOff {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) :
-    AnalyticOnNhd ℂ (LFunction χ) ({1}ᶜ : Set ℂ) := by
-  exact GlobalTheory.Mem.An.ZeroWindow.analyticOff χ
-
 theorem finite_zeros {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) (T : ℝ) :
     {ρ : ℂ | 0 < ρ.re ∧ ρ.re < 1 ∧ |ρ.im| < T ∧ LFunction χ ρ = 0}.Finite := by
   refine (GlobalTheory.Mem.An.ZeroWindow.finite_zeros χ 0 T).subset ?_
   intro ρ hρ
   exact ⟨hρ.1, hρ.2.1, by simpa using hρ.2.2.1.le, hρ.2.2.2⟩
-
-theorem order_ne_top {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) {ρ : ℂ} (hρ : ρ ≠ 1) :
-    analyticOrderAt (LFunction χ) ρ ≠ ⊤ := by
-  exact GlobalTheory.Mem.An.ZeroWindow.order_ne_top χ hρ
 
 open scoped Classical in
 /-- At one, the logarithmic derivative has residue `-1` for every principal
@@ -217,7 +209,7 @@ theorem residue_identity : ∀ (N : ℕ) [NeZero N] (χ : DirichletCharacter ℂ
         simp only [S, Finset.coe_insert, Set.mem_insert_iff, Finset.mem_coe, Set.Finite.mem_toFinset,
           Set.mem_ofPred_eq]
         exact Or.inr (Or.inr ⟨by linarith, by linarith, hI', hL⟩)
-    have hLa : AnalyticAt ℂ (LFunction χ) s := analyticOff χ s hs1
+    have hLa : AnalyticAt ℂ (LFunction χ) s := GlobalTheory.Mem.An.ZeroWindow.analyticOff χ s hs1
     have hd1 : DifferentiableAt ℂ (deriv (LFunction χ)) s := hLa.deriv.differentiableAt
     have hd2 : DifferentiableAt ℂ (fun s : ℂ => (u : ℂ) ^ s) s := (analyticAt_cpow hu0 s).differentiableAt
     exact (((hd1.div hLa.differentiableAt hLs).neg.mul hd2).div differentiableAt_id hs0).differentiableWithinAt
@@ -237,7 +229,7 @@ theorem residue_identity : ∀ (N : ℕ) [NeZero N] (χ : DirichletCharacter ℂ
       exact ⟨a, G, hG, by rw [hr]; exact hfe⟩
     · have hp1 : p ≠ 1 := by rintro rfl; simp at hpZ
       have hp0 : p ≠ 0 := by rintro rfl; simp at hpZ
-      obtain ⟨g, hg, hφp⟩ := logDeriv_pole (analyticOff χ p hp1) (order_ne_top χ hp1)
+      obtain ⟨g, hg, hφp⟩ := logDeriv_pole (GlobalTheory.Mem.An.ZeroWindow.analyticOff χ p hp1) (GlobalTheory.Mem.An.ZeroWindow.order_ne_top χ hp1)
       obtain ⟨a, G, hG, hfe⟩ := expand_simple
         (φ := fun s => deriv (LFunction χ) s / LFunction χ s) hu0 hp0 hg hφp
       have hr : r p = -((analyticOrderNatAt (LFunction χ) p : ℕ) * ((u : ℂ) ^ p / p)) := by
@@ -254,7 +246,7 @@ theorem residue_identity : ∀ (N : ℕ) [NeZero N] (χ : DirichletCharacter ℂ
   simp only [e]
   refine key.trans ?_
   have hr1 : r 1 = if N = 1 then (u : ℂ) else 0 := by
-    simp only [r, if_pos]
+    simp only [r, ite_eq_left]
     split_ifs <;> simp
   have hr0 : r 0 = -(m * (Real.log u : ℂ) + h 0) := by simp [r]
   have hrZ : ∑ p ∈ hZfin.toFinset, r p =

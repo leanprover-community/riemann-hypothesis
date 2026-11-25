@@ -62,24 +62,24 @@ def pathOf (LL : ChainLetters N) (ka : Fin (N + 1) → Fin r → ℤ) (h : IsCha
     | succ i =>
       have h2 := h.2 i
       by_cases hv : LL.vec i = true
-      · rw [if_pos hv] at h2; exact (hstrip_anti (strip_iff.1 h2)).2
-      · rw [if_neg hv] at h2; exact (hstrip_anti (strip_iff.1 h2)).1
+      · rw [ite_eq_left hv] at h2; exact (hstrip_anti (strip_iff.1 h2)).2
+      · rw [ite_eq_right hv] at h2; exact (hstrip_anti (strip_iff.1 h2)).1
   step := fun i => by
     have h2 := h.2 i
     by_cases hv : LL.vec i = true
-    · rw [if_pos hv] at h2
-      rw [if_pos (show (⟨LL.vec⟩ : Letters (Fin N)).vec i = true from hv)]; exact strip_iff.1 h2
-    · rw [if_neg hv] at h2
-      rw [if_neg (show ¬ (⟨LL.vec⟩ : Letters (Fin N)).vec i = true from hv)]; exact strip_iff.1 h2
+    · rw [ite_eq_left hv] at h2
+      rw [ite_eq_left (show (⟨LL.vec⟩ : Letters (Fin N)).vec i = true from hv)]; exact strip_iff.1 h2
+    · rw [ite_eq_right hv] at h2
+      rw [ite_eq_right (show ¬ (⟨LL.vec⟩ : Letters (Fin N)).vec i = true from hv)]; exact strip_iff.1 h2
 
 theorem chain_of_path (LL : ChainLetters N) (P : PPath r N (⟨LL.vec⟩ : Letters (Fin N)) LL.deg) : IsChain LL P.mu := by
   refine ⟨P.zero, fun i => ?_⟩
   have h2 := P.step i
   by_cases hv : LL.vec i = true
-  · rw [if_pos (show (⟨LL.vec⟩ : Letters (Fin N)).vec i = true from hv)] at h2
-    rw [if_pos hv]; exact strip_iff.2 h2
-  · rw [if_neg (show ¬ (⟨LL.vec⟩ : Letters (Fin N)).vec i = true from hv)] at h2
-    rw [if_neg hv]; exact strip_iff.2 h2
+  · rw [ite_eq_left (show (⟨LL.vec⟩ : Letters (Fin N)).vec i = true from hv)] at h2
+    rw [ite_eq_left hv]; exact strip_iff.2 h2
+  · rw [ite_eq_right (show ¬ (⟨LL.vec⟩ : Letters (Fin N)).vec i = true from hv)] at h2
+    rw [ite_eq_right hv]; exact strip_iff.2 h2
 
 theorem ppath_ext {Lt : Letters (Fin N)} {B : Fin N → ℕ} {P P' : PPath r N Lt B} (h : P.mu = P'.mu) : P = P' := by
   cases P; cases P'; simp only at h; subst h; rfl
@@ -394,7 +394,7 @@ theorem card_eq_chainSum (hSt : StWeylAt) (LL : ChainLetters N) {q : ℕ} (J : F
     intro ka hka
     rw [Function.mem_support] at hka
     by_cases hC : IsChain LL ka ∧ ChainOK J M ka
-    · rw [if_pos hC] at hka
+    · rw [ite_eq_left hC] at hka
       have hcard : (Nat.card {I : ℤ → Finset (Fin r) // IsSt ka I} : ℚ) = wdim (ka (Fin.last N)) :=
         hSt r N _ LL.deg (pathOf LL ka hC.1)
       have hne : Nat.card {I : ℤ → Finset (Fin r) // IsSt ka I} ≠ 0 := by
@@ -404,14 +404,14 @@ theorem card_eq_chainSum (hSt : StWeylAt) (LL : ChainLetters N) {q : ℕ} (J : F
       obtain ⟨⟨I, hI⟩⟩ := (Nat.card_ne_zero.1 hne).1
       rw [Finset.coe_image, Finset.coe_univ, Set.image_univ]
       exact ⟨⟨⟨(pathOf LL ka hC.1, I), hI⟩, hC.2⟩, rfl⟩
-    · rw [if_neg hC] at hka; exact absurd rfl hka
+    · rw [ite_eq_right hC] at hka; exact absurd rfl hka
   rw [finsum_eq_sum_of_support_subset _ hsupp, Nat.card_eq_fintype_card, ← Finset.card_univ,
     Finset.card_eq_sum_card_image π Finset.univ]
   push_cast
   refine Finset.sum_congr rfl fun ka hka => ?_
   obtain ⟨x0, -, rfl⟩ := Finset.mem_image.1 hka
   have hC : IsChain LL (π x0) ∧ ChainOK J M (π x0) := ⟨chain_of_path LL x0.1.1.1, x0.2⟩
-  rw [if_pos hC]
+  rw [ite_eq_left hC]
   have hcard : (Nat.card {I : ℤ → Finset (Fin r) // IsSt (π x0) I} : ℚ) = wdim (π x0 (Fin.last N)) :=
     hSt r N _ LL.deg x0.1.1.1
   rw [← hcard]

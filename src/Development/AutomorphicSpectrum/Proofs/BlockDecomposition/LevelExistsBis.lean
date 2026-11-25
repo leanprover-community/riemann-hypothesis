@@ -9,44 +9,7 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsUnram
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsAdmissibleLocalComponentDefiniteUnitary
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsContinuousRetractionOntoUnitaryLocalPoints
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FixedPlaceUnitaryLocalPointsEquivLocalUnitaryGro
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
@@ -356,9 +319,9 @@ theorem levelEx : LevelEx := by
   have hlev : ∀ w : Pl E, IsLevel (MonoidHom.id (UL n w)) (KL n w) (K₀ w) := by
     intro w
     by_cases h : IsUnramU π w ∧ w ∉ R
-    · simp only [K₀, if_pos h]
+    · simp only [K₀, ite_eq_left h]
       exact isLevel_KL w
-    · simp only [K₀, if_neg h]
+    · simp only [K₀, ite_eq_right h]
       exact isLevel_cong w m
   have hcof : ∀ᶠ w in Filter.cofinite, K₀ w = KL n w := by
     rw [Filter.eventually_cofinite]
@@ -367,13 +330,13 @@ theorem levelEx : LevelEx := by
     by_contra hwT
     apply hw
     have h : IsUnramU π w ∧ w ∉ R := ⟨hunr w hwT, fun hR => hwT (by simp [Tb, hR])⟩
-    simp only [K₀, if_pos h]
+    simp only [K₀, ite_eq_left h]
   have hfam : IsLevelFam (fun w => MonoidHom.id (UL n w)) (KL n) K₀ := by
     unfold GlobalTheory.BCT.IsLevelFam
     exact ⟨hlev, hcof⟩
   have hK1 : ∀ w : Pl E, IsUnramU π w → w ∉ R → K₀ w = KL n w := by
     intro w h1 h2
-    simp only [K₀, if_pos (And.intro h1 h2)]
+    simp only [K₀, ite_eq_left (And.intro h1 h2)]
   have hK2 : ∀ w : Pl E, ¬ IsUnramU π w ∨ w ∈ R → IsCong m (K₀ w) := by
     intro w h
     have h' : ¬ (IsUnramU π w ∧ w ∉ R) := by
@@ -381,7 +344,7 @@ theorem levelEx : LevelEx := by
       rcases h with h | h
       · exact h h1
       · exact h2 h
-    simp only [K₀, if_neg h']
+    simp only [K₀, ite_eq_right h']
     exact isCong_cong w m
   let F : Finset (Pl E) := Tb.filter (fun w => w ∈ S ∧ IsUnramU π w ∧ w ∉ R)
   have hbase : ∀ w ∈ S, w ∉ F → ∀ x ∈ locU n w,
@@ -389,7 +352,7 @@ theorem levelEx : LevelEx := by
     rintro w hwS hwF x hx ⟨κ, hκ, hκx⟩
     by_cases hT' : w ∈ Tb
     · have h' : ¬ (IsUnramU π w ∧ w ∉ R) := fun h => hwF (Finset.mem_filter.2 ⟨hT', hwS, h⟩)
-      simp only [K₀, if_neg h'] at hκ
+      simp only [K₀, ite_eq_right h'] at hκ
       rw [cong, Subgroup.mem_subgroupOf] at hκ
       have hc : cLoc w x ∈ GlobalTheory.PrincCong.congSub w n m := by
         rw [← hκx]
@@ -397,11 +360,11 @@ theorem levelEx : LevelEx := by
       exact hk w m (le_trans (Finset.le_sup hT') (le_max_right _ _)) x hx hc
     · have hKL : cLoc w x ∈ GlobalTheory.LFun.KGL w (n := n) := by
         by_cases h : IsUnramU π w ∧ w ∉ R
-        · simp only [K₀, if_pos h] at hκ
+        · simp only [K₀, ite_eq_left h] at hκ
           rw [GlobalTheory.BCT.KL, Subgroup.mem_subgroupOf] at hκ
           rw [← hκx]
           exact hκ
-        · simp only [K₀, if_neg h] at hκ
+        · simp only [K₀, ite_eq_right h] at hκ
           rw [cong, Subgroup.mem_subgroupOf] at hκ
           rw [← hκx]
           exact congSub_le_KGL w m hκ
@@ -437,7 +400,7 @@ theorem levelEx : LevelEx := by
       by_cases hwa : w = a
       · subst hwa
         rintro x hx ⟨κ, hκ, hκx⟩
-        simp only [K₀, if_pos (And.intro haU haR)] at hκ
+        simp only [K₀, ite_eq_left (And.intro haU haR)] at hκ
         rw [GlobalTheory.BCT.KL, Subgroup.mem_subgroupOf] at hκ
         apply hψa x hx
         rw [← hκx]

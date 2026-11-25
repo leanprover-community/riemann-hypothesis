@@ -69,7 +69,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level
 open GlobalTheory.SW hiding Level
 open Formalism.L2.Pj Formalism.L2.PjFree
 open scoped ComplexConjugate Classical
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Dict
 
 namespace GlobalTheory.ThetaNoZero
@@ -184,7 +183,7 @@ theorem exists_thGen_rdU_ne_zero : Formalism.MainNotions.ModuliIntegralCharts.H1
   refine ⟨f, ⟨xs, P, hP, hf⟩, fun h0 => hne' ?_⟩
   have hB := (hU.2.2.2.2.1 a n hdom f hfs k).2.1 x hx b hb
   rw [h0, mul_zero] at hB
-  have e : Formalism.L2.PjFree.rdU U f k (rmul x b) = Formalism.L2.PjFree.toC (evR Xo c f (U.un k ⟨rmul x b, hx₀⟩)) := dif_pos hx₀
+  have e : Formalism.L2.PjFree.rdU U f k (rmul x b) = Formalism.L2.PjFree.toC (evR Xo c f (U.un k ⟨rmul x b, hx₀⟩)) := dite_eq_left hx₀
   exact e.symm.trans hB
 
 end GlobalTheory.ThetaNoZero
@@ -203,7 +202,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level
 open GlobalTheory.SW hiding Level
 open Formalism.L2.Pj Formalism.L2.PjFree
 open scoped ComplexConjugate Classical
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Dict
 
 end -- clump:auto

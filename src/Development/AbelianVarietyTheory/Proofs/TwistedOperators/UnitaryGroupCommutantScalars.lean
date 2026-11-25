@@ -165,8 +165,7 @@ theorem eigen [CharZero A] (σ : A →+* A) (hσ : ∀ x, σ (σ x) = x) {J : Ma
 
 theorem exists_nonisotropic (σ : A →+* A) (hσ : ∀ x, σ (σ x) = x) [CharZero A] {J : Matrix n n A}
     (hH : IsHerm σ J) (hJ : IsUnit J.det) (hn : Nonempty n) : ∃ w, hform σ J w w ≠ 0 := by
-  by_contra hall
-  push_neg at hall
+  by_contra! hall
   obtain ⟨i⟩ := hn
   set x : n → A := Pi.single i 1
   set y : n → A := J⁻¹ *ᵥ Pi.single i 1

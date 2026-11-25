@@ -164,7 +164,6 @@ section Main
 open scoped NumberField.LiesOver
 
 
-set_option maxHeartbeats 2000000 in
 theorem unitsResField_eq_zero_of_dvd_finrank (ι : LocalEmbeddings K) (x : cohomology (unitsLimitRep K) 2)
     (m : ℕ) (hm : m • x = 0) (hinf : ∀ v : InfinitePlace K.1, brauerLocal ι x (.inl v) = 0)
     (hfin : ∀ v : HeightOneSpectrum (𝓞 K.1), brauerLocal ι x (.inr v) ≠ 0 →
@@ -197,7 +196,6 @@ theorem unitsResField_eq_zero_of_dvd_finrank (ι : LocalEmbeddings K) (x : cohom
     intro w
     let v : InfinitePlace K.1 := w.comap (algebraMap K.1 E.1)
     let w' : v.placesOver E.1 := by
-      set_option synthInstance.maxHeartbeats 200000 in
         exact ⟨w, ⟨rfl⟩⟩
     obtain ⟨ι', hι'⟩ := exists_infPlaceOfEmbedding_eq w'
     have key : ∀ u : v.placesOver E.1, infPlaceOfEmbedding ι' E = u →

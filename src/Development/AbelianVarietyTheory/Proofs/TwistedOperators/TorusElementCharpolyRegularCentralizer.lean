@@ -204,7 +204,7 @@ theorem eq_zero_of_trBase [NumberField E] (z : k ⊗[F] Fld P) (hz : ∀ y, trBa
 
   rw [← (bb P k b).sum_repr z, Finset.sum_mul, map_sum] at h
   simp only [smul_mul_assoc, trBase_smul, bb_apply, Algebra.TensorProduct.tmul_mul_tmul, key, mul_ite,
-    mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at h
+    mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h
   exact h
 
 variable {J : Matrix (Fin n) (Fin n) E}

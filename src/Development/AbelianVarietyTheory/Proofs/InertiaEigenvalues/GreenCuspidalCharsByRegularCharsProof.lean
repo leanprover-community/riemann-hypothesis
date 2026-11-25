@@ -257,8 +257,7 @@ theorem exists_generic_constituent : ∀ (g : ℕ) [Fact g.Prime] (ψ : AddChar 
     (GlobalTheory.gl_list_product_perm_char g L L (degL L) rfl (fun q hq => isChar_of_isIrr (hL q hq).2.1)).1
   obtain ⟨Lρ, hirr, hsum⟩ := (GlobalTheory.charDec _ (hcL L (degL L))).1 hch
   have hex : ∃ ρ ∈ Lρ, wh ψ ρ ≠ 0 := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     apply hwh
     rw [hsum, wh_list_sum]
     exact List.sum_eq_zero fun x hx => by
@@ -785,7 +784,7 @@ theorem primeLab_to_regularChar : ∀ (g : ℕ) [Fact g.Prime] (d : ℕ), 0 < d 
   have hc : ∀ P, IsPrimeLab d P → ∃ u : Kˣ, aeval (u : K) P = 0 ∧ c P = e u := by
     intro P hP
     have h := exists_unit_root hd hK hP
-    exact ⟨h.choose, h.choose_spec, dif_pos h⟩
+    exact ⟨h.choose, h.choose_spec, dite_eq_left h⟩
   refine ⟨c, fun P hP => ?_, fun P P' hP hP' ⟨i, hi, h⟩ => ?_⟩
   · obtain ⟨u, hu, hcu⟩ := hc P hP
     intro i j hi hj h
@@ -1036,8 +1035,7 @@ theorem GlobalTheory.greenRegularCharacters_holds : GreenRegularCharacters := by
         exact ⟨L, fun P hP => (hL1 P hP).1, hL2, fun h => absurd h hed⟩
   choose Lf hc hi hdd using hex
   intro χ hχ
-  by_contra hno
-  push_neg at hno
+  by_contra! hno
   refine count d hd Lf hc hi χ hχ ?_
   intro P hP heq
   obtain ⟨θ, hθ, hs⟩ := hdd d rfl P hP

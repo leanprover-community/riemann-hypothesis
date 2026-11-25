@@ -1,42 +1,7 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnimodMod
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Algebra.InfiniteSum.Nonarchimedean
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
@@ -55,7 +20,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.UPoinc.USum
 
 noncomputable section
@@ -85,8 +49,7 @@ theorem exists_unit_sub_one_unit (p : ℕ) [Fact p.Prime] :
     simp [Polynomial.IsRoot] at hu
     linear_combination hu
   have hle : ‖u‖ ≤ 1 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have h3 : ‖u‖ ^ 2 ≤ max ‖u‖ ‖(1 : PadicAlgCl p)‖ := by
       rw [← norm_pow, h2]; exact IsUltrametricDist.norm_add_le_max _ _
     rw [norm_one, max_eq_left h.le] at h3
@@ -150,16 +113,16 @@ theorem one_class {p : ℕ} [Fact p.Prime] {Y K : Type} [Nonempty Y] [Nonempty K
     · intro χ hχ κ
       by_cases h : χ = χ₀
       · subst h
-        simp only [if_true]
+        simp only [ite_true]
         rw [sub_eq_add_neg]
         exact (IsUltrametricDist.norm_add_le_max _ _).trans (max_le (hG κ) (by rw [norm_neg]; exact hS))
-      · simp only [h, if_false, hw, le_refl]
+      · simp only [h, ite_false, hw, le_refl]
     · intro χ hχ
       by_cases h : χ = χ₀
       · subst h
         obtain ⟨κ, hκ⟩ := hex
         exact ⟨κ, by simpa using hκ⟩
-      · exact ⟨Classical.arbitrary K, by simp only [h, if_false, hw]⟩
+      · exact ⟨Classical.arbitrary K, by simp only [h, ite_false, hw]⟩
     · intro κ
       have h1 : HasSum (fun χ => if χ = χ₀ then G κ - S else 0) (G κ - S) := hasSum_ite_eq _ _
       have h2 := h1.add hsum.hasSum
@@ -199,7 +162,7 @@ theorem one_class {p : ℕ} [Fact p.Prime] {Y K : Type} [Nonempty Y] [Nonempty K
         simp only [hz, Pi.zero_apply, tsum_zero, norm_zero]; positivity
     rw [sub_eq_add_neg, IsUltrametricDist.norm_add_eq_max_of_norm_ne_norm
       (by rw [norm_neg, hκ]; exact hlt.ne'), norm_neg, hκ, max_eq_left hlt.le]
-  · push_neg at hstrict
+  · push Not at hstrict
     obtain ⟨χ₁, hχ₁C, hχ₁ne, hχ₁le⟩ := hstrict
     have hq₁ : q χ₁ = q χ₀ := le_antisymm hχ₁le (hmin χ₁ hχ₁C)
     have hχ₁D : χ₁ ∈ D := ⟨hχ₁C, hχ₁ne⟩
@@ -316,7 +279,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.UPoinc.USum
 
 

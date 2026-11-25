@@ -43,21 +43,6 @@ variable {P : ArithVariety n} (D : AddBlockData P)
 
 end AddBlockData
 
-section Examples
-
-variable (n)
-
-
-
-
-
-
-
-
-
-
-end Examples
-
 end
 
 end GroundTheory.Heights₂.Heights

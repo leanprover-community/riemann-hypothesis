@@ -1,6 +1,7 @@
 module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SupportDatum.Blocks
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.SupportLoc
 
 @[expose] public section
 
@@ -29,11 +30,7 @@ theorem modBlocks_some {A B : Type} [Monoid B] (f : ℕ → ℕ → A → B) (bs
 
 theorem mapBlocks_snd {A B : Type} (f : ℕ → ℕ → A → B) (bs : List (A × ℕ)) (a : ℕ) :
     (mapBlocks f a bs).map Prod.snd = bs.map Prod.snd := by
-  induction bs generalizing a with
-  | nil => simp [mapBlocks]
-  | cons b rest ih =>
-    obtain ⟨t, s⟩ := b
-    simp [mapBlocks, ih]
+  apply _root_.Formalism.L2.SG.Pf.mapBlocks_snd <;> assumption
 
 theorem blkDet_append {K : Type} [CommRing K] (l1 l2 : List (K × ℕ)) :
     blkDet (l1 ++ l2) = blkDet l1 * blkDet l2 := by

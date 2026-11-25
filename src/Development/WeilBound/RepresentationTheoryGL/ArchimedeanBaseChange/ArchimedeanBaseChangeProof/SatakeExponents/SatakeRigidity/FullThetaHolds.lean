@@ -35,6 +35,7 @@ import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HasSatakeGLOfIsS
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsIdempotentElemCharIdem
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SplitPlaceUnitaryLocalPointsEquivGL
 import Development.WeilBound.CoreStatements.AutomorphicKernels.IsobaricBaseChange.SplitSph
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousFlipGL
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.SatakeRigidity.LInertSatExb, Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.SatakeRigidity.LRCuspCsd, Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.SatakeRigidity.LRFull, Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.SatakeRigidity.LSplitConj, Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.SatakeRigidity.OfEqOfIsSpeh, Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.SatakeRigidity.FullThetaHolds
@@ -71,8 +72,6 @@ noncomputable section
 
 open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC GlobalTheory.DiscSpec PositivityTheory.Rg.Rs
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace PositivityTheory.Rg.BcB.F.Rig
 
@@ -132,14 +131,12 @@ theorem sum_rev_map {d : ℕ} (f : Fin d → Multiset ℂˣ) :
   rw [map_inv_sum]
   exact Fintype.sum_equiv Fin.revPerm _ _ fun k => by rw [Fin.revPerm_apply]
 
-
 variable (E) in
 def nuT (s : ℝ) : Formalism.L2.Host.HChar E := GlobalTheory.ThetaPull.thetaChar (GlobalTheory.HeckeGal.Model.absPow E (-s))
 
 theorem isAbsPow_nuT (s : ℝ) : (nuT E s).IsAbsPow s := by
   have h := GlobalTheory.ThetaPull.isAbsPow_thetaChar (GlobalTheory.HeckeGal.Model.absPow_isAbsPow E (-s))
   rwa [neg_neg] at h
-
 
 variable (E) in
 def muT (d : ℕ) (k : Fin d) : Formalism.L2.Host.HChar E := GlobalTheory.HeckeGal.Model.absPow E (-spehExp d k.rev)
@@ -152,7 +149,6 @@ theorem isAbsPow_muT (d : ℕ) (k : Fin d) : (muT E d k).IsAbsPow (spehExp d k) 
   exact GlobalTheory.HeckeGal.Model.absPow_isAbsPow E _
 
 end CuspidalConjugateSelfDual
-
 
 open CuspidalConjugateSelfDual in
 theorem rCuspCsd : RCuspCsd := by
@@ -366,44 +362,11 @@ noncomputable section
 
 open NumberField IsDedekindDomain Matrix
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.BcB.F.Rig
 
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
-
-
-omit [IsCMField E] in
-theorem sc_hasSatGL_of_isSubquotient {w : HeightOneSpectrum (𝓞 E)} {V W : Type} [AddCommGroup V] [Module ℂ V]
-    [AddCommGroup W] [Module ℂ W] (ρ : Representation ℂ (GL (Fin n) (w.adicCompletion E)) V) (hρs : IsSmooth ρ)
-    (σ : Representation ℂ (GL (Fin n) (w.adicCompletion E)) W) (hsub : GlobalTheory.SmGL.IsSubquotient σ ρ)
-    (hsph : GlobalTheory.LGrp.IsSpherical σ (GlobalTheory.LFun.KGL w (n := n))) (B : Multiset ℂˣ)
-    (hsat : ∀ f ∈ fixed ρ (GlobalTheory.LFun.KGL w (n := n)), f ≠ 0 → GlobalTheory.LFun.IsSatVecGL w ρ f B) :
-    GlobalTheory.LFun.HasSatGL w σ B := by
-  obtain ⟨S, q, hq⟩ := hsub
-  obtain ⟨-, hKc⟩ := GlobalTheory.LFun.SatCompare.isOpen_isCompact_KGL w n
-  have hSs : IsSmooth S.toRepresentation := fun y => by
-    refine (congrArg IsOpen ?_).mpr (hρs y.1)
-    ext g
-    exact Subtype.ext_iff
-  refine ⟨hsph, fun x hx hx0 => ?_⟩
-  have hx' : x ∈ (fixed S.toRepresentation (GlobalTheory.LFun.KGL w (n := n))).map q.toLinearMap := by
-    rw [GlobalTheory.LocGL.map_fixed_of_surjective hSs hKc (f := q) hq]
-    exact hx
-  obtain ⟨u, hu, hux⟩ := Submodule.mem_map.1 hx'
-  have hu0 : u ≠ 0 := fun e => hx0 (by rw [← hux, e, map_zero])
-  have huK : u.1 ∈ fixed ρ (GlobalTheory.LFun.KGL w (n := n)) :=
-    GlobalTheory.LGrp.mem_fixed.2 fun k hk => congrArg Subtype.val (GlobalTheory.LGrp.mem_fixed.1 hu k hk)
-  have hu1 : GlobalTheory.LFun.IsSatVecGL w ρ u.1 B := hsat _ huK fun e => hu0 (Subtype.ext e)
-  have hu2 : GlobalTheory.LFun.IsSatVecGL w S.toRepresentation u B :=
-    GlobalTheory.LFun.IsSatVecGL.of_map (ρ' := ρ) S.toSubmodule.subtype (fun _ _ => rfl) Subtype.val_injective hu1
-  have hu3 : GlobalTheory.LFun.IsSatVecGL w σ (q.toLinearMap u) B :=
-    hu2.map (ρ' := σ) q.toLinearMap (fun g y => Representation.IntertwiningMap.isIntertwining _ _ q g y)
-      (by rw [hux]; exact hx0)
-  rw [hux] at hu3
-  exact hu3
 
 theorem sc_satVec (X : Pre E n) (w : HeightOneSpectrum (𝓞 E)) (B : Multiset ℂˣ) (h : X.Sat w B) :
     ∀ f ∈ fixed (locProd X.h w (X.σ · w)) (GlobalTheory.LFun.KGL w (n := n)), f ≠ 0 →
@@ -418,19 +381,7 @@ theorem sc_satVec (X : Pre E n) (w : HeightOneSpectrum (𝓞 E)) (B : Multiset �
 
 theorem sc_cLoc_conj (x : UA E n) (u : HeightOneSpectrum (𝓞 E)) :
     cLoc u x = GlobalTheory.LFun.ConjPlace.invT (GlobalTheory.ThetaSatake.cloc u) n (cLoc (GlobalTheory.ThetaSatake.cw u) x) := by
-  have h : ((GeneralLinearGroup.map (conjLoc (IsCMField.complexConj E).toRingEquiv u)
-      (cLoc (GlobalTheory.ThetaSatake.cw u) x)).val)ᵀ * (cLoc u x).val = 1 := GlobalTheory.SplitPts.comp_eq x u
-  generalize hM : GeneralLinearGroup.map (conjLoc (IsCMField.complexConj E).toRingEquiv u)
-      (cLoc (GlobalTheory.ThetaSatake.cw u) x) = M at h
-  have h1 : ((M⁻¹ : GL (Fin n) (u.adicCompletion E)).val)ᵀ * (M.val)ᵀ = 1 := by
-    rw [← Matrix.transpose_mul, Units.mul_inv, Matrix.transpose_one]
-  have h2 : (cLoc u x).val = ((M⁻¹ : GL (Fin n) (u.adicCompletion E)).val)ᵀ := by
-    calc (cLoc u x).val = ((M⁻¹ : GL (Fin n) (u.adicCompletion E)).val)ᵀ * ((M.val)ᵀ * (cLoc u x).val) := by
-          rw [← Matrix.mul_assoc, h1, Matrix.one_mul]
-      _ = _ := by rw [h, Matrix.mul_one]
-  refine Units.ext (Matrix.ext fun i j => ?_)
-  rw [h2, GlobalTheory.LFun.ConjPlace.invT_val, Matrix.transpose_apply, ← hM, ← map_inv]
-  rfl
+  apply _root_.GlobalTheory.CompanionTheory.ConjSat.cLoc_eq_flipGL <;> assumption
 
 theorem splitConj : SplitConj := by
   intro E _ _ _ n π hπ D w u hw hwu hu hDw hDu B B' hB hB'
@@ -445,7 +396,7 @@ theorem splitConj : SplitConj := by
   obtain ⟨P, hPsub, hPc⟩ := hDw
   obtain ⟨P', hP'sub, hP'c⟩ := hDu
   have hPsat : GlobalTheory.LFun.HasSatGL (GlobalTheory.ThetaSatake.cw u) P.ρ B :=
-    sc_hasSatGL_of_isSubquotient (locProd D.h _ (D.σ · _)) (GlobalTheory.SmGL.isSmooth_parInd _ _) P.ρ hPsub
+    PositivityTheory.Rg.BcB.F.Rig.hasSatGL_of_isSubquotient (locProd D.h _ (D.σ · _)) (GlobalTheory.SmGL.isSmooth_parInd _ _) P.ρ hPsub
       (GlobalTheory.PfBCI.split_spherical hπ hw P hPc hu) B (sc_satVec D _ B hB)
   have hq : Formalism.UG.qV E u = Formalism.UG.qV E (GlobalTheory.ThetaSatake.cw u) := (GlobalTheory.ThetaSatake.absNorm_cw u).symm
   have hQsat : GlobalTheory.LFun.HasSatGL u
@@ -472,7 +423,7 @@ theorem splitConj : SplitConj := by
   have hP'inv : GlobalTheory.LFun.HasSatGL u P'.ρ (B.map (·⁻¹)) :=
     GlobalTheory.SplitSatake.hasSatGL_of_isCompAlong_split E n π hπ u hsu _ _ _ P'.ρ hQc hP'c _ hQsat
   have hP'B' : GlobalTheory.LFun.HasSatGL u P'.ρ B' :=
-    sc_hasSatGL_of_isSubquotient (locProd D.h u (D.σ · u)) (GlobalTheory.SmGL.isSmooth_parInd _ _) P'.ρ hP'sub hP'inv.1 B'
+    PositivityTheory.Rg.BcB.F.Rig.hasSatGL_of_isSubquotient (locProd D.h u (D.σ · u)) (GlobalTheory.SmGL.isSmooth_parInd _ _) P'.ρ hP'sub hP'inv.1 B'
       (sc_satVec D u B' hB')
   exact hP'B'.unique hP'inv
 
@@ -492,8 +443,6 @@ noncomputable section
 
 open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC GlobalTheory.DiscSpec PositivityTheory.Rg.Rs
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace PositivityTheory.Rg.BcB.F.Rig
 

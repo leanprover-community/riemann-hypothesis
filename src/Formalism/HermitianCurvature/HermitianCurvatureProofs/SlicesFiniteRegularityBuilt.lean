@@ -164,12 +164,12 @@ theorem cutoff_iteratedDeriv_bounded {χ : ℝ → ℝ} (hχ : C6.IsCut0 χ) (q 
   by_cases hx : x ∈ Set.Icc δ 1
   · exact le_trans (hM x hx) (le_max_left _ _)
   · rcases not_and_or.mp hx with hx | hx
-    · push_neg at hx
+    · push Not at hx
       have hev : χ =ᶠ[nhds x] fun _ => (0 : ℝ) := by
         filter_upwards [Iio_mem_nhds hx] with y hy using h0 y hy
       rw [hev.iteratedDeriv_eq]
       exact le_trans (hconst 0 x (by simp)) (le_max_right _ _)
-    · push_neg at hx
+    · push Not at hx
       have hev : χ =ᶠ[nhds x] fun _ => (1 : ℝ) := by
         filter_upwards [Ioi_mem_nhds hx] with y hy using h1 y (le_of_lt hy)
       rw [hev.iteratedDeriv_eq]
@@ -197,8 +197,7 @@ theorem isCutG_div {χ : ℝ → ℝ} (hχ : C6.IsCut0 χ) {ε : ℝ} (hε : 0 <
     rw [div_lt_iff₀ hε]
     exact hx
   · intro x hx
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hx (h0 x h)
 
 def idOp (k r : ℕ) (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
@@ -362,7 +361,7 @@ theorem level_zero_case (Cc : ℝ) (hCc : 150 ≤ Cc) (k r : ℕ) (Wp Wq : Type)
       Formalism.FourierDecayAlt.P.Dx1.LZ.uwG_zero]
   rw [hfun]
   by_cases ha : a = Wd.e1
-  · rw [if_pos ha]
+  · rw [ite_eq_left ha]
     obtain ⟨ρ, rfl⟩ : ∃ ρ, r = 0 + ρ := ⟨r, (zero_add r).symm⟩
     have hb := budget0 (0 + ρ) k N hk2 A₀ Cc hCc hA₀
     obtain ⟨ε', hε', h1, h2, h3⟩ := Formalism.FourierDecayAlt.P.JCTx6.Lev0.level_zero_estimate T.base.z T.base.z' f χ hχ A₀ hfA ε hε
@@ -372,7 +371,7 @@ theorem level_zero_case (Cc : ℝ) (hCc : 150 ≤ Cc) (k r : ℕ) (Wp Wq : Type)
         push_cast at hb
         linarith)
     exact ⟨ε', hε', h1, h2, h3⟩
-  · rw [if_neg ha]
+  · rw [ite_eq_right ha]
     refine ⟨1, one_pos, ?_, ⟨0, ?_⟩, fun g _ h => (h rfl).elim⟩
     · exact (Formalism.FourierDecayAlt.P.BetaSesquilinearity.CCle_zero (A := 0)).1
     · exact Formalism.FourierDecayAlt.P.BetaSesquilinearity.CCle_zero
@@ -970,8 +969,8 @@ theorem aa_shape {F : Mat k (j + ρ) → E} (hF : CkOn ⊤ (GV k (j + ρ)) F) {�
   rw [shape_flatMap', Finset.sum_map_toList]
   refine Finset.sum_congr rfl fun c _ => ?_
   by_cases hc : StrictMono c
-  · rw [if_pos hc, if_pos hc, shape_mul, sv_poly, eval_qAA, qm_shape hF hL hh m u _ c g hg]
-  · rw [if_neg hc, if_neg hc, shape_nil]
+  · rw [ite_eq_left hc, ite_eq_left hc, shape_mul, sv_poly, eval_qAA, qm_shape hF hL hh m u _ c g hg]
+  · rw [ite_eq_right hc, ite_eq_right hc, shape_nil]
 
 theorem av_shape {F : Mat k (j + ρ) → E} (hF : CkOn ⊤ (GV k (j + ρ)) F) {κ ℓ : ℕ} {L : FS k (j + ρ)}
     (hL : Bd k j ρ κ ℓ L) {h : Mat k (j + ρ) → E} (hh : ∀ g ∈ Sj k j ρ, h g = shape k j ρ F L g)
@@ -982,8 +981,8 @@ theorem av_shape {F : Mat k (j + ρ) → E} (hF : CkOn ⊤ (GV k (j + ρ)) F) {�
   rw [shape_flatMap', Finset.sum_map_toList]
   refine Finset.sum_congr rfl fun B _ => ?_
   by_cases hc : StrictMono (fun l => C3.keyS k (j + ρ) (B l))
-  · rw [if_pos hc, if_pos hc, shape_mul, sv_poly, eval_qAV _ _ _ _ _ g hg.1, qm_shape hF hL hh m _ B _ g hg]
-  · rw [if_neg hc, if_neg hc, shape_nil]
+  · rw [ite_eq_left hc, ite_eq_left hc, shape_mul, sv_poly, eval_qAV _ _ _ _ _ g hg.1, qm_shape hF hL hh m _ B _ g hg]
+  · rw [ite_eq_right hc, ite_eq_right hc, shape_nil]
 
 end shapes
 
@@ -1030,14 +1029,14 @@ theorem vlet_shape (hj1 : 1 ≤ j) (z z' : Fin (2 * (j + ρ) + k + 1) → ℂ) (
   intro g hg
   have hne : ¬ (e = 1 ∧ j = 0) := fun h' => by omega
   unfold D.vLet
-  rw [if_neg hne]
+  rw [ite_eq_right hne]
   rcases l with ⟨b, y⟩
   cases b
-  · simp only [letFS, Bool.false_eq_true, if_false]
+  · simp only [letFS, Bool.false_eq_true, ite_false]
     rw [shape_mul, av_shape hF hL hh _ _ _ g hg, _root_.Formalism.FourierDecayAlt.P.Ux3.zhDmin]
     congr 1
     simp [sv]
-  · simp only [letFS, if_true]
+  · simp only [letFS, ite_true]
     rw [shape_mul, aa_shape hF hL hh _ _ _ g hg, _root_.Formalism.FourierDecayAlt.P.Ux3.zhDmin]
     congr 1
     simp [sv]
@@ -1620,11 +1619,35 @@ namespace Formalism.FourierDecayAlt.P.JCTx6.Pos
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants
 
 
-theorem posCore : PosCore := by
-  intro hIntG hTrans
+theorem posCoreQ_of (hIntG : IntG) (hTrans : OrbitSliceIntegrable) :
+  ∃ Cc : ℝ, 0 ≤ Cc ∧
+  ∀ (k ph n ρ : ℕ) (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
+    [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq]
+    (z z' : Fin (2 * (ph + (n + 1) + ρ) + k + 1) → ℂ), inWb k (ph + (n + 1) + ρ) z → inWb k (ph + (n + 1) + ρ) z' →
+    ∀ (Θ : B.DiffOp k (ph + (n + 1) + ρ) Wp Wq) (o κ : ℕ), U.InDD k (ph + (n + 1)) ρ o κ Θ →
+    ∀ (χ : ℝ → ℝ) (A₀ ε : ℝ), C6.IsCut0 χ → 0 < ε →
+    ∀ (σ : Equiv.Perm (Fin ph)) (d : Fin ph → ℂ) (t : ℂ), (∀ i, d i ≠ 0) → t ≠ 0 →
+    ∀ (As mm : ℕ) (A : ℝ), o ≤ As → κ + (ph + (n + 1)) * o ≤ As → mm ≤ As →
+      (2 * (ph + (n + 1) + ρ) + k + 1) ^ 3 ≤ As →
+      A ≤ 128 * (((ph + (n + 1) + ρ : ℕ) : ℝ) + 1) ^ 3 * (As : ℝ) →
+      Cc * (((ph + (n + 1) + ρ : ℕ) : ℝ) + 1) ^ 4 * (As : ℝ) ≤ A₀ →
+      ∃ ε' K : ℝ, 0 < ε' ∧ 0 ≤ K ∧
+      ∀ (f : B.Mat k (ph + (n + 1) + ρ) → (Wq →L[ℂ] Wp)) (c : ℝ), B.CCle A₀ (3 * As) f c →
+      ∀ F : B.Mat k (ph + (n + 1) + ρ) → (Wq →L[ℂ] Wp),
+        (∀ g ∈ B.GV k (ph + (n + 1) + ρ), U.DjU k (ph + (n + 1)) ρ g ≠ 0 →
+          F g = B.opApply Θ (fun x => ((χ (Gf k (ph + (n + 1) + ρ) z z' x / ε) : ℝ) : ℂ) • f x) g) →
+        B.CCle A mm (fun γ => U.PhiFun (p := ph + (n + 1)) (s := 0) k ρ (Dx2.SL.sigP σ)
+          (Dx2.SL.dP d t) z z' F (fun a => a.elim0) γ) (K * c) ∧
+        (∀ γ ∈ B.GV k ρ, U.PhiFun (p := ph + (n + 1)) (s := 0) k ρ (Dx2.SL.sigP σ)
+          (Dx2.SL.dP d t) z z' F (fun a => a.elim0) γ ≠ 0 →
+          ε' ≤ Gf k ρ (U.lowV k (ph + (n + 1)) ρ z) (U.lowV k (ph + (n + 1)) ρ z') γ) ∧
+        ∀ γ ∈ B.GV k ρ, Integrable (fun ξ : U.Xi k (ph + (n + 1)) 0 ρ (Dx2.SL.sigP σ) =>
+          U.psiStar (p := ph + (n + 1)) (s := 0) k ρ (Dx2.SL.sigP σ) z z' ξ •
+            F (U.gaXi (p := ph + (n + 1)) (s := 0) k ρ (Dx2.SL.sigP σ) (Dx2.SL.dP d t) ξ (fun a => a.elim0) γ))
+          (U.muXi k (ph + (n + 1)) 0 ρ (Dx2.SL.sigP σ)) := by
   obtain ⟨CcU, hCcU⟩ := Formalism.FourierDecayAlt.P.corollary_u2_germ_hypothesis 127 0
   refine ⟨max CcU 0, le_max_right _ _, ?_⟩
-  intro k ph n ρ Wp Wq _ _ _ _ _ _ z z' hz hz' Θ o κ hΘ f χ A₀ ε hf hfA hχ hε F hF σ d t hd ht As mm A ho hκ
+  intro k ph n ρ Wp Wq _ _ _ _ _ _ z z' hz hz' Θ o κ hΘ χ A₀ ε hχ hε σ d t hd ht As mm A ho hκ
     hmm hAs hA hA₀
 
   have hw : (G.wMat (n + 1)).det ≠ 0 := Formalism.FourierDecayAlt.P.G2.det_wMat_ne_zero (n + 1)
@@ -1637,9 +1660,9 @@ theorem posCore : PosCore := by
   have hε' : 0 < ε' := by positivity
   let UD : U.UData k ph (n + 1) ρ Wp Wq Unit :=
     ⟨σ, d, z, z', fun _ => Θ, χD, fun x => χ (ε⁻¹ * x), δ * ε, ε', o, κ, 0, mm, As⟩
-  have hAs1 : 1 ≤ As := le_trans (Nat.one_le_pow _ _ (by omega)) hAs
+  have hAs1 : 1 ≤ As := le_trans (Nat.one_le_pow _ _ (by lia)) hAs
   have hOk : UD.Ok 0 := by
-    refine ⟨hd, by omega, hz, hz', fun _ => hΘ, hχD, hχε, hε', ?_, ho, hκ, by simp [UD], hmm, hAs,
+    refine ⟨hd, by lia, hz, hz', fun _ => hΘ, hχD, hχε, hε', ?_, ho, hκ, by simp [UD], hmm, hAs,
       by simpa using hAs1⟩
     intro w hw'
     have h2 := (hχDs w hw').2
@@ -1652,13 +1675,16 @@ theorem posCore : PosCore := by
     exact le_max_left _ _
   obtain ⟨ha1, -, -, C, hC⟩ := hCcU k ph (n + 1) ρ Wp Wq Unit UD hOk A₀ hA₀U
   set a := UD.a 0 A₀ with ha_def
-  obtain ⟨c, hc⟩ := hfA (3 * As)
+  set Iv : ℝ := ∫ v, (1 + ‖v‖) ^ (-a) ∂(G.muPi U.betaU (G.UT (n + 1))) with hIv
+  refine ⟨ε', max (Real.pi ^ ((n + 1) * n / 2) * (C * (min 1 ‖t‖) ^ (-a) * Iv)) 0, hε', le_max_right _ _, ?_⟩
+  intro f c hc F hF
+  have hc0 : 0 ≤ c := Formalism.FourierDecayAlt.P.JCx2.pd_ccle_nonneg hc
   obtain ⟨V, indexVFirst, indexVSecond, hVc, ⟨MM⟩⟩ :=
     Formalism.FourierDecayAlt.P.compactly_supported_banach_model k ρ (Unit → (Wq →L[ℂ] Wp)) (UD.a 0 A₀) mm UD.S
   obtain ⟨Φ, hΦev, hΦreg⟩ := hC f c hc V MM
 
   obtain ⟨C1, hC1⟩ := Formalism.FourierDecayAlt.P.corollary_u1_truncated_alt k (ph + (n + 1)) ρ Wp Wq z z' o κ Θ χD
-    (fun x => χ (ε⁻¹ * x)) (δ * ε) hΘ hχD hχε 0 (3 * As) A₀ (by omega)
+    (fun x => χ (ε⁻¹ * x)) (δ * ε) hΘ hχD hχε 0 (3 * As) A₀ (by lia)
   have hStar := hC1 f c hc
   set F₁ := B.opApply Θ (U.cutDG k (ph + (n + 1)) ρ z z' χD (fun x => χ (ε⁻¹ * x)) f) with hF₁def
 
@@ -1866,13 +1892,37 @@ theorem posCore : PosCore := by
   have hCC' : B.CCle A mm (fun γ => U.PhiFun (p := ph + (n + 1)) (s := 0) k ρ (Dx2.SL.sigP σ)
       (Dx2.SL.dP d t) z z' F (fun a => a.elim0) γ) ‖Wf‖ :=
     Formalism.FourierDecayAlt.P.Ux1.cc_congr (fun γ hγ => (key γ hγ).symm) hCC
-  refine ⟨ε', hε', hCC'.1, ⟨_, hCC'⟩, ?_⟩
+  have hgint : Integrable (fun v : G.UT (n + 1) → ℂ => C * c * (min 1 ‖t‖) ^ (-a) * (1 + ‖v‖) ^ (-a))
+      (G.muPi U.betaU (G.UT (n + 1))) := by
+    rw [Dx2.SL.muPi_betaU]
+    apply Integrable.smul_measure_nnreal
+    exact (integrable_one_add_norm hfin).const_mul _
+  have hW0 : ‖W₀‖ ≤ C * c * (min 1 ‖t‖) ^ (-a) * Iv := by
+    rw [hW₀]
+    refine (norm_integral_le_of_norm_le hgint (Eventually.of_forall hbound)).trans (le_of_eq ?_)
+    rw [hIv, ← MeasureTheory.integral_const_mul]
+  have hWfb : ‖Wf‖ ≤ max (Real.pi ^ ((n + 1) * n / 2) * (C * (min 1 ‖t‖) ^ (-a) * Iv)) 0 * c := by
+    rw [hWf, norm_smul, Complex.norm_real, Real.norm_of_nonneg (by positivity)]
+    calc Real.pi ^ ((n + 1) * n / 2) * ‖W₀‖ ≤ Real.pi ^ ((n + 1) * n / 2) * (C * c * (min 1 ‖t‖) ^ (-a) * Iv) :=
+          mul_le_mul_of_nonneg_left hW0 (by positivity)
+      _ = (Real.pi ^ ((n + 1) * n / 2) * (C * (min 1 ‖t‖) ^ (-a) * Iv)) * c := by ring
+      _ ≤ _ := mul_le_mul_of_nonneg_right (le_max_left _ _) hc0
+  refine ⟨Formalism.FourierDecayAlt.P.JCx2.pd_ccle_mono_c hCC' hWfb, ?_, fun γ hγ => hTrans k ph n ρ σ d t z z' _ F γ (hInt γ hγ)⟩
   intro γ hγ hne
   by_contra hlt
   have hnot : γ ∉ UD.S := fun h => hlt h
   apply hne
   rw [key γ hγ, MM.off Wf γ hγ hnot]
   rfl
+
+theorem posCore : PosCore := by
+  intro hIntG hTrans
+  obtain ⟨Cc, hCc, hQ⟩ := posCoreQ_of hIntG hTrans
+  refine ⟨Cc, hCc, fun k ph n ρ Wp Wq _ _ _ _ _ _ z z' hz hz' Θ o κ hΘ f χ A₀ ε _ hfA hχ hε F hF σ d t hd ht As mm A ho hκ hmm hAs hA hA₀ => ?_⟩
+  obtain ⟨ε', K, hε', -, hKQ⟩ := hQ k ph n ρ Wp Wq z z' hz hz' Θ o κ hΘ χ A₀ ε hχ hε σ d t hd ht As mm A ho hκ hmm hAs hA hA₀
+  obtain ⟨c, hc⟩ := hfA (3 * As)
+  obtain ⟨hCC, hsupp, -⟩ := hKQ f c hc F hF
+  exact ⟨ε', hε', hCC.1, ⟨K * c, hCC⟩, hsupp⟩
 
 end Formalism.FourierDecayAlt.P.JCTx6.Pos
 

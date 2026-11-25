@@ -83,6 +83,7 @@ import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AdelicUnitaryTopology
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegralEqFinClSumAvg
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegralEqVolMulSum
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FramesStdMatched
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsFinCombOfIsThetaAt, Development.AbelianVarietyTheory.Proofs.TwistedOperators.DefiniteBottomFiniteVectorEqFiniteHeisenbergComb, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsOpenFixingVacuumTranslateSource, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsOpenCompactLevelThetaKernelBottomTriple, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsWeightedAverageHaarLifted
@@ -96,7 +97,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.Forms Formalism.UG
 open NumberField IsDedekindDomain Matrix MeasureTheory GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.MixPer GlobalTheory.Core.Rk GlobalTheory.AdForm
 open scoped TensorProduct Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.AdForm.FinComb
 
@@ -244,7 +244,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Form
 open IsDedekindDomain NumberField GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim
 open Formalism.L2.Host (HChar)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RowEx MeasureTheory
 
 
@@ -271,12 +270,6 @@ theorem exists_nat_den (a : D.host.E) : ∃ q : ℕ, 0 < q ∧ (q : EAf D) * eTo
     rw [h0, zsmul_eq_mul, map_mul, map_intCast, Int.cast_mul, mul_assoc]
   rw [h2]
   exact mul_mem (intCast_mem _ _) h1
-
-theorem dualCoord_add_nsmul (A' WW : HSp D) (βA' : GL (Fin A'.rank) (EAf D)) (βW : GL (Fin WW.rank) (EAf D))
-    (t u : WO A' WW) (k : ℕ) :
-    dualCoord A' WW βA' βW (t + k • u) = dualCoord A' WW βA' βW t + k • dualCoord A' WW βA' βW u := by
-  unfold dualCoord
-  rw [_root_.GlobalTheory.PlaceVec.frMapAdj_add, _root_.GlobalTheory.CompanionTheory.StdSndTheta.frMapAdj_nsmul, smul_add, smul_comm]
 
 theorem isIntM_rightBlock {k d : ℕ} (a : ℕ) {Y : Matrix (Fin k) (Fin d) (EAf D)} (h : IsIntM Y) :
     IsIntM (rightBlock a Y) := fun i j => by
@@ -324,14 +317,14 @@ theorem stdSnd_shift {ν : (AE D)ˣ →* Circle} {e : AE D} {S : Finset (Pl D.ho
   unfold stdSnd
   by_cases hcnd : IsHalf (cA D e) t ∧ IsIntM (dualCoord A' WW βA' βW t) ∧
       ∀ i j, j.1 < a → InId I (dualCoord A' WW βA' βW t i j)
-  · rw [if_pos hcnd, if_pos ⟨hh.2 hcnd.1, hint.2 hcnd.2.1, hid.2 hcnd.2.2⟩]
+  · rw [ite_eq_left hcnd, ite_eq_left ⟨hh.2 hcnd.1, hint.2 hcnd.2.1, hid.2 hcnd.2.2⟩]
     refine (unitChar_congr he hl hc (isIntM_rightBlock a hcnd.2.1)
       (Z := rightBlock a fun i j => (n₀ : EAf D) * Z i j)
       (isIntM_rightBlock a fun i j => mul_mem (natCast_mem _ _) (hZ i j))
       (rightBlock_shift a (c := ((n * c : ℕ) : EAf D)) fun i j => ?_)).symm
     rw [h, Nat.cast_mul n₀]
     ring
-  · rw [if_neg hcnd, if_neg fun h' => hcnd ⟨hh.1 h'.1, hint.1 h'.2.1, hid.1 h'.2.2⟩]
+  · rw [ite_eq_right hcnd, ite_eq_right fun h' => hcnd ⟨hh.1 h'.1, hint.1 h'.2.1, hid.1 h'.2.2⟩]
 
 
 
@@ -434,7 +427,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Form
 open IsDedekindDomain NumberField GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim
 open Formalism.L2.Host (HChar)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RowEx MeasureTheory
 
 open scoped Topology
@@ -465,8 +457,7 @@ theorem exists_open_fix_translate_source : ∀ (D : D7) (ψ : AddChar (AF D.host
   have key : ∃ n : ℕ, ∀ κ ∈ GfC S, GlobalTheory.Member.FinCong S n.factorial κ →
       ∃ l ∈ (latO S T (ΛS : Set (Fin S.rank → D.host.E)) (ΛT : Set (Fin T.rank → D.host.E)) fun _ => True),
         actO S T κ 1 u = u + (2 * (2 * 2) * M * M) • l := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     choose k hk hkc hkne using hne
     have ht := GlobalTheory.SplitCharTrivial.tendsto_one_of_finCong (k := k) hk hkc
     obtain ⟨n, hn⟩ := (ht.eventually hev').exists
@@ -508,7 +499,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Form
 open IsDedekindDomain NumberField GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim
 open Formalism.L2.Host (HChar)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RowEx MeasureTheory
 
 noncomputable section
@@ -561,21 +551,7 @@ theorem finPart_one (V : HSp D) : GlobalTheory.DefiniteClassAvg.finPart V 1 = 1 
 
 theorem eq_of_finE_eq (V : HSp D) {a b : GA D V} (ha : a ∈ GfC V) (hb : b ∈ GfC V) (h : Lev.finE V a = Lev.finE V b) :
     a = b := by
-  have h1 : finHom V a = finHom V b := by
-    have inj : Function.Injective (Formalism.UG.bc (n := Fin V.rank) (Lev.swapAE D)) := by
-      intro x y hxy
-      apply Units.ext
-      ext p q
-      have := congrArg (fun z : GL (Fin V.rank) (Lev.EAf D) => z.1 p q) hxy
-      simp only [Formalism.UG.bc, Units.coe_map] at this
-      exact (Algebra.TensorProduct.comm D.host.F (Af D.host.F) D.host.E).injective this
-    exact inj h
-  have h2 : a⁻¹ * b ∈ GinfC V ⊓ GfC V := by
-    refine ⟨?_, (GfC V).mul_mem ((GfC V).inv_mem ha) hb⟩
-    show finHom V (a⁻¹ * b) = 1
-    rw [map_mul, map_inv, h1, inv_mul_cancel]
-  rw [Formalism.IndefR.TopMult.inf_GinfC_GfC', Subgroup.mem_bot] at h2
-  exact (inv_mul_eq_one.1 h2)
+  apply _root_.GlobalTheory.StdFrameExist.ext_GfC <;> assumption
 
 theorem exists_level : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {i j : Fin D.R.m}
     {A A' WW : HSp D} {X : Tri T A A' WW}, IsBottomTri W i j X → ∀ t : T,
@@ -626,7 +602,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Form
 open IsDedekindDomain NumberField GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim
 open Formalism.L2.Host (HChar)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RowEx MeasureTheory
 
 noncomputable section

@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.SideTrace
 import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.TensFactorAlt
 public import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.TensFactor
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.OfinProd
@@ -16,48 +17,8 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.Convolut
 public import Development.AutomorphicArithmetic.Foundations.Convolution.GeneralizedMeasures.ContinuousMapGL
 import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 import GroundTheory.GlobalFields.LocalAtPlace
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Separation.Connected
 
 @[expose] public section
 
@@ -69,145 +30,21 @@ noncomputable section
 
 namespace UpperTheory.EigenspaceProjectionTraces
 
+open UpperTheory.FiniteProductSplitting
+
 private theorem ops_key {M : Type*} [Monoid M] (b₁ b₂ P Q O : M) (habs : b₁ = b₁ * P) (hc : b₂ * P = P * b₂)
     (hO : P * Q = O) : b₁ * (b₂ * O) = b₁ * b₂ * Q := by
   subst hO
   rw [← mul_assoc b₂, hc, mul_assoc P, ← mul_assoc b₁, ← habs, mul_assoc]
 
-private noncomputable def glue {ι : Type} {R : ι → Type} [∀ i, CommRing (R i)] {n : ℕ} (g : ∀ i, GL (Fin n) (R i)) :
-    GL (Fin n) (∀ i, R i) where
-  val := Matrix.of fun a b i => (g i : Matrix (Fin n) (Fin n) (R i)) a b
-  inv := Matrix.of fun a b i => ((g i)⁻¹ : GL (Fin n) (R i)) a b
-  val_inv := by
-    ext a b i
-    have := congrFun (congrFun (g i).mul_inv a) b
-    simp only [Matrix.mul_apply, Matrix.of_apply, Finset.sum_apply, Pi.mul_apply, Matrix.one_apply] at this ⊢
-    rw [this]; split_ifs <;> rfl
-  inv_val := by
-    ext a b i
-    have := congrFun (congrFun (g i).inv_mul a) b
-    simp only [Matrix.mul_apply, Matrix.of_apply, Finset.sum_apply, Pi.mul_apply, Matrix.one_apply] at this ⊢
-    rw [this]; split_ifs <;> rfl
-
-private theorem glue_cont {ι : Type} {R : ι → Type} [∀ i, CommRing (R i)] [∀ i, TopologicalSpace (R i)] {n : ℕ} :
-    Continuous (glue : (∀ i, GL (Fin n) (R i)) → GL (Fin n) (∀ i, R i)) := by
-  refine Units.continuous_iff.2 ⟨?_, ?_⟩
-  · refine continuous_pi fun a => continuous_pi fun b => continuous_pi fun i => ?_
-    exact (Units.continuous_val.comp (continuous_apply i)).matrix_elem a b
-  · refine continuous_pi fun a => continuous_pi fun b => continuous_pi fun i => ?_
-    exact (Units.continuous_coe_inv.comp (continuous_apply i)).matrix_elem a b
-
 section Main
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
-private theorem cmp_cont {v : Pl F} (w : PlacesOver E v) : Continuous (GM.cmp (n := n) w) := by
-  refine Units.continuous_iff.2 ⟨?_, ?_⟩
-  · refine continuous_pi fun a => continuous_pi fun b => ?_
-    exact (continuous_apply w).comp (Units.continuous_val.matrix_elem a b)
-  · refine continuous_pi fun a => continuous_pi fun b => ?_
-    exact (continuous_apply w).comp (Units.continuous_coe_inv.matrix_elem a b)
-
-private theorem liesOver_under (w : Pl E) : w.asIdeal.LiesOver (w.under (𝓞 F)).asIdeal := ⟨rfl⟩
-
 private theorem under_eq {v : Pl F} (w : PlacesOver E v) : w.1.under (𝓞 F) = v :=
   HeightOneSpectrum.ext w.2.over.symm
 
-private theorem finite_under (S : Set (Pl F)) (hS : S.Finite) :
-    {w : Pl E | w.under (𝓞 F) ∈ S}.Finite := by
-  refine (hS.biUnion fun v _ => Set.finite_range (Subtype.val : PlacesOver E v → Pl E)).subset ?_
-  intro w hw
-  exact Set.mem_biUnion hw ⟨⟨w, liesOver_under w⟩, rfl⟩
-
-private theorem iwCoset_zero (w : Pl E) :
-    GM.iwCoset w (0 : Fin n → ℤ) = (GLnLocal.iwahori (w.adicCompletion E) n : Set (Gw n w)) := by
-  have hd : Cartan.diagPow (w.adicCompletion E) n (0 : Fin n → ℤ) = 1 := by
-    apply Units.ext
-    rw [Cartan.coe_diagPow]
-    simp
-  ext g
-  constructor
-  · rintro ⟨a, ha, b, hb, rfl⟩
-    rw [hd, mul_one]
-    exact mul_mem ha hb
-  · intro hg
-    exact ⟨g, hg, 1, one_mem _, by rw [hd, mul_one, mul_one]⟩
-
-private theorem iw_test (w : Pl E) :
-    IsLocallyConstant (((GLnLocal.iwahori (w.adicCompletion E) n : Set (Gw n w))).indicator (1 : Gw n w → ℂ)) ∧
-      HasCompactSupport (((GLnLocal.iwahori (w.adicCompletion E) n : Set (Gw n w))).indicator (1 : Gw n w → ℂ)) := by
-  have ho := GLnLocal.isOpen_iwahori (w.adicCompletion E) n
-  have hc := GLnLocal.isCompact_iwahori (w.adicCompletion E) n
-  refine ⟨?_, HasCompactSupport.intro hc fun x hx => Set.indicator_of_notMem hx _⟩
-  rw [IsLocallyConstant.iff_exists_open]
-  intro x
-  by_cases hx : x ∈ (GLnLocal.iwahori (w.adicCompletion E) n : Set (Gw n w))
-  · exact ⟨_, ho, hx, fun y hy => by rw [Set.indicator_of_mem hy, Set.indicator_of_mem hx]; rfl⟩
-  · exact ⟨_, hc.isClosed.isOpen_compl, hx, fun y hy => by
-      rw [Set.indicator_of_notMem hy, Set.indicator_of_notMem hx]⟩
-
-private theorem prodFn_eq {v : Pl F} (h : ∀ w : PlacesOver E v, GL (Fin n) (w.1.adicCompletion E) → ℂ)
-    [Fintype (PlacesOver E v)] : GM.prodFn h = fun g => ∏ w, h w (GM.cmp w g) :=
-  funext fun _ => finprod_eq_prod_of_fintype _
-
-private theorem prodFn_test {v : Pl F} (h : ∀ w : PlacesOver E v, GL (Fin n) (w.1.adicCompletion E) → ℂ)
-    (hc : ∀ w, IsLocallyConstant (h w) ∧ HasCompactSupport (h w)) :
-    IsLocallyConstant (GM.prodFn h) ∧ HasCompactSupport (GM.prodFn h) := by
-  haveI : Fintype (PlacesOver E v) := Fintype.ofFinite _
-  rw [prodFn_eq]
-  constructor
-  · have key : ∀ T : Finset (PlacesOver E v),
-        IsLocallyConstant fun g : GL (Fin n) (CompletionsOver E v) => ∏ w ∈ T, h w (GM.cmp w g) := by
-      intro T
-      induction T using Finset.induction_on with
-      | empty =>
-        simp only [Finset.prod_empty]
-        exact IsLocallyConstant.const (1 : ℂ)
-      | insert a s ha ih =>
-        simp only [Finset.prod_insert ha]
-        exact ((hc a).1.comp_continuous (cmp_cont a)).mul ih
-    exact key _
-  · haveI : T2Space (CompletionsOver E v) := Pi.t2Space
-    haveI : T2Space (GL (Fin n) (CompletionsOver E v)) := Units.instT2Space
-    haveI : R1Space (GL (Fin n) (CompletionsOver E v)) := T2Space.r1Space
-    refine HasCompactSupport.intro ((isCompact_univ_pi fun w => (hc w).2.isCompact).image glue_cont) fun g hg => ?_
-    by_contra hne
-    refine hg ⟨fun w => GM.cmp w g, fun w _ => subset_tsupport _ ?_, ?_⟩
-    · exact fun h0 => hne (Finset.prod_eq_zero (Finset.mem_univ w) h0)
-    · exact Units.ext (Matrix.ext fun a b => rfl)
-
-private theorem unit_prod (v : Pl F) :
-    (GM.prodFn fun w : PlacesOver E v => (GLnLocal.integralGL (w.1.adicCompletion E) n : Set (GL (Fin n) (w.1.adicCompletion E))).indicator (1 : GL (Fin n) (w.1.adicCompletion E) → ℂ)) =
-      (unitSet E n v).indicator 1 := by
-  haveI : Fintype (PlacesOver E v) := Fintype.ofFinite _
-  funext g
-  rw [GM.prodFn, finprod_eq_prod_of_fintype]
-  by_cases hg : g ∈ unitSet E n v
-  · rw [Set.indicator_of_mem hg]
-    exact Finset.prod_eq_one fun w _ => Set.indicator_of_mem (hg w) _
-  · rw [Set.indicator_of_notMem hg]
-    obtain ⟨w, hw⟩ := not_forall.1 hg
-    exact Finset.prod_eq_zero (Finset.mem_univ w) (Set.indicator_of_notMem hw _)
-
-private theorem iwFn_test {q : Pl F} (w₀ : PlacesOver E q) :
-    IsLocallyConstant (GM.iwFn w₀ (0 : Fin n → ℤ)) ∧ HasCompactSupport (GM.iwFn w₀ (0 : Fin n → ℤ)) := by
-  refine prodFn_test _ fun w => ?_
-  rw [ite_self, iwCoset_zero]
-  exact iw_test w.1
-
 variable {σ : E ≃ₐ[F] E} {q : Pl F} {w₀ : PlacesOver E q}
-
-private noncomputable def dflt (T : Ty σ n q w₀) (w : Pl E) : Gw n w → ℂ :=
-  (T.J w : Set (Gw n w)).indicator fun x => conj (T.χ w x)
-
-private theorem dflt_of_triv (T : Ty σ n q w₀) (w : Pl E) (h : T.χ w = 1) :
-    dflt T w = (T.J w : Set (Gw n w)).indicator 1 := by
-  unfold dflt
-  rw [h]
-  funext x
-  by_cases hx : x ∈ (T.J w : Set (Gw n w))
-  · simp [Set.indicator_of_mem hx]
-  · simp [Set.indicator_of_notMem hx]
 
 private theorem phi_eq (T : Ty σ n q w₀) (L : GM.Loc σ n q w₀) (ψ : ∀ v : Pl F, Gw n (T.mk' v).1 → ℂ)
     (hF : FitsV T L ψ) (hq : GM.Split E q) (huq : ∀ v ∈ nsS T, ∀ u : PlacesOver E v, u = T.mk' v)
@@ -259,7 +96,7 @@ end Main
 end UpperTheory.EigenspaceProjectionTraces
 
 
-open UpperTheory.EigenspaceProjectionTraces in
+open UpperTheory.EigenspaceProjectionTraces UpperTheory.FiniteProductSplitting in
 theorem UpperTheory.exists_pos_const_eigenspace_bound_of_split_CMDatum :
     ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E ≃ₐ[F] E) (n : ℕ), 0 < n →
         ∀ (μ : Measure (normOneGL (K := E) (n := n))) [μ.IsHaarMeasure] (νE : Measure (archGroup E n)) [νE.IsHaarMeasure] (aE : TI E n)

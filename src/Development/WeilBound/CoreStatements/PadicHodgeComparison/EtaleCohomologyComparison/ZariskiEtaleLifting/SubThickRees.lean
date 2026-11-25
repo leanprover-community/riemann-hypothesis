@@ -8,7 +8,6 @@ public import Mathlib.RingTheory.RingHom.Etale
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 set_option linter.unusedVariables false
 
 noncomputable section

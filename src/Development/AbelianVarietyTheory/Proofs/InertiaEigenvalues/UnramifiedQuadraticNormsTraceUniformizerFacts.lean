@@ -199,8 +199,7 @@ open IsLocalRing Polynomial in
 variable (K : _root_.GlobalTheory.UnitLemma.UQ) in
 private theorem exists_add_mul_cO_notMem_maximalIdeal (e : K.O) :
     ∃ t : K.O, t + e * _root_.GlobalTheory.UnitLemma.UnramNorm.cO K t ∉ maximalIdeal K.O := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   obtain ⟨x, y, hxy, hm⟩ := K.c_res
   have hy : _root_.GlobalTheory.UnitLemma.UnramNorm.cO K x = y := _root_.GlobalTheory.UnitLemma.UnramNorm.alg_inj K
     (by rw [_root_.GlobalTheory.UnitLemma.UnramNorm.cO_spec, hxy])

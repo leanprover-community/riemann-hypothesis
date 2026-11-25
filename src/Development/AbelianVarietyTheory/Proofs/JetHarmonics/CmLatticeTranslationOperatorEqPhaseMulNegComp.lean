@@ -204,15 +204,13 @@ theorem inOK_natCast_mul {d : ℕ} (n : ℕ) {z : ℂ} (h : InOK d z) : InOK d (
 
 theorem wK_re (d : ℕ) : (wK d).re = 1 / 2 := by simp [wK]
 
-theorem wK_im (d : ℕ) : (wK d).im = Real.sqrt d / 2 := by simp [wK]
-
 theorem cmLatticeHermitianForm_im_int_of_mem_order {d : ℕ} (hd : 0 < d) {x y : ℂ} (hx : InOK d x) (hy : InOK d y) : ∃ k : ℤ, (h1 d x y).im = k := by
   obtain ⟨u, v, rfl⟩ := hx
   obtain ⟨u', v', rfl⟩ := hy
   have hs : Real.sqrt d ≠ 0 := by positivity
   refine ⟨v * u' - u * v', ?_⟩
   rw [h1, Complex.im_ofReal_mul]
-  simp [wK_re, wK_im]
+  simp [wK_re, GlobalTheory.MomOne.OKArith.im_w]
   field_simp
   ring
 
@@ -220,13 +218,13 @@ theorem inOK_of_im {d : ℕ} (hd : 0 < d) {z : ℂ} {k l : ℤ} (h : (h1 d z 1).
     InOK d z := by
   have hs : Real.sqrt d ≠ 0 := by positivity
   rw [h1, Complex.im_ofReal_mul] at h h'
-  simp only [Complex.mul_im, Complex.conj_re, Complex.conj_im, wK_re, wK_im, map_one, Complex.one_re,
+  simp only [Complex.mul_im, Complex.conj_re, Complex.conj_im, wK_re, GlobalTheory.MomOne.OKArith.im_w, map_one, Complex.one_re,
     Complex.one_im] at h h'
   have e : Real.sqrt d * (2 / Real.sqrt d) = 2 := by field_simp
   refine ⟨-l, k, Complex.ext ?_ ?_⟩
-  · simp [wK_re, wK_im]
+  · simp [wK_re, GlobalTheory.MomOne.OKArith.im_w]
     linear_combination (-1) * h' + (1 / 2) * h - z.re / 2 * e
-  · simp [wK_re, wK_im]
+  · simp [wK_re, GlobalTheory.MomOne.OKArith.im_w]
     linear_combination (Real.sqrt d / 2) * h - z.im / 2 * e
 
 theorem exp_rat_mem (r : ℚ) : Complex.exp ((Real.pi : ℂ) * Complex.I * (r : ℂ)) ∈ Qbar := by
@@ -465,16 +463,6 @@ namespace GlobalTheory.MomOne.FrameChange
 
 variable {g : ℕ}
 
-theorem beta_sum_left {κ : Type} [Fintype κ] (d : ℕ) (Hm : Matrix (Fin g) (Fin g) ℂ) (c : κ → ℂ)
-    (v : κ → Fin g → ℂ) (w : Fin g → ℂ) :
-    beta d Hm (∑ k, c k • v k) w = ∑ k, c k * beta d Hm (v k) w := by
-  simp only [beta, hf, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Finset.sum_mul, Finset.mul_sum]
-  rw [Finset.sum_comm' (t' := Finset.univ) (s' := fun _ => Finset.univ) (h := by simp)]
-  simp_rw [Finset.sum_comm (s := (Finset.univ : Finset (Fin g))) (t := (Finset.univ : Finset κ))]
-  refine Finset.sum_congr rfl fun k _ => ?_
-  rw [Finset.sum_comm]
-  exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
-
 theorem beta_conj (d : ℕ) {Hm : Matrix (Fin g) (Fin g) ℂ} (h : Hm.IsHermitian) (z w : Fin g → ℂ) :
     conj (beta d Hm z w) = beta d Hm w z := by
 
@@ -490,7 +478,7 @@ theorem eq_sum_frame (d : ℕ) (Hm : Matrix (Fin g) (Fin g) ℂ) (x : Fin g → 
     (v : Fin g → ℂ) : v = ∑ i, (beta d Hm v (x i) / (a i : ℂ)) • x i := by
   have key : ∀ (z : Fin g → ℂ) k, beta d Hm (∑ i, z i • x i) (x k) = z k * a k := by
     intro z k
-    rw [beta_sum_left]
+    rw [GlobalTheory.MomOne.Frame.beta_sum_left]
     simp [hx]
   have hli : LinearIndependent ℂ x := by
     refine Fintype.linearIndependent_iff.2 fun z hz k => ?_
@@ -540,8 +528,8 @@ theorem frameChange : ∀ (q : ℕ) [Fact q.Prime] (ι : ℂ ≃+* ℂ_[q]) (g :
 
   have hMN : ∀ i k, ∑ j, beta S.d S.Hm (x i) (b j) * (conj (c k j) / (s k * a k)) = if i = k then 1 else 0 := by
     intro i k
-    have e := beta_sum_left S.d S.Hm (c k) b (x i)
-    have e2 := beta_sum_left S.d S.Hm (fun _ : Unit => (s k : ℂ)) (fun _ => x k) (x i)
+    have e := GlobalTheory.MomOne.Frame.beta_sum_left S.d S.Hm (c k) b (x i)
+    have e2 := GlobalTheory.MomOne.Frame.beta_sum_left S.d S.Hm (fun _ : Unit => (s k : ℂ)) (fun _ => x k) (x i)
     simp only [Finset.univ_unique, Finset.sum_singleton] at e2
     rw [← hsc k, e2] at e
     have e3 := congrArg conj e
@@ -1118,7 +1106,7 @@ private lemma eq_sum_beta_div_smul_of_beta_orthogonal {g d : ℕ} {Hm : Matrix (
     refine Fintype.linearIndependent_iff.2 fun c hc i => ?_
     have h := congrArg (fun w => _root_.Formalism.L2.Ker.JMB.beta d Hm w (x i)) hc
     simp only [beta_sum_left', beta_smul_left', hx, mul_ite, mul_zero,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true] at h
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h
     have h0 : _root_.Formalism.L2.Ker.JMB.beta d Hm 0 (x i) = 0 := by
       simpa using beta_smul_left' (d := d) Hm 0 (x i) (x i)
     rw [h0] at h
@@ -1130,7 +1118,7 @@ private lemma eq_sum_beta_div_smul_of_beta_orthogonal {g d : ℕ} {Hm : Matrix (
     have hsub : w + ∑ i, (_root_.Formalism.L2.Ker.JMB.beta d Hm v (x i) / (a i : ℂ)) • x i = v := by rw [hw]; abel
     have := congrArg (fun u => _root_.Formalism.L2.Ker.JMB.beta d Hm u (x j)) hsub
     simp only [beta_add_left', beta_sum_left', beta_smul_left', hx,
-      mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true, div_mul_cancel₀ _ (ha' j)] at this
+      mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true, div_mul_cancel₀ _ (ha' j)] at this
     linear_combination this
   have hww : _root_.Formalism.L2.Ker.JMB.beta d Hm w w = 0 := by
     have hmem : w ∈ Submodule.span ℂ (Set.range x) := by rw [hspan]; exact Submodule.mem_top

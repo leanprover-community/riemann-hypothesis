@@ -3,6 +3,7 @@ module
 public import Formalism.PeriodIntegrals.LocGlobIncl
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.SharpRestriction.GlobalSchurBounds.LinkPk
 
 @[expose] public section
 
@@ -28,20 +29,7 @@ theorem maximal_ne_bot (m : Ideal (𝓞 K)) (hm : m.IsMaximal) : m ≠ ⊥ := by
 
 theorem mem_of_local {W : Type} [AddCommGroup W] [Module (𝓞 K) W] (N : Submodule (𝓞 K) W) (x : W)
     (h : ∀ w : HeightOneSpectrum (𝓞 K), ∃ s : 𝓞 K, s ∉ w.asIdeal ∧ s • x ∈ N) : x ∈ N := by
-  by_contra hx
-  have hI : N.comap (LinearMap.toSpanSingleton (𝓞 K) W x) ≠ ⊤ := by
-    intro htop
-    apply hx
-    have h1 : (1 : 𝓞 K) ∈ N.comap (LinearMap.toSpanSingleton (𝓞 K) W x) := by
-      rw [htop]; exact Submodule.mem_top
-    rw [Submodule.mem_comap, LinearMap.toSpanSingleton_apply, one_smul] at h1
-    exact h1
-  obtain ⟨m, hm, hle⟩ := Ideal.exists_le_maximal _ hI
-  obtain ⟨s, hs, hsx⟩ := h ⟨m, hm.isPrime, maximal_ne_bot m hm⟩
-  apply hs
-  apply hle
-  rw [Submodule.mem_comap, LinearMap.toSpanSingleton_apply]
-  exact hsx
+  apply _root_.Formalism.MainNotions.Lnk.mem_of_locally <;> assumption
 
 theorem coe_pow_toNat_le (v : HeightOneSpectrum (𝓞 K)) (k : ℤ) :
     ((v.asIdeal ^ k.toNat : Ideal (𝓞 K)) : FractionalIdeal (nonZeroDivisors (𝓞 K)) K) ≤
@@ -50,7 +38,7 @@ theorem coe_pow_toNat_le (v : HeightOneSpectrum (𝓞 K)) (k : ℤ) :
   by_cases hk : 0 ≤ k
   · obtain ⟨n, rfl⟩ := Int.eq_ofNat_of_zero_le hk
     simp
-  · push_neg at hk
+  · push Not at hk
     obtain ⟨n, rfl⟩ := Int.exists_eq_neg_ofNat hk.le
     have h0 : (-(n : ℤ)).toNat = 0 := Int.toNat_of_nonpos hk.le
     rw [h0, pow_zero, zpow_neg, zpow_natCast]

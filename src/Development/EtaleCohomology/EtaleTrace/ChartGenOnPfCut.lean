@@ -20,7 +20,7 @@ def ChartGenMem : Prop := ∀ (k : Type) [Field k] {X : Scheme.{0}} [IsIntegral 
       algebraMap (X.presheaf.stalk y) X.functionField
         (X.presheaf.germ U y hy (φ (HomogeneousLocalization.Away.mk _ hx m g hg))) = eval₂ (kHom p) w g / w i ^ m) →
   ∀ (hη : genericPoint X ∈ U) (n : ℕ), 0 < n → ∀ (f : MvPolynomial (Fin (N + 1)) k)
-    (hf : f ∈ homogeneousSubmodule (Fin (N + 1)) k n),
+    (_ : f ∈ homogeneousSubmodule (Fin (N + 1)) k n),
     ((⟨genericPoint X, hη⟩ : U) ∈ chartMor i U hx φ ⁻¹ᵁ Proj.basicOpen _ f ↔ eval₂ (kHom p) w f ≠ 0)
 
 def ChartGenVal : Prop := ∀ (k : Type) [Field k] {X : Scheme.{0}} [IsIntegral X] (p : X ⟶ S k) (N : ℕ)

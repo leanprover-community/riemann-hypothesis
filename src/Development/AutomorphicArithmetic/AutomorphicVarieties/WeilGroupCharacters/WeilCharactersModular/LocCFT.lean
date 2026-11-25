@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.LamLocal
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.FiniteCohomology
 public import GroundTheory.LocalFields.LocalArtinCompletion
 public import Mathlib.NumberTheory.Padics.ValuativeRel
@@ -106,17 +107,7 @@ private theorem ag_lift {G C : Type} [Group G] [TopologicalSpace G] [IsTopologic
 private theorem ag_map {G G' : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [Group G']
     [TopologicalSpace G'] [IsTopologicalGroup G'] (f : G →* G') (hf : Continuous f) :
     ∃ F : TopologicalAbelianization G →* TopologicalAbelianization G', Continuous F ∧ ∀ g : G, F g = (f g : G') := by
-  set M := (commutator G').topologicalClosure
-  have hker : ((QuotientGroup.mk' M).comp f).ker = M.comap f := by
-    ext x
-    simp
-  have hle : (commutator G).topologicalClosure ≤ M.comap f := by
-    apply Subgroup.topologicalClosure_minimal
-    · rw [← hker]
-      exact Abelianization.commutator_subset_ker _
-    · exact (Subgroup.isClosed_topologicalClosure _).preimage hf
-  refine ⟨QuotientGroup.map _ M f hle, ?_, fun g => rfl⟩
-  exact continuous_coinduced_dom.2 (continuous_quotient_mk'.comp hf)
+  apply _root_.ab_map <;> assumption
 
 open GroundTheory.LocalField ValuativeRel GroundTheory.LocalField.Abstract in
 private theorem ag_field (K Ω : Type) [Field K] [ValuativeRel K] [TopologicalSpace K]
@@ -365,8 +356,7 @@ theorem UpperTheory.exists_principal_units_retraction_localField :
     have hunit : IsUnit ((Nat.card 𝓀[K] - 1 : ℕ) : ℤ_[l]) := by
       rw [PadicInt.isUnit_iff]
       apply le_antisymm (PadicInt.norm_le_one _)
-      by_contra hlt
-      push_neg at hlt
+      by_contra! hlt
       have h : l ∣ Fintype.card 𝓀[K] - 1 := by simpa using hlt
       rw [← Nat.card_eq_fintype_card] at h
       exact (hl.coprime_iff_not_dvd.mp hcop.symm) h

@@ -93,7 +93,7 @@ theorem addSubgroup_finite_quot_of_commensurable : ∀ (V : Type) [AddCommGroup 
   intro u hu
   obtain ⟨r₀, hr₀, v, hv, huv⟩ := hR₀ (N • u) (hAL u hu)
   have hP : P r₀ := ⟨u, hu, v, hv, huv⟩
-  have hf : f r₀ = hP.choose := dif_pos hP
+  have hf : f r₀ = hP.choose := dite_eq_left hP
   obtain ⟨haA, w, hwL, haw⟩ := hP.choose_spec
   refine ⟨f r₀, Finset.mem_image_of_mem f hr₀, M • (v - w), hLA _ (L.sub_mem hv hwL), ?_⟩
   rw [hf]
@@ -217,7 +217,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum MeasureTheory Matrix ValuativeRel GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.SplitWeil GlobalTheory.SeeSaw GlobalTheory.AdForm GlobalTheory.LocMod
 open NumberField
 open scoped TensorProduct Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.StdHomOrth
 

@@ -9,53 +9,9 @@ public import Mathlib.LinearAlgebra.Basis.VectorSpace
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CechNerveFaceOneZero
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PullbackZeroCochainsAlgebraMap
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.HodgeWedgeFields.IsPullbackH2Structure
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.TypeStar
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Divisors.CommAlgFunctorCoboundaryZeroMemCocyclesOne
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DnCompDn
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -921,9 +877,9 @@ theorem sign_off (q : ℕ) (i : Fin (q + 2)) (k : Fin (q + 1)) :
   simp only [val_succAbove, val_predAbove, Fin.val_castSucc]
   by_cases h : (k : ℕ) < i
   · obtain ⟨m, hm⟩ : ∃ m, (i : ℕ) = m + 1 := ⟨(i : ℕ) - 1, by omega⟩
-    rw [if_pos h, if_pos h, if_pos (by omega), hm]
+    rw [ite_eq_left h, ite_eq_left h, ite_eq_left (by omega), hm]
     simp [pow_add, pow_succ]
-  · rw [if_neg h, if_neg (by omega), if_neg (by omega)]
+  · rw [ite_eq_right h, ite_eq_right (by omega), ite_eq_right (by omega)]
     simp [pow_add, pow_succ]
 
 def fwd (q : ℕ) (p : Fin (q + 2) × Fin (q + 1)) : Fin (q + 1) × Fin (q + 2) :=
@@ -1293,9 +1249,9 @@ theorem hopfLeSt : CxSt → DictSt → LowSt → HopfLeSt := by
     rw [LinearMap.comp_apply, hΛv i _ (hdd y), hΦd, map_zero]
     rfl
   have hΛ1 : ∀ i, Λ i (xt i) = 1 := fun i ↦ by
-    rw [hΛv i _ (hxc i), hΦx, hl, if_pos rfl]
+    rw [hΛv i _ (hxc i), hΦx, hl, ite_eq_left rfl]
   have hΛn : ∀ i j, i ≠ j → Λ i (xt j) = 0 := fun i j h ↦ by
-    rw [hΛv i _ (hxc j), hΦx, hl, if_neg h]
+    rw [hΛv i _ (hxc j), hΦx, hl, ite_eq_right h]
   have hpr : ∀ i, ∃ u, pulln π 1 (pulln (boxL F) 1 (xt i) + pulln (boxR F) 1 (xt i)) - pulln m 1 (xt i) =
       dn G 0 u := fun i ↦ by
     have h := hprim (x i)

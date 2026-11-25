@@ -341,8 +341,7 @@ theorem exists_multiplier_descend_of_closed {σ X : Type} [Fintype σ] [Nonempty
   obtain ⟨b, hb, hbs⟩ := _root_.GlobalTheory.exists_common_denominator_of_isNilpotent B A Subtype.val_injective (s.image π) hnil
   obtain ⟨b, c, rfl⟩ := b
   refine ⟨c, ?_, fun f hf => ?_⟩
-  · by_contra hc
-    push_neg at hc
+  · by_contra! hc
     exact hb (Subtype.ext (Subtype.ext (funext fun x => hc x)))
   · obtain ⟨⟨b', c', rfl⟩, hb'⟩ := hbs (π f) (Finset.mem_image_of_mem _ hf)
     exact ⟨c', fun x => congrFun (congrArg Subtype.val hb') x⟩
@@ -449,10 +448,6 @@ lemma evC_ltr (g y : Matrix ι ι ℂ) (f : MvPolynomial (ι × ι) ℂ) : evC (
     rw [map_mul, evC_mul, evC_mul, hp]
     congr 1
     simp [evC, ltr, Matrix.mul_apply]
-
-omit [Fintype ι] [DecidableEq ι] in
-alias evC_map := _root_.GlobalTheory.ClassFin.evC_map_rat
-
 
 omit [DecidableEq ι] in
 lemma exists_fg_rtr (f : MvPolynomial (ι × ι) ℂ) :
@@ -566,9 +561,9 @@ theorem GlobalTheory.ClassFin.exists_evC_blk_of_fibre_const : ∀ (ι : Type) [F
     obtain ⟨z, hz⟩ := exists_common_zero _ hD
     have hzp : z ∈ pts (blk e '' Γ) ℂ := by
       intro p hp
-      rw [← evC_map]
+      rw [← GlobalTheory.ClassFin.evC_map_rat]
       refine hz _ fun g _ => ⟨0, fun x hx => ?_⟩
-      rw [evC_map, hp _ ⟨x, hx, rfl⟩]
+      rw [GlobalTheory.ClassFin.evC_map_rat, hp _ ⟨x, hx, rfl⟩]
       simp [evC]
     have hx₀p : blk e x₀ ∈ pts (blk e '' Γ) ℂ := fun p hp => hp _ ⟨x₀, hx₀, rfl⟩
     have := _root_.GlobalTheory.ClassFin.evC_eq_zero_of_mem_pts_of_stable ι _ hpre.aut_mem (ltr z b₀) (by
@@ -1439,7 +1434,7 @@ private lemma exists_finset_integral_classes {R : Type} [CommRing R] [Algebra �
     choose z a ha hza using fun i j => hi L hL0 _ (hwN i j)
     have hc : ∃ w', Cls (fun i j => (z i j : ZMod L)) w' :=
       ⟨w, hw, fun i j => ⟨z i j, a i j, ha i j, rfl, hza i j⟩⟩
-    refine ⟨hc.choose, Finset.mem_image.2 ⟨_, Finset.mem_univ _, dif_pos hc⟩, ?_⟩
+    refine ⟨hc.choose, Finset.mem_image.2 ⟨_, Finset.mem_univ _, dite_eq_left hc⟩, ?_⟩
     obtain ⟨htS, ht⟩ := hc.choose_spec
     obtain ⟨t, htdef⟩ : ∃ t, t = hc.choose := ⟨_, rfl⟩
     rw [← htdef] at htS ht ⊢

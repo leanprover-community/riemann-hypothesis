@@ -224,12 +224,12 @@ theorem mem_N_of_val {g : GL (n ⊕ Fin c) k} {β : n → k} {t : k} (hg : g.val
   · simp [Matrix.one_apply]
   · simp only [lev, Sum.elim_inl, Sum.elim_inr] at hrs
     simp only [Matrix.fromBlocks_apply₁₂, ExchangeSupport.colM, Matrix.of_apply]
-    rw [if_neg (by omega)]
+    rw [ite_eq_right (by omega)]
     simp
   · simp
   · simp only [lev, Sum.elim_inr] at hrs
     simp only [Matrix.fromBlocks_apply₂₂, Matrix.add_apply, zM, Matrix.of_apply]
-    rw [if_neg (by omega)]
+    rw [ite_eq_right (by omega)]
     simp [Matrix.one_apply]
 
 private theorem eMat_mem_N_succ (u : n → k) : rowE c p u ∈ N k n c (p + 1) := by
@@ -242,7 +242,7 @@ private theorem eMat_mem_N_succ (u : n → k) : rowE c p u ∈ N k n c (p + 1) :
   · simp
   · simp only [lev, Sum.elim_inl, Sum.elim_inr] at hrs
     simp only [Matrix.fromBlocks_apply₂₁, ExchangeSupport.rowM, Matrix.of_apply]
-    rw [if_neg (by omega)]
+    rw [ite_eq_right (by omega)]
     simp
   · simp [Matrix.one_apply]
 
@@ -389,7 +389,7 @@ theorem exists_isQuotInt_unfolding : ∀ (k : Type) [Field k] [ValuativeRel k] [
       simpa using this
     rw [hf _ _ hkey, hf h ⟨_, hmemΨ h⟩ rfl, map_smul, hθΨ, map_smul, LinearMap.smul_apply, map_mul,
       map_mul, Module.End.mul_apply, Module.End.mul_apply, hb.2 x, hb.1 _ u hu, smul_eq_mul]
-    have hN : 0 < nabs k (Matrix.GeneralLinearGroup.det x) := GlobalTheory.RootEx.OpELevi.nabs_pos _
+    have hN : 0 < nabs k (Matrix.GeneralLinearGroup.det x) := GlobalTheory.SplitWeil.nabs_pos' _
     have hpow : (nabs k (Matrix.GeneralLinearGroup.det x) ^ ((c : ℝ) + 1 - 2 * p) : ℝ) =
         nabs k (Matrix.GeneralLinearGroup.det x) ^ (((c : ℝ) + 1) / 2 - p) *
           nabs k (Matrix.GeneralLinearGroup.det x) ^ (((c : ℝ) + 1) / 2 - p) := by

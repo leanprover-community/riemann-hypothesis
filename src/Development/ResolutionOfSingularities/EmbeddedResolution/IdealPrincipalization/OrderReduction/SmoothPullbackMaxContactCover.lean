@@ -1076,7 +1076,7 @@ private theorem prod_map_range_pow_ite_eq_pow {X : Scheme.{u}} (A : ℕ → X.Id
     intro y hy
     simp only [List.mem_map, List.mem_range] at hy
     obtain ⟨j, hj, rfl⟩ := hy
-    rw [if_neg (Nat.ne_of_lt hj), pow_zero]
+    rw [ite_eq_right (Nat.ne_of_lt hj), pow_zero]
   rw [List.range_succ, List.map_append, List.prod_append, h1, one_mul]
   simp
 
@@ -1091,7 +1091,7 @@ private theorem exists_le_and_pow_le_tunedSheaf (k : Type u) [Field k] [IsNoethe
     refine Finset.sum_eq_single n (fun b _ hb => by simp [hb]) (fun h => ?_)
     exact absurd (Finset.mem_range.2 (Nat.lt_succ_self n)) h
   have hsum : (∑ j ∈ Finset.range (n + 1), (n + 1 - j) * (if j = n then s else 0)) = s := by
-    rw [h0, if_pos rfl, Nat.add_sub_cancel_left, one_mul]
+    rw [h0, ite_eq_left rfl, Nat.add_sub_cancel_left, one_mul]
   have h := prod_pow_derivIdealSheafIterate_le_tunedSheaf k p I (n + 1) s
     (fun j => if j = n then s else 0) hsum.ge
   rw [prod_map_range_pow_ite_eq_pow] at h

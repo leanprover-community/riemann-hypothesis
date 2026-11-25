@@ -5,6 +5,7 @@ import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Lemma
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FlowCoefficientBounds
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.OrthonormalFlagTranslateHolds
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FourierCoefficientDomain
 
 @[expose] public section
 
@@ -47,30 +48,19 @@ variable {X} {x0 : Frame X.Ψ r} (D : LUData X x0) (la : Wt X.Ψ r) (F : V (nd X
 def Gf (x : Frame X.Ψ r) : ℝ≥0∞ := ENNReal.ofReal (X.pnorm la (P0 D la F) x ^ 2)
 
 private lemma dom_isOpen : IsOpen X.dom := by
-  have hd : ∀ (τ : X.Ψ) (i : Fin (r + 1)), Continuous fun x : Frame X.Ψ r => dmin X.Gm x τ i :=
-    fun τ i => cont_dmin X τ i
-  have hdet : ∀ τ : X.Ψ, Continuous fun x : Frame X.Ψ r => (mat x τ).det := by
-    intro τ
-    first
-      | exact Continuous.matrix_det (continuous_apply τ)
-  show IsOpen {x : Frame X.Ψ r | ∀ τ : X.Ψ, (mat x τ).det ≠ 0 ∧
-    ∀ i : Fin (r + 1), 0 < psgn X.p0 i * (dmin X.Gm x τ i).re}
-  simp only [Set.setOf_forall, Set.setOf_and]
-  refine isOpen_iInter_of_finite fun τ => ?_
-  refine (isOpen_ne_fun (hdet τ) continuous_const).inter (isOpen_iInter_of_finite fun i => ?_)
-  exact isOpen_lt continuous_const (continuous_const.mul (Complex.continuous_re.comp (hd τ i)))
+  apply _root_.ReciprocityTheory.ChartRestriction.G.FD.FourierCoefficientDomain.isOpen_dom <;> assumption
 
 private lemma continuous_cpt' : Continuous (cpt X x0) := by
   have hn : ∀ (τ : X.Ψ) (a b : Fin r), Continuous fun z : V (nd X) => nmat X z τ a b := by
     intro τ a b
     by_cases h : b < a
-    · simp only [nmat, dif_pos h]
+    · simp only [nmat, dite_eq_left h]
       first
         | exact (EuclideanSpace.proj (𝕜 := ℂ) _).continuous
     · by_cases h' : a = b
-      · simp only [nmat, dif_neg h, if_pos h']
+      · simp only [nmat, dite_eq_right h, ite_eq_left h']
         exact continuous_const
-      · simp only [nmat, dif_neg h, if_neg h']
+      · simp only [nmat, dite_eq_right h, ite_eq_right h']
         exact continuous_const
   refine continuous_pi fun τ => continuous_pi fun a => continuous_pi fun b => ?_
   show Continuous fun z => ∑ k, mat x0 τ a k * mat (nmat X z) τ k b
@@ -103,10 +93,10 @@ theorem Gf_meas (hF : DifferentiableOn ℂ F (OmF X x0)) : Measurable (Gf D la F
     funext x
     by_cases h : x ∈ cell D
     · rw [Set.piecewise_eq_of_mem _ _ _ h]
-      exact if_pos h
+      exact ite_eq_left h
     · first
         | rw [Set.piecewise_eq_of_notMem _ _ _ h]
-      exact if_neg h
+      exact ite_eq_right h
   have hPm : Measurable (P0 D la F) := by
     rw [hP]
     exact hfc.measurable_piecewise continuous_zero.continuousOn (isOpen_cell D).measurableSet

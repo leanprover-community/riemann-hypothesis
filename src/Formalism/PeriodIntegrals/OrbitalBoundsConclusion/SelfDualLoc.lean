@@ -190,7 +190,7 @@ theorem bwdDir_of (hN : Nondeg) (hSp : SpanTop) (hL : LocBasis) (hD : DualBasis)
     refine hdual _ fun z hz => ?_
     obtain ⟨a, ha⟩ := hpair z hz (yd j)
     rw [hform_smul_right_self_dual_local_basis, ha]
-    simp only [hyd, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [hyd, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     exact hσint (a j)
 
   set w : Fin n → Fin n → E ⊗[F] v.adicCompletion F :=
@@ -250,7 +250,7 @@ theorem bwdDir_of (hN : Nondeg) (hSp : SpanTop) (hL : LocBasis) (hD : DualBasis)
       dsimp only
       rw [hform_incl, hyd]
       split_ifs <;> simp
-    simp only [h', mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true] at h
+    simp only [h', mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true] at h
     exact h
   rw [hyc]
   exact Submodule.sum_mem _ fun j _ => by
@@ -354,8 +354,7 @@ theorem nondeg : Nondeg := by
   intro F E _ _ _ _ _ n σ J Lb T hfin hT hT0 y hy
   by_contra hne
   obtain ⟨j, hj⟩ : ∃ j, y j ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (funext h)
   obtain ⟨d, hd0, hd⟩ := exists_den Lb (Module.Finite.iff_fg.1 hfin)
   obtain ⟨t, ht⟩ := exists_not_mem_intOE (E := E)

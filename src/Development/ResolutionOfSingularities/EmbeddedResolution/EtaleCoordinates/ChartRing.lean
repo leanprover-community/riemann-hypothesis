@@ -130,7 +130,6 @@ theorem EtaleChart.coordRingHom_etale (c : EtaleChart p U m) (hU : IsAffineOpen 
     c.coordRingHom.Etale := by
   have hUaff : IsAffine U.toScheme := hU
   have hEt : AlgebraicGeometry.Etale c.map := c.isEtale
-  have hAaff : IsAffine (affineSpaceFin k m) := inferInstance
   have hbeta : IsIso (Scheme.Hom.appTop
       (AffineSpace.SpecIso (ULift.{u} (Fin m)) (CommRingCat.of k)).hom) :=
     inferInstanceAs (IsIso

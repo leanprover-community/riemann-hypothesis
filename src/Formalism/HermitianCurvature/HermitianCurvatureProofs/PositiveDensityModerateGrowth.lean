@@ -981,16 +981,6 @@ end partD
 
 end Formalism.FourierDecayAlt.P.JCx4
 
-namespace Formalism.FourierDecayAlt.P.JCx4
-
-section partE
-
-open Formalism.FourierDecayAlt.P.JCx2 Formalism.FourierDecayAlt.P.BetaSesquilinearity
-
-end partE
-
-end Formalism.FourierDecayAlt.P.JCx4
-
 namespace Formalism.FourierDecayAlt.P
 
 open Formalism.FourierDecayAlt.P.JCx2 Formalism.FourierDecayAlt.P.BetaSesquilinearity Formalism.FourierDecayAlt.P.JCx4

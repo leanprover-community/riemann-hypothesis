@@ -45,7 +45,7 @@ theorem sum_crdB (bs : Module.Basis (Fin 2) F E) (Z : Mx F E m n) : ∑ k, crdB 
   ext i j
   simp only [Matrix.sum_apply, Matrix.smul_apply, Ek, Matrix.single_apply, smul_ite, smul_zero, Fintype.sum_prod_type]
   rw [Finset.sum_eq_single i, Finset.sum_eq_single j]
-  · simp only [and_self, if_true, crdB]
+  · simp only [and_self, ite_true, crdB]
     conv_rhs => rw [← (Algebra.TensorProduct.basis (AF F) bs).sum_repr (Z i j)]
     simp [Algebra.TensorProduct.basis_apply]
   · intro j' _ h; simp [h]

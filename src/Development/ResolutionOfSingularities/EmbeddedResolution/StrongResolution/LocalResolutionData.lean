@@ -134,10 +134,6 @@ private theorem eqToHom_comp_pullback_fst {X₀ X₁ Y₀ Y₁ : Scheme.{u}} (φ
   subst hg
   simp
 
-private theorem base_comp_apply {A B C : Scheme.{u}} (a : A ⟶ B) (b : B ⟶ C) (t : ↥A) :
-    (a ≫ b).base t = b.base (a.base t) := by
-  simp
-
 theorem lastObjIsoPullback_hom_fst (d : LocalResolutionData k f s) (i : d.cover.I₀) :
     (d.lastObjIsoPullback i).hom ≫ pullback.fst (d.cover.f i) s.lastStructMap = (d.seq i).lastStructMap := by
   have hg : eqToHom (congrArg s.schemeAt (d.reindex_length i)) ≫ s.lastStructMap
@@ -185,10 +181,8 @@ theorem exists_chartToLastObj_eq (d : LocalResolutionData k f s) (x : ↥(s.last
   have h3 := congrArg
     (fun m : (pullback (d.cover.f (d.cover.idx (s.lastStructMap.base x))) s.lastStructMap : Scheme.{u}) ⟶ s.lastObj
       => m.base p) h2
-  simp only [base_comp_apply] at h3
+  simp only [Scheme.Hom.comp_apply] at h3
   exact h3.trans hp2
-
-private alias exists_chartToLastObj_apply_eq := _root_.FunctorialResolution.EmbeddedResolution.LocalResolutionData.exists_chartToLastObj_eq
 
 def lastObjCover (d : LocalResolutionData k f s) : Scheme.OpenCover.{u, u} s.lastObj :=
   Scheme.Cover.mkOfCovers d.cover.I₀ (fun i => (d.seq i).lastObj)

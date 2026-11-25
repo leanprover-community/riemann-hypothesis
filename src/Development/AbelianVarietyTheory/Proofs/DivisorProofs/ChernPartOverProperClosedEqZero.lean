@@ -78,7 +78,6 @@ open scoped TensorProduct
 namespace GlobalTheory.WeilIntegral
 
 
-set_option autoImplicit false in
 open scoped TensorProduct in
 theorem _root_.GlobalTheory.WeilIntegral.isAlgebraic_of_etale (S B : Type) [CommRing S] [IsDomain S] [CommRing B] [Algebra S B]
     [Algebra.Etale S B] (f : B) : IsAlgebraic S f := by
@@ -140,8 +139,7 @@ theorem exists_poly_dvd {k R : Type} [CommRing k] [IsDomain k] [CommRing R] [IsD
 theorem volume_poly_zero (D : ℕ) (P : MvPolynomial (Fin D) ℂ) (hP : P ≠ 0) :
     volume {v : ReciprocityTheory.L2DbarEstimates.V D | MvPolynomial.eval (fun a => v a) P = 0} = 0 := by
   obtain ⟨w, hw⟩ : ∃ w, MvPolynomial.eval w P ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hP (MvPolynomial.funext fun x => by simpa using h x)
   have h0 := ReciprocityTheory.AnForm.volume_zero_set_of_analyticOnNhd isOpen_univ isPreconnected_univ
     (fun z _ => _root_.GlobalTheory.SimpleRoots.analyticAt_mvPolynomial_eval P z) ⟨w, mem_univ _, hw⟩

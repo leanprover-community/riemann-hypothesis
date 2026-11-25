@@ -120,7 +120,6 @@ section
 noncomputable section
 namespace GlobalTheory.Mem.Top.Bl
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top.GroupRetwisting NumberField IsDedekindDomain
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 section Pack
 open Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Rows Formalism.IndefR Formalism.IndefR.Links
 set_option genInjectivity false in

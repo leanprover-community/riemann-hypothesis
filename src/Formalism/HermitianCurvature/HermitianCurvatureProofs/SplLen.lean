@@ -161,14 +161,7 @@ lemma spl_len {w w₁ w₂ : List (Bool × Mat k r)} (h : Spl w w₁ w₂) : w�
 
 private theorem adm_of_sublist {n : ℕ} {w w' : List (Bool × Mat k r)} (h : admitted n w)
     (hw : w'.Sublist w) : admitted n w' := by
-  obtain ⟨u, v, hu, hv, hlen, rfl⟩ := h
-  obtain ⟨l₁, l₂, rfl, h1, h2⟩ := List.sublist_append_iff.1 hw
-  unfold wL at h1
-  unfold wR at h2
-  obtain ⟨u', hu', rfl⟩ := List.sublist_map_iff.1 h1
-  obtain ⟨v', hv', rfl⟩ := List.sublist_map_iff.1 h2
-  exact ⟨u', v', fun X hX => hu X (hu'.subset hX), fun X hX => hv X (hv'.subset hX),
-    by have := hu'.length_le; have := hv'.length_le; omega, rfl⟩
+  apply _root_.PI.UnitaryCorollaryDerivatives.CRH.Adm_sub <;> assumption
 
 theorem fdb (ψ : Mat k r → F) (hψ : ContDiff ℝ ∞ ψ) (S : Set (Mat k r)) (K : Set F) (hK : ∀ g ∈ S, ψ g ∈ K)
     (Y : Mat k r → ℝ) (hY : ∀ g ∈ S, 1 ≤ Y g) (α β : ℕ) (M : ℝ) (n : ℕ)

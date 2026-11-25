@@ -342,12 +342,12 @@ theorem serMul_zero (f : L⟦X⟧) : serMul f (0 : ℤ → M) = 0 := by
 theorem serMul_C (c : L) (u : ℤ → M) : serMul (C c) u = c • u := by
   funext k
   unfold serMul
-  rw [finsum_eq_single _ 0 fun j hj => by rw [coeff_C, if_neg hj, zero_smul]]
+  rw [finsum_eq_single _ 0 fun j hj => by rw [coeff_C, ite_eq_right hj, zero_smul]]
   simp
 
 theorem serMul_X_pow (m : ℕ) (u : ℤ → M) (k : ℤ) : serMul ((X : L⟦X⟧) ^ m) u k = u (k - m) := by
   unfold serMul
-  rw [finsum_eq_single _ m fun j hj => by rw [coeff_X_pow, if_neg hj, zero_smul]]
+  rw [finsum_eq_single _ m fun j hj => by rw [coeff_X_pow, ite_eq_right hj, zero_smul]]
   simp
 
 theorem serMul_low (f : L⟦X⟧) {u : ℤ → M} {m : ℤ} (hu : ∀ k < m, u k = 0) :
@@ -456,7 +456,7 @@ theorem spanIsLines_of_graded_onto {N : Type} (E : N → ℤ → M) {r : ℕ} (u
     have h3 := congrFun h0 k
     rw [Matrix.mulVec, dotProduct, Finset.sum_eq_single k] at h3
     · change constantCoeff (Mx k k) * v k = 0 at h3
-      rw [heq k k rfl, if_pos rfl, one_mul] at h3
+      rw [heq k k rfl, ite_eq_left rfl, one_mul] at h3
       exact (Finset.mem_filter.1 hk).2 h3
     · intro s _ hs
       change constantCoeff (Mx k s) * v s = 0
@@ -464,7 +464,7 @@ theorem spanIsLines_of_graded_onto {N : Type} (E : N → ℤ → M) {r : ℕ} (u
       · rw [hvs, mul_zero]
       rcases (hmax s (by simpa using hvs)).lt_or_eq with h | h
       · rw [hlt k s h, zero_mul]
-      · rw [heq k s h, if_neg (Ne.symm hs), zero_mul]
+      · rw [heq k s h, ite_eq_right (Ne.symm hs), zero_mul]
     · simp
   intro y
   constructor
@@ -529,10 +529,10 @@ theorem serSpan_eq_std_iff (D : Submodule L M) [FiniteDimensional L D] (S : Set 
         · simp [A, hb, hab.trans hb]
         · simp [A, hb]
       · by_cases hk : -k ≤ 0
-        · simpa only [A, if_pos hk] using (h1 y hy).2 k
+        · simpa only [A, ite_eq_left hk] using (h1 y hy).2 k
         · rw [(h1 y hy).1 k (by omega)]; exact zero_mem _
       · rcases lt_trichotomy k 0 with hk | rfl | hk
-        · have : w = 0 := by simpa only [A, if_neg (show ¬ -k ≤ 0 by omega), Submodule.mem_bot] using hw
+        · have : w = 0 := by simpa only [A, ite_eq_right (show ¬ -k ≤ 0 by omega), Submodule.mem_bot] using hw
           exact ⟨0, zero_mem _, fun _ _ => zero_mem _, by simp [this]⟩
         · have h3 : D ≤ (serSpan L S).map (LinearMap.proj (0 : ℤ)) := by
             rw [← h2, Submodule.span_le]
@@ -541,7 +541,7 @@ theorem serSpan_eq_std_iff (D : Submodule L M) [FiniteDimensional L D] (S : Set 
           obtain ⟨y, hy, rfl⟩ := h3 (hAD _ hw)
           exact ⟨y, hy, fun j hj => by rw [(hle hy).1 j (by omega)]; exact zero_mem _, by simp⟩
         · refine ⟨0, zero_mem _, fun _ _ => zero_mem _, ?_⟩
-          simpa only [A, if_pos (show -k + 1 ≤ 0 by omega), Pi.zero_apply, zero_sub, neg_mem_iff] using hAD _ hw
+          simpa only [A, ite_eq_left (show -k + 1 ≤ 0 by omega), Pi.zero_apply, zero_sub, neg_mem_iff] using hAD _ hw
     refine le_antisymm hle (le_trans ?_ e.ge)
     exact le_iSup_of_le (f := fun a => shiftSer a (A a)) 0 (by simp [A])
 
@@ -620,7 +620,7 @@ theorem map_shiftSer {c : L} (hc : c ≠ 0) (g : M →ₗ[L] M') (a : ℤ) (F : 
       fun k => Submodule.smul_mem _ _ (Submodule.mem_map_of_mem (hu.2 k))⟩
   · rintro y ⟨h0, h1⟩
     choose f hf hfy using h1
-    refine ⟨fun k => if k < -a then 0 else (c ^ k)⁻¹ • f k, ⟨fun k hk => if_pos hk, fun k => ?_⟩, funext fun k => ?_⟩
+    refine ⟨fun k => if k < -a then 0 else (c ^ k)⁻¹ • f k, ⟨fun k hk => ite_eq_left hk, fun k => ?_⟩, funext fun k => ?_⟩
     · dsimp only
       split_ifs
       · exact zero_mem _
@@ -1121,7 +1121,7 @@ theorem zc_X_pow_mul (c : F⟦X⟧) (m : ℕ) (j : ℤ) : zc (X ^ m * c) (j + m)
   · rw [zc_neg c h]
     unfold zc
     split_ifs with h'
-    · rw [coeff_X_pow_mul', if_neg (by omega)]
+    · rw [coeff_X_pow_mul', ite_eq_right (by omega)]
     · rfl
   · obtain ⟨j, rfl⟩ := Int.eq_ofNat_of_zero_le h
     rw [← Nat.cast_add, zc_nat, zc_nat, coeff_X_pow_mul]

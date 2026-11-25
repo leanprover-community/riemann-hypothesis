@@ -34,8 +34,7 @@ theorem intAlg_smul (a : 𝓞 c.F) {f : Rul Xo c} (hf : IntAlg f) : IntAlg (a �
   have e : (a • f : Rul Xo c) = (a : c.F) • f := rfl
   rw [e]
   by_cases ha : (a : c.F) = 0
-  · set_option synthInstance.maxHeartbeats 200000 in
-      rw [ha, zero_smul, (isVal_valSet la v hv).zero]
+  · rw [ha, zero_smul, (isVal_valSet la v hv).zero]
     exact le_top
   · rw [(isVal_valSet la v hv).smul _ _ ha]
     exact add_nonneg (by exact_mod_cast vAdd_int_nonneg la ha) (hf la v hv)
@@ -104,20 +103,5 @@ theorem exists_of_mem_span_valG {u : WtR E} {ι : Type} {R : ι → Rul Xo c} {x
     refine (Algebra.smul_def a (valG h u F Z)).trans ?_
     rw [IsScalarTower.algebraMap_apply (𝓞 c.F) c.F (AC Z)]
     exact (valC_smul_ct h u.1 u.2 (a : c.F) F Z).symm
-
-section LawA2Of
-
-variable [Fintype (Comp Xo c)]
-    (fn : ∀ σ : c.F →+* ℂ, FrPt Xo c (CAt σ) → Ix Dw → ℝ)
-    (yP : ∀ Z : Comp Xo c, ∀ P : Om Z →+* ℂ, FrPt Xo c (CAt (sgOf P)))
-    (Dd N T i g0 : ℕ) (cc : ℝ) (uL uF uka ude uet uta1 uta2 : WtR E)
-    (wR : Fin (N + 1) → Rul Xo c) (jc : Comp Xo c → Fin (N + 1))
-    (np : ℕ) (thpR : Fin np → Rul Xo c) (n0 : ℕ) (th0R : Fin n0 → Rul Xo c) (uF0 : WtR E)
-    (nk : ℕ) (thkR : Fin nk → Rul Xo c) (MR : Set (Rul Xo c)) (etR ta1R ta2R : Rul Xo c)
-    (nu : HeightOneSpectrum (𝓞 c.F) → ℝ)
-    (ip : (c.F →+* ℂ) → (∀ Z : Comp Xo c, AC Z) → (∀ Z : Comp Xo c, AC Z) → ℂ)
-    (wsize : WTZ E → ℝ) (DF PN PQ tableDegreeThreeBase PP0' Pd Gc PI4 Pet tableLineDegreeFive tableLineDegreeTwo Prw PO f r : ℝ)
-
-end LawA2Of
 
 end Formalism.L2.Pj

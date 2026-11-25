@@ -323,7 +323,7 @@ theorem _root_.GlobalTheory.WigSh.contraction_maps_at_representatives :
     have hex : ∃ g, Rep γ g := by
       obtain ⟨g, hg, hZ, hd⟩ := hexist k r Wp Wq D ν' m₀ γ hbase hγ hpos
       exact ⟨g, hg, hZ, hd⟩
-    simp only [rep, dif_pos hex]
+    simp only [rep, dite_eq_left hex]
     exact hex.choose_spec
   have rep_eq : ∀ γ, _root_.Formalism.FourierDecayAlt.D.IsLocPt γ (r + 1) →
       0 < _root_.Formalism.FourierDecayAlt.D.ptG (_root_.Formalism.QuantumDeterminants.Tz k r D.z * _root_.Formalism.QuantumDeterminants.Tz k r D.z') r γ → ∀ g, Rep γ g →

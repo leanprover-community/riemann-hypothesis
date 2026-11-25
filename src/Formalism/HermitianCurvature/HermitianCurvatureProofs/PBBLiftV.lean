@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SizeAtNonneg
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBBStmt
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdmissibleWordMemBoundedLetterLists
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.JointInstanceTheoremA
@@ -71,15 +72,7 @@ theorem sizeAt_nonneg (S : C.HidaSetting E Wp Wq) (v : Fin S.f) (a : List C.Lett
 
 theorem gN_psd (S : C.HidaSetting E Wp Wq) (hpos : C.ThmPPos S) (v : Fin S.f) (ε : ℝ) (hε : 0 < ε) (j : ℕ)
     (hj : j ≤ S.G.r + 1) (w : S.W) (Z : Finset C.LPt) : TB.PSDOn Z (KB.gN S v ε j (w.1 v)) := by
-  have h0 := hpos v ε hε j hj w Z
-  have h1 := _root_.Formalism.FourierDecayAlt.P.Jx7.t_DiagScale C.LPt Z _ (fun _ => (√(S.sizeAt v (w.1 v)))⁻¹) h0
-  refine psd_congr Z _ _ (fun x _ y _ => ?_) h1
-  unfold KB.gN
-  have hs := sizeAt_nonneg S v (w.1 v)
-  have e : (((√(S.sizeAt v (w.1 v)))⁻¹ : ℝ) : ℂ) * (((√(S.sizeAt v (w.1 v)))⁻¹ : ℝ) : ℂ) =
-      ((S.sizeAt v (w.1 v) : ℝ) : ℂ)⁻¹ := by
-    rw [← Complex.ofReal_mul, ← mul_inv, Real.mul_self_sqrt hs, Complex.ofReal_inv]
-  rw [e, div_eq_mul_inv, mul_comm]
+  apply _root_.Formalism.FourierDecayAlt.P.PBA.gN_psd <;> assumption
 
 theorem lift_block0 (S : C.HidaSetting E Wp Wq) (hpos : C.ThmPPos S) (v : Fin S.f) (ε : ℝ) (hε : 0 < ε) (j : ℕ)
     (hj : j ≤ S.G.r + 1) (w : S.W) (Y : Finset (TB.Pt E)) (P P' : TB.Pt E → C.LPt) :
@@ -181,9 +174,9 @@ theorem liftV_core (S : C.HidaSetting E Wp Wq) (Λ : ℕ → ℕ → Fin S.f →
     intro sg A v
     by_cases hv : v ∈ A
     · cases sg
-      · simp only [U, th, hv, if_true, Bool.false_eq_true, if_false]; exact hUm' v
-      · simp only [U, th, hv, if_true]; exact hUp' v
-    · simp only [U, th, hv, if_false]; exact locProb_single S w v _ (by omega)
+      · simp only [U, th, hv, ite_true, Bool.false_eq_true, ite_false]; exact hUm' v
+      · simp only [U, th, hv, ite_true]; exact hUp' v
+    · simp only [U, th, hv, ite_false]; exact locProb_single S w v _ (by omega)
   have hP : ∀ sg A, TB.IsProb (S.base.Wb (S.base.cnt w + C.Kst)) (fun w' : S.W => ∏ v, th sg A v (w'.1 v)) :=
     fun sg A => isProb_prod S _ hcnt (U sg A) (th sg A) (hU sg A)
   refine ⟨fun A x => (∏ v, th true A v (x.1.1 v)) * ∏ v, th false A v (x.2.1 v), fun A => ?_, ?_⟩
@@ -225,11 +218,11 @@ theorem liftV_core (S : C.HidaSetting E Wp Wq) (Λ : ℕ → ℕ → Fin S.f →
       have hB' := blockPSD_pull Y (C.loc (S.σ v)) _ _ _ hB
       refine ⟨u * ((t v)⁻¹ - (t' v)⁻¹) ^ C.Kst, by simp [hv, hu, norm_pow], ?_⟩
       rw [haK true v, haK false v]
-      simp only [hv, if_true, Bool.false_eq_true, if_false]
+      simp only [hv, ite_true, Bool.false_eq_true, ite_false]
       exact hB'
     · refine ⟨1, by simp [hv], ?_⟩
       rw [haK true v, haK false v]
-      simp only [hv, if_false, one_mul]
+      simp only [hv, ite_false, one_mul]
       exact lift_block0 S hpos v ε hε i (by omega) w Y (Pt v) (Pt' v)
   choose c hcn hcB using hc
   have hS := block_schur2 Y κa κw κb hκ (fun v p q => aK true v (Pt v p) (Pt v q))

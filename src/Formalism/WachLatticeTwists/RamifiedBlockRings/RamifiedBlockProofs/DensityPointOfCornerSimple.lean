@@ -75,10 +75,4 @@ theorem charpoly_smul_sep {K : Type*} [Field K] {S : Type*} [Fintype S] [Decidab
   exact Polynomial.Separable.unit_mul
     (Polynomial.isUnit_C.mpr ((isUnit_iff_ne_zero.mpr hc).pow _)) (separable_comp_C_mul_X_of_ne_zero h (inv_ne_zero hc))
 
-section Pts
-variable {O : Type} [CommRing O] [IsDomain O] {X : Type} (T : Subalgebra O (X → O)) {d : Type} [Fintype d]
-  [DecidableEq d] {G : Type} [Group G] (r : G →* (X → Matrix d d O))
-
-end Pts
-
 end Formalism.RepresentationBoundsCohomology.ringDataObjects

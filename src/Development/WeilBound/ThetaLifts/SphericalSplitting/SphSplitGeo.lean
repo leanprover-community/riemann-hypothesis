@@ -643,42 +643,42 @@ theorem latSt : LatSt := by
     obtain ⟨h, hh⟩ := below_iff ht0 c.out
     refine Submodule.subset_span ⟨h, funext fun Y => ?_⟩
     by_cases hY : Below t Y c.out
-    · rw [if_pos hY, Set.indicator_of_mem ((hh Y).1 hY)]
-    · rw [if_neg hY, Set.indicator_of_notMem (fun h' => hY ((hh Y).2 h'))]
+    · rw [ite_eq_left hY, Set.indicator_of_mem ((hh Y).1 hY)]
+    · rw [ite_eq_right hY, Set.indicator_of_notMem (fun h' => hY ((hh Y).2 h'))]
   have hdec : ∀ c ∈ T, (fun Y => if Below t Y c.out then (1 : ℂ) else 0) = e c + ∑ c' ∈ F c, e c' := by
     intro c hc
     funext Y
     simp only [Pi.add_apply, Finset.sum_apply]
     by_cases hB : Below t Y c.out
-    · rw [if_pos hB]
+    · rw [ite_eq_left hB]
       have hq : Quotient.mk s Y ∈ T := memT Y (below_int htO hB (outT c hc))
       by_cases hqc : Quotient.mk s Y = c
       · have h0 : ∑ c' ∈ F c, e c' Y = 0 := Finset.sum_eq_zero fun c' hc' => by
           simp only [e]
-          rw [if_neg]
+          rw [ite_eq_right]
           intro h
           exact (Finset.mem_filter.1 hc').2.2 (h.symm.trans hqc)
         rw [h0, add_zero]
         simp only [e]
-        rw [if_pos hqc]
+        rw [ite_eq_left hqc]
       · have h0 : ∑ c' ∈ F c, e c' Y = 1 := by
           simp only [e]
-          rw [Finset.sum_ite_eq, if_pos]
+          rw [Finset.sum_ite_eq, ite_eq_left]
           exact Finset.mem_filter.2 ⟨hq, below_trans (out_rel Y).1 hB, hqc⟩
         rw [h0]
         simp only [e]
-        rw [if_neg hqc, zero_add]
-    · rw [if_neg hB]
+        rw [ite_eq_right hqc, zero_add]
+    · rw [ite_eq_right hB]
       have h1 : e c Y = 0 := by
         simp only [e]
-        rw [if_neg]
+        rw [ite_eq_right]
         intro h
         apply hB
         rw [← h]
         exact (out_rel Y).2
       have h2 : ∑ c' ∈ F c, e c' Y = 0 := Finset.sum_eq_zero fun c' hc' => by
         simp only [e]
-        rw [if_neg]
+        rw [ite_eq_right]
         intro h
         apply hB
         have h3 := (Finset.mem_filter.1 hc').2.1
@@ -715,9 +715,9 @@ theorem latSt : LatSt := by
     simp only [Pi.smul_apply, smul_eq_mul, e, mul_ite, mul_one, mul_zero]
     rw [Finset.sum_ite_eq]
     by_cases hY : IntM (t • Y)
-    · rw [if_pos (memT Y hY)]
+    · rw [ite_eq_left (memT Y hY)]
       exact key _ _ (out_rel Y).2 (out_rel Y).1
-    · rw [if_neg]
+    · rw [ite_eq_right]
       · by_contra h
         exact hY (hsupp Y h)
       · intro hq
@@ -910,8 +910,6 @@ open scoped Matrix Topology
 open NumberField IsDedekindDomain ValuativeRel GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes PositivityTheory.ThK
   GlobalTheory.SplitFlip PositivityTheory.KCo
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n d : ℕ}
   {X : Spc F E n} {W : Spc F E d}
 
@@ -1075,8 +1073,6 @@ namespace PositivityTheory.Sph.SplitPl
 open scoped Matrix Topology
 open NumberField IsDedekindDomain ValuativeRel GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes PositivityTheory.ThK
   GlobalTheory.SplitFlip PositivityTheory.KCo
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n d : ℕ}
   {X : Spc F E n} {W : Spc F E d}

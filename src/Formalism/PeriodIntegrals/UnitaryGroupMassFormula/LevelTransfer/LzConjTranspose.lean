@@ -16,8 +16,6 @@ namespace PIQnLT
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {k i r' : ℕ}
 
 theorem lev_in (j : Fin (2 * r' + k + 1)) :

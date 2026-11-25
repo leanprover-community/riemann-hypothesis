@@ -6,6 +6,7 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BigCellOrbit
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PositiveDensityModerateGrowth
 import Mathlib.Tactic.Linter.Style
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelFormSesquilinearFiniteClass
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutLimE
 
 @[expose] public section
 
@@ -95,21 +96,7 @@ variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace �
 
 theorem beta_congr_right (D : RealPlaceData k r Wp Wq) {F G G₂ : Mat k r → (Wq →L[ℂ] Wp)}
     (h : ∀ g ∈ GV k r, G g = G₂ g) : beta D F G = beta D F G₂ := by
-  unfold B.beta betaBig
-  refine integral_congr_ae ?_
-  filter_upwards [ae_imp_of_ae_restrict (Formalism.FourierDecayAlt.P.big_cell_orbit_set k r Wp Wq D)] with q hq
-  by_cases hQ : q ∈ B.Qset D
-  · have hg : bigCell k r q.1 (D.μsec q.2) ∈ GV k r := (hq hQ).1
-    show (bcWeight k r (Tz k r D.z) (Tz k r D.z') q : ℂ) * inner ℂ (hsVec (JF D G (bigCell k r q.1 (D.μsec q.2))))
-        (hsVec (JF D F (bigCell k r q.1 (D.μsec q.2)))) =
-      (bcWeight k r (Tz k r D.z) (Tz k r D.z') q : ℂ) * inner ℂ (hsVec (JF D G₂ (bigCell k r q.1 (D.μsec q.2))))
-        (hsVec (JF D F (bigCell k r q.1 (D.μsec q.2))))
-    rw [sq_jf_congr D h hg]
-  · have hw : bcWeight k r (Tz k r D.z) (Tz k r D.z') q = 0 :=
-      le_antisymm (not_lt.1 hQ) (Formalism.FourierDecayAlt.P.B7.boundary_weight_nonneg _ _ q)
-    show (bcWeight k r (Tz k r D.z) (Tz k r D.z') q : ℂ) * _ = (bcWeight k r (Tz k r D.z) (Tz k r D.z') q : ℂ) * _
-    rw [hw]
-    simp
+  apply _root_.Formalism.FourierDecayAlt.P.CutBP.beta_congr_right <;> assumption
 
 end beta
 

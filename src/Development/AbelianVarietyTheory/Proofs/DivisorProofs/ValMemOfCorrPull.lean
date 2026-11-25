@@ -115,6 +115,3 @@ theorem val_spMap_mem {R : Type} [CommRing R] {L : LB X} {φ : Ix → (Sp R ⟶ 
   val_mem_of_defOver k₀ t (defOver_spMap k₀ f hf) z hJ
 
 end GlobalTheory.Poinc.Sep
-
-namespace GlobalTheory.Poinc.Sep
-end GlobalTheory.Poinc.Sep

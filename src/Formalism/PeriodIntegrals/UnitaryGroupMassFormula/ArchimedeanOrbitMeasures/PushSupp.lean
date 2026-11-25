@@ -5,6 +5,7 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbit
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.PushLF
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MassComputations.ProdFirstProjectionSmul
 import Mathlib.RingTheory.PiTensorProduct
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.ConstSm
 
 @[expose] public section
 
@@ -78,15 +79,7 @@ theorem linIndep_of_isUnit_det {n : ℕ} (X : Fin n → Fin M → R ⊗[F] E) (h
 
 theorem continuous_sigRP [FiniteDimensional F E] [TopologicalSpace R] [IsTopologicalRing R] :
     Continuous (sigR R σ) := by
-  have h : ∀ x : R ⊗[F] E, sigR R σ x = (σ.toLinearMap.baseChange R) x := by
-    intro x
-    induction x using TensorProduct.induction_on with
-    | zero => simp
-    | tmul r e => simp [sigR]
-    | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
-  have : (sigR R σ : R ⊗[F] E → R ⊗[F] E) = (σ.toLinearMap.baseChange R) := funext h
-  rw [this]
-  exact IsModuleTopology.continuous_of_linearMap _
+  apply _root_.PI.AprimeInfW.continuous_sigR <;> assumption
 
 theorem continuous_gramRP [FiniteDimensional F E] [TopologicalSpace R] [IsTopologicalRing R] {m : ℕ} :
     Continuous (gramR R σ J : (Fin m → Fin M → R ⊗[F] E) → Matrix (Fin m) (Fin m) (R ⊗[F] E)) := by

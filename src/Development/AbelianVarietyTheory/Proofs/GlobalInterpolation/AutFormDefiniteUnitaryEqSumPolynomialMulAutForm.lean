@@ -357,32 +357,29 @@ def finStab (φ : UA E n → ℂ) : Subgroup (finU (E := E) (n := n)) where
 
 theorem isAutFormU_of_mem (hc : ∀ k : infU E n, ∀ g ∈ finU (E := E) (n := n), k.1 * g = g * k.1) {φ : UA E n → ℂ}
     (hφ : IsAutFormU φ) (ψ : UA E n → ℂ) (hψ : ψ ∈ infSpan φ) : IsAutFormU ψ := by
-  refine ⟨?_, ?_, ?_, ?_⟩
-  · induction hψ using Submodule.span_induction with
-    | mem _ h =>
-      obtain ⟨l, rfl⟩ := h
-      exact hφ.cont.comp (continuous_mul_const l.1)
-    | zero => exact continuous_const
-    | add _ _ _ _ h₁ h₂ => exact h₁.add h₂
-    | smul c _ _ h => exact h.const_smul c
-  · intro γ hγ g
+  have h :
+      Continuous ψ ∧ (∀ γ ∈ ratU (E := E) (n := n), ∀ g, ψ (γ * g) = ψ g) ∧
+        ∀ k ∈ finStab φ, RU E n k ψ = ψ := by
     induction hψ using Submodule.span_induction with
     | mem _ h =>
       obtain ⟨l, rfl⟩ := h
-      change φ (γ * g * l) = φ (g * l)
-      rw [mul_assoc, hφ.left γ hγ]
-    | zero => rfl
-    | add _ _ _ _ h₁ h₂ => simp only [Pi.add_apply, h₁, h₂]
-    | smul c _ _ h => simp only [Pi.smul_apply, h]
-  · refine Subgroup.isOpen_mono (H₁ := finStab φ) (H₂ := finStab ψ) (fun k hk => ?_) hφ.level
-    change RU E n k ψ = ψ
-    induction hψ using Submodule.span_induction with
-    | mem _ h =>
-      obtain ⟨l, rfl⟩ := h
-      rw [_root_.GlobalTheory.DefU.RU_RU, ← hc l k.1 k.2, ← _root_.GlobalTheory.DefU.RU_RU, show RU E n k φ = φ from hk]
-    | zero => rw [map_zero]
-    | add _ _ _ _ h₁ h₂ => rw [map_add (f := _), h₁, h₂]
-    | smul c _ _ h => rw [map_smul, h]
+      refine ⟨hφ.cont.comp (continuous_mul_const l.1), ?_, ?_⟩
+      · intro γ hγ g
+        change φ (γ * g * l) = φ (g * l)
+        rw [mul_assoc, hφ.left γ hγ]
+      · intro k hk
+        rw [_root_.GlobalTheory.DefU.RU_RU, ← hc l k.1 k.2, ← _root_.GlobalTheory.DefU.RU_RU,
+          show RU E n k φ = φ from hk]
+    | zero => exact ⟨continuous_const, fun _ _ _ => rfl, fun _ _ => map_zero _⟩
+    | add _ _ _ _ h₁ h₂ =>
+      refine ⟨h₁.1.add h₂.1, ?_, fun k hk => by rw [map_add, h₁.2.2 k hk, h₂.2.2 k hk]⟩
+      intro γ hγ g
+      simp only [Pi.add_apply, h₁.2.1 γ hγ g, h₂.2.1 γ hγ g]
+    | smul c _ _ h =>
+      refine ⟨h.1.const_smul c, ?_, fun k hk => by rw [map_smul, h.2.2 k hk]⟩
+      intro γ hγ g
+      simp only [Pi.smul_apply, h.2.1 γ hγ g]
+  refine ⟨h.1, h.2.1, Subgroup.isOpen_mono (H₁ := finStab φ) (H₂ := finStab ψ) h.2.2 hφ.level, ?_⟩
   · have := hφ.kfin
     refine Submodule.finiteDimensional_of_le (S₂ := infSpan φ) (Submodule.span_le.2 ?_)
     rintro _ ⟨k, rfl⟩

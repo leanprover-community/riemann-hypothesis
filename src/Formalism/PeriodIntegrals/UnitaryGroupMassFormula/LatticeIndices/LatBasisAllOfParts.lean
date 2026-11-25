@@ -2,6 +2,7 @@ module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.SecondEmbeddingAlgebraMap
 import Mathlib.RingTheory.PiTensorProduct
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ValuationLocalVolumes.OmVSDBwdHolds
 
 @[expose] public section
 
@@ -38,13 +39,7 @@ theorem hform_add_left (y y' x : Fin X.B.I.n → X.B.I.E) :
 theorem hform_smul_left (a : 𝓞 X.B.I.E) (y x : Fin X.B.I.n → X.B.I.E) :
     Formalism.UG.hform (starRingEnd X.B.I.E) X.B.I.J (a • y) x =
       star (a : X.B.I.E) * Formalism.UG.hform (starRingEnd X.B.I.E) X.B.I.J y x := by
-  simp only [Formalism.UG.hform, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-  show star ((a • y) i) * X.B.I.J i j * x j = star (a : X.B.I.E) * (star (y i) * X.B.I.J i j * x j)
-  rw [Pi.smul_apply, Algebra.smul_def]
-  show star ((a : X.B.I.E) * y i) * _ * _ = _
-  rw [star_mul']
-  ring
+  apply _root_.Formalism.L2.SG.Pf.NcVal.OmVSt.OmX.hform_smul_left <;> assumption
 
 theorem locGlob_of (hN : DenomP X p θ) : LocGlob X p θ := by
   classical

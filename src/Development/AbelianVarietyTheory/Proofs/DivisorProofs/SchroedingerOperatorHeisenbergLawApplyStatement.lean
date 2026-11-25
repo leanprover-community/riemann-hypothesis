@@ -94,8 +94,7 @@ theorem norm_le_one (ψ0 : AddChar k ℂ) (hc : Continuous ψ0) (x : k) : ‖ψ0
       simpa using (Subring.natCast_mem (𝒪[k]) m)
     have := hB _ hm
     rwa [show x * (m : k) = m • x by rw [nsmul_eq_mul, mul_comm], AddChar.map_nsmul_eq_pow, norm_pow] at this
-  by_contra h
-  push_neg at h
+  by_contra! h
   obtain ⟨m, hm⟩ := (tendsto_pow_atTop_atTop_of_one_lt h).eventually_gt_atTop B |>.exists
   exact absurd (hpow m) (not_le.mpr hm)
 
@@ -323,9 +322,9 @@ theorem _root_.GlobalTheory.T.norm_character_unit_eq_one_heisenberg : ∀ {k : T
       change ((GlobalTheory.HeisUnit.diagAt u i0).valᵀ * Y) i j ∈ 𝒪[k] ↔ Y i j ∈ 𝒪[k]
       rw [GlobalTheory.HeisUnit.diagAt_val, diagonal_transpose, diagonal_mul]
       by_cases hi : i = i0
-      · rw [if_pos hi]
+      · rw [ite_eq_left hi]
         simp only [Valuation.mem_integer_iff, map_mul, hu, one_mul]
-      · rw [if_neg hi, one_mul]
+      · rw [ite_eq_right hi, one_mul]
     let L : Set (Matrix (Fin n) (Fin d) k) := {Z | ∀ i j, Z i j ∈ 𝒪[k]}
     have hL : g.valᵀ * Y ∈ L ↔ Y ∈ L :=
       forall_congr' fun i => forall_congr' fun j => hEntry i j
@@ -667,8 +666,6 @@ open IsDedekindDomain NumberField MeasureTheory Matrix
 open scoped TensorProduct
 open GlobalTheory.FunObj GlobalTheory.ChiGrid GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.StdFrames Formalism.L2.DIV
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
-
 open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun
 open ValuativeRel
 
@@ -801,8 +798,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open IsDedekindDomain NumberField MeasureTheory Matrix
 open scoped TensorProduct
 open GlobalTheory.FunObj GlobalTheory.ChiGrid GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.StdFrames Formalism.L2.DIV
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
 
 open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun
 open ValuativeRel

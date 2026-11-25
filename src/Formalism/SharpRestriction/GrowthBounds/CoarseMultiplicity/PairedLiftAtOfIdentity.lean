@@ -236,7 +236,7 @@ theorem paired_lift_at_of_identity {C0 CYb Cde Ck CD Cb CE1 CE2 Cm Ct Cc : ℝ} 
       · refine ⟨0, ?_⟩
         rw [hGv0 β' u' fun hh => hk' hh.1]
         have hne : β ≠ β' := fun hh => hk' (hh ▸ hk)
-        rw [if_neg hne]
+        rw [ite_eq_right hne]
         simp [beHH]
     · refine ⟨0, ?_⟩
       rw [hFv0 β u fun hh => hk hh.1]

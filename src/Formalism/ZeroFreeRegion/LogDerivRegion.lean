@@ -789,7 +789,7 @@ theorem rectangleShiftOfResidue : RectShiftOf := by
     filter_upwards [eventually_nhdsWithin_iff.mp hAev] with w hw
     by_cases hw1 : w = 1
     · subst hw1; simp [G]
-    · simp only [G, H, if_neg hw1]; rw [hw hw1]; ring
+    · simp only [G, H, ite_eq_right hw1]; rw [hw hw1]; ring
   set U : Set ℂ := {w | ∀ᶠ z in 𝓝 w, DifferentiableAt ℂ G z}
   have hsub : (Set.uIcc σ₁ σ₀ ×ℂ Set.uIcc (-T) T) ⊆ U := fun w hw => by
     rw [Complex.mem_reProdIm, Set.uIcc_of_le (by linarith), Set.uIcc_of_le (by linarith)] at hw
@@ -807,7 +807,7 @@ theorem rectangleShiftOfResidue : RectShiftOf := by
   refine hRDP (Fy y) G a b 1 σ₁ σ₀ (-T) T (by simpa using h2) (by simpa using h3)
     (by simp; linarith) (by simpa using hT)
     ⟨U, isOpen_setOfPred_eventually_nhds, hsub, fun _ hw => hw.self_of_nhds.differentiableWithinAt⟩
-    fun w hw => by simp only [G, H, if_neg hw]; ring
+    fun w hw => by simp only [G, H, ite_eq_right hw]; ring
 
 end Formalism.ZF
 end -- clump:auto

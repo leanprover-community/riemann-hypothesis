@@ -119,9 +119,7 @@ def trivSet (Bj : B.RealPlaceData k ρ Wp Wq) : B.RealPlaceData k ρ ℂ ℂ whe
   χ_int := Bj.χ_int
 
 theorem norm_psi (z : Fin (2 * ρ + k + 1) → ℂ) (c : ℂ) (g : B.Mat k ρ) : ‖psi k ρ z c g‖ = 1 := by
-  unfold psi
-  rw [mul_comm]
-  exact Complex.norm_exp_ofReal_mul_I _
+  exact Formalism.FourierDecayAlt.P.SmoothnessOnGoodSet.norm_psi z c g
 
 theorem norm_xiP (Bs : B.RealPlaceData k ρ Wp Wq) (P : B.SS k ρ) : ‖JF.xiP Bs P‖ = 1 := by
   unfold JF.xiP

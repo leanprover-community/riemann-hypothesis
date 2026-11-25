@@ -43,10 +43,6 @@ theorem isDblCoord_cast₂ {R A : Type} [CommRing R] [CommRing A] [Algebra R A] 
     (H : IsDblCoord c ξ' K J' (GlobalTheory.WeilSchrodinger.transD c (Sw.castD c h (GlobalTheory.WeilSchrodinger.transD c d))) dd) :
     IsDblCoord c ξ K J d (Sw.castD₂ c (Sw.smul_dbl h) dd) := fun w₁ w₂ => H w₁ w₂
 
-theorem swapHom_fst {A α G M : Type} [CommRing A] [Fintype α] [DecidableEq α] [Group G] [Monoid M]
-    {H K : Subgroup (GL α A)} (hle : H ≤ K) (hge : K ≤ H) (om : G × K →* M) (g : K) :
-    Sw.swapHom hle om (Subgroup.inclusion hge g, 1) = om (1, g) := rfl
-
 end PositivityTheory.ThKW
 
 end

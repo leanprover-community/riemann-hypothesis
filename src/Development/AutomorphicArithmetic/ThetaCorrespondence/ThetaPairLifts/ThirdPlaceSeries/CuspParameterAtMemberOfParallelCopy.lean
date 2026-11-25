@@ -85,8 +85,6 @@ theorem exists_mtInput_of_nTrue {hL : _root_.UpperTheory.Zero.LLC.RecTExists} {D
   subst hm
   exact ⟨tp.tup, C.Q, { mt with }⟩
 end GlobalTheory.HeightCounting.Up.ParCopy
-namespace GlobalTheory.HeightCounting.Up
-end GlobalTheory.HeightCounting.Up
 end
 end -- clump:auto
 end -- clump:auto
@@ -160,7 +158,7 @@ end GlobalTheory.HeightCounting.Up
 end
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.TypeRec.factG
+attribute [local instance] GlobalTheory.TypeRec.factG
 
 end
 end

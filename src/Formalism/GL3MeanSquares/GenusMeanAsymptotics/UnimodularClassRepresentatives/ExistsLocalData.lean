@@ -72,7 +72,7 @@ theorem repr_coe {κ : Type} [Fintype κ] [DecidableEq κ] (b : Basis κ K V) (y
   rw [hy, map_sum]
   simp only [map_smul, Basis.repr_self, Finsupp.coe_finsetSum, Finset.sum_apply,
     Finsupp.smul_apply, Finsupp.single_apply, smul_eq_mul, mul_ite, mul_one, mul_zero,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem exists_local_data (hF : IsFixF K F) {h : V →ₗ⋆[K] V →ₗ[K] K} (hs : h.IsSymm)
     (hd : IsTotPosDef h) {L : Submodule (𝓞 K) V} (hL : Submodule.IsFullLattice K L)

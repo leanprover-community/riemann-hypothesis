@@ -29,7 +29,7 @@ theorem gramX_isHermitian (ε : Fin m → Bool) (x : Fin m → Fin n → ℂ) : 
 
   simp only [gramX, Qp, Qb, evX, conjTranspose_apply, map_sub, map_sum, map_mul, eval_X, star_sub, star_sum,
   star_mul']
-  simp only [if_true, Bool.false_eq_true, if_false]
+  simp only [ite_true, Bool.false_eq_true, ite_false]
   congr 1 <;> (refine Finset.sum_congr rfl fun a _ => ?_; rw [star_star, mul_comm])
 
 theorem trace_im_zero {b Q : Matrix (Fin n) (Fin n) ℂ} (hb : b.IsHermitian) (hQ : Q.IsHermitian) :
@@ -103,13 +103,7 @@ theorem det_ne_zero {b : Matrix (Fin n) (Fin n) ℂ} (hb : b.IsHermitian) (r : �
     have := congrArg Complex.im (star_dot_herm hb v)
     simp only [Complex.star_def, Complex.conj_im] at this
     linarith
-  have hs : (star v ⬝ᵥ v).im = 0 := by
-    have : star (star v ⬝ᵥ v) = star v ⬝ᵥ v := by
-      simp only [dotProduct, star_sum, star_mul', star_star, Pi.star_apply]
-      exact Finset.sum_congr rfl fun i _ => mul_comm _ _
-    have := congrArg Complex.im this
-    simp only [Complex.star_def, Complex.conj_im] at this
-    linarith
+  have hs : (star v ⬝ᵥ v).im = 0 := (Complex.nonneg_iff.1 (dotProduct_star_self_nonneg v)).2.symm
   have hr : (star v ⬝ᵥ v).re = 0 := by
     rw [e2]; simp [Complex.mul_re, hq]
   exact hv (dotProduct_star_self_eq_zero.mp (Complex.ext (by simpa using hr) (by simpa using hs)))
@@ -233,7 +227,7 @@ theorem key (hI : IntegP) (hW : Wick) (hR : Rot) (ε : Fin m → Bool) {c : ℝ}
         refine Finset.sum_congr rfl fun j _ => ?_
         rw [amat_inv_apply ε hc.ne' s (herm_isHermitian y), mm_inv]
         by_cases h : ε a = true <;> simp [h] <;> ring
-      · push_neg at ht
+      · push Not at ht
         by_cases hd0 : d = 0
         · subst hd0
           exact ⟨1, fun y => by simp [evUV]⟩

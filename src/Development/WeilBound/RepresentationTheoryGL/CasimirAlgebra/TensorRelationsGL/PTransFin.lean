@@ -509,14 +509,14 @@ theorem transFin_of : TensorGl → JMComm → StepFormula → QdetFacts → Spec
   have hTmi : ∀ i ∈ Finset.range (n + 1), Tm i = c i - algebraMap ℂ _ (p.coeff i) := by
     intro i hi
     show (if i < n + 1 then c i - algebraMap ℂ _ (p.coeff i) else 0) = _
-    exact if_pos (Finset.mem_range.mp hi)
+    exact ite_eq_left (Finset.mem_range.mp hi)
   have hTmB : ∀ i, Tm i ∈ B ∧ Tm i ∈ A := by
     intro i
     by_cases h : i < n + 1
     · rw [hTmi i (Finset.mem_range.mpr h)]
       exact ⟨B.sub_mem (hcB i (Finset.mem_range.mpr h)) (B.algebraMap_mem _),
         A.sub_mem (hcA i (Finset.mem_range.mpr h)) (A.algebraMap_mem _)⟩
-    · have e : Tm i = 0 := if_neg h
+    · have e : Tm i = 0 := ite_eq_right h
       rw [e]
       exact ⟨B.zero_mem, A.zero_mem⟩
   have hρgT : ∀ i ∈ Finset.range (n + 1), ρ ∘ₗ (g ∘ₗ Tm i) = 0 := by
@@ -525,8 +525,7 @@ theorem transFin_of : TensorGl → JMComm → StepFormula → QdetFacts → Spec
       Algebra.algebraMap_eq_smul_one, LinearMap.comp_smul,
       show φ ∘ₗ (1 : Module.End ℂ (TV n M (Fin m))) = φ from rfl, hφc i hi, smul_zero]
   obtain ⟨v0, hv0⟩ : ∃ v, φ v ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hg0 (LinearMap.ext h)
   haveI hQfin : FiniteDimensional ℂ (Subalgebra.toSubmodule (B ⊓ A)) :=
     Submodule.finiteDimensional_of_le (S₂ := Subalgebra.toSubmodule B) (fun x hx => hx.1)

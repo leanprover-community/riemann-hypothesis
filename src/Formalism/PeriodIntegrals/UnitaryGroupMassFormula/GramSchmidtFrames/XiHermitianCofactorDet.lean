@@ -13,6 +13,7 @@ import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GramSchmidtFrames.HermBvecEI
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GramSchmidtFrames.HmSelfRe
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactlySupportedBanachModel
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.InvMulVecOfFixedVector
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GramSchmidtFrames.MemXspIff, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GramSchmidtFrames.XiHermitianCofactorDet
@@ -42,7 +43,7 @@ lemma mem_Xsp_iff (v : Fin (2 * r + k + 1) → ℂ) : v ∈ Xsp k r ↔ ∀ i : 
       obtain ⟨a, rfl⟩ := hx
       intro i hi
       simp only [bvec, Pi.single_apply]
-      rw [if_neg]
+      rw [ite_eq_right]
       intro h
       have ha := a.isLt
       rw [h] at hi
@@ -58,9 +59,9 @@ lemma mem_Xsp_iff (v : Fin (2 * r + k + 1) → ℂ) : v ∈ Xsp k r ↔ ∀ i : 
       by_cases hi : i.val < r
       · rw [Finset.sum_eq_single ⟨i.val, hi⟩]
         · have he : i = eI k r ⟨i.val, hi⟩ := by ext; rfl
-          rw [if_pos he, ← he]
+          rw [ite_eq_left he, ← he]
         · intro b _ hb
-          rw [if_neg]
+          rw [ite_eq_right]
           intro h
           apply hb
           ext
@@ -71,7 +72,7 @@ lemma mem_Xsp_iff (v : Fin (2 * r + k + 1) → ℂ) : v ∈ Xsp k r ↔ ∀ i : 
         · simp
       · rw [hv i (by omega)]
         refine (Finset.sum_eq_zero fun b _ => ?_).symm
-        rw [if_neg]
+        rw [ite_eq_right]
         intro h
         have hb := b.isLt
         rw [h] at hi
@@ -108,18 +109,8 @@ variable {k r : ℕ}
 lemma herm_out_wb {v u : Fin (2 * r + k + 1) → ℂ}
     (hv : ∀ i : Fin (2 * r + k + 1), r ≤ i.val → i.val ≤ r + k → v i = 0) (hu : inWb k r u) :
     herm (Hpk k r) v u = 0 := by
-  unfold herm
-  simp only [dotProduct, mulVec, Pi.star_apply]
-  refine Finset.sum_eq_zero fun j _ => ?_
-  by_cases hj : r ≤ j.val ∧ j.val ≤ r + k
-  · refine mul_eq_zero_of_right _ (Finset.sum_eq_zero fun l _ => ?_)
-    by_cases hl : r ≤ l.val ∧ l.val ≤ r + k
-    · rw [hv l hl.1 hl.2, mul_zero]
-    · have h0 : Hpk k r j l = 0 := by
-        simp only [Hpk]
-        split_ifs with h1 h2 h3 <;> first | rfl | (exfalso; omega)
-      rw [h0, zero_mul]
-  · rw [hu j (by omega), star_zero, zero_mul]
+  intros
+  apply _root_.Formalism.FourierDecayAlt.P.TLC.om_herm_wb_zero <;> assumption
 
 lemma herm_wb_out {u v : Fin (2 * r + k + 1) → ℂ} (hu : inWb k r u)
     (hv : ∀ i : Fin (2 * r + k + 1), r ≤ i.val → i.val ≤ r + k → v i = 0) :
@@ -130,12 +121,12 @@ lemma wbPart_mid (v : Fin (2 * r + k + 1) → ℂ) :
     ∀ i : Fin (2 * r + k + 1), r ≤ i.val → i.val ≤ r + k → (v - wbPart k r v) i = 0 := by
   intro i h1 h2
   simp only [Pi.sub_apply, wbPart]
-  rw [if_pos ⟨h1, h2⟩, sub_self]
+  rw [ite_eq_left ⟨h1, h2⟩, sub_self]
 
 lemma wbPart_inWb (v : Fin (2 * r + k + 1) → ℂ) : inWb k r (wbPart k r v) := by
   intro i hi
   simp only [wbPart]
-  rw [if_neg (by omega)]
+  rw [ite_eq_right (by omega)]
 
 lemma Tz_ne {z : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) : (Tz k r z : ℂ) ≠ 0 :=
   Complex.ofReal_ne_zero.2 hz.2.ne'
@@ -173,7 +164,7 @@ lemma sub_wbPart_X {ξ : Fin (2 * r + k + 1) → ℂ} (hX : ∀ a : Fin r, ξ (e
   by_cases h2 : i.val ≤ r + k
   · exact wbPart_mid ξ i hi h2
   · simp only [Pi.sub_apply, wbPart]
-    rw [if_neg (by omega), sub_zero]
+    rw [ite_eq_right (by omega), sub_zero]
     exact esI_hi hX i (by omega)
 
 lemma herm_add_X {p q x x' : Fin (2 * r + k + 1) → ℂ} (hp : inWb k r p) (hq : inWb k r q)

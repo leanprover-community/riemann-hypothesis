@@ -61,12 +61,12 @@ theorem sumE_one_single {E : Type} [Field E] {N n : ℕ} (hN : N = n + 1) (t : E
       show ¬ i.val + 1 = N
       have := i.2
       omega
-    rw [if_neg hi, Pi.single_apply]
+    rw [ite_eq_right hi, Pi.single_apply]
     simp only [Fin.ext_iff]
   · have hi : (Formalism.L2.Col.Br.iL hN).val + 1 = N := by
       show n + 1 = N
       omega
-    rw [GlobalTheory.TopStep.sumE_last, if_pos hi, Pi.single_apply]
+    rw [GlobalTheory.TopStep.sumE_last, ite_eq_left hi, Pi.single_apply]
     simp only [Fin.ext_iff]
     split_ifs <;> simp
 

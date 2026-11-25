@@ -142,10 +142,10 @@ private theorem pderiv_tay_eq_tay_cons_single (θ : (Fin g → ℂ) → ℂ) (s 
       intro p
       by_cases hp : p = q
       · subst hp
-        rw [if_pos rfl, Finsupp.add_apply, Finsupp.single_eq_same, Nat.factorial_succ]
+        rw [ite_eq_left rfl, Finsupp.add_apply, Finsupp.single_eq_same, Nat.factorial_succ]
         push_cast
         ring
-      · rw [if_neg hp, Finsupp.add_apply, mul_one]
+      · rw [ite_eq_right hp, Finsupp.add_apply, mul_one]
         simp [Ne.symm hp]
     unfold fct
     rw [Finset.prod_congr rfl (fun p _ => h p), Finset.prod_mul_distrib, Finset.prod_ite_eq']
@@ -179,8 +179,7 @@ theorem cc_subst {σ τ : Type} [Fintype σ] {L : σ → MvPowerSeries τ ℂ} (
   · simp [MvPowerSeries.coeff_zero_eq_constantCoeff_apply]
   · intro e he
     obtain ⟨p, hp⟩ : ∃ p, e p ≠ 0 := by
-      by_contra hn
-      push_neg at hn
+      by_contra! hn
       exact he (Finsupp.ext hn)
     have hz : constantCoeff (e.prod fun s n => L s ^ n) = 0 := by
       rw [Finsupp.prod, map_prod]
@@ -315,7 +314,7 @@ theorem partA (f : (Fin g → ℂ) → ℂ) (hf : ContDiffAt ℂ ω f 0) (c : Fi
       ∑ p : Fin 1 × Fin g, (if p = q then c p.2 else 0) • (Pi.single p.2 1 : Fin g → ℂ) := by
     intro q
     rw [diagCLM_apply]
-    simp only [ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     funext i
     by_cases h : i = q.2 <;> simp [h]
   have h3 := isTayF_comp hf (diagCLM c) (w := fun p : Fin 1 × Fin g => (Pi.single p.2 1 : Fin g → ℂ)) hv h2

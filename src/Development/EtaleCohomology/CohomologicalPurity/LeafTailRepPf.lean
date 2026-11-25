@@ -34,7 +34,7 @@ theorem eqv_of_iso (R : Type) [CommRing R] {E₁ E₂ E₁' E₂' : Spc} (f : E�
   exact (pull_bij_of_iso R e₁ F n).comp ((h n).comp (pull_bij_of_iso R e₂.symm F n))
 
 def LeafTailRep : Prop := ∀ (d : ℕ) (R : Type) [CommRing R] (n : SimplexCategoryᵒᵖ),
-  ∃ (A : Type) (_ : CommRing A) (I : Ideal A) (φ : R →+* A),
+  ∃ (A : Type) (_ : CommRing A) (I : Ideal A) (_ : R →+* A),
     I.FG ∧ ∃ (h : off (Polynomial A) (I.map Polynomial.C) ≤
         Spec.map (CommRingCat.ofHom (Polynomial.C : A →+* Polynomial A)) ⁻¹ᵁ off A I)
       (e₁ : disc.obj ((PR (d + 1) 1 R).obj n) ≅ sch.obj (off (Polynomial A) (I.map Polynomial.C)))

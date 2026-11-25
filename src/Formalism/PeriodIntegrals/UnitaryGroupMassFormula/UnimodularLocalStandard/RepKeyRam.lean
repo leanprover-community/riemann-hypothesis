@@ -99,8 +99,7 @@ theorem rep_prim_pair (a : ℕ) (b c : ℤ) (d : ℕ) (ha : 0 < a) (hd : 0 < d) 
 
   set P : ℕ → Prop := fun j => ((l : ℂ) ^ j)⁻¹ • (Df • f) ∈ Λ with hPdef
   have hex : ∃ j, ¬ P j := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     set K : ℕ := Nf * Df with hK
     have hK0 : K ≠ 0 := Nat.mul_ne_zero (Nat.factorial_ne_zero _) (Nat.factorial_ne_zero _)
     have hdvd : ∀ j : ℕ, (l : ℤ) ^ j ∣ K * x ∧ (l : ℤ) ^ j ∣ K * y := by
@@ -172,7 +171,7 @@ theorem rep_prim_pair (a : ℕ) (b c : ℤ) (d : ℕ) (ha : 0 < a) (hd : 0 < d) 
     have : ((l : ℂ)⁻¹ • xt) ∈ dualLat (stdH L m) Λ := hall
     rw [hΛ] at this
     exact this
-  push_neg at hnd
+  push Not at hnd
   obtain ⟨yv, hyv, hyk⟩ := hnd
   have hxtd : xt ∈ dualLat (stdH L m) Λ := by rw [hΛ]; exact hxtΛ
   obtain ⟨c₂, hc₂⟩ := hxtd yv hyv

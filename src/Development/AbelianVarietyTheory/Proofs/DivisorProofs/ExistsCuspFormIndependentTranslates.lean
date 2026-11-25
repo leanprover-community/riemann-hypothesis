@@ -21,59 +21,12 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolum
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.KronHolPsiStatementHolds
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.LminorSubmatrixCastSucc
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsBalancedFrameCMUnitaryProof
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsArchOne
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.ArakelovInstances.IsStrictDom
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.BigStatementPfA
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.FundSetPf
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FlowCoefficientBounds
-import Mathlib.Tactic.Polynomial.Basic
 import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.MajLactRmul
-import Mathlib.Algebra.Order.Star.Real
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.InterpStatementPfH
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.LUStatementPfB
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.ModeHalfStatementPfA
@@ -246,7 +199,7 @@ theorem not_iso (X : Data E r) (hp : X.p0 = 0 ∨ X.p0 = r) (ξ : Fin r → E) :
   have hsum : hermC τ X.Gm u u = e * ∑ a, v a * conj (v a) := by
     rw [← hPv, hermC_mulVec, hg]
     simp only [Matrix.diagonal_apply, hsg, mul_ite, ite_mul, mul_zero, zero_mul, Finset.sum_ite_eq,
-      Finset.mem_univ, if_true, Finset.mul_sum]
+      Finset.mem_univ, ite_true, Finset.mul_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     ring
   have hv : v = 0 := by
@@ -605,10 +558,10 @@ theorem gapsPairing_deMul' {E : Type} [Field E] [NumberField E] [IsCMField E] {r
     have hj' : ((j : ℕ) : ℤ) = (i : ℕ) + 1 := by exact_mod_cast hj
     simp only [Pi.sub_apply, deMul, kapW, hj']
     by_cases hi : (i : ℕ) < X.p0
-    · rw [if_pos (e.2 hi), if_pos hi]; omega
-    · rw [if_neg (mt e.1 hi), if_neg hi]; omega
+    · rw [ite_eq_left (e.2 hi), ite_eq_left hi]; omega
+    · rw [ite_eq_right (mt e.1 hi), ite_eq_right hi]; omega
   · simp only [Pi.sub_apply, deMul, kapW, h0', h1', hk]
-    rw [if_pos h0, if_neg (by omega)]
+    rw [ite_eq_left h0, ite_eq_right (by omega)]
     have hr : ((r - 1 : ℕ) : ℤ) = (r : ℤ) - 1 := by omega
     rw [hr]
     push_cast
@@ -645,10 +598,10 @@ theorem orbit_interp_small : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
   · have e : ((j : ℕ) < X.p0 ↔ (i : ℕ) < X.p0) := by omega
     simp only [deMul]
     by_cases hi : (i : ℕ) < X.p0
-    · rw [if_pos (e.2 hi), if_pos hi]
-    · rw [if_neg (mt e.1 hi), if_neg hi]
+    · rw [ite_eq_left (e.2 hi), ite_eq_left hi]
+    · rw [ite_eq_right (mt e.1 hi), ite_eq_right hi]
   · simp only [deMul]
-    rw [if_pos (by omega), if_neg (by omega)]
+    rw [ite_eq_left (by omega), ite_eq_right (by omega)]
     omega
 
 end GlobalTheory.Up.OrbitInterpSmall
@@ -706,10 +659,10 @@ theorem large : ∀ (r : ℕ) (X : Data E r) (G : Subgroup (GL (Fin r) E)) (x0 :
   · have e : ((j : ℕ) < X.p0 ↔ (i : ℕ) < X.p0) := by omega
     simp only [deMul]
     by_cases hi : (i : ℕ) < X.p0
-    · rw [if_pos (e.2 hi), if_pos hi]
-    · rw [if_neg (mt e.1 hi), if_neg hi]
+    · rw [ite_eq_left (e.2 hi), ite_eq_left hi]
+    · rw [ite_eq_right (mt e.1 hi), ite_eq_right hi]
   · simp only [deMul]
-    rw [if_pos (by omega), if_neg (by omega)]
+    rw [ite_eq_left (by omega), ite_eq_right (by omega)]
     omega
 
 theorem orbit_interp_deMul : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r),
@@ -871,7 +824,7 @@ theorem comp_interp {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
     refine ⟨P, hP, hP0, fun γ hγ hγ' => absurd ?_ hγ'⟩
     rw [h1 γ hγ]
     exact X.Γ.one_mem
-  · push_neg at hdef
+  · push Not at hdef
     have hp0 : 0 < X.p0 := Nat.pos_of_ne_zero hdef.1
     have hp1 : X.p0 < r := lt_of_le_of_ne X.p0_le hdef.2
     obtain ⟨x0, h0, ⟨b, hb, rfl⟩, hFB⟩ := _root_.GlobalTheory.FreeBallAt.freeBall_at E r X G g hg hgr hΓG hL' hΛ hU x hx hNC
@@ -923,7 +876,7 @@ theorem exists_form_one_lift : ∀ (E : Type) [Field E] [NumberField E] [IsCMFie
     · subst hc
       have e : (fun y => u c' (castFrame (M.comp_Ψ c') y)) = P := by
         funext y
-        simp only [u, if_pos rfl]
+        simp only [u, ite_eq_left rfl]
         exact congrArg P (castFrame_symm_cast _ y)
       rw [e, castWt_deMul]
       rw [M.comp_basePoint c'] at hP
@@ -937,7 +890,7 @@ theorem exists_form_one_lift : ∀ (E : Type) [Field E] [NumberField E] [IsCMFie
   · intro h hh
     unfold TwoLevels.pull
     by_cases hc : h • c = c
-    · simp only [u, hc, if_pos rfl]
+    · simp only [u, hc, ite_eq_left rfl]
       rw [castFrame_lact]
       refine hPγ _ ((hG _).2 ⟨h, hc, 1, (M.comp c).Γ.one_mem, by simp⟩) fun hm => hh ?_
       exact M.tr_faithful h c hc hm
@@ -1124,8 +1077,8 @@ theorem detNeAt [Fintype U] [DecidableEq U] {la : Wt M.Ψ r} {u u0 : C → Frame
     rw [Matrix.of_apply, entry, Matrix.submatrix_apply, id, Matrix.smul_apply, Matrix.one_apply,
       smul_eq_mul]
     by_cases e : h * h' * k = 1
-    · rw [if_pos ((key h h').1 e), e, mul_one]
-    · rw [if_neg (fun e' => e ((key h h').2 e')), mul_zero]
+    · rw [ite_eq_left ((key h h').1 e), e, mul_one]
+    · rw [ite_eq_right (fun e' => e ((key h h').2 e')), mul_zero]
       exact hz _ e
   unfold TwoLevels.detTr
   rw [hmat, Matrix.det_permute, Matrix.det_smul, Matrix.det_one, mul_one]

@@ -312,7 +312,7 @@ theorem scalar_of_same_coset : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u 
   refine ⟨?_, ?_⟩
   · show s0T t t' = 1
     unfold s0T
-    rw [if_pos ⟨hlam, hlam'⟩]
+    rw [ite_eq_left ⟨hlam, hlam'⟩]
     exact hs0
   · show scalT t t'
     exact ⟨⟨hlam, hlam'⟩, hs0, hsc⟩
@@ -330,7 +330,6 @@ section -- clump:auto
 
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.FourierDecayAlt Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.SnFam
 open scoped Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto

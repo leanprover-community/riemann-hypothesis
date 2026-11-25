@@ -167,7 +167,7 @@ theorem offBlock_le : ∀ (k r : ℕ) (z z' : (Fin (2 * r + k + 1) → ℂ)) (g�
     (fun i j h => Matrix.one_apply_ne h.ne) (fun i => by simp [hU, upperOff, upper])
     (fun i j h => by
       simp only [hU, upperOff, upper]
-      rw [dite_eq_right (not_lt.2 h.le), if_neg h.ne'])
+      rw [dite_eq_right (not_lt.2 h.le), ite_eq_right h.ne'])
     (fun i j hi hj => hZ0 i j ⟨fun _ => not_lt.2 hj, fun _ => hi⟩) ⟨c.val, hcl⟩ b
     (fun c' hc' => by
       by_contra h
@@ -673,7 +673,7 @@ theorem radical_coords_le : ∀ (k r : ℕ) (z z' : (Fin (2 * r + k + 1) → ℂ
     rw [e, eucl_neg]
     exact (eucl_comp_le (wI k r) (fun j j' h => (Rad.wI_inj j j').1 h) _).trans (hEbd b)
   · have e : q.2.1 p = skewM q.2.1 q.2.2 p.1.1 p.1.2 := by
-      simp only [skewM, dif_pos p.2]
+      simp only [skewM, dite_eq_left p.2]
     rw [e]
     exact hskew _ _
   · have e : skewM q.2.1 q.2.2 b b = (q.2.2 b : ℂ) * Complex.I := by
@@ -810,10 +810,6 @@ theorem herm_inv {g : Mat k r} (hg : g ∈ GG k r) (v w : Fin (2 * r + k + 1) �
     herm (Hpk k r) v (g⁻¹ *ᵥ w) = herm (Hpk k r) (g *ᵥ v) w := by
   rw [← herm_iso hg, Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ (unit_of_UH HH hg), Matrix.one_mulVec]
 
-theorem herm_inv' {g : Mat k r} (hg : g ∈ GG k r) (v w : Fin (2 * r + k + 1) → ℂ) :
-    herm (Hpk k r) (g⁻¹ *ᵥ v) w = herm (Hpk k r) v (g *ᵥ w) := by
-  rw [← herm_iso hg, Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ (unit_of_UH HH hg), Matrix.one_mulVec]
-
 theorem of_Xst {v : Fin (2 * r + k + 1) → ℂ} (hv : v ∈ Xst k r) : rE k r v = 0 ∧ rW k r v = 0 := by
   induction hv using Submodule.span_induction with
   | mem x hx =>
@@ -877,10 +873,10 @@ theorem rS_u (u : Matrix (Fin r) (Fin r) ℂ) (v : Fin (2 * r + k + 1) → ℂ) 
     Fin.ext (by have := b.2; simp only [esI]; omega)
   have h1 : ∀ b, uEmb k r u (esI k r a) (eI k r b) = 0 := fun b => by
     have := b.2
-    unfold uEmb; rw [dite_eq_right (by simp only [esI]; omega), dite_eq_right (by simp only [eI]; omega), if_neg (esI_ne_eI _ _)]
+    unfold uEmb; rw [dite_eq_right (by simp only [esI]; omega), dite_eq_right (by simp only [eI]; omega), ite_eq_right (esI_ne_eI _ _)]
   have h2 : ∀ b, uEmb k r u (esI k r a) (wI k r b) = 0 := fun b => by
     have := b.2
-    unfold uEmb; rw [dite_eq_right (by simp only [esI]; omega), dite_eq_right (by simp only [wI]; omega), if_neg (esI_ne_wI _ _)]
+    unfold uEmb; rw [dite_eq_right (by simp only [esI]; omega), dite_eq_right (by simp only [wI]; omega), ite_eq_right (esI_ne_wI _ _)]
   have h3 : ∀ b, uEmb k r u (esI k r a) (esI k r b) = star (u⁻¹ b a) := fun b => by
     have := b.2
     unfold uEmb; rw [dite_eq_right (by simp only [esI]; omega), dite_eq_left (by simp only [esI]; omega)]
@@ -1050,7 +1046,7 @@ theorem gram_ne (ht : TwoFl k r z z' g) (hn : IsNormal k r β g) :
     funext a
     obtain ⟨h1, h2⟩ := of_Xst (hn.2.1 a).2
     show (g⁻¹ *ᵥ z) (esI k r a) = 0
-    rw [← herm_e (g⁻¹ *ᵥ z) a, herm_inv' hg, herm3, h1, h2, z1]
+    rw [← herm_e (g⁻¹ *ᵥ z) a, GlobalTheory.Amp.NfComp.herm_inv_left hg, herm3, h1, h2, z1]
     simp [herm]
   have real : ∀ v : Fin (k + 1) → ℂ, herm (Hb k) v v = ((herm (Hb k) v v).re : ℂ) := fun v =>
     (Complex.conj_eq_iff_re.1 (herm_star v v)).symm
@@ -1125,7 +1121,7 @@ theorem mem_pos (p : Fin (2 * r + k + 1) → ℂ) : p ∈ LinearMap.ker (Matrix.
     refine ⟨funext fun a => ?_, ?_⟩
     · have := congrFun h (esI k r a); rwa [GlobalTheory.Amp.NCoord.H_es] at this
     · have := congrFun h (wI k r (Fin.last k)); rw [H_w] at this
-      simp only [sg, if_true] at this
+      simp only [sg, ite_true] at this
       show p _ = 0
       linear_combination (-1 / 2 : ℂ) * this
   · rintro ⟨h1, h2⟩

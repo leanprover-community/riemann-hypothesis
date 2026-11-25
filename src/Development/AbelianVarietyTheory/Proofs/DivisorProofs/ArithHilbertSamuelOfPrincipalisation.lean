@@ -62,52 +62,7 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.Geo
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ResidueDegreeEqOneOfComp
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SemipositiveOfIsometric
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AmpleArithHilbertSamuelOfPrincipalisation
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Tactic.Polynomial.Basic
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RepresentsHermitianLineBundleDual
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermLineBundleGeometricDegreeNonnegOfSemiPos
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermLineBundleIsNefTens
@@ -123,22 +78,12 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.CurveCl
 import Formalism.DegreeFormula.FlagDegFormula
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsAddEquivOfSurjectiveOfKerIff
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ClsLinCombSingle
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.QuadTie
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
-import Mathlib.AlgebraicGeometry.AlgClosed.Basic
-import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsConjFsBasisOfUnitary
-import Mathlib.Analysis.Calculus.ContDiff.WithLp
-import Mathlib.Analysis.InnerProductSpace.Calculus
 import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.HoloSmooth
 import ReciprocityTheory.L2DbarEstimates.LeviForms.EventuallyDifferentiableAtOfContDiffAt
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnderEqGenericPoint
@@ -477,7 +422,6 @@ namespace GlobalTheory
 theorem lowerBound_along_residues : ∀ (d n : ℕ) (u : ℕ → ℝ) (γ : ℝ), 0 < n → (∀ r < n, ∀ ε : ℝ, 0 < ε → ∀ᶠ q : ℕ in atTop, (γ - ε) * (q : ℝ) ^ d ≤ u (n * q + r)) → ∀ ε : ℝ, 0 < ε → ∀ᶠ M : ℕ in atTop, (γ / (n : ℝ) ^ d - ε) * (M : ℝ) ^ d ≤ u M := by
   intro d n u γ hn h ε hε
   have hnR : (0:ℝ) < n := Nat.cast_pos.mpr hn
-  have hnd : (0:ℝ) < (n:ℝ)^d := pow_pos hnR d
   set ε' := ε * (n:ℝ)^d / 2 with hε'
   have hε'pos : 0 < ε' := by positivity
   have h1 : ∀ᶠ q : ℕ in atTop, ∀ r ∈ Set.Iio n, (γ - ε') * (q:ℝ)^d ≤ u (n*q + r) :=
@@ -659,7 +603,6 @@ theorem tendsto_log_sq_div {X : ℕ → ℝ} {D : ℕ} {L : ℝ} (h1 : ∀ m, 1 
     (hX : Tendsto (fun m : ℕ => X m / (m : ℝ) ^ (D + 1)) atTop (𝓝 L)) :
     Tendsto (fun m : ℕ => Real.log (X m ^ 2) / m) atTop (𝓝 0) := by
   set C : ℝ := max (L + 1) 1 with hC
-  have hC1 : 1 ≤ C := le_max_right _ _
   have hev : ∀ᶠ m : ℕ in atTop, X m / (m : ℝ) ^ (D + 1) < C :=
     hX.eventually (gt_mem_nhds (lt_of_lt_of_le (lt_add_one L) (le_max_left _ _)))
   have hup : Tendsto (fun m : ℕ => 2 * Real.log C / m + (2 * ((D : ℝ) + 1)) * (Real.log m / m)) atTop (𝓝 0) := by
@@ -747,7 +690,6 @@ theorem eventually_le_of_bound : ∀ (D : ℕ) (u β g : ℕ → ℝ) (a γ : �
   intro D u β g a γ hβ0 hg0 hβ hg hu ε hε
   set F : ℝ := ((D + 1).factorial : ℝ) with hFdef
   have hF : 0 < F := by rw [hFdef]; exact_mod_cast Nat.factorial_pos _
-  have ha : 0 ≤ a := ge_of_tendsto' hβ (fun m => div_nonneg (hβ0 m) (by positivity))
   set K : ℝ := Real.log 2 * a / (F * ε) with hK
   obtain ⟨n, hn⟩ := exists_nat_gt (2 * Real.exp K)
   set q : ℕ := max n 3 with hqdef
@@ -1027,8 +969,8 @@ theorem exists_residueDegree_pos_of_mem_range (W Z : Scheme.{0}) (g : W ⟶ Z) [
     have : LocallyOfFiniteType (Spec.map β) := hβ ▸ inferInstance
     exact HasRingHomProperty.Spec_iff (P := @LocallyOfFiniteType) |>.mp this
   have hβf : β.hom.Finite := by
-    letI := β.hom.toAlgebra
-    haveI : Algebra.FiniteType (Z.residueField z) (F.residueField x) := hβft
+    let := β.hom.toAlgebra
+    have : Algebra.FiniteType (Z.residueField z) (F.residueField x) := hβft
     exact finite_of_finite_type_of_isJacobsonRing _ _
   have hhf : (h.residueFieldMap x).hom.Finite := by
     have : h.residueFieldMap x = (Z.residueFieldCongr e.symm).inv ≫ β := by simp [β]
@@ -1038,15 +980,15 @@ theorem exists_residueDegree_pos_of_mem_range (W Z : Scheme.{0}) (g : W ⟶ Z) [
   refine ⟨g.fiberι z x, e, ?_⟩
   rw [show h.residueFieldMap x = g.residueFieldMap (g.fiberι z x) ≫ (g.fiberι z).residueFieldMap x
     from Scheme.residueFieldMap_comp _ _ _] at hhf
-  letI := (g.residueFieldMap (g.fiberι z x)).hom.toAlgebra
-  letI := ((g.fiberι z).residueFieldMap x).hom.toAlgebra
-  letI := (g.residueFieldMap (g.fiberι z x) ≫ (g.fiberι z).residueFieldMap x).hom.toAlgebra
-  haveI : IsScalarTower (Z.residueField (g (g.fiberι z x))) (W.residueField (g.fiberι z x))
+  let := (g.residueFieldMap (g.fiberι z x)).hom.toAlgebra
+  let := ((g.fiberι z).residueFieldMap x).hom.toAlgebra
+  let := (g.residueFieldMap (g.fiberι z x) ≫ (g.fiberι z).residueFieldMap x).hom.toAlgebra
+  have : IsScalarTower (Z.residueField (g (g.fiberι z x))) (W.residueField (g.fiberι z x))
       (F.residueField x) := IsScalarTower.of_algebraMap_eq fun _ => rfl
-  haveI : Module.Finite (Z.residueField (g (g.fiberι z x))) (F.residueField x) := hhf
+  have : Module.Finite (Z.residueField (g (g.fiberι z x))) (F.residueField x) := hhf
   let φ := IsScalarTower.toAlgHom (Z.residueField (g (g.fiberι z x)))
     (W.residueField (g.fiberι z x)) (F.residueField x)
-  haveI : Module.Finite (Z.residueField (g (g.fiberι z x))) (W.residueField (g.fiberι z x)) :=
+  have : Module.Finite (Z.residueField (g (g.fiberι z x))) (W.residueField (g.fiberι z x)) :=
     Module.Finite.of_injective φ.toLinearMap φ.toRingHom.injective
   exact Module.finrank_pos
 

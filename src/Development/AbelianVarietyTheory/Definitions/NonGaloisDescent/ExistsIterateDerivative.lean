@@ -5,51 +5,6 @@ public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsUl
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.RealisesUnitPow
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FrobSubMulSurjective
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FrobeniusSubOneWittTensorLatticeSurjectiveFixed
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 
 @[expose] public section
 
@@ -355,10 +310,6 @@ theorem range_ofT : LinearMap.range I.ofT = Treal t ϖ P := by
   ext v
   rw [mem_Treal, ← I.j.injective.eq_iff, I.j_φ, (frob_fixed T).2.1]
   exact exists_congr fun x => by rw [← I.j.injective.eq_iff, j_ofT, eq_comm]
-
-def equivT : ↥T.L.T ≃ₗ[O] Treal t ϖ P :=
-  (LinearEquiv.ofInjective I.ofT I.ofT_injective).trans (LinearEquiv.ofEq _ _ I.range_ofT)
-
 
 include I in
 theorem exists_phiW_sub (y : ι → OW l O) : ∃ v, phiW t ϖ P v - v = y := by
@@ -843,12 +794,6 @@ theorem isMapOf_constHom {T T' : LocLat G ℚ_[l] K O} (b : Module.Basis ι O �
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [← Algebra.smul_def, smul_tmul]
 
-def trivFunctor : BKFunctor t ϖ (IsTriv : Lat a O K ϖ → Prop) where
-  obj T hT := ⟨_, _, unitIdent t ϖ T (latBasis T), isBK_unitIdent t ϖ hT _⟩
-  map {T T'} _ _ f := constHom l a e (LinearMap.toMatrix (latBasis T) (latBasis T')
-    ((f.f.restrictScalars O).restrict f.T_le))
-  isMapOf _ _ f := isMapOf_constHom t ϖ _ _ f
-
 theorem isLMat_unitIdent (T : LocLat G ℚ_[l] K O) (b : Module.Basis ι O ↥T.L.T) (s : GQ l) {g : G}
     (hg : ∀ x, T.ρ g x = x) : (unitIdent t ϖ T b).IsLMat s g 1 := fun c => by
   rw [unitIdent_act t ϖ T b s hg, inclL_apply, inclL_apply, frobMat_unitMod, Matrix.one_mulVec,
@@ -902,15 +847,6 @@ theorem natural_constHom (Y : Matrix κ ι O) :
       ∑ j, algebraMap O K⟦X⟧ (Y i j) * PowerSeries.derivative (m τ j)
 
     simp only [map_sum, algebraMap_eq_C, ← smul_eq_C_mul, Derivation.map_smul]
-
-def trivConn : (trivFunctor (K := K) t ϖ).IntConn where
-  conn _ _ := unitConn l a e _
-  natural _ _ _ := natural_constHom _
-  frobCompat _ _ := unitConn_frobCompat
-  topNilp _ _ := unitConn_topNilp
-  stable _ hT := stable_unitIdent t ϖ hT _
-  taylor _ hT := taylor_unitIdent t ϖ hT _
-
 
 variable (G) in
 def unitLat : LocLat G ℚ_[l] K O where

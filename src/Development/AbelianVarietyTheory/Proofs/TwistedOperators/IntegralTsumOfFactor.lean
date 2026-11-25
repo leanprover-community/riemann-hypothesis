@@ -71,8 +71,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.TwistedLevelValues GlobalTheory.Ade
 
 namespace GlobalTheory.LiftScalarL
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem tprod_split {α κ : Type} (g : α → κ → ℝ) (hm : ∀ p : α → Prop, Multipliable fun a : {v // p v} × κ => g a.1.1 a.2)

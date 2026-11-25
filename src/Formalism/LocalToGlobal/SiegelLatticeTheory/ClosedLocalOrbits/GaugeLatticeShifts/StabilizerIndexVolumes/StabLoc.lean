@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.ScalarFramePfA
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.PairVal
 import Mathlib.Tactic.TypeStar
 
@@ -129,18 +130,18 @@ theorem constG (e : K ≃ₐ[F] F × F) (ι : E →+* K) (Dd : Fin (r + 1) → K
     simp only [lG, Matrix.of_apply, AlgEquiv.apply_symm_apply]
     by_cases hxl : x = Fin.last r
     · subst hxl
-      rw [if_pos rfl, (ha _ _).2 rfl, (hb _ _).2 rfl]
+      rw [ite_eq_left rfl, (ha _ _).2 rfl, (hb _ _).2 rfl]
       simp [Fin.val_last, div_self (hy _)]
-    · rw [if_neg hxl, (ha _ _).1 (lt_of_le_of_ne (Fin.le_last x) hxl), (hb _ _).1 (lt_of_le_of_ne (Fin.le_last x) hxl)]
+    · rw [ite_eq_right hxl, (ha _ _).1 (lt_of_le_of_ne (Fin.le_last x) hxl), (hb _ _).1 (lt_of_le_of_ne (Fin.le_last x) hxl)]
       simp
   have hr : ρG e ι Dd a b (Fin.last r) y = if y = Fin.last r then 1 else 0 := by
     apply e.injective
     simp only [ρG, Matrix.of_apply, AlgEquiv.apply_symm_apply]
     by_cases hyl : y = Fin.last r
     · subst hyl
-      rw [if_pos rfl, (ha _ _).2 rfl, (hb _ _).2 rfl]
+      rw [ite_eq_left rfl, (ha _ _).2 rfl, (hb _ _).2 rfl]
       simp [Fin.val_last, div_self (hx _)]
-    · rw [if_neg hyl, (hb _ _).1 (lt_of_le_of_ne (Fin.le_last y) hyl), (ha _ _).1 (lt_of_le_of_ne (Fin.le_last y) hyl)]
+    · rw [ite_eq_right hyl, (hb _ _).1 (lt_of_le_of_ne (Fin.le_last y) hyl), (ha _ _).1 (lt_of_le_of_ne (Fin.le_last y) hyl)]
       simp
   rw [hl, hr, Matrix.single_apply]
   by_cases hxl : x = Fin.last r <;> by_cases hyl : y = Fin.last r
@@ -169,17 +170,7 @@ def ρOf (p : PlF D) (a b : MatR D) : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1
   | some g => ρG g.e (D.s.atP p).ιE (frFac δ p) a b
 
 theorem unitAt_ne (p : PlF D) : (uP p : D.host.E) ≠ 0 := by
-  have h1 : (gpart p : ℚ) ≠ 0 := by
-    unfold gpart; split_ifs
-    · exact_mod_cast (D.host.g_prime 0).ne_zero
-    · exact_mod_cast (D.host.g_prime 1).ne_zero
-    · norm_num
-  have h2 : (Lat.gS D : ℚ) ≠ 0 := by
-    unfold Lat.gS
-    push_cast
-    exact mul_ne_zero (by exact_mod_cast (D.host.g_prime 0).ne_zero) (by exact_mod_cast (D.host.g_prime 1).ne_zero)
-  unfold uP
-  exact_mod_cast div_ne_zero h1 h2
+  apply _root_.Formalism.L2.SG.Pf.ScalarFramePf.unitAt_ne <;> assumption
 
 theorem frFac_unit {p : PlF D} (hA : Agree δ M p) (i : Fin (D.R.rS + 1)) : IsUnit (frFac δ p i) := by
   unfold frFac

@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CardEqChainSum
 public import Formalism.SharpRestriction.GrowthBounds.ValuationLowestDegreeRename
 public import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 public import Formalism.LocalRingCardinality.Lemmas
@@ -20,17 +21,7 @@ namespace Formalism.MainNotions.G.Joints.Lit
 
 theorem antitone_of_succ {n : ℕ} (μ : Fin n → ℤ) (h : ∀ (a : Fin n) (ha : a.1 + 1 < n), μ ⟨a.1 + 1, ha⟩ ≤ μ a) :
     Antitone μ := by
-  intro a b hab
-  obtain ⟨a, ha⟩ := a
-  obtain ⟨b, hb⟩ := b
-  have hab' : a ≤ b := hab
-  clear hab
-  revert hb
-  induction b, hab' using Nat.le_induction with
-  | base => intro hb; exact le_rfl
-  | succ k hak ih =>
-    intro hb
-    exact (h ⟨k, by omega⟩ hb).trans (ih (by omega))
+  apply _root_.Formalism.MainNotions.ColumnSystems.Pf.anti_of_step <;> assumption
 
 theorem stCount_eq_dGT (n : ℕ) (μ : Fin n → ℤ) (hμ : Antitone μ) :
     Formalism.MainNotions.SelectionLemmas.stCount n μ = Formalism.InvariantFactorPaths.GelfandTsetlinBases.dGT n μ := by
@@ -353,10 +344,6 @@ theorem NPDesc_of (c : LatCmp D) {L : SizeData₂ D} (hT : GatTies D) (X : Inst 
       rw [hNP]
       exact Submodule.subset_span ⟨y, hy, rfl⟩
 
-
-end Formalism.MainNotions.G.Joints.Lit
-
-namespace Formalism.MainNotions.G.Joints.Lit
 
 end Formalism.MainNotions.G.Joints.Lit
 

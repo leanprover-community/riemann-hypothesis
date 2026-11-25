@@ -62,7 +62,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ (PS ev pt addOf)
 open ReciprocityTheory.PGsh.Be2 (nEval)
 open GlobalTheory.UU (CubWeil)
-attribute [local instance] Over.cartesianMonoidalCategory
 open Formalism.L2.FormalSeriesBounds IsLocalRing GlobalTheory.AlphaPair
 open scoped CategoryTheory.Obj
 
@@ -154,7 +153,7 @@ theorem exists_val (β : V →+* Ω) (e : FrTyG t (𝟙 (Sp V)) d x m) (z : Sp A
   have h : ∃ ψ, Q a u ψ := ⟨ψ, hQ⟩
   have k : h.choose = ψ := Ideal.Quotient.ringHom_ext (MvPolynomial.ringHom_ext
     (fun v => (h.choose_spec.1 v).trans (hψ v).symm) fun q => (h.choose_spec.2 q).trans (hQ.2 q).symm)
-  simp only [dif_pos h, k]
+  simp only [dite_eq_left h, k]
 
 theorem val_pe (e : ∀ m, FrTyG t (𝟙 (Sp V)) d x m) {z : Sp A} {J : (Sp A ⟶ t.G.left) → t.PP.L.ι}
     (hJ : Good t.PP.L z J) {n : ℕ} (ψ : Jet V (Fin n × Fin d) m →+* A)
@@ -254,7 +253,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ (PS ev pt addOf)
 open ReciprocityTheory.PGsh.Be2 (nEval)
 open GlobalTheory.UU (CubWeil)
-attribute [local instance] Over.cartesianMonoidalCategory
 open Formalism.L2.FormalSeriesBounds IsLocalRing GlobalTheory.AlphaPair
 open scoped CategoryTheory.Obj
 

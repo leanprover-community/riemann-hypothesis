@@ -8,8 +8,6 @@ public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCoh
 
 
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 open CategoryTheory Limits AlgebraicGeometry GroundTheory.PAdicHodge CrystallineSemistableComparison TensorProduct GlobalTheory.LogCris DividedPowers
@@ -23,10 +21,6 @@ abbrev phiH (P : PAlg l ⥤ Type) (n j : ℕ) : MH P n j → MH P n j := (phiMor
 
 variable (l) in
 def tA : Acris l := ACris.periodT (untilt_epsilon (p := l))
-
-
-def galA (g : K.fixingSubgroup) : Acris l →+* Acris l := ACris.galCris (IntermediateField.fixingSubgroupEquiv K g)
-
 
 structure PBg (l : ℕ) [Fact l.Prime] {A Γ : Type} [CommRing A] (t : A) (φA : A →+* A) (σA : Γ → (A →+* A)) (z : ℤ_[l] →+* A) : Type 1 where
   C : Type

@@ -131,12 +131,12 @@ theorem scalar_exists {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L s
     intro τ
     by_cases hτ : τ = τ₀
     · subst hτ
-      simp only [hζdef, if_pos rfl, h1]
-    · simp only [hζdef, if_neg hτ, h2 τ hτ, one_smul]
+      simp only [hζdef, ite_eq_left rfl, h1]
+    · simp only [hζdef, ite_eq_right hτ, h2 τ hτ, one_smul]
   have hζn : ∀ τ, ‖ζ τ‖ = 1 := fun τ => by
     by_cases hτ : τ = τ₀
-    · simp only [hζdef, if_pos hτ, he]
-    · simp only [hζdef, if_neg hτ, norm_one]
+    · simp only [hζdef, ite_eq_left hτ, he]
+    · simp only [hζdef, ite_eq_right hτ, norm_one]
   have hf : IsThetaFunO W.ψ (neg A) WW (X.f t) := (GlobalTheory.ConstRatio.theta_f hI t).1
   have ho := GlobalTheory.PlaceModelSum.isOrthSum_of_isIdemSum (hI.idem t)
   have hfock : ∀ τ, IsFockVacAt (heisO W.ψ (neg A) WW) W.θ τ (cplxO (-X.rA.s τ) (X.rW.s τ)) (X.f t) := fun τ =>
@@ -179,9 +179,9 @@ theorem scalar_exists {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L s
       smul_smul]
     congr 2
     rw [Finset.prod_eq_single τ₀]
-    · simp only [hζdef, if_pos rfl, hw]
+    · simp only [hζdef, ite_eq_left rfl, hw]
     · intro ρ _ hρ
-      simp only [hζdef, if_neg hρ, inv_one, ite_self, one_pow]
+      simp only [hζdef, ite_eq_right hρ, inv_one, ite_self, one_pow]
     · simp
   refine ⟨C, w, by rw [hw]; split_ifs; exacts [Or.inr rfl, Or.inl rfl], fun k h => ?_⟩
   set φ := pureTensorO W.ψ W.θ (neg A) WW (fun τ => -X.rA.s τ) X.rW.s X.rA.B X.rW.B (X.f t) (MvPolynomial.monomial k 1)

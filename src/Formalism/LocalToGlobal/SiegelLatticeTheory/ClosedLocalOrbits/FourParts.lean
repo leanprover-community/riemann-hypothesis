@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermDef
 import Mathlib.Tactic.Linter.Style
 
@@ -36,15 +37,7 @@ theorem Xflag_r {T : E} (F : LFlag S r T) : F.fl.Xa r = Xsp F := by
   simp
 
 theorem z_mem_orth {T : E} (F : LFlag S r T) : F.fl.z ∈ orth S (Xsp F) := by
-  simp only [orth, Submodule.mem_iInf, LinearMap.mem_ker]
-  intro x hx
-  induction hx using Submodule.span_induction with
-  | mem y hy =>
-    obtain ⟨a, rfl⟩ := hy
-    exact F.fl.z_orth a
-  | zero => simp
-  | add y w _ _ hy hw => simp [hy, hw]
-  | smul c y _ hy => simp [hy]
+  apply _root_.Formalism.MainNotions.LatticeGluingRadicals.d_z_orthX <;> assumption
 
 theorem inSF_of_isIdF (Λ : Submodule (𝓞 E) S.V) {T T' : E} {F : LFlag S r T} {F' : LFlag S r T'}
     (h : IsIdF Λ F F') : InSF F F' := by
@@ -76,7 +69,7 @@ theorem gval_eq_zero_of_inSF {T T' : E} (hT : star T = T) {F : LFlag S r T} {F' 
       exact Fin.snoc_last (α := fun _ => S.V) (p := G.fl.e) (x := G.fl.z)
     have hD1 : Dl F.fl F'.fl 1 = -T' := by
       simp only [Dl, leadMinorE]
-      simp only [Nat.le_refl, dif_pos, Matrix.det_unique]
+      simp only [Nat.le_refl, dite_eq_left, Matrix.det_unique]
       show S.hT (F.fl.fvec _) (F'.fl.fvec _) = -T'
       rw [hf F, hf F', hz, F.fl.z_norm]
     have hD0 : Dl F.fl F'.fl 0 = 1 := by
@@ -99,7 +92,7 @@ theorem gval_eq_zero_of_inSF {T T' : E} (hT : star T = T) {F : LFlag S r T} {F' 
       · simp [FlagG.fvec, F.fl.e_iso]
     have hDl : ∀ l, 1 ≤ l → l ≤ r + 1 → Dl F.fl F'.fl l = 0 := by
       intro l hl1 hl2
-      simp only [Dl, leadMinorE, dif_pos hl2]
+      simp only [Dl, leadMinorE, dite_eq_left hl2]
       refine Matrix.det_eq_zero_of_column_eq_zero ⟨0, by omega⟩ (fun i => ?_)
       simp only [Matrix.submatrix_apply]
       have : (Fin.castLE hl2 ⟨0, by omega⟩ : Fin (r + 1)) = ⟨0, by omega⟩ := rfl

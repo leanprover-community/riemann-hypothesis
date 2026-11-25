@@ -377,12 +377,6 @@ theorem val_stalkPt {Y : Scheme.{0}} {k : Type} [CommRing k] {p : Y ⟶ Sp k} {B
   rw [H0.val_apply, H0.germ_apply]
   exact evalPt_stalkPt y ψ _ _ _ _
 
-theorem val_restr_pt {k : Type} [CommRing k] {T' : Scheme.{0}} {p : T' ⟶ Sp k} {B : LB T'} {O O' : T'.Opens}
-    (h : O' ≤ O) {R : Type} [CommRing R] (x : Sp R ⟶ T') (i : B.ι) (hO : ⊤ ≤ x ⁻¹ᵁ O) (hO' : ⊤ ≤ x ⁻¹ᵁ O')
-    (hi : ⊤ ≤ x ⁻¹ᵁ B.U i) (f : H0 p B O) : H0.val x i hO' hi (H0.restr h f) = H0.val x i hO hi f :=
-  GlobalTheory.TangentOrigin.evalPt_res x (inf_le_inf_right _ h) (GlobalTheory.FlagMod.le_preimage_inf hO hi)
-    (GlobalTheory.FlagMod.le_preimage_inf hO' hi) _
-
 theorem exists_extension {Y : Scheme.{0}} [IsIntegral Y] [IsLocallyNoetherian Y] (hN : Geo.Tor.IsNormalScheme Y)
     {k : Type} [CommRing k] {p : Y ⟶ Sp k} {B : LB Y} (hB : B.IsLB) {O : Y.Opens} (hO : (O : Set Y).Nonempty)
     (m : H0 p B O)

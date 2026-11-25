@@ -205,7 +205,7 @@ theorem selTw : SelTw := by
       show ∫ y, φ y * (q s F (x * y) * eI (s * (Ht (x * y) - Ht x))) ∂μ = q s F x
       refine Eq.trans ?_ (reprod hφ hi ((kc s F).comp (continuous_const.prodMk continuous_id)) (kb s F x))
       refine integral_congr_ae (Eventually.of_forall fun y => ?_)
-      simp only [q, k, Function.comp_apply]
+      simp only [q, k]
       rw [← integral_mul_const]
       congr 1
       refine integral_congr_ae (Eventually.of_forall fun z => ?_)

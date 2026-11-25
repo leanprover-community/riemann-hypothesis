@@ -10,48 +10,9 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsOpenIsC
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.MemAdelicLatticeIffLocalSelfDualCompletion
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.OmSplitHalves
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.LatticeFrames.JointSmooth
 
 @[expose] public section
@@ -71,8 +32,8 @@ open Classical in
 def indP (D : D7) (P : Pl D → Prop) : Af D.host.F :=
   ⟨fun v => if P v then 1 else 0, Filter.Eventually.of_forall fun v => by
     by_cases h : P v
-    · simp only [if_pos h]; exact one_mem (v.adicCompletionIntegers D.host.F)
-    · simp only [if_neg h]; exact zero_mem (v.adicCompletionIntegers D.host.F)⟩
+    · simp only [ite_eq_left h]; exact one_mem (v.adicCompletionIntegers D.host.F)
+    · simp only [ite_eq_right h]; exact zero_mem (v.adicCompletionIntegers D.host.F)⟩
 
 open Classical in
 theorem evalV_indP (P : Pl D → Prop) (w : Pl D) : evalV D.host.F w (indP D P) = if P w then 1 else 0 := rfl
@@ -105,7 +66,7 @@ theorem e_mul_of_supp (P : Pl D → Prop) (X : Af D.host.F ⊗[D.host.F] D.host.
   change GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedCharacter.compFin D w _ = GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedCharacter.compFin D w _
   rw [map_mul, compFin_e]
   by_cases hw : P w
-  · rw [if_pos hw, one_mul]
+  · rw [ite_eq_left hw, one_mul]
   · rw [h w hw, mul_zero]
 
 theorem e_mul_fin {P : Pl D → Prop} {a : AE D} (ha : a ∈ idAt D P) :
@@ -124,7 +85,7 @@ theorem exists_latticeCompletion_cut_to_places_finiteReal (S : HSp D) (L : Lat S
       refine ⟨fun i => pairA D.host.F 0 (indP D P * a) ⊗ₜ[D.host.F] (1 * x i),
         AddSubgroup.subset_closure ⟨_, GlobalTheory.KStabBridge.intAf_mul (indicatorAdele_integral P) ha, fun w hw => ?_, 1, rfl, x, hx, rfl⟩,
         fun i => _root_.GlobalTheory.LatVac.infPart_pair _ _, fun i => ?_⟩
-      · rw [map_mul, evalV_indP, if_neg hw, zero_mul]
+      · rw [map_mul, evalV_indP, ite_eq_right hw, zero_mul]
       · rw [_root_.GlobalTheory.LatVac.finPart_pair, one_mul, Algebra.TensorProduct.tmul_mul_tmul, one_mul]
     | zero =>
       refine ⟨0, zero_mem (latV S L P), fun i => (infPart D).map_zero, fun i => ?_⟩
@@ -147,7 +108,7 @@ theorem mem_idAt_of_fin (P : Pl D → Prop) {a : AE D} (h1 : infPart D a = 0) {z
     (h2 : finPart D a = (indP D P ⊗ₜ[D.host.F] (1 : D.host.E)) * z) : a ∈ idAt D P := by
   refine (mem_supportedOnPlacesIdeal_iff_components_zero_elsewhere D P _).2 ⟨h1, fun w hw => ?_⟩
   change GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedCharacter.compFin D w (finPart D a) = 0
-  rw [h2, (GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedCharacter.compFin D w).map_mul, compFin_e, if_neg hw, zero_mul]
+  rw [h2, (GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedCharacter.compFin D w).map_mul, compFin_e, ite_eq_right hw, zero_mul]
 
 theorem exists_lift_latV (S : HSp D) (L : Lat S) (P : Pl D → Prop) {z : Fin S.rank → Af D.host.F ⊗[D.host.F] D.host.E}
     (hz : z ∈ latHat D.host.F D.host.E (L : Set (Fin S.rank → D.host.E))) :
@@ -212,7 +173,7 @@ theorem levelOpen_of_inK (S : HSp D) (L : Lat S) (hL : L.FG) (P : Pl D → Prop)
   have hI := (SetCut.mem_congGrp_iff S _ g).1 hg.1
   refine keeps_of_core (latHat D.host.F D.host.E (L : Set (Fin S.rank → D.host.E)))
     (indP D P ⊗ₜ[D.host.F] (1 : D.host.E))
-    (e_mul_of_supp P _ fun w hw => by rw [compFin_e, if_neg hw])
+    (e_mul_of_supp P _ fun w hw => by rw [compFin_e, ite_eq_right hw])
     (fun z hz => GlobalTheory.KStabBridge.latHat_smul _ (indicatorAdele_integral P) hz) (fun z hz => ?_) _ (fun i j => ?_) (fun z => ?_)
   · have := GlobalTheory.KStabBridge.latHat_smul _ (one_sub_indP_int P) hz
     rwa [TensorProduct.sub_tmul, ← Algebra.TensorProduct.one_def] at this

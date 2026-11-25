@@ -34,12 +34,6 @@ open GroundTheory.Heights₂.Heights.LowerBoundFree (AmpleOnGenericFibre)
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
-section Field
-
-variable {F : Type} [Field F]
-
-end Field
-
 variable {Ω : Type} [Field Ω]
 
 
@@ -51,12 +45,6 @@ theorem geomDeg_eq (hD : DegreeStatement) {W : Ideal (MRing ι)} {d : ℕ} (hW :
   rw [hpot] at h
   unfold geomDeg genDeg
   rw [h]
-
-section Values
-
-variable {y : (Σ k, ι k) → Ω} {L : Type} [Field L] {z : (Σ k, ι k) → L} {c : ∀ k, ι k}
-
-end Values
 
 end GlobalTheory.CompanionTheory.Ar.Cusp.NineEq
 

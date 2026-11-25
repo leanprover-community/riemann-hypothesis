@@ -324,8 +324,6 @@ open ReciprocityTheory.ChartRestriction.G.Chart (tvec tmap tvec_inj tvec_eig_iff
 open Formalism.L2.Pj.LieRel Formalism.L2.Pj.LieAlg
 open scoped CategoryTheory.Obj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
 variable (Xo : Moduli Dw l) (c : Coeff l)
 

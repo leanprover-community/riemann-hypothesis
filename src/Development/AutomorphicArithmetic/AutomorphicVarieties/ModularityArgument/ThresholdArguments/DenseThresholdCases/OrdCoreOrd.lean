@@ -537,7 +537,7 @@ theorem UpperTheory.V.Z.Ord.ordinary_scalar_of_literal_automorphy_n : _root_.Glo
   let a : ℕ → ℂ := fun m => H.lowVal ι lam v m * (if h : m - 1 < n then b ⟨m - 1, h⟩ else 0)
   have ha : ∀ j : Fin n, a (j + 1) = H.lowVal ι lam v (j + 1) * b j := fun j => by
     have h : (j : ℕ) + 1 - 1 < n := by simpa using j.2
-    simp only [a, dif_pos h]
+    simp only [a, dite_eq_left h]
     congr 2
   obtain ⟨ω, h1, h2, h3, h4⟩ := local_exp (_root_.UpperTheory.V.Z.Ord.ordinary_jacquet_of_literal_automorphy_n hLit) (H.atV d v) (Y.σl v) (Y.isoL v) hF.1 hF0 e
     (fun i y => ι (H.finPart θ x.toRingHom lam v i y)) hN hNm hT
@@ -558,7 +558,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option maxHeartbeats 800000
 set_option synthInstance.maxHeartbeats 200000
 
 section

@@ -234,10 +234,6 @@ noncomputable def IsCMExt (F E : Type) [Field F] [NumberField F] [Field E] [Numb
   IsTotallyReal F ∧ IsTotallyComplex E ∧ Module.finrank F E = 2 ∧
     ∀ (τ : E →+* ℂ) (x : E), τ (σ x) = star (τ x)
 
-theorem aux2 {F E : Type} [Field F] [Field E] :
-    RingHomClass (𝓞 F →+* 𝓞 E) (𝓞 F) (𝓞 E) :=
-  inferInstance
-
 noncomputable def IsSplit {F E : Type} [Field F] [Field E] [Algebra F E]
     (w : HeightOneSpectrum (𝓞 F)) : Prop :=
   ∃ P Q : HeightOneSpectrum (𝓞 E),

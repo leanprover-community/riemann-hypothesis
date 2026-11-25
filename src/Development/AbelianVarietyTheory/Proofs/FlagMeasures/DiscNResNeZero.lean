@@ -1837,12 +1837,12 @@ theorem main : MinkowskiBound → GlobalTheory.Mass.MaxMass → Formalism.Hermit
         simp only [I, Finset.coe_product, Set.mem_prod, Finset.mem_coe, Finset.mem_Ico, Finset.mem_Icc]
         refine ⟨by omega, l3, ?_⟩
         by_contra hn
-        rw [if_neg (fun a => hn (by exact_mod_cast a))] at l4
+        rw [ite_eq_right (fun a => hn (by exact_mod_cast a))] at l4
         have : ({q ∈ Trip H g L j x x' | fixSp q.2.2 = fixSp p.2.2}).encard = 0 := by simpa using l4
         exact (Set.eq_empty_iff_forall_notMem.1 (Set.encard_eq_zero.1 this)) p ⟨hp, rfl⟩
       · refine add_le_add ?_ (Finset.sum_le_sum fun i hi => encard_fibres_le _ _ _ _ fun U hU => ?_)
         · have p0 := ps 0 D ⊤ hD1 (by simp) ((discN_top _ _).trans hLd)
-          rw [if_pos (by nlinarith)] at p0
+          rw [ite_eq_left (by nlinarith)] at p0
           rw [mul_add, mul_one, ENNReal.ofReal_add (by positivity) (by positivity)]
           refine add_le_add (p0.trans (ENNReal.ofReal_le_ofReal
             (top_bound c D _ Y g k f j x x' hc hD1' rfl hX1 hY))) (pk.trans (ENNReal.ofReal_le_ofReal ?_))
@@ -1852,7 +1852,7 @@ theorem main : MinkowskiBound → GlobalTheory.Mass.MaxMass → Formalism.Hermit
           gcongr
         · simp only [I, Finset.mem_product, Finset.mem_Ico, Finset.mem_Icc] at hi
           have p1 := ps i.1 i.2 U hi.2.1 (by rw [hU.1]; omega) hU.2
-          rw [if_pos (by exact_mod_cast hi.2.2)] at p1
+          rw [ite_eq_left (by exact_mod_cast hi.2.2)] at p1
           exact p1)
   refine h1.trans ?_
   rw [← hmass, ← ENNReal.ofReal_mul hm0.le]

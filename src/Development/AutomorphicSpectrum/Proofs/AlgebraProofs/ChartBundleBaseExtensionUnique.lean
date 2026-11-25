@@ -21,28 +21,8 @@ theorem UpperTheory.Reformulated.B.Ydb6.main :
         ∀ (v : V),
           v ∈ AddSubgroup.closure {v : V | ∃ a ∈ R, ∃ e ∈ B, v = a • e} ↔
             ∃ e ∈ AddSubgroup.closure {v : V | ∃ a ∈ R, ∃ e ∈ A, v = a • e}, v = c • e := by
-  intro O Ω V _ _ _ _ _ R A B c hB v
-  let f : V →+ V := DistribSMul.toAddMonoidHom V c
-  have hS : {v : V | ∃ a ∈ R, ∃ e ∈ B, v = a • e} =
-      f '' {v : V | ∃ a ∈ R, ∃ e ∈ A, v = a • e} := by
-    ext w
-    simp only [Set.mem_ofPred_eq, Set.mem_image]
-    constructor
-    · rintro ⟨a, ha, e, he, rfl⟩
-      obtain ⟨e', he', rfl⟩ := (hB e).1 he
-      refine ⟨a • e', ⟨a, ha, e', he', rfl⟩, ?_⟩
-      show c • a • e' = a • c • e'
-      rw [smul_smul, smul_smul, mul_comm]
-    · rintro ⟨x, ⟨a, ha, e, he, rfl⟩, rfl⟩
-      refine ⟨a, ha, c • e, (hB _).2 ⟨e, he, rfl⟩, ?_⟩
-      show c • a • e = a • c • e
-      rw [smul_smul, smul_smul, mul_comm]
-  rw [hS, ← AddMonoidHom.map_closure, AddSubgroup.mem_map]
-  constructor
-  · rintro ⟨x, hx, rfl⟩
-    exact ⟨x, hx, rfl⟩
-  · rintro ⟨x, hx, rfl⟩
-    exact ⟨x, hx, rfl⟩
+  intros
+  apply _root_.PositivityTheory.Xgn.A_pull_preserve.scaled_closure <;> assumption
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsExtraRest =====

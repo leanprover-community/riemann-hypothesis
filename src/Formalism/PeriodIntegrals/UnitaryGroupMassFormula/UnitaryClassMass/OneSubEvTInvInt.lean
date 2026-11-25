@@ -98,11 +98,11 @@ theorem evT_eq_sum (T : Finset (HeightOneSpectrum (𝓞 F))) : evT (T : Set _) =
   rw [evT_apply, show (∑ w' ∈ T, sgl w' 1) w = evalV F w (∑ w' ∈ T, sgl w' 1) from rfl, map_sum]
   simp only [show ∀ w', evalV F w (sgl w' 1) = Pi.single w' 1 w from fun _ => rfl]
   by_cases hw : w ∈ T
-  · rw [if_pos (by exact_mod_cast hw), Finset.sum_eq_single w]
+  · rw [ite_eq_left (by exact_mod_cast hw), Finset.sum_eq_single w]
     · simp
     · intro b _ hb; simp [Ne.symm hb]
     · intro h; exact absurd hw h
-  · rw [if_neg (by exact_mod_cast hw)]
+  · rw [ite_eq_right (by exact_mod_cast hw)]
     refine (Finset.sum_eq_zero fun b hb => ?_).symm
     have : w ≠ b := fun h => hw (h ▸ hb)
     simp [this]

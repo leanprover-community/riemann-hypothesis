@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.LamPolySmulRight
 public import Formalism.SharpRestriction.GrowthBounds.TableLineDegreeFive
 import Mathlib.Tactic.TypeStar
 
@@ -31,13 +32,7 @@ theorem isDominant_add {n' m : ℕ} {lam mu : Fin n' → Fin (m + 1) → ℤ} (h
 
 theorem nuOf_add {m : ℕ} {a b : Fin (m + 1) → ℤ} (ha : Antitone a) (hb : Antitone b) :
     nuOf (a + b) = nuOf a + nuOf b := by
-  funext t
-  have h1 : 0 ≤ a t - a (Fin.last m) := sub_nonneg.2 (ha (Fin.le_last t))
-  have h2 : 0 ≤ b t - b (Fin.last m) := sub_nonneg.2 (hb (Fin.le_last t))
-  simp only [nuOf, Pi.add_apply]
-  rw [show a t + b t - (a (Fin.last m) + b (Fin.last m)) =
-      (a t - a (Fin.last m)) + (b t - b (Fin.last m)) by ring]
-  exact Int.toNat_add h1 h2
+  apply _root_.Formalism.MainNotions.flipOneThree.Pf.cbNuOf_add <;> assumption
 
 theorem dualWeyl_mul (R : Type*) [CommRing R] (r n : ℕ) (ν ν' : Fin n → ℕ)
     {F G : MvPolynomial (Fin r × Fin n) R} (hF : F ∈ dualWeyl R r n ν) (hG : G ∈ dualWeyl R r n ν') :
@@ -75,14 +70,14 @@ theorem V_mul (Kf : Type*) [Field Kf] {n' m : ℕ} {lam mu nu : Fin n' → Fin (
     · have hab : Antitone (lamAt (lam + mu) s) := by
         rw [hs]
         exact ha.add hb
-      rw [if_pos ha] at hF
-      rw [if_pos hb] at hG
-      rw [if_pos hab, hs, nuOf_add ha hb]
+      rw [ite_eq_left ha] at hF
+      rw [ite_eq_left hb] at hG
+      rw [ite_eq_left hab, hs, nuOf_add ha hb]
       exact dualWeyl_mul Kf (m + 1) (m + 1) _ _ hF hG
-    · rw [if_neg hb, Submodule.mem_bot] at hG
+    · rw [ite_eq_right hb, Submodule.mem_bot] at hG
       rw [hG, mul_zero]
       exact Submodule.zero_mem _
-  · rw [if_neg ha, Submodule.mem_bot] at hF
+  · rw [ite_eq_right ha, Submodule.mem_bot] at hF
     rw [hF, zero_mul]
     exact Submodule.zero_mem _
 

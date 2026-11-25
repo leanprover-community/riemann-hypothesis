@@ -5,8 +5,6 @@ public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.JetPointZe
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace Formalism.MainNotions.ModuliIntegralCharts.H1.ExpGJ
@@ -14,8 +12,6 @@ namespace Formalism.MainNotions.ModuliIntegralCharts.H1.ExpGJ
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open Formalism.MainNotions.ModuliIntegralCharts.H1.ExpGU Formalism.MainNotions.ModuliIntegralCharts.H1.ExpGH
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 def PhOneValSt : Prop :=
   ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H)

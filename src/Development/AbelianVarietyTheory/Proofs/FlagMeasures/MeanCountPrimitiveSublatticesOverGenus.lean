@@ -580,13 +580,6 @@ theorem exists_smul_mem (L : Submodule (𝓞 K) V) (hL : Submodule.IsFullLattice
     ∃ r : 𝓞 K, r ≠ 0 ∧ r • x ∈ L :=
   _root_.GlobalTheory.SmulMemSpan.exists_smul_mem L hL x
 
-theorem latIn_isLattice (L : Submodule (𝓞 K) V) (hL : Submodule.IsLattice K L) (U : Submodule K V) :
-    Submodule.IsLattice K (latIn U L) := by
-  refine ⟨?_, ?_⟩
-  · refine Submodule.fg_of_fg_map_injective (U.subtype.restrictScalars (𝓞 K)) U.injective_subtype ?_
-    exact Submodule.FG.of_le hL.fg (Submodule.map_comap_le _ _)
-  · intro s hs hli
-    exact (LinearIndependent.iff_fractionRing _ _).mp hli
 theorem latIn_isFullLattice (L : Submodule (𝓞 K) V) (hL : Submodule.IsFullLattice K L)
     (U : Submodule K V) : Submodule.IsFullLattice K (latIn U L) := by
   apply _root_.GlobalTheory.Mass.DetAgree.isLattice_latIn <;> assumption
@@ -815,7 +808,7 @@ theorem main : ∀ c₀ : ℝ, 0 < c₀ → ∃ C₀ : ℝ, ∀ C : ℝ, C₀ �
     rw [e1] at H2
     have e2 : ((Lat.Tu D u ^ (2 * D.R.f) : ℕ) : ℝ) = Cnt.NT D u ^ 2 := by
       rw [Cnt.NT, ← pow_mul, mul_comm D.R.f]; push_cast; rfl
-    rw [e2, _root_.Formalism.BasicNotions.Host.finrank_E', Cnt.XiS, Cnt.Xi, if_pos ⟨hs2, hmid⟩]
+    rw [e2, _root_.Formalism.BasicNotions.Host.finrank_E', Cnt.XiS, Cnt.Xi, ite_eq_left ⟨hs2, hmid⟩]
     push_cast
     exact H2
   · have hk : 1 ≤ D.R.k := by omega
@@ -840,7 +833,7 @@ theorem main : ∀ c₀ : ℝ, 0 < c₀ → ∃ C₀ : ℝ, ∀ C : ℝ, C₀ �
         exact one_le_mul_of_one_le_of_one_le (one_le_pow₀ (by linarith)) (one_le_pow₀ hde')
     · rw [o2, ← hm1, mul_comm, ← ENNReal.ofReal_mul hm2.le]
       refine ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_left ?_ hm2.le)
-      rw [Cnt.XiS, Cnt.Xi, if_neg (fun a => hmid a.2), if_pos (by omega)]
+      rw [Cnt.XiS, Cnt.Xi, ite_eq_right (fun a => hmid a.2), ite_eq_left (by omega)]
       exact H2
 
 end GlobalTheory.Mass.PrimMeanRow

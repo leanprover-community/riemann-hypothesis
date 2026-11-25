@@ -384,11 +384,11 @@ theorem gramFilt_gen {F E : Type} [Field F] [NumberField F] [Field E] [NumberFie
     intro i j k
     show PI.VolStabS.PositiveNearLattice.crd b (Fv F v) (e0 i j) k ∈ v.adicCompletionIntegers F
     by_cases hij : i = i0 ∧ j = j0
-    · simp only [e0, if_pos hij, PI.VolStabS.PositiveNearLattice.crd_incl, b.repr_self, Finsupp.single_apply]
+    · simp only [e0, ite_eq_left hij, PI.VolStabS.PositiveNearLattice.crd_incl, b.repr_self, Finsupp.single_apply]
       split_ifs
       · simp
       · simp
-    · simp only [e0, if_neg hij, PI.VolStabS.PositiveNearLattice.crd, map_zero, Finsupp.zero_apply]
+    · simp only [e0, ite_eq_right hij, PI.VolStabS.PositiveNearLattice.crd, map_zero, Finsupp.zero_apply]
       exact zero_mem _
   have hφe : φ e0 = 1 := by
     show PI.VolStabS.PositiveNearLattice.crd b (Fv F v) (e0 i0 j0) k0 = 1

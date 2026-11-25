@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BlockJoinInclusionsCompat
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
 public import Development.AutomorphicSpectrum.Statements.MetricStatements.AgreementIffGuarded
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagHeightPolynomialWeightForm
@@ -26,6 +27,7 @@ import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PHFlProdLinear
 import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ADensStC
 import Mathlib.Tactic.Linter.HaveILetI
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSectionLatticeFinite
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.PluriharmonicCharts.XBirat, Development.WeilBound.CoreStatements.PluriharmonicCharts.FlHeightNonnegDominant, Development.WeilBound.CoreStatements.PluriharmonicCharts.IsBlockMapOmitV, Development.WeilBound.CoreStatements.PluriharmonicCharts.XTopFlh, Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagHeight
@@ -48,14 +50,7 @@ theorem hom_neg {f : ReciprocityTheory.ChartRestriction.G.Geo.MRing ι} {a : K �
   exact hf m hm k
 
 theorem hom_one : ReciprocityTheory.ChartRestriction.G.Geo.IsMultiHomog (1 : ReciprocityTheory.ChartRestriction.G.Geo.MRing ι) 0 := by
-  classical
-  intro m hm k
-  have : m = 0 := by
-    by_contra h
-    rw [mem_support_iff, coeff_one, if_neg (Ne.symm h)] at hm
-    exact hm rfl
-  subst this
-  simp
+  apply _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.SectionLatticeFinite.homog_one <;> assumption
 
 theorem hom_X (k : K) (i j : ι k) : ∃ a, ReciprocityTheory.ChartRestriction.G.Geo.IsMultiHomog (X ⟨k, i⟩ : ReciprocityTheory.ChartRestriction.G.Geo.MRing ι) a ∧
     ReciprocityTheory.ChartRestriction.G.Geo.IsMultiHomog (X ⟨k, j⟩ : ReciprocityTheory.ChartRestriction.G.Geo.MRing ι) a := by
@@ -343,8 +338,8 @@ theorem flHeight_nonneg_dominant : Inputs → ∀ (II : IntersectionSystem), IsF
     refine Finset.sum_congr rfl fun w _ => ?_
     by_cases hw : ∀ j, ((w j).2 : ℕ) + 1 < N
     · congr 1
-      exact Finset.prod_congr rfl fun j _ => (if_pos (hw j)).symm
-    · push_neg at hw
+      exact Finset.prod_congr rfl fun j _ => (ite_eq_left (hw j)).symm
+    · push Not at hw
       obtain ⟨j, hj⟩ := hw
       rw [hzero w j (not_lt.2 hj), zero_mul, zero_mul]
   rw [e]
@@ -440,22 +435,8 @@ private theorem imageZ_mCoordIdeal' {K : Type} {ι : K → Type} {K' : Type} {ι
     [Field Ω] (κ : K → K') (v : (Σ k, ι k) → Σ k', ι' k') (hκ : Function.Injective κ)
     (hv : ∀ p, (v p).1 = κ p.1) (y : (Σ k', ι' k') → Ω) :
     imageZ v (mCoordIdeal y) = mCoordIdeal (y ∘ v) := by
-  ext g
-  simp only [imageZ, mCoordIdeal, Ideal.mem_comap, RingHom.mem_ker]
-  have h : (mConeMap y) (rename v g) = rename κ (mConeMap (y ∘ v) g) := by
-    induction g using MvPolynomial.induction_on with
-    | C a => simp [mConeMap]
-    | add f g hf hg => simp only [map_add (f := _), hf, hg]
-    | mul_X f p hf =>
-      simp only [map_mul, rename_X, hf]
-      simp [mConeMap, hv]
-  change (mConeMap y) (rename v g) = 0 ↔ (mConeMap (y ∘ v)) g = 0
-  rw [h]
-  constructor
-  · intro h'
-    exact rename_injective κ hκ (by rw [h', map_zero])
-  · intro h'
-    rw [h', map_zero]
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Cmp.JoinBlock.imageZ_coord <;> assumption
 
 private theorem II_fsHerm_yDeg_eq_zero_of_ne (II : IntersectionSystem) (hII : IsFullIntersectionSystem II)
     (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] [Nonempty Ψ] (N : ℕ) (hN : 2 ≤ N)
@@ -620,7 +601,7 @@ theorem flZero_main : Inputs → ∀ (II : IntersectionSystem), IsFullIntersecti
   · obtain ⟨j, hj⟩ := hw
     apply mul_eq_zero_of_right
     exact Finset.prod_eq_zero (Finset.mem_univ j) (by rw [hj]; exact hgap)
-  · push_neg at hw
+  · push Not at hw
     apply mul_eq_zero_of_left
     exact II_fsHerm_yDeg_eq_zero_of_ne II hII Ψ N hN p hp w hw
 
@@ -651,12 +632,6 @@ section -- clump:auto
 @[expose] public section
 
 open MvPolynomial MeasureTheory Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
-
-namespace GlobalTheory.CompanionTheory.Ar.PB
-
-theorem flagHeight_holds : FlagHeight := PositivityTheory.Xgp.t_top_flh
-
-end GlobalTheory.CompanionTheory.Ar.PB
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagHeight =====

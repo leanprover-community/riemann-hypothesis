@@ -439,7 +439,6 @@ theorem coefSpace_le_span_pure_tensors (K : Type) [Field K] {ι : Type} [Fintype
       (MvPolynomial (ι × Fin n × Fin n) K) :=
     (MultilinearMap.mkPiAlgebra K ι (MvPolynomial (ι × Fin n × Fin n) K)).compLinearMap
       (fun τ => (Formalism.GradedWeylDivisibility.blockEmb K τ).toLinearMap)
-  have hm : ∀ f, m f = ten f := fun f => rfl
   unfold VV Formalism.GradedWeylDivisibility.tensorLat
   rw [Submodule.span_le]
   rintro P ⟨F, hF, rfl⟩
@@ -458,7 +457,6 @@ section -- clump:auto
 
 noncomputable section
 open NumberField Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Theta Formalism.IndefR
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open MvPolynomial
 open scoped Matrix

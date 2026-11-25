@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DoubledVacuumLatticeStabilizerBigCellFactorizati
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitEqNormCompletionTensorOfIsInertAt
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LiftVAlgebraMapMul
@@ -250,20 +251,7 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 
 theorem evFin_half_mem (v : Pl (F := F)) (h2 : (2 : 𝓞 F) ∉ v.asIdeal) :
     evFin F v (⅟2 : AF F) ∈ v.adicCompletionIntegers F := by
-  have hv2 : Valued.v (2 : Fv F v) = 1 := by
-    have e : ((algebraMap (𝓞 F) (v.adicCompletionIntegers F) 2 : v.adicCompletionIntegers F) : Fv F v) = 2 := by
-      rw [map_ofNat]; rfl
-    have hn := (GlobalTheory.InertUnitNorm.algebraMap_mem_maximalIdeal_iff v 2).not.2 h2
-    rw [GlobalTheory.InertUnitNorm.mem_maximalIdeal_iff_valued_lt_one, e] at hn
-    have hle : Valued.v (2 : Fv F v) ≤ 1 := by
-      rw [← e]; exact (algebraMap (𝓞 F) (v.adicCompletionIntegers F) 2).2
-    exact le_antisymm hle (not_lt.1 hn)
-  have hx : (2 : Fv F v) * evFin F v (⅟2 : AF F) = 1 := by
-    rw [← map_ofNat (evFin F v) 2, ← map_mul, mul_invOf_self, map_one]
-  rw [IsDedekindDomain.HeightOneSpectrum.mem_adicCompletionIntegers]
-  have := congrArg Valued.v hx
-  rw [map_mul, hv2, one_mul, map_one] at this
-  exact this.le
+  first | exact _root_.GlobalTheory.DblVacFactor.evFin_half_mem | exact @_root_.GlobalTheory.DblVacFactor.evFin_half_mem | apply _root_.GlobalTheory.DblVacFactor.evFin_half_mem <;> assumption
 
 theorem symmetricScalarBlockMatrix_mulVec_mem_doubledLattice {d : ℕ} {W : Spc F E d} {v : Pl (F := F)} {a b : AE F E} (ha : GlobalTheory.SplitConj.Mult W v a)
     (hb : GlobalTheory.SplitConj.Mult W v b) (z : Fin d ⊕ Fin d → AE F E) (hz : z ∈ GlobalTheory.InertDbl.latAtD W v) :

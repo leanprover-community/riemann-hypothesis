@@ -117,13 +117,13 @@ theorem atN_of_mem {n c i : ℕ} {v : Fin (n + c) → k} (hv : v ∈ Ufl k n c i
 
 theorem atN_eN {N i : ℕ} (h : i < N) : atN (eN k N i) i = 1 := by
   rw [atN, dite_eq_left h, eN_apply]
-  exact if_pos rfl
+  exact ite_eq_left rfl
 
 theorem atN_eN_ne {N i j : ℕ} (h : j ≠ i) : atN (eN k N j) i = 0 := by
   unfold atN
   split_ifs with hi
   · rw [eN_apply]
-    exact if_neg fun e => h e.symm
+    exact ite_eq_right fun e => h e.symm
   · rfl
 
 def base {n' n c : ℕ} (xj : (Fin n' → k) →ₗ[k] (Fin n → k)) (l : Fin (n + c)) (s : Fin (n' + (c + 1))) : k :=

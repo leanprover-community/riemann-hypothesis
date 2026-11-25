@@ -32,8 +32,7 @@ theorem fd_prod' {X Y : Type} [AddCommGroup X] [AddCommGroup Y] [MeasurableSpace
     exact ⟨⟨(g, d), AddSubgroup.mem_prod.2 ⟨hg, hd⟩⟩, hgs, hdt⟩
   · intro g h hgh
     have key : (g : X × Y).1 ≠ (h : X × Y).1 ∨ (g : X × Y).2 ≠ (h : X × Y).2 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hgh (Subtype.ext (Prod.ext hc.1 hc.2))
     rcases key with h1 | h2
     · have hg : (g : X × Y).1 ∈ Γ := (AddSubgroup.mem_prod.1 g.2).1

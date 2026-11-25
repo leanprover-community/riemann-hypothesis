@@ -43,46 +43,8 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGrou
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.WeilRepresentation.MeasEx
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.WeilRepresentation.WeilEx
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.ThetaLiftTrivialOrbitTermsVanish
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.WeilRepresentation.LiftCentre
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
 import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.UnitaryActions.ContinuousAdelicGL2OfContinuousEntries
 import GroundTheory.HeightsAndTheta.Theta.AdelicFourierCoord
 import GroundTheory.HeightsAndTheta.Theta.Weil.PartialFourierAdelicPi
@@ -90,7 +52,6 @@ import GroundTheory.LocalFields.LocalFourierHaar
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.UnramifiedSplitting.LcLaws
 import Development.AbelianVarietyTheory.Definitions.Foundations.NormEulerPolySubOneLe
-import Mathlib.Algebra.Order.Star.Int
 import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.WeilRepresentation.Smooth
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -993,7 +954,7 @@ theorem UpperTheory.ConvolutionTheory.R2.dih :
   obtain ⟨h1, h2⟩ := hq v hw
   refine ⟨h1, B, hB, ?_⟩
   rcases hp v hw with hs | hi
-  · rw [h2, if_pos hs.1]; simp
+  · rw [h2, ite_eq_left hs.1]; simp
   · have hn : normV w ≠ normV v := fun e => by
       have h3 := hi.norm
       have h4 : 1 < normV v := by
@@ -1006,7 +967,7 @@ theorem UpperTheory.ConvolutionTheory.R2.dih :
     have h6 : β = -α := Units.ext (by
       have := (mul_eq_zero.1 h5).resolve_right hT
       simpa using eq_neg_of_add_eq_zero_right this)
-    rw [h2, if_neg hn, h6]
+    rw [h2, ite_eq_right hn, h6]
     simp
     exact Multiset.pair_comm _ _
 end -- clump:auto

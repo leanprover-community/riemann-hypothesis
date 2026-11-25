@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.LemGBInImgIff
 public import Formalism.GaussValuationBounds.Statement
 public import Formalism.SharpRestriction.LevelLetterCocycles.CrystallineLiftingBounds
 public import Formalism.WachLatticeTwists.LagrangeExtensionCocycles.StatementLetters
@@ -1605,10 +1606,10 @@ theorem coreH_sol_bound (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) (i : ZM
       have hy : ∀ j < s + 1 + 1, ∀ m, algebraMap O LL (y j m) = (PD.p : LL) ^ K * c j m := by
         intro j hj m
         by_cases hj' : j < s + 1
-        · simp only [y, if_pos hj', map_mul, map_pow, map_natCast, hy' j m hj']
+        · simp only [y, ite_eq_left hj', map_mul, map_pow, map_natCast, hy' j m hj']
           rw [← mul_assoc, ← pow_add, Nat.sub_add_cancel haK]
         · obtain rfl : j = s + 1 := by omega
-          simp only [y, if_neg hj']
+          simp only [y, ite_eq_right hj']
           exact hyt m
       obtain ⟨x₁, hx₁, e₁⟩ := hc (s + 1 + 1) K y hy
       obtain ⟨x₀, hx₀, e₀⟩ := hc (s + 1) a y' (fun j hj m => hy' j m hj)
@@ -1619,11 +1620,11 @@ theorem coreH_sol_bound (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) (i : ZM
         refine Finset.sum_congr rfl fun j hj => ?_
         have hyj : y j = fun m => ((PD.p : ℕ) : O) ^ (K - a) * y' j m := by
           funext m
-          simp only [y, if_pos (Finset.mem_range.1 hj)]
+          simp only [y, ite_eq_left (Finset.mem_range.1 hj)]
         rw [hyj, frame_vecB_smul, smul_comm]
       have hyt' : y (s + 1) = yt := by
         funext m
-        simp only [y, if_neg (lt_irrefl _)]
+        simp only [y, ite_eq_right (lt_irrefl _)]
       rw [Finset.sum_range_succ, hS, hyt'] at e₁
       obtain ⟨x₂, hx₂, e₂⟩ := h1 (s + 1) (vecB W T b yt) (frame_vecB_mem W T i b hb yt)
       have hKa : ((PD.p : ℕ) : O) ^ K = ((PD.p : ℕ) : O) ^ (K - a) * ((PD.p : ℕ) : O) ^ a := by
@@ -3061,20 +3062,8 @@ theorem liftb_q (W : LocWach PD LL O v n) :
   exact hw
 
 theorem liftb_q_unit (W : LocWach PD LL O v n) : IsUnit (algebraMap (LetA O n) W.EE W.q) := by
-  obtain ⟨w, hw⟩ := liftb_q W
-  have := W.EE_complete
-  have hj : ((PD.p : ℕ) : W.EE) ∈ (⊥ : Ideal W.EE).jacobson :=
-    IsAdicComplete.le_jacobson_bot (Ideal.span {((PD.p : ℕ) : W.EE)})
-      (Ideal.subset_span (Set.mem_singleton _))
-  obtain ⟨u, hu⟩ := (W.EE_π.pow (PD.p - 1))
-  have h1 := (Ideal.mem_jacobson_bot.1 hj) (algebraMap (LetA O n) W.EE w * ((u⁻¹ : W.EEˣ) : W.EE))
-  have h2 : algebraMap (LetA O n) W.EE W.q =
-      (u : W.EE) * (((PD.p : ℕ) : W.EE) * (algebraMap (LetA O n) W.EE w * ((u⁻¹ : W.EEˣ) : W.EE)) + 1) := by
-    rw [hw, map_add (f := _), map_mul, map_pow, map_natCast, ← hu]
-    have : (u : W.EE) * ((u⁻¹ : W.EEˣ) : W.EE) = 1 := u.mul_inv
-    linear_combination (-(((PD.p : ℕ) : W.EE) * algebraMap (LetA O n) W.EE w)) * this
-  rw [h2]
-  exact u.isUnit.mul h1
+  intros
+  apply _root_.Formalism.MainNotions.N.FrobeniusPowerSeries.lemGB_q_unit <;> assumption
 
 theorem liftb_Q_unit (W : LocWach PD LL O v n) : IsUnit (algebraMap (LetA O n) W.EE W.Q) := by
   rw [LocWach.Q, liftb_φE_pow]
@@ -4048,7 +4037,7 @@ theorem phib_dist [Nontrivial O] (p : ℕ) (hp : p.Prime) :
   by_cases h0 : k = 0
   · subst h0
     simp
-  · rw [if_neg h0, sub_zero]
+  · rw [ite_eq_right h0, sub_zero]
     exact Ideal.mem_span_singleton.2 (Nat.cast_dvd_cast (hp.dvd_choose_self h0 hk))
 
 theorem phib_div (p : ℕ) (hp : p.Prime) [IsAdicComplete (Ideal.span {((p : ℕ) : O)}) O]
@@ -4559,9 +4548,5 @@ theorem opnPhiLinInj_holds (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW
 
 theorem wach_second_and_result_of_admitted (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (h : admitted D HW F Cm) (hJ : opnJumpsQuot D HW F) : WachExponentRecursionAll D HW F ∧ WachResultConstant D HW F 10 :=
   wach_clauses_of_admitted_inj D HW F Cm h hJ (opnPhiLinInj_holds D HW F)
-
-end Formalism.MainNotions.LiftingTheory
-
-namespace Formalism.MainNotions.LiftingTheory
 
 end Formalism.MainNotions.LiftingTheory

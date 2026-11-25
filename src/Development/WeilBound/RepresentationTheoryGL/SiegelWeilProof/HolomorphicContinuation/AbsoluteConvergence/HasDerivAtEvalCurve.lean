@@ -54,7 +54,7 @@ theorem hasDerivAt_eval_curve {σ : Type*} [Fintype σ] [DecidableEq σ] (Q : Mv
         by_cases hk : k = i
         · subst hk; simp; ring
         · simp [hk]; ring
-      simp only [e1, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, if_true, Finset.sum_mul]
+      simp only [e1, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, ite_true, Finset.sum_mul]
     rw [e]
     exact (hp.mul (hw i)).congr_of_eventuallyEq (Filter.Eventually.of_forall fun s => by simp)
 

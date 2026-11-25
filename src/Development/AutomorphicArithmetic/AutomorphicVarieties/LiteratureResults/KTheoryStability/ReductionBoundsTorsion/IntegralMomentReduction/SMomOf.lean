@@ -584,8 +584,7 @@ theorem local_decomp {ι : Type*} [Fintype ι] [Nonempty ι] {N : ℕ} (hN : 1 �
     obtain ⟨w⟩ := ‹Nonempty ι›
     have h1 := hbM w ⟨0, hN⟩ ⟨0, hN⟩
     have h2 := hbm w ⟨0, hN⟩
-    by_contra h
-    push_neg at h
+    by_contra! h
     have h3 : 1 < M⁻¹ := (one_lt_inv₀ hM).mpr h
     linarith
   have hlogM : 0 ≤ Real.log M := Real.log_nonneg hM1
@@ -1297,7 +1296,7 @@ theorem exists_finset_cosets {C : Set (AdelicGLn.FiniteAdelicGL L N)} (hC : IsCo
   refine ⟨t.image g, fun γ hγ => ?_⟩
   obtain ⟨c, hct, hc⟩ := Set.mem_iUnion₂.1 (ht hγ)
   have hex : ∃ γ : GL (Fin N) L, p γ ∈ C ∧ p γ ∈ V c := ⟨γ, hγ, hc⟩
-  have hg : g c = hex.choose := dif_pos hex
+  have hg : g c = hex.choose := dite_eq_left hex
   have hgV : p (g c) ∈ V c := by
     rw [hg]
     exact hex.choose_spec.2

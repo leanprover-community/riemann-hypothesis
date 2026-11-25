@@ -683,7 +683,7 @@ theorem weil_basis_existence : WBasis := by
     rw [hG_symm, hef]
     by_cases h : b = a
     · subst h; simp
-    · rw [if_neg h, if_neg (Ne.symm h), star_zero]
+    · rw [ite_eq_right h, ite_eq_right (Ne.symm h), star_zero]
   let φ : (Fin I.n → I.E) →ₗ[I.E] (Fin r → I.E) × (Fin r → I.E) :=
     { toFun := fun x => (fun a => hG I (e a) x, fun a => hG I (f a) x)
       map_add' := fun x y => by

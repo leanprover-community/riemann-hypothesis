@@ -157,8 +157,6 @@ private theorem exists_etale_mvPolynomialHom_castAdd_coord (p : X ⟶ Spec (Comm
   have : Algebra.FiniteType (MvPolynomial (ULift.{u} (Fin m) ⊕ ULift.{u} (Fin d)) k) Γ(Y, V) :=
     Algebra.FiniteType.of_restrictScalars_finiteType k
       (MvPolynomial (ULift.{u} (Fin m) ⊕ ULift.{u} (Fin d)) k) Γ(Y, V)
-  have : IsNoetherianRing (MvPolynomial (ULift.{u} (Fin m) ⊕ ULift.{u} (Fin d)) k) :=
-    inferInstance
   have : Algebra.FinitePresentation (MvPolynomial (ULift.{u} (Fin m) ⊕ ULift.{u} (Fin d)) k)
       Γ(Y, V) := Algebra.FinitePresentation.of_finiteType.mp inferInstance
   have hχE : χ.Etale := etale_of_formallyEtale_of_finitePresentation χ inferInstance inferInstance

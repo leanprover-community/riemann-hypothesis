@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.IsOpenAdelicUnipotentTimesIntegralOutsideSet
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedS
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TwoByOneBlock
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GNonneg
@@ -254,9 +255,9 @@ private lemma hpk_mulVec_apply_of_outer_index (v : Fin (2 * r + k + 1) → ℂ) 
     (hi : i.val < r ∨ r + k < i.val) : (Hpk k r *ᵥ v) i = v ⟨2 * r + k - i.val, by omega⟩ := by
   simp only [Matrix.mulVec, dotProduct, fun j => hpk_apply_of_outer_index (k := k) (r := r) i j hi]
   rw [Finset.sum_eq_single (⟨2 * r + k - i.val, by omega⟩ : Fin (2 * r + k + 1))]
-  · rw [if_pos (Nat.add_sub_cancel' (by omega)), one_mul]
+  · rw [ite_eq_left (Nat.add_sub_cancel' (by omega)), one_mul]
   · intro l _ hl
-    rw [if_neg, zero_mul]
+    rw [ite_eq_right, zero_mul]
     intro h
     exact hl (Fin.ext (by show l.val = 2 * r + k - i.val; omega))
   · simp
@@ -319,23 +320,7 @@ theorem key {z v : Fin (2 * r + k + 1) → ℂ} {ζ : ℂ} {T T' : ℝ} (hT : T 
     ring
 
 theorem uh_inv_mem {X : Q.Mx k r} (hX : X ∈ UH (Hpk k r)) : X⁻¹ ∈ UH (Hpk k r) := by
-  have hX' : Xᴴ * Hpk k r * X = Hpk k r := hX
-  have hdH : (Hpk k r).det ≠ 0 := by
-    intro h0
-    have e := congrArg Matrix.det (GBasic.Hpk_sq k r)
-    rw [Matrix.det_mul, h0, zero_mul, Matrix.det_one] at e
-    exact zero_ne_one e
-  have hdX : IsUnit X.det := by
-    have e := congrArg Matrix.det hX'
-    rw [Matrix.det_mul, Matrix.det_mul] at e
-    refine isUnit_iff_ne_zero.2 fun h0 => hdH ?_
-    rw [h0, mul_zero] at e
-    exact e.symm
-  show (X⁻¹)ᴴ * Hpk k r * X⁻¹ = Hpk k r
-  calc (X⁻¹)ᴴ * Hpk k r * X⁻¹ = (X⁻¹)ᴴ * (Xᴴ * Hpk k r * X) * X⁻¹ := by rw [hX']
-    _ = (X * X⁻¹)ᴴ * Hpk k r * (X * X⁻¹) := by
-        rw [Matrix.conjTranspose_mul]; simp only [Matrix.mul_assoc]
-    _ = Hpk k r := by rw [Matrix.mul_nonsing_inv _ hdX]; simp
+  apply _root_.Formalism.FourierDecayAlt.P.Qx4.uh_inv <;> assumption
 
 theorem inv_fix {X : Q.Mx k r} (hu : IsUnit X.det) {v w : Fin (2 * r + k + 1) → ℂ} (h : X *ᵥ v = w) :
     X⁻¹ *ᵥ w = v := by
@@ -596,7 +581,3 @@ theorem locSec : NFRadRedS.LocSec := by
   exact pt hz hz' hT hsec ha₀ hgl hG hg.2
 
 end Formalism.FourierDecayAlt.P.NFRadRedLocSec
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

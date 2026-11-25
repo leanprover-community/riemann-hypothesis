@@ -27,7 +27,7 @@ lemma mem_inv (L : LevelData A r) (st : Start A) (w : List (Letter ℂ S)) (Y : 
     have hl := h l (by simp)
     have ih' := ih (fun l' hl' => h l' (by simp [hl']))
     by_cases hp : l.plus
-    · simp only [ofWord, hp, if_true, FrameData.plus]
+    · simp only [ofWord, hp, ite_true, FrameData.plus]
       exact ⟨ih', hl.1, hl.2.1⟩
     · simp only [ofWord, hp, FrameData.minus]
       refine ⟨ih', ?_, ?_⟩
@@ -42,7 +42,7 @@ lemma qw_ne (q : ℂ → ℂ) (w : List (Letter ℂ S)) (Y : ℂ) (h0 : q Y ≠ 
     have hl := h l (by simp)
     have ih' := ih (fun l' hl' => h l' (by simp [hl']))
     by_cases hp : l.plus
-    · simp only [qw, hp, if_true]
+    · simp only [qw, hp, ite_true]
       refine mul_ne_zero ih' (div_ne_zero ?_ hl.1)
       intro e; apply hl.2; linear_combination e
     · simp only [qw, hp]
@@ -155,7 +155,7 @@ theorem admissible_rec_of_admissible_word : AdmRecOfAdm := by
        fun e => hd l' hl' 0 (by norm_num) (by push_cast; linear_combination e)⟩)
     refine ⟨ih hAw, hnd'.1, hre l (by simp), m0, m1, ?_⟩
     by_cases hp : l.plus
-    · simp only [hp, if_true]
+    · simp only [hp, ite_true]
       rw [q_eq]
       exact qw_ne _ _ _ q0 (fun l' hl' =>
         ⟨fun e => hd l' hl' 0 (by norm_num) (by push_cast; linear_combination e),
@@ -176,8 +176,8 @@ theorem frameRecAssemble : FrameRecAssemble := by
     have hw := ih h1
     have hfr := hf A S r L st w l.intersection_update_fsHerm_neg_one h2
     by_cases hl : l.plus
-    · simp only [hl, if_true] at h6
-      simp only [ofWord, hl, if_true]
+    · simp only [hl, ite_true] at h6
+      simp only [ofWord, hl, ite_true]
       exact hp A S r L _ l.intersection_update_fsHerm_neg_one l.pt ⟨hL, hw, hfr, h3, h4, h5, h6⟩
     · simp only [hl] at h6
       simp only [ofWord, hl]
@@ -246,25 +246,25 @@ theorem cDiag : CDiag := by
         · funext Y; simp [ofWord, hl, FrameData.minus, qw, ih']
     by_cases hp : l.plus
     · refine ⟨fun Y => ?_, fun Y => ?_, ?_⟩
-      · simp only [ofWord, hp, if_true, FrameData.plus, ihx, ins_sc, Matrix.diagonal_mul_diagonal, xs, phiL]
+      · simp only [ofWord, hp, ite_true, FrameData.plus, ihx, ins_sc, Matrix.diagonal_mul_diagonal, xs, phiL]
         congr 1; funext e
         split_ifs <;> simp [kc, km]
-      · simp only [ofWord, hp, if_true, FrameData.plus, ihxi, ins_sc, Matrix.diagonal_mul_diagonal, xs, phiL]
+      · simp only [ofWord, hp, ite_true, FrameData.plus, ihxi, ins_sc, Matrix.diagonal_mul_diagonal, xs, phiL]
         congr 1; funext e
         split_ifs <;> simp [kc, km, inv_div, mul_comm]
-      · simp only [ofWord, hp, if_true, FrameData.plus, ihx, ihxi, ihc, hq, ← Matrix.diagonal_smul, ins_diag,
+      · simp only [ofWord, hp, ite_true, FrameData.plus, ihx, ihxi, ihc, hq, ← Matrix.diagonal_smul, ins_diag,
           Matrix.diagonal_mul_diagonal, cs]
         congr 1; funext e
         split_ifs <;> simp [ks, km, div_eq_mul_inv]
     · have hp' : l.plus = false := by simpa using hp
       refine ⟨fun Y => ?_, fun Y => ?_, ?_⟩
-      · simp only [ofWord, hp', Bool.false_eq_true, if_false, FrameData.minus, ihx, ins_sc, Matrix.diagonal_mul_diagonal, xs, phiL]
+      · simp only [ofWord, hp', Bool.false_eq_true, ite_false, FrameData.minus, ihx, ins_sc, Matrix.diagonal_mul_diagonal, xs, phiL]
         congr 1; funext e
         split_ifs <;> simp [kc, km]
-      · simp only [ofWord, hp', Bool.false_eq_true, if_false, FrameData.minus, ihxi, ins_sc, Matrix.diagonal_mul_diagonal, xs, phiL]
+      · simp only [ofWord, hp', Bool.false_eq_true, ite_false, FrameData.minus, ihxi, ins_sc, Matrix.diagonal_mul_diagonal, xs, phiL]
         congr 1; funext e
         split_ifs <;> simp [kc, km, inv_div, mul_comm]
-      · simp only [ofWord, hp', Bool.false_eq_true, if_false, FrameData.minus, ihx, ihxi, ihc, hq, ← Matrix.diagonal_smul, ins_diag,
+      · simp only [ofWord, hp', Bool.false_eq_true, ite_false, FrameData.minus, ihx, ihxi, ihc, hq, ← Matrix.diagonal_smul, ins_diag,
           Matrix.diagonal_mul_diagonal, cs]
         congr 1; funext e
         split_ifs <;> simp [ks, km, div_eq_mul_inv]
@@ -379,26 +379,10 @@ theorem cPos : CPos := by
 lemma q_core' (k : ℕ) (u u' ρ : ℕ → ℝ) (l : ℕ) (Y : ℝ) (hl1 : 1 ≤ l) (hlk : l ≤ k)
     (h : Interlaces k u u' ρ) (hA : u l + 2 ≤ -Y ∧ -Y ≤ u' l - 2) :
     ∏ i ∈ Icc 1 k, ((Y - 1 + 1/2 + u i) * (Y - 1 + 1/2 + u' i)) < 0 := by
-  have hu := antitone_on (u_step h)
-  have hu' := antitone_on (u_step (interlaces_swap h))
   have hl : l ∈ Icc 1 k := mem_Icc.2 ⟨hl1, hlk⟩
+  have hx : Y - 1 + 1/2 + u l < 0 ∧ 0 < Y - 1 + 1/2 + u' l := by constructor <;> linarith
   rw [← mul_prod_erase _ _ hl]
-  apply mul_neg_of_neg_of_pos
-  · apply mul_neg_of_neg_of_pos <;> linarith
-  · apply prod_pos
-    intro i hi
-    have hne := ne_of_mem_erase hi
-    have hi' := mem_Icc.1 (mem_of_mem_erase hi)
-    rcases lt_or_gt_of_ne hne with hil | hil
-    · obtain ⟨a, b, c, d⟩ := h i (mem_Icc.2 ⟨hi'.1, by omega⟩)
-      have h1 := hu' (i + 1) l (by omega) (by omega) hlk
-      have h2 := hu' i l hi'.1 (by omega) hlk
-      apply mul_pos <;> linarith
-    · obtain ⟨j, rfl⟩ : ∃ j, i = j + 1 := ⟨i - 1, by omega⟩
-      obtain ⟨a, b, c, d⟩ := h j (mem_Icc.2 ⟨by omega, by omega⟩)
-      have h1 := hu l (j + 1) hl1 (by omega) hi'.2
-      have h2 := hu l j hl1 (by omega) (by omega)
-      apply mul_pos_of_neg_of_neg <;> linarith
+  exact mul_neg_of_neg_of_pos (mul_neg_of_neg_of_pos hx.1 hx.2) (prod_erase_pos hl h hx)
 
 lemma q_core'' (k : ℕ) (u u' ρ : ℕ → ℝ) (l : ℕ) (Y : ℝ) (hl1 : 1 ≤ l) (hlk : l ≤ k)
     (h : Interlaces k u u' ρ) (hA : u' l + 2 ≤ -Y ∧ -Y ≤ u l - 2) :

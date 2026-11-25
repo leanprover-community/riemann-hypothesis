@@ -60,10 +60,10 @@ theorem fSatake_rev_iff (k l : Fin n) : (k : ℕ) + l + 1 = n ↔ k = l.rev := b
 theorem fSatake_cTJ (M : Matrix (Fin n) (Fin n) L) (i l : Fin n) :
     (cT σ M * antiJ L n) i l = σ (M l.rev i) := by
   rw [Matrix.mul_apply, Finset.sum_eq_single l.rev]
-  · rw [show antiJ L n l.rev l = 1 from if_pos ((fSatake_rev_iff l.rev l).2 rfl), mul_one]
+  · rw [show antiJ L n l.rev l = 1 from ite_eq_left ((fSatake_rev_iff l.rev l).2 rfl), mul_one]
     rfl
   · intro j _ hj
-    rw [show antiJ L n j l = 0 from if_neg (fun h => hj ((fSatake_rev_iff j l).1 h)), mul_zero]
+    rw [show antiJ L n j l = 0 from ite_eq_right (fun h => hj ((fSatake_rev_iff j l).1 h)), mul_zero]
   · intro h
     exact absurd (Finset.mem_univ _) h
 
@@ -72,7 +72,7 @@ theorem fSatake_unit_diag_mat {M : Matrix (Fin n) (Fin n) L} (hb : ∀ i j : Fin
   have h := congrFun (congrFun hU i) i.rev
   rw [Matrix.mul_apply, Finset.sum_eq_single i.rev] at h
   · rw [fSatake_cTJ, Fin.rev_rev,
-      show antiJ L n i i.rev = 1 from if_pos ((fSatake_rev_iff i i.rev).2 (Fin.rev_rev i).symm)] at h
+      show antiJ L n i i.rev = 1 from ite_eq_left ((fSatake_rev_iff i i.rev).2 (Fin.rev_rev i).symm)] at h
     exact h
   · intro l _ hl
     rw [fSatake_cTJ]

@@ -105,9 +105,7 @@ section -- clump:auto
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.ZH Classical
-attribute [local instance] SplitExt.free SplitExt.finite MvPolynomial.gradedAlgebra
 
 theorem _root_.GlobalTheory.T.adaptedBasis_rows_have_class_weight : GlobalTheory.UT.LL → UTorsSt → ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] [ArithBase o Ω] (S : ThetaSys o Ω) (ρ : S.Real) (p : ℕ) [Fact p.Prime] (y₀ : S.R →+* PadicAlgCl p) (u : ρ.UTest p y₀) (l : u.Lab) (σ : S.J → (u.H S.N).Sec) (cls : S.J → u.D.toPre.X) (f : S.J → ∀ α, u.D.toPre.SecB S.N α), u.Basis l S.N σ cls f → ∀ b : Matrix S.J S.J (FractionRing u.V), u.Link σ b → ∀ i, ((S.proj _ (l.wt (cls i))).map fun a => y₀ (algebraMap o S.R a)).mulVec (b.map (algebraMap _ (PadicAlgCl p)) i) = b.map (algebraMap _ (PadicAlgCl p)) i := by
   first | exact @GlobalTheory.ZH.ClassWeight.row_weight
@@ -123,9 +121,7 @@ section -- clump:auto
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.ZH Classical
-attribute [local instance] SplitExt.free SplitExt.finite MvPolynomial.gradedAlgebra
 
 theorem _root_.GlobalTheory.T.exists_adapted_basis_sections_mod_k : GlobalTheory.UT.LL → ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] [ArithBase o Ω] (S : ThetaSys o Ω) (ρ : S.Real) (p : ℕ) [Fact p.Prime] (y₀ : S.R →+* PadicAlgCl p) (u : ρ.UTest p y₀) (l : u.Lab) (k : ℕ), 1 ≤ k → ∀ (J : Type) [Fintype J], Fintype.card J = k ^ S.g → ∃ (σ : J → (u.H k).Sec) (cls : J → u.D.toPre.X) (f : J → ∀ α, u.D.toPre.SecB k α), u.Basis l k σ cls f := by
   first | exact @GlobalTheory.AdaptedBasis.main
@@ -141,9 +137,7 @@ section -- clump:auto
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.ZH Classical
-attribute [local instance] SplitExt.free SplitExt.finite MvPolynomial.gradedAlgebra
 
 theorem _root_.GlobalTheory.T.exists_invertible_adaptedBasis_link_matrix : GlobalTheory.UT.LL → ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] [ArithBase o Ω] (S : ThetaSys o Ω) (ρ : S.Real) (p : ℕ) [Fact p.Prime] (y₀ : S.R →+* PadicAlgCl p) (u : ρ.UTest p y₀) (l : u.Lab) (σ : S.J → (u.H S.N).Sec) (cls : S.J → u.D.toPre.X) (f : S.J → ∀ α, u.D.toPre.SecB S.N α), u.Basis l S.N σ cls f → ∃ b : Matrix S.J S.J (FractionRing u.V), b.det ≠ 0 ∧ u.Link σ b := by
   first | exact @GlobalTheory.ZH.LinkMatrix.exists_link
@@ -159,9 +153,7 @@ section -- clump:auto
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.ZH Classical
-attribute [local instance] SplitExt.free SplitExt.finite MvPolynomial.gradedAlgebra
 
 namespace GlobalTheory.ZH.LatChar
 
@@ -681,9 +673,7 @@ section -- clump:auto
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.ZH Classical
-attribute [local instance] SplitExt.free SplitExt.finite MvPolynomial.gradedAlgebra
 open GlobalTheory.ZH.FrameNorm
 
 set_option backward.isDefEq.respectTransparency false
@@ -1008,9 +998,7 @@ section -- clump:auto
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.ZH Classical
-attribute [local instance] SplitExt.free SplitExt.finite MvPolynomial.gradedAlgebra
 
 namespace GlobalTheory.ZH.TestSpan
 
@@ -1269,7 +1257,7 @@ theorem E_eq_bdd [ArithBase o Ω] (φ : o →+* OO p) (hφ : ∀ a, (φ a : Padi
   rw [he']
   refine Submodule.sum_mem _ fun c _ => ?_
   obtain ⟨α, hα, rfl⟩ := (test_weights o Ω S p y₀ τ).1 c
-  have hPP : S.proj _ (τ.wt α) * S.proj _ (τ.wt α) = S.proj _ (τ.wt α) := by rw [hmul, if_pos rfl]
+  have hPP : S.proj _ (τ.wt α) * S.proj _ (τ.wt α) = S.proj _ (τ.wt α) := by rw [hmul, ite_eq_left rfl]
   have hfix : (ψ.mapMatrix (S.proj _ (τ.wt α))).mulVec ((ψ.mapMatrix (S.proj _ (τ.wt α))).mulVec e) =
       (ψ.mapMatrix (S.proj _ (τ.wt α))).mulVec e := by
     rw [Matrix.mulVec_mulVec, ← map_mul, hPP]
@@ -1313,9 +1301,7 @@ section -- clump:auto
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.ZH Classical
-attribute [local instance] SplitExt.free SplitExt.finite MvPolynomial.gradedAlgebra
 
 namespace GlobalTheory.WeightIrred
 
@@ -1585,9 +1571,7 @@ section -- clump:auto
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.ZH Classical
-attribute [local instance] SplitExt.free SplitExt.finite MvPolynomial.gradedAlgebra
 
 namespace GlobalTheory.ZH
 
@@ -1661,9 +1645,7 @@ section -- clump:auto
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.ZH Classical
-attribute [local instance] SplitExt.free SplitExt.finite MvPolynomial.gradedAlgebra
 
 theorem _root_.GlobalTheory.T.testLattice_eq_span_model_sections : GlobalTheory.UT.LL → ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] [ArithBase o Ω] (S : ThetaSys o Ω) (ρ : S.Real) (p : ℕ) [Fact p.Prime] (y₀ : S.R →+* PadicAlgCl p) (u : ρ.UTest p y₀) (l : u.Lab) (τ : S.Test p y₀) (σ : S.J → (u.H S.N).Sec) (cls : S.J → u.D.toPre.X) (md : Mod p u.j u.G S.g S.N l.q (u.H S.N) σ cls) (b : Matrix S.J S.J (FractionRing u.V)), S.Big → (∀ a : o, ‖y₀ (algebraMap o S.R a)‖ ≤ 1) → l.Match τ → u.Link σ b → b.det ≠ 0 → ∃ c : FractionRing u.V, c ≠ 0 ∧ τ.E = Submodule.span (OO p) (Set.range ((c • b).map (algebraMap _ (PadicAlgCl p)))) := by
   first | exact @GlobalTheory.ZH.testLattice_eq_span_sections
@@ -1679,9 +1661,7 @@ section -- clump:auto
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.ZH Classical
-attribute [local instance] SplitExt.free SplitExt.finite MvPolynomial.gradedAlgebra
 
 namespace GlobalTheory.ZH.GeoExist
 
@@ -1720,9 +1700,7 @@ section -- clump:auto
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.ZH Classical
-attribute [local instance] SplitExt.free SplitExt.finite MvPolynomial.gradedAlgebra
 
 end -- clump:auto
 end -- clump:auto

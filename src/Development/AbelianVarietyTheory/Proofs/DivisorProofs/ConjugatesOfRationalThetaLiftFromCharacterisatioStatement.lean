@@ -108,8 +108,6 @@ open scoped TensorProduct InnerProductSpace
 open GlobalTheory.GalLift
 open Formalism.IndefR.Arith
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 noncomputable section
 
 namespace GlobalTheory.GalLift.Assembly
@@ -296,7 +294,7 @@ theorem prod_hv (hL : IsTotallyComplex L) {I : Type} [Fintype I] (φ : I → L �
   have hp := GlobalTheory.TypeValues.productRule χ ∅ (fun v _ => hu v) (GlobalTheory.Mem.ValAlg.uOf a ha)
   have e1 : ∀ v, (∏ᶠ (_ : v ∉ (∅ : Finset (HeightOneSpectrum (𝓞 L)))), χ.val v ^ ordF v (GlobalTheory.Mem.ValAlg.uOf a ha)) =
       χ.val v ^ cnt a v := fun v => by
-    rw [finprod_eq_if, if_pos (Finset.notMem_empty v), ordF_eq, zpow_natCast]
+    rw [finprod_eq_if, ite_eq_left (Finset.notMem_empty v), ordF_eq, zpow_natCast]
   simp_rw [e1] at hp
   rw [Finset.prod_empty, mul_one, finprod_eq_prod_of_mulSupport_subset (s := U) _ (fun v hv' => by
     by_contra h
@@ -342,7 +340,7 @@ theorem hv_mem (hL : IsTotallyComplex L) {I : Type} [Fintype I] (φ : I → L �
   obtain ⟨a, ha⟩ := IsDedekindDomain.exists_forall_sub_mem_ideal (s := S) (fun v => v.asIdeal) (fun _ => 2)
     (fun v _ => v.prime) (fun v _ w _ h h' => h (HeightOneSpectrum.ext h')) (fun v => if v.1 = P then b else 1)
   have haP := ha P hP
-  rw [if_pos rfl] at haP
+  rw [ite_eq_left rfl] at haP
   have ha2 : a ∉ P.asIdeal ^ 2 := fun h => hb2 (by simpa using (P.asIdeal ^ 2).sub_mem h haP)
   have ha1 : a ∈ P.asIdeal := by simpa using P.asIdeal.add_mem (Ideal.pow_le_self two_ne_zero haP) hb1
   have ha0 : a ≠ 0 := by rintro rfl; exact ha2 (zero_mem _)
@@ -360,7 +358,7 @@ theorem hv_mem (hL : IsTotallyComplex L) {I : Type} [Fintype I] (φ : I → L �
   refine div_mem (inv_mem (prod_mem fun i _ => hM i _)) (prod_mem fun v hv' => pow_mem (hS v fun hvS => ?_) _)
   obtain ⟨hvP, hva⟩ := Finset.mem_erase.1 hv'
   have h1 := ha v hvS
-  rw [if_neg hvP] at h1
+  rw [ite_eq_right hvP] at h1
   refine v.isPrime.ne_top ((Ideal.eq_top_iff_one _).2 ?_)
   simpa using v.asIdeal.sub_mem ((hU v).2 hva) (Ideal.pow_le_self two_ne_zero h1)
 
@@ -387,7 +385,7 @@ theorem hv_mem_of_inert {F : Type} [Field F] [NumberField F] [Algebra F L] (χ :
     omega
   have hk := (hval _ _).1 (unif_spec (v.under (𝓞 F)))
   have h := hr.1 (v.under (𝓞 F)) (unif (v.under (𝓞 F)))
-  rw [HChar.resFin, etaFin, hab, Finset.prod_singleton, MonoidHom.comp_apply, if_pos (Finset.card_singleton _), hk, zpow_one] at h
+  rw [HChar.resFin, etaFin, hab, Finset.prod_singleton, MonoidHom.comp_apply, ite_eq_left (Finset.card_singleton _), hk, zpow_one] at h
   have h2 : χ.val v = -1 := (χ.val_eq hu _ ((hval _ _).2 ((ho _).trans hk))).symm.trans h
   unfold hv
   rw [h2, hN, Nat.cast_pow, Real.sqrt_sq (Nat.cast_nonneg _), Complex.ofReal_inv, Complex.ofReal_natCast, Units.val_neg,
@@ -411,8 +409,6 @@ open GlobalTheory.GalLift
 namespace GlobalTheory.EtaValues
 
 open Formalism.L2.Col
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem hv_mem_host (D : D7) (χ : Formalism.L2.Host.HChar D.host.E) (hχ : Formalism.L2.Host.IsEtaT D.host χ) (T : Finset (Pl D.host.E))
     (hT : ∀ v, Bridge.SplitOff v (T : Set (Pl D.host.E)) → hv χ v ∈ D.what₂.embLL.fieldRange) (P : Pl D.host.E) :
@@ -454,7 +450,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Pj Formalism.IndefR Formal
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilGramSignature
 open scoped TensorProduct InnerProductSpace
 open GlobalTheory.GalLift
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.GalLift.ConjWeil
 
@@ -502,7 +497,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Pj Formalism.IndefR Formal
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilGramSignature
 open scoped TensorProduct InnerProductSpace
 open GlobalTheory.GalLift
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem GlobalTheory.EtaValues.etaVals_five : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.Core5 R F → ∀ (i : Fin D.R.m), EtaVals R := by
   classical
@@ -570,7 +564,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Pj Formalism.IndefR Formal
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilGramSignature
 open scoped TensorProduct InnerProductSpace
 open GlobalTheory.GalLift
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 alias _root_.GlobalTheory.T.conjugateCharacters_embeddings_of_characterisation := _root_.GlobalTheory.GalLift.conjChars_five
 end -- clump:auto
@@ -589,7 +582,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Pj Formalism.IndefR Formal
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilGramSignature
 open scoped TensorProduct InnerProductSpace
 open GlobalTheory.GalLift
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.CoefModel
 
@@ -782,8 +774,6 @@ open GlobalTheory.GalLift
 
 namespace GlobalTheory.GalLift.BaseDatum
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def along {K X Z : Type} [Field K] [AddCommGroup X] [Module K X] [AddCommGroup Z] [Module ℂ Z] {s s' : K →+* ℂ} (h : s = s')
     (f : X →ₛₗ[s] Z) : X →ₛₗ[s'] Z where
   toFun := f
@@ -878,8 +868,6 @@ open GlobalTheory.GalLift
 
 namespace GlobalTheory.GalLift.BaseEquiv
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem phiC_congr {D : D7} (T : CoreJ D) {j : ℕ} {σ σ' : T.Q.c.F →+* ℂ} (e : σ = σ') {W : HSp D} (hV : T.V j σ = W)
     (hV' : T.V j σ' = W) (a : (D.host.E →+* ℂ) × ℕ → ℕ) (f : T.R j) : phiC T hV a f = phiC T hV' a f := by
   subst e
@@ -926,7 +914,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Pj Formalism.IndefR Formal
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilGramSignature
 open scoped TensorProduct InnerProductSpace
 open GlobalTheory.GalLift
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.GalLift.BaseId
 
@@ -1024,7 +1011,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Pj Formalism.IndefR Formal
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilGramSignature
 open scoped TensorProduct InnerProductSpace ComplexConjugate
 open GlobalTheory.GalLift
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.GalLift
 
@@ -1282,7 +1268,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Pj Formalism.IndefR Formal
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilGramSignature
 open scoped TensorProduct InnerProductSpace
 open GlobalTheory.GalLift
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 alias _root_.GlobalTheory.T.conjugateLift_unique_and_baseDatum := _root_.GlobalTheory.GalLift.lift_and_base_five
 end -- clump:auto
@@ -1296,7 +1281,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum GlobalTheory.JointHarm
 open scoped TensorProduct InnerProductSpace Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -1347,7 +1331,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.F
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Datum Level Moduli Coeff SABMap)
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.OneMapRef GlobalTheory.WeilParts GlobalTheory.IndefiniteRowSideFullHecke.WeilGramSignature GlobalTheory.GalLift GlobalTheory.GalOne GlobalTheory.GalLift.Assembly
 
 namespace GlobalTheory.ConjRatLiftFive

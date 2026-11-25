@@ -63,7 +63,6 @@ theorem Bd_add_left_AF (a : Fin N → F) (u v w : Fin N → AF F) :
 
 theorem Bd_rat_rat (a : Fin N → F) (η ξ : Fin N → F) :
     Bd (AF F) a (rat η) (rat ξ) = algebraMap F (AF F) (Bd F a η ξ) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp only [Bd, rat, map_sum, map_mul, Algebra.algebraMap_self, RingHom.id_apply]
 
 theorem charOrth : ∀ (F : Type) [Field F] [NumberField F] (N : ℕ) (ψ : AddChar (AF F) ℂ) (lam : InfinitePlace F → ℝ) (ν : Measure (AF F)) (a : Fin N → F), Ctx ψ lam ν a → ∀ D : Set (Fin N → AF F), IsAddFundamentalDomain (AddSubgroup.closure (Set.range (rat : (Fin N → F) → (Fin N → AF F)))) D (muV N ν) → muV N ν D = 1 → ∀ ξ : Fin N → F, ξ ≠ 0 → ∫ u in D, ψ (Bd (AF F) a u (rat ξ)) ∂(muV N ν) = 0 := by
@@ -97,8 +96,7 @@ theorem charOrth : ∀ (F : Type) [Field F] [NumberField F] (N : ℕ) (ψ : AddC
     obtain ⟨η, rfl⟩ := hmem g hg
     rw [hadd, Bd_rat_rat, hF, one_mul]
   obtain ⟨l, hl⟩ : ∃ l, ξ l ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hξ (funext h)
   have hc : (2 * a l * ξ l) ≠ 0 := mul_ne_zero (mul_ne_zero two_ne_zero (ha l)) hl
   set u₀ : Fin N → AF F := Pi.single l (algebraMap F (AF F) (2 * a l * ξ l)⁻¹ * x) with hu₀def

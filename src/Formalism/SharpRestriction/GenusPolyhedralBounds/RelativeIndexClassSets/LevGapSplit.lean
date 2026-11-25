@@ -18,30 +18,9 @@ open scoped Pointwise
 
 theorem int_dvd_of_mem_span {E : Type*} [Field E] [NumberField E] (N a : ℤ)
     (h : (a : 𝓞 E) ∈ Ideal.span {(N : 𝓞 E)}) : N ∣ a := by
-  obtain ⟨z, hz⟩ := Ideal.mem_span_singleton'.1 h
-  by_cases hN : N = 0
-  · subst hN
-    simp only [Int.cast_zero, mul_zero] at hz
-    have : a = 0 := by exact_mod_cast hz.symm
-    simp [this]
-  have hNE : (N : E) ≠ 0 := by exact_mod_cast hN
-  have hzE' : (z : E) * (N : E) = (a : E) := by
-    have := congrArg (fun t : 𝓞 E => (t : E)) hz
-    simpa using this
-  have hzE : (z : E) = algebraMap ℚ E ((a : ℚ) / N) := by
-    rw [map_div₀, eq_div_iff (by simpa using hNE)]
-    simpa using hzE'
-  have hint : IsIntegral ℤ ((a : ℚ) / N) := by
-    have : IsIntegral ℤ (z : E) := RingOfIntegers.isIntegral_coe z
-    rw [hzE] at this
-    exact (isIntegral_algebraMap_iff ).1 this
-  obtain ⟨m, hm⟩ := IsIntegrallyClosed.isIntegral_iff.1 hint
-  refine ⟨m, ?_⟩
-  have hNQ : (N : ℚ) ≠ 0 := by exact_mod_cast hN
-  have : (a : ℚ) = N * m := by
-    have h2 : (m : ℚ) = (a : ℚ) / N := by simpa using hm
-    rw [h2]; field_simp
-  exact_mod_cast this
+  rwa [← Ideal.mem_span_singleton,
+    ← Ideal.comap_map_eq_self_of_faithfullyFlat (B := 𝓞 E) (Ideal.span {N}),
+    Ideal.mem_comap, Ideal.map_span, Set.image_singleton]
 
 theorem norm_congr_one {E : Type*} [Field E] [NumberField E] (c : E ≃ₐ[ℚ] E) (T M : ℕ) (pz : 𝓞 E)
     (hpz : (pz : E) * c (pz : E) = (T : E)) (hcong : (pz - 1) ∈ Ideal.span {(M : 𝓞 E)}) :
@@ -82,17 +61,6 @@ theorem liesOver_of_natCast_mem {K : Type} [Field K] [NumberField K] (p : ℕ) (
   exact hpM.eq_of_le (Ideal.IsPrime.under ℤ v.asIdeal).ne_top hle
 
 end Gen
-
-section Fix
-
-variable {E : Type} [Field E] [NumberField E] (F : Subfield E) [NumberField F]
-
-variable {F} (c : E ≃ₐ[ℚ] E) (hF : ∀ x : E, x ∈ F ↔ c x = x) (hc : ∀ x : E, c (c x) = x)
-
-
-
-
-end Fix
 
 section HostInst
 
@@ -171,20 +139,6 @@ theorem natCast_notMem_sq_of_split (p : ℕ) (hp : p.Prime)
   norm_num at h1
 
 end Deg
-
-section Two
-
-variable {E : Type} [Field E] [NumberField E] {F : Subfield E} [NumberField F]
-  (c : E ≃ₐ[ℚ] E) (hF : ∀ x : E, x ∈ F ↔ c x = x) (hc : ∀ x : E, c (c x) = x)
-
-
-end Two
-
-section HostDeg
-
-variable {R : Ranks} (H : Host R)
-
-end HostDeg
 
 end Formalism.MainNotions.Gaps.LevGap
 

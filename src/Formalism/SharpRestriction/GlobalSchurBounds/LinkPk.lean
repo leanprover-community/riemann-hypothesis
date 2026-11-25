@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.Columns.CoefficientsModP.NablaIndependenceHolds
 public import Formalism.SharpRestriction.GlobalSchurBounds.TopDensityNGeSixteen
 public import Formalism.SharpRestriction.GlobalSchurBounds.JointsF
 import Formalism.LocalRingCardinality.Lemmas
@@ -38,29 +39,7 @@ theorem mem_of_locally (M : Submodule (𝓞 K) V) (x : V)
 
 theorem exists_common_mul (M N : Submodule (𝓞 K) V) (hM : M.FG)
     (h : ∀ y ∈ M, ∃ s : 𝓞 K, s ≠ 0 ∧ s • y ∈ N) : ∃ c : 𝓞 K, c ≠ 0 ∧ ∀ y ∈ M, c • y ∈ N := by
-  classical
-  obtain ⟨S, hS⟩ := hM
-  have hSM : ∀ y ∈ S, y ∈ M := fun y hy => by rw [← hS]; exact Submodule.subset_span hy
-  let f : V → 𝓞 K := fun y => if hy : y ∈ M then (h y hy).choose else 1
-  have hf0 : ∀ y, f y ≠ 0 := by
-    intro y
-    by_cases hy : y ∈ M
-    · simp only [f, dif_pos hy]; exact (h y hy).choose_spec.1
-    · simp only [f, dif_neg hy]; exact one_ne_zero
-  have hfN : ∀ y ∈ M, f y • y ∈ N := by
-    intro y hy
-    simp only [f, dif_pos hy]; exact (h y hy).choose_spec.2
-  refine ⟨∏ y ∈ S, f y, Finset.prod_ne_zero_iff.2 (fun y _ => hf0 y), ?_⟩
-  have hle : Submodule.span (𝓞 K) (S : Set V) ≤ N.comap (LinearMap.lsmul (𝓞 K) V (∏ y ∈ S, f y)) := by
-    rw [Submodule.span_le]
-    intro y hy
-    obtain ⟨k, hk⟩ := Finset.dvd_prod_of_mem f hy
-    show (∏ y ∈ S, f y) • y ∈ N
-    rw [hk, mul_comm, mul_smul]
-    exact N.smul_mem _ (hfN y (hSM y hy))
-  intro y hy
-  rw [← hS] at hy
-  exact hle hy
+  apply _root_.Formalism.L2.DIV.nb_common <;> assumption
 
 end General
 
@@ -108,11 +87,11 @@ theorem exists_free_prime (D : D7) (u : D.what₂.Word) :
   by_cases hT : (D.mem u).A.T = 2
   · refine ⟨D.host.q, D.host.hyp.1, by rw [hT]; exact hq2, ?_⟩
     unfold DV.InertK Host.cls primeClass
-    rw [if_neg D.host.q_notMem_small, if_pos rfl]
+    rw [ite_eq_right D.host.q_notMem_small, ite_eq_left rfl]
     simp
   · refine ⟨2, Nat.prime_two, fun h => hT h.symm, ?_⟩
     unfold DV.InertK Host.cls primeClass
-    rw [if_pos D.host.two_mem_small]
+    rw [ite_eq_left D.host.two_mem_small]
     simp
 
 theorem nuCommens_of {D : D7} {L : SizeData₂ D} (hNu : DV.NuDef D L) (hT : NuAtT D L) : NuCommens D L := by
@@ -147,8 +126,4 @@ end Formalism.MainNotions.Lnk
 end
 
 end Commens
-
-namespace Formalism.MainNotions
-
-end Formalism.MainNotions
 

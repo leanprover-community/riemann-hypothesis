@@ -85,7 +85,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical ComplexOrder
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -258,21 +257,21 @@ theorem colDerM_single (t : T) (k l : κ) :
   · rw [colDerM_X_xVar, colDer_X_xVar]
     by_cases ht : t' = t
     · by_cases hj : j = l
-      · subst hj; rw [if_pos ht, if_pos ⟨ht, rfl⟩, ← xForm_single]
+      · subst hj; rw [ite_eq_left ht, ite_eq_left ⟨ht, rfl⟩, ← xForm_single]
         congr 1; ext i; simp [single_apply, Pi.single_apply, eq_comm]
-      · rw [if_pos ht, if_neg (fun h => hj h.2)]
+      · rw [ite_eq_left ht, ite_eq_right (fun h => hj h.2)]
         have : (single l k (1 : R)) j = 0 := by ext i; simp [Ne.symm hj]
         rw [this, map_zero]
-    · rw [if_neg ht, if_neg (fun h => ht h.1)]
+    · rw [ite_eq_right ht, ite_eq_right (fun h => ht h.1)]
   · rw [colDerM_X_yVar, colDer_X_yVar]
     by_cases ht : t' = t
     · by_cases hj : j = k
-      · subst hj; rw [if_pos ht, if_pos ⟨ht, rfl⟩, ← yForm_single]
+      · subst hj; rw [ite_eq_left ht, ite_eq_left ⟨ht, rfl⟩, ← yForm_single]
         congr 2; ext i; simp [single_apply, Pi.single_apply, eq_comm]
-      · rw [if_pos ht, if_neg (fun h => hj h.2)]
+      · rw [ite_eq_left ht, ite_eq_right (fun h => hj h.2)]
         have : (fun r => single l k (1 : R) r j) = 0 := by ext i; simp [Ne.symm hj]
         rw [this, map_zero, neg_zero]
-    · rw [if_neg ht, if_neg (fun h => ht h.1)]
+    · rw [ite_eq_right ht, ite_eq_right (fun h => ht h.1)]
 
 end ColDerLin
 
@@ -586,7 +585,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical ComplexOrder
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -740,7 +738,7 @@ theorem GlobalTheory.RenamedMinors.renamed_delta_mem_rowHighest : ∀ (D : D7) (
   · change phi C _ ∈ _
     rw [hκ, ← MvPolynomial.smul_eq_C_mul]
     refine Submodule.smul_mem _ κ (Harm.minorProd_mem_rowHighest _ _ fun t a b => ?_)
-    rw [single_dotProduct, one_mul, Pi.single_apply, if_neg]
+    rw [single_dotProduct, one_mul, Pi.single_apply, ite_eq_right]
     intro h
     have h' := congrArg Fin.val h
     simp only [Fin.coe_castLE] at h'
@@ -769,7 +767,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical ComplexOrder
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 end -- clump:auto
@@ -786,7 +783,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical ComplexOrder
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -876,7 +872,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical ComplexOrder
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -891,7 +886,7 @@ theorem revB_isB : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (B₀ : C.Bas), C.Is
     show sgn C.X.p0 ((revPos C.X.p0 a : Fin T.rank) : ℕ) = _
     unfold revPos
     split_ifs with h
-    · simp only [sgn, if_pos h.1, if_pos (show C.X.p0 - 1 - (a : ℕ) < C.X.p0 by omega)]
+    · simp only [sgn, ite_eq_left h.1, ite_eq_left (show C.X.p0 - 1 - (a : ℕ) < C.X.p0 by omega)]
     · rfl
   have hD : (sgnM C.X).submatrix σ σ = sgnM C.X := by
     unfold sgnM
@@ -1077,7 +1072,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto

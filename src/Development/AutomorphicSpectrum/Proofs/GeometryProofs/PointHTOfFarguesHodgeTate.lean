@@ -43,7 +43,7 @@ def ordTower (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [Char
     (M : LieModel G y L) : OrdTower p O La L :=
   haveI : IsLocalRing O := (_root_.GlobalTheory.CompanionTheory.Ar.HT.padicComplete_integers_structure p C v O hv hp hO).2.1.toIsLocalRing
   have h3 := _root_.GlobalTheory.CompanionTheory.Ar.HT.tw_hopf_main p C v O hv hp hO S G hG y La X
-  have h4 := _root_.GlobalTheory.CompanionTheory.Ar.HT.btOrder_restriction p C v O hv hp hO S G hG y La X
+  have h4 := _root_.PositivityTheory.HtPt.Gi.tw_res p C v O hv hp hO S G hG y La X
   have h5 := _root_.GlobalTheory.CompanionTheory.Ar.HT.TwDer.der_main p C v O hv hp hO S G hG y La X L M
   have h6 := (GlobalTheory.T.semiabelian_adic_torsion_four p C v O hv hp hO S G hG y La X L M).1
   { A := fun n => (X.Γ n).btOrder ⊤
@@ -75,7 +75,7 @@ theorem pointHT (hF : FarguesHodgeTate) : PointHT := by
     haveI := hmon a
     exact (GlobalTheory.T.semiabelian_adic_torsion_four p C v O hv hp hO S G hG y La X L M).2 (act a) _ (ρL a) (hind a) (hact a) n f g hfg
   have hpe : T.PairingExtends EF ζ := fun n =>
-    _root_.GlobalTheory.CompanionTheory.Ar.HT.pairingRegular_mem_prodSpan p C v O hv hp hO S G hG y La X EF ζ (fun n => (hζ n).pow_eq_one) hpair n
+    _root_.PositivityTheory.HtPt.Twpair.tw_pair p C v O hv hp hO S G hG y La X EF ζ (fun n => (hζ n).pow_eq_one) hpair n
   exact _root_.GlobalTheory.CompanionTheory.Ar.HT.TowerPoint.exists_HTPoint hF p C v O hv hp hO E c hc La EF N u hu L T ρL ζ κ hacts hrank hζ hζp hpe hκ
 
 end GlobalTheory.CompanionTheory.Ar.HT.Fargues

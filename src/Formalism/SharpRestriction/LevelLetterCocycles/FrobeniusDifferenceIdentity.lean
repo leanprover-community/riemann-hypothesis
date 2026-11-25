@@ -243,7 +243,7 @@ theorem jumps_bounds_of_set [NeZero n] (W : LocWach PD LL O v n) {d : ℕ} {T₁
     intro c' hc' a ha
     have hpar' := S9.parity_succ hn d c'
     unfold Formalism.MainNotions.RamifiedCoefficientChains.JumpWinS at ha
-    rw [if_neg (by omega)] at ha
+    rw [ite_eq_right (by omega)] at ha
     simp only [Set.mem_union, Set.mem_Icc] at ha
     push_cast at ha
     omega

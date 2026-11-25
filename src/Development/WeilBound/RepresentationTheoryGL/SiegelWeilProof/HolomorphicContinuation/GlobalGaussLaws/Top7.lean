@@ -63,7 +63,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (swSec sZero IsKFinVec)
 open GlobalTheory.Core.Rk.SW (sch)
 open GlobalTheory.Mem.AutSpace (SmFun)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 namespace GlobalTheory.ThetaInv
@@ -195,8 +194,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace PositivityTheory.Rg.Sw.Glob.DerOneBH
 
@@ -422,7 +419,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (swSec sZero IsKFinVec)
 open GlobalTheory.Core.Rk.SW (sch)
 open GlobalTheory.Mem.AutSpace (SmFun)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 namespace GlobalTheory.RegSch.ChartDer
@@ -458,8 +454,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace PositivityTheory.Rg.Sw.Glob.DerOneCH
 
@@ -516,7 +510,6 @@ theorem fin_oneP (hθ : IsInfFam θ) {Y : Matrix (Fin V.rank) (Fin V.rank) ℂ} 
   ((GlobalTheory.RegSch.ChartDer.isAtTau_iff θ V τ _ _).1 (GlobalTheory.Mem.Lift.isAtTau_oneP hθ hY t)).2.2
 
 section
-attribute [local instance] Matrix.linftyOpNormedRing Matrix.linftyOpNormedAlgebra
 
 theorem diff_entry {m : ℕ} (Y : Matrix (Fin m) (Fin m) ℂ) (C : Matrix (Fin m) (Fin n) ℂ) (i : Fin m) (j : Fin n) :
     Differentiable ℝ fun u : ℝ => ((NormedSpace.exp (u • Y) : Matrix (Fin m) (Fin m) ℂ) * C) i j := by
@@ -562,9 +555,9 @@ theorem key (hθ : IsInfFam θ) {Y : Matrix (Fin V.rank) (Fin V.rank) ℂ} (hY :
     refine Differentiable.mul_const (f.differentiable.comp ?_) _
     refine differentiable_pi.2 fun τ' => differentiable_pi.2 fun i => differentiable_pi.2 fun j => ?_
     by_cases h : τ' = τ
-    · simp only [h, if_true]
+    · simp only [h, ite_true]
       exact diff_entry Y (compAt θ τ z) i j
-    · simp only [h, if_false, Matrix.one_mul]
+    · simp only [h, ite_false, Matrix.one_mul]
       exact differentiable_const _
   · exact ⟨continuous_const, fun z => by simpa using differentiable_const (0 : ℂ)⟩
   · rintro x y - - ⟨h1, h2⟩ ⟨h3, h4⟩

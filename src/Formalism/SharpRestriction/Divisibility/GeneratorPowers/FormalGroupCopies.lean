@@ -1,11 +1,10 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.NablaValueCopiesBilinear
 public import Formalism.LocalToGlobal.ProjectiveLattices.PlaceBelow
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.PartialDerivativeExponent
 
 @[expose] public section
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -41,18 +40,13 @@ theorem dpoly_sup (P : MvPolynomial ι R) (T : Finset (ι →₀ ℕ)) (hT : P.s
 
 theorem dpoly_add (P Q : MvPolynomial ι R) (g : PS R n d) :
     DpolyN F cp u (P + Q) g = DpolyN F cp u P g + DpolyN F cp u Q g := by
-  classical
-  rw [dpoly_sup F cp u (P + Q) (P.support ∪ Q.support) MvPolynomial.support_add,
-    dpoly_sup F cp u P (P.support ∪ Q.support) Finset.subset_union_left,
-    dpoly_sup F cp u Q (P.support ∪ Q.support) Finset.subset_union_right, ← Finset.sum_add_distrib]
-  refine Finset.sum_congr rfl (fun mm _ => ?_)
-  rw [MvPolynomial.coeff_add, map_add (f := _), add_mul]
+  apply _root_.GlobalTheory.dpolyN_add_left <;> assumption
 
 theorem dpoly_monomial (mm : ι →₀ ℕ) (a : R) (g : PS R n d) :
     DpolyN F cp u (MvPolynomial.monomial mm a) g = C a * DmonN F cp u mm g := by
   classical
   rw [dpoly_sup F cp u _ {mm} MvPolynomial.support_monomial_subset, Finset.sum_singleton,
-    MvPolynomial.coeff_monomial, if_pos rfl]
+    MvPolynomial.coeff_monomial, ite_eq_left rfl]
 
 def dpolyHom (g : PS R n d) : MvPolynomial ι R →+ PS R n d where
   toFun P := DpolyN F cp u P g
@@ -62,10 +56,3 @@ def dpolyHom (g : PS R n d) : MvPolynomial ι R →+ PS R n d where
 end Fold
 
 end Formalism.MainNotions.ModuliIntegralCharts.H1.FormalGroupCopies
-
-namespace Formalism.MainNotions.ModuliIntegralCharts.H1
-
-open MvPowerSeries Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
-open Formalism.MainNotions.ModuliIntegralCharts.H1.PartialDerivativeExponent Formalism.MainNotions.ModuliIntegralCharts.H1.FormalGroupCopies
-
-end Formalism.MainNotions.ModuliIntegralCharts.H1

@@ -220,7 +220,7 @@ theorem gcl_trR_val (P : M.Par) (Bs : B.RealPlaceData P.k P.r Wp Wq) (hpl : Q.Is
     exact h2
   have h1 : ((trR P Bs e Φ ρ : MA.SmQ P.r P.TT) : MA.Qp P.r P.TT → ℂ) =
       rawR P Bs.μsec e (Φ : Q.Fn P.k P.r (Wq →L[ℂ] Wp)) ρ := by
-    simp only [trR, MA.toSm, dif_pos hmem]
+    simp only [trR, MA.toSm, dite_eq_left hmem]
   rw [h1]
   simp [rawR, NF.radR, Set.indicator_of_mem hq]
 
@@ -386,7 +386,7 @@ theorem gcl_core (P : M.Par) (Bs : B.RealPlaceData P.k P.r Wp Wq)
     rw [← hκ, hΨfix] at h1
     by_cases hσ : σ = ρ
     · subst hσ
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       have hx1 : ((c1, x.2) : (Fin P.r → ℂ) × ℂ) ∈ NF.QR P.k P.r Bs.z Bs.z' := (hQR _).2 ⟨hc1, ((hQR x).1 hx).2⟩
       have heq := hloc (Ψ σ) (Ψ σ) x (c1, x.2) hx hx1 rfl (by
         filter_upwards [hUo.mem_nhds ((hQR x).1 hx).2] with ζ hζ
@@ -394,8 +394,8 @@ theorem gcl_core (P : M.Par) (Bs : B.RealPlaceData P.k P.r Wp Wq)
       show _ = inner ℂ (B.hsVec (e σ x.2)) (B.hsVec (NF.radR P.k P.r Bs.z Bs.z' Bs.μsec
         ((T (Ψ σ) : Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π') : Q.Fn P.k P.r (Wq →L[ℂ] Wp)) (c1, x.2)))
       rw [heq]
-    · rw [if_neg hσ]
-      rw [if_neg (Ne.symm hσ), zero_mul] at h1
+    · rw [ite_eq_right hσ]
+      rw [ite_eq_right (Ne.symm hσ), zero_mul] at h1
       exact h1
 
   let wc : ℂ → ℂ := fun ζ => ((wR P.k P.TT ζ : ℝ) : ℂ)
@@ -449,7 +449,7 @@ theorem gcl_core (P : M.Par) (Bs : B.RealPlaceData P.k P.r Wp Wq)
     (B.hsVec (NF.radR P.k P.r Bs.z Bs.z' Bs.μsec (Φ : Q.Fn P.k P.r (Wq →L[ℂ] Wp)) x))
   have hGev : MA.ext ((trR P Bs e Φ ρ : MA.SmQ P.r P.TT) : MA.Qp P.r P.TT → ℂ) =ᶠ[nhds q.1] G := by
     filter_upwards [(MA.Qset_open P.r P.TT).mem_nhds q.2] with x hx
-    simp only [MA.ext, dif_pos hx]
+    simp only [MA.ext, dite_eq_left hx]
     exact gcl_trR_val P Bs hpl hk2 e he Φ ρ ⟨x, hx⟩
   have hGs : ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) G (NF.QR P.k P.r Bs.z Bs.z') :=
     (hwc.comp contDiff_snd.contDiffOn fun x hx => ((hQR x).1 hx).2).mul
@@ -517,7 +517,7 @@ theorem gcl_fn_mulZ {P : M.Par} {Bs : B.RealPlaceData P.k P.r Wp Wq} (X : Q.Actu
       have h1 := X.fn_apply j Φ (c, g) hx
       dsimp only at h1
       rw [h1, hf]
-    · simp only [Set.indicator, hx, if_false]
+    · simp only [Set.indicator, hx, ite_false]
       obtain ⟨h0, -, -⟩ := (X.fn j Φ).2
       exact h0 (c, g) hx
   exact ⟨key 0 id (fun _ => rfl), key 2 (starRingEnd ℂ) (fun _ => rfl)⟩
@@ -533,7 +533,7 @@ private theorem fnZ_apply_eq_snd (P : M.Par) (f : ℂ → ℂ)
       contDiff_snd.contDiffOn
     refine (hf.comp hs (fun x hx => hx.2)).congr (fun x hx => ?_)
     simp [MA.ext, hx]
-  simp only [fnZ, MA.toSm, dif_pos hmem]
+  simp only [fnZ, MA.toSm, dite_eq_left hmem]
 
 theorem local_frame_holds : GTCLFrame := by
   intro Wp Wq _ _ _ _ _ _ P Bs X d hH e he hk hN hNs
@@ -662,17 +662,17 @@ theorem rep_ext {P : M.Par} {Bs : B.RealPlaceData P.k P.r Wp Wq}
     (h : Rep P Bs T n A) : Rep P Bs T m (fun j ζ => if j ≤ n then A j ζ else 0) := by
   refine ⟨fun j => ?_, fun Φ q hq => ?_⟩
   · by_cases hj : j ≤ n
-    · simp only [hj, if_true]; exact h.1 j
-    · simp only [hj, if_false]; exact contDiffOn_const
+    · simp only [hj, ite_true]; exact h.1 j
+    · simp only [hj, ite_false]; exact contDiffOn_const
   · rw [h.2 Φ q hq]
     symm
     rw [← Finset.sum_subset (Finset.range_mono (by omega : n + 1 ≤ m + 1))]
     · refine Finset.sum_congr rfl fun j hj => ?_
       have : j ≤ n := by simp at hj; omega
-      simp only [this, if_true]
+      simp only [this, ite_true]
     · intro j _ hj
       have : ¬ j ≤ n := by simp at hj; omega
-      simp only [this, if_false, ContinuousLinearMap.zero_apply]
+      simp only [this, ite_false, ContinuousLinearMap.zero_apply]
 
 theorem radR_smul' (P : M.Par) (Bs : B.RealPlaceData P.k P.r Wp Wq) (c : ℂ) (F : Q.Fn P.k P.r (Wq →L[ℂ] Wp))
     (x : (Fin P.r → ℂ) × ℂ) :

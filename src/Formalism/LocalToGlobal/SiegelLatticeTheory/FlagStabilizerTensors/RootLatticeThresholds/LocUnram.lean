@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.EmbeddingIntegerAlgebraMap
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.LocalAdditiveCharContinuous
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermLoc
 import Mathlib.Algebra.Order.Floor.Extended
@@ -137,13 +138,7 @@ theorem iotaF_inv_mem (x : 𝓞 D.host.F) (hx : x ∉ p.asIdeal) :
   rw [Valuation.mem_integer_iff, map_inv₀, le_antisymm h1 h2, inv_one]
 
 theorem iotaF_ne (x : 𝓞 D.host.F) (hx : x ∉ p.asIdeal) : (D.s.atP p).ιF (x : D.host.F) ≠ 0 := by
-  intro h
-  apply hx
-  have h0 : (x : D.host.F) = 0 := (map_eq_zero (D.s.atP p).ιF).1 h
-  have h1 : x = 0 := by
-    first
-    | exact_mod_cast h0
-  rw [h1]; exact p.asIdeal.zero_mem
+  apply _root_.Formalism.L2.SG.Pf.LocalDenominators.iF_t_ne <;> assumption
 
 theorem iotaE_alg (x : D.host.F) :
     (D.s.atP p).ιE ((x : D.host.E)) = algebraMap (D.s.atP p).Fp (D.s.atP p).Ep ((D.s.atP p).ιF x) := (D.s.atP p).compat x
@@ -154,15 +149,8 @@ theorem iotaE_mem (θ : D.host.E) (hθ : IsIntegral ℤ θ) : (D.s.atP p).ιE θ
   exact h1.tower_top
 
 private theorem algebraMap_Fp_Ep_injective :
-    Function.Injective (algebraMap (D.s.atP p).Fp (D.s.atP p).Ep) := by
-  haveI : Nontrivial (D.s.atP p).Ep := by
-    by_contra hn
-    rw [not_nontrivial_iff_subsingleton] at hn
-    haveI := hn
-    have h := (D.s.atP p).rank
-    rw [Module.finrank_zero_of_subsingleton] at h
-    exact absurd h (by norm_num)
-  exact (algebraMap (D.s.atP p).Fp (D.s.atP p).Ep).injective
+    Function.Injective (algebraMap (D.s.atP p).Fp (D.s.atP p).Ep) :=
+  (algebraMap (D.s.atP p).Fp (D.s.atP p).Ep).injective
 
 private theorem algebraMap_mem_O_of_mem_integers (a : (D.s.atP p).Fp)
     (ha : a ∈ 𝒪[(D.s.atP p).Fp]) :

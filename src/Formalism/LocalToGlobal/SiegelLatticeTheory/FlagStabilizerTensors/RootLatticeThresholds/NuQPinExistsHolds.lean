@@ -112,7 +112,7 @@ theorem conj_core (hgi : gi * g = 1) (hgi' : g * gi = 1)
     intro a w hw
     refine hJ_span_zero ε (F a) _ ?_ w hw
     rintro _ ⟨b, hb, rfl⟩
-    rw [hFE, if_neg]
+    rw [hFE, ite_eq_right]
     intro h; subst h; simp at hb
 
   have hgF : ∀ (a : Fin r) (w : Fin n → ℂ), w ∈ spanLt E (a.1 + 1) → hJ ε (g *ᵥ F a) w = hJ ε (F a) w := by
@@ -156,22 +156,22 @@ theorem conj_core (hgi : gi * g = 1) (hgi' : g * gi = 1)
         set N' := nxt E Z' a with hN'
         have hxa : g *ᵥ N' - N ∈ spanLt E (a.1 + 1) := by
           by_cases h : a.1 + 1 < r
-          · simp only [hN, hN', nxt, dif_pos h]
+          · simp only [hN, hN', nxt, dite_eq_left h]
             exact hEg ⟨a.1 + 1, h⟩
-          · simp only [hN, hN', nxt, dif_neg h]
+          · simp only [hN, hN', nxt, dite_eq_right h]
             have : a.1 + 1 = r := by omega
             rw [this]; exact hZ
         have hsN : s *ᵥ N - N ∈ spanLt E (a.1 + 1) := by
           by_cases h : a.1 + 1 < r
-          · simp only [hN, nxt, dif_pos h]
+          · simp only [hN, nxt, dite_eq_left h]
             exact hsE' ⟨a.1 + 1, h⟩
-          · simp only [hN, nxt, dif_neg h]
+          · simp only [hN, nxt, dite_eq_right h]
             have : a.1 + 1 = r := by omega
             rw [this]; exact hsZ'
         have hFN : hJ ε (F a) N' = hJ ε (F a) N := by
           by_cases h : a.1 + 1 < r
-          · simp only [hN, hN', nxt, dif_pos h]
-          · simp only [hN, hN', nxt, dif_neg h]
+          · simp only [hN, hN', nxt, dite_eq_left h]
+          · simp only [hN, hN', nxt, dite_eq_right h]
             rw [hFZ, hFZ']
         have e1 : (gi * s * g) *ᵥ N' = gi *ᵥ (s *ᵥ (g *ᵥ N')) := by
           rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec]
@@ -235,8 +235,6 @@ open scoped Classical
 open MeasureTheory NumberField Matrix Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp
 
 namespace Formalism.L2.SG.Pf.IdBlocks2.Conj
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Rat
 
@@ -440,8 +438,6 @@ open MeasureTheory NumberField Matrix Formalism.BasicNotions Formalism.MainNotio
 
 namespace Formalism.L2.SG.Pf.IdBlocks2.Lift
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open PI.SchurPlaces.Geo
 
 theorem inv_maps {D : D7} (X : HidaSetting D) (γ : (VS D).V ≃ₗ[D.host.E] (VS D).V)
@@ -537,7 +533,7 @@ theorem idOffLift_all {D : D7} (X : HidaSetting D) (u u' : D.what₂.Word)
     · show hJ ε (rvc X v (X.fY a')) _ = 0
       rw [hexp]
       simp_rw [hfe]
-      simp only [mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true, sub_self]
+      simp only [mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true, sub_self]
     · show hJ ε (rvc X v (X.zu u)) _ = 0
       rw [hexp, hyZ b]
       simp [hze]
@@ -667,8 +663,6 @@ end Formalism.L2.SG.Pf.IdBlocks2.Lift
 
 namespace Formalism.L2.SG.Pf
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open Formalism.BasicNotions Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.TermOp.IdBlocks Formalism.L2.SG.Full
 
 theorem idOffConjC_holds : IdOffConjC :=
@@ -735,8 +729,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 open Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.SpectralTiesReal
 
 namespace Formalism.L2.SG.PoincareAmplitudeLowerBounds
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.L2.SG.DataInst Formalism.L2.SG.CntLocal Formalism.L2.SG.RowsConc Formalism.L2.SG.RealObj
 
@@ -833,11 +825,11 @@ theorem exists_typ {D : D7} (X : HidaSetting D) :
   by_cases h : q p
   · have : (typ p).1 = true := by
       simp [typ, Equiv.sumCompl_symm_apply_of_pos h, Equiv.boolProdEquivSum]
-    rw [this, if_pos rfl]
+    rw [this, ite_eq_left rfl]
     exact_mod_cast h
   · have : (typ p).1 = false := by
       simp [typ, Equiv.sumCompl_symm_apply_of_neg h, Equiv.boolProdEquivSum]
-    rw [this, if_neg (by simp)]
+    rw [this, ite_eq_right (by simp)]
     exact_mod_cast (hneg p).1 h
 
 theorem linkAll_of (hKpp : KppVolAll) : LinkAll := by

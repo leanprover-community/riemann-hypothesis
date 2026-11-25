@@ -5,53 +5,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTool
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsSubquotientDetRepParInd
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwDomMul
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwMemIwC
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwHeckePairIwC
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwHkApply
@@ -149,7 +102,7 @@ private theorem levi_mem {α : Type} {m : α → Type} [Fintype α] [LinearOrder
       split_ifs
       · exact h2 a c h
       · simp
-    · rw [levi_entry, if_pos rfl]
+    · rw [levi_entry, ite_eq_left rfl]
       exact h3 a
   refine mem_of_good (key p hp) ?_
   rw [← map_inv, ← map_inv]
@@ -329,7 +282,7 @@ private theorem pos_mono (h : (j : ℕ) = i + 1) (σ : Equiv.Perm (Fin n)) (hσ 
     (hb : ∀ a, bl i j (σ a) = bl i j a) (t : Fin n → kˣ) (ht : Dom t) :
     (FF C h).Pos (pm k n σ * diagT k (Fin n) t) := by
   refine ⟨(mem_Mf C h _).2 fun a c hac => ?_, ?_, ?_⟩
-  · rw [Units.val_mul, val_diagT, mul_diagonal, pm_apply, if_neg, zero_mul]
+  · rw [Units.val_mul, val_diagT, mul_diagonal, pm_apply, ite_eq_right, zero_mul]
     rintro rfl
     exact hac (hb c)
   · refine conj_mem _ σ (fun a => t (σ a)) (fun g hg a c hac => ?_) (by rw [pm_diag, hσ])

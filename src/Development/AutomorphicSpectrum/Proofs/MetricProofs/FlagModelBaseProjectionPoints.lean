@@ -224,10 +224,10 @@ theorem detFac_one (j : ℕ) (i : Fin N) : detFac j i (1 : Matrix (Fin N) (Fin N
 theorem stepCols_nonempty {j : ℕ} (hj : j ≤ N) (i : Fin N) : (stepCols N j i).Nonempty := by
   by_cases h : (i : ℕ) + 1 ≤ j
   · refine ⟨⟨N - j, by omega⟩, ?_⟩
-    simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, if_pos h]
+    simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, ite_eq_left h]
     omega
   · refine ⟨⟨0, by have := i.2; omega⟩, ?_⟩
-    simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, if_neg h]
+    simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, ite_eq_right h]
     omega
 
 theorem detFac_ne_zero {L : Type} [Field L] {j : ℕ} (hj : j ≤ N) (i : Fin N) {T : Matrix (Fin N) (Fin N) L}
@@ -330,7 +330,7 @@ theorem flag_nonzero {F : FrameData ι Ψ N M.Ω M.blk} (hF : M.IsFrame F) {z : 
   by_cases hk : ∀ p, M.blk p ≠ some k
   · obtain ⟨i, hi⟩ := hzb.1 ⟨k, hk⟩
     exact ⟨i, hi⟩
-  · push_neg at hk
+  · push Not at hk
     obtain ⟨p, hp⟩ := hk
     obtain ⟨a, ha, hz⟩ := H.2.2 p k hp
     let val := regVal hzb
@@ -410,7 +410,7 @@ theorem flag_back {F : FrameData ι Ψ N M.Ω M.blk} (hF : M.IsFrame F) {z : (Σ
       · have e1 : ρ (C ⟨_, _, hv m⟩) = val ⟨_, _, hv m⟩ := eval₂Hom_C _ _ _
         rw [e1, show val ⟨_, _, hv m⟩ = _ from regVal_eq hzb _ (hv m), hzc, div_one, one_mul]
         rfl
-    · push_neg at hk
+    · push Not at hk
       obtain ⟨p, hp⟩ := hk
       obtain ⟨a, ha, hz⟩ := H.2.2 p k hp
       let uA : (Σ k, ι k) → Finset (Fin N) → A := fun q I => ⟨F.u q I, exists_isValueAt hzb (hG.2.1 q I).1⟩
@@ -450,8 +450,7 @@ theorem flag_back {F : FrameData ι Ψ N M.Ω M.blk} (hF : M.IsFrame F) {z : (Σ
         · show _ = φL _ * algebraMap S L D * φL _
           ring
         · rfl
-      · set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum, hz m, inv_mul_cancel_left₀ ha]
+      · rw [map_sum, hz m, inv_mul_cancel_left₀ ha]
         refine Finset.sum_congr rfl fun I _ => ?_
         rw [map_mul, ← minorIJ_map, hρ]
         congr 1

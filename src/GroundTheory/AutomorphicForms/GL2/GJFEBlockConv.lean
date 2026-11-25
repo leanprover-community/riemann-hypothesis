@@ -68,7 +68,7 @@ theorem hasSum_geom_poly {β : ℂ} (hβ : β ≠ 0) (e : ℕ) {P : ℤ → ℂ[
     convert (hasSum_geometric_of_norm_lt_one hlt).mul_left ((β * x ^ e) ^ j₁ * (P j₁).eval x) using 1
     funext k
     simp only [Function.comp_apply, f]
-    rw [if_neg (by lia), h1 _ (by lia), zpow_add₀ hz, zpow_natCast]; ring
+    rw [ite_eq_right (by lia), h1 _ (by lia), zpow_add₀ hz, zpow_natCast]; ring
   have htot := hfin.add htail
   rw [show (fun j => (if j < j₁ then f j else 0) + (if j < j₁ then 0 else f j)) = f from
     funext fun j => by split_ifs <;> simp] at htot
@@ -397,8 +397,8 @@ theorem IsCentralCoeff.exists_eq_div_zeta (hc : IsCentralCoeff m α c)
     obtain ⟨hg0, hg1⟩ := hg
     simp only [zero_mul, zero_add] at hg0 hg1
     have hk : (ordDet g).toNat ∈ Finset.range m := Finset.mem_range.2 (by omega)
-    rw [Finset.sum_eq_single_of_mem _ hk (fun k _ hk' => by rw [if_neg (by omega), mul_zero]),
-      if_pos (Int.toNat_of_nonneg hg0).symm, detPow_centralUnif_zpow_mul, hc.zpow_mul,
+    rw [Finset.sum_eq_single_of_mem _ hk (fun k _ hk' => by rw [ite_eq_right (by omega), mul_zero]),
+      ite_eq_left (Int.toNat_of_nonneg hg0).symm, detPow_centralUnif_zpow_mul, hc.zpow_mul,
       detPow_eq_qs_zpow, ← hx, mul_zpow, mul_comm j, _root_.zpow_mul, zpow_natCast,
       ← Int.toNat_of_nonneg hg0, zpow_natCast]
     simp only [Int.toNat_natCast]; ring

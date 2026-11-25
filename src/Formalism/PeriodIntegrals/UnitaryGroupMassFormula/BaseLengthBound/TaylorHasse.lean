@@ -43,7 +43,7 @@ theorem hasse_section_eq_zero {β : Idx D j N →₀ ℕ} (hβ : NoRow0 β) (h0 
     hasseRp X la N β (sec X la w 0) = 0 := by
   rw [hasseRp_sec]
   refine Finset.sum_eq_zero fun k _ => ?_
-  rw [hasseOp_Tv, if_neg h0, if_neg, map_zero, zero_smul]
+  rw [hasseOp_Tv, ite_eq_right h0, ite_eq_right, map_zero, zero_smul]
   intro e
   have := hβ k
   rw [e, Finsupp.single_eq_same] at this
@@ -112,7 +112,7 @@ theorem bcol_sub_single {N : ℕ} (jj : Fin N) (α : Fin (WeightFamilies.dimY D 
 
 theorem sum_add_single {d : ℕ} (δ : Fin d → ℕ) (l : Fin d) :
     ∑ i, (δ + Pi.single l 1 : Fin d → ℕ) i = ∑ i, δ i + 1 := by
-  simp only [Pi.add_apply, Finset.sum_add_distrib, Finset.sum_pi_single', Finset.mem_univ, if_true]
+  simp only [Pi.add_apply, Finset.sum_add_distrib, Finset.sum_pi_single', Finset.mem_univ, ite_true]
 
 theorem eq_sub_add_single {d : ℕ} (δ : Fin d → ℕ) (l : Fin d) (h : 1 ≤ δ l) :
     δ = (δ - Pi.single l 1) + Pi.single l 1 := by
@@ -139,7 +139,7 @@ theorem hasse_single_sfr (G : GlobalFamilyData X ka wL wF) (la : HeightOneSpectr
       ((PoleLengthBounds.wfr G la jj : ↥(Frac0 X la G.w)) : Lw X la G.w) := by
   have hn : NoRow0 (Finsupp.single ((l.succ, jj) : Idx D j G.N) 1) := by
     simp [NoRow0, Fin.succ_ne_zero]
-  rw [hasse_sfr X la G.w hn, hasseRp_single, pdRp_sec, if_pos rfl, coe_wfr_Lc]
+  rw [hasse_sfr X la G.w hn, hasseRp_single, pdRp_sec, ite_eq_left rfl, coe_wfr_Lc]
 
 theorem hasse_sfr_eq_zero (G : GlobalFamilyData X ka wL wF) (la : HeightOneSpectrum (𝓞 B.KO)) (jj : Fin G.N)
     (α : Fin (WeightFamilies.dimY D j) → ℕ) (l : Fin (WeightFamilies.dimY D j)) {c : Idx D j G.N →₀ ℕ}
@@ -156,10 +156,10 @@ theorem hasse_sfr_eq_zero (G : GlobalFamilyData X ka wL wF) (la : HeightOneSpect
       have hp2 : p.2 = jj := by
         by_contra hne
         have := hc p
-        rw [Finsupp.single_eq_same, bcol_apply, if_neg hne] at this
+        rw [Finsupp.single_eq_same, bcol_apply, ite_eq_right hne] at this
         omega
       exact he (by rw [show p = (l.succ, jj) from Prod.ext hp hp2])
-    · rw [if_neg hp, map_zero, zero_mul]
+    · rw [ite_eq_right hp, map_zero, zero_mul]
   · push Not at h1
     rw [hasseRp_sec_eq_zero X la G.w h0 h1, map_zero, zero_mul]
 
@@ -185,7 +185,7 @@ theorem ymDeriv : PoleLengthBounds.YmDeriv := by
         ext ⟨i, k⟩
         rw [bcol_apply]
         refine Fin.cases ?_ (fun i => ?_) i <;> simp
-      rw [hb, if_pos rfl]
+      rw [hb, ite_eq_left rfl]
       refine (hasse_zero X la G.w _).trans ?_
       simp
       rfl
@@ -195,7 +195,7 @@ theorem ymDeriv : PoleLengthBounds.YmDeriv := by
         have := congrArg (fun f : Idx D j G.N →₀ ℕ => f (i.succ, jj)) h
         simp only [bcol_apply, Fin.cases_succ, Finsupp.coe_zero, Pi.zero_apply] at this
         exact hi this
-      rw [if_neg (Ne.symm hα)]
+      rw [ite_eq_right (Ne.symm hα)]
       have := hasse_emb X la G.w hb 1
       rw [map_one, map_one] at this
       exact this
@@ -215,7 +215,7 @@ theorem ymDeriv : PoleLengthBounds.YmDeriv := by
     rw [hym, MulMemClass.coe_mul]
     refine (hasse_mul X la G.w (PoleLengthBounds.bcol jj α) _ _).trans ?_
     have hIHa : hasse X la G.w (PoleLengthBounds.bcol jj α) ((PoleLengthBounds.ym G la γ' : ↥(Frac0 X la G.w)) : Lw X la G.w) = 0 := by
-      rw [ih γ' α hγ's (by omega), if_neg]
+      rw [ih γ' α hγ's (by omega), ite_eq_right]
       · rfl
       · rintro rfl
         omega
@@ -236,9 +236,9 @@ theorem ymDeriv : PoleLengthBounds.YmDeriv := by
           rw [← hγα]
           funext i
           simp
-        rw [if_pos hγ'α, if_pos hγα, ← hγ'α, ← hγα, sum_add_single, pow_succ']
+        rw [ite_eq_left hγ'α, ite_eq_left hγα, ← hγ'α, ← hγα, sum_add_single, pow_succ']
         rfl
-      · rw [if_neg hγα, if_neg]
+      · rw [ite_eq_right hγα, ite_eq_right]
         · exact mul_zero _
         intro h
         apply hγα
@@ -278,14 +278,14 @@ theorem ymDeriv : PoleLengthBounds.YmDeriv := by
       exact absurd (mem_antidiagonal.2 (zero_add _)) h
     · intro hnot
       dsimp only
-      rw [tb, if_neg]
+      rw [tb, ite_eq_right]
       · rfl
       intro hγα
       apply hnot
       apply mem_antidiagonal.2
       dsimp only
       refine add_tsub_cancel_of_le (Finsupp.single_le_iff.2 ?_)
-      rw [bcol_apply, if_pos rfl, Fin.cases_succ, ← hγα]
+      rw [bcol_apply, ite_eq_left rfl, Fin.cases_succ, ← hγα]
       simp
 
 end PI.PoleLengthCount
@@ -450,7 +450,7 @@ theorem taylorHasse_of (hY : YmDeriv) : TaylorHasse := by
   rw [hxe, hs_add, hs_sum]
   have hsum : ∑ γ ∈ mon D j k, (if γ = α then ((wfr G la jj ^ k : ↥(Frac0 X la G.w)) : Lw X la G.w) *
       (cf α : Lw X la G.w) else 0) = (wfr G la jj ^ k : ↥(Frac0 X la G.w)) • (cf α : Lw X la G.w) := by
-    rw [Finset.sum_ite_eq', if_pos hα, smul_eq_mul']
+    rw [Finset.sum_ite_eq', ite_eq_left hα, smul_eq_mul']
   rw [← hsum, add_sub_assoc, ← Finset.sum_sub_distrib]
   exact Submodule.add_mem _ h1 (Submodule.sum_mem _ h2)
 

@@ -30,13 +30,9 @@ structure FibreCurve (ξ : Spec (CommRingCat.of Ω) ⟶ X) (ϖ : Ω) where
   [fk : Field k]
   [fκ : Field κ]
   [alg : Algebra k κ]
-  fg : (⊤ : IntermediateField k κ).FG
-  trdeg : Algebra.trdeg k κ = 1
 
   C : Crv.ACurve κ
   w_pos : ∀ i, 0 < C.w i
-  triv : ∀ i (a : k), a ≠ 0 → C.v i (algebraMap k κ a) = 1
-  all : ∀ W : ValuationSubring κ, W ≠ ⊤ → (∀ a : k, algebraMap k κ a ∈ W) → ∃! i, (C.v i).valuationSubring = W
 
   η : Spec (CommRingCat.of κ) ⟶ X
   η_spec : genPt ξ ⤳ centre η
@@ -97,23 +93,5 @@ theorem numTrivMod_of_gen {ξ : Spec (CommRingCat.of Ω) ⟶ X} {L : Lat ξ Ω} 
     (ϖ : Ω) : NumTrivMod L ϖ := fun Γ => Γ.hasDeg_zero_of_gen (he _) fun _ => he _
 
 end General
-
-namespace FibLine
-
-open ProjectiveLinePlaces Crv.Inhab
-
-section Proj
-
-open MvPolynomial HomogeneousLocalization ProjCoord
-
-attribute [local instance] MvPolynomial.gradedAlgebra
-
-variable {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω]
-
-end Proj
-
-attribute [local instance] MvPolynomial.gradedAlgebra
-
-end FibLine
 
 end GlobalTheory.CompanionTheory.Ar.Flat

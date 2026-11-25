@@ -1451,7 +1451,6 @@ theorem GlobalTheory.FormalAlg.exists_chart_cocycle_of_pull : ∀ (R : Type) [Co
     obtain ⟨m, hm⟩ := exists_chart hL (γ e z)
     obtain ⟨a, ha⟩ := exists_chart hH₀ z
     have hzi : z ∈ C.D 0 i := (hpre i).1 ▸ hz'.1
-    have hzj : z ∈ C.D 0 j := (hpre j).1 ▸ hz'.2
     have hm3 : γ e z ∈ C.D e i ⊓ C.D e j ⊓ L.U m := ⟨hz', hm⟩
 
     have hgz : gs (γ e) z _ (g i j).val = (gm (𝟙 _) z _ (u j m)).val * ((gm (𝟙 _) z _ (u i m))⁻¹).val := by

@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameMinorValueFormula
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsBaseChart
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.AevalNeZeroOfNotMem
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsBaseChartAtGoodPoint
@@ -81,18 +82,18 @@ theorem minorIJ_shear {C : Finset (Fin N)} {ca cb : Fin N} (t : ℂ) (h : cb ∉
     simp [Matrix.add_apply, hx]
   have h1 := CPts.minorIJ_one (R := ℂ) C
   unfold minorIJ at h1 ⊢
-  rw [dif_pos rfl] at h1 ⊢
+  rw [dite_eq_left rfl] at h1 ⊢
   rw [e, h1]
 
 theorem cb_notMem {a ca cb : Fin N} (hca : (ca : ℕ) = lastCol N j a) (hcb : (cb : ℕ) = ca + 1) :
     cb ∉ stepCols N j a := by
   simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and]
   by_cases h : (a : ℕ) + 1 ≤ j
-  · simp only [lastCol, if_pos h] at hca
-    rw [if_pos h]
+  · simp only [lastCol, ite_eq_left h] at hca
+    rw [ite_eq_left h]
     omega
-  · simp only [lastCol, if_neg h] at hca
-    rw [if_neg h]
+  · simp only [lastCol, ite_eq_right h] at hca
+    rw [ite_eq_right h]
     omega
 
 end Minors
@@ -109,42 +110,8 @@ theorem pluck_of_flag (M : FlagModel y Ψ N j) {F : FrameData ι Ψ N M.Ω M.blk
     (hw : ∀ m : ι k, w ⟨k, m⟩ = A * ∑ I, valAt M.x (F.u ⟨k, m⟩ I) zb * minorIJ H I (stepCols N j p.2))
     {I : Finset (Fin N)} (hI : IsStepRows N j p.2 I) :
     pluck M F zb k w I = A * minorIJ H I (stepCols N j p.2) := by
-  let val := CPts.regVal hzb
-  let uA : (Σ k, ι k) → Finset (Fin N) → CPts.regRing M.x zb :=
-    fun q I => ⟨F.u q I, exists_isValueAt hzb (hG.2.1 q I).1⟩
-  let vA : Finset (Fin N) → (Σ k, ι k) → CPts.regRing M.x zb :=
-    fun I q => ⟨F.u' I q, exists_isValueAt hzb (hG.2.1 q I).2⟩
-  have rel : ∀ I', IsStepRows N j p.2 I' →
-      ∑ m : ι k, valAt M.x (F.u' I ⟨k, m⟩) zb * valAt M.x (F.u ⟨k, m⟩ I') zb = if I = I' then 1 else 0 :=
-    fun I' hI' => by
-      have e : ∑ m : ι k, vA I ⟨k, m⟩ * uA ⟨k, m⟩ I' = if I = I' then 1 else 0 := by
-        apply Subtype.ext
-        have := hF.2.2.1 p k hp I I' hI hI'
-        split_ifs at this ⊢ <;> simpa [uA, vA] using this
-      have e' := congrArg val e
-
-      rw [map_sum] at e'
-      simp only [map_mul] at e'
-      refine e'.trans ?_
-      split_ifs <;> simp
-  unfold pluck
-  simp only [hw]
-  calc ∑ m : ι k, valAt M.x (F.u' I ⟨k, m⟩) zb *
-        (A * ∑ I', valAt M.x (F.u ⟨k, m⟩ I') zb * minorIJ H I' (stepCols N j p.2))
-      = A * ∑ I', (∑ m : ι k, valAt M.x (F.u' I ⟨k, m⟩) zb * valAt M.x (F.u ⟨k, m⟩ I') zb) *
-          minorIJ H I' (stepCols N j p.2) := by
-        simp only [Finset.mul_sum, Finset.sum_mul]
-        rw [Finset.sum_comm]
-        exact Finset.sum_congr rfl fun I' _ => Finset.sum_congr rfl fun m _ => by ring
-    _ = A * minorIJ H I (stepCols N j p.2) := by
-        congr 1
-        rw [Finset.sum_eq_single I]
-        · rw [rel I hI, if_pos rfl, one_mul]
-        · intro I' _ hne
-          by_cases hs : IsStepRows N j p.2 I'
-          · rw [rel I' hs, if_neg (Ne.symm hne), zero_mul]
-          · rw [minorIJ_block_zero hH hs, mul_zero]
-        · simp
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.WMan.TwRead.pluck_eq <;> assumption
 
 theorem twMinor_of_flag (M : FlagModel y Ψ N j) {F : FrameData ι Ψ N M.Ω M.blk} (hF : M.IsFrame F)
     {zb : (Σ k, baseIdx ι M.blk k) → ℂ} (hzb : zb ∈ mcPts (mCoordIdeal M.x)) (hG : M.GoodAt F (mCoordIdeal zb))
@@ -189,9 +156,9 @@ theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι 
     rcases o with _ | k
     · exact one_ne_zero
     · by_cases h : ∀ p, M.blk p ≠ some k
-      · simp only [c, Option.elim_some, dif_pos h]
+      · simp only [c, Option.elim_some, dite_eq_left h]
         exact hc₀ _
-      · simp only [c, Option.elim_some, dif_neg h]
+      · simp only [c, Option.elim_some, dite_eq_right h]
         exact one_ne_zero
   let z' : (Σ o : Option K, ι (o.getD k₀)) → ℂ := fun p => c p.1 * z p
   have hz' : z' ∈ mcPts (wP M τ a k₀ ca cb) := mcPts_smul hW.2.1.2.1 c hc hz
@@ -200,7 +167,7 @@ theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι 
     funext q
     obtain ⟨⟨k, hk⟩, m⟩ := q
     show c (some k) * z ⟨some k, m⟩ = c₀ ⟨k, hk⟩ * z ⟨some k, m⟩
-    simp only [c, Option.elim_some, dif_pos hk]
+    simp only [c, Option.elim_some, dite_eq_left hk]
   have hbp2 : basePart M.blk (sndPt k₀ z') = zc := by
     rw [← hbp]
     funext q
@@ -219,7 +186,7 @@ theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι 
     obtain ⟨A, hA0, hA'⟩ := H1.2.2 p k hp
     have hk : c (some k) = 1 := by
       simp only [c, Option.elim_some]
-      exact dif_neg fun e => e p hp
+      exact dite_eq_right fun e => e p hp
     have hw : ∀ m : ι k, fstPt k₀ z ⟨k, m⟩ =
         A * ∑ I, valAt M.x (F.u ⟨k, m⟩ I) (baseOf M k₀ z) * minorIJ (h p.1) I (stepCols N j p.2) := fun m => by
       have e : fstPt k₀ z' ⟨k, m⟩ = fstPt k₀ z ⟨k, m⟩ := by

@@ -17,46 +17,7 @@ public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.WeilActionPreservesThetaAndInnerProduct
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HermitianThetaLevelDataFormsSystem
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.LevelThetaSpan
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.CategoryTheory.Monoidal.Cartesian.Over
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Presheaf
 import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IMemSiegel
@@ -68,16 +29,12 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.JetI
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.NonzeroLocus
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.HermitianTraceForms.TraceFormDualOneTraceFormDual
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.HermitianTraceFormVanishing
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.RationalSchwartzBruhatAlgebraIntegralLinear
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
@@ -104,7 +61,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level
 open GlobalTheory.SW hiding Level
 open Formalism.L2.Pj Formalism.L2.PjFree
 open scoped ComplexConjugate Classical
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Dict
 
 namespace GlobalTheory.Dict
@@ -159,7 +115,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level
 open GlobalTheory.SW hiding Level
 open Formalism.L2.Pj Formalism.L2.PjFree
 open scoped ComplexConjugate Classical
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Dict
 
 theorem _root_.GlobalTheory.T.exists_cmField_generator_at_primes_dividing : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (𝔍 : Ideal (𝓞 E)) (M : ℕ), 𝔍 ≠ ⊥ → 0 < M → ∃ (α : 𝓞 E) (𝔞 : Ideal (𝓞 E)), α ≠ 0 ∧ Ideal.span {α} = 𝔍 * 𝔞 ∧ IsCoprime 𝔞 (Ideal.span {(M : 𝓞 E)}) := by
@@ -179,7 +134,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level
 open GlobalTheory.SW hiding Level
 open Formalism.L2.Pj Formalism.L2.PjFree
 open scoped ComplexConjugate Classical
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Dict
 
 theorem _root_.GlobalTheory.T.exists_rowHighest_harmonic_polyDeriv_unitaryAction : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r) (g q0 : ℕ) (hr : X.p0 + q0 = r) (bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ) (idx : Fin g ≃ X.Ψ × Fin r) (n : ℕ), IsSympl X bas → Even n → ∀ h : Matrix (Fin n) (Fin n) E, ccT h * h = 1 → ∀ (k : X.Ψ → Fin q0 → ℕ) (k' : X.Ψ → Fin X.p0 → ℕ), ∀ P ∈ Harm.rowHighest ℂ k k', ∃ P' ∈ Harm.rowHighest ℂ k k', ∀ F : (Fin n → Fin g → ℂ) → ℂ, AnalyticOnNhd ℂ F Set.univ → I2.polyDeriv P (letterDir X hr idx) (fun z => F (hAct X idx h z)) 0 = I2.polyDeriv P' (letterDir X hr idx) F 0 := by
@@ -199,7 +153,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level
 open GlobalTheory.SW hiding Level
 open Formalism.L2.Pj Formalism.L2.PjFree
 open scoped ComplexConjugate Classical
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Dict
 
 namespace GlobalTheory.Dict.Patch
@@ -690,7 +643,7 @@ theorem moved_mem (hy : y ∈ tens Λ ((Ideal.span {2} * conjI D.𝔪) • L))
   have low : ∀ k : Fin n, r ≤ (k : ℕ) →
       (lowD r n (cc (α : E) / (α : E)) * y) k ∈ Lev.loc D.𝔪 (𝔐 • X.Λ) := fun k hk' => by
     obtain ⟨s, hs, h⟩ := cong_zero.1 (hk k hk')
-    rw [lowD_row, if_neg (not_lt.2 hk')]
+    rw [lowD_row, ite_eq_right (not_lt.2 hk')]
     refine ⟨a * s, cop_mul (ha' _ hM) hs, ?_⟩
     rw [h𝔪, mul_comm 𝔐, Submodule.mul_smul] at h
     rw [mul_smul, smul_comm s]
@@ -699,7 +652,7 @@ theorem moved_mem (hy : y ∈ tens Λ ((Ideal.span {2} * conjI D.𝔪) • L))
   · obtain ⟨s, hs, h⟩ := loc_tens (y := lowD r n (cc (α : E) / (α : E)) * y)
       (𝔟 := Ideal.span {2} * conjI D.𝔪) hΛ' hM (near_of_mem hL) fun k => by
         by_cases hk' : (k : ℕ) < r
-        · rw [lowD_row, if_pos hk', one_smul]
+        · rw [lowD_row, ite_eq_left hk', one_smul]
           exact rows_loc hΛ hM (near_of_mem hL) hy k
         · exact loc_smul (cop_level D)
             (Lev.loc_mono Submodule.smul_le_right (low k (not_lt.1 hk')))
@@ -783,7 +736,7 @@ theorem low_laws (hy : y ∈ tens Λ'' ((Ideal.span {2} * conjI D.𝔪 * D.𝔪)
   refine ⟨tens_mono _ (Submodule.smul_mono_left Ideal.mul_le_left) h3, fun k hk => ?_,
     fun k => ?_⟩
   · have := cong_of_mem (y' := 0) hΛ hM (near_of_mem hL) (by rw [sub_zero]; exact move' h0 hm hy) k
-    rwa [lowD_row, if_pos hk, one_smul] at this
+    rwa [lowD_row, ite_eq_left hk, one_smul] at this
   · obtain ⟨s, hs, h⟩ := near_of_mem hL
     exact cong_of_mem (y' := 0) hΛ' hM' ⟨s, (h𝔪 ▸ hs).of_mul_right_left, h⟩
       (by rw [sub_zero]; exact h3) k
@@ -805,7 +758,7 @@ theorem of_datF_ne (h : datF D 𝔐 hn y ≠ 0) :
     (∃ k : D.J, D.Red (fun i => y (Fin.castLE hn i)) k) ∧
       ∀ k : Fin n, r ≤ (k : ℕ) → Cong X 𝔐 (y k) 0 := by
   by_contra h'
-  exact h (dif_neg h')
+  exact h (dite_eq_right h')
 
 theorem dat_eq : D.dat hn y = datF D D.𝔪 hn y := rfl
 
@@ -1090,7 +1043,7 @@ theorem sum_free : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : �
     have := cong_add (cong_refl (X := X) (𝔪 := D.𝔪) (y k)) ((hlow q).2.1 k hk)
     rw [add_zero] at this
     change Cong X D.𝔪 ((lowD r n (cc (α : E) / (α : E)) * y) k + _) _
-    rwa [lowD_row, if_pos hk, one_smul]
+    rwa [lowD_row, ite_eq_left hk, one_smul]
   refine ⟨Finset.univ.image f, ?_, ?_⟩
   · rw [Finset.sum_image hinj.injOn]
     exact phi_eq_sum idx hs he hn hM hΛ hL v₀ hv f f1 f2 f3
@@ -1125,20 +1078,20 @@ theorem sum_free : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : �
       · exact (D.lam κ).ne_zero
       · refine red_congr (fun a => ?_) hκ
         change Cong X D.𝔪 (if _ then _ else _) _
-        rw [if_pos (show ((Fin.castLE hn a : Fin n) : ℕ) < r from a.2)]
+        rw [ite_eq_left (show ((Fin.castLE hn a : Fin n) : ℕ) < r from a.2)]
         exact cong_refl _
       · intro k hk
         change Cong X D.𝔪 (if _ then _ else _) _
-        rw [if_neg (not_lt.2 hk)]
+        rw [ite_eq_right (not_lt.2 hk)]
         exact cong_refl _)
     have h3 : x - lowD r n (cc (α : E) / (α : E)) * f i ∈ tens Λ'' (D.sh L) := by
       refine mem_moved hM h𝔪 hc h0 hα h𝔞 hΛ hΛ' hΛ'' hm h2 hL (sub_mem hx (f6 i).1)
         (fun k hk => ?_) fun k hk => ?_
       · have h4 := hi k
         change Cong X D.𝔪 (if _ then _ else _) _ at h4
-        rw [if_pos hk] at h4
+        rw [ite_eq_left hk] at h4
         change Cong X D.𝔪 (x k - (lowD r n (cc (α : E) / (α : E)) * f i) k) 0
-        rw [lowD_row, if_pos hk, one_smul, cong_zero]
+        rw [lowD_row, ite_eq_left hk, one_smul, cong_zero]
         exact h4
       · have := cong_sub (h5 k hk) ((f6 i).2 k hk)
         rw [sub_zero] at this
@@ -1168,7 +1121,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level
 open GlobalTheory.SW hiding Level
 open Formalism.L2.Pj Formalism.L2.PjFree
 open scoped ComplexConjugate Classical
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Dict
 
 theorem _root_.GlobalTheory.T.sum_moved_vacuum_translates_eq_freeRow_testFunction : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r) (g : ℕ) (bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ) (idx : Fin g ≃ X.Ψ × Fin r) (n : ℕ), IsSympl X bas → Even n → ∀ (D : SW.Level X) (hn : r ≤ n) (M : ℕ) (𝔐 𝔍 𝔞 : Ideal (𝓞 E)) (α : 𝓞 E), 0 < M → (M : 𝓞 E) ∈ D.𝔪 → D.𝔪 = 𝔐 * 𝔍 → IsCoprime 𝔐 𝔍 → α ≠ 0 → Ideal.span {α} = 𝔍 * 𝔞 → IsCoprime 𝔞 (Ideal.span {(M : 𝓞 E)}) → ∀ v₀ : Lt E r → TF n g, (∀ L ∈ D.lats, IsVac X bas D.w (tens (stdL E n) (D.sh L)) (v₀ L)) → ∀ h : Matrix (Fin n) (Fin n) E, h = Matrix.diagonal (fun k : Fin n => if (k : ℕ) < r then 1 else cc (α : E) / (α : E)) → ∀ Λ ∈ Vset E n M, ∀ Λ' ∈ Vset E n M, ∀ Λ'' ∈ Vset E n 1, Moves h Λ Λ'' → (𝔍 * conjI 𝔍) • Λ'' ≤ Λ' → (𝔍 * conjI 𝔍) • Λ' ≤ Λ'' → ∃ t : ℂ, t ≠ 0 ∧ ∀ L ∈ D.lats, ∃ s : Finset (Matrix (Fin n) (Fin r) E), D.phi bas hn v₀ L Λ = ∑ y ∈ s, D.dat hn y • heisG X bas y (unitv (projA X bas D.w (tens Λ (D.sh L)) (v₀ L))) ∧ ∑ y ∈ s, D.dat hn y • heisG X bas (h * y) (unitv (projA X bas D.w (tens Λ'' (D.sh L)) (v₀ L))) = t • phiF bas D 𝔐 hn v₀ L Λ' := by
@@ -1188,7 +1140,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level
 open GlobalTheory.SW hiding Level
 open Formalism.L2.Pj Formalism.L2.PjFree
 open scoped ComplexConjugate Classical
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Dict
 
 theorem _root_.GlobalTheory.T.theta_heisenberg_unitary_column_change : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r) (g : ℕ) (bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ) (idx : Fin g ≃ X.Ψ × Fin r) (n : ℕ), IsSympl X bas → Even n → ∀ h : Matrix (Fin n) (Fin n) E, ccT h * h = 1 → ∀ φ φ' : TF n g, IsSB φ → IsSB φ' → ∀ t : ℂ, ∀ x ∈ X.dom, (∀ z, thA X bas idx φ' x (hAct X idx h z) = t * thA X bas idx φ x z) → ∀ (y : Matrix (Fin n) (Fin r) E) z, thA X bas idx (heisG X bas (h * y) φ') x (hAct X idx h z) = t * thA X bas idx (heisG X bas y φ) x z := by
@@ -1208,7 +1159,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level
 open GlobalTheory.SW hiding Level
 open Formalism.L2.Pj Formalism.L2.PjFree
 open scoped ComplexConjugate Classical
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Dict
 
 theorem _root_.GlobalTheory.T.thetaVacuum_unitary_column_change_unit_factor : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r) (g : ℕ) (bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ) (idx : Fin g ≃ X.Ψ × Fin r) (n : ℕ), IsSympl X bas → Even n → ∀ w : E, IsIntegral ℤ w → w + cc w = 1 → ∀ h : Matrix (Fin n) (Fin n) E, ccT h * h = 1 → ∀ Λ ∈ Vset E n 1, ∀ Λ' ∈ Vset E n 1, Moves h Λ Λ' → ∃ t : ℂ, ‖t‖ = 1 ∧ ∀ L : Lt E r, SelfD X L → ∀ v : TF n g, IsVac X bas w (tens (stdL E n) L) v → ∀ x ∈ X.dom, ∀ z : Fin n → Fin g → ℂ, thA X bas idx (unitv (projA X bas w (tens Λ' L) v)) x (hAct X idx h z) = t * thA X bas idx (unitv (projA X bas w (tens Λ L) v)) x z := by
@@ -1228,21 +1178,12 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level
 open GlobalTheory.SW hiding Level
 open Formalism.L2.Pj Formalism.L2.PjFree
 open scoped ComplexConjugate Classical
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Dict
 
 namespace GlobalTheory.Dict.DiagFree
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r g n : ℕ} {X : Data E r}
   {bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ}
-
-theorem vset_one {M : ℕ} {Λ : Lt E n} (h : Λ ∈ Vset E n M) : Λ ∈ Vset E n 1 := by
-  obtain ⟨hfg, hdual, s, hs, -, h1, h2⟩ := h
-  exact ⟨hfg, hdual, s, hs, Nat.coprime_one_right s, h1, h2⟩
-
-theorem conjI_mono {P Q : Ideal (𝓞 E)} (h : P ≤ Q) : conjI P ≤ conjI Q := by
-  unfold conjI
-  exact Ideal.span_mono fun _ ⟨b, hb, e⟩ => ⟨b, h hb, e⟩
 
 theorem isSB_smul (c : ℂ) {φ : TF n g} (h : IsSB φ) : IsSB (c • φ) := by
   obtain ⟨R, hR, h1, h2⟩ := h
@@ -1294,7 +1235,7 @@ theorem thP_phi_eq_thP_phiF : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
   have hcopJ : IsCoprime 𝔍 (conjI 𝔍) := by
     have h1 := D.cop
     rw [Ideal.isCoprime_iff_sup_eq] at h1 ⊢
-    exact top_unique (h1.symm.le.trans (sup_le_sup hle (conjI_mono hle)))
+    exact top_unique (h1.symm.le.trans (sup_le_sup hle (GlobalTheory.Dict.SumFree.conjI_mono hle)))
   obtain ⟨α, 𝔞, hα, hspan, hcopa⟩ := GlobalTheory.T.exists_cmField_generator_at_primes_dividing E 𝔍 M h𝔍 hM
   set H : Matrix (Fin n) (Fin n) E :=
     Matrix.diagonal (fun k : Fin n => if (k : ℕ) < r then 1 else cc (α : E) / (α : E)) with hHdef
@@ -1303,7 +1244,7 @@ theorem thP_phi_eq_thP_phiF : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
   obtain ⟨t, ht0, ht⟩ := GlobalTheory.T.sum_moved_vacuum_translates_eq_freeRow_testFunction E r X g bas idx n hs hn D hrn M 𝔐 𝔍 𝔞 α hM hMm hsplit hcop hα
     hspan hcopa v₀ hv₀ H hHdef Λ hΛ Λ' hΛ' Λ'' hΛ'' hmv hle1 hle2
   obtain ⟨t', ht'1, ht'⟩ := GlobalTheory.T.thetaVacuum_unitary_column_change_unit_factor E r X g bas idx n hs hn D.w D.w_int D.w_tr H hunit Λ
-    (vset_one hΛ) Λ'' hΛ'' hmv
+    (GlobalTheory.Dict.SumFree.mem_Vset_one hΛ) Λ'' hΛ'' hmv
   obtain ⟨P', hP', hPd⟩ := GlobalTheory.T.exists_rowHighest_harmonic_polyDeriv_unitaryAction E r X g q0 hr bas idx n hs hn H hunit k k' P hP
   have ht'0 : t' ≠ 0 := by
     intro h0
@@ -1366,7 +1307,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level
 open GlobalTheory.SW hiding Level
 open Formalism.L2.Pj Formalism.L2.PjFree
 open scoped ComplexConjugate Classical
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Dict
 
 namespace GlobalTheory.Dict
@@ -1506,7 +1446,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level
 open GlobalTheory.SW hiding Level
 open Formalism.L2.Pj Formalism.L2.PjFree
 open scoped ComplexConjugate Classical
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Dict
 
 private theorem thP_smul' {E : Type} [Field E] [NumberField E] [IsCMField E] {r g q0 n : ℕ}
@@ -1558,7 +1497,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level
 open GlobalTheory.SW hiding Level
 open Formalism.L2.Pj Formalism.L2.PjFree
 open scoped ComplexConjugate Classical
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Dict
 
 end -- clump:auto

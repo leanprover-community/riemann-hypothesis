@@ -142,10 +142,10 @@ def flagChain (𝔉 : IsoFlag V) (τ : E →ₐ[F] Fv F v) (j : Fin (2 * 𝔉.k 
 variable (𝔉 : IsoFlag V) (τ : E →ₐ[F] Fv F v)
 
 theorem flagChain_of_le {j : Fin (2 * 𝔉.k + 2)} (hj : (j : ℕ) ≤ 𝔉.k) :
-    flagChain 𝔉 τ j = wPart τ (𝔉.X ⟨j, by omega⟩) := dif_pos hj
+    flagChain 𝔉 τ j = wPart τ (𝔉.X ⟨j, by omega⟩) := dite_eq_left hj
 
 theorem flagChain_of_lt {j : Fin (2 * 𝔉.k + 2)} (hj : 𝔉.k < (j : ℕ)) :
-    flagChain 𝔉 τ j = wPart τ (perp V (𝔉.X ⟨2 * 𝔉.k + 1 - j, by omega⟩)) := dif_neg (not_le.2 hj)
+    flagChain 𝔉 τ j = wPart τ (perp V (𝔉.X ⟨2 * 𝔉.k + 1 - j, by omega⟩)) := dite_eq_right (not_le.2 hj)
 
 theorem flagChain_mono : Monotone (flagChain 𝔉 τ) := by
   intro i j hij

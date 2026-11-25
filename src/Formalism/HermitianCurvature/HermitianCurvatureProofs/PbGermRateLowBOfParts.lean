@@ -149,8 +149,7 @@ theorem cutN_supp {k r : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ
   have hc : PBASM.cutN n g ≠ 0 := by intro h0; apply hne; simp [h0]
   unfold PBASM.cutN at hc
   have hpos : 0 < (4 - ∑ i, ∑ j, Complex.normSq ((((n : ℝ) + 1)⁻¹ • g) i j)) / 3 := by
-    by_contra hle
-    push_neg at hle
+    by_contra! hle
     apply hc
     rw [Real.smoothTransition.zero_of_nonpos hle]
     simp
@@ -212,7 +211,7 @@ theorem utOf_sub_mainD {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ 
       rintro rfl
       rw [mem_rootSet4 hs0, zero_pow hs0] at hz
       exact hD hz.symm
-    simp only [GermFibreKernels.btOf, if_neg hz0, smul_smul, neg_smul]
+    simp only [GermFibreKernels.btOf, ite_eq_right hz0, smul_smul, neg_smul]
 
 end decomp
 

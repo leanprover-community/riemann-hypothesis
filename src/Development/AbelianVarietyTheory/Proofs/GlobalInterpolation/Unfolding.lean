@@ -1081,8 +1081,6 @@ theorem unramified_host (D : D7) : UnramifiedAtFinite D.host.F D.host.E := by
   intro P hP _
   exact Algebra.unramified_iff_forall.1 hU ⟨P, hP⟩
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem unfoldAt (hT : StabTransitive) (D : D7) (W W' : HSpace D.host.E) (P Q P' Q' : ℕ)
     (hc : P' + Q' + 1 = P + Q) (hs : W.SigOK) (hPQ : ∀ τ, W.sig τ = (P, Q)) (hs' : W'.SigOK)
     (hPQ' : ∀ τ, W'.sig τ = (P', Q')) (β : D.host.F) (hβ : β = 1 ∨ β = -1) (x : W.V)

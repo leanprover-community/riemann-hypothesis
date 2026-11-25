@@ -16,6 +16,7 @@ import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.SectionDivision
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsRealMultiplicationUniformization
 
 @[expose] public section
 
@@ -32,45 +33,7 @@ attribute [local instance] GlobalTheory.AbelianExp.pointTopology
 
 theorem compactSpace_points (A : Over (Sp ℂ)) [GrpObj A] (L : LB A.left) (hL : Out.RelAmple A L) :
     @CompactSpace _ (PointsCompact.pointTopology A) := by
-  have h1 := @valAt'_rules
-  have h2 := @existsUnique_point_of_ringHom
-  obtain ⟨N, -, M, s, hcov, H⟩ := hL ⊤ (isAffineOpen_top _)
-  let Y : Over (Sp ℂ) := Over.mk ((A.hom ∣_ ⊤) ≫ (⊤ : (Sp ℂ).Opens).ι)
-  let φ : Y ⟶ A := Over.homMk (A.hom ⁻¹ᵁ ⊤).ι (morphismRestrict_ι A.hom ⊤).symm
-  let c₀ : ℂ →+* Γ((⊤ : (Sp ℂ).Opens).toScheme, ⊤) :=
-    ((⊤ : (Sp ℂ).Opens).ι.appTop).hom.comp (Scheme.ΓSpecIso (CommRingCat.of ℂ)).inv.hom
-  have hc₀ : Function.Surjective c₀ := by
-    have : IsIso (⊤ : (Sp ℂ).Opens).ι := inferInstanceAs (IsIso (Sp ℂ).topIso.hom)
-    exact (ConcreteCategory.bijective_of_isIso ((⊤ : (Sp ℂ).Opens).ι.app ⊤)).2.comp
-      (ConcreteCategory.bijective_of_isIso (Scheme.ΓSpecIso (CommRingCat.of ℂ)).inv).2
-  have hY : @CompactSpace _ (PointsCompact.pointTopology Y) := by
-    refine PointsCompact.compact_of_sections h1 h2 Y (Out.powOver A L ⊤ N) s hcov
-      fun i => ⟨(H i).1, ?_⟩
-    obtain ⟨r, hr, hs⟩ := (H i).2
-    refine ⟨r, hr, ((A.hom ∣_ ⊤).appLE ⊤ (Out.nonzeroLocus (s i)) le_top).hom.comp c₀,
-      fun a => ?_, fun f => ?_⟩
-    · have := Scheme.Hom.comp_appLE (A.hom ∣_ ⊤) (⊤ : (Sp ℂ).Opens).ι ⊤
-        (Out.nonzeroLocus (s i)) le_top
-      exact (congrArg (fun u => u.hom ((Scheme.ΓSpecIso (CommRingCat.of ℂ)).inv.hom a)) this).symm
-    · obtain ⟨p, rfl⟩ := hs f
-      obtain ⟨q, rfl⟩ := MvPolynomial.map_surjective c₀ hc₀ p
-      exact ⟨q, (MvPolynomial.eval₂_map c₀ r _ q).symm⟩
-  letI := PointsCompact.pointTopology Y
-  letI := PointsCompact.pointTopology A
-  have hsurj : Function.Surjective fun x : 𝟙_ (Over (Sp ℂ)) ⟶ Y => x ≫ φ := by
-    intro x
-    have hrange : Set.range x.left ⊆ Set.range (A.hom ⁻¹ᵁ ⊤).ι := by
-      rw [Scheme.Opens.range_ι]
-      intro _ _
-      trivial
-    have hl := IsOpenImmersion.lift_fac (A.hom ⁻¹ᵁ ⊤).ι x.left hrange
-    refine ⟨Over.homMk (IsOpenImmersion.lift (A.hom ⁻¹ᵁ ⊤).ι x.left hrange) ?_, ?_⟩
-    · have := Over.w x
-      rw [← hl, Category.assoc, ← morphismRestrict_ι] at this
-      exact this
-    · ext1
-      exact hl
-  exact hsurj.compactSpace (PointsCompact.continuous_comp h1 φ)
+  apply _root_.GlobalTheory.RealMultChart.compactSpace_points <;> assumption
 
 theorem surjective_mulA (A : Over (Sp ℂ)) [GrpObj A] (hA : IsAbelianScheme A) (r : ℕ) (hr : 1 ≤ r) :
     Surjective (Out.mulA A r).left := by

@@ -98,8 +98,7 @@ theorem nthree : ‖(3 : K)‖ ≤ 1 := by
 
 theorem norm_le_one_of_monic_two {y b c : K} (hb : ‖b‖ ≤ 1) (hc : ‖c‖ ≤ 1)
     (h : y ^ 2 + b * y = c) : ‖y‖ ≤ 1 := by
-  by_contra hy
-  push_neg at hy
+  by_contra! hy
   have h2 : y ^ 2 = c + -(b * y) := by rw [← h]; ring
   have h3 : ‖y ^ 2‖ ≤ max ‖c‖ ‖-(b * y)‖ := by
     rw [h2]
@@ -195,12 +194,6 @@ theorem division_spec : DivSpec.{u, v} := by
   · intro h2
     subst h2
     rfl
-
-section Double
-
-variable {A : Type u} [CommRing A]
-
-end Double
 
 end Formalism.L2.Th1.A
 end -- clump:auto

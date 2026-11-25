@@ -295,15 +295,15 @@ private theorem stdFst_change_frames : ∀ {D : D7} (ν : (AE D)ˣ →* Circle) 
       rwa [Matrix.mul_assoc, hkk, Matrix.mul_one] at this
     by_cases hc : IsIntM (frMapO A WW βA' βW' y) ∧
         ∀ i j, A.rank ≤ i.1 → GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle.InId I (frMapO A WW βA' βW' y i j)
-    · rw [if_pos ⟨hh, hc⟩, if_pos ⟨hh', hI.2 hc.1, hR.2 hc.2⟩, ← mul_assoc, ← Circle.coe_mul, mul_inv_cancel,
+    · rw [ite_eq_left ⟨hh, hc⟩, ite_eq_left ⟨hh', hI.2 hc.1, hR.2 hc.2⟩, ← mul_assoc, ← Circle.coe_mul, mul_inv_cancel,
         Circle.coe_one, one_mul]
-    · rw [if_neg fun h => hc h.2, if_neg fun h => hc ⟨hI.1 h.2.1, hR.1 h.2.2⟩, mul_zero]
+    · rw [ite_eq_right fun h => hc h.2, ite_eq_right fun h => hc ⟨hI.1 h.2.1, hR.1 h.2.2⟩, mul_zero]
   · have hh' : ¬ IsHalf e (HMul.hMul (mt WW k⁻¹) (y : Matrix (Fin WW.rank) (Fin A.rank) (AE D)) : Mx D WW.rank A.rank) :=
       fun h => hh (by
         have := half_mul (mt WW k) h
         rwa [← Matrix.mul_assoc, ← GlobalTheory.AdelicLatMove.mt_mul, mul_inv_cancel, GlobalTheory.AdelicLatMove.mt_one,
           Matrix.one_mul] at this)
-    rw [if_neg fun h => hh h.1, if_neg fun h => hh' h.1, mul_zero]
+    rw [ite_eq_right fun h => hh h.1, ite_eq_right fun h => hh' h.1, mul_zero]
 
 end GlobalTheory.frameChangeUnitDeterminant
 

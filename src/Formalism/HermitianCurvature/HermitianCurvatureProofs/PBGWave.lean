@@ -192,8 +192,8 @@ theorem uInv_add_smul (s : ℂ) : ∀ (w : List C.Letter) (x y : Wd.Ix (Fin w.le
     simp only [KB.uInv]
     rw [r0, r1, hx, hx1]
     by_cases h0 : e 0 = 0
-    · simp only [if_pos h0, Pi.add_apply, Pi.smul_apply]
-    · simp only [if_neg h0, Pi.add_apply, Pi.smul_apply, smul_add, smul_smul]
+    · simp only [ite_eq_left h0, Pi.add_apply, Pi.smul_apply]
+    · simp only [ite_eq_right h0, Pi.add_apply, Pi.smul_apply, smul_add, smul_smul]
       rw [mul_comm c]
       abel
 
@@ -232,7 +232,7 @@ theorem waveG_cons0 (Bs : B.RealPlaceData k ρ Wp Wq) (s : ℂ) (t : ℝ) (w : L
   funext g
   have h1 : (fun a : Fin w.length => (Fin.cons (0 : Fin 2) e' : Wd.Ix (Fin (w.length + 1))) a.succ) = e' := by
     funext a; simp
-  simp only [KB.waveG, KB.uInv, Fin.cons_zero, if_true, h1]
+  simp only [KB.waveG, KB.uInv, Fin.cons_zero, ite_true, h1]
 
 theorem waveG_cons1 (Bs : B.RealPlaceData k ρ Wp Wq) (s : ℂ) (t : ℝ) (w : List C.Letter)
     (x : Wd.Ix (Fin (w.length + 1)) → B.Mat k ρ → (Wq →L[ℂ] Wp)) (e' : Wd.Ix (Fin w.length)) :
@@ -241,8 +241,8 @@ theorem waveG_cons1 (Bs : B.RealPlaceData k ρ Wp Wq) (s : ℂ) (t : ℝ) (w : L
   funext g
   have h1 : (fun a : Fin w.length => (Fin.cons (1 : Fin 2) e' : Wd.Ix (Fin (w.length + 1))) a.succ) = e' := by
     funext a; simp
-  simp only [KB.waveG, KB.uInv, Fin.cons_zero, h1, Pi.add_apply, Pi.smul_apply, if_true,
-    show ((1 : Fin 2) = 0) = False from by decide, if_false, smul_add]
+  simp only [KB.waveG, KB.uInv, Fin.cons_zero, h1, Pi.add_apply, Pi.smul_apply, ite_true,
+    show ((1 : Fin 2) = 0) = False from by decide, ite_false, smul_add]
   rw [smul_comm s]
 
 theorem waveG_congrGV (Bs : B.RealPlaceData k ρ Wp Wq) (s : ℂ) :

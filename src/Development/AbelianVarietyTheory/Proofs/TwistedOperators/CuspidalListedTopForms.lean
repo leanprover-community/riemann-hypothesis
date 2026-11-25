@@ -78,27 +78,27 @@ theorem isTypeAt_of_finSum (θ : InfFam D) (V : HSp D) (τ : D.what₂.Tau) {S :
   let CC : ℕ → ℝ := fun i => if hi : i < n then ‖L ⟨i, hi⟩‖ else 0
   have hb : ∀ i w, ‖ll i w‖ ≤ CC i * ‖w‖ := fun i w => by
     by_cases hi : i < n
-    · simp only [ll, CC, dif_pos hi]
+    · simp only [ll, CC, dite_eq_left hi]
       exact (L ⟨i, hi⟩).le_opNorm w
-    · simp [ll, CC, dif_neg hi]
+    · simp [ll, CC, dite_eq_right hi]
   refine ⟨vv, fun i => ?_, ll, fun i => ⟨[[]], CC i, by simp, fun w _ => by simpa using hb i w⟩,
     ⟨[[]], CC, by simp, fun i w _ => by simpa using hb i w, fun S' _ => ?_, fun _ => 1, continuous_const,
       fun g hg w _ => ?_⟩, fun g hg => ?_⟩
   · by_cases hi : i < n
-    · simp only [vv, dif_pos hi]
+    · simp only [vv, dite_eq_left hi]
       exact hv _
-    · simp only [vv, dif_neg hi]
+    · simp only [vv, dite_eq_right hi]
       intro k Xs _
       simpa using contDiff_const
   · refine summable_of_ne_finset_zero (s := Finset.range n) fun i hi => ?_
     have : ¬ i < n := by simpa using hi
-    simp [CC, dif_neg this]
+    simp [CC, dite_eq_right this]
   · simp [hD.2.2.1.2.1 _ (_root_.GlobalTheory.HolDict.ModelRep.conj_mem hP hJ hg) w]
   · rw [hφ g hg]
     convert hasSum_sum_of_ne_finset_zero (s := Finset.range n)
       (f := fun i => ll i (σ (P * g * P⁻¹) (vv i))) (fun i hi => by
         have : ¬ i < n := by simpa using hi
-        simp [ll, dif_neg this]) using 1
+        simp [ll, dite_eq_right this]) using 1
     · rw [Finset.sum_range]
       refine Finset.sum_congr rfl fun i _ => ?_
       simp [ll, vv, i.2]
@@ -214,9 +214,5 @@ theorem props_cast (θ : InfFam D) (S : D.what₂.Tau → SPar) {Λ : Submodule 
       ∀ τ, IsTypeAt θ X.sp τ (S τ) fun g => star (φ (cast (congrArg (fun X : LSp D => GA D X.sp) h) g)) := by
   subst h
   exact ⟨h1, h2, h3⟩
-
-end GlobalTheory.EndCusp
-
-namespace GlobalTheory.EndCusp
 
 end GlobalTheory.EndCusp

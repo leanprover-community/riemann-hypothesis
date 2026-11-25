@@ -62,7 +62,6 @@ open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.In
 open Formalism.IndefR.Datum (InfFam)
 open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.LevelsProd
 
@@ -135,7 +134,7 @@ theorem mem_unipSym_memK (s k : ℕ) (u : GL (Fin r) κ) : u ∈ unipSym κ r s 
 theorem edgeSum_sup (s k : ℕ) (u : GL (Fin r) κ) : edgeSum supEdge u = sumK false s k u.val := by
   unfold edgeSum supEdge sumK EdK
   refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun c _ => ?_
-  simp only [Bool.false_eq_true, if_false]
+  simp only [Bool.false_eq_true, ite_false]
   split_ifs <;> simp_all
 
 theorem edgeSum_sym (s k : ℕ) (hk : 0 < k) (u : GL (Fin r) κ) : edgeSum (symEdge s k) u = sumK true s k u.val := by
@@ -369,7 +368,6 @@ open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.In
 open Formalism.IndefR.Datum (InfFam)
 open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto

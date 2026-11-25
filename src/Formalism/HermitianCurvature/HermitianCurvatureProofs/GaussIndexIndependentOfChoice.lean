@@ -6,6 +6,7 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IntegralLatt
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.KernelQuotientFinite
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.PadicChangeOfVariables
 
 @[expose] public section
 
@@ -36,18 +37,7 @@ theorem small (hD : LocalDatum K R ψ) (h0 : ∀ n : ℕ, n ≠ 0 → IsUnit (n 
 theorem big (hD : LocalDatum K R ψ) {ϖ : Kˣ}
     (hϖ : (ϖ : K) ∈ R) (hϖ' : ∀ x : K, ∃ m : ℕ, (ϖ : K) ^ m * x ∈ R) (C : Set K)
     (hC : IsCompact C) : ∃ n : ℕ, ∀ y ∈ C, (ϖ : K) ^ n * y ∈ R := by
-  obtain ⟨n, hn⟩ := hC.elim_directed_cover
-    (fun n : ℕ => (fun y => (ϖ : K) ^ n * y) ⁻¹' (R : Set K))
-    (fun n => hD.isOpen.preimage (continuous_const.mul continuous_id))
-    (fun y _ => by simpa using hϖ' y)
-    (by
-      apply directed_of_isDirected_le
-      intro a b hab y hy
-      obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hab
-      show (ϖ : K) ^ (a + k) * y ∈ R
-      have e : (ϖ : K) ^ (a + k) * y = (ϖ : K) ^ k * ((ϖ : K) ^ a * y) := by rw [pow_add]; ring
-      rw [e]; exact R.mul_mem (R.pow_mem hϖ k) hy)
-  exact ⟨n, hn⟩
+  apply _root_.Formalism.FourierDecayAlt.P.A6x9.bdd_of_compact <;> assumption
 
 theorem compact_big (hD : LocalDatum K R ψ) (ϖ : Kˣ) (n : ℕ) :
     IsCompact {y : K | (ϖ : K) ^ n * y ∈ R} := by
@@ -101,12 +91,12 @@ theorem kernel_as_coset_sum : Formalism.FourierDecayAlt.A6.KpFromBB := by
   · refine finsum_congr fun q' => ?_
     unfold bbZ
     by_cases h : IsInt R (orbZ w' (rep R q'))
-    · rw [if_pos h, finsum_mul]
+    · rw [ite_eq_left h, finsum_mul]
       refine finsum_congr fun q => ?_
       by_cases h2 : IsInt R (orbZ w (rep R q))
-      · simp only [pairTerm, Equiv.prodComm_apply, Prod.swap_prod_mk, h, h2, and_self, if_true]
+      · simp only [pairTerm, Equiv.prodComm_apply, Prod.swap_prod_mk, h, h2, and_self, ite_true]
         rfl
-      · simp only [pairTerm, Equiv.prodComm_apply, Prod.swap_prod_mk, h, h2, false_and, if_false,
+      · simp only [pairTerm, Equiv.prodComm_apply, Prod.swap_prod_mk, h, h2, false_and, ite_false,
           zero_mul]
     · simp [pairTerm, h]
   · exact hfin.preimage ((Equiv.prodComm (Cos R w') (Cos R w)).injective.injOn)
@@ -159,8 +149,8 @@ theorem gaussF_scale (ψ : AddChar K ℂ) (L : AddSubgroup K) (m : ℕ) (a b : K
     rw [this, one_mul]
   unfold gaussF
   by_cases h : ∀ i, ξ i ∈ L
-  · rw [if_pos h, if_pos (h1.2 h), h2]
-  · rw [if_neg h, if_neg (fun h' => h (h1.1 h'))]
+  · rw [ite_eq_left h, ite_eq_left (h1.2 h), h2]
+  · rw [ite_eq_right h, ite_eq_right (fun h' => h (h1.1 h'))]
 
 theorem smul_inv_smul' (b : Kˣ) {d : ℕ} (x : Fin d → K) :
     (b : K) • (((b⁻¹ : Kˣ) : K) • x) = x := by
@@ -629,11 +619,11 @@ variable {ψ : AddChar K ℂ}
 
 theorem gaussF_pos {L : AddSubgroup K} {M : Matrix (Fin m) (Fin m) K} {ξ : Fin m → K}
     (h : ∀ i, ξ i ∈ L) : gaussF ψ L M ξ = ψ (qf M ξ) := by
-  unfold gaussF qf; rw [if_pos h]
+  unfold gaussF qf; rw [ite_eq_left h]
 
 theorem gaussF_neg {L : AddSubgroup K} {M : Matrix (Fin m) (Fin m) K} {ξ : Fin m → K}
     (h : ¬ ∀ i, ξ i ∈ L) : gaussF ψ L M ξ = 0 := by
-  unfold gaussF; rw [if_neg h]
+  unfold gaussF; rw [ite_eq_right h]
 
 theorem single_mem {L : AddSubgroup K} {a : K} (ha : a ∈ L) (j i : Fin m) :
     (Pi.single j a : Fin m → K) i ∈ L := by

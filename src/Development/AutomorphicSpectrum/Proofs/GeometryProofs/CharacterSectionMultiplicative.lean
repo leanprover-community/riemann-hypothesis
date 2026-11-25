@@ -238,15 +238,6 @@ theorem appTop_pt (Γ : QFGroup R T) (s : Γ(Γ.G.left, ⊤)) (f : T → R) (hs 
   simp
   rfl
 
-theorem mul_univ [Finite T] (Γ : QFGroup R T) (χ : T →* Rˣ) (s : Γ(Γ.G.left, ⊤))
-    (hs : Γ.HasValues s (fun t => ((χ t : Rˣ) : R))) :
-    (fst Γ.G Γ.G * snd Γ.G Γ.G).left.appTop s =
-      (fst Γ.G Γ.G).left.appTop s * (snd Γ.G Γ.G).left.appTop s := by
-  rw [← sub_eq_zero]
-  refine sec_prod_zero Γ _ fun a b => ?_
-  rw [map_sub, map_mul, pull, pull, pull, comp_mul, lift_fst, lift_snd, ← map_mul, appTop_pt Γ s _ hs,
-    appTop_pt Γ s _ hs, appTop_pt Γ s _ hs, ← map_mul, ← map_mul, map_mul χ, Units.val_mul, sub_self]
-
 theorem appTop_gen_injective :
     Function.Injective (Spec.map (CommRingCat.ofHom (algebraMap R (FractionRing R)))).appTop := by
   intro x y hxy
@@ -277,4 +268,3 @@ theorem one_univ (Γ : QFGroup R T) (χ : T →* Rˣ) (s : Γ(Γ.G.left, ⊤))
   exact inj (h1.trans (map_one _).symm)
 
 end GlobalTheory.CompanionTheory.Ar.BT.CharMul
-

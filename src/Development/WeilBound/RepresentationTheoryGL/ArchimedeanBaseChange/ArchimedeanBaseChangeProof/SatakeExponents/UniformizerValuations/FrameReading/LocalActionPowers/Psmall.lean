@@ -16,6 +16,7 @@ import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HasSatakeGLOfIsSatVecGL
 import GroundTheory.GlobalFields.LocalFieldAtPlace
 import Mathlib.Tactic.Linter.Style
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocMIterateDiag
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.RelIndexNeZeroOfIsOpenLeIsCompact, Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.FrameReading.LocalActionPowers.Psmall
@@ -27,7 +28,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory
 
@@ -63,19 +63,8 @@ section Generic
 
 variable {P X : Type} [Group P] [Group X]
 
-theorem hint_smul (K : Subgroup P) (c : ℂ) (v : P → ℂ) : hint K (fun m => c * v m) = c * hint K v := by
-  by_cases hc : c = 0
-  · subst hc
-    simp only [zero_mul]
-    exact GlobalTheory.CompanionTheory.FamClP.hint_zero K
-  · have hst : rStab (fun m => c * v m) = rStab v := by
-      ext r
-      show (∀ x, c * v (x * r) = c * v x) ↔ ∀ x, v (x * r) = v x
-      exact forall_congr' fun x => mul_right_inj' hc
-    unfold hint
-    rw [hst, show (∑ᶠ q : P ⧸ (rStab v ⊓ K), c * v q.out) = c * ∑ᶠ q : P ⧸ (rStab v ⊓ K), v q.out from
-      (smul_finsum c _).symm]
-    ring
+theorem hint_smul (K : Subgroup P) (c : ℂ) (v : P → ℂ) : hint K (fun m => c * v m) = c * hint K v :=
+  _root_.GlobalTheory.CompanionTheory.TailLocPow.hint_smul K c v
 
 theorem act_left (K L : Subgroup P) (c : ℂ) (φ : P →* X) (G : X → ℂ) (z : X) (l : P) (hl : l ∈ L) :
     hint K (fun m => (L : Set P).indicator (fun _ => c) m * G (z * φ l * φ m)) =
@@ -115,7 +104,7 @@ theorem idem_fix_iff (K L : Subgroup P) (hLK : L ≤ K) (hfin : L.relIndex K ≠
       have := QuotientGroup.eq.1 (QuotientGroup.out_eq' ((1 : P) : P ⧸ L))
       simpa using this
     rw [finsum_eq_single _ ((1 : P) : P ⧸ L)]
-    · simp only [Set.indicator_apply, SetLike.mem_coe, hone, if_true]
+    · simp only [Set.indicator_apply, SetLike.mem_coe, hone, ite_true]
       have hc : ((L.relIndex K : ℕ) : ℂ) ≠ 0 := Nat.cast_ne_zero.2 hfin
       rw [← mul_assoc, inv_mul_cancel₀ hc, one_mul]
     · intro q hq
@@ -243,7 +232,7 @@ theorem locM_iter_diag (w : Pl E) {k : Type} [Fintype k] (q : k → GLw a w × G
     rw [Finset.sum_eq_single x]
     · simp
     · intro y _ hy
-      rw [if_neg (Ne.symm hy), actP_zero]
+      rw [ite_eq_right (Ne.symm hy), actP_zero]
     · intro h
       exact absurd (Finset.mem_univ x) h
   induction m with

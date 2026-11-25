@@ -58,12 +58,6 @@ noncomputable section
 
 namespace GlobalTheory.DblUnitaryBox
 
-section Alg
-
-variable {A α β : Type} [CommRing A] [Fintype β] [DecidableEq β]
-
-end Alg
-
 section Meas
 
 variable {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ]
@@ -120,34 +114,6 @@ theorem integral_mul_star_eq (μ : Measure (κ → AF F)) (hμ : μ.IsAddHaarMea
 
 
 end Meas
-
-section Shape
-
-variable {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ] {M : Type} [AddCommGroup M] [Module (AF F) M]
-  {Bf : M → M → AF F}
-
-attribute [local instance] measTup borelTup
-
-variable {E : Type} [Field E] [NumberField E] [Algebra F E]
-
-end Shape
-
-section Lagr
-
-variable {R A α β m κ : Type} [CommRing R] [CommRing A] [Algebra R A] [Fintype α] [DecidableEq α] [Fintype κ]
-  {Bf : Matrix α β A → Matrix α β A → R} (co : Darboux Bf κ)
-
-
-
-end Lagr
-
-section Value
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-
-attribute [local instance] measTup borelTup
-
-end Value
 
 end GlobalTheory.DblUnitaryBox
 

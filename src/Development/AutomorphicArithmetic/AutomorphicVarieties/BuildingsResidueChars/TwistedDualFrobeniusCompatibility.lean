@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.ThetaCharEqSelfOfConjugateDual
 public import Mathlib.NumberTheory.Cyclotomic.CyclotomicCharacter
 public import Mathlib.NumberTheory.NumberField.Basic
 public import Mathlib.NumberTheory.Padics.Complex
@@ -149,12 +150,7 @@ private theorem isFrob_conjGal {K Ω : Type} [Field K] [NumberField K] [Field Ω
 private theorem isLift_conj {F Ω : Type} [Field F] [NumberField F] [IsCMField F] [Field Ω] [Algebra F Ω]
     {c : G (maximalRealSubfield F) Ω} (hc : IsConjEl c) :
     IsLift (IsCMField.complexConj F).toRingEquiv c.symm.toRingEquiv := by
-  obtain ⟨j, hj⟩ := hc
-  intro x
-  refine c.symm_apply_eq.2 (j.injective ?_)
-  rw [hj]
-  have h := IsCMField.complexEmbedding_complexConj F (j.comp (algebraMap F Ω)) x
-  exact (Complex.conj_conj _).symm.trans (congrArg (starRingEnd ℂ) h.symm)
+  apply _root_.isLift_conj <;> assumption
 
 private noncomputable def dPerp {k : Type} [Field k] {a : ℕ} (W : Submodule k (Fin a → k)) : Submodule k (Fin a → k) :=
   W.dualAnnihilator.comap (dotProductEquiv k (Fin a)).toLinearMap

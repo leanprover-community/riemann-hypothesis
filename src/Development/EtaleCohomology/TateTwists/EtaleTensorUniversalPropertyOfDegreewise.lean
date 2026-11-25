@@ -51,7 +51,7 @@ def postPair {R : Type} [CommRing R] {I J K K' : Cx R} (μ : Pair I J K) (u : K 
 
 theorem part3 {R : Type} [CommRing R] {I J K : Cx R} (τ : Pair I J K) {K' : Cx R} (u : K ⟶ K') :
     ∃ ν : Pair I J K', τ.Compat ν (𝟙 I) (𝟙 J) u :=
-  ⟨postPair τ u, fun U s t w h a b => rfl⟩
+  ⟨postPair τ u, fun _ _ _ _ _ _ _ => rfl⟩
 
 theorem sep {R : Type} [CommRing R] {F : Shv R} {U : Scheme.{0}} (S : Sieve U) (hS : S ∈ Scheme.etaleTopology U)
     (y z : Sec F U) (h : ∀ (V : Scheme.{0}) (g : V ⟶ U), S.arrows g → Sec.res g y = Sec.res g z) : y = z := by

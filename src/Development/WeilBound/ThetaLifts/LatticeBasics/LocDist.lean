@@ -384,12 +384,12 @@ theorem top_cell (ξ : kˣ →* ℂˣ) (l : (Matrix (Fin d) (Fin d) k → ℂ) �
       · exact h0 _ (not_not.1 h)
   · rw [hm, hm]
     refine Eq.trans ?_ (hl (fun X => if X.det ≠ 0 then ψ (toGL X) else 0) (sb_chart (T := Set.univ) hU cont_toGL Units.continuous_val.continuousOn (fun X hX => toGL_val hX)
-      (fun x _ => x.det_ne_zero) hψ (fun _ h => absurd trivial h) (fun X hX => if_pos hX) fun X hX => if_neg hX) h)
+      (fun x _ => x.det_ne_zero) hψ (fun _ h => absurd trivial h) (fun X hX => ite_eq_left hX) fun X hX => ite_eq_right hX) h)
     congr 1; ext X
     by_cases hX : X.det = 0
     · simp [hX]
     · have : (X * h.1).det ≠ 0 := by rw [det_mul]; exact mul_ne_zero hX h.det_ne_zero
-      rw [if_pos hX, if_pos this]
+      rw [ite_eq_left hX, ite_eq_left this]
       congr 1; apply Units.ext
       rw [Units.val_mul, toGL_val hX, toGL_val this]
 
@@ -476,8 +476,6 @@ section -- clump:auto
 namespace GlobalTheory.ThK.Dbl
 
 open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
-
-attribute [local instance] GlobalTheory.LocalData.complRel
 
 theorem locDist : LocDist := by
   intro F _ _ v n d ξ hξ l hl

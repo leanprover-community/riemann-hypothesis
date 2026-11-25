@@ -111,7 +111,7 @@ theorem leading_depth_one_mem_closure (D : Formalism.BasicNotions.D7) (v : TV n'
     ⟨H i, fun v hv => ?_, (hc i).2.2.2.2, rfl⟩, rfl⟩
   have h1 := (hc i).2.1 v hv
   unfold IsNormal
-  rw [if_pos h1.1]
+  rw [ite_eq_left h1.1]
   have := h1.2
   omega
 

@@ -12,6 +12,7 @@ import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Topology.Algebra.Star.Unitary
 import Mathlib.Topology.UniformSpace.Uniformizable
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryKTypeFinite
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.AbsoluteConvergence.RepKerP, Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.AbsoluteConvergence.ProjOpOf
@@ -296,20 +297,7 @@ namespace PositivityTheory.Rg.Sw.AbsSt.Proj
 open PositivityTheory.Rg.Sw PositivityTheory.Rg.Sw.AbsSt
 
 theorem cpt_unitary (n : ℕ) : IsCompact (unitaryGroup (Fin n) ℂ : Set (Matrix (Fin n) (Fin n) ℂ)) := by
-  have hsub : (unitaryGroup (Fin n) ℂ : Set (Matrix (Fin n) (Fin n) ℂ)) ⊆
-      Set.pi Set.univ (fun _ => Set.pi Set.univ (fun _ => Metric.closedBall (0 : ℂ) 1)) := by
-    intro U hU i _ j _
-    simpa using entry_norm_bound_of_unitary hU i j
-  refine (isCompact_univ_pi fun _ => isCompact_univ_pi fun _ =>
-    isCompact_closedBall (0 : ℂ) 1).of_isClosed_subset ?_ hsub
-  have hset : (unitaryGroup (Fin n) ℂ : Set (Matrix (Fin n) (Fin n) ℂ)) =
-      {A | star A * A = 1 ∧ A * star A = 1} := by
-    ext A
-    exact Iff.rfl
-  rw [hset]
-  have h1 : Continuous fun A : Matrix (Fin n) (Fin n) ℂ => star A * A := by fun_prop
-  have h2 : Continuous fun A : Matrix (Fin n) (Fin n) ℂ => A * star A := by fun_prop
-  exact (isClosed_eq h1 continuous_const).inter (isClosed_eq h2 continuous_const)
+  apply _root_.GlobalTheory.CompanionTheory.LinRedFactor.isCompact_unitary_fin <;> assumption
 
 instance cptU (n : ℕ) : CompactSpace (unitaryGroup (Fin n) ℂ) :=
   isCompact_iff_compactSpace.mp (cpt_unitary n)

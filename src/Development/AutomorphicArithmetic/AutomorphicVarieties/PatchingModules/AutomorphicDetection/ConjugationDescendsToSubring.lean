@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SeparableMatrixStability.AmFin
 public import Mathlib.Algebra.Field.Defs
 public import Mathlib.Data.Matrix.Mul
 public import Mathlib.LinearAlgebra.Span.Defs
@@ -40,62 +41,12 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingMod
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.DGext
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.TwoBlock
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.ZlUniq
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.RingTheory.AdicCompletion.Noetherian
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.RingTheory.PowerSeries.Ideal
 import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.RepAlg
-import Std.Tactic.BVDecide.Normalize.BitVec
-import Mathlib.Algebra.AffineMonoid.UniqueSums
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.DensityProd, Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IntertwinerIso, Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.BlockForm, Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.ClosedOfComb, Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.ConjCont, Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.FiniteOfGeneratedByOneElement, Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.ExistsIntegralBlockIwasawaDecomposition, Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.FlagFDiagonalise, Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.FlagBasis, Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.ResSqField, Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.SolBase, Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.SpanImageDenominators, Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.SpanInt, Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.AutomorphicDetection.ConjugationDescendsToSubring
@@ -137,8 +88,7 @@ private theorem intertwiner_of_ker {F : Type} [Field F] {σ : Type} (d : σ → 
     simp only [Pi.mul_apply, hx0, zero_mul, Finset.sum_const_zero, Pi.one_apply] at h1
     exact zero_ne_one h1
   obtain ⟨a, b, hab⟩ : ∃ a b, xx i0 s a b ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (Matrix.ext h)
   refine ⟨Matrix.of fun u j => xx j s u b, ?_, ?_⟩
   · intro hV
@@ -167,8 +117,7 @@ private theorem separate {F : Type} [Field F] {σ : Type} (d : σ → Type)
     (hk : ∃ x ∈ S, x t = 0 ∧ x s ≠ 0) : ∃ x ∈ S, x t = 0 ∧ x s = 1 := by
   obtain ⟨x, hxS, hxt, hxs⟩ := hk
   obtain ⟨a, b, hab⟩ : ∃ a b, x s a b ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hxs (Matrix.ext h)
   choose p hpS hps using fun i => hs (Matrix.single i a (x s a b)⁻¹)
   choose q hqS hqs using fun i => hs (Matrix.single b i (1 : F))
@@ -223,8 +172,7 @@ theorem UpperTheory.V.AlgebraTools.density_prod :
   have hsep : ∀ s t, s ≠ t → ∃ x ∈ S, x t = 0 ∧ x s = 1 := by
     intro s t hst
     apply separate d S s t (hsurj s)
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     obtain ⟨V, hV0, hV⟩ := intertwiner_of_ker d S s t (hsurj t) hno
     exact hV0 (hint s t hst V fun g => hV _ (hmem g))
   have he : ∀ s, ∃ e ∈ S, e s = 1 ∧ ∀ t, t ≠ s → e t = 0 := by
@@ -341,8 +289,7 @@ theorem UpperTheory.V.AlgebraTools.intertwiner_iso :
       simpa using h2
     have surj : Function.Surjective (Matrix.toLin' V) := by
       obtain ⟨i0, k0, h0⟩ : ∃ i k, V i k ≠ 0 := by
-        by_contra h
-        push_neg at h
+        by_contra! h
         exact hV0 (Matrix.ext fun i k => by simp [h i k])
       intro y
       let A : Matrix m m F := Matrix.of fun i a => if a = i0 then y i * (V i0 k0)⁻¹ else 0
@@ -827,22 +774,7 @@ open Matrix IsLocalRing UpperTheory.V.Alg UpperTheory.V.W UpperTheory.V.Pa
 
 private theorem char_of_padic {l : ℕ} [Fact l.Prime] {K : Type} [Field K] [Finite K] (f : ℤ_[l] →+* K) :
     (l : K) = 0 := by
-  obtain ⟨p, hchar⟩ := CharP.exists K
-  have hp : p.Prime := CharP.char_is_prime K p
-  have hpl : p = l := by
-    by_contra hne
-    have hunit : IsUnit (p : ℤ_[l]) := by
-      by_contra hnu
-      have hlt : ‖((p : ℤ) : ℤ_[l])‖ < 1 := by
-        rw [Int.cast_natCast]
-        exact PadicInt.mem_nonunits.mp hnu
-      rw [PadicInt.norm_int_lt_one_iff_dvd, Int.natCast_dvd_natCast] at hlt
-      exact hne ((Nat.prime_dvd_prime_iff_eq (Fact.out) hp).mp hlt).symm
-    have h := hunit.map f
-    rw [map_natCast, CharP.cast_eq_zero] at h
-    exact not_isUnit_zero h
-  subst hpl
-  exact CharP.cast_eq_zero K p
+  apply _root_.l_zero <;> assumption
 
 private theorem closed_of_comb {A G ι : Type} [CommRing A] [IsDomain A] [IsLocalRing A] [IsNoetherianRing A]
     [TopologicalSpace G] [Fintype ι] (ρ : ι → G → A) (hρ : ∀ a, AdicCont (maximalIdeal A) (ρ a))
@@ -1351,9 +1283,9 @@ theorem UpperTheory.V.Pa.Det.flagBasis :
     refine Infinite.of_injective (fun m : ℕ => ι (PowerSeries.X ^ m)) ?_
     intro m k hmk
     have h := congrArg (fun p => PowerSeries.coeff (R := K) m p) (hιi hmk)
-    simp only [PowerSeries.coeff_X_pow, if_true] at h
+    simp only [PowerSeries.coeff_X_pow, ite_true] at h
     by_contra hne
-    rw [if_neg hne] at h
+    rw [ite_eq_right hne] at h
     exact one_ne_zero h
   have hev' : ∀ g, mat (pushRep ι r) g ∈ Ev (FractionRing (PowerSeries K)) (FractionRing (PowerSeries K)) n a := by
     intro g

@@ -136,8 +136,7 @@ theorem windowOne : WindowOne := by
     rintro δ ⟨x, ⟨hx1, hx2⟩, hxW⟩
     obtain ⟨k, hk1, hk2⟩ := Set.mem_iUnion.mp hxW
     have hkn : k ≤ n + 1 := by
-      by_contra hlt
-      push_neg at hlt
+      by_contra! hlt
       refine hk2 (n+1) hlt ⟨γ * δ, ?_⟩
       rw [hmul, ← hmul δ δ⁻¹ x, mul_inv_cancel, map_one, ContinuousLinearMap.one_apply]
       exact hOK n hx2
@@ -219,7 +218,7 @@ theorem window : Window := by
       exact hrr _ _
     refine ⟨δ * h.1, ?_⟩
     beta_reduce
-    rw [h1, if_pos h2, mul_inv_rev, map_mul]
+    rw [h1, ite_eq_left h2, mul_inv_rev, map_mul]
     exact hh
   · obtain ⟨δ, hδ⟩ := hr s
     obtain ⟨N, hN, hfin⟩ := (hW (r s)).2.2 () _ (G.maps δ⁻¹ p hp)

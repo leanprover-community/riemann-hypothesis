@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.CoeEqA
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry

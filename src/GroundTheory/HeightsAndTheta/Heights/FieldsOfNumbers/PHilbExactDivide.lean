@@ -90,7 +90,7 @@ theorem finrank_eq (h1 : GradedFinite.Statement.{u}) [Fintype K] [∀ k, Fintype
   rw [← hrange, ← hrn]
   congr 1
   by_cases hc : c ≤ n
-  · rw [if_pos hc]
+  · rw [ite_eq_left hc]
     let W := weightedHomogeneousSubmodule F (blockWeight ι) (n - c)
     let α : W →ₗ[F] (MRing ι F ⧸ I.colon (Ideal.span {s})) :=
       (Ideal.Quotient.mkₐ F (I.colon (Ideal.span {s}))).toLinearMap ∘ₗ W.subtype
@@ -121,7 +121,7 @@ theorem finrank_eq (h1 : GradedFinite.Statement.{u}) [Fintype K] [∀ k, Fintype
       · rintro ⟨y, hy, rfl⟩
         obtain ⟨f, hf, hfL, hyf⟩ := hkerdesc y hy
         obtain ⟨t, ht⟩ := exists_sub_component_mem hI hf hfL
-        rw [component_mul_form hs, if_pos hc] at ht
+        rw [component_mul_form hs, ite_eq_left hc] at ht
         refine ⟨⟨weightedHomogeneousComponent (blockWeight ι) (n - c) t,
           weightedHomogeneousComponent_mem _ _ _⟩, ?_⟩
         change Ideal.Quotient.mk I (weightedHomogeneousComponent (blockWeight ι) (n - c) t * s) =
@@ -133,13 +133,13 @@ theorem finrank_eq (h1 : GradedFinite.Statement.{u}) [Fintype K] [∀ k, Fintype
     rw [← e1, eα.finrank_eq, e2]
     exact (Submodule.equivMapOfInjective (gradedPiece I n).subtype Subtype.val_injective
       (LinearMap.ker (π.domRestrict (gradedPiece I n)))).finrank_eq
-  · rw [if_neg hc]
+  · rw [ite_eq_right hc]
     have hbot : LinearMap.ker (π.domRestrict (gradedPiece I n)) = ⊥ := by
       rw [eq_bot_iff]
       intro y hy
       obtain ⟨f, hf, hfL, hyf⟩ := hkerdesc y hy
       obtain ⟨t, ht⟩ := exists_sub_component_mem hI hf hfL
-      rw [component_mul_form hs, if_neg hc, sub_zero] at ht
+      rw [component_mul_form hs, ite_eq_right hc, sub_zero] at ht
       rw [Submodule.mem_bot]
       apply Subtype.ext
       rw [hyf, ZeroMemClass.coe_zero, Ideal.Quotient.eq_zero_iff_mem]
@@ -154,7 +154,7 @@ theorem proof (h1 : GradedFinite.Statement.{u}) : HilbExactDivide.Statement.{u} 
     have key := finrank_eq h1 hI hs n
     rw [(h1 F K ι I n).2, (h1 F K ι (I ⊔ Ideal.span {s}) n).2, key]
     by_cases hc : c ≤ n
-    · rw [if_pos hc]
+    · rw [ite_eq_left hc]
       have hnc : ((fun k => (n k : ℤ)) - fun k => (c k : ℤ)) = fun k => ((n - c) k : ℤ) :=
         funext fun k => by
           have : c k ≤ n k := hc k
@@ -163,10 +163,10 @@ theorem proof (h1 : GradedFinite.Statement.{u}) : HilbExactDivide.Statement.{u} 
       rw [hnc, (h1 F K ι _ (n - c)).2]
       push_cast
       ring
-    · rw [if_neg hc]
+    · rw [ite_eq_right hc]
       have hneg : hilbFn (I.colon (Ideal.span {s}))
           ((fun k => (n k : ℤ)) - fun k => (c k : ℤ)) = 0 := by
-        rw [hilbFn, if_neg]
+        rw [hilbFn, ite_eq_right]
         intro hall
         apply hc
         intro k
@@ -184,7 +184,7 @@ theorem proof (h1 : GradedFinite.Statement.{u}) : HilbExactDivide.Statement.{u} 
       have := hall k
       simp only [Pi.sub_apply] at this
       omega
-    simp only [hilbFn, if_neg hm, if_neg hm', sub_zero]
+    simp only [hilbFn, ite_eq_right hm, ite_eq_right hm', sub_zero]
 
 theorem closed : HilbExactDivide.Statement.{u} :=
   proof GradedFinite.proof

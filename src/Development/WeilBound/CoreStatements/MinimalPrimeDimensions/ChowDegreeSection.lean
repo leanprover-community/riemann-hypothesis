@@ -108,9 +108,6 @@ theorem sectionCycleReduced_closed : SectionCycleReduced.Statement :=
 
 end GlobalTheory.CompanionTheory.Ar.Short.ChowClosing
 
-namespace GlobalTheory.CompanionTheory.Ar.Short
-
-end GlobalTheory.CompanionTheory.Ar.Short
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ChartResidueDegreeAlgClosedClosed =====
@@ -496,7 +493,7 @@ theorem field_case (h1 : StPts) (h2 : StPull) (h3 : StDiv) (hS : ChowDegreeSecti
       have hval (z : Z) (hz : z ∈ T) : ((divCycle (P (genericPoint Z)) u (P z) : ℕ) : ℤ) =
           (divOfSec hE.isLB (s k) hk).mult z := by
         rw [d₂ z ((hT z).1 hz), divCycle, GroundTheory.Heights₂.Heights.fundCycle, Finsupp.onFinset_apply,
-          if_pos ((d₁ z).1 ((hT z).1 hz))]
+          ite_eq_left ((d₁ z).1 ((hT z).1 hz))]
       refine Finset.sum_bij (fun z _ => P z) (fun z hz => ?_) (fun _ _ _ _ h => inj h) (fun W hW => ?_)
         fun z hz => ?_
       · rw [Finsupp.mem_support_iff, ← Nat.cast_ne_zero (R := ℤ), hval z hz]
@@ -504,7 +501,7 @@ theorem field_case (h1 : StPts) (h2 : StPull) (h3 : StDiv) (hS : ChowDegreeSecti
       · obtain ⟨z, hz, rfl⟩ := hex W (by
           by_contra h
           rw [Finsupp.mem_support_iff, divCycle, GroundTheory.Heights₂.Heights.fundCycle, Finsupp.onFinset_apply,
-            if_neg h] at hW
+            ite_eq_right h] at hW
           exact hW rfl)
         exact ⟨z, hz, rfl⟩
       · rw [length_cut hE.isLB (s k) hk ((hT z).1 hz), Nat.cast_mul, hval z hz]

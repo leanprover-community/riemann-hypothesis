@@ -72,15 +72,6 @@ theorem nonarchimedeanGroup_of_isCompact_isOpen {H : Type} [Group H] [Topologica
     exact ⟨N.toOpenSubgroup, hN.trans interior_subset⟩⟩
   NonarchimedeanGroup.nonarchimedean_of_emb K.subtype ho.isOpenEmbedding_subtypeVal
 
-section General
-
-variable {G : Type} [Group G] {K : Subgroup G} {Φ : G → ℂ}
-
-
-variable [TopologicalSpace G] [ContinuousMul G]
-
-end General
-
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
 
 section Groups
@@ -121,12 +112,6 @@ end Groups
 
 variable {σ} {n : ℕ} {Q : Matrix (Fin (n + n)) (Fin (n + n)) E} {L : Submodule (𝓞 E) (Fin n → E)}
   [Submodule.IsLattice E L]
-
-section Record
-
-open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
-
-end Record
 
 end GlobalTheory.Doubling
 

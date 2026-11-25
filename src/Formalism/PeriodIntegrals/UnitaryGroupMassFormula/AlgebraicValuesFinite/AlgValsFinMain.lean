@@ -153,14 +153,14 @@ theorem assemble : Assemble L := by
     obtain ⟨kv, hkv⟩ := hk v
     have h1 : ∀ u, u ∉ ({v} : Finset (HeightOneSpectrum (𝓞 L))) → ordF u kv = 0 := by
       intro u hu
-      rw [hkv u, if_neg (fun h' => hu (Finset.mem_singleton.mpr h'))]
+      rw [hkv u, ite_eq_right (fun h' => hu (Finset.mem_singleton.mpr h'))]
     have h2 : ∀ u ∈ ({v} : Finset (HeightOneSpectrum (𝓞 L))), χ.UnrAt u := by
       intro u hu
       rw [Finset.mem_singleton.mp hu]
       exact hv
     obtain ⟨r, hr, e⟩ := hKey χ s m hm kv {v} h1 h2
     refine ⟨_, prod_mem_compo m (kv : L), _, hz r hr, ?_⟩
-    rw [Finset.prod_singleton, hkv v, if_pos rfl, zpow_natCast] at e
+    rw [Finset.prod_singleton, hkv v, ite_eq_left rfl, zpow_natCast] at e
     rw [← mul_assoc]
     exact e
   let C : IntermediateField ℚ ℂ := compo L ⊔ IntermediateField.adjoin ℚ S
@@ -182,7 +182,7 @@ theorem assemble : Assemble L := by
       have h1 : ∀ u, u ∉ ({v, hex.choose} : Finset (HeightOneSpectrum (𝓞 L))) → ordF u k = 0 := by
         intro u hu
         simp only [Finset.mem_insert, Finset.mem_singleton, not_or] at hu
-        rw [hkk u, if_neg hu.1, if_neg hu.2, sub_zero]
+        rw [hkk u, ite_eq_right hu.1, ite_eq_right hu.2, sub_zero]
       have h2 : ∀ u ∈ ({v, hex.choose} : Finset (HeightOneSpectrum (𝓞 L))), χ.UnrAt u := by
         intro u hu
         simp only [Finset.mem_insert, Finset.mem_singleton] at hu

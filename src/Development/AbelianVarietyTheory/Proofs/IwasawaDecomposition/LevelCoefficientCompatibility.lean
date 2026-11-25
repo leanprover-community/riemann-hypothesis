@@ -49,6 +49,7 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.CoeSelfDualLatticeInFrameCoordinatesEq
 public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.Hat1
+import Development.AbelianVarietyTheory.Counterexamples.RotationExamples.LevelVectorSizeBounds
 
 @[expose] public section
 
@@ -239,14 +240,7 @@ open scoped TensorProduct
 
 theorem eq_one_of_full_upper_block_eq_one {κ : Type} [CommRing κ] {n r : ℕ} (hr : r ≤ n) (hn : n = r) {g : GL (Fin n) κ}
     (h : upperLeftBlock hr g = 1) : g = 1 := by
-  subst hn
-  have hg : g ∈ blockTri (κ := κ) (blk2 n) := fun i j hij => by
-    simp [blk2] at hij
-  have := upper_block_val_submatrix hr hg
-  rw [h] at this
-  apply Units.ext
-  ext i j
-  exact (congrFun (congrFun this i) j).symm
+  apply _root_.GlobalTheory.Survey.LevelVectorSizeBounds.eq_one_of_full_upper_block_eq_one <;> assumption
 
 theorem transfer_gen {R T : Type} [CommRing R] [CommRing T] {n : ℕ} (ψ : R →+* T) (hψ : Function.Injective ψ)
     (K : Matrix (Fin n) (Fin n) R) (c : R) (z y' : Fin n → R) (y : Fin n → T) (hy : ∀ i, ψ (y' i) = y i) (M : ℕ)

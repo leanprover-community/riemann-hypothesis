@@ -184,8 +184,8 @@ theorem sum_min_self {q : ℕ} {s : Fin q → ℝ} (hs : s ∈ Cone q) :
     ∑ i, ∑ j, min (s i) (s j) = ∑ i : Fin q, (2 * (i.val : ℝ) + 1) * s i := by
   have e : ∀ i j, min (s i) (s j) = (if j ≤ i then s i else 0) + if i < j then s j else 0 := fun i j => by
     rcases le_or_gt j i with h | h
-    · rw [if_pos h, if_neg (not_lt.2 h), add_zero, min_eq_left (hs.1 h)]
-    · rw [if_neg (not_le.2 h), if_pos h, zero_add, min_eq_right (hs.1 h.le)]
+    · rw [ite_eq_left h, ite_eq_right (not_lt.2 h), add_zero, min_eq_left (hs.1 h)]
+    · rw [ite_eq_right (not_le.2 h), ite_eq_left h, zero_add, min_eq_right (hs.1 h.le)]
   simp only [e, Finset.sum_add_distrib]
   rw [Finset.sum_comm (f := fun i j => if i < j then s j else 0), ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun i _ => ?_

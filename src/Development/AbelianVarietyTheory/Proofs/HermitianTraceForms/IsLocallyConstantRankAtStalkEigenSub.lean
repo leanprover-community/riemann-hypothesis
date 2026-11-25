@@ -508,16 +508,6 @@ theorem charpoly_eq_prod (hfree : ∀ i, Module.Free R (eigenSub ρ (σ i))) (a 
 
 end Charpoly
 
-section Stalk
-
-variable {O : Type*} [CommRing O] {R : Type*} [CommRing R] {ι : Type*} [Fintype ι]
-  {N : Type*} [AddCommGroup N] [Module R N]
-  {σ : ι → O →+* R} (h : IsSplitting σ) (ρ : O →+* Module.End R N)
-include h
-
-
-end Stalk
-
 section Discr
 
 variable {E : Type*} [Field E] [NumberField E] {R : Type*} [CommRing R] {ι : Type*} [Fintype ι]

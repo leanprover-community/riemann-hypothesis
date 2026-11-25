@@ -203,8 +203,6 @@ theorem isFundamentalDomain_map {G H : Type} [Group G] [Group H] [MeasurableSpac
         show φ (φ.symm γ * y) = γ * φ y
         rw [map_mul, φ.apply_symm_apply]
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem isoPair_of_isometry (V V' : HSp D) (e : V.V ≃ₗ[D.host.E] V'.V)

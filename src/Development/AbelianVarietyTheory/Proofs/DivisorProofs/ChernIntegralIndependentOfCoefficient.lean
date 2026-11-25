@@ -51,7 +51,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.SemiposAtOfPositive
 import Development.AbelianVarietyTheory.Definitions.Divisors.SlopeTestRemainingChoices
 import Development.AbelianVarietyTheory.Definitions.Foundations.IsProbabilityMeasureMuPart
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemConeOfMem
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NormsOfInduces
 import Formalism.LocalRingCardinality.DataTheta
 import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
 import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
@@ -63,7 +62,7 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.O
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.BasicNotions.TH Formalism.L2.Theta ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.CovTop GlobalTheory.CovHt GlobalTheory.Mean4 GlobalTheory.Mean4O
 open scoped ENNReal Classical
-open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory GlobalTheory.ArInt GlobalTheory.ProjVar GlobalTheory.TrueGeo GlobalTheory.ShFam.Pad GlobalTheory.VertForm GlobalTheory.CoverNorm
+open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory GlobalTheory.ArInt GlobalTheory.ProjVar GlobalTheory.TrueGeo GlobalTheory.ShFam.Pad GlobalTheory.VertForm
 open GlobalTheory.Cartier GlobalTheory.CxPts GlobalTheory.ArInt
 open GlobalTheory.ChartGlue GlobalTheory.Points
 open Topology Filter
@@ -108,13 +107,5 @@ theorem hess_dual {φ : Weight p σ B} (hφ : φ.IsCInf) (hy : y ∈ c.e.source)
   funext v
   simp only [Function.comp_apply]
   exact Complex.ofReal_neg _
-
-end GlobalTheory.FlatMass
-
-namespace GlobalTheory.FlatMass
-
-open GlobalTheory.CoverNorm
-
-variable {F : Type} [Field F] [NumberField F] {Y : Var F}
 
 end GlobalTheory.FlatMass

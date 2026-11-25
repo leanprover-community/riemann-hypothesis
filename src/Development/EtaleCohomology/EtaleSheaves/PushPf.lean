@@ -105,7 +105,7 @@ theorem Push_of : LateralTheory.E.AlgResPropsPf.Push := by
         simpa using this }
   have hv : ∀ c, v.hom c ∈ T := fun c => by
     refine alg_of v.hom Q (v.hom c) (X - Polynomial.C c) 1 ?_ ?_
-    · simp only [coeff_sub, coeff_X_one, coeff_C, one_ne_zero, if_false, sub_zero, map_one]
+    · simp only [coeff_sub, coeff_X_one, coeff_C, one_ne_zero, ite_false, sub_zero, map_one]
       exact fun h1 => hQ.ne_top ((Ideal.eq_top_iff_one Q).2 h1)
     · simp [Q.zero_mem]
   have hu : ∀ b, u.hom b ∈ T := fun b => by

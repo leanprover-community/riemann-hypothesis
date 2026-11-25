@@ -16,7 +16,6 @@ variable {m n : ℕ}
 
 theorem evX_Qb (ε : Fin m → Bool) (b : Bool) (i j : Fin n) (u : Fin m → Fin n → ℂ) :
     evX (Qb ε b i j) u = ∑ a ∈ Finset.univ.filter (fun a => ε a = b), star (u a i) * u a j := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp [evX, Qb, map_sum]
 
 theorem gramB_apply (ε : Fin m → Bool) (b : Bool) (u : Fin m → Fin n → ℂ) (i j : Fin n) :

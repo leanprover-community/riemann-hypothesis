@@ -60,7 +60,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice IsDedekindDomain NumberField Matrix Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ConjTwist GlobalTheory.GalTw ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open Classical
 namespace GlobalTheory.IdemKerDiv
@@ -117,7 +116,7 @@ theorem integral_div_iff : ∀ (D : D7) (Q : Finset (Pl D.host.E)) (es : Pl D.ho
       calc es P * incA D (ϖ P : D.host.E) * (es P' * incA D ((ϖ P' : D.host.E))⁻¹)
             = (es P * es P') * incA D ((ϖ P : D.host.E) * (ϖ P' : D.host.E)⁻¹) := by
               rw [map_mul]; ring
-          _ = 0 := by rw [hmul P hP P' hP', if_neg (Ne.symm hne), zero_mul]
+          _ = 0 := by rw [hmul P hP P' hP', ite_eq_right (Ne.symm hne), zero_mul]
     · intro h; exact absurd hP h
   have hoToS : ∀ x : 𝓞 D.host.E,
       ((oToS D.host.F D.host.E x : Formalism.L2.Herm.intAf D.host.F D.host.E) : EAf D) =
@@ -142,7 +141,7 @@ theorem integral_div_iff : ∀ (D : D7) (Q : Finset (Pl D.host.E)) (es : Pl D.ho
         push_cast
         apply Finset.sum_congr rfl
         intro P hP
-        simp only [eI, dif_pos hP, map_mul, hoToS]
+        simp only [eI, dite_eq_left hP, map_mul, hoToS]
       show N = ((∑ P ∈ Q, eI P * oToS D.host.F D.host.E (ϖ P) :
           Formalism.L2.Herm.intAf D.host.F D.host.E) : EAf D) * M
       rw [hs, hMdef, ← mul_assoc, ← map_mul, hpp, hfix]
@@ -153,7 +152,7 @@ theorem integral_div_iff : ∀ (D : D7) (Q : Finset (Pl D.host.E)) (es : Pl D.ho
       exact Ideal.mul_mem_left _ _ (Ideal.mem_map_of_mem _ (hϖ P hP).1)
     · refine Ideal.mul_mem_right _ _ ?_
       refine (_root_.Formalism.L2.DIV.resS_eq_zero_iff (F := D.host.F) (E := D.host.E) PP _).mp ?_
-      simp only [eI, dif_pos hP]
+      simp only [eI, dite_eq_left hP]
       exact GlobalTheory.TameProd.resS_idem_eq_zero (hid P hP) hPe _
   · intro hres
 
@@ -192,7 +191,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice IsDedekindDomain NumberField Matrix Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ConjTwist GlobalTheory.GalTw ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open Classical
 

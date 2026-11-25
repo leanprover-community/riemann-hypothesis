@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.ExistsDeterminantPairPullback
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.TaylorWilesObstructionBound
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivOfRangeEq
@@ -27,16 +28,7 @@ variable {l : ℕ} [Fact l.Prime] {F' F : W.GFrame l} (h : W.FHom F' F)
 
 theorem ofRep_comap {n : ℕ} {A G H : Type} [CommRing A] [Group G] [Group H] (ρ : G →* Matrix (Fin n) (Fin n) A) (φ : H →* G) :
     (W.GDet.ofRep ρ).comap φ = W.GDet.ofRep (ρ.comp φ) := by
-  apply W.GDet.ext
-  intro B _ _ y
-  have key : ∀ z : MonoidAlgebra B H,
-      W.GDet.repAlg ρ B (MonoidAlgebra.mapDomainRingHom B φ z) = W.GDet.repAlg (ρ.comp φ) B z := by
-    intro z
-    induction z using MonoidAlgebra.induction_linear with
-    | zero => simp
-    | add a b ha hb => rw [map_add (f := _), map_add (f := _), map_add (f := _), ha, hb]
-    | single g b => simp [W.GDet.repAlg, MonoidAlgebra.lift_single]
-  exact congrArg Matrix.det (key y)
+  apply _root_.UpperTheory.V.W.FramePullback.ofRep_comap <;> assumption
 
 theorem chi_comap {n : ℕ} {A G H : Type} [CommRing A] [Group G] [Group H] (D : W.GDet n A G) (φ : H →* G) (g : H) :
     (D.comap φ).chi (MonoidAlgebra.single g 1) = D.chi (MonoidAlgebra.single (φ g) 1) := by

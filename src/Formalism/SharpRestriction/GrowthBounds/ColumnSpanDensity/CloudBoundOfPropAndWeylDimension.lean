@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 public import Formalism.PolynomialDimension.DigitClassSize
 public import Formalism.PolynomialDimension.WeylDim
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.RhoLowerBoundLargeConductor
@@ -50,9 +51,6 @@ theorem cwt_lower (m A c B : ℕ) (μ : Fin m → ℤ) (hμ : Antitone μ) (h0 :
     linarith
   have hμc : ∀ j, (0 : ℝ) ≤ μ j ∧ (μ j : ℝ) ≤ c := fun j =>
     ⟨by exact_mod_cast (h0 j).1, by exact_mod_cast (h0 j).2⟩
-  have hA0 : (0 : ℝ) ≤ A := Nat.cast_nonneg A
-  have hB0 : (0 : ℝ) ≤ B := Nat.cast_nonneg B
-  have hc0 : (0 : ℝ) ≤ c := Nat.cast_nonneg c
   have h1 : (∏ j : Fin m, ((A : ℝ) + ((j : ℕ) : ℝ) + 1) / (((j : ℕ) : ℝ) + 1)) ≤
       ∏ j : Fin m, ((A : ℝ) + c - (μ j : ℝ) + ((j : ℕ) : ℝ) + 1) / (((j : ℕ) : ℝ) + 1) :=
     Finset.prod_le_prod₀ (fun j _ => by positivity)
@@ -148,11 +146,7 @@ theorem dimV_tops (hW : WeylV) {p n' : ℕ} (R : RS p n') (mm : ℕ) (TT : Finse
 
 theorem lamAt_anti {n' m : ℕ} (lam0 : Fin n' → Fin (m + 1) → ℤ) (hdom : IsDominant lam0) (s : Fin n') :
     Antitone (lamAt lam0 s) := by
-  unfold lamAt
-  split_ifs
-  · exact hdom s
-  · intro i j hij
-    exact neg_le_neg (hdom s (Fin.rev_le_rev.mpr hij))
+  apply _root_.Formalism.MainNotions.G.LatticeSystems.kp_lamAt_antitone <;> assumption
 
 theorem top_shape {n' mm : ℕ} (TT : Finset (Fin n')) (aw bw : Fin n' → ℤ) (ccl : ℕ)
     (lam0 : Fin n' → Fin (mm + 1 + 1) → ℤ) (hB : IsBaseWeight TT aw bw ccl lam0) (s : Fin n') (hs : s ∈ TT) :
@@ -193,10 +187,6 @@ private theorem one_sub_mul_exp_le_one_of_le (x ep : ℝ) (hx : x ≤ ep) : (1 -
   have h2 : Real.exp (-x) * Real.exp x = 1 := by rw [← Real.exp_add]; simp
   have h3 := Real.exp_pos x
   nlinarith [mul_le_mul_of_nonneg_right h1 h3.le, mul_le_mul_of_nonneg_right hx h3.le]
-
-private theorem one_add_pow_le_exp_mul (t : ℝ) (ht : 0 ≤ t) (N : ℕ) : (1 + t) ^ N ≤ Real.exp (N * t) := by
-  rw [Real.exp_nat_mul]
-  exact pow_le_pow_left₀ (by linarith) (by linarith [Real.add_one_le_exp t]) N
 
 private theorem top_facts_lemma_4 {n' mm : ℕ} (TT : Finset (Fin n')) (aw bw : Fin n' → ℤ) (ccl : ℕ)
     (lam0 : Fin n' → Fin (mm + 1 + 1) → ℤ) (A B : TT → ℕ) (hB : IsBaseWeight TT aw bw ccl lam0)
@@ -301,7 +291,9 @@ theorem cloud_bound_of_prop_and_weyl_dimension (hP : CloudLowerBoundWeyl) (hW : 
       ring
     rw [e1, e2]
     exact div_le_div_of_nonneg_right (by nlinarith) hb'.le
-  have hEx := one_add_pow_le_exp_mul t0 ht0 ((2 * mm + 1) * TT.card)
+  have hEx : (1 + t0) ^ ((2 * mm + 1) * TT.card) ≤ Real.exp (((2 * mm + 1) * TT.card : ℕ) * t0) := by
+    rw [Real.exp_nat_mul]
+    exact pow_le_pow_left₀ (by linarith) (by linarith [Real.add_one_le_exp t0]) _
   have hE1 : (1 - ep) * E ≤ 1 :=
     le_trans (mul_le_mul_of_nonneg_left hEx (by linarith)) (one_sub_mul_exp_le_one_of_le _ ep hx)
   have hE2 : E ≤ 2 := by

@@ -37,11 +37,6 @@ namespace UpperTheory.Esk.DeterminantRepresentatives
 
 variable {F : Type} [Field F] [NumberField F]
 
-theorem norm_one' {w : Pl F} {x : w.adicCompletion F} (h : Valued.v x = 1) : ‖x‖ = 1 := by
-  have := (Valued.toNormedField.norm_le_one_iff (x := x)).2 h.le
-  have h2 := (Valued.toNormedField.one_le_norm_iff (x := x)).2 h.ge
-  exact le_antisymm this h2
-
 theorem fin_supp (y : (Af F)ˣ) : Function.HasFiniteMulSupport fun w : Pl F => ‖pLoc F w (y : Af F)‖ := by
   have h1 := Filter.eventually_cofinite.1 (y : Af F).2
   have h2 := Filter.eventually_cofinite.1 ((y⁻¹ : (Af F)ˣ) : Af F).2
@@ -52,7 +47,7 @@ theorem fin_supp (y : (Af F)ˣ) : Function.HasFiniteMulSupport fun w : Pl F => �
   have a2 : Valued.v (pLoc F w ((y⁻¹ : (Af F)ˣ) : Af F)) ≤ 1 := hc.2
   have a3 : Valued.v (pLoc F w (y : Af F)) * Valued.v (pLoc F w ((y⁻¹ : (Af F)ˣ) : Af F)) = 1 := by
     rw [← map_mul, ← map_mul, Units.mul_inv, map_one, map_one]
-  refine hw (norm_one' (le_antisymm a1 ?_))
+  refine hw (UpperTheory.Esk.MonomialSupportLemmas.nrm_unit (le_antisymm a1 ?_))
   calc 1 = _ := a3.symm
     _ ≤ Valued.v (pLoc F w (y : Af F)) * 1 := mul_le_mul_right a2 _
     _ = _ := mul_one _
@@ -175,7 +170,7 @@ theorem ex (c : Pl F → ℕ) (W : List (Pl F)) : ∃ (ι : Type) (_ : Fintype �
         (Matrix.GeneralLinearGroup.scalar (Fin 2) (atFin w (unif w)) * (aff (atFin w (unif w)) 0)⁻¹)
         (fun u => aff (atFin w (unif w)) ((u : w.adicCompletionIntegers F) : w.adicCompletion F))) ?_ ?_ ?_⟩
       · intro V _ _ ρ x hx
-        rw [(uopSum F w V ρ (c w) x hx).2 S hS, if_pos hc, Fintype.sum_option, add_comm, ← Finset.sum_coe_sort S]
+        rw [(uopSum F w V ρ (c w) x hx).2 S hS, ite_eq_left hc, Fintype.sum_option, add_comm, ← Finset.sum_coe_sort S]
         rfl
       · intro j
         cases j with
@@ -185,7 +180,7 @@ theorem ex (c : Pl F → ℕ) (W : List (Pl F)) : ∃ (ι : Type) (_ : Fintype �
     · refine ⟨S × ι, inferInstance, _, step hb (fun u : S => aff (atFin w (unif w))
         ((u : w.adicCompletionIntegers F) : w.adicCompletion F)) ?_ (fun _ => det_aff _ _) (fun _ u => ⟨u, rfl⟩)⟩
       intro V _ _ ρ x hx
-      rw [(uopSum F w V ρ (c w) x hx).2 S hS, if_neg hc, add_zero, ← Finset.sum_coe_sort S]
+      rw [(uopSum F w V ρ (c w) x hx).2 S hS, ite_eq_right hc, add_zero, ← Finset.sum_coe_sort S]
 
 end UpperTheory.Esk.DeterminantRepresentatives
 
@@ -256,7 +251,7 @@ theorem nz_prod {F : Type} [Field F] [NumberField F] {l : ℕ} [Fact l.Prime] {�
       rw [List.count_cons]
       by_cases h : D.pl v = w
       · subst h
-        rw [if_pos rfl]
+        rw [ite_eq_left rfl]
         simp [mul_add, pow_add]
         try ring
       · have h' : ¬ (w == D.pl v) = true := by

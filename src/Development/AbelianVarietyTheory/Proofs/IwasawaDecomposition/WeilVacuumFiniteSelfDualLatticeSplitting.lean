@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilLatticeIntertwinerCoefficientAtPlace
 import Formalism.LocalToGlobal.IndefiniteReal.SelfDualFullLattice
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FibExtMarked
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsDetInt
@@ -201,15 +202,7 @@ variable {D : D7}
 
 theorem placeIdem_idem {v : HeightOneSpectrum (𝓞 D.host.F)} {ε : AF D.host.F} (h : IsPlaceIdem D v ε) :
     ε * ε = ε := by
-  obtain ⟨α, rfl, h1, h0⟩ := h
-  refine Prod.ext (mul_zero _) ?_
-  change α * α = α
-  refine RestrictedProduct.ext _ _ fun w => ?_
-  change evalV D.host.F w (α * α) = evalV D.host.F w α
-  rw [map_mul]
-  by_cases hw : w = v
-  · subst hw; rw [h1, mul_one]
-  · rw [h0 w hw, zero_mul]
+  apply _root_.GlobalTheory.LatCoef.placeIdem_mul_self <;> assumption
 
 theorem finUnit_cut {a : AE D} (ha : a * a = a) {x : (AE D)ˣ} (hx : FinUnit x) : FinUnit (cut a ha x) := by
   have h2 : finPart D a ∈ intAE D := GlobalTheory.AdIdem.idempotent_mem_intAE D _ (by rw [← RingHom.map_mul, ha])

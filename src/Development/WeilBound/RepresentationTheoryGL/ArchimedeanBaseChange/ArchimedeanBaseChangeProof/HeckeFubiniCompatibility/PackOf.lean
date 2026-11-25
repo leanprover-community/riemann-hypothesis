@@ -13,8 +13,6 @@ open PositivityTheory.Rg.BcB.SpectralAccumulation (Hf finH TypeH HeckeM heckeAct
 open PositivityTheory.RgBcC.Bridge (along)
 open scoped Classical
 
-attribute [local instance] PositivityTheory.Rg.BcB.E.borelH
-
 namespace PositivityTheory.Rg.BcB.CG
 
 def ValCont : Prop := ∀ (n : ℕ) [MeasurableSpace (G n)] (μ : Measure (G n)) (M : KMod n) (k : Mat n → (M.V →L[ℂ] M.V))

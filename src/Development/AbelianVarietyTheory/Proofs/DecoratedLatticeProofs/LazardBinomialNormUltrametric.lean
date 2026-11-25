@@ -64,8 +64,7 @@ namespace GlobalTheory.Honda.Lazard
 
 theorem norm_natCast_eq_one_of_not_dvd {K : Type} [NormedField K] [IsUltrametricDist K] {l m : ℕ}
     (hp : l.Prime) (hl : ‖(l : K)‖ < 1) (hm : ¬ l ∣ m) : ‖(m : K)‖ = 1 := by
-  intros
-  apply _root_.GlobalTheory.ConvSer.TowerNorm.norm_natCast_eq_one <;> assumption
+  apply GlobalTheory.ConvSer.TowerNorm.norm_natCast_eq_one <;> assumption
 
 theorem not_dvd_choose_pow_mul {l : ℕ} (hp : l.Prime) (m : ℕ) (hm : ¬ l ∣ m) :
     ∀ v : ℕ, ¬ l ∣ (l ^ v * m).choose (l ^ v) := by

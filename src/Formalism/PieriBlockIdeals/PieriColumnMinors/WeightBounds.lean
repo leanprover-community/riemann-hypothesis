@@ -542,9 +542,9 @@ def placesOfParameters (P : Par) (hP : P.Hyp) {ι : Type} (W : Wts ι) (hW : W.O
   shapeF := by
     intro τ l
     cases h : W.cj l τ
-    · simp only [Wts.UsetF, Wts.botF, h, Bool.false_eq_true, if_false]
+    · simp only [Wts.UsetF, Wts.botF, h, Bool.false_eq_true, ite_false]
       exact weights_have_positive_shape P hP W hW _
-    · simp only [Wts.UsetF, Wts.botF, h, if_true]
+    · simp only [Wts.UsetF, Wts.botF, h, ite_true]
       rw [top_eq_bot_add_t_sub_one P hP W hW]
       exact shape_reflect P _ _ _ _ _ (weights_have_positive_shape P hP W hW _)
   kindF := fun τ l => thick_or_top_or_thin P W hW _
@@ -735,12 +735,12 @@ theorem depth_of_linkage_holds : DepthOfLink := by
     rw [hσ]
     unfold Wts.mwF Wts.botF Wts.UsetF
     by_cases hc : W.cj l τ = true
-    · rw [if_pos hc, if_pos hc, if_pos hc, WorkedExample.weight_letters_holds E _ D σ (h0 P) P.t hRefl, hmw]
+    · rw [ite_eq_left hc, ite_eq_left hc, ite_eq_left hc, WorkedExample.weight_letters_holds E _ D σ (h0 P) P.t hRefl, hmw]
       have e : (h0 P : ℤ) - W.top P (W.fr l τ) = (h0 P : ℤ) - (W.bot P (W.fr l τ) + (P.t : ℤ) - 1) := by
         rw [top_eq_bot_add_t_sub_one P hH W hW]
       rw [e, WorkedExample.weight_reflection_holds]
       rfl
-    · rw [if_neg hc, if_neg hc, if_neg hc, hmw]
+    · rw [ite_eq_right hc, ite_eq_right hc, ite_eq_right hc, hmw]
       rfl
   rw [hmw, hmwF, ← linkage_depth_eq_sum_difference P.Nr (kc P) (W.j τ) P.t (W.q τ) hrows (W.lam τ) w (D.U (inc τ))
     (D.U' (inc τ)) (hU τ) hU'] at hDB
@@ -807,9 +807,9 @@ theorem coarse_le_c_w_holds : CoarseLeCW := by
     exact mul_le_mul (div_le_div_of_nonneg_right hdep hl0) (by linarith)
       (add_nonneg zero_le_one Real.posLog_nonneg) (div_nonneg hdep0 hl0)
   by_cases hc : ((d0 l (W.xm τ - W.top P τ) : ℕ) : ℤ) < W.xm τ - W.top P τ
-  · simp only [if_pos hc] at t4 ⊢
+  · simp only [ite_eq_left hc] at t4 ⊢
     linarith
-  · simp only [if_neg hc] at t4 ⊢
+  · simp only [ite_eq_right hc] at t4 ⊢
     linarith
 
 theorem j_w_seven_le_holds : CoarseWeightBoundLe := by
@@ -828,9 +828,9 @@ theorem j_w_seven_le_holds : CoarseWeightBoundLe := by
     intro τ _
     by_cases hτ : τ ∈ W.T2
     · have hτ' : τ ∈ (W.sizeData₂ P J).T2 := hτ
-      rw [if_pos hτ']
+      rw [ite_eq_left hτ']
       unfold cTau
-      rw [if_pos hτ, Nat.cast_min]
+      rw [ite_eq_left hτ, Nat.cast_min]
       apply min_le_min le_rfl
       have h1 := coarse_le_c_w_holds P hH hL ι W hW J τ hτ l hl
       have h2 := short_bound_nonneg_holds l (kc P) (W.j τ) P.t (W.q τ) (h0 P) P.Nr (W.ecl P τ l) (W.xm τ)
@@ -839,18 +839,18 @@ theorem j_w_seven_le_holds : CoarseWeightBoundLe := by
         (W.xp τ) (W.top P τ) (W.iW P l τ : ℝ)).2
       exact (Nat.floor_le (h2.trans h3)).trans h1
     · have hτ' : τ ∉ (W.sizeData₂ P J).T2 := hτ
-      rw [if_neg hτ']
+      rw [ite_eq_right hτ']
       unfold cTau
-      rw [if_neg hτ]
+      rw [ite_eq_right hτ]
       exact le_rfl
 
 theorem seventh_recursion_eq_a_of_small_prime {ι : Type} [Fintype ι] [DecidableEq ι] (W : Wts ι) (P : Par) (l : ℕ)
     (hc : (l : ℝ) ≤ P.lJ ∨ P.Excl l ∨ l ∈ W.Sp) : W.Jrec7 P l = W.JA P l := by
-  rw [Wts.Jrec7, if_pos hc]
+  rw [Wts.Jrec7, ite_eq_left hc]
 
 theorem seventh_recursion_eq_w_of_large_prime {ι : Type} [Fintype ι] [DecidableEq ι] (W : Wts ι) (P : Par) (l : ℕ)
     (hc : ¬ ((l : ℝ) ≤ P.lJ ∨ P.Excl l ∨ l ∈ W.Sp)) : W.Jrec7 P l = W.coarseWeightBound P l := by
-  rw [Wts.Jrec7, if_neg hc]
+  rw [Wts.Jrec7, ite_eq_right hc]
 
 theorem sizeData_boundW_of_le_seventh_recursion {ι : Type} [Fintype ι] [DecidableEq ι] (W : Wts ι) (P : Par) (hH : P.Hyp)
     (hL : P.Large) (hW : W.Ok P) (J : ℕ → ℕ) (hJ : ∀ l : ℕ, l.Prime → J l ≤ W.Jrec7 P l) :
@@ -866,8 +866,8 @@ theorem sizeData_boundW_of_le_seventh_recursion {ι : Type} [Fintype ι] [Decida
   apply Finset.sum_congr rfl
   intro τ _
   by_cases hτ : τ ∈ (W.sizeData₂ P J).T2
-  · rw [if_pos hτ, if_pos hτ]
-  · rw [if_neg hτ, if_neg hτ]
+  · rw [ite_eq_left hτ, ite_eq_left hτ]
+  · rw [ite_eq_right hτ, ite_eq_right hτ]
 
 end Formalism.CohomologicalDescent.ShortWeightBounds
 end -- clump:auto

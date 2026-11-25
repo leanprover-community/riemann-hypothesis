@@ -5,6 +5,7 @@ import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
 public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
 public import Mathlib.Basic.Complex.BigOperators
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockRaisingLowering.FockInnerEqSumRight
 
 @[expose] public section
 
@@ -33,9 +34,9 @@ private theorem fockInner_eq_sum_support_left (P Q : MvPolynomial σ ℂ) :
   unfold FockH1Action.fockInner
   refine Finset.sum_congr rfl (fun α _ => ?_)
   rw [Finset.sum_eq_single α]
-  · rw [if_pos rfl, wt]
+  · rw [ite_eq_left rfl, wt]
   · intro β _ hβ
-    rw [if_neg (Ne.symm hβ), mul_zero]
+    rw [ite_eq_right (Ne.symm hβ), mul_zero]
   · intro hα
     rw [MvPolynomial.mem_support_iff, not_not] at hα
     simp only [hα, mul_zero, zero_mul]
@@ -136,15 +137,12 @@ lemma fockInner_conj (P Q : MvPolynomial σ ℂ) :
   rw [map_mul, map_mul, conj_wt, Complex.conj_conj]
   ring
 
-private theorem conj_mul_self_eq_normSq (z : ℂ) : (starRingEnd ℂ) z * z = ((Complex.normSq z : ℝ) : ℂ) := by
-  exact Complex.normSq_eq_conj_mul_self.symm
-
 lemma fockInner_self (P : MvPolynomial σ ℂ) : FockH1Action.fockInner P P =
     ∑ α ∈ P.support, (((Complex.normSq (AddMonoidAlgebra.coeff P α)) *
       ((α.prod fun _ k => k.factorial : ℕ) : ℝ) : ℝ) : ℂ) := by
   rw [fockInner_eq_sum_support_left]
   refine Finset.sum_congr rfl (fun α _ => ?_)
-  rw [conj_mul_self_eq_normSq, wt_eq_nat]
+  rw [← Complex.normSq_eq_conj_mul_self, wt_eq_nat]
   rw [Complex.ofReal_mul, Complex.ofReal_natCast]
 
 lemma fockInner_self_re_nonneg (P : MvPolynomial σ ℂ) : 0 ≤ (FockH1Action.fockInner P P).re := by
@@ -185,7 +183,7 @@ lemma wt_add_single [Fintype σ] [DecidableEq σ] (β : σ →₀ ℕ) (l : σ) 
   have hrest : ∏ i ∈ Finset.univ.erase l, (((β + Finsupp.single l 1 : σ →₀ ℕ) i).factorial : ℂ)
       = ∏ i ∈ Finset.univ.erase l, ((β i).factorial : ℂ) := by
     refine Finset.prod_congr rfl (fun i hi => ?_)
-    rw [Finsupp.add_apply, Finsupp.single_apply, if_neg (Ne.symm (Finset.ne_of_mem_erase hi)),
+    rw [Finsupp.add_apply, Finsupp.single_apply, ite_eq_right (Ne.symm (Finset.ne_of_mem_erase hi)),
       add_zero]
   rw [hrest, Finsupp.add_apply, Finsupp.single_eq_same, Nat.factorial_succ]
   push_cast
@@ -210,30 +208,7 @@ private theorem fockInner_monomial_monomial_of_ne (a b : σ →₀ ℕ) (c d : �
 
 lemma fockInner_X_mul [Fintype σ] (l : σ) (P Q : MvPolynomial σ ℂ) :
     FockH1Action.fockInner (X l * P) Q = FockH1Action.fockInner P (pderiv l Q) := by
-  classical
-  refine MvPolynomial.induction_on' P (fun a c => ?_) (fun P P' hP hP' => ?_)
-  · refine MvPolynomial.induction_on' Q (fun b d => ?_) (fun Q Q' hQ hQ' => ?_)
-    · rw [X_mul_monomial_eq_monomial_add_single, pderiv_monomial]
-      by_cases h : b = a + Finsupp.single l 1
-      · subst h
-        rw [add_tsub_cancel_right, fockInner_monomial_monomial_self, fockInner_monomial_monomial_self,
-          wt_add_single, Finsupp.add_apply, Finsupp.single_eq_same]
-        push_cast
-        ring
-      · rw [fockInner_monomial_monomial_of_ne _ _ _ _ h]
-        by_cases hbl : b l = 0
-        · rw [hbl, Nat.cast_zero, mul_zero, map_zero, fockInner_zero_right]
-        · have hb : b - Finsupp.single l 1 + Finsupp.single l 1 = b := by
-            ext i
-            by_cases hi : i = l
-            · subst hi
-              simp
-              omega
-            · simp [Ne.symm hi]
-          have hne : b - Finsupp.single l 1 ≠ a := fun he => h (hb.symm.trans (by rw [he]))
-          rw [fockInner_monomial_monomial_of_ne _ _ _ _ hne]
-    · rw [fockInner_add_right, map_add (f := _), fockInner_add_right, hQ, hQ']
-  · rw [mul_add, fockInner_add_left, fockInner_add_left, hP, hP']
+  apply _root_.FockRaiseLowInner.fockInner_X_mul <;> assumption
 
 lemma fockInner_pderiv [Fintype σ] (l : σ) (P Q : MvPolynomial σ ℂ) :
     FockH1Action.fockInner (pderiv l P) Q = FockH1Action.fockInner P (X l * Q) := by

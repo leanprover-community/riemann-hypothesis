@@ -10,12 +10,6 @@ open Formalism.BasicNotions Formalism.ConjugateSelfDual NumberField IsDedekindDo
 
 namespace Formalism.L2.NR
 
-section frame
-
-variable {E Ω L : Type} [Field E] [Field Ω] [Algebra E Ω] [Field L]
-
-end frame
-
 def IsConjRep {Γ K : Type} [Group Γ] [CommRing K] {n : ℕ} (ρ₁ ρ₂ : Γ →* GL (Fin n) K) : Prop :=
   ∃ P : GL (Fin n) K, ∀ g, ρ₁ g = P * ρ₂ g * P⁻¹
 

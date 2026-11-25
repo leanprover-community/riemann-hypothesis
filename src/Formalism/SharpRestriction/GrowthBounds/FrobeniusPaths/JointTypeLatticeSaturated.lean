@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.ValuationLowestDegreeMapFractionField
 public import Formalism.SharpRestriction.GrowthBounds.StatementOfDegreeAndBound
 public import Formalism.SharpRestriction.GrowthBounds.FrobeniusPaths.AntitoneOfAppend
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.DvrFractionFieldCharZeroPrime
@@ -54,7 +55,7 @@ lemma low_mul {f g : MvPolynomial σ R} {a b : ℕ} (hf : ∀ m ∈ f.support, a
         · have h1 := hf x hx
           have h2 := hg y hy
           have h3 : Finsupp.weight w x + Finsupp.weight w y = a + b := by rw [← map_add (f := _), hxy, hm]
-          rw [if_pos (by omega), if_pos (by omega)]
+          rw [ite_eq_left (by omega), ite_eq_left (by omega)]
         · rw [notMem_support_iff.1 hy]; simp
       · rw [notMem_support_iff.1 hx]; simp
     · symm
@@ -66,8 +67,8 @@ lemma low_mul {f g : MvPolynomial σ R} {a b : ℕ} (hf : ∀ m ∈ f.support, a
       by_cases h1 : Finsupp.weight w x = a
       · by_cases h2 : Finsupp.weight w y = b
         · exfalso; apply hm; rw [← hxy, map_add (f := _), h1, h2]
-        · rw [if_neg h2, mul_zero]
-      · rw [if_neg h1, zero_mul]
+        · rw [ite_eq_right h2, mul_zero]
+      · rw [ite_eq_right h1, zero_mul]
 
 lemma low_prod {ι : Type*} (s : Finset ι) (f : ι → MvPolynomial σ R) (o : ι → ℕ)
     (hf : ∀ c ∈ s, ∀ m ∈ (f c).support, o c ≤ Finsupp.weight w m) :
@@ -223,18 +224,7 @@ lemma sat_of_subbasis {O M ι : Type*} [CommRing O] [IsDomain O] [AddCommGroup M
     (hv : LinearIndependent O v) (s : Set ι) (f : M) (a : O) (ha : a ≠ 0)
     (hf : f ∈ Submodule.span O (Set.range v)) (haf : a • f ∈ Submodule.span O (v '' s)) :
     f ∈ Submodule.span O (v '' s) := by
-  rw [← Finsupp.range_linearCombination] at hf
-  obtain ⟨l, rfl⟩ := hf
-  rw [Finsupp.mem_span_image_iff_linearCombination] at haf ⊢
-  obtain ⟨l', hl', h⟩ := haf
-  have h2 : l' = a • l := hv (by rw [h, map_smul])
-  refine ⟨l, ?_, rfl⟩
-  rw [Finsupp.mem_supported] at hl' ⊢
-  intro i hi
-  apply hl'
-  rw [h2]
-  simp only [Finset.mem_coe, Finsupp.mem_support_iff, Finsupp.smul_apply, smul_eq_mul] at hi ⊢
-  exact mul_ne_zero ha hi
+  apply _root_.Formalism.MainNotions.G.Joints.StandardMonomialSpace.sat_li <;> assumption
 
 lemma pol_of_smul {O : Type*} [CommRing O] [IsDomain O] {ι : Type*} {n : ℕ} (d : ι → ℕ)
     (f : MvPolynomial (ι × Fin n) O) (a : O) (ha : a ≠ 0) (h : a • f ∈ Pol O n d) : f ∈ Pol O n d := by

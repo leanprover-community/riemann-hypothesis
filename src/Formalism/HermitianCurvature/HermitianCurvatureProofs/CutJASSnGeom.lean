@@ -740,8 +740,6 @@ open Matrix
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 namespace S5
 
 variable {k r : ℕ}
@@ -1030,7 +1028,7 @@ private lemma mem_xsp_of_apply_eq_zero_of_le {w : Fin (2 * r + k + 1) → ℂ} (
         by_cases ha : a = ⟨i.val, hi⟩
         · subst ha
           have : i = eI k r ⟨i.val, hi⟩ := Fin.ext rfl
-          rw [if_pos this, if_pos rfl, mul_one, ← this]
+          rw [ite_eq_left this, ite_eq_left rfl, mul_one, ← this]
         · have hne : i ≠ eI k r a := by
             intro h'
             apply ha
@@ -1039,7 +1037,7 @@ private lemma mem_xsp_of_apply_eq_zero_of_le {w : Fin (2 * r + k + 1) → ℂ} (
             simp only [eI] at this
             simp only
             omega
-          rw [if_neg hne, if_neg ha, mul_zero]
+          rw [ite_eq_right hne, ite_eq_right ha, mul_zero]
       rw [Finset.sum_congr rfl (fun a _ => hsum a), Finset.sum_ite_eq']
       simp
     · rw [h i (by omega)]
@@ -1051,7 +1049,7 @@ private lemma mem_xsp_of_apply_eq_zero_of_le {w : Fin (2 * r + k + 1) → ℂ} (
         have := congrArg Fin.val h'
         simp only [eI] at this
         omega
-      rw [if_neg hne, mul_zero]
+      rw [ite_eq_right hne, mul_zero]
   rw [hw]
   exact Submodule.sum_mem _ fun a _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨a, rfl⟩)
 
@@ -1321,8 +1319,6 @@ open scoped Matrix
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 namespace S2
 
 variable {k r : ℕ}
@@ -1349,18 +1345,7 @@ lemma omW_N {z z' : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) (hz' : C2.
 lemma omW'_N {z z' : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) (hz' : C2.StdZ k r z') {n n' : B.Mat k r}
     (hn : n ∈ Nset k r) (hn' : n' ∈ Nset k r) {g : B.Mat k r} (hg : g ∈ B.GV k r) :
     omW' k r z z' (n * g * n') = omW' k r z z' g := by
-  have hh : nᴴ * Hpk k r * n = Hpk k r := hn.1
-  have hleft : (Hpk k r * nᴴ * Hpk k r) * n = 1 := by
-    calc (Hpk k r * nᴴ * Hpk k r) * n = Hpk k r * (nᴴ * Hpk k r * n) := by
-          simp only [Matrix.mul_assoc]
-      _ = 1 := by rw [hh, WeylGroupFacts.hpk_sq]
-  have hnn : n⁻¹ * n = 1 := by
-    rw [Matrix.inv_eq_left_inv hleft]
-    exact hleft
-  show prW k r z' ((n * g * n')⁻¹ *ᵥ xcofL k r z z' (n * g * n')) = prW k r z' (g⁻¹ *ᵥ xcofL k r z z' g)
-  rw [xcofL_N hz hz' hn hn' g, Matrix.mul_inv_rev, Matrix.mul_inv_rev, Matrix.mulVec_mulVec,
-    Matrix.mul_assoc, Matrix.mul_assoc, hnn, Matrix.mul_one, ← Matrix.mulVec_mulVec]
-  exact prW_N (WeylGroupFacts.mem_n_inv hn') (fun a => ginv_xcofL_esI z z' hg a)
+  apply _root_.Formalism.FourierDecayAlt.P.CutMP.JA.SSn.Geom.S3.omW'_N <;> assumption
 
 end S2
 

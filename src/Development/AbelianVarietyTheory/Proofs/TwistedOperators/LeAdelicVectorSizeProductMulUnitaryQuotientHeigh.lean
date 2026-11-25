@@ -54,7 +54,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Matrix NumberField IsDedekindDomain
 open scoped NNReal TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -92,7 +91,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Matrix NumberField IsDedekindDomain
 open scoped NNReal TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.NormInf
 
@@ -109,7 +107,7 @@ theorem infPlace_norm_le {F E : Type} [Field F] [NumberField F] [Field E] [Numbe
     _ = (c : ℝ) ^ Fintype.card (E →ₐ[F] ℂ) := by rw [Finset.prod_const, Finset.card_univ]
 
 theorem main : ∀ (D : D7) (w : InfinitePlace D.host.F) (y : D.host.E) (c : ℝ≥0), (∀ τ : GlobalTheory.AdelicU.EmbOver D.host.E w, ‖τ.1 y‖₊ ≤ c) → w (Algebra.norm D.host.F y) ≤ (c : ℝ) ^ Module.finrank D.host.F D.host.E :=
-  fun D w y c h => infPlace_norm_le w y c h
+  fun _ w y c h => infPlace_norm_le w y c h
 
 end GlobalTheory.NormInf
 end -- clump:auto
@@ -122,7 +120,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Matrix
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 
@@ -262,8 +259,7 @@ theorem rat_size {n : ℕ} (ξ : Fin n → D.host.E) (hξ : ξ ≠ 0) :
     simp only [Set.mem_union, Set.mem_setOf_eq, not_or, not_not, Function.mem_mulSupport, not_le] at hc
     apply hv
     refine le_antisymm (not_lt.1 hc.1) ?_
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     have := (ha v).trans_lt (pow_lt_one₀ zero_le hlt hd)
     rw [hc.2] at this
     exact lt_irrefl _ this
@@ -293,8 +289,7 @@ theorem rat_size {n : ℕ} (ξ : Fin n → D.host.E) (hξ : ξ ≠ 0) :
     rw [← NNReal.coe_le_coe, coe_nnnorm, InfinitePlace.norm_embedding_eq, NNReal.coe_pow]
     exact hA w
   have h1 : (1 : ℝ≥0) ≤ (∏ w, vInf w (fun i => incA D (ξ i))) * ∏ᶠ v, vFin v (fun i => incA D (ξ i)) := by
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     exact absurd hle (not_le.2 (pow_lt_one₀ zero_le hlt hd))
   exact_mod_cast h1
 

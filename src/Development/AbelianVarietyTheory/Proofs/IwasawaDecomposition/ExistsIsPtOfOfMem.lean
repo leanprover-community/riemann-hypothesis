@@ -64,12 +64,12 @@ theorem exists_isPtOf_of_mem {F E : Type} [Field F] [NumberField F] [Field E] [N
     rw [← hN] at hv
     rw [← hd]
     simp only [decoRaw]
-    rw [if_pos (le_locP _ _ hv), e]
+    rw [ite_eq_left (le_locP _ _ hv), e]
     exact hasRes_redA _ ((mem_globLat g v).1 hv i)
   · rw [← hN] at hv
     rw [← hd]
     simp only [decoRaw]
-    rw [if_pos (le_locP _ _ hv)]
+    rw [ite_eq_left (le_locP _ _ hv)]
     exact hasRes_redA _ ((mem_globLat g v).1 hv i)
 
 end GlobalTheory.Mem.Col2.ChiFinTop

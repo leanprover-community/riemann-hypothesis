@@ -295,8 +295,6 @@ namespace Formalism.L2.SG.RhoPf
 
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.Pf
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Kset
 
 variable (I : Formalism.MainNotions.S.AutInst)

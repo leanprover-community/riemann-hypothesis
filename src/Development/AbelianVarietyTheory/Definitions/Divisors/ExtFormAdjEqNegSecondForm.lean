@@ -366,18 +366,6 @@ omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
 theorem IsHermFrame.eventually_herm (h : IsHermFrame U H) (hz : z ∈ U) :
     ∀ᶠ x in 𝓝 z, (H x).IsHermitian := mem_of_superset (h.isOpen.mem_nhds hz) h.herm
 
-
-omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
-theorem IsHermFrame.of_mContDiffAt (hU : IsOpen U) (h : ∀ z ∈ U, MContDiffAt ∞ H z)
-    (h1 : ∀ z ∈ U, (H z).IsHermitian) (h2 : ∀ z ∈ U, IsUnit (H z).det) : IsHermFrame U H :=
-  ⟨hU, fun a b z hz => (h z hz a b).contDiffWithinAt, h1, h2⟩
-
-
-omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
-theorem IsHermFrame.isPosFrame (h : IsHermFrame U H) (h' : ∀ z ∈ U, (H z).PosDef) :
-    IsPosFrame U H := ⟨h.isOpen, h.smooth, h'⟩
-
-
 theorem conn_eq_of_isSymm (h : ∀ᶠ x in 𝓝 z, (H x).IsSymm) (ξ : E) :
     conn H z ξ = (H z)⁻¹ * mdel H z ξ := by
   rw [conn, h.self_of_nhds.eq, ← mdel_transpose, mdel_congr (h.mono fun x hx => hx.eq)]
@@ -665,68 +653,6 @@ theorem MContDiffAt.quotGram (h : MContDiffAt k H z) (hu : IsUnit (HermFrame.sub
   (h.submatrix Sum.inr Sum.inr).sub (((h.submatrix Sum.inr Sum.inl).mul (h.subGram.inv hu)).mul
     (h.submatrix Sum.inl Sum.inr))
 
-
-omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
-theorem IsHermFrame.sub (h : IsHermFrame U H) (hu : ∀ z ∈ U, IsUnit (subGram (H z)).det) :
-    IsHermFrame U fun x => subGram (H x) :=
-  .of_mContDiffAt h.isOpen (fun _ hz => (h.mContDiffAt hz).subGram)
-    (fun z hz => isHermitian_subGram (h.herm z hz)) hu
-
-
-
-omit [NormedSpace ℂ E] [IsScalarTower ℝ ℂ E] in
-theorem IsPosFrame.sub (h : IsPosFrame U H) : IsPosFrame U fun x => subGram (H x) :=
-  (h.isHermFrame.sub fun z hz =>
-    (isUnit_iff_isUnit_det _).1 (posDef_subGram (h.posDef z hz)).isUnit).isPosFrame
-    fun z hz => posDef_subGram (h.posDef z hz)
-
-
-theorem secondForm_eq (H : E → Matrix (m ⊕ l) (m ⊕ l) ℂ) (z ξ : E) :
-    secondForm H z ξ = (conn H z ξ).toBlocks₂₁ := by
-  rw [secondForm]
-  conv_lhs => rw [← fromBlocks_toBlocks (conn H z ξ)]
-  simp [quotMap, incl, fromCols_mul_fromBlocks, fromCols_mul_fromRows]
-
-theorem extForm_eq_neg_mdbar (H : E → Matrix (m ⊕ l) (m ⊕ l) ℂ) (z η : E) :
-    extForm H z η = -mdbar (fun x => orthCoeff (H x)) z η := by
-  have h : mdbar (fun x => orthLift (H x)) z η =
-      fromRows (-mdbar (fun x => orthCoeff (H x)) z η) 0 := by
-    ext (a | a) b <;> simp [orthLift, dbar_neg]
-  rw [extForm, h, orthProj, fromCols_mul_fromRows]; simp
-
-theorem extForm_eq_neg_secondFormAdj (h : MContDiffAt 1 H z)
-    (hh : ∀ᶠ x in 𝓝 z, (H x).IsHermitian) (hu : IsUnit (H z).det)
-    (hs : IsUnit (subGram (H z)).det) (η : E) : extForm H z η = -secondFormAdj H z η := by
-  have hz := hh.self_of_nhds
-  have hs' : IsUnit (H z).toBlocks₁₁ᵀ.det := by rwa [det_transpose]
-
-  have h1 : (H z)ᵀ * orthLift (H z) = fromRows 0 (quotGram (H z))ᵀ := by
-    have := congrArg transpose (orthLift_transpose_mul hs)
-    rwa [transpose_mul, transpose_transpose, transpose_fromCols, transpose_zero] at this
-
-  have h2 : (conn H z η)ᴴ * (H z)ᵀ = (mdbar H z η)ᵀ := by
-    have := congrArg conjTranspose (transpose_mul_conn hu η)
-    rwa [conjTranspose_mul, hz.transpose.eq,
-      show (mdel H z η)ᵀᴴ = (mdel H z η)ᴴᵀ from rfl, conjTranspose_mdel hh] at this
-  have h3 : (conn H z η)ᴴ * fromRows (0 : Matrix m l ℂ) (quotGram (H z))ᵀ =
-      (mdbar H z η)ᵀ * orthLift (H z) := by
-    rw [← h1, ← Matrix.mul_assoc, h2]
-  rw [← fromBlocks_toBlocks (conn H z η)ᴴ, ← fromBlocks_toBlocks (mdbar H z η)ᵀ, orthLift,
-    fromBlocks_mul_fromRows, fromBlocks_mul_fromRows] at h3
-  have h4 := congrArg toRows₁ h3
-  simp only [toRows₁_fromRows, Matrix.mul_zero, zero_add, Matrix.mul_one] at h4
-  have h11 : MContDiffAt 1 (fun x => (H x).toBlocks₁₁ᵀ) z := h.subGram.transpose
-  have h21 : MContDiffAt 1 (fun x => (H x).toBlocks₂₁ᵀ) z :=
-    (h.submatrix Sum.inr Sum.inl).transpose
-  rw [extForm_eq_neg_mdbar, secondFormAdj, adj, secondForm_eq, Matrix.mul_assoc,
-    show (conn H z η).toBlocks₂₁ᴴ = (conn H z η)ᴴ.toBlocks₁₂ from rfl, h4]
-  simp only [orthCoeff]
-  rw [mdbar_mul (h11.inv hs') h21, mdbar_inv h11 hs',
-    show mdbar (fun x => (H x).toBlocks₂₁ᵀ) z η = (mdbar H z η)ᵀ.toBlocks₁₂ from rfl,
-    show mdbar (fun x => (H x).toBlocks₁₁ᵀ) z η = (mdbar H z η)ᵀ.toBlocks₁₁ from rfl, subGram]
-  simp only [Matrix.mul_add, Matrix.mul_neg, Matrix.neg_mul, Matrix.mul_assoc]
-  abel
-
 theorem adj_adj {A : Matrix m m ℂ} {B : Matrix l l ℂ} (hA : A.IsHermitian) (hAu : IsUnit A.det)
     (hB : B.IsHermitian) (hBu : IsUnit B.det) (T : Matrix l m ℂ) : adj B A (adj A B T) = T := by
   have hA' : IsUnit Aᵀ.det := by rwa [det_transpose]
@@ -734,16 +660,6 @@ theorem adj_adj {A : Matrix m m ℂ} {B : Matrix l l ℂ} (hA : A.IsHermitian) (
   simp only [adj, conjTranspose_mul, conjTranspose_conjTranspose, hB.transpose.eq,
     hA.transpose.inv.eq, Matrix.mul_assoc, nonsing_inv_mul _ hA', Matrix.mul_one,
     nonsing_inv_mul_cancel_left _ _ hB']
-
-theorem extFormAdj_eq_neg_secondForm (h : MContDiffAt 1 H z)
-    (hh : ∀ᶠ x in 𝓝 z, (H x).IsHermitian) (hu : IsUnit (H z).det)
-    (hs : IsUnit (subGram (H z)).det) (ξ : E) : extFormAdj H z ξ = -secondForm H z ξ := by
-  have hz := hh.self_of_nhds
-  rw [extFormAdj, extForm_eq_neg_secondFormAdj h hh hu hs, secondFormAdj,
-    ← adj_adj (isHermitian_subGram hz) hs (isHermitian_quotGram hz) (isUnit_det_quotGram hu hs)
-      (secondForm H z ξ),
-    adj_adj (isHermitian_quotGram hz) (isUnit_det_quotGram hu hs) (isHermitian_subGram hz) hs]
-  simp [adj]
 
 theorem conn_submatrix_equiv [Fintype n] [DecidableEq n] (K : E → Matrix n n ℂ) (e : m ≃ n)
     (z ξ : E) : conn (fun x => (K x).submatrix e e) z ξ = (conn K z ξ).submatrix e e := by

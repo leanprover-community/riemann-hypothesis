@@ -48,8 +48,6 @@ lemma evalAt_smul (ρ : A →+* ℂ) {f : MvPolynomial (Fin (N + 1)) A} {d : ℕ
     evalAt ρ (c • w) f = c ^ d * evalAt ρ w f := by
   simpa [evalAt, eval_map] using (hf.map ρ).eval_smul c w
 
-attribute [local instance] MvPolynomial.gradedAlgebra
-
 end
 
 end GroundTheory.Heights₂.Heights

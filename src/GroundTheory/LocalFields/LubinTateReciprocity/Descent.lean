@@ -279,12 +279,7 @@ variable {A B : Type*} [CommRing A] [IsDomain A] [IsDiscreteValuationRing A]
 theorem isLocalHom_algebraMap_of_map_maximalIdeal
     (hunr : (maximalIdeal A).map (algebraMap A B) = maximalIdeal B) :
     IsLocalHom (algebraMap A B) := by
-  refine ⟨fun a ha ↦ ?_⟩
-  by_contra h
-  have hm : a ∈ maximalIdeal A := (mem_maximalIdeal a).2 h
-  have := Ideal.mem_map_of_mem (algebraMap A B) hm
-  rw [hunr] at this
-  exact (mem_maximalIdeal _).1 this ha
+  exact GroundTheory.LocalField.FormalGroup.isLocalHom_of_map_maximalIdeal hunr
 
 variable [IsAdicComplete (maximalIdeal A) A] [Finite (ResidueField A)]
   (hunr : (maximalIdeal A).map (algebraMap A B) = maximalIdeal B) (σ : B →ₐ[A] B)

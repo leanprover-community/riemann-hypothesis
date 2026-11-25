@@ -29,59 +29,10 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGrou
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.GaussianForms.IdxEta
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.GaussianForms.Imports
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import GroundTheory.AutomorphicForms.ReductionMeasure
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.NumberTheory.RamificationInertia.Inertia
-import Mathlib.RingTheory.Ideal.Norm.RelNorm
-import Mathlib.Tactic.ENatToNat
 import GroundTheory.AutomorphicForms.GL2.GJMatrixInfinite
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.TrivialOnInertiaOfUnr
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.Newform
 import Development.AutomorphicArithmetic.IntegralCasts.IsOpenStabOfMemNhds
@@ -89,12 +40,8 @@ import Formalism.ConjugateSelfDual.Statement
 import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 import GroundTheory.GlobalFields.TateThesis.NoSmallSubgroups
 import ReciprocityTheory.NeutralLocalFields.Reciprocity
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.TypeStar
 import GroundTheory.GlobalFields.CompletionAtPlace.Integers
-import Mathlib.Topology.Compactness.Paracompact
 import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.UnitaryActions.ContinuousAdelicGL2OfContinuousEntries
-import Mathlib.Algebra.Order.Positive.Field
 import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.GaussianForms.ImportsBis
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -162,7 +109,7 @@ theorem UpperTheory.ConvolutionTheory.R2.C.unrOf :
     intro i j
     by_cases hij : i = j
     · simp [Matrix.one_apply, hij]
-    · simp only [Matrix.one_apply, hij, if_false, Prod.snd_zero]
+    · simp only [Matrix.one_apply, hij, ite_false, Prod.snd_zero]
       change (0 : v.adicCompletion F) ∈ v.adicCompletionIntegers F
       exact zero_mem _
   set X : Fin 2 × Fin 2 → FiniteAdeleRing (𝓞 F) F :=
@@ -427,8 +374,8 @@ theorem UpperTheory.ConvolutionTheory.R2.C.etaQuad :
     unfold GlobalTheory.LFun.etaU
     have hi := QuadraticHeckeCharacter.isSplit_iff_normV h2 w hw'
     by_cases hs : Formalism.MainNotions.SchurIrreducible.IsSplit (E := E) (w.under (𝓞 F))
-    · rw [if_pos hs, if_pos (hi.1 hs)]
-    · rw [if_neg hs, if_neg (mt hi.2 hs)]
+    · rw [ite_eq_left hs, ite_eq_left (hi.1 hs)]
+    · rw [ite_eq_right hs, ite_eq_right (mt hi.2 hs)]
   · have h3 : ((GlobalTheory.LFun.toHChar η hη'.isHeckeF).1 a : ℂ) = ((η a : Circle) : ℂ) := rfl
     rw [h3, he, MonoidHom.comp_apply]
     rcases Int.units_eq_one_or (GlobalTheory.IdeleNormChar.normSign E a) with e | e <;>
@@ -819,8 +766,7 @@ private lemma fieldCase (K : Type) [Field K] [CharZero K] {ι : Type} (s : Finse
 
 private lemma rowUnit {R : Type} [CommRing R] [IsLocalRing R] {a b c d : R}
     (h : a * d - b * c = 1) : IsUnit c ∨ IsUnit d := by
-  by_contra hn
-  push_neg at hn
+  by_contra! hn
   have hc : c ∈ IsLocalRing.maximalIdeal R := (IsLocalRing.mem_maximalIdeal c).2 hn.1
   have hd : d ∈ IsLocalRing.maximalIdeal R := (IsLocalRing.mem_maximalIdeal d).2 hn.2
   have h1 : (1 : R) ∈ IsLocalRing.maximalIdeal R := by
@@ -861,7 +807,7 @@ private lemma goodPlace {F : Type} [Field F] [NumberField F] (s : Finset (G1 F))
     fun x => if h : x ∈ v.adicCompletionIntegers F then ⟨x, h⟩ else 0
   have hto : ∀ x (h : x ∈ v.adicCompletionIntegers F), (toO x : v.adicCompletion F) = x := by
     intro x h
-    simp only [toO, dif_pos h]
+    simp only [toO, dite_eq_left h]
   let pr : G1 F → v.adicCompletionIntegers F × v.adicCompletionIntegers F :=
     fun g => (toO ((g 1 0).2 v), toO ((g 1 1).2 v))
   obtain ⟨t, ht⟩ := UpperTheory.ConvolutionTheory.R2.C.genLoc (v.adicCompletionIntegers F) (s.image pr) (by
@@ -889,8 +835,7 @@ theorem UpperTheory.ConvolutionTheory.R2.C.generic :
     refine fieldCase w.Completion s (fun g => (g 1 0).1 w) (fun g => (g 1 1).1 w) fun g _ => ?_
     have hdet : (g 0 0).1 w * (g 1 1).1 w - (g 0 1).1 w * (g 1 0).1 w = 1 :=
       congrArg (fun x : A F => x.1 w) (row g)
-    by_contra hn
-    push_neg at hn
+    by_contra! hn
     simp only [hn.1, hn.2, mul_zero, sub_zero] at hdet
     exact zero_ne_one hdet
   let G : HeightOneSpectrum (𝓞 F) → Prop := fun v =>
@@ -916,8 +861,7 @@ theorem UpperTheory.ConvolutionTheory.R2.C.generic :
         (fun g => (g 1 1).2 v) (fun g _ => by
           have hdet : (g 0 0).2 v * (g 1 1).2 v - (g 0 1).2 v * (g 1 0).2 v = 1 :=
             congrArg (fun x : A F => x.2 v) (row g)
-          by_contra hn
-          push_neg at hn
+          by_contra! hn
           simp only [hn.1, hn.2, mul_zero, sub_zero] at hdet
           exact zero_ne_one hdet)
       exact ⟨t, fun h => absurd h hv, fun g hg => ⟨ht g hg, fun h => absurd h hv⟩⟩

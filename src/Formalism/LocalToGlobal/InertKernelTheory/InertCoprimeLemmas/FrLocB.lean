@@ -554,9 +554,9 @@ theorem local_orthonormal_basis : LocBasisMM := by
         rw [_root_.Formalism.L2.KerInert.FrLocB.hK_smul_right']
       rw [e2, hc, hK_sum_smul_right]
       rw [Finset.sum_eq_single n]
-      · rw [hK_symm, hw, if_pos rfl, map_one, mul_one]
+      · rw [hK_symm, hw, ite_eq_left rfl, map_one, mul_one]
       · intro i _ hi
-        rw [hK_symm, hw, if_neg hi, map_zero, mul_zero]
+        rw [hK_symm, hw, ite_eq_right hi, map_zero, mul_zero]
       · intro h; exact absurd (Finset.mem_univ n) h
     show G0.hK D ((S : D.host.K) • w n) y ∈ _
     rw [e1]

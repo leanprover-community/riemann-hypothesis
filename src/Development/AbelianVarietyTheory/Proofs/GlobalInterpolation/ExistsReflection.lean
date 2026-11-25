@@ -54,19 +54,6 @@ namespace GlobalTheory.WittTransitivity
 
 variable {A : Type} [CommRing A] (c : A →+* A) {M : ℕ} (J : Matrix (Fin M) (Fin M) A)
 
-theorem hform_sub_left (x y z : Fin M → A) :
-    hform c J (x - y) z = hform c J x z - hform c J y z := by
-  simp only [Formalism.UG.hform, Pi.sub_apply, map_sub, sub_mul, Finset.sum_sub_distrib]
-
-theorem hform_sub_right (x y z : Fin M → A) :
-    hform c J x (y - z) = hform c J x y - hform c J x z := by
-  simp only [Formalism.UG.hform, Pi.sub_apply, mul_sub, Finset.sum_sub_distrib]
-
-theorem hform_smul_left (a : A) (x z : Fin M → A) :
-    hform c J (a • x) z = c a * hform c J x z := by
-  simp only [Formalism.UG.hform, Pi.smul_apply, smul_eq_mul, map_mul, Finset.mul_sum]
-  exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
-
 theorem hform_smul_right (a : A) (x z : Fin M → A) :
     hform c J x (a • z) = a * hform c J x z := by
   simp only [Formalism.UG.hform, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
@@ -107,7 +94,7 @@ theorem exists_reflection (hc : ∀ a, c (c a) = a) (hJ : ∀ i j, c (J j i) = J
     have hxx : c (hform c J x x) = hform c J x x := conj_hform c J hc hJ x x
     have e1 : c s = hform c J x x - hform c J x x' := by
       rw [hs_def, map_sub, hxx, conj_hform c J hc hJ]
-    rw [hv, hform_sub_left, hform_sub_right, hform_sub_right, e1, hs_def, ← hx]
+    rw [hv, PIW.AdelicOrbitU.hform_sub_left, PIW.AdelicOrbitU.hform_sub_right, PIW.AdelicOrbitU.hform_sub_right, e1, hs_def, ← hx]
     ring
   set g : Matrix (Fin M) (Fin M) A :=
     1 - Matrix.of (fun k j => b * v k * hform c J v (Pi.single j 1)) with hg_def
@@ -123,14 +110,14 @@ theorem exists_reflection (hc : ∀ a, c (c a) = a) (hJ : ∀ i j, c (J j i) = J
     exact Finset.sum_congr rfl fun j _ => by ring
   have hpres : ∀ y z, hform c J (g *ᵥ y) (g *ᵥ z) = hform c J y z := by
     intro y z
-    rw [hgy, hgy, hform_sub_left, hform_sub_right, hform_sub_right, hform_smul_left,
-      hform_smul_left, hform_smul_right, hform_smul_right, map_mul,
+    rw [hgy, hgy, PIW.AdelicOrbitU.hform_sub_left, PIW.AdelicOrbitU.hform_sub_right, PIW.AdelicOrbitU.hform_sub_right, PIW.AdelicOrbitU.hform_smul_left,
+      PIW.AdelicOrbitU.hform_smul_left, hform_smul_right, hform_smul_right, map_mul,
       conj_hform c J hc hJ v y, hvv]
     linear_combination (hform c J y v * hform c J v z * c b) * hbs +
       (hform c J y v * hform c J v z * b) * hcb
   obtain ⟨G, hG, hGg⟩ := exists_mem_UJ c J hdet g hpres
   refine ⟨G, hG, ?_⟩
-  have hvx : hform c J v x = s := by rw [hv, hform_sub_left, hs_def]
+  have hvx : hform c J v x = s := by rw [hv, PIW.AdelicOrbitU.hform_sub_left, hs_def]
   rw [hGg, hgy, hvx, hbs, one_smul, hv, sub_sub_cancel]
 
 theorem exists_norm_one (hc : ∀ a, c (c a) = a) (hf : ∀ a, c a = a → a ≠ 0 → IsUnit a)
@@ -223,15 +210,15 @@ theorem witt_transitive (A : Type) [CommRing A] (c : A →+* A) (hc : ∀ a, c (
   obtain ⟨u, hu, hut⟩ :=
     exists_norm_one c hc hf h2 h3 hθ (hform c J x x) (hform c J x' x) hxx hb
   have hux : hform c J x x = hform c J (u • x') (u • x') := by
-    rw [hform_smul_left, hform_smul_right, ← hx]
+    rw [PIW.AdelicOrbitU.hform_smul_left, hform_smul_right, ← hx]
     linear_combination (-(hform c J x x)) * hu
   obtain ⟨g1, hg1, hg1x⟩ := exists_reflection c J hc hJ hdet x (u • x') hux
-    (by rw [hform_smul_left]; exact hut)
+    (by rw [PIW.AdelicOrbitU.hform_smul_left]; exact hut)
   obtain ⟨g2, hg2, hg2e⟩ := exists_mem_UJ c J hdet (c u • (1 : Matrix (Fin M) (Fin M) A))
     (by
       intro y z
       simp only [Matrix.smul_mulVec, Matrix.one_mulVec]
-      rw [hform_smul_left, hform_smul_right, hc]
+      rw [PIW.AdelicOrbitU.hform_smul_left, hform_smul_right, hc]
       linear_combination (hform c J y z) * hu)
   refine ⟨g2 * g1, mul_mem hg2 hg1, ?_⟩
   rw [Units.val_mul, ← Matrix.mulVec_mulVec, hg1x, hg2e]

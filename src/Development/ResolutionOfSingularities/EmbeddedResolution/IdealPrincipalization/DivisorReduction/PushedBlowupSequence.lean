@@ -110,7 +110,6 @@ structure PushedBlowupSequenceProperties (hres : FunctorialResolution.Blowup.Str
           ⇑(DivisorReduction.embeddingIntoAmbient hres hno T j hj (DivisorReduction.lowerIdealAfterBlowup T j hj)
               (DivisorReduction.lowerBoundaryAfterBlowup T j hj) s hpr t) ⁻¹'
             ((DivisorReduction.prependedPushedMarkedSeq hres hno T j hj hb s hpr hmk).otherBoundaryLocus j (t + 1))
-  one_le_mult : ∀ T : MarkedIdealWithBoundary.{u}, T.IsAdmissible → 1 ≤ T.mult
   isSmoothDivisor_ker_top :
     ∀ (T : MarkedIdealWithBoundary.{u}) (hV : T.IsAdmissible), T.IsOrderBoundedByMult →
       T.IsBalanced hV.locallyOfFiniteType →

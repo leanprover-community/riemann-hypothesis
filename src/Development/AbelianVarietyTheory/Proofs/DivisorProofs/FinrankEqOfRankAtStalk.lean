@@ -52,18 +52,9 @@ open CategoryTheory AlgebraicGeometry Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Pdiv ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup GlobalTheory.DeRham GlobalTheory.AbDual GlobalTheory.Cris GlobalTheory.CurveRootGeometry GlobalTheory.ConjSeq
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.SymmPoincare
 
 universe u
-
-section Linear
-
-variable {K : Type} [Field K] {V : Type u} [AddCommGroup V] [Module K V]
-  {ψ : Module.Dual K V →ₗ[K] Module.Dual K V →ₗ[K] K} {β : V →ₗ[K] Module.Dual K V}
-
-end Linear
 
 section Swap
 

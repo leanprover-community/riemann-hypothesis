@@ -114,10 +114,10 @@ theorem la_rowDiv_xy_zero (R : Type) [CommRing R] {n : ℕ} (s : Fin n) (a : Fin
         (X ((0 : Fin 2), s) ^ (p - k) * X (a, s) ^ k * X ((1 : Fin 2), s) ^ q) := by
   have h0 : rowGen R a (0 : Fin 2) (X ((0 : Fin 2), s) : MvPolynomial (Fin 2 × Fin n) R) =
       Polynomial.C (X ((0 : Fin 2), s)) + Polynomial.X * Polynomial.C (X (a, s)) := by
-    rw [la_rowGen_X, if_pos rfl]
+    rw [la_rowGen_X, ite_eq_left rfl]
   have h1 : rowGen R a (0 : Fin 2) (X ((1 : Fin 2), s) : MvPolynomial (Fin 2 × Fin n) R) =
       Polynomial.C (X ((1 : Fin 2), s)) := by
-    rw [la_rowGen_X, if_neg (show ¬ ((1 : Fin 2) = 0) by decide), add_zero]
+    rw [la_rowGen_X, ite_eq_right (show ¬ ((1 : Fin 2) = 0) by decide), add_zero]
   simp only [rowDiv]
   rw [la_xy, map_mul, map_pow, map_pow, h0, h1, ← Polynomial.C_pow, la_coeff]
 
@@ -127,10 +127,10 @@ theorem la_rowDiv_xy_one (R : Type) [CommRing R] {n : ℕ} (s : Fin n) (a : Fin 
         (X ((1 : Fin 2), s) ^ (q - k) * X (a, s) ^ k * X ((0 : Fin 2), s) ^ p) := by
   have h0 : rowGen R a (1 : Fin 2) (X ((1 : Fin 2), s) : MvPolynomial (Fin 2 × Fin n) R) =
       Polynomial.C (X ((1 : Fin 2), s)) + Polynomial.X * Polynomial.C (X (a, s)) := by
-    rw [la_rowGen_X, if_pos rfl]
+    rw [la_rowGen_X, ite_eq_left rfl]
   have h1 : rowGen R a (1 : Fin 2) (X ((0 : Fin 2), s) : MvPolynomial (Fin 2 × Fin n) R) =
       Polynomial.C (X ((0 : Fin 2), s)) := by
-    rw [la_rowGen_X, if_neg (show ¬ ((0 : Fin 2) = 1) by decide), add_zero]
+    rw [la_rowGen_X, ite_eq_right (show ¬ ((0 : Fin 2) = 1) by decide), add_zero]
   simp only [rowDiv]
   rw [la_xy, map_mul, map_pow, map_pow, h0, h1, ← Polynomial.C_pow,
     mul_comm (Polynomial.C (X ((0 : Fin 2), s) ^ p)), la_coeff]
@@ -267,7 +267,7 @@ theorem la_arith (l d : ℕ) (hl : l.Prime) :
     ∃ m : ℕ, ¬ l ∣ m ∧ ∀ i ≤ d, d.choose i ∣ m * l ^ Formalism.RankGapBounds.JumpSetsAlt.maxVal l d := by
   refine ⟨∏ i ∈ Finset.range (d + 1), d.choose i / l ^ ((d.choose i).factorization l), ?_, ?_⟩
   · rw [Prime.dvd_finsetProd_iff hl.prime]
-    push_neg
+    push Not
     intro i hi
     exact Nat.not_dvd_ordCompl hl (Nat.choose_pos (by rw [Finset.mem_range] at hi; omega)).ne'
   · intro i hi
@@ -325,7 +325,7 @@ theorem la_core {n : ℕ} (s : Fin n) (d : ℕ) (g : MvPolynomial (Fin 2 × Fin 
       apply mul_left_cancel₀ hg
       rw [hgz, mul_smul_comm]
     have hc := la_coeff_binLat s d z hz (d - i) i
-    rw [hz', la_xy_eq, MvPolynomial.coeff_smul, coeff_monomial, if_pos rfl, smul_eq_mul, mul_one,
+    rw [hz', la_xy_eq, MvPolynomial.coeff_smul, coeff_monomial, ite_eq_left rfl, smul_eq_mul, mul_one,
       show d - i + i = d by omega] at hc
     exact_mod_cast hc
   · intro he
@@ -350,7 +350,7 @@ theorem la_lpMinor_one (R : Type) [CommRing R] {r n : ℕ} (s : ℕ) (hs : s = 1
 theorem highest_weight_one_column (R : Type) [CommRing R] {r : ℕ} (hn : 1 ≤ r) (ν : Fin 1 → ℕ) :
     hw R hn ν = X ((⟨0, hn⟩ : Fin r), (0 : Fin 1)) ^ ν 0 := by
   show ∏ s : Fin 1, (lpMinor R (s.val + 1) (by omega) (by omega)) ^ (ν s - nuNext ν s) = _
-  rw [Fin.prod_univ_one, show nuNext ν 0 = 0 from dif_neg (by decide), Nat.sub_zero]
+  rw [Fin.prod_univ_one, show nuNext ν 0 = 0 from dite_eq_right (by decide), Nat.sub_zero]
   exact congrArg (· ^ ν 0) (la_lpMinor_one R _ rfl _ _)
 
 theorem la_weyl_le_of_stable (R : Type) [CommRing R] {r n : ℕ} (hn : n ≤ r) (ν : Fin n → ℕ)
@@ -424,8 +424,8 @@ theorem la_nabla_r2n1 (R : Type) [CommRing R] (ν : Fin 1 → ℕ) :
 theorem la_eExp_r2n1 (ν : Fin 1 → ℕ) (l : ℕ) :
     Formalism.RankGapBounds.JumpSetsAlt.eExp (lamU 2 1 ν) l = Formalism.RankGapBounds.JumpSetsAlt.maxVal l (ν 0) := by
   rw [exact_exponent_rank_two 1 ν l]
-  have h0 : rowNu (r := 2) ν 0 = ν 0 := dif_pos (by decide)
-  have h1 : rowNu (r := 2) ν 1 = 0 := dif_neg (by decide)
+  have h0 : rowNu (r := 2) ν 0 = ν 0 := dite_eq_left (by decide)
+  have h1 : rowNu (r := 2) ν 1 = 0 := dite_eq_right (by decide)
   rw [h0, h1, Nat.sub_zero]
 
 theorem sharp_rank_two_one_column : SharpInclusionRankTwoOneColumn := by
@@ -486,8 +486,8 @@ theorem la_lpMinor_two (R : Type) [CommRing R] (s : ℕ) (hs : s = 2) (hr : s �
 theorem highest_weight_rank_two (R : Type) [CommRing R] (hn : 2 ≤ 2) (ν : Fin 2 → ℕ) :
     hw R hn ν = la_det R ^ ν 1 * la_xy R (0 : Fin 2) (ν 0 - ν 1) 0 := by
   show ∏ s : Fin 2, (lpMinor R (s.val + 1) (by omega) (by omega)) ^ (ν s - nuNext ν s) = _
-  rw [Fin.prod_univ_two, show nuNext ν 0 = ν 1 from dif_pos (by decide),
-    show nuNext ν 1 = 0 from dif_neg (by decide), Nat.sub_zero]
+  rw [Fin.prod_univ_two, show nuNext ν 0 = ν 1 from dite_eq_left (by decide),
+    show nuNext ν 1 = 0 from dite_eq_right (by decide), Nat.sub_zero]
   have e1 := la_lpMinor_one R (r := 2) (n := 2) ((0 : Fin 2).val + 1) (by decide) (by decide) (by decide)
   have e2 := la_lpMinor_two R ((1 : Fin 2).val + 1) (by decide) (by decide) (by decide)
   rw [e1, e2, la_xy, pow_zero, mul_one]
@@ -691,8 +691,8 @@ theorem la_nabla_r2n2 (hn : 2 ≤ 2) (ν : Fin 2 → ℕ) (hν : Antitone ν) :
 theorem la_eExp_r2n2 (ν : Fin 2 → ℕ) (l : ℕ) :
     Formalism.RankGapBounds.JumpSetsAlt.eExp (lamU 2 2 ν) l = Formalism.RankGapBounds.JumpSetsAlt.maxVal l (ν 0 - ν 1) := by
   rw [exact_exponent_rank_two 2 ν l]
-  have h0 : rowNu (r := 2) ν 0 = ν 0 := dif_pos (by decide)
-  have h1 : rowNu (r := 2) ν 1 = ν 1 := dif_pos (by decide)
+  have h0 : rowNu (r := 2) ν 0 = ν 0 := dite_eq_left (by decide)
+  have h1 : rowNu (r := 2) ν 1 = ν 1 := dite_eq_left (by decide)
   rw [h0, h1]
 
 theorem sharp_rank_two_two_columns : SharpInclusionRankTwoTwoColumns := by

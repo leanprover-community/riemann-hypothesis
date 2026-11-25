@@ -15,8 +15,6 @@ namespace ReciprocityTheory.ChartRestriction.G.Pdiv.AvDefs
 
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Pdiv
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section Lie
 
 variable {O : Type} [CommRing O] (G : Over (Spec (CommRingCat.of O))) [GrpObj G] [IsCommMonObj G]

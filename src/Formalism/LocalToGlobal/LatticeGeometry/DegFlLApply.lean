@@ -106,36 +106,4 @@ def finPl (D : D7) (p : ℕ) [hp : Fact p.Prime] : Fintype (PlL D p) :=
   Fintype.subtype (finite_places_over (K := D.what₂.LL) p hp.out).choose
     (finite_places_over (K := D.what₂.LL) p hp.out).choose_spec
 
-theorem wtL_eq (D : D7) (p : ℕ) (v : PlL D p) :
-    wtL D p v = lw D.what₂.LL v.1 * (eWL D.what₂.LL v.1 : ℝ) / Real.log p := by
-  unfold wtL lw
-  by_cases h1 : Real.log (p : ℝ) = 0
-  · simp [h1]
-  have h2 : (Module.finrank ℚ D.what₂.LL : ℝ) ≠ 0 := by
-    exact_mod_cast (Module.finrank_pos (R := ℚ) (M := D.what₂.LL)).ne'
-  field_simp
-
-theorem wtL_sum (D : D7) (p : ℕ) [hp : Fact p.Prime] : (letI := finPl D p; ∑ la, wtL D p la) = 1 := by
-  let := finPl D p
-  have hS := (finite_places_over (K := D.what₂.LL) p hp.out).choose_spec
-  have h := sum_lw_e (K := D.what₂.LL) p hp.out _ hS
-  have hlog : Real.log (p : ℝ) ≠ 0 := (Real.log_pos (by exact_mod_cast hp.out.one_lt)).ne'
-  simp only [wtL_eq]
-  rw [← Finset.sum_div]
-  have e : ∑ la : PlL D p, lw D.what₂.LL la.1 * (eWL D.what₂.LL la.1 : ℝ) = Real.log p := by
-    rw [← h]
-    exact (Finset.sum_subtype _ hS (fun w => lw D.what₂.LL w * (eWL D.what₂.LL w : ℝ))).symm
-  rw [e, div_self hlog]
-
-theorem plL_ne (D : D7) (p : ℕ) [hp : Fact p.Prime] : Nonempty (PlL D p) := by
-  by_contra hne
-  rw [not_nonempty_iff] at hne
-  have := wtL_sum D p
-  simp at this
-
-theorem wtL_nonneg (D : D7) (p : ℕ) (la : PlL D p) : 0 ≤ wtL D p la := by
-  unfold wtL
-  exact div_nonneg (mul_nonneg (Nat.cast_nonneg _) (Real.log_natCast_nonneg _))
-    (mul_nonneg (Real.log_natCast_nonneg _) (Nat.cast_nonneg _))
-
 end Formalism.L2.Geo

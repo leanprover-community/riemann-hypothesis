@@ -8,6 +8,7 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelBaseP
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsValueAtOfTorus
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverFramesValueAtPoint
 
 @[expose] public section
 
@@ -17,18 +18,7 @@ open scoped ComplexOrder Classical
 namespace GlobalTheory.CompanionTheory.Ar.PB.StepW.FlagPoint
 
 theorem stepCols_ne_empty {N j : ℕ} (hj : j ≤ N) (i : Fin N) : stepCols N j i ≠ ∅ := by
-  intro h
-  have hi' := i.2
-  by_cases hi : (i : ℕ) + 1 ≤ j
-  · have hm : (⟨N - j, by omega⟩ : Fin N) ∈ stepCols N j i := by
-      simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, if_pos hi]
-      constructor <;> simp
-    simp [h] at hm
-  · have hm : (⟨0, by omega⟩ : Fin N) ∈ stepCols N j i := by
-      simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, if_neg hi]
-      show 0 < (i : ℕ) + 1 - j
-      omega
-    simp [h] at hm
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.stepCols_ne_empty <;> assumption
 
 theorem val_sum {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
     {x : (Σ k, ι k) → Ω} {z : (Σ k, ι k) → ℂ} (hz : z ∈ mcPts (mCoordIdeal x)) {α : Type} (s : Finset α)
@@ -73,15 +63,15 @@ theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι 
     rw [mConeMap, aeval_X, h0, map_zero, zero_mul])
   let c : K → ℂ := fun k =>
     if h : ∀ p', M.blk p' ≠ some k then (zb ⟨⟨k, h⟩, F.c ⟨k, h⟩⟩)⁻¹ else 1
-  have hck : ∀ k : NonPluckerBlocks M.blk, c k.1 = (zb ⟨k, F.c k⟩)⁻¹ := fun k => dif_pos k.2
+  have hck : ∀ k : NonPluckerBlocks M.blk, c k.1 = (zb ⟨k, F.c k⟩)⁻¹ := fun k => dite_eq_left k.2
   have hc : ∀ k, c k ≠ 0 := fun k => by
     by_cases h : ∀ p', M.blk p' ≠ some k
     · rw [hck ⟨k, h⟩]
       exact inv_ne_zero (hne ⟨k, h⟩)
-    · have : c k = 1 := dif_neg h
+    · have : c k = 1 := dite_eq_right h
       rw [this]
       exact one_ne_zero
-  have hck₀ : c k₀ = 1 := dif_neg fun h => h p hblk
+  have hck₀ : c k₀ = 1 := dite_eq_right fun h => h p hblk
   let z₁ : (Σ k, ι k) → ℂ := fun q => c q.1 * z q
   have hz₁ : z₁ ∈ mcPts (mCoordIdeal y) := ((GlobalTheory.CompanionTheory.Ar.PB.StepW.TorusAct.main K ι Φ y z c hc).2 hz).1
   let cb : NonPluckerBlocks M.blk → ℂ := fun k => c k.1
@@ -133,10 +123,10 @@ theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι 
   have hsum : ∑ I', (∑ m : ι k₀, valAt M.x (F.u' I ⟨k₀, m⟩) zb * valAt M.x (F.u ⟨k₀, m⟩ I') zb) *
       minorIJ (hh p.1) I' (stepCols N j p.2) = minorIJ (hh p.1) I (stepCols N j p.2) := by
     rw [Finset.sum_eq_single I]
-    · rw [hδ I hI, if_pos rfl, one_mul]
+    · rw [hδ I hI, ite_eq_left rfl, one_mul]
     · intro I' _ hne'
       by_cases hs : IsStepRows N j p.2 I'
-      · rw [hδ I' hs, if_neg (Ne.symm hne'), zero_mul]
+      · rw [hδ I' hs, ite_eq_right (Ne.symm hne'), zero_mul]
       · rw [hmin I' hs, mul_zero]
     · intro h
       exact absurd (Finset.mem_univ I) h

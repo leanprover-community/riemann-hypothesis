@@ -109,17 +109,10 @@ section Index
 
 variable {R : Type} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]
 
-theorem sIdx_eq {W : Type} [AddCommGroup W] [Module R W] (l : ℕ) (M N : Submodule R W) :
-    Formalism.MainNotions.IntegralHeckeForms.sIdx l M N =
-      (signedLength M N : ℝ) / ((IsDiscreteValuationRing.addVal R (l : R)).toNat : ℝ) := by
-  simp only [Formalism.MainNotions.IntegralHeckeForms.sIdx, Formalism.MainNotions.IntegralHeckeForms.lenR, signedLength, relLength_eq_length_quotient_comap]
-  push_cast
-  rw [sub_div]
-
 theorem sIdx_map {W W' : Type} [AddCommGroup W] [Module R W] [AddCommGroup W'] [Module R W']
     (f : W →ₗ[R] W') (hf : Function.Injective f) (l : ℕ) (M N : Submodule R W) :
     Formalism.MainNotions.IntegralHeckeForms.sIdx l (M.map f) (N.map f) = Formalism.MainNotions.IntegralHeckeForms.sIdx l M N := by
-  simp only [sIdx_eq, signedLength, relLength_map_of_injective f hf]
+  simp only [GlobalTheory.sIdx_eq_signedLength_div, signedLength, relLength_map_of_injective f hf]
 
 variable {W : Type} [AddCommGroup W] [Module (FractionRing R) W] [Module R W]
   [IsScalarTower R (FractionRing R) W]
@@ -343,18 +336,6 @@ variable (E : Formalism.MainNotions.IntegralHeckeForms.ExpDat Y)
 
 end Basis
 
-section Main
-
-variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂} {X : NTw D.R D.host D.what₂ D.LL0 N}
-  (bkP : BKPh X)
-
-variable (Y : NExp D.R D.host D.what₂ D.LL0 N X) (E : Formalism.MainNotions.IntegralHeckeForms.ExpDat Y)
-
-
-
-
-end Main
-
 end GlobalTheory.ExportCompare
 
 end
@@ -452,7 +433,7 @@ theorem relLength_read (h : Induces emb v) (rd : V →ₛₗ[emb] W) {ι : Type}
       refine Finset.sum_congr rfl fun a _ => ?_
       simp only [Pi.add_apply, Pi.smul_apply, TensorProduct.add_tmul, TensorProduct.smul_tmul']
   have hinj : Function.Injective g := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro t ht
     obtain ⟨c, hc, s, hs⟩ := hnorm t
     have h1 : ∑ a, algebraMap O' (FractionRing O') (s a) • rd (b a) = 0 := by
@@ -625,7 +606,7 @@ theorem Reads.lix_le [StarRing K] {v : HeightOneSpectrum (𝓞 K)} {e : V →ₗ
     unfold LengthCommensurable at this ⊢
     rwa [relLength_map_of_injective _ (toFrac_injective _ _ _), relLength_map_of_injective _ (toFrac_injective _ _ _)]
   · have := h2 O' hi hf _ l0
-    rw [← Set.image_congr fun y _ => up_eq Y i j b O' k y, sIdx_eq (X.l i) _ ((eTh Y i j b (SgJ Y E i j b)).baseChange O'),
+    rw [← Set.image_congr fun y _ => up_eq Y i j b O' k y, GlobalTheory.sIdx_eq_signedLength_div (X.l i) _ ((eTh Y i j b (SgJ Y E i j b)).baseChange O'),
       signedLength, sub_self, Int.cast_zero, zero_div, zero_add] at this
     rw [eΘ, eX, sIdx_map _ (toFrac_injective _ _ _), ← hl]
     exact this
@@ -682,8 +663,6 @@ open Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Fo
 open Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.FWT
 open GlobalTheory.OnTies GlobalTheory.IndefiniteRowSideFullHecke.PlaceBelowAllPowers
 open GlobalTheory.IndefiniteRowSideFullHecke.ToricLatticeDenominators (FmExt)
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
@@ -762,8 +741,6 @@ theorem isLatIn_eTh {I : TwIn D} {i : D.ntw.Tw} (h : I.Ok i) {j : ℕ} (hj : j �
 
 theorem succ_mem_Icc (ι : Fin D.R.m) : (ι : ℕ) + 1 ∈ Finset.Icc 1 D.R.m := Finset.mem_Icc.2 ⟨Nat.le_add_left _ _, ι.2⟩
 
-abbrev Twist (i : D.ntw.Tw) : Type := Σ (Q : Finset (PlE D.host)) (k : ℕ), D.ntw.RCG i Q →* (D.ntw.Ok i k)ˣ
-
 theorem exists_leafTW1_of_twGoodAt (A : FamIn D.what₂.LL Γ Pl0 T0 D.R.m) (c : NChoice D) (I : TwIn D) (hG : TwGoodAt D c I)
     (O : OnObj S P oc) (ι : Bs.J → Fin D.R.m) (hι : Function.Injective ι) (hM : GoodPartLattice O) (hΘ : ThetaFullRank O)
     (hT : AtPair S fun v => TwistedAt D (D.plEq.symm v) ∧ ∀ j, TiedAt A c I.E O v j (ι j)) :
@@ -812,8 +789,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.DIV.Cons
 open Formalism.IndefR.FWT GlobalTheory.BigTop GlobalTheory.OntoChain GlobalTheory.RealIndexBound GlobalTheory.OnTies
 
 namespace GlobalTheory.BigOn
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Record
 
@@ -885,9 +860,6 @@ def RecAt {Pm : ParameterChoice' D L} (Tp : ParamsT D L Pm) (r : TwoRuns p.T p.P
   IsRec Tp ex.kap_def ex.errX (F2 p) (fw2 p) r O ∧ OwnPin r
 
 end Point
-
-def AtPts (Q : ∀ {eps : ℝ} (Fm : FamP eps) (x : ℝ) (hx : Fm.x1 < x) (i : Fm.Ix x), Pt Fm x hx i → Prop) : Prop :=
-  Closed FamHyp fun Fm _ => EvPt Fm fun x hx i p => More p → Q Fm x hx i p
 
 section Checks
 

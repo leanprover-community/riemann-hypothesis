@@ -116,8 +116,7 @@ theorem lDiag_boxFun_star_ne : ∀ (F : Type) [Field F] [NumberField F] (κ : Ty
   have hc : Continuous fun p => Complex.normSq (φ (glue p)) :=
     Complex.continuous_normSq.comp (continuous_glue hφ)
   obtain ⟨x, hx⟩ : ∃ x, φ x ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (funext h)
   refine ((integral_pos_iff_support_of_nonneg (fun p => Complex.normSq_nonneg _) hr).2 ?_).ne'
   refine hc.isOpen_support.measure_pos _ ⟨shiftOf x, ?_⟩

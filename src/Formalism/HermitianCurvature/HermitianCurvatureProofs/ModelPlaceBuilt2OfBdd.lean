@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJASAPairLQOf
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDCapAGrp
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDACapToda
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDACapTodaV
@@ -271,7 +272,7 @@ theorem sAPairOne_of_parts (hZ : SAZero) (hL : SALocal) (hE : SAExh) (hJC : SAJC
     have h0 := image_eq_zero_of_notMem_tsupport hn
     simp only [MA.ext] at h0
     first
-    | exact (dif_pos hy).symm.trans h0
+    | exact (dite_eq_left hy).symm.trans h0
   have hΘK0 : ∀ y ∈ Qs, y ∉ Cs → B.opApply Θ K (B.gq (T v).base y) = 0 := fun y hy hyC =>
     hL' E Wp Wq S T f χ ν' m₀ top A₀ hB2 v Θ hΘ K hK (Qs \ Cs) ((MA.Qset_open _ _).sdiff hCcl)
       Set.sdiff_subset (fun y' hy' => hK0 y' hy'.1 hy'.2) y ⟨hy, hyC⟩
@@ -290,7 +291,7 @@ theorem sAPairOne_of_parts (hZ : SAZero) (hL : SALocal) (hE : SAExh) (hJC : SAJC
         simp [hΘK0 y hyQ hyC, _root_.Formalism.FourierDecayAlt.P.JCx1.needs.hsVec_zero]
       · simp only [MA.ext]
         first
-        | exact dif_neg hyQ
+        | exact dite_eq_right hyQ
     have hts := closure_minimal hsupp hCcl
     exact ⟨hCc.of_isClosed_subset (isClosed_tsupport _) hts, hts.trans hCQ⟩
   ·
@@ -346,21 +347,12 @@ namespace Formalism.FourierDecayAlt.P.CutMP.JA.SA
 
 open NumberField Formalism.FourierDecayAlt.P.CutMP Formalism.FourierDecayAlt.P.CutMP.JA
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 def qOf (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) (g : B.Mat k r) : (Fin r → ℂ) × ℂ :=
   (fun a => Formalism.QuantumDeterminants.cmin k r z z' g a, Formalism.QuantumDeterminants.zeta k r z z' g)
 
 theorem qOf_contOn (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) :
     ContinuousOn (qOf k r z z') (Q.OmPlus k r z z') := by
-  refine ContinuousOn.prodMk ?_ ?_
-  · refine continuousOn_pi.2 fun a => ?_
-    unfold Formalism.QuantumDeterminants.cmin
-    exact (Formalism.FourierDecayAlt.P.PositiveOrbitOpen.dmin_cont z z' _).continuousOn.div (Formalism.FourierDecayAlt.P.PositiveOrbitOpen.dmin_cont z z' _).continuousOn
-      (fun g hg => hg.1 _ (Nat.le_of_lt a.isLt))
-  · unfold Formalism.QuantumDeterminants.zeta
-    exact (Formalism.FourierDecayAlt.P.PositiveOrbitOpen.dmin_cont z z' _).continuousOn.div (Formalism.FourierDecayAlt.P.PositiveOrbitOpen.dmin_cont z z' _).continuousOn
-      (fun g hg => hg.1 _ le_rfl)
+  apply _root_.Formalism.FourierDecayAlt.P.CutMP.JA.SA.QO.qOf_contOn <;> assumption
 
 theorem qOf_sgs {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] (D : B.RealPlaceData k r Wp Wq) {p : B.SS k r} (hp : D.inSS p)
@@ -480,7 +472,7 @@ theorem sec_at (hR : SARadSec) (hD : SADescend) (hC : SACover)
       rw [Gauge.tc_gq, (hKv q.1.1 q.2.1 _ hG hGG).2, hval q, Gauge.tc_hsVec_smul, inner_smul_right,
         Gauge.tc_hsVec_sum, inner_sum]
       simp only [Gauge.tc_hsVec_smul, inner_smul_right, horth, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq,
-        Finset.mem_univ, if_true]
+        Finset.mem_univ, ite_true]
       push_cast
       field_simp
     show MA.toSm P (Gauge.rawJ P Bs e K ρ) = U ρ
@@ -521,8 +513,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.JA.SA
 
 open Formalism.FourierDecayAlt.P.CutMP.Gauge.GC.SSTr
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem radial_section_holds : SARadSec := by
   intro Wp Wq _ _ _ _ _ _ P Bs hpl e he U
   classical
@@ -554,7 +544,7 @@ theorem radial_section_holds : SARadSec := by
         intro p hp
         have h3 := fib_sum_smul P Bs x.2 (fun ρ => if ρ = ρ0 then (((Real.sqrt (MA.wq P.k x P.TT))⁻¹ : ℝ) : ℂ) else 0)
           (fun _ => ∑ ρ, MA.ext (U ρ : MA.Qp P.r P.TT → ℂ) x • e ρ x.2) (fun _ => h1) p hp
-        simp only [ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true] at h3
+        simp only [ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h3
         exact h3
       · have : ∑ ρ, MA.ext (U ρ : MA.Qp P.r P.TT → ℂ) x • e ρ x.2 = 0 := by
           rw [Finset.univ_eq_empty_iff.2 (not_nonempty_iff.1 hne)]; simp
@@ -666,7 +656,7 @@ theorem fund0 (h : SmQ r TT) (hh : ∀ V ∈ Test r TT, ip0 h V = 0) : h = 0 := 
     congr 1
     funext x
     by_cases hx : x ∈ Qset r TT
-    · simp only [MA.ext, hx, dif_pos, hG, hχQ, ofAmb]
+    · simp only [MA.ext, hx, dite_eq_left, hG, hχQ, ofAmb]
       simp only [Subalgebra.coe_mul, Pi.mul_apply, map_mul, Complex.conj_ofReal]
       push_cast
       rw [← Complex.mul_conj']
@@ -786,7 +776,7 @@ theorem isLoc_euler (v : M.Var r) : IsLoc (eulerQ (r := r) (TT := TT) v) := by
   intro u V hV hu q hq
   have h0 : MA.ext (u : Qp r TT → ℂ) =ᶠ[nhds q.1] fun _ => (0 : ℂ) := by
     filter_upwards [(hV.inter (Qset_open r TT)).mem_nhds ⟨hq, q.2⟩] with x hx
-    simp only [MA.ext, dif_pos hx.2]
+    simp only [MA.ext, dite_eq_left hx.2]
     exact hu ⟨x, hx.2⟩ hx.1
   have hd : fderiv ℝ (MA.ext (u : Qp r TT → ℂ)) q.1 = 0 := by
     rw [h0.fderiv_eq]; exact fderiv_const_apply _

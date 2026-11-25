@@ -113,7 +113,7 @@ import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.TotallySplit
 
 -- This file was produced by scripts/clump.py from the modules listed below.
--- Members: Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsCtxBase, Development.AbelianVarietyTheory.Proofs.TwistedOperators.CompactTorusActsFockVectorRowHighest, Development.AbelianVarietyTheory.Proofs.DivisorProofs.RightDerivativeMultiplicityMapValueEqStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExtremalVectorAnnihilated, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExtremalVectorValuesLoweringAndTorus, Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockPolynomialVectorsReframeSource, Development.AbelianVarietyTheory.Proofs.DivisorProofs.LevelCharacterTrivialOnSubgroup, Development.AbelianVarietyTheory.Proofs.TwistedOperators.LevelCharacterPlacesOddAndPrincipalLevel, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaSpanAndGoodRange
+-- Members: Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsCtxBase, Development.AbelianVarietyTheory.Proofs.TwistedOperators.CompactTorusActsFockVectorRowHighest, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExtremalVectorAnnihilated, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExtremalVectorValuesLoweringAndTorus, Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockPolynomialVectorsReframeSource, Development.AbelianVarietyTheory.Proofs.DivisorProofs.LevelCharacterTrivialOnSubgroup, Development.AbelianVarietyTheory.Proofs.TwistedOperators.LevelCharacterPlacesOddAndPrincipalLevel, Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaSpanAndGoodRange
 
 -- ===== clump member: Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsCtxBase =====
 -- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsCtxBase", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsWeakOfDatum\npublic import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral\npublic import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.MemMulAAOfTrace\npublic import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.SelfDualCLatP\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
@@ -129,8 +129,6 @@ open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate
 
 namespace GlobalTheory.Ker.Inhab
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem exists_ctx_base : ∀ (D : D7) (n p q : ℕ), ∃ (S T : HSp D) (C : Ctx S T), S.rank = 2 * n ∧ C.X.p0 = p ∧
     C.q0 = q ∧ S.SigOK ∧ T.SigOK ∧ ∃ (Lv : GlobalTheory.SW.Level C.X) (B : C.Bas) (f : WO S T → ℂ),
@@ -169,7 +167,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.AdSpan.TorWt
 
@@ -348,7 +345,7 @@ theorem bT_mem (C : Ctx S T) (ρ : D.what₂.Tau) (t : Fin T.rank → ℝ) : bT 
   intro σ
   by_cases e : σ = C.m.e ρ
   · have h : mat (bT C ρ t) σ = diagonal (fun a => cexp (-((t a : ℂ) * I))) := by
-      rw [mat_bT, if_pos e]
+      rw [mat_bT, ite_eq_left e]
     refine ⟨?_, fun a c hca => ?_⟩
     · rw [h, det_diagonal]
       exact Finset.prod_ne_zero_iff.2 fun a _ => Complex.exp_ne_zero _
@@ -356,7 +353,7 @@ theorem bT_mem (C : Ctx S T) (ρ : D.what₂.Tau) (t : Fin T.rank → ℝ) : bT 
       simp only [mat, Matrix.of_apply] at this
       rw [this, diagonal_apply_ne _ (ne_of_gt hca)]
   · have h : mat (bT C ρ t) σ = 1 := by
-      rw [mat_bT, if_neg e]
+      rw [mat_bT, ite_eq_right e]
     refine ⟨by rw [h, det_one]; exact one_ne_zero, fun a c hca => ?_⟩
     have := congrFun (congrFun h a) c
     simp only [mat, Matrix.of_apply] at this
@@ -371,10 +368,10 @@ theorem xB_mvB_torAt (C : Ctx S T) {B : C.Bas} (hB : C.IsB B) (ρ : D.what₂.Ta
   rw [mat_bT]
   by_cases e : σ = C.m.e ρ
   · subst e
-    rw [if_pos (Equiv.symm_apply_apply _ _), if_pos rfl, mul_diagonal, mul_diagonal, map_mul, conj_exp]
+    rw [ite_eq_left (Equiv.symm_apply_apply _ _), ite_eq_left rfl, mul_diagonal, mul_diagonal, map_mul, conj_exp]
     simp [mat, Ctx.xB]
   · have e' : C.m.e.symm σ ≠ ρ := fun h => e (by rw [← h, Equiv.apply_symm_apply])
-    rw [if_neg e', if_neg e, Matrix.mul_one]
+    rw [ite_eq_right e', ite_eq_right e, Matrix.mul_one]
     rfl
 
 end GlobalTheory.AdSpan.TorWt
@@ -393,8 +390,8 @@ theorem bchar_bT (C : Ctx S T) (ρ : D.what₂.Tau) (t : Fin T.rank → ℝ) (la
     split_ifs <;> simp
   unfold bchar
   rw [Finset.prod_eq_single (C.m.e ρ) (fun σ _ hσ => Finset.prod_eq_one fun i _ => by
-    rw [hb, if_neg hσ, _root_.one_zpow]) (fun h => absurd (Finset.mem_univ _) h)]
-  exact Finset.prod_congr rfl fun i _ => by rw [hb, if_pos rfl]
+    rw [hb, ite_eq_right hσ, _root_.one_zpow]) (fun h => absurd (Finset.mem_univ _) h)]
+  exact Finset.prod_congr rfl fun i _ => by rw [hb, ite_eq_left rfl]
 
 theorem detPow_torAt (C : Ctx S T) {B : C.Bas} (hB : C.IsB B) (ρ : D.what₂.Tau) (t : Fin T.rank → ℝ)
     (m : D.what₂.Tau → ℤ) : detPow C.θ T m (torAt C.θ T B ρ t) = (∏ a, cexp ((t a : ℂ) * I)) ^ m ρ := by
@@ -404,8 +401,8 @@ theorem detPow_torAt (C : Ctx S T) {B : C.Bas} (hB : C.IsB B) (ρ : D.what₂.Ta
     refine isUnit_iff_ne_zero.2 fun h0 => det_sgnM_ne C ?_
     rw [← h, h0, mul_zero]
   unfold detPow
-  rw [Finset.prod_eq_single ρ (fun τ _ hτ => by rw [compAt_torAt C hB ρ t τ, if_neg hτ, det_one, _root_.one_zpow])
-    (fun h => absurd (Finset.mem_univ _) h), compAt_torAt C hB ρ t ρ, if_pos rfl, det_mul, det_mul,
+  rw [Finset.prod_eq_single ρ (fun τ _ hτ => by rw [compAt_torAt C hB ρ t τ, ite_eq_right hτ, det_one, _root_.one_zpow])
+    (fun h => absurd (Finset.mem_univ _) h), compAt_torAt C hB ρ t ρ, ite_eq_left rfl, det_mul, det_mul,
     det_diagonal, mul_comm, ← mul_assoc, ← det_mul, nonsing_inv_mul _ hdet, det_one, one_mul]
 
 theorem scalar_eq (t : Fin T.rank → ℝ) (k : ℤ) (w : Fin T.rank → ℤ) :
@@ -445,27 +442,13 @@ end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.CompactTorusActsFockVectorRowHighest =====
 
--- ===== clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.RightDerivativeMultiplicityMapValueEqStatement =====
--- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.RightDerivativeMultiplicityMapValueEqStatement", "h": "module\n\npublic import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction\npublic import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RightDerivativeMultiplicityMapValueEq\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmoothReal\n\n"}
-section -- clump:auto
-@[expose] public section
-
-open NumberField IsDedekindDomain Matrix MeasureTheory ReciprocityTheory.ChartRestriction.G.FD Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Pj Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.FWT GlobalTheory.HolRead
-open scoped TensorProduct InnerProductSpace Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.RightDerivativeMultiplicityMapValueEqStatement =====
-
 -- ===== clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExtremalVectorAnnihilated =====
--- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExtremalVectorAnnihilated", "h": "module\n\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmoothReal\npublic import Formalism.LocalToGlobal.IndefiniteReal.ExistsChosenExtremalVector\npublic import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.ConjAtFixedIff\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DiscreteSeriesModelUnitaryIrreducibleOrthonormal\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExtremalLowestKTypeKilledCompactRootsStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LowestKTypeKilledByNegativeNoncompactRootsStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RightDerivativeMultiplicityMapValueEqStatement\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.MatrixExponential\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\n\n"}
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExtremalVectorAnnihilated", "h": "module\n\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmoothReal\npublic import Formalism.LocalToGlobal.IndefiniteReal.ExistsChosenExtremalVector\npublic import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.ConjAtFixedIff\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DiscreteSeriesModelUnitaryIrreducibleOrthonormal\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExtremalLowestKTypeKilledCompactRootsStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LowestKTypeKilledByNegativeNoncompactRootsStatement\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.MatrixExponential\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\n\n"}
 section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Matrix MeasureTheory ReciprocityTheory.ChartRestriction.G.FD Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Pj Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.FWT GlobalTheory.HolRead
 open scoped TensorProduct InnerProductSpace Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.HolRead.ExtKill
 
@@ -551,7 +534,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.ExtFock
 
@@ -579,7 +561,7 @@ theorem perm_single_perm (hπ : ∀ a, π (π a) = a) (c d : Fin n) :
   simp only [Matrix.mul_apply, Matrix.submatrix_apply, id, Matrix.one_apply, Matrix.single_apply]
   simp [mul_ite, Finset.sum_ite_eq']
   have key : ∀ x y, x = π y ↔ π x = y := fun x y => ⟨fun h => by rw [h, hπ], fun h => by rw [← h, hπ]⟩
-  simp only [ite_and, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [ite_and, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   simp only [key d b]
   by_cases h1 : π c = a
   · subst h1; simp
@@ -610,14 +592,14 @@ theorem killPair_rev {n p : ℕ} (hpn : p ≤ n) {c d : Fin n} (h : d < c) :
   unfold GlobalTheory.HolRead.KillPair GlobalTheory.AdSpan.revPos
   by_cases hc : (c : ℕ) < p <;> by_cases hd : (d : ℕ) < p
   · left
-    simp only [dif_pos (And.intro hc hpn), dif_pos (And.intro hd hpn), Fin.lt_def]
+    simp only [dite_eq_left (And.intro hc hpn), dite_eq_left (And.intro hd hpn), Fin.lt_def]
     refine ⟨by simp; omega, by simp; omega, by omega⟩
   · omega
   · right; right
-    simp only [dif_neg (fun h' : (c : ℕ) < p ∧ p ≤ n => hc h'.1), dif_pos (And.intro hd hpn), Fin.lt_def]
+    simp only [dite_eq_right (fun h' : (c : ℕ) < p ∧ p ≤ n => hc h'.1), dite_eq_left (And.intro hd hpn), Fin.lt_def]
     refine ⟨by simp; omega, by omega⟩
   · right; left
-    simp only [dif_neg (fun h' : (c : ℕ) < p ∧ p ≤ n => hc h'.1), dif_neg (fun h' : (d : ℕ) < p ∧ p ≤ n => hd h'.1), Fin.lt_def]
+    simp only [dite_eq_right (fun h' : (c : ℕ) < p ∧ p ≤ n => hc h'.1), dite_eq_right (fun h' : (d : ℕ) < p ∧ p ≤ n => hd h'.1), Fin.lt_def]
     refine ⟨by simp; omega, by simp; omega, hdc⟩
 
 end GlobalTheory.ExtFock
@@ -770,7 +752,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.AdSpan.Refock
 
@@ -1014,7 +995,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix MeasureTheory ReciprocityTheory.ChartRestriction.G.FD Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Pj Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.FWT GlobalTheory.HolRead
 open scoped TensorProduct InnerProductSpace Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.HolRead.PrincLevelSub
 
@@ -1043,7 +1023,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.SpanPlaces
 
@@ -1106,7 +1085,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -1206,7 +1184,7 @@ theorem eq_zero_of_value {V : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel V
   · have h1 := (ipM_spec M μ 𝓕 _ _ h v v).2
     simp only [hx, Pi.zero_apply, mul_zero, integral_zero, inner_self_eq_norm_sq_to_K, hv] at h1
     simpa using h1.symm
-  · exact dif_neg h
+  · exact dite_eq_right h
 
 theorem isB_onb {S T : HSp D} (C : Ctx S T) {Sp : D.what₂.Tau → SPar} (M : DSModel T Sp)
     (hε : ∀ τ a, M.ε τ a = decide ((a : ℕ) < C.X.p0)) : C.IsB (onb M) ∧ C.sB (onb M) = cart M := by

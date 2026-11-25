@@ -112,8 +112,7 @@ theorem step (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (hθ : IsInfFam θ
   obtain ⟨u, hu⟩ := htr (io F)
   have hker := fun P => GlobalTheory.thetaKO_rat_left_and_eigen_right ψ V W χS χT om hom (pt P) (hpt P)
   have hx : ∃ φ w, It φ w ≠ 0 := by
-    by_contra hn
-    push_neg at hn
+    by_contra! hn
     exact hIt (LinearMap.ext fun φ => LinearMap.ext fun w => hn φ w)
   obtain ⟨φ0, w0, hx⟩ := hx
   have e := GlobalTheory.thetaLift_translate_of_kernel_fixed ν 𝓖 (thetaKO om) pt It CCs (MultT θ M J χ) io hio

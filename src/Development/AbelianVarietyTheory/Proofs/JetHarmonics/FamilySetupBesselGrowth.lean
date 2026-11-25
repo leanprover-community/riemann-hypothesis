@@ -1,5 +1,0 @@
-module
-
-public import Development.AbelianVarietyTheory.Definitions.Jets.SideFam
-public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.DiscreteSeriesUnitarySmoothBasic
-public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.NumericalFamilyShapeGaps

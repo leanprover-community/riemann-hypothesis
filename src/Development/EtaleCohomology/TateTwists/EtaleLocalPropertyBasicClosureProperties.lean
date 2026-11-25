@@ -65,7 +65,7 @@ theorem loc_finite (U : Scheme.{0}) (ι : Type) [Finite ι] (P : ι → ∀ V : 
   exact loc_mono U _ _ (loc_finset U ι P h Finset.univ) (fun V g hg i => hg i (Finset.mem_univ i))
 
 theorem loc_empty (U : Scheme.{0}) [IsEmpty U] (P : ∀ V : Scheme.{0}, (V ⟶ U) → Prop) : Loc U P :=
-  ⟨⊥, Scheme.bot_mem_grothendieckTopology U, fun V g hg => hg.elim⟩
+  ⟨⊥, Scheme.bot_mem_grothendieckTopology U, fun _ _ hg => hg.elim⟩
 
 end LateralTheory.EtaleFoundations.LocBasicPf
 

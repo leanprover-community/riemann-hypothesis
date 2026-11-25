@@ -10,6 +10,7 @@ import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.PartialFlagBlocks
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.GenericFibreKerTarget
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.RationalSections.IsRatSectionOn
+import ReciprocityTheory.AnalyticForms.LeviForms.TailCutA
 
 @[expose] public section
 
@@ -24,14 +25,7 @@ namespace BlockPot
 
 theorem continuousAt_of_holoOn {e : ℕ} {X : Type} [TopologicalSpace X] {A : FinHolAtlas e X} {U : Set X}
     {g : X → ℂ} (hg : A.HoloOn U g) {x : X} (hx : x ∈ U) : ContinuousAt g x := by
-  obtain ⟨j, hj⟩ := A.cover x
-  have an := hg j (A.chart j x) ⟨(A.chart j).map_source hj, by
-    simpa only [Set.mem_preimage, (A.chart j).left_inv hj] using hx⟩
-  have c : ContinuousAt (fun y => (g ∘ (A.chart j).symm) (A.chart j y)) x :=
-    ContinuousAt.comp (f := A.chart j) an.continuousAt ((A.chart j).continuousAt hj)
-  refine c.congr ?_
-  filter_upwards [(A.chart j).open_source.mem_nhds hj] with y hy
-  simp only [Function.comp_apply, (A.chart j).left_inv hy]
+  apply _root_.ReciprocityTheory.AnForm.P.LeviFormBoundaryTopology.continuousAt_of_holoOn <;> assumption
 
 theorem holoOn_comp {e e' : ℕ} {X Y : Type} [TopologicalSpace X] [TopologicalSpace Y]
     {A : FinHolAtlas e' X} {B : FinHolAtlas e Y} {h : Y → X} (hh : HoloMap B A h) {S : Set X}

@@ -332,10 +332,6 @@ theorem det_ne_zero_of_chars [DecidableEq ι] (χ : ι → A →+* L) (hχ : Fun
 
 end Chars
 
-section Label
-
-end Label
-
 end Formalism.L2.FormalSeriesBounds.UpFBr.Pl
 end -- clump:auto
 end -- clump:auto
@@ -744,7 +740,7 @@ theorem echelon {C : Type} [Field C] (vm : Valuation C NNReal) (n : ℕ) :
   intro M hM
   by_cases h0 : ∃ v ∈ M, v ≠ 0
   swap
-  · push_neg at h0
+  · push Not at h0
     refine ⟨0, Fin.elim0, Fin.elim0, fun i => i.elim0, fun i => i.elim0, fun i => i.elim0,
       fun v hv => ?_⟩
     simp [h0 v hv]
@@ -805,10 +801,10 @@ theorem echelon {C : Type} [Field C] (vm : Valuation C NNReal) (n : ℕ) :
     | zero =>
       induction i' using Fin.cases with
       | zero => simp [hbj]
-      | succ i' => simp only [Fin.cons_zero, Fin.cons_succ, hbJ]; rw [if_neg (Fin.succ_ne_zero i').symm]
+      | succ i' => simp only [Fin.cons_zero, Fin.cons_succ, hbJ]; rw [ite_eq_right (Fin.succ_ne_zero i').symm]
     | succ i =>
       induction i' using Fin.cases with
-      | zero => simp only [Fin.cons_zero, Fin.cons_succ, hB'j]; rw [if_neg (Fin.succ_ne_zero i)]
+      | zero => simp only [Fin.cons_zero, Fin.cons_succ, hB'j]; rw [ite_eq_right (Fin.succ_ne_zero i)]
       | succ i' => simp [hB'δ, Fin.succ_inj]
   · intro w hw
     rw [Fin.sum_univ_succ]
@@ -1246,8 +1242,6 @@ open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj Alg
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ ReciprocityTheory.ChartRestriction.G.Pdiv.AvDefs
 open ReciprocityTheory.ChartRestriction.G.Pdiv.ChartF IsLocalRing
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section Inst
 
 variable {C : Type} [Field C] [CharZero C] {V : VF C} {OE : Type} [CommRing OE] [StarRing OE] {dd : ℕ} {d : ℕ} [NeZero d]
@@ -1362,7 +1356,7 @@ theorem eigInS_of_integral_lifts {Y : FBChart C V OE dd} (p : SelfData Y d I0) (
       refine ⟨s, W, hb, fun a' h' => ?_⟩
       obtain rfl := hsep a' a h'
       exact ⟨e, hu⟩
-    · push_neg at h
+    · push Not at h
       obtain ⟨s, W, h1, h2⟩ := eigFreeSt_holds C vm R hv dd OE (fun x => linPart (actR x)) τ
       refine ⟨s, W, ?_, fun a h' => absurd h' (h a)⟩
       unfold IsEigBasis

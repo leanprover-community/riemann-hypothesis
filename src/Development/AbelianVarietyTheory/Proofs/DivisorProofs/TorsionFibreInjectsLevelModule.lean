@@ -1529,7 +1529,7 @@ theorem torsLevel_pull : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
     have hPQ : IsTorsI I (pullAct TF Z φ) (P * Q) := fun a ha => by
       haveI := (pullAct TF Z φ).hom a
       rw [MonObj.mul_comp, hP a ha, hQ a ha, _root_.mul_one]
-    simp only [dif_pos hP, dif_pos hQ, dif_pos hPQ]
+    simp only [dite_eq_left hP, dite_eq_left hQ, dite_eq_left hPQ]
     exact GlobalTheory.T.torsionPoint_class_mul_eq_add (pullG TF Z φ) l.M hn ℓ (etaSecL TF Z φ ℓ hℓ) (etaSecL_w TF Z φ ℓ hℓ) hun
       (GlobalTheory.T.levelSection_add_at_geometricPoint TF Z φ ℓ hℓ) K t P Q _ _ _ (hPT P hP) (hPT Q hQ) (hPT _ hPQ) _ _ _ _ (hcl P hP) (hcl Q hQ)
       (hcl _ hPQ)
@@ -1537,11 +1537,11 @@ theorem torsLevel_pull : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
     have hPa : IsTorsI I (pullAct TF Z φ) (P ≫ (pullAct TF Z φ).act a) := fun r hr => by
       rw [Category.assoc, ← (pullAct TF Z φ).mul]
       exact hP _ (I.mul_mem_left a hr)
-    simp only [dif_pos hP, dif_pos hPa]
+    simp only [dite_eq_left hP, dite_eq_left hPa]
     exact GlobalTheory.T.torsionPointClassAtStalk_smul_action (pullG TF Z φ) l.M hn ℓ (etaSecL TF Z φ ℓ hℓ) (etaSecL_w TF Z φ ℓ hℓ) hun (pullAct TF Z φ)
       (GlobalTheory.T.levelSection_smul_at_geometricPoint TF Z φ ℓ hℓ) K t P a _ _ (hPT P hP) (hPT _ hPa) _ _ _ (hcl P hP) (hcl _ hPa)
   · intro P Q hP hQ he
-    simp only [dif_pos hP, dif_pos hQ] at he
+    simp only [dite_eq_left hP, dite_eq_left hQ] at he
     exact GlobalTheory.T.eq_of_torsionPointClassAtStalk_eq (pullG TF Z φ) l.M hn ℓ (etaSecL TF Z φ ℓ hℓ) (etaSecL_w TF Z φ ℓ hℓ) K t P Q _ _
       (hPT P hP) (hPT Q hQ) _ _ (hcl P hP) (he ▸ hcl Q hQ)
   · intro γ ht P Q hP hQP
@@ -1551,7 +1551,7 @@ theorem torsLevel_pull : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
       rw [one_left] at e1
       rw [Over.comp_left, one_left, hQP, Category.assoc, ← hm.2.1 γ a, ← Category.assoc, ← Over.comp_left, e1,
         Category.assoc, eta_comp_of_isGrpPullback (hm.1 γ), ← Category.assoc, ht]
-    simp only [dif_pos hP, dif_pos hQ]
+    simp only [dite_eq_left hP, dite_eq_left hQ]
     exact GlobalTheory.T.torsionPoint_class_image_eq_level_action (pullG TF Z φ) l.M hn ℓ (etaSecL TF Z φ ℓ hℓ) (etaSecL_w TF Z φ ℓ hℓ) hun (pullAct TF Z φ)
       ρ' ρ hρ ι m hm hmv' K t γ P Q _ _ (hPT P hP) (hPT Q hQ) hQP _ _ _ (hcl P hP) (hcl Q hQ)
 

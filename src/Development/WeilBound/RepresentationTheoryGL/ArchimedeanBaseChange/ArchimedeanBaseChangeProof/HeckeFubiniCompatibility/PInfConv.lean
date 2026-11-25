@@ -126,7 +126,7 @@ theorem coeff_defect_top (t : ℕ → ℂ) (m N r : ℕ) (R : ℂ[X]) (hR : ∀ 
     rw [hR', coeff_sub, coeff_C_mul_X_pow]
     rcases eq_or_lt_of_le hi with h | h
     · subst h; simp
-    · rw [if_neg (by omega), hR i h, sub_zero]
+    · rw [ite_eq_right (by omega), hR i h, sub_zero]
   have h0 : (defect t m N R').coeff (r + N) = 0 := by
     by_cases hz : R' = 0
     · rw [hz, defect_zero', coeff_zero]
@@ -226,14 +226,14 @@ theorem key (m : ℕ) (χ : Fin (m + 1) → ℂ) (r : ℕ) (_hr : r ≤ m) :
     intro i hi
     rw [coeff_sub, coeff_Hi]
     by_cases hin : i ∈ Ioc r (m + 1)
-    · rw [if_pos hin, sub_self]
-    · rw [if_neg hin, sub_zero]
+    · rw [ite_eq_left hin, sub_self]
+    · rw [ite_eq_right hin, sub_zero]
       apply coeff_eq_zero_of_natDegree_lt
       rw [cq_natDegree]
       simp only [mem_Ioc, not_and, not_le] at hin
       exact hin hi
   have hr' : (cq m χ - Hi r (m + 1) (cq m χ)).coeff r = (cq m χ).coeff r := by
-    rw [coeff_sub, coeff_Hi, if_neg (by simp), sub_zero]
+    rw [coeff_sub, coeff_Hi, ite_eq_right (by simp), sub_zero]
   rw [e, coeff_add, coeff_defect_top _ _ _ r _ hvan, hr', gelfVal_zero'] at hz
   push_cast at hz
   exact hz

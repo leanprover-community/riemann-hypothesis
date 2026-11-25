@@ -137,7 +137,7 @@ theorem e_diag_commute (i j : Fin n) : e (i, i) * e (j, j) = e (j, j) * e (i, i)
   have h := e_mul_sub_mul (i, i) (j, j)
   by_cases hij : i = j
   · subst hij; rfl
-  · simp only [hij, Ne.symm hij, if_false, sub_self] at h
+  · simp only [hij, Ne.symm hij, ite_false, sub_self] at h
     exact sub_eq_zero.1 h
 
 theorem cartanSet_commute : ∀ a ∈ cartanSet n, ∀ b ∈ cartanSet n, a * b = b * a := by
@@ -176,7 +176,7 @@ theorem word_blockW_diagL (m : Fin n × Fin n →₀ ℕ) :
   have hg : ∀ a ∈ diagL n, ((g a : cartanSub n) : U n) = e a ^ m a := by
     intro a ha
     have h : a.1 = a.2 := mem_diagL.1 ha
-    simp only [g, dif_pos h, SubmonoidClass.coe_pow]
+    simp only [g, dite_eq_left h, SubmonoidClass.coe_pow]
     congr 2
     exact Prod.ext rfl h
   have hnodup : (diagL n).Nodup := nodup_allL.filter _
@@ -494,7 +494,7 @@ theorem geDeg_anti {t t' : ℕ} (h : t' ≤ t) : (geDeg t : Submodule ℂ (Poly 
 theorem monomial_mem_geDeg {t : ℕ} (s : Fin n × Fin n →₀ ℕ) (c : ℂ) (h : t ≤ s.degree) :
     (monomial s c : Poly n) ∈ geDeg t := by
   intro s' hs'
-  rw [coeff_monomial, if_neg]
+  rw [coeff_monomial, ite_eq_right]
   rintro rfl
   omega
 
@@ -678,7 +678,7 @@ theorem constantCoeff_rho_one_word_monomial (w : List (Fin n × Fin n))
     · exact le_antisymm (hiff.1 hne) (tsub_eq_zero_iff_le.1 h0)
     · exact absurd rfl hne
   · rintro rfl
-    rw [tsub_self, if_pos rfl]
+    rw [tsub_self, ite_eq_left rfl]
     exact hiff.2 le_rfl
 
 end GroundTheory.Automorphic.HarishChandra
@@ -815,11 +815,11 @@ noncomputable def hcProjLin : U n →ₗ[ℂ] MvPolynomial (Fin n) ℂ :=
 
 theorem hcProjLin_canon_of_isDiagExp {m : Fin n × Fin n →₀ ℕ} (h : IsDiagExp m) :
     hcProjLin (canon m) = monomial (diagExp m) 1 := by
-  rw [hcProjLin, ← pbw_apply, Module.Basis.constr_basis, if_pos h]
+  rw [hcProjLin, ← pbw_apply, Module.Basis.constr_basis, ite_eq_left h]
 
 theorem hcProjLin_canon_of_not {m : Fin n × Fin n →₀ ℕ} (h : ¬ IsDiagExp m) :
     hcProjLin (canon m) = 0 := by
-  rw [hcProjLin, ← pbw_apply, Module.Basis.constr_basis, if_neg h]
+  rw [hcProjLin, ← pbw_apply, Module.Basis.constr_basis, ite_eq_right h]
 
 theorem canon_of_isDiagExp {m : Fin n × Fin n →₀ ℕ} (h : IsDiagExp m) :
     canon m = hcEmb (monomial (diagExp m) 1) := by
@@ -874,7 +874,7 @@ theorem hcProjLin_eq_zero_of_mem_nPlusU {x : U n} (hx : x ∈ nPlusU n) : hcProj
 theorem sum_mul_rootAt (a : Fin n × Fin n) :
     ∑ k : Fin n, (k : ℤ) * rootAt a k = (a.1 : ℤ) - a.2 := by
   simp only [rootAt, mul_sub, mul_ite, mul_one, mul_zero, Finset.sum_sub_distrib,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem sum_mul_wt (m : Fin n × Fin n →₀ ℕ) :
     ∑ k : Fin n, (k : ℤ) * wt m k = m.sum fun a c => (c : ℤ) * ((a.1 : ℤ) - a.2) := by

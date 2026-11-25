@@ -124,11 +124,6 @@ def Good (T : GL (Fin n) K) : Prop :=
         (α i ᵥ* P) ᵥ* (T : Matrix (Fin n) (Fin n) K) = α i ᵥ* P ∧
         (α' i ᵥ* P) ᵥ* (T : Matrix (Fin n) (Fin n) K) = α' i ᵥ* P)
 
-private theorem smul_vecMul' (b : K) (v : Fin n → K) (M : Matrix (Fin n) (Fin n) K) :
-    (b • v) ᵥ* M = b • (v ᵥ* M) := by
-  ext j
-  simp only [Matrix.vecMul, dotProduct, Pi.smul_apply, smul_eq_mul, Finset.mul_sum, mul_assoc]
-
 theorem good_mul {S T : GL (Fin n) K} (hS : Good O P Λ1 Λ2 a a' α α' S)
     (hT : Good O P Λ1 Λ2 a a' α α' T) : Good O P Λ1 Λ2 a a' α α' (S * T) := by
   unfold Good at hS hT ⊢
@@ -176,7 +171,7 @@ theorem isAdmissible_rankOneGL (hP : ∀ β ∈ Λ2, ∀ x ∈ Λ1, pr P β x �
   have hvec : ∀ (e : K) (β : Fin n → K),
       (β + (e * ((β ᵥ* P) ⬝ᵥ w)) • γ) ᵥ* P = (β ᵥ* P) ᵥ* (1 + e • vecMulVec w (γ ᵥ* P)) := by
     intro e β
-    rw [vecMul_one_add_smul_vecMulVec, Matrix.add_vecMul, smul_vecMul']
+    rw [vecMul_one_add_smul_vecMulVec, Matrix.add_vecMul, Matrix.smul_vecMul]
   refine ⟨fun x hx => ⟨?_, ?_⟩,
     fun β hβ => ⟨⟨β + (c * ((β ᵥ* P) ⬝ᵥ w)) • γ, ?_, hvec c β⟩,
       ⟨β + (d * ((β ᵥ* P) ⬝ᵥ w)) • γ, ?_, hvec d β⟩⟩, fun i => ?_⟩

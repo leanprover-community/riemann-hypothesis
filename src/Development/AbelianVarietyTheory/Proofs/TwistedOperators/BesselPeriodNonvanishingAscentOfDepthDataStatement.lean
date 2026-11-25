@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.DoubleLiftPeriodRankZeroFubiniCompactQuotient
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.PartFixed
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsWeilDatumHermitianPair
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.UnfoldingLevelsAndStepsHaarMeasuresExist
@@ -100,7 +101,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Unf GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.SepRows
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Asc
 
 namespace GlobalTheory.Asc
@@ -128,9 +128,9 @@ theorem ascent_of_rungs : TowerEx → Rung0 → RungB → RungJ → Ascent := by
   refine ⟨ρ, Φ, ?_⟩
   let f : ∀ i, Fn G (.grid i 0) := fun i => if hi : i ≤ D.R.m then part W M ρ Φ u i hi else 0
   have hf : f D.R.m = thetaChi W M ρ Φ u := by
-    simp only [f, dif_pos le_rfl]; rfl
+    simp only [f, dite_eq_left le_rfl]; rfl
   have := hE.top (r - 1) hk hk' Ψ f (hΨ.1 _ le_rfl) (by rw [hf, ← part_m]; exact hu ρ Φ _ le_rfl) (by
-    simp only [f, dif_pos hk]; exact hne)
+    simp only [f, dite_eq_left hk]; exact hne)
   rwa [hf] at this
 
 end GlobalTheory.Asc
@@ -149,7 +149,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Unf GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.SepRows
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Asc
 
 namespace GlobalTheory.Asc.RungJac
@@ -175,20 +174,6 @@ private theorem rapidDec_star' {D : D7} {V : HSp D} {f : GA D V → ℂ} (hf : R
   · obtain ⟨C, hC⟩ := hf.2.2 N
     exact ⟨C, fun g => by simpa only [Pi.star_apply, norm_star] using hC g⟩
 
-private theorem isHeckeChar_of_isHeckeChar_mul {D : D7} {χ χ' : (AE D)ˣ →* Circle} (h : IsHeckeChar D χ)
-    (h' : IsHeckeChar D (χ * χ')) : IsHeckeChar D χ' := by
-  have e : (χ' : (AE D)ˣ → Circle) = fun x => (χ x)⁻¹ * (χ * χ') x := by
-    funext x
-    simp
-  refine ⟨?_, fun x => ?_⟩
-  · rw [e]
-    exact h.1.inv.mul h'.1
-  · have hx := h'.2 x
-    rw [MonoidHom.mul_apply, h.2 x, one_mul] at hx
-    exact hx
-
-
-
 theorem rungJ : FockTot → PartFixed → RungJ := by
   intro hFock hFix D hD T L μ0 hL sc G W M hM v F ΓL _hEnds hGood Ψ hΨ u hu k h h' hB
   obtain ⟨ρ, Φ, hne⟩ := hB
@@ -202,7 +187,7 @@ theorem rungJ : FockTot → PartFixed → RungJ := by
   have hex := GlobalTheory.WeilDatumExistence.weilDatumExists D
   have hc2 := ((GlobalTheory.IndefiniteRowSideFullHecke.WeilDatumExistenceCriterion.weilDatumExists_iff D).1 hex _ _ W.ψ _ _).1 ⟨_, c2⟩
   have hc1 := ((GlobalTheory.IndefiniteRowSideFullHecke.WeilDatumExistenceCriterion.weilDatumExists_iff D).1 hex _ _ W.ψ _ _).1 ⟨_, c1⟩
-  have hEta : IsHeckeChar D L.eta := isHeckeChar_of_isHeckeChar_mul hc2.2.1 hc1.2.2.1
+  have hEta : IsHeckeChar D L.eta := GlobalTheory.WeilDetermined.hecke_of_mul hc2.2.1 hc1.2.2.1
   obtain ⟨omz, hz⟩ : ∃ omz : Om (G.V (.core (2 * k + 2 + 1))) (negSp F.Lz),
       IsWeilDatumO W.ψ _ _ (G.ch.chi (D.R.m - (2 * k + 2)))⁻¹ L.eta omz := by
     refine hex _ _ W.ψ _ _ W.ψ_std hc2.2.1 hEta hc2.2.2.2.1 ?_
@@ -238,8 +223,7 @@ theorem rungJ : FockTot → PartFixed → RungJ := by
   have hFk := hFock D hD T L μ0 hL sc G W M hM ⟨2 * k + 2, hi⟩ _ hTame
   obtain ⟨κ, P, hκP⟩ : ∃ κ P, (F.jac v (k + 1) h).per W.ψ (F.ζ (k + 1)) omz (star (Ψ (2 * k + 2 + 1)))
       (s.lift (star (part W M ρ Φ u (2 * k + 2) h')) (star (W.fock (.chi (2 * k + 2) 0) (W.cosVec (2 * k + 2) κ) P))) Φ₀ ≠ 0 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     exact hΦ'ne (hFk hall Φ' (hRow Φ' hΦ'𝒮))
 
   have hpart : part W M (Function.update ρ ⟨2 * k + 2, hi⟩ P) (Function.update Φ ⟨2 * k + 2, hi⟩ κ) u (2 * k + 2) hi.le =
@@ -283,7 +267,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Unf GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.SepRows GlobalTheory.Asc
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK MonoAt OrthAt PrimAt ColsAt)
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
@@ -378,7 +361,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Unf GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.SepRows GlobalTheory.Asc
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK MonoAt OrthAt PrimAt ColsAt)
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
@@ -461,7 +443,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Unf GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.SepRows GlobalTheory.Asc
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK MonoAt OrthAt PrimAt ColsAt)
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
@@ -616,8 +597,6 @@ theorem integral_tr' {D : D7} {S : HSp D} {N N' : Subgroup (GA D S)} (hN : N = N
   subst hN
   rfl
 
-alias per_scale := _root_.GlobalTheory.Per.besPer_haar_scale
-
 section Parts
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc}
 
@@ -692,7 +671,7 @@ theorem scale_top (W : G.Weil) (M : GlobalTheory.FunObj.Vol G) (hM : M.IsRow) (v
     (hφ : RapidDec _ φ) (hF : RapidDec _ F) :
     ∃ r : ℝ, 0 < r ∧ GlobalTheory.Per.besPer W.ψ G.besTop (toTop vA).μ (toTop vA).𝓕 ν 𝓝 (embTop G) (star φ) F =
       r * GlobalTheory.Per.besPer W.ψ G.besTop (M.ν (.top 0)) (M.fd (.top 0)) M.νN M.fdN (embTop G) (star φ) F :=
-  per_scale W.ψ W.ψ_std (G.rowDec 0 (by have := D.R.two_le_m; omega)) G.besTop (GlobalTheory.RowUnf.cocpt_top G (Nat.zero_le _))
+  GlobalTheory.Per.besPer_haar_scale W.ψ W.ψ_std (G.rowDec 0 (by have := D.R.two_le_m; omega)) G.besTop (GlobalTheory.RowUnf.cocpt_top G (Nat.zero_le _))
     (toTop vA).μ (M.ν (.top 0)) (toTop vA).𝓕 (M.fd (.top 0)) ν M.νN 𝓝 M.fdN
     (toTop vA).haar (toTop vA).fund hM.top.haar_fund.1 hM.top.haar_fund.2 hν hM.unip
     (star φ) F (fun γ hγ g => congrArg star (hφ.1 γ hγ g)) hF.1
@@ -748,7 +727,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Unf GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.SepRows GlobalTheory.Asc
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK MonoAt OrthAt PrimAt ColsAt)
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
@@ -774,7 +752,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Unf GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.SepRows GlobalTheory.Asc
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK MonoAt OrthAt PrimAt ColsAt)
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
@@ -810,7 +787,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Unf GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.SepRows
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Asc
 
 noncomputable section
@@ -848,7 +824,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Unf GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.SepRows
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Asc
 
 noncomputable section
@@ -876,16 +851,7 @@ private lemma eq_one_of_subOne_mulVec_ratV_eq_zero {S : HSp D} (g : GA D S)
   exact (HR (AF D.host.F) D.sp.cm.sig S.gram).subtype_injective h2
 
 theorem eq_one_of_mem_flagN {S S₀ : HSp D} (d : HypDec S S₀ 0) {n : GA D S} (hn : n ∈ flagN d) : n = 1 := by
-  have hle : flagN d ≤ ⊥ := by
-    unfold flagN NFlag
-    refine (Subgroup.closure_le _).2 ?_
-    rintro g ⟨-, hg⟩
-    refine Subgroup.mem_bot.2 (eq_one_of_subOne_mulVec_ratV_eq_zero g fun x => ?_)
-    obtain ⟨a, ha⟩ := hg x (Subsingleton.elim _ _)
-    rw [ha]
-    ext i
-    simp [Matrix.mulVec, dotProduct]
-  exact Subgroup.mem_bot.1 (hle hn)
+  apply _root_.GlobalTheory.Unf.LastSteps.flagN_rank_zero <;> assumption
 
 theorem per_zero (J : JacL D 0) {L' : HSp D} (ζ' : Fin L'.rank → D.host.E) (omz : Om J.W₀ L') (φ : GA D J.W₀ → ℂ)
     (f : GA D J.W → ℂ) (Φ₀ : WO J.W₀ L' → ℂ) :
@@ -1095,7 +1061,7 @@ theorem upLast : ∀ D : D7, UpLast D := by
   push Not at hcon
   apply hne
   rw [← hval Ξ hΞ.1]
-  refine GlobalTheory.T.tame_functional_vacuum_irreducibility D ψ hψ J.W₀ X ΓX _ hTame _ hbox hf₀ (fun w hw => ?_) Ξ hΞ
+  refine _root_.GlobalTheory.Irr.irr D ψ hψ J.W₀ X ΓX _ hTame _ hbox hf₀ (fun w hw => ?_) Ξ hΞ
   obtain ⟨hw1, hw2⟩ := hLL.ann w hw
   have hΦ := (GlobalTheory.Asc.annVac D ψ hψ J.W T Γ).1 f₁ hf₁ _ hw1
   have hΦ₀ := (GlobalTheory.Asc.annVac D ψ hψ J.W₀ (negSp L'') ΓL).1 f₂ hf₂ _ hw2
@@ -1123,7 +1089,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Unf GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.SepRows
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Asc
 
 noncomputable section
@@ -1132,10 +1097,7 @@ namespace GlobalTheory.AscBottom
 variable {D : D7}
 
 theorem rapidDec_star {V : HSp D} {f : GA D V → ℂ} (h : RapidDec V f) : RapidDec V (star f) := by
-  obtain ⟨h1, h2, h3⟩ := h
-  refine ⟨fun γ hγ g => by simp [Pi.star_apply, h1 γ hγ g], h2.star, fun N => ?_⟩
-  obtain ⟨C, hC⟩ := h3 N
-  exact ⟨C, fun g => by simpa [Pi.star_apply, norm_star] using hC g⟩
+  apply _root_.GlobalTheory.Asc.RungJac.rapidDec_star' <;> assumption
 
 theorem rung0 (hF : FockTot) : Rung0 := by
   intro D hq T L μ0 hL sc G W M hM v F ΓL hE hG Ψ hΨ u hu hper h
@@ -1198,8 +1160,7 @@ theorem rung0 (hF : FockTot) : Rung0 := by
     (_root_.GlobalTheory.LiftTame.lift_periods_tame D W.ψ (Yc D 0) vT (star u) hu').2 0 (F.jac v 0 h) a⁻¹ (a⁻¹ * L.eta) (omRow W 0) homR (negSp F.Lz)
       (F.ζ 0) a⁻¹⁻¹ L.eta omz homz (star (Ψ 1)) Φz hφ hΦz.1
   have hK : ∃ κ P, ℓ (star (W.fock (.chi 0 0) (W.cosVec 0 κ) P)) ≠ 0 := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     exact hne (hF D hq T L μ0 hL sc G W M hM ⟨0, hm⟩ ℓ hT hno Φ' hΦ')
   obtain ⟨κ, P, hκP⟩ := hK
   let ρ : G.RealVec := Function.update ρ₀ ⟨0, hm⟩ P
@@ -1228,7 +1189,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Unf GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.SepRows
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Asc
 
 namespace GlobalTheory.Asc
@@ -1252,7 +1212,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links MeasureTheory IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Unf GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.SepRows
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Asc
 
 theorem _root_.GlobalTheory.T.bessel_period_nonvanishing_ascent_of_depth_data : DepFixed → Ascent := by

@@ -150,7 +150,7 @@ theorem jDRConseq_of (hP : JDRPComm) (hC : JDRCont) : JDRConseq := by
   have eΨ2 : ∀ (m : ℕ) (h : m + 2 ≤ r) (b : Fin 2), Ψ (m + 2) b =
       Y • Ψ (m + 1) b + Q.crd (pOp ⟨r - (m + 2), by omega⟩) (Ψ (m + 1) b) -
         Q.crd (cOp ⟨r - (m + 1), by omega⟩) (Q.crd (ciOp ⟨r - (m + 2), by omega⟩) (Ψ m b)) := by
-    intro m h b; funext c g; simp only [hΨdef, tdU, dif_pos h, Q.crd, Pi.add_apply, Pi.sub_apply, Pi.smul_apply]
+    intro m h b; funext c g; simp only [hΨdef, tdU, dite_eq_left h, Q.crd, Pi.add_apply, Pi.sub_apply, Pi.smul_apply]
   have famΨ : ∀ m, m ≤ r → ∀ b, Q.FamFF k r z z' π π' (Fin.last r) Dc (Ψ m b) := by
     intro m
     induction m using Nat.strong_induction_on with
@@ -313,11 +313,11 @@ theorem jDRConseq_of (hP : JDRPComm) (hC : JDRCont) : JDRConseq := by
       refine ⟨?_, ?_⟩
       · have e : Q.crd (Q.vAB r Y (i + 1)).1 Φ = Y • Q.crd (Q.vAB r Y i).1 Φ +
             Q.crd (pOp ⟨i, hlt⟩) (Q.crd (Q.vAB r Y i).1 Φ) - Q.crd (cOp ⟨i, hlt⟩) (Q.crd (Q.vAB r Y i).2 Φ) := by
-          funext c g; simp only [Q.vAB, dif_pos hlt, Q.crd, Pi.add_apply, Pi.sub_apply, Pi.smul_apply]
+          funext c g; simp only [Q.vAB, dite_eq_left hlt, Q.crd, Pi.add_apply, Pi.sub_apply, Pi.smul_apply]
         rw [e]
         exact cq_sub (cq_add (cq_smul hA' Y) (cq_opL hz hz' hO hA' _ 0)) (cq_opL hz hz' hO hB' _ 1)
       · have e : Q.crd (Q.vAB r Y (i + 1)).2 Φ = Q.crd (ciOp ⟨i, hlt⟩) (Q.crd (Q.vAB r Y i).1 Φ) := by
-          funext c g; simp only [Q.vAB, dif_pos hlt, Q.crd]
+          funext c g; simp only [Q.vAB, dite_eq_left hlt, Q.crd]
         rw [e]
         exact cq_opL hz hz' hO hA' _ 2
   have famVb : ∀ b : Fin 2, Q.FamFF k r z z' π π' (Fin.last r) Dc (Q.crd (Q.cmp (Q.vAB r Y r) b) Φ) := by

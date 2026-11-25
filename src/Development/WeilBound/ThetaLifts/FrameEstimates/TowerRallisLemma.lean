@@ -54,10 +54,10 @@ def LinDer : Prop :=
   ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (τ : ∀ w : InfinitePlace F, EmbOver E w) (d : ℕ) (W : Spc F E d), EpsHerm σ W.J → ∃ (m : ℕ) (β : Fin m → (Multiplicative ℝ →* UA σ W.J)) (c : Fin m → (InfinitePlace F → Matrix (Fin d) (Fin d) ℂ) →ₗ[ℝ] ℝ), (∀ i, β i ∈ Lines σ W) ∧ ∀ (f : UA σ W.J → ℂ) (f' : Fin m → UA σ W.J → ℂ), (∀ i, Continuous (f' i) ∧ ∀ h, HasDerivAt (fun t : ℝ => f (h * β i (Multiplicative.ofAdd t))) (f' i h) 0) → ∀ γ ∈ Lines σ W, ∀ Y, Gen τ W γ Y → ∀ h, HasDerivAt (fun t : ℝ => f (h * γ (Multiplicative.ofAdd t))) (∑ i, (c i Y : ℂ) * f' i h) 0
 
 def UMGSmooth : Prop :=
-  ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (τ : ∀ w : InfinitePlace F, EmbOver E w) (d : ℕ) (W : Spc F E d), EpsHerm σ W.J → ∀ f : UA σ W.J → ℂ, UMG W f → ∀ (k : ℕ) (γ : Fin k → (Multiplicative ℝ →* UA σ W.J)), (∀ i, γ i ∈ Lines σ W) → ∀ g, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) fun t : Fin k → ℝ => f (g * (List.ofFn fun i => γ i (Multiplicative.ofAdd (t i))).prod)
+  ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (_ : ∀ w : InfinitePlace F, EmbOver E w) (d : ℕ) (W : Spc F E d), EpsHerm σ W.J → ∀ f : UA σ W.J → ℂ, UMG W f → ∀ (k : ℕ) (γ : Fin k → (Multiplicative ℝ →* UA σ W.J)), (∀ i, γ i ∈ Lines σ W) → ∀ g, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) fun t : Fin k → ℝ => f (g * (List.ofFn fun i => γ i (Multiplicative.ofAdd (t i))).prod)
 
 def UMGLin : Prop :=
-  ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (τ : ∀ w : InfinitePlace F, EmbOver E w) (d : ℕ) (W : Spc F E d), EpsHerm σ W.J → ∀ f f' : UA σ W.J → ℂ, UMG W f → UMG W f' → ∀ a b : ℂ, UMG W (a • f + b • f')
+  ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (_ : ∀ w : InfinitePlace F, EmbOver E w) (d : ℕ) (W : Spc F E d), EpsHerm σ W.J → ∀ f f' : UA σ W.J → ℂ, UMG W f → UMG W f' → ∀ a b : ℂ, UMG W (a • f + b • f')
 
 def CuspRapid : Prop :=
   ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (τ : ∀ w : InfinitePlace F, EmbOver E w) (d : ℕ) (W : Spc F E d), EpsHerm σ W.J → ∀ f : UA σ W.J → ℂ, LeftInv f → UMG W f → SmoothFin W τ f → PositivityTheory.ThKEnd.IsCusp W f → Rapid f

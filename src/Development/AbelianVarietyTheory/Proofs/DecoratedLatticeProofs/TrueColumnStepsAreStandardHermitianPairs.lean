@@ -87,12 +87,6 @@ theorem emb_injective {R : Ranks} (H : Host R) : Function.Injective H.emb := by
 theorem embT_injective {R : Ranks} (H : Host R) : Function.Injective (embT H) := fun τ τ' h =>
   Subtype.ext (emb_injective H h)
 
-theorem bb_ne_bot {R : Ranks} (H : Host R) : H.𝔟 ≠ ⊥ := by
-  intro h
-  have h1 := H.𝔟_spec.1
-  rw [h, Ideal.bot_mul] at h1
-  exact differentIdeal_ne_bot h1
-
 theorem int_mem_inverse_half_different {R : Ranks} (H : Host R) (t : 𝓞 H.E) :
     ((t : H.E)) ∈ (H.AA0 : Submodule (𝓞 H.E) H.E) := by
   first | exact _root_.GlobalTheory.InverseHalfDifferent.integers_mem_inverse_half_different | exact @_root_.GlobalTheory.InverseHalfDifferent.integers_mem_inverse_half_different | apply _root_.GlobalTheory.InverseHalfDifferent.integers_mem_inverse_half_different <;> assumption
@@ -111,7 +105,7 @@ theorem dgen_ne_zero : ∀ {R : Ranks} (H : Host R) (cD : Tau R → ℂ), Th.IsD
   let e : Tau R → H.E →+* M := fun σ => (embT H σ).codRestrict M (hemb σ)
   have hlift : ∀ σ (x : H.E), Formalism.MainNotions.TaylorLogMetric.liftM M (embT H σ x) = e σ x := by
     intro σ x
-    simp only [Formalism.MainNotions.TaylorLogMetric.liftM, dif_pos (hemb σ x)]
+    simp only [Formalism.MainNotions.TaylorLogMetric.liftM, dite_eq_left (hemb σ x)]
     rfl
   let f : Tau R → (𝓞 H.E →* M) := fun σ => ((e σ).comp (algebraMap (𝓞 H.E) H.E)).toMonoidHom
   have hf : Function.Injective f := by
@@ -186,7 +180,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.Forms Formalism.L2.Ker Formalism.UG
 open NumberField IsDedekindDomain Matrix MeasureTheory GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.MixPer GlobalTheory.Core.Rk GlobalTheory.AdForm
 open scoped TensorProduct Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.AdForm.StdSteps
 
@@ -221,7 +214,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.Forms Formalism.UG
 open NumberField IsDedekindDomain Matrix MeasureTheory GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.MixPer GlobalTheory.Core.Rk GlobalTheory.AdForm
 open scoped TensorProduct Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.KJInf Formalism.L2.Ker
 open GlobalTheory.SeeSaw GlobalTheory.Unf
 

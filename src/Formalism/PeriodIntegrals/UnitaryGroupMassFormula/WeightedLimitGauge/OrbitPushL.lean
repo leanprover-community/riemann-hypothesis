@@ -24,14 +24,14 @@ def wEquiv (k : ℕ) : ((Fin k → ℂ) × ℂ) ≃ₗ[ℂ] (Fin (k + 1) → ℂ
     funext j
     unfold toW
     by_cases h : j.val < k
-    · simp only [dif_pos h, Prod.fst_add, Pi.add_apply]
-    · simp only [dif_neg h, Prod.snd_add, Pi.add_apply]
+    · simp only [dite_eq_left h, Prod.fst_add, Pi.add_apply]
+    · simp only [dite_eq_right h, Prod.snd_add, Pi.add_apply]
   map_smul' c p := by
     funext j
     unfold toW
     by_cases h : j.val < k
-    · simp only [dif_pos h, Prod.smul_fst, Pi.smul_apply, RingHom.id_apply]
-    · simp only [dif_neg h, Prod.smul_snd, Pi.smul_apply, RingHom.id_apply]
+    · simp only [dite_eq_left h, Prod.smul_fst, Pi.smul_apply, RingHom.id_apply]
+    · simp only [dite_eq_right h, Prod.smul_snd, Pi.smul_apply, RingHom.id_apply]
   left_inv := ofW_toW
   right_inv := toW_ofW
 

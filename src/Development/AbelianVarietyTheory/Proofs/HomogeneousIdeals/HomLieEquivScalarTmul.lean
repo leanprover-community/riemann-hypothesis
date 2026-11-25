@@ -60,8 +60,6 @@ open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding epsScale
 open GlobalTheory.GrpTangent
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.Serre
 
 section Lie
@@ -517,15 +515,6 @@ theorem lieMult (t : Sp k ⟶ S) (τ : 𝓞 E →+* k) {n : ℕ}
   exact h.lieMult_of_unramified t hn
 
 end Module
-
-section Ideal
-
-variable {I : FractionalIdeal (nonZeroDivisors (𝓞 E)) E}
-
-variable {G₁ H₁ : Over (Sp k)} [GrpObj G₁] [GrpObj H₁] [IsCommMonObj G₁] [IsCommMonObj H₁]
-  {a₁ : OAct (𝓞 K) G₁} {b₁ : OAct (𝓞 K) H₁}
-
-end Ideal
 
 end IsTensor
 

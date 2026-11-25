@@ -117,7 +117,6 @@ open AlgebraicGeometry CategoryTheory NumberField IsDedekindDomain IsLocalRing
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ Formalism.L2.Pj
 open ReciprocityTheory.ChartRestriction.G.Pdiv.ChartF ReciprocityTheory.ChartRestriction.G.Pdiv.AvDefs
 open GlobalTheory.CharDepth TensorProduct
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.ChartBaseChange
 
@@ -215,7 +214,7 @@ theorem psJet_eq {n d : ℕ} (m : ℕ) (q : Fin n × Fin d) (f : PS V n d) (P : 
   refine Ideal.Quotient.eq.2 (Ideal.Quotient.eq_zero_iff_mem.1 ((GlobalTheory.JetTest.mk_eq_zero_iff (m := m) _).2 ?_))
   intro e he
   have hle : ∀ i, e i ≤ m := fun i => (Finsupp.le_degree i e).trans he
-  rw [MvPolynomial.coeff_sub, MvPowerSeries.coeff_trunc, if_pos, h e he, sub_self]
+  rw [MvPolynomial.coeff_sub, MvPowerSeries.coeff_trunc, ite_eq_left, h e he, sub_self]
   refine lt_of_le_of_ne (fun i => ?_) (fun hh => ?_)
   · simpa using (hle i).trans (Nat.le_succ m)
   · have := hle q
@@ -243,9 +242,9 @@ theorem subst_sq (φ : V →+* V') {n d : ℕ} (i0 : Fin n) (m : ℕ) (f : Fin d
   rw [GlobalTheory.JetTest.jetMap_mk, MvPolynomial.aeval_X]
   refine psJet_eq m (i0, q.2) _ (MvPolynomial.map φ _) fun a ha => ?_
   have hc : MvPolynomial.constantCoeff (psTrunc m (f q.2)) = 0 := by
-    rw [MvPolynomial.constantCoeff_eq, GlobalTheory.JetTest.coeff_psTrunc, if_pos (by simp),
+    rw [MvPolynomial.constantCoeff_eq, GlobalTheory.JetTest.coeff_psTrunc, ite_eq_left (by simp),
       MvPowerSeries.coeff_zero_eq_constantCoeff_apply, hf]
-  rw [hc, map_zero, sub_zero, MvPolynomial.coeff_map, GlobalTheory.JetTest.coeff_psTrunc, if_pos ha, e,
+  rw [hc, map_zero, sub_zero, MvPolynomial.coeff_map, GlobalTheory.JetTest.coeff_psTrunc, ite_eq_left ha, e,
     MvPowerSeries.coeff_map]
 
 theorem copy_sq (φ : V →+* V') {n d : ℕ} (i : Fin n) (m : ℕ) :

@@ -31,8 +31,8 @@ theorem prod_uTop {M : Type} [CommMonoid M] {s : ℕ} (S : SegData s) (f : Fin s
   rw [h1, ← Finset.prod_mul_distrib]
   refine Finset.prod_congr rfl fun i _ => ?_
   by_cases h : (i : ℕ) < S.sigma
-  · rw [if_pos h, if_neg (by omega), mul_one]
-  · rw [if_neg h, if_pos (by omega), one_mul]
+  · rw [ite_eq_left h, ite_eq_right (by omega), mul_one]
+  · rw [ite_eq_right h, ite_eq_left (by omega), one_mul]
 
 def mEps (K : Type) [CommRing K] {s r : ℕ} (ez ey : Fin s → Fin r → ℕ) (ax : Fin r → ℕ) :
     MvPolynomial (Fin (2 * s + 1) × Fin r) K :=
@@ -145,12 +145,12 @@ theorem segMon_eq (ju : Fin (X.seg C0 CE1 CE2 j).t → ℕ) (jp : ℕ) (du : Fin
     unfold sTopMon
     refine Finset.prod_congr rfl fun i _ => ?_
     by_cases h : (i : ℕ) < (X.seg C0 CE1 CE2 j).sigma
-    · rw [if_pos h, if_pos h, hz0 i h]
+    · rw [ite_eq_left h, ite_eq_left h, hz0 i h]
       have : (segmentBlockOfMonomial C0 CE1 CE2 X j ju jp du A).sg i = y0A C0 CE1 CE2 X j A i := by
         show (if (i : ℕ) < (X.seg C0 CE1 CE2 j).sigma then _ else 0) = _
-        rw [if_pos h]
+        rw [ite_eq_left h]
       rw [this, pow_mul, pow_mul]
-    · rw [if_neg h, if_neg h]
+    · rw [ite_eq_right h, ite_eq_right h]
   rw [hS]
 
   have hodd : ∀ i : Fin (segS X.TT j), ∏ c : Fin (X.m + 1),

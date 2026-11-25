@@ -24,60 +24,14 @@ public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.MorphismDes
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsGrpPullbackFactor
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.CrysToDRBijective
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.AbelianLifting
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.TypeStar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsSchemeTheoreticallyDominantSpecOfInjective
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.Divisors.CommAlgFunctorCoboundaryZeroMemCocyclesOne
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsKSValueOneOfRetraction
 import Development.AbelianVarietyTheory.Definitions.Divisors.Pullback1MemHodgeFiltration
-import Mathlib.RingTheory.DividedPowers.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsStepNilExp, Development.AbelianVarietyTheory.Proofs.DivisorProofs.GrothendieckMessingLiftAbelianSchemeOfSquareZero, Development.AbelianVarietyTheory.Proofs.DivisorProofs.GrothendieckMessingLiftHomomorphismOfSquareZero, Development.AbelianVarietyTheory.Proofs.DivisorProofs.GroupSchemeDividedPowerLiftTower, Development.AbelianVarietyTheory.Proofs.DivisorProofs.LiftAbelianSchemeAlongSquareZeroFactorization, Development.AbelianVarietyTheory.Proofs.DivisorProofs.HodgeFiltrationMiddleEqReductionOfTop, Development.AbelianVarietyTheory.Proofs.DivisorProofs.LiftHomOfIsStep, Development.AbelianVarietyTheory.Proofs.DivisorProofs.GrothendieckMessingLiftOfNoetherianCase, Development.AbelianVarietyTheory.Proofs.DivisorProofs.GrothendieckMessingLiftOfNoetherianCaseStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.IotaCompTrans, Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbelianHomReductionDescendsFinitelyGenerated, Development.AbelianVarietyTheory.Proofs.DivisorProofs.PushMemLiftFilOfInjective, Development.AbelianVarietyTheory.Proofs.DivisorProofs.LiftHomExistsOfNoetherian, Development.AbelianVarietyTheory.Proofs.DivisorProofs.LiftHomExistsOfNoetherianStatement, Development.AbelianVarietyTheory.Proofs.DivisorProofs.SquareZeroLiftingOfNoetherianCase, Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbelianLiftingOfDeRhamUnobstructed
@@ -89,8 +43,6 @@ section -- clump:auto
 
 open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj DividedPowers
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.SqLift GlobalTheory.Published GlobalTheory.Published.GrothendieckMessing
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 
@@ -223,7 +175,6 @@ theorem isSubDPIdeal (κ : DividedPowers I) {N : ℕ} (hN : NilExp κ (N + 2)) :
 
 end GlobalTheory.SqLift.DPStep
 
-
 open GlobalTheory.SqLift.DPStep in
 theorem GlobalTheory.SqLift.exists_isStep_nilExp :
     ∀ (R R₀ : Type) [CommRing R] [CommRing R₀] (I : Ideal R) (κ : DividedPowers I) (π : R →+* R₀),
@@ -297,8 +248,6 @@ section -- clump:auto
 open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj DividedPowers
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.SqLift GlobalTheory.Published GlobalTheory.Published.GrothendieckMessing
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.SqLift
 
 theorem liftObj_sq : AbelianDeRham → ∀ (R R₀ : Type) [CommRing R] [CommRing R₀] (I : Ideal R) (hI : I ^ 2 = 0) (π : R →+* R₀), Function.Surjective π → RingHom.ker π = I → AbelianSchemeLifts.At hI π → LiftObj (divided₂ hI) π := by
@@ -308,7 +257,7 @@ theorem liftObj_sq : AbelianDeRham → ∀ (R R₀ : Type) [CommRing R] [CommRin
   have hA₀ : IsAbelianScheme A₀ := PolPull.isAbelianScheme_of_isGrpPullback hA' h'
   have hg₀ : SmoothOfRelativeDimension g A₀.hom :=
     (smoothOfRelativeDimension_isStableUnderBaseChange _).of_isPullback h'.1 hg'
-  obtain ⟨e, he, he₀⟩ := GlobalTheory.T.exists_section_lift_smooth_nilpotent_thickening R R₀ π hπ hn X A₀ i h hX (1 : Over.mk (𝟙 (Sp R₀)) ⟶ A₀).left
+  obtain ⟨e, he, he₀⟩ := GlobalTheory.SecLift.exists_section_lift R R₀ π hπ hn X A₀ i h hX (1 : Over.mk (𝟙 (Sp R₀)) ⟶ A₀).left
     (Over.w (1 : Over.mk (𝟙 (Sp R₀)) ⟶ A₀))
   have w : ((fst A₀ A₀).left ≫ i) ≫ X.hom = ((snd A₀ A₀).left ≫ i) ≫ X.hom := by
     rw [Category.assoc, Category.assoc, h.w, Over.w_assoc, Over.w_assoc]
@@ -316,12 +265,12 @@ theorem liftObj_sq : AbelianDeRham → ∀ (R R₀ : Type) [CommRing R] [CommRin
       = (fst A₀ A₀).left ≫ i := Limits.pullback.lift_fst _ _ _
   have hl₂ : (Limits.pullback.lift _ _ w : (A₀ ⊗ A₀).left ⟶ (X ⊗ X).left) ≫ (snd X X).left
       = (snd A₀ A₀).left ≫ i := Limits.pullback.lift_snd _ _ _
-  obtain ⟨m, hm⟩ := GlobalTheory.T.exists_lift_shearMap_squareZero_abelianSchemes R R₀ I hI π hπ hk H g g A₀ A₀ A' A' i' i' h' h' hA' hA' hg' hg' X X i i h h hX hX
+  obtain ⟨m, hm⟩ := GlobalTheory.ShearLift.exists_lift_shear R R₀ I hI π hπ hk H g g A₀ A₀ A' A' i' i' h' h' hA' hA' hg' hg' X X i i h h hX hX
     e e he he he₀ he₀ _ hl₁ hl₂ (𝟙 A₀) (fun d hd ↦ by rw [push_id]; exact hd)
   have hμ : (fst A₀ A₀ ≫ 𝟙 A₀) * snd A₀ A₀ = μ[A₀] := by
     rw [Category.comp_id, Hom.mul_def, lift_fst_snd, Category.id_comp]
   rw [hμ] at hm
-  obtain ⟨_, hp, hab⟩ := GlobalTheory.T.exists_grpObj_isAbelianScheme_smoothLift_nilpotent R R₀ π hπ hn A₀ hA₀ X i h hX e he he₀ _ hl₁ hl₂ m hm
+  obtain ⟨_, hp, hab⟩ := GlobalTheory.LiftGroupLaw.exists_grpObj_isAbelianScheme R R₀ π hπ hn A₀ hA₀ X i h hX e he he₀ _ hl₁ hl₂ m hm
   have hg : SmoothOfRelativeDimension g X.hom := GlobalTheory.T.smoothOfRelativeDimension_of_nilpotent_reduction R R₀ π hπ hn g X A₀ i h hX hg₀
   exact ⟨X, _, i, hp, hab, hg, (schemeFil_eq_liftFil _ hp (P.1 R X g hab hg).1).symm.trans hFil⟩
 
@@ -339,8 +288,6 @@ noncomputable section
 
 open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj DividedPowers
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.SqLift GlobalTheory.Published GlobalTheory.Published.GrothendieckMessing
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.SqLift.Hom
 
@@ -371,11 +318,11 @@ theorem liftHom_sq : AbelianDeRham → ∀ (R R₀ : Type) [CommRing R] [CommRin
     ⟨Limits.pullback.lift ((fst A₀ B₀).left ≫ i) ((snd A₀ B₀).left ≫ j) (by
       rw [Category.assoc, Category.assoc, h.1.w, k.1.w, ← Category.assoc, ← Category.assoc, Over.w, Over.w]),
       Limits.pullback.lift_fst _ _ _, Limits.pullback.lift_snd _ _ _⟩
-  obtain ⟨φ, hφ⟩ := GlobalTheory.T.exists_lift_shearMap_squareZero_abelianSchemes R R₀ I hI π hπ hk H g g' A₀ B₀ A B i j h k hA hB hg hg' A B i j h.1 k.1
+  obtain ⟨φ, hφ⟩ := GlobalTheory.ShearLift.exists_lift_shear R R₀ I hI π hπ hk H g g' A₀ B₀ A B i j h k hA hB hg hg' A B i j h.1 k.1
     hA.smooth hB.smooth η[A].left η[B].left (Over.w η[A]) (Over.w η[B])
     ((one_left_comp h _).trans (Category.id_comp _)) ((one_left_comp k _).trans (Category.id_comp _)) l l₁ l₂ f₀
     (by rw [schemeFil_eq_liftFil _ h pA, schemeFil_eq_liftFil _ k pB]; exact hf)
-  refine GlobalTheory.T.existsUnique_isMonHom_lift_of_grpPullback_abelian R R₀ π hπ ⟨2, hk ▸ hI⟩ A₀ B₀ A B i j h k hA hB f₀ (lift (𝟙 A) 1 ≫ φ) ?_
+  refine GlobalTheory.HomLift.existsUnique_isMonHom_lift R R₀ π hπ ⟨2, hk ▸ hI⟩ A₀ B₀ A B i j h k hA hB f₀ (lift (𝟙 A) 1 ≫ φ) ?_
   have e : i ≫ (lift (𝟙 A) (1 : A ⟶ B)).left = (lift (𝟙 A₀) (1 : A₀ ⟶ B₀)).left ≫ l := by
     refine Limits.pullback.hom_ext ?_ ?_
     · change (i ≫ _) ≫ (fst A B).left = (_ ≫ l) ≫ (fst A B).left
@@ -400,8 +347,6 @@ section -- clump:auto
 
 open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj DividedPowers
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.SqLift GlobalTheory.Published GlobalTheory.Published.GrothendieckMessing
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 
@@ -526,8 +471,6 @@ noncomputable section
 open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj DividedPowers
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.SqLift GlobalTheory.Published GlobalTheory.Published.GrothendieckMessing
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.SqLift
 
 theorem corr_crysToDR_step_iff {R R₁ R₀ : Type} [CommRing R] [CommRing R₁] [CommRing R₀] {I : Ideal R}
@@ -629,9 +572,9 @@ theorem liftObj_step : AbelianDeRham → AbelianUnobstructed → ∀ (R R₁ R�
   have kA : IsGrpPullback A₀ A (spMap π) (j₁ ≫ j₃) := (k₁.comp k₃).congr hsp.symm rfl
   refine ⟨A, inferInstance, j₁ ≫ j₃, kA, hA, hgA, ?_⟩
   obtain ⟨N, -, hNC⟩ :=
-    GlobalTheory.T.deRham_crystal_two_reductions_agree P R R₁ R₀ I J I₁ κ π hJ ρ κ₁ π₁ S g A₀ B₁ C j₁ j₂ (j₁ ≫ j₂) k₁ k₂ kC rfl hC hgC
+    _root_.GlobalTheory.SqLift.crys_two_reductions P R R₁ R₀ I J I₁ κ π hJ ρ κ₁ π₁ S g A₀ B₁ C j₁ j₂ (j₁ ≫ j₂) k₁ k₂ kC rfl hC hgC
   obtain ⟨N', -, hNA⟩ :=
-    GlobalTheory.T.deRham_crystal_two_reductions_agree P R R₁ R₀ I J I₁ κ π hJ ρ κ₁ π₁ S g A₀ B₁ A j₁ j₃ (j₁ ≫ j₃) k₁ k₃ kA rfl hA hgA
+    _root_.GlobalTheory.SqLift.crys_two_reductions P R R₁ R₀ I J I₁ κ π hJ ρ κ₁ π₁ S g A₀ B₁ A j₁ j₃ (j₁ ≫ j₃) k₁ k₃ kA rfl hA hgA
   obtain rfl : N' = N := rfl
   ext d
   change crysToDR κ kA d ∈ Fil A ↔ d ∈ E
@@ -653,8 +596,6 @@ section -- clump:auto
 
 open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj DividedPowers
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.SqLift GlobalTheory.Published GlobalTheory.Published.GrothendieckMessing
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.FilRed
 
@@ -723,8 +664,6 @@ noncomputable section
 
 open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj DividedPowers
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.SqLift GlobalTheory.Published GlobalTheory.Published.GrothendieckMessing
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.SqLift
 
@@ -830,8 +769,8 @@ theorem liftHom_of_isStep : AbelianDeRham → ∀ (R R₁ R₀ : Type) [CommRing
       ⟨_, hf d hd, GrpMor.Corr.push (st.idMor B₀) f₀ f₀ (by simp) e⟩
   obtain ⟨f₁, ⟨_, ef₁⟩, uf₁⟩ := H₁ g A₀ A₁ i₁ h₁ hA₁ hgA g' B₀ B₁ j₁ k₁ hB₁ hgB f₀ hf₁
 
-  obtain ⟨NA, bA, cA⟩ := GlobalTheory.T.deRham_crystal_two_reductions_agree P R R₁ R₀ I J I₁ κ π hJ ρ κ₁ π₁ st g A₀ A₁ A i₁ i₂ i h₁ h₂ h ei hA hg
-  obtain ⟨NB, -, cB⟩ := GlobalTheory.T.deRham_crystal_two_reductions_agree P R R₁ R₀ I J I₁ κ π hJ ρ κ₁ π₁ st g' B₀ B₁ B j₁ j₂ j k₁ k₂ k ej hB hg'
+  obtain ⟨NA, bA, cA⟩ := _root_.GlobalTheory.SqLift.crys_two_reductions P R R₁ R₀ I J I₁ κ π hJ ρ κ₁ π₁ st g A₀ A₁ A i₁ i₂ i h₁ h₂ h ei hA hg
+  obtain ⟨NB, -, cB⟩ := _root_.GlobalTheory.SqLift.crys_two_reductions P R R₁ R₀ I J I₁ κ π hJ ρ κ₁ π₁ st g' B₀ B₁ B j₁ j₂ j k₁ k₂ k ej hB hg'
   have sA : Function.Surjective
       (NA.pull : prim (divided₂ hJ) (spMap ρ) A₁ →ₗ[R] prim κ (spMap π) A₀).dualMap :=
     (LinearEquiv.ofBijective _ bA).dualMap.surjective
@@ -875,8 +814,6 @@ noncomputable section
 open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj DividedPowers
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.SqLift GlobalTheory.Published
   GlobalTheory.Published.GrothendieckMessing
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.NoethLiftObj
 
@@ -1049,7 +986,6 @@ theorem ann_bc {Q Q' : Type*} [AddCommGroup Q] [Module S Q] [AddCommGroup Q'] [M
 
 end Linear
 
-
 open scoped CategoryTheory.Obj in
 theorem exists_factor {S S' S'' : Scheme.{0}} {G : Over S} [GrpObj G] {G'' : Over S''} [GrpObj G'']
     {f : S' ⟶ S} {k : S'' ⟶ S'} {t : S'' ⟶ S} {φ : G''.left ⟶ G.left} (h : IsGrpPullback G'' G t φ)
@@ -1085,7 +1021,7 @@ theorem exists_noeth_model (P : AbelianDeRham) {R : Type} [CommRing R] {g : ℕ}
       Function.Injective σ ∧ IsAbelianScheme B ∧ SmoothOfRelativeDimension g B.hom ∧
       ∀ (x : HdR B) (x' : HdR A), (∀ c, x' ((redMor h).pull c) = σ (x c)) →
         ∀ c, e x' ((redMor h).pull c) = σ (e₁ x c) := by
-  obtain ⟨S, B, _, φ, -, hS, hB, hgB, h⟩ := GlobalTheory.T.abelianScheme_descends_to_finitelyGenerated_subring R g A ∅ hA hg
+  obtain ⟨S, B, _, φ, -, hS, hB, hgB, h⟩ := GlobalTheory.AbelianLimit.abelianScheme_descends_to_fg_subring R g A ∅ hA hg
   haveI : IsNoetherianRing S := Algebra.FiniteType.isNoetherianRing ℤ S
   obtain ⟨hf, hp, -⟩ := P.1.prim hB hgB
   obtain ⟨n, p, l, hpl⟩ := exists_frame (S := S) (P := primDR B)
@@ -1184,8 +1120,6 @@ section -- clump:auto
 open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj DividedPowers
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.SqLift GlobalTheory.Published GlobalTheory.Published.GrothendieckMessing
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.GrothendieckMessingLiftOfNoetherianCaseStatement =====
@@ -1211,7 +1145,7 @@ theorem iota_comp_mk (hI : RingHom.ker π = I) (S : Subring R) :
     (iota I π hI S).comp (Ideal.Quotient.mk _) = π.comp S.subtype := rfl
 
 theorem iota_injective (hI : RingHom.ker π = I) (S : Subring R) : Function.Injective (iota I π hI S) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro a ha
   obtain ⟨x, rfl⟩ := Ideal.Quotient.mk_surjective a
   rw [Ideal.Quotient.eq_zero_iff_mem]
@@ -1244,8 +1178,6 @@ section -- clump:auto
 open CategoryTheory Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj DividedPowers
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.SqLift GlobalTheory.Published GlobalTheory.Published.GrothendieckMessing
 open scoped CategoryTheory.Obj
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 
@@ -1291,10 +1223,6 @@ theorem exists_isPullback_reductions : ∀ (R : Type) [CommRing R] (I : Ideal R)
   refine IsPullback.of_right ?_ (pullback.lift_snd _ _ _) (IsPullback.of_hasPullback _ _)
   rwa [pullback.lift_fst]
 
-theorem spMap_comp_spMap {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (g : A →+* B) (f : B →+* C) :
-    spMap f ≫ spMap g = spMap (f.comp g) := by
-  rw [← Spec.map_comp, ← CommRingCat.ofHom_comp]
-
 theorem isIso_spMap {A B : Type} [CommRing A] [CommRing B] (f : A ≃+* B) : IsIso (spMap (f : A →+* B)) := by
   have : IsIso (CommRingCat.ofHom (f : A →+* B)) := f.toCommRingCatIso.isIso_hom
   infer_instance
@@ -1329,7 +1257,7 @@ theorem morphism_descends_to_reduction : ∀ (R : Type) [CommRing R] (I : Ideal 
   have hpb' : IsPullback π' p (a ≫ spMap (redInv I π hI S)) (spMap (iota I π hI S).range.subtype) := by
     refine IsPullback.of_iso hpb (Iso.refl _) (Iso.refl _) (Iso.refl _)
       (asIso (spMap (redInv I π hI S))) (by simp) (by simp) (by simp) ?_
-    rw [Iso.refl_hom, Category.id_comp, asIso_hom, spMap_comp_spMap, iota_redInv]
+    rw [Iso.refl_hom, Category.id_comp, asIso_hom, GlobalTheory.SecGlue.Cocycle.spMap_comp_spMap, iota_redInv]
   obtain ⟨F₀, hF₀⟩ := GlobalTheory.morphism_descends_to_subring R₀ (iota I π hI S).range X X₀ Y₀ p
     (a ≫ spMap (redInv I π hI S)) (b ≫ spMap (redInv I π hI S)) π' φ hpb'
     (by rw [← Category.assoc, hφ, Category.assoc])
@@ -1355,9 +1283,9 @@ theorem morphism_descends_to_reduction : ∀ (R : Type) [CommRing R] (I : Ideal 
       (spMap (Subring.inclusion hT)) := by
     refine IsPullback.of_iso hpb₁ (Iso.refl _) (Iso.refl _) (asIso (spMap (redInv I π hI S')))
       (asIso (spMap (redInv I π hI S))) (by simp) (by simp) (by simp) ?_
-    rw [asIso_hom, asIso_hom, spMap_comp_spMap, spMap_comp_spMap, hring]
+    rw [asIso_hom, asIso_hom, GlobalTheory.SecGlue.Cocycle.spMap_comp_spMap, GlobalTheory.SecGlue.Cocycle.spMap_comp_spMap, hring]
   have hk₂' : k ≫ a₁ ≫ spMap (redInv I π hI S') = p ≫ spMap (iota I π hI S').range.subtype := by
-    rw [← Category.assoc, hk₂, Category.assoc, spMap_comp_spMap, iota_redInv]
+    rw [← Category.assoc, hk₂, Category.assoc, GlobalTheory.SecGlue.Cocycle.spMap_comp_spMap, iota_redInv]
   obtain ⟨ψ, hψ₁, hψ₂⟩ := hF₀ _ hT hFT X₁ _ π₁ k hpb₁' hk₁ hk₂'
   refine ⟨ψ, hψ₁, ?_⟩
   rw [← Category.assoc, ← Category.assoc] at hψ₂
@@ -1391,9 +1319,9 @@ theorem abelian_hom_reduction_descends : ∀ (R : Type) [CommRing R] (I : Ideal 
     i ≫ φA = ψA ≫ iS ∧ j ≫ φB = ψB ≫ jS ∧ f₀.left ≫ ψB = ψA ≫ fS₀.left := by
   intro R _ I R₀ _ π hπ hI g A₀ _ A _ i hA hAab hAsm g' B₀ _ B _ j hB hBab hBsm f₀ _
 
-  obtain ⟨S₀, AS₀, _, φA₀, -, hfg₀, hAS₀ab, hAS₀sm, hφA₀⟩ := GlobalTheory.T.abelianScheme_descends_to_finitelyGenerated_subring R g A ∅ hAab hAsm
+  obtain ⟨S₀, AS₀, _, φA₀, -, hfg₀, hAS₀ab, hAS₀sm, hφA₀⟩ := GlobalTheory.AbelianLimit.abelianScheme_descends_to_fg_subring R g A ∅ hAab hAsm
   obtain ⟨F₀, hF₀⟩ := exists_finset_le_of_finiteType R S₀ hfg₀
-  obtain ⟨S₁, BS₁, _, φB₁, hF₀S₁, hfg₁, hBS₁ab, hBS₁sm, hφB₁⟩ := GlobalTheory.T.abelianScheme_descends_to_finitelyGenerated_subring R g' B F₀ hBab hBsm
+  obtain ⟨S₁, BS₁, _, φB₁, hF₀S₁, hfg₁, hBS₁ab, hBS₁sm, hφB₁⟩ := GlobalTheory.AbelianLimit.abelianScheme_descends_to_fg_subring R g' B F₀ hBab hBsm
   obtain ⟨AS₁, _, φA₁, -, hAS₁ab, hAS₁sm, hφA₁, -, -⟩ :=
     exists_baseChange_subring R S₀ S₁ (hF₀ S₁ hF₀S₁) g A AS₀ φA₀ hAS₀ab hAS₀sm hφA₀
 
@@ -1476,8 +1404,6 @@ section -- clump:auto
 
 open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj DividedPowers
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.SqLift GlobalTheory.Published GlobalTheory.Published.GrothendieckMessing
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.SqLift
 
@@ -1565,8 +1491,6 @@ section -- clump:auto
 open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj DividedPowers
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.SqLift GlobalTheory.Published GlobalTheory.Published.GrothendieckMessing
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory
 
 theorem liftHom_exists_of_noetherian : AbelianDeRham → (∀ (R : Type) [CommRing R] [IsNoetherianRing R] (I : Ideal R) (hI : I ^ 2 = 0) (R₀ : Type) [CommRing R₀] (π : R →+* R₀),
@@ -1615,8 +1539,6 @@ section -- clump:auto
 open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj DividedPowers
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.SqLift GlobalTheory.Published GlobalTheory.Published.GrothendieckMessing
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 theorem _root_.GlobalTheory.T.liftHom_exists_of_noetherian_alt : AbelianDeRham → (∀ (R : Type) [CommRing R] [IsNoetherianRing R] (I : Ideal R) (hI : I ^ 2 = 0) (R₀ : Type) [CommRing R₀] (π : R →+* R₀),
     Function.Surjective π → RingHom.ker π = I → LiftObj (divided₂ hI) π ∧ LiftHom (divided₂ hI) π) →
   ∀ (R : Type) [CommRing R] (I : Ideal R) (h : I ^ 2 = 0) (R₀ : Type) [CommRing R₀] (π : R →+* R₀),
@@ -1640,8 +1562,6 @@ section -- clump:auto
 open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj DividedPowers
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.SqLift GlobalTheory.Published GlobalTheory.Published.GrothendieckMessing
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.SqLift
 
 theorem sqLifting_of_noetherian : AbelianDeRham → (∀ (R : Type) [CommRing R] [IsNoetherianRing R] (I : Ideal R) (hI : I ^ 2 = 0) (R₀ : Type) [CommRing R₀] (π : R →+* R₀),
@@ -1650,7 +1570,7 @@ theorem sqLifting_of_noetherian : AbelianDeRham → (∀ (R : Type) [CommRing R]
   refine ⟨_root_.GlobalTheory.NoethLiftObj.liftObj_of_noetherian P H R I h R₀ π hπ hI, ?_⟩
   intro g A₀ _ A _ i hA hAa hg g' B₀ _ B _ j hB hBa hg' f₀ _ hf
   obtain ⟨φ, hφ⟩ := GlobalTheory.T.liftHom_exists_of_noetherian_alt P H R I h R₀ π hπ hI g A₀ A i hA hAa hg g' B₀ B j hB hBa hg' f₀ hf
-  exact GlobalTheory.T.existsUnique_isMonHom_lift_of_grpPullback_abelian R R₀ π hπ ⟨2, by rw [hI]; exact h⟩ A₀ B₀ A B i j hA hB hAa hBa f₀ φ hφ
+  exact GlobalTheory.HomLift.existsUnique_isMonHom_lift R R₀ π hπ ⟨2, by rw [hI]; exact h⟩ A₀ B₀ A B i j hA hB hAa hBa f₀ φ hφ
 
 end GlobalTheory.SqLift
 end -- clump:auto
@@ -1666,8 +1586,6 @@ noncomputable section
 
 open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj DividedPowers
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.DeRham GlobalTheory.SqLift GlobalTheory.Published GlobalTheory.Published.GrothendieckMessing
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.SqLift
 

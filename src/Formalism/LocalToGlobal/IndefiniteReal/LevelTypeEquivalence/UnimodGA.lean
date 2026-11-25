@@ -69,8 +69,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.BasicNotions.TH 
 
 namespace Formalism.IndefR.Eqv
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Fin
 
 variable {D : D7} {V : HSp D} (fr : UI.Frames D V)

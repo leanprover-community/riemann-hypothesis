@@ -51,7 +51,7 @@ theorem pow_torsionExponent (x : (ZMod (ℓ ^ unitsLevel ℓ))ˣ) : x ^ torsionE
   · subst h
     have key : ∀ y : ZMod 8, (∃ z : ZMod 8, y * z = 1) → y ^ 2 = 1 := by decide
     have h8 : (2 : ℕ) ^ unitsLevel 2 = 8 := by simp [unitsLevel]
-    rw [torsionExponent, if_pos rfl]
+    rw [torsionExponent, ite_eq_left rfl]
     refine Units.ext ?_
     rw [Units.val_pow_eq_pow_val, Units.val_one]
     revert x
@@ -60,8 +60,8 @@ theorem pow_torsionExponent (x : (ZMod (ℓ ^ unitsLevel ℓ))ˣ) : x ^ torsionE
     exact key _ ⟨_, x.mul_inv⟩
   · have : NeZero ℓ := ⟨hℓ.out.ne_zero⟩
     have hc : Fintype.card (ZMod (ℓ ^ unitsLevel ℓ))ˣ = ℓ - 1 := by
-      rw [ZMod.card_units_eq_totient, unitsLevel, if_neg h, pow_one, Nat.totient_prime hℓ.out]
-    rw [torsionExponent, if_neg h, ← hc, pow_card_eq_one]
+      rw [ZMod.card_units_eq_totient, unitsLevel, ite_eq_right h, pow_one, Nat.totient_prime hℓ.out]
+    rw [torsionExponent, ite_eq_right h, ← hc, pow_card_eq_one]
 
 def unitsKer (n : ℕ) : Subgroup (ZMod (ℓ ^ (n + unitsLevel ℓ)))ˣ :=
   (ZMod.unitsMap (pow_dvd_pow ℓ (Nat.le_add_left (unitsLevel ℓ) n))).ker
@@ -392,7 +392,7 @@ theorem mem_torsion_iff (u : ℤ_[ℓ]ˣ) :
 
 theorem mem_torsion_two_iff (u : ℤ_[2]ˣ) :
     u ∈ CommGroup.torsion ℤ_[2]ˣ ↔ u = 1 ∨ u = -1 := by
-  rw [mem_torsion_iff, torsionExponent, if_pos rfl]
+  rw [mem_torsion_iff, torsionExponent, ite_eq_left rfl]
   constructor
   · intro h
     have h1 := congrArg Units.val h

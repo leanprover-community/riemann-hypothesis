@@ -79,7 +79,6 @@ open GlobalTheory.FunObj.SqNum (hatId CongOne skewLat unitBlock cosetVec)
 open GlobalTheory.NormExact (Reads Setup IsFinIdl HasFinPart finPt)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (InId IsUnitDet unitChar stdFst)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.StdRead
 
 noncomputable section
@@ -168,7 +167,6 @@ open GlobalTheory.FunObj.SqNum (hatId CongOne skewLat unitBlock cosetVec)
 open GlobalTheory.NormExact (Reads Setup IsFinIdl HasFinPart finPt)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (InId IsUnitDet unitChar stdFst)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.StdRead
 
 noncomputable section
@@ -258,7 +256,6 @@ open GlobalTheory.FunObj.SqNum (hatId CongOne skewLat unitBlock cosetVec)
 open GlobalTheory.NormExact (Reads Setup IsFinIdl HasFinPart finPt)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (InId IsUnitDet unitChar stdFst)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.StdRead
 
 
@@ -283,7 +280,6 @@ open GlobalTheory.FunObj.SqNum (hatId CongOne skewLat unitBlock cosetVec)
 open GlobalTheory.NormExact (Reads Setup IsFinIdl HasFinPart finPt)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (InId IsUnitDet unitChar stdFst)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.StdRead
 
 namespace GlobalTheory.StdReadFrame
@@ -371,7 +367,6 @@ open GlobalTheory.FunObj.SqNum (hatId CongOne skewLat unitBlock cosetVec)
 open GlobalTheory.NormExact (Reads Setup IsFinIdl HasFinPart finPt)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (InId IsUnitDet unitChar stdFst)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.StdRead
 
 namespace GlobalTheory.StdRead.CongOneChar
@@ -497,7 +492,6 @@ open GlobalTheory.FunObj.SqNum (hatId CongOne skewLat unitBlock cosetVec)
 open GlobalTheory.NormExact (Reads Setup IsFinIdl HasFinPart finPt)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (InId IsUnitDet unitChar stdFst)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.StdRead
 
 noncomputable section
@@ -612,7 +606,6 @@ open GlobalTheory.FunObj.SqNum (hatId CongOne skewLat unitBlock cosetVec)
 open GlobalTheory.NormExact (Reads Setup IsFinIdl HasFinPart finPt)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (InId IsUnitDet unitChar stdFst)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.StdRead
 
 noncomputable section
@@ -633,9 +626,6 @@ def valM {a : ℕ} (k : Formalism.MainNotions.StandardLatticesGL3.GA D a) : Matr
 theorem invM_mul {a : ℕ} (k : Formalism.MainNotions.StandardLatticesGL3.GA D a) : invM k * valM k = 1 := Units.inv_mul _
 
 theorem valM_mul {a : ℕ} (k : Formalism.MainNotions.StandardLatticesGL3.GA D a) : valM k * invM k = 1 := Units.mul_inv _
-
-theorem int_of_hat {𝔪 : Ideal (𝓞 D.host.E)} {x : Formalism.MainNotions.StandardLatticesGL3.AE D} (hx : x ∈ hatId D 𝔪) : x ∈ OhE D :=
-  (toE_int_iff x).1 ((GlobalTheory.T.memIdealIntegral_tensorSwap_iff_mem_idealSubgroup 𝔪 x).2 hx).1
 
 theorem hat_mul_mat {𝔪 : Ideal (𝓞 D.host.E)} {a : ℕ} {A B : Matrix (Fin a) (Fin a) (Formalism.MainNotions.StandardLatticesGL3.AE D)} (hA : ∀ i j, A i j ∈ hatId D 𝔪)
     (hB : ∀ i j, B i j ∈ OhE D) (i j : Fin a) : (A * B) i j ∈ hatId D 𝔪 := by
@@ -835,7 +825,6 @@ open GlobalTheory.FunObj.SqNum (hatId CongOne skewLat unitBlock cosetVec)
 open GlobalTheory.NormExact (Reads Setup IsFinIdl HasFinPart finPt)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (InId IsUnitDet unitChar stdFst)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.StdRead
 
 

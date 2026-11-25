@@ -35,45 +35,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EvConjTransp
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IrrepAveragesFinDimSmoothOfKTypesAndPolyAverages
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolyCoefIrrepHasDerivedAction
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeylFormulaCompactTorusIdentityOfIngredients
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.CsqDdPt
@@ -83,17 +44,12 @@ import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.BridgeExpK
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.ExistsKhwGenSubOfKType
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.PropsEquiv
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.RingTheory.Finiteness.Lattice
 import Std.Tactic.BVDecide.Normalize.Prop
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirAlgebra.MulMulSubMulMulEqAdd
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.CFCoreA
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.MemHighestWeightSubIff
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TraceGap.ProdModeCharExp
-import Mathlib.Tactic.Lemma
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Analysis.InnerProductSpace.Trace
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactHaarRightInvariantInst
@@ -780,19 +736,19 @@ theorem intertwiner_preserves_highestWeight : HWVec := by
     by_cases hca : c = a
     · subst hca
       have hcb : ¬ b = c := fun h => (ne_of_lt hab) h.symm
-      simp only [if_neg hcb, sub_zero, Pi.add_apply, root, Pi.sub_apply, Pi.single_eq_same, ↓reduceIte]
+      simp only [ite_eq_right hcb, sub_zero, Pi.add_apply, root, Pi.sub_apply, Pi.single_eq_same, ↓reduceIte]
       rw [Pi.single_eq_of_ne (ne_of_lt hab)]
       simp only [sub_zero, Complex.ofReal_add, Complex.ofReal_one, add_smul, one_smul]
       rfl
     · by_cases hcb : b = c
       · subst hcb
-        simp only [if_neg hca, zero_sub, Pi.add_apply, root, Pi.sub_apply, Pi.single_eq_same,
+        simp only [ite_eq_right hca, zero_sub, Pi.add_apply, root, Pi.sub_apply, Pi.single_eq_same,
           LinearMap.neg_apply, ↓reduceIte]
         rw [Pi.single_eq_of_ne hca]
         simp only [zero_sub, Complex.ofReal_add, Complex.ofReal_neg, Complex.ofReal_one, add_smul, neg_smul,
           one_smul]
         rfl
-      · simp only [if_neg hca, if_neg hcb, sub_zero, LinearMap.zero_apply, add_zero, Pi.add_apply, root,
+      · simp only [ite_eq_right hca, ite_eq_right hcb, sub_zero, LinearMap.zero_apply, add_zero, Pi.add_apply, root,
           Pi.sub_apply]
         rw [Pi.single_eq_of_ne hca, Pi.single_eq_of_ne (Ne.symm hcb)]
         simp
@@ -839,7 +795,7 @@ lemma offdiag {ε : Fin n → Bool} {k : Mat n} (hk : k ∈ Formalism.REAL.Kset 
     k a b = 0 := by
   have h := congrFun (congrFun hk.2 a) b
   simp only [Formalism.REAL.Jm, mul_diagonal, diagonal_mul] at h
-  cases ha : ε a <;> cases hb : ε b <;> simp only [ha, hb, Bool.false_eq_true, if_false, if_true] at h hab
+  cases ha : ε a <;> cases hb : ε b <;> simp only [ha, hb, Bool.false_eq_true, ite_false, ite_true] at h hab
   · exact absurd rfl hab
   · linear_combination (1 / 2 : ℂ) * h
   · linear_combination (-1 / 2 : ℂ) * h
@@ -1023,10 +979,10 @@ lemma entry {ε : Fin n → Bool} {k : Mat n} (hk : k ∈ Formalism.REAL.Kset ε
     · simp
   rw [Finset.sum_congr rfl (fun j _ => h1 j)]
   simp only [mul_sub, Finset.sum_sub_distrib, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ,
-    if_true]
+    ite_true]
   by_cases had : a = d
   · subst had
-    simp only [if_true, K_unit hk]
+    simp only [ite_true, K_unit hk]
     by_cases hil : i = l
     · subst hil; simp
     · simp [hil]
@@ -1076,7 +1032,6 @@ namespace GlobalTheory.Orb
 variable {H : Type} [Group H] [TopologicalSpace H]
   {V U : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] [FiniteDimensional ℂ V]
   [NormedAddCommGroup U] [InnerProductSpace ℂ U] {D : H →* (V →L[ℂ] V)} {π : H →* (U →L[ℂ] U)}
-
 
 variable [MeasurableSpace H] [BorelSpace H] {μ : Measure H}
 
@@ -1265,7 +1220,7 @@ theorem StrIdx_proof2 : StrIdx := by
     rintro k _ ⟨y, hy, rfl⟩
     exact ⟨sigD hD (hφK k) y, hLK _ (hφK k) y hy, rfl⟩
   have hAc : ∀ v, Continuous fun k : KG ε => σ (toMK k) v := fun v =>
-    (hσ.2.2 v).comp_continuous hφc fun g => kset_mem_UJset (hφK g)
+    (hσ.2.2 v).comp_continuous hφc fun g => ReciprocityTheory.ChartRestriction.DS.closure_inUJ_of_mem_Kset (hφK g)
   have hcont : Continuous fun k : KG ε => ev (toMK k) P * physDet ε (toMK k) := by
     have := hent (P * Q)
     simpa only [map_mul, hQ] using this
@@ -1323,7 +1278,6 @@ open GlobalTheory.PsCo.Pc1 (Mat)
 namespace GlobalTheory.PsCo.PcEF
 
 open GlobalTheory.PsCo.PcEG
-
 
 theorem supertrace_carriedBy_diracKernel : StrKer := by
   intro n ε H _ _ σ D E hσ hD Y _ hY hG hK
@@ -1712,23 +1666,8 @@ variable {n : ℕ} (ε : Fin n → Bool) {X : Type} [NormedAddCommGroup X] [Inne
 abbrev mat (g : Formalism.REAL.UJ ε) : Matrix (Fin n) (Fin n) ℂ :=
   ((g : (Matrix (Fin n) (Fin n) ℂ)ˣ) : Matrix (Fin n) (Fin n) ℂ)
 
-theorem mat_injective : Function.Injective (mat ε) := fun _ _ h => Subtype.ext (Units.ext h)
-
 def rep (π : Formalism.REAL.UJ ε →* (X →L[ℂ] X)) (x : Matrix (Fin n) (Fin n) ℂ) : X →L[ℂ] X := by
   classical exact if h : ∃ g, mat ε g = x then π h.choose else 1
-
-theorem rep_mat (π : Formalism.REAL.UJ ε →* (X →L[ℂ] X)) (g : Formalism.REAL.UJ ε) : rep ε π (mat ε g) = π g := by
-  have h : ∃ g', mat ε g' = mat ε g := ⟨g, rfl⟩
-  rw [rep, dite_eq_left h, mat_injective ε h.choose_spec]
-
-theorem range_mat : Set.range (mat ε) = Formalism.MainNotions.S.UJset ε := (Formalism.REAL.isClosedEmbeddingMatrix n ε).2
-
-theorem mat_mem (g : Formalism.REAL.UJ ε) : mat ε g ∈ Formalism.MainNotions.S.UJset ε := range_mat ε ▸ ⟨g, rfl⟩
-
-theorem exists_mat {x : Matrix (Fin n) (Fin n) ℂ} (hx : x ∈ Formalism.MainNotions.S.UJset ε) : ∃ g, mat ε g = x := by
-  rw [← range_mat ε] at hx; exact hx
-
-theorem isEmbedding_mat : Topology.IsEmbedding (mat ε) := (Formalism.REAL.isClosedEmbeddingMatrix n ε).1.isEmbedding
 
 end GlobalTheory.PsCo.PcEF.MatrixRepresentation
 

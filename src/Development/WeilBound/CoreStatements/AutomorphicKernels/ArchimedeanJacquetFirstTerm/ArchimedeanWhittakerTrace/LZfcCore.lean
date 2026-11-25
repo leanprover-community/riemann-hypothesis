@@ -44,7 +44,6 @@ theorem incM_map_cA (γ : Matrix (Fin n) (Fin n) E) : (incM F (γ.map σ)) = (in
   simp [incM, Matrix.map_apply, GlobalTheory.LeviLine.cA_inclR]
 
 theorem trace_map_cA (M : Matrix (Fin n) (Fin n) (AE F E)) : (M.map (cA σ)).trace = cA σ M.trace := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp [Matrix.trace, map_sum]
 
 theorem trace_tst (ε : ℤˣ) (γ : Matrix (Fin n) (Fin n) E) (β : Matrix (Fin n) (Fin n) (AE F E))
@@ -112,9 +111,7 @@ theorem incM_mul (A C : Matrix (Fin n) (Fin n) E) : incM F (A * C) = incM F A * 
 
 theorem trace_incM_rat [FiniteDimensional F E] (A : Matrix (Fin n) (Fin n) E) :
     Algebra.trace (AF F) (AE F E) (Matrix.trace (incM F A)) = algebraMap F (AF F) (Algebra.trace F E (Matrix.trace A)) := by
-  have : Matrix.trace (incM F A) = (1 : AF F) ⊗ₜ[F] Matrix.trace A := by
-    simp [incM, Matrix.trace, inclR, TensorProduct.tmul_sum]
-  rw [this, GlobalTheory.LatVac.trace_tmul, one_mul]
+  apply PositivityTheory.SiegelWeilFormula.kunf.tt_rat
 
 end PositivityTheory.FTA.ZFC
 

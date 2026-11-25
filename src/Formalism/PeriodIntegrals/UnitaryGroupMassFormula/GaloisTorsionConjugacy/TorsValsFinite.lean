@@ -313,14 +313,7 @@ theorem neg_pair (L : PeriodPair) {s r : ℂ} (h : s + r ∈ L.lattice) :
 theorem pInj (L : PeriodPair) {z w : ℂ} (hz : z ∉ L.lattice) (hw : w ∉ L.lattice)
     (hx : L.weierstrassP z = L.weierstrassP w) (hy : L.derivWeierstrassP z = L.derivWeierstrassP w) :
     z - w ∈ L.lattice := by
-  rcases (pInjective L z w hz hw).1 hx with h | h
-  · exact h
-  · have h1 := (neg_pair L h).2
-    have h0 : L.derivWeierstrassP z = 0 := by linear_combination (hy + h1) / 2
-    have h2 : 2 * z ∈ L.lattice := (pDerivZero L z hz).1 h0
-    have e : z - w = 2 * z - (z + w) := by ring
-    rw [e]
-    exact L.lattice.sub_mem h2 h
+  apply _root_.GlobalTheory.sub_mem_lattice_of_weierstrassP_eq <;> assumption
 
 theorem pNeg (L : PeriodPair) {z w : ℂ} (hz : z ∉ L.lattice) (hw : w ∉ L.lattice)
     (hx : L.weierstrassP z = L.weierstrassP w) (hy : L.derivWeierstrassP z = -L.derivWeierstrassP w) :

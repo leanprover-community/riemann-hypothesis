@@ -302,11 +302,11 @@ theorem intLat_eq_sum {K : Type} [CommRing K] (R : Subring K) (Λ : AddSubgroup 
   · apply Finset.sum_congr rfl
     intro y hy
     rw [Set.Finite.mem_toFinset] at hy
-    exact if_pos hy
+    exact ite_eq_left hy
   · intro y hy
     by_contra hyT
     apply hy
-    exact if_neg (by simpa [Finset.mem_coe, Set.Finite.mem_toFinset] using hyT)
+    exact ite_eq_right (by simpa [Finset.mem_coe, Set.Finite.mem_toFinset] using hyT)
 
 open Classical in
 theorem mean_prod {K : Type} [CommRing K] (hCM : CharMean) (R : Subring K) (ψ : AddChar K ℂ)
@@ -323,8 +323,8 @@ theorem mean_prod {K : Type} [CommRing K] (hCM : CharMean) (R : Subring K) (ψ :
     ring
   rw [e, hCM K ψ L₁ R.toAddSubgroup B le₁ hB a ha]
   by_cases hR : a ∈ perp ψ R.toAddSubgroup
-  · rw [if_pos hR, mul_one, hCM K ψ R.toAddSubgroup L₂ A le₂ hA a hR]
-  · rw [if_neg hR, mul_zero, if_neg]
+  · rw [ite_eq_left hR, mul_one, hCM K ψ R.toAddSubgroup L₂ A le₂ hA a hR]
+  · rw [ite_eq_right hR, mul_zero, ite_eq_right]
     exact fun h2 => hR (fun l hl => h2 l (le₂ hl))
 
 theorem cutNormEval_main : CutNormEval := by
@@ -409,10 +409,10 @@ theorem cutNormEval_main : CutNormEval := by
   have houteq : (Quotient.out ((z₁ : K) : K ⧸ perp ψ D.L₂) : K) =
       z₁ + ((Quotient.out ((z₁ : K) : K ⧸ perp ψ D.L₂) : K) - z₁) := by ring
   rw [Finset.sum_eq_single ((z₁ : K) : K ⧸ perp ψ D.L₂)]
-  · rw [if_pos hout, mul_one, houteq]
+  · rw [ite_eq_left hout, mul_one, houteq]
     exact D.nsInv h hh h' hh' z₁ hz₁ _ hout
   · intro y _ hy
-    rw [if_neg, mul_zero]
+    rw [ite_eq_right, mul_zero]
     intro hm
     apply hy
     rw [← QuotientAddGroup.out_eq' y, QuotientAddGroup.eq]

@@ -46,13 +46,6 @@ open GlobalTheory GlobalTheory.CM
 
 namespace GlobalTheory.CM.DegBound
 
-section Lattice
-
-variable {K : Type} [Field K] [NumberField K] {V V' : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V]
-  [IsScalarTower (𝓞 K) K V] [AddCommGroup V'] [Module K V'] [Module (𝓞 K) V'] [IsScalarTower (𝓞 K) K V']
-
-end Lattice
-
 variable {K : Type} [Field K] [NumberField K] {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 

@@ -62,16 +62,11 @@ open Formalism.MainNotions.KudlaSiegelWeil (Pl FinF FinE FF Over Split LocW Rest
 open GlobalTheory.IndefiniteRowSideFullHecke.SymplecticTensorMeasures (ConjIsom omTens toHom)
 open Formalism.IndefR.Datum (IsHalf IsLatVac)
 open scoped TensorProduct Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.HeckeConj
 
 theorem continuous_cA (D : D7) : Continuous (cA D) := by
-  have : IsModuleTopology (AF D.host.F) (AE D) := ⟨rfl⟩
-  have : IsTopologicalRing (AE D) := IsModuleTopology.isTopologicalRing (AF D.host.F) (AE D)
-  have := IsModuleTopology.continuous_of_linearMap
-    (Algebra.TensorProduct.map (AlgHom.id (AF D.host.F) (AF D.host.F)) D.sp.cm.sig).toLinearMap
-  exact this
+  exact GlobalTheory.FockCompare.ThetaCont.continuous_conj
 
 end GlobalTheory.HeckeConj
 end -- clump:auto
@@ -88,7 +83,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open MeasureTheory Matrix GlobalTheory.Chain GlobalTheory.ChainFr GlobalTheory.Grid
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.PairLift
 
 namespace GlobalTheory.AdjLawPf

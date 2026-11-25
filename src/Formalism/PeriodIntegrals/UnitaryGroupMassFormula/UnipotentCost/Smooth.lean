@@ -39,20 +39,11 @@ lemma sm_conjT {ι κ : Type*} [Fintype ι] [Fintype κ] {F : X → Matrix ι κ
   simp only [Matrix.conjTranspose_apply]
   exact (Complex.conjCLE.contDiff.contDiffAt).comp x₀ (hF j i)
 
-private lemma contDiffAt_finset_prod' {ι : Type*} (s : Finset ι) (f : ι → X → ℂ)
-    (h : ∀ i ∈ s, ContDiffAt ℝ n (f i) x₀) : ContDiffAt ℝ n (fun x => ∏ i ∈ s, f i x) x₀ := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simpa only [Finset.prod_empty] using (contDiffAt_const : ContDiffAt ℝ n (fun _ : X => (1 : ℂ)) x₀)
-  | @insert a s ha ih =>
-    simp only [Finset.prod_insert ha]
-    exact (h a (Finset.mem_insert_self a s)).mul (ih fun i hi => h i (Finset.mem_insert_of_mem hi))
-
 lemma sm_det {ι : Type*} [Fintype ι] [DecidableEq ι] {F : X → Matrix ι ι ℂ} (hF : ContDiffAt ℝ n F x₀) :
     ContDiffAt ℝ n (fun x => (F x).det) x₀ := by
   rw [sm_iff] at hF
   simp only [Matrix.det_apply']
-  exact ContDiffAt.sum fun τ _ => contDiffAt_const.mul (contDiffAt_finset_prod' _ _ fun i _ => hF (τ i) i)
+  exact ContDiffAt.sum fun τ _ => contDiffAt_const.mul (contDiffAt_prod fun i _ => hF (τ i) i)
 
 lemma sm_updateRow {ι : Type*} [Fintype ι] [DecidableEq ι] {F : X → Matrix ι ι ℂ} (hF : ContDiffAt ℝ n F x₀)
     (j : ι) (b : ι → ℂ) : ContDiffAt ℝ n (fun x => (F x).updateRow j b) x₀ := by

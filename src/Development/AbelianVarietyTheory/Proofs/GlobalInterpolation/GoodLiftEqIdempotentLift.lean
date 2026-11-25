@@ -78,8 +78,6 @@ theorem hf_sub_right (Hm : Matrix (Fin g) (Fin g) ℂ) (x y y' : Fin g → ℂ) 
     hf Hm x (y - y') = hf Hm x y - hf Hm x y' := by
   rw [sub_eq_add_neg, hf_add_right, hf_neg_right, ← sub_eq_add_neg]
 
-alias hf_sub_left := _root_.GlobalTheory.MomDual.hf_sub_left
-
 theorem hf_sum_right (Hm : Matrix (Fin g) (Fin g) ℂ) {r : ℕ} (x : Fin g → ℂ) (y : Fin r → Fin g → ℂ) :
     hf Hm x (∑ i, y i) = ∑ i, hf Hm x (y i) := by
   have : ∀ s : Finset (Fin r), hf Hm x (∑ i ∈ s, y i) = ∑ i ∈ s, hf Hm x (y i) := by
@@ -145,7 +143,7 @@ theorem goodLift_eq : ∀ (q : ℕ) [Fact q.Prime] (lam : Qbar →+* ℂ_[q]) (g
   have bsubr : ∀ x y y', beta S.d S.Hm x (y - y') = beta S.d S.Hm x y - beta S.d S.Hm x y' := fun x y y' => by
     rw [beta, beta, beta, hf_sub_right]; ring
   have bsubl : ∀ x x' y, beta S.d S.Hm (x - x') y = beta S.d S.Hm x y - beta S.d S.Hm x' y := fun x x' y => by
-    rw [beta, beta, beta, hf_sub_left]; ring
+    rw [beta, beta, beta, GlobalTheory.MomDual.hf_sub_left]; ring
   have bnr : ∀ x y, beta S.d S.Hm x (-y) = -beta S.d S.Hm x y := fun x y => by
     rw [beta, beta, hf_neg_right]; ring
   have bsumr : ∀ x (y : Fin r → Fin g → ℂ), beta S.d S.Hm x (∑ j, y j) = ∑ j, beta S.d S.Hm x (y j) := fun x y => by

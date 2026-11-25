@@ -75,7 +75,7 @@ private instance : Countable SL(2, ℤ) :=
 private instance (H : Subgroup SL(2, ℤ)) : Countable (SL(2, ℤ) ⧸ H) := QuotientGroup.mk_surjective.countable
 
 private theorem wt_meas (H : Subgroup SL(2, ℤ)) : Measurable (wt H) :=
-  Measurable.tsum fun q => (measurable_const.indicator fdFin'.1).comp (mpSL _).measurable
+  Measurable.tsum fun _ => (measurable_const.indicator fdFin'.1).comp (mpSL _).measurable
 
 private theorem wt_sum (H : Subgroup SL(2, ℤ)) : ∀ᵐ z : ℍ, ∑' h : H, wt H ((h : SL(2, ℤ)) • z) = 2 := by
   have hc : Rs.FdCount := Rs.fdCount (Rs.fdNull Rs.volMap)

@@ -209,7 +209,7 @@ private theorem loc_move (hU : GlobalTheory.BCT.Unr E) (hn : 1 ≤ n) {σ : Subm
     (K : Subgroup (UL n w)) :
     Module.finrank ℂ (fixd τ'.ρ (K.map (UL n w).subtype)) = Module.finrank ℂ (fixed τ.ρ K) := by
   have hm : ∀ g : GLw n w, g ∈ UL n w := fun g => by
-    rw [UL, if_pos hw]
+    rw [UL, ite_eq_left hw]
     trivial
   let τ₁ : SmIrr (UL n w) :=
     { V := τ'.V

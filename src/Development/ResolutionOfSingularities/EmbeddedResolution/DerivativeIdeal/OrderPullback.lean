@@ -68,8 +68,6 @@ theorem orderAt_comap (k : Type u) [Field k] [CharZero k] {X Y : Scheme.{u}}
     (p : X ⟶ Spec (CommRingCat.of k)) [AlgebraicGeometry.Smooth p]
     (h : Y ⟶ X) [AlgebraicGeometry.Smooth h] (I : X.IdealSheafData) (y : Y) :
     orderAt (I.comap h) y = orderAt I (h.base y) := by
-  have : LocallyOfFiniteType p := inferInstance
-  have : LocallyOfFiniteType (h ≫ p) := inferInstance
   refine le_antisymm ?_ (orderAt_le_orderAt_comap h I y)
   rcases eq_or_ne (orderAt I (h.base y)) ⊤ with hI | hI
   · rw [hI]; exact le_top

@@ -481,7 +481,7 @@ theorem colAt_low {j : ℕ} (hj : j ≤ m2) (al : L.β j) (p : PtAt R sel mu cst
         ((chKerC W Ch sel mu cst L A u m2 b hY P hK).kk.colTo hF j (startC hL u φ) a) g d p.1.1).trans ?_
     · rw [← ih hj'.le]
       refine LinearMap.congr_fun ((kAt_mat W Ch A u hL (by omega) a al _ p).trans ?_) _
-      have e : (chKerC W Ch sel mu cst L A u m2 b hY P hK).kk j a al = ⟨_, hK.1 j hj' a al⟩ := dif_pos hj'
+      have e : (chKerC W Ch sel mu cst L A u m2 b hY P hK).kk j a al = ⟨_, hK.1 j hj' a al⟩ := dite_eq_left hj'
       rw [e]
     · show _ = ((∑ a, (((chKerC W Ch sel mu cst L A u m2 b hY P hK).kk j a al).opOf (hF j a) _) ∘ₗ (LinearMap.proj a))
         ((chKerC W Ch sel mu cst L A u m2 b hY P hK).kk.colTo hF j (startC hL u φ))).1 p.1.1
@@ -687,8 +687,6 @@ end General
 section True
 
 open GlobalTheory.Mem GlobalTheory.Mem.Chr Formalism.MainNotions
-
-attribute [local instance] GlobalTheory.Mem.Col2.starE
 
 variable {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} (I : TC B X)
 

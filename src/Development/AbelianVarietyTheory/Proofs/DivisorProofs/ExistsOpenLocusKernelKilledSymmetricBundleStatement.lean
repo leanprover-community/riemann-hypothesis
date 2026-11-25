@@ -885,7 +885,6 @@ theorem exists_alg [Algebra A B] (hφ : φ = CommRingCat.ofHom (algebraMap A B))
   obtain ⟨εc, hε, rfl⟩ := hfac A (𝟙 A) e0
   let ε : B →ₐ[A] A :=
     { εc.hom with commutes' := fun a => congrArg (fun f => f.hom a) hε }
-  have hεc : CommRingCat.ofHom ε.toRingHom = εc := rfl
   have hunit : ∀ (R : CommRingCat.{0}) (χ : A ⟶ R) (σ : A ⟶ R) (h : CommRingCat.ofHom (algebraMap A B) ≫ εc ≫ σ = χ),
       pt hc (εc ≫ σ) h ≫ i = 1 := by
     intro R χ σ h

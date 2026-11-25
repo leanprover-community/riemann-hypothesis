@@ -127,7 +127,6 @@ open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open GlobalTheory.ExportSeries (Base Twist Weight PairRep GLR detChar detFam fockGL harm harmLat IsCoefRing finPt series idem)
 open scoped TensorProduct Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.SingleDatum
 
 
@@ -259,7 +258,6 @@ open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open GlobalTheory.ExportSeries (Base Twist Weight PairRep GLR detChar detFam fockGL harm harmLat IsCoefRing finPt series idem)
 open scoped TensorProduct Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.SingleDatum
 set_option synthInstance.maxHeartbeats 400000
 
@@ -310,7 +308,7 @@ theorem exists_basis_integral_coords : ∀ (F : IntermediateField ℚ ℂ) [Numb
     intro k
     set_option synthInstance.maxHeartbeats 100000 in
       rw [hxs, map_sum]
-    simp only [map_smul, key, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [map_smul, key, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   refine ⟨?_, fun k => ?_⟩
   · conv_lhs => rw [hxs]
     refine Finset.sum_congr rfl fun j _ => ?_
@@ -390,7 +388,6 @@ open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open GlobalTheory.ExportSeries (Base Twist Weight PairRep GLR detChar detFam fockGL harm harmLat IsCoefRing finPt series idem)
 open scoped TensorProduct Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.SingleDatum
 
 
@@ -457,7 +454,6 @@ open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open GlobalTheory.ExportSeries (Base Twist Weight PairRep GLR detChar detFam fockGL harm harmLat IsCoefRing finPt series idem)
 open scoped TensorProduct Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.SingleDatum
 
 
@@ -528,7 +524,6 @@ open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open GlobalTheory.SingleDatum GlobalTheory.CoverRead
 open scoped TensorProduct Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open GlobalTheory.LevelSeries
 
@@ -579,7 +574,7 @@ theorem thetaSum_value_emb : ∀ (D : D7) (H : Geo.Tor.Host D.host.E) (Dw : Datu
   obtain ⟨vt, hvt, hev⟩ := hth ℂ halg _ y₂ hov₂
 
   have hrdU : rdU U f (dict g).1 (dict g).2 =
-      evR Xo c f (unC (Formalism.L2.PjFree.Unf.ofPj U) (dict g).1 ⟨(dict g).2, hx⟩) := dif_pos hx
+      evR Xo c f (unC (Formalism.L2.PjFree.Unf.ofPj U) (dict g).1 ⟨(dict g).2, hx⟩) := dite_eq_left hx
 
   have hcsv : evR d.Xo₂ d.c₂ 1 y₂ = 1 := evalAt_one _ _ y₂
     (GlobalTheory.Frames.allTest_of_secBaseChange GlobalTheory.firstFiveLaws.1.secBaseChange _ H Dw d.l₂ d.Xo₂ d.c₂ ℂ y₂)
@@ -618,7 +613,7 @@ theorem thetaSum_value_emb : ∀ (D : D7) (H : Geo.Tor.Host D.host.E) (Dw : Datu
     have hm' : ∀ τ, τ ∉ (U.X (dict g).1).Ψ →
         Dw.mult τ ≤ (U.X (dict g).1).p0 := fun τ hτ => by
       unfold Datum.mult
-      rw [if_neg fun h => hτ ((hΨ τ).2 h), hp0]
+      rw [ite_eq_right fun h => hτ ((hΨ τ).2 h), hp0]
     obtain ⟨h1', h2'⟩ := GlobalTheory.AdTh.Dic.letter Dc hrel hm' ℓ
     obtain ⟨g1, g2, g3⟩ := hvr (Dc.eL ℓ)
     refine AddValue.fvar_eq (τ := ℓ.1) (i := ℓ.2.1) (p := Dw.p) (j := ℓ.2.2) ⟨g2.trans h1', ?_⟩ (hlt ℓ) hne
@@ -811,7 +806,6 @@ open GlobalTheory.SW hiding Level IsSB
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open GlobalTheory.SingleDatum GlobalTheory.CoverRead
 open scoped TensorProduct Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open GlobalTheory.LevelSeries
 

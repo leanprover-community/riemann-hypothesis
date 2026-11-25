@@ -100,7 +100,7 @@ theorem pairPar_X : ∀ D : D7, GlobalTheory.IndefiniteRowSideFullHecke.CuspAlon
     · rintro (⟨x, hx, rfl⟩ | ⟨z, hz, rfl⟩)
       · have := hlt _ hx
         left
-        rw [if_pos (by simp only at this; linarith)]
+        rw [ite_eq_left (by simp only at this; linarith)]
         simp only [Bool.not_not]
         convert hx using 2
         ring
@@ -112,7 +112,7 @@ theorem pairPar_X : ∀ D : D7, GlobalTheory.IndefiniteRowSideFullHecke.CuspAlon
       · left
         refine ⟨(y.1 - δ' + δ, !y.2), by simpa using h, ?_⟩
         have := hlt _ h
-        rw [if_pos (by simp only at this ⊢; linarith)]
+        rw [ite_eq_left (by simp only at this ⊢; linarith)]
         ext
         · simp only; ring
         · simp

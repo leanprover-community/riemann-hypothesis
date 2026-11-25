@@ -1,5 +1,7 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullFormsGeneric
+
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsSmoothHermTrivLine
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PAdjoinIndepRelfinrank
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PChartScalingIndep
@@ -22,30 +24,7 @@ variable {K : Type} [Fintype K] {J : K → Type} [∀ k, Fintype (J k)] {Ω : Ty
 
 theorem blockFnField_eq_top (y : (Σ k, J k) → Ω) (c : ∀ k, J k) (hc : ∀ k, y ⟨k, c k⟩ ≠ 0)
     (hb : Birational y) : blockFnField y = ⊤ := by
-  have hy : ∀ f : MRing J,
-      aeval (GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.RowSecGlue.ratioPt y c) f ∈ blockFnField y := by
-    intro f
-    induction f using MvPolynomial.induction_on with
-    | C a => simp
-    | add p q hp hq => rw [map_add]; exact add_mem hp hq
-    | mul_X p i hp =>
-      rw [map_mul, aeval_X]
-      exact mul_mem hp (IntermediateField.subset_adjoin _ _ ⟨i, ⟨i.1, c i.1⟩, rfl, rfl⟩)
-  refine eq_top_iff.2 fun s _ => ?_
-  obtain ⟨d, g, h, hg, hh, hne, e⟩ := hb s
-  have eg := GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.RowSecGlue.aeval_eq_ratioPt y c hc hg
-  have eh := GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.RowSecGlue.aeval_eq_ratioPt y c hc hh
-  have hU : (∏ k, y ⟨k, c k⟩ ^ d k) ≠ 0 :=
-    Finset.prod_ne_zero_iff.mpr fun k _ => pow_ne_zero _ (hc k)
-  rw [eh] at hne
-  have hH := left_ne_zero_of_mul hne
-  rw [eg, eh, ← _root_.mul_assoc] at e
-  have e2 := mul_right_cancel₀ hU e
-  have : s = aeval (GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.RowSecGlue.ratioPt y c) g /
-      aeval (GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.RowSecGlue.ratioPt y c) h := by
-    rw [e2]; field_simp
-  rw [this]
-  exact div_mem (hy g) (hy h)
+  apply _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.PullFormsGeneric.blockFnField_eq_top <;> assumption
 
 end Top
 

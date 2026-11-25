@@ -97,7 +97,7 @@ theorem loc_finE_u_colCoord {T : Type} {L : LevCh D T} {sc : Consts} {G : GridDa
       exact h3.1 ((G.pl.under_w hv).symm ▸ hv)
     · exact h3.2.1 t ht w h rfl
   obtain ⟨q, hq, hqw⟩ : ∃ q ∈ S.N.S, ((q : ℕ) : 𝓞 D.host.E) ∈ w.asIdeal := by
-    unfold Off at hnot; push_neg at hnot; exact hnot
+    unfold Off at hnot; push Not at hnot; exact hnot
   have hz : cpt w (toEAf D ((∑ PP ∈ P', es PP) + cA D (∑ PP ∈ P', es PP))) = 0 := by
     have hA : ∀ PP ∈ P', cpt w (toEAf D (es PP)) = 0 := fun PP hPP =>
       (cpt_of_isIdemAt (hes PP hPP)).2 _ fun e => hoff PP hPP q hq (e ▸ hqw)
@@ -185,6 +185,6 @@ theorem colAt_movedPt_conj : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Const
     rw [Function.update_of_ne h1, Function.update_of_ne h2, colAt_eq S t w _ hi, colAt_eq S t w x hi, hm]
   · simp only [colMove]
     rw [Function.update_of_ne h1, Function.update_of_ne h2]
-    simp only [GridChoice.colAt, dif_neg hi]
+    simp only [GridChoice.colAt, dite_eq_right hi]
 
 end GlobalTheory.TopLevelInv

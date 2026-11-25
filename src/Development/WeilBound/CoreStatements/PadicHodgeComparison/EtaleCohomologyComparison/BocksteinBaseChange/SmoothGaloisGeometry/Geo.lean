@@ -59,7 +59,6 @@ open CategoryTheory Limits AlgebraicGeometry TopologicalSpace
 
 namespace CrystallineSemistableComparison
 
-
 theorem smooth_snd_of_isStrictlySemistable {O K : Type} [CommRing O] [CommRing K] [Algebra O K] (ϖ : O)
     [IsLocalization.Away ϖ K] {X : Scheme.{0}} (p : X ⟶ Spec (CommRingCat.of O))
     (hss : GlobalTheory.Et.IsStrictlySemistable ϖ p)
@@ -149,10 +148,10 @@ theorem mem_span_of_eq_mul_integral {A K : Type*} [CommRing A] [IsDomain A] [Fie
     ext i
     rw [coeff_map, coeff_scaleRoots, coeff_X_pow, map_mul, map_pow, ht0]
     rcases lt_trichotomy i p.natDegree with hi | hi | hi
-    · rw [if_neg hi.ne, zero_pow (by omega), mul_zero]
+    · rw [ite_eq_right hi.ne, zero_pow (by omega), mul_zero]
     · subst hi
       simp [hp.coeff_natDegree]
-    · rw [if_neg hi.ne', coeff_eq_zero_of_natDegree_lt hi, map_zero, zero_mul]
+    · rw [ite_eq_right hi.ne', coeff_eq_zero_of_natDegree_lt hi, map_zero, zero_mul]
   have h3 : Ideal.Quotient.mk (Ideal.span {t}) a ^ p.natDegree = 0 := by
     have h4 := congrArg (Ideal.Quotient.mk (Ideal.span {t})) h1
     rw [map_zero, ← Polynomial.eval₂_at_apply, ← Polynomial.eval_map, h2] at h4
@@ -209,7 +208,6 @@ section -- clump:auto
 @[expose] public section
 
 namespace GlobalTheory.CompanionTheory.SemistableLocal
-
 
 open MvPolynomial in
 theorem irreducible_prod_X_sub_C (O : Type) [CommRing O] [IsDomain O]
@@ -453,7 +451,7 @@ theorem ssModel_algebraMap_ne_zero : algebraMap O (GlobalTheory.Et.ssModel O ϖ 
 include hϖ h1 h2 in
 theorem ssModel_algebraMap_injective : Function.Injective (algebraMap O (GlobalTheory.Et.ssModel O ϖ m r)) := by
   haveI := ssModel_isDomain O ϖ hϖ m r h1 h2
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro c hc
   by_contra hc0
   obtain ⟨n, u, rfl⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible hc0 hϖ
@@ -643,7 +641,7 @@ theorem isInvariant : Algebra.IsInvariant R (Ω ⊗[k] R) (Ω ≃ₐ[k] Ω) wher
       · exact (algebraMap k Ω).injective (h.choose_spec.trans (map_zero _).symm)
       · rfl
     have hφ : ∀ i, algebraMap k Ω (φ (B.repr x i)) = B.repr x i := fun i => by
-      simp only [φ, dif_pos (hc i)]
+      simp only [φ, dite_eq_left (hc i)]
       exact (hc i).choose_spec
     let f : Module.Free.ChooseBasisIndex k R →₀ k := Finsupp.mapRange φ hφ0 (B.repr x)
     refine ⟨b.repr.symm f, B.repr.injective ?_⟩
@@ -936,8 +934,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 open CategoryTheory Limits AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.Tor
@@ -946,15 +942,10 @@ namespace CrystallineSemistableComparison
 
 namespace GeoD
 
-
-attribute [local instance] MvPolynomial.gradedAlgebra in
-theorem isProper_pspace (R : Type) [CommRing R] (N : ℕ) : IsProper (PSpace.str R N) := by
-  apply _root_.UpperTheory.Gal.Seam.Spec.isProper_pstr
-
 theorem compactSpace_of_isProjOver {R : Type} [CommRing R] {X : Scheme.{0}} {f : X ⟶ Sp R}
     (h : IsProjOver f) : CompactSpace X := by
   obtain ⟨N, i, hi, rfl⟩ := h
-  have := isProper_pspace R N
+  have := UpperTheory.Gal.Seam.Spec.isProper_pstr R N
   exact QuasiCompact.compactSpace_of_compactSpace (i ≫ PSpace.str R N)
 
 end GeoD

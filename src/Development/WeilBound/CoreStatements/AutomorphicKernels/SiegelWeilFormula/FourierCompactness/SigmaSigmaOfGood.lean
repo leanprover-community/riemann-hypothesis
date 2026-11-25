@@ -5,6 +5,7 @@ import Development.AbelianVarietyTheory.Proofs.HeightProofs.MeanSquareAddFundame
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.EisensteinSeriesG2.BlockTriangularFrames.SiegelParabolicEqStabiliserCols
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.EisensteinSeriesG2.G2HaarMeasure.CountableRationalPointsDoubled
 import Mathlib.Tactic.Linter.Style
+import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnfoldingCompactness.MatrixOfUnipotentFrame
 
 @[expose] public section
 
@@ -147,7 +148,7 @@ theorem nbE_mem {b : GL (Fin n ⊕ Fin n) E} (hσ : ∀ a, σ (σ a) = a) (hb : 
 theorem nbE_eq {b : GL (Fin n ⊕ Fin n) E} (hσ : ∀ a, σ (σ a) = a) (hb : IsFrame2 σ Y b) :
     nbE σ Y b = fun β => ⟨nU b β.1, nbE_mem hσ hb β⟩ := by
   funext β
-  simp only [nbE, dif_pos (nbE_mem hσ hb β)]
+  simp only [nbE, dite_eq_left (nbE_mem hσ hb β)]
 
 theorem isNMap_nbE {b : GL (Fin n ⊕ Fin n) E} (hσ : ∀ a, σ (σ a) = a) (hb : IsFrame2 σ Y b) :
     IsNMap b (nbE σ Y b) := by
@@ -218,23 +219,7 @@ theorem incM_nM (T : Matrix (Fin n) (Fin n) E) :
 
 theorem nb_rat {b : GL (Fin n ⊕ Fin n) E} {nb : nA σ Y b → G2 σ Y} (h : IsNMap b nb) (γ : nA σ Y b)
     (hγ : γ ∈ nF σ Y b) : nb γ ∈ rat2 σ Y := by
-  obtain ⟨T, hT⟩ := (mem_nF_iff γ).1 hγ
-  let gE : GL (Fin n ⊕ Fin n) E :=
-    ⟨b.1 * Matrix.fromBlocks 1 T 0 1 * (b⁻¹).1, b.1 * Matrix.fromBlocks 1 (-T) 0 1 * (b⁻¹).1, by
-      simp only [Matrix.mul_assoc]
-      rw [← Matrix.mul_assoc (b⁻¹).1 b.1, Units.inv_mul, Matrix.one_mul, ← Matrix.mul_assoc (Matrix.fromBlocks _ _ _ _),
-        Matrix.fromBlocks_multiply]
-      simp, by
-      simp only [Matrix.mul_assoc]
-      rw [← Matrix.mul_assoc (b⁻¹).1 b.1, Units.inv_mul, Matrix.one_mul, ← Matrix.mul_assoc (Matrix.fromBlocks _ _ _ _),
-        Matrix.fromBlocks_multiply]
-      simp⟩
-  refine Subgroup.mem_subgroupOf.2 ⟨gE, Units.ext ?_⟩
-  show (b.1 * Matrix.fromBlocks 1 T 0 1 * (b⁻¹).1).map (inclR (F := F) (AF F)) = mat2 (nb γ)
-  rw [matrix_eq_frame_conjugate b, h γ, hT]
-  show incM F (b.1 * Matrix.fromBlocks 1 T 0 1 * (b⁻¹).1) = _
-  rw [incM_mul', incM_mul', incM_nM]
-  rfl
+  apply _root_.PositivityTheory.SiegelWeilFormula.kunf.nb_rat <;> assumption
 
 theorem isClosed_nCond (ε : ℤˣ) : IsClosed (nCond σ n ε : Set (Matrix (Fin n) (Fin n) (AE F E))) := by
   have hc : Continuous fun y : Matrix (Fin n) (Fin n) (AE F E) => -((((ε : ℤ) : AE F E)) • y.map (cA σ)) :=

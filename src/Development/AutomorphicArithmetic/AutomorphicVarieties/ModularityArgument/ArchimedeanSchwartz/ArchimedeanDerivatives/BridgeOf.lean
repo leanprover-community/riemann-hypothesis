@@ -183,10 +183,8 @@ private theorem haar_eq (hH : HaarL) (μ : Measure (AdelicGLn.InfiniteAdelicGL K
   obtain ⟨m, hm, hmap⟩ := hH K n
   haveI : (Measure.map (grpC K n) m).IsHaarMeasure := (grpC K n).isHaarMeasure_map _
   haveI : LocallyCompactSpace (AdelicGLn.InfiniteAdelicGL K n) := by
-    set_option synthInstance.maxHeartbeats 200000 in
       infer_instance
   haveI : SecondCountableTopology (AdelicGLn.InfiniteAdelicGL K n) := by
-    set_option synthInstance.maxHeartbeats 200000 in
       infer_instance
   have h := Measure.isMulLeftInvariant_eq_smul μ (Measure.map (grpC K n) m)
   have hpos := Measure.haarScalarFactor_pos_of_isHaarMeasure μ (Measure.map (grpC K n) m)

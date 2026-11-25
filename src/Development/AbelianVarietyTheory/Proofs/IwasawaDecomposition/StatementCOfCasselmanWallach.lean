@@ -210,7 +210,7 @@ def frameM (m : ℕ) : Matrix (Fin (m + 2)) (Fin (m + 2)) ℤ :=
 theorem det_frameM (m : ℕ) : (frameM m).det = 1 := by
   rw [Matrix.det_of_lowerTriangular]
   · refine Finset.prod_eq_one fun i _ => ?_
-    simp only [frameM, Matrix.of_apply, if_true]
+    simp only [frameM, Matrix.of_apply, ite_true]
     split_ifs with h1 h2
     · rfl
     · rw [h2]; rfl
@@ -288,7 +288,7 @@ theorem exists_class (m r : ℕ) (hr : 2 ≤ r) (s : SplitPlace L) {p : ℕ} (hp
       · rw [Pi.single_eq_of_ne hl, sub_zero]
         exact hlow l 0 (by simp; omega) (by simpa using Fin.pos_iff_ne_zero.2 hl))
     rw [Finset.sum_eq_single 0 (fun l _ hl => by rw [Pi.single_eq_of_ne hl, mul_zero]) (by simp)] at h3
-    simp only [hA, frameM, Matrix.of_apply, if_true, Int.cast_one, mul_one, Pi.single_eq_same] at h3
+    simp only [hA, frameM, Matrix.of_apply, ite_true, Int.cast_one, mul_one, Pi.single_eq_same] at h3
     let ζ : 𝓞 L := ⟨_, hint i (σ i)⟩
     have eζ : algebraMap (𝓞 L) L ζ = (c : Matrix _ _ L) i (σ i) := rfl
     have hζ : IsOfFinOrder ζ := by
@@ -317,7 +317,7 @@ theorem exists_class (m r : ℕ) (hr : 2 ≤ r) (s : SplitPlace L) {p : ℕ} (hp
     simp only [Pi.add_apply, mul_add, Finset.sum_add_distrib] at h3
     rw [Finset.sum_eq_single 0 (fun l _ hl => by rw [Pi.single_eq_of_ne hl, mul_zero]) (by simp),
       Finset.sum_eq_single 1 (fun l _ hl => by rw [Pi.single_eq_of_ne hl, mul_zero]) (by simp)] at h3
-    simp only [hA, frameM, Matrix.of_apply, if_true, if_neg h10, Int.cast_one, mul_one, one_mul, Pi.single_eq_same,
+    simp only [hA, frameM, Matrix.of_apply, ite_true, ite_eq_right h10, Int.cast_one, mul_one, one_mul, Pi.single_eq_same,
       hone, map_one] at h3
     convert h3 using 2
     push_cast
@@ -355,8 +355,6 @@ theorem exists_class (m r : ℕ) (hr : 2 ≤ r) (s : SplitPlace L) {p : ℕ} (hp
     rw [this, Matrix.one_apply_eq]
     rfl
   · rw [hσ0 i j (by rwa [hid]), Matrix.one_apply_ne (Ne.symm hij), TensorProduct.zero_tmul]
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem exists_trivial_stabiliser : ∀ (D : D7) (k : Fin 2) (s : SplitPlace D.host.E), s.w ∈ placesOver D.host.E (D.host.g k) → ∃ g : GAf D.host.E D.R.nV, ∀ γ ∈ GQ D.host.E D.R.nV, g⁻¹ * γ * g ∈ Umax D.host.E D.R.nV → NG.UniRT s D.R.r (s.loc _ (g⁻¹ * γ * g)) → γ = 1 := by
   intro D k s hs
@@ -408,7 +406,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -502,7 +499,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -596,7 +592,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -779,7 +774,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -844,7 +838,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -945,8 +938,7 @@ theorem mem_para_of_eig : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L]
     rw [hO, ValuationSubring.mem_toSubring, IsDedekindDomain.HeightOneSpectrum.mem_adicCompletionIntegers]
   have hint := (GlobalTheory.HeckeScalarSph.loc_mem_GLint_iff s hκT).2 hκU
   refine ⟨hint, ?_⟩
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   obtain ⟨i0, j0, hi0, hj0, hv⟩ := hcon
   set h := s.loc n κ with hh
   have hent : ∀ i j, Valued.v (h.val i j) ≤ 1 := fun i j =>
@@ -999,14 +991,14 @@ theorem mem_para_of_eig : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L]
     intro i j hi hj
     have hji : j ≠ i0 := fun e => by rw [e] at hj; omega
     have hij : i ≠ j := fun e => by rw [e] at hi; omega
-    rw [hgl', G_apply, if_neg hji, Matrix.one_apply_ne hij, add_zero, map_zero]
+    rw [hgl', G_apply, ite_eq_right hji, Matrix.one_apply_ne hij, add_zero, map_zero]
     exact zero_lt_one
   have hpP : NG.ParaRT s r (s.loc n p) := by
     refine ⟨mem_GLint_of O _ (fun i j => by rw [hpl]; exact hPint i j) (by rw [hpl, hdP]; exact hdinv), ?_⟩
     intro i j hi hj
     have hij0 : i ≠ j0 := fun e => by rw [e] at hi; omega
     have hij : i ≠ j := fun e => by rw [e] at hi; omega
-    rw [hpl, P_apply, if_neg hij0, Matrix.one_apply_ne hij, add_zero, map_zero]
+    rw [hpl, P_apply, ite_eq_right hij0, Matrix.one_apply_ne hij, add_zero, map_zero]
     exact zero_lt_one
   have hgJ : g ∈ J := (hJ g hgT).2 hgP
   have hpJ : p ∈ J := (hJ p hpT).2 hpP
@@ -1017,7 +1009,7 @@ theorem mem_para_of_eig : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L]
   rw [hχp] at ep
   have hkp : κ * p = g * κ := by rw [hp]; group
   obtain ⟨x0, hx0⟩ : ∃ x, F x ≠ 0 := by
-    by_contra hn; push_neg at hn; exact hF (funext hn)
+    by_contra hn; push Not at hn; exact hF (funext hn)
   have hc0 : c ≠ 0 := by
     rintro rfl
     apply hx0
@@ -1055,7 +1047,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -1195,7 +1186,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -1268,7 +1258,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -1308,7 +1297,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -1395,7 +1383,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 open Formalism.AUTREP (GAf)
 open Neutral.B1 (Ideles)
 open GlobalTheory.HeckeGal (Gab IsGlobalArtin)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 open GlobalTheory.LevCmp
@@ -1577,10 +1564,10 @@ theorem exists_data (hG : IsGalois ℚ ↥D.LL0) (s : D.what₂.places.Pl → D.
   have h1 : ∀ v, ReadsAt (s v) (b v) v ∧ ∃ (ρ : Reading (s v) (k v) (b v) v)
       (ψ : D.ntw.RCG (s v) (Q v) →* (D.ntw.Ok (s v) (k v))ˣ), ρ.Pulls ψ (ψ₀ v) ∧ twPack D (s v) (b v) (Q v) (k v) ψ = p (o v) := fun v => by
     by_cases h2 : o v = v
-    · have e : b v = b₀ v := if_pos h2
+    · have e : b v = b₀ v := ite_eq_left h2
       rw [e, h2]
       exact ⟨hb v, unpack (hp v).1 (hp v).2.1 (hp v).2.2.1 (hp v).2.2.2⟩
-    · have e : b v = !b₀ (D.what₂.places.conj v) := if_neg h2
+    · have e : b v = !b₀ (D.what₂.places.conj v) := ite_eq_right h2
       have h3 := (hb (D.what₂.places.conj v)).conj hG
       have h4 := (hp (D.what₂.places.conj v)).1.conj hG
       rw [D.what₂.places.conj_conj] at h3 h4
@@ -1592,8 +1579,8 @@ theorem exists_data (hG : IsGalois ℚ ↥D.LL0) (s : D.what₂.places.Pl → D.
   refine ⟨b, ρ, ψ, hr, h2, fun w hne => ?_, fun v => by rw [h3, h3, (ho v).2]⟩
   simp only [b, (ho w).2, D.what₂.places.conj_conj]
   rcases (ho w).1 with h | h
-  · rw [if_neg (by rw [h]; exact hne.symm), if_pos h]
-  · rw [if_pos h, if_neg (by rw [h]; exact hne), Bool.not_not]
+  · rw [ite_eq_right (by rw [h]; exact hne.symm), ite_eq_left h]
+  · rw [ite_eq_left h, ite_eq_right (by rw [h]; exact hne), Bool.not_not]
 
 abbrev kMap {i : D.ntw.Tw} {k : ℕ} {b : Bool} {v : D.what₂.places.Pl} (ρ : Reading i k b v) : NX.Kk D i k →+* FractionRing ρ.Oe :=
   IsFractionRing.map (K := FractionRing (D.ntw.Ok i k)) (L := FractionRing ρ.Oe) ρ.inj

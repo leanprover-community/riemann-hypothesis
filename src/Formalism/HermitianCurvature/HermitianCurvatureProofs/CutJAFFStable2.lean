@@ -10,8 +10,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.JA.FFS
 
 open NumberField Formalism.FourierDecayAlt.P.CutMP Formalism.FourierDecayAlt.P.CutMP.JA
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 noncomputable section
 
 def GermOps : Prop :=

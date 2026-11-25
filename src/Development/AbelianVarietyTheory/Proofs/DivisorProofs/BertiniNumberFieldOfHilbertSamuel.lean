@@ -39,62 +39,12 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MapLine
 public import Mathlib.RingTheory.Polynomial.Resultant.Basic
 public import Mathlib.Algebra.MvPolynomial.Funext
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DegreeImageBirationalLinearSystemEqSelfInt
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ProjPointIdealMemProjComponentsOfIsProjPureDim
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.RingKrullDimQuotientAddOneOfMemMinimalPrimesSup
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.AlgebraicGeometry.QuasiAffine
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsAddEquivOfSurjectiveOfKerIff
 import ReciprocityTheory.SemistableReduction.DetGramEqProdGramSchmidt
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Algebra.MvPolynomial.Nilpotent
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -110,8 +60,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 
 namespace GlobalTheory.ChowDegree
-
-attribute [local instance] MvPolynomial.gradedAlgebra
 
 theorem degree_eq_hilbertDegree_of_isChowForm : ∀ (F : Type) [Field F] [CharZero F] (D N δ : ℕ) (I : Ideal (MvPolynomial (Fin N) F)) (f : MvPolynomial (Fin (D + 1) × Fin N) F), IsChowForm I D δ f → I.IsPrime → (∀ g ∈ I, ∀ n : ℕ, homogeneousComponent n g ∈ I) → δ = hilbertDegree I := by
   intro F _ _ D N δ I f hf hp hI
@@ -130,7 +78,6 @@ section -- clump:auto
 @[expose] public section
 
 open MvPolynomial GlobalTheory.ChowHt
-attribute [local instance] MvPolynomial.gradedAlgebra
 
 namespace GlobalTheory.ChowSection
 
@@ -155,8 +102,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open ReciprocityTheory.ChartRestriction.G.Out (nonzeroLocus)
 
 namespace GlobalTheory.HSElim
-
-attribute [local instance] MvPolynomial.gradedAlgebra
 
 theorem aeval_eq_zero_of_point {F K : Type} [Field F] [Field K] [Algebra F K] [IsAlgClosure F K]
     {N e δ : ℕ} {P : Ideal (MvPolynomial (Fin N) F)} {f : MvPolynomial (Fin (e + 1) × Fin N) F}
@@ -282,8 +227,7 @@ theorem exists_elim_form_of_field : ∀ (F : Type) [Field F] [CharZero F] (D N d
         have := h' _ (Or.inr (Or.inl ⟨i, rfl⟩))
         simpa using this)
   obtain ⟨j0, hj0⟩ : ∃ j0, y j0 ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hy (funext hcon)
   let z : Fin N → K := fun j => if j = j0 then (y j0)⁻¹ else 0
   let x0 : (Fin D × Fin N) ⊕ (Fin N ⊕ Fin N) → K := Sum.elim (fun p => s p.1 p.2) (Sum.elim y z)
@@ -589,9 +533,9 @@ theorem homogeneous_components_of_integral_equation (F K : Type) [Field F] [Fiel
       = MvPolynomial.eval₂ φ w (homogeneousComponent (e * (m - k)) (b k)) * τ ^ (k : ℕ) := by
     intro k
     have hle : e * (k : ℕ) ≤ e * m := Nat.mul_le_mul_left e k.is_lt.le
-    rw [hpow, ← mul_assoc, Polynomial.coeff_mul_X_pow', if_pos hle, Polynomial.coeff_mul_C,
+    rw [hpow, ← mul_assoc, Polynomial.coeff_mul_X_pow', ite_eq_left hle, Polynomial.coeff_mul_C,
       ← Nat.mul_sub, coeff_eval₂_C_mul_X]
-  rw [hpow, Polynomial.coeff_C_mul_X_pow, if_pos rfl] at hc
+  rw [hpow, Polynomial.coeff_C_mul_X_pow, ite_eq_left rfl] at hc
   simpa only [hterm] using hc
 
 end GlobalTheory
@@ -735,8 +679,7 @@ namespace GlobalTheory.ConeOnto
 theorem exists_pt_of_mem_cone_of_isAlgClosed : ∀ (F : Type) [Field F] (S : LinSys F), S.IsVariety → S.BasePointFree → ∀ (K : Type) [Field K] [Algebra F K] [IsAlgClosed K] (y : Fin S.N → K), y ≠ 0 → (∀ g ∈ S.imageIdeal, aeval y g = 0) → ∃ (x : S.Pt K) (c : K), c ≠ 0 ∧ S.coords x.1 = c • y := by
   intro F _ S hS hb K _ _ _ y hy hI
   classical
-  by_contra hno
-  push_neg at hno
+  by_contra! hno
   have hT : (S.baseChange K).IsVariety := hS.baseChange K
   have hbT : (S.baseChange K).BasePointFree := hb.baseChange K
   obtain ⟨i₀, hi₀⟩ := Function.ne_iff.1 hy
@@ -746,8 +689,7 @@ theorem exists_pt_of_mem_cone_of_isAlgClosed : ∀ (F : Type) [Field F] (S : Lin
     simp [u, sub_mul, Finset.sum_sub_distrib, Pi.single_apply]
 
   have hcov : ∀ z : (S.baseChange K).Y, ∃ j, z ∈ nonzeroLocus ((S.baseChange K).comb (u j)) := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     obtain ⟨z, hz⟩ := hc
     have := hT.smooth
     have : Smooth (S.baseChange K).str := SmoothOfRelativeDimension.smooth (S.baseChange K).D _
@@ -941,12 +883,7 @@ theorem simpleAt_of_noSquare : ∀ (F : Type) [Field F] [NumberField F] (T : Tup
   have hPf : Finite P := hPfin.to_subtype
   have hrepinj : Function.Injective (fun q => (⟨rep q, hrepP q⟩ : P)) := fun q q' h =>
     hinj q q' (by rw [show rep q = rep q' from congrArg Subtype.val h])
-  have hfr : (Module.finrank E Γ((T.linSection E s).subscheme, ⊤) : ℤ) = δ := hrank.trans hδ.symm
   have h1 : Nat.card P = Nat.card (Γ((T.linSection E s).subscheme, ⊤) →ₐ[E] AlgebraicClosure E) := hcard
-  have h3 : Module.finrank E Γ((T.linSection E s).subscheme, ⊤) = δ := by exact_mod_cast hfr
-  have hPle : Nat.card P ≤ δ := by
-    have h2 := hI.2.1
-    omega
   have hmP : Nat.card (Fin (Nat.card (line '' P))) ≤ Nat.card P := Nat.card_le_card_of_injective _ hrepinj
   rw [Nat.card_fin] at hmP
   have hPδ : Nat.card P = δ := by omega
@@ -1380,7 +1317,7 @@ theorem line_natDegree_le_and_coeff (F R : Type) [CommRing F] [CommRing R] [Alge
   have hdeg : ∀ p, (v p).natDegree ≤ w p := by
     rintro ⟨i, j⟩
     refine Fin.lastCases ?_ (fun i => ?_) i
-    · simp only [hv, w, join, if_true, Fin.lastCases_last]
+    · simp only [hv, w, join, ite_true, Fin.lastCases_last]
       rw [add_comm]
       exact Polynomial.natDegree_linear_le
     · simp [hv, w, join]
@@ -1534,9 +1471,9 @@ theorem coeffDeg_line {D N δ : ℕ} (f : MvPolynomial (Fin (D + 1) × Fin N) F)
         (fun j => Polynomial.C (C (ξ₀ j)) + Polynomial.C (C (ξ₁ j)) * Polynomial.X) p) := by
     rintro ⟨i, j⟩
     refine Fin.lastCases ?_ (fun i => ?_) i
-    · simp only [join, Fin.lastCases_last, if_true]
+    · simp only [join, Fin.lastCases_last, ite_true]
       exact (coeffDeg_C (totalDegree_C _).le).add ((coeffDeg_C (e := 0) (totalDegree_C _).le).mul coeffDeg_X)
-    · simp only [join, Fin.lastCases_castSucc, if_neg (Fin.castSucc_ne_last i)]
+    · simp only [join, Fin.lastCases_castSucc, ite_eq_right (Fin.castSucc_ne_last i)]
       exact coeffDeg_C (totalDegree_X _).le
   refine (hc.mul (coeffDeg_prod Finset.univ _ _ fun p _ => (hw p).pow (d p))).mono (le_of_eq ?_)
   rw [zero_add, Fintype.sum_prod_type, Fin.sum_univ_castSucc]

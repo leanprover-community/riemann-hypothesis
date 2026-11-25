@@ -13,8 +13,6 @@ namespace Formalism.FourierDecayAlt.Qr
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 def FrameMinor : Prop :=
   ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℂ E] (k r m : ℕ) (D : Set (Mx k r)), IsOpen D →
     ∀ (Bs : Fin m → Fin (2 * r + k + 1) → ℂ), (∀ a, inWb k r (Bs a)) →

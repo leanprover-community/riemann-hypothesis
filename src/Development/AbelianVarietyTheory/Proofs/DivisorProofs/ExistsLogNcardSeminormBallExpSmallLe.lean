@@ -56,7 +56,6 @@ open Filter Topology GlobalTheory.VolBr
 
 namespace GlobalTheory.VolBr
 
-set_option autoImplicit false in
 open Filter Topology in
 private lemma isBallFam_mono {G : Type} [AddCommGroup G] {Λ : AddSubgroup G} {B : ℝ → Set G}
     (hB : _root_.GlobalTheory.VolBr.IsBallFam Λ B) {r r' : ℝ} (hrr' : r ≤ r') : B r ⊆ B r' := by
@@ -64,7 +63,6 @@ private lemma isBallFam_mono {G : Type} [AddCommGroup G] {Λ : AddSubgroup G} {B
   have := hB.sub_mem r (r' - r) x 0 hx (hB.zero_mem _ (sub_nonneg.2 hrr'))
   simpa using this
 
-set_option autoImplicit false in
 open Filter Topology in
 private lemma encard_mul_encard_le_isBallFam {G : Type} [AddCommGroup G] {Λ : AddSubgroup G}
     {B : ℝ → Set G} (hB : _root_.GlobalTheory.VolBr.IsBallFam Λ B) {a b : ℝ} {m : ℕ} (hm : 0 < m)
@@ -187,7 +185,6 @@ theorem log_ncard_ball_exp_le : ∀ (G : Type) [AddCommGroup G] (Λ : ℕ → Ad
   have hbig : R * (Q : ℝ) ^ e ≤ Real.exp (3 * m) := by
     have h4 : (4 : ℝ) ≤ Real.exp 3 := by
       have := Real.add_one_le_exp 3; linarith
-    have hQ0 : (0 : ℝ) ≤ Q := Nat.cast_nonneg _
     calc R * (Q : ℝ) ^ e ≤ R * (4 * R) ^ e := by gcongr
       _ = 4 ^ e * R ^ (e + 1) := by ring
       _ ≤ Real.exp 3 ^ e * Real.exp (2 * m) := by gcongr

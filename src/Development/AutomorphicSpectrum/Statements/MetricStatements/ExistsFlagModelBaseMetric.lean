@@ -179,13 +179,4 @@ variable {Ψ : Type} {N j n : ℕ} {M : FlagModel y Ψ N j}
 
 end Tests
 
-section Chain
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H}
-  {Xo : Moduli D l} {c : Coeff l} {Y : Model Xo c (algebraMap (𝓞 c.F) c.F)} {S S' : Finset ℕ}
-  {Ω : Type} [Field Ω] [CharZero Ω] {K₀ : Type} [Fintype K₀] {J₀ : K₀ → Type} [∀ k, Fintype (J₀ k)]
-  {x₀ : (Σ k, J₀ k) → Ω}
-
-end Chain
-
 end GlobalTheory.CompanionTheory.Ar.PB

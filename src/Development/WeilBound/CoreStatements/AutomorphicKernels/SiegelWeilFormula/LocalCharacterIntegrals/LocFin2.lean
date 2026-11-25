@@ -202,20 +202,13 @@ theorem exists_lattice_norm_ge_pow {ϖ : Fv F v} (hϖ0 : 0 < ‖ϖ‖) (hϖ1 : �
   have := card_le_lattice_norm lam h1 b hb y hy hsep
   simpa [Fintype.card_fun, Fintype.card_bool, Fintype.card_fin] using this
 
-theorem cvSigR_smul (σ : E →ₐ[F] E) (t : Fv F v) (x : Fv F v ⊗[F] E) :
-    sigR (Fv F v) σ (t • x) = t • sigR (Fv F v) σ x := by
-  rw [Algebra.smul_def, Algebra.smul_def, map_mul]
-  congr 1
-  rw [Algebra.TensorProduct.algebraMap_apply]
-  simp [sigR, Algebra.TensorProduct.map_tmul]
-
 theorem smul_mem_herm (σ : E →ₐ[F] E) (t : Fv F v) {S : Matrix (Fin n) (Fin n) (Fv F v ⊗[F] E)}
     (hS : S ∈ HermR (Fv F v) σ n) : t • S ∈ HermR (Fv F v) σ n := by
   have hS' : ∀ a b, sigR (Fv F v) σ (S b a) = S a b := hS
   show ∀ a b, sigR (Fv F v) σ ((t • S) b a) = (t • S) a b
   intro a b
   simp only [Matrix.smul_apply]
-  rw [cvSigR_smul, hS' a b]
+  rw [PositivityTheory.SiegelWeilFormula.SwLocFin.sigR_smul, hS' a b]
 
 def scH (σ : E →ₐ[F] E) (n : ℕ) {t : Fv F v} (ht : t ≠ 0) : HermR (Fv F v) σ n ≃+ HermR (Fv F v) σ n where
   toFun b := ⟨t • b.1, smul_mem_herm σ t b.2⟩
@@ -322,7 +315,7 @@ theorem convP : ConvP := by
     intro b _
     by_cases hb : nM v b.1 ≤ R₀
     · exact Or.inl hb
-    · push_neg at hb
+    · push Not at hb
       obtain ⟨j, hj1, hj2⟩ := exists_nat_pow_near (x := nM v b.1 / R₀) (y := q) ((one_le_div hR₀).2 hb.le) hq1
       refine Or.inr (Set.mem_iUnion.2 ⟨j, ?_, ?_⟩)
       · rw [mul_comm]; exact (le_div_iff₀ hR₀).1 hj1
@@ -607,7 +600,6 @@ namespace PositivityTheory.SiegelWeilFormula.SwLocFin.DualA
 open HeckeCharacterZeroLocus.SiegelWeilU NumberField IsDedekindDomain MeasureTheory GlobalTheory.Cont PositivityTheory.PfSWUS.Loc Filter Topology
 open scoped TensorProduct Matrix
 
-
 open Classical in
 theorem setIntegral_char_subgroup {G : Type*} [AddCommGroup G] [MeasurableSpace G] [MeasurableAdd G]
     (ν : Measure G) [ν.IsAddRightInvariant] (Λ : AddSubgroup G) (hΛ : MeasurableSet (Λ : Set G))
@@ -623,9 +615,9 @@ theorem setIntegral_char_subgroup {G : Type*} [AddCommGroup G] [MeasurableSpace 
       simp only [Set.indicator]
       by_cases hx : x ∈ Λ
       · have : x + x0 ∈ Λ := Λ.add_mem hx hx0
-        simp only [SetLike.mem_coe, hx, this, if_true, hχ, mul_comm]
+        simp only [SetLike.mem_coe, hx, this, ite_true, hχ, mul_comm]
       · have : x + x0 ∉ Λ := fun h' => hx (by simpa using Λ.sub_mem h' hx0)
-        simp only [SetLike.mem_coe, hx, this, if_false, mul_zero]
+        simp only [SetLike.mem_coe, hx, this, ite_false, mul_zero]
     have key : ∫ x in (Λ : Set G), χ x ∂ν = χ x0 * ∫ x in (Λ : Set G), χ x ∂ν := by
       calc ∫ x in (Λ : Set G), χ x ∂ν = ∫ x, (Λ : Set G).indicator χ x ∂ν := (integral_indicator hΛ).symm
         _ = ∫ x, (Λ : Set G).indicator χ (x + x0) ∂ν := (integral_add_right_eq_self _ x0).symm
@@ -1041,10 +1033,10 @@ theorem setIntegral_uu (h : Hyp σ M J n ψ v μv νv lam L₁ L₂ Φv g T) (R 
           (fun b => psiV F ψ v (trPair (Fv F v) b.1 (gramR (Fv F v) σ J Y - T.1)))
           (fun b b' => psiV_trPair_add_left ψ _ b b')]
         by_cases hP : ∀ b ∈ Λ, psiV F ψ v (trPair (Fv F v) b.1 (gramR (Fv F v) σ J Y - T.1)) = 1
-        · rw [if_pos hP, Set.indicator_of_mem (show Y ∈ setP σ J ψ v (Λ : Set (HermR (Fv F v) σ n)) T from
+        · rw [ite_eq_left hP, Set.indicator_of_mem (show Y ∈ setP σ J ψ v (Λ : Set (HermR (Fv F v) σ n)) T from
             fun b hb => hP b hb)]
           ring
-        · rw [if_neg hP, Set.indicator_of_notMem (show Y ∉ setP σ J ψ v (Λ : Set (HermR (Fv F v) σ n)) T from
+        · rw [ite_eq_right hP, Set.indicator_of_notMem (show Y ∉ setP σ J ψ v (Λ : Set (HermR (Fv F v) σ n)) T from
             fun h' => hP fun b hb => h' b hb)]
           ring
     _ = ((νv.real (Λ : Set (HermR (Fv F v) σ n)) : ℝ) : ℂ) *
@@ -1106,9 +1098,9 @@ theorem vol_mul_vol_perp (h : Hyp σ M J n ψ v μv νv lam L₁ L₂ Φv g T) (
     rw [e1, setIntegral_char_subgroup νv Λ hΛm (fun x => psiV F ψ v (trPair (Fv F v) x.1 y.1))
       (fun b b' => psiV_trPair_add_left ψ y.1 b b')]
     by_cases hy : ∀ x ∈ Λ, psiV F ψ v (trPair (Fv F v) x.1 y.1) = 1
-    · rw [if_pos hy, Set.indicator_of_mem (show y ∈ perpH σ ψ v (Λ : Set (HermR (Fv F v) σ n)) from
+    · rw [ite_eq_left hy, Set.indicator_of_mem (show y ∈ perpH σ ψ v (Λ : Set (HermR (Fv F v) σ n)) from
         fun b hb => hy b hb)]
-    · rw [if_neg hy, Set.indicator_of_notMem (show y ∉ perpH σ ψ v (Λ : Set (HermR (Fv F v) σ n)) from
+    · rw [ite_eq_right hy, Set.indicator_of_notMem (show y ∉ perpH σ ψ v (Λ : Set (HermR (Fv F v) σ n)) from
         fun h' => hy fun b hb => h' b hb)]
   have hint : Integrable (fun y => ∫ x, Φ0 x * psiV F ψ v (pairHerm (Fv F v) σ n x y) ∂νv) νv := by
     rw [hhat]

@@ -103,12 +103,12 @@ theorem jointAmplitudeFactorizationRotated_of (Y : Full X) (u u' : D.what₂.Wor
   have hn : 0 < Fintype.card D.what₂.Tau := Fintype.card_pos
   have hθ0 : thetaP u u' hB (J2of Y u u' ν (toPts w')) w' =
       (localAmplitudeProduct u u' hB w' / J2of Y u u' ν (toPts w')) ^ ((1 : ℝ) / (2 * Fintype.card D.what₂.Tau)) := by
-    simp only [thetaP, if_pos (And.intro hpos hP1)]
+    simp only [thetaP, ite_eq_left (And.intro hpos hP1)]
   have hθpos : 0 < thetaP u u' hB (J2of Y u u' ν (toPts w')) w' := by
     rw [hθ0]; apply Real.rpow_pos_of_pos; exact div_pos hP1 hpos
   have hν1 : ∀ τ, RMeas D (locW C u u' τ) (gamP C u u' w' τ) 1 (nu1P C u u' w' τ) := fun τ => by
     have h := hM w' hrow hrep τ
-    simp only [nu1P, dif_pos h]
+    simp only [nu1P, dite_eq_left h]
     exact h.choose_spec
   have hsc : ∀ τ, RMeas D (locW C u u' τ) (gamP C u u' w' τ) (thetaP u u' hB (J2of Y u u' ν (toPts w')) w')
       (ENNReal.ofReal (thetaP u u' hB (J2of Y u u' ν (toPts w')) w')⁻¹ • nu1P C u u' w' τ) := fun τ => by

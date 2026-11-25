@@ -63,9 +63,6 @@ def IsSecOn (A : WeightedAtlas n Y ι La) (la : La) (U : Set Y) (s : ι → Y �
 def IsSec (A : WeightedAtlas n Y ι La) (la : La) (s : ι → Y → ℂ) : Prop :=
   A.IsSecOn la Set.univ s
 
-def IsFrameOn (A : WeightedAtlas n Y ι La) (la : La) (U : Set Y) (s : ι → Y → ℂ) : Prop :=
-  A.IsSecOn la U s ∧ ∀ y ∈ U, s (A.pick y) y ≠ 0
-
 def SmoothFn (A : WeightedAtlas n Y ι La) (f : Y → ℝ) : Prop :=
   ∀ i, ContDiffOn ℝ ∞ (f ∘ (A.chart i).symm) (A.chart i).target
 

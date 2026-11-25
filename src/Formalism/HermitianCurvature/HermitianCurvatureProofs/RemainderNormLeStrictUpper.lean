@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.StandardCharacterExists
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalIntegralConvergesAbs
 public import Formalism.HermitianCurvature.StatementG
 
@@ -19,11 +20,7 @@ theorem blk_cc {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (b a : Fin n → ℂ) 
 
 theorem blk_cl {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (b a : Fin n → ℂ) (e : ℂ) (i : Fin n) :
     blk A b a e i.castSucc (Fin.last n) = b i := by
-  have h : ∀ i : Fin n, finSumFinEquiv.symm (i.castSucc : Fin (n+1)) = Sum.inl i := fun i =>
-    finSumFinEquiv_symm_apply_castAdd (n := 1) i
-  have h2 : finSumFinEquiv.symm (Fin.last n : Fin (n+1)) = Sum.inr (0 : Fin 1) :=
-    finSumFinEquiv_symm_apply_natAdd (m := n) (0 : Fin 1)
-  simp [blk, h, h2]
+  apply _root_.Formalism.FourierDecayAlt.P.StandardCharacterExists.blk_cl <;> assumption
 
 theorem xOf_castSucc {m : ℕ} (X : Matrix (Fin (m + 1)) (Fin (m + 1)) ℂ) (B : Fin (m + 1) → ℂ)
     (k : Fin m) : xOf X B k.castSucc = X k.castSucc k.succ := by

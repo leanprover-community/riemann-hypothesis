@@ -11,7 +11,7 @@ open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC LateralTh
 namespace LateralTheory.E.H2CurveOrder.LeafKumMuInjPf
 
 def ShfSep : Prop := ∀ (R : Type) [CommRing R] (F : Shv R) (U : Scheme.{0}) (y : Sec F U),
-  (Loc U fun V g => Sec.res g y = 0) → y = 0
+  (Loc U fun _ g => Sec.res g y = 0) → y = 0
 
 theorem shfSep : ShfSep := by
   intro R _ F U y h

@@ -59,10 +59,4 @@ def MRatSpan : Prop := Submodule.span O (cmpF P α e Mi '' intLL P α e Mi) = Mi
 
 end Pl
 
-section Rec
-
-variable {D : D7} (c : LatCmp D)
-
-end Rec
-
 end Formalism.L2.G.Cmp

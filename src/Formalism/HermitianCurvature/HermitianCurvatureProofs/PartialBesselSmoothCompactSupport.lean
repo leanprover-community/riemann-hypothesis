@@ -185,7 +185,7 @@ def sxF (e : p + ρ = n) (x : PBQ.XP k p ρ) : Mat k n :=
 theorem cast_leftFactor_eq_of_good {Bj : B.RealPlaceData k ρ Wp Wq} {x : PBQ.XP k p ρ} (hx : PBQ.GoodP Bj x) (e : p + ρ = n) :
     D.castM e (PBQ.sP Bj x) = sxF e x := by
   unfold PBQ.sP sxF
-  rw [if_pos hx]
+  rw [ite_eq_left hx]
 
 theorem sxF_GV {Bj : B.RealPlaceData k ρ Wp Wq} (e : p + ρ = n) {x : PBQ.XP k p ρ} (hx : PBQ.GoodP Bj x) :
     sxF e x ∈ GV k n := by
@@ -246,7 +246,7 @@ theorem pbF_eq_Gt (Bj : B.RealPlaceData k ρ Wp Wq) (B0 : B.RealPlaceData k n Wp
   refine integral_congr_ae ?_
   filter_upwards [PBQ.ae_goodP (p := p) Bj] with x hx
   unfold PBQ.pbI fam
-  rw [if_pos hx]
+  rw [ite_eq_left hx]
   simp only [iotL_mul, iotL_iotL, cast_leftFactor_eq_of_good hx e]
 
 theorem norm_cP (Bj : B.RealPlaceData k ρ Wp Wq) (x : PBQ.XP k p ρ) : ‖PBQ.cP Bj x‖ ≤ 1 := by
@@ -276,19 +276,7 @@ open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Form
 open scoped Matrix.Norms.Elementwise
 
 theorem fmc_RC (k p ρ : ℕ) : IsFiniteMeasureOnCompacts (U.muRC k p ρ) := by
-  unfold U.muRC
-  have h0 : IsFiniteMeasureOnCompacts (volume : Measure (Fin p → ℂ)) := by rw [volume_pi]; infer_instance
-  have h1 : IsFiniteMeasureOnCompacts (volume : Measure (G.UT p → ℂ)) := by rw [volume_pi]; infer_instance
-  have h2 : IsFiniteMeasureOnCompacts (volume : Measure (Fin p → ℝ)) := by rw [volume_pi]; infer_instance
-  have h3 : IsFiniteMeasureOnCompacts (volume : Measure (Fin (2 * ρ + k + 1) → Fin p → ℂ)) := by
-    rw [volume_pi]; infer_instance
-  have : SigmaFinite (volume : Measure (Fin p → ℝ)) := by rw [volume_pi]; infer_instance
-  have : SigmaFinite (volume : Measure (G.UT p → ℂ)) := by rw [volume_pi]; infer_instance
-  have : SigmaFinite (volume : Measure ((G.UT p → ℂ) × (Fin p → ℝ))) := by
-    rw [Measure.volume_eq_prod]; infer_instance
-  have h4 : IsFiniteMeasureOnCompacts (volume : Measure ((G.UT p → ℂ) × (Fin p → ℝ))) := by
-    rw [Measure.volume_eq_prod]; infer_instance
-  rw [Measure.volume_eq_prod]; infer_instance
+  apply +allowSynthFailures _root_.Formalism.FourierDecayAlt.P.LeftFubiniLemmas.fmoc_RC <;> assumption
 
 section ck
 
@@ -432,7 +420,7 @@ theorem ck_at (Bj : B.RealPlaceData k ρ Wp Wq) (B0 : B.RealPlaceData k n Wp Wq)
         (Bj.π (Matrix.of x.1.1)).comp (dLR (w.map Formalism.FourierDecayAlt.P.Ux1.Lt) [] Φt (y * iotL k n (sxF e x))) := by
     intro w x hx y
     have hf : fam Bj e Φt x = fun g => (Bj.π (Matrix.of x.1.1)).comp (Φt (g * iotL k n (sxF e x))) := by
-      funext g; unfold fam; rw [if_pos hx]
+      funext g; unfold fam; rw [ite_eq_left hx]
     rw [hf]
     show (w.map Formalism.FourierDecayAlt.P.Ux1.Lt).foldr LdV
       (fun g => (Bj.π (Matrix.of x.1.1)).comp (Φt (g * iotL k n (sxF e x)))) y = _
@@ -453,8 +441,7 @@ theorem ck_at (Bj : B.RealPlaceData k ρ Wp Wq) (B0 : B.RealPlaceData k n Wp Wq)
       refine (mul_le_of_le_one_left (norm_nonneg _) (Formalism.FourierDecayAlt.P.B7.norm_pi_le Bj hxK.2.1)).trans ?_
       exact hcw w hw _ ⟨(x, y), ⟨hxK, hmemKc Y hY⟩, rfl⟩
     · have hx' : x ∉ K ∨ ¬ PBQ.GoodP Bj x := by
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         exact hxK ⟨hc.1, hc.2⟩
       have h0 : dLR (w.map Formalism.FourierDecayAlt.P.Ux1.Lt) [] (fam Bj e Φt x) y = 0 := by
         rw [Formalism.FourierDecayAlt.P.B4.dLR_eq]
@@ -491,11 +478,11 @@ theorem ck_at (Bj : B.RealPlaceData k ρ Wp Wq) (B0 : B.RealPlaceData k n Wp Wq)
     intro x
     by_cases hx : PBQ.GoodP Bj x
     · have hf : fam Bj e Φt x = fun g => (Bj.π (Matrix.of x.1.1)).comp (Φt (g * iotL k n (sxF e x))) := by
-        funext g; unfold fam; rw [if_pos hx]
+        funext g; unfold fam; rw [ite_eq_left hx]
       rw [hf]
       exact ckOn_post (ckOn_rtransl (Formalism.FourierDecayAlt.P.B5.ckOn_mono le_top hΦt) (iotL_mem (sxF_GV e hx))) _
     · have hf : fam Bj e Φt x = fun _ => 0 := by
-        funext g; unfold fam; rw [if_neg hx]
+        funext g; unfold fam; rw [ite_eq_right hx]
       rw [hf]
       exact Formalism.FourierDecayAlt.P.SmoothnessOnGoodSet.ckOn_zero _
   have hAL := Formalism.FourierDecayAlt.P.ChartIntegralLocal.int_chart_loc (μ := μ) (fun x => PBQ.cP Bj x) (norm_cP Bj)

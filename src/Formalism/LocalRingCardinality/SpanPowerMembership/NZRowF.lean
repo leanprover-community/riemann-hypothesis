@@ -16,15 +16,6 @@ namespace Formalism.BasicNotions.Examples₂.NZ
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.Examples₂
 
-section Pure
-
-variable {K : Type} [Field K] [NumberField K] [StarRing K] (σ : K →+* ℂ)
-  (hstar : ∀ z, σ (star z) = starRingEnd ℂ (σ z)) {n : ℕ}
-  {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] (b : OrthonormalBasis (Fin n) ℂ V)
-
-
-end Pure
-
 section Sharp
 
 variable (D : D7)

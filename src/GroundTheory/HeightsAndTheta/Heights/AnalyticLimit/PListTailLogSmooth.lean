@@ -30,11 +30,6 @@ def ListTailLogSmooth.Statement : Prop :=
       (∀ i, IsSmoothPotForm A R.Yo R.r Om C₁ (th i) (u i)) →
         TailLogBound A R.Yo R.r (fun i => potForm (th i) (u i)) CE
 
-section Inhabitants
-
-
-end Inhabitants
-
 end GroundTheory.Heights₂.Heights.AnalyticLimit
 end -- clump:auto
 end -- clump:auto
@@ -84,13 +79,6 @@ theorem regChartData_continuousOn_r (R : RegChartData A) : ContinuousOn R.r R.Yo
     exact this
   exact ((hg.comp ((R.ψ j).continuousAt hxs)).congr hev.symm).continuousWithinAt
 
-theorem regChartData_C_nonneg (R : RegChartData A) {x : X} (hx : x ∈ R.Yo) : 0 ≤ R.C := by
-  by_contra h
-  have h1 := R.le_φ x hx
-  have h2 := R.φ_le x hx
-  have h3 : 0 ≤ Real.log (R.r x) := Real.log_nonneg (R.one_le_r x hx)
-  nlinarith
-
 def regChartShift (R : RegChartData A) : RegChartData A :=
   { R with
     r := fun x => R.r x + (Real.exp 1 - 1)
@@ -104,21 +92,7 @@ def regChartShift (R : RegChartData A) : RegChartData A :=
       have := R.one_le_r x hx
       have := Real.add_one_le_exp (0 : ℝ)
       rw [Real.exp_zero] at this
-      linarith [Real.add_one_le_exp (1 : ℝ)]
-    le_φ := fun x hx => by
-      have hC := regChartData_C_nonneg R hx
-      have h1 := R.one_le_r x hx
-      have : Real.log (R.r x) ≤ Real.log (R.r x + (Real.exp 1 - 1)) :=
-        Real.log_le_log (by linarith) (by linarith [Real.add_one_le_exp (1 : ℝ)])
-      nlinarith [R.le_φ x hx]
-    grad := fun j z hz => by
-      have hx : (R.ψ j).symm z ∈ R.Yo := (R.mem_Yo_iff j z hz.1).2 hz.2
-      have hC := regChartData_C_nonneg R hx
-      have h1 := R.one_le_r _ hx
-      have he : 0 ≤ Real.exp 1 - 1 := by linarith [Real.add_one_le_exp (1 : ℝ)]
-      refine (R.grad j z hz).trans (mul_le_mul (mul_le_mul_of_nonneg_left
-        (Real.rpow_le_rpow (by linarith) (by linarith) hC) hC)
-        (Real.exp_le_exp.2 (by linarith)) (Real.exp_pos _).le (by positivity)) }
+      linarith [Real.add_one_le_exp (1 : ℝ)] }
 
 theorem tailLogBound_of_le [CompactSpace X] [T2Space X] {Yo : Set X} (hYo : IsOpen Yo)
     {r r' : X → ℝ} (hr : ContinuousOn r Yo) (hle : ∀ x ∈ Yo, r x ≤ r' x) {T : Fin D → LocPot X}

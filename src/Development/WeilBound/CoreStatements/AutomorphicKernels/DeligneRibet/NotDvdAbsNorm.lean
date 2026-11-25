@@ -962,7 +962,7 @@ theorem smoothed_of
     intro I hI
     refine ⟨?_, ?_⟩
     · rw [Ne, Ideal.mul_eq_bot]
-      push_neg
+      push Not
       exact ⟨h𝔠ne, hI.1⟩
     · rw [sup_comm, Ideal.sup_mul_eq_of_coprime_left (by rw [sup_comm]; exact h𝔠f), sup_comm]
       exact hI.2
@@ -1011,12 +1011,12 @@ theorem smoothed_of
       · have e : f ∘ m = fun I' => ((Ideal.absNorm 𝔠 : ℕ) : ℂ) ^ (-s) * ((Ideal.absNorm I'.1 : ℕ) : ℂ) ^ (-s) := by
           funext I'
           simp only [Function.comp, f, m]
-          rw [if_pos Ideal.mul_le_left, map_mul, Nat.cast_mul, Complex.natCast_mul_natCast_cpow]
+          rw [ite_eq_left Ideal.mul_le_left, map_mul, Nat.cast_mul, Complex.natCast_mul_natCast_cpow]
         rw [e]
         exact hB.mul_left _
       · intro I hI
         simp only [f]
-        rw [if_neg]
+        rw [ite_eq_right]
         intro hle
         apply hI
         obtain ⟨I', hI'⟩ := Ideal.dvd_iff_le.2 hle
@@ -1069,26 +1069,8 @@ open NumberField Formalism.MainNotions.ShortIntervalPrimes GlobalTheory.RayZeta 
 
 namespace PositivityTheory.PfDRL
 
-theorem classValueZ : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (𝔣 𝔞 𝔟 𝔠 : Ideal (𝓞 F)) (J : Type) [Fintype J]
-    (r : J → ℕ) (y : J → 𝓞 F) (v : ∀ j, Fin (r j) → 𝓞 F), ClassParam 𝔣 𝔞 𝔟 r y v → 𝔠.IsPrime → (Ideal.absNorm 𝔠).Prime →
-    (∀ j i, v j i ∉ 𝔠 * 𝔟) → ∀ T : ℂ → ℂ, DifferentiableOn ℂ T {1}ᶜ →
-      (∀ s : ℂ, 1 < s.re → HasSum (fun I : {I : Ideal (𝓞 F) // CoprimeTo F 𝔣 I ∧ RayRel F 𝔣 I 𝔞} =>
-        (classWeight (Ideal.absNorm 𝔠) 𝔠 I.1 : ℂ) * ((Ideal.absNorm I.1 : ℕ) : ℂ) ^ (-s)) (T s)) →
-      ∀ k : ℕ, 1 ≤ k → ∃ q : ℚ, T (1 - (k : ℂ)) = (q : ℂ) ∧
-        ∀ l : ℕ, l.Prime → l ≠ Ideal.absNorm 𝔠 → ¬ l ∣ Ideal.absNorm 𝔟 → 0 ≤ padicValRat l q := _root_.GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Integrality.classTwist_value_int
-
-theorem classParamCop : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (𝔣 : Ideal (𝓞 F)), 𝔣 ≠ ⊥ →
-    ∀ 𝔞 : Ideal (𝓞 F), CoprimeTo F 𝔣 𝔞 →
-      ∃ (𝔟 : Ideal (𝓞 F)) (J : Type) (_ : Fintype J) (r' : J → ℕ) (y : J → 𝓞 F) (v' : ∀ j, Fin (r' j) → 𝓞 F),
-        ClassParam 𝔣 𝔞 𝔟 r' y v' ∧ 𝔟 ⊔ 𝔣 = ⊤ := _root_.GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.exists_classParam_sup_eq_top
-
 theorem not_dvd_absNorm {F : Type} [Field F] [NumberField F] {l : ℕ} (hl : l.Prime) {𝔟 : Ideal (𝓞 F)}
     (h : 𝔟 ⊔ Ideal.span {(l : 𝓞 F)} = ⊤) : ¬ l ∣ Ideal.absNorm 𝔟 := _root_.GlobalTheory.CompanionTheory.DeligneRibet.absNorm_not_dvd_of_sup_span_eq_top F l hl 𝔟 h
-
-theorem deg1Ray : ∀ (F : Type) [Field F] [NumberField F] (𝔣 𝔞 : Ideal (𝓞 F)), 𝔣 ≠ ⊥ → CoprimeTo F 𝔣 𝔞 →
-    ∀ (W : Finset (𝓞 F)) (B : ℕ), (∀ x ∈ W, x ≠ 0) →
-      ∃ 𝔠 : Ideal (𝓞 F), 𝔠.IsPrime ∧ (Ideal.absNorm 𝔠).Prime ∧ B < Ideal.absNorm 𝔠 ∧ CoprimeTo F 𝔣 𝔠 ∧
-        RayRel F 𝔣 𝔠 𝔞 ∧ ∀ x ∈ W, x ∉ 𝔠 := _root_.GlobalTheory.CompanionTheory.DegOneRay.exists_degOne_prime_in_rayClass
 
 theorem absNorm_modEq (F : Type) [Field F] [NumberField F] (l m : ℕ) {I J : Ideal (𝓞 F)}
     (h : RayRel F (powMod F l m) I J) : Ideal.absNorm I ≡ Ideal.absNorm J [MOD l ^ m] := _root_.GlobalTheory.CompanionTheory.RayFacts.absNorm_modEq_of_rayRel_powMod F l m I J h

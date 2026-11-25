@@ -811,9 +811,9 @@ theorem monomial_mem_sup (O : MonomialOrder σ) {ι : Type*} (c : ι → MvPolyn
         have hne : d ≠ O.degree (c i) := by
           intro hdeq
           apply hd'
-          rw [hdeq, hq, MvPolynomial.coeff_sub, MvPolynomial.coeff_monomial, if_pos rfl, hlc1, sub_self]
+          rw [hdeq, hq, MvPolynomial.coeff_sub, MvPolynomial.coeff_monomial, ite_eq_left rfl, hlc1, sub_self]
         have hci : (c i).coeff d ≠ 0 := by
-          rw [hq, MvPolynomial.coeff_sub, MvPolynomial.coeff_monomial, if_neg (Ne.symm hne),
+          rw [hq, MvPolynomial.coeff_sub, MvPolynomial.coeff_monomial, ite_eq_right (Ne.symm hne),
             sub_zero] at hd'
           exact hd'
         have hle := MonomialOrder.le_degree (m := O) (MvPolynomial.mem_support_iff.mpr hci)

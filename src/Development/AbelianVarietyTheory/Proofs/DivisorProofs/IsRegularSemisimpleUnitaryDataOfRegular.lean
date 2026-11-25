@@ -71,8 +71,7 @@ theorem isRegular_of_isRegSS : ∀ {D : D7} {V : HSp D} (γ : GF V), IsRegSS γ.
       Algebra.FinitePresentation.of_finiteType.1 inferInstance⟩
   · intro e
     simp [Formalism.BasicNotions.CMData.sig]
-  · by_contra hne
-    push_neg at hne
+  · by_contra! hne
     have htop : (⊥ : Subalgebra (↥D.host.F) D.host.E) = ⊤ := by
       refine eq_top_iff.2 (fun e _ => ?_)
       rw [Algebra.mem_bot]

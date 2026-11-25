@@ -117,7 +117,7 @@ lemma range_psi [FaithfulSMul R K] {A : Subalgebra R (T → R)} {d : R} (hd0 : d
     let L' : Module.Dual R A :=
       { toFun := L
         map_add' := fun a b => hinj (by
-          simp [hL, add_mul, mul_add, Finset.sum_add_distrib])
+          simp [hL, mul_add, Finset.sum_add_distrib])
         map_smul' := fun c a => hinj (by
           simp [hL, Finset.mul_sum, mul_left_comm]) }
     refine ⟨L', ?_⟩

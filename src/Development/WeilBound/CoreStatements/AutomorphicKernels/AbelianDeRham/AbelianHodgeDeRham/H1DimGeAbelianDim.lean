@@ -11,8 +11,6 @@ noncomputable section
 open CategoryTheory CategoryTheory.Limits AlgebraicGeometry TensorProduct
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw GlobalTheory.CechPic GlobalTheory.Cris GlobalTheory.CechDR
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace MainStatements.Hodge
 
 def FewEqSt : Prop :=

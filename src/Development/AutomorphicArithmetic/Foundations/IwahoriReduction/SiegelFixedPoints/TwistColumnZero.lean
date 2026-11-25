@@ -97,7 +97,7 @@ private theorem eisF_shift {K : Type} [Field K] [CharZero K] (j M : ℕ) (ζ : K
     · have : ζ ^ (a₂ + e * a₁) = ζ ^ a₂ :=
         zpow_cg hM hζ (Int.ModEq.symm ((Int.modEq_iff_dvd).2 (by simpa using hd.mul_left e)))
       rw [this]
-    · simp only [if_neg hd]
+    · simp only [ite_eq_right hd]
   · unfold coefPos
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl fun d hd => ?_
@@ -327,8 +327,7 @@ private theorem UpperTheory.ring_hom_eisenstein_coeff {K : Type} [Field K] [Char
   · simp only [map_div₀, map_mul, map_add (f := _), map_sub, map_one, map_ofNat, h]
   · simp only [map_ratCast]
   · simp only [map_neg, map_ratCast]
-  · set_option synthInstance.maxHeartbeats 100000 in
-    simp only [map_sum, map_sub]
+  · simp only [map_sum, map_sub]
     refine Finset.sum_congr rfl fun d _ => ?_
     congr 1
     · split_ifs
@@ -1373,7 +1372,7 @@ theorem UpperTheory.Kd.L.arith :
     repM (topM l n m (N * N)) y (E r₀ γ) with hS2
   have hF : Fsum ε l n m N x c d w gm R z (i : ℚ) = (N : Ω) ^ 3 * ((l : Ω) ^ ((m + n) * w) * S1 + (l : Ω) ^ n * S2) := by
     unfold Fsum
-    rw [if_pos (by simp)]
+    rw [ite_eq_left (by simp)]
     congr 1
     simp only [hS1, hS2, Finset.mul_sum, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun y _ => Finset.sum_congr rfl fun r₀ _ => Finset.sum_congr rfl fun γ hγ => ?_
@@ -1454,7 +1453,7 @@ theorem UpperTheory.Kd.L.arith :
     have hdiv : l ^ (m + n) * i = l ^ n * (l ^ m * i) := by rw [pow_add]; ring
     rw [hdiv]
     unfold vp
-    rw [if_pos (dvd_mul_right _ _), Nat.mul_div_cancel_left _ (pow_pos hl.pos n)]
+    rw [ite_eq_left (dvd_mul_right _ _), Nat.mul_div_cancel_left _ (pow_pos hl.pos n)]
   rw [hvp] at down
   set Ks : Ω := ∑ γ ∈ ((unitSet l (m + n)).filter fun γ : GL (Fin 2) (ZMod (l ^ (m + n))) => (((γ : Matrix (Fin 2) (Fin 2) (ZMod (l ^ (m + n)))).det.val : ℕ) : ZMod (l ^ m)) = z₀),
     kg ζ l (m + n) N (c : ℤ) (d : ℤ) w ((x.val : ℤ) * a₀ * (topT l (m + n) N : ℤ), 0) (a₀ * (topT l (m + n) N : ℤ), 0) γ (l ^ (m + n) * i) with hKs

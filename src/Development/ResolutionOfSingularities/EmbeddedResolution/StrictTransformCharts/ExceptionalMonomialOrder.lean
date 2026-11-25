@@ -122,14 +122,14 @@ private theorem exceptionalVar_of_mem (hU : IsAffineOpen U) (Z : X.IdealSheafDat
     (cc : EtaleChart p U m) (SS : Finset (Fin m)) (ss : Fin m) (j : Fin m)
     (h : j ∈ SS.erase ss) :
     exceptionalVar hU Z cc SS ss j = MvPolynomial.X ⟨j, h⟩ :=
-  dif_pos h
+  dite_eq_left h
 
 private theorem exceptionalVar_of_not_mem (hU : IsAffineOpen U) (Z : X.IdealSheafData)
     (cc : EtaleChart p U m) (SS : Finset (Fin m)) (ss : Fin m) (j : Fin m)
     (h : j ∉ SS.erase ss) :
     exceptionalVar hU Z cc SS ss j =
       MvPolynomial.C ((Ideal.Quotient.mk (Z.ideal ⟨U, hU⟩)) (cc.coord j)) :=
-  dif_neg h
+  dite_eq_right h
 
 private def exceptionalEvalHom (hU : IsAffineOpen U) (Z : X.IdealSheafData)
     (cc : EtaleChart p U m) (SS : Finset (Fin m)) (ss : Fin m) :
@@ -163,13 +163,13 @@ private theorem exceptionalEval_coordRelation (hU : IsAffineOpen U) (Z : X.Ideal
   have hsnot : s ∉ S.erase s := fun hc => (Finset.mem_erase.mp hc).1 rfl
   rw [hpr]
   by_cases h : i ∈ S ∧ i ≠ s
-  · rw [if_pos h, map_sub, map_mul, exceptionalEval_X, exceptionalEval_X, exceptionalEval_C,
+  · rw [ite_eq_left h, map_sub, map_mul, exceptionalEval_X, exceptionalEval_X, exceptionalEval_C,
       exceptionalVar_of_not_mem hU Z c S s s hsnot,
       mk_coord_eq_zero_of_mem hU Z hZ s hs, mk_coord_eq_zero_of_mem hU Z hZ i h.1, map_zero,
       mul_zero, sub_zero]
   · have hnot : i ∉ S.erase s := fun hc =>
       h ⟨(Finset.mem_erase.mp hc).2, (Finset.mem_erase.mp hc).1⟩
-    rw [if_neg h, map_sub, exceptionalEval_X, exceptionalEval_C,
+    rw [ite_eq_right h, map_sub, exceptionalEval_X, exceptionalEval_C,
       exceptionalVar_of_not_mem hU Z c S s i hnot, sub_self]
 
 private theorem exceptionalEval_eq_zero_of_mem_span_coordRelation (hU : IsAffineOpen U) (Z : X.IdealSheafData)
@@ -783,7 +783,7 @@ theorem ideal_le_comap_pow_succ_of_map_le_span_pow_mul {A B : Type*} [CommRing A
           (Ideal.Quotient.mk (Ideal.span (x '' (S : Set (Fin m)))) (cf g))) (fsel g₀) = 0 := by
       intro g hg hne
       have hne' : fsel g ≠ fsel g₀ := fun hh => hne (hinj g hg g₀ hg₀ hh)
-      rw [MvPolynomial.coeff_monomial, if_neg hne']
+      rw [MvPolynomial.coeff_monomial, ite_eq_right hne']
     rw [MvPolynomial.coeff_sum, Finset.sum_eq_single_of_mem g₀ hg₀ hstep,
       MvPolynomial.coeff_monomial]
     simp

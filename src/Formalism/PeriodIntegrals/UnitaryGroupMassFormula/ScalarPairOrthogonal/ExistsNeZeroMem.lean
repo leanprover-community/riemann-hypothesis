@@ -25,8 +25,7 @@ theorem ddS_ne_zero (D : D7) : ddS D ≠ 0 := by
 theorem exists_ne_zero_mem (D : D7) (j : ℤ) :
     ∃ x : D.host.E, x ≠ 0 ∧ x ∈ (ddS D ^ j : FractionalIdeal (nonZeroDivisors (𝓞 D.host.E)) D.host.E) := by
   have h : ddS D ^ j ≠ 0 := zpow_ne_zero j (ddS_ne_zero D)
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   apply h
   rw [FractionalIdeal.eq_zero_iff]
   intro x hx

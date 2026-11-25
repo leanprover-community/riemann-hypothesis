@@ -95,24 +95,6 @@ theorem adjoint_one : h.adjoint 1 = 1 := by
   intro y x
   rfl
 
-noncomputable def adjointEquiv (g : V ≃ₗ[E] V) : V ≃ₗ[E] V where
-  toLinearMap := h.adjoint g.toLinearMap
-  invFun := h.adjoint g.symm.toLinearMap
-  left_inv x := by
-    change (h.adjoint g.symm.toLinearMap * h.adjoint g.toLinearMap) x = x
-    rw [← adjoint_mul]
-    have : g.toLinearMap * g.symm.toLinearMap = 1 := by
-      ext y; simp
-    rw [this, adjoint_one]
-    rfl
-  right_inv x := by
-    change (h.adjoint g.toLinearMap * h.adjoint g.symm.toLinearMap) x = x
-    rw [← adjoint_mul]
-    have : g.symm.toLinearMap * g.toLinearMap = 1 := by
-      ext y; simp
-    rw [this, adjoint_one]
-    rfl
-
 end HermitianForm
 
 section Stable
@@ -128,17 +110,6 @@ def torusE (γ : V ≃ₗ[E] V) : Subgroup (V ≃ₗ[E] V) :=
 
 
 def TorusE (γ : V ≃ₗ[E] V) : Type _ := torusE γ
-
-namespace TorusE
-
-variable {γ : V ≃ₗ[E] V}
-
-
-
-
-variable [Fact (IsRegularSemisimple γ)]
-
-end TorusE
 
 end Stable
 

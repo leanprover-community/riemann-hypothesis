@@ -17,12 +17,6 @@ open Formalism.DivisionValues Formalism.EigenvalueLevelCeiling
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 
-namespace ColData
-
-variable {Bs : DefBase K} {Df : DefSide Bs} {Dc : DefCols Df} {Sp : SPer Dc} {S : IndefData Df} (C : ColData Dc Sp S)
-
-end ColData
-
 structure ConvFace (Bs : DefBase K) where
 
   primes : Prop
@@ -63,13 +57,6 @@ structure IndefPkg2 {Bs : DefBase K} (A : DefAmb Bs) (fc : DefSub A → DefFace 
   heckeB : HeckeAll cf toIndefPkg.core.base.toIndefData
 
   heckeC : HeckeAll cf toIndefPkg.core.cols.toIndefData
-
-namespace IndefPkg2
-
-variable {Bs : DefBase K} {A : DefAmb Bs} {fc : DefSub A → DefFace Bs} {cf : ConvFace Bs} {C CH : ℝ}
-  (P : IndefPkg2 A fc cf C CH)
-
-end IndefPkg2
 
 namespace IndefData
 
@@ -187,14 +174,5 @@ theorem intoDual (hD : DivIntoDualShift) (hG : LatticeGlue) (wf : Df.WF) (u : Dc
     exact (S.RR_spec hG wf).2 w
 
 end IndefColsR
-
-namespace IndefCoreR
-
-variable {Bs : DefBase K} {Df0 Df1 : DefSide Bs} {Dc : DefCols Df1} {Sp : SPer Dc} {N : IndefNum Bs}
-  (P : IndefCoreR Df0 Df1 Dc Sp N)
-
-include P
-
-end IndefCoreR
 
 end Formalism.L2.Indef

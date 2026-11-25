@@ -1,7 +1,0 @@
-module
-
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.FundSetMeasStatement
-public import ReciprocityTheory.L2DbarEstimates.LeviForms.Vanish
-public import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.MvDivIntegrand
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.InterpStatementPfH
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.InterpStatementPfJ

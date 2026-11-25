@@ -59,8 +59,6 @@ open ReciprocityTheory.ChartRestriction.G.Semi (IsAbelianScheme mulN)
 open GlobalTheory.DeRham (spOver spOver_comp)
 open scoped CategoryTheory.Obj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.AbelianPDiv
 
 open PDiv

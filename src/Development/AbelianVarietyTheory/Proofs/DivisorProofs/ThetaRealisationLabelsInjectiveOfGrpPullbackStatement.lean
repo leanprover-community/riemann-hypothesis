@@ -63,7 +63,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.TorRef GlobalTheory.PolDeg
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.AnForm.R GlobalTheory.ZH GlobalTheory.Poinc GlobalTheory.Poinc.Sep
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT ReciprocityTheory.ChartRestriction.G.DVR
 
 noncomputable section
@@ -74,7 +73,7 @@ theorem realPt_inj_of_grpPullback : ∀ {o₂ Ω₂ : Type} [CommRing o₂] [Fie
   intro o₂ Ω₂ _ _ _ S₂ ρ₂ T G _ f φ hφ x y hxy
   have hpt : ρ₂.pt x = ρ₂.pt y := by
     ext
-    exact hφ.1.hom_ext hxy (by simp only [Category.assoc, Over.w])
+    exact hφ.1.hom_ext hxy (by simp only [Over.w])
   have hzero : ρ₂.pt 0 = 1 := by
     have h := ρ₂.pt_add 0 0
     rw [add_zero] at h

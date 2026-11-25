@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameChangeUnderFieldMap
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsBlkCover
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockDiagonalMinorVanishing
@@ -15,20 +16,7 @@ noncomputable section
 namespace GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg
 
 theorem stepCols_ne_empty {N j : ℕ} (hj : j ≤ N) {i : Fin N} : stepCols N j i ≠ ∅ := by
-  intro e
-  by_cases hi : (i : ℕ) + 1 ≤ j
-  · have h0 : N - j < N := by omega
-    have : (⟨N - j, h0⟩ : Fin N) ∈ stepCols N j i := by
-      simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, if_pos hi]
-      omega
-    rw [e] at this
-    simp at this
-  · have h0 : 0 < N := by have := i.2; omega
-    have : (⟨0, h0⟩ : Fin N) ∈ stepCols N j i := by
-      simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, if_neg hi]
-      omega
-    rw [e] at this
-    simp at this
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.FV.stepCols_ne_empty <;> assumption
 
 theorem img_form : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (M : FlagModel y Ψ N j) (K' : Type) [Fintype K'] (ι' : K' → Type) [∀ k, Fintype (ι' k)] (Φ' : Type) [Field Φ'] (y' : (Σ k, ι' k) → Φ') (M' : FlagModel y' Ψ N j) (Cv : FlagCover M' M) (z : (Σ k, ι' k) → ℂ) (F' : FrameData ι' Ψ N M'.Ω M'.blk) (F : FrameData ι Ψ N M.Ω M.blk) (h : Ψ → Matrix (Fin N) (Fin N) ℂ), basePart M'.blk z ∈ mcPts (mCoordIdeal M'.x) → M'.IsFrame F' → M.IsFrame F → M'.GoodAt F' (mCoordIdeal (basePart M'.blk z)) → M.GoodAt F (mCoordIdeal (basePart M'.blk z ∘ Cv.v)) → (∀ τ, IsBlockDiag j (h τ)) → (∀ (p : Ψ × Fin N) (k' : K'), M'.blk p = some k' → ∃ a : ℂ, a ≠ 0 ∧ ∀ m' : ι' k', z ⟨k', m'⟩ = a * CovMap.LocImg.plk M' F' (basePart M'.blk z) p.2 ⟨k', m'⟩ (h p.1)) → ∀ (p : Ψ × Fin N) (k : K), M.blk p = some k → ∃ a : ℂ, a ≠ 0 ∧ ∀ m : ι k, CovMap.LocImg.img Cv F' F z ⟨k, m⟩ = a * CovMap.LocImg.plk M F (basePart M'.blk z ∘ Cv.v) p.2 ⟨k, m⟩ (Cv.trans F' F (basePart M'.blk z) p.1 * h p.1) := by
   intro K _ ι _ Φ _ y Ψ _ _ N j M K' _ ι' _ Φ' _ y' M' Cv z F' F h hb hF' hF hG' hG hh hyp p k hp
@@ -64,10 +52,10 @@ theorem img_form : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype 
     rw [e1]
     congr 1
     rw [Finset.sum_eq_single I']
-    · rw [hdelta I' I' hI hI, if_pos rfl, one_mul]
+    · rw [hdelta I' I' hI hI, ite_eq_left rfl, one_mul]
     · intro J _ hne
       by_cases hJ : IsStepRows N j p.2 J
-      · rw [hdelta I' J hI hJ, if_neg hne.symm, zero_mul]
+      · rw [hdelta I' J hI hJ, ite_eq_right hne.symm, zero_mul]
       · rw [hoff J hJ, mul_zero]
     · simp
   refine ⟨a, ha, fun m => ?_⟩
@@ -80,7 +68,7 @@ theorem img_form : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype 
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl fun I' _ => ?_
   by_cases hI : IsStepRows N j p.2 I'
-  · rw [if_pos hI, hread I' hI]; ring
-  · rw [if_neg hI, hoff I' hI, mul_zero, mul_zero]
+  · rw [ite_eq_left hI, hread I' hI]; ring
+  · rw [ite_eq_right hI, hoff I' hI, mul_zero, mul_zero]
 
 end GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg

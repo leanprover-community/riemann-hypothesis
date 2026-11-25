@@ -1,5 +1,6 @@
 module
 
+import Formalism.WachLatticeTwists.LagrangeExtensionCocycles.DualWByLettersExtended
 public import Mathlib.Basic.Real.Basic
 public import Mathlib.Data.Int.Interval
 public import Mathlib.NumberTheory.Padics.PadicVal.Basic
@@ -36,19 +37,7 @@ theorem padicValNat_factorial_add_sum (l : ℕ) [Fact l.Prime] (m S : ℕ) :
 
 theorem padicValNat_factorial_le_div_sub_one' (l : ℕ) [hp : Fact l.Prime] (n : ℕ) :
     (padicValNat l n.factorial : ℝ) ≤ n / ((l : ℝ) - 1) := by
-  have hl : 2 ≤ l := hp.out.two_le
-  have hlR : (0 : ℝ) < (l : ℝ) - 1 := by
-    have : (2 : ℝ) ≤ l := by exact_mod_cast hl
-    linarith
-  have key := Nat.Prime.sub_one_mul_multiplicity_factorial (n := n) hp.out
-  have hle : (l - 1) * padicValNat l n.factorial ≤ n := by
-    rw [Nat.padicValNat_def, key]; exact Nat.sub_le _ _
-  have hcast : ((l - 1 : ℕ) : ℝ) = (l : ℝ) - 1 := by
-    rw [Nat.cast_sub (by omega), Nat.cast_one]
-  have h' : ((l : ℝ) - 1) * (padicValNat l n.factorial : ℝ) ≤ n := by
-    rw [← hcast]; exact_mod_cast hle
-  rw [le_div_iff₀ hlR]
-  linarith [mul_comm ((l : ℝ) - 1) (padicValNat l n.factorial : ℝ)]
+  apply _root_.Formalism.RepresentationBoundsCohomology.N2.SumVal.val_factorial_le <;> assumption
 
 private theorem sum_Ico_int_eq_sum_range_add (a : ℤ) (S : ℕ) (f : ℤ → ℕ) :
     ∑ i ∈ Finset.Ico a (a + S), f i = ∑ j ∈ range S, f (a + j) := by

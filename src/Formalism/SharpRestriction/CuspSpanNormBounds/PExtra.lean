@@ -30,12 +30,6 @@ end Family
 
 end GroupS0
 
-section GroupS1
-
-open Formalism.MainNotions.S
-
-end GroupS1
-
 section GroupS5
 
 open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.UnitaryVolumeMass Formalism.MainNotions.S.Bridge

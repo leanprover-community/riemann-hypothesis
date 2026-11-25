@@ -34,9 +34,9 @@ theorem inv_superdiag {u : Matrix (Fin n) (Fin n) ℂ} (hu : u.BlockTriangular i
   have hw := inv_upper hu hud
   have hne : m1 ≠ m := fun e => by rw [e] at hm; omega
   have h1 : (u⁻¹ * u) m1 m = 0 := by
-    rw [Matrix.nonsing_inv_mul _ hdet, Matrix.one_apply, if_neg hne]
+    rw [Matrix.nonsing_inv_mul _ hdet, Matrix.one_apply, ite_eq_right hne]
   have h2 : (u⁻¹ * u) m1 m1 = 1 := by
-    rw [Matrix.nonsing_inv_mul _ hdet, Matrix.one_apply, if_pos rfl]
+    rw [Matrix.nonsing_inv_mul _ hdet, Matrix.one_apply, ite_eq_left rfl]
   rw [Matrix.mul_apply, Finset.sum_eq_single m1] at h2
   · rw [Matrix.mul_apply, Finset.sum_eq_add m1 m hne] at h1
     · rw [hud] at h2 h1
@@ -67,18 +67,18 @@ section Rel
 variable {Z u u' : Matrix (Fin n) (Fin n) ℂ} {σ : Fin n → Fin n} {ζ : Fin n → ℂ}
 
 theorem Z_row (hZ : ∀ i j, Z i j = if j = σ i then ζ i else 0) (i b : Fin n) (hb : b ≠ σ i) : Z i b = 0 := by
-  rw [hZ, if_neg hb]
+  rw [hZ, ite_eq_right hb]
 
 theorem Z_col (hσ : ∀ i, σ (σ i) = i) (hZ : ∀ i j, Z i j = if j = σ i then ζ i else 0) (a j : Fin n)
     (ha : a ≠ σ j) : Z a j = 0 := by
-  rw [hZ, if_neg]; intro e; apply ha; rw [e, hσ]
+  rw [hZ, ite_eq_right]; intro e; apply ha; rw [e, hσ]
 
 theorem Z_at (hZ : ∀ i j, Z i j = if j = σ i then ζ i else 0) (i : Fin n) : Z i (σ i) = ζ i := by
-  rw [hZ, if_pos rfl]
+  rw [hZ, ite_eq_left rfl]
 
 theorem Z_at' (hσ : ∀ i, σ (σ i) = i) (hZ : ∀ i j, Z i j = if j = σ i then ζ i else 0) (j : Fin n) :
     Z (σ j) j = ζ (σ j) := by
-  rw [hZ, if_pos (hσ j).symm]
+  rw [hZ, ite_eq_left (hσ j).symm]
 
 theorem relA (hσ : ∀ i, σ (σ i) = i) (hZ : ∀ i j, Z i j = if j = σ i then ζ i else 0)
     (hu : u.BlockTriangular id) (hud : ∀ i, u i i = 1) (hrel : uᴴ * Z * u' = Z) (i j : Fin n) :

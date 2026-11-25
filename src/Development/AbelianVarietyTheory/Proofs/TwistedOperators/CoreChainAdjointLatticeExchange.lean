@@ -99,11 +99,7 @@ theorem starLE_inv {I J : FI D} (hI : I ≠ 0) (hJ : J ≠ 0) (h : StarLE J I) :
   rw [e2] at hc
   rw [e1, hc', hc, star_mul', star_star]
 
-theorem AAbar_ne : D.host.AAbar ≠ 0 := by
-  intro h
-  have h1 := Formalism.IndefR.Fin.factPrincipalDatum D.R D.host
-  rw [h, mul_zero, zero_mul] at h1
-  exact zero_ne_one h1
+theorem AAbar_ne : D.host.AAbar ≠ 0 := GlobalTheory.Member.LatSelfDual.AAbar_ne_zero D
 
 theorem AA_ne : D.host.AA ≠ 0 := Formalism.L2.Pj.AA_ne_zero Formalism.IndefR.Fin.factPrincipalDatum D
 

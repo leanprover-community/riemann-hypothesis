@@ -58,13 +58,13 @@ theorem dg_uh (u : ℂ) (hu : star u * u = 1) : dg k r u ∈ UH (Hpk k r) := by
   by_cases hi : i = p0 k r <;> by_cases hj : j = p0 k r
   · subst hi
     subst hj
-    simp only [Pi.star_apply, if_true]
+    simp only [Pi.star_apply, ite_true]
     linear_combination (Hpk k r (p0 k r) (p0 k r)) * hu
   · subst hi
-    simp only [Pi.star_apply, if_true, if_neg hj, splitHermForm_firstMiddle_apply j hj, mul_zero, zero_mul]
+    simp only [Pi.star_apply, ite_true, ite_eq_right hj, splitHermForm_firstMiddle_apply j hj, mul_zero, zero_mul]
   · subst hj
-    simp only [Pi.star_apply, if_true, if_neg hi, splitHermForm_apply_firstMiddle i hi, mul_zero, zero_mul]
-  · simp only [Pi.star_apply, if_neg hi, if_neg hj, star_one, one_mul, mul_one]
+    simp only [Pi.star_apply, ite_true, ite_eq_right hi, splitHermForm_apply_firstMiddle i hi, mul_zero, zero_mul]
+  · simp only [Pi.star_apply, ite_eq_right hi, ite_eq_right hj, star_one, one_mul, mul_one]
 
 theorem dg_fix (u : ℂ) (e : Fin (2 * r + k + 1)) (he : e ≠ p0 k r) : dg k r u *ᵥ bvec e = bvec e := by
   funext x

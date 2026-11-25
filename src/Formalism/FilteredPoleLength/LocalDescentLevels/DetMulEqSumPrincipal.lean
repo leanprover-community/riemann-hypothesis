@@ -26,13 +26,6 @@ namespace Formalism.LatticeBaseChangeAlt
 open Finset Matrix
 open scoped RealInnerProductSpace BigOperators
 
-def CompletingSquare : Prop :=
-  ∀ (V : Type) [AddCommGroup V] [Module ℝ V] (B : LinearMap.BilinForm ℝ V),
-    (∀ x y, B x y = B y x) → (∀ x, 0 ≤ B x x) →
-    ∀ (q : ℝ), 0 < q → ∀ χ : V,
-      (∀ u : V, -(B χ χ / 2) / q ≤ B χ u + q * (B u u / 2)) ∧
-      B χ ((-(1 / q)) • χ) + q * (B ((-(1 / q)) • χ) ((-(1 / q)) • χ) / 2) = -(B χ χ / 2) / q
-
 def PackingCount : Prop :=
   ∀ (n : ℕ) (P : Finset (EuclideanSpace ℝ (Fin n))) (δ R : ℝ), 0 < δ → δ ≤ R →
     (∀ x ∈ P, ‖x‖ ≤ R) → (∀ x ∈ P, ∀ y ∈ P, x ≠ y → δ ≤ dist x y) →
@@ -89,8 +82,7 @@ theorem detPerturbNumeric : DetPerturbNumeric := by
   have h2 : Real.exp ((ρ:ℝ) * ((ρ : ℝ) ^ (-(3 : ℝ) / 2) / 10)) ≤ Real.exp (1/10) :=
     Real.exp_le_exp.2 hρx
   have h3 : Real.exp (1/10) ≤ 3/2 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have h4 : (3/2:ℝ)^10 < Real.exp (1/10) ^ 10 := pow_lt_pow_left₀ hc (by norm_num) (by norm_num)
     rw [← Real.exp_nat_mul] at h4
     norm_num at h4
@@ -211,7 +203,7 @@ theorem cauchyBinetMax : CauchyBinetMax := by
     intro S hS
     have hc := (Finset.mem_powersetCard.1 hS).2
     rw [principal_minor_factor M Mᴴ S hc]
-    simp only [g, dif_pos hc]
+    simp only [g, dite_eq_left hc]
     have e : Mᴴ.submatrix (S.orderEmbOfFin hc) id = (M.submatrix id (S.orderEmbOfFin hc))ᴴ := by
       ext a b
       simp [Matrix.conjTranspose_apply]
@@ -221,12 +213,11 @@ theorem cauchyBinetMax : CauchyBinetMax := by
   have h3 : (1 : ℝ) = ∑ S ∈ (Finset.univ : Finset (Fin N)).powersetCard i, g S := by
     have := h1.trans (Finset.sum_congr rfl h2)
     exact_mod_cast this
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hlt : ∀ S ∈ (Finset.univ : Finset (Fin N)).powersetCard i, g S < (2 : ℝ) ^ (-(r : ℝ)) := by
     intro S hS
     have hc := (Finset.mem_powersetCard.1 hS).2
-    simp only [g, dif_pos hc]
+    simp only [g, dite_eq_left hc]
     have h4 := hcon _ (S.orderEmbOfFin hc).strictMono
     have h5 : ‖(M.submatrix id (S.orderEmbOfFin hc)).det‖ ^ 2 < ((2 : ℝ) ^ (-(r : ℝ) / 2)) ^ 2 :=
       pow_lt_pow_left₀ h4 (norm_nonneg _) (by norm_num)

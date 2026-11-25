@@ -12,8 +12,6 @@ import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section
 
-set_option autoImplicit false
-
 namespace CycSplitWork
 
 open scoped BigOperators
@@ -179,8 +177,7 @@ theorem hasIrreducibleDecomposition_of_finrank_eq : ∀ (n : ℕ) (V : Type) [Ad
     have h2 : (⊥ : Submodule L V) = ⊤ := congrArg Subrepresentation.toSubmodule h
     exact bot_ne_top h2
   obtain ⟨W, hW0, hWT⟩ : ∃ W : Subrepresentation σ, W ≠ ⊥ ∧ W ≠ ⊤ := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hirr (show IsSimpleOrder (Subrepresentation σ) from
       { toNontrivial := ⟨⟨⊥, ⊤, hbt⟩⟩
         eq_bot_or_eq_top := fun W => by

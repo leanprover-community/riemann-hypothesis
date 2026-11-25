@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsAbelianSchemeOfProper
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.SlopeBoundSt
 import Mathlib.Tactic.Linter.HaveILetI
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaCore
@@ -19,17 +20,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 
 theorem isPrincipal_dim {K : Type} [Field K] {t : SAB H (Sp K)} (_h : IsPrincipal t) :
     ∃ d, SmoothOfRelativeDimension d t.G.hom := by
-  letI := t.grp
-  haveI hs : IsSemiAbelian t.G := t.semi
-  haveI : Smooth t.G.hom := hs.smooth
-  haveI : GeometricallyConnected t.G.hom := hs.geomConnected
-  have hc := t.G.hom.isConnected_preimage_singleton (IsLocalRing.closedPoint K)
-  have hu : t.G.hom ⁻¹' {IsLocalRing.closedPoint K} = Set.univ := by
-    ext y
-    simp only [Set.mem_preimage, Set.mem_univ, iff_true]
-    exact Subsingleton.elim _ _
-  haveI : PreconnectedSpace t.G.left := ⟨by rw [← hu]; exact hc.isPreconnected⟩
-  exact exists_dim_of_preconnected t.G.hom hc.nonempty.some
+  apply _root_.GlobalTheory.HeckePoint.exists_dim <;> assumption
 
 def pol {K : Type} [Field K] (t : SAB H (Sp K)) (h : IsPrincipal t) : Out.PolAV (Sp K) where
   A := t.G

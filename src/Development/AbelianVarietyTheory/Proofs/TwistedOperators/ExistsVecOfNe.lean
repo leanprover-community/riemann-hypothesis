@@ -56,9 +56,7 @@ variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.w
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
 
 theorem nP_pos' (F : Face D A) (b : Bool) : 0 < RealDat.nP F b := by
-  have hcard : 0 < Nat.card (F.lvl b).P := Nat.card_pos
-  unfold RealDat.nP
-  exact_mod_cast hcard
+  exact Formalism.IndefR.Links.RealDat.nP_pos b
 
 end Defs
 
@@ -113,8 +111,7 @@ theorem exists_vec_of_ne {M : DSModel V S} {T : MMap M} (hT : T ≠ 0) :
   classical
 
   obtain ⟨v, hv⟩ : ∃ v : M.Vec, T v ≠ 0 := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     exact hT (MultilinearMap.ext fun x => by simp [hno x])
   refine ⟨v, Finset.prod_ne_zero_iff.mpr fun τ _ => ?_⟩
   have hvt : v τ ≠ 0 := fun h0 => hv (T.map_coord_zero τ h0)

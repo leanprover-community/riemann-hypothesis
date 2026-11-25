@@ -3,7 +3,10 @@ module
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LefschetzSigmaSums.HeckeTraceSemi
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BtOrderIsHopfOrderNoetherian
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EigenvalueNormSqOfSimilitudeHermitianSignature
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SimultaneousEigenvectors.SimEig
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
+public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
+public import Mathlib.LinearAlgebra.Eigenspace.Basic
+public import Development.WeilBound.SimpleEigenvalues.SimpleEigenvalueExtension.SimEig
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.SphericalCoordinates.RootSumWOff
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ProjectiveAutomorphicHecke.PProjOne
 import Mathlib.Algebra.Order.Floor.Extended
@@ -47,7 +50,6 @@ import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsGDatumOneOneO
 import Mathlib.Tactic.ENatToNat
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Development.WeilBound.SimpleEigenvalues.SimpleEigenvalueExtension.SimEig
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.Tactic.Lemma
 import Mathlib.RingTheory.PiTensorProduct
@@ -1124,10 +1126,10 @@ theorem UpperTheory.Gal.LocalSmoothExtension.schWConj_of :
     rfl
   · have h0 : schW lam χ = 0 := by
       unfold schW
-      exact dif_neg h
+      exact dite_eq_right h
     have h1 : schW (conjWt σ lam) χ = 0 := by
       unfold schW
-      exact dif_neg h
+      exact dite_eq_right h
     rw [h0, h1, map_zero]
 end -- clump:auto
 end -- clump:auto
@@ -1244,7 +1246,7 @@ theorem UpperTheory.Gal.LocalSmoothExtension.traceSemi_of :
       rintro ⟨t, ⟨c⟩⟩
       obtain ⟨c', -⟩ := exists_basis (semi_symm h) c
       exact H ⟨_, ⟨c'.reindexFinsetRange⟩⟩
-    simp only [LinearMap.trace, dif_neg H, dif_neg H', LinearMap.zero_apply, map_zero]
+    simp only [LinearMap.trace, dite_eq_right H, dite_eq_right H', LinearMap.zero_apply, map_zero]
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LefschetzSigmaSums.PTraceSemi =====

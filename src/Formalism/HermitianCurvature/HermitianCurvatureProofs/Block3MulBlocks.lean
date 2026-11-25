@@ -642,7 +642,7 @@ lemma gN_le_of_EB {k r : ℕ} (M : B.Mat k r) {c : ℝ} (h : EB M c) (hc : 0 ≤
 
 lemma EB_bk {k j ρ : ℕ} {ι κ : Type*} (M : B.Mat k (j + ρ)) (f : ι → Ix k j ρ) (f' : κ → Ix k j ρ) :
     EB (bk M f f') (B.gN M) :=
-  fun a b => entry_le_gN M _ _
+  fun _ _ => entry_le_gN M _ _
 
 lemma wMat_mul_self (d : ℕ) : G.wMat d * G.wMat d = 1 := by
   ext i j

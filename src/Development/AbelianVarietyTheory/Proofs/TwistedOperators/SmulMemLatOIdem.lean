@@ -78,9 +78,7 @@ theorem symplO_eq_of_half {S T : HSp D} {e₀ e₁ : AE D} (h01 : e₀ * e₁ = 
 
 theorem smul_mem_latO_idem {S T : HSp D} (LS : Set (Fin S.rank → D.host.E)) (LT : Set (Fin T.rank → D.host.E))
     {a : AE D} (ha : a * a = a) {u : WO S T} (hu : u ∈ latO S T LS LT fun _ => True) :
-    a • u ∈ latO S T LS LT fun _ => True :=
-  GlobalTheory.LatticeStable.smul_mem_latO D S T _ _ _ a
-    (GlobalTheory.AdIdem.idempotent_mem_intAE D _ (by rw [← RingHom.map_mul, ha])) _ hu
+    a • u ∈ latO S T LS LT fun _ => True := GlobalTheory.SplitScalar.idem_smul_mem ha u hu
 
 end Gen
 

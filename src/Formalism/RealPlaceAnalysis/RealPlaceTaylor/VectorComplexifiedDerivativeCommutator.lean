@@ -80,7 +80,7 @@ theorem rdLinV_of (h : RdExtV) : RdLinV := by
     rw [hD.fderiv]
     simp
 
-theorem rdBracketV_of (h : RdExtV) (_hs : RdSmoothV) : RdBracketV := by
+theorem rdBracketV_of (h : RdExtV) : RdBracketV := by
   intro n ε E _ _ f X Y g hf hX hY hg
   letI : NormedAddCommGroup (Matrix (Fin n) (Fin n) ℂ →L[ℝ] E) :=
     ContinuousLinearMap.toNormedAddCommGroup

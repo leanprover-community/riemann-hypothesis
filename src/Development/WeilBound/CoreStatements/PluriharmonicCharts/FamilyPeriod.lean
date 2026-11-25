@@ -428,13 +428,13 @@ theorem exists_chart {Xo : Moduli D l} {c : Coeff l} (Y : Model Xo c (algebraMap
   obtain ⟨mk, -⟩ := GlobalTheory.ObjMaps.exists_sab_comp Y.m0.toSABMap mU
 
   let p' : (Fin n → ℂ) → (Sp ℂ ⟶ X') := fun u => if u ∈ Metric.ball (0 : Fin n → ℂ) 1 then p u else p 0
-  have hp'e : ∀ u ∈ Metric.ball (0 : Fin n → ℂ) 1, p' u = p u := fun u hu => if_pos hu
+  have hp'e : ∀ u ∈ Metric.ball (0 : Fin n → ℂ) 1, p' u = p u := fun u hu => ite_eq_left hu
   have hp' : IsHolTo (Metric.ball (0 : Fin n → ℂ) 1) p' := GlobalTheory.LocLift.isHolTo_congr hp hp'e
   have hs' : ∀ u, (p' u ≫ jx) ≫ Y.s = spMap τ ≫ spMap (algebraMap (𝓞 c.F) c.F) := fun u => by
     have : p' u ≫ jx ≫ Y.s = spMap (τ.comp (algebraMap (𝓞 c.F) c.F)) := by
       by_cases hu : u ∈ Metric.ball (0 : Fin n → ℂ) 1
       · rw [hp'e u hu]; exact hs u hu
-      · simp only [p', if_neg hu]; simpa [h0] using hs 0 h0
+      · simp only [p', ite_eq_right hu]; simpa [h0] using hs 0 h0
     rw [Category.assoc, this]
     simp [spMap]
   let q : (Fin n → ℂ) → (Sp ℂ ⟶ pullback Y.s (spMap (algebraMap (𝓞 c.F) c.F))) :=
@@ -717,7 +717,7 @@ theorem model_periods {Xo : Moduli D l} {c : Coeff l} {Y : Model Xo c (algebraMa
     fun a s hs t => ?_⟩, fun v hv => ?_⟩
   · obtain ⟨Hm, hR, hH⟩ := (hall u hu).2.2.1
     obtain ⟨w, hw1, hw2⟩ := hw u
-    have hg := GlobalTheory.T.chart_lattice_tangent_coordinates E H D l Xo _ n 0 C 𝔐.X 𝔐.t _ mX Ω 𝔐.ξ 𝔐.Li 𝔐.M r (fun k => b (f k))
+    have hg := GlobalTheory.CompanionTheory.Ar.RiemGram.gramAt_of_isRiem E H D l Xo _ n 0 C 𝔐.X 𝔐.t _ mX Ω 𝔐.ξ 𝔐.Li 𝔐.M r (fun k => b (f k))
       (fun k => x (ea (f k))) u Hm (fun k => w (f k)) hR (fun k => hw1 _) (fun k => hw2 _)
     rw [← hpt u (hsub hu)]
     convert hg using 4 with _ i' _ j'

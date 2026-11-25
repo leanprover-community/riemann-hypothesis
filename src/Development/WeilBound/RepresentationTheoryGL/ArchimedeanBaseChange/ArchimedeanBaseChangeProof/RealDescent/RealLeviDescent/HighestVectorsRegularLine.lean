@@ -16,22 +16,6 @@ namespace PositivityTheory.RgBcC.RealD
 open PositivityTheory.RgTw (Mat G th IsThetaOp)
 open PositivityTheory.RgBcC.Real
 
-def Bridge : Prop :=
-  ∀ (n : ℕ) (lam : Fin n → ℤ) (U : Type) [NormedAddCommGroup U] [InnerProductSpace ℂ U] [CompleteSpace U]
-    (π : G n →* (U →L[ℂ] U)) (A : U →L[ℂ] U), IsUnitaryRep π → IsTopIrreducible π → IsThetaOp n π A → A * A = 1 →
-    HasInf π (infOf lam) → ∀ (E : KMod n) (T : E.V →L[ℂ] E.V), (∀ k, T * E.ρ k = E.ρ k * T) →
-      ∃ (V : Submodule ℂ U) (E1 E2 : Fin n → Fin n → Module.End ℂ V)
-        (σ : Matrix.unitaryGroup (Fin n) ℂ →* (V →ₗ[ℂ] V)) (A' : V →ₗ[ℂ] V),
-        IsCoreMod (infOf lam) E1 E2 σ A' ∧ FiniteDimensional ℂ (invA σ E) ∧ (invSp π E ≠ ⊥ → invA σ E ≠ ⊥) ∧
-          trInv π E A T = trOn (invA σ E) (flipA E A' T)
-
-def Core : Prop :=
-  ∀ (n : ℕ) (lam : Fin n → ℤ), StrictAnti lam → ∀ (E : KMod n) (T : E.V →L[ℂ] E.V), IsLefK lam E T →
-    ∀ (V : Type) [NormedAddCommGroup V] [InnerProductSpace ℂ V] (E1 E2 : Fin n → Fin n → Module.End ℂ V)
-      (σ : Matrix.unitaryGroup (Fin n) ℂ →* (V →ₗ[ℂ] V)) (A : V →ₗ[ℂ] V), IsCoreMod (infOf lam) E1 E2 σ A →
-      FiniteDimensional ℂ (invA σ E) → invA σ E ≠ ⊥ →
-        ∃ s : ℂ, (s = 1 ∨ s = -1) ∧ trOn (invA σ E) (flipA E A T) = s * 2 ^ n
-
 def SignOne : Prop :=
   ∀ (V : Type) [AddCommGroup V] [Module ℂ V] (S : Submodule ℂ V) (A : V →ₗ[ℂ] V), A * A = 1 → (∀ x ∈ S, A x ∈ S) →
     Module.finrank ℂ S = 1 → ∃ s : ℂ, (s = 1 ∨ s = -1) ∧ trOn S A = s

@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.DecompB
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.TraceFormulaC
 import Mathlib.Tactic.TypeStar
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Closure
@@ -20,40 +21,8 @@ variable {n : ℕ}
 theorem tfg_gen {M : Type*} [AddCommGroup M] [Module ℂ M] (dual : Bool)
     (E : Fin n → Fin n → Module.End ℂ M) (V : Submodule ℂ M) (S : Submodule ℂ (Fin n → M))
     (hV : tensSub V ≤ S) (hS : ∀ a b, ∀ f ∈ S, tensF dual E a b f ∈ S) : tensSub (genSub E V) ≤ S := by
-  let T : Submodule ℂ M := ⨅ c, S.comap (LinearMap.single ℂ (fun _ : Fin n => M) c)
-  have hT : ∀ m, m ∈ T ↔ ∀ c, (Pi.single c m : Fin n → M) ∈ S := fun m => by simp [T, Submodule.mem_iInf]
-  have hle : genSub E V ≤ T := sInf_le ⟨fun v hv => (hT v).2 fun c => hV (tset_mem.mpr fun d => by
-      by_cases h : d = c
-      · subst h; simpa using hv
-      · simp [h]),
-    fun a b m hm => (hT _).2 fun c => by
-      have hm' := (hT m).1 hm
-      cases dual
-      · have e : (Pi.single c (E a b m) : Fin n → M) =
-            tensF false E a b (Pi.single c m) - if b = c then Pi.single a m else 0 := by
-          funext d
-          simp only [tensF, cond_false, Pi.sub_apply, tensV_coord]
-          by_cases h1 : d = c <;> by_cases h2 : d = a <;> by_cases h3 : b = c <;>
-            simp_all
-        rw [e]
-        refine S.sub_mem (hS a b _ (hm' c)) ?_
-        split_ifs
-        · exact hm' a
-        · exact S.zero_mem
-      · have e : (Pi.single c (E a b m) : Fin n → M) =
-            tensF true E a b (Pi.single c m) + if a = c then Pi.single b m else 0 := by
-          funext d
-          simp only [tensF, cond_true, Pi.add_apply, tensVd_coord]
-          by_cases h1 : d = c <;> by_cases h2 : d = b <;> by_cases h3 : a = c <;>
-            simp_all
-        rw [e]
-        refine S.add_mem (hS a b _ (hm' c)) ?_
-        split_ifs
-        · exact hm' b
-        · exact S.zero_mem⟩
-  intro f hf
-  rw [← Finset.univ_sum_single f]
-  exact S.sum_mem fun c _ => (hT _).1 (hle (tset_mem.mp hf c)) c
+  intros
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.dc_tens_gen_le <;> assumption
 
 theorem tfg_real {X : Type*} [NormedAddCommGroup X] [InnerProductSpace ℂ X] {ε : Fin n → Bool}
     {E : Fin n → Fin n → Module.End ℂ X} (hU : IsInfUnitary ε E) {c : ℂ} {v : X}

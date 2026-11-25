@@ -888,10 +888,10 @@ theorem frameMat_unitary (k : ℕ) (u : Fin (k + 1) → ℂ)
   | last =>
     cases j using Fin.lastCases with
     | last =>
-      simp only [frameMat_ll, frameMat_cl, Matrix.diagonal_apply, hne', if_true, if_false, mul_one]
+      simp only [frameMat_ll, frameMat_cl, Matrix.diagonal_apply, hne', ite_true, ite_false, mul_one]
       rw [hu]; ring
     | cast j =>
-      simp only [frameMat_ll, frameMat_cl, frameMat_lc, frameMat_cc, Matrix.diagonal_apply, hne, hne', if_true, if_false, mul_one,
+      simp only [frameMat_ll, frameMat_cl, frameMat_lc, frameMat_cc, Matrix.diagonal_apply, hne, hne', ite_true, ite_false, mul_one,
         ← ht, ← hn, ← hc, ← hm]
       have hpt : ∀ x : Fin k, star (u x.castSucc) * ((if x = j then (1 : ℂ) else 0) +
           u x.castSucc * star (u j.castSucc) * (c : ℂ)) =
@@ -899,13 +899,13 @@ theorem frameMat_unitary (k : ℕ) (u : Fin (k + 1) → ℂ)
             (star (u j.castSucc) * (c : ℂ)) := by
         intro x; split_ifs with h <;> [subst h; skip] <;> ring
       rw [Finset.sum_congr rfl (fun x _ => hpt x)]
-      simp only [Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, if_true, ← Finset.sum_mul, hu]
+      simp only [Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, ite_true, ← Finset.sum_mul, hu]
       linear_combination (star (u j.castSucc)) * key2 +
         (star (u j.castSucc) * (c : ℂ) - star (u j.castSucc) * (m : ℂ)) * ht2
   | cast i =>
     cases j using Fin.lastCases with
     | last =>
-      simp only [frameMat_ll, frameMat_cl, frameMat_lc, frameMat_cc, Matrix.diagonal_apply, hne', if_true, if_false, mul_one,
+      simp only [frameMat_ll, frameMat_cl, frameMat_lc, frameMat_cc, Matrix.diagonal_apply, hne', ite_true, ite_false, mul_one,
         ← ht, ← hn, ← hc, ← hm]
       have hpt : ∀ x : Fin k, star ((if x = i then (1 : ℂ) else 0) +
           u x.castSucc * star (u i.castSucc) * (c : ℂ)) * u x.castSucc =
@@ -914,12 +914,12 @@ theorem frameMat_unitary (k : ℕ) (u : Fin (k + 1) → ℂ)
         intro x; split_ifs with h <;> [subst h; skip] <;> simp only [star_add, star_mul, frameMat_star_ofReal, star_star,
           star_one, star_zero] <;> ring
       rw [Finset.sum_congr rfl (fun x _ => hpt x)]
-      simp only [Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, if_true, ← Finset.sum_mul, hu,
+      simp only [Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, ite_true, ← Finset.sum_mul, hu,
         star_mul, frameMat_star_ofReal, star_star]
       linear_combination (u i.castSucc) * key2 +
         (u i.castSucc * (c : ℂ) - u i.castSucc * (m : ℂ)) * ht2
     | cast j =>
-      simp only [frameMat_lc, frameMat_cc, Matrix.diagonal_apply, hne', if_true, if_false, mul_one,
+      simp only [frameMat_lc, frameMat_cc, Matrix.diagonal_apply, hne', ite_true, ite_false, mul_one,
         Fin.castSucc_inj, ← ht, ← hn, ← hc, ← hm]
       have hpt : ∀ x : Fin k, star ((if x = i then (1 : ℂ) else 0) +
           u x.castSucc * star (u i.castSucc) * (c : ℂ)) * ((if x = j then (1 : ℂ) else 0) +
@@ -931,7 +931,7 @@ theorem frameMat_unitary (k : ℕ) (u : Fin (k + 1) → ℂ)
           | exact (‹¬ _ = _› rfl).elim
           | (simp only [star_add, star_mul, frameMat_star_ofReal, star_star, star_one, star_zero]; ring)
       rw [Finset.sum_congr rfl (fun x _ => hpt x)]
-      simp only [Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, if_true, ← Finset.sum_mul, hu,
+      simp only [Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, ite_true, ← Finset.sum_mul, hu,
         star_mul, frameMat_star_ofReal, star_star]
       linear_combination (u i.castSucc * star (u j.castSucc)) * key +
         (u i.castSucc * star (u j.castSucc) * (c : ℂ) ^ 2 - u i.castSucc * star (u j.castSucc) * (m : ℂ) ^ 2) * ht2
@@ -945,13 +945,13 @@ theorem frame_Hpk_mul (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) (hz : inWb k
     Hpk k r i j * z j = if j = i then frameCoef k r i * z i else 0 := by
   by_cases hij : j = i
   · subst hij
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     by_cases hj : j.val < r ∨ r + k < j.val
     · rw [hz j hj, mul_zero, mul_zero]
     · congr 1
       unfold Hpk frameCoef
       split_ifs <;> first | rfl | (exfalso; omega)
-  · rw [if_neg hij]
+  · rw [ite_eq_right hij]
     by_cases hj : j.val < r ∨ r + k < j.val
     · rw [hz j hj, mul_zero]
     · have hv : j.val ≠ i.val := fun h => hij (Fin.ext h)
@@ -1041,7 +1041,7 @@ theorem stFrame : StFrame := by
   · have hlast : (wI k r (Fin.last k)).val = r + k := by simp [frame_wI_val]
     funext i
     simp only [bvec, Matrix.mulVec, dotProduct, Pi.single_apply, mul_ite, mul_one, mul_zero,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true, Pi.smul_apply, smul_eq_mul]
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true, Pi.smul_apply, smul_eq_mul]
     unfold embWb
     by_cases hi : r ≤ i.val ∧ i.val ≤ r + k
     · rw [dite_eq_left ⟨hi, by omega, by omega⟩]
@@ -1054,7 +1054,7 @@ theorem stFrame : StFrame := by
       have hne : ¬ (i = wI k r (Fin.last k) ∧ ¬ (r ≤ i.val ∧ i.val ≤ r + k)) := by
         rintro ⟨rfl, h⟩
         exact h ⟨by omega, by omega⟩
-      rw [if_neg hne, hz i (by omega), mul_zero]
+      rw [ite_eq_right hne, hz i (by omega), mul_zero]
 
 end ReciprocityTheory.ChartRestriction.DS.Mult1
 end -- clump:auto
@@ -1119,8 +1119,7 @@ theorem inner_sig_left (X : SigData k r) (hG : IsClosedSubgroup (GV k r)) {h : M
 
 theorem exists_inner_ne (X : SigData k r) (hG : IsClosedSubgroup (GV k r)) (v : X.Hs) (hv : v ≠ 0) :
     ∃ g ∈ GV k r, ⟪v, X.σ g X.w⟫_ℂ ≠ 0 := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   let S : Submodule ℂ X.Hs :=
     { carrier := {u | ∀ g ∈ GV k r, ⟪v, X.σ g u⟫_ℂ = 0}
       add_mem' := by
@@ -1349,7 +1348,7 @@ theorem rankOneMinors : RankOneMinors := by
       congr 1
       exact Complex.conj_ofReal _
     rw [hst, div_mul_div_comm, hs, ← hk0, hmin x x0 x0 y, mul_div_assoc, div_self hx0, mul_one]
-  · push_neg at h
+  · push Not at h
     refine ⟨fun _ => 0, fun x y => ?_⟩
     simp only [zero_mul]
     have h1 := hmin x y y x
@@ -1652,7 +1651,7 @@ theorem stSymBeta (h : UnitaryGroupStructuralFacts) : StSymBeta := by
   have hle : Tz k r D.z * Tz k r D.z ≤ Complex.normSq q.2 := by
     by_contra hc
     apply hw
-    rw [bcWeight, hD.z_eq, if_neg hc]
+    rw [bcWeight, hD.z_eq, ite_eq_right hc]
   have hlt : Tz k r D.z * Tz k r D.z < Complex.normSq q.2 :=
     lt_of_le_of_ne hle (fun e => hq2 e.symm)
   have hEf : Ef D (scalF Wp f) q ≠ ⊤ := (hq hQ).2.ne

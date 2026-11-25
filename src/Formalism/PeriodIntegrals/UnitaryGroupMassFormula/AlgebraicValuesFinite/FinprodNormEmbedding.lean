@@ -4,6 +4,7 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AlgebraicValuesF
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.SplitOA
 
 @[expose] public section
 
@@ -27,12 +28,7 @@ theorem toNNReal_exp {e : NNReal} (he : e ≠ 0) (n : ℤ) :
     | rfl
 
 theorem prod_norm_emb (x : L) : ∏ φ : L →+* ℂ, ‖φ x‖ = |((Algebra.norm ℚ x : ℚ) : ℝ)| := by
-  calc ∏ φ : L →+* ℂ, ‖φ x‖ = ∏ σ : L →ₐ[ℚ] ℂ, ‖σ x‖ :=
-        Fintype.prod_equiv (RingHom.equivRatAlgHom L ℂ) _ _ fun _ => rfl
-    _ = ‖∏ σ : L →ₐ[ℚ] ℂ, σ x‖ := (norm_prod _ _).symm
-    _ = ‖algebraMap ℚ ℂ (Algebra.norm ℚ x)‖ := by rw [Algebra.norm_eq_prod_embeddings ℚ ℂ x]
-    _ = |((Algebra.norm ℚ x : ℚ) : ℝ)| := by
-      rw [eq_ratCast, ← Complex.ofReal_ratCast, Complex.norm_real, Real.norm_eq_abs]
+  apply _root_.ReciprocityTheory.ChartRestriction.G.I2.so_prod_norm <;> assumption
 
 theorem finprod_norm_embedding (k : Lˣ) (T : Finset (HeightOneSpectrum (𝓞 L)))
     (hT : ∀ v, v ∉ T → ordF v k = 0) :

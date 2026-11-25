@@ -106,7 +106,6 @@ theorem cl_sd_ratio_le (a b : ℕ) (θ : ℝ) (hθ : 0 ≤ θ) (n : ℕ)
     have ht := h (n + 1) (by omega) le_rfl
     push_cast at ht
     have ha0 : (0 : ℝ) ≤ (sd n a : ℝ) := Nat.cast_nonneg _
-    have hb0 : (0 : ℝ) ≤ (sd n b : ℝ) := Nat.cast_nonneg _
     refine le_of_mul_le_mul_right ?_ hn
     calc (sd (n + 1) a : ℝ) * ((n : ℝ) + 1) = ((a : ℝ) + ((n : ℝ) + 1)) * (sd n a : ℝ) := hs.symm
       _ ≤ (θ * ((b : ℝ) + ((n : ℝ) + 1))) * (θ ^ n * (sd n b : ℝ)) :=
@@ -153,11 +152,6 @@ theorem cl_hockey_low (m B : ℕ) (La : ℝ) (hm : 4 ≤ m) (hB : m + 1 ≤ B) (
   have hcastBL : ((B - (J + 1) : ℕ) : ℝ) = (B : ℝ) - ((J : ℝ) + 1) := by
     rw [Nat.cast_sub hJB]; push_cast; ring
   set θ : ℝ := 1 - ((J : ℝ) + 1) / ((B : ℝ) + m) with hθ
-  have hLB : (J : ℝ) + 1 ≤ (B : ℝ) + m := by
-    have : ((J + 1 : ℕ) : ℝ) ≤ (B : ℝ) := by exact_mod_cast hJB
-    push_cast at this
-    have : (0 : ℝ) ≤ m := Nat.cast_nonneg _
-    linarith
   have hθ0 : 0 ≤ θ := by
     rw [hθ, sub_nonneg, div_le_iff₀ hBm]; linarith
   have hratio : (sd m (B - (J + 1)) : ℝ) ≤ θ ^ m * (sd m B : ℝ) := by
@@ -165,10 +159,8 @@ theorem cl_hockey_low (m B : ℕ) (La : ℝ) (hm : 4 ≤ m) (hB : m + 1 ≤ B) (
     intro t _ htm
     rw [hcastBL]
     have htm' : (t : ℝ) ≤ m := by exact_mod_cast htm
-    have ht0 : (0 : ℝ) ≤ t := Nat.cast_nonneg _
     have e : θ * ((B : ℝ) + t) = ((B : ℝ) + t) - ((J : ℝ) + 1) * ((B : ℝ) + t) / ((B : ℝ) + m) := by
       rw [hθ]; ring
-    have hJ0 : (0 : ℝ) ≤ (J : ℝ) + 1 := by positivity
     have : ((J : ℝ) + 1) * ((B : ℝ) + t) / ((B : ℝ) + m) ≤ (J : ℝ) + 1 := by
       rw [div_le_iff₀ hBm]; nlinarith
     rw [e]; linarith
@@ -183,7 +175,6 @@ theorem cl_hockey_low (m B : ℕ) (La : ℝ) (hm : 4 ≤ m) (hB : m + 1 ≤ B) (
     have hq : ((m : ℝ) + 1) * ((B : ℝ) + m) ≤ 3 * m * B := by
       nlinarith [mul_nonneg (sub_nonneg.mpr hBr) (by linarith : (0 : ℝ) ≤ 2 * m - 1),
         mul_nonneg (by linarith : (0 : ℝ) ≤ m + 1) (by linarith : (0 : ℝ) ≤ m - 1)]
-    have hm0 : (0 : ℝ) ≤ m := Nat.cast_nonneg _
     have key : La * ((B : ℝ) + m) * ((m : ℝ) + 1) ≤ 3 * m * ((J : ℝ) + 1) * ((m : ℝ) + 1) := by
       calc La * ((B : ℝ) + m) * ((m : ℝ) + 1) = La * (((m : ℝ) + 1) * ((B : ℝ) + m)) := by ring
         _ ≤ La * (3 * m * B) := mul_le_mul_of_nonneg_left hq hLa0
@@ -256,7 +247,6 @@ theorem countLow_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ}
   have hs := hstd X hD hH hc
   have hkdef : X.k = (X.m : ℝ) + 1 := rfl
   have hk5 := hs.k5
-  have hk0 : 0 < X.k := by linarith
   have hLa1 := hs.La1
   have hLa0 : 0 ≤ X.La C0 := by linarith
   have hm4 : 4 ≤ X.m := by
@@ -363,9 +353,6 @@ theorem countLow_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ}
       (clC C0 CE1 CE2 X j rz ry) : ℚ) : ℝ) with hKS
   set Hr : ℝ := ((∑ jp ∈ range (⌊X.La C0 * ((X.seg C0 CE1 CE2 j).bPlus : ℝ) / ((X.m : ℝ) + 1)⌋₊ + 1),
         sdXi X.m ((X.seg C0 CE1 CE2 j).bPlus - jp) : ℕ) : ℝ) with hHr
-  have hP0 : (0 : ℝ) ≤ (Pi : ℝ) := Nat.cast_nonneg _
-  have hy0 : (0 : ℝ) ≤ (sd X.m (X.seg C0 CE1 CE2 j).bPlus : ℝ) := Nat.cast_nonneg _
-  have hx1 : (0 : ℝ) ≤ (sd X.m (A0n - ⌈m⌉₊) : ℝ) := Nat.cast_nonneg _
   have hKS0 : 0 ≤ KS := le_trans (by positivity) t1
   calc a1 * a2 * (1 - (X.m : ℝ) * (⌈m⌉₊ : ℝ) / (A0n : ℝ)) *
         ((sd X.m A0n : ℝ) * (Pi : ℝ) * (sd X.m (X.seg C0 CE1 CE2 j).bPlus : ℝ))
@@ -420,8 +407,8 @@ theorem cl_prod_le {α τ : Type*} (P : α → Prop) [DecidablePred P] (w : α �
       intro a
       rw [← Finset.mem_coe, hSe, Function.mem_support]
       constructor
-      · intro h; by_contra hp; exact h (if_neg hp)
-      · intro hp; rw [if_pos hp]; exact (hw a hp).ne'
+      · intro h; by_contra hp; exact h (ite_eq_right hp)
+      · intro hp; rw [ite_eq_left hp]; exact (hw a hp).ne'
     have mem : ∀ x : α × ℕ, x ∈ S ×ˢ range (J + 1) → P x.1 ∧ x.2 ≤ J := by
       intro x hx
       rw [Finset.mem_product, Finset.mem_range] at hx
@@ -437,7 +424,7 @@ theorem cl_prod_le {α τ : Type*} (P : α → Prop) [DecidablePred P] (w : α �
       refine Finset.sum_congr rfl (fun a ha => Finset.sum_congr rfl (fun jj hj => ?_))
       have hp := (hmemS a).mp ha
       have hjj : jj ≤ J := by have := Finset.mem_range.mp hj; omega
-      rw [if_pos hp, hval (a, jj) hp hjj]
+      rw [ite_eq_left hp, hval (a, jj) hp hjj]
     rw [← himg]
     apply Finset.sum_le_sum_of_subset_of_nonneg
     · intro t ht
@@ -473,7 +460,7 @@ theorem cl_Fs_finite {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ} (hCD : ChainDimAt)
     by_contra hn
     apply hz
     unfold Fs
-    rw [if_neg hn]
+    rw [ite_eq_right hn]
   exact (finsum_le_of_inj (Fs C0 CE1 CE2 X j m rz ry)
     (Gt (r := X.m) (mmLetters C0 CE1 CE2 X j rz ry) (X.seg C0 CE1 CE2 j).bPlus) Φ
     (Gt_nonneg _ _) (Gt_support_finite hCD _ _) (hinj.mono (fun _ hz => hsupp _ hz)) (by
@@ -482,7 +469,7 @@ theorem cl_Fs_finite {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ} (hCD : ChainDimAt)
       obtain ⟨h1, h2, h3, h4⟩ := hΦ z hz'
       have hjp : z.2.1.2 ≤ (X.seg C0 CE1 CE2 j).bPlus := le_trans hz'.2.1.2 (min_le_right _ _)
       unfold Fs Gt
-      rw [if_pos hz', if_pos ⟨h1, h2, by rw [h4]; exact hjp⟩, h3, h4])).1
+      rw [ite_eq_left hz', ite_eq_left ⟨h1, h2, by rw [h4]; exact hjp⟩, h3, h4])).1
 
 theorem match_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ} (hCD : ChainDimAt)
     (hMU : MatchUpAt C0 CYb Cde Ck CD Cb CE1 CE2 Cc) (hML : MatchLowAt C0 CYb Cde Ck CD Cb CE1 CE2 Cc) :
@@ -520,7 +507,7 @@ theorem match_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ} (hCD : ChainDimAt)
         unfold TgtOK; exact ⟨hp, hj⟩
       obtain ⟨hs, hl, hjp⟩ := hΨ (t.1.1, t.1.2, t.2) hok
       unfold Fs
-      rw [if_pos hs, hl, hjp])
+      rw [ite_eq_left hs, hl, hjp])
   unfold keptPairSum
   convert key
 

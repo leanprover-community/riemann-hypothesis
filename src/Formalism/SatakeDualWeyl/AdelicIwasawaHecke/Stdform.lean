@@ -96,7 +96,7 @@ theorem stdform_psd (τ : E →+* ℂ) (M : Matrix n n ℂ) (hM : ∀ i j, ∃ e
       rintro _ ⟨v, rfl⟩
       exact hall fun i => ((v i).1 : E) + ((v i).2 : E) * e0
     exact hsub (by rw [h2.closure_range]; trivial)
-  · push_neg at hre
+  · push Not at hre
     have hM' : ∀ i j, (M i j).im = 0 := fun i j => by
       obtain ⟨e, he⟩ := hM i j
       rw [← he]
@@ -184,10 +184,6 @@ end Inv
 section Sign
 
 variable {n : Type} [Fintype n] [DecidableEq n]
-
-private lemma re_conj_mul_self_eq_normSq (z : ℂ) : (starRingEnd ℂ z * z).re = Complex.normSq z := by
-  rw [Complex.mul_re, Complex.conj_re, Complex.conj_im, Complex.normSq_apply]
-  ring
 
 theorem stdform_sig_diag {p q : ℕ} (M : Matrix n n ℂ) (e : n ≃ Fin p ⊕ Fin q)
     (P : GL (Fin p ⊕ Fin q) ℂ)

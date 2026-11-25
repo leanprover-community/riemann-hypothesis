@@ -85,7 +85,6 @@ section -- clump:auto
 
 open NumberField
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum MeasureTheory Matrix ValuativeRel IsLocalRing GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.LatPair GlobalTheory.SplitWeil GlobalTheory.SeeSaw GlobalTheory.FinPl
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open scoped TensorProduct nonZeroDivisors
 
 noncomputable section
@@ -269,7 +268,6 @@ section -- clump:auto
 
 open NumberField
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum MeasureTheory Matrix ValuativeRel IsLocalRing GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.LatPair GlobalTheory.SplitWeil GlobalTheory.SeeSaw GlobalTheory.FinPl
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 open IsDedekindDomain
@@ -314,7 +312,7 @@ theorem idem_mul_incA (P : Pl D → Prop) (y : D.host.E) :
   rw [mul_comm, idem, GlobalTheory.IdVGen.incA_mul_tmul, mul_one]
 
 theorem idem_mul_incA_mem {𝔞 : FI D} {c : D.host.E} (hc : c ∈ 𝔞) (v : Pl D) : idem D (· = v) * incA D c ∈ idV 𝔞 v :=
-  AddSubgroup.subset_closure ⟨ePl D (· = v), ePl_int _, fun w hw => by rw [evalV_ePl, if_neg hw], c, hc,
+  AddSubgroup.subset_closure ⟨ePl D (· = v), ePl_int _, fun w hw => by rw [evalV_ePl, ite_eq_right hw], c, hc,
     idem_mul_incA _ c⟩
 
 theorem mul_incA_mem {v : Pl D} {𝔞 : FI D} {y : D.host.E}
@@ -378,8 +376,8 @@ theorem exists_integer_of_forall (y : D.host.E) (h : ∀ v : Pl D, idem D (· = 
     · refine AddSubgroup.subset_closure ⟨(t : D.host.F)⁻¹ • ePl D (· ∉ hfin.toFinset), fun w => ?_, b, ?_⟩
       · rw [map_smul, evalV_ePl]
         by_cases hw : w ∈ hfin.toFinset
-        · rw [if_neg (not_not.2 hw), smul_zero]; exact zero_mem _
-        · rw [if_pos hw, Algebra.smul_def, mul_one]
+        · rw [ite_eq_right (not_not.2 hw), smul_zero]; exact zero_mem _
+        · rw [ite_eq_left hw, Algebra.smul_def, mul_one]
           refine GlobalTheory.IdVGen.inv_mem_integers fun hm => hw ?_
           rw [Set.Finite.mem_toFinset, Set.mem_setOf_eq, Ideal.dvd_span_singleton]
           exact hm
@@ -393,7 +391,7 @@ theorem exists_integer_of_forall (y : D.host.E) (h : ∀ v : Pl D, idem D (· = 
 theorem idem_ne_zero (v : Pl D) : idem D (· = v) ≠ 0 := by
   intro h
   have := compAt_idem (· = v) v
-  rw [h, if_pos rfl, RingHom.map_zero] at this
+  rw [h, ite_eq_left rfl, RingHom.map_zero] at this
   exact zero_ne_one this
 
 theorem selfDual_of_local : ∀ (D : D7) (h : D.host.E) (𝔞 : FI D) (u : (AE D)ˣ), (∀ x : Pl D, ∀ a ∈ idAt D (· = x), a ∈ idV 𝔞 x ↔ ((u⁻¹ : (AE D)ˣ) : AE D) * a ∈ intAt D (· = x)) → (∀ x : Pl D, ∀ a ∈ idAt D (· = x), a ∈ intAt D (· = x) ↔ (u : AE D) * cA D (u : AE D) * incA D h * a ∈ intAt D (· = x)) → ∀ d : D.host.E, d ∈ 𝔞 ↔ ∀ c ∈ 𝔞, ∃ b : 𝓞 D.host.E, (b : D.host.E) = star c * d * h := by
@@ -458,7 +456,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.SplitWeil GlobalTheory.LatPair GlobalTheory.SeeSaw GlobalTheory.FinPl ValuativeRel
 open scoped TensorProduct nonZeroDivisors
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -517,8 +514,7 @@ theorem isSelfDualC_lineLat : ∀ (D : D7) (S : HSp D) (ζ : Fin S.rank → D.ho
   refine ⟨⟨?_, ?_⟩, dual⟩
   · exact (FractionalIdeal.fg_of_isNoetherianRing le_rfl 𝔄).map _
   · obtain ⟨c, hc, hc0⟩ : ∃ c ∈ 𝔄, c ≠ 0 := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       have h1m : (1 : D.host.E) ∈ 𝔄 := by
         rw [h𝔄]
         intro c hc
@@ -540,7 +536,6 @@ section -- clump:auto
 
 open NumberField
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum MeasureTheory Matrix ValuativeRel IsLocalRing GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.LatPair GlobalTheory.SplitWeil GlobalTheory.SeeSaw GlobalTheory.FinPl
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 namespace GlobalTheory.FinPl.CoreIdele
@@ -691,7 +686,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Matrix ValuativeRel IsLocalRing
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.LatPair GlobalTheory.SplitWeil GlobalTheory.SeeSaw GlobalTheory.FinPl GlobalTheory.FinPlLoc GlobalTheory.IwaPlace NumberField Filter
 open scoped TensorProduct nonZeroDivisors
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
 

@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwHkNorm
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.ContinuousTorusCharacter
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.Distinct
 public import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.SelmerDuality.HasSmithOfOne
@@ -19,14 +20,7 @@ open IsLocalRing Matrix UpperTheory.V.Hi
 
 private theorem dcG_mem {H : Type} [Group H] (K : Subgroup H) (x p : H) :
     (p : H ⧸ K) ∈ MulAction.orbit K (x : H ⧸ K) ↔ ∃ k ∈ K, ∃ k' ∈ K, p = k * x * k' := by
-  constructor
-  · rintro ⟨k, hk⟩
-    have h : (((k : H) * x : H) : H ⧸ K) = (p : H ⧸ K) := hk
-    exact ⟨k, k.2, _, QuotientGroup.eq.mp h, by group⟩
-  · rintro ⟨k, hk, k', hk', rfl⟩
-    refine ⟨⟨k, hk⟩, ?_⟩
-    change ((k * x : H) : H ⧸ K) = _
-    exact QuotientGroup.eq.mpr (by simpa [mul_assoc] using hk')
+  apply _root_.hkNorm_mem <;> assumption
 
 private theorem dcG_sum {α β γ M : Type} [AddCommMonoid M] [DecidableEq γ] (s : Finset α) (t : Finset β)
     (F : α → γ) (G : β → γ) (g : γ → M)
@@ -141,7 +135,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Polynomial ValuativeRel GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V.Hi
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 private theorem sphC_fin {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
     {K : Subgroup G} (hL : IsCompact (K : Set G)) (hK' : IsOpen (K : Set G)) (x : G) :

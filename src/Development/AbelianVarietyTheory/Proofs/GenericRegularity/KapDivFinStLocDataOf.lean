@@ -247,16 +247,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory
 
-namespace AdmissibleFiniteSupport
-
-variable {K : Type} [Field K] [NumberField K] {ι : Type} [Fintype ι]
-  {Ω : ι → Type} [∀ c, Field (Ω c)] [∀ c, Algebra K (Ω c)]
-  {WT : Type} [AddCommGroup WT]
-  {A : ι → Type} [∀ c, CommRing (A c)] [∀ c, Algebra (Ω c) (A c)] [∀ c, Algebra K (A c)]
-  [∀ c, Algebra (𝓞 K) (A c)]
-
-end AdmissibleFiniteSupport
-
 open NumberField in
 open scoped TensorProduct in
 attribute [local instance] _root_.ReciprocityTheory.ChartRestriction.G.T0.resAlg in
@@ -343,8 +333,7 @@ private lemma case_two_finite_lemma
     rw [← trdeg_eq_zero_iff, hFΩ]
     exact one_ne_zero
   obtain ⟨t, ht⟩ : ∃ t : Ω, Transcendental F t := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hnalg ⟨fun a => not_not.1 (h a)⟩
   have htinv : Transcendental F t⁻¹ := fun h => ht (by simpa using h.inv)
   refine ((H2 F Ω t hfgF hFΩ ht g hg).union (H2 F Ω t⁻¹ hfgF hFΩ htinv g hg)).subset ?_
@@ -373,7 +362,7 @@ private lemma case_two_finite_lemma
   · right
     refine ⟨hdisc, hF, ?_, hvg⟩
     rw [v.map_inv]
-    push_neg at hvt
+    push Not at hvt
     exact withTop_int_neg_nonneg_of_neg hvt
 
 open NumberField in
@@ -470,8 +459,7 @@ private lemma polynomial_value_over_prime_lemma_4 {K Ω : Type} [Field K] [Numbe
     refine sum_mem fun m _ => mul_mem ?_ ?_
     · rw [mem_vRing_iff_nonneg]; exact addValuation_algebraMap_ringOfIntegers_nonneg v _
     · rw [mem_vRing_iff_nonneg]; exact hmono m
-  · by_contra hnot
-    push_neg at hnot
+  · by_contra! hnot
     obtain ⟨m, hm⟩ := hnot
     set a := p.coeff m
     have ha0 : v (algebraMap K Ω a) = 0 :=
@@ -676,7 +664,7 @@ theorem injective_of_dvr {R Ω : Type} [CommRing R] [IsDomain R] [Field Ω] (φ 
     obtain ⟨c, hc⟩ := hm
     apply ha0
     rw [← hψ, hc, map_mul, h, zero_mul]
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro r hr
   by_contra hr0
   have hinj := IsLocalization.injective (Localization.AtPrime P) (M := P.primeCompl)
@@ -1108,7 +1096,7 @@ theorem exists_continuousOn_embeddings (K : Type) [Field K] [CharZero K] (σ : T
       (∀ f, τ f = ev f t) ∧ p.map (MvPolynomial.eval (cf t)) = (minpoly F pb.gen).map τ := by
     intro t ht
     have hinj : Function.Injective (MvPolynomial.eval₂Hom sg t : R →+* ℂ) := by
-      set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+      rw [injective_iff_map_eq_zero]
       intro q hq
       by_contra h
       exact hG t ht q h hq

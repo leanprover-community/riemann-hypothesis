@@ -50,7 +50,7 @@ theorem cTerm_word {c : ℂ} {w : List (B.Mat k r)} (hw : ∀ X ∈ w, B.inLie k
     (cTerm (Wp := Wp) (Wq := Wq) c w).word = w := by
   unfold cTerm
   dsimp only
-  rw [if_pos hw]
+  rw [ite_eq_left hw]
 
 theorem cTerm_word_le (c : ℂ) (w : List (B.Mat k r)) :
     (cTerm (Wp := Wp) (Wq := Wq) c w).word.length ≤ w.length := by

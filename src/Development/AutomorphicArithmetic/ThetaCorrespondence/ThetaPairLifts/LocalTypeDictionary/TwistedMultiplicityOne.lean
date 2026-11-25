@@ -232,18 +232,6 @@ end GlobalTheory.AutMult
 end
 end
 
-section
-open MeasureTheory Set Filter NumberField IsDedekindDomain
-open GlobalTheory.AdelicU GlobalTheory.OpTrace GlobalTheory.Orb GlobalTheory.AutomorphicL2Unitary GlobalTheory.AutMult Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
-open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Mult
-open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots (IsTestDataX PPol Tor Phi PhiOK PhiReal ellKernel Gap NoFixed IsLatticeConj GeomExpansion EllipticPartX TraceEq)
-open GlobalTheory.PRep (IsAdmissible)
-open GlobalTheory.TrMult
-
-theorem _root_.GlobalTheory.PsCo.Plug.copyTraceT : ∀ (D : D7) (V : HSp D) (lam : D.what₂.Tau → Fin V.rank → ℤ) (S : D.what₂.Tau → SPar) (M : DSModel V S) (T : TypeDataG V) (U : AuxiliaryPlaceHermitianSpace V) (μa : ∀ w, Measure (GArch D.sp.cm.sig V.gram w)) (μf : ∀ v, Measure (GLoc D.sp.cm.sig V.gram v)) (μ : Measure (GA D V)) [μ.IsHaarMeasure] [μ.IsMulRightInvariant] (fa : ∀ w, GArch D.sp.cm.sig V.gram w → ℂ) (ff : ∀ v, GLoc D.sp.cm.sig V.gram v → ℂ), IsTestDataX V lam M T U μa μf μ fa ff → ∀ ν, IsFinMeas V μf ν → ∀ (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] (π : GA D V →* (H →L[ℂ] H)), IsIrrUnitary π → ∀ (W : Type) [AddCommGroup W] [Module ℂ W] (σ : Representation ℂ (GfC V) W), σ.IsIrreducible → IsAdmissible σ → IsCopyFinDS σ M π ⊤ → ∀ c, GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets.HasTrace ν σ (finFn V ff) c → HasTrace (repOp π μ (tensor D.sp.cm.sig V.gram fa ff)) c := by
-  first | exact @GlobalTheory.AutMult.hasTrace_repOp_of_isCopyFinDSX
-end
-
 namespace GlobalTheory
 
 end GlobalTheory
@@ -350,7 +338,6 @@ theorem phiDS_one {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel
   rw [inner_self_eq_norm_sq_to_K, hunit]
   simp
 
-
 theorem inner_apply_homDS {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} {M : DSModel V S} {H : Type}
     [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] {π : GA D V →* (H →L[ℂ] H)}
     (hπ : IsUnitaryRep π) {K : Subgroup (GfC V)} {Φ : ContinuousMultilinearMap ℂ M.H H} (hΦ : Φ ∈ homDS M π ⊤)
@@ -366,7 +353,6 @@ theorem inner_apply_homDS {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} {M :
   rw [inner_eq_bePi (fun τ => isIrrUnitary_dsRep M τ) hπ hΦ hΦ]
   rfl
 
-
 theorem eq_zero_of_apply_unitVec {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} {M : DSModel V S} {H : Type}
     [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] {π : GA D V →* (H →L[ℂ] H)}
     (hπ : IsUnitaryRep π) {Φ : ContinuousMultilinearMap ℂ M.H H} (hΦ : Φ ∈ homDS M π ⊤)
@@ -377,8 +363,6 @@ theorem eq_zero_of_apply_unitVec {D : D7} {V : HSp D} {S : D.what₂.Tau → SPa
   simp only [bePi] at hpos
   rw [h0, inner_zero_left] at hpos
   simp at hpos
-
-
 
 theorem finiteDimensional_of_bump {G E : Type} [Group G] [TopologicalSpace G] [MeasurableSpace G]
     [OpensMeasurableSpace G] [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E]
@@ -435,7 +419,6 @@ theorem finiteDimensional_of_bump {G E : Type} [Group G] [TopologicalSpace G] [M
       have : ‖x‖ * (‖J‖ * ‖x‖) = ‖x‖ ^ 2 * ‖J‖ := by ring
       linarith
   exact finiteDimensional_of_compact_bdd _ hcpt X (norm_pos_iff.2 hJ0) hbound
-
 
 theorem admissible_representation_factorisation : AdmSt := by
   intro D V S M μ _ H _ _ _ π hπ hcpt hU
@@ -902,7 +885,7 @@ theorem copyFinDS (h1 : IrredSt) (h2 : CompSt) (h4 : AdmSt) : GlobalTheory.Publi
   haveI : ν.IsHaarMeasure := hν.1
   have hfam : IsFinFamily D.sp.cm.sig V.gram (frameLat V) ff := hTD.2.2.2.2.2.2.isFinFamily
   obtain ⟨⟨c', hc'⟩, -⟩ := GlobalTheory.T.admissibleRep_hasTrace_finiteAdelicPureTensorFunction D V ν ff hfam _ (finPartDSSm M hU) hadm
-  have hπc' := GlobalTheory.PsCo.Plug.copyTraceT D V lam S M T U μa μf μ fa ff hTD ν hν H π hπ _ (finPartDSSm M hU) hirr hadm hcopy c' hc'
+  have hπc' := GlobalTheory.AutMult.hasTrace_repOp_of_isCopyFinDSX D V lam S M T U μa μf μ fa ff hTD ν hν H π hπ _ (finPartDSSm M hU) hirr hadm hcopy c' hc'
   have hcc : c' = c := hπc'.2.symm.trans hc.2
   subst hcc
   exact ⟨_, _, _, finPartDSSm M hU, hirr, hadm, hcopy, hc'⟩
@@ -938,7 +921,7 @@ theorem specTrace (h1 : IrredSt) (h2 : CompSt) (h3 : CptSt) (h4 : AdmSt) : Globa
     intro x i hR
     refine ⟨?_, ?_⟩
     · rw [_root_.GlobalTheory.AutMult.mCusp_eq_mCuspDS D V S M μ x.rep.H x.rep.π x.rep.isIrr (Ws i) (σs i) (hIrr.1 i) (hIrr.2.1 i) hR]
-    · exact (GlobalTheory.PsCo.Plug.copyTraceT D V lam S M T U μa μf μ fa ff hTD ν hν x.rep.H x.rep.π x.rep.isIrr (Ws i) (σs i)
+    · exact (GlobalTheory.AutMult.hasTrace_repOp_of_isCopyFinDSX D V lam S M T U μa μf μ fa ff hTD ν hν x.rep.H x.rep.π x.rep.isIrr (Ws i) (σs i)
         (hIrr.1 i) (hIrr.2.1 i) hR (c i) (hc i)).2
   ·
     intro x i j hi hj
@@ -998,7 +981,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues Polynomial
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.LiftRows
 namespace GlobalTheory.MultEqFinal
 theorem twisted_multiplicity_eq : GlobalTheory.Published.DiscreteSeriesClassification → GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Published.HarishChandraFinite → GlobalTheory.Published.CuspTraceClass → GlobalTheory.Published.DixmierMalliavinFactorisation → GlobalTheory.Published.ZelevinskyPolynomialRing → GlobalTheory.Published.GeometricLemma → GlobalTheory.Published.GreenCuspidal → ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type} {A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat3 D A3 Ks) (F : Face3 D A3) {s : ℕ}, A3.fam3.Ok3 s → R.WeakCharacterisation F → R.toRealDat.ExAt → HostHyp D → (∃ L : SizeData₂ D, Nonempty (ParameterChoice' D L)) → D.host.ccK = ⊤ → FWT.QGuard R.toRealDat → GlobalTheory.IndefiniteRowSideFullHecke.CommutingLevelOperators.GoodTypes R.toRealDat → GlobalTheory.CuspMult.MultEq R.toRealDat := by

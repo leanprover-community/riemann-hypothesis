@@ -31,8 +31,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doublin
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace PositivityTheory.Rg.Sw.Glob.DilBH
 
 variable {D : D7} {n : ℕ}
@@ -49,12 +47,12 @@ theorem pointAt {m : ℕ} (θ : InfFam D) (hθ : IsInfFam θ) (τ : D.what₂.Ta
   obtain ⟨L, _, hLf, hLz⟩ :=
     Formalism.IndefR.Eqv.lineAtExists_holds D θ hθ m n τ (fr * Matrix.of u - compAt θ τ x₀)
   refine ⟨x₀ + L 1, ?_, ?_, ?_⟩
-  · rw [compAt_add, hLz 1 τ, if_pos rfl, Complex.ofReal_one, one_smul]
+  · rw [compAt_add, hLz 1 τ, ite_eq_left rfl, Complex.ofReal_one, one_smul]
     have hs : compAt θ τ x₀ + (fr * Matrix.of u - compAt θ τ x₀) = fr * Matrix.of u := by abel
     rw [hs]
     exact Matrix.nonsing_inv_mul_cancel_left _ _ hfr
   · intro τ' h
-    rw [compAt_add, hLz 1 τ', if_neg h, add_zero]
+    rw [compAt_add, hLz 1 τ', ite_eq_right h, add_zero]
   · ext i j
     have h1 := congrFun (congrFun (hLf 1) i) j
     simp only [Matrix.map_apply, Matrix.add_apply, map_add (f := _), Matrix.zero_apply] at h1 ⊢
@@ -78,8 +76,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace PositivityTheory.Rg.Sw.Glob.DilCH
 

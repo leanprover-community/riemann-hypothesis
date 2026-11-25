@@ -73,7 +73,7 @@ def wForm (a b : C → ι → ℂ) : ℂ := ∑ c, ((w c : ℕ) : ℂ)⁻¹ * (s
 variable {G}
 
 theorem wForm_nonneg (hG : G.PosSemidef) (a : C → ι → ℂ) : 0 ≤ wForm w G a a :=
-  Finset.sum_nonneg fun c _ => mul_nonneg (inv_nonneg.2 (Nat.cast_nonneg _)) (hG.dotProduct_mulVec_nonneg _)
+  Finset.sum_nonneg fun _ _ => mul_nonneg (inv_nonneg.2 (Nat.cast_nonneg _)) (hG.dotProduct_mulVec_nonneg _)
 
 theorem wForm_conj (hG : G.IsHermitian) (a b : C → ι → ℂ) : starRingEnd ℂ (wForm w G b a) = wForm w G a b := by
   unfold wForm

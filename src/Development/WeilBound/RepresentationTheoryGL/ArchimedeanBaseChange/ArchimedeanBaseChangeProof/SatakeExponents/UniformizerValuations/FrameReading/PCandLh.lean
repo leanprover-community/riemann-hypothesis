@@ -37,9 +37,6 @@ open NumberField IsDedekindDomain Matrix Filter
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT PositivityTheory.Rg.BcN.F2
 open scoped Classical TensorProduct
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
-
 namespace PositivityTheory.Rg.BcB.F.Tail.B
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
@@ -84,8 +81,6 @@ noncomputable section
 open NumberField IsDedekindDomain
 open GlobalTheory.PRep
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.BcB.F.Tail
 
 theorem satSph : SatSph := by
@@ -119,7 +114,7 @@ open scoped Classical
 
 namespace PositivityTheory.Rg.BcB.F.PCandLh
 
-attribute [local instance] borelG borelF borelA GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
+attribute [local instance] borelG borelF borelA
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
@@ -176,7 +171,7 @@ theorem inert_d (h1 : Tail.ReadT) (h2 : Tail.ExpRead) (h3 : RS.JoinSat) (hR : Rd
   clear_value G'
   have hm : (F.d.betaL _ ha).m w = fun x y => @ite _ (x = y) (Classical.propDecidable _) (F.d.qT (F₀.C.a i) w x.1.1) 0 := by
     funext x y
-    simp only [LocData.betaL, if_pos hwd, LocData.diag]
+    simp only [LocData.betaL, ite_eq_left hwd, LocData.diag]
     congr
   rw [hm] at hx₀
   obtain ⟨x, hx⟩ := (Tail.locPow_holds E _ _ w (F.d.kap w) (F.d.lev _ w) G' F.m ((isLev_lev F.d F.ok ha).1 w).1
@@ -186,7 +181,7 @@ theorem inert_d (h1 : Tail.ReadT) (h2 : Tail.ExpRead) (h3 : RS.JoinSat) (hR : Rd
   by_cases h : LocData.admitted n (F₀.C.a i) s
   swap
   · exfalso
-    have e : F.d.qT (F₀.C.a i) w s = fun _ => 0 := by funext y; simp only [LocData.qT, dif_neg h]
+    have e : F.d.qT (F₀.C.a i) w s = fun _ => 0 := by funext y; simp only [LocData.qT, dite_eq_right h]
     obtain ⟨k, hk⟩ : ∃ k, F.m = k + 1 := ⟨F.m - 1, by have := F.m_pos; omega⟩
     rw [e, hk, Function.iterate_succ_apply', actP_zero] at hx
     exact hx rfl
@@ -195,7 +190,7 @@ theorem inert_d (h1 : Tail.ReadT) (h2 : Tail.ExpRead) (h3 : RS.JoinSat) (hR : Rd
       (F.d.c w j * (-qh w) ^ (-vRes n (F₀.C.a i) (lOf j.1) s) * V) *
         dc2 w (F₀.d₀.ϖ w) (PositivityTheory.Rg.Bc.ArchbcB.B.restr j.1 _ h.2.1) (PositivityTheory.Rg.Bc.ArchbcB.B.restr j.1 _ h.2.2) g := by
     funext g
-    simp only [LocData.qT, dif_pos h, Finsupp.sum, hϖ]
+    simp only [LocData.qT, dite_eq_left h, Finsupp.sum, hϖ]
     exact (Finset.sum_coe_sort _ _).symm
   rw [e] at hx
   obtain ⟨ξa, ξb, hJ, hsum⟩ := h1 E n _ _ F₀.μ s₁ s₂ Pa Pb D hc.ctx w (F₀.d₀.ϖ w) (F.d.c w).support _ _ _ F.m (G' x)
@@ -295,7 +290,7 @@ theorem candLev_of (h0 : Tail.ReadLev) (h1 : Tail.ReadT) (h2 : Tail.ExpRead) (h3
     · obtain ⟨a1, m', a2, a3, a4⟩ := F₀.K_conj _ ha u hR' hus w hcj m X hm
       refine ⟨?_, a1⟩
       have hm' : m' ∈ F.d.lev₂ (F₀.C.a i) u := by
-        rw [LocData.lev₂, if_pos (by rw [hS0, hBad]; exact hR'), hL]
+        rw [LocData.lev₂, ite_eq_left (by rw [hS0, hBad]; exact hR'), hL]
         exact a2
       have e := GlobalTheory.LGrp.mem_fixed.1 hf m' hm'
       show (rightReg ℂ _ ℂ) (embW _ w m.1, embW _ w m.2) (G j) = G j

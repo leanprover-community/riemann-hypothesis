@@ -32,8 +32,6 @@ open Formalism.L2.SG.Pf Formalism.L2.SG.Pf.Vanish2 Formalism.L2.SG.Pf.Level Form
 
 namespace Formalism.L2.SG.Pf.RelChar
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section abelian₂
 
 variable {D : D7} (X : HidaSetting D)
@@ -78,7 +76,7 @@ theorem lamU_one (w : D.what₂.Word) (v : InfinitePlace X.B.I.F) : lamU X w v 1
   rw [Matrix.mul_one, Bv_mul_Bv', Matrix.one_mulVec]
   unfold nxt
   split_ifs with h
-  · rw [hfe_v, if_neg]
+  · rw [hfe_v, ite_eq_right]
     intro h'
     have := congrArg Fin.val h'
     simp at this
@@ -285,8 +283,6 @@ open Matrix NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism
 open Formalism.L2.SG.Pf Formalism.L2.SG.Pf.Level Formalism.L2.SG.TermOp Formalism.L2.SG.TermOp.Vanish Formalism.L2.SG.NonRelPf
 
 namespace Formalism.L2.SG.Pf.RelChar
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Gen
 

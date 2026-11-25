@@ -33,20 +33,20 @@ theorem piInf_dilV (h : IsCMExt F E σ) (τ' : ∀ w : InfinitePlace F, EmbOver 
   · simp only [dilV, Sum.elim_inl]
     by_cases h1 : j = i₀
     · subst h1
-      rw [if_pos rfl, piInf_adr h τ']
+      rw [ite_eq_left rfl, piInf_adr h τ']
       by_cases h2 : u = w
-      · rw [if_pos h2, if_pos h2]; simp
-      · rw [if_neg h2, if_neg h2]; simp
-    · rw [if_neg h1, map_one]
+      · rw [ite_eq_left h2, ite_eq_left h2]; simp
+      · rw [ite_eq_right h2, ite_eq_right h2]; simp
+    · rw [ite_eq_right h1, map_one]
       split_ifs <;> simp [h1]
   · simp only [dilV, Sum.elim_inr]
     by_cases h1 : j = i₀
     · subst h1
-      rw [if_pos rfl, piInf_adr h τ']
+      rw [ite_eq_left rfl, piInf_adr h τ']
       by_cases h2 : u = w
-      · rw [if_pos h2, if_pos h2]; simp
-      · rw [if_neg h2, if_neg h2]; simp
-    · rw [if_neg h1, map_one]
+      · rw [ite_eq_left h2, ite_eq_left h2]; simp
+      · rw [ite_eq_right h2, ite_eq_right h2]; simp
+    · rw [ite_eq_right h1, map_one]
       split_ifs <;> simp [h1]
 
 theorem finOne_dilV (h : IsCMExt F E σ) {n : ℕ} (w : InfinitePlace F) (i₀ : Fin n) (τ : ℝ) (k : Fin n ⊕ Fin n) :

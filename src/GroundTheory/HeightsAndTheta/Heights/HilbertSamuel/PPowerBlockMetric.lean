@@ -27,77 +27,32 @@ namespace PowerBlockMetric
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
 
 theorem homog_add {f g : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a) (hg : IsMultiHomog g a) :
-    IsMultiHomog (f + g) a := by
-  classical
-  intro m hm
-  rcases Finset.mem_union.mp (support_add hm) with hm | hm
-  · exact hf m hm
-  · exact hg m hm
+    IsMultiHomog (f + g) a := SectionBounded.homog_add hf hg
 
 theorem homog_sub {f g : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a) (hg : IsMultiHomog g a) :
-    IsMultiHomog (f - g) a := by
-  rw [sub_eq_add_neg]
-  exact homog_add hf (GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBounded.homog_neg hg)
+    IsMultiHomog (f - g) a := SectionBounded.homog_sub hf hg
 
 theorem homog_mul {f g : MRing ι} {a b : K → ℕ} (hf : IsMultiHomog f a) (hg : IsMultiHomog g b) :
-    IsMultiHomog (f * g) (a + b) := by
-  classical
-  intro m hm k
-  obtain ⟨m1, hm1, m2, hm2, rfl⟩ := Finset.mem_add.mp (MvPolynomial.support_mul f g hm)
-  simp only [Finsupp.add_apply, Finset.sum_add_distrib, Pi.add_apply, hf m1 hm1 k, hg m2 hm2 k]
+    IsMultiHomog (f * g) (a + b) := SectionBounded.homog_mul hf hg
 
-theorem homog_X [DecidableEq K] (p : Σ k, ι k) : IsMultiHomog (X p : MRing ι) (Pi.single p.1 1) := by
-  classical
-  obtain ⟨k, i⟩ := p
-  intro m hm k'
-  rw [MvPolynomial.support_X, Finset.mem_singleton] at hm
-  subst hm
-  by_cases h : k' = k
-  · subst h
-    rw [Pi.single_eq_same, Finset.sum_eq_single i]
-    · simp
-    · intro b _ hb
-      rw [Finsupp.single_apply, if_neg]
-      intro e
-      exact hb (eq_of_heq (Sigma.mk.inj_iff.mp e).2).symm
-    · simp
-  · rw [Pi.single_eq_of_ne h]
-    refine Finset.sum_eq_zero fun j _ => ?_
-    rw [Finsupp.single_apply, if_neg]
-    intro e
-    exact h (congrArg Sigma.fst e).symm
+theorem homog_X [DecidableEq K] (p : Σ k, ι k) : IsMultiHomog (X p : MRing ι) (Pi.single p.1 1) :=
+  SectionBounded.homog_X p
 
 def chartMon (c : ∀ k, ι k) (d : K → ℕ) : MRing ι := ∏ k, (X ⟨k, c k⟩ : MRing ι) ^ d k
 
-theorem homog_chartMon (c : ∀ k, ι k) (d : K → ℕ) : IsMultiHomog (chartMon c d) d := by
-  classical
-  have key : ∀ s : Finset K, IsMultiHomog (∏ k ∈ s, (X ⟨k, c k⟩ : MRing ι) ^ d k)
-      (∑ k ∈ s, d k • Pi.single k 1) := by
-    intro s
-    induction s using Finset.induction_on with
-    | empty => simpa using (GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBounded.homog_one (ι := ι))
-    | insert k s hk ih =>
-      rw [Finset.prod_insert hk, Finset.sum_insert hk]
-      exact homog_mul (GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBounded.homog_pow (homog_X ⟨k, c k⟩) _) ih
-  have e : (∑ k, d k • (Pi.single k 1 : K → ℕ)) = d := by
-    ext k
-    simp [Finset.sum_apply, Pi.single_apply]
-  have := key Finset.univ
-  rw [e] at this
-  exact this
+theorem homog_chartMon (c : ∀ k, ι k) (d : K → ℕ) : IsMultiHomog (chartMon c d) d :=
+  SectionBounded.homog_chartMon c d
 
 theorem aeval_chartMon (y : (Σ k, ι k) → Ω) (c : ∀ k, ι k) (d : K → ℕ) :
-    aeval y (chartMon c d) = ∏ k, y ⟨k, c k⟩ ^ d k := by
-  simp [chartMon, map_prod]
+    aeval y (chartMon c d) = ∏ k, y ⟨k, c k⟩ ^ d k := SectionBounded.aeval_chartMon y c d
 
 theorem eval_chartMon (z : (Σ k, ι k) → ℂ) (c : ∀ k, ι k) (d : K → ℕ) :
-    eval z (map (Int.castRingHom ℂ) (chartMon c d)) = ∏ k, z ⟨k, c k⟩ ^ d k := by
-  simp [chartMon, map_prod]
+    eval z (map (Int.castRingHom ℂ) (chartMon c d)) = ∏ k, z ⟨k, c k⟩ ^ d k := SectionBounded.eval_chartMon z c d
 
 theorem exists_form_of_mem_chartRingZ (y : (Σ k, ι k) → Ω) (c : ∀ k, ι k) (hc : ∀ k, y ⟨k, c k⟩ ≠ 0) {x : Ω}
     (hx : x ∈ chartRingZ y c) :
-    ∃ (δ : K → ℕ) (e : MRing ι), IsMultiHomog e δ ∧ aeval y e = x * ∏ k, y ⟨k, c k⟩ ^ δ k := by
-  apply GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBounded.exists_form_of_mem_chartRingZ <;> assumption
+    ∃ (δ : K → ℕ) (e : MRing ι), IsMultiHomog e δ ∧ aeval y e = x * ∏ k, y ⟨k, c k⟩ ^ δ k :=
+  SectionBounded.exists_form_of_mem_chartRingZ y c hc hx
 
 theorem y_ne_zero {y : (Σ k, ι k) → Ω} {z : (Σ k, ι k) → ℂ} (hz : z ∈ mcPts (mCoordIdeal y))
     {p : Σ k, ι k} (hp : z p ≠ 0) : y p ≠ 0 := by
@@ -167,6 +122,44 @@ theorem val_spec {y : (Σ k, ι k) → Ω} {A : HermLine ι} {n : ℕ} {s : Ω} 
   have h2 := metric_ne (A := A) hz n
   rw [eq_comm, div_mul_eq_mul_div, div_mul_eq_mul_div, div_eq_iff (mul_ne_zero h1 h2)]
   linear_combination (-(A.h z : ℂ) ^ n) * hc
+
+theorem val_eq {y : (Σ k, ι k) → Ω} {A : HermLine ι} {n : ℕ} {s : Ω} (hs : s ∈ chartLat y A.a n)
+    {z : (Σ k, ι k) → ℂ} (hz : z ∈ mcPts (mCoordIdeal y)) {g h : MRing ι} (hr : IsRep y A.a n s g h)
+    (hh : eval z (map (Int.castRingHom ℂ) h) ≠ 0) :
+    val y A n s z = eval z (map (Int.castRingHom ℂ) g) /
+      (eval z (map (Int.castRingHom ℂ) h) * (A.h z : ℂ) ^ n) := by
+  rw [eq_div_iff (mul_ne_zero hh (metric_ne hz n)), val_spec hs hz hr]
+  ring
+
+theorem rep_add {y : (Σ k, ι k) → Ω} {a : K → ℤ} {n : ℕ} {s t : Ω} {g₁ h₁ g₂ h₂ : MRing ι}
+    (r₁ : IsRep y a n s g₁ h₁) (r₂ : IsRep y a n t g₂ h₂) :
+    IsRep y a n (s + t) (g₁ * h₂ + g₂ * h₁) (h₁ * h₂) := by
+  obtain ⟨dg₁, dh₁, hg₁, hh₁, hd₁, hy₁⟩ := r₁
+  obtain ⟨dg₂, dh₂, hg₂, hh₂, hd₂, hy₂⟩ := r₂
+  refine ⟨dg₁ + dh₂, dh₁ + dh₂, homog_add (homog_mul hg₁ hh₂) (GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBounded.homog_congr (homog_mul hg₂ hh₁) fun k => ?_),
+    homog_mul hh₁ hh₂, fun k => ?_, ?_⟩
+  · simp only [Pi.add_apply]
+    zify
+    linear_combination hd₂ k - hd₁ k
+  · simp only [Pi.add_apply]
+    push_cast
+    linear_combination hd₁ k
+  · rw [map_add (f := _), map_mul, map_mul, map_mul, hy₁, hy₂]
+    ring
+
+def w (y : (Σ k, ι k) → Ω) (A : HermLine ι) (n : ℕ) : chartLat y A.a n →+ (((Σ k, ι k) → ℂ) → ℂ) :=
+  AddMonoidHom.mk' (fun s => val y A n s) fun s t => by
+    funext z
+    show val y A n ((s + t : chartLat y A.a n) : Ω) z = val y A n s z + val y A n t z
+    by_cases hz : z ∈ mcPts (mCoordIdeal y)
+    · obtain ⟨⟨g₁, h₁⟩, r₁, n₁⟩ := exists_rep_at s.2 hz
+      obtain ⟨⟨g₂, h₂⟩, r₂, n₂⟩ := exists_rep_at t.2 hz
+      have hT := metric_ne (A := A) hz n
+      rw [AddSubgroup.coe_add, val_eq (add_mem s.2 t.2) hz (rep_add r₁ r₂) (by simpa using mul_ne_zero n₁ n₂),
+        val_eq s.2 hz r₁ n₁, val_eq t.2 hz r₂ n₂]
+      simp only [map_add (f := _), map_mul]
+      field_simp
+    · simp [val, hz]
 
 theorem secNormAt_eq {y : (Σ k, ι k) → Ω} {A : HermLine ι} {n : ℕ} {s : Ω} (hs : s ∈ chartLat y A.a n)
     {z : (Σ k, ι k) → ℂ} (hz : z ∈ mcPts (mCoordIdeal y)) : secNormAt y A n s z = ‖val y A n s z‖ := by

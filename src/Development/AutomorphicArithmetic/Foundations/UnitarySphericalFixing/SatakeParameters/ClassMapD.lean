@@ -64,7 +64,6 @@ end
 
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.NT NumberField IsDedekindDomain Polynomial GlobalTheory.TypeRec GlobalTheory.GLq GlobalTheory.GLp GlobalTheory.SerSys Formalism.MainNotions.ArithmeticCylinders
-attribute [local instance] GlobalTheory.LabPin.instCM
 namespace DiscreteGroups.sglob.DzType.Rt
 open GlobalTheory.TypeRec GlobalTheory.LabPin
 
@@ -73,7 +72,6 @@ end
 
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.NT NumberField IsDedekindDomain Polynomial GlobalTheory.TypeRec GlobalTheory.GLq GlobalTheory.GLp GlobalTheory.SerSys Formalism.MainNotions.ArithmeticCylinders
-attribute [local instance] GlobalTheory.LabPin.instCM
 namespace GlobalTheory.LabPin
 end GlobalTheory.LabPin
 namespace GlobalTheory.LabPin

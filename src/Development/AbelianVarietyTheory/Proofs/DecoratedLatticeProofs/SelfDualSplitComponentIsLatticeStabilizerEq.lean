@@ -1,5 +1,6 @@
 module
 
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntAEMulMem
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsSumFrame
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LatticeLocalEqIntegralAlmostAll
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MemHomLatticeCompletionIffSupportedMaps
@@ -57,7 +58,7 @@ section General
 
 variable {D : D7}
 
-alias mul_mem_intAE := _root_.GlobalTheory.IdemPrime.mul_mem_int
+alias mul_mem_intAE := GlobalTheory.IntegralAdeleProducts.intAE_mul_mem
 
 theorem finPart_cA (x : AE D) : finPart D (cA D x) = sigR (Af D.host.F) D.sp.cm.sig (finPart D x) := by
   induction x using TensorProduct.induction_on with
@@ -157,7 +158,7 @@ theorem exists_expansion (hL : IsSelfDualC S L) :
     · rw [RingHom.map_zero, zero_mul]
   simp only [pairing, Finset.sum_mul]
   rw [Finset.sum_comm]
-  simp only [h1, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [h1, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 theorem mem_of_pairing (hL : IsSelfDualC S L) {v : Pl D} {y : Fin S.rank → AE D} (hy : ∀ i, y i ∈ idAt D (· = v))
     (h : ∀ s ∈ L, finPart D (pairing S s y) ∈ intAE D) : y ∈ latV S L (· = v) := by

@@ -2,7 +2,6 @@ module
 
 public import Formalism.HermitianLattices.StatementLat
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
-import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

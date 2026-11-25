@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsColIntertwiner
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CmHostImaginaryGeneratorNeZero
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.HermitianOrthogonalExtensionData
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NodeAgree
@@ -199,7 +200,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open GlobalTheory.Grid GlobalTheory.ChiGrid GlobalTheory.GridJoin
 open scoped Pointwise TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto
@@ -215,7 +215,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open GlobalTheory.Grid GlobalTheory.ChiGrid GlobalTheory.GridJoin
 open scoped Pointwise TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory
 namespace SDFrameCompletion
@@ -258,7 +257,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open GlobalTheory.Grid GlobalTheory.ChiGrid GlobalTheory.GridJoin
 open scoped Pointwise TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -293,7 +291,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open GlobalTheory.Grid GlobalTheory.ChiGrid GlobalTheory.GridJoin
 open scoped Pointwise TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.heckeCharacterGrid_isAuxiliaryCharacter_testGrid : ∀ {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 T : Type} {A : FamIn D.what₂.LL Γ Pl0 T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat D A Ks} {sc : GlobalTheory.ChiGrid.Consts}, GlobalTheory.Grid.gap D = GlobalTheory.ChiGrid.gap D 1 → sc.cGap = 1 → ∀ {G' : GlobalTheory.ChiGrid.GridData R.toLevCh sc} (Z : GlobalTheory.Grid.PlaceDat D), Z.S0 R.Pg = G'.pl.S0 → (∀ w, w ∈ R.Pg ∨ w ∈ Z.Wd → w.under (𝓞 D.host.F) ∈ GlobalTheory.ChiGrid.S1 D) → (∀ w ∈ Z.Wd, Formalism.L2.Host.OverP D.host D.host.pde w ∨ Formalism.L2.Host.OverP D.host D.host.pde' w) → Z.w0 = G'.pl.w G'.pl.v0 → ∀ i, 1 ≤ i → i ≤ D.R.m → Z.IsGridPlaceAuxiliaryHeckeCharacter R.Pg (fun τ => GlobalTheory.Grid.cen D τ i) (G'.ch.chiH i) := by
   first | exact @GlobalTheory.Grid.heckeCharacterGrid_isAuxiliaryCharacter_testGrid_alt
@@ -311,7 +308,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open GlobalTheory.Grid GlobalTheory.ChiGrid GlobalTheory.GridJoin
 open scoped Pointwise TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -357,7 +353,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open GlobalTheory.Grid GlobalTheory.ChiGrid GlobalTheory.GridJoin
 open scoped Pointwise TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -366,22 +361,7 @@ namespace GlobalTheory.GridHC
 open GlobalTheory.SignedHC Finset
 
 theorem inCoset_weightX (D : D7) (τ : D.what₂.Tau) (j : ℕ) : InCoset (1 / 2) ((GlobalTheory.Grid.grid D τ).weightX j) := by
-  induction j with
-  | zero => exact GlobalTheory.ChiGrid.inCoset_weightX_zero (GlobalTheory.ChiGrid.odd_sLen D)
-  | succ j ih =>
-    rw [(GlobalTheory.Grid.grid D τ).weightX_succ]
-    intro x hx
-    rcases mem_union.1 hx with h | h
-    · exact ih x h
-    · obtain ⟨a, -, rfl⟩ := GlobalTheory.SignedHC.mem_block.1 h
-      obtain ⟨u, hu⟩ := D.R.t_odd
-      have e : ((GlobalTheory.Grid.grid D τ).t : ℚ) = 2 * u + 1 := by
-        have : ((GlobalTheory.Grid.grid D τ).t : ℚ) = D.R.t := rfl
-        rw [this, hu]; push_cast; ring
-      refine ⟨-(GlobalTheory.Grid.grid D τ).e (j + 1) + u - a, ?_⟩
-      push_cast
-      rw [e]
-      ring
+  first | exact _root_.GlobalTheory.ColParam.inCoset_weightX | exact @_root_.GlobalTheory.ColParam.inCoset_weightX | apply _root_.GlobalTheory.ColParam.inCoset_weightX <;> assumption
 
 theorem even_rkX (D : D7) (j : ℕ) : Even (GlobalTheory.Grid.rkX D j) := GlobalTheory.ChiGrid.even_rankX D j
 
@@ -419,7 +399,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open GlobalTheory.Grid GlobalTheory.ChiGrid GlobalTheory.GridJoin
 open scoped Pointwise TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 noncomputable section
 
 namespace GlobalTheory.GridJoin
@@ -492,10 +471,10 @@ theorem placeDat_of_grid : ∀ {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0
     have hv0' : P.v0 ∈ P.S0 := P.mem_S0_of_sum_eq.2 (Or.inl rfl)
     simp only [GlobalTheory.Grid.PlaceDat.depth, Z]
     by_cases h : v = P.v0
-    · rw [h, if_pos rfl]
-    · rw [if_neg (fun h' => h (hinj v hv _ hv0' h'))]
+    · rw [h, ite_eq_left rfl]
+    · rw [ite_eq_right (fun h' => h (hinj v hv _ hv0' h'))]
       unfold Places.depth
-      rw [if_neg h]
+      rw [ite_eq_right h]
   have hS0eq : Z.S0 R.Pg = P.S0 := by
     ext v
     simp only [GlobalTheory.Grid.PlaceDat.S0, hW, Places.W0, Finset.mem_image]
@@ -600,7 +579,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open GlobalTheory.Grid GlobalTheory.ChiGrid GlobalTheory.GridJoin
 open scoped Pointwise TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.GridJoin
 
@@ -674,7 +652,7 @@ theorem exists_gridPre_spaces : ∀ {D : D7} {Γ : Type} [Group Γ] [Fintype Γ]
   choose β hβ using hFr
   let mk : ∀ X, good X → GlobalTheory.Grid.Node D := fun X h => ⟨G'.V X, Sx X, M X h, G'.Λ X, β X h⟩
   let node : GlobalTheory.ChiGrid.Node → GlobalTheory.Grid.Node D := fun X => if h : good X then mk X h else GlobalTheory.Grid.row0 R 0
-  have node_pos : ∀ X (h : good X), node X = mk X h := fun X h => dif_pos h
+  have node_pos : ∀ X (h : good X), node X = mk X h := fun X h => dite_eq_left h
   have mk_is : ∀ X (h : good X), (mk X h).Is (X.rank D) (X.neg D.R.m) (Sx X) := fun X h => by
     have hv := G'.isV (hgood X h).1 (hgood X h).2
     exact ⟨hv.rank, hv.sigOK, hv.sig, rfl, hβ X h⟩
@@ -759,14 +737,14 @@ theorem exists_gridPre_spaces : ∀ {D : D7} {Γ : Type} [Group Γ] [Fintype Γ]
       exact hdP
     · intro i hi1 hi2
       dsimp only [G]
-      rw [dif_pos ⟨hi1, hi2⟩, gridDecompositionCast_is_iff]
+      rw [dite_eq_left ⟨hi1, hi2⟩, gridDecompositionCast_is_iff]
       have hl' : Z.ideal R.Pg = G'.pl.modul sc := hlvl
       have := hdV i ⟨hi1, hi2⟩
       rw [joinGram_neg, joinStair, ← hl'] at this
       exact this
     · intro j hj
       dsimp only [G]
-      rw [dif_pos hj, gridDecompositionCast_is_iff]
+      rw [dite_eq_left hj, gridDecompositionCast_is_iff]
       have := hdX j hj
       rw [joinGram_neg, joinStair_top] at this
       exact this
@@ -813,7 +791,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open GlobalTheory.Grid GlobalTheory.ChiGrid GlobalTheory.GridJoin
 open scoped Pointwise TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open scoped Topology
 
@@ -880,7 +857,7 @@ theorem exists_measDat (N : GlobalTheory.Grid.Node D) (hs : N.V.SigOK) (df : Pro
   have hc := princ_isCompact N hI
   by_cases h : df
   · obtain ⟨μ, 𝓕, e⟩ := GlobalTheory.FunObj.exists_meas N.V hs (hdf h) (N.princ I) ⟨ho, hc⟩
-    rw [if_pos rfl] at e
+    rw [ite_eq_left rfl] at e
     exact ⟨⟨μ, 𝓕⟩, by unfold GlobalTheory.Grid.Node.MeasDat.Is; exact ⟨fun _ => e, fun hn => absurd h hn⟩⟩
   · obtain ⟨μ, 𝓕, e⟩ := exists_isMeasFD N.V hs _ ho hc
     exact ⟨⟨μ, 𝓕⟩, by unfold GlobalTheory.Grid.Node.MeasDat.Is; exact ⟨fun h' => absurd h' h, fun _ => e⟩⟩
@@ -903,8 +880,8 @@ theorem exists_isMeas (G : GlobalTheory.Grid.GridPre R) (hS : G.IsSpaces) :
           rw [hN.sig τ]
           show (D.R.m - j) / 2 = 0
           by_cases hj : j = 0
-          · rw [if_pos hj] at hd; exact hd.elim
-          · rw [if_neg hj] at hd; omega)
+          · rw [ite_eq_left hj] at hd; exact hd.elim
+          · rw [ite_eq_right hj] at hd; omega)
         (I := if j = 0 then G.lvl R else ⊤) (by split_ifs; exacts [hlvl, htop])
       exact ⟨m, fun _ _ => hm⟩
     · exact ⟨⟨0, ∅⟩, fun h1 h2 => absurd ⟨h1, h2⟩ h⟩
@@ -936,10 +913,10 @@ theorem exists_isMeas (G : GlobalTheory.Grid.GridPre R) (hS : G.IsSpaces) :
     | zero => exact h00
     | succ i =>
       have := hmV i 0 hi (Nat.zero_le _)
-      rw [if_pos rfl, if_pos rfl] at this
+      rw [ite_eq_left rfl, ite_eq_left rfl] at this
       exact this
   · have := hmV i (j + 1) hi hj
-    rw [if_neg (Nat.succ_ne_zero j), if_neg (Nat.succ_ne_zero j)] at this
+    rw [ite_eq_right (Nat.succ_ne_zero j), ite_eq_right (Nat.succ_ne_zero j)] at this
     exact this
 
 end GlobalTheory.GridJoin
@@ -959,8 +936,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionValues
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open scoped Pointwise TensorProduct InnerProductSpace
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.GridJoin
 

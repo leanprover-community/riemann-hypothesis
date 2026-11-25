@@ -249,7 +249,7 @@ theorem integral_after_clearing_polynomial_denominators_holds : LeafClearDen := 
   have hi' : i < d := Finset.mem_range.mp hi
   rw [eval₂_mul, eval₂_C, eval₂_X_pow]
   congr 1
-  simp only [c, Finset.mem_range, hi', dif_pos]
+  simp only [c, Finset.mem_range, hi', dite_eq_left]
   rfl
 
 theorem LeafOrdInfLocal_of' (h1 : LeafFinInf) (h2 : LeafFinVal) : LeafOrdInfLocal :=

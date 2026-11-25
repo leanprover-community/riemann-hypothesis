@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LintegralBigCellHaarDensityConstant
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceFoundations.AssemblyStatement
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceFoundations.UnipotentExpHaarSqrtBound
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.ExpInPPosDef
@@ -138,15 +139,7 @@ theorem hs_nonneg {m : ℕ} (X : Matrix (Fin m) (Fin m) ℂ) : 0 ≤ S7.hs X := 
 
 theorem hs_unreal {m : ℕ} (x : EuclideanSpace ℝ (Fin m × Fin m × Bool)) :
     S7.hs (Formalism.MainNotions.S.unrealify x) = ‖x‖ ^ 2 := by
-  unfold S7.hs
-  rw [EuclideanSpace.norm_eq, Real.sq_sqrt (Finset.sum_nonneg fun _ _ => sq_nonneg _),
-    Fintype.sum_prod_type]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rw [Fintype.sum_prod_type]
-  refine Finset.sum_congr rfl fun j _ => ?_
-  rw [Fintype.sum_bool]
-  simp only [Formalism.MainNotions.S.unrealify, Complex.sq_norm, Complex.normSq_mk, Real.norm_eq_abs, sq_abs]
-  ring
+  apply _root_.GlobalTheory.CellDens.DNorm.norm_unrealify <;> assumption
 
 theorem eight_n_q0_lt_needed_gap {n : ℕ} (ε : Fin n → Bool) : 8 * (n : ℝ) * (S7.q0 ε : ℝ) < hNeed ε := by
   have hq : ((S7.q0 ε : ℕ) : ℝ) = min (pOf ε : ℝ) (qOf ε : ℝ) := by
@@ -324,7 +317,7 @@ theorem assembly : AssemblyStatement := by
           (P * NormedSpace.exp (Formalism.MainNotions.S.unrealify (x : EuclideanSpace ℝ _)) * P⁻¹)
           (Classical.choice (hT t ht)).w⟫_ℂ *
         Complex.exp (-((t : ℂ) * trace (dMat (dNode k r) * conjL P x))) :=
-    fun t ht x => dif_pos ht
+    fun t ht x => dite_eq_left ht
   have hgc : Continuous fun x : Formalism.MainNotions.S.lieE (Formalism.QuantumDeterminants.Nset k r) =>
       P * NormedSpace.exp (Formalism.MainNotions.S.unrealify (x : EuclideanSpace ℝ _)) * P⁻¹ :=
     (continuous_const.matrix_mul exp_unreal_continuous).matrix_mul continuous_const
@@ -466,7 +459,7 @@ theorem assembly : AssemblyStatement := by
   have hinWb : Formalism.QuantumDeterminants.inWb k r (z0 k r) := by
     intro i hi
     show (Pi.single (Formalism.QuantumDeterminants.wI k r (Fin.last k)) (1 : ℂ) : Fin (2 * r + k + 1) → ℂ) i = 0
-    rw [Pi.single_apply, if_neg]
+    rw [Pi.single_apply, ite_eq_right]
     intro hh
     subst hh
     simp only [Formalism.QuantumDeterminants.wI, Fin.val_last] at hi

@@ -52,8 +52,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.PullbackSections
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section Valuations
 
 open IsLocalRing Polynomial
@@ -78,15 +76,6 @@ variable {W L : Type} [CommRing W] [IsDomain W] [IsDiscreteValuationRing W] [Fie
   [IsFractionRing W L]
 
 end Valuations
-
-section Clauses
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
-  {Xo : Moduli Dw l} {c : Coeff l}
-
-variable [StarRing (𝓞 E)]
-
-end Clauses
 
 end GlobalTheory.ThetaValueIdentityCompare
 end -- clump:auto
@@ -363,9 +352,6 @@ end Main
 
 end GlobalTheory.CompanionTheory.Ar.Rec.FinRd.Pt
 
-namespace GlobalTheory.CompanionTheory.Ar.Rec.FinRd
-
-end GlobalTheory.CompanionTheory.Ar.Rec.FinRd
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

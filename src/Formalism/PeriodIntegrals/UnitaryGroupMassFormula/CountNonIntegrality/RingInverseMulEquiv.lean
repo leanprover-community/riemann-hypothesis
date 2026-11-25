@@ -21,21 +21,6 @@ def LocGen : Prop :=
         Ring.inverse ((algebraMap (D.s.atP p).Fp (D.s.atP p).Ep (δ p) * (D.s.atP p).ιE (uP p : D.host.E)) ^ m) =
           w * (D.s.atP p).ιE x
 
-theorem ringInverse_mulEquiv {R S : Type*} [MonoidWithZero R] [MonoidWithZero S] (f : R ≃* S) (x : R) :
-    f (Ring.inverse x) = Ring.inverse (f x) := by
-  have f0 : f 0 = 0 := by
-    calc f 0 = f (0 * f.symm 0) := by rw [zero_mul]
-      _ = f 0 * f (f.symm 0) := map_mul f _ _
-      _ = 0 := by rw [f.apply_symm_apply, mul_zero]
-  by_cases h : IsUnit x
-  · obtain ⟨u, rfl⟩ := h
-    have e : f u = ((Units.map f.toMonoidHom u : Sˣ) : S) := rfl
-    rw [Ring.inverse_unit, e, Ring.inverse_unit]
-    rfl
-  · have hf : ¬ IsUnit (f x) := fun hu => h (by simpa using hu.map f.symm)
-    rw [Ring.inverse_non_unit x h, Ring.inverse_non_unit _ hf]
-    exact f0
-
 theorem iE_mem_O (D : Formalism.BasicNotions.D7) (p : PlF D) (o : 𝓞 D.host.E) : (D.s.atP p).ιE (o : D.host.E) ∈ (D.s.atP p).O := by
   rw [(D.s.atP p).O_def]
   have h1 : IsIntegral ℤ ((D.s.atP p).ιE (o : D.host.E)) :=
@@ -46,7 +31,7 @@ theorem cj_frFac (D : Formalism.BasicNotions.D7) (δ : ∀ p : PlF D, (D.s.atP p
     (D.s.atP p).cj (frFac δ p a) = frFac δ p a := by
   unfold frFac
   rw [show ∀ x, (D.s.atP p).cj (Ring.inverse x) = Ring.inverse ((D.s.atP p).cj x) from
-    fun x => ringInverse_mulEquiv (D.s.atP p).cj.toMulEquiv x]
+    fun x => map_ringInverse (D.s.atP p).cj.toMulEquiv x]
   rw [map_pow, map_mul, AlgEquiv.commutes, (D.s.atP p).cj_ιE, map_ratCast]
 
 theorem frame_mem {D : Formalism.BasicNotions.D7} {T : D.host.E} (Λ : Submodule (𝓞 D.host.E) (VS D).V)

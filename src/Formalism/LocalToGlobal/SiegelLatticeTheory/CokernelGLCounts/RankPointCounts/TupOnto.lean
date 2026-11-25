@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIdealWeight
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.TupLift
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermsFiniteAtPoint.FrameL
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermsFiniteAtPoint.HeisOpHolds
@@ -68,22 +69,8 @@ theorem good_sum {M : ℕ → Matrix (Fin n) (Fin n) E} (hM : ∀ k, Good aa (M 
 
 theorem pow_upper {N : Matrix (Fin n) (Fin n) E} (hN : ∀ c b, b ≤ c → N c b = 0) :
     ∀ k (c b : Fin n), (b : ℕ) < c + k → (N ^ k) c b = 0 := by
-  intro k
-  induction k with
-  | zero =>
-    intro c b h
-    rw [pow_zero, Matrix.one_apply_ne]
-    intro hcb
-    subst hcb
-    omega
-  | succ k ih =>
-    intro c b h
-    rw [pow_succ, Matrix.mul_apply]
-    refine Finset.sum_eq_zero fun d _ => ?_
-    by_cases hbd : b ≤ d
-    · rw [hN d b hbd, mul_zero]
-    · have hdb : (d : ℕ) < b := Fin.lt_iff_val_lt_val.1 (not_le.1 hbd)
-      rw [ih c d (by omega), zero_mul]
+  intros
+  apply _root_.GlobalTheory.StrictUpperNilpotent.pow_apply_eq_zero_of_strictUpper <;> assumption
 
 theorem inv_good {U : Matrix (Fin n) (Fin n) E} (hU0 : ∀ c b, b < c → U c b = 0) (hU1 : ∀ c, U c c = 1)
     (hg : ∀ c b, c < b → ∀ x ∈ (aa b : Submodule (𝓞 E) E), x * U c b ∈ (aa c : Submodule (𝓞 E) E)) :
@@ -557,7 +544,7 @@ theorem nLamOnto_holds : TupLift.NLamOnto := by
         · have h0 : UX c i - (if c = i then 1 else 0) = 0 := by
             by_cases hci : c = i
             · subst hci; simp [hUX1]
-            · rw [if_neg hci, hUX0 c i (lt_of_le_of_ne (Fin.le_iff_val_le_val.2 (by omega)) (Ne.symm hci)),
+            · rw [ite_eq_right hci, hUX0 c i (lt_of_le_of_ne (Fin.le_iff_val_le_val.2 (by omega)) (Ne.symm hci)),
                 sub_zero]
           rw [h0, zero_smul]
           exact Submodule.zero_mem _

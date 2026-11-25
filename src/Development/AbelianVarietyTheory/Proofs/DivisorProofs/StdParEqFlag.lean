@@ -155,7 +155,7 @@ theorem exists_coeff_of_mem_colSpan {F E : Type} [Field F] [NumberField F] [Fiel
     obtain ⟨i, hi, rfl⟩ := hx
     obtain ⟨j, rfl, hj⟩ := hI i hi
     refine ⟨Pi.single j 1, fun j' hj' => ?_, ?_⟩
-    · rw [Pi.single_apply, if_neg]
+    · rw [Pi.single_apply, ite_eq_right]
       rintro rfl
       exact hj' hj
     · rw [Matrix.mulVec_single_one]
@@ -287,7 +287,7 @@ theorem flag_mat {R : Type} [CommRing R] {n r : ℕ} (A : Matrix (Fin n) (Fin r)
       rw [Finset.sum_map]; rfl]
     refine Finset.sum_subset (Finset.subset_univ _) fun l _ hl => ?_
     have : s ≤ l.val := by
-      by_contra h; push_neg at h
+      by_contra h; push Not at h
       exact hl (Finset.mem_map.2 ⟨⟨l.val, h⟩, Finset.mem_univ _, Fin.ext rfl⟩)
     rw [hsmall _ hj l this, mul_zero]
 
@@ -369,8 +369,7 @@ theorem unipFlag_castLE_le_unip : ∀ (F E : Type) [Field F] [NumberField F] [Fi
   · obtain ⟨m, hmS, hmax⟩ : ∃ m ∈ S, ∀ k ∈ S, k ≤ m := ⟨S.max' hne, S.max'_mem hne, fun k hk => S.le_max' k hk⟩
     have hsm : s = m.val + 1 := by
       apply le_antisymm
-      · by_contra hlt
-        push_neg at hlt
+      · by_contra! hlt
         obtain ⟨k, hk, hle⟩ := (hS ⟨m.val + 1, by omega⟩).1 (by simp only; omega)
         have h2 := hmax k hk
         rw [Fin.le_def] at hle h2

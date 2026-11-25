@@ -164,8 +164,7 @@ lemma norm_act_le {dim : (E →+* ℂ) → ℕ} (α : 𝓞 E) (B : ℝ) (hB : �
     rw [show act α (0 : Vsp dim) = 0 from (actL α).map_zero]
     simp
   obtain ⟨i, hi⟩ : ∃ i, v i ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hv (by ext i; simpa using h i)
   have hB0 : 0 ≤ B := (norm_nonneg _).trans (hB i.1)
   rw [EuclideanSpace.norm_eq, EuclideanSpace.norm_eq, ← Real.sqrt_sq hB0, ← Real.sqrt_mul (sq_nonneg B)]

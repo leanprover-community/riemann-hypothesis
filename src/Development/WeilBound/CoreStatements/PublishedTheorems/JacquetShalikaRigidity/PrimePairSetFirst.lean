@@ -90,7 +90,7 @@ theorem colT_rat (hψ : StdPsi ψ) (m : ℕ) (hmk : m + 1 < k) (f : GA E k → �
   · intro s _ hs
     have h0 : eLast (E := E) k (m + 1) s = 0 := by
       simp only [eLast]
-      rw [if_neg]
+      rw [ite_eq_right]
       intro e
       apply hs
       have h2 := s.2.2
@@ -114,23 +114,23 @@ def rowEquiv (m : ℕ) (hmk : m + 1 < k) : RowT E k (m + 1) ≃ {ξ : UnipotentB
     intro h0
     exact hi (congrFun h0 ⟨(i, ⟨m + 1, hmk⟩), him, le_rfl, le_rfl⟩)⟩
   invFun η := ⟨fun i => if h : (i : ℕ) < m + 1 then η.1 ⟨(i, ⟨m + 1, hmk⟩), h, le_rfl, le_rfl⟩ else 0, by
-    refine ⟨fun h0 => η.2 ?_, fun i hi => dif_neg (by omega)⟩
+    refine ⟨fun h0 => η.2 ?_, fun i hi => dite_eq_right (by omega)⟩
     funext t
     have h1 := congrFun h0 t.1.1
     simp only [Pi.zero_apply] at h1
-    rw [dif_pos t.2.1, blk_eta hmk t] at h1
+    rw [dite_eq_left t.2.1, blk_eta hmk t] at h1
     exact h1⟩
   left_inv ξ := by
     apply Subtype.ext
     funext i
     by_cases h : (i : ℕ) < m + 1
-    · exact dif_pos h
-    · exact (dif_neg h).trans (ξ.2.2 i (by omega)).symm
+    · exact dite_eq_left h
+    · exact (dite_eq_right h).trans (ξ.2.2 i (by omega)).symm
   right_inv η := by
     apply Subtype.ext
     funext t
     show (if h : (t.1.1 : ℕ) < m + 1 then η.1 ⟨(t.1.1, ⟨m + 1, hmk⟩), h, le_rfl, le_rfl⟩ else 0) = η.1 t
-    rw [dif_pos t.2.1, blk_eta hmk t]
+    rw [dite_eq_left t.2.1, blk_eta hmk t]
 
 end primePairSetFirst
 
@@ -152,8 +152,8 @@ theorem p1_holds : N0 → P0 → P1 := by
     have ht := t.2.1
     simp only [eLast, Matrix.one_apply]
     by_cases h : (t.1.1 : ℕ) = m
-    · rw [if_pos (Fin.ext h.symm), if_pos (by omega)]
-    · rw [if_neg (fun e => h (congrArg Fin.val e).symm), if_neg (by omega)]
+    · rw [ite_eq_left (Fin.ext h.symm), ite_eq_left (by omega)]
+    · rw [ite_eq_right (fun e => h (congrArg Fin.val e).symm), ite_eq_right (by omega)]
   · intro j hj y g
     rcases Nat.lt_or_ge (m + 1) j with h1 | h1
     · exact primePairSetFirst.colT_law m f j h1 (hf.law j h1) y g

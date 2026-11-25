@@ -110,7 +110,7 @@ theorem traced_comatrix : ∀ (A : Type) [Ring A] [Algebra ℂ A] (m : ℕ) (E :
   have hQ := qComatrix A m E hE u
   have S1 : ∑ i, ∑ l, (∑ j, C i j * Tm E (u - (m : ℂ)) j l) * P l i =
       qdet E u * ∑ k ∈ range (N + 1), algebraMap ℂ A ((-1) ^ k * (u - m) ^ (N - k)) * etr E k := by
-    simp only [hC, hQ, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    simp only [hC, hQ, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     rw [← Finset.mul_sum]
     congr 1
     simp only [hP, etr, Finset.mul_sum]
@@ -127,7 +127,7 @@ theorem traced_comatrix : ∀ (A : Type) [Ring A] [Algebra ℂ A] (m : ℕ) (E :
             exact Finset.sum_comm
         _ = _ := Finset.sum_congr rfl fun j _ => congrArg (C i j * ·) (key E (u - (m : ℂ)) N j i)
     simp only [h, mul_add, Finset.sum_add_distrib, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true, Finset.mul_sum]
+      Finset.mem_univ, ite_true, Finset.mul_sum]
     congr 1
     · refine Finset.sum_congr rfl fun i _ => ?_
       rw [← Algebra.commutes]

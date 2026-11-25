@@ -16,16 +16,12 @@ public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndExp
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace Formalism.MainNotions.ModuliIntegralCharts.H1.ExpUniqGlue
 
 open CategoryTheory Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
 open MvPolynomial Formalism.L2.Pj Formalism.MainNotions.ModuliIntegralCharts.H1.ExpUniqJet
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 section BC
 
@@ -266,16 +262,12 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace Formalism.MainNotions.ModuliIntegralCharts.H1.ExpUniqChart
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor NumberField Formalism.L2.Pj
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem epsMul_zero {S : Type} [CommRing S] :
     epsMul (0 : S) = (algebraMap S (DualNumber S)).comp (TrivSqZeroExt.fstHom S S S).toRingHom := by
@@ -318,7 +310,7 @@ theorem tan_eq (y : FrPt Xo c S) (x : ∀ m, jO y (dL Dw) m 1 ⟶ Xo.univ.t.G) (
     have e : u i = homAt y.x (Algebra.ofId S (DualNumber S)) ≫
         (homAt y.x (jetAug : Jet S (Fin 1 × Fin (dL Dw)) (0 + 1) →ₐ[S] S) ≫ x 1) := by
       apply Over.OverMorphism.ext
-      simp only [hu i, hj, if_neg hi, epsMul_zero, ← fst_comp_tan (dL Dw) i]
+      simp only [hu i, hj, ite_eq_right hi, epsMul_zero, ← fst_comp_tan (dL Dw) i]
       simp only [Over.comp_left, homAt, Over.homMk_left]
       simp only [spMap, ← Category.assoc]
       congr 1

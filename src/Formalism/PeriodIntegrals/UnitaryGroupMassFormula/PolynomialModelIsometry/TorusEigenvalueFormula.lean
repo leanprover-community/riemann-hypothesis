@@ -63,7 +63,7 @@ theorem torus_eigenvalue_formula : TorusEig := by
   congr 2
   simp only [map_mul, Complex.conj_ofReal, Complex.conj_I]
   push_cast
-  simp only [Pi.neg_apply, Finset.mul_sum, Finset.sum_mul, ← Finset.sum_neg_distrib, ← Finset.sum_add_distrib]
+  simp only [Pi.neg_apply, Finset.mul_sum, Finset.sum_mul, ← Finset.sum_add_distrib]
   ring_nf
   apply Finset.sum_congr rfl
   intro i _

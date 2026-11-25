@@ -91,7 +91,7 @@ theorem eq_mul_prod_of_partial {ι : Type} [Fintype ι] [DecidableEq ι] {A : ι
     ring
   by_cases hF : ∀ a, F a = 0
   · exact ⟨0, fun a => by simp [hF a]⟩
-  push_neg at hF
+  push Not at hF
   obtain ⟨a₀, ha₀⟩ := hF
   have hl : ∀ i, l i (a₀ i) ≠ 0 := by
     intro i hi

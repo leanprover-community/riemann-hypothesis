@@ -72,9 +72,9 @@ theorem eq_sum_cosets {φ : V → ℂ} (hφ : HasCompactSupport φ) (L : AddSubg
     intro q
     by_cases hq : q = (x : V ⧸ L)
     · subst hq
-      rw [if_pos rfl, Set.indicator_of_mem (show x ∈ {y | y - ((x : V ⧸ L)).out ∈ L} from (key _).2 rfl),
+      rw [ite_eq_left rfl, Set.indicator_of_mem (show x ∈ {y | y - ((x : V ⧸ L)).out ∈ L} from (key _).2 rfl),
         hval, mul_one]
-    · rw [if_neg hq, Set.indicator_of_notMem (show x ∉ {y | y - q.out ∈ L} from fun hx => hq ((key _).1 hx)),
+    · rw [ite_eq_right hq, Set.indicator_of_notMem (show x ∉ {y | y - q.out ∈ L} from fun hx => hq ((key _).1 hx)),
         mul_zero]
   simp only [hterm, Finset.sum_ite_eq']
   split_ifs with hx
@@ -138,15 +138,15 @@ theorem exists_box_subset {W : Set (Af F)} (hW : W ∈ 𝓝 (0 : Af F)) :
       intro v
       by_cases hv : v ∈ I
       · have := hy v
-        simp only [hv, if_true] at this
+        simp only [hv, ite_true] at this
         exact hQ1 v this
       · have := hy v
-        simp only [hv, if_false] at this
+        simp only [hv, ite_false] at this
         exact this
     have : (fun v => (⟨y v, hint v⟩ : A v)) ∈ (RestrictedProduct.structureMap R A Filter.cofinite) ⁻¹' W := by
       refine hsub fun v hv => hQ2 v _ ?_
       have := hy v
-      simp only [hv, if_true] at this
+      simp only [hv, ite_true] at this
       exact this
     exact this
 
@@ -165,9 +165,3 @@ theorem crd_zero {R : Type} [CommRing R] [Algebra F R] (k : Fin d) :
   simp [crd]
 
 end GlobalTheory.CompanionTheory.Hypotheses₂.OneV.Coef.Dec
-
-namespace GlobalTheory.CompanionTheory.Hypotheses₂.OneV.Coef
-
-open Dec
-
-end GlobalTheory.CompanionTheory.Hypotheses₂.OneV.Coef

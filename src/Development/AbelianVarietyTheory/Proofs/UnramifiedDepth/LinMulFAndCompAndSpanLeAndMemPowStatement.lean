@@ -160,7 +160,7 @@ private theorem nsum_sub_mem (F : FGLaw R d) (N : ℕ) (i : Fin d) :
   | succ N ih =>
     have h := ev_sub_lin_mem (pair_points_zero_constant (gp_mulF F N) (gp_pt 0)) (F.const i)
     simp only [Fintype.sum_prod_type, coeff_law, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true, Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one] at h
+      Finset.mem_univ, ite_true, Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one] at h
     convert add_mem h ih using 1
     change ev ![mulF F.F N, pt R d 0] (F.F i) - _ = _
     simp only [pt, Nat.cast_succ, add_smul, one_smul]
@@ -231,7 +231,6 @@ open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj Alg
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ ReciprocityTheory.ChartRestriction.G.Pdiv.ChartF ReciprocityTheory.ChartRestriction.G.Pdiv.AvDefs
 open ReciprocityTheory.PGsh ReciprocityTheory.PGsh.Up ReciprocityTheory.PGsh.Be2 GlobalTheory.ChF
 open ReciprocityTheory.ChartRestriction.G.Chart (sp spMap)
-attribute [local instance] Over.cartesianMonoidalCategory
 
 end -- clump:auto
 end -- clump:auto

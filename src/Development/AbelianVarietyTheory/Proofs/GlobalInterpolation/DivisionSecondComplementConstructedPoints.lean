@@ -79,12 +79,6 @@ namespace GlobalTheory.LossItemsCompare
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.G GlobalTheory.IndefiniteRowSideFullHecke GlobalTheory.HCEntries
 
-section Programme
-
-variable {l d : ℕ} [NeZero d]
-
-end Programme
-
 section Point
 
 variable {D : D7} {L : SizeData₂ D} {X : ErrX D} {K : Consts} {c : ErrC}
@@ -96,12 +90,6 @@ theorem cube_le_eta (P : ParameterChoice' D L) : 4 * (D.R.N D.R.m : ℝ) ^ 3 + 6
   linarith [one_le_letterBlockLength D]
 
 end Point
-
-section Family
-
-variable {eps : ℝ} (Fm : FamP eps)
-
-end Family
 
 end GlobalTheory.LossItemsCompare
 
@@ -129,9 +117,9 @@ noncomputable def topConst (D : D7) (c : ℝ) (τ : D.what₂.Tau) : ℝ :=
 theorem topConst_top (c : ℝ) {τ : D.what₂.Tau} {t : D.host.TT}
     (h : (D.eTau τ : D.R.GG) = D.R.tau1 t) : topConst D c τ = c := by
   unfold topConst
-  rw [Finset.sum_eq_single t, if_pos h]
+  rw [Finset.sum_eq_single t, ite_eq_left h]
   · intro s _ hs
-    exact if_neg fun h' => hs (Subtype.ext (tau1_injective (h'.symm.trans h)))
+    exact ite_eq_right fun h' => hs (Subtype.ext (tau1_injective (h'.symm.trans h)))
   · simp
 
 theorem topConst_nonneg {c : ℝ} (hc : 0 ≤ c) (τ : D.what₂.Tau) : 0 ≤ topConst D c τ := by
@@ -150,7 +138,7 @@ theorem sum_topConst (c : ℝ) : ∑ τ, topConst D c τ = (D.host.TT.card : ℝ
     rw [Finset.sum_eq_single (D.eTau.symm ⟨D.R.tau1 t, (Formalism.HC.Frame.mem_Psi_iff _).2 rfl⟩)]
     · simp
     · intro τ _ hτ
-      refine if_neg fun h' => hτ ?_
+      refine ite_eq_right fun h' => hτ ?_
       rw [Equiv.eq_symm_apply]
       exact Subtype.ext h'
     · simp
@@ -188,12 +176,12 @@ theorem end_rows (P : ParameterChoice' D L) (u : D.what₂.Word) (i : ℕ) (hi :
   unfold offWt
   by_cases ha : (D.eTau τ : D.R.GG) ∈ D.host.topPlaces
   · obtain ⟨t, ht⟩ := GlobalTheory.HCEntries.exists_top ha
-    rw [topWt_top L ht, topConst_top _ ht, if_neg (not_not.2 ((mem_topsOf τ).2 ha))]
+    rw [topWt_top L ht, topConst_top _ ht, ite_eq_right (not_not.2 ((mem_topsOf τ).2 ha))]
     rw [(L.top_u τ t hk0 ht).1] at a1 a2
     rw [(L.top_u τ t hk0 ht).2] at b1 b2
     obtain ⟨c1, c2⟩ := L.win_top (i + 1) (by omega) hi τ t ht
     constructor <;> linarith
-  · rw [topWt_off L ha, if_pos (fun h => ha ((mem_topsOf τ).1 h))]
+  · rw [topWt_off L ha, ite_eq_left (fun h => ha ((mem_topsOf τ).1 h))]
     rw [P.uk_extreme τ (by omega) ha] at b1 b2
     have h0 := topConst_nonneg hc τ
     have h1 := P.cloud_place_bound τ (by omega) ha
@@ -750,13 +738,13 @@ theorem sum_over_eq {X : ErrX D} (hs : SeenDef D X) (u : D.what₂.Word) (S : Fi
     have b2 : vAdd (D.plEq w) y = (D.what₂.places.ramIdx w : ℤ) := by
       by_contra hne
       exact a4 ⟨b1, by omega⟩
-    rw [if_pos h, b2]
+    rw [ite_eq_left h, b2]
     push_cast
     ring
   · have b2 : vAdd (D.plEq w) y = 0 := by
       have := mt a5.2 h
       omega
-    rw [if_neg h, b2]
+    rw [ite_eq_right h, b2]
     simp
 
 theorem seen_half : ∀ {eps : ℝ} (Fm : FamP eps) (x : ℝ) (hx : Fm.x1 < x) (i : Fm.Ix x) (u : (Fm.D x i).what₂.Word) (S : Finset (Fm.D x i).what₂.places.Pl), (∀ w ∈ S, Formalism.MainNotions.product_first_zeroth_parts.OverT (Fm.D x i) u w) → 0 ≤ ∑ w ∈ S, SizeData₂.sz w (Formalism.MainNotions.product_first_zeroth_parts.ET (Fm.D x i) u w) ∧ ∑ w ∈ S, SizeData₂.sz w (Formalism.MainNotions.product_first_zeroth_parts.ET (Fm.D x i) u w) ≤ Formalism.MainNotions.product_first_zeroth_parts.ETpi (Fm.D x i) u * Real.log (((Fm.D x i).mem u).A.T : ℝ) := by
@@ -1026,7 +1014,7 @@ theorem ctD_le (h : SizesAt L) (P : ParameterChoice' D L) (hx : 2 ≤ L.sc.x) (u
   have a := (abs_le.1 (nuAbs_place P u i j2 _ w0)).2
   unfold ctD
   by_cases ht : t ∈ D.host.TT
-  · simp only [if_pos ht]
+  · simp only [ite_eq_left ht]
     rw [topWt_top L (t := ⟨t, ht⟩) (eTau_false D t)] at a
     have b1 := (head_row u i j2 (tauPl D (false, t)) 0 (by omega)).2
     rw [D.hcW_first u _ (by omega), (L.top_u _ ⟨t, ht⟩ (by omega) (eTau_false D t)).1] at b1
@@ -1038,7 +1026,7 @@ theorem ctD_le (h : SizesAt L) (P : ParameterChoice' D L) (hx : 2 ≤ L.sc.x) (u
     have b6 := (L.cloud_v (tauPl D (true, t)) ⟨0, by omega⟩).2
     push_cast at b5
     linarith
-  · simp only [if_neg ht]
+  · simp only [ite_eq_right ht]
     rw [topWt_off L (false_not_top ht)] at a
     linarith
 

@@ -184,7 +184,7 @@ theorem line_trace : ∀ (D : D7) (S : HSp D) (L : Lat S) (x : Fin S.rank → D.
   | add y z _ _ hy hz => rw [map_add (f := _), add_mul]; exact intAt_add hy hz
   | smul o y hy' hy =>
     have h1 := GlobalTheory.IdVGen.gen_mem_intAt (v := v) (GlobalTheory.FinPlLoc.ePl_int (· = v))
-      (fun w hw => by rw [GlobalTheory.FinPlLoc.evalV_ePl, if_neg hw]) o
+      (fun w hw => by rw [GlobalTheory.FinPlLoc.evalV_ePl, ite_eq_right hw]) o
     have e := incA_mul_tmul (D := D) (algebraMap (𝓞 D.host.E) D.host.E o) (pairA D.host.F 0 (GlobalTheory.FinPlLoc.ePl D (· = v))) 1
     rw [mul_one] at e
     have h2 := intAt_mul h1 hy

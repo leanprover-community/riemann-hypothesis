@@ -140,16 +140,13 @@ def OffChaseGeo : Prop := PairFiveS → PairFiveR → OffChaseMV
 theorem etale_complement_continuity_induction_of_five_lemma_inputs (hL : OffContLoc) (hS : PairFiveS) (hR : PairFiveR) (hG : OffChaseGeo) : OffContStep :=
   offContStep_of' hL offExcMV (hG hS hR)
 
-theorem dbl.inl_map {P' P : Arrow Spc} (φ : P' ⟶ P) : dbl.inl P' ≫ dbl.map φ = φ.right ≫ dbl.inl P :=
-  pushout.inl_desc (f := P'.hom) (g := P'.hom) _ _ _
-
 alias dbl.map_comp := _root_.LateralTheory.CohomologicalPurity.dbl.map_comp'
 
 theorem Hs.fgt_pull (q : ℕ) {P' P : Arrow Spc} (φ : P' ⟶ P) (n i : ℤ) (x : Hs q P n i) :
     Hs.fgt q P' n i (Hs.pull q φ n i x) = GlobalTheory.EtC.pull _ φ.right (tw q i) n (Hs.fgt q P n i x) := by
   change GlobalTheory.EtC.pull _ (dbl.inl P') _ n (GlobalTheory.EtC.pull _ (dbl.map φ) _ n x.1) =
     GlobalTheory.EtC.pull _ φ.right _ n (GlobalTheory.EtC.pull _ (dbl.inl P) _ n x.1)
-  rw [← GlobalTheory.EtC.pull_comp, ← GlobalTheory.EtC.pull_comp, dbl.inl_map]
+  rw [← GlobalTheory.EtC.pull_comp, ← GlobalTheory.EtC.pull_comp, LateralTheory.CohomologicalPurity.dbl.inl_map']
 
 theorem pairFiveR_surj (bd : LeafBd) (q : ℕ) {J : Type} [SmallCategory J] [IsFiltered J] (F : Jᵒᵖ ⥤ Arrow Spc)
     (P : Arrow Spc) (c : ∀ j, P ⟶ F.obj (op j)) (hc : ∀ j k (f : j ⟶ k), c k ≫ F.map f.op = c j)

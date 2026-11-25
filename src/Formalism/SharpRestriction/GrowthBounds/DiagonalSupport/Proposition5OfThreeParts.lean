@@ -163,7 +163,6 @@ theorem value_core {p : ℕ} [hpF : Fact p.Prime] {O : Type} [CommRing O] [IsDom
         ((fock G (asm F p O hk Dt.nL rho (Dt.ph (Gp + R)) N0) - k0 * Dt.Bform F2 (Dt.ph (Gp + R))) -
           fock G (asm F p O hk Dt.nL rho (Dt.ph R) N0)) := by
     rw [map_add (f := _), asm_add, fock_add_right]; ring
-  have hκ0 : (0 : ℝ) ≤ (kapFl p (m + 1) d : ℝ) := Nat.cast_nonneg _
   have herr : geQ (vK p ((fock G (asm F p O hk Dt.nL rho (Dt.ph (Gp + R)) N0) - k0 * Dt.Bform F2 (Dt.ph (Gp + R))) -
           fock G (asm F p O hk Dt.nL rho (Dt.ph R) N0)))
           ((cP : ℝ) - CDm * large₂ + twiceValuationFactorialProduct p d - (kapFl p (m + 1) d : ℝ)) := by
@@ -201,10 +200,6 @@ theorem proposition5_at_of_three_parts (C CDn CDm CLa : ℝ) (h0n : 0 ≤ CDn) (
       have : cStar ≤ cPrime n' r TT.card c0 cpp cStar := by unfold cPrime; omega
       exact_mod_cast this
     have h2 : (8 : ℝ) * ((Dp : ℝ) + 1) ≤ (cStar : ℝ) := by exact_mod_cast hcS
-    have h3 : C * ((TT.card : ℝ) * ((m + 1 : ℕ) : ℝ) ^ 2 * Real.logb p a) ≤ (Dp : ℝ) := by
-      calc C * ((TT.card : ℝ) * ((m + 1 : ℕ) : ℝ) ^ 2 * Real.logb p a)
-          = C * (TT.card : ℝ) * ((m + 1 : ℕ) : ℝ) ^ 2 * Real.logb p a := by ring
-        _ ≤ _ := hDp
     linarith
   obtain ⟨large₂, hLgdef⟩ : ∃ large₂ : ℝ, large₂ = (TT.card : ℝ) * ((m + 1 : ℕ) : ℝ) ^ 2 * Real.logb p a := ⟨_, rfl⟩
   rw [← hLgdef] at hLg hκ hNum hcPge
@@ -250,7 +245,6 @@ theorem proposition5_of_three_parts (D : Formalism.BasicNotions.D7) (CLa Ck Crk 
   have c2 : C₂ ≤ C := le_trans (le_trans (le_max_right _ _) (le_max_left _ _)) hC
   have c3 : C₃ ≤ C := le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) hC
   have c4 : CDn + 3 * CDm ≤ C := le_trans (le_trans (le_max_right _ _) (le_max_right _ _)) hC
-  have c5 : 0 ≤ C := le_trans h2.le c1
   exact proposition5_at_of_three_parts C CDn CDm CLa h1.le h4.le (by linarith) (hP' C c1) (hM' C c2) (hN' C c3)
 
 end Formalism.MainNotions.Proposition5Numerics

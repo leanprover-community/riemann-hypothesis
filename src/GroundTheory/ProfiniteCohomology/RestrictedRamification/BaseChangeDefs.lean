@@ -164,22 +164,8 @@ theorem exists_le_of_algebraMap_mem (hL : ∀ x : L, algebraMap L Ω x ∈ (maxU
     ∃ E : IntermediateField F Ω, FiniteDimensional F E ∧ IsUnramifiedOutside S E ∧
       ∀ x : L, algebraMap L Ω x ∈ E := by
   classical
-  have exists_subset (s : Finset Ω)
-      (hs : ∀ x ∈ s, x ∈ maxUnramifiedOutside (F := F) (Ω := Ω) S) :
-      ∃ E : IntermediateField F Ω, FiniteDimensional F E ∧ IsUnramifiedOutside S E ∧
-        ∀ x ∈ s, x ∈ E := by
-    induction s using Finset.induction_on with
-    | empty => exact ⟨⊥, inferInstance, isUnramifiedOutside_bot S, by simp⟩
-    | insert a s _ ih =>
-      obtain ⟨E₁, hf₁, hu₁, ha⟩ :=
-        (mem_maxUnramifiedOutside_iff S).1 (hs a (Finset.mem_insert_self a s))
-      obtain ⟨E₂, hf₂, hu₂, hs₂⟩ := ih fun x hx => hs x (Finset.mem_insert_of_mem hx)
-      refine ⟨E₁ ⊔ E₂, inferInstance, hu₁.sup hu₂, fun x hx => ?_⟩
-      rcases Finset.mem_insert.1 hx with rfl | hx
-      · exact le_sup_left (α := IntermediateField F Ω) ha
-      · exact le_sup_right (α := IntermediateField F Ω) (hs₂ x hx)
   let b := Module.finBasis F L
-  obtain ⟨E, hf, hu, hE⟩ := exists_subset
+  obtain ⟨E, hf, hu, hE⟩ := exists_subset_of_subset_maxUnramifiedOutside S
     (Finset.univ.image fun i => algebraMap L Ω (b i)) fun x hx => by
       obtain ⟨i, -, rfl⟩ := Finset.mem_image.1 hx
       exact hL (b i)
@@ -209,40 +195,6 @@ theorem isUnramifiedIn_of_algebraMap_mem
   have e : P = Q.under (𝓞 L) := Ideal.over_def Q P
   subst e
   exact h
-
-
-omit [IsGalois F Ω] in
-theorem isUnramifiedOutside_restrictScalars_iff_of_isUnramifiedIn
-    (hL : ∀ v ∉ S, Algebra.IsUnramifiedIn (𝓞 L) v.asIdeal) (M : IntermediateField L Ω)
-    [FiniteDimensional L M] :
-    IsUnramifiedOutside S (M.restrictScalars F) ↔ IsUnramifiedOutside (placesOver S) M := by
-  have : FiniteDimensional F M := FiniteDimensional.trans F L M
-  have := NumberField.of_module_finite L M
-  change (∀ v ∉ S, Algebra.IsUnramifiedIn (𝓞 M) v.asIdeal) ↔ _
-  constructor
-  · intro hM w hw Q hQ hQw
-    have hv0 : w.asIdeal.under (𝓞 F) ≠ ⊥ := Ideal.under_ne_bot (𝓞 F) w.ne_bot
-    let v : HeightOneSpectrum (𝓞 F) := ⟨w.asIdeal.under (𝓞 F), inferInstance, hv0⟩
-    have hwv : w.asIdeal.LiesOver v.asIdeal := ⟨rfl⟩
-    have hv : v ∉ S := fun hvS => hw ⟨v, hvS, hwv⟩
-    have : Q.LiesOver v.asIdeal := Ideal.LiesOver.trans Q w.asIdeal v.asIdeal
-    exact ((isUnramifiedAt_tower_iff (F := F) (L := L) Q).1 (hM v hv Q hQ this)).2
-  · intro hM v hv Q hQ hQv
-    have hP0 : Q.under (𝓞 L) ≠ ⊥ := by
-      have : (Q.under (𝓞 L)).LiesOver v.asIdeal :=
-        ⟨by rw [Ideal.under_under]; exact hQv.over⟩
-      exact Ideal.ne_bot_of_liesOver_of_ne_bot v.ne_bot (Q.under (𝓞 L))
-    let w : HeightOneSpectrum (𝓞 L) := ⟨Q.under (𝓞 L), inferInstance, hP0⟩
-    have hwv : w.asIdeal.LiesOver v.asIdeal := ⟨by
-      change v.asIdeal = (Q.under (𝓞 L)).under (𝓞 F)
-      rw [Ideal.under_under]; exact hQv.over⟩
-    have hw : w ∉ placesOver S := by
-      rintro ⟨u, huS, hwu⟩
-      have huv : u = v := HeightOneSpectrum.ext (hwu.over.trans hwv.over.symm)
-      exact hv (huv ▸ huS)
-    have h1 := hM w hw Q hQ ⟨rfl⟩
-    have h2 := hL v hv (Q.under (𝓞 L)) inferInstance hwv
-    exact (isUnramifiedAt_tower_iff (F := F) (L := L) Q).2 ⟨h2, h1⟩
 
 theorem restrictScalars_maxUnramifiedOutside_eq
     (hL : ∀ x : L, algebraMap L Ω x ∈ (maxUnramifiedOutside (F := F) (Ω := Ω) S)) :

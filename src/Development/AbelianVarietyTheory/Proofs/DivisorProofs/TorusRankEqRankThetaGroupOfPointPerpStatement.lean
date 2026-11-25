@@ -116,7 +116,7 @@ theorem exists_emb_fractionRing_of_dominant : ∀ (o Ω : Type) [CommRing o] [Fi
     rw [GlobalTheory.Points.valR_eq ξ U h]
     exact e2
   have hinj0 : Function.Injective g0 := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     rintro ⟨x, hx⟩ h0
     obtain ⟨U, f, hz, rfl⟩ := RatModel.mem_O.1 hx
     rw [hg0 U f hz] at h0
@@ -168,7 +168,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.ZH
 open scoped CategoryTheory.Obj
 open Classical
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 
@@ -354,7 +353,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.ZH
 open scoped CategoryTheory.Obj
 open Classical
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 
@@ -619,7 +617,6 @@ open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM
 open scoped CategoryTheory.Obj
 open GlobalTheory.Poinc GlobalTheory.TorusPart
 open Classical
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Poinc.FibLat GlobalTheory.Poinc.Eq8
 
 

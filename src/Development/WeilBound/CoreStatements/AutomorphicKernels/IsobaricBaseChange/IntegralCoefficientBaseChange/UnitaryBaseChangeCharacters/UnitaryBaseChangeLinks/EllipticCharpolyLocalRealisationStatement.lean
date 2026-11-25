@@ -191,7 +191,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 namespace GlobalTheory.IntUnitaryPoly
@@ -292,18 +291,7 @@ theorem mem_GLint {L : Type} [Field L] {O : Subring L} {n : ℕ} (g : GL (Fin n)
     (h1 : ∀ i j, (g : Matrix (Fin n) (Fin n) L) i j ∈ O)
     (h2 : ∀ i j, ((g⁻¹ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) i j ∈ O) :
     g ∈ GLint (Fin n) O := by
-  let A : Matrix (Fin n) (Fin n) O := fun i j => ⟨_, h1 i j⟩
-  let B : Matrix (Fin n) (Fin n) O := fun i j => ⟨_, h2 i j⟩
-  have hA : A.map O.subtype = (g : Matrix (Fin n) (Fin n) L) := by ext i j; rfl
-  have hB : B.map O.subtype = ((g⁻¹ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) := by ext i j; rfl
-  have inj : ∀ M N : Matrix (Fin n) (Fin n) O, M.map O.subtype = N.map O.subtype → M = N := fun M N h => by
-    ext i j; exact congrFun (congrFun h i) j
-  have hAB : A * B = 1 := inj _ _ (by
-    rw [Matrix.map_mul, hA, hB, Units.mul_inv, Matrix.map_one _ (map_zero _) (map_one _)])
-  have hBA : B * A = 1 := inj _ _ (by
-    rw [Matrix.map_mul, hA, hB, Units.inv_mul, Matrix.map_one _ (map_zero _) (map_one _)])
-  refine ⟨⟨A, B, hAB, hBA⟩, ?_⟩
-  ext i j; rfl
+  apply _root_.Formalism.UG.P.satake_mem_glint <;> assumption
 
 theorem Ov_eq {E : Type} [Field E] [NumberField E] (w : Pl E) :
     (w.adicCompletionIntegers E).toSubring = intL (w.adicCompletion E) := by
@@ -326,7 +314,7 @@ theorem main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E →
   have hCwi : ∀ w, (((Cw w)⁻¹ : GLw n w) : Matrix (Fin n) (Fin n) _) = Ci.map (f w) := fun w => rfl
   have hchar : ∀ w, (C.map (f w)).charpoly = atPl w P := fun w => by
     rw [Matrix.charpoly_map, hC]
-  refine ⟨?_, fun w hs => ⟨⟨Cw w, by rw [UL, if_pos hs]; exact Subgroup.mem_top _⟩, hchar w⟩⟩
+  refine ⟨?_, fun w hs => ⟨⟨Cw w, by rw [UL, ite_eq_left hs]; exact Subgroup.mem_top _⟩, hchar w⟩⟩
   have hall : ∀ M : Matrix (Fin n) (Fin n) E, ∀ᶠ w in (cofinite : Filter (Pl E)), ∀ i j, Valued.v (f w (M i j)) ≤ 1 :=
     fun M => Filter.eventually_all.2 fun i => Filter.eventually_all.2 fun j => ae_int (M i j)
   filter_upwards [hall C, hall Ci, hall H, ae_unit hHd, ae_unit (two_ne_zero : (2 : E) ≠ 0)] with w h1 h2 h3 h4 h5
@@ -335,7 +323,7 @@ theorem main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E →
   have hK : Cw w ∈ GlobalTheory.LFun.KGL w (n := n) :=
     mem_GLint _ (fun i j => hO _ (h1 i j)) (fun i j => hO _ (h2 i j))
   by_cases hs : IsSplitAt w
-  · exact ⟨⟨Cw w, by rw [UL, if_pos hs]; exact Subgroup.mem_top _⟩, Subgroup.mem_subgroupOf.2 hK, hchar w⟩
+  · exact ⟨⟨Cw w, by rw [UL, ite_eq_left hs]; exact Subgroup.mem_top _⟩, Subgroup.mem_subgroupOf.2 hK, hchar w⟩
   · obtain ⟨-, -, -, hns, -⟩ := GlobalTheory.ConjAtPlace.main E hU w
     obtain ⟨hext, ⟨ϖ, q, hUI, -⟩, -, -⟩ := hns hs
     have h2v : Valued.v (2 : w.adicCompletion E) = 1 := by
@@ -359,7 +347,7 @@ theorem main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E →
         rw [Ov_eq]
       rw [e]; exact hR
     refine ⟨⟨R⁻¹ * Cw w * R, ?_⟩, Subgroup.mem_subgroupOf.2 (mul_mem (mul_mem (inv_mem hRK) hK) hRK), ?_⟩
-    · rw [UL, if_neg hs]
+    · rw [UL, ite_eq_right hs]
       show cT (cj w) ((R⁻¹ * Cw w * R : GLw n w) : Matrix (Fin n) (Fin n) _) * 1 *
         ((R⁻¹ * Cw w * R : GLw n w) : Matrix (Fin n) (Fin n) _) = 1
       rw [Units.val_mul, Units.val_mul, hCwv]
@@ -397,10 +385,7 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-theorem _root_.GlobalTheory.T.elliptic_charpoly_local_realisation : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∀ (n : ℕ) (P : E[X]), P ∈ Ell E n → (∀ᶠ w in (cofinite : Filter (Pl E)), ∃ y : UL n w, y ∈ KL n w ∧ y.1.val.charpoly = atPl w P) ∧ ∀ w : Pl E, IsSplitAt w → ∃ y : UL n w, y.1.val.charpoly = atPl w P := by
-  first | exact @GlobalTheory.IntUnitaryPoly.main
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.WeilBound.CoreStatements.AutomorphicKernels.IsobaricBaseChange.IntegralCoefficientBaseChange.UnitaryBaseChangeCharacters.UnitaryBaseChangeLinks.EllipticCharpolyLocalRealisationStatement =====

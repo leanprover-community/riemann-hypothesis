@@ -44,8 +44,6 @@ namespace GroundTheory.ProfCoh
 
 open CategoryTheory MonoidalCategory Involution OrderTwo
 
-attribute [local instance 2000] Rep.hV2
-
 section Transfer
 
 variable {F Ω : Type} [Field F] [Field Ω] [Algebra F Ω] (M : Rep.{0} (ULift.{0} ℤ) Gal(Ω/F))
@@ -310,7 +308,7 @@ theorem cupPairing_H0_cocycleTwo (a : M.ρ.invariants) (φ : cartierDual F Ω M)
       funext j; fin_cases j <;> rfl
     have e3 : Fin.partialProd (![g, h] : Fin 2 → Gal(Ω/F)) ⟨0, by omega⟩ = 1 := by
       simp [Fin.partialProd]
-    rw [e1, e3, map_one, Module.End.one_apply]
+    rw [e1, e3, map_one, one_apply_eq_self]
   obtain ⟨ht, hzt⟩ := exists_eq_cocycleTwo_of_normalized (galUnits.{0} F Ω) hG hc z
     (fun g => by rw [hval, cochainTwo_one_left _ hc, LinearMap.zero_apply])
     (fun g => by rw [hval, cochainTwo_one_right _ hc, LinearMap.zero_apply])
@@ -341,8 +339,6 @@ noncomputable section
 namespace GroundTheory.ProfCoh
 
 open CategoryTheory MonoidalCategory Involution OrderTwo
-
-attribute [local instance 2000] Rep.hV2
 
 section Neg
 
@@ -398,8 +394,8 @@ theorem realDualityPairing_zero_two_eq_zero (x : cohomology M 0) (hx : x ∈ nor
   have hφb : (φ : M →ₗ[ULift.{0} ℤ] galUnits.{0} F Ω) (M.ρ c b) =
       (galUnits.{0} F Ω).ρ c ((φ : M →ₗ[ULift.{0} ℤ] galUnits.{0} F Ω) b) := by
     conv_lhs => rw [← hφ]
-    rw [cartierDual_ρ_apply, inv_eq_self hG hc, ← Module.End.mul_apply, ← map_mul,
-      mul_self_eq_one hG hc, map_one, Module.End.one_apply]
+    rw [cartierDual_ρ_apply, inv_eq_self hG hc, ← mul_apply_eq_comp, ← map_mul,
+      mul_self_eq_one hG hc, map_one, one_apply_eq_self]
   change (φ : M →ₗ[ULift.{0} ℤ] galUnits.{0} F Ω) (M.ρ.norm b) = _
   rw [norm_apply _ hG hc, map_add (f := _), hφb]
 
@@ -645,21 +641,6 @@ theorem realDualityPairingZeroTwo_flip_bijective :
 
 end Duality
 
-section Values
-
-variable {F Ω : Type} [Field F] [Field Ω] [Algebra F Ω] [FiniteDimensional F Ω] [IsGalois F Ω]
-  (h2 : Module.finrank F Ω ≤ 2)
-  (hN : ∀ a b : Fˣ, (a : F) ∉ Set.range (Algebra.norm F : Ω → F) →
-    (b : F) ∉ Set.range (Algebra.norm F : Ω → F) →
-      ((a * b : Fˣ) : F) ∈ Set.range (Algebra.norm F : Ω → F))
-  {c : Gal(Ω/F)} (hG : ∀ g : Gal(Ω/F), g = 1 ∨ g = c) (hc : c ≠ 1)
-  (hneg : (-1 : F) ∉ Set.range (Algebra.norm F : Ω → F))
-  (hconj : ∀ ζ : galUnits.{0} F Ω, (∃ k : ℕ, 0 < k ∧ k • ζ = 0) → (galUnits.{0} F Ω).ρ c ζ = -ζ)
-  (hroots : ∀ k : ℕ, 0 < k → Nonempty (galRootsOfUnity.{0} F Ω k ≃+ ZMod k))
-  (M : Rep.{0} (ULift.{0} ℤ) Gal(Ω/F)) [IsDiscreteRep M] [Finite M]
-
-end Values
-
 section Bundle
 
 variable {F Ω : Type} [Field F] [Field Ω] [Algebra F Ω] [FiniteDimensional F Ω] [IsGalois F Ω]
@@ -709,8 +690,6 @@ noncomputable section
 namespace GroundTheory.ProfCoh
 
 open IsDedekindDomain NumberField CategoryTheory MonoidalCategory GroundTheory.Global
-
-attribute [local instance 2000] Rep.hV2
 
 section NormClassMap
 
@@ -774,8 +753,7 @@ theorem tensorHom_dualToCartier_cartierPairing :
         cartierPairing K L (Rep.res ψ.toMonoidHom M) =
       _root_.GroundTheory.ProfCoh.resEvalPairing ψ D M ≫ ρ := by
   refine Rep.Hom.ext (Representation.IntertwiningMap.ext (LinearMap.ext fun x => ?_))
-  induction x using TensorProduct.induction_on with
-  | zero => simp only [map_zero]
+  induction x using TensorProduct.inductionOn with
   | tmul a f => rfl
   | add x y hx hy => simp only [map_add (f := _), hx, hy]
 
@@ -988,8 +966,6 @@ namespace GroundTheory.ProfCoh
 
 open IsDedekindDomain NumberField CategoryTheory CategoryTheory.Limits MonoidalCategory GroundTheory.Global
 
-attribute [local instance 2000] Rep.hV2
-
 local notation "ℚ̄" => AlgebraicClosure ℚ
 
 variable {K : FiniteSubfield} (S : Set (HeightOneSpectrum (𝓞 K.1)))
@@ -1088,8 +1064,8 @@ end Local
 
 section Hypotheses
 
-noncomputable instance fintypeRealPlaces (K : FiniteSubfield) : Fintype {v : InfinitePlace K.1 // v.IsReal} :=
-  Fintype.ofFinite _
+noncomputable instance fintypeRealPlaces (K : FiniteSubfield) : Fintype {v : InfinitePlace K.1 // v.IsReal} := by
+  classical infer_instance
 
 theorem injective_resZero {G H : Type} [Group G] [TopologicalSpace G]
     [IsTopologicalGroup G] [Group H] [TopologicalSpace H] [IsTopologicalGroup H] (φ : H →ₜ* G)

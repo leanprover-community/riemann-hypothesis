@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DetZhatSwapUnit
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.SharpSpanCounting.MemPerpSpanIff
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.SharpSpanCounting.GraphTransport
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.SharpSpanCounting.OmPMemSpan
@@ -43,12 +44,7 @@ theorem dl_swap_r (f f' : Fin (r + 1) → V) :
   exact (RingHom.map_det (M.L.cj : E →+* E) _).symm
 
 theorem om_swap (f f' : Fin (r + 1) → V) : H.om' f' f = H.om f f' := by
-  unfold HermSp.om' HermSp.om
-  rw [zhat_swap]
-  refine Finset.sum_congr rfl fun b _ => ?_
-  congr 1
-  rw [Matrix.transpose_map, ← Matrix.adjugate_transpose, Matrix.transpose_apply]
-  exact congrFun (congrFun (RingHom.map_adjugate (M.L.cj : E →+* E) (H.Zhat f f')).symm _) _
+  apply _root_.Formalism.L2.SG.LsDatumA.om'_swap <;> assumption
 
 theorem inv_swap (f f' : Fin (r + 1) → V) (hD : IsUnit (H.Dl f f' (r + 1))) (a b : Fin (r + 1)) :
     (H.Zhat f' f)⁻¹ a b = M.L.cj ((H.Zhat f f')⁻¹ b a) := by

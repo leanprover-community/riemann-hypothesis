@@ -70,20 +70,8 @@ theorem aeval_mem (F : IntermediateField ℚ Ω) (w : (Σ k, ι k) → Ω) (hw :
 
 omit [Fintype K] [CharZero Ω] in
 theorem isMultiHomog_X_single [DecidableEq K] (p : Σ k, ι k) :
-    IsMultiHomog (X p : MRing ι) (fun k ↦ if k = p.1 then 1 else 0) := by
-  intro m hm k
-  rw [support_X, Finset.mem_singleton] at hm
-  subst hm
-  obtain ⟨k', i'⟩ := p
-  by_cases h : k = k'
-  · subst h
-    rw [Finset.sum_eq_single i']
-    · simp
-    · intro b _ hb
-      simp [Ne.symm hb]
-    · intro h
-      exact absurd (Finset.mem_univ _) h
-  · simp [h]
+    IsMultiHomog (X p : MRing ι) (fun k ↦ if k = p.1 then 1 else 0) :=
+  GroundTheory.Heights₂.Heights.Bridge.isMultiHomog_X_ite p
 
 
 omit [CharZero Ω] in

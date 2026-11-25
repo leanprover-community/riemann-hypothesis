@@ -351,8 +351,8 @@ theorem exists_isON_orth (h : IsHerm L Hm) (y : Fin n → E) (k : ℕ) :
     let f : Fin k → Fin n → E := fun i => e i.succ.succ.succ
     have hf' : IsON L Hm f := fun i j => by simpa [f] using he i.succ.succ.succ j.succ.succ.succ
     have hne : ∀ i j, i ≠ j → hf L Hm (e i) (e j) = 0 := fun i j hij => by
-      rw [he, if_neg hij]
-    have heq : ∀ i, hf L Hm (e i) (e i) = 1 := fun i => by rw [he, if_pos rfl]
+      rw [he, ite_eq_right hij]
+    have heq : ∀ i, hf L Hm (e i) (e i) = 1 := fun i => by rw [he, ite_eq_left rfl]
     have hmem : ∀ i : Fin (k + 1 + 2), (∀ j : Fin k, i ≠ j.succ.succ.succ) →
         e i ∈ M ⊓ ⨅ j, orthTo L Hm (f j) := fun i hi =>
       ⟨hM i, (Submodule.mem_iInf _).2 fun j => hne _ _ (hi j)⟩
@@ -711,7 +711,7 @@ private theorem sum_addChar_rep_mul_eq_ite {ϖ : 𝒪[F]} {ψ : AddChar F ℂ}
       addChar_eq_one_of_mem_integer hψ (mul_mem (_root_.GlobalTheory.HL.CharCond.rep ϖ a r).2 hcO)
     simp [this]
   · have hne : ¬ ∀ y : 𝒪[F], ψ (c * y) = 1 := fun h => hcO ((hψ c).1 h)
-    push_neg at hne
+    push Not at hne
     obtain ⟨y, hy⟩ := hne
     set m : 𝒪[F] ⧸ Ideal.span {ϖ ^ a} := Ideal.Quotient.mk _ y
     have hm : ψ (_root_.GlobalTheory.HL.CharCond.rep ϖ a m * c) ≠ 1 := by
@@ -821,8 +821,8 @@ theorem _root_.GlobalTheory.HL.CharCond.expand_by_conductor : ∀ {F : Type} [Fi
         _ = _ := by
             rw [e, hcard]
             by_cases h : ϖ ^ a ∣ Q u
-            · rw [if_pos (hiff.2 h), if_pos h]; push_cast; rfl
-            · rw [if_neg (fun h' => h (hiff.1 h')), if_neg h]
+            · rw [ite_eq_left (hiff.2 h), ite_eq_left h]; push_cast; rfl
+            · rw [ite_eq_right (fun h' => h (hiff.1 h')), ite_eq_right h]
     simp only [hg]
     rw [Finset.sum_comm]
     simp_rw [← Finset.sum_mul, hinner]
@@ -1355,8 +1355,7 @@ private lemma ideal_le_pi_or_le_cj_pi_of_proper (L : _root_.Formalism.MainNotion
     (hPID : IsPrincipalIdealRing L.O) {π : E} (hπ : π ∈ L.O)
     (hN : π * L.cj π = algebraMap F E (ϖ : F)) (I : Ideal L.O) (hI : I ≠ ⊤) :
     (∀ x ∈ I, ∃ c ∈ L.O, (x : E) = π * c) ∨ ∀ x ∈ I, ∃ c ∈ L.O, (x : E) = L.cj π * c := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   obtain ⟨⟨x₁, hx₁I, hx₁⟩, ⟨x₂, hx₂I, hx₂⟩⟩ := hcon
   have hN' : L.cj π * L.cj (L.cj π) = algebraMap F E (ϖ : F) := by rw [L.cj_cj, mul_comm, hN]
   obtain ⟨u₁, hu₁, w₁, hw₁, h₁⟩ := exists_mul_eq_one_add_pi_mul_of_not_dvd L hϖ hPID hπ hN x₁.2
@@ -1392,7 +1391,7 @@ theorem _root_.GlobalTheory.UnramOrder.proper_ideals : ∀ {F : Type} [Field F] 
     obtain ⟨π, hπ, hN⟩ := exists_norm_eq_uniformizer' L hϖ hPID hnorm hy hyu hyϖ
     exact ⟨π, hπ, hN, fun I hI => ideal_le_pi_or_le_cj_pi_of_proper L hϖ hPID hπ hN I hI⟩
   · left
-    push_neg at h
+    push Not at h
     intro I hI x hx
     apply h x x.2
     intro z hz hxz
@@ -1573,8 +1572,8 @@ theorem exists_norm (hH : IsHermND L Hm) (ϖ : 𝒪[F]) (hϖ : Irreducible ϖ)
   have hQ : ∀ u ∈ UU, nrm u ∈ 𝒪[F] := fun u hu => (hint _).1 (by rw [hnrm]; exact hUU u hu u hu)
   refine ⟨nrm, fun u => if h : nrm u ∈ 𝒪[F] then ⟨nrm u, h⟩ else 0, hnrm, fun u hu => ?_,
     fun a u hu => ?_⟩
-  · simp only [dif_pos (hQ u hu)]
-  · simp only [dif_pos (hQ u hu)]
+  · simp only [dite_eq_left (hQ u hu)]
+  · simp only [dite_eq_left (hQ u hu)]
     constructor
     · rintro ⟨c, hc⟩
       refine ⟨c, ?_⟩

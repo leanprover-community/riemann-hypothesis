@@ -203,8 +203,6 @@ open PositivityTheory.Rg.BcB.F.Eig PositivityTheory.Rg.BcN.F2
 
 namespace PositivityTheory.Rg.BcB.F.B3
 
-attribute [local instance] borelG borelF borelA GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PTop
 
 section Generic
@@ -305,7 +303,7 @@ theorem ug_ok (x : F.Γ) : (F.ug x).Ok F₀.Sec F.d.B := by
   rcases x with _ | x | x
   · exact trivial
   · exact trivial
-  · exact ⟨x.1.2.1, good_notin_B F x.1.2.2, GlobalTheory.CompanionTheory.MatchWord.isHecke_hU F.d F.ok (if_pos x.1.2.2.1) x.2.1⟩
+  · exact ⟨x.1.2.1, good_notin_B F x.1.2.2, GlobalTheory.CompanionTheory.MatchWord.isHecke_hU F.d F.ok (ite_eq_left x.1.2.2.1) x.2.1⟩
 
 theorem u_word (hE : GlobalTheory.BCT.Unr E) (w : List (F.Γ × Bool)) :
     wdVal (fun x => F.R.op (F.ug x)) w = ((w.map (ul F)).map F.R.op).prod := by
@@ -318,7 +316,7 @@ theorem u_word (hE : GlobalTheory.BCT.Unr E) (w : List (F.Γ × Bool)) :
     obtain ⟨x, b⟩ := p
     cases b
     · simp [ul]
-    · simp only [ul, if_true]
+    · simp only [ul, ite_true]
       exact (U.unitary_adjoint_holds E hE n F₀.Sec F₀.lam F.d.KU F.fam F.d.B (F.d.gU F.m) F.R F.levOff (F.ug x)
         (ug_ok F x)).2.symm
 
@@ -333,7 +331,7 @@ theorem b_word (hS : F.Struct) (i : F₀.C.ι) (w : List (F.Γ × Bool)) :
     obtain ⟨x, b⟩ := p
     cases b
     · simp [gl]
-    · simp only [gl, if_true]
+    · simp only [gl, ite_true]
       exact (bgen_adj _ _ (hS.ok x i)).2.symm
 
 theorem bw_ok (hS : F.Struct) (i : F₀.C.ι) (w : List (F.Γ × Bool)) : ∀ g ∈ bw F i w, g.Ok := by

@@ -452,12 +452,6 @@ namespace Formalism.CountingSumsFrames
 
 open Formalism.GM Formalism.GM.TM M MvPolynomial Finset
 
-end Formalism.CountingSumsFrames
-
-namespace Formalism.CountingSumsFrames
-
-open Formalism.GM Formalism.GM.TM M MvPolynomial Finset
-
 section XD
 variable {k σ : Type} [Field k]
 
@@ -1541,11 +1535,5 @@ theorem lcomp_int {p : ℕ} [Fact p.Prime] {N r : ℕ} {ι : Type*} [LinearOrder
     exact (Pol p r LL).smul_mem _ (hpol a _ (Submodule.mem_inf.mp ih).1)
 
 end E3
-
-end Formalism.CountingSumsFrames
-
-namespace Formalism.CountingSumsFrames
-
-open Formalism.GM Formalism.GM.TM
 
 end Formalism.CountingSumsFrames

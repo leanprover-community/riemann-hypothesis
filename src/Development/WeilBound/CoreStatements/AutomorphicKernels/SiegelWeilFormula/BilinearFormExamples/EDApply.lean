@@ -73,8 +73,7 @@ theorem BfE_nondeg [FiniteDimensional F E] (σ : E →ₐ[F] E) (hσ : ∀ a, σ
       have h2 := congrArg (fun M => (Jᵀ)⁻¹ * M) h0
       simpa [← Matrix.mul_assoc, Matrix.nonsing_inv_mul _ hdetT] using h2
     obtain ⟨b0, j0, hb⟩ : ∃ b j, (Jᵀ * x) b j ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hy (Matrix.ext h)
     have h1 := hx ((Matrix.single b0 j0 ((Jᵀ * x) b0 j0)⁻¹).map σ)
     have hσσ : ((Matrix.single b0 j0 ((Jᵀ * x) b0 j0)⁻¹).map σ).map σ =
@@ -101,8 +100,7 @@ theorem BfE_nondeg [FiniteDimensional F E] (σ : E →ₐ[F] E) (hσ : ∀ a, σ
       simp only [Matrix.map_apply, Matrix.zero_apply] at this
       rw [Matrix.zero_apply, ← hσ (z a b), this, map_zero]
     obtain ⟨a0, b0, hb⟩ : ∃ a b, (J * z.map σ) a b ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hw (Matrix.ext h)
     have h1 := hz (Matrix.single a0 b0 ((J * z.map σ) a0 b0)⁻¹)
     have hv : ((Matrix.single a0 b0 ((J * z.map σ) a0 b0)⁻¹)ᵀ * J * z.map σ).trace = 1 := by

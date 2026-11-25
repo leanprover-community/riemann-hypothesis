@@ -421,8 +421,7 @@ theorem core (hQ : QdetFacts) (hW : WallAlg) (hT : TensorGK) (hL : LieInv)
     exact Submodule.sum_mem _ (fun σ _ => Submodule.smul_mem _ _ (hpmY σ y hy))
   have hanti : ∀ τ ∈ firstG m n, pm τ ζ' = ((Equiv.Perm.sign τ : ℤ) : ℂ) • ζ' := fun τ hτ => pm_alt_firstG τ hτ y
   have hnz : ∃ I, q (ζ' I) ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hξalt
     rw [← hQalt]
     funext I
@@ -577,7 +576,7 @@ theorem contract_of : TensorGl → QdetFacts → WallAlg → TensorGK → LieInv
       have h5 : N.mkQ (ζ2 I2 I0) ≠ 0 := hI2
       rwa [Submodule.mkQ_apply, Ne, Submodule.Quotient.mk_eq_zero] at h5
     rw [hN] at hnot
-    push_neg at hnot
+    push Not at hnot
     obtain ⟨w', hw', hφ'⟩ := hnot
     exact ⟨_, w', hw', by rwa [hv]⟩
 

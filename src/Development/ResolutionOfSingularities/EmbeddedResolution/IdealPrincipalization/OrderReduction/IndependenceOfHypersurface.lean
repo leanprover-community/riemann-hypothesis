@@ -29,7 +29,6 @@ private theorem toSequenceOfBlowups_eq_of_heq {k : Type u} [Field k] {X : Scheme
 theorem subschemeι_comap_comp_comp_eq {A B C : Scheme.{u}} (e : A ⟶ B) (J : B.IdealSheafData)
     (f g : B ⟶ C) (h : J.subschemeι ≫ f = J.subschemeι ≫ g) :
     (J.comap e).subschemeι ≫ (e ≫ f) = (J.comap e).subschemeι ≫ (e ≫ g) := by
-  have : IsClosedImmersion (Limits.pullback.fst e J.subschemeι) := inferInstance
   have hker : J.comap e = Scheme.Hom.ker (Limits.pullback.fst e J.subschemeι) := rfl
   have hc := Limits.pullback.condition (f := e) (g := J.subschemeι)
   have key : Limits.pullback.fst e J.subschemeι ≫ (e ≫ f)
@@ -72,9 +71,7 @@ theorem isAdmissible_and_isStrictPullbackBlowupSeq_of_etale
   have : AlgebraicGeometry.Smooth T.structMap := hV.smooth
   have : AlgebraicGeometry.Etale ψ := hψ
   have : AlgebraicGeometry.QuasiCompact q := hq
-  have : AlgebraicGeometry.Smooth ψ := inferInstance
   have := hV.isNoetherian
-  have : AlgebraicGeometry.IsLocallyNoetherian T.scheme := inferInstance
   have hVal : (T.pullbackAlong V q ψ).IsAdmissible := hin.valid_pullbackAlong T hV V q ψ hcomp
   have hftq : AlgebraicGeometry.LocallyOfFiniteType q := hVal.locallyOfFiniteType
   have hOT : T.IsOrderBoundedByMult := (T.isOrderBoundedByMult_iff).2 hO

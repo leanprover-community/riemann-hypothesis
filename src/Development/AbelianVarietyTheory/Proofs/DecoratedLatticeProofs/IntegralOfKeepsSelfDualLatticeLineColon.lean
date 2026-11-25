@@ -61,8 +61,7 @@ theorem mem_int_of_pow {E : Type} [Field E] [NumberField E] (Q : IsDedekindDomai
   have h' : ∀ n : ℕ, Valued.v (c * y ^ n) ≤ 1 := fun n =>
     (IsDedekindDomain.HeightOneSpectrum.mem_adicCompletionIntegers (K := E) (v := Q)).1 (h n)
   refine (IsDedekindDomain.HeightOneSpectrum.mem_adicCompletionIntegers (K := E) (v := Q)).2 ?_
-  by_contra hy
-  push_neg at hy
+  by_contra! hy
   have hc' : Valued.v c ≠ 0 := (Valuation.ne_zero_iff _).2 hc
   have hy0 : Valued.v y ≠ 0 := ne_of_gt (lt_trans zero_lt_one hy)
   obtain ⟨a, ha⟩ := WithZero.ne_zero_iff_exists.1 hc'

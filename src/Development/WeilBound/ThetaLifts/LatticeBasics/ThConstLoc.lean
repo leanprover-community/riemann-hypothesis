@@ -74,7 +74,7 @@ theorem mem_range_boxL [T2Space A] [T2Space B] {f : A × B → ℂ} (hf : f ∈ 
       HasCompactSupport.intro (hK.image continuous_snd) fun y hy => z _ _ fun h => hy ⟨_, h, rfl⟩⟩ : SB B), rfl⟩
   have : (fun y => f (x', y)) = 0 := funext fun y => z _ _ fun h => hx' ⟨_, h, rfl⟩
   refine Set.indicator_apply_eq_zero.2 fun h => ?_
-  exact if_pos (h.symm.trans this)
+  exact ite_eq_left (h.symm.trans this)
 
 theorem sb_comp {f : B → ℂ} (hf : f ∈ SB B) (e : A ≃ₜ B) : (fun x => f (e x)) ∈ SB A :=
   ⟨hf.1.comp_continuous e.continuous, hf.2.comp_homeomorph e⟩

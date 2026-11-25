@@ -84,7 +84,7 @@ variable (L) in
 def weierstrassLaurentCoeff (j : ℕ) : ℂ := if j = 0 then 0 else (j + 1) * L.G (j + 2)
 
 lemma weierstrassLaurentCoeff_odd (i : ℕ) : weierstrassLaurentCoeff (L := L) (2 * i + 1) = 0 := by
-  rw [weierstrassLaurentCoeff, if_neg (by omega), L.G_eq_zero_of_odd _ ⟨i + 1, by ring⟩, mul_zero]
+  rw [weierstrassLaurentCoeff, ite_eq_right (by omega), L.G_eq_zero_of_odd _ ⟨i + 1, by ring⟩, mul_zero]
 
 lemma iteratedDeriv_weierstrassPExcept_zero (j : ℕ) :
     iteratedDeriv j ℘[L - (0 : ℂ)] 0 = j ! * weierstrassLaurentCoeff (L := L) j := by
@@ -150,14 +150,14 @@ lemma laurent_ode_coeff (k : ℕ) :
   have e := (laurent_ode (L := L)).iteratedDeriv_eq (k + 2)
   rw [iteratedDeriv_fun_mul hsq.contDiffAt hW.contDiffAt,
     iteratedDeriv_const_mul_field] at e
-  rw [Finset.sum_eq_single 2 (fun i _ hi ↦ by rw [iteratedDeriv_fun_pow_zero, if_neg hi]; simp)
+  rw [Finset.sum_eq_single 2 (fun i _ hi ↦ by rw [iteratedDeriv_fun_pow_zero, ite_eq_right hi]; simp)
     (fun h ↦ absurd (Finset.mem_range.2 (by omega)) h)] at e
   rw [iteratedDeriv_fun_add hA.contDiffAt analyticAt_const.contDiffAt,
     iteratedDeriv_fun_sub hQ.contDiffAt h6.contDiffAt, iteratedDeriv_const_mul_field,
     iteratedDeriv_fun_mul hP.contDiffAt hP.contDiffAt, iteratedDeriv_const,
     ← iteratedDeriv_succ', ← iteratedDeriv_succ', iteratedDeriv_fun_pow_zero,
     show k + 2 - 2 = k by omega] at e
-  simp only [if_true, Nat.factorial_two, Nat.cast_ofNat] at e
+  simp only [ite_true, Nat.factorial_two, Nat.cast_ofNat] at e
   rw [← e, ← choose_two_mul k]
 
 lemma sum_range_of_odd_eq_zero {f : ℕ → ℂ} (hf : ∀ i, f (2 * i + 1) = 0) (N : ℕ) :
@@ -175,7 +175,7 @@ lemma weierstrassLaurentCoeff_recursion (n : ℕ) :
         weierstrassLaurentCoeff (L := L) (2 * (n + 1 - i)) := by
   have e := laurent_ode_coeff (L := L) (2 * n + 4)
   simp only [iteratedDeriv_weierstrassPExcept_zero] at e
-  rw [if_neg (by omega)] at e
+  rw [ite_eq_right (by omega)] at e
   have hsum : ∑ j ∈ Finset.range (2 * n + 4 + 1), ((2 * n + 4).choose j : ℂ) *
       ((j ! : ℂ) * weierstrassLaurentCoeff (L := L) j) *
       (((2 * n + 4 - j) ! : ℂ) * weierstrassLaurentCoeff (L := L) (2 * n + 4 - j)) =
@@ -222,7 +222,7 @@ lemma weierstrassLaurentCoeff_recursion (n : ℕ) :
 
 lemma weierstrassLaurentCoeff_two_mul {n : ℕ} (hn : n ≠ 0) :
     weierstrassLaurentCoeff (L := L) (2 * n) = (2 * n + 1) * L.G (2 * n + 2) := by
-  rw [weierstrassLaurentCoeff, if_neg (by omega)]
+  rw [weierstrassLaurentCoeff, ite_eq_right (by omega)]
   push_cast
   ring
 

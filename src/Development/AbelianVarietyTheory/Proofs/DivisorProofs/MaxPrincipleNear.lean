@@ -28,59 +28,11 @@ public import Mathlib.RingTheory.TensorProduct.Maps
 public import Mathlib.RingTheory.NoetherNormalization
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsIsClosedImmersionGenericPoint
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsContinuousReadOnAffineOpenRingHoms
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Definitions.Divisors.NefFibOfIsNef
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.Algebra.MvPolynomial.Division
 import Mathlib.FieldTheory.PurelyInseparable.Exponent
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.TypeStar
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -180,7 +132,7 @@ private lemma norm_root_le_two_pow_mul_of_coeff_le {p : ℂ[X]} {n : ℕ} (hp : 
     ‖a‖ ≤ 2 ^ n * ρ := by
   by_cases hle : ‖a‖ ≤ ρ
   · exact hle.trans (le_mul_of_one_le_left hρ (one_le_pow₀ (by norm_num)))
-  push_neg at hle
+  push Not at hle
   have hpos : 0 < ‖a‖ := hρ.trans_lt hle
   obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := by
     rcases n with _ | m
@@ -377,8 +329,7 @@ theorem _root_.GlobalTheory.maxPrinciple_line_eval₂ : ∀ (d : ℕ) (B : Type)
     gcongr
     · norm_num
     · exact natDegree_minpoly_pow_le hg N
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   rcases hR0.eq_or_lt with hR00 | hRpos
   · have h1 := key 1
     rw [← hR00] at h1 hlt
@@ -575,8 +526,7 @@ private lemma exists_small_direction_eval_circle_ne_zero {d : ℕ} {P : MvPolyno
       ∀ᶠ z' in nhds z, ∀ w : ℂ, ‖w‖ = 1 → MvPolynomial.eval (z' + w • v) P ≠ 0 := by
   classical
   obtain ⟨u, hu⟩ : ∃ u, MvPolynomial.eval u P ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hP (MvPolynomial.funext fun u => by simpa using h u)
   set q : Polynomial ℂ := MvPolynomial.eval₂ Polynomial.C
     (fun i => Polynomial.C (z i) + Polynomial.X * Polynomial.C (u i - z i)) P with hq
@@ -645,8 +595,7 @@ theorem _root_.GlobalTheory.local_maximum_principle_weight_finite_mvPolynomial_a
   obtain ⟨k, e, he⟩ := ((finite_setOf_homs_over_point (B := B) z).diff (t := {x₀})).fin_embedding
   have hsep : ∀ j, ∃ b : B, e j b ≠ x₀ b := by
     intro j
-    by_contra h
-    push_neg at h
+    by_contra! h
     have hj : e j ∈ Set.range e := ⟨j, rfl⟩
     rw [he] at hj
     exact hj.2 (RingHom.ext h)
@@ -777,8 +726,7 @@ theorem _root_.GlobalTheory.local_maximum_principle_weight_finite_mvPolynomial_a
         Finset.prod_eq_one fun j _ => mul_inv_cancel₀ (sub_ne_zero.mpr (hy4 j))
       rw [hΦy, one_pow, mul_one] at key
       have hR : 0 ≤ R := by
-        by_contra h
-        push_neg at h
+        by_contra! h
         have := mul_neg_of_neg_of_pos h (Real.exp_pos (N * (ψ x₀ + 2 * δ / 3)))
         linarith [norm_nonneg (y f)]
       calc ‖y f‖ * Real.exp (-(N * ψ y)) ≤ R' * Real.exp (-(N * ψ y)) :=
@@ -787,7 +735,6 @@ theorem _root_.GlobalTheory.local_maximum_principle_weight_finite_mvPolynomial_a
             rw [mul_assoc, ← Real.exp_add]
         _ ≤ R * Real.exp (δ * N) := by
             gcongr
-            have hN : (0 : ℝ) ≤ N := Nat.cast_nonneg N
             nlinarith
         _ = Real.exp (δ * N) * R := mul_comm _ _
     · intro x w hw hx
@@ -801,7 +748,6 @@ theorem _root_.GlobalTheory.local_maximum_principle_weight_finite_mvPolynomial_a
           rw [mul_assoc, ← Real.exp_add, neg_add_cancel, Real.exp_zero, mul_one]
         rw [h1]
         exact mul_le_mul_of_nonneg_right hf (Real.exp_pos _).le
-      have hN : (0 : ℝ) ≤ N := Nat.cast_nonneg N
       rw [hG, norm_mul, norm_pow]
       rcases hQx with ⟨h1, h2⟩ | ⟨j, hj⟩
       · have hΦ := hnear hy2 h1

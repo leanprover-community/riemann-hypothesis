@@ -127,7 +127,6 @@ private theorem ringKrullDim_le_of_map_maximalIdeal (R S : Type*) [CommRing R] [
     [IsLocalRing S] [IsNoetherianRing S] [_root_.IsRegularLocalRing R] [Algebra R S]
     (hmax : IsLocalRing.maximalIdeal S = (IsLocalRing.maximalIdeal R).map (algebraMap R S)) :
     ringKrullDim S ≤ ringKrullDim R := by
-  have : IsNoetherianRing R := inferInstance
   have hne : IsLocalRing.maximalIdeal S ≠ ⊤ := (IsLocalRing.maximalIdeal.isMaximal S).ne_top
   have hh : (IsLocalRing.maximalIdeal S).height ≤ ((IsLocalRing.maximalIdeal S).spanFinrank : ℕ∞) :=
     Ideal.height_le_spanFinrank _ hne
@@ -146,9 +145,6 @@ theorem ringKrullDim_eq_of_flat_formallyUnramified (R S : Type*) [CommRing R] [C
     [IsLocalHom (algebraMap R S)] [Algebra.EssFiniteType R S] [Algebra.FormallyUnramified R S]
     [Module.Flat R S] :
     ringKrullDim S = ringKrullDim R := by
-  have : IsLocalRing R := inferInstance
-  have : IsNoetherianRing R := inferInstance
-  have : Algebra.HasGoingDown R S := inferInstance
   have h1 : ringKrullDim R ≤ ringKrullDim S := ringKrullDim_le_of_hasGoingDown R S
   have hmax : IsLocalRing.maximalIdeal S = (IsLocalRing.maximalIdeal R).map (algebraMap R S) :=
     (Algebra.FormallyUnramified.map_maximalIdeal (R := R) (S := S)).symm
@@ -159,8 +155,6 @@ theorem isRegularLocalRing_of_flat_formallyUnramified (R S : Type*) [CommRing R]
     [IsLocalHom (algebraMap R S)] [Algebra.EssFiniteType R S] [Algebra.FormallyUnramified R S]
     [Module.Flat R S] :
     _root_.IsRegularLocalRing S := by
-  have : IsLocalRing R := inferInstance
-  have : IsNoetherianRing R := inferInstance
   have hdim : ringKrullDim S = ringKrullDim R := ringKrullDim_eq_of_flat_formallyUnramified R S
   have hR : ((IsLocalRing.maximalIdeal R).spanFinrank : WithBot ℕ∞) = ringKrullDim R :=
     (isRegularLocalRing_iff R).mp inferInstance
@@ -196,7 +190,6 @@ private theorem isRegularLocalRing_stalk_of_iso_spec {X : Scheme.{u}} (R : Type 
       ((Spec.structureSheaf R).presheaf.stalk y)).toRingEquiv
   have h3 : _root_.IsRegularLocalRing ((Spec.structureSheaf R).presheaf.stalk y) :=
     IsRegularLocalRing.of_ringEquiv e2
-  have h4 : IsIso (e.hom.stalkMap x) := inferInstance
   have e3 : ((Spec.structureSheaf R).presheaf.stalk y) ≃+* (X.presheaf.stalk x) :=
     (asIso (e.hom.stalkMap x)).commRingCatIsoToRingEquiv
   exact IsRegularLocalRing.of_ringEquiv e3
@@ -399,7 +392,6 @@ private theorem isDomain_localization_of_iso_spec {Y : Scheme.{u}} (R : CommRing
     (IsLocalization.algEquiv (pointOfIsoSpec R e y).asIdeal.primeCompl
       (Localization.AtPrime (pointOfIsoSpec R e y).asIdeal)
       ((Spec.structureSheaf ↥R).presheaf.stalk (pointOfIsoSpec R e y))).toRingEquiv
-  have h4 : IsIso (e.hom.stalkMap y) := inferInstance
   have e3 : ((Spec.structureSheaf ↥R).presheaf.stalk (pointOfIsoSpec R e y)) ≃+*
       ↥(Y.presheaf.stalk y) :=
     (asIso (e.hom.stalkMap y)).commRingCatIsoToRingEquiv

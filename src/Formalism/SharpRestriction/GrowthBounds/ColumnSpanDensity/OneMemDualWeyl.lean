@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.GroupLattices.FockModels.MulMemRiemannRochSpaceAdd
 public import Formalism.SharpRestriction.GrowthBounds.UnramifiedQuadraticSetting
 public import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 import Mathlib.Tactic.TypeStar
@@ -14,16 +15,7 @@ open Formalism.MainNotions.G Formalism.MainNotions.flipOneThree Formalism.MainNo
 
 theorem dualWeyl_mul (R : Type*) [CommRing R] (r n : ℕ) (ν ν' : Fin n → ℕ) {F G : MvPolynomial (Fin r × Fin n) R}
     (hF : F ∈ dualWeyl R r n ν) (hG : G ∈ dualWeyl R r n ν') : F * G ∈ dualWeyl R r n (ν + ν') := by
-  rw [dualWeyl, Submodule.mem_inf] at hF hG ⊢
-  refine ⟨(mem_weightedHomogeneousSubmodule _ _ _ _).2
-    (((mem_weightedHomogeneousSubmodule _ _ _ _).1 hF.1).mul
-      ((mem_weightedHomogeneousSubmodule _ _ _ _).1 hG.1)), ?_⟩
-  have hF2 := hF.2
-  have hG2 := hG.2
-  simp only [Submodule.mem_iInf, LinearMap.mem_ker, LinearMap.sub_apply, AlgHom.toLinearMap_apply,
-    sub_eq_zero] at hF2 hG2 ⊢
-  intro l j hlj
-  rw [map_mul, map_mul, hF2 l j hlj, hG2 l j hlj]
+  apply _root_.Formalism.L2.G.Model.dualWeyl_mul <;> assumption
 
 theorem one_mem_dualWeyl (R : Type*) [CommRing R] (r n : ℕ) : (1 : MvPolynomial (Fin r × Fin n) R) ∈ dualWeyl R r n 0 := by
   rw [dualWeyl, Submodule.mem_inf]
@@ -38,14 +30,7 @@ variable {R K : Type*} [CommRing R] [CommRing K] [Algebra R K] {S : Type*} [Fint
 theorem tensorLat_mul (M N L : S → Submodule R (MvPolynomial (Fin k × Fin n) K))
     (h : ∀ s, ∀ F ∈ M s, ∀ G ∈ N s, F * G ∈ L s) :
     ∀ P ∈ tensorLat R K M, ∀ Q ∈ tensorLat R K N, P * Q ∈ tensorLat R K L := by
-  intro P hP Q hQ
-  have hmem : P * Q ∈ tensorLat R K M * tensorLat R K N := Submodule.mul_mem_mul hP hQ
-  rw [tensorLat, tensorLat, Submodule.span_mul_span] at hmem
-  refine (Submodule.span_le.2 ?_) hmem
-  rintro x ⟨a, ⟨F, hF, rfl⟩, b, ⟨G, hG, rfl⟩, rfl⟩
-  apply Submodule.subset_span
-  refine ⟨fun s => F s * G s, fun s => h s _ (hF s) _ (hG s), ?_⟩
-  simp [map_mul, Finset.prod_mul_distrib]
+  apply _root_.Formalism.L2.G.Model.tensorLat_mul <;> assumption
 
 end Ten
 
@@ -58,7 +43,7 @@ theorem Vsp_eq (Kf : Type) [Field Kf] {n' m : ℕ} (lam0 : Fin n' → Fin (m + 1
   unfold Vsp
   congr 1
   funext s
-  rw [if_pos (kp_lamAt_antitone lam0 hdom s)]
+  rw [ite_eq_left (kp_lamAt_antitone lam0 hdom s)]
 
 end Formalism.MainNotions.flipOneThree.Pf
 

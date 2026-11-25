@@ -239,7 +239,7 @@ theorem exists_int_primitive {F E : Type*} [Field F] [Field E] [Algebra F E] [Ch
     obtain ⟨n, hα, hβ⟩ := exists_int_primitive_element_pair (F := F) (∑ i, (c i : E) * v i) (v j)
     refine ⟨c + Pi.single j n, ?_⟩
     have h2 : ∑ i, (((Pi.single j n : ι → ℤ) i : ℤ) : E) * v i = (n : E) * v j := by
-      rw [Fintype.sum_eq_single j (fun i hi => by simp [Pi.single_apply, hi])]
+      rw [Fintype.sum_eq_single j (fun i hi => by simp [hi])]
       simp
     have hsum : ∑ i, (((c + Pi.single j n : ι → ℤ) i : ℤ) : E) * v i =
         ∑ i, (c i : E) * v i + (n : E) * v j := by

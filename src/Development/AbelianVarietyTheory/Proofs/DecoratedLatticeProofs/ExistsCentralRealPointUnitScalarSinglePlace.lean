@@ -128,8 +128,8 @@ theorem exists_central_of_norm_one : ∀ (D : D7) (θ : InfFam D), IsInfFam θ �
   intro D θ hθ S τ ζ hζ
   obtain ⟨a, a1, a2, ac⟩ := exists_unit hθ τ hζ
   refine ⟨scalarElt S ac, scalarElt_mem_GinfC S ac a1, scalarElt_mem_center S ac, ?_, fun ρ hρ => ?_⟩
-  · rw [compAt_scalarElt, a2, if_pos rfl]
-  · rw [compAt_scalarElt, a2, if_neg hρ, one_smul]
+  · rw [compAt_scalarElt, a2, ite_eq_left rfl]
+  · rw [compAt_scalarElt, a2, ite_eq_right hρ, one_smul]
 
 end GlobalTheory.CentralUnit
 

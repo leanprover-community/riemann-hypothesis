@@ -20,7 +20,7 @@ theorem natW_cast {n : ℕ} (lam : DomWeight n) (i : Fin n) : ((lam.natW i : ℕ
   have h : lam.detShift ≤ lam.w i := by
     unfold DomWeight.detShift
     have hn : 0 < n := Fin.pos i
-    rw [dif_pos hn]
+    rw [dite_eq_left hn]
     exact lam.anti (show i ≤ ⟨n - 1, by omega⟩ from Fin.mk_le_mk.2 (by omega))
   omega
 
@@ -33,10 +33,10 @@ theorem chain_degree_eq : StepDegIs := by
   have hN : 0 < R.N i := R.N_pos i
   have d0 : (W.lamTrue u i τ).detShift = (W.lamTrue u i τ).w ⟨R.N i - 1, by omega⟩ := by
     unfold DomWeight.detShift
-    exact dif_pos hN
+    exact dite_eq_left hN
   have d1 : (W.nuW u (i + 1) τ).detShift = (W.nuW u (i + 1) τ).w ⟨R.N i - 1, by show R.N i - 1 < R.N i; omega⟩ := by
     unfold DomWeight.detShift
-    exact dif_pos hN
+    exact dite_eq_left hN
   rw [d0, d1]
   show (W.lamN u i τ).w r + _ - ((W.lamN u i τ).w _ + _) + ((W.lamN u i τ).w _ + _) = (W.lamN u i τ).w r + _
   ring
@@ -91,15 +91,6 @@ theorem chTh_ok_ambD (hm : m2 + 1 < R.m) (hT : 0 < Pr.T u) (hq : MuqTie Ch sel m
     top := stepC_ok_deg W Ch sel mu cst A u (m2 + 1) hm _ hT _ _ hq h.2 }
 
 end Chain
-
-section ChainN
-
-variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
-  (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
-  (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (L : ChIdx X Pr R (QE sel (mu : Chr X.F X.E X.K))) (G : ChGlob X R.m)
-  {D : D7} (s : Seam D X) {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base D cc δ) (χ : TaylorLogMetric.IdE D → ℂ) (cD : D.what₂.Tau → ℂ) (u : Pr.Word) (m2 : ℕ)
-
-end ChainN
 
 
 

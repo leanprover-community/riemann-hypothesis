@@ -9,13 +9,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.PSDKOnOfPSDK
 
 noncomputable section
 
-namespace Formalism.MainNotions.LocalBesselAndTopKernel.TOP
-
-open ValuativeRel MeasureTheory ComplexConjugate ComplexOrder
-open Formalism.MainNotions.S.Loc
-
-end Formalism.MainNotions.LocalBesselAndTopKernel.TOP
-
 namespace Formalism.MainNotions.LocalBesselAndTopKernel.GLOB
 
 open NumberField IsDedekindDomain Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups ValuativeRel
@@ -134,20 +127,6 @@ def FamilyMidVolume (D : D7) : Prop :=
 def nPl {N : ℕ} (ε : Fin N → Bool) : ℕ := (Finset.univ.filter (fun a => ε a = true)).card
 def nMi {N : ℕ} (ε : Fin N → Bool) : ℕ := (Finset.univ.filter (fun a => ε a = false)).card
 
-section Glob
-
-open Formalism.MainNotions.S.LocalSplitGroups
-
-variable {D : D7}
-
-variable (D)
-
-variable {D}
-
-variable (D)
-
-end Glob
-
 section One
 
 open Formalism.MainNotions.S.LocalSplitGroups
@@ -185,11 +164,5 @@ def FamilyUnfoldingCount (C0 Cg cb Cu cT CT : ℝ) : Prop :=
   SecondSizeStatement Fm → BesselFormLine Fm → FamilyRanksHypothesis Fm C0 Cg cb Cu cT CT → FamilyBesselBoundFirstPart Fm C0 Cg cb Cu cT CT
 
 end Family
-
-section Closed
-
-open Formalism.MainNotions.S.LocalSplitGroups
-
-end Closed
 
 end Formalism.MainNotions.LocalBesselAndTopKernel

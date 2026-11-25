@@ -28,8 +28,6 @@ open scoped Classical
 
 namespace PositivityTheory.Rg.BcB.F
 
-attribute [local instance] borelG borelF borelA
-
 namespace PCandSa
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
@@ -78,7 +76,7 @@ theorem betaL_hecke {n a : ℕ} (d : LocData E n) (hd : d.Ok) (ha : a ≤ n) :
 
 def kapX {n : ℕ} (d : LocData E n) {w : Pl E} (hT : w ∉ d.T) (hS : w ∈ d.S₀) : d.kap w ≃ (d.X w) :=
   Equiv.ofBijective (fun x => ⟨x.1.2, LocOk.kap_X d hT hS x⟩) (by
-    have e : d.idx w = {∅} ×ˢ d.X w := by unfold LocData.idx; rw [if_neg hT, if_pos hS]
+    have e : d.idx w = {∅} ×ˢ d.X w := by unfold LocData.idx; rw [ite_eq_right hT, ite_eq_left hS]
     constructor
     · rintro ⟨⟨s, x⟩, hx⟩ ⟨⟨s', x'⟩, hx'⟩ h
       have h1 := (Finset.mem_product.1 (e ▸ hx)).1
@@ -125,7 +123,7 @@ theorem candS_of (h : Tail.ReadS) : CandS := by
     fun x y => phiMu (Nat.add_sub_of_le ha) w (F₀.μ.loc w) (F.d.e w) x y
   have hm : (F.d.betaL _ ha).m w = fun x y => (F.d.sgn (F₀.C.a i) w * ((F.d.X w).card : ℂ))⁻¹ • N (φ x) (φ y) := by
     funext x y g
-    simp only [LocData.betaL, if_neg hwT, LocData.mac, Pi.smul_apply, smul_eq_mul, N, hμ, F₀.μloc]
+    simp only [LocData.betaL, ite_eq_right hwT, LocData.mac, Pi.smul_apply, smul_eq_mul, N, hμ, F₀.μloc]
     rfl
   rw [hm] at hx₀
   have hopen : IsOpen (F.d.lev (F₀.C.a i) w : Set (GLw (F₀.C.a i) w × GLw (n - F₀.C.a i) w)) :=

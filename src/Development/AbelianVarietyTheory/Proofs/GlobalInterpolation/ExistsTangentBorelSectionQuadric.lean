@@ -137,8 +137,8 @@ theorem measurable_tanMat (k i j : Fin P ⊕ Fin Q) : Measurable fun y => tanMat
     funext y
     unfold tanMat
     by_cases h : qf y = sg k ∧ y k ≠ -1
-    · rw [if_pos h, if_pos h, flipAt, mul_diagonal]; rfl
-    · rw [if_neg h, if_neg h]
+    · rw [ite_eq_left h, ite_eq_left h, flipAt, mul_diagonal]; rfl
+    · rw [ite_eq_right h, ite_eq_right h]
   rw [this]
   refine Measurable.ite ?_
     (((measurable_qrefl _ _ i j).comp measurable_neg).neg.mul measurable_const)
@@ -152,7 +152,7 @@ theorem tanMat_sub_one (k i b : Fin P ⊕ Fin Q) (y : Sp P Q) (h1 : qf y = sg k)
     ‖(tanMat k y - 1) i b‖ = ‖(Pi.single k 1 : Sp P Q) i + y i‖ * ‖y b‖ / ‖1 + y k‖ := by
   have : (tanMat k y - 1) i b = -((star (1 + y k) * (sg k : ℂ))⁻¹ *
       (((Pi.single k 1 : Sp P Q) i + y i) * (star (y b) * (sg b : ℂ)))) := by
-    rw [tanMat, if_pos ⟨h1, h2⟩, Matrix.sub_apply, flipAt, mul_diagonal, if_neg hb, qrefl,
+    rw [tanMat, ite_eq_left ⟨h1, h2⟩, Matrix.sub_apply, flipAt, mul_diagonal, ite_eq_right hb, qrefl,
       coef_single]
     simp only [Matrix.neg_apply, Matrix.sub_apply, Matrix.smul_apply, vecMulVec_apply,
       smul_eq_mul, jpq_eq_diagonal, vecMul_diagonal, Pi.star_apply, Pi.add_apply,

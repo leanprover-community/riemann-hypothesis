@@ -129,13 +129,6 @@ theorem blockSubst_block (k₀ : K) (N : Matrix (ι k₀) (Ix (Fin r)) ℤ) (i :
     blockSubst k₀ N ⟨k₀, i⟩ = ∑ j, C (N i j) * X j := by
   simp [blockSubst]
 
-theorem isHomogeneous_blockSubst (k₀ : K) (N : Matrix (ι k₀) (Ix (Fin r)) ℤ) (p : Σ k, ι k) :
-    (blockSubst k₀ N p).IsHomogeneous 1 := by
-  unfold blockSubst
-  split_ifs
-  · exact IsHomogeneous.sum _ _ _ fun j _ => (isHomogeneous_X ℤ j).C_mul _
-  · exact isHomogeneous_zero _ _ _
-
 def fwd (k₀ : K) (N : Matrix (ι k₀) (Ix (Fin r)) ℤ) : MRing ι →ₐ[ℤ] MvPolynomial (Ix (Fin r)) ℤ :=
   bind₁ (blockSubst k₀ N)
 
@@ -158,27 +151,11 @@ theorem backQ_map (k₀ : K) (M : Matrix (Ix (Fin r)) (ι k₀) ℤ) (g : MvPoly
     backQ k₀ M (map (Int.castRingHom ℚ) g) = map (Int.castRingHom ℚ) (back k₀ M g) := by
   rw [back, backQ, map_bind₁]
 
-theorem fst_eq_of_mem_support {f : MRing ι} {k₀ : K} {n : ℕ}
-    (hf : IsMultiHomog f (blockDeg k₀ n)) {c : (Σ k, ι k) →₀ ℕ}
-    (hc : AddMonoidAlgebra.coeff f c ≠ 0) {p : Σ k, ι k} (hp : p ∈ c.support) : p.1 = k₀ :=
-  BlockSectionsRank.fst_eq_of_mem_support hf hc hp
-
-theorem isHomogeneous_of_blockDeg {f : MRing ι} {k₀ : K} {n : ℕ} (hf : IsMultiHomog f (blockDeg k₀ n)) :
-    f.IsHomogeneous n :=
-  BlockSectionsRank.isHomogeneous_of_blockDeg hf
-
 theorem isHomogeneous_fwd (k₀ : K) (N : Matrix (ι k₀) (Ix (Fin r)) ℤ) {f : MRing ι} {n : ℕ}
     (hf : IsMultiHomog f (blockDeg k₀ n)) : (fwd k₀ N f).IsHomogeneous n :=
   BlockSectionsRank.isHomogeneous_fwd k₀ N hf
 
 def wB : (Σ k, ι k) → (K → ℕ) := fun p => Pi.single p.1 1
-
-theorem weight_wB (c : (Σ k, ι k) →₀ ℕ) : Finsupp.weight wB c = fun k => ∑ i, c ⟨k, i⟩ :=
-  BlockSectionsRank.weight_wB c
-
-theorem isMultiHomog_iff_wB (f : MRing ι) (a : K → ℕ) :
-    IsMultiHomog f a ↔ IsWeightedHomogeneous wB f a :=
-  BlockSectionsRank.isMultiHomog_iff_wB f a
 
 theorem isMultiHomog_back (k₀ : K) (M : Matrix (Ix (Fin r)) (ι k₀) ℤ) {g : MvPolynomial (Ix (Fin r)) ℤ} {n : ℕ}
     (hg : g.IsHomogeneous n) : IsMultiHomog (back k₀ M g) (blockDeg k₀ n) :=
@@ -220,7 +197,7 @@ theorem back_fwd_sub_mem (h : IsBlockImage y k₀ M N x) {f : MRing ι} {n : ℕ
   rw [hom_bind₁, hom_bind₁, coe_eval₂Hom, coe_eval₂Hom]
   refine eval₂_congr _ _ _ fun {p} {c} hp hc => ?_
   obtain ⟨k, i⟩ := p
-  have hk : k = k₀ := fst_eq_of_mem_support hf hc hp
+  have hk : k = k₀ := GroundTheory.Heights₂.Heights.HilbertSamuel.BlockSectionsRank.fst_eq_of_mem_support hf hc hp
   subst hk
   have e3 : back k M (∑ j, C (N i j) * X j) = ∑ j, C (N i j) * blockForms k M j := by
     rw [back, map_sum]
@@ -301,12 +278,6 @@ end Values
 section Points
 
 variable {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} [∀ k, Fintype (ι k)]
-
-theorem conjPt_mem_mcPts {P : Ideal (MRing ι)} {z : (Σ k, ι k) → ℂ} (hz : z ∈ mcPts P) : conjPt z ∈ mcPts P := by
-  refine ⟨fun k => ?_, fun f hf => ?_⟩
-  · obtain ⟨i, hi⟩ := hz.1 k
-    exact ⟨i, by simpa [conjPt] using hi⟩
-  · rw [ResSym.eval_conjPt_map_int, hz.2 f hf, map_zero]
 
 theorem blockMapC_conjPt (k₀ : K) {J : Type} [Fintype J] (M : Matrix J (ι k₀) ℤ) (z : (Σ k, ι k) → ℂ) :
     blockMapC k₀ M (conjPt z) = conjPt (blockMapC k₀ M z) := by
@@ -456,7 +427,7 @@ theorem blockGram_eq (d₀ : HSMBlockDatum D K ι Ω) (M : Matrix (Ix (Fin r)) (
     refine integral_congr_ae (Filter.Eventually.of_forall fun a => ?_)
     simp only
     rw [← blockMapC_conjPt]
-    exact (hpt _ (conjPt_mem_mcPts (hmem a)) k l).symm
+    exact (hpt _ (GroundTheory.Heights₂.Heights.HilbertSamuel.SupBoundCount.conjPt_mem_mcPts (hmem a)) k l).symm
   simp only [blockGram, resGram]
   rw [h1, h2]
 
@@ -640,8 +611,8 @@ theorem pr_ne_zero (hBP : ProjFrameBasePtFree.Statement) (hfr : IsProjFrame x e)
     simp only [SetLike.mem_coe, RingHom.mem_ker, hψ, RingHom.comp_apply, ReciprocityTheory.ChartRestriction.G.AI.I4.linForm, map_sum, map_mul,
     map_C, map_X, eval_C, eval_X, projMat]
     simp only [eq_intCast, Int.cast_ite, Int.cast_one, Int.cast_zero, ite_mul, one_mul, zero_mul]
-    rw [Finset.sum_eq_single (e k).2 (fun i _ hi => if_neg (Ne.symm hi))
-      (fun h => absurd (Finset.mem_univ _) h), if_pos rfl, he]
+    rw [Finset.sum_eq_single (e k).2 (fun i _ hi => ite_eq_right (Ne.symm hi))
+      (fun h => absurd (Finset.mem_univ _) h), ite_eq_left rfl, he]
     exact hk
   have h1 := hle hN
   rw [RingHom.mem_ker] at h1
@@ -707,7 +678,6 @@ theorem exists_ratio_lb (hBP : ProjFrameBasePtFree.Statement) (hfr : IsProjFrame
     exact hmin hz'
 
 end PullFSExtension
-
 
 open PullFSExtension in
 theorem PullFSExtension.proof (hBP : ProjFrameBasePtFree.Statement) : PullFSExtension.Statement := by
@@ -835,10 +805,10 @@ theorem abs_sub_le (hR : ResolutionSupBound.Statement) (d : HSMDatum D Ω κ) :
   have hL : 0 ≤ Real.log 2 + Real.log K + D * Real.log n := by positivity
   by_cases h : ∃ p : (Σ r : ℕ, Fin r → MvPolynomial (Ix κ) ℚ), IsSecBasis d.x n p.2
   swap
-  · simp only [resChi, resCChi, dif_neg h, sub_zero, abs_zero]
+  · simp only [resChi, resCChi, dite_eq_right h, sub_zero, abs_zero]
     exact mul_nonneg (Nat.cast_nonneg _) hL
   rw [ResSym.resChi_eq d n h]
-  simp only [resCChi, dif_pos h]
+  simp only [resCChi, dite_eq_left h]
   have hp := h.choose_spec
   generalize h.choose = p at hp ⊢
   obtain ⟨r, b⟩ := p
@@ -1565,13 +1535,12 @@ theorem linearIndependent_mono (D N : ℕ) :
   have hp0 := VeroneseGenDeg.aeval_t_injective D hpa
   have hc := congrArg (AddMonoidAlgebra.coeff · (Finsupp.equivFunOnFinite.symm (adtEnum D N l))) hp0
   rw [hp, coeff_sum, MvPolynomial.coeff_zero, Finset.sum_eq_single l (fun k _ hkl => ?_) (by simp)] at hc
-  · rwa [MvPolynomial.coeff_smul, monoZ, coeff_monomial, if_pos rfl, smul_eq_mul, mul_one] at hc
-  · rw [MvPolynomial.coeff_smul, monoZ, coeff_monomial, if_neg, smul_zero]
+  · rwa [MvPolynomial.coeff_smul, monoZ, coeff_monomial, ite_eq_left rfl, smul_eq_mul, mul_one] at hc
+  · rw [MvPolynomial.coeff_smul, monoZ, coeff_monomial, ite_eq_right, smul_zero]
     intro hE
     exact hkl (adtEnum_injective D N (by simpa using hE))
 
 end VeroneseMonoBasis
-
 
 open VeroneseMonoBasis in
 theorem VeroneseMonoBasis.proof : VeroneseMonoBasis.Statement := by

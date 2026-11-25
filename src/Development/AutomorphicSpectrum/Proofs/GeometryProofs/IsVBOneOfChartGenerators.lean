@@ -48,12 +48,6 @@ theorem span_singleton_eq_of_unitAt {u : Ω} (hu : unitAt ξ p u) {e e' : E} (h 
 
 end Units
 
-namespace Lat
-
-variable {ξ : Spec (CommRingCat.of Ω) ⟶ X}
-
-end Lat
-
 section Pull
 
 variable {X' : Scheme.{0}} {Ω' : Type} [Field Ω'] {ξ : Spec (CommRingCat.of Ω) ⟶ X}
@@ -119,12 +113,6 @@ theorem block_coord_ne_zero {p : Cpt ξ} {c : (k : K) → ι k}
   Finset.prod_ne_zero_iff.1 h.1 k (Finset.mem_univ k)
 
 end Multi
-
-section Single
-
-variable {κ : Type} {x : κ → Ω}
-
-end Single
 
 end Lat
 

@@ -45,11 +45,11 @@ theorem trace_nondeg {a : mixedEmbedding.mixedSpace F} (ha : a ≠ 0) :
         if u = w then Complex.normSq (a.2 w) else 0 := fun u => by
       by_cases hu : u = w
       · subst hu
-        rw [Pi.single_eq_same, Complex.mul_conj, Complex.ofReal_re, if_pos rfl]
-      · rw [Pi.single_eq_of_ne hu, mul_zero, Complex.zero_re, if_neg hu]
+        rw [Pi.single_eq_same, Complex.mul_conj, Complex.ofReal_re, ite_eq_left rfl]
+      · rw [Pi.single_eq_of_ne hu, mul_zero, Complex.zero_re, ite_eq_right hu]
     rw [ht]
     simp only [Prod.fst_mul, mul_zero, Pi.zero_apply, Finset.sum_const_zero, zero_add, Prod.snd_mul, Pi.mul_apply, e, mul_ite,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     exact mul_ne_zero two_ne_zero (Complex.normSq_pos.2 hw).ne'
   · obtain ⟨w, hw⟩ := Function.ne_iff.1 h1
     refine ⟨(Pi.single w 1, 0), ?_⟩
@@ -124,7 +124,7 @@ theorem nonempty_coord : Nonempty (Coord F κ) := by
     conv_lhs => rw [this]
     simp [R]
   have hinj : Function.Injective R := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro y hy
     by_contra h
     obtain ⟨i, hi⟩ := Function.ne_iff.1 h

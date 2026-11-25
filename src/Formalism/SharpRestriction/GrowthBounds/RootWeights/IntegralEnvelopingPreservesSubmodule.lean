@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.RootWeights.MemWeightSpaceIffDiagonalEigen
 import Formalism.SharpRestriction.GrowthBounds.RootWeights.DvrFractionFieldCharZeroPrime
 public import Formalism.SharpRestriction.GrowthBounds.ObjPol
 import Mathlib.RingTheory.RegularLocalRing.Defs
@@ -26,8 +27,7 @@ variable {n : ℕ} {K V : Type*} [Field K] [AddCommGroup V] [Module K V]
 
 theorem mem_weightSpace_iff_diag_scalar {E : GLOps n K V} {mu : Fin n → ℤ} {x : V} :
     x ∈ weightSp E mu ↔ ∀ a, E a a x = (mu a : K) • x := by
-  unfold weightSp
-  simp [Submodule.mem_iInf, sub_eq_zero]
+  exact Formalism.MainNotions.G.GLWeightTheory.mem_weightSpace_iff_diagonal_eigen E mu x
 
 theorem inv_factorial_prod_eq_choose [CharZero K] (m : ℤ) (k : ℕ) :
     ((k.factorial : K)⁻¹) * ∏ j ∈ range k, ((m : K) - (j : K)) = ((Ring.choose m k : ℤ) : K) := by
@@ -39,19 +39,7 @@ theorem inv_factorial_prod_eq_choose [CharZero K] (m : ℤ) (k : ℕ) :
 
 theorem binomial_diagonal_on_weight [CharZero K] {E : GLOps n K V} {mu : Fin n → ℤ} {x : V} (hx : x ∈ weightSp E mu)
     (a : Fin n) (k : ℕ) : binomE E a k x = ((Ring.choose (mu a) k : ℤ) : K) • x := by
-  have hx' := (mem_weightSpace_iff_diag_scalar.mp hx) a
-  unfold binomE
-  rw [LinearMap.smul_apply, ← inv_factorial_prod_eq_choose (mu a) k, mul_smul]
-  congr 1
-  induction k with
-  | zero => simp
-  | succ k ih =>
-    rw [List.range_succ, List.map_append, List.prod_append, Finset.prod_range_succ]
-    simp only [List.map_cons, List.map_nil, List.prod_cons, List.prod_nil, mul_one, Module.End.mul_apply,
-      LinearMap.sub_apply, LinearMap.smul_apply, Module.End.one_apply, hx']
-    rw [← sub_smul, map_smul, ih, smul_smul]
-    congr 1
-    ring
+  apply _root_.Formalism.MainNotions.G.GLWeightTheory.binomial_diagonal_apply_weight <;> assumption
 
 def shiftedBinomialOperator (E : GLOps n K V) (a : Fin n) (c : ℤ) (d : ℕ) : Module.End K V :=
   ∑ ij ∈ antidiagonal d, ((Ring.choose c ij.2 : ℤ) : K) • binomE E a ij.1
@@ -94,8 +82,7 @@ theorem lattice_stable_weight_separator [CharZero (KK O)] (E : GLOps n (KK O) V)
       (∀ mu, ∀ x ∈ weightSp E mu, T x = ((g mu : ℤ) : KK O) • x) ∧
       ∀ M : Submodule O V, UZStable (O := O) E M → ∀ x ∈ M, T x ∈ M := by
   have hex : ∃ a, nu a ≠ lam a := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact h (funext hc)
   obtain ⟨a, ha⟩ := hex
   rcases lt_or_gt_of_ne ha with hlt | hgt

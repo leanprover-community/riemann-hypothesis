@@ -39,7 +39,7 @@ theorem splitL_diag (c : K) (u : Fin n → K) (k : Fin n) :
   · show (if h' : (k : ℕ) < a then u ⟨k, by omega⟩ else c * u ⟨a + (k - a), by omega⟩) = _
     simp [h]
   · show (if h' : (k : ℕ) < a then u ⟨k, by omega⟩ else c * u ⟨a + (k - a), by omega⟩) = _
-    simp only [h, dite_false, if_false]
+    simp only [h, dite_false, ite_false]
     congr 2
     exact Fin.ext (by simp; omega)
 

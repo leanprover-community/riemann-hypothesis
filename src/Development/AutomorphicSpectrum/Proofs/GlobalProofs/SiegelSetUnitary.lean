@@ -746,7 +746,7 @@ theorem sum_single (r : ℕ) : ∑ i : Fin r, (Matrix.single i i 1 : Matrix (Fin
     · simp [h]
   · intro k _ hk
     simp only [Matrix.single_apply]
-    rw [if_neg (fun e => hk e.1)]
+    rw [ite_eq_right (fun e => hk e.1)]
   · simp
 
 theorem sum_pr (X Y : Matrix (Fin n) (Fin r) R) (X' Y' : Matrix (Fin r) (Fin n) R) :
@@ -1042,7 +1042,7 @@ theorem conj_eq (h : IsCMExt F E σ) (hJ : IsHermND σ J) (hW : IsWittFrame σ J
   dsimp only
   rw [Matrix.smul_mul, Matrix.smul_mul, Matrix.mul_smul, smul_smul, dl_neg]
   by_cases hr : rk α ≤ rk β
-  · rw [if_pos hr, eA_exp_mul]
+  · rw [ite_eq_left hr, eA_exp_mul]
   · rw [pj_mul_pj_eq_zero h hJ hW hp (not_le.1 hr), smul_zero, smul_zero]
 
 theorem isCompact_mat (K : Set (Matrix (Fin n) (Fin n) (AF F ⊗[F] E))) (hK : IsCompact K) :

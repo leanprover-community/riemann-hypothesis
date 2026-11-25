@@ -47,7 +47,7 @@ theorem flW_dom {n' m : ℕ} (d : Fin n' → ℕ) : IsDominant (flW (m := m) d) 
     have hi : i = 0 := le_antisymm hij (Fin.zero_le _)
     subst hi
     exact le_refl _
-  · rw [if_neg hj]
+  · rw [ite_eq_right hj]
     split_ifs <;> positivity
 
 theorem restW_dom {n' m : ℕ} (hm : 1 ≤ m) (TT : Finset (Fin n')) (lam0 : Fin n' → Fin (m + 1) → ℤ)
@@ -72,14 +72,14 @@ theorem restW_dom {n' m : ℕ} (hm : 1 ≤ m) (TT : Finset (Fin n')) (lam0 : Fin
       rw [Fin.le_def, h1v]
       have : j.val ≠ 0 := fun h0 => hj (Fin.ext h0)
       omega
-    rw [if_neg hj]
+    rw [ite_eq_right hj]
     by_cases hi : i = 0
     · subst hi
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       split_ifs
       · linarith [hA h1j]
       · linarith [hA (Fin.zero_le j)]
-    · rw [if_neg hi]
+    · rw [ite_eq_right hi]
       linarith [hA hij]
 
 theorem lambda_zero_eq_product {n' m : ℕ} (TT : Finset (Fin n')) (lam0 : Fin n' → Fin (m + 1) → ℤ) :
@@ -160,8 +160,6 @@ theorem level_lower_bound_terms (Cdeg CLa C Ct0 : ℝ) (h1 : |Cdeg| ≤ Ct0) (h3
       (k : ℝ) * (p : ℝ) ^ G') ≤ t0 C Ct0 p N N₁ L₁ G' k a := by
   unfold t0 tableLineDegreeFive.La
   have hlog : 0 ≤ Real.log a := Real.log_nonneg ha
-  have hp0 : (0 : ℝ) < p := by exact_mod_cast hp
-  have hk0 : (0 : ℝ) < k := by exact_mod_cast hk
   have hNs' : (Ns : ℝ) ^ 2 ≤ (N₁ : ℝ) ^ 2 := by
     have : (Ns : ℝ) ≤ N₁ := by exact_mod_cast hNs
     exact pow_le_pow_left₀ (Nat.cast_nonneg _) this 2

@@ -200,8 +200,7 @@ open NumberField IsDedekindDomain
 namespace GlobalTheory.CharConductor
 
 theorem exists_conductor_exponent : ∀ (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) (ψ : AddChar (v.adicCompletion F) ℂ), Continuous ψ → (∀ t, ‖ψ t‖ = 1) → (∃ t, ψ t ≠ 1) → ∃ n : ℤ, ∀ t : v.adicCompletion F, (∀ s ∈ v.adicCompletionIntegers F, ψ (t * s) = 1) ↔ Valued.v t ≤ WithZero.exp n := by
-  first
-  | exact @_root_.GlobalTheory.ConductorAdicCompletion.exists_conductor_adicCompletion
+  apply GlobalTheory.ConductorAdicCompletion.exists_conductor_adicCompletion
 
 end GlobalTheory.CharConductor
 end -- clump:auto

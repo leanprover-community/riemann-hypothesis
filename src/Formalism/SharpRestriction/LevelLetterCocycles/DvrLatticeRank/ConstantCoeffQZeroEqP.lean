@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.ArcCoordinatesOfMembership
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ExistsInfFilVEqBot
 public import Formalism.SharpRestriction.LevelLetterCocycles.DeltaInvariantLattices
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocalizationQuotientSeparatedDvd
@@ -34,13 +35,7 @@ theorem cc_lev_pi (c : ZMod n) (ζ : LL) (hζ : ∃ j : ℕ, IsPrimitiveRoot ζ 
   linear_combination this
 
 theorem constantCoeff_q_zero_eq_p : PowerSeries.constantCoeff W.q₀ = (PD.p : O) := by
-  have h := congrArg (PowerSeries.coeff 1) W.q₀_def
-  rw [PowerSeries.coeff_succ_X_mul, PowerSeries.coeff_zero_eq_constantCoeff_apply] at h
-  rw [h, map_sub, PowerSeries.coeff_one, if_neg one_ne_zero, sub_zero]
-  have e : ((1 : PowerSeries O) + PowerSeries.X) ^ PD.p =
-      (((Polynomial.X + 1) ^ PD.p : Polynomial O) : PowerSeries O) := by
-    rw [Polynomial.coe_pow, Polynomial.coe_add, Polynomial.coe_X, Polynomial.coe_one, add_comm]
-  rw [e, Polynomial.coeff_coe, Polynomial.coeff_X_add_one_pow, Nat.choose_one_right]
+  apply _root_.Formalism.MainNotions.UnusedSlot80.ArcF.constantCoeff_q_zero_eq_p <;> assumption
 
 theorem cc_lev_q_one (c : ZMod n) : PowerSeries.constantCoeff (W.lev c 1 W.q) = (PD.p : LL) := by
   have hq : W.q = (fun _ => PowerSeries.mk fun k => PowerSeries.coeff (k + 1) W.q₀) * letπ +
@@ -73,9 +68,7 @@ theorem qroot_prim (hs : W.s = 1) (hp : (PD.p : LL) ≠ 0) {c : ZMod n} {ζ : LL
 
 theorem letE_smul_of_mem_Nl {T : LocLat G Qp LL O} {c : ZMod n} {y : W.DD T}
     (hy : y ∈ W.Nl T c) : (letE c : LetA O n) • y = y := by
-  obtain ⟨z, -, rfl⟩ := hy
-  simp only [LinearMap.smul_apply, LinearMap.id_apply]
-  rw [smul_smul, _root_.Formalism.MainNotions.LiftingTheory.letter_idempotent_sq]
+  exact Formalism.MainNotions.LiftingTheory.frame_letE_fix W T c hy
 
 theorem mem_Nl_of {T : LocLat G Qp LL O} {c : ZMod n} {y : W.DD T} (hy : y ∈ W.N T)
     (hc : (letE c : LetA O n) • y = y) : y ∈ W.Nl T c :=

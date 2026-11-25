@@ -97,16 +97,16 @@ theorem good_cyclotomic_succ (ℓ : ℕ) (hℓ : ℓ.Prime) (j : ℕ) :
   rw [hmon.nextCoeff_mul hm1, nextCoeff_X_pow_sub_one _ (pow_pos hℓ.pos j),
     nextCoeff_X_pow_sub_one _ (pow_pos hℓ.pos (j + 1))] at hnc
   have hne : ℓ ^ (j + 1) ≠ 1 := (Nat.one_lt_pow (by omega) hℓ.one_lt).ne'
-  rw [if_neg hne] at hnc
+  rw [ite_eq_right hne] at hnc
   rcases j with _ | k
-  · rw [pow_zero, if_pos rfl] at hnc
+  · rw [pow_zero, ite_eq_left rfl] at hnc
     refine ⟨hmon, 1, ?_, ?_, fun h => absurd h one_ne_zero⟩
     · rw [hdeg]; simp
     · have hc : (((ℓ ^ 0 * (ℓ - 1) : ℕ)) : ℚ) = (ℓ : ℚ) - 1 := by
         rw [pow_zero, one_mul, Nat.cast_sub (by omega), Nat.cast_one]
       rw [hdeg, hc]; push_cast; linarith
   · have hne' : ℓ ^ (k + 1) ≠ 1 := (Nat.one_lt_pow (by omega) hℓ.one_lt).ne'
-    rw [if_neg hne'] at hnc
+    rw [ite_eq_right hne'] at hnc
     have hz : nextCoeff (cyclotomic (ℓ ^ (k + 1 + 1)) ℚ) = 0 := by linarith
     refine ⟨hmon, ℓ ^ k * (ℓ - 1), ?_, ?_, ?_⟩
     · rw [hdeg]

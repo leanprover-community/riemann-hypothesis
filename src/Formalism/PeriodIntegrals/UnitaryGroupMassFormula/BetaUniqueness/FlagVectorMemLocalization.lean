@@ -7,6 +7,7 @@ import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.Tactic.TypeStar
+import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
 
 @[expose] public section
 
@@ -130,18 +131,7 @@ theorem e_mem_Xsp {r : ℕ} {T : E} (F : LFlag S r T) (a : Fin r) : F.fl.e a ∈
 
 theorem hT_X {r : ℕ} {T : E} (F : LFlag S r T) {x y : S.V} (hx : x ∈ Xsp F) (hy : y ∈ Xsp F) :
     S.hT x y = 0 := by
-  rw [Xsp_eq] at hx hy
-  induction hx using Submodule.span_induction with
-  | mem a ha =>
-    obtain ⟨i, rfl⟩ := ha
-    induction hy using Submodule.span_induction with
-    | mem b hb => obtain ⟨j, rfl⟩ := hb; exact F.fl.e_iso i j
-    | zero => simp
-    | add _ _ _ _ h1 h2 => simp [h1, h2]
-    | smul c _ _ h => simp [h]
-  | zero => simp
-  | add _ _ _ _ h1 h2 => simp [h1, h2]
-  | smul c _ _ h => simp [h]
+  apply _root_.Formalism.MainNotions.LatticeGluingRadicals.p_X_iso <;> assumption
 
 theorem Xflag_r {r : ℕ} {T : E} (F : LFlag S r T) : Xflag F r = Xsp F := by
   show Submodule.span E (F.fl.e '' {i | i.1 < r}) = Submodule.span E (Set.range F.fl.e)
@@ -344,7 +334,7 @@ def iv (ε : S.V) (x : S.V) : 𝓞 E := by
 theorem iv_spec (hU : Formalism.HermitianLatticesTheory.IsUnimodular S.hT Λ) {ε x : S.V} (hε : ε ∈ Λ) (hx : x ∈ Λ) :
     algebraMap (𝓞 E) E (iv ε x) = S.hT ε x := by
   have h := int_of_unimod Λ hU hε hx
-  simp only [iv, h, dif_pos]
+  simp only [iv, h, dite_eq_left]
   exact h.choose_spec
 
 theorem surj {r : ℕ} (hU : Formalism.HermitianLatticesTheory.IsUnimodular S.hT Λ) (P : HeightOneSpectrum (𝓞 E))
@@ -411,8 +401,7 @@ theorem surj {r : ℕ} (hU : Formalism.HermitianLatticesTheory.IsUnimodular S.hT
         intro a _
         show mk (c a) * mk (iv (ε a) l) = mk (iv (ε a) l) * f (ef a)
         rw [hc a]; ring
-      · set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum]
+      · rw [map_sum]
         apply Finset.sum_congr rfl
         intro a _
         rw [map_mul, iv_spec hU (hε a) hl])

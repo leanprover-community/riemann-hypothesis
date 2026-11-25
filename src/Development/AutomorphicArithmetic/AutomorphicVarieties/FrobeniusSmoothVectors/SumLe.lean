@@ -36,58 +36,8 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.FrobeniusSm
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.FrobeniusSmoothVectors.PrRes
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.FrobeniusSmoothVectors.ZeroOfNeg
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.FrobeniusSmoothVectors.ZpowWNe
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.AdicCompletion.Noetherian
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicArithmetic.AutomorphicVarieties.FrobeniusSmoothVectors.LcMatrix
 import Std.Tactic.BVDecide.Normalize.Prop
@@ -687,7 +637,7 @@ private theorem ns_coeff {O σ : Type} [CommRing O] [DecidableEq σ] (s t : σ) 
   by_cases h : t = s
   · subst h
     simp
-  · rw [if_neg h, if_neg]
+  · rw [ite_eq_right h, ite_eq_right]
     intro hle
     have := hle t
     simp [Ne.symm h] at this
@@ -837,7 +787,7 @@ private theorem small {O : Type} [CommRing O] [IsLocalRing O] (h2 : IsUnit (2 : 
     intro u v
     obtain ⟨a, ha, hya⟩ := hco ⟨ε v, hεK v⟩
     have h0 : ∑ w, (a w - if w = v then 1 else 0) • ε w = 0 := by
-      simp only [sub_smul, Finset.sum_sub_distrib, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      simp only [sub_smul, Finset.sum_sub_distrib, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
       rw [← hya]
       exact sub_self _
     have hmem := hind _ h0 u
@@ -1085,7 +1035,7 @@ theorem UpperTheory.Reformulated.B.PowerSeriesMemSpanIndexedVariables.ep_odd_spa
     have h2 : (MvPowerSeries.X (e a) : MvPowerSeries σ O) ∣ f - g := by
       rw [MvPowerSeries.X_dvd_iff]
       intro n hn
-      rw [map_sub, hg, if_pos hn, sub_self]
+      rw [map_sub, hg, ite_eq_left hn, sub_self]
     have h3 : f - g ∈ Ideal.span
         (Set.range fun (i : ι) ↦ (MvPowerSeries.X (e i) : MvPowerSeries σ O)) :=
       Ideal.mem_of_dvd _ h2 (Ideal.subset_span ⟨a, rfl⟩)
@@ -1127,7 +1077,7 @@ theorem UpperTheory.V.Fr.ep_odd :
   · rw [Ideal.span_le]
     rintro _ ⟨i, rfl⟩
     refine Ideal.subset_span ⟨MvPowerSeries.X (.inr i), fun n hn => ?_, rfl⟩
-    rw [MvPowerSeries.coeff_X, if_neg]
+    rw [MvPowerSeries.coeff_X, ite_eq_right]
     rintro rfl
     apply hn
     simp [Finsupp.weight_single, Space.Loc.par]
@@ -1229,8 +1179,8 @@ theorem UpperTheory.Reformulated.B.Qf39.ev_decomp :
     intro i m
     rw [MvPowerSeries.X_def, MvPowerSeries.coeff_monomial_mul, one_mul]
     by_cases hle : Finsupp.single i 1 ≤ m
-    · rw [if_pos hle, hh, tsub_add_cancel_of_le hle]
-    · rw [if_neg hle, if_neg]
+    · rw [ite_eq_left hle, hh, tsub_add_cancel_of_le hle]
+    · rw [ite_eq_right hle, ite_eq_right]
       intro hi
       exact hle (Finsupp.single_le_iff.2 (Nat.one_le_iff_ne_zero.2 (hc₂ m i hi)))
   refine ⟨h, ?_, fun i => ?_⟩
@@ -1249,7 +1199,7 @@ theorem UpperTheory.Reformulated.B.Qf39.ev_decomp :
     have hji : j = i := by
       by_contra hji
       exact hc₂ _ j hj (Finsupp.single_eq_of_ne hji)
-    rw [← MvPowerSeries.coeff_zero_eq_constantCoeff_apply, hh, zero_add, if_pos (hji ▸ hj)]
+    rw [← MvPowerSeries.coeff_zero_eq_constantCoeff_apply, hh, zero_add, ite_eq_left (hji ▸ hj)]
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.EvDecomp =====

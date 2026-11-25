@@ -149,9 +149,9 @@ theorem ShiftByUniformiser.proof (h₁ : DivCycleMul.Statement.{u})
         else cycEval (fun G => vNum G L) (ratDiv W (C ϖ) 1)) (divCycle P s) := by
     refine cycEval_eq_add_mul_of_fun (n : ℤ) (hfin P s) fun W hW => ?_
     by_cases hϖW : (C ϖ : MRing ι O) ∈ W
-    · simp only [if_pos hϖW, vNum_vecCons_zero]
+    · simp only [ite_eq_left hϖW, vNum_vecCons_zero]
       ring
-    · simp only [if_neg hϖW]
+    · simp only [ite_eq_right hϖW]
       have hV := hH W hW hϖW
       have hWp : W.IsPrime := by
         unfold divCycle at hW

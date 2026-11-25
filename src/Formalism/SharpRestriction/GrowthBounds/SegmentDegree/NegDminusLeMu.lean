@@ -85,7 +85,7 @@ theorem dsum_succ (f : Fin N → Prop) [DecidablePred f] (dd : Fin N → ℕ) (s
     · have hne : l.val ≠ s := fun h => h1 (Fin.ext h)
       have hiff : (l.val < s + 1 ∧ f l) ↔ (l.val < s ∧ f l) :=
         ⟨fun ⟨a, b⟩ => ⟨by omega, b⟩, fun ⟨a, b⟩ => ⟨by omega, b⟩⟩
-      simp only [hiff, h1, if_false, add_zero]
+      simp only [hiff, h1, ite_false, add_zero]
   rw [Finset.sum_congr rfl (fun l _ => key l), Finset.sum_add_distrib]
   simp
 
@@ -179,7 +179,7 @@ theorem vcount_succ (LL : Letters (Fin N)) (t s : ℕ) (hts : t ≤ s) (hs : s <
     vcount LL t (s + 1) = vcount LL t s + if LL.vec ⟨s, hs⟩ = true then 1 else 0 := by
   unfold vcount
   by_cases hv : LL.vec ⟨s, hs⟩ = true
-  · rw [if_pos hv]
+  · rw [ite_eq_left hv]
     have hset : (Finset.univ.filter fun l : Fin N => t ≤ l.val ∧ l.val < s + 1 ∧ LL.vec l = true) =
         insert ⟨s, hs⟩ (Finset.univ.filter fun l : Fin N => t ≤ l.val ∧ l.val < s ∧ LL.vec l = true) := by
       ext l
@@ -196,7 +196,7 @@ theorem vcount_succ (LL : Letters (Fin N)) (t s : ℕ) (hts : t ≤ s) (hs : s <
         · exact ⟨h1, by omega, h3⟩
     rw [hset, Finset.card_insert_of_notMem]
     simp
-  · rw [if_neg hv, add_zero]
+  · rw [ite_eq_right hv, add_zero]
     congr 1
     ext l
     simp only [Finset.mem_filter, Finset.mem_univ, true_and]
@@ -227,11 +227,11 @@ theorem row_back (P : PPath n N LL dd) (t : ℕ) :
     rw [vcount_succ LL t s hts hsN] at hm
     cases hv : LL.vec ⟨s, hsN⟩
     · rw [hv] at hm
-      simp only [Bool.false_eq_true, if_false, add_zero] at hm
+      simp only [Bool.false_eq_true, ite_false, add_zero] at hm
       have hstr : HStrip (P.mu ⟨s + 1, hs⟩) (P.mu ⟨s, by omega⟩) (dd ⟨s, hsN⟩) := step_cov P ⟨s, hsN⟩ hv
       exact (hstr.1 m').trans (ih (by omega) m m' hm)
     · rw [hv] at hm
-      simp only [if_true] at hm
+      simp only [ite_true] at hm
       have hstr : HStrip (P.mu ⟨s, by omega⟩) (P.mu ⟨s + 1, hs⟩) (dd ⟨s, hsN⟩) := step_vec P ⟨s, hsN⟩ hv
       have hlt := m'.isLt
       have ha : m.val + vcount LL t s < n := by omega

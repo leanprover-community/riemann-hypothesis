@@ -638,7 +638,6 @@ private theorem isProper_desc {A G U Z : Scheme.{0}} {φ : A ⟶ G} {f : A ⟶ U
   haveI : IsSeparated g := ⟨hC⟩
   exact IsProper.mk
 
-set_option backward.isDefEq.respectTransparency.types false in
 private theorem isFinite_desc_fin (W : Scheme.{0}) (n : ℕ) :
     IsFinite (Sigma.desc (f := fun _ : Fin n => W) fun _ => 𝟙 W) := by
   induction n with
@@ -667,7 +666,6 @@ private theorem isFinite_desc_fin (W : Scheme.{0}) (n : ℕ) :
     rw [key]
     infer_instance
 
-set_option backward.isDefEq.respectTransparency.types false in
 private theorem isFinite_desc (W : Scheme.{0}) (J : Type) [Finite J] :
     IsFinite (Sigma.desc (f := fun _ : J => W) fun _ => 𝟙 W) := by
   obtain ⟨n, ⟨e⟩⟩ := Finite.exists_equiv_fin J
@@ -694,7 +692,6 @@ private theorem locallyQuasiFinite_of_etale {X Y : Scheme.{0}} (f : X ⟶ Y) [Et
   show Algebra.QuasiFinite R S
   infer_instance
 
-set_option backward.isDefEq.respectTransparency.types false in
 theorem UpperTheory.Gal.G3.jSplitDesc :
     SplitDesc := by
   intro Z Y W s c _ _ _ J _ σ hs

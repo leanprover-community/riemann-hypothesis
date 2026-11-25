@@ -57,8 +57,6 @@ namespace GlobalTheory.CapelliCentral
 
 open Formalism.REAL Formalism.QuantumDeterminants
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {n : ℕ} {ε : Fin n → Bool} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
 open Matrix in
@@ -145,7 +143,7 @@ theorem _root_.GlobalTheory.CapelliCentral.cut_of_mem (f : Matrix (Fin n) (Fin n
     {g : Matrix (Fin n) (Fin n) ℂ} (hg : _root_.Formalism.REAL.inUJ ε g) :
     _root_.GlobalTheory.CapelliCentral.cut ε f g = f g := by
   unfold _root_.GlobalTheory.CapelliCentral.cut
-  rw [if_pos hg]
+  rw [ite_eq_left hg]
 
 open Matrix in
 open scoped ContDiff in
@@ -155,7 +153,7 @@ theorem _root_.GlobalTheory.CapelliCentral.cut_of_not_mem (f : Matrix (Fin n) (F
     {g : Matrix (Fin n) (Fin n) ℂ} (hg : ¬ _root_.Formalism.REAL.inUJ ε g) :
     _root_.GlobalTheory.CapelliCentral.cut ε f g = 0 := by
   unfold _root_.GlobalTheory.CapelliCentral.cut
-  rw [if_neg hg]
+  rw [ite_eq_right hg]
 
 def smoothSpace (ε : Fin n → Bool) (E : Type) [NormedAddCommGroup E] [NormedSpace ℂ E] :
     Submodule ℂ (Matrix (Fin n) (Fin n) ℂ → E) where
@@ -274,9 +272,3 @@ theorem _root_.GlobalTheory.CapelliCentral.eabEnd_glRel : _root_.Formalism.REAL.
   split_ifs <;> simp [hF]
 
 end GlobalTheory.CapelliCentral
-
-namespace GlobalTheory
-
-open Formalism.REAL Formalism.QuantumDeterminants CapelliCentral
-
-end GlobalTheory

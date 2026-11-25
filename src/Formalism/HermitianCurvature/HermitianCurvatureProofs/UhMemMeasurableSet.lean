@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.CuspSpanNormBounds.BesselShellMomentBounds
 public import Formalism.HermitianCurvature.BesselNonvanishingReduction
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Analysis.Complex.Tietze
@@ -13,8 +14,6 @@ open MeasureTheory Matrix
 open scoped InnerProductSpace ENNReal NNReal
 
 namespace Formalism.FourierDecayAlt.P.S3dx4
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.ThreeDimData
 
@@ -127,10 +126,6 @@ theorem coef_ext {ε : Fin (2 * r + k + 1) → Bool} {lam : Fin (2 * r + k + 1) 
 
 theorem uh_mem_measurableSet :
     MeasurableSet {x : Formalism.QuantumDeterminants.Mt k r | Matrix.of x ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r)} := by
-  have h0 : Continuous fun x : Formalism.QuantumDeterminants.Mt k r => (Matrix.of x : Mx k r) := continuous_id
-  have hc : Continuous fun x : Formalism.QuantumDeterminants.Mt k r =>
-      (Matrix.of x)ᴴ * Formalism.QuantumDeterminants.Hpk k r * Matrix.of x :=
-    (h0.matrix_conjTranspose.matrix_mul continuous_const).matrix_mul h0
-  exact (isClosed_eq hc continuous_const).measurableSet
+  apply _root_.Formalism.MainNotions.BesselShellMomentBounds.measurableSet_UH <;> assumption
 
 end Formalism.FourierDecayAlt.P.S3dx4

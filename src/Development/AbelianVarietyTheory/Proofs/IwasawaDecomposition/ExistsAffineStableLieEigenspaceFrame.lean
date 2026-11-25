@@ -58,8 +58,6 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestric
 open scoped CategoryTheory.Obj Matrix
 open ReciprocityTheory.ChartRestriction.G.Chart (tvec tmap eigLat IsUnivChart scaleD sp)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 theorem spread_basis {R L : Type} [CommRing R] [CommRing L] [Algebra R L] (M : Submonoid R) [IsLocalization M L]
     {n m : ℕ} (P : Matrix (Fin n) (Fin n) R) (B : Fin m → Fin n → L)
     (hB : ∀ j, P.map (algebraMap R L) *ᵥ B j = B j)
@@ -218,7 +216,7 @@ theorem exists_projectors {L : Type} [CommRing L] (φ : c.F →+* L) {x : Sp L �
       by_cases h : τ' = τ
       · subst h; rwa [Pi.single_eq_same]
       · rw [Pi.single_eq_of_ne h]; intro a; simp) τ
-    rwa [Finset.sum_pi_single', if_pos (Finset.mem_univ _), Pi.single_eq_same] at this
+    rwa [Finset.sum_pi_single', ite_eq_left (Finset.mem_univ _), Pi.single_eq_same] at this
   have htm : ∀ (a : 𝓞 E) (cc : Fin n → L), rho hx' a (ψ ∘ cc) = ψ ∘ rho hx a cc :=
     fun a cc => vec_inj hx' (by
       show vec t _ xc' (tmap hx' _ _) = vec t _ xc' (_ ∘ tmap hx _ _)

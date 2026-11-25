@@ -30,8 +30,6 @@ namespace PositivityTheory.Mix
 open NumberField IsDedekindDomain Filter Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK PositivityTheory.KCo
   GlobalTheory.LatVac
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 variable {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ] {v : Pl F}
 
 def liftW (v : Pl F) (y : (κ → Fv F v) × (κ → Fv F v)) : (κ → AF F) × (κ → AF F) :=
@@ -143,8 +141,7 @@ theorem eq_std {ψ : AddChar (AF F) ℂ} (hψ : PsiUnr ψ v) {Φ : (κ → Fv F 
   · rw [Pi.smul_apply, Set.indicator_of_notMem (show x ∉ {x : κ → Fv F v | ∀ i, x i ∈ v.adicCompletionIntegers F} from hx), smul_zero]
     obtain ⟨i, hi⟩ := not_forall.1 hx
     obtain ⟨y, hy, hne⟩ : ∃ y ∈ v.adicCompletionIntegers F, psiLoc ψ v (x i * y) ≠ 1 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hi ((hψ _).1 hc)
     have := congrFun (h (0, Pi.single i y) ⟨fun _ => zero_mem _, fun j => by
       by_cases e : j = i
@@ -198,7 +195,7 @@ theorem finite_adelic_estimates_holds : FinSt := by
         fun i => zero_mem _)] at this
       exact one_ne_zero this
     change c v • ι v (s v) = _
-    rw [show c v = (ι v (s v) 0)⁻¹ from if_neg h0, inv_smul_eq_iff₀ h0]
+    rw [show c v = (ι v (s v) 0)⁻¹ from ite_eq_right h0, inv_smul_eq_iff₀ h0]
     exact h
 
 end PositivityTheory.Mix
@@ -310,7 +307,7 @@ theorem rel_fin (ev : ∀ v : Pl F, ((κ → Fv F v) → ℂ) →ₗ[ℂ] ((κ �
           unfold tens r GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure
           rw [funext hprod, finprod_mul_distrib ht hsupport,
             finprod_eq_single t v (fun w e => ite_eq_right e)]
-          simp only [t, if_true]
+          simp only [t, ite_true]
           ac_rfl
         funext x
         have hs : (fun y => pure g θ (repl v x y)) = r x • θ v := by

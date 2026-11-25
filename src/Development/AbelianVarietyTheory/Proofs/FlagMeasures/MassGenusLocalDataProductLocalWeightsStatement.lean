@@ -302,7 +302,7 @@ theorem GlobalTheory.DblCos.finite_double_cosets : ∀ (D : D7) (X : HidaSetting
       exact img_one p Z.M _
     · have hc : (∃ h ∈ (FP p).UW0, LocNG.img h (lattice₂ D Z.M p Λ₀) = lattice₂ D Z.M p Λs) ∧
           lattice₂ D Z.M p Λs ≠ lattice₂ D Z.M p Λ₀ := ⟨hex, he⟩
-      simp only [fam, dif_pos hc]
+      simp only [fam, dite_eq_left hc]
       exact hc.1.choose_spec.2
   refine ⟨(Slat.filter (fun Λs => Submodule.IsFullLattice D.host.E Λs)).image fam, ?_, ?_⟩
   ·
@@ -371,7 +371,6 @@ section -- clump:auto
 
 open scoped Classical ENNReal
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.Unfold
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.finite_doubleCosets_rational_localLatticeStabilizers : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word), ∀ (F : LFlag (D.sp.Y 0) D.R.rS (((D.mem u).A.T : ℕ) : D.host.E)) (F' : LFlag (D.sp.Y 0) D.R.rS (((D.mem u').A.T : ℕ) : D.host.E)) (w : Point D.host.E (D.R.rS + 1)), ZhatOM (ZhatL F F') = ptMat w → Gval F F' ≠ 0 → ∀ (Z : LocDat D) (FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R.rS), Based Z FP (Tu D u) (Tu D u') F F' → (∀ p, (FP p).RelG (LocNG.theta (Z.M p))) → ∀ (φ : ↥(FlagPairStabilizer F F') →* (∀ p, ↥(FP p).UW0)), (∀ (h : ↥(FlagPairStabilizer F F')) p, Ext p (h : GV D) ((φ h p : ↥(FP p).UW0) : Vp D p ≃ₗ[(D.s.atP p).Ep] Vp D p)) → ∀ Λ₀ : LV D, Submodule.IsFullLattice D.host.E Λ₀ → ∃ S : Finset (∀ p, ↥(FP p).UW0), (∀ s ∈ S, {p | ((s p : ↥(FP p).UW0) : Vp D p ≃ₗ[(D.s.atP p).Ep] Vp D p) ∉ LocNG.Aut (lattice₂ D Z.M p Λ₀)}.Finite) ∧ ∀ g : ∀ p, ↥(FP p).UW0, {p | ((g p : ↥(FP p).UW0) : Vp D p ≃ₗ[(D.s.atP p).Ep] Vp D p) ∉ LocNG.Aut (lattice₂ D Z.M p Λ₀)}.Finite → ∃ s ∈ S, ∃ h : ↥(FlagPairStabilizer F F'), ∃ k : ∀ p, ↥(FP p).UW0, (∀ p, ((k p : ↥(FP p).UW0) : Vp D p ≃ₗ[(D.s.atP p).Ep] Vp D p) ∈ LocNG.Aut (lattice₂ D Z.M p Λ₀)) ∧ g = φ h * s * k := by
   first
@@ -609,8 +608,8 @@ theorem GlobalTheory.Unfold.massA_eq_sum_orbits : ∀ (D : D7) (X : HidaSetting 
     · rintro ⟨g, hg⟩
       exact ⟨g.1, g.2, (hmov p g (d p) (o.out p)).2 hg⟩
   by_cases hc : (∀ p, ∃ g : ↥(FP p).UW0, g • d p = o.out p) ∧ {p | o.out p ≠ d p}.Finite
-  · rw [if_pos (hin.2 hc), if_pos hc, hstab]
-  · rw [if_neg (mt hin.1 hc), if_neg hc]
+  · rw [ite_eq_left (hin.2 hc), ite_eq_left hc, hstab]
+  · rw [ite_eq_right (mt hin.1 hc), ite_eq_right hc]
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.GenusMassEqSumOverRationalGroupOrbits =====
@@ -630,16 +629,6 @@ open Formalism.MainNotions.S.LocNG Formalism.MainNotions.KappaEndpoints Formalis
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
 variable {M : Model F E} {V : Type} [AddCommGroup V] [Module E V] {H : HermSp M V} {r : ℕ}
-
-theorem perpX_of (Fr : FrameD H r) {k : V} (h : ∀ a : Fin r, H.h k (Fr.f a.castSucc) = 0) :
-    k ∈ H.perp (H.X Fr.f) := by
-  intro x hx
-  unfold HermSp.X at hx
-  induction hx using Submodule.span_induction with
-  | mem x hx => obtain ⟨a, rfl⟩ := hx; exact h a
-  | zero => rw [H.h_herm 0 _, H.h_zero_left, map_zero]
-  | add x y _ _ hx hy => rw [H.h_herm (x + y) _, H.h_add_left, map_add (f := _), ← H.h_herm, ← H.h_herm, hx, hy, add_zero]
-  | smul c x _ hx => rw [H.h_herm (c • x) _, H.h_smul_left, map_mul, ← H.h_herm, hx, mul_zero]
 
 theorem mkW_eq (Fr : FrameD H r) {x y : ↥(H.perp (H.X Fr.f))} (h : (x : V) - y ∈ H.X Fr.f) :
     H.mkW Fr.f x = H.mkW Fr.f y := by
@@ -1005,7 +994,7 @@ theorem inv_encard_eq_relIndex_mul {G : Type} [Group G] (H K : Subgroup G) (hle 
     simp [hH, hK]
   · have hH : Nat.card H ≠ 0 := by
       intro h; rw [h, zero_mul] at hc; exact hK hc.symm
-    rw [if_neg hH, if_neg hK, ← hc]
+    rw [ite_eq_right hH, ite_eq_right hK, ← hc]
     push_cast
     rw [ENNReal.mul_inv (Or.inl (by exact_mod_cast hH)) (Or.inl (by simp)), mul_comm,
       mul_assoc, ENNReal.inv_mul_cancel (by exact_mod_cast hr) (by simp), mul_one]
@@ -1067,7 +1056,7 @@ theorem fibre_sum {G : Type} [Group G] (Γ : Subgroup G) {Y Z : Type} [MulAction
   classical
   by_cases hz : Quotient.out O ∈ S
   swap
-  · rw [if_neg hz, mul_zero]
+  · rw [ite_eq_right hz, mul_zero]
     haveI : IsEmpty {P // fbar P = O} := by
       refine ⟨fun ⟨P, hP⟩ => ?_⟩
       have h1 : Quotient.mk (MulAction.orbitRel Γ Z) (f (Quotient.out P))
@@ -1077,7 +1066,7 @@ theorem fibre_sum {G : Type} [Group G] (Γ : Subgroup G) {Y Z : Type} [MulAction
       exact (hemp _ hz).false ⟨(γ⁻¹ : G) • Quotient.out P, by
         rw [hf, ← hγ]; simp [Subgroup.smul_def]⟩
     simp
-  rw [if_pos hz]
+  rw [ite_eq_left hz]
   obtain ⟨z, hzO⟩ : ∃ z, Quotient.out O = z := ⟨_, rfl⟩
   rw [hzO] at hz ⊢
   have hOz : Quotient.mk (MulAction.orbitRel Γ Z) z = O := by rw [← hzO, Quotient.out_eq]
@@ -1534,14 +1523,14 @@ theorem mass_restricted_product : ∀ {ι : Type} (G : ι → Type) [∀ i, Grou
       let g : ∀ i, G i := fun i => if y i = x i then 1 else Classical.choose (hall i)
       have hgR : g ∈ R := by
         refine hf.subset (fun i hi hyx => hi ?_)
-        simp only [g, hyx, if_true]
+        simp only [g, hyx, ite_true]
         exact one_mem _
       refine ⟨⟨g, hgR⟩, funext fun i => ?_⟩
       dsimp only
       rw [Subgroup.smul_def, Pi.smul_apply']
       by_cases hyx : y i = x i
       · simp [g, hyx]
-      · simp only [g, hyx, if_false]
+      · simp only [g, hyx, ite_false]
         exact Classical.choose_spec (hall i)
     · rintro ⟨g, rfl⟩
       refine ⟨fun i => ⟨(g : ∀ i, G i) i, by dsimp only; rw [Subgroup.smul_def, Pi.smul_apply']⟩, ?_⟩
@@ -1658,8 +1647,6 @@ open scoped Classical ENNReal
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.Unfold
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.mass_genus_local_data_product_local_weights : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word), ∀ (F : LFlag (D.sp.Y 0) D.R.rS (((D.mem u).A.T : ℕ) : D.host.E)) (F' : LFlag (D.sp.Y 0) D.R.rS (((D.mem u').A.T : ℕ) : D.host.E)) (w : Point D.host.E (D.R.rS + 1)), ZhatOM (ZhatL F F') = ptMat w → Gval F F' ≠ 0 → ∀ (Z : LocDat D) (FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R.rS), Based Z FP (Tu D u) (Tu D u') F F' → (∀ p, (FP p).RelG (LocNG.theta (Z.M p))) → ∀ d0 : Dat Z FP, (∀ p, ∃ τ, LocNG.IsTermOver (FP p) (d0 p) τ) → (∃ Λ₀ : LV D, Submodule.IsLattice D.host.E Λ₀ ∧ {p | ¬ ∃ τ, LocNG.IsTermOver (FP p) (d0 p) τ ∧ τ.abelian₂ = lattice₂ D Z.M p Λ₀}.Finite) → ∃ V1 : ℝ, 0 < V1 ∧ ∀ d : Dat Z FP, (∀ p, ∃ τ, LocNG.IsTermOver (FP p) (d p) τ) → {p | d p ≠ d0 p}.Finite → massA F F' d = ENNReal.ofReal (V1 * ∏ᶠ p, LocNG.Datum.wt (d0 p) (d p)) := by
-  first | exact @GlobalTheory.Unfold.mass_genus_local_weights
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.MassGenusLocalDataProductLocalWeightsStatement =====

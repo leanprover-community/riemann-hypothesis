@@ -6,49 +6,10 @@ public import Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil
 public import Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.ThetaIdempotents.ThetaCoefficients.LPartFTD
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PullbackSchwartzLinearIndependentStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BlockMatrixMul
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsBlockMatrixTwoByTwoFinEq
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SecondOnCommonRangeOfSecond
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EisensteinRationalPoints
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThetaSumInvariantWeylInvolution
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EisensteinHeisenbergSchwartzStatement
 
@@ -67,8 +28,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open PositivityTheory.GramSchwartzFunctions.EC GlobalTheory.CompanionTheory.EisCovar
 
@@ -181,8 +140,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doublin
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open PositivityTheory.GramSchwartzFunctions.EC GlobalTheory.CompanionTheory.EisCovar GlobalTheory.CompanionTheory.ThetaPoisson
 
 namespace PositivityTheory.Rg.Rsw.L.LPartFT
@@ -271,8 +228,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doublin
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open PositivityTheory.GramSchwartzFunctions.EC GlobalTheory.CompanionTheory.EisCovar
 
 namespace PositivityTheory.Rg.Rsw.L.LPartFT
@@ -300,7 +255,7 @@ theorem clause1 {V : HSp D} {ψ χ θ μ ω} (hS : SetW D n V ψ χ θ μ ω) (h
 
 theorem clause2 {θ : InfFam D} (hθ : IsInfFam θ) {V : HSp D} (hn : r + t = n) (Φ : schwartzA θ V.rank n) :
     (fun x => Φ.1 (jn hn x 0)) ∈ schwartzA θ V.rank r := by
-  have := GlobalTheory.T.pullback_schwartz_linear_independent D θ hθ V.rank r n (c₁ D hn) (linInd_c₁ hn) Φ.1 Φ.2
+  have := GlobalTheory.CompanionTheory.PullSch.pullSchLI D θ hθ V.rank r n (c₁ D hn) (linInd_c₁ hn) Φ.1 Φ.2
   convert this using 1
   funext x
   exact congrArg Φ.1 (mul_c₁ hn x).symm
@@ -320,7 +275,7 @@ theorem clause3 {V : HSp D} {ψ χ θ μ ω} (hS : SetW D n V ψ χ θ μ ω) (h
     rw [mat_mul', ← h1, ← Matrix.mul_assoc, mat_inv_mul', Matrix.one_mul]
   have hψ := hS.1
   have hθ := hS.2.2.1
-  have hΨm := GlobalTheory.T.eisenstein_heisenberg_schwartz D ψ hψ θ hθ V n (HMul.hMul (xz (jn hn x v₀)) (mat (M.emb w))) Φ.1 Φ.2
+  have hΨm := _root_.PositivityTheory.RdEc.heisSch D ψ hψ θ hθ V n (HMul.hMul (xz (jn hn x v₀)) (mat (M.emb w))) Φ.1 Φ.2
   let Ψ : schwartzA θ V.rank n := ⟨Heisenberg₂ ψ V (HMul.hMul (xz (jn hn x v₀)) (mat (M.emb w))) Φ.1, hΨm⟩
   have hc := covar_w hS (M.emb w) hγ (HMul.hMul (xz (jn hn x v₀)) (mat (M.emb w))) Φ Ψ rfl
   have hv : HMul.hMul (HMul.hMul (xz (jn hn x v₀)) (mat (M.emb w))) (mat (M.emb w)⁻¹) = xz (jn hn x v₀) := by

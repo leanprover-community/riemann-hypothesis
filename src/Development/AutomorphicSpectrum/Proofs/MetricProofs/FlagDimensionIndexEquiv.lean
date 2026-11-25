@@ -61,10 +61,10 @@ theorem card_pairs (N j : ℕ) (hj : j ≤ N) :
   have hM : M + j - j = M := by omega
   rw [hM, Finset.sum_range_add]
   have e1 : ∑ x ∈ Finset.range M, (if x < M then x else x - M) = ∑ x ∈ Finset.range M, x :=
-    Finset.sum_congr rfl (fun x hx => if_pos (Finset.mem_range.mp hx))
+    Finset.sum_congr rfl (fun x hx => ite_eq_left (Finset.mem_range.mp hx))
   have e2 : ∑ x ∈ Finset.range j, (if M + x < M then M + x else M + x - M) =
       ∑ x ∈ Finset.range j, x :=
-    Finset.sum_congr rfl (fun x _ => by rw [if_neg (by omega)]; omega)
+    Finset.sum_congr rfl (fun x _ => by rw [ite_eq_right (by omega)]; omega)
   rw [e1, e2, sum_range_eq_choose, sum_range_eq_choose, add_comm]
 
 theorem card_lowIdx (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (hj : j ≤ N) :

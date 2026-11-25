@@ -149,7 +149,3 @@ theorem intBOfParts : IntBOfParts := intB_of
 end
 
 end Formalism.FourierDecayAlt.P.PBASM
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

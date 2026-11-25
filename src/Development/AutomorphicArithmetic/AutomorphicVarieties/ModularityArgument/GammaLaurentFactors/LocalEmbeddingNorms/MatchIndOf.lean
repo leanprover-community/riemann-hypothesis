@@ -155,8 +155,7 @@ private theorem unram_bound (K M : Type) [Field K] [NumberField K] [Field M] [Nu
   have hqv : ((Nat.minFac (Ideal.absNorm (w.under (𝓞 K)).asIdeal) : ℕ) : 𝓞 K) ∈ (w.under (𝓞 K)).asIdeal :=
     natCast_mem _ hq (Nat.minFac_dvd _)
   have hqN : N < Nat.minFac (Ideal.absNorm (w.under (𝓞 K)).asIdeal) := by
-    by_contra hle
-    push_neg at hle
+    by_contra! hle
     apply hw
     obtain ⟨k, hk⟩ := Nat.dvd_factorial hq.pos hle
     rw [hk, Nat.cast_mul]
@@ -221,7 +220,7 @@ private theorem ind_key (hE : Module.finrank K M = 2) (sat : HeightOneSpectrum (
     left
     refine ⟨?_, w', hne, hu, hgood.1 w' hne hu⟩
     rw [absNorm_pow (K := K) w, f_one hE hne hu, pow_one]
-  · push_neg at hs
+  · push Not at hs
     have honly : ∀ w' : HeightOneSpectrum (𝓞 M), w'.under (𝓞 K) = w.under (𝓞 K) → w' = w :=
       fun w' hu => by_contra fun hne => hs w' hne hu
     have hN2 : Ideal.absNorm w.asIdeal = Ideal.absNorm (w.under (𝓞 K)).asIdeal ^ 2 := by

@@ -68,7 +68,6 @@ open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
 open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Hk3 (hyp IsVacAt UnrPl)
 
 theorem _root_.GlobalTheory.T.mem_hyperspecialSubgroupAtPlace_iff_local_stabilizer : ∀ (D : D7) (v : HeightOneSpectrum (𝓞 D.host.F)) (w : HeightOneSpectrum (𝓞 D.host.E)), w.under (𝓞 D.host.F) = v → ∀ (V : HSp D) (g : GA D V), g ∈ hyp V w ↔ ∃ k ∈ Kv V v, g = embV V v k := by
@@ -90,7 +89,6 @@ open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
 open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Hk3 (hyp IsVacAt UnrPl)
 namespace GlobalTheory.VacInertAt
 
@@ -177,7 +175,6 @@ open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
 open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Hk3 (hyp IsVacAt UnrPl)
 
 noncomputable section
@@ -260,7 +257,6 @@ open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
 open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Hk3 (hyp IsVacAt UnrPl)
 
 theorem _root_.GlobalTheory.T.unramified_char_trivial_on_integral_units_at_place : ∀ (D : D7) (v : HeightOneSpectrum (𝓞 D.host.F)) (w : HeightOneSpectrum (𝓞 D.host.E)), w.under (𝓞 D.host.F) = v → ∀ χ : (AE D)ˣ →* Circle, (∀ w' : HeightOneSpectrum (𝓞 D.host.E), w'.under (𝓞 D.host.F) = v → UnrAt χ w') → UnrPl w χ := by
@@ -282,7 +278,6 @@ open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
 open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Hk3 (hyp IsVacAt UnrPl)
 
 namespace GlobalTheory.PlaceDict

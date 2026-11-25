@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ActualAdjointnessFromHermitian
 public import Formalism.HermitianCurvature.FrameExists2
 import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CapelliCoordinates
@@ -15,8 +16,6 @@ noncomputable section
 namespace Formalism.FourierDecayAlt.P
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Qr Formalism.FourierDecayAlt.P.QrD
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 namespace LieListProducts
 
@@ -88,12 +87,7 @@ theorem hpart2_comb {X₁ X₂ : Mx k r} (h1 : InLieW k r z X₁) (h2 : InLieW k
   simp
 
 theorem hsum (Z : Mx k r) : hpart1 (Hpk k r) Z + Complex.I • hpart2 (Hpk k r) Z = Z := by
-  unfold hpart1 hpart2
-  rw [smul_smul]
-  have e : Complex.I * (1 / (2 * Complex.I)) = 1 / 2 := by
-    field_simp [Complex.I_ne_zero]
-  rw [e, ← smul_add, sub_add_add_cancel, ← two_smul ℂ Z, smul_smul]
-  norm_num
+  apply _root_.Formalism.FourierDecayAlt.P.Qx5.hpart_sum <;> assumption
 
 theorem gl_comb {X₁ X₂ : Mx k r} (h1 : InLieW k r z X₁) (h2 : InLieW k r z X₂) :
     InGlW k r z (X₁ + Complex.I • X₂) := by
@@ -170,8 +164,8 @@ theorem unitB_mul {n m : ℕ} (H : Matrix (Fin n) (Fin n) ℂ) (Bs : Fin m → F
   funext v
   rw [← Matrix.mulVec_mulVec, Qx8.unitB_mulVec H Bs c d, Matrix.mulVec_smul, Qx8.unitB_mulVec, ho]
   by_cases h : b = c
-  · rw [if_pos h, if_pos h.symm, one_smul, Qx8.unitB_mulVec]
-  · rw [if_neg h, if_neg (Ne.symm h), zero_smul, smul_zero, Matrix.zero_mulVec]
+  · rw [ite_eq_left h, ite_eq_left h.symm, one_smul, Qx8.unitB_mulVec]
+  · rw [ite_eq_right h, ite_eq_right (Ne.symm h), zero_smul, smul_zero, Matrix.zero_mulVec]
 
 theorem list_prod_apply {W : Type*} [AddCommGroup W] [Module ℂ W] (L : List (Module.End ℂ W)) (v : W) :
     (L.map fun T : Module.End ℂ W => fun y : W => T y).foldr (fun T h => T h) v = L.prod v := by

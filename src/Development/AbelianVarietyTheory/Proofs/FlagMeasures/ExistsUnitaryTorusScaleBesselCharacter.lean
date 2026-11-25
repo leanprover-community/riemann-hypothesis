@@ -76,12 +76,12 @@ theorem dS_eI (l : ℂ) (a : Fin r) : dS k r l (eI k r a) = l ^ (r - a.val) := b
 
 theorem dS_mid (l : ℂ) (i : Fin (2 * r + k + 1)) (h : ¬ (i.val < r ∨ r + k < i.val)) : dS k r l i = 1 := by
   unfold dS
-  rw [if_neg (by omega), if_neg (by omega)]
+  rw [ite_eq_right (by omega), ite_eq_right (by omega)]
 
 theorem dS_pair {l : ℂ} (hl : l ≠ 0) (i j : Fin (2 * r + k + 1)) (hi : i.val < r) (hij : i.val + j.val = 2 * r + k) :
     star (dS k r l i) * dS k r l j = 1 := by
   unfold dS
-  rw [if_pos hi, if_neg (by omega), if_pos (by omega)]
+  rw [ite_eq_left hi, ite_eq_right (by omega), ite_eq_left (by omega)]
   have : 2 * r + k - j.val = i.val := by omega
   rw [this]
   exact mul_inv_cancel₀ (star_ne_zero.2 (pow_ne_zero _ hl))
@@ -121,7 +121,7 @@ theorem dS_Hpk {l : ℂ} (hl : l ≠ 0) (i j : Fin (2 * r + k + 1)) (h : Hpk k r
   · rw [← h3.2.2, dS_mid l i (by omega)]; simp
   exfalso
   unfold Hpk at h
-  rw [if_neg h1, if_neg h2, if_neg h3] at h
+  rw [ite_eq_right h1, ite_eq_right h2, ite_eq_right h3] at h
   exact h rfl
 
 theorem conj_mem_N (d : Fin (2 * r + k + 1) → ℂ) (hd : ∀ i, d i ≠ 0)
@@ -177,12 +177,12 @@ theorem Hpk_outer (i j p : Fin (2 * r + k + 1)) (hj : j.val < r ∨ r + k < j.va
   unfold Hpk
   by_cases e : p = i
   · subst e
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     by_cases h1 : j.val < r
-    · rw [if_pos ⟨h1, by omega⟩]
-    · rw [if_neg (by omega), if_pos (by omega)]
+    · rw [ite_eq_left ⟨h1, by omega⟩]
+    · rw [ite_eq_right (by omega), ite_eq_left (by omega)]
   · have e' : p.val ≠ i.val := fun x => e (Fin.ext x)
-    rw [if_neg e, if_neg (by omega), if_neg (by omega), if_neg (by omega)]
+    rw [ite_eq_right e, ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by omega)]
 
 theorem UW_row {z : Fin (2 * r + k + 1) → ℂ} {h : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (hh : h ∈ UWset k r z) (i j : Fin (2 * r + k + 1)) (hi : i.val < r ∨ r + k < i.val) :

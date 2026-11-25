@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.Pi0MemADelta
 public import Formalism.SharpRestriction.LevelLetterCocycles.LatticeBoundsOfThreeParts
 import Mathlib.Tactic.Lemma
 
@@ -29,38 +30,8 @@ theorem qp_mem (hπ : W.π₀ ∈ W.AΔ) : Formalism.MainNotions.LiftingTheory.q
 def QhP (i : ZMod n) (h : ℕ) : Submodule O (W.DD T) :=
   (PhiPullΔ W T i).map ((Formalism.MainNotions.LiftingTheory.qp W ^ h) • (LinearMap.id : W.DD T →ₗ[O] W.DD T))
 
-private lemma exists_pow_eq_one_mul {Γ : Type} [CommGroup Γ] {a b : Γ} (ha : ∃ k : ℕ, 0 < k ∧ a ^ k = 1)
-    (hb : ∃ k : ℕ, 0 < k ∧ b ^ k = 1) : ∃ k : ℕ, 0 < k ∧ (a * b) ^ k = 1 := by
-  obtain ⟨k, hk, hak⟩ := ha
-  obtain ⟨m, hm, hbm⟩ := hb
-  refine ⟨k * m, Nat.mul_pos hk hm, ?_⟩
-  rw [mul_pow, pow_mul, hak, one_pow, one_mul, mul_comm, pow_mul, hbm, one_pow]
-
-private lemma exists_pow_eq_one_inv {Γ : Type} [CommGroup Γ] {a : Γ} (ha : ∃ k : ℕ, 0 < k ∧ a ^ k = 1) :
-    ∃ k : ℕ, 0 < k ∧ a⁻¹ ^ k = 1 := by
-  obtain ⟨k, hk, hak⟩ := ha
-  exact ⟨k, hk, by rw [inv_pow, hak, inv_one]⟩
-
 theorem uniformizer_mem_delta_invariants : W.π₀ ∈ W.AΔ := by
-  show ∀ δ ∈ W.DelF, W.γA δ W.π₀ = W.π₀
-  intro δ hδ
-  have hδt := (W.DelF_def δ).1 hδ
-  funext i
-  show W.γ₀ δ W.π₀₁ = W.π₀₁
-
-  simp only [Formalism.BasicNotions.LocWach.π₀₁, map_add (f := _), map_sub, map_one, map_natCast, map_sum]
-  congr 1
-  refine Finset.sum_equiv (Equiv.mulLeft δ) ?_ ?_
-  · intro g
-    simp only [Equiv.coe_mulLeft]
-    rw [W.DelF_def g, W.DelF_def (δ * g)]
-    constructor
-    · exact fun hg => exists_pow_eq_one_mul hδt hg
-    · intro hg
-      have h2 := exists_pow_eq_one_mul (exists_pow_eq_one_inv hδt) hg
-      rwa [inv_mul_cancel_left] at h2
-  · intro g _
-    simp only [Equiv.coe_mulLeft, map_mul, AlgHom.mul_apply]
+  apply _root_.Formalism.MainNotions.N.FrobeniusPowerSeries.TypesA.pi0_mem_ADelta <;> assumption
 
 end Setup
 

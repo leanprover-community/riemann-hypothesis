@@ -95,7 +95,7 @@ theorem linDens_holds : LinDens := by
   congr 1
   funext y
   by_cases hy : y ∈ S
-  · simp only [Q, Set.indicator, Set.mem_preimage, hy, if_true, ← hψ y]
+  · simp only [Q, Set.indicator, Set.mem_preimage, hy, ite_true, ← hψ y]
   · simp [Q, Set.indicator, hy]
 
 end PI.VolStabS

@@ -329,7 +329,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Polynomial ValuativeRel IsLocalRing GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.LocLanglands GlobalTheory.LocGL GlobalTheory.GalOfCusp GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V UpperTheory.V.Hi
 open UpperTheory.V.HV (Coef)
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 set_option synthInstance.maxHeartbeats 200000
 
 private theorem hiAlg_unit {A M ι : Type} [CommRing A] [AddCommGroup M] [Module A M] (Y L : Submodule A M)
@@ -443,7 +442,6 @@ private theorem hiAlg_abs {O A M ι : Type} [CommRing O] [IsLocalRing O] [Finite
     rw [IsScalarTower.algebraMap_apply O A _ (a i)]
     exact h5
 
-set_option maxHeartbeats 800000 in
 theorem UpperTheory.V.Hi.hiAlg :
     ∀ (L Ω : Type) [Field L] [NumberField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] (l : ℕ) [Fact l.Prime] (n : ℕ) (c : Coef l) (H : HSet L Ω l n c), H.Ax →
     ∀ (A : Type) [CommRing A] [Algebra c.O A] [Alg.IsCO c.O A] (θ : H.X.I.T →* Aˣ), H.IsWt θ →
@@ -472,7 +470,7 @@ theorem UpperTheory.V.Hi.hiAlg :
     · subst hw
       simp only [Pi.mulSingle_eq_same]
       exact al_mem _ n k
-    · simp only [Pi.mulSingle, Function.update, hw, dif_neg, not_false_eq_true, Pi.one_apply]
+    · simp only [Pi.mulSingle, Function.update, hw, dite_eq_right, not_false_eq_true, Pi.one_apply]
       exact (glIwa _ n).P.one_mem
   obtain ⟨-, -, hbij⟩ := ordFree _ _ _ H.X A H.m (H.τA A) θ hθ.cont (H.lev K) (hAx.fin K) (hθ.free K)
   obtain ⟨hCO, hfin, hnz, hres⟩ := hiAlg_abs (O := c.O) (H.X.Ord (H.τA A) θ (H.lev K)) (H.op A) a hcY

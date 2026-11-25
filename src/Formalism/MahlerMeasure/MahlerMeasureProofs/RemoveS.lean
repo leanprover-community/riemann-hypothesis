@@ -81,7 +81,7 @@ theorem fockK_X_mul (v : σ) (g h : MvPolynomial σ k) :
 
 private theorem mvPolynomial_pderiv_X_eq_zero_of_ne {i j : σ} (h : j ≠ i) : pderiv i (X j : MvPolynomial σ k) = 0 := by
   classical
-  rw [MvPolynomial.pderiv_X, Pi.single_apply, if_neg h]
+  rw [MvPolynomial.pderiv_X, Pi.single_apply, ite_eq_right h]
 
 private theorem pderiv_X_pow_of_ne {i j : σ} (h : j ≠ i) (z : ℕ) : pderiv i (X j ^ z : MvPolynomial σ k) = 0 := by
   rw [Derivation.leibniz_pow, mvPolynomial_pderiv_X_eq_zero_of_ne h, smul_zero, smul_zero]
@@ -164,7 +164,7 @@ theorem eulL_pderiv_mem {s : ℕ} (t : Fin s → σ) (ht : Function.Injective t)
       rw [MvPolynomial.pderiv_mul, Formalism.GM.pderiv_X_inj ht, pderiv_comm (t c0) (t c)]
       split_ifs <;> simp
     rw [Finset.sum_congr rfl (fun c _ => hc c), Finset.sum_add_distrib, Finset.sum_ite_eq',
-      if_pos (Finset.mem_univ _)]
+      ite_eq_left (Finset.mem_univ _)]
   rw [key]
   ring
 
@@ -704,7 +704,7 @@ private theorem tiePhi_eq_sum_range_neg_one_pow_div_tieE_pow_tieF_pow {q : ℕ} 
   simp only [Formalism.GM.tiePhi, LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.comp_apply]
 
 theorem fockForm_augLift_augLift [CharZero k] (hv : M.TieVars w e zv sv) (hr : 1 ≤ r) {o n z : ℕ} {y y' : MvPolynomial σ k}
-    (_hy : BiHom w e o n y) (hy' : BiHom w e o n y') (hz : M.ZSFree zv sv y) (hz' : M.ZSFree zv sv y') :
+    (hy' : BiHom w e o n y') (hz : M.ZSFree zv sv y) (hz' : M.ZSFree zv sv y') :
     M.fockK (M.tieP w e zv sv o n z y) (M.tieP w e zv sv o n z y') =
       (z.factorial : k) * M.fockK y (tiePhi w e o n z y') := by
   have hzz : ∀ c, w c ≠ zv ∧ e c ≠ zv := fun c => ⟨(hv.2.2.2.1 c).1, (hv.2.2.2.1 c).2.2.1⟩
@@ -778,7 +778,7 @@ theorem fockForm_raiseAug_pow_augLift [CharZero k] (hv : M.TieVars w e zv sv) (h
   by_cases h : j = j'
   · subst j'
     rw [fockK_tieE_pow_tieE_pow_eq_ite hw' he' hd (o + z) n (o + z + n + r) hN _ _ hL' hE'.1 hE'.2 hL j j le_rfl,
-      if_pos rfl, if_pos rfl, fockForm_augLift_augLift (z := z) hv hr hy hy' hz hz']
+      ite_eq_left rfl, ite_eq_left rfl, fockForm_augLift_augLift (z := z) hv hr hy' hz hz']
     have h1 : o + n + r + z + 1 + j - 1 = o + z + n + r + j := by omega
     have hf : (j.factorial : k) ≠ 0 := Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero j)
     have e1 : (j.factorial : k)⁻¹ * (j.factorial : k) = 1 := inv_mul_cancel₀ hf
@@ -787,15 +787,11 @@ theorem fockForm_raiseAug_pow_augLift [CharZero k] (hv : M.TieVars w e zv sv) (h
     linear_combination (((j.factorial : k)⁻¹ * (j.factorial : k) + 1) *
       (((o + z + n + r + j).choose j : ℕ) : k) * (z.factorial : k) *
       Formalism.GM.M.fockK y (Formalism.GM.tiePhi w e o n z y')) * e1
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     rcases lt_or_gt_of_ne h with hlt | hgt
     · rw [fockK_tieE_pow_tieE_pow_eq_ite hw' he' hd (o + z) n (o + z + n + r) hN _ _ hL' hE'.1 hE'.2 hL j j' hlt.le,
-        if_neg h, mul_zero, mul_zero]
+        ite_eq_right h, mul_zero, mul_zero]
     · rw [fockK_symm, fockK_tieE_pow_tieE_pow_eq_ite hw' he' hd (o + z) n (o + z + n + r) hN _ _ hL hE.1 hE.2 hL'
-        j' j hgt.le, if_neg (Ne.symm h), mul_zero, mul_zero]
+        j' j hgt.le, ite_eq_right (Ne.symm h), mul_zero, mul_zero]
 
 end Formalism.GM.ProjS
-
-namespace Formalism.GM
-
-end Formalism.GM

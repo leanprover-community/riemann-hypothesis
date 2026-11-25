@@ -319,11 +319,11 @@ theorem loweringWord_weight {μ : Fin n → ℝ} {y : X} (hy : ∀ a, A a a y = 
     by_cases hac : a = c <;> by_cases had : a = d
     · subst hac; subst had; simp
     · subst hac
-      simp only [if_neg had, if_neg (Ne.symm had), LinearMap.zero_apply, sub_zero]
+      simp only [ite_eq_right had, ite_eq_right (Ne.symm had), LinearMap.zero_apply, sub_zero]
       push_cast
       module
     · subst had
-      simp only [if_neg hac, LinearMap.zero_apply, zero_sub]
+      simp only [ite_eq_right hac, LinearMap.zero_apply, zero_sub]
       push_cast
       module
     · simp [hac, had, Ne.symm had]
@@ -552,17 +552,9 @@ variable {N : Type*} [AddCommGroup N] [Module ℂ N]
 
 theorem casimir_scalar_on_generated {E : Fin n → Fin n → Module.End ℂ N} (hE : IsGlRep E) {V : Submodule ℂ N} {c : ℂ}
     (hc : ∀ v ∈ V, casimir E v = c • v) : ∀ v ∈ genSub E V, casimir E v = c • v := by
-  let T : Submodule ℂ N := LinearMap.ker (casimir E - c • (1 : Module.End ℂ N))
-  have hmem : ∀ v, v ∈ T ↔ casimir E v = c • v := by
-    intro v
-    simp only [T, LinearMap.mem_ker, LinearMap.sub_apply, LinearMap.smul_apply, Module.End.one_apply, sub_eq_zero]
-  have hT : genSub E V ≤ T := by
-    refine sInf_le ⟨fun v hv => (hmem v).2 (hc v hv), fun a b v hv => ?_⟩
-    rw [hmem] at hv ⊢
-    have := LinearMap.congr_fun (casimir_comm hE a b) v
-    simp only [Module.End.mul_apply] at this
-    rw [this, hv, map_smul]
-  exact fun v hv => (hmem v).1 (hT hv)
+  first
+    | exact _root_.ReciprocityTheory.ChartRestriction.DS.casimir_genSub
+    | apply _root_.ReciprocityTheory.ChartRestriction.DS.casimir_genSub <;> first | assumption | rfl | infer_instance
 
 end SlopeTestRemainingChoices
 

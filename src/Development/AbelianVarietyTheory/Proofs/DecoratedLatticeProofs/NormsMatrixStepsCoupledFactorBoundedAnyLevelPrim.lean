@@ -790,7 +790,7 @@ theorem smallDatum_xiCpl1_sharp : ∀ (CY : ℝ) (D : D7) (N : NumDatum) (X : Fi
       frsF sel mu r P x ∈ r.deco.1.at P.1 ↔ x ∈ stdAt X.E (N.R.N j) P.1 := by
     intro j r P x
     have hP := hrow P.1 P.2
-    simp only [frsF, hP, dif_pos]
+    simp only [frsF, hP, dite_eq_left]
     exact (GlobalTheory.ColNorms.liftFr_lifts X.E _ _ _ r.deco ⟨P.1, hP⟩).1 x
   have key := @GlobalTheory.ColNorms.DatOne.smallDatum_of_frames X.E X.K _ _ _ _ _ _ (Pr.vT u) _ _ (rowSG Pr sel mu) (fun a b => Classical.propDecidable (a = b))
     p₀.deco.1 p.deco (frsF sel mu p₀) (frsF sel mu p) (hfr p₀) (hfr p) (Pr.T u * (Pr.g 0 * Pr.g 1))
@@ -899,7 +899,7 @@ theorem locSmall_locTop (hm : R.m = m2 + 2) (hc : cst.Ok) (hs : cst.sharp = true
     rw [map_mul, norm_mul]
     refine mul_le_one₀ ?_ (norm_nonneg _) ?_
     · unfold PhiTop
-      rw [if_pos hP, hs, if_pos rfl]
+      rw [ite_eq_left hP, hs, ite_eq_left rfl]
       have hq0 : Formalism.L2.Col.qOf P.1 ≠ 0 := fun h0 => P.1.ne_bot (Ideal.absNorm_eq_zero_iff.1 h0)
       have hN : ∀ j, R.N j = R.k + j * R.t + j := fun j => by unfold Ranks.N; ring
       have h0 : Formalism.L2.Col.cOf R (m2 + 1) = 0 := by unfold Formalism.L2.Col.cOf; omega
@@ -911,7 +911,7 @@ theorem locSmall_locTop (hm : R.m = m2 + 2) (hc : cst.Ok) (hs : cst.sharp = true
       · rw [hN]; omega
       · unfold Ranks.r; omega
     · unfold ftY
-      rw [if_pos hP]
+      rw [ite_eq_left hP]
       split_ifs with h
       · refine (norm_psi hc P ?_ σ).le
         have he : IntAt P.1 ((epsSg : ℤ) : X.E) := intCast_mem (intRing P.1) _
@@ -1181,7 +1181,7 @@ theorem unfolding_smallHomFunction_levelPrime_bounded (hq : (Formalism.L2.Col.qO
         have h' := intAt_zpow_mono (v := 1) (by
           unfold LocE.scE
           dsimp only
-          rw [if_neg (by omega), if_neg (by omega)]
+          rw [ite_eq_right (by omega), ite_eq_right (by omega)]
           omega) h
         rwa [zpow_one, mul_comm] at h'
       have h2 : ‖σ (psi (-Loc.chArg y))‖ ^ q = 1 := by rw [← norm_pow, ← map_pow, hpsi _ h1, map_one, norm_one]
@@ -1305,7 +1305,7 @@ theorem locSmall_XiAt_sharp : ∃ C : ℕ, ∀ (CY : ℝ) (D : D7) (N : NumDatum
   have hs' := hI.stabG (i + 1) be P hP
   replace hom := hom (hI.stabG i al P hP) hs'
   unfold lamYat at hom hs'
-  rw [if_pos hP] at hom hs'
+  rw [ite_eq_left hP] at hom hs'
   have hE := unfolding_smallHomFunction_levelPrime_bounded hq (c' := cOf N.R i) (c := cOf N.R (i + 1)) (by unfold cOf; omega) cst.A cst.B (cst.psi P)
     (fun a ha => by
       have := GlobalTheory.GO.ChRoot.psi_root hI.cst_ok P a (by rwa [hI.depthG P hP, pow_one])
@@ -1319,7 +1319,7 @@ theorem locSmall_XiAt_sharp : ∃ C : ℕ, ∀ (CY : ℝ) (D : D7) (N : NumDatum
     have h1 := (norm_volN_inv_le (K := X.K) _ _ σ).trans (Nat.cast_le.2
       (relIndex_le hg2 N.R.k N.R.rS N.R.r N.R.t (N.R.N (i + 1)) (cOf N.R (i + 1)) _ hs'))
     unfold Jat lamYat
-    rw [if_pos hP, if_pos hP, if_pos hsharp]
+    rw [ite_eq_left hP, ite_eq_left hP, ite_eq_left hsharp]
     refine (mul_le_mul h1 (hE.2.2 σ x) (norm_nonneg _) (Nat.cast_nonneg _)).trans ?_
     rw [Nat.cast_pow, ← pow_add]
     refine pow_le_pow_right₀ hq1 ?_
@@ -1878,7 +1878,7 @@ theorem factors_leS : GlobalTheory.IndefiniteRowSideFullHecke.PaddedLastEntry.Bl
         have h2 := hk i (i + 1) rfl (by omega) _ (frsF sel mu p) _ (frsF sel mu p') ⟨p.deco.2.lat, p.deco.2.uni⟩
           ⟨p'.deco.2.lat, p'.deco.2.uni⟩ _ (hdat CY D N X s Pr W Ch G sel Sg mu cst I dl χ cD pl u δ H i hi al be p p') M hM ρ x
         have e : (Q.kk i al be).k p p' = matK W Ch sel mu cst I (chTh W Ch sel mu cst (ambOf s B χ cD) u (N.R.m - 2)) i al be p p' := by
-          exact congrArg (fun k : ClsKer _ _ => k.k p p') (dif_pos (show i < N.R.m - 2 by omega))
+          exact congrArg (fun k : ClsKer _ _ => k.k p p') (dite_eq_left (show i < N.R.m - 2 by omega))
         rw [e]
         exact (hsq (W.lamTrue u (i + 1)) _).trans_le (h2.trans_eq (congrArg _ (hsq (W.lamTrue u i) _).symm))) φ
     refine h1.trans (mul_le_mul_of_nonneg_right ?_ (hfam i φ))
@@ -1905,7 +1905,7 @@ theorem factors_leS : GlobalTheory.IndefiniteRowSideFullHecke.PaddedLastEntry.Bl
           ((_root_.GlobalTheory.Core.Ht2.DatOneS.smallDatum_xiCpl1_sharp CY D N X s Pr W Ch G sel Sg mu cst I dl χ cD pl u δ H al p₀ p Y).mono hone) M hM ρ x
         have e : (Q.cp al).k1 p₀ p Y = kerOf (stepC W Ch sel mu cst (ambOf s B χ cD) u (N.R.m - 2) (W.lamTrue u (N.R.m - 2 + 1)))
             (Sall sel mu u) (cAof sel mu cst) (cBof sel mu cst u) p₀.deco.1.N (frsF sel mu p₀) p.deco.1.N (frsF sel mu p)
-            (XiCpl1 Ch sel mu cst I (N.R.m - 2) al p₀ p Y) := if_pos hYm
+            (XiCpl1 Ch sel mu cst I (N.R.m - 2) al p₀ p Y) := ite_eq_left hYm
         rw [e]
         exact (hsq (W.lamTrue u (N.R.m - 2 + 1)) _).trans_le
           (h2.trans_eq (congrArg _ (hsq (W.lamTrue u (N.R.m - 2)) _).symm))) (by
@@ -1915,7 +1915,7 @@ theorem factors_leS : GlobalTheory.IndefiniteRowSideFullHecke.PaddedLastEntry.Bl
           ((_root_.GlobalTheory.Core.Ht2.LastDatumS.smallDatum_xiCpl2_sharp CY D N X s Pr W Ch G sel Sg mu cst I dl χ cD pl u δ H p d Y hYm).mono hone) M hM ρ x
         have e : (Q.cp al).k2 p Y d = kerOf (stepC W Ch sel mu cst (ambOf s B χ cD) u (N.R.m - 2 + 1) (W.lamTrue u N.R.m))
             (Sall sel mu u) (cAof sel mu cst) (cBof sel mu cst u) p.deco.1.N (frsF sel mu p) (tilQ sel mu u d).1.N
-            (frsT sel mu u d) (XiCpl2 Ch sel mu cst (N.R.m - 2) p Y d) := if_pos hYm
+            (frsT sel mu u d) (XiCpl2 Ch sel mu cst (N.R.m - 2) p Y d) := ite_eq_left hYm
         rw [e]
         exact (hsq (W.lamTrue u N.R.m) _).trans_le
           (h2.trans_eq (congrArg _ (hsq (W.lamTrue u (N.R.m - 2 + 1)) _).symm))) φ

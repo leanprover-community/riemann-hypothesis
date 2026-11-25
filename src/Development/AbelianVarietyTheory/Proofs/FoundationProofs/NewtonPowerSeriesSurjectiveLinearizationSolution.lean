@@ -101,7 +101,7 @@ theorem newton_powerSeries_of_surjective_linearisation (k ι κ : Type) [Field k
         rw [map_add (f := _), coeffXC]
         rcases Nat.lt_or_ge j (n + 1) with hj' | hj'
         · have := (PowerSeries.X_pow_dvd_iff.mp (ih.2 e)) j hj'
-          rw [this, if_neg (by omega), add_zero]
+          rw [this, ite_eq_right (by omega), add_zero]
         · have hjn : j = n + 1 := by omega
           subst hjn
           simp [hv]
@@ -116,7 +116,7 @@ theorem newton_powerSeries_of_surjective_linearisation (k ι κ : Type) [Field k
     | succ n hjn ihn =>
       rw [← ihn, sq_succ]
       simp only [step, map_add (f := _)]
-      rw [coeffXC, if_neg (by omega), add_zero]
+      rw [coeffXC, ite_eq_right (by omega), add_zero]
   let xl : ι → PowerSeries k := fun i => PowerSeries.mk (fun j => PowerSeries.coeff j (sq j i))
   have hdiff : ∀ n i, (PowerSeries.X : PowerSeries k) ^ (n + 1) ∣ xl i - sq n i := by
     intro n i

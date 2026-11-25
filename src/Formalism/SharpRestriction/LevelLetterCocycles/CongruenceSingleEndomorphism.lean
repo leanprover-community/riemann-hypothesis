@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TypeSpaceProjectionToPointEigenspaces
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocalCongruenceBound
 public import Formalism.SharpRestriction.LevelLetterCocycles.EndomorphismIndexBound
 public import Mathlib.LinearAlgebra.Eigenspace.Pi
@@ -26,21 +27,8 @@ variable {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] {X : T
 
 theorem heckeEig_indep (hsep : ∀ x y : X, x ≠ y → ∃ f ∈ T, f x ≠ f y) :
     iSupIndep (heckeEig T act) := by
-  let F : T → Module.End (FractionRing O) (TensorProduct O (FractionRing O) M) :=
-    fun f => actK T act f
-  have hc : ∀ f g, Commute (F f) (F g) := fun f g => by
-    show actK T act f * actK T act g = actK T act g * actK T act f
-    rw [← map_mul, mul_comm, map_mul]
-  have h := Module.End.independent_iInf_maxGenEigenspace_of_forall_mapsTo F
-    (fun f g φ => Module.End.mapsTo_maxGenEigenspace_of_comm (hc g f) φ)
-  let χ : X → (T → FractionRing O) := fun x f => algebraMap O (FractionRing O) ((f : X → O) x)
-  have hχ : Function.Injective χ := by
-    intro x y hxy
-    by_contra hne
-    obtain ⟨f, hf, hfx⟩ := hsep x y hne
-    exact hfx (IsFractionRing.injective O (FractionRing O) (congrFun hxy ⟨f, hf⟩))
-  refine (h.comp hχ).mono fun x => iInf_mono fun f => ?_
-  exact ((F f).genEigenspace _).monotone le_top
+  intros
+  apply _root_.GlobalTheory.EtaJoin.TypeTieProof.heckeEig_iSupIndep <;> assumption
 
 end Hecke
 

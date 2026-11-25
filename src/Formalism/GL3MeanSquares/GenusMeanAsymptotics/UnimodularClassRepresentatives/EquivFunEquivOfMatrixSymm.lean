@@ -63,7 +63,7 @@ theorem mem_locF_iff_repr {𝔭 : Ideal (𝓞 F)} [𝔭.IsPrime] (b : Basis κ K
 
     simp only [← algebraMap_smul K (ι t), map_smul, map_sum, Pi.smul_apply, Finset.sum_apply,
     Basis.equivFun_self, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true] at h3
+    Finset.mem_univ, ite_true] at h3
     exact h3.symm
   · intro hx
     rw [← b.sum_equivFun x]

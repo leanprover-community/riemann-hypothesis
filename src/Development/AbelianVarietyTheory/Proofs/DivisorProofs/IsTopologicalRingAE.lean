@@ -260,7 +260,7 @@ noncomputable def toBF (f : WOF F E nS nT → ℂ) (hc : Continuous f) (hb : ∃
 
 theorem continuous_iotaVF {θ : InfinitePlace F → (Ainf F ⊗[F] E →+* ℂ)} {ι : (InfinitePlace F → ℂ) →+ AEF F E}
     (hι : IsChartF θ ι) : Continuous (iotaVF (nS := nS) (nT := nT) ι) :=
-  continuous_pi fun i => continuous_pi fun j => hι.cont.comp (continuous_pi fun w => continuous_apply _)
+  continuous_pi fun _ => continuous_pi fun _ => hι.cont.comp (continuous_pi fun _ => continuous_apply _)
 
 theorem real_iotaVF {θ : InfinitePlace F → (Ainf F ⊗[F] E →+* ℂ)} {ι : (InfinitePlace F → ℂ) →+ AEF F E}
     (hι : IsChartF θ ι) (v : IxF F nS nT → ℂ) : (iotaVF ι v).map (finPartF F E) = 0 := by

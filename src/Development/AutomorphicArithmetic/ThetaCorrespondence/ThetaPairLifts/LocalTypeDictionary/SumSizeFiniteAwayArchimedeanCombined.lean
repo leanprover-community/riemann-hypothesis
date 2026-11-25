@@ -111,20 +111,6 @@ section
 open GlobalTheory.SumSize GlobalTheory.RowClaim
 noncomputable section
 namespace GlobalTheory.CompanionTheory.VolVal
-end GlobalTheory.CompanionTheory.VolVal
-namespace GlobalTheory.CompanionTheory.VolVal
-end GlobalTheory.CompanionTheory.VolVal
-namespace GlobalTheory.CompanionTheory.VolVal
-end GlobalTheory.CompanionTheory.VolVal
-namespace GlobalTheory.CompanionTheory.VolVal
-end GlobalTheory.CompanionTheory.VolVal
-namespace GlobalTheory.CompanionTheory.VolVal
-end GlobalTheory.CompanionTheory.VolVal
-namespace GlobalTheory.CompanionTheory.VolVal
-end GlobalTheory.CompanionTheory.VolVal
-namespace GlobalTheory.CompanionTheory.VolVal
-end GlobalTheory.CompanionTheory.VolVal
-namespace GlobalTheory.CompanionTheory.VolVal
 open Formalism.BasicNotions Formalism.L2.DIV
 theorem finCoefK_alt : _root_.GlobalTheory.FunPr.ThetaLocalInputs → FinCoefK := by
   intro _
@@ -161,14 +147,8 @@ section -- clump:auto
 
 section
 noncomputable section
-namespace GlobalTheory.ScalAA
-end GlobalTheory.ScalAA
 noncomputable section
-namespace GlobalTheory.ScalAA
-end GlobalTheory.ScalAA
 noncomputable section
-namespace GlobalTheory.ScalAA
-end GlobalTheory.ScalAA
 noncomputable section
 namespace GlobalTheory.ScalAA
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
@@ -249,7 +229,7 @@ private theorem GlobalTheory.SumSize.TopSize.depSum {D : D7} {T : Type} {L : Lev
     fun l _ _ => Finset.sum_nonneg fun v _ => hnn v)
   have hp := (Finset.mem_filter.1 hl).2
   dsimp only
-  rw [if_pos hp]
+  rw [ite_eq_left hp]
   rcases key l hp with h | ⟨v, hv, h, h1, h2⟩
   · rw [h, Nat.cast_zero, zero_mul]; exact Finset.sum_nonneg fun v _ => hnn v
   · refine le_trans ?_ (Finset.single_le_sum (f := fun v => (G.pl.depth sc v : ℝ) * Real.log (Ideal.absNorm v.asIdeal))
@@ -343,7 +323,7 @@ private theorem GlobalTheory.SumSize.TopSize.core {D : D7} {T : Type} {L : LevCh
   have hPp : ∀ p ∈ P, p.Prime := fun p hp => (Finset.mem_filter.1 hp).2
   have e : topDl G δ C1 b = fun w : PlL D => (vw w ((primeUnder w : ℕ) : D.what₂.LL) : ℝ) * h (primeUnder w) := by
     funext w
-    simp only [hh, if_pos (primeUnder_prime w), topDl, mul_assoc]
+    simp only [hh, ite_eq_left (primeUnder_prime w), topDl, mul_assoc]
   rw [e]
   refine UpperTheory.WildA.expLoss D P h _ ⟨hPp, fun l => ?_, fun l hl => ?_, ?_⟩
   · simp only [hh]
@@ -355,9 +335,9 @@ private theorem GlobalTheory.SumSize.TopSize.core {D : D7} {T : Type} {L : LevCh
     · simp only [hP, Finset.mem_filter, hp, and_true, Finset.mem_union, Finset.mem_singleton, Finset.mem_range, not_or] at hl
       obtain ⟨⟨⟨h1, h2⟩, h3⟩, h4⟩ := hl
       have e1 := hδ.2.2.1 l h1
-      have e3 : (depL G l : ℝ) = 0 := by simpa only [if_pos hp] using hSd.2.2.1 l h3
+      have e3 : (depL G l : ℝ) = 0 := by simpa only [ite_eq_left hp] using hSd.2.2.1 l h3
       have e4 : ¬ (l : ℝ) ≤ C1 * b := fun h5 => h4 (Nat.lt_succ_of_le (Nat.le_floor h5))
-      simp only [kerLoss, e1, e3, if_neg h2, if_neg e4, add_zero, mul_zero, Finset.sum_const_zero]
+      simp only [kerLoss, e1, e3, ite_eq_right h2, ite_eq_right e4, add_zero, mul_zero, Finset.sum_const_zero]
     · rfl
   have hKp : ∀ p ∈ P, h p * Real.log p ≤
       C1 * D.R.m * (13 * D.R.f * bigN D * b) * (δ p * Real.log p) +
@@ -377,7 +357,7 @@ private theorem GlobalTheory.SumSize.TopSize.core {D : D7} {T : Type} {L : LevCh
         exact add_le_add (mul_le_mul_of_nonneg_right (hker j (Finset.mem_range.1 hj)) hM) le_rfl)
     rw [Finset.card_range, nsmul_eq_mul] at hK
     have hlp : 0 ≤ Real.log p := Real.log_natCast_nonneg p
-    simp only [hh, if_pos (hPp p hp)]
+    simp only [hh, ite_eq_left (hPp p hp)]
     refine (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hK hC1.le) hlp).trans (le_of_eq ?_)
     ring
   have hs2 : ∑ p ∈ P, (if p = D.host.d then (1 : ℝ) else 0) * Real.log p ≤ Real.log b := by
@@ -853,8 +833,6 @@ theorem finGamAt_of {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 T : Type} {A : Form
 
 end GlobalTheory.GamLoss
 
-namespace GlobalTheory.GamLoss
-end GlobalTheory.GamLoss
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteGammaBound =====
@@ -866,14 +844,6 @@ section -- clump:auto
 
 section
 open NumberField
-namespace GlobalTheory.GamLoss
-end GlobalTheory.GamLoss
-namespace GlobalTheory.GamLoss
-end GlobalTheory.GamLoss
-namespace GlobalTheory.GamLoss
-end GlobalTheory.GamLoss
-namespace GlobalTheory.GamLoss
-end GlobalTheory.GamLoss
 namespace GlobalTheory.GamLoss
 open GlobalTheory.SumSize GlobalTheory.RowClaim
 theorem finite_place_gamma_loss_bound : _root_.GlobalTheory.FunPr.ThetaLocalInputs → FinGamK := by
@@ -906,7 +876,7 @@ namespace GlobalTheory.KerConjMean
 theorem archimedean_top_term_kernel_conj_mean : _root_.GlobalTheory.FunPr.ThetaLocalInputs → (∀ D, GlobalTheory.NormSum.Inp D) → DictK → DepthK → InfTopK := by
   intro hP hI hD hDp
   obtain ⟨C1, hC1, hmean⟩ := GlobalTheory.T.exists_const_mean_logArea_logThetaNorm_le
-  obtain ⟨CF0, hCF⟩ := _root_.GlobalTheory.T.kernel_conjugation_average hP hI hD hDp C1 hC1
+  obtain ⟨CF0, hCF⟩ := _root_.GlobalTheory.KerConjMean.conj_top_degree_in_kernel_mean hP hI hD hDp C1 hC1
   obtain ⟨CF0', hCF'⟩ := _root_.GlobalTheory.KerConjMean.ratTopAt_big
   refine ⟨max CF0 CF0', fun CF hCF0 => ?_⟩
   obtain ⟨C0, hC0⟩ := hCF CF (le_trans (le_max_left _ _) hCF0)
@@ -1057,7 +1027,7 @@ theorem UpperTheory.WildA.depSum :
           apply Finset.sum_le_sum
           intro l hl
           have hp : l.Prime := ((hS l).1 hl).1
-          rw [if_pos hp, ← Finset.sum_filter, ← Finset.sum_mul]
+          rw [ite_eq_left hp, ← Finset.sum_filter, ← Finset.sum_mul]
           apply mul_le_mul_of_nonneg_right _ (Real.log_natCast_nonneg l)
           exact_mod_cast hdep l
       _ = ∑ v ∈ G.pl.S0, (G.pl.depth sc v : ℝ) *
@@ -1113,7 +1083,7 @@ private theorem expMono {S : Finset ℕ} {f : ℕ → ℝ} {a b : ℝ} (h : Glob
 private theorem expOne (d : ℕ) : GlobalTheory.NormSum.Exponents (({d} : Finset ℕ).filter Nat.Prime)
     (fun l => if l.Prime ∧ l = d then 1 else 0) (Real.log d) := by
   refine ⟨fun l hl => (Finset.mem_filter.1 hl).2, fun l => by dsimp only; split_ifs <;> norm_num, fun l hl => ?_, ?_⟩
-  · exact if_neg fun h => hl (Finset.mem_filter.2 ⟨Finset.mem_singleton.2 h.2, h.1⟩)
+  · exact ite_eq_right fun h => hl (Finset.mem_filter.2 ⟨Finset.mem_singleton.2 h.2, h.1⟩)
   · rw [Finset.filter_singleton]
     split_ifs with h
     · simp [h]
@@ -1124,13 +1094,13 @@ private theorem expLog {y c : ℝ} (hy : 0 ≤ y) (hc : 0 ≤ c) (hyc : Real.log
     (fun l => if l.Prime ∧ (l : ℝ) ≤ y then Real.logb l y else 0) (y * c) := by
   have hm : ∀ l : ℕ, l ∈ (Finset.range (⌊y⌋₊ + 1)).filter Nat.Prime ↔ l.Prime ∧ (l : ℝ) ≤ y := fun l => by
     rw [Finset.mem_filter, Finset.mem_range, Nat.lt_succ_iff, Nat.le_floor_iff hy, and_comm]
-  refine ⟨fun l hl => (Finset.mem_filter.1 hl).2, fun l => ?_, fun l hl => if_neg fun h => hl ((hm l).2 h), ?_⟩
+  refine ⟨fun l hl => (Finset.mem_filter.1 hl).2, fun l => ?_, fun l hl => ite_eq_right fun h => hl ((hm l).2 h), ?_⟩
   · dsimp only
     split_ifs with h
     · exact Real.logb_nonneg (by exact_mod_cast h.1.one_lt) (le_trans (by exact_mod_cast h.1.one_lt.le) h.2)
     · exact le_rfl
   · dsimp only
-    rw [Finset.sum_congr (g := fun l : ℕ => Real.logb l y * Real.log l) rfl fun l hl => by rw [if_pos ((hm l).1 hl)]]
+    rw [Finset.sum_congr (g := fun l : ℕ => Real.logb l y * Real.log l) rfl fun l hl => by rw [ite_eq_left ((hm l).1 hl)]]
     rcases le_or_gt 1 y with h | h
     · exact (UpperTheory.WildA.logSum y h).trans (mul_le_mul_of_nonneg_left hyc hy)
     · rw [Nat.floor_eq_zero.2 h]
@@ -1194,7 +1164,7 @@ theorem UpperTheory.WildA.lossOne :
     ring
   · refine mul_le_mul_of_nonneg_left ?_ hC1.le
     unfold GlobalTheory.SumSize.TopInt.kerLoss
-    simp only [hl, true_and, if_true]
+    simp only [hl, true_and, ite_true]
     refine add_le_add (mul_le_mul_of_nonneg_right (UpperTheory.WildA.kerLe (G := G) large₂ hS hH hc p hp) ?_) le_rfl
     have := hδ.2.1 l
     split_ifs <;> positivity
@@ -1411,7 +1381,7 @@ namespace GlobalTheory.SumSize.Join
 theorem sum_size_finite_away_archimedean_combined : _root_.GlobalTheory.FunPr.ThetaLocalInputs → GlobalTheory.SumSize.FinK ∧ GlobalTheory.SumSize.AwayK ∧ GlobalTheory.SumSize.InfK := by
   intro P
   have hInp : ∀ D, GlobalTheory.NormSum.Inp D := _root_.GlobalTheory.NormSum.inp_all
-  have hOK : GlobalTheory.RowClaim.SumOKK := _root_.GlobalTheory.T.sumOKK_of_theta_local_inputs P
+  have hOK : GlobalTheory.RowClaim.SumOKK := _root_.GlobalTheory.RowClaim.rowSum_of_hypotheses_alt P
   have hDep : GlobalTheory.SumSize.DepthK := _root_.GlobalTheory.DepthUnf.depthK_of_hypotheses_alt P hOK
   have hDict : GlobalTheory.SumSize.DictK := _root_.GlobalTheory.SumSize.sum_size_dictionary_of_local_bounds P hInp
   have hScal := _root_.GlobalTheory.ScalAA.finScalK_and_infScalK_of_theta_inputs P
@@ -1425,7 +1395,7 @@ theorem sum_size_finite_away_archimedean_combined : _root_.GlobalTheory.FunPr.Th
   refine ⟨?_, _root_.TwistAwayFromPlace.GlobalTheory.CompanionTheory.Twist.twist_trivial_away_from_level P, ?_⟩
   · exact _root_.DenominatorLossAdditivity.GlobalTheory.CompanionTheory.FinDen.fin_of_factors hOK hDep hScal.1 (_root_.ResidueCardinalityNilpotence.GlobalTheory.CompanionTheory.VolVal.finCoefK_alt P) (_root_.GlobalTheory.FunDat.finDatK_alt P) (_root_.GlobalTheory.GamLoss.finite_place_gamma_loss_bound P)
       hTopF hRowF hPair.1 hPsi.1 hForm.1
-  · exact _root_.GlobalTheory.Adopt.archimedeanSumSizeBound_largeData_from_factors hOK hDep hScal.2 (_root_.GlobalTheory.T.sum_size_archimedean_tensor_bound P) (_root_.GlobalTheory.T.sum_count_bound_archimedean P hDep) (_root_.GlobalTheory.T.class_count_bound_archimedean P)
+  · exact _root_.GlobalTheory.Adopt.archimedeanSumSizeBound_largeData_from_factors hOK hDep hScal.2 (_root_.GlobalTheory.SumSize.archimedean_tensor_size_bound_of_local P) (_root_.GlobalTheory.SumCount.archimedean_sum_count_bound P hDep) (_root_.GlobalTheory.ClassCount.archimedean_class_count_bound P)
       hTopI hRowI hPair.2 hPsi.2 hForm.2
 end GlobalTheory.SumSize.Join
 end

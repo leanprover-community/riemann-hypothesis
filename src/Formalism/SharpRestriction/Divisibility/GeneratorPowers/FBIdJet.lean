@@ -44,9 +44,9 @@ theorem psTrunc_eq {ι : Type} [Fintype ι] [DecidableEq ι] (m : ℕ) (f : MvPo
     | exact Finset.sum_ite_eq' (degLE m) e (fun x => MvPowerSeries.coeff x f)
   rw [hL]
   by_cases h : e.degree < m + 1
-  · rw [if_pos (hmem.2 h), MvPowerSeries.coeff_truncTotal]
+  · rw [ite_eq_left (hmem.2 h), MvPowerSeries.coeff_truncTotal]
     exact h
-  · rw [if_neg (fun h' => h (hmem.1 h'))]
+  · rw [ite_eq_right (fun h' => h (hmem.1 h'))]
     first
     | exact (MvPowerSeries.coeff_truncTotal_eq_zero _ (by omega)).symm
 
@@ -147,8 +147,7 @@ theorem psTrunc_mem_orig {τ : Type} [Fintype τ] [DecidableEq τ] (m : ℕ) (g 
     first
     | simp [hg]
   · obtain ⟨i, hi⟩ : ∃ i, e i ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact he (Finsupp.ext fun j => by simp [h j])
     have key : MvPolynomial.monomial e (MvPowerSeries.coeff e g) =
         MvPolynomial.monomial (e - Finsupp.single i 1) (MvPowerSeries.coeff e g) *

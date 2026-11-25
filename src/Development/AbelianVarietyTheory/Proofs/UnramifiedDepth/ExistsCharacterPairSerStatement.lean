@@ -64,7 +64,6 @@ open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj Alg
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ ReciprocityTheory.ChartRestriction.G.Pdiv.ChartF ReciprocityTheory.ChartRestriction.G.Pdiv.AvDefs
 open ReciprocityTheory.PGsh ReciprocityTheory.PGsh.Up ReciprocityTheory.PGsh.Be2 GlobalTheory.ChF
 open ReciprocityTheory.ChartRestriction.G.Chart (sp spMap)
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.ChF
 
@@ -264,7 +263,6 @@ open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj Alg
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ ReciprocityTheory.ChartRestriction.G.Pdiv.ChartF ReciprocityTheory.ChartRestriction.G.Pdiv.AvDefs
 open ReciprocityTheory.PGsh ReciprocityTheory.PGsh.Up ReciprocityTheory.PGsh.Be2 GlobalTheory.ChF
 open ReciprocityTheory.ChartRestriction.G.Chart (sp spMap)
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.ChF
 
@@ -428,7 +426,7 @@ theorem exists_character_pairSer : ∀ (R₀ : Type) [CommRing R₀] (B : BX R�
     have h : ∃ z : Sˣ, ∃ hL : LocO O S, PVal p τ (mkS O S hL) (Y _ (mkS O S hL) (a 0)) z := ⟨z, hL, hz⟩
     obtain ⟨_, h'⟩ := h.choose_spec
     have := pval_unique h1 h2 h' hz
-    simp only [c, dif_pos h]
+    simp only [c, dite_eq_left h]
     exact congrArg Units.val this
   obtain ⟨u, hu⟩ := GlobalTheory.T.exists_powerSeries_of_natural_nilpotentPoints (O : Type) _ hc 1 g (fun S _ _ => LocO O S)
     (fun k m => jet_local _ hI _ k m) c (by
@@ -539,7 +537,6 @@ open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj Alg
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ ReciprocityTheory.ChartRestriction.G.Pdiv.ChartF ReciprocityTheory.ChartRestriction.G.Pdiv.AvDefs
 open ReciprocityTheory.PGsh ReciprocityTheory.PGsh.Up ReciprocityTheory.PGsh.Be2 GlobalTheory.ChF
 open ReciprocityTheory.ChartRestriction.G.Chart (sp spMap)
-attribute [local instance] Over.cartesianMonoidalCategory
 
 end -- clump:auto
 end -- clump:auto

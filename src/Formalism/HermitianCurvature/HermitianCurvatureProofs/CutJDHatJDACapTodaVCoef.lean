@@ -15,8 +15,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP
 
 open Matrix
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 noncomputable section
 
 namespace TVCoefPf
@@ -194,7 +192,7 @@ theorem coef_gen {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {c : Fin 
       intro a b hab
       simp only [C3.sR, _root_.Fin.castLE_refl, keyS_esI]
       exact hab
-    rw [if_pos hmono]
+    rw [ite_eq_left hmono]
     rfl
   · intro B hB
     split_ifs with hm

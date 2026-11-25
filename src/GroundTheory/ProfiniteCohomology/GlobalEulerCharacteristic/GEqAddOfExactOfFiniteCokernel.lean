@@ -135,55 +135,8 @@ theorem exists_logLatticeProd_real_equiv :
     ∃ e : ℝ ⊗[ℤ] (logLattice L × ℤ) ≃ₗ[ℝ] ℝ ⊗[ℤ] (InfinitePlace L → ℤ),
       ∀ (g : L ≃ₐ[K] L) y, e ((((logLatticeRep K L).prod
           (Representation.trivial ℤ (L ≃ₐ[K] L) ℤ)) g).baseChange ℝ y) =
-        (funPermRep ℤ (L ≃ₐ[K] L) (InfinitePlace L) g).baseChange ℝ (e y) := by
-  classical
-  let bM := Module.Free.chooseBasis ℤ (logLattice L)
-  let b := bM.prod (Basis.singleton Unit ℤ)
-  let B := Algebra.TensorProduct.basis ℝ b
-  let E := (logLatticeProdMap (L := L)).liftBaseChange ℝ
-  let v := Sum.elim (fun i ↦ (bM i : InfinitePlace L → ℝ))
-    (fun _ : Unit ↦ (1 : InfinitePlace L → ℝ))
-  have hEB : ∀ j, E (B j) = v j := by
-    intro j
-    rw [Algebra.TensorProduct.basis_apply, LinearMap.liftBaseChange_tmul, one_smul]
-    rcases j with i | u
-    · simp [b, v, Basis.prod_apply, logLatticeProdMap_apply]
-    · simp [b, v, Basis.prod_apply, logLatticeProdMap_apply]
-  have hli : LinearIndependent ℝ v := linearIndependent_logLattice_one bM
-  have hcard : Fintype.card (Module.Free.ChooseBasisIndex ℤ (logLattice L) ⊕ Unit) =
-      finrank ℝ (InfinitePlace L → ℝ) := by
-    rw [Fintype.card_sum, Fintype.card_unit, Module.finrank_fintype_fun_eq_card,
-      ← Module.finrank_eq_card_chooseBasisIndex, finrank_logLattice, rank]
-    have : 0 < Fintype.card (InfinitePlace L) := Fintype.card_pos
-    omega
-  have hspan := hli.span_eq_top_of_card_eq_finrank hcard
-  have hsurj : Function.Surjective E := by
-    rw [← LinearMap.range_eq_top, eq_top_iff, ← hspan, Submodule.span_le]
-    rintro _ ⟨j, rfl⟩
-    exact ⟨B j, hEB j⟩
-  have hdim : finrank ℝ (ℝ ⊗[ℤ] (logLattice L × ℤ)) = finrank ℝ (InfinitePlace L → ℝ) := by
-    rw [Module.finrank_eq_card_basis B, hcard]
-  have hinj : Function.Injective E :=
-    (LinearMap.injective_iff_surjective_of_finrank_eq_finrank hdim).2 hsurj
-  have hbij : Function.Bijective E := ⟨hinj, hsurj⟩
-  let P := TensorProduct.piScalarRight ℤ ℝ ℝ (InfinitePlace L)
-  let e : ℝ ⊗[ℤ] (logLattice L × ℤ) ≃ₗ[ℝ] ℝ ⊗[ℤ] (InfinitePlace L → ℤ) :=
-    (LinearEquiv.ofBijective E hbij).trans P.symm
-  have hE : ∀ (g : L ≃ₐ[K] L) y, E ((((logLatticeRep K L).prod
-      (Representation.trivial ℤ (L ≃ₐ[K] L) ℤ)) g).baseChange ℝ y) =
-      funPermRep ℝ (L ≃ₐ[K] L) (InfinitePlace L) g (E y) := by
-    intro g y
-    induction y using TensorProduct.induction_on with
-    | zero => simp
-    | tmul r x =>
-      rw [LinearMap.baseChange_tmul, LinearMap.liftBaseChange_tmul, LinearMap.liftBaseChange_tmul,
-        map_smul, logLatticeProdMap_comm]
-    | add y z hy hz => rw [map_add (f := _), map_add (f := _), hy, hz, map_add (f := _), map_add (f := _)]
-  refine ⟨e, fun g y ↦ ?_⟩
-  apply P.injective
-  simp only [e, LinearEquiv.trans_apply, LinearEquiv.apply_symm_apply]
-  rw [piScalarRight_baseChange_funPermRep, LinearEquiv.apply_symm_apply,
-    LinearEquiv.ofBijective_apply, LinearEquiv.ofBijective_apply, hE]
+        (funPermRep ℤ (L ≃ₐ[K] L) (InfinitePlace L) g).baseChange ℝ (e y) :=
+  GroundTheory.Global.exists_logLatticeProd_real_equiv
 
 theorem exists_logLatticeProd_intertwiner :
     ∃ φ : logLattice L × ℤ →ₗ[ℤ] (InfinitePlace L → ℤ), Function.Injective φ ∧

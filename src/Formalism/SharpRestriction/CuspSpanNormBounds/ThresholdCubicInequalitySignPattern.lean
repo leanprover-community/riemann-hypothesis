@@ -468,19 +468,16 @@ theorem numNV (N m t : ℝ) (hN : 6 ≤ N) (hm : m ≤ N) (hm0 : 0 ≤ m) (ht : 
   have h1 : N + m * t ≤ 3 * N ^ 2 := by
     subst ht
     have hm1 : m * (N + 6) ≤ N * (N + 6) := mul_le_mul_of_nonneg_right hm (by linarith)
-    have heq : N * (N + 6) = N ^ 2 + 6 * N := by ring
     linarith
   have h0 : 0 ≤ N + m * t := by
     subst ht
     have : 0 ≤ m * (N + 6) := mul_nonneg hm0 (by linarith)
     linarith
   have h3 : (N + m * t) ^ 3 ≤ (3 * N ^ 2) ^ 3 := pow_le_pow_left₀ h0 h1 3
-  have h4 : (3 * N ^ 2) ^ 3 = 27 * N ^ 6 := by ring
   have h6 : (6 : ℝ) ^ 6 ≤ N ^ 6 := pow_le_pow_left₀ (by norm_num) hN 6
   have h13 : (6 : ℝ) ^ 13 ≤ N ^ 13 := pow_le_pow_left₀ (by norm_num) hN 13
   have h5 : t + 3 ≤ N ^ 6 := by
     have h2 : N ^ 2 ≤ N ^ 6 := pow_le_pow_right₀ (by linarith) (by norm_num)
-    have h22 : N + 9 ≤ N ^ 2 := by linarith
     subst ht; linarith
   have h19 : N ^ 19 = N ^ 6 * N ^ 13 := by ring
   have hpos : 0 < N ^ 6 := by positivity
@@ -653,27 +650,6 @@ theorem numeric_setting_of_datum (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg c
     calc C * (D.R.r : ℝ) ^ 3 ≤ Cl * (D.R.r : ℝ) ^ 3 := mul_le_mul_of_nonneg_right hC hp.le
       _ < Cl * (D.R.r : ℝ) ^ 19 := mul_lt_mul_of_pos_left h3 (by linarith)
 
-section Size
-
-open Formalism.MainNotions.S.Bridge Formalism.MainNotions.S.ThB MeasureTheory
-open scoped ENNReal
-
-end Size
-
-section SizeRangeProof
-
-open Formalism.MainNotions.S.ThB
-
-end SizeRangeProof
-
-section SizeFam
-
-open Formalism.MainNotions.S.Bridge Formalism.MainNotions.S.ThB
-
-variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
-
-end SizeFam
-
 theorem count_hypotheses_diagonal_words (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT C0 A : ℝ)
     (hD : StandingNumericalData D C0) (hH : StandingHypotheses D large₂ C' Cl Cg cb Cu cT CT) (h0 : 1 ≤ C0) (hCl : 2 < Cl) (hC' : 1 ≤ C')
     (hA : 1 ≤ A) (u : D.what₂.Word) : Cnt.Hyp D large₂ u u C' Cl Cg cb Cu cT CT C0 A := by
@@ -699,24 +675,6 @@ theorem sizes3bF (C0 Cg cb Cu cT CT C1 C2 A : ℝ) (h0 : 0 ≤ C1) (h1 : C1 ≤ 
     (H1 x (le_trans (le_max_left _ _) hx) i hy) (H2 x (le_trans (le_max_right _ _) hx) i hy)⟩
 
 end Family
-
-section Assembly
-
-variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
-
-end Assembly
-
-section Assembly2
-
-variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
-
-end Assembly2
-
-section All
-
-variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
-
-end All
 
 end Formalism.MainNotions
 

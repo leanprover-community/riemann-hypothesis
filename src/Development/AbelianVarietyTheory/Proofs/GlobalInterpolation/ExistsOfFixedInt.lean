@@ -250,12 +250,6 @@ section Place
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   (σ : E →ₐ[F] E) {M : ℕ} (J : Matrix (Fin M) (Fin M) E) (v : HeightOneSpectrum (𝓞 F))
 
-theorem mem_stabVec (x : Fin M → Ev F E v) (g : HA (Fv F v) σ J) :
-    g ∈ stabVec σ J v x ↔ act σ J v g x = x := by
-  unfold stabVec
-  rw [MulAction.mem_stabilizer_iff]
-  exact ⟨fun h => congrFun h 0, fun h => funext fun _ => h⟩
-
 theorem mem_stabLat (L : Submodule (OEv F E v) (Fin M → Ev F E v)) (g : HA (Fv F v) σ J) :
     g ∈ stabLat σ J v L ↔ ∀ y, y ∈ L ↔ act σ J v g y ∈ L := Iff.rfl
 
@@ -300,7 +294,7 @@ theorem stabLat_inf_stabVec : ∀ (F E : Type) [Field F] [NumberField F] [Field 
   ext g
   rw [Subgroup.mem_inf, Subgroup.mem_inf]
   refine and_congr_left fun hg => ?_
-  rw [mem_stabVec] at hg
+  rw [GlobalTheory.UnitVectorStabiliser.mem_stabVec] at hg
   have hh : ∀ y, hR (Fv F v) σ J x (act σ J v g y) = hR (Fv F v) σ J x y := by
     intro y
     rw [← hR_act σ J v g x y, hg]
@@ -596,7 +590,7 @@ theorem exists_family (hc : ∀ a, c (c a) = a) (hJ : ∀ i j, c (J j i) = J i j
       (∀ i j, hform c J (e i) (e j) = if i = j then 1 else 0) ∧ e 0 = x := by
   induction k with
   | zero => exact ⟨fun _ => x, fun _ => hx, fun i j => by
-      rw [hx1, if_pos (Subsingleton.elim (α := Fin 1) i j)], rfl⟩
+      rw [hx1, ite_eq_left (Subsingleton.elim (α := Fin 1) i j)], rfl⟩
   | succ k ih =>
     obtain ⟨e, heL, he, he0⟩ := ih (by omega)
     obtain ⟨y, hy, hy0, hy1⟩ := step (k + 1) (by omega) e heL he
@@ -627,7 +621,7 @@ theorem exists_basis (hL : ∀ y, y ∈ L ↔ ∀ z ∈ L, hform c J z y ∈ O) 
 
     rw [map_sum, map_zero] at h2
     simp only [map_smul, hLin_apply, he, smul_eq_mul, mul_ite, mul_one, mul_zero,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true] at h2
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true] at h2
     exact Subtype.ext h2
   have hsp : ⊤ ≤ Submodule.span O (Set.range f) := by
     intro y _

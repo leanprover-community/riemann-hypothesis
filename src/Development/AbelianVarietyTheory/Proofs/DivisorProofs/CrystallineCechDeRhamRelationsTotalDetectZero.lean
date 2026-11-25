@@ -9,57 +9,13 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmallDescent
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CrystallineForgetFormsBijectiveSiteAndPairs
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CrystallineFormsRestrictionAffineLiftBijective
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CompatibleFormsCochainsEqDeRhamCochainsSmoothLif
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.CategoryTheory.Monoidal.Mon
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CrystallineH2SmallCoverBijective
 import Development.AbelianVarietyTheory.Definitions.Divisors.OneFormMapEqKaehlerDifferentialMap
 import Development.AbelianVarietyTheory.Definitions.Divisors.Pullback1MemHodgeFiltration
 import Development.AbelianVarietyTheory.Definitions.Divisors.RatBasisLinearIndependentInt
-import Mathlib.RingTheory.DividedPowers.Basic
-import Mathlib.Topology.Sheaves.Presheaf
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FilProperties
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HomSpecPointsLevels
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmoothSectionsMonoReductionAffineInf
@@ -638,7 +594,7 @@ variable {C' : Type u} [Category.{0} C'] (G : C' ⥤ C)
 
 theorem h1_injective (hi : Function.Injective (CoefMap.restrict F G).pull1) :
     Function.Injective ((Cx.single (Coef.ofAlg F)).resMap G).h1 := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro c hc
   obtain ⟨z, rfl⟩ := QuotientAddGroup.mk_surjective c
   have hz : z.1.1 ∈ Z1 F := (singleComplex_mem_cocyclesOne_iff_algebraFunctor F z.1).1 z.2
@@ -677,7 +633,7 @@ theorem h1_surjective (hs : Function.Surjective (CoefMap.restrict F G).pull1) :
 
 theorem h2_injective (hi : Function.Injective (CoefMap.restrict F G).pull2) :
     Function.Injective ((Cx.single (Coef.ofAlg F)).resMap G).h2 := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro c hc
   obtain ⟨z, rfl⟩ := QuotientAddGroup.mk_surjective c
   have hz : z.1.1 ∈ Z2 F := (singleComplex_mem_cocyclesTwo_iff_algebraFunctor F z.1).1 z.2
@@ -873,11 +829,11 @@ theorem restrict_upwardClosed_subcategory_pull1_bijective : ∀ (R : Type) [Comm
       obtain ⟨x, hx⟩ := glue T (fun S u ↦ if hS : P S then g S hS - f.1 T S u else 0)
         fun S S' u ψ hS ↦ by
           have hS' := hP _ _ ψ hS
-          simp only [dif_pos hS, dif_pos hS', map_sub]
+          simp only [dite_eq_left hS, dite_eq_left hS', map_sub]
           have k1 := Z1.comp f u ψ
           have k2 := hg' S S' hS hS' ψ
           linear_combination k2 - k1
-      exact ⟨x, fun S u hS ↦ by rw [hx S u hS, dif_pos hS]⟩
+      exact ⟨x, fun S u hS ↦ by rw [hx S u hS, dite_eq_left hS]⟩
     choose x hx using h1
     refine H1.mk_eq_zero.2 ⟨x, ?_⟩
     funext T T' φ
@@ -897,12 +853,12 @@ theorem restrict_upwardClosed_subcategory_pull1_bijective : ∀ (R : Type) [Comm
         z S S'' (ψ ≫ χ) = mp F χ (z S S' ψ) + z S' S'' χ := by
       intro S S' S'' ψ χ hp
       have hp' := hP _ _ ψ hp
-      simp only [z, dif_pos hp, dif_pos hp']
+      simp only [z, dite_eq_left hp, dite_eq_left hp']
       exact y.2 (T := ⟨S, hp⟩) (T' := ⟨S', hp'⟩) (T'' := ⟨S'', hP _ _ χ hp'⟩)
         (ObjectProperty.homMk ψ) (ObjectProperty.homMk χ)
     have hzy : ∀ (S S' : P.FullSubcategory) (ψ : S ⟶ S'), z S.obj S'.obj ψ.hom = y.1 S S' ψ := by
       intro S S' ψ
-      simp only [z, dif_pos S.property]
+      simp only [z, dite_eq_left S.property]
       rfl
     have h1 : ∀ T : C, ∃ b : ∀ S, (T ⟶ S) → F.obj S, (∀ S S' u ψ, P S →
         b S' (u ≫ ψ) - mp F ψ (b S u) = z S S' ψ) ∧ (P T → ∀ S u, b S u = z T S u) := by

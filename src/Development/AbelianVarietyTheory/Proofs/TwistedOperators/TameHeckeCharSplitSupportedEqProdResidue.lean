@@ -189,9 +189,9 @@ theorem char_eq_prod_res : ∀ (D : D7) (c : (AE D)ˣ →* Circle) (χ : Formali
       Valued.v (CharLocProd.evalAt R (ι (finPart D x)) - _) ≤ _
     rw [← hev]
     by_cases hR : R ∈ P
-    · simp only [if_pos hR]
+    · simp only [ite_eq_left hR]
       exact ⟨(hk R).1, (hk R).2.1⟩
-    · simp only [if_neg hR]
+    · simp only [ite_eq_right hR]
       rw [hxP' R hR, Units.val_one, map_one, map_one, map_one, sub_self, map_zero]
       exact ⟨rfl, zero_le⟩
   · intro R hR
@@ -200,9 +200,9 @@ theorem char_eq_prod_res : ∀ (D : D7) (c : (AE D)ˣ →* Circle) (χ : Formali
     rw [← hev, hxP' R hR.1, map_one]
     exact ⟨rfl, fun h => hR.2 (hfin.mem_toFinset.2 (Ideal.dvd_span_singleton.2 h))⟩
   rw [key, ← Finset.prod_subset Finset.subset_union_left
-    (fun R _ hR => by rw [if_neg hR, map_one, Units.val_one])]
+    (fun R _ hR => by rw [ite_eq_right hR, map_one, Units.val_one])]
   refine Finset.prod_congr rfl fun R hR => ?_
-  rw [if_pos hR]
+  rw [ite_eq_left hR]
   obtain ⟨b, hb⟩ := Ideal.Quotient.mk_surjective (u R : kP R)
   have := R.isPrime
   have hbR : b ∉ R.asIdeal := fun h => (u R).ne_zero (hb ▸ Ideal.Quotient.eq_zero_iff_mem.2 h)

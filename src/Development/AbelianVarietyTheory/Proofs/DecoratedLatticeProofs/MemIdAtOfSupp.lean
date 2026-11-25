@@ -143,9 +143,7 @@ theorem xi_unit (hu : q.UnitAA) (h0 : (ofSplit q).xi ≠ 0) : valuation k (ofSpl
   exact le_antisymm h3 ((inv_le_one₀ (zero_lt_iff.2 ((map_ne_zero _).2 h0))).1 h4)
 
 theorem sec_mul (x y : k) : q.sec x * q.sec y = q.sec (x * y) := by
-  have h := q.sec_pr (q.sec x * q.sec y)
-  rw [map_mul, q.pr_sec, q.pr_sec, ← mul_assoc, ← GlobalTheory.FrameGlob.sec_eq_mul] at h
-  exact h.symm
+  exact (GlobalTheory.FinPl.FrameLat.sec_mul q x y).symm
 
 theorem idl_mul (x y : k) (h : x * y = 1) : (q.sec x + (1 - q.e)) * (q.sec y + (1 - q.e)) = 1 := by
   have h1 := sec_mul q x y

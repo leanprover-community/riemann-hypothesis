@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.AllRowsOf
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.DepthPays
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.UnimodInst
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
@@ -99,7 +100,6 @@ open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheor
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelPlusSubgroup (coefPlus Cols SizeRows)
 open GlobalTheory.ChainFr GlobalTheory.SepRows GlobalTheory.SepPer Matrix
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.LatDict
 open Formalism.IndefR.Eqv.UI
@@ -153,7 +153,6 @@ open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheor
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelPlusSubgroup (coefPlus Cols SizeRows)
 open GlobalTheory.ChainFr GlobalTheory.SepRows GlobalTheory.SepPer Matrix
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.adelicPointRationalLattice_unitaryModelIso_eq : ∀ (D : D7) (V : HSp D) (fr : Formalism.IndefR.Eqv.UI.Frames D V) (x : (Formalism.IndefR.Eqv.UI.instV fr).GA), latAt fr.Λ (Formalism.IndefR.Eqv.UI.brg fr x) = GlobalTheory.Count.lamX (Formalism.IndefR.Eqv.UI.instV fr) x := by
   first | exact @GlobalTheory.LatDict.latAt_brg
@@ -264,15 +263,7 @@ theorem kg_one (I : AutInst) (m : ℕ) : (1 : I.Gf) ∈ I.Kg m :=
 
 open Formalism.L2.SG.Pf.unitaryCongruence in
 theorem kg_mul (I : AutInst) (m : ℕ) {x y : I.Gf} (hx : x ∈ I.Kg m) (hy : y ∈ I.Kg m) : x * y ∈ I.Kg m := by
-  refine ⟨K_mul I hx.1 hy.1, fun v hv => ?_⟩
-  obtain ⟨z, hz, hyz⟩ := hy.2 v hv
-  obtain ⟨z', hz', hxz⟩ := hx.2 v hv
-  refine ⟨I.fmat x *ᵥ z + z', add_mem (K_mv I hx.1 hz) hz', ?_⟩
-  have e : (I.fmat (x * y) - 1) *ᵥ v = I.fmat x *ᵥ ((I.fmat y - 1) *ᵥ v) + (I.fmat x - 1) *ᵥ v := by
-    rw [fmat_mul, Matrix.sub_mulVec, Matrix.sub_mulVec, Matrix.sub_mulVec, Matrix.mulVec_sub, Matrix.mulVec_mulVec,
-      Matrix.one_mulVec]
-    abel
-  rw [e, hyz, hxz, Matrix.mulVec_smul, smul_add]
+  apply _root_.Formalism.L2.SG.AllRowsOf.Kg_mul' <;> assumption
 
 
 open Formalism.L2.SG.Pf.unitaryCongruence in
@@ -327,13 +318,13 @@ theorem exists_step (I : AutInst) (x : I.GA) (q : ℕ) (hn : 1 ≤ I.n)
     · norm_num
   have hτ'lt : ∀ i < a, τ' i < τ' (i + 1) := by
     intro i hi
-    simp only [hτ', dif_pos hi]
+    simp only [hτ', dite_eq_left hi]
     split_ifs with h
     · exact hτmono (Fin.mk_lt_mk.2 (Nat.lt_succ_self i))
     · exact (hτ ⟨i, hi⟩).2.1
   have hτ'a : τ' a = 1 / 2 := by simp [hτ']
   have hτ'0 : τ' 0 = least I x := by
-    simp only [hτ', dif_pos (show 0 < a by omega)]
+    simp only [hτ', dite_eq_left (show 0 < a by omega)]
     exact hτ0 (by omega)
   obtain ⟨b, hb, hratio, hsq⟩ := GlobalTheory.exists_consecutive_ratio_le_rpow a q τ' ha haq hτ'pos hτ'lt hτ'a
   rw [hτ'0] at hratio hsq
@@ -440,7 +431,6 @@ open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheor
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelPlusSubgroup (coefPlus Cols SizeRows)
 open GlobalTheory.ChainFr GlobalTheory.SepRows GlobalTheory.SepPer Matrix
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory
 
@@ -684,7 +674,7 @@ theorem prod_map_mulSingle_apply {ι : Type u_1} [DecidableEq ι] {M : ι → Ty
     rw [List.map_cons, List.prod_cons, Pi.mul_apply, ih hl']
     by_cases h : w = a
     · subst h
-      rw [if_neg ha, if_pos List.mem_cons_self, Pi.mulSingle_eq_same, mul_one]
+      rw [ite_eq_right ha, ite_eq_left List.mem_cons_self, Pi.mulSingle_eq_same, mul_one]
     · rw [Pi.mulSingle_eq_of_ne h, one_mul]
       simp only [List.mem_cons, h, false_or]
 
@@ -707,8 +697,6 @@ open GlobalTheory.ChainFr GlobalTheory.SepRows GlobalTheory.SepPer Matrix
 open scoped TensorProduct InnerProductSpace
 
 namespace GlobalTheory.RealMove
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open Formalism.IndefR.Eqv
 
@@ -881,7 +869,7 @@ theorem lip_move_real : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V : H
     funext w
     refine Eq.trans ?_ (list_prod_mulSingle (M := fun w : InfinitePlace (UI.instV fr).F => Formalism.REAL.UJ ((UI.instV fr).ε w))
       (fun v => expUJ (hAZ v).1 * expUJ (hAZ v).2) _ (Finset.nodup_toList _) w).symm
-    refine Eq.trans ?_ (if_pos (Finset.mem_toList.2 (Finset.mem_univ _))).symm
+    refine Eq.trans ?_ (ite_eq_left (Finset.mem_toList.2 (Finset.mem_univ _))).symm
     exact Subtype.ext (Units.ext (hu w))
   have hfac : UI.brg fr (u, 1) = ((Finset.univ : Finset (InfinitePlace D.host.F)).toList.map fun v =>
       oneP θ V ((Formalism.L2.Host.tauPl D).symm v) (fr.P v * Av v * (fr.P v)⁻¹) 1 *
@@ -923,7 +911,6 @@ open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheor
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelPlusSubgroup (coefPlus Cols SizeRows)
 open GlobalTheory.ChainFr GlobalTheory.SepRows GlobalTheory.SepPer Matrix
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.CongLevelInst
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E] {n : ℕ}
@@ -975,8 +962,6 @@ end GlobalTheory.CongLevelInst
 
 namespace GlobalTheory.CongLevelInst
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem kg_mem_levA : ∀ (D : D7) (V : HSp D) (fr : Formalism.IndefR.Eqv.UI.Frames D V) (g : ℕ), 1 ≤ g → ∀ k ∈ (Formalism.IndefR.Eqv.UI.instV fr).Kg g, Formalism.IndefR.Eqv.UI.brg fr (1, k) ∈ Formalism.IndefR.Lev.levA V (congLev D.sp.cm V.gram fr.Λ (Ideal.span {((g : ℕ) : 𝓞 D.host.E)})) := by
   intro D V fr g _ k hk
   rw [Formalism.IndefR.Eqv.brg_mem_levA]
@@ -997,7 +982,6 @@ open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheor
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelPlusSubgroup (coefPlus Cols SizeRows)
 open GlobalTheory.ChainFr GlobalTheory.SepRows GlobalTheory.SepPer Matrix
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.NormDict
 
@@ -1034,7 +1018,6 @@ open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheor
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelPlusSubgroup (coefPlus Cols SizeRows)
 open GlobalTheory.ChainFr GlobalTheory.SepRows GlobalTheory.SepPer Matrix
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -1078,10 +1061,6 @@ theorem least_nonneg : ∀ (I : Formalism.MainNotions.S.AutInst) (x : I.GA), 0 �
   apply mul_nonneg (mul_nonneg (by positivity) (Real.rpow_nonneg (abs_nonneg _) _))
   split_ifs <;> positivity
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-
-
 theorem norm_le_of_not_long : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V : HSp D) (A : Fr V) (Λ : Lat V), IsSelfDualC V Λ → ∀ (g q : ℕ), 1 ≤ g → 1 ≤ q → 1 ≤ V.rank → (∀ τ, min (Finset.univ.filter fun a => A.ε τ a = true).card (Finset.univ.filter fun a => A.ε τ a = false).card ≤ q) → ∀ φ : GA D V → ℂ, IsAutFun V φ → IsCuspFun V φ → (∀ k ∈ Lev.levA V (congLev D.sp.cm V.gram Λ (Ideal.span {((g : ℕ) : 𝓞 D.host.E)})), ∀ x, φ (x * k) = φ x) → ∀ c : ℝ, 0 ≤ c → Lip θ A φ c → ∀ (x : GA D V) (s : ℝ), 0 < s → s ≤ 1 / 2 → ¬ Long θ A Λ x s → ‖φ x‖ ≤ c * ((V.rank : ℝ) ^ 2 * Fintype.card D.what₂.Tau * g * rdisc D * (2 * s) ^ ((1 : ℝ) / q)) := by
   intro D θ hθ V A Λ hΛ g q hg hq hn hrk φ hφ hcusp hlev c hc hlip x s hs hs2 hlong
   obtain ⟨fr, hfrΛ, hfr⟩ := _root_.GlobalTheory.frames_of_diagonalising_frame D V A Λ hΛ
@@ -1093,8 +1072,7 @@ theorem norm_le_of_not_long : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ 
   have hbx : Formalism.IndefR.Eqv.UI.brg fr x0 = x := by simp [hx0]
   have hl0 : 0 ≤ GlobalTheory.Count.least (Formalism.IndefR.Eqv.UI.instV fr) x0 := least_nonneg _ x0
   have hlt : GlobalTheory.Count.least (Formalism.IndefR.Eqv.UI.instV fr) x0 < s := by
-    by_contra hge
-    push_neg at hge
+    by_contra! hge
     apply hlong
     intro 𝔪 h𝔪 w hw hw0
     have hL := GlobalTheory.T.adelicPointRationalLattice_unitaryModelIso_eq D V fr x0
@@ -1174,7 +1152,6 @@ open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheor
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelPlusSubgroup (coefPlus Cols SizeRows)
 open GlobalTheory.ChainFr GlobalTheory.SepRows GlobalTheory.SepPer Matrix
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto

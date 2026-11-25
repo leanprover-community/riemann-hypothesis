@@ -65,7 +65,7 @@ theorem glRel_resE {E : Fin n → Fin n → Module.End ℂ V} (hE : GlRel E) (S 
   apply Subtype.ext
   have h := LinearMap.congr_fun (hE a b c d) (x : V)
   by_cases hbc : b = c <;> by_cases hda : d = a <;>
-    simp only [hbc, hda, if_true, if_false, Module.End.mul_apply, LinearMap.sub_apply, LinearMap.zero_apply,
+    simp only [hbc, hda, ite_true, ite_false, Module.End.mul_apply, LinearMap.sub_apply, LinearMap.zero_apply,
       Submodule.coe_sub, Submodule.coe_zero, sub_zero, zero_sub, resE_apply] at h ⊢ <;> exact h
 
 theorem irr_resE {E : Fin n → Fin n → Module.End ℂ V} (S : Submodule ℂ V) (hS : Stab E S) (hne : S ≠ ⊥)

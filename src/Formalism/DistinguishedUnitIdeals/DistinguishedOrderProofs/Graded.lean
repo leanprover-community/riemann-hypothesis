@@ -376,7 +376,7 @@ theorem xi_module_structure : XiModule := by
     rw [not_le] at hneg
     apply h1
     have := PowerSeries.coeff_coe (R := Ks) (f := a) ij.1
-    rw [if_pos hneg] at this
+    rw [ite_eq_left hneg] at this
     exact this
   have h4 : ij.2 ≤ i := by
     have : ij.1 + ij.2 = i := h3
@@ -716,19 +716,6 @@ namespace Formalism.ExponentWindows.G
 
 open TensorProduct SlopeTestRemainingChoices
 
-namespace SlopeTestRemainingChoices
-section
-variable {LL W : Type} [Field LL] [AddCommGroup W] [Module LL W]
-
-end
-end SlopeTestRemainingChoices
-
-end Formalism.ExponentWindows.G
-
-namespace Formalism.ExponentWindows.G
-
-open TensorProduct SlopeTestRemainingChoices
-
 theorem graded_semilinear_holds : GrdSemi := by
   intro LL Ks D _ _ _ _ _ τ a x f
   apply amb_ext
@@ -942,9 +929,5 @@ theorem descent_fixed_points_holds : DcFixOf := by
     rw [R.mem_Nl s hs] at he ⊢
     rw [R.pr_γ s hs s hs e]
     exact (xi_gamma_commute LL (Ks s) Δ D (R.lev s)).1 _ _ he
-
-end Formalism.ExponentWindows.G
-
-namespace Formalism.ExponentWindows.G
 
 end Formalism.ExponentWindows.G

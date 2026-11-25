@@ -16,13 +16,6 @@ attribute [local instance] borelH
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
-def fixK (π : CuspSub E n) (K : Subgroup (GL (Fin n) (Af E))) : Submodule ℂ (Sm E n) :=
-  π.V ⊓
-    { carrier := {φ | ∀ k ∈ K, finRep E n k φ = φ}
-      add_mem' := fun {a b} ha hb k hk => by rw [map_add (f := _), ha k hk, hb k hk]
-      zero_mem' := fun k _ => map_zero _
-      smul_mem' := fun c a ha k hk => by rw [map_smul, ha k hk] }
-
 def IsHeckeAct [MeasurableSpace (GL (Fin n) (Af E))] (μf : Measure (GL (Fin n) (Af E))) (K : Subgroup (GL (Fin n) (Af E)))
     (Y : Submodule ℂ (Sm E n)) (ρ : (GL (Fin n) (Af E) → ℂ) → Module.End ℂ Y) : Prop :=
   ∀ h, IsHeckeF K h → ∀ y : Y, (((ρ h y : Y) : Sm E n) : GA E n → ℂ) = heckeOp μf h ((y : Sm E n) : GA E n → ℂ)

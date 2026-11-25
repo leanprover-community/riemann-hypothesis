@@ -127,38 +127,10 @@ theorem topologicalKrullDim_lt_of_isClosed_of_not_subset_irreducibleComponents
   rw [topologicalKrullDim_eq_iSup_length (Z := ↥Y), hD]
   exact lt_of_le_of_lt hbound (WithBot.coe_lt_coe.mpr h6)
 
-private def irreducibleClosedsMapHomeomorph {X : Type u} {Y : Type v} [TopologicalSpace X] [TopologicalSpace Y]
-    (e : X ≃ₜ Y) (a : IrreducibleCloseds X) : IrreducibleCloseds Y :=
-  ⟨e '' a.1, a.2.image e e.continuous.continuousOn, e.isClosedMap _ a.3⟩
-
-private theorem coe_irreducibleClosedsMapOfHomeomorph {X : Type u} {Y : Type v} [TopologicalSpace X] [TopologicalSpace Y]
-    (e : X ≃ₜ Y) (a : IrreducibleCloseds X) :
-    ((irreducibleClosedsMapHomeomorph e a : IrreducibleCloseds Y) : Set Y) = e '' (a : Set X) := rfl
-
-private theorem strictMono_irreducibleClosedsMapOfHomeomorph {X : Type u} {Y : Type v} [TopologicalSpace X]
-    [TopologicalSpace Y] (e : X ≃ₜ Y) : StrictMono (irreducibleClosedsMapHomeomorph e) := by
-  intro a b hab
-  refine lt_of_le_of_ne ?_ ?_
-  · rw [← SetLike.coe_subset_coe, coe_irreducibleClosedsMapOfHomeomorph, coe_irreducibleClosedsMapOfHomeomorph]
-    exact Set.image_mono (SetLike.coe_subset_coe.mpr hab.le)
-  · intro h
-    have h1 : e '' (a : Set X) = e '' (b : Set X) := by
-      rw [← coe_irreducibleClosedsMapOfHomeomorph e a, ← coe_irreducibleClosedsMapOfHomeomorph e b, h]
-    exact hab.ne (SetLike.coe_injective (Set.image_injective.mpr e.injective h1))
-
-open Order in
-private theorem topologicalKrullDim_le_of_homeomorph {X : Type u} {Y : Type v} [TopologicalSpace X]
-    [TopologicalSpace Y] (e : X ≃ₜ Y) : topologicalKrullDim X ≤ topologicalKrullDim Y := by
-  rw [topologicalKrullDim_eq_iSup_length (Z := X), topologicalKrullDim_eq_iSup_length (Z := Y)]
-  refine iSup_le fun p => ?_
-  have h := le_iSup (fun r : LTSeries (IrreducibleCloseds Y) => (r.length : WithBot ℕ∞))
-    (p.map (irreducibleClosedsMapHomeomorph e) (strictMono_irreducibleClosedsMapOfHomeomorph e))
-  exact h
-
 theorem topologicalKrullDim_eq_of_homeomorph {X : Type u} {Y : Type v}
     [TopologicalSpace X] [TopologicalSpace Y] (e : X ≃ₜ Y) :
     topologicalKrullDim X = topologicalKrullDim Y :=
-  le_antisymm (topologicalKrullDim_le_of_homeomorph e) (topologicalKrullDim_le_of_homeomorph e.symm)
+  IsHomeomorph.topologicalKrullDim_eq e e.isHomeomorph
 
 private theorem withBotSuccToNat_lt_withBotSuccToNat {a b : WithBot ℕ∞} (h : a < b) (hb : b < ⊤) :
     withBotSuccToNat a < withBotSuccToNat b := by

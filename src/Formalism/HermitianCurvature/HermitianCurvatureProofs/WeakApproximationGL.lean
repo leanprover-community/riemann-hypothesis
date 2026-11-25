@@ -55,7 +55,7 @@ theorem idx_surjective (m : ℕ) : Function.Surjective (idx m) := by
     · refine ⟨Sum.inr (Sum.inr (Sum.inl ⟨(k.castSucc, k.succ), Fin.castSucc_lt_succ⟩)), ?_⟩
       show cls k.castSucc k.succ.castSucc (succ_le_castSucc Fin.castSucc_lt_succ) = Sum.inl k.castSucc
       unfold cls
-      exact dif_pos rfl
+      exact dite_eq_left rfl
     · exact ⟨Sum.inr (Sum.inr (Sum.inr (Fin.last m))), by simp [idx, cls]⟩
   · rcases Fin.eq_zero_or_eq_succ a with rfl | ⟨i, rfl⟩
     · rcases Fin.eq_castSucc_or_eq_last b with ⟨c, rfl⟩ | rfl
@@ -159,9 +159,9 @@ theorem rhs_succ {m : ℕ} (t ρ₁ : ℂ) (x : Fin (m + 1) → ℂ) (y : UT (m 
     Matrix.diagonal_apply, Fin.val_succ, smul_eq_mul, Fin.cons_succ]
   have hiff : ((j : ℕ) + 1 = (i : ℕ) + 1) ↔ ((j : ℕ) = i) := by omega
   by_cases hj : (j : ℕ) = i
-  · rw [if_pos (hiff.mpr hj), if_pos hj]
+  · rw [ite_eq_left (hiff.mpr hj), ite_eq_left hj]
     ring
-  · rw [if_neg (fun h => hj (hiff.mp h)), if_neg hj]
+  · rw [ite_eq_right (fun h => hj (hiff.mp h)), ite_eq_right hj]
     ring
 
 theorem wMat_mulVec_apply {n : ℕ} (B : Fin n → ℂ) (i : Fin n) : (wMat n *ᵥ B) i = B i.rev := by
@@ -175,7 +175,7 @@ theorem xOf_redOf (m : ℕ) (p : XY m) (k : Fin (m + 1)) :
     exact tri_diag p.1 p.2 (Fin.last m)
   | cast c =>
     simp only [xOf, Fin.succ_castSucc, blk_cc, strictUpper, Matrix.of_apply,
-      dif_pos (Fin.castSucc_lt_succ (i := c))]
+      dite_eq_left (Fin.castSucc_lt_succ (i := c))]
     exact tri_diag p.1 p.2 c.castSucc
 
 theorem matrix_redOf (m : ℕ) (t ρ₁ : ℂ) (p : XY m) :
@@ -204,7 +204,7 @@ theorem matrix_redOf (m : ℕ) (t ρ₁ : ℂ) (p : XY m) :
       by_cases hrc : r < c
       · have h1 : r ≠ c := ne_of_lt hrc
         have h2 : (c : ℕ) ≠ r := fun h => h1 (Fin.ext h.symm)
-        rw [dif_pos hrc, if_neg h1, if_neg h2]
+        rw [dite_eq_left hrc, ite_eq_right h1, ite_eq_right h2]
         simp only [mul_zero, zero_add]
         rfl
       · have hcr : c.castSucc < r.succ := by
@@ -222,7 +222,7 @@ theorem matrix_redOf (m : ℕ) (t ρ₁ : ℂ) (p : XY m) :
         simp only [Fin.val_last]
         have := r.isLt
         omega
-      rw [if_neg hne, zero_add]
+      rw [ite_eq_right hne, zero_add]
       rfl
 
 theorem diag_const (m : ℕ) (z : ℂ) :

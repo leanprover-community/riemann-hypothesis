@@ -11,7 +11,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 open GlobalTheory.UU
 
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 
@@ -38,10 +37,10 @@ theorem eq_single_of_isUnit_coeff {A X : Type} [CommRing A] [IsReduced A] [AddCo
       have ha : a = χ := by
         by_contra hne
         have h1 := ec χ
-        simp only [AddMonoidAlgebra.coeff_single, Finsupp.single_apply, if_neg hne] at h1
+        simp only [AddMonoidAlgebra.coeff_single, Finsupp.single_apply, ite_eq_right hne] at h1
         exact (hχ.map (Ideal.Quotient.mk p)).ne_zero h1
       have h2 := ec z
-      simp only [AddMonoidAlgebra.coeff_single, Finsupp.single_apply, if_neg (ha.trans_ne hz.symm)] at h2
+      simp only [AddMonoidAlgebra.coeff_single, Finsupp.single_apply, ite_eq_right (ha.trans_ne hz.symm)] at h2
       exact Ideal.Quotient.eq_zero_iff_mem.1 h2
     rw [nilradical_eq_zero] at hn
     exact hn

@@ -131,7 +131,7 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SiegelReframe (Fl Pt IsPeriodMap co
 open ReciprocityTheory.L2DbarEstimates (V)
 open GlobalTheory.Points (PtsOver)
 open GlobalTheory.GoodMetric (coordVec)
-open GlobalTheory.CxForm (IsRegVar BottChern ArChow hermMat eval₂ bas relCot dRel IsRelAcyclic IsGenSmooth)
+open GlobalTheory.CxForm (bas IsRelAcyclic)
 open GlobalTheory.IndefiniteRowSideFullHecke.SiegelReframe (om0)
 open scoped ContDiff Real CategoryTheory.Obj ComplexOrder
 
@@ -214,7 +214,6 @@ noncomputable section
 
 open CategoryTheory MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AmpleGen
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.AmpleGen
 
@@ -322,7 +321,6 @@ noncomputable section
 
 open CategoryTheory MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AmpleGen
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.PowPull
 
@@ -388,7 +386,6 @@ section -- clump:auto
 
 open CategoryTheory MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AmpleGen
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem _root_.GlobalTheory.T.cechPicardPullback_zpow_mul_mixed_split : ∀ (K : Type) [Field K] (A : Over (Sp K)) [GrpObj A], IsAbelianScheme A → ∀ (L : LB A.left) (hL : L.IsLB) (T : Over (Sp K)) (x y : T ⟶ A) (m n a b : ℤ), a • GlobalTheory.CechPic.pull (x ^ m * y ^ n).left (GlobalTheory.CechPic.cls L hL) + b • GlobalTheory.CechPic.pull ((x ^ m * y ^ n)⁻¹).left (GlobalTheory.CechPic.cls L hL) = (a • GlobalTheory.CechPic.pull (x ^ m).left (GlobalTheory.CechPic.cls L hL) + b • GlobalTheory.CechPic.pull ((x ^ m)⁻¹).left (GlobalTheory.CechPic.cls L hL)) + (a • GlobalTheory.CechPic.pull (y ^ n).left (GlobalTheory.CechPic.cls L hL) + b • GlobalTheory.CechPic.pull ((y ^ n)⁻¹).left (GlobalTheory.CechPic.cls L hL)) + ((a + b) * (m * n)) • GlobalTheory.CechPic.lam (GlobalTheory.CechPic.cls L hL) x y := by
   intro K _ A _ hA L hL T x y m n a b
@@ -490,14 +487,6 @@ theorem tr_map (φ : A →+* B) (h : FinFree φ) (r : ℕ)
   · change Algebra.trace A B (algebraMap A B a) = _
     rw [Algebra.trace_algebraMap, hr hA, nsmul_eq_mul]
 
-theorem exists_finFree_away_of_finitePresentation {φ : A →+* B} (hf : φ.Finite) (hfl : φ.Flat)
-    (hfp : φ.FinitePresentation) (p : PrimeSpectrum A) :
-    ∃ r ∉ p.asIdeal, ∀ {A' B' : Type} [CommRing A'] [CommRing B'] {α : A →+* A'} {β : B →+* B'}
-      {φ' : A' →+* B'},
-      IsPushout (CommRingCat.ofHom φ) (CommRingCat.ofHom α) (CommRingCat.ofHom β)
-        (CommRingCat.ofHom φ') → IsUnit (α r) → FinFree φ' := by
-  apply GlobalTheory.FiniteAmpleFP.exists_finFree_away_fp <;> assumption
-
 end Algebra
 
 section Geometry
@@ -527,7 +516,7 @@ theorem exists_finFree_app_of_finitePresentation {y : Y} {U : Y.Opens} (hy : y �
   have hfp : (f.app V).hom.FinitePresentation := by
     rw [Scheme.Hom.app_eq_appLE]
     exact f.finitePresentation_appLE hV (hV.preimage f) _
-  obtain ⟨r, hr, H⟩ := exists_finFree_away_of_finitePresentation
+  obtain ⟨r, hr, H⟩ := GlobalTheory.FiniteAmpleFP.exists_finFree_away_fp
     (f.finite_app V hV) hfl hfp (hV.primeIdealOf ⟨y, hyV⟩)
   refine ⟨Y.basicOpen r, hV.basicOpen r, ?_, (Y.basicOpen_le r).trans hle,
     H (isPushout_app f hV (hV.basicOpen r) (Y.basicOpen_le r)) (Y.toRingedSpace.isUnit_res_basicOpen r)⟩
@@ -806,7 +795,6 @@ noncomputable section
 section Lemmas
 open CategoryTheory MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AmpleGen
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.AmpleGen
 
@@ -836,7 +824,6 @@ end Lemmas
 section RowLatticeBoundForBasis
 open CategoryTheory MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AmpleGen
-attribute [local instance] Over.cartesianMonoidalCategory
 namespace GlobalTheory.AmpleGen
 
 open GlobalTheory.CechPic in
@@ -875,7 +862,6 @@ end RowLatticeBoundForBasis
 section MainAux
 open CategoryTheory MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AmpleGen GlobalTheory.AbLaw
-attribute [local instance] Over.cartesianMonoidalCategory
 namespace GlobalTheory.AmpleGen
 
 theorem finrank_pos_of_not_exactAt {K : Type} [Field K] {X : Scheme.{0}} {f : X ⟶ Spec (CommRingCat.of K)}
@@ -1013,23 +999,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 
 variable {X₀ : Scheme.{0}} {S : Type} [CommRing S]
 
-section Group
-
-variable (G : Over X₀) [GrpObj G] [IsCommMonObj G]
-
-variable (x : Sp S ⟶ X₀) {d : ℕ}
-
-
-variable {G x}
-
-end Group
-
-section Germ
-
-variable {G : Over X₀} [GrpObj G] {x : Sp S ⟶ X₀} {d : ℕ}
-
-end Germ
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 
 abbrev PrimIso (t : SAB H X₀) : Type :=
@@ -1142,24 +1111,6 @@ theorem isGen_divEquiv (φ : K → (X ⟶ X)) (ε : K → ℤ) (w : LB.Iso L (LB
       (congrArg₂ (· * ·) (gm_g_div φ ε i j y hy.1 hy.2) (hv j y hy.2)).symm)
 
 end General
-
-section Jets
-
-variable {S : Type} [CommRing S] {d : ℕ}
-
-end Jets
-
-section Compare
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {X₀ : Scheme.{0}} (t : SAB H X₀)
-
-variable {S : Type} [CommRing S] (x : Sp S ⟶ X₀) {d : ℕ}
-
-variable {t x}
-
-variable {j : JetPts t.G x d} (act : 𝓞 E → Germ.Pt S 1 d) (e : FrameFam t.G x t.PP.L j) (w : PrimIso t)
-
-end Compare
 
 end GlobalTheory.GermSectionCompare
 end -- clump:auto
@@ -1514,7 +1465,7 @@ theorem coboundary_of_exact {κ : Type} [LinearOrder κ] (W : κ → X.Opens)
       SecOnR.restrict f M (le_inf (hle (by simp)) (hle (by simp))) (Φ k l) := by
     intro k l hkl
     have hn : ({k, l} : Finset κ).Nonempty := by simp
-    simp only [x, dif_pos hn]
+    simp only [x, dite_eq_left hn]
     exact hcongr (by simp [hkl.le]) (by simp [hkl.le]) _ _
   have hE := (cechComplex_exactAt_succ_iff (secCube f M W) 0).1 hW
   have hd : Cube.d (secCube f M W) (0 + 2) (fun s => x s.1) = 0 := by
@@ -1669,7 +1620,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G.Out
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem GlobalTheory.CxForm.firstCohomologyVanishes_of_isRelAcyclic_affine : ∀ (R : Type) [CommRing R] (X : Scheme.{0}) (f : X ⟶ Spec (CommRingCat.of R)) (M : LB X), M.IsLB → CompactSpace X → GlobalTheory.CxForm.IsRelAcyclic f f M → GlobalTheory.AbLaw.FirstCohomologyVanishes M := by
   apply _root_.GlobalTheory.ExactCoboundaryTriple.firstCohomologyVanishes_of_isRelAcyclic <;> assumption
@@ -1757,7 +1707,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G.Out
-attribute [local instance] Over.cartesianMonoidalCategory
 
 end -- clump:auto
 end -- clump:auto
@@ -1772,7 +1721,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G.Out
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.PowAmple
 
@@ -1810,7 +1758,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.EndLoc
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G.Out
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 namespace GlobalTheory.AmpleSecBC

@@ -13,8 +13,6 @@ namespace PositivityTheory.Rg.BcB.E
 
 open PositivityTheory.Rg.BcB
 
-attribute [local instance] borelH
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {a b : ℕ}
 
 def chiH (τ : ℝ) (x : H E a b) : ℝ := (cutSet E a τ ×ˢ cutSet E b τ).indicator 1 x

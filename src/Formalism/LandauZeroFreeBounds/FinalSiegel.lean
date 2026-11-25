@@ -64,7 +64,7 @@ lemma character_convolution_eq {N N' M : ℕ} (χ : DirichletCharacter ℂ N) (�
   have hi0 : i ≠ 0 := (Nat.pos_of_mem_divisors hi).ne'
   have hni : n / i ≠ 0 :=
     (Nat.div_pos (Nat.le_of_dvd (Nat.pos_of_ne_zero hn) hdvd) (Nat.pos_of_ne_zero hi0)).ne'
-  simp only [toArithmeticFunction, coe_mk, hi0, hni, if_false]
+  simp only [toArithmeticFunction, coe_mk, hi0, hni, ite_false]
   rw [hψ i]
   calc χ' ((n / i : ℕ) : ZMod N') * (χ (i : ZMod N) * χ' (i : ZMod N'))
       = (χ' ((n / i : ℕ) : ZMod N') * χ' (i : ZMod N')) * χ (i : ZMod N) := by ring
@@ -1235,7 +1235,7 @@ theorem siegel_theorem_of : SiegelOf := by
     intro q _ χ ψ _ _ _ _
     simp [Fbq, hzero]
   ·
-    push_neg at hex
+    push Not at hex
     obtain ⟨q₁, hq₁, χ₁, h1sq, h1ne⟩ := hR
     have hnz : ∀ (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q), χ ^ 2 = 1 → χ ≠ 1 →
         ∀ σ : ℝ, σ₀ ≤ σ → DirichletCharacter.LFunction χ σ ≠ 0 := by

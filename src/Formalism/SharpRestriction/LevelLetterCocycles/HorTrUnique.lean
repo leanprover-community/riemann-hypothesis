@@ -41,8 +41,7 @@ theorem piLam_piPs (A : ArcP n) (a : ZMod n) (e : ℕ) : W.π₀ * abelian₂ W 
 
 theorem lA_smul_eq (T : LocLat G Qp LL O) (t : ℕ) (z : W.DD T) :
     lA W ^ t • z = (((PD.p : ℕ) : O) ^ t) • z := by
-  rw [← algebraMap_smul (LetA O n) (((PD.p : ℕ) : O) ^ t) z, map_pow, map_natCast]
-  rfl
+  exact (Formalism.MainNotions.UnusedSlot80.Relay2.lsmul_eq W T t z).symm
 
 theorem lA_smul_smul (T : LocLat G Qp LL O) (t s : ℕ) (z : W.DD T) :
     lA W ^ t • lA W ^ s • z = lA W ^ (s + t) • z := by

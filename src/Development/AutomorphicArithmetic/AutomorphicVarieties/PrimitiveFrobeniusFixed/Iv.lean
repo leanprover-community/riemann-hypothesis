@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ValPrimeOfLt
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PrimitiveFrobeniusFixed.IsAdmissiblePrimeListNil
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.ExistsPrimitiveRootPow
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SumInvEqZeroOfUnramifiedCocycle
@@ -293,11 +294,11 @@ private theorem core (hPT : PoitouTateDuality) (hU : UnramifiedOrthogonality) {�
   let Av : S → ValuationSubring Ω := fun v => if v.1 = v₀ then A₀ else placeOf Ω v.1
   have hAv : ∀ v, IsPlaceOver (Av v) v.1 := fun v => by
     by_cases h : v.1 = v₀
-    · simp only [Av, if_pos h]
+    · simp only [Av, ite_eq_left h]
       rw [h]; exact hv₀
-    · simp only [Av, if_neg h]
+    · simp only [Av, ite_eq_right h]
       exact isPlaceOver_placeOf Ω v.1
-  have hA0 : Av ⟨v₀, h₀⟩ = A₀ := if_pos rfl
+  have hA0 : Av ⟨v₀, h₀⟩ = A₀ := ite_eq_left rfl
   have hχ : ∀ g z, ((cycMod ℚ Ω l r g : (ZMod (l ^ r))ˣ) : ZMod (l ^ r)) * lam z = lam (α g * β g * z) := fun g z => by
     rw [hαβ, hlam]
   have hNS := ns_le (S : Set (HeightOneSpectrum (𝓞 ℚ))) φ α β hαβ hα c n hc hn cc cn (fun v hv h => hv (hlS v h))
@@ -350,7 +351,7 @@ theorem UpperTheory.V.ML.recip :
   have hι : ∀ u, ι (mk u) = u • w₀ := fun _ => rfl
   have hιm : ∀ u x, ι (mk u * x) = u • ι x := fun u x => map_smul ι u x
   have hinj : Function.Injective ι := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro x hx
     obtain ⟨u, rfl⟩ := Ideal.Quotient.mk_surjective x
     exact Ideal.Quotient.eq_zero_iff_mem.2 (Ideal.mem_span_singleton.2 ((hw u).1 hx))
@@ -479,20 +480,7 @@ private theorem primRam_unit (l : ℕ) [Fact l.Prime] (c : HV.Coef l) (n : ℕ) 
 private theorem exists_prime_dvd_over_of_over_mul_iff (Ω : Type) [Field Ω] (A : ValuationSubring Ω)
     (hmul : ∀ m n : ℕ, Over A (m * n) ↔ Over A m ∨ Over A n) (n : ℕ) (hn : n ≠ 0) (h : Over A n) :
     ∃ r, r.Prime ∧ r ∣ n ∧ Over A r := by
-  refine Nat.recOnMul (motive := fun n => n ≠ 0 → Over A n → ∃ r, r.Prime ∧ r ∣ n ∧ Over A r)
-    ?_ ?_ ?_ ?_ n hn h
-  · intro h0
-    exact absurd rfl h0
-  · intro _ h1
-    simp [Over] at h1
-  · intro p hp _ hpA
-    exact ⟨p, hp, dvd_rfl, hpA⟩
-  · intro a b iha ihb hab hAab
-    rcases (hmul a b).1 hAab with ha | hb
-    · obtain ⟨r, hr, hra, hrA⟩ := iha (left_ne_zero_of_mul hab) ha
-      exact ⟨r, hr, hra.mul_right b, hrA⟩
-    · obtain ⟨r, hr, hrb, hrA⟩ := ihb (right_ne_zero_of_mul hab) hb
-      exact ⟨r, hr, hrb.mul_left a, hrA⟩
+  apply _root_.UpperTheory.Reformulated.B.Qi55.val_prime_of_lt <;> assumption
 
 theorem UpperTheory.V.ML.primRam :
     ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (l : ℕ) [Fact l.Prime] (c : HV.Coef l) (f : ℕ) [NeZero f] (ψ : DirichletCharacter c.O f), ψ.IsPrimitive → ¬ l ∣ orderOf ψ →
@@ -757,7 +745,7 @@ private theorem th_eq (F b : ℕ) [NeZero F] (t : ZMod F) (ht : t ≠ 0) (hy : (
   have h3 : F * ((-t).val * b / F) + (-t).val * b % F = (-t).val * b := Nat.div_add_mod _ _
   have h4 : (-t).val * b % F < F := Nat.mod_lt _ hF
   have h5 : (-t).val + t.val = F := by
-    rw [ZMod.neg_val, if_neg ht]
+    rw [ZMod.neg_val, ite_eq_right ht]
     have := ZMod.val_lt t
     omega
   rw [← h1] at h2
@@ -1183,8 +1171,7 @@ private theorem over_mul {Ω : Type} [Field Ω] (A : ValuationSubring Ω) (m n :
   simp only [Over, Nat.cast_mul, map_mul]
   constructor
   · intro h
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have h1 : A.valuation (m : Ω) = 1 := le_antisymm hm hc.1
     have h2 : A.valuation (n : Ω) = 1 := le_antisymm hn hc.2
     rw [h1, h2, one_mul] at h
@@ -1306,7 +1293,7 @@ private theorem prim_case (hR : Rec) (Ω : Type) [Field Ω] [Algebra ℚ Ω] [Is
       have hc := count hR Ω l c.O (f / l ^ f.factorization l) m _ b _ hD hb δ hδu σ hσ a₀ hdiv
       rw [shT_congr _ δ (F' := f * l) (fun A => over_lev A l f m hD.pos)] at hc
       exact hc.trans (IsDiscreteValuationRing.addVal_le_iff_dvd.mpr hza)
-  · push_neg at hex
+  · push Not at hex
     set_option synthInstance.maxHeartbeats 200000 in
       rw [exc Ω l c.O h2 _ hex ?_, Module.length_bot]
     · exact zero_le

@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.ProdSubLtEqFactorial
 public import Formalism.SharpRestriction.CuspSpanNormBounds.StandingNumericalData
 import Std.Tactic.BVDecide.Normalize.BitVec
 
@@ -12,55 +13,9 @@ namespace Formalism.MainNotions.BridgeLemma
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Finset MeasureTheory
 open scoped InnerProductSpace
 
-private theorem szh_sf_inner_lemma (N : ℕ) (a : Fin N) :
-    ∏ b ∈ univ.filter (fun b : Fin N => a < b), (((b : ℕ) : ℝ) - ((a : ℕ) : ℝ)) =
-      ((N - ((a : ℕ) + 1)).factorial : ℝ) := by
-  rw [Finset.prod_nbij (fun b : Fin N => (b : ℕ)) (t := Finset.Ico ((a : ℕ) + 1) N)
-    (g := fun j : ℕ => ((j : ℝ) - ((a : ℕ) : ℝ))) ?_ ?_ ?_ ?_]
-  · rw [Finset.prod_Ico_eq_prod_range]
-    have e : ∀ k ∈ range (N - ((a : ℕ) + 1)),
-        ((((a : ℕ) + 1 + k : ℕ) : ℝ) - ((a : ℕ) : ℝ)) = ((k + 1 : ℕ) : ℝ) := by
-      intro k _
-      push_cast
-      ring
-    rw [Finset.prod_congr rfl e, ← Nat.cast_prod, Finset.prod_range_add_one_eq_factorial]
-  · intro b hb
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hb
-    simp only [Finset.mem_Ico]
-    exact ⟨hb, b.2⟩
-  · intro x _ y _ hxy
-    exact Fin.ext hxy
-  · intro j hj
-    simp only [Finset.coe_Ico, Set.mem_Ico] at hj
-    refine ⟨⟨j, hj.2⟩, ?_, rfl⟩
-    simp only [Finset.coe_filter, Finset.mem_univ, true_and, Set.mem_setOf_eq]
-    show (a : ℕ) < j
-    omega
-  · intro b _
-    rfl
-
-theorem szh_sf (N : ℕ) :
-    ∏ a : Fin N, ∏ b ∈ univ.filter (fun b : Fin N => a < b), (((b : ℕ) : ℝ) - ((a : ℕ) : ℝ)) =
-      ∏ i ∈ range N, (i.factorial : ℝ) := by
-  simp_rw [szh_sf_inner_lemma]
-  refine (Fin.prod_univ_eq_prod_range (fun i : ℕ => ((N - (i + 1)).factorial : ℝ)) N).trans ?_
-  refine Eq.trans ?_ (Finset.prod_range_reflect (fun i : ℕ => (i.factorial : ℝ)) N)
-  apply Finset.prod_congr rfl
-  intro i _
-  show ((N - (i + 1)).factorial : ℝ) = ((N - 1 - i).factorial : ℝ)
-  rw [show N - (i + 1) = N - 1 - i by omega]
-
 theorem szh_fdegHC {N : ℕ} (lam : Fin N → ℝ) (h : StrictAnti lam) :
     Formalism.QuantumDeterminants.fdegHC lam = vand lam / ∏ i ∈ range N, (i.factorial : ℝ) := by
-  unfold Formalism.QuantumDeterminants.fdegHC vand
-  rw [szh_sf]
-  congr 1
-  apply Finset.prod_congr rfl
-  intro a _
-  apply Finset.prod_congr rfl
-  intro b hb
-  simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hb
-  exact abs_of_pos (sub_pos.mpr (h hb))
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.dimVlam_eq_vand <;> assumption
 
 theorem szh_vand_nonneg {N : ℕ} (lam : Fin N → ℝ) (h : StrictAnti lam) : 0 ≤ vand lam := by
   unfold vand

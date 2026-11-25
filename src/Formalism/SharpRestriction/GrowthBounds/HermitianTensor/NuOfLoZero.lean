@@ -37,7 +37,6 @@ theorem midI_mono (r : ℕ) : Monotone (midI r) := by
 
 theorem midOf_midI (r : ℕ) (j : Fin r) : midOf (midI r j) = some j := by
   have hv := midI_val r j
-  have h2 := j.isLt
   unfold midOf
   split_ifs with h
   · exact Option.some_inj.mpr (Fin.ext (by show (midI r j).val - 1 = j.val; omega))
@@ -65,25 +64,25 @@ theorem nuOf_last {m : ℕ} (mu : Fin (m + 1) → ℤ) : nuOf mu (Fin.last m) = 
   simp [nuOf]
 
 theorem wtPQ_mid (mm a b : ℕ) (j : Fin mm) : wtPQ (mm + 1) a b (midI mm j) = 0 := by
-  simp only [wtPQ, if_neg (midI_ne_zero _ _), if_neg (midI_ne_last _ _)]
+  simp only [wtPQ, ite_eq_right (midI_ne_zero _ _), ite_eq_right (midI_ne_last _ _)]
 
 theorem nuOf_wt_zero (mm a b : ℕ) : nuOf (wtPQ (mm + 1) a b) 0 = a + b := by
   have hne : (Fin.last (mm + 1)) ≠ 0 := by simp [Fin.ext_iff]
-  simp only [nuOf, wtPQ, if_neg hne, if_true]
+  simp only [nuOf, wtPQ, ite_eq_right hne, ite_true]
   omega
 
 theorem nuOf_wt_mid (mm a b : ℕ) (j : Fin mm) : nuOf (wtPQ (mm + 1) a b) (midI mm j) = b := by
   have hne : (Fin.last (mm + 1)) ≠ 0 := by simp [Fin.ext_iff]
   simp only [nuOf]
   rw [wtPQ_mid]
-  simp only [wtPQ, if_neg hne, if_true]
+  simp only [wtPQ, ite_eq_right hne, ite_true]
   omega
 
 theorem nuOf_wt_add (mm a b a' b' : ℕ) :
     nuOf (wtPQ (mm + 1) (a + a') (b + b')) = nuOf (wtPQ (mm + 1) a b) + nuOf (wtPQ (mm + 1) a' b') := by
   funext t
   have hne : (Fin.last (mm + 1)) ≠ 0 := by simp [Fin.ext_iff]
-  simp only [Pi.add_apply, nuOf, wtPQ, if_neg hne]
+  simp only [Pi.add_apply, nuOf, wtPQ, ite_eq_right hne]
   split_ifs <;> push_cast <;> omega
 
 section Data
@@ -95,7 +94,6 @@ variable (mm ccl P Q : ℕ) (lam : Fin (mm + 1 + 1) → ℤ) (h0 : lam 0 = (P : 
 include hmid in
 theorem lam_mid_bd (j : Fin mm) : -(ccl : ℤ) ≤ lam (midI mm j) ∧ lam (midI mm j) ≤ ccl := by
   have hv := midI_val mm j
-  have h2 := j.isLt
   exact abs_le.mp (hmid _ (by omega) (by omega))
 
 include h0 hl in
@@ -106,7 +104,7 @@ theorem lo_zero : (lam - wtPQ (mm + 1) P Q) 0 = ccl := by
 include h0 hl in
 theorem lo_last : (lam - wtPQ (mm + 1) P Q) (Fin.last (mm + 1)) = -(ccl : ℤ) := by
   have hne : (Fin.last (mm + 1)) ≠ 0 := by simp [Fin.ext_iff]
-  simp only [Pi.sub_apply, wtPQ, if_neg hne, ↓reduceIte, hl]
+  simp only [Pi.sub_apply, wtPQ, ite_eq_right hne, ↓reduceIte, hl]
   ring
 
 include h0 hl in
@@ -160,9 +158,9 @@ theorem shapeC_lo : shapeC (2 * ccl) (fun j => nuOf (lam - wtPQ (mm + 1) P Q) (m
   · simp only [shapeC, ↓reduceIte]
     rw [nuOf_lo_zero mm ccl P Q lam h0 hl]
   · have hne : (Fin.last (mm + 1)) ≠ 0 := by simp [Fin.ext_iff]
-    simp only [shapeC, if_neg hne, midOf_last]
+    simp only [shapeC, ite_eq_right hne, midOf_last]
     rw [nuOf_last]
-  · simp only [shapeC, if_neg (midI_ne_zero _ _), midOf_midI]
+  · simp only [shapeC, ite_eq_right (midI_ne_zero _ _), midOf_midI]
 
 include h0 hl in
 theorem shapeC_lo' : shapeC (2 * ccl) (fun j => nuOf (dualWt (lam - wtPQ (mm + 1) P Q)) (midI mm j)) =
@@ -172,9 +170,9 @@ theorem shapeC_lo' : shapeC (2 * ccl) (fun j => nuOf (dualWt (lam - wtPQ (mm + 1
   · simp only [shapeC, ↓reduceIte]
     rw [nuOf_lo'_zero mm ccl P Q lam h0 hl]
   · have hne : (Fin.last (mm + 1)) ≠ 0 := by simp [Fin.ext_iff]
-    simp only [shapeC, if_neg hne, midOf_last]
+    simp only [shapeC, ite_eq_right hne, midOf_last]
     rw [nuOf_last]
-  · simp only [shapeC, if_neg (midI_ne_zero _ _), midOf_midI]
+  · simp only [shapeC, ite_eq_right (midI_ne_zero _ _), midOf_midI]
 
 end Data
 
@@ -225,18 +223,18 @@ private theorem tele_lemma_10 {k : ℕ} (ν : Fin k → ℕ) (hν : Antitone ν)
       by_cases ha : a.val < n
       · have h3 := h2 (le_of_lt ha)
         have ha' : a.val < n + 1 := by omega
-        simp only [if_pos ha, if_pos ha']
+        simp only [ite_eq_left ha, ite_eq_left ha']
         omega
       · by_cases hb : a.val = n
         · have ha' : a.val < n + 1 := by omega
-          simp only [if_neg ha, if_pos ha']
+          simp only [ite_eq_right ha, ite_eq_left ha']
           rw [hb]
           omega
         · have ha' : ¬ a.val < n + 1 := by omega
-          simp only [if_neg ha, if_neg ha']
+          simp only [ite_eq_right ha, ite_eq_right ha']
           omega
   have hk := key k le_rfl
-  rw [if_pos a.isLt] at hk
+  rw [ite_eq_left a.isLt] at hk
   have hgk : g k = 0 := by simp [hg]
   rw [hgk, Nat.sub_zero] at hk
   rw [hgν a, ← hk, ← Fin.sum_univ_eq_sum_range (fun i => (g i - g (i + 1)) * (if a.val < i + 1 then 1 else 0)) k]

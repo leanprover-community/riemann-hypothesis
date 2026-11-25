@@ -113,8 +113,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InvFiveLogLe
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open NumberField Module ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.IndefiniteRowSideFullHecke.FrameWeightGapBounds GlobalTheory.ShareOn GlobalTheory.CuspEmb
@@ -199,7 +197,7 @@ theorem exists_cocycle : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
     by_cases hc : C0 c
     · have hgc : C0 (g • c) := hstab g c hc
       have hhgc : C0 ((h * g) • c) := hstab (h * g) c hc
-      simp only [hc, hgc, if_true]
+      simp only [hc, hgc, ite_true]
       obtain ⟨f', x, hfx⟩ := hc
       set f := ρ (h * g) f' with hfdef
       have hV : (f : C → M.dom → ℂ) ((h * g) • c) (Lmap M (h * g) c x) ≠ 0 := by
@@ -215,10 +213,10 @@ theorem exists_cocycle : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
       simp [hc, hgc]
   · intro h f c x
     by_cases hc : C0 c
-    · simp only [hc, if_true]
+    · simp only [hc, ite_true]
       exact hform h f c x
     · have hhc : ¬ C0 (h • c) := hstab' h c hc
-      simp only [hc, if_false, Units.val_one, one_mul]
+      simp only [hc, ite_false, Units.val_one, one_mul]
       have l0 : ((ρ h⁻¹ f : M.cusp ka) : C → M.dom → ℂ) c x = 0 := by
         by_contra hne
         exact hc ⟨ρ h⁻¹ f, x, hne⟩
@@ -240,8 +238,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField Module ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.IndefiniteRowSideFullHecke.FrameWeightGapBounds GlobalTheory.ShareOn GlobalTheory.CuspEmb
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -303,8 +299,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField Module ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.IndefiniteRowSideFullHecke.FrameWeightGapBounds GlobalTheory.ShareOn GlobalTheory.CuspEmb
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -428,8 +422,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open NumberField Module ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.IndefiniteRowSideFullHecke.FrameWeightGapBounds GlobalTheory.ShareOn GlobalTheory.CuspEmb
@@ -466,8 +458,6 @@ section -- clump:auto
 
 open NumberField Module ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.IndefiniteRowSideFullHecke.FrameWeightGapBounds GlobalTheory.ShareOn GlobalTheory.CuspEmb
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.CuspEmb
@@ -501,8 +491,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwoLevelCuspFormsEmbedRegularRepresentationCopie", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsArchOne\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LactMemDomOfIsom\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.BadElt\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EmbedsInRegularRepresentationCopiesOfGroupDeterm\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCocyclePullbackRepresentation\npublic import Development.AbelianVarietyTheory.BlockTheory.PoincareCuspForms.TwoLevelLogarithm\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCuspFormIndependentTranslates\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolynomialCHolInvariantMemNonZeroDivisors\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedPullbackPolynomialRightActionOfCocycle\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwoLevelCuspFormsMulMemAddWeight\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwoLevelCuspFormsPullMem\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwoLevelCuspFormsRestrictHolInvariant\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -693,8 +681,6 @@ open NumberField IsDedekindDomain
 open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Indef.Tree Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Cx Formalism.IndefR.FWT
 open GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.OntoChain GlobalTheory.RealIndexBound GlobalTheory.OnTies GlobalTheory.ShareOn Formalism.MainNotions.ArithmeticCylinders
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.BadWOn
@@ -730,14 +716,6 @@ theorem model_bound {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
       _ ≤ 2 * finrank ℂ (M.cusp (ka - deMul M.Ψ r M.p0 (GlobalTheory.ShareOn.sOf M))) := h4
       _ ≤ 2 * (Nat.card P * finrank ℂ (eig ρ P lam)) := by linarith
       _ = 2 * Nat.card P * finrank ℂ (eig ρ P lam) := by ring
-
-section Point
-
-variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
-  {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ}
-
-
-end Point
 
 end GlobalTheory.BadWOn
 
@@ -933,8 +911,7 @@ theorem nat_bound (r f T : ℕ) (hr : 100 ≤ r) (hf : 5 ≤ f) (hT : 11 * (f * 
   omega
 
 theorem five_le_of_pow (r f : ℕ) (hr : 100 ≤ r) (h : (r : ℝ) / 2 * (7 / 8 : ℝ) ^ f ≤ 1 / 16) : 5 ≤ f := by
-  by_contra hf
-  push_neg at hf
+  by_contra! hf
   have h1 : (7 / 8 : ℝ) ^ 4 ≤ (7 / 8 : ℝ) ^ f := pow_le_pow_of_le_one (by norm_num) (by norm_num) (by omega)
   have h2 : (100 : ℝ) ≤ r := by exact_mod_cast hr
   nlinarith [pow_pos (show (0:ℝ) < 7/8 by norm_num) f]
@@ -1014,13 +991,10 @@ theorem eU_coeff_one_ne (g N : ℕ) [NeZero g] (ψ₀ : AddChar (ZMod g) ℂ) :
   · rw [Finsupp.single_eq_same, h0, AddChar.map_zero_eq_one, inv_one, Complex.one_re]
     exact one_ne_zero
   · intro b _ hb
-    rw [Finsupp.single_apply, if_neg hb]
+    rw [Finsupp.single_apply, ite_eq_right hb]
     simp
   · intro h; exact absurd h1 h
 
-theorem sum_inv_primes_between_ge (N : ℕ) (hN : 100 ≤ N) : 1 / (5 * Real.log N) ≤
-    ∑ p ∈ (Finset.range (N + 1)).filter (fun p => p.Prime ∧ N < 2 * p ∧ p + 3 ≤ N), (1 : ℝ) / p :=
-  _root_.GlobalTheory.PrimeRecip.inv_five_log_le_sum_inv_primes N hN
 
 theorem mass_not_hasPrimeFactor_le_five (g : ℕ) [Fact g.Prime] (N : ℕ) (hN : 100 ≤ N) :
     (GlobalTheory.BadShare.mass g N fun f => ¬ GlobalTheory.BadShare.HasPrimeFactor g N f) ≤ 1 - 1 / (5 * Real.log N) := by
@@ -1223,13 +1197,13 @@ theorem propW_eUk : ∀ (D : Formalism.BasicNotions.D7) (ψ₀ : ∀ k : Fin 2, 
     have hs0 := Finset.sum_nonneg (s := Finset.univ) fun v (_ : v ∈ Finset.univ) =>
       hite (¬ Squarefree (t v)) t
     by_cases h : ∀ v, Squarefree (t v)
-    · rw [if_pos h]; linarith
+    · rw [ite_eq_left h]; linarith
     · push Not at h
       obtain ⟨v, hv⟩ := h
-      rw [if_neg (fun h => hv (h v))]
+      rw [ite_eq_right (fun h => hv (h v))]
       have := Finset.single_le_sum (f := fun v => if ¬ Squarefree (t v) then ∏ v, w (t v) else 0)
         (fun v _ => hite _ t) (Finset.mem_univ v)
-      simp only [if_pos hv] at this
+      simp only [ite_eq_left hv] at this
       linarith
   set S' := S.filter (fun t => ∀ v, t v ∈ S0) with hS'
   have hA : ∑ t ∈ S', ∑ v, (if ¬ Squarefree (t v) then ∏ v, w (t v) else 0) ≤
@@ -1303,7 +1277,6 @@ section
 open NumberField IsDedekindDomain
 open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Indef.Tree Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Cx Formalism.IndefR.FWT
 open GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.OntoChain GlobalTheory.RealIndexBound GlobalTheory.OnTies GlobalTheory.ShareOn Formalism.MainNotions.ArithmeticCylinders
-set_option autoImplicit false
 noncomputable section
 namespace GlobalTheory.BadWOn
 open Module GlobalTheory.BadCount GlobalTheory.TwistedRepresentationEmbedding GlobalTheory.CovTop ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheory.ChartRestriction.G.AR.Up GlobalTheory.IndefiniteRowSideFullHecke.FrameWeightGapBounds

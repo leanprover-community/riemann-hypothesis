@@ -40,7 +40,7 @@ theorem mulVec_mem_latK {g : GL (Fin n) L} (hg : Integ g) {k : ℕ} {x : Fin n �
         rw [Fin.lt_def]; omega
       exact lt_of_le_of_lt (mul_le_of_le_one_right' (hx1 j)) (hg.2 i j hji)
     · have := hx j
-      rw [if_neg hj] at this
+      rw [ite_eq_right hj] at this
       exact lt_of_le_of_lt (mul_le_of_le_one_left' (hg.1 i j)) this
 
 theorem integ_of_stable {g : GL (Fin n) L}
@@ -55,11 +55,11 @@ theorem integ_of_stable {g : GL (Fin n) L}
   constructor
   · intro i j
     have := h n le_rfl _ (hs n j j.2) i
-    rw [if_pos i.2] at this
+    rw [ite_eq_left i.2] at this
     simpa using this
   · intro i j hji
     have := h i.val i.2.le _ (hs i.val j hji) i
-    rw [if_neg (lt_irrefl _)] at this
+    rw [ite_eq_right (lt_irrefl _)] at this
     simpa using this
 
 theorem mem_IwGL_iff (g : GL (Fin n) L) : g ∈ IwGL L n ↔ Integ g ∧ Integ g⁻¹ := by

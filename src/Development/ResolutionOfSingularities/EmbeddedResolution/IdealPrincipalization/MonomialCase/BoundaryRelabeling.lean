@@ -409,7 +409,7 @@ private theorem isMaxOrderIndexSet_lexMaxIndices {Y : Scheme.{u}} (I : Y.IdealSh
     ⟨J₀, hJ₀, hcode⟩
   have hch : lexMaxIndices I m L = hdite.choose := by
     unfold lexMaxIndices
-    exact dif_pos hdite
+    exact dite_eq_left hdite
   have hspec := hdite.choose_spec
   rw [← hch] at hspec
   refine ⟨hspec.1, fun K hK => ?_⟩
@@ -424,7 +424,7 @@ private theorem lexMaxIndices_eq_empty {Y : Scheme.{u}} (I : Y.IdealSheafData) (
     rintro ⟨J, hJ, -⟩
     exact hex ⟨J, hJ⟩
   unfold lexMaxIndices
-  exact dif_neg hno
+  exact dite_eq_right hno
 
 private theorem lexMaxIndices_eq_of_binaryEncode_le {Y : Scheme.{u}} (I : Y.IdealSheafData) (m : ℕ)
     (L : List Y.IdealSheafData) {J : Finset (Fin L.length)} (hJ : IsMaxOrderIndexSet I m L J)
@@ -566,9 +566,9 @@ private theorem monomialCenter_eq_of_orderedMatchingOfNonTop {Y : Scheme.{u}} {L
   unfold monomialCenter
   by_cases hc : minIndexCard I m L ≠ 0 ∧
       IsOpen (⇑(intersectionIdeal L (lexMaxIndices I m L)).subschemeι ⁻¹' monomialCenterSet I m L)
-  · rw [dif_pos hc, dif_pos (hiff.1 hc)]
+  · rw [dite_eq_left hc, dite_eq_left (hiff.1 hc)]
     exact openSublocusIdeal_congr hint hcen _ _
-  · rw [dif_neg hc, dif_neg (fun hx => hc (hiff.2 hx))]
+  · rw [dite_eq_right hc, dite_eq_right (fun hx => hc (hiff.2 hx))]
 
 theorem minIndexCard_eq_of_sameNontrivialBoundary {Y : Scheme.{u}} (I : Y.IdealSheafData) (m : ℕ)
     {L L' : List Y.IdealSheafData} (h : MarkedIdealWithBoundary.SameNontrivialBoundary L L') :

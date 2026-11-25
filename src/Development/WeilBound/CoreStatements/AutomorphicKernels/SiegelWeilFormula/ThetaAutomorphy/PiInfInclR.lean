@@ -32,12 +32,6 @@ theorem piInf_inclR' {w : InfinitePlace F} (τ : EmbOver E w) (e : E) : piInf τ
   rw [show inclR (F := F) (AF F) e = (1 : AF F) ⊗ₜ[F] e from rfl, GlobalTheory.RealLift.KLineProof.piInf_tmul, map_one, map_one,
     one_mul]
 
-theorem incM_mul'' {α β γ : Type} [Fintype β] (X : Matrix α β E) (Z : Matrix β γ E) :
-    incM F (X * Z) = incM F X * incM F Z := by
-  ext i j
-
-  simp [incM, Matrix.mul_apply, map_sum]
-
 theorem incM_map {α β : Type} (X : Matrix α β E) : incM F (X.map σ) = (incM F X).map (cA σ) := by
   ext i j
   simp [incM, cA_inclR']

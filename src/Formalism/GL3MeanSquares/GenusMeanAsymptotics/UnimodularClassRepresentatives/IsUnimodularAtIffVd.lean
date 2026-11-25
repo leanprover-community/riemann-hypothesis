@@ -176,11 +176,11 @@ theorem exists_unique_patch (hK : Formalism.HermitianLatticesTheory.IsCMUnram K)
     if h : 𝔭 ∈ s then (hT 𝔭 h).2.choose else L₀
   have hB1 : ∀ 𝔭 (h : 𝔭 ∈ s), Submodule.IsFullLattice K (B 𝔭) ∧ locF 𝔭.1 (B 𝔭) = T 𝔭 := by
     intro 𝔭 h
-    simp only [B, dif_pos h]
+    simp only [B, dite_eq_left h]
     exact (hT 𝔭 h).2.choose_spec
   have hB2 : ∀ 𝔭 ∉ s, B 𝔭 = L₀ := by
     intro 𝔭 h
-    simp only [B, dif_neg h]
+    simp only [B, dite_eq_right h]
   have hB : ∀ 𝔭, Submodule.IsFullLattice K (B 𝔭) := by
     intro 𝔭
     by_cases h : 𝔭 ∈ s

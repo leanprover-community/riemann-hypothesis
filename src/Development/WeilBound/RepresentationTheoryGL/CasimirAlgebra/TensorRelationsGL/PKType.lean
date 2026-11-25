@@ -173,7 +173,7 @@ theorem cnt2 (bar : ι → ι) (hinv : ∀ τ, bar (bar τ) = τ) (τ : ι) (i :
   rw [Finset.sum_congr rfl (g := fun x : H => if (x : ι) = bar τ then (i : ℕ) else 0) (fun x _ => ?_)]
   · rw [Finset.sum_coe_sort H (fun x => if x = bar τ then (i : ℕ) else 0), Finset.sum_ite_eq']
   · by_cases h : (x : ι) = bar τ
-    · simp only [h, if_true]
+    · simp only [h, ite_true]
       simp only [sumFin, hj]
     · simp [h]
 

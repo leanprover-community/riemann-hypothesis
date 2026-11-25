@@ -62,8 +62,6 @@ structure NAllCAlt (D : D7) (C : NChoice D) where
   cf : Host.CharFrame D
   tp : Host.TupTied D cf C
   plB : D.what₂.places.Pl → ValuationSubring ℂ
-  plκ : ∀ w, haveI : Fact (D.what₂.places.resChar w).Prime := ⟨D.what₂.places.resChar_prime w⟩
-    IsLocalRing.ResidueField (plB w) ≃+* Formalism.CyclotomicNorms.Fbar (D.what₂.places.resChar w)
 variable {D : D7} {C : NChoice D} {I : TwIn D}
 end
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host NumberField IsDedekindDomain

@@ -91,8 +91,7 @@ theorem local_step (R R₁ : Subalgebra o Ω) (hR : R ≤ R₁) (q : E →ₗ[Ω
         refine sum_mem fun j _ => ?_
         rw [map_smul, smul_smul, hσ]
         exact hL _ (hp' j) _ (ht j)
-      · set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_smul, map_sub, map_smul, hce, map_sum, map_sum, Finset.smul_sum]
+      · rw [map_smul, map_sub, map_smul, hce, map_sum, map_sum, Finset.smul_sum]
         simp only [map_smul, hσ, hqt]
         rw [← Finset.sum_sub_distrib, Finset.sum_eq_zero, smul_zero]
         intro j _

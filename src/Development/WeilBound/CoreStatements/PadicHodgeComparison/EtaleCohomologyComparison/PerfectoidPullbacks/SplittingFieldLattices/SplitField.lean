@@ -374,15 +374,6 @@ theorem dividedPowerFiltration_dividedPowersBot_of_one_le' {K : Type} [Field K] 
   rw [e]
   exact (dividedPowersBot K).dpow_eval_zero h0
 
-theorem tfbase_K {K : Type} [Field K] [CharZero K] {s : ℕ} (hs : 1 ≤ s) : TFBase (dividedPowersBot K) 1 s := by
-  refine { nil := dividedPowerFiltration_dividedPowersBot_of_one_le' hs, tf := ?_, dv := ?_ }
-  · intro r x h
-    simpa using h
-  · intro n hn
-    exact ⟨0, (n : K)⁻¹, by
-      have : (n : K) ≠ 0 := Nat.cast_ne_zero.2 hn
-      simp [this]⟩
-
 theorem tfbase_B {K B : Type} [Field K] [CharZero K] [CommRing B] [Algebra K B] {I : Ideal B} (γ : DividedPowers I) {s : ℕ}
     (h : pdP γ s = ⊥) : TFBase γ 1 s := by
   refine { nil := h, tf := ?_, dv := ?_ }
@@ -409,7 +400,7 @@ theorem main : BcOn False → KH.KIso → BasisB := by
   obtain ⟨S⟩ := _root_.GlobalTheory.CompanionTheory.GrSplitField.nonempty_grSplit (K := K) γ m hm
   have hs : 1 ≤ s := hm0.trans_le hms
   have hsB : pdP γ s = ⊥ := le_bot_iff.1 (hm ▸ Ideal.span_mono fun _ ⟨l, hl, hr, hz⟩ => ⟨l, hl, hms.trans hr, hz⟩)
-  have hO : TFBase (dividedPowersBot K) 1 s := tfbase_K hs
+  have hO : TFBase (dividedPowersBot K) 1 s := GlobalTheory.CompanionTheory.ConeLocal.tfBase_dpBot hs
   have hA : TFBase γ 1 s := tfbase_B (K := K) γ hsB
   have hd : ∀ α, U.d α < s := fun α => by have := hU α; omega
   have LC := fun (i : Fin m) n r => _root_.GlobalTheory.CompanionTheory.LecShift.leC_shift (O := K) γ q 1 s 𝒱 i (S.ν i n) (S.mem i n) r
@@ -668,7 +659,6 @@ theorem capO_affine {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of O)} (U : Co
     · obtain ⟨a, -, rfl⟩ := Finset.mem_image.1 hα
       exact capO_le U.U i a
   rwa [e] at h
-
 
 theorem gr_range [IsNoetherianRing O] (hLoc : KH.LocGr) (hPoly : KH.PolyTf) (hSer : KH.GlobSerreSt) (hCech : KH.GrCechFin)
     (l s : ℕ) (hb : TFBase (dividedPowersBot O) l s) {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of O)) [IsProper q]

@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.DerivativeRepresentation
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDRInvEig
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.FlatModels.Letter
 public import Formalism.SharpRestriction.GrowthBounds.ObjSeg
@@ -153,19 +154,7 @@ theorem Nv_mem (R : Type) [CommRing R] (m : ℕ) (vec : Bool) (c : Fin (m + 1)) 
 
 theorem dw_pow {R : Type} [CommRing R] {r n : ℕ} {ν : Fin n → ℕ} {f : MvPolynomial (Fin r × Fin n) R}
     (hf : f ∈ dualWeyl R r n ν) (a : ℕ) : f ^ a ∈ dualWeyl R r n (a • ν) := by
-  induction a with
-  | zero =>
-    have e : (0 : ℕ) • ν = 0 := by
-      funext t
-      simp
-    rw [pow_zero, e]
-    exact one_mem_dualWeyl
-  | succ a ih =>
-    have e : (a + 1) • ν = a • ν + ν := by
-      funext t
-      simp [add_mul]
-    rw [pow_succ, e]
-    exact Formalism.GradedWeylDivisibility.dualWeyl_mul ih hf
+  apply +allowSynthFailures _root_.Formalism.MainNotions.flipOneThree.Pf.qc_pow_mem <;> assumption
 
 theorem dw_prod {R : Type} [CommRing R] {r n : ℕ} {ν : Fin n → ℕ} {J : Type} (s : Finset J)
     (f : J → MvPolynomial (Fin r × Fin n) R) (a : J → ℕ) (hf : ∀ i, f i ∈ dualWeyl R r n ν) :
@@ -222,7 +211,7 @@ theorem minor_pre (R : Type) [CommRing R] (m : ℕ) (hm : 1 ≤ m) (vec : Bool) 
       subst hs0
       obtain ⟨c, rfl⟩ := exists_succAbove I hI
       refine ⟨MvPolynomial.C ((-1 : R) ^ ((c : ℕ) + s)) * X c, ?_, ?_⟩
-      · rw [if_neg (by omega)]
+      · rw [ite_eq_right (by omega)]
         exact Hd_X R (s + 1) _ c
       · unfold theta
         rw [map_mul, MvPolynomial.aeval_C, MvPolynomial.aeval_X, Nv_false_eq, MvPolynomial.algebraMap_eq,
@@ -230,7 +219,7 @@ theorem minor_pre (R : Type) [CommRing R] (m : ℕ) (hm : 1 ≤ m) (vec : Bool) 
     · simp only [s0, ↓reduceIte] at hs0
       subst hs0
       refine ⟨X (I 0), ?_, ?_⟩
-      · rw [if_neg one_ne_zero]
+      · rw [ite_eq_right one_ne_zero]
         simpa using Hd_X R (m + 1) 1 (I 0)
       · unfold theta
         rw [MvPolynomial.aeval_X, Nv_true_eq]

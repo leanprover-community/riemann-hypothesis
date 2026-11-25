@@ -6,6 +6,7 @@ public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.HeckeFubiniCompatibility.TrMulComm
 import Mathlib.Tactic.Linter.Style
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.QuotientVanishing.QuotVanish
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SecondCountableNilrad
 
 @[expose] public section
 
@@ -22,22 +23,8 @@ namespace PSumH
 variable {n : ℕ}
 
 theorem isClosed_nilrad (W₁ W₂ : Submodule ℂ (Fin n → ℂ)) :
-    IsClosed (nilrad W₁ W₂ : Set (Matrix (Fin n) (Fin n) ℂ)) := by
-  have hW : ∀ W : Submodule ℂ (Fin n → ℂ), IsClosed (W : Set (Fin n → ℂ)) := fun W =>
-    W.closed_of_finiteDimensional
-  have hc : ∀ y : Fin n → ℂ, Continuous fun X : Matrix (Fin n) (Fin n) ℂ => X *ᵥ y := fun y =>
-    continuous_id.matrix_mulVec continuous_const
-  have e : (nilrad W₁ W₂ : Set (Matrix (Fin n) (Fin n) ℂ)) =
-      (⋂ y, (fun X : Matrix (Fin n) (Fin n) ℂ => X *ᵥ y) ⁻¹' W₂) ∩
-        ((⋂ y ∈ W₂, (fun X : Matrix (Fin n) (Fin n) ℂ => X *ᵥ y) ⁻¹' W₁) ∩
-          ⋂ y ∈ W₁, (fun X : Matrix (Fin n) (Fin n) ℂ => X *ᵥ y) ⁻¹' {0}) := by
-    ext X
-    simp only [Set.mem_inter_iff, Set.mem_iInter, Set.mem_preimage, SetLike.mem_coe, Set.mem_singleton_iff]
-    exact Iff.rfl
-  rw [e]
-  refine (isClosed_iInter fun y => (hW W₂).preimage (hc y)).inter
-    ((isClosed_biInter fun y _ => (hW W₁).preimage (hc y)).inter
-      (isClosed_biInter fun y _ => isClosed_singleton.preimage (hc y)))
+    IsClosed (nilrad W₁ W₂ : Set (Matrix (Fin n) (Fin n) ℂ)) :=
+  _root_.GlobalTheory.CompanionTheory.LocVan.isClosed_nilrad W₁ W₂
 
 theorem integrable_nil {f : GL (Fin n) ℂ → ℂ} (hf : Continuous f) (hfc : HasCompactSupport f)
     {W₁ W₂ : Submodule ℂ (Fin n → ℂ)} (u : nilrad W₁ W₂ → GL (Fin n) ℂ) (hu : ∀ X, (u X).val = 1 + X.1)

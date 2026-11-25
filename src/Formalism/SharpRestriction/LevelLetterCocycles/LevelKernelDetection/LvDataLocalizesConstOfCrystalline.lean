@@ -215,8 +215,8 @@ theorem rho_sub_mem [IsDomain O] (Hy : LvHyp Lb hR uZ ιZ C c ell Λ κ lam) {j 
     funext i
     unfold Tw
     by_cases h : ((((baseIdOf hR).Bs.ℓ - 1) * M : ℕ) : ℤ) ≤ i
-    · rw [if_pos h, if_pos (by omega)]
-    · rw [if_neg h, if_neg (by omega)]
+    · rw [ite_eq_left h, ite_eq_left (by omega)]
+    · rw [ite_eq_right h, ite_eq_right (by omega)]
   have hz' : tp (KsW W s) (-((((baseIdOf hR).Bs.ℓ - 1) * M : ℕ) : ℤ)) • z ∈
       Xi (KsW W s) (Tw (LL := LL) (D := Dc W T c) 0) :=
     (xi_shift_holds LL (KsW W s) (Dc W T c) _ _ z).2 (by rw [hTw]; exact hz)
@@ -338,45 +338,9 @@ theorem lvData_localizesConst_of_crystalline [IsDomain O] {T : LocLat G Qp LL O}
       {r : ℕ} (e : Fin r → C.V) (he : ∀ k, e k ∈ (latOf C).N i) (x : C.V) (hx : x ∈ (latOf C).N i)
       (a : Fin r → O) (hred : x - ∑ k, PowerSeries.C (a k) • e k ∈ E.sm (PowerSeries.X : PowerSeries O) ((latOf C).N i)) :
       W.cmp T ⟨C.t i x, hx⟩ = ∑ k, algebraMap O LL (a k) • W.cmp T ⟨C.t i (e k), he k⟩ := by
-    obtain ⟨z, hz, hzeq⟩ := Submodule.mem_map.1 hred
-    rw [LinearMap.lsmul_apply] at hzeq
-    have key : (⟨x, hx⟩ : ↥((latOf C).N i)) =
-        ∑ k, PowerSeries.C (a k) • (⟨e k, he k⟩ : ↥((latOf C).N i)) + (PowerSeries.X : PowerSeries O) • ⟨z, hz⟩ := by
-      apply Subtype.ext
-      simp only [Submodule.coe_add, Submodule.coe_sum, Submodule.coe_smul]
-      rw [hzeq]
-      abel
-    have hF := congrArg (comparisonOnLetter C i) key
-
-    rw [map_add (f := _), map_sum] at hF
-    have hC : ∀ k, comparisonOnLetter C i (PowerSeries.C (a k) • (⟨e k, he k⟩ : ↥((latOf C).N i))) =
-        algebraMap O LL (a k) • W.cmp T ⟨C.t i (e k), he k⟩ := by
-      intro k
-      have hm : (baseIdOf hR).d (PowerSeries.C (a k)) • C.t i (e k) ∈ W.N T := by
-        rw [← C.t_smul]
-        exact (PowerSeries.C (a k) • (⟨e k, he k⟩ : ↥((latOf C).N i))).2
-      have h0 : comparisonOnLetter C i (PowerSeries.C (a k) • (⟨e k, he k⟩ : ↥((latOf C).N i))) =
-          W.cmp T ⟨(baseIdOf hR).d (PowerSeries.C (a k)) • C.t i (e k), hm⟩ :=
-        lvBasis_cmp_congr (a := C.t i (PowerSeries.C (a k) • e k))
-          (PowerSeries.C (a k) • (⟨e k, he k⟩ : ↥((latOf C).N i))).2 hm (C.t_smul i _ _)
-      rw [h0]
-      refine lvBasis_cmp_smul_const (he k) _ (a k) (fun j => ?_) hm
-      rw [BaseId.d_apply]
-      have h1 : (baseIdOf hR).ι (PowerSeries.C (a k)) = PowerSeries.C (a k) :=
-        (baseIdOf hR).ι.commutes (a k)
-      rw [h1, PowerSeries.constantCoeff_C]
-    have hX : comparisonOnLetter C i ((PowerSeries.X : PowerSeries O) • (⟨z, hz⟩ : ↥((latOf C).N i))) = 0 := by
-      have hm : W.π₀ • C.t i z ∈ W.N T := by
-        rw [← BaseId.d_X, ← C.t_smul]
-        exact ((PowerSeries.X : PowerSeries O) • (⟨z, hz⟩ : ↥((latOf C).N i))).2
-      have h0 : comparisonOnLetter C i ((PowerSeries.X : PowerSeries O) • (⟨z, hz⟩ : ↥((latOf C).N i))) =
-          W.cmp T ⟨W.π₀ • C.t i z, hm⟩ :=
-        lvBasis_cmp_congr (a := C.t i ((PowerSeries.X : PowerSeries O) • z))
-          ((PowerSeries.X : PowerSeries O) • (⟨z, hz⟩ : ↥((latOf C).N i))).2 hm
-          (by rw [C.t_smul, BaseId.d_X])
-      rw [h0, lvBasis_cmp_smul_const hz W.π₀ 0 (constantCoeff_pi0_eq_zero_of_p9ring hp9) hm, map_zero, zero_smul]
-    rw [hX, add_zero, Finset.sum_congr rfl (fun k _ => hC k)] at hF
-    exact hF
+    first
+    | exact _root_.Formalism.MainNotions.N.Ln03.Pf.comparison_of_reduction
+    | apply _root_.Formalism.MainNotions.N.Ln03.Pf.comparison_of_reduction <;> assumption
   have hcoef0 : frobeniusCoeff Lb T c ell ⟨C.t (c - (ell : ZMod n)) x, hx⟩ 0 =
       ∑ k, algebraMap O LL (a k) • lam k := by
     apply Subtype.ext
@@ -412,19 +376,19 @@ theorem lvData_localizesConst_of_crystalline [IsDomain O] {T : LocLat G Qp LL O}
   by_cases hm : ((((baseIdOf hR).Bs.ℓ - 1) * M : ℕ) : ℤ) ≤ i
   · have htop : Tw (LL := LL) (D := Dc W T c) ((((baseIdOf hR).Bs.ℓ - 1) * M : ℕ) : ℤ) i = ⊤ := by
       unfold Tw
-      rw [if_pos hm]
+      rw [ite_eq_left hm]
     rw [htop, Submodule.baseChange_top]
     exact Submodule.mem_top
   · have hbot : Tw (LL := LL) (D := Dc W T c) ((((baseIdOf hR).Bs.ℓ - 1) * M : ℕ) : ℤ) i = ⊥ := by
       unfold Tw
-      rw [if_neg hm]
+      rw [ite_eq_right hm]
     rw [hbot, Submodule.baseChange_bot, Submodule.mem_bot]
     rw [hℓ] at hm
-    push_neg at hm
+    push Not at hm
     by_cases h0 : i = 0
     · subst h0
-      rw [if_pos rfl, hcoef0, sub_self]
-    · rw [if_neg h0, hcoef i hm h0, TensorProduct.tmul_zero, sub_zero]
+      rw [ite_eq_left rfl, hcoef0, sub_self]
+    · rw [ite_eq_right h0, hcoef i hm h0, TensorProduct.tmul_zero, sub_zero]
 
 end Formalism.MainNotions.N.Ln03.Pf
 end -- clump:auto

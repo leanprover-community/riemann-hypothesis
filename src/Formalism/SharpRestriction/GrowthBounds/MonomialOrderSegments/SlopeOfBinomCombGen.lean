@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.ZpowNeOneOfClose
 public import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.MemPolKIff
 public import Mathlib.CategoryTheory.Category.Basic
 import Mathlib.Tactic.Linter.Style
@@ -29,11 +30,7 @@ structure CostOK (TotallyRealRoots : ℕ → ((σ →₀ ℕ) → K) → Prop) :
 variable {v}
 
 theorem v_natCast_nonneg_monomial_order_segments (n : ℕ) : 0 ≤ v (n : K) := by
-  induction n with
-  | zero => rw [Nat.cast_zero, AddValuation.map_zero]; exact le_top
-  | succ k ih =>
-    rw [Nat.cast_succ]
-    exact le_trans (le_min ih (le_of_eq (AddValuation.map_one v).symm)) (AddValuation.map_add v _ _)
+  apply _root_.Formalism.MainNotions.N.Pv.LocalLengthBound.Val.v_natCast_nonneg <;> assumption
 
 theorem v_sum_nonneg {ι : Type} (s : Finset ι) (f : ι → K) (h : ∀ i ∈ s, 0 ≤ v (f i)) :
     0 ≤ v (∑ i ∈ s, f i) := by
@@ -120,7 +117,7 @@ theorem choose_affine (ρ P m : ℕ) : ∃ z : ℕ → ℕ, ∀ β : ℕ,
     intro i hi
     rw [show ((1 + Polynomial.X : Polynomial ℕ) ^ ρ) * (Polynomial.X * Q) ^ i =
         ((1 + Polynomial.X) ^ ρ * Q ^ i) * Polynomial.X ^ i by ring,
-      Polynomial.coeff_mul_X_pow', if_neg (by omega)]
+      Polynomial.coeff_mul_X_pow', ite_eq_right (by omega)]
   have hL : ∀ i, (((1 + Polynomial.X : Polynomial ℕ) ^ ρ) *
       ((Polynomial.X * Q) ^ i * 1 ^ (β - i) * ((β.choose i : ℕ) : Polynomial ℕ))).coeff m =
       (((1 + Polynomial.X : Polynomial ℕ) ^ ρ) * (Polynomial.X * Q) ^ i).coeff m * β.choose i := by

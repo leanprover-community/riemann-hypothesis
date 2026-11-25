@@ -42,7 +42,15 @@ public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLif
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.SeriesRatSOf
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.BernsteinUnitaryProductIrreducible
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.LamLowOfPublished
-public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.LlOf
+public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.BrauerDegreeZero
+public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.ChevalleyUnits
+public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.DepthZeroInduction
+public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.LanglandsExhaustionGL
+public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.LanglandsMultisegments
+public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.LocalConverseGL
+public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.StandardCosocleGL
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HasFiniteLengthOfIsIrreducible
+public import Development.AutomorphicArithmetic.Foundations.LocalLanglands.IsRecTOfIsRec
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -188,8 +196,6 @@ end GlobalTheory.BadOnRec
 
 namespace GlobalTheory.BadOnRec
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 local instance runAlgBad {D : D7} {J : CoreJ D} [inst : Algebra J.Q.c.F D.what₂.LL] (r : RealIndexBound.RunData J) :
     Algebra r.full.J.Q.c.F D.what₂.LL := inst
 
@@ -246,15 +252,11 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option synthInstance.maxHeartbeats 200000
-
 section
 noncomputable section
 open NumberField IsDedekindDomain Module
 open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Indef.Tree Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Cx Formalism.IndefR.FWT
 open GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.OntoChain GlobalTheory.RealIndexBound GlobalTheory.OnTies GlobalTheory.ShareOn Formalism.MainNotions.ArithmeticCylinders
-namespace GlobalTheory.BadOnRec
-end GlobalTheory.BadOnRec
 namespace GlobalTheory.BadOnRec
 attribute [local instance] runAlgBad
 section Point
@@ -428,9 +430,6 @@ end Point
 
 end GlobalTheory.ShareOn.Comparison₂
 
-namespace GlobalTheory.ShareOn
-
-end GlobalTheory.ShareOn
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -557,16 +556,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.FrameWeightGapBounds
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
   {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ}
 
-end GlobalTheory.ShareOn
-
-namespace GlobalTheory.ShareOn
-
-open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.CovTop
-open GlobalTheory.IndefiniteRowSideFullHecke.FrameWeightGapBounds
-
-variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
-  {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ}
-
 theorem halfUnip_bot (p : PtAt ex Csz) : HalfUnip p ⊥ := by
   refine ⟨0, fun g hg v => ?_⟩
   rw [Subgroup.mem_bot] at hg
@@ -618,13 +607,6 @@ theorem shareW_of_modelAt (p : PtAt ex Csz) (i : Fin D.R.m) (T : ℕ) (y : ℝ) 
 
 end GlobalTheory.ShareOn
 
-namespace GlobalTheory.ShareOn
-
-open NumberField IsDedekindDomain
-open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Indef.Tree Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Cx Formalism.IndefR.FWT
-open GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.OntoChain GlobalTheory.RealIndexBound GlobalTheory.OnTies Formalism.MainNotions.ArithmeticCylinders
-
-end GlobalTheory.ShareOn
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -799,22 +781,6 @@ section -- clump:auto
 section
 noncomputable section
 open Module
-namespace GlobalTheory.ShareOn.Alg
-end GlobalTheory.ShareOn.Alg
-namespace GlobalTheory.ShareOn.Alg
-end GlobalTheory.ShareOn.Alg
-namespace GlobalTheory.ShareOn
-open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.CovTop
-open GlobalTheory.IndefiniteRowSideFullHecke.FrameWeightGapBounds
-variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
-  {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ}
-end GlobalTheory.ShareOn
-namespace GlobalTheory.ShareOn
-open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links GlobalTheory.BigTop GlobalTheory.BigOn GlobalTheory.CovTop
-open GlobalTheory.IndefiniteRowSideFullHecke.FrameWeightGapBounds
-variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
-  {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ}
-end GlobalTheory.ShareOn
 namespace GlobalTheory.ShareOn
 open NumberField IsDedekindDomain
 open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Indef.Tree Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Cx Formalism.IndefR.FWT

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RowLatticesMeanEqGenusMean
 public import Formalism.SharpRestriction.CuspSpanNormBounds.CayleyDegreeNondegeneracy.GluingMassOfGluingFacts
 import Formalism.HermitianLattices.HermitianLatticesProofs.IsomAct
 public import Formalism.SharpRestriction.CuspSpanNormBounds.AbsoluteAmplitudeSecondOfSource
@@ -23,10 +24,7 @@ section Cl
 variable {D : D7}
 
 theorem partial_isotropic_top {T : D.host.E} (F0 : FlagG (VS D) D.R.rS T) : F0.Xa D.R.rS = F0.X := by
-  unfold FlagG.Xa FlagG.X
-  congr 1
-  ext x
-  simp
+  exact GlobalTheory.MeanGenus.Xa_top D F0
 
 theorem partial_isotropic_le {T : D.host.E} (F0 : FlagG (VS D) D.R.rS T) (j : ℕ) : F0.Xa j ≤ F0.X :=
   Submodule.span_mono (Set.image_subset_range _ _)
@@ -78,12 +76,7 @@ theorem Lsub_gmap_of_isometry {T : D.host.E} (F0 : FlagG (VS D) D.R.rS T) (σ : 
 
 theorem mul_mem_flag_stabilizer {T : D.host.E} (F0 : FlagG (VS D) D.R.rS T) {a b : (VS D).V ≃ₗ[D.host.E] (VS D).V}
     (ha : a ∈ stabF D F0) (hb : b ∈ stabF D F0) : a * b ∈ stabF D F0 := by
-  refine ⟨(isom (VS D).hT).mul_mem ha.1 hb.1, fun j => ?_, ?_⟩
-  · have e : ((a * b : (VS D).V ≃ₗ[D.host.E] (VS D).V) : (VS D).V →ₗ[D.host.E] (VS D).V) =
-        (a : (VS D).V →ₗ[D.host.E] (VS D).V) ∘ₗ (b : (VS D).V →ₗ[D.host.E] (VS D).V) := rfl
-    rw [e, Submodule.map_comp, hb.2.1 j, ha.2.1 j]
-  · change a (b F0.z) = F0.z
-    rw [hb.2.2, ha.2.2]
+  apply _root_.GlobalTheory.RowMassCompare.mul_mem_stabF <;> assumption
 
 end Cl
 

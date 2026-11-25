@@ -211,10 +211,6 @@ theorem continuous_coeff_charpoly {K : Type} [CommRing K] [TopologicalSpace K] [
 
 end PositivityTheory.Rg.DzCong.CongruenceClosure
 
-namespace PositivityTheory.Rg.DzCong
-
-end PositivityTheory.Rg.DzCong
-
 end
 end -- clump:auto
 end -- clump:auto

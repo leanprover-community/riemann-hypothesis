@@ -44,7 +44,7 @@ theorem IT_hom {H : PP} (h : bc_IT Fr H) : IsWeightedHomogeneous (normalVariable
   have hm' : m ∈ h0.support := support_map_subset _ _ hm
   unfold normDeg
   refine Finset.sum_eq_zero fun v hv => ?_
-  rw [if_neg (h1 v ((mem_vars_iff_mem_support v).2 ⟨m, hm', hv⟩))]
+  rw [ite_eq_right (h1 v ((mem_vars_iff_mem_support v).2 ⟨m, hm', hv⟩))]
 
 theorem Sy_IT {H : PP} (h : bc_IT Fr H) : Sy w Fr Q g 0 H :=
   ⟨(hom_iff _ _).2 (IT_hom h), AddSubmonoid.subset_closure ⟨1, H, isKeyProduct_one w Fr Q g, h, by simp⟩⟩

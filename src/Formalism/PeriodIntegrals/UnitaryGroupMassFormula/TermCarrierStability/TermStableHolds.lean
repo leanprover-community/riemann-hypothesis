@@ -6,6 +6,7 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.Term
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermCarrierStability.AdmissibleStableUnderFrameChange, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermCarrierStability.TermStableHolds
@@ -31,15 +32,7 @@ theorem mem_orth {U : Submodule E S.V} {v : S.V} : v ∈ orth S U ↔ ∀ y ∈ 
   simp [orth, Submodule.mem_iInf, LinearMap.mem_ker]
 
 theorem z_mem_orth {T : E} (F : LFlag S r T) : F.fl.z ∈ orth S (Xsp F) := by
-  rw [mem_orth]
-  intro y hy
-  have hy' : y ∈ Submodule.span E (Set.range F.fl.e) := hy
-  clear hy
-  induction hy' using Submodule.span_induction with
-  | mem x hx => obtain ⟨a, rfl⟩ := hx; exact F.fl.z_orth a
-  | zero => simp
-  | add x y _ _ hx hy => simp [hx, hy]
-  | smul c x _ hx => simp [hx]
+  apply _root_.Formalism.MainNotions.LatticeGluingRadicals.d_z_orthX <;> assumption
 
 theorem coef_exists {T : E} (F : LFlag S r T) (n : S.V ≃ₗ[E] S.V)
     (h1 : ∀ j, ∀ x ∈ Xflag F (j + 1), n x - x ∈ Xflag F j)
@@ -121,7 +114,7 @@ theorem coef {T : E} (Λ : Submodule (𝓞 E) S.V) (g : ℕ) (F : LFlag S r T) (
   · rw [Matrix.add_apply, Matrix.one_apply_ne (ne_of_lt hba).symm, hν0 a b hba.le, add_zero]
   · rw [Matrix.add_apply, Matrix.one_apply_eq, hν0 a a le_rfl, add_zero]
   · simp only [frE, Matrix.add_apply, add_smul, Finset.sum_add_distrib, hνsum b, Matrix.one_apply,
-      ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     abel
   · haveI := P.isPrime
     refine Subring.add_mem _ ?_ ?_
@@ -212,8 +205,6 @@ namespace PI.TCS
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.TermDef
 
 section D7
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem tr_XS (D : D7) {T' : D.host.E} {γ : (VS D).V ≃ₗ[D.host.E] (VS D).V}
     {x F₂ : LFlag (D.sp.Y 0) D.R.rS T'} (he : ∀ k, F₂.fl.e k = γ (x.fl.e k)) :

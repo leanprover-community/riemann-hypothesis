@@ -1,5 +1,6 @@
 module
 
+import Formalism.MahlerMeasure.MahlerMeasureProofs.FreezeY
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.CoeffSumMonomialLinear
 
 @[expose] public section
@@ -58,15 +59,7 @@ def rowInd {k n : ℕ} (a : Fin k) : Fin k × Fin n → ℕ := fun v => if v.1 =
 
 theorem qa_weight_rowInd {k n : ℕ} (a : Fin k) (u : Fin k × Fin n →₀ ℕ) :
     Finsupp.weight (rowInd a) u = rowDeg u a := by
-  rw [Finsupp.weight_apply, Finsupp.sum_fintype _ _ (by simp), Fintype.sum_prod_type, rowDeg]
-  rw [Finset.sum_eq_single a]
-  · refine Finset.sum_congr rfl fun s _ => ?_
-    simp [rowInd]
-  · intro b _ hb
-    refine Finset.sum_eq_zero fun s _ => ?_
-    simp [rowInd, hb]
-  · intro h
-    exact absurd (Finset.mem_univ a) h
+  apply _root_.Formalism.GM.FrozenVariableComponents.weight_row <;> assumption
 
 theorem qa_iwh_pow {σ R M : Type} [CommSemiring R] [AddCommMonoid M] {w : σ → M} {φ : MvPolynomial σ R} {n : M}
     (h : IsWeightedHomogeneous w φ n) (k : ℕ) : IsWeightedHomogeneous w (φ ^ k) (k • n) := by

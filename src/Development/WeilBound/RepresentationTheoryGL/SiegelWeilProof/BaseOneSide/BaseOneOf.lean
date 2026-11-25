@@ -511,7 +511,7 @@ theorem testEx : TestEx := by
     exact Finset.prod_congr rfl fun v hvS => by simp [hvS]
   refine ⟨φ, fun v => if v ∈ S then A0 v else latV b v, ⟨h1, h2, h3, h4, ?_, ?_⟩, ?_, ?_⟩
   · intro v hvS
-    simp only [hvS, if_true]
+    simp only [hvS, ite_true]
     exact ⟨hc v, ho v, hs v⟩
   · intro v hvS
     simp [hvS]
@@ -806,22 +806,7 @@ theorem coCpt_one {F E : Type} [Field F] [NumberField F] [Field E] [NumberField 
 
 theorem cfac_ne_zero {F : Type} (E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     (v : HeightOneSpectrum (𝓞 F)) : cfac E v ≠ 0 := by
-  have hq : (1 : ℝ) < (Ideal.absNorm v.asIdeal : ℝ) := by
-    have h0 : Ideal.absNorm v.asIdeal ≠ 0 := by
-      rw [Ne, Ideal.absNorm_eq_zero_iff]; exact v.ne_bot
-    have h1 : Ideal.absNorm v.asIdeal ≠ 1 := by
-      rw [Ne, Ideal.absNorm_eq_one_iff]; exact v.isPrime.ne_top
-    exact_mod_cast (by omega : 1 < Ideal.absNorm v.asIdeal)
-  have he : eR E v ≤ 1 := by
-    unfold eR PositivityTheory.SiegelWeilFormula.Gen.eSp
-    split_ifs <;> norm_num
-  have hpos : 0 < 1 - eR E v / (Ideal.absNorm v.asIdeal : ℝ) := by
-    have : eR E v / (Ideal.absNorm v.asIdeal : ℝ) < 1 := by
-      rw [div_lt_one (by linarith)]; linarith
-    linarith
-  unfold cfac
-  simp only [ne_eq, Real.toNNReal_eq_zero, not_le]
-  exact inv_pos.2 hpos
+  apply _root_.GlobalTheory.CompanionTheory.RgBaseCnt.cfac_ne_zero <;> assumption
 
 theorem euler_of_factor {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (n M d : ℕ) (b : Module.Basis (Fin d) F E)

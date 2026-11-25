@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncResolutionCoverAndCone
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsBaseChart
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FiniteMinimalPrimes
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterPC
@@ -40,21 +41,7 @@ theorem proj_eq_of_orbit {z w : (Σ k, ι k) → ℂ} (h : SameOrbit z w) : proj
 
 theorem orbit_of_proj {z w : (Σ k, ι k) → ℂ} (hz : ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0) (hw : ∀ k, ∃ i, w ⟨k, i⟩ ≠ 0)
     (h : proj z = proj w) : SameOrbit z w := by
-  refine orbit_of_cross hz hw fun k i i' => ?_
-  obtain ⟨j, hj⟩ := hz k
-  have hN : ((∑ l, ‖z ⟨k, l⟩‖ ^ 2 : ℝ) : ℂ) ≠ 0 :=
-    Complex.ofReal_ne_zero.2 (Top.normSq_pos (hz k)).ne'
-  have hM : ((∑ l, ‖w ⟨k, l⟩‖ ^ 2 : ℝ) : ℂ) ≠ 0 :=
-    Complex.ofReal_ne_zero.2 (Top.normSq_pos (hw k)).ne'
-  have hj' : starRingEnd ℂ (z ⟨k, j⟩) ≠ 0 := by simpa using hj
-  have h1 := congrFun h ⟨k, (i, j)⟩
-  have h2 := congrFun h ⟨k, (i', j)⟩
-  simp only [proj] at h1 h2
-  rw [div_eq_div_iff hN hM] at h1 h2
-  have : (z ⟨k, i⟩ * w ⟨k, i'⟩ - z ⟨k, i'⟩ * w ⟨k, i⟩) *
-      (starRingEnd ℂ (z ⟨k, j⟩) * ((∑ l, ‖w ⟨k, l⟩‖ ^ 2 : ℝ) : ℂ)) = 0 := by
-    linear_combination (w ⟨k, i'⟩) * h1 - (w ⟨k, i⟩) * h2
-  exact sub_eq_zero.1 ((mul_eq_zero.1 this).resolve_right (mul_ne_zero hj' hM))
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Cmp.SncRes.sameOrbit_of_proj_eq <;> assumption
 
 variable {P : Ideal (MRing ι)} {e : ℕ}
 

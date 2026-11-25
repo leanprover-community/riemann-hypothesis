@@ -681,7 +681,7 @@ theorem exists_laurent (hσ : IsSmooth σ) (hc : IsCuspidal σ) (θ : levi F n �
   exact Finset.sum_congr rfl fun k _ => by rw [integral_const_mul, mul_comm]
 theorem exists_leviZeta (hσ : IsSmooth σ) [σ.IsIrreducible] (hc : IsCuspidal σ)
     (θ : levi F n β →* ℝ≥0) (hθ : Continuous θ) (μM : Measure (levi F n β)) [μM.IsHaarMeasure] :
-    ∃ s₀ : ℝ, ∃ D : ℂ[X], D.eval 0 = 1 ∧ ∀ Ψ : Matrix (Fin n) (Fin n) F → ℂ, IsLeviSchwartz β Ψ →
+    ∃ s₀ : ℝ, ∃ D : ℂ[X], D.eval 0 = 1 ∧ D.natDegree ≤ n ∧ ∀ Ψ : Matrix (Fin n) (Fin n) F → ℂ, IsLeviSchwartz β Ψ →
       ∀ w : W, ∀ ℓ ∈ smoothVectors (Representation.dual σ),
         (∀ s : ℂ, s₀ < s.re → Integrable (leviIntegrand σ θ Ψ w ℓ s) μM) ∧
         ∃ (N : ℕ) (P : ℂ[X]), ∀ s : ℂ, s₀ < s.re →
@@ -690,13 +690,20 @@ theorem exists_leviZeta (hσ : IsSmooth σ) [σ.IsIrreducible] (hc : IsCuspidal 
   obtain ⟨ω, hω⟩ := exists_blockChar (F := F) hσ; obtain ⟨s₀, -, hconv⟩ := exists_lintegral_lt_top hσ hc θ hθ μM
   let B1 : Finset (Set.range β) := Finset.univ.filter fun b => blockSize β b = 1
   refine ⟨s₀, ∏ b ∈ B1, (1 - Polynomial.C ((θ (blockUnif F b) : ℂ) * ω b) * Polynomial.X),
-    by rw [Polynomial.eval_prod]; exact Finset.prod_eq_one fun _ _ => by simp,
+    by rw [Polynomial.eval_prod]; exact Finset.prod_eq_one fun _ _ => by simp, ?_,
     fun Ψ hΨ w ℓ hℓ => ⟨fun s hs => integrable_leviIntegrand hσ θ hθ hΨ w ℓ s (hconv s hs w ℓ hℓ), ?_⟩⟩
-  obtain ⟨Ψ', hΨ', hvan, hint⟩ := exists_removeBlocks hσ θ hθ μM hω w ℓ (fun s hs k => hconv s hs w ℓ hℓ k) hΨ B1
-  obtain ⟨N, P, hNP⟩ := exists_laurent hσ hc θ hθ μM hΨ'
-    (fun b hb => hvan b (Finset.mem_filter.2 ⟨Finset.mem_univ _, hb⟩)) w hℓ (fun s hs w' k => hconv s hs w' ℓ hℓ k)
-  refine ⟨N, P, fun s hs => ?_⟩; rw [← hNP s hs, hint s hs, Polynomial.eval_prod]; congr 1
-  exact Finset.prod_congr rfl fun b hb => by simp [(Finset.mem_filter.1 hb).2]
+  · refine (Polynomial.natDegree_prod_le _ _).trans ?_
+    refine (Finset.sum_le_card_nsmul _ _ 1 fun b _ => ?_).trans ?_
+    · refine (Polynomial.natDegree_sub_le _ _).trans ?_
+      rw [Polynomial.natDegree_one]
+      exact max_le (Nat.zero_le _) ((Polynomial.natDegree_C_mul_le _ Polynomial.X).trans Polynomial.natDegree_X_le)
+    · rw [smul_eq_mul, mul_one]
+      exact (Finset.card_le_univ _).trans ((Fintype.card_range_le β).trans (Fintype.card_fin n).le)
+  · obtain ⟨Ψ', hΨ', hvan, hint⟩ := exists_removeBlocks hσ θ hθ μM hω w ℓ (fun s hs k => hconv s hs w ℓ hℓ k) hΨ B1
+    obtain ⟨N, P, hNP⟩ := exists_laurent hσ hc θ hθ μM hΨ'
+      (fun b hb => hvan b (Finset.mem_filter.2 ⟨Finset.mem_univ _, hb⟩)) w hℓ (fun s hs w' k => hconv s hs w' ℓ hℓ k)
+    refine ⟨N, P, fun s hs => ?_⟩; rw [← hNP s hs, hint s hs, Polynomial.eval_prod]; congr 1
+    exact Finset.prod_congr rfl fun b hb => by simp [(Finset.mem_filter.1 hb).2]
 end GodementJacquet
 end GroundTheory.Automorphic
 end -- clump:auto

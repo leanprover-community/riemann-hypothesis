@@ -46,13 +46,6 @@ def LowNatStatement : Prop := ∀ (R : Type u) [CommRing R] (G : Type u) [Group 
   (∀ x, e₀' (P.hom.H 0 x) = P.h0 (e₀ x)) ∧ (∀ x, e₁' (P.hom.H 1 x) = P.h1 (e₁ x)) ∧
   ∀ x, e₂' (P.hom.H 2 x) = P.h2 (e₂ x)
 
-def LowResStatement : Prop := ∀ (R : Type u) [CommRing R] (G : Type u) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (M : TRep R G),
-  (∀ (N : Subgroup G) [N.Normal] (Q : TRep R (G ⧸ N)) (P : Pair Q M), IsInvRep M N Q P →
-    Injective P.h1 ∧ Exact P.h1 (resH1 M.rho N.subtype continuous_subtype_val)) ∧
-  ∀ (U : Subgroup G) [U.FiniteIndex], IsOpen (U : Set G) →
-    (∀ x, resH1 M.rho U.subtype continuous_subtype_val x = 0 → U.index • x = 0) ∧
-    ∀ x, resH2 M.rho U.subtype continuous_subtype_val x = 0 → U.index • x = 0
-
 def TransgressionStatement : Prop := ∀ (R : Type u) [CommRing R] (G : Type u) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G] [T2Space G] [TotallyDisconnectedSpace G]
   (M : TRep R G) [DiscreteTopology M.V] (N : Subgroup G) [N.Normal], IsClosed (N : Set G) →
   ∀ (Q : TRep R (G ⧸ N)) (P : Pair Q M), IsInvRep M N Q P → ∀ I : Submodule R ((M.resSub N).H 1),

@@ -57,8 +57,7 @@ theorem cV_zero {k r : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E
 
 theorem coefficient_vector_support : CVSupp := by
   intro k r Wp Wq _ _ _ _ _ _ z z' c s Y F hF hsupp g hg hne
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hU : IsOpen {x | Gf k r z z' x < c} :=
     isOpen_lt (Formalism.FourierDecayAlt.P.Ux8.cont_Gf k r z z') continuous_const
   have hF0 : ∀ x ∈ {x | Gf k r z z' x < c} ∩ B.GV k r,

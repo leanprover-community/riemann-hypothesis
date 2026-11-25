@@ -1,5 +1,7 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermitianFormBasics
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.TwoByOneBlock
 public import Formalism.HermitianCurvature.StatementG
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdditiveCharacterPsi
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AffineChangeOfVariables
@@ -39,14 +41,7 @@ theorem muPi_eq (β : ℂ) (ι : Type) [Fintype ι] :
 
 theorem map_mulVec_volume {ι : Type} [Fintype ι] [DecidableEq ι] (M : Matrix ι ι ℂ) (h : ‖M.det‖ = 1) :
     Measure.map (fun x : ι → ℂ => M *ᵥ x) volume = volume := by
-  have hdet : LinearMap.det ((Matrix.toLin' M).restrictScalars ℝ) = 1 := by
-    rw [LinearMap.det_restrictScalars, LinearMap.det_toLin', Algebra.norm_complex_apply,
-      Complex.normSq_eq_norm_sq, h, one_pow]
-  have h2 := Measure.map_linearMap_addHaar_eq_smul_addHaar (volume : Measure (ι → ℂ))
-    (f := (Matrix.toLin' M).restrictScalars ℝ) (by rw [hdet]; exact one_ne_zero)
-  rw [hdet] at h2
-  have h3 : Measure.map (fun x : ι → ℂ => M *ᵥ x) volume = ENNReal.ofReal |(1 : ℝ)⁻¹| • volume := h2
-  simpa using h3
+  apply _root_.Formalism.FourierDecayAlt.P.TwoByOneBlock.map_mulVec_volume <;> assumption
 
 theorem mp_mulVec (β : ℂ) {ι : Type} [Fintype ι] [DecidableEq ι] (M : Matrix ι ι ℂ) (h : ‖M.det‖ = 1) :
     MeasurePreserving (fun x : ι → ℂ => M *ᵥ x) (muPi β ι) (muPi β ι) := by
@@ -69,9 +64,9 @@ theorem norm_det_wMat (n : ℕ) : ‖(wMat n).det‖ = 1 := by
 theorem continuous_strictUpper (d : ℕ) : Continuous (strictUpper : (UT d → ℂ) → Matrix (Fin d) (Fin d) ℂ) := by
   refine continuous_matrix fun i j => ?_
   by_cases h : i < j
-  · simp only [strictUpper, Matrix.of_apply, h, dif_pos]
+  · simp only [strictUpper, Matrix.of_apply, h, dite_eq_left]
     exact continuous_apply _
-  · simp only [strictUpper, Matrix.of_apply, h, dif_neg, not_false_iff]
+  · simp only [strictUpper, Matrix.of_apply, h, dite_eq_right, not_false_iff]
     exact continuous_const
 
 theorem continuous_upper (d : ℕ) : Continuous (upper : (UT d → ℂ) → Matrix (Fin d) (Fin d) ℂ) :=
@@ -130,21 +125,7 @@ theorem isStrictUpper_strictUpper {d : ℕ} (v : UT d → ℂ) : IsStrictUpper (
 
 theorem pow_apply_strict {n : ℕ} (X : Matrix (Fin n) (Fin n) ℂ) (hX : IsStrictUpper X) :
     ∀ (j : ℕ) (i k : Fin n), (k : ℕ) < i + j → (X ^ j) i k = 0 := by
-  intro j
-  induction j with
-  | zero =>
-    intro i k h
-    have : i ≠ k := by
-      rintro rfl
-      simp at h
-    simp [this]
-  | succ j ih =>
-    intro i k h
-    rw [pow_succ, Matrix.mul_apply]
-    refine Finset.sum_eq_zero fun l _ => ?_
-    by_cases hl : (l : ℕ) < i + j
-    · rw [ih i l hl, zero_mul]
-    · rw [hX l k (by rw [Fin.le_def]; omega), mul_zero]
+  apply _root_.Formalism.FourierDecayAlt.P.HermitianProjections.strict_pow_apply <;> assumption
 
 theorem pow_card_strict {n : ℕ} (X : Matrix (Fin n) (Fin n) ℂ) (hX : IsStrictUpper X) : X ^ n = 0 := by
   ext i k
@@ -646,7 +627,3 @@ theorem omConverges : OmConverges := by
     exact (hb (M v) (hdet v)).2.trans (hmono _ _ (norm_nonneg _) (norm_long_le z v (M v) rfl))
 
 end Formalism.FourierDecayAlt.P.G7
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

@@ -214,7 +214,7 @@ private theorem coeff_tail_lemma {O : Type} [CommRing O] (f : ℕ → PowerSerie
     omega
   · intro k _ hk
     simp only [Finset.mem_range, not_lt] at hk
-    rw [PowerSeries.coeff_X_pow_mul', if_neg (by omega)]
+    rw [PowerSeries.coeff_X_pow_mul', ite_eq_right (by omega)]
 
 variable {O : Type} [CommRing O] {n : ℕ}
 

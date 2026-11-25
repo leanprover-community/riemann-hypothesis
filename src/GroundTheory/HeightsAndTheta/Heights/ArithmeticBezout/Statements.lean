@@ -78,7 +78,7 @@ def fundCycle [IsNoetherianRing R] (J : Ideal (MvPolynomial (Fin n) R)) : ProjCy
       (fun W hW => by
         rw [Set.Finite.mem_toFinset]
         by_contra h
-        exact hW (if_neg fun h' => h h'.1))
+        exact hW (ite_eq_right fun h' => h h'.1))
 
 def divCycle [IsNoetherianRing R] (I : Ideal (MvPolynomial (Fin n) R)) (u : Fin n → R) :
     ProjCycle R n :=

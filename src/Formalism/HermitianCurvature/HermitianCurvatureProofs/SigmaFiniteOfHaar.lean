@@ -226,13 +226,4 @@ theorem kr_rule (Bs : B.RealPlaceData k r Wp Wq) (F : B.Mat k r → (Wq →L[ℂ
 
 end rule
 
-section ring
-
-open Classical Formalism.FourierDecayAlt.P.CapelliWordSumExpansion
-
-variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
-  [InnerProductSpace ℂ Wq]
-
-end ring
-
 end Formalism.FourierDecayAlt.P.PBG

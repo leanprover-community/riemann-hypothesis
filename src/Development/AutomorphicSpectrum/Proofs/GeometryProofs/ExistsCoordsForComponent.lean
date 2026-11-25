@@ -242,8 +242,7 @@ theorem isIntegrallyClosed_of_snc {K : Type} [Fintype K] {J : K → Type} [∀ k
     rw [AddSubmonoidClass.coe_finsetSum]
     exact hs1
   obtain ⟨l, hl⟩ : ∃ l, IsUnit (f' l) := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have h1 : (1 : regAt ξ q) ∈ IsLocalRing.maximalIdeal (regAt ξ q) := by
       rw [← hsum']
       exact Ideal.sum_mem _ fun l _ => Ideal.mul_mem_left _ _ ((IsLocalRing.mem_maximalIdeal _).2 (hcon l))
@@ -355,7 +354,7 @@ theorem exists_eigBase : ReciprocityTheory.ChartRestriction.G.Geo.ResK.ResKState
   have hw : ∃ l, x l ≠ 0 := by
     obtain ⟨l, hl⟩ := htie.cover (Flat.ZLat.gp ξ)
     exact ⟨l, hl.1⟩
-  obtain ⟨κ', _, y0, M', g, hd, hN, hch, hflat, hnorm⟩ := _root_.GlobalTheory.CompanionTheory.Relay.flag_model_common_refinement ℤ Ω₀ ((k : K₀) → J₀ k) x
+  obtain ⟨κ', _, y0, M', g, hd, hN, hch, hflat, hnorm⟩ := _root_.PositivityTheory.HtPt.Mb.LTopCommon.exists_common_normal_model ℤ Ω₀ ((k : K₀) → J₀ k) x
     (PModel.mk X₀ ξ (specZIsTerminal.from X₀) hover hall htie) Unit (fun _ => (k : K₀) → J₀ k) (fun _ => x)
     (CMType H ⊕ CMType H) (fun _ => Li) L V (fun _ => hw) hcoh hspan
   have hd' : GlobalTheory.CompanionTheory.Ar.Dominates M'.ξ ξ g (RingHom.id Ω₀) := hd

@@ -146,7 +146,7 @@ lemma val_tl_pow [CharZero K] (p : ℕ) [Fact p.Prime] (hp : v (p : K) < 1) {x :
     rw [Valuation.mem_integer_iff, map_inv₀, h, inv_one]⟩ else 0
   have hc' : ∀ k, 1 ≤ k → k < p → (c k : K) = (k : K)⁻¹ := by
     intro k h1 h2
-    simp only [c, dif_pos (val_nat_eq v p hp k h1 h2)]
+    simp only [c, dite_eq_left (val_nat_eq v p hp k h1 h2)]
   have hc : ∀ k, 1 ≤ k → k < p → c k * k = 1 := by
     intro k h1 h2
     ext

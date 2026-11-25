@@ -137,8 +137,7 @@ theorem norm_leading_minor_monomial {j l : ℕ} (hl : l ≤ j) (Z : Matrix (Fin 
     rw [hi]
   · intro σ _ hσ
     obtain ⟨i, hi⟩ : ∃ i, w' (σ i) ≠ i := by
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       exact hσ (Equiv.ext fun i => w'.eq_symm_apply.2 (hne i))
     apply mul_eq_zero_of_right
     apply Finset.prod_eq_zero (Finset.mem_univ i)
@@ -154,8 +153,7 @@ theorem blockAnti_perm_partialProd : ∀ (j : ℕ) (β : Fin j → ℕ) (Z : Mat
 
   have hrow : ∀ a, ∃ b, Z a b ≠ 0 := by
     intro a
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     exact hdet (Matrix.det_eq_zero_of_row_eq_zero a hne)
   choose f hf using hrow
   have huniq : ∀ a b, Z a b ≠ 0 → b = f a := fun a b hab =>
@@ -216,7 +214,7 @@ theorem blockAnti_perm_partialProd : ∀ (j : ℕ) (β : Fin j → ℕ) (Z : Mat
       rw [hnorm, hprod] at hb
       exact hb
     · right
-      push_neg at hbd
+      push Not at hbd
       obtain ⟨a, hal, hwa⟩ := hbd
       have hlj : l < j := lt_of_le_of_lt hwa (w a).2
       have hl0 : 0 < l := lt_of_le_of_lt (Nat.zero_le _) hal
@@ -316,7 +314,7 @@ lemma mEmb_e (k r : ℕ) (m : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (a : Fin r
   unfold bvec
   rw [Matrix.mulVec_single_one]
   simp only [Matrix.col_apply, mEmb]
-  rw [dif_neg (by simp [eI]), Pi.single_apply]
+  rw [dite_eq_right (by simp [eI]), Pi.single_apply]
 
 lemma esI_inj (k r : ℕ) : Function.Injective (esI k r) := by
   intro a b h
@@ -348,7 +346,7 @@ lemma pluck_flag {k r n : ℕ} (hn : n ≤ r) (z : Fin (2 * r + k + 1) → ℂ) 
       have ha := a.2
       have : upper uu b (Fin.castLE hn a) = 0 := by
         unfold upper
-        rw [dif_neg, if_neg]
+        rw [dite_eq_right, ite_eq_right]
         · intro h; have := congrArg Fin.val h; simp at this; omega
         · rw [Fin.lt_def]; simp; omega
       simp [this]
@@ -359,7 +357,7 @@ lemma pluck_flag {k r n : ℕ} (hn : n ≤ r) (z : Fin (2 * r + k + 1) → ℂ) 
     · intro a b hab
       have hab' : b.val < a.val := hab
       simp only [Matrix.submatrix_apply, upper]
-      rw [dif_neg, if_neg]
+      rw [dite_eq_right, ite_eq_right]
       · intro h; have := congrArg Fin.val h; simp at this; omega
       · rw [Fin.lt_def]; simp; omega
   have hp := GlobalTheory.PlueckerBound.norm_det_inner_le_of_det_eq_one _ n (fun i => WithLp.toLp 2 (x⁻¹ *ᵥ bvec (eI k r (Fin.castLE hn i))))
@@ -400,7 +398,7 @@ lemma inv_e {k r j : ℕ} (hj : j ≤ r) {g : Mat k r} (hg : g ∈ GG k r) (a b 
       have : esI k r (Fin.castLE hj c) ≠ esI k r (Fin.castLE hj b) := fun h =>
         hc (Fin.castLE_injective hj (esI_inj k r h))
       simp [h0, bvec, Pi.single_eq_of_ne this]
-  · push_neg at hi
+  · push Not at hi
     rw [XstJ_eq hX i fun c hc => hi ⟨c.val, hc⟩]
     simp [bvec, Pi.single_eq_of_ne (hi b)]
 
@@ -426,14 +424,13 @@ lemma sEl_pair (k r j : ℕ) (β : Fin r → ℕ) (q : PSec k r j × (UToff β �
 
 lemma upperOff_ne {r : ℕ} {β : Fin r → ℕ} (hβ : Monotone β) (x : UToff β → ℂ) (a b : Fin r)
     (h : upperOff β x a b ≠ 0) : a = b ∨ β a < β b := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   apply h
   unfold upperOff upper
   by_cases h1 : a < b
   · rw [dite_eq_left h1]
-    exact dif_neg (not_not.2 (le_antisymm (hβ h1.le) hc.2))
-  · rw [dif_neg h1, if_neg hc.1]
+    exact dite_eq_right (not_not.2 (le_antisymm (hβ h1.le) hc.2))
+  · rw [dite_eq_right h1, ite_eq_right hc.1]
 
 lemma levi_diag_middle_mem_bessel_unitary_eucl {k r : ℕ} {m : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ} (hm : m ∈ UH (Hb k)) (a : Fin r → ℝ)
     (ha : ∀ b, 0 < a b) :
@@ -523,7 +520,7 @@ theorem herm_sEl_inv_le : ∀ (k r j : ℕ) (hj : j ≤ r) (z z' : (Fin (2 * r +
   · intro i i' hii
     have hlt : i < i' := hii
     have hi : i ≠ Fin.last _ := (hlt.trans_le (Fin.le_last _)).ne
-    simp only [Matrix.of_apply, y, if_neg hi]
+    simp only [Matrix.of_apply, y, ite_eq_right hi]
     rw [sEl_pair]
     refine mul_eq_zero_of_right _ (star_eq_zero.2 ?_)
     by_contra h0
@@ -538,10 +535,10 @@ theorem herm_sEl_inv_le : ∀ (k r j : ℕ) (hj : j ≤ r) (z z' : (Fin (2 * r +
       ‖herm (Hpk k r) (s⁻¹ *ᵥ bvec (esI k r b)) u‖ := by
     rw [Finset.prod_eq_single (Fin.last _)]
     · have : ι (Fin.last _) = b₀ := rfl
-      simp only [y, if_true, this, hb₀]
+      simp only [y, ite_true, this, hb₀]
       rfl
     · intro i _ hi
-      simp only [y, if_neg hi]
+      simp only [y, ite_eq_right hi]
       rw [sEl_pair]
       simp [upperOff, upper]
     · simp

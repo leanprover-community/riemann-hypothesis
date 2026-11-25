@@ -411,9 +411,9 @@ theorem map_funLeft_extendZero : ∀ (F : Type) [Field F] [NumberField F] {κ₁
       have hC : IsCompact (Set.univ.pi C) := by
         refine isCompact_univ_pi fun k => ?_
         by_cases h : k ∈ Set.range j
-        · simp only [C, dif_pos h]
+        · simp only [C, dite_eq_left h]
           exact hcs.isCompact.image (continuous_apply _)
-        · simp only [C, dif_neg h]
+        · simp only [C, dite_eq_right h]
           exact hOk
       refine HasCompactSupport.intro hC fun x hx => ?_
       by_contra hne
@@ -423,11 +423,11 @@ theorem map_funLeft_extendZero : ∀ (F : Type) [Field F] [NumberField F] {κ₁
       apply hx
       intro k _
       by_cases h : k ∈ Set.range j
-      · simp only [C, dif_pos h]
+      · simp only [C, dite_eq_left h]
         refine ⟨x ∘ j, subset_tsupport _ hgx, ?_⟩
         simp only [Function.comp_apply]
         rw [Classical.choose_spec h]
-      · simp only [C, dif_neg h]
+      · simp only [C, dite_eq_right h]
         exact hxS k h
     · funext y
       rw [LinearMap.funLeft_apply]
@@ -1027,7 +1027,7 @@ theorem unip_trivial_m : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [N
   by_cases h0 : ∀ Φ ∈ schA F (Fin n × Fin d), e Φ = 0
   · intro Φ hΦ
     rw [h0 _ (pres _ _ hΦ), h0 _ hΦ]
-  push_neg at h0
+  push Not at h0
   obtain ⟨Φ₀, hΦ₀, hne⟩ := h0
   let Q : UA σ X.J → ℂ → Prop := fun g c => ∀ Φ ∈ schA F (Fin n × Fin d), e (om (g, 1) Φ) = c • e Φ
   have Quniq : ∀ g c c', Q g c → Q g c' → c = c' := fun g c c' h h' =>

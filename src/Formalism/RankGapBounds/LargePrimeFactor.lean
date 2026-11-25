@@ -41,10 +41,6 @@ structure Data (ι : Type) where
   mw : ι → ℕ → ℕ
   mwF : ι → ℕ → ℕ
 
-namespace Data
-
-end Data
-
 def ChebyshevTheta : Prop :=
   ∀ n : ℕ, ∑ p ∈ primesUpTo n, Real.log (p : ℝ) ≤ Real.log 4 * (n : ℝ)
 

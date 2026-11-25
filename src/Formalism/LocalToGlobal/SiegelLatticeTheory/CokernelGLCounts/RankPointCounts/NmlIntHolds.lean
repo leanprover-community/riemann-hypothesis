@@ -32,8 +32,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
 
 namespace Formalism.L2.SG.NGCut.NormalIntegrality
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 theorem zhat_int {Λ : Submodule (𝓞 D.host.E) (VS D).V} (hun : Formalism.HermitianLatticesTheory.IsUnimodular (VS D).hT Λ)
@@ -86,7 +84,7 @@ theorem yv_orth_X {T T' : D.host.E} (F : FlagG (VS D) D.R.rS T) (F' : FlagG (VS 
       simp [Zhat, brS, FlagG.fvec, Fin.snoc_castSucc]
     have hm := congrFun (congrFun (Matrix.mul_adjugate (Zhat F F')) a.castSucc) (Fin.last _)
     rw [Matrix.mul_apply] at hm
-    simp only [Matrix.smul_apply, Matrix.one_apply, Fin.castSucc_ne_last, if_false, smul_zero] at hm
+    simp only [Matrix.smul_apply, Matrix.one_apply, Fin.castSucc_ne_last, ite_false, smul_zero] at hm
     unfold NormalVectorPairings.yv NormalVectorPairings.omp
 
     rw [map_add (f := _), map_smul, map_smul, F.z_orth a, smul_zero, add_zero, map_sum]
@@ -169,8 +167,6 @@ open scoped Classical
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
 
 namespace Formalism.L2.SG.NGCut.NormalIntegrality
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
@@ -338,8 +334,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 set_option linter.dupNamespace false
 
 namespace Formalism.L2.SG.NGCut.NormalIntegrality
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Term
 

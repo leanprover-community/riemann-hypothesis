@@ -75,7 +75,7 @@ theorem monoAt_of_proj {S S₀ : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ) (L : L
     have hrat : d.e * d.qX + d.i₀ * d.q0 + d.e' * d.qY = 1 := by
       have h : fromRows (fromRows d.qX d.q0) d.qY * fromCols (fromCols d.e d.i₀) d.e' = 1 := by
         rw [fromRows_mul_fromCols, fromRows_mul_fromCols, fromRows_mul, mul_fromCols,
-          GlobalTheory.SeeSaw.SplitLat.qX_e, GlobalTheory.SeeSaw.SplitLat.qX_i₀,
+          GlobalTheory.MixPer.qX_e, GlobalTheory.SeeSaw.SplitLat.qX_i₀,
           GlobalTheory.SeeSaw.SplitLat.qX_e', GlobalTheory.SeeSaw.SplitLat.qY_e,
           GlobalTheory.SeeSaw.SplitLat.qY_i₀, GlobalTheory.SeeSaw.SplitLat.qY_e',
           GlobalTheory.SeeSaw.SplitLat.wittDecomposition_coreProj_mul_e_eq_zero,
@@ -155,23 +155,23 @@ theorem eq_idempotent_mul_add_of_mul_sub_eq {n : ℕ} (a : Matrix (Fin n) (Fin c
   simp only [colsOf, cfE, cfE']
   by_cases hq : q.1 < ρ
   · rw [Finset.sum_eq_single ⟨q.1, hq⟩, Finset.sum_eq_zero]
-    · rw [if_pos rfl, add_zero, show (Fin.castLE h ⟨q.1, hq⟩ : Fin c) = q from Fin.ext rfl, mul_comm,
+    · rw [ite_eq_left rfl, add_zero, show (Fin.castLE h ⟨q.1, hq⟩ : Fin c) = q from Fin.ext rfl, mul_comm,
         ← mul_assoc, inv_mul_cancel₀ (hx _), one_mul]
     · intro p _
-      rw [if_neg (by omega), mul_zero]
+      rw [ite_eq_right (by omega), mul_zero]
     · intro p _ hp
-      rw [if_neg (fun e => hp (Fin.ext e)), mul_zero]
+      rw [ite_eq_right (fun e => hp (Fin.ext e)), mul_zero]
     · intro hn; exact absurd (Finset.mem_univ _) hn
   · have hp' : c - 1 - q.1 < ρ := by have := q.2; omega
     rw [Finset.sum_eq_zero, Finset.sum_eq_single ⟨c - 1 - q.1, hp'⟩]
-    · rw [if_pos (by have := q.2; simp only [Fin.val_mk]; omega), zero_add,
+    · rw [ite_eq_left (by have := q.2; simp only [Fin.val_mk]; omega), zero_add,
         show ((Fin.castLE h ⟨c - 1 - q.1, hp'⟩ : Fin c).rev) = q from Fin.ext (by simp [Fin.val_rev]; omega),
         mul_comm, ← mul_assoc, inv_mul_cancel₀ (hs _), one_mul]
     · intro p _ hp
-      rw [if_neg (fun e => hp (Fin.ext (show p.1 = c - 1 - q.1 by omega))), mul_zero]
+      rw [ite_eq_right (fun e => hp (Fin.ext (show p.1 = c - 1 - q.1 by omega))), mul_zero]
     · intro hn; exact absurd (Finset.mem_univ _) hn
     · intro p _
-      rw [if_neg (by have := p.2; omega), mul_zero]
+      rw [ite_eq_right (by have := p.2; omega), mul_zero]
 
 end SlopeTestRemainingChoices
 
@@ -191,7 +191,7 @@ theorem auxiliaryLattice_splitsAlongWitt_at_place {A B : HSp D} {c ρ : ℕ} (t 
   have ha := eq_idempotent_mul_add_of_mul_sub_eq t.a hc hρ s hs
   rw [← he, ← he'] at ha
   have hX : d.qX * t.a = cfE c := by
-    rw [ha, Matrix.mul_add, ← Matrix.mul_assoc, ← Matrix.mul_assoc, GlobalTheory.SeeSaw.SplitLat.qX_e, GlobalTheory.SeeSaw.SplitLat.qX_e',
+    rw [ha, Matrix.mul_add, ← Matrix.mul_assoc, ← Matrix.mul_assoc, GlobalTheory.MixPer.qX_e, GlobalTheory.SeeSaw.SplitLat.qX_e',
       Matrix.one_mul, Matrix.zero_mul, add_zero]
   have hY : d.qY * t.a = cfE' c s := by
     rw [ha, Matrix.mul_add, ← Matrix.mul_assoc, ← Matrix.mul_assoc, GlobalTheory.SeeSaw.SplitLat.qY_e, GlobalTheory.SeeSaw.SplitLat.qY_e',
@@ -209,10 +209,10 @@ theorem auxiliaryLattice_splitsAlongWitt_at_place {A B : HSp D} {c ρ : ℕ} (t 
       by_cases hq : i.1 = q.1
       · have e : (Fin.castLE hρ i : Fin c) = q := Fin.ext hq
         subst e
-        rw [if_pos hq, Pi.single_eq_same, mul_one, mul_comm ((-D.host.xi0) ^ _), mul_assoc, mul_inv_cancel₀ (hx _),
+        rw [ite_eq_left hq, Pi.single_eq_same, mul_one, mul_comm ((-D.host.xi0) ^ _), mul_assoc, mul_inv_cancel₀ (hx _),
           mul_one]
       · have e : q ≠ (Fin.castLE hρ i : Fin c) := fun e => hq (by rw [e]; rfl)
-        rw [if_neg hq, mul_zero, Pi.single_apply, if_neg e, mul_zero]
+        rw [ite_eq_right hq, mul_zero, Pi.single_apply, ite_eq_right e, mul_zero]
     · intro p
       rw [Pi.single_apply]
       split_ifs
@@ -227,9 +227,9 @@ theorem auxiliaryLattice_splitsAlongWitt_at_place {A B : HSp D} {c ρ : ℕ} (t 
       by_cases hq : q.1 + i.1 + 1 = c
       · have e : (Fin.castLE hρ i : Fin c).rev = q := Fin.ext (by simp [Fin.val_rev]; omega)
         subst e
-        rw [if_pos hq, Pi.single_eq_same, mul_one, mul_comm (s i), mul_assoc, mul_inv_cancel₀ (hs _), mul_one]
+        rw [ite_eq_left hq, Pi.single_eq_same, mul_one, mul_comm (s i), mul_assoc, mul_inv_cancel₀ (hs _), mul_one]
       · have e : q ≠ (Fin.castLE hρ i : Fin c).rev := fun e => hq (by rw [e]; simp [Fin.val_rev]; omega)
-        rw [if_neg hq, mul_zero, Pi.single_apply, if_neg e, mul_zero]
+        rw [ite_eq_right hq, mul_zero, Pi.single_apply, ite_eq_right e, mul_zero]
     · intro p
       rw [Pi.single_apply]
       split_ifs

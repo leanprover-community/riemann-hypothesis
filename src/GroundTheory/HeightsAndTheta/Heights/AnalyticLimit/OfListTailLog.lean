@@ -924,17 +924,17 @@ theorem mixedForms_eq_cons {W : Type} [TopologicalSpace W] {D : ℕ} (Om : LocPo
     have hD : (i : ℕ) < D := by omega
     have hc : Fin.cycleRange (⟨a, ha⟩ : Fin (D + 1)) i = Fin.succ ⟨i, hD⟩ :=
       Fin.ext (by simp [Fin.coe_cycleRange_of_lt h])
-    rw [hc, Fin.cons_succ, if_pos hi]
-    simp only [restForms, if_pos hi]
+    rw [hc, Fin.cons_succ, ite_eq_left hi]
+    simp only [restForms, ite_eq_left hi]
     rfl
-  · rw [h, Fin.cycleRange_self, Fin.cons_zero, if_neg (lt_irrefl a)]
+  · rw [h, Fin.cycleRange_self, Fin.cons_zero, ite_eq_right (lt_irrefl a)]
   · have hi : a < (i : ℕ) := h
     have hne : i ≠ 0 := fun h0 => by rw [h0] at hi; exact Nat.not_lt_zero _ hi
-    rw [Fin.cycleRange_of_gt h, if_neg (by omega)]
+    rw [Fin.cycleRange_of_gt h, ite_eq_right (by omega)]
     obtain ⟨j, rfl⟩ := Fin.exists_succ_eq.2 hne
     rw [Fin.cons_succ]
     simp only [restForms]
-    rw [if_neg]
+    rw [ite_eq_right]
     simp only [Fin.val_succ] at hi
     omega
 
@@ -1239,9 +1239,9 @@ theorem interior_secZero {r : ℕ} {m : Fin r → ℕ} {Δ : Fin r → Set W} (h
   have hw0 : ∀ i, w i ≠ 0 := by
     intro i
     by_cases h : ψ x i = 0
-    · simp only [w, if_pos h, ne_eq, Complex.ofReal_eq_zero]
+    · simp only [w, ite_eq_left h, ne_eq, Complex.ofReal_eq_zero]
       linarith
-    · simp only [w, if_neg h]
+    · simp only [w, ite_eq_right h]
       exact h
   have hwb : w ∈ Metric.ball (ψ x) δ := by
     rw [Metric.mem_ball, dist_eq_norm, pi_norm_lt_iff hδ]
@@ -1249,9 +1249,9 @@ theorem interior_secZero {r : ℕ} {m : Fin r → ℕ} {Δ : Fin r → Set W} (h
     by_cases h : ψ x i = 0
     · rw [Pi.sub_apply]
       simp only [w]
-      rw [if_pos h, h, sub_zero, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by linarith)]
+      rw [ite_eq_left h, h, sub_zero, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by linarith)]
       linarith
-    · simp only [w, Pi.sub_apply, if_neg h, sub_self, norm_zero]
+    · simp only [w, Pi.sub_apply, ite_eq_right h, sub_self, norm_zero]
       exact hδ
   obtain ⟨hwt, hwU⟩ := hball hwb
   obtain ⟨i, hi⟩ := hcoord _ (ψ.map_target hwt) hwU
@@ -1427,11 +1427,11 @@ theorem mixedForms_cycle {D : ℕ} (Om : LocPot W) (T : Fin (D + 1) → LocPot W
   · simp only [Function.comp_apply, Fin.cons_succ, Fin.cycleRange_symm_succ]
     by_cases hj : (j : ℕ) < a
     · rw [Fin.succAbove_of_castSucc_lt _ _ (by rw [Fin.lt_def]; simpa using hj)]
-      simp only [mixedForms, restForms, Fin.val_castSucc, hj, if_true]
-      rw [if_pos (by omega)]
+      simp only [mixedForms, restForms, Fin.val_castSucc, hj, ite_true]
+      rw [ite_eq_left (by omega)]
     · rw [Fin.succAbove_of_le_castSucc _ _ (by rw [Fin.le_def]; simp; omega)]
-      simp only [mixedForms, restForms, Fin.val_succ, hj, if_false]
-      rw [if_neg (by omega)]
+      simp only [mixedForms, restForms, Fin.val_succ, hj, ite_false]
+      rw [ite_eq_right (by omega)]
 
 end
 

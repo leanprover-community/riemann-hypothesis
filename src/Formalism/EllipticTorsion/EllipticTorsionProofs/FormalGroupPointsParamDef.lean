@@ -39,7 +39,7 @@ theorem ev_C (a t : K) : Ev (C a) t a := by
     unfold AbsSum; rw [e]
     exact summable_of_ne_finset_zero (s := {0}) (fun n hn => by simp at hn; simp [hn])
   · unfold evalPS
-    rw [tsum_eq_single 0 (fun n hn => by rw [h, if_neg hn])]
+    rw [tsum_eq_single 0 (fun n hn => by rw [h, ite_eq_right hn])]
     simp
 
 theorem ev_X (t : K) : Ev (X : PowerSeries K) t t := by
@@ -51,7 +51,7 @@ theorem ev_X (t : K) : Ev (X : PowerSeries K) t t := by
     unfold AbsSum; rw [e]
     exact summable_of_ne_finset_zero (s := {1}) (fun n hn => by simp at hn; simp [hn])
   · unfold evalPS
-    rw [tsum_eq_single 1 (fun n hn => by rw [h, if_neg hn])]
+    rw [tsum_eq_single 1 (fun n hn => by rw [h, ite_eq_right hn])]
     simp
 
 variable [CompleteSpace K]

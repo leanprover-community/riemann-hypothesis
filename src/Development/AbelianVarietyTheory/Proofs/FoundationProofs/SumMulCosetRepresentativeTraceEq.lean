@@ -61,10 +61,10 @@ theorem sum_mul_cosetTrace_eq (L : Type) [Field L] (v : Valuation L ℝ≥0) (G 
       = if ((1 : G) : G ⧸ N) = q then c * x else 0 := by
     intro q
     by_cases hq : q.out ∈ N
-    · rw [if_pos ((hmem q).mp hq).symm, h.sum_in _ hq]
+    · rw [ite_eq_left ((hmem q).mp hq).symm, h.sum_in _ hq]
       congr 1
       exact hx ⟨_, hq⟩
-    · rw [if_neg (fun h1 => hq ((hmem q).mpr h1.symm)), h.sum_out _ hq, zero_mul]
+    · rw [ite_eq_right (fun h1 => hq ((hmem q).mpr h1.symm)), h.sum_out _ hq, zero_mul]
   calc ∑ i, a i * cosetTrace N (b i * x)
       = ∑ q : G ⧸ N, (∑ i, a i * q.out • b i) * q.out • x := by
         simp only [cosetTrace, smul_mul', Finset.mul_sum, Finset.sum_mul]

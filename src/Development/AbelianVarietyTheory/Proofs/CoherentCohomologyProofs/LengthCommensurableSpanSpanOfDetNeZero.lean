@@ -98,7 +98,7 @@ theorem main : ∀ {R : Type u_1} [inst : CommRing R] [inst_1 : IsDomain R] [IsD
   intro R _ _ _ M _ _ _ _ f h
   obtain ⟨φ, hφ0, hφ⟩ := exists_dual_ne_zero_comp_eq_zero h
   obtain ⟨m, hm⟩ : ∃ m, φ m ≠ 0 := by
-    by_contra hc; push_neg at hc; exact hφ0 (LinearMap.ext hc)
+    by_contra hc; push Not at hc; exact hφ0 (LinearMap.ext hc)
   have hle : LinearMap.range f ≤ LinearMap.ker φ := by
     rintro _ ⟨x, rfl⟩
     simpa using congrArg (fun g => g x) hφ
@@ -316,8 +316,7 @@ theorem main {R : Type u_1} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R
       rw [hA, LinearMap.toMatrix_apply]
     let ψ := (LinearMap.range f).liftQ φ hle
     obtain ⟨i, hi⟩ : ∃ i, w i ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hw0 (funext h)
     have hmem : (R ∙ w i) ≤ LinearMap.range ψ := by
       rw [Submodule.span_le, Set.singleton_subset_iff]

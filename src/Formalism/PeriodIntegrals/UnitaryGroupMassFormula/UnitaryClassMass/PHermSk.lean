@@ -101,9 +101,9 @@ theorem hermApprox_of (hL : LocSw) (hC : CloseLoc) (hW : WPlace) (hB : BcU) (hG 
   have hgl : ∀ t ∈ T, gl t ∈ PI.UnitaryApproxDefs.UPts σ0 J (t.adicCompletion K0) := by
     intro t _
     by_cases hx : ∃ p, w p = t
-    · simp only [gl, dif_pos hx]
+    · simp only [gl, dite_eq_left hx]
       exact hB K0 E σ0 M J _ _ (hg _)
-    · simp only [gl, dif_neg hx]
+    · simp only [gl, dite_eq_right hx]
       exact one_mem _
 
   have hCp := fun p : P => hC K0 E σ0 V M J b L0 hσσ0 hH0 hdet hL0 (g p) (hg p)
@@ -121,7 +121,7 @@ theorem hermApprox_of (hL : LocSw) (hC : CloseLoc) (hW : WPlace) (hB : BcU) (hG 
   have hcong := hc (w q') hT
   have hglq : gl (w q') = Units.map ((PI.UnitaryApproxDefs.inclE (F := K0) (E := E) ((w q').adicCompletion K0)).mapMatrix :
         Matrix (Fin M) (Fin M) E →+* Matrix (Fin M) (Fin M) (E ⊗[K0] (w q').adicCompletion K0)).toMonoidHom
-          (g ps) := dif_pos hx
+          (g ps) := dite_eq_left hx
   rw [hglq] at hcong
   have hcl := hDcl ps Dall (Finset.dvd_prod_of_mem _ (Finset.mem_univ _)) γ hγ (w q') hcong
   have eq1 := hL K0 E σ0 hσstar hfix V q (hP q hq) (w q') rfl

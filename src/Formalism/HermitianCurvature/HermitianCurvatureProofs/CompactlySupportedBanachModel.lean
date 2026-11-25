@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.HpkMulVecMulVec
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DilationUnipotentWeylMeasure
 public import Formalism.HermitianCurvature.StatementU
 public import Mathlib.Analysis.Normed.Lp.lpSpace
@@ -291,7 +292,7 @@ lemma Mv_sum (Y : J k r → ℝ) : Mv Y = ∑ i, Y i • Eb i := by
   simp only [Matrix.smul_apply, Eb, Matrix.of_apply, Mv, smul_ite, smul_zero, ite_and]
   rw [Fintype.sum_prod_type]
   simp only [Fintype.sum_prod_type, Fintype.sum_bool]
-  simp only [Complex.real_smul, mul_one, if_true, if_false, Bool.false_eq_true]
+  simp only [Complex.real_smul, mul_one, ite_true, ite_false, Bool.false_eq_true]
   simp only [Finset.sum_add_distrib]
   rw [Finset.sum_eq_single p, Finset.sum_eq_single q, Finset.sum_eq_single p, Finset.sum_eq_single q]
   · simp [add_comm]
@@ -318,7 +319,7 @@ lemma cd_co {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X] {n : WithTop 
   rw [cdm_iff] at hF
   unfold co
   by_cases h : i.2.2 = true
-  · simp only [h, if_true]; exact Complex.imCLM.contDiff.comp_contDiffOn (hF _ _)
+  · simp only [h, ite_true]; exact Complex.imCLM.contDiff.comp_contDiffOn (hF _ _)
   · simp only [h]; exact Complex.reCLM.contDiff.comp_contDiffOn (hF _ _)
 
 lemma cd_Mv : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (Mv : (J k r → ℝ) → Mat k r) := by
@@ -545,23 +546,7 @@ lemma continuous_gN : Continuous (gN : Mat k r → ℝ) := by
     Complex.continuous_normSq.comp ((continuous_apply j).comp (continuous_apply i)))
 
 lemma gN_pos {g : Mat k r} (hg : g ∈ GV k r) : 0 < gN g := by
-  have hu : IsUnit g.det := Formalism.QuantumDeterminants.WeylGroupFacts.isUnit_of_uh hg
-  have hne : g ≠ 0 := by
-    rintro rfl
-    have : Nonempty (Fin (2 * r + k + 1)) := ⟨⟨0, by omega⟩⟩
-    rw [Matrix.det_zero] at hu
-    exact not_isUnit_zero hu
-  obtain ⟨i, j, hij⟩ : ∃ i j, g i j ≠ 0 := by
-    by_contra h; push Not at h; exact hne (Matrix.ext h)
-  unfold gN
-  apply Real.sqrt_pos.2
-  calc (0:ℝ) < Complex.normSq (g i j) := Complex.normSq_pos.2 hij
-    _ ≤ ∑ j', Complex.normSq (g i j') :=
-        Finset.single_le_sum (f := fun j' => Complex.normSq (g i j'))
-          (fun _ _ => Complex.normSq_nonneg _) (Finset.mem_univ j)
-    _ ≤ ∑ i', ∑ j', Complex.normSq (g i' j') :=
-        Finset.single_le_sum (f := fun i' => ∑ j', Complex.normSq (g i' j'))
-          (fun _ _ => Finset.sum_nonneg fun _ _ => Complex.normSq_nonneg _) (Finset.mem_univ i)
+  apply _root_.ReciprocityTheory.ChartRestriction.DS.Mult1.TopH.gN_pos <;> assumption
 
 lemma cv_continuous (b : Bool) (X g : Mat k r) : Continuous (fun t : ℝ => cv b X t g) := by
   rw [continuous_iff_continuousAt]

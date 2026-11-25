@@ -6,6 +6,7 @@ import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.GenericFibreKerTarget
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.IsFieldIntersection
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.RationalSections.IsRatSectionOn
+import ReciprocityTheory.AnalyticForms.LeviForms.TailCutA
 
 @[expose] public section
 
@@ -35,16 +36,7 @@ theorem holoOn_eval {σ : Type} (A : FinHolAtlas e X) {W : Set X} {b : X → σ 
 
 theorem continuousAt_of_holoOn (A : FinHolAtlas e X) {W : Set X} {f : X → ℂ} (hf : A.HoloOn W f) {y : X}
     (hy : y ∈ W) : ContinuousAt f y := by
-  obtain ⟨j, hj⟩ := A.cover y
-  have h1 : (A.chart j) y ∈ (A.chart j).target ∩ (A.chart j).symm ⁻¹' W :=
-    ⟨(A.chart j).map_source hj, by
-      rw [Set.mem_preimage, (A.chart j).left_inv hj]; exact hy⟩
-  have h2 : ContinuousAt (f ∘ (A.chart j).symm) ((A.chart j) y) := (hf j _ h1).continuousAt
-  have h3 : ContinuousAt (fun u => (f ∘ (A.chart j).symm) ((A.chart j) u)) y :=
-    ContinuousAt.comp (f := A.chart j) h2 ((A.chart j).continuousAt hj)
-  refine h3.congr ?_
-  filter_upwards [(A.chart j).open_source.mem_nhds hj] with u hu
-  simp only [Function.comp_apply, (A.chart j).left_inv hu]
+  apply _root_.ReciprocityTheory.AnForm.P.LeviFormBoundaryTopology.continuousAt_of_holoOn <;> assumption
 
 theorem isOpen_inter_ne (A : FinHolAtlas e X) {W : Set X} {f : X → ℂ} (hW : IsOpen W)
     (hf : A.HoloOn W f) : IsOpen (W ∩ {y | f y ≠ 0}) := by

@@ -377,7 +377,7 @@ private lemma la1sq_pos_of_mem_dom {r : ℕ} (X : _root_.ReciprocityTheory.Chart
     intro v hvΛ hv0
     by_cases hsmall : ∀ τ : X.Ψ, ‖_root_.ReciprocityTheory.ChartRestriction.G.FD.Data.emb (τ : E →+* ℂ) v‖ ≤ 1
     · exact le_trans (min_le_left _ _) (hδf v ⟨⟨hvΛ, hsmall⟩, hv0⟩)
-    · push_neg at hsmall
+    · push Not at hsmall
       obtain ⟨τ, hτ⟩ := hsmall
       refine le_trans (min_le_right _ _) ?_
       have h1 : m * c0 ≤ X.c τ * X.maj x τ (_root_.ReciprocityTheory.ChartRestriction.G.FD.Data.emb (τ : E →+* ℂ) v) := by
@@ -393,8 +393,7 @@ private lemma la1sq_pos_of_mem_dom {r : ℕ} (X : _root_.ReciprocityTheory.Chart
         X.c τ * X.maj x τ (_root_.ReciprocityTheory.ChartRestriction.G.FD.Data.emb (τ : E →+* ℂ) v)) (fun τ _ => hterm v τ)
         (Finset.mem_univ _))
   obtain ⟨v0, hv0Λ, hv00⟩ : ∃ v ∈ X.Λ, v ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hbot : (X.Λ : Set (Fin r → E)) ⊆ {0} := fun v hv => hcon v hv
     have := X.Λ_span
     rw [eq_top_iff] at this

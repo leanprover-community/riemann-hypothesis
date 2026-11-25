@@ -110,10 +110,10 @@ theorem conjugated_generator_gl_relation : EabHGl := by
     intro i j k l
     by_cases hjk : j = k
     · subst hjk
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       first
       | rw [Matrix.single_mul_single_same, mul_one]
-    · rw [if_neg hjk]
+    · rw [ite_eq_right hjk]
       first
       | (ext p q; simp [Matrix.mul_apply, Matrix.single_apply, ite_and, hjk, Finset.sum_ite_eq])
   simp only [hE]

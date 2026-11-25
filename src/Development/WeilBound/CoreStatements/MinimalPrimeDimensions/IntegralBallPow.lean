@@ -58,15 +58,11 @@ theorem integral_ball_pow (e : ℕ) {R : ℝ} (hR : 0 ≤ R) :
   field_simp
   ring
 
-theorem gram_nonneg {e n : ℕ} (v : (Fin e → ℂ) → (Fin n → ℂ)) (y : Fin e → ℂ) :
-    0 ≤ gramVol v y := by
-  apply _root_.GroundTheory.Heights₂.Heights.gramVol_nonneg
-
 def fsDens {e n : ℕ} (v : (Fin e → ℂ) → (Fin n → ℂ)) (x : Fin e → ℂ) : ℝ :=
   (e.factorial : ℝ) / Real.pi ^ e * gramVol v x / ‖WithLp.toLp 2 (v x)‖ ^ (2 * (e + 1))
 
 theorem fsDens_nonneg {e n : ℕ} (v : (Fin e → ℂ) → (Fin n → ℂ)) (x : Fin e → ℂ) : 0 ≤ fsDens v x :=
-  div_nonneg (mul_nonneg (by positivity) (gram_nonneg v x)) (by positivity)
+  div_nonneg (mul_nonneg (by positivity) (GroundTheory.Heights₂.Heights.gramVol_nonneg v x)) (by positivity)
 
 theorem cHess_two_mul {D : ℕ} {ψ : (Fin D → ℂ) → ℝ} {v : V D} (hψ : ContDiffAt ℝ 2 ψ v.ofLp) :
     cHess D (fun w => ((2 * ψ w.ofLp : ℝ) : ℂ)) v = (2 : ℂ) • cxHessian ψ v.ofLp := by
@@ -191,7 +187,7 @@ theorem area_ball {n e : ℕ} {ι : Type} [Countable ι] {U D : ι → Set (Fin 
         ∫⁻ x in D i, F (WithLp.toLp 2 (v i x)) * ENNReal.ofReal (fsDens (v i) x) := by
     rw [← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
     exact setLIntegral_congr_fun (hUD i).2.1 fun x hx =>
-      lintegral_line hF (by simpa using h0 i x hx) (gram_nonneg _ _)
+      lintegral_line hF (by simpa using h0 i x hx) (GroundTheory.Heights₂.Heights.gramVol_nonneg _ _)
   simp only [e1] at hA
   rw [ENNReal.tsum_mul_left, mul_left_comm, ENNReal.mul_right_inj hc0 ENNReal.ofReal_ne_top,
     lintegral_indicator measurableSet_ball, Measure.restrict_restrict measurableSet_ball] at hA

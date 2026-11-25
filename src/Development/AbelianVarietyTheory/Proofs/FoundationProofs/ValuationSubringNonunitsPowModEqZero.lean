@@ -74,8 +74,7 @@ theorem cgA_pow_of_mem_nonunits {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgCl
     · rw [← A.valuation_le_one_iff, map_div₀, map_pow]
       exact (div_le_one₀ (zero_lt_iff.2 hvl0)).2 hk
     · rw [sub_zero, pow_one]; field_simp
-  by_contra H
-  push_neg at H
+  by_contra! H
   have hlt : ∀ k : ℕ, A.valuation (l : Ω) < A.valuation x ^ k :=
     fun k => not_le.1 (fun h => H k (key k h))
   have hx0 : x ≠ 0 := by
@@ -116,8 +115,7 @@ theorem cgA_pow_of_mem_nonunits {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgCl
     · exfalso; apply hc; simpa using h'
     · exact h'
   have hex : ∃ i, ¬ (l : ℤ) ∣ q.coeff i := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     have hu := hqprim (l : ℤ) ((C_dvd_iff_dvd_coeff _ _).2 h)
     exact hpl.not_unit hu
   set i0 := Nat.find hex with hi0

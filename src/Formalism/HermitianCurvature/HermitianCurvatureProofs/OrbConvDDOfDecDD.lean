@@ -16,8 +16,6 @@ open scoped InnerProductSpace
 
 namespace Formalism.FourierDecayAlt.P.S3dx4
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.ThreeDimData
 
 theorem ag_nonneg (k r : ℕ) : 0 ≤ AG k r := by unfold AG; positivity

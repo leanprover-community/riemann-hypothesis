@@ -97,7 +97,7 @@ theorem isMultiHomog_one : IsMultiHomog (1 : MRing ι) 0 := by
   have hm0 : m = 0 := by
     rw [MvPolynomial.mem_support_iff, MvPolynomial.coeff_one] at hm
     by_contra h
-    exact hm (if_neg (Ne.symm h))
+    exact hm (ite_eq_right (Ne.symm h))
   simp [hm0]
 
 attribute [local instance] MvPolynomial.weightedGradedAlgebra

@@ -90,17 +90,17 @@ theorem UpperTheory.bideterminant_antidiag_eval_weight_unit_support :
           simp only [Fin.val_rev, Fin.coe_castLE]
           omega
         · intro r _
-          rw [if_neg]
+          rw [ite_eq_right]
           have := r.isLt
           omega
       · rw [Finset.sum_eq_single (⟨n - 1 - (J p : ℕ), by omega⟩ : Fin s)]
-        · rw [if_pos (by simp only; omega)]
+        · rw [ite_eq_left (by simp only; omega)]
           congr 1
           ext
           simp only [Fin.val_rev, Fin.coe_castLE]
           omega
         · intro b _ hb
-          rw [if_neg]
+          rw [ite_eq_right]
           intro h'
           apply hb
           ext
@@ -162,13 +162,12 @@ theorem UpperTheory.bideterminant_antidiag_eval_weight_unit_support :
       fun h0 => hne (Finset.prod_eq_zero (Finset.mem_univ k) h0)
     have hlow : ∀ p : Fin (sz k), n ≤ (I k p : ℕ) + sz k := by
       intro p
-      by_contra hlt
-      push_neg at hlt
+      by_contra! hlt
       apply hdet
       apply Matrix.det_eq_zero_of_row_eq_zero p
       intro q
       simp only [Matrix.of_apply]
-      rw [if_neg]
+      rw [ite_eq_right]
       have := q.isLt
       omega
     have hA : ∀ d : ℕ, ∀ a b : Fin (sz k), (b : ℕ) = a + d → (I k a : ℕ) + d ≤ I k b := by
@@ -211,14 +210,14 @@ private theorem sum_ite_eq_of_shifted_index {n m : ℕ} (g : Fin m → Fin n) (h
     (hm : m ≤ n) (i : Fin n) :
     (∑ p : Fin m, if g p = i then 1 else 0 : ℕ) = if n - m ≤ (i : ℕ) then 1 else 0 := by
   by_cases h : n - m ≤ (i : ℕ)
-  · rw [if_pos h, Finset.sum_eq_single (⟨i - (n - m), by have := i.isLt; omega⟩ : Fin m)]
-    · rw [if_pos]
+  · rw [ite_eq_left h, Finset.sum_eq_single (⟨i - (n - m), by have := i.isLt; omega⟩ : Fin m)]
+    · rw [ite_eq_left]
       ext
       rw [hg]
       show n - m + ((i : ℕ) - (n - m)) = (i : ℕ)
       omega
     · intro p _ hp
-      rw [if_neg]
+      rw [ite_eq_right]
       intro he
       apply hp
       ext
@@ -228,10 +227,10 @@ private theorem sum_ite_eq_of_shifted_index {n m : ℕ} (g : Fin m → Fin n) (h
       omega
     · intro hn
       exact absurd (Finset.mem_univ _) hn
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     apply Finset.sum_eq_zero
     intro p _
-    rw [if_neg]
+    rw [ite_eq_right]
     intro he
     apply h
     have := hg p
@@ -243,8 +242,8 @@ private theorem sum_ite_pair_castLE_eq_of_shifted_index {n m : ℕ} (hm : m ≤ 
     (∑ p : Fin m, if (g p, Fin.castLE hm p) = (i, j) then 1 else 0 : ℕ)
       = if m + (i : ℕ) = n + j then 1 else 0 := by
   by_cases h : m + (i : ℕ) = n + j
-  · rw [if_pos h, Finset.sum_eq_single (⟨j, by have := i.isLt; omega⟩ : Fin m)]
-    · rw [if_pos]
+  · rw [ite_eq_left h, Finset.sum_eq_single (⟨j, by have := i.isLt; omega⟩ : Fin m)]
+    · rw [ite_eq_left]
       refine Prod.ext (Fin.ext ?_) (Fin.ext ?_)
       · show ((g _ : Fin n) : ℕ) = (i : ℕ)
         rw [hg]
@@ -252,7 +251,7 @@ private theorem sum_ite_pair_castLE_eq_of_shifted_index {n m : ℕ} (hm : m ≤ 
         omega
       · simp
     · intro p _ hp
-      rw [if_neg]
+      rw [ite_eq_right]
       intro he
       apply hp
       ext
@@ -262,10 +261,10 @@ private theorem sum_ite_pair_castLE_eq_of_shifted_index {n m : ℕ} (hm : m ≤ 
       exact this
     · intro hn
       exact absurd (Finset.mem_univ _) hn
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     apply Finset.sum_eq_zero
     intro p _
-    rw [if_neg]
+    rw [ite_eq_right]
     intro he
     apply h
     have h1 := congrArg (fun x => (x.1 : ℕ)) he
@@ -322,8 +321,8 @@ private theorem shapeDeg_rev_eq_count_of_shifted {n K : ℕ} (sz : Fin K → ℕ
   rw [Fin.val_rev]
   have := i.isLt
   by_cases h : n - sz k ≤ (i : ℕ)
-  · rw [if_pos h, if_pos (by omega)]
-  · rw [if_neg h, if_neg (by omega)]
+  · rw [ite_eq_left h, ite_eq_left (by omega)]
+  · rw [ite_eq_right h, ite_eq_right (by omega)]
 
 private theorem bidetExp_apply_eq_card_of_canonical {n K : ℕ} (sz : Fin K → ℕ) (hsz : ∀ k, sz k ≤ n)
     (I : ∀ k, Fin (sz k) → Fin n) (hcan : ∀ k p, (I k p : ℕ) + sz k = n + p) (i j : Fin n) :
@@ -525,8 +524,7 @@ theorem sqBasis (O K : Type) [CommRing O] [IsDomain O] [Field K] [Algebra O K] (
     rw [← hb.2.1, Set.range_eq_empty, Submodule.span_empty] at h1
     exact hwNe O n n le_rfl _ h1
   obtain ⟨k0, hk0⟩ : ∃ k0, ℓ (b k0) ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     obtain ⟨m⟩ := hne
     let I' : ∀ k, Fin (sz m k) → Fin n := fun k p => ⟨n - sz m k + p, by have := hsz m k; have := p.2; omega⟩
     have h0 : ℓ = 0 := b.ext h

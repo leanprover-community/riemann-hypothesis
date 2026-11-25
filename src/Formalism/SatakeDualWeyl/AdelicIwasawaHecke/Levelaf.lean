@@ -156,7 +156,7 @@ theorem levelaf_adele_res (D : 𝓞 F) (hD : D ≠ 0) :
   · intro a ha
     have hex : ∃ b, φ b = φ ⟨a, ha⟩ := ⟨_, rfl⟩
     have hrep : φ (rep (φ ⟨a, ha⟩)) = φ ⟨a, ha⟩ := by
-      simp only [rep, dif_pos hex]; exact hex.choose_spec
+      simp only [rep, dite_eq_left hex]; exact hex.choose_spec
     obtain ⟨y, hy, e⟩ := key ⟨a, ha⟩ _ hrep.symm
     exact ⟨_, ⟨_, rfl⟩, y, hy, e⟩
 

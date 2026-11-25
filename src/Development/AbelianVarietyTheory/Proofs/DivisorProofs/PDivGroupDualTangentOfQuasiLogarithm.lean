@@ -9,53 +9,11 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PDivGroupFor
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsHomNmulOfIsLaw
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OmegaBaseChangeFiniteProjectiveReflexive
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsHausdorffOfProjective
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.EpsilonPairingZeta
 import Development.AbelianVarietyTheory.Definitions.Divisors.GhostFrobenius
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Definitions.Divisors.FormalCoboundarySmul
 import Mathlib.RingTheory.MvPowerSeries.Basic
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PadicContinuousEvaluationExistsUniqueSubstNatura
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FontaineXiPowSaturatedQuotientComplete
@@ -77,14 +35,12 @@ namespace GlobalTheory.DefectComp
 
 variable {R Q : Type} [CommRing R] [CommRing Q] [Algebra R Q] {d : ℕ}
 
-set_option autoImplicit false in
 open MvPowerSeries TensorProduct in
 variable {R Q : Type} [CommRing R] [CommRing Q] [Algebra R Q] {d : ℕ} in
 variable {S : Type} [CommRing S] in
 private lemma nmul_zero (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) S) :
     _root_.GlobalTheory.QLog.nmul μ 0 = fun _ => 0 := rfl
 
-set_option autoImplicit false in
 open MvPowerSeries TensorProduct in
 variable {R Q : Type} [CommRing R] [CommRing Q] [Algebra R Q] {d : ℕ} in
 variable {S : Type} [CommRing S] in
@@ -93,7 +49,6 @@ private lemma hasSubst_sumElim_of_constantCoeff_eq_zero {τ : Type} {v w : Fin d
     HasSubst (Sum.elim v w) :=
   hasSubst_of_constantCoeff_zero fun s => by cases s <;> simp [hv, hw]
 
-set_option autoImplicit false in
 open MvPowerSeries TensorProduct in
 variable {R Q : Type} [CommRing R] [CommRing Q] [Algebra R Q] {d : ℕ} in
 variable {S : Type} [CommRing S] in
@@ -104,7 +59,6 @@ private lemma constantCoeff_katz_op_eq_zero {τ : Type} (μ : Fin d → MvPowerS
   constantCoeff_subst_eq_zero (hasSubst_sumElim_of_constantCoeff_eq_zero hv hw)
     (fun s => by cases s <;> simp [hv, hw]) (hμ i)
 
-set_option autoImplicit false in
 open MvPowerSeries TensorProduct in
 variable {R Q : Type} [CommRing R] [CommRing Q] [Algebra R Q] {d : ℕ} in
 variable {S : Type} [CommRing S] in
@@ -117,7 +71,6 @@ private lemma constantCoeff_nmul_eq_zero' (μ : Fin d → MvPowerSeries (Fin d �
     rw [_root_.GlobalTheory.QLogDefect.nmul_succ]
     exact constantCoeff_katz_op_eq_zero μ hμ ih (fun j => constantCoeff_X j) i
 
-set_option autoImplicit false in
 open MvPowerSeries TensorProduct in
 variable {R Q : Type} [CommRing R] [CommRing Q] [Algebra R Q] {d : ℕ} in
 variable {S : Type} [CommRing S] in
@@ -127,7 +80,6 @@ private lemma mvPowerSeries_map_injective {σ A B : Type} [CommRing A] [CommRing
   apply hh
   simpa using congrArg (coeff n) hpq
 
-set_option autoImplicit false in
 open MvPowerSeries TensorProduct in
 variable {R Q : Type} [CommRing R] [CommRing Q] [Algebra R Q] {d : ℕ} in
 variable {S : Type} [CommRing S] in
@@ -135,7 +87,6 @@ private lemma subst_zero_divisor {σ τ : Type} {c : σ → MvPowerSeries τ S} 
     subst c (0 : MvPowerSeries σ S) = 0 := by
   rw [← coe_substAlgHom hc, map_zero]
 
-set_option autoImplicit false in
 open MvPowerSeries TensorProduct in
 variable {R Q : Type} [CommRing R] [CommRing Q] [Algebra R Q] {d : ℕ} in
 variable {S : Type} [CommRing S] in
@@ -149,7 +100,6 @@ private lemma subst_subst_sumElim_eq_subst_sumElim_subst {τ υ : Type} {v w : F
   funext s
   cases s <;> rfl
 
-set_option autoImplicit false in
 open MvPowerSeries TensorProduct in
 variable {R Q : Type} [CommRing R] [CommRing Q] [Algebra R Q] {d : ℕ} in
 variable {S : Type} [CommRing S] in
@@ -161,7 +111,6 @@ private lemma subst_katz_op_eq_op_subst {τ υ : Type} (μ : Fin d → MvPowerSe
       _root_.GlobalTheory.Katz.op μ (fun j => subst c (v j)) (fun j => subst c (w j)) i :=
   subst_subst_sumElim_eq_subst_sumElim_subst hv hw hc (μ i)
 
-set_option autoImplicit false in
 open MvPowerSeries TensorProduct in
 variable {R Q : Type} [CommRing R] [CommRing Q] [Algebra R Q] {d : ℕ} in
 variable {S : Type} [CommRing S] in
@@ -203,7 +152,6 @@ private lemma nmul_add_eq_op {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) S}
       subst_X hc, Sum.elim_inl, Sum.elim_inr] at h
     exact h
 
-set_option autoImplicit false in
 open MvPowerSeries TensorProduct in
 variable {R Q : Type} [CommRing R] [CommRing Q] [Algebra R Q] {d : ℕ} in
 variable {S : Type} [CommRing S] in
@@ -224,7 +172,6 @@ private lemma subst_nmul_nmul_eq_nmul_mul {μ : Fin d → MvPowerSeries (Fin d �
     rw [Nat.succ_mul, nmul_add_eq_op hG]
 
 
-set_option autoImplicit false in
 open MvPowerSeries TensorProduct in
 variable {R Q : Type} [CommRing R] [CommRing Q] [Algebra R Q] {d : ℕ} in
 variable {S : Type} [CommRing S] in

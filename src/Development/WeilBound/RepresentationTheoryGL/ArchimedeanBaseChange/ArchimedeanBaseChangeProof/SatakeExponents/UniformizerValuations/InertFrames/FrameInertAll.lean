@@ -33,8 +33,6 @@ open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC GlobalTheory.BCT
 open scoped Classical
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.BcB.F.Inert.WittBasisGramMatrix
 
 variable {R : Type} [CommRing R]
@@ -48,9 +46,6 @@ theorem antiJ_eq_rev {L : Type} [Field L] {n : ℕ} (i j : Fin n) :
     omega
   show (if (i : ℕ) + j + 1 = n then (1 : L) else 0) = _
   exact if_congr key rfl rfl
-
-theorem antiJ_mul_self {L : Type} [Field L] (n : ℕ) : antiJ L n * antiJ L n = 1 :=
-  _root_.Formalism.UG.P.fIwasawa_antiJ_mul_antiJ
 
 def bM {n : ℕ} (d₁ d₂ : Fin n → R) : Matrix (Fin n) (Fin n) R :=
   fun i j => (if i = j then d₁ i else 0) + (if i = Fin.rev j then d₂ i else 0)
@@ -68,20 +63,20 @@ theorem gram_bM {n : ℕ} (σ : R →+* R) (d₁ d₂ : Fin n → R)
   rw [Matrix.mul_apply]
   simp only [Matrix.transpose_apply, Matrix.map_apply, bM_map]
   simp only [bM, add_mul, mul_add, Finset.sum_add_distrib, ite_mul, mul_ite, zero_mul, mul_zero,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   by_cases hjk : j = k
   · subst hjk
     by_cases hs : j = Fin.rev j
     · obtain ⟨h0, h1⟩ := P3 j hs
       rw [← hs]
       simp [h0, h1]
-    · simp only [if_neg hs, if_neg (Ne.symm hs), if_true, add_zero, zero_add]
+    · simp only [ite_eq_right hs, ite_eq_right (Ne.symm hs), ite_true, add_zero, zero_add]
       exact P1 j hs
   · by_cases hr : j = Fin.rev k
     · have hk : k = Fin.rev j := by rw [hr, Fin.rev_rev]
       subst hk
       have hs : j ≠ Fin.rev j := hjk
-      simp only [Fin.rev_rev, if_neg (Ne.symm hs), if_neg hs, if_true, zero_add,
+      simp only [Fin.rev_rev, ite_eq_right (Ne.symm hs), ite_eq_right hs, ite_true, zero_add,
         add_zero]
       rw [add_comm]
       exact P2 j hs
@@ -89,7 +84,7 @@ theorem gram_bM {n : ℕ} (σ : R →+* R) (d₁ d₂ : Fin n → R)
       have h2 : k ≠ Fin.rev j := fun h => hr (by rw [h, Fin.rev_rev])
       have h3 : Fin.rev k ≠ j := fun h => hr h.symm
       have h4 : Fin.rev k ≠ Fin.rev j := fun h => hjk (Fin.rev_injective h).symm
-      simp only [if_neg h1, if_neg h2, if_neg h3, if_neg h4, if_neg hr, add_zero]
+      simp only [ite_eq_right h1, ite_eq_right h2, ite_eq_right h3, ite_eq_right h4, ite_eq_right hr, add_zero]
 
 end PositivityTheory.Rg.BcB.F.Inert.WittBasisGramMatrix
 
@@ -125,18 +120,18 @@ theorem wittEx : WittEx := by
     ⟨_, fun _ => rfl⟩
   have hfirst : ∀ j : Fin n, (j : ℕ) < (Fin.rev j : ℕ) → d₁ j = 1 ∧ d₂ j = 1 - wv := by
     intro j h
-    rw [hd₁, hd₂, if_pos h, if_pos h]
+    rw [hd₁, hd₂, ite_eq_left h, ite_eq_left h]
     exact ⟨rfl, rfl⟩
   have hsecond : ∀ j : Fin n, (Fin.rev j : ℕ) < (j : ℕ) → d₁ j = -(t * wv) ∧ d₂ j = t := by
     intro j h
     have h1 : ¬ ((j : ℕ) < (Fin.rev j : ℕ)) := by omega
     have h2 : j ≠ Fin.rev j := fun e => by rw [← e] at h; exact lt_irrefl _ h
-    rw [hd₁, hd₂, if_neg h1, if_neg h1, if_neg h2, if_neg h2]
+    rw [hd₁, hd₂, ite_eq_right h1, ite_eq_right h1, ite_eq_right h2, ite_eq_right h2]
     exact ⟨rfl, rfl⟩
   have hmid : ∀ j : Fin n, j = Fin.rev j → d₁ j = 1 ∧ d₂ j = 0 := by
     intro j e
     have h1 : ¬ ((j : ℕ) < (Fin.rev j : ℕ)) := by rw [← e]; exact lt_irrefl _
-    rw [hd₁, hd₂, if_neg h1, if_neg h1, if_pos e, if_pos e]
+    rw [hd₁, hd₂, ite_eq_right h1, ite_eq_right h1, ite_eq_left e, ite_eq_left e]
     exact ⟨rfl, rfl⟩
   have hside : ∀ j : Fin n, j ≠ Fin.rev j → (j : ℕ) < (Fin.rev j : ℕ) ∨ (Fin.rev j : ℕ) < (j : ℕ) :=
     fun j hj => lt_or_gt_of_ne (fun e => hj (Fin.ext e))
@@ -174,7 +169,7 @@ theorem wittEx : WittEx := by
     rw [WittBasisGramMatrix.gram_bM (GlobalTheory.BCT.cj w) d₁ d₂ P1 P2 P3 j k, WittBasisGramMatrix.antiJ_eq_rev]
   have hCB : (antiJ (IsDedekindDomain.HeightOneSpectrum.adicCompletion E w) n *
       ((WittBasisGramMatrix.bM d₁ d₂).map (GlobalTheory.BCT.cj w))ᵀ) * WittBasisGramMatrix.bM d₁ d₂ = 1 := by
-    rw [Matrix.mul_assoc, hG, WittBasisGramMatrix.antiJ_mul_self]
+    rw [Matrix.mul_assoc, hG, Formalism.UG.P.fIwasawa_antiJ_mul_antiJ]
   have hBC : WittBasisGramMatrix.bM d₁ d₂ * (antiJ (IsDedekindDomain.HeightOneSpectrum.adicCompletion E w) n *
       ((WittBasisGramMatrix.bM d₁ d₂).map (GlobalTheory.BCT.cj w))ᵀ) = 1 := (Matrix.mul_eq_one_comm_of_equiv (Equiv.refl _)).mp hCB
   have hd1int : ∀ j, Valued.v (d₁ j) ≤ 1 := by
@@ -258,16 +253,6 @@ private theorem infinite_of_hasDirichletDensity_pos {K : Type} [Field K] [Number
   have h0 := GroundTheory.Global.hasDirichletDensity_zero_of_finite hfin
   exact hδ.ne' (h.dirichletDensity_eq.symm.trans h0.dirichletDensity_eq)
 
-private theorem eq_one_or_eq_complexConj_of_maximalRealSubfield (E : Type) [Field E] [NumberField E] [IsCMField E]
-    (σ : Gal(E/↥(maximalRealSubfield E))) : σ = 1 ∨ σ = IsCMField.complexConj E := by
-  have hσ : σ ∈ Subgroup.zpowers (IsCMField.complexConj E) := by
-    rw [IsCMField.zpowers_complexConj_eq_top]
-    trivial
-  obtain ⟨k, rfl⟩ := Subgroup.mem_zpowers_iff.mp hσ
-  rw [← zpow_mod_orderOf, IsCMField.orderOf_complexConj]
-  push_cast
-  rcases Int.emod_two_eq_zero_or_one k with hk | hk <;> simp [hk]
-
 theorem inertSet_infinite : (inertSet E).Infinite := by
   have hcl : ∀ σ ∈ ({IsCMField.complexConj E} : Set Gal(E/↥(maximalRealSubfield E))),
       ∀ τ : Gal(E/↥(maximalRealSubfield E)), τ * σ * τ⁻¹ ∈
@@ -275,7 +260,7 @@ theorem inertSet_infinite : (inertSet E).Infinite := by
     intro σ hσ τ
     rw [Set.mem_singleton_iff] at hσ ⊢
     subst hσ
-    rcases eq_one_or_eq_complexConj_of_maximalRealSubfield E τ with h | h <;> subst h <;> group
+    rcases Formalism.FrobeniusOrbits.Eta.cases E τ with h | h <;> subst h <;> group
   have hd := GroundTheory.Global.hasDirichletDensity_chebotarevSet
     (K := ↥(maximalRealSubfield E)) (L := E) _ hcl
   apply infinite_of_hasDirichletDensity_pos hd
@@ -295,7 +280,7 @@ theorem eq_of_liesOver {v : HeightOneSpectrum (𝓞 (maximalRealSubfield E))} (h
     Gal(E/↥(maximalRealSubfield E))
   apply IsDedekindDomain.HeightOneSpectrum.ext
   rw [← hσ]
-  rcases eq_one_or_eq_complexConj_of_maximalRealSubfield E σ with h | h
+  rcases Formalism.FrobeniusOrbits.Eta.cases E σ with h | h
   · rw [h, one_smul]
   · have hfrob := (hv w hw).2
     rw [Set.mem_singleton_iff] at hfrob
@@ -357,8 +342,6 @@ open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC GlobalTheory.BCT
 open scoped Classical
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.Rg.BcB.F.Inert
 
 namespace UniformizerValuation
@@ -408,8 +391,6 @@ noncomputable section
 open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC GlobalTheory.BCT
 open scoped Classical
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace PositivityTheory.Rg.BcB.F.Inert
 
@@ -484,8 +465,6 @@ noncomputable section
 open NumberField IsDedekindDomain Matrix
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC GlobalTheory.BCT
 open scoped Classical
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace PositivityTheory.Rg.BcB.F.Inert
 

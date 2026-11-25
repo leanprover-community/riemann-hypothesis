@@ -15,8 +15,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 namespace PCommPf
 
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [NormedSpace ℂ Wp] [NormedAddCommGroup Wq]
@@ -56,13 +54,13 @@ theorem tL_crd_comm (z z' : Fin (2 * r + k + 1) → ℂ) (i : Fin (r + 1)) (Dc :
   · show pOp l (fun c' => Q.tL k r z z' i Y a b (Ψ c') g) c =
       Q.tL k r z z' i Y a b (fun g' => pOp l (fun c' => Ψ c' g') c) g
     have h := hder (c l) (-Complex.I)
-    simp only [pOp, if_pos hc, wirt]
+    simp only [pOp, ite_eq_left hc, wirt]
     simp only [Qx8.dv, neg_smul, ← sub_eq_add_neg] at h
     exact h
   · show pbOp l (fun c' => Q.tL k r z z' i Y a b (Ψ c') g) c =
       Q.tL k r z z' i Y a b (fun g' => pbOp l (fun c' => Ψ c' g') c) g
     have h := hder (star (c l)) Complex.I
-    simp only [pbOp, if_pos hc, wirtBar]
+    simp only [pbOp, ite_eq_left hc, wirtBar]
     simp only [Qx8.dv] at h
     exact h
 

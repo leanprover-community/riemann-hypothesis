@@ -247,7 +247,7 @@ theorem leftFactor_mul_eq_shear {x : XP k p ρ} (hx : GoodP Bj x) (d0 : U.RC k p
   rw [shearE_apply]
   have hx' : GoodP Bj (x.1, StabilizerDisintegration.HC.mulC (-(dOf d0 x.1)) x.2) := hx
   unfold sP
-  rw [if_pos hx, if_pos hx']
+  rw [ite_eq_left hx, ite_eq_left hx']
   simp only []
   rw [Matrix.mul_assoc, ← yA_eq hx, LeftFubiniLemmas.embedded_group_right_action k p ρ _ d0 (yA_unitary hx), ← Matrix.mul_assoc]
   congr 1

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InfDiagMulFinPartI
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsRationalUnitaryDeterminantMapRationalUnitaryTo
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsConjQuotientOfRationalUnitaryDeterminantMa
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IdeleCharacterTrivialOnLocalUnits
@@ -56,17 +57,7 @@ namespace GlobalTheory.Mem.ChiLaws
 
 theorem infDiag_mul_finPart {L : Type} [Field L] [NumberField L] (k : Lˣ) :
     infDiag k * finPartI L (diagUnits L k) = diagUnits L k := by
-  have h : ((infDiag k : Ideles L) : AdeleRing (𝓞 L) L) = (algebraMap L (InfiniteAdeleRing L) k, 1) := by
-    unfold infDiag
-    rw [MonoidHom.finsetProd_apply, Units.coe_prod]
-    let ι : (∀ w : InfinitePlace L, w.Completion) →* AdeleRing (𝓞 L) L :=
-      MonoidHom.inl (InfiniteAdeleRing L) (FiniteAdeleRing (𝓞 L) L)
-    change ∏ w : InfinitePlace L, ι (Pi.mulSingle w (algebraMap L w.Completion k)) =
-      ι (fun w => algebraMap L w.Completion k)
-    rw [← map_prod, Finset.univ_prod_mulSingle]
-  apply Units.ext
-  rw [Units.val_mul, h]
-  exact Prod.ext (mul_one _) (one_mul _)
+  first | exact _root_.GlobalTheory.UnUnitCmp.Val.infDiag_mul_finPartI | exact @_root_.GlobalTheory.UnUnitCmp.Val.infDiag_mul_finPartI | apply _root_.GlobalTheory.UnUnitCmp.Val.infDiag_mul_finPartI <;> assumption
 
 theorem phase_sq {a u : ℂ} (ha : a ≠ 0) (h : u * starRingEnd ℂ a = a) :
     (a / ((‖a‖ : ℝ) : ℂ)) ^ (2 : ℤ) = u := by

@@ -35,7 +35,7 @@ lemma span_map_weightBasis_eq_dualWeyl {R K : Type} [CommRing R] [IsDomain R] [F
     rw [Submodule.map_span, ← Set.range_comp] at h1
     exact Submodule.span_le_restrictScalars R K _ h1
 
-theorem nablaLKBasis_of (h1 : RowActMul) (_h2 : SSBasis) : NablaLKBasis := by
+theorem nablaLKBasis_of (h1 : RowActMul) : NablaLKBasis := by
   intro R K _ _ _ _ hinj k n ν ι b μ hb g hg
   have hinv : ∀ (A : Matrix (Fin k) (Fin k) K) (P : MvPolynomial (Fin k × Fin n) K),
       P ∈ dualWeyl K k n ν → rowAct K A P ∈ dualWeyl K k n ν := by

@@ -386,8 +386,8 @@ theorem perCoord : PerCoord := by
       have ha := a.2
       have ha' := a'.2
       by_cases h : (a : ℕ) < q <;> by_cases h' : (a' : ℕ) < q <;>
-        simp only [u, u', h, h', dif_pos, dif_neg, not_false_eq_true, ip_zero_left, ip_zero_right, heo, heo', diagonal_apply,
-          sigForm, Nat.add_sub_cancel_left, Fin.ext_iff, if_true, if_false] <;> split_ifs <;> first | omega | simp
+        simp only [u, u', h, h', dite_eq_left, dite_eq_right, not_false_eq_true, ip_zero_left, ip_zero_right, heo, heo', diagonal_apply,
+          sigForm, Nat.add_sub_cancel_left, Fin.ext_iff, ite_true, ite_false] <;> split_ifs <;> first | omega | simp
     rw [← h2, ← h1]
     simp only [Matrix.sub_apply, Matrix.mul_apply, conjTranspose_apply, transpose_apply, map_apply, of_apply, RiemLat.gram,
       Finset.sum_mul]

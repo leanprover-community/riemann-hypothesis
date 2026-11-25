@@ -159,7 +159,3 @@ theorem good_row {i : ℕ} (hi : i < D.R.m) (f : Sch G (.right i D.R.m))
   exact hc.comp (((continuous_negGA _).comp continuous_snd).prodMk continuous_fst)
 
 end GlobalTheory.DefConv
-
-namespace GlobalTheory.DefConv
-
-end GlobalTheory.DefConv

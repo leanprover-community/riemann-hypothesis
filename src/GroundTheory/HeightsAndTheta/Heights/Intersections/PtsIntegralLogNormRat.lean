@@ -85,21 +85,8 @@ theorem ptsIntegral_logNormRat (hInt : PtsIntegrableStatement) {P : Ideal (MRing
 
 theorem isSmoothHerm_pull {κ : K → K'} {v : (Σ k, ι k) → (Σ k', ι' k')} (hv : IsBlockMap κ v)
     {A : HermLine ι} {A' : HermLine ι'} (hA : IsSmoothHerm A) (h : IsPullHerm κ v A A') :
-    IsSmoothHerm A' := by
-  have e : A'.h = A.h ∘ fun z' p => z' (v p) := funext h.2
-  unfold IsSmoothHerm
-  rw [e]
-  refine hA.comp (contDiff_pi.2 fun p => contDiff_apply ℝ (fun _ => ℂ) (v p)).contDiffOn ?_
-  intro z' hz'
-  simp only [Set.mem_ofPred_eq] at hz' ⊢
-  intro k
-  obtain ⟨i', hi'⟩ := hz' (κ k)
-  obtain ⟨p, hp⟩ := hv.2.2.2 ⟨κ k, i'⟩ ⟨k, rfl⟩
-  have h2 : p.1 = k := hv.1 (by rw [← hv.2.2.1 p, hp])
-  obtain ⟨pk, pi⟩ := p
-  simp only at h2
-  subst h2
-  exact ⟨pi, by rw [hp]; exact hi'⟩
+    IsSmoothHerm A' :=
+  IsPullHerm.isSmoothHerm hv h hA
 
 omit [Fintype K] [∀ k, Fintype (ι k)] [Fintype K'] [∀ k, Fintype (ι' k)] in
 theorem pullDeg_add (κ : K → K') (a b : K → ℤ) : pullDeg κ (a + b) = pullDeg κ a + pullDeg κ b := by

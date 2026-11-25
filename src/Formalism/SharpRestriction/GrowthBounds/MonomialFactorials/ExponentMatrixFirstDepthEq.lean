@@ -35,10 +35,6 @@ theorem mem_levels {N : ℕ} (G : Formalism.GM.M.BlockData N) (x : (Fin G.T.t �
 theorem chain_eta (aTop : Fin X.s → ℕ) (b : SegBlock X.s X.r) (i : Fin (X.S C0 CE1 CE2).t)
     (q : Fin (2 * X.s + 1)) (hq : (q : ℕ) = 2 * ((X.S C0 CE1 CE2).sigma + (i : ℕ)) + 1) :
     (segChain X.p (X.S C0 CE1 CE2) aTop b).deg q = coarseC X.p (X.S C0 CE1 CE2) aTop b (uTop (X.S C0 CE1 CE2) i) := by
-  have hi : (X.S C0 CE1 CE2).sigma + (i : ℕ) < X.s := by
-    have := i.2
-    unfold SegData.t at this
-    omega
   have h1 : (q : ℕ) ≠ 2 * X.s := by omega
   have h2 : ¬ (q : ℕ) % 2 = 0 := by omega
   have h3 : topOf q h1 = uTop (X.S C0 CE1 CE2) i := by
@@ -48,7 +44,7 @@ theorem chain_eta (aTop : Fin X.s → ℕ) (b : SegBlock X.s X.r) (i : Fin (X.S 
     unfold uTop; simp
   unfold segChain
   simp only
-  rw [dite_eq_right h1, if_neg h2, h3, if_neg h4]
+  rw [dite_eq_right h1, ite_eq_right h2, h3, ite_eq_right h4]
 
 theorem lvlRoom_of {dl : DCl X} {a0 : Fin X.s → ℕ} (ha0 : a0 ∈ cbox C0 CE1 CE2 X dl) {x : Σ _ : SegBlock X.s X.r, Lv C0 CE1 CE2 X}
     (hb : x.1.ry = dl.2) (hx : ∀ a ∈ cbox C0 CE1 CE2 X dl, x ∈ idx C0 CE1 CE2 X dl a) :

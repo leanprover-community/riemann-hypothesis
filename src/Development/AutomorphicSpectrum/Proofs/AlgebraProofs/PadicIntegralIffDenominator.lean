@@ -17,12 +17,8 @@ private theorem not_dvd_den_of_norm_le_one_padicAlgCl (p : ℕ) [Fact p.Prime] (
     ¬ p ∣ q.den := by
   intro hd
   have hp : p.Prime := Fact.out
-  have hnum : ¬ (p : ℤ) ∣ q.num := by
-    intro hn
-    have h1 : p ∣ q.num.natAbs := Int.natCast_dvd.mp hn
-    have h2 : p ∣ Nat.gcd q.num.natAbs q.den := Nat.dvd_gcd h1 hd
-    rw [Nat.Coprime.gcd_eq_one q.reduced] at h2
-    exact hp.one_lt.ne' (Nat.dvd_one.mp h2)
+  have hnum : ¬ (p : ℤ) ∣ q.num := fun hn =>
+    hp.one_lt.ne' (Nat.eq_one_of_dvd_coprimes q.reduced (Int.natCast_dvd.mp hn) hd)
   have hnum1 : ‖(q.num : PadicAlgCl p)‖ = 1 :=
     le_antisymm (IsUltrametricDist.norm_intCast_le_one _ _)
       (not_lt.mp fun h => hnum ((norm_intCast_padicAlgCl_lt_one_iff_dvd p _).mp h))

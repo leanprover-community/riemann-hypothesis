@@ -361,30 +361,30 @@ theorem mixed_change (w : D.what₂.places.Pl) (hw : OverT D u w) (τ₀ : D.wha
   have hmul : ∀ τ, N τ * N' τ = 1 := by
     intro τ
     by_cases hτ : τ = τ₀
-    · simp only [N, N', if_pos hτ]
+    · simp only [N, N', ite_eq_left hτ]
       rw [← atInf_mul', show B'⁻¹ * B₁' * (B₁'⁻¹ * B') = 1 by group, atInf_one']
-    · simp only [N, N', if_neg hτ]
+    · simp only [N, N', ite_eq_right hτ]
       rw [← atInf_mul', show B⁻¹ * B₁ * (B₁⁻¹ * B) = 1 by group, atInf_one']
   have hN : ∀ τ a b, N τ a b ∈ bwA_Ow D w := by
     intro τ a b
     by_cases hτ : τ = τ₀
-    · simp only [N, if_pos hτ]
+    · simp only [N, ite_eq_left hτ]
       exact bwG_change_mem D u w hw τ hB₁' hB' a b
-    · simp only [N, if_neg hτ]
+    · simp only [N, ite_eq_right hτ]
       exact bwG_change_mem D u w hw τ hB₁ hB a b
   have hN' : ∀ τ a b, N' τ a b ∈ bwA_Ow D w := by
     intro τ a b
     by_cases hτ : τ = τ₀
-    · simp only [N', if_pos hτ]
+    · simp only [N', ite_eq_left hτ]
       exact bwG_change_mem D u w hw τ hB' hB₁' a b
-    · simp only [N', if_neg hτ]
+    · simp only [N', ite_eq_right hτ]
       exact bwG_change_mem D u w hw τ hB hB₁ a b
   have hfac : mixF τ₀ B B' = fun τ => N τ * mixF τ₀ B₁ B₁' τ := by
     funext τ
     by_cases hτ : τ = τ₀
-    · simp only [mixF, N, if_pos hτ]
+    · simp only [mixF, N, ite_eq_left hτ]
       rw [← atInf_mul', show B'⁻¹ * B₁' * B₁'⁻¹ = B'⁻¹ by group]
-    · simp only [mixF, N, if_neg hτ]
+    · simp only [mixF, N, ite_eq_right hτ]
       rw [← atInf_mul', show B⁻¹ * B₁ * B₁⁻¹ = B⁻¹ by group]
   refine ⟨MvPolynomial.C (∏ τ, (N τ).det ^ shiftOf (lamT u 0) τ) * subP N P,
     bwG_intSpan_allSubP D w _ N _
@@ -439,7 +439,7 @@ theorem onto_Bw (hRC : RatInC D u) (hRG : RatGL D u) (T : Forms0 D u) (hA : admS
   have ho : ∀ c τ, τ ≠ (D.fm u).tauOf w v → bwA_N D ((D.fm u).tauOf w v) (B c) (B' c) τ = 1 := by
     intro c τ h
     unfold bwA_N
-    rw [if_neg h]
+    rw [ite_eq_right h]
   have hprod : ∀ c, ∏ τ, (bwA_N D ((D.fm u).tauOf w v) (B c) (B' c) τ).det ^ shiftOf (lamT u 0) τ =
       (bwA_N D ((D.fm u).tauOf w v) (B c) (B' c) ((D.fm u).tauOf w v)).det ^
         ((D.fm u).lam 0 ((D.fm u).tauOf w v)).detShift := by

@@ -298,7 +298,7 @@ theorem gamma_neg (r : ℕ) (T T' : ℝ) (hT : 0 < T) (hT' : 0 < T') (s : ℂ)
       · omega
     have := hqpos _ _ hxy
     linarith
-  · push_neg at hin
+  · push Not at hin
     obtain ⟨a, ha⟩ := hin
     have hpos : 0 < ∑ b, Complex.normSq (c (Sum.inl b)) :=
       Finset.sum_pos' (fun b _ => Complex.normSq_nonneg _)
@@ -523,8 +523,7 @@ theorem main : PI.FlagGramNonneg := by
       rfl
 
     have hs : (T : ℝ) * T' ≤ Complex.normSq (τ (sval hT e e' z z')) := by
-      by_contra hlt
-      push_neg at hlt
+      by_contra! hlt
       set y : Fin r ⊕ Fin 2 → V :=
         Sum.elim (yv hT e e') ![zt hT e e' z, zt' hT e e' z'] with hy
       have hyz : ∀ a, hT (zt hT e e' z) (yv hT e e' a) = 0 := fun a => by
@@ -584,8 +583,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.MainNotions.S
 
 namespace Formalism.L2.SG.Closed
-
-theorem GramDetFlag_holds : Formalism.L2.SG.GramJoint.GramDetFlag := Formalism.L2.SG.GramJoint.gramDetFlag
 
 theorem GNonnegAt_holds : Formalism.L2.SG.GramJoint.GNonnegAt := by
   intro E _ _ _ S τ hτ hsig r T T' hr hT hT' F F'

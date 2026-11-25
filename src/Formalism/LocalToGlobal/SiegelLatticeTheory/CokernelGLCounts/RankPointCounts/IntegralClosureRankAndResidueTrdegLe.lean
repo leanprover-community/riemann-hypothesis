@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.UnitaryThetaVanishing.ThetaMbeUFalseOf
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.SharpSpanCounting.MemPerpSpanIff
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.SharpSpanCounting.AdjLast
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.SharpSpanCounting.OmPMemSpan
@@ -304,13 +305,7 @@ theorem unit_gramCU {f f' : Fin (r + 1) → V} {T T' : F}
     (hF : Formalism.MainNotions.ThinScalesBound.FrameK H f T) (hF' : Formalism.MainNotions.ThinScalesBound.FrameK H f' T')
     (hD1 : IsUnit (H.Dl f f' (r + 1))) (hGd : IsUnit (H.Gdet f f' T T')) :
     IsUnit (gramC (M.L.cj : E →+* E) (H.Zhat f f') (algebraMap F E T) (algebraMap F E T')).det := by
-  rw [gramC_eq H f f' T T' hF hF', Matrix.det_transpose]
-  obtain ⟨s, hs, hdet⟩ := gram_det H f f' T T' hF hF' hD1
-  have hsu : IsUnit s := ⟨⟨s, s, hs, hs⟩, rfl⟩
-  have : (H.gram (Sum.elim f f')).det = H.Gdet f f' T T' * s := by
-    rw [← hdet, mul_assoc, hs, mul_one]
-  rw [this]
-  exact hGd.mul hsu
+  apply _root_.Formalism.L2.SG.LocalCountModules.UnitaryGroupMassFormula.ThetaMbeU.unit_gramC_of <;> assumption
 
 theorem unit_gramHU {g : SplitG M.L} (hs : M.split = some g) {t : Term V M r}
     (hF : Formalism.MainNotions.ThinScalesBound.FrameK H t.f t.T) (hF' : Formalism.MainNotions.ThinScalesBound.FrameK H t.f' t.T')

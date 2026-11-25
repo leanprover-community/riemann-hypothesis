@@ -33,7 +33,7 @@ private lemma sum_inv_mul_trace (p : ℕ) [Fact p.Prime] (F : Type) [Field F] [F
       · simp [h]
       · simp [h]
     simp only [this, Finset.sum_sub_distrib, Finset.sum_const, Finset.card_univ,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true, nsmul_eq_mul, mul_one,
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true, nsmul_eq_mul, mul_one,
       FiniteField.cast_card_eq_zero, zero_sub]
   have h2 : ∀ σ : F ≃ₐ[ZMod p] F, σ ≠ 1 → ∑ a : F, a⁻¹ * σ a = 0 := by
     intro σ hσ

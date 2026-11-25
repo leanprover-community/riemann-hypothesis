@@ -63,7 +63,7 @@ def cutPart (a : AE D) (V : HSp D) (g : GA D V) : GA D V :=
 
 theorem mt_cutPart {a : AE D} (h : a * a = a) (hc : cA D a = a) (V : HSp D) (g : GA D V) :
     Formalism.L2.Theta.mt V (cutPart a V g) = a • Formalism.L2.Theta.mt V g + (1 - a) • (1 : Matrix _ _ (AE D)) := by
-  have e : cutPart a V g = ⟨piece h g.1, piece_mem _ _ h hc g.2⟩ := dif_pos ⟨h, hc⟩
+  have e : cutPart a V g = ⟨piece h g.1, piece_mem _ _ h hc g.2⟩ := dite_eq_left ⟨h, hc⟩
   rw [e]
   rfl
 
@@ -132,7 +132,7 @@ theorem halfInd_cutPart {S T : HSp D} {e : AE D} (he : e * e = e) (hc : e * cA D
   by_cases hy : IsHalf e (actO S T (cutPart (e + cA D e) S g)⁻¹ 1⁻¹ x)
   · rw [actO_cutPart_compl he hc g hy]
   · unfold halfInd
-    rw [if_neg fun h => hy h.2, if_neg fun h => hy (GlobalTheory.ThetaMove.isHalf_of_act _ _ h.2)]
+    rw [ite_eq_right fun h => hy h.2, ite_eq_right fun h => hy (GlobalTheory.ThetaMove.isHalf_of_act _ _ h.2)]
 
 end GlobalTheory.ExpansionInvariance
 

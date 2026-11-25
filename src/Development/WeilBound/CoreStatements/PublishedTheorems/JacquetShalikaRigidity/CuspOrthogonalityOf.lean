@@ -138,8 +138,6 @@ open GroundTheory.Automorphic GroundTheory.Automorphic.FourierWhittaker GroundTh
 open scoped ENNReal ComplexConjugate InnerProductSpace
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.CuspRep.CuspidalL2GL
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace PositivityTheory.AdelicQuotientData
 
 namespace QORT
@@ -239,10 +237,8 @@ theorem band_eq (hQ2 : Q2) (hD0 : D0) (hN3 : N3) (hk : 1 ≤ k) (μ : Measure (G
     (hl : LeftInv (latticeGL E k) Φ) (hi : IntegrableOn Φ (stdDom (latticeGL E k)) μ) :
     ∫ g in band E k, Φ g ∂μ.withDensity β = ∫ g in stdDom (latticeGL E k), Φ g ∂μ := by
   haveI : T1Space (GA E k) := by
-    set_option synthInstance.maxHeartbeats 200000 in
       infer_instance
   haveI : MeasurableSingletonClass (GA E k) := by
-    set_option synthInstance.maxHeartbeats 200000 in
       infer_instance
   have hcont : Continuous (Dt : GA E k → ℝ) := (hD0 E k).2.2.1
   have hband : MeasurableSet (band E k) :=

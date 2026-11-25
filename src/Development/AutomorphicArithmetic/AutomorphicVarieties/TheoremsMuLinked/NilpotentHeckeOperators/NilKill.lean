@@ -92,7 +92,7 @@ private theorem absNil_eig {T W : Type} [CommGroup T] [AddCommGroup W] [Module �
       by_cases hsc : ∀ t, ∃ μ : ℂ, ∀ v ∈ S, (θ t : Module.End ℂ W) v = μ • v
       · obtain ⟨v, hv, hv0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hS
         exact ⟨v, hv, hv0, fun t => (hsc t).imp fun μ h => h v hv⟩
-      · push_neg at hsc
+      · push Not at hsc
         obtain ⟨t0, ht0⟩ := hsc
         haveI : Nontrivial S := Submodule.nontrivial_iff_ne_bot.2 hS
         obtain ⟨μ, hμ⟩ := Module.End.exists_eigenvalue ((θ t0 : Module.End ℂ W).restrict (fun v hv => hinv t0 v hv))

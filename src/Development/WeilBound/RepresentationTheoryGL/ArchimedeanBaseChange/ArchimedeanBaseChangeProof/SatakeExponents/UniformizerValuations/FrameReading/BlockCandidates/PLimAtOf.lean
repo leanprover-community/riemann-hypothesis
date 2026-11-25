@@ -24,8 +24,6 @@ open scoped Classical
 
 namespace PositivityTheory.Rg.BcB.F.BC
 
-attribute [local instance] borelG borelF borelA
-
 theorem gelfand_value_fin_zero {k : ℕ} (hk : k = 0) (x y : Fin k → ℂ) (m : ℕ) : GlobalTheory.Dec.gelfVal x m = GlobalTheory.Dec.gelfVal y m := by
   subst hk; simp [GlobalTheory.Dec.gelfVal]
 
@@ -57,10 +55,10 @@ theorem limAtOf_holds : LimAtOf := by
       exact Or.inr rfl
     · simp only [RunFrame.g] at hx
       by_cases hi : i = x.1
-      · rw [if_pos hi, Sum.inr.injEq] at hx
+      · rw [ite_eq_left hi, Sum.inr.injEq] at hx
         subst hx
         exact Or.inr rfl
-      · rw [if_neg hi] at hx
+      · rw [ite_eq_right hi] at hx
         cases hx
     · simp only [RunFrame.g, Sum.inr.injEq] at hx
       subst hx

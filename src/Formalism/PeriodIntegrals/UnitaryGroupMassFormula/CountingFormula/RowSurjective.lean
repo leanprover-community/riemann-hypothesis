@@ -32,8 +32,6 @@ noncomputable section
 
 namespace PI.UnitaryGroupMassFormula.CntFormula.RowsMassW
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Lat
 
 variable (D : D7)
@@ -91,7 +89,7 @@ theorem coordL_injective (hf : PartnerOK D F0 f) : Function.Injective (coordL D 
       intro b
       rw [map_smul, smul_eq_mul, ← (VS D).herm.eq (F0.e b) (f a), hf.1 b a]
       split_ifs <;> simp
-    simp only [e, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at h
+    simp only [e, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h
     exact h
   rw [← hc]
   simp [hc0]
@@ -172,8 +170,6 @@ noncomputable section
 
 namespace PI.UnitaryGroupMassFormula.CntFormula.RowsMassW
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Coord
 
 variable (D : D7) {T : D.host.E} (F0 : FlagG (VS D) D.R.rS T)
@@ -236,8 +232,6 @@ open Classical
 noncomputable section
 
 namespace PI.UnitaryGroupMassFormula.CntFormula.RowsMassW
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Flag
 
@@ -317,7 +311,7 @@ theorem rs_xlam (hf : PartnerOK D F0 f) : XLam (lamC D F0 f M) (lf D F0) = XS D 
 
       rw [← hc, map_sum] at h
       simp only [map_smul, rs_hT_f_e hf, smul_eq_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-        Finset.mem_univ, if_true] at h
+        Finset.mem_univ, ite_true] at h
       exact h
     rw [← hc]
     refine Submodule.sum_mem _ fun a _ => Submodule.subset_span ⟨a, c a, hca a, rfl⟩
@@ -380,7 +374,7 @@ theorem rs_hT_f_lift (hf : PartnerOK D F0 f) (w : perpS (VS D) F0.X) (b : Fin D.
     split_ifs <;> simp
 
   simp only [rsLift, map_sub, map_sum, map_smul, hfe, smul_eq_mul, mul_ite, mul_one, mul_zero,
-  Finset.sum_ite_eq', Finset.mem_univ, if_true, sub_self]
+  Finset.sum_ite_eq', Finset.mem_univ, ite_true, sub_self]
 
 theorem rs_lift_mem (hf : PartnerOK D F0 f) (w : perpS (VS D) F0.X)
     (hw : (Submodule.Quotient.mk w : WbQ D F0) ∈ M) : rsLift (f := f) w ∈ lamC D F0 f M := by
@@ -424,8 +418,6 @@ open Classical
 noncomputable section
 
 namespace PI.UnitaryGroupMassFormula.CntFormula.RowsMassW
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Unimod
 
@@ -487,12 +479,8 @@ private theorem hT_eq_hT_vPr_left_add_sum (x z : (VS D).V) : (VS D).hT x z =
 
 private theorem mem_perpS_X_of_hT_e_eq_zero (z : (VS D).V) (hz : ∀ b, (VS D).hT (F0.e b) z = 0) :
     z ∈ perpS (VS D) F0.X := by
-  have hK : F0.X ≤ LinearMap.ker ((VS D).hT z) := by
-    rw [FlagG.X, Submodule.span_le]
-    rintro _ ⟨b, rfl⟩
-    rw [SetLike.mem_coe, LinearMap.mem_ker, ← hs_lemma_2, hz b, star_zero]
-  intro x hx
-  rw [← hs_lemma_2, LinearMap.mem_ker.1 (hK hx), star_zero]
+  intros
+  refine (@_root_.PI.UnitaryGroupMassFormula.CntFormula.RowsMassW.rs_mem_perp_iff' ?_ ?_ ?_ ?_).mpr ?_ <;> first | assumption | infer_instance
 
 private theorem hT_e_vPr_eq_zero_of_partnerOK (hf : PartnerOK D F0 f) (z : (VS D).V) (b : Fin D.R.rS) :
     (VS D).hT (F0.e b) (vPr D F0 f z) = 0 := by
@@ -536,8 +524,8 @@ theorem rs_smul_f_mem (hf : PartnerOK D F0 f) {a : Fin D.R.rS} {s : D.host.E} (h
   refine mem_lamC_iff.2 ⟨fun b => ?_, ⟨0, ?_, ?_⟩, fun b => ?_⟩
   · rw [map_smul, hf.1, smul_eq_mul]
     by_cases hab : b = a
-    · subst hab; rw [if_pos rfl, mul_one, star_star]; exact hs
-    · rw [if_neg hab, mul_zero, star_zero]; exact fi_zero D _
+    · subst hab; rw [ite_eq_left rfl, mul_one, star_star]; exact hs
+    · rw [ite_eq_right hab, mul_zero, star_zero]; exact fi_zero D _
   · simp [rs_vPr_smul_f hf]
   · rw [Submodule.Quotient.mk_zero]; exact M.zero_mem
   · rw [rs_vPr_smul_f hf, map_zero]; exact fi_zero D _
@@ -666,8 +654,6 @@ noncomputable section
 
 namespace PI.UnitaryGroupMassFormula.CntFormula.RowsMassW
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Gen
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] (S : HSpace E)
@@ -766,7 +752,7 @@ theorem partner_exists {r : ℕ} {T : E} (F0 : FlagG S r T) (hT0 : T ≠ 0) :
     rw [hT_sub_sum_left]
     simp only [hf1]
     rw [hT_sub_sum_right]
-    simp only [hgeE, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [hgeE, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     have hs : star (c a b) = S.hT (g a) (g b) / 2 := by
       simp only [c]
       rw [← star_hT_eq_hT_swap (S := S) (g a) (g b)]
@@ -866,8 +852,7 @@ theorem exists_pair (hS : IsHermSemilocal S) (hM : IsSelfDualMod S h M) {ι : Ty
   refine ⟨α, hα0, hrM, m₀ - ∑ i, (h (x i) m₀ * (h (x i) (x i))⁻¹) • x i, ?_, ?_, ?_⟩
   · refine M.sub_mem hm₀ (M.sum_mem fun i _ => hM.smul_mem _ ?_ _ (hxM i))
     exact S.mul_mem (hM.int _ (hxM i) _ hm₀) (hxu i).2.2
-  · set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sub, map_sum, LinearMap.sub_apply, LinearMap.sum_apply,
+  · simp only [map_sub, map_sum, LinearMap.sub_apply, LinearMap.sum_apply,
         map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, RingHom.id_apply, hrx, mul_zero,
         Finset.sum_const_zero, sub_zero]
     rw [hα, inv_mul_cancel₀ hα0]

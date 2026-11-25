@@ -6,6 +6,7 @@ public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.LinearAlgebra.Matrix.CharP
 import Mathlib.Tactic.TypeStar
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerFlagSplitting.MulVecColOfMul
 
 @[expose] public section
 
@@ -50,11 +51,7 @@ theorem inv_eq {k r : ℕ} {g : B.Mat k r} (hg : g ∈ B.GV k r) :
 
 theorem herm_mulVec {k r : ℕ} {g : B.Mat k r} (hg : g ∈ B.GV k r) (v w : Fin (2 * r + k + 1) → ℂ) :
     herm (Hpk k r) (g *ᵥ v) (g *ᵥ w) = herm (Hpk k r) v w := by
-  have h : gᴴ * Hpk k r * g = Hpk k r := hg
-  unfold herm
-  rw [star_mulVec, ← dotProduct_mulVec]
-  simp only [mulVec_mulVec]
-  rw [← Matrix.mul_assoc, h]
+  apply _root_.PI.StabSplit.herm_unit <;> assumption
 
 def hs {ι : Type*} [Fintype ι] (M : Matrix ι ι ℂ) : ℝ := ∑ i, ∑ j, Complex.normSq (M i j)
 
@@ -78,7 +75,7 @@ theorem hs_hpk_mul {k r : ℕ} (M : B.Mat k r) : hs (Hpk k r * M) = hs M := by
   have e : ∀ i j, (Hpk k r * M) i j = GBasic.sgn k r i * M (GBasic.sig k r i) j := by
     intro i j
     rw [Matrix.mul_apply]
-    simp only [GBasic.Hpk_eq k r i, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [GBasic.Hpk_eq k r i, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   have hs1 : ∀ i, Complex.normSq (GBasic.sgn k r i) = 1 := by
     intro i; unfold GBasic.sgn; split_ifs <;> simp
   simp only [e, Complex.normSq_mul, hs1, one_mul]
@@ -196,7 +193,7 @@ theorem fvec_sum_le (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) (a : Fin (r + 
   split_ifs with h
   · have e : ∀ i, ‖bvec (eI k r ⟨a.val, h⟩) i‖ = if i = eI k r ⟨a.val, h⟩ then 1 else 0 := by
       intro i; unfold bvec; rw [Pi.single_apply]; split_ifs <;> simp
-    simp only [e, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [e, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     linarith
   · linarith
 

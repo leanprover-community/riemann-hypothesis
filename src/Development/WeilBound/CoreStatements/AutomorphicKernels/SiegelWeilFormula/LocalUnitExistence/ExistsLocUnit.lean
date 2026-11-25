@@ -5,6 +5,7 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PlaceSplitOr
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ValuationAlgebraMapEqOfInertPlace
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUniqueIsConjAt
 public import Development.WeilBound.ThetaLifts.LatticeBasics.FrameB
+import Development.AutomorphicArithmetic.LocalEmbeddings.OppLagr
 
 @[expose] public section
 
@@ -18,22 +19,7 @@ namespace PositivityTheory.SiegelWeilFormula.Ldexb.UnitA
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 
 theorem exists_xi (h : IsCMExt F E σ) : ∃ ξ : E, ξ ≠ 0 ∧ σ ξ = -ξ := by
-  by_cases hx : ∃ x : E, σ x ≠ x
-  · obtain ⟨x, hx⟩ := hx
-    refine ⟨x - σ x, sub_ne_zero.2 (Ne.symm hx), ?_⟩
-    rw [map_sub, _root_.GlobalTheory.AdelicU.cm_conj_conj h]; ring
-  · push Not at hx
-    exfalso
-    obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
-    have hr : ComplexEmbedding.IsReal τ := by
-      rw [ComplexEmbedding.isReal_iff]
-      ext x
-      rw [ComplexEmbedding.conjugate_coe_eq]
-      have := h.2.2.2 τ x
-      rw [hx] at this
-      exact this.symm
-    have := h.2.1
-    exact (InfinitePlace.not_isReal_iff_isComplex.2 (IsTotallyComplex.isComplex _)) (InfinitePlace.isReal_mk_iff.2 hr)
+  apply _root_.GlobalTheory.OppLagr.exists_anti <;> assumption
 
 omit [NumberField E] in
 theorem compFin_cA (v : Pl (F := F)) (z : AE F E) : compFin F E v (cA σ z) = sigR (Fv F v) σ (compFin F E v z) := by

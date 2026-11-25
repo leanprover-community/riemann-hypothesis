@@ -219,16 +219,6 @@ theorem _root_.GlobalTheory.RootEx.UnfoldShape.colMat_smul (a : k) (y : Fin c �
 
 end
 
-section
-omit [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
-
-end
-
-section
-omit [ValuativeRel k] [Fintype n] [DecidableEq n] [DecidableEq n']
-
-end
-
 
 variable [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
@@ -302,8 +292,7 @@ theorem _root_.GlobalTheory.RootEx.UnfoldShape.exists_pt_ne_zero {ψ : AddChar k
     {Ψ : Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k → ℂ} {x₀ : Matrix n n' k} (h : _root_.GlobalTheory.RootEx.opE ψ ν 1 Ψ x₀ ≠ 0) :
     ∃ y : Fin c → (n ⊕ Fin c → k), (∀ i, y i ∈ _root_.GlobalTheory.IndefiniteRowSideFullHecke.ExponentTerms.Yle k n c (i.val + 1)) ∧
       Ψ (_root_.GlobalTheory.IndefiniteRowSideFullHecke.ExponentTerms.pt x₀ y) ≠ 0 := by
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   apply h
   have hzero : ∀ e, Ψ (_root_.GlobalTheory.RootEx.affPt 1 x₀ e) = 0 := fun e => by
     rw [affPt_eq_pt_col]

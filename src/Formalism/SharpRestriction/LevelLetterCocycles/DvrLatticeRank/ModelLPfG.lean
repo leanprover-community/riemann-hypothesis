@@ -63,8 +63,8 @@ theorem serMul_serMul (P Q : PowerSeries LL) {F : ℤ → V'} {m₀ : ℤ} (hF :
 theorem serMul_X_pow (h : ℕ) (F : ℤ → V') (i : ℤ) :
     serMul (PowerSeries.X ^ h : PowerSeries LL) F i = F (i - h) := by
   unfold serMul
-  rw [finsum_eq_single _ h (fun k hk => by rw [PowerSeries.coeff_X_pow, if_neg hk, zero_smul])]
-  rw [PowerSeries.coeff_X_pow, if_pos rfl, one_smul]
+  rw [finsum_eq_single _ h (fun k hk => by rw [PowerSeries.coeff_X_pow, ite_eq_right hk, zero_smul])]
+  rw [PowerSeries.coeff_X_pow, ite_eq_left rfl, one_smul]
 
 theorem serMul_rescale (u : LL) (hu : u ≠ 0) (P : PowerSeries LL) (F : ℤ → V') (i : ℤ) :
     u ^ i • serMul P F i = serMul (PowerSeries.rescale u P) (fun j => u ^ j • F j) i := by

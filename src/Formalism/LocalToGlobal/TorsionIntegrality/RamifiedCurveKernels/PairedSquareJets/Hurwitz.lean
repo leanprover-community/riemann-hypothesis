@@ -128,8 +128,7 @@ theorem jetsIn_iff_pderiv (f : MvPowerSeries ι K) :
     · subst hκ
       simpa [mfact_zero] using h0
     · obtain ⟨i, hi⟩ : ∃ i, κ i ≠ 0 := by
-        by_contra h
-        push_neg at h
+        by_contra! h
         exact hκ (Finsupp.ext h)
       have hk : κ - Finsupp.single i 1 + Finsupp.single i 1 = κ :=
         tsub_add_cancel_of_le (Finsupp.single_le_iff.mpr (Nat.one_le_iff_ne_zero.mpr hi))

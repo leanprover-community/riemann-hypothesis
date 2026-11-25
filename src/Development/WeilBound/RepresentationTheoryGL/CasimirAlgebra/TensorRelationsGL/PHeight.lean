@@ -224,7 +224,7 @@ theorem Om_single (p : P) (I : P → Fin n) (v : M) :
     · intro a _ ha
       rw [Pi.single_eq_of_ne, map_zero]
       intro h; apply ha; rw [← h]; simp
-  · push_neg at hJ
+  · push Not at hJ
     obtain ⟨q, hq, hne⟩ := hJ
     rw [Finset.sum_eq_zero, Finset.sum_eq_zero]
     · intro c _; rw [Pi.single_eq_of_ne]; intro h; apply hne; rw [h, Function.update_of_ne hq]
@@ -369,7 +369,7 @@ theorem height_of : TensorGl → Height := by
   · have h0 : 0 < n := by omega
     obtain ⟨c, hc, hcv⟩ := prod_exact E hE hψ1 hψ2 hψ L ⟨0, h0⟩ top (by simp [hL])
     obtain ⟨v, hv⟩ : ∃ v, ℓ v ≠ 0 := by
-      by_contra h; push_neg at h; exact hl (LinearMap.ext h)
+      by_contra h; push Not at h; exact hl (LinearMap.ext h)
     intro h
     have := LinearMap.congr_fun h (Pi.single (fun _ => ⟨0, h0⟩) v)
     simp only [LinearMap.comp_apply, LinearMap.proj_apply, LinearMap.zero_apply] at this
@@ -382,7 +382,7 @@ theorem height_of : TensorGl → Height := by
     ext f
     simp only [LinearMap.comp_apply, LinearMap.proj_apply, LinearMap.smul_apply]
     rw [tE_apply]
-    simp only [hta, if_false, Finset.sum_const_zero, add_zero]
+    simp only [hta, ite_false, Finset.sum_const_zero, add_zero]
     rw [← LinearMap.comp_apply, hψ a b hab]
     rfl
 

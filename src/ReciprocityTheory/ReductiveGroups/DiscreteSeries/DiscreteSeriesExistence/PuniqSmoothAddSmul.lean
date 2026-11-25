@@ -18,12 +18,6 @@ open scoped Matrix.Norms.Elementwise
 
 variable {n : ℕ}
 
-section Smooth
-
-variable {ε : Fin n → Bool} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E]
-
-end Smooth
-
 theorem puniq_schur {ε : Fin n → Bool} {Λ : Fin n → ℝ} (T : S7.KType ε Λ) (A : T.V →ₗ[ℂ] T.V)
     (hA : ∀ (k : S7.KG ε) (v : T.V), A (T.op k v) = T.op k (A v)) : ∃ c : ℂ, ∀ v, A v = c • v := by
   letI := T.instNACG

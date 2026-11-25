@@ -63,7 +63,7 @@ lemma apra_slice (d k : ℕ) (hMVd : MVStatement d) (ε τ : ℝ) (u : V d × V 
   refine lintegral_congr fun x => ?_
   by_cases hx : ‖x‖ < ε
   · have hx' : x ∈ ball (0 : V d) ε := mem_ball_zero_iff.mpr hx
-    simp only [apraW, if_pos hx, Set.indicator_of_mem hx']
+    simp only [apraW, ite_eq_left hx, Set.indicator_of_mem hx']
     rw [ENNReal.ofReal_mul (by positivity)]
   · have hx' : x ∉ ball (0 : V d) ε := fun h => hx (mem_ball_zero_iff.mp h)
     simp [apraW, hx]
@@ -113,7 +113,7 @@ lemma apra_blow (d : ℕ) (hd : 1 ≤ d) (hMVI : MVIntStatement d) (ε : ℝ) (h
       have hpos : 0 < ‖x‖ := norm_pos_iff.mpr hx0
       obtain ⟨n, hn⟩ := exists_nat_one_div_lt (pow_pos hpos 2)
       refine le_trans ?_ (le_iSup _ n)
-      simp only [hf, hg, apraW, if_pos hx]
+      simp only [hf, hg, apraW, ite_eq_left hx]
       rw [max_eq_left hn.le, ENNReal.ofReal_rpow_of_pos hpos, ← Real.rpow_natCast,
         ← Real.rpow_mul hpos.le]
       apply le_of_eq
@@ -234,7 +234,6 @@ open scoped ContDiff ENNReal
 
 noncomputable section
 
-set_option synthInstance.maxHeartbeats 100000 in
 theorem aprb_complement {n d : ℕ} (Lm : V n →L[ℂ] V d) (hs : Function.Surjective Lm) :
     ∃ A : V n ≃L[ℂ] V d × V (n - d), ∀ v, (A v).1 = Lm v := by
   classical

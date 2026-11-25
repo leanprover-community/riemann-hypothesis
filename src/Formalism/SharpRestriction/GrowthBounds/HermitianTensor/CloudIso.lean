@@ -1,5 +1,7 @@
 module
 
+
+import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.EdgeLatticeMulOfWeightSum
 public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.CloudIsoDef
 public import Formalism.SharpRestriction.GrowthBounds.ProjectionLemmaBaseLevel
@@ -14,7 +16,6 @@ import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.TotallySplit
 import Formalism.PolynomialDimension.WeylDim
-
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.LatRetract, Formalism.SharpRestriction.GrowthBounds.HermitianTensor.CloudIso
 
@@ -196,11 +197,7 @@ open Formalism.MainNotions.G Formalism.MainNotions.flipOneThree Formalism.Counti
 
 theorem nuOf_add {m : ℕ} (lam mu : Fin (m + 1) → ℤ) (h1 : Antitone lam) (h2 : Antitone mu) :
     nuOf (lam + mu) = nuOf lam + nuOf mu := by
-  funext t
-  have a1 : lam (Fin.last m) ≤ lam t := h1 (Fin.le_last t)
-  have a2 : mu (Fin.last m) ≤ mu t := h2 (Fin.le_last t)
-  simp only [nuOf, Pi.add_apply]
-  omega
+  apply _root_.Formalism.MainNotions.Pf14.nuOf_add <;> assumption
 
 section One
 

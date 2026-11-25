@@ -42,13 +42,13 @@ theorem admissible_in_truncation_holds : AdmInCut := by
     simp only [C.HidaSetting.cutLo, C.HidaSetting.cutHi, Set.mem_Icc]
     constructor <;> linarith [hY.1, hY.2]
   by_cases hp : ((w.1 v)[j]'hj).1
-  · rw [if_pos hp] at h1
+  · rw [ite_eq_left hp] at h1
     have hy : (∃ b, ((w.1 v)[j]'hj).2 ∈ S.grid v b) ∨ ((w.1 v)[j]'hj).2 ∈ S.grid1 v := by
       rcases Finset.mem_union.1 h1 with h | h
       · exact Or.inl ⟨_, h⟩
       · exact Or.inr h
     exact hcut _ (hnode _ hy).1
-  · rw [if_neg hp] at h1
+  · rw [ite_eq_right hp] at h1
     have hy : (∃ b, ((w.1 v)[j]'hj).2 - 1 ∈ S.grid v b) ∨ ((w.1 v)[j]'hj).2 - 1 ∈ S.grid1 v := by
       rcases Finset.mem_union.1 h1 with h | h
       · exact Or.inl ⟨_, h⟩
@@ -185,24 +185,11 @@ theorem cfg_v_lt (hok : c.Ok) {i j : ℕ} (hij : i < j) : c.v j < c.v i := by
   nlinarith
 
 theorem cfg_b_lt (hok : c.Ok) : ∀ {j j' : ℕ}, 1 ≤ j → j < j' → j' ≤ c.m → c.b j < c.b j' := by
-  intro j j' hj hjj' hj'm
-  induction j' with
-  | zero => omega
-  | succ n ih =>
-    have hg := hok.hgap n (by omega) (by omega)
-    rcases Nat.lt_succ_iff_lt_or_eq.mp hjj' with h | h
-    · have := ih h (by omega)
-      linarith
-    · subst h
-      linarith
+  intros
+  apply _root_.Formalism.FourierDecayAlt.P.Sz3.b_lt <;> assumption
 
 theorem cfg_b_ge_one (hok : c.Ok) {j : ℕ} (hj : 1 ≤ j) (hjm : j ≤ c.m) : 1 ≤ c.b j := by
-  rcases Nat.lt_or_ge 1 j with h | h
-  · have := cfg_b_lt c hok (le_refl 1) h hjm
-    linarith [hok.hb1]
-  · have e : j = 1 := by omega
-    subst e
-    exact hok.hb1
+  apply _root_.Formalism.FourierDecayAlt.P.Sz3.b_ge_one <;> assumption
 
 theorem cfg_interlaces (r : ℕ) (hm : c.m = 2 * r + 2) (hk : 2 ≤ c.k) (hok : c.Ok) (de : ℕ → ℝ)
     (hde : ∀ i, de i = 0 ∨ de i = 1) :
@@ -214,13 +201,13 @@ theorem cfg_interlaces (r : ℕ) (hm : c.m = 2 * r + 2) (hk : 2 ≤ c.k) (hok : 
   have ha := hok.ha
   have hkR : (4 : ℝ) ≤ c.k := by exact_mod_cast hk4
   have hlamv : ∀ s : ℕ, s < c.k → c.lam s = c.v s := fun s hs => by
-    rw [Sz.Cfg.lam, if_pos hs]
+    rw [Sz.Cfg.lam, ite_eq_left hs]
   have hlamb : ∀ s : ℕ, ¬ s < c.k → c.lam s = -c.b (s + 1 - c.k) := fun s hs => by
-    rw [Sz.Cfg.lam, if_neg hs]
-  have hu1 : c.u de 1 = c.a := by rw [Sz.Cfg.u, if_pos rfl]
-  have huk : c.u de c.k = c.ulast := by rw [Sz.Cfg.u, if_neg (by omega), if_pos rfl]
+    rw [Sz.Cfg.lam, ite_eq_right hs]
+  have hu1 : c.u de 1 = c.a := by rw [Sz.Cfg.u, ite_eq_left rfl]
+  have huk : c.u de c.k = c.ulast := by rw [Sz.Cfg.u, ite_eq_right (by omega), ite_eq_left rfl]
   have hum : ∀ j : ℕ, j ≠ 1 → j ≠ c.k → c.u de j = c.v (j - 1) - 1 / 2 - de (j - 1) * c.Del :=
-    fun j h1 h2 => by rw [Sz.Cfg.u, if_neg h1, if_neg h2]
+    fun j h1 h2 => by rw [Sz.Cfg.u, ite_eq_right h1, ite_eq_right h2]
   have hde0 : ∀ j, 0 ≤ de j * c.Del ∧ de j * c.Del ≤ c.Del := fun j => by
     rcases hde j with h | h <;> simp [h] <;> linarith
   have hul : c.ulast = if c.top then -c.bp else c.vlast - 1 / 2 := rfl

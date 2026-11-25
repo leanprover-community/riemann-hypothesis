@@ -35,18 +35,6 @@ theorem La_nonneg (hS : SizeQD L) : 0 ≤ L.La := by
 
 end One
 
-section Mono
-
-variable {D : D7} (L : SizeData₂ D)
-
-end Mono
-
-section Link
-
-variable {eps : ℝ} (Fm : FamP eps)
-
-end Link
-
 end Formalism.MainNotions.DIV
 
 end

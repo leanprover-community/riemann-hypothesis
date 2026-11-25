@@ -11,14 +11,6 @@ namespace Formalism.HermitianLatticeCounting.ExpansionTerms
 section PartA2
 open Finset Real MeasureTheory NumberField
 
-def MomentConstantBound : Prop :=
-  ∀ C0 CA C1 : ℝ, 0 ≤ C0 → 0 ≤ CA → 0 ≤ C1 → ∃ C : ℝ,
-    ∀ (r n : ℕ) (b bv ka T j q : ℝ), 2 ≤ b → 0 < ka → ka ≤ b ^ C0 → ka⁻¹ ≤ b ^ C0 → 1 ≤ T →
-      T ≤ b ^ (C0 * (2 * (r : ℝ) + 2)) → 1 ≤ n → (n : ℝ) ≤ bv → bv ≤ b → 0 ≤ j → 0 ≤ q → j + q ≤ b →
-      ((n : ℝ) * √(T * max ka ka⁻¹ ^ (2 * r) * b ^ CA) * (6 * bv) ^ (2 * r + 2)) *
-          max 1 (C1 * (n : ℝ) ^ 2 * (b + j + q) / ka) ^ r ≤
-        b ^ (C * (2 * (r : ℝ) + 2)) * (1 + 1 / ka) ^ (2 * r + 2)
-
 end PartA2
 
 section PartB2
@@ -158,15 +150,5 @@ def MomentPointwiseBound : Prop :=
       (ka * la1 / la) ^ 2 * ‖P‖ ^ 2 ≤ ∑ i, ‖x i‖ ^ 2
 
 end PartB2
-
-section PartC2
-open Finset
-
-end PartC2
-
-section PartD2
-open Finset
-
-end PartD2
 
 end Formalism.HermitianLatticeCounting.ExpansionTerms

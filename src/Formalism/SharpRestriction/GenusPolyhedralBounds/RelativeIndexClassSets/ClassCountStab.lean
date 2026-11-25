@@ -40,46 +40,4 @@ instance finiteAdeleRing_nontrivial : Nontrivial (FiniteAdeleRing (𝓞 F) F) :=
   obtain ⟨v, -⟩ := exists_place_two (F := F)
   exact (evalV F v).toRingHom.domain_nontrivial
 
-section Herm
-
-variable [StarRing E] (σ : E →ₐ[F] E) (hσ : ∀ e, σ e = star e)
-  (h : (n → E) →ₗ⋆[E] (n → E) →ₗ[E] E)
-
-
-
-
-
-
-
-section Mass
-
-variable (hsymm : h.IsSymm) (hpos : ∀ x : n → E, x ≠ 0 → 0 < Algebra.trace ℚ E (h x x))
-  (Λ : Submodule (𝓞 E) (n → E)) (hΛ : Submodule.IsLattice E Λ)
-  (hIn : ∀ g ∈ UPts σ (Formalism.UG.gram h) (FiniteAdeleRing (𝓞 F) F), globLat g Λ ∈ Formalism.HermitianLatticesTheory.genus h Λ)
-  (hSurj : ∀ M ∈ Formalism.HermitianLatticesTheory.genus h Λ, ∃ g ∈ UPts σ (Formalism.UG.gram h) (FiniteAdeleRing (𝓞 F) F), globLat g Λ = M)
-
-
-
-
-
-
-end Mass
-
-end Herm
-
-section Std
-
-open Formalism.MainNotions.StandardLattice
-
-variable {k : ℕ} [StarRing E] (σ : E →ₐ[F] E) (hσ : ∀ e, σ e = star e)
-
-
-variable (hc : ∀ (φ : E →+* ℂ) (a : E), φ (star a) = starRingEnd ℂ (φ a))
-
-
-
-
-
-end Std
-
 end Formalism.MainNotions.Gaps.CC.Stab

@@ -116,7 +116,7 @@ theorem embV_zero_of {tE : Tau → E →+* LL} {β : X.Cb} (H : X.Hyp e pos tE �
   have h0 : MvPolynomial.map e (valC (X.S β) emb embLL (X.gat β) (X.A β) pos (X.embV β) (X.yc β) x i L) = 0 := by
     have := congrFun (congrFun hx i) L
     unfold cmpB cmpC at this
-    rwa [if_pos hL] at this
+    rwa [ite_eq_left hL] at this
   have h1 : valC (X.S β) emb embLL (X.gat β) (X.A β) pos (X.embV β) (X.yc β) x i L = 0 :=
     MvPolynomial.map_injective e e.injective (by rw [h0, map_zero])
   have h2 := (valC_spec H.ex x i L hL).2 g (fun _ => rfl) c γ hγ κ hpt z z' hz

@@ -118,7 +118,7 @@ theorem cellRes_locMul (hW : W ≤ Module.annihilator (MRingOver S ι) M) {J I :
       GenTwistGenerated.cellRes_mk h, locMul_mk]
     rfl
   · unfold KH.cellRes
-    rw [dif_neg h]
+    rw [dite_eq_right h]
     simp only [LinearMap.zero_apply, map_zero]
 
 theorem act_mem (hW : W ≤ Module.annihilator (MRingOver S ι) M) {𝓜 : (K → ℤ) → Submodule S M}
@@ -160,70 +160,8 @@ theorem cechD_zero_apply_uniform (I : KH.Cell K ι 1) :
     ∃ J₁ J₂ : KH.Cell K ι 0, ∃ σ : ℤ, (σ = 1 ∨ σ = -1) ∧
       ∀ (N : Type) [AddCommGroup N] [Module (MRingOver S ι) N] (f : KH.CechC S ι N 0),
         KH.cechD S ι N 0 f I = σ • (KH.cellRes S N J₁.1 I.1 (f J₁) - KH.cellRes S N J₂.1 I.1 (f J₂)) := by
-  classical
-  have hne : ∀ k, (I.1 k).Nonempty := I.2.1
-  have hsum : ∑ k, ((I.1 k).card - 1) = 1 := I.2.2
-  obtain ⟨k₀, -, hk₀⟩ := Finset.exists_ne_zero_of_sum_ne_zero (s := Finset.univ)
-    (f := fun k => (I.1 k).card - 1) (by rw [hsum]; exact one_ne_zero)
-  have hle : ∀ k, (I.1 k).card - 1 ≤ 1 := fun k =>
-    (Finset.single_le_sum (f := fun k => (I.1 k).card - 1) (fun _ _ => Nat.zero_le _)
-      (Finset.mem_univ k)).trans hsum.le
-  have hpos : ∀ k, 1 ≤ (I.1 k).card := fun k => Finset.card_pos.mpr (hne k)
-  have hcard₀ : (I.1 k₀).card = 2 := by have := hle k₀; have := hpos k₀; omega
-  have hother : ∀ l, l ≠ k₀ → (I.1 l).card = 1 := by
-    intro l hl
-    have h2 := Finset.sum_le_sum_of_subset (f := fun k => (I.1 k).card - 1) (Finset.subset_univ {l, k₀})
-    rw [Finset.sum_pair hl] at h2
-    have h3 := h2.trans hsum.le
-    have := hpos l
-    omega
-  obtain ⟨x, y, hxy, hI⟩ := Finset.card_eq_two.mp hcard₀
-  have hface : ∀ i ∈ I.1 k₀, (∀ l, (Function.update I.1 k₀ ((I.1 k₀).erase i) l).Nonempty) ∧
-      ∑ l, ((Function.update I.1 k₀ ((I.1 k₀).erase i) l).card - 1) = 0 := by
-    intro i hi
-    have hc : ((I.1 k₀).erase i).card = 1 := by rw [Finset.card_erase_of_mem hi, hcard₀]
-    refine ⟨fun l => ?_, Finset.sum_eq_zero fun l _ => ?_⟩
-    · by_cases hl : l = k₀
-      · subst hl; rw [Function.update_self]; exact Finset.card_pos.mp (by omega)
-      · rw [Function.update_of_ne hl]; exact hne l
-    · by_cases hl : l = k₀
-      · subst hl; rw [Function.update_self, hc]; rfl
-      · rw [Function.update_of_ne hl, hother l hl]; rfl
-  have hx : x ∈ I.1 k₀ := by rw [hI]; simp
-  have hy : y ∈ I.1 k₀ := by rw [hI]; simp
-  have hsign : KH.faceSign I.1 k₀ y = -KH.faceSign I.1 k₀ x := by
-    unfold KH.faceSign
-    rcases lt_or_gt_of_ne hxy with h | h
-    · have e₁ : ((I.1 k₀).filter (· < x)).card = 0 := by
-        rw [hI]; simp [Finset.filter_insert, Finset.filter_singleton, h.not_gt]
-      have e₂ : ((I.1 k₀).filter (· < y)).card = 1 := by
-        rw [hI]; simp [Finset.filter_insert, Finset.filter_singleton, h]
-      rw [e₁, e₂, add_comm 1, pow_succ, zero_add]; ring
-    · have e₁ : ((I.1 k₀).filter (· < x)).card = 1 := by
-        rw [hI]; simp [Finset.filter_insert, Finset.filter_singleton, h]
-      have e₂ : ((I.1 k₀).filter (· < y)).card = 0 := by
-        rw [hI]; simp [Finset.filter_insert, Finset.filter_singleton, h.not_gt]
-      rw [e₁, e₂, add_comm 1, pow_succ, zero_add]; ring
-  refine ⟨⟨_, hface x hx⟩, ⟨_, hface y hy⟩, KH.faceSign I.1 k₀ x,
-    by unfold KH.faceSign; exact neg_one_pow_eq_or ℤ _, fun N _ _ f => ?_⟩
-  change (∑ k : K, ∑ i ∈ I.1 k, _ :
-    KH.CechC S ι N 0 →ₗ[MRingOver S ι] LocalizedModule (KH.cellMon S I.1) N) f = _
-  rw [Finset.sum_eq_single k₀, Finset.sum_eq_add_of_mem x y hx hy hxy, dite_eq_left (hface x hx),
-    dite_eq_left (hface y hy)]
-  · rw [hsign, LinearMap.add_apply]
-    change KH.faceSign I.1 k₀ x • (KH.cellRes S N _ I.1 (f _)) +
-      (-KH.faceSign I.1 k₀ x) • (KH.cellRes S N _ I.1 (f _)) = _
-    rw [neg_smul, ← sub_eq_add_neg]
-    exact (zsmul_sub _ _ _).symm
-  · intro i hi hne'
-    have : i = x ∨ i = y := by rw [hI] at hi; simpa using hi
-    tauto
-  · intro l _ hl
-    refine Finset.sum_eq_zero fun i hi => dif_neg fun h => ?_
-    have := (h.1 l)
-    rw [Function.update_self, ← Finset.card_pos, Finset.card_erase_of_mem hi, hother l hl] at this
-    omega
-  · intro h; exact absurd (Finset.mem_univ k₀) h
+  obtain ⟨J₁, J₂, -, -, σ, hσ, hd⟩ := GenTwistGenerated.cechD_zero_apply_uniform.{0} (S := S) I
+  exact ⟨J₁, J₂, σ, hσ, hd⟩
 
 def prodCochain (hW : W ≤ Module.annihilator (MRingOver S ι) M) (u : KH.CechC S ι (MRingOver S ι ⧸ W) 0)
     (z : KH.CechC S ι M 0) : KH.CechC S ι M 0 :=

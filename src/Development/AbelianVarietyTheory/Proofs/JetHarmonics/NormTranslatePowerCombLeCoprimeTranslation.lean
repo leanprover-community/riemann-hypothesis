@@ -58,6 +58,7 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Mathlib.Tactic.Lemma
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ConstantCoeffSubstEq
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.JetHarmonics.CpSeriesBoundedOneTorsionTranslateCmTheta, Development.AbelianVarietyTheory.Proofs.JetHarmonics.TranslateCoprimeOrderNotIncreaseThetaCombNorm, Development.AbelianVarietyTheory.Proofs.JetHarmonics.NormTranslatePowerCombLeCoprimeTranslation
@@ -117,8 +118,7 @@ theorem bd_one_of_inv {q : ℕ} [Fact q.Prime] (f g : ℂ_[q]⟦X⟧) (hf : Bdd 
     split_ifs <;> simp
   have hm := (sup_norm_laws q).2.2.2.1 f g 1 hf hg h1
   intro i
-  by_contra hi
-  push_neg at hi
+  by_contra! hi
   have hp : 0 < ‖coeff i f‖ := lt_trans one_pos hi
   have hb : Bd (1 / ‖coeff i f‖) g := fun j => by
     rw [le_div_iff₀ hp, mul_comm]; exact hm i j
@@ -247,20 +247,7 @@ lemma inOK_natMul {d : ℕ} {z : ℂ} (n : ℕ) (h : InOK d z) : InOK d ((n : �
   exact ⟨n * u, n * v, by push_cast; ring⟩
 
 lemma not_inOK_half {d : ℕ} (hd : 0 < d) : ¬ InOK d (0 - 1 / 2) := by
-  rintro ⟨u, v, h⟩
-  have hs : 0 < Real.sqrt d := Real.sqrt_pos.mpr (by exact_mod_cast hd)
-  have him := congrArg Complex.im h
-  have hre := congrArg Complex.re h
-  simp [wK] at him hre
-  have hv : v = 0 := by
-    rcases him with h | h
-    · exact h
-    · exfalso; first | omega
-  subst hv
-  simp at hre
-  have h2 : ((2 * u : ℤ) : ℝ) = ((-1 : ℤ) : ℝ) := by push_cast; rw [← hre]; norm_num
-  have h3 : 2 * u = -1 := by exact_mod_cast h2
-  omega
+  apply _root_.GlobalTheory.MomOne.ScaledQuot.not_inOK_neg_half <;> assumption
 
 lemma exists_common {d q m : ℕ} (s : Fin m → ℂ) (t : ℂ) (hs : ∀ j, PrimeTo d q (s j)) (ht : PrimeTo d q t) :
     ∃ S : ℕ, 0 < S ∧ Nat.Coprime S q ∧ InOK d ((S : ℂ) * t) ∧ ∀ j, InOK d ((S : ℂ) * s j) := by
@@ -284,14 +271,7 @@ lemma differentiable_U1 (d : ℕ) (x : ℂ) {F : ℂ → ℂ} (hF : Differentiab
 variable {q : ℕ} [Fact q.Prime]
 
 lemma bd_pow {f : ℂ_[q]⟦X⟧} (hf : Bd 1 f) (a : ℕ) : Bd 1 (f ^ a) := by
-  induction a with
-  | zero =>
-    intro n
-    rw [pow_zero, coeff_one]
-    split_ifs <;> simp
-  | succ a ih =>
-    have := ((GlobalTheory.MomOne.sup_norm_laws q).1 _ _ _ _ ih hf).2
-    rwa [one_mul, ← pow_succ] at this
+  apply _root_.GlobalTheory.MomOne.FeUniq.intSer_pow <;> assumption
 
 lemma hat_comb (ι : ℂ ≃+* ℂ_[q]) {ℓ : ℂ_[q]⟦X⟧} (hl : constantCoeff ℓ = 0) {κ : Type} (T : Finset κ)
     (c : κ → ℂ_[q]) (F : κ → ℂ → ℂ) (hF : ∀ j, AnalyticAt ℂ (F j) 0) (a : ℕ) :

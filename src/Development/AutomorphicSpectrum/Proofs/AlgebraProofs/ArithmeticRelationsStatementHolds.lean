@@ -379,7 +379,7 @@ theorem PositivityTheory.Xgn.t_fam_pull : ∀ (O : Type) [CommRing O] [IsDomain 
       PositivityTheory.Xgn.A_fam_pull.latFamily_join x z _ a5 _ (fun _ => rfl),
       PositivityTheory.Xgn.A_fam_pull.latFamily_join x z _ a6 _ (fun _ => rfl),
       PositivityTheory.Xgn.A_fam_pull.latFamily_join x z _ a7 _ (fun _ => rfl)⟩
-  · exact (_root_.GlobalTheory.CompanionTheory.Ar.Num.lattice_base_change_larger_ring (D (restrictChart c)) _ p _ _ (hcd _) (hD.base _ (hc c h).1) Ω _
+  · exact (_root_.PositivityTheory.Xgn.character_data_base_change (D (restrictChart c)) _ p _ _ (hcd _) (hD.base _ (hc c h).1) Ω _
       (fun a ha => (hc c h).2 ha)).2
   · exact PositivityTheory.Xgn.test_facts_base_change (D (restrictChart c)) _ _ (hc c h).2 p _ _ φ (hD.test _ (hc c h).1)
   · exact ((PositivityTheory.Xgn.good_lattice_base_change (D (restrictChart c)) _ p _ _ (hcd _) (hD.base _ (hc c h).1)
@@ -508,8 +508,7 @@ theorem PositivityTheory.Xgn.t_flatten_lines : ∀ (O : Type) [CommRing O] [IsDo
   choose a M v hv using key
   have hnz : ∀ j, ∃ l, v j l ≠ 0 := by
     intro j
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     apply ((hΓ j).2 c0 hm0).1
     rw [hv j c0 hm0, eq_bot_iff]
     unfold spanOver
@@ -614,7 +613,7 @@ theorem injective {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing 
     {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} [∀ k, Fintype (ι k)] {x : (Σ k, ι k) → Ω} {d : ℕ}
     (h : GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundles.IsModelOver O (mcIdeal O x) d) :
     Function.Injective (algebraMap O Ω) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro a ha
   have h1 : a ∈ (mcIdeal O x).comap (C : O →+* _) := by
     rw [Ideal.mem_comap, mcIdeal, RingHom.mem_ker]
@@ -784,7 +783,7 @@ theorem injective {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing 
     {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} [∀ k, Fintype (ι k)] {x : (Σ k, ι k) → Ω} {d : ℕ}
     (h : GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundles.IsModelOver O (mcIdeal O x) d) :
     Function.Injective (algebraMap O Ω) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro a ha
   have h1 : a ∈ (mcIdeal O x).comap (C : O →+* _) := by
     rw [Ideal.mem_comap, mcIdeal, RingHom.mem_ker]
@@ -1090,27 +1089,7 @@ variable (O : Type) [CommRing O] {Ω : Type} [Field Ω] [Algebra O Ω]
 
 theorem chart_trans {s t : ∀ k, ι k} (hs : mseg x s ≠ 0) {a : Ω} (ha : a ∈ chartRing O (mseg x) s) :
     ∃ m : ℕ, (mseg x s / mseg x t) ^ m * a ∈ chartRing O (mseg x) t := by
-  have hf : mseg x s / mseg x t ∈ chartRing O (mseg x) t :=
-    ReciprocityTheory.ChartRestriction.G.Geo.div_mem_chartRing (o := O) _ _ _
-  unfold chartRing at ha
-  induction ha using Algebra.adjoin_induction with
-  | mem y hy =>
-    obtain ⟨u, rfl⟩ := hy
-    refine ⟨1, ?_⟩
-    have : (mseg x s / mseg x t) ^ 1 * (mseg x u / mseg x s) = mseg x u / mseg x t := by
-      rw [pow_one, mul_comm, div_mul_div_cancel₀ hs]
-    beta_reduce
-    rw [this]
-    exact ReciprocityTheory.ChartRestriction.G.Geo.div_mem_chartRing (o := O) _ _ _
-  | algebraMap r => exact ⟨0, by simpa using Subalgebra.algebraMap_mem _ r⟩
-  | add a b _ _ ha hb => exact frac_add _ hf ha hb
-  | mul a b _ _ ha hb =>
-    obtain ⟨m, hm⟩ := ha
-    obtain ⟨n, hn⟩ := hb
-    refine ⟨m + n, ?_⟩
-    have := Subalgebra.mul_mem _ hm hn
-    convert this using 1
-    ring
+  apply _root_.PositivityTheory.Xgn.A_pull_exists.pow_mul_mem <;> assumption
 
 theorem fam_span (S : Set E) : IsLatFamily O x fun c => spanOver (chartRing O (mseg x) c) S := by
   refine ⟨fun s _ => span_stable _ S, fun s t hs _ v hv => ?_⟩
@@ -1393,7 +1372,6 @@ theorem isIntegrallyClosedIn (R R' : Subalgebra O Ω) {u : Ω} (hu0 : u ≠ 0) (
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
-
 omit [∀ k, Fintype (ι k)] in
 theorem fam (x : (Σ k, ι k) → Ω) : IsLatFamily O x fun c => intGrp (chartRing O (mseg x) c) := by
   refine ⟨fun s _ a ha v hv => (isIntegral_of_mem ha).mul hv, fun s t hs _ v hv => ?_⟩
@@ -1550,7 +1528,7 @@ theorem inj_of_model {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} [�
     {x : (Σ k, ι k) → Ω} {d : ℕ}
     (h : GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundles.IsModelOver O (mcIdeal O x) d) :
     Function.Injective (algebraMap O Ω) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro c hc
   have hmem : c ∈ (mcIdeal O x).comap (MvPolynomial.C : O →+* MvPolynomial (Σ k, ι k) O) := by
     rw [Ideal.mem_comap]
@@ -1726,22 +1704,13 @@ theorem sum_allOne (q : ℕ) (F : (Fin q →₀ ℕ) → ℤ) :
     ∑ μ ∈ (monomial (allOne q) (1 : ℤ) : MvPolynomial (Fin q) ℤ).support,
       (monomial (allOne q) (1 : ℤ) : MvPolynomial (Fin q) ℤ).coeff μ * F μ = F (allOne q) := by
   classical
-  rw [support_monomial, if_neg one_ne_zero, Finset.sum_singleton, coeff_monomial, if_pos rfl, one_mul]
+  rw [support_monomial, ite_eq_right one_ne_zero, Finset.sum_singleton, coeff_monomial, ite_eq_left rfl, one_mul]
 
 theorem classNum_perm {K : Type} [DecidableEq K] {ι : K → Type} {O : Type} [CommRing O] [IsDomain O]
     [IsDiscreteValuationRing O] {σ : Type} (cls : σ → K → ℤ) (H : MvPolynomial σ ℤ)
     {Q Q' : List (K → ℤ)} (h : Q.Perm Q') (W : Ideal (MRing ι O)) :
     classNum cls H Q W = classNum cls H Q' W := by
-  unfold classNum
-  refine Finset.sum_congr rfl fun μ _ => ?_
-  congr 1
-  have : LeftCommutative (diffStep (K := K)) := ⟨fun a b f => by
-    funext m
-    simp only [diffStep]
-    rw [sub_right_comm m a b]
-    ring⟩
-  simp only [vNumL, vNum, intNum, mixedDiff, List.ofFn_get]
-  rw [(h.append_left _).foldr_eq]
+  apply _root_.GlobalTheory.CompanionTheory.Ar.CkPullBirat.classNum_perm <;> assumption
 
 theorem key (hC : GroundTheory.Heights₂.Heights.NumbersDVR.ChernClassOnFlagPair.Statement) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (Ω : Type) [Field Ω]
     [Algebra O Ω] (K : Type) [Fintype K] [DecidableEq K] (ι : K → Type) [∀ k, Fintype (ι k)]

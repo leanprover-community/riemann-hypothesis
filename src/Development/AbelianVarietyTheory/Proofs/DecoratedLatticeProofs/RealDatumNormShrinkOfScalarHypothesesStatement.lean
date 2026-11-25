@@ -81,7 +81,6 @@ open scoped TensorProduct InnerProductSpace ComplexConjugate
 open GlobalTheory.ChainOnto GlobalTheory.ChainTw
 open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (SplitProj IsProjAt IsIdemOf LiftsChar rdA grpCo frCo gAt)
 open GlobalTheory.IndefiniteRowSideFullHecke.VolumeFlatSection (Blocks parahoric datum)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.LiftRows (Given)
 open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (FinPl IsBase onHalf phiQ rdQ)
 noncomputable section
@@ -140,7 +139,6 @@ open scoped TensorProduct InnerProductSpace ComplexConjugate
 open GlobalTheory.ChainOnto GlobalTheory.ChainTw
 open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (SplitProj IsProjAt IsIdemOf LiftsChar rdA grpCo frCo gAt)
 open GlobalTheory.IndefiniteRowSideFullHecke.VolumeFlatSection (Blocks parahoric datum)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.LiftRows (Given)
 open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (FinPl IsBase onHalf phiQ rdQ)
 
@@ -159,7 +157,6 @@ open scoped TensorProduct InnerProductSpace ComplexConjugate
 open GlobalTheory.ChainOnto GlobalTheory.ChainTw
 open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (SplitProj IsProjAt IsIdemOf LiftsChar rdA grpCo frCo gAt)
 open GlobalTheory.IndefiniteRowSideFullHecke.VolumeFlatSection (Blocks parahoric datum)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.LiftRows (Given)
 open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (FinPl IsBase onHalf phiQ rdQ)
 noncomputable section
@@ -224,7 +221,6 @@ open scoped TensorProduct InnerProductSpace ComplexConjugate
 open GlobalTheory.ChainOnto GlobalTheory.ChainTw
 open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (SplitProj IsProjAt IsIdemOf LiftsChar rdA grpCo frCo gAt)
 open GlobalTheory.IndefiniteRowSideFullHecke.VolumeFlatSection (Blocks parahoric datum)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.LiftRows (Given)
 open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (FinPl IsBase onHalf phiQ rdQ)
 
@@ -260,12 +256,12 @@ theorem chainStep_twisted_normSq_eq_untwisted_mul_localFactors : ∀ (D : D7) (�
   have hP : (Lev.datY S.rank r t j hr Pg Q (LevelP.triv _ _ _) χ ξ Lev.Frm.B).P =
       LevelP.ofLocal (Pg := Pg) (r := r) (LL := ℂ) (fun _ => ⊥) (fun _ => 1) := by
     show (if Lev.Frm.B = Lev.Frm.B then LevelP.triv Pg r ℂ else (LevelP.triv Pg r ℂ).conj) = _
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     exact level_trivial_eq_ofLocal Pg r
   have hP' : (Lev.datY S.rank r t j hr Pg ∅ (LevelP.triv _ _ _) χ ξ' Lev.Frm.B).P =
       LevelP.ofLocal (Pg := Pg) (r := r) (LL := ℂ) (fun _ => ⊥) (fun _ => 1) := by
     show (if Lev.Frm.B = Lev.Frm.B then LevelP.triv Pg r ℂ else (LevelP.triv Pg r ℂ).conj) = _
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     exact level_trivial_eq_ofLocal Pg r
   obtain ⟨⟨x, hx⟩, hall⟩ := GlobalTheory.StepVec.stepVecLocal D ψ θ S T sS sT ΛS ΛT βS βT _ χj Q ξ f₀ f m X t' ht _ _ hP hB hC
     hFS hFT hdisj hf
@@ -294,12 +290,12 @@ theorem chainStep_twisted_normSq_eq_untwisted_mul_localFactors : ∀ (D : D7) (�
     ⟨Sum.elim (fun v => if ∃ PP ∈ Pg, PP.asIdeal.under (𝓞 D.host.F) = v.asIdeal then x (.inl v) else f₀) fun _ => f₀,
       fun _ => rfl, fun _ => rfl⟩
   have hpure' := hall' x' ⟨⟨hx'l, fun v hv => by
-      rw [hx'r, if_neg]
+      rw [hx'r, ite_eq_right]
       rintro ⟨PP, h1, h2⟩
       exact hv PP (Finset.mem_union_left _ h1) h2⟩,
     fun v φ e' he' mu => ⟨fun PP hpp hmu J lam hJ => by
       have h := (hx.2 v φ e' he' mu).1 PP hpp hmu J lam hJ
-      rw [hx'r, if_pos ⟨PP.1, PP.2, (hsum.2 v φ PP.1 hpp).1⟩]
+      rw [hx'r, ite_eq_left ⟨PP.1, PP.2, (hsum.2 v φ PP.1 hpp).1⟩]
       exact h, fun PP hq => by simp at hq⟩⟩
   have hpure := hall x hx
   obtain ⟨hfin, hxx⟩ := GlobalTheory.PlaceTensor.PureScalar.ip_pure_eq_finprod D ψ θ S T sS sT ΛS ΛT f₀ m X hB hC x x f f
@@ -321,15 +317,15 @@ theorem chainStep_twisted_normSq_eq_untwisted_mul_localFactors : ∀ (D : D7) (�
       ipO m X (x' p) (x' p) * (if p ∈ U then ipO m X (x p) (x p) else 1) := by
     intro p
     by_cases hp : p ∈ U
-    · rw [if_pos hp]
+    · rw [ite_eq_left hp]
       obtain ⟨i, -, rfl⟩ := Finset.mem_image.1 hp
-      rw [hx'r, if_neg (hnotPg i), h0, one_mul]
-    · rw [if_neg hp, mul_one]
+      rw [hx'r, ite_eq_right (hnotPg i), h0, one_mul]
+    · rw [ite_eq_right hp, mul_one]
       rcases p with v | τ
       · rw [hx'r]
         by_cases hv : ∃ PP ∈ Pg, PP.asIdeal.under (𝓞 D.host.F) = v.asIdeal
-        · rw [if_pos hv]
-        · rw [if_neg hv]
+        · rw [ite_eq_left hv]
+        · rw [ite_eq_right hv]
           have hxv : x (.inl v) = f₀ := hx.1.2 v fun PP hPP hu => by
             rcases Finset.mem_union.1 hPP with h | h
             · exact hv ⟨PP, h, hu⟩
@@ -346,7 +342,7 @@ theorem chainStep_twisted_normSq_eq_untwisted_mul_localFactors : ∀ (D : D7) (�
     · exact Finset.mem_union_right _ hU
     · refine Finset.mem_union_left _ (hfin.mem_toFinset.2 ?_)
       have h := hpt p
-      rw [if_neg hU, mul_one] at h
+      rw [ite_eq_right hU, mul_one] at h
       rw [Function.mem_mulSupport] at hp ⊢
       rwa [h]
   have hsplit : ∏ p ∈ s0, ipO m X (x p) (x p) =
@@ -388,14 +384,11 @@ open scoped TensorProduct InnerProductSpace ComplexConjugate
 open GlobalTheory.ChainOnto GlobalTheory.ChainTw
 open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (SplitProj IsProjAt IsIdemOf LiftsChar rdA grpCo frCo gAt)
 open GlobalTheory.IndefiniteRowSideFullHecke.VolumeFlatSection (Blocks parahoric datum)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.LiftRows (Given)
 
 noncomputable section
 
 namespace GlobalTheory.ChainTw.RNrmProof
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem rNrm_of_given : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), Given R F → RNrm R := by
   intro D G _ _ Pl0 T A Ks _ _ _ R F hG
@@ -470,7 +463,6 @@ open scoped TensorProduct InnerProductSpace ComplexConjugate
 open GlobalTheory.ChainOnto GlobalTheory.ChainTw
 open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (SplitProj IsProjAt IsIdemOf LiftsChar rdA grpCo frCo gAt)
 open GlobalTheory.IndefiniteRowSideFullHecke.VolumeFlatSection (Blocks parahoric datum)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.LiftRows (Given)
 
 end -- clump:auto

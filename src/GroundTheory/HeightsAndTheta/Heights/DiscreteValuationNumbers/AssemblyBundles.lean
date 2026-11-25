@@ -927,7 +927,7 @@ theorem TautologicalCase.proof (h3 : IntNumAddFirst.Statement.{u}) (h5 : Minimal
   by_cases hW : ratDiv P f g W = 0
   · simp [hW]
   · beta_reduce
-    rw [if_pos (hD.vertical W hW), hadd W hW]
+    rw [ite_eq_left (hD.vertical W hW), hadd W hW]
 
 end
 
@@ -1363,12 +1363,12 @@ theorem exists_form_pair_left {P H : Ideal (MRing ι R)} [hP : P.IsPrime]
   set u' := weightedHomogeneousComponent (blockWeight ι) e u with hu'
   have hc := hPm _ h (e + bf)
   rw [map_sub, weightedHomogeneousComponent_mul_form hf, weightedHomogeneousComponent_mul_form hg,
-    if_pos le_add_self, add_tsub_cancel_right, ← hu'] at hc
+    ite_eq_left le_add_self, add_tsub_cancel_right, ← hu'] at hc
   by_cases hle : bg ≤ e + bf
-  · rw [if_pos hle] at hc
+  · rw [ite_eq_left hle] at hc
     exact ⟨u', _, e, e + bf - bg, weightedHomogeneousComponent_isWeightedHomogeneous _ _,
       weightedHomogeneousComponent_isWeightedHomogeneous _ _, tsub_add_cancel_of_le hle, he, hc⟩
-  · rw [if_neg hle, sub_zero] at hc
+  · rw [ite_eq_right hle, sub_zero] at hc
     exact ((hP.mem_or_mem hc).elim (fun h' => he (hPH h')) hfP).elim
 
 end Helpers

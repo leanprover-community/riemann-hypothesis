@@ -57,8 +57,6 @@ open TrivSqZeroExt (inl inr)
 
 namespace GlobalTheory.SqZero
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {R : Type} [CommRing R] {G : Over (Spec (CommRingCat.of R))} [GrpObj G] [IsCommMonObj G]
   {n : ℕ} {A A' : Type} [CommRing A] [Algebra R A] [CommRing A'] [Algebra R A']
   {v : Fin n → (epsR R ⟶ G)}
@@ -507,8 +505,6 @@ end GlobalTheory.SqZero
 namespace GlobalTheory
 
 open SqZero
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem sqZero_reduction_of_isLocalRing {R : Type} [CommRing R] [IsLocalRing R] (G : Over (Sp R))
     [GrpObj G] [IsCommMonObj G] [Smooth G.hom] :

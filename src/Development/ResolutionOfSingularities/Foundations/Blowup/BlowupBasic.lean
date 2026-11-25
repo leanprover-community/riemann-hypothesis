@@ -14,23 +14,8 @@ namespace FunctorialResolution.Blowup
 
 theorem map_mem_nonZeroDivisors_of_iso {A B : CommRingCat.{u}} (e : A ≅ B) {x : A}
     (hx : x ∈ nonZeroDivisors A) : e.hom.hom x ∈ nonZeroDivisors B := by
-  obtain ⟨hx1, hx2⟩ := mem_nonZeroDivisors_iff.mp hx
-  have h2 : ∀ z : A, e.inv.hom (e.hom.hom z) = z := by
-    intro z
-    simp
-  have h3 : ∀ y : B, e.hom.hom (e.inv.hom y) = y := by
-    intro y
-    simp
-  have key : ∀ y : B, e.hom.hom x * y = 0 → y = 0 := by
-    intro y hy
-    have h1 : e.inv.hom (e.hom.hom x * y) = 0 := by rw [hy, map_zero]
-    rw [map_mul, h2 x] at h1
-    have h4 := hx1 _ h1
-    rw [← h3 y, h4, map_zero]
-  rw [mem_nonZeroDivisors_iff]
-  refine ⟨key, fun y hy => key y ?_⟩
-  rw [mul_comm]
-  exact hy
+  rw [← MulEquivClass.map_nonZeroDivisors e.commRingCatIsoToRingEquiv]
+  exact Submonoid.mem_map_of_mem e.commRingCatIsoToRingEquiv hx
 
 private theorem exists_affineOpen_le (X : Scheme.{u}) (x : X) (W : X.Opens) (hx : x ∈ W) :
     ∃ U : X.affineOpens, x ∈ (U : X.Opens) ∧ (U : X.Opens) ≤ W := by

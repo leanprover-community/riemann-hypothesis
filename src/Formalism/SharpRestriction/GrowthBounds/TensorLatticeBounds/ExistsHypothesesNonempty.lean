@@ -11,13 +11,6 @@ namespace Formalism.MainNotions.G.Inhab
 
 open Formalism.MainNotions.G Formalism.BasicNotions Formalism.FrobeniusOrbits
 
-section InstSec
-
-variable (D : D7) (L : SizeData₂ D)
-
-
-end InstSec
-
 def GatHasPlaces (D : D7) : Prop :=
   ∀ u (w : D.what₂.places.Pl) (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)), 0 < (D.gat u w hg).P.nV
 

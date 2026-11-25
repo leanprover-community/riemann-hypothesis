@@ -53,8 +53,6 @@ namespace UpperTheory.V.Cm
 
 open Fb (Stab)
 
-attribute [local instance 100] LieRing.ofAssociativeRing
-
 variable (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (a : ℕ)
 
 def ofCusp : cuspForms E a →ₗ[ℂ] Sm E a := Submodule.inclusion cuspForms_le_Sm

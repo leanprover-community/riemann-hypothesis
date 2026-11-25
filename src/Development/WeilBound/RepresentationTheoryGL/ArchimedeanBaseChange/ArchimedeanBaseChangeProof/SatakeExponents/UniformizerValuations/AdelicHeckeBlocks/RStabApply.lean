@@ -18,8 +18,6 @@ open scoped Classical
 
 namespace PositivityTheory.Rg.BcB.F
 
-attribute [local instance] borelG borelF borelH
-
 namespace Hint
 
 theorem relIndex_ne_zero {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] {H K : Subgroup G}
@@ -175,8 +173,8 @@ theorem count {ι Γ : Type} [Group Γ] {Hl : ι → Type} [∀ i, Group (Hl i)]
     obtain ⟨v, hv⟩ := QuotientGroup.mk_out_eq_mul V x
     rw [hv, hFV x v v.2]
   let y : (∀ i : T, Hl i ⧸ W i) → ∀ i, Hl i := fun c i => if hi : i ∈ T then (c ⟨i, hi⟩).out else 1
-  have hy_out : ∀ c (i : T), y c i = (c i).out := fun c i => dif_pos i.2
-  have hy_one : ∀ c i, i ∉ T → y c i = 1 := fun c i hi => dif_neg hi
+  have hy_out : ∀ c (i : T), y c i = (c i).out := fun c i => dite_eq_left i.2
+  have hy_one : ∀ c i, i ∉ T → y c i = 1 := fun c i hi => dite_eq_right hi
   have hy : ∀ c, ∀ᶠ i in cofinite, y c i ∈ KH i := fun c =>
     Filter.eventually_cofinite.2 (T.finite_toSet.subset fun i hi => by
       by_contra hiT
@@ -218,9 +216,9 @@ theorem count {ι Γ : Type} [Group Γ] {Hl : ι → Type} [∀ i, Group (Hl i)]
     refine QuotientGroup.eq.2 ((hmemV _).2 fun i => ?_)
     rw [map_mul, map_inv, hX]
     by_cases hi : i ∈ T
-    · simp only [y, dif_pos hi]
+    · simp only [y, dite_eq_left hi]
       exact QuotientGroup.eq.1 (QuotientGroup.out_eq' _)
-    · simp only [y, dif_neg hi, inv_one, one_mul]
+    · simp only [y, dite_eq_right hi, inv_one, one_mul]
       rw [hW i hi]
       exact hK i hi
   have hval : ∀ c, F (Φ c).out = ∏ i : T, h i (c i).out := by
@@ -307,8 +305,7 @@ theorem hintProd : HintProd := by
       exact finprod_eq_one_of_forall_eq_one fun i => Set.indicator_of_mem ((hK x).1 hx i) _
     · rw [Set.indicator_of_notMem (show x ∉ (K : Set Γ) from hx)]
       obtain ⟨i, hi⟩ : ∃ i, p i x ∉ KH i := by
-        by_contra hn
-        push_neg at hn
+        by_contra! hn
         exact hx ((hK x).2 hn)
       refine finprod_eq_zero _ i (Set.indicator_of_notMem hi _) ?_
       refine (Filter.eventually_cofinite.1 (hfin x)).subset fun j hj => ?_

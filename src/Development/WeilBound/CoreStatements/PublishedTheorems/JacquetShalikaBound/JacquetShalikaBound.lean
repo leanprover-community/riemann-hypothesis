@@ -70,10 +70,10 @@ theorem superdiagSum_cM {k : ℕ} (hk : k + 1 < n) (x : Fin (k + 1) → F) :
     Whittaker.superdiagSum (cM n k x) = x (Fin.last k) := by
   unfold Whittaker.superdiagSum
   rw [Finset.sum_eq_single (⟨k, by omega⟩ : Fin n), Finset.sum_eq_single (⟨k + 1, hk⟩ : Fin n)]
-  · rw [if_pos rfl, cM_eq_of x rfl (by simp)]
+  · rw [ite_eq_left rfl, cM_eq_of x rfl (by simp)]
     rfl
   · intro j _ hj
-    rw [if_neg]
+    rw [ite_eq_right]
     intro e
     exact hj (Fin.ext (by simpa using e))
   · simp
@@ -253,7 +253,7 @@ theorem coeff_prod_one_sub {n : ℕ} (β : Fin n → ℂ) (r : ℕ) :
   rw [e, coeff_C_mul, coeff_X_pow]
   by_cases h : r = t.card
   · subst h; simp
-  · rw [if_neg h, if_neg (fun h' => h h'.symm)]; simp
+  · rw [ite_eq_right h, ite_eq_right (fun h' => h h'.symm)]; simp
 
 theorem mk_mul_prod_eq_one {n : ℕ} (β : Fin n → ℂ) (g : ℕ → ℂ) (h0 : g 0 = 1)
     (hrec : ∀ j : ℕ, 1 ≤ j → ∑ r ∈ Finset.range (j + 1),
@@ -264,7 +264,7 @@ theorem mk_mul_prod_eq_one {n : ℕ} (β : Fin n → ℂ) (g : ℕ → ℂ) (h0 
   simp only [coeff_prod_one_sub, coeff_mk]
   rcases Nat.eq_zero_or_pos j with rfl | hj
   · simp [h0, coeff_one]
-  · rw [hrec j hj, coeff_one, if_neg (by omega)]
+  · rw [hrec j hj, coeff_one, ite_eq_right (by omega)]
 
 end GlobalTheory.CompanionTheory.SatakeBound
 
@@ -754,8 +754,7 @@ theorem sphSpan_le (π : CuspSub E a) (w : HeightOneSpectrum (𝓞 E)) : sphSpan
 
 theorem exists_translate_ne_zero : G2 := by
   intro E _ _ _ a π w B hB l hl
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   obtain ⟨x, hx⟩ := hB.exists_vec
   have hfix : ∀ v : π.V, IsFix π w v → v ≠ 0 → IsSatVecGL w (π.locRep w) v B := fun v hv h0 =>
     hB.2 v (GlobalTheory.LGrp.mem_fixed.2 hv) h0
@@ -792,8 +791,6 @@ section -- clump:auto
 noncomputable section
 
 open NumberField IsDedekindDomain Matrix Formalism.L2.Host GlobalTheory.CuspRep GlobalTheory.LFun PositivityTheory.JacquetShalikaLocal
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.CompanionTheory.JSUnit
 
@@ -961,8 +958,6 @@ noncomputable section
 
 open NumberField IsDedekindDomain MeasureTheory GlobalTheory.CuspRep GlobalTheory.LFun PositivityTheory.JacquetShalikaLocal
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace GlobalTheory.CompanionTheory.SatakeBound
 
 theorem jacquetShalikaBound_of_steps : ParameterUpperBound → liftZP_unit → ParameterAbsoluteValues → lift_levelP_alt₂ → G1 → G2 → G3 → G4 → GlobalTheory.Published.JacquetShalikaBound := by
@@ -1027,8 +1022,6 @@ noncomputable section
 open NumberField IsDedekindDomain GlobalTheory.CuspRep GroundTheory.Automorphic GroundTheory.Automorphic.GLnLocal
   PositivityTheory.JacquetShalikaLocal
 open scoped ValuativeRel Topology MatrixGroups
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.CompanionTheory.JSSmooth
 
@@ -1210,10 +1203,10 @@ theorem div_col {n k c : ℕ} {y : Fin (k + 1) → F}
   by_cases h : (j : ℕ) = k + 1 ∧ (i : ℕ) < k + 1
   · obtain ⟨t, ht, e'⟩ := hy ⟨i, h.2⟩
     refine ⟨t, ht, ?_⟩
-    simp only [cM, Matrix.of_apply, dif_pos h]
+    simp only [cM, Matrix.of_apply, dite_eq_left h]
     exact e'
   · refine ⟨0, Subring.zero_mem _, ?_⟩
-    simp only [cM, Matrix.of_apply, dif_neg h, mul_zero]
+    simp only [cM, Matrix.of_apply, dite_eq_right h, mul_zero]
 
 theorem stability_coefficients : L0 → L2 → ColumnsMirabolic → FormCoefficientStability := by
   intro h0 h2 h3 F _ _ _ _ _ _ μ _ ψ hψ n V _ _ ρ hρ l k B hk hI u u'
@@ -1323,7 +1316,7 @@ theorem orthogonality_of_lattice_character : L0 → L1 := by
   have hL := hL0 F μ ψ hψ
   dsimp only at hL ⊢
   by_cases hy : ∀ i, y i ∈ (valuation F).integer
-  · rw [if_pos hy]
+  · rw [ite_eq_left hy]
     have hmeas : MeasurableSet (lat F m 0) := ((hL.2 m).1 0).2.2.1
     have h1 : Set.EqOn (fun ξ : Fin m → F => ψ (ξ ⬝ᵥ y)) (fun _ => (1 : ℂ)) (lat F m 0) := by
       intro ξ hξ
@@ -1333,7 +1326,7 @@ theorem orthogonality_of_lattice_character : L0 → L1 := by
       exact sum_mem fun j _ => mul_mem (hξ j) (hy j)
     rw [setIntegral_congr_fun hmeas h1, setIntegral_const]
     simp
-  · rw [if_neg hy]
+  · rw [ite_eq_right hy]
     simp only [not_forall] at hy
     obtain ⟨i, hi⟩ := hy
     obtain ⟨t, ht, hne⟩ := exists_integer_psi_mul_ne_one hψ hi

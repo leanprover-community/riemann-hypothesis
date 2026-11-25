@@ -160,8 +160,6 @@ open GlobalTheory.NormExact
 open GlobalTheory.BotFormula (IsFinPt)
 open GlobalTheory.BotClassDict (finQ)
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 noncomputable section
 namespace GlobalTheory.SplitPhase
 
@@ -212,11 +210,11 @@ theorem phase_eq : ∀ D : D7, ∃ w : 𝓞 D.host.E, w + GlobalTheory.FinWeil.s
     have hR : GlobalTheory.LatVac.hRat S T X X = n := by
       rw [GlobalTheory.LatVac.hRat, hset.gS, hset.gT, inv_one]
       simp only [Matrix.one_apply, ite_mul, one_mul, zero_mul, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq,
-        Finset.mem_univ, if_true]
+        Finset.mem_univ, ite_true]
       have e : ∀ x, (∑ x_1, ∑ x_2, if x = x_1 then star (X x_2 x_1) * X x_2 x else 0) =
           ∑ x_2, star (X x_2 x) * X x_2 x := fun x => by
         rw [Finset.sum_comm]
-        simp only [Finset.sum_ite_eq, Finset.mem_univ, if_true]
+        simp only [Finset.sum_ite_eq, Finset.mem_univ, ite_true]
       rw [Finset.sum_congr rfl fun x _ => e x, Finset.sum_comm]
     have hs : symplOH S T (GlobalTheory.FinWeilO.intA D b • finPt (S := S) (T := T) rfl rfl r z)
         (finPt (S := S) (T := T) rfl rfl r z) = pairA D.host.F 0
@@ -240,7 +238,6 @@ theorem phase_eq : ∀ D : D7, ∃ w : 𝓞 D.host.E, w + GlobalTheory.FinWeil.s
     obtain ⟨c, hc⟩ : ∃ c : ℂ, c = ∑ τ, tauE D τ n := ⟨_, rfl⟩
     obtain ⟨hxi, hN1, hd1⟩ := ReciprocityTheory.ChartRestriction.G.PullbackSections.PfModelDataX.xiR_facts D
     have hNR : (Ideal.absNorm D.host.ccK : ℝ) ≠ 0 := by linarith
-    have hNC : (Ideal.absNorm D.host.ccK : ℂ) ≠ 0 := by exact_mod_cast hNR
     have hdR : Real.sqrt D.host.d ≠ 0 := by linarith
     have hsumq : ∑ τ, tauE D τ ((-q : D.host.F) : D.host.E) = c / (2 * (Ideal.absNorm D.host.ccK : ℂ)) := by
       have e : ∀ τ, tauE D τ ((-q : D.host.F) : D.host.E) = tauE D τ n / (2 * (Ideal.absNorm D.host.ccK : ℂ)) :=
@@ -328,8 +325,6 @@ open Formalism.MainNotions.StandardLatticesGL3 (WeilO HeckeU TT stdL pt oddE0)
 open GlobalTheory.NormExact
 open GlobalTheory.BotFormula (IsFinPt)
 open GlobalTheory.BotClassDict (finQ)
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 open Formalism.MainNotions.StandardLattice Matrix GlobalTheory.WeilParts GlobalTheory.FinWeil GlobalTheory.FinWeilO
@@ -472,8 +467,6 @@ open Formalism.MainNotions.StandardLatticesGL3 (WeilO HeckeU TT stdL pt oddE0)
 open GlobalTheory.NormExact
 open GlobalTheory.BotFormula (IsFinPt)
 open GlobalTheory.BotClassDict (finQ)
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 open Formalism.MainNotions.StandardLattice Matrix GlobalTheory.WeilParts GlobalTheory.FinWeil GlobalTheory.FinWeilO GlobalTheory.SplitProj
@@ -684,8 +677,6 @@ open GlobalTheory.NormSum (Pair Tup minorPol ratG intG Cls gam)
 open GlobalTheory.NormDict GlobalTheory.NormExact
 open GlobalTheory.BotFormula (IsFinPt)
 open GlobalTheory.IndefiniteRowSideFullHecke.ClassFunctionSumIntegral (IsDefiniteSpace IsOpenCompactLevel)
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -1058,8 +1049,6 @@ open GlobalTheory.NormSum (Pair Tup minorPol ratG intG Cls gam)
 open GlobalTheory.NormDict GlobalTheory.NormExact
 open GlobalTheory.BotFormula (IsFinPt)
 open GlobalTheory.IndefiniteRowSideFullHecke.ClassFunctionSumIntegral (IsDefiniteSpace IsOpenCompactLevel)
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -1463,8 +1452,6 @@ open GlobalTheory.NormSum (Pair Tup minorPol ratG intG Cls gam)
 open GlobalTheory.NormDict GlobalTheory.NormExact
 open GlobalTheory.BotFormula (IsFinPt)
 open GlobalTheory.IndefiniteRowSideFullHecke.ClassFunctionSumIntegral (IsDefiniteSpace IsOpenCompactLevel)
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.VacMoveFin
 

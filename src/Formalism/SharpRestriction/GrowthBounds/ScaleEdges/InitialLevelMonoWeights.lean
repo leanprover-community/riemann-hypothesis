@@ -19,14 +19,12 @@ theorem initial_level_nonneg {C Ct0 : ℝ} (hC : 0 ≤ C) (h0 : 0 ≤ Ct0) (p N 
     0 ≤ t0 C Ct0 p N N₁ L₁ G' k a := by
   unfold t0 tableLineDegreeFive.La
   have hl : 0 ≤ Real.log a := Real.log_nonneg ha
-  have ha0 : 0 ≤ a := by linarith
   positivity
 
 theorem initial_level_mono_weights {C Ct0 Ct0' : ℝ} (hC : 0 ≤ C) (h : Ct0 ≤ Ct0') (p N N₁ L₁ G' k : ℕ) {a : ℝ} (ha : 1 ≤ a) :
     t0 C Ct0 p N N₁ L₁ G' k a ≤ t0 C Ct0' p N N₁ L₁ G' k a := by
   unfold t0 tableLineDegreeFive.La
   have hl : 0 ≤ Real.log a := Real.log_nonneg ha
-  have ha0 : 0 ≤ a := by linarith
   have hB : 0 ≤ C * (N₁ : ℝ) ^ 2 * Real.log a * a / (p * k) + a * (p : ℝ) ^ (-(L₁ : ℤ)) + k * (p : ℝ) ^ G' := by
     positivity
   have hN : (0 : ℝ) ≤ N := Nat.cast_nonneg _

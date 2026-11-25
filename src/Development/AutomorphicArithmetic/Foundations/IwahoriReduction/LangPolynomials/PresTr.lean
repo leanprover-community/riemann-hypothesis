@@ -80,11 +80,8 @@ theorem UpperTheory.Kd.C7.pPresTr :
   haveI : CharZero Ω := charZero_of_injective_algebraMap (algebraMap ℚ Ω).injective
   haveI : NeZero (l : Ω) := ⟨Nat.cast_ne_zero.mpr (Nat.Prime.ne_zero Fact.out)⟩
   haveI : ∀ i, HasEnoughRootsOfUnity Ω (l ^ i) := fun i => inferInstance
-  have hbu : IsUnit (b : ℤ_[l]) := by
-    rw [PadicInt.isUnit_iff]
-    refine le_antisymm (PadicInt.norm_le_one _) (not_lt.mp fun h => hb ?_)
-    have h' : ‖((b : ℤ) : ℤ_[l])‖ < 1 := by simpa using h
-    exact Int.natCast_dvd_natCast.mp ((PadicInt.norm_int_lt_one_iff_dvd _).mp h')
+  have hbu : IsUnit (b : ℤ_[l]) := PadicInt.isUnit_iff.2 <| PadicInt.norm_natCast_eq_one_iff.2 <|
+    (Nat.Prime.coprime_iff_not_dvd (Fact.out : l.Prime)).2 hb
   obtain ⟨τ, hτ, hτc⟩ := (pFrobEx l hl Ω A hOver).2.2 hbu.unit
   have hmodpow : ∀ (t : Ω) (N a : ℕ), t ^ N = 1 → t ^ a = t ^ (a % N) := by
     intro t N a ht

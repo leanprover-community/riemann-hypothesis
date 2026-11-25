@@ -279,12 +279,12 @@ theorem trace_gramB {m : ℕ} (Z : Matrix (Fin n) (Fin n) ℂ) (ε : Fin m → B
 
   simp only [Matrix.trace, Matrix.diag, Matrix.mul_apply, gramB, evX, Qb, map_sum, map_mul, MvPolynomial.eval_X,
   dotProduct, Matrix.mulVec, rowC, Pi.star_apply, star_star, Finset.mul_sum]
-  simp only [if_true]
+  simp only [ite_true]
   conv_rhs => rw [Finset.sum_comm]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl (fun k _ => Finset.sum_congr rfl (fun a _ => ?_))
-  simp only [Bool.false_eq_true, if_false]
+  simp only [Bool.false_eq_true, ite_false]
   ring
 
 theorem star_dot_conjTranspose (Z : Matrix (Fin n) (Fin n) ℂ) (w : Fin n → ℂ) :

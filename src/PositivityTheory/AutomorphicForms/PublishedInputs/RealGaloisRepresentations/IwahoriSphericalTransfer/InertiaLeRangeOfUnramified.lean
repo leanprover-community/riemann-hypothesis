@@ -37,7 +37,7 @@ theorem good {F K : Type} [Field F] [NumberField F] [Field K] [NumberField K] [A
 theorem orderDvd_two {F K : Type} [Field F] [NumberField F] [Field K] [NumberField K] [Algebra F K] {η : HChar F}
     (hq : IsQuadCharOf K η) : η.OrderDvd 2 := by
   show η ^ 2 = 1
-  apply GlobalTheory.T.hecke_character_eq_of_cofinite F (η ^ 2) 1
+  apply _root_.GlobalTheory.HeckeMultOne.main F (η ^ 2) 1
   filter_upwards [good hq] with v hv
   obtain ⟨w, -, hu, hval⟩ := hv
   refine ⟨fun x hx => ?_, fun x _ => rfl, ?_⟩

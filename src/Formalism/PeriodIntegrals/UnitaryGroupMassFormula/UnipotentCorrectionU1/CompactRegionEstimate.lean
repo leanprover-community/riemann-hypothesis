@@ -15,8 +15,6 @@ namespace PI.UnitaryCorollaryDerivatives
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.U
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem compact_region_estimate : CompR := by
   intro k r ψ h cost n C₀ hψ hh hb H
   obtain ⟨K, _, hK⟩ := CRH.main ψ h cost n C₀ hψ hh hb (by

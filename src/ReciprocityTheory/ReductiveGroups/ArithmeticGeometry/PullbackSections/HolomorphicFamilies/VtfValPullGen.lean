@@ -15,8 +15,6 @@ namespace ReciprocityTheory.ChartRestriction.G.PullbackSections
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj Opposite
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.TB.ValAt Formalism.L2.Pj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section LC
 
 variable {X Y Z : Scheme.{0}} (L : LB X) {K K' : Type} [Fintype K] [Fintype K']
@@ -29,7 +27,7 @@ private lemma valprod_lemma {R : Type} [CommRing R] (φ : R →+* ℂ) (u : K �
 
 theorem vtf_val_prodU (p : Sp ℂ ⟶ Y) {V : Y.Opens} (h : ⊤ ≤ p ⁻¹ᵁ V) (u : K → Γ(Y, V)ˣ) (ε : K → ℤ) :
     valAt' p V (∏ k, u k ^ ε k).val = ∏ k, valAt' p V (u k).val ^ ε k := by
-  simp only [valAt', dif_pos h]
+  simp only [valAt', dite_eq_left h]
   unfold valAt
   simp only [← RingHom.comp_apply]
   exact valprod_lemma _ u ε
@@ -74,11 +72,5 @@ theorem vtf_isGen_val (φ : K → (Y ⟶ X)) (ε : K → ℤ) (t : LB.Gen (LB.Li
     _ = _ := by rw [vtf_val_lcg L φ ε p j j' h, vtf_val_res p _ h']
 
 end LC
-
-section Liou
-
-variable {g : ℕ}
-
-end Liou
 
 end ReciprocityTheory.ChartRestriction.G.PullbackSections

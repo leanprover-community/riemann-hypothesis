@@ -121,12 +121,6 @@ theorem index_det (ϖ : R) (hϖ : Irreducible ϖ) {n : Type} [Fintype n] [Decida
 
 end IdxDet
 
-section Count
-
-variable {F : Type} [Field F] [Fintype F]
-
-end Count
-
 end Formalism.HermitianLattices.RamifiedLatticeOperators.IndexDeterminantCharacterSums
 end -- clump:auto
 end -- clump:auto
@@ -144,11 +138,6 @@ noncomputable section
 namespace Formalism.L2.Col
 
 variable {K : Type} [Field K] [NumberField K]
-
-section Len
-variable {V : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
-
-end Len
 
 section Rec
 variable [StarRing K]

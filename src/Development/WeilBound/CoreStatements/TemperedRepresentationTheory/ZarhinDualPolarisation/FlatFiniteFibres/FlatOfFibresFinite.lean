@@ -14,23 +14,11 @@ open scoped CategoryTheory.Obj CategoryTheory.MonObj
 open GlobalTheory.CechPic GlobalTheory.AbDual
 open GlobalTheory.IndefiniteRowSideFullHecke.ZeroSectionBase (IsPrincipalPol sqToBase)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 open ReciprocityTheory.ChartRestriction.G.Chart (sp spMap)
 
 namespace PositivityTheory.Tls2.Zar3.Ch1
 
 open GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Ar.GR
-
-def PolFibreIsog : Prop :=
-  ∀ (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (R : Type) [CommRing R]
-    [Algebra R C], v.Integers R →
-    ∀ (A B : Over (Sp R)) [GrpObj A] [GrpObj B] (P : LB (A ⊗ B).left) (l : A ⟶ B),
-      IsAbelianScheme A → IsAbelianScheme B → IsDual A B P → IsDual B A (swap P) →
-      Zarhin.IsPolarisation A B P l →
-      ∀ (Ω : Type) [Field Ω] [IsAlgClosed Ω] (s : Sp Ω ⟶ Sp R),
-        IsFinite ((Over.pullback s).map l).left ∧ Flat ((Over.pullback s).map l).left ∧
-          Surjective ((Over.pullback s).map l).left
 
 def FiniteOfFibres : Prop :=
   ∀ (R : Type) [CommRing R] (A B : Over (Sp R)) [GrpObj A] [GrpObj B] (l : A ⟶ B),

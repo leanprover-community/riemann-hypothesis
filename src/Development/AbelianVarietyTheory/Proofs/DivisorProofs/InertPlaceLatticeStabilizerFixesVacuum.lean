@@ -487,7 +487,6 @@ theorem conj_sq : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberFi
     rw [← atV_sub, ← atV_add, mul_one, ← hK]
     congr 1
     ring
-  have h2' : (2 : AF F) * ⅟2 = 1 := mul_invOf_self 2
   have hιF : ∀ t : F, inclR (F := F) (AF F) (algebraMap F E t) =
       algebraMap (AF F) (AE F E) (algebraMap F (AF F) t) := fun t => by
     show Algebra.TensorProduct.includeRight (algebraMap F E t) = _
@@ -691,8 +690,7 @@ theorem scalar_eq_one : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Nu
       ring
     rw [← e1, hfix]
   obtain ⟨y, hy⟩ : ∃ y, G.M'.vac v y ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hne (funext h)
   let x : Fin a' × Fin (a + a') → AF F := fun i => GlobalTheory.LatVac.liftV v (y i)
   have hRx : R x = R 0 := by

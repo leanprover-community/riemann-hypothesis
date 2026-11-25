@@ -46,20 +46,6 @@ theorem eq_or_eq_conjPlE (P w : PlE D.host)
 def conjSplit (s : SplitPlace D.host.E) : SplitPlace D.host.E :=
   ⟨s.v, s.i.comp (IsCMField.complexConj D.host.E).toAlgHom⟩
 
-theorem mem_conj_w (s : SplitPlace D.host.E) (x : 𝓞 D.host.E) : x ∈ (conjSplit s).w.asIdeal ↔ cO x ∈ s.w.asIdeal := by
-  show Valued.v ((conjSplit s).i (x : D.host.E)) < 1 ↔ Valued.v (s.i ((cO x : 𝓞 D.host.E) : D.host.E)) < 1
-  rw [IsCMField.coe_ringOfIntegersComplexConj]
-  rfl
-
-theorem splitEx_of (hstar : ∀ x : D.host.E, D.host.conj x = IsCMField.complexConj D.host.E x)
-    (hsplit : ∀ v₀ : HeightOneSpectrum (𝓞 (maximalRealSubfield D.host.E)),
-      (∃ w w' : PlE D.host, w ≠ w' ∧
-        w.asIdeal.comap (algebraMap (𝓞 (maximalRealSubfield D.host.E)) (𝓞 D.host.E)) = v₀.asIdeal ∧
-        w'.asIdeal.comap (algebraMap (𝓞 (maximalRealSubfield D.host.E)) (𝓞 D.host.E)) = v₀.asIdeal) →
-      ∃ s : SplitPlace D.host.E, s.v = v₀) :
-    SplitEx D :=
-  _root_.GlobalTheory.SplitConjPlace.splitEx_of hstar hsplit
-
 end Formalism.L2
 
 namespace Formalism.L2

@@ -41,8 +41,6 @@ theorem pfCoord_of_system :
   rw [e1, e2]
   exact hPF K ι K' ι' κ v Ω y d L L' hv hP' hP hL hL'
 
-theorem pfCoord : ReciprocityTheory.ChartRestriction.G.Geo.ArithIntersectionSystemStatement → PFCoordStatement :=
-  pfCoord_of_system
 
 end PositivityTheory.HtPt.Aig
 end -- clump:auto
@@ -56,8 +54,6 @@ section -- clump:auto
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I4
 
-theorem _root_.GlobalTheory.CompanionTheory.Relay.coordinate_projection_of_arith_system : ReciprocityTheory.ChartRestriction.G.Geo.ArithIntersectionSystemStatement → PFCoordStatement := by
-  first | exact @PositivityTheory.HtPt.Aig.pfCoord
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.MetricProofs.CoordinateProjectionOfArithSystem =====

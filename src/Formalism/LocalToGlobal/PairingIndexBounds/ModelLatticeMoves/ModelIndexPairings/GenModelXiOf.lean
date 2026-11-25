@@ -66,8 +66,8 @@ theorem GenModelXi_of (hXE : XiExists) (hMU : MovesU) (hExt : ExtendLin) : GenMo
     unfold ind
     simp only [SetLike.mem_coe, AddSubgroup.mem_addSubgroupOf, Set.indicator, Pi.one_apply]
     by_cases ha : (a : V) ∈ Λ i
-    · rw [if_pos ha, if_pos ((hmem a).1 ha)]
-    · rw [if_neg ha, if_neg (fun h => ha ((hmem a).2 h))]
+    · rw [ite_eq_left ha, ite_eq_left ((hmem a).1 ha)]
+    · rw [ite_eq_right ha, ite_eq_right (fun h => ha ((hmem a).2 h))]
   rw [hz, map_zero]
 
 end Formalism.L2.PairingIndexBounds.Mv

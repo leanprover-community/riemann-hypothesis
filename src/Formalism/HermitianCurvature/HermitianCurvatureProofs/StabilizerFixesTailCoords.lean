@@ -34,21 +34,8 @@ def IsHaarOn {k r : ℕ} (S : Set (Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k 
   SigmaFinite μ ∧ μ ≠ 0 ∧ μ {x | Matrix.of x ∉ S} = 0 ∧
     ∀ s ∈ S, μ.map (Formalism.QuantumDeterminants.lmulM s) = μ
 
-def realifyFun {m : ℕ} (X : Matrix (Fin m) (Fin m) ℂ) : Fin m × Fin m × Bool → ℝ :=
-  fun p => if p.2.2 then (X p.1 p.2.1).im else (X p.1 p.2.1).re
-
-def unrealify {m : ℕ} (x : EuclideanSpace ℝ (Fin m × Fin m × Bool)) : Matrix (Fin m) (Fin m) ℂ :=
-  fun i j => ⟨x (i, j, false), x (i, j, true)⟩
-
 def lieOf {m : ℕ} (S : Set (Matrix (Fin m) (Fin m) ℂ)) : Set (Matrix (Fin m) (Fin m) ℂ) :=
   {X | ∀ t : ℝ, NormedSpace.exp ((t : ℂ) • X) ∈ S}
-
-def lieE {m : ℕ} (S : Set (Matrix (Fin m) (Fin m) ℂ)) : Submodule ℝ (EuclideanSpace ℝ (Fin m × Fin m × Bool)) :=
-  Submodule.span ℝ ((fun X => (WithLp.equiv 2 _).symm (realifyFun X)) '' lieOf S)
-
-def haarLie {k r : ℕ} (S : Set (Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)) (κ : ENNReal) :
-    Measure (Formalism.QuantumDeterminants.Mt k r) :=
-  κ • Measure.map (fun x : lieE S => fun i j => NormedSpace.exp (unrealify (x : EuclideanSpace ℝ _)) i j) volume
 
 end PI
 end -- clump:auto
@@ -135,12 +122,12 @@ theorem S_col {z : Fin (2 * r + k + 1) → ℂ} {s : PI.WUN.Mx k r} (hs : s ∈ 
   obtain ⟨h, hh, m, hm, rfl⟩ := hs
   have ha := a.2
   rw [Matrix.mul_apply, Finset.sum_eq_single (Formalism.QuantumDeterminants.eI k r a)]
-  · rw [hm.2.1 a (Formalism.QuantumDeterminants.eI k r a) le_rfl, if_pos rfl, mul_one]
+  · rw [hm.2.1 a (Formalism.QuantumDeterminants.eI k r a) le_rfl, ite_eq_left rfl, mul_one]
     exact hcol hh i _ a.2
   · intro l _ hl
     by_cases hal : a.val ≤ l.val
-    · rw [hm.2.1 a l hal, if_neg hl, mul_zero]
-    · rw [hcol hh i l (by omega), if_neg (by intro e; rw [e] at hai; omega), zero_mul]
+    · rw [hm.2.1 a l hal, ite_eq_right hl, mul_zero]
+    · rw [hcol hh i l (by omega), ite_eq_right (by intro e; rw [e] at hai; omega), zero_mul]
   · intro hn; exact absurd (Finset.mem_univ _) hn
 
 theorem stabilizer_fixes_tail_coords {z : Fin (2 * r + k + 1) → ℂ} (hz : Formalism.QuantumDeterminants.inWb k r z) {s : PI.WUN.Mx k r}
@@ -152,11 +139,11 @@ theorem stabilizer_fixes_tail_coords {z : Fin (2 * r + k + 1) → ℂ} (hz : For
     change (∑ x, m l x * z x) = z l
     rw [Finset.sum_eq_single l]
     · by_cases hlW : l.val ≤ r + k
-      · rw [hm.2.2 l l hl hlW hl, if_pos rfl, one_mul]
+      · rw [hm.2.2 l l hl hlW hl, ite_eq_left rfl, one_mul]
       · rw [hz l (Or.inr (by omega)), mul_zero]
     · intro x _ hx
       by_cases hxW : r ≤ x.val ∧ x.val ≤ r + k
-      · rw [hm.2.2 l x hxW.1 hxW.2 hl, if_neg (fun e => hx e.symm), zero_mul]
+      · rw [hm.2.2 l x hxW.1 hxW.2 hl, ite_eq_right (fun e => hx e.symm), zero_mul]
       · rw [hz x (by omega), mul_zero]
     · intro hn; exact absurd (Finset.mem_univ _) hn
   have hz' : (∑ l, h i l * z l) = z i := congrFun hh.2.2 i
@@ -166,7 +153,7 @@ theorem stabilizer_fixes_tail_coords {z : Fin (2 * r + k + 1) → ℂ} (hz : For
   intro l _
   by_cases hl : r ≤ l.val
   · rw [hv l hl]
-  · rw [hcol hh i l (by omega), if_neg (by intro e; rw [e] at hi; omega), zero_mul, zero_mul]
+  · rw [hcol hh i l (by omega), ite_eq_right (by intro e; rw [e] at hi; omega), zero_mul, zero_mul]
 
 theorem lieHpk_of {X : PI.WUN.Mx k r}
     (hX : ∀ t : ℝ, NormedSpace.exp ((t : ℂ) • X) ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r)) : PI.WUN.InLieHpk k r X := by
@@ -309,9 +296,9 @@ theorem lie_stabilizer_splitting : LieSsetSplit := by
       · rw [hpk_cross l j (Or.inr ⟨Or.inl (by have := a.2; omega), h1, h2⟩), mul_zero]
     have s2 : ∑ l, Formalism.QuantumDeterminants.Hpk k r (Formalism.QuantumDeterminants.eI k r a) l * X l j = X i j := by
       rw [Finset.sum_eq_single i]
-      · rw [hpk_row, if_pos (by simp only [a]; omega), one_mul]
+      · rw [hpk_row, ite_eq_left (by simp only [a]; omega), one_mul]
       · intro l _ hl
-        rw [hpk_row, if_neg (by simp only [a]; intro e; exact hl (Fin.ext (by omega))), zero_mul]
+        rw [hpk_row, ite_eq_right (by simp only [a]; intro e; exact hl (Fin.ext (by omega))), zero_mul]
       · intro hn; exact absurd (Finset.mem_univ _) hn
     rw [s1, s2, zero_add] at hE
     exact hE
@@ -344,14 +331,14 @@ theorem lie_stabilizer_splitting : LieSsetSplit := by
         have ha := a.2
         rw [Matrix.sub_apply, middleBlock_apply, F1 a i hai]
         have : pw k r (Formalism.QuantumDeterminants.eI k r a) = 0 := by
-          unfold pw; rw [if_neg]; simp only [Formalism.QuantumDeterminants.eI]; omega
+          unfold pw; rw [ite_eq_right]; simp only [Formalism.QuantumDeterminants.eI]; omega
         rw [this, mul_zero, sub_zero]
       · intro i j h1 h2 h3
         rw [Matrix.sub_apply, middleBlock_apply]
-        have hj : pw k r j = 1 := by unfold pw; rw [if_pos ⟨h1, h2⟩]
+        have hj : pw k r j = 1 := by unfold pw; rw [ite_eq_left ⟨h1, h2⟩]
         rw [hj, mul_one]
         by_cases hi : i.val ≤ r + k
-        · have : pw k r i = 1 := by unfold pw; rw [if_pos ⟨h3, hi⟩]
+        · have : pw k r i = 1 := by unfold pw; rw [ite_eq_left ⟨h3, hi⟩]
           rw [this, one_mul, sub_self]
         · rw [F3 i j h1 h2 (by omega), mul_zero, sub_zero]
     intro t

@@ -1,16 +1,13 @@
 module
 
-public import Formalism.HermitianLattices.StatementLat
 public import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
-public import Formalism.HermitianLattices.HermitianLatticesProofs.LocBasic
-import Mathlib.Algebra.Order.Star.Int
+import Formalism.HermitianLattices.HermitianLatticesProofs.LocBasic
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
-public import Mathlib.RingTheory.OrderOfVanishing.Basic
-import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.OrderOfVanishing.Basic
+public import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 

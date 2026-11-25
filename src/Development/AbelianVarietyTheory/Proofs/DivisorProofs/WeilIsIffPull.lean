@@ -81,7 +81,6 @@ section -- clump:auto
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry IsLocalRing
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.DVR
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT
 
 noncomputable section
@@ -175,7 +174,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
 noncomputable section
@@ -369,7 +367,6 @@ theorem goodLab_move [CharZero R] [IsAlgClosed F] [IsAlgClosed F'] (ha : IsFib �
     (f : ∀ k, QkPt D.toPre F k → (TFK (R := R) F ⟶ A.A)) (f' : ∀ k, QkPt D' F' k → (TFK (R := W) F' ⟶ A'.A))
     (hf : ∀ k, 1 ≤ k → ∀ p, (f' k (tr hD c em hB' p)).left ≫ a = spMap em.toRingHom ≫ (f k p).left) :
     GoodLab D.toPre A F f ↔ GoodLab D' A' F' f' := by
-  have hB := D.tau_bimult
   obtain ⟨ε, hε, iε, oε, wε⟩ := exists_ptHom ha c em
   have e : ∀ k, 1 ≤ k → ∀ p, f' k (tr hD c em hB' p) = ε (f k p) := fun k hk p => (hε _ _).2 (hf k hk p)
   have s : ∀ k, 1 ≤ k → ∀ p' : QkPt D' F' k, ∃ p, tr hD c em hB' p = p' := fun k hk => (tr_bij hD c em hB' hk).2

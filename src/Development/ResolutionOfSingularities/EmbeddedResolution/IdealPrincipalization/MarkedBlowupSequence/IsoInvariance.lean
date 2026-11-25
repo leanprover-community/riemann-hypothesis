@@ -18,8 +18,6 @@ private theorem exists_isIso_subschemeι_eq_comp_of_eq_ker {A X : Scheme.{u}} (g
     [IsClosedImmersion g] (I : X.IdealSheafData) (hI : I = g.ker) :
     ∃ φ : I.subscheme ⟶ A, IsIso φ ∧ I.subschemeι = φ ≫ g := by
   subst hI
-  have : Mono g := inferInstance
-  have : Mono (Scheme.Hom.ker g).subschemeι := inferInstance
   have h1 : Scheme.Hom.ker g ≤ Scheme.Hom.ker (Scheme.Hom.ker g).subschemeι :=
     le_of_eq (Scheme.IdealSheafData.ker_subschemeι _).symm
   have h2 : Scheme.Hom.ker (Scheme.Hom.ker g).subschemeι ≤ Scheme.Hom.ker g :=
@@ -77,7 +75,6 @@ theorem smooth_comap_iso {k : Type u} [Field k] {X Y : Scheme.{u}}
       Limits.pullback.snd e.hom Z.subschemeι ≫ Z.subschemeι ≫ e.inv := by
     rw [← Category.assoc, ← Limits.pullback.condition, Category.assoc, e.hom_inv_id,
       Category.comp_id]
-  have hsnd : IsIso (Limits.pullback.snd e.hom Z.subschemeι) := inferInstance
   have hci : IsClosedImmersion (Limits.pullback.fst e.hom Z.subschemeι) := by
     rw [hsq]; infer_instance
   obtain ⟨φ, hφ, hcomm⟩ :=
@@ -88,7 +85,6 @@ theorem smooth_comap_iso {k : Type u} [Field k] {X Y : Scheme.{u}}
       (φ ≫ Limits.pullback.snd e.hom Z.subschemeι) ≫ Z.subschemeι := by
     rw [hcomm, Category.assoc, Category.assoc, Limits.pullback.condition]
   rw [← Category.assoc, hc2, Category.assoc]
-  have : IsIso (φ ≫ Limits.pullback.snd e.hom Z.subschemeι) := inferInstance
   have : AlgebraicGeometry.Smooth (Z.subschemeι ≫ q) := h
   infer_instance
 
@@ -111,8 +107,6 @@ private theorem etale_resLE_comp_map_of_iso {k : Type u} [Field k] {X Y : Scheme
     AlgebraicGeometry.Etale
       (e.hom.resLE U ((Opens.map e.hom.base).obj U) le_rfl ≫ c.map) := by
   have : IsIso (e.hom.resLE U ((Opens.map e.hom.base).obj U) le_rfl) := isIso_resLE_iso_hom e U
-  have : AlgebraicGeometry.Etale (e.hom.resLE U ((Opens.map e.hom.base).obj U) le_rfl) :=
-    inferInstance
   have : AlgebraicGeometry.Etale c.map := c.isEtale
   infer_instance
 

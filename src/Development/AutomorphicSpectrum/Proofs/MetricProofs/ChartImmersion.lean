@@ -120,7 +120,7 @@ theorem pH_diff (τ : Ψ) (a b : Fin N) (w : Fin e → ℂ) :
     intro x
     unfold pMat lowMat
     by_cases hh : b < x ∧ ((x : ℕ) < N - j ↔ (b : ℕ) < N - j)
-    · simp only [dif_pos hh, cExt]
+    · simp only [dite_eq_left hh, cExt]
       split_ifs with hs
       · exact differentiableAt_apply _ _
       · exact differentiableAt_const _

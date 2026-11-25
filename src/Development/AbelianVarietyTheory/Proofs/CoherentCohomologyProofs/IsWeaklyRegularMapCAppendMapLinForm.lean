@@ -167,23 +167,23 @@ def linFormHom (u : J → R) (S : Set ι) (j₀ : J) :
 
 theorem linFormHom_X_of_mem (u : J → R) {S : Set ι} (j₀ : J) {i : ι} (hi : i ∈ S) :
     linFormHom u S j₀ (X (i, j₀)) = linForm u i := by
-  rw [linFormHom, aeval_X, if_pos (by exact ⟨hi, rfl⟩)]
+  rw [linFormHom, aeval_X, ite_eq_left (by exact ⟨hi, rfl⟩)]
 
 theorem linFormHom_X_of_notMem (u : J → R) {S : Set ι} {j₀ : J} {x : ι × J}
     (hx : x ∉ elimIndices S j₀) : linFormHom u S j₀ (X x) = X x := by
-  rw [linFormHom, aeval_X, if_neg hx]
+  rw [linFormHom, aeval_X, ite_eq_right hx]
 
 theorem linFormHom_linForm [DecidableEq J] (u v : J → R) {S : Set ι} (j₀ : J) {i : ι}
     (hi : i ∈ S) : linFormHom u S j₀ (linForm v i) =
       linForm (fun j => if j = j₀ then v j₀ * u j₀ else v j₀ * u j + v j) i := by
 
   rw [linForm_eq v i j₀, map_add (f := _), map_mul, linFormHom_X_of_mem u j₀ hi, map_sum,
-  linForm_eq u i j₀, linForm_eq _ i j₀, if_pos rfl, algHom_C, algebraMap_eq, mul_add,
+  linForm_eq u i j₀, linForm_eq _ i j₀, ite_eq_left rfl, algHom_C, algebraMap_eq, mul_add,
   Finset.mul_sum, add_assoc, ← Finset.sum_add_distrib, C_mul, mul_assoc]
   congr 1
   refine Finset.sum_congr rfl fun j hj => ?_
   have hj' := Finset.ne_of_mem_erase hj
-  rw [map_mul, linFormHom_X_of_notMem u (by simp [hj']), if_neg hj', algHom_C, algebraMap_eq,
+  rw [map_mul, linFormHom_X_of_notMem u (by simp [hj']), ite_eq_right hj', algHom_C, algebraMap_eq,
     C_add, C_mul]
   ring
 
@@ -196,11 +196,11 @@ theorem linFormHom_comp_eq_id {u v : J → R} (S : Set ι) {j₀ : J} (h₀ : v 
   · obtain ⟨i, j⟩ := x
     obtain ⟨hi, rfl⟩ : i ∈ S ∧ j = j₀ := hx
     rw [AlgHom.comp_apply, linFormHom_X_of_mem v j hi, linFormHom_linForm u v j hi,
-      linForm_eq _ i j, if_pos rfl, h₀, Finset.sum_eq_zero]
+      linForm_eq _ i j, ite_eq_left rfl, h₀, Finset.sum_eq_zero]
     · simp
     · intro k hk
       have hk' := Finset.ne_of_mem_erase hk
-      rw [if_neg hk', h k hk', C_0, zero_mul]
+      rw [ite_eq_right hk', h k hk', C_0, zero_mul]
   · simp [linFormHom_X_of_notMem _ hx]
 
 

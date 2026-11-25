@@ -5,6 +5,7 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegral
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.TraceOfKer
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RingTheory.PiTensorProduct
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalDualGenerator.IsClosedO
 
 @[expose] public section
 
@@ -48,16 +49,7 @@ theorem val_ell_lt {K : Type} [Field K] [NumberField K] {p : HeightOneSpectrum (
 theorem zp_memK {ℓ : ℕ} [Fact ℓ.Prime] {Fp : Type} [Field Fp] [ValuativeRel Fp] [TopologicalSpace Fp]
     [IsNonarchimedeanLocalField Fp] [Algebra ℚ_[ℓ] Fp] (hc : Continuous (algebraMap ℚ_[ℓ] Fp))
     (x : ℤ_[ℓ]) : algebraMap ℚ_[ℓ] Fp (x : ℚ_[ℓ]) ∈ 𝒪[Fp] := by
-  have hg : Continuous fun y : ℤ_[ℓ] => algebraMap ℚ_[ℓ] Fp (y : ℚ_[ℓ]) :=
-    hc.comp continuous_subtype_val
-  have hcl : IsClosed {y : ℤ_[ℓ] | algebraMap ℚ_[ℓ] Fp (y : ℚ_[ℓ]) ∈ 𝒪[Fp]} :=
-    Valuation.isClosed_integer.preimage hg
-  have hsub : Set.range (Nat.cast : ℕ → ℤ_[ℓ]) ⊆ {y : ℤ_[ℓ] | algebraMap ℚ_[ℓ] Fp (y : ℚ_[ℓ]) ∈ 𝒪[Fp]} := by
-    rintro _ ⟨k, rfl⟩
-    simp only [Set.mem_setOf_eq]
-    push_cast
-    exact natCast_mem _ k
-  exact hcl.closure_subset_iff.mpr hsub (PadicInt.denseRange_natCast x)
+  apply _root_.PI.LocDualGen.FpU.iota_mem <;> assumption
 
 theorem approx_core {K : Type} [Field K] [NumberField K] {ℓ : ℕ} [Fact ℓ.Prime] {Fp : Type} [Field Fp]
     [CharZero Fp] [ValuativeRel Fp] [TopologicalSpace Fp] [IsNonarchimedeanLocalField Fp] [Algebra ℚ_[ℓ] Fp]
@@ -93,7 +85,7 @@ theorem approx_core {K : Type} [Field K] [NumberField K] {ℓ : ℕ} [Fact ℓ.P
 
       rw [← hexp, Finset.sum_mul, map_sum] at h
       simpa only [smul_mul_assoc, map_smul, hBA, htb, smul_eq_mul, mul_ite, mul_one, mul_zero,
-        Finset.sum_ite_eq, Finset.mem_univ, if_true] using h
+        Finset.sum_ite_eq, Finset.mem_univ, ite_true] using h
     rw [← hexp]
     simp [hc0]
   let φ : ℚ_[ℓ] ⊗[ℚ] K →ₗ[ℚ_[ℓ]] ℚ_[ℓ] :=
@@ -107,7 +99,7 @@ theorem approx_core {K : Type} [Field K] [NumberField K] {ℓ : ℕ} [Fact ℓ.P
       rw [hBb, LinearMap.comp_apply, LinearMap.mulLeft_apply]
 
       simp only [β, Finset.sum_mul, map_sum, smul_mul_assoc, map_smul, htb, smul_eq_mul, mul_ite, mul_one,
-      mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     intro x
     exact congrArg (fun L => L x) hL
   have hker : ∀ x, piMap K ℓ Fp ι x = 0 → β * x = 0 := by
@@ -149,7 +141,7 @@ theorem approx_core {K : Type} [Field K] [NumberField K] {ℓ : ℕ} [Fact ℓ.P
       intro j
 
       simp only [t, Finset.sum_mul, map_sum, smul_mul_assoc, map_smul, hdb, smul_eq_mul, mul_ite, mul_one,
-      mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     intro a
     have ha : (a : K) = ∑ j, ((RingOfIntegers.basis K).repr a j) • b j := by
       have h := congrArg (algebraMap (𝓞 K) K) ((RingOfIntegers.basis K).sum_repr a)

@@ -1,6 +1,7 @@
 module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.NuInvLoc
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsOfFixedInt
 
 @[expose] public section
 
@@ -18,11 +19,7 @@ theorem hform_eq (σ : A →+* A) (J : Matrix n n A) (x y : n → A) :
 
 theorem hform_mulVec (σ : A →+* A) (J G : Matrix n n A) (x y : n → A) :
     Formalism.UG.hform σ J (G *ᵥ x) (G *ᵥ y) = Formalism.UG.hform σ (Formalism.UG.cT σ G * J * G) x y := by
-  rw [hform_eq, hform_eq, ← mulVec_mulVec, ← mulVec_mulVec]
-  conv_rhs => rw [dotProduct_mulVec, Formalism.UG.cT, vecMul_transpose]
-  congr 1
-  funext i
-  exact RingHom.map_mulVec σ G x i
+  apply _root_.GlobalTheory.UnitVectorStabEq.hform_mulVec <;> assumption
 
 end PI.VolStabS.TopoGram
 

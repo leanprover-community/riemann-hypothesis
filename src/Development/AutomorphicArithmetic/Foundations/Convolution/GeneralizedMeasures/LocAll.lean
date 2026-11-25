@@ -14,59 +14,13 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.Spherica
 public import Development.AutomorphicArithmetic.Foundations.Convolution.GeneralizedMeasures.HeckeFinAlt
 public import Development.AutomorphicArithmetic.Foundations.Convolution.GeneralizedMeasures.PolyMem
 import GroundTheory.LocalFields.LocalFourierHaar
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 import GroundTheory.AutomorphicForms.CompactFormulaCountable
-import Mathlib.RingTheory.Henselian
-import Mathlib.Tactic.Basify
 import GroundTheory.AutomorphicForms.Satake
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 import GroundTheory.GlobalFields.CompletionAtPlace.Integers
 import Development.AbelianVarietyTheory.Definitions.Divisors.LineOppositeParabolicUnitaryLeviSectionEq
 import GroundTheory.GlobalFields.LocalAtPlace
-import Mathlib.Tactic.ENatToNat
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -698,8 +652,8 @@ theorem UpperTheory.ConvolutionTheory.GM.locAll :
   · refine UpperTheory.ConvolutionTheory.L1.locHeckeSplit F E σ hσ hp n hn v hs (fun w => if w.1 ∈ κ then γ w.1 * p w.1 else 1)
       (fun w => h w.1) f (fun w => ?_) ?_
     · by_cases hw : w.1 ∈ κ
-      · simpa only [if_pos hw] using hh _ hw
-      · simp only [if_neg hw, hh' _ hw]
+      · simpa only [ite_eq_left hw] using hh _ hw
+      · simp only [ite_eq_right hw, hh' _ hw]
         exact (sphEx E n hn w.1).2.1
     · rw [finprod_eq_prod_of_fintype]
       convert hf using 2 with w
@@ -712,9 +666,9 @@ theorem UpperTheory.ConvolutionTheory.GM.locAll :
       exact finprod_eq_single _ w fun b hb => absurd (hw b) hb
     rw [e]
     by_cases hk : w.1 ∈ κ
-    · rw [if_pos hk, resDeg_inert v hv w hw] at hf
+    · rw [ite_eq_left hk, resDeg_inert v hv w hw] at hf
       exact hγ2 w.1 hk v w.2 hs (p w.1) (hpD _ hk) _ f (hh _ hk) hf
-    · rw [if_neg hk] at hf
+    · rw [ite_eq_right hk] at hf
       rw [(UpperTheory.ConvolutionTheory.L1.sphLaws.2 F n v).2.1 1 _ _ hf (sphEx F n hn v).2.1,
         hh' _ hk]
       have e2 : (fun g => (GLnLocal.integralGL (w.1.adicCompletion E) n : Set _).indicator

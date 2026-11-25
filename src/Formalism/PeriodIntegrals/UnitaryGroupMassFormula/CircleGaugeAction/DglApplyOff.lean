@@ -55,7 +55,7 @@ lemma dgl_mem {u : ℂ} (hu : (starRingEnd ℂ) u * u = 1) : dgl r u ∈ UWb 0 r
       by_cases hp : p = cI r
       · subst hp
         have hc : Fin.rev (cI r) = cI r := (rev_eq_c_iff _).2 rfl
-        simp only [hc, if_true]
+        simp only [hc, ite_true]
         show star u * -1 * u = -1
         rw [show star u = (starRingEnd ℂ) u from rfl]
         linear_combination -hu
@@ -67,13 +67,13 @@ lemma dgl_mem {u : ℂ} (hu : (starRingEnd ℂ) u * u = 1) : dgl r u ∈ UWb 0 r
       have := congrArg Fin.val h
       simp [eI, cI] at this
       omega
-    simp only [bvec, dgl, Matrix.diagonal_mulVec_single, if_neg hne, one_mul]
+    simp only [bvec, dgl, Matrix.diagonal_mulVec_single, ite_eq_right hne, one_mul]
   · have hne : esI 0 r a ≠ cI r := by
       intro h
       have := congrArg Fin.val h
       simp [esI, cI] at this
       omega
-    simp only [bvec, dgl, Matrix.diagonal_mulVec_single, if_neg hne, one_mul]
+    simp only [bvec, dgl, Matrix.diagonal_mulVec_single, ite_eq_right hne, one_mul]
 
 lemma col_fix {g : Mat 0 r} (hg : g ∈ UWb 0 r) (j : Fin (2 * r + 0 + 1)) (hj : j ≠ cI r)
     (i : Fin (2 * r + 0 + 1)) : g i j = if i = j then 1 else 0 := by
@@ -125,9 +125,9 @@ lemma dgl_norm {u : ℂ} (h : dgl r u ∈ UWb 0 r) : (starRingEnd ℂ) u * u = 1
   have h1 := congrFun (congrFun hU (cI r)) (cI r)
   have hc : Fin.rev (cI r) = cI r := (rev_eq_c_iff (cI r)).2 rfl
   simp only [dgl, Matrix.diagonal_conjTranspose, Matrix.diagonal_mul, Matrix.mul_diagonal,
-    Pi.star_apply, if_true] at h1
+    Pi.star_apply, ite_true] at h1
   rw [Hpk_apply] at h1
-  simp only [hc, if_true] at h1
+  simp only [hc, ite_true] at h1
   show (starRingEnd ℂ) u * u = 1
   rw [show (starRingEnd ℂ) u = star u from rfl]
   linear_combination -h1

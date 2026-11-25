@@ -3,6 +3,7 @@ module
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.LocalOperatorBlocks.LongWeylFunctional
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsSchwartzPolyMulGauss
 import Mathlib.Tactic.Linter.HaveILetI
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryGroupFamilyZariskiDense
 
 @[expose] public section
 
@@ -34,53 +35,9 @@ def reP (p : MvPolynomial σ ℂ) : MvPolynomial σ ℝ := ∑ k ∈ p.support, 
 
 def imaginary (p : MvPolynomial σ ℂ) : MvPolynomial σ ℝ := ∑ k ∈ p.support, MvPolynomial.monomial k (AddMonoidAlgebra.coeff p k).im
 
-theorem coeff_reP (p : MvPolynomial σ ℂ) (k : σ →₀ ℕ) : AddMonoidAlgebra.coeff (reP p) k = (AddMonoidAlgebra.coeff p k).re := by
-  classical
-  rw [reP, MvPolynomial.coeff_sum]
-  simp only [MvPolynomial.coeff_monomial]
-  rw [Finset.sum_ite_eq']
-  split_ifs with h
-  · rfl
-  · rw [MvPolynomial.notMem_support_iff.1 h, Complex.zero_re]
-
-theorem coeff_imP (p : MvPolynomial σ ℂ) (k : σ →₀ ℕ) : AddMonoidAlgebra.coeff (imaginary p) k = (AddMonoidAlgebra.coeff p k).im := by
-  classical
-  rw [imaginary, MvPolynomial.coeff_sum]
-  simp only [MvPolynomial.coeff_monomial]
-  rw [Finset.sum_ite_eq']
-  split_ifs with h
-  · rfl
-  · rw [MvPolynomial.notMem_support_iff.1 h, Complex.zero_im]
-
-theorem eval_map_real (q : MvPolynomial σ ℝ) (y : σ → ℝ) :
-    MvPolynomial.eval (fun i => (y i : ℂ)) (MvPolynomial.map (algebraMap ℝ ℂ) q) = ((MvPolynomial.eval y q : ℝ) : ℂ) := by
-  induction q using MvPolynomial.induction_on with
-  | C a => simp
-  | add p q hp hq => simp [hp, hq]
-  | mul_X p i hp => simp [hp]
-
-theorem eq_map_re_add_im (p : MvPolynomial σ ℂ) :
-    p = MvPolynomial.map (algebraMap ℝ ℂ) (reP p) + MvPolynomial.C Complex.I * MvPolynomial.map (algebraMap ℝ ℂ) (imaginary p) := by
-  ext k
-  rw [MvPolynomial.coeff_add, MvPolynomial.coeff_C_mul, MvPolynomial.coeff_map, MvPolynomial.coeff_map, coeff_reP,
-    coeff_imP]
-  apply Complex.ext <;> simp
-
 theorem eq_zero_of_eval_real (p : MvPolynomial σ ℂ) (h : ∀ y : σ → ℝ, MvPolynomial.eval (fun i => (y i : ℂ)) p = 0) :
-    p = 0 := by
-  have hre : ∀ y : σ → ℝ, MvPolynomial.eval y (reP p) = 0 ∧ MvPolynomial.eval y (imaginary p) = 0 := by
-    intro y
-    have h1 := h y
-    rw [eq_map_re_add_im p, MvPolynomial.eval_add, MvPolynomial.eval_mul, MvPolynomial.eval_C] at h1
-    rw [eval_map_real, eval_map_real] at h1
-    have hr := congrArg Complex.re h1
-    have hi := congrArg Complex.im h1
-    simp at hr hi
-    exact ⟨hr, hi⟩
-  have a1 : reP p = 0 := MvPolynomial.funext fun y => by simpa using (hre y).1
-  have a2 : imaginary p = 0 := MvPolynomial.funext fun y => by simpa using (hre y).2
-  rw [eq_map_re_add_im p, a1, a2]
-  simp
+    p = 0 :=
+  _root_.GlobalTheory.UnitaryZariskiDense.eq_zero_of_eval_real p h
 
 end Real
 

@@ -34,23 +34,6 @@ def kapL (κ : FractionRing R →+* FractionRing R')
     simp only [Algebra.smul_def, map_mul, RingHom.id_apply, this,
       IsScalarTower.algebraMap_apply R R' (FractionRing R')]
 
-lemma inj_one (κ : FractionRing R →+* FractionRing R')
-    (hκ : κ.comp (algebraMap R _) = (algebraMap R' _).comp (algebraMap R R')) :
-    Function.Injective ((kapL κ hκ).liftBaseChange R') := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
-  intro u hu
-  obtain ⟨r, d, hd, rfl⟩ := PositivityTheory.HtPt.Htat.ValuationInjectivePi.tensor_frac_form u
-  rw [LinearMap.liftBaseChange_tmul] at hu
-  have h1 : algebraMap R (FractionRing R) d ≠ 0 := by simpa using hd
-  have h2 : κ (algebraMap R (FractionRing R) d)⁻¹ ≠ 0 :=
-    (map_ne_zero κ).2 (inv_ne_zero h1)
-  have h3 : r = 0 := by
-    have h4 : algebraMap R' (FractionRing R') r * κ (algebraMap R (FractionRing R) d)⁻¹ = 0 := by
-      rw [← Algebra.smul_def]; exact hu
-    have := (mul_eq_zero.1 h4).resolve_right h2
-    simpa using this
-  simp [h3]
-
 end Alg
 
 section Sch

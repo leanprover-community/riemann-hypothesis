@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixMul
 public import Formalism.HermitianCurvature.StatementG
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
@@ -62,12 +63,7 @@ theorem det_blk_row_zero {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (b : Fin n �
   simp
 
 theorem det_upper {d : ℕ} (v : UT d → ℂ) : (upper v).det = 1 := by
-  have h : (upper v).BlockTriangular id := by
-    intro i j hij
-    have hij' : j < i := hij
-    simp [upper, strictUpper, Matrix.one_apply, hij'.ne', not_lt.2 hij'.le]
-  rw [Matrix.det_of_isUpperTriangular h]
-  simp [upper, strictUpper]
+  apply _root_.Formalism.FourierDecayAlt.P.Ux3.det_upper <;> assumption
 
 theorem wMat_mul_apply {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (i j : Fin n) :
     (wMat n * A) i j = A i.rev j := by

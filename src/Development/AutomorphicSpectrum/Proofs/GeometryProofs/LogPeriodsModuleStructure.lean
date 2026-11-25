@@ -98,7 +98,7 @@ theorem exists_eventually_int_eq_zero {X V J : Type*} [TopologicalSpace X] [Norm
 variable {n a g : ℕ} {Λ : Type} [AddCommGroup Λ] (L : Flat.LogPeriods n a g Λ)
 
 theorem P_injective {w : Fin n → ℂ} (hw : w ∈ logCover L.a_le) : Function.Injective (L.P w) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro x hx
   apply L.unimod.1
   rw [map_zero]
@@ -125,7 +125,7 @@ theorem real_indep {J : Type*} [Fintype J] (b : Module.Basis J ℤ Λ) {w : Fin 
   have h2 := congrArg ψ h
 
   simp only [map_sum, map_smul, h1, map_zero, smul_eq_mul, mul_ite, mul_zero,
-  Finset.sum_ite_eq', Finset.mem_univ, if_true] at h2
+  Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h2
   simpa using h2
 
 theorem continuousAt_P (x : Λ) {w₀ : Fin n → ℂ} (hw : w₀ ∈ logCover L.a_le) :

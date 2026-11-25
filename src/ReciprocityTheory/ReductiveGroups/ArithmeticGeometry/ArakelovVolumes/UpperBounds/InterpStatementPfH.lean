@@ -109,12 +109,12 @@ theorem phla_kapW_cpt (x0 : Frame X.Ψ r) (ho : IsOrth X x0) {z : V (nd X)} (hz 
   have h1 : ∀ i : Fin r, Lm X (cpt X x0 z) τ i.succ = L ((i : ℕ) + 1) := fun i => by
     rw [hL]
     dsimp only
-    rw [dif_pos (show (i : ℕ) + 1 < r + 1 by have := i.isLt; omega)]
+    rw [dite_eq_left (show (i : ℕ) + 1 < r + 1 by have := i.isLt; omega)]
     try rfl
   have h2 : ∀ i : Fin r, Lm X (cpt X x0 z) τ i.castSucc = L (i : ℕ) := fun i => by
     rw [hL]
     dsimp only
-    rw [dif_pos (show (i : ℕ) < r + 1 by have := i.isLt; omega)]
+    rw [dite_eq_left (show (i : ℕ) < r + 1 by have := i.isLt; omega)]
     try rfl
   have hk : ∀ i : Fin r, ((kapW X τ i : ℤ) : ℝ) = (2 * (i : ℕ) : ℝ) - ((r : ℝ) - 1) := fun i => by
     simp only [kapW]
@@ -123,13 +123,13 @@ theorem phla_kapW_cpt (x0 : Frame X.Ψ r) (ho : IsOrth X x0) {z : V (nd X)} (hz 
   have hr : L r = 0 := by
     rw [hL]
     dsimp only
-    rw [dif_pos (show r < r + 1 by omega)]
+    rw [dite_eq_left (show r < r + 1 by omega)]
     exact Lm_last_cpt X x0 ho z τ
   have e0 : (⟨0, Nat.succ_pos r⟩ : Fin (r + 1)) = 0 := Fin.ext (by simp)
   have h0 : L 0 = 0 := by
     rw [hL]
     dsimp only
-    rw [dif_pos (show 0 < r + 1 by omega), e0]
+    rw [dite_eq_left (show 0 < r + 1 by omega), e0]
     exact Lm_zero X _ τ
   simp only [h1, h2, hk]
   rw [Fin.sum_univ_eq_sum_range (fun i => ((2 * i : ℝ) - ((r : ℝ) - 1)) * (L (i + 1) - L i)) r,
@@ -141,9 +141,9 @@ theorem cpt_entry_cd (x0 : Frame X.Ψ r) (τ : X.Ψ) (a b : Fin r) :
   have hN : ∀ k : Fin r, ContDiff ℂ ∞ fun z : V (nd X) => nmat X z τ k b := by
     intro k
     by_cases h : b < k
-    · simp only [nmat, dif_pos h]
+    · simp only [nmat, dite_eq_left h]
       exact (show V (nd X) →L[ℂ] ℂ from EuclideanSpace.proj _).contDiff
-    · simp only [nmat, dif_neg h]
+    · simp only [nmat, dite_eq_right h]
       exact contDiff_const
   show ContDiff ℂ ∞ fun z : V (nd X) => (mat x0 τ * mat (nmat X z) τ) a b
   simp only [Matrix.mul_apply, mat, Matrix.of_apply]

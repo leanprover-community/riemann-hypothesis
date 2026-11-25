@@ -126,8 +126,8 @@ theorem UpperTheory.V.Z.Sym.So.torPart :
     exact loc hO h2 (A.hs v h) hs0 (A.V v) _ (huJ v h)
   let cf : (v : Pl F) → DX ((cv v) Δ) := fun v =>
     if h : v ∈ A.Sg then Classical.choose (hex v h) else u.1 v
-  have cf_in : ∀ v (h : v ∈ A.Sg), cf v = Classical.choose (hex v h) := fun v h => dif_pos h
-  have cf_out : ∀ v, v ∉ A.Sg → cf v = u.1 v := fun v h => dif_neg h
+  have cf_in : ∀ v (h : v ∈ A.Sg), cf v = Classical.choose (hex v h) := fun v h => dite_eq_left h
+  have cf_out : ∀ v, v ∉ A.Sg → cf v = u.1 v := fun v h => dite_eq_right h
   have hcRP : cf ∈ RP (fun v => DX ((cv v) Δ)) (fun v => KD ((cv v) Δ) (Ov v)) := by
     show ∀ᶠ v in Filter.cofinite, cf v ∈ KD ((cv v) Δ) (Ov v)
     rw [Filter.eventually_cofinite]

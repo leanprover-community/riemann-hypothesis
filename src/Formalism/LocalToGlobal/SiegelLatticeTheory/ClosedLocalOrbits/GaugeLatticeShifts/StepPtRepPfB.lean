@@ -286,7 +286,7 @@ theorem gram (hA : ∀ j, Aα (Fin.last r) j = 0) (b c : Fin (r + 1)) :
     hJ ε (F.yv i0 Z Aα t b) (F.yv i0 Z Aα t c) =
       -(F.T : ℂ)⁻¹ * (star (Z (Fin.last r) b) * Z (Fin.last r) c) + (Zᴴ * Aα) b c + (Aαᴴ * Z) b c +
         star (t b) * t c := by
-  rw [hJ_yv_left_eq_sum, F.p4 i0 Z Aα t i0 c, if_pos rfl]
+  rw [hJ_yv_left_eq_sum, F.p4 i0 Z Aα t i0 c, ite_eq_left rfl]
   simp only [F.p2 i0 Z Aα t hA, F.p3 i0 Z Aα t]
   have hAZ : ∑ a, star (Aα a b) * (if a = Fin.last r then 0 else Z a c) = ∑ a, star (Aα a b) * Z a c := by
     refine Finset.sum_congr rfl fun a _ => ?_
@@ -296,7 +296,7 @@ theorem gram (hA : ∀ j, Aα (Fin.last r) j = 0) (b c : Fin (r + 1)) :
     · simp [ha]
   rw [hAZ, Matrix.mul_apply, Matrix.mul_apply]
   simp only [Matrix.conjTranspose_apply, mul_add, Finset.sum_add_distrib, mul_ite, mul_zero,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   ring
 
 end Fr

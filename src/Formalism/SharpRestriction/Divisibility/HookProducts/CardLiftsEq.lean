@@ -180,10 +180,6 @@ theorem logX_le (hN : SizeN L) (hK : SizeK L) :
   have hLeq : L.sc.L = L.sc.x ^ L.sc.eps := rfl
   unfold Formalism.MainNotions.DIV.Proofs.szPol
   rw [hLeq]
-  have hf : (0 : ℝ) ≤ (D.R.f : ℝ) := by positivity
-  have hm : (0 : ℝ) ≤ (D.R.m : ℝ) := by positivity
-  have ht : (0 : ℝ) ≤ (D.R.t : ℝ) := by positivity
-  have hNm : (0 : ℝ) ≤ (D.R.N D.R.m : ℝ) := by positivity
   linarith
 
 
@@ -210,7 +206,6 @@ theorem ga_le_pol (P : ParameterChoice' D L) (X : Inst D L) (K : Consts) (hK : K
     exact Real.rpow_le_one_of_one_le_of_nonpos hx1.le (by linarith)
   have hn0 : (0 : ℝ) ≤ (D.R.n : ℝ) := Nat.cast_nonneg _
   have hm0 : (0 : ℝ) ≤ (D.R.m : ℝ) := Nat.cast_nonneg _
-  have hk0 : (0 : ℝ) ≤ (D.R.k : ℝ) := Nat.cast_nonneg _
   have hT0 : (0 : ℝ) ≤ (D.host.TT.card : ℝ) := Nat.cast_nonneg _
   have hTT' : (D.host.TT.card : ℝ) ≤ 2 * D.R.n := by
     simp only [Formalism.MainNotions.szNst] at hTT
@@ -227,14 +222,10 @@ theorem ga_le_pol (P : ParameterChoice' D L) (X : Inst D L) (K : Consts) (hK : K
   have hL0 : 0 ≤ L.sc.L := by
     simp only [Scale.L]
     exact Real.rpow_nonneg hx0.le _
-  have hf : (0 : ℝ) ≤ (D.R.f : ℝ) := by positivity
-  have ht : (0 : ℝ) ≤ (D.R.t : ℝ) := by positivity
-  have hNm : (0 : ℝ) ≤ (D.R.N D.R.m : ℝ) := by positivity
   have hmk : (D.R.m : ℝ) + D.R.k ≤ Formalism.MainNotions.DIV.Proofs.szPol L := by
     unfold Formalism.MainNotions.DIV.Proofs.szPol; linarith
   have hQ1 : 1 ≤ Formalism.MainNotions.DIV.Proofs.szPol L := by
     unfold Formalism.MainNotions.DIV.Proofs.szPol; linarith
-  have hQ0 : 0 ≤ Formalism.MainNotions.DIV.Proofs.szPol L := by linarith
   have e1 : (D.host.TT.card : ℝ) * L.sc.x ≤ 2 * D.R.k := by
     have q := mul_le_mul_of_nonneg_right hTT' hx0.le
     linarith

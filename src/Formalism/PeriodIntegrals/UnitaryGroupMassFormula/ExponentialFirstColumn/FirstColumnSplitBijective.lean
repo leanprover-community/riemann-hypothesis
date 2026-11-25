@@ -4,6 +4,7 @@ public import Formalism.PeriodIntegrals.QmDefs
 public import Mathlib.GroupTheory.Perm.Fin
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RowExpansionMinor.FirstColumnSplitBijective
 
 @[expose] public section
 
@@ -51,21 +52,7 @@ def phi0 (m : ℕ) (p : Fin (m + 1) × Equiv.Perm (Fin m)) : Equiv.Perm (Fin (m 
   cyc0 m p.1 * ext0 p.2
 
 theorem firstColumnSplit_bijective (m : ℕ) : Function.Bijective (phi0 m) := by
-  refine (Fintype.bijective_iff_injective_and_card _).mpr ⟨?_, ?_⟩
-  · rintro ⟨j, τ⟩ ⟨j', τ'⟩ h
-    have h0 : j = j' := by
-      have := congrArg (fun σ : Equiv.Perm (Fin (m + 1)) => σ 0) h
-      simpa [phi0, Equiv.Perm.mul_apply, matrixExtendByZero_zero, cycle_perm_zero] using this
-    subst h0
-    have h1 : ext0 τ = ext0 τ' :=
-      mul_left_cancel (show cyc0 m j * ext0 τ = cyc0 m j * ext0 τ' from h)
-    have h2 : τ = τ' := by
-      refine Equiv.ext fun k => ?_
-      have := congrArg (fun σ : Equiv.Perm (Fin (m + 1)) => σ k.succ) h1
-      simpa [extByZero_succ] using this
-    subst h2
-    rfl
-  · simp [Fintype.card_perm, Fintype.card_prod, Fintype.card_fin, Nat.factorial_succ]
+  apply _root_.PI.QmRowExpWork.firstColumnSplit_bijective <;> assumption
 
 theorem expFirst {A : Type*} [Ring A] [Algebra ℂ A] {n m : ℕ} (E : Fin n → Fin n → A)
     (a b : Fin (m + 1) → Fin n) (u : ℂ) :

@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.Columns.MtIsoVal
 public import Formalism.SharpRestriction.GrowthBounds.ChartRank.HypRankGe
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LBidetLemmas
 import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.MRatSpanOfRatInv
@@ -129,21 +130,11 @@ theorem isWH_iff {σ M R : Type} [CommSemiring R] [AddCommMonoid M] [DecidableEq
   · intro h d hd
     rw [← h, MvPolynomial.coeff_weightedHomogeneousComponent] at hd
     by_contra hc
-    exact hd (if_neg hc)
+    exact hd (ite_eq_right hc)
 
 theorem colAddGen_map {r n : ℕ} (l j : Fin n) (Q : MvPolynomial (Fin r × Fin n) LL) :
     MvPolynomial.map e (Formalism.GradedWeylDivisibility.colAddGen LL l j Q) = Formalism.GradedWeylDivisibility.colAddGen Kf l j (MvPolynomial.map e Q) := by
-  induction Q using MvPolynomial.induction_on
-  · rename_i a
-    simp [Formalism.GradedWeylDivisibility.colAddGen]
-  · rename_i p q hp hq
-    simp only [map_add (f := _), hp, hq]
-  · rename_i p v hp
-    simp only [map_mul]
-    rw [hp, MvPolynomial.map_X]
-    congr 1
-    simp only [Formalism.GradedWeylDivisibility.colAddGen, MvPolynomial.aeval_X]
-    split_ifs <;> simp
+  apply _root_.Formalism.L2.Col.mti_map_colAddGen <;> assumption
 
 theorem dualWeyl_desc {r n : ℕ} (ν : Fin n → ℕ) :
     Formalism.GradedWeylDivisibility.dualWeyl Kf r n ν ≤

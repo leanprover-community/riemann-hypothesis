@@ -3,6 +3,7 @@ module
 public import Mathlib.RingTheory.DedekindDomain.Factorization
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.CountCoeEqMultiplicity
 import Mathlib.Tactic.TypeStar
+import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.IdxChange
 
 @[expose] public section
 
@@ -18,13 +19,7 @@ variable {R K : Type*} [CommRing R] [IsDedekindDomain R] [Field K] [Algebra R K]
 
 theorem count_span_unit (v : HeightOneSpectrum R) (s : R) (hs : s ∉ v.asIdeal) :
     FractionalIdeal.count K v (FractionalIdeal.spanSingleton (nonZeroDivisors R) (algebraMap R K s)) = 0 := by
-  have hs0 : s ≠ 0 := fun h => hs (h ▸ v.asIdeal.zero_mem)
-  have hsp : Ideal.span {s} ≠ ⊥ := by simpa using hs0
-  rw [← FractionalIdeal.coeIdeal_span_singleton, count_coe_eq_multiplicity v hsp]
-  have : multiplicity v.asIdeal (Ideal.span {s}) = 0 := by
-    apply multiplicity_eq_zero_of_not_dvd
-    rwa [Ideal.dvd_iff_le, Ideal.span_singleton_le_iff_mem]
-  simp [this]
+  apply _root_.Formalism.DivisionValues.idxChange_cnt_unit <;> assumption
 
 theorem count_le_of_mem (v : HeightOneSpectrum R) {I : FractionalIdeal (nonZeroDivisors R) K} {y : K}
     (hy : y ∈ I) (hy0 : y ≠ 0) :

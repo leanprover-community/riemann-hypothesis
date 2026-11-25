@@ -61,7 +61,6 @@ open NumberField MeasureTheory Formalism.BasicNotions Formalism.BasicNotions.TH 
 open scoped ENNReal
 open IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj
 open scoped TensorProduct Matrix
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 namespace GlobalTheory.RepsInj

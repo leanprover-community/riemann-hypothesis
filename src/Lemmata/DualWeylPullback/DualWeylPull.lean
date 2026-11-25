@@ -15,20 +15,11 @@ import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 
 namespace Bl.DualWeylPullback
 
-private lemma map_aeval_nat {O K σ τ : Type} [CommRing O] [CommRing K] (φ : O →+* K)
-    (h : σ → MvPolynomial τ O) (f : MvPolynomial σ O) :
-    MvPolynomial.map φ (MvPolynomial.aeval h f) =
-      MvPolynomial.aeval (fun v => MvPolynomial.map φ (h v)) (MvPolynomial.map φ f) := by
-  induction f using MvPolynomial.induction_on with
-  | C a => simp only [MvPolynomial.aeval_C, MvPolynomial.map_C, MvPolynomial.algebraMap_eq]
-  | add p q hp hq => simp only [map_add (f := _), hp, hq]
-  | mul_X p v hp => simp only [map_mul, MvPolynomial.map_X, MvPolynomial.aeval_X, hp]
-
 private lemma colAddGen_map {O K : Type} [CommRing O] [CommRing K] (φ : O →+* K) {k n : ℕ}
     (l j : Fin n) (f : MvPolynomial (Fin k × Fin n) O) :
     MvPolynomial.map φ (Formalism.GradedWeylDivisibility.colAddGen O l j f) = Formalism.GradedWeylDivisibility.colAddGen K l j (MvPolynomial.map φ f) := by
   unfold Formalism.GradedWeylDivisibility.colAddGen
-  rw [map_aeval_nat]
+  rw [MvPolynomial.map_aeval_eq_aeval_map φ (MvPolynomial.map φ) (by ext; simp)]
   congr 1
   congr 1
   funext v
@@ -107,7 +98,7 @@ theorem goal1 :
     dualWeyl_pull _ hinj _ G0 (by rw [hG0]; exact Submodule.smul_mem _ _ hG)
   refine ⟨n, ?_⟩
   unfold Formalism.MainNotions.G.H0
-  rw [if_pos hmu]
+  rw [ite_eq_left hmu]
   simp only [Submodule.mem_iInf]
   rintro g' ⟨hg', hspan⟩
   obtain ⟨A, hA, rfl⟩ := span_unit hinj g g' hg hspan

@@ -153,8 +153,6 @@ namespace Formalism.FourierDecayAlt.P.PartialBesselProperness
 
 open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {k p ρ n : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq]
 

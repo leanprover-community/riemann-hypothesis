@@ -78,12 +78,6 @@ def sphericalEisensteinSeriesOnGroup (h : GA D T) : ℂ → ℂ := fun s => cose
 
 end SlopeTestRemainingChoices
 
-section Centre
-
-variable (θ : InfFam D) (n : ℕ) (τ : D.what₂.Tau)
-
-end Centre
-
 section Ops
 
 variable {n : ℕ}

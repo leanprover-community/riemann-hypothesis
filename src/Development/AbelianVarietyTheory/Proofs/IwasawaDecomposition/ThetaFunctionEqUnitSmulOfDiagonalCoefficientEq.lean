@@ -77,11 +77,7 @@ theorem exists_unit_smul {X : Type} (f f' : X → ℂ) (h : ∀ x y, f' y * star
 variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D}
 
 theorem symplO_eq (x y : WO S T) : symplO S T x y = symplOH S T x y + symplOH S T x y := by
-  have h2 : algebraMap D.host.F (AF D.host.F) (1 / 2) * 2 = 1 := by
-    rw [← map_ofNat (algebraMap D.host.F (AF D.host.F)) 2, ← map_mul]
-    norm_num
-  unfold symplOH
-  linear_combination (-symplO S T x y) * h2
+  exact (GlobalTheory.SplitScalar.symplOH_add_self S T x y).symm
 
 theorem char_mul_heisO {g : WO S T → ℂ} (hg : IsThetaFunO ψ S T g) {γ : WO S T} (hγ : γ ∈ ratL T S) (w x : WO S T) :
     ψ (symplO S T x γ) * heisO ψ S T w g x = ψ (symplOH S T γ w) * heisO ψ S T (γ + w) g x := by

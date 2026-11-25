@@ -132,7 +132,7 @@ theorem comp_mul_zero {σ : Type} {K : Type} [Field K] (w : σ → ℤ) {φ : Mv
       have hsum := by simpa using hx
       have hw : weight w x.2 = n := by
         rw [← hd, ← hsum, map_add (f := _), hx0, zero_add]
-      rw [if_pos hw]
+      rw [ite_eq_left hw]
   · symm
     refine Finset.sum_eq_zero fun x hx => ?_
     rw [coeff_weightedHomogeneousComponent]
@@ -143,7 +143,7 @@ theorem comp_mul_zero {σ : Type} {K : Type} [Field K] (w : σ → ℤ) {φ : Mv
       have hw : weight w x.2 ≠ n := by
         rw [← hsum, map_add (f := _), hx0, zero_add] at hd
         exact hd
-      rw [if_neg hw, mul_zero]
+      rw [ite_eq_right hw, mul_zero]
 
 theorem tt_ne_zero (K : Type) [Field K] [CharZero K] (k : ℕ) (hk : 0 < k) : tt K k ≠ 0 := by
   intro h
@@ -153,15 +153,14 @@ theorem tt_ne_zero (K : Type) [Field K] [CharZero K] (k : ℕ) (hk : 0 < k) : tt
 
 theorem pairingWeightCancel : TTWt := by
   intro K _ _ k c g h m hm a
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   obtain ⟨n, hn⟩ : ∃ n : ℤ, n = (m (Sum.inl a) : ℤ) - m (Sum.inr a) := ⟨_, rfl⟩
   have hwm : weight (va k a) m = n := by rw [weight_va, hn]
   have hk : 0 < k := Fin.pos a
   have hcomp : weightedHomogeneousComponent (va k a) n g ≠ 0 := by
     intro h0
     have h3 := congrArg (AddMonoidAlgebra.coeff · m) h0
-    rw [coeff_weightedHomogeneousComponent, if_pos hwm] at h3
+    rw [coeff_weightedHomogeneousComponent, ite_eq_left hwm] at h3
     exact (MvPolynomial.mem_support_iff.1 hm) (by simpa using h3)
   have hprod : weightedHomogeneousComponent (va k a) n (tt K k * g) ≠ 0 := by
     rw [comp_mul_zero (va k a) (tt_va K k a) n g]

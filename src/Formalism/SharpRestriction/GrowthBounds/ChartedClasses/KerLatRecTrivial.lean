@@ -12,12 +12,6 @@ open scoped TensorProduct
 
 namespace Formalism.MainNotions.G.KAat
 
-section SlopeTestRemainingChoices
-
-variable {p : ℕ} [Fact p.Prime] {X : Sys p} {D : D7}
-
-end SlopeTestRemainingChoices
-
 section Rec
 
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : G.Inst D L} {Gl : G.LatInst D} {Kc0 : G.Consts} {Dx : DivX D}
@@ -42,9 +36,9 @@ variable {Ch std vp unif eO eO_spec dG dG_spec om I L0 a bad t cls}
 theorem frM_comp (i : ℕ) (c : Lv.comp (i + 1)) (Lt Lt' : (Fl.Pj (i + 1)).Tup) (v : (sysAt Ch std vp unif eO eO_spec dG dG_spec om).Pl) :
     (fdAtL Ch std vp unif eO eO_spec dG dG_spec om I L0 a bad).frM (i + 1) (c, Lt) v = (fdAtL Ch std vp unif eO eO_spec dG dG_spec om I L0 a bad).frM (i + 1) (c, Lt') v := by
   by_cases hi : i + 1 ≤ D.R.m
-  · simp only [fdAtL, fdAt, fdOfCharts, cpAt, chAt, dif_pos hi]
+  · simp only [fdAtL, fdAt, fdOfCharts, cpAt, chAt, dite_eq_left hi]
     rfl
-  · simp only [fdAtL, fdAt, fdOfCharts, cpAt, chAt, dif_neg hi]
+  · simp only [fdAtL, fdAt, fdOfCharts, cpAt, chAt, dite_eq_right hi]
     rfl
 
 

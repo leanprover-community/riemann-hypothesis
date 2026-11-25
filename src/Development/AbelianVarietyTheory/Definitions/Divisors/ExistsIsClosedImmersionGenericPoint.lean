@@ -10,53 +10,6 @@ import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsFinite
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.RingKrullDimQuotientEqOfMemMinimalPrimes
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IsProjOverIffIsProperAndExistsIsAmpleLB
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsConjFsBasisOfUnitary
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Analysis.Calculus.ContDiff.WithLp
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.InnerProductSpace.Calculus
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.KrullDimension.Field
-import Mathlib.RingTheory.KrullDimension.Polynomial
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
 import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.HoloSmooth
 public import ReciprocityTheory.L2DbarEstimates.LeviForms.DetUpdateColEq
 public import ReciprocityTheory.L2DbarEstimates.LeviForms.LogNormSq
@@ -434,7 +387,7 @@ theorem finite_support_mult [CompactSpace Z] (D : CartierDiv Z) :
     fun z hz => ?_
   obtain ⟨T, hT, hzT⟩ := mem_sUnion.1 (hU.le (mem_supp_of_mult_ne_zero hz))
   refine ⟨T, hT, ?_⟩
-  simp only [dif_pos (hi T hT)]
+  simp only [dite_eq_left (hi T hT)]
   have hg := (hi T hT).isGenericPoint_genericPoint (hc T hT)
   have h₁ : z ≤ (hi T hT).genericPoint := hg.specializes hzT
   have h₂ : (hi T hT).genericPoint < genericPoint Z := by
@@ -468,7 +421,7 @@ theorem ratVal_fnOf {U : Z.Opens} (hy : y ∈ ptsIn q σ U) (h : genericPoint Z 
   have hr := regAt_fnOf (mem_ptsIn.1 hy) h a
   have e := hr.exists_fnOf.choose_spec.choose_spec.choose_spec
   have hV := mem_ptsIn_inf.2 ⟨mem_ptsIn.2 hr.exists_fnOf.choose_spec.choose, hy⟩
-  rw [ratVal, dif_pos hr, ← ev_res inf_le_left hV, ← ev_res inf_le_right hV]
+  rw [ratVal, dite_eq_left hr, ← ev_res inf_le_left hV, ← ev_res inf_le_right hV]
   congr 1
   exact fn_ext fun _ => by rw [fnOf_resG, fnOf_resG, e]
 
@@ -534,7 +487,7 @@ variable {hL : L.IsLB} {s : L.Sec} {hs : genericPoint Z ∈ nonzeroLocus s}
 
 theorem val_ratOfSec {i : L.ι} (h : genericPoint Z ∈ L.U i) :
     (ratOfSec s hs i : Z.functionField) = fnOf _ h (s.f i) := by
-  rw [ratOfSec, dif_pos h, Units.val_mk0]
+  rw [ratOfSec, dite_eq_left h, Units.val_mk0]
 
 
 variable (s hs) in

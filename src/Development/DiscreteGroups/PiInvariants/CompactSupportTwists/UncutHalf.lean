@@ -14,8 +14,6 @@ open scoped Classical
 
 namespace DiscreteGroups.T1.G
 
-attribute [local instance] borelH
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {a b : ℕ}
 
 def lInt0 {ι : Type} [Fintype ι] (D : Dom E a b) (k₁ k₂ : H E a b → ι → Hs (ι := ι) D)

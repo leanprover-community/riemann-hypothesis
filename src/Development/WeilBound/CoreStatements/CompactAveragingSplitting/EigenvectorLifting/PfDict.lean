@@ -169,7 +169,7 @@ theorem chrW_conj (hσ : IsCMExt F E σ) (t : E →ₐ[F] Fv F v) {χ : Chr F E}
   have a2 := (h'.idele z' x (by simpa [z'] using h.atConj _ za) ((h.conj _).2.trans z1)
     (by rw [comp_comp hσ]; exact (h.conj _).1.trans z2)).1 χ
   have a3 := hχ (Units.map (Algebra.norm (AF F) : AE F E →* AF F) z)
-  rw [if_pos (Subgroup.mem_sup_right (MonoidHom.mem_range.2 ⟨z, rfl⟩)), show Units.map (algebraMap (AF F) (AE F E) : AF F →* AE F E)
+  rw [ite_eq_left (Subgroup.mem_sup_right (MonoidHom.mem_range.2 ⟨z, rfl⟩)), show Units.map (algebraMap (AF F) (AE F E) : AF F →* AE F E)
     (Units.map (Algebra.norm (AF F) : AE F E →* AF F) z) = z * z' from Units.ext (GlobalTheory.Doubling.algebraMap_norm_eq hσ _),
     map_mul, Circle.coe_mul, a1, a2] at a3
   exact eq_inv_of_mul_eq_one_right (Units.ext a3)

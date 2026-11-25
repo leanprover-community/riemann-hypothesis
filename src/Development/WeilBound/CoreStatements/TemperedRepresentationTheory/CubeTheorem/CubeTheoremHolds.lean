@@ -48,8 +48,6 @@ open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbDual GlobalTheory.AbLaw GlobalTheory.AbLaw.CubeGen
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.CubeModel
 
 variable {S : Scheme.{0}} {A : Over S} [GrpObj A]
@@ -90,7 +88,6 @@ open AlgebraicGeometry CategoryTheory CategoryTheory.Limits MonoidalCategory Car
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj CategoryTheory.MonObj TensorProduct
 open GlobalTheory.ZM GlobalTheory.AbLaw GlobalTheory.AbLaw.CubeGen GlobalTheory.Biadditive GlobalTheory.CubeNoeth GlobalTheory.CubeModel
-attribute [local instance] Over.cartesianMonoidalCategory
 
 variable {S : Scheme.{0}} {A : Over S} [GrpObj A]
 
@@ -189,7 +186,7 @@ theorem cube (hP : GlobalTheory.SpreadingModels.PerfAll) (hA : IsAbelianScheme A
   rw [e] at c₀
   exact c₀
 
-theorem cubeTheorem_of_perfAll : GlobalTheory.SpreadingModels.PerfAll → GlobalTheory.Published.CubeTheorem := fun hP S A _ hA L hL T a b c =>
+theorem cubeTheorem_of_perfAll : GlobalTheory.SpreadingModels.PerfAll → GlobalTheory.Published.CubeTheorem := fun hP _ _ _ hA L hL T a b c =>
   cube hP hA L hL T a b c
 
 end GlobalTheory.CompanionTheory.CubePerf

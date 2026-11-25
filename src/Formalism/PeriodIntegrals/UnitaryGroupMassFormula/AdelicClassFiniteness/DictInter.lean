@@ -3,6 +3,7 @@ module
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicClassFiniteness.DictPlan
 public import Mathlib.RingTheory.DedekindDomain.Different
 import Mathlib.Tactic.Linter.Style
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.EmbeddingTraceSumAlt.NormUnitsOfCalculation
 
 @[expose] public section
 
@@ -49,18 +50,7 @@ lemma tau_incl (w e : E) :
   rw [tau_tmul, Algebra.algebraMap_eq_smul_one]
 
 lemma algebraMap_mem_intAd (x : 𝓞 F) : algebraMap F (Af F) (algebraMap (𝓞 F) F x) ∈ Formalism.UG.intAd F := by
-  intro v
-  have h1 : Valued.v (((algebraMap (𝓞 F) F x : F)) : v.adicCompletion F) ≤ 1 := by
-    first
-      | rw [IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_eq_valuation']
-        first
-          | exact v.valuation_le_one x
-      | rw [IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_eq_valuation]
-        first
-          | exact v.valuation_le_one x
-          | exact v.valuation_le_one F x
-  first
-    | exact h1
+  apply _root_.PI.ScPsiExists.UnitaryGroupMassFormula.alg_int_mem <;> assumption
 
 lemma of_algebraMap_mem_intAd (f : F) (h : algebraMap F (Af F) f ∈ Formalism.UG.intAd F) :
     f ∈ (algebraMap (𝓞 F) F).range := by

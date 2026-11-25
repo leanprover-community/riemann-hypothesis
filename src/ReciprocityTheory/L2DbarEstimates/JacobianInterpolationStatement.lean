@@ -86,12 +86,6 @@ def TWStatement (n : ℕ) (M : Type*) [TopologicalSpace M] [T2Space M]
           ∫⁻ x, ENNReal.ofReal ((Real.sqrt (a x) + ‖F0 x - F x‖ * Real.sqrt (b x)) ^ 2 *
             Real.exp (Ph x - ps x)) ∂vol n X.z
 
-def MAStatement (n : ℕ) : Prop :=
-  ∀ (Ω : Set (V n)) (ph v : V n → ℝ),
-    IsOpen Ω → ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ph Ω → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) v → HasCompactSupport v → tsupport v ⊆ Ω →
-    ∫ y in Ω, ((cHess n (fun w => ((ph w + v w : ℝ) : ℂ)) y).det -
-      (cHess n (fun w => (ph w : ℂ)) y).det) = 0
-
 def DetMonoStatement (n : ℕ) : Prop :=
   ∀ A B : Matrix (Fin n) (Fin n) ℂ, B.PosSemidef → (A - B).PosSemidef → B.det.re ≤ A.det.re
 

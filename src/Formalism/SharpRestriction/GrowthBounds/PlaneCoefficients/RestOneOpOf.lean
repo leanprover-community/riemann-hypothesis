@@ -31,14 +31,14 @@ theorem oneT_monomial (e : Module.End Kf (MvPolynomial τ Kf)) (mo : σ →₀ �
   unfold oneT
   by_cases hq : q = 0
   · simp [hq]
-  · rw [support_monomial, if_neg hq, Finset.sum_singleton, coeff_monomial, if_pos rfl]
+  · rw [support_monomial, ite_eq_right hq, Finset.sum_singleton, coeff_monomial, ite_eq_left rfl]
 
 theorem planeCoeff_monomial (nu : τ →₀ ℕ) (mo : σ →₀ ℕ) (q : MvPolynomial τ Kf) :
     planeCoeff nu (monomial mo q) = monomial mo (q.coeff nu) := by
   unfold planeCoeff
   by_cases hq : q = 0
   · simp [hq]
-  · rw [support_monomial, if_neg hq, Finset.sum_singleton, coeff_monomial, if_pos rfl]
+  · rw [support_monomial, ite_eq_right hq, Finset.sum_singleton, coeff_monomial, ite_eq_left rfl]
 
 theorem X_mul_monomial' {R : Type} [CommSemiring R] (v : σ) (u : σ →₀ ℕ) (a : R) :
     (X v : MvPolynomial σ R) * monomial u a = monomial (Finsupp.single v 1 + u) a := by
@@ -136,7 +136,7 @@ theorem touch_cost_nonneg {n' r : ℕ} [NeZero n'] (Fr : Frames n' r) (s : Fin n
 theorem touch_cost_eq_one {n' r : ℕ} [NeZero n'] (Fr : Frames n' r) (s : Fin n') (jz : ℤ) (u : ℕ) (h : touchT Fr jz u s) :
     cost1 Fr s jz u = 1 := by
   unfold cost1
-  rw [if_pos h]
+  rw [ite_eq_left h]
 
 def thUp {n' r : ℕ} [NeZero n'] (Fr : Frames n' r) {p : ℕ} {O : Type} [CommRing O] [IsDomain O]
     [IsDiscreteValuationRing O] {J : ℕ} (Dt : SignedChainData p O r J) (s : Fin n') (th : ∀ j, Fin (Dt.nch j) → ℝ) :
@@ -229,8 +229,6 @@ theorem thDrop_of (hB : Base Fr p Dt) {x0 : TL J Dt.nL r} (hG : TouchAt Fr Dt x0
       rcases hx with ⟨l, hl⟩ | ⟨m', hlt, hm'⟩
       · exact Or.inl ⟨l, hl, by have := l.isLt; omega⟩
       · refine Or.inr ⟨m', hm', ?_⟩
-        have h1 : mm.val < m'.val := hlt
-        have h2 := m'.isLt
         omega
     unfold thLUp
     rw [touch_cost_eq_one Fr _ _ _ ht]
@@ -311,7 +309,6 @@ theorem var_cases (x0 : TL J nL r) (b : Fin (m + 1)) :
     unfold Formalism.MainNotions.TestSideWords.plVar
     exact Prod.ext rfl (Fin.ext rfl)
   · right
-    have h1 := b.isLt
     refine ⟨⟨b.val - r, by omega⟩, ?_⟩
     unfold Formalism.MainNotions.TestSideWords.noVar
     refine Prod.ext rfl (Fin.ext ?_)

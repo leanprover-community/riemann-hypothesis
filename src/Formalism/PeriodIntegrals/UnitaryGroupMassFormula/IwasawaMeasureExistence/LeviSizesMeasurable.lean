@@ -33,7 +33,6 @@ section Gen
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-
 end Gen
 
 section Unit
@@ -77,11 +76,6 @@ theorem compactSpace_integer (v : HeightOneSpectrum (𝓞 F)) :
   · exact (Valued.isClosed_integer (R := v.adicCompletion F)).completeSpace_coe
   · exact inferInstanceAs (IsDiscreteValuationRing (v.adicCompletionIntegers F))
 
-theorem isCompact_Ov (v : HeightOneSpectrum (𝓞 F)) :
-    IsCompact (v.adicCompletionIntegers F : Set (v.adicCompletion F)) := by
-  have := compactSpace_integer v
-  exact isCompact_iff_compactSpace.mpr this
-
 def Ohat (F : Type) [Field F] [NumberField F] : Set (FiniteAdeleRing (𝓞 F) F) :=
   {a | ∀ v, a v ∈ v.adicCompletionIntegers F}
 
@@ -92,22 +86,10 @@ theorem isOpen_Ohat : IsOpen (Ohat F) :=
 
 instance compactSpace_Ov' (v : HeightOneSpectrum (𝓞 F)) :
     CompactSpace ((v.adicCompletionIntegers F : Set (v.adicCompletion F))) :=
-  isCompact_iff_compactSpace.mp (isCompact_Ov v)
+  isCompact_iff_compactSpace.mp (PI.WAU.isCompact_Ov v)
 
 theorem isCompact_Ohat : IsCompact (Ohat F) := by
-  have hc : Continuous (RestrictedProduct.structureMap (fun v : HeightOneSpectrum (𝓞 F) => v.adicCompletion F)
-      (fun v => (v.adicCompletionIntegers F : Set (v.adicCompletion F))) Filter.cofinite) :=
-    RestrictedProduct.isEmbedding_structureMap.continuous
-  have : Ohat F = Set.range (RestrictedProduct.structureMap (fun v : HeightOneSpectrum (𝓞 F) => v.adicCompletion F)
-      (fun v => (v.adicCompletionIntegers F : Set (v.adicCompletion F))) Filter.cofinite) := by
-    ext a
-    constructor
-    · intro ha
-      exact ⟨fun v => ⟨a v, ha v⟩, rfl⟩
-    · rintro ⟨x, rfl⟩ v
-      exact (x v).2
-  rw [this]
-  exact isCompact_range hc
+  apply _root_.PI.WAU.isCompact_Ohat <;> assumption
 
 end PI.IwaMeasEx.Wau
 
@@ -148,15 +130,6 @@ theorem ohat_zero : (0 : FiniteAdeleRing (𝓞 F) F) ∈ Ohat F :=
   fun v => by
     show (0 : v.adicCompletion F) ∈ _
     exact zero_mem _
-
-section Coord
-
-variable {E : Type} [Field E] [NumberField E] [Algebra F E]
-variable {ι : Type} [Fintype ι] [DecidableEq ι] (b : Module.Basis ι F E)
-
-variable {b}
-
-end Coord
 
 end PI.IwaMeasEx.Wau
 
@@ -307,7 +280,6 @@ theorem isCompact_IntAf : IsCompact ((IntAf I.F I.E : Subring (AEf I)) : Set (AE
   refine ⟨fun j => AfT.crd I b j x, fun j _ => Wau.Cpt.mem_Bx I (by omega) ?_, (AfT.sum_crd I b x).symm⟩
   rw [nsmul_eq_mul]
   exact AfT.crd_mem I b hDb (AfT.IntAf_le_sumsInt I hx) j
-
 
 end Top
 

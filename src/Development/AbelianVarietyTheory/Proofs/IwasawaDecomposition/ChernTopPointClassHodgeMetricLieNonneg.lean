@@ -394,8 +394,6 @@ noncomputable section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Filter Topology
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.HolCoordEv
 
 theorem eventually_differentiableAt_of_forms {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] {g : ℕ}
@@ -558,8 +556,6 @@ noncomputable section
 
 open Limits MonoidalCategory CartesianMonoidalCategory MonObj Filter
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.HolCoordEv
 
 open GlobalTheory.ShFam.Hor.LogCh
@@ -598,7 +594,7 @@ theorem coords_holomorphic : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
   let L := EuclideanSpace.equiv (Fin d) ℂ
   let x : (Fin d → ℂ) → (U.X k).dom := fun b =>
     if h : G (L.symm b) ∈ (U.X k).dom then ⟨G (L.symm b), h⟩ else ⟨G u₀, h₀⟩
-  have hxb : ∀ b (h : G (L.symm b) ∈ (U.X k).dom), x b = ⟨G (L.symm b), h⟩ := fun b h => dif_pos h
+  have hxb : ∀ b (h : G (L.symm b) ∈ (U.X k).dom), x b = ⟨G (L.symm b), h⟩ := fun b h => dite_eq_left h
   let P : (Fin d → ℂ) → ((F.Di (ik k)).La →+ (Fin g → ℂ)) := fun b => Pm k (x b)
   let p : (Fin d → ℂ) → (Sp ℂ ⟶ Xo.XF c) := fun b => GlobalTheory.AllWt.ptF (S := CAt σ) (U.un k (x b))
   have hu : ∀ b, F.u (ik k) (P b) =
@@ -657,7 +653,7 @@ theorem coords_holomorphic : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
       obtain ⟨w, hw, -⟩ := hExp.2.2 _ ht
       exact ⟨w, (hgF τ i) ▸ hw⟩
     have hW : IsDerivAt0 (Ex b) (Wd i b) (spMap (dualMap (ev' b)) ≫ fR.v τ i) := by
-      have e0 : Wd i b = hex.choose := dif_pos hex
+      have e0 : Wd i b = hex.choose := dite_eq_left hex
       rw [e0]
       exact hex.choose_spec
     refine ⟨hW, ?_⟩
@@ -777,8 +773,6 @@ namespace GlobalTheory.ShFam.StalkSpread
 open GlobalTheory.LieLocFrame (res res_sum res_res)
 open ReciprocityTheory.ChartRestriction.G.PullbackSections (spMap_comp_spMap)
 open scoped CategoryTheory.MonObj
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem exists_affine_isMap : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (O : Type) [CommRing O] (β : O →+* c.F) (Z : Model Xo c β) (F : Type) [Field F] (X : Var F) (j : X.X ⟶ gen Z) (z : X.X) (φz : c.F →+* X.X.presheaf.stalk z) (fz : EigFrame Z φz (stalkPt X z ≫ j ≫ genι Z)) (W₀ : X.X.Opens), z ∈ W₀ → stalkPt X z ≫ j ≫ genStr Z = spMap φz → ∃ (W : X.X.Opens) (hW : IsAffineOpen W) (φ : c.F →+* Γ(X.X, W)) (fW : EigFrame Z φ (((show Sp Γ(X.X, W) ⟶ X.X from hW.fromSpec) ≫ j) ≫ genι Z)) (hz : z ∈ W), W ≤ W₀ ∧ ((show Sp Γ(X.X, W) ⟶ X.X from hW.fromSpec) ≫ j) ≫ genStr Z = spMap φ ∧ (fun mapψ dstFrame => ∀ embτ basisIdx, _root_.GlobalTheory.ShFam.EigFrame.v dstFrame embτ basisIdx = _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap (_root_.Formalism.L2.Pj.dualMap mapψ) ≫ _root_.GlobalTheory.ShFam.EigFrame.v fW embτ basisIdx) (X.X.presheaf.germ W z hz).hom fz := by
   intro E _ _ _ H Dw l Xo c O _ β Z F _ X j z φz fz W₀ hz₀ hstr
@@ -960,7 +954,7 @@ theorem exists_holo_coord_frameAt : ∀ (E : Type) [Field E] [NumberField E] [Is
   classical
   let ev : V X.dim → (Γ(X.X, W) →+* ℂ) := fun u =>
     if h : c'.e.symm u ∈ ptsIn X.str (σ.comp e.toRingHom) W then evHom h else evHom hyW
-  have hev : ∀ u (h : c'.e.symm u ∈ ptsIn X.str (σ.comp e.toRingHom) W), ev u = evHom h := fun u h => dif_pos h
+  have hev : ∀ u (h : c'.e.symm u ∈ ptsIn X.str (σ.comp e.toRingHom) W), ev u = evHom h := fun u h => dite_eq_left h
   set S : Set (V X.dim) := c'.e.target ∩ c'.e.symm ⁻¹' ptsIn X.str (σ.comp e.toRingHom) W with hSdef
   have hSo : IsOpen S := c'.e.continuousOn_symm.isOpen_inter_preimage c'.e.open_target (isOpen_ptsIn _)
   have hu0 : c'.e y ∈ S := ⟨c'.e.map_source hyc, by show c'.e.symm (c'.e y) ∈ ptsIn X.str (σ.comp e.toRingHom) W; rw [c'.e.left_inv hyc]; exact hyW⟩
@@ -1305,7 +1299,7 @@ theorem isHol_chart_framePt : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
   · obtain ⟨x₀, hx₀⟩ := hne
     let sf : Frame (U.X k).Ψ (Dw.p + Dw.q) → (U.X k).dom := fun x =>
       if h : x ∈ (U.X k).dom then ⟨x, h⟩ else ⟨x₀, hx₀⟩
-    have hsf : ∀ x (h : x ∈ (U.X k).dom), sf x = ⟨x, h⟩ := fun x h => dif_pos h
+    have hsf : ∀ x (h : x ∈ (U.X k).dom), sf x = ⟨x, h⟩ := fun x h => dite_eq_left h
     have h1 := BdArc.Leave.isHolTo_ptC (U := U.toPj) hU' k sf fun x h => by rw [hsf x h]
     have h2 := LocLift.isHolTo_comp_hom h1 T.Z.jQ
     have hψ : DifferentiableOn ℂ ψ W :=
@@ -1329,7 +1323,7 @@ theorem isHol_chart_framePt : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
       if h : ∃ y' ∈ c'.e.source, cxOf e σ hj y' = P w then h.choose else c'.e.symm 0
     have hq : ∀ w, (∃ y' ∈ c'.e.source, cxOf e σ hj y' = P w) →
         q w ∈ c'.e.source ∧ cxOf e σ hj (q w) = P w := fun w h => by
-      simp only [q, dif_pos h]
+      simp only [q, dite_eq_left h]
       exact h.choose_spec
     refine ⟨q, ?_, fun w _ h hex => ?_, ?_⟩
     · rw [hS]

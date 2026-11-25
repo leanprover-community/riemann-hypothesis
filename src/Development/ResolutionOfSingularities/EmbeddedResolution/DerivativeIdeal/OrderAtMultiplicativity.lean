@@ -1306,8 +1306,8 @@ theorem exists_adapted_parameters (k : Type*) [CommRing k] (ι : Type*) [Fintype
       (∀ x : {j : ι // ¬ (j ∈ Jst)}, w (x : ι) = s (e x)) := by
     refine ⟨fun j => if hj : j ∈ Jst then coord k ι S j else s (e ⟨j, hj⟩),
       fun j hj => ?_, fun x => ?_⟩
-    · exact dif_pos hj
-    · exact dif_neg x.2
+    · exact dite_eq_left hj
+    · exact dite_eq_right x.2
   have hbasisApply : ∀ x : Fin h ⊕ {j : ι // j ∈ Jst},
       B x = (1 : IsLocalRing.ResidueField A) ⊗ₜ[A]
         KaehlerDifferential.D k A (algebraMap S A (w (τ x))) := by

@@ -237,7 +237,7 @@ theorem box_norm {κ' κ'' : Type} [Fintype κ'] [Fintype κ''] (μ' : @Measure 
 
 end SliceP
 
-theorem sliceFacts : SliceFacts := fun F _ _ κ' κ'' _ _ =>
+theorem sliceFacts : SliceFacts := fun _ _ _ _ κ'' _ _ =>
   ⟨SliceP.slice_mem, SliceP.slice_adm, SliceP.exists_one κ'', fun μ' μ'' h' h'' => SliceP.box_norm μ' μ'' h' h''⟩
 
 end PositivityTheory.SiegelWeilFormula.Ald

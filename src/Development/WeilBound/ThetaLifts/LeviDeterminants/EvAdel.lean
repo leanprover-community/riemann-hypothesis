@@ -380,14 +380,14 @@ theorem polData_map (B : Base F E) {n d n₁ d₁ : ℕ} {X : Spc F E n} {W : Sp
     let φ : ∀ v : Pl (F := F), (Fin n × Fin d → Fv F v) → ℂ := fun v => if φ' v = M₁.vac v then M.vac v else (hpre v).choose
     have hφ : ∀ v, φ v ∈ SB _ := fun v => by
       by_cases h : φ' v = M₁.vac v
-      · simp only [φ, if_pos h]; exact hM v
-      · simp only [φ, if_neg h]; exact (hpre v).choose_spec.1
+      · simp only [φ, ite_eq_left h]; exact hM v
+      · simp only [φ, ite_eq_right h]; exact (hpre v).choose_spec.1
     have hev : (fun v => ev v (φ v)) = φ' := funext fun v => by
       by_cases h : φ' v = M₁.vac v
-      · simp only [φ, if_pos h]; rw [(hv v).1, h]
-      · simp only [φ, if_neg h]; exact (hpre v).choose_spec.2
+      · simp only [φ, ite_eq_left h]; rw [(hv v).1, h]
+      · simp only [φ, ite_eq_right h]; exact (hpre v).choose_spec.2
     have hc : ∀ᶠ v in cofinite, φ v = M.vac v := by
-      filter_upwards [hc'] with v h; simp only [φ, if_pos h]
+      filter_upwards [hc'] with v h; simp only [φ, ite_eq_left h]
     apply Submodule.subset_span
     refine ⟨GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure f φ, ⟨f, hf, φ, hφ, hc, rfl⟩, ?_⟩
     rw [hl f φ hφ hc, hev]

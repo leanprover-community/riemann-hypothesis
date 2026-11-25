@@ -70,15 +70,15 @@ theorem simpleAdd : Formalism.DoubleCosetMeasures.SimpleAdd := by
     rw [← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun j _ => ?_
     by_cases h : j.val + 1 < n
-    · simp only [dif_pos h]; exact low_simple_entry hx hy j h
-    · simp [dif_neg h]
+    · simp only [dite_eq_left h]; exact low_simple_entry hx hy j h
+    · simp [dite_eq_right h]
   · intro hx hy
     unfold sUp
     rw [← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun j _ => ?_
     by_cases h : j.val + 1 < n
-    · simp only [dif_pos h]; exact up_simple_entry hx hy j h
-    · simp [dif_neg h]
+    · simp only [dite_eq_left h]; exact up_simple_entry hx hy j h
+    · simp [dite_eq_right h]
 
 section Int
 
@@ -119,11 +119,5 @@ theorem intInv : Formalism.DoubleCosetMeasures.IntInv := by
       (isInt_inv R hbR (isUpUni_det K hb))
   · intro h
     exact isInt_mul R (isInt_mul R haR h) hbR
-
-section Lat
-
-variable {K : Type} [CommRing K] (R : Subring K) {n : ℕ}
-
-end Lat
 
 end Formalism.DoubleCosetMeasures.P

@@ -78,7 +78,7 @@ theorem finsum_mul_comp_eq_sum_indicator {W Z : Type*} (c : W → ℝ) (hc : (Fu
   refine Finset.sum_congr rfl fun w hw => ?_
   have hwF : f w ∈ F := hF ⟨w, (Set.Finite.mem_toFinset hc).1 hw, rfl⟩
   simp only [Set.indicator_apply, Set.mem_singleton_iff, Pi.one_apply, mul_ite, mul_one, mul_zero]
-  rw [Finset.sum_ite_eq F (f w) (fun x => g x * c w), if_pos hwF, mul_comm]
+  rw [Finset.sum_ite_eq F (f w) (fun x => g x * c w), ite_eq_left hwF, mul_comm]
 
 theorem exists_finset_resCyc {k : Type} [CommRing k] {Y : Scheme.{0}} [IsIntegral Y] [IsLocallyNoetherian Y]
     {q : Y ⟶ Sp k} (hq : IsAmb q) {B : LB Y} (hB : B.IsLB) (t : B.Sec) (z : Y) :
@@ -91,12 +91,12 @@ theorem exists_finset_resCyc {k : Type} [CommRing k] {Y : Scheme.{0}} [IsIntegra
     have hc : (Function.support fun w => (D.mult w : ℝ)).Finite :=
       D.finite_support_mult.subset fun w hw h0 => hw (by simp [h0])
     refine ⟨(hc.image fun w => cloι z w).toFinset, fun F' hF' g => ?_⟩
-    simp only [resCyc, dif_pos h]
+    simp only [resCyc, dite_eq_left h]
     refine finsum_mul_comp_eq_sum_indicator _ hc _ F' ?_ g
     intro y hy
     exact hF' ((Set.Finite.mem_toFinset _).2 hy)
   · refine ⟨∅, fun F' _ g => ?_⟩
-    simp [resCyc, dif_neg h]
+    simp [resCyc, dite_eq_right h]
 
 end GlobalTheory.MixHt
 

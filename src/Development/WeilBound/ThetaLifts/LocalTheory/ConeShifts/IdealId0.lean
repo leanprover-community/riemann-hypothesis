@@ -12,6 +12,7 @@ import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardAdelicChara
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SplitPrimeAdditiveCharacterUnramified
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.OneVectorCcOfSiegelWeil
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.IdealA, Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.IdealB, Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.IdealId0
@@ -278,7 +279,7 @@ theorem exists_gen {P : Finset (Pl F)} {𝔞 : FI E} (h : Pr P 𝔞) : ∃ T l, 
   · obtain ⟨w, hw, rfl⟩ := Finset.mem_image.1 hv
     exact hf.mem_toFinset.1 hw (h w hP)
   · by_cases hw : w.under (𝓞 F) = v
-    · rw [cp_idem hw, cp_idem hw, cp_prod, if_neg fun hm => hv (Finset.mem_image.2 ⟨w, hm, hw⟩), map_one]
+    · rw [cp_idem hw, cp_idem hw, cp_prod, ite_eq_right fun hm => hv (Finset.mem_image.2 ⟨w, hm, hw⟩), map_one]
     · rw [cp_idem_ne hw, cp_idem_ne hw]
   · rw [cp_prod]
     split_ifs with hw
@@ -364,27 +365,8 @@ open FractionalIdeal (count)
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 open GlobalTheory.StdDual (codiff codiff_ne_zero)
 
-theorem add_sigma (h : IsCMExt F E σ) (x : E) : x + σ x = algebraMap F E (Algebra.trace F E x) := by
-  classical
-  have hc := h.2.1
-  haveI : Algebra.IsQuadraticExtension F E := ⟨h.2.2.1⟩
-  let s : E ≃ₐ[F] E := AlgEquiv.ofAlgHom σ σ (by ext y; simp [PositivityTheory.ThK.Vac.sigma_sigma h]) (by ext y; simp [PositivityTheory.ThK.Vac.sigma_sigma h])
-  have hs : (1 : E ≃ₐ[F] E) ≠ s := by
-    intro h1
-    obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
-    refine IsTotallyComplex.complexEmbedding_not_isReal τ ?_
-    rw [ComplexEmbedding.isReal_iff]
-    ext y
-    have h2 : σ y = y := (DFunLike.congr_fun h1 y).symm
-    have := h.2.2.2 τ y
-    rw [h2] at this
-    simpa using this.symm
-  have hu : (Finset.univ : Finset (E ≃ₐ[F] E)) = {1, s} := by
-    symm
-    apply Finset.eq_univ_of_card
-    rw [Finset.card_pair hs, ← Nat.card_eq_fintype_card, IsGalois.card_aut_eq_finrank, h.2.2.1]
-  rw [trace_eq_sum_automorphisms, hu, Finset.sum_pair hs]
-  rfl
+theorem add_sigma (h : IsCMExt F E σ) (x : E) : x + σ x = algebraMap F E (Algebra.trace F E x) :=
+  _root_.GlobalTheory.GaussMean.OneVec.add_sigma h x
 
 theorem add_cA (h : IsCMExt F E σ) (z : AE F E) : ∃ a : AF F, z + cA σ z = algebraMap (AF F) (AE F E) a := by
   induction z using TensorProduct.induction_on with
@@ -521,7 +503,7 @@ theorem idealVal_codiff {B : Base F E} (hB : B.IsGood σ) {ν : Chr F E} (hν : 
     · rw [Units.coe_prod, map_prod]
       exact Finset.prod_eq_one fun v _ => by rw [ideleMap_localIdele, inf_prod]
     · by_cases hw : w.under (𝓞 F) = v
-      · rw [cp_idem hw, cp_idem hw, hc, if_neg (hw ▸ hv), map_one]
+      · rw [cp_idem hw, cp_idem hw, hc, ite_eq_right (hw ▸ hv), map_one]
       · rw [cp_idem_ne hw, cp_idem_ne hw]
     · rw [hc]
       split_ifs with hw

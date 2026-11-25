@@ -88,12 +88,6 @@ theorem chernMat_congr {L N : HermLB p} (e : L.Isometric N) (c : AlgChart p σ D
   unfold chernMat
   exact (e.hess_eq c hy (mem_pick _ y) (mem_pick _ y)).symm
 
-section Flag
-
-variable {E : X.Modules} {r : ℕ} (h : VMetric p E r) (fl : Vert.Flag E r)
-
-end Flag
-
 section Cell
 
 variable {ι : Type} [Fintype ι] {r : ι → ℕ} (e : Fin (d + 1) ≃ Option (Σ a, Low (r a)))

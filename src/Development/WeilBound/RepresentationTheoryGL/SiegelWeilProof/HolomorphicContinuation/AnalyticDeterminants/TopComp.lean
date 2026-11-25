@@ -38,8 +38,6 @@ namespace PositivityTheory.Rg.Sw.LVs.TC
 
 open PositivityTheory.Rg.Sw PositivityTheory.Rg.Sw.LVs
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {n : ℕ}
 
 def matrixBlockRestriction (s t : Finset (Fin n)) (x : Matrix (Fin n) (Fin n) ℂ) : Matrix (Fin n) (Fin n) ℂ :=
@@ -107,13 +105,13 @@ theorem block_part_single (s t : Finset (Fin n)) (r u : Fin n) :
     matrixBlockRestriction s t (single r u (1 : ℂ)) = if r ∈ s ∧ u ∈ t then single r u 1 else 0 := by
   ext a b
   by_cases h : r ∈ s ∧ u ∈ t
-  · rw [if_pos h]
+  · rw [ite_eq_left h]
     simp only [matrixBlockRestriction, Matrix.single_apply]
     by_cases hab : r = a ∧ u = b
     · obtain ⟨rfl, rfl⟩ := hab
       simp [h]
     · simp [hab]
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
     simp only [matrixBlockRestriction, Matrix.single_apply, Matrix.zero_apply]
     by_cases hab : r = a ∧ u = b
     · obtain ⟨rfl, rfl⟩ := hab
@@ -265,7 +263,7 @@ theorem lhs_eq (hA : IterAffine) (j : ℕ) (c c' : ℂ) (ψ : Matrix (Fin n) (Fi
         simp [hr, hr', blkB]
     rw [hprod, prod_coef, smul_eq_mul]
     ring
-  · push_neg at hp
+  · push Not at hp
     obtain ⟨r, hr⟩ := hp
     have hz : (∏ r : Fin n, if r ∈ blkA (n := n) j ∧ σ r ∈ blkA (n := n) j then c
         else if r ∈ blkB (n := n) j ∧ σ r ∈ blkB (n := n) j then c' else 0) = 0 := by
@@ -289,7 +287,7 @@ theorem append_eq (j : ℕ) (σA : Equiv.Perm (blkA (n := n) j)) (τ : Equiv.Per
     by_cases hpq : (x : Fin n) = p ∧ (y : Fin n) = q
     · obtain ⟨rfl, rfl⟩ := hpq
       simp
-    · rw [if_neg hpq]
+    · rw [ite_eq_right hpq]
       split_ifs with h1 h2
       · exact absurd ⟨by rw [h2.1], by rw [h2.2]⟩ hpq
       · rfl
@@ -516,9 +514,9 @@ theorem top_vanish {V : Type*} [NormedAddCommGroup V] [NormedSpace ℂ V] {k : �
   congr 1
   rw [Finset.sum_eq_single (fun _ => 2)]
   · simp only [Fin.isValue, Fin.val_two, Finset.sum_const, Finset.card_univ, Fintype.card_fin, smul_eq_mul]
-    rw [if_pos (by ring), mul_one]
+    rw [ite_eq_left (by ring), mul_one]
   · intro f _ hf
-    rw [if_neg, mul_zero]
+    rw [ite_eq_right, mul_zero]
     intro h2
     exact hf (funext (sum_eq_top f h2.symm))
   · simp
@@ -630,7 +628,7 @@ theorem supp_smul {s t : Finset (Fin n)} (c : ℂ) (x : Matrix (Fin n) (Fin n) �
   intro a b h
   by_contra hn
   apply h
-  simp only [Matrix.smul_apply, matrixBlockRestriction, if_neg hn, smul_zero]
+  simp only [Matrix.smul_apply, matrixBlockRestriction, ite_eq_right hn, smul_zero]
 
 private theorem eq_mul_mX_mul_mX_blockEntries (g : M2 n) (j : ℕ) (t : Matrix (Fin n) (Fin n) ℂ) :
     g + topL g j t = g * mX 1 ((2 * Complex.I)⁻¹ • matrixBlockRestriction (blkA j) (blkA j) t)

@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.PositiveOrbitOpen
 public import Formalism.HermitianCurvature.StatementJF
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
@@ -78,15 +79,7 @@ theorem loc_Rw {N : ℕ} {f : Mat k r → E} {g : Mat k r} (h : Loc (N : ℕ∞)
 theorem rdV_congr {f₁ f₂ : Mat k r → E} {U : Set (Mat k r)} (hU : IsOpen U) {g X : Mat k r} (hg : g ∈ U)
     (hgG : g ∈ GV k r) (hX : inLie k r X) (he : ∀ x ∈ U, x ∈ GV k r → f₁ x = f₂ x) :
     RdV X f₁ g = RdV X f₂ g := by
-  have hγ := Formalism.FourierDecayAlt.P.B5.curve_hasDerivAt g X 0
-  have hγ0 : g * NormedSpace.exp (((0 : ℝ) : ℂ) • X) = g := by simp
-  have hmem : ∀ᶠ t : ℝ in 𝓝 (0 : ℝ), g * NormedSpace.exp ((t : ℂ) • X) ∈ U :=
-    hγ.continuousAt.preimage_mem_nhds (by rw [hγ0]; exact hU.mem_nhds hg)
-  show deriv (fun t : ℝ => f₁ (g * NormedSpace.exp ((t : ℂ) • X))) 0 =
-    deriv (fun t : ℝ => f₂ (g * NormedSpace.exp ((t : ℂ) • X))) 0
-  apply Filter.EventuallyEq.deriv_eq
-  filter_upwards [hmem] with t ht
-  exact he _ ht (Formalism.FourierDecayAlt.P.B5.curve_mem hgG hX t)
+  apply _root_.Formalism.FourierDecayAlt.P.PositiveOrbitOpen.rdV_local <;> assumption
 
 theorem rdV_sum {ι : Type*} (L : List ι) (c : ι → ℂ) (h : ι → Mat k r → E) {g X : Mat k r}
     (hg : g ∈ GV k r) (hX : inLie k r X) (hL : ∀ i ∈ L, Loc 1 (h i) g) :

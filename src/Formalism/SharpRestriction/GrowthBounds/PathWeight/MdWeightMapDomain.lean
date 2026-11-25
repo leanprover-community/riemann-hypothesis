@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.ColumnWordReductionOfFour
 public import Formalism.SharpRestriction.GrowthBounds.PathWeight.GeneratorImageIsSymbol
 import Mathlib.Tactic.TypeStar
 
@@ -155,15 +156,7 @@ def MGenM (m : ℤ) (th : ℤ → ℝ) (D : Fin (Mj F j) → ℕ) : Set (MvPolyn
       P = rename (plVar (K := K)) A * rename (tanVar (r := r)) G}
 
 theorem md_geR_mono {v v' : WithTop ℤ} (h : v ≤ v') {t : ℝ} (hv : geR v t) : geR v' t := by
-  intro z hz
-  subst hz
-  cases hv' : v with
-  | top => simp [hv'] at h
-  | coe z' =>
-    rw [hv'] at h
-    have h1 : z' ≤ z := by exact_mod_cast h
-    have h2 : (z' : ℝ) ≤ z := by exact_mod_cast h1
-    linarith [hv z' hv']
+  apply Formalism.MainNotions.SelectionLemmas.Pf.geR_mono <;> assumption
 
 theorem md_comp_gen (m : ℤ) (th : ℤ → ℝ) (D : Fin (Mj F j) → ℕ) {ζ : MvPolynomial (Fin (Mj F j) × Fin (r + K)) O}
     (hζ : ζ ∈ Submodule.span O (GenM (O := O) (K := K) F j m th)) :

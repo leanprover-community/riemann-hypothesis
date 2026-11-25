@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPowerBlockMeasure
 import Development.WeilBound.CoreStatements.MultihomogeneousSquares.EmbImmersion
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRes
@@ -55,16 +56,7 @@ theorem sameOrbit_cj {z z' : (Σ k, ι k) → ℂ} (h : SameOrbit z z') : SameOr
   simp [cj]
 
 theorem cj_mem_mcPts {P : Ideal (MRing ι)} {z : (Σ k, ι k) → ℂ} (hz : z ∈ mcPts P) : cj z ∈ mcPts P := by
-  refine ⟨cj_nonzero hz.1, fun f hf => ?_⟩
-  have h := hz.2 f hf
-  have key : eval (cj z) (map (Int.castRingHom ℂ) f) =
-      starRingEnd ℂ (eval z (map (Int.castRingHom ℂ) f)) := by
-
-    rw [MvPolynomial.eval_map, MvPolynomial.eval_map, MvPolynomial.eval₂_eq, MvPolynomial.eval₂_eq,
-    map_sum]
-    refine Finset.sum_congr rfl fun d _ => ?_
-    simp [map_mul, map_prod, map_pow]
-  rw [key, h, map_zero]
+  apply _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.PowerBlockMeasure.conjPt_mem <;> assumption
 
 theorem log_sub_orbit (A B : HermLine ι) (hab : A.a = B.a) {z z' : (Σ k, ι k) → ℂ}
     (hz : ∀ k, ∃ i, z' ⟨k, i⟩ ≠ 0) (h : SameOrbit z z') :

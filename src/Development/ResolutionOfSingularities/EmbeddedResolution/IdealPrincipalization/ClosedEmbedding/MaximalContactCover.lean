@@ -292,7 +292,6 @@ theorem surjective_pullbackFiberToBase (C : MaximalContactCover p τ I c) :
 
 theorem ker_pullbackFiberToTotal (C : MaximalContactCover p τ I c) [IsClosedImmersion τ] :
     Scheme.Hom.ker C.pullbackFiberToTotal = τ.ker.comap C.projection := by
-  have hq : AlgebraicGeometry.QuasiCompact τ := inferInstance
   have hq' : AlgebraicGeometry.QuasiCompact C.pullbackFiberToTotal :=
     quasiCompact_of_isPullback C.isPullback_pullbackFiber
   have hf : AlgebraicGeometry.Flat C.projection :=
@@ -404,7 +403,6 @@ theorem comapImageIdealSheaf_eq_imageIdealSheaf_idealOnHypersurface (C : Maximal
 theorem idealOnHypersurface_eq_imageIdealSheaf (C : MaximalContactCover p τ I c)
     [IsClosedImmersion τ] :
     C.idealOnHypersurface = _root_.FunctorialResolution.Blowup.schemeImageIdeal C.pullbackFiberToHypersurface (I.comap C.pullbackFiberToBase) := by
-  have hqc : AlgebraicGeometry.QuasiCompact τ := inferInstance
   have hflat : AlgebraicGeometry.Flat C.projection :=
     MaxContactReduction.FiniteOpenCoverWithIdeals.flat_disjointUnionMap C.toCoverData
   have h1 : (_root_.FunctorialResolution.Blowup.schemeImageIdeal τ I).comap C.projection

@@ -5,6 +5,7 @@ import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Topology.Algebra.Group.Units
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.BaseLatticeIsUnimodular
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UpqLocallyCompactGroup
 
 @[expose] public section
 
@@ -59,26 +60,7 @@ theorem mat_inv (g : UpqT P Q) :
     _ = _ := by rw [hAB, Matrix.mul_one]
 
 theorem isInducing_mat : IsInducing (UpqT.mat (P := P) (Q := Q)) := by
-  have hv : IsInducing (fun g : UpqT P Q => ((toS P Q g : HcS.UG.Upq P Q) : GL (Fin P ⊕ Fin Q) ℂ)) := by
-    rw [isInducing_iff]
-    ext s
-    rw [isOpen_induced_iff]
-    show HcS.BasicNotions.instTopologicalSpaceUpqT._aux_1 P Q s ↔ _
-    unfold HcS.BasicNotions.instTopologicalSpaceUpqT._aux_1
-    rfl
-  have he : IsInducing ((Units.embedProduct Mat) ∘
-      (fun g : UpqT P Q => ((toS P Q g : HcS.UG.Upq P Q) : GL (Fin P ⊕ Fin Q) ℂ))) :=
-    Units.isEmbedding_embedProduct.isInducing.comp hv
-  have hcomp : (Units.embedProduct Mat) ∘
-      (fun g : UpqT P Q => ((toS P Q g : HcS.UG.Upq P Q) : GL (Fin P ⊕ Fin Q) ℂ)) =
-      (fun X : Mat => (X, MulOpposite.op (HcS.UG.Jpq P Q * Xᴴ * HcS.UG.Jpq P Q))) ∘ UpqT.mat := by
-    funext x
-    exact Prod.ext rfl (congrArg MulOpposite.op (mat_inv P Q x))
-  rw [hcomp] at he
-  refine IsInducing.of_comp ?_ ?_ he
-  · exact Units.continuous_val.comp hv.continuous
-  · exact continuous_id.prodMk (MulOpposite.continuous_op.comp
-      ((continuous_const.matrix_mul continuous_id.matrix_conjTranspose).matrix_mul continuous_const))
+  apply _root_.GlobalTheory.UpqTopology.isInducing_mat <;> assumption
 
 theorem range_mat : Set.range (UpqT.mat (P := P) (Q := Q)) =
     {X : Mat | Xᴴ * HcS.UG.Jpq P Q * X = HcS.UG.Jpq P Q} := by

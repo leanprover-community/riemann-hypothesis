@@ -381,11 +381,7 @@ theorem nuIn_mem_Sram (D : D7) (u : D.what₂.Word) (w : D.what₂.places.Pl) (�
   exact this
 
 theorem pair_gain_nonneg {X : Inst D L} {K : Consts} (a b : HH D → ℤ) (p j : ℕ) : 0 ≤ gainP X K a b p j := by
-  unfold gainP
-  split_ifs
-  · exact le_rfl
-  · refine add_nonneg (Finset.sum_nonneg fun t _ => ?_) (Finset.sum_nonneg fun t _ => le_max_right _ _)
-    exact le_trans (le_max_right _ _) (le_max_right _ _)
+  apply _root_.Formalism.MainNotions.WeilJacquetShalikaLaw.gainP_nonneg' <;> assumption
 
 theorem served_gain_nonneg {X : Inst D L} {K : Consts} (p j : ℕ) : 0 ≤ gainS X K p j := by
   unfold gainS
@@ -417,7 +413,7 @@ theorem gainD_le_gainS {X : Inst D L} {K : Consts} (hF : ∀ w, ParametersFill X
         · exact L.gain_g j w (by rw [(Nat.prime_dvd_prime_iff_eq hp (D.host.g_prime 0)).1 h]; simp)
       · exact L.gain_g j w (by rw [(Nat.prime_dvd_prime_iff_eq hp (D.host.g_prime 1)).1 h]; simp)
     rw [hgz]; exact served_gain_nonneg _ _
-  · rw [hg, gainS, if_pos ⟨hin, hE⟩, if_neg (fun h => hd (hcs _ (D.what₂.places.resChar_prime w) h))]
+  · rw [hg, gainS, ite_eq_left ⟨hin, hE⟩, ite_eq_right (fun h => hd (hcs _ (D.what₂.places.resChar_prime w) h))]
 
 theorem local_compatibility_family {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (x : ℝ) (hx : Fm.x1 < x) (i : Fm.Ix x) :
     Ties9 (Fm.D x i) (Fm.L x i) (Fm.Gx x i) (Fm.Gy x i) (Fm.ex x hx i).cmp := by

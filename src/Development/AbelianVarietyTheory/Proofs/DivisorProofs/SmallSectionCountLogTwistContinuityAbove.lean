@@ -235,15 +235,12 @@ theorem tendsto_comp_div_pow_of_ratio (d : ℕ) (h : ℕ → ℝ) (L r : ℝ) (u
   have h2 := (hh.comp huN).mul (hu.pow d)
   refine h2.congr' ?_
   filter_upwards [eventually_gt_atTop 0, huN.eventually (eventually_gt_atTop 0)] with M hM huM
-  have a : (M : ℝ) ≠ 0 := by exact_mod_cast hM.ne'
-  have b : (u M : ℝ) ≠ 0 := by exact_mod_cast huM.ne'
   simp only [Function.comp]
   rw [div_pow]
   field_simp
 
 theorem tendsto_natDiv_div_self (n : ℕ) (hn : 0 < n) :
     Tendsto (fun M : ℕ => ((M / n : ℕ) : ℝ) / M) atTop (𝓝 (1 / n)) := by
-  have hnR : (0:ℝ) < n := by exact_mod_cast hn
   have hlow : Tendsto (fun M : ℕ => 1 / (n:ℝ) - 1 / (M:ℝ)) atTop (𝓝 (1 / n)) := by
     have := (tendsto_one_div_atTop_nhds_zero_nat).const_sub (1 / (n:ℝ))
     rwa [sub_zero] at this
@@ -279,7 +276,6 @@ theorem eventually_le_at_nearby_indices :
   have hn : ∀ᶠ n : ℕ in atTop, α * ((b:ℝ) + 1 / (n:ℝ)) ^ d < α * (b:ℝ) ^ d + ε / 3 :=
     (tendsto_order.1 hlim).2 _ (by linarith)
   filter_upwards [hn, eventually_gt_atTop 0] with n hn hn0
-  have hnR : (0:ℝ) < n := by exact_mod_cast hn0
   have hrpos : (0:ℝ) < (b:ℝ) + 1 / (n:ℝ) := by positivity
   obtain ⟨η, hη, hηlt⟩ : ∃ η : ℝ, 0 < η ∧
       (α + β * η) * ((b:ℝ) + 1 / (n:ℝ)) ^ d < α * ((b:ℝ) + 1 / (n:ℝ)) ^ d + ε / 3 := by

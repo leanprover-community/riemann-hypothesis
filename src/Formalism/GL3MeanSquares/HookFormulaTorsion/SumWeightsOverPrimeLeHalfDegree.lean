@@ -99,8 +99,7 @@ private lemma inert_prime_norm_ge_sq (P : Ideal (𝓞 K)) (hP : P.IsMaximal)
     (hc : Formalism.HermitianLatticesTheory.conjIdeal (K := K) P = P)
     (hu : ∃ θ t : 𝓞 K, algebraMap (𝓞 K) K t = star (algebraMap (𝓞 K) K θ) ∧ θ - t ∉ P) :
     residueCharacteristic K P ^ 2 ≤ Ideal.absNorm P := by
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   obtain ⟨θ, t, ht, hθt⟩ := hu
   obtain ⟨k, hk1, hk⟩ := abs_norm_eq_prime_pow K P hP
   have hp := residue_characteristic_prime K P hP
@@ -367,9 +366,13 @@ private lemma partial_sums_log_euler_factor_le (hK : Formalism.HermitianLattices
 
 end main
 
-theorem log_l_value_field_bound : LogLFunctionEulerBound := by
-  intro K _ _ _ hK M hM
-  have hM2 : 2 ≤ M := by omega
+theorem log_l_value_field_bound_ge_two (K : Type) [Field K] [NumberField K] [StarRing K]
+    (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (M : ℕ) (hM2 : 2 ≤ M) :
+    Multipliable (fun P : {P : Ideal (NumberField.RingOfIntegers K) // P.IsMaximal} =>
+      Formalism.HermitianLatticesTheory.eulerFac K M P.1) ∧
+    0 < Formalism.HermitianLatticesTheory.lValEta K M ∧
+    |Real.log (Formalism.HermitianLatticesTheory.lValEta K M)| ≤
+      (Formalism.HermitianLatticesTheory.fDeg K : ℝ) * Real.log (zetaR M) := by
   have hpos : ∀ P : {P : Ideal (𝓞 K) // P.IsMaximal}, 0 < Formalism.HermitianLatticesTheory.eulerFac K M P.1 :=
     fun P => (euler_factor_log_bound K hK M (by omega) P.1 P.2).1
   have habs : Summable
@@ -389,5 +392,8 @@ theorem log_l_value_field_bound : LogLFunctionEulerBound := by
       (by simpa [Real.norm_eq_abs] using habs)
     simp only [Real.norm_eq_abs] at hn
     exact hn.trans (habs.tsum_le_of_sum_le (partial_sums_log_euler_factor_le K hK M hM2))
+
+theorem log_l_value_field_bound : LogLFunctionEulerBound :=
+  fun K _ _ _ hK M hM => log_l_value_field_bound_ge_two K hK M (by omega)
 
 end Formalism.HermitianLattices.GenusMassVolumes

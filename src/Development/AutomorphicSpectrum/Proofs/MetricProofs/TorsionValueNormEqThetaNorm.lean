@@ -58,10 +58,10 @@ def ev (x : Sp ℂ ⟶ X) (U : X.Opens) (h : ⊤ ≤ x ⁻¹ᵁ U) : Γ(X, U) �
   (Scheme.ΓSpecIso (CommRingCat.of ℂ)).hom.hom.comp (x.appLE U ⊤ h).hom
 
 theorem valF_eq (x : Sp ℂ ⟶ X) (U : X.Opens) (h : ⊤ ≤ x ⁻¹ᵁ U) (f : Γ(X, U)) : valF x U f = ev x U h f :=
-  dif_pos h
+  dite_eq_left h
 
 theorem valAt'_eq (x : Sp ℂ ⟶ X) (U : X.Opens) (h : ⊤ ≤ x ⁻¹ᵁ U) (f : Γ(X, U)) : valAt' x U f = ev x U h f :=
-  dif_pos h
+  dite_eq_left h
 
 theorem ev_res (x : Sp ℂ ⟶ X) {U V : X.Opens} (hVU : V ≤ U) (h : ⊤ ≤ x ⁻¹ᵁ V) (h' : ⊤ ≤ x ⁻¹ᵁ U) (f : Γ(X, U)) :
     ev x V h ((X.presheaf.map (homOfLE hVU).op).hom f) = ev x U h' f :=

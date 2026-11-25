@@ -13,6 +13,8 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.DifferentialOperato
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.FrameCompletion
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.QuadraticFormTwoTwo.ExistsFrameOfPositiveVector
 import Std.Tactic.BVDecide.Normalize.Prop
+import CompanionTheory.AutomorphicTheory.LocalBesselUniqueness.OpLocal
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGenTransferKPt
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.HermitianCurvature.HermitianCurvatureProofs.Sq2UnitOfEqOneOfSq2EqDiv, Formalism.HermitianCurvature.HermitianCurvatureProofs.XFibreOfParts
@@ -245,15 +247,7 @@ variable {k r : ℕ}
 
 private theorem herm_swap_eq_zero_of_eq_zero {k r : ℕ} (v w : Fin (2 * r + k + 1) → ℂ) :
     herm (Hpk k r) w v = star (herm (Hpk k r) v w) := by
-  have hH : ∀ i j : Fin (2 * r + k + 1), star (Hpk k r i j) = Hpk k r j i := by
-    intro i j
-    simp only [Hpk, Fin.ext_iff]
-    split_ifs <;> first | (exfalso; omega) | norm_num
-  simp only [herm, dotProduct, mulVec, Pi.star_apply, star_sum, star_mul', star_star, Finset.mul_sum]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-  rw [hH]
-  ring
+  apply _root_.Formalism.FourierDecayAlt.P.CutMP.Gauge.GC.KPt.herm_conj <;> assumption
 
 private theorem herm_Hpk_frame_sum_of_orthogonal {z' y u : Fin (2 * r + k + 1) → ℂ} {B0 : Fin k → Fin (2 * r + k + 1) → ℂ}
     (hz' : inWb k r z') (hT' : 0 < Tz k r z') (hB0 : IsFrameOf k r [z'] B0) (a : ℂ) (hu : inWb k r u)
@@ -344,31 +338,12 @@ theorem xf_Pi_cd (π' : Mx k r → (Wq →L[ℂ] Wq)) (B0 : Fin k → Fin (2 * r
     ContDiff ℝ ∞ (xfPi (Wp := Wp) π' B0 w) := by
   exact (((ContinuousLinearMap.compL ℂ Wq Wq Wp).flip).restrictScalars ℝ).contDiff.comp (xf_capV_cd π' B0 w)
 
-private theorem contDiff_of_isPolyDeg' {k r κ : ℕ} {P : B.Mat k r → ℂ} (h : U.IsPolyDeg κ P) : ContDiff ℝ ∞ P := by
-  obtain ⟨q, -, hq⟩ := h
-  have hP : P = fun g => MvPolynomial.eval (Sum.elim (fun x => g x.1 x.2) (fun x => star (g x.1 x.2))) q := funext hq
-  subst hP
-  clear hq
-  induction q using MvPolynomial.induction_on
-  next a =>
-    simp only [MvPolynomial.eval_C]
-    exact contDiff_const
-  next p q hp hq =>
-    simp only [map_add (f := _)]
-    exact hp.add hq
-  next p i hp =>
-    simp only [map_mul, MvPolynomial.eval_X]
-    refine hp.mul ?_
-    rcases i with ⟨a, b⟩ | ⟨a, b⟩
-    · exact JCx1.contDiff_entry a b
-    · exact Complex.conjCLE.contDiff.comp (JCx1.contDiff_entry a b)
-
 theorem xf_bound (hOm : OmFacts) (Bs : B.RealPlaceData k r Wp Wq) {B0 : Fin k → Fin (2 * r + k + 1) → ℂ}
     (hB0 : IsFrameOf k r [Bs.z'] B0) (w : ℂ) : C6.FibBound Bs (xFib Bs B0 w) := by
   obtain ⟨hom, hsq, -, -⟩ := hOm k r Wp Wq Bs B0 hB0
   have hGc : ContDiff ℝ ∞ (fun g : B.Mat k r => ((Gf k r Bs.z Bs.z' g : ℝ) : ℂ)) :=
     Complex.ofRealCLM.contDiff.comp (JCx1.contDiff_Gf Bs.z Bs.z')
-  have hoc : ∀ a, ContDiff ℝ ∞ (fun g => omC Bs B0 g a) := fun a => contDiff_of_isPolyDeg' (hom a)
+  have hoc : ∀ a, ContDiff ℝ ∞ (fun g => omC Bs B0 g a) := fun a => _root_.Formalism.FourierDecayAlt.P.CutBP.LimitNormalForms.contDiff_poly (hom a)
   refine ⟨fun g₀ hg₀ => ?_, fun ε hε i => ?_⟩
   · refine ⟨{g | Gf k r Bs.z Bs.z' g₀ / 2 < Gf k r Bs.z Bs.z' g},
       fun g => xfPi Bs.π' B0 w (AdmissibleLieWords.utv (Gf k r Bs.z Bs.z' g₀) (Tz k r Bs.z') (Gf k r Bs.z Bs.z') (omC Bs B0) g),
@@ -407,15 +382,7 @@ end TLC
 
 private theorem herm_Hpk_swap {k r : ℕ} (v w : Fin (2 * r + k + 1) → ℂ) :
     herm (Hpk k r) w v = star (herm (Hpk k r) v w) := by
-  have hH : ∀ i j : Fin (2 * r + k + 1), star (Hpk k r i j) = Hpk k r j i := by
-    intro i j
-    simp only [Hpk, Fin.ext_iff]
-    split_ifs <;> first | (exfalso; omega) | norm_num
-  simp only [herm, dotProduct, mulVec, Pi.star_apply, star_sum, star_mul', star_star, Finset.mul_sum]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-  rw [hH]
-  ring
+  apply _root_.Formalism.FourierDecayAlt.P.CutMP.Gauge.GC.KPt.herm_conj <;> assumption
 
 private theorem exists_isFrameOf_singleton_of_Tz_pos {k r : ℕ} {z' : Fin (2 * r + k + 1) → ℂ} (hk : 1 ≤ k) (hz' : inWb k r z')
     (hT' : 0 < Tz k r z') : ∃ B0 : Fin k → Fin (2 * r + k + 1) → ℂ, IsFrameOf k r [z'] B0 := by
@@ -439,7 +406,7 @@ private theorem exists_isFrameOf_singleton_of_Tz_pos {k r : ℕ} {z' : Fin (2 * 
       have e0 := congrFun h0 i0
       have e1 := congrFun hc i0
       have e2 := congrFun hc i1
-      simp only [bvec, Pi.single_apply, Pi.smul_apply, smul_eq_mul, if_neg hne] at e0 e1 e2
+      simp only [bvec, Pi.single_apply, Pi.smul_apply, smul_eq_mul, ite_eq_right hne] at e0 e1 e2
       have hz0 : z' i0 ≠ 0 := fun h => by rw [h, mul_zero] at e0; exact one_ne_zero e0
       have hc0 : c = 0 := (mul_eq_zero.mp e1.symm).resolve_right hz0
       rw [hc0, zero_mul] at e2
@@ -453,9 +420,9 @@ private theorem exists_isFrameOf_singleton_of_Tz_pos {k r : ℕ} {z' : Fin (2 * 
   · refine Fin.cases ?_ (fun i => ?_) i <;> refine Fin.cases ?_ (fun j => ?_) j
     · simpa using hee
     · simp only [Fin.cons_zero, Fin.cons_succ]
-      rw [herm_Hpk_swap _ e, hBs.2.2 _ e (by simp), star_zero, if_neg (Fin.succ_ne_zero j).symm]
+      rw [herm_Hpk_swap _ e, hBs.2.2 _ e (by simp), star_zero, ite_eq_right (Fin.succ_ne_zero j).symm]
     · simp only [Fin.cons_zero, Fin.cons_succ]
-      rw [hBs.2.2 _ e (by simp), if_neg (Fin.succ_ne_zero i)]
+      rw [hBs.2.2 _ e (by simp), ite_eq_right (Fin.succ_ne_zero i)]
     · simp only [Fin.cons_succ]
       rw [hBs.2.1]
       simp [Fin.ext_iff]

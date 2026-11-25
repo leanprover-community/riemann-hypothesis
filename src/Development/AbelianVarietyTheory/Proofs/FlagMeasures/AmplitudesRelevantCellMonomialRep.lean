@@ -154,8 +154,8 @@ theorem monomial_of_pt {z z' : Fin (2 * r + k + 1) → ℂ} {g : MatKR k r} (hg 
   ext a b
   simp only [C2.monoP, conjTranspose_apply, Matrix.of_apply]
   by_cases e : a = permOf p b
-  · rw [if_pos e, if_pos (by rw [e, permOf_invol]), e]
-  · rw [if_neg e, if_neg (fun e' => e (by rw [e', permOf_invol])), star_zero]
+  · rw [ite_eq_left e, ite_eq_left (by rw [e, permOf_invol]), e]
+  · rw [ite_eq_right e, ite_eq_right (fun e' => e (by rw [e', permOf_invol])), star_zero]
 
 
 open GlobalTheory.ThA.OrbSq P.Dx1.Rel in

@@ -94,7 +94,7 @@ def blkR {r : ℕ} (hr : r ≤ n) : blockTri (κ := κ) (n := n) (blk2 r) →* G
         have : (y.1 : Matrix (Fin n) (Fin n) κ) l (Fin.castLE hr j) = 0 := by
           refine y.2 ?_
           have hj : (Fin.castLE hr j).val < r := j.2
-          simp only [blk2, hj, hl', if_true, if_false]
+          simp only [blk2, hj, hl', ite_true, ite_false]
           exact Nat.zero_lt_one
         rw [this, mul_zero] }
 

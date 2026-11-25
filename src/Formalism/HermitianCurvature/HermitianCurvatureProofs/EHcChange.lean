@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.LieDecompositionLocal
 public import Formalism.HermitianCurvature.StatementB
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CvRhoOfParts
@@ -26,8 +27,6 @@ noncomputable section
 namespace Formalism.FourierDecayAlt.P.JFxE
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.BetaSesquilinearity Formalism.FourierDecayAlt.P.JFxB
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 variable {k r : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
@@ -60,16 +59,10 @@ theorem hp_decomp (Z : Mat k r) : hpart1 (Hpk k r) Z + Complex.I • hpart2 (Hpk
   norm_num
 
 theorem hpart1_add' (Z W : Mat k r) : hpart1 (Hpk k r) (Z + W) = hpart1 (Hpk k r) Z + hpart1 (Hpk k r) W := by
-  simp only [hpart1, Matrix.conjTranspose_add, Matrix.mul_add, Matrix.add_mul]
-  rw [← smul_add]
-  congr 1
-  abel
+  exact Formalism.FourierDecayAlt.P.LieDecompositionLocal.hpart1_add Z W
 
 theorem hpart2_add' (Z W : Mat k r) : hpart2 (Hpk k r) (Z + W) = hpart2 (Hpk k r) Z + hpart2 (Hpk k r) W := by
-  simp only [hpart2, Matrix.conjTranspose_add, Matrix.mul_add, Matrix.add_mul]
-  rw [← smul_add]
-  congr 1
-  abel
+  exact Formalism.FourierDecayAlt.P.LieDecompositionLocal.hpart2_add Z W
 
 theorem hp1_real (x : ℝ) (Z : Mat k r) : hpart1 (Hpk k r) ((x : ℂ) • Z) = (x : ℂ) • hpart1 (Hpk k r) Z := by
   have hs : star (x : ℂ) = (x : ℂ) := Complex.conj_ofReal x
@@ -97,20 +90,7 @@ theorem hpart2_I_smul (Z : Mat k r) : hpart2 (Hpk k r) (Complex.I • Z) = hpart
   rw [smul_add, smul_smul, smul_smul, smul_sub, e1, e2, neg_smul, sub_eq_add_neg]
 
 theorem lie_bracket {X Y : Mat k r} (hX : inLie k r X) (hY : inLie k r Y) : inLie k r (X * Y - Y * X) := by
-  have hX0 : Xᴴ * Hpk k r + Hpk k r * X = 0 := hX
-  have hY0 : Yᴴ * Hpk k r + Hpk k r * Y = 0 := hY
-  have hX' : Xᴴ * Hpk k r = -(Hpk k r * X) := eq_neg_of_add_eq_zero_left hX0
-  have hY' : Yᴴ * Hpk k r = -(Hpk k r * Y) := eq_neg_of_add_eq_zero_left hY0
-  have hX'' : ∀ M : Mat k r, Xᴴ * (Hpk k r * M) = -(Hpk k r * (X * M)) := by
-    intro M
-    rw [← Matrix.mul_assoc, hX', Matrix.neg_mul, Matrix.mul_assoc]
-  have hY'' : ∀ M : Mat k r, Yᴴ * (Hpk k r * M) = -(Hpk k r * (Y * M)) := by
-    intro M
-    rw [← Matrix.mul_assoc, hY', Matrix.neg_mul, Matrix.mul_assoc]
-  show (X * Y - Y * X)ᴴ * Hpk k r + Hpk k r * (X * Y - Y * X) = 0
-  simp only [Matrix.conjTranspose_sub, Matrix.conjTranspose_mul, Matrix.sub_mul, Matrix.mul_sub,
-    Matrix.mul_assoc, hX', hY', Matrix.mul_neg, hX'', hY'', neg_neg]
-  abel
+  apply _root_.Formalism.FourierDecayAlt.P.LieDecompositionLocal.inLie_comm <;> assumption
 
 theorem hp_of_parts {X Y : Mat k r} (hX : inLie k r X) (hY : inLie k r Y) :
     hpart1 (Hpk k r) (X + Complex.I • Y) = X ∧ hpart2 (Hpk k r) (X + Complex.I • Y) = Y := by

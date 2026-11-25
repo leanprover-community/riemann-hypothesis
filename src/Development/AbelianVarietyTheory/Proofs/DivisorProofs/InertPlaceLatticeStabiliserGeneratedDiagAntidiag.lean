@@ -426,10 +426,6 @@ theorem gl_iotaW_one (hw : Formalism.UG.IsInertAt F E v w) :
   rw [gl_iotaW_apply, _root_.map_one]
   exact h.symm
 
-theorem gl_compl_mul_iotaW (hw : Formalism.UG.IsInertAt F E v w) (x : w.adicCompletion E) :
-    (1 - algebraMap (AF F) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) (GlobalTheory.LatVac.liftV v 1)) * iotaW hw x = 0 := by
-  rw [sub_mul, one_mul, gl_idem_mul_iotaW, sub_self]
-
 theorem gl_compl_idem (hw : Formalism.UG.IsInertAt F E v w) :
     (1 - algebraMap (AF F) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) (GlobalTheory.LatVac.liftV v 1)) * (1 - algebraMap (AF F) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) (GlobalTheory.LatVac.liftV v 1)) =
       1 - algebraMap (AF F) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) (GlobalTheory.LatVac.liftV v 1) := by
@@ -442,7 +438,7 @@ variable {ι : Type} [Fintype ι] [DecidableEq ι]
 theorem gl_compl_smul_map (hw : Formalism.UG.IsInertAt F E v w) (P : Matrix ι ι (w.adicCompletion E)) :
     (1 - algebraMap (AF F) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)) (GlobalTheory.LatVac.liftV v 1)) • P.map (iotaW hw) = 0 := by
   ext i j
-  rw [Matrix.smul_apply, Matrix.map_apply, smul_eq_mul, gl_compl_mul_iotaW, Matrix.zero_apply]
+  rw [Matrix.smul_apply, Matrix.map_apply, smul_eq_mul, GlobalTheory.InertBigCell.one_sub_mul_iotaW, Matrix.zero_apply]
 
 theorem gl_map_mul_map (hw : Formalism.UG.IsInertAt F E v w) (P Q : Matrix ι ι (w.adicCompletion E)) :
     P.map (iotaW hw) * Q.map (iotaW hw) = (P * Q).map (iotaW hw) := by
@@ -516,7 +512,7 @@ theorem glueW_props : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [Numb
     funext i
 
     rw [glueW, Matrix.add_mulVec, hd, Pi.add_apply, Pi.smul_apply, smul_eq_mul,
-    gl_compl_mul_iotaW, zero_add, Matrix.mulVec, dotProduct, Matrix.mulVec, dotProduct, map_sum]
+    GlobalTheory.InertBigCell.one_sub_mul_iotaW, zero_add, Matrix.mulVec, dotProduct, Matrix.mulVec, dotProduct, map_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [Matrix.map_apply, gl_iotaW_mul]
 
@@ -1341,7 +1337,6 @@ theorem exists_bigCell : (∀ {O : Type} [CommRing O] [IsLocalRing O] (c : O →
     exact hP0U
   let p : GlobalTheory.DblVac.UD σ W := ⟨u, hu⟩
   have hp : GlobalTheory.DblVac.matD p = glueW hw P0 := rfl
-  have hp' : GlobalTheory.DblVac.matD p⁻¹ = glueW hw P0' := rfl
   have hmul : ∀ a c : GlobalTheory.DblVac.UD σ W, GlobalTheory.DblVac.matD (a * c) = GlobalTheory.DblVac.matD a * GlobalTheory.DblVac.matD c :=
     fun _ _ => rfl
   have hpl : ∀ z ∈ GlobalTheory.DblVac.latD W v, GlobalTheory.DblVac.matD p *ᵥ z ∈ GlobalTheory.DblVac.latD W v :=

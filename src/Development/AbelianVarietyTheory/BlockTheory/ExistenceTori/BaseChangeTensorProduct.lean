@@ -91,8 +91,6 @@ instance instAddCommGroupCf (w : WeightFamilies.Wt D j) : AddCommGroup (Cf T j w
 
 instance instModuleCf (w : WeightFamilies.Wt D j) : Module T.Q.c.F (Cf T j w) := Submodule.module _
 
-abbrev la (w : WeightFamilies.Wt D j) : ∀ k, ReciprocityTheory.ChartRestriction.G.FD.Wt (T.X₀ j k).Ψ D.R.r := laU (T.U j T.σ₀) (wtA w) w.n
-
 def rd (w : WeightFamilies.Wt D j) : Cf T j w →ₛₗ[T.σ₀] FDSec (T.X₀ j) :=
   (rdU (T.U j T.σ₀)).comp (cutR T.C j w).subtype
 
@@ -114,17 +112,5 @@ abbrev CfT (w : WeightFamilies.Wt D j) : Type := KT T j N ⊗[T.Q.c.F] Cf T j w
 instance instModuleCfT (w : WeightFamilies.Wt D j) : Module (KT T j N) (CfT T j N w) := TensorProduct.leftModule
 
 end Generic
-
-section Cusps
-
-variable (T : Core D) (j : ℕ)
-
-def Deep (w : WeightFamilies.Wt D j) (c : ℝ) (P : FDSec (T.X₀ j)) : Prop :=
-  ∀ k ξ, (T.X₀ j k).IsIso ξ → ∀ ν : (T.X₀ j k).Ψ → ℝ, ∑ τ, ν τ ≤ c →
-    ∀ x ∈ (T.X₀ j k).dom, (T.X₀ j k).fj (la T j w k) ξ ν (P k) x = 0
-
-variable {T} (h : LawsCore T)
-
-end Cusps
 
 end GlobalTheory.IndefiniteRowSideFullHecke.BaseChangeTensorProduct

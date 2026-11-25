@@ -14,53 +14,7 @@ public import Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomolo
 public import Mathlib.Algebra.Category.ModuleCat.Sheaf.PullbackFree
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.SubsingletonOfSheafPullback
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.SumNegOnePowFinrankEqZero
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.RegularizedHypergeometric
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.RestrictPullbackIsoHomAppPullbackSections
-import Mathlib.RingTheory.RegularLocalRing.Defs
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsMvPolynomialOfIteratedBackwardDifferenceVa, Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.FiniteCohPushforwardIffOfIsClosedImmersion
@@ -168,10 +122,6 @@ theorem multiDiff_comp_equiv {ι κ : Type*} [Fintype ι] [Fintype κ] (e : κ �
     (φ : G → M) : multiDiff (g ∘ e) φ = multiDiff g φ := by
   simp only [multiDiff_eq_shiftAct, Function.comp]
   rw [Equiv.prod_comp e (fun i ↦ diffElt (g i))]
-
-theorem multiDiff_add {ι : Type*} [Fintype ι] (g : ι → G) (φ ψ : G → M) :
-    multiDiff g (φ + ψ) = multiDiff g φ + multiDiff g ψ := by
-  simp [multiDiff_eq_shiftAct]
 
 theorem multiDiff_sub {ι : Type*} [Fintype ι] (g : ι → G) (φ ψ : G → M) :
     multiDiff g (φ - ψ) = multiDiff g φ - multiDiff g ψ := by
@@ -432,7 +382,7 @@ theorem exists_mvPolynomial_of_iteratedBackwardDifferenceVanish {ι : Type*} [Fi
     have h0 := isHomogeneous_diffTopPoly 0 g φ 0
     refine ⟨diffTopPoly 0 g φ 0, h0.totalDegree_le, fun n ↦ ?_, ?_⟩
     · rw [h.eval_diffTopPoly, h.form_apply _ (∑ i, n i • g i)]; simp
-    · rw [MvPolynomial.homogeneousComponent_of_mem h0, if_pos rfl]
+    · rw [MvPolynomial.homogeneousComponent_of_mem h0, ite_eq_left rfl]
   | succ d ih =>
     intro φ h
     obtain ⟨Q, hQ, hQ', -⟩ := ih _ h.sub_form_diag
@@ -440,7 +390,7 @@ theorem exists_mvPolynomial_of_iteratedBackwardDifferenceVanish {ι : Type*} [Fi
     refine ⟨Q + diffTopPoly (d + 1) g φ 0, (MvPolynomial.totalDegree_add _ _).trans
       (max_le (by omega) h0.totalDegree_le), fun n ↦ ?_, ?_⟩
     · rw [map_add (f := _), hQ', h.eval_diffTopPoly]; simp
-    · rw [map_add (f := _), MvPolynomial.homogeneousComponent_of_mem h0, if_pos rfl,
+    · rw [map_add (f := _), MvPolynomial.homogeneousComponent_of_mem h0, ite_eq_left rfl,
         MvPolynomial.homogeneousComponent_eq_zero _ _ (by omega), zero_add]
 
 theorem DiffVanish.exists_mvPolynomial {d : ℕ} {φ : G → K} (h : DiffVanish (d + 1) φ)
@@ -595,12 +545,6 @@ theorem chi_shortExact (hS : S.ShortExact) (h₁ : FiniteCoh k S.X₁) (h₃ : F
   finsum_neg_one_pow_hdim_eq_add k hS h₁.finite h₃.finite h₁.eventually_zero h₃.eventually_zero
 
 end ShortExact
-
-section Pi
-
-variable {ι : Type*} [Fintype ι] {E : ι → X.Modules}
-
-end Pi
 
 
 variable (k F) in
@@ -841,11 +785,6 @@ theorem nonempty_twist_twist_iso_of_cls_eq (F : X.Modules) {M N P : LB X} (hM : 
     Nonempty (twist (twist F M) N ≅ twist F P) :=
   Twist.nonempty_twistTwistIso hM hN hP ((cls_eq_iff hN (Semi.LB.isLB_div hP hM)).1
     (by rw [cls_div hP hM, h, add_sub_cancel_left]))
-
-theorem nonempty_twist_iso_of_cls_eq_zero (F : X.Modules) {M : LB X} (hM : M.IsLB)
-    (h : cls M hM = 0) : Nonempty (twist F M ≅ F) :=
-  have ⟨t, ht⟩ := (cls_eq_zero_iff hM).1 h
-  ⟨(Twist.genIso F hM t ht).symm⟩
 
 end Prod
 
@@ -1097,13 +1036,6 @@ theorem interNum_cons (hM : M.IsLB) (hP : ∀ i, (P i).IsLB) :
   interNum_cons_of_cls_eq_neg k F hM hP (Twist.isLB_lbZPow hM (-1))
     (by rw [cls_lbZPow hM, neg_one_zsmul])
 
-theorem interNum_twist_cons (hM : M.IsLB) (hP : ∀ i, (P i).IsLB) :
-    interNum k (twist F M) (Fin.cons M P : Fin (d + 1) → LB X) =
-      interNum k (twist F M) P - interNum k F P := by
-  have ⟨e⟩ := nonempty_twist_twist_iso_of_cls_eq F hM (Twist.isLB_lbZPow hM (-1))
-    (LB.isLB_triv X) (by rw [cls_triv, cls_lbZPow hM, neg_one_zsmul, add_neg_cancel])
-  rw [interNum_cons k _ hM hP, interNum_congr k (e ≪≫ (Twist.trivIso F).symm)]
-
 theorem interNum_cons_of_cls_eq_add (hM : M.IsLB) (hA : A.IsLB) (hB : B.IsLB)
     (hP : ∀ i, (P i).IsLB) (h : cls M hM = cls A hA + cls B hB) :
     interNum k F (Fin.cons M P : Fin (d + 1) → LB X) =
@@ -1283,10 +1215,6 @@ variable (k : Type v) [Field k] (A : CommRingCat.{0}) [Algebra k A] [Algebra k �
 
 
 end FiniteAlgebra
-
-section Examples
-
-end Examples
 
 end GlobalTheory
 end -- clump:auto

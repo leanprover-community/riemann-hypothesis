@@ -69,17 +69,10 @@ def cPsi (δ : D.host.E) (v : D.what₂.Tau) : ℂ := 4 * (Real.pi : ℂ) / plEm
 
 def kaV (δ : D.host.E) (v : D.what₂.Tau) : ℝ := 2 * Real.pi / ‖plEmb D v δ‖
 
-def dualPsi (δ : D.host.E) (L : Submodule ℤ D.host.E) : Set D.host.E :=
-  {l | ∀ c ∈ L, ∃ z : ℤ, Algebra.trace ℚ D.host.E (l * c / δ) = (z : ℚ)}
-
 def FullLat (L : Submodule ℤ D.host.E) : Prop :=
   L.FG ∧ Submodule.span ℚ (L : Set D.host.E) = ⊤
 
 end S1bNum
-
-section Kernels
-
-end Kernels
 
 section S1bData
 
@@ -149,9 +142,5 @@ def ThS (C1 C2 N T T' : ℝ) (δ : D.host.E) (x : D.what₂.Tau → LocalDataRea
   ThInvF D C1 C2 N T T' δ x L ^ (-(1 / (D.R.f : ℝ)))
 
 end Sizes
-
-section Rows
-
-end Rows
 
 end Formalism.MainNotions.S

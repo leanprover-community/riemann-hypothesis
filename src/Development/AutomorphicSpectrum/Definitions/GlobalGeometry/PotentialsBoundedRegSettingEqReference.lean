@@ -208,12 +208,4 @@ theorem Adapted.mem_iff_of_piece (h : Adapted M P S) {j : Fin P.N} (hj : (P.char
 
 end Free
 
-namespace SncLine
-
-open Metric GroundTheory.Heights₂.Heights.LowerBoundFree.Line
-open GroundTheory.Heights₂.Heights (CP)
-open scoped Matrix ComplexOrder
-
-end SncLine
-
 end GlobalTheory.CompanionTheory.Ar.Cusp

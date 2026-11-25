@@ -240,8 +240,7 @@ private theorem qR_nonneg_of_mem_Pos {L : Type} [Field L] [NumberField L] {N : �
 private theorem qR_pos_of_mem_Pos_of_ne_zero {L : Type} [Field L] [NumberField L] {N : ℕ} {h : HS L N}
     (hh : h ∈ Pos L N) (x : InfinitePlace L → Fin N → ℂ) (hx : x ≠ 0) : 0 < qR h x := by
   obtain ⟨w₀, hw₀⟩ : ∃ w, x w ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hx (funext hc)
   exact Finset.sum_pos' (fun w _ => re_star_dotProduct_mat_mulVec_nonneg_of_mem_Pos hh w (x w))
     ⟨w₀, Finset.mem_univ _, (hh w₀).re_dotProduct_pos hw₀⟩
@@ -408,7 +407,7 @@ private theorem ncard_q_le_mul_le_sqrt_pow_mul_ncard {L : Type} [Field L] [Numbe
         rw [hc2]
         rw [hq] at hv₀
         nlinarith [hv₀.1, hv₀.2]
-      rw [if_pos hx, mul_one, Nat.cast_le]
+      rw [ite_eq_left hx, mul_one, Nat.cast_le]
       refine Finset.card_le_card_of_injOn (fun v => v - v₀) ?_ ?_
       · intro v hv
         rw [Finset.coe_filter] at hv
@@ -530,7 +529,7 @@ private theorem qR_smul_VR {L : Type} [Field L] [NumberField L] {N : ℕ} (h : H
 private theorem qR_pos_of_mem_Pos_of_VR_ne_zero {L : Type} [Field L] [NumberField L] {N : ℕ} (h : HS L N)
     (hp : h ∈ Pos L N) (z : VR L N) (hz : z ≠ 0) : 0 < qR h z := by
   obtain ⟨w0, hw0⟩ : ∃ w, z w ≠ 0 := by
-    by_contra hc; push_neg at hc; exact hz (funext hc)
+    by_contra hc; push Not at hc; exact hz (funext hc)
   show 0 < ∑ w, (star (z w) ⬝ᵥ mat h w *ᵥ z w).re
   have hnn : ∀ w, 0 ≤ (star (z w) ⬝ᵥ mat h w *ᵥ z w).re := fun w => by
     have := (hp w).posSemidef.dotProduct_mulVec_nonneg (z w)
@@ -1263,11 +1262,10 @@ theorem pf_GBump : GBump := by
       have e3 : 0 ≤ 4 * (Lc : ℝ) * R0 * δ := by positivity
       have e4 : 2 / m + 2 / m = 16 / m * (1 / 4) := by ring
       nlinarith
-    · push_neg at hδ4
+    · push Not at hδ4
       have hnh : ‖h‖ ≤ 2 * R0 := by
         have hor : h ∈ Metric.cthickening ε K ∨ k ∈ Metric.cthickening ε K := by
-          by_contra hc
-          push_neg at hc
+          by_contra! hc
           apply hne
           rw [show ψ k = 0 from by_contra fun H => hc.2 (ψs k H),
             show ψ h = 0 from by_contra fun H => hc.1 (ψs h H)]

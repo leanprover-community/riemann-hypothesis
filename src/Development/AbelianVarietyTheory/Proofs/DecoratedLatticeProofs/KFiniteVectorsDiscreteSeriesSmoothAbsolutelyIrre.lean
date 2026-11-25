@@ -95,7 +95,7 @@ theorem kFin_rank_zero {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} (M : DS
         exact N.smul_mem c hxN
     · by_cases hz : ∀ x : kFin M τ, x = 0
       · exact ⟨0, LinearMap.ext fun x => by rw [hz x]; simp⟩
-      · push_neg at hz
+      · push Not at hz
         obtain ⟨x, hx0⟩ := hz
         obtain ⟨c, hc⟩ := hK x (T x) hx0
         refine ⟨c, LinearMap.ext fun y => ?_⟩

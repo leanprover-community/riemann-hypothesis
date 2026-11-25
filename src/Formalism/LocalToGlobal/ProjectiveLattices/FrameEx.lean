@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.SumLeFinsumOfSurjectsOntoFinset
 public import Formalism.LocalToGlobal.ProjectiveLattices.FamilyUniformisationBasePointOrthogonal
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.PiTensorProduct
@@ -20,25 +21,13 @@ open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.Geo.Tor R
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 open AlgebraicGeometry CategoryTheory Limits ReciprocityTheory.ChartRestriction.G.Semi
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section PerFr
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 theorem perFr_add {r : ℕ} (X : ReciprocityTheory.ChartRestriction.G.FD.Data E r) (x : Frame X.Ψ r) (v w : Fin r → E) (τ : E →+* ℂ)
     (i : ℕ) : perFr X x (v + w) τ i = perFr X x v τ i + perFr X x w τ i := by
-  have he : ∀ σ : E →+* ℂ, Data.emb σ (v + w) = Data.emb σ v + Data.emb σ w := by
-    intro σ
-    first
-      | (funext k; simp [Data.emb]; done)
-  unfold perFr
-  simp only [he]
-  split_ifs <;> first
-    | (simp; done)
-    | (simp [Matrix.mulVec_add]; done)
-    | (unfold hermC; simp [Matrix.dotProduct_add, Matrix.mulVec_add, mul_add, add_mul, Finset.sum_add_distrib]; done)
-    | (unfold hermC; simp [mul_add, Finset.sum_add_distrib, map_add (f := _)])
+  apply +allowSynthFailures _root_.GlobalTheory.OrthoPeriodTorus.perFr_add <;> assumption
 
 theorem perFr_zero {r : ℕ} (X : ReciprocityTheory.ChartRestriction.G.FD.Data E r) (x : Frame X.Ψ r) (τ : E →+* ℂ) (i : ℕ) :
     perFr X x 0 τ i = 0 := by
@@ -146,19 +135,6 @@ variable {g : ℕ} {e : Fin g ≃ Σ τ : E →+* ℂ, Fin (Dw.mult τ)}
 
 end Fam
 
-section Main
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
-  {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {σ : c.F →+* ℂ} {r : ℕ}
-
-end Main
-
-section Rows
-
-variable {D : D7}
-
-end Rows
-
 end Formalism.L2.Pj
 end -- clump:auto
 end -- clump:auto
@@ -209,24 +185,6 @@ abbrev IsGenSec (s : GenSec e F M) : Prop :=
 
 
 end Fam
-
-section Red
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
-  {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {σ : c.F →+* ℂ} {r : ℕ} {g : ℕ}
-  {e : Fin g ≃ Σ τ : E →+* ℂ, Fin (Dw.mult τ)}
-  {F : FamilyUnif Xo (σ.comp (IntermediateField.inclusion c.le).toRingHom) (fun j => relab c σ (e j).1)}
-  {M : ModelsOf F r}
-  (hTE : ExpTan e F) (hEL : ExpLin e F) (hLE : LieEig e F) (hP : PerAt e F M) (s : GenSec e F M)
-  (hs : IsGenSec e F M s)
-
-end Red
-
-section Row
-
-variable {D : D7}
-
-end Row
 
 section Gam
 

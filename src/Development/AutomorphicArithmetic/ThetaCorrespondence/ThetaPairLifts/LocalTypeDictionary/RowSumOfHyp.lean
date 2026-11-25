@@ -634,12 +634,6 @@ theorem rowSum_of_hypotheses_alt : _root_.GlobalTheory.FunPr.ThetaLocalInputs â†
 end GlobalTheory.RowClaim
 end
 end
-
-section
-
-theorem _root_.GlobalTheory.T.sumOKK_of_theta_local_inputs : _root_.GlobalTheory.FunPr.ThetaLocalInputs â†’ GlobalTheory.RowClaim.SumOKK := by
-  first | exact @_root_.GlobalTheory.RowClaim.rowSum_of_hypotheses_alt
-end
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.RowSumOfHyp =====

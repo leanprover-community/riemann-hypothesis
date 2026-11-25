@@ -63,12 +63,6 @@ open GlobalTheory.PD
 
 variable (k : Type) [Field k] (d : ℕ)
 
-section Bundle
-
-variable (k : Type) [Field k] {F : Type} [Field F] [Algebra k F] {d : ℕ} (x : Fin (d + 1) → F)
-
-end Bundle
-
 section Cover
 
 variable (k : Type) [Field k] {F : Type} [Field F] [Algebra k F] {d : ℕ} (x : Fin (d + 1) → F)
@@ -134,10 +128,6 @@ def chartEquiv (hP : IsPd k x) (i : Fin (d + 1)) : MvPolynomial (Fin d) k ≃ₐ
 
 end Cover
 
-section Extra
-
-end Extra
-
 end GlobalTheory.PD.Model
 end -- clump:auto
 end -- clump:auto
@@ -154,7 +144,6 @@ open GlobalTheory.PD GlobalTheory.CechDR KaehlerDifferential
 namespace GlobalTheory.PD
 
 
-set_option autoImplicit false in
 open KaehlerDifferential in
 theorem _root_.GlobalTheory.PD.rA_single_polyEquiv : ∀ (k : Type) [Field k] (F : Type) [Field F]
     [Algebra k F] (d : ℕ) (x : Fin (d + 1) → F), _root_.GlobalTheory.PD.IsPd k x →

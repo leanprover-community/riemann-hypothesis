@@ -158,7 +158,7 @@ theorem IsWinProj.apply_of_mem (he : IsWinProj ρ e) {v : V} (hv : v ∈ LinearM
 variable (ρ e) in
 def winOp (m : M) : End ℂ (LinearMap.range e) :=
   LinearMap.codRestrict (LinearMap.range e) (e ∘ₗ ρ m ∘ₗ (LinearMap.range e).subtype)
-    fun x => ⟨_, rfl⟩
+    fun _ => ⟨_, rfl⟩
 
 
 variable (ρ e) in

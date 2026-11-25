@@ -32,8 +32,8 @@ theorem dplus_le_beA (_H : HypT N n0 r K LL B od bb a La p) {dd : Fin N → ℕ}
   unfold dplus beA
   refine Finset.sum_le_sum fun l _ => ?_
   by_cases hl : l.val < s ∧ LL.vec l = true
-  · rw [if_pos hl, if_pos (by omega), hdd l (by omega)]
-  · rw [if_neg hl]; exact Nat.zero_le _
+  · rw [ite_eq_left hl, ite_eq_left (by omega), hdd l (by omega)]
+  · rw [ite_eq_right hl]; exact Nat.zero_le _
 
 theorem dminus_le_beA (H : HypT N n0 r K LL B od bb a La p) {dd : Fin N → ℕ}
     (hdd : ∀ i : Fin N, i.val < n0 → dd i = B i) (s : ℕ) : dminus LL dd s ≤ beA n0 B := by
@@ -45,8 +45,8 @@ theorem dminus_le_beA (H : HypT N n0 r K LL B od bb a La p) {dd : Fin N → ℕ}
       have := H.vec_true_of_late l (by omega)
       rw [hl.2] at this
       exact absurd this (by simp)
-    rw [if_pos hl, if_pos hln, hdd l hln]
-  · rw [if_neg hl]; exact Nat.zero_le _
+    rw [ite_eq_left hl, ite_eq_left hln, hdd l hln]
+  · rw [ite_eq_right hl]; exact Nat.zero_le _
 
 theorem path_le_beA (H : HypT N n0 r K LL B od bb a La p) {dd : Fin N → ℕ} (P : PPath (r + K) N LL dd)
     (hP : IsPATHa LL n0 B P.mu dd) :
@@ -81,8 +81,8 @@ theorem beA_le (H : HypT N n0 r K LL B od bb a La p) : (beA n0 B : ℝ) ≤ 2 * 
   calc ∑ i : Fin N, (if i.val < n0 then (B i : ℝ) else 0) ≤ ∑ _i : Fin N, 2 * a := by
         refine Finset.sum_le_sum fun i _ => ?_
         by_cases hi : i.val < n0
-        · rw [if_pos hi]; exact (H.H1 i hi).2
-        · rw [if_neg hi]; exact ha
+        · rw [ite_eq_left hi]; exact (H.H1 i hi).2
+        · rw [ite_eq_right hi]; exact ha
     _ = 2 * a * (N : ℝ) := by rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]; ring
 
 end
@@ -105,7 +105,6 @@ theorem path_count_finite : PathCountFinite := by
       fun h => mu_nonpos P s.val s.2 m (by have := s.2; omega), path_le_beA H P hP s.val s.2 m, ?_⟩
     refine le_trans ?_ (neg_dminus_le_mu P s.val s.2 m)
     have := dminus_le_beA H hP.degs s.val
-    have h' : (dminus LL dd s.val : ℤ) ≤ (M : ℤ) := by exact_mod_cast this
     linarith
   have hmaps : ∀ μ ∈ SP (r := r) (K := K) LL n0 B, code N r K μ ∈ (t : Set (Fin N × Fin (2 * N) → ℕ)) := by
     intro μ hμ
@@ -168,7 +167,6 @@ theorem path_count_finite : PathCountFinite := by
   rw [hcard] at hle
   have hA : (0 : ℝ) < 1 + 2 * a * (N : ℝ) := by
     have := H.a3
-    have hN : (0 : ℝ) ≤ (N : ℝ) := Nat.cast_nonneg _
     nlinarith
   have hM1 : ((M + 1 : ℕ) : ℝ) ≤ 1 + 2 * a * (N : ℝ) := by
     have := beA_le H

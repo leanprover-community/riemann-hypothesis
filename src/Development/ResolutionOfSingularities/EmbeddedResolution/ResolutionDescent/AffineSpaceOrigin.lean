@@ -226,7 +226,6 @@ private theorem ker_appTop_affineSpaceOrigin (k : Type u) [Field k] (m : ℕ) :
 
 theorem ker_affineSpaceOrigin (k : Type u) [Field k] (m : ℕ) :
     Scheme.Hom.ker (affineSpaceOrigin k m) = coordSubspaceIdeal k m Finset.univ := by
-  have : QuasiCompact (affineSpaceOrigin k m) := inferInstance
   have hker : RingHom.ker (CommRingCat.Hom.hom (Scheme.Hom.app (affineSpaceOrigin k m) ⊤)) =
       Ideal.span (Set.range fun i : Fin m =>
         AffineSpace.coord (Spec (CommRingCat.of k)) (ULift.up.{u, 0} i)) :=
@@ -310,7 +309,6 @@ theorem ker_affineSpaceInl_eq_comap (hsm : AffineSpaceIsSmooth.{u}) (k : Type u)
     Scheme.Hom.ker (affineSpaceInl k n m) =
       (Scheme.Hom.ker (affineSpaceOrigin k m)).comap (projRight k n m) := by
   have hsmooth : AlgebraicGeometry.Smooth (projRight k n m) := smooth_projRight hsm k n m
-  have hflat : AlgebraicGeometry.Flat (projRight k n m) := inferInstance
   have hbig : IsPullback (affineSpaceIndexedByToSpec k (ULift.{u, 0} (Fin n)))
       (affineSpaceInl k n m ≫ projLeft k n m)
       (affineSpaceOrigin k m ≫ affineSpaceIndexedByToSpec k (ULift.{u, 0} (Fin m)))
@@ -321,7 +319,6 @@ theorem ker_affineSpaceInl_eq_comap (hsm : AffineSpaceIsSmooth.{u}) (k : Type u)
       (affineSpaceOrigin k m) (projRight k n m) :=
     IsPullback.of_bot hbig (affineSpaceInl_comp_projRight k n m).symm
       (isPullback_projLeft_projRight k n m).flip
-  have : QuasiCompact (affineSpaceOrigin k m) := inferInstance
   have : QuasiCompact (affineSpaceInl k n m) := quasiCompact_of_isPullback hsq
   exact ker_eq_comap_ker_of_isPullback_of_flat hsq
 
@@ -346,9 +343,6 @@ theorem ker_affineSpaceInrEmbedding_eq_comap (hsm : AffineSpaceIsSmooth.{u}) (k 
     Scheme.Hom.ker (affineSpaceInrEmbedding k n m) =
       (Scheme.Hom.ker (affineSpaceOrigin k n)).comap (projLeft k n m) := by
   have hsmooth : AlgebraicGeometry.Smooth (projLeft k n m) := smooth_projLeft hsm k n m
-  have hflat : AlgebraicGeometry.Flat (projLeft k n m) := inferInstance
-  have hq1 : AlgebraicGeometry.QuasiCompact (affineSpaceOrigin k n) := inferInstance
-  have hq2 : AlgebraicGeometry.QuasiCompact (affineSpaceInrEmbedding k n m) := inferInstance
   exact ker_eq_comap_ker_of_isPullback_of_flat (isPullback_affineSpaceInrEmbedding_projLeft k n m)
 
 theorem hasSmoothCoordCodim_affineSpaceInl (hsm : AffineSpaceIsSmooth.{u}) (k : Type u) [Field k]

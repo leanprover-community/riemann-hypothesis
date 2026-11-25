@@ -199,8 +199,8 @@ def tjcosets_ext (n j : ℕ) : (Fin (n - j) → 𝔽) →ₗ[𝔽] (Fin n → �
 
 def tjcosets_pr (n j : ℕ) : (Fin n → 𝔽) →ₗ[𝔽] (Fin (n - j) → 𝔽) where
   toFun x c := x (tjcosets_idx n j c)
-  map_add' x y := rfl
-  map_smul' c x := rfl
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
 
 theorem tjcosets_pr_ext (n j : ℕ) (u : Fin (n - j) → 𝔽) :
     tjcosets_pr n j (tjcosets_ext n j u) = u := by

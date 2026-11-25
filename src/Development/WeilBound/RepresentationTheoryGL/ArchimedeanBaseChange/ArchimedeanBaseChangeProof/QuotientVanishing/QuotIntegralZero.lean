@@ -109,7 +109,7 @@ theorem ellFormula2_of (hU : Unfold2) (hE : EllTerm) (hV : ClassVanish2) (hS : S
   rw [(hU E a b μ₁ μ₂ F₁ F₂ τ r φ hF₁ hF₂ hφ).2, ellSum2]
   refine finsum_congr fun c => ?_
   by_cases he : IsRegEll (Quot.out c.1) ∧ IsRegEll (Quot.out c.2)
-  · rw [finsum_eq_if, if_pos he, cutTerm2, orbTerm2]
+  · rw [finsum_eq_if, ite_eq_left he, cutTerm2, orbTerm2]
     congr 1
     funext x
     by_cases h0 : φ (twConj (thetaA E a) x.1 (ratGL E a (Quot.out c.1)), twConj (thetaA E b) x.2 (ratGL E b (Quot.out c.2))) = 0
@@ -124,7 +124,7 @@ theorem ellFormula2_of (hU : Unfold2) (hE : EllTerm) (hV : ClassVanish2) (hS : S
         have a0 := (hS E b).2.1 (twConj (thetaA E b) x.2 (ratGL E b (Quot.out c.2)))
         exact mul_le_mul l₂ (by linarith [hs.2]) (by linarith) (le_max_left _ _)
       simp [chiT, hx₁, hx₂]
-  · rw [finsum_eq_if, if_neg he]
+  · rw [finsum_eq_if, ite_eq_right he]
     by_cases hd : IsRegD (Quot.out c.1) ∧ IsRegD (Quot.out c.2)
     · exact h₃ μ₁ μ₂ τ r φ _ _ hφ (le_trans (mul_le_mul_of_nonneg_right l₃ h1r) hτ) hd.1 hd.2 he
     · have : ∀ x : GA E a × GA E b, φ (twConj (thetaA E a) x.1 (ratGL E a (Quot.out c.1)),

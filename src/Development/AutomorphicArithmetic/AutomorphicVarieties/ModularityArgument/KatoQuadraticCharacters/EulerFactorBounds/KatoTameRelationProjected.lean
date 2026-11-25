@@ -177,16 +177,8 @@ private def rw0 (M : ℕ) (v : Fin 2 → ℤ) : Row M := fun i => (v i : ZMod M)
 private theorem val_cast {M D : ℕ} [NeZero M] (h : D ∣ M) (a : ℤ) : (((a : ZMod M).val : ℕ) : ZMod D) = (a : ZMod D) := by
   rw [ZMod.natCast_val, ZMod.cast_intCast h]
 
-private theorem exists_int_div_eq_toQ_rw0_add (M : ℕ) [NeZero M] (v : Fin 2 → ℤ) (i : Fin 2) : ∃ j : ℤ, (v i : ℚ) / (M : ℚ) = toQ M (rw0 M v) i + j := by
-  refine ⟨v i / (M : ℤ), ?_⟩
-  have hM : (M : ℚ) ≠ 0 := Nat.cast_ne_zero.mpr (NeZero.ne M)
-  have h1 : (((v i : ZMod M).val : ℕ) : ℤ) = v i % (M : ℤ) := ZMod.val_intCast (v i)
-  have h2 : v i % (M : ℤ) + (M : ℤ) * (v i / (M : ℤ)) = v i := Int.emod_add_mul_ediv _ _
-  rw [← h1] at h2
-  have h3 := congrArg (fun z : ℤ => (z : ℚ)) h2
-  push_cast at h3
-  simp only [toQ, rw0]
-  rw [← h3, add_div, mul_div_cancel_left₀ _ hM]
+private theorem exists_int_div_eq_toQ_rw0_add (M : ℕ) [NeZero M] (v : Fin 2 → ℤ) (i : Fin 2) : ∃ j : ℤ, (v i : ℚ) / (M : ℚ) = toQ M (rw0 M v) i + j :=
+  rz_toQ M v i
 
 private theorem dn_rw0_mul_eq_rw0 (k M : ℕ) (v : Fin 2 → ℤ) : dn k M (rw0 (k * M) v) = rw0 M v := by
   funext i
@@ -591,7 +583,7 @@ private theorem main (hA : SApi) (hC : SCohApi) (hM : SXiMul) (hX : SXiCoh) (hD 
   simp only [rdH_comp] at TC
   have hlu : IsUnit (l : ZMod p) := (ZMod.isUnit_iff_coprime l p).mpr hpl.symm
   have hinv : ((inv1 p l : (ZMod p)ˣ) : ZMod p) * l = 1 := by
-    simp only [inv1, dif_pos hlu]
+    simp only [inv1, dite_eq_left hlu]
     exact hlu.val_inv_mul
   have hν1 : (((rdH l n r N p (ZMod.unitOfCoprime k kcM)).1 : (ZMod p)ˣ) : ZMod p) = l := by
     show ZMod.castHom (Dvd.intro_left _ rfl : p ∣ lvT l n r N p) (ZMod p) (k : ZMod (lvT l n r N p)) = _
@@ -868,15 +860,8 @@ private theorem topXi (hT : STopRel) (hB : SBridge)
     (hx : ∀ i, x' i = (U i : ℚ) / (M₀ : ℚ)) (hy : ∀ i, y' i = (V i : ℚ) / (M₀ : ℚ))
     (A : Type) [Group A] [DecidableEq A] (π : (ZMod M)ˣ →* A) :
     CohB X l N w n (fun s => (π (cycM M s))⁻¹) (GlobalTheory.KA.push π (shB X l M (clsG X l n N M w c d g x' y')))
-      fun s t => Xi X l n N M₀ M w g (rw0 M₀ U) (rw0 M₀ V) (fun z => π z = t) (ws n M₀ s) := by
-  have hx' : ∀ i, ∃ j : ℤ, x' i = toQ M₀ (rw0 M₀ U) i + j := fun i => by
-    rw [hx i]
-    exact exists_int_div_eq_toQ_rw0_add M₀ U i
-  have hy' : ∀ i, ∃ j : ℤ, y' i = toQ M₀ (rw0 M₀ V) i + j := fun i => by
-    rw [hy i]
-    exact exists_int_div_eq_toQ_rw0_add M₀ V i
-  obtain ⟨β, hβ, hc⟩ := hT Ω ε X l n N M₀ M w g lev hL c d ws law lv (rw0 M₀ U) (rw0 M₀ V) ok x' y' hx' hy'
-  exact hB Ω ε X l n N M₀ M w g lev hL (rw0 M₀ U) (rw0 M₀ V) ok (ws n M₀) (law.coc n M₀ lv) _ β hβ hc A π
+      fun s t => Xi X l n N M₀ M w g (rw0 M₀ U) (rw0 M₀ V) (fun z => π z = t) (ws n M₀ s) :=
+  NormOneTraceTorsion.topXi hT hB X l n N M₀ M w c d g lev hL ws law lv U V ok x' y' hx hy A π
 
 private def rdH (l n r N p : ℕ) : (ZMod (lvT l n r N p))ˣ →* (ZMod p)ˣ × (ZMod (l ^ r))ˣ :=
   (Units.map (ZMod.castHom (Dvd.intro_left _ rfl : p ∣ lvT l n r N p) (ZMod p)).toMonoidHom).prod

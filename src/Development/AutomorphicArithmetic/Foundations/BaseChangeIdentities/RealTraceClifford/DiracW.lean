@@ -188,17 +188,17 @@ private theorem alH_mul (key : ι → ℕ) (i : ι) (M : Matrix (Finset ι) (Fin
   simp only [Matrix.conjTranspose_apply, al, Matrix.of_apply]
   split_ifs with hi
   · rw [Finset.sum_eq_single (A.erase i)]
-    · rw [if_pos ⟨Finset.notMem_erase i A, (Finset.insert_erase hi).symm⟩, star_sg,
+    · rw [ite_eq_left ⟨Finset.notMem_erase i A, (Finset.insert_erase hi).symm⟩, star_sg,
         sg_erase key i hi, tw_self, one_mul]
     · intro A' _ hA'
-      rw [if_neg, star_zero, zero_mul]
+      rw [ite_eq_right, star_zero, zero_mul]
       rintro ⟨h1, rfl⟩
       exact hA' (Finset.erase_insert h1).symm
     · intro hm
       exact absurd (Finset.mem_univ _) hm
   · apply Finset.sum_eq_zero
     intro A' _
-    rw [if_neg, star_zero, zero_mul]
+    rw [ite_eq_right, star_zero, zero_mul]
     rintro ⟨_, rfl⟩
     exact hi (Finset.mem_insert_self i A')
 
@@ -215,7 +215,7 @@ private theorem ann_ann {key : ι → ℕ} (hk : Function.Injective key) (i j : 
   · simp [hi]
   by_cases hj : j ∈ A
   · simp [hj]
-  simp only [hi, hj, Finset.mem_insert, hij, hji, or_self, if_false]
+  simp only [hi, hj, Finset.mem_insert, hij, hji, or_self, ite_false]
   rw [sg_insert key j hi, sg_insert key i hj, tw_swap hk hij, Finset.insert_comm j i]
   ring
 
@@ -226,25 +226,25 @@ private theorem ann_cre {key : ι → ℕ} (hk : Function.Injective key) (i j : 
   simp only [Matrix.add_apply, al_mul, alH_mul]
   by_cases hij : i = j
   · subst hij
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     by_cases hi : i ∈ A
-    · rw [if_pos hi, if_pos hi, if_neg (Finset.notMem_erase i A), Finset.insert_erase hi,
+    · rw [ite_eq_left hi, ite_eq_left hi, ite_eq_right (Finset.notMem_erase i A), Finset.insert_erase hi,
         sg_erase key i hi, tw_self, zero_add]
       linear_combination M A B * sg_mul_self key i A
-    · rw [if_neg hi, if_neg hi, if_pos (Finset.mem_insert_self i A), Finset.erase_insert hi,
+    · rw [ite_eq_right hi, ite_eq_right hi, ite_eq_left (Finset.mem_insert_self i A), Finset.erase_insert hi,
         sg_insert key i hi, tw_self, add_zero]
       linear_combination M A B * sg_mul_self key i A
-  rw [if_neg hij, Matrix.zero_apply]
+  rw [ite_eq_right hij, Matrix.zero_apply]
   by_cases hi : i ∈ A
-  · rw [if_pos hi, zero_add, if_pos (Finset.mem_erase.2 ⟨hij, hi⟩)]
+  · rw [ite_eq_left hi, zero_add, ite_eq_left (Finset.mem_erase.2 ⟨hij, hi⟩)]
     simp
   by_cases hj : j ∈ A
-  · rw [if_neg hi, if_pos (Finset.mem_insert_of_mem hj), if_pos hj,
-      if_neg (fun hm => hi (Finset.mem_of_mem_erase hm)), sg_insert key j hi, sg_erase key i hj,
+  · rw [ite_eq_right hi, ite_eq_left (Finset.mem_insert_of_mem hj), ite_eq_left hj,
+      ite_eq_right (fun hm => hi (Finset.mem_of_mem_erase hm)), sg_insert key j hi, sg_erase key i hj,
       tw_swap hk hij, Finset.erase_insert_of_ne hij]
     ring
   · have h1 : j ∉ insert i A := fun hm => (Finset.mem_insert.1 hm).elim (fun e => hij e.symm) hj
-    rw [if_neg hi, if_neg h1, if_neg hj]
+    rw [ite_eq_right hi, ite_eq_right h1, ite_eq_right hj]
     simp
 
 private theorem cre_ann (key : ι → ℕ) (i : ι) :
@@ -253,12 +253,12 @@ private theorem cre_ann (key : ι → ℕ) (i : ι) :
   rw [alH_mul, Matrix.diagonal_apply]
   simp only [al, Matrix.of_apply]
   by_cases hi : i ∈ A
-  · rw [if_pos hi, if_pos hi, Finset.insert_erase hi, sg_erase key i hi, tw_self, one_mul]
+  · rw [ite_eq_left hi, ite_eq_left hi, Finset.insert_erase hi, sg_erase key i hi, tw_self, one_mul]
     by_cases hAB : A = B
     · subst hAB
-      rw [if_pos ⟨Finset.notMem_erase i A, rfl⟩, if_pos rfl, sg_mul_self]
-    · rw [if_neg (fun hc => hAB hc.2.symm), if_neg hAB, mul_zero]
-  · rw [if_neg hi, if_neg hi]
+      rw [ite_eq_left ⟨Finset.notMem_erase i A, rfl⟩, ite_eq_left rfl, sg_mul_self]
+    · rw [ite_eq_right (fun hc => hAB hc.2.symm), ite_eq_right hAB, mul_zero]
+  · rw [ite_eq_right hi, ite_eq_right hi]
     simp
 
 end UpperTheory.RealTr.CartanExamples
@@ -366,9 +366,9 @@ private lemma relC (α : Io n → Mt n) (h1 : ∀ i j, α i * α j + α j * α i
   unfold cM
   rw [anti _ _ _ _ _ _ _ _ _ (h1 _ _) k2 k3 k4]
   by_cases hp : pr a b = pr d e
-  · rw [comb1 a b d e hp, if_pos hp]
+  · rw [comb1 a b d e hp, ite_eq_left hp]
     split_ifs <;> simp
-  · rw [if_neg hp, smul_zero, if_neg]
+  · rw [ite_eq_right hp, smul_zero, ite_eq_right]
     rintro ⟨rfl, rfl⟩
     exact hp (pr_comm _ _)
 
@@ -431,7 +431,7 @@ private lemma Dall (α : Io n → Mt n) (hc : Clif (cM α))
     simp [sg, h, not_lt.mpr h.le]
   · subst h
     have hcl := hc a a a a
-    simp only [and_self, if_true] at hcl
+    simp only [and_self, ite_true] at hcl
     have hX : cM α a a * cM α a a = (1 / 2 : ℂ) • (1 : Mt n) := by
       have h2 : (2 : ℂ) • (cM α a a * cM α a a) = 1 := by
         rw [two_smul]
@@ -444,7 +444,7 @@ private lemma Dall (α : Io n → Mt n) (hc : Clif (cM α))
     ext i j
     simp [Matrix.diagonal_apply, Matrix.one_apply, sg]
   · have hcl := hc a d d a
-    simp only [and_self, if_true] at hcl
+    simp only [and_self, ite_true] at hcl
     have e := Dlt α h3 h
     have hs : cM α a d * cM α d a = 1 - cM α d a * cM α a d := eq_sub_of_add_eq hcl
     rw [hs, e, pr_comm d a]
@@ -477,7 +477,7 @@ private lemma diagC (α : Io n → Mt n) (hc : Clif (cM α))
       Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
     ring
   unfold spn
-  simp only [if_true]
+  simp only [ite_true]
   simp_rw [Dall α hc h3 a]
   ext i j
   simp only [Matrix.sub_apply, Matrix.sum_apply, Matrix.diagonal_apply, Matrix.algebraMap_matrix_apply]
@@ -970,7 +970,6 @@ private theorem nsq_eq {n : ℕ} (u : Fin n → ℝ) : Formalism.REAL.nsq u = ns
 
 private theorem cas_map {A B : Type} [Ring A] [Ring B] [Algebra ℂ A] [Algebra ℂ B] {n : ℕ} (φ : A →ₐ[ℂ] B)
     (F : Fin n → Fin n → A) : φ (Cas F) = Cas fun a b => φ (F a b) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp [Cas, map_sum, map_mul]
 
 private theorem spn_map {A B : Type} [Ring A] [Ring B] [Algebra ℂ A] [Algebra ℂ B] {n : ℕ} (φ : A →ₐ[ℂ] B)

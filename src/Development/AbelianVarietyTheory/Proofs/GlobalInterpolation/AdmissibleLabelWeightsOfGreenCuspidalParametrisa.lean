@@ -85,9 +85,9 @@ theorem iso_of_char {d : ℕ} (V W : FDRep ℂ (GL (Fin d) (ZMod g))) [Simple V]
   have h1 := FDRep.char_orthonormal V W
   have h2 := FDRep.char_orthonormal V V
   have e : W.character = V.character := (funext h).symm
-  rw [e, h2, if_pos ⟨Iso.refl V⟩] at h1
+  rw [e, h2, ite_eq_left ⟨Iso.refl V⟩] at h1
   by_contra hn
-  rw [if_neg hn] at h1
+  rw [ite_eq_right hn] at h1
   exact one_ne_zero h1
 
 theorem primeLab_lab {C : LabelConv (ZMod g)} (O : LabelMap (ZMod g) C) {d : ℕ} (V : FDRep ℂ (GL (Fin d) (ZMod g)))
@@ -119,9 +119,9 @@ theorem exists_perm_deg (hG : Green) (L : LabelDatum g) {C : LabelConv (ZMod g)}
   let e := Equiv.ofBijective p (Finite.injective_iff_bijective.1 hinj)
   refine ⟨fun P => if h : IsPrimeLab d P then (e.symm ⟨P, h⟩).1 else P,
     fun P => if h : IsPrimeLab d P then (e ⟨P, h⟩).1 else P, fun P hP => ?_, fun V _ hs hc => ?_⟩
-  · simp only [dif_pos hP]
+  · simp only [dite_eq_left hP]
     refine ⟨(e.symm ⟨P, hP⟩).2, ?_⟩
-    rw [dif_pos (e.symm ⟨P, hP⟩).2]
+    rw [dite_eq_left (e.symm ⟨P, hP⟩).2]
     simp
   · obtain ⟨P, hP, hχ⟩ := h3 _ ((_root_.GlobalTheory.CuspCharRep.isCusp_character_iff_isCuspidal g d V hd hs).2 hc)
     haveI := hs
@@ -130,7 +130,7 @@ theorem exists_perm_deg (hG : Green) (L : LabelDatum g) {C : LabelConv (ZMod g)}
     have hl : O.lab d V = O.lab d (W ⟨P, hP⟩) := O.lab_iso d _ _ hi
     have hp := primeLab_lab O V hd hs hc
     have e1 : (⟨O.lab d V, hp⟩ : {P : (ZMod g)[X] // IsPrimeLab d P}) = e ⟨P, hP⟩ := Subtype.ext hl
-    simp only [dif_pos hp]
+    simp only [dite_eq_left hp]
     rw [e1, Equiv.symm_apply_apply, hχ]
     exact (h1 P hP).1
 

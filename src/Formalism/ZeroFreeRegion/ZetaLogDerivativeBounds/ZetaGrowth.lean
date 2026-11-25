@@ -30,7 +30,7 @@ theorem growthBound : ZetaGrowth := by
   have hne : s - 1 ≠ 0 := sub_ne_zero.2 hs1
   have h1 : riemannZeta₁ s = (s - 1) * riemannZeta s := by
     unfold riemannZeta₁ riemannZeta₀
-    rw [if_neg hs1, mul_sub, mul_inv_cancel₀ hne]; ring
+    rw [ite_eq_right hs1, mul_sub, mul_inv_cancel₀ hne]; ring
   have hz : riemannZeta s = (s - ComplexPowerDifferenceIntegral.Dz s) / (s - 1) := by
     rw [← ComplexPowerDifferenceIntegral.riemannZetaOne_eq_one_sub_of_re_pos hs, h1]; field_simp
   rw [hz, norm_div, div_le_iff₀ (norm_pos_iff.2 hne)]

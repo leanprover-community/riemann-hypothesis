@@ -374,8 +374,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
@@ -479,8 +477,6 @@ open GlobalTheory.CompHt (hodgeWt)
 open GlobalTheory.LevDesc (TypeFrame grpHR grpGHR levDet secRing move)
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
 open GlobalTheory.OrbitSep
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -622,8 +618,6 @@ open GlobalTheory.LevDesc (TypeFrame grpHR grpGHR levDet secRing move)
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
 open GlobalTheory.OrbitSep
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.OrbitSep.UnipPrime
@@ -735,8 +729,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace GlobalTheory.GenericGroupDet
@@ -789,7 +781,7 @@ theorem exists_combination_delta (F V S J : Type) [Field F] [Algebra F ℂ] [Add
       rintro rfl
       obtain ⟨j, hj⟩ := h1
       exact hr ⟨j, hj⟩
-    rw [if_neg h1']
+    rw [ite_eq_right h1']
     exact Finset.sum_eq_zero fun k _ => by rw [h2 _ (hw k) h hr, mul_zero]
 
 theorem exists_vec_det_ne_zero (F : Type) [Field F] [CharZero F] [Algebra F ℂ] (V : Type) [AddCommGroup V] [Module F V]
@@ -827,8 +819,7 @@ theorem exists_vec_det_ne_zero (F : Type) [Field F] [CharZero F] [Algebra F ℂ]
   have hQ : (∏ i, P i) ≠ 0 := Finset.prod_ne_zero_iff.2 fun i _ => hPi i
   obtain ⟨x, hx, hQx⟩ : ∃ x ∈ Set.pi Set.univ (fun _ : (Σ i, Fin (n i)) => Set.range (algebraMap F ℂ)),
       MvPolynomial.eval x (∏ i, P i) ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     exact hQ (MvPolynomial.funext_set (fun _ => Set.range (algebraMap F ℂ))
       (fun _ => Set.infinite_range_of_injective (algebraMap F ℂ).injective)
       fun x hx => by rw [hcon x hx, map_zero])
@@ -946,8 +937,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.LevDesc (move)
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
 open GlobalTheory.OrbitSep
-
-set_option autoImplicit false
 
 namespace GlobalTheory.MoveOrder
 
@@ -1162,8 +1151,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.TateIsometryTorsionEqLevelSmul", "h": "module\n\npublic import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.TwoWeightEqOneAddRoot\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\npublic import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.LevelCarrying\nimport Development.AbelianVarietyTheory.Definitions.Divisors.IsRightActFunPull\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.MemLevEigenIffTransl\nimport Development.AbelianVarietyTheory.Proofs.DivisorProofs.GapGeSubKapBase\nimport Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf\nimport Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc\n\n"}
 section -- clump:auto
 @[expose] public section
-
-set_option autoImplicit false
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.BasicNotions
@@ -1512,8 +1499,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
@@ -1551,9 +1536,6 @@ theorem cls_nsmul {Y : Scheme.{0}} {Λ : Type} [AddCommGroup Λ] {B : Λ → LB 
 
 end GlobalTheory.OrbitSep
 
-namespace GlobalTheory.OrbitSep
-
-end GlobalTheory.OrbitSep
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -1576,7 +1558,6 @@ open GlobalTheory.LevDesc (TypeFrame grpHR grpGHR levDet secRing move)
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
 open GlobalTheory.OrbitSep
 open scoped GlobalTheory.CompHt
-set_option autoImplicit false
 namespace GlobalTheory.HodgeBig
 theorem hodgeLineBundle_isBig : _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → GlobalTheory.Published.GrothendieckDeformation → GlobalTheory.HSCore.Quoted → GlobalTheory.Published.ToroidalForFanKS → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (TF : TorFlag Xo c) (Z : Comp Xo c), 1 ≤ Dw.p → 1 ≤ Dw.q → FnAlgClosed (Xo := Xo) (c := c) → ∀ (δ : LB (X₀ TF.Y Z)) (hδ : δ.IsLB), CechPic.pull (π₀ TF.X Z) (cls δ hδ) = cls (L₀ TF.X Z (hodgeWt Dw)) (isLB_L₀ TF.X Z _) → letI := algebraΓOfHom (s₀ TF.Y Z); IsBig c.F δ := by
   intro hP _ _ hK E _ _ _ H Dw l Xo c TF Z _ _ hF δ hδ hpull
@@ -1596,7 +1577,7 @@ theorem hodgeLineBundle_isBig : _root_.GlobalTheory.CovTop.PublishedHodgeBundleT
   let w : AllWt.Weight Dw := ∑ τ : Psi H, NefWt.unitWt τ (-1)
   have ew : 2 • hodgeWt Dw - χ = w := by
     funext τ i
-    simp only [w, Finset.sum_apply, NefWt.unitWt_apply, Finset.sum_ite_eq, Finset.mem_univ, if_true, Pi.sub_apply,
+    simp only [w, Finset.sum_apply, NefWt.unitWt_apply, Finset.sum_ite_eq, Finset.mem_univ, ite_true, Pi.sub_apply,
       Pi.smul_apply, hodgeWt, CompHt.barWt, χ]
     split_ifs <;> norm_num
   have hwnef : (letI := algebraΓOfHom (str₀ TF.X Z); IsNef c.F (L₀ TF.X Z w)) := by
@@ -1651,7 +1632,6 @@ section -- clump:auto
 @[expose] public section
 
 section
-set_option autoImplicit false
 set_option synthInstance.maxHeartbeats 400000
 noncomputable section
 open CategoryTheory AlgebraicGeometry TopologicalSpace Limits NumberField
@@ -1703,7 +1683,7 @@ theorem separate_orbits_by_cusp (hP2 : _root_.GlobalTheory.CovTop.PublishedHodge
   obtain ⟨Γ, ρ, hΓ, hρ, hmem⟩ := _root_.GlobalTheory.CompLevelStab.stab_acts _ _ _ _ _ _ TF.Y Z hpq hA S
   obtain ⟨X', W, φ, ℓ, ρ', q, sW, hint', n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11⟩ :=
     GlobalTheory.EqModel.exists_equivariant_model Y.d.c₂.F _ _ (s₀ TF.Y Z) (j₀ TF.Y Z) Γ ρ hpr ⟨v₁ (IsLocalRing.closedPoint ℂ)⟩ hnorm hρ.1
-  obtain ⟨δ, hδ, eδ, hlin⟩ := _root_.GlobalTheory.T.hodgeLineBundle_rational_linear_equiv_class hP2 _ _ _ _ _ _ TF Z hpq hA hF
+  obtain ⟨δ, hδ, eδ, hlin⟩ := _root_.GlobalTheory.HodgeLin.hodgeLineBundle_rationally_linear hP2 _ _ _ _ _ _ TF Z hpq hA hF
   obtain ⟨N, hN, eN⟩ := _root_.GlobalTheory.QuotDescent.descent Y.d.c₂.F X' W q sW Γ ρ' _ _ (n7 ▸ n2) n6
     (hlin I g hI hM Γ Γ.subtype ρ (fun γ => hS _ (hΓ γ.2)) hρ X' φ ℓ ρ' n1 n2 n3 n4 n5)
   let K := CanonLB.all (s₀ TF.Y Z) (T.Q.Dw j).dim

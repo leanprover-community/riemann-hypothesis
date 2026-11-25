@@ -148,7 +148,7 @@ theorem main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Geo.T
     push_cast
     rfl
   · have hp : ∀ χ, vPsiAt P.D.toPre f p χ = -(Q χ * Real.logb p ‖f ϖ‖) := fun χ =>
-      (dif_pos (hex χ)).trans (by rw [logb_of_hasVal (h0 χ) (hv χ) f hf])
+      (dite_eq_left (hex χ)).trans (by rw [logb_of_hasVal (h0 χ) (hv χ) f hf])
     show _ = _ * β a b
     rw [hβ]
     simp only [betaAt, hp, QForm.bOf]

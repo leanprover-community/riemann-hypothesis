@@ -83,10 +83,7 @@ variable {σ : E →ₐ[F] E} {B : Base F E} {nS nT : ℕ} {JS : Matrix (Fin nS)
   E} {ξ₀ : E} {θ : InfinitePlace F → (Ainf F ⊗[F] E →+* ℂ)} {ι : (InfinitePlace F → ℂ) →+ AEF F E} {Λ : Submodule (𝓞
   E) (Matrix (Fin nT) (Fin nS) E)} {hc : HeisClosedF σ JS JT ξ₀ B.ψ} {w : 𝓞 E} {lam : ℕ →* ℂ} {Om : GAF σ JS × GAF σ
   JT →* Module.End ℂ (thetaSubF σ JS JT ξ₀ B.ψ)}
-theorem sgsg_k (hB : GoodK σ B) (x : E) : σ (σ x) = x := by
-  let τ := (IsAlgClosed.lift (M := ℂ) (R := ℚ) (S := E)).toRingHom
-  apply τ.injective
-  rw [hB.cm.2.2.2 τ, hB.cm.2.2.2 τ, star_star]
+theorem sgsg_k (hB : GoodK σ B) (x : E) : σ (σ x) = x := PositivityTheory.ThKW.LatA.sig_sig_k hB x
 theorem mem_iff_k (C : Ctx_k σ B JS JT ξ₀ θ ι) (hR : RatSD σ JS JT ξ₀ Λ)
     (hA : SelfDual (gamFF σ JS JT ξ₀ B.ψ) (latF F E nS nT Λ)) (y : Matrix (Fin nT) (Fin nS) E) :
     finRatF F y ∈ latF F E nS nT Λ ↔ y ∈ Λ :=

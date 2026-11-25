@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialProperness.MXMulVecMid
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 public import Formalism.HermitianCurvature.FiniteOrderIntersectionInSmooth
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.ReverseCauchySchwarzHolds
@@ -123,12 +124,7 @@ lemma herm_basis {n : ℕ} (H A : Matrix (Fin n) (Fin n) ℂ) (i j : Fin n) :
 
 lemma uh_of_herm {n : ℕ} (H A : Matrix (Fin n) (Fin n) ℂ)
     (h : ∀ y y', herm H (A *ᵥ y) (A *ᵥ y') = herm H y y') : A ∈ UH H := by
-  show Aᴴ * H * A = H
-  ext i j
-  have h1 := h (Pi.single j 1) (Pi.single i 1)
-  rw [herm_basis] at h1
-  rw [h1]
-  simp [herm, dotProduct, mulVec, Pi.single_apply]
+  apply _root_.PI.PolynomialProperness.TM.uh_of_herm <;> assumption
 
 lemma nEich_herm {z : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) (ξ : Fin r → ℂ) (y y' : Fin (2 * r + k + 1) → ℂ) :
     herm (Hpk k r) (C2.nEich k r z ξ *ᵥ y) (C2.nEich k r z ξ *ᵥ y') = herm (Hpk k r) y y' := by
@@ -159,7 +155,7 @@ lemma nEich_col {z : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) (ξ : Fin
   rw [← e, nEich_apply]
   have hjx : herm (Hpk k r) (bvec j) (C2.xiV k r ξ) = 0 :=
     herm_X_right (C2.xiV k r ξ) (bvec j) (xiV_X ξ) (fun p hp => by
-      simp only [bvec, Pi.single_apply]; rw [if_neg (fun e => by rw [e] at hp; omega)])
+      simp only [bvec, Pi.single_apply]; rw [ite_eq_right (fun e => by rw [e] at hp; omega)])
   rw [hjx]
   simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, bvec, Pi.single_apply, zero_mul, mul_zero,
     add_zero]
@@ -168,7 +164,7 @@ lemma nEich_col {z : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) (ξ : Fin
   · have hjr : j.val < r := by omega
     have hjz : herm (Hpk k r) (Pi.single j 1) z = 0 :=
       herm_X_left (Pi.single j 1) z (fun p hp => by
-        simp only [Pi.single_apply]; rw [if_neg (fun e => by rw [e] at hp; omega)])
+        simp only [Pi.single_apply]; rw [ite_eq_right (fun e => by rw [e] at hp; omega)])
         (fun p hp => hz.1 p (Or.inr hp))
     rw [hjz]; simp
 

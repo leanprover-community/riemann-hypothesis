@@ -142,12 +142,6 @@ structure KerData (D : D7) (u : D.what₂.Word) where
   Q : ∀ i (_s : D.what₂.LL →+* ℂ), (D.mem u).C.cls i → (D.mem u).C.cls (i + 1) →
     ((D.fm u).lat i).V → ((D.fm u).lat (i + 1)).V → MvPolynomial (Gx D i) ℂ
 
-namespace KerData
-
-variable {D : D7} {u : D.what₂.Word} (X : KerData D u)
-
-end KerData
-
 section Tensor
 
 variable {ι : Type} [Fintype ι]

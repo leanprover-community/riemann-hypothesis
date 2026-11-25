@@ -79,13 +79,13 @@ theorem words_pos_of_parts : C.WordsPosOfParts := by
   obtain ⟨j, hj, rfl⟩ := List.mem_iff_getElem.mp ha
   have hadm := w.2.1.1 v j hj
   by_cases hb : ((w.1 v)[j]'hj).1 = true
-  · rw [if_pos hb] at hadm
+  · rw [ite_eq_left hb] at hadm
     have hy : (∃ a, ((w.1 v)[j]'hj).2 ∈ S.grid v a) ∨ ((w.1 v)[j]'hj).2 ∈ S.grid1 v := by
       rcases Finset.mem_union.mp hadm with h | h
       · exact Or.inl ⟨_, h⟩
       · exact Or.inr h
     exact ((hG v).2.2.2.2.2 _ hy).2.2.1
-  · rw [if_neg hb] at hadm
+  · rw [ite_eq_right hb] at hadm
     have hy : (∃ a, ((w.1 v)[j]'hj).2 - 1 ∈ S.grid v a) ∨ ((w.1 v)[j]'hj).2 - 1 ∈ S.grid1 v := by
       rcases Finset.mem_union.mp hadm with h | h
       · exact Or.inl ⟨_, h⟩

@@ -689,8 +689,7 @@ private theorem zm_f {B A : Type} [CommRing B] [CommRing A] [Algebra B A] {k : �
   have hle : Irr (reesGr N) ≤ Ideal.span (reesGr N (e i) : Set (rees N)) := by
     unfold Irr
     exact Ideal.prod_le_inf.trans (Finset.inf_le (Finset.mem_univ i))
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   apply hp
   refine hle.trans (Ideal.span_le.mpr ?_)
   intro s hs
@@ -704,8 +703,8 @@ private theorem zm_f {B A : Type} [CommRing B] [CommRing A] [Algebra B A] {k : �
     ext m
     rw [MvPolynomial.coeff_monomial]
     by_cases hm : Finsupp.single i 1 = m
-    · rw [if_pos hm, hm]
-    · rw [if_neg hm]
+    · rw [ite_eq_left hm, hm]
+    · rw [ite_eq_right hm]
       apply hs'
       intro h
       exact hm (toDeg_injective (hdeg.trans h.symm))

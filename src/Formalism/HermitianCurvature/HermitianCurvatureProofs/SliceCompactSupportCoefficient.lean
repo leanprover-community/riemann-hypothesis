@@ -143,8 +143,7 @@ theorem slice_pos_cpt (k r : ℕ) (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerP
           (fun a => a.elim0 : G.Mat 0)).det = dh * G.detM (fun a => a.elim0 : G.Mat 0) :=
         Formalism.FourierDecayAlt.P.level_determinant_z _ _ _ _ _ _
       have hgR : R < B.gN g := by
-        by_contra hle
-        push_neg at hle
+        by_contra! hle
         apply hbig
         have h5 : B.gN γ ≤ Cs * B.gN g ^ (2 * (ph + (n + 1) + 0) + 1) /
             min 1 ‖(U.ZjH (p := ph + (n + 1)) (s := 0) (Formalism.FourierDecayAlt.P.Dx2.SL.sigP (D.ptPerm h)) (Formalism.FourierDecayAlt.P.Dx2.SL.dP (D.ptDiag h) t) ξ.2

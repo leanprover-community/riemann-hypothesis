@@ -310,8 +310,8 @@ theorem dictionary {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Recip
   have hcc : ∀ τ : E →+* ℂ, ComplexEmbedding.conjugate (ComplexEmbedding.conjugate τ) = τ := fun τ =>
     ComplexEmbedding.involutive_conjugate E τ
   obtain ⟨f, hf⟩ := GlobalTheory.FrameUnif.exists_letter_equiv X.Ψ X.cmType Dw.p Dw.q r hr (Formalism.L2.PjFree.relab c σ) hbij Dw.mult
-    (fun τ h => by unfold Datum.mult; rw [if_pos ((hrt τ).1 ((hty _).1 h))])
-    (fun τ h => by unfold Datum.mult; rw [if_neg (fun h' => h ((hty _).2 ((hrt τ).2 h')))])
+    (fun τ h => by unfold Datum.mult; rw [ite_eq_left ((hrt τ).1 ((hty _).1 h))])
+    (fun τ h => by unfold Datum.mult; rw [ite_eq_right (fun h' => h ((hty _).2 ((hrt τ).2 h')))])
   obtain ⟨idx, hi⟩ : ∃ idx : Fin g ≃ X.Ψ × Fin r, ∀ j,
       (Formalism.L2.PjFree.relab c σ (e j).1 ∈ X.Ψ ∧ (idx j).1.1 = Formalism.L2.PjFree.relab c σ (e j).1 ∧
         ((idx j).2 : ℕ) = Dw.q + (e j).2) ∨
@@ -323,8 +323,8 @@ theorem dictionary {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Recip
     intro j
     rw [hq]
     rcases hi j with ⟨a, b, c'⟩ | ⟨a, b, c', d⟩
-    · rw [if_neg (by omega), b]
-    · rw [if_pos (by omega), b, hcc]
+    · rw [ite_eq_right (by omega), b]
+    · rw [ite_eq_left (by omega), b, hcc]
   have hqq : D.q = X.p0 := hq.trans hp0.symm
   refine ⟨idx, fun x v j => ?_, fun b hb j j' hne => ?_, fun P hP => ?_⟩
   · have h := hi j
@@ -334,12 +334,12 @@ theorem dictionary {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Recip
     dsimp only at h ⊢
     rw [← hp0] at h
     rcases h with ⟨a, rfl, rfl⟩ | ⟨a, rfl, rfl, d⟩
-    · rw [if_neg (by omega)]
+    · rw [ite_eq_right (by omega)]
       unfold Formalism.L2.PjFree.perFr
-      rw [dif_pos a, dif_pos hn]
-    · rw [if_pos (by omega)]
+      rw [dite_eq_left a, dite_eq_left hn]
+    · rw [ite_eq_left (by omega)]
       unfold Formalism.L2.PjFree.perFr
-      rw [dite_eq_right a, dif_pos (show conjEmb (Formalism.L2.PjFree.relab c σ (e j).1) ∈ X.Ψ from hτ), dif_pos hn]
+      rw [dite_eq_right a, dite_eq_left (show conjEmb (Formalism.L2.PjFree.relab c σ (e j).1) ∈ X.Ψ from hτ), dite_eq_left hn]
       rfl
   · obtain ⟨h1, h2⟩ := PerBor.moveMat_support _ idx hb j j' hne
     rw [← hqq] at h2
@@ -348,14 +348,14 @@ theorem dictionary {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Recip
     have c1 := hi j
     have c2 := hi j'
     by_cases hj : ((idx j).2 : ℕ) < D.q
-    · rw [if_pos hj] at h2 t1
+    · rw [ite_eq_left hj] at h2 t1
       have hj' : ((idx j').2 : ℕ) < D.q := by omega
-      rw [if_pos hj'] at t2
+      rw [ite_eq_left hj'] at t2
       refine ⟨hbij.1 (by rw [t1, t2, h1]), ?_⟩
       rcases c1 with ⟨-, -, c1⟩ | ⟨-, -, c1, d1⟩ <;> rcases c2 with ⟨-, -, c2⟩ | ⟨-, -, c2, d2⟩ <;> omega
-    · rw [if_neg hj] at h2 t1
+    · rw [ite_eq_right hj] at h2 t1
       have hj' : ¬ ((idx j').2 : ℕ) < D.q := by omega
-      rw [if_neg hj'] at t2
+      rw [ite_eq_right hj'] at t2
       refine ⟨hbij.1 (by rw [t1, t2, h1]), ?_⟩
       rcases c1 with ⟨-, -, c1⟩ | ⟨-, -, c1, d1⟩ <;> rcases c2 with ⟨-, -, c2⟩ | ⟨-, -, c2, d2⟩ <;> omega
   · rcases eq_or_ne r 0 with hr0 | hr0
@@ -494,7 +494,7 @@ theorem isMeagre_chart (U : Formalism.L2.PjFree.Unf Xo c σ r) (hσ : Formalism.
     else ψ₀
   have hφ' : ∀ i, ∀ b ∈ B i, ∀ a, Formalism.L2.PjFree.toC (φ' i b a) = φ i b a := by
     intro i b hb a
-    simp only [φ', dif_pos hb]
+    simp only [φ', dite_eq_left hb]
     rfl
   choose z hz using fun i b => hL.bc _ _ (φ' i b) C.y
   have key := fun (i : ι) (a : {a : C.R // a ≠ 0}) => isMeagre_family U hσ hU k C.y (φ' i) (z i) (hB i)

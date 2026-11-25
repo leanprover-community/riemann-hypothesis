@@ -45,7 +45,6 @@ theorem ioD_odd (i : Fin (segS X.TT j)) (e : ℕ) (he : e < 2) (a : Fin (2 * seg
     ioD O C0 CE1 CE2 mu X β j (MvPolynomial.X (Sum.inl (a, c))) =
       MvPolynomial.X ((topOdd X j i, decide (e = 0)), c.succ) ^ (X.seg C0 CE1 CE2 j).P X.p i := by
   rw [ioD_X]
-  have hi := i.2
   have hl : (a : ℕ) < 2 * segS X.TT j := by omega
   simp only [symVar, symLev]
   rw [dite_eq_left hl, dite_eq_left hl]

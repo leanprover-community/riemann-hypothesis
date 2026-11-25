@@ -64,9 +64,9 @@ theorem muZ_contDiffOn (hsec : IsSection k r z z' μsec) :
   refine contDiffOn_pi.2 fun i => contDiffOn_pi.2 fun j => ?_
   simp only [NF.muZ, B2.embWb]
   by_cases h : (r ≤ i.val ∧ i.val ≤ r + k) ∧ (r ≤ j.val ∧ j.val ≤ r + k)
-  · simp only [dif_pos h]
+  · simp only [dite_eq_left h]
     exact hsec.1 _ _
-  · simp only [dif_neg h]
+  · simp only [dite_eq_right h]
     exact contDiffOn_const
 
 theorem decomp (hk : 1 ≤ k) (hz : inWb k r z) (hz' : inWb k r z') (hT : 0 < Tz k r z) (hT' : 0 < Tz k r z')
@@ -133,7 +133,3 @@ theorem radRedInj : NF.RadRedInj := by
   · exact (h0 (x, g) hx).trans (h0' (x, g) hx).symm
 
 end Formalism.FourierDecayAlt.P.NFRadRedA
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

@@ -24,24 +24,18 @@ theorem isNoetherian_of_locallyOfFiniteType {X Y : Scheme.{u}} (f : X ⟶ Y)
 theorem isNoetherian_of_iso {X Y : Scheme.{u}} (e : X ≅ Y)
     [AlgebraicGeometry.IsNoetherian X] :
     AlgebraicGeometry.IsNoetherian Y := by
-  have : AlgebraicGeometry.LocallyOfFiniteType e.inv := inferInstance
-  have : AlgebraicGeometry.QuasiCompact e.inv := inferInstance
   exact isNoetherian_of_locallyOfFiniteType e.inv
 
 theorem isNoetherian_of_isBlowupAlongIdealSheaf {X X' : Scheme.{u}} [AlgebraicGeometry.IsNoetherian X]
     {π : X' ⟶ X} {I : X.IdealSheafData} (h : Blowup.IsBlowupAlongIdealSheaf π I) :
     AlgebraicGeometry.IsNoetherian X' := by
   have : AlgebraicGeometry.IsProper π := Blowup.blowupIsProper.{u} X X' π I h
-  have : AlgebraicGeometry.LocallyOfFiniteType π := inferInstance
-  have : AlgebraicGeometry.QuasiCompact π := inferInstance
   exact isNoetherian_of_locallyOfFiniteType π
 
 instance instIsNoetherianAffineSpaceIdx (k : Type u) [Field k] (n : Type u) [Finite n] :
     AlgebraicGeometry.IsNoetherian (affineSpaceIndexedBy k n) := by
   have : IsNoetherianRing ↑(CommRingCat.of (MvPolynomial n k)) :=
     inferInstanceAs (IsNoetherianRing (MvPolynomial n k))
-  have : AlgebraicGeometry.IsNoetherian
-      (Spec (CommRingCat.of (MvPolynomial n k))) := inferInstance
   exact isNoetherian_of_iso
     (AlgebraicGeometry.AffineSpace.SpecIso n (CommRingCat.of k)).symm
 

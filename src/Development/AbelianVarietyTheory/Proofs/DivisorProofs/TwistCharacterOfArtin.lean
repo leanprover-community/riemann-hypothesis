@@ -106,10 +106,7 @@ theorem chrEq_mul {D : D7} {c c' : (AE D)ˣ →* Circle} {χ χ' : HChar D.host.
     rfl
 
 theorem finite_placesOver (E : Type) [Field E] [NumberField E] {l : ℕ} (hl : l ≠ 0) : (Formalism.BasicNotions.placesOver E l).Finite := by
-  have h0 : Ideal.span {((l : ℕ) : 𝓞 E)} ≠ 0 := by
-    rw [Ne, Ideal.zero_eq_bot, Ideal.span_singleton_eq_bot]
-    exact_mod_cast hl
-  exact (Ideal.finite_factors h0).subset fun v hv => Ideal.dvd_span_singleton.mpr hv
+  exact Formalism.MainNotions.placesOver_finite_av E l hl
 
 section Point
 

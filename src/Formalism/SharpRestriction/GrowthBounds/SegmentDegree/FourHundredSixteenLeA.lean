@@ -99,8 +99,6 @@ theorem a_big (hX : X.Hyp p K) : 416 * (X.Ns : ℝ) ≤ X.a := by
   have hmem := frj_mem hX.valid 1 0 (by have := hX.r2; omega)
   have hQ : 1 ≤ X.Q := (one_le_pow₀ (by linarith : (1 : ℝ) ≤ p)).trans (hX.twist 1 _ hmem)
   have hE : (1 : ℝ) ≤ (X.E₀ : ℝ) + X.mStar + 1 := by
-    have h1 : (0 : ℝ) ≤ X.E₀ := Nat.cast_nonneg _
-    have h2 : (0 : ℝ) ≤ X.mStar := Nat.cast_nonneg _
     linarith
   calc 416 * (X.Ns : ℝ) = 32 * 13 * 1 * 1 ^ 2 * X.Ns * 1 ^ 2 * 1 := by ring
     _ ≤ 32 * p * X.Y * ((r + K : ℕ) : ℝ) ^ 2 * X.Ns * X.Q ^ 2 * ((X.E₀ : ℝ) + X.mStar + 1) := by
@@ -132,7 +130,6 @@ theorem c_bounds (hX : X.Hyp p K) (h41 : ∀ t ∈ X.F.TT, (9 / 10 : ℝ) * (X.d
   have hV := hX.valid
   have hr2 := hX.r2
   have hp1 : (1 : ℝ) ≤ p := by have := hX.p13; exact_mod_cast (by omega : 1 ≤ p)
-  have hyL := hy
   simp only [Frames.letters, Finset.mem_filter, Finset.mem_Icc] at hy
   obtain ⟨⟨hy1, hy2⟩, hyT⟩ := hy
   have hdeg := hX.degs _ hyT
@@ -140,7 +137,7 @@ theorem c_bounds (hX : X.Hyp p K) (h41 : ∀ t ∈ X.F.TT, (9 / 10 : ℝ) * (X.d
   have ha'le : (X.a' p K (posOf n' y) : ℝ) ≤ X.deg (posOf n' y) := by
     have h0 : X.a' p K (posOf n' y) ≤ X.deg (posOf n' y) := by
       unfold Dat.a' Dat.d
-      rw [if_pos hyT]
+      rw [ite_eq_left hyT]
       omega
     exact_mod_cast h0
   refine ⟨?_, by linarith [hdeg.1], by linarith [hdeg.2]⟩
@@ -174,8 +171,6 @@ theorem c_bounds (hX : X.Hyp p K) (h41 : ∀ t ∈ X.F.TT, (9 / 10 : ℝ) * (X.d
     have h1 : (0 : ℝ) < (p : ℝ) ^ D0 := pow_pos (by linarith) _
     have h2 : (0 : ℝ) < X.Y * ((r + K : ℕ) : ℝ) ^ 2 * X.Ns := by
       have h3 : (0 : ℝ) < ((r + K : ℕ) : ℝ) ^ 2 := by positivity
-      have h4 : (0 : ℝ) < X.Ns := by linarith
-      have h5 : (0 : ℝ) < X.Y := by linarith
       positivity
     nlinarith
   have hDa : Dn ≤ X.a := by
@@ -224,7 +219,6 @@ theorem Bdeg_bounds (hX : X.Hyp p K)
         (X.Bdeg p K j (X.restr j b) x : ℝ) ∧
       (X.Bdeg p K j (X.restr j b) x : ℝ) ≤
         (X.a' p K (posOf n' x) : ℝ) / (p : ℝ) ^ (X.F.dist j x + X.Rj p K j) := by
-  have hV := hX.valid
   have hr2 := hX.r2
   have hNs : (6 : ℝ) ≤ X.Ns := by exact_mod_cast six_le_Ns hX
   have hkdef : Dat.k (r := r) K = ((r + K : ℕ) : ℝ) := rfl
@@ -235,7 +229,7 @@ theorem Bdeg_bounds (hX : X.Hyp p K)
   have hP0 : (0 : ℝ) < (p : ℝ) ^ (X.F.dist j x + X.Rj p K j) := by rw [← hPc]; exact_mod_cast hpp
   unfold Dat.Bdeg
   by_cases hW : X.F.IsW j x
-  · rw [if_pos hW]
+  · rw [ite_eq_left hW]
     unfold Dat.Bw Dat.m0
     set A := X.a' p K (posOf n' x) with hAdef
     set pp := p ^ (X.F.dist j x + X.Rj p K j) with hppdef
@@ -270,7 +264,6 @@ theorem Bdeg_bounds (hX : X.Hyp p K)
     have hkc : ((r + K : ℕ) : ℝ) = (r : ℝ) + K := by push_cast; ring
     rw [hkdef, hkc]
     have hrR : (2 : ℝ) ≤ r := by exact_mod_cast hr2
-    have hKR : (0 : ℝ) ≤ K := Nat.cast_nonneg _
     have hprod : ((r : ℝ) + K) * 6 ≤ ((r : ℝ) + K) * X.Ns :=
       mul_le_mul_of_nonneg_left hNs (by linarith)
     constructor
@@ -284,7 +277,7 @@ theorem Bdeg_bounds (hX : X.Hyp p K)
           linarith
         · exact hApos
       linarith
-  · rw [if_neg hW]
+  · rw [ite_eq_right hW]
     have hxl := hx
     simp only [Frames.letters, Finset.mem_filter, Finset.mem_Icc] at hxl
     have hlate : x ∈ X.toLate j := by
@@ -292,11 +285,11 @@ theorem Bdeg_bounds (hX : X.Hyp p K)
       simp only [Finset.mem_filter]
       exact ⟨hx, hW⟩
     unfold Dat.restr
-    rw [if_pos hlate]
+    rw [ite_eq_left hlate]
     have hLL : x ∈ X.F.LLset j := by
       simp only [Frames.LLset, Finset.mem_filter, Finset.mem_Ioo]
       unfold Frames.IsW at hW
-      push_neg at hW
+      push Not at hW
       exact ⟨⟨hW, hlt⟩, hxl.2⟩
     obtain ⟨h1, h2⟩ := hA x hLL
     have hPz : ((X.Pz p K j x : ℕ) : ℝ) = (p : ℝ) ^ (X.F.dist j x + X.Rj p K j) := by

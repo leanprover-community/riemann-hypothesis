@@ -633,10 +633,6 @@ set_option linter.overlappingInstances false
 
 open NumberField Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.GalOfCusp IsLocalRing UpperTheory.V UpperTheory.V.HV UpperTheory.V.U3 UpperTheory.V.Base UpperTheory.V.Af UpperTheory.V.Pr UpperTheory.V.Alg UpperTheory.V.J
 
-namespace UpperTheory.V.J.ChevalleyRestriction
-
-end UpperTheory.V.J.ChevalleyRestriction
-
 theorem UpperTheory.V.J.chev :
     ∀ (B A : Type) [CommRing B] [IsDomain B] [CommRing A] [IsDomain A] [Algebra B A] [Algebra.FiniteType B A], Function.Injective (algebraMap B A) →
         ∀ a : A, a ≠ 0 → ∃ b : B, b ≠ 0 ∧ ∀ (K : Type) [Field K] [IsAlgClosed K] (y : B →+* K), y b ≠ 0 →
@@ -683,8 +679,7 @@ private theorem chev_prime (B A : Type) [CommRing B] [CommRing A] [Algebra B A] 
 
 private theorem gen_out {R : Type} [CommRing R] {s : Set R} {P : Ideal R} (h : ¬ Ideal.span s ≤ P) :
     ∃ x ∈ s, x ∉ P := by
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   exact h (Ideal.span_le.2 hc)
 
 set_option synthInstance.maxHeartbeats 200000 in
@@ -1495,8 +1490,7 @@ theorem UpperTheory.V.J.redCrit :
     ∀ (A : Type) [CommRing A] [IsNoetherianRing A] (q : Ideal A), q.IsPrime → (∀ P ∈ associatedPrimes A A, P ≤ q → P ∈ minimalPrimes A) →
         (∀ P ∈ minimalPrimes A, P ≤ q → ∀ a ∈ P, ∃ s ∉ P, s * a = 0) → ∀ a : A, (∀ P : Ideal A, P.IsPrime → P ≤ q → a ∈ P) → ∃ s ∉ q, s * a = 0 := by
   intro A _ _ q hq h1 h2 a ha
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   let N : Submodule A A := Submodule.span A {a}
   have hann : ∀ x, x ∈ Module.annihilator A N ↔ x * a = 0 := by
     intro x
@@ -1685,7 +1679,7 @@ private theorem rank_ge [Algebra O T] [IsScalarTower O A T] [IsNoetherianRing T]
       map_add' := fun _ _ => rfl
       map_smul' := fun _ _ => rfl }
   have hinj : Function.Injective Ψ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro φ h0
     have h1 : ∀ x, φ (r (algebraMap A T x)) = 0 := fun x =>
       congrArg (fun D : PtDer ξ K => (D : A →ₗ[O] K) x) h0

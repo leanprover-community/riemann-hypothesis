@@ -89,12 +89,12 @@ theorem GermData.phiG_bdd (hG : GermData Y U P Q hat) (κ : H → H → ℂ) :
   refine ⟨(∑ h ∈ Y, ∑ h' ∈ Y, ‖κ h h'‖) * B ^ f, fun x x' => ?_⟩
   unfold phiG
   by_cases hg : Good x ∧ Good x'
-  · simp only [if_pos hg]
+  · simp only [ite_eq_left hg]
     have hE := fun v h (hh : h ∈ Y) h' (hh' : h' ∈ Y) => entry_lemma_2 hG hB0 hB v hh hh' (hg.1 v) (hg.2 v)
     exact ⟨phi_bound Y κ U B hB0 x x' fun v h hh h' hh' => (hE v h hh h' hh').1,
       phi_bound Y κ P B hB0 x x' fun v h hh h' hh' => (hE v h hh h' hh').2.1,
       phi_bound Y κ Q B hB0 x x' fun v h hh h' hh' => (hE v h hh h' hh').2.2⟩
-  · simp only [if_neg hg, norm_zero]
+  · simp only [ite_eq_right hg, norm_zero]
     exact ⟨hC, hC, hC⟩
 
 theorem GermData.phiRG_bdd (hG : GermData Y U P Q hat) (κ : H → H → ℂ) :

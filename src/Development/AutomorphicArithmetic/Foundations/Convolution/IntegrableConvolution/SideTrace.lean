@@ -73,7 +73,7 @@ open scoped ComplexConjugate Classical InnerProductSpace
 
 namespace UpperTheory.FiniteProductSplitting
 
-private noncomputable def glue {ι : Type} {R : ι → Type} [∀ i, CommRing (R i)] {n : ℕ} (g : ∀ i, GL (Fin n) (R i)) :
+noncomputable def glue {ι : Type} {R : ι → Type} [∀ i, CommRing (R i)] {n : ℕ} (g : ∀ i, GL (Fin n) (R i)) :
     GL (Fin n) (∀ i, R i) where
   val := Matrix.of fun a b i => (g i : Matrix (Fin n) (Fin n) (R i)) a b
   inv := Matrix.of fun a b i => ((g i)⁻¹ : GL (Fin n) (R i)) a b
@@ -88,7 +88,7 @@ private noncomputable def glue {ι : Type} {R : ι → Type} [∀ i, CommRing (R
     simp only [Matrix.mul_apply, Matrix.of_apply, Finset.sum_apply, Pi.mul_apply, Matrix.one_apply] at this ⊢
     rw [this]; split_ifs <;> rfl
 
-private theorem glue_cont {ι : Type} {R : ι → Type} [∀ i, CommRing (R i)] [∀ i, TopologicalSpace (R i)] {n : ℕ} :
+theorem glue_cont {ι : Type} {R : ι → Type} [∀ i, CommRing (R i)] [∀ i, TopologicalSpace (R i)] {n : ℕ} :
     Continuous (glue : (∀ i, GL (Fin n) (R i)) → GL (Fin n) (∀ i, R i)) := by
   refine Units.continuous_iff.2 ⟨?_, ?_⟩
   · refine continuous_pi fun a => continuous_pi fun b => continuous_pi fun i => ?_
@@ -100,13 +100,13 @@ private theorem exists_ext {ι A : Type*} {X : A → Type*} (wi : ι → A) (hw 
     (ψ : ∀ i, X (wi i)) (d : ∀ a, X a) :
     ∃ h : ∀ a, X a, (∀ i, h (wi i) = ψ i) ∧ ∀ a, a ∉ Set.range wi → h a = d a := by
   refine ⟨fun a => if ha : ∃ i, wi i = a then ha.choose_spec ▸ ψ ha.choose else d a, fun i => ?_,
-    fun a ha => dif_neg ha⟩
+    fun a ha => dite_eq_right ha⟩
   have key : ∀ j (hj : wi j = wi i), (hj ▸ ψ j : X (wi i)) = ψ i := by
     intro j hj
     obtain rfl := hw hj
     rfl
   have ha : ∃ j, wi j = wi i := ⟨i, rfl⟩
-  simp only [dif_pos ha]
+  simp only [dite_eq_left ha]
   exact key _ _
 
 private theorem finprod_split {A M : Type*} [CommMonoid M] {r : ℕ} (wi : Fin r → A) (hw : Function.Injective wi)
@@ -124,22 +124,22 @@ section Main
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
 
-private theorem cmp_cont {v : Pl F} (w : PlacesOver E v) : Continuous (GM.cmp (n := n) w) := by
+theorem cmp_cont {v : Pl F} (w : PlacesOver E v) : Continuous (GM.cmp (n := n) w) := by
   refine Units.continuous_iff.2 ⟨?_, ?_⟩
   · refine continuous_pi fun a => continuous_pi fun b => ?_
     exact (continuous_apply w).comp (Units.continuous_val.matrix_elem a b)
   · refine continuous_pi fun a => continuous_pi fun b => ?_
     exact (continuous_apply w).comp (Units.continuous_coe_inv.matrix_elem a b)
 
-private theorem liesOver_under (w : Pl E) : w.asIdeal.LiesOver (w.under (𝓞 F)).asIdeal := ⟨rfl⟩
+theorem liesOver_under (w : Pl E) : w.asIdeal.LiesOver (w.under (𝓞 F)).asIdeal := ⟨rfl⟩
 
-private theorem finite_under (S : Set (Pl F)) (hS : S.Finite) :
+theorem finite_under (S : Set (Pl F)) (hS : S.Finite) :
     {w : Pl E | w.under (𝓞 F) ∈ S}.Finite := by
   refine (hS.biUnion fun v _ => Set.finite_range (Subtype.val : PlacesOver E v → Pl E)).subset ?_
   intro w hw
   exact Set.mem_biUnion hw ⟨⟨w, liesOver_under w⟩, rfl⟩
 
-private theorem iwCoset_zero (w : Pl E) :
+theorem iwCoset_zero (w : Pl E) :
     GM.iwCoset w (0 : Fin n → ℤ) = (GLnLocal.iwahori (w.adicCompletion E) n : Set (Gw n w)) := by
   have hd : Cartan.diagPow (w.adicCompletion E) n (0 : Fin n → ℤ) = 1 := by
     apply Units.ext
@@ -153,7 +153,7 @@ private theorem iwCoset_zero (w : Pl E) :
   · intro hg
     exact ⟨g, hg, 1, one_mem _, by rw [hd, mul_one, mul_one]⟩
 
-private theorem iw_test (w : Pl E) :
+theorem iw_test (w : Pl E) :
     IsLocallyConstant (((GLnLocal.iwahori (w.adicCompletion E) n : Set (Gw n w))).indicator (1 : Gw n w → ℂ)) ∧
       HasCompactSupport (((GLnLocal.iwahori (w.adicCompletion E) n : Set (Gw n w))).indicator (1 : Gw n w → ℂ)) := by
   have ho := GLnLocal.isOpen_iwahori (w.adicCompletion E) n
@@ -166,11 +166,11 @@ private theorem iw_test (w : Pl E) :
   · exact ⟨_, hc.isClosed.isOpen_compl, hx, fun y hy => by
       rw [Set.indicator_of_notMem hy, Set.indicator_of_notMem hx]⟩
 
-private theorem prodFn_eq {v : Pl F} (h : ∀ w : PlacesOver E v, GL (Fin n) (w.1.adicCompletion E) → ℂ)
+theorem prodFn_eq {v : Pl F} (h : ∀ w : PlacesOver E v, GL (Fin n) (w.1.adicCompletion E) → ℂ)
     [Fintype (PlacesOver E v)] : GM.prodFn h = fun g => ∏ w, h w (GM.cmp w g) :=
   funext fun _ => finprod_eq_prod_of_fintype _
 
-private theorem prodFn_test {v : Pl F} (h : ∀ w : PlacesOver E v, GL (Fin n) (w.1.adicCompletion E) → ℂ)
+theorem prodFn_test {v : Pl F} (h : ∀ w : PlacesOver E v, GL (Fin n) (w.1.adicCompletion E) → ℂ)
     (hc : ∀ w, IsLocallyConstant (h w) ∧ HasCompactSupport (h w)) :
     IsLocallyConstant (GM.prodFn h) ∧ HasCompactSupport (GM.prodFn h) := by
   haveI : Fintype (PlacesOver E v) := Fintype.ofFinite _
@@ -196,7 +196,7 @@ private theorem prodFn_test {v : Pl F} (h : ∀ w : PlacesOver E v, GL (Fin n) (
     · exact fun h0 => hne (Finset.prod_eq_zero (Finset.mem_univ w) h0)
     · exact Units.ext (Matrix.ext fun a b => rfl)
 
-private theorem unit_prod (v : Pl F) :
+theorem unit_prod (v : Pl F) :
     (GM.prodFn fun w : PlacesOver E v => (GLnLocal.integralGL (w.1.adicCompletion E) n : Set (GL (Fin n) (w.1.adicCompletion E))).indicator (1 : GL (Fin n) (w.1.adicCompletion E) → ℂ)) =
       (unitSet E n v).indicator 1 := by
   haveI : Fintype (PlacesOver E v) := Fintype.ofFinite _
@@ -209,7 +209,7 @@ private theorem unit_prod (v : Pl F) :
     obtain ⟨w, hw⟩ := not_forall.1 hg
     exact Finset.prod_eq_zero (Finset.mem_univ w) (Set.indicator_of_notMem hw _)
 
-private theorem iwFn_test {q : Pl F} (w₀ : PlacesOver E q) :
+theorem iwFn_test {q : Pl F} (w₀ : PlacesOver E q) :
     IsLocallyConstant (GM.iwFn w₀ (0 : Fin n → ℤ)) ∧ HasCompactSupport (GM.iwFn w₀ (0 : Fin n → ℤ)) := by
   refine prodFn_test _ fun w => ?_
   rw [ite_self, iwCoset_zero]
@@ -217,10 +217,10 @@ private theorem iwFn_test {q : Pl F} (w₀ : PlacesOver E q) :
 
 variable {σ : E ≃ₐ[F] E} {q : Pl F} {w₀ : PlacesOver E q}
 
-private noncomputable def dflt (T : Ty σ n q w₀) (w : Pl E) : Gw n w → ℂ :=
+noncomputable def dflt (T : Ty σ n q w₀) (w : Pl E) : Gw n w → ℂ :=
   (T.J w : Set (Gw n w)).indicator fun x => conj (T.χ w x)
 
-private theorem dflt_of_triv (T : Ty σ n q w₀) (w : Pl E) (h : T.χ w = 1) :
+theorem dflt_of_triv (T : Ty σ n q w₀) (w : Pl E) (h : T.χ w = 1) :
     dflt T w = (T.J w : Set (Gw n w)).indicator 1 := by
   unfold dflt
   rw [h]

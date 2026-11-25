@@ -94,14 +94,6 @@ structure LiftInput (R : RealDat D A Ks) (i : Fin D.R.m) (σ : D.what₂.LL →+
 
   fd : Set (GA D (Vc D i))
 
-namespace LiftInput
-
-variable {R : RealDat D A Ks} {i : Fin D.R.m} {σ : D.what₂.LL →+* ℂ} (X : LiftInput R i σ)
-
-variable {t : T} {s : ℂ →+* ℂ} {P : LevelP R.Pg D.R.r ℂ}
-
-end LiftInput
-
 theorem labE_base (τ : D.what₂.Tau) : labE D.what₂.embLL τ = tauE D τ := by
   ext x
   exact DFunLike.congr_fun D.embE_φ₀ (D.host.sigmaOf (D.eTau τ).1 x)

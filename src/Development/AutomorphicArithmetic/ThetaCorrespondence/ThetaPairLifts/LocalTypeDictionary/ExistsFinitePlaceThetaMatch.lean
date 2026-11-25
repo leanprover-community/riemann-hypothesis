@@ -161,7 +161,6 @@ open scoped TensorProduct ComplexConjugate GlobalTheory.IndefiniteRowSideFullHec
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model piW chrW unifAt latAtV At SInf)
 open GlobalTheory.TripleRead (thO ptO)
 open GlobalTheory.AdelicU (evFin splitPrime)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 theorem UpperTheory.shellSum_eq_const_of_twist_eq_indicator_double_coset :
     ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (ϖ : kˣ), GlobalTheory.SplitFlip.IsUnif ϖ →
@@ -371,7 +370,6 @@ open scoped TensorProduct ComplexConjugate GlobalTheory.IndefiniteRowSideFullHec
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model piW chrW unifAt latAtV At SInf)
 open GlobalTheory.TripleRead (thO ptO)
 open GlobalTheory.AdelicU (evFin splitPrime)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 theorem UpperTheory.bigZeta_stdSchwartz_translate_eq_smallZeta :
     ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (ϖ : kˣ), GlobalTheory.SplitFlip.IsUnif ϖ →
@@ -399,7 +397,6 @@ open scoped TensorProduct ComplexConjugate GlobalTheory.IndefiniteRowSideFullHec
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model piW chrW unifAt latAtV At SInf)
 open GlobalTheory.TripleRead (thO ptO)
 open GlobalTheory.AdelicU (evFin splitPrime)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 private theorem fmFst_mat {k : Type} [Field k] {a n d : ℕ} (e : Fin n ≃ Fin d) (B G Gi : Matrix (Fin a) (Fin a) k) (hG : Gi * G = 1)
     (W Wi : Matrix (Fin d) (Fin d) k) (hW : Wi * W = 1) (m : GL (Fin n) k) (hm : m.1 = W.submatrix e e)
@@ -425,7 +422,7 @@ private theorem fmFst_loc {k : Type} [Field k] [ValuativeRel k] [TopologicalSpac
   have hb : GlobalTheory.StdPairCone.blk₁ ((Mᵀ).submatrix id (finCongr (rfl : a + a' = a + a'))) = (topL a M)ᵀ := by
     ext i j
     have : j.1 < a + a' ∧ i.1 < a := ⟨by omega, i.2⟩
-    simp only [GlobalTheory.StdPairCone.blk₁, topL, Matrix.of_apply, Matrix.submatrix_apply, Matrix.transpose_apply, dif_pos this]
+    simp only [GlobalTheory.StdPairCone.blk₁, topL, Matrix.of_apply, Matrix.submatrix_apply, Matrix.transpose_apply, dite_eq_left this]
     rfl
   have hb2 : ∀ i j, GlobalTheory.StdPairCone.blk₂ ((Mᵀ).submatrix id (finCongr (rfl : a + a' = a + a'))) i j = M (Fin.natAdd a j) i :=
     fun i j => rfl
@@ -442,14 +439,14 @@ private theorem fmFst_loc {k : Type} [Field k] [ValuativeRel k] [TopologicalSpac
   unfold GlobalTheory.StdPairCone.stdA GlobalTheory.StdPairCone.unitInd GlobalTheory.StdPairCone.IsGLO
   simp only [hb1, hb2]
   by_cases h : (∀ i j, M i j ∈ (ValuativeRel.valuation k).integer) ∧ ∀ i j, a ≤ i.1 → M i j ∈ GlobalTheory.SplitWeil.cball (ϖ ^ c)
-  · rw [if_pos h]
+  · rw [ite_eq_left h]
     by_cases h' : (topL a M).det ≠ 0 ∧ ValuativeRel.valuation k (topL a M).det = 1
-    · rw [dif_pos h', dif_pos ⟨hd ▸ h'.1, ⟨fun i j => h.1 _ _, hd ▸ h'.2⟩, fun i j => h.2 _ _ (by simp)⟩]
+    · rw [dite_eq_left h', dite_eq_left ⟨hd ▸ h'.1, ⟨fun i j => h.1 _ _, hd ▸ h'.2⟩, fun i j => h.2 _ _ (by simp)⟩]
       simp only [hd]
     · rw [dite_eq_right h', dite_eq_right]
       rintro ⟨h1, ⟨-, h2⟩, -⟩
       exact h' ⟨hd ▸ h1, hd ▸ h2⟩
-  · rw [if_neg h, dite_eq_right]
+  · rw [ite_eq_right h, dite_eq_right]
     rintro ⟨-, ⟨h1, -⟩, h2⟩
     refine h ⟨fun i j => ?_, fun i j => ?_⟩
     · induction i using Fin.addCases with
@@ -502,8 +499,8 @@ theorem UpperTheory.exists_gl_stdFst_eq_product_local :
   unfold GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle.stdFst
   by_cases hx : IsHalf e₀ x
   swap
-  · rw [if_neg hx, if_neg fun h => hx h.1]
-  rw [if_pos hx]
+  · rw [ite_eq_right hx, ite_eq_right fun h => hx h.1]
+  rw [ite_eq_left hx]
   have hN : ∀ i j, toEAf D e₀ * frMapO A WW βA βW x i j = frMapO A WW βA βW x i j := by
     have h1 : toEAf D e₀ • Matrix.map x (toEAf D) = Matrix.map x (toEAf D) := by
       ext i j
@@ -516,9 +513,9 @@ theorem UpperTheory.exists_gl_stdFst_eq_product_local :
   generalize frMapO A WW βA βW x = N at hN
   have hI := fun i j => UpperTheory.mem_intAf_and_inId_iff_splitComponents D e₀ S hS P t hP ht c (N i j) (hN i j)
   by_cases h : IsIntM N ∧ ∀ i j, A.rank ≤ i.1 → GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle.InId (∏ w ∈ S, w.asIdeal ^ c w) (N i j)
-  · rw [if_pos ⟨hx, h⟩, UpperTheory.unitChar_idempotentSum_eq_prod_over_splitPlaces D e₀ S hS P t hP ht ν _ (topL A.rank N)]
+  · rw [ite_eq_left ⟨hx, h⟩, UpperTheory.unitChar_idempotentSum_eq_prod_over_splitPlaces D e₀ S hS P t hP ht ν _ (topL A.rank N)]
     · refine Finset.prod_congr rfl fun v _ => ?_
-      rw [if_pos ⟨fun i j => (hI i j).1.1 (h.1 i j) v, fun i j hi => (hI i j).2.1 (h.2 i j hi) v⟩]
+      rw [ite_eq_left ⟨fun i j => (hI i j).1.1 (h.1 i j) v, fun i j hi => (hI i j).2.1 (h.2 i j hi) v⟩]
       congr 2
       refine Matrix.ext fun i j => ?_
       simp only [topL, Matrix.map_apply]
@@ -530,7 +527,7 @@ theorem UpperTheory.exists_gl_stdFst_eq_product_local :
       split_ifs
       · exact h.1 _ _
       · exact zero_mem _
-  · rw [if_neg fun h' => h h'.2]
+  · rw [ite_eq_right fun h' => h h'.2]
     by_contra hne
     have hv := fun v : P => Finset.prod_ne_zero_iff.1 (Ne.symm hne) v (Finset.mem_univ v)
     have hv' := fun v : P => (ite_ne_right_iff.1 (hv v)).1
@@ -550,7 +547,6 @@ open scoped TensorProduct ComplexConjugate GlobalTheory.IndefiniteRowSideFullHec
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model piW chrW unifAt latAtV At SInf)
 open GlobalTheory.TripleRead (thO ptO)
 open GlobalTheory.AdelicU (evFin splitPrime)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 private theorem stdB_eq {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     (ν : kˣ →* ℂˣ) (ϖ : kˣ) (hϖ : ValuativeRel.valuation k (ϖ : k) ≤ 1) (c a a' : ℕ)
@@ -562,11 +558,11 @@ private theorem stdB_eq {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace 
   unfold GlobalTheory.StdPairCone.stdB GlobalTheory.StdPairCone.unitInd
   by_cases h : (∀ i j, Y i j ∈ (ValuativeRel.valuation k).integer) ∧
           ∀ i j, Y i (Fin.castAdd a' j) ∈ GlobalTheory.SplitWeil.cball (ϖ ^ c)
-  · rw [if_pos h]
+  · rw [ite_eq_left h]
     by_cases h2 : (GlobalTheory.StdPairCone.blk₂ Y).det ≠ 0 ∧ ValuativeRel.valuation k (GlobalTheory.StdPairCone.blk₂ Y).det = 1
     · rw [dite_eq_left h2, dite_eq_left ⟨h2.1, ⟨fun i j => h.1 _ _, h2.2⟩, h.2⟩]
     · rw [dite_eq_right h2, dite_eq_right fun h3 => h2 ⟨h3.1, h3.2.1.2⟩]
-  · rw [if_neg h, dite_eq_right]
+  · rw [ite_eq_right h, dite_eq_right]
     rintro ⟨-, h1, h2⟩
     refine h ⟨fun i j => ?_, h2⟩
     refine Fin.addCases (fun j => ?_) (fun j => h1.1 i j) j
@@ -674,8 +670,8 @@ theorem UpperTheory.exists_gl_stdSnd_eq_product_local :
   unfold GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle.stdSnd
   by_cases hy : IsHalf (cA D e₀) y
   swap
-  · rw [if_neg fun h => hy h.1, if_neg hy]
-  rw [if_pos hy]
+  · rw [ite_eq_right fun h => hy h.1, ite_eq_right hy]
+  rw [ite_eq_left hy]
   have hc : ∀ v : P, GlobalTheory.StdPairCone.stdB (chrW ν (t v)) (unifAt v.1) (c (splitPrime (t v))) a A'.rank
       ((Matrix.GeneralLinearGroup.map (piF (t v)) βA'⁻¹).1 *
         (ptO (sgn false A').gram (finCongr hr) y).map (piW ((t v).comp D.sp.cm.sig)) *
@@ -699,11 +695,11 @@ theorem UpperTheory.exists_gl_stdSnd_eq_product_local :
       unfold GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle.rightBlock
       rw [dite_eq_left hj]
       rfl
-    rw [if_pos ⟨hy, h⟩, UpperTheory.unitChar_idempotentSum_eq_prod_over_splitPlaces D e₀ S hS P t hP ht ν _ _ (by rw [hb]; exact fun i j => h.1 _ _)]
+    rw [ite_eq_left ⟨hy, h⟩, UpperTheory.unitChar_idempotentSum_eq_prod_over_splitPlaces D e₀ S hS P t hP ht ν _ _ (by rw [hb]; exact fun i j => h.1 _ _)]
     refine Finset.prod_congr rfl fun v _ => ?_
-    rw [if_pos ⟨fun i j => (hI _ _).1.1 (h.1 _ _) v, fun i j => (hI _ _).2.1 (h.2 _ _ j.2) v⟩, hb]
+    rw [ite_eq_left ⟨fun i j => (hI _ _).1.1 (h.1 _ _) v, fun i j => (hI _ _).2.1 (h.2 _ _ j.2) v⟩, hb]
     rfl
-  · rw [if_neg fun h' => h h'.2]
+  · rw [ite_eq_right fun h' => h h'.2]
     symm
     by_contra h0
     refine h ⟨fun i j => (hI i j).1.2 fun v => ?_, fun i j hj => (hI i j).2.2 fun v => ?_⟩
@@ -726,7 +722,6 @@ open scoped TensorProduct ComplexConjugate GlobalTheory.IndefiniteRowSideFullHec
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model piW chrW unifAt latAtV At SInf)
 open GlobalTheory.TripleRead (thO ptO)
 open GlobalTheory.AdelicU (evFin splitPrime)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace UpperTheory.HermitianLatticeSelfDual
 
@@ -960,7 +955,6 @@ open scoped TensorProduct ComplexConjugate GlobalTheory.IndefiniteRowSideFullHec
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model piW chrW unifAt latAtV At SInf)
 open GlobalTheory.TripleRead (thO ptO)
 open GlobalTheory.AdelicU (evFin splitPrime)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 private theorem ptO_smul' {D : D7} {m k d : ℕ} (G : Matrix (Fin m) (Fin m) D.host.E) (e : Fin k ≃ Fin d) (a : AF D.host.F)
     (x : Mx D d m) : ptO G e (a • x) = a • ptO G e x := by
@@ -1045,8 +1039,8 @@ theorem UpperTheory.exists_polynomial_of_isFinF_thetaLift_pureTensor :
   have hg : (show Matrix (Fin S.rank) (Fin S.rank) D.host.E from (sgn ε S).gram) =
       (if ε then -1 else 1 : D.host.E) • S.gram := by
     cases ε
-    · simp only [Bool.false_eq_true, if_false, one_smul]; rfl
-    · simp only [if_true, neg_smul, one_smul]; exact neg_gram S
+    · simp only [Bool.false_eq_true, ite_false, one_smul]; rfl
+    · simp only [ite_true, neg_smul, one_smul]; exact neg_gram S
   obtain ⟨cS, hcS, hcS'⟩ : ∃ cS : Matrix (Fin S.rank) (Fin d) (AE D) ≃+ WO S X,
       (∀ u, cS u = (HMul.hMul (uᵀ.submatrix e.symm id) (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.incM ((if ε then -1 else 1 : D.host.E) • S.gram)) :
         Matrix (Fin X.rank) (Fin S.rank) (AE D))) ∧ ∀ x, cS.symm x = ptO (sgn ε S).gram e x :=
@@ -1104,7 +1098,7 @@ section Local
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes IsDedekindDomain NumberField Matrix
 open scoped TensorProduct
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.WeilM GlobalTheory.SplitFlip GlobalTheory.StdPairCone
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.measFv GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.borelFv
+attribute [local instance] GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.measFv GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.borelFv
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 private theorem linear_model_smul {n d : ℕ} {X : Spc F E n} {W : Spc F E d} {M : Model σ X W} {ψ : AddChar (AF F) ℂ} {v : Pl F}
     {π₁ π₀ : AE F E →+* Fv F v} {co ι} (h : M.IsLin ψ π₁ π₀ co ι) {c : ℂ} (hc : c ≠ 0) : M.IsLin ψ π₁ π₀ co (c • ι) := by
@@ -1203,7 +1197,6 @@ open scoped TensorProduct ComplexConjugate GlobalTheory.IndefiniteRowSideFullHec
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model piW chrW unifAt latAtV At SInf)
 open GlobalTheory.TripleRead (thO ptO)
 open GlobalTheory.AdelicU (evFin splitPrime)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 variable {D : D7}
 private theorem fock_vector_of_theta_at_lattice {ψ : AddChar (AF D.host.F) ℂ} {ε : Bool} {S X : HSp D} {d : ℕ} {e : Fin d ≃ Fin X.rank}
     {Bs : Base D.host.F D.host.E} {Vs : Spc D.host.F D.host.E S.rank} {Ws : Spc D.host.F D.host.E d}
@@ -1259,7 +1252,6 @@ open scoped TensorProduct ComplexConjugate GlobalTheory.IndefiniteRowSideFullHec
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model piW chrW unifAt latAtV At SInf)
 open GlobalTheory.TripleRead (thO ptO)
 open GlobalTheory.AdelicU (evFin splitPrime)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 variable {D : D7}
 
@@ -1309,10 +1301,10 @@ theorem exists_finite_place_theta_match (hP : _root_.GlobalTheory.FunPr.ThetaLoc
     fun v => if hv : v ∈ Bs.P then φl ⟨v, hv⟩ else Γ.M.vac v
   let φ' : ∀ v : HeightOneSpectrum (𝓞 D.host.F), (Fin A'.rank × Fin (A.rank + A'.rank) → Fv D.host.F v) → ℂ :=
     fun v => if hv : v ∈ Bs.P then φl' ⟨v, hv⟩ else Γ.M'.vac v
-  have e1 : ∀ v : Bs.P, φ v = φl v := fun v => dif_pos v.2
-  have e1' : ∀ v : Bs.P, φ' v = φl' v := fun v => dif_pos v.2
-  have e2 : ∀ v, v ∉ Bs.P → φ v = Γ.M.vac v := fun v hv => dif_neg hv
-  have e2' : ∀ v, v ∉ Bs.P → φ' v = Γ.M'.vac v := fun v hv => dif_neg hv
+  have e1 : ∀ v : Bs.P, φ v = φl v := fun v => dite_eq_left v.2
+  have e1' : ∀ v : Bs.P, φ' v = φl' v := fun v => dite_eq_left v.2
+  have e2 : ∀ v, v ∉ Bs.P → φ v = Γ.M.vac v := fun v hv => dite_eq_right hv
+  have e2' : ∀ v, v ∉ Bs.P → φ' v = Γ.M'.vac v := fun v hv => dite_eq_right hv
   have sb : ∀ v, φ v ∈ GlobalTheory.WeilM.SB _ := fun v => by
     by_cases hv : v ∈ Bs.P
     · exact e1 ⟨v, hv⟩ ▸ hφ ⟨v, hv⟩
@@ -1365,7 +1357,7 @@ theorem exists_finite_place_theta_match (hP : _root_.GlobalTheory.FunPr.ThetaLoc
   rw [Fin.sum_univ_one, Fin.sum_univ_one, ← hQ', hfy', ← funext fun v => (im v).1] at mB
   have sA := GlobalTheory.T.fockAlgebraicThetaVectors_stable_finiteAdeles_lie D ψ θ hψ hθ true A WW FA FW _ _ _ hA
   have sB := GlobalTheory.T.fockAlgebraicThetaVectors_stable_finiteAdeles_lie D ψ θ hψ hθ false A' WW FA' FW _ _ _ hB
-  obtain ⟨oA, oB⟩ := _root_.GlobalTheory.T.triple_algebra_map_surjective hH hP D ψ θ hψ hθ A A' WW FA FA' FW _ _ hT _ _ hA hB _ Bs Γ Xc om om' h hTA hTB R Rf hM
+  obtain ⟨oA, oB⟩ := _root_.GlobalTheory.TripleAssembly.Onto.tripleProductAlgebra_weilRep_range_eq_top hH hP D ψ θ hψ hθ A A' WW FA FA' FW _ _ hT _ _ hA hB _ Bs Γ Xc om om' h hTA hTB R Rf hM
   obtain ⟨iA, iB⟩ := _root_.GlobalTheory.TripleAssembly.triple_map_comp_inverse_finite hH hP D ψ θ hψ hθ A A' WW FA FA' FW _ _ hT _ _ hA hB _ Bs Γ Xc om om' h hTA hTB R Rf hM
   obtain ⟨lA, lB⟩ := _root_.GlobalTheory.TripleAssembly.LieInv.theta_triple_maps_lie_action_eq_zero hH hP D ψ θ hψ hθ A A' WW FA FA' FW _ _ hT _ _ hA hB _ Bs Γ Xc om om' h hTA hTB R Rf hM
   obtain ⟨fA, fB⟩ := _root_.GlobalTheory.TripleAssembly.EqFin.theta_triple_maps_equivariant_on_finite_vectors hH hP D ψ θ hψ hθ A A' WW FA FA' FW _ _ hT _ _ hA hB _ Bs Γ Xc om om' h hTA hTB R Rf hM
@@ -1394,7 +1386,6 @@ open GlobalTheory.CMVal (IsHeckeL)
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.SqTop
 open GlobalTheory.ConstRatio (NegIdx Factor)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open scoped TensorProduct
 namespace GlobalTheory.FinMatch
 private theorem hecke_character_pow_apply {E : Type} [Field E] [NumberField E] (χ : HChar E) (a : ℕ) (x) : (χ ^ a).1 x = χ.1 x ^ a := by
@@ -1505,7 +1496,7 @@ theorem _root_.GlobalTheory.T.finite_place_theta_matching : _root_.GlobalTheory.
         p (GlobalTheory.SquareComm.fockF W.ψ W.θ true FA FW (X.f t) P) ≠ 0 ∧
         p (GlobalTheory.SquareComm.fockF W.ψ W.θ true FA FW (X.f t) P) = κ • p' (GlobalTheory.SquareComm.fockF W.ψ W.θ false FA' FW (X.f' t) P') := by
   intro hP _ hLM
-  obtain ⟨a₁, h₁⟩ := GlobalTheory.T.gridSquare_infinityExponent_gap_largeGrids
+  obtain ⟨a₁, h₁⟩ := _root_.GlobalTheory.SquareInfGap.square_infExp_gap
   obtain ⟨a₂, h₂⟩ := GlobalTheory.T.towerStage_finitePlaces_unramified_or_split
   refine ⟨max a₁ a₂, fun ε CF hCF => ?_⟩
   obtain ⟨C₁, x₁, h₁⟩ := h₁ ε CF (le_of_max_le_left hCF)

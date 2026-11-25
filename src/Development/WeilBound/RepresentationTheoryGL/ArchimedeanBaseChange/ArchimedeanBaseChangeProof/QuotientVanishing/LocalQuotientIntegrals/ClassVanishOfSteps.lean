@@ -54,7 +54,7 @@ theorem cV_embInf (v w : InfinitePlace E) (y : GL (Fin n) ℂ) :
 theorem cV_embInf_self (v : InfinitePlace E) (y : GL (Fin n) ℂ) :
     GeneralLinearGroup.map (cV v) (embInf n v y) = y := by
   classical
-  rw [cV_embInf, if_pos rfl]
+  rw [cV_embInf, ite_eq_left rfl]
 
 theorem pFin_embInf (v : InfinitePlace E) (y : GL (Fin n) ℂ) :
     GeneralLinearGroup.map (pFin E) (embInf n v y) = 1 := by
@@ -92,10 +92,6 @@ theorem lognInf_eq (v : InfinitePlace E) (x : GA E n) {r : ℕ} (M : Matrix (Fin
     lognInf v (frame x M) = ploc (M.map v.embedding) (GeneralLinearGroup.map (cV v) x) := by
   rw [lognInf, frame_map, ploc]
 
-theorem exists_left (v : InfinitePlace E) (W : Submodule E (Fin n → E)) :
-    ∃ L : Matrix (Fin (Module.finrank E W)) (Fin n) ℂ, L * (basisMat W).map v.embedding = 1 := by
-  apply _root_.GlobalTheory.CompanionTheory.LocFlagPf.exists_left
-
 theorem gram_re_pos {r : ℕ} (B : Matrix (Fin n) (Fin r) ℂ) (L : Matrix (Fin r) (Fin n) ℂ) (hL : L * B = 1) :
     0 < (Bᴴ * B).det.re := by
   have hps : (Bᴴ * B).PosSemidef := posSemidef_conjTranspose_mul_self B
@@ -112,7 +108,7 @@ theorem gram_re_pos {r : ℕ} (B : Matrix (Fin n) (Fin r) ℂ) (L : Matrix (Fin 
 theorem ploc_re_pos (v : InfinitePlace E) (W : Submodule E (Fin n → E)) (g : GL (Fin n) ℂ) :
     0 < ((((g⁻¹ : GL (Fin n) ℂ).val * (basisMat W).map v.embedding)ᴴ *
       ((g⁻¹ : GL (Fin n) ℂ).val * (basisMat W).map v.embedding)).det).re := by
-  obtain ⟨L, hL⟩ := exists_left v W
+  obtain ⟨L, hL⟩ := GlobalTheory.CompanionTheory.LocFlagPf.exists_left v W
   refine gram_re_pos _ (L * g.val) ?_
   rw [Matrix.mul_assoc, ← Matrix.mul_assoc g.val, ← Units.val_mul, mul_inv_cancel, Units.val_one, Matrix.one_mul, hL]
 
@@ -161,13 +157,13 @@ theorem deg_embInf (v : InfinitePlace E) (W : Submodule E (Fin n → E)) (g : GL
         ploc ((basisMat W).map v.embedding) (GeneralLinearGroup.map (cV v) x) else 0 := fun w => by
     by_cases h : w = v
     · subst h
-      rw [if_pos rfl, lognInf_eq, lognInf_eq, map_mul, cV_embInf_self]
+      rw [ite_eq_left rfl, lognInf_eq, lognInf_eq, map_mul, cV_embInf_self]
       ring
-    · rw [if_neg h, add_zero]
+    · rw [ite_eq_right h, add_zero]
       unfold lognInf
-      rw [frame_map_eq (cV w) _ x (by rw [map_mul, cV_embInf, if_neg h, one_mul])]
+      rw [frame_map_eq (cV w) _ x (by rw [map_mul, cV_embInf, ite_eq_right h, one_mul])]
   simp only [deg, degM, hfin, hinf, Finset.sum_add_distrib, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
   ring
 
 end PositivityTheory.Rg.BcB.CV.LocalPlacePositivity
@@ -181,7 +177,7 @@ theorem PositivityTheory.Rg.BcB.CV.pf_Ploc : PositivityTheory.Rg.BcB.CV.Ploc := 
   · subst hW
     exact ⟨fun x => LocalPlacePositivity.ploc_empty _ (by simp) x, fun x => LocalPlacePositivity.degM_empty x _ (by simp)⟩
   · classical
-    rw [LocalPlacePositivity.cV_embInf, if_neg hv']
+    rw [LocalPlacePositivity.cV_embInf, ite_eq_right hv']
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.QuotientVanishing.LocalQuotientIntegrals.CVEmbInfSelf =====
@@ -858,7 +854,7 @@ theorem PositivityTheory.Rg.BcB.CV.pf_CutInt : PositivityTheory.Rg.BcB.D4.KerFin
       refine ⟨c, hcC, ?_⟩
       rwa [twConj_mul_eq, twConj_ratGL] at hφx
     have hex : ∃ g', twConj (thetaE E n) g' d = twConj (thetaE E n) g d := ⟨g, rfl⟩
-    have hpick : pick (twConj (thetaE E n) g d) = hex.choose := dif_pos hex
+    have hpick : pick (twConj (thetaE E n) g d) = hex.choose := dite_eq_left hex
     set g₀ := hex.choose with hg₀
     have hg₀d : twConj (thetaE E n) g₀ d = twConj (thetaE E n) g d := hex.choose_spec
     have hcent : g * g₀⁻¹ ∈ twCent (thetaE E n) d := by
@@ -1652,7 +1648,7 @@ theorem quotIntegral_mul_right (hNE : NormEq) {T : Type} [Group T] [TopologicalS
     (s : T) : quotIntegral ν Γ μΓ (fun t => F (t * s)) = quotIntegral ν Γ μΓ F := by
   unfold quotIntegral
   by_cases hρ : ∃ ρ, IsQuotNormaliser Γ μΓ ρ
-  · rw [dif_pos hρ, dif_pos hρ]
+  · rw [dite_eq_left hρ, dite_eq_left hρ]
     have hρn := hρ.choose_spec
     have : ν.IsMulRightInvariant := ⟨fun g => by
       have h : (fun x => x * g) = (fun x => g * x) := funext fun x => hcomm x g
@@ -1666,7 +1662,7 @@ theorem quotIntegral_mul_right (hNE : NormEq) {T : Type} [Group T] [TopologicalS
     simp only [mul_inv_cancel_right] at h1
     rw [h1]
     exact hNE T ν Γ μΓ F _ _ hF hinv hρ' hρn
-  · rw [dif_neg hρ, dif_neg hρ]
+  · rw [dite_eq_right hρ, dite_eq_right hρ]
 
 end PositivityTheory.Rg.BcB.CV.VolumeFunction
 
@@ -1711,7 +1707,7 @@ theorem pf_Vfun : PositivityTheory.Rg.BcB.ChainSum → PositivityTheory.Rg.BcB.D
       (Finset.mem_univ e)).1
   refine ⟨⟨?_, ?_, ?_⟩, ?_⟩
   · by_cases hρ : ∃ ρ, IsQuotNormaliser Γ (Measure.count : Measure Γ) ρ
-    · simp only [quotIntegral, dif_pos hρ]
+    · simp only [quotIntegral, dite_eq_left hρ]
       have h2 : Measurable fun p : ((Fin m → SignType) → ℝ) × T => (p.1, a p.2) :=
         measurable_fst.prodMk (hac.measurable.comp measurable_snd)
       have hj : Measurable fun p : ((Fin m → SignType) → ℝ) × T =>
@@ -1719,7 +1715,7 @@ theorem pf_Vfun : PositivityTheory.Rg.BcB.ChainSum → PositivityTheory.Rg.BcB.D
         (Complex.measurable_ofReal.comp ((hRD.2 m).comp h2)).mul
           (Complex.measurable_ofReal.comp ((hρ.choose_spec.1.ennreal_toReal).comp measurable_snd))
       exact (hj.stronglyMeasurable.integral_prod_right' (ν := ν)).measurable
-    · simp only [quotIntegral, dif_neg hρ]
+    · simp only [quotIntegral, dite_eq_right hρ]
       exact measurable_const
   · intro M
     obtain ⟨B, hB⟩ := key M

@@ -154,6 +154,94 @@ theorem finrank_le_of_step {K V W : Type*} [Field K] [AddCommGroup V] [Module K 
     exact Subtype.ext (Subtype.ext h)
   omega
 
+theorem exists_hom_prime_filtration {S : Type u} [CommRing S] [IsNoetherianRing S]
+    {Ω : Type w} [Field Ω] [Algebra S Ω] {N : ℕ} {x : Fin (N + 1) → Ω}
+    {J : Ideal (Poly S N)} (hJhom : ∀ f ∈ J, ∀ d : ℕ, homogeneousComponent d f ∈ J)
+    (hJx : primeOf (S := S) x ≤ J) :
+    ∃ (Fl : PrimeFilt (quotGraded J hJhom))
+      (g : Fin Fl.n → Poly S N) (eK : Fin Fl.n → ℕ) (Jk : Fin (Fl.n + 1) → Ideal (Poly S N)),
+      (∀ (G : Ideal (Poly S N)) [G.IsPrime], G ∈ J.minimalPrimes →
+        (((Finset.univ.filter fun l => Fl.prime l = G).card : ℕ) : ℕ∞) =
+          Module.length (Localization.AtPrime G) (LocalizedModule G.primeCompl (Poly S N ⧸ J))) ∧
+      (∀ l, J ≤ Fl.prime l) ∧
+      (∀ l, (g l).IsHomogeneous (eK l)) ∧
+      (Jk 0 = J) ∧
+      (Jk (Fin.last _) = ⊤) ∧
+      (∀ l : Fin Fl.n, Jk l.succ = Jk l.castSucc ⊔ Ideal.span {g l}) ∧
+      (∀ (l : Fin Fl.n) (f : Poly S N), f ∈ Fl.prime l ↔ f * g l ∈ Jk l.castSucc) ∧
+      (∀ l, J ≤ Jk l) ∧
+      (∀ l, ∀ f ∈ Jk l, ∀ d : ℕ, homogeneousComponent d f ∈ Jk l) := by
+  classical
+  have hkill : ∀ p ∈ primeOf (S := S) x, ∀ m : Poly S N ⧸ J, p • m = 0 := by
+    intro p hp m
+    obtain ⟨m, rfl⟩ := Ideal.Quotient.mk_surjective m
+    change Ideal.Quotient.mk J (p * m) = 0
+    exact Ideal.Quotient.eq_zero_iff_mem.mpr (J.mul_mem_right m (hJx hp))
+  obtain ⟨⟨Fl⟩, hcount⟩ := PrimeFiltration.Exists.proof.{u, u, w} S Ω N x (Poly S N ⧸ J)
+    (quotGraded J hJhom) (finite_quot J) hkill
+  rw [Ideal.annihilator_quotient] at hcount
+  have hann : ∀ l, J ≤ Fl.prime l := fun l => by
+    have := Fl.ann_le l; rwa [Ideal.annihilator_quotient] at this
+  have hlift : ∀ l : Fin Fl.n, ∃ (g : Poly S N) (e : ℕ), g.IsHomogeneous e ∧
+      Ideal.Quotient.mk J g = Fl.gen l := by
+    intro l
+    obtain ⟨g, hg, hgm⟩ := mem_quotGraded_piece.mp (Fl.gen_mem l)
+    by_cases h0 : 0 ≤ Fl.deg l
+    · refine ⟨g, (Fl.deg l).toNat, isHomogeneous_of_isWeightedHomogeneous_one ?_, hgm⟩
+      rwa [Int.toNat_of_nonneg h0]
+    · refine ⟨0, 0, isHomogeneous_zero _ _ _, ?_⟩
+      have hg0 : g = 0 := by
+        ext m
+        by_contra hne
+        have h1 := hg hne
+        rw [weight_one_int] at h1
+        omega
+      rw [← hgm, hg0]
+  choose g eK hgH hgm using hlift
+  let Jk : Fin (Fl.n + 1) → Ideal (Poly S N) := fun l => (Fl.step l).comap J.mkQ
+  have hJ0 : Jk 0 = J := by
+    simp only [Jk, Fl.step_zero, Submodule.comap_bot, Submodule.ker_mkQ]
+  have hJlast : Jk (Fin.last _) = ⊤ := by
+    simp only [Jk, Fl.step_last, Submodule.comap_top]
+  have hmkQ : ∀ (c : Poly S N) (l : Fin Fl.n), J.mkQ (c * g l) = c • Fl.gen l := by
+    intro c l
+    rw [← hgm l]
+    rfl
+  have hJsucc : ∀ l : Fin Fl.n, Jk l.succ = Jk l.castSucc ⊔ Ideal.span {g l} := by
+    intro l
+    ext f
+    simp only [Jk, Fl.step_succ, Submodule.mem_comap]
+    constructor
+    · intro hf
+      obtain ⟨a, ha, y, hy, hay⟩ := Submodule.mem_sup.mp hf
+      obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.mp hy
+      have h1 : f - c * g l ∈ (Fl.step l.castSucc).comap J.mkQ := by
+        rw [Submodule.mem_comap, map_sub, hmkQ, ← hay, add_sub_cancel_right]
+        exact ha
+      have h2 := Submodule.add_mem_sup h1 (Ideal.mul_mem_left _ c (Ideal.mem_span_singleton_self (g l)))
+      rwa [sub_add_cancel] at h2
+    · intro hf
+      obtain ⟨a, ha, y, hy, rfl⟩ := Submodule.mem_sup.mp hf
+      obtain ⟨c, rfl⟩ := Ideal.mem_span_singleton'.mp hy
+      rw [map_add (f := _), hmkQ]
+      exact Submodule.add_mem_sup ha (Submodule.smul_mem _ _ (Submodule.mem_span_singleton_self _))
+  have hJkp : ∀ (l : Fin Fl.n) (f : Poly S N), f ∈ Fl.prime l ↔ f * g l ∈ Jk l.castSucc := by
+    intro l f
+    rw [Fl.mem_prime, ← hgm l]
+    exact Iff.rfl
+  have hJk_ge : ∀ l, J ≤ Jk l := fun l f hf => by
+    simp only [Jk, Submodule.mem_comap, Submodule.mkQ_apply,
+      (Submodule.Quotient.mk_eq_zero J).mpr hf, zero_mem]
+  have hJk_hom : ∀ l, ∀ f ∈ Jk l, ∀ d : ℕ, homogeneousComponent d f ∈ Jk l := by
+    intro l
+    induction l using Fin.induction with
+    | zero => rw [hJ0]; exact hJhom
+    | succ l ih =>
+      rw [hJsucc l]
+      exact hom_sup ih (hom_span fun g' hg' => ⟨eK l, by rw [Set.mem_singleton_iff.mp hg']; exact hgH l⟩)
+  exact ⟨Fl, g, eK, Jk, fun G _ hG => hcount Fl G hG, hann, hgH, hJ0, hJlast, hJsucc, hJkp, hJk_ge,
+    hJk_hom⟩
+
 end SectionCount.Drop.Filt
 
 
@@ -178,76 +266,8 @@ theorem SectionCount.Drop.Filt.proof (hK : SectionCount.Drop.Filt.Kernel.Stateme
   have hJhom : ∀ f ∈ J, ∀ d : ℕ, homogeneousComponent d f ∈ J :=
     hom_sup (fun f hf d => homogeneousComponent_mem_primeOf x hf d)
       (hom_span fun g ⟨c, hc, _⟩ => ⟨c, hc⟩)
-
-  have hkill : ∀ p ∈ primeOf (S := k) x, ∀ m : Poly k N ⧸ J, p • m = 0 := by
-    intro p hp m
-    obtain ⟨m, rfl⟩ := Ideal.Quotient.mk_surjective m
-    change Ideal.Quotient.mk J (p * m) = 0
-    exact Ideal.Quotient.eq_zero_iff_mem.mpr (J.mul_mem_right m (Ideal.mem_sup_left hp))
-  obtain ⟨⟨Fl⟩, hcount⟩ := PrimeFiltration.Exists.proof.{u, u, w} k Ω N x (Poly k N ⧸ J)
-    (quotGraded J hJhom) (finite_quot J) hkill
-  rw [Ideal.annihilator_quotient] at hcount
-  have hann : ∀ l, J ≤ Fl.prime l := fun l => by
-    have := Fl.ann_le l; rwa [Ideal.annihilator_quotient] at this
-
-  have hlift : ∀ l : Fin Fl.n, ∃ (g : Poly k N) (e : ℕ), g.IsHomogeneous e ∧
-      Ideal.Quotient.mk J g = Fl.gen l := by
-    intro l
-    obtain ⟨g, hg, hgm⟩ := mem_quotGraded_piece.mp (Fl.gen_mem l)
-    by_cases h0 : 0 ≤ Fl.deg l
-    · refine ⟨g, (Fl.deg l).toNat, isHomogeneous_of_isWeightedHomogeneous_one ?_, hgm⟩
-      rwa [Int.toNat_of_nonneg h0]
-    · refine ⟨0, 0, isHomogeneous_zero _ _ _, ?_⟩
-      have hg0 : g = 0 := by
-        ext m
-        by_contra hne
-        have h1 := hg hne
-        rw [weight_one_int] at h1
-        omega
-      rw [← hgm, hg0]
-  choose g eK hgH hgm using hlift
-
-  let Jk : Fin (Fl.n + 1) → Ideal (Poly k N) := fun l => (Fl.step l).comap J.mkQ
-  have hJ0 : Jk 0 = J := by
-    simp only [Jk, Fl.step_zero, Submodule.comap_bot, Submodule.ker_mkQ]
-  have hJlast : Jk (Fin.last _) = ⊤ := by
-    simp only [Jk, Fl.step_last, Submodule.comap_top]
-  have hmkQ : ∀ (c : Poly k N) (l : Fin Fl.n), J.mkQ (c * g l) = c • Fl.gen l := by
-    intro c l
-    rw [← hgm l]
-    rfl
-  have hJsucc : ∀ l : Fin Fl.n, Jk l.succ = Jk l.castSucc ⊔ Ideal.span {g l} := by
-    intro l
-    ext f
-    simp only [Jk, Fl.step_succ, Submodule.mem_comap]
-    constructor
-    · intro hf
-      obtain ⟨a, ha, y, hy, hay⟩ := Submodule.mem_sup.mp hf
-      obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.mp hy
-      have h1 : f - c * g l ∈ (Fl.step l.castSucc).comap J.mkQ := by
-        rw [Submodule.mem_comap, map_sub, hmkQ, ← hay, add_sub_cancel_right]
-        exact ha
-      have h2 := Submodule.add_mem_sup h1 (Ideal.mul_mem_left _ c (Ideal.mem_span_singleton_self (g l)))
-      rwa [sub_add_cancel] at h2
-    · intro hf
-      obtain ⟨a, ha, y, hy, rfl⟩ := Submodule.mem_sup.mp hf
-      obtain ⟨c, rfl⟩ := Ideal.mem_span_singleton'.mp hy
-      rw [map_add (f := _), hmkQ]
-      exact Submodule.add_mem_sup ha (Submodule.smul_mem _ _ (Submodule.mem_span_singleton_self _))
-  have hJkp : ∀ (l : Fin Fl.n) (f : Poly k N), f ∈ Fl.prime l ↔ f * g l ∈ Jk l.castSucc := by
-    intro l f
-    rw [Fl.mem_prime, ← hgm l]
-    exact Iff.rfl
-  have hJk_ge : ∀ l, J ≤ Jk l := fun l f hf => by
-    simp only [Jk, Submodule.mem_comap, Submodule.mkQ_apply,
-      (Submodule.Quotient.mk_eq_zero J).mpr hf, zero_mem]
-  have hJk_hom : ∀ l, ∀ f ∈ Jk l, ∀ d : ℕ, homogeneousComponent d f ∈ Jk l := by
-    intro l
-    induction l using Fin.induction with
-    | zero => rw [hJ0]; exact hJhom
-    | succ l ih =>
-      rw [hJsucc l]
-      exact hom_sup ih (hom_span fun g' hg' => ⟨eK l, by rw [Set.mem_singleton_iff.mp hg']; exact hgH l⟩)
+  obtain ⟨Fl, g, eK, Jk, hcount, hann, hgH, hJ0, hJlast, hJsucc, hJkp, hJk_ge, hJk_hom⟩ :=
+    exists_hom_prime_filtration hJhom (le_sup_left : primeOf (S := k) x ≤ J)
 
   have hprimeZ : ∀ l, primeOf (S := k) x ≤ Fl.prime l := fun l => le_sup_left.trans (hann l)
   have hsv : ∀ l, (∃ i, (X i : Poly k N) ∉ Fl.prime l) → ∃ e ≤ d, IsSubvar x (Fl.prime l) e :=
@@ -339,7 +359,7 @@ theorem SectionCount.Drop.Filt.proof (hK : SectionCount.Drop.Filt.Kernel.Stateme
           exact ⟨hrel, hdim_inj (heSv l hrel) (h2 ▸ h.2), h2⟩
       rw [hset]
       have : qq.IsPrime := h.1.1.1
-      have hq := hcount Fl qq h.1
+      have hq := hcount qq h.1
       unfold cutMult
       rw [← hq, ENat.toNat_natCast]
     · rw [dite_eq_right h, hc1 qq, Nat.cast_eq_zero, Finset.card_eq_zero, Finset.filter_eq_empty_iff]

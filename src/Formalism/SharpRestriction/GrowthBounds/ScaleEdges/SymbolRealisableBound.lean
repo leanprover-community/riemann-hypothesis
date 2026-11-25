@@ -30,7 +30,7 @@ theorem isFlat_flW {n' m : ℕ} (d : Fin n' → ℕ) : IsFlat (m := m) (vecE n')
   by_cases hs : Even s.val
   · simp [lamAt, vecE, flW, hs]
   · funext i
-    simp only [lamAt, vecE, flW, hs, if_false, decide_false, Bool.false_eq_true]
+    simp only [lamAt, vecE, flW, hs, ite_false, decide_false, Bool.false_eq_true]
     by_cases hi : i = Fin.last m
     · subst hi
       simp

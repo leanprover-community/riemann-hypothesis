@@ -120,7 +120,6 @@ namespace GlobalTheory.GoodTop
 
 open CorrHolo
 
-set_option autoImplicit false in
 open MeasureTheory Filter Topology in
 open scoped ContDiff Matrix ComplexConjugate in
 private lemma apply_coordVec_eq_sum_coordMat {n : ℕ} (L : _root_.ReciprocityTheory.L2DbarEstimates.V n →L[ℂ] _root_.ReciprocityTheory.L2DbarEstimates.V n)
@@ -128,7 +127,6 @@ private lemma apply_coordVec_eq_sum_coordMat {n : ℕ} (L : _root_.ReciprocityTh
       ∑ c, _root_.GlobalTheory.GoodTop.CorrHolo.coordMat L c a • _root_.GlobalTheory.GoodMetric.coordVec c :=
   _root_.GlobalTheory.LineForm.chain_sum_coordVec _
 
-set_option autoImplicit false in
 open MeasureTheory Filter Topology in
 open scoped ContDiff Matrix ComplexConjugate in
 private lemma mdel_sum_smul_coordVec {n : ℕ} {r : Type}
@@ -138,7 +136,6 @@ private lemma mdel_sum_smul_coordVec {n : ℕ} {r : Type}
   ext i j
   simp [_root_.GlobalTheory.HermFrame.mdel_apply, Matrix.sum_apply]
 
-set_option autoImplicit false in
 open MeasureTheory Filter Topology in
 open scoped ContDiff Matrix ComplexConjugate in
 private lemma mdbar_sum_smul_coordVec {n : ℕ} {r : Type}
@@ -148,7 +145,6 @@ private lemma mdbar_sum_smul_coordVec {n : ℕ} {r : Type}
   ext i j
   simp [_root_.GlobalTheory.HermFrame.mdbar_apply, Matrix.sum_apply]
 
-set_option autoImplicit false in
 open MeasureTheory Filter Topology in
 open scoped ContDiff Matrix ComplexConjugate in
 private lemma mddbar_sum_smul_coordVec {n : ℕ} {r : Type}
@@ -161,7 +157,6 @@ private lemma mddbar_sum_smul_coordVec {n : ℕ} {r : Type}
   simp [_root_.GlobalTheory.HermFrame.mddbar_apply, Matrix.sum_apply, mul_assoc]
   rw [Finset.sum_comm]
 
-set_option autoImplicit false in
 open MeasureTheory Filter Topology in
 open scoped ContDiff Matrix ComplexConjugate in
 private lemma curv_sum_smul_coordVec {n : ℕ} {r : Type} [Fintype r] [DecidableEq r]
@@ -176,7 +171,6 @@ private lemma curv_sum_smul_coordVec {n : ℕ} {r : Type} [Fintype r] [Decidable
     Matrix.transpose_sum, Matrix.transpose_smul, Matrix.mul_sum, Matrix.sum_mul, Matrix.mul_smul,
     Matrix.smul_mul, smul_sub, Finset.sum_sub_distrib, smul_smul, Finset.smul_sum]
 
-set_option autoImplicit false in
 open MeasureTheory Filter Topology in
 open scoped ContDiff Matrix ComplexConjugate in
 private lemma conn_sum_smul {n : ℕ} {r : Type} [Fintype r] [DecidableEq r]
@@ -193,7 +187,6 @@ private lemma conn_sum_smul {n : ℕ} {r : Type} [Fintype r] [DecidableEq r]
   exact Finset.sum_congr rfl fun c _ => _root_.GlobalTheory.HermFrame.conn_smul_vec G z (x c) (v c)
 
 
-set_option autoImplicit false in
 open MeasureTheory Filter Topology in
 open scoped ContDiff Matrix ComplexConjugate in
 theorem _root_.GlobalTheory.GoodTop.corrC_comp_holo {n : ℕ} {r : Type} [Fintype r]

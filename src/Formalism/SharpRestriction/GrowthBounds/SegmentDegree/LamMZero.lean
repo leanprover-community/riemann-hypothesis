@@ -285,9 +285,9 @@ theorem restLamTau : RestLamTau := by
     unfold Frames.IsW
     omega
   unfold Dat.bfam
-  rw [if_pos hmem, if_neg hnW, if_pos h0i]
+  rw [ite_eq_left hmem, ite_eq_right hnW, ite_eq_left h0i]
   rw [Finset.sum_eq_single i]
-  · rw [if_pos rfl]
+  · rw [ite_eq_left rfl]
     unfold Dat.eZ
     rw [dite_eq_left (by omega)]
     congr 1
@@ -296,7 +296,7 @@ theorem restLamTau : RestLamTau := by
     simp only [hm, Int.toNat_natCast]
     exact Nat.mod_eq_of_lt hj
   · intro b _ hb
-    rw [if_neg]
+    rw [ite_eq_right]
     intro h
     apply hb
     have hbl := b.isLt

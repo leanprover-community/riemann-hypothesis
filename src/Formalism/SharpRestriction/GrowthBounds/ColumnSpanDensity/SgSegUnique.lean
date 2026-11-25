@@ -1,5 +1,6 @@
 module
 
+import all Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.IoBlockSupported
 public import Formalism.SharpRestriction.GrowthBounds.ObjSeg
 public import Formalism.SharpRestriction.GrowthBounds.TopChoiceBounds
 import Mathlib.Tactic.Lemma
@@ -16,13 +17,7 @@ variable {n' : ℕ}
 
 theorem sg_cdist (a b : Fin n') :
     cdist a b = if a.val ≤ b.val then b.val - a.val else b.val + n' - a.val := by
-  have ha := a.isLt
-  have hb := b.isLt
-  unfold cdist
-  split_ifs with h
-  · rw [show b.val + n' - a.val = (b.val - a.val) + n' by omega, Nat.add_mod_right,
-      Nat.mod_eq_of_lt (by omega)]
-  · exact Nat.mod_eq_of_lt (by omega)
+  apply _root_.Formalism.MainNotions.ColumnSystems.Pf.cdist_eq_ite <;> assumption
 
 private lemma posAdd_cdist_eq_self (x y : Fin n') : posAdd x (cdist x y) = y := by
   have hx := x.isLt
@@ -90,10 +85,10 @@ theorem sg_seg_unique (TT : Finset (Fin n')) (h2 : 2 ≤ numSeg TT) (j j' : Fin 
   have m2 := bs_min TT h2 j' (segStart TT j) (bs_start_mem TT j).1 (bs_start_mem TT j).2 hs
   have hG1 : segG TT j = cdist (segStart TT j) (segNext TT j) := by
     unfold segG
-    rw [if_neg (by omega)]
+    rw [ite_eq_right (by omega)]
   have hG2 : segG TT j' = cdist (segStart TT j') (segNext TT j') := by
     unfold segG
-    rw [if_neg (by omega)]
+    rw [ite_eq_right (by omega)]
   have A := (sg_pos_spec TT j i).2.2.2.2
   have B := (sg_pos_spec TT j' i').2.2.2.2
   rw [h, hG1] at A

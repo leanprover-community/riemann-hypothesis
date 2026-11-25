@@ -61,8 +61,7 @@ theorem vanish_above (w u : Module.Basis (Fin N) Ω V) (hup : ∀ i j, i < j →
     (hd : ∀ i, w.repr (u i) i ≠ 0) (v : V) (i : Fin N) (hv : ∀ j, i < j → w.repr v j = 0) :
     ∀ j, i < j → u.repr v j = 0 := by
   classical
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hne : (Finset.univ.filter (fun j => i < j ∧ u.repr v j ≠ 0)).Nonempty := by
     obtain ⟨j, hj, hj'⟩ := hcon
     exact ⟨j, Finset.mem_filter.mpr ⟨Finset.mem_univ _, hj, hj'⟩⟩
@@ -87,8 +86,7 @@ theorem exists_basis (w : Module.Basis (Fin N) Ω V) (f : Fin N → V)
   · have hli : LinearIndependent Ω f := by
       rw [Fintype.linearIndependent_iff]
       intro g hg
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       have hne : (Finset.univ.filter (fun j => g j ≠ 0)).Nonempty := by
         obtain ⟨j, hj⟩ := hcon
         exact ⟨j, Finset.mem_filter.mpr ⟨Finset.mem_univ _, hj⟩⟩
@@ -143,10 +141,10 @@ theorem coords_mem {O : Type*} [CommRing O] [Algebra O Ω] (R : Subalgebra O Ω)
           · have hne : (⟨k, hk⟩ : Fin N) ≠ j := fun e => by
               rw [← e] at h
               exact lt_irrefl _ h
-            rw [hv j h, if_neg hne, mul_zero, sub_zero]
+            rw [hv j h, ite_eq_right hne, mul_zero, sub_zero]
           · have he : (⟨k, hk⟩ : Fin N) = j := Fin.ext h
             subst he
-            rw [if_pos rfl, mul_one, sub_self]
+            rw [ite_eq_left rfl, mul_one, sub_self]
         intro i
         have hi := ih _ hv'L hv' i
         rw [hrep i] at hi
@@ -592,7 +590,7 @@ theorem trivFlagOnHodge_of_fargues : GlobalTheory.CompanionTheory.Ar.HT.FarguesH
       have hR : 𝔐.R p - 2 ≠ 0 := by
         have := 𝔐.R_ge p hpS
         omega
-      exact _root_.GlobalTheory.CompanionTheory.Ar.HT.trivFlagMod_of_dvd O Ω K J y _ ϖ _ _ (dvd_pow hpO hR) h2
+      exact _root_.PositivityTheory.HtPt.Gf.trivflag_mono O Ω K J y _ ϖ _ _ (dvd_pow hpO hR) h2
   have hJ := isMultiHomogIdeal_pointIdeal_sup_map_C (ι := J) (O := O) y (IsLocalRing.maximalIdeal O)
   have hWh := GroundTheory.Heights₂.Heights.NumbersDVR.MinimalPrimeMultiHomog.proof.{0} O K J _ W hJ hW.1
   have hCϖ : (C ϖ : GroundTheory.Heights₂.Heights.NumbersDVR.MRing J O) ∈ W :=

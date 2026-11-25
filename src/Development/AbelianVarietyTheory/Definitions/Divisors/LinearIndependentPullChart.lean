@@ -5,47 +5,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.LinearIndepe
 public import Development.AbelianVarietyTheory.Definitions.Divisors.NoCommonZeroCombVal
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IndepBaseChange
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NonemptyHomologyEquiv
-import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.FieldTheory.PurelyInseparable.Exponent
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.TypeStar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
 
 @[expose] public section
@@ -268,9 +227,6 @@ def cval : H0 p B O →ₛₗ[σ] (B.ι → CxPts p σ → ℂ) where
     by_cases h : y ∈ ptsIn p σ (O ⊓ B.U i)
     · exact congrArg (· * _) ((ev_res inf_le_left h _).trans (ev_algX (ptsIn_mono inf_le_left h) c))
     · simp only [Pi.smul_apply, ev_of_notMem h, mul_zero, smul_zero]
-
-theorem cval_eq_val (f : H0 p B O) (i : B.ι) (y : CxPts p σ) (hO : y ∈ ptsIn p σ O) (hi : y ∈ ptsIn p σ (B.U i)) :
-    cval σ f i y = val y.1 i hO hi f := ev_eq (mem_ptsIn_inf.2 ⟨hO, hi⟩) _
 
 theorem cval_ofSec (s : B.Sec) : cval σ (H0.ofSec p ⊤ s) = secVal p σ s := funext₂ fun i y => by
   by_cases h : y ∈ ptsIn p σ (B.U i)

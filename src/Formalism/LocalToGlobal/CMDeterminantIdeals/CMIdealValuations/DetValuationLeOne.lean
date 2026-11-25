@@ -23,14 +23,6 @@ theorem key_formula_link : KeyCoreLink := by
   obtain ⟨u, hu, -⟩ := h3 R K x xK hpb
   exact ⟨u, hu⟩
 
-section Core
-
-end Core
-
-section Lie
-
-end Lie
-
 section Had
 
 variable {K : Type} [Field K] [NumberField K]

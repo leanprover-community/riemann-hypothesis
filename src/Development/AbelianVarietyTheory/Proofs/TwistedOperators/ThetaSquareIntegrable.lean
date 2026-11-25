@@ -67,14 +67,10 @@ theorem cocompact (V W : HSp D) : Cocompact V W := by
   exact ⟨_, hk, QuotientAddGroup.eq.2 (by simpa using hγ)⟩
 
 theorem symplOH_zero_right (w : WO V W) : symplOH V W w 0 = 0 := by
-  have := symplOH_add_right w 0 0
-  rw [add_zero] at this
-  exact left_eq_add.1 this
+  exact GlobalTheory.WeilVacMove.symplOH_zero_right V W w
 
 theorem symplOH_zero_left (w : WO V W) : symplOH V W 0 w = 0 := by
-  have := symplOH_add_left 0 0 w
-  rw [add_zero] at this
-  exact left_eq_add.1 this
+  exact GlobalTheory.FinTranslate.symplOH_zero_left V W w
 
 theorem symplOH_neg_self (u : WO V W) : symplOH V W (-u) u = 0 := by
   have := symplOH_add_left (-u) u u

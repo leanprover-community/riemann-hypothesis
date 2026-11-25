@@ -592,7 +592,6 @@ open AlgebraicGeometry CategoryTheory Limits NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.LogKS Formalism.L2.Pj
 
 set_option autoImplicit false
-attribute [local instance] Over.cartesianMonoidalCategory
 open TensorProduct
 
 namespace GlobalTheory.AbCohFibre
@@ -1251,15 +1250,6 @@ end Data
 
 end GlobalTheory.DeRhamSheaf
 
-namespace GlobalTheory.AffGlue
-
-variable {T : Scheme.{0}}
-
-end GlobalTheory.AffGlue
-
-namespace GlobalTheory.DeRhamSheaf
-
-end GlobalTheory.DeRhamSheaf
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

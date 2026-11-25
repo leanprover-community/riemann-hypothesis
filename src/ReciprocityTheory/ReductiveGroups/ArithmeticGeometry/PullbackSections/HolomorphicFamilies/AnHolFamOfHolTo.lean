@@ -21,8 +21,6 @@ open AlgebraicGeometry CategoryTheory Limits Opposite MonoidalCategory Cartesian
 open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.TB.ValAt
 open scoped ContDiff
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section Lin
 
 variable {g g' : ℕ}
@@ -91,7 +89,6 @@ end Lin
 variable {Y : Scheme.{0}}
 
 
-set_option backward.isDefEq.respectTransparency false in
 theorem jetPt_precompD {g g' : ℕ} (e : (Fin g → ℂ) → (Sp ℂ ⟶ Y)) (e' : (Fin g' → ℂ) → (Sp ℂ ⟶ Y))
     (hol : IsHolFam e) (hol' : IsHolFam e') (h0 : e' 0 = e 0) (m : ℕ)
     (χ : Jet ℂ (Fin 1 × Fin g) m →+* Jet ℂ (Fin 1 × Fin g') m) [hχl : IsLocalHom χ]

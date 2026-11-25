@@ -70,7 +70,7 @@ theorem ae_inPair_nu (L : LocBessel k r) {γ : Matrix (Fin (2 * r + k + 1)) (Fin
     by_cases hx : x ∈ {p : PairSp k r | ¬ InPair L p}
     · rw [Set.indicator_of_mem hx]
       exact key x hx
-    · simp only [Set.indicator, hx, if_false]
+    · simp only [Set.indicator, hx, ite_false]
       exact zero_le
   rw [lintegral_indicator_const hB] at h2
   rw [ae_iff]
@@ -128,7 +128,7 @@ theorem ae_uh_nuR {μG : Measure (Mt k r)} {γ : Matrix (Fin (2 * r + k + 1)) (F
     by_cases hx : x ∈ {x : Mt k r | of x ∉ UH (Hpk k r)}
     · rw [Set.indicator_of_mem hx]
       exact key x hx
-    · simp only [Set.indicator, hx, if_false]
+    · simp only [Set.indicator, hx, ite_false]
       exact zero_le
   rw [lintegral_indicator_const hB] at h2
   rw [ae_iff]

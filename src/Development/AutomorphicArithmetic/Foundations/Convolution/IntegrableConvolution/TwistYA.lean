@@ -299,8 +299,7 @@ section Loc
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
 
 theorem rhoL_adj (w : Pl K) (g : Gw n w) : ContinuousLinearMap.adjoint (rhoL μ w g) = rhoL μ w g⁻¹ := by
-  have := (UpperTheory.ConvolutionTheory.Tf.commPrj K n μ ⊥).2.2.2.2.2.2.2.1 (AdelicGLn.localEmbedding w g)
-  simpa only [rhoL, map_inv] using this
+  exact UpperTheory.ConvolutionTheory.L1.rhoL_adj μ w g
 
 theorem rhoL_comm {v w : Pl K} (h : v ≠ w) (g : Gw n v) (x : Gw n w) : Commute (rhoL μ v g) (rhoL μ w x) := by
   have hm := (UpperTheory.ConvolutionTheory.Tf.commPrj K n μ ⊥).2.2.2.2.2.1
@@ -428,8 +427,7 @@ theorem split_fin (M : Submonoid (normOneGL (K := K) (n := n))) (B : Finset (Pl 
       · rw [(UpperTheory.ConvolutionTheory.Tf.locEmb K n b).2.2.1 w (fun e => hb (e ▸ hw)), h1 w hw, inv_one, one_mul]
 
 theorem rhoL_mul (w : Pl K) (g h : Gw n w) : rhoL μ w (g * h) = rhoL μ w g ∘L rhoL μ w h := by
-  have := (UpperTheory.ConvolutionTheory.Tf.commPrj K n μ ⊥).2.2.2.2.2.1
-  simp only [rhoL, map_mul, this]
+  exact UpperTheory.ConvolutionTheory.L1.rhoL_mul μ w g h
 
 theorem arch_comm (a : archGroup K n) (w : Pl K) (g : Gw n w) :
     Commute (rightRegularRep (rationalGLOne (K := K) (n := n)) μ (archP K n a)) (rhoL μ w g) := by

@@ -58,7 +58,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.TorRef GlobalTheory.PolDeg GlobalTheory.TChart GlobalTheory.UT GlobalTheory.Mum.Two
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.TInj
 
 noncomputable section
@@ -92,15 +91,15 @@ theorem exists_good_closed {V : Type} [CommRing V] [IsDomain V] [IsLocalRing V] 
   refine ⟨fun ψ => if h : ∃ e : Sp V ⟶ D.P.A.left, (TK V).hom ≫ e = ψ then pick (h.choose (closedPoint V))
     else pick (ψ z), fun ψ => ?_, fun e => ?_⟩
   · by_cases h : ∃ e : Sp V ⟶ D.P.A.left, (TK V).hom ≫ e = ψ
-    · simp only [dif_pos h]
+    · simp only [dite_eq_left h]
       have e1 : ψ z = ((TK V).hom ≫ h.choose) z :=
         (congrArg (fun q : (TK V).left ⟶ D.P.A.left => q z) h.choose_spec).symm
       rw [e1]
       exact hsp _ _ _ (hpick _)
-    · simp only [dif_neg h]
+    · simp only [dite_eq_right h]
       exact hpick _
   · have h : ∃ e' : Sp V ⟶ D.P.A.left, (TK V).hom ≫ e' = (TK V).hom ≫ e := ⟨e, rfl⟩
-    simp only [dif_pos h]
+    simp only [dite_eq_left h]
     rw [hinj _ _ h.choose_spec]
     exact hpick _
 

@@ -66,7 +66,7 @@ theorem gSplitX_holds : Formalism.L2.SG.LocVol.GSplitX X := by
     · exact gResCard_holds X p.1 0 h0
     · exact gResCard_holds X p.1 1 (hty.resolve_left h0)
   · unfold Formalism.L2.SG.LocVol.etaV
-    rw [if_pos (split_at_g X p.1 hg)]
+    rw [ite_eq_left (split_at_g X p.1 hg)]
 
 end
 

@@ -137,7 +137,7 @@ theorem modfree_pb (R : Type) [CommRing R] {A' A B' B : Type} (t : A' ⟶ B') (l
       ((ModuleCat.free (ULift.{1} R)).map (uliftFunctor.{1}.map b)) := by
   obtain ⟨w, hinj, hex⟩ := (Types.isPullback_iff _ _ _ _).1 hpb
   have ht : Function.Injective t := fun x y h => hinj x y ⟨h, hb (by
-    have := ConcreteCategory.congr_hom w x; have h2 := ConcreteCategory.congr_hom w y; simp only [ConcreteCategory.comp_apply, types_comp_apply] at this h2
+    have := ConcreteCategory.congr_hom w x; have h2 := ConcreteCategory.congr_hom w y; simp only [ConcreteCategory.comp_apply] at this h2
     rw [← this, ← h2, h])⟩
   have hw : ∀ a : ULift.{1} A', ULift.up (r (t a.down)) = ULift.up (b (l a.down)) := fun a => by
     have := ConcreteCategory.congr_hom w a.down; simp only [ConcreteCategory.comp_apply] at this; rw [this]

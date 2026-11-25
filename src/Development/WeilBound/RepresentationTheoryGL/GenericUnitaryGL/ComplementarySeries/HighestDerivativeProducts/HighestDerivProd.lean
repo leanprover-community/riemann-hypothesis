@@ -33,56 +33,11 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PhiGpCom
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PhiPgCommutationHolds
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ResidueSequenceHolds
 public import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.ComplementarySeries.HighestDerivativeProducts.IsSmoothCharDpowM
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsPolyBallOfCompact
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsMemTwKerPolyBall
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.RingTheory.SimpleRing.Principal
 import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.LeibnizOrders.ProdGPn
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DerivativeOfProductInducedIso
 import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
@@ -199,8 +154,8 @@ theorem bumpF_fix (p m : GL (Fin n) k) (v a : Fin n → k) (h1 : IntM m) (h2 : I
       rw [ofAdd_add]
       exact mul_mem (h2.mulVec_mem h) ha
   by_cases hv : Multiplicative.ofAdd v ∈ polyBall (k := k) n s
-  · rw [if_pos hv, if_pos (hiff.2 hv)]
-  · rw [if_neg hv, if_neg (fun c => hv (hiff.1 c))]
+  · rw [ite_eq_left hv, ite_eq_left (hiff.2 hv)]
+  · rw [ite_eq_right hv, ite_eq_right (fun c => hv (hiff.1 c))]
 
 def nbhd : Set (Mir k n) :=
   {x | IntM (mirabolicProjection k n x) ∧ IntM (mirabolicProjection k n x)⁻¹ ∧ ρ (lv k n (mirabolicProjection k n x)) e = e ∧
@@ -249,7 +204,7 @@ theorem bumpF_support : ∃ C : Set (Mir k n), IsCompact C ∧ ∀ g, bumpF ρ s
     (isCompact_polyBall n s).image (continuous_unipIn n), fun g hg => ?_⟩
   have hL : Multiplicative.ofAdd (mvec g) ∈ polyBall (k := k) n s := by
     by_contra hc
-    exact hg (if_neg hc)
+    exact hg (ite_eq_right hc)
   exact ⟨levi k n (mirabolicProjection k n g), ⟨_, rfl⟩, uv n (mvec g), ⟨_, hL, rfl⟩, decomp g⟩
 
 theorem exists_bump_restr : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
@@ -317,8 +272,8 @@ theorem exists_finset_eq_sum_polyBall_translates :
   rw [Finset.sum_image (fun a _ b _ h => hf h)]
   by_cases hv : q (Multiplicative.ofAdd v) ∈ T.image q
   · rw [Finset.sum_eq_single_of_mem _ hv
-      (fun b _ hb => if_neg (fun h => hb ((hmem v b).1 h).symm)),
-      if_pos ((hmem v _).2 rfl), hval]
+      (fun b _ hb => ite_eq_right (fun h => hb ((hmem v b).1 h).symm)),
+      ite_eq_left ((hmem v _).2 rfl), hval]
   · have h0 : φ v = 0 := by
       by_contra hne
       obtain ⟨x, hx, y, hy, hxy⟩ := Set.mem_iUnion₂.1 (hT (hsupp v hne))
@@ -328,7 +283,7 @@ theorem exists_finset_eq_sum_polyBall_translates :
         simpa using hy
       exact QuotientGroup.eq.2 hxv
     rw [h0]
-    refine (Finset.sum_eq_zero fun b hb => if_neg fun h => hv ?_).symm
+    refine (Finset.sum_eq_zero fun b hb => ite_eq_right fun h => hv ?_).symm
     rw [(hmem v b).1 h]
     exact hb
 
@@ -513,11 +468,11 @@ theorem exists_twisted_integral : ∀ (k : Type) [Field k] [ValuativeRel k] [Top
         by_cases hv : Multiplicative.ofAdd v ∈ polyBall (k := k) (N + 1) s
         · have h1 : ψ (v (Fin.last N)) = 1 := hs v hv
           simp only [tw]
-          rw [hb v, if_pos hv, Set.indicator_of_mem (show v ∈ {a | Multiplicative.ofAdd a ∈ polyBall (k := k) (N + 1) s} from hv),
+          rw [hb v, ite_eq_left hv, Set.indicator_of_mem (show v ∈ {a | Multiplicative.ofAdd a ∈ polyBall (k := k) (N + 1) s} from hv),
             AddChar.map_neg_eq_inv, h1]
           simp
         · simp only [tw]
-          rw [hb v, if_neg hv, Set.indicator_of_notMem (show v ∉ {a | Multiplicative.ofAdd a ∈ polyBall (k := k) (N + 1) s} from hv),
+          rw [hb v, ite_eq_right hv, Set.indicator_of_notMem (show v ∉ {a | Multiplicative.ofAdd a ∈ polyBall (k := k) (N + 1) s} from hv),
             smul_zero]
       rw [hT, e', smInt_indicator]
 
@@ -568,27 +523,7 @@ theorem restr_periodic (ρ : Representation ℂ (LH k n) E) (f : cIndSpace (LH k
   exact congrFun (congrArg Subtype.val h1) (uv n v)
 
 theorem continuous_mvec (n : ℕ) : Continuous (mvec (k := k) (n := n)) := by
-  have hval : Continuous fun g : Mir k n =>
-      ((g : GL (Fin (n + 1)) k) : Matrix (Fin (n + 1)) (Fin (n + 1)) k) :=
-    Units.continuous_val.comp continuous_subtype_val
-  have hblock : Continuous fun g : Mir k n =>
-      ((mirabolicProjection k n g : GL (Fin n) k) : Matrix (Fin n) (Fin n) k) := by
-    refine continuous_pi fun i => continuous_pi fun j => ?_
-    exact (continuous_apply (Fin.castSucc j)).comp ((continuous_apply (Fin.castSucc i)).comp hval)
-  have h1 : Continuous fun g : Mir k n =>
-      (((mirabolicProjection k n g)⁻¹ : GL (Fin n) k) : Matrix (Fin n) (Fin n) k) := by
-    have hinv : Continuous fun g : Mir k n => g⁻¹ := continuous_inv
-    have heq : (fun g : Mir k n =>
-        (((mirabolicProjection k n g)⁻¹ : GL (Fin n) k) : Matrix (Fin n) (Fin n) k)) =
-        fun g => ((mirabolicProjection k n g⁻¹ : GL (Fin n) k) : Matrix (Fin n) (Fin n) k) := by
-      funext g
-      rw [map_inv]
-    rw [heq]
-    exact hblock.comp hinv
-  have h2 : Continuous (colv (k := k) (n := n)) := by
-    refine continuous_pi fun i => ?_
-    exact hval.matrix_elem _ _
-  exact h1.matrix_mulVec h2
+  apply _root_.GlobalTheory.CompanionTheory.MirLevi.Bump.continuous_mvec <;> assumption
 
 theorem support_abs (F : Mir k n → E) (C : Set (Mir k n))
     (hF : ∀ g, F g ≠ 0 → ∃ h ∈ LH k n, ∃ c ∈ C, g = h * c) (v : Fin n → k) (hv : F (uv n v) ≠ 0) :

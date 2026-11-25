@@ -21,7 +21,6 @@ section -- clump:auto
 
 open NumberField Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Matrix
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Published GlobalTheory.Published.AutFin GlobalTheory.StdPar GlobalTheory.ThK.SmoothLev GlobalTheory.CompanionTheory.Hypotheses₂.ConstFin GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart
 open GlobalTheory.UAut GlobalTheory.AdelicU GlobalTheory.SiegelSet
 
@@ -137,14 +136,14 @@ theorem conj_frame {n m l d : ℕ} (hnm : 2 * m ≤ n) (hld : l + d ≤ m) (P Pi
       rw [← hPw, Matrix.mulVec_mulVec] at h1
       have h2 : ((R * P) *ᵥ w) i = ∑ c, (R * P) i c * w c := rfl
       rw [h2, Finset.sum_eq_single b] at h1
-      · rw [hR, if_pos (by show b.val + (n - 1 - b.val) + 1 = n; omega), one_mul] at h1
+      · rw [hR, ite_eq_left (by show b.val + (n - 1 - b.val) + 1 = n; omega), one_mul] at h1
         exact h1
       · intro c _ hc
         have : c.val + i.val + 1 ≠ n := by
           have : i.val = n - 1 - b.val := rfl
           intro h
           exact hc (Fin.ext (by omega))
-        rw [hR, if_neg this, zero_mul]
+        rw [hR, ite_eq_right this, zero_mul]
       · simp
     set y := N₀ *ᵥ w with hy
     have hysupp : ∀ i : Fin n, y i ≠ 0 → i.val < l + d := by
@@ -210,10 +209,10 @@ theorem frame_pairing {F E : Type} [Field F] [NumberField F] [Field E] [NumberFi
   have hi := i.2
   have hb := b.2
   by_cases h1 : b.val < r
-  · rw [col X ⟨b.val, h1⟩ (hC.colX b ⟨b.val, h1⟩ rfl), hW.xx, if_neg (by omega)]
+  · rw [col X ⟨b.val, h1⟩ (hC.colX b ⟨b.val, h1⟩ rfl), hW.xx, ite_eq_right (by omega)]
     rfl
   · by_cases h2 : b.val + r < n
-    · rw [if_neg (by omega)]
+    · rw [ite_eq_right (by omega)]
       exact congrFun (hC.perpX b (by omega) h2) i
     · let j : Fin r := ⟨n - 1 - b.val, by omega⟩
       have hj : j.val = n - 1 - b.val := rfl
@@ -311,20 +310,9 @@ section -- clump:auto
 
 open NumberField Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Matrix
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Published GlobalTheory.Published.AutFin GlobalTheory.StdPar GlobalTheory.ThK.SmoothLev GlobalTheory.CompanionTheory.Hypotheses₂.ConstFin GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart
 open GlobalTheory.UAut GlobalTheory.AdelicU GlobalTheory.SiegelSet
 
-theorem _root_.GlobalTheory.T.adapted_basis_block_entries : ∀ (D : D7) (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)), IsInfFam θ →
-    ∀ (V : HSp D) (m : ℕ) (X Y : Matrix (Fin V.rank) (Fin m) D.host.E),
-    IsWittFrame D.sp.cm.sig V.gram X Y → ∀ (T : Finset (Fin m)) (l d : ℕ), l + d ≤ m →
-    (∃ k ∈ T, k.val + 1 = l + d) → (l = 0 ∨ ∃ p ∈ T, p.val + 1 = l) →
-    ∀ C : GL (Fin V.rank) D.host.E, GlobalTheory.BlockForms.IsAdapted D.sp.cm.sig V.gram X Y C → ∀ (τ : D.what₂.Tau)
-    (A : Matrix (Fin V.rank) (Fin V.rank) ℂ), A ∈ lieAt V τ →
-    (∀ a b : Fin V.rank, ((C.1.map (tauE D τ))⁻¹ * A * C.1.map (tauE D τ)) a b ≠ 0 →
-      ∃ e : ℕ, (e = l ∨ e = l + d ∨ e + l + d = V.rank ∨ e + l = V.rank) ∧ a.val < e ∧ e ≤ b.val) →
-    ∀ t : ℝ, oneP θ V τ A t ∈ unip D.sp.cm.sig V.gram X T := by
-  first | exact @GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UnipOne.oneP_mem_unip
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GlobalProofs.AdaptedBasisConjugateZeroEntriesStatement =====

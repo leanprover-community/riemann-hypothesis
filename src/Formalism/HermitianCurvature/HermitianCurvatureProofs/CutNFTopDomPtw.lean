@@ -66,7 +66,7 @@ theorem unfolding_top_term_holds : NFUnfoldTop := by
     simp [TBB.normC]
   have hRR : p.RR H (P.r + 1) w (TBB.bigPt P.r c) (TBB.bigPt P.r c) =
       Top.topOf P p.l0 p.T p.ν' p.m₀ p.Θ p.TP H w (TBB.bigPt P.r c) (TBB.bigPt P.r c) := by
-    rw [KB.Pl.RR, D.RRplace, dite_eq_left ⟨hloc, hloc⟩, dite_eq_right (Nat.not_succ_le_self _), if_pos rfl, if_neg hw]
+    rw [KB.Pl.RR, D.RRplace, dite_eq_left ⟨hloc, hloc⟩, dite_eq_right (Nat.not_succ_le_self _), ite_eq_left rfl, ite_eq_right hw]
   show (TBB.NP p (fun _ => 1) H (P.r + 1) w (TBB.bigPt P.r c) (TBB.bigPt P.r c)).re = _
   rw [TBB.NP, hn, div_one, hRR, Top.topOf, Complex.re_ofReal_mul]
   congr 1

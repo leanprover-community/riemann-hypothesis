@@ -95,7 +95,7 @@ theorem gap_comp_swap {Ψ : Type} [DecidableEq Ψ] {N : ℕ} (τ : Ψ) (a b : Fi
   have hab : (a : ℕ) + 1 < N := hb ▸ b.2
   have hbe : (⟨(a : ℕ) + 1, hab⟩ : Fin N) = b := Fin.ext hb.symm
   have hu : gap lam (τ, a) = lam (τ, a) - lam (τ, b) := by
-    rw [gap_eq_weight_sub_next]; simp only [hab, dif_pos, hbe]
+    rw [gap_eq_weight_sub_next]; simp only [hab, dite_eq_left, hbe]
   have hsw : ∀ q : Ψ × Fin N, (lam ∘ Equiv.swap (τ, a) (τ, b)) q =
       lam q + (if q.1 = τ then (if (q.2 : ℕ) = a + 1 then 1 else 0) - (if (q.2 : ℕ) = a then 1 else 0) else 0)
         * (lam (τ, a) - lam (τ, b)) := by
@@ -207,7 +207,6 @@ theorem linePoly_formPoly {σ : Type} [Fintype σ] (D : ℕ) (b : (Fin D → σ)
   rw [show -u / 2 = 1 / 2 * -u by ring, mul_pow]
   ring
 
-
 open Classical in
 noncomputable def mixPoly {σ : Type} [Fintype σ] (n : ℕ) (a : (Fin n → σ) → ℝ) (k : ℕ) (e : σ → ℝ) (a₀ : σ) :
     MvPolynomial σ ℝ :=
@@ -311,7 +310,7 @@ theorem PositivityTheory.Xgp.t_thma_alg : ∀ (σ : Type) [Fintype σ] (D : ℕ)
     intro f hf
     have hbig : ∀ n, D + 1 ≤ n → Pl.coeff n = 0 := by
       intro n hn
-      rw [hcoeff, if_neg (by omega)]
+      rw [hcoeff, ite_eq_right (by omega)]
     rw [Finset.sum_subset (Finset.range_mono (Nat.le_add_right (Pl.natDegree + 1) (D + 1)))
         (fun n hn hn' => hf n (Polynomial.coeff_eq_zero_of_natDegree_lt (by simp at hn hn'; omega))),
       Finset.sum_subset (Finset.range_mono (Nat.le_add_left (D + 1) (Pl.natDegree + 1)))
@@ -326,11 +325,11 @@ theorem PositivityTheory.Xgp.t_thma_alg : ∀ (σ : Type) [Fintype σ] (D : ℕ)
   rw [Finset.mem_range] at hn
   rcases Nat.even_or_odd n with ⟨m, rfl⟩ | ⟨m, rfl⟩
   · have hno : ¬ Odd (m + m) := Nat.not_odd_iff_even.mpr ⟨m, rfl⟩
-    rw [if_neg hno, Odd.neg_pow ⟨m, by ring⟩]
+    rw [ite_eq_right hno, Odd.neg_pow ⟨m, by ring⟩]
     simp
   · have e1 : (2 * m + 1 + 1) / 2 = m + 1 := by omega
     have e2 : 2 * m + 1 + 1 = 2 * m + 2 := by ring
-    rw [if_pos (odd_two_mul_add_one m), e1, hcoeff, if_pos hn, e2, hPk m hn, Even.neg_pow ⟨m + 1, by ring⟩]
+    rw [ite_eq_left (odd_two_mul_add_one m), e1, hcoeff, ite_eq_left hn, e2, hPk m hn, Even.neg_pow ⟨m + 1, by ring⟩]
     have hch := succ_mul_choose_odd_eq_choose_succ_mul D m
     simp only [Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_pow, Polynomial.eval_X]
     push_cast
@@ -359,12 +358,6 @@ section -- clump:auto
 
 open MvPolynomial MeasureTheory Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
 
-namespace GlobalTheory.CompanionTheory.Ar.PB
-
-theorem coefficient_identities_give_operator_identity : ∀ (σ : Type) [Fintype σ] (D : ℕ) (a : (Fin (D + 1) → σ) → ℝ) (b : (Fin D → σ) → ℝ) (κ : ℕ → ℝ) (ε : σ → ℤ) (a₀ : σ), (∀ (π : Equiv.Perm (Fin (D + 1))) w, a (w ∘ π) = a w) → (∀ (π : Equiv.Perm (Fin D)) w, b (w ∘ π) = b w) → (∀ n : σ → ℤ, n a₀ = 0 → polar (D + 1) a (fun _ x => (n x : ℝ)) = 0 ∧ ∀ k : ℕ, 1 ≤ k → 2 * k ≤ D + 1 → polar (D + 1) a (mix (2 * k) (fun x => (ε x : ℝ)) fun x => (n x : ℝ)) = -(2 * κ k) * polar D b (mix (2 * k - 1) (fun x => (ε x : ℝ)) fun x => (n x : ℝ))) → ∀ (c : σ → ℝ), c a₀ = 0 → ∀ u : ℝ, eval (fun x => c x - u / 2 * ε x) (formPoly (D + 1) a) + eval (fun x => c x + u / 2 * ε x) (formPoly (D + 1) a) = (tsgPoly D κ (linePoly c ε (formPoly D b))).eval u :=
-  @PositivityTheory.Xgp.t_thma_alg
-
-end GlobalTheory.CompanionTheory.Ar.PB
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.MetricProofs.PolarIdentityFromSymmetricForms =====
@@ -488,7 +481,6 @@ def EY {d : ℕ} (G : (Fin d → ℂ) → Matrix (Fin 2) (Fin 2) ℂ) (α : (Fin
 
 end SqFubini
 
-
 end GlobalTheory.CompanionTheory.Ar.PB
 end -- clump:auto
 end -- clump:auto
@@ -533,7 +525,6 @@ theorem word_map {V W : Type} (f : V → W) (D k i : ℕ) (x y a : V) :
   split_ifs <;> rfl
 
 def i0 (c : σ → ℤ) : Option σ → ℤ := fun o => o.elim 0 c
-
 
 open Classical in
 def i1 (a₀ : σ) (c : σ → ℤ) : Option σ → ℤ :=
@@ -819,7 +810,7 @@ theorem pts_eq_polar (hE : ResExistsStatement) (Q : SqSys Re a₀ ε) {t : ℝ} 
     have hxZ : x ∉ Z := fun h => hx (Or.inr h)
     rw [hAm _ (Q.ReW.R.mem x x (Q.ReW.R.mem_U x)) hxZ, hNe t ht ht' x hxN]
     rfl
-  have hbr := _root_.GlobalTheory.CompanionTheory.Ar.PB.ptsIntegral_logNormRat_eq_base hE _ _ Q.alg.PW Q.ReW.J (d + 2) Q.ReW.R Q.an.SW.X Q.an.SW.A Q.ReW.π Q.ReW.holo
+  have hbr := _root_.PositivityTheory.Xgp.t_re_bridge hE _ _ Q.alg.PW Q.ReW.J (d + 2) Q.ReW.R Q.an.SW.X Q.an.SW.A Q.ReW.π Q.ReW.holo
     Q.ReW.deg Q.ReW.br Q.alg.arithW Q.ReW.degree (fun j => combLine (fun o => Q.ReW.line o t) (c j)) Φ
     hsmooth hΦ hSame Am Q.alg.g Q.alg.h (Q.an.gT t) (N ∪ Z) hAmS hRat hN' hEq hexp.1
   rw [hbr, Q.deg_eq]
@@ -831,7 +822,6 @@ end Main
 end GlobalTheory.CompanionTheory.Ar.PB.SqAt
 
 namespace GlobalTheory.CompanionTheory.Ar.PB
-
 
 open GlobalTheory.CompanionTheory.Ar.PB.SqAt in
 theorem first_half_at_scale : Inputs → ∀ (II : IntersectionSystem), IsFullIntersectionSystem II →
@@ -876,7 +866,7 @@ theorem first_half_at_scale : Inputs → ∀ (II : IntersectionSystem), IsFullIn
   have hpol : ∀ c : Fin (d + 2) → σ → ℤ, polar (d + 2) (Re.num II t) (fun r a => (c r a : ℝ)) =
       II K ι P (d + 2) (fun r => combLine LY (c r)) / Re.deg := by
     intro c
-    rw [(_root_.GlobalTheory.CompanionTheory.Ar.PB.combLine_intersection hI.metricLocal II hII K ι σ P (d + 2) LY c Re.arith hsY).2]
+    rw [(_root_.PositivityTheory.Xgp.t_re_comb hI.metricLocal II hII K ι σ P (d + 2) LY c Re.arith hsY).2]
     exact polar_div _ _ _ _
   let Xi : HermLine ι := combLine LY ε
   let A : HermLine ι := combLine LY n
@@ -1029,7 +1019,7 @@ theorem thmA_limit : Inputs → GroundTheory.Heights₂.Heights.Inter.FibreLocal
   have hlim := (hAg II hII K ι P Re).1
   have hev : ∀ᶠ t in 𝓝[>] (0 : ℝ), 0 < t ∧ t ≤ Q.an.SW.t₀ := by
     filter_upwards [Ioc_mem_nhdsGT hposW] with t ht using ⟨ht.1, ht.2⟩
-  refine _root_.GlobalTheory.CompanionTheory.Ar.PB.coefficient_identities_give_operator_identity σ (d + 1) (Re.limNum II) SY.degNum kappa ε a₀ (Re.limNum_perm hII hpos)
+  refine _root_.PositivityTheory.Xgp.t_thma_alg σ (d + 1) (Re.limNum II) SY.degNum kappa ε a₀ (Re.limNum_perm hII hpos)
     SY.degNum_perm (fun n hn => ?_) c hc u
   have hsq := _root_.GlobalTheory.CompanionTheory.Ar.PB.first_half_at_scale hI II hII K ι d σ SY P Re a₀ ε Q n hn
   refine ⟨?_, fun k hk hk2 => ?_⟩
@@ -1231,16 +1221,8 @@ section -- clump:auto
 
 open MvPolynomial MeasureTheory Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
 
-namespace PositivityTheory.Xgp.tsg_smul
-
-theorem toWt_inj (Ψ : Type) (N : ℕ) :
-    Function.Injective (toWt : MvPolynomial (Ψ × Fin N) ℝ → MvPolynomial (Ψ × Fin N) ℝ) := by
-  apply GlobalTheory.CompanionTheory.Ar.Top.FlDeg.toWt_leftInverse_injective
-
-end PositivityTheory.Xgp.tsg_smul
-
 theorem PositivityTheory.Xgp.t_tsg_smul : (∀ (D : ℕ) (κ : ℕ → ℝ) (v : ℝ) (Q : Polynomial ℝ), tsgPoly D κ (Polynomial.C v * Q) = Polynomial.C v * tsgPoly D κ Q) ∧ (∀ (σ : Type) (c : σ → ℝ) (e : σ → ℤ) (v : ℝ) (Q : MvPolynomial σ ℝ), linePoly c e (C v * Q) = Polynomial.C v * linePoly c e Q) ∧ ∀ (Ψ : Type) (N : ℕ), Function.Injective (toWt : MvPolynomial (Ψ × Fin N) ℝ → MvPolynomial (Ψ × Fin N) ℝ) := by
-  refine ⟨?_, ?_, fun Ψ N => PositivityTheory.Xgp.tsg_smul.toWt_inj Ψ N⟩
+  refine ⟨?_, ?_, fun Ψ N => GlobalTheory.CompanionTheory.Ar.Top.FlDeg.toWt_leftInverse_injective Ψ N⟩
   · intro D κ v Q
     by_cases hv : v = 0
     · subst hv
@@ -1264,13 +1246,6 @@ section -- clump:auto
 
 open MvPolynomial MeasureTheory Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
 
-namespace GlobalTheory.CompanionTheory.Ar.PB
-
-theorem tsgPoly_linePoly_smul_toWt_injective :
-    (∀ (D : ℕ) (κ : ℕ → ℝ) (v : ℝ) (Q : Polynomial ℝ), tsgPoly D κ (Polynomial.C v * Q) = Polynomial.C v * tsgPoly D κ Q) ∧ (∀ (σ : Type) (c : σ → ℝ) (e : σ → ℤ) (v : ℝ) (Q : MvPolynomial σ ℝ), linePoly c e (C v * Q) = Polynomial.C v * linePoly c e Q) ∧ ∀ (Ψ : Type) (N : ℕ), Function.Injective (toWt : MvPolynomial (Ψ × Fin N) ℝ → MvPolynomial (Ψ × Fin N) ℝ) :=
-  PositivityTheory.Xgp.t_tsg_smul
-
-end GlobalTheory.CompanionTheory.Ar.PB
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.MetricProofs.WeightTransformInjectiveLinear =====
@@ -1320,7 +1295,7 @@ theorem antisymmetry : Antisymmetry := by
     exact tendsto_const_nhds.limUnder_eq
 
   have hdegS : S.degPoly = C (volOf S) * S₀.degPoly := by
-    apply (_root_.GlobalTheory.CompanionTheory.Ar.PB.tsgPoly_linePoly_smul_toWt_injective).2.2 Ψ N
+    apply (_root_.PositivityTheory.Xgp.t_tsg_smul).2.2 Ψ N
     rw [hS, map_mul, hdeg0]
     congr 1
     simp [toWt, MvPolynomial.algebraMap_eq]
@@ -1343,7 +1318,7 @@ theorem antisymmetry : Antisymmetry := by
   have e0 := _root_.GlobalTheory.CompanionTheory.Ar.PB.thmA_swap hIn II hII Ψ N d S₀ (FlBlock Ψ N) (FlIdx Ψ N) (PFl Ψ N) Re₀ τ a b hab
     (hF₀.sq τ a b hab (Or.inl b.isLt)) lam
   rw [hPB0] at e0
-  rw [hdegS, (_root_.GlobalTheory.CompanionTheory.Ar.PB.tsgPoly_linePoly_smul_toWt_injective).2.1, (_root_.GlobalTheory.CompanionTheory.Ar.PB.tsgPoly_linePoly_smul_toWt_injective).1, Polynomial.eval_mul, Polynomial.eval_C, ← e0] at e1
+  rw [hdegS, (_root_.PositivityTheory.Xgp.t_tsg_smul).2.1, (_root_.PositivityTheory.Xgp.t_tsg_smul).1, Polynomial.eval_mul, Polynomial.eval_C, ← e0] at e1
   simp only [map_sub, smul_eval]
   linarith
 
@@ -1378,7 +1353,7 @@ theorem sq_of (hT : StTie) (hCmp : StCmp) : StSq := by
   obtain ⟨M', t, d, S, K, _, ι, _, P, Re, hgen, hR, hdeg, hpos, hS, hF, hPB⟩ :=
     hT hG hW E H D l (Xo l) c Y (o.S B) _ (o.Or B a).𝔐.ξ₀ (o.Or B a).𝔐.gen₀ (o.Or B a).𝔐.S_prime hdisc hp hq
   obtain ⟨-, ⟨x, hx⟩, -⟩ := HodgeCpt.basic _ _ _ _ _ _ _ _ Y _ _ _ _ _ (o.Or B a).𝔐 RingOfIntegers.coe_injective
-  have hA := _root_.GlobalTheory.CompanionTheory.Ar.RootAlg.algOver_of_immersion E H D l (Xo l) c (𝓞 c.F) _ Y (o.S B) (T.M B a) (o.Sys a) (o.Fx a) (o.Or B a) x hx hmono (hX.1 a)
+  have hA := _root_.PositivityTheory.UnitarySelfGeneration.o_algover E H D l (Xo l) c (𝓞 c.F) _ Y (o.S B) (T.M B a) (o.Sys a) (o.Fx a) (o.Or B a) x hx hmono (hX.1 a)
   obtain ⟨f₁, f₂⟩ := hCmp hIn hC II hII E H D l (Xo l) c _ _ Y _ _ _ _ t
     (RootFieldNumerics.Sq.tieOf (o.Or B a) ((o.Sys a).reg none).1 (o.omVB B a) t.discr hA) hmono hgen
     (fun p hp => (hX.2 B a p hp).trans (hR p hp).symm) hdeg (o.Or B a).Re_deg

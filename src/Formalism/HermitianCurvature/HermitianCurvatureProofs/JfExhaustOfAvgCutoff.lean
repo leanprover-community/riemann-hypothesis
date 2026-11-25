@@ -38,7 +38,3 @@ theorem om_sub_gv (z z' : Fin (2 * r + k + 1) → ℂ) : Om k r z z' ⊆ GV k r 
   exact Set.inter_subset_left
 
 end Formalism.FourierDecayAlt.P.JFxI
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

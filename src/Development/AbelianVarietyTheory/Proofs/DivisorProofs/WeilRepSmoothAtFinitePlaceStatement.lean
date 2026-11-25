@@ -74,8 +74,6 @@ open IsDedekindDomain NumberField MeasureTheory Matrix Filter Topology
 open scoped TensorProduct
 open GlobalTheory.FunObj GlobalTheory.ChiGrid GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.StdFrames Formalism.L2.DIV
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
-
 open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun
 open ValuativeRel
 
@@ -283,7 +281,7 @@ theorem span_finiteDimensional_of_bounded_forms {V : Type} [AddCommGroup V] [Mod
       rw [← hb, Module.Basis.constr_basis]
       have h : ∃ j : ℕ, ((e j : t) : V) = ((⟨_, hmem⟩ : hli'.extend (Set.subset_univ t)) : V) :=
         ⟨k, rfl⟩
-      simp only [v, dif_pos h]
+      simp only [v, dite_eq_left h]
       have hj : h.choose = k := e.injective (Subtype.ext h.choose_spec)
       rw [hj]
     obtain ⟨k, hk⟩ := exists_nat_gt C
@@ -308,8 +306,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open IsDedekindDomain NumberField MeasureTheory Matrix Filter Topology
 open scoped TensorProduct
 open GlobalTheory.FunObj GlobalTheory.ChiGrid GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.StdFrames Formalism.L2.DIV
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
 
 open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun
 open ValuativeRel
@@ -459,7 +455,7 @@ theorem weil_smooth_at : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [N
     if hx : x ∈ H then (locOp v R (om x)).restrict (fun ψ hψ => (key x hx ψ hψ).1) else LinearMap.id
   have hS : ∀ x (hx : x ∈ H) (ψ : V), ((S x ψ : V) : (Fin n × Fin d → Fv F v) → ℂ) = locOp v R (om x) ψ := by
     intro x hx ψ
-    simp only [S, dif_pos hx]
+    simp only [S, dite_eq_left hx]
     rfl
   have hmul : ∀ x ∈ H, ∀ y ∈ H, S (x * y) = S x * S y := by
     intro x hx y hy
@@ -522,8 +518,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open IsDedekindDomain NumberField MeasureTheory Matrix Filter Topology
 open scoped TensorProduct
 open GlobalTheory.FunObj GlobalTheory.ChiGrid GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.StdFrames Formalism.L2.DIV
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
 
 open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun
 open ValuativeRel

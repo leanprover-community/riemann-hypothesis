@@ -321,9 +321,9 @@ theorem lift_cpt_finite : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyRea
     rw [ite_apply] at h
     exact h
   have h1 : ∀ v, x.val 0 0 v ^ 2 + x.val 0 1 v ^ 2 = 1 := fun v => by
-    have := hr v 0 0; simp only [if_true] at this; linear_combination this
+    have := hr v 0 0; simp only [ite_true] at this; linear_combination this
   have h2 : ∀ v, x.val 1 0 v ^ 2 + x.val 1 1 v ^ 2 = 1 := fun v => by
-    have := hr v 1 1; simp only [if_true] at this; linear_combination this
+    have := hr v 1 1; simp only [ite_true] at this; linear_combination this
   have h3 : ∀ v, x.val 0 0 v * x.val 1 0 v + x.val 0 1 v * x.val 1 1 v = 0 := fun v => by simpa using hr v 0 1
   change TR.cptRep F 2 r φ ∈ _
   rw [e]
@@ -334,10 +334,10 @@ theorem lift_cpt_finite : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyRea
     fin_cases i <;> fin_cases j <;> simp [epsG, Matrix.mul_apply, Fin.sum_univ_two]
   have hs : ∀ v, x.val 1 0 v = -(sg s v * x.val 0 1 v) ∧ x.val 1 1 v = sg s v * x.val 0 0 v := fun v => by
     by_cases h : x.val 1 0 v = -x.val 0 1 v ∧ x.val 1 1 v = x.val 0 0 v
-    · have : sg s v = 1 := by simp only [sg, s, decide_eq_true_eq]; exact if_pos h
+    · have : sg s v = 1 := by simp only [sg, s, decide_eq_true_eq]; exact ite_eq_left h
       rw [this, one_mul, one_mul]
       exact h
-    · have : sg s v = -1 := by simp only [sg, s, decide_eq_true_eq]; exact if_neg h
+    · have : sg s v = -1 := by simp only [sg, s, decide_eq_true_eq]; exact ite_eq_right h
       rw [this]
       have := (orth_cases (h1 v) (h2 v) (h3 v)).resolve_left h
       exact ⟨by linear_combination this.1, by linear_combination this.2⟩

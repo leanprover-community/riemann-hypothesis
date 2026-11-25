@@ -78,7 +78,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl NumberField IsDedekindDomain
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.Mem.Top.Bl.QpIsOf
 
@@ -218,8 +217,6 @@ namespace GlobalTheory.Mem.Top.DivRec
 
 open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links GlobalTheory.Mem.R3
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type} {A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat3 D A3 Ks} {F : Face3 D A3}
   {cG : G0 R.Pg D.R.r ≃* G0g D.nd} {X0 : BaseLevelRowSide D} {Y : Read (A3 := A3) R.toRealDat F.lv2 X0}
@@ -248,8 +245,8 @@ def logLamOf (Z : ReadL R F X0 Y) (hH : Holds R F) (j : ℕ) (σ : D.what₂.FT)
 theorem lamAre_of_eq (Z : ReadL R F X0 Y) (hH : Holds R F) (Xd : DivX D) (hX : Xd.logLam = logLamOf Z hH) : Bl.LamAre Z Xd := by
   refine ⟨labOf Z hH, overIx_labOf Z hH, fun i σ e he => ?_⟩
   have h : (i : ℕ) + 1 - 1 < D.R.m := i.2
-  rw [hX, logLamOf, if_neg he, dite_eq_left h]
-  exact ⟨fun h0 => if_neg h0, fun h0 => if_pos h0⟩
+  rw [hX, logLamOf, ite_eq_right he, dite_eq_left h]
+  exact ⟨fun h0 => ite_eq_right h0, fun h0 => ite_eq_left h0⟩
 
 def x0 (Z : ReadL R F X0 Y) (hP : Pins R F cG) (hH : Holds R F) : DivX D where
   geo := Formalism.BasicNotions.Examples₂.geoExample _
@@ -283,7 +280,7 @@ def x0 (Z : ReadL R F X0 Y) (hP : Pins R F cG) (hH : Holds R F) : DivX D where
   Lw := fun _ c => c.elim
   iMj := fun _ c => c.elim
   logLam := logLamOf Z hH
-  logLam_base := fun _ _ => if_pos rfl
+  logLam_base := fun _ _ => ite_eq_left rfl
   kapR := fun _ => kapSharp D
   Surf := Empty
   SurfFp := Empty
@@ -298,8 +295,6 @@ namespace GlobalTheory.Mem.Top.DivRec
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl
   NumberField IsDedekindDomain
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem tupPins_of_muIsW (X : Stages) (f : Fr X.B.toPre) (T : TwDat X.B) (Wt : Set X.B.places.Pl)
     (xi : X.C.Tup → HChar X.B.host.E) (h : V4.MuIsW X f T Wt xi) {C : CharFrame X.toD7} {nch : NChoice X.toD7}

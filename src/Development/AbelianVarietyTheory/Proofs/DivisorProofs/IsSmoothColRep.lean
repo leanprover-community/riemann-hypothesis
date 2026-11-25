@@ -49,8 +49,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.SmGL.RowOneCell
 
-def sz (u v : ℕ) (i j : Bool) : ℕ := cond i (cond j v 1) (cond j u 0)
-
 def extTensorEquiv {G H V W V' W' : Type} [Group G] [Group H] [AddCommGroup V] [Module ℂ V]
     [AddCommGroup W] [Module ℂ W] [AddCommGroup V'] [Module ℂ V'] [AddCommGroup W'] [Module ℂ W']
     {ρ : Representation ℂ G V} {σ : Representation ℂ H W} {ρ' : Representation ℂ G V'}
@@ -62,14 +60,5 @@ def extTensorEquiv {G H V W V' W' : Type} [Group G] [Group H] [AddCommGroup V] [
       (ψ.toIntertwiningMap.isIntertwining _ _ g.2 w)
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-
-def colChar (v : ℕ) (χ₂ : kˣ →* ℂˣ) (j : Bool) : kˣ →* ℂˣ :=
-  χ₂ * absPow k (cond j (1 / 2) (-(v : ℂ) / 2))
-
-def colRep (χ₁ χ₂ : kˣ →* ℂˣ) (u v : ℕ) (j : Bool) :
-    Representation ℂ (Levi k fun i => Fin (sz u v i j)) (ℂ ⊗[ℂ] ℂ) :=
-  (extTensor (detRep (Fin (sz u v false j)) χ₁) (detRep (Fin (sz u v true j)) (colChar v χ₂ j))).comp
-    ((Pi.evalMonoidHom (fun i => GL (Fin (sz u v i j)) k) false).prod
-      (Pi.evalMonoidHom (fun i => GL (Fin (sz u v i j)) k) true))
 
 end GlobalTheory.SmGL.RowOneCell

@@ -727,8 +727,7 @@ theorem classified_dualNumber_of_algClosed : ∀ (g n : ℕ), 1 ≤ g → 3 ≤ 
   obtain ⟨lam, c', h1, h2, hlam⟩ : ∃ (lam : (Fin (g * (g + 1) / 2 + 1) → K) →ₗ[K] K)
       (c' : SiegPre g n (zetaAway n) (spMap ((algebraMap K (DualNumber K)).comp β₀))),
       SiegPB c' G (spMap (dirMap lam)) ∧ SiegPB c' G (constPt (spMap (dirMap lam))) ∧ lam ≠ 0 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     have := htb fun lam c' h1 h2 => hne lam c' h1 h2
     omega
   obtain ⟨mu, a, hdec⟩ : ∃ (mu : (Fin (g * (g + 1) / 2) → K) →ₗ[K] K) (a : K),
@@ -902,27 +901,17 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory
 
-theorem spec_localArtinian_point_eq (P : CommRingCat.{0}) [IsLocalRing P] [IsArtinianRing P]
-    (x y : Spec P) : x = y := by
-  apply PrimeSpectrum.ext
-  haveI := x.isPrime
-  haveI := y.isPrime
-  rw [IsLocalRing.eq_maximalIdeal (IsArtinianRing.isMaximal_of_isPrime x.asIdeal),
-    IsLocalRing.eq_maximalIdeal (IsArtinianRing.isMaximal_of_isPrime y.asIdeal)]
-
 theorem spec_map_injective_of_surjective {R S : CommRingCat.{0}} (f : R ⟶ S) (hf : Function.Surjective f) :
     Function.Injective (Spec.map f) := fun x y h =>
   PrimeSpectrum.comap_injective_of_surjective f.hom hf h
 
 theorem spec_pullback_localArtinian_glue_existsUnique : ∀ (P B₁ B₂ B₀ : CommRingCat.{0}) (f₁ : P ⟶ B₁) (f₂ : P ⟶ B₂) (g₁ : B₁ ⟶ B₀) (g₂ : B₂ ⟶ B₀), IsPullback f₁ f₂ g₁ g₂ → IsLocalRing P → IsArtinianRing P → Function.Surjective f₁ → Function.Surjective f₂ → Nontrivial B₀ → ∀ (Z : Scheme.{0}) (a : Spec B₁ ⟶ Z) (b : Spec B₂ ⟶ Z), Spec.map g₁ ≫ a = Spec.map g₂ ≫ b → ∃! w : Spec P ⟶ Z, Spec.map f₁ ≫ w = a ∧ Spec.map f₂ ≫ w = b := by
   intro P B₁ B₂ B₀ f₁ f₂ g₁ g₂ hP hloc hart hs₁ hs₂ hnt Z a b hab
-  have hnt₁ : Nontrivial B₁ := RingHom.domain_nontrivial g₁.hom
-  have hnt₂ : Nontrivial B₂ := RingHom.domain_nontrivial g₂.hom
   obtain ⟨y₀⟩ : Nonempty (Spec B₀) := inferInstanceAs (Nonempty (PrimeSpectrum B₀))
   have hone₁ : ∀ y y' : Spec B₁, y = y' := fun y y' =>
-    spec_map_injective_of_surjective f₁ hs₁ (spec_localArtinian_point_eq P _ _)
+    spec_map_injective_of_surjective f₁ hs₁ (GlobalTheory.ArtinPatch.spec_eq_of_artinian P _ _)
   have hone₂ : ∀ y y' : Spec B₂, y = y' := fun y y' =>
-    spec_map_injective_of_surjective f₂ hs₂ (spec_localArtinian_point_eq P _ _)
+    spec_map_injective_of_surjective f₂ hs₂ (GlobalTheory.ArtinPatch.spec_eq_of_artinian P _ _)
   obtain ⟨V, hV, hzV, -⟩ := exists_isAffineOpen_mem_and_subset (U := ⊤)
     (x := a (Spec.map g₁ y₀)) trivial
   have hza : Set.range a ⊆ Set.range hV.fromSpec := by
@@ -949,7 +938,7 @@ theorem spec_pullback_localArtinian_glue_existsUnique : ∀ (P B₁ B₂ B₀ : 
     intro w hw₁ hw₂
     have hr : Set.range w ⊆ Set.range hV.fromSpec := by
       rintro _ ⟨x, rfl⟩
-      rw [spec_localArtinian_point_eq P x (Spec.map f₁ (Spec.map g₁ y₀)), ← Scheme.Hom.comp_apply, hw₁]
+      rw [GlobalTheory.ArtinPatch.spec_eq_of_artinian P x (Spec.map f₁ (Spec.map g₁ y₀)), ← Scheme.Hom.comp_apply, hw₁]
       exact hza ⟨_, rfl⟩
     rw [← IsOpenImmersion.lift_fac hV.fromSpec w hr, ← Spec.map_preimage (IsOpenImmersion.lift hV.fromSpec w hr)]
     congr 2
@@ -1393,9 +1382,6 @@ open GlobalTheory.ZM GlobalTheory.SiegLev GlobalTheory.SiegelTor
 open scoped CategoryTheory.Obj
 
 namespace GlobalTheory.SFamCompl
-
-theorem glue : ∀ (R : Type) [CommRing R] [IsLocalRing R], IsAdicComplete (IsLocalRing.maximalIdeal R) R → ∀ (X : Scheme.{0}) (x : ∀ e : ℕ, Sp (R ⧸ IsLocalRing.maximalIdeal R ^ (e + 1)) ⟶ X), (∀ e, Out.thickTrans R (IsLocalRing.maximalIdeal R) e ≫ x (e + 1) = x e) → ∃ f : Sp R ⟶ X, ∀ e, Out.thick R (IsLocalRing.maximalIdeal R) e ≫ f = x e :=
-  _root_.GlobalTheory.LocalThickGlue.exists_glue
 
 theorem ext_affine : ∀ (R : Type) [CommRing R] (I : Ideal R), IsHausdorff I R → ∀ (A : Type) [CommRing A]
     (f f' : Sp R ⟶ Sp A), (∀ e, Out.thick R I e ≫ f = Out.thick R I e ≫ f') → f = f' := by

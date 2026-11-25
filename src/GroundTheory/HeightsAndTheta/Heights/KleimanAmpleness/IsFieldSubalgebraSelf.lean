@@ -553,10 +553,4 @@ theorem NefGeneric.hypotheses_example :
         (specialIdeal (⊥ : Ideal (MRing (fun _ : Unit => Fin 2) (PowerSeries ℚ)))) 0 :=
   ⟨GroundTheory.Heights₂.Heights.NumbersDVR.isModelOver_projectiveSpace 1, isNefIdeal_zero _ _⟩
 
-section Fit
-
-variable (F : Type) [Field F]
-
-end Fit
-
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Kleiman2

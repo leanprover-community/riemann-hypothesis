@@ -40,7 +40,7 @@ theorem bc_mem (g : GL (Fin M) E) (hg : g ∈ UJ (σ : E →+* E) J) :
 def emb : UJ (σ : E →+* E) J →* HA (AF F) σ J where
   toFun g := (⟨bc (inclR (AF F)) g.1, bc_mem σ J g.1 g.2⟩ : HR (AF F) σ J)
   map_one' := Subtype.ext (map_one _)
-  map_mul' a b := Subtype.ext (map_mul _ _ _)
+  map_mul' _ _ := Subtype.ext (map_mul _ _ _)
 
 theorem emb_mem (g : UJ (σ : E →+* E) J) : emb σ J g ∈ GamG σ J := by
   have : (show HR (AF F) σ J from emb σ J g).1 ∈ HFin (AF F) σ J := ⟨g.1, g.2, rfl⟩

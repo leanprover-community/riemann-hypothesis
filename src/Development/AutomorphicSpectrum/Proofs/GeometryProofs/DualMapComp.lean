@@ -23,6 +23,7 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ValuationRin
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
+import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.HodgeComponentFlagDegree
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenProjectorDenominator, Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeEigenProjectorExists, Development.AutomorphicSpectrum.Proofs.GeometryProofs.DualMapComp
@@ -317,19 +318,7 @@ theorem self_mem_flagStep {r : ℕ} (b : Fin r → Li) (j : ℕ) (k : Fin r) (hk
 
 theorem flag_coef {r : ℕ} (b b₀ : Fin r → Li) (hf : ∀ j, flagStep Ω b j = flagStep Ω b₀ j) (k : Fin r) :
     ∃ t : Ω, b k - t • b₀ k ∈ flagStep Ω b₀ k := by
-  have h1 : b k ∈ flagStep Ω b₀ ((k : ℕ) + 1) := hf _ ▸ self_mem_flagStep b _ k (Nat.lt_succ_self _)
-  have h2 : flagStep Ω b₀ ((k : ℕ) + 1) ≤ flagStep Ω b₀ k ⊔ Submodule.span Ω {b₀ k} := by
-    refine Submodule.span_le.2 ?_
-    rintro _ ⟨l, hl, rfl⟩
-    have hl' : (l : ℕ) ≤ k := Nat.lt_succ_iff.1 hl
-    rcases hl'.lt_or_eq with h | h
-    · exact Submodule.mem_sup_left (self_mem_flagStep b₀ _ l h)
-    · have : l = k := Fin.ext h
-      subst this
-      exact Submodule.mem_sup_right (Submodule.mem_span_singleton_self _)
-  obtain ⟨x, hx, z, hz, e⟩ := Submodule.mem_sup.1 (h2 h1)
-  obtain ⟨t, rfl⟩ := Submodule.mem_span_singleton.1 hz
-  exact ⟨t, by rw [← e, add_sub_cancel_right]; exact hx⟩
+  apply _root_.GlobalTheory.CompanionTheory.Ar.FlagDet.exists_diag <;> assumption
 
 theorem mem_span_of_flag {r : ℕ} (b : Fin r → Li) (j : ℕ) : flagStep Ω b j ≤ Submodule.span Ω (Set.range b) :=
   Submodule.span_mono (Set.image_subset_range _ _)

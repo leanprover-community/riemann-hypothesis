@@ -72,7 +72,7 @@ theorem clause_unique {D : D7} (X : HidaSetting D) (ψ : AddChar (AF X.B.I.F) �
       g • ratTup (Ainf X.B.I.F) (tupH (frameOf X u')) = y) →
       s y • ratTup (Ainf X.B.I.F) (tupH (frameOf X u')) = y := by
     intro y hy
-    simp only [s, dif_pos hy]
+    simp only [s, dite_eq_left hy]
     exact hy.choose_spec
   have hf : Measurable (K.indicator (1 : HA (Ainf X.B.I.F) X.B.I.cm.sig X.B.I.J → ENNReal)) :=
     measurable_const.indicator hK

@@ -2,6 +2,7 @@ module
 
 public import Formalism.PeriodIntegrals.PairValDefs
 public import Formalism.SharpRestriction.CuspSpanNormBounds.FlagEEqHyperbolic
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.PairValPf
 
 @[expose] public section
 
@@ -19,25 +20,7 @@ variable {K : Type} [Field K] [NumberField K]
 
 theorem sgUp_mul {N : ℕ} {U V : Matrix (Fin N) (Fin N) K} (hU : IsUpUni U) (hV : IsUpUni V) :
     sgUp (U * V) = sgUp U + sgUp V := by
-  unfold sgUp
-  rw [← Finset.sum_add_distrib]
-  refine Finset.sum_congr rfl fun a _ => ?_
-  split_ifs with h
-  · rw [Matrix.mul_apply, Fintype.sum_eq_add a ⟨a.val + 1, h⟩]
-    · rw [(hU a a).2 rfl, (hV ⟨a.val + 1, h⟩ ⟨a.val + 1, h⟩).2 rfl, one_mul, mul_one, add_comm]
-    · intro e
-      rw [Fin.ext_iff] at e
-      simp at e
-    · rintro x ⟨hxa, hxb⟩
-      rcases lt_or_gt_of_ne hxa with hx | hx
-      · rw [(hU a x).1 hx, zero_mul]
-      · have hne : x.val ≠ a.val + 1 := fun e => hxb (Fin.ext e)
-        have hx' : (⟨a.val + 1, h⟩ : Fin N) < x := by
-          rw [Fin.lt_def] at hx ⊢
-          show a.val + 1 < x.val
-          omega
-        rw [(hV x ⟨a.val + 1, h⟩).1 hx', mul_zero]
-  · simp
+  apply _root_.Formalism.L2.SG.Pf.sgUp_mul <;> assumption
 
 theorem sgUp_one {N : ℕ} : sgUp (1 : Matrix (Fin N) (Fin N) K) = 0 := by
   unfold sgUp

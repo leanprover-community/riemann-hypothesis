@@ -98,12 +98,12 @@ theorem blkZ_gen (hB : G.BlockOK) (hr : 1 ≤ r) (U Mx : ℕ)
       push_cast at h2
       by_cases hik : i = k
       · subst hik
-        rw [if_pos rfl] at h1
-        rw [h1, if_pos rfl]
+        rw [ite_eq_left rfl] at h1
+        rw [h1, ite_eq_left rfl]
         rw [zpow_add₀ hp0, zpow_add₀ hp0, zpow_natCast, ← h2, two_mul, zpow_add₀ hp0, zpow_natCast]
         ring
-      · rw [if_neg (fun h => hik h.symm)] at h1
-        rw [h1, if_neg]
+      · rw [ite_eq_right (fun h => hik h.symm)] at h1
+        rw [h1, ite_eq_right]
         · ring
         · intro h
           rw [Sigma.mk.inj_iff] at h
@@ -111,7 +111,7 @@ theorem blkZ_gen (hB : G.BlockOK) (hr : 1 ≤ r) (U Mx : ℕ)
     · have hne : (l.1.1, l.1.2) ≠ (l'.1.1, l'.1.2) := by
         intro h
         exact hll (Subtype.ext h)
-      rw [Th_orth p G hB hr _ _ _ _ (hok l) (hok l') hne _ _ (hv _ _) (hu _ _), if_neg]
+      rw [Th_orth p G hB hr _ _ _ _ (hok l) (hok l') hne _ _ (hv _ _) (hu _ _), ite_eq_right]
       · ring
       · intro h
         rw [Sigma.mk.inj_iff] at h

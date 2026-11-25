@@ -62,7 +62,7 @@ theorem prod_one_apply (I J : P → Fin n) :
 theorem Aop_one : (Aop (fun _ : P => (1 : Matrix (Fin n) (Fin n) ℂ)) : Module.End ℂ (TV n M P)) = 1 := by
   refine LinearMap.ext fun f => funext fun I => ?_
   simp only [Aop_apply, prod_one_apply, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ,
-    if_true, Module.End.one_apply]
+    ite_true, Module.End.one_apply]
 
 theorem Aop_mul (K L : P → Matrix (Fin n) (Fin n) ℂ) :
     (Aop (fun q => K q * L q) : Module.End ℂ (TV n M P)) = Aop K * Aop L := by
@@ -338,10 +338,10 @@ theorem cprod_erase (I J : P → Fin n) (p : P) (x : ℂ) :
       ∑ b, if J = Function.update I p b then x else 0 := by
   by_cases h : ∀ q, q ≠ p → I q = J q
   · rw [Finset.prod_eq_one, one_mul, Finset.sum_eq_single (J p)]
-    · rw [if_pos]; funext q; by_cases hq : q = p
+    · rw [ite_eq_left]; funext q; by_cases hq : q = p
       · subst hq; simp
       · simp [Function.update_of_ne hq, h q hq]
-    · intro b _ hb; rw [if_neg]; intro hJ; apply hb; rw [hJ]; simp
+    · intro b _ hb; rw [ite_eq_right]; intro hJ; apply hb; rw [hJ]; simp
     · simp
     · intro q hq; rw [h q (Finset.ne_of_mem_erase hq)]; simp
   · push Not at h
@@ -349,7 +349,7 @@ theorem cprod_erase (I J : P → Fin n) (p : P) (x : ℂ) :
     have h0 : ∏ q ∈ Finset.univ.erase p, (1 : Matrix (Fin n) (Fin n) ℂ) (I q) (J q) = 0 :=
       Finset.prod_eq_zero (Finset.mem_erase.mpr ⟨hqp, Finset.mem_univ q⟩) (Matrix.one_apply_ne hq)
     rw [h0, zero_mul]
-    refine (Finset.sum_eq_zero fun b _ => if_neg ?_).symm
+    refine (Finset.sum_eq_zero fun b _ => ite_eq_right ?_).symm
     intro hJ; apply hq; rw [hJ, Function.update_of_ne hqp]
 
 theorem csum_erase (I : P → Fin n) (p : P) (φ : (P → Fin n) → ℂ) :
@@ -383,14 +383,14 @@ theorem cderiv_entry {ι Γ : Type} [DecidableEq ι] (κ : ι → Γ → Matrix 
   unfold cD
   by_cases h1 : σ = τ
   · subst h1
-    rw [if_pos rfl, if_neg (fun h => hne h.symm), add_zero]
+    rw [ite_eq_left rfl, ite_eq_right (fun h => hne h.symm), add_zero]
     exact hd i j
   · by_cases h2 : σ = bar τ
     · subst h2
-      rw [if_neg h1, if_pos rfl, zero_add]
+      rw [ite_eq_right h1, ite_eq_left rfl, zero_add]
       simp_rw [hconj τ]
       exact (hd i j).star
-    · rw [if_neg h1, if_neg h2, add_zero]
+    · rw [ite_eq_right h1, ite_eq_right h2, add_zero]
       rw [show (fun t => κ σ (c t) i j) = fun _ => (1 : Matrix (Fin n) (Fin n) ℂ) i j from
         funext fun t => by rw [hoth σ h1 h2 t]]
       exact hasDerivAt_const _ _
@@ -443,7 +443,7 @@ theorem actT_der {ι Γ : Type} [DecidableEq ι] [Group Γ] (lab : P → ι) (κ
   rw [cLam_sum]
   refine Finset.sum_congr rfl fun I _ => ?_
   rw [Finset.sum_add_distrib]
-  simp_rw [cprod_one, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp_rw [cprod_one, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   simp_rw [Finset.sum_mul, smul_eq_mul, mul_assoc]
   rw [Finset.sum_comm]
   simp_rw [csum_erase, Function.update_self]

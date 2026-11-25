@@ -645,7 +645,7 @@ theorem form_eq_zero_of_casK (V : Type) [NormedAddCommGroup V] [InnerProductSpac
           split_ifs with h
           · rw [h]
           · exact inner_zero_right _
-        simpa only [hterm, Finset.sum_ite_eq', Finset.mem_univ, if_true] using hT0
+        simpa only [hterm, Finset.sum_ite_eq', Finset.mem_univ, ite_true] using hT0
       rw [← hsup] at hP
       obtain ⟨p, hp, m, hm, hpmE⟩ := Submodule.mem_sup.mp hP
       have hmm : ⟪m, m⟫_ℂ = 0 := by

@@ -69,18 +69,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {LL : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL]
     {O : Type} [CommRing O] [Algebra O LL]
 
-theorem B1_le_Z1f (A : GRep G Qp LL O) : B1 A.ρ ≤ finiteCocycles PD A.ρ := by
-  rintro _ ⟨v, rfl⟩
-  refine ⟨⟨?_, fun g h => ?_⟩, v ⊗ₜ[Qp] (1 : B), fun g => ?_⟩
-  · have : cob A.ρ v = fun g => A.ρ g v + -v := funext fun g => sub_eq_add_neg _ _
-    rw [this]
-    exact (A.cont v).add continuous_const
-  · change A.ρ (g * h) v - v = A.ρ g v - v + A.ρ g (A.ρ h v - v)
-    rw [map_mul, Module.End.mul_apply, map_sub]
-    abel
-  · change (A.ρ g v - v) ⊗ₜ[Qp] (1 : B) = A.ρ g v ⊗ₜ[Qp] PD.actB g 1 - _
-    rw [map_one, sub_tmul]
-
 theorem lc_mk {V X : Type} [AddCommGroup V] [Module O V] [TopologicalSpace V] [ContinuousAdd V]
     [TopologicalSpace X] {M : Submodule O V} (hM : IsOpen (M : Set V)) {c : X → V}
     (hc : Continuous c) : IsLocallyConstant fun g => (Submodule.Quotient.mk (c g) : V ⧸ M) := by
@@ -138,7 +126,7 @@ theorem exists_of_mem_HfD {c : G → A'.V ⧸ LA'.T} (hc : c ∈ HfD PD LA') :
     ∃ b ∈ finiteCocycles PD A'.ρ, c = fun g => Submodule.Quotient.mk (b g) := by
   obtain ⟨_, ⟨b, hb, rfl⟩, _, ⟨x, rfl⟩, rfl⟩ := Submodule.mem_sup.1 hc
   obtain ⟨x, rfl⟩ := Submodule.Quotient.mk_surjective _ x
-  exact ⟨b + cob A'.ρ x, (finiteCocycles PD A'.ρ).add_mem hb (B1_le_Z1f PD A' ⟨x, rfl⟩), rfl⟩
+  exact ⟨b + cob A'.ρ x, (finiteCocycles PD A'.ρ).add_mem hb (GlobalTheory.BlochKatoAnn.B1_le_Z1f PD A' ⟨x, rfl⟩), rfl⟩
 
 theorem hfD_le (hT : IsOpen (LA'.T : Set A'.V)) : HfD PD LA' ≤ divisibleCocycles LA' := by
   intro c hc

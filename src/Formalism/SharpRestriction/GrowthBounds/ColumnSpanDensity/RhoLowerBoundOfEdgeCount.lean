@@ -32,7 +32,7 @@ theorem dvd_pow_of_vLEO {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuati
   unfold vO vK ordW at hq
   have hx0 : algebraMap O (KK O) z ≠ 0 :=
     (map_ne_zero_iff _ (IsFractionRing.injective O (KK O))).mpr hz
-  rw [if_neg hx0] at hq
+  rw [ite_eq_right hx0] at hq
   dsimp only at hq
   have hspec := Classical.choose_spec (IsLocalization.surj (nonZeroDivisors O) (algebraMap O (KK O) z))
   generalize Classical.choose (IsLocalization.surj (nonZeroDivisors O) (algebraMap O (KK O) z)) = ab
@@ -382,7 +382,7 @@ theorem rho_lower_bound_of_edge_count (hcnt : RestEdgeCount) : RhoLowerBoundLarg
       refine ⟨∑ l', b l' * P j' l' l, ?_⟩
       have hs' : (⟨j, i⟩ : Σ j, Fin (k j)) ≠ ⟨j', l⟩ := fun h => hj (congrArg Sigma.fst h)
 
-      rw [if_neg hs', zero_add, Finset.mul_sum, map_sum]
+      rw [ite_eq_right hs', zero_add, Finset.mul_sum, map_sum]
       refine Finset.sum_congr rfl fun l' _ => ?_
       rw [hb l', ← map_mul, mul_assoc]
   choose B hB using hkey
@@ -396,7 +396,6 @@ theorem rho_lower_bound_of_edge_count (hcnt : RestEdgeCount) : RhoLowerBoundLarg
       simpa [hT, nsmul_eq_mul, Nat.cast_sum] using h
     have hN0 := gaussianNumber_prime_pow_pos R (m + 1) (by omega)
     have hdim : (0 : ℝ) ≤ dimV R.Kf lam0 := Nat.cast_nonneg _
-    have hT0 : (0 : ℝ) ≤ T := Nat.cast_nonneg _
     by_cases hκ : 1 - κ ≤ 0
     · nlinarith
     · have hκ' : 0 < 1 - κ := lt_of_not_ge hκ
@@ -454,9 +453,9 @@ theorem rho_lower_bound_of_edge_count (hcnt : RestEdgeCount) : RhoLowerBoundLarg
   rw [hw, hzq (σE l).1]
   by_cases h : i = l
   · subst h
-    simp only [if_true]
+    simp only [ite_true]
     ring
-  · simp only [h, if_false]
+  · simp only [h, ite_false]
     ring
 
 end Formalism.MainNotions.flipOneThree.Pf

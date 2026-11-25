@@ -25,11 +25,6 @@ namespace Formalism.L2.Pj.GSR
 
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Chart
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
-
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section Corr
 
 variable {S S' : Scheme.{0}} {G : Over S} [GrpObj G] {G' : Over S'} [GrpObj G'] {f : S' ⟶ S} {F : G'.left ⟶ G.left}
@@ -49,17 +44,6 @@ def liftT {X Y : Over (Spec (CommRingCat.of k))} (φ : Y ⟶ X) : viaT tk Y ⟶ 
 variable {tk g}
 
 end Corr
-
-section Count
-
-variable {S S' : Scheme.{0}} {G : Over S} [GrpObj G] {G' : Over S'} [GrpObj G'] {f : S' ⟶ S} {F : G'.left ⟶ G.left}
-  (hc : ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsGrpPullback G' G f F) {k : Type} [CommRing k] {tk : Spec (CommRingCat.of k) ⟶ S'}
-  {g : Spec (CommRingCat.of k) ⟶ S} (hg : tk ≫ f = g)
-
-
-
-
-end Count
 
 end Formalism.L2.Pj.GSR
 end -- clump:auto

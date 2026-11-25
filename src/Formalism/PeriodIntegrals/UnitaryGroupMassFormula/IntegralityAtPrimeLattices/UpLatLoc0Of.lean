@@ -92,7 +92,7 @@ theorem upLatLoc0_of (T : Forms0 D u) (hA : AwayLat0 T) : UpLatLoc0 T := by
   intro w hw hs v c z hz γ η κ h1 h2 h3 h4 B B₂ B' hB hB₂ hB' τ
   by_cases hτ : τ = (D.fm u).tauOf w v
   · subst hτ
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     refine intInv_of_loc T.atT w hw hs v B' B γ.1 hB' hB ?_ ?_
     · calc Ld D u 0 (Nat.zero_le _) c ≤ Formalism.HermitianLatticesTheory.localization₂ (T.atT.Pv v) (Ld D u 0 (Nat.zero_le _) c) := le_locP' (T.atT.Pv v) _
         _ = Formalism.HermitianLatticesTheory.localization₂ (T.atT.Pv v)
@@ -121,7 +121,7 @@ theorem upLatLoc0_of (T : Forms0 D u) (hA : AwayLat0 T) : UpLatLoc0 T := by
           exact add_mem ha hb
   · obtain ⟨v', rfl⟩ := ((D.fm u).tauOf w).surjective τ
     have hvv : v' ≠ v := fun h => hτ (by rw [h])
-    rw [if_neg hτ]
+    rw [ite_eq_right hτ]
     have hE := hA v v' hvv c ((D.fm u).up 0 v c (T.lv0.pr v c z)) γ η κ h1 h2
     refine intInv_of_loc T.atT w hw hs v' B₂ B γ.1 hB₂ hB ?_ ?_
     · rw [hE]; exact le_locP' (T.atT.Pv v') _

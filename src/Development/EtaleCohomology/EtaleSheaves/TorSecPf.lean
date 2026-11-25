@@ -64,8 +64,7 @@ section LC
 variable {q : ℕ} [NeZero q] {R : Type} [CommRing R] {δ : ZMod q → R}
 
 lemma exists_not_mem (hδ : CompleteOrthogonalIdempotents δ) (p : PrimeSpectrum R) : ∃ k, δ k ∉ p.asIdeal := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   apply p.isPrime.ne_top
   rw [Ideal.eq_top_iff_one, ← hδ.complete]
   exact Ideal.sum_mem _ fun k _ => h k
@@ -377,7 +376,7 @@ theorem TorSec_of : TorSec := by
   suffices h : k0 = m0 - φ P by rw [h]; ring
   by_contra hne
   have htor := (mem_tor hε _).1 (t k0).2 (m0 - φ P)
-  rw [ht k0, Pi.single_apply, if_neg (Ne.symm hne), map_zero] at htor
+  rw [ht k0, Pi.single_apply, ite_eq_right (Ne.symm hne), map_zero] at htor
   have h1 : ε (φ P) * rR f g ((t k0 : Amb f g q).2 m0) = 0 := by
     have := congrArg (ε (φ P) * ·) htor
     simp only [mul_zero] at this

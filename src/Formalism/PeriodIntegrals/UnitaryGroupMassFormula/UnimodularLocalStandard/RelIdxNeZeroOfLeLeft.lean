@@ -39,18 +39,8 @@ private theorem relIndex_ne_zero_of_finite_cover {A B : AddSubgroup V} {ι : Typ
   exact AddSubgroup.index_ne_zero_of_finite
 
 lemma relIdx_ne_zero_of_le_left {A A' B : AddSubgroup V} (h : A ≤ A') (hA : A.relIndex B ≠ 0) :
-    A'.relIndex B ≠ 0 := by
-  haveI : Finite (B ⧸ A.addSubgroupOf B) :=
-    Nat.finite_of_card_ne_zero (α := B ⧸ A.addSubgroupOf B) hA
-  refine relIndex_ne_zero_of_finite_cover (ι := B ⧸ A.addSubgroupOf B) (fun q => ((q.out : B) : V))
-    (fun q => q.out.2) ?_
-  intro b hb
-  refine ⟨((⟨b, hb⟩ : B) : B ⧸ A.addSubgroupOf B), h ?_⟩
-  have e : -((((⟨b, hb⟩ : B) : B ⧸ A.addSubgroupOf B)).out) + (⟨b, hb⟩ : B) ∈ A.addSubgroupOf B := by
-    rw [← QuotientAddGroup.eq]
-    exact QuotientAddGroup.out_eq' _
-  rw [AddSubgroup.mem_addSubgroupOf] at e
-  simpa [neg_add_eq_sub] using e
+    A'.relIndex B ≠ 0 :=
+  mt (AddSubgroup.relIndex_eq_zero_of_le_left h) hA
 
 lemma relIdx_map_smul {w : ℂ} (hw : w ≠ 0) (A B : AddSubgroup V) :
     (A.map (smulHom w)).relIndex (B.map (smulHom w)) = A.relIndex B := by
@@ -76,10 +66,6 @@ private theorem relIndex_ne_zero_of_le {A B : AddSubgroup V} (h : B ≤ A) : A.r
   relIndex_ne_zero_of_finite_cover (ι := Unit) (fun _ => 0) (fun _ => B.zero_mem)
     (fun b hb => ⟨(), by simpa using h hb⟩)
 
-private theorem relIndex_ne_zero_trans' {A B C : AddSubgroup V} (h : A.relIndex B ≠ 0)
-    (h' : B.relIndex C ≠ 0) : A.relIndex C ≠ 0 := by
-  exact AddSubgroup.relIndex_ne_zero_trans h h'
-
 lemma comm_smul {S X : AddSubgroup V} {w : ℂ} (hw : w ≠ 0) {N : ℕ} (hN : N ≠ 0)
     (hS : (S.map (smulHom (N : ℂ))).relIndex S ≠ 0) (h1 : S.relIndex X ≠ 0) (h2 : X.relIndex S ≠ 0)
     (ha : ∀ x ∈ X, (N : ℂ) • w • x ∈ X) (hb : ∀ x ∈ X, (N : ℂ) • w⁻¹ • x ∈ X) :
@@ -88,7 +74,7 @@ lemma comm_smul {S X : AddSubgroup V} {w : ℂ} (hw : w ≠ 0) {N : ℕ} (hN : N
   have hNXS : (X.map (smulHom (N : ℂ))).relIndex (S.map (smulHom (N : ℂ))) ≠ 0 := by
     rw [relIdx_map_smul hN']; exact h2
   have t1 : (X.map (smulHom (N : ℂ))).relIndex X ≠ 0 :=
-    relIndex_ne_zero_trans' (relIndex_ne_zero_trans' hNXS hS) h1
+    AddSubgroup.relIndex_ne_zero_trans (AddSubgroup.relIndex_ne_zero_trans hNXS hS) h1
   have hcomm : (X.map (smulHom w)).map (smulHom (N : ℂ)) =
       (X.map (smulHom (N : ℂ))).map (smulHom w) := by
     rw [AddSubgroup.map_map, AddSubgroup.map_map]
@@ -109,8 +95,8 @@ lemma comm_smul {S X : AddSubgroup V} {w : ℂ} (hw : w ≠ 0) {N : ℕ} (hN : N
     rw [smulHom_apply, smulHom_apply, smul_smul, smul_smul]
     congr 1
     rw [mul_comm w, mul_assoc, mul_inv_cancel₀ hw, mul_one]
-  exact ⟨relIndex_ne_zero_trans' (relIndex_ne_zero_trans' h1 t3) t2,
-    relIndex_ne_zero_trans' t4 (relIndex_ne_zero_trans' hNXS hS)⟩
+  exact ⟨AddSubgroup.relIndex_ne_zero_trans (AddSubgroup.relIndex_ne_zero_trans h1 t3) t2,
+    AddSubgroup.relIndex_ne_zero_trans t4 (AddSubgroup.relIndex_ne_zero_trans hNXS hS)⟩
 
 end Idx
 

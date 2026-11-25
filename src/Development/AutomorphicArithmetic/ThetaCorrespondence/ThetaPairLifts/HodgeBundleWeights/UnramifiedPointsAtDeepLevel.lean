@@ -105,7 +105,7 @@ theorem exists_intFr_index_one : ∀ (E : Type) [Field E] [NumberField E] [IsCMF
     rw [Category.assoc, Limits.pullback.condition, ← Category.assoc, hs, GlobalTheory.EtaVal.spMap_comp_spMap]
     rfl
   obtain ⟨y₀, -, h0, -, -⟩ := gfp_frPt_gen (Xo := Xo) (c := c) (L := T.Fr) (L' := T.Fr) hT (fun _ => rfl) _ hx
-    (fun _ i j => if i = j then 1 else 0) (fun _ _ => if_pos rfl) (fun _ _ _ h => if_neg h.ne')
+    (fun _ i j => if i = j then 1 else 0) (fun _ _ => ite_eq_left rfl) (fun _ _ _ h => ite_eq_right h.ne')
   obtain ⟨y', t, hbor⟩ := intFr_of_model hIF T (k.comp (algebraMap c.F K)) Y hPI b hb y₀
   refine ⟨T, k.comp (algebraMap c.F K), y', ho, hfin, fun q => ?_⟩
   have h1 : y'.1.x = y₀.x := hbor.1
@@ -314,13 +314,6 @@ theorem unramified_points_at_deep_level : _root_.GlobalTheory.CovTop.PublishedHo
   exact _root_.GlobalTheory.UnramCM.unramified_points_of_CMDatum hP _ T.Q.H (T.Q.Dw j) Y.d.l₂ Y.d.Xo₂ Y.d.c₂ (by omega)
     (Or.inr (Or.inr ⟨by omega, hLaws.line⟩)) hLaws.good
 end GlobalTheory.UnramCover
-end
-
-section
-open GlobalTheory.IndefiniteRowSideFullHecke.DifferentConjugateDefects NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AllWt GlobalTheory.FlatLine GlobalTheory.FlatTw GlobalTheory.SlopeRec GlobalTheory.CovTop GlobalTheory.BigTop GlobalTheory.RefSum
-
-theorem _root_.GlobalTheory.T.unramified_points_of_deep_cover : _root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems → ∀ (D : D7) (T : CoreJ D) (j : ℕ) (Y : Deep T.toCore j) (e : ℕ) (o : ℝ), LawsJ T → InR D j → Y.Good e o → UnramPts Y.d.Xo₂ Y.d.c₂ (badPrimes T.Q.H Y.d.l₂) := by
-  first | exact @_root_.GlobalTheory.UnramCover.unramified_points_at_deep_level
 end
 end -- clump:auto
 end -- clump:auto

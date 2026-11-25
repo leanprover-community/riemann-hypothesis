@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.ValuationBoundAdd
 public import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.TheoremOfAlternateForm
 
@@ -16,19 +17,8 @@ attribute [local instance] Formalism.MainNotions.G.GAtP.ringO Formalism.MainNoti
 
 variable {p : ℕ} [Fact p.Prime] {X : Sys p}
 
-theorem prime_cast_ne_zero : ((p : ℕ) : K0 p) ≠ 0 := by
-  have h1 : ((p : ℕ) : WW p) ≠ 0 := WittVector.p_nonzero p (kb p)
-  have h2 : algebraMap (WW p) (K0 p) ((p : ℕ) : WW p) ≠ 0 :=
-    (map_ne_zero_iff _ (IsFractionRing.injective (WW p) (K0 p))).2 h1
-  simpa using h2
-
 theorem pKf_ne (Y : Pend X) : ((p : ℕ) : X.G.Kf) ≠ 0 := by
-  intro h
-  have h1 : algebraMap X.G.Kf Y.Kc ((p : ℕ) : X.G.Kf) = 0 := by rw [h, map_zero]
-  have h2 : algebraMap (K0 p) Y.Kc ((p : ℕ) : K0 p) = 0 := by
-    rw [map_natCast] at h1 ⊢
-    exact h1
-  exact prime_cast_ne_zero ((map_eq_zero _).1 h2)
+  apply _root_.Formalism.MainNotions.FormalGroupSystem.Pf.pK_ne <;> assumption
 
 theorem algebraMap_inj (Y : Pend X) (he : 0 < X.eO) : Function.Injective (algebraMap X.G.O X.G.Kf) := by
   rw [injective_iff_map_eq_zero]

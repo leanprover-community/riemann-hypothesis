@@ -93,13 +93,6 @@ noncomputable section
 
 namespace PI.UnitaryGroupMassFormula.DLm
 
-section Frob
-
-attribute [local instance] Matrix.frobeniusSeminormedAddCommGroup Matrix.frobeniusNormedAddCommGroup
-  Matrix.frobeniusNormedSpace
-
-end Frob
-
 lemma gN_cont (k r : ℕ) : Continuous (fun g : B.Mat k r => B.gN g) := by
   unfold B.gN
   fun_prop
@@ -537,7 +530,7 @@ theorem nbm_mul (Ba B : Matrix (Fin r) (Fin (k + 1)) ℂ) (Sa S : Matrix (Fin r)
   induction p using cases3 <;> induction q using cases3 <;>
     simp only [nb_ee, nb_we, nb_se, nb_ew, nb_ww, nb_sw, nb_es, nb_ws, nb_ss, zero_mul, mul_zero,
       Finset.sum_const_zero, add_zero, zero_add, ite_mul, mul_ite, one_mul, mul_one, Finset.sum_ite_eq,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true, Matrix.add_apply, star_add]
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true, Matrix.add_apply, star_add]
   all_goals first
     | done
     | (rw [nbm_cm, mul_diagonal_conjTranspose_apply, ← Finset.sum_neg_distrib]; ring_nf)
@@ -562,12 +555,6 @@ open scoped ENNReal NNReal
 noncomputable section
 
 namespace PI.UnitaryGroupMassFormula.DLm
-
-namespace HBx
-
-variable {k r : ℕ}
-
-end HBx
 
 namespace HBx
 
@@ -979,7 +966,7 @@ theorem local_smooth (Bs : B.RealPlaceData k r Wp Wq) (ν' : Fin (2 * r + k + 1)
     obtain ⟨hgG, -⟩ := hsecΩ' Z hZΩ'
     have hgK : (Matrix.of (sec Z) : B.Mat k r) ∈ Kg := by
       rw [hKgdef]; exact ⟨Z, ball_subset_closedBall hZ, rfl⟩
-    rw [PBI.phi0, if_pos hZpos, PBI.fibInt, convolution_def]
+    rw [PBI.phi0, ite_eq_left hZpos, PBI.fibInt, convolution_def]
     refine integral_congr_ae ?_
     filter_upwards [hae] with p hp
     obtain ⟨h1, h2, h3, h4⟩ := hp
@@ -1042,9 +1029,6 @@ end
 
 end Formalism.FourierDecayAlt.P.SmoothExtensionClosedSet
 
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Formalism.HermitianCurvature.HermitianCurvatureProofs.AutomorphicInSphericalLevel =====

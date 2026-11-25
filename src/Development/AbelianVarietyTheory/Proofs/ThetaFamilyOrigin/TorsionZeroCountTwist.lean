@@ -59,8 +59,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Out
   ReciprocityTheory.ChartRestriction.G.H1 ReciprocityTheory.ChartRestriction.G.H1.SectionArithmetic ReciprocityTheory.ChartRestriction.G.H1.SquareUnits
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.TwistZero
 
 section General
@@ -224,8 +222,7 @@ theorem torsion_zero_count_twist : Out.MulNSt → Out.SquareSt → (∀ (K : Typ
   obtain ⟨b, rfl⟩ := SectionDivision.exists_div hmul P c (N * d) (by omega)
   obtain ⟨s', hs'⟩ := TwistZero.exists_untwist hsq P (N * d) hq b s
   have hs0 : ∃ j, s'.f j ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     obtain ⟨j, hj⟩ := hs
     refine hj (sec_ext_val P.isLB (s := s) (s' := secZero _) (fun y J hJ => ?_) j)
     obtain ⟨u, hu⟩ := hs' _ (𝟙 _) y J hJ

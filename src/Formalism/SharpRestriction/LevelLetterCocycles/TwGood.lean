@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.JointConditionsZpowers.ResidualIrreducibleOfTheorem
 public import Formalism.SharpRestriction.ParConsts
 public import Formalism.SharpRestriction.LevelLetterCocycles.IntegralHeckeForms
 
@@ -68,14 +69,7 @@ def AvSet (D : D7) : Set (PlE D.host) := ⋃ p ∈ avPrimes D, placesOver D.host
 
 theorem placesOver_finite_av (E : Type) [Field E] [NumberField E] (p : ℕ) (hp : p ≠ 0) :
     (placesOver E p).Finite := by
-  have hI : (Ideal.span {((p : ℕ) : 𝓞 E)} : Ideal (𝓞 E)) ≠ 0 := by
-    rw [Ne, Ideal.zero_eq_bot, Ideal.span_singleton_eq_bot]
-    exact_mod_cast hp
-  refine (Ideal.finite_factors hI).subset ?_
-  intro v hv
-  show v.asIdeal ∣ _
-  rw [Ideal.dvd_iff_le, Ideal.span_singleton_le_iff_mem]
-  exact hv
+  apply _root_.Formalism.MainNotions.N.placesOver_finite_joint_conditions_zpowers <;> assumption
 
 theorem avSet_finite (D : D7) : (AvSet D).Finite := by
   unfold AvSet

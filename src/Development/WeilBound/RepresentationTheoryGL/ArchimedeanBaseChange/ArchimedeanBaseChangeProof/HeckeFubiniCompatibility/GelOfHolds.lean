@@ -36,8 +36,6 @@ open PositivityTheory.RgTw (Mat G)
 open PositivityTheory.Rg.BcB.SpectralAccumulation (Hf finH)
 open scoped Classical InnerProductSpace
 
-attribute [local instance] PositivityTheory.Rg.BcB.E.borelH
-
 set_option linter.unusedSectionVars false
 set_option linter.unusedSimpArgs false
 
@@ -99,7 +97,6 @@ theorem St_indep (v : InfinitePlace E) (ka : Kers Ma) (kb : Kers Mb) (ψ : Matri
   · intro j _
     simp only [cA_update_right, Rv_update]
 
-set_option synthInstance.maxHeartbeats 200000 in
 theorem continuous_St (v : InfinitePlace E) {ka : Kers Ma} {kb : Kers Mb} {ψ : Matrix κ κ (Hf E a b → ℂ)}
     {f : Io Ma Mb κ → H E a b → ℂ} (hf : ∀ i, Continuous (f i))
     (hka : ∀ w, Continuous (fun t : G a => ka w t.val) ∧ HasCompactSupport (fun t : G a => ka w t.val))
@@ -130,7 +127,6 @@ theorem continuous_St (v : InfinitePlace E) {ka : Kers Ma} {kb : Kers Mb} {ψ : 
     ((continuous_const.mul ((continuous_ιA v).comp continuous_fst)).mul ((continuous_σA v).comp continuous_snd)))
 
 
-set_option maxHeartbeats 800000 in
 set_option synthInstance.maxHeartbeats 200000 in
 theorem Rv_eq (hF : CompatFub) (D : Dom E a b) (hC : Compat D μa μb ν) (v : InfinitePlace E) (ka : Kers Ma)
     (kb : Kers Mb) (ψ : Matrix κ κ (Hf E a b → ℂ)) (f : Io Ma Mb κ → H E a b → ℂ) (hT : IsTestM (tens ka kb ψ))
@@ -233,14 +229,14 @@ theorem FA_eq_act (hF : CompatFub) (D : Dom E a b) (hC : Compat D μa μb ν) (v
     (hψ : IsFinM ψ) {c : ℂ} (hc : c ≠ 0) (hrep : conv D.μ (tens ka kb ψ) f = c • f) (i : Io Ma Mb κ)
     (q0 : Ix (Ma v)) (y : GA E a) (m₂ : GA E b) {x : Mat a} (hx : x ∈ GLs a) :
     FA v μa μb ν ka kb ψ f i y m₂ x = c⁻¹ • act μa (Ma v) (ka v) (FtA v μa μb ν ka kb ψ f i q0 y m₂) x := by
-  rw [FA, dif_pos hx, Rv_eq hF D hC v ka kb ψ f hT hf hka hkb hψ hc hrep i q0]
+  rw [FA, dite_eq_left hx, Rv_eq hF D hC v ka kb ψ f hT hf hka hkb hψ hc hrep i q0]
   congr 1
   show _ = ∫ t : G a, ka v t.val (FtA v μa μb ν ka kb ψ f i q0 y m₂ (x * t.val)) ∂μa
   refine integral_congr_ae (ae_of_all _ fun t => ?_)
   have hxt : x * t.val ∈ GLs a := GlobalTheory.CompanionTheory.WaveAll.mul_mem_GLs hx (val_mem_GLs t)
   have hm : GeneralLinearGroup.mkOfDetNeZero (x * t.val) hxt = GeneralLinearGroup.mkOfDetNeZero x hx * t :=
     Units.ext rfl
-  simp only [FtA, dif_pos hxt, hm, ιA_mul, mul_assoc]
+  simp only [FtA, dite_eq_left hxt, hm, ιA_mul, mul_assoc]
 
 private theorem continuousOn_gls {n : ℕ} {Y : Type*} [TopologicalSpace Y]
     {f : Mat n → Y} {g : G n → Y} (hg : Continuous g)
@@ -361,8 +357,6 @@ open PositivityTheory.Rg.BcB.SpectralAccumulation (Hf finH)
 open PositivityTheory.RgBcC.Bridge (along atW)
 open scoped Classical InnerProductSpace
 
-attribute [local instance] PositivityTheory.Rg.BcB.E.borelH
-
 set_option linter.unusedSectionVars false
 set_option linter.unusedSimpArgs false
 
@@ -463,7 +457,6 @@ theorem integral_splitB (hF : CompatFub) (D : Dom E a b) (hC : Compat D μa μb 
     (Q : H E a b → ℂ) (hQ : Continuous Q) (hQs : HasCompactSupport Q) :
     Integrable (fun q : G b × RB E a b v => Q (ιB v q.1 * σB v q.2)) (μb.prod (restB μa μb ν v)) ∧
       ∫ g, Q g ∂D.μ = ∫ t, ∫ r, Q (ιB v t * σB v r) ∂restB μa μb ν v ∂μb := by
-  set_option synthInstance.maxHeartbeats 400000 in
     haveI : SigmaFinite μa := inferInstance
     haveI : SigmaFinite μb := inferInstance
     haveI : SigmaFinite ν := inferInstance
@@ -504,10 +497,10 @@ theorem prod_split {X : Type} (v : InfinitePlace E) (F : InfinitePlace E → X �
     (r : {w : InfinitePlace E // w ≠ v} → X) :
     ∏ w, F w (if h : w = v then t else r ⟨w, h⟩) = F v t * ∏ w : {w : InfinitePlace E // w ≠ v}, F w (r w) := by
   rw [Fintype.prod_eq_mul_prod_subtype_ne _ v]
-  simp only [dif_pos]
+  simp only [dite_eq_left]
   congr 1
   refine Finset.prod_congr rfl fun w _ => ?_
-  rw [dif_neg w.2]
+  rw [dite_eq_right w.2]
 
 theorem tens_ισB (v : InfinitePlace E) (ka : Kers Ma) (kb : Kers Mb) (ψ : Matrix κ κ (Hf E a b → ℂ))
     (i j : Io Ma Mb κ) (t : G b) (r : RB E a b v) :
@@ -585,8 +578,8 @@ theorem continuous_σB (v : InfinitePlace E) : Continuous (σB (a := a) (b := b)
   refine (splitH a b).continuous.comp (continuous_fst.prodMk (Continuous.prodMk (continuous_pi fun w => ?_)
     (continuous_snd.comp continuous_snd)))
   by_cases h : w = v
-  · simp only [h, dif_pos]; exact continuous_const
-  · simp only [h, dif_neg, not_false_eq_true]
+  · simp only [h, dite_eq_left]; exact continuous_const
+  · simp only [h, dite_eq_right, not_false_eq_true]
     exact (continuous_apply _).comp (continuous_fst.comp continuous_snd)
 
 theorem ιB_mul (v : InfinitePlace E) (s t : G b) : ιB (a := a) v (s * t) = ιB v s * ιB v t := by
@@ -599,7 +592,6 @@ theorem cB_props (v : InfinitePlace E) {ka : Kers Ma} {kb : Kers Mb} {ψ : Matri
     (hkb : ∀ w, Continuous (fun t : G b => kb w t.val) ∧ HasCompactSupport (fun t : G b => kb w t.val))
     (hψ : IsFinM ψ) (i j : Io Ma Mb κ) :
     Continuous (cB v ka kb ψ i j) ∧ HasCompactSupport (cB v ka kb ψ i j) := by
-  set_option synthInstance.maxHeartbeats 400000 in
     refine ⟨?_, ?_⟩
     · refine ((continuous_finsetProd _ fun w _ => ?_).mul (continuous_finsetProd _ fun w _ => ?_)).mul
         ((hψ i.2 j.2).1.comp (continuous_snd.comp continuous_snd))
@@ -631,7 +623,6 @@ theorem continuous_RvB_comp (v : InfinitePlace E) {ka : Kers Ma} {kb : Kers Mb} 
     (hψ : IsFinM ψ) (i : Io Ma Mb κ) {X : Type} [TopologicalSpace X] [FirstCountableTopology X]
     [LocallyCompactSpace X] {φ : X → H E a b} (hφ : Continuous φ) :
     Continuous fun z : X => RvB v μa μb ν ka kb ψ f i (φ z) := by
-  set_option synthInstance.maxHeartbeats 400000 in
     haveI : SigmaFinite μa := inferInstance
     haveI : SigmaFinite μb := inferInstance
     haveI : SigmaFinite ν := inferInstance
@@ -676,7 +667,7 @@ theorem along_convB (hF : CompatFub) (D : Dom E a b) (hC : Compat D μa μb ν) 
     have hxt : x * t.val ∈ GLs b := GlobalTheory.CompanionTheory.WaveAll.mul_mem_GLs hx (val_mem_GLs t)
     have hm : GeneralLinearGroup.mkOfDetNeZero (x * t.val) hxt = GeneralLinearGroup.mkOfDetNeZero x hx * t :=
       Units.ext rfl
-    simp only [FB, dif_pos hxt, hm, ιB_mul, hp0, mul_assoc]
+    simp only [FB, dite_eq_left hxt, hm, ιB_mul, hp0, mul_assoc]
   have hc : Continuous fun t : G b => kb v t.val (FB v μa μb ν ka kb ψ f i m₁ y (x * t.val)) := by
     simp only [hFB]
     exact (hkb v).1.clm_apply (continuous_RvB v hf hka hkb hψ i p0)
@@ -743,8 +734,6 @@ open PositivityTheory.RgTw (Mat G)
 open PositivityTheory.Rg.BcB.SpectralAccumulation (Hf finH)
 open scoped Classical InnerProductSpace
 
-attribute [local instance] PositivityTheory.Rg.BcB.E.borelH
-
 set_option linter.unusedSectionVars false
 set_option linter.unusedSimpArgs false
 
@@ -804,7 +793,6 @@ theorem StB_indep (v : InfinitePlace E) (ka : Kers Ma) (kb : Kers Mb) (ψ : Matr
   · intro j _
     simp only [cB_update_right, RvB_update]
 
-set_option synthInstance.maxHeartbeats 200000 in
 theorem continuous_StB (v : InfinitePlace E) {ka : Kers Ma} {kb : Kers Mb} {ψ : Matrix κ κ (Hf E a b → ℂ)}
     {f : Io Ma Mb κ → H E a b → ℂ} (hf : ∀ i, Continuous (f i))
     (hka : ∀ w, Continuous (fun t : G a => ka w t.val) ∧ HasCompactSupport (fun t : G a => ka w t.val))
@@ -835,7 +823,6 @@ theorem continuous_StB (v : InfinitePlace E) {ka : Kers Ma} {kb : Kers Mb} {ψ :
     ((continuous_const.mul ((continuous_ιB v).comp continuous_fst)).mul ((continuous_σB v).comp continuous_snd)))
 
 
-set_option maxHeartbeats 800000 in
 set_option synthInstance.maxHeartbeats 200000 in
 theorem RvB_eq (hF : CompatFub) (D : Dom E a b) (hC : Compat D μa μb ν) (v : InfinitePlace E) (ka : Kers Ma)
     (kb : Kers Mb) (ψ : Matrix κ κ (Hf E a b → ℂ)) (f : Io Ma Mb κ → H E a b → ℂ) (hT : IsTestM (tens ka kb ψ))
@@ -938,14 +925,14 @@ theorem FB_eq_act (hF : CompatFub) (D : Dom E a b) (hC : Compat D μa μb ν) (v
     (hψ : IsFinM ψ) {c : ℂ} (hc : c ≠ 0) (hrep : conv D.μ (tens ka kb ψ) f = c • f) (i : Io Ma Mb κ)
     (q0 : Ix (Mb v)) (m₁ : GA E a) (y : GA E b) {x : Mat b} (hx : x ∈ GLs b) :
     FB v μa μb ν ka kb ψ f i m₁ y x = c⁻¹ • act μb (Mb v) (kb v) (FtB v μa μb ν ka kb ψ f i q0 m₁ y) x := by
-  rw [FB, dif_pos hx, RvB_eq hF D hC v ka kb ψ f hT hf hka hkb hψ hc hrep i q0]
+  rw [FB, dite_eq_left hx, RvB_eq hF D hC v ka kb ψ f hT hf hka hkb hψ hc hrep i q0]
   congr 1
   show _ = ∫ t : G b, kb v t.val (FtB v μa μb ν ka kb ψ f i q0 m₁ y (x * t.val)) ∂μb
   refine integral_congr_ae (ae_of_all _ fun t => ?_)
   have hxt : x * t.val ∈ GLs b := GlobalTheory.CompanionTheory.WaveAll.mul_mem_GLs hx (val_mem_GLs t)
   have hm : GeneralLinearGroup.mkOfDetNeZero (x * t.val) hxt = GeneralLinearGroup.mkOfDetNeZero x hx * t :=
     Units.ext rfl
-  simp only [FtB, dif_pos hxt, hm, ιB_mul, mul_assoc]
+  simp only [FtB, dite_eq_left hxt, hm, ιB_mul, mul_assoc]
 
 theorem continuousOn_FtB (v : InfinitePlace E) (ka : Kers Ma) (kb : Kers Mb) (ψ : Matrix κ κ (Hf E a b → ℂ))
     (f : Io Ma Mb κ → H E a b → ℂ) (hf : ∀ i, Continuous (f i))
@@ -1040,8 +1027,6 @@ open NumberField IsDedekindDomain Matrix MeasureTheory
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTheory.Rg.BcB.E PositivityTheory.RgBcC
 open PositivityTheory.RgTw (Mat G)
 open PositivityTheory.Rg.BcB.SpectralAccumulation (Hf finH)
-
-attribute [local instance] PositivityTheory.Rg.BcB.E.borelH
 
 namespace PositivityTheory.Rg.BcB.CG
 

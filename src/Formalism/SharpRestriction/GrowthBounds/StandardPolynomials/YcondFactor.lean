@@ -43,7 +43,7 @@ theorem HomW.one (φ : MonH X →+ ℕ) : HomW φ 0 (1 : RHH O X) := by
   rw [mem_support_iff, coeff_one] at hm
   by_cases h : 0 = m
   · rw [← h, map_zero]
-  · rw [if_neg h] at hm; exact absurd rfl hm
+  · rw [ite_eq_right h] at hm; exact absurd rfl hm
 
 theorem HomW.pow {φ : MonH X →+ ℕ} {d : ℕ} {P : RHH O X} (hP : HomW φ d P) (u : ℕ) : HomW φ (u * d) (P ^ u) := by
   induction u with
@@ -126,7 +126,7 @@ theorem ycond_factor (D : Formalism.BasicNotions.D7) {K : Type} [Field K] [CharZ
           exact Finset.single_le_sum (f := fun c => m (i, c)) (fun _ _ => Nat.zero_le _) (Finset.mem_univ 0)
         have hm0' : (m (i, 0) : ℤ) ≤ (dr i : ℤ) := by exact_mod_cast hm0
         by_cases hv : LL.vec i = true
-        · simp only [hv, if_true]
+        · simp only [hv, ite_true]
           split_ifs <;> simp
         · simp only [hv]
           split_ifs <;> simp <;> omega

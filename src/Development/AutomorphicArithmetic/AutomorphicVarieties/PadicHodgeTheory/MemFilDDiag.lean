@@ -1,47 +1,6 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.FiniteCohomology
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -225,7 +184,7 @@ theorem hodge_diag (w : Fin n → ℤ) (hw : Function.Injective w) (m : ℤ → 
       · rw [sub_zero]
         exact step b _ (fun e => hba (hw e)) _ (hy' b)
     · have h1 := (mem_FilD_diag hρ _ _ _).1 hc' a
-      rw [Fin.sum_univ_one, map_sub, ← tm_smulD, pr_inc, if_pos rfl, (hF a _).2 (lt_add_one _),
+      rw [Fin.sum_univ_one, map_sub, ← tm_smulD, pr_inc, ite_eq_left rfl, (hF a _).2 (lt_add_one _),
         Submodule.mem_bot, sub_eq_zero] at h1
       funext j
       rw [Subsingleton.elim j 0]
@@ -247,7 +206,7 @@ theorem crys_diag {L : FinExt l} (h : K.1 ≤ L.1) (hN : ((GK L).subgroupOf (GK 
       pr l _ b (∑ a, smulC (Fin n → A) L (c a) (inc l _ a (x a))) = smulC A L (c b) (x b) := by
     intro c b
 
-    simp only [map_sum, ← tm_smulC, pr_inc, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    simp only [map_sum, ← tm_smulC, pr_inc, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   refine ⟨hN, hC, fun a => inc l _ a (x a), fun a => tm_Dcr _ _ (fun g => single_diag hρ a (incl h g)) (hx a),
     fun y hy => ?_, fun γ _ M hM => ?_⟩
   · choose c hc hcu using fun a => hB a _ (tm_Dcr _ _ (fun g => proj_diag hρ a (incl h g)) hy)
@@ -259,7 +218,7 @@ theorem crys_diag {L : FinExt l} (h : K.1 ≤ L.1) (hN : ((GK L).subgroupOf (GK 
   · rw [sum_tmul]
     refine Finset.sum_congr rfl fun b _ => ?_
     have h1 := congrArg (pr l _ b) (hM b)
-    rw [key (fun a => M a b), tm_actC _ _ _ (proj_diag hρ b γ), pr_inc, if_pos rfl, ht] at h1
+    rw [key (fun a => M a b), tm_actC _ _ _ (proj_diag hρ b γ), pr_inc, ite_eq_left rfl, ht] at h1
     exact (hB b _ (Submodule.smul_mem _ (t b γ) (hx b))).unique h1 (smulC_one L _ _).symm
 
 end Types

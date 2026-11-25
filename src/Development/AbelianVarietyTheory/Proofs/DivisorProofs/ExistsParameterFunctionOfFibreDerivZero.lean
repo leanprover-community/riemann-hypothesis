@@ -64,7 +64,7 @@ theorem exists_glue_fn {I : Type} [Fintype I] {g : ℕ} {Λ : Type} [AddCommGrou
     rw [← r₁, ← r₂]
   refine ⟨fun q ↦ if h : ∃ k, q ∈ K.W k then (a h.choose).fn q else 0, fun k q hq ↦ ?_⟩
   have h : ∃ k, q ∈ K.W k := ⟨k, hq⟩
-  simp only [dif_pos h]
+  simp only [dite_eq_left h]
   exact key _ _ q h.choose_spec hq
 
 theorem exists_cst_of_dw_eq_zero : ∀ {I : Type} [Fintype I] {g : ℕ} {Λ : Type} [AddCommGroup Λ] {F : Fam I g Λ}

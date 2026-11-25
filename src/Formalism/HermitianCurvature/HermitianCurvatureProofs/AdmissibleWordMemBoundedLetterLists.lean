@@ -10,6 +10,7 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentCoo
 import Mathlib.MeasureTheory.Integral.Pi
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBJoint
 
 @[expose] public section
 
@@ -208,7 +209,7 @@ theorem rhs_eval (S : C.HidaSetting E Wp Wq) (ε : ℝ) (i : ℕ) (hi : i - 1 �
     congr 1
     refine Finset.sum_congr rfl fun w' _ => ?_
     congr 1
-    simp only [KB.gN, C.HidaSetting.gram, if_pos hi, Finset.prod_div_distrib]
+    simp only [KB.gN, C.HidaSetting.gram, ite_eq_left hi, Finset.prod_div_distrib]
     congr 1
     simp only [C.Word.size, C.HidaSetting.sizeAt, Complex.ofReal_prod]
   have e2 : ∑ h ∈ Y, ∑ h' ∈ Y, κ h h' * ∏ v, ((s v : ℂ) * ∑ a ∈ U v, (θ v a : ℂ) *
@@ -252,9 +253,9 @@ theorem waveV_core (S : C.HidaSetting E Wp Wq) (X : ℕ → Fin S.f → ℝ) (hW
     intro sg A v
     by_cases hv : v ∈ A
     · cases sg
-      · simp only [U, th, hv, if_true, Bool.false_eq_true, if_false]; exact hUm' v
-      · simp only [U, th, hv, if_true]; exact hUp' v
-    · simp only [U, th, hv, if_false]; exact locProb_single S w v _ (by omega)
+      · simp only [U, th, hv, ite_true, Bool.false_eq_true, ite_false]; exact hUm' v
+      · simp only [U, th, hv, ite_true]; exact hUp' v
+    · simp only [U, th, hv, ite_false]; exact locProb_single S w v _ (by omega)
   have hP : ∀ sg A, TB.IsProb (S.base.Wb (S.base.cnt w + C.Kst)) (fun w' : S.W => ∏ v, th sg A v (w'.1 v)) :=
     fun sg A => isProb_prod S _ hcnt (U sg A) (th sg A) (hU sg A)
   refine ⟨fun A w' => ((∏ v, th true A v (w'.1 v)) + ∏ v, th false A v (w'.1 v)) / 2, fun A => ?_, ?_⟩
@@ -288,12 +289,12 @@ theorem waveV_core (S : C.HidaSetting E Wp Wq) (X : ℕ → Fin S.f → ℝ) (hW
     · obtain ⟨-, u, hu, hB⟩ := hblk v ε hε (L v) (Y.image (C.loc (S.σ v))) (hYv v)
       refine ⟨u * L v ^ C.Kst, by simp [hv, hu, norm_pow], ?_⟩
       rw [haK true v, haK false v]
-      simp only [hv, if_true, Bool.false_eq_true, if_false]
+      simp only [hv, ite_true, Bool.false_eq_true, ite_false]
       exact hB
     · obtain ⟨hB0, -⟩ := hblk v ε hε (L v) (Y.image (C.loc (S.σ v))) (hYv v)
       refine ⟨1, by simp [hv], ?_⟩
       rw [haK true v, haK false v]
-      simp only [hv, if_false, one_mul]
+      simp only [hv, ite_false, one_mul]
       exact hB0
   choose c hcn hcB using hc
   have hS := block_schur Y κ hκ (fun v p q => aK true v (C.loc (S.σ v) p) (C.loc (S.σ v) q))
@@ -352,20 +353,7 @@ theorem psiInf_eq_prod (S : C.HidaSetting E Wp Wq) (l : E) (c : J.CV E) :
 
 theorem prod_dlB (S : C.HidaSetting E Wp Wq) (hg : 0 < S.g) (hU : S6.Unram E) (i : ℕ) :
     ∏ _v : Fin S.f, KB.dlB S i 1 = ZLattice.covolume (J.eLat E (S6.perLat E S.g (S6.nuBlock S.G.r i 1) 1) 1) := by
-  rw [_root_.Formalism.FourierDecayAlt.P.Dx2.NH.nhat E hU S.g _ 1 hg]
-  have hf : S.f = S6.deg E := by
-    have h1 := (Formalism.FourierDecayAlt.P.degreeFacts_statement E).2.1
-    have h2 : Fintype.card (Fin S.f) = Fintype.card (InfinitePlace E) := Fintype.card_congr S.pl
-    rw [Fintype.card_fin] at h2
-    omega
-  rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin, hf]
-  unfold KB.dlB D.deG
-  have hrd := Formalism.FourierDecayAlt.P.Jx4.rd_pos E
-  have hg' : (0 : ℝ) < (S.g : ℝ) := by exact_mod_cast hg
-  have e : S6.rd E ^ (2 * S6.nuBlock (S.G.r : ℤ) (i : ℤ) (1 : ℤ)) / (2 / (S6.rd E * (S.g : ℝ) ^ 3)) =
-      S6.rd E ^ (2 * S6.nuBlock (S.G.r : ℤ) (i : ℤ) (1 : ℤ)) * (S6.rd E / 2) * (S.g : ℝ) ^ 3 := by
-    field_simp
-  rw [Nat.cast_one, e, mul_pow, mul_pow, ← zpow_natCast, ← zpow_mul, ← pow_mul]
+  apply _root_.Formalism.FourierDecayAlt.P.PBJoint.prod_dlB <;> assumption
 
 theorem nhat_eq_nhatV (S : C.HidaSetting E Wp Wq) (hg : 0 < S.g) (hU : S6.Unram E) (hInt : KB.IntAll S)
     (ε : ℝ) (hε : 0 < ε) (i : ℕ) (hi1 : 1 ≤ i) (hi2 : i ≤ S.G.r + 1) (w : S.W) (Y : Finset (TB.Pt E))

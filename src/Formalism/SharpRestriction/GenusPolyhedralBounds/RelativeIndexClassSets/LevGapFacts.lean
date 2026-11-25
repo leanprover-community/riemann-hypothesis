@@ -40,12 +40,6 @@ end Par
 
 end Gen
 
-section HostPar
-
-variable {R : Ranks} (H : Host R)
-
-end HostPar
-
 end Formalism.MainNotions.Gaps.LG
 
 end

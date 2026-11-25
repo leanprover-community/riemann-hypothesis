@@ -18,7 +18,7 @@ def e0 (B : Scheme.{0}) (q : ℕ) : OU B q ⋙ DerivedCategory.homologyFunctor (
   Functor.isoWhiskerLeft (F0 B q) (DerivedCategory.singleFunctorCompHomologyFunctorIso (SShv B q) 0) ≪≫ Functor.rightUnitor _
 
 def EtaleSheafMapZeroOfLocallyZeroOnFreeSheafGenerators : Prop := ∀ (B : Scheme.{0}) (q : ℕ) (H H' : SShv B q) (g : H ⟶ H'),
-  (∀ (U : B.Etale) (t : (F0 B q).obj U ⟶ H), Cov U (fun U' a => (F0 B q).map a ≫ t ≫ g = 0)) → g = 0
+  (∀ (U : B.Etale) (t : (F0 B q).obj U ⟶ H), Cov U (fun _ a => (F0 B q).map a ≫ t ≫ g = 0)) → g = 0
 
 theorem LeafGen_of (hG : EtaleSheafMapZeroOfLocallyZeroOnFreeSheafGenerators) : LeafGen := by
   intro B q H H' g h

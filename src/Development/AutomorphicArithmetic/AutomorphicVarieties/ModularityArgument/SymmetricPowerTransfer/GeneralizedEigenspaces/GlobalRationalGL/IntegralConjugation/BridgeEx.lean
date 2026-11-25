@@ -216,7 +216,7 @@ private theorem delta_ne {L : Type} [Field L] [NumberField L] [IsCMField L] (R :
 private theorem hs_one {K : Type} [Field K] [CharZero K] {D : K} (h0 : D ≠ 0) (h : IsSquare D) (x : K) : hs D x = 1 := by
   obtain ⟨r, rfl⟩ := h
   have hr : r ≠ 0 := fun e => h0 (by rw [e, mul_zero])
-  refine if_pos ⟨(x + 1) / 2, (x - 1) / (2 * r), ?_⟩
+  refine ite_eq_left ⟨(x + 1) / 2, (x - 1) / (2 * r), ?_⟩
   field_simp
   ring
 
@@ -225,7 +225,7 @@ private theorem hs_neg {O K : Type} [CommRing O] [IsDomain O] [IsDiscreteValuati
   haveI := L.frac
   obtain ⟨ε, s, hs0, rfl⟩ := L.even
   have hp' : algebraMap O K p ≠ 0 := (map_ne_zero_iff _ (IsFractionRing.injective O K)).2 hp.ne_zero
-  refine if_neg fun ⟨a, b, e⟩ => L.not_even hp ?_
+  refine ite_eq_right fun ⟨a, b, e⟩ => L.not_even hp ?_
   have e' : a ^ 2 - algebraMap O K ε * (s * b) ^ 2 = algebraMap O K p := by rw [← e]; ring
   exact e' ▸ L.even_of_norm ε (fun ⟨r, hr⟩ => hD ⟨r * s, by rw [hr]; ring⟩) (e' ▸ hp')
 
@@ -1596,8 +1596,7 @@ private theorem rho_coe (P : Pre L) (v : Pl (Lp L)) (w : Plc L) (h : un w = v) (
   simp
 
 private theorem exists_over (P : Pre L) (v : Pl (Lp L)) : ∃ w : Plc L, un w = v := by
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have hE : IsEmpty {w : Plc L // un w = v} := ⟨fun w => hne w.1 w.2⟩
   have h01 := (rhoBij L P v).1 (a₁ := 0) (a₂ := 1) (funext fun w => (hE.false w).elim)
   exact zero_ne_one h01

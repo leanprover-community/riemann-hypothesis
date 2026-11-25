@@ -107,8 +107,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.ThetaVacuumAE
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem exists_finset_of_mem_nhds {F : Type} [Field F] [NumberField F] {N : Set (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Af F)} (hN : N ∈ 𝓝 0) :
     ∃ S : Finset (HeightOneSpectrum (𝓞 F)), ∀ α ∈ intAf F, (∀ v ∈ S, evalV F v α = 0) → α ∈ N := by
   have hc := (RestrictedProduct.isEmbedding_structureMap
@@ -164,7 +162,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 
@@ -436,7 +433,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 
@@ -455,7 +451,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 open GlobalTheory.DownLift.SplitCoef
@@ -599,8 +594,8 @@ theorem GlobalTheory.DownLift.SplitCoef.exists_locSpan_coef_eq : ∀ (D : D7) (�
     by_cases hΦx : Φ x = 0
     · rw [hΦx, zero_mul, mul_zero, zero_mul]
     · obtain ⟨z₀, ⟨hz₀, hP₀⟩, huniq⟩ := hXu x hx (hkΦ' x (hΦsupp x hΦx))
-      rw [Finset.sum_eq_single_of_mem z₀ hz₀ (fun z hz hne => if_neg fun hP => hne (huniq z ⟨hz, hP⟩)),
-        if_pos hP₀]
+      rw [Finset.sum_eq_single_of_mem z₀ hz₀ (fun z hz hne => ite_eq_right fun hP => hne (huniq z ⟨hz, hP⟩)),
+        ite_eq_left hP₀]
       field_simp
 
 end
@@ -617,7 +612,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 open GlobalTheory.DownLift.SplitCoef
@@ -637,7 +631,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 open GlobalTheory.DownLift.SplitCoef
@@ -808,7 +801,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 open GlobalTheory.DownLift.SplitCoef
@@ -828,7 +820,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 open GlobalTheory.DownLift.SplitCoef
@@ -915,7 +906,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 open GlobalTheory.DownLift.SplitCoef
@@ -935,7 +925,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 open GlobalTheory.DownLift.SplitCoef
@@ -954,8 +943,7 @@ theorem isSBHalf_sub_smul {m n : ℕ} {e : AE D} {Λ : AddSubgroup (Mx D m n)} {
   obtain ⟨f1, k, hk, f2, f3⟩ := hf
   obtain ⟨g1, l, hl, g2, g3⟩ := hg
   have hne : ∀ t, (f - c • g) t ≠ 0 → f t ≠ 0 ∨ g t ≠ 0 := fun t ht => by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact ht (by rw [Pi.sub_apply, Pi.smul_apply, h.1, h.2, smul_zero, sub_zero])
   have hh : ∀ (j : ℕ) (u : Mx D m n), IsHalf e u → IsHalf e (j • u) := fun j u hu => by
     rw [GlobalTheory.SplitScalar.isHalf_iff] at hu ⊢
@@ -1078,13 +1066,13 @@ theorem hasShape_adjDat : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : H
       rw [GlobalTheory.PlaceVec.frMapAdj_add]
       by_cases c1 : IsIntM (frMapAdj S T βS βT x)
       · by_cases c2 : IsHalf (cA D e) t ∧ IsIntM (frMapAdj S T βS βT t)
-        · rw [if_pos ⟨(isHalf_add_iff hx' t).2 c2.1, hI.2 ⟨c2.2, c1⟩⟩, if_pos ⟨hx, c1⟩, if_pos c2]
+        · rw [ite_eq_left ⟨(isHalf_add_iff hx' t).2 c2.1, hI.2 ⟨c2.2, c1⟩⟩, ite_eq_left ⟨hx, c1⟩, ite_eq_left c2]
           beta_reduce
           rw [h₁ _ (fun Q => redM Q (frMapAdj S T βS βT x)) (redM_add_of_one PP hp hp1 hM hN c2.2 c1),
             h₂ _ (fun Q => redM Q (frMapAdj S T βS βT t)) fun Q _ hQ =>
               redM_add_of_zero Q hp (GlobalTheory.TameProd.resS_idem_eq_zero he₀ hQ.symm hp) hN c2.2 c1]
-        · rw [if_neg c2, if_neg fun h => c2 ⟨(isHalf_add_iff hx' t).1 h.1, (hI.1 h.2).1⟩, mul_zero]
-      · rw [if_neg fun h => c1 (hI.1 h.2).2, if_neg fun h => c1 h.2, zero_mul]
+        · rw [ite_eq_right c2, ite_eq_right fun h => c2 ⟨(isHalf_add_iff hx' t).1 h.1, (hI.1 h.2).1⟩, mul_zero]
+      · rw [ite_eq_right fun h => c1 (hI.1 h.2).2, ite_eq_right fun h => c1 h.2, zero_mul]
   rw [map_sub, map_smul, hTm.trans _ s12 x hx', ← hfT, map_sub, map_smul, smul_eq_mul, sub_eq_zero] at key
   rw [key, mul_comm]
 
@@ -1104,7 +1092,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 open GlobalTheory.DownLift.SplitCoef
@@ -1124,7 +1111,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 open GlobalTheory.DownLift.SplitCoef
@@ -1254,7 +1240,7 @@ theorem mem_span_of_coef_mem_span : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ
 
       rw [heisO_lin_sub, GlobalTheory.SplitScalar.heisO_sum, map_sub, map_sum, hL ℓ hℓ x hx, sub_eq_zero]
       refine Finset.sum_congr rfl fun x₁ hx₁ => ?_
-      rw [hφe x₁ hx₁ ℓ hℓ x hx, coef, if_pos hx])
+      rw [hφe x₁ hx₁ ℓ hℓ x hx, coef, ite_eq_left hx])
   rw [sub_eq_zero] at hzero
   exact hzero ▸ hsum
 
@@ -1273,7 +1259,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 open GlobalTheory.DownLift.SplitCoef
@@ -1293,7 +1278,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 open GlobalTheory.DownLift.SplitCoef
@@ -1429,7 +1413,7 @@ theorem rel_extend {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) 
     refine Finset.sum_eq_zero fun u _ => ?_
     show c u • heisO ψ S T u 0 = 0
     rw [hz, smul_zero]
-  push_neg at hΦ
+  push Not at hΦ
   obtain ⟨x₀, hx₀, h0⟩ := hΦ
   choose p hp using fun x u => heisO_factor ψ S T hE x u
   have key : ∀ g, IsThetaFunO ψ S T g → HasShape ψ S T a Φ g → ∀ ℓ, InvForm ψ S T a ℓ → ∀ x, IsHalf a x →
@@ -1506,7 +1490,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 open GlobalTheory.DownLift.SplitCoef
@@ -1526,7 +1509,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 open GlobalTheory.DownLift.SplitCoef
@@ -1571,7 +1553,7 @@ theorem cross_law {χS χT : (AE D)ˣ →* Circle} {om : GA D S × GA D T →* M
   rw [ef, GlobalTheory.SplitScalar.heisO_smul, map_smul, smul_eq_mul] at e1
   rw [ew, GlobalTheory.SplitScalar.heisO_smul, map_smul, smul_eq_mul, hc₀ _ (GlobalTheory.SplitHecke.isHalf_actO κ 1 hx'), hc₀ _ hx'] at e2
   unfold coef
-  rw [if_pos (GlobalTheory.SplitHecke.isHalf_actO κ 1 hx), if_pos hx]
+  rw [ite_eq_left (GlobalTheory.SplitHecke.isHalf_actO κ 1 hx), ite_eq_left hx]
   have e3 : c * Φ (actO S T κ 1 x') = s * Φ x' := mul_left_cancel₀ hc0 (by linear_combination e2)
   apply mul_left_cancel₀ hc
   linear_combination (Φ x') * e1 - (ℓ (heisO ψ S T x f)) * e3
@@ -1593,15 +1575,15 @@ theorem omegaQ_split {a b : ℕ} (Q : Finset (Pl D.host.E)) (r : ℕ) (ξ : ∀ 
     · rfl
   rw [key, key, key]
   by_cases h : ∀ P ∈ Q, LowZero r (y P) ∧ IsUnit (topL r (y P)).det
-  · rw [if_pos h, if_pos (fun P hP' => h P (by rw [Finset.mem_singleton.1 hP']; exact hP)),
-      if_pos (fun P hP' => h P (Finset.mem_of_mem_erase hP')), Finset.prod_singleton, Finset.mul_prod_erase Q F hP]
-  · rw [if_neg h]
+  · rw [ite_eq_left h, ite_eq_left (fun P hP' => h P (by rw [Finset.mem_singleton.1 hP']; exact hP)),
+      ite_eq_left (fun P hP' => h P (Finset.mem_of_mem_erase hP')), Finset.prod_singleton, Finset.mul_prod_erase Q F hP]
+  · rw [ite_eq_right h]
     by_cases h1 : ∀ P ∈ ({PP} : Finset (Pl D.host.E)), LowZero r (y P) ∧ IsUnit (topL r (y P)).det
-    · rw [if_pos h1, if_neg (fun h2 => h fun P hP' => by
+    · rw [ite_eq_left h1, ite_eq_right (fun h2 => h fun P hP' => by
         by_cases e : P = PP
         · exact h1 P (Finset.mem_singleton.2 e)
         · exact h2 P (Finset.mem_erase.2 ⟨e, hP'⟩)), mul_zero]
-    · rw [if_neg h1, zero_mul]
+    · rw [ite_eq_right h1, zero_mul]
 
 theorem idem_over {e : AE D} {PP : Pl D.host.E} {v : HeightOneSpectrum (𝓞 D.host.F)}
     (he : Formalism.L2.NTheta.IsIdemAt e PP) (hv : Over PP v) :
@@ -1767,7 +1749,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 
@@ -1786,7 +1767,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 
@@ -1805,7 +1785,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 
@@ -1824,7 +1803,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 
@@ -1912,7 +1890,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 

@@ -80,8 +80,7 @@ theorem mackey_product : MackeyProd := by
     exact (hψ v).2.1 _ (hu1 v (Set.mem_univ v)) _ (hu2 v (Set.mem_univ v))
   · intro h hh
     have hex : ∃ v0, h v0 ∉ U v0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       apply hh
       show ∀ v ∈ (Set.univ : Set ι), h v ∈ U v
       exact fun v _ => hc v

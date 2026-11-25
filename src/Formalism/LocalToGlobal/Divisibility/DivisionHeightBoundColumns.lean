@@ -81,62 +81,6 @@ variable {K : Type} [Field K] [NumberField K] [StarRing K]
 
 end Fub
 
-section Rev
-
-open Pointwise
-
-variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ} {ST SG : Finset (HeightOneSpectrum (𝓞 E))}
-
-
-end Rev
-
-section PhiLem
-
-open Pointwise
-
-variable {E : Type} [Field E] [NumberField E] [StarRing E] {SG : Finset (HeightOneSpectrum (𝓞 E))}
-
-variable {K : Type} [Field K] {a b : ℕ}
-
-
-end PhiLem
-
-section Gauss
-
-variable {L : Type} [Field L]
-
-end Gauss
-
-section Count
-
-variable (E : Type) [Field E] [NumberField E] [StarRing E]
-
-
-end Count
-
-section ClassRel
-
-open Classical
-
-variable {E K : Type} [Field E] [NumberField E] [StarRing E] [Field K] {a b : ℕ} {SG : Finset (HeightOneSpectrum (𝓞 E))}
-  {V V' : Type} [AddCommGroup V] [Module K V] [AddCommGroup V'] [Module K V']
-
-end ClassRel
-
-section RelOf
-
-variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
-  (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S)
-
-end RelOf
-
-section Main
-
-variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
-  (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S)
-
-end Main
-
 end Formalism.L2.Col
 end -- clump:auto
 end -- clump:auto
@@ -330,15 +274,6 @@ variable (hX : X.Ok) (v0 : InfinitePlace X.K) (TU : Finset (Tup X.F X.E X.K S))
   (Xg : Finset (Col.G0 X.E Pr.vGs R.r → X.K)) (S0 : Set (HeightOneSpectrum (𝓞 X.E)))
 
 end XiCol
-
-section LinkCol
-
-variable {X : Col.Fields} {Pr : Col.Primes X} {R : Ranks} (W : Col.Wts X Pr.Word R) (Ch : Col.Chars X Pr R.m)
-  (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (hX : X.Ok) (v0 : InfinitePlace X.K)
-  (TU : Finset (Tup X.F X.E X.K S)) (Xg : Finset (Col.G0 X.E Pr.vGs R.r → X.K)) (S0 : Set (HeightOneSpectrum (𝓞 X.E)))
-
-
-end LinkCol
 
 end Formalism.L2.DIV
 end -- clump:auto

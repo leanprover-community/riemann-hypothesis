@@ -237,18 +237,6 @@ namespace GlobalTheory.EtaConjType
 
 open Formalism.L2.Host Formalism.L2.JoinChr
 
-section General
-
-variable {E : Type} [Field E] [NumberField E]
-
-variable {L : Type} [Field L] (ι σ : L →+* ℂ) {χ χ' : HChar E} (hu : ∀ P, χ.UnrAt P) (hu' : ∀ P, χ'.UnrAt P)
-  (y : HeightOneSpectrum (𝓞 E) → L) (hy : ∀ P, ι (y P) = ((χ.val P : ℂˣ) : ℂ) * (rt P : ℂ))
-  (hy' : ∀ P, σ (y P) = ((χ'.val P : ℂˣ) : ℂ) * (rt P : ℂ))
-
-include hu hu' hy hy'
-
-end General
-
 theorem resEta_hasInfExp_of_isEtaConj_ofFive : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.Core5 R F → ∀ (i : Fin D.R.m), ∀ (σ : D.what₂.LL →+* ℂ), OverK σ → ∀ η', IsEtaConj σ R.eta η' → ResEta D η' 1 ∧ ∀ ρ, HasInfExp D η' ρ (1 / 2) := by
   intro D G _ _ Pl0 T0 A Ks _ _ _ R F hR _ σ hσ η' hη
   obtain ⟨χ', hc⟩ := GlobalTheory.HeckeTensorRead.exists_hchar_chrEq D η' hη.1
@@ -283,7 +271,7 @@ theorem hypConj_of_chars_ofFive : ∀ {D : D7} {G : Type} [Group G] [Fintype G] 
       sig := fun ρ => D.sp.W_sigval _ (Nat.le_add_left _ _) i.2 _
       lab_bij := hb
       lab_at := hat
-      par := fun ρ => if_pos (hat ρ)
+      par := fun ρ => ite_eq_left (hat ρ)
       gap := fun ρ n hn => GlobalTheory.IndefiniteRowSideFullHecke.ThetaAdjointScalarOnComponents.gap (D.hc (lab σ ρ)) i hn
       mu_res := ⟨hres.1, fun η _ a => (hμ.2.1 a).trans (pow_zero _).symm⟩
       mu_inf := hμ.2.2.1
@@ -401,7 +389,7 @@ theorem factsAt_ofFive : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 :
   · have h : ChiAt R i σ (T.chiW ((i : ℕ) + 1) (res T σ)) := tie.chiR i σ hg
     rw [hs] at h
     rw [(GlobalTheory.ConjCharUnique.conjChar_unique_ofFive R F hR i σ).1 _ _ hμ h]
-    exact FactsLat.muVal_cast hV (tie.laws.muVal _ hin _ hg')
+    exact GlobalTheory.HolDict.muVal_castDict hV (tie.laws.muVal _ hin _ hg')
   · have h := GlobalTheory.EtaConjType.resEta_hasInfExp_of_isEtaConj_ofFive R F hR i σ hK η' hη
     exact (hypConj_of_chars_ofFive R F hR i σ hl.1 hl.2).2 μ' η' hμ hη h.1 h.2
 
@@ -422,14 +410,6 @@ open GlobalTheory.OneMapRef GlobalTheory.WeilParts
 namespace GlobalTheory.OneMapRef.FactsLat
 
 variable {D : D7}
-
-section Model
-
-variable {V : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel V S) {p q : ℕ} (hpq : p + q = V.rank)
-  (hε : ∀ τ a, M.ε τ a = decide ((a : ℕ) < p))
-include hpq hε
-
-end Model
 
 theorem facts_lat_ofFive : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : FamIn D.what₂.LL G Pl0 T0 D.R.m) (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F) (F : Face D A) (κ : ∀ i : Fin D.R.m, WeightFamilies.Wt D ((i : ℕ) + 1)) (v₀ : ∀ (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (R.MW i σ).Vec), GlobalTheory.Core5 R F → Nonempty (FWTie T R κ v₀) → ∀ (i : Fin D.R.m) (Tp : Type) (tup : Tp → T0) (O : OMDat T.toCore R i Tp tup), O.Pins (κ i) (v₀ i (sg0 D A)) (iotaW T i) (T.x₀ ((i : ℕ) + 1) O.s0) → sg0 D A = D.what₂.embLL ∧ (Vc D i).gram = 1 ∧ Even (Vc D i).rank ∧ (κ i).n = (Vc D i).rank ∧ R.ΛV i = stdL D.host.E (Vc D i).rank ∧ IsSelfDualC (Vc D i) (R.ΛV i) ∧ IsSelfDualC (Wc D i) (R.ΛW i) ∧ IsONeg (Wc D i) (T.Q.Dw ((i : ℕ) + 1)).q (baseZ R i) ∧ cart (R.MW i (sg0 D A)) = cartZ (Wc D i) (T.Q.Dw ((i : ℕ) + 1)).q (baseZ R i) ∧ (∀ ρ, T.x₀ ((i : ℕ) + 1) O.s0 (tauE D ρ) = Matrix.reindex (finCongr (rank_Wc i)) (finCongr (rank_Wc i)) (baseZ R i ρ)) ∧ MuVal (Wc D i) (R.mu0 ((i : ℕ) + 1)) O.mu ∧ (T.Q.Dw ((i : ℕ) + 1)).p ≠ (T.Q.Dw ((i : ℕ) + 1)).q ∧ 1 ≤ D.R.r ∧ LatEmb (Wc D i) (iotaW T i) ∧ ∀ h : GA D (Wc D i), ∃ LT : Lt D.host.E (Wc D i).rank, IsSelfDualC (Wc D i) LT ∧ GlobalTheory.Ker.IsAA (latG (Wc D i) h) LT ∧ GlobalTheory.Ker.IsMov (GlobalTheory.Ker.fmt (Wc D i) h) (R.ΛW i) LT ∧ ∀ u : WO (Vc D i) (Wc D i), u ∈ (latO (Vc D i) (Wc D i) (R.ΛV i : Set _) (LT : Set _) fun _ => True) ↔ ∃ u₀ ∈ (latO (Vc D i) (Wc D i) (R.ΛV i : Set _) (R.ΛW i : Set _) fun _ => True), u = actO (Vc D i) (Wc D i) 1 h u₀ := by
   rintro D G _ _ Pl0 T0 A T _ R F κ v₀ hR ⟨tie⟩ i Tp tup O hP
@@ -476,7 +456,7 @@ theorem facts_lat_ofFive : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0
   · have h1 := (tie.chiR i D.what₂.embLL (by rw [hs]; exact hg)).2.2.2.2 rfl
     rw [hs] at h1
     rw [← h1]
-    exact muVal_cast O.hV (tie.laws.muVal _ hin _ hg)
+    exact GlobalTheory.HolDict.muVal_castDict O.hV (tie.laws.muVal _ hin _ hg)
   · rw [hp, hq]
     simp only [Ranks.sigW]
     omega
@@ -727,7 +707,7 @@ theorem deltaConj_extremal_weight_ofFive : ∀ {D : D7} {G : Type} [Group G] [Fi
     · subst e
       rw [show compAt R.θ ρ (Formalism.L2.Theta.mt (Wc D i) g) = _ from a2, ← Matrix.mul_assoc, ← Matrix.mul_assoc, h1,
         Matrix.one_mul, Matrix.mul_assoc, h1, Matrix.mul_one]
-      simp only [θs, if_true]
+      simp only [θs, ite_true]
     · rw [show compAt R.θ ρ (Formalism.L2.Theta.mt (Wc D i) g) = _ from a3 ρ e, Matrix.mul_one, h1]
       simp [θs, e]
   have e1 : ∀ ρ, (R.BV i ρ)⁻¹ * compAt R.θ ρ (Formalism.L2.Theta.mt (Vc D i) 1) * R.BV i ρ = 1 := fun ρ => by
@@ -748,7 +728,7 @@ theorem deltaConj_extremal_weight_ofFive : ∀ {D : D7} {G : Type} [Group G] [Fi
   congr 1
   by_cases hp : (j : ℕ) < pW D i τ
   · simp [θs, hp, mul_assoc]
-  · rw [if_neg hp, if_neg hp, if_neg (by have := hpq τ; omega),
+  · rw [ite_eq_right hp, ite_eq_right hp, ite_eq_right (by have := hpq τ; omega),
       show (Wc D i).rank - 1 - ((Wc D i).rank - 1 - (j - pW D i τ)) = j - pW D i τ by omega]
     simp [θs, mul_assoc]
 
@@ -808,32 +788,6 @@ section
 
 noncomputable section
 
-namespace GlobalTheory.GalOne.PhaseAt
-
-section General
-
-open MvPolynomial Formalism.BasicNotions Formalism.L2.DIV
-
-end General
-
-section Letters
-
-open NumberField Matrix Complex
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Dict GlobalTheory.AdTh GlobalTheory.ClsVal
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
-open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
-open scoped TensorProduct Classical ComplexConjugate
-open GlobalTheory.AdTh.PhaseMap
-
-variable {D : D7} {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} {Dw : Datum H} {m n : ℕ} {l : Geo.Tor.Level H} (c : Coeff l)
-  (φ : c.F →+* ℂ) {e : D.what₂.Tau → D.what₂.Tau}
-
-variable {lt : LtN Dw n → FVar D m n}
-
-end Letters
-
-end GlobalTheory.GalOne.PhaseAt
-
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.FWT Formalism.L2.Pj
 open MeasureTheory IsDedekindDomain NumberField Matrix
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.ThFr GlobalTheory.Dict GlobalTheory.ClsVal
@@ -886,7 +840,7 @@ theorem io_eq_phase_smul_at_ofFive : ∀ {D : D7} {G : Type} [Group G] [Fintype 
   have n1 : ‖c₁ v₁‖ = 1 := by
     have hn := GlobalTheory.StdFrame.neg_eq_false_of_vStd D i hstd
     have hG : gramV D i = 1 := by
-      rw [gramV, hn, if_neg Bool.false_ne_true]
+      rw [gramV, hn, ite_eq_right Bool.false_ne_true]
       exact hstd.1
     have hi := inner_of_int (lamV D i) σ c₁ _ hc₁.pair v₁ v₁ (∏ τ, Formalism.GradedWeylDivisibility.blockEmb ℤ τ (Formalism.BasicNotions.extremal ℤ _ (lamV D i τ))) (by
       show Formalism.L2.DIV.ten _ = _
@@ -909,7 +863,7 @@ theorem io_eq_phase_smul_at_ofFive : ∀ {D : D7} {G : Type} [Group G] [Fintype 
     have hγE : Matrix.nonsingInvUnit γE.val hu = γE := Units.ext rfl
     have hemb : (fun τ => embF O.c' (tauE D τ)) = fun τ => O.jL.comp (labLL D τ) :=
       funext fun τ => (embV_eq_embF O.c' O.jL hO.lift.field τ).symm
-    rw [rhoM, dif_pos hu, hγE, hemb]
+    rw [rhoM, dite_eq_left hu, hγE, hemb]
     exact CoefExt.up_rhoVr O.jL (lamV D i) (labLL D) γE v
   have hid : ∀ v, c₁ (CoefExt.up (RingHom.id _) (lamV D i) v) = c₁ v := fun v => congrArg c₁ (up_id _ v)
   have n3 : Submodule.span ℂ (Set.range c₁) = ⊤ := CoefExt.span_top (W := c.W) hid hc₁.span
@@ -978,10 +932,10 @@ theorem io_eq_phase_smul_at_ofFive : ∀ {D : D7} {G : Type} [Group G] [Fintype 
       refine toG_pG O.c' σ' he hl hty i1 _ _ _ _ _ (fun τ => by rw [pW, hsig, d1]) (fun τ => by rw [qW, hsig, d2])
         (fun τ k hk => ?_) fun τ k hk => ?_
       · rw [d1] at hk
-        refine (w3 _ k).1.trans ((dif_pos hk).trans (((hT.kap i _).1 ⟨k, hk⟩).trans ?_))
+        refine (w3 _ k).1.trans ((dite_eq_left hk).trans (((hT.kap i _).1 ⟨k, hk⟩).trans ?_))
         rw [pW, hsig, hsig]
       · rw [d2] at hk
-        refine (w3 _ k).2.trans ((dif_pos hk).trans (((hT.kap i _).2.1 ⟨k, hk⟩).trans ?_))
+        refine (w3 _ k).2.trans ((dite_eq_left hk).trans (((hT.kap i _).2.1 ⟨k, hk⟩).trans ?_))
         rw [pW, qW, hsig, hsig]
     obtain ⟨a, ha, ha'⟩ := proportional (c.ρ.comp (GQ (Vc D i)).subtype) _ r1 (fun γ hγ => hγ) r2 A₀ (PT ∘ₗ B₀)
       (fun γ => by
@@ -1030,18 +984,6 @@ section
 noncomputable section
 
 namespace GlobalTheory.GalOne.IoCmp
-
-section Letters
-
-open NumberField Matrix
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Dict GlobalTheory.AdTh GlobalTheory.ClsVal
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
-open GlobalTheory.SW hiding Level IsSB
-open scoped Classical
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
-
-end Letters
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.FWT Formalism.L2.Pj
 open MeasureTheory IsDedekindDomain NumberField Matrix
@@ -1096,10 +1038,10 @@ theorem ioAt_of_conj_ofFive : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0
         (ℓ.2.1 : ℕ) < (T.Q.Dw ((i : ℕ) + 1)).q) := fun ℓ => by
     by_cases h : InPsi T.Q.H ℓ.1
     · obtain ⟨ρ, hρ⟩ := (w1 _).1 ((hrl _).2 h)
-      have h3 : (ℓ.2.1 : ℕ) < (T.Q.Dw ((i : ℕ) + 1)).p := lt_of_lt_of_eq ℓ.2.1.2 (if_pos h)
+      have h3 : (ℓ.2.1 : ℕ) < (T.Q.Dw ((i : ℕ) + 1)).p := lt_of_lt_of_eq ℓ.2.1.2 (ite_eq_left h)
       exact ⟨ρ, ⟨(T.Q.Dw ((i : ℕ) + 1)).q + ℓ.2.1, by omega⟩, Or.inl ⟨hρ, rfl, h3⟩⟩
     · obtain ⟨ρ, hρ⟩ := (w2 _).1 (fun h' => h ((hrl _).1 h'))
-      have h3 : (ℓ.2.1 : ℕ) < (T.Q.Dw ((i : ℕ) + 1)).q := lt_of_lt_of_eq ℓ.2.1.2 (if_neg h)
+      have h3 : (ℓ.2.1 : ℕ) < (T.Q.Dw ((i : ℕ) + 1)).q := lt_of_lt_of_eq ℓ.2.1.2 (ite_eq_right h)
       exact ⟨ρ, ⟨(T.Q.Dw ((i : ℕ) + 1)).q - 1 - ℓ.2.1, by omega⟩, Or.inr ⟨hρ, rfl, h3⟩⟩
   choose ρ c hc using hex
   let lt' : LtN (T.Q.Dw ((i : ℕ) + 1)) (Vc D i).rank → FVar D (Wc D i).rank (Vc D i).rank := fun ℓ => (ρ ℓ, c ℓ, ℓ.2.2)
@@ -1114,7 +1056,7 @@ theorem ioAt_of_conj_ofFive : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0
       omega
     · refine Or.inr ⟨h1, ?_⟩
       show ((arr (T.Q.Dw ((i : ℕ) + 1)).q (c ℓ) : Fin _) : ℕ) = _
-      rw [arr, dif_pos (by omega)]
+      rw [arr, dite_eq_left (by omega)]
       show (Wc D i).rank - 1 - (c ℓ : ℕ) = _
       omega⟩)
   have hBV : ∀ τ, (R.BV i τ)ᴴ * gramAt D (Vc D i) τ * R.BV i τ = 1 := fun τ => by
@@ -1141,7 +1083,7 @@ theorem ioAt_of_conj_ofFive : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0
       have h : ¬ InPsi T.Q.H τ := fun h => by
         obtain ⟨s, hs⟩ := (w1 _).1 ((hrl τ).2 h)
         exact hτ (by rw [hs, ← heT s]; exact (eT s).2)
-      have h2 : (T.Q.Dw ((i : ℕ) + 1)).mult τ = (T.Q.Dw ((i : ℕ) + 1)).q := if_neg h
+      have h2 : (T.Q.Dw ((i : ℕ) + 1)).mult τ = (T.Q.Dw ((i : ℕ) + 1)).q := ite_eq_right h
       omega
     have hne : ∀ (s : D.what₂.Tau) (t : X.Ψ), tauE D s ≠ ReciprocityTheory.ChartRestriction.G.Geo.Tor.conjEmb t.1 := fun s t e =>
       (w2 _).2 ⟨eT.symm t, by rw [e, ← heT, Equiv.apply_symm_apply]⟩ ((w1 _).2 ⟨s, rfl⟩)
@@ -1853,14 +1795,6 @@ open GlobalTheory.OneMapRef GlobalTheory.WeilParts GlobalTheory.IndefiniteRowSid
 
 namespace GlobalTheory.GalOne.ClassConj
 
-section Local
-
-open Formalism.L2.JoinChr Formalism.L2.Host
-
-variable {D : D7}
-
-end Local
-
 
 
 theorem class_scalar_conj_ofFive : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m} (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F) (F : Face D A) (κ : ∀ i : Fin D.R.m, WeightFamilies.Wt D ((i : ℕ) + 1)) (v₀ : ∀ (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (R.MW i σ).Vec), GlobalTheory.Core5 R F → FWTie T R κ v₀ → ∀ (i : Fin D.R.m) (O : OM T R i), Pinned κ v₀ O → ∀ (σ : D.what₂.LL →+* ℂ) (σ' : O.c'.F →+* ℂ), σ'.comp O.jL = σ → ∀ μ' η' : (AE D)ˣ →* Circle, ChiAt R i σ μ' → IsEtaConj σ R.eta η' → ∀ (h : O.Cl' () → GA D (Vc D i)) (J' : Subgroup (Bridge.Gf (Vc D i))), RepsR R i A.μ0 h (O.bad ()) J' (O.Lh ()) (O.gam ()) (O.vol ()) → ∀ k, (O.La () k).La ∈ Vset D.host.E (Vc D i).rank 1 ∧ GlobalTheory.Ker.IsMov (GlobalTheory.Ker.fmtC (Vc D i) (h k)) (stdL D.host.E (Vc D i).rank) (O.La () k).La ∧ ∃ (e : AE D) (P : Finset (Pl D.host.E)) (x : (AE D)ˣ), IsIdemSum e P ∧ SuppAt e (Vc D i) (h k) ∧ IsDetAt e (Vc D i) (h k) x ∧ σ' (O.ep () k * (((O.La () k).mIdx (O.Nc () k) D.R.r : O.c'.F))⁻¹ * ((O.La () k).zCard (O.Nc () k) D.R.r : O.c'.F)) = ((((μ' * η'⁻¹) x)⁻¹ : Circle) : ℂ) * ((Real.sqrt ((((((O.La () k).La ⊓ stdL D.host.E (Vc D i).rank).toAddSubgroup.addSubgroupOf (O.La () k).La.toAddSubgroup).index ^ D.R.r : ℕ) : ℝ)) : ℝ) : ℂ) := by
@@ -1902,7 +1836,7 @@ theorem class_scalar_conj_ofFive : ∀ {D : D7} {G : Type} [Group G] [Fintype G]
     (fun Q hQ x => by
       rw [Formalism.L2.Host.HChar.resFin_mul, Formalism.L2.Host.HChar.resFin_mul, Formalism.L2.Host.HChar.resFin_inv,
         (R.C.isMu0 i).triv.1, (hL.xi_triv A.μ0).1, R.C.isEta.res.1, Formalism.L2.Host.etaFin, GlobalTheory.ClassScalarValue.above_eq,
-        Finset.card_pair hQ.symm, if_neg (by norm_num), inv_one, one_mul, one_mul])
+        Finset.card_pair hQ.symm, ite_eq_right (by norm_num), inv_one, one_mul, one_mul])
     σ R.eta η' hch.1.2.1 hη
   rw [← hbar] at c1 c3
   rw [← hLh] at c3
@@ -2010,9 +1944,9 @@ theorem zak_class_term_conj_ofFive : ∀ {D : D7} {G : Type} [Group G] [Fintype 
     obtain ⟨⟨v', hv'⟩, -, h, -⟩ :=
       TensVac.vacua _ _ X g bas idx _ hS.2.2.2.2.2.2.2 hS.2.2.2.1 _ hw hw' L hL 1 _ hΛ
     rw [h v hv.1 v' hv']
-    exact Const.isSB_smul_tf _ hv'.1
+    exact GlobalTheory.Dict.ShortVal.isSB_smul _ hv'.1
   rw [mul_assoc a, ← hval] at hE
-  have key := zak_sum hS hZ (Const.isSB_smul_tf _ hsb) hE (fun q => inC O.c' (O.w () k q)) Y
+  have key := zak_sum hS hZ (GlobalTheory.Dict.ShortVal.isSB_smul _ hsb) hE (fun q => inC O.c' (O.w () k q)) Y
     ((Nat.card (Fin (Vc D i).rank → LevQ (T.Q.Dw ((i : ℕ) + 1)) (O.dδ ()).l₂) : ℕ) : ℂ)⁻¹
 
   rw [hsum _ (Nat.pos_of_ne_zero (DualMark.level_ne _)) dvd_rfl Y₀ hY₀, map_smul, gphi, finsum_eq_sum_of_fintype,
@@ -2080,12 +2014,6 @@ open GlobalTheory.OneMapRef GlobalTheory.WeilParts GlobalTheory.IndefiniteRowSid
 
 namespace GlobalTheory.GalOne
 
-section Gen
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H} {l : Level H}
-
-end Gen
-
 
 
 theorem conj_coeff_eq_dilate_ofFive : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m} (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F) (F : Face D A) (κ : ∀ i : Fin D.R.m, WeightFamilies.Wt D ((i : ℕ) + 1)) (v₀ : ∀ (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (R.MW i σ).Vec), GlobalTheory.Core5 R F → FWTie T R κ v₀ → ∀ (i : Fin D.R.m) (O : OM T R i), Pinned κ v₀ O → ∀ σ' : O.c'.F →+* ℂ, ∃ m : ℤ, IsCoprime m ((O.dδ ()).l₂.M : ℤ) ∧ ∀ k q, σ' (O.w () k q) = inC O.c' (O.w () k (m • q)) := by
@@ -2093,7 +2021,7 @@ theorem conj_coeff_eq_dilate_ofFive : ∀ {D : D7} {G : Type} [Group G] [Fintype
   have hQ : R.Q A.μ0 = ∅ := (chars_of_lift_ofFive D G Pl0 T0 A _ R F hR i).2.2.1
   have hq : ∀ {a b : ℕ} (Q : Finset (Formalism.L2.DIV.Pl D.host.E)) r ξ k y, Q = ∅ → omegaQ (D := D) (a := a) (b := b) Q r ξ k y = 1 := by
     rintro a b _ r ξ k y rfl
-    rw [omegaQ, dif_pos (fun _ h => absurd h (Finset.notMem_empty _))]
+    rw [omegaQ, dite_eq_left (fun _ h => absurd h (Finset.notMem_empty _))]
     simp
   have hk : ∀ {a b : ℕ} (Q : Finset (Formalism.L2.DIV.Pl D.host.E)) y,
       omegaK (D := D) (a := a) (b := b) Q y = 0 ∨ omegaK (D := D) (a := a) (b := b) Q y = 1 := by
@@ -2131,12 +2059,6 @@ open scoped TensorProduct ComplexConjugate
 open GlobalTheory.OneMapRef GlobalTheory.WeilParts GlobalTheory.IndefiniteRowSideFullHecke.WeilGramSignature GlobalTheory.GalLift GlobalTheory.GalOne
 
 namespace GlobalTheory.GalCentral
-
-section Res
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
-
-end Res
 
 variable {D : D7}
 
@@ -2380,7 +2302,7 @@ theorem identity_of_frConst_ofFive (hR : GlobalTheory.Core5 R F) (tie : FWTie T 
     _ (fibExt hAo A₀) (k5.2.2.2.2.2.2.2 g Dc.bas Dc.idx Dc.e Dc.sympl hM A₀ mk hmk.1 hmk.2) k7.1
   have hb := hbc ℂ hAo ((ptC (T.U ((i : ℕ) + 1) (sOf O σ')) (dictS hV q).1 ⟨(dictS hV q).2, hdom⟩).ext O.hle hAo)
   have e1 : ∑ k, σ' (as k) * rdU (T.U ((i : ℕ) + 1) (sOf O σ')) (fs k) (dictS hV q).1 (dictS hV q).2 = _ :=
-    (Finset.sum_congr rfl fun k _ => congrArg (σ' (as k) * ·) (dif_pos hdom)).trans (hb.symm.trans hg)
+    (Finset.sum_congr rfl fun k _ => congrArg (σ' (as k) * ·) (dite_eq_left hdom)).trans (hb.symm.trans hg)
   rw [← hfr] at ha
   have alg : ∀ {n : ℕ} (a r : Fin n → ℂ) (ph c0 S l c u k C : ℂ), ph * S = c * u * k * l * C → ∑ j, a j * r j = c0 * k * C →
       ph * c0 * S = ∑ j, a j * (l * (c * u * r j)) := fun a r ph c0 S l c u k C h1 h2 => by

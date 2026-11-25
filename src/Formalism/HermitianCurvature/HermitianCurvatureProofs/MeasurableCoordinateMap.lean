@@ -307,7 +307,7 @@ theorem inj_Tt : Function.Injective (Tt S γ w e) := by
 
 
 include hγ hd hZw hpos he in
-theorem emb_Tt : MeasurableEmbedding (Tt S γ w e) := set_option maxHeartbeats 800000 in by
+theorem emb_Tt : MeasurableEmbedding (Tt S γ w e) := by
   have hm : Measurable (Tt S γ w e) := by
     unfold Tt
     exact measurable_fst.prodMk (meas_Tx S hγ hd hZw hpos e)

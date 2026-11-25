@@ -83,15 +83,14 @@ theorem B_inj {ψ : AddChar (Ad E) ℂ} (hψ : StdPsi ψ) (γ : Fin k → Ad E) 
   subst hξ'
   by_contra hne
   have : ∃ i, ξ i ≠ 0 := by
-    by_contra h0
-    push_neg at h0
+    by_contra! h0
     exact hne (funext fun i => by simp [h0 i])
   obtain ⟨i, hi⟩ := this
   obtain ⟨a, ha⟩ := psi_nontriv hψ
   apply ha
   have := h (Pi.single i (algebraMap E (Ad E) (ξ i)⁻¹ * a) : Fin k → Ad E)
   have e : (∑ j, (fun j => algebraMap E (Ad E) (ξ j)) j * (Pi.single i (algebraMap E (Ad E) (ξ i)⁻¹ * a) : Fin k → Ad E) j) = a := by
-    simp only [Pi.single_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [Pi.single_apply, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rw [← mul_assoc, ← map_mul, mul_inv_cancel₀ hi, map_one, one_mul]
   simp only [B] at this
   rwa [e] at this

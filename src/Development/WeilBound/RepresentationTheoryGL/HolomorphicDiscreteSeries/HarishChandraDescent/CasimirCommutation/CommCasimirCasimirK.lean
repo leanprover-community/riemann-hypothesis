@@ -64,7 +64,7 @@ theorem glRep_diag {E : Fin n → Fin n → Module.End ℂ M} (hE : IsGlRep E) (
   by_cases hca : c = a
   · subst hca
     rfl
-  · rw [if_neg hca, if_neg (Ne.symm hca), sub_zero] at h
+  · rw [ite_eq_right hca, ite_eq_right (Ne.symm hca), sub_zero] at h
     exact sub_eq_zero.mp h
 
 theorem sum_adj (ε : Fin n → Bool) (E : Fin n → Fin n → Module.End ℂ M) :
@@ -90,10 +90,10 @@ theorem Qop_eq (ε : Fin n → Bool) (E : Fin n → Fin n → Module.End ℂ M) 
     intro b
     split_ifs with h
     · subst h
-      simp only [adjSign, if_true, one_smul]
+      simp only [adjSign, ite_true, one_smul]
       abel
     · simp
-  simp only [key, Finset.sum_add_distrib, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [key, Finset.sum_add_distrib, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 theorem comm_casimir_casimirK {E : Fin n → Fin n → Module.End ℂ M} (hE : IsGlRep E) (ε : Fin n → Bool) :
     Commute (casimirK ε E) (casimir E) :=
@@ -260,8 +260,7 @@ theorem comp_proof : SqId → Comp := by
       exact heig χ (some a)
     · rw [real_of_eigen (hsa _) (heig χ none) (hne χ hχ)]
       exact heig χ none
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hlt : ∀ χ ∈ s, S * ‖c χ‖ ^ 2 < qf E μ (c χ) := fun χ hχ => hcon _ _ _ (hgood χ hχ)
   have hsne : s.Nonempty := by
     rw [Finset.nonempty_iff_ne_empty]

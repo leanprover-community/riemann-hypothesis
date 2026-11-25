@@ -4,41 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.RangeShape
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HasTypeVec
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.ConstantTermVanishing
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.NonFieldTypeVanishing
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
@@ -101,14 +66,6 @@ variable {W : Type} [AddCommGroup W] [Module ℂ W] (μ : Measure (GLoc σ J v))
   (τ : Representation ℂ (GL (Fin n) (ResF v)) W)
 end SplitAt
 attribute [instance] TypeData.acg TypeData.mod TypeData.fd
-section ArchFamily
-variable {Hs : InfinitePlace F → Type} [∀ w, NormedAddCommGroup (Hs w)] [∀ w, InnerProductSpace ℂ (Hs w)]
-  [∀ w, CompleteSpace (Hs w)]
-variable {Ψ : ∀ w : InfinitePlace F, EmbOver E w} {D : ∀ w, GArch σ J w →* (Hs w →L[ℂ] Hs w)} {T : TypeData σ J L} {U : UnitaryAuxiliaryPlaceData σ J L}
-  {μa : ∀ w, Measure (GArch σ J w)} {μf : ∀ v, Measure (GLoc σ J v)}
-end ArchFamily
-section Cent
-end Cent
 section Record
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Mult Formalism.MainNotions.S
 variable {D : D7} (V : HSp D)
@@ -168,13 +125,6 @@ open Formalism.UG (cT)
 open scoped TensorProduct ENNReal
 noncomputable section
 namespace GlobalTheory.IndefiniteRowSideFullHecke.NonFieldTypeVanishingAlt
-section Class
-variable {G : Type} [Group G]
-end Class
-section TypeOf
-variable {F E : Type} [Field F] [Field E] [Algebra F E] (σ : E →ₐ[F] E) {n : ℕ} (J γ : Matrix (Fin n) (Fin n) E)
-variable {σ J γ}
-end TypeOf
 section Record
 variable {D : D7} {V : HSp D}
 
@@ -210,22 +160,6 @@ open GlobalTheory.AdelicU GlobalTheory.OpTrace GlobalTheory.Orb GlobalTheory.Aut
 open scoped TensorProduct ComplexConjugate Matrix
 noncomputable section
 namespace GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots
-section Poly
-variable {F E : Type} [Field F] [Field E] [Algebra F E] (σ : E →ₐ[F] E) (r : ℕ)
-variable {σ r} (P : PPol σ r)
-variable (k : Type) [CommRing k] [Algebra F k]
-variable {n : ℕ} (J : Matrix (Fin n) (Fin n) E)
-variable {P k J}
-variable [TopologicalSpace k]
-variable (dg : Measure (HA k σ J)) (dt : Measure (Tor P k)) (f : HA k σ J → ℂ)
-end Poly
-section Weyl
-variable {r : ℕ}
-variable {F E : Type} [Field F] [Field E] [Algebra F E] {σ : E →ₐ[F] E}
-end Weyl
-section Global
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {r : ℕ}
-end Global
 section Record
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.IndefR.Mult
 variable {D : D7}
@@ -236,14 +170,6 @@ def IsTestDataX (V : HSp D) (lam : D.what₂.Tau → Fin V.rank → ℤ) {S : D.
     (fa : ∀ w, GArch D.sp.cm.sig V.gram w → ℂ) (ff : ∀ v, GLoc D.sp.cm.sig V.gram v → ℂ) : Prop :=
   Odd V.rank ∧ (∀ ρ, Gap (lam ρ)) ∧ (∀ ρ i, M.lam ρ i = lam ρ i) ∧ NoFixed T ∧
     IsRestrictedProd D.sp.cm.sig V.gram (frameLat V) μa μf μ ∧ IsTestArchGX M μa fa ∧ IsTestFin T U μf ff
-section Terms
-variable (V : HSp D) (lam : D.what₂.Tau → Fin V.rank → ℤ) (μa : ∀ w, Measure (GArch D.sp.cm.sig V.gram w))
-  (μf : ∀ v, Measure (GLoc D.sp.cm.sig V.gram v)) (fa : ∀ w, GArch D.sp.cm.sig V.gram w → ℂ)
-  (ff : ∀ v, GLoc D.sp.cm.sig V.gram v → ℂ) (P : PPol D.sp.cm.sig V.rank)
-  (dta : ∀ w : InfinitePlace D.host.F, Measure (Tor P w.Completion))
-  (dtf : ∀ v : HeightOneSpectrum (𝓞 D.host.F), Measure (Tor P (Fv D.host.F v)))
-  (dt : Measure (Tor P (AF D.host.F)))
-end Terms
 
 def EllipticPartX : Prop :=
   ∀ (D : D7) (V : HSp D) (lam : D.what₂.Tau → Fin V.rank → ℤ) (S : D.what₂.Tau → SPar) (M : DSModel V S)

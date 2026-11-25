@@ -72,9 +72,7 @@ variable {D : ℕ} {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} [∀
 
 omit [DecidableEq K] [∀ k, Fintype (ι k)] in
 theorem isOpen_blockNonzero : IsOpen {z : (Σ k, ι k) → ℂ | ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0} := by
-  simp only [Set.ofPred_forall, Set.ofPred_exists]
-  exact isOpen_iInter_of_finite fun k => isOpen_iUnion fun i =>
-    isOpen_ne_fun (continuous_apply _) continuous_const
+  exact GroundTheory.Heights₂.Heights.HilbertSamuel.BlockResolutionSupBound.isOpen_blockNonzero
 
 theorem lift_blockNonzero (d : HSMBlockDatum D K ι Ω) {x y : d.R.X} (hy : y ∈ d.R.U x) :
     ∀ k, ∃ i, d.R.lift x y ⟨k, i⟩ ≠ 0 :=

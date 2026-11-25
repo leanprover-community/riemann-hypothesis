@@ -31,7 +31,6 @@ theorem sum_total_loss (r J N : ℕ) (k Y A : ℝ) (hr : 2 ≤ r) (hk : 5 ≤ k)
     0 ≤ 1 - 5 / Y ∧ 0 ≤ 1 - 1 / Y ∧ 0 ≤ 1 - (r : ℝ) / (2 * Y) ∧ 1 - 5 / Y ≤ 1 ∧ 1 - 1 / Y ≤ 1 ∧
       1 - (r : ℝ) / (2 * Y) ≤ 1 ∧
       1 - 1 * (N : ℝ) * (r : ℝ) ^ 2 * k / Y ≤ A ^ J * sumEta r Y ^ N := by
-  have hY0 : 0 < Y := by linarith
   have hr' : (2 : ℝ) ≤ r := by exact_mod_cast hr
   have hN' : (1 : ℝ) ≤ N := by exact_mod_cast hN
   set u := 1 / Y with hu
@@ -44,7 +43,6 @@ theorem sum_total_loss (r J N : ℕ) (k Y A : ℝ) (hr : 2 ≤ r) (hk : 5 ≤ k)
   rw [e32] at hA
   unfold sumEta
   rw [e5, er]
-  have hrk : 0 ≤ (r : ℝ) ^ 2 * k * u := by positivity
   have h1 : (r : ℝ) ^ 2 * k * u < 1 := by nlinarith
   have hr2k : 10 * (r : ℝ) ≤ (r : ℝ) ^ 2 * k := by nlinarith
   have h5 : 5 * u ≤ 1 := by nlinarith
@@ -62,7 +60,6 @@ theorem sum_total_loss (r J N : ℕ) (k Y A : ℝ) (hr : 2 ≤ r) (hk : 5 ≤ k)
   have hε : (7 + (r : ℝ) / 2) * u ≤ (r : ℝ) ^ 2 * k * u := by
     apply mul_le_mul_of_nonneg_right _ hu0.le
     nlinarith
-  have hbase0 : 0 ≤ 1 - (7 + (r : ℝ) / 2) * u := by linarith
   have hpow : A ^ N ≤ A ^ J := pow_le_pow_of_le_one hA0 hA1 hJN
   have hηN : 0 ≤ η ^ N := pow_nonneg p2 N
   calc 1 - (N : ℝ) * ((r : ℝ) ^ 2 * k * u) ≤ 1 + (N : ℝ) * (-((7 + (r : ℝ) / 2) * u)) := by nlinarith
@@ -123,7 +120,6 @@ theorem restSum_of (hF : ∀ (p n' r K : ℕ) [NeZero n'] [NeZero r] [NeZero K] 
   obtain ⟨F, hNs⟩ := hF p n' r K X hX hLa hk
   have hp : 0 < p := hX.prime.pos
   have hr : 0 < r := by have := hX.r2; omega
-  have hp0 : (0 : ℝ) < p := by exact_mod_cast hp
   have hRHS0 : 0 ≤ ∑ la ∈ X.LA p K, ∑ e ∈ X.EE p K la, ∏ j : Fin X.F.J,
       G (j.val : ℤ) (X.bfam p K la e (j.val : ℤ)) :=
     Finset.sum_nonneg fun la _ => Finset.sum_nonneg fun e _ => Finset.prod_nonneg fun j _ => hG0 _ _
@@ -446,8 +442,6 @@ theorem sum_compA (hX : X.Hyp p K) (hLa : (1088 : ℝ) ≤ X.CLa) (hk : (1088 : 
         le_mul_of_one_le_right (by have := B.Ns1; positivity) hp1
       linarith
     have hE : (X.E₀ : ℝ) ≤ 4 * (p : ℝ) * ((X.E₀ : ℝ) + X.mStar + 1) := by
-      have e0 : (0 : ℝ) ≤ X.E₀ := Nat.cast_nonneg _
-      have m0 : (0 : ℝ) ≤ X.mStar := Nat.cast_nonneg _
       linarith [le_mul_of_one_le_left (show (0 : ℝ) ≤ (X.E₀ : ℝ) + X.mStar + 1 by linarith) (show (1 : ℝ) ≤ p by linarith [B.p1])]
     calc (X.E₀ : ℝ) * (Dat.k (r := r) K * X.Y)
         ≤ (4 * (p : ℝ) * ((X.E₀ : ℝ) + X.mStar + 1)) *
@@ -469,7 +463,7 @@ theorem sum_compA (hX : X.Hyp p K) (hLa : (1088 : ℝ) ≤ X.CLa) (hk : (1088 : 
   have hdeg := (hX.degs t ht).1
   have hnat : X.deg t ≤ X.a' p K t + X.E' t + X.Et p K t := by
     unfold Dat.a' Dat.d
-    rw [if_pos ht]
+    rw [ite_eq_left ht]
     omega
   have hnat' : (X.deg t : ℝ) ≤ (X.a' p K t : ℝ) + X.E' t + X.Et p K t := by exact_mod_cast hnat
   have hE' : (X.E' t : ℝ) ≤ X.E₀ := by exact_mod_cast hX.E'le t ht

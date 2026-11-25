@@ -174,7 +174,6 @@ theorem pow_prime_pow_close : ∀ (C : Type) [Field C] (v : AddValuation C (With
     induction N with
     | zero => simpa using hε
     | succ N ih =>
-      have hN : (0 : ℝ) ≤ N := Nat.cast_nonneg N
       have := pow_prime_step v hp hvp (hpow x (p ^ N) hx') (hpow y (p ^ N) hy')
         (t := ((N : ℝ) + 1) * ε) (ε := ε) (by nlinarith) hε1 ih
       rw [← pow_mul, ← pow_mul, ← pow_succ] at this
@@ -1237,7 +1236,6 @@ theorem ringHom_ker_eq_iff_frobenius_twist :
   letI : Fintype (R ⧸ RingHom.ker f) := Fintype.ofFinite _
   obtain ⟨hfix, hsurj, hinj, hall⟩ := field_case (R ⧸ RingHom.ker f) k p (RingHom.kerLift f) h hh
     (by rw [← Nat.card_eq_fintype_card, hc])
-  have hmk : ∀ a, RingHom.kerLift f (Ideal.Quotient.mk _ a) = f a := RingHom.kerLift_mk f
   have hfix' : ∀ a, f a ^ p ^ h = f a := fun a => by
     have := hfix (Ideal.Quotient.mk _ a)
     exact this
@@ -1312,7 +1310,7 @@ theorem proj_eq {j : Fin d' → κ} (hj : Function.Injective j) (t : κ → C) (
     U.submatrix id j * L.submatrix j id = U * Matrix.diagonal t * L := by
   ext a b
   simp only [Matrix.mul_apply, Matrix.submatrix_apply, id, Matrix.diagonal_apply, mul_ite, mul_zero,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   refine Finset.sum_of_injOn j hj.injOn (fun _ _ => by simp) (fun ℓ _ hℓ => ?_) fun b' _ => by rw [h1, mul_one]
   rw [h0 ℓ (by simpa using hℓ), mul_zero, zero_mul]
 
@@ -1482,7 +1480,7 @@ theorem typedPartAt (hp : UnramIn E p) (τ : E →+* ℂ) : TypedPartAt Ch X τ 
       rw [Matrix.of_apply, frame, hco', hr, Matrix.one_apply]
       simp [eq_comm]
     rw [this]; simp
-  · rw [frame, hco', if_neg]
+  · rw [frame, hco', ite_eq_right]
     intro hb'
     exact hb (hinj ((congrArg Sigma.fst hb').trans hf))
   · exact _root_.GlobalTheory.DepthMono.detDepth_le_of_isIntHom X.C _ _ _ _ k _ _ _ _ hπ _

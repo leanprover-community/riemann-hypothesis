@@ -314,11 +314,11 @@ theorem cfg_lam (D : D7) (u : D.what₂.Word) (τ : D.what₂.Tau) :
   unfold lamSH lamS Sz.Cfg.lam
   simp only [Fin.val_cast]
   by_cases h : i.val < D.R.k - 1
-  · rw [dite_eq_left h, if_pos (show i.val + 1 < (cfg D u τ).k from (by omega : i.val + 1 < D.R.k)), cfg_v D u τ (by omega) (by omega)]
+  · rw [dite_eq_left h, ite_eq_left (show i.val + 1 < (cfg D u τ).k from (by omega : i.val + 1 < D.R.k)), cfg_v D u τ (by omega) (by omega)]
     unfold vOne
     rw [dite_eq_left ⟨by omega, by omega⟩]
     rfl
-  · rw [dite_eq_right h, dite_eq_left (by omega), if_neg (show ¬ i.val + 1 < (cfg D u τ).k from (by omega : ¬ i.val + 1 < D.R.k))]
+  · rw [dite_eq_right h, dite_eq_left (by omega), ite_eq_right (show ¬ i.val + 1 < (cfg D u τ).k from (by omega : ¬ i.val + 1 < D.R.k))]
     show _ = -bOne D τ (i.val + 1 + 1 - D.R.k)
     unfold bOne
     rw [dite_eq_left ⟨by omega, by omega⟩]
@@ -338,20 +338,20 @@ theorem cfg_u (D : D7) (u : D.what₂.Word) (τ : D.what₂.Tau)
     rfl
   unfold Sz.Cfg.u
   by_cases h1 : i.val + 1 = 1
-  · rw [if_pos h1, e, h1]; rfl
-  rw [if_neg h1]
+  · rw [ite_eq_left h1, e, h1]; rfl
+  rw [ite_eq_right h1]
   by_cases h2 : i.val + 1 = D.R.k
-  · rw [if_pos (show i.val + 1 = (cfg D u τ).k from h2), e, h2]
+  · rw [ite_eq_left (show i.val + 1 = (cfg D u τ).k from h2), e, h2]
     unfold Sz.Cfg.ulast
     by_cases ht : IsTop D τ
-    · rw [if_pos (by simpa [cfg] using ht)]
+    · rw [ite_eq_left (by simpa [cfg] using ht)]
       show _ = - -uOne D D.u₀ τ D.R.k
       unfold uOne uS
       rw [neg_neg, dite_eq_left ⟨by omega, le_rfl⟩, dite_eq_left ⟨by omega, le_rfl⟩, D.hcW_last u τ (by omega),
         D.hcW_last D.u₀ τ (by omega)]
-    · rw [if_neg (by simpa [cfg] using ht)]
+    · rw [ite_eq_right (by simpa [cfg] using ht)]
       exact hl ht
-  · rw [if_neg (show ¬ i.val + 1 = (cfg D u τ).k from h2), Nat.add_sub_cancel, cfg_v D u τ (by omega) (by omega)]
+  · rw [ite_eq_right (show ¬ i.val + 1 = (cfg D u τ).k from h2), Nat.add_sub_cancel, cfg_v D u τ (by omega) (by omega)]
     have h3 := D.s.u_letter u τ (i.val - 1) (by omega)
     simp only [D.hcW_v] at h3
     have e2 : (⟨i.val - 1 + 1, by omega⟩ : Fin D.R.k) = i := Fin.ext (by simp only; omega)
@@ -494,7 +494,7 @@ theorem tcrit_low (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT C0 :
   have hae : 0 < c.aeff ∧ c.aeff ≤ B ^ 4 ∧ 0 ≤ c.vthp ∧ c.vthp ≤ 1 := by
     unfold Sz.Cfg.aeff Sz.Cfg.vthp
     by_cases ht : IsTop D τ
-    · rw [if_pos (htp.2 ht), if_pos (htp.2 ht)]
+    · rw [ite_eq_left (htp.2 ht), ite_eq_left (htp.2 ht)]
       obtain ⟨t1, t2⟩ := htop τ ht
       obtain ⟨t, ht⟩ := ht
       have ha0 : 0 < uOne D u τ 1 := by linarith [ha u τ]
@@ -534,7 +534,7 @@ theorem tcrit_low (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT C0 :
       · show 4 * (D.R.k : ℝ) * D.s.Del / bTop D τ ≤ 1
         rw [div_le_one hbp]
         linarith
-    · rw [if_neg (fun h => ht (htp.1 h)), if_neg (fun h => ht (htp.1 h)), hv1]
+    · rw [ite_eq_right (fun h => ht (htp.1 h)), ite_eq_right (fun h => ht (htp.1 h)), hv1]
       have h1 := ha u τ
       have h2 := ha' u τ ht
       have h3 : B ≤ B ^ 4 := le_self_pow₀ hB1 (by norm_num)

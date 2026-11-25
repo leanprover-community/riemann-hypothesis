@@ -23,8 +23,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.JA.SA
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem self_adjoint_cover_holds : SACover := by
   intro k r z z' hz hz' g hg
   obtain ⟨hg0, hD, hG⟩ := hg

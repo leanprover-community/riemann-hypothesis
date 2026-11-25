@@ -154,9 +154,9 @@ theorem continuous_kern_phe : ∀ (B : RowsAut) (d : InfinitePlace B.I.F → ℝ
     have hp : 0 ≤ C' * ∏ v, Real.exp (-(2 * (2 * (n : ℝ) ^ 2) * (⌊D γ v⌋₊ : ℝ))) :=
       mul_nonneg hC'0 (Finset.prod_nonneg fun v _ => (Real.exp_pos _).le)
     by_cases hK : (x0⁻¹ * γ.1 * y0).2 ∈ B.I.Kset
-    · simp only [ht, if_pos hK]
+    · simp only [ht, ite_eq_left hK]
       exact ⟨hp, le_rfl⟩
-    · simp only [ht, if_neg hK]
+    · simp only [ht, ite_eq_right hK]
       exact ⟨le_rfl, hp⟩
   have hDnn : ∀ γ v, 0 ≤ D γ v := fun γ v => ((hC v).2.1 ((x0⁻¹ * γ.1 * y0).1 v) 1 hn).1
   have ha : Real.exp (-(2 * (n : ℝ) ^ 2)) ≤ 1 / 2 := by
@@ -180,7 +180,7 @@ theorem continuous_kern_phe : ∀ (B : RowsAut) (d : InfinitePlace B.I.F → ℝ
       rintro γ ⟨htγ, hrγ⟩
       refine ⟨γ.2, ?_, hrγ⟩
       by_contra hK
-      exact htγ (by simp only [ht, if_neg hK])
+      exact htγ (by simp only [ht, ite_eq_right hK])
     have hpre := Set.Finite.preimage (f := (Subtype.val : B.I.GFset → B.I.GA)) Subtype.val_injective.injOn hfin
     refine ⟨hpre.subset hsub, ?_⟩
     calc (({γ | t γ ≠ 0 ∧ ∀ v, D γ v ≤ r v}.ncard : ℕ) : ℝ)
@@ -220,7 +220,7 @@ theorem continuous_kern_phe : ∀ (B : RowsAut) (d : InfinitePlace B.I.F → ℝ
     have hzK : (x0⁻¹ * γ.1 * y0).2 ∈ B.I.Kset := by
       rw [hz]
       exact hKmul a.2 w.2 b.2 (hK1K hKx) (hsupp _ hew) (hK1K hKy)
-    simp only [ht, if_pos hzK]
+    simp only [ht, ite_eq_left hzK]
 
     have hmaj : ‖ph B d w.1‖ ≤ |∏ v, d v| *
         ∏ v, Real.exp (-(4 * (n : ℝ) ^ 2 * (⌊dOp (uMat (w.1 v))⌋₊ : ℝ))) := by

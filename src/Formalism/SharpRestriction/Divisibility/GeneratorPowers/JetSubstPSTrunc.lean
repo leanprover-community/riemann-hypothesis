@@ -7,8 +7,6 @@ import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDPf
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace Formalism.MainNotions.ModuliIntegralCharts.H1.ExpGB
@@ -16,8 +14,6 @@ namespace Formalism.MainNotions.ModuliIntegralCharts.H1.ExpGB
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open Formalism.MainNotions.ModuliIntegralCharts.H1.GermD
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 section Jet
 
@@ -48,7 +44,7 @@ theorem aug_comp_eq (f : Jet S κ 0 →ₐ[S] Jet S κ' 0) :
 
 theorem cc_psTrunc' (m : ℕ) (f : MvPowerSeries κ S) :
     MvPolynomial.constantCoeff (psTrunc m f) = MvPowerSeries.constantCoeff f := by
-  rw [FBIdJet.psTrunc_eq, MvPowerSeries.constantCoeff_truncTotal_eq_ite, if_pos (Nat.succ_pos m)]
+  rw [FBIdJet.psTrunc_eq, MvPowerSeries.constantCoeff_truncTotal_eq_ite, ite_eq_left (Nat.succ_pos m)]
 
 private theorem jetSubstPS_mk_lemma (n : ℕ) (g : κ → MvPowerSeries κ' S) (P : MvPolynomial κ S) :
     (jetSubstPS (m := n) g) (Ideal.Quotient.mk (orig S κ ^ (n + 1)) P) =
@@ -104,8 +100,7 @@ theorem const_compL {d' : ℕ} (φ : Fin d' → MvPowerSeries (Fin 1 × Fin (dL 
   · simp
   · intro d hd
     obtain ⟨i, hi⟩ : ∃ i, d i ≠ 0 := by
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       exact hd (Finsupp.ext hcon)
     have h0 : MvPowerSeries.constantCoeff (d.prod fun s e => (φ s.2) ^ e) = 0 := by
       rw [Finsupp.prod, map_prod]

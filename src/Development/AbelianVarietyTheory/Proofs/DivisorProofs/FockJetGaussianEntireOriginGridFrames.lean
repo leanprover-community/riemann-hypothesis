@@ -77,7 +77,6 @@ theorem cartan_eq_one {n : ℕ} {G s B : Matrix (Fin n) (Fin n) ℂ} (hB : Bᴴ 
   have hPd : P.PosDef := by
     have := h3.conjTranspose_mul_mul_same (B := B) (Matrix.mulVec_injective_of_isUnit hu)
     simpa [hP, Matrix.mul_assoc] using this
-  have hC : (Bᴴ * G) * B = 1 := hB
   have hPP : P * P = 1 := by
     have : P * P = Bᴴ * G * s * (B * (Bᴴ * G)) * s * B := by simp only [hP, Matrix.mul_assoc]
     rw [this, hBi, Matrix.mul_one, Matrix.mul_assoc (Bᴴ * G), h1, Matrix.mul_one]
@@ -143,8 +142,6 @@ theorem hAt_coord {τ : D.what₂.Tau} (hS : (BS τ)ᴴ * gramAt D S τ * BS τ 
   set Q := BT τ
   set GS := gramAt D S τ
   set GT := gramAt D T τ
-  have hP1 : (Pᴴ * GS) * P = 1 := hS
-  have hP2 : P * (Pᴴ * GS) = 1 := mul_eq_one_comm.1 hP1
   have hP3 : GS * P * Pᴴ = 1 := mul_eq_one_comm.1 (by rw [← Matrix.mul_assoc]; exact hS)
   have hGS : GS⁻¹ = P * Pᴴ := Matrix.inv_eq_right_inv (by rw [← Matrix.mul_assoc]; exact hP3)
   have hQ1 : (Qᴴ * GT) * Q = 1 := hT
@@ -245,13 +242,13 @@ theorem zc_line (hθ : IsInfFam θ) (v : FVar D T.rank S.rank) (α : ℂ) (t : �
         ((t : ℂ) * α) • Matrix.single a b (1 : ℂ) := by
       rw [← coord_unit (hS τ') (hT τ') a b]
       simp only [Matrix.mul_smul, Matrix.smul_mul, smul_smul]
-    rw [if_pos rfl, key]
+    rw [ite_eq_left rfl, key]
     show ((t : ℂ) * α) * (Matrix.single a b (1 : ℂ)) i j = ((t : ℂ) * α) * Formalism.MainNotions.TaylorLogMetric.coordV D (τ', a, b) τ' i j
     congr 1
     have hiff : (a = i ∧ b = j) ↔ (i = a ∧ j = b) := by
       constructor <;> rintro ⟨rfl, rfl⟩ <;> exact ⟨rfl, rfl⟩
     simp only [Formalism.MainNotions.TaylorLogMetric.coordV, Matrix.single_apply, hiff, true_and]
-  · rw [if_neg h, Matrix.mul_zero, Matrix.zero_mul]
+  · rw [ite_eq_right h, Matrix.mul_zero, Matrix.zero_mul]
     simp [Formalism.MainNotions.TaylorLogMetric.coordV, h]
 
 theorem omO_line (hθ : IsInfFam θ) (v : FVar D T.rank S.rank) (α : ℂ) (t : ℝ) (w : WO S T) :
@@ -263,7 +260,7 @@ theorem omO_line (hθ : IsInfFam θ) (v : FVar D T.rank S.rank) (α : ℂ) (t : 
   rw [omO_apply, Finset.sum_eq_single τ]
   · have e : GlobalTheory.FockCompare.piW θ T S (lineAt θ τ (α • unitMap (BS τ) (BT τ) a b) t) τ = (t : ℂ) • α • unitMap (BS τ) (BT τ) a b := by
       have := hL τ
-      rw [if_pos rfl] at this
+      rw [ite_eq_left rfl] at this
       exact this
     have e2 : GlobalTheory.FockCompare.piW θ T S w τ = compAt θ τ w := rfl
     rw [e, e2, omAt, hAt_coord (hS τ) (hT τ)]
@@ -282,7 +279,7 @@ theorem omO_line (hθ : IsInfFam θ) (v : FVar D T.rank S.rank) (α : ℂ) (t : 
   · intro τ' _ h
     have e : GlobalTheory.FockCompare.piW θ T S (lineAt θ τ (α • unitMap (BS τ) (BT τ) a b) t) τ' = 0 := by
       have := hL τ'
-      rw [if_neg h] at this
+      rw [ite_eq_right h] at this
       exact this
     rw [e]
     have z0 : ∀ x : Matrix (Fin T.rank) (Fin S.rank) ℂ, omAt S T τ' x 0 = 0 := fun x => by simp [omAt, hAt]
@@ -452,7 +449,7 @@ theorem fock_monomial_zero {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D �
       iteratedFDeriv ℂ (Finsupp.toMultiset k).toList.length Θ 0 fun i => u ((Finsupp.toMultiset k).toList.get i) := by
     classical
     unfold Formalism.MainNotions.GL3Theta.applyAt0
-    rw [MvPolynomial.support_monomial, if_neg one_ne_zero, Finset.sum_singleton, MvPolynomial.coeff_monomial, if_pos rfl,
+    rw [MvPolynomial.support_monomial, ite_eq_right one_ne_zero, Finset.sum_singleton, MvPolynomial.coeff_monomial, ite_eq_left rfl,
       one_mul, Formalism.MainNotions.TaylorLogMetric.taylor, mul_div_cancel₀ _ hprod]
     exact hgen _ _ (Multiset.length_toList _).symm
   rw [h2, opPow, key _ 0 hr0, h0, hg0, one_mul, (hops _).2, hap, ← hlen]

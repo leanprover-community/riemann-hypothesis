@@ -55,8 +55,6 @@ noncomputable section
 namespace GlobalTheory.SeeSaw.LastPrim
 variable {D : D7}
 
-alias latV_entry_mem' := _root_.GlobalTheory.FinPlLoc.latV_idAt
-
 theorem incAdj_yZero_mulVec : ∀ (D : D7) (ρ : ℕ) (B : BesLev D ρ) (J : JacLev D ρ) (hρ : 0 < ρ) (a : AE D) (y : Fin B.V₀.rank → AE D),
     Matrix.mulVec (show Matrix (Fin J.W.rank) (Fin B.V₀.rank) (AE D) from J.d.incAdj B.V₀ (a • yZero B.V₀ ρ (vecB B.o B.ζ))) y =
       colMul J.d.jY ⟨ρ - 1, by omega⟩ (incA D D.host.xi0⁻¹ * cA D a * (∑ l, (∑ m, cA D (ratV (vecB B.o B.ζ) m) * gA B.V₀ m l) * y l)) := by

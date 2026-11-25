@@ -107,7 +107,6 @@ theorem isStrictNormalCrossingsAt_base_of_comap {X' Y' : Scheme.{u}} (h : X' ⟶
     le_of_eq (Scheme.Hom.preimage_image_eq h U'.1).symm
   have hy : h.base x ∈ h ''ᵁ U'.1 := ⟨x, hx, rfl⟩
   have : IsIso (h.appLE (h ''ᵁ U'.1) U'.1 he) := isIso_appLE_image h U'.1 he
-  have : IsIso (h.stalkMap x) := inferInstance
   let ε : Γ(Y', h ''ᵁ U'.1) ≃+* Γ(X', U'.1) :=
     (asIso (h.appLE (h ''ᵁ U'.1) U'.1 he)).commRingCatIsoToRingEquiv
   let τ : Y'.presheaf.stalk (h.base x) ≃+* X'.presheaf.stalk x :=

@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordsAtSmul
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsSheetCover
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
@@ -25,23 +26,8 @@ namespace GlobalTheory.CompanionTheory.Ar.Cusp.WeightSheet
 theorem coordsAt_torusSmul {X : Scheme.{0}} {Ω : Type} [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) {K : Type} [Fintype K]
     {J : K → Type} [∀ k, Fintype (J k)] {y : (Σ k, J k) → Ω} {z : Spec (CommRingCat.of ℂ) ⟶ X} {w : (Σ k, J k) → ℂ}
     (h : CoordsAt ξ y z w) {a : K → ℂ} (ha : ∀ k, a k ≠ 0) : CoordsAt ξ y z (torusSmul a w) := by
-  have hs : ∀ q : Σ k, J k, torusSmul a w q = a q.1 * w q := fun q => rfl
-  refine ⟨fun k => ?_, fun k c hc => ?_⟩
-  · obtain ⟨c, hc⟩ := h.1 k
-    refine ⟨c, ?_⟩
-    rw [hs]
-    exact (isUnit_iff_ne_zero.2 (ha k)).mul hc
-  · have hc' : IsUnit (w ⟨k, c⟩) := by
-      rw [hs] at hc
-      exact isUnit_of_mul_isUnit_right hc
-    obtain ⟨hy, hv⟩ := h.2 k c hc'
-    refine ⟨hy, fun i => ?_⟩
-    obtain ⟨r, hr, he⟩ := hv i
-    refine ⟨r, hr, ?_⟩
-    rw [hs, hs]
-    show a k * w ⟨k, i⟩ = r * (a k * w ⟨k, c⟩)
-    rw [he]
-    ring
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.coordsAt_smul <;> assumption
 
 theorem valAt_eq {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X} (hξ : IsCptGen ξ)
     {R : Type} [CommRing R] [IsLocalRing R] {z : Spec (CommRingCat.of R) ⟶ X} (h : genPt ξ ⤳ centre z) {a : Ω} {r r' : R}
@@ -80,7 +66,7 @@ theorem eq_cuspW_of_fibre (Or : CptOrigin Y S₀ Dc Hd) {U : ((Σ k, J k) → �
   subst hσ
   obtain ⟨φ, h1, h2, h3, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Cusp.FibreUnique.exists_linearEquiv_of_fibreLatVec E H Or.𝔐.X Or.𝔐.t z g' g Λ' Λ R' R Empty _ _ _ hF' hF
   rw [he]
-  exact (_root_.GlobalTheory.CompanionTheory.Relay.cusp_weight_invariant_under_isometry E g' Λ' (CMType H) R' σ' g Λ R φ (isCMFam_of_labVal Or hL) h1 h2 h3).1.symm
+  exact (_root_.LevelTowerAlt.riemann_lattice_isometry_transport E g' Λ' (CMType H) R' σ' g Λ R φ (isCMFam_of_labVal Or hL) h1 h2 h3).1.symm
 
 theorem cuspWeight_torus_and_sheets : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] [IsAbelianGalois ℚ E] (H : Host E) (D : Datum H) (Xo : ∀ l : Tor.Level H, Moduli D l) (l : Tor.Level H) (c : Coeff l) (Y : Model (Xo l) c (algebraMap (𝓞 c.F) c.F)) (II : IntersectionSystem) (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (Ω : Type) [Field Ω] [Algebra ℚ Ω] (W : CMType H → Type) [∀ τ, AddCommGroup (W τ)] [∀ τ, Module Ω (W τ)] (Dc : ComponentData II (CMType H) K J Ω W) (Hd : HodgeData Dc) (S₀ : Finset ℕ) (Or : CptOrigin Y S₀ Dc Hd) (Q : Pieces Or) (U : ((Σ k, J k) → ℂ) → ℝ), Or.𝔐.IsCuspWeight Or.sm U → (∀ w ∈ Dc.Xo, ∀ w' ∈ torusSat {w}, U w' = U w) ∧ ∀ m, ∀ t ∈ Q.V m, U (Q.γ m t) = ((Q.F (Q.pc m)).R t).cuspW (Q.F (Q.pc m)).σ := by
   intro E _ _ _ _ H D Xo l c Y II K _ J _ Ω _ _ W _ _ Dc Hd S₀ Or Q U hU

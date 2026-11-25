@@ -158,7 +158,7 @@ theorem segment_mean_kappa_bound (D : Formalism.BasicNotions.D7) (K : Cst) (hK :
     · intro s hs
       have hs' : s ∈ X.TT := hs
       have h1 := Finset.mem_Icc.1 (hB ⟨s, hs'⟩)
-      have h2 : ex B s = B ⟨s, hs'⟩ := dif_pos hs'
+      have h2 : ex B s = B ⟨s, hs'⟩ := dite_eq_left hs'
       show X.bl ≤ (ex B s : ℝ) ∧ (ex B s : ℝ) ≤ X.bu + 2 * X.J0 K
       rw [h2]
       refine ⟨?_, ?_⟩
@@ -195,8 +195,8 @@ theorem segment_sum_kappa_bound (D : Formalism.BasicNotions.D7) (K : Cst) (hK : 
     show kapSeg K X R jj B (segATop X.TT (ex A) jj) (segAPlus X.TT (ex A) jj) = _
     have e1 : segATop X.TT (ex A) jj = fun i => (A ∘ sgTop X.TT jj) (some i) := by
       funext i
-      exact dif_pos (sg_pos_spec X.TT jj i).1
-    have e2 : segAPlus X.TT (ex A) jj = (A ∘ sgTop X.TT jj) none := dif_pos (sg_next_mem X.TT jj).1
+      exact dite_eq_left (sg_pos_spec X.TT jj i).1
+    have e2 : segAPlus X.TT (ex A) jj = (A ∘ sgTop X.TT jj) none := dite_eq_left (sg_next_mem X.TT jj).1
     rw [e1, e2]
   have h3 := sum_pi_marginal_injective (sgTop X.TT jj) (sgTop_inj X.TT jj) (X.WaP K)
     (fun A' : Option (Fin (segS X.TT jj)) → ℕ => kapSeg K X R jj B (fun i => A' (some i)) (A' none))

@@ -78,8 +78,7 @@ private theorem integral_minorOn_wM_ne_zero {n : ℕ} (j : ℕ) (Kg : Type) [Gro
 theorem lv_of (hC : Cayley) (hU : UAct) (hDj : DjSec) (hDp : DpDual) (hHI : HolInt) (hHZ : HolZero)
     (hSD : SingToDiff) (hTC : TopComp) (hII : InfInv) : LV := by
   intro n p q hsig Kg _ _ _ _ _ _ μ _ ι hι hK
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   obtain ⟨j, hjn, hj1, hj2, hj3, hj4⟩ := exists_split_avoiding_of_goodSig n p q hsig
   have hC : ((∏ i ∈ Finset.range j, (-((q:ℤ):ℂ) + (i:ℂ))) * ∏ i ∈ Finset.range (n - j), (-((p:ℤ):ℂ) + (i:ℂ))) ≠ 0 := by
     refine mul_ne_zero ?_ ?_

@@ -117,8 +117,7 @@ theorem exists_sub_lt_one (hk : IsAlgClosed (ResidueField O)) {x : AlgebraicClos
   rw [map_sub, hpx, zero_sub, Valuation.map_neg] at hval
   simp only [Q, map_multiset_prod, Multiset.map_map, Function.comp_def, map_sub, Polynomial.aeval_X,
     Polynomial.aeval_C] at hval
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   refine absurd hval (not_lt.2 ?_)
   apply Multiset.one_le_prod_of_one_le
   intro t ht

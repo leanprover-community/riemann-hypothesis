@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.RawChartBaseChangeRigGerm
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBCorr
 public import Formalism.LocalToGlobal.ProjectiveLattices.ThGerm
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDVal
@@ -8,16 +9,12 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValua
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace Formalism.MainNotions.ModuliIntegralCharts.H1.ExpTieGerm
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj TopologicalSpace Opposite
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor NumberField Formalism.L2.Pj
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 private theorem gs_idRes_lemma {X Y : Scheme.{0}} (h : Y ⟶ X) {U : X.Opens} {W : Y.Opens}
     (hV : W ≤ h ⁻¹ᵁ U) (y : Y) (hy : y ∈ W) (x : Γ(X, U)) :
@@ -91,14 +88,7 @@ theorem isPullSec_comp (a : ℤ) {T1 T2 T3 : Over S0} (h1 : T2 ⟶ T1) (h2 : T3 
     (e1 : IsPullSec A L a (h1 ▷ A) (whiskerRight_snd _ _) s1 s2)
     (e2 : IsPullSec A L a (h2 ▷ A) (whiskerRight_snd _ _) s2 s3) :
     IsPullSec A L a ((h2 ≫ h1) ▷ A) (whiskerRight_snd _ _) s1 s3 := by
-  intro j
-  apply fn_ext
-  intro y hy
-  have hy2 : (h2 ▷ A).left y ∈ (LPow A L a T2).U j :=
-    chart_le_res A L (h2 ▷ A) (whiskerRight_snd _ _) a j hy
-  rw [GermD.pullSec_stalk (A := A) (L := L) a e2 (𝟙 _) y j hy, Category.id_comp,
-    GermD.pullSec_stalk (A := A) (L := L) a e1 (h2 ▷ A).left y j hy2,
-    gs_idRes_lemma _ _ y hy, comp_whiskerRight, Over.comp_left]
+  apply _root_.GlobalTheory.RawChartGermBC.isPullSec_whisker_comp <;> assumption
 
 theorem isPullSec_congr (a : ℤ) {T T' : Over S0} {h h' : T' ⟶ T} (e : h = h')
     {s : LB.Sec (LPow A L a T)} {s' : LB.Sec (LPow A L a T')}

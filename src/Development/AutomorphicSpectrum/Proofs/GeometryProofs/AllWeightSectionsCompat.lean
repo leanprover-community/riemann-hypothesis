@@ -228,7 +228,7 @@ theorem rdU_indicator {r : ℕ} {U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r} {h :
     (GlobalTheory.AllWt.LiesOn Z ((U σ).un k ⟨x, hx⟩) → rdU (U σ) (e Z) k x = 1) ∧
       (¬ GlobalTheory.AllWt.LiesOn Z ((U σ).un k ⟨x, hx⟩) → rdU (U σ) (e Z) k x = 0) := by
   have hval : rdU (U σ) (e Z) k x = toC (evR Xo c (e Z) ((U σ).un k ⟨x, hx⟩)) := by
-    simp only [rdU, LinearMap.coe_mk, AddHom.coe_mk, hx, dif_pos]
+    simp only [rdU, LinearMap.coe_mk, AddHom.coe_mk, hx, dite_eq_left]
   letI : Field (CAt σ) := inferInstanceAs (Field ℂ)
   obtain ⟨Z₀, h1, h2, h3⟩ := indicator_at_field hC ((U σ).un k ⟨x, hx⟩)
   let s₀ : Sp (CAt σ) := (⟨⊥, Ideal.isPrime_bot⟩ : PrimeSpectrum (CAt σ))

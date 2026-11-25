@@ -6,6 +6,7 @@ public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.EnInPara
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.AuxUOfFirstTheoremPlaceBound
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.FacEmbDomain
 import Mathlib.Algebra.Order.Star.Real
+import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.InClassOfExp
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.MultisetValuation.EnGePProdRat, Formalism.SharpRestriction.GrowthBounds.MultisetValuation.KernelProductForm
@@ -166,18 +167,10 @@ section IntRL
 variable {ι K : Type} [Field K] {R : Subring K}
 
 theorem en_IntR_mul {f g : MvPowerSeries ι K} (hf : IntR R f) (hg : IntR R g) : IntR R (f * g) := by
-  classical
-  intro n
-  rw [MvPowerSeries.coeff_mul]
-  exact R.sum_mem fun x _ => R.mul_mem (hf _) (hg _)
+  exact Formalism.MainNotions.FormalGroupSystem.Pf.IntR_mul hf hg
 
 theorem en_IntR_one : IntR R (1 : MvPowerSeries ι K) := by
-  classical
-  intro n
-  rw [MvPowerSeries.coeff_one]
-  split_ifs
-  · exact R.one_mem
-  · exact R.zero_mem
+  apply _root_.Formalism.MainNotions.FormalGroupSystem.Pf.IntR_one <;> assumption
 
 theorem en_IntR_X (i : ι) : IntR R (MvPowerSeries.X i : MvPowerSeries ι K) := by
   classical
@@ -188,9 +181,7 @@ theorem en_IntR_X (i : ι) : IntR R (MvPowerSeries.X i : MvPowerSeries ι K) := 
   · exact R.zero_mem
 
 theorem en_IntR_pow {f : MvPowerSeries ι K} (hf : IntR R f) (k : ℕ) : IntR R (f ^ k) := by
-  induction k with
-  | zero => rw [pow_zero]; exact en_IntR_one
-  | succ k ih => rw [pow_succ]; exact en_IntR_mul ih hf
+  exact Formalism.MainNotions.FormalGroupSystem.Pf.IntR_pow hf k
 
 theorem en_IntR_prod {α : Type} (s : Finset α) (f : α → MvPowerSeries ι K) (h : ∀ a ∈ s, IntR R (f a)) :
     IntR R (∏ a ∈ s, f a) :=

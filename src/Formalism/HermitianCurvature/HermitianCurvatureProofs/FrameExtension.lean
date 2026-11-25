@@ -12,8 +12,6 @@ namespace Formalism.FourierDecayAlt.P.FrameExtension
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Qr Formalism.FourierDecayAlt.P Formalism.FourierDecayAlt.P.QrD
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem frame_weaken {k r m : ℕ} {z e : Fin (2 * r + k + 1) → ℂ} {Bs : Fin m → Fin (2 * r + k + 1) → ℂ}
     (h : IsFrameOf k r [z, e] Bs) : IsFrameOf k r [z] Bs := by
   obtain ⟨h1, h2, h3⟩ := h
@@ -51,12 +49,12 @@ theorem frame_snoc {k r m : ℕ} {z e : Fin (2 * r + k + 1) → ℂ} {Bs : Fin m
       | last => simpa using hee
       | cast j =>
         simp only [Fin.snoc_last, Fin.snoc_castSucc]
-        rw [if_neg (Fin.castSucc_lt_last j).ne', herm_hpk_eq_star_herm_swap, h3 j e (by simp), star_zero]
+        rw [ite_eq_right (Fin.castSucc_lt_last j).ne', herm_hpk_eq_star_herm_swap, h3 j e (by simp), star_zero]
     | cast i =>
       induction b using Fin.lastCases with
       | last =>
         simp only [Fin.snoc_last, Fin.snoc_castSucc]
-        rw [if_neg (Fin.castSucc_lt_last i).ne, h3 i e (by simp)]
+        rw [ite_eq_right (Fin.castSucc_lt_last i).ne, h3 i e (by simp)]
       | cast j =>
         simp only [Fin.snoc_castSucc]
         rw [h2 i j]
@@ -85,8 +83,6 @@ end Formalism.FourierDecayAlt.P.FrameExtension
 namespace Formalism.FourierDecayAlt.P
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Qr Formalism.FourierDecayAlt.P.QrD
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem qr_branchingK_of : Qr.BranchingAlg → Qr.FrameGl → Qr.LieStab → Qr.StabLie → Qr.FrameChange →
     Qr.FrameExists2 → Qr.BranchingK := by

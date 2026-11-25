@@ -35,25 +35,8 @@ def beta : I.E := (exists_beta I).choose
 
 theorem beta_int : beta I ∈ Formalism.UG.intOE I.E := (exists_beta I).choose_spec.1
 
-theorem beta_notF : beta I ∉ Set.range (algebraMap I.F I.E) := (exists_beta I).choose_spec.2
-
 theorem linIndep_one_beta : LinearIndependent I.F ![(1 : I.E), beta I] := by
-  rw [LinearIndependent.pair_iff]
-  intro s t h
-  by_cases ht : t = 0
-  · subst ht
-    refine ⟨by simpa using h, rfl⟩
-  · exfalso
-    apply beta_notF I
-    have h2 : t • beta I = -(s • (1 : I.E)) := by
-      rw [eq_neg_iff_add_eq_zero, add_comm]
-      exact h
-    refine ⟨-(s / t), ?_⟩
-    rw [Algebra.algebraMap_eq_smul_one]
-    calc (-(s / t)) • (1 : I.E) = t⁻¹ • (-(s • (1 : I.E))) := by
-          rw [smul_neg, smul_smul, neg_smul, div_eq_inv_mul]
-      _ = t⁻¹ • (t • beta I) := by rw [h2]
-      _ = beta I := by rw [smul_smul, inv_mul_cancel₀ ht, one_smul]
+  apply _root_.PI.InvTopW.linearIndependent_one_beta <;> assumption
 
 def bas : Module.Basis (Fin 2) I.F I.E :=
   basisOfLinearIndependentOfCardEqFinrank (linIndep_one_beta I) (by simp [I.cm.deg2])

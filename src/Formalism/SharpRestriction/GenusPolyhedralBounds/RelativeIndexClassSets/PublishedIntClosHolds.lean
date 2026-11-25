@@ -236,8 +236,7 @@ private theorem pt_lemma_6 (O K A : Type) [CommRing O] [IsDomain O] [IsDiscreteV
     · intro h
       exact absurd (Finset.mem_univ M) h
   obtain ⟨I, hI⟩ : ∃ I, (⟨E I, hEi I⟩ : ↥(As O A)) ∉ ζ.asIdeal := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     apply ζ.isMaximal.ne_top
     rw [Ideal.eq_top_iff_one]
     have h1 : (∑ I, (⟨E I, hEi I⟩ : ↥(As O A))) ∈ ζ.asIdeal :=
@@ -261,7 +260,7 @@ private theorem pt_lemma_6 (O K A : Type) [CommRing O] [IsDomain O] [IsDiscreteV
     refine ⟨⟨E I * a, hint I y (y.2 : IsIntegral O (y : A ⧸ I.asIdeal)) a ha⟩, ?_⟩
     apply Subtype.ext
     show Ideal.Quotient.mk I.asIdeal (E I * a) = y
-    rw [hmk, if_pos rfl, ha]
+    rw [hmk, ite_eq_left rfl, ha]
   have hone : φ ⟨E I, hEi I⟩ = 1 := Subtype.ext (hE1 I)
   have hzero : ∀ c, φ c = 0 → (⟨E I, hEi I⟩ : ↥(As O A)) * c = 0 := by
     intro c hc

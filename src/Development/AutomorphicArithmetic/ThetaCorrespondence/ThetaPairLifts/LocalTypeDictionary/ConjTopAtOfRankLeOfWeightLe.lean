@@ -254,8 +254,7 @@ theorem subD_scale (w : ι → K) (P : Pol K ι a) :
     (MvPolynomial.algHom_ext fun v => ?_) P
   simp only [AlgHom.comp_apply, subD, aeval_X]
   split_ifs with h
-  · set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, map_mul, scaleVar, aeval_X, Sum.elim_inl, Sum.elim_inr, map_one]
+  · simp only [map_sum, map_mul, scaleVar, aeval_X, Sum.elim_inl, Sum.elim_inr, map_one]
     refine Finset.sum_congr rfl fun β _ => ?_
     ring
   · simp
@@ -451,7 +450,7 @@ namespace GlobalTheory.JetDescent
 
 theorem coe_lift_of_mem (M : IntermediateField ℚ ℂ) (x : ℂ) (hx : x ∈ M) : Formalism.MainNotions.TaylorLogMetric.liftM M x = ⟨x, hx⟩ := by
   unfold Formalism.MainNotions.TaylorLogMetric.liftM
-  exact dif_pos hx
+  exact dite_eq_left hx
 
 theorem mapVV_rational_form_conj : ∀ {D : D7} {a b : ℕ} (lam : D.what₂.Tau → DomWeight a) (lam' : D.what₂.Tau → DomWeight b) (n : D.what₂.Tau → ℕ)
     (J : (Formalism.L2.Ker.DVar D.what₂.Tau a b →₀ ℕ) → ℂ) (σ : D.what₂.LL →+* ℂ) (ρ' : Qbar →ₐ[ℚ] ℂ)
@@ -515,8 +514,8 @@ theorem applyAt0_mono (D : D7) {N N' : ℕ} (α : Mono D N N') (G : VC D N N' �
       = ((α.prod fun _ n => n.factorial : ℕ) : ℂ) * Formalism.MainNotions.TaylorLogMetric.taylor D G α := by
   classical
   unfold Formalism.MainNotions.GL3Theta.applyAt0
-  rw [MvPolynomial.support_monomial, if_neg one_ne_zero, Finset.sum_singleton, MvPolynomial.coeff_monomial,
-    if_pos rfl, one_mul]
+  rw [MvPolynomial.support_monomial, ite_eq_right one_ne_zero, Finset.sum_singleton, MvPolynomial.coeff_monomial,
+    ite_eq_left rfl, one_mul]
   simp [Finsupp.prod]
 
 theorem jet_of_cjF {D : D7} {N N' : ℕ} {ρ : Qbar →ₐ[ℚ] ℂ} {F F' : VC D N N' → ℂ} (h : CjF D Qbar ρ F F')
@@ -819,15 +818,6 @@ theorem conj_top_degree_in_kernel_mean : _root_.GlobalTheory.FunPr.ThetaLocalInp
   _root_.GlobalTheory.KerConjMean.conjTopAt_of_rank_le_of_weight_le _root_.GlobalTheory.KerConjTransport.kernel_conjugate_transport_top_degree _root_.GlobalTheory.ConjGrowth.conj_growth _root_.GlobalTheory.FockJetBound.jetOp_norm_le _root_.GlobalTheory.KerConjMean.TopSizes.sizesK
 end GlobalTheory.KerConjMean
 end
-end
-
-section
-open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
-open IsDedekindDomain NumberField Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim GlobalTheory.TestLat
-open Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.SumSize GlobalTheory.KerConjMean
-
-theorem _root_.GlobalTheory.T.kernel_conjugation_average : _root_.GlobalTheory.FunPr.ThetaLocalInputs → (∀ D, GlobalTheory.NormSum.Inp D) → DictK → DepthK → ∀ C1 : ℝ, 0 < C1 → BigC fun _ ch C b => ConjTopAt ch C b C1 := by
-  first | exact @_root_.GlobalTheory.KerConjMean.conj_top_degree_in_kernel_mean
 end
 end -- clump:auto
 end -- clump:auto

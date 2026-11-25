@@ -60,7 +60,7 @@ theorem dplus_le_geom {LL : Letters (Fin N)} {B : Fin N → ℕ} {n0 p : ℕ} (h
       dsum_succ (fun l => LL.vec l = true) B m hmN
     rw [hd]
     by_cases hv : LL.vec ⟨m, hmN⟩ = true
-    · rw [if_pos hv]
+    · rw [ite_eq_left hv]
       have h1 := ih ⟨m, hmN⟩ hv le_rfl (by simp only; omega)
       have h2 := H2 ⟨m, hmN⟩ l (by rw [Fin.lt_def]; simp only; omega) hln (by rw [hv, hl])
       push_cast
@@ -76,7 +76,7 @@ theorem dplus_le_geom {LL : Letters (Fin N)} {B : Fin N → ℕ} {n0 p : ℕ} (h
       have h6 : 10 / (p : ℝ) ^ 2 * (B l : ℝ) = 2 * (5 / (p : ℝ) ^ 2 * (B l : ℝ)) := by ring
       rw [h6]
       linarith
-    · rw [if_neg hv]
+    · rw [ite_eq_right hv]
       simpa using ih l hl (by omega) hln
 
 theorem oldest_lt_n0 {n0 : ℕ} {LL : Letters (Fin N)} {B : Fin N → ℕ} {od : Fin N → Fin N} {bb : Fin N → ℝ} {a La : ℝ} {p : ℕ}
@@ -109,7 +109,6 @@ theorem vcount_od {n0 : ℕ} {LL : Letters (Fin N)} {B : Fin N → ℕ} {od : Fi
       · exact Or.inl hl
       · refine Or.inr ⟨?_, h2, h3⟩
         have : (od i).val ≠ l.val := fun h => hl (Fin.ext h.symm)
-        have h1' : (od i).val ≤ l.val := h1
         omega
     · rintro (rfl | ⟨h1, h2, h3⟩)
       · exact ⟨le_rfl, H.od_lt i hi, H.od_vec i hi⟩
@@ -132,11 +131,11 @@ theorem nu_last_le [NeZero r] {n0 : ℕ} {LL : Letters (Fin N)} {B : Fin N → �
     unfold dplus
     refine Finset.sum_congr rfl fun l _ => ?_
     by_cases hl : l.val < (od i).val + 1 ∧ LL.vec l = true
-    · rw [if_pos hl, if_pos hl, hdd l (by omega)]
-    · rw [if_neg hl, if_neg hl]
+    · rw [ite_eq_left hl, ite_eq_left hl, hdd l (by omega)]
+    · rw [ite_eq_right hl, ite_eq_right hl]
   have h4 : dplus LL B ((od i).val + 1) = dplus LL B (od i).val + B (od i) := by
     have := dsum_succ (fun l => LL.vec l = true) B (od i).val (od i).2
-    rw [if_pos (H.od_vec i hi)] at this
+    rw [ite_eq_left (H.od_vec i hi)] at this
     exact this
   have h5 := dplus_le_geom H.p13 H.H2 (od i).val (od i) (H.od_vec i hi) le_rfl hod
   have hp' : (13 : ℝ) ≤ (p : ℝ) := by exact_mod_cast H.p13

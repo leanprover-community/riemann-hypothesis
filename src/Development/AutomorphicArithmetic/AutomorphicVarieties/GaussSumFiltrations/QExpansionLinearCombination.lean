@@ -36,8 +36,7 @@ theorem hasQ_lin : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (f
   refine ⟨⟨⟨D * E, hDE, ?_⟩, ?_⟩, ⟨⟨D, hD, ?_⟩, ?_⟩, ⟨⟨D * E, hDE, ?_⟩, ?_⟩, ⟨⟨1, one_pos, ?_⟩, ?_⟩⟩
   · intro ξ h
     apply both
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     apply h
     simp [hc.1, hc.2]
   · intro z
@@ -51,8 +50,7 @@ theorem hasQ_lin : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (f
     simpa [Pi.smul_apply, smul_eq_mul, mul_assoc] using (hfs z).mul_left c
   · intro ξ h
     apply both
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     apply h
     simp [hc.1, hc.2]
   · intro z

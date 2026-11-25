@@ -55,7 +55,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM GlobalTheory.SiegelTor GlobalTheory.TorRef GlobalTheory.PolDeg GlobalTheory.TChart GlobalTheory.UT GlobalTheory.Mum.Two
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.TInj
 
 namespace GlobalTheory.TInj
@@ -87,16 +86,14 @@ theorem cone_gen_mem_of_common {O : Type} [CommRing O] {bar : O → O} {φ : Inv
     have h1 := congrArg (f l) h0
 
     rw [map_nsmul, map_sum] at h1
-    simp only [map_nsmul, hfG, smul_ite, smul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true, nsmul_eq_mul,
+    simp only [map_nsmul, hfG, smul_ite, smul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true, nsmul_eq_mul,
       _root_.mul_one] at h1
     have hk'' : (0 : ℤ) < k' := by exact_mod_cast hk'
-    by_contra hneg
-    push_neg at hneg
+    by_contra! hneg
     have : (k' : ℤ) * f l (G' i) < 0 := mul_neg_of_pos_of_neg hk'' hneg
     linarith [Int.natCast_nonneg (e l)]
   have hex : ∃ i, 0 < d i := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     have h0 : k • ζ j = 0 := by
       rw [hd]
       exact Finset.sum_eq_zero fun i _ => by rw [Nat.le_zero.1 (hno i), zero_smul]
@@ -111,7 +108,7 @@ theorem cone_gen_mem_of_common {O : Type} [CommRing O] {bar : O → O} {φ : Inv
     intro l hl
     have h1 := congrArg (f l) hdG
 
-    rw [map_nsmul, map_sum, hfG, if_neg hl, smul_zero] at h1
+    rw [map_nsmul, map_sum, hfG, ite_eq_right hl, smul_zero] at h1
     simp only [map_nsmul, nsmul_eq_mul] at h1
     have hnn : ∀ i' ∈ Finset.univ, 0 ≤ (d i' : ℤ) * f l (G' i') := fun i' _ => by
       rcases Nat.eq_zero_or_pos (d i') with h | h
@@ -126,7 +123,7 @@ theorem cone_gen_mem_of_common {O : Type} [CommRing O] {bar : O → O} {φ : Inv
     have h1 := congrArg (f m) hE
 
     rw [map_nsmul, map_sum] at h1
-    simp only [map_nsmul, hfG, smul_ite, smul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true, nsmul_eq_mul,
+    simp only [map_nsmul, hfG, smul_ite, smul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true, nsmul_eq_mul,
       _root_.mul_one] at h1
     exact h1.symm
   have hEj : k' • G' i = e j • G j := by
@@ -136,7 +133,7 @@ theorem cone_gen_mem_of_common {O : Type} [CommRing O] {bar : O → O} {φ : Inv
     rw [hzero m hm, mul_zero] at h1
     rw [show e m = 0 by exact_mod_cast h1, zero_smul]
   have h1 := congrArg (g i) hEj
-  simp only [map_nsmul, hgG, if_true, nsmul_eq_mul, _root_.mul_one] at h1
+  simp only [map_nsmul, hgG, ite_true, nsmul_eq_mul, _root_.mul_one] at h1
   have h2 := hem j
   have hk'' : (0 : ℤ) < k' := by exact_mod_cast hk'
   have hu : f j (G' i) * g i (G j) = 1 := by

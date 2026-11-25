@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.PsiVNeOneOfTrace
 public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedWeil
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.StdCharFinitePartRationalEqExpTrace
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SumPlacesEqTrace
@@ -57,18 +58,7 @@ theorem psiV_ne_one_of_trace {F : Type} [Field F] [NumberField F] {ψ : AddChar 
     (hinf : ∀ a : F, psiInf F ψ (algebraMap F (Ainf F) a) =
       Complex.exp (2 * Real.pi * Complex.I * ((Algebra.trace ℚ F a : ℚ) : ℂ))) (v : HeightOneSpectrum (𝓞 F)) :
     ∃ y, psiV F ψ v y ≠ 1 := by
-  by_contra hn
-  push Not at hn
-  have hs := GlobalTheory.SnMass.Inhab.stdAt_of_psiInf h hinf v
-  obtain ⟨d, hd, hd0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot (differentIdeal_ne_bot (A := ℤ) (B := 𝓞 F))
-  have hd1 : algebraMap F (Fv F v) (d : F) ≠ 0 := by
-    rw [Ne, map_eq_zero]
-    exact_mod_cast hd0
-  obtain ⟨z, hz⟩ := HeightOneSpectrum.valuedAdicCompletion_surjective F v (WithZero.exp 1)
-  have h1 := (hs (z * (algebraMap F (Fv F v) (d : F))⁻¹)).1 (fun y _ => hn _) d hd
-  rw [inv_mul_cancel_right₀ hd1, HeightOneSpectrum.mem_adicCompletionIntegers, hz, ← WithZero.exp_zero,
-    WithZero.exp_le_exp] at h1
-  omega
+  first | exact _root_.GlobalTheory.StdCharTotReal.psiV_ne_one_of_trace | exact @_root_.GlobalTheory.StdCharTotReal.psiV_ne_one_of_trace | apply _root_.GlobalTheory.StdCharTotReal.psiV_ne_one_of_trace <;> assumption
 
 theorem psiV_ne_one : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) →
     ∀ v, ∃ y, psiV D.host.F ψ v y ≠ 1 := by

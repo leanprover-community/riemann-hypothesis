@@ -87,9 +87,9 @@ theorem quad_form (q : MvPowerSeries (Fin 1 × Fin N) S) (hq0 : constantCoeff q 
       · exact ⟨p', p, h, by rw [hst, add_comm]⟩
     rw [Finset.sum_eq_single a]
     · rw [Finset.sum_eq_single b]
-      · rw [if_pos hee, mul_one, qβ, if_pos hab, ← hee]
+      · rw [ite_eq_left hee, mul_one, qβ, ite_eq_left hab, ← hee]
       · intro j _ hj
-        rw [if_neg, mul_zero]
+        rw [ite_eq_right, mul_zero]
         intro h
         have := congrArg (fun f => f ((0 : Fin 1), b)) (hee.symm.trans h)
         simp only [single_add_single_at, Prod.mk.injEq, true_and] at this
@@ -111,8 +111,8 @@ theorem quad_form (q : MvPowerSeries (Fin 1 × Fin N) S) (hq0 : constantCoeff q 
           split_ifs at hj' <;> simp_all
         subst haj
         have hlt : ¬ b ≤ a := fun h' => hi (le_antisymm h' hab)
-        rw [qβ, if_neg hlt, zero_mul]
-      · rw [if_neg h, mul_zero]
+        rw [qβ, ite_eq_right hlt, zero_mul]
+      · rw [ite_eq_right h, mul_zero]
     · simp
   · have hz : coeff e q = 0 := by
       by_contra h
@@ -120,7 +120,7 @@ theorem quad_form (q : MvPowerSeries (Fin 1 × Fin N) S) (hq0 : constantCoeff q 
     rw [hz]
     symm
     refine Finset.sum_eq_zero fun i _ => Finset.sum_eq_zero fun j _ => ?_
-    rw [if_neg, mul_zero]
+    rw [ite_eq_right, mul_zero]
     rintro rfl
     apply hdeg
     rw [map_add (f := _), Finsupp.degree_single, Finsupp.degree_single]

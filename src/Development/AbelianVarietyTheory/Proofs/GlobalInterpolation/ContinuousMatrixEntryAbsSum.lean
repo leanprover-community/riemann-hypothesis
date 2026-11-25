@@ -148,13 +148,8 @@ theorem tendsto_div_of_squeeze {F V A : ℝ → ℝ≥0∞} {n : ℕ} {c : ℝ�
   have key : ∀ t : ℝ, 0 < t →
       Tendsto (fun r => F (t * r) / V r) (𝓝[>] 0) (𝓝 (ENNReal.ofReal (t ^ n) * c)) := by
     intro t ht
-    have h1 : Tendsto (fun r : ℝ => t * r) (𝓝[>] 0) (𝓝[>] 0) := by
-      refine tendsto_nhdsWithin_iff.2 ⟨?_, ?_⟩
-      · have : Tendsto (fun r : ℝ => t * r) (𝓝 0) (𝓝 (t * 0)) :=
-          (continuous_const.mul continuous_id).tendsto 0
-        rw [mul_zero] at this
-        exact this.mono_left nhdsWithin_le_nhds
-      · filter_upwards [self_mem_nhdsWithin] with r hr using mul_pos ht hr
+    have h1 : Tendsto (fun r : ℝ => t * r) (𝓝[>] 0) (𝓝[>] 0) :=
+      Filter.tendsto_iff_comap.2 (comap_mulLeft_nhdsGT_zero ht).ge
     have h2 := ENNReal.Tendsto.const_mul (a := ENNReal.ofReal (t ^ n)) (hF.comp h1)
       (Or.inr ENNReal.ofReal_ne_top)
     refine h2.congr' ?_

@@ -533,7 +533,6 @@ theorem exists_avgData (hψ : Continuous ψ) (hπ : IsSmooth π) (ξ : V1 k m) {
     simp only [AddSubgroup.coe_inf]
     exact ((hU.inter hA.2).inter (isOpen_stabSub h π hπ v)).inter (isOpen_charSub ψ hψ ξ)
   obtain ⟨T, hT, hTr⟩ := GlobalTheory.T.exists_finite_coset_representatives A _ hA.1 ho
-    (inf_le_left.trans (inf_le_left.trans inf_le_right))
   exact ⟨(_, T), ⟨inf_le_left.trans (inf_le_left.trans inf_le_right), ho,
     fun _ ha => ha.1.2, fun _ ha => ha.2, hT, hTr⟩,
     inf_le_left.trans (inf_le_left.trans inf_le_left)⟩

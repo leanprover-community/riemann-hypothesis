@@ -31,13 +31,10 @@ theorem Ai_add_mul_le_A0 {Ai A0 de ε k p N1 La s : ℝ} (hAi : 0 ≤ Ai) (hA : 
   have hp0 : 0 < p := lt_of_lt_of_le (by positivity) hp
   have hA0 : 0 < A0 := by linarith
   have hε0 : 0 ≤ ε := by rw [hε]; positivity
-  have hde0 : 0 ≤ de := by linarith
   have hAiA : Ai ≤ A0 := by nlinarith
 
-  have h1 : A0 * de < (A0 - Ai) * (1 + de) := by nlinarith
   have h2 : (A0 - Ai) * (1 + de) ≤ (A0 - Ai) * (7 / 6) := mul_le_mul_of_nonneg_left (by linarith) (by linarith)
   have h3 : A0 * (40 * ε) ≤ A0 * de := mul_le_mul_of_nonneg_left hde hA0.le
-  have h4 : 34 * (ε * A0) ≤ A0 - Ai := by nlinarith
 
   have c1 : 2 * (Ai + k) / p ≤ 4 * A0 / k ^ 2 := by
     rw [div_le_div_iff₀ hp0 (by positivity)]
@@ -53,11 +50,9 @@ theorem Ai_add_mul_le_A0 {Ai A0 de ε k p N1 La s : ℝ} (hAi : 0 ≤ Ai) (hA : 
   have c3 : 2 * (Ai + k) / p + 2 * La * A0 / k ≤ 3 * (La * A0 / k) := by
     have : 2 * La * A0 / k = 2 * (La * A0 / k) := by ring
     linarith
-  have c30 : 0 ≤ La * A0 / k := by positivity
   have c4 : s * (2 * (Ai + k) / p + 2 * La * A0 / k) ≤ N1 * (3 * (La * A0 / k)) :=
     mul_le_mul hs c3 (by positivity) (by linarith)
   have c5 : N1 * (3 * (La * A0 / k)) = 3 * (ε * A0) := by rw [hε]; ring
-  have c6 : 0 ≤ ε * A0 := by positivity
   linarith
 
 variable {C0 Cde CE1 CE2 H : ℝ} {X : Loc}
@@ -115,15 +110,15 @@ theorem partial_width_le_cap [NeZero X.m] (hH : 1 ≤ H) (h : Std C0 Cde CE1 CE2
         (if l = i then (coarseA X.p S b i : ℝ) else 0) + (c1 + c2) := by
     intro l
     by_cases hl : l.val < i.val + 1
-    · rw [if_pos hl]
+    · rw [ite_eq_left hl]
       have hlσ : l.val < S.sigma := by omega
       have hsg : (b.sg l : ℝ) ≤ c2 := (hSt l hlσ).2.2.2.2
       push_cast
       by_cases hli : l = i
-      · rw [if_pos hli, hli]
+      · rw [ite_eq_left hli, hli]
         rw [hli] at hsg
         linarith
-      · rw [if_neg hli]
+      · rw [ite_eq_right hli]
         have hlt : l < i := by
           rcases lt_or_eq_of_le (Nat.lt_succ_iff.1 hl) with h' | h'
           · exact h'
@@ -139,7 +134,7 @@ theorem partial_width_le_cap [NeZero X.m] (hH : 1 ≤ H) (h : Std C0 Cde CE1 CE2
         have := coarse_ratio_small (k := X.k) (Nat.cast_nonneg _) h.bpos hbe12 (h.levels j i).1 hp0 hPP' (hcb l).1
           (h.winB _ (pos_mem X.TT j l).1).2 (hcb i).2 (h.winB _ (pos_mem X.TT j i).1).1
         linarith
-    · rw [if_neg hl]
+    · rw [ite_eq_right hl]
       push_cast
       split_ifs
       · have : (0 : ℝ) ≤ (coarseA X.p S b i : ℝ) := Nat.cast_nonneg _
@@ -149,7 +144,7 @@ theorem partial_width_le_cap [NeZero X.m] (hH : 1 ≤ H) (h : Std C0 Cde CE1 CE2
       (if l.val < i.val + 1 then ((coarseA X.p S b l : ℤ) + (b.sg l : ℤ)) else 0) : ℤ) : ℝ) ≤ (S.A0 X.p : ℝ) := by
     rw [Int.cast_sum]
     refine le_trans (Finset.sum_le_sum fun l _ => hterm l) ?_
-    rw [Finset.sum_add_distrib, Finset.sum_ite_eq' Finset.univ i, if_pos (Finset.mem_univ i), Finset.sum_const,
+    rw [Finset.sum_add_distrib, Finset.sum_ite_eq' Finset.univ i, ite_eq_left (Finset.mem_univ i), Finset.sum_const,
       Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
     have hsN : ((segS X.TT j : ℕ) : ℝ) ≤ X.N1 := by exact_mod_cast (h.segB j).2
     have hpk : X.k ^ 2 ≤ (X.p : ℝ) := by
@@ -172,18 +167,17 @@ theorem partial_width_le_cap [NeZero X.m] (hH : 1 ≤ H) (h : Std C0 Cde CE1 CE2
     by_cases hl : l.val < i.val + 1
     · have hlσ : l.val < S.sigma := by omega
       have hw : (b.w l : ℤ) ≤ (coarseA X.p S b l : ℤ) := by exact_mod_cast (hSt l hlσ).2.1
-      have hsg0 : (0 : ℤ) ≤ (b.sg l : ℤ) := Int.natCast_nonneg _
       have ho : (oEff S b l : ℤ) = (b.w l : ℤ) + (b.sg l : ℤ) := by
         unfold oEff
-        rw [if_pos hlσ]
+        rw [ite_eq_left hlσ]
         push_cast
         ring
-      rw [if_pos hl, if_pos hl]
+      rw [ite_eq_left hl, ite_eq_left hl]
       split_ifs
       · rw [ho]; linarith
       · linarith
     · have hln : ¬ (l : ℕ) < n := by omega
-      rw [if_neg hl, if_neg hl, if_neg hln]
+      rw [ite_eq_right hl, ite_eq_right hl, ite_eq_right hln]
       simp
   have hs := Finset.sum_le_sum (s := Finset.univ) fun l _ => hcmp l
   simp only [mul_zero, zero_add] at hs

@@ -310,8 +310,8 @@ theorem qPl_sub {D : D7} {cf : CharFrame D} {C : NChoice D} (tp : TupTied D cf C
   refine HChar.UnrAt.mul ((cf.isMu0 j).unr w' fun k hk => hg ⟨w', hov, k, hk⟩) (HChar.UnrAt.mul ?_ ?_)
   · unfold CharFrame.delAt
     split_ifs with h
-    · exact cf.isDel'.unr w' fun hp => hno.2 (by rw [if_pos h]; exact hp)
-    · exact cf.isDel.unr w' fun hp => hno.2 (by rw [if_neg h]; exact hp)
+    · exact cf.isDel'.unr w' fun hp => hno.2 (by rw [ite_eq_left h]; exact hp)
+    · exact cf.isDel.unr w' fun hp => hno.2 (by rw [ite_eq_right h]; exact hp)
   · exact ((tp.psi_is w hw).ram w').2 hno.1
 
 end Chars

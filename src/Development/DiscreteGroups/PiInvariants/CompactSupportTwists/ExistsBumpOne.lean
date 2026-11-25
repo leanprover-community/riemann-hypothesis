@@ -14,8 +14,6 @@ open scoped Classical
 
 namespace DiscreteGroups.T1.G
 
-attribute [local instance] borelH
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
 def aS (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (s : ℝ) : H E n 0 := (splitCentre E n s, 1)

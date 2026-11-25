@@ -4,6 +4,7 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.Gaug
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.EmbeddingTraceSumAlt.NormUnitsOfCalculation
 public import Mathlib.Algebra.AffineMonoid.Basic
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicClassFiniteness.DictRing
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StrongApproximationUnitaryUnipotentRadical
 
 @[expose] public section
 
@@ -77,16 +78,7 @@ end Fld
 
 theorem approxE (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     (b : E ⊗[F] Af F) : ∃ x : E, b - Formalism.UG.inclE (F := F) (Af F) x ∈ IntAf F E := by
-  obtain ⟨m, hm, hmb⟩ := PIW.AdelClassFin.dual_denominator F E b
-  obtain ⟨a, r', hr', hr⟩ := PIW.AdelClassFin.dual_dense F E m hm _ hmb
-  refine ⟨(m : E)⁻¹ * (a : E), ?_⟩
-  have hmi : Formalism.UG.inclE (F := F) (Af F) ((m : E)⁻¹) * (m : E ⊗[F] Af F) = 1 := by
-    rw [← map_natCast (Formalism.UG.inclE (F := F) (Af F)) m, ← map_mul,
-      inv_mul_cancel₀ (Nat.cast_ne_zero.2 hm.ne'), map_one]
-  have e : b - Formalism.UG.inclE (F := F) (Af F) ((m : E)⁻¹ * (a : E)) = r' := by
-    rw [map_mul]
-    linear_combination (Formalism.UG.inclE (F := F) (Af F) ((m : E)⁻¹)) * hr - (b - r') * hmi
-  rw [e]; exact hr'
+  apply _root_.GlobalTheory.UnipApprox.exists_sub_mem_int <;> assumption
 
 section Inst
 

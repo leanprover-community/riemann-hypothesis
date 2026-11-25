@@ -7,6 +7,7 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicUnimodular
 public import Formalism.PeriodIntegrals.AdUnimod
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.MassClEqSum
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnimodIdx, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnimodularIndex.PairwiseDisjointCosets, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicUnimodularity.ConstructionD
@@ -98,12 +99,7 @@ lemma pairwise_disjoint_cosets (A H : Subgroup G) :
 
 lemma mem_conj_map (K : Subgroup G) (g y : G) :
     y ∈ K.map (MulAut.conj g).toMonoidHom ↔ g⁻¹ * y * g ∈ K := by
-  rw [Subgroup.mem_map]
-  constructor
-  · rintro ⟨x, hx, rfl⟩
-    simpa [mul_assoc] using hx
-  · intro h
-    exact ⟨g⁻¹ * y * g, h, by simp [mul_assoc]⟩
+  apply _root_.Formalism.L2.SG.RhoPf.mem_map_conj <;> assumption
 
 end Cosets
 

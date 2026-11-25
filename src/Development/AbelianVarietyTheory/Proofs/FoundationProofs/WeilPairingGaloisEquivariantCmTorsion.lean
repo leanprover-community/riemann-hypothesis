@@ -75,16 +75,16 @@ theorem exists_top_agree (M : IntermediateField ℚ ℂ) (ρ : M →ₐ[ℚ] ℂ
     (ρ.comp (IntermediateField.inclusion hle)).toRingHom
   refine ⟨(τ.toRingHom.comp (⊤ : IntermediateField ℚ ℂ).val.toRingHom).toRatAlgHom, fun x hx => ?_⟩
   have h := hτ ⟨x, IntermediateField.subset_adjoin ℚ S hx⟩
-  simp only [cj, TaylorLogMetric.liftM, dif_pos (hM x hx), dif_pos (IntermediateField.mem_top (F := ℚ) (x := x))]
+  simp only [cj, TaylorLogMetric.liftM, dite_eq_left (hM x hx), dite_eq_left (IntermediateField.mem_top (F := ℚ) (x := x))]
   exact h
 
 theorem cj_top_mul (s : (⊤ : IntermediateField ℚ ℂ) →ₐ[ℚ] ℂ) (x y : ℂ) :
     cj ⊤ s (x * y) = cj ⊤ s x * cj ⊤ s y := by
-  simp only [cj, TaylorLogMetric.liftM, dif_pos (IntermediateField.mem_top (F := ℚ))]
+  simp only [cj, TaylorLogMetric.liftM, dite_eq_left (IntermediateField.mem_top (F := ℚ))]
   rw [← map_mul]; rfl
 
 theorem cj_one (M : IntermediateField ℚ ℂ) (ρ : M →ₐ[ℚ] ℂ) : cj M ρ 1 = 1 := by
-  simp only [cj, TaylorLogMetric.liftM, dif_pos M.one_mem]
+  simp only [cj, TaylorLogMetric.liftM, dite_eq_left M.one_mem]
   exact map_one ρ
 
 theorem ee_add (a b : ℝ) : ee (a + b) = ee a * ee b := by
@@ -153,7 +153,7 @@ theorem periodPair_conj (L : PeriodPair) (Λ : AddSubgroup ℂ) (h : ∀ z, z �
     intro h0
     apply hd
     have := congrArg (fun y : M => (y : ℂ)) h0
-    simp only [TaylorLogMetric.liftM, dif_pos h2, dif_pos h3] at this
+    simp only [TaylorLogMetric.liftM, dite_eq_left h2, dite_eq_left h3] at this
     exact this
   obtain ⟨L', ha, hb⟩ := hex _ _ hne
   obtain ⟨e2, e3, -, -, -, hun, -⟩ :=
@@ -171,7 +171,7 @@ theorem value_shift_sg (L : PeriodPair) (Λ : AddSubgroup ℂ) (h : ∀ z, z ∈
   refine value_shift Λ _ x l fun z => ?_
   have h2 : 2 * l ∈ Λ := by rw [two_mul]; exact Λ.add_mem hl hl
   rw [(GlobalTheory.OddTheta.sgStar_laws Λ (isLattice_of_periodPair L Λ h)).1.2.2.2 _ h2 z,
-    if_pos (by simpa using hl), one_mul]
+    ite_eq_left (by simpa using hl), one_mul]
 
 theorem value_ne_zero (L : PeriodPair) (Λ : AddSubgroup ℂ) (h : ∀ z, z ∈ Λ ↔ z ∈ L.lattice)
     {x : ℂ} (hx : x ∉ Λ) : coef1 (U1 Λ x (sgStar Λ)) 0 ≠ 0 := by

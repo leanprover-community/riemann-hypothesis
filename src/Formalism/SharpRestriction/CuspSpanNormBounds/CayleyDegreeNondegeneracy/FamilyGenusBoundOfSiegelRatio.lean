@@ -251,8 +251,6 @@ namespace Formalism.MainNotions.BridgeLemma₂
 
 open NumberField Module Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.S.Cnt
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem plane_mass_bound_of_facts (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT C B₁ : ℝ)
     (hA : ShortVectorEveryPlace D.host.E B₁) (hB : SecondOrthogonalVector D.host.E) (hCt : PlaneClassCount D.host.E)
     (hB0 : 0 ≤ B₁) (hB1 : B₁ ≤ 4 * D.R.f * D.host.rdE) (hC : 55 * max 1 (1 / Cl) ≤ C ^ 2)
@@ -333,7 +331,7 @@ theorem exists_small_mem_fractional_ideal (K : Type) [Field K] [NumberField K] [
   have hr0 : 0 ≤ rootDiscriminant K := by unfold rootDiscriminant; positivity
   let f : InfinitePlace K → NNReal := fun _ => NNReal.sqrt (Real.toNNReal (rootDiscriminant K))
   have hmult : ∀ w : InfinitePlace K, w.mult = 2 := fun w => by
-    rw [InfinitePlace.mult, if_neg]
+    rw [InfinitePlace.mult, ite_eq_right]
     exact InfinitePlace.not_isReal_iff_isComplex.2 (IsTotallyComplex.isComplex w)
   have hcard : Fintype.card (InfinitePlace K) = InfinitePlace.nrComplexPlaces K := by
     rw [InfinitePlace.card_eq_nrRealPlaces_add_nrComplexPlaces, IsTotallyComplex.nrRealPlaces_eq_zero K, zero_add]
@@ -693,7 +691,7 @@ theorem eq_zero_of_inner_self_eq_zero (hK : IsCMUnram K) (L : Submodule (𝓞 K)
   have h01 : h (e 0) (e 1) = 0 := by rw [horth]; simp
   have h10 : h (e 1) (e 0) = 0 := by rw [horth]; simp
   rw [inner_comb_orthogonal_pair h _ _ h01 h10, horth, horth] at hv
-  simp only [if_true, mul_one] at hv
+  simp only [ite_true, mul_one] at hv
   obtain ⟨φ⟩ : Nonempty (K →+* ℂ) := inferInstance
   have h2 := congrArg φ hv
   rw [map_add (f := _), map_mul, map_mul, hK.2.1, hK.2.1, map_zero] at h2
@@ -1095,8 +1093,7 @@ theorem trace_inner_pos_of_orthonormal_pair (hK : IsCMUnram K) (h : V →ₗ⋆[
   obtain ⟨a, rfl⟩ := exists_coords_basis_fin_two e hli hsp x
   rw [inner_sum_orthonormal_pair h e he a a]
   have hi : ∃ i, a i ≠ 0 := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     apply hx
     simp [hne]
   obtain ⟨i, hi⟩ := hi
@@ -1352,8 +1349,7 @@ theorem second_orthogonal_vector_holds (K : Type) [Field K] [NumberField K] [Sta
       have hv : v = 0 := by
         by_contra hv
         obtain ⟨i, hi⟩ : ∃ i, b.repr v i ≠ 0 := by
-          by_contra hn
-          push_neg at hn
+          by_contra! hn
           apply hv
           apply b.repr.injective
           ext i
@@ -1380,8 +1376,6 @@ namespace Formalism.MainNotions.BridgeLemma₂
 
 open NumberField Module Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.S.Cnt
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem plane_mass_le_height_pow (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT C : ℝ)
     (hC : 55 * max 1 (1 / Cl) ≤ C ^ 2) (hH : StandingHypotheses D large₂ C' Cl Cg cb Cu cT CT) : UnitaryVolumeMass.Mass2At D large₂ C := by
   have hK : Formalism.HermitianLatticesTheory.IsCMUnram D.host.E := D.sp.cm.cmUnram
@@ -1401,12 +1395,6 @@ theorem plane_mass_le_height_pow (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg c
 theorem plane_mass_bound_parameters (D : D7) (large₂ : SizeData₂ D) (u u' : D.what₂.Word) (C' Cl Cg cb Cu cT CT C0 A C : ℝ)
     (hC : 55 * max 1 (1 / Cl) ≤ C ^ 2) : UnitaryVolumeMass.stMass2 D large₂ u u' C' Cl Cg cb Cu cT CT C0 A C :=
   fun hH => plane_mass_le_height_pow D large₂ C' Cl Cg cb Cu cT CT C hC hH.1.1
-
-section Family
-
-variable {eps : ℝ} (Fm : FamP eps)
-
-end Family
 
 end Formalism.MainNotions.BridgeLemma₂
 

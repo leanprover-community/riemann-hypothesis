@@ -70,7 +70,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formali
 open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots (IsTestData PPol Tor Phi PhiOK PhiReal ellKernel Gap NoFixed IsLatticeConj GeomExpansion EllipticPart TraceEq)
 open GlobalTheory.PRep (IsAdmissible)
 open GlobalTheory.TrMult
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Chamber GlobalTheory.TruncKer GlobalTheory.Cusp
 open Polynomial
 
@@ -97,14 +96,12 @@ theorem exists_pow_projArch_not_mem_of_eigen_two : ∀ (D : D7) (V : HSp D) (g :
       rw [pow_succ, Subgroup.coe_mul, Units.val_mul, ← Matrix.mulVec_mulVec, hM, Matrix.mulVec_smul, ih, smul_smul,
         pow_succ, mul_comm]
   obtain ⟨j, hj⟩ : ∃ j, c j ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hx
     have : V.frame.repr x = 0 := Finsupp.ext h
     simpa using this
   obtain ⟨φ, hφ⟩ : ∃ φ : Module.Dual D.host.F D.host.E, φ (c j) ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hj ((Module.forall_dual_apply_eq_zero_iff _ _).1 h)
 
   let ι : D.host.E →+* w.Completion ⊗[D.host.F] D.host.E := inclR (F := D.host.F) w.Completion
@@ -170,7 +167,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formali
 open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots (IsTestData PPol Tor Phi PhiOK PhiReal ellKernel Gap NoFixed IsLatticeConj GeomExpansion EllipticPart TraceEq)
 open GlobalTheory.PRep (IsAdmissible)
 open GlobalTheory.TrMult
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Chamber GlobalTheory.TruncKer GlobalTheory.Cusp
 open Polynomial
 open Matrix
@@ -216,7 +212,7 @@ theorem exists_scale (D : D7) (V : HSp D) (Φ : WittFrame V) (u : SV (wittIndex 
     simp only [P, Matrix.mul_diagonal, Matrix.diagonal_mul, S, submatrix_apply, Matrix.one_apply, id, Equiv.prodCongr_apply, Equiv.coe_refl, Prod.map, Prod.mk.injEq, Equiv.boolNot_apply]
     by_cases hij : i = j
     · subst hij
-      cases s <;> cases t <;> simp only [Bool.not_true, Bool.not_false, Bool.false_eq_true, Bool.true_eq_false, if_true, if_false, and_self, mul_one, mul_zero, zero_mul, and_false]
+      cases s <;> cases t <;> simp only [Bool.not_true, Bool.not_false, Bool.false_eq_true, Bool.true_eq_false, ite_true, ite_false, and_self, mul_one, mul_zero, zero_mul, and_false]
       all_goals first | exact hσd i _
     · simp [hij]
   obtain ⟨Q, hQ⟩ : ∃ Q, Q = S * (cT σ (cols V b) * V.gram) := ⟨_, rfl⟩
@@ -252,7 +248,7 @@ theorem exists_scale (D : D7) (V : HSp D) (Φ : WittFrame V) (u : SV (wittIndex 
       have hm1 : ∀ x, x ∈ Φ.sub u ∨ x ∈ Φ.sub (-u) → V.hT x z = 0 := fun x hx => hx.elim (hz1 x) (hz2 x)
       apply hm1
       rcases (show u i = 1 ∨ u i = -1 by generalize u i = t at h; revert t; decide) with h' | h' <;> cases s <;>
-        simp only [b, if_true, if_false, Bool.false_eq_true]
+        simp only [b, ite_true, ite_false, Bool.false_eq_true]
       · exact .inr (by rw [WittFrame.sub]; exact Submodule.subset_span (.inr ⟨i, by simp [h'], rfl⟩))
       · exact .inl (by rw [WittFrame.sub]; exact Submodule.subset_span (.inl ⟨i, h', rfl⟩))
       · exact .inl (by rw [WittFrame.sub]; exact Submodule.subset_span (.inr ⟨i, h', rfl⟩))
@@ -290,7 +286,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formali
 open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots (IsTestData PPol Tor Phi PhiOK PhiReal ellKernel Gap NoFixed IsLatticeConj GeomExpansion EllipticPart TraceEq)
 open GlobalTheory.PRep (IsAdmissible)
 open GlobalTheory.TrMult
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Chamber GlobalTheory.TruncKer GlobalTheory.Cusp
 open Polynomial
 
@@ -353,11 +348,10 @@ theorem mem_parab_of_mem_cent {D : D7} {V : HSp D} {γ : GF V} (hγ : IsRegSS γ
 theorem exists_ne_zero_mem_sub {D : D7} {V : HSp D} (Φ : WittFrame V) {u : SV (wittIndex V)} (hu : u ≠ 0) :
     ∃ x ∈ Φ.sub u, x ≠ 0 := by
   obtain ⟨i, hi⟩ : ∃ i, u i ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hu (funext h)
   have h1 := Φ.ef i i
-  rw [if_pos rfl] at h1
+  rw [ite_eq_left rfl] at h1
   rcases h : u i with _ | _ | _
   · exact absurd h hi
   · refine ⟨Φ.f i, Submodule.subset_span (Or.inr ⟨i, h, rfl⟩), fun e => ?_⟩
@@ -413,7 +407,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formali
 open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots (IsTestData PPol Tor Phi PhiOK PhiReal ellKernel Gap NoFixed IsLatticeConj GeomExpansion EllipticPart TraceEq)
 open GlobalTheory.PRep (IsAdmissible)
 open GlobalTheory.TrMult
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Chamber GlobalTheory.TruncKer GlobalTheory.Cusp
 
 end -- clump:auto

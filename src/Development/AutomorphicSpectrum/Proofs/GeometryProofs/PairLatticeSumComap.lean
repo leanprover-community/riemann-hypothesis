@@ -4,6 +4,7 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodge
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeCptInteriorGeneric
 import Mathlib.Tactic.Linter.Style
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.PermFinTwoUniv
+import ReciprocityTheory.SemistableReduction.ExistsIntSmulMemSpan
 
 @[expose] public section
 
@@ -22,15 +23,7 @@ variable {Ω V : Type} [Field Ω] [AddCommGroup V] [Module Ω V]
 
 theorem range_append {α : Type} {r s : ℕ} (f : Fin r → α) (g : Fin s → α) :
     Set.range (Fin.append f g) = Set.range f ∪ Set.range g := by
-  ext x
-  constructor
-  · rintro ⟨k, rfl⟩
-    refine Fin.addCases (fun i => ?_) (fun i => ?_) k
-    · exact Or.inl ⟨i, by simp⟩
-    · exact Or.inr ⟨i, by simp⟩
-  · rintro (⟨i, rfl⟩ | ⟨i, rfl⟩)
-    · exact ⟨Fin.castAdd s i, by simp⟩
-    · exact ⟨Fin.natAdd r i, by simp⟩
+  apply _root_.ReciprocityTheory.MultiplicativeHeights.DegAdd.range_fin_append <;> assumption
 
 theorem linearIndependent_append {r s : ℕ} {f : Fin r → V} {g : Fin s → V} (hf : LinearIndependent Ω f)
     (hg : LinearIndependent Ω g) (hd : Disjoint (span Ω (Set.range f)) (span Ω (Set.range g))) :

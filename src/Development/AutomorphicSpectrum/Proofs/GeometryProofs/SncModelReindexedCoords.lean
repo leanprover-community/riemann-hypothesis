@@ -1,5 +1,7 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCurveCharts
+
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsSncModel
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PrimeChartExistsUniquePoint
@@ -125,34 +127,7 @@ end Ratios
 
 theorem exists_nat_mul_mem_adjoin {Ω : Type} [Field Ω] [CharZero Ω] {W : Set Ω} {a : Ω}
     (ha : a ∈ Algebra.adjoin ℚ W) : ∃ N : ℕ, N ≠ 0 ∧ (N : Ω) * a ∈ Algebra.adjoin ℤ W := by
-  induction ha using Algebra.adjoin_induction with
-  | mem x hx => exact ⟨1, one_ne_zero, by simpa using Algebra.subset_adjoin hx⟩
-  | algebraMap r =>
-    refine ⟨r.den, r.den_ne_zero, ?_⟩
-    have : (r.den : Ω) * algebraMap ℚ Ω r = (r.num : Ω) := by
-      have hd : (r.den : Ω) ≠ 0 := Nat.cast_ne_zero.mpr r.den_ne_zero
-      rw [eq_ratCast, Rat.cast_def]
-      field_simp
-    rw [this]
-    exact intCast_mem _ _
-  | add x y _ _ hx hy =>
-    obtain ⟨N, hN, hx⟩ := hx
-    obtain ⟨M, hM, hy⟩ := hy
-    refine ⟨N * M, mul_ne_zero hN hM, ?_⟩
-    have : ((N * M : ℕ) : Ω) * (x + y) = (M : Ω) * ((N : Ω) * x) + (N : Ω) * ((M : Ω) * y) := by
-      push_cast
-      ring
-    rw [this]
-    exact add_mem (mul_mem (natCast_mem _ _) hx) (mul_mem (natCast_mem _ _) hy)
-  | mul x y _ _ hx hy =>
-    obtain ⟨N, hN, hx⟩ := hx
-    obtain ⟨M, hM, hy⟩ := hy
-    refine ⟨N * M, mul_ne_zero hN hM, ?_⟩
-    have : ((N * M : ℕ) : Ω) * (x * y) = ((N : Ω) * x) * ((M : Ω) * y) := by
-      push_cast
-      ring
-    rw [this]
-    exact mul_mem hx hy
+  apply _root_.GroundTheory.Heights₂.Heights.CurveAffineCharts.exists_nat_mul_mem_adjoin <;> assumption
 
 theorem aeval_mem_subring {Ω σ : Type} [Field Ω] (T : Subring Ω) (r : σ → Ω) (h : ∀ p, r p ∈ T)
     (g : MvPolynomial σ ℤ) : MvPolynomial.aeval r g ∈ T := by

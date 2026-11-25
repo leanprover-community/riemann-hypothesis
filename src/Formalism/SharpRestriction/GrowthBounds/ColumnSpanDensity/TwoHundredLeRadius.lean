@@ -51,7 +51,6 @@ theorem La_round {K : Cst} (hK : K.Pos) {CH : ℝ} {X : Dat} (B : Base K CH X) :
       have a1 : Real.log X.a ≤ (1 + 1 / 200) * Real.log X.ar := by linarith
       have a0 : 0 ≤ Real.log X.a := by linarith
       have a2 := mul_le_mul a1 a1 a0 (by linarith)
-      have a3 : 0 ≤ Real.log X.ar * Real.log X.ar := by positivity
       nlinarith
     have := mul_le_mul_of_nonneg_left hsq hcn
     calc K.C₀ * (X.N₁ : ℝ) ^ 2 * Real.log X.a * Real.log X.a
@@ -161,7 +160,6 @@ theorem hyp_round {K : Cst} (hK : K.Pos) {CH : ℝ} (hCH : K.TM ≤ CH) {X : Dat
   have hLa1 : 1 ≤ LaI K.C₀ X.N₁ X.ar := B.hLa1
   have hLa'0 : 0 ≤ LaI K.C₀ X.N₁ X.a := by linarith
   have hN1r : (1 : ℝ) ≤ (X.N₁ : ℝ) := B.hN1
-  have hY0 : 0 ≤ X.Y := by linarith
   have hdd : deI K.CH K.C₀ X.m X.N₁ X.a X.b' X.bl X.bu + 1 / ((X.m : ℝ) + 1) ≤
       deI CH K.C₀ X.m X.N₁ X.ar X.b' X.bl X.bu := by
     unfold deI

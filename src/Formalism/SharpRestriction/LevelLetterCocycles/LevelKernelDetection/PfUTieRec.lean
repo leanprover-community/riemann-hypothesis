@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.LevelClauseOfOpenTool
 public import Formalism.SharpRestriction.LevelLetterCocycles.TeichOnto
 import Mathlib.Algebra.Order.Star.Real
 
@@ -48,21 +49,7 @@ theorem norm_chiQ (P : LocPrime l) (g : GQ l) : ‖((P.χQ g : ℚ_[l]ˣ) : ℚ_
 
 theorem v_algebraMap_zp (P : LocPrime l) (LL : FinExt l) (y : ℤ_[l]) (hy : y ≠ 0) :
     P.v LL (algebraMap ℤ_[l] ↥LL.1 y) = ((y.valuation : ℕ) : WithTop ℚ) := by
-  have hint : ∀ z : ℤ_[l], 0 ≤ P.v LL (algebraMap ℤ_[l] ↥LL.1 z) := fun z =>
-    (P.v_O LL _).2 (Subalgebra.algebraMap_mem (OL LL) z)
-  have spec := PadicInt.unitCoeff_spec hy
-  set w := PadicInt.unitCoeff hy
-  have hw : P.v LL (algebraMap ℤ_[l] ↥LL.1 (w : ℤ_[l])) = 0 := by
-    have h1 := hint (w : ℤ_[l])
-    have h2 := hint ((w⁻¹ : ℤ_[l]ˣ) : ℤ_[l])
-    have hsum : P.v LL (algebraMap ℤ_[l] ↥LL.1 (w : ℤ_[l])) +
-        P.v LL (algebraMap ℤ_[l] ↥LL.1 ((w⁻¹ : ℤ_[l]ˣ) : ℤ_[l])) = 0 := by
-      rw [← AddValuation.map_mul, ← map_mul, ← Units.val_mul, mul_inv_cancel, Units.val_one, map_one,
-        AddValuation.map_one]
-    exact le_antisymm ((le_add_of_nonneg_right h2).trans hsum.le) h1
-  conv_lhs => rw [spec]
-  rw [map_mul, map_pow, map_natCast, AddValuation.map_mul, AddValuation.map_pow, hw, P.v_l, zero_add,
-    nsmul_one]
+  apply _root_.Formalism.MainNotions.CrystallineLiftingInputs.v_padicInt <;> assumption
 
 end Loc
 

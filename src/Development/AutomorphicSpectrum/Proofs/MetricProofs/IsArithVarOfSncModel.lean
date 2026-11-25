@@ -44,8 +44,7 @@ theorem PositivityTheory.Xgp.t_c_bm_exists_arith : ∀ (X : Scheme.{0}) (Ω : Ty
   have hc0 : ∀ k, x ⟨k, c k⟩ ≠ 0 := fun k => Finset.prod_ne_zero_iff.1 hc.1 k (Finset.mem_univ k)
   obtain ⟨m, f, a, hf, ha, hsum, hmain⟩ := hs c hc0
   obtain ⟨l, hl⟩ : ∃ l, f l ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     simp [h] at hsum
   set R : Set Ω := Set.range fun p : Σ k, J k => x p / x ⟨p.1, c p.1⟩ with hR
   set S : Subalgebra ℚ Ω := Algebra.adjoin ℚ (insert (f l)⁻¹ R) with hS
@@ -120,8 +119,6 @@ open ReciprocityTheory.ChartRestriction.G.Semi
 open scoped ComplexOrder
 
 
-theorem _root_.GlobalTheory.CompanionTheory.Relay.isArithVar_of_snc_model : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] [CharZero Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (x : (Σ k, J k) → Ω) (n : ℕ) (bd : Ideal (MRing J)), 1 ≤ n → CoordTie ℤ ξ (fun c' : (k : K) → J k => ∏ k, x ⟨k, c' k⟩) → Cmp.IsSncModel x n bd → ReciprocityTheory.ChartRestriction.G.Geo.IsArithVar (mCoordIdeal x) (n + 1) := by
-  first | exact @PositivityTheory.Xgp.t_c_bm_exists_arith
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.MetricProofs.IsArithVarOfSncModel =====

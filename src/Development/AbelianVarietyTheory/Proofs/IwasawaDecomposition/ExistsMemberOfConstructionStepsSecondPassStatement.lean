@@ -137,14 +137,14 @@ theorem planeVec_planeVec (N n h p : ℕ) (hN : n + 2 * h ≤ N) (hp : p = n + h
   simp only [planeVec, map_add (f := _), LinearMap.add_apply, diag_single_single, c1, c2]
   have e1 : ¬ (n + (i : ℕ) = n + h + j) := by omega
   have e2 : ¬ (n + h + (i : ℕ) = n + j) := by omega
-  rw [if_neg e1, if_neg e2]
+  rw [ite_eq_right e1, ite_eq_right e2]
   by_cases hij : i = j
   · subst hij
     simp [sgn, sub_eq_add_neg]
   · have h' : (i : ℕ) ≠ j := fun e => hij (Fin.ext e)
     have e3 : ¬ (n + (i : ℕ) = n + j) := by omega
     have e4 : ¬ (n + h + (i : ℕ) = n + h + j) := by omega
-    rw [if_neg e3, if_neg e4, if_neg hij]
+    rw [ite_eq_right e3, ite_eq_right e4, ite_eq_right hij]
     simp
 
 theorem ext_planeVec (N n h : ℕ) (hN : n + 2 * h ≤ N) (neg : Fin N → Bool) (x : Fin n → E) (a b : E)
@@ -157,7 +157,7 @@ theorem single_planeVec (N n h : ℕ) (hN : n + 2 * h ≤ N) (neg : Fin N → Bo
     (hl : n + 2 * h ≤ l) (c a b : E) (i : Fin h) :
     diagForm N neg (Pi.single l c) (planeVec N n h hN a b i) = 0 := by
   have hi := i.isLt
-  rw [planeVec, map_add (f := _), diag_single_single, diag_single_single, if_neg, if_neg, add_zero]
+  rw [planeVec, map_add (f := _), diag_single_single, diag_single_single, ite_eq_right, ite_eq_right, add_zero]
   · simp only; omega
   · simp only; omega
 
@@ -185,7 +185,7 @@ theorem top_line_norm :
       (Pi.single (⟨R.rankY R.m, by rw [N_top]; omega⟩ : Fin (R.N R.m)) pz)
       (Pi.single (⟨R.rankY R.m, by rw [N_top]; omega⟩ : Fin (R.N R.m)) pz) = (T : E) := by
   refine (diag_single_single _ (fun _ => false) _ _ pz pz).trans ?_
-  rw [if_pos rfl, ← hpz]
+  rw [ite_eq_left rfl, ← hpz]
   simp [sgn]
 
 def spacesNorm : Spaces R F E :=
@@ -222,7 +222,7 @@ theorem spacesNorm_hasFrame (j : ℕ) (hj : j < R.m) : HasHyperbolicAuxiliaryFra
     refine (diag_single_single _ (cut _ (pY R j)) _ _ pz pz).trans ?_
     have c : cut (R.rankY j) (pY R j) ⟨_, hl⟩ = true := by
       simp only [cut, decide_eq_true_eq]; omega
-    rw [if_pos rfl, c]
+    rw [ite_eq_left rfl, c]
     change _ = -(T : E)
     rw [← hpz]
     simp [sgn]
@@ -267,8 +267,6 @@ noncomputable section
 namespace GlobalTheory.StdFrameObj
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.IndefR Formalism.IndefR.FWT GlobalTheory.Mem
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem star_piT_mul {P : PreCh} (L : LevCh P) :
     (star (L.piT P.u₀ : L.host.E) : L.host.E) * (L.piT P.u₀ : L.host.E) = (L.T P.u₀ : L.host.E) := by
@@ -651,7 +649,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions GlobalTheory.Mem GlobalTheory.Mem.Col2
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.Mem.Col2.PinsCoord
 
 theorem extTo_basis {E : Type} [Field E] (n N : ℕ) (a : Fin n) (b : Fin N) (h : (a:ℕ) = b) : DiagSp.extTo (E := E) n N (Pi.basisFun E (Fin n) a) = Pi.basisFun E (Fin N) b := by
@@ -680,7 +677,6 @@ section -- clump:auto
 noncomputable section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl NumberField IsDedekindDomain
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Published GlobalTheory.NT GlobalTheory.Mem.Fld
 
 namespace GlobalTheory.Mem.Top.Bl.KPxCond
@@ -709,8 +705,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl NumberField IsDedekindDomain
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.Mem.Top.GroupRetwisting
 
@@ -765,7 +759,6 @@ section -- clump:auto
 noncomputable section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
-attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.Mem.Col2.TwIdxEx
 
@@ -973,7 +966,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl NumberField IsDedekindDomain
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto
@@ -985,7 +977,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl NumberField IsDedekindDomain
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.Mem.Top.Bl.PinW
 
@@ -1044,7 +1035,6 @@ section -- clump:auto
 noncomputable section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl NumberField IsDedekindDomain
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.Mem.Top.Bl.MemberEx2
 
@@ -1104,7 +1094,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl NumberField IsDedekindDomain
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.Mem.Top.Bl
 

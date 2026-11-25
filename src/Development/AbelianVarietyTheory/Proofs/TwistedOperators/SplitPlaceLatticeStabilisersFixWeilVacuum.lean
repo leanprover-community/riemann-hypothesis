@@ -62,29 +62,6 @@ open scoped TensorProduct ComplexOrder
 
 namespace GlobalTheory.PlaceTensor
 
-private theorem det_int {D : D7} {V : HSp D} {L : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)}
-    (hL : Submodule.IsFullLattice D.host.E L) (g : GA D V)
-    (h : ∀ y ∈ latHat D.host.F D.host.E (L : Set (Fin V.rank → D.host.E)),
-      (finMat D.sp.cm.sig V.gram g).mulVec y ∈ latHat D.host.F D.host.E (L : Set (Fin V.rank → D.host.E))) :
-    finPart D (Formalism.L2.Theta.mt V g).det ∈ intAE D := by
-  have hd : finPart D (Formalism.L2.Theta.mt V g).det = (finMat D.sp.cm.sig V.gram g).det :=
-    RingHom.map_det (finPart D) (Formalism.L2.Theta.mt V g)
-  rw [hd, GlobalTheory.CharFin.integralFiniteAdeles_eq_adelicCompletion_integers]
-  exact GlobalTheory.DetTranslate.det_mem_int D.host.F L _ hL.toIsLattice.fg hL.span_eq_top h
-
-private theorem unram_detAt {D : D7} {V : HSp D} {L : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)}
-    (hL : Submodule.IsFullLattice D.host.E L) {g : GA D V}
-    (h : ∀ y, y ∈ latHat D.host.F D.host.E (L : Set (Fin V.rank → D.host.E)) ↔
-      (finMat D.sp.cm.sig V.gram g).mulVec y ∈ latHat D.host.F D.host.E (L : Set (Fin V.rank → D.host.E)))
-    {e : AE D} (he : e * e = e) {ε : AF D.host.F} (hs : algebraMap (AF D.host.F) (AE D) ε * e = e)
-    {χ : (AE D)ˣ →* Circle} (hχ : GlobalTheory.WeilParts.UnramAt ε χ) : χ (GlobalTheory.VecInv.detAt e he V g) = 1 := by
-  refine hχ _ ?_ (GlobalTheory.Mem.DetUnit.part_mem_intAE he (det_int hL g fun y hy => (h y).1 hy)) ?_
-  · change _ * (e * (Formalism.L2.Theta.mt V g).det + (1 - e) - 1) = e * (Formalism.L2.Theta.mt V g).det + (1 - e) - 1
-    linear_combination ((Formalism.L2.Theta.mt V g).det - 1) * hs
-  · rw [← MonoidHom.map_inv]
-    exact GlobalTheory.Mem.DetUnit.part_mem_intAE he (det_int hL g⁻¹ (GlobalTheory.LocalLatStab.inv_keeps V _ g h))
-
-
 theorem splitVacuumFixed : ∀ D : D7, SplitVacuumFixed D := by
   intro D ψ S T χS χT om ΛS ΛT hW hS hT v hv uS uT f hf hvac k hk k' hk'
   obtain ⟨e, he, hb⟩ := hv
@@ -108,7 +85,7 @@ theorem splitVacuumFixed : ∀ D : D7, SplitVacuumFixed D := by
     (GlobalTheory.VecInv.isDetAt_detAt e he.1 S _) (GlobalTheory.VecInv.isDetAt_detAt e he.1 T _) hf
     (fun u hu hh => hvac.2 e he u (GlobalTheory.VacStabFixed.half_mem_place hε s1 hu hh) hh)
     (fun u hu hh => hvac.2 _ he' u (GlobalTheory.VacStabFixed.half_mem_place hε s2 hu hh) hh)
-  rwa [splitFacO, unram_detAt (Formalism.IndefR.Datum.IsSelfDualC.isFullLattice S ΛS hS) kS he.1 s1 uT, unram_detAt (Formalism.IndefR.Datum.IsSelfDualC.isFullLattice T ΛT hT) kT he.1 s1 uS,
+  rwa [splitFacO, GlobalTheory.VacStabFixed.unram_detAt (Formalism.IndefR.Datum.IsSelfDualC.isFullLattice S ΛS hS) kS he.1 s1 uT, GlobalTheory.VacStabFixed.unram_detAt (Formalism.IndefR.Datum.IsSelfDualC.isFullLattice T ΛT hT) kT he.1 s1 uS,
     inv_one, mul_one, Circle.coe_one, one_smul] at key
 
 end GlobalTheory.PlaceTensor

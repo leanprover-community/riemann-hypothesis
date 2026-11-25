@@ -190,7 +190,7 @@ theorem lastDatum : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [Topologi
       rw [dite_eq_left Q.lat.zero_mem]
       exact map_zero Q.fn
     have h0 := congrFun h 0
-    simp only [charInd, vecInd, hev, neg_zero, AddChar.map_zero_eq_one, Q.lat.zero_mem, if_true, mul_one,
+    simp only [charInd, vecInd, hev, neg_zero, AddChar.map_zero_eq_one, Q.lat.zero_mem, ite_true, mul_one,
       Pi.zero_apply] at h0
     exact one_ne_zero h0
   have hA : ∀ y : WO L S, Vac ψ A S LA LS (· = p.v) (comb ψ A S e (fun u => Ξ ((o.resS S).symm (u, y)))) ∧
@@ -271,7 +271,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Unf GlobalTheory.LatPair GlobalTheory.SplitWeil GlobalTheory.SeeSaw ValuativeRel IsLocalRing GlobalTheory.FinPl
 open GlobalTheory.IndefiniteRowSideFullHecke.AppendedVectorData (lastKer lastPair)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.LastTAllPf
 
@@ -397,8 +396,6 @@ variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchim
   {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D} {α : ∀ i, Frame (p i) S n'} {β : ∀ i, Frame (p i) T n} {LS : Lat S}
   {LT : Lat T} {Ψ : ι → Matrix n n' k → ℂ}
 
-alias overAll_cons' := _root_.GlobalTheory.FinPl.AllCombProof.overAll_cons
-
 theorem overAll_steps : ∀ (J : List ι) (f f' : WO S T → ℂ), OverAll ψ α β LS LT Ψ J f f' →
     ∀ j ∈ J, ∃ g g', Over ψ (α j) (β j) LS LT g (Ψ j) g' := by
   intro J
@@ -406,7 +403,7 @@ theorem overAll_steps : ∀ (J : List ι) (f f' : WO S T → ℂ), OverAll ψ α
   | nil => intro _ _ _ j hj; simp at hj
   | cons i J ih =>
     intro f f' h j hj
-    obtain ⟨g, hg, h⟩ := overAll_cons'.1 h
+    obtain ⟨g, hg, h⟩ := GlobalTheory.FinPl.AllCombProof.overAll_cons.1 h
     rcases List.mem_cons.1 hj with rfl | hj
     · exact ⟨g, f', h⟩
     · exact ih f g hg j hj
@@ -432,7 +429,7 @@ theorem overAll_foldr (hψ : IsStdChar D ψ (-1)) (hinj : Function.Injective fun
   | cons i l ih =>
     intro hl f hf
     obtain ⟨hi, hl'⟩ := List.nodup_cons.1 hl
-    refine overAll_cons'.2 ⟨_, ih hl' f fun j hj => hf j (List.mem_cons_of_mem _ hj), hr2 i _ ?_⟩
+    refine GlobalTheory.FinPl.AllCombProof.overAll_cons.2 ⟨_, ih hl' f fun j hj => hf j (List.mem_cons_of_mem _ hj), hr2 i _ ?_⟩
     exact vac_foldr_off hψ r (fun j => (· = (p j).v)) l (fun j _ => hr1 j)
       (fun j hj h => hi (by rw [hinj h]; exact hj)) (hf i List.mem_cons_self)
 
@@ -602,7 +599,6 @@ section -- clump:auto
 
 noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum MeasureTheory Matrix ValuativeRel IsLocalRing GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.LatPair GlobalTheory.SplitWeil GlobalTheory.SeeSaw GlobalTheory.FinPl
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.CharsFromWeil
 
@@ -802,7 +798,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Unf GlobalTheory.LatPair GlobalTheory.SplitWeil ValuativeRel IsLocalRing
 open GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedCharacter (compFin ExtUnramAt CharUnramAt)
 open scoped TensorProduct Pointwise
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.FinPl
 
@@ -838,9 +833,6 @@ end Translate
 
 end GlobalTheory.FinPl
 
-namespace GlobalTheory.FinPl
-
-end GlobalTheory.FinPl
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -857,7 +849,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Unf GlobalTheory.LatPair GlobalTheory.SplitWeil ValuativeRel IsLocalRing
 open GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedCharacter (compFin ExtUnramAt CharUnramAt)
 open scoped TensorProduct Pointwise
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.FinPl
 
@@ -1071,7 +1062,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Un
 open GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedCharacter (compFin ExtUnramAt CharUnramAt)
 open GlobalTheory.IndefiniteRowSideFullHecke.AppendedVectorData (lastKer lastPair)
 open scoped TensorProduct Pointwise
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.FinPl.SmallAllPf
 
@@ -1165,7 +1155,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum MeasureTheory Matrix ValuativeRel IsLocalRing GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.LatPair GlobalTheory.SplitWeil GlobalTheory.SeeSaw GlobalTheory.FinPl
 open GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedCharacter (CharUnramAt)
 open GlobalTheory.IndefiniteRowSideFullHecke.AppendedVectorData (lastKer lastPair)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 

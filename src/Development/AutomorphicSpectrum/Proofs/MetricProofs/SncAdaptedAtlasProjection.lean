@@ -15,6 +15,7 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersecti
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.IsFieldIntersection
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.RationalSections.IsRatSectionOn
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsSemipositiveOn
+import Development.WeilBound.CoreStatements.HomogeneousNonvanishing.IsOpenHoloPreimage
 
 @[expose] public section
 
@@ -27,25 +28,7 @@ namespace GlobalTheory.CompanionTheory.Ar.PB.SncPull
 theorem holoOn_comp_pr {e n : ℕ} {X Z : Type} [TopologicalSpace X] [TopologicalSpace Z]
     {A : FinHolAtlas e X} {Ab : FinHolAtlas n Z} {pr : X → Z} (hp : HoloMap A Ab pr)
     {U : Set Z} {g : Z → ℂ} (hg : Ab.HoloOn U g) : A.HoloOn (pr ⁻¹' U) (fun x => g (pr x)) := by
-  intro j t ht
-  obtain ⟨k, hk⟩ := Ab.cover (pr ((A.chart j).symm t))
-  have hO : IsOpen ((A.chart j).target ∩ (A.chart j).symm ⁻¹' (pr ⁻¹' (Ab.chart k).source)) :=
-    (A.chart j).isOpen_inter_preimage_symm ((Ab.chart k).open_source.preimage hp.1)
-  have htO : t ∈ (A.chart j).target ∩ (A.chart j).symm ⁻¹' (pr ⁻¹' (Ab.chart k).source) :=
-    ⟨ht.1, hk⟩
-  have h1 : AnalyticAt ℂ (Ab.chart k ∘ pr ∘ (A.chart j).symm) t := hp.2 j k t htO
-  have hmem : (Ab.chart k ∘ pr ∘ (A.chart j).symm) t ∈
-      (Ab.chart k).target ∩ (Ab.chart k).symm ⁻¹' U := by
-    refine ⟨(Ab.chart k).map_source hk, ?_⟩
-    simp only [Function.comp, Set.mem_preimage, (Ab.chart k).left_inv hk]
-    exact ht.2
-  have h2 : AnalyticAt ℂ (g ∘ (Ab.chart k).symm) ((Ab.chart k ∘ pr ∘ (A.chart j).symm) t) :=
-    hg k _ hmem
-  have h3 := AnalyticAt.comp (g := g ∘ (Ab.chart k).symm)
-    (f := Ab.chart k ∘ pr ∘ (A.chart j).symm) h2 h1
-  refine h3.congr ?_
-  filter_upwards [hO.mem_nhds htO] with t' ht'
-  simp [Function.comp, (Ab.chart k).left_inv ht'.2]
+  apply _root_.PositivityTheory.UnitarySelfGeneration.HolomorphicMinorCharts.holo_comp_map <;> assumption
 
 theorem isSection_pull {e n : ℕ} {X Z : Type} [TopologicalSpace X] [TopologicalSpace Z]
     {A : FinHolAtlas e X} {Ab : FinHolAtlas n Z} {pr : X → Z} (hp : HoloMap A Ab pr)

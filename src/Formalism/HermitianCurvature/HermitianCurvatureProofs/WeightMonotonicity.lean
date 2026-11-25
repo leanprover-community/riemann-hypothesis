@@ -80,7 +80,7 @@ theorem Tm_dualE {n : ℕ} (E : Fin n → Fin n → Module.End ℂ V) (u : ℂ) 
   congr 1
   by_cases h : a = b
   · subst h; simp [dm_algebraMap]
-  · rw [if_neg h, if_neg (Ne.symm h), dm_zero]
+  · rw [ite_eq_right h, ite_eq_right (Ne.symm h), dm_zero]
 
 theorem arg_rev {t : ℕ} (w : ℂ) (j : Fin t) :
     w - (t : ℂ) + 1 + (((Fin.rev j : Fin t) : ℕ) : ℂ) = w - ((j : ℕ) : ℂ) := by
@@ -135,14 +135,14 @@ theorem weight_mono {n : ℕ} (E : Fin (n + 1) → Fin (n + 1) → Module.End �
       etaK E x * E c.castSucc c.castSucc + (if x = c then (1 : ℂ) else 0) • etaK E x := by
     intro x
     have h := hE c.castSucc c.castSucc x.castSucc (Fin.last n)
-    rw [if_neg (Fin.castSucc_lt_last c).ne', sub_zero] at h
+    rw [ite_eq_right (Fin.castSucc_lt_last c).ne', sub_zero] at h
     by_cases hx : x = c
     · subst hx
-      rw [if_pos rfl] at h
-      rw [if_pos rfl, one_smul]
+      rw [ite_eq_left rfl] at h
+      rw [ite_eq_left rfl, one_smul]
       exact eq_add_of_sub_eq' h
-    · rw [if_neg (fun e => hx (Fin.castSucc_injective _ e).symm)] at h
-      rw [if_neg hx, zero_smul, add_zero]
+    · rw [ite_eq_right (fun e => hx (Fin.castSucc_injective _ e).symm)] at h
+      rw [ite_eq_right hx, zero_smul, add_zero]
       exact sub_eq_zero.mp h
   have hc := congrArg (fun g : Module.End ℂ V => g w) (comm_mono _ (etaK E) _ hd a)
   simp only [Module.End.mul_apply, LinearMap.add_apply, LinearMap.smul_apply, hw, map_smul] at hc

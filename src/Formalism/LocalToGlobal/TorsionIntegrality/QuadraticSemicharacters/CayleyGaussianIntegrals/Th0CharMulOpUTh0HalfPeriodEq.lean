@@ -306,11 +306,11 @@ theorem ThStd_proof : ThStd := by
           simp
         · simp [Finset.mem_insert, hj]
       rw [h1]
-      simp only [hi, if_false]
+      simp only [hi, ite_false]
       ring
   funext z
   have h := key Finset.univ z
-  simp only [Finset.mem_univ, if_true] at h
+  simp only [Finset.mem_univ, ite_true] at h
   rw [h]
   simp only [Pi.smul_apply, smul_eq_mul, F0, prodFn]
   rw [mul_comm]

@@ -621,9 +621,9 @@ theorem traceRat : TraceRat := by
     translate_all R F hcore hU i v₀ hext hker h y u hu x hx g v, LinearMap.smul_apply, smul_smul, ← map_mul]
   congr 2
   by_cases hg : g ∈ U
-  · simp only [c', dif_pos hg]
+  · simp only [c', dite_eq_left hg]
     rw [← Units.val_mul, mul_assoc, inv_mul_cancel, mul_one]
-  · simp only [c', dif_neg hg, zero_mul, map_zero]
+  · simp only [c', dite_eq_right hg, zero_mul, map_zero]
 
 end GlobalTheory.TraceRatPf
 end -- clump:auto
@@ -837,8 +837,7 @@ theorem readExt_eq_smul_of_read
       rw [h1, sub_self]
     exact sub_eq_zero.1 (Fintype.linearIndependent_iff.1 (hF _ v v.linearIndependent) _ e1 k)
   obtain ⟨k, hk⟩ : ∃ k, c k ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     apply h0
     have h2 : eL (algebraMap O L d) • R s = 0 := by
       rw [← hsm, es, hsum]
@@ -1095,10 +1094,6 @@ open scoped TensorProduct
 
 
 namespace GlobalTheory.BigOn.Exp.SerBase
-section Point
-variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
-  {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ} (p : PtAt ex Csz) (w : D.what₂.places.Pl) (j : Fin D.R.m)
-end Point
 theorem baseGe_of_serBase_facts_flatKer_centLat (hI : _root_.GlobalTheory.BigOn.Exp.ReadInjAlt) (hG : _root_.GlobalTheory.BigOn.Exp.LatticeHasSmallGenerators) (h1 : _root_.GlobalTheory.BigOn.Exp.SerBase.KerOfAtAlt) (h2 : _root_.GlobalTheory.BigOn.Exp.SerBase.TraceAt') (h3 : _root_.GlobalTheory.BigOn.Exp.SerBase.KernelRationalAt) (h4 : _root_.GlobalTheory.BigOn.Exp.SerBase.LatticeInclusionAt)
     (h5 : _root_.GlobalTheory.BigOn.Exp.SerBase.ReadComparisonAt) (hF : FlatKer) (hC : CentLat) (hTr : TraceRat) (hO : OwnUnit) : _root_.GlobalTheory.BigOn.Exp.BaseLowerBound₂ := by
   unfold _root_.GlobalTheory.BigOn.Exp.BaseLowerBound₂ _root_.GlobalTheory.BigOn.Exp.CanonicalFits _root_.GlobalTheory.BigOn.Exp.ReadInjAlt _root_.GlobalTheory.BigOn.Exp.LatticeHasSmallGenerators _root_.GlobalTheory.BigOn.Exp.SerBase.KerOfAtAlt _root_.GlobalTheory.BigOn.Exp.SerBase.TraceAt' _root_.GlobalTheory.BigOn.Exp.SerBase.KernelRationalAt _root_.GlobalTheory.BigOn.Exp.SerBase.LatticeInclusionAt _root_.GlobalTheory.BigOn.Exp.SerBase.ReadComparisonAt _root_.GlobalTheory.BigOn.Exp.TwistConditions _root_.GlobalTheory.BigOn.AtPtsAlt at *

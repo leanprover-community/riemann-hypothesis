@@ -4,6 +4,7 @@ public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange
 public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.SliceTensors.PPrAdm
 import Mathlib.Tactic.Linter.Style
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.StableLevelDecomposition
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AdmissibleDiscreteSpaces
 
 @[expose] public section
 
@@ -130,36 +131,8 @@ end AdmDiscPf
 
 
 open AdmDiscPf in
-theorem admissible_discrete_spaces : AdmDisc := by
-  intro E _ _ _ M K' W' hK' hW' V hV
-  obtain ⟨φ₀, hφ₀, h0⟩ := (Submodule.ne_bot_iff _).1 hV.ne_bot
-  have hA : PrAdm.SupSpansPsiPart V φ₀ = V := by
-    rcases hV.irred _ (PrAdm.admissible_span_le V φ₀) (PrAdm.isStable_admissible_span hV.stable φ₀) with h | h
-    · exact absurd ((Submodule.mem_bot ℂ).1 (h ▸ PrAdm.mem_admissible_span_self hφ₀)) h0
-    · exact h
-  have : FiniteDimensional ℂ (W' ⊓ contK E M : Submodule ℂ (Kinf E M → ℂ)) :=
-    Submodule.finiteDimensional_of_le inf_le_left
-  have : FiniteDimensional ℂ (rS (lI (W' ⊓ contK E M))) := fd_rS_lI _
-  have hU : ∀ u ∈ rS (lI (W' ⊓ contK E M)), ∀ k, (fun x => u (x * k)) ∈ rS (lI (W' ⊓ contK E M)) :=
-    fun u hu k => rS_right hu k
-  have hfd := PrAdm.finiteDimensional_admissible_isotypic hV.aut (hV.aut φ₀ hφ₀) hK' (rR _ hU) (isContRep_rR _ hU (cont_rS W'))
-  refine Submodule.finiteDimensional_of_le
-    (S₂ := PrAdm.SupSpansPsiPart V φ₀ ⊓ typePart K' (rR (rS (lI (W' ⊓ contK E M))) hU)) (Submodule.span_le.2 ?_)
-  rintro φ ⟨hφV, hT⟩
-  refine ⟨hA.symm ▸ hφV, fun k hk => Subtype.ext (funext fun g => hT.1 k hk g), fun g => ?_⟩
-  have hf : (fun k : Kinf E M => (cptRep E M k φ).1 g) ∈ lI (W' ⊓ contK E M) := by
-    refine mem_lI.2 fun k₀ => ⟨?_, ?_⟩
-    · show (fun k => φ.1 (g * infGL E M (Unitary.toUnits (k₀ * k)))) ∈ W'
-      have := hT.2 (g * infGL E M (Unitary.toUnits k₀))
-      simpa only [map_mul, mul_assoc] using this
-    · show Continuous fun k => φ.1 (g * infGL E M (Unitary.toUnits (k₀ * k)))
-      have := cont_K φ (g * infGL E M (Unitary.toUnits k₀))
-      simpa only [map_mul, mul_assoc] using this
-  have hfU := le_rS _ hf
-  refine Submodule.subset_span ⟨(LinearMap.proj 1 : (Kinf E M → ℂ) →ₗ[ℂ] ℂ).comp
-    (rS (lI (W' ⊓ contK E M))).subtype, ⟨_, hfU⟩, funext fun k => ?_⟩
-  change (cptRep E M k φ).1 g = (cptRep E M (1 * k) φ).1 g
-  rw [one_mul]
+theorem admissible_discrete_spaces : AdmDisc :=
+  _root_.GlobalTheory.CompanionTheory.AdmDiscFin.admissible_discrete_spaces
 
 end PositivityTheory.Rg.BcB.SpectralAccumulation
 

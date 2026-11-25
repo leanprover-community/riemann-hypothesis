@@ -616,8 +616,6 @@ section -- clump:auto
 open UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi UpperTheory.Zero.ConvolutionTheory.EB
 open NumberField GlobalTheory.CuspRep PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.E
 
-attribute [local instance] PositivityTheory.Rg.BcB.E.borelH
-
 private theorem zero_of_powers_compact {G : Type*} [Monoid G] [TopologicalSpace G] (f : G → ℝ) (hf : Continuous f)
     (hm : ∀ x y, f (x * y) = f x + f y) (S : Set G) (hS : IsCompact S) (k : G) (hk : ∀ m : ℕ, k ^ m ∈ S) : f k = 0 := by
   obtain ⟨C, hC⟩ := (hS.image hf).isBounded.exists_norm_le
@@ -1620,7 +1618,7 @@ theorem UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi.seenTr_pf :
     Prod.ext rfl (Subsingleton.elim _ _)
   rw [hcv]
   unfold PositivityTheory.Rg.BcB.G8.seen
-  rw [if_pos hw]
+  rw [ite_eq_left hw]
   rw [UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi.hint_fst (KGL w (n := n)) N (KGL w (n := 0)) _ hNK ?_ hi]
   · congr 1
     refine finsum_congr fun q => ?_
@@ -1696,8 +1694,6 @@ open PositivityTheory.Rg.BcB.CG.prime_not_mem_section_base_place
 open scoped Classical
 
 namespace UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi
-
-attribute [local instance] PositivityTheory.Rg.BcB.E.borelH
 
 section SlopeTestRemainingChoices
 

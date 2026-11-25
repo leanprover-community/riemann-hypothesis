@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RankOneEmbeddings
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.JacobianCoordinates
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.HermitianZZEqNeg
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.JacLocOfHpk
@@ -70,11 +71,7 @@ variable {k r : ℕ}
 alias meas_invM := _root_.Formalism.FourierDecayAlt.P.B2x1.invM_meas
 
 theorem meas_mulM : Measurable (mulM : Mt k r × Mt k r → Mt k r) := by
-  unfold mulM
-  have hc : Continuous (fun p : Mt k r × Mt k r => (Matrix.of p.1 * Matrix.of p.2 : Mat k r)) :=
-    Continuous.matrix_mul continuous_fst continuous_snd
-  exact Measurable.of_eval fun i => Measurable.of_eval fun j =>
-    ((continuous_apply j).comp ((continuous_apply i).comp hc)).measurable
+  apply _root_.Formalism.FourierDecayAlt.P.RankOneEmbeddings.In.mulM_meas <;> assumption
 
 def Cm (g : Mt k r) (p : SS k r) : Mt k r := mulM (mulM (mulM (mulM (p.1.1, p.1.2), g), p.2.2), p.2.1)
 

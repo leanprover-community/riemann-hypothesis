@@ -51,9 +51,4 @@ def Cong (G H : MvPowerSeries σ K) : Prop := InN (G - H)
 
 end Cong
 
-def NZpSmul : Prop :=
-  ∀ (p : ℕ) [Fact p.Prime] (K : Type u) [NormedField K] [IsUltrametricDist K]
-    [CharZero K] [NormedAlgebra ℚ_[p] K] (σ : Type) (G : MvPowerSeries σ K), InN G →
-      ∀ b : ℤ_[p], InN (algebraMap ℚ_[p] K (b : ℚ_[p]) • G)
-
 end Formalism.ELL

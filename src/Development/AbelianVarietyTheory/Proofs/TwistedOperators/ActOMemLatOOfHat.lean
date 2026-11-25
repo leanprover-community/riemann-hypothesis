@@ -68,7 +68,7 @@ theorem idemSum_mul_eq_zero {P P' : Finset (Pl D.host.E)} {e e' : AE D} (he : Is
 theorem ne_and_not_conj {S : Finset ℕ} {w w' : Pl D.host.E} (hw : ¬ Off S w) (hw' : Off S w') :
     w ≠ w' ∧ ¬ Formalism.IndefR.Lev.IsConjPl (D := D) w w' := by
   unfold Off at hw hw'
-  push_neg at hw
+  push Not at hw
   obtain ⟨q, hq, hqw⟩ := hw
   refine ⟨fun h => hw' q hq (h ▸ hqw), fun h => ?_⟩
   obtain ⟨c', hc', hc'eq⟩ := h _ hqw

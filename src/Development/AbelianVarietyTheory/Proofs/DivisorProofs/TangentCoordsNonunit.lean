@@ -136,7 +136,7 @@ theorem algHom_ext : ∀ (p : ℕ) (O : Type) [CommRing O] [IsAdicComplete (Idea
   have hlow : ∀ α : σ →₀ ℕ, α.degree < max N₁ N₂ →
       MvPowerSeries.coeff α (f - (g : MvPowerSeries σ O)) = 0 := by
     intro α hα
-    rw [map_sub, MvPolynomial.coeff_coe, hg, MvPowerSeries.coeff_trunc', if_pos, sub_self]
+    rw [map_sub, MvPolynomial.coeff_coe, hg, MvPowerSeries.coeff_trunc', ite_eq_left, sub_self]
     intro i
     exact (Finsupp.le_degree i α).trans (by simpa using hα.le)
   have hdiff : F f - F' f = F (f - (g : MvPowerSeries σ O)) - F' (f - (g : MvPowerSeries σ O)) := by

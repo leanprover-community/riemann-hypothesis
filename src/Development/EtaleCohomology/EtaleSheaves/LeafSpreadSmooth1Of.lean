@@ -199,7 +199,6 @@ theorem stepB {R K B A : Type} [CommRing R] [CommRing K] [CommRing B] [CommRing 
   exact Algebra.FormallySmooth.of_equiv ((IsLocalization.algEquiv (Q.comap (algebraMap A B)).primeCompl
     (Localization.AtPrime Q) _).restrictScalars R)
 
-set_option maxHeartbeats 1600000 in
 set_option synthInstance.maxHeartbeats 200000 in
 theorem algDescend (k : Type) [Field k] (Ω : Type) [Field Ω] [Algebra k Ω] (R : Subalgebra k Ω)
     (A : Type) [CommRing A] [Algebra R A] (hfp : Algebra.FinitePresentation R A) (hs : Algebra.Smooth Ω (Ω ⊗[R] A))

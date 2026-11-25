@@ -182,14 +182,14 @@ theorem sum_ite_l (g : Fin n → ℂ) (F : Fin n → MvPolynomial (FinalTheorems
     ∑ x, C (if j0 = x then g x else 0) * F x = C (g j0) * F j0 := by
   rw [Finset.sum_eq_single j0]
   · simp
-  · intro x _ hx; rw [if_neg (Ne.symm hx)]; simp
+  · intro x _ hx; rw [ite_eq_right (Ne.symm hx)]; simp
   · intro h; exact absurd (Finset.mem_univ _) h
 
 theorem sum_ite_r (g : Fin n → ℂ) (F : Fin n → MvPolynomial (FinalTheorems m n) ℂ) (j0 : Fin n) :
     ∑ x, C (if x = j0 then g x else 0) * F x = C (g j0) * F j0 := by
   rw [Finset.sum_eq_single j0]
   · simp
-  · intro x _ hx; rw [if_neg hx]; simp
+  · intro x _ hx; rw [ite_eq_right hx]; simp
   · intro h; exact absurd (Finset.mem_univ _) h
 
 theorem act_transvection (t : Matrix.TransvectionStruct (Fin n) ℂ) (p : MvPolynomial (FinalTheorems m n) ℂ)

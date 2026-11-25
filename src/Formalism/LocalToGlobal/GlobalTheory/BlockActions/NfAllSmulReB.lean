@@ -101,7 +101,7 @@ theorem dOT_on (o' G' : Matrix (Fin (D.R.N D.R.m - 1)) (Fin (D.R.N D.R.m - 1)) �
   congr 1
   ext i j
   simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, Matrix.of_apply, Fin.sum_univ_one, Matrix.one_apply, Fin.fin_one_eq_zero,
-    if_true, star_sqrtT]
+    ite_true, star_sqrtT]
   rw [show ((sqrtT D u : ℂˣ) : ℂ) * ((D.mem u).A.T : ℂ)⁻¹ * ((sqrtT D u : ℂˣ) : ℂ) =
     ((sqrtT D u : ℂˣ) : ℂ) * ((sqrtT D u : ℂˣ) : ℂ) * ((D.mem u).A.T : ℂ)⁻¹ by ring, sqrtT_mul_self, mul_inv_cancel₀ hT]
 

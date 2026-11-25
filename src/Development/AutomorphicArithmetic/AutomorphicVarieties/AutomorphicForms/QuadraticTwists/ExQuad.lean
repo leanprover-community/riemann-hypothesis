@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.CharacterLevelBounds.PlacesQ
 public import Mathlib.NumberTheory.NumberField.CMField
 public import ReciprocityTheory.GaloisValuations.Global
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsContinuousPadic
@@ -70,22 +71,7 @@ open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory
 
 private theorem exists_valuationSubring_valuation_prime_lt_one (Ω : Type) [Field Ω] [CharZero Ω] (p : ℕ) (hp : p.Prime) :
     ∃ A : ValuationSubring Ω, A.valuation (p : Ω) < 1 := by
-  let R : Subring Ω := (Int.castRingHom Ω).range
-  have hpR : (p : Ω) ∈ R := ⟨p, by simp⟩
-  let x : R := ⟨p, hpR⟩
-  have hI : Ideal.span {x} ≠ ⊤ := by
-    intro h
-    rw [Ideal.eq_top_iff_one, Ideal.mem_span_singleton'] at h
-    obtain ⟨⟨r, n, rfl⟩, hr⟩ := h
-    have h1 : ((n * p : ℤ) : Ω) = 1 := by
-      have := congrArg Subtype.val hr
-      simpa [x] using this
-    have h2 : n * (p : ℤ) = 1 := by exact_mod_cast h1
-    have h3 : ((p : ℕ) : ℤ) ∣ ((1 : ℕ) : ℤ) := ⟨n, by push_cast; linarith⟩
-    have h4 : p ∣ 1 := Int.natCast_dvd_natCast.mp h3
-    exact hp.one_lt.ne' (Nat.dvd_one.mp h4)
-  obtain ⟨B, -, hB⟩ := Ideal.image_subset_nonunits_valuationSubring _ hI
-  exact ⟨B, (B.mem_nonunits_iff).mp (hB ⟨x, Ideal.subset_span rfl, rfl⟩)⟩
+  apply _root_.UpperTheory.V.Chr.RationalPlaces.exists_place <;> assumption
 
 private theorem ringOfIntegers_rat_exists_int_eq (x : 𝓞 ℚ) : ∃ n : ℤ, x = (n : 𝓞 ℚ) := by
   refine ⟨Rat.ringOfIntegersEquiv x, ?_⟩

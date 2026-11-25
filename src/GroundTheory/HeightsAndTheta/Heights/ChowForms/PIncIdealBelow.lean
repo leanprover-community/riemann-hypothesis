@@ -39,7 +39,7 @@ private theorem aeval_killFirst_eq_zero {F : Type*} [Field F] {e n δ : ℕ} (h�
     apply hij0
     simp [groupWeight, Ne.symm h]
   refine mul_eq_zero_of_right _ (Finset.prod_eq_zero hij ?_)
-  rw [killFirst, if_pos h1]
+  rw [killFirst, ite_eq_left h1]
   exact zero_pow (Finsupp.mem_support_iff.mp hij)
 
 theorem IncIdealBelow.proof (h₁ : ChowFormMultiHomog.Statement) : IncIdealBelow.Statement := by

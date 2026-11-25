@@ -48,8 +48,8 @@ def BFCross : Prop :=
 theorem tm_comm_E {A : Type*} [Ring A] [Algebra ℂ A] {n : ℕ} (E : Fin n → Fin n → A) (hE : GlRel E)
     (u : ℂ) (e c d : Fin n) (h1 : e ≠ c) (h2 : d ≠ e) : Tm E u e e * E c d = E c d * Tm E u e e := by
   have h := hE e e c d
-  rw [if_neg h1, if_neg h2, sub_zero, sub_eq_zero] at h
-  rw [Formalism.REAL.Tm, if_pos rfl, add_mul, mul_add, Algebra.commutes, h]
+  rw [ite_eq_right h1, ite_eq_right h2, sub_zero, sub_eq_zero] at h
+  rw [Formalism.REAL.Tm, ite_eq_left rfl, add_mul, mul_add, Algebra.commutes, h]
 
 theorem bL_last {n m : ℕ} (e es : Fin n) (v : Fin m → Fin n) :
     bE e (bS v es) ∘ (Fin.last (m + 1)).succAbove = bE e v := by

@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.Divisibility.ChainOperators.GenericFramesLetters
 public import Formalism.SharpRestriction.GlobalSchurBounds.GL3Columns
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LatAtLattice
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.ThetaIsometryFactsHold
@@ -63,7 +64,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
-attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Mem.CanonicalSurjection
 
 namespace GlobalTheory.Mem.RangeMinors
@@ -157,7 +157,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
-attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Mem.CanonicalSurjection
 
 noncomputable section
@@ -206,17 +205,7 @@ theorem exists_equiv_of_counts {A B : Type} [Fintype A] [Fintype B] (a : A → �
 
 theorem card_colLen_gt (μ : YoungDiagram) (t : ℕ) :
     (Finset.univ.filter fun c : Fin (μ.rowLen 0) => t < μ.colLen c).card = μ.rowLen t := by
-  classical
-  have hle : μ.rowLen t ≤ μ.rowLen 0 := μ.rowLen_anti 0 t (Nat.zero_le _)
-  have : (Finset.univ.filter fun c : Fin (μ.rowLen 0) => t < μ.colLen c) =
-      Finset.univ.filter fun c : Fin (μ.rowLen 0) => c.val < μ.rowLen t := by
-    ext c
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and]
-    rw [← YoungDiagram.mem_iff_lt_colLen, YoungDiagram.mem_iff_lt_rowLen]
-  rw [this, ← Fintype.card_subtype]
-  rw [Fintype.card_congr (β := Fin (μ.rowLen t))
-    ⟨fun c => ⟨c.1.1, c.2⟩, fun c => ⟨⟨c.1, by have := c.2; omega⟩, c.2⟩, fun _ => rfl, fun _ => rfl⟩]
-  simp
+  apply _root_.PI.MSC.card_colLen_gt <;> assumption
 
 theorem minor_cast {K : Type} [CommRing K] {N h h' : ℕ} (Y : Matrix (Fin N) (Fin N) K) (e : h = h') (hN : h ≤ N)
     (I : Fin h → Fin N) :
@@ -303,7 +292,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
-attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Mem.CanonicalSurjection
 
 noncomputable section
@@ -334,7 +322,7 @@ private theorem prod_eval_mem_span_prod_of_mem_span {L : Type} [Field L] {ι : T
       · simp
       · apply Finset.prod_congr rfl
         intro τ hτ
-        rw [Function.update_apply, if_neg (Finset.ne_of_mem_erase hτ)]
+        rw [Function.update_apply, ite_eq_right (Finset.ne_of_mem_erase hτ)]
 
     have key : ∀ x ∈ Submodule.span L (A a), (fun y : ι → X => ∏ τ, Function.update h a x τ (y τ)) ∈
         Submodule.span L {F | ∃ g : ι → X → L, (∀ τ, g τ ∈ A τ) ∧ F = fun y => ∏ τ, g τ (y τ)} := by
@@ -344,13 +332,13 @@ private theorem prod_eval_mem_span_prod_of_mem_span {L : Type} [Field L] {ι : T
         apply ih
         · intro τ hτ
           have hne : τ ≠ a := fun e => ha (e ▸ hτ)
-          rw [Function.update_apply, if_neg hne]
+          rw [Function.update_apply, ite_eq_right hne]
           exact h1 τ (Finset.mem_insert_of_mem hτ)
         · intro τ hτ
           by_cases e : τ = a
           · subst e
             simpa using hx
-          · rw [Function.update_apply, if_neg e]
+          · rw [Function.update_apply, ite_eq_right e]
             exact h2 τ (by simp [e, hτ])
       | zero =>
         rw [hsplit]
@@ -462,7 +450,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
-attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.Mem.CanonicalSurjection
 
@@ -494,7 +481,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
-attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.toy_entPl_canOnto : ∀ (D : D7) (Pl : Examples₂.EntPl D), CanOnto Pl := by
   first | exact @GlobalTheory.Mem.CanonicalSurjection.canOnto_all

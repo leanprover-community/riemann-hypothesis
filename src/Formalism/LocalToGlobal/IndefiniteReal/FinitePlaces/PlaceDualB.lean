@@ -23,8 +23,6 @@ open scoped TensorProduct ComplexOrder
 
 namespace Formalism.IndefR.Fin
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def PlaceLatDualIv (D : D7) : Prop :=
   ∀ (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (S T : HSp D)
     (ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)) (ΛT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)),
@@ -69,8 +67,6 @@ open scoped TensorProduct
 
 
 namespace Formalism.IndefR.Fin.PDB
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 

@@ -118,7 +118,6 @@ theorem MaxContactCoverProperties.isMaxContactHypersurface_strictTransform_succ 
   have : CharZero T.base := hv.charZero
   have : AlgebraicGeometry.Smooth (s.projectionToSpec i) := hvi.smooth
   have hno : AlgebraicGeometry.IsNoetherian (s.toSequenceOfBlowups.schemeAt (i + 1)) := hvi1.isNoetherian
-  have : AlgebraicGeometry.IsLocallyNoetherian (s.toSequenceOfBlowups.schemeAt (i + 1)) := inferInstance
   have : AlgebraicGeometry.LocallyOfFiniteType
       (s.toSequenceOfBlowups.transitionMapSucc i ≫ s.projectionToSpec i) := by
     rw [← MarkedSequenceOfBlowups.projectionToSpec_succ]

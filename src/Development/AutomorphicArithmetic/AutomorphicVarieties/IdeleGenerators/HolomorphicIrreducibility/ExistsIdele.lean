@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.ScalarStabilizers.FinSupp
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.WeightChange
 public import Mathlib.Algebra.AffineMonoid.Basic
 public import GroundTheory.AutomorphicForms.StrongApproximationSLDense
@@ -222,8 +223,7 @@ theorem UpperTheory.addChar_inverseDifferent_and_residue_sum_eq_zero :
     have e : a = b + (a - b) := by ring
     rw [e, hadd, hker _ hab, mul_one]
   obtain ⟨b0, hb0⟩ : ∃ b0 : 𝓞 F, ψ b0 ≠ 1 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hdual := (UpperTheory.mem_dual_one_iff_trace_mul_int F η).mpr (fun b => (key _).mpr (hcon b))
     exact UpperTheory.false_of_mem_dual_of_valuation_eq_different_succ F η w hdual hw
   have hsum : ψ b0 * ∑ r, ψ (s r) = ∑ r, ψ (s r) := by
@@ -464,19 +464,7 @@ private theorem norm_one {w : Pl F} {x : w.adicCompletion F} (h : Valued.v x = 1
   exact le_antisymm this h2
 
 private theorem fin_supp (y : (Af F)ˣ) : Function.HasFiniteMulSupport fun w : Pl F => ‖pLoc F w (y : Af F)‖ := by
-  have h1 := Filter.eventually_cofinite.1 (y : Af F).2
-  have h2 := Filter.eventually_cofinite.1 ((y⁻¹ : (Af F)ˣ) : Af F).2
-  refine (h1.union h2).subset fun w hw => ?_
-  by_contra hc
-  simp only [Set.mem_union, Set.mem_setOf_eq, not_or, not_not] at hc
-  have a1 : Valued.v (pLoc F w (y : Af F)) ≤ 1 := hc.1
-  have a2 : Valued.v (pLoc F w ((y⁻¹ : (Af F)ˣ) : Af F)) ≤ 1 := hc.2
-  have a3 : Valued.v (pLoc F w (y : Af F)) * Valued.v (pLoc F w ((y⁻¹ : (Af F)ˣ) : Af F)) = 1 := by
-    rw [← map_mul, ← map_mul, Units.mul_inv, map_one, map_one]
-  refine hw (norm_one (le_antisymm a1 ?_))
-  calc 1 = _ := a3.symm
-    _ ≤ Valued.v (pLoc F w (y : Af F)) * 1 := mul_le_mul_right a2 _
-    _ = _ := mul_one _
+  apply _root_.fin_supp' <;> assumption
 
 private theorem absF_mul (y z : (Af F)ˣ) : absF (y * z) = absF y * absF z := by
   unfold absF

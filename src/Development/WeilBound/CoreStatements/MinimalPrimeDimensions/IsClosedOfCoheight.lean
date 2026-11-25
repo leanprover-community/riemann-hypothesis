@@ -155,15 +155,15 @@ theorem vertTerm_eq (hP : P.IsPrime) (h0 : P.comap CC = ⊥) (hi : Function.Inje
   · refine Finset.sum_congr rfl fun z hz => ?_
     have hp : (Pt z).IsPrime := ((hS _).2 ⟨z, hz, rfl⟩).1.1.1
     split_ifs with h
-    · refine (finsum_eq_single _ ⟨(Pt z).comap CC, Ideal.comap_isPrime _ _, h⟩ fun v hv => if_neg fun e => hv ?_).trans
-        (if_pos rfl)
+    · refine (finsum_eq_single _ ⟨(Pt z).comap CC, Ideal.comap_isPrime _ _, h⟩ fun v hv => ite_eq_right fun e => hv ?_).trans
+        (ite_eq_left rfl)
       exact HeightOneSpectrum.ext e.symm
-    · exact finsum_eq_zero_of_forall_eq_zero fun v => if_neg fun (e : (Pt z).comap CC = v.asIdeal) =>
+    · exact finsum_eq_zero_of_forall_eq_zero fun v => ite_eq_right fun (e : (Pt z).comap CC = v.asIdeal) =>
         h fun e' => v.ne_bot (e.symm.trans e')
   · intro z _
     refine Set.Subsingleton.finite fun v hv w hw => HeightOneSpectrum.ext ?_
-    have h1 : (Pt z).comap CC = v.asIdeal := by by_contra h; exact hv (if_neg h)
-    have h2 : (Pt z).comap CC = w.asIdeal := by by_contra h; exact hw (if_neg h)
+    have h1 : (Pt z).comap CC = v.asIdeal := by by_contra h; exact hv (ite_eq_right h)
+    have h2 : (Pt z).comap CC = w.asIdeal := by by_contra h; exact hw (ite_eq_right h)
     exact h1.symm.trans h2
 
 open Classical in
@@ -180,7 +180,7 @@ theorem divCycle_eq (hi : Function.Injective Pt)
   have hval (z) (hz : z ∈ S) (h : (Pt z).comap CC = ⊥) :
       ((divCycle (P.map φ) fun j => (u j : K)) ((Pt z).map φ) : ℤ) = μ z := by
     have := isPrime_map (hp z hz) h
-    rw [divCycle, hJ, fundCycle_apply, if_pos (mem_relComps_map.2 (by
+    rw [divCycle, hJ, fundCycle_apply, ite_eq_left (mem_relComps_map.2 (by
       rw [comap_map (hp z hz) h]; exact (hS _).2 ⟨z, hz, rfl⟩)), localMult_map', comap_map (hp z hz) h, hμ z hz]
   have hmem (z) (hz : z ∈ S) (h : (Pt z).comap CC = ⊥) :
       (Pt z).map φ ∈ (divCycle (P.map φ) fun j => (u j : K)).support :=
@@ -194,7 +194,7 @@ theorem divCycle_eq (hi : Function.Injective Pt)
   · have h1 : W ∈ relComps ((P ⊔ Ideal.span {linForm u}).map φ) := by
       by_contra hn
       refine Finsupp.mem_support_iff.1 hW ?_
-      rw [divCycle, hJ, fundCycle_apply, if_neg hn]
+      rw [divCycle, hJ, fundCycle_apply, ite_eq_right hn]
     obtain ⟨z, hz, e⟩ := (hS _).1 (mem_relComps_map.1 h1)
     exact ⟨z, Finset.mem_filter.2 ⟨hz, e ▸ comap_bot h1.1.1.1.ne_top⟩, by rw [e, map_comap]⟩
   · rw [Finset.mem_filter] at hz
@@ -251,7 +251,6 @@ theorem le_dim_quotient_horizontal (A : Type) [CommRing A] [IsDomain A] [CharZer
       obtain ⟨y, rfl⟩ := hy
       exact ⟨x + y, map_add _ _ _⟩
   have : (RingHom.ker φ).IsPrime := by
-    set_option synthInstance.maxHeartbeats 200000 in
       exact RingHom.ker_isPrime _
   have hc : (RingHom.ker φ).comap (algebraMap A (ℚ ⊗[ℤ] A)) = q := by
     ext a
@@ -408,7 +407,7 @@ theorem bijective_comp (F : Type) [Field F] [NumberField F] :
     exact IsLocalization.ringHom_ext (nonZeroDivisors (𝓞 F)) hfg
   · intro τ
     have hinj : Function.Injective τ := by
-      set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+      rw [injective_iff_map_eq_zero]
       intro x hx
       by_contra hne
       have h := Ideal.comap_ne_bot_of_integral_mem hne (show x ∈ RingHom.ker τ from hx)

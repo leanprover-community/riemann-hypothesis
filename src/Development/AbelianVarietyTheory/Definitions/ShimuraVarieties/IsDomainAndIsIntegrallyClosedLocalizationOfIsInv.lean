@@ -11,64 +11,8 @@ public import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.IsOp
 public import Mathlib.AlgebraicGeometry.Morphisms.Etale
 public import Mathlib.AlgebraicGeometry.Morphisms.FlatRank
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsUnitSmulEqOfBijectiveToSpanSingleton
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Algebra.AffineMonoid.UniqueSums
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Invariant.Basic
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.ENatToNat
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsFreeRingActionIffInertiaEqBotOfIsPrime, Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.IsDomainAndIsIntegrallyClosedLocalizationOfIsInv
@@ -260,30 +204,6 @@ theorem sum_smul_sum_smul (s : Finset (A × A)) (m : M) :
 
 end Tame
 
-section DualBasis
-
-variable {G : Type*} [Group G] [Fintype G] {A : Type*} [CommRing A] [MulSemiringAction G A]
-  {M : Type*} [AddCommGroup M] [Module A M] [DistribMulAction G M] [SMulDistribClass G A M]
-  {N : Type*} [AddCommGroup N] [Module A N] [DistribMulAction G N] [SMulDistribClass G A N]
-
-
-variable (B : Type*) [CommRing B] [Algebra B A] [SMulCommClass G B A]
-  [FaithfulSMul B A] [Algebra.IsInvariant B A G]
-  [Module B M] [IsScalarTower B A M] [SMulCommClass G B M]
-
-
-end DualBasis
-
-section TameDescent
-
-variable {G : Type*} [Group G] [Finite G] {A : Type*} [CommRing A] [MulSemiringAction G A]
-  (B : Type*) [CommRing B] [Algebra B A] [SMulCommClass G B A]
-  [FaithfulSMul B A] [Algebra.IsInvariant B A G]
-  (M : Type*) [AddCommGroup M] [Module A M] [DistribMulAction G M] [SMulDistribClass G A M]
-  [Module B M] [IsScalarTower B A M] [SMulCommClass G B M]
-
-end TameDescent
-
 section Free
 
 variable {G : Type*} [Group G] {A : Type*} [CommRing A] [MulSemiringAction G A]
@@ -361,31 +281,6 @@ variable (M : Type*) [AddCommGroup M] [Module A M] [DistribMulAction G M] [SMulD
   [Module B M] [IsScalarTower B A M] [SMulCommClass G B M]
 
 end Free
-
-section FullyFaithful
-
-variable {G : Type*} [Group G] {A : Type*} [CommRing A] [MulSemiringAction G A]
-  {B : Type*} [CommRing B] [Algebra B A]
-  {M : Type*} [AddCommGroup M] [Module A M] [DistribMulAction G M] [SMulDistribClass G A M]
-  [Module B M] [IsScalarTower B A M] [SMulCommClass G B M]
-  {N : Type*} [AddCommGroup N] [Module A N] [DistribMulAction G N] [SMulDistribClass G A N]
-  [Module B N] [IsScalarTower B A N] [SMulCommClass G B N]
-
-end FullyFaithful
-
-section BaseChange
-
-variable (G : Type*) [Group G] (A : Type*) [CommRing A] [MulSemiringAction G A]
-  (B : Type*) [CommRing B] [Algebra B A] [SMulCommClass B G A]
-  (N : Type*) [AddCommGroup N] [Module B N]
-
-variable [SMulCommClass G B A]
-
-variable [FaithfulSMul B A] [Algebra.IsInvariant B A G]
-
-
-
-end BaseChange
 
 end FreeQuotient
 

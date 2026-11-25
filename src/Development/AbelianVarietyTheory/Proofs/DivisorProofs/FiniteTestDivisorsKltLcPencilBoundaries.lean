@@ -275,9 +275,6 @@ theorem exists_resolution_supp : GlobalTheory.Published.Principalisation → ∀
     hη ((ratPull_bijective_of_birational ℂ X W p s₁ hbij₁ n).1 (h.trans (map_zero _).symm))
   obtain ⟨K₁, hK₁⟩ := (exists_isDivOfForm_and_toPic ℂ W (s₁ ≫ p) n _ hη₁).1
   let Z : Closeds W := (pullCart s₁ G).supp ⊔ (pullCart s₁ D₀).supp ⊔ K₁.supp
-  have hZ : ∀ w, w ∉ Z → w ∉ (pullCart s₁ G).supp ∧ w ∉ (pullCart s₁ D₀).supp ∧ w ∉ K₁.supp :=
-    fun w hw => ⟨fun h => hw (Or.inl (Or.inl h)), fun h => hw (Or.inl (Or.inr h)),
-      fun h => hw (Or.inr h)⟩
   have hgZ : genericPoint W ∉ Z := by
     rintro ((h | h) | h)
     · exact (pullCart s₁ G).genericPoint_notMem_supp h
@@ -458,7 +455,7 @@ theorem GlobalTheory.Discrepancy.MonoOrd.ord_eq_sum_of_monomial : ∀ {k : Type}
         rw [hother j (w i) hv h1 (fun e => hji (hw e.symm)), mul_zero]
       · intro hi
         exact absurd (Finset.mem_univ i) hi
-    · push_neg at h
+    · push Not at h
       rw [Finset.sum_eq_zero fun j _ => by rw [hother j v hv h1 (h j), mul_zero],
         hφ v hv h1 h, add_zero]
   have hreg : ∀ g : Y.functionFieldˣ,
@@ -631,7 +628,7 @@ theorem finite_test_divisors : GlobalTheory.Published.Principalisation → ∀ (
     by_cases hall : ∀ j, t j = 0
     · have := h0 hall
       linarith
-    · push_neg at hall
+    · push Not at hall
       have hpos : 0 < ∑ j, (1 + (discrep (Es j) η m g - c * (Es j).ord f)) * (t j : ℚ) := by
         obtain ⟨j0, hj0⟩ := hall
         refine Finset.sum_pos' (fun j _ => mul_nonneg ?_ ?_) ⟨j0, Finset.mem_univ _, mul_pos ?_ ?_⟩
@@ -646,7 +643,7 @@ theorem finite_test_divisors : GlobalTheory.Published.Principalisation → ∀ (
     by_cases hall : ∀ j, t j = 0
     · have := h0 hall
       linarith
-    · push_neg at hall
+    · push Not at hall
       have hnn : 0 ≤ ∑ j, (1 + (discrep (Es j) η m g - c * (Es j).ord f)) * (t j : ℚ) := by
         refine Finset.sum_nonneg fun j _ => mul_nonneg ?_ ?_
         · have := hS (Es j) (hEs j).1 (hEs j).2.1; linarith

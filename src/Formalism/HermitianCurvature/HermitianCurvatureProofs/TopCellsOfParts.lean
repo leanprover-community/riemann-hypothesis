@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.PhiBoundPartsOfRadicalParametrisation
 public import Formalism.HermitianCurvature.StatementU
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.Block3MulBlocks
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CoordinateSizesOfHypotheses
@@ -102,17 +103,17 @@ theorem continuous_block2 {α : Type*} [TopologicalSpace α] {p s : ℕ} {A : α
 theorem continuous_lowW {p : ℕ} (σ : Equiv.Perm (Fin p)) : Continuous (lowW σ) := by
   refine continuous_matrix fun a b => ?_
   by_cases h : b < a ∧ σ.symm b < σ.symm a
-  · simp only [lowW, Matrix.add_apply, Matrix.of_apply, dif_pos h]
+  · simp only [lowW, Matrix.add_apply, Matrix.of_apply, dite_eq_left h]
     exact continuous_const.add (continuous_apply _)
-  · simp only [lowW, Matrix.add_apply, Matrix.of_apply, dif_neg h]
+  · simp only [lowW, Matrix.add_apply, Matrix.of_apply, dite_eq_right h]
     exact continuous_const
 
 theorem continuous_upper {p : ℕ} : Continuous (G.upper (d := p)) := by
   refine continuous_matrix fun a b => ?_
   by_cases h : a < b
-  · simp only [G.upper, G.strictUpper, Matrix.add_apply, Matrix.of_apply, dif_pos h]
+  · simp only [G.upper, G.strictUpper, Matrix.add_apply, Matrix.of_apply, dite_eq_left h]
     exact continuous_const.add (continuous_apply _)
-  · simp only [G.upper, G.strictUpper, Matrix.add_apply, Matrix.of_apply, dif_neg h]
+  · simp only [G.upper, G.strictUpper, Matrix.add_apply, Matrix.of_apply, dite_eq_right h]
     exact continuous_const
 
 theorem continuous_subS {p : ℕ} : Continuous (subS (p := p)) := by
@@ -120,9 +121,9 @@ theorem continuous_subS {p : ℕ} : Continuous (subS (p := p)) := by
   unfold subS
   refine continuous_finsetSum _ fun i _ => ?_
   by_cases h : i.val + 1 < p
-  · simp only [dif_pos h]
+  · simp only [dite_eq_left h]
     exact continuous_id.matrix_elem _ _
-  · simp only [dif_neg h]
+  · simp only [dite_eq_right h]
     exact continuous_const
 
 theorem continuous_supS {p : ℕ} : Continuous (supS (p := p)) := by
@@ -130,41 +131,30 @@ theorem continuous_supS {p : ℕ} : Continuous (supS (p := p)) := by
   unfold supS
   refine continuous_finsetSum _ fun i _ => ?_
   by_cases h : i.val + 1 < p
-  · simp only [dif_pos h]
+  · simp only [dite_eq_left h]
     exact continuous_id.matrix_elem _ _
-  · simp only [dif_neg h]
+  · simp only [dite_eq_right h]
     exact continuous_const
 
 theorem continuous_cornerA {p s : ℕ} : Continuous (cornerA (p := p) (s := s)) := by
   show Continuous fun a : Fin s → Fin p → ℂ => cornerA a
   by_cases h : 0 < s ∧ 0 < p
-  · simp only [cornerA, dif_pos h]
+  · simp only [cornerA, dite_eq_left h]
     exact continuous_apply_apply _ _
-  · simp only [cornerA, dif_neg h]
+  · simp only [cornerA, dite_eq_right h]
     exact continuous_const
 
 theorem continuous_cornerB {p s : ℕ} : Continuous (cornerB (p := p) (s := s)) := by
   show Continuous fun b : Fin p → Fin s → ℂ => cornerB b
   by_cases h : 0 < s ∧ 0 < p
-  · simp only [cornerB, dif_pos h]
+  · simp only [cornerB, dite_eq_left h]
     exact continuous_apply_apply _ _
-  · simp only [cornerB, dif_neg h]
+  · simp only [cornerB, dite_eq_right h]
     exact continuous_const
 
 theorem continuous_psiH {p s : ℕ} (β : ℂ) (σ : Equiv.Perm (Fin p)) :
     Continuous fun η : XiH p s σ => psiH β σ η := by
-  have h1 : Continuous fun η : XiH p s σ => subS (wP σ * lowW σ η.2.1 * (wP σ)⁻¹) :=
-    continuous_subS.comp ((continuous_const.matrix_mul
-      ((continuous_lowW σ).comp (continuous_fst.comp continuous_snd))).matrix_mul continuous_const)
-  have h2 : Continuous fun η : XiH p s σ => supS (G.upper η.2.2) :=
-    continuous_supS.comp (continuous_upper.comp (continuous_snd.comp continuous_snd))
-  have h3 : Continuous fun η : XiH p s σ => cornerA η.1.1 :=
-    continuous_cornerA.comp (continuous_fst.comp continuous_fst)
-  have h4 : Continuous fun η : XiH p s σ => cornerB η.1.2 :=
-    continuous_cornerB.comp (continuous_snd.comp continuous_fst)
-  simp only [psiH, G.psi]
-  exact Complex.continuous_exp.comp (continuous_const.mul (Complex.continuous_ofReal.comp
-    (Complex.continuous_re.comp (continuous_const.mul (((h1.add h2).add h3).add h4)))))
+  apply _root_.Formalism.FourierDecayAlt.P.Ux10.cont_psiH <;> assumption
 
 theorem continuous_zjH {p s : ℕ} (σ : Equiv.Perm (Fin p)) (d : Fin p → ℂ) (CC : G.Mat s) :
     Continuous fun η : XiH p s σ => (Matrix.of.symm (ZjH σ d η CC) : G.Mat (p + s)) := by

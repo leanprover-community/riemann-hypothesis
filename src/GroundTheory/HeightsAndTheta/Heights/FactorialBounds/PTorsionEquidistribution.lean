@@ -243,17 +243,17 @@ theorem proof : TorsionEquidistribution.Statement := by
   have hWwidth : ∀ i, ∀ u ∈ W i, ∀ v ∈ W i, |u - v| < m := by
     intro i u hu v hv
     by_cases hi : i = i₀
-    · simp only [hW, hi, if_true, Finset.mem_Icc] at hu hv
+    · simp only [hW, hi, ite_true, Finset.mem_Icc] at hu hv
       have h1 : ((b - a : ℤ) : ℝ) < m := by push_cast; linarith
       have h2 : b - a < m := by exact_mod_cast h1
       rw [abs_lt]; constructor <;> omega
-    · simp only [hW, hi, if_false, Finset.mem_Ico] at hu hv
+    · simp only [hW, hi, ite_false, Finset.mem_Ico] at hu hv
       rw [abs_lt]; constructor <;> omega
   have hGsub : gridPoint (k + 1) m '' (Fintype.piFinset W) ⊆ G := by
     rintro _ ⟨j, hj, rfl⟩
     refine ⟨gridPoint_mem hm j, ?_⟩
     have hj0 := Fintype.mem_piFinset.1 (Finset.mem_coe.1 hj) i₀
-    simp only [hW, if_true, Finset.mem_Icc] at hj0
+    simp only [hW, ite_true, Finset.mem_Icc] at hj0
     have hlo : (a : ℝ) ≤ j i₀ := by exact_mod_cast hj0.1
     have hhi : (j i₀ : ℝ) ≤ b := by exact_mod_cast hj0.2
     have e : gridPoint (k + 1) m j i₀ + (c : AddCircle (1 : ℝ)) =
@@ -268,9 +268,9 @@ theorem proof : TorsionEquidistribution.Statement := by
   have hGfin : G.Finite := hTfin.subset fun x hx => hx.1
   have hGcard : (b + 1 - a).toNat * m ^ k ≤ G.ncard := by
     calc (b + 1 - a).toNat * m ^ k = (Fintype.piFinset W).card := by
-          have hW0 : W 0 = Finset.Icc a b := if_pos (Fin.ext (by simp [hi₀]))
+          have hW0 : W 0 = Finset.Icc a b := ite_eq_left (Fin.ext (by simp [hi₀]))
           have hWs : ∀ i : Fin k, W i.succ = Finset.Ico (0 : ℤ) m := fun i =>
-            if_neg (fun h => by simp [hi₀, Fin.ext_iff] at h)
+            ite_eq_right (fun h => by simp [hi₀, Fin.ext_iff] at h)
           rw [Fintype.card_piFinset, Fin.prod_univ_succ, hW0]
           simp only [hWs, Int.card_Icc, Int.card_Ico, Finset.prod_const, Finset.card_univ,
             Fintype.card_fin, sub_zero, Int.toNat_natCast]

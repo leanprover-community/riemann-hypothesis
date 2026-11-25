@@ -41,8 +41,4 @@ theorem posDef_of_sig {n : ℕ} (G : Matrix (Fin n) (Fin n) ℂ) (h : Formalism.
 
 end Formalism.IndefR.Fin.Lifts
 
-namespace Formalism.IndefR.Fin
-
-end Formalism.IndefR.Fin
-
 end

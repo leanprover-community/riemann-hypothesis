@@ -571,18 +571,6 @@ theorem cubeFaceSequence_δ (A : Cube.{v} ι R) (p : ℕ) :
 
 end Cone
 
-section FiveLemma
-
-open ComposableArrows Abelian HomologySequence
-
-variable {C ι : Type*} [Category* C] [Abelian C] {c : ComplexShape ι}
-  {S₁ S₂ : ShortComplex (HomologicalComplex C c)} (φ : S₁ ⟶ S₂)
-  (hS₁ : S₁.ShortExact) (hS₂ : S₂.ShortExact)
-
-include hS₁ hS₂
-
-end FiveLemma
-
 section Corollaries
 
 variable {ι κ : Type} [LinearOrder ι] [LinearOrder κ] {R : Type u} [Ring R]

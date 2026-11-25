@@ -34,11 +34,7 @@ theorem finrank_dual_eq_of_projective (A K : Type) [CommRing A] [IsDomain A] [Fi
 
 theorem ringOfIntegers_mem_range (A K : Type) [CommRing A] [IsDomain A] [IsIntegrallyClosed A] [Field K]
     [Algebra A K] [IsFractionRing A K] {E : Type} [Field E] [NumberField E] (σ : E →+* K) (a : 𝓞 E) :
-    σ (a : E) ∈ (algebraMap A K).range := by
-  have h1 : IsIntegral ℤ (σ (a : E)) := (RingOfIntegers.isIntegral_coe a).map σ.toIntAlgHom
-  have h2 : IsIntegral A (σ (a : E)) := h1.tower_top
-  obtain ⟨y, hy⟩ := IsIntegrallyClosed.isIntegral_iff.1 h2
-  exact ⟨y, hy⟩
+    σ (a : E) ∈ (algebraMap A K).range := by apply PositivityTheory.HtPt.Gd.emb_mem
 
 def qLin {A K : Type} [CommRing A] [Field K] [Algebra A K] {E : Type} [Field E] [NumberField E]
     {c : E ≃+* E} {p R N : ℕ} {Ω : Type} [AddCommGroup Ω] [Module K Ω] [Module A Ω] [IsScalarTower A K Ω]

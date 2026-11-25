@@ -41,7 +41,7 @@ def NotRepC : Prop :=
   ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ →
   ∀ (M : ℕ) (J : Matrix (Fin (M + 1)) (Fin (M + 1)) E), IsHermND σ J → 1 ≤ M →
     PositivityTheory.PfSWUS.HMass.IsAnisoH σ J → ∀ t : F, t ≠ 0 →
-  ∀ (T : Matrix (Fin M) (Fin M) E) (hT : ∀ a b, σ (T b a) = T a b), T.det ≠ 0 →
+  ∀ (T : Matrix (Fin M) (Fin M) E) (_ : ∀ a b, σ (T b a) = T a b), T.det ≠ 0 →
   ∀ (hT' : ∀ a b, σ (blockOne (algebraMap F E t) T b a) = blockOne (algebraMap F E t) T a b),
     (∀ x : Fin (M + 1) → E, hE σ J x x ≠ algebraMap F E t) →
     SWMeasC σ J (blockOne (algebraMap F E t) T) hT'

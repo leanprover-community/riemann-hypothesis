@@ -50,12 +50,12 @@ theorem orderAlong_eq_orderAt_of_mem_intersectionComponents {Y : Scheme.{u}} (I 
     (hC : C ∈ intersectionComponents L J) :
     orderAlong I C = orderAt I (isIrreducible_of_mem_intersectionComponents hC).genericPoint := by
   unfold orderAlong
-  exact dif_pos (isIrreducible_of_mem_intersectionComponents hC)
+  exact dite_eq_left (isIrreducible_of_mem_intersectionComponents hC)
 
 theorem orderAlong_eq_orderAt_genericPoint {Y : Scheme.{u}} (I : Y.IdealSheafData)
     {C : Set ↥Y} (h : IsIrreducible C) : orderAlong I C = orderAt I h.genericPoint := by
   unfold orderAlong
-  exact dif_pos h
+  exact dite_eq_left h
 
 theorem orderAlong_eq_of_closure_eq {Y : Scheme.{u}} (I : Y.IdealSheafData) {S : Set ↥Y}
     (hS : IsIrreducible S) {C : Set ↥Y} (hC : IsIrreducible C)
@@ -181,7 +181,7 @@ theorem orderAt_eq_sum_indicator_support (hGeom : MonomialGeometryHypotheses.{u}
         Set.indicator_of_mem hset]
     · have hset : x ∉ (↑(T.boundary.get i).support : Set ↥T.scheme) := hmem
       rw [(orderAt_eq_zero_iff_not_mem_support (T.boundary.get i) x).2 hmem,
-        Set.indicator_apply, if_neg hset]
+        Set.indicator_apply, ite_eq_right hset]
   calc orderAt T.ideal x = orderAt (T.ideal.comap U.ι) ⟨x, hx⟩ := h1.symm
     _ = ∑ i : Fin T.boundary.length,
           orderAt ((T.boundary.get i).comap U.ι ^ a i) ⟨x, hx⟩ := h2
@@ -246,7 +246,7 @@ theorem orderAt_eq_sum_supportIndices (hGeom : MonomialGeometryHypotheses.{u}) {
     have hx : x ∉ (↑(T.boundary.get j).support : Set ↥T.scheme) := by
       intro hmem
       exact hj ((mem_supportIndices T.boundary x j).2 hmem)
-    rw [Set.indicator_apply, if_neg hx, mul_zero]
+    rw [Set.indicator_apply, ite_eq_right hx, mul_zero]
   have h1 : ∀ j ∈ supportIndices T.boundary x,
       (a j : ℕ∞) *
           (↑(T.boundary.get j).support : Set ↥T.scheme).indicator (fun _ => (1 : ℕ∞)) x
@@ -254,7 +254,7 @@ theorem orderAt_eq_sum_supportIndices (hGeom : MonomialGeometryHypotheses.{u}) {
     intro j hj
     have hx : x ∈ (↑(T.boundary.get j).support : Set ↥T.scheme) :=
       (mem_supportIndices T.boundary x j).1 hj
-    rw [Set.indicator_apply, if_pos hx]
+    rw [Set.indicator_apply, ite_eq_left hx]
     exact mul_one _
   rw [orderAt_eq_sum_indicator_support hGeom hT U a hmon x hxU, Nat.cast_sum,
     ← Finset.sum_subset (Finset.subset_univ (supportIndices T.boundary x)) h2]
@@ -473,7 +473,7 @@ theorem lexMaxIndices_spec (hGeom : MonomialGeometryHypotheses.{u}) {T : MarkedI
       binaryEncode (lexMaxIndices T.ideal T.mult T.boundary)
         = maxBinaryCode T.ideal T.mult T.boundary := by
     unfold lexMaxIndices
-    rw [dif_pos hex]
+    rw [dite_eq_left hex]
     exact hex.choose_spec
   refine ⟨hchosen.1, ?_⟩
   intro J hJ hlex
@@ -559,7 +559,7 @@ theorem monomialCenter_eq_componentUnionIdeal (hGeom : MonomialGeometryHypothese
         monomialCenterSet T.ideal T.mult T.boundary) :=
     ⟨h, isOpen_preimage_monomialCenterSet hGeom hT⟩
   unfold monomialCenter
-  rw [dif_pos hc]
+  rw [dite_eq_left hc]
   exact openSublocusIdeal_eq_componentUnionIdeal T.boundary (lexMaxIndices T.ideal T.mult T.boundary)
     (centerComponents T.ideal T.mult T.boundary) _
     (by rw [monomialCenterSet_eq_sUnion_centerComponents]) _ _

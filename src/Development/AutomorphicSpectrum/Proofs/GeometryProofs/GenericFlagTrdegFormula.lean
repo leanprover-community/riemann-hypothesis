@@ -5,6 +5,8 @@ public import Mathlib.RingTheory.AlgebraicIndependent.Basic
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 public import Mathlib.RingTheory.AlgebraicIndependent.TranscendenceBasis
+import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ComponentModelWeightDimensionDictionary
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TowerComponentsCompatibleLaws
 
 @[expose] public section
 
@@ -16,17 +18,7 @@ open scoped IntermediateField.algebraAdjoinAdjoin
 
 theorem card_below_diagonal (n : ℕ) :
     Fintype.card {lk : Fin n × Fin n // lk.2 < lk.1} = n * (n - 1) / 2 := by
-  rw [show Fintype.card {lk : Fin n × Fin n // lk.2 < lk.1} = Fintype.card (Σ a : Fin n, {b : Fin n // b < a}) from
-    Fintype.card_congr (Equiv.subtypeProdEquivSigmaSubtype fun a b : Fin n => b < a), Fintype.card_sigma]
-  have h : ∀ a : Fin n, Fintype.card {b : Fin n // b < a} = a := by
-    intro a
-    rw [Fintype.card_subtype]
-    have e : (Finset.univ.filter fun b : Fin n => b < a) = Finset.Iio a := by
-      ext b
-      simp
-    rw [e, Fin.card_Iio]
-  simp only [h]
-  rw [Fin.sum_univ_eq_sum_range (fun i => i) n, Finset.sum_range_id]
+  apply _root_.GlobalTheory.Shares.WtDic.card_lower <;> assumption
 
 theorem isTranscendenceBasis_of_adjoin {k K ι : Type} [Field k] [Field K] [Algebra k K] {x : ι → K}
     (hx : AlgebraicIndependent k x)
@@ -46,19 +38,7 @@ theorem trdeg_of_isGenericFlag (Ω₀ Ω : Type) [Field Ω₀] [Field Ω] [Algeb
       (Set.range fun q : Σ σ, Fin (r σ) × Fin (r σ) => u q.1 q.2.1 q.2.2) =
       IntermediateField.adjoin Ω₀
       (Set.range fun q : Σ σ, {lk : Fin (r σ) × Fin (r σ) // lk.2 < lk.1} => u q.1 q.2.1.1 q.2.1.2) := by
-    apply le_antisymm
-    · rw [IntermediateField.adjoin_le_iff]
-      rintro _ ⟨⟨σ, l, k⟩, rfl⟩
-      rcases lt_trichotomy k l with hkl | hkl | hkl
-      · exact IntermediateField.subset_adjoin _ _ ⟨⟨σ, ⟨(l, k), hkl⟩⟩, rfl⟩
-      · subst hkl
-        simp only [hdiag]
-        exact one_mem _
-      · simp only [hup σ l k hkl]
-        exact zero_mem _
-    · rw [IntermediateField.adjoin_le_iff]
-      rintro _ ⟨⟨σ, ⟨⟨l, k⟩, hkl⟩⟩, rfl⟩
-      exact IntermediateField.subset_adjoin _ _ ⟨⟨σ, (l, k)⟩, rfl⟩
+    apply _root_.GlobalTheory.CompanionTheory.Ar.Rec.ReadEx.adjoin_all_eq_strict <;> assumption
   haveI : Module.Finite (IntermediateField.adjoin Ω₀
       (Set.range fun q : Σ σ, Fin (r σ) × Fin (r σ) => u q.1 q.2.1 q.2.2)) Ω :=
     Module.finite_of_finrank_pos (by rw [hfr]; exact hd)

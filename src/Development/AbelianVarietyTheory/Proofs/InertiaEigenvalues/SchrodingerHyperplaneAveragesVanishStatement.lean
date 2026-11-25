@@ -65,7 +65,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (FinPl idem SplitProj IsIdemOf IsProjAt adjCo grpCo frCo)
@@ -212,7 +211,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (FinPl idem SplitProj IsIdemOf IsProjAt adjCo grpCo frCo)
@@ -321,7 +319,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (FinPl idem SplitProj IsIdemOf IsProjAt adjCo grpCo frCo)
@@ -430,10 +427,10 @@ theorem termAt (R : RealDat D A Ks) (hL : R.toLevCh.Is A.μ0) (hω : R.thP_ωP) 
   have hc : (∀ PP' : R.Pg, PP' ≠ ⟨PP, hPP⟩ → R.eG g PP' = 1) ∧
       ∀ x, a' ⬝ᵥ x = 0 → ((R.eG g ⟨PP, hPP⟩ : GL (Fin D.R.r) (kP PP)) : Matrix (Fin D.R.r) (Fin D.R.r) (kP PP)).mulVec x = x := by
     by_contra hc
-    exact hg (by unfold mirC; rw [if_neg (by simpa using hc)])
+    exact hg (by unfold mirC; rw [ite_eq_right (by simpa using hc)])
   have hm : mirC R i ⟨PP, hPP⟩ a' false 1 g =
       ((R.chi ((i : ℕ) + 1) PP (Matrix.GeneralLinearGroup.det (R.eG g ⟨PP, hPP⟩)) : ℂˣ) : ℂ) := by
-    unfold mirC; rw [if_pos (by simpa using hc), zpow_one]
+    unfold mirC; rw [ite_eq_left (by simpa using hc), zpow_one]
   set g₀ := Matrix.GeneralLinearGroup.map ρk.symm.toRingHom (R.eG g ⟨PP, hPP⟩) with hg₀
   obtain ⟨hh, hhv⟩ := exists_blockGL (OI v) D.R.r D.R.t _ (rank_V i) (lift g₀) g₀ (hlift g₀)
   obtain ⟨κ, hSupp, hGf, hSt, hgrp, hred, hoth, hsc⟩ := hAct hh
@@ -483,11 +480,11 @@ theorem avg_schrodinger_hyperplane : ∀ (D : D7) (G : Type) [Group G] [Fintype 
   let κ : G → GA D (Vc D i) := fun g =>
     if hg : mirC R i ⟨PP, hPP⟩ (fun j => ρk (a j)) false 1 g ≠ 0 then (hG g hg).choose else κ₀ g
   have hκ : ∀ g (hg : mirC R i ⟨PP, hPP⟩ (fun j => ρk (a j)) false 1 g ≠ 0), κ g = (hG g hg).choose :=
-    fun g hg => dif_pos hg
+    fun g hg => dite_eq_left hg
   have hLifts : IsLifts R i t κ := fun g => by
     by_cases hg : mirC R i ⟨PP, hPP⟩ (fun j => ρk (a j)) false 1 g ≠ 0
     · rw [hκ g hg]; exact (hG g hg).choose_spec.1
-    · have : κ g = κ₀ g := dif_neg hg
+    · have : κ g = κ₀ g := dite_eq_right hg
       rw [this]; exact hκ₀ g
   have hSupp : ∀ g, mirC R i ⟨PP, hPP⟩ (fun j => ρk (a j)) false 1 g ≠ 0 → SuppIn Sb (Vc D i) (κ g) :=
     fun g hg => by rw [hκ g hg]; exact (hG g hg).choose_spec.2.1
@@ -525,7 +522,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (FinPl idem SplitProj IsIdemOf IsProjAt adjCo grpCo frCo)

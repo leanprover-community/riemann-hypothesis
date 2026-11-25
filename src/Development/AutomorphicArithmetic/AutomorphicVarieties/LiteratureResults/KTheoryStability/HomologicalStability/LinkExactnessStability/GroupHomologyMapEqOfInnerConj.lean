@@ -74,9 +74,6 @@ def conjActHom {k G : Type} [CommRing k] [Group G] (g : G) (A : Rep k G) :
     rw [← Module.End.mul_apply, ← map_mul, ← Module.End.mul_apply, ← map_mul]
     simp [mul_assoc]⟩
 
-theorem conjActHom_hom_apply {k G : Type} [CommRing k] [Group G] (g : G) (A : Rep k G) (a : A) :
-    (conjActHom g A).hom a = A.ρ g a := rfl
-
 theorem conj_map_eq_id_zero (k G : Type) [CommRing k] [Group G] (g : G) (A : Rep k G)
     (u : A ⟶ Rep.res (MulAut.conj g).toMonoidHom A) (hu : ∀ a, u.hom a = A.ρ g a) :
     groupHomology.map (MulAut.conj g).toMonoidHom u 0 = 𝟙 _ := by
@@ -135,9 +132,6 @@ noncomputable def actHom {k G : Type} [CommRing k] [Group G] (B : Rep k G) (g : 
   Rep.ofHom (X := B.V) (Y := B.V) (ρ := B.ρ) (σ := (Rep.res (MulAut.conj g).toMonoidHom B).ρ)
     ⟨B.ρ g, fun h => by ext x; simp [Rep.res]⟩
 
-lemma actHom_apply {k G : Type} [CommRing k] [Group G] (B : Rep k G) (g : G) (x : B) :
-    (actHom B g).hom x = B.ρ g x := rfl
-
 end GlobalTheory.HomStab.ConjMap
 
 open GlobalTheory.HomStab.ConjMap in
@@ -155,8 +149,6 @@ theorem GlobalTheory.HomStab.groupHomology_map_conj : ∀ (k G H : Type) [CommRi
   rw [e, groupHomology.map_comp, _root_.GlobalTheory.HomStab.conj_map_eq_id k G g n B (actHom B g) (fun a => rfl),
     Category.comp_id]
 
-section
-end
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.KTheoryStability.HomologicalStability.LinkExactnessStability.GroupHomologyMapEqOfInnerConj =====

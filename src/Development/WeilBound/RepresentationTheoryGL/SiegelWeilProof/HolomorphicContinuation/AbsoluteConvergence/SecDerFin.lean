@@ -132,7 +132,7 @@ theorem evX_eulH (H : Matrix (Fin n) (Fin n) ℂ) (R : PX m n) (z : Fin m → Fi
   rw [Fintype.sum_prod_type, Finset.sum_congr rfl fun a _ => Fintype.sum_prod_type _]
   refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun j _ => ?_
   rw [Fintype.sum_bool]
-  simp only [ept, mulR, if_true, Bool.false_eq_true, if_false, star_sum, star_mul']
+  simp only [ept, mulR, ite_true, Bool.false_eq_true, ite_false, star_sum, star_mul']
   ring_nf
 
 def trHQ (ε : Fin m → Bool) (H : Matrix (Fin n) (Fin n) ℂ) : PX m n :=
@@ -141,7 +141,7 @@ def trHQ (ε : Fin m → Bool) (H : Matrix (Fin n) (Fin n) ℂ) : PX m n :=
 theorem evX_Qb_add (ε : Fin m → Bool) (z : Fin m → Fin n → ℂ) (i j : Fin n) :
     evX (Qb ε true i j + Qb ε false i j) z = ∑ a, star (z a i) * z a j := by
 
-  simp only [Qb, evX_eq, map_add (f := _), map_sum, map_mul, eval_X, ept, if_true, Bool.false_eq_true, if_false]
+  simp only [Qb, evX_eq, map_add (f := _), map_sum, map_mul, eval_X, ept, ite_true, Bool.false_eq_true, ite_false]
   convert Finset.sum_filter_add_sum_filter_not Finset.univ (fun x => ε x = true) (fun x => star (z x i) * z x j) using 3
   ext x; simp
 
@@ -528,10 +528,6 @@ variable {m n : ℕ}
 theorem gs_norm (c : ℝ) (x : Fin m → Fin n → ℂ) : ‖gs c x‖ = Real.exp (-(c * ∑ a, ∑ i, ‖x a i‖ ^ 2)) := by
   rw [gs, Complex.norm_exp, Complex.neg_re, Complex.ofReal_re]
 
-theorem continuous_gs (c : ℝ) : Continuous (gs (m := m) (n := n) c) := by
-  unfold gs
-  fun_prop
-
 theorem integrable_poly_gs (P : PX m n) {c : ℝ} (hc : 0 < c) :
     Integrable (fun x : Fin m → Fin n → ℂ => ‖evX P x‖ * ‖gs c x‖) := by
   haveI : (volume : Measure (Fin m → Fin n → ℂ)).IsAddHaarMeasure := Measure.pi.isAddHaarMeasure _
@@ -557,7 +553,6 @@ def trH (ε : Fin m → Bool) (H : Matrix (Fin n) (Fin n) ℂ) : PX m n := ∑ i
 
 theorem evX_trH (ε : Fin m → Bool) (H : Matrix (Fin n) (Fin n) ℂ) (x : Fin m → Fin n → ℂ) :
     evX (trH ε H) x = (H * gramX ε x).trace := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp only [trH, Matrix.trace, Matrix.diag, Matrix.mul_apply, gramX, evX, map_sum, map_mul,
     MvPolynomial.eval_C]
 
@@ -566,10 +561,6 @@ theorem evX_DN (ε : Fin m → Bool) (t : ℝ) (H : Matrix (Fin n) (Fin n) ℂ) 
   have h : evX (DN ε t H R) x = (Complex.I * t) * evX (trH ε H) x * evX R x := by
     simp only [DN, trH, evX, map_mul, MvPolynomial.eval_C]
   rw [h, evX_trH]
-
-theorem continuous_gramX (ε : Fin m → Bool) : Continuous (gramX (n := n) ε) := by
-  refine continuous_pi fun i => continuous_pi fun j => ?_
-  exact continuous_evX _
 
 private theorem norm_evX_gs_exp_trace_eq_of_isHermitian (ε : Fin m → Bool) (c t : ℝ) (P : PX m n)
     {B : Matrix (Fin n) (Fin n) ℂ} (hB : B.IsHermitian) (x : Fin m → Fin n → ℂ) :

@@ -4,8 +4,6 @@ public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndBC
 
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace Formalism.MainNotions.ModuliIntegralCharts.H1.CIndBCNab
@@ -31,8 +29,7 @@ theorem const_ev {m n : ℕ} (a : Fin m → Pt S n d) (ha : ∀ j i, constantCoe
   · simp
   · intro e he
     obtain ⟨s, hs'⟩ : ∃ s, e s ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact he (Finsupp.ext h)
     simp only [Finsupp.prod, map_prod, map_pow, ha]
     rw [Finset.prod_eq_zero (Finsupp.mem_support_iff.mpr hs') (zero_pow hs'), smul_zero]

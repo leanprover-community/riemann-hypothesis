@@ -610,7 +610,7 @@ theorem t_PairSplit : PairSplit := by
     rw [← Summable.tsum_finsetSum]
     · apply tsum_congr; intro p
       rw [Finset.sum_ite_eq]
-      simp only [mem_univ, if_true]
+      simp only [mem_univ, ite_true]
       by_cases h3 : p.1 ∈ S <;> by_cases h4 : p.2 ∈ S <;>
         by_cases h5 : X.rowOf p.1 = X.rowOf p.2 <;>
         simp [Set.indicator, Terms.allPairs, h3, h4, h5]
@@ -770,16 +770,16 @@ theorem outOk (hA : J.PSDAgree) (hA2 : A5.A2) (hLP : J.LocalPullback) (hPh : J.P
     · have hS : t ∈ S.L := hL (fun q => (AddSubgroup.mem_iInf.1 hin) q)
       refine psd_congr ?_ key
       intro x hx y hy
-      simp only [hin, hS, if_true, hN x hx y hy]
+      simp only [hin, hS, ite_true, hN x hx y hy]
     · by_cases hS : t ∈ S.L
       · have := _root_.Formalism.FourierDecayAlt.P.Jx7.psd_add (psd_one hSch Y) key
         refine psd_congr ?_ this
         intro x hx y hy
-        simp only [hin, hS, if_true, if_false, hN x hx y hy]
+        simp only [hin, hS, ite_true, ite_false, hN x hx y hy]
         ring
       · refine psd_congr ?_ key
         intro x hx y hy
-        simp only [hin, hS, if_false, hN x hx y hy]
+        simp only [hin, hS, ite_false, hN x hx y hy]
 
 theorem famOk (hA : J.PSDAgree) (hA2 : A5.A2) (hLP : J.LocalPullback) (hPh : J.PhaseOk)
     (hUH : J.LocalUnitHeads) (hN0 : A5.BaseKernelOne) (h13 : ∀ s, 1 ≤ s → A5.A13 s)
@@ -1119,7 +1119,3 @@ theorem t_PairBoundFromLocal : PairBoundFromLocal := by
 end From
 
 end Formalism.FourierDecayAlt.P.GrowthPolynomialOperator
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

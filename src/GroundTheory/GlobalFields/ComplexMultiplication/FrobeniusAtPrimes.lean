@@ -136,14 +136,6 @@ theorem _root_.GroundTheory.Arith.Abelian.Isogeny.invConst_conj (g : ℂ ≃ₐ[
 
 end Descent
 
-namespace Elliptic
-
-variable {K : Type} [Field K] [NumberField K] [Algebra K ℂ] (hK : finrank ℚ K = 2)
-  [_root_.NumberField.IsTotallyComplex K]
-include hK
-
-end Elliptic
-
 end GroundTheory.Global
 end -- clump:auto
 end -- clump:auto

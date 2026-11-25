@@ -33,8 +33,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.CapInv
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.BetaSesquilinearity Formalism.FourierDecayAlt.P.JFxB Formalism.FourierDecayAlt.P.JFxE
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem groupingM {M : Type*} [AddCommGroup M] [Module ℂ M] {t N : ℕ} (κ : Fin N → ℕ) (hκ : Function.Injective κ)
     (F : (Fin t → Fin N) → M)
     (hF : ∀ (d : Fin t → Fin N) (τ : Equiv.Perm (Fin t)), F (d ∘ τ) = ((Equiv.Perm.sign τ : ℤ) : ℂ) • F d)

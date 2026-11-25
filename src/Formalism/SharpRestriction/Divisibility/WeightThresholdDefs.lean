@@ -53,11 +53,6 @@ structure Loc4 where
 
 attribute [instance] Loc4.instCHr
 
-section Fam
-variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (PL : DIV.Align.PrinLevF Fm)
-
-end Fam
-
 end Formalism.MainNotions.WeightThresholdDefs
 
 end

@@ -32,8 +32,7 @@ local notation3 "K⁺" => maximalRealSubfield K
 
 theorem cases (g : K ≃ₐ[K⁺] K) : g = 1 ∨ g = IsCMField.complexConj K := by
   classical
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have h2 : Nat.card (K ≃ₐ[K⁺] K) = 2 := by
     rw [IsGalois.card_aut_eq_finrank]
     exact Algebra.IsQuadraticExtension.finrank_eq_two _ _

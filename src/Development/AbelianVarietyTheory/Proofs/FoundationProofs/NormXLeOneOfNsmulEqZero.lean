@@ -412,12 +412,8 @@ lemma norm_sub_le_max' (a b : K) : ‖a - b‖ ≤ max ‖a‖ ‖b‖ := by
   have := norm_add_le_max a (-b)
   rwa [norm_neg, ← sub_eq_add_neg] at this
 
-alias norm_add_eq_of_lt := _root_.GlobalTheory.UltrametricLineBounds.norm_add_of_lt
-
 lemma norm_sum_three_le (a b c : K) : ‖a + b + c‖ ≤ max (max ‖a‖ ‖b‖) ‖c‖ :=
   (norm_add_le_max _ _).trans (max_le_max (norm_add_le_max _ _) le_rfl)
-
-alias norm_two_le := _root_.GlobalTheory.UltrametricLineBounds.norm_two_le
 
 alias norm_three_le := _root_.GlobalTheory.UltrametricLineBounds.norm_three_le
 

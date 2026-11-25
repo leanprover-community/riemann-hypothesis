@@ -35,7 +35,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open scoped TensorProduct Matrix
 open scoped GlobalTheory.VacAny
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 
@@ -324,7 +323,7 @@ theorem GlobalTheory.InertPsi.exists_field_data : ∀ (F E : Type) [Field F] [Nu
     obtain ⟨y, hy, hne⟩ : ∃ y ∈ v.adicCompletionIntegers F,
         psiLoc B.ψ v ((algebraMap F (Fv F v) s)⁻¹ * y) ≠ 1 := by
       have := mt (hψ _).1 hs
-      push_neg at this
+      push Not at this
       exact this
     have ht : ∀ a, toCompl h (a ⊗ₜ[F] (1 : E)) = complMap h a := fun a => by
       rw [toCompl_tmul, map_one, mul_one]

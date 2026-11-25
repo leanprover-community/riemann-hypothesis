@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.CrystallineToDeRhamInjective
 public import Mathlib.Data.Nat.Prime.Defs
 public import Mathlib.RingTheory.Valuation.Basic
 import Mathlib.Algebra.Order.Star.Int
@@ -18,11 +19,7 @@ namespace Formalism.MainNotions.N.Pv.LocalLengthBound.Val
 variable {LL : Type} [Field LL] (v : AddValuation LL (WithTop ℚ))
 
 theorem v_natCast_nonneg (m : ℕ) : 0 ≤ v (m : LL) := by
-  induction m with
-  | zero => simp [AddValuation.map_zero]
-  | succ n ih =>
-    rw [Nat.cast_succ]
-    exact v.map_le_add ih v.map_one.symm.le
+  apply _root_.Formalism.MainNotions.N.Ln03.Pf.ValuationPow.v_nat_nonneg <;> assumption
 
 private theorem withTop_zero_lt_one : (0 : WithTop ℚ) < 1 := by
   first
@@ -33,19 +30,11 @@ private theorem withTop_rat_not_one_add_one_le_one : ¬ ((1 : WithTop ℚ) + 1 �
   | (rw [← WithTop.coe_one, ← WithTop.coe_add, WithTop.coe_le_coe]; norm_num)
 
 private theorem le_v_sum_range_of_forall (f : ℕ → LL) (g : WithTop ℚ) (hf : ∀ i, g ≤ v (f i)) (m : ℕ) :
-    g ≤ v (∑ i ∈ Finset.range m, f i) := by
-  induction m with
-  | zero => simp [AddValuation.map_zero]
-  | succ n ih =>
-    rw [Finset.sum_range_succ]
-    exact v.map_le_add ih (hf n)
+    g ≤ v (∑ i ∈ Finset.range m, f i) :=
+  v.map_le_sum fun i _ => hf i
 
 theorem v_intCast_nonneg (z : ℤ) : 0 ≤ v (z : LL) := by
-  obtain ⟨n, rfl | rfl⟩ := Int.eq_nat_or_neg z
-  · first
-    | (rw [Int.cast_natCast]; exact v_natCast_nonneg v n)
-  · first
-    | (rw [Int.cast_neg, Int.cast_natCast, v.map_neg]; exact v_natCast_nonneg v n)
+  apply _root_.Formalism.MainNotions.N.Ln03.Pf.ValuationPow.v_int_nonneg <;> assumption
 
 variable {p : ℕ} (hp : p.Prime) (hv : v (p : LL) = 1)
 include hp hv

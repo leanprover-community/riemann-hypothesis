@@ -7,8 +7,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Heights₂.Heights.RestTerms
 
 open MvPolynomial Finset
@@ -45,7 +43,7 @@ theorem flagIntegralReal_eq {f N : ℕ} (G : MvPolynomial (Fin f × Fin N) ℝ) 
   rw [sum_comm]
   refine sum_congr rfl fun w _ => ?_
   simp only [mul_ite, ite_mul, mul_one, mul_zero, zero_mul]
-  rw [sum_ite_eq, if_pos (mem_union_right _ (mem_image_of_mem _ (mem_univ w))),
+  rw [sum_ite_eq, ite_eq_left (mem_union_right _ (mem_image_of_mem _ (mem_univ w))),
     prod_factorial_stairExp]
   ring
 
@@ -150,7 +148,7 @@ theorem ddConst_monomial_rho (f j k : ℕ) :
   rw [ddConst_eq, Fintype.sum_eq_single 1]
   · simp [stairExp_one, permSign_one]
   · intro w hw
-    rw [coeff_monomial, if_neg (fun h => hw (eq_one_of_stairExp_eq w h.symm)), mul_zero]
+    rw [coeff_monomial, ite_eq_right (fun h => hw (eq_one_of_stairExp_eq w h.symm)), mul_zero]
 
 end FlagEq
 

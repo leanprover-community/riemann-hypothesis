@@ -41,7 +41,7 @@ theorem raise_lower_commutator_on_weight {E : GLOps n (KK O) V} (hE : IsGLRep E)
       sub_eq_zero] at h
     exact h
   have hc := congrArg (fun f : Module.End (KK O) V => f z) (hE.1 a b b a)
-  simp only [LinearMap.sub_apply, Module.End.mul_apply, if_true] at hc
+  simp only [LinearMap.sub_apply, Module.End.mul_apply, ite_true] at hc
   rw [hw a, hw b] at hc
   rw [← sub_eq_iff_eq_add', hc, Int.cast_sub, sub_smul]
 

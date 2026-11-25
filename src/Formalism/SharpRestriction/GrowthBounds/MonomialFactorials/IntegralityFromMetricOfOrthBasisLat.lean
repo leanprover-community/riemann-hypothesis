@@ -85,21 +85,21 @@ theorem cmap_glAct {N r : ℕ} (LL : ChainLetters N) (j : ℕ) (c d : Fin r) (y 
   show cmap f _ = _
   by_cases hi : (i : ℕ) < j
   · have hi' : i ∈ {i : Fin N | (i : ℕ) < j} := hi
-    rw [if_pos hi', if_pos hi]
+    rw [ite_eq_left hi', ite_eq_left hi]
     by_cases hv : LL.vec i = true
     · have hv' : (gmL LL).vec i = true := hv
       have hv'' : (⟨LL.vec⟩ : Letters (Fin N)).vec i = true := hv
-      rw [if_pos hv'', if_pos hv']
+      rw [ite_eq_left hv'', ite_eq_left hv']
       simp only [LinearMap.coe_comp, Function.comp_apply, LinearMap.mulLeft_apply]
       exact cmap_X_pderiv f _ _ y
     · have hv' : ¬ (gmL LL).vec i = true := hv
       have hv'' : ¬ (⟨LL.vec⟩ : Letters (Fin N)).vec i = true := hv
-      rw [if_neg hv'', if_neg hv']
+      rw [ite_eq_right hv'', ite_eq_right hv']
       simp only [LinearMap.neg_apply, LinearMap.coe_comp, Function.comp_apply, LinearMap.mulLeft_apply]
       rw [cmap_neg]
       exact congrArg Neg.neg (cmap_X_pderiv f _ _ y)
   · have hi' : i ∉ {i : Fin N | (i : ℕ) < j} := hi
-    rw [if_neg hi', if_neg hi]
+    rw [ite_eq_right hi', ite_eq_right hi]
     simp only [LinearMap.zero_apply]
     exact cmap_zero f
 

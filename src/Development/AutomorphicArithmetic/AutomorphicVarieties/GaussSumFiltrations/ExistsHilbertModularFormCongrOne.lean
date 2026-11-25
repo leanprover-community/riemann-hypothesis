@@ -1,5 +1,7 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.HolomorphicIrreducibility.ExpUnique
+import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaussSumFiltrations.EvenPos
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.IsCondAt
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaussSumFiltrations.HasQExpansionAffineTranslateCoeff
@@ -245,24 +247,8 @@ theorem count_span_int (v : HeightOneSpectrum (𝓞 K)) {r : 𝓞 K} (hr : r ≠
 
 theorem count_span (v : HeightOneSpectrum (𝓞 K)) {x : K} (hx : x ≠ 0) :
     FractionalIdeal.count K v (FractionalIdeal.spanSingleton (𝓞 K)⁰ x) = -WithZero.log (v.valuation K x) := by
-  obtain ⟨⟨r, s⟩, rfl⟩ := IsLocalization.mk'_surjective (𝓞 K)⁰ x
-  have hs : (s : 𝓞 K) ≠ 0 := nonZeroDivisors.coe_ne_zero s
-  have hr : r ≠ 0 := by
-    rintro rfl
-    exact hx (by simp)
-  have hs' : algebraMap (𝓞 K) K s ≠ 0 := (map_ne_zero_iff _ (IsFractionRing.injective (𝓞 K) K)).mpr hs
-  have e : IsLocalization.mk' K r s * algebraMap (𝓞 K) K s = algebraMap (𝓞 K) K r :=
-    IsLocalization.mk'_spec K r s
-  have e2 := congrArg (FractionalIdeal.count K v) (congrArg (FractionalIdeal.spanSingleton (𝓞 K)⁰) e)
-  rw [← FractionalIdeal.spanSingleton_mul_spanSingleton, FractionalIdeal.count_mul K v
-    ((FractionalIdeal.spanSingleton_ne_zero_iff).mpr hx) ((FractionalIdeal.spanSingleton_ne_zero_iff).mpr hs'),
-    count_span_int v hs, count_span_int v hr] at e2
-  have e3 := congrArg (v.valuation K) e
-  rw [map_mul] at e3
-  have hv1 : v.valuation K (algebraMap (𝓞 K) K s) ≠ 0 := (map_ne_zero _).mpr hs'
-  have hv2 : v.valuation K (IsLocalization.mk' K r s) ≠ 0 := (map_ne_zero _).mpr hx
-  rw [← e3, WithZero.log_mul hv2 hv1] at e2
-  linarith
+ intros
+ apply @_root_.ReciprocityTheory.Neutral.Bridge.HCFR.count_spanSingleton <;> assumption
 
 theorem exists_ideal (y : (Af K)ˣ) : ∃ I : FractionalIdeal (𝓞 K)⁰ K, I ≠ 0 ∧
     ∀ w, FractionalIdeal.count K w I = -WithZero.log (Valued.v (pLoc K w (y : Af K))) := by
@@ -338,17 +324,11 @@ namespace GlobalTheory.HilbertThetaSeries.LiftExp
 variable {F : Type} [Field F] [NumberField F]
 
 theorem genD_eq {y : Af F} {𝔪 𝔫 : Ideal (𝓞 F)} (h : GenD y 𝔪) (h' : GenD y 𝔫) : 𝔪 = 𝔫 := by
-  have hc : ∀ w : HeightOneSpectrum (𝓞 F), ordI w 𝔪 = ordI w 𝔫 := fun w => by
-    have := (h.2 w).symm.trans (h'.2 w)
-    rw [WithZero.exp_inj] at this
-    omega
-  rw [← Ideal.finprod_heightOneSpectrum_factorization h.1, ← Ideal.finprod_heightOneSpectrum_factorization h'.1]
-  refine finprod_congr fun w => ?_
-  exact congrArg (fun n => w.asIdeal ^ n) (hc w)
+  apply _root_.UpperTheory.V.Sd.genD_unique <;> assumption
 
 theorem coefAt_of_genD {y : Af F} {𝔪 : Ideal (𝓞 F)} (h : GenD y 𝔪) (a : Ideal (𝓞 F) → ℂ) : coefAt a y = a 𝔪 := by
   have h' : ∃ 𝔪, GenD y 𝔪 := ⟨𝔪, h⟩
-  rw [coefAt, dif_pos h', genD_eq h'.choose_spec h]
+  rw [coefAt, dite_eq_left h', genD_eq h'.choose_spec h]
 
 theorem ordI_eventually {I : Ideal (𝓞 F)} (hI : I ≠ ⊥) :
     ∀ᶠ w : HeightOneSpectrum (𝓞 F) in Filter.cofinite, ordI w I = 0 := by
@@ -357,19 +337,7 @@ theorem ordI_eventually {I : Ideal (𝓞 F)} (hI : I ≠ ⊥) :
   exact_mod_cast hw
 
 theorem exists_unit_genD {𝔪 : Ideal (𝓞 F)} (h : 𝔪 ≠ ⊥) : ∃ y : (Af F)ˣ, GenD (y : Af F) 𝔪 := by
-  choose t ht using fun w : HeightOneSpectrum (𝓞 F) => w.valuedAdicCompletion_surjective F
-    (WithZero.exp ((ordI w (differentIdeal ℤ (𝓞 F)) : ℤ) - (ordI w 𝔪 : ℤ)))
-  have hf : ∀ᶠ w in Filter.cofinite, Valued.v (t w) = 1 := by
-    filter_upwards [ordI_eventually h, ordI_eventually (I := differentIdeal ℤ (𝓞 F)) differentIdeal_ne_bot] with w h1 h2
-    rw [ht, h1, h2]; simp
-  let a : FiniteAdeleRing (𝓞 F) F := ⟨t, by
-    filter_upwards [hf] with w hw
-    exact (HeightOneSpectrum.mem_adicCompletionIntegers _ _ _).2 hw.le⟩
-  have hu : IsUnit a := FiniteAdeleRing.isUnit_iff.2 ⟨fun w hw => by
-    have := ht w
-    rw [show t w = 0 from hw, map_zero] at this
-    exact WithZero.exp_ne_zero this.symm, hf⟩
-  exact ⟨hu.unit, h, fun w => ht w⟩
+  apply _root_.UpperTheory.V.Sd.exists_genD <;> assumption
 
 theorem aff_mul {R : Type} [CommRing R] (y z : Rˣ) (x : R) : aff (y * z) x = aff y 0 * aff z (((y⁻¹ : Rˣ) : R) * x) := by
   apply Units.ext; ext i j; fin_cases i <;> fin_cases j <;> simp [aff, Matrix.mul_apply, Fin.sum_univ_succ]
@@ -553,7 +521,7 @@ theorem GlobalTheory.HilbertThetaSeries.lift_hasExp : ∀ (F : Type) [Field F] [
   intro F _ _ _ k Ψ φ a hΨ hφ ha
   let c : Ideal (𝓞 F) → ℂ := fun 𝔪 => if h : 𝔪 ≠ ⊥ then a (exists_unit_genD h).choose 1 else 0
   have hc : ∀ 𝔪, 𝔪 ≠ ⊥ → ∃ Y : (Af F)ˣ, GenD (Y : Af F) 𝔪 ∧ c 𝔪 = a Y 1 := fun 𝔪 h =>
-    ⟨_, (exists_unit_genD h).choose_spec, dif_pos h⟩
+    ⟨_, (exists_unit_genD h).choose_spec, dite_eq_left h⟩
   refine ⟨c, fun x y hy yf => ?_, fun 𝔪 h => (hc 𝔪 h).imp fun _ h => h.2⟩
   have hP : 0 < ∏ v, y.val v := Finset.prod_pos fun v _ => hy v
   have hP' : (((∏ v, y.val v) ^ ((k : ℝ) / 2) : ℝ) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 (Real.rpow_pos_of_pos hP _).ne'

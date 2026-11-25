@@ -66,7 +66,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 
@@ -130,7 +129,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 
@@ -329,7 +327,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 
@@ -418,7 +415,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 
@@ -635,7 +631,7 @@ theorem twCent_eq_map : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (
   intro E _ _ _ w hw K e he a B hP β ε hε hβ b δ hG
   have hth : thL a w = thetaGL a (cj w) := by
     unfold thL
-    rw [if_neg hw]
+    rw [ite_eq_right hw]
   rw [hth]
   have hs := sf_crd e b (cj w) he _ (β : B.A) hG
   ext g
@@ -694,7 +690,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 noncomputable section
 
 namespace GlobalTheory.TwOrbUnimod
@@ -873,7 +868,7 @@ theorem twist_integral_iff_unimodular : ∀ (E : Type) [Field E] [NumberField E]
     rfl
   have step1 : q⁻¹ * δ * thL a w q ∈ GlobalTheory.LFun.KGL w (n := a) ↔ Yg ∈ GlobalTheory.LFun.KGL w (n := a) := by
     have hth : thL a w q = PhiU a F * invT a F (GeneralLinearGroup.map c q) * (PhiU a F)⁻¹ := by
-      simp only [GlobalTheory.BCT.thL, if_neg hw]
+      simp only [GlobalTheory.BCT.thL, ite_eq_right hw]
       rfl
     have hP : PhiU a F ∈ GlobalTheory.LFun.KGL w (n := a) := PhiU_mem _
     rw [hth, show q⁻¹ * δ * (PhiU a F * invT a F (GeneralLinearGroup.map c q) * (PhiU a F)⁻¹) =
@@ -963,7 +958,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 
@@ -1094,8 +1088,8 @@ theorem GlobalTheory.TwOrbLat.twOrb_unit_eq_orbSum : ∀ (E : Type) [Field E] [N
       rw [one_mul] at this
       simp only [Set.indicator_apply, SetLike.mem_coe, Pi.one_apply]
       by_cases h : P y
-      · rw [if_pos h, if_pos ((this.2 h))]
-      · rw [if_neg h, if_neg (fun h' => h (this.1 h'))]
+      · rw [ite_eq_left h, ite_eq_left ((this.2 h))]
+      · rw [ite_eq_right h, ite_eq_right (fun h' => h (this.1 h'))]
     unfold GlobalTheory.TwOrbConj.summand
     rw [hconst, avg_const, hRel]
     split_ifs <;> simp

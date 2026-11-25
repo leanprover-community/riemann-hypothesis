@@ -184,8 +184,6 @@ open GlobalTheory.QCoh (pullbackSections)
 open ReciprocityTheory.ChartRestriction.G.Pdiv (specO ptMap dualScale)
 open scoped CategoryTheory.Obj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.LocM
 
 theorem cotMap_list_prod {S : Scheme.{0}} {T G : Over S} [GrpObj G] [QuasiSeparated G.hom] {s : 𝟙_ (Over S) ⟶ T} :
@@ -358,14 +356,6 @@ theorem tanLin_injective (h : ⊤ ≤ x ⁻¹ᵁ V) {n : ℕ} (s : Fin n → Γ(
     ⟨isTan_tv w, fun _ => tanEv_resM t _ hU e _⟩)
 
 end Lin
-
-section Phi
-
-variable {X X' X₀ Z : Scheme.{0}} {t : SAB H X} {t' : SAB H X'} {t₀ : SAB H X₀} {τ : X ⟶ X₀} {τ' : X' ⟶ X₀}
-  (mu : SABMap t t₀ τ) (mu' : SABMap t' t₀ τ') {π : Z ⟶ X} {g : Z ⟶ X'} (e : g ≫ τ' = π ≫ τ)
-  {S : Type} [CommRing S]
-
-end Phi
 
 end GlobalTheory.GrCl
 end -- clump:auto

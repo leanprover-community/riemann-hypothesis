@@ -54,9 +54,7 @@ theorem csDual_sig_mem (σ : E →ₐ[F] E) {s : 𝒜} (hs : s ∈ 𝒮) :
 
 theorem csDual_hform_incl (σ : E →ₐ[F] E) (J : Matrix n n E) (y x : n → E) :
     hform (sigR σ (FiniteAdeleRing (𝓞 F) F)) (J.map ι) (fun i => ι (y i)) (fun i => ι (x i)) =
-      ι (hform (σ : E →+* E) J y x) := by
-
-  simp [hform, csDual_sig_incl, map_sum, map_mul]
+      ι (hform (σ : E →+* E) J y x) := Formalism.UG.P.csScale_hform_incl σ J y x
 
 theorem csDual_span (σ : E →ₐ[F] E) (J : Matrix n n E) (M : Submodule (𝓞 E) (n → E)) (x : n → E)
     (hx : ∀ y ∈ M, hform (σ : E →+* E) J y x ∈ (algebraMap (𝓞 E) E).range)

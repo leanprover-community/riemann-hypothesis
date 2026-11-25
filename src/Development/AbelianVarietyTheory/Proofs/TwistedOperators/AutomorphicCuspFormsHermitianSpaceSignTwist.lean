@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockVectorNegHermitianSpaceConjMonomial
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CartFrSgn
 import Development.AbelianVarietyTheory.Definitions.Foundations.OfInfProjInfMulOfFinProjFin
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SignedUnitaryGroupCompatStatement
@@ -59,15 +60,7 @@ theorem gramAt_sgn_true (V : HSp D) (τ : D.what₂.Tau) : gramAt D (sgn true V)
 
 theorem inv_neg_sq {k : Type} [Fintype k] [DecidableEq k] {R : Type} [CommRing R] (A : Matrix k k R) :
     (-A)⁻¹ = -A⁻¹ := by
-  by_cases h : IsUnit A.det
-  · have e : ((-1 : Rˣ) • A) = -A := by simp
-    rw [← e, Matrix.inv_smul' (A := A) (k := (-1 : Rˣ)) h]
-    simp
-  · have h' : ¬ IsUnit (-A).det := by
-      rw [Matrix.det_neg]
-      intro hu
-      exact h (IsUnit.mul_iff.1 hu).2
-    rw [Matrix.nonsing_inv_apply_not_isUnit _ h, Matrix.nonsing_inv_apply_not_isUnit _ h', neg_zero]
+  apply _root_.GlobalTheory.FockConj.inv_neg_mat <;> assumption
 
 theorem conjAt_sgn_true (V : HSp D) (τ : D.what₂.Tau) (Z : Matrix (Fin V.rank) (Fin V.rank) ℂ) :
     conjAt (sgn true V) τ Z = conjAt V τ Z := by

@@ -15,53 +15,7 @@ public import Mathlib.Analysis.Complex.ExponentialBounds
 public import Mathlib.Algebra.Order.Field.GeomSum
 public import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 public import Mathlib.Algebra.BigOperators.Field
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Formalism.SubspaceCounting.Statement
-import Mathlib.Tactic.Lemma
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -390,43 +344,30 @@ theorem UpperTheory.BernoulliSumsFrobeniusOrbits.shares_of_counts :
     rw [← h1]
     push_cast
     ring
-  have hcardA0 : (Finset.univ.filter fun x : A => x ∈ A0).card = n := by
-    rw [hn_def, Nat.card_eq_fintype_card, Fintype.card_subtype]
-  have hsumN : ∑ γ : A, (T.filter fun t => t - γ ∈ A0).card = T.card * n := by
-    simp_rw [Finset.card_filter]
-    rw [Finset.sum_comm]
-    have inner : ∀ t : A, (∑ γ : A, if t - γ ∈ A0 then 1 else 0) = n := by
-      intro t
-      have h2 := Equiv.sum_comp (Equiv.subLeft t) (fun x => if x ∈ A0 then (1:ℕ) else 0)
-      simp only [Equiv.subLeft_apply] at h2
-      rw [h2, ← Finset.card_filter]
-      exact hcardA0
-    rw [Finset.sum_congr rfl (fun t _ => inner t), Finset.sum_const, smul_eq_mul]
-  have hsum : (∑ γ : A, ((T.filter fun t => t - γ ∈ A0).card : ℝ)) = n * T.card := by
-    have h3 := congrArg (Nat.cast : ℕ → ℝ) hsumN
-    push_cast at h3
-    rw [h3]
+  let q : A → A ⧸ A0 := fun a => (a : A ⧸ A0)
+  let observed (c : A ⧸ A0) : ℝ := (T.filter fun t => q t = c).card
+  let expected (c : A ⧸ A0) : ℝ := 3 / 4 * δ * n + if c = 0 then δ * n / 4 else 0
+  have hIndex : Fintype.card (A ⧸ A0) = m := Nat.card_eq_fintype_card.symm
+  have hObserved : ∑ c, observed c = (T.card : ℝ) := by
+    simpa only [observed, Nat.cast_sum] using congrArg (Nat.cast : ℕ → ℝ)
+      (Finset.card_eq_sum_card_fiberwise (f := q) (s := T) (t := univ)
+        (fun _ _ => Finset.mem_univ _)).symm
+  have hExpected : ∑ c, expected c = (3 * m + 1) / 4 * δ * n := by
+    simp [expected, Finset.sum_add_distrib, hIndex, nsmul_eq_mul]
     ring
-  have hf : (∑ γ : A, (if γ ∈ A0 then δ else 3 / 4 * δ) * (n:ℝ)) = (3 * m + 1) / 4 * δ * n * n := by
-    have hpt : ∀ γ : A, (if γ ∈ A0 then δ else 3 / 4 * δ) * (n:ℝ)
-        = 3 / 4 * δ * n + (if γ ∈ A0 then δ / 4 * n else 0) := by
-      intro γ
-      split_ifs <;> ring
-    rw [Finset.sum_congr rfl (fun γ _ => hpt γ), Finset.sum_add_distrib, ← Finset.sum_filter,
-      Finset.sum_const, Finset.sum_const, hcardA0, Finset.card_univ, nsmul_eq_mul, nsmul_eq_mul, hA]
-    ring
-  have hdiff : |(n:ℝ) * T.card - (3 * m + 1) / 4 * δ * n * n| ≤ m * n * D := by
-    rw [← hsum, ← hf, ← Finset.sum_sub_distrib]
-    calc _ ≤ ∑ γ : A, |((T.filter fun t => t - γ ∈ A0).card : ℝ) - (if γ ∈ A0 then δ else 3 / 4 * δ) * n| :=
-          Finset.abs_sum_le_sum_abs _ _
-      _ ≤ ∑ γ : A, D := Finset.sum_le_sum fun γ _ => hc γ
-      _ = m * n * D := by rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, hA]
-  have hn0 : (0:ℝ) < n := by linarith
+  have hClass (c : A ⧸ A0) : |observed c - expected c| ≤ D := by
+    obtain ⟨a, rfl⟩ := QuotientAddGroup.mk_surjective c
+    dsimp only [observed, expected, q]
+    simp only [QuotientAddGroup.eq_iff_sub_mem, QuotientAddGroup.eq_zero_iff]
+    split_ifs with ha
+    · simpa [ha, show 3 / 4 * δ * n + δ * n / 4 = δ * n by ring] using hc a
+    · simpa [ha] using hc a
   have hT : |(T.card : ℝ) - (3 * m + 1) / 4 * δ * n| ≤ m * D := by
-    have he : (n:ℝ) * T.card - (3 * m + 1) / 4 * δ * n * n = n * ((T.card : ℝ) - (3 * m + 1) / 4 * δ * n) := by ring
-    rw [he, abs_mul, abs_of_pos hn0] at hdiff
-    have h4 : (n:ℝ) * |(T.card : ℝ) - (3 * m + 1) / 4 * δ * n| ≤ n * (m * D) := by linarith
-    exact le_of_mul_le_mul_left h4 hn0
+    rw [← hObserved, ← hExpected, ← Finset.sum_sub_distrib]
+    calc _ ≤ ∑ c, |observed c - expected c| := Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ _ : A ⧸ A0, D := Finset.sum_le_sum fun c _ => hClass c
+      _ = _ := by simp [hIndex, nsmul_eq_mul]
+  have hn0 : (0 : ℝ) < n := by linarith
   have hδn : 0 < δ * n := mul_pos hδ hn0
   have hηδ : η * (δ * n) ≤ δ * n := mul_le_of_le_one_left (le_of_lt hδn) hη
   have hmD : 0 ≤ (m:ℝ) * D := mul_nonneg (by linarith) hD

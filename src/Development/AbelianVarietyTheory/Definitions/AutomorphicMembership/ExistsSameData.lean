@@ -1,40 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.SignAtBasePlaceEqEmbedding
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 public import Lean.Meta.Injective
 
 @[expose] public section
@@ -611,7 +577,7 @@ structure RestY (Y₀ : NExp R H rows₀ LL₀ N₀ X₀) (what₂ : Rows.Data R
   eAlg_def : ∀ i b (g : G0g N₀), (Y₀.eAlg i b).coeff g =
     IsFractionRing.map (A := X₀.O0 i) (B := X₀.O i) (K := FractionRing (X₀.O0 i))
       (L := FractionRing (X₀.O i)) (X₀.O_inj i) ((if b then x.emb0 i else x.emb0b i) (eLL0 g))
-  twPsi : ∀ i j b k (ψ : G H.E N₀.Om →* (X₀.Ok i k)ˣ),
+  twPsi : ∀ i j b k (_ : G H.E N₀.Om →* (X₀.Ok i k)ˣ),
     Y₀.Fm i j b →ₗ[X₀.O i] (X₀.Ok i k ⊗[X₀.O i] Y₀.Fm i j b)
   twPsi_one : ∀ i j b k (f : Y₀.Fm i j b), twPsi i j b k 1 f = (1 : X₀.Ok i k) ⊗ₜ[X₀.O i] f
   twDel : ∀ i j b (Q : Finset (PlE H)) (M : ℕ),

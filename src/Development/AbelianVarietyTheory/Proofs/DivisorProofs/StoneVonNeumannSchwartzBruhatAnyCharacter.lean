@@ -69,8 +69,7 @@ namespace GlobalTheory.CondRescale
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
 theorem norm_le_one_of_pow_near (z : ℂ) (h : ∀ n : ℕ, ‖z ^ n - 1‖ < 1) : ‖z‖ ≤ 1 := by
-  by_contra hz
-  push_neg at hz
+  by_contra! hz
   obtain ⟨n, hn⟩ := pow_unbounded_of_one_lt (2 : ℝ) hz
   have h1 := h n
   have h2 : ‖z ^ n‖ ≤ ‖z ^ n - 1‖ + ‖(1 : ℂ)‖ := by
@@ -110,16 +109,14 @@ theorem exists_rescale_conductor_integers [CharZero k]
   classical
   let P : k → Prop := fun a => ∀ y ∈ 𝒪[k], ψ0 (a * y) = 1
   obtain ⟨t, ht⟩ : ∃ t : k, ψ0 t ≠ 1 := by
-    by_contra hall
-    push_neg at hall
+    by_contra! hall
     exact hne (AddChar.ext _ _ fun s => by simpa using hall s)
   have ht0 : t ≠ 0 := by
     rintro rfl
     exact ht (AddChar.map_zero_eq_one _)
   have hbd : ∀ a, P a → a ≠ 0 → valuation k a < valuation k t := by
     intro a ha ha0
-    by_contra hle
-    push_neg at hle
+    by_contra! hle
     apply ht
     have hmem : t / a ∈ 𝒪[k] := by
       rw [Valuation.mem_integer_iff, map_div₀]
@@ -250,7 +247,7 @@ theorem stoneVonNeumann_any_char :
     intro a Y z
     simp only [Matrix.smul_apply, smul_eq_mul, Finset.mul_sum]
     exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
-  obtain ⟨ι, hbij, h1, h2⟩ := GlobalTheory.T.stoneVonNeumann_schwartzBruhat_transverseLagrangians (κ := κ) (n := n) (d := d) (ψ0.mulShift c) hψ1
+  obtain ⟨ι, hbij, h1, h2⟩ := _root_.GlobalTheory.StoneVN.intertwiner_matrix (κ := κ) (n := n) (d := d) (ψ0.mulShift c) hψ1
     (fun x => by simpa only [AddChar.mulShift_apply] using hcond x)
     ((scaleSnd c⁻¹).comp wT) ((scaleSnd c⁻¹).comp (wM.comp S))
     (fun Y Y' => by

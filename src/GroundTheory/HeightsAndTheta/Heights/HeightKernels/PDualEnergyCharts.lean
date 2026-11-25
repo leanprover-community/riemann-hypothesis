@@ -80,9 +80,9 @@ theorem eq_planePt (b : Module.Basis T ℤ (dualLattice F))
     funext ⟨τ, j⟩
     by_cases hτ : τ = σ
     · subst hτ
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       rfl
-    · rw [if_neg hτ]
+    · rw [ite_eq_right hτ]
       exact hσ τ hτ j
   have h1 := (dualRecover b hb).injective hW
   funext ⟨u, t⟩
@@ -101,7 +101,7 @@ theorem h_planePt (b : Module.Basis T ℤ (dualLattice F))
     simp
   · intro τ _ hτ
     rw [recover_planePt]
-    simp only [hτ, if_false]
+    simp only [hτ, ite_false]
     show (star (0 : Fin (D + 1) → ℂ) ⬝ᵥ (F.metric τ *ᵥ (0 : Fin (D + 1) → ℂ))).re = 0
     simp
   · simp

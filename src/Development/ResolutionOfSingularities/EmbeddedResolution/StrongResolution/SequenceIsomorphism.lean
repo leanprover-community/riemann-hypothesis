@@ -64,7 +64,6 @@ private theorem vanishingIdeal_preimage_fromSpec_of_isIso {Y Y' : Scheme.{u}} (�
     PrimeSpectrum.vanishingIdeal (⇑hV.fromSpec ⁻¹' (⇑ψ ⁻¹' T))
       = Ideal.map (ConcreteCategory.hom (ψ.app (U : Y.Opens)))
           (PrimeSpectrum.vanishingIdeal (⇑U.2.fromSpec ⁻¹' T)) := by
-  have : IsIso (ψ.app (U : Y.Opens)) := inferInstance
   have hU : IsAffineOpen (U : Y.Opens) := U.2
   have happ : ψ.appLE (U : Y.Opens) (ψ ⁻¹ᵁ (U : Y.Opens)) le_rfl = ψ.app (U : Y.Opens) := by
     simp [Scheme.Hom.appLE]
@@ -142,7 +141,6 @@ private theorem isStrictNormalCrossingsDivisor_reducedInverseImage_iso_inv_comp 
     IsStrictNormalCrossingsDivisor (reducedInverseImage (g.inv ≫ p) S) := by
   intro y'
   obtain ⟨hreg, U, hy, n, fs, J, hrsp, hideal⟩ := hS (g.inv.base y')
-  have hsi : IsIso (g.inv.stalkMap y') := inferInstance
   have hV : IsAffineOpen (g.inv ⁻¹ᵁ (U : Y.Opens)) := U.2.preimage_of_isIso g.inv
   have he : ∀ t, (asIso (g.inv.stalkMap y')).commRingCatIsoToRingEquiv t
       = (ConcreteCategory.hom (g.inv.stalkMap y')) t := fun _ => rfl

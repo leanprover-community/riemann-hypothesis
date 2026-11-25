@@ -77,7 +77,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 
 namespace GlobalTheory.Slice
@@ -261,7 +260,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 
 open MvPolynomial GlobalTheory.Capelli GlobalTheory.Harm GlobalTheory.Harm.HighestUnique
@@ -275,7 +273,7 @@ theorem fst_eq_of_mixedWeight {k l p q : ℕ} (N : ℕ) (a : Fin k → ℕ) (b :
   have hac := ha c
   split_ifs with h
   · rw [mixedWeight_apply]
-    simp only [c.2, dif_pos, Fin.eta]
+    simp only [c.2, dite_eq_left, Fin.eta]
     split_ifs with h2
     · have hb' : (0 : ℤ) ≤ (b ⟨N - 1 - c, h2⟩ : ℤ) := by positivity
       have h4 : (c : ℕ) < N := h
@@ -297,7 +295,7 @@ theorem snd_eq_of_mixedWeight {k l p q : ℕ} (N : ℕ) (a : Fin k → ℕ) (b :
   · rw [mixedWeight_apply]
     have e : N - 1 - (N - 1 - (d : ℕ)) = d := by omega
     have hd : N - 1 - (N - 1 - (d : ℕ)) < l := by omega
-    rw [dif_pos hd]
+    rw [dite_eq_left hd]
     have hbe : b ⟨N - 1 - (N - 1 - (d : ℕ)), hd⟩ = b d := congrArg b (Fin.ext e)
     simp only [hbe]
     split_ifs with h1
@@ -375,7 +373,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 
 namespace GlobalTheory.JointDict
@@ -472,7 +469,7 @@ theorem term_lt (p : ℕ) (τ : D.what₂.Tau) (i l : Fin m) (j k : Fin n) (hi :
     raiO τ (fun _ : Fin n => true) (fun k : Fin m => decide ((k : ℕ) < p)) i j
       (lowO τ (fun _ : Fin n => true) (fun k : Fin m => decide ((k : ℕ) < p)) l k P) =
       X (τ, i, j) * pderiv (τ, l, k) P := by
-  rw [lowO_apply, raiO_apply, if_pos hi, if_pos hl]
+  rw [lowO_apply, raiO_apply, ite_eq_left hi, ite_eq_left hl]
 
 theorem term_ge (p : ℕ) (τ : D.what₂.Tau) (i l : Fin m) (j k : Fin n) (hi : ¬ (i : ℕ) < p) (hl : ¬ (l : ℕ) < p)
     (P : PolF D m n) :
@@ -480,17 +477,17 @@ theorem term_ge (p : ℕ) (τ : D.what₂.Tau) (i l : Fin m) (j k : Fin n) (hi :
       (lowO τ (fun _ : Fin n => true) (fun k : Fin m => decide ((k : ℕ) < p)) l k P) =
       -(X (τ, l, k) * pderiv (τ, i, j) P) - if i = l ∧ j = k then P else 0 := by
   classical
-  rw [lowO_apply, raiO_apply, if_neg hi, if_neg hl, pderiv_X_mul']
+  rw [lowO_apply, raiO_apply, ite_eq_right hi, ite_eq_right hl, pderiv_X_mul']
   by_cases h : i = l ∧ j = k
   · obtain ⟨rfl, rfl⟩ := h; simp; ring
-  · rw [if_neg h, if_neg (by rintro ⟨⟩; exact h ⟨rfl, rfl⟩)]; ring
+  · rw [ite_eq_right h, ite_eq_right (by rintro ⟨⟩; exact h ⟨rfl, rfl⟩)]; ring
 
 theorem term_mix (p : ℕ) (τ : D.what₂.Tau) (i l : Fin m) (j k : Fin n) (hi : ¬ (i : ℕ) < p) (hl : (l : ℕ) < p)
     (P : PolF D m n) :
     raiO τ (fun _ : Fin n => true) (fun k : Fin m => decide ((k : ℕ) < p)) i j
       (lowO τ (fun _ : Fin n => true) (fun k : Fin m => decide ((k : ℕ) < p)) l k P) =
       -pderiv (τ, i, j) (pderiv (τ, l, k) P) := by
-  rw [lowO_apply, raiO_apply, if_neg hi, if_pos hl]
+  rw [lowO_apply, raiO_apply, ite_eq_right hi, ite_eq_left hl]
 
 theorem sop_eq (w : GlobalTheory.ExportSeries.Weight D n) (τ : D.what₂.Tau) (a b : Fin n) (P : PolF D m n) :
     sop w τ a b P = mixedOp ℂ (Prod.mk τ ∘ zR m n (w.p τ)) (Prod.mk τ ∘ yR m n (w.p τ)) a b P +
@@ -560,7 +557,7 @@ theorem kop_yz (w : GlobalTheory.ExportSeries.Weight D n) (τ : D.what₂.Tau) (
   rw [Finset.sum_congr rfl fun j _ => term_mix (w.p τ) τ _ _ j j (yRow_ge _ d) (zRow_lt _ c) P]
   have hne : (yRow (w.p τ) d : Fin m) ≠ zRow (w.p τ) c := by
     intro h; have := congrArg Fin.val h; have := yRow_ge (w.p τ) d; have := zRow_lt (w.p τ) c; omega
-  rw [if_neg hne, add_zero, Finset.sum_neg_distrib]
+  rw [ite_eq_right hne, add_zero, Finset.sum_neg_distrib]
   rw [neg_inj]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [GlobalTheory.Capelli.pderiv_swap]
@@ -582,31 +579,31 @@ theorem jointTop_of_lowestKType (D : D7) (n m : ℕ) (w : GlobalTheory.ExportSer
     ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · intro i j hij
     have h := hN.1 τ i j hij
-    rw [sop_eq, if_neg hij.ne, add_zero] at h
+    rw [sop_eq, ite_eq_right hij.ne, add_zero] at h
     exact h
   · intro i
     have h := hN.2 τ i
-    rw [sop_eq, if_pos rfl] at h
+    rw [sop_eq, ite_eq_left rfl] at h
     rw [eq_sub_of_add_eq h, ← sub_smul]
     congr 1
     ring
   · intro c c' hcc
     have h := hK.1 τ (zRow _ c) (zRow _ c') (iff_of_true (zRow_lt _ c) (zRow_lt _ c'))
       (by rw [Fin.lt_def] at hcc ⊢; exact hcc)
-    rw [fockTargetMatrixUnit_first_block_eq_capelli, if_neg hcc.ne, add_zero] at h
+    rw [fockTargetMatrixUnit_first_block_eq_capelli, ite_eq_right hcc.ne, add_zero] at h
     exact h
   · intro c
     have h := he (zRow _ c)
-    rw [fockTargetMatrixUnit_first_block_eq_capelli, if_pos rfl] at h
+    rw [fockTargetMatrixUnit_first_block_eq_capelli, ite_eq_left rfl] at h
     rw [eq_sub_of_add_eq h, ← sub_smul]
   · intro d d' hdd
     have h := hK.1 τ (yRow _ d') (yRow _ d) (iff_of_false (yRow_ge _ d') (yRow_ge _ d))
       (by have := d.2; have := d'.2; rw [Fin.lt_def] at hdd ⊢; simp only [yRow]; omega)
-    rw [kop_y, if_neg hdd.ne, sub_zero, neg_eq_zero] at h
+    rw [kop_y, ite_eq_right hdd.ne, sub_zero, neg_eq_zero] at h
     exact h
   · intro d
     have h := he (yRow _ d)
-    rw [kop_y, if_pos rfl] at h
+    rw [kop_y, ite_eq_left rfl] at h
     have h2 : rowOp ℂ (Prod.mk τ ∘ yR m n (w.p τ)) d d P = -(e (yRow (w.p τ) d) • P) - ((n : ℂ) / 2) • P := by
       rw [← h]; abel
     rw [h2, sub_smul, neg_smul]
@@ -629,7 +626,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 
 end -- clump:auto
@@ -645,7 +641,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 
 noncomputable section
@@ -796,7 +791,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef
 open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 
 end -- clump:auto

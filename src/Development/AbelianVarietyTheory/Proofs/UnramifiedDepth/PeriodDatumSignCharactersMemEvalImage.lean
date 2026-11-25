@@ -315,14 +315,12 @@ theorem chart_p_smul_lift_eq_bt :
     rw [B.tg_nat (Tw.π 1) D.wd.πW (Tw.sqZero 1) hsq, ← hpth, smul_comm p, ← map_nsmul,
       smul_smul, pow_two]
   refine ⟨∑ i, n i • B.map D.wd.ψ (p • th i), ?_, ?_⟩
-  · set_option synthInstance.maxHeartbeats 100000 in
-      simp only [ptOf, map_sum, map_nsmul]
+  · simp only [ptOf, map_sum, map_nsmul]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [← B.map_comp, hc1, B.map_comp, hth, ← B.map_comp, hc2, D.L.τ_compat i 0, map_nsmul]
   · refine ⟨hpt ▸ map_tg_ker B _ _ hsq _ D.wd.ρW_eq v, fun k => ?_⟩
     refine ⟨∑ i, n i • D.wd.ψ.1 (btTanCrd D.ch.gb _ k (w i)), ?_, ?_⟩
-    · set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, map_nsmul, Matrix.mulVec, dotProduct, map_mul, Function.comp_apply]
+    · simp only [map_sum, map_nsmul, Matrix.mulVec, dotProduct, map_mul, Function.comp_apply]
       refine Finset.sum_congr rfl fun i _ => ?_
       have h1 := congrArg (btTanCrd D.ch.gb _ k) (hw i)
       rw [btTanCrd_nat, btTanCrd_nat] at h1
@@ -591,7 +589,7 @@ private lemma polCoef_span {R : Type} [CommRing R] {g N : ℕ} (f : MvPolynomial
   intro m hm
   rw [MvPolynomial.coeff_sum]
   refine Finset.sum_eq_zero fun j _ => ?_
-  rw [MvPolynomial.X_pow_eq_monomial, MvPolynomial.coeff_mul_monomial', if_neg]
+  rw [MvPolynomial.X_pow_eq_monomial, MvPolynomial.coeff_mul_monomial', ite_eq_right]
   intro h
   have := h j
   simp only [Finsupp.single_eq_same] at this
@@ -703,7 +701,7 @@ theorem _root_.GlobalTheory.evImg_isLat_subring :
     change Submodule.span _ (Set.range ⇑f) = _
     rw [← LinearMap.coe_range, Submodule.span_eq]
   have hinjΨ : Function.Injective Ψ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro F hF
     funext i
     apply D.fin.sep i
@@ -810,7 +808,6 @@ private lemma btPoly_map_tEval {R₀ : Type} [CommRing R₀] {ι : Type} [Fintyp
     (N : ℕ) (f : MvPowerSeries ι R₀) {S S' : Type} [CommRing S] [Algebra R₀ S] [CommRing S']
     [Algebra R₀ S'] (φ : S →ₐ[R₀] S') (a : ι → S) :
     φ (tEval N f a) = tEval N f (fun i => φ (a i)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp [tEval, map_sum, map_prod]
 
 private lemma btPoly_unif {ι S : Type} [Fintype ι] [CommRing S] (a : ι → S)
@@ -1305,7 +1302,7 @@ private lemma pSerOf_trunc {R₀ : Type} [CommRing R₀] {g : ℕ} (N : ℕ) (G�
     · by_cases h0 : AddMonoidAlgebra.coeff G₁ m = 0
       · simp [h0]
       · simp [h, h0]
-    · rw [if_neg h, if_neg]
+    · rw [ite_eq_right h, ite_eq_right]
       intro hm
       exact h (Finset.mem_filter.1 hm).2
   · intro S _ _ a ha

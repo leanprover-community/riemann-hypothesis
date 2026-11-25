@@ -11,8 +11,6 @@ open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDeca
 
 noncomputable section
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 structure Tm (k r : ℕ) where
   j : ℕ
   ws : Fin j → List (Bool × Mat k r)
@@ -129,7 +127,7 @@ theorem expand {Ψ : V → E'} (hΨ : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ
             · subst h
               simp
             · simp [h]
-          simp only [e, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, if_true, hsum,
+          simp only [e, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, ite_true, hsum,
             List.length_cons]
         · intro l
           by_cases h : l = i

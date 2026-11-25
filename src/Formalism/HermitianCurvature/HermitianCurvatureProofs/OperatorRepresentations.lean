@@ -157,8 +157,8 @@ theorem rep_algebraMap (c : ℂ) : Rep (algebraMap ℂ (Module.End ℂ (SV k r i
 theorem Rep.ite {X : Module.End ℂ (SV k r i D E)} {T : (Mx k r → E) → Mx k r → E} (hX : Rep X T) (p : Prop)
     [Decidable p] : Rep (if p then X else 0) (fun f x => if p then T f x else 0) := by
   by_cases hp : p
-  · simpa only [if_pos hp] using hX
-  · simpa only [if_neg hp] using rep_zero
+  · simpa only [ite_eq_left hp] using hX
+  · simpa only [ite_eq_right hp] using rep_zero
 
 theorem rep_sum {ι : Type*} (s : Finset ι) (X : ι → Module.End ℂ (SV k r i D E))
     (T : ι → (Mx k r → E) → Mx k r → E) (h : ∀ j ∈ s, Rep (X j) (T j)) :

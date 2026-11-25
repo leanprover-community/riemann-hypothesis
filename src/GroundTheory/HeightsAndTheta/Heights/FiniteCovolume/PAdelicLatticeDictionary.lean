@@ -579,8 +579,7 @@ theorem isUnit_det_traceGram_of_isUnit (hH : IsUnit H.det) : IsUnit (traceGram H
     funext a
     simp [vecCoords]
   obtain ⟨i, hi⟩ : ∃ i, X i ≠ 0 := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hX0 (funext hc)
   have hci : conjBase K E K (X i) ≠ 0 := by
     intro h
@@ -1060,7 +1059,7 @@ theorem isDIntegral_dictLattice {d : ℤ} (hd0 : d ≠ 0)
         by_cases hij : i = j
         · subst hij
           simp [Algebra.TensorProduct.one_def]
-        · rw [if_neg hij, if_neg (Ne.symm hij), TensorProduct.tmul_zero]
+        · rw [ite_eq_right hij, ite_eq_right (Ne.symm hij), TensorProduct.tmul_zero]
       rw [e1, map_zsmul, e2, ← Int.cast_smul_eq_zsmul F]
       exact hn
     have hvi : v i = ((d * n : ℤ) : E)⁻¹ • ((d * n) • v i) := by

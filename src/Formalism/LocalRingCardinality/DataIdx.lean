@@ -120,12 +120,6 @@ open NumberField IsDedekindDomain
 
 end Formalism.BasicNotions
 
-namespace Formalism.BasicNotions.Idx
-
-open NumberField IsDedekindDomain Formalism.BasicNotions
-
-end Formalism.BasicNotions.Idx
-
 namespace Formalism.BasicNotions
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal
@@ -206,13 +200,6 @@ structure NMj (D : D7) (X : DivX D) (c : NChoice D) where
   eMj_th : ∀ w j, D.what₂.muAt w ≠ D.what₂.mu0 → 1 ≤ j → j ≤ D.R.m → ∀ x ∈ Idx.TjV D (D.what₂.muTw w) j, ∀ y : (X.MjH j).V,
     X.jM j y = D.what₂.thetaP (D.what₂.muTw w) j (D.what₂.jMt (D.what₂.muTw w) j x) →
     NChoice.toFracE D c w j (eMj w j y) = NChoice.thPe D c w j (c.eMt w j x)
-
-namespace NMj
-
-variable {D : D7} {X : DivX D} {c : NChoice D} (T : NMj D X c)
-
-
-end NMj
 
 
 end Formalism.BasicNotions

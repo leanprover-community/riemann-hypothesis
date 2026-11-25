@@ -354,7 +354,7 @@ theorem theta_unif {κ : Type} [Fintype κ] {ψ : AddChar (AF F) ℂ} (hψ : IsS
     by_cases h0 : g (fun i => ((y + k) i).2) = 0
     · rw [h0, mul_zero, norm_zero]
       exact mul_nonneg (by positivity) (hw0 _)
-    have hm : wt η = (PositivityTheory.ThKCT.sz y ^ N)⁻¹ := if_pos ⟨(_, k), ⟨subset_tsupport g h0, hkK⟩, by
+    have hm : wt η = (PositivityTheory.ThKCT.sz y ^ N)⁻¹ := ite_eq_left ⟨(_, k), ⟨subset_tsupport g h0, hkK⟩, by
       funext i
       change (y i).2 + (k i).2 - (k i).2 = _
       rw [add_sub_cancel_right]⟩

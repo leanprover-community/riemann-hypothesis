@@ -26,7 +26,7 @@ theorem form_last (μ : Measure (Mt k r)) (x y : Ix S → RadSp k r z z' π π')
     form μ (Fin.last r) x y c = ∑ a, pairAt μ (x a) (y a) c := by
   have : IsEmpty {l : Fin r // (Fin.last r).val ≤ l.val} := ⟨fun l => absurd l.2 (not_le.mpr l.1.isLt)⟩
   have hg : ∀ c' : Cf r (Fin.last r), glue (Fin.last r) c c' = c :=
-    fun c' => funext fun l => dif_neg (not_le.mpr l.isLt)
+    fun c' => funext fun l => dite_eq_right (not_le.mpr l.isLt)
   have hp : ∀ c' : Cf r (Fin.last r), ((∏ l, ‖c' l‖ ^ (-2 : ℤ) : ℝ) : ℂ) = 1 := fun c' => by
     rw [Fintype.prod_empty, Complex.ofReal_one]
   have h1 : (volume : Measure (Cf r (Fin.last r))) Set.univ = 1 := by

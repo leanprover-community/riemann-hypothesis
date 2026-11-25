@@ -26,8 +26,6 @@ lemma expS_summable {n : ℕ} (X : Matrix (Fin n) (Fin n) ℂ) :
   letI : NormedAlgebra ℂ (Matrix (Fin n) (Fin n) ℂ) := Matrix.linftyOpNormedAlgebra
   exact NormedSpace.expSeries_summable' X
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 def mvL {n : ℕ} (y : Fin n → ℂ) : Matrix (Fin n) (Fin n) ℂ →L[ℂ] (Fin n → ℂ) :=
   LinearMap.toContinuousLinearMap
     { toFun := fun M => M *ᵥ y
@@ -73,7 +71,7 @@ lemma hpk_symm (i j : Fin (2 * r + k + 1)) : Hpk k r i j = Hpk k r j i := by
     rfl
   · have hji : ¬ j = i := fun h => hij h.symm
     unfold Hpk
-    simp only [hij, hji, and_false, if_false]
+    simp only [hij, hji, and_false, ite_false]
     split_ifs <;> first | rfl | (exfalso; omega)
 
 lemma star_hpk_dot (v y : Fin (2 * r + k + 1) → ℂ) : star (Hpk k r *ᵥ v) ⬝ᵥ y = herm (Hpk k r) y v := by

@@ -401,12 +401,12 @@ theorem pow_last (hj : K + 1 ≤ j) (hv : LL.vec (Fin.last K) = true) (c : Fin r
       glAct p LL j 0 c (X (Fin.last K, c) * y) =
         X (Fin.last K, (0 : Fin r)) * y + X (Fin.last K, c) * glAct p LL j 0 c y := by
     intro y
-    rw [glAct_mul, last_X p LL j hj hv, if_pos rfl]
+    rw [glAct_mul, last_X p LL j hj hv, ite_eq_left rfl]
   have h2 : ∀ z : MvPolynomial (Fin (K + 1) × Fin r) ℚ_[p],
       glAct p LL j 0 c (X (Fin.last K, (0 : Fin r)) * z) =
         X (Fin.last K, (0 : Fin r)) * glAct p LL j 0 c z := by
     intro z
-    rw [glAct_mul, last_X p LL j hj hv, if_neg hc, zero_mul, zero_add]
+    rw [glAct_mul, last_X p LL j hj hv, ite_eq_right hc, zero_mul, zero_add]
   have hpow : ∀ (n : ℕ) (y : MvPolynomial (Fin (K + 1) × Fin r) ℚ_[p]),
       ((glAct p LL j 0 c) ^ (n + 1)) y = glAct p LL j 0 c (((glAct p LL j 0 c) ^ n) y) := by
     intro n y

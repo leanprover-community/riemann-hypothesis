@@ -241,10 +241,10 @@ theorem dual_to_E (S : C.HidaSetting E Wp Wq) (hg : 0 < S.g) (L : Submodule ℤ 
       rw [hμv v, hc]
       simp only [PBC.embV, AddMonoidHom.coe_mk, ZeroHom.coe_mk]
       by_cases h : S.σ v = (S.pl v).embedding
-      · rw [if_pos h, ← h]
+      · rw [ite_eq_left h, ← h]
         simp [Complex.inner, Complex.mul_re]
         ring
-      · rw [if_neg h]
+      · rw [ite_eq_right h]
         have h2 := (Cx2.σ_or S v).resolve_left h
         rw [← h2, ComplexEmbedding.conjugate_coe_eq]
         simp [Complex.inner, Complex.mul_re]
@@ -259,7 +259,7 @@ theorem dual_to_E (S : C.HidaSetting E Wp Wq) (hg : 0 < S.g) (L : Submodule ℤ 
   simp only [J.dm, hμv v] at hcoord
   have hg' : ((S.g : ℝ) : ℂ) ≠ 0 := by exact_mod_cast (Nat.cast_pos.mpr hg).ne'
   by_cases h : S.σ v = (S.pl v).embedding
-  · rw [if_pos h, ← h] at hcoord
+  · rw [ite_eq_left h, ← h] at hcoord
     have := congrArg conj hcoord
     simp only [map_mul, Complex.conj_conj, map_ofNat] at this
     have h3 : conj (((2 / ((S.g : ℝ) * 1) : ℝ)) : ℂ) = ((2 / (S.g : ℝ) : ℝ) : ℂ) := by
@@ -270,7 +270,7 @@ theorem dual_to_E (S : C.HidaSetting E Wp Wq) (hg : 0 < S.g) (L : Submodule ℤ 
     calc (S.g : ℂ) * σ v = ((S.g : ℂ) / 2) * (2 * σ v) := by ring
       _ = ((S.g : ℂ) / 2) * (2 / (S.g : ℂ) * S.σ v l) := by rw [this]
       _ = S.σ v l := by field_simp
-  · rw [if_neg h] at hcoord
+  · rw [ite_eq_right h] at hcoord
     have h2 := (Cx2.σ_or S v).resolve_left h
     rw [← h2, ComplexEmbedding.conjugate_coe_eq, Complex.conj_conj] at hcoord
     push_cast at hcoord ⊢
@@ -331,7 +331,7 @@ theorem mL_le_prof (S : C.HidaSetting E Wp Wq) (K : ℕ) (Λ : Fin S.f → ℝ) 
     rw [Pi.smul_apply, Complex.real_smul, hσ v, ← S.hemb v, InfinitePlace.apply]
     rfl
   unfold crystallineComparison.mfac
-  rw [ha, if_neg hpos.ne']
+  rw [ha, ite_eq_right hpos.ne']
   have key := min_scale ((3 : ℝ) ^ K) ((Λ v / 3 / (S.pl v) l) ^ K) (one_le_pow₀ (by norm_num))
   calc min 1 ((Λ v / (S.pl v) l) ^ K) = min 1 ((3 : ℝ) ^ K * (Λ v / 3 / (S.pl v) l) ^ K) := by
         rw [← mul_pow]
@@ -412,12 +412,6 @@ theorem sum_le (S : C.HidaSetting E Wp Wq) (hg : 0 < S.g) (hU : S6.Unram E) (b s
         rwa [Ne, FractionalIdeal.absNorm_eq_zero_iff]
       have h2 := FractionalIdeal.absNorm_nonneg (S6.dualIdl E S.g ν)
       exact_mod_cast lt_of_le_of_ne h2 (Ne.symm h1)
-    have hthr0 : ∀ w, 0 ≤ J.thrS S.G S.CA S.de S.de' S.T S.T' S.l b s w := by
-      intro w
-      have := hΛ (S.pl.symm w)
-      have h' : PBC.thr S b s (S.pl.symm w) = J.thrS S.G S.CA S.de S.de' S.T S.T' S.l b s w := by
-        simp [PBC.thr]
-      linarith [this.1, this.2, h'.le, h'.ge]
     have hprodthr : ∏ w, J.thrS S.G S.CA S.de S.de' S.T S.T' S.l b s w ≤
         √(FractionalIdeal.absNorm (S6.dualIdl E S.g ν) : ℝ) := by
       have hv : (∏ w, J.thrS S.G S.CA S.de S.de' S.T S.T' S.l b s w) ^ 2 /

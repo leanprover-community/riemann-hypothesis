@@ -5,8 +5,6 @@ public import Formalism.GaussJetBounds.GaussJetProofs.ThmAOp
 import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
@@ -101,7 +99,7 @@ lemma mfact_add_single (κ : ι →₀ ℕ) (i : ι) :
     rw [Finsupp.mem_support_iff, Finsupp.add_apply, Finsupp.single_apply] at hj
     by_cases h : i = j
     · rw [← h]; exact Finset.mem_insert_self _ _
-    · rw [if_neg h, add_zero] at hj
+    · rw [ite_eq_right h, add_zero] at hj
       exact Finset.mem_insert_of_mem
         (Finset.mem_erase.mpr ⟨Ne.symm h, Finsupp.mem_support_iff.mpr hj⟩)
   have hnot : i ∉ κ.support.erase i := by simp
@@ -110,7 +108,7 @@ lemma mfact_add_single (κ : ι →₀ ℕ) (i : ι) :
       ∏ j ∈ κ.support.erase i, (κ j).factorial := by
     refine Finset.prod_congr rfl (fun j hj => ?_)
     rw [Finsupp.add_apply, Finsupp.single_apply,
-      if_neg (fun h => (Finset.ne_of_mem_erase hj) h.symm), add_zero]
+      ite_eq_right (fun h => (Finset.ne_of_mem_erase hj) h.symm), add_zero]
   rw [hrest, Finsupp.add_apply, Finsupp.single_eq_same, Nat.factorial_succ]
   ring
 
@@ -159,8 +157,8 @@ lemma pderiv_aeval_linP (A : ι → ι' → K) (i : ι) (G : MvPolynomial ι' K)
     have h1 : ∑ k : ι', MvPolynomial.C (A i k) *
         (MvPolynomial.aeval (linP A) p * (if j = k then 1 else 0)) =
         MvPolynomial.aeval (linP A) p * MvPolynomial.C (A i j) := by
-      rw [Finset.sum_eq_single j (fun k _ hk => by rw [if_neg (Ne.symm hk)]; ring)
-        (fun h => absurd (Finset.mem_univ j) h), if_pos rfl]
+      rw [Finset.sum_eq_single j (fun k _ hk => by rw [ite_eq_right (Ne.symm hk)]; ring)
+        (fun h => absurd (Finset.mem_univ j) h), ite_eq_left rfl]
       ring
     rw [h1, Finset.mul_sum]
     congr 1
@@ -232,7 +230,7 @@ lemma jetPair_monomial_right (P : MvPolynomial ι' K) (μ : ι' →₀ ℕ) :
   rw [jetPair_eq_sum P _ (insert μ P.support) (Finset.subset_insert _ _), Finset.sum_eq_single μ]
   · simp
   · intro κ _ hκ
-    rw [MvPolynomial.coeff_coe, MvPolynomial.coeff_monomial, if_neg (Ne.symm hκ), mul_zero]
+    rw [MvPolynomial.coeff_coe, MvPolynomial.coeff_monomial, ite_eq_right (Ne.symm hκ), mul_zero]
   · intro h
     exact absurd (Finset.mem_insert_self μ _) h
 
@@ -345,17 +343,17 @@ lemma frameM_genA {K : Type u} [Field K] {d N0 N1 : ℕ} [NeZero d] (TT : Finset
   rw [sum_ZV_slice z.1 z.2.2]
   · simp only [frameM, genA, and_self, ↓reduceIte]
     by_cases h : i.1 = z.1 ∧ i.2.2 = z.2.2
-    · rw [if_pos h, hxg]
+    · rw [ite_eq_left h, hxg]
       obtain ⟨h1, h2⟩ := h
       refine Finset.sum_congr rfl (fun k _ => ?_)
-      rw [if_pos ⟨h1.symm, h2.symm⟩, h1]
+      rw [ite_eq_left ⟨h1.symm, h2.symm⟩, h1]
       ring
-    · rw [if_neg h]
+    · rw [ite_eq_right h]
       refine (Finset.sum_eq_zero (fun k _ => ?_)).symm
-      rw [if_neg (fun h' => h ⟨h'.1.symm, h'.2.symm⟩), mul_zero]
+      rw [ite_eq_right (fun h' => h ⟨h'.1.symm, h'.2.symm⟩), mul_zero]
   · intro y hy
     simp only [frameM]
-    rw [if_neg hy, zero_mul]
+    rw [ite_eq_right hy, zero_mul]
 
 lemma sum_genA_eq_rowOp {K : Type u} [Field K] {d N0 N1 : ℕ} [NeZero d] (TT : Finset (ZMod d))
     (T : ZMod d → Fin N0 → Fin N0 → K) (s : ZMod d) (i : Fin N0) (b : Fin N1) :
@@ -365,19 +363,19 @@ lemma sum_genA_eq_rowOp {K : Type u} [Field K] {d N0 N1 : ℕ} [NeZero d] (TT : 
   rw [sum_ZV_slice s b]
   · simp only [genA, rowOp, effMat, and_self, ↓reduceIte]
     by_cases h : s ∈ TT ∧ i.val = 0
-    · simp only [if_pos h]
+    · simp only [ite_eq_left h]
       rw [Finset.sum_eq_single i]
       · simp
       · intro k _ hk
         simp [hk]
       · intro hi
         exact absurd (Finset.mem_univ i) hi
-    · simp only [if_neg h]
+    · simp only [ite_eq_right h]
       refine Finset.sum_congr rfl (fun k _ => ?_)
       split_ifs <;> simp
   · intro y hy
     simp only [genA]
-    rw [if_neg hy, map_zero, zero_mul]
+    rw [ite_eq_right hy, map_zero, zero_mul]
 
 lemma map_minorProd {R : Type u} [CommRing R] {σ σ' : Type} {N0 N1 C : ℕ}
     (φ : MvPolynomial σ R →ₐ[R] MvPolynomial σ' R)

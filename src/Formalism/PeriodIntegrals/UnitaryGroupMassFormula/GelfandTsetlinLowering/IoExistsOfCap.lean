@@ -37,8 +37,7 @@ theorem io_dw_ext {n : ℕ} {mu sg : DomWeight n} (hw : mu.w = sg.w) : mu = sg :
   rfl
 
 theorem exists_capelliPolynomial_ne {n : ℕ} (mu sg : DomWeight n) (hne : mu.w ≠ sg.w) : ∃ u, capP mu u ≠ capP sg u := by
-  by_contra hall
-  push_neg at hall
+  by_contra! hall
   apply hne
   have hzero : ∀ (nu : DomWeight n) (i : Fin n), capP nu (((i : ℕ) : ℂ) - ((nu.w i : ℤ) : ℂ)) = 0 := by
     intro nu i
@@ -209,7 +208,7 @@ theorem io_last_emb {n N : ℕ} (h : n + 1 = N) (a : ℂˣ) (g : GL (Fin n) ℂ)
       simp only [Equiv.trans_apply, finSumFinEquiv_apply_left, finCongr_apply, Fin.coe_cast,
         Fin.coe_castAdd]
       omega
-    rw [if_neg hk, if_neg hl]
+    rw [ite_eq_right hk, ite_eq_right hl]
     simp
   · simp
   · simp

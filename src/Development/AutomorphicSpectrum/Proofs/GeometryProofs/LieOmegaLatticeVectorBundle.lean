@@ -1,5 +1,7 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenLatticeVectorBundle
+
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EigLat
 public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
@@ -193,31 +195,7 @@ theorem lieLat_isVB_of_smooth : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ 
   intro X Ω _ ξ G _ _ Li _ _ M _ hs
   haveI := hs
   have hvb : M.lat.IsVB (Module.finrank Ω Li) ⊤ := by
-    intro p _
-    obtain ⟨R, _, x, hx, F, _, _, MR, n, b, hp⟩ := exists_chart G p.1
-    have hgen : genPt ξ ∈ x.opensRange := p.2.mem_open x.opensRange.isOpen hp
-    obtain ⟨φ, hφ⟩ := exists_lift x ξ hgen
-    obtain ⟨c, hli, hsp, hfr⟩ := frame_of_basis x MR b ξ M φ hφ
-    have hn : n = Module.finrank Ω Li := by
-      rw [Module.finrank_eq_card_basis (Module.Basis.mk hli hsp.ge), Fintype.card_fin]
-    subst hn
-    refine ⟨x.opensRange, hp, c, hsp, fun q _ hq => ?_⟩
-    have hq' : (X.fromSpecStalk q.1) (IsLocalRing.closedPoint (X.presheaf.stalk q.1)) ∈ x.opensRange := by
-      rw [Scheme.fromSpecStalk_closedPoint]
-      exact hq
-    obtain ⟨ψ, hψ⟩ := exists_lift (A := X.presheaf.stalk q.1) x (X.fromSpecStalk q.1) hq'
-    refine hfr q ψ hψ ?_
-    have h1 : spMap ((genMap ξ q).comp ψ) ≫ x = spMap φ ≫ x := by
-      have e1 : spMap ((genMap ξ q).comp ψ) = spMap (genMap ξ q) ≫ spMap ψ := by
-        simp only [spMap, ← Spec.map_comp]
-        rfl
-      calc spMap ((genMap ξ q).comp ψ) ≫ x = spMap (genMap ξ q) ≫ spMap ψ ≫ x := by
-            rw [e1, Category.assoc]
-        _ = spMap (genMap ξ q) ≫ X.fromSpecStalk q.1 := by rw [hψ]
-        _ = ξ := spec_genMap ξ q
-        _ = spMap φ ≫ x := hφ.symm
-    have h2 := Spec.map_injective ((cancel_mono x).1 h1)
-    exact congrArg (fun g => g.hom) h2
+    apply _root_.GlobalTheory.CompanionTheory.Ar.Flat.EigVb.lat_isVB_of_smooth <;> assumption
   exact ⟨hvb, (Lat.isVBOn_dual_and_bidual X Ω ξ Li M.lat Set.univ _ hvb).1⟩
 
 end GlobalTheory.CompanionTheory.Ar

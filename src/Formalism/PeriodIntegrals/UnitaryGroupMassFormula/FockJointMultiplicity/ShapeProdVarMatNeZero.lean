@@ -1,6 +1,7 @@
 module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockJointMultiplicity.JointMultOfSteps
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockJointMultiplicity.LoweringPartRightActionInlInr
 
 @[expose] public section
 
@@ -45,8 +46,8 @@ theorem det_vars_ne_zero {σ : Type*} {n : ℕ} (f : Fin n × Fin n → σ) (hf 
     intro i j
     by_cases hij : i = j
     · subst hij
-      rw [if_pos ⟨i, rfl⟩, if_pos rfl]
-    · rw [if_neg hij, if_neg]
+      rw [ite_eq_left ⟨i, rfl⟩, ite_eq_left rfl]
+    · rw [ite_eq_right hij, ite_eq_right]
       rintro ⟨i', hi'⟩
       have hpair := hf hi'
       simp only [Prod.mk.injEq] at hpair
@@ -81,20 +82,6 @@ theorem shapeProd_varMat_ne_zero {p q r s m k : ℕ} (ρ : Fin m → Ix p q) (κ
   exact det_vars_ne_zero
     (fun x : Fin (t + 1) × Fin (t + 1) => (ρ (Fin.castLE hc.1 x.1), κ (Fin.castLE hc.2 x.2))) hinj
 
-private theorem pderiv_pderiv_comm_of_complex {σ : Type*} (i j : σ) (P : MvPolynomial σ ℂ) :
-    MvPolynomial.pderiv i (MvPolynomial.pderiv j P) = MvPolynomial.pderiv j (MvPolynomial.pderiv i P) := by
-  classical
-  induction P using MvPolynomial.induction_on
-  next a =>
-    simp only [MvPolynomial.pderiv_C, map_zero]
-  next P Q hP hQ =>
-    simp only [map_add (f := _), hP, hQ]
-  next P n hP =>
-    simp only [Derivation.leibniz, map_add (f := _), smul_eq_mul, MvPolynomial.pderiv_X, Pi.single_apply]
-    split_ifs <;>
-      simp only [Derivation.map_one_eq_zero, map_zero, mul_zero, zero_mul, add_zero, zero_add,
-        mul_one, one_mul, hP] <;> ring
-
 private theorem pderiv_eq_zero_of_mem_supported_of_not_mem {σ : Type*} {S : Set σ} {P : MvPolynomial σ ℂ}
     (hP : P ∈ MvPolynomial.supported ℂ S) {i : σ} (hi : i ∉ S) : MvPolynomial.pderiv i P = 0 := by
   have hv : i ∉ P.vars := fun hmem => hi ((MvPolynomial.mem_supported.mp hP) (Finset.mem_coe.mpr hmem))
@@ -108,7 +95,7 @@ theorem dd_eq_zero {p q r s : ℕ} {S : Set (Ln p q r s)} {P : Pol p q r s}
     | rfl
   rw [key]
   rcases h with h | h
-  · rw [pderiv_pderiv_comm_of_complex, pderiv_eq_zero_of_mem_supported_of_not_mem hP h, map_zero]
+  · rw [_root_.PI.WFJM.pderiv_comm, pderiv_eq_zero_of_mem_supported_of_not_mem hP h, map_zero]
   · rw [pderiv_eq_zero_of_mem_supported_of_not_mem hP h, map_zero]
 
 def inS {p q r s : ℕ} (la lb lc ld : ℕ) : Ln p q r s → Prop

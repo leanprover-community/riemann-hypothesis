@@ -182,8 +182,6 @@ namespace PositivityTheory.Lit1.GEN.X
 
 local notation "ℚ̄" => AlgebraicClosure ℚ
 
-attribute [local instance 2000] Rep.hV2
-
 variable {K L : FiniteSubfield} [Fact (K ≤ L)] {S : Set (HeightOneSpectrum (𝓞 K.1))} {ℓ : ℕ} [Fact ℓ.Prime]
   (hL : ∀ x : L.1, algebraMap L.1 ℚ̄ x ∈ maxUnramifiedOutside K.1 ℚ̄ S) [Normal K.1 L.1]
   (hζ : ∃ ζ : L.1, IsPrimitiveRoot ζ ℓ)
@@ -491,8 +489,6 @@ open CategoryTheory GroundTheory.ProfCoh
 
 namespace PositivityTheory.Lit1.GEN.X
 
-attribute [local instance 2000] Rep.hV2
-
 theorem natCard_invariants_eq_of_addEquiv {k k' H V W : Type*} [CommRing k] [CommRing k'] [Group H]
     [AddCommGroup V] {_mV : Module k V} [AddCommGroup W] {_mW : Module k' W}
     (ρ : Representation k H V) (σ : Representation k' H W) (e : V ≃+ W)
@@ -566,8 +562,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain CategoryTheory GroundTheory.ProfCoh GroundTheory.Global
 
 namespace PositivityTheory.Lit1.GEN.X
-
-attribute [local instance 2000] Rep.hV2
 
 local notation "ℚ̄" => AlgebraicClosure ℚ
 
@@ -870,8 +864,6 @@ namespace PositivityTheory.Lit1.GEN.X
 
 local notation "ℚ̄" => AlgebraicClosure ℚ
 
-attribute [local instance 2000] Rep.hV2
-
 variable {K L : FiniteSubfield} [Fact (K ≤ L)] {S : Set (HeightOneSpectrum (𝓞 K.1))} {ℓ : ℕ} [Fact ℓ.Prime]
   (hL : ∀ x : L.1, algebraMap L.1 ℚ̄ x ∈ maxUnramifiedOutside K.1 ℚ̄ S) [Normal K.1 L.1]
   (hζ : ∃ ζ : L.1, IsPrimitiveRoot ζ ℓ)
@@ -960,7 +952,7 @@ theorem finrank_H2_euler_formula [Finite S] (hℓS : ∀ v ∉ S, ((ℓ : ℕ) :
     (hcop : Nat.Coprime (gsOpenSubgroup S hL : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)).index ℓ)
     (hK : ℓ ≠ 2 ∨ IsTotallyComplex L.1) [Finite (ModN (AA hL 1) ℓ)] :
     (Module.finrank (ZMod ℓ) (cohomology M 2) : ℤ) =
-      dMod hL (dN hL hζ M hM hΓ) 1 + dPlaces (S := S) (dN hL hζ M hM hΓ) - (dN hL hζ M hM hΓ).one := set_option synthInstance.maxHeartbeats 200000 in by
+      dMod hL (dN hL hζ M hM hΓ) 1 + dPlaces (S := S) (dN hL hζ M hM hΓ) - (dN hL hζ M hM hΓ).one := by
   classical
   haveI : Fintype S := Fintype.ofFinite S
   have ιs : ∀ v : S, ℚ̄ →ₐ[K.1] AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K.1)).adicCompletion K.1) :=

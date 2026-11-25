@@ -58,13 +58,13 @@ theorem exists_units_neg_iff_mem (S : Set {v : InfinitePlace K // v.IsReal}) :
   refine ⟨Units.mk0 x hx0, fun v => ?_⟩
   have h := hclose v.1
   rw [apply_eq_abs_embedding_of_isReal v.2, map_sub] at h
-  have hcv : c v.1 = if v ∈ S then -1 else 1 := by rw [hcdef]; exact dif_pos v.2
+  have hcv : c v.1 = if v ∈ S then -1 else 1 := by rw [hcdef]; exact dite_eq_left v.2
   rw [hcv] at h
   rw [Units.val_mk0]
   by_cases hv : v ∈ S
-  · rw [if_pos hv, map_neg, map_one, sub_neg_eq_add, abs_lt] at h
+  · rw [ite_eq_left hv, map_neg, map_one, sub_neg_eq_add, abs_lt] at h
     exact ⟨⟨fun _ => hv, fun _ => by linarith [h.2]⟩, ⟨fun h' => by linarith [h.2], fun h' => absurd hv h'⟩⟩
-  · rw [if_neg hv, map_one, abs_lt] at h
+  · rw [ite_eq_right hv, map_one, abs_lt] at h
     exact ⟨⟨fun h' => by linarith [h.1], fun h' => absurd h' hv⟩, ⟨fun _ => hv, fun _ => by linarith [h.1]⟩⟩
 
 
@@ -335,9 +335,9 @@ theorem placeInv_brauerLocal_globalCupClass_iChar (v : InfinitePlace K.1) :
   by_cases hv : v.IsReal
   · rw [dite_eq_left hv]
     by_cases ha : embedding_of_isReal hv (a : K.1) < 0
-    · rw [if_pos ha]
+    · rw [ite_eq_left ha]
       exact placeInv_brauerLocal_globalCupClass_iChar_of_neg ι a v hv ha
-    · rw [if_neg ha]
+    · rw [ite_eq_right ha]
       have hpos : 0 < embedding_of_isReal hv (a : K.1) :=
         lt_of_le_of_ne (not_lt.1 ha) (fun h => a.ne_zero ((map_eq_zero _).1 h.symm))
       exact placeInv_brauerLocal_globalCupClass_iChar_of_pos ι a v hv hpos

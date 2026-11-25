@@ -1,5 +1,6 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.OrdinaryHeckeCharacters.PartUR2Fix
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.IsTheta
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.OrdinaryHeckeCharacters.CLocConjAlt
 
@@ -72,13 +73,7 @@ private theorem toKT_sec (hn : 1 ≤ n) {w : Plc L} (hw : IsSplitAt w) (hS : w.u
 
 private theorem infRep_fin {s : HidaSetting l L Ω} (V : s.Lev) (ι : Qbar l ≃+* ℂ) (lam : Wt L l n) {k : UA L n}
     (hk : k ∈ finU (E := L) (n := n)) : infRep (V := V) ι lam k = 1 := by
-  have h1 : ∀ τ : L →+* ℂ, cEmb τ k = 1 := fun τ => by
-    change Matrix.GeneralLinearGroup.map (coord τ) (cInf k) = 1
-    rw [MonoidHom.mem_ker.1 hk, map_one]
-  change PiTensorProduct.mapMonoidHom (fun y : Emb l (fun v : V.frame.Vl => s.w v.1) =>
-    GlobalTheory.Branching.sqRep ℂ n (lam y.res) (cEmb (ι.toRingHom.comp y.res) k)) = 1
-  simp only [h1, map_one]
-  exact map_one _
+  apply _root_.UpperTheory.V.Hi.inf_one <;> assumption
 
 end
 

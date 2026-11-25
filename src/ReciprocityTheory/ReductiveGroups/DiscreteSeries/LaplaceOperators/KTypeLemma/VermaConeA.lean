@@ -131,7 +131,7 @@ theorem vc_inRootCone_add_root {β : Fin n → ℝ} (hβ : InRootCone β) {c d :
     by_cases hab : a = c ∧ b = d
     · obtain ⟨rfl, rfl⟩ := hab
       simp [h, add_smul]
-    · rw [if_neg hab, if_neg hab]
+    · rw [ite_eq_right hab, ite_eq_right hab]
       simp
   have hind : (∑ a : Fin n, ∑ b : Fin n, (if a = c ∧ b = d then root c d else 0)) = root c d := by
     rw [Finset.sum_eq_single c (fun a _ ha => by simp [ha]) (by simp)]
@@ -174,23 +174,23 @@ theorem vcMon_weight (T : Fin n → Fin n → Module.End ℂ U) (hT : IsGlRep T)
       · have h2 : ¬ b = c := by
           rw [h1]
           exact fun h => hab h.symm
-        rw [if_pos h1, if_neg h2, sub_zero] at hc
+        rw [ite_eq_left h1, ite_eq_right h2, sub_zero] at hc
         rw [h1] at hc ⊢
-        rw [if_pos rfl, if_neg hab, sub_zero, Complex.ofReal_add, Complex.ofReal_one, add_smul,
+        rw [ite_eq_left rfl, ite_eq_right hab, sub_zero, Complex.ofReal_add, Complex.ofReal_one, add_smul,
           one_smul]
         rw [sub_eq_iff_eq_add] at hc
         rw [hc, add_comm]
       · by_cases h3 : c = b
         · have h2 : b = c := h3.symm
-          rw [if_neg h1, if_pos h2, zero_sub] at hc
+          rw [ite_eq_right h1, ite_eq_left h2, zero_sub] at hc
           rw [h3] at hc ⊢
-          rw [if_neg (Ne.symm hab), if_pos rfl, zero_sub, ← sub_eq_add_neg, Complex.ofReal_sub,
+          rw [ite_eq_right (Ne.symm hab), ite_eq_left rfl, zero_sub, ← sub_eq_add_neg, Complex.ofReal_sub,
             Complex.ofReal_one, sub_smul, one_smul]
           rw [LinearMap.neg_apply, sub_eq_iff_eq_add] at hc
           rw [hc, neg_add_eq_sub]
         · have h2 : ¬ b = c := fun h => h3 h.symm
-          rw [if_neg h1, if_neg h2, sub_zero, LinearMap.zero_apply, sub_eq_zero] at hc
-          rw [if_neg h1, if_neg h3, sub_zero, add_zero, hc]
+          rw [ite_eq_right h1, ite_eq_right h2, sub_zero, LinearMap.zero_apply, sub_eq_zero] at hc
+          rw [ite_eq_right h1, ite_eq_right h3, sub_zero, add_zero, hc]
     have e : ν + root a b - base = (ν - base) + root a b := by abel
     refine ⟨ν + root a b, hw, ?_, ?_⟩
     · rw [e]

@@ -140,7 +140,7 @@ theorem hasTypeAll_single [CompleteSpace H] {ε : Fin n → Bool} {σ : Mx n →
     · rw [Pi.single_eq_of_ne hi]
   · by_cases hi : i = 0
     · subst hi
-      simp only [if_true, Pi.single_eq_same]
+      simp only [ite_true, Pi.single_eq_same]
       have h1 := hb w hw
       have h2 := hd w hw
       have h3 : 0 ≤ sobNorm (fun g => σ (P * g * P⁻¹)) S₀ w := sobNorm_nonneg _ _ _

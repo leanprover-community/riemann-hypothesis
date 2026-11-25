@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.StarLabEvalZOfEqOne
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsBaryStageStart
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOfToRealRel
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NonnegSumSmulIntBilinFormToRealMemPsdCone
@@ -70,20 +71,7 @@ theorem inRCone_of_nsmul_eq {m : ℕ} {γ : Fin m → LinearMap.BilinForm ℤ X}
 theorem inRCone_face {m m' : ℕ} {γ : Fin m → LinearMap.BilinForm ℤ X} {s : Fin m' ↪ Fin m}
     {h : LinearMap.BilinForm ℤ X →ₗ[ℤ] ℤ} (hcut : IsFaceCut γ s h) {β : LinearMap.BilinForm ℤ X} (hβ : InRCone γ β)
     (h0 : h β = 0) : InRCone (fun j => γ (s j)) β := by
-  obtain ⟨c, hc, e⟩ := hβ
-  have e1 := apply_eq_of_toReal_eq e h
-  rw [h0, Int.cast_zero] at e1
-  have hz := (Finset.sum_eq_zero_iff_of_nonneg fun j _ =>
-    mul_nonneg (hc j) (show (0 : ℝ) ≤ h (γ j) by exact_mod_cast hcut.1 j)).1 e1.symm
-  have hc0 : ∀ j, j ∉ Set.range s → c j = 0 := fun j hj => by
-    have hne : (h (γ j) : ℝ) ≠ 0 := fun h0 => hj ((hcut.2 j).1 (by exact_mod_cast h0))
-    exact (mul_eq_zero.1 (hz j (Finset.mem_univ _))).resolve_right hne
-  refine ⟨fun i => c (s i), fun i => hc _, ?_⟩
-  rw [e]
-  classical
-  rw [← Finset.sum_map Finset.univ s (fun j => c j • toReal (γ j))]
-  refine (Finset.sum_subset (Finset.subset_univ _) fun j _ hj => ?_).symm
-  rw [hc0 j fun ⟨i, hi⟩ => hj (by simp [← hi]), zero_smul]
+  first | exact _root_.GlobalTheory.PolFan.StarLab.inRCone_face | exact @_root_.GlobalTheory.PolFan.StarLab.inRCone_face | apply _root_.GlobalTheory.PolFan.StarLab.inRCone_face <;> assumption
 
 theorem apply_eq_zero_of_genRank_le {m m' : ℕ} {γ : Fin m → LinearMap.BilinForm ℤ X} {s : Fin m' → Fin m}
     {h : LinearMap.BilinForm ℤ X →ₗ[ℤ] ℤ} (h0 : ∀ j, h (γ (s j)) = 0) (hr : genRank γ ≤ genRank fun j => γ (s j))

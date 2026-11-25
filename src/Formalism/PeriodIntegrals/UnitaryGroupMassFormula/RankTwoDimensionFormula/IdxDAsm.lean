@@ -30,18 +30,11 @@ theorem sMat_mulVec (b bs : Fin k → Fin n → A) (C D : Matrix (Fin k) (Fin k)
     simp only [Matrix.mulVec, dotProduct, Matrix.smul_apply, Matrix.vecMulVec_apply, Pi.smul_apply, smul_eq_mul,
       Finset.mul_sum, Finset.sum_mul]
     exact Finset.sum_congr rfl fun r _ => by ring
-  have hsum : ∀ (s : Finset (Fin k)) (f : Fin k → Matrix (Fin n) (Fin n) A),
-      (∑ i ∈ s, f i) *ᵥ y = ∑ i ∈ s, f i *ᵥ y := by
-    intro s f
-    classical
-    refine Finset.induction_on s (by simp) ?_
-    intro a s ha ih
-    rw [Finset.sum_insert ha, Finset.sum_insert ha, Matrix.add_mulVec, ih]
   unfold sMat
-  rw [Matrix.add_mulVec, Matrix.one_mulVec, hsum]
+  rw [Matrix.add_mulVec, Matrix.one_mulVec, Matrix.sum_mulVec]
   congr 1
   refine Finset.sum_congr rfl fun i _ => ?_
-  rw [hsum]
+  rw [Matrix.sum_mulVec]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [Matrix.add_mulVec, key, key, hrow_dot, hrow_dot]
 

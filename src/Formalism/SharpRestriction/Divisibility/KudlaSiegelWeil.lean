@@ -692,17 +692,4 @@ structure Sett (D : D7) (T : ThetaX D) (Lc : Loc D T) where
 
   f13 : InertPlaceConditions D := inert_conditions_hold D
 
-namespace Sett
-
-variable {Lc : Loc D T} (S : Sett D T Lc)
-
-end Sett
-
-namespace Sett
-
-variable {Lc : Loc D T} (S : Sett D T Lc)
-
-
-end Sett
-
 end Formalism.MainNotions.KudlaSiegelWeil

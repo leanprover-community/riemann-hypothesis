@@ -45,11 +45,6 @@ theorem tset_genSub_E {M : Type*} [AddCommGroup M] [Module ℂ M] (E : Fin n →
   intro T hT
   exact hT.2 a b v (hv T hT)
 
-theorem tset_actM_single {M : Type*} [AddCommGroup M] [Module ℂ M] (E : Fin n → Fin n → Module.End ℂ M)
-    (r d : Fin n) : actM E (Matrix.single r d (1 : ℂ)) = E r d := by
-  unfold actM
-  simp [Matrix.single_apply, ite_smul, ite_and]
-
 theorem tset_conj_single (k : Matrix (Fin n) (Fin n) ℂ) (r d a b : Fin n) :
     (k * Matrix.single r d (1 : ℂ) * kᴴ : Matrix (Fin n) (Fin n) ℂ) a b = k a r * star (k b d) := by
   simp [Matrix.mul_apply, Matrix.single_apply, Matrix.conjTranspose_apply, ite_and, ite_mul,
@@ -76,7 +71,7 @@ theorem tset_comb {H : Type*} [AddCommGroup H] [Module ℂ H] (k : Fin n → Fin
     rw [← Finset.sum_smul, ← hu s b, Finset.mul_sum]
     congr 1
     exact Finset.sum_congr rfl fun d _ => by ring
-  simp only [hb, mul_ite, mul_one, mul_zero, ite_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [hb, mul_ite, mul_one, mul_zero, ite_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 theorem tset_combd {H : Type*} [AddCommGroup H] [Module ℂ H] (k : Fin n → Fin n → ℂ)
     (hu : ∀ s b, ∑ d, k s d * star (k b d) = if s = b then 1 else 0) (X : Fin n → Fin n → Fin n → H)
@@ -97,7 +92,7 @@ theorem tset_combd {H : Type*} [AddCommGroup H] [Module ℂ H] (k : Fin n → Fi
     exact Finset.sum_congr rfl fun d _ => by ring
   simp only [ha, mul_ite, mul_one, mul_zero, ite_smul, zero_smul]
   rw [Finset.sum_comm]
-  simp only [Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem tset_casVal_add (lam : Fin n → ℝ) (s : Fin n) :
     casVal (lam + Pi.single s 1) = casVal lam + 2 * lam s + 1 := by
@@ -105,8 +100,8 @@ theorem tset_casVal_add (lam : Fin n → ℝ) (s : Fin n) :
       lam a * lam a + (if a = s then 2 * lam s + 1 else 0) := by
     intro a
     by_cases h : a = s
-    · subst h; rw [Pi.add_apply, Pi.single_eq_same, if_pos rfl]; ring
-    · rw [Pi.add_apply, Pi.single_eq_of_ne h, if_neg h]; ring
+    · subst h; rw [Pi.add_apply, Pi.single_eq_same, ite_eq_left rfl]; ring
+    · rw [Pi.add_apply, Pi.single_eq_of_ne h, ite_eq_right h]; ring
   simp only [casVal, nsq, dot, key]
   rw [Finset.sum_add_distrib, Finset.sum_ite_eq']
   simp <;> ring
@@ -117,8 +112,8 @@ theorem tset_casVal_sub (lam : Fin n → ℝ) (s : Fin n) :
       lam a * lam a + (if a = s then -2 * lam s + 1 else 0) := by
     intro a
     by_cases h : a = s
-    · subst h; rw [Pi.sub_apply, Pi.single_eq_same, if_pos rfl]; ring
-    · rw [Pi.sub_apply, Pi.single_eq_of_ne h, if_neg h]; ring
+    · subst h; rw [Pi.sub_apply, Pi.single_eq_same, ite_eq_left rfl]; ring
+    · rw [Pi.sub_apply, Pi.single_eq_of_ne h, ite_eq_right h]; ring
   simp only [casVal, nsq, dot, key]
   rw [Finset.sum_add_distrib, Finset.sum_ite_eq']
   simp <;> ring
@@ -266,8 +261,8 @@ theorem isGKEndo_eeF {ε : Fin n → Bool} {σ : Matrix (Fin n) (Fin n) ℂ → 
         intro r
         rw [map_add (f := _), hc r c a b (f r)]
         by_cases h : r = a
-        · rw [if_pos h, if_pos h, h]
-        · rw [if_neg h, if_neg h, map_zero]
+        · rw [ite_eq_left h, ite_eq_left h, h]
+        · rw [ite_eq_right h, ite_eq_right h, map_zero]
 
       simp only [e1, Finset.sum_add_distrib, Finset.sum_sub_distrib, hirr, Finset.sum_ite_eq,
       Finset.sum_ite_eq', Finset.mem_univ, reduceIte, map_sum]
@@ -280,13 +275,13 @@ theorem isGKEndo_eeF {ε : Fin n → Bool} {σ : Matrix (Fin n) (Fin n) ℂ → 
         intro s
         rw [map_sub, hc c s a b (f s)]
         by_cases h : s = b
-        · rw [if_pos h, if_pos h, h]
-        · rw [if_neg h, if_neg h, map_zero]
+        · rw [ite_eq_left h, ite_eq_left h, h]
+        · rw [ite_eq_right h, ite_eq_right h, map_zero]
 
       simp only [e2, Finset.sum_add_distrib, Finset.sum_sub_distrib, hirr, Finset.sum_ite_eq', Finset.mem_univ, reduceIte, map_sum, map_neg]
       by_cases hbc : b = c
-      · rw [if_pos hbc, if_pos hbc.symm]; abel
-      · rw [if_neg hbc, if_neg (Ne.symm hbc)]; abel
+      · rw [ite_eq_left hbc, ite_eq_left hbc.symm]; abel
+      · rw [ite_eq_right hbc, ite_eq_right (Ne.symm hbc)]; abel
 
 end Ambient
 

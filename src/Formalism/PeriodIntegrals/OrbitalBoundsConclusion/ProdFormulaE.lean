@@ -178,8 +178,8 @@ theorem clause2 (hT : Tr.TrSum) (hI : St.TrInt) (hR : St.ResCharIff) (h2 : Modul
   have hfib : ∀ p q, p ∈ fib q ↔ resChar p = q := by
     intro p q
     by_cases hq : q.Prime
-    · simp only [fib, dif_pos hq, Set.Finite.mem_toFinset, Set.mem_ofPred_eq]
-    · simp only [fib, dif_neg hq, Finset.notMem_empty, false_iff]
+    · simp only [fib, dite_eq_left hq, Set.Finite.mem_toFinset, Set.mem_ofPred_eq]
+    · simp only [fib, dite_eq_right hq, Finset.notMem_empty, false_iff]
       rintro rfl
       exact hq (hprime p)
 
@@ -392,8 +392,7 @@ theorem LocFam.linearIndependent [Fintype ι] (D : LocFam F ℓ ι) (hD : D.Over
     rw [LocFam.Φ_tmul, map_one, one_mul]
   rw [Fintype.linearIndependent_iff]
   intro g hg
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   obtain ⟨k1, hk1⟩ := hne
   obtain ⟨k0, -, hk0⟩ := Finset.exists_max_image Finset.univ (fun k => ‖g k‖) ⟨k1, Finset.mem_univ _⟩
   have hg0 : g k0 ≠ 0 := by

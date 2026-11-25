@@ -157,10 +157,6 @@ theorem fInertGe (D : D7) : FInertGe D := by
 
 theorem factDelDualNabla : FactDelDualNabla := factDelDualNabla_of _root_.Formalism.L2.DIV.weyl_eq_dual_nabla_holds
 
-section Check
-
-end Check
-
 end Formalism.BasicNotions
 
 end

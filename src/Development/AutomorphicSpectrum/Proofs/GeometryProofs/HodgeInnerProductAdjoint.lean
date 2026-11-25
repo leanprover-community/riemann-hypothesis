@@ -28,8 +28,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 open Filter Topology Matrix
 open scoped CategoryTheory.Obj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 open GlobalTheory.TangentOrigin
 
 section Unif

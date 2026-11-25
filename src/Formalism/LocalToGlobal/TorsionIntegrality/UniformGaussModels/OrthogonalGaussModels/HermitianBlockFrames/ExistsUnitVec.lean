@@ -70,26 +70,13 @@ theorem hf_smul_right (Γ : Matrix ι ι K) (c : K) (x y : ι → K) : S.hf Γ x
   rw [mulVec_smul, dotProduct_smul, smul_eq_mul]
 
 private theorem mulVec_single_apply_hermitian_block_frames (Γ : Matrix ι ι K) (i j : ι) (t : K) :
-    (Γ *ᵥ Pi.single j t) i = Γ i j * t := by
-  show ∑ k, Γ i k * (Pi.single j t : ι → K) k = Γ i j * t
-  rw [Finset.sum_eq_single j]
-  · rw [Pi.single_eq_same]
-  · intro k _ hk
-    rw [Pi.single_eq_of_ne hk, mul_zero]
-  · intro h
-    exact absurd (Finset.mem_univ j) h
+    (Γ *ᵥ Pi.single j t) i = Γ i j * t :=
+  dotProduct_single (Γ i) t j
 
 theorem hf_single (Γ : Matrix ι ι K) (i j : ι) (s t : K) :
     S.hf Γ (Pi.single i s) (Pi.single j t) = S.σ s * (Γ i j * t) := by
   unfold hf
-  rw [cv_single, ← mulVec_single_apply_hermitian_block_frames Γ i j t]
-  show ∑ k, (Pi.single i (S.σ s) : ι → K) k * (Γ *ᵥ Pi.single j t) k = _
-  rw [Finset.sum_eq_single i]
-  · rw [Pi.single_eq_same]
-  · intro k _ hk
-    rw [Pi.single_eq_of_ne hk, zero_mul]
-  · intro h
-    exact absurd (Finset.mem_univ i) h
+  rw [cv_single, single_dotProduct, mulVec_single_apply_hermitian_block_frames]
 
 theorem exists_not_NU {Γ : Matrix ι ι K} (hΓ : S.IntM Γ) (hU : S.UM Γ) (h0 : Γ ≠ 0) :
     ∃ i j, ¬ S.NU (Γ i j) := by

@@ -433,13 +433,13 @@ theorem norm_F_one_ge : ∃ A c : ℝ, 0 < A ∧ 0 < c ∧ ∀ (𝓕 : LFam) (χ
   have hP : ∀ t, 0 < t → |th (bRe 𝓕 1) t - ρ / t| ≤ C * 𝓕.B ^ 11 * min t (1 / t) := by
     intro t ht
     have := ((H 𝓕 1).1 t ht).2
-    rw [th_eq h11, LFam.res, if_pos rfl, ← Complex.ofReal_div, ← Complex.ofReal_sub,
+    rw [th_eq h11, LFam.res, ite_eq_left rfl, ← Complex.ofReal_div, ← Complex.ofReal_sub,
       Complex.norm_real, Real.norm_eq_abs] at this
     exact this
   have hQ : ∀ t, 0 < t → |th (bRe 𝓕 χ) t| ≤ C * 𝓕.B ^ 11 * min t (1 / t) := by
     intro t ht
     have := ((H 𝓕 χ).1 t ht).2
-    rw [th_eq hχ, LFam.res, if_neg h1, zero_div, sub_zero,
+    rw [th_eq hχ, LFam.res, ite_eq_right h1, zero_div, sub_zero,
       Complex.norm_real, Real.norm_eq_abs] at this
     exact this
   have hQ' : ∀ t, 1 ≤ t → |th (bRe 𝓕 χ) t| ≤ C * 𝓕.B * Real.exp (-(t / 2)) := by
@@ -536,8 +536,7 @@ theorem LFam.real_zero_far_from_one : ∃ A c : ℝ, 0 < A ∧ 0 < c ∧ ∀ (�
   intro 𝓕 χ β hχ hβ h0
   have hB : 0 < 𝓕.B := by linarith [𝓕.B_ge]
   have hβ1 : β ≤ 1 := by
-    by_contra hlt
-    push_neg at hlt
+    by_contra! hlt
     exact (_root_.GlobalTheory.Hk.LogDeriv.logDeriv_F 𝓕 χ β (by simpa using hlt)).2.2.1 h0
   obtain ⟨han, -, -, -⟩ := _root_.GlobalTheory.Hk.RayCont.continuation_growth 𝓕 χ
   have hn : ‖(1 : ℂ) - β‖ = 1 - β := by
@@ -776,13 +775,13 @@ theorem main : ∃ c : ℝ, 0 < c ∧ ∀ (𝓕 : LFam) (χ ψ : AddChar 𝓕.G 
     by_cases h1 : χ = 1
     · subst h1
       have hB := hb 𝓕 1 σ hσ1 hσ2 T hT
-      rw [if_pos rfl, hpole] at hB
+      rw [ite_eq_left rfl, hpole] at hB
       have h0 := (_root_.GlobalTheory.Hk.LFamPos.positivity 𝓕 1 1 σ 0 hσ1).2.1
       exact false_of_le_of_mul_hundred_mul_add_one_eq_one hC hℓ hcC hc hXT (by linarith)
     · have hB := hb 𝓕 χ σ hσ1 hσ2 T hT
-      rw [if_neg h1] at hB
+      rw [ite_eq_right h1] at hB
       have hB1 := hb 𝓕 1 σ hσ1 hσ2 ∅ (by simp)
-      rw [if_pos rfl, hpole, Finset.sum_empty] at hB1
+      rw [ite_eq_left rfl, hpole, Finset.sum_empty] at hB1
       have h0 := ((_root_.GlobalTheory.Hk.LFamPos.positivity 𝓕 χ χ σ 0 hσ1).2.2 hχ hχ).1
       exact false_of_le_of_mul_hundred_mul_add_one_eq_one hC hℓ hcC hc hXT (by linarith)
   · exfalso
@@ -790,18 +789,18 @@ theorem main : ∃ c : ℝ, 0 < c ∧ ∀ (𝓕 : LFam) (χ ψ : AddChar 𝓕.G 
     · subst h1
       have hψ1 : ψ ≠ 1 := fun h => hcp h.symm
       have hB1 := hb 𝓕 1 σ hσ1 hσ2 {β} (sg 1 β hβ hz)
-      rw [if_pos rfl, hpole, Finset.sum_singleton] at hB1
+      rw [ite_eq_left rfl, hpole, Finset.sum_singleton] at hB1
       have hBψ := hb 𝓕 ψ σ hσ1 hσ2 {β'} (sg ψ β' hβ' hz')
-      rw [if_neg hψ1, Finset.sum_singleton] at hBψ
+      rw [ite_eq_right hψ1, Finset.sum_singleton] at hBψ
       have h0 := ((_root_.GlobalTheory.Hk.LFamPos.positivity 𝓕 ψ ψ σ 0 hσ1).2.2 hψ hψ).1
       exact false_of_le_of_mul_hundred_mul_add_one_eq_one hC hℓ hcC hc (X := (analyticOrderNatAt (𝓕.F 1) β : ℝ) / (σ - β) +
         (analyticOrderNatAt (𝓕.F ψ) β' : ℝ) / (σ - β')) (by linarith) (by linarith)
     · by_cases h2 : ψ = 1
       · subst h2
         have hB1 := hb 𝓕 1 σ hσ1 hσ2 {β'} (sg 1 β' hβ' hz')
-        rw [if_pos rfl, hpole, Finset.sum_singleton] at hB1
+        rw [ite_eq_left rfl, hpole, Finset.sum_singleton] at hB1
         have hBχ := hb 𝓕 χ σ hσ1 hσ2 {β} (sg χ β hβ hz)
-        rw [if_neg h1, Finset.sum_singleton] at hBχ
+        rw [ite_eq_right h1, Finset.sum_singleton] at hBχ
         have h0 := ((_root_.GlobalTheory.Hk.LFamPos.positivity 𝓕 χ χ σ 0 hσ1).2.2 hχ hχ).1
         exact false_of_le_of_mul_hundred_mul_add_one_eq_one hC hℓ hcC hc (X := (analyticOrderNatAt (𝓕.F χ) β : ℝ) / (σ - β) +
           (analyticOrderNatAt (𝓕.F 1) β' : ℝ) / (σ - β')) (by linarith) (by linarith)
@@ -812,13 +811,13 @@ theorem main : ∃ c : ℝ, 0 < c ∧ ∀ (𝓕 : LFam) (χ ψ : AddChar 𝓕.G 
             _ = (χ * ψ) * ψ := (mul_assoc _ _ _).symm
             _ = ψ := by rw [h, one_mul]
         have hB1 := hb 𝓕 1 σ hσ1 hσ2 ∅ (by simp)
-        rw [if_pos rfl, hpole, Finset.sum_empty] at hB1
+        rw [ite_eq_left rfl, hpole, Finset.sum_empty] at hB1
         have hBχ := hb 𝓕 χ σ hσ1 hσ2 {β} (sg χ β hβ hz)
-        rw [if_neg h1, Finset.sum_singleton] at hBχ
+        rw [ite_eq_right h1, Finset.sum_singleton] at hBχ
         have hBψ := hb 𝓕 ψ σ hσ1 hσ2 {β'} (sg ψ β' hβ' hz')
-        rw [if_neg h2, Finset.sum_singleton] at hBψ
+        rw [ite_eq_right h2, Finset.sum_singleton] at hBψ
         have hBχψ := hb 𝓕 (χ * ψ) σ hσ1 hσ2 ∅ (by simp)
-        rw [if_neg hχψ, Finset.sum_empty] at hBχψ
+        rw [ite_eq_right hχψ, Finset.sum_empty] at hBχψ
         have h0 := ((_root_.GlobalTheory.Hk.LFamPos.positivity 𝓕 χ ψ σ 0 hσ1).2.2 hχ hψ).2
         exact false_of_le_of_mul_hundred_mul_add_one_eq_one hC hℓ hcC hc (X := (analyticOrderNatAt (𝓕.F χ) β : ℝ) / (σ - β) +
           (analyticOrderNatAt (𝓕.F ψ) β' : ℝ) / (σ - β')) (by linarith) (by linarith)
@@ -843,8 +842,7 @@ theorem re_one_div (a b : ℝ) : (1 / ((a : ℂ) + b * I)).re = a / (a ^ 2 + b ^
   simp
 
 theorem re_le_one {𝓕 : LFam} {χ : AddChar 𝓕.G ℂ} {w : ℂ} (hw : 𝓕.F χ w = 0) : w.re ≤ 1 := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   exact (_root_.GlobalTheory.Hk.LogDeriv.logDeriv_F 𝓕 χ w h).2.2.1 hw
 
 theorem one_le_order {𝓕 : LFam} {χ : AddChar 𝓕.G ℂ} {ρ : ℂ} (h : 1 / 2 < ρ.re)
@@ -1059,14 +1057,12 @@ theorem inv_le_ell : ∃ K : ℝ, 0 < K ∧ ∀ (𝓕 : LFam) (χ : AddChar 𝓕
     nlinarith
   · have hcase1 : χ = 1 → (30 * ε) ^ 2 ≤ γ ^ 2 := by
       intro h
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hB ⟨by rw [h, mul_one], hc⟩
     have hcase2 : χ * χ = 1 → (30 * ε) ^ 2 ≤ (2 * γ) ^ 2 := by
       intro h
       have : (30 * ε) ^ 2 ≤ γ ^ 2 := by
-        by_contra hc
-        push_neg at hc
+        by_contra! hc
         exact hB ⟨h, hc⟩
       nlinarith [sq_nonneg γ]
     have ha0 : 0 < 6 * ε := by positivity
@@ -1113,8 +1109,7 @@ theorem zero_free_region : ∃ c : ℝ, 0 < c ∧ ∀ (𝓕 : LFam) (χ : AddCha
   obtain ⟨K, hK, hKb⟩ := inv_le_ell
   refine ⟨1 / (4 * K + 400), by positivity, ?_⟩
   intro 𝓕 χ s _ hs hχ
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hℓ2 := 𝓕.two_lt_ell s.im
   have hℓpos : 0 < 𝓕.ell s.im := by linarith
   have hpos : 0 < (2 * K + 200) * 𝓕.ell s.im := mul_pos (by linarith) hℓpos

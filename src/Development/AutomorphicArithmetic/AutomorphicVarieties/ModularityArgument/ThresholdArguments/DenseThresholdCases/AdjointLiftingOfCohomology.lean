@@ -467,13 +467,13 @@ private theorem revM_mul (M : Matrix (Fin n) (Fin n) k) : revM k n * M = M.subma
   ext i j
   rw [Matrix.mul_apply]
   simp only [revM, Matrix.submatrix_apply, id, Matrix.one_apply, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq,
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
 
 private theorem mul_revM (M : Matrix (Fin n) (Fin n) k) : M * revM k n = M.submatrix id Fin.rev := by
   ext i j
   rw [Matrix.mul_apply]
   simp only [revM, Matrix.submatrix_apply, id, Matrix.one_apply, Fin.rev_eq_iff, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
 
 private theorem revM_sq : revM k n * revM k n = 1 := by
   rw [revM_mul]
@@ -778,7 +778,7 @@ theorem ptAutR'_alt :
     rfl
   rw [h4] at h3
   obtain ⟨P, hPair⟩ := ptPair K n r hr
-  haveI : IsAlgClosure T.L Ω := ⟨IsAlgClosure.isAlgClosed ℚ, Algebra.IsAlgebraic.tower_top (K := ℚ) _⟩
+  have : IsAlgClosure T.L Ω := ⟨IsAlgClosure.isAlgClosed ℚ, Algebra.IsAlgebraic.tower_top (K := ℚ) _⟩
   have h5 : Sd.IsAlgChar ι (K.twc n * κ⁻¹) := by
     obtain ⟨χ, hc, art, a', b1, b2, b3⟩ := h2
     exact ⟨hc, art, χ, a', b1, b2, b3⟩
@@ -807,7 +807,7 @@ theorem UpperTheory.V.Ws.hida_modular_ideal_map :
   intro _ Ω _ _ _ l _ c D T _ _ c' h K X B Λ ι J₀ hM φ hφ J hJ n φ' hφ'
   subst hJ
   have hl : ((l : ℕ) : B.B) ∈ maximalIdeal B.B := by
-    haveI := (UpperTheory.V.Base.dvrFacts l c'.O).2.2.1
+    have := (UpperTheory.V.Base.dvrFacts l c'.O).2.2.1
     have h1 : ((l : ℕ) : ℤ_[l]) ∈ maximalIdeal ℤ_[l] := by
       rw [PadicInt.maximalIdeal_eq_span_p]; exact Ideal.mem_span_singleton_self _
     have h2 := map_nonunit (algebraMap c'.O B.B) _ (map_nonunit (algebraMap ℤ_[l] c'.O) _ h1)
@@ -1048,9 +1048,6 @@ section
 open UpperTheory.V UpperTheory.V.Af UpperTheory.V.Br
 namespace UpperTheory.GalN.V.Win.N
 section
-open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Polynomial GlobalTheory.GalOfCusp UpperTheory.V.Af
-end
-section
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Polynomial
 open GlobalTheory.GalOfCusp UpperTheory.V.CongNum
 section
@@ -1133,15 +1130,15 @@ theorem number_sp4_of_admissible_to_admissible_n :
   intro hP hLP hA hR
   obtain ⟨c, A, hc⟩ := _root_.UpperTheory.GalN.V.Win.N.countQ_alt hP hLP hA 4 (by norm_num)
   refine ⟨c * 2 ^ A * 2, A + 1, fun e he M hM p w hp hw h5 hpM k hk z₁ z₂ z₃ h1 h2 h3 => ?_⟩
-  haveI : NeZero k := ⟨hk.ne'⟩
+  have : NeZero k := ⟨hk.ne'⟩
   obtain ⟨D, hD, hcl⟩ := hc ![(e : ℤ) + 1, e, 1, 0] (e + 1)
     (by
       rw [Fin.strictAnti_iff_succ_lt]
       intro i; fin_cases i <;> simp <;> omega)
     (by intro i; fin_cases i <;> simp [Fin.rev] <;> omega) (e + 1)
     (by intro i; fin_cases i <;> simp [abs_le] <;> omega) M hM p w hp hw hpM
-  haveI := D.fin
-  letI := Fintype.ofFinite D.S
+  have := D.fin
+  let := Fintype.ofFinite D.S
   let f : D.S × (ZMod k)ˣ → ℂ := fun x =>
     (D.β x.1).sum - eis4 p e (z₁ ^ (x.2 : ZMod k).val) (z₂ ^ (x.2 : ZMod k).val) (z₃ ^ (x.2 : ZMod k).val)
   have hzi : ∀ z : ℂ, z ^ k = 1 → IsIntegral ℤ z := fun z hz => IsIntegral.of_pow hk (hz ▸ isIntegral_one)

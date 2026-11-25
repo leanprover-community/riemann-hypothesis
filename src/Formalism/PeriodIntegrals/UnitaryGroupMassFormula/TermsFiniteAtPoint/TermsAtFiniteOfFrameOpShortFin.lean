@@ -16,6 +16,7 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermsFiniteAtPoi
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.StabilizerIndexVolumes.DiagMulOfBt
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermsFiniteAtPoint.CellBase, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermsFiniteAtPoint.CellBlock, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermsFiniteAtPoint.CellMain, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermsFiniteAtPoint.DdSPowLeOne, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermsFiniteAtPoint.FixedRel, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermsFiniteAtPoint.FixedZ, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermsFiniteAtPoint.ResFinAlt, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermsFiniteAtPoint.RightInvHolds, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermsFiniteAtPoint.SkewSolveAlt, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TermsFiniteAtPoint.TermsAtFiniteOfFrameOpShortFin
@@ -134,11 +135,7 @@ theorem lo_diag_mul {A B : Matrix (Fin k) (Fin k) K} (hA : A.BlockTriangular Ord
   · intro h; exact absurd (Finset.mem_univ i) h
 
 theorem lo_mul {A B : Matrix (Fin k) (Fin k) K} (hA : IsLoUni A) (hB : IsLoUni B) : IsLoUni (A * B) := by
-  have ht := (lo_bt hA).mul (lo_bt hB)
-  intro i j
-  refine ⟨fun h => ht (by simpa using h), fun h => ?_⟩
-  subst h
-  rw [lo_diag_mul (lo_bt hA) (lo_bt hB), (hA i i).2 rfl, (hB i i).2 rfl, one_mul]
+  apply _root_.Formalism.L2.SG.Pf.StabilizerIndexVolumes.lo_mul <;> assumption
 
 theorem lo_det {A : Matrix (Fin k) (Fin k) K} (hA : IsLoUni A) : A.det = 1 := by
   rw [Matrix.det_of_isLowerTriangular A (lo_bt hA)]
@@ -213,7 +210,7 @@ theorem fin_of_cong {α ι : Type*} [Finite ι] (X : Set α) (f : α → ι → 
   have h1 := hf x hx i
   have h2 := hf _ hy i
   have hg := congrFun hgy i
-  simp only [g, dif_pos h1, dif_pos h2] at hg
+  simp only [g, dite_eq_left h1, dite_eq_left h2] at hg
   rw [Ideal.Quotient.eq, Ideal.mem_span_singleton] at hg
   obtain ⟨o, ho⟩ := hg
   refine ⟨o, ?_⟩
@@ -547,23 +544,23 @@ theorem pm_cons (t : E) (s : ℕ) (bs : List (E × ℕ)) :
   ext (i | i) (j | j)
   · show ptEntry ((t, s) :: bs) (i : ℕ) (j : ℕ) = t * (if j = Fin.rev i then (1 : E) else 0)
     simp only [ptEntry]
-    rw [if_pos ⟨i.isLt, j.isLt⟩]
+    rw [ite_eq_left ⟨i.isLt, j.isLt⟩]
     have hiff : ((i : ℕ) + (j : ℕ) + 1 = s) ↔ j = Fin.rev i := by
       rw [Fin.ext_iff, Fin.val_rev]; omega
     by_cases h : j = Fin.rev i
-    · rw [if_pos (hiff.mpr h), if_pos h, mul_one]
-    · rw [if_neg (fun h' => h (hiff.mp h')), if_neg h, mul_zero]
+    · rw [ite_eq_left (hiff.mpr h), ite_eq_left h, mul_one]
+    · rw [ite_eq_right (fun h' => h (hiff.mp h')), ite_eq_right h, mul_zero]
   · show ptEntry ((t, s) :: bs) (i : ℕ) (s + (j : ℕ)) = 0
     have := i.isLt
     simp only [ptEntry]
-    rw [if_neg (by omega), if_neg (by omega)]
+    rw [ite_eq_right (by omega), ite_eq_right (by omega)]
   · show ptEntry ((t, s) :: bs) (s + (i : ℕ)) (j : ℕ) = 0
     have := j.isLt
     simp only [ptEntry]
-    rw [if_neg (by omega), if_neg (by omega)]
+    rw [ite_eq_right (by omega), ite_eq_right (by omega)]
   · show ptEntry ((t, s) :: bs) (s + (i : ℕ)) (s + (j : ℕ)) = ptEntry bs (i : ℕ) (j : ℕ)
     simp only [ptEntry]
-    rw [if_neg (by omega), if_pos ⟨by omega, by omega⟩, Nat.add_sub_cancel_left, Nat.add_sub_cancel_left]
+    rw [ite_eq_right (by omega), ite_eq_left ⟨by omega, by omega⟩, Nat.add_sub_cancel_left, Nat.add_sub_cancel_left]
 
 theorem bd_all : ∀ L : List (E × ℕ), (∀ b ∈ L, b.1 ≠ 0 ∧ 1 ≤ b.2) → BDm (pm L) := by
   intro L
@@ -708,14 +705,14 @@ theorem cellReduce_holds : CellReduce := by
     have hL : y.2.1 - x.2.1 = algebraMap (𝓞 E) E (D ^ (L.map Prod.snd).sum * b) • ML.map (algebraMap (𝓞 E) E) := by
       ext i j
       have := hML i j
-      simp only [f, Bool.false_eq_true, if_false] at this
+      simp only [f, Bool.false_eq_true, ite_false] at this
       simp only [Matrix.sub_apply, Matrix.smul_apply, Matrix.map_apply, smul_eq_mul]
       apply mul_left_cancel₀ hDE
       rw [mul_sub, ← this]; ring
     have hU : y.2.2 - x.2.2 = algebraMap (𝓞 E) E (D ^ (L.map Prod.snd).sum * b) • MU.map (algebraMap (𝓞 E) E) := by
       ext i j
       have := hMU i j
-      simp only [f, if_true] at this
+      simp only [f, ite_true] at this
       simp only [Matrix.sub_apply, Matrix.smul_apply, Matrix.map_apply, smul_eq_mul]
       apply mul_left_cancel₀ hDE
       rw [mul_sub, ← this]; ring
@@ -745,8 +742,6 @@ open scoped Classical
 namespace PI.TermsAtPtFiniteW
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.TermDef Formalism.L2.SG.Saturated
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem ndS_mul_int (D : D7) (a : Fin D.R.rS) (t : D.host.E) (ht : t ∈ aaS D a) :
     ∃ o : 𝓞 D.host.E, algebraMap (𝓞 D.host.E) D.host.E o = (ndS D : D.host.E) * t := by
@@ -833,8 +828,8 @@ theorem fInt_holds : FInt := by
         by_cases hac : a = c
         · subst hac
           obtain ⟨o, ho⟩ := ndS_mul_int D a t ht
-          exact ⟨o, by rw [ho, if_pos rfl, mul_one]⟩
-        · exact ⟨0, by rw [if_neg hac, mul_zero, mul_zero, map_zero]⟩
+          exact ⟨o, by rw [ho, ite_eq_left rfl, mul_one]⟩
+        · exact ⟨0, by rw [ite_eq_right hac, mul_zero, mul_zero, map_zero]⟩
       · intro y hy
         show ∃ o : (𝓞 D.host.E), algebraMap (𝓞 D.host.E) D.host.E o = (ndS D : D.host.E) * (VS D).hT (f c) (y)
         exact ⟨0, by rw [(hL y hy c).2, mul_zero, map_zero]⟩
@@ -992,7 +987,7 @@ theorem related_gen (hH : HeisOp) (hSk : SkewSolve) {T T' : E} (Λ : Submodule (
     · simp [s, h, not_lt.2 h.le, h.ne']
     · subst h
       have hh : star (S.hT (a c) (a c)) = S.hT (a c) (a c) := herm_star _ _
-      simp only [s, lt_irrefl, if_false, if_true, star_neg, star_mul', hh]
+      simp only [s, lt_irrefl, ite_false, ite_true, star_neg, star_mul', hh]
       linear_combination (-(S.hT (a c) (a c))) * hθ
     · simp [s, h, not_lt.2 h.le, h.ne', herm_star]
   have haa : ∀ c d, S.hT (a c) (a d) = (((nd * nQ) ^ 2 : ℕ) : E) * S.hT (a' c) (a' d) := by
@@ -1036,7 +1031,7 @@ theorem related_gen (hH : HeisOp) (hSk : SkewSolve) {T T' : E} (Λ : Submodule (
       congr 1
       exact Finset.sum_congr rfl fun c _ => mul_comm _ _
     simp only [this, hQβ, sub_smul, Finset.sum_sub_distrib, ite_smul, one_smul, zero_smul,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     have h2 : ∑ d, (v d * l b) • ρ d = l b • ∑ d, v d • ρ d := by
       rw [Finset.smul_sum]
       exact Finset.sum_congr rfl fun d _ => by rw [smul_smul, mul_comm]
@@ -1186,8 +1181,6 @@ theorem mem_orth_Xplus {T : E} (F : LFlag S r T) (x : S.V) (he : ∀ a, S.hT (F.
 end Gen
 
 section D7
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem zhat_cs (D : D7) {T T' : D.host.E} (F0 : FlagG (VS D) D.R.rS T) (F' : LFlag (D.sp.Y 0) D.R.rS T')
     (c : Fin D.R.rS) (b : Fin (D.R.rS + 1)) :
@@ -1403,7 +1396,7 @@ theorem fixedZhat_of (hH : HeisOp) (hSk : SkewSolve) (hS : ShortFin) (hRD : Rows
   rintro _ ⟨y, hy, rfl⟩
   refine ⟨κ y, ⟨y, hy, rfl⟩, ?_⟩
   have h : ∃ y' ∈ Y, κ y' = κ y := ⟨y, hy, rfl⟩
-  simp only [g, dif_pos h]
+  simp only [g, dite_eq_left h]
   obtain ⟨hy', hκ'⟩ := Classical.choose_spec h
   exact hrel _ hy' _ hy hκ'
 
@@ -1582,20 +1575,20 @@ theorem rightInv_holds : RightInv := by
     rw [hQ]
     by_cases hkj : k = j
     · subst hkj
-      simp only [if_true] at htj
+      simp only [ite_true] at htj
       have htv : t = (vv k)⁻¹ := by
         field_simp
         linear_combination htj
-      simp only [if_true]
+      simp only [ite_true]
       rw [htv] at hti
       linear_combination hti
     · have hjk : j ≠ k := fun h => hkj h.symm
-      simp only [if_neg hjk] at htj
+      simp only [ite_eq_right hjk] at htj
       have ht0 : t = 0 := by
         rcases mul_eq_zero.1 htj with h | h
         · exact h
         · exact absurd h hj
-      simp only [if_neg hkj, mul_zero, sub_zero]
+      simp only [ite_eq_right hkj, mul_zero, sub_zero]
       rw [ht0, zero_mul] at hti
       linear_combination hti
 
@@ -1661,7 +1654,7 @@ theorem skewSolve_holds : SkewSolve := by
     ext i j
     rw [Matrix.mul_apply]
     simp only [hQβ, mul_sub, Finset.sum_sub_distrib, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-      Finset.mem_univ, if_true]
+      Finset.mem_univ, ite_true]
     have hi := congrFun hxv i
     have h' : ∑ k, x i k * (v k * l j) = (x *ᵥ v) i * l j := by
       show _ = (∑ k, x i k * v k) * l j
@@ -1686,8 +1679,6 @@ noncomputable section
 namespace PI.TermsAtPtFiniteW
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.TermDef
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem termsAtFinite_of_frameOp_shortFin (hF : FrameOp) (hS : ShortFin) (D : D7) (u u' : D.what₂.Word) :
     TermsAtFinite D u u' :=

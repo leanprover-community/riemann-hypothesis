@@ -32,7 +32,7 @@ theorem posM_blk_zero {j : ℕ} (Y : UnipotentBlockColumnIndex k j j → Ad E) (
     posM Subtype.val Y i c = 0 := by
   simp only [posM, Matrix.sum_apply, Matrix.single_apply]
   refine Finset.sum_eq_zero fun t _ => ?_
-  rw [if_neg]
+  rw [ite_eq_right]
   rintro ⟨h1, h2⟩
   obtain ⟨t1, t2, t3⟩ := t.2
   rw [h1, h2] at *

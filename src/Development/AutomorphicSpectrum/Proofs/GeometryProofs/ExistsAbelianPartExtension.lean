@@ -57,8 +57,6 @@ namespace GlobalTheory.CompanionTheory.Ar.AbB
 
 open GlobalTheory GlobalTheory.UU GlobalTheory.UU.PackageDescent GlobalTheory.BiextTriv GlobalTheory.GeneratorLaw GlobalTheory.TorusUnit GlobalTheory.CompanionTheory.TorusPic
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 theorem pic_inj_field : ∀ (k : Type) [Field k] (G : Over (Sp k)) [GrpObj G] [IsCommMonObj G], IsSemiAbelian G → ∀ (T : TorusExtension G) (Y : Over (Sp k)), Smooth Y.hom → GeometricallyConnected Y.hom → ∀ (y₀ : 𝟙_ (Over (Sp k)) ⟶ Y) (c : Pic (T.B ⊗ Y).left), pull (lift (fst G Y ≫ T.q) (snd G Y)).left c = 0 → pull (lift (𝟙 T.B) (toUnit T.B ≫ y₀)).left c = 0 → c = 0 := by
   intro k _ G _ _ hG T Y hYs hYc y₀ c h₁ h₂
   obtain ⟨N, hN, rfl⟩ := cls_surj c
@@ -113,7 +111,7 @@ theorem pic_inj_field : ∀ (k : Type) [Field k] (G : Over (Sp k)) [GrpObj G] [I
   obtain ⟨f, hf⟩ := exists_unit_weight T.i T.q hiq ((proj T.q Y).left ≫ 𝟙 _)
     (lift (𝟙 T.B) (toUnit T.B ≫ y₀)).left y₀ (by
       rw [Category.comp_id, ← Over.comp_left, ← Over.comp_left, TorusPic.sec, lift_proj]
-      simp [comp_lift, toUnit_unique (T.q ≫ toUnit T.B) (toUnit G)]) hN u hu s hs χ hw
+      simp [comp_lift]) hN u hu s hs χ hw
   obtain ⟨t, ht⟩ := exists_gen_of_weight T.i T.q ker hN u hu χ hw f hf
   have h := (cls_eq_zero_iff (pull_isLB hN (𝟙 _))).2 ⟨t, ht⟩
   rwa [cls_pull hN, pull_id] at h

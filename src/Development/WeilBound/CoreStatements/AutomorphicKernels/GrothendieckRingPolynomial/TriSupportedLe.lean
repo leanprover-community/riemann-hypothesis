@@ -125,7 +125,7 @@ theorem tri_bij {σ : Type*} (w : σ → ℕ) (ψ : MvPolynomial σ ℤ →+* Mv
 theorem uni_inj {M I : Type*} (L : M ≃ I) (w : M → ℕ) (f : M → I →₀ ℤ)
     (h1 : ∀ m, f m (L m) = 1) (hlt : ∀ m n, f m (L n) ≠ 0 → m = n ∨ w m < w n) :
     Function.Injective (Finsupp.linearCombination ℤ f) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro a ha
   by_contra hne
   have hsupp : a.support.Nonempty := Finsupp.support_nonempty_iff.2 hne
@@ -172,7 +172,7 @@ theorem uni_exists {M I C : Type*} (L : M ≃ I) (c : M → C) (w : M → ℕ) (
       have hf : f n (L m) ≠ 0 := by
         intro hf0
         apply hvi
-        rw [hi', hv, Finsupp.sub_apply, hf0, sub_zero, Finsupp.single_apply, if_neg]
+        rw [hi', hv, Finsupp.sub_apply, hf0, sub_zero, Finsupp.single_apply, ite_eq_right]
         intro heq
         exact hne (L.injective heq).symm
       obtain ⟨hc, hw⟩ := hlt n m hf

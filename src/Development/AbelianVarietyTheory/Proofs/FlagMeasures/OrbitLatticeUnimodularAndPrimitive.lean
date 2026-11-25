@@ -113,7 +113,6 @@ section -- clump:auto
 open scoped Classical ENNReal Pointwise
 open MeasureTheory Matrix NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full
   Formalism.L2.SG.LocWSOf Formalism.MainNotions.S.Cnt Formalism.L2.SG.KappaOffDiagonal Formalism.MainNotions.LatticeGluingRadicals
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -176,14 +175,14 @@ theorem pr_mem (v : (VS D).V) : pr X v ∈ Wb X := by
   · rw [pr_apply]
 
     simp only [map_sub, map_sum, map_smul, X.ee, X.ef, smul_eq_mul, mul_zero, Finset.sum_const_zero, sub_zero,
-    mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, if_true, sub_self]
+    mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, ite_true, sub_self]
   · rw [pr_apply]
 
-    simp only [map_sub, map_sum, map_smul, X.ff, hT_fe, smul_eq_mul, mul_zero, Finset.sum_const_zero, mul_ite, mul_one, Finset.sum_ite_eq', Finset.mem_univ, if_true, sub_self]
+    simp only [map_sub, map_sum, map_smul, X.ff, hT_fe, smul_eq_mul, mul_zero, Finset.sum_const_zero, mul_ite, mul_one, Finset.sum_ite_eq', Finset.mem_univ, ite_true, sub_self]
 
 theorem pr_eX (c : Fin D.R.rS) : pr X (X.eX c) = 0 := by
   rw [pr_apply]
-  simp only [hT_fe, X.ee, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, if_true,
+  simp only [hT_fe, X.ee, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, ite_true,
     Finset.sum_const_zero, sub_self]
 
 theorem pr_X {x : (VS D).V} (hx : x ∈ Submodule.span D.host.E (Set.range X.eX)) : pr X x = 0 := by
@@ -319,7 +318,7 @@ theorem lmap_unimod (Y : Full X) (u : D.what₂.Word) (Λ : Submodule (𝓞 D.ho
       rw [hw']
 
       simp only [map_sub, map_sum, map_smul, hfe, smul_eq_mul, mul_ite, mul_one, mul_zero,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true, sub_self]
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true, sub_self]
     have hw'e : ∀ b, (VS D).hT (X.eX b) w' = 0 := by
       intro b
       rw [hw']

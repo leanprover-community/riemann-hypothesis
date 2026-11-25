@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HighestWeightDerivativeSumZero
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.CFPrimeB
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.DSymmHypsInhabited
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.PRVComponents
@@ -216,17 +217,7 @@ theorem ssh_casimir_eT {N : Type*} [AddCommGroup N] [Module ℂ N] (E : Fin n �
 
 theorem ssh_nsq_sub_root (lam : Fin n → ℝ) {a b : Fin n} (hab : a ≠ b) :
     nsq (lam - root a b) = nsq lam - 2 * (lam a - lam b) + 2 := by
-  have e : nsq (lam - root a b) = nsq lam - 2 * dot (root a b) lam + dot (root a b) (root a b) := by
-    unfold nsq dot
-    rw [mul_sum, ← sum_sub_distrib, ← sum_add_distrib]
-    refine sum_congr rfl fun c _ => ?_
-    simp only [Pi.sub_apply]
-    ring
-  rw [e, dot_root_left, dot_root_left]
-  have ha : root a b a = 1 := by simp [root, hab]
-  have hb : root a b b = -1 := by simp [root, Ne.symm hab]
-  rw [ha, hb]
-  ring
+  apply _root_.GlobalTheory.Jet.Schmid.nsq_sub_root <;> assumption
 
 end Shift
 

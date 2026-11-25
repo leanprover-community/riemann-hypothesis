@@ -47,9 +47,9 @@ theorem mp_hc (A : Module.End ℂ (MvPolynomial σ ℂ)) (P : MvPolynomial σ �
     simp
   unfold minusPart
   rw [map_finsum _ hfin, finsum_eq_single _ d]
-  · rw [hc_hc, if_pos rfl]
+  · rw [hc_hc, ite_eq_left rfl]
   · intro e he
-    rw [hc_hc, if_neg (Ne.symm he)]
+    rw [hc_hc, ite_eq_right (Ne.symm he)]
 
 theorem mp_comm (T A B : Module.End ℂ (MvPolynomial σ ℂ))
     (hT : ∀ e P, homogeneousComponent e (T P) = T (homogeneousComponent e P))
@@ -273,14 +273,14 @@ theorem jHarmonic_stable_second_action : KSt (units (fockAct2 p q r s)) (jHarm p
 theorem homogeneous_stable_first_action (d : ℕ) : KSt (units (fockAct1 p q r s)) (homog (Ix p q × Ix r s) d) := by
   unfold KSt units
   intro a b hab P hP
-  have hP' : P = homogeneousComponent d P := by rw [homogeneousComponent_of_mem hP, if_pos rfl]
+  have hP' : P = homogeneousComponent d P := by rw [homogeneousComponent_of_mem hP, ite_eq_left rfl]
   rw [hP', ← homogComponent_comm_first_action hab]
   exact homogeneousComponent_mem _ _
 
 theorem homogeneous_stable_second_action (d : ℕ) : KSt (units (fockAct2 p q r s)) (homog (Ix p q × Ix r s) d) := by
   unfold KSt units
   intro a b hab P hP
-  have hP' : P = homogeneousComponent d P := by rw [homogeneousComponent_of_mem hP, if_pos rfl]
+  have hP' : P = homogeneousComponent d P := by rw [homogeneousComponent_of_mem hP, ite_eq_left rfl]
   rw [hP', ← homogComponent_comm_second_action hab]
   exact homogeneousComponent_mem _ _
 
@@ -341,14 +341,14 @@ theorem low_homog (c d : Ix r s) {e : ℕ} {g : Pol p q r s} (hg : g ∈ homog (
     PI.FockOneDegW.lowOp (p := p) (q := q) c d g ∈ homog (Ix p q × Ix r s) e := by
   have h1 : PI.FockOneDegW.lowOp (p := p) (q := q) c d g =
       homogeneousComponent e (PI.FockOneDegW.lowOp (p := p) (q := q) c d g) := by
-    rw [PI.FockOneDegW.RedOps.hc_lowOp, homogeneousComponent_of_mem hg, if_pos rfl]
+    rw [PI.FockOneDegW.RedOps.hc_lowOp, homogeneousComponent_of_mem hg, ite_eq_left rfl]
   rw [h1]
   exact homogeneousComponent_mem _ _
 
 theorem low_homog_small (c d : Ix r s) {e : ℕ} (he : e < 2) {g : Pol p q r s}
     (hg : g ∈ homog (Ix p q × Ix r s) e) : PI.FockOneDegW.lowOp (p := p) (q := q) c d g = 0 := by
   refine hc_ext fun n => ?_
-  rw [PI.FockOneDegW.RedOps.hc_lowOp, homogeneousComponent_of_mem hg, if_neg (by omega), map_zero, map_zero]
+  rw [PI.FockOneDegW.RedOps.hc_lowOp, homogeneousComponent_of_mem hg, ite_eq_right (by omega), map_zero, map_zero]
 
 private theorem omE_add_pderiv_pderiv_eq_X_mul_X_of_not_sameBlock {c d : Ix r s} (hcd : ¬ sameBlock c d) (a : Ix p q) (P : Pol p q r s) :
     omE (a, c) (a, d) P +

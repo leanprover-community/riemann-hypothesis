@@ -182,7 +182,6 @@ theorem eventually_conj {A B : Type} [CommRing A] [TopologicalSpace A] [IsTopolo
 section Group
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev Formalism.L2.DIV
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 def finRing (D : D7) : AF D.host.F ⊗[D.host.F] D.host.E →+* EAf D :=
   (swapAE D).comp (Algebra.TensorProduct.map (sndA D.host.F) (AlgHom.id D.host.F D.host.E)).toRingHom
@@ -312,7 +311,6 @@ end Princ
 section Main
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.IndefR.Lev Formalism.L2.DIV
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {V : HSp D}
 
@@ -388,7 +386,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField
 open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Polynomial
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.CuspMult
 
 namespace GlobalTheory.PartDims

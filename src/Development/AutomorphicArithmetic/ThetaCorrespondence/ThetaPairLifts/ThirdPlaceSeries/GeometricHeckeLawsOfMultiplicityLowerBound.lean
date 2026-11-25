@@ -157,8 +157,6 @@ noncomputable section
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj
   AlgebraicGeometry
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.IndefiniteRowSideFullHecke.WeilPairingLaws
 
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out
@@ -196,8 +194,6 @@ noncomputable section
 open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCategory MonObj
   AlgebraicGeometry
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.PairingLawsCompare
 
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.IndefiniteRowSideFullHecke.WeilPairingLaws
@@ -232,12 +228,6 @@ theorem mem_tors_of_weilIs {S : Scheme.{0}} (P : PolAV S) (k : ℕ) {T : Over S}
     obtain ⟨V, hV, ⟨θx, θy, -, hy⟩, -⟩ := h p
     exact ⟨V, hV, θy, hy⟩
 
-section Clauses
-
-variable {S : Scheme.{0}} (P : PolAV S) (k : ℕ) (T : Over S)
-
-end Clauses
-
 end GlobalTheory.PairingLawsCompare
 end -- clump:auto
 end -- clump:auto
@@ -255,7 +245,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open GlobalTheory.ThetaTrace GlobalTheory.HeckeFrCompare GlobalTheory.PlaceInt
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.HkAnyField
 
@@ -546,8 +535,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 open GlobalTheory.IndefiniteRowSideFullHecke.FibrePushforwardExistenceTori GlobalTheory.HeckeFrCompare GlobalTheory.HeckePointLaw
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.HeckeBorelChange
 
 section SlopeTestRemainingChoices
@@ -716,7 +703,7 @@ theorem heckeStable : GlobalTheory.IndefiniteRowSideFullHecke.UnusedSlot39.Hecke
     rw [norm_mul, norm_one] at h4
     have h5 : ‖jj (algebraMap T'.V T'.Fr (u2 a : T'.V))‖ = 1 := by
       refine le_antisymm h1 (by_contra fun hlt => ?_)
-      push_neg at hlt
+      push Not at hlt
       have : ‖jj (algebraMap T'.V T'.Fr (u2 a : T'.V))‖ * ‖jj (algebraMap T'.V T'.Fr ((u2 a)⁻¹ : T'.Vˣ))‖ < 1 :=
         (mul_le_of_le_one_right (norm_nonneg _) h2).trans_lt hlt
       exact this.ne h4

@@ -113,12 +113,6 @@ structure Ctx {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] (B : Base E
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
-namespace Ctx
-
-variable {B : Base E} {r : ℕ} (C : Ctx B r)
-
-end Ctx
-
 end Formalism.MainNotions.S.LevR
 
 noncomputable section
@@ -162,12 +156,6 @@ end GCtx
 
 namespace Ctx
 
-variable {B : Base E} {r : ℕ} (C : Ctx B r)
-
-end Ctx
-
-namespace Ctx
-
 section Shape
 
 variable {B : Base E} {r : ℕ} {C : Ctx B r} {SS : Fin B.k0 → (Fin (r + 1) → ℂ) → E →L[ℂ] E} {b : Bool}
@@ -200,10 +188,3 @@ end Formalism.MainNotions.S.LevR
 noncomputable section
 
 set_option linter.unusedVariables false
-
-namespace Formalism.MainNotions.S.LevR
-
-open Formalism.QuantumDeterminants
-open Formalism.MainNotions.S.TopsChoicePartA
-
-end Formalism.MainNotions.S.LevR

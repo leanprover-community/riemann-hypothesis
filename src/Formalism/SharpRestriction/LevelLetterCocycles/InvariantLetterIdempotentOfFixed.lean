@@ -75,7 +75,7 @@ theorem invariantLetter_sub' {i : ZMod n} {x x' : W.DD T} (h : DL W T i x) (h' :
   rw [sub_eq_add_neg]; exact Formalism.MainNotions.RamifiedCoefficientChains.S9.dl_add W T h (invariantLetter_neg W T h')
 
 theorem invariantLetter_zero (i : ZMod n) : DL W T i (0 : W.DD T) :=
-  ⟨smul_zero _, fun δ _ => map_zero _⟩
+  ⟨smul_zero _, fun _ _ => map_zero _⟩
 
 theorem uniformizerLattice_neg {k : ℕ} {x : W.DD T} (h : InPN W T k x) : InPN W T k (-x) := by
   have := Formalism.MainNotions.RamifiedCoefficientChains.S9.inPN_smul W T (-1 : O) h
@@ -86,7 +86,7 @@ theorem uniformizerLattice_sub {k : ℕ} {x x' : W.DD T} (h : InPN W T k x) (h' 
   rw [sub_eq_add_neg]; exact Formalism.MainNotions.RamifiedCoefficientChains.S9.inPN_add W T h (uniformizerLattice_neg W T h')
 
 theorem uniformizerLattice_zero (k : ℕ) : InPN W T k (0 : W.DD T) :=
-  ⟨0, (W.N T).zero_mem, fun δ _ => map_zero _, (smul_zero _).symm⟩
+  ⟨0, (W.N T).zero_mem, fun _ _ => map_zero _, (smul_zero _).symm⟩
 
 theorem uniformizerLattice_antitone {k K : ℕ} (hk : k ≤ K) (hπ : W.π₀ ∈ W.AΔ) {x : W.DD T} (h : InPN W T K x) :
     InPN W T k x := by

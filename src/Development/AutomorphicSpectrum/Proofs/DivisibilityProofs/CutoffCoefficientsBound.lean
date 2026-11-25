@@ -50,7 +50,7 @@ theorem flat_85_bound : ∀ II : IntersectionSystem, ∀ (Ψ : Type) [Fintype Ψ
     refine Finset.sum_congr rfl fun c _ => ?_
     rw [hPP B₀ (by omega) c τ Q hQ, hdeg, mul_one]
   rw [hL, hhh, hrest] at hid
-  simp only [hSh, hTot, Finset.sum_ite_eq', Finset.mem_univ, if_true] at hid
+  simp only [hSh, hTot, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at hid
   have hvol : 0 < T.volT := Finset.sum_pos (fun c _ => hP.1 c) Finset.univ_nonempty
   have hv0 : T.volT ≠ 0 := hvol.ne'
   have key : (T.j : ℝ) * A₀ + N * b₀ = -(∑ c, h B₀ c τ * T.vol c) / T.volT := by

@@ -30,51 +30,11 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TendstoSelfI
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasPointClosureDimBasicProjArithAmbient
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianLineBundleIsNefPullback
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsAmbOfIsArithVar
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsBallFamMonoNegAdd
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsSeminormBallFamilySectionBalls
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RepresentsBaseBundlesAndTrivial
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Data.Nat.Choose.Multinomial
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RepresentsHermitianLineBundlePow
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Polynomial.Basic
 import Development.AbelianVarietyTheory.Definitions.Divisors.LineBundleGlobalSectionsDimCongrPicardClass
-import Mathlib.Algebra.Order.Star.Real
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoheightAddPointClosureDimEqDim
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ResidueDegreeOfIsClosedImmersion
 
@@ -405,12 +365,10 @@ open GlobalTheory GlobalTheory.ArInt GlobalTheory.CxPts GlobalTheory.Cartier Glo
 
 theorem GlobalTheory.HSNef.height_generic_nonneg_of_ample : GlobalTheory.Published.ArCalc → AmpleHS → ∀ (k : Type) [CommRing k] (X : Scheme.{0}) [IsIntegral X] (p : X ⟶ Sp k) (D : ℕ), IsArithVar p D → 1 ≤ D → ∀ (C : HermLB p) (h : X → ℝ), IsAmpleLB C.B → C.SemiPos D → C.IsArithHeight h → (∀ z, z ≠ genericPoint X → 0 ≤ h z) → 0 ≤ h (genericPoint X) := by
   intro hAr hHS k _ X _ p D hX hD C h hA hS hH hnn
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have hg : 0 < gdeg C D := _root_.GlobalTheory.HSNef.gdeg_pos_of_ample hAr hHS k X p D hX C hA hS
   set c := h (genericPoint X) with hcdef
   set g := gdeg C D with hgdef
-  have hD' : (1 : ℝ) ≤ D := by exact_mod_cast hD
   set x : ℝ := -c / g with hx
   have hx0 : 0 < x := div_pos (by linarith) hg
   have hxg : x * g = -c := by rw [hx]; field_simp
@@ -432,7 +390,6 @@ theorem GlobalTheory.HSNef.height_generic_nonneg_of_ample : GlobalTheory.Publish
   have hS' : C'.SemiPos D := hS.shift _ _
   obtain ⟨P, hPL, -⟩ := exists_pair C' C'
   have hrep : P.Rep 1 0 C' := hPL ▸ (GlobalTheory.VolBr.Pair.rep_base k X p P).1
-  have hfac : (0 : ℝ) < ((D + 1).factorial : ℝ) := by positivity
   have hε : 0 < α / (2 * ((D + 1).factorial : ℝ)) := by positivity
   obtain ⟨m, hm, hm0⟩ := ((_root_.GlobalTheory.HSNef.lc_one_eventually_ge hHS k X p D hX P 1 0 0 0 C' α hrep hA' hS' hα' _ hε).and
     (eventually_gt_atTop 0)).exists
@@ -444,8 +401,7 @@ theorem GlobalTheory.HSNef.height_generic_nonneg_of_ample : GlobalTheory.Publish
     have := mul_pos hε this
     simpa using lt_of_lt_of_le this hm
   have hn : 1 < (P.Bl ((m : ℤ) * 1) ((m : ℤ) * 0) 1).ncard := by
-    by_contra hle
-    push_neg at hle
+    by_contra! hle
     have : ((P.Bl ((m : ℤ) * 1) ((m : ℤ) * 0) 1).ncard : ℝ) ≤ 1 := by exact_mod_cast hle
     exact absurd hlc (not_lt.2 (Real.log_nonpos (Nat.cast_nonneg _) this))
   have hfin : (P.Bl ((m : ℤ) * 1) ((m : ℤ) * 0) 1).Finite :=
@@ -545,8 +501,7 @@ theorem htNef_of_isNef : GlobalTheory.Published.ArCalc → AmpleHS → SemiPull 
         have h1 : i (genericPoint Z) ≤ genericPoint X := genericPoint_specializes _
         exact (Specializes.antisymm (h0 h1) (genericPoint_specializes _)).eq
       have heD : e < D := by
-        by_contra hle
-        push_neg at hle
+        by_contra! hle
         obtain ⟨c, hc'⟩ : ∃ c : ℕ, Order.coheight (i (genericPoint Z)) = c := by
           refine ⟨(Order.coheight (i (genericPoint Z))).toNat, (ENat.coe_toNat fun ht => ?_).symm⟩
           rw [ht, top_add] at hco

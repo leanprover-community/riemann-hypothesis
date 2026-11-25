@@ -70,16 +70,11 @@ structure RegCharts (A : FinHolAtlas D X) where
 
   om : LocPot X
 
-  q : Fin n → (Fin D → ℂ) → ℝ
-
 namespace RegCharts
 
 variable {A : FinHolAtlas D X} (R : RegCharts A)
 
 def V'' (j : Fin R.n) : Set X := (R.ψ j).source ∩ R.ψ j ⁻¹' R.W'' j
-
-def u (φ : X → ℝ) (j : Fin R.n) (z : Fin D → ℂ) : ℝ := R.q j z + φ ((R.ψ j).symm z)
-
 
 end RegCharts
 
@@ -101,21 +96,6 @@ structure RegChartData (A : FinHolAtlas D X) extends RegCharts A where
   one_le_r : ∀ x ∈ Yo, 1 ≤ r x
 
   φ : X → ℝ
-  φ_smooth : A.SmoothOn Yo φ
-  psh : ∀ j, ReciprocityTheory.AnForm.A.IsPsh (W j \ coordDiv (S j)) (toRegCharts.u φ j)
-
-  C : ℝ
-  φ_le : ∀ x ∈ Yo, φ x ≤ C
-  le_φ : ∀ x ∈ Yo, -(C * Real.log (r x)) ≤ φ x
-  grad : ∀ j, ∀ z ∈ W j \ coordDiv (S j),
-    ‖fderiv ℝ (toRegCharts.u φ j) z‖ ≤
-      C * r ((ψ j).symm z) ^ C * Real.exp (r ((ψ j).symm z) / 2)
-
-structure BoundedThPsh {A : FinHolAtlas D X} (R : RegCharts A) where
-
-  φ : X → ℝ
-  bdd : ∃ B, ∀ x, |φ x| ≤ B
-  psh : ∀ j, ReciprocityTheory.AnForm.A.IsPsh (R.W j) (R.u φ j)
 
 def siegel (g : ℕ) : Set (Matrix (Fin g) (Fin g) ℂ) :=
   {Z | Zᵀ = Z ∧ (Z.map Complex.im).PosDef}
@@ -135,12 +115,6 @@ structure PeriodPolydisc (n a g : ℕ) where
   B_zero : ∀ i : Fin n, a ≤ (i : ℕ) → B i = 0
   period : ∀ i : Fin n, (i : ℕ) < a → ∀ w ∈ coverSet n a,
     τ (w + Pi.single i (2 * Real.pi * Complex.I)) = τ w + (B i).map (fun m : ℤ => (m : ℂ))
-
-namespace PeriodPolydisc
-
-variable {n a g : ℕ} (P : PeriodPolydisc n a g)
-
-end PeriodPolydisc
 
 theorem im_mul_inv_two_pi_I (x : ℝ) (w : ℂ) :
     ((x : ℂ) * (2 * Real.pi * Complex.I)⁻¹ * w).im = -x * w.re / (2 * Real.pi) := by

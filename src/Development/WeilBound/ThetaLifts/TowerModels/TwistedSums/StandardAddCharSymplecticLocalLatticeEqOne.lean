@@ -63,22 +63,7 @@ open Classical
 open scoped TensorProduct ComplexConjugate GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model HasExp SplitsFully Chars)
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 noncomputable section
-
-namespace Tw.LatVac
-open _root_.GlobalTheory
-
-variable {F : Type} [Field F] [NumberField F]
-
-def liftV (v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)) : Fv F v →ₗ[F] AF F :=
-  (LinearMap.inr F (Ainf F) (Af F)).comp (GlobalTheory.AdelicU.singleFin v)
-
-theorem evFin_liftV (v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)) (a : Fv F v) : GlobalTheory.AdelicU.evFin F v (liftV v a) = a :=
-  GlobalTheory.AdelicU.evalV_singleFin_self v a
-
-end Tw.LatVac
 
 namespace Tw.LatVac
 open _root_.GlobalTheory
@@ -90,11 +75,6 @@ theorem symp_smul_smul {F E : Type} [Field F] [NumberField F] [Field E] [NumberF
     GlobalTheory.WeilM.symp (R := AF F) (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA σ) ξ JA JB (a • x) (a' • y) =
       a * a' * GlobalTheory.WeilM.symp (R := AF F) (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA σ) ξ JA JB x y :=
   by apply _root_.GlobalTheory.LatVac.symp_smul_smul
-
-end Tw.LatVac
-
-namespace Tw.LatVac
-open _root_.GlobalTheory
 
 end Tw.LatVac
 end -- clump:auto
@@ -134,8 +114,6 @@ open IsDedekindDomain NumberField MeasureTheory Matrix
 open Classical
 open scoped TensorProduct ComplexConjugate GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model HasExp SplitsFully Chars)
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 

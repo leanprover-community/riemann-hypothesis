@@ -41,14 +41,7 @@ lemma hm_smul_r (c : ℂ) (x w : Fin m → ℂ) : herm H x (c • w) = star c * 
   simp [herm]
 
 lemma hm_symm (hH : Hᴴ = H) (x y : Fin m → ℂ) : herm H y x = star (herm H x y) := by
-  have hij : ∀ i j, H j i = star (H i j) := fun i j => by
-    have := congrFun (congrFun hH j) i
-    simpa [Matrix.conjTranspose_apply] using this.symm
-  simp only [herm, dotProduct, Matrix.mulVec, Pi.star_apply, star_sum, star_mul', star_star, Finset.mul_sum]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
-  rw [hij]
-  ring
+  apply _root_.Formalism.FourierDecayAlt.P.TwoByOneBlock.herm_symm <;> assumption
 
 lemma hm_self_re (hH : Hᴴ = H) (x : Fin m → ℂ) : herm H x x = ((herm H x x).re : ℂ) := by
   have h := hm_symm H hH x x

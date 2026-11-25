@@ -16,8 +16,6 @@ open scoped CategoryTheory.Obj CategoryTheory.MonObj
 open GlobalTheory.CechPic GlobalTheory.AbDual
 open GlobalTheory.IndefiniteRowSideFullHecke.ZeroSectionBase (IsPrincipalPol sqToBase)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.CompanionTheory.Hypotheses₂
 
 namespace Zarhin

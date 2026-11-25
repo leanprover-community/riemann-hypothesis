@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ActualAdjointnessFromHermitian
 public import Formalism.HermitianCurvature.StatementHeads
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OperatorPreservesFusionForms
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelImageArithmetic.GlevImageOf
@@ -75,7 +76,7 @@ theorem ιLev_inj {g g' : Mx k ρ} (h : ιLev k 1 ρ g = ιLev k 1 ρ g') : g = 
   simpa [ιLev, ha, hb] using h1
 
 theorem glev_image_last (r : ℕ) : Glev k r (Fin.last r) = ιLev k r 0 '' UH (Hpk k 0) :=
-  QnGlevImageW.glevImage_of PI.QnLevBasicsW.level_group_homomorphism PI.QnLevBasicsW.level_group_unitary_hermitian k r 0
+  QnGlevImageW.glevImage_of PI.QnLevBasicsW.level_group_unitary_hermitian k r 0
 
 theorem glev_iota (g : Mx k ρ) : ιLev k 1 ρ g ∈ Glev k (1 + ρ) (Fin.last (1 + ρ)) ↔ g ∈ Glev k ρ (Fin.last ρ) := by
   rw [glev_image_last, glev_image_last]
@@ -178,19 +179,7 @@ theorem tL_iota {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {z z' : Fi
 theorem diff_rad {r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {π : Mx k r → (Wp →L[ℂ] Wp)} {π' : Mx k r → (Wq →L[ℂ] Wq)}
     {Φ : Fn k r (Wq →L[ℂ] Wp)} (hΦ : Φ ∈ RadSp k r z z' π π') (g : Mx k r) {c : Fin r → ℂ} (hc : c ∈ OmX r) :
     DifferentiableAt ℝ (fun c' => Φ c' g) c := by
-  by_cases hx : (c, g) ∈ DomR k r z z'
-  · obtain ⟨U, F, hU, hxU, hF, hΦF⟩ := hΦ.2.1 (c, g) hx
-    have hU' : IsOpen ((fun c' => (c', g)) ⁻¹' U) := hU.preimage (continuous_id.prodMk continuous_const)
-    have hd : DifferentiableAt ℝ (fun c' => F (c', g)) c :=
-      ((hF.differentiableOn (by simp)).differentiableAt (hU.mem_nhds hxU)).comp c
-        ((differentiableAt_id).prodMk (differentiableAt_const _))
-    refine hd.congr_of_eventuallyEq ?_
-    filter_upwards [hU'.mem_nhds (show (c, g) ∈ U from hxU)] with c' hc'
-    exact hΦF (c', g) hc' hx.2.1
-  · have h0 : (fun c' => Φ c' g) = fun _ => 0 := by
-      funext c'
-      refine hΦ.1 (c', g) fun h => hx ⟨hc, h.2.1, h.2.2⟩
-    rw [h0]; exact differentiableAt_const _
+  apply _root_.Formalism.FourierDecayAlt.P.Qx5.slice_diff <;> assumption
 
 def insL : (Fin ρ → ℂ) →L[ℝ] (Fin (1 + ρ) → ℂ) :=
   LinearMap.toContinuousLinearMap
@@ -244,10 +233,10 @@ theorem opL_consC {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] {t : �
     unfold pOp
     by_cases hc : c ∈ OmX ρ
     · have hc' := (omX_consC ht c).2 hc
-      rw [if_pos hc, if_pos hc', consC_sh]
+      rw [ite_eq_left hc, ite_eq_left hc', consC_sh]
       unfold wirt
       rw [fderiv_consC t f c (hf hc'), fderiv_consC t f c (hf hc')]
-    · rw [if_neg hc, if_neg (fun h => hc ((omX_consC ht c).1 h))]
+    · rw [ite_eq_right hc, ite_eq_right (fun h => hc ((omX_consC ht c).1 h))]
   · show cOp l (fun c' => f (consC t c')) c = cOp (shS l) f (consC t c)
     simp only [cOp, consC_sh]
   · show ciOp l (fun c' => f (consC t c')) c = ciOp (shS l) f (consC t c)
@@ -256,10 +245,10 @@ theorem opL_consC {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] {t : �
     unfold pbOp
     by_cases hc : c ∈ OmX ρ
     · have hc' := (omX_consC ht c).2 hc
-      rw [if_pos hc, if_pos hc', consC_sh]
+      rw [ite_eq_left hc, ite_eq_left hc', consC_sh]
       unfold wirtBar
       rw [fderiv_consC t f c (hf hc'), fderiv_consC t f c (hf hc')]
-    · rw [if_neg hc, if_neg (fun h => hc ((omX_consC ht c).1 h))]
+    · rw [ite_eq_right hc, ite_eq_right (fun h => hc ((omX_consC ht c).1 h))]
   · show cbOp l (fun c' => f (consC t c')) c = cbOp (shS l) f (consC t c)
     simp only [cbOp, consC_sh]
   · show cbiOp l (fun c' => f (consC t c')) c = cbiOp (shS l) f (consC t c)

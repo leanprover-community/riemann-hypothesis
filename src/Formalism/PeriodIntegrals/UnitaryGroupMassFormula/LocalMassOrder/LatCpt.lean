@@ -6,6 +6,7 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassOrder.C
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassOrder.IsTopRingTens
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassOrder.SelfDualMeasureSFinite
 import Mathlib.RingTheory.PiTensorProduct
+import GroundTheory.IdeleRoots.TorusPowers.HeckeTensor
 
 @[expose] public section
 
@@ -41,18 +42,7 @@ def Osub : AddSubgroup (Fv F v ⊗[F] E) where
 
 theorem exists_intBasis : ∃ b : Module.Basis (Fin (Module.finrank F E)) F E,
     ∀ i, IsIntegral ℤ (b i) := by
-  classical
-  let b0 := Module.finBasis F E
-  obtain ⟨y, hy0, hy⟩ := exists_integral_multiples ℤ ℚ (L := E) (Finset.univ.image b0)
-  have hu : ∀ i : Fin (Module.finrank F E), IsUnit ((y : F)) := fun _ =>
-    isUnit_iff_ne_zero.2 (by exact_mod_cast hy0)
-  refine ⟨b0.isUnitSMul hu, fun i => ?_⟩
-  have h := hy (b0 i) (Finset.mem_image_of_mem _ (Finset.mem_univ i))
-  rw [Module.Basis.isUnitSMul_apply]
-  have e : ((y : F)) • b0 i = y • b0 i := by
-    rw [← Int.cast_smul_eq_zsmul F y (b0 i)]
-  rw [e]
-  exact h
+  apply _root_.GroundTheory.BlockD.ThmBHecke.exists_basis_isIntegral <;> assumption
 
 def ib : Module.Basis (Fin (Module.finrank F E)) F E := (exists_intBasis (F := F) (E := E)).choose
 
@@ -91,8 +81,7 @@ variable (v : HeightOneSpectrum (𝓞 F))
 
 theorem exists_ne_zero_mem_nhds {U : Set (Fv F v)} (hU : U ∈ 𝓝 (0 : Fv F v)) :
     ∃ t ∈ U, t ≠ 0 := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   have h0 : ({0} : Set (Fv F v)) ∈ 𝓝 (0 : Fv F v) := Filter.mem_of_superset hU fun t ht => h t ht
   have hop : IsOpen ({0} : Set (Fv F v)) := by
     refine isOpen_iff_mem_nhds.mpr fun x hx => ?_

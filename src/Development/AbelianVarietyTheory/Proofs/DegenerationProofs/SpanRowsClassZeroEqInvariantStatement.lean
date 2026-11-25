@@ -56,9 +56,7 @@ section -- clump:auto
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.ZH Classical
-attribute [local instance] SplitExt.free SplitExt.finite MvPolynomial.gradedAlgebra
 
 namespace GlobalTheory.ZH.WeightZero
 
@@ -136,7 +134,7 @@ theorem span_eq_of_test {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] [hA
     by_cases h : 0 = τ.wt (a i)
     · rw [hL, h, hb']
       exact Submodule.subset_span ⟨i, hz _ (ha i) h, rfl⟩
-    · rw [hL, ← hb', Matrix.mulVec_mulVec, hQ, if_neg h, Matrix.zero_mulVec]
+    · rw [hL, ← hb', Matrix.mulVec_mulVec, hQ, ite_eq_right h, Matrix.zero_mulVec]
       exact Submodule.zero_mem _
   refine le_antisymm (Submodule.span_le.2 ?_) (Submodule.span_le.2 ?_)
   · rintro _ ⟨i, hi, rfl⟩
@@ -153,7 +151,7 @@ theorem span_eq_of_test {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] [hA
     · simp
     · funext j
       rw [map_zero, _root_.one_mul, hQd]
-    · rw [hcol, hQ, if_pos rfl]
+    · rw [hcol, hQ, ite_eq_left rfl]
 
 theorem short_transfer {X Y Z : Type} [AddCommGroup X] [AddCommGroup Y] [AddCommGroup Z] (e : X ≃+ Y) (f : Z ≃+ Y)
     (q : QuadraticMap ℤ X ℝ) (q' : QuadraticMap ℤ Y ℝ) (hq : ∀ α, q α = q' (e α)) {N : ℕ} {y : Y}
@@ -219,9 +217,7 @@ section -- clump:auto
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.ZH Classical
-attribute [local instance] SplitExt.free SplitExt.finite MvPolynomial.gradedAlgebra
 
 end -- clump:auto
 end -- clump:auto

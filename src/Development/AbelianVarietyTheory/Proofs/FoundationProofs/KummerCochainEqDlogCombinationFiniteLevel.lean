@@ -872,7 +872,7 @@ theorem glue_fam (T : Tower p Ω) (F : ℕ → Ω → Ω) (hF : ∀ m, GlobalThe
   have hG : ∀ m, ∀ x ∈ Lev T (m + 1), IsInt (p := p) (F (M x) x - F m x) := by
     intro m x hx
     have h : ∃ m, x ∈ Lev T (m + 1) := ⟨m, hx⟩
-    have hM : M x = Classical.choose h := dif_pos h
+    have hM : M x = Classical.choose h := dite_eq_left h
     have ha := Classical.choose_spec h
     rw [hM]
     have h1 := hc _ (max m (Classical.choose h)) (le_max_right _ _) x ha
@@ -962,8 +962,6 @@ theorem natCast_eq_pow {Ω : Type} [Field Ω] (N p k : ℕ) (h : N = p ^ (k + 1)
   subst h; push_cast; rfl
 
 
-set_option maxHeartbeats 2000000 in
-set_option synthInstance.maxHeartbeats 200000 in
 theorem exists_levDer : ∀ (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω] [Algebra (O0 p) Ω], IsClo p Ω → ∀ (T : Tower p Ω) (m : ℕ), 1 ≤ m →
     ∃ dz dq : Ω → Ω, IsDer (Lev T m) dz ∧ IsDer (Lev T m) dq ∧ Vals T m dz dq := by
   intro p _ Ω _ _ hC T m hm
@@ -1254,9 +1252,9 @@ theorem exponents : ∀ (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω] [Algebra
   have h1 : (g (T.ζ (2 * n + k))) ^ (p ^ (2 * n + k)) = 1 := by
     rw [← map_pow, (T.prim _).pow_eq_one, map_one]
   obtain ⟨i, -, hi⟩ := (T.prim _).eq_pow_of_pow_eq_one h1
-  have hqne := qq_ne T (2 * n + k)
+  have hqne := GlobalTheory.K5.Basic.qq_ne_zero T (2 * n + k)
   have h2 : (g (T.qq (2 * n + k)) / T.qq (2 * n + k)) ^ (p ^ (2 * n + k)) = 1 := by
-    rw [div_pow, ← map_pow, kummerTower_qq_pow_level_eq_q, AlgEquiv.commutes, ← kummerTower_qq_pow_level_eq_q T (2 * n + k),
+    rw [div_pow, ← map_pow, GlobalTheory.K5.Basic.qq_pow, AlgEquiv.commutes, ← GlobalTheory.K5.Basic.qq_pow T (2 * n + k),
       div_self (pow_ne_zero _ hqne)]
   obtain ⟨j, -, hj⟩ := (T.prim _).eq_pow_of_pow_eq_one h2
   have hj' : g (T.qq (2 * n + k)) = T.ζ (2 * n + k) ^ j * T.qq (2 * n + k) := by
@@ -1275,7 +1273,7 @@ theorem exponents : ∀ (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω] [Algebra
   have kq := hq g hg
   rw [gz, ← ezn, ← pow_mul, ← pow_succ] at kz
   rw [gq, ← ezn, ← pow_mul] at kq
-  have kq' := mul_right_cancel₀ (qq_ne T (2 * n)) kq
+  have kq' := mul_right_cancel₀ (GlobalTheory.K5.Basic.qq_ne_zero T (2 * n)) kq
   rw [GlobalTheory.K5.Basic.zeta_pow_eq_iff] at kz kq'
   rw [Nat.modEq_iff_dvd] at kz kq'
   obtain ⟨s, hs⟩ := kz
@@ -1582,7 +1580,7 @@ theorem core (hp2 : p ≠ 2) (hΩ : IsClo p Ω) (T : Tower p Ω) (n : ℕ) (hn :
   have kq := _root_.GlobalTheory.KumDlog.kaehler_rel_isInt p Ω n ι _ hC (fun x => hLC (hL x)) Dq hDq _ _ _ _ _ _ hrel
   simp only [map_mul, hι.1, hι.2] at kz kq
   have z0 := zeta_ne T n
-  have q0 := qq_ne T n
+  have q0 := GlobalTheory.K5.Basic.qq_ne_zero T n
   have p0 := p_ne T
   have inv := int_mul (int_zeta_inv T n) (int_qq_inv T n)
   obtain ⟨N, hN⟩ : ∃ N, p ^ n = N + 1 := ⟨p ^ n - 1, by have := ppow_pos (p := p) n; omega⟩

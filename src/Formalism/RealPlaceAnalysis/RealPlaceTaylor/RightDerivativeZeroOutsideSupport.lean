@@ -75,8 +75,7 @@ lemma contDiff_frobenius {n : ℕ} : ContDiff ℝ ∞ (hs : Matrix (Fin n) (Fin 
 
 lemma frobenius_pos_of_indefinite_unitary {n : ℕ} {ε : Fin n → Bool} {g : Matrix (Fin n) (Fin n) ℂ} (hg : inUJ ε g)
     [Nonempty (Fin n)] : 0 < hs g := by
-  by_contra hle
-  push_neg at hle
+  by_contra! hle
   have h0 : hs g = 0 := le_antisymm hle (frobenius_nonneg g)
   have hg0 : g = 0 := by
     unfold hs at h0
@@ -294,17 +293,7 @@ lemma right_derivative_zero_outside_support {n : ℕ} {ε : Fin n → Bool} {φ 
   simp
 
 lemma continuous_smooth_on_group {n : ℕ} {ε : Fin n → Bool} {f : Matrix (Fin n) (Fin n) ℂ → ℂ} (hf : SmoothOnG ε f) :
-    Continuous (fun g : UJ ε => f (toM g)) := by
-  have hc : Continuous (toM : UJ ε → Matrix (Fin n) (Fin n) ℂ) := by
-    unfold toM
-    exact Units.continuous_val.comp continuous_subtype_val
-  rw [continuous_iff_continuousAt]
-  intro g
-  obtain ⟨U, F, hU, hgU, hF, hfF⟩ := hf (toM g) g.2
-  have hev : (fun g' : UJ ε => F (toM g')) =ᶠ[𝓝 g] (fun g' => f (toM g')) := by
-    filter_upwards [hc.continuousAt.preimage_mem_nhds (hU.mem_nhds hgU)] with g' hg'
-    exact (hfF _ hg' g'.2).symm
-  exact ContinuousAt.congr ((hF.continuousOn.continuousAt (hU.mem_nhds hgU)).comp hc.continuousAt) hev
+    Continuous (fun g : UJ ε => f (toM g)) := Formalism.REAL.continuous_smooth_on_group_eval hf
 
 lemma isCompact_frobenius_sublevel {n : ℕ} (ε : Fin n → Bool) (r : ℝ) : IsCompact {g : UJ ε | hsG g ≤ r} := by
   apply Formalism.REAL.isCompact_frobenius_ball_group

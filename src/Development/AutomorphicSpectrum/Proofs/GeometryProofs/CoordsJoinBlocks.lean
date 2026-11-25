@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordTieCompEquiv
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GlueApplyOfNotInFibre
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ZarhinBundleKernelFirstCoordEquations
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.JoinCoordsCoordTie
@@ -25,25 +26,10 @@ section Reindex
 
 variable {X : Scheme.{0}} {Ω : Type} [Field Ω]
 
-theorem inChart_comp_equiv (ξ : Spec (CommRingCat.of Ω) ⟶ X) {κ κ' : Type} (e : κ' ≃ κ) (x : κ → Ω) (c : κ')
-    (p : Cpt ξ) : InChart ξ (x ∘ e) c p ↔ InChart ξ x (e c) p := by
-  unfold InChart
-  refine and_congr Iff.rfl ⟨fun h c' => ?_, fun h c' => h _⟩
-  simpa using h (e.symm c')
-
 theorem coordTie_comp_equiv {o : Type} [CommRing o] [Algebra o Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X} {κ κ' : Type}
     (e : κ' ≃ κ) {x : κ → Ω} (h : CoordTie o ξ x) : CoordTie o ξ (x ∘ e) := by
-  have hr : ∀ c : κ', (Set.range fun j => (x ∘ e) j / (x ∘ e) c) = Set.range fun j => x j / x (e c) := fun c =>
-    e.surjective.range_comp (fun j => x j / x (e c))
-  refine ⟨h.gen, fun p => ?_, fun c hc => ?_, fun c hc a => ?_⟩
-  · obtain ⟨c, hc⟩ := h.cover p
-    exact ⟨e.symm c, (inChart_comp_equiv ξ e x _ p).2 (by simpa using hc)⟩
-  · obtain ⟨U, hU, hq⟩ := h.affine (e c) hc
-    refine ⟨U, hU, fun q => ?_⟩
-    rw [hq q]
-    exact exists_congr fun hh => (inChart_comp_equiv ξ e x c ⟨q, hh⟩).symm
-  · rw [hr c, h.ring (e c) hc a]
-    exact forall_congr' fun p => imp_congr (inChart_comp_equiv ξ e x c p).symm Iff.rfl
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.FlagBun.coordTie_comp_equiv <;> assumption
 
 end Reindex
 

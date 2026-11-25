@@ -225,13 +225,6 @@ theorem mem_zeroSet_iff_le_ker (J : Ideal (MvPolynomial (Fin n) ℂ)) (x : Fin n
     x ∈ zeroSet J ↔ J ≤ RingHom.ker (eval x : MvPolynomial (Fin n) ℂ →+* ℂ) := by
   simp only [zeroSet, Set.mem_ofPred_eq, SetLike.le_def, RingHom.mem_ker]
 
-theorem isClosed_zeroSet (J : Ideal (MvPolynomial (Fin n) ℂ)) : IsClosed (zeroSet J) := by
-  have h : zeroSet J = ⋂ f ∈ J, {x : Fin n → ℂ | eval x f = 0} := by
-    ext x
-    simp [zeroSet]
-  rw [h]
-  exact isClosed_biInter fun f _ => isClosed_eq (MvPolynomial.continuous_eval f) continuous_const
-
 theorem exists_minimalPrime_mem_zeroSet {I : Ideal (MvPolynomial (Fin n) ℂ)} {x : Fin n → ℂ}
     (hx : x ∈ zeroSet I) : ∃ W ∈ I.minimalPrimes, x ∈ zeroSet W := by
   rw [mem_zeroSet_iff_le_ker] at hx
@@ -312,7 +305,7 @@ theorem proof : CurveGermComponents.Statement := by
   have hfin : I.minimalPrimes.Finite := Ideal.finite_minimalPrimes_of_isNoetherianRing _ I
   refine ⟨⋂ W ∈ {W ∈ I.minimalPrimes | q ∉ zeroSet W}, (zeroSet W)ᶜ, ?_, ?_⟩
   · exact (Filter.biInter_mem (hfin.subset (Set.sep_subset _ _))).2 fun W hW =>
-      (isClosed_zeroSet W).isOpen_compl.mem_nhds hW.2
+      (GroundTheory.Heights₂.Heights.ComplexSets.FiniteProjectionCluster.isClosed_zeroSet W).isOpen_compl.mem_nhds hW.2
   · rintro x ⟨hxI, hxN⟩
     obtain ⟨W, hW, hxW⟩ := exists_minimalPrime_mem_zeroSet hxI
     have hqW : q ∈ zeroSet W := by

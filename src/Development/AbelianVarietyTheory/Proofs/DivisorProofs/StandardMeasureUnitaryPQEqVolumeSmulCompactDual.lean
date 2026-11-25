@@ -62,10 +62,7 @@ namespace GlobalTheory.LowRow.CompactDualScale
 
 theorem omegaDensity_smul {P Q : ℕ} {μ : Measure (UpqT P Q)} {c : ENNReal} (a : ENNReal) (ha : a ≠ ⊤)
     (h : OmegaDensity μ c) : OmegaDensity (a • μ) (a * c) := by
-  obtain ⟨lam, hlam, hl⟩ := h
-  refine ⟨lam, hlam, ?_⟩
-  refine (ENNReal.Tendsto.const_mul hl (Or.inr ha)).congr fun r => ?_
-  rw [Measure.smul_apply, smul_eq_mul, mul_div_assoc]
+  apply Formalism.BasicNotions.Examples₂.CD.omegaDensity_smul <;> assumption
 
 theorem omegaDensity_unique {P Q : ℕ} {μ : Measure (UpqT P Q)} {c c' : ENNReal}
     (h : OmegaDensity μ c) (h' : OmegaDensity μ c') : c = c' := by

@@ -107,14 +107,14 @@ lemma sig_order_mem (hord : SigmaOrder) {β z : ℂ} (h : z + β ∈ L.lattice) 
     meromorphicOrderAt (fun w => wSigma L (w + β)) z = ((1 : ℤ) : WithTop ℤ) := by
   have := hord L 1 β z one_ne_zero
   simp only [one_mul] at this
-  rw [this, if_pos (by rwa [one_mul])]
+  rw [this, ite_eq_left (by rwa [one_mul])]
   rfl
 
 lemma sig_order_notMem (hord : SigmaOrder) {β z : ℂ} (h : z + β ∉ L.lattice) :
     meromorphicOrderAt (fun w => wSigma L (w + β)) z = ((0 : ℤ) : WithTop ℤ) := by
   have := hord L 1 β z one_ne_zero
   simp only [one_mul] at this
-  rw [this, if_neg (by rwa [one_mul])]
+  rw [this, ite_eq_right (by rwa [one_mul])]
   rfl
 
 lemma sig_eventually_ne (he : SigmaEntire) (hord : SigmaOrder) (β z : ℂ) :

@@ -3,6 +3,7 @@ module
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.LocalUnfoldPfB
 import Mathlib.Tactic.Lemma
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.OntoStatementPfS
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.ExhaustFStatementPfC
 
 @[expose] public section
 
@@ -31,26 +32,10 @@ variable {X b1}
 theorem mat_uL (x : Frame X.Ψ r) (τ : X.Ψ) :
     mat (uL X x1' b1 x) τ = mat x1' τ * (mat b1 τ)⁻¹ * (mat x1' τ)⁻¹ * mat x τ := rfl
 
-private lemma det_mat_ne_zero_of_isOrth {x : Frame X.Ψ r} (ho : IsOrth X x) (τ : X.Ψ) : (mat x τ).det ≠ 0 := by
-  intro h0
-  have hg := ho τ
-  have e : gram τ.1 X.Gm (mat x τ) =
-      (mat x τ).transpose * X.Gm.map τ.1 * (mat x τ).map (starRingEnd ℂ) := by
-    ext a b
-    simp only [gram, hermC, col, Matrix.of_apply, Matrix.mul_apply, Matrix.transpose_apply,
-      Matrix.map_apply, Finset.sum_mul]
-    rw [Finset.sum_comm]
-  have hd := congrArg Matrix.det hg
-  rw [e, Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, h0, zero_mul, zero_mul,
-    Matrix.det_diagonal] at hd
-  refine (Finset.prod_ne_zero_iff.mpr fun a _ => ?_) hd.symm
-  unfold sgn
-  split_ifs <;> norm_num
-
 theorem uL_cpt (ho' : IsOrth X x1') (hb1 : b1 ∈ Bor X.Ψ r) (z : V (nd X)) (b : Frame X.Ψ r) :
     uL X x1' b1 (rmul (cpt X (rmul x1' b1) z) b) = rmul (cpt X x1' z) b := by
   funext τ
-  have hA := isUnit_iff_ne_zero.mpr (det_mat_ne_zero_of_isOrth ho' τ)
+  have hA := isUnit_iff_ne_zero.mpr (ExF.det_ne_of_orth _ ho' τ)
   have hB := isUnit_iff_ne_zero.mpr (hb1 τ).1
   have e : ∀ x b : Frame X.Ψ r, mat (rmul x b) τ = mat x τ * mat b τ := fun _ _ => rfl
   show mat (uL X x1' b1 (rmul (cpt X (rmul x1' b1) z) b)) τ = mat (rmul (cpt X x1' z) b) τ
@@ -61,7 +46,7 @@ theorem uL_cpt (ho' : IsOrth X x1') (hb1 : b1 ∈ Bor X.Ψ r) (z : V (nd X)) (b 
 theorem vL_uL (ho' : IsOrth X x1') (hb1 : b1 ∈ Bor X.Ψ r) (x : Frame X.Ψ r) :
     vL X x1' b1 (uL X x1' b1 x) = x := by
   funext τ
-  have hA := isUnit_iff_ne_zero.mpr (det_mat_ne_zero_of_isOrth ho' τ)
+  have hA := isUnit_iff_ne_zero.mpr (ExF.det_ne_of_orth _ ho' τ)
   have hB := isUnit_iff_ne_zero.mpr (hb1 τ).1
   have e : ∀ y : Frame X.Ψ r,
       mat (vL X x1' b1 y) τ = mat x1' τ * mat b1 τ * (mat x1' τ)⁻¹ * mat y τ := fun _ => rfl
@@ -74,7 +59,7 @@ theorem vL_uL (ho' : IsOrth X x1') (hb1 : b1 ∈ Bor X.Ψ r) (x : Frame X.Ψ r) 
 theorem vL_cpt (ho' : IsOrth X x1') (z : V (nd X)) (b : Frame X.Ψ r) :
     vL X x1' b1 (rmul (cpt X x1' z) b) = rmul (cpt X (rmul x1' b1) z) b := by
   funext τ
-  have hA := isUnit_iff_ne_zero.mpr (det_mat_ne_zero_of_isOrth ho' τ)
+  have hA := isUnit_iff_ne_zero.mpr (ExF.det_ne_of_orth _ ho' τ)
   have e : ∀ x b : Frame X.Ψ r, mat (rmul x b) τ = mat x τ * mat b τ := fun _ _ => rfl
   have e2 : ∀ y : Frame X.Ψ r,
       mat (vL X x1' b1 y) τ = mat x1' τ * mat b1 τ * (mat x1' τ)⁻¹ * mat y τ := fun _ => rfl

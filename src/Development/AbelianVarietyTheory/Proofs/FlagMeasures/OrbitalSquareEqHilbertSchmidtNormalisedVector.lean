@@ -165,10 +165,10 @@ theorem block_iff : ∀ (bs : List (ℂ × ℕ)) (a b : ℕ), a < b → b < D.pt
     simp only [blockIdx, D.ptPartner]
     by_cases h1 : a < s
     · by_cases h2 : b < s
-      · simp only [h1, h2, if_true, true_iff]; omega
-      · simp only [h1, h2, if_true, if_false]; omega
+      · simp only [h1, h2, ite_true, true_iff]; omega
+      · simp only [h1, h2, ite_true, ite_false]; omega
     · have h2 : ¬ b < s := by omega
-      simp only [h1, h2, if_false]
+      simp only [h1, h2, ite_false]
       have := block_iff bs (a - s) (b - s) (by omega) (by omega)
       omega
 

@@ -196,7 +196,7 @@ theorem line_fQ (s : ℂ) (hs : s = 1 ∨ s = -1) (z : ℂ) (m : ℕ) (Q : Fm n)
   have h3 := h1.mul h2
   refine h3.congr_deriv ?_
   simp only [fQ, opD, LinearMap.add_apply, opH_eq, evQ_add, evQ_multPart, evQ_derPart, trace_eU, sum_bool_fin, gD,
-    Bool.false_eq_true, if_false, if_true, Matrix.smul_apply, sandwich_eU, smul_eq_mul, cB, alB, vals,
+    Bool.false_eq_true, ite_false, ite_true, Matrix.smul_apply, sandwich_eU, smul_eq_mul, cB, alB, vals,
     Polynomial.eval_add, Polynomial.eval_C, Polynomial.eval_X, zero_smul, add_zero]
   simp only [Finset.mul_sum, mul_add]
   ring_nf
@@ -389,7 +389,7 @@ theorem opH_apply (s : ℂ) (m : ℕ) (b : Bool) (k l : Fin n) (Q : Fm n) :
   cases b <;>
   simp only [opH, cc, aa, LinearMap.add_apply, LinearMap.smul_apply, LinearMap.sum_apply,
     LinearMap.comp_apply, LinearMap.restrictScalars_apply, LinearMap.mulLeft_apply, Derivation.coeFn_coe,
-    Bool.false_eq_true, if_true, if_false]
+    Bool.false_eq_true, ite_true, ite_false]
 
 def RCP (T : Fm n →ₗ[ℂ] Fm n) : Prop := ∀ (R : Fm n) (q : Polynomial ℂ), T (R * MvPolynomial.C q) = T R * MvPolynomial.C q
 
@@ -690,10 +690,6 @@ theorem dl_X (s : ℂ) (b : Bool) (k l : Fin n) (v : Bool × Fin n × Fin n) :
     dl s b k l (X v) = if v.1 = b then k0 s b * (yv b v.2.1 k * yv b l v.2.2) else 0 := by
   simp [dl, MvPolynomial.mkDerivation_X]
 
-theorem smul_eq (c : ℂ) (p : Fm n) : c • p = MvPolynomial.C (Polynomial.C c) * p := by
-  rw [Algebra.smul_def, MvPolynomial.algebraMap_apply, Polynomial.algebraMap_apply]
-  rfl
-
 theorem sum_eq (s : ℂ) (b : Bool) (k l : Fin n) (p : Fm n) :
     (∑ a : Fin n, ∑ d : Fin n, (-(cc s b)) • (yv b a k * yv b l d * MvPolynomial.pderiv (b, a, d) p)) = dl s b k l p := by
   let D : Derivation (Polynomial ℂ) (Fm n) (Fm n) :=
@@ -711,7 +707,7 @@ theorem sum_eq (s : ℂ) (b : Bool) (k l : Fin n) (p : Fm n) :
 
       simp only [map_sum, Finset.sum_apply, Derivation.coeFnAddMonoidHom_apply, Derivation.smul_apply, smul_eq_mul]
     rw [this]
-    simp only [smul_eq, k0]
+    simp only [PositivityTheory.Rg.Sw.SP.smulC, k0]
     refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun d _ => ?_
     ring
   have hDl : D = dl s b k l := by
@@ -720,7 +716,7 @@ theorem sum_eq (s : ℂ) (b : Bool) (k l : Fin n) (p : Fm n) :
     rw [dl_X]
     have : (D : Fm n → Fm n) (X v) = ∑ a : Fin n, ∑ d : Fin n, (k0 s b * (yv b a k * yv b l d)) * MvPolynomial.pderiv (b, a, d) (X v) := by
       rw [hD]
-      simp only [smul_eq, k0]
+      simp only [PositivityTheory.Rg.Sw.SP.smulC, k0]
       refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun d _ => ?_
       ring
     rw [this]
@@ -728,17 +724,17 @@ theorem sum_eq (s : ℂ) (b : Bool) (k l : Fin n) (p : Fm n) :
     simp only [MvPolynomial.pderiv_X, Pi.single_apply]
     by_cases hb : b0 = b
     · subst hb
-      simp only [if_true]
+      simp only [ite_true]
       rw [Finset.sum_eq_single a0, Finset.sum_eq_single d0]
       · simp
       · intro d _ hd; simp [Prod.ext_iff, Ne.symm hd]
       · intro h; exact absurd (Finset.mem_univ _) h
       · intro a _ ha; apply Finset.sum_eq_zero; intro d _; simp [Prod.ext_iff, Ne.symm ha]
       · intro h; exact absurd (Finset.mem_univ _) h
-    · rw [if_neg hb]
+    · rw [ite_eq_right hb]
       apply Finset.sum_eq_zero; intro a _; apply Finset.sum_eq_zero; intro d _
       have : ¬ ((b0, a0, d0) = (b, a, d)) := fun h => hb (congrArg Prod.fst h)
-      simp only [this, if_false, mul_zero]
+      simp only [this, ite_false, mul_zero]
   rw [← hD, hDl]
 
 theorem opH_apply (s : ℂ) (m : ℕ) (b : Bool) (k l : Fin n) (p : Fm n) :
@@ -746,7 +742,7 @@ theorem opH_apply (s : ℂ) (m : ℕ) (b : Bool) (k l : Fin n) (p : Fm n) :
   rw [← sum_eq]
   simp only [opH, LinearMap.add_apply, LinearMap.smul_apply, LinearMap.coe_restrictScalars, LinearMap.mulLeft_apply,
     LinearMap.sum_apply, LinearMap.comp_apply, Derivation.coeFn_coe]
-  rw [smul_eq]
+  rw [PositivityTheory.Rg.Sw.SP.smulC]
   simp only [mm, k0, cc, al]
   congr 1
   split_ifs <;> ring
@@ -777,21 +773,20 @@ theorem key2 (s : ℂ) (b b' : Bool) (k l k' l' : Fin n) : ⁅dl s b k l, dl s b
   obtain ⟨b0, a0, d0⟩ := v
   by_cases h1 : b0 = b' <;> by_cases h2 : b0 = b
   · subst h1; subst h2
-    simp only [if_true, Derivation.leibniz, derivation_constant_vanishes, dl_yv, smul_eq_mul]
+    simp only [ite_true, Derivation.leibniz, derivation_constant_vanishes, dl_yv, smul_eq_mul]
     simp
     ring
   · subst h1
-    simp only [if_true, if_neg h2, Derivation.map_zero, Derivation.leibniz, derivation_constant_vanishes, smul_eq_mul,
+    simp only [ite_true, ite_eq_right h2, Derivation.map_zero, Derivation.leibniz, derivation_constant_vanishes, smul_eq_mul,
       dl_other s b b0 (Ne.symm h2)]
     simp
   · subst h2
-    simp only [if_true, if_neg h1, Derivation.map_zero, Derivation.leibniz, derivation_constant_vanishes, smul_eq_mul,
+    simp only [ite_true, ite_eq_right h1, Derivation.map_zero, Derivation.leibniz, derivation_constant_vanishes, smul_eq_mul,
       dl_other s b' b0 (Ne.symm h1)]
     simp
-  · simp [if_neg h1, if_neg h2]
+  · simp [ite_eq_right h1, ite_eq_right h2]
 
 end CommPf
-
 
 open CommPf in
 theorem comm : Comm := by
@@ -1475,9 +1470,9 @@ theorem integrand_eq (b : Bool) {c t : ℝ} (hc : 0 < c) (z : ℂ) (y : E n) :
         cls (if b then ((t / c : ℝ) : ℂ) else -((t / c : ℝ) : ℂ)) z m 0 1 y := by
   rw [sec_one_const b hc, cls_vac]
   cases b
-  · simp only [Bool.false_eq_true, if_false, vM_eq_uM]
+  · simp only [Bool.false_eq_true, ite_false, vM_eq_uM]
     ring
-  · simp only [if_true]
+  · simp only [ite_true]
     ring
 
 theorem wrOrd_of (hS : SPrime) : PositivityTheory.SiegelWeilFormula.Gen.WROrd := by

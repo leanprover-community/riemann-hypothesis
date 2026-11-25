@@ -6,48 +6,9 @@ public import Development.AbelianVarietyTheory.Proofs.HeightProofs.InnerDRepSq
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CompactAverageKFiniteFiniteRank
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsHermitianJmBracket
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.IterateOnePlusCasOfEq
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Tactic.ENatToNat
 import Std.Tactic.BVDecide.Normalize.Bool
 import Mathlib.Tactic.TypeStar
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InnerKAvgNeZero
@@ -110,10 +71,10 @@ theorem norm_one {a b : Fin n} (hab : a < b) : ∀ X ∈ f (a, b), B X X = 1 := 
   simp only [f, List.mem_cons, List.not_mem_nil, or_false] at hX
   rcases hX with rfl | rfl
   · simp only [B, smul_mul_smul_comm, Matrix.trace_smul, mul_add, add_mul, Matrix.trace_add, tr_unit,
-      h1, h2, and_self, if_true, if_false, sq_inv, smul_eq_mul]
+      h1, h2, and_self, ite_true, ite_false, sq_inv, smul_eq_mul]
     norm_num
   · simp only [B, smul_mul_smul_comm, Matrix.trace_smul, mul_sub, sub_mul, Matrix.trace_sub, tr_unit,
-      h1, h2, and_self, if_true, if_false, smul_eq_mul]
+      h1, h2, and_self, ite_true, ite_false, smul_eq_mul]
     have : invSqrtTwo * Complex.I * (invSqrtTwo * Complex.I) = -(1 / 2 : ℂ) := by
       rw [show invSqrtTwo * Complex.I * (invSqrtTwo * Complex.I) = invSqrtTwo * invSqrtTwo * (Complex.I * Complex.I) by ring,
         sq_inv, Complex.I_mul_I]; ring
@@ -125,7 +86,7 @@ theorem within {a b : Fin n} (hab : a < b) : (f (a, b)).Pairwise fun X Y => B X 
   simp only [f, List.pairwise_cons, List.mem_cons, List.not_mem_nil, or_false, forall_eq,
     List.Pairwise.nil, and_true, IsEmpty.forall_iff, implies_true]
   simp only [B, smul_mul_smul_comm, Matrix.trace_smul, mul_sub, add_mul, Matrix.trace_sub, Matrix.trace_add, tr_unit,
-    h1, h2, and_self, if_true, if_false, smul_eq_mul]
+    h1, h2, and_self, ite_true, ite_false, smul_eq_mul]
   simp
 
 theorem across {a b c d : Fin n} (hab : a < b) (hcd : c < d) (hne : (a, b) ≠ (c, d)) :
@@ -138,7 +99,7 @@ theorem across {a b c d : Fin n} (hab : a < b) (hcd : c < d) (hne : (a, b) ≠ (
   simp only [f, List.mem_cons, List.not_mem_nil, or_false] at hX hY
   rcases hX with rfl | rfl <;> rcases hY with rfl | rfl <;>
   simp only [B, smul_mul_smul_comm, Matrix.trace_smul, mul_sub, sub_mul, mul_add, add_mul, Matrix.trace_sub,
-    Matrix.trace_add, tr_unit, e1, e2, e3, e4, if_false, sub_zero, add_zero, smul_zero, Complex.zero_re]
+    Matrix.trace_add, tr_unit, e1, e2, e3, e4, ite_false, sub_zero, add_zero, smul_zero, Complex.zero_re]
 
 theorem pairwise_pList (ε : Fin n → Bool) : (pList ε).Pairwise fun X Y => B X Y = 0 := by
   rw [pList_eq, List.pairwise_flatMap]
@@ -166,9 +127,9 @@ theorem pB_orthonormal : ∀ (n : ℕ) (ε : Fin n → Bool) (a b : Fin (pList �
   have hpw := List.pairwise_iff_get.1 (PB.pairwise_pList ε)
   show PB.B (pB ε a) (pB ε b) = _
   rcases lt_trichotomy a b with h | rfl | h
-  · rw [if_neg h.ne]; exact hpw a b h
-  · rw [if_pos rfl]; exact PB.norm_pList ε _ (List.get_mem _ _)
-  · rw [if_neg h.ne', PB.B_comm]; exact hpw b a h
+  · rw [ite_eq_right h.ne]; exact hpw a b h
+  · rw [ite_eq_left rfl]; exact PB.norm_pList ε _ (List.get_mem _ _)
+  · rw [ite_eq_right h.ne', PB.B_comm]; exact hpw b a h
 
 end GlobalTheory.TypeSum.CasBasis
 
@@ -188,7 +149,7 @@ namespace GlobalTheory.TypeSum.CasBasis
 
 theorem unitE_apply_eq_zero_of_sign {n : ℕ} {ε : Fin n → Bool} {i j a b : Fin n}
     (h : (ε i = ε j) ≠ (ε a = ε b)) : unitE i j a b = 0 := by
-  rw [unitE, Matrix.single_apply, if_neg]
+  rw [unitE, Matrix.single_apply, ite_eq_right]
   rintro ⟨rfl, rfl⟩
   exact h rfl
 
@@ -356,7 +317,7 @@ theorem decomp (U : Mx n) :
   · rw [Finset.sum_eq_single r (fun x _ hx => Finset.sum_eq_zero fun y _ => by split_ifs <;> grind) (by simp),
       Finset.sum_eq_single t (fun y _ hy => by split_ifs <;> grind) (by simp)]
     simp [h, h.ne]
-  · simp only [if_true]
+  · simp only [ite_true]
     rw [Finset.sum_eq_zero fun x _ => Finset.sum_eq_zero fun y _ => by split_ifs <;> grind]
     simp
   · rw [Finset.sum_eq_single t (fun x _ hx => Finset.sum_eq_zero fun y _ => by split_ifs <;> grind) (by simp),
@@ -456,21 +417,21 @@ theorem trace_casimirAntisymPair_mul_self {a b : Fin n} (h : a < b) :
     trace ((invSqrtTwo • (unitE a b - unitE b a)) * (invSqrtTwo • (unitE a b - unitE b a))) = -1 := by
   simp only [Matrix.smul_mul, Matrix.mul_smul, Matrix.trace_smul, Matrix.mul_sub, Matrix.sub_mul,
     Matrix.trace_sub, trE]
-  simp only [h.ne, h.ne', and_self, if_true, if_false, smul_eq_mul]
+  simp only [h.ne, h.ne', and_self, ite_true, ite_false, smul_eq_mul]
   linear_combination (-2 : ℂ) * s2
 
 theorem trace_casimirSymPairI_mul_self {a b : Fin n} (h : a < b) :
     trace (((invSqrtTwo * Complex.I) • (unitE a b + unitE b a)) * ((invSqrtTwo * Complex.I) • (unitE a b + unitE b a))) = -1 := by
   simp only [Matrix.smul_mul, Matrix.mul_smul, Matrix.trace_smul, Matrix.mul_add, Matrix.add_mul,
     Matrix.trace_add, trE]
-  simp only [h.ne, h.ne', and_self, if_true, if_false, smul_eq_mul]
+  simp only [h.ne, h.ne', and_self, ite_true, ite_false, smul_eq_mul]
   linear_combination (2 * invSqrtTwo * invSqrtTwo) * Complex.I_mul_I - (2 : ℂ) * s2
 
 theorem p12 {a b : Fin n} (h : a < b) :
     trace ((invSqrtTwo • (unitE a b - unitE b a)) * ((invSqrtTwo * Complex.I) • (unitE a b + unitE b a))) = 0 := by
   simp only [Matrix.smul_mul, Matrix.mul_smul, Matrix.trace_smul, Matrix.mul_add, Matrix.sub_mul,
     Matrix.trace_add, Matrix.trace_sub, trE]
-  simp only [h.ne, h.ne', and_self, if_true, if_false, smul_eq_mul]
+  simp only [h.ne, h.ne', and_self, ite_true, ite_false, smul_eq_mul]
   ring
 
 theorem dp1 (a : Fin n) {b c : Fin n} (h : b < c) :
@@ -506,10 +467,10 @@ theorem pq_zero {p q : Fin n × Fin n} (hp : p.1 < p.2) (hq : q.1 < q.2) (hpq : 
     ∀ Y ∈ [invSqrtTwo • (unitE q.1 q.2 - unitE q.2 q.1), (invSqrtTwo * Complex.I) • (unitE q.1 q.2 + unitE q.2 q.1)],
     trace (X * Y) = 0 := by
   obtain ⟨h1, h2, h3, h4⟩ := pq_facts hp hq hpq
-  have e1 : trace (unitE p.1 p.2 * unitE q.1 q.2) = 0 := by rw [trE, if_neg h1]
-  have e2 : trace (unitE p.1 p.2 * unitE q.2 q.1) = 0 := by rw [trE, if_neg h2]
-  have e3 : trace (unitE p.2 p.1 * unitE q.1 q.2) = 0 := by rw [trE, if_neg h3]
-  have e4 : trace (unitE p.2 p.1 * unitE q.2 q.1) = 0 := by rw [trE, if_neg h4]
+  have e1 : trace (unitE p.1 p.2 * unitE q.1 q.2) = 0 := by rw [trE, ite_eq_right h1]
+  have e2 : trace (unitE p.1 p.2 * unitE q.2 q.1) = 0 := by rw [trE, ite_eq_right h2]
+  have e3 : trace (unitE p.2 p.1 * unitE q.1 q.2) = 0 := by rw [trE, ite_eq_right h3]
+  have e4 : trace (unitE p.2 p.1 * unitE q.2 q.1) = 0 := by rw [trE, ite_eq_right h4]
   intro X hX Y hY
   simp only [List.mem_cons, List.not_mem_nil, or_false] at hX hY
   rcases hX with rfl | rfl <;> rcases hY with rfl | rfl <;>
@@ -548,8 +509,8 @@ theorem kB_trace_orthonormal : ∀ (n : ℕ) (ε : Fin n → Bool) (i j : Fin (k
   intro n ε i j
   by_cases hij : i = j
   · subst hij
-    rw [if_pos rfl, kB, KOrth.kList_self ε _ (List.get_mem _ _)]; simp
-  · rw [if_neg hij]
+    rw [ite_eq_left rfl, kB, KOrth.kList_self ε _ (List.get_mem _ _)]; simp
+  · rw [ite_eq_right hij]
     have hP := List.pairwise_iff_get.mp (KOrth.kList_pairwise ε)
     rcases lt_or_gt_of_ne hij with h | h
     · rw [kB, hP i j h]; simp
@@ -1602,8 +1563,7 @@ theorem trace_bound : ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [NormedAddC
     rw [eQ, Complex.norm_real, Real.norm_eq_abs, sq_abs] at hH
     have hQ0 : 0 ≤ ∑ j, ‖x j‖ ^ 2 := Finset.sum_nonneg fun _ _ => by positivity
     have hQ : ∑ j, ‖x j‖ ^ 2 ≤ C0 * C' := by
-      by_contra hne
-      push_neg at hne
+      by_contra! hne
       have hK0 : 0 ≤ C0 * C' := mul_nonneg hC0 hC'0
       nlinarith
     refine le_of_eq_of_le (Finset.sum_congr rfl fun j _ => ?_) hQ

@@ -78,13 +78,13 @@ theorem isUnit_of_unit_coefficient (hOloc : IsLocalRing O)
   have hdvd : (PowerSeries.X : PowerSeries O) ^ k₀ ∣ a i - Lp := by
     rw [PowerSeries.X_pow_dvd_iff]
     intro d hd
-    rw [map_sub, hcL, if_pos hd, sub_self]
+    rw [map_sub, hcL, ite_eq_left hd, sub_self]
   obtain ⟨U, hU⟩ := hdvd
   have hUu : IsUnit U := by
     rw [PowerSeries.isUnit_iff_constantCoeff, ← PowerSeries.coeff_zero_eq_constantCoeff_apply]
     have h1 := congrArg (PowerSeries.coeff k₀) hU
-    rw [PowerSeries.coeff_X_pow_mul', if_pos le_rfl, Nat.sub_self, map_sub, hcL,
-      if_neg (lt_irrefl _), sub_zero] at h1
+    rw [PowerSeries.coeff_X_pow_mul', ite_eq_left le_rfl, Nat.sub_self, map_sub, hcL,
+      ite_eq_right (lt_irrefl _), sub_zero] at h1
     rw [← h1]
     exact hu₀
   let δf : LetA O n := fun j => if j = i then 1 else PowerSeries.X ^ k₀
@@ -420,8 +420,7 @@ theorem basis_combination_mem_invariants (i : ZMod n) (d : Fin r → W.EE) (hd :
   · rw [Finset.smul_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [← smul_assoc, (hd j).1]
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+  · rw [map_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [W.γD_smul, hB j δ hδ, (hd j).2 δ hδ]
 

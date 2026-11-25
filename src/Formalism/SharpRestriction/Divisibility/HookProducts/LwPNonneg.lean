@@ -101,7 +101,6 @@ theorem FInert_le (j : ℕ) (W : ℝ) (hW0 : 0 ≤ W) (hW : ∀ τ, 0 ≤ wj D j
       intro τ
       rw [div_le_div_iff₀ hq0 hp0]
       have h1 : ((D.R.k : ℝ) - 1) * wj D j τ ≤ ((D.R.k : ℝ) - 1) * W := mul_le_mul_of_nonneg_left (hW τ).2 hk0
-      have h2 : 0 ≤ ((D.R.k : ℝ) - 1) * wj D j τ := mul_nonneg hk0 (hW τ).1
       nlinarith
     refine le_trans (Finset.sum_le_sum fun τ _ => hterm τ) ?_
     rw [Finset.sum_const, nsmul_eq_mul]
@@ -185,21 +184,17 @@ theorem F_le (hFD : L.FDef) (hS : SizesAt L) (j : ℕ) (hj : j ∈ SizeData₂.l
     have hs : 0 ≤ ∑ t : HH D, min (wPl D j (false, t)) (wPl D j (true, t)) :=
       Finset.sum_nonneg fun t _ => le_min (hW _).1 (hW _).1
     have : -(((D.R.k : ℝ) - 1) / 2) * ∑ t : HH D, min (wPl D j (false, t)) (wPl D j (true, t)) ≤ 0 := by
-      have hk2 : 0 ≤ ((D.R.k : ℝ) - 1) / 2 := by linarith
       nlinarith
     linarith
   ·
     have hI := FInert_le j (4 * Pz ^ 5 * L.sc.b) hW0 hW hk (f_le L) _ hp
     unfold gC
-    rw [if_pos h3.2]
+    rw [ite_eq_left h3.2]
     refine le_trans hI ?_
     rw [div_le_div_iff_of_pos_right hp0]
-    have hk0 : 0 ≤ (D.R.k : ℝ) - 1 := by linarith
-    have e1 : ((D.R.k : ℝ) - 1) ≤ Pz := by linarith
     have e2 : 4 * Pz * ((D.R.k : ℝ) - 1) ≤ 4 * Pz * Pz := by nlinarith
     have e3 : 4 * Pz * ((D.R.k : ℝ) - 1) * (4 * Pz ^ 5 * L.sc.b) ≤ 4 * Pz * Pz * (4 * Pz ^ 5 * L.sc.b) :=
       mul_le_mul_of_nonneg_right e2 hW0
-    have e4 : 4 * Pz * Pz * (4 * Pz ^ 5 * L.sc.b) = 16 * Pz ^ 7 * L.sc.b := by ring
     linarith
   · exact hg0
 
@@ -213,11 +208,7 @@ theorem fo_le_pol (hFD : L.FDef) (hS : SizesAt L) (hM : Formalism.MainNotions.Co
   have hL0 : 0 ≤ L.sc.L := by
     simp only [Scale.L]
     exact Real.rpow_nonneg hx0.le _
-  have hf : (0 : ℝ) ≤ (D.R.f : ℝ) := by positivity
-  have hk0 : (0 : ℝ) ≤ (D.R.k : ℝ) := by positivity
   have hm0 : (0 : ℝ) ≤ (D.R.m : ℝ) := by positivity
-  have ht : (0 : ℝ) ≤ (D.R.t : ℝ) := by positivity
-  have hNm : (0 : ℝ) ≤ (D.R.N D.R.m : ℝ) := by positivity
   have hmP : (D.R.m : ℝ) ≤ Formalism.MainNotions.DIV.Proofs.szPol L := by
     unfold Formalism.MainNotions.DIV.Proofs.szPol; linarith
   have hQ1 : 1 ≤ Formalism.MainNotions.DIV.Proofs.szPol L := by

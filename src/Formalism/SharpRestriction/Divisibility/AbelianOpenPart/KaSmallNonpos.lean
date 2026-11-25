@@ -120,23 +120,6 @@ theorem kaBig_nonneg (D : D7) (hK : DV.KapDef D) {j : ℕ} (h1 : 1 ≤ j) (h2 : 
   rw [hsig, he, e1, e2]
   linarith
 
-private lemma aMinusQ_le_aMinusQ_succ (D : D7) (j : ℕ) (τ : D.what₂.Tau) (c : ℕ)
-    (hc : j + c + 1 < D.R.m) : DV.aMinusQ D j τ c ≤ DV.aMinusQ D j τ (c + 1) := by
-  have h0 : j + c < D.R.m := by omega
-  have h1 : j + (c + 1) < D.R.m := by omega
-  have g1 := (D.hc τ).gap_be ⟨j + c, h0⟩
-  have g2 : ((D.R.t : ℚ) + 3) / 2 ≤ (D.hc τ).b ⟨j + (c + 1), h1⟩ - (D.hc τ).e ⟨j + c, h0⟩ := by
-    have g3 := (D.hc τ).gap_eb ⟨j + c, h0⟩ (by show j + c + 1 < D.R.m; omega)
-    have e3 : (⟨j + (c + 1), h1⟩ : Fin D.R.m) = ⟨j + c + 1, by omega⟩ :=
-      Fin.ext (by show j + (c + 1) = j + c + 1; omega)
-    rw [e3]
-    exact g3
-  have ht : (0 : ℚ) ≤ D.R.t := Nat.cast_nonneg _
-  unfold DV.aMinusQ
-  rw [dite_eq_left h0, dite_eq_left h1]
-  push_cast
-  linarith
-
 theorem kaSmall_anti (D : D7) (hK : DV.KapDef D) {j : ℕ} (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) (τ : D.what₂.Tau) :
     Antitone (D.what₂.kaSmall j τ) := by
   have hs : (D.R.sigW j).2 = D.R.m - j := rfl
@@ -148,7 +131,7 @@ theorem kaSmall_anti (D : D7) (hK : DV.KapDef D) {j : ℕ} (h1 : 1 ≤ j) (h2 : 
     | zero => intro a _; simp
     | succ d ih =>
       intro a ha
-      have h3 := aMinusQ_le_aMinusQ_succ D j τ (a + d) (by omega)
+      have h3 := Inh.aMinusQ_step D j τ (a + d) (by omega)
       have h4 := ih a (by omega)
       rw [← add_assoc]
       linarith

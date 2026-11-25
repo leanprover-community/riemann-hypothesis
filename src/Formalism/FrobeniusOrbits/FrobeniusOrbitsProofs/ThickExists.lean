@@ -211,7 +211,7 @@ theorem hostThickExists : HostThickExists := by
         exact absurd (hs₁.trans hs₂.symm) h12
       · rw [Finset.card_singleton, Nat.cast_one]
         exact hsmall
-  push_neg at hsmall
+  push Not at hsmall
   have hnpos : (0 : ℝ) < n := by
     rcases Nat.eq_zero_or_pos n with hn | hn
     · rw [hn] at hsmall
@@ -226,8 +226,7 @@ theorem hostThickExists : HostThickExists := by
   have hxpos : 0 < x := by linarith
   have hs2 : s ^ 2 = x * y := by rw [hs]; exact Real.sq_sqrt (mul_pos hxpos hy0).le
   have hs32 : 32 * y < s := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     grind [mul_nonneg hs0 (sub_nonneg.mpr hc), mul_pos hpos hy0, sq_nonneg y]
   have hs16 : 16 < s := by linarith
   obtain ⟨S, hSdef⟩ : ∃ S : ℕ, S = ⌊s / y⌋₊ := ⟨_, rfl⟩

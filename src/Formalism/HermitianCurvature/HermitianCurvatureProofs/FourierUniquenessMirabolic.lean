@@ -49,12 +49,7 @@ theorem diagonal_cons_succ {n : ℕ} (a b : ℂ) (x : Fin n → ℂ) (i : Fin n)
 
 theorem xOf_redOf (m : ℕ) (p : XY m) (k : Fin (m + 1)) :
     xOf (strictUpper (redOf m p).2.2.1) (redOf m p).2.2.2 k = p.1 k := by
-  refine Fin.lastCases ?_ (fun k => ?_) k
-  · rw [G6.xOf_last]
-    simp [redOf, triXY, strictUpper, Fin.succ_last]
-  · rw [G6.xOf_castSucc]
-    have h : k.castSucc < k.succ := Fin.castSucc_lt_succ
-    simp [redOf, triXY, strictUpper, h]
+  apply _root_.Formalism.FourierDecayAlt.P.WeakApproximationGL.xOf_redOf <;> assumption
 
 theorem wM_redOf (m : ℕ) (t ρ₁ : ℂ) (p : XY m) :
     wMat (m + 2) * Mcoord t (strictUpper (redOf m p).2.2.1) (redOf m p).2.2.2

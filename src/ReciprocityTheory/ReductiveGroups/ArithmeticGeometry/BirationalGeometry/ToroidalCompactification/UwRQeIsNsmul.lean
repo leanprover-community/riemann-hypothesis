@@ -13,8 +13,6 @@ namespace ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G.Semi
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 theorem uwRQe_gen {X : Scheme.{0}} {L : LB X} (hL : L.IsLB) {Y Y' : Scheme.{0}} {K : Type} [Fintype K]
     {φ : K → (Y ⟶ X)} {φ' : K → (Y' ⟶ X)} {ε : K → ℤ} (g : Y' ⟶ Y) (hφ : ∀ k, φ' k = g ≫ φ k)
     (t : LB.Gen (LB.LinComb L φ ε)) (ht : t.IsGen) :

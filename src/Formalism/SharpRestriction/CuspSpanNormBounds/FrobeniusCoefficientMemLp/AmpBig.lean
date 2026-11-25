@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RightSingleRule.PatEntryZero
 public import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.AmpUnif
 public import Formalism.FormalDegreeBessel.FinalBF
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
@@ -29,17 +30,7 @@ theorem hsNormSq_nonneg' {Wp Wq : Type*} [NormedAddCommGroup Wp] [InnerProductSp
 
 theorem ell_one {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) :
     ell k r z (1 : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) = 0 := by
-  simp only [inWb] at hz
-  simp only [ell, eI]
-  apply Finset.sum_eq_zero
-  intro a _
-  split_ifs with h
-  · apply Matrix.one_apply_ne
-    intro heq
-    have h' := congrArg Fin.val heq
-    simp [eI] at h'
-  · rw [Matrix.one_mulVec]
-    exact hz _ (Or.inl (by simp [a.isLt]))
+  apply _root_.Formalism.FourierDecayAlt.Q.QRR.ell_one <;> assumption
 
 theorem psi_one {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (c : ℂ) :
     psi k r z c (1 : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) = 1 := by
@@ -177,8 +168,8 @@ theorem big_cell_eq : BigCellEq := by
     refine ⟨Equiv.refl _, fun a => if h : a.val < D.R.rS then q.1 ⟨a.val, h⟩ else
       herm (Hpk D.R.k D.R.rS) (Matrix.mulVec (bigCell D.R.k D.R.rS q.1 (μsec q.2)) W.z') W.z, fun a => ?_, ?_⟩
     · by_cases h : a.val < D.R.rS
-      · simp only [dif_pos h]; exact hc _
-      · simp only [dif_neg h]
+      · simp only [dite_eq_left h]; exact hc _
+      · simp only [dite_eq_right h]
         have hz0 := (Formalism.QuantumDeterminants.bigCellMinors _ _ _ _ q.1 (μsec q.2) hz hz').2.2 hc
         have hζ0 : q.2 ≠ 0 := by
           intro e; rw [e, Complex.normSq_zero] at hζ'

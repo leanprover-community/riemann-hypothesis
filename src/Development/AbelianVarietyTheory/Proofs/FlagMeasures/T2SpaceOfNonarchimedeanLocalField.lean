@@ -214,10 +214,7 @@ theorem secondCountable_localField (k : Type) [Field k] [ValuativeRel k] [Topolo
   apply _root_.PositivityTheory.RgUd.T.Desc.SLF.sck <;> assumption
 
 theorem t2Space_of_nonarchimedeanLocalField (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
-    [IsNonarchimedeanLocalField k] : T2Space k := by
-  letI := IsTopologicalAddGroup.rightUniformSpace k
-  haveI := isUniformAddGroup_of_addCommGroup (G := k)
-  infer_instance
+    [IsNonarchimedeanLocalField k] : T2Space k := PositivityTheory.RgUd.T.Desc.SLF.t2k
 
 theorem isOpen_integer_localField (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
     [IsNonarchimedeanLocalField k] : IsOpen (𝒪[k] : Set k) := by

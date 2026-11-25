@@ -18,55 +18,13 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MaximalCompa
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOrEqOfPlaceIdem
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsFockVacAtOfIsThetaAt
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsSelfDualCoordLatticeOfSelfDualFrameStatement
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.RingTheory.PiTensorProduct
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOnAtTau
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsNsmulIntMemLatO
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GramMapMulInv
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsCharFamIsVacVec
-import Mathlib.Tactic.ENatToNat
-import Std.Tactic.BVDecide.Normalize.BitVec
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExtremalNegativeSets, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsExtremalUnitVectorSameHighestImage, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FockPolynomialVectorsInjectiveNonzeroVacuumStatement, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LowestKTypeSmoothVectorsIsKStable, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MinorProductTorusWeightBlockTranslates, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PureTensorOSmul
@@ -83,8 +41,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.Cx Formalism.IndefR.Links Formalism.IndefR.FWT
 
 namespace GlobalTheory.Cmp.ExtremalNegativeSets
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Idx
 
@@ -150,8 +106,7 @@ theorem isWtOn_proj {E : H →L[ℂ] H} (hE : ∀ k ∈ Formalism.REAL.Kset ε, 
 
 theorem exists_not_orth {lam : Fin n → ℝ} {x : H} (hx : x ∈ lowKSub ε lam σ) (h0 : x ≠ 0) :
     ∃ S, IsKTypeOf ε σ (Formalism.QuantumDeterminants.lowK ε lam) S ∧ ∃ s ∈ S, ⟪x, s⟫_ℂ ≠ 0 := by
-  by_contra h
-  push_neg at h
+  by_contra! h
   have h1 : lowKSub ε lam σ ≤ LinearMap.ker (innerSL ℂ x : H →ₗ[ℂ] ℂ) :=
     sSup_le fun S hS s hs => h S hS s hs
   have h2 : ⟪x, x⟫_ℂ = 0 := h1 hx
@@ -242,7 +197,7 @@ theorem form_anti (a b : Fin n) (hab : a < b) (h : ε a = ε b) :
   simp only [eps_symm]
   cases ha : ε a
   · have hb : ε b = false := h ▸ ha
-    simp only [hb, Bool.false_eq_true, if_false, Nat.cast_lt]
+    simp only [hb, Bool.false_eq_true, ite_false, Nat.cast_lt]
     rcases lt_trichotomy ((revNeg ε).symm b) ((revNeg ε).symm a) with h1 | h1 | h1
     · exact h1
     · exact absurd ((revNeg ε).symm.injective h1) hab.ne'
@@ -252,7 +207,7 @@ theorem form_anti (a b : Fin n) (hab : a < b) (h : ε a = ε b) :
   · have hb : ε b = true := h ▸ ha
     have e1 : (revNeg ε).symm a = a := (Equiv.symm_apply_eq _).2 (revNeg_of_pos ε ha).symm
     have e2 : (revNeg ε).symm b = b := (Equiv.symm_apply_eq _).2 (revNeg_of_pos ε hb).symm
-    simp only [hb, if_true, e1, e2, neg_lt_neg_iff, Nat.cast_lt]
+    simp only [hb, ite_true, e1, e2, neg_lt_neg_iff, Nat.cast_lt]
     exact hab
 
 theorem wt_eq (hσ : IsURepOn (UJset ε) σ) {lam μ : Fin n → ℝ} {x : H} (hx : x ∈ lowKSub ε lam σ)
@@ -378,7 +333,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.FWT NumberField Matrix
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.fockPolynomialVectors_injective_nonzero_vacuum : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D) (S' : D.what₂.Tau → SPar) (M : DSModel T S') (BS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.rank) ℂ) (f : WO S T → ℂ), IsStdChar D ψ (-1) → IsInfFam θ → (∀ τ, IsCartanInv (gramAt D S τ) 1) → (∀ τ, IsONBasis (gramAt D S τ) 1 (BS τ) S.rank) → IsThetaFunO ψ S T f → f ≠ 0 → (∀ τ, IsFockVacAt (heisO ψ S T) θ τ (cplxO 1 (cart M τ)) f) → Function.Injective (pureTensorO ψ θ S T (fun _ => 1) (cart M) BS (onb M) f) := by
   first | exact @GlobalTheory.FockIndep.pureTensorO_injective
@@ -478,8 +432,6 @@ theorem smoothVec_apply {n : ℕ} {ε : Fin n → Bool} {H : Type} [NormedAddCom
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult
   Formalism.IndefR.Datum Formalism.IndefR.FWT
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem isKStableOn_lowKSub_inf_sm (D : D7) (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S)
     (τ : D.what₂.Tau) : IsKStableOn (M.ε τ) (M.σ τ) (lowKSub (M.ε τ) (M.lam τ) (M.σ τ) ⊓ M.sm τ) := by
   intro k hk w hw
@@ -510,7 +462,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.FWT NumberField Matrix
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.MinorWeight
 
@@ -676,7 +627,7 @@ theorem good_mnr_self (τ : D.what₂.Tau) (p p₀ k : ℕ) (hp : p₀ = 0 ∨ p
   classical
   by_cases hk : ∀ β : Fin k, p₀ + β < m
   swap
-  · push_neg at hk
+  · push Not at hk
     obtain ⟨β, hβ⟩ := hk
     have h0 : (mnr τ p₀ k r : MvPolynomial (FVar D m n) ℂ) = 0 := by
       unfold mnr
@@ -719,7 +670,7 @@ theorem good_mnr_self (τ : D.what₂.Tau) (p p₀ k : ℕ) (hp : p₀ = 0 ∨ p
     refine Filt.sum _ _ fun f _ => ?_
     by_cases hge : ∀ β, p₀ ≤ (f β : ℕ)
     swap
-    · push_neg at hge
+    · push Not at hge
       obtain ⟨β, hβ⟩ := hge
       rcases hp with rfl | rfl
       · omega
@@ -776,7 +727,6 @@ noncomputable section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct InnerProductSpace
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.IoExtremal
 
@@ -810,7 +760,7 @@ theorem thPVec_ne_zero {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {S T : H
           GlobalTheory.PlaceVec.omegaQ_congr Q _ ξ _ fun PP hPP => h PP (Finset.mem_union_right _ hPP)])
     fun hz => h3 ?_
   have := congrFun hz x
-  rwa [if_pos ⟨h1, h2⟩] at this
+  rwa [ite_eq_left ⟨h1, h2⟩] at this
 
 abbrev sub {m n : ℕ} (c : D.what₂.Tau → Matrix (Fin m) (Fin m) ℂ) : PolF D m n →ₐ[ℂ] PolF D m n :=
   MvPolynomial.aeval fun v : FVar D m n => ∑ b, c v.1 b v.2.1 • (MvPolynomial.X (v.1, b, v.2.2) : PolF D m n)
@@ -866,7 +816,7 @@ theorem tw_block {m p : ℕ} {ε : Fin m → Bool} (hε : ∀ a, ε a = decide (
   have e2 : ε b = true := by simp [hε, hb]
   simp only [Formalism.REAL.Jm, mul_diagonal, diagonal_mul, e1, e2] at h
   have : k b a = 0 := by
-    simp only [Bool.false_eq_true, if_false, if_true] at h
+    simp only [Bool.false_eq_true, ite_false, ite_true] at h
     linear_combination (-1 / 2) * h
   simp [tw, this]
 
@@ -1025,9 +975,9 @@ theorem sub_diag {m n : ℕ} (τ : D.what₂.Tau) (l : Fin m → ℂ) :
   dsimp only
   by_cases e : ρ = τ
   · subst e
-    rw [Function.update_self, if_pos rfl, Finset.sum_eq_single a (fun b _ hb => by rw [diagonal_apply_ne _ hb, zero_smul])
+    rw [Function.update_self, ite_eq_left rfl, Finset.sum_eq_single a (fun b _ hb => by rw [diagonal_apply_ne _ hb, zero_smul])
       (fun h => (h (Finset.mem_univ _)).elim), diagonal_apply_eq]
-  · rw [Function.update_of_ne e, if_neg e, Finset.sum_eq_single a (fun b _ hb => by rw [Matrix.one_apply_ne hb, zero_smul])
+  · rw [Function.update_of_ne e, ite_eq_right e, Finset.sum_eq_single a (fun b _ hb => by rw [Matrix.one_apply_ne hb, zero_smul])
       (fun h => (h (Finset.mem_univ _)).elim), Matrix.one_apply_eq]
 
 
@@ -1081,7 +1031,7 @@ theorem delta_weights {m n : ℕ} (p q : D.what₂.Tau → ℕ) (ap am : D.what�
       rw [Finsupp.prod_fintype _ _ (fun _ => pow_zero _), Fintype.prod_prod_type,
         Finset.prod_eq_single τ (fun ρ _ hρ => by simp [hρ]) (fun h => (h (Finset.mem_univ _)).elim),
         Fintype.prod_prod_type] at h'
-      simp only [if_true, ← Complex.exp_nat_mul, ← Complex.exp_sum, ← Complex.exp_add] at h'
+      simp only [ite_true, ← Complex.exp_nat_mul, ← Complex.exp_sum, ← Complex.exp_add] at h'
       refine Eq.trans ?_ (h'.symm.trans ?_)
       · simp only [Finset.mul_sum, mul_left_comm]
       · congr 1

@@ -526,14 +526,8 @@ theorem continuousAt_ratioAt {w₀ : (Σ k, J k) → ℂ} {c : (k : K) → J k} 
 theorem continuousAt_ratioPoly {w₀ : (Σ k, J k) → ℂ} {c : (k : K) → J k} (hc : ∀ k, w₀ ⟨k, c k⟩ ≠ 0)
     (P : MvPolynomial ((k : K) → J k) ℤ) :
     ContinuousAt (fun w => MvPolynomial.aeval (ratioAt c w) P) w₀ := by
-  induction P using MvPolynomial.induction_on with
-  | C n => simpa using continuousAt_const
-  | add p q hp hq =>
-    simp only [map_add (f := _)]
-    exact hp.add hq
-  | mul_X p i hp =>
-    simp only [map_mul, MvPolynomial.aeval_X]
-    exact hp.mul (continuousAt_ratioAt hc i)
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.RootHt.ArchB.OpenNear.continuousAt_aeval_segreRatio <;> assumption
 
 end Values
 

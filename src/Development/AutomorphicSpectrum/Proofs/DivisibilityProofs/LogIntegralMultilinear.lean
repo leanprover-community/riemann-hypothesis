@@ -9,6 +9,7 @@ public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.Bir
 public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.ArithIntersectionMultilinearAll
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.CompactGapsGE
 import Mathlib.Tactic.Linter.Style
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.SumFundCoMulSumIic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.ArithIntersectionConstantMetric, Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.IntersectionSystemDegree, Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.LogIntegralMultilinear
@@ -22,12 +23,6 @@ open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo Filter Topology Globa
 
 noncomputable section
 
-namespace GlobalTheory.CompanionTheory.Ar.Top
-
-theorem intersection_snoc_constWeight : ∀ II : IntersectionSystem, IsIntersectionSystem II → ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (P : Ideal (MRing ι)) (e : ℕ) (L : Fin e → HermLine ι) (c : ℝ), IsArithVar P (e + 1) → (∀ j, IsSmoothHerm (L j)) → II K ι P (e + 1) (Fin.snoc L (HermLine.ofWeight (fun _ => c) (fun _ _ _ => rfl))) = -c * ptsIntegral P (fun j z => Real.log ((L j).h z)) (fun _ => 1) :=
-  RootFieldNumerics.intersection_constant_metric_line
-
-end GlobalTheory.CompanionTheory.Ar.Top
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -80,19 +75,7 @@ theorem smooth_oneLine : IsSmoothHerm (oneLine ι) := by
 
 theorem smooth_comb {J : Type} [Fintype J] {ℓ : J → HermLine ι} (hℓ : ∀ j, IsSmoothHerm (ℓ j))
     (n : J → ℤ) : IsSmoothHerm (combLine ℓ n) := by
-  refine contDiffOn_prod fun a _ => ?_
-  intro z hz
-  have h0 : (ℓ a).h z ≠ 0 := ((ℓ a).pos z hz).ne'
-  have hf := hℓ a z hz
-  have key : ∀ m : ℤ, ContDiffWithinAt ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun z => (ℓ a).h z ^ m)
-      {z | ∀ k, ∃ i, z ⟨k, i⟩ ≠ 0} z := by
-    intro m
-    cases m with
-    | ofNat k => simpa only [Int.ofNat_eq_natCast, zpow_natCast] using hf.pow k
-    | negSucc k =>
-      simp only [zpow_negSucc]
-      exact (hf.pow (k + 1)).inv (pow_ne_zero _ h0)
-  exact key _
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Small.Fund.isSmoothHerm_comb <;> assumption
 
 def extLine {J : Type} (ℓ : J → HermLine ι) : Option J → HermLine ι
   | none => oneLine ι
@@ -124,7 +107,7 @@ theorem pts_eq_II (II : IntersectionSystem) (hII : IsFullIntersectionSystem II) 
     {e : ℕ} (L : Fin e → HermLine ι) (hP : IsArithVar P (e + 1)) (hL : ∀ j, IsSmoothHerm (L j)) :
     ptsIntegral P (fun k z => Real.log ((L k).h z)) (fun _ => 1) =
       II K ι P (e + 1) (Fin.snoc L (oneLine ι)) := by
-  have h := _root_.GlobalTheory.CompanionTheory.Ar.Top.intersection_snoc_constWeight II hII.1 K ι P e L (-1) hP hL
+  have h := _root_.RootFieldNumerics.intersection_constant_metric_line II hII.1 K ι P e L (-1) hP hL
   have h' : II K ι P (e + 1) (Fin.snoc L (oneLine ι)) =
       - -1 * ptsIntegral P (fun j z => Real.log ((L j).h z)) (fun _ => 1) := h
   rw [h']

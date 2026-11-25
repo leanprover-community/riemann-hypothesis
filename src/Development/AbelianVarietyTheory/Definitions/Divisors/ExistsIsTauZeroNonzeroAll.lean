@@ -86,8 +86,6 @@ namespace GlobalTheory.ThetaConst
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.EtaForm
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
 
 theorem exists_sep (l : Level H) : ∃ e : 𝓞 E, e ∈ Mfr l ∧ 1 - e ∈ l.Mb ∧ H.bar e ∈ l.Mb ∧ H.bar (1 - e) ∈ Mfr l := by
@@ -507,8 +505,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.EtaForm
 open GlobalTheory.AllWt GlobalTheory.FlatLine GlobalTheory.ShFam GlobalTheory.CompHt
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
   {l : Level H}
 
@@ -519,7 +515,6 @@ def tauExpr {S : Type} [CommRing S] {k : ℕ} {J : Type} [Fintype J] {n : ℕ} (
 theorem map_tauExpr {S T : Type} [CommRing S] [CommRing T] (φ : S →+* T) {k : ℕ} {J : Type} [Fintype J] {n : ℕ}
     (cf : J → ℤ) (x : J → Fin n → LatMod Dw k) (w : LatMod Dw k → S) :
     φ (tauExpr cf x w) = tauExpr cf x (fun q => φ (w q)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp only [tauExpr, map_prod, map_sum, map_mul, map_intCast]
 
 theorem tauExpr_scale {S : Type} [CommRing S] {k : ℕ} {J : Type} [Fintype J] {n : ℕ} (cf : J → ℤ)

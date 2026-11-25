@@ -275,7 +275,6 @@ section
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes MeasureTheory
   GlobalTheory.WeilM GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
   Formalism.IndefR.DatumF
-attribute [-instance] CStarMatrix.instHMulOfFintypeOfMulOfAddCommMonoid
 set_option linter.unusedSectionVars false
 noncomputable section
 namespace PositivityTheory.ThKW.AdelicSchwartzProperties

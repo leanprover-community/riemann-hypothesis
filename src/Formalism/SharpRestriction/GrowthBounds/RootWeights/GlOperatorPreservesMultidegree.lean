@@ -39,9 +39,9 @@ theorem disjoint_letters_commute (LL : Letters ι) (S S' : Set ι) (hd : Disjoin
     rw [Derivation.commutator_apply]
     by_cases hl : l ∈ S
     · have hl' : l ∉ S' := fun h => (Set.disjoint_left.1 hd) hl h
-      simp only [gl_derivation_variable, hl, hl', if_true, if_false, map_zero]
+      simp only [gl_derivation_variable, hl, hl', ite_true, ite_false, map_zero]
       split_ifs <;> simp [gl_derivation_variable, hl']
-    · simp only [gl_derivation_variable, hl, if_false, map_zero]
+    · simp only [gl_derivation_variable, hl, ite_false, map_zero]
       split_ifs <;> simp [gl_derivation_variable, hl]
   refine LinearMap.ext fun F => ?_
   have h := congrArg (fun D : Derivation K (MvPolynomial (ι × Fin n) K) (MvPolynomial (ι × Fin n) K) => D F) h0

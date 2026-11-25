@@ -61,15 +61,6 @@ theorem chartRing_le_join (x : (Σ k, ι k) → Ω) (z : (Σ k, ι' k) → Ω) (
 
 end Charts
 
-section Pull
-
-variable (O : Type*) [CommRing O] {Ω : Type*} [Field Ω] [Algebra O Ω]
-variable {K K' : Type} [Fintype K] [Fintype K'] {ι : K → Type} {ι' : K' → Type}
-  [∀ k, Fintype (ι k)] [∀ k, Fintype (ι' k)]
-variable {N : ℕ} {V : Type*} [AddCommGroup V] [Module Ω V]
-
-end Pull
-
 end JoinPullbackAlt
 
 

@@ -62,11 +62,7 @@ theorem exists_left_inv {B : Type} [CommRing B] {n : ℕ} (φ : ZMod n →+* B) 
     AddMonoidHom.mk' (fun x => Λ x y) (fun x x' => Λadd x x' y)
   have hdec : ∀ x y, Λ x y = ∑ i, s (x i) * Λ (Pi.single i 1) y := by
     intro x y
-    have hx : x = ∑ i, x i • (Pi.single i 1 : Fin N → 𝓞 E) := by
-      conv_lhs => rw [← Finset.univ_sum_single x]
-      refine Finset.sum_congr rfl fun i _ => ?_
-      funext j
-      simp [Pi.single_apply]
+    have hx : x = ∑ i, x i • (Pi.single i 1 : Fin N → 𝓞 E) := pi_eq_sum_univ' x
     have := congrArg (Λh y) hx
 
     rw [map_sum] at this

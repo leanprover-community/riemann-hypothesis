@@ -587,8 +587,7 @@ open UpperTheory.Gal.Int.Div
 
 private theorem two_cases {R : Type} [CommRing R] (T : R → Prop) (hT : ∀ a b, T a → T b → T (a + b))
     (I J : Ideal R) (h : ∀ y, T y → y ∈ I ∨ y ∈ J) : (∀ y, T y → y ∈ I) ∨ (∀ y, T y → y ∈ J) := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   obtain ⟨⟨a, ha, haI⟩, b, hb, hbJ⟩ := hcon
   have haJ : a ∈ J := (h a ha).resolve_left haI
   have hbI : b ∈ I := (h b hb).resolve_right hbJ
@@ -1033,7 +1032,6 @@ theorem z_eq_of_equiv {ι : Qbar l ≃+* ℂ} {Kw : Levels E a} {J : Type} (O : 
     simp only [MonoidHom.one_apply, Units.val_one, one_smul] at this ⊢
     rw [← he, this]
   have hop : e.toLinearEquiv (opOf σ.ρ (O.f j) v) = opOf σ'.ρ (O.f j) (e.toLinearEquiv v) := by
-    set_option synthInstance.maxHeartbeats 100000 in
       simp only [opOf, Finsupp.sum, map_sum, map_smul, he]
   have h2 := O.act j σ' _ hv'
   rw [← hop, O.act j σ v hv, map_smul] at h2
@@ -1042,9 +1040,6 @@ theorem z_eq_of_equiv {ι : Qbar l ≃+* ℂ} {Kw : Levels E a} {J : Type} (O : 
 
 end GlobalTheory.Cong.OffTLimit
 
-namespace GlobalTheory.Cong
-
-end GlobalTheory.Cong
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.SatakeParameters.ApartOfNotMem =====
@@ -1210,7 +1205,7 @@ theorem frobOpsIdx : SphOps → ∀ (E Ω : Type) [Field E] [NumberField E] [IsC
       GlobalTheory.LFun.HasSatGL j.1.1 σ.ρ B → zz j σ = ((UpperTheory.V.Af.algSat a (normV j.1.1) B).map (· ^ j.1.2.2.2)).sum := by
     intro j σ B hB
     have h : ∃ B, GlobalTheory.LFun.HasSatGL j.1.1 σ.ρ B := ⟨B, hB⟩
-    simp only [zz, dif_pos h]
+    simp only [zz, dite_eq_left h]
     rw [show h.choose = B from h.choose_spec.unique hB]
   let T : LocOps l ι Kw J :=
     { pl := fun j => j.1.1
@@ -1325,7 +1320,7 @@ theorem exists_trace_limit : ∀ (l : ℕ) [Fact l.Prime] (Γ : Type) [Group Γ]
   have hcont : ∀ i, Continuous (trc (ρ i)) := fun i =>
     (Units.continuous_val.comp (hρ i)).matrix_trace
   have hLc : IsComplete (L : Set (PadicAlgCl l)) := by
-    haveI : FiniteDimensional ℚ_[l] L.toSubalgebra.toSubmodule := hL
+    have : FiniteDimensional ℚ_[l] L.toSubalgebra.toSubmodule := hL
     exact Submodule.complete_of_finiteDimensional L.toSubalgebra.toSubmodule
   have conv : ∀ A : Set I, PolyApprox θ (η '' A) → ∀ ε > 0, ∃ F : Finset I, (↑F ⊆ A) ∧
       ∃ c : I → PadicAlgCl l, ∀ P : MvPolynomial J ℤ,
@@ -1334,7 +1329,7 @@ theorem exists_trace_limit : ∀ (l : ℕ) [Fact l.Prime] (Γ : Type) [Group Γ]
     obtain ⟨s, c, hs, hc⟩ := hA ε hε
     rcases s.eq_empty_or_nonempty with rfl | ⟨f0, hf0⟩
     · exact ⟨∅, by simp, fun _ => 0, fun P => le_of_eq_of_le (by simp only [Finset.sum_empty]; rfl) (hc P)⟩
-    haveI : Nonempty I := ⟨(hs hf0).choose⟩
+    have : Nonempty I := ⟨(hs hf0).choose⟩
     have hex : ∀ f ∈ s, ∃ i, i ∈ A ∧ η i = f := fun f hf => hs hf
     choose! k hkA hk using hex
     refine ⟨s.image k, ?_, fun i => c (η i), fun P => ?_⟩
@@ -1380,7 +1375,7 @@ theorem exists_trace_limit : ∀ (l : ℕ) [Fact l.Prime] (Γ : Type) [Group Γ]
       _ ≤ ε + r := (norm_add_le _ _).trans (add_le_add h1 h2.le)
   have hlim : ∀ g : Γ, ∃ v ∈ L, Filter.Tendsto θ (Filter.comap x (𝓝 g) ⊓ B) (𝓝 v) := by
     intro g
-    haveI := hne g
+    have := hne g
     have hcau : Cauchy (Filter.map θ (Filter.comap x (𝓝 g) ⊓ B)) := by
       refine Metric.cauchy_iff.2 ⟨inferInstance, fun e he => ?_⟩
       obtain ⟨F, -, c, hc⟩ := conv Set.univ (by rw [Set.image_univ]; exact hθ) (e / 5) (by positivity)
@@ -1415,7 +1410,7 @@ theorem exists_trace_limit : ∀ (l : ℕ) [Fact l.Prime] (Γ : Type) [Group Γ]
     have hmem : (fun g => (g, t g)) ∈ closure (Set.univ.pi fun _ : Γ => Z) := by
       rw [closure_pi_set]
       intro g _
-      haveI := hne g
+      have := hne g
       refine mem_closure_of_tendsto ((Filter.tendsto_comap.mono_left inf_le_left).prodMk_nhds (htlim g)) ?_
       filter_upwards [Filter.mem_inf_of_right (hDF F)] with j hj
       exact ⟨j, hj, rfl⟩
@@ -1611,7 +1606,6 @@ open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory
 open GlobalTheory.GalCut GlobalTheory.UnitaryBC GlobalTheory.Cong GlobalTheory.Published GlobalTheory.AboveL GlobalTheory.CongL
 
 namespace UpperTheory.Gal.Lim
-
 
 open GlobalTheory.Cong.OffTLimit GlobalTheory.CongL.UnitLim in
 theorem limWU4_of : ∀ (Rk : ℕ → Prop) (Ty : UnitaryAutomorphicTypeClass) (Gen : ℕ → ℕ → Multiset ℂˣ → Prop) (Wt : SeedWtU),

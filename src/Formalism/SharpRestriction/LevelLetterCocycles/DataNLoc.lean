@@ -13,6 +13,7 @@ public import Mathlib.RingTheory.WittVector.Teichmuller
 public import Mathlib.RingTheory.WittVector.DiscreteValuationRing
 public import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
 public import Mathlib.RingTheory.Polynomial.Cyclotomic.Eval
+import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.ValuationCoeEqNorm
 
 @[expose] public section
 
@@ -730,19 +731,7 @@ namespace Loc
 variable (l : ℕ) [Fact l.Prime]
 
 theorem OC_l_not_unit : ¬ IsUnit ((l : ℕ) : PadicComplexInt l) := by
-  intro h
-  have h1 := ((PadicComplexInt.integers l).isUnit_iff_valuation_eq_one).mp h
-  have h2 : (PadicComplex.valued l).v
-      (algebraMap (PadicComplexInt l) (PadicComplex l) ((l : ℕ) : PadicComplexInt l))
-      = 1 / (l : ℝ≥0) := by
-    rw [map_natCast]
-    exact PadicComplex.valuation_p l
-  rw [h1] at h2
-  have hl : (2 : ℝ≥0) ≤ (l : ℝ≥0) := by exact_mod_cast (Fact.out : l.Prime).two_le
-  have : (1 : ℝ≥0) / (l : ℝ≥0) < 1 := by
-    rw [div_lt_one (by positivity)]
-    exact lt_of_lt_of_le (by norm_num) hl
-  exact absurd h2 (ne_of_gt this)
+  apply _root_.GlobalTheory.PadicComplexHost.not_isUnit_p <;> assumption
 
 instance factOC : Fact (¬ IsUnit ((l : ℕ) : PadicComplexInt l)) := ⟨OC_l_not_unit l⟩
 
@@ -958,7 +947,7 @@ theorem ε_ne_one : AI.ε ≠ 1 := by
   let c : OC l → OC l := fun μ => if h : μ ∈ s then Classical.choose (hfac μ h) else 0
   have hc : ∀ μ ∈ s, 1 - μ = (1 - AI.ζ 2) * c μ := by
     intro μ hμ
-    simp only [c, dif_pos hμ]
+    simp only [c, dite_eq_left hμ]
     exact Classical.choose_spec (hfac μ hμ)
   rw [Finset.prod_congr rfl hc, Finset.prod_mul_distrib, Finset.prod_const] at hev
   have hcard : s.card = l * (l - 1) := by

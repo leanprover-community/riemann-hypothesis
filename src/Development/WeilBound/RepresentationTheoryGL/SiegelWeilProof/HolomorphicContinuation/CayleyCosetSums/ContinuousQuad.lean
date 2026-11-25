@@ -129,12 +129,7 @@ private theorem posDef_imM_mul_inv_of_skew_relation (X U : Matrix (Fin n) (Fin n
     have h2I : -(2 * Complex.I) ≠ 0 := by simp
     have hvv : star v ⬝ᵥ v = 0 := (mul_eq_zero.1 e.symm).resolve_left h2I
     exact dotProduct_star_self_eq_zero.1 hvv
-  have hinj : Function.Injective U.mulVec := by
-    intro v w hvw
-    have h0 : U *ᵥ (v - w) = 0 := by
-      rw [Matrix.mulVec_sub, sub_eq_zero]
-      exact hvw
-    exact sub_eq_zero.1 (hker _ h0)
+  have hinj : Function.Injective U.mulVec := (injective_iff_map_eq_zero U.mulVecLin).2 hker
   have hU : IsUnit U := mulVec_injective_iff_isUnit.1 hinj
   have hUU : U * U⁻¹ = 1 := Matrix.mul_nonsing_inv U ((Matrix.isUnit_iff_isUnit_det U).1 hU)
   have hc : (U⁻¹)ᴴ * Uᴴ = 1 := by

@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.LatticeMembershipAevalUniformizer
 public import Formalism.SharpRestriction.LevelLetterCocycles.KillWinFromCut
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocalInputsFromLiterature
 public import Formalism.SharpRestriction.LevelLetterCocycles.UniversalGeneratorsOfUnits
@@ -115,10 +116,10 @@ theorem level_form (hπ : W.π₀ ∈ W.AΔ) {a : ZMod n} {e s : ℕ} (hs : s �
   simp only [Function.update_apply] at hg
   have e1 : (∏ t ∈ (Finset.range e).erase s, ps W t ^ (if t = s then x else α t).toNat) =
       ∏ t ∈ (Finset.range e).erase s, ps W t ^ (α t).toNat :=
-    Finset.prod_congr rfl fun t ht => by rw [if_neg (Finset.ne_of_mem_erase ht)]
+    Finset.prod_congr rfl fun t ht => by rw [ite_eq_right (Finset.ne_of_mem_erase ht)]
   have e2 : (∏ t ∈ (Finset.range e).erase s, ps W t ^ (-(if t = s then x else α t)).toNat) =
       ∏ t ∈ (Finset.range e).erase s, ps W t ^ (-α t).toNat :=
-    Finset.prod_congr rfl fun t ht => by rw [if_neg (Finset.ne_of_mem_erase ht)]
+    Finset.prod_congr rfl fun t ht => by rw [ite_eq_right (Finset.ne_of_mem_erase ht)]
   rw [e1, e2] at hg
   have h1 := inFr_num_drop W (prod_ps_mem' W hπ _ _) hg
   have h2 := inFr_den_mul W (prod_ps_mem' W hπ ((Finset.range e).erase s) (fun t => H t - (-α t).toNat)) h1
@@ -290,26 +291,7 @@ section Pi0
 open Formalism.MainNotions.UnusedSlot80.ToolsR Formalism.MainNotions.WachCoordinates
 
 theorem exists_gamma_pi0_eq_pi0_mul [IsDomain O] [NeZero n] (hR : RingP W) : ∃ z ∈ W.AΔ, W.γA W.gam W.π₀ = W.π₀ * z := by
-  obtain ⟨w, hw⟩ := hR.2.2.2.2.2.2.1
-  have e : Formalism.MainNotions.DeltaInvariantLattices.Eat (fun _ : ZMod n => Polynomial.X + Polynomial.C ((PD.p : ℕ) : O)) W.π₀ =
-      qP W := by
-    funext i; simp [Formalism.MainNotions.DeltaInvariantLattices.Eat, qP, LocWach.π₀]
-  rw [e] at hw
-  have hp0 := Formalism.MainNotions.WachCoordinates.Br.p_ne_zero_O W
-  have hπ : W.π₀ ∈ W.AΔ := hR.1
-  have hq : qP W ∈ W.AΔ := qP_AΔ hR
-  have hc : W.π₀ * qP W ∈ W.AΔ := Subalgebra.mul_mem _ hπ hq
-  have hc0 : ∀ i, (W.π₀ * qP W) i ≠ 0 := fun i => by
-    show W.π₀₁ * qP W i ≠ 0
-    exact mul_ne_zero (π₀₁_ne hR) (q_component_ne_zero' hR hp0 i)
-  have hwΔ : (w : LetA O n) ∈ W.AΔ := by
-    refine cancel_AΔ hc hc0 ?_
-    have : W.π₀ * qP W * (w : LetA O n) = W.γA W.gam W.π₀ - W.π₀ := by rw [hw]; ring
-    rw [this]
-    exact Subalgebra.sub_mem _ (γA_mem W _ hπ) hπ
-  refine ⟨1 + qP W * (w : LetA O n), Subalgebra.add_mem _ (Subalgebra.one_mem _)
-    (Subalgebra.mul_mem _ hq hwΔ), ?_⟩
-  linear_combination hw
+  apply _root_.Formalism.MainNotions.UnusedSlot80.UGen.exists_gammaA_pi0_eq_pi0_mul_of_RingP <;> assumption
 
 def InIdπ (a : ZMod n) (e : ℕ) (α : ℕ → ℤ) (f : W.EE) : Prop :=
   ∃ u ∈ W.AΔ, ιE (denI W e α) * f = ιE (letE a * numI W e α * (W.π₀ * u))
@@ -406,7 +388,7 @@ theorem inId_αk_iff {a : ZMod n} {e s : ℕ} (hs : s ∈ Finset.range e) (d : �
     · simp [αk]
     · intro t ht
       have ht' := Finset.ne_of_mem_erase ht
-      have h0 : (αk e s d k t).toNat = 0 := by simp only [αk, if_neg ht']; omega
+      have h0 : (αk e s d k t).toNat = 0 := by simp only [αk, ite_eq_right ht']; omega
       rw [h0, pow_zero]
   have hd : (∏ t ∈ Finset.range e, ps W t ^ (-(αk e s d k t)).toNat) =
       ∏ t ∈ (Finset.range e).erase s, ps W t ^ d t := by
@@ -417,7 +399,7 @@ theorem inId_αk_iff {a : ZMod n} {e s : ℕ} (hs : s ∈ Finset.range e) (d : �
     rw [h1, pow_zero, one_mul]
     refine Finset.prod_congr rfl fun t ht => ?_
     have ht' := Finset.ne_of_mem_erase ht
-    have h2 : (-(αk e s d k t)).toNat = d t := by simp only [αk, if_neg ht']; omega
+    have h2 : (-(αk e s d k t)).toNat = d t := by simp only [αk, ite_eq_right ht']; omega
     rw [h2]
   simp only [InId]
   rw [hn, hd]
@@ -475,7 +457,7 @@ theorem mem_JS_thin (A : ArcP n) {c : ZMod n} {s : ℕ} (hs : s < A.len c)
     i ∈ A.JS c := by
   unfold ArcP.JS
   apply Finset.mem_union_left
-  rw [if_pos ⟨s, hs, hth⟩]
+  rw [ite_eq_left ⟨s, hs, hth⟩]
   exact Finset.mem_Icc.2 ⟨hi1, hi2⟩
 
 theorem mem_JS_up (A : ArcP n) {c : ZMod n} {s : ℕ} (hs : s < A.len c) {b : ℕ}

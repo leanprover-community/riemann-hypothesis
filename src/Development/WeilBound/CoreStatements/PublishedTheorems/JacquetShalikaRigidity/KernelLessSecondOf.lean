@@ -21,9 +21,9 @@ theorem lastRow_eq (hk : 1 ≤ k) (y : GA E k) (c : Fin k) :
     lastRow y c = y.val ⟨k - 1, by omega⟩ c := by
   unfold lastRow
   rw [Finset.sum_eq_single ⟨k - 1, by omega⟩]
-  · rw [if_pos (by simp; omega)]
+  · rw [ite_eq_left (by simp; omega)]
   · intro b _ hb
-    rw [if_neg]
+    rw [ite_eq_right]
     intro h
     apply hb
     ext

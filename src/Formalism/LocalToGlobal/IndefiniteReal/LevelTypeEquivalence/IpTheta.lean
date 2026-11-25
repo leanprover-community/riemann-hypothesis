@@ -41,25 +41,6 @@ theorem thetaO_smul {f : WO S T → ℂ} (c : ℂ) (hf : IsThetaFunO ψ S T f) :
 
 end Basic
 
-section L2
-
-variable {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D}
-
-end L2
-
-section Unit
-
-variable {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D} {χS χT : (AE D)ˣ →* Circle}
-  {om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)}
-
-end Unit
-
-section Cont
-
-variable {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D}
-
-end Cont
-
 end Formalism.IndefR.Eqv
 
 end

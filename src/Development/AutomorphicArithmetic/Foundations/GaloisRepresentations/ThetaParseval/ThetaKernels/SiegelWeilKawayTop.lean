@@ -89,8 +89,7 @@ private theorem stepM_gen (hT : TAll_k) (y : GR d.n) (a : d.Mnc) (ha : IsUnit a.
       rw [hy, mLoc, fromBlocks_multiply, ← fromBlocks_one]
       simp only [Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add, Matrix.nonsing_inv_mul _ ha,
         Matrix.mul_nonsing_inv _ haH]
-    calc mR y⁻¹ = (fromBlocks a⁻¹ 0 0 aᴴ * mR y) * mR y⁻¹ := by rw [h2, Matrix.one_mul]
-      _ = _ := by rw [Matrix.mul_assoc, h1, Matrix.mul_one]
+    exact (left_inv_eq_right_inv h2 h1).symm
   obtain ⟨hM, hA1, -, hO1, hF1, -⟩ := R.frame_diag w y a (aᴴ)⁻¹ hy
   obtain ⟨hM', -, hD', hO', -, hF'⟩ := R.frame_diag w y⁻¹ a⁻¹ aᴴ hyi
   set M := inFrame d.b (R.ι w y); set M' := inFrame d.b (R.ι w y⁻¹)
@@ -476,14 +475,12 @@ private theorem conj_split (d : SD_k σ) (hT : TAll_k) {α : Type*} (π : d.MxE 
       have := key u hex.choose; rw [mul_div_assoc', eq_div_iff hex.choose_spec.2]; linear_combination -this
     rw [e]; funext X; simp only [dite_eq_left hex, Pi.smul_apply, smul_eq_mul, hA]; ring
 private theorem inFrame_inv_of (d : SD_k σ) (x : d.G) (N : d.Mn2) (h : inFrame d.b x * N = 1) :
-    inFrame d.b x⁻¹ = N := by
-  calc inFrame d.b x⁻¹ = inFrame d.b x⁻¹ * (inFrame d.b x * N) := by rw [h, Matrix.mul_one]
-    _ = N := by rw [← Matrix.mul_assoc, ← d.inFrame_mul, inv_mul_cancel, d.inFrame_one, Matrix.one_mul]
+    inFrame d.b x⁻¹ = N :=
+  left_inv_eq_right_inv (GlobalTheory.EisBL.DoubledParabolic.inFrame_inv_mul d.b x) h
 private theorem exists_of_inU {d : SD_k σ} {ε : ℤˣ}
     (hε : d.b.1ᵀ * dbl d.Y.J * d.b.1.map σ = fromBlocks 0 1 (((ε : ℤ) : E) • 1) 0) (M : d.Mn2)
     (hM : Mᵀ * jF d.n ε * M.map (cA σ) = jF d.n ε) : ∃ x : d.G, inFrame d.b x = M := by
-  have hεε : ((ε : ℤ) : AE F E) * ((ε : ℤ) : AE F E) = 1 := by
-    rw [← Int.cast_mul, ← Units.val_mul, Int.units_mul_self, Units.val_one, Int.cast_one]
+  have hεε : ((ε : ℤ) : AE F E) * ((ε : ℤ) : AE F E) = 1 := by rw [← Int.cast_mul, Int.units_coe_mul_self, Int.cast_one]
   have hJJ : (jF d.n ε : d.Mn2) * (((ε : ℤ) : AE F E) • jF d.n ε) = 1 := by
     rw [Matrix.mul_smul, jF, fromBlocks_multiply, ← fromBlocks_one, fromBlocks_smul]
     congr 1 <;> simp [smul_smul, hεε]
@@ -508,8 +505,7 @@ private theorem adDecomp (d : SD_k σ) (ε : ℤˣ) (w : d.G) (hw : d.IsW ε w) 
   have heB : e • B = 0 := by rw [← smul_toBlocks₁₂, hx, smul_toBlocks₁₂, one_toBlocks₁₂, smul_zero]
   have heC : e • C = 0 := by rw [← smul_toBlocks₂₁, hx, smul_toBlocks₂₁, one_toBlocks₂₁, smul_zero]
   have heD : e • D = e • (1 : d.Mn) := by rw [← smul_toBlocks₂₂, hx, smul_toBlocks₂₂, one_toBlocks₂₂]
-  have hε₀2 : (ε₀ : ℤ) * (ε₀ : ℤ) = 1 := by rw [← Units.val_mul, Int.units_mul_self, Units.val_one]
-  obtain ⟨t, ht, het, hunit⟩ := free_etale_sheaf_zmod_exists_hom_sending_generator d.cm (ε₀ : ℤ) hε₀2 X (h1 x) e he heA
+  obtain ⟨t, ht, het, hunit⟩ := free_etale_sheaf_zmod_exists_hom_sending_generator d.cm (ε₀ : ℤ) (Int.units_coe_mul_self ε₀) X (h1 x) e he heA
   have hni (u : d.Mn) {y : d.G} (hy : inFrame d.b y = nM u) : inFrame d.b y⁻¹ = nM (-u) :=
     inFrame_inv_of d y _ (by rw [hy, nM, nM, fromBlocks_multiply]; simp [fromBlocks_one])
   obtain ⟨x₁, hx₁⟩ := exists_of_inU hε₀ (nM t) ((nM_cond_iff (cA σ).toRingHom (ε₀ : ℤ) t).2 ht)
@@ -520,9 +516,8 @@ private theorem adDecomp (d : SD_k σ) (ε : ℤˣ) (w : d.G) (hw : d.IsW ε w) 
   rw [hY, toBlocks_fromBlocks₁₁, toBlocks_fromBlocks₂₁] at h11
   set c₀ := C * A'⁻¹; set c := ((ε : ℤ) : AE F E) • c₀
   obtain ⟨x₂, hx₂⟩ := exists_of_inU hε₀ (nM c)
-    ((nM_cond_iff (cA σ).toRingHom (ε₀ : ℤ) c).2 (cond_c (cA σ).toRingHom (ε₀ : ℤ) A' C hunit hε₀2 h11 (ε : ℤ)))
-  have hεε : ((ε : ℤ) : AE F E) * ((ε : ℤ) : AE F E) = 1 := by
-    rw [← Int.cast_mul, ← Units.val_mul, Int.units_mul_self, Units.val_one, Int.cast_one]
+    ((nM_cond_iff (cA σ).toRingHom (ε₀ : ℤ) c).2 (cond_c (cA σ).toRingHom (ε₀ : ℤ) A' C hunit (Int.units_coe_mul_self ε₀) h11 (ε : ℤ)))
+  have hεε : ((ε : ℤ) : AE F E) * ((ε : ℤ) : AE F E) = 1 := by rw [← Int.cast_mul, Int.units_coe_mul_self, Int.cast_one]
   have hwi : inFrame d.b w⁻¹ = fromBlocks 0 (((ε : ℤ) : AE F E) • 1) 1 0 :=
     inFrame_inv_of d w _ (by rw [hw, fromBlocks_multiply]; simp [smul_smul, hεε, fromBlocks_one])
   have hL : inFrame d.b (w * x₂ * w⁻¹) = fromBlocks 1 0 c₀ 1 := by
@@ -669,9 +664,7 @@ private def kerSub (c : AF F) : AddSubgroup d.MxE where
 private theorem stepW_f (hT : TAll_k) (hA : SiegelWeilDatumProperties) (ε : ℤˣ) (w : d.G) (hw : d.IsW ε w) :
     ∃ A B, StepF d w A B := by
   obtain ⟨⟨ν, hν⟩, -, -⟩ := hA F E σ d; have := hν.1; obtain ⟨_, _, _, _⟩ := KFock.mxTop_k d
-  have hsm (c : AF F) : Continuous fun Z : d.MxE => c • Z := continuous_pi fun i => continuous_pi fun j =>
-    Continuous.fun_smul (f := fun _ : d.MxE => c) (g := fun Z : d.MxE => Z i j) continuous_const
-      ((continuous_apply j).comp (continuous_apply i))
+  have hsm (c : AF F) : Continuous fun Z : d.MxE => c • Z := continuous_const_smul c
   let VI := kerSub d (finOne F); let VF := kerSub d (eInf F)
   have hlc (c : AF F) : LocallyCompactSpace (kerSub d c) :=
     (isClosed_eq (hsm c) continuous_const).isClosedEmbedding_subtypeVal.locallyCompactSpace

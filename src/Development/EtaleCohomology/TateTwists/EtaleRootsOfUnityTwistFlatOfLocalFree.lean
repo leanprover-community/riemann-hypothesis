@@ -1,9 +1,20 @@
 module
 
-public import Development.EtaleCohomology.TateTwists.EtaleTateTwistSheafFlat
 public import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
 import Mathlib.Algebra.Category.ModuleCat.FilteredColimits
 import Mathlib.Tactic.Linter.Style
+public import Development.AbelianVarietyTheory.Definitions.Divisors.SecClass
+
+section
+@[expose] public section
+
+open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC
+
+def LateralTheory.EtaleFoundations.EtaleTateTwistSheafFlat : Prop :=
+  ∀ (q : ℕ) [NeZero q] (i : ℤ), FlatS (tw q i)
+end
+end
+
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.EtaleCohomology.TateTwists.EtaleTateTwistSectionsFlatOfQuotientIso, Development.EtaleCohomology.TateTwists.EtaleRootsOfUnityTwistFlatOfLocalFree

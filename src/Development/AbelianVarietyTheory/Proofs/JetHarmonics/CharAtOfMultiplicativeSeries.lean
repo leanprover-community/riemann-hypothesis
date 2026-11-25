@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Statements.TorsionEndomorphisms.EndDeterminedOnTorsion
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.AlWellDefSt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.RosatiAdj
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ChartChg
@@ -84,7 +85,6 @@ noncomputable section
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry IsLocalRing
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Pdiv ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.Out
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.TorsionCharacter
 
@@ -92,16 +92,7 @@ open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.FamGe
 
 theorem ringAct_natCast {S : Scheme.{0}} {A : Over S} [GrpObj A] [IsCommMonObj A] {Λ : Type} [Ring Λ]
     (ρ : RingAct A Λ) (n : ℕ) : ρ.act n = (𝟙 A) ^ n := by
-  induction n with
-  | zero =>
-    have h : ρ.act 0 = ρ.act 0 * ρ.act 0 := by
-      have := ρ.map_add 0 0
-      rwa [add_zero] at this
-    rw [Nat.cast_zero, pow_zero]
-    exact left_eq_mul.mp h
-  | succ n ih =>
-    rw [Nat.cast_succ, ρ.map_add, ih, ρ.map_one, pow_succ]
-    rfl
+  apply _root_.GlobalTheory.ThetaPtDet.act_natCast <;> assumption
 
 abbrev Admissible {V O : Type} [CommRing V] [IsLocalRing V] [CommRing O] (f : V →+* O) (A : Type) [CommRing A]
     [Algebra O A] : Prop :=
@@ -159,7 +150,6 @@ noncomputable section
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry IsLocalRing
 open scoped CategoryTheory.Obj CategoryTheory.MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Pdiv ReciprocityTheory.ChartRestriction.G.DVR ReciprocityTheory.ChartRestriction.G.Out
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.SeriesCharacter
 

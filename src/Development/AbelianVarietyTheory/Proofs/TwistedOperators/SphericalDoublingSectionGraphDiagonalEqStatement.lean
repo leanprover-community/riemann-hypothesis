@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CayleyTransformTrivialPhaseSkewHermitian
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.GaussianBinomialClosedForm
 public import Formalism.LocalToGlobal.IndefiniteReal.SubgroupCharExtensionOneApply
 public import Formalism.SatakeDualWeyl.StatementG
@@ -69,7 +70,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -82,15 +82,7 @@ variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))]
 theorem mem_GLint_of_entries {ι : Type} [Fintype ι] [DecidableEq ι] {x : GL ι L}
     (h1 : ∀ i j, x.1 i j ∈ Formalism.UG.intL L) (h2 : ∀ i j, (x⁻¹).1 i j ∈ Formalism.UG.intL L) :
     x ∈ Formalism.UG.GLint ι (Formalism.UG.intL L) := by
-  refine ⟨⟨Matrix.of fun i j => ⟨_, h1 i j⟩, Matrix.of fun i j => ⟨_, h2 i j⟩, ?_, ?_⟩, rfl⟩
-  · refine Matrix.map_injective (Formalism.UG.intL L).subtype_injective ?_
-    simp only
-    rw [Matrix.map_mul, Matrix.map_one _ (map_zero _) (map_one _)]
-    exact x.mul_inv
-  · refine Matrix.map_injective (Formalism.UG.intL L).subtype_injective ?_
-    simp only
-    rw [Matrix.map_mul, Matrix.map_one _ (map_zero _) (map_one _)]
-    exact x.inv_mul
+  apply _root_.GlobalTheory.Hk3.CayleyPhase.mem_GLint_of_int <;> assumption
 
 theorem unif_mem_int {ϖ : L} {σ : L →+* L} {q : ℕ} (hU : IsUnramInv ϖ σ q) : ϖ ∈ Formalism.UG.intL L := by
   show Valued.v ϖ ≤ 1
@@ -103,7 +95,7 @@ theorem exp_rev {ϖ : Lˣ} {σ : L →+* L} {q n : ℕ} (hU : IsUnramInv (ϖ : L
   have h1 := congrFun (congrFun h i) (Fin.rev i)
   have hJ : Formalism.UG.antiJ L n i (Fin.rev i) = 1 := by
     simp only [Formalism.UG.antiJ, Fin.val_rev]
-    rw [if_pos (by omega)]
+    rw [ite_eq_left (by omega)]
   rw [hJ, ht, Formalism.UG.cT, Matrix.diagonal_map (map_zero σ), Matrix.diagonal_transpose, Matrix.mul_diagonal,
     Matrix.diagonal_mul, hJ] at h1
   rw [map_zpow₀, hU.2.2.1, mul_one, ← zpow_add₀ ϖ.ne_zero] at h1
@@ -288,7 +280,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke dosetInd IsCommen
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LGrp (IsUnitarisable IsIrrSmooth bcParam)
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto

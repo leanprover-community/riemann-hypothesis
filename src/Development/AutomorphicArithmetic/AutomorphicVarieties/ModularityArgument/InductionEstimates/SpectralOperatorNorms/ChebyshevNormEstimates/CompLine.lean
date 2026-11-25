@@ -98,7 +98,6 @@ private theorem lv_left {K : Type} [Field K] [NumberField K] {F : G1 K (2 + 2) �
 private theorem rep_ae {K : Type} [Field K] [NumberField K] {μ : Measure (G1 K 2)} [μ.IsHaarMeasure] {v : L2 μ}
     {φ : G1 K 2 → ℂ} (hc : Continuous φ) (hi : ∀ γ ∈ Gam K 2, ∀ y, φ (γ * y) = φ y) (hr : Reps μ v φ) :
     (v : RightCosetSpace (Gam K 2) → ℂ) =ᵐ[quotientMeasure (Gam K 2) μ] fun y => φ (Quotient.out y) := by
-  set_option synthInstance.maxHeartbeats 200000 in
     let q : RightCosetSpace (Gam K 2) → ℂ := Quotient.lift φ (fun a b hab => by
       obtain ⟨γ, rfl⟩ := hab
       exact hi γ γ.2 b)
@@ -159,7 +158,6 @@ theorem UpperTheory.constantTerm_pairing_vanishes_of_orthogonal :
           ∀ (m₂ : G1 K 2) (s : ℝ), ∀ k ∈ KG K (2 + 2),
             Integrable (fun y : RightCosetSpace (Gam K 2) => (∫ X, F (w0 K * nn X * (lv (Quotient.out y) m₂ s * k)) ∂unipMeasure K (2 + 2) 2) * starRingEnd ℂ (h (Quotient.out y))) (quotientMeasure (Gam K 2) μ₂) ∧
             ∫ y : RightCosetSpace (Gam K 2), (∫ X, F (w0 K * nn X * (lv (Quotient.out y) m₂ s * k)) ∂unipMeasure K (2 + 2) 2) * starRingEnd ℂ (h (Quotient.out y)) ∂quotientMeasure (Gam K 2) μ₂ = 0 := by
-  set_option synthInstance.maxHeartbeats 200000 in
    intro K _ _ μ₂ _ τ₁ τ₂ ρ F h hP hB hS hort hc hi hv m₂ s k hk
    obtain ⟨v, hvρ, hvr⟩ := hv
    have hQf := isFiniteMeasure_quotientMeasure (K := K) (n := 2) μ₂
@@ -443,7 +441,6 @@ private theorem int_pair {E : Type} [Field E] [NumberField E] [_root_.NumberFiel
       obtain ⟨γ, rfl⟩ := hab
       exact hinv γ γ.2 b)
     have hq : Continuous q := (isOpenQuotientMap_mk (Gam E 2)).isQuotientMap.continuous_iff.2 hc
-    set_option synthInstance.maxHeartbeats 200000 in
     have he : (w : RightCosetSpace (Gam E 2) → ℂ) =ᵐ[quotientMeasure (Gam E 2) (BW.mu1 E 2)] q := by
       have hm : ∀ᵐ x ∂(Measure.map (mk (Gam E 2)) ((BW.mu1 E 2).restrict (fundamentalDomain (Gam E 2)))), w x = q x := by
         refine (ae_map_iff (measurable_mk (Gam E 2)).aemeasurable
@@ -500,7 +497,6 @@ private theorem rep_eq {E : Type} [Field E] [NumberField E] [_root_.NumberField.
   change _ = φ.1 ((γ : GlobalTheory.CuspRep.GA E n) * y)
   exact (hδ ▸ h.umg.left δ y).symm
 
-set_option synthInstance.maxHeartbeats 200000 in
 theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.compLine :
     ∀ {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {μ : Measure (normOneGL (K := E) (n := (2 + 2)))} [μ.IsHaarMeasure] {θ : Twist μ} {𝔢 : Side θ 2} (𝔵 : _root_.UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.Fam 𝔢) (b b' : BW.Blo 𝔢.S 2), BloIn b 𝔵.τ₂ 𝔵.m₂ 𝔵.B₂ → BloIn b' 𝔵.τ₁ 𝔵.m₁ 𝔵.B₁ →
       ∃ c : ℂ, c ≠ 0 ∧ ∀ k ∈ KG E (2 + 2), ∀ (u : ℝ → Eu 𝔵.d') (U : L (Eu 𝔵.d')) (φ : GlobalTheory.CuspRep.Sm E (2 + 2)), Continuous u → HasCompactSupport u →

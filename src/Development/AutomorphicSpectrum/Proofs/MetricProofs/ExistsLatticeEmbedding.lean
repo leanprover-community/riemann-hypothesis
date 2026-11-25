@@ -1,5 +1,7 @@
 module
 
+import Development.WeilBound.CoreStatements.PlurisubharmonicCones.FiniteOfTorsion
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsLevelBlockOfEq
 public import Mathlib.NumberTheory.NumberField.CMField
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntEmbInjective
@@ -316,55 +318,16 @@ open scoped ComplexOrder
 
 namespace GlobalTheory.CompanionTheory.Ar.Cusp.CMRank
 
-theorem restrict_bijective (E : Type) [Field E] [NumberField E] :
-    Function.Bijective (fun φ : E →+* ℂ => φ.comp (algebraMap (𝓞 E) E)) := by
-  constructor
-  · intro φ ψ h
-    exact IsFractionRing.ringHom_ext (A := 𝓞 E) (K := E) (fun a => DFunLike.congr_fun h a)
-  · intro s
-    refine ⟨embOf s, ?_⟩
-    ext a
-    exact IsFractionRing.lift_algebraMap (intEmb_injective s) a
-
-theorem natCard_intEmb (E : Type) [Field E] [NumberField E] :
-    Nat.card (𝓞 E →+* ℂ) = Module.finrank ℚ E := by
-  rw [← Nat.card_congr (Equiv.ofBijective _ (restrict_bijective E)), Nat.card_eq_fintype_card,
-    NumberField.Embeddings.card]
-
 theorem cmFam_sum_bijective {E : Type} [Field E] [NumberField E] [IsCMField E] {Ψ : Type} [Fintype Ψ]
     {σ : Ψ → (𝓞 E →+* ℂ)} (h : IsCMFam σ) :
     Function.Bijective
       (Sum.elim σ (fun τ => (starRingEnd ℂ).comp (σ τ)) : Ψ ⊕ Ψ → (𝓞 E →+* ℂ)) := by
-  have hconj : ∀ s : 𝓞 E →+* ℂ, (starRingEnd ℂ).comp ((starRingEnd ℂ).comp s) = s := by
-    intro s
-    ext a
-    simp
-  obtain ⟨hinj, hiff⟩ := h
-  constructor
-  · rintro (a | a) (b | b) hab
-    · exact congrArg Sum.inl (hinj hab)
-    · exact absurd ⟨a, hab⟩ ((hiff (σ b)).1 ⟨b, rfl⟩)
-    · exact absurd ⟨b, hab.symm⟩ ((hiff (σ a)).1 ⟨a, rfl⟩)
-    · have hab' : (starRingEnd ℂ).comp (σ a) = (starRingEnd ℂ).comp (σ b) := hab
-      have : σ a = σ b := by
-        rw [← hconj (σ a), hab', hconj]
-      exact congrArg Sum.inr (hinj this)
-  · intro s
-    by_cases hs : ∃ τ, σ τ = s
-    · obtain ⟨τ, rfl⟩ := hs
-      exact ⟨Sum.inl τ, rfl⟩
-    · have hn : ∃ τ, σ τ = (starRingEnd ℂ).comp s := by
-        by_contra hc
-        exact hs ((hiff s).2 hc)
-      obtain ⟨τ, hτ⟩ := hn
-      refine ⟨Sum.inr τ, ?_⟩
-      change (starRingEnd ℂ).comp (σ τ) = s
-      rw [hτ, hconj]
+  apply _root_.LevelTowerAlt.cm_bij <;> assumption
 
 theorem finrank_eq_two_mul_card : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Type) [Fintype Ψ]
     (σ : Ψ → (𝓞 E →+* ℂ)), IsCMFam σ → Module.finrank ℚ E = 2 * Fintype.card Ψ := by
   intro E _ _ _ Ψ _ σ h
-  rw [← natCard_intEmb E, ← Nat.card_congr (Equiv.ofBijective _ (cmFam_sum_bijective h)),
+  rw [← GlobalTheory.CompanionTheory.Ar.Cusp.Dict.TangentDim.natCard_ringHom E, ← Nat.card_congr (Equiv.ofBijective _ (cmFam_sum_bijective h)),
     Nat.card_eq_fintype_card, Fintype.card_sum]
   omega
 
@@ -619,19 +582,7 @@ theorem zero_mem_ballDom {Ψ : Type} [Fintype Ψ] {j j' n : ℕ} (q : Ψ × Fin 
 
 theorem trace_zero_of_int {E : Type} [Field E] [NumberField E] (w : E)
     (hw : ∀ a : 𝓞 E, Algebra.trace ℚ E ((a : E) * w) = 0) : w = 0 := by
-  have nd := traceForm_nondegenerate ℚ E
-  apply nd.1
-  intro a
-  have halg : IsAlgebraic ℤ a :=
-    (IsFractionRing.isAlgebraic_iff ℤ ℚ E).2 (Algebra.IsAlgebraic.isAlgebraic a)
-  obtain ⟨n, hn, hint⟩ := halg.exists_integral_multiple
-  have h1 : Algebra.trace ℚ E ((n • a) * w) = 0 := hw ⟨n • a, hint⟩
-  have hnq : ((n : ℤ) : ℚ) ≠ 0 := by exact_mod_cast hn
-  have h2 : (n • a) * w = ((n : ℚ)) • (w * a) := by
-    rw [← Int.cast_smul_eq_zsmul ℚ n a, smul_mul_assoc, mul_comm a w]
-  rw [h2, map_smul, smul_eq_mul] at h1
-  rw [Algebra.traceForm_apply]
-  exact (mul_eq_zero.1 h1).resolve_left hnq
+  apply _root_.GlobalTheory.FrameFibre.eq_zero_of_trace <;> assumption
 
 theorem exists_latEmb : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (Ψ : Type) [Fintype Ψ] (j j' n g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (_H : Host E) (F : UnivFam E Ψ j j' n g Λ), Nonempty (LatEmb F) := by
   intro E _ _ _ Ψ _ j j' n g Λ _ _ H F

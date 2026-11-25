@@ -81,7 +81,7 @@ theorem setCoordsZero_X_of_mem (k : Type u) [Field k] (m : ℕ) (S : Finset (Fin
   have h1 : setCoordsZero k m S (MvPolynomial.X (ULift.up.{u} j)) = substZeroOnFinset k m S (ULift.up.{u} j) :=
     by simp [setCoordsZero, MvPolynomial.aeval_X]
   rw [h1]
-  exact dif_pos hj
+  exact dite_eq_left hj
 
 theorem setCoordsZero_X_complOrderEmb (k : Type u) [Field k] (m : ℕ) (S : Finset (Fin m))
     (i : Fin (m - S.card)) :
@@ -93,7 +93,7 @@ theorem setCoordsZero_X_complOrderEmb (k : Type u) [Field k] (m : ℕ) (S : Fins
     simp [setCoordsZero, MvPolynomial.aeval_X]
   have h2 : substZeroOnFinset k m S (ULift.up.{u} (complOrderEmb m S i))
       = MvPolynomial.X (ULift.up.{u} (Classical.choose (exists_complOrderEmb_eq m S hnot))) :=
-    dif_neg hnot
+    dite_eq_right hnot
   have h3 : Classical.choose (exists_complOrderEmb_eq m S hnot) = i :=
     (complOrderEmb m S).injective (Classical.choose_spec (exists_complOrderEmb_eq m S hnot))
   rw [h1, h2, h3]

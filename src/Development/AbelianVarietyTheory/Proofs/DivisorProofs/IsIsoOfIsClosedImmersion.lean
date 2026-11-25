@@ -57,7 +57,6 @@ import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsAdditive
 noncomputable section
 open CategoryTheory Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.AbLaw GlobalTheory.CechPic GlobalTheory.AbDual
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.AbMonoIso
 

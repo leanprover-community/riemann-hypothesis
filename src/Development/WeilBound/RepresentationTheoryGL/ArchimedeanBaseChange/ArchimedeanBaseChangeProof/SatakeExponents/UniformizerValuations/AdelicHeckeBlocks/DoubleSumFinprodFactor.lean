@@ -14,7 +14,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 
@@ -63,8 +62,6 @@ open PositivityTheory.Rg.BcN.F2 (mconv)
 open scoped Classical
 
 namespace PositivityTheory.Rg.BcB.F
-
-attribute [local instance] borelG borelF borelH
 
 namespace Fm
 
@@ -210,7 +207,7 @@ theorem fmTr (h3 : Slots) : FmTr := by
       (fun j => by cases j <;> exact hL.1 _ _) _ (fun w => ?_) ?_
     · by_cases hw : w ∈ P
       · refine ⟨κ w × κ w, inferInstance, fun p => some ⟨⟨w, hw⟩, p⟩, fun p => N w p.2 p.1, ?_⟩
-        simp only [LM.tr, if_pos hw, Option.elim_some, LM.ent, dif_pos hw, Function.update_self]
+        simp only [LM.tr, ite_eq_left hw, Option.elim_some, LM.ent, dite_eq_left hw, Function.update_self]
         exact (Fintype.sum_prod_type' (fun x y => N w y x • L.m w x y)).symm
       · refine ⟨Unit, inferInstance, fun _ => none, fun _ => 1, ?_⟩
         simp [LM.tr, hw, LM.ent]
@@ -233,7 +230,7 @@ theorem fmTr (h3 : Slots) : FmTr := by
       if IsSplitAt (i : Pl E) then L.t i (atW (i : Pl E) (thP E B.a B.b h)) else 1)
     (fun i x y => N i y x) (fun X Y => fac (L.ent P X Y) L.t h) (fun X Y i hi => by simp [fac, LM.ent, hi])
     (fun X Y i => by simp [fac, LM.ent, i.2]) _ (fun i hi => by simp [fac, LM.tr, hi]) (fun i => ?_)
-  simp only [fac, LM.tr, if_pos i.2, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Finset.sum_mul]
+  simp only [fac, LM.tr, ite_eq_left i.2, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Finset.sum_mul]
   exact Finset.sum_congr rfl fun x _ => Finset.sum_congr rfl fun y _ => by ring
 
 open Fm in
@@ -282,7 +279,7 @@ theorem fmAlg (h1 : FinConv) (h3 : Slots) : FmAlg := by
       (fun Z => fac (fun w => mconv (L.ent P (e x) Z w) (L'.ent P Z (e y) w)) (fun w => mconv (L.t w) (L'.t w)) g)
       (fun Z i hi => by simp [fac, LM.ent, hi]) (fun Z i => by simp [fac, LM.ent, i.2]) _
       (fun i hi => by simp [fac, LM.ent, LM.mul, hi]) (fun i => ?_)
-    simp only [fac, LM.ent, dif_pos i.2, LM.mul, Finset.sum_apply, Finset.sum_mul]
+    simp only [fac, LM.ent, dite_eq_left i.2, LM.mul, Finset.sum_apply, Finset.sum_mul]
   · funext x y g
     simp only [adjF, fm, map_mul, map_inv₀, vol_conj]
     congr 1

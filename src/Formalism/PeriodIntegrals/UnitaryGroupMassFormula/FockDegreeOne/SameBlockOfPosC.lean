@@ -167,8 +167,7 @@ theorem reduction_of (hI : InnerFacts) (hKc : KHc) (hKh : KHarm) (hHc : HcHarm) 
   obtain ⟨W, hWfd, hPW, hWK, hWhw⟩ := hOT
   have key := fun e he => key_of hI hKc hKh hHc hS hA hE hT μ W hWK hWhw P hPW hH e he
   obtain ⟨e, he⟩ : ∃ e, homogeneousComponent e P ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hP0 (FockRaiseLowGrade.eq_zero_of_hc P h)
   refine ⟨e, key e he, ?_⟩
   have hother : ∀ e', e' ≠ e → homogeneousComponent e' P = 0 := by
@@ -184,7 +183,7 @@ theorem reduction_of (hI : InnerFacts) (hKc : KHc) (hKh : KHarm) (hHc : HcHarm) 
       rw [map_sub, FockRaiseLowGrade.hc_hc]
       by_cases h : e' = e
       · subst h; simp
-      · rw [if_neg h, hother e' h, sub_zero]
+      · rw [ite_eq_right h, hother e' h, sub_zero]
     exact sub_eq_zero.mp this
   rw [hPe]
   exact (mem_homogeneousSubmodule _ _).mpr (homogeneousComponent_isHomogeneous e P)

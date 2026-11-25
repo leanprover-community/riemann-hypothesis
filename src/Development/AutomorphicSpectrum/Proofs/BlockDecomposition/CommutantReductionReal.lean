@@ -7,47 +7,7 @@ public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.Cen
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.PolarConjTranspose
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.ConstantTermParabolicFiniteType
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.RealDescent.RealLeviDescent.LeviCommutantWordReduction
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NegRightMulLetterShiftApply, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CommutantReductionReal
@@ -150,13 +110,13 @@ theorem evB_intertwine {W : Type} [AddCommGroup W] [Module ℂ W] {lev : Fin n �
     simp only [evB, FreeAlgebra.lift_ι_apply]
     by_cases hpq : lev p = lev q
     · cases s
-      · simp only [if_true, hpq, Bool.false_eq_true, if_false, negRightMulLetterShift_apply]
+      · simp only [ite_true, hpq, Bool.false_eq_true, ite_false, negRightMulLetterShift_apply]
         have e1 : X2 p q (ρ u t) = ρ u (X2 p q t) := (LinearMap.congr_fun (hc p q hpq u).eq t).symm
         have e2 : X2 p q t = -(X1 p q t) + if p = q then τ p • t else 0 := by
           rw [← ht p q hpq, LinearMap.add_apply]; abel
         rw [e1, e2]
         split_ifs <;> simp [map_add (f := _), map_neg, map_mul, hρ p q hpq, LinearMap.add_apply]
-      · simp only [if_true, hpq, leftMulLetter_apply, map_mul, Module.End.mul_apply, hρ p q hpq]
+      · simp only [ite_true, hpq, leftMulLetter_apply, map_mul, Module.End.mul_apply, hρ p q hpq]
     · simp [hpq]
   | mul a c ha hc' =>
     simp only [map_mul, Module.End.mul_apply]
@@ -335,7 +295,7 @@ theorem levRel_xl {n : ℕ} (e : (Σ i, Fin (d i)) ≃ Fin n) {lev : Fin n → �
     exact eb_rel d i p q r v
   · have n1 : (⟨i, q⟩ : Σ i, Fin (d i)) ≠ ⟨k, r⟩ := fun h => hik (congrArg Sigma.fst h)
     have n2 : (⟨k, v⟩ : Σ i, Fin (d i)) ≠ ⟨i, p⟩ := fun h => hik (congrArg Sigma.fst h).symm
-    simp only [xl_apply, xs_same, EmbeddingLike.apply_eq_iff_eq, n1, n2, if_false, sub_zero]
+    simp only [xl_apply, xs_same, EmbeddingLike.apply_eq_iff_eq, n1, n2, ite_false, sub_zero]
     exact sub_eq_zero.2 (eb_comm d hik p q r v).eq
 
 theorem glHom_comm {A : Type} [Ring A] [Algebra ℂ A] {m m' : ℕ} {E : Fin m → Fin m → A} {E' : Fin m' → Fin m' → A}
@@ -352,9 +312,6 @@ end Final
 
 end GlobalTheory.CompanionTheory.PairMult.CenScal
 
-namespace GlobalTheory.CompanionTheory.PairMult
-
-end GlobalTheory.CompanionTheory.PairMult
 end
 end -- clump:auto
 end -- clump:auto
@@ -467,7 +424,7 @@ theorem exists_rho {M : ℕ} {d : Fin M → ℕ} (e : (Σ i, Fin (d i)) ≃ Fin 
     have := hL.1 (e ⟨i, p⟩) (e ⟨i, q⟩) (e ⟨k, r⟩) (e ⟨k, v⟩) (hl _ _ _) (hl _ _ _)
     have n1 : e ⟨i, q⟩ ≠ e ⟨k, r⟩ := fun h => hik (congrArg Sigma.fst (e.injective h))
     have n2 : e ⟨k, v⟩ ≠ e ⟨i, p⟩ := fun h => hik (congrArg Sigma.fst (e.injective h)).symm
-    rw [if_neg n1, if_neg n2, sub_zero] at this
+    rw [ite_eq_right n1, ite_eq_right n2, sub_zero] at this
     exact sub_eq_zero.1 this
   refine ⟨lift ℂ (DirectSum.toLieAlgebra _
     (fun i => glHom (fun p q : Fin (d i) => X1 (e ⟨i, p⟩) (e ⟨i, q⟩)) (hG i))

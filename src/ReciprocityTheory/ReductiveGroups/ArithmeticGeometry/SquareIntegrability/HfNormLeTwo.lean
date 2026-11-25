@@ -353,8 +353,7 @@ theorem card_pos_le : Fintype.card (Σ j : Fin nb, Fin (bs j).i) ≤ DF bs := by
 theorem card_pos_pos (h : 1 ≤ DF bs) : 1 ≤ Fintype.card (Σ j : Fin nb, Fin (bs j).i) := by
   rw [Fintype.card_sigma]
   simp only [Fintype.card_fin]
-  by_contra hc
-  push_neg at hc
+  by_contra! hc
   have h0 : ∀ j, (bs j).i = 0 := by
     intro j
     have := Finset.single_le_sum (f := fun j => (bs j).i) (fun j _ => Nat.zero_le _) (Finset.mem_univ j)
@@ -576,7 +575,7 @@ theorem eU_props {dim : (E →+* ℂ) → ℕ} {n nb : ℕ} (bs : Fin nb → Blo
     (a : Fin (bs j).i) : InPart (bs j).τ (eU bs j a) ∧ ‖eU bs j a‖ = 1 := by
   refine ⟨fun k hk => ?_, by simp [eU]⟩
   simp only [eU, PiLp.single_apply]
-  rw [if_neg]
+  rw [ite_eq_right]
   rintro rfl
   exact hk rfl
 

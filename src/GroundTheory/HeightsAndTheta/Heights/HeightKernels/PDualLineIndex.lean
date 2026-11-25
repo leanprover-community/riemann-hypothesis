@@ -31,37 +31,10 @@ import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 
 -- This file was produced by scripts/clump.py from the modules listed below.
--- Members: GroundTheory.AutomorphicForms.HermitianDisc, GroundTheory.HeightsAndTheta.Theta.EisensteinZeta.MirabolicInduction.MemRangeIffIsIntegral, GroundTheory.HeightsAndTheta.Theta.EisensteinZeta.MirabolicInduction.LinearFormEqZeroOfIntegers, GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PLineIdealDual, GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualLineIndex
-
--- ===== clump member: GroundTheory.AutomorphicForms.HermitianDisc =====
--- clump-header: {"m": "GroundTheory.AutomorphicForms.HermitianDisc", "h": "module\n\npublic import GroundTheory.AutomorphicForms.HermitianSpaces\npublic import Mathlib.FieldTheory.Separable\npublic import GroundTheory.AutomorphicForms.HermitianOrthogonal\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.PiTensorProduct\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Tactic.TypeStar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\nimport GroundTheory.LocalFields.Interface\n\n"}
-section -- clump:auto
-@[expose] public section
-
-noncomputable section
-
-namespace GroundTheory.Automorphic
-
-open Module Matrix GroundTheory.LocalField
-
-variable {F E : Type*} [Field F] [Field E] [Algebra F E] [Algebra.IsQuadraticExtension F E]
-variable {V V' : Type*} [AddCommGroup V] [Module E V] [AddCommGroup V'] [Module E V']
-
-namespace HermitianForm
-
-variable [Algebra.IsSeparable F E]
-
-end HermitianForm
-
-end GroundTheory.Automorphic
-
-end
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: GroundTheory.AutomorphicForms.HermitianDisc =====
+-- Members: GroundTheory.HeightsAndTheta.Theta.EisensteinZeta.MirabolicInduction.MemRangeIffIsIntegral, GroundTheory.HeightsAndTheta.Theta.EisensteinZeta.MirabolicInduction.LinearFormEqZeroOfIntegers, GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PLineIdealDual, GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualLineIndex
 
 -- ===== clump member: GroundTheory.HeightsAndTheta.Theta.EisensteinZeta.MirabolicInduction.MemRangeIffIsIntegral =====
--- clump-header: {"m": "GroundTheory.HeightsAndTheta.Theta.EisensteinZeta.MirabolicInduction.MemRangeIffIsIntegral", "h": "module\n\npublic import GroundTheory.HeightsAndTheta.Heights.HermitianLattice\npublic import GroundTheory.AutomorphicForms.HermitianDisc\npublic import Mathlib.Analysis.CStarAlgebra.Module.Constructions\npublic import Mathlib.Analysis.InnerProductSpace.Dual\npublic import Mathlib.LinearAlgebra.Dual.BaseChange\npublic import Mathlib.NumberTheory.NumberField.Discriminant.Defs\npublic import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex\npublic import GroundTheory.HeightsAndTheta.Theta.CMDatum\nimport Mathlib.Algebra.Module.StablyFree.Basic\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.LinearAlgebra.Matrix.FiniteDimensional\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\npublic import Mathlib.RingTheory.Flat.Basic\n\n"}
+-- clump-header: {"m": "GroundTheory.HeightsAndTheta.Theta.EisensteinZeta.MirabolicInduction.MemRangeIffIsIntegral", "h": "module\n\npublic import GroundTheory.HeightsAndTheta.Heights.HermitianLattice\npublic import Mathlib.Analysis.CStarAlgebra.Module.Constructions\npublic import Mathlib.Analysis.InnerProductSpace.Dual\npublic import Mathlib.LinearAlgebra.Dual.BaseChange\npublic import Mathlib.NumberTheory.NumberField.Discriminant.Defs\npublic import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex\npublic import GroundTheory.HeightsAndTheta.Theta.CMDatum\nimport Mathlib.Algebra.Module.StablyFree.Basic\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.LinearAlgebra.Matrix.FiniteDimensional\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\npublic import Mathlib.RingTheory.Flat.Basic\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -179,12 +152,6 @@ def fPl : ℕ := Fintype.card (InfinitePlace E)
 
 variable (E) in
 def rd : ℝ := |(discr E : ℝ)| ^ ((1 : ℝ) / (2 * fPl E))
-
-namespace MetSpace
-
-variable (S : MetSpace E)
-
-end MetSpace
 
 namespace MetSpace
 
@@ -342,12 +309,6 @@ variable (S : MetSpace E)
 
 end MetSpace
 
-namespace MetSpace
-
-variable (S : MetSpace E)
-
-end MetSpace
-
 structure SelfDualFrame (F E : Type) [Field F] [Field E] [NumberField E] [Algebra F E]
     [Algebra.IsQuadraticExtension F E] where
 
@@ -363,12 +324,6 @@ structure SelfDualFrame (F E : Type) [Field F] [Field E] [NumberField E] [Algebr
   θ_θ : ∀ τ u, θ τ (θ τ u) = u
   θ_isometry : ∀ τ u v, inner ℂ (θ τ u) (θ τ v) = inner ℂ u v
   majorant : ∀ τ (y y' : S.V), inner ℂ (θ τ (S.pt τ y)) (S.pt τ y') = τ.embedding (B.toSesq y y')
-
-namespace SelfDualFrame
-
-variable {F : Type} [Field F] [Algebra F E] [Algebra.IsQuadraticExtension F E]
-
-end SelfDualFrame
 
 section Standard
 
@@ -446,20 +401,6 @@ namespace DualHomPf
 
 open NumberField Module FunctionalEquationAlt FunctionalEquationAlt.MetSpace NumberField.InfinitePlace
 open scoped InnerProductSpace nonZeroDivisors ComplexConjugate
-
-section NumberFieldFacts
-
-variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E]
-
-open Classical
-
-end NumberFieldFacts
-
-section DualLattice
-
-variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E]
-
-end DualLattice
 
 section DualBasis
 
@@ -592,35 +533,6 @@ theorem exists_dualBasis (A : Submodule (𝓞 E) V) (hA : A.FG) :
 
 end DualBasis2
 
-section Fibres
-
-variable {E : Type} [Field E] [NumberField E]
-
-variable (S : MetSpace E) (τ : InfinitePlace E)
-
-end Fibres
-
-section Adjoints
-
-variable {H₁ H₂ : Type} [NormedAddCommGroup H₁] [InnerProductSpace ℂ H₁] [FiniteDimensional ℂ H₁]
-  [NormedAddCommGroup H₂] [InnerProductSpace ℂ H₂] [FiniteDimensional ℂ H₂]
-
-end Adjoints
-
-section IdealMaps
-
-variable {E : Type} [Field E] [NumberField E]
-variable {V V' : Type} [AddCommGroup V] [Module E V] [Module (𝓞 E) V] [IsScalarTower (𝓞 E) E V]
-  [AddCommGroup V'] [Module E V'] [Module (𝓞 E) V'] [IsScalarTower (𝓞 E) E V']
-
-end IdealMaps
-
-section FibMaps
-
-variable {E : Type} [Field E] [NumberField E]
-
-end FibMaps
-
 end DualHomPf
 
 open NumberField Module FunctionalEquationAlt FunctionalEquationAlt.MetSpace DualHomPf
@@ -731,7 +643,7 @@ theorem proof : LineIdealDual.Statement := by
         rw [← hKid j k, map_sum, Finset.mul_sum]
         exact Finset.sum_congr rfl fun i _ ↦ by rw [map_mul]; ring
       simp only [e, apply_ite (algebraMap K K'), map_one, map_zero, mul_ite, mul_one, mul_zero,
-        Finset.sum_ite_eq', Finset.mem_univ, if_true]
+        Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     choose y hy using h
     rw [hid' (a • v)]
     refine Submodule.sum_mem _ fun i _ ↦ ?_
@@ -863,7 +775,7 @@ theorem dualPointCoord_ne_zero {K : Type} [Field K] [NumberField K] {i : ℕ} (F
   simp only [Λ, LinearMap.coe_mk, AddHom.coe_mk, LinearMap.zero_apply,
     zsmul_eq_mul, Pi.mul_apply, Pi.intCast_apply, Pi.single_apply, mul_ite, mul_one, mul_zero,
     apply_ite (algebraMap K K'), map_intCast, map_zero, ite_mul, zero_mul, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true] at this
+    Finset.mem_univ, ite_true] at this
   rcases mul_eq_zero.mp this with h | h
   · apply hD
     have h' : algebraMap K K' (D : K) = 0 := by rw [map_intCast]; exact h

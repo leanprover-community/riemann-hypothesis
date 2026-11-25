@@ -3,47 +3,7 @@ module
 public import Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.HdimEqZeroOfSubsingleton
 public import Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.IsIsoCechComplexMapPresheafCubeRes
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.CubeComplexExactAtOfIsLocalizedModuleRes
-import Mathlib.Algebra.Module.LocalizedModule.Away
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
@@ -222,30 +182,7 @@ def cechAbCubeToCube :
 
 variable (S : Type t) [CommRing S] [Algebra S Γ(X, ⊤)] [Algebra R S] [IsScalarTower R S Γ(X, ⊤)]
 
-def cechCubeScalars : Cube.SemiHom (algebraMap R S) (cechCube R F V U) (cechCube S F V U) where
-  app s :=
-    { toFun := fun x => x
-      map_add' := fun _ _ => rfl
-      map_smul' := fun r (x : sectionsOn F (cechOpen V U s)) => (algebraMap_smul S r x).symm }
-  app_res _ _ := rfl
-
-def cechCubeRestrictScalarsIso :
-    cechCube R F V U ≅ cechCube S F V U ⋙ ModuleCat.restrictScalars (algebraMap R S) :=
-  Cube.isoMk (fun s =>
-    { toFun := fun x => x
-      invFun := fun x => x
-      left_inv := fun _ => rfl
-      right_inv := fun _ => rfl
-      map_add' := fun _ _ => rfl
-      map_smul' := fun r (x : sectionsOn F (cechOpen V U s)) => (algebraMap_smul S r x).symm })
-    fun _ _ => rfl
-
 variable [LinearOrder ι]
-
-def cechHScalarsEquiv (n : ℕ) : cechH R F V U n ≃+ cechH S F V U n :=
-  AddEquiv.ofBijective ((cechCubeScalars R F V U S).homology n).toAddMonoidHom
-    ((cechCubeScalars R F V U S).homology_bijective (fun _ _ => Function.bijective_id) n)
-
 
 def cechAbHEquiv (n : ℕ) : cechAbH F.presheaf V U n ≃+ cechH R F V U n :=
   AddEquiv.ofBijective ((cechAbCubeToCube R F V U).homology n).toAddMonoidHom

@@ -180,13 +180,13 @@ private lemma prod_filter_le_ite_eq_of_mul_eq_one (j j1 : Fin d) (hj : j1.val = 
   · have h1 : ¬ j ≤ k := not_le.mpr h
     have h2 : ¬ j1 ≤ k := by
       rw [Fin.le_iff_val_le_val]; rw [Fin.lt_iff_val_lt_val] at h; omega
-    rw [if_neg h1, if_neg h2, if_neg (ne_of_lt h), one_mul]
+    rw [ite_eq_right h1, ite_eq_right h2, ite_eq_right (ne_of_lt h), one_mul]
   · have h2 : ¬ j1 ≤ j := by rw [Fin.le_iff_val_le_val]; omega
-    rw [h, if_pos le_rfl, if_neg h2, if_pos rfl, mul_one]
+    rw [h, ite_eq_left le_rfl, ite_eq_right h2, ite_eq_left rfl, mul_one]
   · have h1 : j ≤ k := le_of_lt h
     have h2 : j1 ≤ k := by
       rw [Fin.le_iff_val_le_val]; rw [Fin.lt_iff_val_lt_val] at h; omega
-    rw [if_pos h1, if_pos h2, if_neg (ne_of_gt h), hAB]
+    rw [ite_eq_left h1, ite_eq_left h2, ite_eq_right (ne_of_gt h), hAB]
 
 lemma pot_swap (b : Fin d → E) (hb : LinearIndependent ℝ b) (j j1 : Fin d)
     (hj : j1.val = j.val + 1) :
@@ -203,12 +203,12 @@ lemma pot_swap (b : Fin d → E) (hb : LinearIndependent ℝ b) (j j1 : Fin d)
         (if i = j1 then ‖gs b j‖ ^ 2 / ‖gs b j1 + mu b j1 j • gs b j‖ ^ 2 else 1)) := by
     intro i
     by_cases h1 : i = j
-    · rw [h1, if_pos rfl, if_neg hne, swap_gs_j b hb j j1 hj, mul_one, mul_comm,
+    · rw [h1, ite_eq_left rfl, ite_eq_right hne, swap_gs_j b hb j j1 hj, mul_one, mul_comm,
         div_mul_cancel₀ _ hG0]
     · by_cases h2 : i = j1
-      · rw [h2, if_neg (Ne.symm hne), if_pos rfl, one_mul, mul_div_assoc', eq_div_iff hU0]
+      · rw [h2, ite_eq_right (Ne.symm hne), ite_eq_left rfl, one_mul, mul_div_assoc', eq_div_iff hU0]
         linear_combination norm_gso_comp_swap_right_sq_mul b hb j j1 hj
-      · rw [if_neg h1, if_neg h2, swap_gs_other b j j1 hj i h1 h2]
+      · rw [ite_eq_right h1, ite_eq_right h2, swap_gs_other b j j1 hj i h1 h2]
         ring
   have hAB : ‖gs b j1 + mu b j1 j • gs b j‖ ^ 2 / ‖gs b j‖ ^ 2 *
       (‖gs b j‖ ^ 2 / ‖gs b j1 + mu b j1 j • gs b j‖ ^ 2) = 1 := by
@@ -223,7 +223,7 @@ lemma pot_swap (b : Fin d → E) (hb : LinearIndependent ℝ b) (j j1 : Fin d)
     exact Finset.prod_congr rfl (fun i _ => hf i)
   unfold pot
   rw [Finset.prod_congr rfl (fun k _ => hk k), Finset.prod_mul_distrib, Finset.prod_ite_eq' univ j,
-    if_pos (Finset.mem_univ j)]
+    ite_eq_left (Finset.mem_univ j)]
 
 end ReciprocityTheory.ReducedBases.T2
 
@@ -332,7 +332,7 @@ private lemma exists_basis_size_reduce_column {E : Type*} [NormedAddCommGroup E]
   set b : Fin d → E := fun i => f (e0 i) with hb
   obtain ⟨e1, he1⟩ := exists_basis_sub_sum_lower f hli e0
     (fun i l => if l = j ∧ j < i then round (mu b i j) else 0)
-    (fun i l h => if_neg (by rintro ⟨rfl, h2⟩; exact absurd h (not_le.mpr h2)))
+    (fun i l h => ite_eq_right (by rintro ⟨rfl, h2⟩; exact absurd h (not_le.mpr h2)))
   have hfe1 : (fun i => f (e1 i)) = fun i => b i -
       ∑ l, ((if l = j ∧ j < i then round (mu b i j) else 0 : ℤ) : ℝ) • b l := by
     funext i
@@ -357,7 +357,7 @@ private lemma exists_basis_size_reduce_column {E : Type*} [NormedAddCommGroup E]
     exact gs_sub_sum_lower_smul b (fun i l => ((if l = j ∧ j < i then round (mu b i j) else 0 : ℤ) : ℝ))
       (fun i l h => by
         show ((if l = j ∧ j < i then round (mu b i j) else 0 : ℤ) : ℝ) = 0
-        rw [if_neg (by rintro ⟨rfl, h2⟩; exact absurd h (not_le.mpr h2)), Int.cast_zero])
+        rw [ite_eq_right (by rintro ⟨rfl, h2⟩; exact absurd h (not_le.mpr h2)), Int.cast_zero])
   have hmu : ∀ i j', mu (fun i => f (e1 i)) i j' =
       mu b i j' - ((if j < i then round (mu b i j) else 0 : ℤ) : ℝ) * mu b j j' := by
     intro i j'
@@ -367,7 +367,7 @@ private lemma exists_basis_size_reduce_column {E : Type*} [NormedAddCommGroup E]
     rw [hgs, hfi, inner_sub_right, inner_smul_right]
     ring
   refine ⟨e1, hgs, fun i hi => ?_, fun i j' hj' => ?_⟩
-  · rw [hmu, if_pos hi, _root_.ReciprocityTheory.ReducedBases.T2.mu_self b (hli e0) j, mul_one]
+  · rw [hmu, ite_eq_left hi, _root_.ReciprocityTheory.ReducedBases.T2.mu_self b (hli e0) j, mul_one]
     exact abs_sub_round _
   · rw [hmu, _root_.ReciprocityTheory.ReducedBases.T2.mu_of_lt b hj', mul_zero, sub_zero]
 

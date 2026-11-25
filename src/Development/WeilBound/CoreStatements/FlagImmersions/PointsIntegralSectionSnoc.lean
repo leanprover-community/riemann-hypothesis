@@ -114,14 +114,14 @@ theorem points_integral_section_snoc : ∀ II : IntersectionSystem, IsFullInters
     by_cases hh : IsHorizontal W
     · have hWa := (hDS K ι P (e + 1) A s W hP ⟨a, ha, hsa, hsP⟩ hW).1 hh
       have hh' : IsHorizontal W ↔ True := iff_true_intro hh
-      simp only [hW', hh', and_self, if_true]
+      simp only [hW', hh', and_self, ite_true]
       rw [intersection_constant_metric_line II hIS K ι W e L (-1) hWa hL]
       ring
     · have hh' : IsHorizontal W ↔ False := iff_false_intro hh
-      simp only [hW', hh', and_false, if_true, if_false]
+      simp only [hW', hh', and_false, ite_true, ite_false]
       rw [geoNum_last_zero e W _ (by simp [hO, HermLine.ofWeight])]
       simp
   · have hW' : W ∈ divSupp P s ↔ False := iff_false_intro hW
-    simp only [hW', false_and, if_false]
+    simp only [hW', false_and, ite_false]
 
 end RootFieldNumerics

@@ -91,7 +91,7 @@ theorem cut_ppath {LL : Letters (Fin N)} {b' : Fin N → ℕ} (P1 : PPath r N LL
         show stg P1.mu (min (i.val + 1) n0) = _
         rw [min_eq_left (by omega), stg_succ P1.mu]
       rw [e1, e2]
-      simp only [h, if_true]
+      simp only [h, ite_true]
       exact P1.step i
     · have e1 : cutPath n0 P1.mu i.castSucc = stg P1.mu n0 := by
         show stg P1.mu (min i.val n0) = _
@@ -100,7 +100,7 @@ theorem cut_ppath {LL : Letters (Fin N)} {b' : Fin N → ℕ} (P1 : PPath r N LL
         show stg P1.mu (min (i.val + 1) n0) = _
         rw [min_eq_right (by omega)]
       rw [e1, e2]
-      simp only [h, if_false]
+      simp only [h, ite_false]
       have hs : HStrip (stg P1.mu n0) (stg P1.mu n0) 0 :=
         ⟨fun _ => le_rfl, fun a h' => hdom n0 (by omega) (by rw [Fin.le_def]; simp), by simp⟩
       split_ifs <;> exact hs

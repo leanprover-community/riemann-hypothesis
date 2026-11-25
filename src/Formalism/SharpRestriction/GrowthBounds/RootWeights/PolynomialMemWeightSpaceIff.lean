@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.ProjectionOfIsotypicDecomposition
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.DerivationFinsetSumApply
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.GlOperatorPreservesMultidegree
 import Mathlib.RingTheory.Finiteness.Lattice
@@ -66,49 +67,7 @@ theorem weight_vector_monomial_weight [CharZero K] (LL : Letters ι) (S : Set ι
   have h2 := mul_right_cancel₀ hc h
   exact_mod_cast h2
 
-theorem monomial_mem_weightSpace (LL : Letters ι) (S : Set ι) (m : ι × Fin n →₀ ℕ) (c : K) :
-    monomial m c ∈ weightSp (glOps K n LL S) (wtS LL S m) := by
-  rw [polynomial_mem_weightSpace_iff]
-  intro a
-  rw [diagonal_derivation_monomial, smul_monomial, smul_eq_mul]
-
 theorem polynomial_isGLRep (LL : Letters ι) (S : Set ι) : IsGLRep (glOps K n LL S) := by
-  classical
-  refine ⟨polynomial_gl_commutation LL S, ?_, ?_⟩
-  · intro x
-    haveI : ∀ m : x.support, FiniteDimensional K (Pol K n (fun i => multideg (m : ι × Fin n →₀ ℕ) i)) :=
-      fun m => homogeneous_multidegree_findim _
-    refine ⟨⨆ m : x.support, Pol K n (fun i => multideg (m : ι × Fin n →₀ ℕ) i), inferInstance, ?_, ?_⟩
-    · have key : ∑ m ∈ x.support, monomial m (AddMonoidAlgebra.coeff x m) ∈
-          ⨆ m : x.support, Pol K n (fun i => multideg (m : ι × Fin n →₀ ℕ) i) := by
-        apply Submodule.sum_mem
-        intro m hm
-        apply Submodule.mem_iSup_of_mem (⟨m, hm⟩ : x.support)
-        rw [Pol, mem_restrictSupport_iff]
-        intro m' hm'
-        have h1 := support_monomial_subset (Finset.mem_coe.1 hm')
-        rw [Finset.mem_singleton] at h1
-        subst h1
-        intro i
-        rfl
-      convert key using 1
-      exact x.as_sum
-    · intro a b y hy
-      refine Submodule.iSup_induction _ (motive := fun y => glOps K n LL S a b y ∈
-        ⨆ m : x.support, Pol K n (fun i => multideg (m : ι × Fin n →₀ ℕ) i)) hy ?_ ?_ ?_
-      · intro m z hz
-        exact Submodule.mem_iSup_of_mem m (gl_operator_preserves_multidegree LL S _ a b z hz)
-      · simp
-      · intro z w hz hw
-        rw [map_add (f := _)]
-        exact Submodule.add_mem _ hz hw
-  · rw [eq_top_iff]
-    intro F _
-    have key : ∑ m ∈ F.support, monomial m (AddMonoidAlgebra.coeff F m) ∈ ⨆ mu : Fin n → ℤ, weightSp (glOps K n LL S) mu := by
-      apply Submodule.sum_mem
-      intro m _
-      exact Submodule.mem_iSup_of_mem (wtS LL S m) (monomial_mem_weightSpace LL S m _)
-    convert key using 1
-    exact F.as_sum
+  apply _root_.Formalism.MainNotions.G.Joints.isGLRep_glOps <;> assumption
 
 end Formalism.MainNotions.G.GLWeightTheory

@@ -579,9 +579,9 @@ theorem pre_colT (hψ : StdPsi ψ) {m : ℕ} {f : GA E a → ℂ} (hma : m + 1 <
       have ht := t.2.1
       simp only [eLast, Matrix.one_apply]
       by_cases h : (t.1.1 : ℕ) = m
-      · rw [if_pos (Fin.ext h.symm), if_pos (by omega)]
-      · rw [if_neg (fun e => h (congrArg Fin.val e).symm), if_neg (by omega)]
-    · rw [eLast, if_neg, zero_mul]
+      · rw [ite_eq_left (Fin.ext h.symm), ite_eq_left (by omega)]
+      · rw [ite_eq_right (fun e => h (congrArg Fin.val e).symm), ite_eq_right (by omega)]
+    · rw [eLast, ite_eq_right, zero_mul]
       intro e
       have h2 := s.2.2
       exact hs (Subtype.ext (Prod.ext (Fin.ext (by simp [s0]; omega)) (Fin.ext (by simp [s0]; omega))))
@@ -861,7 +861,7 @@ theorem ct_van {r : ℕ} (hr : r ≤ j - 1) (h0 : Av σ W (colSp (fst u (hr.tran
     ext a k
     refine (congrFun (congrFun e a) (Fin.castLE hr' k)).trans ?_
     rw [Matrix.mul_apply, Finset.sum_eq_single (Fin.castLE hr' k) (fun l _ hl => ?_) (by simp)]
-    all_goals rw [Matrix.map_apply, Matrix.add_apply, posM_blk_apply, dif_neg (fun q => by have := k.2; simp at q; omega), add_zero]
+    all_goals rw [Matrix.map_apply, Matrix.add_apply, posM_blk_apply, dite_eq_right (fun q => by have := k.2; simp at q; omega), add_zero]
     · simp [fst, incM]
     · rw [Matrix.one_apply_ne hl, map_zero, mul_zero]
   have le : unipU σ W (colSp (fst u hr')) ≤ S := fun n hn => by

@@ -257,13 +257,13 @@ theorem X_mul_pderiv_monomial {σ : Type*} [DecidableEq σ] (l : σ) (α : σ �
 
 theorem omE_pos {p q r s : ℕ} (l : Ln p q r s) (hl : linePos l = true) (α : Ln p q r s →₀ ℕ) :
     omE l l (monomial α 1) = (((α l : ℕ) : ℂ) + 1 / 2) • monomial α 1 := by
-  simp only [omE, raiB, lowB, hl, if_true]
+  simp only [omE, raiB, lowB, hl, ite_true]
   show (X l : Pol p q r s) * pderiv l (monomial α (1 : ℂ)) + (1 / 2 : ℂ) • monomial α (1 : ℂ) = _
   rw [X_mul_pderiv_monomial, add_smul]
 
 theorem omE_neg {p q r s : ℕ} (l : Ln p q r s) (hl : linePos l = false) (α : Ln p q r s →₀ ℕ) :
     omE l l (monomial α 1) = (-(((α l : ℕ) : ℂ) + 1 / 2)) • monomial α 1 := by
-  simp only [omE, raiB, lowB, hl, if_true, Bool.false_eq_true, if_false]
+  simp only [omE, raiB, lowB, hl, ite_true, Bool.false_eq_true, ite_false]
   show -(pderiv l ((X l : Pol p q r s) * monomial α (1 : ℂ))) + (1 / 2 : ℂ) • monomial α (1 : ℂ) = _
   rw [Derivation.leibniz, pderiv_X_self, smul_eq_mul, smul_eq_mul, X_mul_pderiv_monomial, mul_one]
   module
@@ -533,11 +533,6 @@ def Dpar (j : ℕ) (τ : D.what₂.Tau) : SPar :=
   ((Finset.univ.filter fun i : Fin D.R.m => i.1 < j).biUnion fun i =>
     (block (-P.e τ i) P.t).image fun x => (x, true))).image
       fun x => (x.1 + (if Odd j then P.eta τ else 0), x.2)
-
-def Xpar (j : ℕ) (τ : D.what₂.Tau) : SPar :=
-  (Finset.univ.image fun i : Fin D.R.k => (P.u τ i, true)) ∪
-  ((Finset.univ.filter fun i : Fin D.R.m => i.1 < j).biUnion fun i =>
-    (block (-P.e τ i) (P.t + 1)).image fun x => (x, true))
 
 end TPar
 

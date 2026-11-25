@@ -67,7 +67,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Datum IsDedekindDomain NumberField Matrix GlobalTheory.ExportSeries GlobalTheory.ExportSeries.DualType
 open Formalism.IndefR.Links (PolF)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.dualType_residueChars_unramified_tuple : ∀ {D : D7} {S T : HSp D} (B : Base S T), B.Good → ∀ (ν : Twist D Circle), ν.Good → B.admitted ν.Q → (∀ PP ∈ allP B ν.Q, GlobalTheory.StepLaw.ResAt (B.mu * ν.chi) PP (resP B ν PP) ∧ GlobalTheory.StepLaw.ResAt (B.mu * ν.chi * B.eta⁻¹) PP (resP B ν PP)) ∧ GlobalTheory.StepLaw.UnrOff (B.mu * ν.chi) (allP B ν.Q) ∧ GlobalTheory.StepLaw.UnrOff (B.mu * ν.chi * B.eta⁻¹) (allP B ν.Q) := by
   first | exact @GlobalTheory.ExportSeries.TupleChars.tuple_chars
@@ -92,8 +91,6 @@ open scoped TensorProduct
 
 
 namespace GlobalTheory.ExportSeries.DualType
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open GlobalTheory.StepLaw (ResAt UnrOff)
 
@@ -212,10 +209,10 @@ theorem datumFn_act (F : Frame S T) (G : TypeDat D T.rank) (Q' : Finset (Pl D.ho
   simp only [hH, hO.1, hJ.1]
   by_cases c1 : IsHalf (halfIdem G.Pg Q') x ∧ IsIntM (frMapAdj S T F.βS F.βT x)
   · by_cases c2 : IsHalf (halfIdem G.Pg Q') x ∧ IsIntM (frMapO S T F.βS F.βT x)
-    · rw [if_pos c1, if_pos c2, if_pos c1, if_pos c2, funext (hJ.2 c1.2), funext (hO.2 c2.2), hA, hB]
+    · rw [ite_eq_left c1, ite_eq_left c2, ite_eq_left c1, ite_eq_left c2, funext (hJ.2 c1.2), funext (hO.2 c2.2), hA, hB]
       ring
-    · rw [if_neg c2, if_neg c2]; ring
-  · rw [if_neg c1, if_neg c1]; ring
+    · rw [ite_eq_right c2, ite_eq_right c2]; ring
+  · rw [ite_eq_right c1, ite_eq_right c1]; ring
 
 variable {n r : ℕ}
 
@@ -235,7 +232,7 @@ theorem omegaG_levT_of (G : TypeDat D r) {y : ∀ PP : Pl D.host.E, Matrix (Fin 
         (∀ PP : ↥G.levT.Pg, g' PP ∈ blockTri (blkOf G.levT.r G.levT.t)) ∧ (fun PP => upperLeftBlock G.levT.hr (g' PP)) ∈ G.levT.P.H :=
     ⟨h0, g, hg, fun PP => blockTri_blkOf_one_top _, by show (fun PP : ↥G.Pg => upperLeftBlock (le_refl r) (g PP)) ∈ G.P.H; rw [hr]; exact hH⟩
   unfold omegaG
-  rw [dif_pos hex]
+  rw [dite_eq_left hex]
   have e : hex.2.choose = g := funext fun PP => Units.ext ((hex.2.choose_spec.1 PP).trans (hg PP).symm)
   have e2 : (⟨fun PP => upperLeftBlock G.levT.hr (hex.2.choose PP), hex.2.choose_spec.2.2⟩ : G.levT.P.H) = ⟨g, hH⟩ :=
     Subtype.ext ((hr _).trans e)
@@ -248,7 +245,7 @@ theorem omegaG_levT_zero (G : TypeDat D r) {y : ∀ PP : Pl D.host.E, Matrix (Fi
     (h : ¬ ((∀ PP ∈ G.Pg, LowZero r (y PP)) ∧ ∃ g : G0 G.Pg r, (∀ PP : ↥G.Pg, (g PP).val = topL r (y PP.1)) ∧ g ∈ G.P.H)) :
     omegaG G.levT G.muC y = 0 := by
   unfold omegaG
-  refine dif_neg fun h' => h ⟨h'.1, ?_⟩
+  refine dite_eq_right fun h' => h ⟨h'.1, ?_⟩
   obtain ⟨g, h1, -, h3⟩ := h'.2
   refine ⟨g, h1, ?_⟩
   rwa [show (fun PP => upperLeftBlock G.levT.hr (g PP)) = g from funext fun PP => GlobalTheory.AdjDatumMove.restrictedBlock_self_apply _] at h3
@@ -303,7 +300,7 @@ theorem flat_mul_inv (hr : r ≤ n) (ν : kˣ →* Rˣ) {K : GL (Fin n) k} (hK :
     ext i j
     have hi : i.val < r ∧ j.val < n := ⟨i.2, lt_of_lt_of_le j.2 hr⟩
     have hi' : ∀ l : Fin r, i.val < r ∧ l.val < n := fun l => ⟨i.2, lt_of_lt_of_le l.2 hr⟩
-    simp only [topL, dif_pos hi, Matrix.mul_apply, dif_pos (hi' _), Matrix.submatrix_apply]
+    simp only [topL, dite_eq_left hi, Matrix.mul_apply, dite_eq_left (hi' _), Matrix.submatrix_apply]
     refine (Fintype.sum_of_injective (Fin.castLE hr) (Fin.castLE_injective hr) _ _ (fun l hl => ?_) (fun l => ?_)).symm
     · have hl' : ¬ l.val < r := fun h => hl ⟨⟨l.val, h⟩, by ext; rfl⟩
       rw [mem_blockTri.1 hK' l ⟨j.val, hi.2⟩ (by simp [blk2, hl', j.2]), mul_zero]
@@ -534,12 +531,6 @@ theorem om_tgt_of_red (hB : B.Good) (hS : S.SigOK) {Q : Finset (Pl D.host.E)} (h
 
 end Target
 
-section TargetSeries
-
-variable {B : Base S T}
-
-end TargetSeries
-
 section TargetSeriesAll
 
 variable {B : Base S T}
@@ -573,12 +564,6 @@ theorem gen_mul_right_of_red (hB : B.Good) (hS : S.SigOK) {ψ : Twist D Circle} 
 
 end TargetSeriesAll
 
-section TargetLattice
-
-variable {B : Base S T}
-
-end TargetLattice
-
 section Xi
 
 variable {B : Base S T} {C : Type} [AddCommGroup C] [Fintype C]
@@ -597,7 +582,7 @@ theorem delQ_det_of_red (hB : B.Good) {u : UnivTwist D C} {Q : Finset (Pl D.host
   refine Eq.trans (Finset.sum_congr rfl fun PP _ => ?_) (Finset.univ_sum_single _)
   show Multiplicative.toAdd ((u.spec Q (MonoidHom.id _)).res PP.1 _) = _
   rw [show (u.spec Q (MonoidHom.id _)).res PP.1 = (MonoidHom.id _).comp ((AddMonoidHom.toMultiplicative
-    (AddMonoidHom.single (fun _ : ↥Q => C) ⟨PP.1, PP.2⟩)).comp (u.kap PP.1)) from dif_pos PP.2]
+    (AddMonoidHom.single (fun _ : ↥Q => C) ⟨PP.1, PP.2⟩)).comp (u.kap PP.1)) from dite_eq_left PP.2]
   rfl
 
 

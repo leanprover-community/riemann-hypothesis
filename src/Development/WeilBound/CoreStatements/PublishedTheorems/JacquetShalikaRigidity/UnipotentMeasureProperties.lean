@@ -122,12 +122,12 @@ theorem exists_gam {j : ℕ} (hjk : j ≤ k) (ξ : RowT E k j) :
     · have a1 : i ≠ i₀ := fun e => by rw [e] at hi; omega
       have a2 : i ≠ i₁ := fun e => by have : (i₁ : ℕ) = j - 1 := rfl; rw [e] at hi; omega
       have hs : σ i = i := by rw [hσ]; exact Equiv.swap_apply_of_ne_of_ne a1 a2
-      rw [hs, hu, Pi.single_apply, if_neg a1, zero_mul, add_zero]
+      rw [hs, hu, Pi.single_apply, ite_eq_right a1, zero_mul, add_zero]
     · have b1 : c ≠ i₀ := fun e => by rw [e] at hc'; omega
       have b2 : c ≠ i₁ := fun e => by have : (i₁ : ℕ) = j - 1 := rfl; rw [e] at hc'; omega
       have hs : σ i = c ↔ i = c := by
         rw [← Equiv.eq_symm_apply, hσ, Equiv.symm_swap, Equiv.swap_apply_of_ne_of_ne b1 b2]
-      have hv0 : v c = 0 := by rw [hv, Pi.sub_apply, Pi.single_apply, if_neg b1, ξ.2.2 c hc', sub_zero]
+      have hv0 : v c = 0 := by rw [hv, Pi.sub_apply, Pi.single_apply, ite_eq_right b1, ξ.2.2 c hc', sub_zero]
       rw [hv0, mul_zero, add_zero, Matrix.one_apply, Matrix.one_apply]
       simp only [hs]
   · intro i c hi
@@ -176,7 +176,7 @@ theorem exists_coset {j : ℕ} (hj : 1 ≤ j) (hjk : j ≤ k) (γ : GL (Fin k) E
     simp [fun c => congr_fun h c] at key
   have supp : ∀ c : Fin k, j ≤ (c : ℕ) → γ.val i₁ c = 0 := by
     intro c hc
-    rw [hγ i₁ c (Or.inr hc), Matrix.one_apply, if_neg]
+    rw [hγ i₁ c (Or.inr hc), Matrix.one_apply, ite_eq_right]
     intro e
     have : (i₁ : ℕ) = (c : ℕ) := congr_arg Fin.val e
     simp [i₁] at this
@@ -219,13 +219,13 @@ theorem last_row (hk : 1 ≤ k) (ξ : RowT E k k) (g : GA E k) :
   funext c
   simp only [lastRow]
   rw [Finset.sum_eq_single (⟨k - 1, by omega⟩ : Fin k)]
-  · rw [if_pos (by simp; omega), Units.val_mul, Matrix.mul_apply]
+  · rw [ite_eq_left (by simp; omega), Units.val_mul, Matrix.mul_apply]
     simp only [Matrix.vecMul, dotProduct]
     refine Finset.sum_congr rfl fun l _ => ?_
     rw [← (gam_spec le_rfl ξ).2 ⟨k - 1, by omega⟩ l (by simp; omega)]
     rfl
   · intro b _ hb
-    rw [if_neg]
+    rw [ite_eq_right]
     intro e
     exact hb (Fin.ext (by simp; omega))
   · simp

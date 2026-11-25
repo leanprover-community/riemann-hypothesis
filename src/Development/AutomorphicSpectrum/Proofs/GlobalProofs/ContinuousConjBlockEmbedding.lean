@@ -123,7 +123,7 @@ theorem mul_diag_zero {b : Type} [Fintype b] {N : Matrix b (Fin m) D.host.E} {I 
   rw [Matrix.mul_diagonal, GlobalTheory.CompanionTheory.LeviGen.ind_apply]
   by_cases hi : i ∈ I
   · rw [h a i hi, zero_mul]; rfl
-  · rw [if_neg hi, mul_zero]; rfl
+  · rw [ite_eq_right hi, mul_zero]; rfl
 
 theorem frame_proj (hCM : IsCMExt D.host.F D.host.E D.sp.cm.sig) (hJ : IsHermND D.sp.cm.sig V.gram)
     (hW : IsWittFrame D.sp.cm.sig V.gram X Y) (hι : HSpace.IsIsomEmb V' V ι)
@@ -146,7 +146,7 @@ theorem frame_proj (hCM : IsCMExt D.host.F D.host.E D.sp.cm.sig) (hJ : IsHermND 
   have hcol : ∀ j, ∃ u, ι u = V.frame.equivFun.symm fun a => (1 - Q) a j := fun j => by
     refine (hr _).2 fun i hi => ?_
     rw [hT_col, hT_col]
-    have hi' : (ind (upTo T) : Fin m → D.host.E) i = 1 := by rw [GlobalTheory.CompanionTheory.LeviGen.ind_apply, if_pos hi]
+    have hi' : (ind (upTo T) : Fin m → D.host.E) i = 1 := by rw [GlobalTheory.CompanionTheory.LeviGen.ind_apply, ite_eq_left hi]
     constructor
     · have e : cT (D.sp.cm.sig : D.host.E →+* D.host.E) X * V.gram * (1 - Q) =
           (1 - diagonal (ind (upTo T) : Fin m → D.host.E)) * (cT (D.sp.cm.sig : D.host.E →+* D.host.E) X * V.gram) := by

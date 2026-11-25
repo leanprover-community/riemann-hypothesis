@@ -63,7 +63,7 @@ theorem ind_hopf : ∀ (R : Type) [CommRing R] [IsDomain R] (T : Type) [CommGrou
     · simp only [ext, ↓reduceIte, hκ]
     · intro c _ hc
       simp only [ext]
-      rw [if_neg (fun h => hc h.symm)]
+      rw [ite_eq_right (fun h => hc h.symm)]
     · intro h
       exact absurd (Finset.mem_univ _) h
   let extL : T ⧸ ι.range → (H → R) →ₗ[R] (T → R) := fun c =>
@@ -160,14 +160,14 @@ theorem ind_hopf : ∀ (R : Type) [CommRing R] [IsDomain R] (T : Type) [CommGrou
                 ((QuotientGroup.mk z.2 : T ⧸ ι.range).out * ι (κ z.2))) := by rw [hκ, hκ]
             _ = _ := by rw [map_mul, mul_mul_mul_comm]
         · intro c' _ hc'
-          rw [if_neg (fun h => hc' h.2.symm)]
+          rw [ite_eq_right (fun h => hc' h.2.symm)]
         · intro h
           exact absurd (Finset.mem_univ _) h
       · intro c _ hc
         rw [Finset.sum_apply]
         apply Finset.sum_eq_zero
         intro c' _
-        rw [if_neg (fun h => hc h.1.symm)]
+        rw [ite_eq_right (fun h => hc h.1.symm)]
       · intro h
         exact absurd (Finset.mem_univ _) h
     rw [hsum]

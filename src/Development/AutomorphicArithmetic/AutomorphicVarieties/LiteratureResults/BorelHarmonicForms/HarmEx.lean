@@ -540,7 +540,6 @@ private theorem cas_alg {E : Type} [Field E] [NumberField E] {a n : ℕ} (e : Fi
 
 theorem UpperTheory.V.Lit.Bor.casTens :
     UpperTheory.V.Lit.Bor.CasTens := by
-  set_option synthInstance.maxHeartbeats 200000 in
     intro E _ _ _ a n e he π Ξ r
     obtain ⟨c₁, h₁⟩ := casPi E a n e he π r
     obtain ⟨c₂, h₂⟩ := casXi E a n e he Ξ (-r)

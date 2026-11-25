@@ -95,7 +95,7 @@ theorem step_KC {n : ℕ} (G : Grp k n) : CompactOpenKernelProp G := by
     refine ⟨hg.1, fun i j hij => ?_⟩
     have hne : i ≠ j := fun h => (ne_of_lt hij) (h ▸ rfl)
     obtain ⟨y, hy, e⟩ := hg.2 i j
-    rw [if_neg hne, sub_zero] at e
+    rw [ite_eq_right hne, sub_zero] at e
     have hc : cc G.μ (G.bl j) (G.bl i) ≤ r := (hB.2.1 (G.bl j) (G.bl i)).le.trans hr
     exact ⟨y, Ideal.pow_le_pow_right hc hy, e⟩
 

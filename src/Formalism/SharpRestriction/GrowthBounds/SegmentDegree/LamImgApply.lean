@@ -90,15 +90,15 @@ theorem lam_eval (hG : LamGeo X p K) (m : Fin X.F.J → (ℤ × Fin (r + K) →�
       X.Pz p K (j0.val : ℤ) x0 * m j0 (x0, c) := by
     rw [Finset.sum_eq_single j0]
     · rw [Finset.sum_eq_single x0]
-      · rw [if_pos rfl]
+      · rw [ite_eq_left rfl]
       · intro x hx hne
-        rw [if_neg]
+        rw [ite_eq_right]
         intro h
         exact hne (hG.U1 j0 j0 x hx x0 hx0 h).2
       · intro h; exact absurd hx0 h
     · intro j _ hne
       refine Finset.sum_eq_zero fun x hx => ?_
-      rw [if_neg]
+      rw [ite_eq_right]
       intro h
       exact hne (hG.U1 j j0 x hx x0 hx0 h).1
     · intro h; exact absurd (Finset.mem_univ _) h
@@ -171,7 +171,7 @@ theorem restLamInj_of (C₀ : ℝ) (hGeo : RestLamGeo C₀) (hTau : RestLamTau) 
       exact (hdec j0 x0 hx0 c).1
     · have ha : X.a' p K t = 0 := by
         unfold Dat.a' Dat.d
-        rw [if_neg ht]; simp
+        rw [ite_eq_right ht]; simp
       have b1 := (Finset.mem_filter.mp (hlaS t)).2.1
       have b2 := (Finset.mem_filter.mp (hlaS' t)).2.1
       rw [ha] at b1 b2
@@ -195,17 +195,17 @@ theorem restLamInj_of (C₀ : ℝ) (hGeo : RestLamGeo C₀) (hTau : RestLamTau) 
           unfold segmentWeightExponent
           rw [Finset.sum_eq_single j]
           · rw [Finset.sum_eq_single x]
-            · rw [if_pos hpos.symm]
+            · rw [ite_eq_left hpos.symm]
             · intro y hy hne
               obtain ⟨hyl, hyW⟩ := Finset.mem_filter.mp hy
-              rw [if_neg]
+              rw [ite_eq_right]
               intro h
               exact hne (hG.U2 j j y hyl hyW x hv.1 hW (h.trans hpos)).2
             · intro h; exact absurd (Finset.mem_filter.mpr ⟨hv.1, hW⟩) h
           · intro j' _ hne
             refine Finset.sum_eq_zero fun y hy => ?_
             obtain ⟨hyl, hyW⟩ := Finset.mem_filter.mp hy
-            rw [if_neg]
+            rw [ite_eq_right]
             intro h
             exact hne (hG.U2 j' j y hyl hyW x hv.1 hW (h.trans hpos)).1
           · intro h; exact absurd (Finset.mem_univ _) h

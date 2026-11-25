@@ -102,12 +102,12 @@ theorem ptEntry_app_lt (c : ℂ) : ∀ (H : C.LPt) (a b : ℕ), a < D.ptSize H �
     simp only [D.ptSize, List.map_cons, List.sum_cons] at ha hb
     simp only [List.cons_append, D.ptEntry]
     by_cases h1 : a < s ∧ b < s
-    · rw [if_pos h1, if_pos h1]
-    · rw [if_neg h1, if_neg h1]
+    · rw [ite_eq_left h1, ite_eq_left h1]
+    · rw [ite_eq_right h1, ite_eq_right h1]
       by_cases h2 : s ≤ a ∧ s ≤ b
-      · rw [if_pos h2, if_pos h2]
+      · rw [ite_eq_left h2, ite_eq_left h2]
         exact ptEntry_app_lt c rest (a - s) (b - s) (by simp only [D.ptSize]; omega) (by simp only [D.ptSize]; omega)
-      · rw [if_neg h2, if_neg h2]
+      · rw [ite_eq_right h2, ite_eq_right h2]
 
 theorem ptEntry_app_last (c : ℂ) : ∀ (H : C.LPt), D.ptEntry (H ++ [(1, c)]) (D.ptSize H) (D.ptSize H) = c := by
   intro H
@@ -210,13 +210,13 @@ theorem cutWord_of_adm (S : C.HidaSetting E Wp Wq) (hG : C.GridsOK S) (hC : KB.C
       simp only [C.HidaSetting.cutLo, C.HidaSetting.cutHi, Set.mem_Icc]
       constructor <;> linarith [hY.1, hY.2]
     by_cases hp : x.1
-    · rw [if_pos hp] at h1
+    · rw [ite_eq_left hp] at h1
       have hy : (∃ a, x.2 ∈ S.grid v a) ∨ x.2 ∈ S.grid1 v := by
         rcases Finset.mem_union.1 h1 with h | h
         · exact Or.inl ⟨_, h⟩
         · exact Or.inr h
       exact hcut _ (hnode _ hy).1
-    · rw [if_neg hp] at h1
+    · rw [ite_eq_right hp] at h1
       have hy : (∃ a, x.2 - 1 ∈ S.grid v a) ∨ x.2 - 1 ∈ S.grid1 v := by
         rcases Finset.mem_union.1 h1 with h | h
         · exact Or.inl ⟨_, h⟩

@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.FibreCounting
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.TermTieOf
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SaturatedPf
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.GenericRatioOfBoundHolds
@@ -137,15 +138,7 @@ theorem fib_decomp {s s' : TT Y u u'} (h : s.toTerm = s'.toTerm) :
 theorem gterm_eq {s s' : TT Y u u'} (h1 : s.lam = s'.lam) (h2 : s.lam' = s'.lam')
     (h3 : ∃ n ∈ NLam s.lam (lf D (X.Fu u)), ∃ n' ∈ NLam s.lam' (lf D (X.Fu u')), s'.lin = n * s.lin * n') :
     s = s' := by
-  obtain ⟨l, hl, l', hl', c⟩ := s
-  obtain ⟨k, hk, k', hk', c'⟩ := s'
-  simp only at h1 h2
-  subst h1 h2
-  have : c = c' := by
-    rw [← Quot.out_eq c, ← Quot.out_eq c']
-    exact Quot.sound h3
-  subst this
-  rfl
+  apply _root_.Formalism.L2.SG.Pf.FibreCounting.gterm_eq <;> assumption
 
 def cPerp {T : D.host.E} (F0 : FlagG (VS D) D.R.rS T) (c : (VS D).V ≃ₗ[D.host.E] (VS D).V)
     (hc : c ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT) (hX : ∀ x ∈ F0.X, c x = x) :
@@ -688,7 +681,7 @@ theorem pair_step (hK : IotaKer) {s₁ s₂ t₁ t₂ : TT Y u u'} (h1 : s₁.to
   have hsF := X_le_spanE_XLam (X.Fu u) s₁.lam ((Y.rowsOK u).1 _ s₁.mem)
   constructor
   · unfold s0T
-    rw [if_pos ⟨hl, hl'⟩, if_pos ⟨hm, hm'⟩, ← hl1, hβt]
+    rw [ite_eq_left ⟨hl, hl'⟩, ite_eq_left ⟨hm, hm'⟩, ← hl1, hβt]
     have hT := Th_move hn₁ hn₂' hm₁ hm₂' hf₁ hzt₁ hf₂ hzt₂ (lift_F s₁) (lift_frame s₁) hL₂ hsF (hs_frame s₁) hβ hβX
       hτX hτ
     unfold Lat.s0

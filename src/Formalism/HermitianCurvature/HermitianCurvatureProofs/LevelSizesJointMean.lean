@@ -60,14 +60,13 @@ theorem t_BoxSumLattice : BoxSumLattice := by
       exact min_eq_right zero_le_one
     simp only [h0, Finset.sum_const_zero]
     exact hep
-  push_neg at hz
+  push Not at hz
   have hxpos : ∀ w, 0 < x w := fun w => lt_of_le_of_ne (hx w) (hz w).symm
   have hn0 : Fintype.card (InfinitePlace E) ≠ 0 := Fintype.card_ne_zero
   have hPpos : 0 < ∏ w, x w := Finset.prod_pos (fun w _ => hxpos w)
   have haΘ : 0 < (a / Θ) ^ Fintype.card (InfinitePlace E) := pow_pos (div_pos hapos hΘpos) _
   have hNpos : 0 < √(FractionalIdeal.absNorm aa : ℝ) := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     nlinarith [haΘ, hPpos, hprod, hcon]
   set n := Fintype.card (InfinitePlace E) with hn
   set P := ∏ w, x w with hP

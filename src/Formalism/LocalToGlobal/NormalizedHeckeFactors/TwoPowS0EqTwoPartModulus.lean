@@ -66,8 +66,7 @@ theorem evPt_surjective (T : Subalgebra O (X → O))
       (fun h => absurd (Finset.mem_univ z) h)]
     exact Finset.prod_erase_mul _ _ (Finset.mem_univ z)
   have hφ : ∃ x, φ (P x) ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have h1 := congrArg φ hsum
     rw [AlgHom.commutes] at h1
     exact hN0 (by simpa [hcon] using h1.symm)
@@ -107,16 +106,6 @@ theorem mem_Q_iff (i : D.nd.Loc) (v : HeightOneSpectrum (𝓞 D.host.E)) :
   (D.ntw.psiL_ram i v (D.nd.plOm.1 v) (D.nd.plOm.2 v)).symm
 
 end Record
-
-section Good
-
-open Polynomial
-
-end Good
-
-section Tame
-
-end Tame
 
 def latRel {O : Type} [CommRing O] {φ : O →+* ℂ} {V : Type} [AddCommGroup V] [Module ℂ V] (L : Rows.OLat O φ V) :
     Set (L.gen → O) :=

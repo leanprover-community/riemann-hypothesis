@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.UniversalGeneralOfRestriction
 public import Mathlib.RingTheory.AdicCompletion.Basic
 public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Defs
 public import Mathlib.RingTheory.PowerSeries.Basic
@@ -184,14 +185,7 @@ variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field 
     {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
 
 theorem φVB_inj : Function.Injective (φVB PD (LL := LL) (V := V)) := by
-  have h : ∀ y, φVB PD (LL := LL) (V := V) y = ((PD.φ.toLinearMap).lTensor V) y := fun y => by
-    induction y using TensorProduct.induction_on with
-    | zero => simp
-    | tmul x b => simp [φVB]
-    | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
-  intro a b hab
-  rw [h, h] at hab
-  exact Module.Flat.lTensor_preserves_injective_linearMap _ PD.φ_inj hab
+  apply _root_.Formalism.MainNotions.UnusedSlot80.UnivF.φVB_inj <;> assumption
 
 end PhiInj
 
@@ -267,8 +261,7 @@ theorem indep_phi_cmp (hdom : IsDomain O) (hFr : IsFractionRing O LL)
     refine ⟨?_, fun δ hδ => ?_⟩
     · rw [hz, Finset.smul_sum]
       exact Finset.sum_congr rfl fun m _ => by rw [smul_comm, (he.1 m).2.1]
-    · set_option synthInstance.maxHeartbeats 100000 in
-      rw [hz, map_sum]
+    · rw [hz, map_sum]
       exact Finset.sum_congr rfl fun m _ => by rw [map_smul, (he.1 m).2.2 δ hδ]
   have hcz : W.cmp T ⟨z, hzN⟩ = 0 := by
     have e1 : (⟨z, hzN⟩ : ↥(W.N T)) = ∑ m, o m • (⟨e m, (he.1 m).1⟩ : ↥(W.N T)) :=
@@ -405,8 +398,8 @@ theorem expCritP_of [NeZero n] (hA : Formalism.MainNotions.LiftingTheory.CaseA W
     have hFa : Antitone Fil := by
       intro a b hab
       by_cases hb : b ≤ 0
-      · rw [show Fil a = ⊤ from if_pos (le_trans hab hb), show Fil b = ⊤ from if_pos hb]
-      · rw [show Fil b = ⊥ from if_neg hb]; exact bot_le
+      · rw [show Fil a = ⊤ from ite_eq_left (le_trans hab hb), show Fil b = ⊤ from ite_eq_left hb]
+      · rw [show Fil b = ⊥ from ite_eq_right hb]; exact bot_le
     haveI := fd_ιDi W hA hD T hT i
     have hDLφ : ∀ m, Formalism.MainNotions.CrystallineLiftingInputs.DL W T i (((W.φD T) ^ 1) (e m)) := by
       intro m
@@ -418,14 +411,14 @@ theorem expCritP_of [NeZero n] (hA : Formalism.MainNotions.LiftingTheory.CaseA W
       refine Submodule.mem_inf.2 ⟨hval _ _ (hDLφ m) (hEx m) j, ?_⟩
       by_cases hj : j < 0
       · rw [hEn m j hj]; exact Submodule.zero_mem _
-      · rw [show Fil (-j) = ⊤ from if_pos (by omega)]; exact Submodule.mem_top
+      · rw [show Fil (-j) = ⊤ from ite_eq_left (by omega)]; exact Submodule.mem_top
     have h₁ : Formalism.MainNotions.DeltaInvariantLattices.ιDi W T i ⊓ Fil 1 = ⊥ := by
-      rw [show Fil 1 = ⊥ from if_neg (by norm_num), inf_bot_eq]
+      rw [show Fil 1 = ⊥ from ite_eq_right (by norm_num), inf_bot_eq]
     have hind : ∀ c : Fin (Module.finrank LL T.V) → LL,
         (∀ j, ∑ m, c m • Em m j ∈ Fil (-j + 1)) → c = 0 := by
       intro c hc
       have h0 := hc 0
-      rw [show Fil (-(0 : ℤ) + 1) = ⊥ from if_neg (by norm_num), Submodule.mem_bot] at h0
+      rw [show Fil (-(0 : ℤ) + 1) = ⊥ from ite_eq_right (by norm_num), Submodule.mem_bot] at h0
       apply indep_phi_cmp W inferInstance hFr hring T (h3 T hT) hmod (i - 1) e he c
       rw [← h0]
       exact Finset.sum_congr rfl fun m _ => by rw [hE0 m]
@@ -440,7 +433,7 @@ theorem expCritP_of [NeZero n] (hA : Formalism.MainNotions.LiftingTheory.CaseA W
           rw [map_pow, hlq, mul_pow, mul_comm, smulS_mul hdLB, smulS_X_pow (LB_smulS hdLB _)]
           exact LB_smulS hdLB _ _ (by omega)
         rw [h0]; exact Submodule.zero_mem _
-      · rw [show Fil ((k : ℤ) - j) = ⊤ from if_pos (by omega)]; exact Submodule.mem_top
+      · rw [show Fil ((k : ℤ) - j) = ⊤ from ite_eq_left (by omega)]; exact Submodule.mem_top
     have hdvd := MC.dvd_of_dg hFa (Formalism.MainNotions.DeltaInvariantLattices.ιDi W T i) 1 h₁ hEmem hind k _ hdg
 
     let ψ : PowerSeries O →+* PowerSeries LL := (W.lev i ζ).toRingHom.comp (at0Hom W hring)

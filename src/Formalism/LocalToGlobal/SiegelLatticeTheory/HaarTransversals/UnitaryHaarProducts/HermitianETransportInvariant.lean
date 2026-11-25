@@ -431,7 +431,7 @@ theorem hA_f_span (T : Set (Fin D.R.rS)) (y : VA X.B.I)
     rw [Submodule.span_le]
     rintro _ ⟨c, hc, rfl⟩
     show hA X.B.I (incl X.B.I (X.fR b)) (incl X.B.I (X.eR c)) = 0
-    rw [hA_f_e, if_neg (fun h : c = b => hb (h ▸ hc))]
+    rw [hA_f_e, ite_eq_right (fun h : c = b => hb (h ▸ hc))]
   exact this hy
 
 theorem span_repr (y : VA X.B.I)
@@ -475,7 +475,7 @@ theorem coef {C : ℕ} (hC : GoodC X u C) (T : Set (Fin D.R.rS)) (s : VA X.B.I) 
     rw [e1, hs'def, Finset.smul_sum, ← Finset.sum_sub_distrib]
     refine Submodule.sum_mem _ fun b _ => ?_
     by_cases hb : b ∈ T
-    · rw [if_pos hb]
+    · rw [ite_eq_left hb]
       have key : ((C * C : ℕ) : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • (hA X.B.I (incl X.B.I (X.fR b)) s • incl X.B.I (X.eR b)) -
           ((C * C : ℕ) : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • (hA X.B.I (X.f0 b) s • X.e0 b) =
           hA X.B.I ((C : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • (incl X.B.I (X.fR b) - X.f0 b)) s •
@@ -494,7 +494,7 @@ theorem coef {C : ℕ} (hC : GoodC X u C) (T : Set (Fin D.R.rS)) (s : VA X.B.I) 
       · have hm : (C : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • (incl X.B.I (X.eR b) - X.e0 b) ∈ mL X.B.I X.B.g := by
           rw [← neg_sub, smul_neg]; exact neg_mem (hC.2.1 b)
         exact intsmul_mem X (unitaryCongruence.hA_int X.B.I (X.vectorsInLattice.1 b).2 hs) (natsmul_mem X _ hm)
-    · rw [if_neg hb, hT b hb]; simp
+    · rw [ite_eq_right hb, hT b hb]; simp
   have hCC : ((C * C : ℕ) : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • s ∈ unitaryCongruence.Mo X.B.I X.B.g (X.e0 '' T) := by
     have e : ((C * C : ℕ) : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • s = ((C * C : ℕ) : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • s' +
         (((C * C : ℕ) : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • s - ((C * C : ℕ) : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • s') := by abel
@@ -837,7 +837,7 @@ theorem hA_f_nxt (a : Fin D.R.rS) :
     hA X.B.I (incl X.B.I (X.fR a)) (incl X.B.I (nxt X.eR (X.zR u) a)) = 0 := by
   unfold nxt
   split_ifs with h
-  · rw [hA_f_e, if_neg]
+  · rw [hA_f_e, ite_eq_right]
     intro h'
     have := congrArg Fin.val h'
     simp at this
@@ -929,7 +929,7 @@ theorem Z_bw {n : X.B.I.Gf} (hn : n ∈ X.NfinU u) (hnK : n ∈ X.B.I.Kset) (i :
     refine unitaryCongruence.Z_add X.B.I X.B.g ?_ (hQ hMo)
     have hne : i ≠ ⟨i.1 + 1, h⟩ := fun h' => by have := congrArg Fin.val h'; simp at this
     have := X.bw_dual i ⟨i.1 + 1, h⟩
-    rwa [if_neg hne, sub_zero] at this
+    rwa [ite_eq_right hne, sub_zero] at this
   · exact unitaryCongruence.Z_zero X.B.I X.B.g
 
 theorem unipotent_in_level_of_psi (hP : PsiDd X) : UnipotentConjugateInLevel X u := by

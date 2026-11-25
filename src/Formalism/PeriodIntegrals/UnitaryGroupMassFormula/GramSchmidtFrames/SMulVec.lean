@@ -91,9 +91,9 @@ lemma s_adj {p : ℕ} {M : E → Matrix (Fin p) (Fin p) ℂ} (h : ∀ i j, Sm (f
   refine s_det fun i j => ?_
   simp only [Matrix.updateRow_apply]
   by_cases hi : i = b
-  · simp only [hi, if_true]
+  · simp only [hi, ite_true]
     exact contDiffOn_const
-  · simp only [hi, if_false]
+  · simp only [hi, ite_false]
     exact h i j
 
 variable {k r : ℕ}
@@ -103,9 +103,9 @@ lemma s_wbPart {v : E → Fin (2 * r + k + 1) → ℂ} (hv : Sm v s) : Sm (fun x
   intro i
   simp only [wbPart]
   by_cases hc : r ≤ i.val ∧ i.val ≤ r + k
-  · simp only [hc, and_self, if_true]
+  · simp only [hc, and_self, ite_true]
     exact sv_iff.1 hv i
-  · simp only [hc, if_false]
+  · simp only [hc, ite_false]
     exact contDiffOn_const
 
 lemma s_prW (z : Fin (2 * r + k + 1) → ℂ) {v : E → Fin (2 * r + k + 1) → ℂ} (hv : Sm v s) :

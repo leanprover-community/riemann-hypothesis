@@ -25,8 +25,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open Formalism.MainNotions.ModuliIntegralCharts.H1.CIndFrFix
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ (PS Pt ev pt comp1 FGLaw FB)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section Alg
 
 variable {S : Type} [CommRing S] {d : ℕ}
@@ -130,8 +128,7 @@ private theorem const_ev_lemma {R : Type} [CommRing R] {e m n : ℕ} (a : Fin m 
   · subst hx
     simp [hf]
   · obtain ⟨s, hs'⟩ : ∃ s, x s ≠ 0 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hx (Finsupp.ext hc)
     rw [Finsupp.prod, map_prod, Finset.prod_eq_zero (Finsupp.mem_support_iff.2 hs')]
     · simp
@@ -342,8 +339,6 @@ namespace Formalism.MainNotions.ModuliIntegralCharts.H1
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem germFix_holds : GermFixSt := by
   intro E _ _ _ H Dw l Xo c _ _ S _ _ _ y C e' hfr hrig cc hT he k F f hf

@@ -19,47 +19,8 @@ public import Development.AutomorphicArithmetic.WhittakerHecke.ZetaIntegralEqLse
 public import Mathlib.Topology.Algebra.MvPolynomial
 import GroundTheory.GlobalFields.CompletionAtPlace.Integers
 import GroundTheory.LocalFields.PadicLogSeries
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.TypeStar
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -875,7 +836,7 @@ theorem UpperTheory.lseries_twisted_coeff_eq_tsum_coprime_of_summable :
     rintro ⟨n, hn, hc⟩
     have hn0 : (n : ℂ) ≠ 0 := by exact_mod_cast hn.ne'
     rw [LSeries.term_of_ne_zero hn.ne']
-    simp only [bN, if_pos hc]
+    simp only [bN, ite_eq_left hc]
     rw [Complex.cpow_sub _ _ hn0, Complex.cpow_one]
     ring
   have hzero : ∀ x ∉ Set.range (Subtype.val : {n : ℕ // 0 < n ∧ n.Coprime N} → ℕ),
@@ -885,7 +846,7 @@ theorem UpperTheory.lseries_twisted_coeff_eq_tsum_coprime_of_summable :
     · rw [h0, LSeries.term_zero]
     · rw [LSeries.term_of_ne_zero h0]
       have hc : ¬ x.Coprime N := fun hc => hx ⟨⟨x, Nat.pos_of_ne_zero h0, hc⟩, rfl⟩
-      simp only [bN, if_neg hc, zero_div]
+      simp only [bN, ite_eq_right hc, zero_div]
   have heq : (LSeries.term (bN N χ μ) s) ∘ (Subtype.val : {n : ℕ // 0 < n ∧ n.Coprime N} → ℕ) =
       fun n : {n : ℕ // 0 < n ∧ n.Coprime N} => μ n * ((χ.1 (pin n) : ℂˣ) : ℂ) * (n : ℂ) ^ (1 - s) :=
     funext hterm
@@ -1239,7 +1200,7 @@ theorem UpperTheory.zeta_integral_eq_zero_of_mem_maximal_compact_not_mem_level :
   have hz : ∀ z : IdeleGroup ℚ, (PhiN N p fun j => ((z : (A ℚ)ˣ) : A ℚ) * row k j) = 0 := by
     intro z
     unfold PhiN
-    rw [if_neg]
+    rw [ite_eq_right]
     intro h
     apply hkS
     intro v
@@ -1296,8 +1257,7 @@ private theorem rhoB (p : MvPolynomial (Fin 2) ℂ) :
 
 private theorem It_ne {E : Type} [Field E] [NumberField E] (D : Dat ℚ E) (χ : HChar ℚ) (φ : GL (Fin 2) (A E) → ℂ) (s : ℂ) (hs : 4 < s.re) (t : ℝ)
     (h : It D χ φ s t ≠ 0) : ∃ r t : ℝ, r ≠ 0 ∧ Wo D φ (em E (aE (iy r) * rot t)) ≠ 0 := by
-  by_contra hn
-  push_neg at hn
+  by_contra! hn
   refine h ?_
   unfold It
   have : ∀ y : ℝ, Wo D φ (em E (aE (iy y) * rot t)) * ((χ.1 (iy y) : ℂˣ) : ℂ) * (y : ℂ) ^ 0 * ((|y| : ℝ) : ℂ) ^ (s - 2) = 0 := by
@@ -1364,7 +1324,7 @@ theorem UpperTheory.ConvolutionTheory.RankTwoDescent.fac_of :
       simp only [hI t, mul_zero] at this
       exact this.unique hasSum_zero
     simp [hY0, hI]
-  push_neg at hI
+  push Not at hI
   obtain ⟨t₀, ht₀⟩ := hI
   set u : {n : ℕ // 0 < n ∧ n.Coprime N} → ℂ := fun n => μ n * ((χ.1 (pin n) : ℂˣ) : ℂ) * (n : ℂ) ^ (1 - s) with hu
   have hcL' : (cT L : ℂ) ≠ 0 := by exact_mod_cast hcL.ne'

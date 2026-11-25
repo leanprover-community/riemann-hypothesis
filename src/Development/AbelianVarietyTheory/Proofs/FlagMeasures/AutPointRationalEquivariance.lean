@@ -249,9 +249,9 @@ theorem frm_mul (k : I.GA) (w : InfinitePlace I.E) :
   simp only [frm]
   by_cases h : w.embedding = I.φ (w.comap (algebraMap I.F I.E))
   · left
-    rw [if_pos h, if_pos h, hm, Matrix.mul_assoc]
+    rw [ite_eq_left h, ite_eq_left h, hm, Matrix.mul_assoc]
   · right
-    rw [if_neg h, if_neg h, hm, ← Matrix.mul_assoc, Matrix.map_mul]
+    rw [ite_eq_right h, ite_eq_right h, hm, ← Matrix.mul_assoc, Matrix.map_mul]
 
 theorem frm_rat
     (h : ∀ v, uMat (a.1 v) = (I.P v)⁻¹ * (γ : Matrix (Fin I.n) (Fin I.n) I.E).map (I.φ v) * I.P v)
@@ -268,9 +268,9 @@ theorem frm_rat
     simp only [← Matrix.mul_assoc, hP, Matrix.one_mul]
   simp only [frm]
   by_cases h' : w.embedding = I.φ (w.comap (algebraMap I.F I.E))
-  · rw [if_pos h', if_pos h', key, h']
+  · rw [ite_eq_left h', ite_eq_left h', key, h']
   · have he := (embedding_eq I w).resolve_left h'
-    rw [if_neg h', if_neg h', key, Matrix.map_mul, he, Matrix.map_map]
+    rw [ite_eq_right h', ite_eq_right h', key, Matrix.map_mul, he, Matrix.map_map]
     rfl
 
 theorem fcoord_rat

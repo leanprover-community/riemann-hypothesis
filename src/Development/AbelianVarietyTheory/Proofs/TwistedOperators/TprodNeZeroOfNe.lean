@@ -108,8 +108,7 @@ theorem tprod_ne_zero_of_ne {ι : Type} [Fintype ι] {B : ι → Type} [∀ τ, 
     [∀ τ, Module ℂ (B τ)] (w : ∀ τ, B τ) (hw : ∀ τ, w τ ≠ 0) : PiTensorProduct.tprod ℂ w ≠ 0 := by
   classical
   have : ∀ τ, ∃ f : Module.Dual ℂ (B τ), f (w τ) ≠ 0 := fun τ => by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hw τ ((Module.forall_dual_apply_eq_zero_iff ℂ (w τ)).1 hc)
   choose f hf using this
   intro h
@@ -157,8 +156,7 @@ theorem contrTensor : ContrTensor := by
     simpa using this
   refine ⟨It, hT, fun hne h0 => ?_⟩
   have : ∀ τ, ∃ P v, Itl τ P v ≠ 0 := fun τ => by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     exact hne τ (LinearMap.ext fun P => LinearMap.ext fun v => hc P v)
   choose P v hPv using this
   apply tprod_ne_zero_of_ne _ hPv

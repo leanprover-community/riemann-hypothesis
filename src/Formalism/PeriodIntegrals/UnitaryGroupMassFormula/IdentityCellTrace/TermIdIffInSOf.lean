@@ -59,8 +59,6 @@ theorem e_mem_X (G : FlagG S r T) (a : Fin r) : G.e a ∈ G.X := Submodule.subse
 
 end Flag
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def TraceOne (D : D7) : Prop := ∃ θ : 𝓞 D.host.E, (θ : D.host.E) + star (θ : D.host.E) = 1
 
 end PI.UnitaryGroupMassFormula.IdCellInSW

@@ -52,13 +52,13 @@ theorem skMat_low_om (x : UCo N) (l : {ab : Fin N × Fin N // ab.2 < ab.1}) :
     skMat x l.1.1 l.1.2 = x.2 l := by
   obtain ⟨⟨a, b⟩, h⟩ := l
   show skMat x a b = x.2 ⟨(a, b), h⟩
-  simp only [skMat, if_neg (ne_of_gt h), dif_pos h]
+  simp only [skMat, ite_eq_right (ne_of_gt h), dite_eq_left h]
 
 theorem skMat_up_om (x : UCo N) (l : {ab : Fin N × Fin N // ab.2 < ab.1}) :
     skMat x l.1.2 l.1.1 = -star (x.2 l) := by
   obtain ⟨⟨a, b⟩, h⟩ := l
   show skMat x b a = -star (x.2 ⟨(a, b), h⟩)
-  simp only [skMat, if_neg (ne_of_lt h), dif_neg (not_lt.2 h.le), dif_pos h]
+  simp only [skMat, ite_eq_right (ne_of_lt h), dite_eq_right (not_lt.2 h.le), dite_eq_left h]
 
 theorem skMat_conjTranspose_om (x : UCo N) : (skMat x)ᴴ = -skMat x := by
   ext a b

@@ -35,7 +35,6 @@ theorem base_exponent_le_a (p : ℕ) (hp : 0 < p) (S : SegData s) (hE : 0 ≤ S.
     (S.A0 p : ℝ) ≤ (S.a : ℝ) / (p : ℝ) ^ S.G := by
   unfold SegData.A0 SegData.Qj
   push_cast
-  have hp' : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hp
   refine (Int.floor_le _).trans ?_
   gcongr
   linarith
@@ -78,7 +77,7 @@ private theorem mul_sum_pow_lt_le_pow_of_segHyp (H : SegHyp p S b' de be aS Q) :
   induction n with
   | zero =>
     intro hn
-    simp only [Nat.not_lt_zero, if_false, Finset.sum_const_zero, mul_zero]
+    simp only [Nat.not_lt_zero, ite_false, Finset.sum_const_zero, mul_zero]
     positivity
   | succ n ih =>
     intro hn
@@ -221,7 +220,6 @@ theorem SegHyp.top_ord (H : SegHyp p S b' de be aS Q) {aTop : Fin s → ℕ} {b 
   have hde6 := H.de6
   have hbe0 := H.be0
   have hbeLe := H.beLe
-  have hk : (0 : ℝ) < (r : ℝ) + 1 := by positivity
   have ha0 : (0 : ℝ) ≤ (S.a : ℝ) := Nat.cast_nonneg _
   have hP0 : 0 < (p : ℝ) ^ (S.G - S.d i) := by positivity
   have hx0 : 0 < (p : ℝ) ^ (S.d i) := by positivity
@@ -254,7 +252,6 @@ theorem SegHyp.top_ord (H : SegHyp p S b' de be aS Q) {aTop : Fin s → ℕ} {b 
         mul_le_mul_of_nonneg_left hxb.le (by linarith)
       have h3 : (1 + be) * (1 - 2 * de) ≤ 1 := by
         have hprod : 0 ≤ be * de := mul_nonneg hbe0 hde0
-        have hexp : (1 + be) * (1 - 2 * de) = 1 + be - 2 * de - 2 * (be * de) := by ring
         linarith
       have h4 : (1 + be) * ((S.a : ℝ) * (1 - 2 * de)) ≤ (S.a : ℝ) := by
         have := mul_le_mul_of_nonneg_left h3 ha0
@@ -263,7 +260,7 @@ theorem SegHyp.top_ord (H : SegHyp p S b' de be aS Q) {aTop : Fin s → ℕ} {b 
     rw [min_eq_left hbi]
     have hoe : (oEff S b i : ℝ) = ((b.w i + b.sg i : ℕ) : ℝ) := by
       unfold oEff
-      rw [if_pos hs]
+      rw [ite_eq_left hs]
     rw [hoe]
     have hm := mul_le_mul_of_nonneg_left hsum hP0.le
     have e1 : (p : ℝ) ^ (S.G - S.d i) * ((coarseA p S b i : ℝ) * (1 + 4 / (p : ℝ) ^ 2) +
@@ -310,7 +307,6 @@ theorem SegHyp.top_ord (H : SegHyp p S b' de be aS Q) {aTop : Fin s → ℕ} {b 
           mul_le_mul_of_nonneg_left hxb.le (by linarith)
         have h3 : 1 ≤ (1 - be) * (1 + 2 * de) := by
           have hbd : be * de ≤ be * (1 / 6) := mul_le_mul_of_nonneg_left hde6.le hbe0
-          have hexp : (1 - be) * (1 + 2 * de) = 1 + 2 * de - be - 2 * (be * de) := by ring
           linarith
         have h4 : (S.a : ℝ) ≤ (1 - be) * ((S.a : ℝ) * (1 + 2 * de)) := by
           have := mul_le_mul_of_nonneg_left h3 ha0
@@ -319,7 +315,7 @@ theorem SegHyp.top_ord (H : SegHyp p S b' de be aS Q) {aTop : Fin s → ℕ} {b 
       · exact div_le_div_of_nonneg_right H.aS hx0.le
     have hoe : (oEff S b i : ℝ) = (b.o i : ℝ) := by
       unfold oEff
-      rw [if_neg hs]
+      rw [ite_eq_right hs]
     rw [hoe]
     have hm := mul_le_mul_of_nonneg_left hoc hP0.le
     have e1 : (p : ℝ) ^ (S.G - S.d i) * ((cap p S b i : ℝ) + S.La * (coarseA p S b i : ℝ) / ((r : ℝ) + 1)) =
@@ -410,7 +406,7 @@ theorem SegHyp.oplus (H : SegHyp p S b' de be aS Q) (b : SegBlock s r) :
           ≤ ∑ _i : Fin s, 2 * (b' / p) := by
             apply Finset.sum_le_sum
             intro i _
-            rw [if_pos i.2]
+            rw [ite_eq_left i.2]
             exact hcoarse i
         _ = (s : ℝ) * (2 * (b' / p)) := by simp
     linarith
@@ -564,7 +560,6 @@ theorem segHyp_of {C0 Cde CE1 CE2 H : ℝ} {X : Loc} (St : Std C0 Cde CE1 CE2 H 
       have h2 := St.N1k
       have h3 := St.pk
       have h4 := St.Y1
-      have h5 : (0 : ℝ) ≤ (X.N1 : ℝ) := Nat.cast_nonneg _
       have hk1 : 1 ≤ X.k := by linarith
       have h6 : X.k ≤ X.k ^ 2 := by simpa using pow_le_pow_right₀ hk1 (show 1 ≤ 2 by norm_num)
       have h7 : X.k ^ 2 * 1 ≤ X.k ^ 2 * X.Y ^ 2 := mul_le_mul_of_nonneg_left (one_le_pow₀ h4) (by positivity)

@@ -37,22 +37,22 @@ lemma star_dotProduct_Hpk_mulVec_eq_sum_sub (v w : Fin (2 * r + k + 1) → ℂ) 
         have hW' := hW
         unfold inW at hW'
         unfold piI
-        rw [if_pos hW']
+        rw [ite_eq_left hW']
       rw [hp]
       unfold inW at hW
       by_cases hl : i.val = r + k
       · have h1 : lI k r = i := Fin.ext hl.symm
-        rw [if_neg (by omega), if_pos h1, h1]
-        unfold epsI; rw [if_pos hl]; ring
+        rw [ite_eq_right (by omega), ite_eq_left h1, h1]
+        unfold epsI; rw [ite_eq_left hl]; ring
       · have h1 : lI k r ≠ i := fun h => hl (by rw [← h]; rfl)
-        rw [if_pos ⟨hW.1, by omega⟩, if_neg h1]
-        unfold epsI; rw [if_neg hl]; ring
+        rw [ite_eq_left ⟨hW.1, by omega⟩, ite_eq_right h1]
+        unfold epsI; rw [ite_eq_right hl]; ring
     · have h0 : v (piI k r i) = 0 := hv _ (piI_not_inW hW)
       have h1 : lI k r ≠ i := fun h => hW (by rw [← h]; unfold inW lI; simp)
       unfold inW at hW
-      rw [h0, if_neg (by omega), if_neg h1]; ring
+      rw [h0, ite_eq_right (by omega), ite_eq_right h1]; ring
   simp only [dotProduct, Pi.star_apply, hterm, Finset.sum_sub_distrib, Finset.sum_ite_eq,
-    Finset.mem_univ, if_true, Wp, Finset.sum_filter]
+    Finset.mem_univ, ite_true, Wp, Finset.sum_filter]
 
 lemma star_mul_self_eq (x : ℂ) : star x * x = ((‖x‖ ^ 2 : ℝ) : ℂ) := by
   rw [Complex.star_def, Complex.conj_mul']
@@ -128,7 +128,7 @@ lemma uw_entry_bound {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hT : 0
     intro x hx
     have hne : x ≠ j := by rintro rfl; exact hx hjW
     have := uw_block hh x j (fun h' => hx h'.1)
-    simp only [hcdef, this, if_neg hne]
+    simp only [hcdef, this, ite_eq_right hne]
   have hEA : star c ⬝ᵥ (Hpk k r *ᵥ c) = star (bvec j) ⬝ᵥ (Hpk k r *ᵥ bvec j) := by
     rw [hc]; exact herm_invariant hh.1 _ _
   have hEK : star z ⬝ᵥ (Hpk k r *ᵥ c) = star z ⬝ᵥ (Hpk k r *ᵥ bvec j) := by

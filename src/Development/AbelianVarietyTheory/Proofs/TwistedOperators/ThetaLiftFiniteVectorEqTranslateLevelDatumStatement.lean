@@ -87,7 +87,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Real Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.Ker.KernelCompare
 
@@ -114,7 +113,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.LevkLoc
 
@@ -157,8 +155,7 @@ theorem congr_of_isAA : ∀ (D : D7) {k : ℕ} (Λ ΛT : Lt D.host.E k) (P : Ide
       exact Finset.sum_congr rfl fun i _ => by rw [mul_comm]; exact hb i
     exact RingOfIntegers.ext this
   obtain ⟨i, hi⟩ : ∃ i, b i ∉ P := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hP.ne_top
     rw [Ideal.eq_top_iff_one, ← hb1]
     exact Ideal.sum_mem _ fun i _ => hcon i
@@ -188,7 +185,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.ConjPlace
 
@@ -238,7 +234,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.LevMov
 
@@ -276,7 +271,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -284,18 +278,11 @@ namespace GlobalTheory.LevCong
 
 variable {D : D7}
 
-theorem toAf_mem_hatV {k : ℕ} {L : Lt D.host.E k} {x : Fin k → D.host.E} (hx : x ∈ L) :
-    toAf (D := D) x ∈ hatV L :=
-  AddSubgroup.subset_closure ⟨1, GlobalTheory.TensLatMove.intAf_one, x, hx, rfl⟩
-
 theorem hatV_mono {k : ℕ} {L L' : Lt D.host.E k} (h : L ≤ L') : hatV (D := D) L ≤ hatV L' :=
   AddSubgroup.closure_mono fun _ ⟨a, ha, x, hx, e⟩ => ⟨a, ha, x, h hx, e⟩
 
 theorem toAf_add {k : ℕ} (x y : Fin k → D.host.E) : toAf (D := D) (x + y) = toAf x + toAf y := by
   funext i; simp [toAf, TensorProduct.tmul_add]
-
-theorem toAf_sub {k : ℕ} (x y : Fin k → D.host.E) : toAf (D := D) (x - y) = toAf x - toAf y := by
-  funext i; simp [toAf, TensorProduct.tmul_sub]
 
 theorem toAf_zero {k : ℕ} : toAf (D := D) (0 : Fin k → D.host.E) = 0 := by
   funext i; simp [toAf]
@@ -331,7 +318,7 @@ theorem fsmul (c : 𝓞 D.host.E) (x : Fin r → D.host.E) : m *ᵥ toAf (D := D
 
 theorem sum_one_smul (β : Fin r → Fin r → D.host.E) (i : Fin r) :
     ∑ j, (1 : Matrix (Fin r) (Fin r) (𝓞 D.host.E)) j i • β j = β i := by
-  simp only [Matrix.one_apply, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [Matrix.one_apply, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem sum_sub_one (β : Fin r → Fin r → D.host.E) (κ' : Matrix (Fin r) (Fin r) (𝓞 D.host.E)) (i : Fin r) :
     ∑ j, (κ' j i - (1 : Matrix (Fin r) (Fin r) (𝓞 D.host.E)) j i) • β j = ∑ j, κ' j i • β j - β i := by
@@ -346,11 +333,11 @@ theorem mem_of_smul {r : ℕ} (Λ : Lt D.host.E r) (𝔪 I : Ideal (𝓞 D.host.
   intro t ht
   refine Submodule.smul_induction_on ht ?_ ?_
   · intro p hp y hy
-    have h1 : m *ᵥ toAf (D := D) y ∈ hatV Λ := (hmov _).2 ⟨_, toAf_mem_hatV hy, rfl⟩
+    have h1 : m *ᵥ toAf (D := D) y ∈ hatV Λ := (hmov _).2 ⟨_, GlobalTheory.Ker.LevEig.toAf_mem hy, rfl⟩
     rw [fsmul]
     rw [smul_sub]
     refine sub_mem (smul_mem_hatV p (fun x hx => Submodule.smul_mem_smul (h𝔪I hp) hx) h1) ?_
-    rw [← toAf_smul]; exact toAf_mem_hatV (Submodule.smul_mem_smul (h𝔪I hp) hy)
+    rw [← toAf_smul]; exact GlobalTheory.Ker.LevEig.toAf_mem (Submodule.smul_mem_smul (h𝔪I hp) hy)
   · intro x y hx hy; rw [fadd]; exact add_mem hx hy
 
 theorem mem_of_span {r : ℕ} (Λ : Lt D.host.E r) (β : Fin r → Fin r → D.host.E) (𝔪 I : Ideal (𝓞 D.host.E))
@@ -365,10 +352,10 @@ theorem mem_of_span {r : ℕ} (Λ : Lt D.host.E r) (β : Fin r → Fin r → D.h
     obtain ⟨i, rfl⟩ := hx
     have e : m *ᵥ toAf (D := D) (β i) - toAf (β i) = (m *ᵥ toAf (β i) - toAf (∑ j, κ' j i • β j)) +
         toAf (∑ j, (κ' j i - (1 : Matrix (Fin r) (Fin r) (𝓞 D.host.E)) j i) • β j) := by
-      rw [sum_sub_one, toAf_sub, sub_add_sub_cancel]
+      rw [sum_sub_one, GlobalTheory.Ker.LevEig.toAf_sub, sub_add_sub_cancel]
     rw [e]
     exact add_mem (hatV_mono (Submodule.smul_mono_left h𝔪I) (hfr i))
-      (toAf_mem_hatV (sum_mem fun j _ => Submodule.smul_mem_smul (hκ j i) (hβ j)))
+      (GlobalTheory.Ker.LevEig.toAf_mem (sum_mem fun j _ => Submodule.smul_mem_smul (hκ j i) (hβ j)))
   | zero => rw [toAf_zero, Matrix.mulVec_zero, sub_zero]; exact zero_mem _
   | add x y _ _ hx hy => rw [fadd]; exact add_mem hx hy
   | smul c x _ hx =>
@@ -397,7 +384,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -467,7 +453,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 namespace GlobalTheory.LevExt
@@ -526,7 +511,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -564,7 +548,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -574,7 +557,7 @@ variable {D : D7} {S T : HSp D}
 
 theorem mem_of_indL_ne {L : AddSubgroup (WO S T)} {t : WO S T} (h : GlobalTheory.LiftLevel.indL L t ≠ 0) : t ∈ L := by
   by_contra hn
-  exact h (by simp only [GlobalTheory.LiftLevel.indL, hn, if_false])
+  exact h (by simp only [GlobalTheory.LiftLevel.indL, hn, ite_false])
 
 theorem isSBHalf_indL (a : AE D) (Λ L : AddSubgroup (WO S T)) (hL : ∀ x ∈ L, IsHalf a x)
     (h1 : ∃ m : ℕ, 0 < m ∧ ∀ x ∈ L, m • x ∈ Λ) (h2 : ∃ m : ℕ, 0 < m ∧ ∀ x ∈ Λ, IsHalf a x → m • x ∈ L) :
@@ -669,8 +652,8 @@ theorem indL_theta_fock_latVac : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (B : C
     congr 1
     funext t
     by_cases h : t ∈ L
-    · simp only [GlobalTheory.LiftLevel.indL, h, if_true, ht t h, one_mul]
-    · simp only [GlobalTheory.LiftLevel.indL, h, if_false, mul_zero]
+    · simp only [GlobalTheory.LiftLevel.indL, h, ite_true, ht t h, one_mul]
+    · simp only [GlobalTheory.LiftLevel.indL, h, ite_false, mul_zero]
   have hfix_r : ∀ r ∈ GlobalTheory.PlaceModel.half S T b, heisO C.ψ S T r f₀ = f₀ →
       heisO C.ψ S T r (Tm (GlobalTheory.LiftLevel.indL L)) = Tm (GlobalTheory.LiftLevel.indL L) := fun r hr hr0 =>
     heisO_fix hψ hS hT ha hinf hTm r hr0
@@ -747,7 +730,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -783,7 +765,7 @@ theorem thPVec_ne_zero : ∀ (D : D7) (S T : HSp D) (C : Ctx S T), T.rank ≤ S.
   intro h0
   have := congrFun h0 x
   simp only [Pi.zero_apply] at this
-  rw [if_pos ⟨hx1, hx2⟩] at this
+  rw [ite_eq_left ⟨hx1, hx2⟩] at this
   exact hx3 this
 
 end GlobalTheory.ThPVecNe
@@ -803,7 +785,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -921,7 +902,6 @@ open MeasureTheory IsDedekindDomain NumberField Matrix Complex
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Ker GlobalTheory.AdSpan
 open GlobalTheory.SW hiding Level
 open scoped TensorProduct ComplexConjugate Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto

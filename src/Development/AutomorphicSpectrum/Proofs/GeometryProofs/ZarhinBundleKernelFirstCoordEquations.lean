@@ -56,26 +56,9 @@ theorem genMap_push_injective (η : Spec (CommRingCat.of Ω) ⟶ Y) (f : Y ⟶ X
 
 end OpenImm
 
-section Chart
-
-variable {X : Scheme.{0}} {Ω A : Type} [Field Ω] [CommRing A]
-
-end Chart
-
-section Away
-
-open HomogeneousLocalization
-
-variable {σ A Ω : Type} [CommRing A] [SetLike σ A] [AddSubgroupClass σ A] (𝒜 : ℕ → σ) [GradedRing 𝒜]
-  [Field Ω]
-
-end Away
-
 section Poly
 
 open MvPolynomial HomogeneousLocalization
-
-attribute [local instance] MvPolynomial.gradedAlgebra
 
 variable {o κ Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω]
 
@@ -93,7 +76,5 @@ theorem aeval_mul_of_isHomogeneous {B : Type} [CommRing B] [Algebra o B] (x : κ
 end Poly
 
 end ProjCoord
-
-attribute [local instance] MvPolynomial.gradedAlgebra
 
 end GlobalTheory.CompanionTheory.Ar

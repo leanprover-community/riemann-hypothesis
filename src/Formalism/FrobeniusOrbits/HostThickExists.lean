@@ -34,13 +34,6 @@ def bern {α : Type*} [Fintype α] (δ : ℝ) (T : Finset α) : ℝ :=
   δ ^ T.card * (1 - δ) ^ (Fintype.card α - T.card)
 
 
-def HostStab : Prop :=
-  ∀ (e q d : ℕ), HypOdd q d →
-  ∀ (L : Type) [Field L] [NumberField L] (ζ a b : L), IsLayer (e + 2) q d ζ a b →
-  ∀ (k g : ℕ), g.Prime → 2 ^ (e + 2) * k < g - 1 →
-  ∀ Γ : Subgroup (Matrix.GeneralLinearGroup (Fin k) (hostE ζ a b)),
-    (∀ γ ∈ Γ, ∃ m : ℕ, orderOf γ = g ^ m) → Γ = ⊥
-
 def HostOrdinary : Prop :=
   ∀ (e q d : ℕ), HostHyp q d →
   ∀ (L : Type) [Field L] [NumberField L] (ζ a b : L), IsLayer (e + 2) q d ζ a b →

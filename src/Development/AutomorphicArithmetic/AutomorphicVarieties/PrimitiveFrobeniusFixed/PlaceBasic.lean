@@ -1,5 +1,7 @@
 module
 
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.GaloisCohomologyLength.DecFrob
+import all Development.AutomorphicArithmetic.AutomorphicVarieties.QuadraticExtensions.IneChar
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PrimitiveFrobeniusFixed.IsAdmissiblePrimeListNil
 
 @[expose] public section
@@ -61,15 +63,7 @@ private theorem not_of_coprime (A : ValuationSubring Ω) {m n : ℤ} (hc : IsCop
 
 private theorem val_intCast_lt_one_iff (A : ValuationSubring Ω) (hA : A.valuation ((l : ℕ) : Ω) < 1) (n : ℤ) :
     A.valuation (n : Ω) < 1 ↔ ((l : ℕ) : ℤ) ∣ n := by
-  constructor
-  · intro h
-    by_contra hnd
-    exact not_of_coprime A (((Nat.prime_iff_prime_int.mp hl.out).coprime_iff_not_dvd).mpr hnd)
-      (by rwa [Int.cast_natCast]) h
-  · rintro ⟨k, rfl⟩
-    push_cast
-    rw [map_mul]
-    exact lt_of_le_of_lt (mul_le_of_le_one_right' (val_intCast_le_one A k)) hA
+  apply _root_.UpperTheory.V.LDataCardLeFinrank.DecompositionFrobenius.val_intCast_lt_one_iff <;> assumption
 
 private theorem isPlaceOver_vQ [Algebra ℚ Ω] (A : ValuationSubring Ω) (hA : A.valuation ((l : ℕ) : Ω) < 1) :
     IsPlaceOver (F := ℚ) A (vQ l) := by
@@ -96,13 +90,7 @@ private theorem val_root {m : ℕ} (hv : ¬ A.valuation (m : Ω) < 1) {ζ : Ω} 
 
 private theorem one_sub_pow {η : Ω} (h1 : A.valuation η = 1) (h : A.valuation (η - 1) < 1) (i : ℕ) :
     A.valuation (1 - η ^ i) < 1 := by
-  induction i with
-  | zero => simp
-  | succ i ih =>
-    have e : 1 - η ^ (i + 1) = η * (1 - η ^ i) - (η - 1) := by ring
-    rw [e]
-    refine A.valuation.map_sub_lt ?_ h
-    rw [map_mul, h1, one_mul]; exact ih
+  apply _root_.power_bounds_of_between <;> assumption
 
 private theorem root_eq_one {m : ℕ} (hv : ¬ A.valuation (m : Ω) < 1) {η : Ω} (hη : η ^ m = 1)
     (h : A.valuation (η - 1) < 1) : η = 1 := by

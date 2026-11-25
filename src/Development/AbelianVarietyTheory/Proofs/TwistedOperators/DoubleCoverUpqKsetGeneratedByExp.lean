@@ -47,6 +47,7 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Formalism.SharpRestriction.Divisibility.SchurIrreducible
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EqOneOfSmulHaarEq
 
 @[expose] public section
 
@@ -62,17 +63,7 @@ variable {p q : ℕ}
 
 theorem blockOrd_std (p q : ℕ) :
     BlockOrd (p := p) (q := q) finSumFinEquiv (fun i => (finSumFinEquiv.symm i).isLeft) := by
-  refine ⟨fun i => by simp, fun j => by simp, ?_⟩
-  rintro (a | a) (b | b) hab
-  · have hlt : a < b := hab
-    simp only [finSumFinEquiv_apply_left, Fin.lt_def, Fin.val_castAdd]
-    exact Fin.lt_def.mp hlt
-  · simp [posC] at hab
-  · simp [posC] at hab
-  · have hlt : a < b := hab
-    have := Fin.lt_def.mp hlt
-    simp only [finSumFinEquiv_apply_right, Fin.lt_def, Fin.val_natAdd]
-    omega
+  apply _root_.GlobalTheory.HolDS.blockOrd_finSumFinEquiv <;> assumption
 
 theorem exists_log (T : GrpData p q) {k : T.G} (hk : k ∈ T.Kset) :
     ∃ X, X ∈ upq p q ∧ IsKC X ∧ T.cov (T.expt X) = T.cov k := by

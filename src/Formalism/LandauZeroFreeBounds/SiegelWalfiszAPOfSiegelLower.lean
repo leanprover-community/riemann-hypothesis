@@ -914,7 +914,7 @@ theorem chebyshev_character_bound_of : PsiChiBoundOf := by
   by_cases hχ : χ = 1
   · have hB0 : B = ∅ := Finset.eq_empty_of_forall_notMem fun β hβ => (hB.2.1 β hβ).1 hχ
     subst hχ hB0
-    rw [if_pos rfl, Finset.sum_empty, add_zero]
+    rw [ite_eq_left rfl, Finset.sum_empty, add_zero]
     have hG' : ∀ z : ℝ, x ≤ z → |Formalism.Gz z| ≤ Kg' * z * Real.exp (-cg * Real.sqrt (Real.log z)) := by
       intro z hz
       refine (hGz z (by linarith)).trans ?_
@@ -925,7 +925,7 @@ theorem chebyshev_character_bound_of : PsiChiBoundOf := by
       simpa [mul_assoc] using mul_le_mul_of_nonneg_right hle this
     have := chebyshev_principal_character_bound (q := q) hc0 hc01 hc0g hKg' hx hq hG'
     linarith [this, mul_nonneg (by linarith : (0 : ℝ) ≤ 4 * Cs') he4]
-  · rw [if_neg hχ, sub_zero]
+  · rw [ite_eq_right hχ, sub_zero]
     have hE : ∀ z : ℝ, x ≤ z →
         ‖Schi χ z - negLD χ 1 * z + ∑ β ∈ B, (z : ℂ) ^ (β : ℂ) / ((β : ℂ) * ((β : ℂ) - 1))‖ ≤
           Cs' * z * Real.exp (-cs * Real.sqrt (Real.log z)) := by
@@ -1021,7 +1021,7 @@ lemma exists_exceptional_zero_set (cZ c₁ : ℝ) (hle : c₁ ≤ cZ)
       refine ⟨s.re, Finset.mem_singleton_self _, ?_⟩
       rw [hss]
       exact Complex.ext (by simp) (by simp [him])
-  · push_neg at h
+  · push Not at h
     refine ⟨∅, by simp, by simp, ?_⟩
     intro s hs hL
     exact absurd hL (h s hs)
@@ -1117,8 +1117,7 @@ lemma bounded_of_exp_sqrt_lt_pow (A c : ℝ) (hA : 0 < A) (hc : 0 < c) :
   have hb := ho.bound (show (0:ℝ) < 1 / 2 by norm_num)
   obtain ⟨N, hN⟩ := Filter.eventually_atTop.mp hb
   refine ⟨max N 0, le_max_right _ _, fun L hL hlt => ?_⟩
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   have hLN : N ≤ L := le_trans (le_max_left _ _) hcon.le
   have h2 : ‖Real.sqrt L ^ (2 * A)‖ ≤ 1 / 2 * ‖Real.exp (c * Real.sqrt L)‖ := hN L hLN
   have hs : Real.sqrt L ^ (2 * A) = L ^ A := by
@@ -1174,7 +1173,7 @@ theorem siegel_walfisz_character_of : SiegelWalfiszOf := by
     have s3 : x * (U + 1) * (Real.exp (cf * Real.sqrt U) * Real.exp (-cf * Real.sqrt (Real.log x))) =
         (U + 1) * Real.exp (cf * Real.sqrt U) * x * Real.exp (-cf * Real.sqrt (Real.log x)) := by ring
     linarith
-  · push_neg at hsmall
+  · push Not at hsmall
     have hqexp : (q:ℝ) ≤ Real.exp (c * Real.sqrt (Real.log x)) := le_trans hqL hsmall
     obtain ⟨B, hB⟩ := exists_exceptional_zero_set cZ c₁ hc₁Z hZ' q χ
     have hmain := hPC q χ B x hB hx hqexp
@@ -1253,7 +1252,7 @@ theorem exists_contour_avoiding_real_zero (B : Finset ℝ) (hB : B.card ≤ 1) (
   · exact ⟨_, Or.inl rfl, fun β' hβ' => by rw [hBs β' hβ']; exact h⟩
   · refine ⟨_, Or.inr rfl, fun β' hβ' => ?_⟩
     rw [hBs β' hβ']
-    push_neg at h
+    push Not at h
     have tri := abs_sub_le (1 - c₁ / (3 * L)) β (1 - c₁ / (4 * L))
     rw [hab, abs_neg, abs_of_pos (by positivity), abs_sub_comm β] at tri
     linarith
@@ -1368,8 +1367,7 @@ theorem chebyshev_character_explicit_general (hP : PerronChi) (hRS : RectShiftCh
     obtain ⟨-, -, hz, hd⟩ := hBz β hβ.1
     refine ⟨hβ.2, ?_, hd⟩
     have hβ1 : β < 1 := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact DirichletCharacter.LFunction_ne_zero_of_one_le_re χ (Or.inl hχ) (by simpa using hc) hz
     linarith
   have hB₁z : ∀ β ∈ B.filter (fun β => σ₁ < β), DirichletCharacter.LFunction χ (β : ℂ) = 0 := by
@@ -1453,8 +1451,7 @@ theorem chebyshev_character_explicit_general (hP : PerronChi) (hRS : RectShiftCh
       (mul_nonneg (Real.rpow_nonneg hy0.le _) (div_pos (by linarith) hc₁).le) (fun β hβ => ?_)
     rw [Finset.mem_sdiff] at hβ
     have hβσ : β ≤ σ₁ := by
-      by_contra hc
-      push_neg at hc
+      by_contra! hc
       exact hβ.2 (Finset.mem_filter.mpr ⟨hβ.1, hc⟩)
     have hreg := (hBz β hβ.1).2.1
     unfold InRegion at hreg
@@ -1519,7 +1516,7 @@ theorem perron_error_terms_sum_bound (C C₀ c₁ y T X L Pw Y ℓ : ℝ) (hc₁
       (2 * Real.pi * Real.exp 1 * (1 + C₀) + 6 * Real.exp 1 * (C + 1) +
         16 * (C / c₁ + 24 / c₁ ^ 2) + 8 / c₁) * Pw * (y * X + T * Y) := by
   have hT0 : 0 < T := by linarith
-  have hX0 : 0 < X := by by_contra h; push_neg at h; have := mul_nonpos_of_nonneg_of_nonpos hT0.le h; linarith
+  have hX0 : 0 < X := by by_contra h; push Not at h; have := mul_nonpos_of_nonneg_of_nonpos hT0.le h; linarith
   have hX1 : X ≤ 1 := by have := le_mul_of_one_le_left hX0.le hT1; linarith
   have e1 : ∀ z : ℝ, z / T = z * X := fun z => by
     rw [div_eq_iff hT0.ne', mul_assoc, mul_comm X T, hTX, mul_one]

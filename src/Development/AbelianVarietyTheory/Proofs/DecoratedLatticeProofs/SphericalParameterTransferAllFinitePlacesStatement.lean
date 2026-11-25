@@ -95,7 +95,6 @@ open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
 open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -207,7 +206,6 @@ open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
 open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Hk3 (opOf hyp)
 
 noncomputable section
@@ -370,7 +368,7 @@ theorem split_label_ops : ∀ (D : D7) (V : HSp D) (v : HeightOneSpectrum (𝓞 
   have hJ := key (fun i => if (i : ℕ) < k then 1 else 0) tJ (fun i => if (i : ℕ) < k then ϖ else 1)
     (fun i j hij => by
       have hij' : (i : ℕ) ≤ j := hij
-      by_cases h1 : (i : ℕ) < k <;> by_cases h2 : (j : ℕ) < k <;> simp only [h1, h2, if_true, if_false] <;> omega)
+      by_cases h1 : (i : ℕ) < k <;> by_cases h2 : (j : ℕ) < k <;> simp only [h1, h2, ite_true, ite_false] <;> omega)
     (fun i => by by_cases h1 : (i : ℕ) < k <;> simp [h1, hv])
     (by rw [htJ]; rfl)
   have hlJ : List.ofFn (fun i : Fin n => if (i : ℕ) < k then (1 : ℤ) else 0) = dualLab (splitLab n k) := by
@@ -388,7 +386,7 @@ theorem split_label_ops : ∀ (D : D7) (V : HSp D) (v : HeightOneSpectrum (𝓞 
   have hS := key (fun i => if n - k ≤ (i : ℕ) then -1 else 0) tS (fun i => if n - k ≤ (i : ℕ) then ϖ⁻¹ else 1)
     (fun i j hij => by
       have hij' : (i : ℕ) ≤ j := hij
-      by_cases h1 : n - k ≤ (i : ℕ) <;> by_cases h2 : n - k ≤ (j : ℕ) <;> simp only [h1, h2, if_true, if_false] <;> omega)
+      by_cases h1 : n - k ≤ (i : ℕ) <;> by_cases h2 : n - k ≤ (j : ℕ) <;> simp only [h1, h2, ite_true, ite_false] <;> omega)
     (fun i => by by_cases h1 : n - k ≤ (i : ℕ) <;> simp [h1, hv])
     (by rw [htS]; rfl)
   have hlS : List.ofFn (fun i : Fin n => if n - k ≤ (i : ℕ) then (-1 : ℤ) else 0) = splitLab n k := by
@@ -408,8 +406,8 @@ theorem split_label_ops : ∀ (D : D7) (V : HSp D) (v : HeightOneSpectrum (𝓞 
     funext i
     have e1 : (n - k ≤ (i.rev : ℕ)) ↔ (i : ℕ) < k := by rw [Fin.val_rev]; omega
     by_cases h1 : (i : ℕ) < k
-    · rw [if_pos h1, if_pos (e1.2 h1), mul_inv_cancel₀ hϖ0]
-    · rw [if_neg h1, if_neg (mt e1.1 h1), mul_one]
+    · rw [ite_eq_left h1, ite_eq_left (e1.2 h1), mul_inv_cancel₀ hϖ0]
+    · rw [ite_eq_right h1, ite_eq_right (mt e1.1 h1), mul_one]
   have hTinv : (fun g => Tj ℂ n (Ov D.host.E w) ϖ k g⁻¹) = Formalism.UG.dosetInd ℂ (KGL w (n := n)) tS := by
     rw [hTj, GlobalTheory.ChainOnto.dosetInd_comp_inv, hinv, dosetInd_mul (revGL_mem _) (revGL_mem _)]
   refine ⟨?_, ?_⟩
@@ -438,7 +436,6 @@ open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
 open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Hk3 (opOf hyp)
 
 end -- clump:auto
@@ -458,7 +455,6 @@ open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
 open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.ChainOnto.HSplitChart
 
@@ -521,7 +517,6 @@ open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
 open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.satake_esymm_scaled_multiset_add_segment : ∀ (E : Type) [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (a t k : ℕ) (B : Multiset ℂˣ) (z y : ℂˣ), B.card = a → k ≤ a + t → satEig (qV E w) (a + t) (B.map (z * y⁻¹ * ·) + seg w z t) k = ∑ j ∈ Finset.range (a + 1), (if j ≤ k then (qV E w : ℂ) ^ ((a - j) * (k - j)) * (Formalism.L2.Col.gaussBin (qV E w) t (k - j) : ℂ) * ((z : ℂ) * ((Real.sqrt (qV E w) : ℂ) ^ a)⁻¹) ^ k * (((y : ℂ))⁻¹ * (Real.sqrt (qV E w) : ℂ) ^ (a + t)) ^ j else 0) * satEig (qV E w) a B j := by
   first | exact @GlobalTheory.ChainOnto.satEig_map_add_seg
@@ -542,7 +537,6 @@ open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
 open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.satake_vector_iff_inverse_doubleCosets : ∀ (E : Type) [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (n : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (ρ : Representation ℂ (GL (Fin n) (w.adicCompletion E)) V) (x : V) (B : Multiset ℂˣ), x ≠ 0 → x ∈ fixed ρ (KGL w (n := n)) → B.card = n → (IsSatVecGL w ρ x B ↔ ∀ ϖ, IsUnifV E w ϖ → ∀ j ≤ n, heckeVec ρ (KGL w (n := n)) (fun g => Tj ℂ n (Ov E w) ϖ j g⁻¹) x = satEig (qV E w) n (B.map (·⁻¹)) j • x) := by
   first | exact @GlobalTheory.ChainOnto.SatInv.satVec_iff_inv
@@ -565,7 +559,6 @@ open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
 open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.ChainOnto.SplitTransfer
 
@@ -726,7 +719,6 @@ open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
 open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto
@@ -745,7 +737,6 @@ open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
 open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -863,7 +854,6 @@ open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
 open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto
@@ -884,7 +874,6 @@ open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
 open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.ChainOnto
 
@@ -914,7 +903,6 @@ open GlobalTheory.FinZeta (Gv embV Kv VacFin IsLocKer KerU)
 open GlobalTheory.SphTheta (IsStd CayleyRule intMat liftPar)
 open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt Hecke IsCommensurated Tj SatU ordL Ov)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem _root_.GlobalTheory.T.sphericalParameterTransfer_all_finitePlaces : GlobalTheory.Hk3.HoweUnram → ∀ D : D7, TransferOn D fun _ => True := by
   first | exact @GlobalTheory.ChainOnto.transferOn_all

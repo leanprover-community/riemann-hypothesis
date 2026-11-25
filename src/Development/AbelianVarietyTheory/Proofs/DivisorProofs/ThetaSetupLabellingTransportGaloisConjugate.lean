@@ -1,9 +1,7 @@
 module
 
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.GalLab
 public import Development.AbelianVarietyTheory.Counterexamples.ModuliSurvey.DeltaIsGreatest
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCommonFibre
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsIsLab
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLatticeIsoOfTwoPadicAlgClUniformisationsStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TorsionPointTransferThroughCommonGrpPullback
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UniformisedPointOverLabelPowRNEqOne

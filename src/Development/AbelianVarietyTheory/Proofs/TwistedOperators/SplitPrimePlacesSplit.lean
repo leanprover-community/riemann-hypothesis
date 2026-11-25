@@ -99,8 +99,7 @@ theorem isSplit_of_norm {F E : Type} [Field F] [NumberField F] [Field E] [Number
     have hsq : (p : 𝓞 E) ∉ Q ^ 2 := (h ⟨Q, hQp, hQ0⟩ (hover Q hQo)).2
     have hle : Q.ramificationIdx (𝓞 F) ≤ 1 := by
       rw [← Ideal.ramificationIdx'_eq_ramificationIdx v.asIdeal Q v.ne_bot]
-      by_contra hlt
-      push_neg at hlt
+      by_contra! hlt
       have hmap : v.asIdeal.map (algebraMap (𝓞 F) (𝓞 E)) ≤ Q ^ 2 :=
         Ideal.le_pow_of_le_ramificationIdx' hlt
       apply hsq

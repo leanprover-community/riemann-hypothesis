@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaDistributionNonzeroAdmissible
 public import Formalism.HermitianCurvature.StatementG
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdditiveCharacterPsi
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AffineChangeOfVariables
@@ -245,16 +246,7 @@ theorem DB.inv {q : ℕ} {f : E → ℂ} {u : E} {S P W : ℝ} (hf : DB q f u S 
 theorem iteratedDeriv_expI (n : ℕ) :
     iteratedDeriv n (fun r : ℝ => Complex.exp (Complex.I * (r : ℂ))) =
       fun r : ℝ => Complex.I ^ n * Complex.exp (Complex.I * (r : ℂ)) := by
-  induction n with
-  | zero => simp
-  | succ n ih =>
-    rw [iteratedDeriv_succ, ih]
-    funext r
-    have h1 : HasDerivAt (fun r : ℝ => (r : ℂ)) 1 r := Complex.ofRealCLM.hasDerivAt
-    have h2 : HasDerivAt (fun r : ℝ => Complex.exp (Complex.I * (r : ℂ)))
-        (Complex.exp (Complex.I * (r : ℂ)) * (Complex.I * 1)) r := (h1.const_mul Complex.I).cexp
-    rw [(h2.const_mul (Complex.I ^ n)).deriv]
-    ring
+  apply _root_.GlobalTheory.CompanionTheory.AdelicHeis.iteratedDeriv_exp_I <;> assumption
 
 theorem DB_expI (q : ℕ) (r : ℝ) : DB q (fun r : ℝ => Complex.exp (Complex.I * (r : ℂ))) r 1 1 := by
   refine ⟨?_, fun j _ => ?_⟩
@@ -429,8 +421,8 @@ theorem MXY_cases (m : ℕ) (i j : Fin (m + 2)) :
     by_cases hj : (j : ℕ) = a
     · refine Or.inr (Or.inl fun D t p => ?_)
       have h : j < a.succ := by rw [Fin.lt_def, Fin.val_succ]; omega
-      rw [if_pos hj, WeakApproximationGL.tri_gt p.1 p.2 h, add_zero]
-    · simp only [if_neg hj, zero_add]
+      rw [ite_eq_left hj, WeakApproximationGL.tri_gt p.1 p.2 h, add_zero]
+    · simp only [ite_eq_right hj, zero_add]
       rcases tri_cases m a.succ j with h | ⟨k, h⟩ | ⟨e, h⟩
       · exact Or.inl fun D t p => h p.1 p.2
       · exact Or.inr (Or.inr (Or.inr (Or.inl ⟨k, fun D t p => h p.1 p.2⟩)))
@@ -438,7 +430,7 @@ theorem MXY_cases (m : ℕ) (i j : Fin (m + 2)) :
 
 theorem x_le_MXY (m : ℕ) (D t : ℂ) (p : XY m) (k : Fin (m + 1)) : ‖p.1 k‖ ≤ ‖MXY m D t p‖ := by
   have h : MXY m D t p k.succ.rev k.succ = p.1 k := by
-    rw [MXY_apply, Fin.rev_rev, WeakApproximationGL.rhs_succ, WeakApproximationGL.tri_diag, if_neg (by simp), zero_add]
+    rw [MXY_apply, Fin.rev_rev, WeakApproximationGL.rhs_succ, WeakApproximationGL.tri_diag, ite_eq_right (by simp), zero_add]
   rw [← h]
   exact G7.norm_entry_le _ _ _
 

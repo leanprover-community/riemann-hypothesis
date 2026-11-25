@@ -18,9 +18,4 @@ def LemmaEEnergy.Statement : Prop :=
     mInt A (fun i => potForm Om.pot (v i)) (fun x => -w x) ≤
       mInt A (fun _ => Om.pot) (fun x => -w x) + D * Om.vol
 
-section Inhabitants
-
-
-end Inhabitants
-
 end GroundTheory.Heights₂.Heights.AnalyticLimit

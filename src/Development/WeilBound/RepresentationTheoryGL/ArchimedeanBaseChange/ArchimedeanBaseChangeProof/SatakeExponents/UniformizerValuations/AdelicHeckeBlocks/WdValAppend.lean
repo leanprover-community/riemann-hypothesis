@@ -17,8 +17,6 @@ open scoped Classical
 
 namespace PositivityTheory.Rg.BcB.F
 
-attribute [local instance] borelG borelF borelH
-
 namespace Word
 
 theorem wdVal_append {A Γ : Type} [Monoid A] [Star A] (gen : Γ → A) (u v : List (Γ × Bool)) :

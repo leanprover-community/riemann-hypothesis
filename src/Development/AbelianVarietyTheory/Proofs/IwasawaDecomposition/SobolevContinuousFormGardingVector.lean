@@ -67,7 +67,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S Formalism.L2.Theta Formalism.IndefR.Mult GlobalTheory.SmVec MeasureTheory Matrix Filter
 open scoped TensorProduct ContDiff InnerProductSpace Topology
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.SobGarding
 
@@ -82,7 +81,7 @@ theorem word_gard (hP : IsUnit P) (h : Pᴴ * Formalism.REAL.Jm ε * P = G) (hσ
   | nil => exact ⟨φ, hφ, fun _ => rfl⟩
   | cons X l ih =>
     obtain ⟨φ', h1, h2⟩ := ih fun Y hY => hl Y (by simp [hY])
-    obtain ⟨ψ, hψ⟩ := GlobalTheory.T.gardingVector_derivative_eq_gardingVector n ε H σ P G hP h hσ φ' h1
+    obtain ⟨ψ, hψ⟩ := _root_.GlobalTheory.SmVec.dRep_gard n ε H σ P G hP h hσ φ' h1
     exact ⟨ψ X, (hψ X).1, fun w => by rw [word_cons, h2, (hψ X).2 (hl X (by simp))]⟩
 
 theorem inner_word_gard (hP : IsUnit P) (h : Pᴴ * Formalism.REAL.Jm ε * P = G) (hσ : IsURepOn (UJset ε) σ)

@@ -351,7 +351,7 @@ theorem restriction_of_blocks_and_jordan (hB : BlocksCycle) (hJ : JordanTransiti
       have hmem : ρ g' (e i) ∈ W.map (ρ (g' * g)) :=
         Submodule.mem_map.mpr ⟨w, hw, by rw [map_mul ρ g' g, Module.End.mul_apply, hwe]⟩
       exact hj (g' * g) (hI _ (htr W hW (g' * g)) _ hmem j hne)
-    · push_neg at hi
+    · push Not at hi
       rw [(hY x).mp hx i hi, zero_smul]
       exact Y.zero_mem
   have hWY : W ≤ Y := by
@@ -366,8 +366,7 @@ theorem restriction_of_blocks_and_jordan (hB : BlocksCycle) (hJ : JordanTransiti
     exact le_bot_iff.mp hWY
   have hcov : ∀ j, ∃ g, e j ∈ W.map (ρ g) := by
     intro j
-    by_contra hj
-    push_neg at hj
+    by_contra! hj
     have h1 : e j ∈ Y := by
       rw [hYtop]
       exact Submodule.mem_top

@@ -1,5 +1,6 @@
 module
 
+import all ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.PairUnfoldPfB
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.FundSetMeasStatement
 public import Mathlib.Analysis.InnerProductSpace.Calculus
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.ExhaustFStatementPfD
@@ -419,18 +420,7 @@ theorem densF_pos (x0 : Frame X.Ψ r) {z : V (nd X)} (hz : z ∈ OmF X x0) : 0 <
   | exact zpow_pos (norm_pos_iff.mpr hne) _
 
 private lemma continuous_cpt' (x0 : Frame X.Ψ r) : Continuous (cpt X x0) := by
-  have hr : Continuous fun y : Frame X.Ψ r => rmul x0 y := continuous_pi fun τ =>
-    (show Continuous fun y : Frame X.Ψ r => (mat x0 τ * mat y τ : Matrix (Fin r) (Fin r) ℂ) from
-      continuous_const.matrix_mul (continuous_apply τ))
-  unfold cpt nmat
-  refine hr.comp ?_
-  refine continuous_pi fun τ => continuous_pi fun a => continuous_pi fun b => ?_
-  by_cases h : b < a
-  · simp only [dif_pos h]
-    first
-    | fun_prop
-  · simp only [dif_neg h]
-    exact continuous_const
+  apply _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.PairUnfoldPf.continuous_cpt_apply <;> assumption
 
 theorem densF_meas (x0 : Frame X.Ψ r) : Measurable (densF X x0) := by
   unfold densF

@@ -35,17 +35,6 @@ theorem dual_weyl_action_mul : Formalism.UG.DwActMul := by
   · simp only [Formalism.UG.dwAct, inv_one, Units.val_one]
     exact wact_rowAct_one R r n
 
-private theorem isWeightedHomogeneous_pow' {σ R M : Type*} [CommRing R] [AddCommMonoid M] {w : σ → M}
-    {φ : MvPolynomial σ R} {m : M} (h : IsWeightedHomogeneous w φ m) (k : ℕ) :
-    IsWeightedHomogeneous w (φ ^ k) (k • m) := by
-  induction k with
-  | zero =>
-    first
-    | simpa using isWeightedHomogeneous_C w (1 : R)
-  | succ k ih =>
-    rw [pow_succ, succ_nsmul]
-    exact ih.mul h
-
 private theorem isWeightedHomogeneous_algHom_apply {σ R M : Type*} [CommRing R] [AddCommMonoid M] (w : σ → M)
     (φ : MvPolynomial σ R →ₐ[R] MvPolynomial σ R)
     (hφ : ∀ v, IsWeightedHomogeneous w (φ (X v)) (w v)) (f : MvPolynomial σ R) (m : M)
@@ -60,7 +49,7 @@ private theorem isWeightedHomogeneous_algHom_apply {σ R M : Type*} [CommRing R]
     apply IsWeightedHomogeneous.prod
     intro v _
     rw [map_pow]
-    exact isWeightedHomogeneous_pow' (hφ v) (d v)
+    exact (hφ v).pow (d v)
   have hC : φ (C (AddMonoidAlgebra.coeff f d)) = C (AddMonoidAlgebra.coeff f d) := by
     rw [← MvPolynomial.algebraMap_eq]
     exact φ.commutes _
@@ -99,7 +88,7 @@ theorem dual_weyl_module_stable : Formalism.UG.DwStable := by
       · subst hkj
 
         simp only [AlgHom.comp_apply, Formalism.GradedWeylDivisibility.rowAct, Formalism.GradedWeylDivisibility.colAddGen, aeval_X, map_sum, map_mul,
-        aeval_C, map_add, if_true, Option.elim, algebraMap_eq]
+        aeval_C, map_add, ite_true, Option.elim, algebraMap_eq]
         rw [Finset.mul_sum, ← Finset.sum_add_distrib]
         apply Finset.sum_congr rfl
         intro b _

@@ -71,7 +71,7 @@ lemma exists_Z (X : Data E r) {x : Frame X.Ψ r} (hx : x ∈ X.dom) (τ : X.Ψ)
   have hcomb : ∀ w' : Fin X.p0 → ℂ, ∃ w : Fin r → ℂ, (∀ j : Fin r, X.p0 ≤ (j : ℕ) → w j = 0) ∧
       (w' ≠ 0 → w ≠ 0) ∧ Q *ᵥ ∑ j, w j • y j = ∑ a, w' a • c a := by
     intro w'
-    refine ⟨fun j => if h : (j : ℕ) < X.p0 then w' ⟨j, h⟩ else 0, fun j hj => dif_neg (by omega), ?_, ?_⟩
+    refine ⟨fun j => if h : (j : ℕ) < X.p0 then w' ⟨j, h⟩ else 0, fun j hj => dite_eq_right (by omega), ?_, ?_⟩
     · intro hw' hw
       apply hw'
       funext a
@@ -238,8 +238,7 @@ theorem latticeBoundAtMaximum_of_transference (hD5 : CoveringRadiusStatement) : 
         (laStar / Real.sqrt (Fintype.card X.Ψ)) ^ 2 ≤
           ReciprocityTheory.MultiplicativeHeights.normSq ((mat x0 τ)⁻¹ *ᵥ ReciprocityTheory.MultiplicativeHeights.embVec τ.1 v) := by
       intro v hv hv0
-      by_contra hcon
-      push_neg at hcon
+      by_contra! hcon
       have hlt : ∑ τ : X.Ψ, X.maj z0 τ (Data.emb τ.1 v) <
           ∑ _τ : X.Ψ, (laStar / Real.sqrt (Fintype.card X.Ψ)) ^ 2 := by
         apply Finset.sum_lt_sum_of_nonempty Finset.univ_nonempty

@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.RealInputsBuiltClosedForm
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutMP2
 public import Formalism.FormalDegreeBessel.FinalG
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaCutoffLimit
@@ -150,17 +151,7 @@ theorem isBuiltPlace_mono3 {Cc₁ Cc₂ : ℝ} (h : Cc₁ ≤ Cc₂) {S : C.Hida
     {ν' : Fin S.f → Fin (2 * S.G.r + S.G.k + 1) → ℂ} {m₀ : Fin S.f → B.Mat S.G.k S.G.r}
     {top : ∀ v : Fin S.f, (B.Mat S.G.k S.G.r → (Wq (S.pl v) →L[ℂ] Wp (S.pl v))) → List C.Letter → C.LPt → C.LPt → ℂ}
     {A₀ : ℝ} (hB : JCT.IsBuiltPlace Cc₂ S T f χ ν' m₀ top A₀) : JCT.IsBuiltPlace Cc₁ S T f χ ν' m₀ top A₀ := by
-  obtain ⟨h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12, h13⟩ := hB
-  refine ⟨h1, h2, h3, h4, h5, h6, h7, ?_, le_trans h h9, h10, h11, ?_, h13⟩
-  · intro v
-    have hv := h8 v
-    have hX : 0 ≤ (S.G.k : ℝ) * S.Ntop * ((S.G.r : ℝ) + 1) ^ 2 + (S.Ntop : ℝ) ^ 2 * ((S.G.r : ℝ) + 1) ^ 2 +
-        (S.Ntop : ℝ) ^ 3 := by positivity
-    nlinarith [mul_le_mul_of_nonneg_right h hX]
-  · have hX : 0 ≤ ((S.G.r : ℝ) + 1) ^ 4 *
-        ((S.Ntop : ℝ) * (2 * (S.G.r : ℝ) + S.G.k + 1) ^ 2 + (2 * (S.G.r : ℝ) + S.G.k + 1) ^ 3) := by positivity
-    have := mul_le_mul_of_nonneg_right h hX
-    nlinarith
+  apply _root_.Formalism.FourierDecayAlt.P.jct_isBuiltPlace_mono <;> assumption
 
 end bridge
 

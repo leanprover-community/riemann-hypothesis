@@ -267,8 +267,7 @@ theorem swStart_holds : SWStart := by
   haveI : BorelSpace Γ := ⟨rfl⟩
   obtain ⟨H, hH⟩ := SWS.exists_half bar hK.invol hK.ne
   obtain ⟨y, hy⟩ : ∃ y, φ y ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     exact hφ (LinearMap.ext h)
   have hf : Continuous fun k => φ (ρ k y) := hG.cont y φ
   have h1 : φ (ρ 1 y) ≠ 0 := by simpa [hG.one] using hy

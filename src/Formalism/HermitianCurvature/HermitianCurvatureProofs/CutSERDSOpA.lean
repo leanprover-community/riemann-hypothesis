@@ -57,7 +57,7 @@ theorem rds_dMul_loc {k r : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace 
       CutMP.dMul (CutMP.drbF r) (Q.crd (Q.cmp (CutMP.vABm r y r) 0) Φ) c g =
         CutMP.dMul (CutMP.drbF r) (Q.crd (Q.cmp (CutMP.vABm r y r) 0) Ψ) c g := by
   obtain ⟨h1, h2⟩ := hLoc r E y (fun c' => Φ c' g) (fun c' => Ψ c' g) (fun c' hc' => hΦΨ c' hc') c hc
-  simp only [CutMP.dMul, Q.crd, Q.cmp, if_true]
+  simp only [CutMP.dMul, Q.crd, Q.cmp, ite_true]
   exact ⟨by rw [h1], by rw [h2]⟩
 
 theorem rDSOpA_of_parts (hP : RDSPolyProp) (hG : RDSAGrp) (hR : RDSARad) (hLoc : RDSALoc) : RDSOpA := by

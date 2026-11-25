@@ -5,6 +5,7 @@ public import Formalism.HermitianCurvature.StatementU
 public import Mathlib.Analysis.Calculus.Deriv.Linear
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentCorrectionU1.CoreStar
 import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.HaarCompactGrowth.IsHaarOnUWsetOfIsHaarOnOfUnivEqOne
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentCorrectionU1.DjCurveB, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentCorrectionU1.DjCurve
@@ -146,11 +147,7 @@ theorem mem_range_eL (c : Fin (2 * (j + ρ) + k + 1)) :
 
 theorem hpk_row {k r : ℕ} (i m : Fin (2 * r + k + 1)) (hi : i.val < r) :
     Hpk k r i m = if i.val + m.val = 2 * r + k then 1 else 0 := by
-  unfold Hpk
-  by_cases h : i.val + m.val = 2 * r + k
-  · simp [hi, h]
-  · rw [if_neg (fun h' => h h'.2), if_neg (fun h' => h h'.2), if_neg (fun h' => absurd h'.1 (by omega)),
-      if_neg h]
+  apply _root_.Formalism.MainNotions.GrowthW.hpk_row_e <;> assumption
 
 variable {k j ρ}
 
@@ -172,13 +169,13 @@ theorem presL {Y : B.Mat k (j + ρ)} (hY : inLieP k j ρ Y) : Pres (Set.range (e
   have h1 : ∑ m, Yᴴ i m * Hpk k (j + ρ) m b = 0 := by
     refine Finset.sum_eq_zero fun m _ => ?_
     by_cases hm : m.val < j
-    · rw [hpk_row m b (by omega), if_neg (by omega), mul_zero]
+    · rw [hpk_row m b (by omega), ite_eq_right (by omega), mul_zero]
     · rw [Matrix.conjTranspose_apply, hY.2 m i hi (by omega), star_zero, zero_mul]
   have h2 : ∑ m, Hpk k (j + ρ) i m * Y m b = Y c b := by
     rw [Finset.sum_eq_single c]
-    · rw [hpk_row i c (by omega), if_pos (by omega), one_mul]
+    · rw [hpk_row i c (by omega), ite_eq_left (by omega), one_mul]
     · intro m _ hm
-      rw [hpk_row i m (by omega), if_neg, zero_mul]
+      rw [hpk_row i m (by omega), ite_eq_right, zero_mul]
       intro h
       apply hm
       ext
@@ -286,8 +283,6 @@ noncomputable section
 namespace PI.UnitaryCorollaryDerivatives
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.U
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem determinant_curve_derivative : DjCurve := fun _ _ _ Y hY => DjC.djCurve_general Y hY
 

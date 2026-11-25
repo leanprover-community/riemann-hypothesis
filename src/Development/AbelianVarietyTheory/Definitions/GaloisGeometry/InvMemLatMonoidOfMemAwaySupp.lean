@@ -9,43 +9,6 @@ public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsMonH
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLevelEqKN
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FibrePowerMapOfTotalSpacesIsPullback
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ForgetIsHeckeOne
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSiegelObjectLoweredLevel
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.OmegaPullId
 import Formalism.SatakeDualWeyl.KpqSubgroupCompact
@@ -76,12 +39,6 @@ def zs {N : ℕ} (X : GenModel gb N) (k : ℕ) : Z X k ⟶ Sp ℂ := (GlobalTheo
 def corrOp {Z Y : Scheme.{0}} {s : Z ⟶ Sp ℂ} {s' : Y ⟶ Sp ℂ} (c1 c2 : Y ⟶ Z) [IsFinite c1] [Etale c1]
     (h1 : c1 ≫ s = s') (h2 : c2 ≫ s = s') (a b : ℕ) : hodgeH s a b →ₗ[ℂ] hodgeH s a b :=
   hodgeTrace h1 a b ∘ₗ hodgePull h2 a b
-
-section Eig
-
-variable {N : ℕ} {X : GenModel gb N} {k : ℕ} {S : Finset ℕ} {θ : (G.La →ₗ[G.O] G.La) → ℕ → ℂ} {a b : ℕ}
-
-end Eig
 
 end GlobalTheory.W2
 end -- clump:auto
@@ -259,12 +216,6 @@ variable {p : ℕ} [Fact p.Prime] {D : Datum p} {G : HTGroup p}
 variable (L : _root_.GlobalTheory.LKGeo.Link D G)
 
 end Away
-
-section Basic₂
-
-variable {p : ℕ} [Fact p.Prime] {D : Datum p} {G : HTGroup p} (L : _root_.GlobalTheory.LKGeo.Link D G) {gb : GBase D.toG ℂ} {N : ℕ}
-
-end Basic₂
 
 end GlobalTheory.W2
 end -- clump:auto

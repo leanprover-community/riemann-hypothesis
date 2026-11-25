@@ -40,7 +40,7 @@ theorem zfull_mul_single_last (W : Matrix (Fin j) (Fin j) ℂ) (σ : ℂ) :
     simp only [Matrix.smul_apply, Matrix.single_apply, zfull_apply, Fin.ext_iff, Fin.val_last, smul_eq_mul]
     split_ifs <;> (try simp only [true_and, and_true] at *) <;> first | (exfalso; omega) | ring1
   · intro c _ hc
-    rw [Matrix.single_apply, if_neg (fun h => hc h.1.symm), mul_zero]
+    rw [Matrix.single_apply, ite_eq_right (fun h => hc h.1.symm), mul_zero]
   · simp
 
 theorem single_last_mul_w :

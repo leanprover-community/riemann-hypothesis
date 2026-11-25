@@ -24,7 +24,7 @@ def pw {κ : Pl E → Type} [∀ w, Fintype (κ w)] {a b : ℕ} (L : LM κ a b) 
 def muAt (d : LocData E n) (w : Pl E) : (w.adicCompletion E)ˣ →* ℂˣ := if w ∈ d.S₀ ∨ (w ∈ d.Bad ∧ IsSplitAt w) then d.μ w else 1
 
 def MatchLMUnit : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∀ (n : ℕ) (d : LocData E n), d.Ok →
-  ∀ (a : ℕ) (ha : a ≤ n) (w : Pl E), w ∉ d.B → (IsSplitAt w → d.Good w) →
+  ∀ (a : ℕ) (_ : a ≤ n) (w : Pl E), w ∉ d.B → (IsSplitAt w → d.Good w) →
     Match n a (n - a) w (if IsSplitAt w then d.μ w else 1) ((KL n w : Set (UL n w)).indicator 1) ((d.eL a).tr d.P d.one w)
 
 def MatchLMId : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (d : LocData E n), d.Ok →

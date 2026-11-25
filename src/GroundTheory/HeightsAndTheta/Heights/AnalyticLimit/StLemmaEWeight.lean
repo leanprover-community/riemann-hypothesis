@@ -17,9 +17,4 @@ def LemmaEWeight.Statement : Prop :=
       (∀ x ∈ secOpen s, min (c₀ * rSec L s x) l ≤ -w x ∧ -w x ≤ c₀ * rSec L s x + 1) ∧
       (∀ x, x ∉ secOpen s → l ≤ -w x)
 
-section Inhabitants
-
-
-end Inhabitants
-
 end GroundTheory.Heights₂.Heights.AnalyticLimit

@@ -19,12 +19,6 @@ open IsDedekindDomain NumberField MeasureTheory
 
 namespace Formalism.IndefR.RecTie
 
-section Zero
-
-variable {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} (θ : Datum.InfFam D) (M : Mult.DSModel V S)
-
-end Zero
-
 section FromLinks
 
 open Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Datum
@@ -71,14 +65,14 @@ def toChainReal (R : RealDat D A Ks) (F : Face D A) (tupT : D.what₂.Tup → T)
   It := R.ItY
   th μ k := thetaKO (R.ωY (tupT μ) k)
   ioC _ μ k := if h : k + 1 < D.R.m then
-      (LinearEquiv.ofEq _ _ (by simp only [if_pos (show k < D.R.m by omega)])).toLinearMap ∘ₗ
-        R.ioY (tupT μ) k ∘ₗ (LinearEquiv.ofEq _ _ (by simp only [if_pos h])).toLinearMap
+      (LinearEquiv.ofEq _ _ (by simp only [ite_eq_left (show k < D.R.m by omega)])).toLinearMap ∘ₗ
+        R.ioY (tupT μ) k ∘ₗ (LinearEquiv.ofEq _ _ (by simp only [ite_eq_left h])).toLinearMap
     else 0
   SinfX := PolF D D.sp.X'.rank (Yc D (D.R.m - 1)).rank
   ptX _ μ := R.ptX (tupT μ)
   ItX := R.ItX
   thX μ := thetaKO (R.ωX (tupT μ))
-  ioX _ μ := (LinearEquiv.ofEq _ _ (by simp only [if_pos (show D.R.m - 1 < D.R.m by omega)])).toLinearMap ∘ₗ
+  ioX _ μ := (LinearEquiv.ofEq _ _ (by simp only [ite_eq_left (show D.R.m - 1 < D.R.m by omega)])).toLinearMap ∘ₗ
     R.ioX (tupT μ) ∘ₗ (LinearEquiv.ofEq _ _ (hTop (tupT μ)).symm).toLinearMap
   JE b := levS _ (R.βY 0) (R.dat0 (R.levR F b))
   χE b := levChi _ (R.βY 0) (R.dat0 (R.levR F b))

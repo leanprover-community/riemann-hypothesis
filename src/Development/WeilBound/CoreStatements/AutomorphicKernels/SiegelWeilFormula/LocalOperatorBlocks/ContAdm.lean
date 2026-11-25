@@ -18,11 +18,6 @@ open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.Inde
 
 namespace PositivityTheory.SiegelWeilFormula.KLI
 
-
-open Complex in
-theorem tg_exp : Function.HasTemperateGrowth (fun t : ℝ => cexp (I * t)) := by
-  apply GlobalTheory.ThK.Dbl.Dense.temperate_exp
-
 section admitted
 
 variable (F : Type) [Field F] [NumberField F] {κ : Type} [Fintype κ]
@@ -49,7 +44,7 @@ theorem phz_tg (p : (κ → AF F) × (κ → AF F)) : (phz F p).HasTemperateGrow
       Algebra.trace ℝ (mixedEmbedding.mixedSpace F) z) :=
     (LinearMap.toContinuousLinearMap (Algebra.trace ℝ (mixedEmbedding.mixedSpace F))).hasTemperateGrowth
   have hg : Function.HasTemperateGrowth (fun s : ℝ => Complex.exp (-(2 * Real.pi * Complex.I) * (s : ℂ))) := by
-    have h := tg_exp.comp (((-(2 * Real.pi)) • ContinuousLinearMap.id ℝ ℝ).hasTemperateGrowth)
+    have h := GlobalTheory.CompanionTheory.OM.SchDiff.temperate_exp.comp (((-(2 * Real.pi)) • ContinuousLinearMap.id ℝ ℝ).hasTemperateGrowth)
     convert h using 1
     funext s
     simp only [Function.comp_apply, ContinuousLinearMap.coe_smul', ContinuousLinearMap.coe_id',

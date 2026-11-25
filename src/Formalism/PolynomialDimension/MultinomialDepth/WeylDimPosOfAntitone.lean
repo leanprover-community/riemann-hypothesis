@@ -22,11 +22,11 @@ theorem weylDim_cons_snoc (m : ℕ) (a b : ℤ) (μ : Fin m → ℤ) :
   simp only [Fin.prod_univ_succ (n := m + 1)]
   simp only [Fin.prod_univ_castSucc (n := m)]
   simp only [Fin.cons_zero, Fin.cons_succ, Fin.snoc_castSucc, Fin.snoc_last, lt_self_iff_false,
-    Fin.not_lt_zero, if_false, Fin.succ_pos, if_true, Fin.succ_lt_succ_iff,
+    Fin.not_lt_zero, ite_false, Fin.succ_pos, ite_true, Fin.succ_lt_succ_iff,
     Fin.castSucc_lt_castSucc_iff, Fin.castSucc_lt_last, Fin.val_succ, Fin.val_castSucc, Fin.val_last,
     Fin.val_zero, one_mul, mul_one]
   have hl : ∀ x : Fin m, ¬ (Fin.last m < x.castSucc) := fun x => (Fin.castSucc_lt_last x).asymm
-  simp only [hl, if_false, Finset.prod_const_one, mul_one]
+  simp only [hl, ite_false, Finset.prod_const_one, mul_one]
   push_cast
   simp only [sub_zero, ← add_assoc, add_sub_add_right_eq_sub, Finset.prod_mul_distrib]
   ring

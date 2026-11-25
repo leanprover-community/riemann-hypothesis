@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.RootWeights.MahPadicGeOfDvd
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.PadicGeMulNat
 import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.Algebra.Ring.IsFormallyReal
@@ -17,11 +18,7 @@ open Formalism.MainNotions.G Formalism.MainNotions.CovariantDegrees
 
 theorem asm_newton (f : ℕ → ℚ) (m : ℕ) :
     f m = ∑ j ∈ range (m + 1), mah f j * (m.choose j : ℚ) := by
-  have h := shift_eq_sum_fwdDiff_iter (1 : ℕ) f m 0
-  simp only [zero_add, smul_eq_mul, mul_one, nsmul_eq_mul] at h
-  rw [h]
-  refine Finset.sum_congr rfl fun j _ => ?_
-  rw [mah, mul_comm]
+  apply _root_.Formalism.MainNotions.G.GLWeightTheory.mah_newton <;> assumption
 
 private theorem ext_lemma (a : ℕ → ℚ) (m N : ℕ) (h : m < N) :
     ∑ j ∈ range (m + 1), a j * (m.choose j : ℚ) = ∑ j ∈ range N, a j * (m.choose j : ℚ) := by
@@ -224,24 +221,8 @@ theorem asm_bin_deg {σ : Type*} (k : σ) (j : ℕ) : (asm_bin σ k j).totalDegr
 private theorem choose_lemma (n : ℕ) : ∀ j : ℕ,
     ((j.factorial : ℚ))⁻¹ * ∏ i ∈ range j, ((n : ℚ) - (i : ℚ)) = (n.choose j : ℚ) := by
   intro j
-  induction j with
-  | zero => simp
-  | succ j ih =>
-    have hj : (j.factorial : ℚ) ≠ 0 := by positivity
-    have key : (n.choose (j + 1) : ℚ) * ((j : ℚ) + 1) = (n.choose j : ℚ) * ((n : ℚ) - j) := by
-      rcases Nat.lt_or_ge n j with h | h
-      · rw [Nat.choose_eq_zero_of_lt h, Nat.choose_eq_zero_of_lt (by omega)]
-        simp
-      · have := congrArg (Nat.cast : ℕ → ℚ) (Nat.choose_succ_right_eq n j)
-        push_cast [Nat.cast_sub h] at this
-        linarith
-    rw [Finset.prod_range_succ, Nat.factorial_succ]
-    push_cast
-    have e1 : (∏ i ∈ range j, ((n : ℚ) - (i : ℚ))) = (n.choose j : ℚ) * j.factorial := by
-      rw [← ih]
-      field_simp
-    rw [e1, inv_mul_eq_iff_eq_mul₀ (by positivity)]
-    linear_combination (-(j.factorial : ℚ)) * key
+  rw [← descPochhammer_eval_eq_prod_range, descPochhammer_eval_eq_descFactorial,
+    Nat.descFactorial_eq_factorial_mul_choose, Nat.cast_mul, inv_mul_cancel_left₀ (by positivity)]
 
 theorem asm_bin_eval {σ : Type*} (k : σ) (j : ℕ) (e : σ → ℕ) :
     MvPolynomial.eval (fun k => (e k : ℚ)) (asm_bin σ k j) = ((e k).choose j : ℚ) := by

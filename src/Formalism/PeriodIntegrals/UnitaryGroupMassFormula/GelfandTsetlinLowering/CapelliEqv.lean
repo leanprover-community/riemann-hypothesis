@@ -65,7 +65,7 @@ theorem det_one_add_single {n : ℕ} (a b : Fin n) (t : ℂ) :
     simp [add_comm]
   · have := Matrix.det_transvection_of_ne a b hab t
     unfold Matrix.transvection at this
-    rw [this, if_neg hab]
+    rw [this, ite_eq_right hab]
 
 theorem embGL_transvec {n : ℕ} (g : GL (Fin n) ℂ) (a b : Fin n) (t : ℂ)
     (hg : (g : Matrix (Fin n) (Fin n) ℂ) = 1 + Matrix.single a b t) :
@@ -157,7 +157,7 @@ theorem eqv_pol {n N : ℕ} (h : n + 1 = N) (mu : DomWeight n) (lam : DomWeight 
     · simp
   rw [hP, Polynomial.coeff_sub, hc1, hc1, hL0, hL1, hG0, hG1] at h1
   by_cases hab : a = b
-  · simp only [hab, if_true] at h1 ⊢
+  · simp only [hab, ite_true] at h1 ⊢
     have c1 : ((e1 : ℕ) : MvPolynomial (Fin (n + 1) × Fin (n + 1)) ℂ) = C ((d1 : ℂ) + (K : ℂ)) := by
       rw [← map_natCast C]; congr 1; exact_mod_cast he1
     have c2 : ((e2 : ℕ) : MvPolynomial (Fin (n + 1) × Fin (n + 1)) ℂ) = C ((d2 : ℂ) + (K : ℂ)) := by
@@ -166,7 +166,7 @@ theorem eqv_pol {n N : ℕ} (h : n + 1 = N) (mu : DomWeight n) (lam : DomWeight 
     rw [smul_eq_C_mul, smul_eq_C_mul]
     subst hab
     linear_combination h1
-  · simp only [hab, if_false, add_zero] at h1 ⊢
+  · simp only [hab, ite_false, add_zero] at h1 ⊢
     exact sub_eq_zero.mp h1
 
 end PI.WGL

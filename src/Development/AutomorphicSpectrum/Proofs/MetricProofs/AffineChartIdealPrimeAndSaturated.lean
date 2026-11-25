@@ -50,7 +50,7 @@ theorem isMultiHomog_X [DecidableEq K] (s : Σ k, ι k) :
   · subst h
     simp [Finsupp.single_apply]
   · have : ∀ i, (Finsupp.single (⟨k₀, i₀⟩ : Σ k, ι k) 1 : (Σ k, ι k) →₀ ℕ) ⟨k, i⟩ = 0 := fun i => by
-      rw [Finsupp.single_apply, if_neg]
+      rw [Finsupp.single_apply, ite_eq_right]
       intro e
       exact h (congrArg Sigma.fst e).symm
     simp [this, h]

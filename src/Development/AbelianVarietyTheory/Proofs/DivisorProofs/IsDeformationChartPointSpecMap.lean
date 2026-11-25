@@ -57,7 +57,6 @@ open scoped Classical
 open GlobalTheory.CechKS
 
 noncomputable section
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.CechKS
 

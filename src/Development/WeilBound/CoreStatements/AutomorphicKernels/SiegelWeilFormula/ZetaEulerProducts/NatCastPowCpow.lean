@@ -150,7 +150,7 @@ theorem local_factor (h2 : Module.finrank F E = 2) (v : HeightOneSpectrum (𝓞 
       GlobalTheory.InertField.isField_of_inert F E h2 v (by rw [hmapa]; exact a.isPrime)
     have heSp : PositivityTheory.SiegelWeilFormula.Gen.eSp E v = -1 := by
       unfold PositivityTheory.SiegelWeilFormula.Gen.eSp
-      exact if_pos hfield
+      exact ite_eq_left hfield
     rw [ha, Finset.prod_singleton, hnorm a hamem, haf, heSp, natCast_pow_cpow]
     ring
   · obtain ⟨a, b, hab, hfab⟩ := Finset.card_eq_two.mp hc
@@ -170,7 +170,7 @@ theorem local_factor (h2 : Module.finrank F E = 2) (v : HeightOneSpectrum (𝓞 
     have hnf := GlobalTheory.SplitPlace.not_isField_of_split F E h2 v hsplit
     have heSp : PositivityTheory.SiegelWeilFormula.Gen.eSp E v = 1 := by
       unfold PositivityTheory.SiegelWeilFormula.Gen.eSp
-      exact if_neg hnf
+      exact ite_eq_right hnf
     rw [hfab, Finset.prod_pair hab, hnorm a hamem, hnorm b hbmem, ha1, hb1, heSp, pow_one]
     ring
 

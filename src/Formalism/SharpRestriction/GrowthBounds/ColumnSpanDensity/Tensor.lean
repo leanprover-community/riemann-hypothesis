@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.WeylEqSpanInt
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.FactorsLEOfIndex
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.FinrankTensor
 public import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
@@ -41,11 +42,7 @@ theorem tn_rowAct_C {K : Type} [CommRing K] {r n : ℕ} (g : Matrix (Fin r) (Fin
 
 theorem tn_rowAct_one {K : Type} [CommRing K] {r n : ℕ} (F : MvPolynomial (Fin r × Fin n) K) :
     rowAct K (n := n) (1 : Matrix (Fin r) (Fin r) K) F = F := by
-  have e : rowAct K (n := n) (1 : Matrix (Fin r) (Fin r) K) = AlgHom.id K _ := by
-    apply MvPolynomial.algHom_ext
-    intro v
-    simp [rowAct, Matrix.one_apply]
-  rw [e, AlgHom.id_apply]
+  apply _root_.Formalism.L2.G.RelativeIndexFlags.Core.rowAct_one <;> assumption
 
 private theorem rowAct_invariant_zero_weight_iff {K : Type} [CommRing K] {r n : ℕ} (g h : Matrix (Fin r) (Fin r) K)
     (F : MvPolynomial (Fin r × Fin n) K) : rowAct K (n := n) g (rowAct K h F) = rowAct K (h * g) F := by
@@ -64,7 +61,7 @@ theorem invariant_sections_zero_weight_iff {O Kf : Type} [CommRing O] [Field Kf]
   have hw : (fun t : Fin (m + 1) => ((0 : Fin (m + 1) → ℤ) t - (0 : Fin (m + 1) → ℤ) (Fin.last m)).toNat) = 0 := by
     funext t
     simp
-  simp only [H0, if_pos hA, Submodule.mem_iInf, nablaLTw, nablaL, hw, Submodule.mem_map, Submodule.mem_comap]
+  simp only [H0, ite_eq_left hA, Submodule.mem_iInf, nablaLTw, nablaL, hw, Submodule.mem_map, Submodule.mem_comap]
   simp
   constructor
   · intro h
@@ -160,7 +157,7 @@ theorem tn_Vsp {Kf : Type} [Field Kf] {n' m : ℕ} (TT : Finset (Fin n')) (lam0 
   refine tn_family TT lam0 (fun _ lam => if Antitone lam then dualWeyl Kf (m + 1) (m + 1) (nuOf lam) else ⊥)
     fun s F => ?_
   have hanti : Antitone (0 : Fin (m + 1) → ℤ) := fun _ _ _ => le_rfl
-  simp only [if_pos hanti, tn_nuOf_zero]
+  simp only [ite_eq_left hanti, tn_nuOf_zero]
   constructor
   · intro hF
     exact ⟨_, tn_const _ _ F hF⟩
@@ -289,7 +286,7 @@ theorem tnDelta_on (lam1 : Fin n' → Fin (m + 1) → ℤ) (hDom : IsDominant la
     · have hFs : F s ∈ dualWeyl Kf (m + 1) (m + 1) 0 := by
         have := hF s
         have hz : Antitone (0 : Fin (m + 1) → ℤ) := fun _ _ _ => le_rfl
-        simp only [h0, tn_nuOf_zero, if_pos hz] at this
+        simp only [h0, tn_nuOf_zero, ite_eq_left hz] at this
         exact this
       rw [tn_const _ _ _ hFs, tn_blockEmb_C, AlgHom.commutes, AlgHom.commutes]
     · exact h1 _
@@ -324,7 +321,7 @@ theorem tn_dimV (Kf : Type) [Field Kf] {n' m : ℕ} (lam0 : Fin n' → Fin (m + 
   have e : (fun s => if Antitone (lamAt lam0 s) then dualWeyl Kf (m + 1) (m + 1) (nuOf (lamAt lam0 s)) else ⊥) =
       fun s => dualWeyl Kf (m + 1) (m + 1) (nuOf (lamAt lam0 s)) := by
     funext s
-    rw [if_pos (hanti s)]
+    rw [ite_eq_left (hanti s)]
   rw [e]
   exact finrank_tensor Kf (Fin n') (m + 1) (m + 1) _
 

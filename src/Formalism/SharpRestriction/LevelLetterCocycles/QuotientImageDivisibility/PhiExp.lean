@@ -60,7 +60,7 @@ theorem phi_exp (hs : W.s = 1) (C : CmpTie W E ιdR p1 tS zS)
     rw [C.levN_eq, C.levB_φ T hT i ζ ⟨1, by rwa [pow_one]⟩ y' m hm' k, hζp]
   have hcoef : ∀ j : ℕ, j < m → PowerSeries.coeff j (W.lev i ζ (W.Q ^ m)) = 0 := by
     intro j hj
-    rw [map_pow, hQ, mul_pow, PowerSeries.coeff_X_pow_mul', if_neg (by omega)]
+    rw [map_pow, hQ, mul_pow, PowerSeries.coeff_X_pow_mul', ite_eq_right (by omega)]
   have hterm0 : ∀ (k : ℤ) (j : ℕ), (j < m ∨ k < (j : ℤ)) →
       PowerSeries.coeff j (W.lev i ζ (W.Q ^ m)) • (((PD.p : LL) ^ (k - (j : ℤ))) •
         φVB PD (LL := LL) (V := T.V) (C.levB T (i - 1) 1 y' (k - (j : ℤ)))) = 0 := by
@@ -79,7 +79,7 @@ theorem phi_exp (hs : W.s = 1) (C : CmpTie W E ιdR p1 tS zS)
   have he_m : e m = (PowerSeries.constantCoeff u) ^ m •
       ιV PD (LL := LL) (V := T.V) (φVB PD (LL := LL) (V := T.V) (C.levB T (i - 1) 1 y' 0)) := by
     rw [hφrule, finsum_eq_single _ m (fun j hj => ?_)]
-    · rw [map_pow, hQ, mul_pow, PowerSeries.coeff_X_pow_mul', if_pos le_rfl, Nat.sub_self,
+    · rw [map_pow, hQ, mul_pow, PowerSeries.coeff_X_pow_mul', ite_eq_left le_rfl, Nat.sub_self,
         PowerSeries.coeff_zero_eq_constantCoeff_apply, map_pow, sub_self, zpow_zero, one_smul,
         map_smul]
     · rcases Nat.lt_or_gt_of_ne hj with h | h

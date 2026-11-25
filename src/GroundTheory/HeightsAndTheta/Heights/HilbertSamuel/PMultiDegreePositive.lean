@@ -77,7 +77,6 @@ theorem isRelevant_of_ringKrullDim (W : Ideal (MRing (fun _ : Unit => ι₀) F))
   apply _root_.GroundTheory.Heights₂.Heights.Kleiman.ProjDegreePositive.isRelevant_of_ringKrullDim <;> assumption
 
 
-set_option synthInstance.maxHeartbeats 400000 in
 theorem hilbFn_pos (q : Ideal (MRing (fun _ : Unit => ι₀) F)) (hq : IsMultiProjPrime q) (n : ℕ) :
     0 < hilbFn q (fun _ => (n : ℤ)) := by
   apply _root_.GroundTheory.Heights₂.Heights.Kleiman.ProjDegreePositive.hilbFn_pos <;> assumption
@@ -90,88 +89,8 @@ theorem le_ker_constantCoeff (q : Ideal (MRing (fun _ : Unit => ι₀) F)) (hq :
 
 theorem pos (D : ℕ) : ∀ q : Ideal (MRing (fun _ : Unit => ι₀) F), IsMultiProjPrime q →
     ringKrullDim (MRing (fun _ : Unit => ι₀) F ⧸ q) = ((D + 1 : ℕ) : WithBot ℕ∞) →
-    0 < intNum F q (fun _ : Fin D => fun _ => (1 : ℤ)) := by
-  induction D with
-  | zero =>
-    intro q hq hd
-    obtain ⟨a₀, ha⟩ := HilbertDimZero.proof F Unit (fun _ => ι₀) q hq
-      (by rw [Fintype.card_unit]; exact hd)
-    have h := ha (fun _ => a₀) (fun _ => le_rfl)
-    have e : (fun _ : Fin 0 => fun _ : Unit => (1 : ℤ)) = (![] : Fin 0 → Unit → ℤ) :=
-      funext fun j => j.elim0
-    rw [e, ← h]
-    exact hilbFn_pos q hq a₀
-  | succ D ih =>
-    intro q hq hd
-    have hqp : q.IsPrime := hq.isPrime
-    obtain ⟨i, hX⟩ := hq.relevant ()
-    set x : MRing (fun _ : Unit => ι₀) F := X ⟨(), i⟩ with hxdef
-    have hx : IsMultiHomog x (blockWeight (fun _ : Unit => ι₀) ⟨(), i⟩) :=
-      isWeightedHomogeneous_X F _ _
-    have hlt : ringKrullDim (MRing (fun _ : Unit => ι₀) F ⧸ q) <
-        ((D + 2 + Fintype.card Unit : ℕ) : WithBot ℕ∞) := by
-      rw [hd, Fintype.card_unit]
-      exact_mod_cast (by omega : D + 1 + 1 < D + 2 + 1)
-    have hcut := CutByForm.full F Unit (fun _ => ι₀) D q hqp hq.multiHomog hlt x _ hx hX
-      (fun _ : Fin D => fun _ : Unit => (1 : ℤ))
-    have e1 : Matrix.vecCons (fun k => ((blockWeight (fun _ : Unit => ι₀) ⟨(), i⟩ k : ℕ) : ℤ))
-        (fun _ : Fin D => fun _ : Unit => (1 : ℤ)) = fun _ : Fin (D + 1) => fun _ : Unit => (1 : ℤ) := by
-      funext j k
-      cases k
-      refine Fin.cases ?_ (fun j => ?_) j <;> simp [blockWeight]
-    rw [e1] at hcut
-    rw [hcut, cycEval]
-    set J := q ⊔ Ideal.span {x} with hJdef
-    have hJh : IsMultiHomogIdeal J := isMultiHomogIdeal_sup_span_of_form hq.multiHomog hx
-
-    have hterm : ∀ W, divCycle q x W ≠ 0 →
-        0 < divCycle q x W ∧ 0 < intNum F W (fun _ : Fin D => fun _ : Unit => (1 : ℤ)) := by
-      intro W hW
-      unfold divCycle at hW ⊢
-      by_cases hc : W ∈ J.minimalPrimes ∧ IsRelevant W
-      · rw [dite_eq_left hc] at hW ⊢
-        have hWp : W.IsPrime := hc.1.1.1
-        have hWd := Kleiman.ProjDegreePositive.ringKrullDim_of_mem_minimalPrimes q W x hX (D + 1) hd hc.1
-        have hWq : IsMultiProjPrime W :=
-          ⟨hWp, MinimalPrimeMultiHomog.full F Unit (fun _ => ι₀) J W hJh hc.1, hc.2⟩
-        exact ⟨lt_of_le_of_ne (by positivity) (Ne.symm hW), ih W hWq hWd⟩
-      · rw [dite_eq_right hc] at hW
-        exact absurd rfl hW
-    have hfin := DivCycleFiniteSupport.full F Unit (fun _ => ι₀) q x
-    rw [finsum_eq_sum_of_support_subset _
-      ((Function.support_mul_subset_left _ _).trans hfin.coe_toFinset.symm.subset)]
-    refine Finset.sum_pos' (fun W _ => ?_) ?_
-    · by_cases hW : divCycle q x W = 0
-      · rw [hW, zero_mul]
-      · exact (mul_pos (hterm W hW).1 (hterm W hW).2).le
-
-    have hJm : J ≤ RingHom.ker (constantCoeff : MRing (fun _ : Unit => ι₀) F →+* F) := by
-      refine sup_le (le_ker_constantCoeff q hq) ?_
-      rw [Ideal.span_le, Set.singleton_subset_iff]
-      change constantCoeff x = 0
-      rw [hxdef, constantCoeff_X]
-    have hmax : (RingHom.ker (constantCoeff : MRing (fun _ : Unit => ι₀) F →+* F)).IsPrime :=
-      (RingHom.ker_isMaximal_of_surjective _ fun a => ⟨C a, by simp⟩).isPrime
-    obtain ⟨W, hmin, -⟩ := Ideal.exists_minimalPrimes_le hJm
-    have hWp : W.IsPrime := hmin.1.1
-    have hWd := Kleiman.ProjDegreePositive.ringKrullDim_of_mem_minimalPrimes q W x hX (D + 1) hd hmin
-    have hrel := isRelevant_of_ringKrullDim W D hWd
-    have hne : divCycle q x W ≠ 0 := by
-      unfold divCycle
-      rw [dite_eq_left ⟨hmin, hrel⟩]
-      have htop := length_localizedQuot_ne_top J W hmin
-      have hzero : multAt J W ≠ 0 := by
-        unfold multAt
-        rw [Ne, Module.length_eq_zero_iff, LocalizedModule.subsingleton_iff]
-        intro hs
-        obtain ⟨r, hr, hr1⟩ := hs (1 : MRing (fun _ : Unit => ι₀) F ⧸ J)
-        rw [Algebra.smul_def, mul_one, Ideal.Quotient.algebraMap_eq, Ideal.Quotient.eq_zero_iff_mem] at hr1
-        exact hr (hmin.1.2 hr1)
-      have : (multAt J W).toNat ≠ 0 := by
-        rw [Ne, ENat.toNat_eq_zero]
-        exact not_or.mpr ⟨hzero, htop⟩
-      exact_mod_cast this
-    refine ⟨W, hfin.mem_toFinset.mpr hne, mul_pos (hterm W hne).1 (hterm W hne).2⟩
+    0 < intNum F q (fun _ : Fin D => fun _ => (1 : ℤ)) :=
+  Kleiman.ProjDegreePositive.pos D
 
 end DegreePositive
 

@@ -63,7 +63,7 @@ theorem key {B : Scheme.{0}} (U : B.Etale) (x : U.left) (Ω : Type) [Field Ω]
     (by simp only [Category.assoc]; rw [hcomp j m f1, IsIso.inv_hom_id_assoc])
     (by simp only [Category.assoc]; rw [hg', hcomp k m f2, IsIso.inv_hom_id_assoc])
     (by
-      simp only [Category.assoc, IsIso.hom_inv_id_assoc]
+      simp only [IsIso.hom_inv_id_assoc]
       rw [reassoc_of% h1, reassoc_of% h2, reassoc_of% hlg', reassoc_of% hl'])
   simp only [IsIso.hom_inv_id_assoc] at h3
   have hfac : Spec.map (CommRingCat.ofHom (D.map f3).hom) ≫ Spec.map (CommRingCat.ofHom (D.map f1).hom) =

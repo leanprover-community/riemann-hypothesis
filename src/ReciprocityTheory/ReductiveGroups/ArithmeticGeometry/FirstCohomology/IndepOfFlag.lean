@@ -40,8 +40,7 @@ lemma indep_of_flag [FiniteDimensional ℝ E] {d : ℕ} (hd : d = finrank ℝ E)
     (h : ∀ k, f k ∉ V f k.val) : LinearIndependent ℝ f := by
   rw [Fintype.linearIndependent_iff]
   intro g hg
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   let s := Finset.univ.filter (fun l => g l ≠ 0)
   have hs : s.Nonempty := by
     obtain ⟨i, hi⟩ := hne

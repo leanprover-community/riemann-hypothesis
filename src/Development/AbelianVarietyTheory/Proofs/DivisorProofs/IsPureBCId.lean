@@ -45,8 +45,6 @@ noncomputable section
 open CategoryTheory AlgebraicGeometry
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.Cris GlobalTheory.DeRham
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.PureLift
 
 def IsPure {R : Type} [CommRing R] (A : Over (Sp R)) [GrpObj A] (W : A ⟶ A) [IsMonHom W] (r s : R) : Prop :=

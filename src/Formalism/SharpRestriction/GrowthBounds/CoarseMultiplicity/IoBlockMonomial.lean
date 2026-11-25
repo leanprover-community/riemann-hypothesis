@@ -85,7 +85,7 @@ theorem coarse_eval (C0 CE1 CE2 : ℝ) (X : Loc) (j : Fin (numSeg X.TT)) (μ : B
   rw [Finsupp.sum, Finset.sum_eq_single v0]
   · simp
   · intro v _ hv
-    rw [if_neg fun e => hv (symVar_inj C0 CE1 CE2 X j e)]
+    rw [ite_eq_right fun e => hv (symVar_inj C0 CE1 CE2 X j e)]
   · intro hv
     simp [Finsupp.notMem_support_iff.1 hv]
 

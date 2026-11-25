@@ -12,7 +12,7 @@ open scoped InnerProductSpace ComplexConjugate
 
 namespace PositivityTheory.RgHe.A
 
-def SchurEigenProjectionExists : Prop := GlobalTheory.CompanionTheory.PairingAnalysis.ForPairs fun {n} ε lam ε' mu _ e H H' _ _ _ _ _ _ π σ ν =>
+def SchurEigenProjectionExists : Prop := GlobalTheory.CompanionTheory.PairingAnalysis.ForPairs fun {_} ε lam ε' mu _ e H H' _ _ _ _ _ _ π σ ν =>
   GlobalTheory.CompanionTheory.PairingAnalysis.HeWord ε lam ε' mu → ∀ κ : ℝ, PositivityTheory.RgHe.SchurK ε' σ ν κ → ∀ w ∈ lowKSub ε' mu σ, ‖w‖ = 1 →
     Integrable (fun h : UJ ε' => ⟪w, σ (GlobalTheory.CompanionTheory.PairingAnalysis.um h) w⟫_ℂ) ν ∧
     ∃ (i : H' →L[ℂ] H) (η : H), (∀ x, ‖i x‖ = ‖x‖) ∧

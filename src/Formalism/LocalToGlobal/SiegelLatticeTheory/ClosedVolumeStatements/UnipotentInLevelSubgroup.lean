@@ -56,8 +56,6 @@ noncomputable section
 
 namespace Formalism.L2.SG.Pf.IdMeet
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open scoped Classical
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
 open Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.TermOp Formalism.L2.SG.TermOp.IdBlocks Formalism.L2.SG.Full
@@ -98,7 +96,7 @@ theorem isId_of_lin {t : GTerm X u u F0 F0 what₂ what₂} (h : t.lin ∈ NLam 
   refine ⟨t.frame, ⟨t.rep.2.2.2.2, rfl⟩, ?_⟩
   unfold Formalism.L2.SG.FourParts.IsIdF
   have hi : t.lin ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT := t.rep.2.2.1
-  have hf : mapLF t.lin (lf D F0) = _ := dif_pos hi
+  have hf : mapLF t.lin (lf D F0) = _ := dite_eq_left hi
   rw [show t.frame = mapLF t.lin (lf D F0) from rfl, hf]
   refine ⟨t.lin, h, fun a => rfl, ?_⟩
   have hz : (mapFlag t.lin hi (lf D F0).fl).z = t.lin (lf D F0).fl.z := rfl
@@ -200,8 +198,6 @@ section -- clump:auto
 noncomputable section
 
 namespace Formalism.L2.SG.Pf.IdMeet
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open scoped Classical ENNReal
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
@@ -421,8 +417,6 @@ noncomputable section
 
 namespace Formalism.L2.SG.Pf.IdMeet
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open scoped Classical ENNReal
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
 open Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting
@@ -538,8 +532,6 @@ section -- clump:auto
 noncomputable section
 
 namespace Formalism.L2.SG.Pf.IdMeet
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open scoped Classical ENNReal
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
@@ -762,8 +754,6 @@ noncomputable section
 
 namespace Formalism.L2.SG.Pf.IdMeet
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 open scoped Classical ENNReal
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
 open Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.TermOp Formalism.L2.SG.TermOp.IdBlocks Formalism.L2.SG.Full
@@ -930,8 +920,6 @@ section -- clump:auto
 noncomputable section
 
 namespace Formalism.L2.SG.Pf.IdMeet
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 open scoped Classical
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat

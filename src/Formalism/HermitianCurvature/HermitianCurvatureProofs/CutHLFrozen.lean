@@ -32,7 +32,7 @@ theorem comm_Tm (Eu : Fin n → Fin n → A) (hG : GlRel Eu) (p a b : Fin n) (ha
     · exact (Algebra.commutes v (Eu p p)).symm
     · exact Commute.zero_right _
   · have h := hG p p a b
-    rw [if_neg (Ne.symm ha), if_neg hb, sub_zero] at h
+    rw [ite_eq_right (Ne.symm ha), ite_eq_right hb, sub_zero] at h
     exact sub_eq_zero.mp h
 
 theorem comm_qminor (Eu : Fin n → Fin n → A) (hG : GlRel Eu) {t : ℕ} (a b : Fin t → Fin n) (u : ℂ) (p : Fin n)
@@ -78,7 +78,7 @@ theorem comm_AAx (Eu : Fin (2 * r + k + 1) → Fin (2 * r + k + 1) → A) (hG : 
         exact h0 _ a.isLt
       simp only [hdet, zero_smul]
       exact Commute.zero_right _
-    · push_neg at hp
+    · push Not at hp
       refine Commute.smul_right ?_ _
       refine comm_qminor Eu hG _ _ u _ (fun i => ?_) hp
       have := i.isLt
@@ -102,7 +102,7 @@ theorem comm_AAv (Eu : Fin (2 * r + k + 1) → Fin (2 * r + k + 1) → A) (hG : 
         exact h0 _ a.isLt
       simp only [hdet, zero_smul]
       exact Commute.zero_right _
-    · push_neg at hp
+    · push Not at hp
       refine Commute.smul_right ?_ _
       refine comm_qminor Eu hG _ _ _ _ hp (fun i => ?_)
       have := i.isLt
@@ -178,7 +178,7 @@ private theorem sgn_sig_mul_y0_eq_star_esI_apply_of_mem_GV {k r : ℕ} (g : B.Ma
     split_ifs with h1 h2 h2 <;> simp only at * <;> omega
   have hn : GBasic.sgn k r (eI k r a) = 1 := by
     have := a.isLt
-    rw [GBasic.sgn, if_neg]
+    rw [GBasic.sgn, ite_eq_right]
     simp only [eI, Fin.val_mk]
     omega
   have he : GBasic.sig k r (eI k r a) = esI k r a := by
@@ -229,7 +229,7 @@ theorem y0_x0_esI_j_eq_zero_of_det_ne_zero (hj : j + 1 ≤ r) {Z : Matrix (Fin j
   have : j + 1 ≤ r := hj
   have hse : (GBasic.sig k r (esI k r ⟨j, by omega⟩)).val = j := by
     unfold GBasic.sig
-    rw [if_pos (Or.inr (by simp only [esI]; omega))]
+    rw [ite_eq_left (Or.inr (by simp only [esI]; omega))]
     simp only [esI]
     omega
   rw [hse]

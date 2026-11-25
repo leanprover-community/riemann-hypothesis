@@ -2,6 +2,7 @@ module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.OrbAllOfUnitV
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.GenSmulMem
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.HformSmulRight
 
 @[expose] public section
 
@@ -17,15 +18,7 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
   (v : HeightOneSpectrum (𝓞 F)) (Λ : Set (Fin n → E))
 
 theorem sigma_invol (hcm : IsCMExt F E σ) (x : E) : σ (σ x) = x := by
-  let τ : E →ₐ[ℚ] ℂ := (by
-    refine @_root_.IsAlgClosed.lift _ _ _ _ _ _ _ _ _ _ _ ?_ ?_ ?_
-    solve_by_elim* (maxDepth := 2) only [*,
-      @_root_.DivisionSemiring.to_moduleIsTorsionFree,
-      @_root_.Algebra.IsIntegral.isAlgebraic, @_root_.inferInstance])
-  apply τ.toRingHom.injective
-  have h1 := hcm.2.2.2 τ.toRingHom (σ x)
-  have h2 := hcm.2.2.2 τ.toRingHom x
-  rw [h1, h2, star_star]
+  apply _root_.PI.VolStabS.sigma_invol_cm <;> assumption
 
 theorem sigR_invol (hcm : IsCMExt F E σ) (z : Fv F v ⊗[F] E) : sigR (Fv F v) σ (sigR (Fv F v) σ z) = z := by
   induction z using TensorProduct.induction_on with

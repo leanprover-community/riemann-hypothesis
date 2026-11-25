@@ -41,20 +41,20 @@ theorem segreVec_pow (y : (Σ k, ι k) → Ω) (c : ∀ k, ι k) (n : ℕ) :
     segreVec y c ^ n = chartPow y c (fun _ => (n : ℤ)) := by
   simp [segreVec, chartPow, Finset.prod_pow]
 
-section Dual
+section DualRing
 
-variable {N : ℕ} {E : Type} [AddCommGroup E] [Module Ω E]
+variable {R : Type} [CommRing R] {Ω : Type} [Field Ω] [Algebra R Ω]
+  {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} {N : ℕ} {E : Type} [AddCommGroup E] [Module Ω E]
 
-omit [∀ k, Fintype (ι k)] in
-theorem exists_flag_dual_of_frame (y : (Σ k, ι k) → Ω) (B : ChartBundle F (segreVec y) N E)
+theorem exists_flag_dual_of_frame (y : (Σ k, ι k) → Ω) (B : ChartBundle R (segreVec y) N E)
     (w : Module.Basis (Fin N) Ω E) (b : Fin N → K → ℤ) (hfl : IsFlagFrame y B w b)
     (c : ∀ k, ι k) (hc : segreVec y c ≠ 0) (i : Fin N) :
-    ∃ ψ : Module.Dual Ω E, (∀ v ∈ B.lat c, ψ v ∈ chartRing F (segreVec y) c) ∧
+    ∃ ψ : Module.Dual Ω E, (∀ v ∈ B.lat c, ψ v ∈ chartRing R (segreVec y) c) ∧
       (∀ j, j < i → ψ (w j) = 0) ∧ ψ (w i) = (chartPow y c (b i))⁻¹ := by
   have hY : ∀ k, y ⟨k, c k⟩ ≠ 0 := fun k => (Finset.prod_ne_zero_iff.1 hc) k (Finset.mem_univ _)
   have hp : ∀ j, chartPow y c (b j) ≠ 0 := fun j => chartPow_ne_zero hY _
   have hgr : ∀ (j : Fin N) (s : Ω), (∃ v ∈ B.lat c, (∀ m, j < m → w.repr v m = 0) ∧ w.repr v j = s) ↔
-      ∃ r ∈ chartRing F (segreVec y) c, s = r * chartPow y c (b j) := fun j s => by
+      ∃ r ∈ chartRing R (segreVec y) c, s = r * chartPow y c (b j) := fun j s => by
     have h := hfl.graded c hc j
     rw [Set.ext_iff] at h
     exact h s
@@ -70,8 +70,7 @@ theorem exists_flag_dual_of_frame (y : (Σ k, ι k) → Ω) (B : ChartBundle F (
     intro m hm
     simp only [Finset.mem_coe, Finsupp.mem_support_iff] at hm
     simp only [Set.mem_setOf_eq]
-    by_contra hjm
-    push_neg at hjm
+    by_contra! hjm
     apply hm
     rcases hjm.lt_or_eq with h | h
     · have hne : j ≠ m := fun h' => (ne_of_lt h) (congrArg Fin.val h')
@@ -122,7 +121,7 @@ theorem exists_flag_dual_of_frame (y : (Σ k, ι k) → Ω) (B : ChartBundle F (
   have hself : ∀ j m, eb.repr (e j) m = Finsupp.single j 1 m := fun j m => by
     rw [← heb, eb.repr_self]
   have hint : ∀ m ≤ N, ∀ v ∈ B.lat c, (∀ j : Fin N, m ≤ (j : ℕ) → w.repr v j = 0) →
-      ∀ j, eb.repr v j ∈ chartRing F (segreVec y) c := by
+      ∀ j, eb.repr v j ∈ chartRing R (segreVec y) c := by
     intro m
     induction m with
     | zero =>
@@ -157,12 +156,18 @@ theorem exists_flag_dual_of_frame (y : (Σ k, ι k) → Ω) (B : ChartBundle F (
       hself, hvan _ (hx i)]
     simp
 
+end DualRing
+
+section Dual
+
+variable {N : ℕ} {E : Type} [AddCommGroup E] [Module Ω E]
+
 theorem exists_flag_dual (y : (Σ k, ι k) → Ω) (B : ChartBundle F (segreVec y) N E)
     (w : Module.Basis (Fin N) Ω E) (b : Fin N → K → ℤ) (hfl : IsFlagFrame y B w b)
     (c : ∀ k, ι k) (hc : segreVec y c ≠ 0) (i : Fin N) :
     ∃ ψ : Module.Dual Ω E, (∀ v ∈ B.lat c, ψ v ∈ chartRing F (segreVec y) c) ∧
-      (∀ j, j < i → ψ (w j) = 0) ∧ ψ (w i) = (chartPow y c (b i))⁻¹ := by
-  apply exists_flag_dual_of_frame <;> assumption
+      (∀ j, j < i → ψ (w j) = 0) ∧ ψ (w i) = (chartPow y c (b i))⁻¹ :=
+  exists_flag_dual_of_frame y B w b hfl c hc i
 
 end Dual
 

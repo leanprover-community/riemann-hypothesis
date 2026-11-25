@@ -4,6 +4,7 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowS
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.DualFamilyExists
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.RetractionReduction
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SesquilinearRowSplitting.SesquilinearRepresentation
+import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.SplittingAdmissibleOfTermData
 
 @[expose] public section
 
@@ -47,16 +48,7 @@ theorem mem_orth_iff {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpa
 
 theorem hX_left {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ} {T : E}
     (F0 : FlagG S r T) {v : S.V} (hv : ∀ a, S.hT (F0.e a) v = 0) : ∀ y ∈ F0.X, S.hT y v = 0 := by
-  intro y hy
-  have hy' : y ∈ Submodule.span E (Set.range F0.e) := hy
-  clear hy
-  induction hy' using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨a, rfl⟩ := hx
-    exact hv a
-  | zero => simp
-  | add x w _ _ hx hw => simp [hx, hw]
-  | smul c x _ hx => simp [hx]
+  apply _root_.Formalism.MainNotions.BridgeLemma.tie_X_le_ker <;> assumption
 
 theorem X_le_orth {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ} {T : E}
     (F0 : FlagG S r T) : F0.X ≤ orth S F0.X := by
@@ -148,7 +140,7 @@ theorem frame_reduction : FrameStep := by
   have hcfz : ∀ b, cf (Fin.castSucc b) F0.z = 0 := by
     intro b
     have h := hcf (Fin.castSucc b) (Fin.last r)
-    simp only [Fin.snoc_last, Fin.castSucc_ne_last, if_false] at h
+    simp only [Fin.snoc_last, Fin.castSucc_ne_last, ite_false] at h
     exact h
   have hcfN : ∀ b, ∀ n ∈ N, cf (Fin.castSucc b) n ∈ aa b := by
     intro b n hn

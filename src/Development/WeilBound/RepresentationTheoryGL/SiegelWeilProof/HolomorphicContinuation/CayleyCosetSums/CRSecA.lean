@@ -46,7 +46,7 @@ theorem contDiffAt_mul' {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] {�
 theorem contDiff_mul' {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] {ι : Type} [Fintype ι]
     {f g : E → Matrix ι ι ℂ} {k : WithTop ℕ∞} (hf : ContDiff ℝ k f) (hg : ContDiff ℝ k g) :
     ContDiff ℝ k (fun y => f y * g y) :=
-  contDiff_iff_contDiffAt.2 fun x => contDiffAt_mul' hf.contDiffAt hg.contDiffAt
+  contDiff_iff_contDiffAt.2 fun _ => contDiffAt_mul' hf.contDiffAt hg.contDiffAt
 
 private theorem hasDerivAt_exp_smul_apply_zero {ι : Type} [Fintype ι] (M0 : Matrix ι ι ℂ) (a b : ι) :
     AnalyticAt ℂ (fun M : Matrix ι ι ℂ => M a b) M0 := by
@@ -62,12 +62,7 @@ private theorem analyticAt_det_of_analyticAt_entries {ι : Type} [Fintype ι] [D
     simp [Matrix.det_apply, Finset.sum_apply, Units.smul_def, zsmul_eq_mul]
   rw [e]
   refine Finset.analyticAt_sum _ fun σ _ => analyticAt_const.mul ?_
-  have h := Finset.analyticAt_prod (𝕜 := ℂ) Finset.univ (f := fun l M => F M (σ l) l) (c := M0)
-    fun l _ => hF _ _
-  have e2 : (∏ l : ι, fun M : Matrix ι ι ℂ => F M (σ l) l) = fun M => ∏ l, F M (σ l) l := by
-    ext M
-    simp [Finset.prod_apply]
-  rwa [e2] at h
+  exact Finset.analyticAt_fun_prod Finset.univ fun l _ => hF _ _
 
 theorem analyticAt_adj {ι : Type} [Fintype ι] [DecidableEq ι] (M0 : Matrix ι ι ℂ) (i j : ι) :
     AnalyticAt ℂ (fun M : Matrix ι ι ℂ => M.adjugate i j) M0 := by

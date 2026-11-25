@@ -107,14 +107,6 @@ def TypeProjExists : Prop :=
     (e : Fin (2 * P.r + P.k + 1) → ℂ), Q.IsPlace P z z' π π' → inWb P.k P.r e →
     herm (Hpk P.k P.r) e z = 0 → herm (Hpk P.k P.r) e e = 1 → Nonempty (TypeProj P π z e)
 
-section hermitianSpaces
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {Wp Wq : InfinitePlace E → Type}
-  [∀ x, NormedAddCommGroup (Wp x)] [∀ x, InnerProductSpace ℂ (Wp x)] [∀ x, NormedAddCommGroup (Wq x)]
-  [∀ x, InnerProductSpace ℂ (Wq x)] [∀ x, FiniteDimensional ℂ (Wp x)] [∀ x, FiniteDimensional ℂ (Wq x)]
-
-end hermitianSpaces
-
 end
 
 end Formalism.FourierDecayAlt.Top

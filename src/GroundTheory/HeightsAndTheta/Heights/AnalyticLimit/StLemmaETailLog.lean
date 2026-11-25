@@ -35,12 +35,6 @@ def LemmaETailLog.Statement : Prop :=
     ∃ CE : ℝ, ∀ u : Fin D → X → ℝ, (∀ i, IsLemmaEPot A Om L s C₁ (u i)) →
       TailLogBound A (secOpen s) (rSec L s) (fun i => potForm Om.pot (u i)) CE
 
-section Inhabitants
-
-open OnePoint
-
-end Inhabitants
-
 end
 
 end GroundTheory.Heights₂.Heights.AnalyticLimit

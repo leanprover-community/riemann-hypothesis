@@ -42,7 +42,7 @@ theorem fIwasawa_E_mulVec (e z : Fin n → L) (c : L) (w : Fin n → L) :
   funext i
   simp only [fIwasawaE, fIwasawaH, Matrix.mulVec, dotProduct, Matrix.of_apply, Pi.add_apply,
     Pi.sub_apply, Pi.smul_apply, smul_eq_mul, add_mul, sub_mul, Finset.sum_add_distrib,
-    Finset.sum_sub_distrib, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true,
+    Finset.sum_sub_distrib, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true,
     Finset.mul_sum, Finset.sum_mul]
   ring_nf
 

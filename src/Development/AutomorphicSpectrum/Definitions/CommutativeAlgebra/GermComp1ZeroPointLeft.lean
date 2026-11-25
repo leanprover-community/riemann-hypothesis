@@ -227,12 +227,4 @@ theorem germ_comp1_zero_point_left {n : ℕ} (a : Pt R n d) (ha : ∀ i, constan
   rw [MvPowerSeries.subst_X hs]
   rfl
 
-section Gauge
-
-open ReciprocityTheory.ChartRestriction.G.TB ReciprocityTheory.ChartRestriction.G.TB.WickVanishing
-
-variable (k : Type) [CommRing k] [Algebra ℚ k] [Algebra R k]
-
-end Gauge
-
 end GlobalTheory.CompanionTheory.Ar.Conj

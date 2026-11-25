@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DiscreteSeriesModelOfDualParameter
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.L2UnitaryRepresentationData
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ModelsAreCoverSeries
 import Mathlib.Algebra.Order.Floor.Extended
@@ -77,7 +78,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 noncomputable section
@@ -141,18 +141,8 @@ theorem isKFin_barRev {n : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductS
 
 theorem isEnum_rev {n : ℕ} {S : SPar} {lam : Fin n → ℝ} {ε : Fin n → Bool} (h : IsEnum S lam ε) :
     IsEnum (dualPar S) (fun a => -lam a.rev) (fun a => ε a.rev) := by
-  obtain ⟨hanti, r, hr, hS⟩ := h
-  refine ⟨fun a b hab => ?_, fun a => -r a.rev, fun a => by simp [hr], ?_⟩
-  · have hba : b.rev < a.rev := Fin.rev_lt_rev.mpr hab
-    simpa using hanti hba
-  · rw [show dualPar S = S.image fun x => (-x.1, x.2) from rfl, hS, Finset.image_image]
-    ext x
-    simp only [Finset.mem_image, Finset.mem_univ, true_and, Function.comp_apply]
-    constructor
-    · rintro ⟨a, rfl⟩
-      exact ⟨a.rev, by simp⟩
-    · rintro ⟨a, rfl⟩
-      exact ⟨a.rev, rfl⟩
+  intros
+  apply _root_.GlobalTheory.ConjDS.isEnum_dual <;> assumption
 
 theorem Jm_rev {n : ℕ} (ε : Fin n → Bool) :
     Formalism.REAL.Jm (fun a => ε a.rev) = (Formalism.REAL.Jm ε).submatrix Fin.revPerm Fin.revPerm := by
@@ -250,7 +240,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 end -- clump:auto

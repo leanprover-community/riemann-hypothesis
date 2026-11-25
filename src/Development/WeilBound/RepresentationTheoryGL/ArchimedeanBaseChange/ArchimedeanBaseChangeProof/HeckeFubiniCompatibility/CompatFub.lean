@@ -16,8 +16,6 @@ open PositivityTheory.Rg.BcB.SpectralAccumulation (Hf finH TypeH HeckeM heckeAct
 open PositivityTheory.RgBcC.Bridge (along)
 open scoped Classical
 
-attribute [local instance] PositivityTheory.Rg.BcB.E.borelH
-
 namespace PositivityTheory.Rg.BcB.CG
 
 def CompatEx : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (a b : ℕ) (D : Dom E a b)

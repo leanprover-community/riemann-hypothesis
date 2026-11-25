@@ -30,52 +30,11 @@ theorem kap_comm_nab (P : Par) (f : Ty P → ℂ) : Commute (kap P f) (nabA P) :
 
 theorem kap_comm_nabs (P : Par) (f : Ty P → ℂ) : Commute (kap P f) (nabsA P) := kap_comm_diagonal P f _
 
-section abs
-
-variable {R : Type*} [Ring R] [Algebra ℂ R]
-
-end abs
-
 end PartT
-
-section PartF
-
-open Formalism.FourierDecayAlt.M Formalism.FourierDecayAlt Finset Polynomial
-
-noncomputable section
-
-end
-
-end PartF
-
-section PartA
-
-open Formalism.FourierDecayAlt.M Formalism.FourierDecayAlt Finset Polynomial
-
-section Poly
-
-variable {B : Type} [Ring B] [Algebra ℂ B]
-
-end Poly
-
-section AbsDet
-
-variable {B : Type} [Ring B] [Algebra ℂ B]
-
-
-end AbsDet
-
-end PartA
 
 section PartB
 
 open Formalism.FourierDecayAlt.M Formalism.FourierDecayAlt Finset
-
-section abs2
-
-variable {R : Type*} [Ring R] [Algebra ℂ R]
-
-end abs2
 
 theorem star_kap (P : Par) (f : Ty P → ℂ) : star (kap P f) = kap P (fun π => star (f π)) := by
   rw [kap_eq, kap_eq, Matrix.star_eq_conjTranspose, Matrix.diagonal_conjTranspose]
@@ -83,18 +42,6 @@ theorem star_kap (P : Par) (f : Ty P → ℂ) : star (kap P f) = kap P (fun π =
   exact (algebraMap_star_comm (f π)).symm
 
 end PartB
-
-section PartC
-
-open Formalism.FourierDecayAlt.M Formalism.FourierDecayAlt Finset
-
-end PartC
-
-section PartD
-
-open Formalism.FourierDecayAlt.M Formalism.FourierDecayAlt Finset Polynomial
-
-end PartD
 
 end Formalism.FourierDecayAlt.P.Mx7
 

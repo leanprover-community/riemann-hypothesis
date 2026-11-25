@@ -110,8 +110,7 @@ lemma dim_bound {E : Type*} [Field E] [Algebra ℚ E] [FiniteDimensional ℚ E]
     have h0 : aeval M (X - 1 : E[X]) = 0 := by rw [hq, map_mul, minpoly.aeval, zero_mul]
     simpa [sub_eq_zero] using h0
   obtain ⟨f, hf, hfm, hfΦ⟩ : ∃ f : E[X], Irreducible f ∧ f ∣ minpoly E M ∧ f ∣ cyclotomic g E := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     have hcop : IsCoprime (minpoly E M) (cyclotomic g E) :=
       isCoprime_of_irreducible_dvd (fun h => hm0 h.1) (fun z hz hzm hzΦ => hcon z hz hzm hzΦ)
     exact hnd (hcop.dvd_of_dvd_mul_right hdvd)
@@ -149,13 +148,13 @@ theorem hostOrbitsPlaces : HostOrbitsPlaces := by
       · rw [h]; ext <;> simp [hi.neg_one_pow]
     have hp : placeOf (φ ^ i * τ) = φ ^ i * τ := by
       unfold placeOf
-      rw [if_pos]
+      rw [ite_eq_left]
       simp [Prod.pow_fst, hc, hτ2]
     rw [hp]
     refine ⟨by simp, fun _ => by simp [hc], fun _ => by simp [hc, hi]⟩
   · have hp : placeOf (φ ^ i * τ) = cc e * (φ ^ i * τ) := by
       unfold placeOf
-      rw [if_neg]
+      rw [ite_eq_right]
       rcases hφ with h | h
       · simp [h, c0, hi.neg_one_pow, hτ2, hne]
       · simp [h, hi.neg_one_pow, hτ2, hne]

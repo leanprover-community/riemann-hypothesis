@@ -190,19 +190,6 @@ theorem isMultiplicityInner_mul_inner {V : HSp D} {Sp : D.what₂.Tau → SPar} 
   rw [integral_sub (h₂ v v').1 (h₁ v v').1, (h₂ v v').2, (h₁ v v').2, inner_add_right]
   ring
 
-namespace MultTie
-
-variable {Y : SideTie R F tup b S} (M : MultTie Y)
-
-
-end MultTie
-
-namespace MultTied
-
-variable {X0 : BaseLevelRowSide D} {Y : RowsTie R F X0}
-
-end MultTied
-
 end GlobalTheory.Mem.Th
 
 end

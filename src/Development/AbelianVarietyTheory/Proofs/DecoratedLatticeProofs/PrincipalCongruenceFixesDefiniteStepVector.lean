@@ -213,7 +213,7 @@ theorem prin_fixes_stepVec : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ :
           fun H' => GlobalTheory.SplitHecke.isHalf_actO _ _ H'⟩
       by_cases hx : Formalism.IndefR.Datum.IsHalf e x ∧ Formalism.IndefR.Datum.IsIntM (frMapO A H β βH x)
       · beta_reduce
-        rw [if_pos hx, if_pos ⟨i0.2 hx.1, i1.2 hx.2⟩, funext (i2 hx.2), GlobalTheory.ChainOnto.StepLevLaw.omegaQ_empty,
+        rw [ite_eq_left hx, ite_eq_left ⟨i0.2 hx.1, i1.2 hx.2⟩, funext (i2 hx.2), GlobalTheory.ChainOnto.StepLevLaw.omegaQ_empty,
           GlobalTheory.ChainOnto.StepLevLaw.omegaQ_empty, mul_one, mul_one]
         simp only [map_one, Formalism.L2.DIV.redFn_one, inv_one, Units.val_one, Matrix.one_mul]
         rw [hoG]
@@ -222,7 +222,7 @@ theorem prin_fixes_stepVec : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ :
         simp only [Finset.prod_empty, Finset.prod_const_one, MonoidHom.one_apply, inv_one, mul_one]
         exact (congrArg Units.val (show (prinDat A Z).P.chi _ = 1 from rfl)).trans Units.val_one
       · beta_reduce
-        rw [if_neg hx, if_neg fun H' => hx ⟨i0.1 H'.1, i1.1 H'.2⟩, mul_zero])
+        rw [ite_eq_right hx, ite_eq_right fun H' => hx ⟨i0.1 H'.1, i1.1 H'.2⟩, mul_zero])
   rw [h2, mul_one, one_smul]
 
 end GlobalTheory.SmallFix

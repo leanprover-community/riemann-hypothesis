@@ -104,8 +104,7 @@ private theorem exists_mem_col_fiber_eq_of_isTab_of_le (col : X → C) (b : X �
     ∃ x, col x = c ∧ b x = j := by
   have hinj := injOn_col_fiber_of_isTab col b hT c
   unfold IsTab at hT
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   have hsub : (Finset.univ.filter (fun y => col y = c)).image b ⊆ Finset.Ioi j := by
     intro i hi
     obtain ⟨x, hx, rfl⟩ := Finset.mem_image.mp hi
@@ -125,12 +124,10 @@ theorem exists_perm (col : X → C) (b : X → Fin n) (hT : IsTab col b) (ζ : E
     (hJ : ColInj col (b ∘ ζ)) : ∃ π ∈ colG col, b ∘ π = b ∘ ζ := by
   unfold ColInj at hJ
   have key : ∀ p, ∃ q, col q = col p ∧ b q = b (ζ p) := by
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     obtain ⟨p0, hp0⟩ := hne
     have hsmall : (Finset.univ.filter (fun y => col y = col p0)).card < n - (b (ζ p0) : ℕ) := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       obtain ⟨q, hq, hbq⟩ := exists_mem_col_fiber_eq_of_isTab_of_le col b hT (col p0) (b (ζ p0)) (by omega)
       exact hp0 q hq hbq
     have hfib : ∀ s : Finset X,
@@ -175,7 +172,7 @@ theorem exists_perm (col : X → C) (b : X → Fin n) (hT : IsTab col b) (ζ : E
               simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hx ⊢
               exact hx.2
           _ ≤ _ := hsubR c hA
-      · push_neg at hA
+      · push Not at hA
         calc _ ≤ (Finset.Ioi (b (ζ p0))).card := by
               apply Finset.card_le_card_of_injOn (fun x => b (ζ x))
               · intro x hx
@@ -234,7 +231,7 @@ theorem sg_perm (col : X → C) (b : X → Fin n) (hI : ColInj col b) (π : Equi
   rw [Finset.sum_eq_single π]
   · simp
   · intro σ hσ hne
-    rw [if_neg]
+    rw [ite_eq_right]
     intro h
     apply hne
     ext p
@@ -248,7 +245,7 @@ theorem sg_zero (col : X → C) (b : X → Fin n) (v : X → Fin n) (h : ¬ ∃ 
     sg col b v = 0 := by
   unfold sg
   refine Finset.sum_eq_zero fun π hπ => ?_
-  rw [if_neg]
+  rw [ite_eq_right]
   exact fun h' => h ⟨π, hπ, h'⟩
 
 theorem isTab_comp {Y : Type} (col : X → C) (b : X → Fin n) (hT : IsTab col b) (e : Y → X)
@@ -371,7 +368,7 @@ private theorem sum_ite_mul_mul_eq_pos_of_subgroup_transversal {Γ : Type} [Grou
     · rw [Finset.sum_eq_single a⁻¹]
       · simp [he]
       · intro b _ hb
-        rw [if_neg]
+        rw [ite_eq_right]
         intro h
         apply hb
         rw [mul_one] at h
@@ -381,7 +378,7 @@ private theorem sum_ite_mul_mul_eq_pos_of_subgroup_transversal {Γ : Type} [Grou
     · intro b hb hb1
       apply Finset.sum_eq_zero
       intro a' ha'
-      rw [if_neg]
+      rw [ite_eq_right]
       intro h
       apply hb1
       apply hRC b hb
@@ -397,8 +394,7 @@ private theorem sum_ite_mul_mul_eq_pos_of_subgroup_transversal {Γ : Type} [Grou
   have hc : (0 : ℤ) < C.card := by exact_mod_cast Finset.card_pos.2 ⟨1, hC1⟩
   have hcc : (0 : ℤ) < (C.card : ℤ) * C.card := mul_pos hc hc
   rw [h1, h2] at h3
-  by_contra hK0
-  push_neg at hK0
+  by_contra! hK0
   have := mul_nonpos_of_nonneg_of_nonpos hcc.le hK0
   linarith
 
@@ -461,9 +457,9 @@ private theorem sum_e_mul_prod_sums_eq_four_sum {Γ : Type} [Group Γ] [Decidabl
           rw [hinv (b2 * π * ρ⁻¹)]
           simp [_root_.mul_inv_rev, mul_assoc]
         by_cases h : ρ * (b2 * π)⁻¹ ∈ C
-        · rw [if_pos (hc.2 h), if_pos h, hem]
+        · rw [ite_eq_left (hc.2 h), ite_eq_left h, hem]
           linear_combination (e b2 * e ρ) * hee π
-        · rw [if_neg (fun h' => h (hc.1 h')), if_neg h]
+        · rw [ite_eq_right (fun h' => h (hc.1 h')), ite_eq_right h]
     _ = ∑ v ∈ C, ∑ b1 ∈ R, ∑ b2 ∈ R, if b1 * (b2 * v)⁻¹ ∈ C then e b1 * e b2 else 0 := rfl
     _ = ∑ b1 ∈ R, ∑ v ∈ C, ∑ b2 ∈ R, if b1 * (b2 * v)⁻¹ ∈ C then e b1 * e b2 else 0 :=
         Finset.sum_comm

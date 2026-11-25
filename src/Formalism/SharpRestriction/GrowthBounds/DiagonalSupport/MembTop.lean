@@ -110,11 +110,11 @@ theorem mfh_of : ∃ C₁ : ℝ, 0 < C₁ ∧ ∀ C : ℝ, C₁ ≤ C → ∀ CL
   · intro s hs
     rw [hF.1] at hs
     unfold dT
-    rw [if_pos hs]
+    rw [ite_eq_left hs]
   · intro s hs
     rw [hF.1] at hs
     unfold dT
-    rw [if_neg hs]
+    rw [ite_eq_right hs]
   · intro jj xx hx hW
     have hBo := Bo_ge hF.2.1 (by omega) p (by omega) (flatDeg lam0) a
       (fun s hs => (hfd s (by rw [hF.1] at hs; exact hs)).1) jj xx hx hW

@@ -58,8 +58,6 @@ open GlobalTheory.KZ GlobalTheory.Sieg
 
 namespace GlobalTheory.KZ.SiegelSL
 
-alias isOpen_Hs := _root_.GlobalTheory.KZ.SiegelModel.isOpen_Hs
-
 theorem neBot_Hs : (Filter.codiscreteWithin Hs).NeBot := by
   rw [Filter.neBot_iff]
   intro h
@@ -71,15 +69,10 @@ theorem neBot_Hs : (Filter.codiscreteWithin Hs).NeBot := by
   have h1 := hmem Complex.I hI
   rw [Set.sdiff_empty, Filter.disjoint_principal_right] at h1
   have h2 : Hs ∈ nhdsWithin Complex.I {Complex.I}ᶜ :=
-    mem_nhdsWithin_of_mem_nhds (isOpen_Hs.mem_nhds hI)
+    mem_nhdsWithin_of_mem_nhds (GlobalTheory.KZ.SiegelModel.isOpen_Hs.mem_nhds hI)
   have h3 := Filter.inter_mem h1 h2
   rw [Set.compl_inter_self] at h3
   simpa using Filter.nonempty_of_mem h3
-
-theorem germ_eq_of_eqOn {φ ψ : ℂ → ℂ} (h : ∀ z ∈ Hs, φ z = ψ z) : (φ : Mero) = (ψ : Mero) := by
-  apply Filter.Germ.coe_eq.2
-  filter_upwards [Filter.self_mem_codiscreteWithin Hs] with z hz
-  exact h z hz
 
 theorem an_injective {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} (T : Tower Ω ε) :
     Function.Injective T.an := by
@@ -98,7 +91,7 @@ theorem sl_siegel : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure �
   symm
   apply siegel_eq
   rw [T.an_sl _ _ _ (_root_.GlobalTheory.KZ.SiegelMem.an_siegel_eq Ω ε T c x hx)]
-  apply germ_eq_of_eqOn
+  apply GlobalTheory.KZ.SiegelModel.germ_eq_of_eqOn
   intro z hz
   have hτ : ((⟨z, hz⟩ : ℍ) : ℂ) = z := rfl
   rw [← hτ, _root_.GlobalTheory.KZ.SiegelModel.mob_ofSL, _root_.GlobalTheory.KZ.SiegelModel.sgC_coe, _root_.GlobalTheory.KZ.SiegelModel.sgC_coe, _root_.GlobalTheory.Sieg.sg_smul c x γ _ hx]

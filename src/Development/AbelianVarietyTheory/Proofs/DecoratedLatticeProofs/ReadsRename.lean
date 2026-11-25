@@ -242,7 +242,7 @@ theorem exists_step {I : TC B X} (hI : I.Ok) (hP : TC.Pins B X) {l : I.Laws} {Z 
       unfold ptFr
       rw [dite_eq_right hPG, dite_eq_right hPQ, hN]
       unfold GlobalTheory.Mem.Col2.latFr
-      exact if_pos rfl
+      exact ite_eq_left rfl
     refine Matrix.ext fun r s => ?_
     have e := (hpt β).fr ⟨P, hP'⟩ r s
     rw [extTo_fr, hfr] at e

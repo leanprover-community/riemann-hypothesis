@@ -102,7 +102,6 @@ open CategoryTheory CategoryTheory.Limits AlgebraicGeometry MonoidalCategory Car
   TensorProduct NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.RealMult GlobalTheory.RealMult.Obj
 
-attribute [local instance] Over.cartesianMonoidalCategory
 namespace GlobalTheory.FibreBasisSpread
 
 theorem exists_away_linearCombination_bijective : ∀ (R : Type) [CommRing R] (M : Type) [AddCommGroup M] [Module R M] [Module.Finite R M]
@@ -363,7 +362,7 @@ theorem exists_chart : ∀ (R : Type) [CommRing R] (X : Scheme.{0}) (f : X ⟶ S
   have hgs : ∀ i, algebraMap Γ(X, U) K (sf i) ≠ 0 → X.basicOpen g ≤ X.basicOpen (sf i) := by
     intro i hi
     obtain ⟨k, hk⟩ : sf i ∣ g := by
-      have hq : q i = sf i := if_neg hi
+      have hq : q i = sf i := ite_eq_right hi
       exact dvd_mul_of_dvd_right (hq ▸ Finset.dvd_prod_of_mem q (Finset.mem_univ i)) h
     rw [hk, Scheme.basicOpen_mul]; exact inf_le_left
   have hxg : x ∈ X.basicOpen g := by

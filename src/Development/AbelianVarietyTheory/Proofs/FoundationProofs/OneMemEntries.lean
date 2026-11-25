@@ -194,7 +194,7 @@ theorem Bdd.entries {m n : Type} [Finite m] [Finite n] {f : Q → Matrix m n X} 
 
 theorem bdd_units [Monoid X] [T1Space X] [ContinuousMul X] {f : Q → Xˣ} (h : Bdd fun q => (f q).1)
     (h' : Bdd fun q => (f q)⁻¹.1) : Bdd f :=
-  let ⟨K, hK, h⟩ := h.prod (h'.map MulOpposite.continuous_op)
+  let ⟨_, hK, h⟩ := h.prod (h'.map MulOpposite.continuous_op)
   ⟨_, Units.isClosedEmbedding_embedProduct.isCompact_preimage hK, h⟩
 
 end Bounded

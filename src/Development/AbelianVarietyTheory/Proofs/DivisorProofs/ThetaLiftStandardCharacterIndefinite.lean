@@ -79,9 +79,6 @@ theorem topRing : IsTopologicalRing (AEF F E) := by
   haveI := modTop (F := F) (E := E)
   exact IsModuleTopology.isTopologicalRing (AF F) (AEF F E)
 
-def sigLin (σ : E →ₐ[F] E) : AEF F E →ₗ[AF F] AEF F E :=
-  TensorProduct.AlgebraTensorModule.map (LinearMap.id : AF F →ₗ[AF F] AF F) σ.toLinearMap
-
 theorem continuous_cAF (σ : E →ₐ[F] E) : Continuous (cAF σ) := by
   apply _root_.GlobalTheory.HeisKeepF.continuous_cAF <;> assumption
 

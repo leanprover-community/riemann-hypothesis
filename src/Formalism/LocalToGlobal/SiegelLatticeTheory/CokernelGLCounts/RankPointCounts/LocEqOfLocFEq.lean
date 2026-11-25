@@ -328,8 +328,6 @@ open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Formalism.B
 
 namespace Formalism.L2.SG.Pf.FrameGlobalPatching
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 def LatPatch : Prop :=
   ∀ (D : D7) (Zd : LocDat D) (Λ₀ : Submodule (𝓞 D.host.E) (VS D).V), Submodule.IsFullLattice D.host.E Λ₀ →
     ∀ Mf : ∀ p : PlF D, Submodule (Zd.M p).L.O (Vp D p),
@@ -340,8 +338,6 @@ def LatPatch : Prop :=
 end Formalism.L2.SG.Pf.FrameGlobalPatching
 
 namespace Formalism.L2.SG.Pf.LocalDenominators
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
@@ -465,7 +461,7 @@ theorem latPatch_holds : Formalism.L2.SG.Pf.FrameGlobalPatching.LatPatch := by
   let M : Ideal (𝓞 D.host.E) → Set (VS D).V := fun P =>
     if hP : P.IsMaximal then PI.LatLocGlob.loc P (Λ' (plOf P hP)) else ∅
   have hMP : ∀ P (hP : P.IsMaximal), M P = PI.LatLocGlob.loc P (Λ' (plOf P hP)) := fun P hP => by
-    simp only [M, dif_pos hP]
+    simp only [M, dite_eq_left hP]
   have hexc : {P : Ideal (𝓞 D.host.E) | P.IsMaximal ∧ M P ≠ PI.LatLocGlob.loc P Λ₀}.Finite := by
     refine (hfin.biUnion fun p _ => finite_over p).subset ?_
     rintro P ⟨hPm, hne⟩

@@ -120,7 +120,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 theorem _root_.GlobalTheory.T.exists_fockPolynomialIso_graded_isometry : ∀ (p q r s a b : ℕ) (ε : Fin a → Bool) (ε' : Fin b → Bool) (e : Ix p q ≃ Fin a) (e' : Ix r s ≃ Fin b), SignCompat ε e → SignCompat ε' e' → ∃ κ : LPol b a ≃ₗ[ℂ] Pol p q r s, IsPolyIso ε ε' e e' κ ∧ Graded κ ∧ ∀ P Q, fockIp (κ P) (κ Q) = fockIp P Q := by
@@ -146,7 +145,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 namespace GlobalTheory.ArchRec.KFiniteTie
@@ -185,9 +183,9 @@ theorem inner_map (hadd : ∀ x y, U (x + y) = U x + U y) (hs : ∀ (z : ℂ) x,
   cases cj
   · apply Complex.ext <;> simp_all [cjc]
   · apply Complex.ext
-    · simp only [cjc, if_true, Complex.conj_re]
+    · simp only [cjc, ite_true, Complex.conj_re]
       exact h1
-    · simp only [cjc, if_true, Complex.conj_im] at h2 ⊢
+    · simp only [cjc, ite_true, Complex.conj_im] at h2 ⊢
       simpa using h2
 
 end Semi
@@ -277,7 +275,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 theorem _root_.GlobalTheory.T.exists_kFiniteIsometry_discreteSeriesModel_detCover : ∀ (D : D7) (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S) (τ : D.what₂.Tau) (p q : ℕ) (T : GrpData p q) (R : DSRep T) (lam : Ix p q → ℚ) (c : ℚ) (br cj : Bool) (e : Ix p q ≃ Fin V.rank) (m : ℤ) (U : M.H τ → R.U.H), IsParam lam → IsOrd (M.ε τ) (M.lam τ) lam c (sg br cj) e → (m : ℚ) = 2 * c → Comparison₂ R M τ br cj e m U → (∀ x v, U x = R.ι v → (IsHighestUnit (M.ε τ) (M.lam τ) (M.σ τ) x ↔ UnitHW R (blattner lam) v)) → ∃ u, KTie R M τ lam c br cj e u := by
@@ -301,7 +298,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 noncomputable section
@@ -446,7 +442,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 end -- clump:auto
@@ -468,7 +463,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 theorem _root_.GlobalTheory.T.fockVectors_matrixCoefficients_eq_fockRepresentation : ∀ (p q r s n : ℕ) (T₀ : GrpData (p * r + q * s) (p * s + q * r)) (T₁ : GrpData p q) (T₂ : GrpData r s) (F : FockData T₀ T₁ T₂) (ι Z : Type) (G fr : Mn n) (ε : Fin n → Bool) (br : Bool) (e : Ix p q ≃ Fin n) (A : Mn n → (Z → ℂ) → (Z → ℂ)) (pt : MvPolynomial ι ℂ → (Z → ℂ)) (ip : (Z → ℂ) → (Z → ℂ) → ℂ) (Θ : Submodule ℂ (Z → ℂ)) (κ : MvPolynomial ι ℂ ≃ₗ[ℂ] Pol p q r s) (c : ℚ) (m : ℤ) (N : ℝ), 1 ≤ p + q → IsUnit fr → frᴴ * Formalism.REAL.Jm ε * fr = G → SignCompat ε e → (m : ℚ) = 2 * c → Side A pt κ (phiFr fr br e) c (fockAct1 p q r s) → L2UnitaryRepresentationData G A pt ip Θ → Fischer pt ip κ N → Coef F A pt ip κ (phiFr fr br e) m N := by
@@ -492,7 +486,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 theorem _root_.GlobalTheory.T.fockVectors_realPlace_act_as_fockPolynomials : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D) (ω : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)) (τ : D.what₂.Tau), IsInfFam θ → ∀ (sS frS : Mn S.rank) (εS : Fin S.rank → Bool) (sT frT : Mn T.rank) (εT : Fin T.rank → Bool), IsFrameOf (gramAt D S τ) sS εS frS → IsFrameOf (gramAt D T τ) sT εT frT → ∀ (aS aT : ℚ) (pt : LPol T.rank S.rank →ₗ[ℂ] (WO S T → ℂ)), Function.Injective pt → LieAt ψ θ τ ω εS frS εT frT aS aT pt → ∀ (p q r s : ℕ) (e : Ix p q ≃ Fin S.rank) (e' : Ix r s ≃ Fin T.rank), SignCompat εS e → SignCompat εT e' → ∀ κ : LPol T.rank S.rank ≃ₗ[ℂ] Pol p q r s, IsPolyIso εS εT e e' κ → Side (actSrc θ ω τ) pt κ (phiFr frS true e) aT (fockAct1 p q r s) ∧ Side (actTgt θ ω τ) pt κ (phiFr frT false e') aS (fockAct2 p q r s) := by
@@ -516,7 +509,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 theorem _root_.GlobalTheory.T.lieAlgebrasAtPlace_act_fockVectors_by_fockOperators : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D) (χS χT : (AE D)ˣ →* Circle) (ω : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)) (τ : D.what₂.Tau), IsInfFam θ → IsWeilDatumO ψ S T χS χT ω → ∀ aS aT : ℚ, HasInfExp D χS τ aS → HasInfExp D χT τ aT → ∀ (sS frS : Mn S.rank) (εS : Fin S.rank → Bool) (sT frT : Mn T.rank) (εT : Fin T.rank → Bool), IsFrameOf (gramAt D S τ) sS εS frS → IsFrameOf (gramAt D T τ) sT εT frT → ∀ f, IsThetaFunO ψ S T f → IsFockVacAt (heisO ψ S T) θ τ (cplxO sS sT) f → LieAt ψ θ τ ω εS frS εT frT aS aT (ptAt ψ θ S T τ sS sT frS⁻¹ frT⁻¹ f) := by
@@ -540,7 +532,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 namespace GlobalTheory.ArchRec.PairVanish
@@ -728,7 +719,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 theorem _root_.GlobalTheory.T.no_invariant_theta_pairing_of_no_tensor_intertwiner : ∀ (p q r s : ℕ) (T₁ : GrpData p q) (σ : Type) (a₁ : Mat p q →ₗ[ℂ] Module.End ℂ (MvPolynomial σ ℂ)) (a₂ : Mat r s →ₗ[ℂ] Module.End ℂ (MvPolynomial σ ℂ)) (R₁ : DSRep T₁), IsGK a₁ → IsGK a₂ → (∀ Y Z, a₁ Y * a₂ Z = a₂ Z * a₁ Y) → AdmGK R₁.HK → TensNo a₁ a₂ R₁ → PairNo a₁ R₁ := by
@@ -754,7 +744,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 namespace GlobalTheory.ArchRec.NoLiftTransfer
@@ -848,7 +837,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 theorem _root_.GlobalTheory.T.noThetaMap_models_of_noPairing_covers : ∀ (D : D7) (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S) (τ : D.what₂.Tau) (ι σ Z : Type) (A : Mn V.rank → (Z → ℂ) → (Z → ℂ)) (pt : MvPolynomial ι ℂ → (Z → ℂ)) (κ : MvPolynomial ι ℂ ≃ₗ[ℂ] MvPolynomial σ ℂ) (p q : ℕ) (T₁ : GrpData p q) (R₁ : DSRep T₁) (a₁ : Mat p q →ₗ[ℂ] Module.End ℂ (MvPolynomial σ ℂ)) (l₁ : Ix p q → ℚ) (c₁ : ℚ) (b₁ : Bool) (e₁ : Ix p q ≃ Fin V.rank) (u₁ : kfin M τ → R₁.HK.V), KTie R₁ M τ l₁ c₁ b₁ true e₁ u₁ → Side A pt κ (phiFr (M.fr τ) b₁ e₁) c₁ a₁ → PairNo a₁ R₁ → NoLift M τ A pt := by
@@ -872,7 +860,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 theorem _root_.GlobalTheory.T.noThetaTensorIntertwiner_lowerTowerMembers : ∀ (X : ProvA), DiscreteSeriesBlattner X → admQ5 X → ∀ (t : ℕ) (al be ga de : List ℚ), HypA t al be ga de → ∀ i : ℕ, 1 ≤ i → (i ≤ al.length + de.length + t → i ≤ ga.length + be.length → TensNo (fockAct1 _ _ (al.length + de.length + t - i) (ga.length + be.length - i)) (fockAct2 _ _ _ _) (X.ds _ _ (lamA al be ga de))) ∧ ((∀ x ∈ al ++ be ++ ga ++ de, ((t : ℚ) + 3) / 2 ≤ |x|) → i ≤ al.length + be.length → i ≤ ga.length + de.length → TensNo (fockAct2 (al.length + be.length - i) (ga.length + de.length - i) _ _) (fockAct1 _ _ _ _) (X.ds _ _ (lamA' t al be ga de))) := by
@@ -896,7 +883,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 noncomputable section
@@ -989,7 +975,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 theorem _root_.GlobalTheory.T.lowestKTypeFockMap_unique_of_discreteSeries : GlobalTheory.Published.DiscreteSeriesCover → GlobalTheory.Published.HarishChandraModules → ∀ D : D7, IoUniq D := by
@@ -1013,7 +998,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 theorem _root_.GlobalTheory.T.realPlaceGroups_act_unitarily_weakly_on_theta : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D) (χS χT : (AE D)ˣ →* Circle) (ω : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)) (τ : D.what₂.Tau), IsInfFam θ → IsWeilDatumO ψ S T χS χT ω → ∀ (frS : Mn S.rank) (εS : Fin S.rank → Bool) (frT : Mn T.rank) (εT : Fin T.rank → Bool) (aS aT : ℚ) (pt : LPol T.rank S.rank →ₗ[ℂ] (WO S T → ℂ)), (∀ P, IsThetaFunO ψ S T (pt P)) → LieAt ψ θ τ ω εS frS εT frT aS aT pt → ∀ (μ : Measure (WO S T)) (𝓕 : Set (WO S T)), μ.IsAddHaarMeasure → IsAddFundamentalDomain (ratL T S) 𝓕 μ → ∃ Θ, L2UnitaryRepresentationData (gramAt D S τ) (actSrc θ ω τ) pt (ipTh μ 𝓕) Θ ∧ L2UnitaryRepresentationData (gramAt D T τ) (actTgt θ ω τ) pt (ipTh μ 𝓕) Θ := by
@@ -1028,7 +1012,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.ArchRec
 
@@ -1056,7 +1039,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 theorem _root_.GlobalTheory.T.realThetaIntertwiners_proportional_of_harishChandra : GlobalTheory.Published.DiscreteSeriesCover → GlobalTheory.Published.HarishChandraModules → ∀ D : D7, GlobalTheory.Chain.ItLine D := by
@@ -1080,7 +1062,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 theorem _root_.GlobalTheory.T.signCompatibleNumbering_of_wittTower_lower : ∀ (D : D7) (T T' : HSp D) (i : ℕ) (τ : D.what₂.Tau) (fr : Mn T.rank) (ε : Fin T.rank → Bool) (fr' : Mn T'.rank) (ε' : Fin T'.rank → Bool) (r s : ℕ) (e : Ix r s ≃ Fin T.rank), IsWittLower T T' i → frᴴ * Formalism.REAL.Jm ε * fr = gramAt D T τ → IsUnit fr → fr'ᴴ * Formalism.REAL.Jm ε' * fr' = gramAt D T' τ → IsUnit fr' → SignCompat ε e → i ≤ r ∧ i ≤ s ∧ ∃ e' : Ix (r - i) (s - i) ≃ Fin T'.rank, SignCompat ε' e' := by
@@ -1104,7 +1085,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 theorem _root_.GlobalTheory.T.splittingHeckeChar_exists_archimedeanExponent : ∀ (D : D7) (θ : InfFam D) (χ : (AE D)ˣ →* Circle) (n : ℕ) (τ : D.what₂.Tau), IsInfFam θ → IsHeckeChar D χ → ResEta D χ n → ∃ a : ℚ, HasInfExp D χ τ a := by
@@ -1128,7 +1108,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 theorem _root_.GlobalTheory.T.thetaChainStep_centred_block_parameters : ∀ (D : D7) (k : Fin D.R.m) (τ : D.what₂.Tau), ∃ al be ga de : List ℚ, Centred D al be ga de ∧ parA (Ptw D) k τ = signed (al ++ be) (ga ++ de) (alT D k τ) ∧ parA (Ptw D) (k + 1) τ = signed (al ++ block D.R.t ++ de) (ga ++ be) (alS D k τ) := by
@@ -1154,7 +1133,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 namespace GlobalTheory.ArchRec.TensLawOf
@@ -1201,7 +1179,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 theorem _root_.GlobalTheory.T.thetaCorrespondenceTensorLaw_both_orders_of_covers : ∀ (X : ProvA) (p q r s : ℕ) (lam : Ix p q → ℚ) (lam' : Ix r s → ℚ), ARi X lam lam' → ARiiiUp X lam lam' → ARiiiDown X lam lam' → ARiiiLine X lam lam' → TensLaw (fockAct1 p q r s) (fockAct2 p q r s) (blattner lam) (blattner lam') ∧ TensLaw (fockAct2 p q r s) (fockAct1 p q r s) (blattner lam') (blattner lam) := by
@@ -1227,7 +1204,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.ArchRec
 
@@ -1632,16 +1608,16 @@ theorem pairTop (h : Good D X) (h1 : Formalism.MainNotions.SchurIrreducible.Arch
 theorem alS_eq (k : Fin D.R.m) (τ : D.what₂.Tau) : alS D k τ = GlobalTheory.Chain.expS D k τ := by
   unfold alS GlobalTheory.Chain.expS
   rcases Nat.even_or_odd (k : ℕ) with h | h
-  · rw [if_pos h.add_one, if_pos h]
-  · rw [if_neg (Nat.not_odd_iff_even.mpr h.add_one), if_neg (Nat.not_even_iff_odd.mpr h)]
+  · rw [ite_eq_left h.add_one, ite_eq_left h]
+  · rw [ite_eq_right (Nat.not_odd_iff_even.mpr h.add_one), ite_eq_right (Nat.not_even_iff_odd.mpr h)]
     ring
 
 theorem alT_eq (k : Fin D.R.m) (τ : D.what₂.Tau) : alT D k τ = GlobalTheory.Chain.expT D k τ := by
   unfold alT GlobalTheory.Chain.expT
   rcases Nat.even_or_odd (k : ℕ) with h | h
-  · rw [if_pos h.add_one, if_pos h]
+  · rw [ite_eq_left h.add_one, ite_eq_left h]
     ring
-  · rw [if_neg (Nat.not_odd_iff_even.mpr h.add_one), if_neg (Nat.not_even_iff_odd.mpr h)]
+  · rw [ite_eq_right (Nat.not_odd_iff_even.mpr h.add_one), ite_eq_right (Nat.not_even_iff_odd.mpr h)]
 
 theorem itLaw (hP : GlobalTheory.Chain.ItPair D) (hL : GlobalTheory.Chain.ItLine D) (hg : NodeGap D) : ItLaw D := by
   intro k V W P P' M M' hPe hPe' ψ θ χS χT ω hω hχ f hf

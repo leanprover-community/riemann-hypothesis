@@ -133,8 +133,6 @@ namespace PositivityTheory.RgBcC.CxeAvg
 
 open PositivityTheory.RgTw (Mat)
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {n : ℕ}
 
 theorem adjoint_clm (lam : Fin n → ℤ) (U : Matrix (Ix n lam) (Ix n lam) ℂ) :
@@ -164,11 +162,9 @@ theorem gram_comm (hF : MatrixFrechetDerivativeAtZeroLaws) (lam : Fin n → ℤ)
     congr 1
     rw [← mul_assoc, hx, mul_assoc, hc k, ← mul_assoc]
   have hint := Fk_int hF lam
-  set_option synthInstance.maxHeartbeats 200000 in
   have hL : clm lam U * gramQ lam = ∫ k, clm lam U * Fk lam k ∂(Measure.haar : Measure (UK n)) := by
     rw [gramQ_def]
     exact ((ContinuousLinearMap.mul ℂ _ (clm lam U)).integral_comp_comm hint).symm
-  set_option synthInstance.maxHeartbeats 200000 in
   have hR : gramQ lam * clm lam U = ∫ k, Fk lam k * clm lam U ∂(Measure.haar : Measure (UK n)) := by
     rw [gramQ_def]
     exact (((ContinuousLinearMap.mul ℂ _).flip (clm lam U)).integral_comp_comm hint).symm

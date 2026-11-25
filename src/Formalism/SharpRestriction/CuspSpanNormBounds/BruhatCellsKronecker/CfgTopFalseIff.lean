@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.CuspSpanNormBounds.StandingHypothesesHoldFamily
 public import Formalism.HermitianCurvature.StatementSz
 public import Formalism.SharpRestriction.CuspSpanNormBounds.StandingNumericalData
 import Mathlib.Algebra.Order.Star.Rat
@@ -172,14 +173,14 @@ theorem cfg_lam (D : D7) (τ : D.what₂.Tau) (a : Fin D.R.r) :
   · have h1 : a.1 + 1 < (cfgOf D τ).k := by
       show a.1 + 1 < D.R.k
       omega
-    rw [if_pos h1, dite_eq_left h, cfg_v D τ (a.1 + 1) (by omega) (by omega), vOne_succ D τ a.1 h]
+    rw [ite_eq_left h1, dite_eq_left h, cfg_v D τ (a.1 + 1) (by omega) (by omega), vOne_succ D τ a.1 h]
   · have h1 : ¬ (a.1 + 1 < (cfgOf D τ).k) := by
       show ¬ (a.1 + 1 < D.R.k)
       omega
     have h2 : a.1 - (D.R.k - 1) < D.R.m := by
       have ha' : a.1 < D.R.k + D.R.m - 1 := ha
       omega
-    rw [if_neg h1, dite_eq_right h, dite_eq_left h2]
+    rw [ite_eq_right h1, dite_eq_right h, dite_eq_left h2]
     show -bOne D τ (a.1 + 1 + 1 - D.R.k) = _
     rw [show a.1 + 1 + 1 - D.R.k = (a.1 - (D.R.k - 1)) + 1 by omega, bOne_succ D τ _ h2]
 
@@ -292,12 +293,7 @@ theorem one_lt_b {D : D7} (large₂ : SizeData₂ D) : 1 < large₂.sc.b := by
   exact Real.exp_lt_exp.mpr (by linarith)
 
 theorem one_le_f (D : D7) : (1 : ℝ) ≤ D.R.f := by
-  have h1 := D.R.m_le_f
-  have h2 := D.R.two_le_m
-  have h3 : 1 ≤ D.R.f := by
-    unfold Ranks.f Ranks.n
-    omega
-  exact_mod_cast h3
+  apply _root_.Formalism.MainNotions.S.one_le_f <;> assumption
 
 theorem bOne_gap (D : D7) (τ : D.what₂.Tau) (j : ℕ) (h1 : 1 ≤ j) (h2 : j < D.R.m) :
     bOne D τ j + 1 ≤ bOne D τ (j + 1) := by

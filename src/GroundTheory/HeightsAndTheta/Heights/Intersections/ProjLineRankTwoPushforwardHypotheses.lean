@@ -71,8 +71,4 @@ def flagDim (n : ℕ) : ℕ := n * (n - 1) / 2
 
 end Bundles
 
-section Inhabitants
-
-end Inhabitants
-
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Inter

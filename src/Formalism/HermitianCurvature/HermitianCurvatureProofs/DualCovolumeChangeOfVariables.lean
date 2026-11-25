@@ -86,7 +86,7 @@ theorem orth_zero (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTot
     rw [PiLp.inner_apply] at ht
     simp only [Fintype.sum_prod_type, Fintype.sum_bool, Finset.sum_apply, Pi.smul_apply,
       Function.comp, v, smul_eq_mul, Pi.zero_apply]
-    simp only [if_true, Bool.false_eq_true, if_false]
+    simp only [ite_true, Bool.false_eq_true, ite_false]
     have h2 : ∀ w : InfinitePlace E, conj (z w) * w.embedding t + z w * conj (w.embedding t) =
         ((2 * inner ℝ (z w) (cemb E t w) : ℝ) : ℂ) := by
       intro w

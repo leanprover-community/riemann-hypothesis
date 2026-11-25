@@ -12,16 +12,6 @@ namespace PositivityTheory.LocInh
 
 open GroundTheory.PAdicHodge Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc
 
-section Abstract
-
-theorem frob_fix_padic {l : ℕ} [Fact l.Prime] {B : Type} [CommRing B] (F : B →+* B)
-    (q : ℚ_[l] →+* B) (h : ∀ z : ℤ_[l], F (q (z : ℚ_[l])) = q (z : ℚ_[l])) (x : ℚ_[l]) :
-    F (q x) = q x :=
-  RingHom.congr_fun (IsLocalization.ringHom_ext (nonZeroDivisors ℤ_[l]) (S := ℚ_[l])
-    (j := F.comp q) (k := q) (RingHom.ext h)) x
-
-end Abstract
-
 variable {l : ℕ} [Fact l.Prime]
 
 theorem frob_oD_apply (x : Om l) :
@@ -32,17 +22,6 @@ theorem frob_qB_coe (z : ℤ_[l]) : qB l (z : ℚ_[l]) = Per6.cB l (algebraMap (
   apply ιCD_injective
   refine (ιCD_qB _).trans (Eq.trans ?_ (ιCD_cB _).symm)
   rw [cD_apply, ACris.iota_padicInt, frob_oD_apply, AlgHom.commutes]
-
-theorem frob_phi_padicInt (z : ℤ_[l]) :
-    ACris.phi (K := ℂ_[l]) (p := l) (algebraMap (AInf ℂ_[l] l) (ACris.ACris ℂ_[l] l)
-      (IsPerfectoidField.padicIntToWitt l z)) =
-    algebraMap (AInf ℂ_[l] l) (ACris.ACris ℂ_[l] l) (IsPerfectoidField.padicIntToWitt l z) := by
-  rw [ACris.phi_algebraMap, ACris.frobenius_padicIntToWitt]
-
-theorem φB_qB (q : ℚ_[l]) : Per6.φB l (qB l q) = qB l q :=
-  frob_fix_padic (Per6.φB l) (qB l) (fun z =>
-    (congrArg (Per6.φB l) (frob_qB_coe z)).trans (((φB_cB _).trans
-      (congrArg (Per6.cB l) (frob_phi_padicInt z))).trans (frob_qB_coe z).symm)) q
 
 theorem frob_aB_apply (a : Ainf l) : Per6.aB l a =
     Per6.cB l (algebraMap (AInf ℂ_[l] l) (ACris.ACris ℂ_[l] l) (Per6.ainfMap l a)) :=

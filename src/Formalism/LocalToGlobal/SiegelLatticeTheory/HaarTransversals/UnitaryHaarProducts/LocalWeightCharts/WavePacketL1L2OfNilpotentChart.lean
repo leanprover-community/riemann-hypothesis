@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormDiagonalEntryDilationGeneratorLeOne
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LocalWeightCharts.WavePacketL1L2
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LocalWeightCharts.RepresentationContinuous
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LocalWeightCharts.AeProductMemUnipotentAndNilradical
@@ -181,22 +182,7 @@ theorem integrable_and_integral_smul_B0_eq (z : Fin (2 * r + k + 1) → ℂ) (c 
 end Kernel
 
 theorem uw_isClosed (z : Fin (2 * r + k + 1) → ℂ) : IsClosed (UWset k r z) := by
-  have h1 : IsClosed {g : Mat k r | gᴴ * Hpk k r * g = Hpk k r} :=
-    isClosed_eq ((continuous_id.matrix_conjTranspose.matrix_mul continuous_const).matrix_mul continuous_id)
-      continuous_const
-  have h2 : ∀ v : Fin (2 * r + k + 1) → ℂ, IsClosed {g : Mat k r | g *ᵥ v = v} := fun v =>
-    isClosed_eq (continuous_id.matrix_mulVec continuous_const) continuous_const
-  have e : UWset k r z = {g : Mat k r | gᴴ * Hpk k r * g = Hpk k r} ∩
-      ((⋂ a : Fin r, ({g : Mat k r | g *ᵥ bvec (eI k r a) = bvec (eI k r a)} ∩
-        {g : Mat k r | g *ᵥ bvec (esI k r a) = bvec (esI k r a)})) ∩ {g : Mat k r | g *ᵥ z = z}) := by
-    ext g
-    constructor
-    · rintro ⟨ha, hb, hc⟩
-      exact ⟨ha, Set.mem_iInter.2 fun a => ⟨(hb a).1, (hb a).2⟩, hc⟩
-    · rintro ⟨ha, hb, hc⟩
-      exact ⟨ha, fun a => ⟨(Set.mem_iInter.1 hb a).1, (Set.mem_iInter.1 hb a).2⟩, hc⟩
-  rw [e]
-  exact h1.inter ((isClosed_iInter fun a => (h2 _).inter (h2 _)).inter (h2 z))
+  apply _root_.Formalism.FourierDecayAlt.P.B6.isClosed_UWset <;> assumption
 
 theorem ak_one_le {g : Mat k r} (hg : g ∈ Gr k r) :
     1 ≤ opn (Hpk k r) ^ N1H k r * opn g ^ N1H k r := by
@@ -939,7 +925,7 @@ lemma dE_tendsto (hB : NWtUpper) (g : GN k r) : Tendsto (fun n => dE k r n g) at
     · subst h
       simp only [sub_self, zpow_zero, Complex.ofReal_one, mul_one, Matrix.one_apply_eq]
       exact tendsto_const_nhds
-    · simp only [if_neg h, zero_mul, Matrix.one_apply_ne h]
+    · simp only [ite_eq_right h, zero_mul, Matrix.one_apply_ne h]
       exact tendsto_const_nhds
   · have h : i ≠ j := by
       intro e; subst e; exact hw le_rfl

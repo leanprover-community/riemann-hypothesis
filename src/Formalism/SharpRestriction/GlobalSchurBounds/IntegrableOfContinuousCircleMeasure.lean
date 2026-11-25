@@ -81,7 +81,7 @@ theorem zeta_proposition_second : PropZ_ii := by
       exact_mod_cast zii_plus0_le (lam ρ) (hanti ρ)
     unfold MeanSquareWeightBound
     by_cases hρ : ρ ∈ TT
-    · rw [if_pos hρ]
+    · rw [ite_eq_left hρ]
       obtain ⟨h1, h2, h3, h4⟩ := hTT ρ hρ
       have hw := hwtp ρ hρ
       have e1 : ((κ:ℝ) + 1) * (bt ρ + S) ≤ ((κ:ℝ) + 1) * (2 * (b' + S)) :=
@@ -96,7 +96,7 @@ theorem zeta_proposition_second : PropZ_ii := by
       have f1 := mul_le_mul_of_nonneg_right hWb hlogK0
       have f2 := mul_le_mul_of_nonneg_left hlog (sq_nonneg ((κ:ℝ) + 1))
       linarith [f1, f2, hKbS]
-    · rw [if_neg hρ]
+    · rw [ite_eq_right hρ]
       have hw := hwtp' ρ hρ
       have e1 : ((κ:ℝ) + 1 + 3) * S ≤ 4 * (((κ:ℝ) + 1) * (b' + S)) := by
         have hKS : S ≤ ((κ:ℝ) + 1) * S := le_mul_of_one_le_left hS0 hK1
@@ -130,14 +130,14 @@ theorem zeta_proposition_second : PropZ_ii := by
     have h3 : 0 ≤ C₀ * S * logT := mul_nonneg (mul_nonneg hC hS0) hT0
     have h4 : 0 ≤ S * logT := mul_nonneg hS0 hT0
     by_cases hρ : ρ ∈ TT
-    · rw [if_pos hρ]
+    · rw [ite_eq_left hρ]
       have h := hwt ρ hρ
       have h1 : (wt (lam ρ) : ℝ) / ((κ:ℝ) + 1) ≤ A ρ / ((κ:ℝ) + 1) + S := by
         rw [div_le_iff₀ hK0, add_mul, div_mul_cancel₀ _ hK0.ne']
         linarith
       have h2 := mul_le_mul_of_nonneg_right h1 hT0
       linarith
-    · rw [if_neg hρ]
+    · rw [ite_eq_right hρ]
       have h := hwt' ρ hρ
       have h1 : (wt (lam ρ) : ℝ) / ((κ:ℝ) + 1) ≤ C₀ * S := by
         rw [div_le_iff₀ hK0]
@@ -314,10 +314,10 @@ theorem zeta_proposition_third : PropZ_iii := by
     rw [add_assoc ((plus (lam ρ) 0 : ℤ) : ℝ) (κ : ℝ) 1]
     by_cases hρ : ρ ∈ TT
     · obtain ⟨hA1, hA2, hbt1, hbt2⟩ := hTT ρ hρ
-      rw [if_pos hρ]
+      rw [ite_eq_left hρ]
       exact ziii_top hC hK1 hKa hb1 hba hS hSb hL hv hN.log_av hT hp0' hpW' hA2 hbt2 (hWT ρ hρ)
         (hlT ρ hρ)
-    · rw [if_neg hρ]
+    · rw [ite_eq_right hρ]
       exact ziii_other hC hK1 hKa hb1 hba hS hSb hL hv hN.log_av hT hp0' hpW' (hWo ρ hρ) (hlo ρ hρ)
   have hsum := Finset.sum_le_sum (s := (Finset.univ : Finset ι)) (fun ρ _ => key ρ)
   have hrhs : ∀ x y : ℝ, ∑ ρ : ι, ((if ρ ∈ TT then x else 0) + y)
@@ -412,8 +412,7 @@ theorem b_nums {D : D7} {T g1 g2 : ℕ} {Cn x b L b' Sc eta : ℝ} (h : Nums D T
     have h2 : Real.log 8 ≤ Real.log (x * b * D.host.v) := Real.log_le_log (by norm_num) h8
     linarith
   have hCn : 0 ≤ Cn := by
-    by_contra hc
-    push_neg at hc
+    by_contra! hc
     have : Cn * L < 0 := mul_neg_of_neg_of_pos hc (by linarith)
     linarith [abs_nonneg (dlogL D 1)]
   have hNb : (D.R.N D.R.m : ℝ) ≤ b' := by
@@ -431,8 +430,8 @@ theorem b_lam_eq (D : D7) (u : D.what₂.Word) (j : ℕ) (hj : j ≤ D.R.m) (τ 
   rw [(D.fm u).lam_eq j hj τ i]
   unfold lamLiftN lamCol wJ
   by_cases h : i.1 < D.R.k
-  · rw [dite_eq_left h, if_pos h, dite_eq_left h]
-  · rw [dite_eq_right h, if_neg h, dite_eq_left (D.R.blk_lt hj i h)]
+  · rw [dite_eq_left h, ite_eq_left h, dite_eq_left h]
+  · rw [dite_eq_right h, ite_eq_right h, dite_eq_left (D.R.blk_lt hj i h)]
 
 theorem b_mem_tops (D : D7) (τ : D.what₂.Tau) : τ ∈ tops D ↔ IsTop D τ := by
   classical

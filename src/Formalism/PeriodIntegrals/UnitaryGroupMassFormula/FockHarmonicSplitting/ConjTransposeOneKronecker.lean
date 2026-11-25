@@ -41,23 +41,23 @@ variable {p q r s : ℕ}
 
 lemma omE_apply_of_ne {l l' : Ln p q r s} (h : l ≠ l') (P : Pol p q r s) :
     omE l l' P = raiB l (lowB l' P) := by
-  rw [FockH1Action.omE, if_neg h, add_zero]; rfl
+  rw [FockH1Action.omE, ite_eq_right h, add_zero]; rfl
 
 private theorem raiB_apply_eq_X_mul_of_linePos {m : FockH1Action.Ln p q r s} (h : FockH1Action.linePos m = true)
     (P : FockH1Action.Pol p q r s) : FockH1Action.raiB m P = X m * P := by
-  rw [FockH1Action.raiB, if_pos h]; rfl
+  rw [FockH1Action.raiB, ite_eq_left h]; rfl
 
 private theorem raiB_apply_eq_neg_pderiv_of_not_linePos {m : FockH1Action.Ln p q r s} (h : FockH1Action.linePos m = false)
     (P : FockH1Action.Pol p q r s) : FockH1Action.raiB m P = -(pderiv m P) := by
-  rw [FockH1Action.raiB, if_neg (by simp [h])]; rfl
+  rw [FockH1Action.raiB, ite_eq_right (by simp [h])]; rfl
 
 private theorem lowB_apply_eq_pderiv_of_linePos {m : FockH1Action.Ln p q r s} (h : FockH1Action.linePos m = true)
     (P : FockH1Action.Pol p q r s) : FockH1Action.lowB m P = pderiv m P := by
-  rw [FockH1Action.lowB, if_pos h]; rfl
+  rw [FockH1Action.lowB, ite_eq_left h]; rfl
 
 private theorem lowB_apply_eq_X_mul_of_not_linePos {m : FockH1Action.Ln p q r s} (h : FockH1Action.linePos m = false)
     (P : FockH1Action.Pol p q r s) : FockH1Action.lowB m P = X m * P := by
-  rw [FockH1Action.lowB, if_neg (by simp [h])]; rfl
+  rw [FockH1Action.lowB, ite_eq_right (by simp [h])]; rfl
 
 lemma omE_adj {l l' : Ln p q r s} (h : linePos l ≠ linePos l') (P Q : Pol p q r s) :
     fockInner (omE l l' P) Q = - fockInner P (omE l' l Q) := by

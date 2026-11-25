@@ -219,8 +219,7 @@ theorem ngen_nonneg (L : LocalNG Cl Nu) (C0 r : ℕ) (hb : L.Basic) (hM : L.Mass
     have h2 := hnn p
     have hpos : 0 < 8 * L.H p ^ (C0 * (r + 1) ^ 2 + 2 * (2 * r + 2)) :=
       mul_pos (by norm_num) (pow_pos (by linarith [hH p]) _)
-    by_contra hneg
-    push_neg at hneg
+    by_contra! hneg
     have := mul_neg_of_pos_of_neg hpos hneg
     linarith
   · rw [← hM.1 p hp]
@@ -452,9 +451,9 @@ theorem t_ClassSquaresSum : Formalism.FourierDecayAlt.PN.ClassSquaresSum := by
     intro p
     simp only [hF]
     by_cases h : cl p.1 = cl p.2
-    · simp only [Set.indicator, Set.mem_ofPred_eq, h, if_true]
+    · simp only [Set.indicator, Set.mem_ofPred_eq, h, ite_true]
       exact (Complex.abs_re_le_norm _).trans (norm_inner_le_norm _ _)
-    · simp only [Set.indicator, Set.mem_ofPred_eq, h, if_false, norm_zero]
+    · simp only [Set.indicator, Set.mem_ofPred_eq, h, ite_false, norm_zero]
       positivity
   have hGs : Summable G := by
     rw [← hinj.summable_iff hsupp]

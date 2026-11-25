@@ -57,7 +57,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum GlobalTheory.JointHarm
 open scoped TensorProduct InnerProductSpace Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -262,8 +261,8 @@ theorem eigen (D : D7) (m n : ℕ) (ε : D.what₂.Tau → Fin m → Bool) (p q 
     by_cases h : (a : ℕ) < p τ
     · simp [h, zpow_add₀ (hk0 τ _), mul_comm]
     · have h4 : m - 1 - (p τ + (m - 1 - a)) = a - p τ := by omega
-      simp only [h, if_false, decide_false, Bool.false_eq_true, _root_.one_zpow, one_mul, h4]
-      rw [if_neg (by omega), zpow_add₀ (hk0 τ _), mul_comm]
+      simp only [h, ite_false, decide_false, Bool.false_eq_true, _root_.one_zpow, one_mul, h4]
+      rw [ite_eq_right (by omega), zpow_add₀ (hk0 τ _), mul_comm]
   · rw [← Finset.prod_mul_distrib]
     refine Finset.prod_congr rfl fun j _ => ?_
     rw [← zpow_add₀ (hu0 j)]
@@ -377,7 +376,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Matrix Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum GlobalTheory.JointHarm
 open scoped TensorProduct InnerProductSpace Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 end -- clump:auto
 end -- clump:auto

@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.OrderedAtRanksOfPositionElement
 public import Formalism.SharpRestriction.CuspSpanNormBounds.CayleySignature
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 public import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.BesselExistenceUniformOfFacts
@@ -46,16 +47,7 @@ theorem smooth_vectors_translate_unitary
     (hrep : ∀ a ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r), ∀ b ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r), σ (a * b) = (σ a).comp (σ b))
     {v : H} (hv : v ∈ smoothVecs (k := k) (r := r) σ) {a : Mat k r} (ha : a ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r)) :
     σ a v ∈ smoothVecs (k := k) (r := r) σ := by
-  intro g₀ hg₀
-  obtain ⟨U, F, o, m, c, e⟩ := hv (g₀ * a) (unitary_group_mul_mem hg₀ ha)
-  have hR : ContDiff ℝ ∞ (fun x : Mat k r => x * a) :=
-    (LinearMap.toContinuousLinearMap (LinearMap.mulRight ℝ a)).contDiff
-  refine ⟨(fun x : Mat k r => x * a) ⁻¹' U, fun x => F (x * a), o.preimage hR.continuous, m,
-    c.comp hR.contDiffOn (fun x hx => hx), fun g hg hgU => ?_⟩
-  have a1 : σ (g * a) v = F (g * a) := e (g * a) hg (unitary_group_mul_mem hgU ha)
-  show σ g (σ a v) = F (g * a)
-  rw [← a1, hrep g hgU a ha]
-  rfl
+  apply _root_.Formalism.MainNotions.LeviCoordinates.smooth_vectors_translate <;> assumption
 
 end Sm
 

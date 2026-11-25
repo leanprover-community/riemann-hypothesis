@@ -463,7 +463,6 @@ namespace GlobalTheory.ShortBlock
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.MainNotions.ModuliIntegralCharts.H1
 open MvPolynomial GlobalTheory.IndefiniteRowSideFullHecke
-attribute [local instance] Over.cartesianMonoidalCategory
 
 section Poly
 
@@ -522,7 +521,7 @@ theorem rowShift_rename_col (g : Fin n → Fin m) (σ : T) (i i' : Fin (r σ)) (
     obtain ⟨rfl, hb⟩ := hb
     simp only [heq_eq_eq, Prod.mk.injEq] at hb
     obtain ⟨rfl, rfl⟩ := hb
-    rw [if_pos ⟨g x, rfl⟩, if_pos ⟨x, rfl⟩]
+    rw [ite_eq_left ⟨g x, rfl⟩, ite_eq_left ⟨x, rfl⟩]
     simp [col]
   · have h' : ¬ ∃ b, (⟨τ, (j, g x)⟩ : Formalism.L2.Pj.Letter T r m) = ⟨σ, (i, b)⟩ := by
       rintro ⟨b, hb⟩
@@ -530,7 +529,7 @@ theorem rowShift_rename_col (g : Fin n → Fin m) (σ : T) (i i' : Fin (r σ)) (
       obtain ⟨rfl, hb⟩ := hb
       simp only [heq_eq_eq, Prod.mk.injEq] at hb
       exact h ⟨x, by rw [hb.1]⟩
-    rw [if_neg h, if_neg h']
+    rw [ite_eq_right h, ite_eq_right h']
     simp [col]
 
 variable {n₁ n₂ : ℕ}
@@ -974,20 +973,9 @@ theorem finsum_block {K S Q J J₁ J₂ : Type} [Field K] [CommRing S] [Algebra 
   haveI : Fintype Q := Fintype.ofFinite Q
   rw [finsum_eq_sum_of_fintype, finsum_eq_sum_of_fintype, finsum_eq_sum_of_fintype,
     Finset.sum_mul_sum, ← Fintype.sum_prod_type']
-  let eq : (Fin (n₁ + n₂) → Q) ≃ (Fin n₁ → Q) × (Fin n₂ → Q) :=
-    { toFun := fun q => (fun i => q (Fin.castAdd n₂ i), fun j => q (Fin.natAdd n₁ j))
-      invFun := fun p => Fin.append p.1 p.2
-      left_inv := by
-        intro q
-        funext i
-        refine Fin.addCases (fun i => ?_) (fun j => ?_) i
-        · simp
-        · simp
-      right_inv := by
-        intro p
-        ext i <;> simp }
+  let eq := (Fin.appendEquiv (α := Q) n₁ n₂).symm
   refine Fintype.sum_equiv eq _ _ (fun q => ?_)
-  simp only [eq, Equiv.coe_fn_mk]
+  simp only [eq, Fin.appendEquiv_symm_apply]
   have hJ : ∀ (a : Fin n₁ → Q) (b : Fin n₂ → Q), ∑ i : J, A₁ a (e i).1 * A₂ b (e i).2 = (∑ i, A₁ a i) * ∑ j, A₂ b j := by
     intro a b
     rw [Finset.sum_mul_sum, ← Fintype.sum_prod_type']
@@ -1162,7 +1150,6 @@ noncomputable section
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.MainNotions.ModuliIntegralCharts.H1
 open GlobalTheory.PtTie GlobalTheory.PlaceInt
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.StdCover
 
@@ -1314,7 +1301,7 @@ theorem pow_eq_one_of_inZh {m N : ℕ} {T : Over Xo.X} {z : Fin m → (T ⟶ Xo.
   have h := hz.2 1 (fun v hv => by rwa [Matrix.one_mulVec]) (fun i j => if i = j then (N : 𝓞 E) else 0)
     (fun i j => by by_cases e : i = j <;> simp [Matrix.one_apply, e]) b
   rw [List.prod_ofFn, Finset.prod_eq_single b (fun j _ hj => by
-    rw [if_neg hj.symm, ← Nat.cast_zero, comp_act_natCast, pow_zero]) (by simp), if_pos rfl, comp_act_natCast] at h
+    rw [ite_eq_right hj.symm, ← Nat.cast_zero, comp_act_natCast, pow_zero]) (by simp), ite_eq_left rfl, comp_act_natCast] at h
   exact h
 
 section Cover
@@ -1476,7 +1463,7 @@ theorem GlobalTheory.shortValAt_std_cover_eq_thValAt : Formalism.MainNotions.Mod
   have e₄ := GlobalTheory.thetaValue_natural hL hCI E H Dw l Xo c nab hn k Ω ψ y u hu a m x P hP v' w hv' hw
   apply ψ.toRingHom.injective
   change χ (φ₁ v) = ψ v'
-  rw [e₄, e₁, finsum_eq_single _ q₀ (fun q hq => by rw [if_neg hq, map_zero, zero_mul]), if_pos rfl, map_mul,
+  rw [e₄, e₁, finsum_eq_single _ q₀ (fun q hq => by rw [ite_eq_right hq, map_zero, zero_mul]), ite_eq_left rfl, map_mul,
     map_mul χ, e₂, χ.commutes, χ.commutes,
     Finset.sum_congr rfl fun i _ => e₃ (z i) (F q₀ i) (GlobalTheory.StdCover.pow_eq_one_of_inZh (hz i)) (hF q₀ i),
     Finset.sum_const, Finset.card_univ, Fintype.card_fin]

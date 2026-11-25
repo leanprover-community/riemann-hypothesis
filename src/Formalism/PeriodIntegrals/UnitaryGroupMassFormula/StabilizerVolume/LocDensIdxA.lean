@@ -65,15 +65,13 @@ theorem fix2 {F : Type} [Field F] (C : Matrix (Fin 2) (Fin 2) F) (hC : C ≠ 1) 
     ∃ k0 k1 : Fin 2, k0 ≠ k1 ∧ u k0 ≠ 0 ∧ ∃ ρ : F, ∀ (K : Type) [Field K] [Algebra F K]
       (x : Fin 2 → K), Matrix.mulVec (C.map (algebraMap F K)) x = x → x k1 = algebraMap F K ρ * x k0 := by
   obtain ⟨i, hi⟩ : ∃ i, (C - 1) i ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hC
     ext a c
     have := congrFun (h a) c
     simpa [sub_eq_zero] using this
   have hab : (C - 1) i 0 ≠ 0 ∨ (C - 1) i 1 ≠ 0 := by
-    by_contra h
-    push_neg at h
+    by_contra! h
     apply hi
     funext j
     fin_cases j
@@ -110,7 +108,7 @@ theorem fix2 {F : Type} [Field F] (C : Matrix (Fin 2) (Fin 2) F) (hC : C ≠ 1) 
     rw [map_div₀]
     field_simp
     linear_combination -h1
-  · push_neg at hu0
+  · push Not at hu0
     have hu1 : u 1 ≠ 0 := by
       intro h1
       apply hu

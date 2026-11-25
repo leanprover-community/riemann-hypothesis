@@ -164,7 +164,7 @@ lemma hpart_kill (a b : Fin (mdim k r i)) (q : Fin (2 * r + k + 1))
   obtain ⟨hqa, _⟩ := out_ne a q hq
   obtain ⟨hqb, _⟩ := out_ne b q hq
   have h1 : Matrix.single (posL k r i a) (posL k r i b) (1 : ℂ) *ᵥ bvec q = 0 := by
-    rw [single_mulVec_bvec, if_neg hqb]
+    rw [single_mulVec_bvec, ite_eq_right hqb]
   have hw : (Hpk k r *ᵥ bvec q) (posL k r i a) = 0 := by
     have ha := a.isLt
     have hi := i.isLt
@@ -219,21 +219,12 @@ section Deriv
 
 variable {k r : ℕ} {i : Fin (r + 1)}
 
-private theorem hasDerivAt_mul_exp_smul_zero' {n : ℕ} (g X : Matrix (Fin n) (Fin n) ℂ) :
-    HasDerivAt (fun t : ℝ => g * NormedSpace.exp ((t : ℂ) • X)) (g * X) 0 := by
-  let large₂ : Matrix (Fin n) (Fin n) ℂ →L[ℝ] Matrix (Fin n) (Fin n) ℂ := LinearMap.toContinuousLinearMap
-    { toFun := fun M => g * M
-      map_add' := fun M N => Matrix.mul_add g M N
-      map_smul' := fun c M => by simp }
-  have h := large₂.hasFDerivAt.comp_hasDerivAt (0 : ℝ) (hasDerivAt_matrix_exp_smul_at_zero X)
-  exact h
-
 lemma hasDerivAt_f {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E]
     (f F : Mx k r → E) (U : Set (Mx k r)) (g X : Mx k r) (hU : IsOpen U) (hgU : g ∈ U)
     (hg : g ∈ Glev k r i) (hF : ContDiffOn ℝ ∞ F U) (hfF : ∀ h ∈ U, h ∈ Glev k r i → f h = F h)
     (hX : inLieLev k r i X) :
     HasDerivAt (fun t : ℝ => f (g * NormedSpace.exp ((t : ℂ) • X))) (fderiv ℝ F g (g * X)) 0 := by
-  have hc : HasDerivAt (fun t : ℝ => g * NormedSpace.exp ((t : ℂ) • X)) (g * X) 0 := hasDerivAt_mul_exp_smul_zero' g X
+  have hc : HasDerivAt (fun t : ℝ => g * NormedSpace.exp ((t : ℂ) • X)) (g * X) 0 := hasDerivAt_mul_exp_smul_zero g X
   have hFd : DifferentiableAt ℝ F g :=
     (hF.contDiffAt (hU.mem_nhds hgU)).differentiableAt (by first | simp)
   have h1 := hFd.hasFDerivAt.comp_hasDerivAt_of_eq (0 : ℝ) hc (curve_zero g X).symm
@@ -266,7 +257,7 @@ lemma hasDerivAt_ybv (z : Fin (2 * r + k + 1) → ℂ) (c : Fin (mdim k r i)) (g
     HasDerivAt (fun t : ℝ => ybv k r z i (g * NormedSpace.exp ((t : ℂ) • X)) c)
       (herm (Hpk k r) ((g * X) *ᵥ bvec (posL k r i c)) (fvec k r z i)) 0 := by
   have h := (hermL (Hpk k r) (bvec (posL k r i c)) (fvec k r z i)).hasFDerivAt.comp_hasDerivAt (0 : ℝ)
-    (hasDerivAt_mul_exp_smul_zero' g X)
+    (hasDerivAt_mul_exp_smul_zero g X)
   exact h
 
 end Deriv
@@ -336,9 +327,9 @@ theorem y_operator_leibniz_rule : YLeibniz := by
       rw [hlin, ← hv, single_mulVec_bvec]
       by_cases hbc : b = c
       · subst hbc
-        rw [if_pos rfl, if_pos rfl]
+        rw [ite_eq_left rfl, ite_eq_left rfl]
         rfl
-      · rw [if_neg (fun h => hbc ((posL_inj c b).mp h).symm), if_neg hbc, Matrix.mulVec_zero]
+      · rw [ite_eq_right (fun h => hbc ((posL_inj c b).mp h).symm), ite_eq_right hbc, Matrix.mulVec_zero]
         simp [herm]
     rw [eEH, eEH, R1, R2, L1, L2, e1, key2, ite_smul, zero_smul]
 

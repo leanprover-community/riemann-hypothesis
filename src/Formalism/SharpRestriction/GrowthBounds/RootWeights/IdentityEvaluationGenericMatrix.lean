@@ -137,7 +137,7 @@ theorem mul_valS_detA_le {R : Type} [Field R] {ι : Type} (LL : Letters ι) {r :
 
       rw [this, map_sum]
       simp only [map_mul, hC, hX, ht]
-      simp only [mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      simp only [mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
       by_cases hij : i = j
       · subst hij; simp [hS]
       · simp [hij]

@@ -42,8 +42,6 @@ open scoped InnerProductSpace GlobalTheory.AdelicU GlobalTheory.Doubling
 
 namespace GlobalTheory.CompanionTheory.Ipf.Loc
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7}
 
 abbrev FPl (D : D7) : Type := HeightOneSpectrum (𝓞 D.host.F)
@@ -85,18 +83,6 @@ variable {K : Type} [Field K] [NumberField K] (v : HeightOneSpectrum (𝓞 K))
 abbrev Cv : Type := v.adicCompletion K
 
 end Local
-
-section Adelic
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-open GlobalTheory.FinZeta (projV embV Kv Gv)
-open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (SplitProj IsIdemOf IsProjAt rdA grpCo frCo)
-open GlobalTheory.CompanionTheory.Ipf.Loc (FPl)
-
-variable {D : D7}
-
-end Adelic
 
 end GlobalTheory.CompanionTheory.Ipf.Val
 

@@ -46,7 +46,6 @@ import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.FirstCohom
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj MeasureTheory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.AbLaw
 open GlobalTheory.KeyPow
 
@@ -61,8 +60,5 @@ def ConnFam : Prop :=
       (∃ (τ M : Matrix (Fin x₀.P.g) (Fin x₀.P.g) ℂ) (a b : Fin x₀.P.g → ℂ) (c : ℂ),
         charHalf _ a b ∧ c ≠ 0 ∧ NormalAt x₀ τ M a b c ∧ e t₀ = M.det ^ 4 / c ^ 8)
 
-namespace ConnFamTest
-
-end ConnFamTest
 end GlobalTheory.KeyKa
 end

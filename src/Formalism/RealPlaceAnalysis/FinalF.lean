@@ -67,7 +67,3 @@ theorem rdSmooth : RdSmooth := rdSmooth_of right_derivative_extends
 theorem eabGl : EabGl := eabGl_of complex_parts_mem_lie_algebra_holds (rdLin_of right_derivative_extends)
   (rdBracket_of right_derivative_extends (rdSmooth_of right_derivative_extends)) (rdSmooth_of right_derivative_extends)
 end Formalism.REAL
-
-namespace Formalism.REAL
-
-end Formalism.REAL

@@ -5,6 +5,8 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsUpUni
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RelativeEquivalence.DCRelEquivAllHolds
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.TermDefPf
+import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
 
 @[expose] public section
 
@@ -144,7 +146,7 @@ theorem gram_first {N : ℕ} (f g w : Fin N → S.V)
       rw [LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, starRingEnd_apply]
     rw [Matrix.mul_apply]
     simp only [Matrix.of_apply, add_mul, Finset.sum_add_distrib, ite_mul, one_mul, zero_mul,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     exact key
 
 theorem gram_second {N : ℕ} (f w w' : Fin N → S.V)
@@ -167,7 +169,7 @@ theorem gram_second {N : ℕ} (f w w' : Fin N → S.V)
       rw [map_smul, smul_eq_mul, mul_comm]
     rw [Matrix.mul_apply]
     simp only [Matrix.of_apply, mul_add, Finset.sum_add_distrib, mul_ite, mul_one, mul_zero,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     exact key
 
 variable {T T' : E}
@@ -179,36 +181,12 @@ theorem frame_last (F : LFlag S r T) : frame F (Fin.last r) = F.fl.z := by
   simp [frame, Formalism.MainNotions.S.FlagG.fvec]
 
 theorem z_mem_orth (F : LFlag S r T) : F.fl.z ∈ orth S (Xsp F) := by
-  rw [mem_orth_iff]
-  intro x hx
-  dsimp only [Xsp, Formalism.MainNotions.S.FlagG.X] at hx
-  induction hx using Submodule.span_induction with
-  | mem y hy =>
-    obtain ⟨i, rfl⟩ := hy
-    exact F.fl.z_orth i
-  | zero => simp
-  | add y y' _ _ h1 h2 => rw [map_add (f := _), LinearMap.add_apply, h1, h2, add_zero]
-  | smul c y _ h => rw [LinearMap.map_smulₛₗ, LinearMap.smul_apply, h, smul_zero]
+  apply _root_.Formalism.MainNotions.LatticeGluingRadicals.d_z_orthX <;> assumption
 
 theorem nlam_frame (Λ : Submodule (𝓞 E) S.V) {F : LFlag S r T} {n : S.V ≃ₗ[E] S.V} (hn : n ∈ NLam Λ F)
     (a : Fin (r + 1)) : n (frame F a) - frame F a ∈ Submodule.span E (frame F '' {c | c < a}) := by
-  induction a using Fin.lastCases with
-  | last =>
-    have h := hn.2.2 _ (z_mem_orth F)
-    rw [frame_last]
-    refine (show Xsp F ≤ _ from ?_) h
-    dsimp only [Xsp, Formalism.MainNotions.S.FlagG.X]
-    refine Submodule.span_mono ?_
-    rintro _ ⟨j, rfl⟩
-    exact ⟨Fin.castSucc j, Fin.castSucc_lt_last j, frame_castSucc F j⟩
-  | cast i =>
-    have h := hn.2.1 i.1 _ (e_mem_Xflag F i)
-    rw [frame_castSucc]
-    refine (show Xflag F i.1 ≤ _ from ?_) h
-    dsimp only [Xflag, Formalism.MainNotions.S.FlagG.Xa]
-    refine Submodule.span_mono ?_
-    rintro _ ⟨j, hj, rfl⟩
-    exact ⟨Fin.castSucc j, Fin.castSucc_lt_castSucc_iff.2 hj, frame_castSucc F j⟩
+  intros
+  apply _root_.Formalism.L2.SG.Pf.frame_sub_mem_span <;> assumption
 
 theorem zhat_eq (F : LFlag S r T) (F' : LFlag S r T') :
     ZhatL F F' = Matrix.of fun a b => S.hT (frame F a) (frame F' b) := by

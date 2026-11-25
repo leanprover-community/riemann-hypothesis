@@ -282,8 +282,8 @@ theorem isotropic_of_sig {r p : ℕ} (G : Matrix (Fin r) (Fin r) E) (hG : ∀ a 
   let d : Fin r → E := fun a => if a = m then G.det * π else ε a
   have hdet : (diagonal d).det = G.det := by
     rw [det_diagonal, ← Finset.mul_prod_erase _ _ (Finset.mem_univ m), Finset.prod_congr rfl
-      (g := fun a => (ε a : E)) fun a ha => if_neg (Finset.ne_of_mem_erase ha)]
-    simp only [d, if_true]
+      (g := fun a => (ε a : E)) fun a ha => ite_eq_right (Finset.ne_of_mem_erase ha)]
+    simp only [d, ite_true]
     rw [← Int.cast_prod, mul_assoc, ← Int.cast_mul, hπ, Int.cast_one, mul_one]
   have hcd : ∀ a, cc (d a) = d a := fun a => by
     have := GlobalTheory.Published.cc_det_of_herm hG
@@ -316,7 +316,7 @@ theorem isotropic_of_sig {r p : ℕ} (G : Matrix (Fin r) (Fin r) E) (hG : ∀ a 
         by_cases h : a = m
         · subst h
           have hπ' : (π : ℂ) * π = 1 := by exact_mod_cast hπ
-          simp only [d, if_true, map_mul, map_intCast]
+          simp only [d, ite_true, map_mul, map_intCast]
           linear_combination (π : ℂ) * h2 + (ε m : ℂ) * hπ'
         · simp [d, h]⟩)
     ⟨1, by rw [hdet, div_self hd]; simp [cc]⟩
@@ -725,9 +725,6 @@ theorem sesq_eq_herm {E : Type} [Field E] [NumberField E] [IsCMField E] {N : ℕ
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun k _ => ?_
   ring
 
-theorem sgI_sq (j j' : ℕ) : sgI j j' * sgI j j' = 1 := by
-  simp [sgI, Matrix.fromBlocks_multiply, Matrix.fromBlocks_one]
-
 theorem stdModel_of (h : StdZ) : StdModel := by
   intro E _ _ _ Ψ _ _ j j' n g Λ _ _ H F ξ c₀ hc₀ hξ
   obtain ⟨C⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Cusp.Dict.LatEmbEx.exists_latEmb E Ψ j j' n g Λ H F
@@ -772,7 +769,7 @@ theorem stdModel_of (h : StdZ) : StdModel := by
       field_simp
     exact_mod_cast this
   have hl : ∀ τ, C.cinv (A τ) τ * A τ = 1 := fun τ => by
-    rw [LatEmb.cinv, Matrix.mul_assoc, Matrix.mul_assoc, ← Matrix.mul_assoc (A τ)ᴴ, hA, sgI_sq]
+    rw [LatEmb.cinv, Matrix.mul_assoc, Matrix.mul_assoc, ← Matrix.mul_assoc (A τ)ᴴ, hA, GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Change.sgI_mul_self]
   have hrr : ∀ τ, A τ * C.cinv (A τ) τ = 1 := fun τ =>
     (Matrix.mul_eq_one_comm_of_equiv finSumFinEquiv).1 (hl τ)
   have hform : ∀ x y, ((F.form x y : ℤ) : ℚ) = EFf (-ξ) (r • g₀ᵀ) (e x) (e y) := fun x y => by

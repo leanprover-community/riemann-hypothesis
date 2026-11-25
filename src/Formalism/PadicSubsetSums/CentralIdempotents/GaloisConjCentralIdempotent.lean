@@ -30,11 +30,6 @@ structure LabelMap (C : LabelConv K) where
     (lab d τ).Monic ∧ Irreducible (lab d τ) ∧ lab d τ ≠ X ∧ (lab d τ).natDegree = d
   lab_inj : ∀ (d : ℕ) (τ τ' : FDRep ℂ (GL (Fin d) K)), 1 ≤ d → Simple τ → IsCuspidal K τ →
     Simple τ' → IsCuspidal K τ' → lab d τ = lab d τ' → Nonempty (τ ≅ τ')
-  lab_one : ∀ (τ : FDRep ℂ (GL (Fin 1) K)) (x : K), Simple τ → x ≠ 0 →
-    (∀ (γ : GL (Fin 1) K) (m : ℕ),
-      C.gen 1 ^ m = algebraMap K (AlgebraicClosure K) (Matrix.det (γ : Matrix (Fin 1) (Fin 1) K)) →
-      LinearMap.trace ℂ τ (τ.ρ γ) = C.ι (algebraMap K (AlgebraicClosure K) x) ^ m) →
-    lab 1 τ = X - Polynomial.C x
 
 
 variable {K} in
@@ -60,25 +55,10 @@ def HasLabelO (O : LabelMap K C) {ι : Type} [Fintype ι] [DecidableEq ι] (τ :
     Function.Surjective b ∧ (∀ c, Simple (lam c) ∧ IsCuspidal K (lam c)) ∧
     IsConstituent τ (hcRep K b lam) ∧ f = ∏ c, labO O (lam c)
 
-def DisjointMultO (O : LabelMap K C) : Prop :=
-  ∀ (n : ℕ) (b : Fin n → Fin 2) (τ σ : ∀ c : Fin 2, FDRep ℂ (GL {i // b i = c} K)) (f f' : Fin 2 → K[X]),
-    Function.Surjective b →
-    (∀ c, Simple (τ c) ∧ Simple (σ c) ∧ HasLabelO O (τ c) (f c) ∧ HasLabelO O (σ c) (f' c)) →
-    IsCoprime (f 0) (f' 1) → IsCoprime (f 1) (f' 0) →
-    Module.finrank ℂ (Intw (hcRep K b τ) (hcRep K b σ)) =
-      Module.finrank ℂ (Intw (τ 0).ρ (σ 0).ρ) * Module.finrank ℂ (Intw (τ 1).ρ (σ 1).ρ)
-
-
-
 def twoBlock (n a : ℕ) : Fin n → Fin 2 := fun i => if (i : ℕ) < a then 0 else 1
 
 
 
-
-def ZIdemOccurs : Prop :=
-  ∀ (Γ : Type) [Group Γ] [Fintype Γ] (τ : FDRep ℂ Γ) (V : Type) [AddCommGroup V] [Module ℂ V]
-    [FiniteDimensional ℂ V] (ρ : Representation ℂ Γ V), Simple τ →
-    ((∃ v : V, ρ.asAlgebraHom (zIdem τ) v ≠ 0) ↔ IsConstituent τ ρ)
 
 end Formalism.IrreducibleCountingLemmas.TYPES
 
@@ -129,11 +109,5 @@ theorem galoisConjCentralIdempotent : BcZIdem := by
   have h : LinearMap.trace ℂ (bc σ τ) ((bc σ τ).ρ γ⁻¹) = σ (LinearMap.trace ℂ τ (τ.ρ γ⁻¹)) :=
     trace_bcRepr σ τ.ρ γ⁻¹
   rw [zIdem_coeff, zIdem_coeff, finrank_bc, h, map_mul, map_div₀, map_natCast, map_natCast]
-
-end Formalism.IrreducibleCountingLemmas.TYPES
-
-namespace Formalism.IrreducibleCountingLemmas.TYPES
-
-variable (K : Type) [Field K] [Fintype K] [DecidableEq K]
 
 end Formalism.IrreducibleCountingLemmas.TYPES

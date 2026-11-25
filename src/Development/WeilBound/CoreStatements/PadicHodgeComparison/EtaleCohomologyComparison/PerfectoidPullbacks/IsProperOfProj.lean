@@ -8,15 +8,11 @@ import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.T
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 namespace CrystallineSemistableComparison.Pb
-
-attribute [local instance] MvPolynomial.gradedAlgebra
 
 theorem isProper_of_proj {R : Type} [CommRing R] {X : Scheme.{0}} {f : X ⟶ Sp R} (h : IsProjOver f) : IsProper f := by
   obtain ⟨N, i, hi, rfl⟩ := h

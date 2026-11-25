@@ -57,7 +57,7 @@ theorem hR_comb (v : PlX X) (c : Fin (D.R.rS + 1 + D.R.rS) → Fv X.B.I.F v ⊗[
       inclR (Fv X.B.I.F v) (gramE X.B.I.cm.sig X.B.I.J (tupH (frameOf X u')) j i) := fun i =>
     congrFun (congrFun (omVGram_holds X u' v) j) i
   simp only [hR_smulE_right, hg, gramE_entry, apply_ite (inclR (Fv X.B.I.F v)), map_zero, mul_ite, mul_zero,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem omVPrim_of (hM : OmVMem X u') (hZ : OmVZPrim X u') : OmVPrim X u' := by
   intro v
@@ -71,7 +71,7 @@ theorem omVPrim_of (hM : OmVMem X u') (hZ : OmVZPrim X u') : OmVPrim X u' := by
       have : piv D.R.rS i = zi (D := D) := Fin.ext (by rw [h, zi_val])
       rw [← hj, this, pivot_castAdd_last]
     have h1 := hR_comb X u' v c (piv D.R.rS i)
-    rw [hj, cD, if_neg hjz, map_one, mul_one] at h1
+    rw [hj, cD, ite_eq_right hjz, map_one, mul_one] at h1
     rw [← h1]
     exact omVSD_fwd X v (hM v _) hc
   intro i
@@ -88,7 +88,7 @@ theorem omVPrim_of (hM : OmVMem X u') (hZ : OmVZPrim X u') : OmVPrim X u' := by
     · exact hZ v hT _ hz
     · obtain ⟨u, hu, hu1⟩ := negNat_unit X v (Tw u') hT
       have h1 := hR_comb X u' v c (zi (D := D))
-      rw [pivot_castAdd_last, cD, if_pos zi_val] at h1
+      rw [pivot_castAdd_last, cD, ite_eq_left zi_val] at h1
       have h2 : c (zi (D := D)) * inclR (Fv X.B.I.F v) (-((Tw u' : ℕ) : X.B.I.E)) ∈ OEv (E := X.B.I.E) v := by
         rw [← h1]; exact omVSD_fwd X v (hM v _) hc
       have h3 : c (zi (D := D)) = (c (zi (D := D)) * inclR (Fv X.B.I.F v) (-((Tw u' : ℕ) : X.B.I.E))) * u := by

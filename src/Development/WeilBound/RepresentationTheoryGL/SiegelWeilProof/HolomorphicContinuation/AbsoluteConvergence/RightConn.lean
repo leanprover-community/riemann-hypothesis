@@ -56,10 +56,10 @@ theorem glue : Glue := by
       have hn : {w : ℂ | w.re < σ + 1} ∈ 𝓝 z :=
         Complex.continuous_re.continuousAt.preimage_mem_nhds (Iio_mem_nhds hlt)
       filter_upwards [nhdsWithin_le_nhds hn] with w hw
-      rw [hH, if_neg (not_lt.2 (le_of_lt hw))]
+      rw [hH, ite_eq_right (not_lt.2 (le_of_lt hw))]
   have hmer : IsMerExt h U H := by
     refine ⟨hU, fun z hz => (hfm z hz).congr (hHf z).symm, σ + 1, fun z hz => ?_⟩
-    rw [hH, if_pos (show σ + 1 < z.re from hz)]
+    rw [hH, ite_eq_left (show σ + 1 < z.re from hz)]
   have hext : IsExtAt h s₀ (Function.update H s₀ (f s₀)) := (hmer.isExtAt hs₀).update _
   refine ⟨_, hext, ?_, by simp⟩
   apply hfa.congr

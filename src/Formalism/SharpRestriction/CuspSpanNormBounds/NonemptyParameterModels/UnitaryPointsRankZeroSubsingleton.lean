@@ -43,13 +43,13 @@ theorem aut_isHCParam_lamS (R : Ranks) (P : HCParam R) : Formalism.QuantumDeterm
   have hv : ∀ (j : ℕ) (hj : j < R.k - 1) (x : Fin R.r), x.val = j → lamS R P x = (P.v ⟨j, hj⟩ : ℝ) := by
     intro j hj x hx
     subst hx
-    simp only [lamS, dif_pos hj]
+    simp only [lamS, dite_eq_left hj]
   have hb : ∀ (j : ℕ) (hj : j < R.m) (x : Fin R.r), x.val = R.k - 1 + j → lamS R P x = -(P.b ⟨j, hj⟩ : ℝ) := by
     intro j hj x hx
     have h1 : ¬ x.val < R.k - 1 := by omega
     have h2 : x.val - (R.k - 1) < R.m := by omega
     have e : (⟨x.val - (R.k - 1), h2⟩ : Fin R.m) = ⟨j, hj⟩ := Fin.ext (show x.val - (R.k - 1) = j by omega)
-    simp only [lamS, dif_neg h1, dif_pos h2, e]
+    simp only [lamS, dite_eq_right h1, dite_eq_left h2, e]
   refine ⟨aut_strictAnti_of_step _ ?_, ?_⟩
   · intro i hi
     have hir : i.val + 1 < R.k + R.m - 1 := hr ▸ hi
@@ -134,27 +134,6 @@ theorem unitary_points_rank_zero_subsingleton {F E : Type} [Field F] [NumberFiel
   exact i.elim0
 
 attribute [local instance] unitary_points_rank_zero_subsingleton
-
-def aut_inst0 (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
-    (cm : CMData F E) : AutInst :=
-  letI : TopologicalSpace (Formalism.UG.UPts cm.sig (0 : Matrix (Fin 0) (Fin 0) E) (Af F)) := ⊥
-  { F := F, E := E, cm := cm, n := 0, J := 0
-    J_herm := Subsingleton.elim _ _
-    J_det := by simp
-    L := ⊤
-    L_span := Subsingleton.elim _ _
-    L_fg := by rw [Subsingleton.elim (⊤ : Submodule (𝓞 E) (Fin 0 → E)) ⊥]; exact Submodule.fg_bot
-    L_dual := fun x => ⟨fun _ y _ => ⟨0, by simp [Formalism.UG.hform]⟩, fun _ => trivial⟩
-    ε := fun _ i => i.elim0
-    φ := fun v => (aut_exists_emb F E cm v).choose
-    φ_over := fun v => (aut_exists_emb F E cm v).choose_spec
-    P := fun _ => 1
-    P_unit := fun _ => isUnit_one
-    P_spec := fun _ => Subsingleton.elim _ _
-    topf := ⊥
-    topf_group := inferInstance
-    topf_open := fun _ _ => isOpen_discrete _
-    topf_basis := fun U hU => ⟨1, le_rfl, fun x _ => by rw [Subsingleton.elim x 1]; exact mem_of_mem_nhds hU⟩ }
 
 theorem aut_Jm_allPos (n : ℕ) : Formalism.REAL.Jm (allPos n) = 1 := by
   unfold Formalism.REAL.Jm allPos
@@ -410,10 +389,6 @@ theorem aut_HTop_holds {F E : Type} [Field F] [NumberField F] [Field E] [NumberF
         (x : GL (Fin n) (E ⊗[F] Af F)) g hg
       exact ⟨g', hg', fun k hk => h' k hk⟩)
   exact ⟨t, ht1, ht2, ht3⟩
-
-section AtRecord
-
-end AtRecord
 
 end Aut
 

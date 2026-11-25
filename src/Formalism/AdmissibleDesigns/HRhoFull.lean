@@ -78,7 +78,7 @@ theorem first_block_column_condition (l : Col i dc) :
     exact Finset.disjoint_left.mp dc.disj hw hwc
   simp only [FS, QS.Fall, Fin.cases_zero]
   unfold FirstBlockLocalConditions
-  simp only [KHf.Fρ, if_neg hnot]
+  simp only [KHf.Fρ, ite_eq_right hnot]
 
 
 
@@ -364,7 +364,6 @@ variable {D : D7} (i : D.nd.Loc) (dc : TruncatedSeriesCountingIdentities.Decl D 
 
 omit [Algebra (D.nd.O i) A] in
 set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 4000000 in
 theorem bkLoc_col (n : ℕ) (hw : plOf i dc n ∈ placesOver D.host.E (D.nd.l i))
     {V : Type} [AddCommGroup V] [Module (FractionRing (D.nd.O i)) V] [Module (D.nd.O i) V]
     [IsScalarTower (D.nd.O i) (FractionRing (D.nd.O i)) V]

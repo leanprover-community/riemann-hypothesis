@@ -240,7 +240,7 @@ theorem satake_subset_of_mem {π : L} (hπ : π ≠ 0) (hπO : π⁻¹ ∉ O) (S
   intro a ha
   by_contra ha'
   have h1 := satake_glint_entry O h a a
-  rw [satakeGL_inv_mul_apply, one_sub_satakeN_mul_one_add_satakeN_diag, if_pos ha, if_neg ha', mul_one, mul_one] at h1
+  rw [satakeGL_inv_mul_apply, one_sub_satakeN_mul_one_add_satakeN_diag, ite_eq_left ha, ite_eq_right ha', mul_one, mul_one] at h1
   exact hπO h1
 
 theorem satake_entry_of_mem {π : L} (hπ : π ≠ 0) (S : Finset (Fin n)) (c c' : satakePairs S → O)
@@ -248,7 +248,7 @@ theorem satake_entry_of_mem {π : L} (hπ : π ≠ 0) (S : Finset (Fin n)) (c c'
     π⁻¹ * (((c' p : O) : L) - ((c p : O) : L)) ∈ O := by
   obtain ⟨⟨a, l⟩, ha, hl, hal⟩ := p
   have h1 := satake_glint_entry O h a l
-  rw [satakeGL_inv_mul_apply, if_pos ha, if_neg hl, mul_one, Matrix.sub_mul, Matrix.mul_add,
+  rw [satakeGL_inv_mul_apply, ite_eq_left ha, ite_eq_right hl, mul_one, Matrix.sub_mul, Matrix.mul_add,
     Matrix.mul_add, satakeN_mul_self, Matrix.one_mul, Matrix.one_mul, Matrix.mul_one, add_zero,
     Matrix.sub_apply, Matrix.add_apply, Matrix.one_apply_ne hal.ne, satakeN_apply O S c' a l,
     satakeN_apply O S c a l, dite_eq_left ⟨ha, hl, hal⟩, dite_eq_left ⟨ha, hl, hal⟩, zero_add] at h1

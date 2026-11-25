@@ -191,8 +191,8 @@ theorem contr_mono (ε : Fin m → Bool) (c : ℝ) {s u : Fin m × Fin n × Bool
     contr c (monomial s a * monomial u b) = if s = u.mapDomain pE then a * b * (wt c s : ℂ) else 0 := by
   rw [monomial_mul, contr_monomial]
   by_cases h : s = u.mapDomain pE
-  · rw [if_pos ((bal_iff ε hs hu).mpr h), if_pos h, piC_eq_wt ε c hu h]
-  · rw [if_neg (fun hb => h ((bal_iff ε hs hu).mp hb)), if_neg h]
+  · rw [ite_eq_left ((bal_iff ε hs hu).mpr h), ite_eq_left h, piC_eq_wt ε c hu h]
+  · rw [ite_eq_right (fun hb => h ((bal_iff ε hs hu).mp hb)), ite_eq_right h]
 
 theorem contr_eq_bf (ε : Fin m → Bool) (c : ℝ) {h g : PX m n} (hh : h ∈ F1 ε) (hg : g ∈ F2 ε) :
     contr c (h * g) = bf (fun s => (wt c s : ℂ)) h (rename pE g) := by

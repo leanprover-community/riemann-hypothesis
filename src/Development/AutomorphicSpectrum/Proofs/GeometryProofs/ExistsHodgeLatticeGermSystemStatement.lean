@@ -22,7 +22,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Crv GlobalTheory.CompanionTheory.Ar.Conj GlobalTheory.CompanionTheory.Ar.Flat GlobalTheory.CompanionTheory.Ar.Fl
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 noncomputable section
 
@@ -134,7 +133,7 @@ theorem card_eq [Nontrivial R] {J : Type} [Fintype J] (w : J → (Fin d → R) �
 
 theorem rhoH_mp {O : Type} [CommRing O] [StarRing O] (f : R →+* Ω) {B : Germ.FB R d O} {B₂ : Germ.FB Ω d O}
     (h : IsMapOf f B B₂) (a : O) (y : (Fin d → R) × (Fin d → R)) : rhoH B₂ a (mp f y) = mp f (rhoH B a y) := by
-  have h1 := (_root_.GlobalTheory.CompanionTheory.Ar.Conj.map_mats_baseChange R Ω f d O B B₂ h).1
+  have h1 := (_root_.PositivityTheory.HtPt.Cc.map_mats R Ω f d O B B₂ h).1
   have hv : ∀ (N : Matrix (Fin d) (Fin d) R) (v : Fin d → R) (i : Fin d),
       (N.map f).mulVec (fun j => f (v j)) i = f (N.mulVec v i) := fun N v i => (RingHom.map_mulVec _ _ _ _).symm
   rw [rhoH_apply, rhoH_apply, (h1 a).1, (h1 a).2, (h1 (star a)).1, ← Matrix.transpose_map, ← Matrix.transpose_map]
@@ -274,7 +273,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Crv GlobalTheory.CompanionTheory.Ar.Conj GlobalTheory.CompanionTheory.Ar.Flat GlobalTheory.CompanionTheory.Ar.Fl
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.CompanionTheory.Ar.Flat
 
@@ -480,7 +478,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Crv GlobalTheory.CompanionTheory.Ar.Conj GlobalTheory.CompanionTheory.Ar.Flat GlobalTheory.CompanionTheory.Ar.Fl
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem _root_.GlobalTheory.T.exists_hodge_lattice_germ_system : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) [StarRing (𝓞 E)], (∀ a : 𝓞 E, star a = H.bar a) → ∀ (X : Scheme.{0}) (t : SAB H X) (Ω : Type) [Field Ω] [CharZero Ω] (ξ : Sp Ω ⟶ X) (d r : ℕ) (M : LieModel t.G ξ (Fin d → Ω)) (S : GermSys t ξ M) (ρ : 𝓞 E →+* Module.End Ω (Fin d → Ω)), IsCptGen ξ → M.IsActOf t.act.act ρ → (∀ q : Cpt ξ, HFree (S.g q).B r) → ∃ 𝓗 : HodgeLat M.lat ρ H.bar r, S.Gives 𝓗 := by
   first | exact @GlobalTheory.CompanionTheory.Ar.Flat.germ_gives_hodgeLat

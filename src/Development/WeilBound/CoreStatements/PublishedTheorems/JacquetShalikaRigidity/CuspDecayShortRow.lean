@@ -151,8 +151,7 @@ theorem chain {t : ℝ} (ht : 0 < t) (ha : 0 < a) (r : Fin a → ℝ) (hr : ∀ 
     have := CuspidalSpectrum.le_pow_mul_of_siegel ht hr hs (a - 1 - i) i ⟨a - 1, by omega⟩ (by simp; omega)
     exact this.trans (mul_le_mul_of_nonneg_right (pow_le_pow_right₀ hT1 (by omega)) (hr _).le)
   refine ⟨h1, h2, ?_, ?_⟩
-  · by_contra hc
-    push_neg at hc
+  · by_contra! hc
     have hlt : ∏ i, r i < 1 := by
       calc ∏ i, r i ≤ ∏ _i : Fin a, T ^ a * r ⟨0, ha⟩ :=
             Finset.prod_le_prod₀ (fun i _ => (hr i).le) fun i _ => h1 i
@@ -160,8 +159,7 @@ theorem chain {t : ℝ} (ht : 0 < t) (ha : 0 < a) (r : Fin a → ℝ) (hr : ∀ 
         _ < 1 := pow_lt_one₀ (by have := hr ⟨0, ha⟩; positivity) hc (by omega)
     rw [hp] at hlt
     exact lt_irrefl _ hlt
-  · by_contra hc
-    push_neg at hc
+  · by_contra! hc
     have hT0 : 0 < T ^ a := by positivity
     have hlt : 1 < ∏ i, r i := by
       have h3 : ∀ i, r ⟨a - 1, by omega⟩ / T ^ a ≤ r i := fun i => by

@@ -19,8 +19,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (pure tens SInf ev
 open GlobalTheory.EmbChart (atPlace atPlace_mul_right evFin_atPlace)
 open scoped GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels TensorProduct
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 noncomputable section
 namespace PositivityTheory.ThKEst.W
 

@@ -1,5 +1,7 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WachLatticeEqStdPowerSeriesAtZero
+import Formalism.SharpRestriction.LevelLetterCocycles.LatticeMembershipPolynomialGamma
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArcCoordinatesOfFrame
 public import Formalism.SharpRestriction.LevelLetterCocycles.RelayGeneralCaseOfAdmissible
 public import Formalism.SharpRestriction.LevelLetterCocycles.RingConditionOfDeltaInvariants
@@ -126,15 +128,7 @@ theorem φVB_mul (T : LocLat G Qp LL O) (c : K₀) (x : T.V ⊗[Qp] B) :
 theorem φVB_letter (T : LocLat G Qp LL O) (i : ZMod n) {x : T.V ⊗[Qp] B}
     (hx : x ∈ DcrisL PD T.ρ (W.emb i)) :
     φVB PD (LL := LL) (V := T.V) x ∈ DcrisL PD T.ρ (W.emb (i + 1)) := by
-  rw [mem_DcrisL_iff]
-  obtain ⟨h1, h2⟩ := (mem_DcrisL_iff T _ x).1 hx
-  refine ⟨(mem_Dcris_iff T _).2 fun g => ?_, fun c => ?_⟩
-  · rw [φVB_act, (mem_Dcris_iff T x).1 h1 g]
-  · obtain ⟨c', rfl⟩ := PD.σ_bij.2 c
-    rw [φVB_mul, h2 c', map_smul]
-    congr 1
-    have := congrArg (fun f : K₀ →ₐ[Qp] LL => f c') (W.emb_σ i)
-    simpa using this.symm
+  apply _root_.Formalism.MainNotions.UnusedSlot80.UnivC.φVB_letter <;> assumption
 
 theorem φVB_pow_letter (T : LocLat G Qp LL O) (i : ZMod n) {x : T.V ⊗[Qp] B}
     (hx : x ∈ DcrisL PD T.ρ (W.emb i)) (e : ℕ) :
@@ -147,16 +141,8 @@ theorem φVB_pow_letter (T : LocLat G Qp LL O) (i : ZMod n) {x : T.V ⊗[Qp] B}
     rwa [show i + (e : ZMod n) + 1 = i + ((e + 1 : ℕ) : ZMod n) by push_cast; ring] at this
 
 theorem φVB_inj (T : LocLat G Qp LL O) : Function.Injective (φVB PD (LL := LL) (V := T.V)) := by
-  have h := Module.Flat.lTensor_preserves_injective_linearMap (M := T.V) PD.φ.toLinearMap PD.φ_inj
-  have e : ∀ z, φVB PD (LL := LL) (V := T.V) z = (PD.φ.toLinearMap.lTensor T.V) z := by
-    intro z
-    induction z using TensorProduct.induction_on with
-    | zero => simp
-    | tmul v b => simp [φVB]
-    | add x y hx hy => simp only [map_add (f := _), hx, hy]
-  intro x y hxy
-  rw [e, e] at hxy
-  exact h hxy
+  intros
+  apply _root_.GlobalTheory.NL.FullDown.phi_inj <;> assumption
 
 include W in
 alias p_ne_zero := _root_.Formalism.MainNotions.LiftingTheory.tr_pLL_ne
@@ -263,9 +249,9 @@ theorem dcrisL_le_span [NeZero n] (T : LocLat G Qp LL O) (h3 : Formalism.MainNot
       split_ifs with h
       · subst h; exact hd
       · exact (DcrisL PD T.ρ (W.emb j)).zero_mem)
-    (by rw [Finset.sum_sub_distrib, hfd, Finset.sum_ite_eq' Finset.univ i, if_pos (Finset.mem_univ _),
+    (by rw [Finset.sum_sub_distrib, hfd, Finset.sum_ite_eq' Finset.univ i, ite_eq_left (Finset.mem_univ _),
       sub_self]) i (Finset.mem_univ _)
-  rw [if_pos rfl, sub_eq_zero] at h0
+  rw [ite_eq_left rfl, sub_eq_zero] at h0
   rw [← h0]; exact hf i
 
 def ev (i : ZMod n) : LetA O n →+* O :=
@@ -349,7 +335,7 @@ theorem cmp_indepO (T : LocLat G Qp LL O) (h3 : Formalism.MainNotions.DeltaInvar
     · split_ifs
       · exact letE_mul_self c'
       · exact mul_zero _
-    · simp only [ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    · simp only [ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
       exact (hbl k).symm
   have hevδ : ∀ k m, ∑ j, ev c' (α' k j) * ev c' (α j m) = if m = k then 1 else 0 := by
     intro k m
@@ -802,7 +788,7 @@ theorem frame_inv_poly (hinj : Function.Injective (algebraMap O LL)) {d : ℕ}
       rw [Polynomial.coeff_mul, map_sum, Finset.mul_sum]
       refine Finset.sum_congr rfl fun x hx => ?_
       have hx' := Finset.HasAntidiagonal.mem_antidiagonal.1 hx
-      rw [hHPc, hGPc, if_pos (by omega), if_pos (by omega), map_mul, hyy k x.1 (by omega),
+      rw [hHPc, hGPc, ite_eq_left (by omega), ite_eq_left (by omega), map_mul, hyy k x.1 (by omega),
         hzz x.2 (by omega)]
       ring
     rw [Finset.sum_congr rfl fun k _ => hk k, ← Finset.mul_sum, hcoef t, hcst]
@@ -969,7 +955,7 @@ theorem secOfP [IsDomain O] (hinj : Function.Injective (algebraMap O LL))
         split_ifs <;> ring
       rw [Finset.sum_congr rfl fun m' _ => h1 m', Finset.sum_add_distrib, ← Finset.mul_sum,
         ← Finset.mul_sum]
-      simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     simp only [w]
     linear_combination -A1 - A2 -
       (((PD.p : ℕ) : LetA O n) ^ A.σ PD.p * ∑ m', Polynomial.aeval Y (ρ m m') * β m') * hYM

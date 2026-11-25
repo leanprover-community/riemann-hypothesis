@@ -13,8 +13,6 @@ namespace PI.QnHermHaar
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Gen
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 variable {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {i : Fin (r + 1)} {μ : Measure (Mt k r)}
 
 theorem repOn_of_eq {hI' : IntOn μ (ιo k r) (testSub k r i)} {T : A hI'} {Φ Ψ : (Mx k r → ℂ) → Mx k r → ℂ}
@@ -34,9 +32,9 @@ private theorem repOn_ite' (H : Hyp k r z z' i μ) (p : Prop) [Decidable p] {T :
     {Φ : (Mx k r → ℂ) → Mx k r → ℂ} (hT : RepOn (hI H) T Φ) :
     RepOn (hI H) (if p then T else 0) (fun f g => if p then Φ f g else 0) := by
   by_cases hp : p
-  · simp only [if_pos hp]
+  · simp only [ite_eq_left hp]
     exact hT
-  · simp only [if_neg hp]
+  · simp only [ite_eq_right hp]
     have h0 := repOn_sub _ hT hT
     rw [sub_self] at h0
     exact repOn_of_eq h0 fun f => funext fun g => by simp

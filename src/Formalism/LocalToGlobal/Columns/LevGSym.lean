@@ -41,11 +41,11 @@ def symPerm (n k rS : ℕ) : Equiv.Perm (Fin n) :=
   else Equiv.refl _
 
 theorem symPerm_val {n k rS : ℕ} (h : k + rS ≤ n) (i : Fin n) : (symPerm n k rS i).val = symIdx k rS i.val := by
-  rw [symPerm, dif_pos h]
+  rw [symPerm, dite_eq_left h]
   rfl
 
 theorem symPerm_symm_val {n k rS : ℕ} (h : k + rS ≤ n) (i : Fin n) : ((symPerm n k rS).symm i).val = symIdxInv k rS i.val := by
-  rw [symPerm, dif_pos h]
+  rw [symPerm, dite_eq_left h]
   rfl
 
 variable (κ : Type) [CommRing κ]
@@ -107,7 +107,7 @@ variable {κ : Type} [CommRing κ]
 
 theorem fine_self_lt {n i : ℕ} (h : i < n) : fine n [] i = i := by
   unfold fine
-  rw [if_pos h]
+  rw [ite_eq_left h]
 
 theorem mem_HPsymF_iff {n k rS : ℕ} (h : k + rS ≤ n) {M : GL (Fin n) κ} :
     M ∈ HPsymF κ n k rS ↔
@@ -156,21 +156,21 @@ def insEquiv (N c k N' : ℕ) (hk : k ≤ N) (hN : N' = N + c) : Fin N' ≃ Fin 
     | Sum.inr j => ⟨k + j.val, by omega⟩
   left_inv a := by
     by_cases h1 : a.val < k
-    · simp only [dif_pos h1]; apply Fin.ext; simp [h1]
+    · simp only [dite_eq_left h1]; apply Fin.ext; simp [h1]
     · by_cases h2 : a.val < k + c
-      · simp only [dif_neg h1, dif_pos h2]; apply Fin.ext; simp; omega
-      · simp only [dif_neg h1, dif_neg h2]; apply Fin.ext; simp; split_ifs <;> omega
+      · simp only [dite_eq_right h1, dite_eq_left h2]; apply Fin.ext; simp; omega
+      · simp only [dite_eq_right h1, dite_eq_right h2]; apply Fin.ext; simp; split_ifs <;> omega
   right_inv x := by
     rcases x with i | j
     · by_cases h : i.val < k
       · simp [h]
       · have h1 : ¬ i.val + c < k := by omega
         have h2 : ¬ i.val + c < k + c := by omega
-        simp only [if_neg h, dif_neg h1, dif_neg h2]
+        simp only [ite_eq_right h, dite_eq_right h1, dite_eq_right h2]
         congr 1; apply Fin.ext; simp
     · have h1 : ¬ k + j.val < k := by omega
       have h2 : k + j.val < k + c := by omega
-      simp only [dif_neg h1, dif_pos h2]
+      simp only [dite_eq_right h1, dite_eq_left h2]
       congr 1; apply Fin.ext; simp
 
 variable (κ : Type) [CommRing κ]

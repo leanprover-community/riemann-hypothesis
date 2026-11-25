@@ -82,11 +82,11 @@ theorem arMono_word (M : RootModel Ψ N) (II : IntersectionSystem) (hII : IsInte
   have e : Finsupp.mapDomain some (∑ k, Finsupp.single (w k) 1) =
       ∑ k, Finsupp.single (some (w k)) (1 : ℕ) := by
     simp [Finsupp.mapDomain_finsetSum]
-  obtain ⟨hdeg, -, -, hv⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Top.monoLines_monomial_word II hII M.K M.ι M.P (dimFl Ψ N + 1) _ (M.line t) (fun k => some (w k))
+  obtain ⟨hdeg, -, -, hv⟩ := _root_.RootFieldNumerics.intersection_monomial_lines II hII M.K M.ι M.P (dimFl Ψ N + 1) _ (M.line t) (fun k => some (w k))
     M.arith (by rintro (_ | r); exacts [M.A_smooth, M.x_smooth t r])
   have hnone : (∑ k, Finsupp.single (some (w k)) (1 : ℕ) : Option (Ψ × Fin N) →₀ ℕ) none = 0 := by
     simp [Finsupp.finsetSum_apply]
-  rw [e, RootModel.arMono, if_pos hdeg, hnone, pow_zero, mul_one, hv]
+  rw [e, RootModel.arMono, ite_eq_left hdeg, hnone, pow_zero, mul_one, hv]
   rfl
 
 end GlobalTheory.CompanionTheory.Ar.Top.PermInv
@@ -127,7 +127,7 @@ theorem limUnder_arMono_perm {Ψ : Type} [Fintype Ψ] {N : ℕ} (M M' : RootMode
         (fun t => K.arMono II t (Finsupp.mapDomain some m)) = fun _ => 0 := by
       intro K m hm
       funext t
-      rw [RootModel.arMono, if_neg (by rw [degree_mapDomain, hm]; exact hd)]
+      rw [RootModel.arMono, ite_eq_right (by rw [degree_mapDomain, hm]; exact hd)]
     rw [h0 M _ (degree_mapDomain _ μ), h0 M' μ rfl]
 
 theorem propA_of_limits : ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) (T : GlobalTheory.CompanionTheory.Ar.Top.RootTower Ψ N)
@@ -245,7 +245,7 @@ theorem GlobalTheory.CompanionTheory.Ar.Cmp.HodgeA.propA_of_hodgeTower : CmpPair
   refine _root_.GlobalTheory.CompanionTheory.Ar.Top.PermInv.propA_of_limits (CMType H) (D.p + D.q) T II (relabGroup H) hConv ?_ ?_ hII.1
   · intro τ τ'
     obtain ⟨g, hg, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.HostAutTrans.existsUnique_hostAut_comp E H τ.1 τ'.1 τ.2 τ'.2
-    obtain ⟨π, hπ, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Label.automorphism_permutes_labels E H l c g
+    obtain ⟨π, hπ, -⟩ := _root_.PositivityTheory.UnitarySelfGeneration.cm_type_label_twist_permutation E H l c g
     exact ⟨π, ⟨g, hπ⟩, Subtype.ext ((hπ τ).trans hg.symm)⟩
   · intro s hs B _
     obtain ⟨g₀, hg₀⟩ := hs
@@ -654,7 +654,7 @@ theorem propA_of_origin : CmpPair → TwistAut → ∀ (II : IntersectionSystem)
     intro B a
     obtain ⟨-, ⟨x, hx⟩, -⟩ := HodgeCpt.basic _ _ _ _ _ _ _ _ Y _ _ _ _ _ (o.Or B a).𝔐 hinj
     exact _root_.GlobalTheory.CompanionTheory.Ar.hodgeTie_of_rootOrigin E H D l Xo c (𝓞 c.F) _ Y (o.S B) (T.M B a) (o.Sys a) (o.Fx a) (o.Or B a) (hOm B a)
-      (hdisc B) (_root_.GlobalTheory.CompanionTheory.Ar.RootAlg.algOver_of_immersion E H D l Xo c (𝓞 c.F) _ Y (o.S B) (T.M B a) (o.Sys a) (o.Fx a) (o.Or B a) x hx
+      (hdisc B) (_root_.PositivityTheory.UnitarySelfGeneration.o_algover E H D l Xo c (𝓞 c.F) _ Y (o.S B) (T.M B a) (o.Sys a) (o.Fx a) (o.Or B a) x hx
         hmono (hhol a))
   choose tie htie using hex
   have hgen : ∀ B a, genPt (tie B a).A.ξ₀ = genPt (o.Fx a).ξf := by

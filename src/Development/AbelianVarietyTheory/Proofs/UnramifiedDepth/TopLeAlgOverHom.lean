@@ -55,7 +55,6 @@ noncomputable section
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry IsLocalRing
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ ReciprocityTheory.ChartRestriction.G.Pdiv.ChartF
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.AddCurve
 
@@ -71,14 +70,5 @@ def cf (n : ℕ) : Tr R l →ₗ[R] R := (Polynomial.lcoeff R n).comp (AdjoinRoo
 variable (R l)
 
 end Rings
-
-section Points
-variable {k : Type} [CommRing k]
-
-variable {B : Over (Spec (CommRingCat.of k))}
-
-variable {R : Type} [CommRing R] [Algebra k R]
-
-end Points
 
 end GlobalTheory.AddCurve

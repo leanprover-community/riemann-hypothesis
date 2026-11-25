@@ -50,12 +50,6 @@ def IsTypeAt (τ : D.what₂.Tau) (S : SPar) (φ : GA D V → ℂ) : Prop :=
               B g * (S.map fun l => ‖l.foldr (dRep (fun g => σ (P * g * P⁻¹))) w‖).sum)) ∧
         ∀ g ∈ Formalism.QuantumDeterminants.UH (gramAt D V τ), HasSum (fun i => ℓ i (σ (P * g * P⁻¹) (v i))) (φ (x * atTau θ V τ g))
 
-def TypTied {X : ThetaX D} (T : ThetaTied D X) : Prop :=
-  AllSome (IsInfFam (D := D)) fun θ => ∀ V : HSp D, V.SigOK → ∀ P : D.what₂.Tau → SPar,
-    (∀ τ, GoodPar V.rank (V.sig (tauE D τ)).1 (V.sig (tauE D τ)).2 (P τ)) →
-    (∀ τ, SParGap V.rank (V.sig (tauE D τ)).1 (V.sig (tauE D τ)).2 (P τ)) →
-    ∀ F, F ∈ X.typ V P ↔ ∀ τ, IsTypeAt θ V τ (P τ) (T.ev V F)
-
 end Formalism.L2.Theta
 
 end

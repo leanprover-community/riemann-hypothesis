@@ -57,7 +57,7 @@ private theorem ordW_alg_lemma {O : Type*} [CommRing O] [IsDomain O] [IsDiscrete
     push_cast
     ring
   unfold ordW
-  rw [if_neg hx]
+  rw [ite_eq_right hx]
   exact congrArg _ (key _ (Classical.choose_spec (ordW._proof_1 (algebraMap O (KK O) z))))
 
 theorem vLEO_one {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] {p : ℕ} {D : ℝ} (hD : 0 ≤ D) :

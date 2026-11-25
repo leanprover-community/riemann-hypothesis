@@ -214,7 +214,7 @@ def extBundle (O' : Type) [CommRing O'] [Algebra O O'] {Ω' : Type} [Field Ω'] 
     ChartBundle O' (segreVec (bcPt Ω' y)) r (Fin r → Ω') where
   lat c := spanOver (chartRing O' (segreVec (bcPt Ω' y)) c)
     (bcMap Ω Ω' (Fin r) '' (B.lat c : Set (Fin r → Ω)))
-  stable c a ha e he := LocFreeBC.smul_mem_spanOver _ _ ha he
+  stable _ _ ha _ he := LocFreeBC.smul_mem_spanOver _ _ ha he
   frame c hc := (locFree_ext (O' := O') B c (segreVec_ne_zero_of_bcPt hc)).2
   overlap i j hi hj e he := span_overlap (segreVec y) (segreVec (bcPt Ω' y))
     (fun c => segreVec_bcPt y c) B.lat i j hi (B.overlap i j (segreVec_ne_zero_of_bcPt hi)

@@ -135,16 +135,6 @@ def cutMult (J qq : Ideal (Poly S N)) [qq.IsPrime] : ℕ∞ :=
 
 end Numbers
 
-section Domination
-
-variable {S : Type u} [CommRing S] {Ω : Type w} [Field Ω] [Algebra S Ω] {N N' : ℕ}
-
-
-
-
-
-end Domination
-
 section Restrict
 
 variable {S : Type u} [CommRing S] {Ω : Type w} [Field Ω] [Algebra S Ω] {N : ℕ}
@@ -276,12 +266,6 @@ theorem isVeryAmpleBy_twistSys_one : IsVeryAmpleBy (twistSys S x 1) x := by
 theorem isVeryAmple_twistSys_one : IsVeryAmple (twistSys S x 1) := ⟨N, x, isVeryAmpleBy_twistSys_one⟩
 
 end Inhabitants2
-
-section LineData
-
-variable (k : Type u) [Field k]
-
-end LineData
 
 end
 

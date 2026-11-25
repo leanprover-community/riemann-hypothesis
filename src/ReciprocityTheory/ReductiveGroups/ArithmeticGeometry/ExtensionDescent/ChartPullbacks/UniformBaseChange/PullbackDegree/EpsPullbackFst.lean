@@ -12,8 +12,6 @@ open CategoryTheory CategoryTheory.Limits MonoidalCategory CartesianMonoidalCate
   AlgebraicGeometry
 open scoped CategoryTheory.Obj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace ReciprocityTheory.ChartRestriction.G.Out.UBC
 
 open Semi
@@ -30,11 +28,5 @@ theorem homEquiv_mul {S S' : Scheme.{0}} (φ : S' ⟶ S) (X : Over S') (A : Over
 end Adj
 
 variable {R R' : Type} [CommRing R] [IsDomain R] [CommRing R'] [IsDomain R']
-
-section Kappa
-
-variable (φ : R →+* R') (hφ : Function.Injective φ)
-
-end Kappa
 
 end ReciprocityTheory.ChartRestriction.G.Out.UBC

@@ -119,8 +119,7 @@ theorem coeff_expS (f : MvPowerSeries σ K) (hf : MvPowerSeries.constantCoeff f 
   · intro n hn
     rw [Function.mem_support] at hn
     rw [Finset.coe_range, Set.mem_Iio]
-    by_contra hnN
-    push_neg at hnN
+    by_contra! hnN
     apply hn
     rw [low_pow hf n d (by omega), smul_zero]
 
@@ -244,9 +243,3 @@ theorem inLam_nsmul [IsUltrametricDist K] [Algebra ℚ K] {f : MvPowerSeries σ 
 end Normed
 
 end Formalism.HermitianLattices.ExpSeriesBivariate.ExpSeriesAddition
-
-namespace Formalism.HermitianLattices.ExpSeriesBivariate
-
-open ExpSeriesAddition
-
-end Formalism.HermitianLattices.ExpSeriesBivariate

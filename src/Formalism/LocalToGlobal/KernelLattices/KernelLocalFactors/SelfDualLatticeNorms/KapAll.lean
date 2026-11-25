@@ -1,5 +1,7 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NormSqMulGaussianLatticeTranslateEqShifted
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CMLatticeDividedPowerJetIntegralityOfHyp
 public import Formalism.LocalToGlobal.KernelLattices.KerStd
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.NormNatCoprime
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.PStdOK
@@ -217,18 +219,7 @@ section Main
 variable {D : D7}
 
 theorem norm_int_unit (p : ℕ) [Fact p.Prime] (m : ℤ) (h : ¬ (p : ℤ) ∣ m) : ‖(m : ℂ_[p])‖ = 1 := by
-  have hc : Nat.Coprime m.natAbs p := by
-    rw [Nat.coprime_comm, Nat.Prime.coprime_iff_not_dvd Fact.out]
-    intro hd
-    exact h (Int.natCast_dvd.2 hd)
-  have h1 := Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.RestC.norm_nat_coprime p hc
-  have h2 : ‖(m : ℂ_[p])‖ = ‖((m.natAbs : ℕ) : ℂ_[p])‖ := by
-    rcases Int.natAbs_eq m with e | e
-    · conv_lhs => rw [e]
-      simp
-    · conv_lhs => rw [e]
-      simp
-  rw [h2, h1]
+  apply _root_.GlobalTheory.SzRamified.norm_int_eq_one <;> assumption
 
 theorem norm_p_lt (p : ℕ) [Fact p.Prime] : ‖(p : ℂ_[p])‖ < 1 := by
   have h := PadicComplex.norm_extends' p (p : ℚ_[p])
@@ -418,12 +409,6 @@ noncomputable section
 open scoped BigOperators ComplexConjugate
 
 namespace Formalism.L2.Th1.H
-
-section Index
-
-variable {V : Type*} [AddCommGroup V]
-
-end Index
 
 section Lattice
 
@@ -1060,19 +1045,7 @@ section Val
 variable {K : Type} [Field K] [NumberField K] {p : ℕ} [Fact p.Prime] (f : K →+* ℂ_[p])
 
 theorem normO_le (a : 𝓞 K) : ‖f (a : K)‖ ≤ 1 := by
-  obtain ⟨P, hm, hP⟩ := RingOfIntegers.isIntegral_coe a
-  let v : Valuation ℂ_[p] NNReal := NormedField.valuation
-  have hv := Valuation.integer.integers v
-  have h2 : IsIntegral v.integer (f (a : K)) := by
-    refine ⟨P.map (Int.castRingHom v.integer), hm.map _, ?_⟩
-    rw [Polynomial.eval₂_map]
-    have e1 : (algebraMap v.integer ℂ_[p]).comp (Int.castRingHom v.integer) = f.comp (algebraMap ℤ K) :=
-      RingHom.ext_int _ _
-    rw [e1, ← Polynomial.hom_eval₂]
-    have : Polynomial.eval₂ (algebraMap ℤ K) (a : K) P = 0 := hP
-    rw [this, map_zero]
-  have := (hv.isIntegral_iff_v_le_one).mp h2
-  exact_mod_cast this
+  apply _root_.GlobalTheory.Vacuum.norm_int_le <;> assumption
 
 variable (𝔭 : HeightOneSpectrum (𝓞 K)) (ϖ : 𝓞 K) (h : ℕ) (hgen : 𝔭.asIdeal ^ h = Ideal.span {ϖ}) (hlt : ‖f (ϖ : K)‖ < 1)
 

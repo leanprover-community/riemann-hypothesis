@@ -5,6 +5,7 @@ public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.GeneratorCommutatorQua
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.QuantumDetHighestWeightHolds
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ShiftedGeneratorEqIteSmulAdd
 import Mathlib.Tactic.TypeStar
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CentralCharacters.QuasiDeterminantConjInv
 
 @[expose] public section
 
@@ -19,19 +20,7 @@ open Formalism.REAL Formalism.FourierDecayAlt.Q
 theorem sum_fun_eq_sum_perm {M : Type*} [AddCommMonoid M] {n : ℕ}
     (g : (Fin n → Fin n) → M) (hg : ∀ c, ¬ Function.Injective c → g c = 0) :
     ∑ c, g c = ∑ σ : Equiv.Perm (Fin n), g σ := by
-  classical
-  have h2 : ∑ σ : Equiv.Perm (Fin n), g σ = ∑ c ∈ Finset.univ.filter Function.Injective, g c := by
-    refine Finset.sum_nbij (fun σ => (σ : Fin n → Fin n)) (fun σ _ => by simpa using σ.injective)
-      (by intro a _ b _ h; exact DFunLike.coe_injective h) (by
-        intro c hc
-        have hc' : Function.Injective c := (Finset.mem_filter.1 (Finset.mem_coe.1 hc)).2
-        exact ⟨Equiv.ofBijective c (Finite.injective_iff_bijective.1 hc'),
-          Finset.mem_coe.2 (Finset.mem_univ _), rfl⟩) (fun _ _ => rfl)
-  rw [h2, Finset.sum_filter]
-  refine Finset.sum_congr rfl fun c _ => ?_
-  split_ifs with h
-  · rfl
-  · exact hg c h
+  apply _root_.PI.UnitaryGroupMassFormula.DSIC.sum_fun_eq_sum_perm <;> assumption
 
 theorem intCast_mul_eq_smul {A : Type*} [Ring A] [Algebra ℂ A] (z : ℤ) (x : A) :
     (z : A) * x = (z : ℂ) • x := by
@@ -98,8 +87,7 @@ theorem qnCovDet_of_lin (h : PI.QnCovLin) : PI.QnCovDet := by
   intro A _ _ n E P Q hE hQP hPQ u
   have hrep : ∀ c : Fin n → Fin n, ¬ Function.Injective c → ∃ p q, p ≠ q ∧ c p = c q := by
     intro c hc
-    by_contra hne
-    push_neg at hne
+    by_contra! hne
     exact hc (fun p q hpq => by_contra fun h => hne p q h hpq)
   have hrow : ∀ c d : Fin n → Fin n, ¬ Function.Injective c → qminor E c d u = 0 := by
     intro c d hc

@@ -11,31 +11,10 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.SliceCompactSupport
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.StandardPairingOfHeads
 
 -- This file was produced by scripts/clump.py from the modules listed below.
--- Members: Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGermLowGram, Formalism.HermitianCurvature.HermitianCurvatureProofs.CutCptManual
-
--- ===== clump member: Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGermLowGram =====
--- clump-header: {"m": "Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGermLowGram", "h": "module\n\npublic import Formalism.HermitianCurvature.HermitianCurvatureProofs.ExistsNormBoundThreeFamilies\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
-section -- clump:auto
-@[expose] public section
-
-namespace Formalism.FourierDecayAlt.P.CutBP
-
-open Formalism.FourierDecayAlt
-open scoped ComplexConjugate ComplexOrder InnerProductSpace
-
-noncomputable section
-
-open Classical
-
-end
-
-end Formalism.FourierDecayAlt.P.CutBP
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGermLowGram =====
+-- Members: Formalism.HermitianCurvature.HermitianCurvatureProofs.CutCptManual
 
 -- ===== clump member: Formalism.HermitianCurvature.HermitianCurvatureProofs.CutCptManual =====
--- clump-header: {"m": "Formalism.HermitianCurvature.HermitianCurvatureProofs.CutCptManual", "h": "module\n\npublic import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutCptDefs\nimport Formalism.HermitianCurvature.HermitianCurvatureProofs.BlockOfChoices\npublic import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGermLowGram\npublic import Formalism.HermitianCurvature.HermitianCurvatureProofs.FmSmulLeft\npublic import Formalism.HermitianCurvature.HermitianCurvatureProofs.HeadContinuityAtZeroOfStandard\npublic import Formalism.HermitianCurvature.HermitianCurvatureProofs.ModuleFormPosCompactSupport\nimport Formalism.HermitianCurvature.HermitianCurvatureProofs.SizeAtMinusW\nimport Formalism.HermitianCurvature.HermitianCurvatureProofs.SliceCompactSupportCoefficient\nimport Formalism.HermitianCurvature.HermitianCurvatureProofs.StandardPairingOfHeads\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Real\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+-- clump-header: {"m": "Formalism.HermitianCurvature.HermitianCurvatureProofs.CutCptManual", "h": "module\n\npublic import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutCptDefs\nimport Formalism.HermitianCurvature.HermitianCurvatureProofs.BlockOfChoices\npublic import Formalism.HermitianCurvature.HermitianCurvatureProofs.FmSmulLeft\npublic import Formalism.HermitianCurvature.HermitianCurvatureProofs.HeadContinuityAtZeroOfStandard\npublic import Formalism.HermitianCurvature.HermitianCurvatureProofs.ModuleFormPosCompactSupport\nimport Formalism.HermitianCurvature.HermitianCurvatureProofs.SizeAtMinusW\nimport Formalism.HermitianCurvature.HermitianCurvatureProofs.SliceCompactSupportCoefficient\nimport Formalism.HermitianCurvature.HermitianCurvatureProofs.StandardPairingOfHeads\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Real\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -485,7 +464,7 @@ theorem posAt_of_cptCpt (hA : P5.ThmPActualCpt) (p : KB.Pl P Wp Wq) (nn : ℝ �
   · have hrr : p.RR F j w h h =
         p.form j hj w (KB.slv p.T F j hj w h hh.2) (KB.slv p.T F j hj w h hh.2) := by
       unfold KB.Pl.RR D.RRplace
-      rw [dif_pos ⟨hh, hh⟩, dif_pos hj]
+      rw [dite_eq_left ⟨hh, hh⟩, dite_eq_left hj]
       rfl
     rw [hrr]
     have hx := Formalism.FourierDecayAlt.P.module_form_pos_compact_support hA _ _ P p j hj w hw.1 (KB.slv p.T F j hj w h hh.2)
@@ -493,7 +472,7 @@ theorem posAt_of_cptCpt (hA : P5.ThmPActualCpt) (p : KB.Pl P Wp Wq) (nn : ℝ �
     exact (Complex.le_def.mp hx).1
   · have hrr : p.RR F j w h h = 0 := by
       unfold KB.Pl.RR D.RRplace
-      rw [dif_neg (fun hc => hh hc.1)]
+      rw [dite_eq_right (fun hc => hh hc.1)]
     rw [hrr]
     simp
 
@@ -505,7 +484,7 @@ theorem truncated_limit_positivity_holdsCpt (hA : P5.ThmPActualCpt) (p : KB.Pl P
         p.form 0 (Nat.zero_le _) w (KB.slv p.T F 0 (Nat.zero_le _) w [] hh.2)
           (KB.slv p.T F 0 (Nat.zero_le _) w [] hh.2) := by
       unfold KB.Pl.RR D.RRplace
-      rw [dif_pos ⟨hh, hh⟩, dif_pos (Nat.zero_le _)]
+      rw [dite_eq_left ⟨hh, hh⟩, dite_eq_left (Nat.zero_le _)]
       rfl
     rw [hrr]
     have hx := Formalism.FourierDecayAlt.P.module_form_pos_compact_support hA _ _ P p 0 (Nat.zero_le _) w hw.1
@@ -514,7 +493,7 @@ theorem truncated_limit_positivity_holdsCpt (hA : P5.ThmPActualCpt) (p : KB.Pl P
     exact (Complex.le_def.mp hx).1
   · have hrr : p.RR F 0 w [] [] = 0 := by
       unfold KB.Pl.RR D.RRplace
-      rw [dif_neg (fun hc => hh hc.1)]
+      rw [dite_eq_right (fun hc => hh hc.1)]
     rw [hrr]
     simp
 

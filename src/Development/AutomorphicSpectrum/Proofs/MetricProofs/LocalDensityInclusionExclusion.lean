@@ -101,27 +101,27 @@ theorem locDens_expand_ofFun : ∀ {e : ℕ} {X : Type} [TopologicalSpace X] (A 
           else (if k ∈ Set.range c then 0 else 1)) := by
       intro S
       by_cases h : ∀ i, c i ∈ S
-      · rw [if_pos h]
+      · rw [ite_eq_left h]
         symm
         refine Finset.prod_eq_one fun k _ => ?_
         by_cases hkS : k ∈ S
-        · rw [if_pos hkS]
+        · rw [ite_eq_left hkS]
           split_ifs <;> simp
         · have hkr : k ∉ Set.range c := by
             rintro ⟨i, rfl⟩
             exact hkS (h i)
-          rw [if_neg hkS, if_neg hkr]
-      · push_neg at h
+          rw [ite_eq_right hkS, ite_eq_right hkr]
+      · push Not at h
         obtain ⟨i, hi⟩ := h
-        rw [if_neg (fun h' => hi (h' i))]
+        rw [ite_eq_right (fun h' => hi (h' i))]
         symm
         refine Finset.prod_eq_zero (Finset.mem_univ (c i)) ?_
-        rw [if_neg hi, if_pos (Set.mem_range_self i)]
+        rw [ite_eq_right hi, ite_eq_left (Set.mem_range_self i)]
     simp only [hterm]
     rw [hPE, Finset.prod_boole]
     by_cases hs : Function.Surjective c
-    · rw [if_pos hs, if_pos (show ∀ i ∈ Finset.univ, i ∈ Set.range c from fun k _ => hs k)]
-    · rw [if_neg hs, if_neg (show ¬ ∀ i ∈ Finset.univ, i ∈ Set.range c from fun h => hs fun k => h k (Finset.mem_univ k))]
+    · rw [ite_eq_left hs, ite_eq_left (show ∀ i ∈ Finset.univ, i ∈ Set.range c from fun k _ => hs k)]
+    · rw [ite_eq_right hs, ite_eq_right (show ¬ ∀ i ∈ Finset.univ, i ∈ Set.range c from fun h => hs fun k => h k (Finset.mem_univ k))]
   have hE : ∀ B : Fin e → Matrix (Fin e) (Fin e) ℂ,
       ∑ S : Finset (Fin e), (-1 : ℂ) ^ (e - S.card) * (∑ k ∈ S, B k).det =
         ∑ σ : Equiv.Perm (Fin e), ∑ c : Fin e → Fin e,
@@ -140,10 +140,10 @@ theorem locDens_expand_ofFun : ∀ {e : ℕ} {X : Type} [TopologicalSpace X] (A 
       rw [Fintype.prod_sum, Finset.mul_sum]
       refine Finset.sum_congr rfl fun c _ => ?_
       by_cases h : ∀ i, c i ∈ S
-      · rw [if_pos h, one_mul, Finset.prod_congr rfl fun i _ => if_pos (h i)]
-      · push_neg at h
+      · rw [ite_eq_left h, one_mul, Finset.prod_congr rfl fun i _ => ite_eq_left (h i)]
+      · push Not at h
         obtain ⟨i, hi⟩ := h
-        rw [if_neg (fun h' => hi (h' i)), zero_mul, Finset.prod_eq_zero (Finset.mem_univ i) (if_neg hi),
+        rw [ite_eq_right (fun h' => hi (h' i)), zero_mul, Finset.prod_eq_zero (Finset.mem_univ i) (ite_eq_right hi),
           mul_zero]
     simp only [h1, Finset.mul_sum]
     rw [Finset.sum_comm (s := (Finset.univ : Finset (Finset (Fin e))))]
@@ -182,10 +182,10 @@ theorem locDens_expand_ofFun : ∀ {e : ℕ} {X : Type} [TopologicalSpace X] (A 
             (((Equiv.Perm.sign σ : ℤ) : ℂ) * ∏ i, (if c i ∈ T then B (c i) + C else C) (σ i) i)) := by
       intro σ c
       by_cases hc : Function.Surjective c
-      · rw [if_pos hc, ← hT B C σ c hc, Finset.mul_sum, Finset.mul_sum]
+      · rw [ite_eq_left hc, ← hT B C σ c hc, Finset.mul_sum, Finset.mul_sum]
         refine Finset.sum_congr rfl fun T _ => ?_
         ring
-      · simp only [if_neg hc, zero_mul, mul_zero, Finset.sum_const_zero]
+      · simp only [ite_eq_right hc, zero_mul, mul_zero, Finset.sum_const_zero]
     rw [Finset.sum_congr rfl fun σ _ => Finset.sum_congr rfl fun c _ => hterm σ c]
     simp only [Finset.mul_sum]
     rw [Finset.sum_comm (s := (Finset.univ : Finset (Finset (Fin e))))]

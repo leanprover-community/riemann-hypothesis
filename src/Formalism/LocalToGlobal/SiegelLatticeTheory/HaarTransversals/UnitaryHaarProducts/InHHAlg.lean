@@ -116,7 +116,7 @@ theorem level_subgroup_eq_support (hK : X.LevelSubgroupCharacter) (hKL : X.Level
   constructor
   · intro hx
     have hx' : x ∈ K2set X.B.I X.B.g X.e0 X.z0 X.bw := hx
-    rw [if_pos hx']
+    rw [ite_eq_left hx']
     have hn : ‖X.chi2 x‖ = 1 := hK.2.2.2.2 x hx
     have hvol : (X.B.μf X.K2).toReal ≠ 0 := ENNReal.toReal_ne_zero.2 ⟨hKL.2.2.1.ne', hKL.2.2.2.ne⟩
     have hc : star (X.chi2 x) ≠ 0 := by
@@ -125,7 +125,7 @@ theorem level_subgroup_eq_support (hK : X.LevelSubgroupCharacter) (hKL : X.Level
   · intro hx
     by_contra hnot
     have hnot' : x ∉ K2set X.B.I X.B.g X.e0 X.z0 X.bw := hnot
-    rw [if_neg hnot'] at hx
+    rw [ite_eq_right hnot'] at hx
     exact hx rfl
 
 theorem level_subgroup_isClopen (hK : X.LevelSubgroupCharacter) (hKL : X.LevelSubgroupNormalized) : IsClopen X.K2 := by
@@ -235,7 +235,7 @@ theorem hA_f_usp (a : Fin D.R.rS) : ∀ y ∈ Usp X a.1, hA X.B.I (incl X.B.I (X
     rintro _ ⟨b, hb, rfl⟩
     simp only [Set.mem_setOf_eq] at hb
     simp only [SetLike.mem_coe, LinearMap.mem_ker, hAlin_apply, hA_f_e]
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro rfl
     exact lt_irrefl _ hb
   simpa only [LinearMap.mem_ker, hAlin_apply] using key hy
@@ -305,7 +305,7 @@ theorem nfin_ca_mul {n n' : X.B.I.Gf} (hn : n ∈ X.NfinU u) (hn' : n' ∈ X.Nfi
   have hv0 : hA X.B.I (incl X.B.I (X.fR a)) (incl X.B.I (nxt X.eR (X.zR u) a)) = 0 := by
     unfold Formalism.L2.SG.HidaSetting.nxt
     split_ifs with h
-    · rw [hA_f_e, if_neg]
+    · rw [hA_f_e, ite_eq_right]
       intro h'
       have := congrArg Fin.val h'
       simp at this
@@ -753,7 +753,7 @@ theorem level_character_eq_conj_idempotent (hKL : X.LevelSubgroupNormalized) (κ
   have hκ' : κ ∈ K2set X.B.I X.B.g X.e0 X.z0 X.bw := hκ
   have hvol : (X.B.μf X.K2).toReal ≠ 0 := ENNReal.toReal_ne_zero.2 ⟨hKL.2.2.1.ne', hKL.2.2.2.ne⟩
   have hv : ((X.B.μf X.K2).toReal : ℂ) ≠ 0 := by exact_mod_cast hvol
-  rw [X.e_eq κ, if_pos hκ', star_div₀, star_star]
+  rw [X.e_eq κ, ite_eq_left hκ', star_div₀, star_star]
   have hs : star (((X.B.μf (K2set X.B.I X.B.g X.e0 X.z0 X.bw)).toReal : ℝ) : ℂ) =
       (((X.B.μf X.K2).toReal : ℝ) : ℂ) := Complex.conj_ofReal _
   rw [hs, div_mul_cancel₀ _ hv]

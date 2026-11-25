@@ -263,10 +263,10 @@ theorem exists_smith_basis (hv : v.Integers R) {ι : Type} [Fintype ι] [Decidab
     · have hj : ((e (e.symm j)) : ℕ) < m := by
         rw [Equiv.apply_symm_apply, ← hkj]; exact k.2
       have hε : ε (e.symm j) = a j := by
-        simp only [ε, if_pos hj, Equiv.apply_symm_apply]
-      rw [if_pos hkj, mul_smul, ← hε]
+        simp only [ε, ite_eq_left hj, Equiv.apply_symm_apply]
+      rw [ite_eq_left hkj, mul_smul, ← hε]
       exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨e.symm j, rfl⟩)
-    · rw [if_neg hkj, mul_zero, zero_smul]
+    · rw [ite_eq_right hkj, mul_zero, zero_smul]
       exact Submodule.zero_mem _
   · rw [Submodule.span_le]
     rintro _ ⟨j, rfl⟩
@@ -283,17 +283,17 @@ theorem exists_smith_basis (hv : v.Integers R) {ι : Type} [Fintype ι] [Decidab
           rw [Matrix.mul_apply, Finset.sum_eq_single (e j)]
           · rw [hD]; simp [mul_comm]
           · intro b _ hb
-            rw [hD, if_neg, mul_zero]
+            rw [hD, ite_eq_right, mul_zero]
             intro h
             exact hb (Fin.ext h.symm)
           · intro h; exact absurd (Finset.mem_univ _) h
         simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
         rw [← h2, h1, h3]
-        simp only [ε, if_pos hj, Λ, Matrix.of_apply]
+        simp only [ε, ite_eq_left hj, Λ, Matrix.of_apply]
       rw [hsum, ← hg]
       exact Submodule.sum_mem _ fun l _ =>
         Submodule.smul_mem _ _ (Submodule.subset_span ⟨l, rfl⟩)
-    · have : ε j = 0 := if_neg hj
+    · have : ε j = 0 := ite_eq_right hj
       rw [this, zero_smul]
       exact Submodule.zero_mem _
 

@@ -32,9 +32,6 @@ abbrev boundaryComponentsInOrderLocusOpens (T : MarkedIdealWithBoundary.{u}) (j 
     (T.boundary.get ⟨j, hj⟩).subscheme.Opens :=
   ⟨boundaryComponentsInOrderLocus T j hj, h⟩
 
-theorem one_le_mult_of_isAdmissible (T : MarkedIdealWithBoundary.{u}) (hV : T.IsAdmissible) : 1 ≤ T.mult :=
-  hV.one_le_mult
-
 theorem isSmoothDivisor_boundary_comap_isoObjZero (T : MarkedIdealWithBoundary.{u}) (hV : T.IsAdmissible) (j : ℕ)
     (hj : j < T.boundary.length) (s : T.SequenceOfBlowups) :
     IsSmoothDivisor (s.projectionToSpec 0) ((T.boundary.get ⟨j, hj⟩).comap s.isoZero.hom) := by

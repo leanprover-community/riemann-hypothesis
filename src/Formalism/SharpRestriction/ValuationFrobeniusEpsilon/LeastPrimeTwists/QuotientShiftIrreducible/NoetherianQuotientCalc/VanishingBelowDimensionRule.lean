@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.ValuationFrobeniusEpsilon.LeastPrimeTwists.QuotientShiftIrreducible.NoetherianQuotientCalc.EulerAdditivityInSection
 public import Formalism.SharpRestriction.ValuationFrobeniusEpsilon.LeastPrimeTwists.QuotientShiftIrreducible.NoetherianQuotientCalc.EulerVanishingBelowDimension
 import Mathlib.NumberTheory.Height.NumberField
 
@@ -48,19 +49,10 @@ theorem chi_ev_zero (ts : List (Deg k × R)) : ∀ (F : GMod B R k),
     simp [chi, a, b]
 
 theorem ann_le_sub (F : GMod B R k) (N : Submodule R F.M) : F.Ann ≤ (F.sub N).Ann := by
-  intro a ha
-  refine Module.mem_annihilator.mpr fun x => ?_
-  have hx : ∀ x : N, a • x = 0 := fun x => Subtype.ext (Module.mem_annihilator.mp ha x.1)
-  exact hx x
+  exact Formalism.MainNotions.V.Pf.V2.Calc.E7.ann_le_sub F N
 
 theorem ann_le_quo (F : GMod B R k) (N : Submodule R F.M) : F.Ann ≤ (F.quo N).Ann := by
-  intro a ha
-  refine Module.mem_annihilator.mpr fun x => ?_
-  have hx : ∀ x : F.M ⧸ N, a • x = 0 := by
-    intro x
-    obtain ⟨y, rfl⟩ := Submodule.Quotient.mk_surjective _ x
-    rw [← Submodule.Quotient.mk_smul, Module.mem_annihilator.mp ha y, Submodule.Quotient.mk_zero]
-  exact hx x
+  apply _root_.Formalism.MainNotions.V.Pf.V2.Calc.E7.ann_le_quo <;> assumption
 
 theorem ann_sup_le_quot (F : GMod B R k) (σ : R) : F.Ann ⊔ Ideal.span {σ} ≤ (F.quot σ).Ann := by
   refine sup_le (ann_le_quo F _) ?_
@@ -108,13 +100,7 @@ def isoQuot (F : GMod B R k) (s : R) (h : ∀ x : F.M, s • x = 0) : GIso F (F.
 
 theorem secs_cons_le (d : Deg k) (s : R) (ts : List (Deg k × R)) :
     secs ((d, s) :: ts) ≤ Ideal.span {s} ⊔ secs ts := by
-  refine Ideal.span_le.mpr ?_
-  rintro x ⟨d', hx⟩
-  rcases List.mem_cons.mp hx with h | h
-  · have : x = s := congrArg Prod.snd h
-    subst this
-    exact Ideal.mem_sup_left (Ideal.mem_span_singleton_self x)
-  · exact Ideal.mem_sup_right (Ideal.subset_span ⟨d', h⟩)
+  apply _root_.Formalism.MainNotions.V.Pf.V2.Calc.E7.secs_cons_le_sup <;> assumption
 
 end Gen
 

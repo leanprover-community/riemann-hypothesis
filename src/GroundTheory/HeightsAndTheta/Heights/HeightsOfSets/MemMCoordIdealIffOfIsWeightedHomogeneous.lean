@@ -96,10 +96,10 @@ theorem mem_mCoordIdeal_iff {Ω : Type*} [Field Ω] (y : Coord n → Ω)
     rw [← sum_compDegs f, map_sum, coeff_sum, AddMonoidAlgebra.coeff_zero,
     Finset.sum_eq_single m₀] at hk
     · rwa [mConeMap_of_isWeightedHomogeneous y
-        (weightedHomogeneousComponent_isWeightedHomogeneous m₀ f), coeff_monomial, if_pos rfl] at hk
+        (weightedHomogeneousComponent_isWeightedHomogeneous m₀ f), coeff_monomial, ite_eq_left rfl] at hk
     · intro m _ hm
       rw [mConeMap_of_isWeightedHomogeneous y
-        (weightedHomogeneousComponent_isWeightedHomogeneous m f), coeff_monomial, if_neg]
+        (weightedHomogeneousComponent_isWeightedHomogeneous m f), coeff_monomial, ite_eq_right]
       exact fun h ↦ hm (Finsupp.equivFunOnFinite.symm.injective h)
     · exact fun h ↦ absurd hm₀ h
   · intro h

@@ -14,8 +14,6 @@ public import Mathlib.RingTheory.MvPowerSeries.Rename
 section -- clump:auto
 @[expose] public section
 
-set_option autoImplicit false
-
 noncomputable section
 
 namespace Formalism.MainNotions.ModuliIntegralCharts.H1
@@ -33,7 +31,7 @@ theorem colSum_zero {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host
   simp only [harmK, Submodule.mem_iInf, LinearMap.mem_ker] at h0
   have h1 := h0 τ hτ i i'
   rw [← h1]
-  simp only [lap, Matrix.one_apply, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+  simp only [lap, Matrix.one_apply, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   rw [LinearMap.sum_apply]
   rfl
 
@@ -50,8 +48,6 @@ end -- clump:auto
 -- clump-header: {"m": "Formalism.SharpRestriction.Divisibility.GeneratorPowers.ConstantCoeffPolyAdd", "h": "module\n\npublic import Formalism.LocalToGlobal.ProjectiveLattices.IsExpChart\npublic import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.KillAdd\npublic import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndEnc\npublic import Mathlib.RingTheory.MvPowerSeries.Rename\npublic import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndEncPf\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\n\n"}
 section -- clump:auto
 @[expose] public section
-
-set_option autoImplicit false
 
 noncomputable section
 
@@ -271,7 +267,7 @@ theorem secondOrder_zero {E : Type} [Field E] [NumberField E] [IsCMField E] {H :
     simp [dotProduct, Matrix.mulVec, Pi.single_apply]
   unfold TB.secondOrder
   simp only [hdot, Fintype.sum_prod_type, apply_ite MvPolynomial.C, map_zero, ite_mul, zero_mul,
-    Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   refine Finset.sum_eq_zero fun ℓ _ => ?_
   rw [Finset.sum_comm]
   refine Finset.sum_eq_zero fun ℓ' _ => ?_
@@ -321,11 +317,11 @@ theorem coeff_prod_cols {S : Type} [CommRing S] {n d : ℕ} (g : Fin n → MvPow
     obtain ⟨b', j⟩ := q
     by_cases h : b' = b
     · subst h
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       show Finsupp.mapDomain (ι b') (colPart b' M) (ι b' (0, j)) = M (b', j)
       rw [Finsupp.mapDomain_apply_of_injective (colEmb_inj b')]
       simp [colPart, Finsupp.comapDomain_apply]
-    · rw [if_neg h]
+    · rw [ite_eq_right h]
       apply Finsupp.mapDomain_notin_range
       rintro ⟨p, hp⟩
       simp only [ι, Prod.mk.injEq] at hp

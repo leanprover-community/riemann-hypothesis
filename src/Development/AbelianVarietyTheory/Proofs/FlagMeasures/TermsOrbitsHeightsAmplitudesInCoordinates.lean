@@ -150,7 +150,7 @@ theorem swap_es (x : V) (b : Fin r) : H.h (swapMap A B x) (B.es b) = H.h x (A.es
   unfold swapFun
   rw [_root_.Formalism.MainNotions.BridgeLemma.h_sub_left, H.h_add_left, H.h_add_left, _root_.Formalism.MainNotions.BridgeLemma.h_sum_left, _root_.Formalism.MainNotions.BridgeLemma.h_sum_left, _root_.Formalism.MainNotions.BridgeLemma.h_sum_left]
   simp only [h_e_esB A B hf, B.h_ss, mul_zero, Finset.sum_const_zero, add_zero, mul_ite, mul_one,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   ring
 
 theorem swap_e (x : V) (b : Fin r) : H.h (swapMap A B x) (A.e b) = H.h x (A.e b) := by
@@ -159,7 +159,7 @@ theorem swap_e (x : V) (b : Fin r) : H.h (swapMap A B x) (A.e b) = H.h x (A.e b)
   rw [_root_.Formalism.MainNotions.BridgeLemma.h_sub_left, H.h_add_left, H.h_add_left, _root_.Formalism.MainNotions.BridgeLemma.h_sum_left, _root_.Formalism.MainNotions.BridgeLemma.h_sum_left, _root_.Formalism.MainNotions.BridgeLemma.h_sum_left]
   have hee : ∀ a, H.h (A.e a) (A.e b) = 0 := fun a => A.h_iso _ _ (Or.inl (Fin.castSucc_lt_last a).ne)
   simp only [hee, ng_prF_e, h_esB_e A B hf, mul_zero, Finset.sum_const_zero, add_zero, zero_add, mul_ite, mul_one,
-    Finset.sum_ite_eq, Finset.mem_univ, if_true, sub_zero]
+    Finset.sum_ite_eq, Finset.mem_univ, ite_true, sub_zero]
 
 theorem swap_prF (x : V) : B.prF (swapMap A B x) - A.prF x = - ∑ a, H.h (A.prF x) (B.es a) • A.e a := by
   have e1 : B.prF (swapMap A B x) = swapMap A B x - ∑ a, H.h x (A.es a) • A.e a -
@@ -201,13 +201,13 @@ theorem swap_fix (b : Fin (r + 1)) : swapMap A B (A.f b) = A.f b := by
       have := ng_prF_e (Fr := A) (A.f a.castSucc)
       unfold FrameD.prF
       have hs : ∑ c, H.h (A.f a.castSucc) (A.es c) • A.e c = A.e a := by
-        simp only [A.h_es, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+        simp only [A.h_es, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
       have hz : ∑ c, H.h (A.f a.castSucc) (A.e c) • A.es c = 0 :=
         Finset.sum_eq_zero (fun c _ => by
           rw [show H.h (A.f a.castSucc) (A.e c) = 0 from A.h_iso _ _ (Or.inl (Fin.castSucc_lt_last a).ne), zero_smul])
       rw [hs, hz]; show A.f a.castSucc - A.f a.castSucc - 0 = 0; simp
     have hs : ∑ c, H.h (A.f a.castSucc) (A.es c) • A.e c = A.f a.castSucc := by
-      simp only [A.h_es, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, if_true]; rfl
+      simp only [A.h_es, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]; rfl
     have hz : ∑ c, H.h (A.f a.castSucc) (A.e c) • B.es c = 0 :=
       Finset.sum_eq_zero (fun c _ => by
         rw [show H.h (A.f a.castSucc) (A.e c) = 0 from A.h_iso _ _ (Or.inl (Fin.castSucc_lt_last a).ne), zero_smul])

@@ -71,14 +71,7 @@ open GlobalTheory.Desc
 namespace GlobalTheory.SmoothStalkNormal
 
 theorem flat_fromSpecStalk' (X : Scheme.{0}) (x : X) : Flat (X.fromSpecStalk x) := by
-  obtain ⟨U, hU, hx, -⟩ := exists_isAffineOpen_mem_and_subset (show x ∈ (⊤ : X.Opens) from trivial)
-  rw [← hU.fromSpecStalk_eq_fromSpecStalk hx, IsAffineOpen.fromSpecStalk]
-  have : Flat (Spec.map (X.presheaf.germ U x hx)) := by
-    rw [HasRingHomProperty.Spec_iff (P := @Flat)]
-    let _ := X.presheaf.algebra_section_stalk ⟨x, hx⟩
-    have := hU.isLocalization_stalk ⟨x, hx⟩
-    exact IsLocalization.flat (X.presheaf.stalk x) (hU.primeIdealOf ⟨x, hx⟩).asIdeal.primeCompl
-  infer_instance
+  exact GlobalTheory.Reg.ChartGenerator.flat_fromSpecStalk x
 
 theorem injective_of_flat_of_isDomain {A B : Type} [CommRing A] [IsDomain A] [CommRing B]
     [Nontrivial B] (f : A →+* B) (hf : f.Flat) : Function.Injective f := by

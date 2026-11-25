@@ -20,8 +20,6 @@ variable {n : ℕ} (G : Grp k n)
 
 namespace Iwahori₂
 
-theorem inPow_zero (a : ℕ) : InPow a (0 : k) := P_Jone.inPow_zero a
-
 theorem mem_uRL {R : Type} [CommRing R] (X : GL (Fin n) R) :
     X ∈ unipRadLower R G.e ↔ ∀ i j, (G.bl i < G.bl j → (X : Matrix (Fin n) (Fin n) R) i j = 0) ∧
       (G.bl i = G.bl j → (X : Matrix (Fin n) (Fin n) R) i j = if i = j then 1 else 0) := by

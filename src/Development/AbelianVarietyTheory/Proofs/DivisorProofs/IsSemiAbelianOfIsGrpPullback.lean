@@ -54,7 +54,6 @@ import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj IsLocalRing NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
 noncomputable section
@@ -69,9 +68,7 @@ theorem isSemiAbelian_of_isGrpPullback {S S' : Scheme.{0}} {G : Over S} [GrpObj 
   exact GlobalTheory.isSemiAbelian_of_grpIso e (IsSemiAbelian.pullback _ G hG)
 
 theorem mono_jK (R : Type) [CommRing R] [IsDomain R] : Mono (jK R) := by
-  haveI : Scheme.Spec.IsRightAdjoint := ΓSpec.adjunction.isRightAdjoint
-  have : Mono (Scheme.Spec.map (CommRingCat.ofHom (algebraMap R (FractionRing R))).op) := inferInstance
-  exact this
+  exact GlobalTheory.PolDeg.Wit.mono_jK
 
 end GlobalTheory.Mum.EvenDesc
 

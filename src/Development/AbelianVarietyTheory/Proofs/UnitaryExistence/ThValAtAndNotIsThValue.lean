@@ -52,8 +52,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.O
 open GlobalTheory.VVRank (pullS isPullSec_pullS)
 open GlobalTheory.TwistBaseChange (eq_pullS_of_isPullSec)
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 namespace GlobalTheory.ThetaRuleCompare
 
 section Descent
@@ -96,27 +94,5 @@ theorem pullS_comp {T T' T'' : Over S} (h' : T'' ⟶ T') (h : T' ⟶ T) (s : LB.
 end Descent
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Geo.Tor.Level H}
-
-section Auxiliary
-
-variable (Xo : Moduli Dw l) (c : Coeff l)
-
-variable {Xo c}
-
-end Auxiliary
-
-section Translates
-
-variable (Xo : Moduli Dw l)
-
-variable {Xo}
-
-end Translates
-
-section Values
-
-variable {Xo : Moduli Dw l} {c : Coeff l}
-
-end Values
 
 end GlobalTheory.ThetaRuleCompare

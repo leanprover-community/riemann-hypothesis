@@ -93,12 +93,6 @@ theorem fIwasawa_chi_mul (hα : ∀ i, α i ≠ 0) (hq : (q : ℂ) ≠ 0) (b c :
     ring
   · rw [mul_one]
 
-private lemma GL_inv_blockTriangular (g : GL (Fin n) L)
-    (hg : (g : Matrix (Fin n) (Fin n) L).BlockTriangular id) :
-    ((g⁻¹ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L).BlockTriangular id := by
-  rw [Matrix.coe_units_inv]
-  exact Matrix.blockTriangular_inv_of_blockTriangular hg
-
 private lemma KU_entries_valuation_le_one (g : GU σ n) (hg : g ∈ KU σ n) (i j : Fin n) :
     Valued.v (((g : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) i j) ≤ 1 ∧
     Valued.v ((((g : GL (Fin n) L)⁻¹ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) i j) ≤ 1 := by
@@ -113,7 +107,7 @@ private lemma KU_entries_valuation_le_one (g : GU σ n) (hg : g ∈ KU σ n) (i 
 theorem fIwasawa_chi_int (b : GU σ n)
     (hb : ((b : GL (Fin n) L) : Matrix (Fin n) (Fin n) L).BlockTriangular id) (hk : b ∈ KU σ n) :
     chiDeltaU q α b = 1 := by
-  have hbinv := GL_inv_blockTriangular (b : GL (Fin n) L) hb
+  have hbinv := Formalism.UG.P.spherical_upper_inv (b : GL (Fin n) L) hb
   unfold Formalism.UG.chiDeltaU
   apply Finset.prod_eq_one
   intro i _
@@ -152,7 +146,7 @@ theorem fIwasawa_wd (hα : ∀ i, α i ≠ 0) (hq : (q : ℂ) ≠ 0) (b b' k k' 
   have hc_eq2 : k' * k⁻¹ = b'⁻¹ * b := by rw [hc_eq]; group
   have htri : (((k' * k⁻¹ : GU σ n) : GL (Fin n) L) : Matrix (Fin n) (Fin n) L).BlockTriangular id := by
     rw [hc_eq2]
-    exact Matrix.BlockTriangular.mul (GL_inv_blockTriangular (b' : GL (Fin n) L) hb') hb
+    exact Matrix.BlockTriangular.mul (Formalism.UG.P.spherical_upper_inv (b' : GL (Fin n) L) hb') hb
   rw [hc_eq, fIwasawa_chi_mul σ q α hα hq b' (k' * k⁻¹) hb' htri,
     fIwasawa_chi_int σ q α (k' * k⁻¹) htri hkk, mul_one]
 

@@ -59,7 +59,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 noncomputable section
 namespace GlobalTheory.ArchRec.JointTransfer
@@ -247,9 +246,9 @@ theorem killedBy_iff (hA : Side A pt κ (phiFr (M.fr τ) br e) c a) {i j : Ix p 
       rw [← two_smul ℂ v] at hv
       simpa using hv
     cases br
-    · simp only [sb, Bool.false_eq_true, if_false, Complex.ofReal_one, neg_smul, one_smul]
+    · simp only [sb, Bool.false_eq_true, ite_false, Complex.ofReal_one, neg_smul, one_smul]
       exact ⟨fun hv => h2 _ (by linear_combination hv), fun hv => by rw [hv]; ring⟩
-    · simp only [sb, if_true, Complex.ofReal_neg, Complex.ofReal_one, neg_neg, one_smul]
+    · simp only [sb, ite_true, Complex.ofReal_neg, Complex.ofReal_one, neg_neg, one_smul]
       exact ⟨fun hv => h2 _ (by linear_combination -hv), fun hv => by rw [hv]; ring⟩
   simp only [mul_zero, zero_smul, add_zero] at d1 d2
   rw [← key]
@@ -279,13 +278,13 @@ theorem isHi_iff {lam : Ix p q → ℚ} (hp : IsParam lam) (ho : IsOrd (M.ε τ)
     cases br <;> simp [sb, sg]
   · simp only [e.surjective.forall, ho.1 _, lt_iff ho, posC_iff hp]
     cases br
-    · simp only [sg, if_true, one_mul, Rat.cast_lt]
+    · simp only [sg, ite_true, one_mul, Rat.cast_lt]
       constructor
       · rintro h i j ⟨h1, h2⟩
         exact (killedBy_iff hA (fun hh => by subst hh; exact lt_irrefl _ h2) h1 P).1 (h i j h2 h1)
       · intro h i j h2 h1
         exact (killedBy_iff hA (fun hh => by subst hh; exact lt_irrefl _ h2) h1 P).2 (h i j ⟨h1, h2⟩)
-    · simp only [sg, Bool.true_eq_false, if_false, neg_mul, one_mul, neg_lt_neg_iff, Rat.cast_lt]
+    · simp only [sg, Bool.true_eq_false, ite_false, neg_mul, one_mul, neg_lt_neg_iff, Rat.cast_lt]
       constructor
       · rintro h i j ⟨h1, h2⟩
         exact (killedBy_iff hA (fun hh => by subst hh; exact lt_irrefl _ h2) h1.symm P).1 (h j i h2 h1.symm)
@@ -301,13 +300,13 @@ theorem isLo_iff {lam : Ix p q → ℚ} (hp : IsParam lam) (ho : IsOrd (M.ε τ)
     cases br <;> simp [sb, sg]
   · simp only [e.surjective.forall, ho.1 _, lt_iff ho, posC_iff hp]
     cases br
-    · simp only [sg, Bool.false_eq_true, if_false, neg_mul, one_mul, neg_lt_neg_iff, Rat.cast_lt]
+    · simp only [sg, Bool.false_eq_true, ite_false, neg_mul, one_mul, neg_lt_neg_iff, Rat.cast_lt]
       constructor
       · rintro h i j ⟨h1, h2⟩
         exact (killedBy_iff hA (fun hh => by subst hh; exact lt_irrefl _ h2) h1 P).1 (h j i h2 h1.symm)
       · intro h i j h2 h1
         exact (killedBy_iff hA (fun hh => by subst hh; exact lt_irrefl _ h2) h1.symm P).2 (h j i ⟨h1.symm, h2⟩)
-    · simp only [sg, if_true, one_mul, Rat.cast_lt]
+    · simp only [sg, ite_true, one_mul, Rat.cast_lt]
       constructor
       · rintro h i j ⟨h1, h2⟩
         exact (killedBy_iff hA (fun hh => by subst hh; exact lt_irrefl _ h2) h1.symm P).1 (h i j h2 h1)
@@ -347,7 +346,6 @@ open GlobalTheory.Chain (signed)
 open GlobalTheory.Chain.RealIt (LPol locS locT IsPolyIso)
 open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.ArchRec
 
 end -- clump:auto

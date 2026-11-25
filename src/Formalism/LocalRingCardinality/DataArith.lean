@@ -40,8 +40,6 @@ def lw (w : HeightOneSpectrum (𝓞 K)) : ℝ :=
 
 def eWL (w : HeightOneSpectrum (𝓞 K)) : ℕ := w.asIdeal.ramificationIdx ℤ
 
-def sizeOfVal (w : HeightOneSpectrum (𝓞 K)) (y : ℝ) : ℝ := 2 * lw K w * y
-
 end Places
 
 def bridge_unit_rule : Prop :=

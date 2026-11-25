@@ -524,11 +524,6 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.AvgFree.Cov
 
-theorem exists_sep {K : Type} [AddCommGroup K] (H : AddSubgroup K) (T : Finset K) :
-    ∃ Rep : Finset K, Rep ⊆ T ∧ (∀ x ∈ T, ∃ r ∈ Rep, x - r ∈ H) ∧
-      ∀ r ∈ Rep, ∀ r' ∈ Rep, r - r' ∈ H → r = r' :=
-  _root_.UpperTheory.Reformulated.B.P6.r08a.GlobalTheory.CompanionTheory.AvgFree.Cov.exists_sep H T
-
 theorem exists_reps {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalRing K] [MeasurableSpace K]
     [BorelSpace K] (μ : Measure K) [μ.IsAddHaarMeasure] (O : Subring K) (hOc : IsCompact (O : Set K))
     (hOo : IsOpen (O : Set K)) (s : Kˣ) (hs : (s : K) ∈ O) (c : ℝ≥0)
@@ -1784,8 +1779,7 @@ theorem GlobalTheory.CompanionTheory.AvgFree.bad_density : ∀ (F E : Type) [Fie
       rintro X ⟨⟨hX1, hX2⟩, hX3⟩
       have h1 : ∃ p ∈ S, X ∈ nearNF (M := M) (n := n) (Fv F v) (O : Set (Fv F v ⊗[F] E))
           (L : Set (Fv F v ⊗[F] E)) (p.1 : Fv F v ⊗[F] E) j := by
-        by_contra hcon
-        push_neg at hcon
+        by_contra! hcon
         refine hX2 ⟨hX1, ?_⟩
         simp only [Set.mem_iUnion, not_exists]
         exact fun p hpS => hcon p hpS

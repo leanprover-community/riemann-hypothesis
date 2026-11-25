@@ -76,7 +76,7 @@ theorem gaugeF_eq (k r : ℕ) : gaugeF k r = fun x => ∏ a : Fin r, gam k r a x
   unfold gaugeF Formalism.FourierDecayAlt.Q.resG
   simp only [smul_eq_mul, mul_one, gam, Complex.ofReal_prod]
   refine Finset.prod_congr rfl fun a _ => ?_
-  rw [if_pos (by simp)]
+  rw [ite_eq_left (by simp)]
 
 theorem gam_smooth (a : Fin r) : ContDiffOn ℝ ∞ (gam k r a) (OmX r) := by
   intro x hx
@@ -162,19 +162,19 @@ theorem pbOp_gauge (i : Fin r) (f : (Fin r → ℂ) → X) (hf : f ∈ WSm r X) 
       simp
     have hpg := Formalism.FourierDecayAlt.P.Qx6.pbOp_gamma i hx (Mdim k r i - 1)
     unfold pbOp at hpg
-    rw [if_pos hx] at hpg
+    rw [ite_eq_left hx] at hpg
     have key : star (x i) * wirtBar i (gam k r i) x =
         ((Mdim k r i - 1 : ℕ) : ℂ) / 2 * gam k r i x := by
       rw [← smul_eq_mul]
       exact hpg
     unfold pbOp
-    rw [if_pos hx, if_pos hx, hsplit, wbar_smul_lemma i (gam k r i) (fun y => gamO k r i y • f y) x hgi (hgO.smul hfd),
+    rw [ite_eq_left hx, ite_eq_left hx, hsplit, wbar_smul_lemma i (gam k r i) (fun y => gamO k r i y • f y) x hgi (hgO.smul hfd),
       wbar_smul_lemma i _ _ x hgO hfd, hwO, gauge_split]
     simp only [smul_add, zero_smul, add_zero, smul_smul]
     rw [← mul_assoc (star (x i)) (wirtBar i (gam k r i) x), key]
     congr 1 <;> congr 1 <;> ring
   · unfold pbOp
-    rw [if_neg hx, if_neg hx, hf.2 x hx]
+    rw [ite_eq_right hx, ite_eq_right hx, hf.2 x hx]
     simp
 
 theorem loc (Φ : (Fin r → ℂ) → X) (U : Set (Fin r → ℂ)) (c : Fin r → ℂ) (hU : IsOpen U) (hUO : U ⊆ OmX r)

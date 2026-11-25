@@ -33,13 +33,6 @@ variable {σ₀ j em TF c}
 
 end Gen
 
-section Inj
-
-variable {K L : Type} [Field K] [Field L] [Algebra K L] {M : Type} [AddCommGroup M] [Module K M]
-  {W : Type} [AddCommGroup W] [Module ℂ W]
-
-end Inj
-
 end HeckeJ
 
 end Formalism.L2.Pj

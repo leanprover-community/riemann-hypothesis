@@ -40,7 +40,7 @@ theorem hpk_row (k r : ℕ) (i : Fin (2 * r + k + 1)) :
 theorem hpk_sq (k r : ℕ) : Formalism.QuantumDeterminants.Hpk k r * Formalism.QuantumDeterminants.Hpk k r = 1 := by
   ext i j
   obtain ⟨j₀, s, hs, h1, h2⟩ := hpk_row k r i
-  simp only [Matrix.mul_apply, h1, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true, h2,
+  simp only [Matrix.mul_apply, h1, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true, h2,
     Matrix.one_apply]
   by_cases hij : i = j
   · simp [hij, hs]

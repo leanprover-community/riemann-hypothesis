@@ -222,7 +222,7 @@ theorem step [∀ k, Fintype (ι k)] (hM : IsMultigrading ι M piece) [DirectSum
     have hq' := GradedPieceQuot.proof F K ι q b
     have hhilb : hilbFn q (m - c) = (Module.finrank F ↥(gradedPiece q b) : ℤ) := by
       unfold hilbFn
-      rw [if_pos hb]
+      rw [ite_eq_left hb]
     rw [hsup, hinf] at *
     refine ⟨inferInstance, ?_⟩
     have key : (Module.finrank F ↥(A ⊔ P.map ψ) : ℤ) =
@@ -247,7 +247,7 @@ theorem step [∀ k, Fintype (ι k)] (hM : IsMultigrading ι M piece) [DirectSum
         exact Int.natCast_nonneg _
     have hhilb : hilbFn q (m - c) = 0 := by
       unfold hilbFn
-      rw [if_neg hb]
+      rw [ite_eq_right hb]
     rw [hsup, hhilb, add_zero]
     exact ⟨inferInstance, rfl⟩
 

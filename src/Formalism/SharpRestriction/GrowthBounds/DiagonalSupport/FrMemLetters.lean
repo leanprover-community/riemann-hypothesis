@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.PathWeight.DvDegOtherMono
 public import Formalism.SharpRestriction.GrowthBounds.TwistedSubstitution.PlaneCoeff
 import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.IsMultiHom
 import Formalism.SharpRestriction.GrowthBounds.PathWeight.GeneratorImageIsSymbol
@@ -64,8 +65,7 @@ theorem posU_lt_iff (hV : Fr.Valid L₁ N₁) (j : ℤ) (a b : ℕ) (ha : a < (F
     (hb : b < (Fr.LLset j).card + r) :
     posU Fr (Fr.LLset j).card j a < posU Fr (Fr.LLset j).card j b ↔ a < b := by
   refine ⟨fun h => ?_, fun h => posU_lt hV j a b h hb⟩
-  by_contra hn
-  push_neg at hn
+  by_contra! hn
   rcases hn.lt_or_eq with h2 | h2
   · exact lt_asymm h (posU_lt hV j b a h2 ha)
   · subst h2
@@ -78,11 +78,11 @@ theorem posU_le_iff (hV : Fr.Valid L₁ N₁) (j : ℤ) (a b : ℕ) (ha : a < (F
 
 theorem posU_ll (j : ℤ) (l : ℕ) (hl : l < (Fr.LLset j).card) : posU Fr (Fr.LLset j).card j l = llPos Fr j l := by
   unfold posU
-  rw [if_pos hl]
+  rw [ite_eq_left hl]
 
 theorem posU_fr (j : ℤ) (i : ℕ) : posU Fr (Fr.LLset j).card j ((Fr.LLset j).card + i) = Fr.fr j i := by
   unfold posU
-  rw [if_neg (by omega), Nat.add_sub_cancel_left]
+  rw [ite_eq_right (by omega), Nat.add_sub_cancel_left]
 
 theorem w_lt_posU (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (j : ℤ) (i u : ℕ) (hi : i < r) (hu : u < (Fr.LLset j).card + r) :
     Fr.fr (j - 1) i < posU Fr (Fr.LLset j).card j u := by
@@ -109,15 +109,7 @@ theorem fr_mem_letters (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (j : ℤ) (i : �
 
 theorem w_mem_letters (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (j : ℤ) (i : ℕ) (hi : i < r) :
     Fr.fr (j - 1) i ∈ Fr.letters j := by
-  have hm0 := fr_le_fr_of_le_of_valid hV (j - 1)
-  have hm := fr_le_fr_of_le_of_valid hV j
-  have hgap : Fr.fr (j - 1) (r - 1) < Fr.fr j 0 := by
-    have h1 := hV.2.2.2.1 (j - 1)
-    rwa [sub_add_cancel] at h1
-  simp only [Frames.letters, Finset.mem_filter, Finset.mem_Icc]
-  refine ⟨⟨hm0 0 i (Nat.zero_le _) hi, ?_⟩, (hV.2.2.2.2.1 (j - 1) i hi).1⟩
-  exact (hm0 i (r - 1) (by omega) (by omega)).trans
-    (hgap.le.trans (hm 0 (r - 1) (Nat.zero_le _) (by omega)))
+  apply _root_.Formalism.MainNotions.G.symbolGeneratorData.dv_frame_letter <;> assumption
 
 end Ord
 

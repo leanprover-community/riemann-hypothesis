@@ -276,22 +276,6 @@ theorem divCoreClausesR_of [_root_.NumberField.IsTotallyComplex K] {Pl : Type} [
 
 end GenericR
 
-section ConcreteR
-
-variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {m : ℕ}
-
-end ConcreteR
-
-section ConcreteColR
-
-open Formalism.BasicNotions Formalism.L2.Col
-
-variable {X : Fields} {Pr : Primes X} {Rk : Ranks} {W : Wts X Pr.Word Rk} {Ch : Chars X Pr Rk.m}
-  {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} {Sg : Set ℕ}
-  {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {m : ℕ}
-
-end ConcreteColR
-
 end Formalism.L2.DIV
 end -- clump:auto
 end -- clump:auto

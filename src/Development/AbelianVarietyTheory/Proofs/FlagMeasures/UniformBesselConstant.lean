@@ -87,8 +87,8 @@ variable (c : Fin r → ℂ) (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ)
 theorem mul_bigCell_low (M : B.Mat k r) (i j : Fin (2 * r + k + 1)) (hj : j.val < r) :
     (M * bigCell k r c μ) i j = M i (esI k r ⟨j.val, hj⟩) * c ⟨j.val, hj⟩ := by
   rw [Matrix.mul_apply, Finset.sum_eq_single (esI k r ⟨j.val, hj⟩)]
-  · unfold bigCell; rw [dite_eq_left hj, if_pos rfl]
-  · intro l _ hl; unfold bigCell; rw [dite_eq_left hj, if_neg hl, mul_zero]
+  · unfold bigCell; rw [dite_eq_left hj, ite_eq_left rfl]
+  · intro l _ hl; unfold bigCell; rw [dite_eq_left hj, ite_eq_right hl, mul_zero]
   · simp
 
 theorem bigCell_row (i j : Fin (2 * r + k + 1)) (hi : i.val < r) (h : i.val + j.val ≠ 2 * r + k) :
@@ -107,7 +107,7 @@ theorem bigCell_row (i j : Fin (2 * r + k + 1)) (hi : i.val < r) (h : i.val + j.
 theorem bigCell_col (i j : Fin (2 * r + k + 1)) (hj : r + k < j.val) (h : i.val + j.val ≠ 2 * r + k) :
     bigCell k r c μ i j = 0 := by
   unfold bigCell
-  rw [dite_eq_right (by omega), dite_eq_right (by omega), if_neg (by omega)]
+  rw [dite_eq_right (by omega), dite_eq_right (by omega), ite_eq_right (by omega)]
 
 theorem rStab_bigCell (hc : ∀ a, c a ≠ 0) (hg : bigCell k r c μ ∈ UH (Hpk k r)) :
     RStab k r (bigCell k r c μ) = {1} := by
@@ -140,7 +140,7 @@ theorem rStab_bigCell (hc : ∀ a, c a ≠ 0) (hg : bigCell k r c μ ∈ UH (Hpk
     · rw [Matrix.mul_apply, hgdef, bigCell_row c μ i j hi h.ne']
       refine Finset.sum_eq_zero fun l _ => ?_
       by_cases hl : l.val + j.val = 2 * r + k
-      · rw [ua i l (by rw [Fin.le_def]; omega), if_neg (by rw [Fin.ext_iff]; omega), zero_mul]
+      · rw [ua i l (by rw [Fin.le_def]; omega), ite_eq_right (by rw [Fin.ext_iff]; omega), zero_mul]
       · rw [bigCell_col c μ l j (by omega) hl, mul_zero]
   ext i j
   rw [Matrix.one_apply]
@@ -159,7 +159,7 @@ theorem rStab_bigCell (hc : ∀ a, c a ≠ 0) (hg : bigCell k r c μ ∈ UH (Hpk
   have h1 := mul_bigCell_low c μ a i m hm
   have e1 : esI k r ⟨m.val, hm⟩ = j := Fin.ext (by simp only [esI, m]; omega)
   rw [e1, ← hgdef, e, Matrix.mul_apply, Finset.sum_eq_zero] at h1
-  · rw [if_neg (by rw [Fin.ext_iff]; omega)]
+  · rw [ite_eq_right (by rw [Fin.ext_iff]; omega)]
     exact (mul_eq_zero.1 h1.symm).resolve_right (hc _)
   · intro l _
     rcases le_or_gt l m with hl | hl
@@ -168,12 +168,12 @@ theorem rStab_bigCell (hc : ∀ a, c a ≠ 0) (hg : bigCell k r c μ ∈ UH (Hpk
       have : g i l = 0 := by
         rw [hgdef]
         unfold bigCell
-        rw [dite_eq_left hl', if_neg]
+        rw [dite_eq_left hl', ite_eq_right]
         rw [Fin.ext_iff]
         simp only [esI, m] at hl ⊢
         omega
       rw [this, zero_mul]
-    · rw [ub l m hl.le, if_neg hl.ne', mul_zero]
+    · rw [ub l m hl.le, ite_eq_right hl.ne', mul_zero]
 
 end stab
 
@@ -271,7 +271,7 @@ theorem cellData_bigCell (L : LocBessel k r) (μG : Measure (Mt k r)) (D : B.Rea
     rw [Matrix.diagonal_apply]
     show _ = if i = j then _ else _
     by_cases h : i = j
-    · rw [if_pos h, if_pos h, h]
-    · rw [if_neg h, if_neg h]
+    · rw [ite_eq_left h, ite_eq_left h, h]
+    · rw [ite_eq_right h, ite_eq_right h]
 
 end GlobalTheory.AmpNorm

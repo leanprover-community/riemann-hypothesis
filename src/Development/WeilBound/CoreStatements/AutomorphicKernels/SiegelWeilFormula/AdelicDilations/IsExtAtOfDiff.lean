@@ -48,13 +48,8 @@ theorem polyFac (p : Polynomial ℂ) (s₀ : ℂ) :
   simp
 
 theorem eqNhds {f g : ℂ → ℂ} {x : ℂ} (h : f =ᶠ[𝓝[≠] x] g) (hf : ContinuousAt f x) (hg : ContinuousAt g x) :
-    f =ᶠ[𝓝 x] g := by
-  have hx : f x = g x :=
-    tendsto_nhds_unique (hf.tendsto.mono_left nhdsWithin_le_nhds) ((hg.tendsto.mono_left nhdsWithin_le_nhds).congr' h.symm)
-  filter_upwards [eventually_nhdsWithin_iff.mp h] with z hz
-  by_cases e : z = x
-  · subst e; exact hx
-  · exact hz e
+    f =ᶠ[𝓝 x] g :=
+  (hf.eventuallyEq_nhds_iff_eventuallyEq_nhdsNE hg).1 h
 
 theorem isExtAt_of_diff {U : Set ℂ} {e φ : ℂ → ℂ} {t : ℝ} {s₀ : ℂ} (hU : IsOpen U) (hR : IsRightDomain U) (hs : s₀ ∈ U)
     (he : DifferentiableOn ℂ e U) (heq : ∀ z : ℂ, t < z.re → e z = φ z) : IsExtAt φ s₀ e :=

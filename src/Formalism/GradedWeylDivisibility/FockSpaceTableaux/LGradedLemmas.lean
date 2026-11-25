@@ -19,7 +19,7 @@ theorem lgraded_rowGen_X {r n : ℕ} (a : Fin r) (v : Fin r × Fin n) :
   simp only [rowGen, aeval_X, lgraded_wa]
   by_cases h : b = a
   · subst h
-    rw [if_pos rfl, if_pos rfl, pow_one]
+    rw [ite_eq_left rfl, ite_eq_left rfl, pow_one]
     ring
   · simp [h]
 

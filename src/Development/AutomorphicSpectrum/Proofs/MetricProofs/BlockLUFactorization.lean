@@ -45,7 +45,7 @@ theorem minor_stepOf_ne_zero (hj : j ≤ N) {G : Matrix (Fin N) (Fin N) ℂ} (hG
     simp only [IsProperStep, stepOf, not_and_or, not_not] at hp
     split_ifs at hp <;> omega
   have hD := GlobalTheory.CompanionTheory.Ar.PB.CPts.detFac_ne_zero hj (⟨N - 1, by omega⟩ : Fin N) hG hd
-  rw [detFac, if_pos (by simp only; omega), if_pos (by simp only; omega)] at hD
+  rw [detFac, ite_eq_left (by simp only; omega), ite_eq_left (by simp only; omega)] at hD
   by_cases h : N - j ≤ (b : ℕ)
   · have e : stepCols N j (stepOf N j b) = wIdx N j := by
       ext a

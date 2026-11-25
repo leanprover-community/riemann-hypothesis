@@ -88,11 +88,6 @@ end Integrals
 
 end SystemIndependence
 
-section Inhabitant
-
-
-end Inhabitant
-
 end
 
 end GroundTheory.Heights₂.Heights.AnalyticLimit

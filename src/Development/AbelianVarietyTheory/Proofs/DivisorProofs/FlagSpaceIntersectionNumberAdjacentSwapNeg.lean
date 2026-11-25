@@ -368,7 +368,6 @@ theorem l_bb (hab : (b : ℕ) = a + 1) (hL : Lo L) (hC : AL (fun i j => i = a �
   have hne : a ≠ b := fun h => absurd (congrArg Fin.val h) (by omega)
   rw [Matrix.mul_apply]
   refine Fintype.sum_eq_add a b hne fun k ⟨hka, hkb⟩ => ?_
-  have hka' : (k : ℕ) ≠ a := fun h => hka (Fin.ext h)
   have hkb' : (k : ℕ) ≠ b := fun h => hkb (Fin.ext h)
   rcases lt_or_gt_of_ne hkb' with h | h
   · rw [hC k b h (fun e => hka e.1), mul_zero]
@@ -380,7 +379,6 @@ theorem r_aa (hab : (b : ℕ) = a + 1) (hC : AL (fun i j => i = a ∧ j = b) C) 
   rw [Matrix.mul_apply]
   refine Fintype.sum_eq_add a b hne fun l ⟨hla, hlb⟩ => ?_
   have hla' : (l : ℕ) ≠ a := fun h => hla (Fin.ext h)
-  have hlb' : (l : ℕ) ≠ b := fun h => hlb (Fin.ext h)
   rcases lt_or_gt_of_ne hla' with h | h
   · rw [hR l a (Fin.lt_iff_val_lt_val.2 h), mul_zero]
   · rw [hC a l (Fin.lt_iff_val_lt_val.2 h) (fun e => hlb e.2), zero_mul]
@@ -652,8 +650,6 @@ theorem dbl_of_isClosedImmersion_lift : ∀ (F : Type) [Field F] (Y : Var F) (Z 
   intro F _ Y Z _ p₁ p₂ h hi hη
   have hp₁ : p₁ = Limits.pullback.lift p₁ p₂ h ≫ Limits.pullback.fst Y.str Y.str :=
     (Limits.pullback.lift_fst _ _ _).symm
-  have hp₂ : p₂ = Limits.pullback.lift p₁ p₂ h ≫ Limits.pullback.snd Y.str Y.str :=
-    (Limits.pullback.lift_snd _ _ _).symm
   refine ⟨?_, ?_⟩
   · rw [hp₁, Category.assoc]
     exact ProjSpace.isProjOver_comp_of_isClosedImmersion _
@@ -1002,7 +998,6 @@ theorem flag_conv : ∀ (F : Type) [Field F] (X Y : Var F) (ι : Type) [Fintype 
   have hval : (ratOf Y).val (spMap ψ₂ ≫ (ratOf Y).pt) = ψ₂ := funext (val_spMap_pt (ratOf Y) ψ₂)
   rw [hval] at hP
   have hAd : ∀ τ, (A τ).det ≠ 0 := Fr.det_ne hA
-  have hBd : ∀ τ, (B τ).det ≠ 0 := Fr.det_ne hB
   have hA'd : ∀ τ, (A' τ).det ≠ 0 := Fr.det_ne hA'
   set C : Mat m Y.Fn := A.map φ with hC
   have hCd : ∀ τ, (C τ).det ≠ 0 := fun τ => by
@@ -1498,10 +1493,10 @@ theorem _root_.GlobalTheory.FlagPush.MultiLevel.antisymm_of_multilinear : ∀ (�
             · subst hi
               simp [Y, K]
             · have hik : (i : ℕ) ≠ k := fun e => hi (Fin.ext e)
-              simp only [Y, Function.update_apply, hi, if_false]
+              simp only [Y, Function.update_apply, hi, ite_false]
               by_cases hlt : (i : ℕ) < k
-              · rw [if_pos hlt, if_pos (by omega)]
-              · rw [if_neg hlt, if_neg (by omega)]
+              · rw [ite_eq_left hlt, ite_eq_left (by omega)]
+              · rw [ite_eq_right hlt, ite_eq_right (by omega)]
           have e0 : Y k = Function.update (Y k) K (v (s K)) := by
             rw [eq_comm, Function.update_eq_self_iff]
             simp [Y, K]
@@ -1717,7 +1712,7 @@ theorem shear_apply_of_ne {ι : Type} {m : ι → ℕ} (τ : ι) (a b : Fin (m �
     {σ : ι} (h : σ ≠ τ) : shear τ a b t σ = 1 := by
   ext i k
   simp only [shear, Matrix.add_apply, Matrix.of_apply]
-  rw [if_neg, add_zero]
+  rw [ite_eq_right, add_zero]
   rintro ⟨h1, -⟩
   exact h (congrArg Sigma.fst h1)
 
@@ -1731,7 +1726,7 @@ theorem shear_self_mul_apply {ι : Type} {m : ι → ℕ} (τ : ι) (a b : Fin (
     by_cases h1 : i = a <;> by_cases h2 : k = b <;> simp [h1, h2]
   rw [Matrix.mul_apply]
   simp only [e, add_mul, Finset.sum_add_distrib, Matrix.one_apply, ite_mul, one_mul, zero_mul,
-    Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   by_cases h1 : i = a <;> simp [h1]
 
 theorem almostLow_of_shear : ∀ (ι : Type) (m : ι → ℕ) (τ : ι) (a b : Fin (m τ)), (b : ℕ) = a + 1 →
@@ -1757,8 +1752,8 @@ theorem almostLow_of_shear : ∀ (ι : Type) (m : ι → ℕ) (τ : ι) (a b : F
     have h1 := hz τ a b hab'
     have h2 := hdiag τ b
     rw [shear_self_mul_apply] at h1 h2
-    rw [if_pos rfl, hmap, h0, map_zero, zero_add] at h1
-    rw [if_neg hba, add_zero] at h2
+    rw [ite_eq_left rfl, hmap, h0, map_zero, zero_add] at h1
+    rw [ite_eq_right hba, add_zero] at h2
     exact h2 ((mul_eq_zero.1 h1).resolve_left ht)
   · intro σ i c hic hn
     refine (map_eq_zero j).1 ?_
@@ -1776,10 +1771,10 @@ theorem almostLow_of_shear : ∀ (ι : Type) (m : ι → ℕ) (τ : ι) (a b : F
           have : (c : ℕ) ≠ b := fun h => hcb (Fin.ext h)
           omega
         have h2 := hz σ b c hbc
-        rw [shear_self_mul_apply, if_neg hba, add_zero] at h2
-        rw [if_pos rfl, h2, mul_zero, add_zero] at h1
+        rw [shear_self_mul_apply, ite_eq_right hba, add_zero] at h2
+        rw [ite_eq_left rfl, h2, mul_zero, add_zero] at h1
         exact h1
-      · rw [if_neg hi, add_zero] at h1
+      · rw [ite_eq_right hi, add_zero] at h1
         exact h1
     · have h1 := hz σ i c hic
       rw [shear_apply_of_ne τ a b t hσ, one_mul] at h1

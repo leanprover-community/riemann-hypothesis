@@ -79,13 +79,6 @@ open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual Recipro
 open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal GlobalTheory.CompanionTheory.LTHodge
 open scoped Classical
 
-namespace GlobalTheory.CompanionTheory.LTHodge
-
-theorem exists_lubinTateChar : ∀ {l : ℕ} [Fact l.Prime] (K : FinExt l), ∃ χ : ↥(GK K) →* (↥K.1)ˣ, IsLTChar K χ ∧
-    Continuous (fun g => (((χ g : (↥K.1)ˣ) : ↥K.1) : Om l)) ∧ ∀ g, ‖(((χ g : (↥K.1)ˣ) : ↥K.1) : Om l)‖ = 1 :=
-  fun K => GlobalTheory.CompanionTheory.LTHodge.CharEx.exists_ltChar K
-
-end GlobalTheory.CompanionTheory.LTHodge
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -100,8 +93,6 @@ noncomputable section
 open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations
 open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal
 open scoped Classical
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.CompanionTheory.HeckeSmooth
 
@@ -437,7 +428,6 @@ open ValuativeRel GroundTheory.LocalField GroundTheory.LocalField.FormalGroup
 open scoped GroundTheory.PAdicHodge.CyclNorms
 
 namespace GlobalTheory.CompanionTheory.LTLink
-
 
 open GroundTheory.Global GroundTheory.Global.SemiLocal in
 theorem local_restriction_abelianization_artin : ∀ {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] (w : HeightOneSpectrum (𝓞 E)) {Ωv : Type} [Field Ωv] [Algebra (w.adicCompletion E) Ωv]
@@ -910,19 +900,18 @@ theorem multV_inv [IsDomain BdR] (κ : K →ₐ[Qp] Om)
   have hinv : ∀ σ, σ.comp τ = κ → ∃ y ∈ PD.Fil (-J), f σ * y = 1 := fun σ hσ => hval J _ (hJ σ) (hJ1 σ hσ)
   choose! yv hyv hyv1 using hinv
   obtain ⟨σ₀, hσ₀⟩ : ∃ σ : LL →ₐ[Qp] Om, σ.comp τ = κ := by
-    by_contra hno
-    push_neg at hno
+    by_contra! hno
     exact hz2 ((mem_filV_coord PD hOm (J + 1) z).2 fun σ' => by
       change f σ' ∈ _
       rw [hzero σ' (hno σ')]
       exact Submodule.zero_mem _)
   set fi : (LL →ₐ[Qp] Om) → BdR := fun σ => if σ.comp τ = κ then yv σ else 0 with hfi
   have hfi1 : ∀ σ, σ.comp τ = κ → f σ * fi σ = 1 := fun σ hσ => by
-    simp only [hfi, if_pos hσ]; exact hyv1 σ hσ
-  have hfi0 : ∀ σ, ¬ σ.comp τ = κ → fi σ = 0 := fun σ hσ => by simp only [hfi, if_neg hσ]
+    simp only [hfi, ite_eq_left hσ]; exact hyv1 σ hσ
+  have hfi0 : ∀ σ, ¬ σ.comp τ = κ → fi σ = 0 := fun σ hσ => by simp only [hfi, ite_eq_right hσ]
   have hfiF : ∀ σ, fi σ ∈ PD.Fil (-J) := fun σ => by
     by_cases hσ : σ.comp τ = κ
-    · simp only [hfi, if_pos hσ]; exact hyv σ hσ
+    · simp only [hfi, ite_eq_left hσ]; exact hyv σ hσ
     · rw [hfi0 σ hσ]; exact Submodule.zero_mem _
   have hcoord : ∀ σ, ev σ (coordInv fi : (Fin 1 → LL) ⊗[Qp] BdR) = fi σ := ev_coordInv fi
   have hII : IsInv PD act χ' fi := fun g σ => by
@@ -1176,7 +1165,7 @@ theorem char_mul {l : ℕ} [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (T
     intro τ
     obtain ⟨hf, hle, -⟩ := (GlobalTheory.Per.Components.components_finrank l P AI T K LL _ ν₃).1 τ
     have hm1 := hm τ (J₁ τ + J₂ τ)
-    rw [if_pos rfl, multV] at hm1
+    rw [ite_eq_left rfl, multV] at hm1
     have hfil : finrank ↥LL.1 ↥(FildR (P.PD K) ν₃ τ (J₁ τ + J₂ τ)) ≤ finrank ↥LL.1 ↥(DdRE (P.PD K) ν₃ τ) :=
       Submodule.finrank_mono (inf_le_left : FildR (P.PD K) ν₃ τ _ ≤ DdRE (P.PD K) ν₃ τ)
     simp only [Module.finrank_pi, Fintype.card_fin] at hle
@@ -1402,8 +1391,6 @@ open scoped Topology
 
 variable {l : ℕ} [Fact l.Prime]
 
-
-
 theorem fil_of_unramified (P : LocPrime l) (AI : LocAinf l P) (Ti : LocTied l P AI) (K LL : FinExt l)
     (T : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)) (hI : ∀ g ∈ IK K, ∀ x, T.ρ g x = x)
     (y : T.V ⊗[ℚ_[l]] P.R.BdR) (hy : y ∈ DdR (P.PD K) T.ρ) :
@@ -1537,7 +1524,6 @@ theorem fil_line (P : LocPrime l) (AI : LocAinf l P) (Ti : LocTied l P AI) (K LL
   fil_of_unramified P AI Ti K LL (lineLoc K LL ρ μ hρ hμ hO)
     (fun g hg (x : Fin 1 → ↥LL.1) => (hρ g x).trans (by rw [hI g hg, one_smul])) y hy
 
-
 set_option maxHeartbeats 1600000 in
 theorem multV_of_fil (P : LocPrime l) (AI : LocAinf l P) (Ti : LocTied l P AI) (K LL : FinExt l) (ρ : Representation ↥LL.1 ↥(GK K) (Fin 1 → ↥LL.1))
     (hDR : IsDR (P.PD K) ρ)
@@ -1561,11 +1547,11 @@ theorem multV_of_fil (P : LocPrime l) (AI : LocAinf l P) (Ti : LocTied l P AI) (
     simpa using this
   unfold multV
   rcases lt_trichotomy a 0 with h | h | h
-  · rw [hneg a h.le, hneg (a + 1) (by omega), sub_self, if_neg h.ne]
+  · rw [hneg a h.le, hneg (a + 1) (by omega), sub_self, ite_eq_right h.ne]
   · subst h
     rw [hneg 0 le_rfl, hpos (0 + 1) (by omega), finrank_bot, hfin]
     simp
-  · rw [hpos a (by omega), hpos (a + 1) (by omega), sub_self, if_neg h.ne']
+  · rw [hpos a (by omega), hpos (a + 1) (by omega), sub_self, ite_eq_right h.ne']
 
 end Line
 
@@ -1573,8 +1559,6 @@ section Main
 
 open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host
 open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal
-
-
 
 open scoped Classical in
 theorem isdRJ_zero_of_trivial_on_open_inertia :
@@ -1706,7 +1690,7 @@ theorem lubinTate_at_embedding (HP : LTPeriods) : ∀ {E Ω : Type} [Field E] [N
       ∀ (x : (w.adicCompletion E)ˣ) (σ : ↥(Dec (F := E) A)), IsUnitAt w x → (σ : G E Ω) ∈ Ine (F := E) A →
         art (localIdele E w x) = toAb E Ω σ → ((lam σ : ↥LL'.1) : Qbar l) = j.1 x := by
   intro E Ω _ _ _ _ _ l _ P AI hT w A hA O _ _ _ Bw hI art hart LL' hLL j
-  obtain ⟨χ, hχ, hc, hn⟩ := _root_.GlobalTheory.CompanionTheory.LTHodge.exists_lubinTateChar Bw.Kw
+  obtain ⟨χ, hχ, hc, hn⟩ := _root_.GlobalTheory.CompanionTheory.LTHodge.CharEx.exists_ltChar Bw.Kw
   obtain ⟨φ, τ, hφc, hφ, hτ, hu⟩ := _root_.GlobalTheory.CompanionTheory.EmbBridge.embeddings_of_continuous w A hA O Bw hI LL' hLL j
   have hper := HP P AI hT Bw.Kw χ hχ hc
   have hsplit : ∀ (μ : ↥Bw.Kw.1 →ₐ[ℚ_[l]] Om l) (x : ↥Bw.Kw.1), μ x ∈ LL'.1 :=
@@ -1884,10 +1868,10 @@ theorem field_of_ltPeriods (HP : LTPeriods) : GlobalTheory.Published.HeckeLAdicC
   have hsum : (0 + ∑ j, nj j • Jj j) τ' = -n (ι.toRingHom.comp τ) := by
     simp only [Pi.add_apply, Finset.sum_apply, Pi.smul_apply, Pi.zero_apply, zero_add]
     rw [Finset.sum_eq_single j0]
-    · simp only [Jj, if_pos hj0, nj, smul_eq_mul, mul_neg, mul_one, ← hj0E, RingHom.comp_assoc]
+    · simp only [Jj, ite_eq_left hj0, nj, smul_eq_mul, mul_neg, mul_one, ← hj0E, RingHom.comp_assoc]
     · intro b _ hb
       have : ¬ IsInduced Bw (b.1.comp (algebraMap E (w.adicCompletion E))) τ' := fun h => hb (huniq b h)
-      simp only [Jj, if_neg this, smul_zero]
+      simp only [Jj, ite_eq_right this, smul_zero]
     · intro h
       exact absurd (Finset.mem_univ j0) h
   rw [hsum, Multiset.count_singleton]

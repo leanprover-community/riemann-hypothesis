@@ -70,7 +70,7 @@ theorem comb_comb {ι κ μ : Type*} [Fintype ι] [Fintype κ] (A : Matrix ι κ
 
 theorem comb_one {ι : Type*} [Fintype ι] [DecidableEq ι] (v : ι → V) : comb (1 : Matrix ι ι E) v = v := by
   funext k
-  simp only [comb, Matrix.one_apply, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [comb, Matrix.one_apply, ite_smul, one_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem comb_mem_spanO {ι κ : Type*} [Fintype ι] (A : Matrix ι κ E) (hA : ∀ i k, A i k ∈ M.L.O) (v : ι → V)
     (k : κ) : comb A v k ∈ Submodule.span M.L.O (Set.range v) :=
@@ -321,8 +321,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
 open Formalism.L2.SG.Pf.AtPt Formalism.L2.SG.Pf.BBTie Formalism.L2.SG.Pf.GeneratorChange
 
 namespace Formalism.L2.SG.Pf.FrameGlobalPatching.FStar
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Cmat
 

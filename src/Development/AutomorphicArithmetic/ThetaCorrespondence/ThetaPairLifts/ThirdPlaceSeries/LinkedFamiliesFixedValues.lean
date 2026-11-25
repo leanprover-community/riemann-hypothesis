@@ -73,17 +73,13 @@ structure NTiedAllAlt (D : D7) (C : NChoice D) (_I : TwIn D) where
   gal : _root_.Formalism.L2.NGalTiedAlt D
   cover : NormalizedLocalCompatibility D gal.mt
   chiD : NC.NChiData D
-  chi : NC.NormalizedCharacterCompatibility D chiD
   types : NormalizedTypesCompatibility D gal.fr.jE
   twF : TwFrame D
   tw : NTwTied D twF
-  nct : NChTie D C
   exp : NExpTied D
   cf : Host.CharFrame D
   tp : Host.TupTied D cf C
   plB : D.what₂.places.Pl → ValuationSubring ℂ
-  plκ : ∀ w, haveI : Fact (D.what₂.places.resChar w).Prime := ⟨D.what₂.places.resChar_prime w⟩
-    IsLocalRing.ResidueField (plB w) ≃+* Formalism.CyclotomicNorms.Fbar (D.what₂.places.resChar w)
 end Formalism.L2
 end
 end

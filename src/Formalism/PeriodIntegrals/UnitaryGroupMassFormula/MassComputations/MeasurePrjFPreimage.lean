@@ -11,6 +11,8 @@ import Mathlib.Tactic.Linter.Style
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.InclusionInjective
+import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.MassDataLevelS
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MassComputations.ContinuousSplitA
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MassComputations.UnfAbs, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MassComputations.MeasurePrjFPreimage
@@ -360,36 +362,12 @@ theorem continuous_prjF : Continuous (prjF σ J P) := by
   exact continuous_induced_rng.2 (hm.comp continuous_subtype_val)
 
 theorem continuous_splitA_u : Continuous (splitA σ J) := by
-  have hs : Continuous (sndA F) := by
-    first
-    | exact continuous_snd
-  have hf : Continuous (fstA F) := by
-    first
-    | exact continuous_fst
-  have h1 := continuous_haMap (σ := σ) (J := J) (fstA F) hf
-  have h2 := continuous_haMap (σ := σ) (J := J) (sndA F) hs
-  first
-  | exact h1.prodMk h2
+  apply _root_.MassDataMassesW.continuous_splitA <;> assumption
 
 theorem isClosed_stabT' (R : Type) [CommRing R] [Algebra F R] [TopologicalSpace R] [IsTopologicalRing R]
     [LocallyCompactSpace R] [T2Space R] {a : ℕ} (X0 : Fin a → Fin n → E) :
     IsClosed ((stabT R σ J X0 : Subgroup (HA R σ J)) : Set (HA R σ J)) := by
-  have hmat : Continuous (fun g : HA R σ J => (HA.mat R σ J g : Matrix (Fin n) (Fin n) (R ⊗[F] E))) :=
-    Units.continuous_val.comp continuous_subtype_val
-  have hc : Continuous (fun g : HA R σ J => actTup R (HA.mat R σ J g) (ratTup (F := F) R X0)) := by
-    unfold actTup
-    refine continuous_pi fun b => ?_
-    refine continuous_pi fun i => ?_
-    first
-    | simp only [Matrix.mulVec, dotProduct]
-    refine continuous_finsetSum _ fun j _ => ?_
-    exact ((continuous_apply j).comp ((continuous_apply i).comp hmat)).mul continuous_const
-  have hset : ((stabT R σ J X0 : Subgroup (HA R σ J)) : Set (HA R σ J)) =
-      {g | actTup R (HA.mat R σ J g) (ratTup (F := F) R X0) = ratTup (F := F) R X0} := by
-    ext g
-    exact Iff.rfl
-  rw [hset]
-  exact isClosed_eq hc continuous_const
+  apply _root_.MassDataLevelSSteps.ProdW.isClosed_stabT <;> assumption
 
 theorem measure_prjF_preimage (M : MeasW σ J P) (hM : M.IsTextNorm) (S : Set (Hsub (Af F) σ J P))
     (hS : MeasurableSet S) : M.μH (prjF σ J P ⁻¹' S) = M.μHinf univ * M.μHf S := by

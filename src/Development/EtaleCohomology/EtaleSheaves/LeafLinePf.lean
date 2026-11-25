@@ -22,7 +22,7 @@ def secF (A : Type) [CommRing A] : SingleObj (GL (Fin 1) A) ⥤ Um 1 A where
   obj _ := e1 A
   map g := ⟨(g, Matrix.GeneralLinearGroup.det g), det_mulVec_one A g⟩
   map_id _ := Subtype.ext (Prod.ext rfl (map_one _))
-  map_comp f g := Subtype.ext (Prod.ext rfl (map_mul _ _ _))
+  map_comp _ _ := Subtype.ext (Prod.ext rfl (map_mul _ _ _))
 
 theorem eqToHom_val {A : Type} [CommRing A] {v w : Um 1 A} (h : v = w) : (eqToHom h).1 = 1 := by
   cases h; rfl

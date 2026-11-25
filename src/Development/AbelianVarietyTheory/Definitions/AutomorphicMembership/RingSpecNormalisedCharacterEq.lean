@@ -312,7 +312,7 @@ structure NdSpec (Pl : PlSide D) (M : MtFam D) (C : NChoice D) (big : D.what₂.
     y ∈ NCov.part (heckeAlg B j w) (mx j w i) ↔ ∃ z, Psi j w i h z = y
   Psi_pr : ∀ j w i (h : i ∈ X.nd.locs j w) (x : D.what₂.MtL (X.nd.mu i) (X.nd.j i)),
     Psi j w i h (X.nd.prMt i x) - B.iV j w (castX X h x) ∈ NCov.off (heckeAlg B j w) (mx j w i)
-  ptX : ∀ j w i (h : i ∈ X.nd.locs j w), X.nd.X i ≃
+  ptX : ∀ j w i (_ : i ∈ X.nd.locs j w), X.nd.X i ≃
     {ψ : heckeAlg B j w →ₐ[B.Oc j w] B.Oc j w //
       NCov.cls ψ = mx j w i ∧ NCov.W (heckeAlg B j w) (NCov.pt ψ) ≠ ⊥}
   ptX_hT : ∀ j w i (h : i ∈ X.nd.locs j w) (x : X.nd.X i) (v : PlE D.host) (k : ℕ)

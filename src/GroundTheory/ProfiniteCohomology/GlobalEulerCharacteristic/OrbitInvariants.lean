@@ -92,12 +92,8 @@ variable {k G V : Type*} [Field k] [Group G] [Fintype G] [AddCommGroup V] [Modul
   (ρ : Representation k G V)
 
 theorem range_averageMap [Invertible (Fintype.card G : k)] :
-    LinearMap.range ρ.averageMap = ρ.invariants := by
-  apply le_antisymm
-  · rintro _ ⟨v, rfl⟩
-    exact ρ.averageMap_invariant v
-  · intro v hv
-    exact ⟨v, ρ.averageMap_id v hv⟩
+    LinearMap.range ρ.averageMap = ρ.invariants :=
+  ρ.isProj_averageMap.range
 
 theorem averageMap_apply [Invertible (Fintype.card G : k)] (v : V) :
     ρ.averageMap v = ⅟(Fintype.card G : k) • ∑ g : G, ρ g v := by

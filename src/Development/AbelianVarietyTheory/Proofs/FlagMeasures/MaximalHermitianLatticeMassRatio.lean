@@ -491,12 +491,11 @@ theorem main : ∀ (K F V : Type) [Field K] [NumberField K] [StarRing K] [Field 
 
   have hle1 : ∀ i, vF p (a i) ≤ 1 := by
     intro i
-    by_contra hgt
-    push_neg at hgt
+    by_contra! hgt
     have h1 : h x x / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a i)) ∈ S := by
       have e : h x x / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a i)) =
           h x x * (((if i = i then (1 : K) else 0) - c i * (h x x)⁻¹ * h (b i) x) / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a i))) + c i * (h (b i) x / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a i))) := by
-        rw [if_pos rfl]; field_simp; ring
+        rw [ite_eq_left rfl]; field_simp; ring
       rw [e]
       exact S.add_mem (S.mul_mem hdS (hE i i)) (S.mul_mem (hcS i) (hξ i))
     have h1' : algebraMap (𝓞 K) K a0 / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a i)) ∈ S := by
@@ -509,7 +508,7 @@ theorem main : ∀ (K F V : Type) [Field K] [NumberField K] [StarRing K] [Field 
     have hci : c i / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a j)) ∈ S := by
       have e : c i / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a j)) = c i * (((if j = j then (1 : K) else 0) - c j * (h x x)⁻¹ * h (b j) x) / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a j)))
           - c j * (((if j = i then (1 : K) else 0) - c i * (h x x)⁻¹ * h (b j) x) / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a j))) := by
-        rw [if_pos rfl, if_neg (fun e => hij e.symm)]; ring
+        rw [ite_eq_left rfl, ite_eq_right (fun e => hij e.symm)]; ring
       rw [e]
       exact S.sub_mem (S.mul_mem (hcS i) (hE j j)) (S.mul_mem (hcS j) (hE i j))
     obtain ⟨t, ht, w, hw⟩ := HU.mem_SP.1 (hcS i)
@@ -529,14 +528,13 @@ theorem main : ∀ (K F V : Type) [Field K] [NumberField K] [StarRing K] [Field 
     have h1 : algebraMap (𝓞 K) K 1 / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a i)) ∈ S := by
       have e : algebraMap (𝓞 K) K 1 / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a i)) = ((if i = i then (1 : K) else 0) - c i * (h x x)⁻¹ * h (b i) x) / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a i))
           + (c i * (h x x)⁻¹) * (h (b i) x / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a i))) := by
-        rw [if_pos rfl, map_one]; ring
+        rw [ite_eq_left rfl, map_one]; ring
       rw [e]; exact S.add_mem (hE i i) (S.mul_mem hcd (hξ i))
     have h2 := (LocalProofs.div_mem_SP_iff hp (ha i) 1).1 h1
     rw [hext] at h2
     exact hP.ne_top ((Ideal.eq_top_iff_one P).2 (Ideal.pow_le_self (by omega) h2))
   have hex : ∃ i, vF p (a i) ≠ 0 := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hPb.2
     have hinv : ∀ i, algebraMap (𝓞 K) K 1 / algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) (a i)) ∈ S := fun i =>
       (LocalProofs.div_mem_SP_iff hp (ha i) 1).2 (by rw [hcon i, pow_zero, Ideal.one_eq_top]; exact Submodule.mem_top)
@@ -629,7 +627,7 @@ theorem localMassFactor_eq_of_mem_badPrimes (hK : IsCMUnram K) (hF : IsFixF K F)
     have := absNorm_comap_inert hK hF hPm hc
     rw [hq] at this
     exact Nat.pow_left_injective two_ne_zero this
-  have hη : etaF K F 𝔭 = -1 := by rw [h𝔭def, etaF_comap hK hF hPm, if_pos hc]
+  have hη : etaF K F 𝔭 = -1 := by rw [h𝔭def, etaF_comap hK hF hPm, ite_eq_left hc]
   have hdisc : (discAut h ⊤ M 𝔭 : ℝ) = (qIn P : ℝ) + 1 := by
     have hq0 : (qIn P : ℝ) ≠ 0 := by exact_mod_cast (by omega : qIn P ≠ 0)
     rw [_root_.GlobalTheory.DiscAutLenOne.discAut_eq_normRepCount K F V hK hF h hs M hlat 𝔭 h𝔭 b a hJ i hi hj,

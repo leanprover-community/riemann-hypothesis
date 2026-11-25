@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LocalIndicesColumnRowLevelsExact
 public import Formalism.SharpRestriction.AdmissibleParameterJoins.SfromGLe
 public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLattice
 public import Formalism.SharpRestriction.AdmissibleParameterJoins.SfromGLp
@@ -33,21 +34,7 @@ theorem card_GL_real (g n : ℕ) [Fact g.Prime] :
 
 theorem cardGL_factor (q : ℝ) (k : ℕ) :
     LocalBesselAndTopKernel.cardGL q k = q ^ (k * (k - 1) / 2) * ∏ i ∈ Finset.Icc 1 k, (q ^ i - 1) := by
-  unfold LocalBesselAndTopKernel.cardGL
-  have h1 : ∀ i ∈ range k, q ^ k - q ^ i = q ^ i * (q ^ (k - 1 - i + 1) - 1) := by
-    intro i hi
-    have hi' := mem_range.mp hi
-    have : k = i + (k - 1 - i + 1) := by omega
-    conv_lhs => rw [this, pow_add]
-    ring
-  rw [prod_congr rfl h1, prod_mul_distrib, prod_pow_eq_pow_sum, sum_range_id,
-    prod_range_reflect (fun j => q ^ (j + 1) - 1) k]
-  congr 1
-  rw [range_eq_Ico, prod_Ico_add' (fun j => q ^ j - 1) 0 k 1]
-  refine prod_congr ?_ fun _ _ => rfl
-  ext x
-  simp only [mem_Ico, mem_Icc]
-  omega
+  apply _root_.GlobalTheory.prod_pow_sub_pow_eq_mul_prod_Icc <;> assumption
 
 theorem idxColLoc_eq (g k : ℕ) [Fact g.Prime] :
     StandardLattice.idxColLoc g k = ∏ i ∈ Finset.Icc 1 k, ((g : ℝ) ^ i - 1) := by

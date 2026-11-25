@@ -46,7 +46,7 @@ theorem phE_eq_sum (p : ℕ) (ζ : D.EM) : D.phE p ζ = ζ.sum fun x k => k • 
     simp [varE, Finsupp.single_apply, mb, ite_and]
   · rw [phE_apply_inr]
     simp only [varE, Sum.elim_inl, Sum.elim_inr, Finsupp.smul_apply, Finsupp.single_apply, Prod.mk.injEq,
-      Sum.inr.injEq, reduceCtorEq, false_and, if_false, Finset.sum_const_zero, zero_add,
+      Sum.inr.injEq, reduceCtorEq, false_and, ite_false, Finset.sum_const_zero, zero_add,
       ite_and, smul_eq_mul, mul_ite, mul_one, mul_zero, mlab, mw, mtp]
     have key : ∀ f : D.Tau → Fin D.r → ℕ,
         (∑ x, ∑ y, if x = t then (if y = a then f x y else 0) else 0) = f t a := by

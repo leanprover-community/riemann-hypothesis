@@ -1035,19 +1035,7 @@ namespace GlobalTheory.CompanionTheory.EigTorus
 
 theorem diag_commute {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))] {n : ℕ} {g h : GL (Fin n) L}
     (hg : IsDiagM g) (hh : IsDiagM h) : g * h = h * g := by
-  have key : ∀ a : GL (Fin n) L, IsDiagM a →
-      (a : Matrix (Fin n) (Fin n) L) = Matrix.diagonal (fun i => (a : Matrix (Fin n) (Fin n) L) i i) := by
-    intro a ha
-    ext i j
-    by_cases hij : i = j
-    · subst hij; simp
-    · simp [Matrix.diagonal_apply_ne _ hij, ha i j hij]
-  apply Units.ext
-  simp only [Units.val_mul]
-  rw [key g hg, key h hh, Matrix.diagonal_mul_diagonal, Matrix.diagonal_mul_diagonal]
-  congr 1
-  ext i
-  exact mul_comm _ _
+  apply _root_.GlobalTheory.CompanionTheory.EqForm.isDiagM_commute <;> assumption
 
 theorem mem_latK_iff {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))] {n : ℕ} (a : GL (Fin n) L)
     (ha : IsDiagM a) (hv : ∀ i, Valued.v ((a : Matrix (Fin n) (Fin n) L) i i) = 1) (k : ℕ) (x : Fin n → L) :
@@ -1107,8 +1095,7 @@ theorem mem_iwU_of_diag {L : Type} [Field L] [Valued L (WithZero (Multiplicative
   have hm := congrArg Valued.v hmul
   rw [map_mul, map_one] at hm
   refine le_antisymm h1 ?_
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have : Valued.v (((k : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) i i) *
       Valued.v (((((k : GL (Fin n) L))⁻¹ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) i i) < 1 :=
     mul_lt_one_of_lt_of_le hlt h2
@@ -1423,7 +1410,7 @@ theorem hecke_fun (D : CassData (GU σ n)) (hDN : ∀ g : GU σ n, g ∈ D.N ↔
     rw [mul_one, chiDeltaU_uni q _ hm, one_mul] at e
     simp only [MonoidHom.one_apply, Units.val_one, one_smul, map_sub, hρ]
     rw [hlam, e, sub_self]
-  have h2 := jacquet_hecke (GU σ n) D V ρ hsm t ht U hU x
+  have h2 := GlobalTheory.CompanionTheory.Cass.jacquet_projection_hecke_intertwines (GU σ n) D V ρ hsm t ht U hU x
   have h3 : D.piN ρ t (D.proj ρ (x : V)) = D.proj ρ (ρ (t : GU σ n) (x : V)) := rfl
   rw [h3] at h2
   have h5 := hker ((Submodule.Quotient.eq _).1 h2)
@@ -1499,7 +1486,7 @@ theorem main_D [CompleteSpace L] {ϖ : L} {q : ℕ} (hU : IsUnramInv ϖ σ q) (D
     exact LinearMap.congr_fun h0 x
   obtain ⟨y, hy0, hy⟩ := exists_common_eigvec F hc ξ (iInf_maxGenEig_ne_bot F hc ξ μ hμ hμf)
   refine ⟨y, hy0, fun t hd hsd U hUt => ?_⟩
-  have hdom := ((dom_u L ϖ σ q hU n D hDJ hDN hDNm hDT ⟨t, (hDT t).2 hd⟩).2 hsd).1
+  have hdom := ((GlobalTheory.CompanionTheory.DomUnitary.domU L ϖ σ q hU n D hDJ hDN hDNm hDT ⟨t, (hDT t).2 hd⟩).2 hsd).1
   exact hy ⟨(⟨t, (hDT t).2 hd⟩, U), hdom, hUt⟩
 
 end Main

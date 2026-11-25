@@ -160,8 +160,7 @@ theorem fin_g (ν : Measure (Formalism.REAL.UJ (X.B.I.ε v))) (hq : IsQuotLoc μ
     exact (isOpen_univ.measure_pos (Formalism.REAL.muG (X.B.I.ε v)) Set.univ_nonempty).ne' this
 
   obtain ⟨m, hm⟩ : ∃ m, 0 < ν (compactCovering (Formalism.REAL.UJ (X.B.I.ε v)) m) := by
-    by_contra hcon
-    push_neg at hcon
+    by_contra! hcon
     apply hν
     rw [← Measure.measure_univ_eq_zero, ← iUnion_compactCovering]
     exact measure_iUnion_null fun m => nonpos_iff_eq_zero.1 (hcon m)

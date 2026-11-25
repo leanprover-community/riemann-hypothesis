@@ -428,8 +428,6 @@ section Completion
 
 open NumberField IsDedekindDomain GlobalTheory.BCT GlobalTheory.UnitaryBC Formalism.UG
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 theorem tdiag_mem_Tor (w : Pl E) (ϖ : (w.adicCompletion E)ˣ) (n : ℕ) (y : Fin n → ℤ) :

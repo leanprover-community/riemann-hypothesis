@@ -60,7 +60,6 @@ open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.Ind
 open GlobalTheory.Grid GlobalTheory.Doubling GlobalTheory.ChainFr GlobalTheory.IndefiniteRowSideFullHecke.MatchingAdjoints
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.SquareComm GlobalTheory.SquareAgree
 
 namespace GlobalTheory.SquareAgree
@@ -88,7 +87,7 @@ theorem exists_good_model : ∀ (D : D7) (Bs : GlobalTheory.IndefiniteRowSideFul
     · exact (hb v).choose_spec
   · filter_upwards [hc] with v hv
     change (if M0.IsVac Bs.ψ v (ind v) then ind v else (hb v).choose) = ind v
-    exact if_pos hv
+    exact ite_eq_left hv
 
 end GlobalTheory.SquareAgree
 end -- clump:auto
@@ -106,7 +105,6 @@ open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.Ind
 open GlobalTheory.Grid GlobalTheory.Doubling GlobalTheory.ChainFr GlobalTheory.IndefiniteRowSideFullHecke.MatchingAdjoints
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.SquareComm GlobalTheory.SquareAgree
 
 end -- clump:auto

@@ -66,7 +66,6 @@ open scoped TensorProduct InnerProductSpace ComplexConjugate
 open GlobalTheory.ChainOnto GlobalTheory.ChainTw
 open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (SplitProj IsProjAt IsIdemOf LiftsChar rdA grpCo frCo gAt)
 open GlobalTheory.IndefiniteRowSideFullHecke.VolumeFlatSection (Blocks parahoric datum)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 
@@ -83,7 +82,7 @@ theorem sum_translate {G : Type} [Group G] (J : Subgroup G) (g₀ : G) (R : Fins
   have hs : ∀ a ∈ J, ∀ y ∈ R, s a y ∈ R ∧ (s a y * g₀)⁻¹ * (a * y * g₀) ∈ J := by
     intro a ha y hy
     have h : a * y ∈ J := J.mul_mem ha (hRJ y hy)
-    have e : s a y = (hR _ h).exists.choose := dif_pos h
+    have e : s a y = (hR _ h).exists.choose := dite_eq_left h
     rw [e]
     exact (hR _ h).exists.choose_spec
   have huniq : ∀ a ∈ J, ∀ y ∈ R, ∀ z ∈ R, (z * g₀)⁻¹ * (a * y * g₀) ∈ J → s a y = z := by
@@ -262,7 +261,6 @@ open scoped TensorProduct InnerProductSpace ComplexConjugate
 open GlobalTheory.ChainOnto GlobalTheory.ChainTw
 open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (SplitProj IsProjAt IsIdemOf LiftsChar rdA grpCo frCo gAt)
 open GlobalTheory.IndefiniteRowSideFullHecke.VolumeFlatSection (Blocks parahoric datum)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.LowerBlockParam
 
@@ -447,7 +445,6 @@ open scoped TensorProduct InnerProductSpace ComplexConjugate
 open GlobalTheory.ChainOnto GlobalTheory.ChainTw
 open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (SplitProj IsProjAt IsIdemOf LiftsChar rdA grpCo frCo gAt)
 open GlobalTheory.IndefiniteRowSideFullHecke.VolumeFlatSection (Blocks parahoric datum)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 end -- clump:auto
 end -- clump:auto

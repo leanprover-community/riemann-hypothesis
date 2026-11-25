@@ -144,9 +144,9 @@ theorem reverse_prod_eq_hecke {n q : ℕ} (M : Multiset K) (hM : M.card = n) (a 
   simp only [coeff_C_mul_X_pow]
   rw [Finset.sum_ite_eq]
   by_cases hi : i ≤ n
-  · rw [if_pos (Finset.mem_range.2 (by omega)), revAt_le hi, Multiset.prod_X_sub_C_coeff _ (by omega), hM,
+  · rw [ite_eq_left (Finset.mem_range.2 (by omega)), revAt_le hi, Multiset.prod_X_sub_C_coeff _ (by omega), hM,
       show n - (n - i) = i by omega, mul_assoc, ha i hi]
-  · rw [if_neg (by rw [Finset.mem_range]; omega), revAt_eq_self_of_lt (by omega), coeff_eq_zero_of_natDegree_lt (by omega)]
+  · rw [ite_eq_right (by rw [Finset.mem_range]; omega), revAt_eq_self_of_lt (by omega), coeff_eq_zero_of_natDegree_lt (by omega)]
 
 theorem le_of_dvd {M₀ M : Multiset K} (h₀ : ∀ m ∈ M₀, m ≠ 0) (h : ∀ m ∈ M, m ≠ 0)
     (hd : (M₀.map fun m => 1 - C m * X).prod ∣ (M.map fun m => 1 - C m * X).prod) : M₀ ≤ M := by
@@ -327,7 +327,7 @@ theorem drops {T : Type} {P : Par} {W : Wts T} (hP : P.Hyp) (hL : P.Large) (hW :
       abs_neg, abs_of_nonneg (by linarith)] at h2
     linarith
 
-theorem wAt_of_lt {n : ℕ} (lam : DomWeight n) {k : ℕ} (h : k < n) : wAt lam k = lam.w ⟨k, h⟩ := dif_pos h
+theorem wAt_of_lt {n : ℕ} (lam : DomWeight n) {k : ℕ} (h : k < n) : wAt lam k = lam.w ⟨k, h⟩ := dite_eq_left h
 
 theorem wAt_dual {n : ℕ} (lam : DomWeight n) {k : ℕ} (h : k < n) : wAt lam.dual k = -wAt lam (n - 1 - k) := by
   rw [wAt_of_lt _ h, wAt_of_lt _ (show n - 1 - k < n by omega)]
@@ -679,13 +679,6 @@ variable {hL : _root_.UpperTheory.Zero.LLC.RecTExists} (hF : GlobalTheory.Publis
   (C : _root_.GlobalTheory.HeightCounting.CGTrueT hL D T)
 end True
 end GlobalTheory.HeightCounting.Blocks
-section
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-namespace GlobalTheory.GalAllPlaces
-open Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.CuspRep GlobalTheory.WeilDeligne Polynomial
-end GlobalTheory.GalAllPlaces
-end
 section
 open NumberField IsDedekindDomain
 open Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions GlobalTheory.UnitaryBC GlobalTheory.CuspRep GlobalTheory.SmGL GlobalTheory.DefiniteBC

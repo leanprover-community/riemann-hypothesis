@@ -359,13 +359,6 @@ structure LiftObj (D : D7) {u : D.what₂.Word} (C : ColumnChain D.R D.what₂.T
   S : Finset ℕ
   Th : ∀ i, C.cls i → C.cls (i + 1) → VC D (D.R.N i) (D.R.N (i + 1)) → ℂ
 
-def liftTie (D : D7) (T : Tor D) (e : FamE D) {u : D.what₂.Word} {C : ColumnChain D.R D.what₂.Tau (D.hcW u)}
-    (O : LiftObj D C) (i : ℕ) : Prop :=
-  (∀ c c', IsKer D T e O.S (O.lat i c).1 (O.lat (i + 1) c').1 (O.Th i c c')) ∧
-  ∀ c c' (Q : MvPolynomial (FrV D (D.R.N i)) ℂ) (y' : C.Y (i + 1)),
-    C.unf i c c' (fun y => evFr D Q (O.frm i y)) y' =
-      applyAt0 D (polD D O.dgen Q (O.frm (i + 1) y')) (O.Th i c c')
-
 def LiftObj.IsMem {D : D7} {u : D.what₂.Word} (O : LiftObj D (D.mem u).C) : Prop :=
   letI := D.host.cmStar
   O.mt = D.muTil ∧ (∀ i c, O.dt i c = D.detCls u i c) ∧

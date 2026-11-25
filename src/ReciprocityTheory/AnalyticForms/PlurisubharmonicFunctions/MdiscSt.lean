@@ -263,7 +263,7 @@ private lemma sum_sign_indicator (f : Fin D → Fin D) :
     simp [hT, Function.Surjective]
   by_cases h : Function.Surjective f
   · simp [hs.2 h, h]
-  · rw [if_neg (fun h' => h (hs.1 h')), if_neg h]; simp
+  · rw [ite_eq_right (fun h' => h (hs.1 h')), ite_eq_right h]; simp
 
 theorem mdisc_eq_sum_perm (A : Fin D → Matrix (Fin D) (Fin D) ℂ) :
     mdisc A = (1 / (D.factorial : ℂ)) *

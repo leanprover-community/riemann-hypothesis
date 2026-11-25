@@ -41,7 +41,7 @@ theorem coeff_relation {O : Type*} [CommRing O] [IsDomain O] {d₁ d : ℕ} (p :
   obtain ⟨R, hR⟩ := heq j
   have h1 : coeff k (C p ^ K * (∑ m, F m * C (μ m j) -
       (if j = k₀ then C p ^ s * X ^ S * Q else 0))) = 0 := by
-    rw [hR, coeff_X_pow_mul', if_neg (by omega)]
+    rw [hR, coeff_X_pow_mul', ite_eq_right (by omega)]
 
   simp only [← map_pow, coeff_C_mul, map_sub, map_sum, coeff_mul_C] at h1
   have h2 := sub_eq_zero.mp ((mul_eq_zero.mp h1).resolve_left (pow_ne_zero _ hp))
@@ -110,8 +110,7 @@ theorem liftΔ [FiniteDimensional Qp LL] (W : LocWach PD LL O v n) (hcase : Form
     refine ⟨?_, fun δ' hδ' => ?_⟩
     · rw [hn₁, ← algebraMap_smul (LetA O n)]
       exact (W.N T₁).smul_mem _ ((W.N T₁).sum_mem fun δ _ => W.N_Γ T₁ δ x₁ hx₁N)
-    · set_option synthInstance.maxHeartbeats 100000 in
-        rw [hn₁, map_smul, map_sum]
+    · rw [hn₁, map_smul, map_sum]
       congr 1
       refine Finset.sum_nbij' (δ' * ·) (δ'⁻¹ * ·) (fun g hg => TypesA.delF_mul W hδ' hg)
         (fun g hg => TypesA.delF_mul W (TypesA.delF_inv W hδ') hg) (fun g _ => by simp)
@@ -232,10 +231,10 @@ theorem sum_unit_inv {R : Type*} [CommRing R] {d₁ d : ℕ} (th : R) (hthu : Is
     exact Finset.sum_congr rfl fun m _ => by ring
   rw [h1, hcr j]
   by_cases hj : j = k₀
-  · rw [if_pos hj, if_pos hj]
+  · rw [ite_eq_left hj, ite_eq_left hj]
     have := hthu.val_inv_mul
     linear_combination P * this
-  · rw [if_neg hj, if_neg hj, mul_zero]
+  · rw [ite_eq_right hj, ite_eq_right hj, mul_zero]
 
 theorem crisMap_dvO (W : LocWach PD LL O v n) {T₁ T₂ : LocLat G Qp LL O} (F : LatHom T₁.L T₂.L) (e : ℕ)
     {d₁ d : ℕ} (b₁ : Fin d₁ → W.DD T₁) (b : Fin d → W.DD T₂) (μ : Fin d₁ → Fin d → O)
@@ -358,13 +357,13 @@ theorem arc_length_one_or_two_case_b [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsD
   have hpsu : ∀ s, IsUnit (algebraMap (LetA O n) W.EE (ps W s)) := ArcLengthTwoLifting.isUnit_ps W hcase hP9 T₁ hT₁
   have hHs0 : A.Hs c 2 0 = A.h := by
     unfold ArcP.Hs
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro (h | h)
     · rw [hty0] at h; exact Formalism.MainNotions.LocalTheoryWindows.LT.noConfusion h
     · rw [hAj] at h; omega
   have hHs1 : A.Hs c 2 1 = A.G₀ := by
     unfold ArcP.Hs
-    rw [if_pos]
+    rw [ite_eq_left]
     right; rw [hAj]
   have hΛ_eq : Λ = ps W 0 ^ A.h * ps W 1 ^ (w + S) := by
     rw [hΛdef, abelian₂, hlen, Finset.prod_range_succ, Finset.prod_range_succ, Finset.prod_range_zero, one_mul,
@@ -449,8 +448,7 @@ theorem arc_length_one_or_two_case_b [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsD
     intro i hi
     have hc := (hgi i).2
     constructor
-    · by_contra hlt
-      push_neg at hlt
+    · by_contra! hlt
       have hm := hc 0 hL0
       rw [filS_top W hcase A T₁ hW₁ c 0 _ ?_, Submodule.mem_bot] at hm
       · exact hi (hdvO0 _ hm)
@@ -459,8 +457,7 @@ theorem arc_length_one_or_two_case_b [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsD
         simp only [Formalism.MainNotions.LocalTheoryWindows.LT.win, hAS, hAη, Set.mem_union, Set.mem_Icc] at hx
         push_cast at hlt
         omega
-    · by_contra hlt
-      push_neg at hlt
+    · by_contra! hlt
       have hm := hc 1 hL1
       rw [filS_top W hcase A T₁ hW₁ c 1 _ ?_, Submodule.mem_bot] at hm
       · exact hi (hdvO0 _ hm)
@@ -500,7 +497,7 @@ theorem arc_length_one_or_two_case_b [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsD
         rw [hΦ]
         conv_lhs => rw [← Nat.sub_add_cancel hd1, ← Nat.sub_add_cancel hd0]
         ring
-      simp only [ht, if_neg hci]
+      simp only [ht, ite_eq_right hci]
       rw [hΦs, IsScalarTower.algebraMap_apply O (LetA O n) W.EE]
       have hE' := hE
       simp only [map_mul] at hE'
@@ -570,7 +567,7 @@ theorem arc_length_one_or_two_case_b [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsD
     intro i hci
     apply Br.inj
     rw [← hTt i]
-    simp only [ht, if_neg hci, Pi.mul_apply, Pi.pow_apply, hletcc, hpsc, hVv, hP0, one_mul, map_mul, map_pow]
+    simp only [ht, ite_eq_right hci, Pi.mul_apply, Pi.pow_apply, hletcc, hpsc, hVv, hP0, one_mul, map_mul, map_pow]
     ring
   have hT0 : ∀ i, c₀ i = 0 → Tt i = 0 := by
     intro i hci
@@ -688,9 +685,9 @@ theorem arc_length_one_or_two_case_b [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsD
     simp only [map_mul, map_sub, map_sum, map_pow, hιC, map_natCast]
     by_cases hjk : j = k₀
     · subst hjk
-      simp only [if_true, Pi.single_eq_same, map_one, mul_one, map_mul, map_pow, map_natCast] at e4 ⊢
+      simp only [ite_true, Pi.single_eq_same, map_one, mul_one, map_mul, map_pow, map_natCast] at e4 ⊢
       linear_combination e4
-    · simp only [if_neg hjk, Pi.single_eq_of_ne hjk, map_zero, mul_zero, neg_zero, add_zero, sub_zero] at e4 ⊢
+    · simp only [ite_eq_right hjk, Pi.single_eq_of_ne hjk, map_zero, mul_zero, neg_zero, add_zero, sub_zero] at e4 ⊢
       linear_combination e4
   have hcr := ArcLengthTwo.coeff_relation ((PD.p : ℕ) : O) hp0 Fq μ k₀ K (A.σ PD.p + rr + A.σ PD.p) S A.h k₀'
     (Br.P.p 1 ^ y) hk₀h (by omega) hrel

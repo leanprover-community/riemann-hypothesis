@@ -1,5 +1,7 @@
 module
 
+
+import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.RdArith
 public import Mathlib.LinearAlgebra.Lagrange
 public import Mathlib.NumberTheory.ArithmeticFunction.VonMangoldt
@@ -19,7 +21,6 @@ import Mathlib.RingTheory.PicardGroup
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Order.CompletePartialOrder
-
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.RdBound, Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.RdDiff, Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.DvdDiscrOfInertia
 
@@ -121,8 +122,7 @@ theorem log_index_le : Real.log U.index ≤ 2 * SS U := by
           rw [Finset.mem_filter, Nat.mem_divisors] at hm
           have hmN : N / m ∣ N := Nat.div_dvd_of_dvd hm.1.1
           have hex' : ∃ u ∈ KK N (N / m), u ∉ U := by
-            by_contra hcon
-            push_neg at hcon
+            by_contra! hcon
             exact hm.2 (hcdvd _ hmN hcon)
           have h12 := half_le_rho U hmN hex'
           have hΛ : 0 ≤ vonMangoldt m := vonMangoldt_nonneg
@@ -238,7 +238,7 @@ theorem rho_two {e M i : ℕ} (hM : Nat.Coprime 2 M) (hN : 2 ^ (e + 2) * M ∣ N
       unfold Nat.ModEq at h4'
       omega
     by_cases hi2 : i < 2
-    · rw [if_pos hi2]
+    · rw [ite_eq_left hi2]
       by_cases hw : ∃ w ∈ (KK N (2 ^ i * M)).filter (fun u => u ∈ U),
           ZMod.unitsMap h2 w = -1
       · obtain ⟨w, hwH, hw1⟩ := hw
@@ -259,14 +259,14 @@ theorem rho_two {e M i : ℕ} (hM : Nat.Coprime 2 M) (hN : 2 ^ (e + 2) * M ∣ N
           _ ≤ _ := Finset.card_union_le _ _
           _ ≤ _ := Nat.add_le_add_left Finset.card_image_le _
           _ = 2 * (KK N (2 ^ (e + 2) * M)).card := by ring
-      · push_neg at hw
+      · push Not at hw
         calc _ ≤ (KK N (2 ^ (e + 2) * M)).card := Finset.card_le_card (fun u hu => by
               rw [Finset.mem_filter] at hu
               rcases hU u hu.2 with h1 | h1
               · exact hA u (hKM u hu.1) h1
               · exact absurd h1 (hw u (Finset.mem_filter.mpr hu)))
           _ ≤ 2 * _ := by omega
-    · rw [if_neg hi2]
+    · rw [ite_eq_right hi2]
       calc _ ≤ (KK N (2 ^ (e + 2) * M)).card := Finset.card_le_card (fun u hu => by
             rw [Finset.mem_filter] at hu
             rcases hU u hu.2 with h1 | h1
@@ -292,14 +292,14 @@ theorem rho_two {e M i : ℕ} (hM : Nat.Coprime 2 M) (hN : 2 ^ (e + 2) * M ∣ N
   have hkey : (((KK N (2 ^ i * M)).filter fun u => u ∈ U).card : ℝ) * (2 ^ i).totient
       ≤ (((2 ^ i).totient : ℝ) + if i < 2 then 1 else 0) * (KK N (2 ^ (e + 2) * M)).card := by
     by_cases hi2 : i < 2
-    · rw [if_pos hi2] at hcard ⊢
+    · rw [ite_eq_left hi2] at hcard ⊢
       have ht : (2 ^ i).totient = 1 := by interval_cases i <;> simp
       rw [ht]
       have : (((KK N (2 ^ i * M)).filter fun u => u ∈ U).card : ℝ)
           ≤ 2 * (KK N (2 ^ (e + 2) * M)).card := by exact_mod_cast hcard
       push_cast
       linarith
-    · rw [if_neg hi2] at hcard ⊢
+    · rw [ite_eq_right hi2] at hcard ⊢
       have : (((KK N (2 ^ i * M)).filter fun u => u ∈ U).card : ℝ)
           ≤ (KK N (2 ^ (e + 2) * M)).card := by
         have := hcard; rw [one_mul] at this; exact_mod_cast this
@@ -390,7 +390,7 @@ theorem le_SS {e d : ℕ} (h2 : 2 ^ (e + 2) ∣ N) (hd : d.Prime) (hdN : d ∣ N
       = ((e : ℝ) + 1 - 1 / 2 ^ e) * Real.log 2 := by
     have hite : ∑ i ∈ range (e + 2), (if i < 2 then (1 : ℝ) else 0) = 2 := by
       rw [add_comm e 2, Finset.sum_range_add, Finset.sum_range_succ, Finset.sum_range_one,
-        Finset.sum_eq_zero fun i _ => if_neg (by omega)]
+        Finset.sum_eq_zero fun i _ => ite_eq_right (by omega)]
       norm_num
     rw [← Finset.mul_sum, Finset.sum_sub_distrib, ← Finset.sum_div, Finset.sum_add_distrib,
       hite, hφ]
@@ -864,11 +864,7 @@ theorem div_q : H.condN / H.q = H.QS * H.d := by
   exact Nat.mul_div_cancel _ (Nat.pos_of_ne_zero (left_ne_zero_of_mul (q_mul_d_ne_zero H)))
 
 theorem q_ne_d : H.q ≠ H.d := by
-  intro h
-  have h1 := H.hyp.2.2.1
-  have h2 := H.hyp.2.2.2.1
-  rw [h] at h1
-  omega
+  apply _root_.Formalism.HC.HostRaw.q_ne_d <;> assumption
 
 theorem exists_d (C : HostCore H) : ∃ u ∈ KK H.condN (H.QS * H.q), u ∉ H.art.ker := by
   by_contra h

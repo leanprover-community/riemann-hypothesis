@@ -35,9 +35,3 @@ lemma ee_mul_conj (x : Fin d → ℝ) (σ σ' : Fin d → ℤ) :
   ring
 
 end Formalism.FourierDecayAlt.P.Herglotz
-
-namespace Formalism.FourierDecayAlt.P
-
-open Real Filter Topology Finset Formalism.FourierDecayAlt.P.Herglotz
-
-end Formalism.FourierDecayAlt.P

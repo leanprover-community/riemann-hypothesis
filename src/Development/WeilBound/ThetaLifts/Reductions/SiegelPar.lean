@@ -182,8 +182,7 @@ theorem colK_of_minPar {k : ℕ} (hk : k ≤ r) {R : Type} [CommRing R] {M : Mat
     rw [hz, mul_zero]
 
 theorem exists_omega (h : IsCMExt F E σ) : ∃ ω : E, ω ≠ 0 ∧ σ ω = -ω := by
-  by_contra hno
-  push_neg at hno
+  by_contra! hno
   have hσ := GlobalTheory.SiegelSet.sigma_sigma h
   have hfix : ∀ y, σ y = y := fun y => by
     by_contra hne
@@ -204,7 +203,7 @@ theorem minPar_of_eich {k : ℕ} (hk : k ≤ r) {R : Type} [CommRing R] (A : Mat
     exact this
   refine ⟨1 - Matrix.of fun l m => if hl : l.val < k then C ⟨l.val, hl⟩ m else 0, fun l m hlm => ?_, ?_⟩
   · have hne : l ≠ m := fun e => (lt_irrefl _ (e ▸ hlm))
-    simp only [Matrix.sub_apply, Matrix.one_apply, Matrix.of_apply, if_neg hne]
+    simp only [Matrix.sub_apply, Matrix.one_apply, Matrix.of_apply, ite_eq_right hne]
     split_ifs with hl
     · have hm : m.val < k := lt_trans (Fin.lt_iff_val_lt_val.1 hlm) hl
       have := hC ⟨l.val, hl⟩ ⟨m.val, hm⟩

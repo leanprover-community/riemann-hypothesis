@@ -15,56 +15,11 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarrisTaylor
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarrisTaylorLieMultiplicitySquareZeroLift
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarrisTaylorLiftLieOfHodgeSummandLieStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HarrisTaylorPrimeToPLevelLiftSquareZero
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.SmoothOfRelativeDimensionTensor
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbelianSchemeFirstDeRhamStructure
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SubsingletonOfFibres
-import Mathlib.Tactic.TypeStar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbelianSchemeGerms
 import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsLocalRingTrivSqZeroExt
 import Mathlib.Algebra.Azumaya.Basic
 
@@ -377,14 +332,6 @@ theorem exists_idem (β : R →+* k) (hx : ∀ i j : Fin D.a, i ≠ j → ∃ x,
   · refine Finset.prod_eq_zero (Finset.mem_erase.2 ⟨h, Finset.mem_univ m⟩) ?_
     rw [hq, sub_self, mul_zero]
 
-theorem chars_ne (β : R →+* k) : ∀ i j : Fin D.a, i ≠ j → ∃ x, β (b.t i x) ≠ β (b.t j x) := by
-  intros
-  apply _root_.GlobalTheory.HTLieRho.exists_sep <;> assumption
-
-theorem delta_ne (β : R →+* k) : β b.ρ - ((D.tr : k) - β b.ρ) ≠ 0 := by
-  intros
-  apply _root_.GlobalTheory.HTLieRho.two_rho_sub_ne_zero <;> assumption
-
 end GlobalTheory.HTRealise.LieCond
 
 namespace GlobalTheory.HTRealise.LieCond
@@ -480,13 +427,13 @@ theorem eigen_decomp_graphFil : ∀ (p : ℕ) [Fact p.Prime] (D : GlobalTheory.U
   set ρ := β b.ρ with hρ
   set ρ' := (D.tr : k) - ρ with hρ'
   set δ := ρ - ρ' with hδdef
-  have hδ : δ ≠ 0 := delta_ne (b := b) β
+  have hδ : δ ≠ 0 := _root_.GlobalTheory.HTLieRho.two_rho_sub_ne_zero b β
   have hcoord := coords_sub (fun c => push_coords (o₀.act.act (algebraMap (𝓞 D.F) D.O D.ω)) huv c)
     (fun c => smul_coords ρ huv c)
   obtain ⟨hx, hy⟩ := (mem_graphFil_iff_coords (f := f) hcoord).1 hd
   change Ω u - ρ • u ∈ Fil o₀.A at hx
   change Ω v - ρ • v - f (Ω u - ρ • u) ∈ Fil o₀.A at hy
-  obtain ⟨e, he⟩ := exists_idem (b := b) β (chars_ne β)
+  obtain ⟨e, he⟩ := exists_idem (b := b) β (fun _ _ hij => b.exists_char_separation β hij)
   obtain ⟨u', hu'def⟩ : ∃ u', u' = δ⁻¹ • (Ω u - ρ' • u) := ⟨_, rfl⟩
   obtain ⟨v', hv'def⟩ : ∃ v', v' = δ⁻¹ • (Ω v - ρ' • v) := ⟨_, rfl⟩
   have hrho : ∀ z, δ⁻¹ • (Ω z - ρ' • z) ∈ GlobalTheory.HTCount.rhoPart o₀ β := fun z =>

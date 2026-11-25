@@ -52,10 +52,6 @@ theorem fnOf_map {X : Scheme.{0}} [IsIntegral X] {U V : X.Opens} (i : V ⟶ U)
 
 end GlobalTheory.Cartier.SecPowLoc
 
-namespace GlobalTheory.Cartier
-
-
-end GlobalTheory.Cartier
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -298,7 +294,7 @@ theorem mem_support_multIdeal_iff : ∀ (k : Type) [Field k] [CharZero k] (X : S
     have h2 : ¬ x ∈ X.zeroLocus (J.ideal ⟨V, hV⟩ : Set Γ(X, V)) := fun h =>
       hx ((Scheme.IdealSheafData.mem_support_iff_of_mem (U := ⟨V, hV⟩) hxV).2 h)
     rw [Scheme.mem_zeroLocus_iff] at h2
-    push_neg at h2
+    push Not at h2
     obtain ⟨f, hf, hfx⟩ := h2
     rw [Scheme.mem_basicOpen X f x hxV] at hfx
     haveI : Nonempty V := ⟨⟨x, hxV⟩⟩
@@ -502,7 +498,7 @@ theorem ratOf_add {W : Y.Opens} (σ τ : Γ(twist (GlobalTheory.structureModule 
     apply mul_right_cancel₀ (Units.ne_zero (genChart D).1.2)
     rw [add_mul, ratOf_mul _ _ h, ratOf_mul _ _ h, ratOf_mul _ _ h, ← map_add (f := _)]
     congr 1
-  · simp [ratOf, dif_neg hW]
+  · simp [ratOf, dite_eq_right hW]
 
 theorem ratOf_smul {W : Y.Opens} (hW : genericPoint Y ∈ W) (a : Γ(Y, W))
     (σ : Γ(twist (GlobalTheory.structureModule Y) (toLB D), W)) :

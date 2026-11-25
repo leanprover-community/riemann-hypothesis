@@ -83,7 +83,7 @@ variable {k r : ℕ}
 theorem inWb_Wb (v : Fin (2 * r + k + 1) → ℂ) : inWb k r (Wb v) := by
   intro i hi
   show (if r ≤ i.val ∧ i.val ≤ r + k then v i else 0) = 0
-  rw [if_neg (by omega)]
+  rw [ite_eq_right (by omega)]
 
 theorem split_of_free {v : Fin (2 * r + k + 1) → ℂ} (hv : ∀ a : Fin r, v (esI k r a) = 0) :
     v = (∑ a : Fin r, v (eI k r a) • ee k r a) + Wb v := by
@@ -95,9 +95,9 @@ theorem split_of_free {v : Fin (2 * r + k + 1) → ℂ} (hv : ∀ a : Fin r, v (
     split_ifs with h
     · have hi : i = eI k r ⟨i.val, h⟩ := Fin.ext (hval ⟨i.val, h⟩).symm
       rw [Finset.sum_eq_single ⟨i.val, h⟩]
-      · rw [if_pos hi, ← hi]
+      · rw [ite_eq_left hi, ← hi]
       · intro b _ hb
-        rw [if_neg]
+        rw [ite_eq_right]
         intro hib
         apply hb
         apply Fin.ext
@@ -107,7 +107,7 @@ theorem split_of_free {v : Fin (2 * r + k + 1) → ℂ} (hv : ∀ a : Fin r, v (
         exact absurd (Finset.mem_univ _) h'
     · apply Finset.sum_eq_zero
       intro b _
-      rw [if_neg]
+      rw [ite_eq_right]
       intro hib
       apply h
       rw [hib, hval]
@@ -116,11 +116,11 @@ theorem split_of_free {v : Fin (2 * r + k + 1) → ℂ} (hv : ∀ a : Fin r, v (
   show v i = (if i.val < r then v i else 0) + (if r ≤ i.val ∧ i.val ≤ r + k then v i else 0)
   have hlt := i.isLt
   by_cases h1 : i.val < r
-  · rw [if_pos h1, if_neg (by omega), add_zero]
-  · rw [if_neg h1, zero_add]
+  · rw [ite_eq_left h1, ite_eq_right (by omega), add_zero]
+  · rw [ite_eq_right h1, zero_add]
     by_cases h2 : i.val ≤ r + k
-    · rw [if_pos ⟨by omega, h2⟩]
-    · rw [if_neg (by omega)]
+    · rw [ite_eq_left ⟨by omega, h2⟩]
+    · rw [ite_eq_right (by omega)]
       have hi : i = esI k r ⟨2 * r + k - i.val, by omega⟩ :=
         Fin.ext (by show i.val = 2 * r + k - (2 * r + k - i.val); omega)
       rw [hi]

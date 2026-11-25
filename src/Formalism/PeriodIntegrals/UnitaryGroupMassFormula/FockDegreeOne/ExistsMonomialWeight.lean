@@ -4,6 +4,7 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockDegreeOne.On
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockWeightDegree.ExistsMonomialWeight
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockDegreeOne.EqZeroOfFockInnerSelfRe
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.PolynomialDerivatives.ProdMapPowSingle
 
 @[expose] public section
 
@@ -16,35 +17,17 @@ namespace PI.FockOneDegW.Core
 open PI.FockOneDegW PI.FockOneDegW.Inner
 open PI.FockWtDegWork (W1 coeff_of_diag fockAct1_monomial lw wt_of_isHW)
 
-theorem pd_comm {σ : Type*} (i j : σ) (P : MvPolynomial σ ℂ) :
-    pderiv i (pderiv j P) = pderiv j (pderiv i P) := by
-  classical
-  induction P using MvPolynomial.induction_on with
-  | C a => simp
-  | add p q hp hq => simp only [map_add (f := _), hp, hq]
-  | mul_X p n hp =>
-    have hc : ∀ a b : σ, pderiv a (pderiv b (X n : MvPolynomial σ ℂ)) = 0 := by
-      intro a b
-      rw [pderiv_X, Pi.single_apply]
-      split_ifs
-      · exact Derivation.map_one_eq_zero _
-      · exact map_zero _
-    simp only [Derivation.leibniz, map_add (f := _), smul_eq_mul]
-    rw [hc i j, hc j i, hp]
-    ring
-
 theorem key {σ : Type*} (v : MvPolynomial σ ℂ) (ac ad bc bd : σ) (hne : bc ≠ ad) :
     fockInner (pderiv ac (pderiv ad v)) (pderiv bc (pderiv bd v)) =
       fockInner (X bc * pderiv ac v) (X ad * pderiv bd v) := by
   rw [fockInner_mul_X, pderiv_mul, pderiv_X_of_ne hne, zero_mul, zero_add, fockInner_X_mul,
-    pd_comm ad ac]
+    MvPolynomial.pderiv_comm ad ac]
 
 theorem coeff_zero_of_dd {σ : Type*} (v : MvPolynomial σ ℂ) (i j : σ) (hij : i ≠ j)
     (h : pderiv i (pderiv j v) = 0) (α : σ →₀ ℕ) (hα : AddMonoidAlgebra.coeff v α ≠ 0) :
     α i = 0 ∨ α j = 0 := by
   classical
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   obtain ⟨hi, hj⟩ := hcon
   have hsplit : α = (α - Finsupp.single i 1 - Finsupp.single j 1) + Finsupp.single i 1 +
       Finsupp.single j 1 := by
@@ -153,8 +136,8 @@ theorem SS_offblock (v : Pol p q r s) (a b : Ix p q) (h : ¬ sameBlock a b) : SS
       apply h
       rw [side_sb]
       rw [(side_lp a d).1 h1.2, (side_lp b d).1 h2.2]
-    · rw [if_neg h2, fockInner_zero_right]
-  · rw [if_neg h1, fockInner_zero_left]
+    · rw [ite_eq_right h2, fockInner_zero_right]
+  · rw [ite_eq_right h1, fockInner_zero_left]
 
 theorem negOp_apply (v : Pol p q r s) (b a : Ix p q) :
     negOp b a v = ∑ c : Ix r s, (if linePos ((b, c) : Ln p q r s) = true then 0
@@ -192,20 +175,20 @@ theorem SS_eq (v : Pol p q r s) (a b : Ix p q) (hab : sameBlock a b) :
     · have hbc : linePos ((b, c) : Ln p q r s) = true := by
         rw [side_lp, ← hs, (side_lp a d).1 hD]
         exact ((side_sb c d).1 hcd).symm
-      rw [if_neg (fun h => h.1 hcd), if_pos hbc, fockInner_zero_left, fockInner_zero_left]
+      rw [ite_eq_right (fun h => h.1 hcd), ite_eq_left hbc, fockInner_zero_left, fockInner_zero_left]
     · have hbc : ¬ linePos ((b, c) : Ln p q r s) = true := by
         intro h
         apply hcd
         rw [side_sb, ← (side_lp b c).1 h, ← hs]
         exact (side_lp a d).1 hD
-      rw [if_pos ⟨hcd, hD⟩, if_pos ⟨hcd, hD'⟩, if_neg hbc, if_pos hD]
+      rw [ite_eq_left ⟨hcd, hD⟩, ite_eq_left ⟨hcd, hD'⟩, ite_eq_right hbc, ite_eq_left hD]
       apply key
       intro h
       apply hcd
       have : c = d := (Prod.mk.inj h).2
       subst this
       exact (side_sb c c).2 rfl
-  · rw [if_neg (fun h => hD h.2), if_neg hD, fockInner_zero_left, fockInner_zero_right]
+  · rw [ite_eq_right (fun h => hD h.2), ite_eq_right hD, fockInner_zero_left, fockInner_zero_right]
 
 theorem hw_eq (hK : OpsK) (μ : Ix p q → ℚ) (v : Pol p q r s)
     (hv : IsHW (fockAct1 p q r s) μ v) (a b : Ix p q) (h : posC a b) :
@@ -214,7 +197,7 @@ theorem hw_eq (hK : OpsK) (μ : Ix p q → ℚ) (v : Pol p q r s)
     have h2 := hv.2
     simp only [hwSub, Submodule.mem_inf, Submodule.mem_iInf, LinearMap.mem_ker] at h2
     exact h2.2 a b h
-  rw [hK p q r s a b (posC_sb a b h), if_neg (posC_ne a b h), add_zero, LinearMap.sub_apply,
+  rw [hK p q r s a b (posC_sb a b h), ite_eq_right (posC_ne a b h), add_zero, LinearMap.sub_apply,
     sub_eq_zero] at hker
   exact hker
 
@@ -258,7 +241,7 @@ theorem core (hK : OpsK) (hL : HarmIff) (μ : Ix p q → ℚ) (v : Pol p q r s)
     have h2 : ¬ linePos ((a, c) : Ln p q r s) = true := by rw [hc]; simp
     exact h2 ((side_lp a c).2 (h1.trans h.symm))
   unfold gg at hg
-  rwa [if_pos ⟨hnsb, hd⟩] at hg
+  rwa [ite_eq_left ⟨hnsb, hd⟩] at hg
 
 theorem exists_monomial_weight' {σ ι : Type*} [Fintype σ]
     (T : ι → Module.End ℂ (MvPolynomial σ ℂ)) (f : ι → (σ →₀ ℕ) → ℚ)
@@ -304,7 +287,7 @@ theorem shift_eq (α : Ln p q r s →₀ ℕ)
     by_cases hA : ∀ c : Fin r, α (Sum.inl i, Sum.inl c) = 0
     · left; exact Finset.sum_eq_zero fun c _ => by simp [hA c]
     · right
-      push_neg at hA
+      push Not at hA
       obtain ⟨c0, hc0⟩ := hA
       refine Finset.sum_eq_zero fun d _ => ?_
       have := (hrow (Sum.inl i) (Sum.inr d) (Sum.inl c0) rfl rfl).resolve_right hc0
@@ -322,7 +305,7 @@ theorem shift_eq (α : Ln p q r s →₀ ℕ)
     by_cases hA : ∀ c : Fin s, α (Sum.inr i, Sum.inr c) = 0
     · left; exact Finset.sum_eq_zero fun c _ => by simp [hA c]
     · right
-      push_neg at hA
+      push Not at hA
       obtain ⟨c0, hc0⟩ := hA
       refine Finset.sum_eq_zero fun d _ => ?_
       have := (hrow (Sum.inr i) (Sum.inl d) (Sum.inr c0) rfl rfl).resolve_right hc0

@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.DecompTypeI
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.MuCardLeTwo
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.KcBase
@@ -24,20 +25,7 @@ variable {φ : Frame} (H : HostRaw φ)
 
 theorem kc_eq_of_pow_eq_one {S : Type*} [CommRing S] [IsDomain S] (P : Ideal S) [hP : P.IsPrime] {m : ℕ} (hm : (m : S) ∉ P)
     {x y : S} (hx : x ^ m = 1) (hy : y ^ m = 1) (hxy : x - y ∈ P) : x = y := by
-  by_contra hne
-  have h1 := geom_sum₂_mul x y m
-  rw [hx, hy, sub_self, mul_eq_zero, sub_eq_zero] at h1
-  have h2 := congrArg (Ideal.Quotient.mk P) (h1.resolve_right hne)
-  have h3 : Ideal.Quotient.mk P x = Ideal.Quotient.mk P y := Ideal.Quotient.eq.mpr hxy
-  rw [RingHom.map_geom_sum₂, h3, geom_sum₂_self, map_zero, ← map_pow, ← map_natCast (Ideal.Quotient.mk P), ← map_mul,
-    Ideal.Quotient.eq_zero_iff_mem] at h2
-  rcases hP.mem_or_mem h2 with h4 | h4
-  · exact hm h4
-  · have h5 : y ∈ P := hP.mem_of_pow_mem _ h4
-    have hm0 : m ≠ 0 := by rintro rfl; exact hm (by simp)
-    have h6 := P.pow_mem_of_mem h5 m (Nat.pos_of_ne_zero hm0)
-    rw [hy] at h6
-    exact hP.ne_top ((Ideal.eq_top_iff_one P).mpr h6)
+  apply +allowSynthFailures _root_.Formalism.HC.D7.eq_of_pow_eq_one <;> assumption
 
 variable (C : HostCore H)
 include C

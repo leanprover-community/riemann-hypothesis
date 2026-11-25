@@ -52,7 +52,7 @@ theorem pivot {K κ : Type*} [Field K] (R : Subring K) (hR : ∀ x : K, x ∈ R 
         · rw [div_self hfa0]; exact R.one_mem
         · have : f k / f a = (f k / f k0) * (f k0 / f a) := by field_simp
           rw [this]; exact R.mul_mem (hR0 k hk) hinv
-    · push_neg at hs
+    · push Not at hs
       have hfa0 : f a ≠ 0 := by
         obtain ⟨k, hk, hfk⟩ := h
         rcases Finset.mem_insert.1 hk with rfl | hk
@@ -170,13 +170,13 @@ theorem descent_core {K Kc V Vc M : Type*} [Field K] [Field Kc] [Algebra K Kc]
           (hA _ (hbR k (Finset.mem_of_mem_erase hk)) _ (ha k0 hk0))) y hy'
       refine ⟨fun k => if k = k0 then 0 else c k, fun k hk => ?_, ?_⟩
       · by_cases hkk : k = k0
-        · simp only [hkk, if_true, map_zero]; exact A.zero_mem
-        · simp only [hkk, if_false]; exact hcA k (Finset.mem_erase.2 ⟨hkk, hk⟩)
+        · simp only [hkk, ite_true, map_zero]; exact A.zero_mem
+        · simp only [hkk, ite_false]; exact hcA k (Finset.mem_erase.2 ⟨hkk, hk⟩)
       · rw [← Finset.add_sum_erase s _ hk0, hyc]
-        simp only [if_true, zero_smul, zero_add]
+        simp only [ite_true, zero_smul, zero_add]
         refine Finset.sum_congr rfl fun k hk => ?_
-        rw [if_neg (Finset.ne_of_mem_erase hk)]
-    · push_neg at hdep
+        rw [ite_eq_right (Finset.ne_of_mem_erase hk)]
+    · push Not at hdep
       have hind : ∀ w : s → K, ∑ k : s, w k • z k = 0 → w = 0 := by
         intro w hw
         have h5 := hdep (fun k => if h : k ∈ s then w ⟨k, h⟩ else 0) (by
@@ -187,7 +187,7 @@ theorem descent_core {K Kc V Vc M : Type*} [Field K] [Field Kc] [Algebra K Kc]
         coeff_mem_range_algebraMap_of_linearIndependent ι hιs π πc hπ hsep s z hind a y hy ⟨k, hk⟩
       let c : κ → K := fun k => if hk : k ∈ s then (hr k hk).choose else 0
       have hc : ∀ k ∈ s, algebraMap K Kc (c k) = a k := fun k hk => by
-        simp only [c, dif_pos hk]; exact (hr k hk).choose_spec
+        simp only [c, dite_eq_left hk]; exact (hr k hk).choose_spec
       refine ⟨c, fun k hk => ?_, ?_⟩
       · rw [hc k hk]; exact ha k hk
       · have h6 : ι (y - ∑ k ∈ s, c k • z k) = 0 := by

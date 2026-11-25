@@ -585,8 +585,7 @@ lemma index_ideal_smul_top_le_norm_pow {E : Type} [Field E] [NumberField E] (p :
         have : Ideal.absNorm p ≠ 1 := by rw [Ne, Ideal.absNorm_eq_one_iff]; exact hp.ne_top
         omega
       have hex : ∃ e, ¬ Jg ≤ p ^ (e + 1) := by
-        by_contra hall
-        push_neg at hall
+        by_contra! hall
         have hN : Ideal.absNorm Jg ≠ 0 := by rwa [Ne, Ideal.absNorm_eq_zero_iff]
         have h0 := Ideal.absNorm_dvd_absNorm_of_le (hall (Ideal.absNorm Jg))
         rw [map_pow] at h0
@@ -617,8 +616,7 @@ lemma index_ideal_smul_top_le_norm_pow {E : Type} [Field E] [NumberField E] (p :
         have h' : p ^ (e + 1) * A ∣ Jg * A := Ideal.dvd_iff_le.2 h
         exact Ideal.dvd_iff_le.1 ((mul_dvd_mul_iff_right hA0).1 h')
       have hgen : ∃ i ∈ s, ∃ x ∈ A, g i * x ∉ p ^ (e + 1) * A := by
-        by_contra hall
-        push_neg at hall
+        by_contra! hall
         apply hnot
         have hcol : Jg ≤ (p ^ (e + 1) * A).colon A := by
           rw [Ideal.span_le]

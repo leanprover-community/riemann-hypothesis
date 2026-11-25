@@ -10,8 +10,6 @@ open CategoryTheory GroundTheory.ProfCoh
 
 namespace PositivityTheory.Lit1.PTN
 
-attribute [local instance 2000] Rep.hV2
-
 def reindexAdd {α β : Type} (P : β → Type) [∀ b, AddCommGroup (P b)] (e : α ≃ β) :
     (∀ a, P (e a)) ≃+ (∀ b, P b) :=
   { Equiv.piCongrLeft P e with

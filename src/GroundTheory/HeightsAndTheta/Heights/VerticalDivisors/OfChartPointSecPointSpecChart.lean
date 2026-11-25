@@ -223,15 +223,7 @@ namespace GenSecKer
 
 theorem genPar_algIndep (k : Type*) [Field k] (e n : ℕ) :
     AlgebraicIndependent k (genPar k e n) := by
-  have hinj : Function.Injective (IsScalarTower.toAlgHom k (MvPolynomial (Par e n) k)
-      (GenParField k e n)) :=
-    IsFractionRing.injective (MvPolynomial (Par e n) k) (GenParField k e n)
-  have h := (MvPolynomial.algebraicIndependent_X (Par e n) k).map' hinj
-  have hc : (⇑(IsScalarTower.toAlgHom k (MvPolynomial (Par e n) k) (GenParField k e n)) ∘ X) =
-      genPar k e n := by
-    funext p
-    simp only [Function.comp_apply, IsScalarTower.coe_toAlgHom', genPar]
-  rwa [hc] at h
+  exact GroundTheory.Heights₂.Heights.Vertical.genPar_algebraicIndependent k e n
 
 theorem coeff_mem_of_sum {k L : Type*} [Field k] [Field L] [Algebra k L] (K : IntermediateField k L)
     {n : ℕ} (x c : Fin n → L) (b : L) (j₀ : Fin n) (hx : ∀ j, x j ∈ K) (hx0 : x j₀ ≠ 0)

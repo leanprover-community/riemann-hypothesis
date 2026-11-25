@@ -183,8 +183,7 @@ theorem exists_im_ne_zero [_root_.NumberField.IsTotallyComplex K] (v : InfiniteP
     ∃ a : K, (v.embedding a).im ≠ 0 := by
   have hc : v.IsComplex := IsTotallyComplex.isComplex v
   rw [InfinitePlace.isComplex_iff] at hc
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   apply hc
   rw [ComplexEmbedding.isReal_iff]
   ext a
@@ -723,12 +722,6 @@ theorem dual_numbers : DualNumbers := by
 
 end DualSec
 
-section HtMap
-
-variable {K : Type} [Field K] [NumberField K] [StarRing K]
-
-end HtMap
-
 section Emb
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
@@ -778,26 +771,5 @@ theorem comap_fg {V W : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V]
   exact isNoetherian_submodule.mp hN _ inf_le_left
 
 end Emb
-
-section Ext
-
-open TensorProduct
-
-variable {K K' : Type} [Field K] [NumberField K] [StarRing K] [Field K'] [NumberField K']
-  [StarRing K'] [Algebra K K']
-
-end Ext
-
-section Record
-
-open Formalism.BasicNotions.DV
-
-end Record
-
-section Checks
-
-variable {K : Type} [Field K] [NumberField K] [StarRing K]
-
-end Checks
 
 end Formalism.L2.GlobalTheoryTheory.HLatOps

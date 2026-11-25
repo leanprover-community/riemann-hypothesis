@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.StandardCharacterExists
 public import Formalism.HermitianCurvature.StatementG
 public import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
 import Mathlib.NumberTheory.Height.NumberField
@@ -134,14 +135,7 @@ theorem gradSmall6 (m : ℕ) (D' : ℂ) (hD : D' ≠ 0) (x : Fin (m + 1) → ℂ
     nlinarith
 
 theorem card_UT (n : ℕ) : Fintype.card (UT n) = ∑ i ∈ range n, i := by
-  rw [Fintype.card_subtype, Finset.card_filter, Fintype.sum_prod_type_right]
-  simp_rw [← Finset.card_filter]
-  have : ∀ y : Fin n, (univ.filter (fun x : Fin n => x < y)).card = (y : ℕ) := by
-    intro y
-    rw [show univ.filter (fun x : Fin n => x < y) = Finset.Iio y by ext; simp]
-    exact Fin.card_Iio y
-  simp_rw [this]
-  exact Fin.sum_univ_eq_sum_range (fun i => i) n
+  apply _root_.Formalism.FourierDecayAlt.P.StandardCharacterExists.card_UT <;> assumption
 
 end Formalism.FourierDecayAlt.P.G1
 
@@ -180,7 +174,7 @@ theorem phase_function_deriv : Formalism.FourierDecayAlt.G.PhaseFunctionDeriv :=
       unfold hess
       rw [prod_split x j]
       have := hx i; have := hx j; have := hQ j
-      simp only [if_neg hij]
+      simp only [ite_eq_right hij]
       field_simp
 
 theorem phase_function_critical_points : Formalism.FourierDecayAlt.G.PhaseFunctionCritical := by
@@ -276,7 +270,7 @@ theorem root_set_characterization : Formalism.FourierDecayAlt.G.RootSetSpec := b
     have hprim := Complex.isPrimitiveRoot_exp s hs.ne'
     unfold rootSet
     rw [Multiset.toFinset_card_of_nodup (hprim.nthRoots_nodup ha), hprim.card_nthRoots]
-    rw [if_pos (IsAlgClosed.exists_pow_nat_eq a hs)]
+    rw [ite_eq_left (IsAlgClosed.exists_pow_nat_eq a hs)]
 
 theorem stationary_leading_constant : Formalism.FourierDecayAlt.G.LeadingConstant := by
   intro m τ ζ hτ hζ

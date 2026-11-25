@@ -23,8 +23,6 @@ section Forms
 open CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj AlgebraicGeometry
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor IsLocalRing TensorProduct
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 def FHSt (p : ℕ) [Fact p.Prime] : Prop :=
   ∀ (T : Type) [CommRing T] [IsDomain T] [IsLocalRing T] [IsNoetherianRing T] [CharZero T]
     [IsAdicComplete (maximalIdeal T) T], ¬ IsUnit (p : T) →

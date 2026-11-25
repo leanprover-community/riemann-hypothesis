@@ -74,11 +74,11 @@ theorem mapDomain_prepend_apply' {V : Type} (τ : List V) (y : List V →₀ ℤ
     Finsupp.mapDomain (fun w => τ ++ w) y l = if τ <+: l then y (l.drop τ.length) else 0 := by
   by_cases h : τ <+: l
   · obtain ⟨u, rfl⟩ := h
-    rw [if_pos (List.prefix_append τ u)]
+    rw [ite_eq_left (List.prefix_append τ u)]
     have hinj : Function.Injective (fun w : List V => τ ++ w) := fun a b hab => List.append_cancel_left hab
     rw [Finsupp.mapDomain_apply_of_injective hinj y u]
     simp
-  · rw [if_neg h, Finsupp.mapDomain_notin_range]
+  · rw [ite_eq_right h, Finsupp.mapDomain_notin_range]
     rintro ⟨u, rfl⟩
     exact h (List.prefix_append τ u)
 
@@ -206,11 +206,11 @@ theorem retract_step : ∀ (V : Type) (F : Set (List V)) (S : Set V), SubClosed 
     by_cases hex' : ∃ τ ∈ P, τ <+: l
     · obtain ⟨τ0, hτ0, hpr⟩ := hex'
       rw [Finset.sum_eq_single τ0
-        (fun τ hτ hne => by rw [if_neg]; exact fun h => hne (huniq τ0 hτ0 τ hτ l hpr h))
-        (fun h => absurd hτ0 h), if_pos hpr, sub_self] at hl
+        (fun τ hτ hne => by rw [ite_eq_right]; exact fun h => hne (huniq τ0 hτ0 τ hτ l hpr h))
+        (fun h => absurd hτ0 h), ite_eq_left hpr, sub_self] at hl
       exact absurd rfl hl
-    · push_neg at hex'
-      rw [Finset.sum_eq_zero (fun τ hτ => if_neg (hex' τ hτ)), sub_zero] at hl
+    · push Not at hex'
+      rw [Finset.sum_eq_zero (fun τ hτ => ite_eq_right (hex' τ hτ)), sub_zero] at hl
       obtain ⟨⟨hlF, _⟩, hlp⟩ := hcs l hl
       simp only [Set.mem_setOf_eq]
       refine ⟨⟨hlF, ?_⟩, hlp⟩
@@ -275,14 +275,14 @@ theorem retract_step : ∀ (V : Type) (F : Set (List V)) (S : Set V), SubClosed 
       exact hpre τ0 hτ0 (τ0 ++ w) (List.prefix_append _ _)
         ((Finsupp.mem_supported ℤ g).1 hgmem (Finsupp.mem_support_iff.2 hne))
     rw [hg0, zero_add, Finset.sum_eq_single τ0] at h0
-    · rw [Finsupp.smul_apply, mapDomain_prepend_apply', if_pos (List.prefix_append _ _),
+    · rw [Finsupp.smul_apply, mapDomain_prepend_apply', ite_eq_left (List.prefix_append _ _),
         List.drop_left, smul_eq_mul] at h0
       rw [Finsupp.zero_apply]
       rcases mul_eq_zero.1 h0.symm with h | h
       · exact absurd h (pow_ne_zero _ (by norm_num))
       · exact h
     · intro τ hτ hne
-      rw [Finsupp.smul_apply, mapDomain_prepend_apply', if_neg, smul_zero]
+      rw [Finsupp.smul_apply, mapDomain_prepend_apply', ite_eq_right, smul_zero]
       exact fun h => hne (huniq τ0 hτ0 τ hτ _ (List.prefix_append _ _) h)
     · intro h
       exact absurd hτ0 h

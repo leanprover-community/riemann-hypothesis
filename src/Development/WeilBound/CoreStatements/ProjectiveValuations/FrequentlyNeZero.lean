@@ -32,7 +32,7 @@ theorem frequently_ne_zero {F : Type} [Field F] {Y : Scheme.{0}} (p : Y ⟶ Sp F
   let e : ℂ → GlobalTheory.CxPts p σ := fun u => if hu : u ∈ Metric.ball (0 : ℂ) ρ then ofHom hW (ψ u) (ha u hu) else y
   have hb := Metric.ball_mem_nhds (0 : ℂ) hψ.1
   have hev : ∀ u ∈ Metric.ball (0 : ℂ) ρ, e u ∈ ptsIn p σ W ∧ ∀ f, ev p σ W f (e u) = ψ u f := fun u hu => by
-    simp only [e, dif_pos hu]
+    simp only [e, dite_eq_left hu]
     exact ⟨ofHom_mem _ _ _, ev_ofHom _ _ _⟩
   have ht : Tendsto e (𝓝 0) (𝓝 y) := by
     refine tendsto_subtype_rng.2 (GlobalTheory.Points.tendsto_of_isAffineOpen hW hy

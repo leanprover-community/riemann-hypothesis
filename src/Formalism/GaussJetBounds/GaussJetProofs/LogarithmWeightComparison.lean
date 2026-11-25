@@ -109,7 +109,7 @@ theorem coeff_genLog {l : ℕ} (hl : 2 ≤ l) (p : τ → τ) (x : τ) (n : τ �
       if n = Finsupp.single (p^[e] x) ((l ^ 2) ^ e) then ((l : K) ^ e)⁻¹ else 0) = _
   apply Finset.sum_subset (fun e he => by simp only [Finset.mem_range] at he ⊢; omega)
   intro e _ hne
-  rw [if_neg]
+  rw [ite_eq_right]
   intro h
   apply hne
   rw [Finset.mem_range]
@@ -160,9 +160,9 @@ theorem coeff_X_eq_sum [Finite τ] {l : ℕ} (hl : 2 ≤ l) (p : τ → τ) {g :
     intro e
     rw [coeff_genLog hl p x (D e) (M := (l ^ 2) ^ e + 1) (by rw [hDdeg]; omega)]
     rw [Finset.sum_eq_single e]
-    · rw [if_pos rfl]
+    · rw [ite_eq_left rfl]
     · intro e' _ hne
-      rw [if_neg]
+      rw [ite_eq_right]
       intro h
       exact hne (hD_inj e e' h).symm
     · intro he
@@ -186,7 +186,7 @@ theorem coeff_X_eq_sum [Finite τ] {l : ℕ} (hl : 2 ≤ l) (p : τ → τ) {g :
     obtain ⟨e, _, he⟩ := Finset.exists_ne_zero_of_sum_ne_zero h1'
     have hde : d = D e := by
       by_contra hc
-      exact he (if_neg hc)
+      exact he (ite_eq_right hc)
     rw [hde, hDdef] at h2
     simp only at h2
     rw [Finsupp.prod_single_index (h := fun s e => g s ^ e) (pow_zero _)] at h2
@@ -202,7 +202,7 @@ theorem isIdMod2_genLog {l : ℕ} (hl : 2 ≤ l) (p : τ → τ) :
   · rw [← MvPowerSeries.coeff_zero_eq_constantCoeff_apply]
     show (∑ e ∈ Finset.range ((0 : τ →₀ ℕ).degree + 1),
       if (0 : τ →₀ ℕ) = Finsupp.single (p^[e] j) ((l ^ 2) ^ e) then ((l : K) ^ e)⁻¹ else 0) = 0
-    refine Finset.sum_eq_zero fun e _ => if_neg ?_
+    refine Finset.sum_eq_zero fun e _ => ite_eq_right ?_
     intro h
     have hd := congrArg Finsupp.degree h
     rw [map_zero, Finsupp.degree_single] at hd
@@ -216,7 +216,7 @@ theorem isIdMod2_genLog {l : ℕ} (hl : 2 ≤ l) (p : τ → τ) :
       have hd := congrArg Finsupp.degree h
       rw [Finsupp.degree_single, Finsupp.degree_single] at hd
       nlinarith
-    rw [if_neg h1, add_zero]
+    rw [ite_eq_right h1, add_zero]
     simp only [Function.iterate_zero, id, pow_zero, inv_one]
     by_cases hij : i = j
     · subst hij
@@ -302,7 +302,7 @@ theorem generalized_log_weight : GenLogWeight.{u, v} := by
     · simpa using Real.rpow_nonneg hπ0.le _
   have hlow : ∀ z, Low N (g z - truncBelow N (g z)) := by
     intro z m hm
-    rw [map_sub, coeff_truncBelow, if_pos hm, sub_self]
+    rw [map_sub, coeff_truncBelow, ite_eq_left hm, sub_self]
   have htr1 : ∀ z, Low 1 (truncBelow N (g z)) := by
     intro z m hm
     rw [coeff_truncBelow]

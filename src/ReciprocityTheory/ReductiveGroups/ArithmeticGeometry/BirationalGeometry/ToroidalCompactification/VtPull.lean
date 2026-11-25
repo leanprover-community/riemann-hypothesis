@@ -14,8 +14,6 @@ namespace ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.DVR
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section Germ
 
 variable {X Y Y' : Scheme.{0}} {L : LB X} {K : Type} [Fintype K]

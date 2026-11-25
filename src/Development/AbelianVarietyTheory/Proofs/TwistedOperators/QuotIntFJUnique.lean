@@ -171,11 +171,7 @@ theorem colE_mem (p : ℕ) (β : n → k) :
     rw [inv_eq_of_mul_eq_one_right (QuotStep.colE_neg p β)]; exact colE_tri p _)
 
 theorem colE_add (p : ℕ) (u w : n → k) : colE c p (u + w) = colE c p u * colE c p w := by
-  apply Units.ext
-  simp only [colE, upU, Units.val_mul, fromBlocks_multiply]
-  congr 1 <;> simp
-  ext r i
-  by_cases h : i.val + 1 = p <;> simp [h, add_comm]
+  exact (GlobalTheory.RootEx.FourierJacobiGroup.colE_add p u w).symm
 
 end Alg
 

@@ -249,7 +249,7 @@ theorem valS_C_nn (LL : Letters ι) (S : Set ι) (c : Kf) :
       subst h
       exact hneg (by simp)
     apply hm
-    rw [LaurentPolynomial.C_apply, if_neg hk0]
+    rw [LaurentPolynomial.C_apply, ite_eq_right hk0]
   · first
       | exact (hm rfl).elim
 

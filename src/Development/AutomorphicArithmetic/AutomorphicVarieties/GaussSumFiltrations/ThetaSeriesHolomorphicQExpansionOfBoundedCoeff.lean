@@ -568,8 +568,7 @@ theorem GlobalTheory.HilbertThetaSeries.th_expansion : ∀ (F : Type) [Field F] 
           rw [h', Int.cast_neg, neg_mul]; exact hy'.neg
       refine ⟨y.natAbs, Int.natAbs_pos.2 hy0, fun ξ hξ => ?_⟩
       obtain ⟨x, ⟨hxa, hxξ⟩, -⟩ : ∃ x ∈ {x : κ → F | x ∈ aL κ a ∧ QF G x = ξ}, Φ x ≠ 0 := by
-        by_contra h
-        push_neg at h
+        by_contra! h
         apply hξ
         beta_reduce
         rw [finsum_mem_eq_finite_toFinset_sum _ (hfin a ξ)]

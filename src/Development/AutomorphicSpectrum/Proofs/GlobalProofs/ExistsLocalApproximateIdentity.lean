@@ -118,19 +118,19 @@ theorem lint_fin (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) {d : ℕ} (b : Modu
       fun v => if h : v ∈ S then s ⟨v, h⟩ else Set.univ
     have hA' : ∀ v, MeasurableSet (A' v) := fun v => by
       by_cases h : v ∈ S
-      · simp only [A', dif_pos h]; exact hs _
-      · simp only [A', dif_neg h]; exact MeasurableSet.univ
+      · simp only [A', dite_eq_left h]; exact hs _
+      · simp only [A', dite_eq_right h]; exact MeasurableSet.univ
     have key := GlobalTheory.CompanionTheory.SW.WBox.coordW_box F E σ hCM d b lam hlam lf hlf h1 n M S A' hA'
     have hset : ρ ⁻¹' Set.univ.pi s ∩ A = {X | (∀ v ∈ S, projV v X ∈ A' v) ∧ ∀ v, v ∉ S → projV v X ∈ latV b v} := by
       ext X
       simp only [Set.mem_inter_iff, Set.mem_preimage, Set.mem_pi, Set.mem_univ, forall_true_left, hA, Set.mem_setOf_eq]
       refine and_congr_left fun _ => ⟨fun h v hv => ?_, fun h v => ?_⟩
-      · simpa only [A', dif_pos hv] using h ⟨v, hv⟩
+      · simpa only [A', dite_eq_left hv] using h ⟨v, hv⟩
       · have := h v.1 v.2
-        simpa only [A', dif_pos v.2] using this
+        simpa only [A', dite_eq_left v.2] using this
     rw [hset, key, ← Finset.prod_coe_sort S]
     refine Finset.prod_congr rfl fun v _ => ?_
-    simp only [A', dif_pos v.2]
+    simp only [A', dite_eq_left v.2]
   rw [lintegral_indicator hAm]
   have hG : Measurable fun y : (∀ v : S, (Fin n → Fin M → Fv F v.1 ⊗[F] E)) => ∏ v : S, φ v.1 (y v) :=
     Finset.measurable_prod _ fun v _ => (hφ v.1).comp (measurable_pi_apply v)
@@ -241,7 +241,3 @@ end
 
 open NumberField IsDedekindDomain MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.Published.SiegelOneVector GlobalTheory.CompanionTheory.Hypotheses₂.OneV
 open scoped TensorProduct ENNReal
-
-namespace GlobalTheory.CompanionTheory.Hypotheses₂.OneV.DxEuler
-
-end GlobalTheory.CompanionTheory.Hypotheses₂.OneV.DxEuler

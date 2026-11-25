@@ -3,6 +3,7 @@ module
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.CauchyBinet
 import Std.Tactic.BVDecide.Normalize.Prop
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockDiagonalMinorVanishing
 
 @[expose] public section
 
@@ -58,35 +59,7 @@ theorem minorIJ_eq_det_of_card {R : Type} [CommRing R] (h : Matrix (Fin N) (Fin 
 
 theorem minorIJ_mul_sum {R : Type} [CommRing R] (T h : Matrix (Fin N) (Fin N) R) (I J : Finset (Fin N)) :
     minorIJ (T * h) I J = ∑ I', minorIJ T I I' * minorIJ h I' J := by
-  classical
-  by_cases e : I.card = J.card
-  · have hm : (T * h).submatrix (I.orderEmbOfFin e) (J.orderEmbOfFin rfl) =
-        T.submatrix (I.orderEmbOfFin e) id * h.submatrix id (J.orderEmbOfFin rfl) := by
-      ext a b
-      simp [Matrix.mul_apply]
-    have hsum : ∑ I', minorIJ T I I' * minorIJ h I' J =
-        ∑ S : {S : Finset (Fin N) // S.card = J.card}, minorIJ T I S.1 * minorIJ h S.1 J := by
-      rw [← Finset.sum_filter_of_ne (s := Finset.univ) (p := fun S : Finset (Fin N) => S.card = J.card)]
-      · exact Finset.sum_subtype _ (by simp) _
-      · intro S _ hS
-        by_contra hc
-        apply hS
-        rw [show minorIJ h S J = 0 by unfold minorIJ; rw [dite_eq_right hc], mul_zero]
-    rw [minorIJ_eq_det_of_card _ I J e rfl, hm, ReciprocityTheory.ChartRestriction.DS.cauchyBinet, hsum]
-    refine Finset.sum_congr rfl fun S _ => ?_
-    rw [minorIJ_eq_det_of_card T I S.1 e S.2, minorIJ_eq_det_of_card h S.1 J S.2 rfl]
-    rfl
-  · have h0 : minorIJ (T * h) I J = 0 := by
-      unfold minorIJ
-      rw [dite_eq_right e]
-    rw [h0]
-    symm
-    refine Finset.sum_eq_zero fun I' _ => ?_
-    by_cases e' : I.card = I'.card
-    · rw [show minorIJ h I' J = 0 by
-        unfold minorIJ
-        rw [dite_eq_right fun c => e (e'.trans c)], mul_zero]
-    · rw [show minorIJ T I I' = 0 by unfold minorIJ; rw [dite_eq_right e'], zero_mul]
+  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.MinorCalc.minorIJ_mul <;> assumption
 
 theorem minorIJ_block_zero {R : Type} [CommRing R] {j : ℕ} {i : Fin N} {h : Matrix (Fin N) (Fin N) R}
     (hh : IsBlockDiag j h) {I : Finset (Fin N)} (hnot : ¬ IsStepRows N j i I) :
@@ -107,20 +80,13 @@ theorem minorIJ_block_zero {R : Type} [CommRing R] {j : ℕ} {i : Fin N} {h : Ma
     generalize (stepCols N j i).orderEmbOfFin rfl c = b at hb
     generalize I.orderEmbOfFin e r = a at haB
     by_cases hc : (i : ℕ) + 1 ≤ j
-    · simp only [stepCols, wIdx, Finset.mem_filter, Finset.mem_univ, true_and, if_pos hc] at hb haB
+    · simp only [stepCols, wIdx, Finset.mem_filter, Finset.mem_univ, true_and, ite_eq_left hc] at hb haB
       omega
-    · simp only [stepCols, omIdx, Finset.mem_filter, Finset.mem_univ, true_and, if_neg hc] at hb haB
+    · simp only [stepCols, omIdx, Finset.mem_filter, Finset.mem_univ, true_and, ite_eq_right hc] at hb haB
       omega
   · unfold minorIJ
     rw [dite_eq_right e]
 
 end Minors
-
-section Model
-
-variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Φ : Type} [Field Φ] {y : (Σ k, ι k) → Φ}
-  {Ψ : Type} {N j : ℕ}
-
-end Model
 
 end GlobalTheory.CompanionTheory.Ar.PB

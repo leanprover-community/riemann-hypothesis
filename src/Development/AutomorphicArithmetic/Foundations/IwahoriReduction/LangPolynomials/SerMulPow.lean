@@ -591,14 +591,14 @@ theorem trace_basis_pow {B A : Type} [CommRing B] [CommRing A] [Algebra B A] (p 
     by_cases h : (i : ℕ) + j < p
     · rw [← hb ⟨_, h⟩, b.repr_self, Finsupp.single_apply]
       by_cases hi : (i : ℕ) = 0
-      · rw [if_pos hi, if_pos (Fin.ext (by simp only [Fin.val_mk]; omega))]
-      · rw [if_neg hi, if_neg (fun h' => hi (by have := congrArg Fin.val h'; simp only [Fin.val_mk] at this; omega))]
+      · rw [ite_eq_left hi, ite_eq_left (Fin.ext (by simp only [Fin.val_mk]; omega))]
+      · rw [ite_eq_right hi, ite_eq_right (fun h' => hi (by have := congrArg Fin.val h'; simp only [Fin.val_mk] at this; omega))]
     · have e : x ^ ((i : ℕ) + j) = y • b ⟨(i : ℕ) + j - p, by omega⟩ := by
         rw [hb, Algebra.smul_def, ← hx, ← pow_add]
         congr 1
         simp only
         omega
-      rw [e, map_smul, b.repr_self, Finsupp.smul_apply, Finsupp.single_apply, if_neg, smul_zero, if_neg]
+      rw [e, map_smul, b.repr_self, Finsupp.smul_apply, Finsupp.single_apply, ite_eq_right, smul_zero, ite_eq_right]
       · omega
       · simp only [Fin.ext_iff]
         omega
@@ -616,7 +616,7 @@ theorem trace_eq_p_mul {B A : Type} [CommRing B] [CommRing A] [Algebra B A] (p :
   rw [Finset.sum_eq_single ⟨0, hp⟩]
   · simp [mul_comm]
   · intro j _ hj
-    rw [if_neg, mul_zero]
+    rw [ite_eq_right, mul_zero]
     intro h0
     exact hj (Fin.ext h0)
   · intro h
@@ -826,7 +826,7 @@ theorem one_add_X_pow_sub_one_ne_zero [Nontrivial R] (N : ℕ) (hN : 1 ≤ N) :
     ((1 + X : PowerSeries R) ^ N - 1) ≠ 0 := by
   intro h
   have := congrArg (coeff N) h
-  rw [map_sub, coeff_one_add_X_pow, Nat.choose_self, coeff_one, if_neg (by omega)] at this
+  rw [map_sub, coeff_one_add_X_pow, Nat.choose_self, coeff_one, ite_eq_right (by omega)] at this
   simp at this
 
 theorem cyc_succ (p n : ℕ) (hp : p.Prime) :

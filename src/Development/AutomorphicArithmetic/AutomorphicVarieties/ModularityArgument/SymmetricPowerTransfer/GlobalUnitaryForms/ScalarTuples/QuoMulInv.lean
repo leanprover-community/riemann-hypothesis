@@ -77,9 +77,7 @@ section Alg
 variable {K : Type} [Field K] {Δ τ : K}
 
 private theorem quo_mul_inv (z : (Etau K τ)ˣ) : quo z * quo z⁻¹ = 1 := by
-  have e : ∀ a b : (Etau K τ)ˣ, quo (a * b) = quo a * quo b := fun a b => by
-    simp only [quo, _root_.mul_inv_rev, Units.val_mul, star_mul]; ring
-  rw [← e, mul_inv_cancel]
+  rw [← _root_.UpperTheory.V.Z.Sym.Loc.quo_mul', mul_inv_cancel]
   simp [quo]
 
 private theorem tor_inv (z : (Etau K τ)ˣ) (x : Sp Δ τ) : tor Δ z (tor Δ z⁻¹ x) = x := by
@@ -280,9 +278,9 @@ private theorem gen_loc (hl : IsLoc O Δ) (hu : ∃ u : Oˣ, algebraMap O K u = 
     simp [hne] at this
   rw [key t, Units.val_mul, hsMul O K Δ hl _ _ _ hD t.ne_zero s.ne_zero, h1, mul_one]
   by_cases ht : t ∈ NE τ
-  · rw [if_pos ((hsNE O K Δ τ hl hD t).1 ht)]
+  · rw [ite_eq_left ((hsNE O K Δ τ hl hD t).1 ht)]
     simp [one, ht]
-  · rw [if_neg (fun h => ht ((hsNE O K Δ τ hl hD t).2 h))]
+  · rw [ite_eq_right (fun h => ht ((hsNE O K Δ τ hl hD t).2 h))]
     simp [one, ht]
 
 end Lat

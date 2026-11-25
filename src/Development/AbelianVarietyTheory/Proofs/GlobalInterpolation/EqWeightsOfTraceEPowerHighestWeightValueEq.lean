@@ -404,7 +404,6 @@ theorem hcRowSeries_eq (R : Type) [CommRing R] (N : ℕ) (μ : Fin N → R) (i :
   cases n with
   | zero => simp [hcRowSeries, sub_mul, mul_assoc, Matrix.one_apply]
   | succ k =>
-    set_option synthInstance.maxHeartbeats 100000 in
       simp [hcRowSeries, sub_mul, mul_assoc, PowerSeries.coeff_succ_X_mul, map_sum, hcRow_succ]
 
 end GlobalTheory.Alc

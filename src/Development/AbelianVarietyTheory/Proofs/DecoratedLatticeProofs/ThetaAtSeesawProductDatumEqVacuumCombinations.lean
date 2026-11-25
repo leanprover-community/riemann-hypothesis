@@ -91,7 +91,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Unf GlobalTheory.SeeSaw GlobalTheory.FinPl
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.LocMod GlobalTheory.SplitWeil ValuativeRel
 
 noncomputable section
@@ -211,11 +210,11 @@ theorem tensorAt_halfInd (FS : Frame k S.rank Y') (FT : Frame k T.rank Y) {e : A
   unfold halfInd
   by_cases hR : t ∈ Λ ∧ IsHalf (e + p.e) t
   · obtain ⟨⟨h1, h2⟩, h3⟩ := key.2 hR
-    rw [if_pos hR, if_pos ⟨h1, h2⟩, if_pos h3, mul_one]
-  · rw [if_neg hR]
+    rw [ite_eq_left hR, ite_eq_left ⟨h1, h2⟩, ite_eq_left h3, mul_one]
+  · rw [ite_eq_right hR]
     by_cases h3 : M ∈ Λv
-    · rw [if_pos h3, mul_one, if_neg fun h => hR (key.1 ⟨h, h3⟩)]
-    · rw [if_neg h3, mul_zero]
+    · rw [ite_eq_left h3, mul_one, ite_eq_right fun h => hR (key.1 ⟨h, h3⟩)]
+    · rw [ite_eq_right h3, mul_zero]
 
 end GlobalTheory.LatIdemVac
 
@@ -260,7 +259,6 @@ open GlobalTheory.StepData (LatFrame)
 open GlobalTheory.RootEx (colE rowE)
 open GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage (schT schM)
 open Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
@@ -294,7 +292,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Unf GlobalTheory.SeeSaw GlobalTheory.FinPl
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.LocMod GlobalTheory.SplitWeil ValuativeRel
 
 namespace GlobalTheory.PlaceSumTheta
@@ -328,7 +325,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Unf GlobalTheory.SeeSaw GlobalTheory.FinPl
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.LocMod GlobalTheory.SplitWeil ValuativeRel
 
 namespace GlobalTheory.SplitOrth
@@ -359,7 +355,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum MeasureTheory IsDedekindDomain NumberField Matrix
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Unf GlobalTheory.SeeSaw GlobalTheory.FinPl
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.LocMod GlobalTheory.SplitWeil ValuativeRel
 
 namespace GlobalTheory.VecProd
@@ -524,9 +519,9 @@ theorem prodDat_zero (L : Fin 0 → LocPl ψ S T M M') (Λ : AddSubgroup (WO S T
   by_cases hx : x = 0
   · subst hx
     have h1 : IsHalf (∑ i, (L i).q.e) (0 : WO S T) := by rw [hs]; exact (isHalf_zero_iff _).2 rfl
-    rw [if_pos h1, if_pos ⟨Λ.zero_mem, (isHalf_zero_iff _).2 rfl⟩, Fin.prod_univ_zero]
+    rw [ite_eq_left h1, ite_eq_left ⟨Λ.zero_mem, (isHalf_zero_iff _).2 rfl⟩, Fin.prod_univ_zero]
   · have h1 : ¬ IsHalf (∑ i, (L i).q.e) x := by rw [hs]; exact fun h => hx ((isHalf_zero_iff _).1 h)
-    rw [if_neg h1, if_neg (fun h => hx ((isHalf_zero_iff _).1 h.2))]
+    rw [ite_eq_right h1, ite_eq_right (fun h => hx ((isHalf_zero_iff _).1 h.2))]
 
 theorem prodDat_succ {n : ℕ} (L : Fin (n+1) → LocPl ψ S T M M') (hinj : Function.Injective fun i => (L i).q.v) :
     prodDat L = (ofSplit (L 0).q).tensorAt (L 0).FS (L 0).FT (prodDat fun i : Fin n => L i.succ) (L 0).Φ.1 := by
@@ -542,9 +537,9 @@ theorem prodDat_succ {n : ℕ} (L : Fin (n+1) → LocPl ψ S T M M') (hinj : Fun
   rw [Fin.sum_univ_succ, Fin.prod_univ_succ]
   have hiff := isHalf_add_iff (a := (L 0).q.e) (b := ∑ i : Fin n, (L i.succ).q.e) (orth_sum L hinj) t
   by_cases h : IsHalf ((L 0).q.e + ∑ i : Fin n, (L i.succ).q.e) t
-  · rw [if_pos h, if_pos (hiff.1 h)]
+  · rw [ite_eq_left h, ite_eq_left (hiff.1 h)]
     ring
-  · rw [if_neg h, if_neg (fun h' => h (hiff.2 h')), zero_mul]
+  · rw [ite_eq_right h, ite_eq_right (fun h' => h (hiff.2 h')), zero_mul]
 
 theorem halfInd_zero_isSBHalf (Λ : AddSubgroup (WO S T)) : IsSBHalf (0 : AE D) Λ (halfInd 0 Λ) := by
   refine ⟨fun t h => ?_, 1, one_pos, fun u _ hh t => ?_, fun t h => ?_⟩

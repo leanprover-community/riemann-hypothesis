@@ -53,14 +53,14 @@ theorem norm_coordinateRing_ne_zero {a : W.toAffine.CoordinateRing} (ha : a ≠ 
 
 noncomputable def valuationInftyCoord : Valuation W.toAffine.CoordinateRing ℤᵐ⁰ where
   toFun a := if a = 0 then 0 else exp ((Algebra.norm F[X] a).natDegree : ℤ)
-  map_zero' := if_pos rfl
+  map_zero' := ite_eq_left rfl
   map_one' := by simp
   map_mul' a b := by
     by_cases ha : a = 0
     · simp [ha]
     by_cases hb : b = 0
     · simp [hb]
-    simp only [if_neg (mul_ne_zero ha hb), if_neg ha, if_neg hb, map_mul,
+    simp only [ite_eq_right (mul_ne_zero ha hb), ite_eq_right ha, ite_eq_right hb, map_mul,
       natDegree_mul (norm_coordinateRing_ne_zero W ha) (norm_coordinateRing_ne_zero W hb),
       Nat.cast_add, exp_add]
   map_add_le_max' a b := by
@@ -70,7 +70,7 @@ noncomputable def valuationInftyCoord : Valuation W.toAffine.CoordinateRing ℤ�
     · simp [hb]
     by_cases hab : a + b = 0
     · simp [hab]
-    simp only [if_neg ha, if_neg hb, if_neg hab]
+    simp only [ite_eq_right ha, ite_eq_right hb, ite_eq_right hab]
     have hd := degree_norm_add_le W a b
     rw [degree_eq_natDegree (norm_coordinateRing_ne_zero W hab),
       degree_eq_natDegree (norm_coordinateRing_ne_zero W ha),
@@ -80,7 +80,7 @@ noncomputable def valuationInftyCoord : Valuation W.toAffine.CoordinateRing ℤ�
     · exact le_max_of_le_right (exp_le_exp.mpr (by exact_mod_cast WithBot.coe_le_coe.mp h))
 
 theorem valuationInftyCoord_apply {a : W.toAffine.CoordinateRing} (ha : a ≠ 0) :
-    valuationInftyCoord W a = exp ((Algebra.norm F[X] a).natDegree : ℤ) := if_neg ha
+    valuationInftyCoord W a = exp ((Algebra.norm F[X] a).natDegree : ℤ) := ite_eq_right ha
 
 theorem valuationInftyCoord_ne_zero {a : W.toAffine.CoordinateRing} (ha : a ≠ 0) :
     valuationInftyCoord W a ≠ 0 := by

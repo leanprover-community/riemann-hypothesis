@@ -62,7 +62,7 @@ theorem eq_zero_of_trace_mul {F E R : Type} [Field F] [Field E] [Algebra F E] [F
         trace_one_tmul, smul_eq_mul]
       have := (Algebra.traceForm F E).apply_dualBasis_left (traceForm_nondegenerate F E) b j i
       rw [Algebra.traceForm_apply, mul_comm] at this
-      rw [this, if_neg hij, map_zero, mul_zero]
+      rw [this, ite_eq_right hij, map_zero, mul_zero]
     · intro hj'; exact absurd (Finset.mem_univ j) hj'
   exact bA.repr.injective (by ext j; simp [key j])
 
@@ -71,8 +71,7 @@ theorem trace_pairing_nondeg : ∀ (F E : Type) [Field F] [NumberField F] [Field
   intro F E _ _ _ _ _ ψ hψ m hm
   haveI : FiniteDimensional F E := Module.Finite.of_restrictScalars_finite ℚ F E
   haveI : Algebra.IsSeparable F E := Algebra.IsAlgebraic.isSeparable_of_perfectField
-  by_contra hne
-  push_neg at hne
+  by_contra! hne
   apply hm
   refine eq_zero_of_trace_mul m fun z => ?_
   apply GlobalTheory.DiagNonvan.eq_zero_of_psi_mul hψ
@@ -258,7 +257,7 @@ theorem exists_compact_of_finite {Y T : Type} [AddCommGroup Y] [TopologicalSpace
   let r : T → Y := fun t => if ht : t ∈ φ '' A then Classical.choose ht else 0
   have hr : ∀ t ∈ φ '' A, φ (r t) = t := by
     intro t ht
-    simp only [r, dif_pos ht]
+    simp only [r, dite_eq_left ht]
     exact (Classical.choose_spec ht).2
   refine ⟨⋃ t ∈ φ '' A, (fun k => r t + k) '' K₀, hfin.isCompact_biUnion fun t _ => hK.image (continuous_const.add continuous_id), ?_⟩
   intro y hy

@@ -3,6 +3,7 @@ module
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.LeftEquivariantFunctions.GLMatrixDerivatives.ChainOfSt
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DifferentiableAtOfSmooth
 import Mathlib.Tactic.Linter.Style
+import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.LeftEquivariantFunctions.GelfandFlags.KerComm
 
 @[expose] public section
 
@@ -39,17 +40,7 @@ theorem eu_congr {f f' : Mat n → V} (h : EqOn f f' (GLs n)) (s : Bool) (a b : 
 
 theorem epow_congr {f f' : Mat n → V} (h : EqOn f f' (GLs n)) (s : Bool) (m : ℕ) :
     ∀ a b, EqOn (Epow s m a b f) (Epow s m a b f') (GLs n) := by
-  induction m with
-  | zero =>
-    intro a b g hg
-    simp only [Epow]
-    split_ifs
-    · exact h hg
-    · rfl
-  | succ m ih =>
-    intro a b g hg
-    simp only [Epow, Finset.sum_apply]
-    exact Finset.sum_congr rfl fun c _ => eu_congr (ih c b) s a c hg
+  apply _root_.PositivityTheory.RgBcC.VC.KC.epow_congr <;> assumption
 
 theorem gel_congr {f f' : Mat n → V} (h : EqOn f f' (GLs n)) (s : Bool) (m : ℕ) :
     EqOn (gel s m f) (gel s m f') (GLs n) := by
@@ -99,7 +90,7 @@ theorem gel_DC (hG : GelComm) {lam : Fin n → ℤ} {E : KMod n} {Fr : Mat n →
   congr 1
   have h2 := gel_sum hG (fun (i : Fin 2) y => if i = 0 then Rd (hb p) f y else fderiv ℝ Fr 1 (hb p) (f y))
     (fun i => by fin_cases i <;> simp [hR p, hD p]) s m x hx
-  simp only [Fin.sum_univ_two, Fin.isValue, if_pos, one_ne_zero, if_false] at h2
+  simp only [Fin.sum_univ_two, Fin.isValue, ite_eq_left, one_ne_zero, ite_false] at h2
   have h2' : gel s m (fun y => Rd (hb p) f y + fderiv ℝ Fr 1 (hb p) (f y)) x =
       gel s m (Rd (hb p) f) x + gel s m (fun y => fderiv ℝ Fr 1 (hb p) (f y)) x := by
     simpa using h2

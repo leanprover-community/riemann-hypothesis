@@ -59,8 +59,6 @@ open scoped Classical
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.PackageTie2
   Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.ColDict Formalism.L2.Forms Formalism.L2.SG.TermOp Formalism.L2.SG.Full
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (Z : New D)
 
 
@@ -112,8 +110,6 @@ namespace GlobalTheory.Mem.SRe
 open scoped Classical
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.PackageTie2
   Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.ColDict Formalism.L2.SG.RowDict Formalism.L2.Forms Formalism.L2.SG.TermOp Formalism.L2.SG.Full
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} (Z : New D)
 
@@ -227,8 +223,6 @@ open scoped Classical
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.PackageTie2
   Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.ColDict Formalism.L2.SG.RowDict Formalism.L2.Forms Formalism.L2.SG.TermOp Formalism.L2.SG.Full
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} (Z : New D)
 
 
@@ -253,12 +247,6 @@ def SPack.re {F : ∀ u, Forms0 D u} (P : SPack D F) {F' : ∀ u, Forms0 (reD D 
   inst := P.inst
   G := reG Z P.G
   pin := P.pin
-
-section API
-
-variable {F : ∀ u, Forms0 D u} (P : SPack D F) {F' : ∀ u, Forms0 (reD D Z) u} (h : SameForms0LevelsAndValues Z F F') (hF : FinX (reY Z P.Y))
-
-end API
 
 theorem conjHH_eEECre {X : HidaSetting D} (G : GoodOp X) (x : EEC X G) :
     conjHH (reX Z X) (reG Z G) (eEECre Z G x) = eHHre Z X (conjHH X G x) := (Eq.refl (eHHre Z X (conjHH X G x)))

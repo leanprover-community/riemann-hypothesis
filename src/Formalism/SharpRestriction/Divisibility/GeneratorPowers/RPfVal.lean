@@ -5,6 +5,7 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.PlaceBelow
 public import Formalism.LocalToGlobal.ProjectiveLattices.CrudeVal
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
 import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
+import Formalism.SharpRestriction.Divisibility.GeneratorPowers.SpanResCharNeBot
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.Divisibility.GeneratorPowers.RStatement, Formalism.SharpRestriction.Divisibility.GeneratorPowers.RPfVal
@@ -59,16 +60,7 @@ theorem vLa_int_not_mem {a : 𝓞 K} (ha : a ∉ la.asIdeal) : vLa la (a : K) = 
   simp
 
 theorem prime_mem_iff {p : ℕ} (hp : p.Prime) : ((p : ℕ) : 𝓞 K) ∈ la.asIdeal ↔ resCharOf la = p := by
-  constructor
-  · intro hm
-    by_contra hne
-    have hl := resCharOf_prime la
-    have hnd : ¬ resCharOf la ∣ p := fun hd =>
-      hne ((Nat.prime_dvd_prime_iff_eq hl hp).1 hd)
-    exact crv_not_mem la hnd hm
-  · intro h
-    rw [← h]
-    exact crv_char_mem la
+  apply _root_.Formalism.MainNotions.ModuliIntegralCharts.H1.H1algLink.prime_mem_iff <;> assumption
 
 theorem padic_prime (l : ℕ) [Fact l.Prime] {p : ℕ} (hp : p.Prime) :
     padicValNat l p = if l = p then 1 else 0 := by
@@ -162,10 +154,10 @@ theorem vAdd_sW (B : WeightFamilies.Prov D) (hinj : Function.Injective D.what₂
   by_cases hS : resCharOf la ∣ D.host.QS
   · have h1 : resCharOf la ≠ D.host.q := fun h => D.host.q_not_dvd_QS (h ▸ hS)
     have h2 : resCharOf la ≠ D.host.d := fun h => D.host.d_not_dvd_QS (h ▸ hS)
-    rw [if_pos hS, if_neg h1, if_neg h2]
+    rw [ite_eq_left hS, ite_eq_right h1, ite_eq_right h2]
     generalize padicValNat (resCharOf la) D.host.QS = m
     push_cast; ring
-  · rw [if_neg hS, Nat.padicValNat_def, multiplicity_eq_zero_of_not_dvd hS]
+  · rw [ite_eq_right hS, Nat.padicValNat_def, multiplicity_eq_zero_of_not_dvd hS]
     split_ifs <;> (try (exfalso; omega)) <;> (try (exfalso; tauto)) <;> push_cast <;> ring
 
 end Formalism.MainNotions.ModuliIntegralCharts.H1.RPfVal

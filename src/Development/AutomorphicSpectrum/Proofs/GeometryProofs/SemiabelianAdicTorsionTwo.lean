@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BtOrderEmbeddingOpenCover
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.DualOrder
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.TranslateMemIndOrder
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FiniteOpenHopfOrder
@@ -105,26 +106,7 @@ variable [Finite T'] {H : Subgroup T} {H' : Subgroup T'} {B : Subalgebra R (T �
 
 private theorem translate_mem_of_isHopfOrder' {U : Type} [CommGroup U] {A : Subalgebra R (U → R)} (hA : IsHopfOrder A)
     {f : U → R} (hf : f ∈ A) (u : U) : (fun x => f (u * x)) ∈ A := by
-  let L : (U × U → R) →ₗ[R] (U → R) :=
-    { toFun := fun g x => g (u, x)
-      map_add' := fun _ _ => rfl
-      map_smul' := fun _ _ => rfl }
-  have hmem : ∀ g ∈ prodSpan A, L g ∈ A := by
-    intro g hg
-    induction hg using Submodule.span_induction with
-    | mem x hx =>
-      obtain ⟨a, ha, b, hb, rfl⟩ := hx
-      convert A.smul_mem hb (a u) using 1
-    | zero =>
-      rw [map_zero]
-      exact A.zero_mem
-    | add x y _ _ hx hy =>
-      rw [map_add (f := _)]
-      exact A.add_mem hx hy
-    | smul r x _ hx =>
-      rw [map_smul]
-      exact A.smul_mem hx r
-  exact hmem _ (hA.comul f hf)
+  apply _root_.GlobalTheory.CompanionTheory.Ar.BT.HopfTranslate.translate_mem_of_isHopfOrder <;> assumption
 
 theorem res_iff_abs (hB : IsHopfOrder B) (hB' : IsHopfOrder B') (hl : IsLoc H B) (hl' : IsLoc H' B')
     (hH : ∀ t, ι t ∈ H' → t ∈ H)
@@ -142,7 +124,7 @@ theorem res_iff_abs (hB : IsHopfOrder B) (hB' : IsHopfOrder B') (hl : IsLoc H B)
     have hrep : ∀ t0 : T, ((ι (rep (ι t0 : T' ⧸ H')) : T') : T' ⧸ H') = (ι t0 : T' ⧸ H') := by
       intro t0
       have hc : ∃ t : T, (ι t : T' ⧸ H') = (ι t0 : T' ⧸ H') := ⟨t0, rfl⟩
-      simp only [rep, dif_pos hc]
+      simp only [rep, dite_eq_left hc]
       exact hc.choose_spec
     let F : T' ⧸ H' → T' → R := fun c s => fr (rep c) ((ι (rep c))⁻¹ * s)
     refine ⟨∑ c, cosetInd R H' c * F c, ?_, ?_⟩
@@ -240,7 +222,7 @@ theorem ker_abs {N : ℕ} (hB' : IsHopfOrder B') (hl' : IsLoc H' B') (hN : ∀ t
           simp [h0, cosetInd, QuotientGroup.mk_pow, hx]
         have e2 : h0 1 = 0 := by
           simp only [h0, cosetInd]
-          rw [if_neg]
+          rw [ite_eq_right]
           intro h1
           apply hs
           rw [← QuotientGroup.mk_pow] at h1
@@ -626,13 +608,6 @@ section -- clump:auto
 @[expose] public section
 
 open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj TensorProduct NumberField GlobalTheory GlobalTheory.PDivGroup GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.BT GlobalTheory.CompanionTheory.Ar.HT ReciprocityTheory.ChartRestriction.G.Semi
-
-namespace GlobalTheory.CompanionTheory.Ar.HT
-
-theorem btOrder_restriction : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [IsDomain O] [Algebra O C] (hv : v.Integers O) (hp : v (p : C) < 1) (hO : IsAdicComplete (Ideal.span {(p : O)}) O) (S : Scheme.{0}) [IsLocallyNoetherian S] (G : Over S) [GrpObj G] [IsCommMonObj G] (hG : IsSemiAbelian G) (y : Spec (CommRingCat.of O) ⟶ S) (La : Type) [AddCommGroup La] [Module.Free ℤ La] [Module.Finite ℤ La] (X : TorsTower p G y La) (n : ℕ), (∀ g : LevGrp La p n → O, g ∈ (X.Γ n).btOrder ⊤ ↔ ∃ f ∈ (X.Γ (n + 1)).btOrder ⊤, ∀ a : La, g (lev p n a) = f (lev p (n + 1) (p • a))) ∧ ∀ f : (X.Γ (n + 1)).btOrder ⊤, (∀ a : La, f.1 (lev p (n + 1) (p • a)) = 0) → f ∈ Ideal.span {g : (X.Γ (n + 1)).btOrder ⊤ | ∃ h ∈ (X.Γ (n + 1)).btOrder ⊤, ∀ t, g.1 t = h (t ^ p ^ n) - h 1} :=
-  @PositivityTheory.HtPt.Gi.tw_res
-
-end GlobalTheory.CompanionTheory.Ar.HT
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.SemiabelianAdicTorsionTwo =====

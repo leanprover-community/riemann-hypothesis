@@ -296,9 +296,6 @@ theorem ιV_mem_DdRE (hs : Function.Surjective (algebraMap K₀ K)) (τ : K →�
   rw [← ιV_mul, h2 a, map_smul]
   simp
 
-theorem FilV_anti : Antitone fun a : ℤ => FilV PD (LL := LL) (V := V) a :=
-  antitone_int_of_succ_le (Formalism.MainNotions.N.Pv.LocalLengthBound.rk_filV_succ PD)
-
 end General
 
 end GlobalTheory.Per.CharJumps
@@ -352,15 +349,15 @@ theorem jumps_of_exact_degree : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (A
     fun c => ⟨⟨c.1, c.2, hA.1 c.2⟩, rfl⟩
   obtain ⟨w, hwD, hin, hout⟩ := hw τ
   have hx := ιV_mem_DdRE (P.PD K) (charRep μ) hs τ hwD
-  have key := inf_of_line _ h1 _ (FilV_anti (P.PD K)) hx (d τ) hin hout
+  have key := inf_of_line _ h1 _ (Formalism.MainNotions.N.Pv.LocalLengthBound.rk_filV_anti (P.PD K)) hx (d τ) hin hout
   have fk : ∀ c : ℤ, (finrank ↥LL.1 ↥(FildR (P.PD K) (charRep μ) τ c) : ℤ) = if c ≤ d τ then 1 else 0 := by
     intro c
     unfold FildR
     rw [key c]
     by_cases hc : c ≤ d τ
-    · rw [if_pos hc, if_pos hc, h1]
+    · rw [ite_eq_left hc, ite_eq_left hc, h1]
       rfl
-    · rw [if_neg hc, if_neg hc, finrank_bot]
+    · rw [ite_eq_right hc, ite_eq_right hc, finrank_bot]
       rfl
   unfold multV
   rw [fk b, fk (b + 1)]
@@ -500,7 +497,7 @@ theorem GlobalTheory.exists_letter_vector_exact_degree : ∀ (l : ℕ) [Fact l.P
     let h0 : ↥(K0 K) →ₗ[ℚ_[l]] P.R.BdR ⧸ (((P.PD K).Fil 1).restrictScalars ℚ_[l]) :=
       q ∘ₗ (IsScalarTower.toAlgHom ℚ_[l] ↥(K0 K) P.R.BdR).toLinearMap
     have hinj : Function.Injective h0 := by
-      set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+      rw [injective_iff_map_eq_zero]
       intro k hk
       have hk' : algebraMap ↥(K0 K) P.R.BdR k ∈ (P.PD K).Fil 1 := by
         have := (Submodule.Quotient.mk_eq_zero _).1 hk
@@ -696,8 +693,7 @@ theorem norm_le_one (l : ℕ) [Fact l.Prime] (K : FinExt l) (c : ↥(GK K) →* 
     ‖(((c g : (↥(K0 K))ˣ) : ↥(K0 K)) : Om l)‖ ≤ 1 := by
   haveI := GlobalTheory.BlochKatoIntegralScalars.compactSpace_GK K
   obtain ⟨B, hB⟩ := (isCompact_univ (X := ↥(GK K))).exists_bound_of_continuousOn hc.continuousOn
-  by_contra h
-  push_neg at h
+  by_contra! h
   obtain ⟨n, hn⟩ := pow_unbounded_of_one_lt B h
   have hpow : (((c (g ^ n) : (↥(K0 K))ˣ) : ↥(K0 K)) : Om l) = ((((c g : (↥(K0 K))ˣ) : ↥(K0 K)) : Om l)) ^ n := by
     simp [map_pow]
@@ -1093,7 +1089,7 @@ theorem GlobalTheory.CrysCharJumps.adm20_of_fonOf :
     rw [hp.2.2]
     have hex : ∃ i, Formalism.MainNotions.tableLineDegreeTwo.Over ((HW l).W K 1 LL hA.2.2).emb i τ := ⟨i, hi⟩
     have hc : c τ = a i := by
-      simp only [c, dif_pos hex]
+      simp only [c, dite_eq_left hex]
       congr 1
       apply ((HW l).W K 1 LL hA.2.2).emb_bij.1
       have h1 := hex.choose_spec

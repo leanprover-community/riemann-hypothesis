@@ -1,5 +1,7 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.QuadraticFormTwoTwo.CbStrictMonoOfAnti
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.LiftMemMatrixAlgebra
 public import Formalism.HermitianCurvature.StatementTop
 public import Formalism.HermitianCurvature.FrameExists2
 import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
@@ -87,18 +89,7 @@ theorem act_mul {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {Wp Wq : Type} 
     {π : Q.Mx k r → (Wp →L[ℂ] Wp)} {π' : Q.Mx k r → (Wq →L[ℂ] Wq)} {S : Type} [Fintype S] [DecidableEq S]
     (M N : Wd.SlopeTestRemainingChoices S (Q.Pr (Q.RadSp k r z z' π π'))) (x : Wd.Ix S → Q.RadSp k r z z' π π') :
     P5.act (M * N) x = P5.act M (P5.act N x) := by
-  funext a
-
-  simp only [P5.act, Matrix.mul_apply, map_sum]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun b _ => ?_
-  have key : ∀ s : Finset (Wd.Ix S),
-      (∑ j ∈ s, M a j * N j b).1 (x b) = ∑ j ∈ s, (M a j).1 ((N j b).1 (x b)) := by
-    intro s
-    induction s using Finset.induction_on with
-    | empty => rw [Finset.sum_empty, Finset.sum_empty]; rfl
-    | insert j s hj ih => rw [Finset.sum_insert hj, Finset.sum_insert hj, ← ih]; rfl
-  exact key Finset.univ
+  apply _root_.Formalism.FourierDecayAlt.P5.act_mul <;> assumption
 
 end
 
@@ -112,8 +103,6 @@ open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Form
 open scoped InnerProductSpace ComplexConjugate
 
 namespace Formalism.FourierDecayAlt.P.Topx1
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 section adj
 
@@ -375,16 +364,14 @@ private theorem eq_of_cpol_eq_of_sDec {n : ℕ} (a b : Fin n → ℂ) (ha : Qr.S
     obtain ⟨j, hj⟩ := hba i
     obtain ⟨j', hj'⟩ := hab i
     have hij : i ≤ j := by
-      by_contra hlt
-      push_neg at hlt
+      by_contra! hlt
       have hlt' : (j : ℕ) < i := hlt
       have e := ih j (by omega) j rfl
       have h1 := re_add_one_le_re_of_sDec_of_lt ha hlt
       rw [← hj, ← e] at h1
       linarith
     have hij' : i ≤ j' := by
-      by_contra hlt
-      push_neg at hlt
+      by_contra! hlt
       have hlt' : (j' : ℕ) < i := hlt
       have e := ih j' (by omega) j' rfl
       have h1 := re_add_one_le_re_of_sDec_of_lt hb hlt
@@ -406,8 +393,7 @@ private theorem eq_of_cpol_eq_of_sDec {n : ℕ} (a b : Fin n → ℂ) (ha : Qr.S
 
 theorem typ_poly_ne (P : M.Par) (hOK : P.OK) (ρ ρ' : M.Ty P) (h : ρ ≠ ρ') :
     ∃ w, Qr.cpol (typM P ρ) w ≠ Qr.cpol (typM P ρ') w := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   apply h
   have e := eq_of_cpol_eq_of_sDec _ _ (typ_sdec P hOK ρ) (typ_sdec P hOK ρ') hcon
   funext j
@@ -745,18 +731,7 @@ theorem parameters_u_for_u_prime_ok {P : M.Par} (h : P.OK) : (parametersUForUPri
   linarith
 
 theorem parameters_u_prime_for_u_ok {P : M.Par} (h : P.OK) : (parametersUPrimeForU P).OK := by
-  have hint : ∀ i ∈ Icc 1 P.k, ∃ n : ℤ, P.u' i - P.u' 1 = n := by
-    intro i hi
-    obtain ⟨a, ha⟩ := h.int_u' i hi
-    obtain ⟨b, hb⟩ := h.int_u' 1 (Finset.mem_Icc.mpr ⟨le_rfl, h.k_pos⟩)
-    exact ⟨a - b, by push_cast; linarith⟩
-  refine ⟨h.k_pos, h.T_pos, h.T'_pos, hint, hint, ?_⟩
-  intro i hi
-  have g := h.gap i hi
-  simp only [M.Par.lo, M.Par.hi, parametersUPrimeForU, max_self, min_self] at g ⊢
-  have a1 := le_max_right (P.u (i + 1)) (P.u' (i + 1))
-  have a2 := min_le_right (P.u i) (P.u' i)
-  linarith
+  apply _root_.Formalism.FourierDecayAlt.Q.LieAlgebraWeightVectors.Pp_OK <;> assumption
 
 theorem vecw_rho_eq {Q : M.Par} (π : M.Ty Q) {i : ℕ} (hi : i ∈ Icc 1 (Q.k - 1)) :
     ∃ n : ℕ, n ≤ Q.wid i ∧ M.rho Q π i = Q.lo i + n := by

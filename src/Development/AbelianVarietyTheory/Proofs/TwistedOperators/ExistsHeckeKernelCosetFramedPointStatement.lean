@@ -266,7 +266,6 @@ section Adelic
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.FWT Formalism.L2.Pj
 open scoped TensorProduct Matrix
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.HeckePointIdent
 
@@ -708,7 +707,7 @@ open NumberField IsDedekindDomain AlgebraicGeometry CategoryTheory Limits Recipr
 open Formalism.IndefR.FWT (castDict)
 open scoped TensorProduct Matrix MonObj
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.HeckeEx.fieldCAt GlobalTheory.HeckeEx.algClosedCAt
+attribute [local instance] GlobalTheory.HeckeEx.fieldCAt GlobalTheory.HeckeEx.algClosedCAt
 
 namespace GlobalTheory.HeckePointIdent
 
@@ -879,7 +878,6 @@ end Point
 section Main
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.FWT Formalism.L2.Pj
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open NumberField
 
 namespace GlobalTheory.HeckePointIdent
@@ -995,7 +993,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.FWT Formalism.L2.Pj
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 noncomputable section
 open NumberField
 
@@ -1043,7 +1040,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.FWT Formalism.L2.Pj
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 noncomputable section
 open NumberField
 
@@ -1086,7 +1082,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.FWT Formalism.L2.Pj
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 noncomputable section
 open NumberField
 
@@ -1269,7 +1264,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.FWT Formalism.L2.Pj
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 noncomputable section
 open NumberField
 

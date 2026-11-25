@@ -39,10 +39,10 @@ lemma herm_X_gen {x w : Fin (2 * r + k + 1) → ℂ} (hx : x ∈ Xsp k r) (hw : 
   refine Finset.sum_eq_zero fun i _ => Finset.sum_eq_zero fun j _ => ?_
   by_cases hj : r ≤ j.val
   · rw [hlo j hj, mul_zero, mul_zero]
-  · push_neg at hj
+  · push Not at hj
     by_cases hi : r + k < i.val
     · rw [hw i hi, star_zero, zero_mul]
-    · push_neg at hi
+    · push Not at hi
       have hH : Hpk k r i j = 0 := by
         unfold Hpk
         simp only [Fin.ext_iff]
@@ -70,10 +70,10 @@ lemma herm_wb_X {x w : Fin (2 * r + k + 1) → ℂ} (hx : x ∈ Xsp k r) (hw : �
   refine Finset.sum_eq_zero fun i _ => Finset.sum_eq_zero fun j _ => ?_
   by_cases hi : r ≤ i.val
   · rw [hlo i hi, star_zero, zero_mul]
-  · push_neg at hi
+  · push Not at hi
     by_cases hj : r + k < j.val
     · rw [hw j hj, mul_zero, mul_zero]
-    · push_neg at hj
+    · push Not at hj
       have hH : Hpk k r i j = 0 := by
         unfold Hpk
         simp only [Fin.ext_iff]

@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.WedgeEqSpanOfIsFrameAt
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LevelSectionsExactKernelLocusOpen
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsGenericFlag
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsGenOfIsVBOne
@@ -50,22 +51,8 @@ variable {X : Scheme.{0}} {Ω : Type} [Field Ω] {E : Type} [AddCommGroup E] [Mo
 
 theorem wedge_frame {A : Lat ξ E} {p : ℕ} {v : Fin p → E} {x : Cpt ξ} (h : A.IsFrameAt v x) :
     A.wedge p x = Submodule.span (regAt ξ x) {exteriorPower.ιMulti Ω p v} := by
-  apply le_antisymm
-  · refine Submodule.span_le.2 ?_
-    rintro w ⟨b, hb, rfl⟩
-    have : ∀ i, ∃ c : Fin p → regAt ξ x, ∑ j, c j • v j = b i := fun i =>
-      (Submodule.mem_span_range_iff_exists_fun _).1 (h.2 ▸ hb i)
-    choose c hc using this
-    refine Submodule.mem_span_singleton.2 ⟨(Matrix.of c).det, ?_⟩
-    have e := alt_det (exteriorPower.ιMulti Ω p) v ((regAt ξ x).subtype.mapMatrix (Matrix.of c))
-    rw [← RingHom.map_det] at e
-    refine e.symm.trans ?_
-    congr 1
-    funext i
-    exact hc i
-  · refine Submodule.span_mono ?_
-    rintro w rfl
-    exact ⟨v, fun i => h.2 ▸ Submodule.subset_span ⟨i, rfl⟩, rfl⟩
+  intros
+  apply _root_.GlobalTheory.CompanionTheory.Ar.Lat.wedge_eq_span_of_isFrameAt <;> assumption
 
 theorem span_unit {x : Cpt ξ} {u : Ω} (hu : unitAt ξ x u) (e : E) :
     Submodule.span (regAt ξ x) {u • e} = Submodule.span (regAt ξ x) {e} := by
@@ -201,13 +188,6 @@ section -- clump:auto
 @[expose] public section
 
 open AlgebraicGeometry CategoryTheory Limits GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Flat
-
-namespace GlobalTheory.CompanionTheory.Ar.Flat
-
-theorem lineLat_isVBOn_gen_frames : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) (E : Type) [AddCommGroup E] [Module Ω E] (A B : Lat ξ E) (p q : ℕ) (V V' : Submodule Ω E) (T : Set (Cpt ξ)) (a : ⋀[Ω]^p E) (b : ⋀[Ω]^q E), A.IsVBOn T p V → B.IsVBOn T q V' → a ≠ 0 → b ≠ 0 → (∃ x ∈ T, ∃ f, IsCoeffAt A B p q a b x f) → (lineLat A B p q a b).IsVBOn T 1 ⊤ ∧ (∀ x ∈ T, ∀ t : Ω, (lineLat A B p q a b).IsGenAt x t ↔ t ≠ 0 ∧ IsCoeffAt A B p q a b x t⁻¹) ∧ ∀ x ∈ T, ∀ (v : Fin p → E) (w : Fin q → E) (α β : Ω), A.IsFrameAt v x → B.IsFrameAt w x → exteriorPower.ιMulti Ω p v = α • a → exteriorPower.ιMulti Ω q w = β • b → (lineLat A B p q a b).IsGenAt x (α / β) :=
-  @PositivityTheory.Xgn.line_lattice_vector_bundle
-
-end GlobalTheory.CompanionTheory.Ar.Flat
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.WedgeLineLatticeVectorBundle =====

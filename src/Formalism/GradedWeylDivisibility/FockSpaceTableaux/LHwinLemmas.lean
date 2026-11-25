@@ -151,7 +151,7 @@ theorem lhwin_exists_killed (h2 : RowDivClosedGraded) {r n : ℕ}
     · intro h
       apply hd
       have := congrArg (AddMonoidAlgebra.coeff · d) h
-      simpa only [coeff_weightedHomogeneousComponent, if_pos rfl, if_true, AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply] using this
+      simpa only [coeff_weightedHomogeneousComponent, ite_eq_left rfl, ite_true, AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply] using this
     · intro e he
       rw [coeff_weightedHomogeneousComponent] at he
       split_ifs at he with hμ

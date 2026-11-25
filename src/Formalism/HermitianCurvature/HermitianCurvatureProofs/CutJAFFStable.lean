@@ -22,8 +22,6 @@ namespace Formalism.FourierDecayAlt.P.CutMP.JA.FFS
 
 open NumberField Formalism.FourierDecayAlt.P.CutMP Formalism.FourierDecayAlt.P.CutMP.JA
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem jAFFStable_of_parts (hG : GermOps) (hE : ExtLoc) (hS : SmoothOps) (hA : AdjComm) (hQ : EquivOps)
     (hO : OmPDom) : JAFFStable := by
   refine ⟨0, ?_⟩

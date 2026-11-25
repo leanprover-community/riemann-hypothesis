@@ -23,7 +23,6 @@ theorem comap_map_eq_map_comap_of_isPullback {W X X' W' : Scheme.{u}} {f : W ⟶
     {g' : W' ⟶ W} {f' : W' ⟶ X'} (H : IsPullback g' f' f g)
     [QuasiCompact f] [AlgebraicGeometry.Flat g] (I : W.IdealSheafData) :
     (I.map f).comap g = (I.comap g').map f' := by
-  have hqc : QuasiCompact (I.subschemeι ≫ f) := inferInstance
   have S : IsPullback (pullback.snd g' I.subschemeι) (pullback.fst g' I.subschemeι ≫ f')
       (I.subschemeι ≫ f) g := (IsPullback.of_hasPullback g' I.subschemeι).flip.paste_vert H
   have hqc' : QuasiCompact (pullback.fst g' I.subschemeι ≫ f') := quasiCompact_of_isPullback S

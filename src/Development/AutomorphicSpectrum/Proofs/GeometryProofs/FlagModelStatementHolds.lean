@@ -354,7 +354,7 @@ theorem flagModel : FlagModelStatement := by
     rw [← hW]
     exact FiniteDimensional.span_of_finite Ω (Set.finite_range b)
   obtain ⟨κ', hκ', y, M', f, hdom, hnorm, hchart, hvb, hat⟩ :=
-    _root_.GlobalTheory.CompanionTheory.Relay.flag_model_common_refinement o Ω κ x M A κa w (Σ σ, Fin (r σ + 1))
+    _root_.PositivityTheory.HtPt.Mb.LTopCommon.exists_common_normal_model o Ω κ x M A κa w (Σ σ, Fin (r σ + 1))
       (fun q => E ⧸ flagStep Ω (b₀ q.1) q.2)
       (fun q => (L q.1).map (flagStep Ω (b₀ q.1) q.2).mkQ)
       (fun q => (W q.1).map (flagStep Ω (b₀ q.1) q.2).mkQ) hw

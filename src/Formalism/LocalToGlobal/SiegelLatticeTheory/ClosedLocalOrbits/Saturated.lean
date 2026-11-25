@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.TermDefPf
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermDef
 import Mathlib.Tactic.Linter.Style
 
@@ -23,15 +24,7 @@ theorem isom_apply {β : S.V ≃ₗ[E] S.V} (hβ : β ∈ Formalism.HermitianLat
 
 theorem mem_gmap_iff (β : S.V ≃ₗ[E] S.V) (L : Submodule (𝓞 E) S.V) (x : S.V) :
     x ∈ Formalism.HermitianLatticesTheory.gmap β L ↔ β.symm x ∈ L := by
-  unfold Formalism.HermitianLatticesTheory.gmap
-  rw [Submodule.mem_map]
-  constructor
-  · rintro ⟨y, hy, hyx⟩
-    have hyx' : β y = x := hyx
-    rw [← hyx', LinearEquiv.symm_apply_apply]
-    exact hy
-  · intro h
-    exact ⟨β.symm x, h, β.apply_symm_apply x⟩
+  apply _root_.Formalism.L2.SG.Pf.mem_gmap_iff <;> assumption
 
 def mapFlag (β : S.V ≃ₗ[E] S.V) (hβ : β ∈ Formalism.HermitianLatticesTheory.isom S.hT) {T : E} (F : FlagG S r T) : FlagG S r T where
   e a := β (F.e a)

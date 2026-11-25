@@ -3,39 +3,6 @@ module
 public import Formalism.LocalToGlobal.IndefiniteReal.IsMultMapUnivZero
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RealIoX
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.GoodPartEq
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.JEvExists
 
 @[expose] public section
@@ -87,13 +54,13 @@ abbrev ccJ (m : type_of% (@MultT D)) (R : RealDat D A Ks) (t : T) (j : ℕ) : Su
 def ioCW (m : type_of% (@MultT D)) (R : RealDat D A Ks) (y : IoYT (@m) R) (t : T) (k : ℕ) :
     ccJ (@m) R t (k + 1) →ₗ[ℂ] ccJ (@m) R t k :=
   if h : k + 1 < D.R.m then
-    (LinearEquiv.ofEq _ _ (by simp only [ccJ, if_pos (show k < D.R.m by omega)])).toLinearMap ∘ₗ
-      y t k ∘ₗ (LinearEquiv.ofEq _ _ (by simp only [ccJ, if_pos h])).toLinearMap
+    (LinearEquiv.ofEq _ _ (by simp only [ccJ, ite_eq_left (show k < D.R.m by omega)])).toLinearMap ∘ₗ
+      y t k ∘ₗ (LinearEquiv.ofEq _ _ (by simp only [ccJ, ite_eq_left h])).toLinearMap
   else 0
 
 def ioXW (m : type_of% (@MultT D)) (R : RealDat D A Ks) (x : IoXT (@m) R) (hm : 0 < D.R.m) (hT : topW (@m) R) (t : T) :
     m R.θ R.MX (levS _ R.βX (R.datXt t)) (levChi _ R.βX (R.datXt t)) →ₗ[ℂ] ccJ (@m) R t (D.R.m - 1) :=
-  (LinearEquiv.ofEq _ _ (by simp only [ccJ, if_pos (show D.R.m - 1 < D.R.m by omega)])).toLinearMap ∘ₗ
+  (LinearEquiv.ofEq _ _ (by simp only [ccJ, ite_eq_left (show D.R.m - 1 < D.R.m by omega)])).toLinearMap ∘ₗ
     x t ∘ₗ (LinearEquiv.ofEq _ _ (hT t).symm).toLinearMap
 
 def ioOKW (m : type_of% (@MultT D)) (Ch : ChainReal D) (c : Bool) (μ : D.what₂.Tup)

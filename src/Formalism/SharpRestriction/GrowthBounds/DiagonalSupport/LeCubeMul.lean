@@ -278,7 +278,6 @@ theorem sl_lt_Bo (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (p : ℕ) (hp : 1 ≤ 
   obtain ⟨hx1, hx2⟩ := posU_mem' hV hr (segZ j) u hu'
   rw [← hnL j] at hx1 hx2
   have hB := Bo_ge hV hr p hp deg a hdeg (segZ j) _ hx1 hx2
-  have hp' : (0 : ℝ) < (p : ℝ) := by exact_mod_cast (by omega : 0 < p)
   have hpos : 0 < Bo p Fr deg (segZ j) (posU Fr (nL j) (segZ j) u) := lt_of_lt_of_le (by positivity) hB
   unfold slU
   exact sl_lt_real _ Y (k : ℝ) _ rfl hpos hY (by exact_mod_cast hk)
@@ -297,7 +296,6 @@ theorem sizeAt_of [hpF : Fact p.Prime] (hk : m + 1 = r + K) (hF : FramesOK TT L�
     SizeAt (K := K) p F nL (dT TT lam0) (9 * ((TT.card : ℝ) * ((m + 1 : ℕ) : ℝ) ^ 2 * Real.logb p a)) := by
   have hV := hF.2.1
   have hp2 : 2 ≤ p := hpF.out.two_le
-  have hp1 : (1 : ℝ) < (p : ℝ) := by exact_mod_cast (by omega : 1 < p)
   have ha2 := hnb.two_le_a
   intro rho dPl dNo hBk bp bn hbp hbn
   have hsum : ∀ x, ((dPl x + dNo x : ℕ) : ℝ) ≤ 2 * a := by
@@ -307,7 +305,7 @@ theorem sizeAt_of [hpF : Fact p.Prime] (hk : m + 1 = r + K) (hF : FramesOK TT L�
       rwa [hF.1] at this
     have e := hBk.2 x
     have e2 : dT TT lam0 (posOf n' (posTL F x)) = flatDeg lam0 (posOf n' (posTL F x)) := by
-      unfold dT; rw [if_pos htop]
+      unfold dT; rw [ite_eq_left htop]
     rw [e2] at e
     have hl : 1 ≤ lowP F p x := Nat.one_le_pow _ _ (by omega)
     have e3 : dPl x + dNo x ≤ flatDeg lam0 (posOf n' (posTL F x)) := by
@@ -320,13 +318,11 @@ theorem sizeAt_of [hpF : Fact p.Prime] (hk : m + 1 = r + K) (hF : FramesOK TT L�
     intro x
     have := hsum x
     push_cast at this
-    have h0 : (0 : ℝ) ≤ (dNo x : ℝ) := Nat.cast_nonneg _
     linarith
   have hdn : ∀ x, (dNo x : ℝ) ≤ 2 * a := by
     intro x
     have := hsum x
     push_cast at this
-    have h0 : (0 : ℝ) ≤ (dPl x : ℝ) := Nat.cast_nonneg _
     linarith
   have hcard : Fintype.card (TL J nL r) ≤ TT.card := by
     have := card_TL_le F hV hr hJ hnL

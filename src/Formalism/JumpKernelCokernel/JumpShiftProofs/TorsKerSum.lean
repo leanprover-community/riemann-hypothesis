@@ -72,7 +72,7 @@ theorem coeff_dvd_of_mem (ℓ : O) (n k : ℕ) {r : PowerSeries O} (hr : r ∈ J
     ∀ i < n, ℓ ^ k ∣ coeff i r := by
   intro i hi
   obtain ⟨a, c, rfl⟩ := Ideal.mem_span_pair.mp hr
-  rw [map_add (f := _), coeff_mul_X_pow', if_neg (by omega), zero_add, coeff_mul_C]
+  rw [map_add (f := _), coeff_mul_X_pow', ite_eq_right (by omega), zero_add, coeff_mul_C]
   exact dvd_mul_left _ _
 
 theorem mem_of_coeff_dvd (ℓ : O) (n k : ℕ) (p : PowerSeries O)

@@ -27,10 +27,6 @@ theorem isPar_mul {n : ℕ} {Y : Spc F E n} {p p' : G2 σ Y} {t t' : GL (Fin n) 
   have e : mat2 (p * p') = mat2 p * mat2 p' := rfl
   rw [e, Units.val_mul, Matrix.mul_assoc, hp', ← Matrix.mul_assoc, hp, Matrix.mul_assoc]
 
-theorem fP_sw {m n : ℕ} (P : PX m n) : IsSw (fP P) := by
-  obtain ⟨S, hS⟩ := PositivityTheory.SiegelWeilFormula.KMain.schwartz_polyGauss (m := m) (n := n) (2 * Real.pi) (by positivity) P
-  exact ⟨S, hS⟩
-
 theorem absE_pos (z : (AE F E)ˣ) : 0 < (absE F E z : ℝ) :=
   NNReal.coe_pos.2 (pos_iff_ne_zero.2 ((Group.isUnit z).map (absE F E)).ne_zero)
 

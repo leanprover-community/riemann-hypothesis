@@ -23,17 +23,7 @@ namespace PositivityTheory.Rg.BcB.F.Small
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 theorem countable_pl (E : Type) [Field E] [NumberField E] : Countable (HeightOneSpectrum (𝓞 E)) := by
-  classical
-  have hinj : Function.Injective fun v : HeightOneSpectrum (𝓞 E) => v.asIdeal :=
-    fun v v' h => HeightOneSpectrum.ext h
-  haveI : Countable (𝓞 E) := (RingOfIntegers.basis E).equivFun.injective.countable
-  haveI : Countable (Ideal (𝓞 E)) :=
-    Function.Injective.countable (f := fun I : Ideal (𝓞 E) => (IsNoetherian.noetherian I).choose)
-      (fun I J h => by
-        rw [← (IsNoetherian.noetherian I).choose_spec, ← (IsNoetherian.noetherian J).choose_spec]
-        simp only at h
-        rw [h])
-  exact hinj.countable
+  apply _root_.GlobalTheory.AdelicUnitaryTop.countable_heightOneSpectrum <;> assumption
 
 end PositivityTheory.Rg.BcB.F.Small
 

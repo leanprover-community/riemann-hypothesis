@@ -45,12 +45,12 @@ theorem rim_rowV (z : Fin (2 * r + k + 1) → ℂ) (J : Fin (r + k) → Fin (2 *
     U.IsPolyDeg 1 (fun g => rowV k r z g J p q) := by
   unfold rowV
   by_cases h : p.val < r
-  · simp only [dif_pos h]
+  · simp only [dite_eq_left h]
     exact rim_herm _ _
   · by_cases h2 : p.val = r
-    · simp only [dif_neg h, dif_pos h2]
+    · simp only [dite_eq_right h, dite_eq_left h2]
       exact rim_herm _ _
-    · simp only [dif_neg h, dif_neg h2]
+    · simp only [dite_eq_right h, dite_eq_right h2]
       exact pd_const _ 1
 
 theorem rim_alJ (z : Fin (2 * r + k + 1) → ℂ) (J : Fin (r + k) → Fin (2 * r + k + 1)) :

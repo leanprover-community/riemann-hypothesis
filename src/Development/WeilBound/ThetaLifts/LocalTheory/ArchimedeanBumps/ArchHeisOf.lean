@@ -9,6 +9,7 @@ public import Development.WeilBound.ThetaLifts.CartanFactorisation.TensOfEval
 public import Development.WeilBound.ThetaLifts.LocalTheory.ArchimedeanBumps.TracePiReal
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
+import Development.WeilBound.ThetaLifts.LeviDeterminants.EqZeroOfTheta
 
 @[expose] public section
 
@@ -80,19 +81,7 @@ theorem at_lin {M N : Type} [AddCommGroup M] [Module (AF F) M] [AddCommGroup N] 
     (h : At (evI F) z) : At (evI F) (T z) := fun u hu => by rw [← map_smul, h u hu, map_zero]
 
 theorem std_ne_one {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ) : ψ ≠ 1 := by
-  intro h
-  have hd : (0 : ℝ) < Module.finrank ℝ (mixedEmbedding.mixedSpace F) := by
-    rw [mixedEmbedding.finrank]; exact_mod_cast Module.finrank_pos
-  set d : ℝ := ((Module.finrank ℝ (mixedEmbedding.mixedSpace F) : ℕ) : ℝ) with hd'
-  have e0 : evI F (realAd F (2 * d)⁻¹) = algebraMap ℝ _ (2 * d)⁻¹ := RingEquiv.apply_symm_apply _ _
-  have := hψ.2.2 (realAd F (2 * d)⁻¹) (fun s hs => Prod.ext (by
-    change s.1 * _ = 0
-    rw [evI_eq_zero.1 hs, zero_mul]) (mul_zero s.2))
-  rw [h, e0, Algebra.trace_algebraMap, nsmul_eq_mul, ← hd', AddChar.one_apply] at this
-  have e : -(2 * Real.pi * Complex.I) * ((d * (2 * d)⁻¹ : ℝ) : ℂ) = -(Real.pi * Complex.I) := by
-    rw [show d * (2 * d)⁻¹ = 2⁻¹ by field_simp]; push_cast; ring
-  rw [e, Complex.exp_neg, Complex.exp_pi_mul_I] at this
-  norm_num at this
+  apply _root_.PositivityTheory.ThKF0.isStd_ne_one <;> assumption
 
 theorem archHeis_of : ArchHeis := by
   intro F E _ _ _ _ _ σ B n d X W M hB

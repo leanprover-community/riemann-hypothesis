@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.CgeZeroIffIntegral
 public import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.MemPolKIff
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.MapCastMono
 import Std.Tactic.BVDecide.Normalize.Prop
@@ -35,19 +36,7 @@ theorem vge_mono' {a b : ℝ} {x : K} (hab : b ≤ a) (h : vge v a x) : vge v b 
   rw [vge_iff'] at *; intro n hn; exact hab.trans (h n hn)
 
 theorem vge_mul' {a b : ℝ} {x y : K} (hx : vge v a x) (hy : vge v b y) : vge v (a + b) (x * y) := by
-  rw [vge_iff'] at *
-  intro n hn
-  rw [v.map_mul] at hn
-  cases h1 : v x with
-  | top => rw [h1] at hn; simp at hn
-  | coe m =>
-    cases h2 : v y with
-    | top => rw [h2] at hn; simp at hn
-    | coe k =>
-      rw [h1, h2, ← WithTop.coe_add, WithTop.coe_inj] at hn
-      have := hx m h1
-      have := hy k h2
-      rw [← hn]; push_cast; linarith
+  apply _root_.Formalism.MainNotions.PlaneGram.vge_mul <;> assumption
 
 theorem vge_sum' {ι : Type} {a : ℝ} (s : Finset ι) (f : ι → K) (h : ∀ i ∈ s, vge v a (f i)) :
     vge v a (∑ i ∈ s, f i) := by
@@ -147,7 +136,7 @@ theorem fock_monomial_right (F : MvPolynomial σ K) (α : σ →₀ ℕ) (c : K)
     fock F (monomial α c) = F.coeff α * c * (fact α : K) := by
   classical
   rw [fock_eq_sum F (monomial α c) {α} (Or.inr (support_monomial_subset)), Finset.sum_singleton,
-    coeff_monomial, if_pos rfl]
+    coeff_monomial, ite_eq_left rfl]
 
 theorem fock_eq_sum_right (F G : MvPolynomial σ K) :
     fock F G = ∑ α ∈ G.support, F.coeff α * G.coeff α * (fact α : K) :=

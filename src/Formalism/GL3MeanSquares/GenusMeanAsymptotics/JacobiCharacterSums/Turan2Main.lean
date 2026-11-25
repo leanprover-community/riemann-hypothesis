@@ -413,11 +413,11 @@ theorem rootAvg (N : ℕ) (j : ℕ) (hj : 1 ≤ j) (hjN : j < N) (y : ℂ) (hy :
   rw [Finset.sum_congr rfl (fun k _ => hterm k), ← Finset.sum_div, Finset.sum_comm]
   simp_rw [← Finset.mul_sum, hS]
   rw [Finset.sum_eq_single (N - j)]
-  · rw [if_pos (by rw [Nat.add_sub_cancel' hjN.le, Nat.mod_self]), Nat.add_sub_cancel' hjN.le]
+  · rw [ite_eq_left (by rw [Nat.add_sub_cancel' hjN.le, Nat.mod_self]), Nat.add_sub_cancel' hjN.le]
     ring
   · intro m hm hne
     rw [Finset.mem_range] at hm
-    rw [if_neg, mul_zero]
+    rw [ite_eq_right, mul_zero]
     by_cases hlt : j + m < N
     · rw [Nat.mod_eq_of_lt hlt]
       omega
@@ -527,8 +527,7 @@ theorem prodLower (n : ℕ) (z : Fin n → ℂ) (ρ : ℝ) (hρ : 0 < ρ) (ξ : 
 
 theorem turan2Main (n m : ℕ) (z : Fin n → ℂ) (hn : 1 ≤ n) (hz : ∀ i, ‖z i‖ ≤ 1) (hz1 : ∃ i, ‖z i‖ = 1) :
     ∃ k : ℕ, m + 1 ≤ k ∧ k ≤ m + n ∧ ((n : ℝ) / (1600 * ((m : ℝ) + n))) ^ n ≤ ‖∑ i, z i ^ k‖ := by
-  by_contra hcon
-  push_neg at hcon
+  by_contra! hcon
   obtain ⟨i0, hi0⟩ := hz1
   set B : ℝ := ((n : ℝ) / (1600 * ((m : ℝ) + n))) ^ n with hBdef
   have hnR : (1 : ℝ) ≤ n := by exact_mod_cast hn

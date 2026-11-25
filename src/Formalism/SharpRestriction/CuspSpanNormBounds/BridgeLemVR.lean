@@ -29,14 +29,7 @@ theorem one_mem_locR (p : Ideal (𝓞 K)) : (1 : K) ∈ locR (K := K) p :=
 
 theorem mul_mem_locR {p : Ideal (𝓞 K)} {x y : K} (hx : x ∈ locR (K := K) p) (hy : y ∈ locR (K := K) p) :
     x * y ∈ locR (K := K) p := by
-  obtain ⟨s, hs, hsx⟩ := hx
-  obtain ⟨t, ht, hty⟩ := hy
-  refine ⟨s * t, (hcompl (K := K) p).mul_mem hs ht, ?_⟩
-  obtain ⟨r, hr⟩ := Submodule.mem_one.1 hsx
-  obtain ⟨r', hr'⟩ := Submodule.mem_one.1 hty
-  refine Submodule.mem_one.2 ⟨r * r', ?_⟩
-  rw [map_mul, hr, hr', Algebra.smul_def, Algebra.smul_def, Algebra.smul_def, map_mul]
-  ring
+  apply _root_.Formalism.HermitianLattices.Ext.L3.SplitA.mul_mem_locR <;> assumption
 
 theorem star_mem_locR {p : Ideal (𝓞 K)} {x : K} (hx : x ∈ locR (K := K) p) :
     star x ∈ locR (K := K) p := by

@@ -35,8 +35,7 @@ theorem constantCoeff_first_two_of_three {F : MvPowerSeries (Fin 2) K} (hF : con
   · subst hd
     simp [MvPowerSeries.coeff_zero_eq_constantCoeff_apply, hF]
   · obtain ⟨s, hs⟩ : ∃ s, d s ≠ 0 := by
-      by_contra h
-      push_neg at h
+      by_contra! h
       exact hd (Finsupp.ext h)
     rw [Finsupp.prod, map_prod, Finset.prod_eq_zero (Finsupp.mem_support_iff.2 hs), smul_zero]
     have h0 : constantCoeff ((![(X 0 : MvPowerSeries (Fin 3) K), X 1] : Fin 2 → MvPowerSeries (Fin 3) K) s) = 0 := by
@@ -317,7 +316,7 @@ private theorem coeff_g0F_at_lemma_2 {K : Type} [Field K] {p : ℕ} (hp : 2 ≤ 
 private theorem coeff_g0F_one_lemma_3 {K : Type} [Field K] {p : ℕ} (hp : 2 ≤ p) :
     PowerSeries.coeff 1 (g0F K p) = 0 := by
   rw [g0F, PowerSeries.coeff_mk]
-  refine Finset.sum_eq_zero fun j _ => if_neg ?_
+  refine Finset.sum_eq_zero fun j _ => ite_eq_right ?_
   intro h
   have h1 : 1 ≤ (p ^ 2) ^ j := Nat.one_le_pow _ _ (pow_pos (by omega : 0 < p) 2)
   nlinarith

@@ -135,7 +135,7 @@ theorem Uo_qs_sum_slz : ∀ (k l : ℕ) (a : ℕ → ℂ), 1 ≤ k → 0 < l →
   rw [← hg.tsum_eq]
   · show ∑' m : ℕ, Uo l a m * cexp (2 * π * Complex.I * m * τ) = _
     refine tsum_congr fun m => ?_
-    simp only [Uo, dvd_mul_right, if_true]
+    simp only [Uo, dvd_mul_right, ite_true]
     rw [show (2 * π * Complex.I * ((l * m : ℕ) : ℂ) * τ / l : ℂ) = 2 * π * Complex.I * m * τ by
       push_cast
       field_simp]

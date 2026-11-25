@@ -86,9 +86,6 @@ private theorem isLocallyNoetherian_of_closedImmersion_pSpace (O F : Type) [Comm
   haveI : IsNoetherian (pullback s (spMap β)) := {}
   infer_instance
 
-theorem generic_points_range_local : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Geo.Tor.Level H) (Xo : Moduli D l) (c : Coeff l) (O : Type) [CommRing O] (β : O →+* c.F) (Y : Model Xo c β), IsDomain O → (letI := β.toAlgebra; IsFractionRing O c.F) → genericPoints Y.X ⊆ Set.range Y.j := by
-  apply PositivityTheory.HtPt.Ml.generic_points_range
-
 end GenericFibreProof
 
 

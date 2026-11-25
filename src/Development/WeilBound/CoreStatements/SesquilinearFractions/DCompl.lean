@@ -53,7 +53,7 @@ theorem padic_norm_sesq_le (D : Datum H) (ℓ : Nat.Primes) (j : E →+* ℂ_[�
   have hinj : Function.Injective (j.comp (algebraMap (𝓞 E) E)) :=
     j.injective.comp (FaithfulSMul.algebraMap_injective (𝓞 E) E)
   have hne : differentIdeal ℤ (𝓞 E) ≠ ⊥ := differentIdeal_ne_bot
-  obtain ⟨a, ha, ha0, -, hL⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Fl.exists_logIdeal_attained E ℓ (j.comp (algebraMap (𝓞 E) E)) _ hinj hne
+  obtain ⟨a, ha, ha0, -, hL⟩ := _root_.PositivityTheory.Xgf.padic_logIdeal_max_element E ℓ (j.comp (algebraMap (𝓞 E) E)) _ hinj hne
   have hca : (j.comp (algebraMap (𝓞 E) E)) a = j (a : E) := rfl
   have hja : 0 < ‖j (a : E)‖ := by
     rw [← hca]

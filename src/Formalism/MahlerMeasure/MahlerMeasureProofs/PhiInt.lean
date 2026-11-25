@@ -323,9 +323,6 @@ theorem phi_integrality : PhiInt := by
 
 end Formalism.GM.M.PhiIntegrality
 
-namespace Formalism.GM
-
-end Formalism.GM
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Formalism.MahlerMeasure.MahlerMeasureProofs.PhiInt =====

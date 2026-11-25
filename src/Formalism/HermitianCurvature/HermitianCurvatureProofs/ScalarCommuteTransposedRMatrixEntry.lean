@@ -116,7 +116,7 @@ alias io_comm_io := _root_.Formalism.FourierDecayAlt.P.Wd6.io_comm
 theorem free_apply_zero {a : S} {M : SlopeTestRemainingChoices S A} (hM : FreeOf a M) {z y : Ix S} (h : z a ≠ y a) :
     M z y = 0 := by
   have h1 := congrFun (congrFun (hM (z a) (z a)).eq z) y
-  rw [eU_mul_apply, mul_eU_apply, if_pos rfl, if_neg (Ne.symm h), Function.update_eq_self] at h1
+  rw [eU_mul_apply, mul_eU_apply, ite_eq_left rfl, ite_eq_right (Ne.symm h), Function.update_eq_self] at h1
   exact h1
 
 theorem free_one (a : S) : FreeOf a (1 : SlopeTestRemainingChoices S A) := fun _ _ => Commute.one_right _
@@ -179,7 +179,7 @@ theorem freeOf_positive_word_matrix {c : S} (w : List (Letter K S)) (hc : c ∉ 
   | cons l w ih =>
     simp only [List.map_cons, List.mem_cons, not_or] at hc
     by_cases h : l.plus
-    · simp only [Xp, h, if_true]
+    · simp only [Xp, h, ite_true]
       exact freeOf2_mul (ih hc.2) (freeOf2_rmatrix hc.1 _)
     · simp only [Xp, h]
       exact ih hc.2
@@ -191,7 +191,7 @@ theorem freeOf_negative_word_matrix {c : S} (w : List (Letter K S)) (hc : c ∉ 
   | cons l w ih =>
     simp only [List.map_cons, List.mem_cons, not_or] at hc
     by_cases h : l.plus
-    · simp only [Xm, h, if_true]
+    · simp only [Xm, h, ite_true]
       exact ih hc.2
     · simp only [Xm, h]
       exact freeOf2_mul (freeOf2_rmatrix_transpose hc.1 _) (ih hc.2)
@@ -234,7 +234,7 @@ theorem Rh0_col (a : S) (D : K) (hD : D ≠ 1) (m : Fin 2) (z : Ix S) :
   · subst hm
     by_cases hz : z = e1
     · subst hz
-      simp only [if_true, and_self, Matrix.one_apply_eq]
+      simp only [ite_true, and_self, Matrix.one_apply_eq]
       exact smul_cancel D hD 1
     · simp [hz]
   · have hm' : ¬ (0 = m) := fun h => hm h.symm
@@ -262,7 +262,7 @@ theorem Xp_fix (w : List (Letter K S)) (Y : K) (hr : Reg w Y) (k : Fin 2) (z : I
     · have hl : Y - l.pt ≠ 1 := by
         have := hr l List.mem_cons_self
         simpa [RegL, h] using this
-      simp only [Xp, h, if_true]
+      simp only [Xp, h, ite_true]
       rw [mul_col _ _ (Rh0_col l.intersection_update_fsHerm_neg_one _ hl)]
       exact ih hr' k z
     · simp only [Xp, h]
@@ -283,7 +283,7 @@ theorem Rht0_row (b : S) (d : K) (hd : d ≠ 1) (X : M2 (SlopeTestRemainingChoic
     simp [e1]
   by_cases hz : z b = 0
   · have hu : Function.update z b 0 = z := by rw [← hz]; exact Function.update_eq_self b z
-    simp only [hz, if_true, h1, add_zero, hu]
+    simp only [hz, ite_true, h1, add_zero, hu]
     exact smul_cancel d hd _
   · have h0 : (X 0 k) z e1 = 0 := free_apply_zero (hX 0 k) hz
     simp [hz, h0]
@@ -302,7 +302,7 @@ theorem Xm_fix (w : List (Letter K S)) (Y : K) (hn : (w.map Letter.intersection_
     have hr' : Reg w Y := fun l' hl' => hr l' (List.mem_cons_of_mem _ hl')
     simp only [List.map_cons, List.nodup_cons] at hn
     by_cases h : l.plus
-    · simp only [Xm, h, if_true]
+    · simp only [Xm, h, ite_true]
       exact ih hn.2 hr' k z
     · have hl : l.pt - Y ≠ 1 := by
         have := hr l List.mem_cons_self
@@ -325,7 +325,7 @@ theorem entry_ins (a : S) (R : SlopeTestRemainingChoices S A) (M : M2 (SlopeTest
   by_cases hz : z a = 0
   · congr 1
     unfold ins
-    simp only [Fin.sum_univ_two, Matrix.add_apply, eU_mul_apply, hz, if_true]
+    simp only [Fin.sum_univ_two, Matrix.add_apply, eU_mul_apply, hz, ite_true]
     have hu : Function.update z a 0 = z := by rw [← hz]; exact Function.update_eq_self a z
     have h1 : ∀ i, (M i 1) (Function.update z a 1) e1 = 0 := fun i => by
       apply free_apply_zero (hM i 1)

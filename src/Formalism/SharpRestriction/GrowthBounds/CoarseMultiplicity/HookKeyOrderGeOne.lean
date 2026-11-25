@@ -126,7 +126,7 @@ theorem hook_key_lift_exact (w : O) (LL : LiftLetters ι) (r : ℕ) (g : Matrix 
         rw [Finset.sum_eq_single b]
         · simp
         · intro b' _ hne
-          rw [if_neg (Ne.symm hne)]
+          rw [ite_eq_right (Ne.symm hne)]
           simp
         · intro h; exact absurd (Finset.mem_univ b) h
     _ = C (algebraMap O (KK O) w) * ∑ a : Fin k, X (l, a) * X (l', a) := by

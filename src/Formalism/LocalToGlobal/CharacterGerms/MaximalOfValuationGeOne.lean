@@ -73,19 +73,10 @@ theorem mm_of_natCast_mul {n : ℕ} (h : ¬ V.l ∣ n) {x : C} (hx : V.Ge 0 x) (
   rw [hx']
   exact mm_add (mm_l_mul (VF.Ge.mul_int (ge_intCast _) hx)) (mm_mul_ge' (ge_intCast _) hm)
 
-private theorem ge_pow_lemma {x : C} (hx : V.Ge 0 x) (k : ℕ) : V.Ge 0 (x ^ k) := by
-  induction k with
-  | zero =>
-    rw [pow_zero]
-    exact VF.Ge.one
-  | succ k ih =>
-    rw [pow_succ]
-    exact VF.Ge.mul_int ih hx
-
 theorem mm_pow {x : C} (hx : V.MM x) {n : ℕ} (hn : n ≠ 0) : V.MM (x ^ n) := by
   obtain ⟨k, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hn
   rw [pow_succ]
-  exact mm_mul_ge' (ge_pow_lemma (le_of_lt hx) k) hx
+  exact mm_mul_ge' (VF.Ge.pow (le_of_lt hx) k) hx
 
 theorem mm_of_pow {x : C} (h : V.MM (x ^ V.l)) : V.MM x := by
   unfold VF.MM at h ⊢
@@ -124,7 +115,7 @@ theorem mm_add_pow {x y : C} (hx : V.Ge 0 x) (hy : V.Ge 0 y) : V.MM ((x + y) ^ V
   rw [hexp]
   apply mm_sum
   intro i hi
-  exact mm_mul_ge' (VF.Ge.mul_int (ge_pow_lemma hx _) (ge_pow_lemma hy _)) (mm_natCast_of_dvd (hdvd i hi))
+  exact mm_mul_ge' (VF.Ge.mul_int (VF.Ge.pow hx _) (VF.Ge.pow hy _)) (mm_natCast_of_dvd (hdvd i hi))
 
 def MMS {σ : Type} (V : VF C) (f : MvPowerSeries σ C) : Prop := ∀ μ, V.MM (MvPowerSeries.coeff μ f)
 
@@ -268,10 +259,8 @@ theorem intS_frobTw {c : MvPowerSeries σ C} (hc : IntS V c) : IntS V (frobTw V.
   intro μ
   rw [coeff_frobTw]
   split_ifs
-  · exact ge_pow_lemma (hc _) _
-  · unfold VF.Ge
-    rw [AddValuation.map_zero]
-    exact le_top
+  · exact VF.Ge.pow (hc _) _
+  · exact VF.Ge.zero 0
 
 theorem mms_frobTw_add {f g : MvPowerSeries σ C} (hf : IntS V f) (hg : IntS V g) :
     MMS V (frobTw V.l (f + g) - (frobTw V.l f + frobTw V.l g)) := by
@@ -307,7 +296,7 @@ theorem mms_of_frobTw {e : MvPowerSeries σ C} (h : MMS V (frobTw V.l e)) : MMS 
   have hd : ∀ s, V.l ∣ (V.l • ν) s := fun s => by
     rw [Finsupp.smul_apply, smul_eq_mul]
     exact dvd_mul_right _ _
-  rw [coeff_frobTw, if_pos hd, divl_smul V.l_prime.pos] at h1
+  rw [coeff_frobTw, ite_eq_left hd, divl_smul V.l_prime.pos] at h1
   exact mm_of_pow h1
 
 private theorem intS_monomial_lemma_10 {ν : σ →₀ ℕ} {c : C} (hc : V.Ge 0 c) :
@@ -316,9 +305,7 @@ private theorem intS_monomial_lemma_10 {ν : σ →₀ ℕ} {c : C} (hc : V.Ge 0
   rw [MvPowerSeries.coeff_monomial]
   split_ifs
   · exact hc
-  · unfold VF.Ge
-    rw [AddValuation.map_zero]
-    exact le_top
+  · exact VF.Ge.zero 0
 
 theorem mms_pow_frobTw [Finite σ] {f : MvPowerSeries σ C} (hf : IntS V f) : MMS V (f ^ V.l - frobTw V.l f) := by
   classical
@@ -333,7 +320,7 @@ theorem mms_pow_frobTw [Finite σ] {f : MvPowerSeries σ C} (hf : IntS V f) : MM
     rw [Finset.sum_ite_eq]
   have hlow : ∀ ν, ν ≤ μ → MvPowerSeries.coeff ν (f - P) = 0 := by
     intro ν hν
-    rw [map_sub, hcoeffP, if_pos (Finset.mem_Iic.2 hν)]
+    rw [map_sub, hcoeffP, ite_eq_left (Finset.mem_Iic.2 hν)]
     exact sub_self _
   have h1 : MvPowerSeries.coeff μ (f ^ V.l) = MvPowerSeries.coeff μ (P ^ V.l) := by
     obtain ⟨Q, hQ⟩ := sub_dvd_pow_sub_pow f P V.l
@@ -349,7 +336,7 @@ theorem mms_pow_frobTw [Finite σ] {f : MvPowerSeries σ C} (hf : IntS V f) : MM
   have h3 : MvPowerSeries.coeff μ (frobTw V.l f) = MvPowerSeries.coeff μ (frobTw V.l P) := by
     rw [coeff_frobTw, coeff_frobTw]
     split_ifs
-    · rw [hcoeffP, if_pos (Finset.mem_Iic.2 (divl_le _ _))]
+    · rw [hcoeffP, ite_eq_left (Finset.mem_Iic.2 (divl_le _ _))]
     · rfl
   have h4 : frobTw V.l P = ∑ ν ∈ S, (MvPowerSeries.monomial ν (MvPowerSeries.coeff ν f)) ^ V.l := by
     ext μ'
@@ -371,7 +358,7 @@ theorem mms_pow_frobTw [Finite σ] {f : MvPowerSeries σ C} (hf : IntS V f) : MM
     · symm
       apply Finset.sum_eq_zero
       intro ν _
-      rw [if_neg]
+      rw [ite_eq_right]
       rintro rfl
       apply hd
       intro s

@@ -13,7 +13,7 @@ namespace GlobalTheory.CompanionTheory.Ar.BT
 
 theorem spec_gamma_isoSpec_inv (S : CommRingCat.{0}) :
     Spec.map (Scheme.ΓSpecIso S).hom ≫ (Spec S).isoSpec.inv = 𝟙 _ := by
-  simp [Scheme.isoSpec_Spec_inv, ← Spec.map_comp]
+  simp [Scheme.isoSpec_Spec_inv]
 
 theorem exists_section_of_isFinite (R : Type) [CommRing R] [IsDomain R] [IsIntegrallyClosed R]
     {X : Scheme.{0}} (f : X ⟶ Spec (CommRingCat.of R)) [IsFinite f]

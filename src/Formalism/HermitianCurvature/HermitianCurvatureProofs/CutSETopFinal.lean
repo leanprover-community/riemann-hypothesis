@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJASSnGeom
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSERDSOpR
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDCapRAsm
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDRvStepB
@@ -64,13 +65,6 @@ def RDSNicePoly : Prop :=
     [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] (D : B.RealPlaceData k r Wp Wq) (o κ : ℕ)
     (Θ : B.DiffOp k r Wp Wq), CutMP.PolyOp o κ Θ →
       ∀ F : B.Mat k r → (Wq →L[ℂ] Wp), NiceAll D F → NiceAll D (B.opApply Θ F) ∧ NiceAll D (B.opAdj Θ F)
-
-section swap
-
-variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
-  [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
-
-end swap
 
 theorem opProp1_of_poly (hN : RDSNicePoly) {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq]
@@ -272,27 +266,7 @@ theorem ckOn_of_contDiff {m : ℕ∞} {f : B.Mat k r → E} (hf : ContDiff ℝ �
 
 theorem ubl_add' {f₁ f₂ : B.Mat k r → E} {S : Set (B.Mat k r)} (hSG : S ⊆ B.GV k r) {n e γ : ℕ}
     (h₁ : UBL f₁ S n e γ) (h₂ : UBL f₂ S n e γ) : UBL (fun g => f₁ g + f₂ g) S n e γ := by
-  obtain ⟨⟨C₁, hC₁, hb₁⟩, hl₁⟩ := h₁
-  obtain ⟨⟨C₂, hC₂, hb₂⟩, hl₂⟩ := h₂
-  refine ⟨⟨C₁ + C₂, add_nonneg hC₁ hC₂, fun w hw g hg => ?_⟩, fun g hg => ?_⟩
-  · obtain ⟨a, ha, V, hV, hgV, haa⟩ := hl₁ g hg
-    obtain ⟨b, hb, W, hW, hgW, hbb⟩ := hl₂ g hg
-    have hlie := admissible_word_mem_lie hw
-    have hG := hSG hg
-    have e0 : Dw w (fun g => f₁ g + f₂ g) g = Dw w (fun g => a g + b g) g :=
-      Dw_congr_loc hlie (hV.inter hW) (fun g' hG' hg' => by simp [haa g' hG' hg'.1, hbb g' hG' hg'.2]) g hG
-        ⟨hgV, hgW⟩
-    rw [e0, Dw_add hlie (ckOn_of_contDiff ha) (ckOn_of_contDiff hb) g hG,
-      ← Dw_congr_loc hlie hV haa g hG hgV, ← Dw_congr_loc hlie hW hbb g hG hgW]
-    have b1 := hb₁ w hw g hg
-    have b2 := hb₂ w hw g hg
-    calc ‖Dw w f₁ g + Dw w f₂ g‖ ≤ ‖Dw w f₁ g‖ + ‖Dw w f₂ g‖ := norm_add_le _ _
-      _ ≤ C₁ * B.gN g ^ (e + γ * w.length) + C₂ * B.gN g ^ (e + γ * w.length) := add_le_add b1 b2
-      _ = (C₁ + C₂) * B.gN g ^ (e + γ * w.length) := by ring
-  · obtain ⟨a, ha, V, hV, hgV, haa⟩ := hl₁ g hg
-    obtain ⟨b, hb, W, hW, hgW, hbb⟩ := hl₂ g hg
-    exact ⟨fun g => a g + b g, ha.add hb, V ∩ W, hV.inter hW, ⟨hgV, hgW⟩, fun g' hG' hg' => by
-      simp [haa g' hG' hg'.1, hbb g' hG' hg'.2]⟩
+  apply _root_.Formalism.FourierDecayAlt.P.CutMP.JA.SSn.Geom.ubl_add <;> assumption
 
 theorem ubl_smulC (c : ℂ) {f : B.Mat k r → E} {S : Set (B.Mat k r)} (hSG : S ⊆ B.GV k r) {n e γ : ℕ}
     (h : UBL f S n e γ) : UBL (fun g => c • f g) S n e γ := by
@@ -576,7 +550,7 @@ theorem pbOp_loc {r : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E
     pbOp l f₁ c = pbOp l f₂ c := by
   have hev : f₁ =ᶠ[nhds c] f₂ := by
     filter_upwards [(Formalism.FourierDecayAlt.P.Qx3.isOpen_OmX r).mem_nhds hc] with c' hc' using h c' hc'
-  simp only [pbOp, wirtBar, if_pos hc, hev.fderiv_eq]
+  simp only [pbOp, wirtBar, ite_eq_left hc, hev.fderiv_eq]
 
 theorem vABs_loc {r : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] (Y : ℂ) :
     ∀ (i : ℕ) (f₁ f₂ : (Fin r → ℂ) → E), (∀ c ∈ OmX r, f₁ c = f₂ c) →
@@ -584,7 +558,7 @@ theorem vABs_loc {r : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E
   | 0, f₁, f₂, h, c, hc => ⟨h c hc, rfl⟩
   | i + 1, f₁, f₂, h, c, hc => by
     by_cases hi : i < r
-    · simp only [vABs, dif_pos hi]
+    · simp only [vABs, dite_eq_left hi]
       have hsub : ∀ c' ∈ OmX r, (Y • f₁ - pbOp ⟨i, hi⟩ f₁) c' = (Y • f₂ - pbOp ⟨i, hi⟩ f₂) c' := by
         intro c' hc'
         simp only [Pi.sub_apply, Pi.smul_apply]
@@ -601,7 +575,7 @@ theorem vABs_loc {r : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E
       · simp only [Pi.sub_apply]
         rw [(vABs_loc Y i _ _ hsub c hc).1, (vABs_loc Y i _ _ hcb c hc).2]
       · exact (vABs_loc Y i _ _ hcbi c hc).1
-    · simp only [vABs, dif_neg hi]
+    · simp only [vABs, dite_eq_right hi]
       exact vABs_loc Y i f₁ f₂ h c hc
 
 def rowP {A : Type} [Ring A] [Algebra ℂ A] {r : ℕ} (L : R.LevelData A r) (Y : ℂ) (n : ℕ) :
@@ -640,7 +614,7 @@ theorem rowSide_chain (X : ActualOps k r z z' π π') (L : R.LevelData (Pr (RadS
         (fun f => (vABs r Y n).1 (Y • f - pbOp ⟨n, h⟩ f) - (vABs r Y n).2 (cbOp ⟨n, h⟩ f),
           fun f => (vABs r Y n).1 (cbiOp ⟨n, h⟩ f)) := by
       show (if h : n < r then _ else _) = _
-      rw [dif_pos h]
+      rw [dite_eq_left h]
     have e00 : rowP L Y (n + 1) 0 0 =
         rowP L Y n 0 0 * (algebraMap ℂ _ Y - L.pb ⟨n, h⟩) + rowP L Y n 0 1 * (-L.cb ⟨n, h⟩) := by
       rw [partialProduct_succ L Y n h]
@@ -690,7 +664,7 @@ theorem spectral_adjoint_rho_action : RDSRhvR := by
     intro y hy
     have hxy : (x.1, y) ∈ DomR P.k P.r z z' := ⟨hx.1, hy.1, hy.2⟩
     rw [eA, (hch Φ (x.1, y) hxy).1]
-    simp only [crd, Q.cmp, if_true]
+    simp only [crd, Q.cmp, ite_true]
     exact (vABs_loc Y P.r _ _ (fun c' hc' => hΦ (c', y) ⟨hc', hy.1, hy.2⟩) x.1 hx.1).1
   have hB : ∀ y ∈ Glev P.k P.r (Fin.last P.r) ∩ Qx8.Dp P.k P.r z z',
       (((L.Bvr Y).1 Φ : RadSp P.k P.r z z' π π') : Fn P.k P.r (Wq →L[ℂ] Wp)) x.1 y =
@@ -698,7 +672,7 @@ theorem spectral_adjoint_rho_action : RDSRhvR := by
     intro y hy
     have hxy : (x.1, y) ∈ DomR P.k P.r z z' := ⟨hx.1, hy.1, hy.2⟩
     rw [eB, (hch Φ (x.1, y) hxy).2]
-    simp only [crd, Q.cmp, if_neg (show (1 : Fin 2) ≠ 0 by decide)]
+    simp only [crd, Q.cmp, ite_eq_right (show (1 : Fin 2) ≠ 0 by decide)]
     exact (vABs_loc Y P.r _ _ (fun c' hc' => hΦ (c', y) ⟨hc', hy.1, hy.2⟩) x.1 hx.1).2
   have e1 : (((RhvR L st Y).1 Φ : RadSp P.k P.r z z' π π') : Fn P.k P.r (Wq →L[ℂ] Wp)) x.1 x.2 =
       (((L.Dr).1 ((st.QQ Y 0 1).1 ((L.Avr Y).1 Φ) + (st.QQ Y 1 1).1 ((L.Bvr Y).1 Φ)) :
@@ -729,8 +703,6 @@ noncomputable section
 namespace Formalism.FourierDecayAlt.P.CutSE
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.P5
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 namespace Comp0
 

@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalGluing.MemOfProjEqZero
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.DeterminantUnitTheta.ThetaGC
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.SharpSpanCounting.SharpEquivApply
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.SharpSpanCounting.HSumRight
@@ -37,12 +38,7 @@ theorem mmfam_some {g : SplitG M.L} (hs : M.split = some g) (t : Term V M r) :
   simp only [HermSp.MMfam, hs]
 
 theorem h_sub_right (x y y' : V) : H.h x (y - y') = H.h x y - H.h x y' := by
-  have h1 : H.h (y - y') x = H.h y x - H.h y' x := by
-    have h2 := H.h_add_left (y - y') y' x
-    rw [sub_add_cancel] at h2
-    rw [h2]
-    ring
-  rw [H.h_herm (y - y') x, h1, map_sub, ← H.h_herm, ← H.h_herm]
+  apply _root_.PI.LocHerm.Glue.h_sub_right <;> assumption
 
 theorem gramH_eqG {g : SplitG M.L} {t : Term V M r} (hg : GoodG H g t) :
     gramH H (H.MMfam t) = gramG (M.L.cj : E →+* E) (algebraMap F E ((g.q : F)⁻¹)) (H.Zhat t.f t.f')
