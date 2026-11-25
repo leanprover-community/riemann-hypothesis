@@ -15,10 +15,9 @@ name: batch queue
 # we learned. In short: GitHub Actions may not create pull requests in this repository, so the
 # queue's batch never got one and every sync run failed; the batches assembled by hand already
 # take every open pull request that is not a draft, touches `src/` and merges cleanly, queued or
-# not; they are stacked, so a batch of the queue would have to follow the outermost one; and a
-# run that assembled cost about 300 requests. To revive it, allow GitHub Actions to create pull
-# requests, decide how it relates to stacked batches assembled by hand, and turn `ASSEMBLE` back
-# on.
+# not; they are stacked, so a batch of the queue would have to follow the outermost one, which it
+# now does; and a run that assembled cost about 300 requests. To revive it, allow GitHub Actions
+# to create pull requests and turn `ASSEMBLE` back on.
 #
 # Commenting `-batch` takes a pull request out of the queue again: it withdraws the recorded
 # commit and removes the `batch queue` label, and `frozen` unless a batch being built holds the
@@ -53,6 +52,18 @@ name: batch queue
 # request labelled `batch queue` that holds a batch like this waits in the queue like any other.
 # `verification/BATCHES.md` says how to assemble such a batch, and `scripts/batch-labels.py`
 # names the labels; the `if:` of the sync job below names some of them too.
+#
+# Batches assembled by hand can be stacked: the upper batch's branch merges the lower one's, and
+# it lands right after it. A batch says which one it is stacked on in its description, with a line
+# such as `- [ ] depends on: #1739`, ticked or not. Until it has one naming an open batch, its
+# branch name says so instead: `batch/<anything>-on-<number>`. A pull request in several batches
+# of a stack belongs to the lowest, and is recorded, labelled and told there only; no pull request
+# that holds a batch is ever part of another. The outermost batch of each stack, the one no other
+# batch is stacked on, is labelled `latest batch` too, until another batch is stacked on it or it
+# closes. When a batch is closed without being merged, each batch stacked on it is told once in a
+# comment: its branch still carries the closed batch's commits, whose pull requests are now its
+# own and stay `batch-building` and `frozen`, and it should be rebuilt and its `depends on` line
+# or branch name updated.
 #
 # Only a comment whose whole text is one of these counts, letter case and surrounding blank space
 # aside: `batch` or `b`, `batch <commit>` or `b <commit>`, `p` and `p <commit>`, `-batch` or
@@ -421,11 +432,11 @@ jobs:
     name: Keep the labels in step with the batches
     needs: [label, reopened]
     # After a pull request was queued, unqueued or given its label back, after a batch was
-    # opened, edited, pushed to, merged or closed, after a labelled pull request was closed, or
-    # when started by hand. A push to a `frozen` pull request starts the `pushed` job instead.
-    # The label names here are those of `scripts/batch-labels.py`. Tidying up does not depend on
-    # the `pull_request_target` event: every run does it, so it only happens sooner with the
-    # event.
+    # opened, edited (a new `depends on` line changes the order of stacked batches), pushed to,
+    # merged or closed, after a labelled pull request was closed, or when started by hand. A push
+    # to a `frozen` pull request starts the `pushed` job instead. The label names here are those
+    # of `scripts/batch-labels.py`. Tidying up does not depend on the `pull_request_target` event:
+    # every run does it, so it only happens sooner with the event.
     if: >-
       ${{ always() && (
           github.event_name == 'workflow_dispatch' ||

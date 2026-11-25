@@ -15,7 +15,8 @@ request still under review adds. Until it lands, the label exists but nothing pu
 | Label | On | Put on when | Taken off when |
 |---|---|---|---|
 | `building` | the pull request of a batch assembled by hand | its branch holds the head of an open pull request | the batch is merged or closed, once its members are tidied up after |
-| `batch-building` | each pull request in that batch | the batch takes its head commit | it leaves the branch; the batch is merged or closed; it is closed |
+| `latest batch` | the pull request of the outermost batch of a stack, the one no other batch is stacked on | it is `building` and nothing is stacked on it | a batch is stacked on it; it is merged or closed |
+| `batch-building` | each pull request in that batch, or in the lowest batch of a stack that holds it | the batch takes its head commit | it leaves every batch being built; its batch is merged or closed; it is closed |
 | `frozen` | each pull request in that batch, and each queued pull request | with `batch-building`, or with `batch queue` on a `batch` comment | it is neither queued nor in a batch being built: `-batch`, it leaves the batch, the batch is merged or closed, it is closed |
 | `changed after frozen` *(planned, #1697)* | a frozen pull request whose head has moved on from the commit taken | it is pushed to after a batch or the queue took a commit of it | its head is that commit again, or it is no longer frozen |
 | `batch queue` | a pull request wanted in a batch | a maintainer or reviewer comments `batch` or `p` | `-batch`; it joins a batch assembled by hand (in exchange for `batch-building`); its queued commit lands; it is closed |
@@ -34,10 +35,12 @@ description doesn't mention, and pull requests reverted in the branch.
 
 ## Rules
 
-1. **Use a branch of this repository named `batch/...`**, such as `batch/b9-on-1313`, and open
-   its pull request against `main`. Don't use the name `batch/` followed by a date and time,
-   such as `batch/2026-11-23-041230`: that form belongs to the workflow's own batches, which
-   are switched off for now.
+1. **Use a branch of this repository named `batch/...`**, such as `batch/b9`, and open its pull
+   request against `main`. Don't use the name `batch/` followed by a date and time, such as
+   `batch/2026-11-23-041230`: that form belongs to the workflow's own batches, which are
+   switched off for now. A batch stacked on another one, say #1313, is named
+   `batch/<anything>-on-1313`, such as `batch/b9-on-1313`, and its description says so in a line
+   `- [ ] depends on: #1313` (see [Several batches at once](#several-batches-at-once)).
 2. **Merge each pull request's head commit into the branch with a merge commit.** The workflow
    reads what a batch contains from its branch, not from its description: a pull request is in
    the batch when its head commit is. A squash, cherry-pick or rebase of a pull request makes new
@@ -78,8 +81,9 @@ description doesn't mention, and pull requests reverted in the branch.
    same heading (ignoring anything in parentheses) is not told again. Its comment is edited to
    show the new entry, which notifies nobody, so that `ready` is not undone every time a batch
    leaves it out for the same kind of reason. Keep the headings the same from one batch to the
-   next for this to work. A pull request that is in the branch is never told it is left out,
-   whatever the description says. The comment puts `#123` and links to pull requests of this
+   next for this to work. A pull request that is in the branch, or in another batch being built,
+   is never told it is left out, whatever the description says: a lower batch can list as left
+   out what the batch stacked on it takes. The comment puts `#123` and links to pull requests of this
    repository in code spans, so that quoting an entry does not mention every pull request it
    names. A batch that was being built before the workflow read descriptions tells nobody what
    its description leaves out at that point: only entries added or changed afterwards are told.
@@ -95,7 +99,9 @@ description doesn't mention, and pull requests reverted in the branch.
 While the batch's pull request is open, it is labelled `building`. Each open pull request whose
 head commit is in the branch is labelled `batch-building` and `frozen`, in place of
 `batch queue`. Each is asked once, in a comment, not to push until the batch has landed or been
-closed. The workflow lists them in a comment of its own on the batch's pull request.
+closed. The workflow lists them in a comment of its own on the batch's pull request. In a stack
+of batches, what the branch shares with a batch it is stacked on belongs to that batch instead
+(see [Several batches at once](#several-batches-at-once)).
 
 A pull request that is pushed to after the batch took its commit stays in the batch at the old
 commit. As soon as the push comes in, it is told that the batch lands only that commit, and is
@@ -127,10 +133,45 @@ that join it later, and entries added or changed later, are.
 
 ## Several batches at once
 
-A batch whose branch contains the head of another batch's pull request is built as part of it.
-The other batch is treated as one of the pull requests it contains. The workflow cannot yet tell
-a batch that is being built from one that waits for another to land: every open batch assembled
-by hand counts as being built.
+Batches can be stacked: the branch of the upper batch merges the branch of the lower one, so it
+holds the lower batch's pull requests too, and it lands right after it.
+
+- **Say which batch it is stacked on.** The workflow reads a line of the upper batch's
+  description such as `- [ ] depends on: #1313`, ticked or not: the same `depends on` line any
+  pull request uses. Whoever assembles batches should add one. A batch can be stacked on more
+  than one. Until its description has such a line naming an open batch that is being built, the
+  branch name is read instead: `batch/<anything>-on-<number>`, such as `batch/b9-on-1313`, is
+  stacked on #1313. Only open batches labelled `building` count, and batches that say they are
+  stacked on each other in a circle are taken to be stacked on none. The workflow warns in its
+  log when a batch's branch shares no commit beyond `main` with the batch it says it is stacked
+  on.
+- **Each pull request belongs to the lowest batch that holds it.** A pull request whose head
+  commit is in several batches of a stack is a member of the lowest one only: it is listed in
+  that batch's record, and its comments (that it is frozen, that it was pushed to, that it left
+  the batch, what landed) name that batch. The upper batch's members are what its branch adds.
+  A pull request that holds a batch is never a member of another batch. All batches are looked
+  through, lowest first, before any label changes, so a pull request that moves from one batch
+  of a stack to another keeps `batch-building` and `frozen` throughout. It is told which batch it
+  is in now.
+- **`latest batch`** goes on the outermost batch of each stack, the one no other batch is stacked
+  on. A batch stacked on nothing, with nothing stacked on it, is a stack of its own. The label
+  comes off when another batch is stacked on it, or when it is merged or closed.
+- **When the lower batch is merged**, its members land and the upper batch simply stops being
+  stacked on it. Its `depends on` line can stay.
+- **When the lower batch is closed without being merged**, the upper batch is told once, in a
+  comment, that its branch still carries the closed batch's commits. The open pull requests of
+  the closed batch that are still in the upper branch become members of the upper batch and keep
+  `batch-building` and `frozen`; they are told they are frozen in the upper batch. The rest are
+  told they can push again, as for any closed batch. Whoever assembles the upper batch should
+  rebuild it on `main` or on another batch, and change its `depends on` line or branch name to
+  match.
+
+Records written before batches were stacked list the lower batch, and everything in it, as
+members of the upper batch. The workflow reads them all the same: a batch is never taken for a
+member, and its own labels never change through membership.
+
+The workflow cannot yet tell a batch that is being built from one that waits for another to
+land: every open batch assembled by hand counts as being built.
 
 ## The status issue
 

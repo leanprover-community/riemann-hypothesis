@@ -15,7 +15,10 @@ QUEUED = "batch queue"
 PRIORITY = "priority"
 # On the pull request of a batch assembled by hand that is being built.
 BUILDING = "building"
-# On each open pull request whose commit is in that batch.
+# On the pull request of a batch assembled by hand that is being built and that no other such
+# batch is stacked on: the outermost batch of its stack.
+LATEST = "latest batch"
+# On each open pull request whose commit is in that batch and in no batch it is stacked on.
 MEMBER = "batch-building"
 # On the same pull requests: the batch builds the commit it took, so their authors should not
 # push until it has landed or been closed.
