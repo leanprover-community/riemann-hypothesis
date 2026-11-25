@@ -50,11 +50,9 @@ copy only its own commits onto it. A hidden marker in the comment names the batc
 so it is sent once for each head of the batch.
 
 Which batches a pull request was told about is read from its comments, once a run at most, and
-only when it is about to be told something it may not have been told. What was read is kept from
-one sweep to the next (`--state`, which the workflow keeps in the Actions cache), so that a sweep
-in which nothing has changed reads no comments, however many batches are compared with. Without
-it, a pull request already labelled `batch-conflict` that is compared with more than one batch
-has its comments read on every sweep.
+only when it is about to be told something it may not have been told. Nothing is kept from one
+run to the next: a pull request already labelled `batch-conflict` that is compared with more than
+one batch, as with two separate stacks, has its comments read again by each sweep.
 
 The workflow's token may make 1,000 REST requests an hour, shared with every other workflow
 here, and the batch-queue workflow can use several hundred of them. So everything is read
@@ -613,9 +611,9 @@ def stale_in(work, trunk, heads, candidates, watch, sharing, carried, log):
 def sync(gh, number=None, compare=compare_all, known=None):
     """Bring both labels up to date on one pull request, or on every open one. Returns a log.
 
-    `known` is what earlier runs read from pull requests' comments or said in them, as
-    {number: notices} (see `GitHub.notices`), and is brought up to date. A sweep keeps it to the
-    open pull requests."""
+    `known` is what this run has read from pull requests' comments or said in them, as {number:
+    notices} (see `GitHub.notices`), and is brought up to date. A caller may pass it in to share it
+    between calls; it is not kept from one run to the next."""
     log = []
     known = {} if known is None else known
     # Comments are read at most once a run (see `GitHub.notices`).
@@ -741,8 +739,6 @@ def sync(gh, number=None, compare=compare_all, known=None):
             gh.failed = True
             log.append(f"closed pull requests: skipped, because {error}")
     if number is None:
-        for key in [key for key in known if key not in pulls]:
-            del known[key]
         for label in OURS:
             having = [key for key in targets if label in pulls[key]["labels"]]
             log.append(f"{len(having)} of {len(targets)} open pull requests "
@@ -751,39 +747,12 @@ def sync(gh, number=None, compare=compare_all, known=None):
     return log
 
 
-def load_state(path):
-    """What earlier runs read from pull requests' comments, as `sync` takes it, from the file
-    `path`. A missing or unreadable file reads as nothing known."""
-    try:
-        kept = json.loads(path.read_text()) if path else {}
-    except (OSError, ValueError):
-        return {}
-    known = {}
-    for key, item in (kept.get("pulls") or {}).items() if isinstance(kept, dict) else ():
-        try:
-            known[int(key)] = {"told": {int(number) for number in item.get("told") or ()},
-                               "stale": {(int(number), str(sha)) for number, sha in item.get("stale") or ()}}
-        except (AttributeError, TypeError, ValueError):
-            continue
-    return known
-
-
-def save_state(path, known):
-    """Write what `load_state` reads."""
-    pulls = {str(key): {"told": sorted(item["told"]), "stale": sorted([number, sha] for number, sha in item["stale"])}
-             for key, item in sorted(known.items())}
-    path.write_text(json.dumps({"pulls": pulls}, sort_keys=True) + "\n")
-
-
 def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--repo", required=True, help="owner/name")
     parser.add_argument("--pr", type=int, help="look at this pull request only")
     parser.add_argument("--dry-run", action="store_true", help="read everything, change nothing")
     parser.add_argument("--summary", type=Path, help="append what was done to this file")
-    parser.add_argument("--state", type=Path,
-                        help="what earlier runs read from pull requests' comments: read from this file if it is "
-                             "there, and written back to it")
     args = parser.parse_args()
 
     gh = GitHub(args.repo, args.dry_run)
@@ -793,12 +762,9 @@ def main():
         sys.stdout.write("- the conflict labels are switched off (`CONFLICT_LABELS_ON` in `batch-labels.py`): "
                          "nothing to do\n")
         return
-    known = load_state(args.state)
     try:
-        log = sync(gh, args.pr, known=known)
+        log = sync(gh, args.pr)
         failure = 1 if gh.failed else None
-        if args.state and not args.dry_run:
-            save_state(args.state, known)
     except (Refused, RuntimeError) as error:
         log, failure = [str(error)], 1
     left = f"; {gh.remaining} left this hour" if gh.remaining is not None else ""
