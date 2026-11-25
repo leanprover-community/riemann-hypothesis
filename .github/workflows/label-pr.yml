@@ -60,10 +60,11 @@ jobs:
                 challenge+="  $path"$'\n' ;;
             esac
             # The solution modules of both Comparator setups (comparator.json and
-            # comparator/formal-conjectures.json), and the files the second one's solution is
-            # built from.
+            # comparator/formal-conjectures.json), the files the second one's solution is
+            # built from, and src/Statements.lean, which defines propositions that
+            # src/Main.lean's theorems state and FormalConjecturesBridge.lean imports.
             case "$path" in
-              src/Main.lean | comparator/FormalConjecturesSolution.lean | \
+              src/Main.lean | src/Statements.lean | comparator/FormalConjecturesSolution.lean | \
               comparator/FormalConjecturesBridge.lean | comparator/FormalConjecturesStatement.lean)
                 solution+="  $path"$'\n' ;;
             esac
