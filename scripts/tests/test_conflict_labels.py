@@ -897,6 +897,37 @@ class Rebuilt(unittest.TestCase):
         self.assertIn("#12 carries commits of #11 that #900 no longer has", log)
         self.assertEqual(again, carried)
 
+    def test_a_dependent_with_several_merge_bases_is_found(self):
+        # Main moves on after #10 and #11 branch off, and the batch is built on it. A pull request
+        # that merges the batch, rebuilt since without #11, has two best common ancestors with it:
+        # main's commit and #10's head. `git merge-base` alone prints main's, so the two would not
+        # be taken to share commits beyond main.
+        with tempfile.TemporaryDirectory() as root:
+            o = Origin(root)
+            ten = o.pull(10, o.main, lambda: o.edit("a.txt", 3, "ten"))
+            eleven = o.pull(11, o.main, lambda: o.edit("b.txt", 3, "eleven"))
+            o.edit("c.txt", 20, "main later")
+            later = o.commit("main later")
+
+            def assemble(*heads):
+                o.git("checkout", "--quiet", "--detach", later)
+                for number, head in heads:
+                    o.git("merge", "--quiet", "--no-ff", "-m", f"Merge PR #{number} into batch", head)
+                head = o.git("rev-parse", "HEAD")
+                o.git("checkout", "--quiet", "main")
+                return head
+            old = assemble((11, eleven), (10, ten))
+            dependent = o.pull(14, later, lambda: o.edit("c.txt", 7, "fourteen"), merge=old)
+            new = assemble((10, ten))
+            o.git("update-ref", "refs/pull/900/head", new)
+            self.assertEqual(set(o.git("merge-base", "--all", dependent, new).split()), {later, ten})
+            candidates = {number: pr(number) for number in (10, 11, 14)}
+            watch = {number: {"on": [], "exclude": [900]} for number in candidates}
+            carried, log = {}, []
+            labels.compare_all(REPO, "main", {900: batch(900)}, candidates, log, origin=f"file://{root}",
+                               watch=watch, carried=carried)
+        self.assertEqual(carried, {14: {"on": [900], "prs": [11]}})
+
 
 # ---------------------------------------------------------------------------------------------
 
