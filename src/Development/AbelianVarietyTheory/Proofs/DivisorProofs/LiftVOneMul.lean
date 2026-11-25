@@ -28,15 +28,6 @@ theorem eq_of_tens_eq {κ : Type} [Fintype κ] (v : Pl (F := F)) {R : (κ → AF
   simp only [tens, GlobalTheory.LatVac.evFin_liftV, hR] at e
   exact mul_right_cancel₀ hR0 e
 
-theorem acts_comp {κ : Type} [Fintype κ] (v : Pl (F := F)) (T S : Module.End ℂ ((κ → AF F) → ℂ))
-    (hT : ∀ Φ ∈ schA F κ, T Φ ∈ schA F κ) {φ φ₁ φ₂ : (κ → Fv F v) → ℂ}
-    (h₁ : Acts (evFin F v) T φ φ₁) (h₂ : Acts (evFin F v) S φ₁ φ₂) : Acts (evFin F v) (S * T) φ φ₂ := by
-  intro r hr
-  have e := h₁ r hr
-  have hr' : Rest (evFin F v) φ₁ r := ⟨hr.1, e ▸ hT _ hr.2⟩
-  rw [Module.End.mul_apply, e]
-  exact h₂ r hr'
-
 end Local
 
 section Stab

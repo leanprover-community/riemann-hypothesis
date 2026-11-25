@@ -32,14 +32,6 @@ theorem dC_mul_inr {R : Type} [CommRing R] {n m : ℕ} (a : Matrix (Fin n) (Fin 
   simp only [dC, Matrix.mul_apply, Matrix.submatrix_apply, Equiv.symm_apply_apply, id]
   simp [diagCols, Matrix.one_apply]
 
-theorem dC_mul_castAdd {R : Type} [CommRing R] {n m : ℕ} (a : Matrix (Fin n) (Fin m) R) (p : Fin n) (j : Fin m) :
-    (dC R n * a) (Fin.castAdd n p) j = a p j := by
-  simpa using dC_mul_inl a p j
-
-theorem dC_mul_addNat {R : Type} [CommRing R] {n m : ℕ} (a : Matrix (Fin n) (Fin m) R) (p : Fin n) (j : Fin m) :
-    (dC R n * a) (p.addNat n) j = a p j := by
-  simpa using dC_mul_inr a p j
-
 theorem dC_mul_eq {R : Type} [CommRing R] {n m : ℕ} (a : Matrix (Fin n) (Fin m) R) :
     dC R n * a = Matrix.of fun i j => a (Sum.elim id id (finSumFinEquiv.symm i)) j := by
   ext i j
@@ -94,7 +86,6 @@ theorem dC_mul_rat {nS nT : ℕ} (γ : Matrix (Fin nT) (Fin nS) E) :
   rfl
 
 end GlobalTheory.LagrThetaInv
-
 
 open scoped Pointwise in
 open GlobalTheory.LagrThetaInv in

@@ -106,7 +106,6 @@ variable {X} {Y : Scheme.{0}} (f : Y ⟶ X)
 set_option backward.isDefEq.respectTransparency.types false in
 def bc : X.Etale ⥤ Y.Etale := MorphismProperty.Over.pullback @Etale ⊤ f
 
-
 set_option backward.isDefEq.respectTransparency.types false in
 instance : PreservesFiniteLimits (bc f) :=
   inferInstanceAs (PreservesFiniteLimits (MorphismProperty.Over.pullback @Etale ⊤ f))
@@ -154,14 +153,12 @@ def push : ShvS R Y ⥤ ShvS R X := (bc f).sheafPushforwardContinuous _ _ _
 variable (R) in
 def pull : ShvS R X ⥤ ShvS R Y := (bc f).sheafPullback _ _ _
 
-
 def adj : pull R f ⊣ push R f := (bc f).sheafAdjunctionContinuous _ _ _
 
 instance : (push R f).Additive where
   map_add := rfl
 
 instance : (pull R f).Additive := (adj f).left_adjoint_additive
-
 
 def resInj (F : ShvS R Y) : CochainComplex (ShvS R Y) ℤ := (injectiveResolution F).cochainComplex
 
@@ -196,18 +193,15 @@ open GlobalTheory.EtC.Rel
 section Sites
 variable {Z Y U Z' Y' U' : Scheme.{0}}
 
-
 set_option backward.isDefEq.respectTransparency.types false in
 def bcSq {a : Z ⟶ Z'} {i' : Z' ⟶ Y'} {i : Z ⟶ Y} {b : Y ⟶ Y'} (h : a ≫ i' = i ≫ b) :
     Rel.bc i' ⋙ Rel.bc a ≅ Rel.bc b ⋙ Rel.bc i :=
   (MorphismProperty.Over.pullbackComp a i').symm ≪≫ MorphismProperty.Over.pullbackCongr h ≪≫
     MorphismProperty.Over.pullbackComp i b
 
-
 set_option backward.isDefEq.respectTransparency.types false in
 def bcComp {f : U ⟶ Z} {g : Z ⟶ Y} {k : U ⟶ Y} (h : f ≫ g = k) : Rel.bc g ⋙ Rel.bc f ≅ Rel.bc k :=
   (MorphismProperty.Over.pullbackComp f g).symm ≪≫ MorphismProperty.Over.pullbackCongr h
-
 
 set_option backward.isDefEq.respectTransparency.types false in
 def bcFst (f : U ⟶ Y) : Rel.bc f ⋙ (Scheme.Etale.forget U ⋙ Over.forget U) ⟶ Scheme.Etale.forget Y ⋙ Over.forget Y where
@@ -361,9 +355,6 @@ def jGen : genFib K Ω p ⟶ intFib Ω p :=
       rw [Category.assoc, pullback.condition, ← Category.assoc, pullback.condition, Category.assoc,
         Category.assoc, ← Spec.map_comp, ← Spec.map_comp, ringHom_tower])
 
-@[reassoc] theorem jGen_snd : jGen K Ω p ≫ intStr Ω p =
-    pullback.snd _ _ ≫ Spec.map (CommRingCat.ofHom (integralClosure O Ω).val.toRingHom) := pullback.lift_snd _ _ _
-
 variable {K Ω}
 
 def galIntMap (σ : Ω ≃ₐ[K] Ω) : intFib Ω p ⟶ intFib Ω p :=
@@ -372,14 +363,6 @@ def galIntMap (σ : Ω ≃ₐ[K] Ω) : intFib Ω p ⟶ intFib Ω p :=
     congr 3
     ext r
     exact congrArg Subtype.val (galInt_algebraMap σ r).symm)
-
-@[reassoc] theorem galIntMap_fst (σ : Ω ≃ₐ[K] Ω) :
-    galIntMap p σ ≫ pullback.fst _ _ = pullback.fst _ _ :=
-  pullback.lift_fst _ _ _
-
-@[reassoc] theorem galIntMap_snd (σ : Ω ≃ₐ[K] Ω) :
-    galIntMap p σ ≫ intStr Ω p = intStr Ω p ≫ Spec.map (CommRingCat.ofHom (galInt O K σ).toRingHom) :=
-  pullback.lift_snd _ _ _
 
 end Schemes
 end GlobalTheory.EtC.Psi

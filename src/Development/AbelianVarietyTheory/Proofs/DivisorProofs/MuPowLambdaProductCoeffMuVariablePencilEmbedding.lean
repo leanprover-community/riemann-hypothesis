@@ -828,23 +828,6 @@ noncomputable section
 
 open MvPolynomial
 
-namespace GlobalTheory.PsCo.Pc1.A
-
-theorem dM_comm : ∀ {n : ℕ} (ε : Fin n → Bool) (w x : Mode ε) (P : Poly n), dM ε w (dM ε x P) = dM ε x (dM ε w P) :=
-  GlobalTheory.PsCo.DMComm.dM_comm
-
-theorem coefM_dMu : ∀ {n L : ℕ} (ε : Fin n → Bool) (x : Mode ε) (k : ℕ) (s : PolyM n L),
-    coefM n L k (dMu L ε x s) = dL L ε x (coefM n L k s) :=
-  GlobalTheory.PsCo.Cw2a.coefM_dMu
-
-theorem coefM_pencil : ∀ {n L : ℕ} {I : Type} [Fintype I] [DecidableEq I] (A0 B0 : Matrix I I (PolyL n L)),
-    let Z : Matrix I I (PolyM n L) := fun x y => muM n L * inM n L (A0 x y) + inM n L (B0 x y)
-    (∀ k, Fintype.card I < k → coefM n L k Z.det = 0) ∧ coefM n L (Fintype.card I) Z.det = A0.det ∧
-      ∀ k x y, Fintype.card I ≤ k → coefM n L k (Z.adjugate y x) = 0 :=
-  GlobalTheory.coefM_pencil
-
-end GlobalTheory.PsCo.Pc1.A
-
 end
 end
 
@@ -1278,7 +1261,6 @@ private lemma shift_add_lemma_3 (f g : ℕ → _root_.GlobalTheory.PsCo.Pc1.Poly
     _root_.GlobalTheory.PsCo.Pc1.prev (fun k => f k + g k) k =
       _root_.GlobalTheory.PsCo.Pc1.prev f k + _root_.GlobalTheory.PsCo.Pc1.prev g k := by
   cases k <;> simp [_root_.GlobalTheory.PsCo.Pc1.prev]
-
 
 open MvPolynomial in
 variable {n L : ℕ} in

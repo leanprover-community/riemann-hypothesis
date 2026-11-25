@@ -26,7 +26,6 @@ def IsTest (p : ℕ) [Fact p.Prime] {X : Scheme.{0}} (Xw : X.Opens) (yb : Sp �
 def GeomIrr {V : Type} [CommRing V] {X : Scheme.{0}} (s : X ⟶ Sp V) (Xw : X.Opens) : Prop :=
   ∀ (k : Type) [Field k] (f : V →+* k), Function.Injective f → IrreducibleSpace ↑(pullback (Xw.ι ≫ s) (spMap f))
 
-
 section Minors
 
 variable {R V J : Type} [CommRing R] [CommRing V] {N g m : ℕ}
@@ -69,7 +68,6 @@ end Lie
 
 abbrev Ind (Dw : Datum H) (τ : E →+* ℂ) : Type := Fin (Dw.mult τ) ⊕ Fin (Dw.mult (conjEmb τ))
 
-
 section Model
 
 variable {l l' : Level H} {Xo : Moduli Dw l} {Xo' : Moduli Dw l'} {c : Coeff l} {c' : Coeff l'} {W : ValuationSubring ℂ}
@@ -100,7 +98,6 @@ def GVal (τ : E →+* ℂ) (f : Rul Xo c) {k : Type} [Field k] [Algebra c.F k] 
       fv * g₁.det = g₂.det * evR Xo c f y
 
 variable {p : ℕ} [Fact p.Prime] [StarRing (𝓞 E)]
-
 
 variable (p E) in
 abbrev PtP : Type 1 := Point p (Valued.v : Valuation ℂ_[p] ℝ≥0) 𝓞_ℂ_[p] (𝓞 E)
@@ -201,9 +198,6 @@ theorem bot_map [IsDomain R] [IsDomain S] {φ : R →+* S} (hφ : Function.Injec
   exact PrimeSpectrum.ext ((RingHom.injective_iff_ker_eq_bot φ).1 hφ)
 
 end BaseChange
-
-theorem coe_valued (p : ℕ) [Fact p.Prime] (x : ℂ_[p]) : ((Valued.v x : ℝ≥0) : ℝ) = ‖x‖ := by
-  rw [PadicComplex.norm_eq_norm, Valued.v.norm_def, (show Valuation.RankLeOne.hom' Valued.v = MonoidWithZeroHom.ValueGroup₀.embedding from rfl), Valuation.embedding_restrict]
 
 end GlobalTheory.FlatModel
 

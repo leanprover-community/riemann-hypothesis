@@ -19,7 +19,6 @@ section Exp
 
 variable {m n : Type} [Fintype m] [DecidableEq m] [Fintype n] [DecidableEq n]
 
-
 open scoped Matrix in
 variable {m n : Type} [Fintype m] [DecidableEq m] [Fintype n] [DecidableEq n] in
 theorem _root_.GlobalTheory.IndLine.Iwasawa.exp_mul_eq {A : Matrix m m ℂ} {D : Matrix n n ℂ}
@@ -71,19 +70,6 @@ structure Grading (p r q θ : R) : Prop where
   θθ : θ * θ = 1
   θp : θ * p = q * θ
 
-namespace Grading
-
-variable {p r q θ : R} (h : Grading p r q θ)
-include h
-
-theorem pr : p * r = 0 := by rw [h.sum, mul_sub, mul_sub, mul_one, h.pp, h.pq, sub_self, sub_zero]
-theorem qr : q * r = 0 := by rw [h.sum, mul_sub, mul_sub, mul_one, h.qq, h.qp, sub_zero, sub_self]
-theorem rr : r * r = r := by
-  conv_lhs => enter [1]; rw [h.sum]
-  rw [sub_mul, sub_mul, one_mul, h.pr, h.qr, sub_zero, sub_zero]
-
-end Grading
-
 end Ring
 
 section Adj
@@ -91,27 +77,6 @@ section Adj
 variable {m : Type} [Fintype m] [DecidableEq m]
 
 def Adj (N A B : Matrix m m ℂ) : Prop := Aᵀ * N = N * B.map star
-
-theorem map_star_mul' {m n p : Type} [Fintype n] (A : Matrix m n ℂ) (B : Matrix n p ℂ) :
-    (A * B).map star = A.map star * B.map star :=
-  Matrix.map_mul (f := starRingEnd ℂ)
-
-variable {N A B A' B' : Matrix m m ℂ}
-
-theorem Adj.mul (h : Adj N A B) (h' : Adj N A' B') : Adj N (A * A') (B' * B) := by
-  rw [Adj, Matrix.transpose_mul, Matrix.mul_assoc, h, ← Matrix.mul_assoc, h', map_star_mul',
-    Matrix.mul_assoc]
-
-theorem Adj.add (h : Adj N A B) (h' : Adj N A' B') : Adj N (A + A') (B + B') := by
-  rw [Adj, Matrix.transpose_add, Matrix.add_mul, h, h', Matrix.map_add _ star_add, Matrix.mul_add]
-
-theorem Adj.sub (h : Adj N A B) (h' : Adj N A' B') : Adj N (A - A') (B - B') := by
-  rw [Adj, Matrix.transpose_sub, Matrix.sub_mul, h, h', Matrix.map_sub _ star_sub, Matrix.mul_sub]
-
-theorem Adj.one : Adj N 1 1 := by
-  rw [Adj, Matrix.transpose_one, Matrix.map_one _ (star_zero _) (star_one _), Matrix.one_mul, Matrix.mul_one]
-
-variable {p r q θ Z : Matrix m m ℂ}
 
 end Adj
 
@@ -136,73 +101,6 @@ structure Hyp (c : A →+* A) (J : Matrix m m A) (x y : m → A) (ι : Matrix m 
   right : ι * ι' = 1 - prX c J x y - prY c J x y
 
 variable {c : A →+* A} {c' : A' →+* A'} {J : Matrix m m A} {x y : m → A} {ι : Matrix m n A} {ι' : Matrix n m A}
-
-theorem map_mulVec' (f : A →+* A') (hf : ∀ a, f (c a) = c' (f a)) (J : Matrix m m A) (x : m → A) :
-    f ∘ (J *ᵥ (c ∘ x)) = J.map f *ᵥ (c' ∘ (f ∘ x)) := by
-  funext i
-  simp [Matrix.mulVec, dotProduct, hf]
-
-theorem prX_map (f : A →+* A') (hf : ∀ a, f (c a) = c' (f a)) :
-    (prX c J x y).map f = prX c' (J.map f) (f ∘ x) (f ∘ y) := by
-  ext i j
-  simp [prX, Matrix.vecMulVec_apply, ← map_mulVec' f hf]
-
-theorem prY_map (f : A →+* A') (hf : ∀ a, f (c a) = c' (f a)) :
-    (prY c J x y).map f = prY c' (J.map f) (f ∘ x) (f ∘ y) := by
-  ext i j
-  simp [prY, Matrix.vecMulVec_apply, ← map_mulVec' f hf]
-
-theorem Hyp.map (h : Hyp c J x y ι ι') (f : A →+* A') (hf : ∀ a, f (c a) = c' (f a)) (hc : ∀ a, c' (c' a) = a) :
-    Hyp c' (J.map f) (f ∘ x) (f ∘ y) (ι.map f) (ι'.map f) := by
-  have d : ∀ u v : m → A, (f ∘ u) ⬝ᵥ J.map f *ᵥ (c' ∘ (f ∘ v)) = f (u ⬝ᵥ J *ᵥ (c ∘ v)) := fun u v => by
-    rw [← map_mulVec' f hf, RingHom.map_dotProduct]
-  have e : ∀ v : m → A, (J *ᵥ (c ∘ v)) ᵥ* ι = 0 → (J.map f *ᵥ (c' ∘ (f ∘ v))) ᵥ* ι.map f = 0 := fun v hv => by
-    funext j
-    rw [← map_mulVec' f hf, ← RingHom.map_vecMul, hv, Pi.zero_apply, map_zero, Pi.zero_apply]
-  refine ⟨hc, ?_, by rw [d, h.xx, map_zero], by rw [d, h.yy, map_zero], by rw [d, h.xy, map_one],
-    by rw [d, h.yx, map_neg, map_one], e x h.ιx, e y h.ιy, ?_, ?_⟩
-  · ext i j
-    have := congrArg f (congrFun (congrFun h.skew i) j)
-    simpa [hf] using this
-  · rw [← Matrix.map_mul, h.left, Matrix.map_one _ (map_zero _) (map_one _)]
-  · rw [← Matrix.map_mul, h.right, Matrix.map_sub _ (map_sub _), Matrix.map_sub _ (map_sub _),
-      Matrix.map_one _ (map_zero _) (map_one _), prX_map f hf, prY_map f hf]
-
-theorem prX_mulVec (v : m → A) : prX c J x y *ᵥ v = (v ⬝ᵥ J *ᵥ (c ∘ y)) • x := by
-  rw [prX, Matrix.vecMulVec_mulVec, dotProduct_comm, op_smul_eq_smul]
-
-theorem prY_mulVec (v : m → A) : prY c J x y *ᵥ v = -(v ⬝ᵥ J *ᵥ (c ∘ x)) • y := by
-  rw [prY, Matrix.neg_mulVec, Matrix.vecMulVec_mulVec, dotProduct_comm, neg_smul, op_smul_eq_smul]
-
-namespace Hyp
-
-variable (h : Hyp c J x y ι ι')
-include h
-
-theorem px : prX c J x y *ᵥ x = x := by rw [prX_mulVec, h.xy, one_smul]
-theorem py : prX c J x y *ᵥ y = 0 := by rw [prX_mulVec, h.yy, zero_smul]
-theorem qx : prY c J x y *ᵥ x = 0 := by rw [prY_mulVec, h.xx, neg_zero, zero_smul]
-theorem qy : prY c J x y *ᵥ y = y := by rw [prY_mulVec, h.yx, neg_neg, one_smul]
-
-omit h in
-theorem mul_p (g : Matrix m m A) : g * prX c J x y = Matrix.vecMulVec (g *ᵥ x) (J *ᵥ (c ∘ y)) := by
-  rw [prX, Matrix.mul_vecMulVec]
-
-omit h in
-theorem mul_q (g : Matrix m m A) : g * prY c J x y = -Matrix.vecMulVec (g *ᵥ y) (J *ᵥ (c ∘ x)) := by
-  rw [prY, Matrix.mul_neg, Matrix.mul_vecMulVec]
-
-theorem pp : prX c J x y * prX c J x y = prX c J x y := by rw [mul_p, h.px]; rfl
-theorem qq : prY c J x y * prY c J x y = prY c J x y := by rw [mul_q, h.qy]; rfl
-theorem pq : prX c J x y * prY c J x y = 0 := by rw [mul_q, h.py, Matrix.zero_vecMulVec, neg_zero]
-theorem qp : prY c J x y * prX c J x y = 0 := by rw [mul_p, h.qx, Matrix.zero_vecMulVec]
-
-theorem ext' {g g' : Matrix m m A} (hx : g *ᵥ x = g' *ᵥ x) (hy : g *ᵥ y = g' *ᵥ y) (hι : g * ι = g' * ι) : g = g' := by
-  have e : (1 : Matrix m m A) = ι * ι' + prX c J x y + prY c J x y := by rw [h.right]; abel
-  rw [← Matrix.mul_one g, ← Matrix.mul_one g', e]
-  simp only [Matrix.mul_add, mul_p, mul_q, ← Matrix.mul_assoc, hx, hy, hι]
-
-end Hyp
 
 end Plane
 
