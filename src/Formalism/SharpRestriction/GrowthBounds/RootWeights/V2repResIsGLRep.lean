@@ -87,7 +87,7 @@ theorem v2rep_res_isGLRep [CharZero K] (E : GLOps n K V) (hR : SatisfiesGLRelati
     have : y' = y := Subtype.ext hyy
     rwa [this] at hy'
 
-theorem stable_subspace_complete_reducibility (D : Formalism.BasicNotions.D7) (h2 : adm2) : StableSubspaceCompleteReducibility := by
+theorem stable_subspace_complete_reducibility (D : Formalism.BasicNotions.D7) (h2 : adm2 D) : StableSubspaceCompleteReducibility := by
   intro K V _ _ _ _ n E hR W hfd hW hw
   have := hfd
   set W' : Submodule K V := ⨆ mu, isotypicPartIn E W mu with hW'

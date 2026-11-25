@@ -1143,12 +1143,12 @@ theorem isotypic_stable_under_operators (E : GLOps n K V) (mu : Fin n → ℤ) (
 
 end
 
-theorem isotypic_subspaces_span_top (D : Formalism.BasicNotions.D7) (h2 : adm2) (K V : Type) [Field K] [CharZero K] [AddCommGroup V]
+theorem isotypic_subspaces_span_top (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (K V : Type) [Field K] [CharZero K] [AddCommGroup V]
     [Module K V] [FiniteDimensional K V] (n : ℕ) (E : GLOps n K V) (hE : IsGLRep E) :
     (⨆ mu : Fin n → ℤ, isoSub E mu) = ⊤ := by
   apply Formalism.MainNotions.G.GLWeightTheory.complete_reducibility_findim <;> assumption
 
-theorem isotypic_projector_fixed_mem (D : Formalism.BasicNotions.D7) (h2 : adm2) : IsotypicProjectorFixedMem := by
+theorem isotypic_projector_fixed_mem (D : Formalism.BasicNotions.D7) (h2 : adm2 D) : IsotypicProjectorFixedMem := by
   intro K V _ _ _ _ _ n E hE lam e he Y hY
   have hY' : Y ∈ (⨆ mu : Fin n → ℤ, isoSub E mu) := by
     rw [isotypic_subspaces_span_top D h2 K V n E hE]; exact Submodule.mem_top
@@ -1178,7 +1178,7 @@ namespace Formalism.MainNotions.G.GLWeightTheory
 
 open Formalism.MainNotions.G Formalism.MainNotions.CovariantDegrees
 
-theorem isotypic_lattice_corollary (D : Formalism.BasicNotions.D7) (h2 : adm2) (h12 : NablaDeltaComparisonField D) : TranslateCorollaryField :=
+theorem isotypic_lattice_corollary (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (h12 : NablaDeltaComparisonField D) : TranslateCorollaryField :=
   isotypic_lattice_of_five_parts D (isotypic_projector_fixed_mem D h2) hwv_generated_multiple_of_hwv dual_lattice_values_mem_scaled lattice_inter_subspace_basis (generated_lattice_corollary_of_thm D h12 hwv_generated_multiple_of_hwv)
 
 end Formalism.MainNotions.G.GLWeightTheory
@@ -1279,7 +1279,7 @@ theorem section_five_lemmas_hold (D : Formalism.BasicNotions.D7) : UnitProductLe
 
 theorem lattice_index_lemma_holds (D : Formalism.BasicNotions.D7) : DerivativeLemmaField D := show DerivativeValuationBound D ∧ DerivativeDigitExpansion ∧ TrueDerivativeDigitClass from ⟨derivative_valuation_bound D, derivative_digit_expansion D, true_derivative_digit_class D⟩
 
-theorem valuation_field_of_adm2 (D : Formalism.BasicNotions.D7) (h2 : adm2) : ValuationLemmaField D := show ValuationsAdditive D ∧ ShaLengthVersionTwo D from ⟨valuationsAdditive_D7 D, generated_weight_lemma_of_reducibility D h2 (valuationsAdditive_D7 D)⟩
+theorem valuation_field_of_adm2 (D : Formalism.BasicNotions.D7) (h2 : adm2 D) : ValuationLemmaField D := show ValuationsAdditive D ∧ ShaLengthVersionTwo D from ⟨valuationsAdditive_D7 D, generated_weight_lemma_of_reducibility D h2 (valuationsAdditive_D7 D)⟩
 
 theorem valuation_field (D : Formalism.BasicNotions.D7) : ValuationLemmaField D := valuation_field_of_adm2 D (weight_condition_from_integral_form D)
 

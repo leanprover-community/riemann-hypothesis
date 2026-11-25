@@ -86,7 +86,7 @@ theorem isotypic_sum_stable {n : ℕ} {K V : Type*} [Field K] [AddCommGroup V] [
     iSup_le fun mu y hy => Submodule.mem_comap.2 (Submodule.mem_iSup_of_mem mu (key mu y hy))
   exact hle hx
 
-theorem complete_reducibility_findim (D : Formalism.BasicNotions.D7) (h2 : adm2) (K V : Type) [Field K] [CharZero K] [AddCommGroup V]
+theorem complete_reducibility_findim (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (K V : Type) [Field K] [CharZero K] [AddCommGroup V]
     [Module K V] [FiniteDimensional K V] (n : ℕ) (E : GLOps n K V) (hE : IsGLRep E) :
     (⨆ mu : Fin n → ℤ, isoSub E mu) = ⊤ := by
   obtain ⟨U', hc, hst⟩ := h2 K V n E hE (⨆ mu : Fin n → ℤ, isoSub E mu)
@@ -274,7 +274,7 @@ private theorem restrictStableOperators_list_prod_sub_apply_coe {n : ℕ} {K V :
     rw [← ih]
     simp
 
-theorem complete_reducibility_of_semisimple (D : Formalism.BasicNotions.D7) (h2 : adm2) : CompleteReducibilityIsotypic := by
+theorem complete_reducibility_of_semisimple (D : Formalism.BasicNotions.D7) (h2 : adm2 D) : CompleteReducibilityIsotypic := by
   intro K V _ _ _ _ n E hE
   rw [eq_top_iff]
   intro x _

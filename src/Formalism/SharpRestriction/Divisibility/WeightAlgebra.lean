@@ -442,7 +442,7 @@ def Conclusion1 (large₂ : SizeData₂ D) (X : Prov D B P) (H : KHyp) (C2 A2 CR
 
 def adm1 (B : WeightFamilies.Prov D) : Prop := WeightFamilies.adm1 B
 
-def adm2 (large₂ : SizeData₂ D) (X : Prov D B P) (CA CG AG : ℝ) : Prop :=
+def adm2 (large₂ : SizeData₂ D) (X : Prov D B P) (CA _C1 _A1 CG AG : ℝ) : Prop :=
   (ParA large₂ CA → OPO large₂ B → ∀ j (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) (w : WeightFamilies.Wt D j), 8 * D.R.f * D.R.r + 4 ≤ w.n →
     Submodule.span B.KO ((X j h1 h2).shortTh w : Set (B.Cusp j w)) = ⊤ ∧
     ∃ S : Finset (B.Cusp j w),
@@ -478,7 +478,7 @@ def adm7 (large₂ : SizeData₂ D) (B : WeightFamilies.Prov D) (CRm Ck Ch Ah Cq
   WeightFamilies.PointsLemma large₂ B CRm Ck Ch Ah Cq Aq
 
 def admitted (large₂ : SizeData₂ D) (X : Prov D B P) (K : KAdm) (H : KHyp) (Ch Ah Cq Aq : ℝ) : Prop :=
-  adm1 B ∧ adm2 large₂ X H.CA K.CG K.AG ∧ adm3 large₂ X H.CA K.Cf K.Af ∧ ArchimedeanSignatureMatching large₂ X H.CA K.CW K.AW ∧
+  adm1 B ∧ adm2 large₂ X H.CA H.C1 H.A1 K.CG K.AG ∧ adm3 large₂ X H.CA K.Cf K.Af ∧ ArchimedeanSignatureMatching large₂ X H.CA K.CW K.AW ∧
     adm5 large₂ B K.CL K.AL ∧ adm6 B K.CRm ∧ adm7 large₂ B K.CRm H.CK Ch Ah Cq Aq
 
 section Family

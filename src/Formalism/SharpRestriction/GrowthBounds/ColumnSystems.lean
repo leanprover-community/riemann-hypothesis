@@ -224,7 +224,7 @@ def FlatHH : Prop :=
 
 def adm18 : Prop := FlatHH
 
-def adm19 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.adm2
+def adm19 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.adm2 D
 
 def adm20 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.CanonicalTranslateJetIdentity
 

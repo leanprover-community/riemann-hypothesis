@@ -85,7 +85,7 @@ def adm1 : Prop :=
       (∀ d', 1 ≤ d' → d' < d → (y + d') % n' ∈ T → ¬ Even ((y + d') % n')) ∧
       (T ∩ (Finset.Ioo 0 d).image (fun j => (y + j) % n')).card ≤ N₁)
 
-def adm2 : Prop :=
+def adm2 (_D : Formalism.BasicNotions.D7) : Prop :=
   ∀ eps : ℝ, 0 < eps → eps < 1 / 52 → ∃ C x₀ : ℝ, ∀ x : ℝ, x₀ ≤ x →
     let h := 2 + 8 * eps
     let r := ⌈8 * (h + 2) / eps⌉₊ + 1
@@ -230,7 +230,7 @@ def adm19 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.Covari
 def adm20 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.CanonicalTranslateJetIdentity
 
 def admitted (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ) : Prop :=
-  adm1 ∧ adm2 ∧ adm3 ∧ ArchimedeanSignatureMatching ∧ adm5 ∧ adm6 D ∧ adm7 D ∧ adm8 D ∧ adm9 D ∧ adm10 D ∧ adm11 D ∧ FilteredProjectionCriterion D ∧
+  adm1 ∧ adm2 D ∧ adm3 ∧ ArchimedeanSignatureMatching ∧ adm5 ∧ adm6 D ∧ adm7 D ∧ adm8 D ∧ adm9 D ∧ adm10 D ∧ adm11 D ∧ FilteredProjectionCriterion D ∧
     adm12 D ∧ adm13 D ∧ adm14 D ∧ adm15 D ∧ adm16 D ∧ adm17 D ∧ adm18 D ∧ adm19 D ∧ adm20 D ∧ adm21 D ∧
     adm22 D ∧ adm23 D ∧ FrobeniusExpansionCongruence D ∧ HerrExtensionClause D ∧ adm26 D CLa Ck Crk Cdeg ∧ HerrCocycleExtensionClass ∧ FontaineFormalProperties ∧ AmbientMetricLowerBound ∧ HostOrbitConditions ∧
     OrderConsequences ∧ TopsChoiceLemma D ∧ ZeroGainAbove D ∧ ChosenTopsCount D ∧ FewBadOrbits D ∧ LevelPrimesProviso D

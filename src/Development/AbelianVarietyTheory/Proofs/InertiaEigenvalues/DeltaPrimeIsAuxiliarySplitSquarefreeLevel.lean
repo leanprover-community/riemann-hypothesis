@@ -31,7 +31,6 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.Tensor
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -59,11 +58,8 @@ import Mathlib.Tactic.NormNum.NatFib
 import Mathlib.Tactic.NormNum.NatLog
 import Mathlib.Tactic.NormNum.NatSqrt
 import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Development.AbelianVarietyTheory.Definitions.Divisors.PerCEmb
-import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.DatEqZero
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsHalfOfBasePins
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TameHeckeCharTrivialOnFiniteUnitsCongOne
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsGoodCoverGalois
@@ -82,31 +78,10 @@ import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.
--- Members: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemSelfDualLatticeIffIntegralFrameMatricesHalfStatement, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeltaPrimeIsAuxiliarySplitSquarefreeLevel
-
--- ===== clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemSelfDualLatticeIffIntegralFrameMatricesHalfStatement =====
--- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemSelfDualLatticeIffIntegralFrameMatricesHalfStatement", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsPlaceModelPlaceMap\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemSelfDualLatticeIffIntegralFrameMatricesHalf\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Development.AbelianVarietyTheory.Definitions.Divisors.PerCEmb\nimport Development.AbelianVarietyTheory.Definitions.SpanningFamilies.DatEqZero\npublic import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IMemSiegel\npublic import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsSystem\n\n"}
-section -- clump:auto
-@[expose] public section
-
-open NumberField Matrix Complex MeasureTheory IsDedekindDomain
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Dict GlobalTheory.AdTh GlobalTheory.ClsVal
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
-open GlobalTheory.SW hiding Level IsSB
-open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
-open scoped TensorProduct Classical ComplexConjugate
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-theorem _root_.GlobalTheory.T.mem_selfDualLattice_iff_integral_frameMatrices_half : ∀ {D : D7} {S T : HSp D} {F : GlobalTheory.ExportSeries.Frame S T}, F.Good → ∀ {Pg Q : Finset (Formalism.L2.DIV.Pl D.host.E)},
-    GlobalTheory.ExportSeries.PlacesOK Pg Q → (∀ PP, PP ∈ Pg ∨ PP ∈ Q → ((D.host.QS * D.host.q * Ideal.absNorm D.host.ccK : ℕ) : 𝓞 D.host.E) ∉ PP.asIdeal) → ∀ {x : WO S T}, IsHalf (GlobalTheory.ExportSeries.halfIdem Pg Q) x →
-      (x ∈ F.lat ↔ IsIntM (frMapAdj S T F.βS F.βT x) ∧ IsIntM (frMapO S T F.βS F.βT x)) := by
-  first | exact @GlobalTheory.ExportSeries.LatHalf.mem_lat_iff_isIntM_halfIdem
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemSelfDualLatticeIffIntegralFrameMatricesHalfStatement =====
+-- Members: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeltaPrimeIsAuxiliarySplitSquarefreeLevel
 
 -- ===== clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeltaPrimeIsAuxiliarySplitSquarefreeLevel =====
--- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeltaPrimeIsAuxiliarySplitSquarefreeLevel", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsRatScalarMulIff\npublic import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ToUnitsCompToCircle\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsGoodCoverLevelOneOverSmallField\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemLevelTypeFormsOfUniversalCoeffReading\npublic import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.SeriesRatSOf\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.LevelOfOfSameBut\npublic import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.NonemptyAlgHomOfIsRayOfDvd\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DictionaryCharacterTrivialOnPrincipalLevel\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExtensionOfLowSmoothLines\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HolomorphicCuspSectionsLeSpanAlgebraicCuspForms\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KapTopLastPosRun\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LevelCharacterEmbeddingCompatStatement\nimport Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsHalfOfBasePins\nimport Development.AbelianVarietyTheory.Proofs.FoundationProofs.TameHeckeCharTrivialOnFiniteUnitsCongOne\nimport Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsGoodCoverGalois\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsHalfOfAuxiliarySplitLevel\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsIsScaleOfChar\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsPrimitiveRootInRayClassFieldNatModulus\nimport Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FockHarmonicValueSpaceMapEqDualWeylModuleFunctioStatement\nimport Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GoodBaseDataWeightEqLiftCoeffModuleWeight\nimport Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HarmonicPolynomialEqZeroOfFunctionStatement\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HolomorphicSectionsSpanRestriction\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsLevelDatumReferenceTupleSmallField\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemCuspFormsOfReadingBoundedCuspidalHolomorphicStatement\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemSelfDualLatticeIffIntegralFrameMatricesHalf\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemSelfDualLatticeIffIntegralFrameMatricesHalfStatement\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NonemptyAlgHomOfIsIntegral\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RationalPhaseThetaSeriesExpandsCuspFormsSmallFie\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TypePlaceResidueCharactersValuesMemSmallFieldStatement\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TypePlacesTwistPlacesGoodPosition\nimport Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousCoeffBlockAct\nimport Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IdempotentMulEqZeroOfOrthogonal\nimport Development.AbelianVarietyTheory.Proofs.TwistedOperators.AdjointHalfDatumStabilizerPairMove\nimport Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryEqRealMulFiniteSplit\nimport Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsAlgebraMapOfSigRFixed\nimport Development.AutomorphicArithmetic.CyclotomicBounds.SmallFacts\nimport Formalism.LocalRingCardinality.RankBoundMonotoneInDimension\npublic import Formalism.LocalToGlobal.IndefiniteReal.FWCentral\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.FieldTheory.Galois.Profinite\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\npublic import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TensorMapDescent\n\n"}
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeltaPrimeIsAuxiliarySplitSquarefreeLevel", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsRatScalarMulIff\npublic import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ToUnitsCompToCircle\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsGoodCoverLevelOneOverSmallField\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemLevelTypeFormsOfUniversalCoeffReading\npublic import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.SeriesRatSOf\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.LevelOfOfSameBut\npublic import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.NonemptyAlgHomOfIsRayOfDvd\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DictionaryCharacterTrivialOnPrincipalLevel\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExtensionOfLowSmoothLines\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HolomorphicCuspSectionsLeSpanAlgebraicCuspForms\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KapTopLastPosRun\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LevelCharacterEmbeddingCompatStatement\nimport Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsHalfOfBasePins\nimport Development.AbelianVarietyTheory.Proofs.FoundationProofs.TameHeckeCharTrivialOnFiniteUnitsCongOne\nimport Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsGoodCoverGalois\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsHalfOfAuxiliarySplitLevel\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsIsScaleOfChar\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsPrimitiveRootInRayClassFieldNatModulus\nimport Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FockHarmonicValueSpaceMapEqDualWeylModuleFunctioStatement\nimport Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GoodBaseDataWeightEqLiftCoeffModuleWeight\nimport Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HarmonicPolynomialEqZeroOfFunctionStatement\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HolomorphicSectionsSpanRestriction\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsLevelDatumReferenceTupleSmallField\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemCuspFormsOfReadingBoundedCuspidalHolomorphicStatement\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemSelfDualLatticeIffIntegralFrameMatricesHalf\npublic import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsPlaceModelPlaceMap\npublic import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IMemSiegel\npublic import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsSystem\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NonemptyAlgHomOfIsIntegral\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RationalPhaseThetaSeriesExpandsCuspFormsSmallFie\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TypePlaceResidueCharactersValuesMemSmallFieldStatement\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TypePlacesTwistPlacesGoodPosition\nimport Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousCoeffBlockAct\nimport Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IdempotentMulEqZeroOfOrthogonal\nimport Development.AbelianVarietyTheory.Proofs.TwistedOperators.AdjointHalfDatumStabilizerPairMove\nimport Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryEqRealMulFiniteSplit\nimport Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsAlgebraMapOfSigRFixed\nimport Development.AutomorphicArithmetic.CyclotomicBounds.SmallFacts\nimport Formalism.LocalRingCardinality.RankBoundMonotoneInDimension\npublic import Formalism.LocalToGlobal.IndefiniteReal.FWCentral\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.FieldTheory.Galois.Profinite\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\npublic import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TensorMapDescent\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -167,13 +142,13 @@ theorem isLevDatum_vec {S T : HSp D} {F : Frame S T} (hF : F.Good) {G : TypeDat 
     unfold Frame.datumFn at ht
     have a1 : IsHalf (halfIdem G.Pg Q) t ∧ IsIntM (frMapAdj S T F.βS F.βT t) := by
       by_contra hc
-      exact left_ne_zero_of_mul ht (ite_eq_right hc)
+      exact left_ne_zero_of_mul ht (if_neg hc)
     have a2 : IsHalf (halfIdem G.Pg Q) t ∧ IsIntM (frMapO S T F.βS F.βT t) := by
       by_contra hc
-      exact right_ne_zero_of_mul ht (ite_eq_right hc)
-    exact ⟨(GlobalTheory.T.mem_selfDualLattice_iff_integral_frameMatrices_half hF h hP a1.1).2 ⟨a1.2, a2.2⟩, a1.1⟩
+      exact right_ne_zero_of_mul ht (if_neg hc)
+    exact ⟨(_root_.GlobalTheory.ExportSeries.LatHalf.mem_lat_iff_isIntM_halfIdem hF h hP a1.1).2 ⟨a1.2, a2.2⟩, a1.1⟩
   · intro u hu hue t
-    obtain ⟨i1, i2⟩ := (GlobalTheory.T.mem_selfDualLattice_iff_integral_frameMatrices_half hF h hP hue).1 hu
+    obtain ⟨i1, i2⟩ := (_root_.GlobalTheory.ExportSeries.LatHalf.mem_lat_iff_isIntM_halfIdem hF h hP hue).1 hu
     have f1 : frMapAdj S T F.βS F.βT (t + N • u) = frMapAdj S T F.βS F.βT t + N • frMapAdj S T F.βS F.βT u := by
       rw [_root_.GlobalTheory.PlaceVec.frMapAdj_add, GlobalTheory.RefDatumLev.frMapAdj_nsmul']
     have f2 : frMapO S T F.βS F.βT (t + N • u) = frMapO S T F.βS F.βT t + N • frMapO S T F.βS F.βT u := by
@@ -192,13 +167,13 @@ theorem isLevDatum_vec {S T : HSp D} {F : Frame S T} (hF : F.Good) {G : TypeDat 
     rw [f1, f2]
     congr 1
     · by_cases hc : IsHalf (halfIdem G.Pg Q) t ∧ IsIntM (frMapAdj S T F.βS F.βT t)
-      · rw [ite_eq_left ⟨hh.2 hc.1, (GlobalTheory.RefDatumLev.isIntM_add_nsmul_iff i1 _).2 hc.2⟩, ite_eq_left hc]
+      · rw [if_pos ⟨hh.2 hc.1, (GlobalTheory.RefDatumLev.isIntM_add_nsmul_iff i1 _).2 hc.2⟩, if_pos hc]
         exact GlobalTheory.PlaceDatum.omegaG_congr _ _ _ _ fun PP hPP => GlobalTheory.RefDatumLev.redM_add_nsmul PP hc.2 i1 _ (hN PP (Or.inl hPP))
-      · rw [ite_eq_right hc, ite_eq_right fun h' => hc ⟨hh.1 h'.1, (GlobalTheory.RefDatumLev.isIntM_add_nsmul_iff i1 _).1 h'.2⟩]
+      · rw [if_neg hc, if_neg fun h' => hc ⟨hh.1 h'.1, (GlobalTheory.RefDatumLev.isIntM_add_nsmul_iff i1 _).1 h'.2⟩]
     · by_cases hc : IsHalf (halfIdem G.Pg Q) t ∧ IsIntM (frMapO S T F.βS F.βT t)
-      · rw [ite_eq_left ⟨hh.2 hc.1, (GlobalTheory.RefDatumLev.isIntM_add_nsmul_iff i2 _).2 hc.2⟩, ite_eq_left hc]
+      · rw [if_pos ⟨hh.2 hc.1, (GlobalTheory.RefDatumLev.isIntM_add_nsmul_iff i2 _).2 hc.2⟩, if_pos hc]
         exact hω _ _ fun PP hPP => GlobalTheory.RefDatumLev.redM_add_nsmul PP hc.2 i2 _ (hN PP (Or.inr hPP))
-      · rw [ite_eq_right hc, ite_eq_right fun h' => hc ⟨hh.1 h'.1, (GlobalTheory.RefDatumLev.isIntM_add_nsmul_iff i2 _).1 h'.2⟩]
+      · rw [if_neg hc, if_neg fun h' => hc ⟨hh.1 h'.1, (GlobalTheory.RefDatumLev.isIntM_add_nsmul_iff i2 _).1 h'.2⟩]
   · intro t
     unfold Frame.datumFn
     refine mul_mem ?_ ?_ <;> split_ifs
@@ -432,7 +407,8 @@ theorem exists_sum_evW (hti : TieIn T Rl.toRealDat κ v₀) (hnV : 8 * D.R.f * D
     rw [(hti.kap j τ).1 i]
     exact GlobalTheory.LiftWeight.kapTop_lastPos D j τ i hi
   have hn : 8 * D.R.f * D.R.r + 4 ≤ (κ j).n := by
-    rwa [(hti.kap j (D.eTau.symm 1)).2.2]
+    rw [(hti.kap j (D.eTau.symm 1)).2.2]
+    exact hnV
   obtain ⟨φ', hφ'm, rfl⟩ := hφ
   have hspan : Formalism.L2.Pj.holSub0 (T.U ((j : ℕ) + 1) T.σ₀).X (laU (T.U ((j : ℕ) + 1) T.σ₀) (wtA (κ j)) (κ j).n) ≤
       Submodule.span ℂ (rdU (T.U ((j : ℕ) + 1) T.σ₀) '' {f | f ∈ sec (T.Q.Xo ((j : ℕ) + 1)) T.Q.c (wtA (κ j)) (κ j).n ∧
@@ -457,7 +433,7 @@ theorem exists_sum_evW (hti : TieIn T Rl.toRealDat κ v₀) (hnV : 8 * D.R.f * D
       rdU (T.U ((j : ℕ) + 1) T.σ₀) f ∈ Formalism.L2.Pj.holSub0 (T.U ((j : ℕ) + 1) T.σ₀).X
         (laU (T.U ((j : ℕ) + 1) T.σ₀) (wtA (κ j)) (κ j).n)) ∧ T.phiJ ((j : ℕ) + 1) T.σ₀ (wtA (κ j)) f = ψ k := hψ
   choose fs hfs using hψ'
-  choose x hx using fun k => hrd ⟨fs k, GlobalTheory.T.mem_cuspForms_of_reading_bounded_cuspidal_holomorphic D T hT _ hInR (κ j) hlast hn (fs k) (hfs k).1.1 (hfs k).1.2⟩
+  choose x hx using fun k => hrd ⟨fs k, _root_.GlobalTheory.CuspOfReading.mem_cuspA_of_rdU_mem_holSub0 D T hT _ hInR (κ j) hlast hn (fs k) (hfs k).1.1 (hfs k).1.2⟩
   refine ⟨m, fun k => C.σ₂ (xs k), x, fun k => ⟨xs k, rfl⟩, funext fun g => ?_⟩
   rw [hφeq, RatExpand.castDict_sum_smul, Finset.smul_sum, Finset.sum_apply]
   refine Finset.sum_congr rfl fun k _ => ?_
@@ -557,7 +533,7 @@ theorem isLevDatum_vecBase {F : Face D A3.A} (hT : LawsJ T) (hcore : GlobalTheor
       exact Ideal.mul_mem_left _ _ (hQ PP (by simpa using hPP))
   · have hP : PP ∈ Rl.Pg := (Finset.ext_iff.1 hBo.Pg PP).1 hPP
     rw [hBo.muC_eq hcore.lev hB hP, MonoidHom.inv_apply, Units.val_inv_eq_inv_val]
-    exact inv_mem (hk (GlobalTheory.T.typePlace_residueCharacters_values_mem_smallField D Γ Pl0 I0 T0 A3 T Rl cG S YS F hT hcore hgal hval hroots j PP hP u))
+    exact inv_mem (hk (_root_.GlobalTheory.TypeChar.chi_mem_smallField D Γ Pl0 I0 T0 A3 T Rl cG S YS F hT hcore hgal hval hroots j PP hP u))
   · unfold Base.locFn
     refine mul_mem (prod_mem fun PP hPP => ?_) (prod_mem fun _ _ => one_mem _)
     unfold flat
@@ -565,7 +541,8 @@ theorem isLevDatum_vecBase {F : Face D A3.A} (hT : LawsJ T) (hcore : GlobalTheor
     · obtain ⟨x, hx⟩ := exists_isLocUnit (hB.de.split.isIdemAt hPP) h.unit
       have e := hx.eq (hB.de.res PP hPP)
       have := hδ x
-      rwa [e] at this
+      rw [e] at this
+      exact this
     · exact zero_mem _
 
 theorem ratBase_of_readsAs (hRF : GlobalTheory.NT.RayField) {F : Face D A3.A} (hti : TieIn T Rl.toRealDat κ v₀)
@@ -607,7 +584,8 @@ theorem ratBase_of_readsAs (hRF : GlobalTheory.NT.RayField) {F : Face D A3.A} (h
   have hω' : IsWeilDatumO Rl.ψ (Vc D j) (Wc D j) (Lift.chrTh (Lift.tup Rl.mu0 (ρ.B i j b).de.chi) Rl.eta ((j : ℕ) + 1)).1
       (Lift.chrTh (Lift.tup Rl.mu0 (ρ.B i j b).de.chi) Rl.eta ((j : ℕ) + 1)).2 (ρ.om i j b 1) := by
     have h1 := hω
-    rwa [Base.IsWeil, mul_one, Base.mu, hBo.ψ, hBo.mu0, hBo.eta] at h1
+    rw [Base.IsWeil, mul_one, Base.mu, hBo.ψ, hBo.mu0, hBo.eta] at h1
+    exact h1
 
   have hm : ∀ τ, (ρ.B i j b).w.p τ + (ρ.B i j b).w.q τ ≤ (Wc D j).rank := fun τ => by
     have h2 := Formalism.BasicNotions.sig_sum _ hB.sigOK (tauE D τ)

@@ -65,7 +65,7 @@ def adm1 (_D : Formalism.BasicNotions.D7) : Prop :=
           (fun mu => Interlace lam mu ∧ ∑ j, mu j = ∑ j, lam j + b),
         alt n (mu + rhoN n)
 
-def adm2 : Prop :=
+def adm2 (_D : Formalism.BasicNotions.D7) : Prop :=
   ∀ (K V : Type) [Field K] [CharZero K] [AddCommGroup V] [Module K V] [FiniteDimensional K V] (n : ℕ)
     (E : GLOps n K V), IsGLRep E → ∀ W : Submodule K V, (∀ a b, ∀ x ∈ W, E a b x ∈ W) →
       ∃ W' : Submodule K V, IsCompl W W' ∧ ∀ a b, ∀ x ∈ W', E a b x ∈ W'
@@ -87,7 +87,7 @@ def adm5 (_D : Formalism.BasicNotions.D7) : Prop :=
         (∀ x ∈ weightSp E mu, x ∈ nMinus E → pp E mu ord T x = 0) ∧
         (∀ x ∈ weightSp E mu, (∀ a b : Fin n, a < b → E a b x = 0) → pp E mu ord T x = x)
 
-def admitted (D : Formalism.BasicNotions.D7) : Prop := adm1 D ∧ adm2 ∧ adm3 ∧ ArchimedeanSignatureMatching ∧ adm5 D
+def admitted (D : Formalism.BasicNotions.D7) : Prop := adm1 D ∧ adm2 D ∧ adm3 ∧ ArchimedeanSignatureMatching ∧ adm5 D
 
 def InvariantProjectionField : Prop :=
   ∀ (p n' : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (_S : UniformizedDVR p O),

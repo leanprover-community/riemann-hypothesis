@@ -1658,7 +1658,7 @@ theorem type_one_hypothesis_of_bounds (D : D7) (L : SizeData₂ D) (X : Inst D L
   type_one_hypothesis_of_segments D L X K Cm CH C hX hK hCH0 hCHk hCHD hCHr hC0 hCt1 hCt2 hCm hc
     (Formalism.MainNotions.G.TopChoiceBounds.orbit_segments D L) h
 
-theorem isotypic_multiplicity_of_reducibility_alt (D : Formalism.BasicNotions.D7) (h : Formalism.MainNotions.CovariantDegrees.ValuationLemmaField D) (h2 : Formalism.MainNotions.CovariantDegrees.adm2) : Formalism.MainNotions.PlaneGramData.adm1 :=
+theorem isotypic_multiplicity_of_reducibility_alt (D : Formalism.BasicNotions.D7) (h : Formalism.MainNotions.CovariantDegrees.ValuationLemmaField D) (h2 : Formalism.MainNotions.CovariantDegrees.adm2 D) : Formalism.MainNotions.PlaneGramData.adm1 :=
   isotypic_multiplicity_of_reducibility D h (polIsoDecompB_of D h2)
 
 

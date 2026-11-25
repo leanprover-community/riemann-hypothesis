@@ -33,12 +33,12 @@ def IsSaturatedIn {X : Type} [AddCommGroup X] [Module O X] (M' M : Submodule O X
 
 def adm1 (G : GAtP p) : Prop := G.TrivStab
 
-def adm2 (G : GAtP p) : Prop := G.FinClasses
+def adm2 (_D : Formalism.BasicNotions.D7) (G : GAtP p) : Prop := G.FinClasses
 
 def adm3 (G : GAtP p) : Prop :=
   ∀ (u v : Fin G.P.nV) (F : G.Fn), G.yv u (G.yv v F) = G.yv v (G.yv u F)
 
-def admitted (D : Formalism.BasicNotions.D7) (G : GAtP p) : Prop := adm1 G ∧ adm2 G ∧ adm3 G
+def admitted (D : Formalism.BasicNotions.D7) (G : GAtP p) : Prop := adm1 G ∧ adm2 D G ∧ adm3 G
 
 def Conclusion1 (G : GAtP p) : Prop :=
   ∀ (VV : Finset (Fin G.P.nV)) (t Sv : Fin G.P.nV → ℕ) (Dd cStar S m : ℕ) (κ : Fin G.P.nV → ℝ),

@@ -924,7 +924,7 @@ theorem orbG_lift : ∀ (F E : Type) [NontriviallyNormedField F] [NontriviallyNo
   obtain ⟨hO, hC⟩ := _root_.GlobalTheory.JR.GLift.glO_isOpen_isCompact F (r + 1)
   have hemb := _root_.GlobalTheory.JR.Step.EmbClosed.isClosedEmbedding_emb F r
   have key := GlobalTheory.CosetIntegral.integral_eq_of_coset_support (GL (Fin (r + 1)) F) (GL (Fin r) F)
-    (GlobalTheory.JR.Step.emb r F) hemb M.μG M'.μG (glOSub (r + 1) F) hO M.volG
+    (GlobalTheory.JR.Step.emb r F) hemb M.μG M'.μG (glOSub (r + 1) F) hO hC M.volG
     (by rw [coe_glOSub, _root_.GlobalTheory.JR.GLift.emb_preimage_glO F r]; exact M'.volG)
     (fun g => unitG (r + 1) F (act g (GlobalTheory.JR.Step.lift Z μ l)) * omega (act g (GlobalTheory.JR.Step.lift Z μ l)))
     (fun k hk g => by

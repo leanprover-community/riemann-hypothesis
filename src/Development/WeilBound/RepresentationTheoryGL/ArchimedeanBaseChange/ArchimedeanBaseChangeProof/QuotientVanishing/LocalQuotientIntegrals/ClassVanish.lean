@@ -255,22 +255,17 @@ theorem cV_embInf (v w : InfinitePlace E) (y : GL (Fin n) ℂ) :
     simp
   · simp [h]
 
-theorem pFin_embInf (v : InfinitePlace E) (y : GL (Fin n) ℂ) :
-    GeneralLinearGroup.map (pFin E) (embInf n v y) = 1 := by
-  unfold embInf
-  exact pFin_infGL _
-
 theorem embInf_eq_cornerGL (v : InfinitePlace E) (y : GL (Fin n) ℂ) : embInf n v y = cornerGL n (sV v) y := by
   classical
   refine ga_ext' (fun w => ?_) ?_
   · rw [cV_embInf]
     by_cases h : w = v
     · subst h
-      rw [ite_eq_left rfl, map_cornerGL_of_hom (sV w) (cV w) (RingHom.id ℂ) (fun x => by rw [cV_sV, Pi.single_eq_same]; rfl) y]
+      rw [if_pos rfl, map_cornerGL_of_hom (sV w) (cV w) (RingHom.id ℂ) (fun x => by rw [cV_sV, Pi.single_eq_same]; rfl) y]
       ext i j
       rfl
-    · rw [ite_eq_right h, map_cornerGL_of_zero (sV v) (cV w) (fun x => by rw [cV_sV, Pi.single_eq_of_ne h]) y]
-  · rw [pFin_embInf, map_cornerGL_of_zero (sV v) (pFin E) (fun x => rfl) y]
+    · rw [if_neg h, map_cornerGL_of_zero (sV v) (cV w) (fun x => by rw [cV_sV, Pi.single_eq_of_ne h]) y]
+  · rw [GlobalTheory.CompanionTheory.SplitTwo.map_pFin_embInf, map_cornerGL_of_zero (sV v) (pFin E) (fun x => rfl) y]
 
 theorem continuous_embInf (v : InfinitePlace E) : Continuous (embInf (E := E) n v) := by
   have h : (embInf (E := E) n v : GL (Fin n) ℂ → GA E n) = cornerGL n (sV v) := funext (embInf_eq_cornerGL v)
@@ -280,7 +275,7 @@ theorem continuous_embInf (v : InfinitePlace E) : Continuous (embInf (E := E) n 
 theorem cV_embInf_self (v : InfinitePlace E) (y : GL (Fin n) ℂ) :
     GeneralLinearGroup.map (cV v) (embInf n v y) = y := by
   classical
-  rw [cV_embInf, ite_eq_left rfl]
+  rw [cV_embInf, if_pos rfl]
 
 theorem embInf_comm (v : InfinitePlace E) (y : GL (Fin n) ℂ) (k : GA E n)
     (hk : k ∈ (GeneralLinearGroup.map (n := Fin n) (cV (E := E) v)).ker) : embInf n v y * k = k * embInf n v y := by
@@ -291,8 +286,8 @@ theorem embInf_comm (v : InfinitePlace E) (y : GL (Fin n) ℂ) (k : GA E n)
     by_cases h : w = v
     · subst h
       rw [hk']; simp
-    · rw [ite_eq_right h]; simp
-  · rw [map_mul, map_mul, pFin_embInf]; simp
+    · rw [if_neg h]; simp
+  · rw [map_mul, map_mul, GlobalTheory.CompanionTheory.SplitTwo.map_pFin_embInf]; simp
 
 theorem cV_thetaA (v : InfinitePlace E) (g : GA E n) :
     GeneralLinearGroup.map (cV v) (thetaA E n g) = thetaR (starRingEnd ℂ) n (GeneralLinearGroup.map (cV v) g) :=
@@ -304,10 +299,10 @@ theorem thetaA_embInf (v : InfinitePlace E) (y : GL (Fin n) ℂ) :
   refine ga_ext' (fun w => ?_) ?_
   · rw [cV_thetaA, cV_embInf, cV_embInf]
     by_cases h : w = v
-    · rw [ite_eq_left h, ite_eq_left h]
-    · rw [ite_eq_right h, ite_eq_right h, thetaR_one']
-  · rw [pFin_embInf, map_thetaR (pFin E) (conjAd E) (conjFin (IsCMField.complexConj E).toRingEquiv) (fun _ => rfl),
-      pFin_embInf, thetaR_one']
+    · rw [if_pos h, if_pos h]
+    · rw [if_neg h, if_neg h, thetaR_one']
+  · rw [GlobalTheory.CompanionTheory.SplitTwo.map_pFin_embInf, map_thetaR (pFin E) (conjAd E) (conjFin (IsCMField.complexConj E).toRingEquiv) (fun _ => rfl),
+      GlobalTheory.CompanionTheory.SplitTwo.map_pFin_embInf, thetaR_one']
 
 theorem cV_ratGL (v : InfinitePlace E) (d : GL (Fin n) E) :
     GeneralLinearGroup.map (cV v) (ratGL E n d) = PositivityTheory.Rg.BcB.D4.locGL v d := by
@@ -601,10 +596,6 @@ section Fubini
 variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
   [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G]
 
-theorem enorm_ofReal_toReal_le (r : ℝ≥0∞) : ‖((r.toReal : ℝ) : ℂ)‖ₑ ≤ r := by
-  rw [← ofReal_norm_eq_enorm, Complex.norm_real, Real.norm_of_nonneg ENNReal.toReal_nonneg]
-  exact ENNReal.ofReal_toReal_le
-
 theorem integral_stage {T : Subgroup G} (μ : Measure G) [μ.IsMulLeftInvariant] [SFinite μ]
     (ν : Measure T) [SFinite ν] {F : G → ℂ} (hF : Measurable F) {σ : G → ℝ≥0∞} (hσ : Measurable σ)
     (hae : ∀ᵐ x ∂μ, ∫⁻ t, σ (((t⁻¹ : T) : G) * x) ∂ν < ∞)
@@ -631,7 +622,7 @@ theorem integral_stage {T : Subgroup G} (μ : Measure G) [μ.IsMulLeftInvariant]
     rw [← lintegral_const_mul _ hm]
     refine lintegral_mono fun t => ?_
     simp only [A, enorm_mul]
-    exact mul_le_mul_right (enorm_ofReal_toReal_le _) _
+    exact mul_le_mul_right (PositivityTheory.Rg.BcB.CV.QuotientIntegral.enorm_ofReal_toReal_le' _) _
   have hBi : Integrable (A ∘ ψ) (ν.prod μ) :=
     (hψ.integrable_comp hAm.aestronglyMeasurable).2 hAi
   have e1 : ∫ x, F x * (((∫⁻ t, σ (((t⁻¹ : T) : G) * x) ∂ν).toReal : ℝ) : ℂ) ∂μ =
@@ -957,7 +948,7 @@ theorem nonEllFlag : PositivityTheory.Rg.BcB.D4.NonEllFlag := by
   intro E _ _ _ n d hreg hell
   have hnot : ∃ (τ : E →+* ℂ) (z : ℂ), ((nrm d).val.charpoly.map τ).IsRoot z ∧ ‖z‖ ≠ 1 := by
     by_contra hno
-    push Not at hno
+    push_neg at hno
     exact hell ⟨hreg, fun τ z hz => hno τ z hz⟩
   obtain ⟨τ, z, hz, hz1⟩ := hnot
   refine ⟨InfinitePlace.mk τ, ?_⟩
@@ -1084,7 +1075,7 @@ theorem quotProd_holds : PositivityTheory.Rg.BcB.D4.QuotProd := by
       simp only [this, Pi.zero_apply]
       rw [integral_mul_const, hq, zero_mul]
     · exact integral_undef hi
-  · simp only [quotIntegral, dite_eq_right hex]
+  · simp only [quotIntegral, dif_neg hex]
 
 theorem quotProd_of_normEq : PositivityTheory.Rg.BcB.D4.NormEq → PositivityTheory.Rg.BcB.D4.QuotProd :=
   fun _ => quotProd_holds
@@ -1604,7 +1595,7 @@ theorem diag_proper (lam : Fin n → ℂ) (hl : Function.Injective lam)
       simp only [G, h1, hp]
       rw [Matrix.mul_apply]
       simp only [Matrix.mul_diagonal, mul_ite, mul_one, mul_zero, ite_mul, zero_mul,
-        Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+        Finset.sum_ite_eq', Finset.mem_univ, if_true]
     rw [← h2]
     exact ((norm_le_pi_norm _ b).trans ((norm_le_pi_norm _ a).trans (norm_le_pi_norm _ i))).trans (hB _ hy)
 

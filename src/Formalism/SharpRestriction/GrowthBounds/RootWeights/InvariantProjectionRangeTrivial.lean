@@ -95,7 +95,7 @@ private theorem E_apply_mem_isoSub_of_mem {n : ℕ} {K V : Type} [Field K] [AddC
     exact Submodule.subset_span ⟨E a b * u, mul_mem (Submonoid.subset_closure ⟨(a, b), rfl⟩) hu, v, hv, rfl⟩
   exact hle hx
 
-theorem isotypic_submodules_span_top (D : Formalism.BasicNotions.D7) (h2 : adm2) : IsotypicSubmodulesSpanTop := by
+theorem isotypic_submodules_span_top (D : Formalism.BasicNotions.D7) (h2 : adm2 D) : IsotypicSubmodulesSpanTop := by
   classical
   intro n K V _ _ _ _ _ E hE
   set S : Submodule K V := ⨆ mu, isoSub E mu with hSdef
@@ -269,7 +269,7 @@ theorem isotypic_zero_killed_by_operators {n : ℕ} {K V : Type} [Field K] [Char
     · exact map_zero _
   exact hle hx
 
-theorem invariant_projection_exists (D : Formalism.BasicNotions.D7) (h2 : adm2) : InvariantProjectionExists :=  by
+theorem invariant_projection_exists (D : Formalism.BasicNotions.D7) (h2 : adm2 D) : InvariantProjectionExists :=  by
   intro n K V _ _ _ _ _ E hE
   set Inv : Submodule K V := ⨅ a, ⨅ b, LinearMap.ker (E a b) with hInvdef
   have hInvmem : ∀ x, x ∈ Inv ↔ ∀ a b, E a b x = 0 := by
@@ -323,7 +323,7 @@ theorem invariant_projection_exists (D : Formalism.BasicNotions.D7) (h2 : adm2) 
       · exact hQ v
     exact hle hx
 
-theorem equivariant_commutes_isotypic (D : Formalism.BasicNotions.D7) (h2 : adm2) : EquivariantCommutesInvariantProjection :=  by
+theorem equivariant_commutes_isotypic (D : Formalism.BasicNotions.D7) (h2 : adm2 D) : EquivariantCommutesInvariantProjection :=  by
   intro n K V V' _ _ _ _ _ _ _ _ E E' hE hE' T hT P P' hP hP' x
   have htop := isotypic_submodules_span_top D h2 n K V E hE
   have hx : x ∈ ⨆ mu, isoSub E mu := by
@@ -340,7 +340,7 @@ theorem equivariant_commutes_isotypic (D : Formalism.BasicNotions.D7) (h2 : adm2
     simp only [map_add (f := _)]
     rw [hy, hz]
 
-theorem invariant_projection_range_trivial (D : Formalism.BasicNotions.D7) (h2 : adm2) {n : ℕ} {K V : Type} [Field K] [CharZero K] [AddCommGroup V]
+theorem invariant_projection_range_trivial (D : Formalism.BasicNotions.D7) (h2 : adm2 D) {n : ℕ} {K V : Type} [Field K] [CharZero K] [AddCommGroup V]
     [Module K V] [FiniteDimensional K V] (E : GLOps n K V) (hE : IsGLRep E) (P : Module.End K V)
     (hP : IsInvProj E P) (x : V) : P x ∈ isoSub E 0 := by
   have htop := isotypic_submodules_span_top D h2 n K V E hE
@@ -360,7 +360,7 @@ theorem invariant_projection_range_trivial (D : Formalism.BasicNotions.D7) (h2 :
     rw [map_add (f := _)]
     exact Submodule.add_mem _ hy hz
 
-theorem invariant_projection_kills_operators (D : Formalism.BasicNotions.D7) (h2 : adm2) : OperatorsKillInvariantProjection := by
+theorem invariant_projection_kills_operators (D : Formalism.BasicNotions.D7) (h2 : adm2 D) : OperatorsKillInvariantProjection := by
   intro n K V _ _ _ _ _ E hE P hP x a b
   exact isotypic_zero_killed_by_operators E hE _ (invariant_projection_range_trivial D h2 E hE P hP x) a b
 

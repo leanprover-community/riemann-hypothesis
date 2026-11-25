@@ -822,7 +822,7 @@ theorem orbit_positions_of_master (D : Formalism.BasicNotions.D7) (hL : CornerGL
   · intro s s' f f' hN hE hE'
     exact c2 s s' f f' hN hE hE'
 
-theorem orbit_counts_of_master (D : Formalism.BasicNotions.D7) (hL : CornerGLContinuity.OrbitPositionsAndSizeBounds D) : tableLineDegreeFive.adm2 := by
+theorem orbit_counts_of_master (D : Formalism.BasicNotions.D7) (hL : CornerGLContinuity.OrbitPositionsAndSizeBounds D) : tableLineDegreeFive.adm2 D := by
   intro eps he0 he1
   obtain ⟨hA, hB⟩ := hL.2
   obtain ⟨Ce, _, hC⟩ := hA (⌈8 * ((2 + 8 * eps) + 2) / eps⌉₊ + 1) (2 + 8 * eps) (by omega) (by positivity)
@@ -3168,7 +3168,7 @@ open Formalism.BasicNotions Formalism.MainNotions.G Formalism.MainNotions
 
 theorem family_master_orbit_holds {eps : ℝ} (Fm : FamP eps) : CornerGLContinuity.FamilyOrbitPositionsAndSizeBounds Fm := fun x i => master_orbit_lemma_holds (Fm.D x i)
 theorem orbit_positions_admitted_holds (D : D7) : tableLineDegreeFive.adm1 := orbit_positions_of_master D (master_orbit_lemma_holds D)
-theorem orbit_counts_admitted_holds (D : D7) : tableLineDegreeFive.adm2 := orbit_counts_of_master D (master_orbit_lemma_holds D)
+theorem orbit_counts_admitted_holds (D : D7) : tableLineDegreeFive.adm2 D := orbit_counts_of_master D (master_orbit_lemma_holds D)
 theorem symbol_space_orbit_holds (D : D7) : SelectionLemmas.PathPairCorrespondence := symbol_space_orbit_of_master D (master_orbit_lemma_holds D)
 theorem localiser_orbit_holds (D : D7) : SourceCleaning.GoodOrbitPositions := goodOrbitPositions_of_orbitLemmaFull D (master_orbit_lemma_holds D)
 theorem family_uniform_constant_holds {eps : ℝ} (Fm : FamP eps) :

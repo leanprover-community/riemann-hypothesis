@@ -574,7 +574,7 @@ namespace Formalism.MainNotions.G.GLWeightTheory
 
 open Formalism.MainNotions.G Formalism.MainNotions.CovariantDegrees
 
-theorem invariant_projection_kills_operator (D : Formalism.BasicNotions.D7) (h2 : adm2) {K V : Type} [Field K] [CharZero K]
+theorem invariant_projection_kills_operator (D : Formalism.BasicNotions.D7) (h2 : adm2 D) {K V : Type} [Field K] [CharZero K]
     [AddCommGroup V] [Module K V] [FiniteDimensional K V] {n : ℕ} (E : GLOps n K V) (hE : IsGLRep E)
     (Inv : Module.End K V) (hInv : IsInvProj E Inv) (a b : Fin n) (x : V) : Inv (E a b x) = 0 := by
   have hs := gl_rep_shifts_weights hE
@@ -601,7 +601,7 @@ theorem invariant_projection_kills_operator (D : Formalism.BasicNotions.D7) (h2 
   have h3 := this (Submodule.mem_top (x := x))
   rwa [LinearMap.mem_ker, Module.End.mul_apply] at h3
 
-theorem invariant_projection_kills_nonzero_weight (D : Formalism.BasicNotions.D7) (h2 : adm2) {K V : Type} [Field K] [CharZero K]
+theorem invariant_projection_kills_nonzero_weight (D : Formalism.BasicNotions.D7) (h2 : adm2 D) {K V : Type} [Field K] [CharZero K]
     [AddCommGroup V] [Module K V] [FiniteDimensional K V] {n : ℕ} (E : GLOps n K V) (hE : IsGLRep E)
     (Inv : Module.End K V) (hInv : IsInvProj E Inv) (μ : Fin n → ℤ) (hμ : μ ≠ 0) (x : V)
     (hx : x ∈ weightSp E μ) : Inv x = 0 := by
@@ -616,7 +616,7 @@ theorem invariant_projection_kills_nonzero_weight (D : Formalism.BasicNotions.D7
   rw [h3]
   exact invariant_projection_kills_operator D h2 E hE Inv hInv a a _
 
-theorem invariant_projection_through_zero_weight (D : Formalism.BasicNotions.D7) (h2 : adm2) {K V : Type} [Field K] [CharZero K]
+theorem invariant_projection_through_zero_weight (D : Formalism.BasicNotions.D7) (h2 : adm2 D) {K V : Type} [Field K] [CharZero K]
     [AddCommGroup V] [Module K V] [FiniteDimensional K V] {n : ℕ} (E : GLOps n K V) (hE : IsGLRep E)
     (Inv : Module.End K V) (hInv : IsInvProj E Inv) (Θ : (Fin n → ℤ) → Module.End K V)
     (hΘ : ∀ μ ν, ∀ x ∈ weightSp E ν, Θ μ x = if ν = μ then x else 0) (x : V) : Inv x = Inv (Θ 0 x) := by
@@ -667,7 +667,7 @@ def ExtremalProjectorProperties {n : ℕ} {K V : Type*} [Field K] [AddCommGroup 
     extremalProjector E c L u ∈ weightSp E 0 ∧
     ∃ w : Fin n → V, extremalProjector E c L u = u + ∑ i ∈ Finset.Iio c, E c i (w i)
 
-theorem denominator_chain_bound (D : Formalism.BasicNotions.D7) (h2 : adm2) (p : ℕ) (O : Type) [CommRing O] [IsDomain O]
+theorem denominator_chain_bound (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (p : ℕ) (O : Type) [CommRing O] [IsDomain O]
     [IsDiscreteValuationRing O] [CharZero (KK O)] (n : ℕ) (V : Type) [AddCommGroup V]
     [Module (KK O) V] [Module O V] [IsScalarTower O (KK O) V] [FiniteDimensional (KK O) V]
     (E : GLOps n (KK O) V) (hE : IsGLRep E) (M : Submodule O V)
@@ -714,7 +714,7 @@ theorem denominator_chain_bound (D : Formalism.BasicNotions.D7) (h2 : adm2) (p :
       rw [he]
       exact hM2
 
-theorem invariant_projection_denominator_bound (D : Formalism.BasicNotions.D7) (h2 : adm2) (p : ℕ) (O : Type) [CommRing O] [IsDomain O]
+theorem invariant_projection_denominator_bound (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (p : ℕ) (O : Type) [CommRing O] [IsDomain O]
     [IsDiscreteValuationRing O] [CharZero (KK O)] (n : ℕ) (V : Type) [AddCommGroup V]
     [Module (KK O) V] [Module O V] [IsScalarTower O (KK O) V] [FiniteDimensional (KK O) V]
     (E : GLOps n (KK O) V) (hE : IsGLRep E) (M : Submodule O V) (hM : UZStable (O := O) E M)
@@ -1020,7 +1020,7 @@ private theorem degreeZeroWeightsBounded_linf {n : ℕ} {K V : Type*} [Field K] 
   rw [Int.abs_eq_natAbs]
   exact_mod_cast hle
 
-theorem linf_lemma_without_projector (D : Formalism.BasicNotions.D7) (h2 : adm2) : InvariantDenominatorLinftyBound := by
+theorem linf_lemma_without_projector (D : Formalism.BasicNotions.D7) (h2 : adm2 D) : InvariantDenominatorLinftyBound := by
   intro p n' O _ _ _ S hG n V _ _ _ _ _ E hE M hM hMQ Inv hInv x hx
   haveI : CharZero (KK O) := dvr_fraction_field_charZero_prime S hG.prime
   rw [hMQ]
@@ -1028,7 +1028,7 @@ theorem linf_lemma_without_projector (D : Formalism.BasicNotions.D7) (h2 : adm2)
     (fun c u hu0 hu => extremal_projector_properties hE c _ (degreeZeroWeightsBounded_linf hE) u hu0 hu)
     (fun c y hy => extremalProjector_denominator_bound S hG.prime hE hM.1 c _ y hy) x hx
 
-theorem denominator_lemma_without_projector (D : Formalism.BasicNotions.D7) (h2 : adm2) : InvariantProjectionDenominator := by
+theorem denominator_lemma_without_projector (D : Formalism.BasicNotions.D7) (h2 : adm2 D) : InvariantProjectionDenominator := by
   intro p n' O _ _ _ S hG n V _ _ _ _ _ E hE M hM hMQ Inv hInv x hx
   haveI : CharZero (KK O) := dvr_fraction_field_charZero_prime S hG.prime
   rw [hMQ]

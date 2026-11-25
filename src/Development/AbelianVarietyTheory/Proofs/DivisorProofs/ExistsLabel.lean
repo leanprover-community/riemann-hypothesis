@@ -1319,7 +1319,7 @@ theorem exists_regular (F : Type) [Field F] [Finite F] (θ : AlgebraicClosure F 
   have hg := generalLinearGroupCardComplex_finiteField_ne_zero F d
   have hq : 2 ≤ Nat.card F := Finite.one_lt_card
   obtain ⟨a, ha, -⟩ := _root_.GlobalTheory.CuspGL.exists_int_coeff_of_isPrimitive F θ hθ d χ hd h hp
-  have haa := sum_coef_mul_eq_pair F θ hθ d hd χ χ h hp hp a a ha ha
+  have haa := sum_coef_mul_eq_pair F θ hθ d hd χ χ h h hp hp a a ha ha
   rw [_root_.GlobalTheory.BI.pair_self_of_isIrrChar_algClosed ℂ _ χ hi, mul_one] at haa
   have hinv : ∀ k l i : ℕ, k * Nat.card F ^ i ≡ l [MOD Nat.card F ^ d - 1] → a k = a l := by
     intro k l i hkl

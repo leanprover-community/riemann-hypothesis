@@ -749,7 +749,7 @@ theorem linf_adjoint_le_ellWt_highest [NeZero n] [CharZero (KK O)] [FiniteDimens
 
 end hw
 
-theorem restA_of_linf_integrality (D : Formalism.BasicNotions.D7) (h2 : adm2) (h : InvariantDenominatorLinftyBound) (hK : HighestWeightVectorIntegrality) : LatticeNablaDeltaBound := by
+theorem restA_of_linf_integrality (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (h : InvariantDenominatorLinftyBound) (hK : HighestWeightVectorIntegrality) : LatticeNablaDeltaBound := by
   intro p n' O _ _ _ S hR n _ lam V _ _ _ _ E v hI x hx
   have := dvr_fraction_field_char_zero_prime S hR.prime
   have := irreducible_highest_weight_findim hI
@@ -787,7 +787,7 @@ theorem restA_of_linf_integrality (D : Formalism.BasicNotions.D7) (h2 : adm2) (h
   have := h3 x hx
   simpa using this
 
-theorem integral_form_of_linf_lemma (D : Formalism.BasicNotions.D7) (h2 : adm2) (h : InvariantDenominatorLinftyBound) : NablaDeltaComparisonField D :=
+theorem integral_form_of_linf_lemma (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (h : InvariantDenominatorLinftyBound) : NablaDeltaComparisonField D :=
   highest_weight_lattice_of_first_part D (restA_of_linf_integrality D h2 h highest_vector_integrality)
 
 end Formalism.MainNotions.G.GLWeightTheory

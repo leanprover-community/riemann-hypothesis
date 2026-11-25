@@ -2219,7 +2219,7 @@ theorem crRes_isGLRep (E : GLOps n K V) (h : GLRel E) (P : Submodule K V) [Finit
     rw [dite_eq_left hmu]
     exact Submodule.mem_iSup_of_mem mu (crRes_weight E P hP mu _ (hf mu hmu).1)
 
-theorem cr_in (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2) {n : ℕ} {K V : Type} [Field K] [CharZero K]
+theorem cr_in (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2 D) {n : ℕ} {K V : Type} [Field K] [CharZero K]
     [AddCommGroup V] [Module K V] (E : GLOps n K V) (h : GLRel E) (P : Submodule K V) [FiniteDimensional K P]
     (hP : Stab E P)
     (hPwt : ∀ x ∈ P, ∃ (T : Finset (Fin n → ℤ)) (f : (Fin n → ℤ) → V),
@@ -2547,12 +2547,12 @@ section Main
 
 variable {n : ℕ} {K V : Type} [Field K] [CharZero K] [AddCommGroup V] [Module K V] (E : GLOps n K V)
 
-theorem cr_of (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2) (hE : IsGLRep E) (P : Submodule K V) [FiniteDimensional K P]
+theorem cr_of (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2 D) (hE : IsGLRep E) (P : Submodule K V) [FiniteDimensional K P]
     (hP : Stab E P) (W : Submodule K V) (hWP : W ≤ P) (hW : Stab E W) :
     ∃ W' : Submodule K V, W' ≤ P ∧ Stab E W' ∧ W ⊓ W' = ⊥ ∧ W ⊔ W' = P :=
   cr_in D h2 E hE.1 P hP (fun x hx => stab_wt_decomp E hE.2.2 P (fun a y hy => hP a a y hy) x hx) W hWP hW
 
-theorem isoSub_top (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2) (hE : IsGLRep E) : (⨆ mu, isoSub E mu) = ⊤ := by
+theorem isoSub_top (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2 D) (hE : IsGLRep E) : (⨆ mu, isoSub E mu) = ⊤ := by
   rw [eq_top_iff]
   intro x _
   obtain ⟨P, hfd, hxP, hP⟩ := hE.2.1 x
@@ -2593,7 +2593,7 @@ theorem isoSet_env (hE : IsGLRep E) (Om : Set (Fin n → ℤ)) (x : V) (hx : x �
     obtain ⟨P, f, s, m⟩ := hy
     exact ⟨P, f, s, Submodule.smul_mem _ _ m⟩
 
-theorem hwv_wt_mem (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2) (hE : IsGLRep E) (Om : Set (Fin n → ℤ))
+theorem hwv_wt_mem (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2 D) (hE : IsGLRep E) (Om : Set (Fin n → ℤ))
     (lam : Fin n → ℤ) (w : V) (hw : IsHWV E lam w) (hmem : w ∈ Submodule.span K (isoSet E Om ⊤)) : lam ∈ Om := by
   by_contra hlam
   obtain ⟨P, hfd, hP, hwN⟩ := isoSet_env E hE Om w hmem
@@ -2644,7 +2644,7 @@ theorem hwv_wt_mem (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.C
   rw [hdis'] at h7
   exact ha.1 ((Submodule.mem_bot K).1 h7)
 
-theorem isoSub_indep (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2) (hE : IsGLRep E) : iSupIndep (isoSub E) := by
+theorem isoSub_indep (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2 D) (hE : IsGLRep E) : iSupIndep (isoSub E) := by
   intro mu
   rw [disjoint_iff]
   by_contra hne
@@ -2668,13 +2668,13 @@ theorem isoSub_indep (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions
   have h2' : lam ∈ {nu : Fin n → ℤ | nu ≠ mu} := hwv_wt_mem E D h2 hE _ lam w hw (hle hwMP.1.2)
   exact h2' h1
 
-theorem isoDecomp (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2) (hE : IsGLRep E) :
+theorem isoDecomp (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2 D) (hE : IsGLRep E) :
     ∃ e : (Fin n → ℤ) → Module.End K V, DecSys (isoSub E) e :=
   decomp_of_indep_top (isoSub E) (isoSub_indep E D h2 hE) (isoSub_top E D h2 hE)
 
 end Main
 
-theorem polIsoDecompB_of (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2) : PolIsoDecompB := by
+theorem polIsoDecompB_of (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2 D) : PolIsoDecompB := by
   intro K _ _ ι _ LL r _ S
   obtain ⟨e, sys⟩ := isoDecomp (glOps K r LL S) D h2 (isGLRep_glOps K ι LL r S)
   refine ⟨e, fun mu => ⟨sys.id_on mu, fun nu hne x hx => sys.zero_on mu nu hne x hx⟩, fun G => ?_⟩
@@ -2682,7 +2682,7 @@ theorem polIsoDecompB_of (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNot
   exact ⟨T, hT, fun mu => sys.mem mu G⟩
 
 theorem projection_of_integral_corollary (D : Formalism.BasicNotions.D7) (hC : Formalism.MainNotions.CovariantDegrees.FilteredProjectorCorollaryField) (hV : Formalism.MainNotions.CovariantDegrees.ShaLengthVersionTwo D)
-    (h2 : Formalism.MainNotions.CovariantDegrees.adm2) : Formalism.MainNotions.PlaneGramData.ArchimedeanSignatureMatching :=
+    (h2 : Formalism.MainNotions.CovariantDegrees.adm2 D) : Formalism.MainNotions.PlaneGramData.ArchimedeanSignatureMatching :=
   projection_of_isotypic_decomposition D hC hV (polIsoDecompB_of D h2)
 
 end Formalism.MainNotions.G.Joints

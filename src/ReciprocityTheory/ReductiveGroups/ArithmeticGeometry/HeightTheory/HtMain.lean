@@ -1359,12 +1359,12 @@ theorem heights (hd : d.AxH 𝒜) (h : d.S1) (hH1 : d.FinitePlaceHyp) (hF1d : d.
     (∑ k, meanK (fun sg => Real.log (d.supN sg d.wF (d.thp (hd.sel k)))))
     (d.del * Real.log d.del)
     (by exact_mod_cast hd.D_ge) (Nat.cast_nonneg _) hL hd.cc_nonneg hd.cc_le hd.ccg0 (Nat.cast_nonneg _)
-    ⟨hPP0', hPN, hP14, hP16, hPI4, hPrw, hGc, hPet⟩
+    (by exact_mod_cast hd.i_ge) ⟨hPP0', hPN, hP14, hP16, hPI4, hPrw, hGc, hPet⟩
     (by linarith) hlr hlw1 hhN hd.DF_le hlaW hnu
     (by simpa [add_assoc] using hUP) hb1
-    haL (div_nonneg (by exact_mod_cast hade0) hn1.le) (by rw [div_le_iff₀ hn1]; have := (Int.cast_le (R := ℝ)).mpr hade; push_cast at this; linarith)
-    (by rw [div_le_iff₀ (by norm_num : (0:ℝ) < 2)]; have := (Int.cast_le (R := ℝ)).mpr haG1; push_cast at this; linarith)
-    (by exact_mod_cast haF) (by exact_mod_cast haG2)
+    haL (div_nonneg (by exact_mod_cast hade0) hn1.le) (by rw [div_le_iff₀ hn1]; have := (Int.cast_le (R := ℝ)).mpr hade; push_cast at this; linarith) (div_nonneg (by exact_mod_cast haG10) (by norm_num))
+    (by rw [div_le_iff₀ (by norm_num : (0:ℝ) < 2)]; have := (Int.cast_le (R := ℝ)).mpr haG1; push_cast at this; linarith) (by exact_mod_cast haF0)
+    (by exact_mod_cast haF) (by exact_mod_cast haG20) (by exact_mod_cast haG2)
     h7a h7b h7c hdi1 hdn
   obtain ⟨ar1, ar2⟩ := arith
   have hsI : (Function.support fun la => d.IL h hd.sel hd.a4.choose la * logNorm la).Finite :=

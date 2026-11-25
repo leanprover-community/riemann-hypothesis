@@ -763,7 +763,7 @@ def adm9 (D : Formalism.BasicNotions.D7) {p : ℕ} (G : GAtP p) : Prop := Formal
 def adm12 (_D : Formalism.BasicNotions.D7) {p : ℕ} (G : GAtP p) : Prop :=
   (∀ v, ∀ F ∈ G.Mna, G.yv v F ∈ G.Mna) ∧ ∀ v, ∀ F ∈ G.M, G.yv v F ∈ G.M
 
-def adm13 (D : Formalism.BasicNotions.D7) {p : ℕ} (G : GAtP p) : Prop := Formalism.MainNotions.SelectionLemmas.adm2 G
+def adm13 (D : Formalism.BasicNotions.D7) {p : ℕ} (G : GAtP p) : Prop := Formalism.MainNotions.SelectionLemmas.adm2 D G
 
 def LemmaVVolumeGeneral (D : Formalism.BasicNotions.D7) (L : SizeData₂ D) (X : Inst D L) (Y : LatInst D) (K : Consts) : Prop :=
   ∀ (u : D.what₂.Word) (w : D.what₂.places.Pl)

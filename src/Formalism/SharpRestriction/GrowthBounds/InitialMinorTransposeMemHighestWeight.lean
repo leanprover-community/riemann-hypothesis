@@ -286,7 +286,7 @@ variable {K : Type} [Field K] [CharZero K] {ι : Type} [Fintype ι] {n : ℕ} [N
 
 theorem sys_of (D : Formalism.BasicNotions.D7) (S : Set ι) (e : (Fin n → ℤ) → Module.End K (MvPolynomial (ι × Fin n) K))
     (he : ∀ lam, IsIsoProj (glOps K n LL S) lam (e lam)) : DecSys (isoSub (glOps K n LL S)) e := by
-  have hweights : Formalism.MainNotions.CovariantDegrees.adm2 := by
+  have hweights : Formalism.MainNotions.CovariantDegrees.adm2 D := by
     intro K' V' _ _ _ _ _ n' E hE W hW
     exact cr_compl E hE.1 hE.2.2 W hW
   obtain ⟨e0, s⟩ := isoDecomp (glOps K n LL S) D hweights (isGLRep_glOps K ι LL n S)

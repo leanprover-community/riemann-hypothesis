@@ -419,7 +419,7 @@ theorem lift_cocycle_of_duality (hT : Formalism.GaloisCohomology.LocalTateDualit
     rw [hz' _ hσ]
     exact h1
 
-theorem lift_cocycle : ∀ (D : Formalism.BasicNotions.D7), adm2 → ArchimedeanSignatureMatching → ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ), Lev l s → ∀ (e r : ℕ) (c : GQ l → ℚ_[l]), (∀ σ ∈ Gj K s, ‖c σ‖ ≤ (l : ℝ) ^ r) → (∀ σ ∈ Gj K s, ∀ τ ∈ Gj K s, ‖c (σ * τ) - c σ - (((D.loc l).χQ σ ^ (-(e : ℤ)) : ℚ_[l]ˣ) : ℚ_[l]) * c τ‖ ≤ 1) → (∀ σ ∈ Gj K s, ∀ᶠ τ in nhdsWithin σ (Gj K s), ‖c τ - c σ‖ ≤ 1) → ∃ z : GQ l → ℚ_[l], CocOn (Gj K s) (fun σ y => (((D.loc l).χQ σ ^ (-(e : ℤ)) : ℚ_[l]ˣ) : ℚ_[l]) * y) Set.univ z ∧ ∀ σ ∈ Gj K s, ‖z σ - (l : ℚ_[l]) ^ (s + padicValNat l (e + 1)) * c σ‖ ≤ 1 :=
+theorem lift_cocycle : ∀ (D : Formalism.BasicNotions.D7), adm2 D → ArchimedeanSignatureMatching → ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ), Lev l s → ∀ (e r : ℕ) (c : GQ l → ℚ_[l]), (∀ σ ∈ Gj K s, ‖c σ‖ ≤ (l : ℝ) ^ r) → (∀ σ ∈ Gj K s, ∀ τ ∈ Gj K s, ‖c (σ * τ) - c σ - (((D.loc l).χQ σ ^ (-(e : ℤ)) : ℚ_[l]ˣ) : ℚ_[l]) * c τ‖ ≤ 1) → (∀ σ ∈ Gj K s, ∀ᶠ τ in nhdsWithin σ (Gj K s), ‖c τ - c σ‖ ≤ 1) → ∃ z : GQ l → ℚ_[l], CocOn (Gj K s) (fun σ y => (((D.loc l).χQ σ ^ (-(e : ℤ)) : ℚ_[l]ˣ) : ℚ_[l]) * y) Set.univ z ∧ ∀ σ ∈ Gj K s, ‖z σ - (l : ℚ_[l]) ^ (s + padicValNat l (e + 1)) * c σ‖ ≤ 1 :=
   fun D h2 _ l _ K s hs e _ c _ hc hloc =>
     lift_cocycle_of_duality h2 (D.loc l).χQ (D.loc l).χQ_cyc K s hs e c hc hloc
 
