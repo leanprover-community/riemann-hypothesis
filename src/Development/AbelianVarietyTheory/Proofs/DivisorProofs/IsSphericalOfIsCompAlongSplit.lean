@@ -104,7 +104,7 @@ theorem isSpherical_of_isCompAlong_split {E : Type} [Field E] [NumberField E] [I
         exact hv x hk
       rw [hv', map_zero]
       exact Submodule.zero_mem _)
-    (fun z hz _ _ => by rw [(Submodule.mem_bot ℂ).1 hz, map_zero]) φ (fun k hk => hφK k.1 k.2 hk) hmem
+    φ (fun k hk => hφK k.1 k.2 hk) hmem
   exact hφ0 ((Submodule.mem_bot ℂ).1 key)
 
 theorem isSpherical_of_isUnramU : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E],

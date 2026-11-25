@@ -8,7 +8,7 @@ import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsLi
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsFiniteLengthOfIsArtinianRingAnnihilator
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IsProjOverIffIsProperAndExistsIsAmpleLB
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TopologicalKrullDimLeZeroOfSubset
-public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.InterNumEqSumLengthMulInterNumRed
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntersectionNumberSheafEqSumLengthMulCycle
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -142,7 +142,7 @@ theorem interNum_cons_eq_finsum_mult : ∀ (κ : Type) [Field κ] (X : Scheme.{0
       w ⤳ genericPoint X).mem_open (nonzeroLocus s).isOpen hs)
     have hc := coheight_eq_one_of_dim_closure hX hmax hd
     simpa using mult_divOfSec_ne_zero hM s hs hc hw.2
-  rw [GlobalTheory.CompanionTheory.Ar.IntersectionNumberLength.interNum_eq_sum_length_mul_interNumRed κ X hproj (Fin n) P hP _ hsupp hfs.toFinset hS,
+  rw [GlobalTheory.SheafCycle.interNum_eq_sum_length_mul_interNumRed κ X hproj (Fin n) P hP _ hsupp hfs.toFinset hS,
     finsum_eq_sum_of_support_subset _ (s := hfs.toFinset) ?_]
   · refine Finset.sum_congr rfl fun w hw => ?_
     have hw' : (divOfSec hM s hs).mult w ≠ 0 := by simpa using hw

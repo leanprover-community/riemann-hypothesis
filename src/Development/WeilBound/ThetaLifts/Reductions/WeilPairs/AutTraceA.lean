@@ -102,17 +102,6 @@ theorem actOF_zero' (g : GAF σ JS) (h : GAF σ JT) : actOF σ JS JT g h (0 : WO
   unfold actOF
   rw [Matrix.mul_zero, Matrix.zero_mul]
 
-theorem ratWF_injective (C : Ctx σ B JS JT ξ₀ θ ι) :
-    Function.Injective (ratWF (F := F) : Matrix (Fin nT) (Fin nS) E → WOF F E nS nT) := fun x y h =>
-  _root_.PositivityTheory.ThKW.TauSpanIdentities.infRatF_injective B (by rw [← _root_.PositivityTheory.ThKW.TauSpanIdentities.piWF_ratWF C, ← _root_.PositivityTheory.ThKW.TauSpanIdentities.piWF_ratWF C, h])
-
-def ratEquivF (C : Ctx σ B JS JT ξ₀ θ ι) : Matrix (Fin nT) (Fin nS) E ≃ ratLF F E nS nT :=
-  Equiv.ofBijective (fun y => ⟨ratWF y, y, rfl⟩)
-    ⟨fun _ _ h => ratWF_injective C (congrArg Subtype.val h), by rintro ⟨_, y, rfl⟩; exact ⟨y, rfl⟩⟩
-
-theorem coe_ratEquivF (C : Ctx σ B JS JT ξ₀ θ ι) (y : Matrix (Fin nT) (Fin nS) E) :
-    (ratEquivF C y : WOF F E nS nT) = ratWF y := rfl
-
 theorem piWA_apply (x : WOF F E nS nT) : piWA θ x = piWF θ x := rfl
 
 theorem iotaA_apply (v : IxF F nS nT → ℂ) : iotaA (nS := nS) (nT := nT) ι v = iotaVF ι v := rfl

@@ -1245,7 +1245,6 @@ open PositivityTheory.Rg.Rsw
 open GlobalTheory.CompanionTheory.ZUnf GlobalTheory.Eis
 
 namespace GlobalTheory.CompanionTheory.ZUnf
-open GlobalTheory.Eis
 
 variable {D : D7} {n ρ p : ℕ}
 

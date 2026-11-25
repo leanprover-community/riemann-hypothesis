@@ -873,7 +873,7 @@ theorem res_eq_one_iff {P : LocPrime l} {K : FinExt l} {s : ℕ} {LL : FinExt l}
 theorem nonempty_wEt : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (K : FinExt l) (s : ℕ) (LL : FinExt l), Good K s LL → ∀ (Γ : GamS P K s LL) (R : WSer Γ) (I : IoS AI R), IoW I → (∀ (T : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)), ∃ e : Module.Basis (Fin (Module.finrank ↥(OL LL) ↥T.L.T)) (RW LL) (TW (RW LL) T), EtBasis I T e) → Nonempty (WEt I) := by
   intro l _ P AI K s LL hg Γ R I hI h
   choose e he using h
-  obtain ⟨h1, h2, -⟩ := _root_.GlobalTheory.IoInj.ioE_injective_saturated_inter l P AI K s LL hg Γ R I hI
+  obtain ⟨h1, h2, -⟩ := _root_.GlobalTheory.IoInj.ioE_injective_saturated_inter l P AI K s LL Γ R I
   refine exists_et I (fun g h x => gRW_mul AI LL _ _ x) (fun g x => GlobalTheory.EtaleBasis.frob_comm_gal AI LL _ x) h1 h2
     (fun p q A A' U hA hA' hU hφ => GlobalTheory.T.fixedByCyclotomicKernel_etalePhi_solution_mem_wach l P AI K s LL hg Γ R I hI p q A A' 0 U hA hA'
       (fun i j g hgK hχ => hU i j ⟨g, hgK⟩ ((res_eq_one_iff Γ _).2 hχ)) ?_) e

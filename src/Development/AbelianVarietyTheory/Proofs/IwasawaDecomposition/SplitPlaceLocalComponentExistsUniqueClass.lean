@@ -119,18 +119,8 @@ theorem eq_sum_coord {K V M : Type} [Field K] [AddCommGroup V] [Module K V] [Add
     rw [← hx, ← hy]
 
 theorem eq_zero_of_compAt_eq_zero :
-    ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (z : AL L), (∀ w, compAt L w z = 0) → z = 0 := by
-  intro L _ _ _ z hz
-  classical
-  let b := Module.finBasis (maximalRealSubfield L) L
-  rw [eq_sum_coord b z]
-  refine Finset.sum_eq_zero fun i _ => ?_
-  have : TensorProduct.lid (maximalRealSubfield L) _ ((b.coord i).rTensor _ z) = 0 := by
-    refine Subtype.ext (funext fun w => ?_)
-    have h := coord_compAt L b w i z
-    rw [hz w, map_zero, map_zero] at h
-    exact h.symm
-  rw [this, TensorProduct.tmul_zero]
+    ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (z : AL L), (∀ w, compAt L w z = 0) → z = 0 :=
+  _root_.GlobalTheory.InertUmax.eq_zero_of_compAt
 
 end GlobalTheory.AdelicComp
 end -- clump:auto

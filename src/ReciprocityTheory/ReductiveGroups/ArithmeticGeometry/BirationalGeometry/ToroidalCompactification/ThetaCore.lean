@@ -447,4 +447,17 @@ theorem thetaCore (hT : SecTwistSt) (hA : AmplePtSt) : ThetaCoreSt := by
   · rw [gs_appLE m2.φ _ _ h₁ (𝟙 _) y hy, hσ' _ (𝟙 _) y j k (h₁ hy) (h₂ hy).2, gs_mul _ y _ hy, gs_res _ y _ hy]
     exact congrArg₂ (· * ·) ((gs_res (𝟙 _) y h₂ hy _).trans (gs_unit (𝟙 _) y _ (h₂ hy) _)).symm rfl
 
+/-- Over the base ring itself, `IsTan` and `IsTangent` are the same condition. -/
+theorem isTan_iff_isTangent {V : Type} [CommRing V] {G : Over (Sp V)} [GrpObj G] (w : epsR V ⟶ G) :
+    IsTan (V := V) (R := V) (G := G) w ↔ IsTangent w := by
+  /- The two sides have types `(ptOver V V).left ⟶ _` and `(𝟙_ (Over (Sp V))).left ⟶ _`. Stating
+  the equation in `Sp V ⟶ G.left` keeps the kernel from comparing `spMap (algebraMap V V)` with
+  `𝟙 (Sp V)` to see that these agree, which is slow. -/
+  have : @Eq (Sp V ⟶ G.left) (1 : ptOver V V ⟶ G).left η[G].left := by
+    show spMap (algebraMap V V) ≫ _ = _
+    rw [show spMap (algebraMap V V) = 𝟙 _ from Spec.map_id _]
+    exact Category.id_comp _
+  unfold IsTan IsTangent
+  rw [this]
+
 end ReciprocityTheory.ChartRestriction.G.Geo.Tor

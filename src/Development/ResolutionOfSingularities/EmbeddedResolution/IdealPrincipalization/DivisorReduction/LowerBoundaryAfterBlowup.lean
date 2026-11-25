@@ -61,19 +61,12 @@ namespace FunctorialResolution.EmbeddedResolution
 
 namespace DivisorReductionBoundary
 
-private theorem mem_closeds_compl {α : Type u} [TopologicalSpace α]
-    (S : TopologicalSpace.Closeds α) (x : α) : x ∈ S.compl ↔ x ∉ S := Iff.rfl
-
 private theorem saturation_top_eq_top {Y : Scheme.{u}} (F : Y.IdealSheafData) :
     saturation F (⊤ : Y.IdealSheafData) = ⊤ := by
   have h := comap_le_strictTransform (𝟙 Y) F (⊤ : Y.IdealSheafData)
   rw [strictTransform_eq_saturation, Scheme.IdealSheafData.comap_id,
     Scheme.IdealSheafData.comap_id] at h
   exact top_le_iff.mp h
-
-private theorem restrictIdeal_mul {X : Scheme.{u}} (A B : X.IdealSheafData) (U : X.Opens) :
-    restrictIdeal (A * B) U = restrictIdeal A U * restrictIdeal B U :=
-  Scheme.IdealSheafData.comap_mul A B U.ι
 
 private theorem restrictIdeal_strictTransform_id {X : Scheme.{u}} [IsLocallyNoetherian X]
     (Z D : X.IdealSheafData) (U : X.Opens) :
@@ -84,24 +77,6 @@ private theorem restrictIdeal_strictTransform_id {X : Scheme.{u}} [IsLocallyNoet
   rw [Category.id_comp] at h2
   rw [h1, Category.comp_id, h2, strictTransform_eq_saturation, Scheme.IdealSheafData.comap_id,
     Scheme.IdealSheafData.comap_id]
-
-private theorem map_eq_self_of_getElem {α : Type u} (g : α → α) : ∀ l : List α,
-    (∀ (i : ℕ) (h : i < l.length), g (l[i]'h) = l[i]'h) → l.map g = l := by
-  intro l h
-  refine List.ext_getElem (List.length_map _) ?_
-  intro i _ hi
-  simpa only [List.getElem_map] using h i hi
-
-private theorem eraseIdx_map_eq {α : Type u} (g : α → α) : ∀ (l : List α) (j : ℕ),
-    (∀ (i : ℕ) (h : i < l.length), i ≠ j → g (l[i]'h) = l[i]'h) →
-    (l.map g).eraseIdx j = l.eraseIdx j := by
-  intro l j h
-  rw [List.eraseIdx_map]
-  apply map_eq_self_of_getElem
-  intro k hk
-  obtain ⟨i, hi, hij, heq⟩ := List.mem_eraseIdx_iff_getElem.mp (List.getElem_mem hk)
-  rw [← heq]
-  exact h i hi hij
 
 theorem strictTransform_comap_boundary_of_ne (T : MarkedIdealWithBoundary.{u}) (hV : T.IsAdmissible) (j : ℕ)
     (hj : j < T.boundary.length) (i : ℕ) (hi : i < T.boundary.length) (hij : i ≠ j) :
@@ -135,15 +110,11 @@ theorem strictTransform_comap_boundary_of_ne (T : MarkedIdealWithBoundary.{u}) (
         have := hq2
         rw [ht]
         exact c.saturation_coordIdeal_of_ne t b htb
-  · refine ⟨(DivisorReduction.containedComponentsIdeal T j hj).support.compl,
-      (mem_closeds_compl _ _).mpr hx, ?_⟩
+  · refine ⟨(DivisorReduction.containedComponentsIdeal T j hj).support.compl, hx, ?_⟩
     have hst := restrictIdeal_strictTransform_eq_comap_of_notMem_support (𝟙 T.scheme)
       (DivisorReduction.containedComponentsIdeal T j hj) (T.boundary.get ⟨i, hi⟩)
       (DivisorReduction.containedComponentsIdeal T j hj).support.compl
-      (fun y hy => by
-        have h' : y ∉ (DivisorReduction.containedComponentsIdeal T j hj).support :=
-          (mem_closeds_compl _ y).mp hy
-        simpa using h')
+      (fun _ hy => hy)
     rw [hst, Scheme.IdealSheafData.comap_id]
 
 theorem isSmoothDivisor_containedComponentsIdeal (T : MarkedIdealWithBoundary.{u}) (hV : T.IsAdmissible) (j : ℕ)
@@ -172,27 +143,23 @@ theorem strictTransform_mul_containedComponentsIdeal (T : MarkedIdealWithBoundar
       (DivisorReduction.containedComponentsIdeal T j hj) (T.boundary.get ⟨j, hj⟩) U
     rw [hZU, hDj] at hq2
     have := hq2
-    rw [restrictIdeal_mul, restrictIdeal_strictTransform_id, hZU, hDj,
+    rw [restrictIdeal_eq_comap_ι, Scheme.IdealSheafData.comap_mul, ← restrictIdeal_eq_comap_ι,
+      ← restrictIdeal_eq_comap_ι, restrictIdeal_strictTransform_id, hZU, hDj,
       c.saturation_coordIdeal_self b, Scheme.IdealSheafData.top_mul]
-  · refine ⟨(DivisorReduction.containedComponentsIdeal T j hj).support.compl,
-      (mem_closeds_compl _ _).mpr hx, ?_⟩
+  · refine ⟨(DivisorReduction.containedComponentsIdeal T j hj).support.compl, hx, ?_⟩
     have hZtop : restrictIdeal (DivisorReduction.containedComponentsIdeal T j hj)
         (DivisorReduction.containedComponentsIdeal T j hj).support.compl = ⊤ := by
       have h := restrictIdeal_exceptionalIdeal_eq_top_of_notMem_support (𝟙 T.scheme)
-        (DivisorReduction.containedComponentsIdeal T j hj) (DivisorReduction.containedComponentsIdeal T j hj).support.compl
-        (fun y hy => by
-          have h' : y ∉ (DivisorReduction.containedComponentsIdeal T j hj).support :=
-            (mem_closeds_compl _ y).mp hy
-          simpa using h')
+        (DivisorReduction.containedComponentsIdeal T j hj)
+        (DivisorReduction.containedComponentsIdeal T j hj).support.compl
+        (fun _ hy => hy)
       rwa [exceptionalIdeal_id] at h
     have hst := restrictIdeal_strictTransform_eq_comap_of_notMem_support (𝟙 T.scheme)
       (DivisorReduction.containedComponentsIdeal T j hj) (T.boundary.get ⟨j, hj⟩)
       (DivisorReduction.containedComponentsIdeal T j hj).support.compl
-      (fun y hy => by
-        have h' : y ∉ (DivisorReduction.containedComponentsIdeal T j hj).support :=
-          (mem_closeds_compl _ y).mp hy
-        simpa using h')
-    rw [restrictIdeal_mul, hst, Scheme.IdealSheafData.comap_id, hZtop,
+      (fun _ hy => hy)
+    rw [restrictIdeal_eq_comap_ι, Scheme.IdealSheafData.comap_mul, ← restrictIdeal_eq_comap_ι,
+      ← restrictIdeal_eq_comap_ι, hst, Scheme.IdealSheafData.comap_id, hZtop,
       Scheme.IdealSheafData.mul_top]
 
 theorem disjoint_support_strictTransform_containedComponentsIdeal (T : MarkedIdealWithBoundary.{u}) (hV : T.IsAdmissible) (j : ℕ)
@@ -229,11 +196,14 @@ theorem take_eraseIdx_lowerBoundaryAfterBlowup (T : MarkedIdealWithBoundary.{u})
       T.boundary.map (fun D =>
         Blowup.strictTransform (𝟙 T.scheme) (DivisorReduction.containedComponentsIdeal T j hj) (D.comap (𝟙 T.scheme))) := by
     simp only [List.map_map, Function.comp_def]
-  have key := eraseIdx_map_eq
-    (fun D : T.scheme.IdealSheafData =>
-      Blowup.strictTransform (𝟙 T.scheme) (DivisorReduction.containedComponentsIdeal T j hj) (D.comap (𝟙 T.scheme)))
-    T.boundary j
-    (fun i h hij => strictTransform_comap_boundary_of_ne T hV j hj i h hij)
+  have key : (T.boundary.map (fun D =>
+      Blowup.strictTransform (𝟙 T.scheme)
+        (DivisorReduction.containedComponentsIdeal T j hj)
+        (D.comap (𝟙 T.scheme)))).eraseIdx j = T.boundary.eraseIdx j := by
+    rw [List.eraseIdx_map]
+    refine (List.map_congr_left (g := id) fun D hD => ?_).trans (List.map_id _)
+    obtain ⟨i, hi, hij, rfl⟩ := List.mem_eraseIdx_iff_getElem.mp hD
+    exact strictTransform_comap_boundary_of_ne T hV j hj i hi hij
   have hlen : j < (T.boundary.map (fun D =>
       Blowup.strictTransform (𝟙 T.scheme) (DivisorReduction.containedComponentsIdeal T j hj)
         (D.comap (𝟙 T.scheme)))).length := by

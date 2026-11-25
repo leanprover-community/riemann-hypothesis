@@ -216,8 +216,7 @@ theorem det_eq_mul_X_pow {k ι : Type} [Field k] (n r e : ℕ) (t : ℕ → Matr
 open Module in
 private theorem index_span_matrix_eq_val_det (O : Type) [CommRing O] [IsDomain O]
     [IsDiscreteValuationRing O] (W : Type) [AddCommGroup W] [Module O W] (l n : ℕ)
-    (bs : Fin n → W) (m : Matrix (Fin n) (Fin n) O) (hbs : LinearIndependent O bs)
-    (_hm : m.det ≠ 0) :
+    (bs : Fin n → W) (m : Matrix (Fin n) (Fin n) O) (hbs : LinearIndependent O bs) :
     Formalism.MainNotions.IntegralHeckeForms.sIdx l (Submodule.span O (Set.range bs))
       (Submodule.span O (Set.range fun a => ∑ c, m c a • bs c)) =
         Formalism.MainNotions.BlochKatoReduction.Gen.nval O l m.det := by
@@ -307,9 +306,9 @@ theorem sIdx_span_of_smul_eq {O : Type} [CommRing O] [IsDomain O] [IsDiscreteVal
     obtain ⟨c, hc, hcy⟩ := hL2.2.2 y hy
     exact ⟨c, hc, hle hcy⟩
   refine ⟨hL1, ?_⟩
-  have e1 := index_span_matrix_eq_val_det O W l n bs m hbs hd
+  have e1 := index_span_matrix_eq_val_det O W l n bs m hbs
   have hxd : (x • (1 : Matrix (Fin n) (Fin n) O)).det = x ^ n := by simp
-  have e2 := index_span_matrix_eq_val_det O W l n w (x • 1) hwi (by rw [hxd]; exact pow_ne_zero _ hx)
+  have e2 := index_span_matrix_eq_val_det O W l n w (x • 1) hwi
   have e3 : (fun a => ∑ c, (x • (1 : Matrix (Fin n) (Fin n) O)) c a • w c) = fun a => x • w a := by
     ext a; simp [Matrix.one_apply]
   rw [e3, hxd] at e2

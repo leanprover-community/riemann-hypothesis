@@ -167,18 +167,12 @@ private def secPb (D : E.LineData Y) (c : Y' ⟶ Y) (C : Y.Opens) (σ : (C : Sch
     ((c ⁻¹ᵁ C : Y'.Opens) : Scheme.{0}) ⟶ (D.pb c).Y :=
   pullback.lift (f := D.f) (g := c) ((c ∣_ C) ≫ σ) (c ⁻¹ᵁ C).ι (by rw [Category.assoc, hσ, morphismRestrict_ι])
 
-private lemma secPb_f (D : E.LineData Y) (c : Y' ⟶ Y) (C : Y.Opens) (σ : (C : Scheme.{0}) ⟶ D.Y) (hσ : σ ≫ D.f = C.ι) :
-    secPb D c C σ hσ ≫ (D.pb c).f = (c ⁻¹ᵁ C).ι := pullback.lift_snd _ _ _
-
-private lemma secPb_fst (D : E.LineData Y) (c : Y' ⟶ Y) (C : Y.Opens) (σ : (C : Scheme.{0}) ⟶ D.Y) (hσ : σ ≫ D.f = C.ι) :
-    (show _ ⟶ pullback D.f c from secPb D c C σ hσ) ≫ pullback.fst D.f c = (c ∣_ C) ≫ σ := pullback.lift_fst _ _ _
-
 private lemma loc_pb (D : E.LineData Y) (c : Y' ⟶ Y) (h : sSup (Pb.𝒱D D) = ⊤) : sSup (Pb.𝒱D (D.pb c)) = ⊤ := by
   rw [eq_top_iff]
   intro y _
   have hy : c y ∈ sSup (Pb.𝒱D D) := by rw [h]; trivial
   obtain ⟨C, ⟨σ, hσ⟩, hC⟩ := Opens.mem_sSup.1 hy
-  exact Opens.mem_sSup.2 ⟨c ⁻¹ᵁ C, ⟨secPb D c C σ hσ, secPb_f D c C σ hσ⟩, hC⟩
+  exact Opens.mem_sSup.2 ⟨c ⁻¹ᵁ C, ⟨secPb D c C σ hσ, pullback.lift_snd _ _ _⟩, hC⟩
 
 private lemma topIso_nat (c : Y' ⟶ Y) (C : Y.Opens) :
     c.app C ≫ (c ⁻¹ᵁ C).topIso.inv = C.topIso.inv ≫ (c ∣_ C).appTop := by
@@ -340,9 +334,9 @@ theorem blowBC : BlowBC := by
       rwa [h3]
     c := fun α => chartPb φ hq hb hc hcl (B.c α)
     σ := fun α k => secPb D c ((B.c α).C k) (B.σ α k) (B.σ_f α k)
-    σ_f := fun α k => secPb_f D c _ _ _
+    σ_f := fun α k => pullback.lift_snd _ _ _
     f_σ := fun α k => by
-      refine (congrArg B.f (secPb_fst D c _ _ _)).trans ?_
+      refine (congrArg B.f (pullback.lift_fst _ _ _)).trans ?_
       rw [B.f_nat, B.f_σ]
       exact eqn_pb hc _ _ _ _ _ }⟩
 

@@ -47,13 +47,6 @@ open MeasureTheory
 
 namespace PositivityTheory.RgFd
 
-def MomA : Prop :=
-  ∀ (Ω Ω' : Type) [MeasurableSpace Ω] [MeasurableSpace Ω'] (ν : Measure Ω) (ν' : Measure Ω') (U : Ω → ℝ) (U' : Ω' → ℝ)
-    (t0 : ℕ), Measurable U → Measurable U' → (∀ x, 0 ≤ U x ∧ U x ≤ 1) → (∀ y, 0 ≤ U' y ∧ U' y ≤ 1) → 1 ≤ t0 →
-    (∀ j : ℕ, 1 ≤ j → ∫⁻ x, ENNReal.ofReal (U x ^ (j * t0)) ∂ν = ∫⁻ y, ENNReal.ofReal (U' y ^ (j * t0)) ∂ν') →
-    (∀ j : ℕ, 1 ≤ j → ∫⁻ x, ENNReal.ofReal (U x ^ (j * t0)) ∂ν ≠ ⊤) →
-    ν {x | 0 < U x} = ν' {y | 0 < U' y}
-
 def MomB : Prop :=
   ∀ (I : Type) [Fintype I] (α β : I → ℝ) (c : ℝ), (∀ i, 0 < α i) → (∀ i, 0 ≤ β i) → 0 ≤ c →
     ∃ (ν' : Measure (I → ℝ)) (U' : (I → ℝ) → ℝ), Measurable U' ∧ (∀ y, 0 < U' y ∧ U' y ≤ 1) ∧

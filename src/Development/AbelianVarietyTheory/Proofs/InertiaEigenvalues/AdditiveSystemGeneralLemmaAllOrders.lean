@@ -859,7 +859,7 @@ theorem gl1 : GLOnto 1 ∧ GLCount 1 := by
   constructor
   · intro F _ _ _ _ p _ _ m _ _ e D he hD M hM b hb
     obtain ⟨A, U, hA, hU0, hUn, -, hfac⟩ := _root_.GlobalTheory.PMonE.preparation F p m e D he hD M hM
-    obtain ⟨y, ⟨hy, hyb⟩, -⟩ := _root_.GlobalTheory.PMonE.existsUnique_integral_gsum_eq F p m e D he U hU0 hUn b hb
+    obtain ⟨y, ⟨hy, hyb⟩, -⟩ := _root_.GlobalTheory.PMonE.existsUnique_integral_gsum_eq F p m e D U hU0 hUn b hb
     obtain ⟨x, hx, hxy⟩ := _root_.GlobalTheory.PMonE.LangOnto.lang_onto F p m e he A hA y hy
     refine ⟨x, hx, ?_⟩
     rw [hfac]
@@ -873,7 +873,7 @@ theorem gl1 : GLOnto 1 ∧ GLCount 1 := by
       rw [hM0, Matrix.det_neg, Matrix.det_mul, h, mul_zero, mul_zero]
     obtain ⟨hInt, hcard⟩ := _root_.GlobalTheory.PMonE.langCount F p m e he A hA hAdet
     have hq : 0 < p ^ e := pow_pos (Fact.out : p.Prime).pos e
-    obtain ⟨z, -, hz⟩ := _root_.GlobalTheory.PMonE.existsUnique_integral_gsum_eq F p m e D he U hU0 hUn 0 (fun i => by simp)
+    obtain ⟨z, -, hz⟩ := _root_.GlobalTheory.PMonE.existsUnique_integral_gsum_eq F p m e D U hU0 hUn 0 (fun i => by simp)
     have key : ∀ x : m → F, Integral x →
         (gsum (p ^ e) D M x = 0 ↔ ∀ i, x i ^ p ^ e = A.mulVec x i) := by
       intro x hx
@@ -1228,11 +1228,11 @@ namespace GlobalTheory.PMonE
 theorem glOnto_zero_and_glCount_zero : GLOnto 0 ∧ GLCount 0 := by
   constructor
   · intro F _ _ _ _ p _ _ m _ _ e D he _ M hM b hb
-    obtain ⟨x, hx, -⟩ := existsUnique_integral_gsum_eq F p m e D he M
+    obtain ⟨x, hx, -⟩ := existsUnique_integral_gsum_eq F p m e D M
       (fun i j => by simp [hM.top]) (fun n hn i j => hM.small n (by omega) i j) b hb
     exact ⟨x, hx⟩
   · intro F _ _ _ _ p _ _ m _ _ e D he _ M hM _
-    obtain ⟨y, hy, huniq⟩ := existsUnique_integral_gsum_eq F p m e D he M
+    obtain ⟨y, hy, huniq⟩ := existsUnique_integral_gsum_eq F p m e D M
       (fun i j => by simp [hM.top]) (fun n hn i j => hM.small n (by omega) i j) 0 (fun i => by simp)
     rw [Nat.mul_zero, pow_zero, Nat.card_eq_one_iff_exists]
     exact ⟨⟨y, hy⟩, fun z => Subtype.ext (huniq z.1 z.2)⟩

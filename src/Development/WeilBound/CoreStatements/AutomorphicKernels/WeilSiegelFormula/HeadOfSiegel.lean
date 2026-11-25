@@ -593,7 +593,6 @@ end GlobalTheory.CompanionTheory.EisCellsPInv
 
 namespace GlobalTheory.CompanionTheory.EisCellsPInv
 
-open PositivityTheory.GramSchwartzFunctions.EC
 
 theorem pInv : PositivityTheory.GramSchwartzFunctions.EC.PInv := by
   intro D n V ψ χ θ μ ω hS Φ γ hγ g

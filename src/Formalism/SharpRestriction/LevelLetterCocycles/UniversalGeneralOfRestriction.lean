@@ -2690,7 +2690,7 @@ theorem universal_general_of_sections (D : D7) (HW : HWOf D.loc) (F : FonOf D.lo
     (Cm : CmpOf D.loc D.locA HW F) (hAdm : AdmUnivA D HW F Cm) (h9 : Formalism.MainNotions.DeltaInvariantLattices.P9 D HW F)
     (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW F) (hDR : Formalism.MainNotions.TruncatedSeriesCountingBounds.adm15 D) (hSec : UnivSecL D HW)
     (hGen : UnivGenL D HW) : UniversalComponentCaseA D HW F Cm :=
-  universal_general_of_frame_sections D HW F Cm hAdm h9 hH (univFrameL_of D HW F Cm hAdm h9 hH hDR) hSec hGen
+  universal_general_of_frame_sections D HW F Cm hAdm h9 (univFrameL_of D HW F Cm hAdm h9 hH hDR) hSec hGen
     (univLiftL_of D HW F Cm hAdm h9)
 
 end Formalism.MainNotions.UnusedSlot80

@@ -369,7 +369,6 @@ theorem kStability_main : UpperTheory.V.Published.KStability := by
 end GlobalTheory.HomStab
 
 section
-open CategoryTheory CategoryTheory.Limits GlobalTheory.HomStab GlobalTheory.SeqCx UpperTheory.V.KL
 end
 end -- clump:auto
 end -- clump:auto

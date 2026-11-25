@@ -51,13 +51,9 @@ open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC GlobalTheory.GalV 
 open UpperTheory.Gal.Int.Geo (FEt Cover gen piece IsHEig)
 universe u v
 
-private theorem sp_subsingleton (Ω : Type) [Field Ω] : Subsingleton ↑(UpperTheory.Gal.G3.sp Ω) :=
-  inferInstanceAs (Subsingleton (PrimeSpectrum Ω))
-
 private theorem exists_factor_ι {J : Type} {W : Scheme.{0}} (Ω : Type) [Field Ω]
     (u : UpperTheory.Gal.G3.sp Ω ⟶ ∐ (fun _ : J => W)) :
     ∃ (j : J) (x : UpperTheory.Gal.G3.sp Ω ⟶ W), x ≫ Sigma.ι (fun _ : J => W) j = u := by
-  haveI := sp_subsingleton Ω
   have p : ↑(UpperTheory.Gal.G3.sp Ω) := show PrimeSpectrum Ω from ⟨⊥, Ideal.isPrime_bot⟩
   obtain ⟨⟨j, y⟩, hq⟩ : ∃ q, (sigmaMk (fun _ : J => W)).symm (u p) = q := ⟨_, rfl⟩
   have hy : Sigma.ι (fun _ : J => W) j y = u p := by
@@ -65,7 +61,7 @@ private theorem exists_factor_ι {J : Type} {W : Scheme.{0}} (Ω : Type) [Field 
   refine ⟨j, IsOpenImmersion.lift (Sigma.ι (fun _ : J => W) j) u ?_,
     IsOpenImmersion.lift_fac _ _ _⟩
   rintro _ ⟨z, rfl⟩
-  obtain rfl : z = p := Subsingleton.elim _ _
+  obtain rfl : z = p := Subsingleton.elim (α := PrimeSpectrum Ω) _ _
   exact ⟨y, hy⟩
 
 private theorem index_eq_of_ι {J : Type} {W : Scheme.{0}} (Ω : Type) [Field Ω] {j j' : J}

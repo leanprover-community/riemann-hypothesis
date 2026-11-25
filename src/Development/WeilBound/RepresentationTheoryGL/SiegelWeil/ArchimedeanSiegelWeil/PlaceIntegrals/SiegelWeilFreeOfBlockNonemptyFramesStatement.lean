@@ -1018,31 +1018,6 @@ theorem fibre_transport {μ : Measure V} {ν : Measure X} {f f' : V → Y} {ι :
       rw [e2]
       exact h2.const_smul (a : ℝ)
 
-omit [BorelSpace V] in
-theorem fibre_scale {μ : Measure V} {ν : Measure X} {f : V → Y} {ι : X → Y} {U : Set V}
-    {B : Set X} {fib : X → Measure V} (a k r : ℝ≥0) (hr : r * k = a)
-    (hfib : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsFibreFamily μ f ι U ν B fib) :
-    Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsFibreFamily (a • μ) f ι U (k • ν) B (fun b => r • fib b) := by
-  refine ⟨fun b => ?_, fun φ hφ => ?_, fun φ hc hcs hts => ?_⟩
-  · rw [Measure.smul_apply, hfib.1 b, smul_zero]
-  · have e1 : ∀ b, ∫⁻ x, φ x ∂(r • fib b) = (r : ℝ≥0∞) * ∫⁻ x, φ x ∂(fib b) := by
-      intro b
-      rw [lintegral_smul_measure, ENNReal.smul_def, smul_eq_mul]
-    simp only [e1]
-    rw [Measure.restrict_smul, lintegral_smul_measure, lintegral_smul_measure,
-      lintegral_const_mul' _ _ ENNReal.coe_ne_top, ← hfib.2.1 φ hφ, ENNReal.smul_def,
-      ENNReal.smul_def, smul_eq_mul, smul_eq_mul, ← mul_assoc, ← hr]
-    push_cast
-    ring_nf
-  · obtain ⟨h1, h2⟩ := hfib.2.2 φ hc hcs hts
-    refine ⟨fun b hb => (h1 b hb).smul_measure ENNReal.coe_ne_top, ?_⟩
-    have e2 : (fun b => ∫ x, φ x ∂(r • fib b)) = fun b => (r : ℝ) • ∫ x, φ x ∂(fib b) := by
-      funext b
-      rw [integral_smul_nnreal_measure]
-      rfl
-    rw [e2]
-    exact h2.const_smul (r : ℝ)
-
 end Gen
 
 section Loc

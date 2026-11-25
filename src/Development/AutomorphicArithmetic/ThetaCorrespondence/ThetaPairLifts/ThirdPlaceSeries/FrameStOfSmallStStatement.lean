@@ -878,41 +878,7 @@ theorem exists_aut {E K : Type} [Field E] [NumberField E] [IsGalois ℚ E] [Fiel
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 theorem isHalf_lab (D : D7) {l : ℕ} [Fact l.Prime] (e0 : D.what₂.LL →+* PadicAlgCl l) : IsHalf (incOf D e0 false) := by
-  have : IsGalois ℚ D.host.E := D.host.hostE_isGalois
-  set ι : D.host.E →+* PadicAlgCl l := e0.comp D.embE with hι
-  have hinc : ∀ τ, incOf D e0 false τ = ι.comp (D.host.sigmaOf (D.eTau τ).1 : D.host.E →+* D.host.E) := fun τ => rfl
-  have hcc : ∀ g, ExpFrame.cj (ι.comp (D.host.sigmaOf g : D.host.E →+* D.host.E)) =
-      ι.comp (D.host.sigmaOf (g * D.R.cc) : D.host.E →+* D.host.E) := by
-    intro g
-    have hs : D.host.sigmaOf (g * D.R.cc) = D.host.sigmaOf g * D.host.conj :=
-      map_mul (D.host.gal).symm g (D.R.cc)
-    ext x
-    rw [hs]
-    show ι (D.host.sigmaOf g (IsCMField.complexConj D.host.E x)) = ι (D.host.sigmaOf g (D.host.conj x))
-    congr 2
-    exact Formalism.BasicNotions.bridge_star_holds D.R D.host x
-  have hinj : ∀ g g', ι.comp (D.host.sigmaOf g : D.host.E →+* D.host.E) = ι.comp (D.host.sigmaOf g' : D.host.E →+* D.host.E) →
-      g = g' := by
-    intro g g' h
-    have : D.host.sigmaOf g = D.host.sigmaOf g' := AlgEquiv.ext fun x => ι.injective (RingHom.congr_fun h x)
-    exact (D.host.gal).symm.injective this
-  refine ⟨fun τ τ' h => ?_, fun τ τ' h => ?_, fun i => ?_⟩
-  · rw [hinc, hinc] at h
-    exact D.eTau.injective (Subtype.ext (hinj _ _ h))
-  · rw [hinc, hinc, hcc] at h
-    have e := hinj _ _ h
-    exact (Formalism.L2.Geo.mem_Psi_iff_mul_cc_notMem _).1 (D.eTau τ).2 (e ▸ (D.eTau τ').2)
-  · obtain ⟨σ, hσ⟩ := exists_aut ι i
-    have hσg : D.host.sigmaOf (D.host.gal σ) = σ :=
-      (D.host.gal).symm_apply_apply σ
-    by_cases hg : D.host.gal σ ∈ D.R.Psi
-    · refine ⟨D.eTau.symm ⟨_, hg⟩, Or.inl ?_⟩
-      rw [hinc, Equiv.apply_symm_apply, hσ, hσg]
-    · have hg' : D.host.gal σ * D.R.cc ∈ D.R.Psi := by
-        by_contra h'
-        exact hg ((Formalism.L2.Geo.mem_Psi_iff_mul_cc_notMem _).2 h')
-      refine ⟨D.eTau.symm ⟨_, hg'⟩, Or.inr ?_⟩
-      rw [hinc, Equiv.apply_symm_apply, ← hcc, cjE_cjE, hσ, hσg]
+  exact GlobalTheory.ExpTie.isHalf_lab (D := D) e0
 
 theorem halfAt_all (D : D7) (l : ℕ) : HalfAt D l := by
   intro _ e0 b

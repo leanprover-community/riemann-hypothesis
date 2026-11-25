@@ -226,29 +226,6 @@ theorem psi_is {D : D7} {cf : CharFrame D} {C : NChoice D} (tp : TupTied D cf C)
   rw [nct.Q_eq a, ← D.nd.w_l a]
   exact tp.psi_is _ (D.nd.w_tw a)
 
-theorem etaT_link {D : D7} {cf : CharFrame D} {C : NChoice D} {tp : TupTied D cf C} (T : NCharTied D cf C tp)
-    (η : NC.HC D.host.E) (h : ∀ x, η.χ x = cf.eta.1 x) (w : PlE D.host) (α : ℂ) (ha : η.At w α) :
-    D.naut.frobEig (D.naut.locG D.naut.etaT w) = {α⁻¹} := by
-  obtain ⟨hu, hv⟩ := of_at _ _ h ha
-  rw [T.frob _ w (by rw [T.etaT]; exact hu), T.etaT, Units.val_inv_eq_inv_val, hv]
-
-theorem muC_link {D : D7} {cf : CharFrame D} {C : NChoice D} {tp : TupTied D cf C} (T : NCharTied D cf C tp)
-    (K : NC.NChiData D) (h1 : ∀ (j : Fin D.R.m) x, (K.mu0 (j.1 + 1)).χ x = (cf.mu0 j).1 x)
-    (h2 : ∀ s x, (K.del s).χ x = (cf.delAt (D.ntw.l s)).1 x) (h3 : ∀ a x, (K.psi a).χ x = (tp.psi (D.nd.w a)).1 x)
-    (i : D.nd.Loc) (w : PlE D.host) (α : ℂ) (ha : (K.mu0 (D.nd.j i) * K.del (D.ntw.twOf i) * K.psi i).At w α) :
-    D.naut.frobEig (D.naut.locG (D.naut.muC i) w) = {α⁻¹} := by
-  let j : Fin D.R.m := ⟨D.nd.j i - 1, by have := D.nd.j_range i; omega⟩
-  have hj : j.1 + 1 = D.nd.j i := by have := D.nd.j_range i; show D.nd.j i - 1 + 1 = _; omega
-  have e := T.muC i j hj
-  have htup : tp.tup (D.nd.mu i) j = cf.mu0 j * cf.delAt (D.nd.l i) * tp.psi (D.nd.w i) := by
-    rw [TupTied.tup, D.nd.mu_w, tp.xi_tw, D.nd.w_l, ← mul_assoc]
-  obtain ⟨hu, hv⟩ := of_at (tp.tup (D.nd.mu i) j) _ (fun x => by
-    rw [htup]
-    change ((K.mu0 (D.nd.j i)).χ x * (K.del (D.ntw.twOf i)).χ x) * (K.psi i).χ x = _
-    rw [← hj, h1, h2, h3, D.ntw.twOf_l]
-    rfl) ha
-  rw [T.frob _ w (by rw [e]; exact hu), e, Units.val_inv_eq_inv_val, hv]
-
 theorem psiL_gal' {D : D7} {cf : CharFrame D} {C : NChoice D} {tp : TupTied D cf C} (T : NCharTied D cf C tp)
     (nct : NChTie D C) (hψ : PsiChoiceCompatible D cf C tp) (K : NC.NChiData D) (h0 : ∀ x, K.etaT.χ x = cf.eta.1 x)
     (h1 : ∀ (j : Fin D.R.m) x, (K.mu0 (j.1 + 1)).χ x = (cf.mu0 j).1 x)

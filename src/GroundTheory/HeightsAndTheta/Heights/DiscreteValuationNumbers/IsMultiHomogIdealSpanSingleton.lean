@@ -192,13 +192,9 @@ theorem isMultiHomogIdeal_span_singleton {K : Type*} [DecidableEq K] {ι : K →
     [CommRing R] {x : MRing ι R} {e : K → ℕ} (hx : IsMultiHomog x e) :
     IsMultiHomogIdeal (Ideal.span {x}) := by
   classical
-  letI := MvPolynomial.weightedGradedAlgebra R (blockWeight ι)
-  have h : (Ideal.span {x}).IsHomogeneous (weightedHomogeneousSubmodule R (blockWeight ι)) :=
-    Ideal.homogeneous_span _ _ (by
-      rintro y rfl
-      exact ⟨e, hx⟩)
-  intro f hf b
-  exact MvPolynomial.weightedHomogeneousComponent_mem_of_mem R (blockWeight ι) h hf b
+  let _ := MvPolynomial.weightedGradedAlgebra R (blockWeight ι)
+  exact fun f hf b => MvPolynomial.weightedHomogeneousComponent_mem_of_mem R (blockWeight ι)
+    (Ideal.homogeneous_span _ _ (by rintro _ rfl; exact ⟨e, hx⟩)) hf b
 
 end Examples
 

@@ -598,7 +598,7 @@ theorem lamB_nonneg (L : SizeData₂ D) (tb : Tab L) {C : ℝ} (hC : 0 < C) {l :
 
 open Classical in
 theorem etaSum_le (L : SizeData₂ D) (tb : Tab L) (C : ℝ) (P : ParameterChoice' D L) (hA : AdmT L tb C P)
-    (_hg2 : ∀ l ∈ gset D, l ≠ 2) (hsumm : Summable (vvTerm D)) {j : ℕ} (hj : j ∈ SizeData₂.lifts D) :
+    (hsumm : Summable (vvTerm D)) {j : ℕ} (hj : j ∈ SizeData₂.lifts D) :
     etaSum L j ≤ (L.dZ0 j : ℝ) * (6 + UpperTheory.KStar.nuBudget D + Real.log (Formalism.MainNotions.N.hE D.host : ℝ) + Real.log (D.what₂.restRowsFiniteGroupCard : ℝ) +
       ∑ l ∈ (L.supp.filter (fun w => D.what₂.muAt w ≠ D.what₂.mu0)).image
         (fun w => D.what₂.places.resChar w), Real.log l * lamG L tb C l) + (L.dZ0 j : ℝ) * ∑' l, vvTerm D l := by

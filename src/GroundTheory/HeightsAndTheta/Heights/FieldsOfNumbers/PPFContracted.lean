@@ -37,7 +37,8 @@ theorem isHomogeneous_iff {M : Type*} [AddCommMonoid M] [DecidableEq M] (w : (Σ
     I.IsHomogeneous (weightedHomogeneousSubmodule F w) ↔
       ∀ (m : M), ∀ r ∈ I, weightedHomogeneousComponent w m r ∈ I := by
   constructor
-  · exact fun h m r hr => (mem_iff_weightedHomogeneousComponent_mem F w h r).mp hr m
+  · intro h m r hr
+    exact (mem_iff_weightedHomogeneousComponent_mem F w h r).mp hr m
   · intro h m r hr
     have := h m r hr
     rwa [← weightedDecomposition.decompose'_apply] at this
@@ -86,7 +87,8 @@ theorem isMultiHomogIdeal_of_blockDeg [Fintype K] {I : Ideal (MRing ι F)}
         ext d
         rw [hG]
         simp
-      rwa [this]
+      rw [this]
+      exact hr
     | insert k T hk ih =>
       have : G (insert k T) = weightedHomogeneousComponent (blockDeg k) (b k) (G T) := by
         ext d
@@ -99,7 +101,7 @@ theorem isMultiHomogIdeal_of_blockDeg [Fintype K] {I : Ideal (MRing ι F)}
     rw [hG, coeff_weightedHomogeneousComponent]
     by_cases hw : Finsupp.weight (blockWeight ι) d = b
     · simp [hw]
-    · rw [ite_eq_right hw, ite_eq_right]
+    · rw [if_neg hw, if_neg]
       exact fun h => hw (funext fun k => h k (Finset.mem_univ k))
   rw [← this]
   exact hmem _
@@ -120,21 +122,17 @@ theorem isMultiHomogIdeal_of_mem_minimalPrimes [Fintype K] {I W : Ideal (MRing �
     le_antisymm (Ideal.toIdeal_homogeneousCore_le _ _)
       (hW.2 ⟨hcore, hle⟩ (Ideal.toIdeal_homogeneousCore_le _ _))
   have hWk : W.IsHomogeneous (weightedHomogeneousSubmodule F (blockDeg (ι := ι) k)) := by
-    rwa [Ideal.IsHomogeneous.iff_eq]
+    rw [Ideal.IsHomogeneous.iff_eq]
+    exact heq
   exact (isHomogeneous_iff _ W).mp hWk n r hr
 
 theorem isMultiHomogIdeal_sup_span {I : Ideal (MRing ι F)} (hI : IsMultiHomogIdeal I)
     {f : MRing ι F} {c : K → ℕ} (hf : IsMultiHomog f c) :
     IsMultiHomogIdeal (I ⊔ Ideal.span {f}) := by
   classical
-  have hI' : I.IsHomogeneous (weightedHomogeneousSubmodule F (blockWeight ι)) :=
-    (isHomogeneous_iff (blockWeight ι) I).mpr fun m r hr => hI r hr m
-  have : (I ⊔ Ideal.span {f}).IsHomogeneous (weightedHomogeneousSubmodule F (blockWeight ι)) :=
-    hI'.sup (Ideal.homogeneous_span _ _ fun x hx => by
-      rw [Set.mem_singleton_iff] at hx
-      subst hx
-      exact ⟨c, (mem_weightedHomogeneousSubmodule _ _ _ _).mpr hf⟩)
-  exact fun r hr b => (isHomogeneous_iff _ _).mp this b r hr
+  have hI' := (isHomogeneous_iff (blockWeight ι) I).mpr fun m r hr => hI r hr m
+  exact fun r hr b => (isHomogeneous_iff _ _).mp
+    (hI'.sup (Ideal.homogeneous_span _ _ (by rintro _ rfl; exact ⟨c, hf⟩))) b r hr
 
 end Homog
 
@@ -202,7 +200,8 @@ theorem contractPrime_isRelevant (j : K ↪ K') (ι' : K' → Type*) {P' : Ideal
   obtain ⟨i, hi⟩ := h (j k)
   refine ⟨i, ?_⟩
   change rename (blockIncl j ι') (X ⟨k, i⟩) ∉ P'
-  rwa [rename_X]
+  rw [rename_X]
+  exact hi
 
 end Contract
 
@@ -232,7 +231,7 @@ theorem pullNat_apply (e : K → ℕ) (k' : K') :
     rw [Finset.sum_eq_zero]
     · simp
     · intro κ _
-      rw [ite_eq_right (fun hk => h ⟨κ, hk.symm⟩), mul_zero]
+      rw [if_neg (fun hk => h ⟨κ, hk.symm⟩), mul_zero]
 
 theorem pullNat_sub (b : K → ℤ) :
     (fun k' => (pullNat K K' j (fun κ => (b κ).toNat) k' : ℤ) -

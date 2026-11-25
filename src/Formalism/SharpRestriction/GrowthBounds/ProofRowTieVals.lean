@@ -668,7 +668,7 @@ theorem pullback_exp_column (col : Fin 2) :
   rw [← MvPowerSeries.coe_substAlgHom hb, map_smul, MvPowerSeries.coe_substAlgHom]
   congr 1
   unfold FB.hL
-  rw [VP.eval_two_points_eq_subst _ _ _ rfl]
+  rw [VP.eval_two_points_eq_subst _ _ _]
   change MvPowerSeries.subst _ (VP.hAt Y (pt C dd 0) (comp1 (Y.B.actK C Y.w0) (pt C dd 0))) = _
   rw [VP.hAt_subst (u := pt C dd 0) (v := comp1 (Y.B.actK C Y.w0) (pt C dd 0)) (hA := hb0)
     (hu := fun i => by exact MvPowerSeries.constantCoeff_X _) (hv := fun i => by

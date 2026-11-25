@@ -45,7 +45,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RowEx
 
 open GlobalTheory.SplitWeil GlobalTheory.SplitFlip MeasureTheory
-attribute [local instance] GlobalTheory.FunObj.borelKw GlobalTheory.FunObj.borelSpaceKw
 
 noncomputable section
 

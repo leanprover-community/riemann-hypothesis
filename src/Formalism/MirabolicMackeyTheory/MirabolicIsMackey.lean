@@ -572,7 +572,6 @@ section -- clump:auto
 namespace Formalism.EigenvalueLevelCeiling
 
 theorem idxPsiGood : IdxPsiGood := idxPsiGood_of _root_.Formalism.EigenvalueLevelCeiling.index_monotone _root_.Formalism.EigenvalueLevelCeiling.index_scale_inclusion _root_.Formalism.EigenvalueLevelCeiling.index_truncation_le _root_.Formalism.EigenvalueLevelCeiling.lattice_intersection
-theorem mirabolicIsMackey : MirabolicIsMackey := mirabolic_is_mackey
 theorem onLocal : OnLocal := onLocal_of _root_.Formalism.EigenvalueLevelCeiling.index_monotone _root_.Formalism.EigenvalueLevelCeiling.index_truncation_le _root_.Formalism.EigenvalueLevelCeiling.index_transport _root_.Formalism.EigenvalueLevelCeiling.lattice_intersection _root_.Formalism.EigenvalueLevelCeiling.three_forms idxPsiGood _root_.Formalism.EigenvalueLevelCeiling.good_index_GG
 theorem ramBasic : RamBasic := ramified_basic_bound
 

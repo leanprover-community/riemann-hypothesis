@@ -47,7 +47,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RowEx
 open GlobalTheory.Mem GlobalTheory.Mem.Top
-attribute [local instance] borelKw borelSpaceKw
 open GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.StdFrames GlobalTheory.SignedHC Formalism.L2.Ker Matrix MvPolynomial
 
 namespace GlobalTheory.RowEx.Jet

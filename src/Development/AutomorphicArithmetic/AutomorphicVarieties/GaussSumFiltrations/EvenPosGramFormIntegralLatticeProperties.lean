@@ -170,6 +170,4 @@ theorem GlobalTheory.HilbertThetaSeries.formLatticeProps : ∀ (F : Type) [Field
   · intro y hy l hl
     exact trace_int (bf_int G (mem_LL.mp hy) (mem_LL.mp hl))
 
-open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.ConjugateSelfDual GlobalTheory.CuspRep UpperTheory.V UpperTheory.V.Af UpperTheory.V.Sd GlobalTheory.HilbertThetaSeries
-open scoped Matrix
 

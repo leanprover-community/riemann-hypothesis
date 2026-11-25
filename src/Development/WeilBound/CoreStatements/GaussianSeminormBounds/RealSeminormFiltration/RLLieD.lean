@@ -75,15 +75,8 @@ namespace PositivityTheory.RL.Delta
 open Complex
 open scoped Real ContDiff
 
-theorem hadamard_lemma : ∀ (n : ℕ) (f : (Fin n → ℝ) → ℂ), ContDiff ℝ ∞ f → f 0 = 0 → ∃ g : Fin n → (Fin n → ℝ) → ℂ, (∀ i, ContDiff ℝ ∞ (g i)) ∧ ∀ x, f x = ∑ i, (x i : ℂ) * g i x :=
-  GlobalTheory.CompanionTheory.DiracComb.hadamard_lemma
-
 theorem dense_hasCompactSupport : ∀ (n : ℕ), Dense {f : SchwartzMap (Fin n → ℝ) ℂ | HasCompactSupport (f : (Fin n → ℝ) → ℂ)} :=
   fun _ => SchwartzMap.dense_hasCompactSupport
-
-theorem exists_quot : ∃ q : ℝ → ℂ, ContDiffOn ℝ ∞ q (Metric.ball 0 1) ∧
-    ∀ t ∈ Metric.ball (0 : ℝ) 1, (t : ℂ) = (cexp (2 * π * I * t) - 1) * q t :=
-  GlobalTheory.CompanionTheory.DiracComb.exists_quot
 
 theorem exists_div (n : ℕ) (f : SchwartzMap (Fin n → ℝ) ℂ)
     (hf : tsupport (f : (Fin n → ℝ) → ℂ) ⊆ Metric.ball 0 1) (h0 : f 0 = 0) :

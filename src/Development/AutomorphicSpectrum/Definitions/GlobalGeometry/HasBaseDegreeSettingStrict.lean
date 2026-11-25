@@ -46,7 +46,6 @@ import Mathlib.Topology.Sheaves.Init
 namespace GlobalTheory.CompanionTheory.Ar.Top
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo GroundTheory.Heights₂.Heights.LowerBoundFree
-open GroundTheory.Heights₂.Heights.LowerBoundFree
 
 def StokesAt {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {II : IntersectionSystem} {Ψ : Type} [Fintype Ψ]
     [DecidableEq Ψ] {Ω : Type} [Field Ω] [Algebra ℚ Ω] {E : Ψ → Type} [∀ τ, AddCommGroup (E τ)] [∀ τ, Module Ω (E τ)]

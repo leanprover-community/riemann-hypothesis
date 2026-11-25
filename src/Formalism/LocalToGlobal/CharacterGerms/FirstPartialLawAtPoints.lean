@@ -130,7 +130,7 @@ include ha hb hc
 theorem first_partial_law_at_points : MvPowerSeries.subst (P3 a b c) Y.B.ph1 =
     mvExp (hAt Y a c + hAt Y b c - hAt Y (addAt Y a b) c) := by
   have h := Y.gauge.ph1
-  rw [toK_eq, eval_two_points_eq_subst _ _ _ rfl, eval_two_points_eq_subst _ _ _ rfl, eval_two_points_eq_subst _ _ _ rfl, addOf_eq] at h
+  rw [toK_eq, eval_two_points_eq_subst _ _ _, eval_two_points_eq_subst _ _ _, eval_two_points_eq_subst _ _ _, addOf_eq] at h
   have k0 := cc_pt (C := C) (dd := dd) (0 : Fin 3)
   have k1 := cc_pt (C := C) (dd := dd) (1 : Fin 3)
   have k2 := cc_pt (C := C) (dd := dd) (2 : Fin 3)
@@ -160,7 +160,7 @@ theorem hAt_zero_left {c : Fin dd → MvPowerSeries τ C} (hc : ∀ i, MvPowerSe
             | exact fun d => Set.toFinite _
             | (simp; intro d; exact Set.toFinite _)⟩
   have h1 : MvPowerSeries.subst (P2 (0 : Pt C 1 dd) (pt C dd 0)) Y.h = 0 := by
-    rw [← eval_two_points_eq_subst (m := 2) _ _ _ rfl]
+    rw [← eval_two_points_eq_subst _ _ _]
     exact Y.gauge.ax0
   have h3 : hAt Y (fun _ => 0) c =
       MvPowerSeries.subst (fun q : Fin 1 × Fin dd => c q.2) (MvPowerSeries.subst (P2 (0 : Pt C 1 dd) (pt C dd 0)) Y.h) := by
@@ -187,7 +187,7 @@ theorem hAt_zero_right {c : Fin dd → MvPowerSeries τ C} (hc : ∀ i, MvPowerS
             | exact fun d => Set.toFinite _
             | (simp; intro d; exact Set.toFinite _)⟩
   have h1 : MvPowerSeries.subst (P2 (pt C dd 0) (0 : Pt C 1 dd)) Y.h = 0 := by
-    rw [← eval_two_points_eq_subst (m := 2) _ _ _ rfl]
+    rw [← eval_two_points_eq_subst _ _ _]
     exact Y.gauge.ax1
   have h3 : hAt Y c (fun _ => 0) =
       MvPowerSeries.subst (fun q : Fin 1 × Fin dd => c q.2) (MvPowerSeries.subst (P2 (pt C dd 0) (0 : Pt C 1 dd)) Y.h) := by

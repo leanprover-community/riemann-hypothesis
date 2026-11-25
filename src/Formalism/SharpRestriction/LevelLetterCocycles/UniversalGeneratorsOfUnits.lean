@@ -74,7 +74,7 @@ section Idem
 
 variable {A : Type} [CommRing A] {E : A}
 
-theorem idem_mul (_hE : E * E = E) {x y : A} (h : x * E = y * E) (z : A) : (z * x) * E = (z * y) * E := by
+theorem idem_mul {x y : A} (h : x * E = y * E) (z : A) : (z * x) * E = (z * y) * E := by
   rw [mul_assoc, h, ← mul_assoc]
 
 theorem idem_pow (hE : E * E = E) {x y : A} (h : x * E = y * E) (k : ℕ) : x ^ k * E = y ^ k * E := by
@@ -174,7 +174,7 @@ theorem finLev_of [IsDomain O] (W : LocWach PD LL O v n) (hR : Formalism.MainNot
     have h1 : (∏ t ∈ Finset.range e, Formalism.MainNotions.ArcLiftingSetup.ps W t ^ H t) * letE a =
         (∏ t ∈ Finset.range e, Formalism.MainNotions.RamifiedCoefficientChains.Sh.at0 W (Fs t) ^ H t) * letE a :=
       idem_prod hE _ _ (fun t => idem_pow hE (hFe t) (H t)) e
-    have h2 := idem_mul hE (idem_pow hE h1 2) W.π₀
+    have h2 := idem_mul (idem_pow hE h1 2) W.π₀
     rw [h2, hGall, Formalism.MainNotions.RamifiedCoefficientChains.Sh.BT.evaluation_eq_homomorphism W hR, map_mul, map_pow, map_prod, ← Formalism.MainNotions.RamifiedCoefficientChains.Sh.BT.evaluation_eq_homomorphism W hR,
       evalZero_X_eq_uniformizer W hR]
     simp only [Formalism.MainNotions.RamifiedCoefficientChains.Sh.BT.evaluation_eq_homomorphism W hR, map_pow]

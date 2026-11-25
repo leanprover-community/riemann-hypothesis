@@ -459,7 +459,6 @@ theorem law_fC (hG0 : jumpWindows.G0) (hG5 : jumpWindows.G5) (hP2 : P2) (hP3 : P
     rw [hPW g', hPW g, hdep.1, e1, h1, h2, hηe, map_mul, ← h3]
     ring
 
-open scoped ValuativeRel
 
 theorem sph_lr (hk : 1 ≤ k) {R' : Type} [CommRing R'] (σ : Ad E →+* R') (g : GA E k) (c : Fin k) :
     σ (lastRow g c) = (g.val.map σ) ⟨k - 1, by omega⟩ c := by

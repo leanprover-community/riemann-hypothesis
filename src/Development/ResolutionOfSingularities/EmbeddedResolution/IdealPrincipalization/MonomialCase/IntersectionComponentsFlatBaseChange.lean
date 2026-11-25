@@ -54,11 +54,6 @@ noncomputable section
 
 namespace FunctorialResolution.EmbeddedResolution
 
-private theorem comap_biSup_finset_fin {X Y : Scheme.{u}} (f : X ⟶ Y) {n : ℕ}
-    (s : Finset (Fin n)) (F : Fin n → Y.IdealSheafData) :
-    (⨆ i ∈ s, F i).comap f = ⨆ i ∈ s, (F i).comap f :=
-  (Scheme.IdealSheafData.map_gc f).l_iSup₂
-
 private theorem pullbackOverField_boundary_get (T : MarkedIdealWithBoundary.{u}) (Y : Scheme.{u}) (k' : Type u)
     [Field k'] (q : Y ⟶ Spec (CommRingCat.of k')) (g : Y ⟶ T.scheme)
     (j : Fin T.boundary.length) :
@@ -76,7 +71,8 @@ theorem intersectionIdeal_pullbackOverField (T : MarkedIdealWithBoundary.{u}) (Y
     (J : Finset (Fin T.boundary.length)) :
     intersectionIdeal (T.pullbackOverField Y k' q g).boundary (J.image (pullbackOverFieldIndex T Y k' q g)) =
       (intersectionIdeal T.boundary J).comap g := by
-  rw [intersectionIdeal_eq_iSup, intersectionIdeal_eq_iSup, comap_biSup_finset_fin]
+  rw [intersectionIdeal_eq_iSup, intersectionIdeal_eq_iSup,
+    (Scheme.IdealSheafData.map_gc g).l_iSup₂]
   refine le_antisymm ?_ ?_
   · refine iSup_le fun j' => iSup_le fun hj' => ?_
     obtain ⟨j, hj, rfl⟩ := Finset.mem_image.mp hj'
@@ -99,7 +95,8 @@ theorem support_intersectionIdeal_pullbackOverField (T : MarkedIdealWithBoundary
   have h2 : (↑((intersectionIdeal T.boundary J).comap g).support : Set ↥Y)
       = ⇑g ⁻¹' (↑(intersectionIdeal T.boundary J).support : Set ↥T.scheme) :=
     support_comap g (intersectionIdeal T.boundary J)
-  rwa [h]
+  rw [h]
+  exact h2
 
 theorem mem_intersectionComponents_pullbackOverField_iff (T : MarkedIdealWithBoundary.{u}) (Y : Scheme.{u}) (k' : Type u)
     [Field k'] (q : Y ⟶ Spec (CommRingCat.of k')) (g : Y ⟶ T.scheme)
@@ -108,7 +105,8 @@ theorem mem_intersectionComponents_pullbackOverField_iff (T : MarkedIdealWithBou
       IsIrreducibleComponentOf C' (⇑g ⁻¹' (↑(intersectionIdeal T.boundary J).support : Set ↥T.scheme)) := by
   have h1 := mem_intersectionComponents_iff (T.pullbackOverField Y k' q g).boundary
       (J.image (pullbackOverFieldIndex T Y k' q g)) C'
-  rwa [support_intersectionIdeal_pullbackOverField T Y k' q g J] at h1
+  rw [support_intersectionIdeal_pullbackOverField T Y k' q g J] at h1
+  exact h1
 
 theorem IsIrreducibleComponentOf.exists_isGenericPoint {Y : Scheme.{u}} {C S : Set ↥Y}
     (h : IsIrreducibleComponentOf C S) (hS : IsClosed S) :
@@ -119,41 +117,25 @@ theorem IsIrreducibleComponentOf.exists_isGenericPoint {Y : Scheme.{u}} {C S : S
   have hCclosed : IsClosed C := closure_eq_iff_isClosed.mp hcl
   exact QuasiSober.sober hirr hCclosed
 
-private theorem isPreirreducible_sUnion_of_isChain {α : Type u} [TopologicalSpace α]
-    (c : Set (Set α)) (hcc : IsChain (· ⊆ ·) c)
-    (hirr : ∀ t ∈ c, IsPreirreducible t) : IsPreirreducible (⋃₀ c) := by
-  intro u v hu hv hxne hyne
-  obtain ⟨x, hxU, hxu⟩ := hxne
-  obtain ⟨y, hyU, hyv⟩ := hyne
-  obtain ⟨t₁, ht₁c, hxt₁⟩ := Set.mem_sUnion.mp hxU
-  obtain ⟨t₂, ht₂c, hyt₂⟩ := Set.mem_sUnion.mp hyU
-  rcases eq_or_ne t₁ t₂ with rfl | hne
-  · obtain ⟨z, hzt, hzuv⟩ := hirr t₁ ht₁c u v hu hv ⟨x, hxt₁, hxu⟩ ⟨y, hyt₂, hyv⟩
-    exact ⟨z, Set.mem_sUnion.mpr ⟨t₁, ht₁c, hzt⟩, hzuv⟩
-  · rcases hcc ht₁c ht₂c hne with h | h
-    · obtain ⟨z, hzt, hzuv⟩ := hirr t₂ ht₂c u v hu hv ⟨x, h hxt₁, hxu⟩ ⟨y, hyt₂, hyv⟩
-      exact ⟨z, Set.mem_sUnion.mpr ⟨t₂, ht₂c, hzt⟩, hzuv⟩
-    · obtain ⟨z, hzt, hzuv⟩ := hirr t₁ ht₁c u v hu hv ⟨x, hxt₁, hxu⟩ ⟨y, h hyt₂, hyv⟩
-      exact ⟨z, Set.mem_sUnion.mpr ⟨t₁, ht₁c, hzt⟩, hzuv⟩
-
 theorem exists_isIrreducibleComponentOf {Y : Scheme.{u}} (S A : Set ↥Y) (hA : IsIrreducible A)
     (hAS : A ⊆ S) :
     ∃ C : Set ↥Y, IsIrreducibleComponentOf C S ∧ A ⊆ C := by
-  have hchain : ∀ c ⊆ {C : Set ↥Y | IsIrreducible C ∧ C ⊆ S}, IsChain (· ⊆ ·) c →
-      c.Nonempty → ∃ ub ∈ {C : Set ↥Y | IsIrreducible C ∧ C ⊆ S}, ∀ s ∈ c, s ⊆ ub := by
-    intro c hcS hcc hcn
-    obtain ⟨t, htc⟩ := hcn
-    have hne : (⋃₀ c).Nonempty := by
-      obtain ⟨x, hx⟩ := (hcS htc).1.1
-      exact ⟨x, Set.mem_sUnion.mpr ⟨t, htc, hx⟩⟩
-    refine ⟨⋃₀ c, ⟨⟨hne, isPreirreducible_sUnion_of_isChain c hcc
-        fun s hs => (hcS hs).1.2⟩, Set.sUnion_subset fun s hs => (hcS hs).2⟩,
-      fun s hs => Set.subset_sUnion_of_mem hs⟩
-  obtain ⟨C, hAC, hmax⟩ :=
-    zorn_subset_nonempty {C : Set ↥Y | IsIrreducible C ∧ C ⊆ S} hchain A ⟨hA, hAS⟩
-  have hmem : IsIrreducible C ∧ C ⊆ S := hmax.1
-  refine ⟨C, ⟨hmem.1, hmem.2, ?_⟩, hAC⟩
-  exact fun C' hC' hCle hC'S => subset_antisymm (hmax.2 ⟨hC', hC'S⟩ hCle) hCle
+  obtain ⟨C, hAC, hmax⟩ := zorn_subset_nonempty {C : Set ↥Y | IsIrreducible C ∧ C ⊆ S}
+    (fun c hcS hcc ⟨t, htc⟩ => ⟨⋃₀ c, ⟨⟨(hcS htc).1.1.mono (Set.subset_sUnion_of_mem htc),
+      fun u v hu hv ⟨x, hx, hxu⟩ ⟨y, hy, hyv⟩ => by
+        obtain ⟨t₁, ht₁c, hxt₁⟩ := Set.mem_sUnion.mp hx
+        obtain ⟨t₂, ht₂c, hyt₂⟩ := Set.mem_sUnion.mp hy
+        rcases hcc.total ht₁c ht₂c with h | h
+        · obtain ⟨z, hz, hzuv⟩ :=
+            (hcS ht₂c).1.2 u v hu hv ⟨x, h hxt₁, hxu⟩ ⟨y, hyt₂, hyv⟩
+          exact ⟨z, Set.mem_sUnion_of_mem hz ht₂c, hzuv⟩
+        · obtain ⟨z, hz, hzuv⟩ :=
+            (hcS ht₁c).1.2 u v hu hv ⟨x, hxt₁, hxu⟩ ⟨y, h hyt₂, hyv⟩
+          exact ⟨z, Set.mem_sUnion_of_mem hz ht₁c, hzuv⟩⟩,
+      Set.sUnion_subset fun s hs => (hcS hs).2⟩, fun s hs => Set.subset_sUnion_of_mem hs⟩) A
+    ⟨hA, hAS⟩
+  exact ⟨C, ⟨hmax.1.1, hmax.1.2, fun _ hC' hCle hC'S =>
+    subset_antisymm (hmax.2 ⟨hC', hC'S⟩ hCle) hCle⟩, hAC⟩
 
 theorem IsIrreducibleComponentOf.closure_image_genericPoint {X Y : Scheme.{u}} (g : Y ⟶ X)
     (hg : GeneralizingMap (fun y : ↥Y => g y)) {S : Set ↥X} (hS : IsClosed S) {C' : Set ↥Y}
@@ -261,7 +243,8 @@ theorem exists_isIrreducibleComponentOf_preimage {X Y : Scheme.{u}} (g : Y ⟶ X
     have hζeq : closure ({ζ} : Set ↥Y) = C' := hζ
     have h4 : y₀ ∈ closure ({ζ} : Set ↥Y) := by rw [hζeq]; exact hy₀C'
     have h6 := image_closure_subset_closure_image hcont (Set.mem_image_of_mem (⇑g) h4)
-    rw [Set.image_singleton, hgy₀] at h6
+    rw [Set.image_singleton] at h6
+    rw [hgy₀] at h6
     have hCsub : C ⊆ closure ({g ζ} : Set ↥X) := by
       rw [← hξeq]
       exact closure_minimal (Set.singleton_subset_iff.mpr h6) isClosed_closure
@@ -413,7 +396,8 @@ private theorem exists_isOpen_comap_ker_of_flat {X Y : Scheme.{u}} (g : Y ⟶ X)
   refine ⟨hopen, ?_⟩
   have hV : subschemePreimageOpens (W.comap g) (⇑g ⁻¹' A) hopen
       = comapSubschemeHom W g ⁻¹ᵁ subschemePreimageOpens W A hA := by
-    exact TopologicalSpace.Opens.ext hset
+    apply TopologicalSpace.Opens.ext
+    exact hset
   rw [hV]
   have hsq2 := (AlgebraicGeometry.isPullback_morphismRestrict (comapSubschemeHom W g)
     (subschemePreimageOpens W A hA)).paste_vert (isPullback_comapSubschemeHom W g)
@@ -470,7 +454,8 @@ theorem comap_componentUnionIdeal_of_flat (T : MarkedIdealWithBoundary.{u}) (hT 
       have hξ0e : closure ({ξ₀} : Set ↥T.scheme) = C₀ := hξ₀
       have h3 : C₀ = C := by rw [← hξ0e, ← hξe, ← h1, ← h2]
       refine ⟨C', ⟨hC'mem, C, hC𝒞, ?_⟩, hyC'⟩
-      rwa [← h3]
+      rw [← h3]
+      exact hmaps0
   have hqc := quasiCompact_comp_of_noetherianSpace
     (subschemePreimageOpens (intersectionIdeal T.boundary J) (⋃₀ 𝒞) hop).ι
     (intersectionIdeal T.boundary J).subschemeι hns

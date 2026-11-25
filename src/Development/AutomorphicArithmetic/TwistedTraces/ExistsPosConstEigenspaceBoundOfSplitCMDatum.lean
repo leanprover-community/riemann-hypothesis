@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.TensFactorAlt
 public import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.TensFactor
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.OfinProd
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.CommPrj
@@ -62,7 +63,7 @@ import Mathlib.Topology.Separation.Connected
 -- Members: Development.AutomorphicArithmetic.TwistedTraces.ExistsBoundDimSimultaneousLocalEigenspaceOfOpenC, Development.AutomorphicArithmetic.TwistedTraces.ExistsPosConstEigenspaceBoundOfSplitCMDatum
 
 -- ===== clump member: Development.AutomorphicArithmetic.TwistedTraces.ExistsBoundDimSimultaneousLocalEigenspaceOfOpenC =====
--- clump-header: {"m": "Development.AutomorphicArithmetic.TwistedTraces.ExistsBoundDimSimultaneousLocalEigenspaceOfOpenC", "h": "module\n\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.TensFactor\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.OfinProd\nimport Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.CommPrj\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.CompatEx\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.FinTens\nimport Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.LocEmb\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.RrTens\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.EigBasic\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.FixLev\nimport GroundTheory.GlobalFields.LocalAtPlace\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.TypeStar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\n\n"}
+-- clump-header: {"m": "Development.AutomorphicArithmetic.TwistedTraces.ExistsBoundDimSimultaneousLocalEigenspaceOfOpenC", "h": "module\n\nimport Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.TensFactorAlt\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.TensFactor\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.OfinProd\nimport Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.CommPrj\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.CompatEx\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.FinTens\nimport Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.LocEmb\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.RrTens\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.EigBasic\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.FixLev\nimport GroundTheory.GlobalFields.LocalAtPlace\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.TypeStar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -123,16 +124,6 @@ private theorem prj_commute {V : Submodule ℂ H} (hV : IsClosed (V : Set H)) (T
 
 end Hil
 
-private theorem ofFn_smul {A : Type*} [Semiring A] [Algebra ℂ A] : ∀ (r : ℕ) (a : Fin r → ℂ) (X : Fin r → A),
-    (List.ofFn fun i => a i • X i).prod = (∏ i, a i) • (List.ofFn X).prod := by
-  intro r
-  induction r with
-  | zero => intro a X; simp
-  | succ r ih =>
-    intro a X
-    simp only [List.ofFn_succ, List.prod_cons, Fin.prod_univ_succ]
-    rw [ih (fun i => a i.succ) (fun i => X i.succ), smul_mul_smul_comm]
-
 private theorem dep_extend {ι α : Type*} {β : α → Type*} (w : ι → α) (hw : Function.Injective w) (ψ : ∀ i, β (w i))
     (d : ∀ v, β v) : ∃ f : ∀ v, β v, (∀ i, f (w i) = ψ i) ∧ ∀ v, v ∉ Set.range w → f v = d v := by
   classical
@@ -151,17 +142,6 @@ private theorem dep_extend {ι α : Type*} {β : α → Type*} (w : ι → α) (
 section Loc
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
 
-private theorem rhoL_adj (w : Pl K) (g : Gw n w) : ContinuousLinearMap.adjoint (rhoL μ w g) = rhoL μ w g⁻¹ := by
-  have := (UpperTheory.ConvolutionTheory.Tf.commPrj K n μ ⊥).2.2.2.2.2.2.2.1 (AdelicGLn.localEmbedding w g)
-  simpa only [rhoL, map_inv] using this
-
-private theorem rhoL_comm {v w : Pl K} (h : v ≠ w) (g : Gw n v) (x : Gw n w) :
-    rhoL μ v g ∘L rhoL μ w x = rhoL μ w x ∘L rhoL μ v g := by
-  have hm := (UpperTheory.ConvolutionTheory.Tf.commPrj K n μ ⊥).2.2.2.2.2.1
-  have hc := (UpperTheory.ConvolutionTheory.Tf.locEmb K n v).2.2.2.1 w h.symm g x
-  simp only [rhoL]
-  rw [← hm, ← hm, hc]
-
 private def GA (J : ∀ w : Pl K, Subgroup (Gw n w)) (χ : ∀ w : Pl K, Gw n w → ℂ) (A : Set (Pl K)) : Submodule ℂ (LL μ) :=
   ⨅ u ∈ A, eigL μ u (J u) (χ u)
 
@@ -173,24 +153,20 @@ private theorem GA_closed (hco : ∀ w, CO (J w) ∧ IsChr (J w) (χ w)) (A : Se
   exact isClosed_iInter fun u => isClosed_iInter fun _ =>
     (eigBasic K n μ u (J u) (χ u) (hco u).1 (hco u).2).1
 
-private theorem mem_eigL {w : Pl K} {J' : Subgroup (Gw n w)} {χ' : Gw n w → ℂ} {x : LL μ} :
-    x ∈ eigL μ w J' χ' ↔ ∀ y ∈ J', rhoL μ w y x = χ' y • x := by
-  simp [eigL, Submodule.mem_iInf, LinearMap.mem_eqLocus]
-
 private theorem GA_stable {A : Set (Pl K)} {v : Pl K} (hv : v ∉ A) (g : Gw n v) (x : LL μ) (hx : x ∈ GA μ J χ A) :
     rhoL μ v g x ∈ GA μ J χ A := by
   simp only [GA, Submodule.mem_iInf] at hx ⊢
   intro u hu
-  refine (mem_eigL μ).2 fun y hy => ?_
+  refine (L1.mem_eigL μ).2 fun y hy => ?_
   have hne : u ≠ v := fun h => hv (h ▸ hu)
-  have h1 := congrArg (· x) (rhoL_comm μ hne y g)
+  have h1 := congrArg (· x) (L1.rhoL_comm μ hne y g)
   simp only [ContinuousLinearMap.comp_apply] at h1
-  rw [h1, (mem_eigL μ).1 (hx u hu) y hy, map_smul]
+  rw [h1, (L1.mem_eigL μ).1 (hx u hu) y hy, map_smul]
 
 private theorem GA_commute (hco : ∀ w, CO (J w) ∧ IsChr (J w) (χ w)) {A : Set (Pl K)} {v : Pl K} (hv : v ∉ A) (g : Gw n v) :
     Commute (rhoL μ v g) (prj (GA μ J χ A)) := by
   refine prj_commute (GA_closed μ hco A) _ (GA_stable μ hv g) fun x hx => ?_
-  rw [rhoL_adj]
+  rw [L1.rhoL_adj]
   exact GA_stable μ hv _ x hx
 
 private theorem list_prj (hco : ∀ w, CO (J w) ∧ IsChr (J w) (χ w)) (L : List (Pl K)) :
@@ -218,26 +194,10 @@ end Loc
 section BernoulliSumsFrobeniusOrbits
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
 
-private theorem oloc_scale (v : Pl K) [MeasurableSpace (Gw n v)] [BorelSpace (Gw n v)] (m m₂ : Measure (Gw n v))
-    [m.IsHaarMeasure] [m₂.IsHaarMeasure] {J : Subgroup (Gw n v)} (hJ : m J = 1) (φ : Gw n v → ℂ)
-    (T : LL μ →L[ℂ] LL μ) (hT : IsOloc μ v m φ T) : IsOloc μ v m₂ φ (((m₂.real J : ℝ) : ℂ) • T) := by
-  obtain ⟨a, e⟩ : ∃ a : NNReal, m₂ = a • m := ⟨_, Measure.isMulLeftInvariant_eq_smul m₂ m⟩
-  subst e
-  have ha : (a • m).real (J : Set (Gw n v)) = a := by
-    simp [Measure.real, hJ]
-  intro x y
-  rw [ha, ContinuousLinearMap.smul_apply, inner_smul_right, hT, integral_smul_nnreal_measure]
-  rfl
-
 end BernoulliSumsFrobeniusOrbits
 
 section SlopeTestRemainingChoices
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
-
-private theorem finAt_eq (h : AdelicGLn.FiniteAdelicGL K n) (v : Pl K) :
-    finAt v (finEmb K n h) = AdelicGLn.finiteRestrictedEquiv K n h v := by
-  show (AdelicGLn.finiteRestrictedEquiv K n (AdelicGLn.prodEquiv K n (finEmb K n h)).2) v = _
-  rw [prodEquiv_finEmb]
 
 open scoped Classical in
 private theorem mem_levOn (P : Finset (Pl K)) (h : AdelicGLn.FiniteAdelicGL K n) :
@@ -250,7 +210,7 @@ private theorem mem_levOn (P : Finset (Pl K)) (h : AdelicGLn.FiniteAdelicGL K n)
   · intro H
     refine ⟨fun v => ?_, fun v hv => ?_⟩
     · have h1 := H v
-      rw [← finAt_eq]
+      rw [← L1.finAt_eq]
       split_ifs at h1 with hv
       · rw [Subgroup.mem_bot] at h1; rw [h1]; exact one_mem _
       · exact h1
@@ -260,17 +220,7 @@ private theorem mem_levOn (P : Finset (Pl K)) (h : AdelicGLn.FiniteAdelicGL K n)
   · rintro ⟨H1, H2⟩ v
     split_ifs with hv
     · exact Subgroup.mem_bot.2 (H2 v hv)
-    · rw [finAt_eq]; exact H1 v
-
-private theorem fixL_bot (v : Pl K) : fixL μ v (⊥ : Subgroup (Gw n v)) = ⊤ := by
-  rw [eq_top_iff]
-  intro x _
-  show x ∈ fixF μ _
-  refine ((UpperTheory.ConvolutionTheory.Tf.commPrj K n μ _).2.1 x).2 fun u hu => ?_
-  rw [Subgroup.map_bot, Subgroup.mem_bot] at hu
-  subst hu
-  rw [(UpperTheory.ConvolutionTheory.Tf.commPrj K n μ ⊥).2.2.2.2.2.2.1]
-  rfl
+    · rw [L1.finAt_eq]; exact H1 v
 
 private theorem sph_eq {J : ∀ w : Pl K, Subgroup (Gw n w)} {χ : ∀ w : Pl K, Gw n w → ℂ}
     (hco : ∀ w, CO (J w) ∧ IsChr (J w) (χ w)) (W : Finset (Pl K))
@@ -281,26 +231,6 @@ private theorem sph_eq {J : ∀ w : Pl K, Subgroup (Gw n w)} {χ : ∀ w : Pl K,
   obtain ⟨h1, h2⟩ := hW v hv
   have e := (eigBasic K n μ v (J v) (χ v) (hco v).1 (hco v).2).2.1
   rw [h2, e, h1]
-
-private theorem test_ind {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] {J : Subgroup G} (hJ : CO J)
-    {χ : G → ℂ} (hχ : IsChr J χ) : Test ((J : Set G).indicator fun x => conj (χ x)) := by
-  refine ⟨(IsLocallyConstant.iff_eventually_eq _).2 fun x => ?_,
-    HasCompactSupport.intro hJ.1 fun x hx => Set.indicator_of_notMem hx _⟩
-  by_cases hx : x ∈ (J : Set G)
-  · filter_upwards [hJ.2.mem_nhds hx, (IsLocallyConstant.iff_eventually_eq _).1 hχ.1 x] with y hy hy2
-    rw [Set.indicator_of_mem hy, Set.indicator_of_mem hx, hy2]
-  · have hcl : IsClosed (J : Set G) := Subgroup.isClosed_of_isOpen J hJ.2
-    filter_upwards [hcl.isOpen_compl.mem_nhds hx] with y hy
-    rw [Set.indicator_of_notMem hy, Set.indicator_of_notMem hx]
-
-private theorem finprod_split {ι α : Type*} [Fintype ι] (w : ι → α) (hw : Function.Injective w) (F : α → ℂ)
-    (hF : (Function.mulSupport F).Finite) : ∏ᶠ v, F v = (∏ i, F (w i)) * ∏ᶠ (u) (_ : u ∉ Set.range w), F u := by
-  have h := finprod_mem_inter_mul_diff' (f := F) (s := Set.univ) (Set.range w) (hF.subset Set.inter_subset_right)
-  rw [Set.univ_inter, finprod_mem_range hw, finprod_eq_prod_of_fintype, finprod_mem_univ] at h
-  rw [← h]
-  congr 1
-  refine finprod_congr fun u => ?_
-  simp
 
 end SlopeTestRemainingChoices
 
@@ -388,7 +318,7 @@ theorem UpperTheory.exists_bound_dim_simultaneousLocalEigenspace_of_openCompact 
     by_cases hv : v ∈ Set.range w
     · obtain ⟨i, rfl⟩ := hv
       rw [hfw]; exact (hT i).1
-    · rw [hfd v hv]; exact test_ind (hco v).1 (hco v).2
+    · rw [hfd v hv]; exact L1.test_ind (hco v).1 (hco v).2
   have hfOff : ∀ v, v ∉ Set.range w' →
       f v = (GLnLocal.integralGL (v.adicCompletion K) n : Set (Gw n v)).indicator 1 := fun v hv => by
     obtain ⟨h1, h2⟩ := hrange v hv
@@ -400,9 +330,9 @@ theorem UpperTheory.exists_bound_dim_simultaneousLocalEigenspace_of_openCompact 
     by_cases hv : v ∈ Set.range w
     · obtain ⟨i, rfl⟩ := hv
       rw [hfw, hXw]
-      exact oloc_scale μ (w i) (mm i) (mO (w i)) (hmm i).2 (ψ i) (T i) (hT i).2
+      exact L1.oloc_scale μ (w i) (mm i) (mO (w i)) (hmm i).2 (ψ i) (T i) (hT i).2
     · rw [hfd v hv, hXd v hv]
-      exact oloc_scale μ v (mJ v) (mO v) (hmJ v) _ _
+      exact L1.oloc_scale μ v (mJ v) (mO v) (hmJ v) _ _
         ((eigBasic K n μ v (J v) (χ v) (hco v).1 (hco v).2).2.2.1 (mJ v) (hmJ v))
   obtain ⟨e', he', -, hop⟩ := UpperTheory.ConvolutionTheory.Tf.finTens K n μ m (r + B0.card) w' hw' f (fun i => hfTest _) hfOff
   have hee : e' = e := by
@@ -419,7 +349,7 @@ theorem UpperTheory.exists_bound_dim_simultaneousLocalEigenspace_of_openCompact 
         by_contra h3; exact hc.2 h3
       rw [Set.indicator_of_mem h2]
       rfl
-    rw [he', he x, finprod_split w hw _ hfin]
+    rw [he', he x, L1.finprod_split w hw _ hfin]
     congr 1
     · exact Finset.prod_congr rfl fun i _ => by rw [hfw]
     · refine finprod_congr fun u => finprod_congr fun hu => ?_
@@ -435,7 +365,7 @@ theorem UpperTheory.exists_bound_dim_simultaneousLocalEigenspace_of_openCompact 
       simp only [W, Finset.mem_image, Finset.mem_univ, true_and, forall_exists_index, forall_apply_eq_imp_iff])
   have hQ : fixF μ (levOn W fun v => (⊥ : Subgroup (Gw n v))) = GA μ J χ {v | v ∉ W} := by
     rw [UpperTheory.ConvolutionTheory.C.fixLev K n μ W _]
-    simp only [fixL_bot, iInf_top, inf_top_eq]
+    simp only [L1.fixL_bot, iInf_top, inf_top_eq]
     exact sph_eq μ hco W fun v hv => hgood v (hrange v (hWm v hv)).2
   have hlist := list_prj μ hco (List.ofFn b) (List.nodup_ofFn.2 hbinj) {v | v ∉ W} (fun v hv h => h (by
     obtain ⟨j, rfl⟩ := (List.mem_ofFn' _ _).1 hv
@@ -470,7 +400,7 @@ theorem UpperTheory.exists_bound_dim_simultaneousLocalEigenspace_of_openCompact 
       · rw [hw'r, Fin.append_right, hXd _ (hbw j)]
     rw [this, List.ofFn_fin_append, List.prod_append]
   have hmain : (List.ofFn fun i => ((c (w' i) : ℝ) : ℂ) • X (w' i)).prod =
-      (∏ i, ((c (w' i) : ℝ) : ℂ)) • (List.ofFn fun i => X (w' i)).prod := ofFn_smul _ _ _
+      (∏ i, ((c (w' i) : ℝ) : ℂ)) • (List.ofFn fun i => X (w' i)).prod := L1.ofFn_smul _ _ _
   have hsub : hBad.toFinset ⊆ W := fun v hv => by
     by_contra h
     exact (hrange v (hWm v h)).2 hv
@@ -499,7 +429,7 @@ end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.TwistedTraces.ExistsBoundDimSimultaneousLocalEigenspaceOfOpenC =====
 
 -- ===== clump member: Development.AutomorphicArithmetic.TwistedTraces.ExistsPosConstEigenspaceBoundOfSplitCMDatum =====
--- clump-header: {"m": "Development.AutomorphicArithmetic.TwistedTraces.ExistsPosConstEigenspaceBoundOfSplitCMDatum", "h": "module\n\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.TvDefs\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.TwistFactor\nimport Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.CommPrj\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.LocEmb\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.TensEProd\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.GeneralizedMeasures.ContinuousMapGL\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.EigBasic\npublic import Development.AutomorphicArithmetic.TwistedTraces.ExistsBoundDimSimultaneousLocalEigenspaceOfOpenC\nimport GroundTheory.GlobalFields.LocalAtPlace\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Tactic.TypeStar\nimport Mathlib.Topology.Separation.Connected\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\n\n"}
+-- clump-header: {"m": "Development.AutomorphicArithmetic.TwistedTraces.ExistsPosConstEigenspaceBoundOfSplitCMDatum", "h": "module\n\nimport Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.TensFactorAlt\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.TvDefs\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.TwistFactor\nimport Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.CommPrj\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.LocEmb\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.TensEProd\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.GeneralizedMeasures.ContinuousMapGL\npublic import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.EigBasic\npublic import Development.AutomorphicArithmetic.TwistedTraces.ExistsBoundDimSimultaneousLocalEigenspaceOfOpenC\nimport GroundTheory.GlobalFields.LocalAtPlace\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Tactic.TypeStar\nimport Mathlib.Topology.Separation.Connected\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -519,45 +449,10 @@ private theorem ops_key {M : Type*} [Monoid M] (b₁ b₂ P Q O : M) (habs : b�
 section Alg
 variable {M : Type*} [Monoid M]
 
-private theorem ofFn_absorb : ∀ (r : ℕ) (T P : Fin r → M), (∀ i j, i ≠ j → Commute (T i) (P j)) → (∀ i, T i * P i = T i) →
-    (List.ofFn T).prod = (List.ofFn T).prod * (List.ofFn P).prod := by
-  intro r
-  induction r with
-  | zero => intro T P _ _; simp
-  | succ r ih =>
-    intro T P h1 h2
-    have h3 := ih (fun i => T i.succ) (fun i => P i.succ)
-      (fun i j hij => h1 _ _ fun h => hij (Fin.succ_injective _ h)) fun i => h2 _
-    have h4 : Commute (List.ofFn fun i : Fin r => T i.succ).prod (P 0) := by
-      refine Commute.list_prod_left _ _ fun x hx => ?_
-      obtain ⟨i, rfl⟩ := (List.mem_ofFn' _ _).1 hx
-      exact h1 _ _ (Fin.succ_ne_zero i)
-    simp only [List.ofFn_succ, List.prod_cons]
-    calc T 0 * (List.ofFn fun i : Fin r => T i.succ).prod
-        = (T 0 * P 0) * ((List.ofFn fun i : Fin r => T i.succ).prod * (List.ofFn fun i : Fin r => P i.succ).prod) := by
-          rw [← h3, h2]
-      _ = _ := by
-          rw [mul_assoc, mul_assoc, ← mul_assoc (P 0), ← h4.eq, mul_assoc]
-
 end Alg
 
 section Loc
 variable {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
-
-private theorem rhoL_mul (w : Pl K) (g h : Gw n w) : rhoL μ w (g * h) = rhoL μ w g ∘L rhoL μ w h := by
-  have := (UpperTheory.ConvolutionTheory.Tf.commPrj K n μ ⊥).2.2.2.2.2.1 (AdelicGLn.localEmbedding w g) (AdelicGLn.localEmbedding w h)
-  simpa only [rhoL, map_mul] using this
-
-private theorem rhoL_adj (w : Pl K) (g : Gw n w) : ContinuousLinearMap.adjoint (rhoL μ w g) = rhoL μ w g⁻¹ := by
-  have := (UpperTheory.ConvolutionTheory.Tf.commPrj K n μ ⊥).2.2.2.2.2.2.2.1 (AdelicGLn.localEmbedding w g)
-  simpa only [rhoL, map_inv] using this
-
-private theorem rhoL_comm {v w : Pl K} (h : v ≠ w) (g : Gw n v) (x : Gw n w) :
-    rhoL μ v g ∘L rhoL μ w x = rhoL μ w x ∘L rhoL μ v g := by
-  have hm := (UpperTheory.ConvolutionTheory.Tf.commPrj K n μ ⊥).2.2.2.2.2.1
-  have hc := (UpperTheory.ConvolutionTheory.Tf.locEmb K n v).2.2.2.1 w h.symm g x
-  simp only [rhoL]
-  rw [← hm, ← hm, hc]
 
 private def GAx (J : ∀ w : Pl K, Subgroup (Gw n w)) (χ : ∀ w : Pl K, Gw n w → ℂ) (A : Set (Pl K)) : Submodule ℂ (LL μ) :=
   ⨅ u ∈ A, eigL μ u (J u) (χ u)
@@ -570,25 +465,21 @@ private theorem GA_closed (hco : ∀ w, CO (J w) ∧ IsChr (J w) (χ w)) (A : Se
   exact isClosed_iInter fun u => isClosed_iInter fun _ =>
     (eigBasic K n μ u (J u) (χ u) (hco u).1 (hco u).2).1
 
-private theorem mem_eigL {w : Pl K} {J' : Subgroup (Gw n w)} {χ' : Gw n w → ℂ} {x : LL μ} :
-    x ∈ eigL μ w J' χ' ↔ ∀ y ∈ J', rhoL μ w y x = χ' y • x := by
-  simp [eigL, Submodule.mem_iInf, LinearMap.mem_eqLocus]
-
 private theorem GA_stable {A : Set (Pl K)} {v : Pl K} (hv : v ∉ A) (g : Gw n v) (x : LL μ) (hx : x ∈ GAx μ J χ A) :
     rhoL μ v g x ∈ GAx μ J χ A := by
   simp only [GAx, Submodule.mem_iInf] at hx ⊢
   intro u hu
-  refine (mem_eigL μ).2 fun y hy => ?_
+  refine (ConvolutionTheory.L1.mem_eigL μ).2 fun y hy => ?_
   have hne : u ≠ v := fun h => hv (h ▸ hu)
-  have h1 := congrArg (· x) (rhoL_comm μ hne y g)
+  have h1 := congrArg (· x) (ConvolutionTheory.L1.rhoL_comm μ hne y g)
   simp only [ContinuousLinearMap.comp_apply] at h1
-  rw [h1, (mem_eigL μ).1 (hx u hu) y hy, map_smul]
+  rw [h1, (ConvolutionTheory.L1.mem_eigL μ).1 (hx u hu) y hy, map_smul]
 
 private theorem GA_commute (hco : ∀ w, CO (J w) ∧ IsChr (J w) (χ w)) {A : Set (Pl K)} {v : Pl K} (hv : v ∉ A) (g : Gw n v) :
     Commute (rhoL μ v g) (prj (GAx μ J χ A)) := by
   refine UpperTheory.ConvolutionTheory.L1.prj_commute
     (GA_closed μ hco A) _ (GA_stable μ hv g) fun x hx => ?_
-  rw [rhoL_adj]
+  rw [ConvolutionTheory.L1.rhoL_adj]
   exact GA_stable μ hv _ x hx
 
 private theorem list_prj (hco : ∀ w, CO (J w) ∧ IsChr (J w) (χ w)) (L : List (Pl K)) :
@@ -661,7 +552,7 @@ private theorem oloc_commute {w v : Pl K} (h : v ≠ w) [MeasurableSpace (Gw n w
   show ⟪a, T (rhoL μ v x b)⟫_ℂ = ⟪a, rhoL μ v x (T b)⟫_ℂ
   rw [hT, ← ContinuousLinearMap.adjoint_inner_left, hT]
   refine integral_congr_ae (Filter.Eventually.of_forall fun g => ?_)
-  have h1 := congrArg (· b) (rhoL_comm μ h x g)
+  have h1 := congrArg (· b) (ConvolutionTheory.L1.rhoL_comm μ h x g)
   simp only [ContinuousLinearMap.comp_apply] at h1
   simp only
   rw [ContinuousLinearMap.adjoint_inner_left, h1]
@@ -682,7 +573,7 @@ private theorem oloc_right (v : Pl K) [MeasurableSpace (Gw n v)] [BorelSpace (Gw
   rw [hT, hT, ← integral_const_mul]
   refine Eq.trans (integral_congr_ae (Filter.Eventually.of_forall fun g => ?_)) (hc.trans
     (integral_congr_ae (Filter.Eventually.of_forall fun g => ?_)))
-  · simp only [mul_inv_cancel_right, rhoL_mul, ContinuousLinearMap.comp_apply]
+  · simp only [mul_inv_cancel_right, ConvolutionTheory.L1.rhoL_mul, ContinuousLinearMap.comp_apply]
   · simp only [hψ', mul_assoc]
 
 private theorem oloc_absorb (v : Pl K) [MeasurableSpace (Gw n v)] [BorelSpace (Gw n v)] (m : Measure (Gw n v))
@@ -1077,7 +968,7 @@ theorem UpperTheory.exists_pos_const_eigenspace_bound_of_split_CMDatum :
   set P : LL μ →L[ℂ] LL μ := (List.ofFn fun i => prj (eigL μ (wsp i) (T.J (wsp i)) (T.χ (wsp i)))).prod with hP
   have hlist' : P * prj (⨅ (u : Pl E) (_ : u ∉ Set.range fun i => (T.mk' (pp i)).1), eigL μ u (T.J u) (T.χ u)) =
       prj (offN μ T) := hlist
-  have habs : (List.ofFn B₁).prod = (List.ofFn B₁).prod * P := ofFn_absorb r₁ B₁ (fun i => prj (eigL μ (wsp i) (T.J (wsp i)) (T.χ (wsp i))))
+  have habs : (List.ofFn B₁).prod = (List.ofFn B₁).prod * P := ConvolutionTheory.L1.ofFn_absorb r₁ B₁ (fun i => prj (eigL μ (wsp i) (T.J (wsp i)) (T.χ (wsp i))))
     (fun i j hij => (eigBasic E n μ (wsp j) (T.J (wsp j)) (T.χ (wsp j)) (hco _).1 (hco _).2).2.2.2 (B₁ i)
       fun x _ => oloc_commute μ (fun e => hij (hwsp e).symm) (mm _) (ψ (p₁ i)) (B₁ i) (hB₁ i) x)
     fun i => oloc_absorb μ (wsp i) (mm _) (hco _).1 (hmm _).2 (hco _).2 (ψ (p₁ i)) (fun u hu g' => by

@@ -261,20 +261,6 @@ set_option genInjectivity false in
 set_option genSizeOfSpec false in
 structure UpperTheory.LiteratureTheorems.OpenImageCondition : Prop where
   galoisRepOfPolarizedPairLit : _root_.UpperTheory.V.Z.Win.RowT
-theorem UpperTheory.LiteratureTheorems.elliptic_main_theorem_cm_of_open (O : _root_.UpperTheory.LiteratureTheorems.OpenImageCondition) : GlobalTheory.Published.EllipticMainTheoremCM :=
-  _root_.GlobalTheory.CompanionTheory.Hypotheses₂.ellipticMainTheoremCM
-theorem UpperTheory.LiteratureTheorems.hecke_tate_functional_equation_of_open (O : _root_.UpperTheory.LiteratureTheorems.OpenImageCondition) : GlobalTheory.Published.HeckeTateFunctionalEquation :=
-  _root_.GlobalTheory.CompanionTheory.HeckeFE.heckeTateFunctionalEquation
-theorem UpperTheory.LiteratureTheorems.hilbert_class_field_j_of_open (O : _root_.UpperTheory.LiteratureTheorems.OpenImageCondition) : GlobalTheory.Published.HilbertClassFieldJ :=
-  _root_.GlobalTheory.CompanionTheory.Hypotheses₂.hilbertClassFieldJ
-theorem UpperTheory.LiteratureTheorems.partial_zeta_functional_equation_of_open (O : _root_.UpperTheory.LiteratureTheorems.OpenImageCondition) : GlobalTheory.Published.PartialZetaFunctionalEquation :=
-  _root_.GlobalTheory.CompanionTheory.Hypotheses₂.partialZetaFunctionalEquation
-theorem UpperTheory.LiteratureTheorems.deligne_ribet_of_open (O : _root_.UpperTheory.LiteratureTheorems.OpenImageCondition) : GlobalTheory.Published.DeligneRibet :=
-  _root_.PositivityTheory.PfDRL.deligneRibet
-theorem UpperTheory.LiteratureTheorems.siegel_klingen_deligne_ribet_of_open (O : _root_.UpperTheory.LiteratureTheorems.OpenImageCondition) : GlobalTheory.Published.SiegelKlingenDeligneRibet :=
-  _root_.GlobalTheory.siegelKlingenDeligneRibet_of_both _root_.GlobalTheory.CompanionTheory.Hypotheses₂.siegelKlingen (_root_.UpperTheory.LiteratureTheorems.deligne_ribet_of_open O)
-theorem UpperTheory.LiteratureTheorems.abelian_de_rham_of_open (O : _root_.UpperTheory.LiteratureTheorems.OpenImageCondition) : GlobalTheory.Published.AbelianDeRham :=
-  PositivityTheory.DualRT.abelianDeRham
 theorem UpperTheory.LiteratureTheorems.de_rham_pot_semistable_of_open (O : _root_.UpperTheory.LiteratureTheorems.OpenImageCondition) : GlobalTheory.Published.DeRhamPotSemistable :=
   GlobalTheory.deRham_potentiallySemistable
 theorem UpperTheory.LiteratureTheorems.global_artin_reciprocity_of_open (O : _root_.UpperTheory.LiteratureTheorems.OpenImageCondition) : GlobalTheory.Published.GlobalArtinReciprocity :=
@@ -337,10 +323,6 @@ theorem UpperTheory.LiteratureTheorems.cuspidal_spectrum_gl_of_open (O : _root_.
   RfCs.cuspidalSpectrumGL
 theorem UpperTheory.LiteratureTheorems.green_regular_characters_of_open (O : _root_.UpperTheory.LiteratureTheorems.OpenImageCondition) : GlobalTheory.Published.GreenRegularCharacters :=
   PositivityTheory.Stage1.PM.greenRegularCharacters
-theorem UpperTheory.LiteratureTheorems.abelian_lifting_of_open (O : _root_.UpperTheory.LiteratureTheorems.OpenImageCondition) : GlobalTheory.Published.AbelianLifting :=
-  GlobalTheory.abelianScheme_hom_lifting_nilpotent_dividedPowers
-theorem UpperTheory.LiteratureTheorems.grothendieck_deformation_of_open (O : _root_.UpperTheory.LiteratureTheorems.OpenImageCondition) : GlobalTheory.Published.GrothendieckDeformation :=
-  GlobalTheory.Published.grothendieckDeformation_of_lifting (_root_.UpperTheory.LiteratureTheorems.abelian_de_rham_of_open O) (_root_.UpperTheory.LiteratureTheorems.abelian_lifting_of_open O)
 theorem UpperTheory.LiteratureTheorems.harish_chandra_finite_of_open (O : _root_.UpperTheory.LiteratureTheorems.OpenImageCondition) : GlobalTheory.Published.HarishChandraFinite :=
   PositivityTheory.RgHf.harishChandraFinite
 theorem UpperTheory.LiteratureTheorems.hecke_ladic_character_crystalline_of_open (O : _root_.UpperTheory.LiteratureTheorems.OpenImageCondition) : GlobalTheory.Published.HeckeLAdicCharacterCrystalline :=
@@ -359,8 +341,6 @@ theorem UpperTheory.LiteratureTheorems.square_integrable_segment_of_open (O : _r
   _root_.GlobalTheory.Published.squareIntegrableSegment_of_ess (_root_.UpperTheory.LiteratureTheorems.ess_square_integrable_segments_of_open O)
 theorem UpperTheory.LiteratureTheorems.totally_disjoint_product_irreducible_of_open (O : _root_.UpperTheory.LiteratureTheorems.OpenImageCondition) : GlobalTheory.Published.TotallyDisjointProductIrreducible :=
   _root_.GlobalTheory.CompanionTheory.Hypotheses₂.totallyDisjointProductIrreducible_of_parts (GlobalTheory.geometricLemma_of_filtration PositivityTheory.Prw.bernsteinZelevinskyFiniteness_holds PositivityTheory.Geo.geometricLemmaFiltration) (PositivityTheory.RgGu.segmentRepresentation) (PositivityTheory.Groth.grothendieckRingPolynomial_of_seg (PositivityTheory.RgGu.segmentRepresentation))
-theorem UpperTheory.LiteratureTheorems.dual_abelian_scheme_of_open (O : _root_.UpperTheory.LiteratureTheorems.OpenImageCondition) : GlobalTheory.Published.DualAbelianScheme :=
-  GlobalTheory.dualAbelianScheme
 theorem UpperTheory.LiteratureTheorems.global_euler_char_of_open (O : _root_.UpperTheory.LiteratureTheorems.OpenImageCondition) : ReciprocityTheory.Gal.GlobalEulerChar :=
   PositivityTheory.Lit1.GEN.globalEulerChar_full
 theorem UpperTheory.LiteratureTheorems.global_finiteness_of_open (O : _root_.UpperTheory.LiteratureTheorems.OpenImageCondition) : ReciprocityTheory.Gal.GlobalFiniteness :=
@@ -1605,30 +1585,16 @@ theorem UpperTheory.One.Join.automorphic_inputs_from_literature (O : _root_.Uppe
     chW := (_root_.UpperTheory.LiteratureTheorems.algebraic_character_wd_of_open O)
     berger := (_root_.UpperTheory.LiteratureTheorems.de_rham_pot_semistable_of_open O) }
 theorem UpperTheory.One.Join.v_window_of_depth_zero_residual_bc_cm (O : _root_.UpperTheory.LiteratureTheorems.OpenImageCondition)
- (bc : _root_.PositivityTheory.Rg.BcN.BaseChangeIsobaricN) (gal : _root_.UpperTheory.V.Z.Win.RowT) (cm : _root_.GlobalTheory.Mem.LiteralAutomorphy.LiteratureCMHypothesis) :
+ (bc : _root_.PositivityTheory.Rg.BcN.BaseChangeIsobaricN) (gal : _root_.UpperTheory.V.Z.Win.RowT) :
     UpperTheory.Top.VWin :=
   _root_.UpperTheory.V.HV.DescentVanishingReductions.v_window_of_automorphy_csd_ss_mono_odd
     { loc := _root_.UpperTheory.One.Join.local_inputs_from_literature O
       aut := _root_.UpperTheory.One.Join.automorphic_inputs_from_literature O bc gal
-      coh := _root_.UpperTheory.LiteratureTheorems.galois_cohomology_from_literature O
-      cm := cm }
-theorem UpperTheory.One.Join.cm_abelian_inputs_from_literature (O : _root_.UpperTheory.LiteratureTheorems.OpenImageCondition) : _root_.GlobalTheory.Mem.LiteralAutomorphy.LiteratureCMHypothesis :=
-  { gm := (_root_.UpperTheory.LiteratureTheorems.grothendieck_deformation_of_open O)
-    dr := (_root_.UpperTheory.LiteratureTheorems.abelian_de_rham_of_open O)
-    dual := ⟨_root_.UpperTheory.LiteratureTheorems.dual_abelian_scheme_of_open O,
-      FubiniStudyChowHeightFormula₂.Adr.crystallineDeRham⟩
-    per := (GlobalTheory.PeriodFamily.periodComparison_holds)
-    gmp := (GlobalTheory.GaussManinTop.main)
-    st := (UpperTheory.Lit.serreTateGoodReduction)
-    cm := (_root_.UpperTheory.LiteratureTheorems.elliptic_main_theorem_cm_of_open O)
-    hj := (_root_.UpperTheory.LiteratureTheorems.hilbert_class_field_j_of_open O)
-    dri := (_root_.UpperTheory.LiteratureTheorems.siegel_klingen_deligne_ribet_of_open O)
-    pz := (_root_.UpperTheory.LiteratureTheorems.partial_zeta_functional_equation_of_open O)
-    fe := (_root_.UpperTheory.LiteratureTheorems.hecke_tate_functional_equation_of_open O) }
+      coh := _root_.UpperTheory.LiteratureTheorems.galois_cohomology_from_literature O }
 theorem UpperTheory.One.Join.automorphic_window_of_inputs (O : _root_.UpperTheory.LiteratureTheorems.OpenImageCondition)
  (bc : _root_.PositivityTheory.Rg.BcN.BaseChangeIsobaricN) (gal : _root_.UpperTheory.V.Z.Win.RowT) :
     UpperTheory.Top.VWin :=
-  _root_.UpperTheory.One.Join.v_window_of_depth_zero_residual_bc_cm O bc gal (_root_.UpperTheory.One.Join.cm_abelian_inputs_from_literature O)
+  _root_.UpperTheory.One.Join.v_window_of_depth_zero_residual_bc_cm O bc gal
 end
 end -- clump:auto
 end -- clump:auto
