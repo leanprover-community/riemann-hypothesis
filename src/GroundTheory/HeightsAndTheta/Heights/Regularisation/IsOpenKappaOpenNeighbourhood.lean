@@ -60,8 +60,6 @@ structure RegCharts (A : FinHolAtlas D X) where
 
   W'' : Fin n → Set (Fin D → ℂ)
   isOpen_kappaOpenNeighbourhood : ∀ j, IsOpen (W j)
-  isOpen_alt : ∀ j, IsOpen (W' j)
-  isOpen_alt_alt : ∀ j, IsOpen (W'' j)
   W_subset : ∀ j, W j ⊆ (ψ j).target
   isCompact_closure_middle : ∀ j, IsCompact (closure (W' j))
   closure_W'_subset : ∀ j, closure (W' j) ⊆ W j
@@ -69,17 +67,10 @@ structure RegCharts (A : FinHolAtlas D X) where
   cover : ∀ x, ∃ j, x ∈ (ψ j).source ∧ ψ j x ∈ W'' j
 
   θ : LocPot X
-  θ_pot : IsPotential A θ
 
   om : LocPot X
-  om_pot : IsPotential A om
-  om_pos : IsPosPot A om
 
   q : Fin n → (Fin D → ℂ) → ℝ
-  q_smooth : ∀ j, ContDiffOn ℝ ∞ (q j) (W j)
-  q_θ : ∀ j, ∀ y ∈ (ψ j).source, ψ j y ∈ W j → ∃ V : Set X, IsOpen V ∧ y ∈ V ∧ ∃ G : X → ℂ,
-    A.HoloOn V G ∧ ∀ x ∈ V ∩ θ.U y ∩ (ψ j).source, ψ j x ∈ W j →
-      θ.φ y x - q j (ψ j x) = (G x).re
 
 namespace RegCharts
 

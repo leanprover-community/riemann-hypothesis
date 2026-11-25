@@ -141,7 +141,7 @@ theorem placeModel_onto_local : ∀ (D : Formalism.BasicNotions.D7) (ψ : AddCha
       rw [map_smul]; exact this
   · refine Submodule.span_induction
       (p := fun x _ => ∃ Φ, IsSBHalf a (latO S T ΛS ΛT fun _ => True) Φ ∧ Tm Φ = x)
-      ?_ ?_ ?_ ?_ (GlobalTheory.T.localFactor_mem_span_localHeisenbergTranslates D ψ θ S T sS sT ΛS ΛT f₀ hb v x hx)
+      ?_ ?_ ?_ ?_ (_root_.GlobalTheory.LocalSpan.mem_span_local D ψ θ S T sS sT ΛS ΛT f₀ hb v x hx)
     · rintro _ ⟨w, rfl⟩
       have hx : IsHalf a (a • w) := by rw [GlobalTheory.SplitScalar.isHalf_iff, smul_smul, h1]
       have hy : IsHalf (cA D a) (cA D a • w) := by rw [GlobalTheory.SplitScalar.isHalf_iff, smul_smul, c1]

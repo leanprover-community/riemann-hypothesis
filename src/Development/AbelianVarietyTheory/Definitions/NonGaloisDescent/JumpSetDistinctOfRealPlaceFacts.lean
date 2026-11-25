@@ -767,9 +767,9 @@ lemma jd_card_lt {m j : ℕ} (hj : j ≤ m) :
   rw [this, Finset.card_image_of_injective _ (Fin.castLE_injective hj), Finset.card_univ,
     Fintype.card_fin]
 
-lemma jd_card_ge {m j : ℕ} (hj : j ≤ m) :
+lemma jd_card_ge {m j : ℕ} :
     (Finset.univ.filter (fun a : Fin m => j ≤ a.1)).card = m - j := by
-  apply Formalism.CohomologicalDescent.FrobeniusPeriodChange.card_filter_le_val_eq_sub <;> assumption
+  exact Formalism.CohomologicalDescent.FrobeniusPeriodChange.card_filter_le_val_eq_sub m j
 
 lemma jd_ncard {n : ℕ} (f : Fin n → ℚ) (hf : Function.Injective f) (p : Fin n → Prop)
     [DecidablePred p] (S : Set ℚ) (hS : ∀ q, q ∈ S ↔ ∃ a, p a ∧ q = f a) :
@@ -868,7 +868,7 @@ theorem jumpSetDistinct_of_realPlaceFacts {L : SizeData₂ D} (h : ∀ j, 1 ≤ 
       have := F.v_anti a a' hl; try dsimp only at e
       linarith)
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
-  · refine (jd_ncard _ iL (fun a => j ≤ a.1) _ ?_).trans (jd_card_ge hjm)
+  · refine (jd_ncard _ iL (fun a => j ≤ a.1) _ ?_).trans jd_card_ge
     intro q
     simp only [lowJ, Set.mem_ofPred_eq]
     constructor
@@ -898,7 +898,7 @@ theorem jumpSetDistinct_of_realPlaceFacts {L : SizeData₂ D} (h : ∀ j, 1 ≤ 
       have := jd_lneg F a hlt; linarith
     · rintro ⟨a, ha, rfl⟩
       exact ⟨⟨a, by ring⟩, by have := jd_lpos F a ha; linarith⟩
-  · refine (jd_ncard _ iR (fun a => j ≤ a.1) _ ?_).trans (jd_card_ge hjm)
+  · refine (jd_ncard _ iR (fun a => j ≤ a.1) _ ?_).trans jd_card_ge
     intro q
     simp only [jd_lowT_f, reflS, AdmissibleParameterJ.refl, lowJ, Set.mem_ofPred_eq]
     constructor
@@ -908,7 +908,7 @@ theorem jumpSetDistinct_of_realPlaceFacts {L : SizeData₂ D} (h : ∀ j, 1 ≤ 
       have := jd_lpos F a hlt; linarith
     · rintro ⟨a, ha, rfl⟩
       exact ⟨⟨a, by ring⟩, by have := jd_lneg F a ha; linarith⟩
-  · refine (jd_ncard _ iL (fun a => j ≤ a.1) _ ?_).trans (jd_card_ge hjm)
+  · refine (jd_ncard _ iL (fun a => j ≤ a.1) _ ?_).trans jd_card_ge
     intro q
     simp only [jumpUnion_true, cloudJ, lowJ, Set.mem_union, Set.mem_ofPred_eq]
     constructor
@@ -1014,7 +1014,7 @@ theorem jumpSetFinal_of_realPlaceFacts {L : SizeData₂ D} (h : ∀ j, 1 ≤ j �
       · by_cases hja : j ≤ a.1
         · have := jd_lneg F a hja; linarith
         · have := jd_lpos F a (by omega); linarith
-  · refine (jd_ncard _ iL4 (fun a => j ≤ a.1) _ ?_).trans (jd_card_ge hjm)
+  · refine (jd_ncard _ iL4 (fun a => j ≤ a.1) _ ?_).trans jd_card_ge
     intro u
     simp only [dualS, jd_JW_f, reflS, AdmissibleParameterJ.refl, cloudJ, lowJ, Set.mem_union, Set.mem_ofPred_eq]
     constructor

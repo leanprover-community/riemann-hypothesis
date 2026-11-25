@@ -499,10 +499,6 @@ theorem subIner_rTensor_actVB (ρ : Representation LL G V) (σ : Representation 
   | tmul v b => simp [actVB, hf]
   | add z w hz hw => simp only [map_add (f := _), hz, hw]
 
-theorem subIner_mem_Eig (ρ : Representation LL G V) (I : Subgroup G) (a : I →* LLˣ) (x : V ⊗[Qp] B) :
-    x ∈ PC.Eig ρ I a ↔ x ∈ PC.Dpcris ρ ∧ ∀ g : I, actVB PC.PD ρ g x = ((a g : LLˣ) : LL) • x := by
-  simp [PotCrysData.Eig, Submodule.mem_iInf, sub_eq_zero]
-
 theorem subIner_Dpcris_eq (ρ : Representation LL G V) {n : ℕ} (σ : Fin n → Representation LL G U)
     (p : Fin n → V →ₗ[LL] U) (hp : ∀ j g v, p j (ρ g v) = σ j g (p j v))
     (hinj : ∀ v, (∀ j, p j v = 0) → v = 0) (I : Subgroup G) (Sig : Finset (I →* LLˣ))
@@ -522,10 +518,10 @@ theorem subIner_Dpcris_eq (ρ : Representation LL G V) {n : ℕ} (σ : Fin n →
     (subIner_rTensor_inj p hinj) (fun (a : I →* LLˣ) g => ((a g : LLˣ) : LL))
     (fun a b hab => MonoidHom.ext fun g => Units.ext (congrFun hab g)) (PC.Dpcris ρ)
     (fun g z hz => subIner_Dpcris_stable PC ρ g z hz) Sig d hd (fun j a => μ j a)
-    (fun j a _ g => ((subIner_mem_Eig PC (σ j) I a _).1 (μ j a).2).2 g) hμ
+    (fun j a _ g => ((GlobalTheory.inertialEig_mem_iff PC (σ j) I a _).1 (μ j a).2).2 g) hμ
   refine Submodule.sum_mem _ fun a ha => ?_
   exact Submodule.mem_iSup_of_mem a (Submodule.mem_iSup_of_mem ha
-    ((subIner_mem_Eig PC ρ I a _).2 (hx a ha)))
+    ((GlobalTheory.inertialEig_mem_iff PC ρ I a _).2 (hx a ha)))
 
 end General
 

@@ -42,16 +42,8 @@ theorem isMultiHomog_monomial (e : (Σ k, ι k) →₀ ℕ) (r : ℤ) :
 
 open Classical in
 theorem sum_single_apply (k' : K) (j : ι k') (b : ℕ) (k : K) :
-    ∑ i, (Finsupp.single (⟨k', j⟩ : Σ k, ι k) b) ⟨k, i⟩ = if k' = k then b else 0 := by
-  classical
-  by_cases h : k' = k
-  · subst h
-    simp [Finsupp.single_apply]
-  · rw [if_neg h]
-    refine Finset.sum_eq_zero fun i _ => ?_
-    rw [Finsupp.single_apply, if_neg]
-    intro he
-    exact h (Sigma.mk.inj_iff.mp he).1
+    ∑ i, (Finsupp.single (⟨k', j⟩ : Σ k, ι k) b) ⟨k, i⟩ = if k' = k then b else 0 :=
+  by apply _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBoundedMul.sum_single_apply
 
 def chartMono (c : ∀ k, ι k) (d : K → ℕ) : MRing ι :=
   ∏ k, X ⟨k, c k⟩ ^ d k

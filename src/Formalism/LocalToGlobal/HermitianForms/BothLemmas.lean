@@ -21,10 +21,4 @@ theorem reL_rfl {a : ℕ} {E : Type} [Field E] [NumberField E] (L : Submodule (�
   ext z
   simp [reL, reV_rfl]
 
-theorem Joint.Pv {D : D7} {X : Formalism.L2.Herm.ColsHerm D} {u : D.what₂.Word} {T : FormsTied D u} (J : Joint X u T)
-    (v : (D.mem u).A.vT) : T.atT.Pv v = (X.atT u).Pv v := by
-  unfold AtTTied.Pv
-  rw [J.res]
-  exact (X.atT u).res_ker v
-
 end Formalism.L2.Forms

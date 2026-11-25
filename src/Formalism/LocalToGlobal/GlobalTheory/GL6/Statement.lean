@@ -35,14 +35,6 @@ def CongruenceLatticeLengthBound : Prop :=
 
 end Split
 
-def ChiUnit {D : D7} {u : D.what₂.Word} (T : Formalism.L2.Forms.FormsTied D u) : Prop :=
-  ∀ i (hi : i ≤ D.R.m) (x : (T.cls i hi).lev.U), ‖(((T.cls i hi).lev.chi x : ℂˣ) : ℂ)‖ = 1
-
-def ChiFin {D : D7} {u : D.what₂.Word} (T : Formalism.L2.Forms.FormsTied D u) : Prop :=
-  ∃ n : ℕ, 0 < n ∧ ∀ i (hi : i ≤ D.R.m) (x : (T.cls i hi).lev.U),
-    (((T.cls i hi).lev.chi x : ℂˣ) : ℂ) ^ n = 1 ∧
-      ∃ r : D.what₂.LL, D.what₂.embLL r = (((T.cls i hi).lev.chi x : ℂˣ) : ℂ)
-
 end Formalism.L2.GlobalTheoryTheory.LocalLatticeBases
 
 end

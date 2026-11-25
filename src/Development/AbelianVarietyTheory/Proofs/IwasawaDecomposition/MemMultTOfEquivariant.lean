@@ -148,7 +148,7 @@ theorem mem_multT_of_equivariant : ∀ (D : D7) (θ : InfFam D) (V : HSp D) (S :
   refine ⟨fun v => ?_, fun v => GlobalTheory.DefiniteEnd.isCuspFun_of_definite hs hd _, fun v k hk g => hlev _ k hk g,
     fun τ g hg v w hw => ?_, fun τ v x => ?_⟩
   · rw [e]
-    refine (GlobalTheory.DefiniteForms.autFunDefIffSm D θ hθ V hs hd _).1 ⟨haut _, ?_⟩
+    refine GlobalTheory.DefiniteForms.sm_of_kfin hθ hs hd ⟨haut _, ?_⟩
     refine Submodule.finiteDimensional_of_le (S₂ := LinearMap.range L) (Submodule.span_le.2 ?_)
     rintro _ ⟨k, hk, rfl⟩
     refine rTr_mem hθ _ (fun τ g hg => ?_) hk _ (LinearMap.mem_range_self L _)

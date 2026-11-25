@@ -1173,7 +1173,7 @@ end
 
 theorem tensLaw_of : ∀ (X : ProvA) (p q r s : ℕ) (lam : Ix p q → ℚ) (lam' : Ix r s → ℚ), ARi X lam lam' → ARiiiUp X lam lam' → ARiiiDown X lam lam' → ARiiiLine X lam lam' → TensLaw (fockAct1 p q r s) (fockAct2 p q r s) (blattner lam) (blattner lam') ∧ TensLaw (fockAct2 p q r s) (fockAct1 p q r s) (blattner lam') (blattner lam) := by
   intro X p q r s lam lam' h1 _ _ _
-  obtain ⟨hiff, -, -⟩ := GlobalTheory.T.fockModel_jointHarmonics_form_normalisation_uniqueness X p q r s (blattner lam) (blattner lam')
+  obtain ⟨hiff, -, -⟩ := _root_.GlobalTheory.ArchRec.Joint.joint_harmonics X p q r s (blattner lam) (blattner lam')
   obtain ⟨Φ₀, hΦ₀⟩ := h1.1
   have hex : CJoint (fockAct1 p q r s) (fockAct2 p q r s) (blattner lam) (blattner lam') Φ₀ :=
     (hiff Φ₀).2 ⟨hΦ₀.1, hΦ₀.2.1, hΦ₀.2.2.1⟩
@@ -1423,7 +1423,7 @@ theorem exists_ktie {X : ProvA} (h : Good D X) {V : HSp D} {S : D.what₂.Tau �
   obtain ⟨e, he⟩ := _root_.GlobalTheory.ArchRec.EnumBlocks.exists_isOrd V.rank p q l₁ l₂ c br cj (M.ε τ) (M.lam τ) h₁ h₂ hp (by rw [← hS]; exact M.enum τ)
   obtain ⟨m, hm, U, hU⟩ : ∃ m : ℤ, (m : ℚ) = 2 * c ∧ ∃ U, Comparison₂ (X.ds p q (ofBlocks l₁ l₂)) M τ br cj e m U := by
     cases br <;> cases cj
-    · obtain ⟨m, hm, hU⟩ := GlobalTheory.T.discreteSeriesModelParamShiftedWeight_of_coverDiscreteSeries D h.br X V S M τ p q l₁ l₂ c hn h₁ h₂ hp hpar (by rw [hS]; rfl)
+    · obtain ⟨m, hm, hU⟩ := _root_.GlobalTheory.ArchRec.Direct.directBridge D h.br X V S M τ p q l₁ l₂ c hn h₁ h₂ hp hpar (by rw [hS]; rfl)
       exact ⟨m, hm, hU e he.1 false⟩
     · obtain ⟨-, m, hm, hU⟩ := h.br.2 X V S M τ p q l₁ l₂ c ⟨hn, h₁, h₂, hp, hpar, by rw [hS]; rfl⟩
       obtain ⟨U, hU⟩ := hU e he.1
@@ -1433,9 +1433,9 @@ theorem exists_ktie {X : ProvA} (h : Good D X) {V : HSp D} {S : D.what₂.Tau �
       obtain ⟨U, hU⟩ := hU e he.1
       exact ⟨m, hm, U, fun x y => U.map_add x y, fun z x => U.map_smul z x, U.bijective, fun x => U.norm_map x,
         hU.grp, hU.kfin⟩
-    · obtain ⟨m, hm, hU⟩ := GlobalTheory.T.discreteSeriesModelParamShiftedWeight_of_coverDiscreteSeries D h.br X V S M τ p q l₁ l₂ c hn h₁ h₂ hp hpar (by rw [hS]; rfl)
+    · obtain ⟨m, hm, hU⟩ := _root_.GlobalTheory.ArchRec.Direct.directBridge D h.br X V S M τ p q l₁ l₂ c hn h₁ h₂ hp hpar (by rw [hS]; rfl)
       exact ⟨m, hm, hU e he.1 true⟩
-  have hhi := GlobalTheory.T.discreteSeriesModelIsometry_unit_highestVector_iff D V S M τ p q _ (X.ds p q (ofBlocks l₁ l₂)) _ c br cj e m U hp he hm hU hfin
+  have hhi := _root_.GlobalTheory.ArchRec.HighTie.highestUnit_iff D V S M τ p q _ (X.ds p q (ofBlocks l₁ l₂)) _ c br cj e m U hp he hm hU hfin
   obtain ⟨u, hu⟩ := GlobalTheory.T.exists_kFiniteIsometry_discreteSeriesModel_detCover D V S M τ p q _ (X.ds p q (ofBlocks l₁ l₂)) _ c br cj e m U hp he hm hU hhi
   exact ⟨⟨m, hm⟩, e, u, hu⟩
 
@@ -1457,12 +1457,12 @@ theorem lift_up (h : Good D X) (h1 : Formalism.MainNotions.SchurIrreducible.Arch
     (hN : KTie (X.ds _ _ (lamA' t al be ga de)) N τ (lamA' t al be ga de) c' b' false e' u')
     (hR : Reads (gramAt D V τ) (gramAt D W τ) A B pt IP (phiFr (M.fr τ) b e) (phiFr (N.fr τ) b' e') c c' κ) :
     LiftLaw M τ A pt N B := by
-  have hJ := GlobalTheory.T.fockJointHarmonic_vectors_iff_polynomials _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ hM hN hR.s₁ hR.s₂ hR.gr
+  have hJ := _root_.GlobalTheory.ArchRec.JointTransfer.isJoint_iff_cJoint _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ hM hN hR.s₁ hR.s₂ hR.gr
   obtain ⟨hU, hD, hLn⟩ := h3.1 t al be ga de hd
   have hT := (GlobalTheory.T.thetaCorrespondenceTensorLaw_both_orders_of_covers X _ _ _ _ _ _ (h1.1 t al be ga de hd) hU hD hLn).1
-  have hPL := GlobalTheory.T.thetaCorrespondence_pairingLaw_of_tensorLaw _ _ _ _ _ _ _ _ _ _ _ (isGK_fock _ _ _ _).1 (isGK_fock _ _ _ _).2 (discreteSeries_harishChandraModule_admissible h.hc (rank_pos hd.1).1 _)
+  have hPL := _root_.GlobalTheory.ArchRec.PairOfTens.pairLaw_of_tensLaw _ _ _ _ _ _ _ _ _ _ _ (isGK_fock _ _ _ _).1 (isGK_fock _ _ _ _).2 (discreteSeries_harishChandraModule_admissible h.hc (rank_pos hd.1).1 _)
     (h.ds _ _ _ hM.par).1 hT
-  exact GlobalTheory.T.thetaCorrespondence_models_of_covers_realPlace _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ hM hN hR.s₁ hR.s₂ hJ hPL
+  exact _root_.GlobalTheory.ArchRec.Lift.liftLaw_of_pairLaw _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ hM hN hR.s₁ hR.s₂ hJ hPL
 
 theorem lift_down (h : Good D X) (h1 : Formalism.MainNotions.SchurIrreducible.ArchimedeanRallisFirst X) (h3 : Formalism.MainNotions.SchurIrreducible.ArchimedeanRallisUpDownLine X)
     (hd : Formalism.MainNotions.SchurIrreducible.DataAR t al be ga de) {u u'} (hm : ∃ m : ℤ, (m : ℚ) = 2 * c)
@@ -1470,16 +1470,16 @@ theorem lift_down (h : Good D X) (h1 : Formalism.MainNotions.SchurIrreducible.Ar
     (hN : KTie (X.ds _ _ (lamA' t al be ga de)) N τ (lamA' t al be ga de) c' b' true e' u')
     (hR : Reads (gramAt D V τ) (gramAt D W τ) A B pt IP (phiFr (M.fr τ) b e) (phiFr (N.fr τ) b' e') c c' κ) :
     LiftLaw N τ B pt M A ∧ ∀ ip, IP ip → ZetaLaw N τ B pt M A ip := by
-  have hJ := GlobalTheory.T.fockJointHarmonic_vectors_iff_polynomials _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ hN hM hR.s₂ hR.s₁ hR.gr
+  have hJ := _root_.GlobalTheory.ArchRec.JointTransfer.isJoint_iff_cJoint _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ hN hM hR.s₂ hR.s₁ hR.gr
   obtain ⟨hU, hD, hLn⟩ := h3.1 t al be ga de hd
   have hT := (GlobalTheory.T.thetaCorrespondenceTensorLaw_both_orders_of_covers X _ _ _ _ _ _ (h1.1 t al be ga de hd) hU hD hLn).2
-  have hPL := GlobalTheory.T.thetaCorrespondence_pairingLaw_of_tensorLaw _ _ _ _ _ _ _ _ _ _ _ (isGK_fock _ _ _ _).2 (isGK_fock _ _ _ _).1 (discreteSeries_harishChandraModule_admissible h.hc (rank_pos hd.1).2 _)
+  have hPL := _root_.GlobalTheory.ArchRec.PairOfTens.pairLaw_of_tensLaw _ _ _ _ _ _ _ _ _ _ _ (isGK_fock _ _ _ _).2 (isGK_fock _ _ _ _).1 (discreteSeries_harishChandraModule_admissible h.hc (rank_pos hd.1).2 _)
     (h.ds _ _ _ hN.par).1 hT
-  refine ⟨GlobalTheory.T.thetaCorrespondence_models_of_covers_realPlace _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ hN hM hR.s₂ hR.s₁ hJ hPL, fun ip hip => ?_⟩
+  refine ⟨_root_.GlobalTheory.ArchRec.Lift.liftLaw_of_pairLaw _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ hN hM hR.s₂ hR.s₁ hJ hPL, fun ip hip => ?_⟩
   obtain ⟨m, hm⟩ := hm
   obtain ⟨K, Θ, hF, hL1, -⟩ := hR.l2 ip hip
   have hC : Coef (X.fock _ _ _ _) A pt ip κ (phiFr (M.fr τ) b e) m K := GlobalTheory.T.fockVectors_matrixCoefficients_eq_fockRepresentation _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ (rank_pos hd.1).1 (M.fr_unit τ) (M.fr_gram τ) hM.ord.1 hm hR.s₁ hL1 hF
-  refine GlobalTheory.T.zetaIntegral_model_of_cover _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ (h1.1 t al be ga de hd) ?_ hM hN.ord.1 hm hC fun Φ hΦ => ((hJ Φ).1 hΦ).symm
+  refine _root_.GlobalTheory.ArchRec.ZetaTransfer.zetaLaw_of_cover _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ (h1.1 t al be ga de hd) ?_ hM hN.ord.1 hm hC fun Φ hΦ => ((hJ Φ).1 hΦ).symm
   intro v hv
   obtain ⟨-, -, hgap⟩ := hd.2
   have hq7 : Formalism.MainNotions.SchurIrreducible.admQ7 := GlobalTheory.TensorHW.highestWeight_tensor
@@ -1579,7 +1579,7 @@ theorem chainLower (h : Good D X) : ChainLower D := by
 
 theorem pairLower (h : Good D X) : PairLower D := by
   intro i τ
-  obtain ⟨al, de, ⟨hA, hF, -⟩, h1, h2⟩ := GlobalTheory.T.definiteSource_pair_centred_block_parameters D i τ
+  obtain ⟨al, de, ⟨hA, hF, -⟩, h1, h2⟩ := _root_.GlobalTheory.ArchRec.ParPair.centred_pair D i τ
   refine noLowerTarget (fun M hM => ?_) (fun M hM => ?_)
     (fun j hj hr hs => PairNo.swap (pairNo_large h hA hF j hj hr hs))
   · obtain ⟨e, u, hu⟩ := tie_large h hA M τ true true (hM.trans h2)
@@ -1610,7 +1610,7 @@ theorem chainTop (h : Good D X) (h1 : Formalism.MainNotions.SchurIrreducible.Arc
 
 theorem pairTop (h : Good D X) (h1 : Formalism.MainNotions.SchurIrreducible.ArchimedeanRallisFirst X) (h3 : Formalism.MainNotions.SchurIrreducible.ArchimedeanRallisUpDownLine X) (hg : NodeGap D) : PairTop D := by
   intro i τ
-  obtain ⟨al, de, ⟨hA, -, hG⟩, e1, e2⟩ := GlobalTheory.T.definiteSource_pair_centred_block_parameters D i τ
+  obtain ⟨al, de, ⟨hA, -, hG⟩, e1, e2⟩ := _root_.GlobalTheory.ArchRec.ParPair.centred_pair D i τ
   have hd : Formalism.MainNotions.SchurIrreducible.DataAR D.R.t al [] [] de := ⟨hA, hG hg⟩
   refine ⟨?_, ?_, ?_⟩
   · intro ψ θ χS χT ω hω hS hT PS PT MS MT hPS hPT BS BT f hf

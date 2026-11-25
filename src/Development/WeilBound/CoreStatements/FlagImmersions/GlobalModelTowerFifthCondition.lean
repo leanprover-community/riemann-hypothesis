@@ -1337,24 +1337,8 @@ theorem recR_map (e : ∀ k, ι k ≃ Fin (n k + 1)) {x : Cone n (AlgebraicClosu
 
 end Recursion
 
-theorem heightRecR : GroundTheory.Heights₂.Heights.HeightRecR.Statement := by
-  open GroundTheory.Heights₂.Heights in
-  have hM : OrbitChartMax.Statement := OrbitChartMax.proof
-  open GroundTheory.Heights₂.Heights in
-  have hQ : OrbitChartQuot.Statement := OrbitChartQuot.proof
-  open GroundTheory.Heights₂.Heights in
-  have hIff : OrbitCenterMemIff.Statement := OrbitCenterMemIff.proof
-  open GroundTheory.Heights₂.Heights in
-  exact HeightRecR.proof OrbitDivVertical.proof
-    (OrbitFiniteSum.proof OrbitDegreeRatio.proof
-      (OrbitLocalSum.proof OrbitChartRing.proof hM (OrbitChartResidue.proof hM hQ (OrbitChartDehom.proof hM hQ))
-        OrbitChartMult.proof
-        (LocalLengthPlaces.proof LocalQuotCard.proof CentredPlacesFinite.proof
-          (LocalQuotCentred.proof CentredRingNormal.proof LocalNormalIndex.proof) PlacesRingQuot.proof)
-        OrbitCenterChart.proof PlaceCentredSum.proof OrbitChartTerm.proof)
-      (OrbitCenterZero.proof OrbitCenterLe.proof hIff
-        (OrbitCenterDivSupp.proof hIff (OrbitCenterPrime.proof hIff) SubringPrimeMaximal.proof)))
-    (OrbitArchSum.of_conjSum OrbitConjSum.proof)
+theorem heightRecR : GroundTheory.Heights₂.Heights.HeightRecR.Statement :=
+  _root_.CoverDenseAlt.heightRecR_full
 
 theorem mem_mCoordIdeal_iff {Ω : Type} [Field Ω] (w : (Σ k, ι k) → Ω) (f : MRing ι) (a : K → ℕ)
     (hf : IsMultiHomog f a) : f ∈ mCoordIdeal w ↔ aeval w f = 0 := by

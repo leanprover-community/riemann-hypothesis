@@ -553,8 +553,6 @@ open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest
 
 namespace GlobalTheory.BigTop.Fun.LeafMMTie
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Spread
 
 open GlobalTheory.SignedHC
@@ -703,7 +701,6 @@ open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain
 open Formalism.L2 Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links
 open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest
 namespace GlobalTheory.BigTop.Fun.LeafMMTie
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 section Spread
 open GlobalTheory.SignedHC
 variable (D : D7) (C : ℝ) (τ : D.what₂.Tau)

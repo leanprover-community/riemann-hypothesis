@@ -301,9 +301,6 @@ theorem IsTraceClass.comp_comp {T : H →L[ℂ] H} (h : IsTraceClass T) (A : H �
 theorem IsTraceClass.comp_left {T : H →L[ℂ] H} (h : IsTraceClass T) (A : H →L[ℂ] H) :
     IsTraceClass (A ∘L T) := by simpa using h.comp_comp A (ContinuousLinearMap.id ℂ H)
 
-theorem IsTraceClass.comp_right {T : H →L[ℂ] H} (h : IsTraceClass T) (A : H →L[ℂ] H) :
-    IsTraceClass (T ∘L A) := by simpa using h.comp_comp (ContinuousLinearMap.id ℂ H) A
-
 theorem IsTraceClass.smul {T : H →L[ℂ] H} (h : IsTraceClass T) (c : ℂ) : IsTraceClass (c • T) := by
   simpa using h.comp_left (c • ContinuousLinearMap.id ℂ H)
 

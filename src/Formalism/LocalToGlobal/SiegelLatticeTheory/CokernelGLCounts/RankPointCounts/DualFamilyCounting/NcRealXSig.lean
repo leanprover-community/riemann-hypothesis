@@ -253,23 +253,6 @@ theorem e_li (hF : IsFrameJ ε e f wf z0) : LinearIndependent ℂ e := by
   simp only [hJ_sum_l, hF.ef, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] at h
   simpa [hJ] using h
 
-theorem frameX_of (hF : IsFrameJ ε e f wf z0) (hk : 1 ≤ k) {zB zB' : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r zB)
-    (hz' : inWb k r zB') (hT : 0 < Tz k r zB) (hT' : 0 < Tz k r zB') :
-    FrameLoc ε k e (Qm e f wf z0 *ᵥ zB) (Qm e f wf z0 *ᵥ zB') (Tz k r zB) (Tz k r zB') := by
-  refine
-    { dim := ?_
-      k_pos := hk
-      sig := sig_of_frame hF
-      e_li := e_li hF
-      ee := hF.ee
-      ez := hJ_e_Qm hF hz
-      ez' := hJ_e_Qm hF hz'
-      zz := hJ_Qm_self hF zB
-      zz' := hJ_Qm_self hF zB'
-      T_pos := hT
-      T'_pos := hT' }
-  omega
-
 end Sig
 
 end Formalism.L2.SG.Pf.NcReal.JX

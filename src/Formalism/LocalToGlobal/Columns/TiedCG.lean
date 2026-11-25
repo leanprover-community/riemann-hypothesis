@@ -74,9 +74,6 @@ structure ClsPTied (u : D.what₂.Word) where
       bc (inclE (F := D.host.F) (FiniteAdeleRing (𝓞 D.host.F) D.host.F)) γ.1 ∈
         lev.U.map (MulAut.conj (y c).1).toMonoidHom
 
-def sgT (u : D.what₂.Word) : D.what₂.Tau → DomWeight (D.R.N D.R.m - 1) :=
-  fun τ => shW ((D.fm u).sg τ) ((D.R.m * (D.R.t + 1) / 2 : ℕ) : ℤ)
-
 
 
 

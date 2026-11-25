@@ -58,8 +58,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EtaProdEq
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HeckeLEntireAndNonzeroAtOneHolds
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SqRepTopVecOfUnitriangular
 public import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.HermitianHassePrincipleHolds
-public import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.ThetaRationalInvarianceHolds
-public import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.PlaneFormNondegenerate
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.RealMetaplecticRepresentation
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.SchurOrthogonalitySquareIntegrable
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HeckeLPartialContinuationHolds
@@ -113,7 +111,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HoweDualityR
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ImportsTailTer
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.JoinOutOfFive
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KawamataViehwegOfNadelVanishingPair
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KudlaSplittingSplitUnitary
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LoceulerHolds
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocfinHolds
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SemiAbelianHomExtensionHolds
@@ -122,7 +119,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SerreHolomor
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.WeylModuleSimpleClosedLowestAlcove
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BhattScholzeCoefficientsOfPadicIntLattices
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BhattScholzeIntegral
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BrauerDegreeZero
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ChebotarevDegreeOne
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ChevalleyUnits
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeRhamPotentiallySemistable
@@ -141,7 +137,6 @@ public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentation
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IwahoriDoubleCosetTorusNilpotent
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.AlgebraicCharacters.AlgebraicCharacterWD
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.FockModels.FockAnisoFree
-public import Development.AutomorphicArithmetic.ThetaCorrespondence.FockModels.GlnTemp
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.RationalDualityOfAllCoefficients
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.BlochKatoLocal
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.GaloisRepresentations.GreenbergWiles
@@ -153,12 +148,10 @@ public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLif
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.SOneRow
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.SiegelEisensteinSecondTermHypotheses
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.TopCovolSlim2Use
-public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.AdmissibleOfIwasawaDecomposition
 public import Development.WeilBound.CoreStatements.AbelianHeightsDuality.PublishedTheoremStatements.BridgesAut
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.SiegelKlingenDeligneRibet
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.DeligneRibet.NotDvdAbsNorm
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.DualAbelianScheme.AbelianDeRhamDuality.AbelianDeRhamDuality
-public import Development.WeilBound.CoreStatements.AutomorphicKernels.LanglandsExhaustion.EssSquareIntegrableSegmentsOfSeg
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.MoriwakiBigness.MoriwakiBigTheorem.Outright
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.NadelVanishing.TopNSI
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.NadelVanishing.TopPointSep
@@ -185,11 +178,7 @@ public import Development.WeilBound.ThetaLifts.Reductions.FiniteClosure.TheoremK
 public import Development.WeilBound.CoreStatements.AbelianHeightsDuality.GelfandKazhdanDuality.GelfandKazhdanDualOfHyp
 public import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.StSandwich
 public import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.ArchimedeanDenseStabilizers.DenseRangeOfNotIsReal
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SignFrameUnitaryIso
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.DecompositionOfFrameWittTorus
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.IwahoriStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemOfIrreducible
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.SplittingOfSandwichAndPairing
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -302,10 +291,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.DixmierMalliavinFactorisationFromLibrary", "h": "module\n\npublic import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.IsClosedEmbeddingOfLocallyCompact\npublic import CompanionTheory.AutomorphicTheory.PadicUnitaryWeights.DixmierMalliavin.DixmierMalliavinFactorisationHolds\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
 section -- clump:auto
 @[expose] public section
-
-namespace GlobalTheory
-
-end GlobalTheory
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.DixmierMalliavinFactorisationFromLibrary =====
@@ -714,32 +699,9 @@ namespace PositivityTheory.Resplug.ResolutionBlowup
 
 def TopRes : Prop := FunctorialResolution.FunctorialResolutionCharZero.{0}
 
-theorem blowup_top_of_iso {X Y : Scheme.{0}} (e : Y ≅ X) :
-    ReciprocityTheory.AnForm.R.FinalTheorems.Blowup e.hom (⊤ : X.IdealSheafData) := by
-  refine ⟨?_, fun W g _ => ⟨g ≫ e.inv, by simp, fun h hh => by rw [← hh]; simp⟩⟩
-  rw [Scheme.IdealSheafData.comap_top]
-  intro y
-  obtain ⟨U, hU, hyU, -⟩ := exists_isAffineOpen_mem_and_subset (x := y) (U := ⊤) trivial
-  exact ⟨⟨U, hU⟩, 1, hyU, one_mem _, by simp⟩
-
-theorem structMap_zero {X : Scheme.{0}} (s : FunctorialResolution.BlowupSequence X) :
-    s.structMap 0 = s.isoZero.hom := by
-  simp [FunctorialResolution.BlowupSequence.structMap, FunctorialResolution.BlowupSequence.down]
-
-theorem isBlowupSeq_structMap {X : Scheme.{0}} (s : FunctorialResolution.BlowupSequence X) :
-    ∀ i, i ≤ s.length → GlobalTheory.CompanionTheory.Hypotheses₂.Resolution.IsBlowupSeq (s.structMap i)
-  | 0, _ => by
-      rw [structMap_zero]
-      exact GlobalTheory.CompanionTheory.Hypotheses₂.Resolution.IsBlowupSeq.single ⊤ _ (blowup_top_of_iso _)
-  | i + 1, hi => by
-      have hlt : i < s.length := hi
-      rw [← s.structMap_down (Nat.le_succ i)]
-      exact GlobalTheory.CompanionTheory.Hypotheses₂.Resolution.IsBlowupSeq.step (s.center i) (s.down (Nat.le_succ i))
-        (isBlowupSeq_structMap s i hlt.le) (s.isBlowup i hlt)
-
 theorem isBlowupSeq_topMap {X : Scheme.{0}} (s : FunctorialResolution.BlowupSequence X) :
     GlobalTheory.CompanionTheory.Hypotheses₂.Resolution.IsBlowupSeq s.topMap :=
-  isBlowupSeq_structMap s s.length le_rfl
+  PositivityTheory.ResPlug.FromRes.isBlowupSeq_structMap s s.length le_rfl
 
 theorem resolutionCharZero_of_top (h : TopRes) : GlobalTheory.CompanionTheory.Hypotheses₂.ResolutionCharZero := by
   obtain ⟨R, hR, -⟩ := h
@@ -834,10 +796,6 @@ section -- clump:auto
 namespace PositivityTheory.Stage1.PM
 
 alias hermitianHassePrinciple := _root_.GlobalTheory.Published.hermitianHassePrinciple_holds
-
-alias thetaRationalInvariance := _root_.GlobalTheory.Published.thetaRationalInvariance_holds
-
-alias stoneVonNeumann := _root_.GlobalTheory.Published.StoneVonNeumann_holds
 
 end PositivityTheory.Stage1.PM
 end -- clump:auto
@@ -990,14 +948,10 @@ theorem UpperTheory.LiteratureTheorems.bloch_kato_local_of_literature : GlobalTh
   _root_.GlobalTheory.CompanionTheory.Hypotheses₂.BK.blochKatoLocal
 theorem UpperTheory.LiteratureTheorems.borel_casselman_of_literature : GlobalTheory.Published.BorelCasselman :=
   PositivityTheory.Stage1.PM.borelCasselman
-theorem UpperTheory.LiteratureTheorems.brauer_degree_zero_of_literature : GlobalTheory.Published.BrauerDegreeZero :=
-  (GlobalTheory.BrauerZero.brauerDegreeZero )
 theorem UpperTheory.LiteratureTheorems.cm_curve_good_outside_prime_st_of_literature : GlobalTheory.Published.CMCurveGoodOutsidePrimeSt :=
   GlobalTheory.Published.cmCurveGoodOutsidePrime
 theorem UpperTheory.LiteratureTheorems.segment_representation_of_literature : GlobalTheory.Published.SegmentRepresentation :=
   PositivityTheory.RgGu.segmentRepresentation
-theorem UpperTheory.LiteratureTheorems.ess_square_integrable_segments_of_literature : GlobalTheory.Published.EssSquareIntegrableSegments :=
-  PositivityTheory.Exh.essSquareIntegrableSegments_of_seg (_root_.UpperTheory.LiteratureTheorems.segment_representation_of_literature)
 theorem UpperTheory.LiteratureTheorems.local_langlands_recT_exists_of_literature (hLiteratureRecT : _root_.UpperTheory.Zero.LLC.RecTExists) : _root_.UpperTheory.Zero.LLC.RecTExists :=
   hLiteratureRecT
 theorem UpperTheory.LiteratureTheorems.pair_u_of_literature (hLiteratureRow : _root_.UpperTheory.One.M.Row) : _root_.UpperTheory.GalS.PairUAlt :=
@@ -1008,31 +962,15 @@ theorem UpperTheory.LiteratureTheorems.jacquet_shalika_rigidity_of_literature : 
   PositivityTheory.AdelicQuotientData.jacquetShalikaRigidity
 theorem UpperTheory.LiteratureTheorems.gelfand_kazhdan_dual_of_literature : GlobalTheory.Published.GelfandKazhdanDual :=
   PositivityTheory.JMult1.gelfandKazhdanDual_of_rigidity (_root_.UpperTheory.LiteratureTheorems.jacquet_shalika_rigidity_of_literature) (_root_.UpperTheory.LiteratureTheorems.cusp_forms_bounded_gl_of_literature)
-theorem UpperTheory.LiteratureTheorems.generic_unlinked_gl_of_literature : GlobalTheory.Published.GenericUnlinkedGL :=
-  GlobalTheory.RgGu.genericUnlinkedGL_of_segRep2 (_root_.UpperTheory.LiteratureTheorems.segment_representation_of_literature)
-theorem UpperTheory.LiteratureTheorems.chevalley_units_of_literature : GlobalTheory.Published.ChevalleyUnits :=
-  (GlobalTheory.Published.chevalleyUnits' )
 theorem UpperTheory.LiteratureTheorems.geometric_restriction_of_literature : GlobalTheory.Published.GeometricLemma :=
   GlobalTheory.CompanionTheory.GeoLink.geometricLemma
 theorem UpperTheory.LiteratureTheorems.grothendieck_ring_polynomial_of_literature : GlobalTheory.Published.GrothendieckRingPolynomial :=
   PositivityTheory.Groth.grothendieckRingPolynomial_of_seg (_root_.UpperTheory.LiteratureTheorems.segment_representation_of_literature)
 theorem UpperTheory.LiteratureTheorems.zelevinsky_polynomial_ring_of_literature : GlobalTheory.Published.ZelevinskyPolynomialRing :=
   _root_.GlobalTheory.zelevinskyPolynomialRing_of_parts _root_.UpperTheory.LiteratureTheorems.bernstein_zelevinsky_finiteness_of_literature (_root_.UpperTheory.LiteratureTheorems.segment_representation_of_literature) (_root_.UpperTheory.LiteratureTheorems.grothendieck_ring_polynomial_of_literature)
-theorem UpperTheory.LiteratureTheorems.depth_zero_induction_of_literature : GlobalTheory.Published.DepthZeroInduction :=
-  (GlobalTheory.DepthZeroPass.depthZeroInduction (_root_.UpperTheory.LiteratureTheorems.geometric_restriction_of_literature) (_root_.UpperTheory.LiteratureTheorems.bernstein_zelevinsky_finiteness_of_literature) (_root_.UpperTheory.LiteratureTheorems.zelevinsky_polynomial_ring_of_literature))
-theorem UpperTheory.LiteratureTheorems.langlands_exhaustion_gl_of_literature : GlobalTheory.Published.LanglandsExhaustionGL :=
-  PositivityTheory.Exh.langlandsExhaustionGL_of_seg (_root_.UpperTheory.LiteratureTheorems.segment_representation_of_literature)
-theorem UpperTheory.LiteratureTheorems.langlands_multisegments_of_literature : GlobalTheory.Published.LanglandsMultisegments :=
-  PositivityTheory.Exh.langlandsMultisegments_of_seg (_root_.UpperTheory.LiteratureTheorems.segment_representation_of_literature)
 theorem UpperTheory.LiteratureTheorems.standard_cosocle_gl_of_literature : GlobalTheory.Published.StandardCosocleGL :=
   PositivityTheory.Exh.standardCosocleGL_of_seg (_root_.UpperTheory.LiteratureTheorems.segment_representation_of_literature)
 alias UpperTheory.LiteratureTheorems.local_langlands_gl_recT_exists_of_literature := _root_.UpperTheory.LiteratureTheorems.local_langlands_recT_exists_of_literature
-theorem UpperTheory.LiteratureTheorems.irreducible_admissible_gl_of_literature : GlobalTheory.Published.IrreducibleAdmissibleGL :=
-  PositivityTheory.Tls2.BZGL.irreducibleAdmissibleGL_top
-theorem UpperTheory.LiteratureTheorems.standard_functors_finite_length_of_literature : GlobalTheory.Published.StandardFunctorsFiniteLength :=
-  PositivityTheory.Tls2.BZGL.standardFunctorsFiniteLength_top
-theorem UpperTheory.LiteratureTheorems.tempered_product_of_square_integrable_of_literature : GlobalTheory.Published.TemperedProductOfSquareIntegrable :=
-  UpperTheory.Lit.Cas.temperedProduct (_root_.UpperTheory.LiteratureTheorems.geometric_restriction_of_literature) (_root_.UpperTheory.LiteratureTheorems.bernstein_zelevinsky_finiteness_of_literature) (_root_.UpperTheory.LiteratureTheorems.irreducible_admissible_gl_of_literature) (_root_.UpperTheory.LiteratureTheorems.standard_functors_finite_length_of_literature) (_root_.UpperTheory.LiteratureTheorems.langlands_exhaustion_gl_of_literature) (_root_.UpperTheory.LiteratureTheorems.standard_cosocle_gl_of_literature) (_root_.UpperTheory.LiteratureTheorems.langlands_multisegments_of_literature) (_root_.UpperTheory.LiteratureTheorems.ess_square_integrable_segments_of_literature)
 theorem UpperTheory.LiteratureTheorems.casselman_wallach_of_literature : GlobalTheory.Published.CasselmanWallach :=
   PositivityTheory.CWB.casselmanWallach
 theorem UpperTheory.LiteratureTheorems.chebotarev_degree_one_of_literature : GlobalTheory.Published.ChebotarevDegreeOne :=
@@ -1053,8 +991,6 @@ theorem UpperTheory.LiteratureTheorems.cusp_rapid_decay_of_literature : GlobalTh
   (GlobalTheory.RapidDecay.cuspRapidDecay )
 theorem UpperTheory.LiteratureTheorems.cusp_trace_class_of_literature : GlobalTheory.Published.CuspTraceClass :=
   _root_.GlobalTheory.Published.cuspTraceClass_of_factorisation _root_.PositivityTheory.DM.dixmierMalliavinFactorisation_holds
-theorem UpperTheory.LiteratureTheorems.cuspidal_spectrum_gl_of_literature : GlobalTheory.Published.CuspidalSpectrumGL :=
-  RfCs.cuspidalSpectrumGL
 theorem UpperTheory.LiteratureTheorems.depth_zero_jacquet_injective_of_literature : GlobalTheory.Published.DepthZeroJacquetInjective :=
   (GlobalTheory.DepthZeroJac.depthZeroJacquetInjective )
 theorem UpperTheory.LiteratureTheorems.depth_zero_support_of_literature : GlobalTheory.Published.DepthZeroSupport :=
@@ -1177,8 +1113,6 @@ theorem UpperTheory.LiteratureTheorems.siegel_set_unitary_of_literature : Global
   _root_.GlobalTheory.CompanionTheory.SiegelRed.siegelSetUnitary
 theorem UpperTheory.LiteratureTheorems.siegel_weil_unitary_schrodinger_of_literature : GlobalTheory.Published.SiegelWeilUnitarySchrodinger :=
   PositivityTheory.SiegelWeilCoefficients.field
-theorem UpperTheory.LiteratureTheorems.square_integrable_segment_of_literature : GlobalTheory.Published.SquareIntegrableSegment :=
-  _root_.GlobalTheory.Published.squareIntegrableSegment_of_ess (_root_.UpperTheory.LiteratureTheorems.ess_square_integrable_segments_of_literature)
 theorem UpperTheory.LiteratureTheorems.strong_approx_su_of_literature : GlobalTheory.Published.StrongApproxSU :=
   GlobalTheory.StrongApproxSUProof.strongApproxSU
 theorem UpperTheory.LiteratureTheorems.toroidal_compactification_of_literature : GlobalTheory.Published.ToroidalCompactification :=
@@ -1249,17 +1183,8 @@ theorem UpperTheory.LiteratureTheorems.literature_local (hLiteratureRecT : _root
     zel := (_root_.UpperTheory.LiteratureTheorems.zelevinsky_polynomial_ring_of_literature),
     disj := (_root_.UpperTheory.LiteratureTheorems.totally_disjoint_product_irreducible_of_literature),
     mp := (_root_.UpperTheory.LiteratureTheorems.moy_prasad_jacquet_iso_of_literature),
-    temp := (_root_.UpperTheory.LiteratureTheorems.tempered_product_of_square_integrable_of_literature),
-    seg := (_root_.UpperTheory.LiteratureTheorems.ess_square_integrable_segments_of_literature),
-    sq := (_root_.UpperTheory.LiteratureTheorems.square_integrable_segment_of_literature),
-    gen := (_root_.UpperTheory.LiteratureTheorems.generic_unlinked_gl_of_literature),
-    multi := (_root_.UpperTheory.LiteratureTheorems.langlands_multisegments_of_literature),
-    exh := (_root_.UpperTheory.LiteratureTheorems.langlands_exhaustion_gl_of_literature),
     cos := (_root_.UpperTheory.LiteratureTheorems.standard_cosocle_gl_of_literature),
     llc := hLiteratureRecT,
-    dzi := (_root_.UpperTheory.LiteratureTheorems.depth_zero_induction_of_literature),
-    brauer := (_root_.UpperTheory.LiteratureTheorems.brauer_degree_zero_of_literature),
-    chev := (_root_.UpperTheory.LiteratureTheorems.chevalley_units_of_literature),
     green := (_root_.UpperTheory.LiteratureTheorems.green_regular_characters_of_literature)
   }
 theorem UpperTheory.LiteratureTheorems.literature_automorphy (hLiteratureRow : _root_.UpperTheory.One.M.Row) : _root_.GlobalTheory.Mem.LiteralAutomorphy.GlobalAutomorphicGaloisHypotheses' :=
@@ -1268,7 +1193,6 @@ theorem UpperTheory.LiteratureTheorems.literature_automorphy (hLiteratureRow : _
     hc := (_root_.UpperTheory.LiteratureTheorems.harish_chandra_finite_of_literature),
     fin := (_root_.UpperTheory.LiteratureTheorems.automorphic_forms_finite_gl_of_literature),
     js := (_root_.UpperTheory.LiteratureTheorems.jacquet_shalika_of_literature),
-    cusp := (_root_.UpperTheory.LiteratureTheorems.cuspidal_spectrum_gl_of_literature),
     bc := (_root_.UpperTheory.LiteratureTheorems.base_change_isobaric),
     gk := (_root_.UpperTheory.LiteratureTheorems.gelfand_kazhdan_dual_of_literature),
     gal := (_root_.UpperTheory.LiteratureTheorems.pair_u_of_literature hLiteratureRow),

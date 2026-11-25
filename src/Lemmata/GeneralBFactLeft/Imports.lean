@@ -13,31 +13,17 @@ public import Mathlib.FieldTheory.Finite.Basic
 
 namespace Bl.general_b_fact_left
 
+open Polynomial in
 theorem goal1 {k : Type} [Field k] [Fintype k] (t m e : k) (hd : t ^ 2 - 4 * m ≠ 0) :
     ∃ x y : k, x ^ 2 + t * x * y + m * y ^ 2 = e := by
   by_cases hc : ringChar k = 2
-  · have h2 : (2 : k) = 0 := by simpa [hc] using ringChar.Nat.cast_ringChar (R := k)
-    have h4 : (4 : k) = 0 := by rw [show (4 : k) = 2 * 2 by norm_num, h2, zero_mul]
-    rw [h4, zero_mul, sub_zero] at hd
-    have ht : t ≠ 0 := fun h => hd (by rw [h]; ring)
-    by_cases hm : m = 0
-    · exact ⟨1, (e - 1) / t, by rw [hm]; field_simp; ring⟩
-    · obtain ⟨r, hr⟩ := FiniteField.isSquare_of_char_two hc (e / m)
-      exact ⟨0, r, by rw [show r ^ 2 = e / m by rw [hr]; ring]; field_simp; ring⟩
-  · have h2 : (2 : k) ≠ 0 := Ring.two_ne_zero hc
-    have h4 : (4 : k) ≠ 0 := by rw [show (4 : k) = 2 * 2 by norm_num]; exact mul_ne_zero h2 h2
-    set D : k := m - t ^ 2 / 4 with hD
-    have hD0 : D ≠ 0 := fun h0 => hd <| by
-      rw [show t ^ 2 - 4 * m = -4 * D by rw [hD]; field_simp; ring, h0, mul_zero]
-    have hf : Polynomial.degree (Polynomial.X ^ 2 - Polynomial.C e : Polynomial k) = 2 := by
-      rw [Polynomial.degree_sub_C, Polynomial.degree_X_pow] <;> norm_num
-    have hg : Polynomial.degree (Polynomial.C D * Polynomial.X ^ 2 : Polynomial k) = 2 := by
-      rw [Polynomial.degree_C_mul_X_pow 2 hD0]; rfl
-    obtain ⟨a, b, hab⟩ := FiniteField.exists_root_sum_quadratic hf hg (FiniteField.odd_card_of_char_ne_two hc)
-    simp only [Polynomial.eval_sub, Polynomial.eval_pow, Polynomial.eval_X, Polynomial.eval_C,
-      Polynomial.eval_mul] at hab
-    refine ⟨a - t * b / 2, b, ?_⟩
-    have key : a ^ 2 + D * b ^ 2 = e := by linear_combination hab
-    rw [← key, hD]; field_simp; ring
+  · obtain ⟨x, hx⟩ := FiniteField.isSquare_of_char_two hc e
+    exact ⟨x, 0, by simpa [pow_two] using hx.symm⟩
+  · obtain ⟨a, b, hab⟩ := FiniteField.exists_root_sum_quadratic (f := X ^ 2 - C e)
+      (by rw [degree_sub_C, degree_X_pow] <;> norm_num)
+      (degree_C_mul_X_pow 2 (sub_ne_zero.mpr (sub_ne_zero.mp hd).symm))
+      (FiniteField.odd_card_of_char_ne_two hc)
+    simp only [eval_sub, eval_pow, eval_X, eval_C, eval_mul] at hab
+    exact ⟨a - t * b, 2 * b, by linear_combination hab⟩
 
 end Bl.general_b_fact_left

@@ -539,11 +539,6 @@ theorem good_part_coordinates_mono {W W' : Submodule K B.S.Forms} (hW : W ≤ W'
   unfold inV0 coord
   exact Submodule.comap_mono (Submodule.map_mono hW)
 
-theorem equivFun_op (i : B.Pl × ℕ) (f : B.S.Forms) :
-    B.S.basis.equivFun (B.op i f) = (B.opMat i).mulVec (B.S.basis.equivFun f) := by
-  unfold opMat
-  simp only [Basis.equivFun_apply, LinearMap.toMatrix_mulVec_repr]
-
 theorem equivFun_act (g : G) (f : B.S.Forms) :
     B.S.basis.equivFun (B.r g f) = (B.S.actMat B.r g).mulVec (B.S.basis.equivFun f) := by
   unfold CSD.actMat

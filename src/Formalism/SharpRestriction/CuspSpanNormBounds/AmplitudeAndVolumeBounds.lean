@@ -22,9 +22,6 @@ abbrev Stand (u u' : D.what₂.Word) : Prop := Cnt.Stand D u u'
 
 abbrev Hyp0 (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT C0 : ℝ) : Prop := Cnt.Hyp0 D large₂ C' Cl Cg cb Cu cT CT C0
 
-def aux₃ (large₂ : SizeData₂ D) (u u' : D.what₂.Word) (C' Cl Cg cb Cu cT CT C0 A c : ℝ) : Prop :=
-  UnitaryVolumeMass.VolumeRatioBound D large₂ u u' C' Cl Cg cb Cu cT CT C0 A c
-
 end B3
 
 section Lat
@@ -243,12 +240,6 @@ def admitted (C' Cl Cg cb Cu cT CT C0 A CM CSW δ Cn Cq CPT CDl hilbertNinetyCon
   Adm3 D large₂ u u' C1 G C' Cl Cg cb Cu cT CT C0 A CM CSW δ Cn Cq CPT CDl hilbertNinetyConstant CMo CS ∧
   Adm3b D large₂ u u' C1 C' Cl Cg cb Cu cT CT C0 A CX cX IncreasingRowChoicePerColumn LocalCohomologySetup CC2 Ad CC3 CC4 Cpr Ca Ca2 Ch δm CH ∧
   TermVolumeSmallCellBound D large₂ X u u' C1 Y C' Cl Cg cb Cu cT CT C0 A CV
-
-def Stmt (C' Cl Cg cb Cu cT CT C0 A CM CSW δ Cn Cq CPT CDl hilbertNinetyConstant CMo CS CX cX IncreasingRowChoicePerColumn LocalCohomologySetup CC2 Ad CC3 CC4 Cpr Ca Ca2 Ch δm CH CV c : ℝ) :
-    Prop :=
-  admitted D large₂ X u u' C1 Y G C' Cl Cg cb Cu cT CT C0 A CM CSW δ Cn Cq CPT CDl hilbertNinetyConstant CMo CS CX cX IncreasingRowChoicePerColumn LocalCohomologySetup CC2 Ad CC3 CC4 Cpr Ca Ca2
-      Ch δm CH CV →
-    aux₃ D large₂ u u' C' Cl Cg cb Cu cT CT C0 A c
 
 end Stmt
 

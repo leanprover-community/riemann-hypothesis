@@ -1088,11 +1088,6 @@ theorem mem_gamma_iff {M : ℕ} {γ : SL(2, ℤ)} :
   simp only [← ZMod.intCast_zmod_eq_zero_iff_dvd, Fin.forall_fin_two]
   simp [sub_eq_zero, and_assoc]
 
-theorem gamma_mono {M N : ℕ} (h : M ∣ N) : CongruenceSubgroup.Gamma N ≤ CongruenceSubgroup.Gamma M := by
-  intro γ hγ
-  rw [mem_gamma_iff] at hγ ⊢
-  exact fun i j => (Int.natCast_dvd_natCast.2 h).trans (hγ i j)
-
 theorem gamma_inf {M N : ℕ} (h : Nat.Coprime M N) {γ : SL(2, ℤ)} (h1 : γ ∈ CongruenceSubgroup.Gamma M)
     (h2 : γ ∈ CongruenceSubgroup.Gamma N) : γ ∈ CongruenceSubgroup.Gamma (M * N) := by
   rw [mem_gamma_iff] at h1 h2 ⊢
@@ -1193,7 +1188,7 @@ theorem descent : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ 
     (fun q hq => by
       obtain ⟨h1, h2⟩ := _root_.GlobalTheory.KZ.ES.Scal.lev_and_scalar ε X Mb hMb
       obtain ⟨e1, e2, e3⟩ := h2 (s q) (fun g hg =>
-        congrArg Subtype.val (hq ⟨_, fun γ hγ => h1 g hg γ (gamma_mono (dvd_mul_left Mb Ma) hγ)⟩))
+        congrArg Subtype.val (hq ⟨_, fun γ hγ => h1 g hg γ (GlobalTheory.KZ.ES.CongruenceDescent.Gamma_le_of_dvd (dvd_mul_left Mb Ma) hγ)⟩))
       have key : ∀ i j, (en (s q) i j : ZMod Mb) = q i j := fun i j =>
         congrArg (fun x : SL(2, ZMod Mb) => x i j) (hs2 q)
       simp only [key] at e1 e2 e3

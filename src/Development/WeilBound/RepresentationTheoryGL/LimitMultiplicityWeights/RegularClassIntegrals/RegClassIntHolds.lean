@@ -704,32 +704,8 @@ namespace MainStatements.WeightKernel.RegInt
 
 variable {D : D7} {V : HSp D} {r : ℕ}
 
-theorem cone_lower {c : ℝ} (hc : 0 < c) : ∃ c₀ : ℝ, 0 < c₀ ∧ ∀ t ∈ GlobalTheory.SiegelSet.cone r c, ∀ i, c₀ ≤ t i := by
-  set d := min c 1 with hd
-  have hd0 : 0 < d := lt_min hc one_pos
-  have hd1 : d ≤ 1 := min_le_right _ _
-  refine ⟨d ^ r, pow_pos hd0 _, fun t ht i => ?_⟩
-  have key : ∀ k : ℕ, ∀ i : Fin r, r - i.val = k + 1 → d ^ (k + 1) ≤ t i := by
-    intro k
-    induction k with
-    | zero =>
-      intro i hi
-      have : i.val + 1 = r := by have := i.2; omega
-      rw [zero_add, pow_one]
-      exact (min_le_left c 1).trans (ht.2.2 i this)
-    | succ k ih =>
-      intro i hi
-      have hlt : i.val + 1 < r := by have := i.2; omega
-      have h1 := ih ⟨i.val + 1, hlt⟩ (by simp only; omega)
-      have h2 := ht.2.1 i ⟨i.val + 1, hlt⟩ rfl
-      have h3 := ht.1 ⟨i.val + 1, hlt⟩
-      calc d ^ (k + 1 + 1) = d * d ^ (k + 1) := by ring
-        _ ≤ d * t ⟨i.val + 1, hlt⟩ := by gcongr
-        _ ≤ c * t ⟨i.val + 1, hlt⟩ := by gcongr; exact min_le_left _ _
-        _ ≤ t i := h2
-  have hi := i.2
-  obtain ⟨k, hk⟩ : ∃ k, r - i.val = k + 1 := ⟨r - i.val - 1, by omega⟩
-  exact (pow_le_pow_of_le_one hd0.le hd1 (by omega)).trans (key k i hk)
+theorem cone_lower {c : ℝ} (hc : 0 < c) : ∃ c₀ : ℝ, 0 < c₀ ∧ ∀ t ∈ GlobalTheory.SiegelSet.cone r c, ∀ i, c₀ ≤ t i :=
+  by apply _root_.GlobalTheory.CompanionTheory.TorusCount.exists_cone_lower; assumption
 
 theorem le_pow_of_root {t : Fin r → ℝ} (ht : ∀ i, 0 < t i) {ρ : ℝ} (hρ : 1 ≤ ρ) (h : ∀ j, root t j ≤ ρ) (i : Fin r) :
     t i ≤ ρ ^ r := by

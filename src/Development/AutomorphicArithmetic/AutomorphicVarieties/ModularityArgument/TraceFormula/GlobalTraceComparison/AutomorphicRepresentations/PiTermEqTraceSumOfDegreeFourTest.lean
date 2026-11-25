@@ -1501,7 +1501,7 @@ protected theorem UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi.hint_fst {G P : Ty
   have hLu : L ≤ rStab u := fun k hk x => by
     have h1 : x * k = (x.1 * k.1, 1) := Prod.ext rfl (Subsingleton.elim _ _)
     rw [h1, hu k.1 hk x.1, ← hp x]
-  rw [GlobalTheory.T.haarIntegralNormalizedOpenCompact_eq_finite_level_sum _ _ L u hLK hLu (by rwa [hrel]), hrel]
+  rw [_root_.GlobalTheory.BCT.HintLevel.hint_level _ _ L u hLK hLu (by rwa [hrel]), hrel]
   congr 1
   have hval : ∀ q : G ⧸ N, u (Quotient.out (QuotientGroup.mk (q.out, (1 : P)) : (G × P) ⧸ L)) = u (q.out, 1) := by
     intro q
@@ -1614,7 +1614,7 @@ theorem UpperTheory.V.Z.Tf.GlobalTraceComparison.Pi.seenTr_pf :
   have hcv : UpperTheory.V.Z.Tf.GlobalTraceComparison.Asm.cv N (two φ₁ φ₂ w false) (two φ₁ φ₂ w true) g =
       ∑ᶠ q : GLw n w ⧸ N, two φ₁ φ₂ w false q.out * two φ₁ φ₂ w true (q.out⁻¹ * g) := by
     unfold UpperTheory.V.Z.Tf.GlobalTraceComparison.Asm.cv
-    rw [GlobalTheory.T.haarIntegralNormalizedOpenCompact_eq_finite_level_sum _ N N _ le_rfl (fun k hk x => hr k hk x) (by simp)]
+    rw [_root_.GlobalTheory.BCT.HintLevel.hint_level _ N N _ le_rfl (fun k hk x => hr k hk x) (by simp)]
     simp
   have hpr : ∀ x : GLw n w, ((x, 1) : GLw n w × GLw 0 w)⁻¹ * (g, 1) = (x⁻¹ * g, 1) := fun x =>
     Prod.ext rfl (Subsingleton.elim _ _)

@@ -73,15 +73,6 @@ def BiAct (D : D7) : Prop :=
       Continuous fun x : (GA D A × GA D S) × (GA D S × GA D A') × WO A S × WO S A' =>
         omb x.2.1 (fun v => oma x.1 (fun u => C u v) x.2.2.1) x.2.2.2
 
-def FockRed (D : D7) : Prop :=
-  ∀ (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D), IsInfFam θ → ∀ (A S A' : HSp D) (x : DefSp A) (y : DefSp S) (z : DefSp A'),
-    x.Is → y.Is → z.Is → ∀ (k : KerDat A S) (k' : KerDat S A'), k.Is ψ θ x y → k'.Is ψ θ y z →
-    ∀ (χ : GA D A → ℂ) (C : WO A S → WO S A' → ℂ), IsBiVac ψ A S A' x.L y.L z.L C → IsBiSmooth C →
-      ∃ (n : ℕ) (P : Fin n → PolF D S.rank A.rank) (P' : Fin n → PolF D A'.rank S.rank),
-        ∀ φ, IsContAut A φ → HasCen A χ φ →
-          biLift k.om k'.om x.vol y.vol φ (biComb ψ A S A' k.c k'.c C) =
-            ∑ i, k'.lift ψ θ y z (P' i) (k.lift ψ θ x y (P i) φ)
-
 namespace Dat
 
 variable {u : D.what₂.Word} (d : Dat D u)

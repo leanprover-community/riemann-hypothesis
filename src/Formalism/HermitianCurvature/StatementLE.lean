@@ -607,8 +607,6 @@ def Meas : Prop :=
   (∀ a, Measurable fun ω => X.u ω a) ∧ (∀ a, Measurable fun ω => X.Cw X.u ω a) ∧ (∀ i, Measurable fun ω => X.dw ω i) ∧
     ∀ p i, Measurable fun ω => dS B X.gw X.u p ω i
 
-def CoefInt : Prop := ∀ q : ℕ, Integrable (sq B X.dw (dS B X.gw X.u q)) B.μ
-
 end EP
 
 end

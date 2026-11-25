@@ -64,44 +64,8 @@ theorem bd_le_hf (L : Lattice (O := O) ρ) : BD L ≤ HfD PD L := le_sup_right
 theorem len_le_torsion (L : Lattice (O := O) ρ) (c : O) :
     Module.length O (↥(divisibleCocycles L ⊓ (HfD PD L).comap (c • LinearMap.id)) ⧸
         (divisibleCocycles L ⊓ HfD PD L).comap (divisibleCocycles L ⊓ (HfD PD L).comap (c • LinearMap.id)).subtype) ≤
-      Module.length O ↥(Submodule.torsionBy O (DivisibleCohomology L ⧸ divisibleFiniteCohomology PD L) c) := by
-  have hBH : BD L ≤ HfD PD L := bd_le_hf PD L
-  let φ : ↥(divisibleCocycles L ⊓ (HfD PD L).comap (c • LinearMap.id)) →ₗ[O] (DivisibleCohomology L ⧸ divisibleFiniteCohomology PD L) :=
-    (divisibleFiniteCohomology PD L).mkQ ∘ₗ (Submodule.comap (divisibleCocycles L).subtype (BD L)).mkQ ∘ₗ
-      Submodule.inclusion inf_le_left
-  have hmem : ∀ z : ↥(divisibleCocycles L), (Submodule.Quotient.mk z : DivisibleCohomology L) ∈ divisibleFiniteCohomology PD L ↔
-      (z : G → V ⧸ L.T) ∈ HfD PD L := by
-    intro z
-    unfold divisibleFiniteCohomology
-    constructor
-    · rintro ⟨y, hy, hyz⟩
-      have h1 : y - z ∈ Submodule.comap (divisibleCocycles L).subtype (BD L) := (Submodule.Quotient.eq _).mp hyz
-      have h2 : ((y : G → V ⧸ L.T) - z) ∈ HfD PD L := by simpa using hBH h1
-      have h3 : (z : G → V ⧸ L.T) = y - (y - z) := by abel
-      rw [h3]
-      exact Submodule.sub_mem _ hy h2
-    · intro hz
-      exact ⟨z, hz, rfl⟩
-  have hφ : ∀ x, φ x = 0 ↔ (x : G → V ⧸ L.T) ∈ HfD PD L := by
-    intro x
-    change Submodule.Quotient.mk (Submodule.Quotient.mk (Submodule.inclusion inf_le_left x) : DivisibleCohomology L) = 0 ↔ _
-    rw [Submodule.Quotient.mk_eq_zero]
-    exact hmem _
-  have htor : ∀ x, φ x ∈ Submodule.torsionBy O (DivisibleCohomology L ⧸ divisibleFiniteCohomology PD L) c := by
-    intro x
-    rw [Submodule.mem_torsionBy_iff, ← map_smul, hφ]
-    have := x.2.2
-    simpa using this
-  let ψ := φ.codRestrict _ htor
-  have hker : LinearMap.ker ψ = (divisibleCocycles L ⊓ HfD PD L).comap
-      (divisibleCocycles L ⊓ (HfD PD L).comap (c • LinearMap.id)).subtype := by
-    rw [LinearMap.ker_codRestrict]
-    ext x
-    rw [LinearMap.mem_ker, hφ, Submodule.mem_comap, Submodule.subtype_apply, Submodule.mem_inf]
-    exact ⟨fun h => ⟨x.2.1, h⟩, fun h => h.2⟩
-  apply Module.length_le_of_injective (Submodule.liftQ _ ψ hker.ge)
-  rw [← LinearMap.ker_eq_bot]
-  exact Submodule.ker_liftQ_eq_bot _ _ _ hker.le
+      Module.length O ↥(Submodule.torsionBy O (DivisibleCohomology L ⧸ divisibleFiniteCohomology PD L) c) :=
+  by apply _root_.GlobalTheory.TBLocal.len_le_torsion
 
 end Len
 

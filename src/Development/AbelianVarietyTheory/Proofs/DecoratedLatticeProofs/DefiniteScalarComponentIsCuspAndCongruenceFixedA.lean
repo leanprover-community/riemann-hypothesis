@@ -124,7 +124,7 @@ theorem definiteScalarComponent_isCusp_and_congruence_fixed : ∀ (D : D7) (G : 
       exact mul_inf_mem_range R i t y l hk))
   have hdef : IsAutFunDef (Vc D i) fun g => l (R.extV i t y g) := ⟨⟨hleft, hlevel, hcont⟩, hkfin⟩
   have hdefn : (Vc D i).IsDefinite := fun τ => Or.inl (hd.pos τ)
-  have hsm := ((GlobalTheory.DefiniteForms.autFunDefIffSm D) R.θ hd.inf (Vc D i) hd.sig hdefn _).1 hdef
+  have hsm := GlobalTheory.DefiniteForms.sm_of_kfin hd.inf hd.sig hdefn hdef
   have hcusp : IsCuspFun (Vc D i) fun g => l (R.extV i t y g) := fun r C hC =>
     absurd hC (GlobalTheory.Per.isAniso_of_posDef hd.sig hd.pos r C)
   have hK : GlobalTheory.Doubling.IsKFinite (GlobalTheory.Cusp.Kinf R.θ (Vc D i) cA) fun g => l (R.extV i t y g) :=

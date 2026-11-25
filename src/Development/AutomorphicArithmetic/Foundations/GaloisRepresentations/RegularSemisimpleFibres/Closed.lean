@@ -587,16 +587,6 @@ private theorem avg_const_frobenius_local_pairs {A : Type} [Group A] (c : ℂ) :
   exact finsum_eq_single (fun _ : A ⧸ (⊤ : Subgroup A) => c) 1
     (fun q hq => absurd (Subsingleton.elim q 1) hq)
 
-private theorem conj_self {G : Type} [Group G] (S : Subgroup G) {s : G} (hs : s ∈ S) :
-    S.map (MulAut.conj s).toMonoidHom = S := by
-  ext y
-  simp only [Subgroup.mem_map, MulEquiv.coe_toMonoidHom, MulAut.conj_apply]
-  constructor
-  · rintro ⟨z, hz, rfl⟩
-    exact S.mul_mem (S.mul_mem hs hz) (S.inv_mem hs)
-  · intro hy
-    exact ⟨s⁻¹ * y * s, S.mul_mem (S.mul_mem (S.inv_mem hs) hy) hs, by group⟩
-
 private theorem zpowers_closed {G H : Type} [Group G] [TopologicalSpace G] [Group H] [TopologicalSpace H]
     (j : H →* G) (hj : Topology.IsClosedEmbedding j) (t : H) :
     IsCompact (closure (Subgroup.zpowers (j t) : Set G)) ↔ IsCompact (closure (Subgroup.zpowers t : Set H)) := by
@@ -633,7 +623,7 @@ private theorem wt_inv {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalG
     {t κ : G} (ht : t ∈ T) (hκ : κ ∈ K) (x : G) : wt T K (t * x * κ) = wt T K x := by
   unfold wt
   have hinj : Function.Injective (MulAut.conj t).toMonoidHom := (MulAut.conj t).injective
-  have hT : T.map (MulAut.conj t).toMonoidHom = T := conj_self T ht
+  have hT : T.map (MulAut.conj t).toMonoidHom = T := GlobalTheory.TwOrbConj.map_conj_self T ht
   have hKm : K.map (MulAut.conj (t * x * κ)).toMonoidHom =
       (K.map (MulAut.conj x).toMonoidHom).map (MulAut.conj t).toMonoidHom := by
     ext y

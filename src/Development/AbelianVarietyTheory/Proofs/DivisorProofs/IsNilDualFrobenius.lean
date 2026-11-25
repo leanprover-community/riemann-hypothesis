@@ -903,7 +903,7 @@ theorem constantCoeff_iterate_invDer_X_sub_mem : ∀ (p : ℕ) [Fact p.Prime] (B
     congr 1
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [smul_eq_C_mul, map_mul, constantCoeff_C, hnat, hmono]
-  obtain ⟨r, hr⟩ := _root_.GlobalTheory.LawDer.constantCoeff_iterate_invDer_sub_linear p B d μ hμ hL.unit hL.comm u H
+  obtain ⟨r, hr⟩ := _root_.GlobalTheory.LinearPartIteration.iterate_linear_part p B d μ hμ hL.unit hL.comm u H
   have hlin1 : ∀ k, coeff (Finsupp.single k 1) H = if k = j then 1 else 0 := fun k => by
     apply hF.inj
     have hPk : P (Finsupp.single k 1) := ⟨by rw [Finsupp.degree_single]; exact hp.one_le, fun i e => by
@@ -1528,7 +1528,7 @@ theorem GlobalTheory.DualFrobNil.isNil_dual_frobenius : ∀ (p : ℕ) [Fact p.Pr
         (fun a => Ideal.Quotient.mk m (u' a)) = Sh (fun a => Ideal.Quotient.mk m (u a)) := by
     intro u φ hφ
     refine ⟨fun a => constantCoeff ((invDer c.μ u)^[p] (X a)), fun Fs => ?_, ?_⟩
-    · obtain ⟨t, ht⟩ := _root_.GlobalTheory.LawDer.constantCoeff_iterate_invDer_sub_linear p O d c.μ c.isLaw.const c.isLaw.unit c.isLaw.comm u Fs
+    · obtain ⟨t, ht⟩ := _root_.GlobalTheory.LinearPartIteration.iterate_linear_part p O d c.μ c.isLaw.const c.isLaw.unit c.isLaw.comm u Fs
       have h1 := _root_.GlobalTheory.LawDer.convPow_ev_sub_constantCoeff_iterate_mem p O G d c n m hp u φ hφ p Fs
       have h2 : (p : O) * t ∈ m := m.mul_mem_right t hp
       have e1 : (φ ^ p) (c.ev n Fs) - ∑ i, constantCoeff ((invDer c.μ u)^[p] (X i)) * lin Fs i =

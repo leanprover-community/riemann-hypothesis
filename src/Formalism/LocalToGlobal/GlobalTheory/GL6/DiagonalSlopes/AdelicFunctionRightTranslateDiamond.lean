@@ -25,15 +25,8 @@ theorem adelic_function_right_translate_diamond {ι : Type} [Fintype ι] (S : St
     (v : HeightOneSpectrum (𝓞 F)) (hv : (T : 𝓞 F) ∈ v.asIdeal) (hb : v ∉ bad) {k : ℤ}
     {δ : UPts σ J (FiniteAdeleRing (𝓞 F) F)} (h : IsDia S v hv k δ)
     {g : UPts σ J (FiniteAdeleRing (𝓞 F) F) → Frames (gramC J emb) → ℂ} (hg : g ∈ AdFun S emb) :
-    (fun x => g (x * δ)) ∈ AdFun S emb := by
-  intro γ hγ x x' κ hx y y' hy
-  have e : (x' * δ).1 = bc (inclE (F := F) (FiniteAdeleRing (𝓞 F) F)) γ * (x * δ).1 *
-      (⟨δ.1⁻¹ * κ.1 * δ.1, diamond_conj_mem_level S v hv h κ⟩ : S.U).1 := by
-    simp only [Subgroup.coe_mul, hx]
-    group
-  have := hg γ hγ (x * δ) (x' * δ) ⟨δ.1⁻¹ * κ.1 * δ.1, diamond_conj_mem_level S v hv h κ⟩ e y y' hy
-  rw [level_character_conj_diamond S v hv hb h κ] at this
-  exact this
+    (fun x => g (x * δ)) ∈ AdFun S emb :=
+  by apply _root_.Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.adelic_function_right_translate_diamond <;> assumption
 
 end Gen
 

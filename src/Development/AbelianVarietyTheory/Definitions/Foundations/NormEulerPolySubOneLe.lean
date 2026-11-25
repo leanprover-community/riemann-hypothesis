@@ -385,9 +385,6 @@ theorem LvTw_eq (c : Fam E) (m : HeightOneSpectrum (𝓞 E) → ℂˣ) (v : Heig
       ((c w).map fun b : ℂˣ => (1 - (b : ℂ) * (m w : ℂ)⁻¹ * npow w (-s))⁻¹).prod := by
   simp [LvTw, Lv, locL_twist]
 
-theorem Lv_add (c c' : Fam E) (v : HeightOneSpectrum (𝓞 F)) (s : ℂ) : Lv (c + c') v s = Lv c v s * Lv c' v s := by
-  simp [Lv, locL_add, Finset.prod_mul_distrib]
-
 theorem hasProd_Lv {S : Set (HeightOneSpectrum (𝓞 F))} {c : Fam E} {s : ℂ} (h : Converges (above E S) c s) :
     HasProd (fun v : {v // v ∉ S} => Lv c v.1 s) (LS S c s) := by
   let f : {w // w ∉ above E S} → {v // v ∉ S} := fun w => ⟨w.1.under (𝓞 F), w.2⟩

@@ -97,7 +97,4 @@ noncomputable def ramIdx [NeZero N] (l : ℕ) [Fact l.Prime]
     (X : Subgroup (DirichletCharacter ℂ N)) : ℕ :=
   Nat.card (X.map (localPart N l))
 
-def vdFormula (l a e : ℕ) : ℚ :=
-  (a : ℚ) - 1 / ((l : ℚ) - 1) + 1 / (((l : ℚ) - 1) * (l : ℚ) ^ (a - 1)) - 1 / (e : ℚ)
-
 end KStar.Ram

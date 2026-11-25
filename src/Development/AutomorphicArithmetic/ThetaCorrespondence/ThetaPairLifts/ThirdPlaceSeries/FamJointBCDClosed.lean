@@ -542,7 +542,7 @@ theorem pageWord_hypA_depth_of_long_orbit {D : D7} (L : SizeData₂ D) (hP : Par
   obtain ⟨-, hLw, h2⟩ := _root_.GlobalTheory.depth_spec L hP l hl
   have h1 : 1 ≤ depth L l := le_trans (by norm_num) (h2 hlA)
   obtain ⟨hcl, hn⟩ := _root_.GlobalTheory.long_clusters D.host τ φ (depth L l) ho h1 hLw
-  have hbox := GlobalTheory.T.twistedDualOrbitPageWord_box L C j ε τ φ hR
+  have hbox := _root_.GlobalTheory.HTW.pageWord_box L C j ε τ φ hR
   have hth : (pageWord L j ε τ φ).thick = fun i : ZMod (orderOf φ) => Thick D.host (letter τ φ i) :=
     funext fun i => propext (_root_.GlobalTheory.HTW.pageWord_thick_iff L C j ε τ φ hR i)
   have hpar := _root_.GlobalTheory.HTW.mul_small_le_bHat L 40 C (depth L l) hR (by norm_num) (by linarith [hR.1]) hLw
@@ -703,7 +703,7 @@ theorem WordData.Mi_add_hi_le_two_mul {n : ℕ} (W : WordData n) (hB : W.Box) (h
 theorem pageWord_Mi_add_hi_le {D : D7} (L : SizeData₂ D) (C : ℝ) (j : Fin D.R.m) (ε : ℤˣ) (τ φ : D.R.GG)
     (hR : Roomy L C) (i : ZMod (orderOf φ)) :
     (((pageWord L j ε τ φ).Mi i + (pageWord L j ε τ φ).hi i : ℕ) : ℝ) ≤ 2 * hPage L := by
-  have h1 := WordData.Mi_add_hi_le_two_mul _ (GlobalTheory.T.twistedDualOrbitPageWord_box L C j ε τ φ hR) (_root_.GlobalTheory.HTW.pageWord_thickOr L C j ε τ φ hR) i
+  have h1 := WordData.Mi_add_hi_le_two_mul _ (_root_.GlobalTheory.HTW.pageWord_box L C j ε τ φ hR) (_root_.GlobalTheory.HTW.pageWord_thickOr L C j ε τ φ hR) i
   have h2 := _root_.GlobalTheory.HTW.bHat_add_etaHat_add_sHat_le_hPage L C hR
   have h3 : (((pageWord L j ε τ φ).Mi i + (pageWord L j ε τ φ).hi i : ℕ) : ℝ)
       ≤ ((2 * (bHat L + etaHat L + sHat L) : ℕ) : ℝ) := Nat.cast_le.mpr h1
@@ -1042,7 +1042,7 @@ theorem pageWord_inert_dichotomy : ∀ {D : D7} (L : SizeData₂ D) (C : ℝ) (j
     (pageWord L j ε τ φ).Box ∧ ((pageWord L j ε τ φ).HypNT ∨
       (φ = D.R.cc ∧ (pageWord L j ε τ φ).HypAT l ∧ ∀ i, (pageWord L j ε τ φ).thick i)) := by
   intro D L C j ε τ φ l hR hl hφ
-  refine ⟨GlobalTheory.T.twistedDualOrbitPageWord_box L C j ε τ φ hR, ?_⟩
+  refine ⟨_root_.GlobalTheory.HTW.pageWord_box L C j ε τ φ hR, ?_⟩
   by_cases h : φ = D.R.cc ∧ Thick D.host τ
   · obtain ⟨rfl, hτ⟩ := h
     exact Or.inr ⟨rfl, _root_.GlobalTheory.HTW.conjWord_hypAT L C j ε τ l hR hl hτ⟩

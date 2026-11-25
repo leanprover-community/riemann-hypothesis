@@ -522,23 +522,8 @@ lemma pos_add (N : NumDatum) (l : ℕ) (z : RPl N.R) (s t : ℕ) :
     rw [add_smul, add_assoc]
 
 lemma pos_mul_period (N : NumDatum) (l : ℕ) (z : RPl N.R) (c : ℕ) :
-    N.pos l z (N.ordP l * c) = z := by
-  unfold NumDatum.pos NumDatum.ordP
-  by_cases h : N.cls l = PrimeClass.signal
-  · rw [if_pos h]
-    refine Prod.ext ?_ ?_
-    · have : ¬ Odd (2 * addOrderOf (2 • N.hP l) * c) := by
-        rw [Nat.not_odd_iff_even, mul_assoc]; exact even_two_mul _
-      dsimp only
-      rw [decide_eq_false (fun hh => this hh.2), Bool.xor_false]
-    · dsimp only
-      rw [show 2 * addOrderOf (2 • N.hP l) * c = c * addOrderOf (2 • N.hP l) * 2 by ring,
-        mul_smul, mul_smul, addOrderOf_nsmul_eq_zero, smul_zero, add_zero]
-  · rw [if_neg h]
-    refine Prod.ext ?_ ?_
-    · simp [h]
-    · dsimp only
-      rw [mul_comm, mul_smul, addOrderOf_nsmul_eq_zero, smul_zero, add_zero]
+    N.pos l z (N.ordP l * c) = z :=
+  by apply _root_.GlobalTheory.LevelsOrbits.pos_mul_period
 
 lemma pos_mod (N : NumDatum) (l : ℕ) (z : RPl N.R) (e : ℕ) :
     N.pos l z (e % N.ordP l) = N.pos l z e := by

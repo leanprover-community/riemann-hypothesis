@@ -13,6 +13,10 @@ open ValuativeRel Formalism.MainNotions.S.Loc Formalism.L2.SG.LsDatumA
 
 namespace Formalism.L2.SG.LocalCountModules.LocCntCommon
 
+theorem span_swap {E : Type} [CommRing E] {V : Type} [AddCommGroup V] [Module E V] {r : ℕ} (f f' : Fin (r + 1) → V) :
+    Submodule.span E (Set.range (Sum.elim f' f)) = Submodule.span E (Set.range (Sum.elim f f')) := by
+  rw [Set.Sum.elim_range, Set.Sum.elim_range, Set.union_comm]
+
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
 variable {M : Model F E} {V : Type} [AddCommGroup V] [Module E V] (H : HermSp M V)
@@ -65,10 +69,6 @@ theorem inv_swap (f f' : Fin (r + 1) → V) (hD : IsUnit (H.Dl f f' (r + 1))) (a
   rw [Matrix.inv_eq_right_inv key]
   rfl
 
-theorem span_swap (f f' : Fin (r + 1) → V) :
-    Submodule.span E (Set.range (Sum.elim f' f)) = Submodule.span E (Set.range (Sum.elim f f')) := by
-  rw [Set.Sum.elim_range, Set.Sum.elim_range, Set.union_comm]
-
 theorem h_omP_swap (f f' : Fin (r + 1) → V) (hD : IsUnit (H.Dl f f' (r + 1))) (u : V) :
     H.h u (omP H f' f) = ∑ a, (H.Zhat f f')⁻¹ (Fin.last r) a * H.h u (f a) := by
   have hDl' : H.Dl f' f (r + 1) = (H.Zhat f' f).det := by
@@ -88,18 +88,6 @@ theorem unit_swap (f f' : Fin (r + 1) → V) (hD : IsUnit (H.Dl f f' (r + 1))) :
     IsUnit (H.Dl f' f (r + 1)) := by
   rw [dl_swap_full]
   exact hD.map (M.L.cj : E →+* E)
-
-theorem dl_r_swap_zero (f f' : Fin (r + 1) → V) (hD0 : H.Dl f f' r = 0) : H.Dl f' f r = 0 := by
-  rw [dl_swap_r, hD0, map_zero]
-
-theorem mkW_decomp' (f f' : Fin (r + 1) → V) (T T' : F) (hF : Formalism.MainNotions.ThinScalesBound.FrameK H f T)
-    (hF' : Formalism.MainNotions.ThinScalesBound.FrameK H f' T') (hD : IsUnit (H.Dl f f' (r + 1))) (hD0 : H.Dl f f' r = 0)
-    (u : ↥(H.perp (H.X f'))) (hu : (u : V) ∈ Submodule.span E (Set.range (Sum.elim f f'))) :
-    H.mkW f' u = H.h u (omP H f' f) • H.mkW f' ⟨f' (Fin.last r), z_mem H f' T' hF'⟩ +
-      (H.h u (f' (Fin.last r)) + algebraMap F E T' * H.h u (omP H f' f)) •
-        H.mkW f' ⟨omP H f' f, omP_mem H f' f (unit_swap H f f' hD)⟩ :=
-  mkW_decomp H f' f T' T hF' hF (unit_swap H f f' hD) (dl_r_swap_zero H f f' hD0) u
-    (by rw [span_swap]; exact hu)
 
 theorem sends_omP' {f₁ f₁' f₂ f₂' : Fin (r + 1) → V} (φ' : H.Wb f₁' ≃ₗ[E] H.Wb f₂')
     (hD₁ : IsUnit (H.Dl f₁ f₁' (r + 1))) (hD₂ : IsUnit (H.Dl f₂ f₂' (r + 1)))

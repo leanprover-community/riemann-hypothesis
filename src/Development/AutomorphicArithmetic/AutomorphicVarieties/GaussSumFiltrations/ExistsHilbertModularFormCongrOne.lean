@@ -21,54 +21,10 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTh
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaussSumFiltrations.ExistsIsHolAdelicLiftOfEvenWeightSystem
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaussSumFiltrations.ExistsSeedThetaLatticeFixedPointFree
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.OneUseOf
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicArithmetic.AutomorphicVarieties.IdeleGenerators.ConstSmall
-import Mathlib.Algebra.AffineMonoid.Basic
-import Mathlib.Algebra.Order.Star.Int
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
 import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.BrData
 import Formalism.GaloisIrreducibility.GaloisIrreducibilityProofs.OneNonUnit
-import Mathlib.GroupTheory.Nilpotent
-import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Lemma
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaussSumFiltrations.QExpansionLinearCombination
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -974,11 +930,6 @@ open scoped Matrix
 
 namespace GlobalTheory.HilbertThetaSeries.GaussSumOrbitFiniteness
 
-theorem reAt_eq {F : Type} [Field F] [NumberField F] [IsTotallyReal F] (v : InfinitePlace F) (x : F) : reAt v x = rhom x v := by
-  simp only [reAt, rhom]
-  rw [← InfinitePlace.embedding_of_isReal_apply (IsTotallyReal.isReal v) x, Complex.ofReal_re]
-  rfl
-
 theorem scal_comm {R : Type} [CommRing R] (z : Rˣ) (A : GL (Fin 2) R) :
     Matrix.GeneralLinearGroup.scalar (Fin 2) z * A = A * Matrix.GeneralLinearGroup.scalar (Fin 2) z := by
   ext i j
@@ -1031,7 +982,7 @@ theorem stab_inv (g : GL (Fin 2) (Af F)) (γ : GL (Fin 2) F) (h : Stab g γ) : S
     have hv := congrArg (fun x => rhom x v) h1
     simp only [map_mul, map_one, Pi.mul_apply, Pi.one_apply] at hv
     have hp := ht v
-    rw [reAt_eq] at hp ⊢
+    rw [GlobalTheory.HilbertThetaSeries.reAt_eq_rhom] at hp ⊢
     exact (pos_iff_pos_of_mul_pos (by rw [hv]; exact one_pos)).mp hp
   · rw [map_inv, inv_mul_eq_iff_eq_mul, ← mul_assoc, ← mul_assoc, ← scal_comm, mul_assoc (Matrix.GeneralLinearGroup.scalar (Fin 2) z⁻¹), he]
     simp only [map_inv]
@@ -1476,10 +1427,6 @@ theorem exists_sl_aff (K : Subgroup (GL (Fin 2) (Af F)))
 
 variable [IsTotallyReal F]
 
-theorem TP_mul {x y : F} (hx : TP x) (hy : TP y) : TP (x * y) := fun v => by
-  have := mul_pos (hx v) (hy v)
-  rw [_root_.GlobalTheory.HilbertThetaSeries.NarrowCls.reAt_eq, _root_.GlobalTheory.HilbertThetaSeries.NarrowCls.reAt_eq] at this; rw [_root_.GlobalTheory.HilbertThetaSeries.NarrowCls.reAt_eq, map_mul]; exact this
-
 theorem TP_inv {x : F} (hx : TP x) : TP x⁻¹ := fun v => by
   have := inv_pos.2 (hx v)
   rw [_root_.GlobalTheory.HilbertThetaSeries.NarrowCls.reAt_eq] at this; rw [_root_.GlobalTheory.HilbertThetaSeries.NarrowCls.reAt_eq, map_inv₀]; exact this
@@ -1505,7 +1452,7 @@ theorem GlobalTheory.HilbertThetaSeries.finite_reps : ∀ (F : Type) [Field F] [
     · have hd : (aff (ξ⁻¹ * ξf y0) 0 * σ⁻¹ : GL (Fin 2) F).val.det = ((ξ⁻¹ * ξf y0 : Fˣ) : F) := by
         rw [← Matrix.GeneralLinearGroup.val_det_apply, map_mul, map_inv, hσ, det_aff', inv_one, mul_one]
       rw [hd, Units.val_mul]
-      exact TP_mul (by simpa using TP_inv hξ) (hξf y0).1
+      exact GlobalTheory.HilbertThetaSeries.CmpP.tp_mul (by simpa using TP_inv hξ) (hξf y0).1
     · rw [e, map_mul, map_inv, ← mul_assoc, ← mul_assoc, inv_mul_cancel_right, toFin_aff, ← mul_assoc, aff_mul_aff, aff_mul_aff, hy]
       congr 2
       simp only [map_mul, map_inv, hι]

@@ -1031,17 +1031,8 @@ end Formalism.L2.SG.Pf.SatGram
 
 namespace Formalism.L2.SG.Pf
 
-alias typedRed_exists := SatGram.typedRed_exists
-alias typedRed_exists' := SatGram.typedRed_exists'
-alias corankPos_tO := SatGram.corankPos_tO
-alias idDegenerate_tO := SatGram.idDegenerate_tO
-alias satGram_of := SatGram.satGram_of
 alias typed_count := SatGram.typed_count
-alias typed_count' := SatGram.typed_count'
 alias tt_eq := SatGram.tt_eq
-alias tt_eq' := SatGram.tt_eq'
 alias gamma_one_eq_prod_typed_places := SatGram.gamma_one_eq_prod_typed_places
-alias gsplit_X := SatGram.gsplit_X
-alias one_sub_ew := SatGram.one_sub_ew
 
 end Formalism.L2.SG.Pf

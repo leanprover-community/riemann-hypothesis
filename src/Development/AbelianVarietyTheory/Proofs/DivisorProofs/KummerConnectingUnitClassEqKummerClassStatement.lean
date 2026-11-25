@@ -511,13 +511,6 @@ theorem pi_unitSec {q : ℕ} (κ : Tz q ⟶ Gm) (h0 : κ ≫ ((q : ℤ) • 𝟙
       Sec.map (cokernel.π κ ≫ cokernel.desc κ ((q : ℤ) • 𝟙 Gm) h0) (unitSec v) := rfl
   rw [e1, cokernel.π_desc, map_zsmul_id, ← map_res, hc, _root_.GlobalTheory.EtC.KumRoots.res_unitSec, ← hv, unitSec_pow, natCast_zsmul]
 
-theorem glue_sections : ∀ {R : Type} [CommRing R] (F : Shv R) (X : Scheme.{0}) (A : ∀ U : Scheme.{0}, (U ⟶ X) → Sec F U → Prop),
-    (∀ (V U : Scheme.{0}) (g : V ⟶ U) (x : U ⟶ X) (s : Sec F U), A U x s → A V (g ≫ x) (Sec.res g s)) →
-    (∀ (U : Scheme.{0}) (x : U ⟶ X) (s t : Sec F U), A U x s → A U x t → s = t) →
-    (∀ (U : Scheme.{0}) (x : U ⟶ X), Loc U fun V g => ∃ s, A V (g ≫ x) s) →
-    ∃ e : ∀ U : Scheme.{0}, (U ⟶ X) → Sec F U, (∀ (V U : Scheme.{0}) (g : V ⟶ U) (x : U ⟶ X), Sec.res g (e U x) = e V (g ≫ x)) ∧
-      ∀ (U : Scheme.{0}) (x : U ⟶ X) (s : Sec F U), A U x s → e U x = s := _root_.GlobalTheory.EtC.secGlue_of_loc
-
 theorem glue_family : ∀ (q : ℕ) [NeZero q] (κ : Tz q ⟶ Gm) (h0 : κ ≫ ((q : ℤ) • 𝟙 Gm) = 0),
     (∀ (U : Scheme.{0}) (ζ : Prim q Γ(U, ⊤)) (u : (Γ(U, ⊤))ˣ), (u : Γ(U, ⊤)) = ζ.1 →
       Sec.map κ (show Sec (Tz q) U from twGen 1 ζ) = unitSec u) →

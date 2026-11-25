@@ -295,11 +295,6 @@ variable {E}
   IsCMField.complexEmbedding_complexConj E τ x
 
 
-variable (E) in
-theorem exists_star_ne : ∃ x : E, star x ≠ x := by
-  by_contra! H
-  exact IsCMField.complexConj_ne_one E (AlgEquiv.ext H)
-
 noncomputable instance : StarRing (𝓞 E) where
   star := IsCMField.ringOfIntegersComplexConj E
   star_involutive x := RingOfIntegers.ext (star_star (x : E))
@@ -749,10 +744,6 @@ instance : Module.Projective (𝓞 E) Λ.L :=
   have : Module.FinitePresentation (𝓞 E) Λ.L := Module.finitePresentation_of_finite _ _
   Module.Flat.projective_of_finitePresentation
 
-theorem finrank_L : Module.finrank (𝓞 E) Λ.L = Λ.n := by
-  have := Λ.isLattice
-  exact (Submodule.IsFullLattice.finrank_eq E Λ.L).trans (Module.finrank_fin_fun E)
-
 theorem isIntegral_form (x y : Λ.L) : IsIntegral ℤ (Λ.form x y) := by
   obtain ⟨c, hc⟩ := (Λ.mem_iff x).1 x.2 y y.2
   exact hc ▸ c.isIntegral_coe
@@ -863,13 +854,6 @@ theorem unimod_stdLat (n : ℕ) : (⟨Formalism.L2.Pj.stdLat E n⟩ : Formalism.
 variable (E) in
 def std (n : ℕ) : Unim E := ofGenLat ⟨Formalism.L2.Pj.stdLat E n⟩ (isLattice_stdLat n) (unimod_stdLat n)
 
-theorem gramE_std (n : ℕ) : (std E n).gramE = (1 : Matrix (Fin n) (Fin n) E) := by
-  have : ∀ i j : Fin n, ∑ k : Fin n, (Pi.single i 1 : Fin n → E) k * star ((Pi.single j 1 : Fin n → E) k) =
-      (1 : Matrix (Fin n) (Fin n) E) i j := fun i j => by
-    rw [Finset.sum_eq_single i (fun k _ hk => by simp [hk]) (by simp)]
-    by_cases h : i = j <;> simp [h, Matrix.one_apply]
-  exact Matrix.ext this
-
 end Unim
 
 variable {H : Host E} {X X' : Scheme.{0}}
@@ -931,13 +915,6 @@ variable {D : D7} {A : Amb D} {N j : ℕ} {S : Sig A N j} {κ : Lv A} {p : ℕ}
 def uniTrue (ct : At S κ p) : UniSt ct where
   Unim := Unim D.host.E
   latStd := Unim.std D.host.E
-
-theorem amb_w0_eq_boundaryLocalData_w0 (A : Amb D) : A.H.w0 = BoundaryLocalData.w0 D := RingOfIntegers.ext (by
-  have h := congrArg (algebraMap (𝓞 D.host.E) D.host.E) A.H.two_weight_eq_one_add_root
-  rw [map_mul, map_add (f := _), map_one, map_ofNat] at h
-  change algebraMap (𝓞 D.host.E) D.host.E A.H.w0 = (1 + D.host.sqrtMinusD) / 2
-  rw [← A.rt_eq, eq_div_iff two_ne_zero, mul_comm]
-  exact h)
 
 end Record
 

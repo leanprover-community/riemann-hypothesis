@@ -560,28 +560,6 @@ theorem DecoSet.eq_one_of_fst_eq_one (d : DecoSet (E := E) (n := n) (ST := ST) (
   have e : (a.2 w').1.mulVec (d.1.be w' x) = d.1.be w' x := this
   simpa using e
 
-theorem DecoSet.prime_le_of_dvd_card (d : DecoSet (E := E) (n := n) (ST := ST) (SG := SG)) (Γ : Subgroup (UF E n × GLG (E := E) (n := n) (SG := SG)))
-    (hΓ : Γ ≤ MulAction.stabilizer (UF E n × GLG (E := E) (n := n) (SG := SG)) d) [Finite Γ] {p : ℕ} (hp : p.Prime)
-    (hdvd : p ∣ Nat.card Γ) : p ≤ finrank ℚ E * n + 1 := by
-  have : Fact p.Prime := ⟨hp⟩
-  obtain ⟨x, hx⟩ := exists_prime_orderOf_dvd_card' p hdvd
-  have h0 : (x : UF E n × GLG (E := E) (n := n) (SG := SG)) ^ p = 1 := by
-    have := pow_orderOf_eq_one x
-    rw [hx] at this
-    exact_mod_cast congrArg Subtype.val this
-  have h1 : ((x : UF E n × GLG (E := E) (n := n) (SG := SG)).1 : Sp E n ≃ₗ[E] Sp E n) ^ p = 1 := by
-    have := congrArg (fun a : UF E n × GLG (E := E) (n := n) (SG := SG) => (a.1 : Sp E n ≃ₗ[E] Sp E n)) h0
-    simpa using this
-  have h2 : ((x : UF E n × GLG (E := E) (n := n) (SG := SG)).1 : Sp E n ≃ₗ[E] Sp E n) ≠ 1 := by
-    intro h
-    have h3 : (x : UF E n × GLG (E := E) (n := n) (SG := SG)) = 1 :=
-      DecoSet.eq_one_of_fst_eq_one d (hΓ x.2) (Subtype.ext h)
-    have : x = 1 := Subtype.ext h3
-    rw [this, orderOf_one] at hx
-    exact hp.one_lt.ne hx
-  have := primeOrder_le hp h1 h2
-  rwa [Module.finrank_fin_fun] at this
-
 end DecoInst
 
 section BaseInst

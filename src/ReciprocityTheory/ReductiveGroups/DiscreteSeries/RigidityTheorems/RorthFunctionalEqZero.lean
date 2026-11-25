@@ -76,15 +76,6 @@ private theorem rorth_functional_eq_zero_of_highest_weight_mem (hE : IsGlRep E) 
     exact hfV _ huV
   rw [← hu ⟨y, hk⟩, hu0, inner_zero_left]
 
-theorem rorth_functional_eq_zero (hE : IsGlRep E) (hU : IsInfUnitary ε E)
-    (hV : IsKIrrHW ε E (lowK ε lam) V) (hc : ∀ v ∈ V, casimir E v = (casVal lam : ℂ) • v)
-    (hgap : StdGap ε lam) (f : M →ₗ[ℂ] ℂ) (hfV : ∀ v ∈ V, f v = 0)
-    (hfd : ∀ a y, f (E a a y) = (lowK ε lam a : ℂ) * f y)
-    (hfl : ∀ a b, a < b → ε a = ε b → ∀ y, f (E b a y) = 0) :
-    ∀ y ∈ genSub E V, f y = 0 := by
-  exact rorth_functional_eq_zero_of_highest_weight_mem hE hU hV
-    (khw_lowK_mem hE hU hV hc hgap) f hfV hfd hfl
-
 end Alg
 
 section Mat

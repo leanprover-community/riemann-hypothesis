@@ -100,7 +100,6 @@ open Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.DivisionVa
 open Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Datum
 open GlobalTheory.Grid GlobalTheory.Doubling GlobalTheory.ChainFr GlobalTheory.IndefiniteRowSideFullHecke.MatchingAdjoints
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.SquareComm GlobalTheory.SquareAgree
 
 abbrev _root_.GlobalTheory.T.TwistedThetaJetCondition : Prop :=  GlobalTheory.Published.HoweDualityReal → _root_.GlobalTheory.FunPr.ThetaLocalInputs → ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {a a' : ℕ}
@@ -128,23 +127,10 @@ namespace GlobalTheory.HoweRealSmall
 
 open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
-private theorem det_ne_hasSig {n r s : ℕ} {M : Matrix (Fin n) (Fin n) ℂ} (h : HasSig M r s) : M.det ≠ 0 := by
-  obtain ⟨hrs, A, hA⟩ := h
-  let e : Fin r ⊕ Fin s ≃ Fin n := finSumFinEquiv.trans (finCongr hrs)
-  let A' : Matrix (Fin n) (Fin n) ℂ := A.submatrix id e.symm
-  have h1 : A'ᵀ * M * A'.map star = (Matrix.fromBlocks (1 : Matrix (Fin r) (Fin r) ℂ) 0 0 (-1)).submatrix e.symm e.symm := by
-    rw [← hA]; ext i j; simp [A', Matrix.mul_apply, Matrix.submatrix_apply, Matrix.transpose_apply, Matrix.map_apply]
-  have h2 : (A'ᵀ * M * A'.map star).det ≠ 0 := by
-    rw [h1, Matrix.det_submatrix_equiv_self, Matrix.det_fromBlocks_zero₂₁]
-    simp [Matrix.det_neg]
-  intro h0
-  apply h2
-  rw [Matrix.det_mul, Matrix.det_mul, h0]; simp
-
 private theorem det_ne_sig_map {E : Type} [Field E] {n r s : ℕ} {J : Matrix (Fin n) (Fin n) E} (τ : E →+* ℂ) (c : ℂ)
     (h : HasSig (c • J.map τ) r s) : J.det ≠ 0 := by
   intro h0
-  apply det_ne_hasSig h
+  apply GlobalTheory.WeilSchrodingerHerm.det_ne_zero_of_hasSig h
   have e := RingHom.map_det τ J
   rw [RingHom.mapMatrix_apply] at e
   rw [Matrix.det_smul, ← e, h0, map_zero, mul_zero]
@@ -173,14 +159,6 @@ private theorem acts_zero {F : Type} [Field F] [NumberField F] {κ : Type} [Fint
   intro r _
   have e : tens (evI F) (⇑(0 : SInf F κ)) r = 0 := by funext y; simp [tens]
   rw [e, map_zero]
-
-private theorem actsD_zero {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ]
-    (T : ℝ → Module.End ℂ ((κ → AF F) → ℂ)) :
-    ActsD (evI F) (fun t => ⇑(T t)) ⇑(0 : SInf F κ) ⇑(0 : SInf F κ) := by
-  intro r _ x
-  have e : tens (evI F) (⇑(0 : SInf F κ)) r = 0 := by funext y; simp [tens]
-  simp only [e, map_zero, Pi.zero_apply]
-  exact hasDerivAt_const _ _
 
 theorem howe_real_ker' : GlobalTheory.Published.HoweDualityReal →
     ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
@@ -221,7 +199,7 @@ theorem howe_real_ker' : GlobalTheory.Published.HoweDualityReal →
     · intro γ hγ f hf f₁ hact
       have hf' := Submodule.mem_inf.1 hf
       have hp := hR.lie γ hγ 0 (zero_mem _) f hf'.2 0 f₁
-        (actsD_zero (fun t => om (1, γ (Multiplicative.ofAdd t)))) hact
+        (GlobalTheory.ThK.RealUniq.actsD_zero (fun t => om (1, γ (Multiplicative.ofAdd t)))) hact
         (by rw [map_zero]; exact (LinearMap.mem_ker.1 hf'.1).symm)
       rw [map_zero] at hp
       exact Submodule.mem_inf.2 ⟨LinearMap.mem_ker.2 hp.symm, (hLie γ hγ f hf'.2).2 f₁ hact⟩

@@ -86,7 +86,6 @@ structure RecTAlt (ex : Extra D L hT Gi Gl K Y cX) where
   pin : _root_.Formalism.L2.Rows.RowPinMinAlt T
   joints : _root_.Formalism.L2.JointsSAlt T.toTiedDataS
   host : _root_.Formalism.L2.HostDatumSelfDual T.toTiedDataS
-  weq : Theta.WeilCompatibleEquivariance T.toTiedDataS.theta.W
 def ExtraDataRecursive (ex : Extra D L hT Gi Gl K Y cX) : Prop := Nonempty (_root_.Formalism.L2.RecTAlt ex)
 theorem ExtraDataRecursive.tiedSK {ex : Extra D L hT Gi Gl K Y cX} (h : _root_.Formalism.L2.ExtraDataRecursive ex) : _root_.Formalism.L2.ExtraDataSelfDualKernel ex :=
   let ⟨R⟩ := h; ⟨R.T⟩

@@ -54,16 +54,8 @@ theorem trace_conj (E : Type) [Field E] [NumberField E] [IsCMField E] (x : E) :
 
 theorem trace_rel (E : Type) [Field E] [NumberField E] [IsCMField E] (x : E) :
     algebraMap (maximalRealSubfield E) E (Algebra.trace (maximalRealSubfield E) E x)
-      = x + complexConj E x := by
-  classical
-  rw [trace_eq_sum_automorphisms]
-  have hu : (Finset.univ : Finset (E ≃ₐ[maximalRealSubfield E] E)) = {1, complexConj E} := by
-    symm
-    apply Finset.eq_univ_of_card
-    rw [Finset.card_pair (complexConj_ne_one E).symm, ← Nat.card_eq_fintype_card,
-      IsGalois.card_aut_eq_finrank, Algebra.IsQuadraticExtension.finrank_eq_two]
-  rw [hu, Finset.sum_pair (complexConj_ne_one E).symm]
-  rfl
+      = x + complexConj E x :=
+  by apply _root_.Formalism.FourierDecayAlt.P.S6x3.trace_eq
 
 theorem exists_theta (E : Type) [Field E] [NumberField E] [IsCMField E]
     (h1 : differentIdeal (𝓞 (maximalRealSubfield E)) (𝓞 E) = ⊤) :

@@ -52,7 +52,7 @@ theorem compAt_eq_one_of_tameAt {L : Type} [Field L] [NumberField L] [IsCMField 
     (u : (s.v.adicCompletion (maximalRealSubfield L))ˣ)
     (hu : Valued.v ((u : s.v.adicCompletion (maximalRealSubfield L)) - 1) < 1) : ξ u = 1 := by
   obtain ⟨ξ', hξ', hv⟩ := _root_.GlobalTheory.HeckeSplitComp.main L s χ hχ
-  have e : ξ = ξ' := GlobalTheory.T.heckeCharacter_splitPlaceComponent_unique L χ s ξ ξ' hξ hξ'
+  have e : ξ = ξ' := _root_.GlobalTheory.CompAtUniq.main L χ s ξ ξ' hξ hξ'
   have hu1 : Valued.v (u : s.v.adicCompletion (maximalRealSubfield L)) = 1 := by
     have h := Valuation.map_one_add_of_lt (Valued.v : Valuation (s.v.adicCompletion (maximalRealSubfield L)) _) hu
     rwa [add_sub_cancel] at h

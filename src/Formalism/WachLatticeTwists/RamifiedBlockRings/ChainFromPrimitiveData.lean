@@ -84,25 +84,4 @@ def StatStageC : Prop :=
     DistinctEigenvalueCornerPerturbation O' (bcT O' T) (bcR O' r) π t g₀ (bcM O' eB) (bcM O' s) ∧
     ∀ Z : Set X, vcc (bcT O' T) Z π = e * vcc T Z π
 
-def ChainHyp (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] {X : Type}
-    (T : Subalgebra O (X → O)) {d : Type} [Fintype d] [DecidableEq d] {G : Type} [Group G]
-    (r : G →* (X → Matrix d d O)) (π : X) {t : ℕ} (bl : d → Fin (t + 1)) (χ₁ ε : G →* Oˣ) (g₀ : G) :
-    Prop :=
-  PrimHyp O T r π bl χ₁ ε ∧
-  AbsIrr (fun g => ((r g π).toSquareBlock bl 0).map (IsLocalRing.residue O)) ∧
-  2 ≤ Fintype.card {a // bl a = 0} ∧
-  (∀ x, ∃ (m : ℕ) (c : d → Fin m) (P : Matrix d d (FractionRing O)),
-    BlockDiagonalIrreducibleAt (fun g => (r g x).map (algebraMap O (FractionRing O))) m c P) ∧
-  (∀ i j : ℕ, i < t → j < t → (ε g₀) ^ i = (ε g₀) ^ j → i = j)
-
-def ChainAB (O : Type) [CommRing O] [IsDomain O] {X : Type} (T : Subalgebra O (X → O)) {d : Type}
-    [Fintype d] [DecidableEq d] {G : Type} [Group G] (r : G →* (X → Matrix d d O)) (π : X) {t : ℕ}
-    (bl : d → Fin (t + 1)) (g₀ : G) (c : O) (eB e₁ s : X → Matrix d d O) : Prop :=
-  IdemHyp O T r π bl eB e₁ ∧
-  (∃ (m : ℕ) (jj : Fin m → X → O) (a : Fin m → X → Matrix d d O),
-    (∀ i, jj i ∈ T ∧ jj i π = 0 ∧ a i ∈ tSpan T r) ∧
-    s = fun x => c • ∑ i, jj i x • (eB x * a i x * eB x)) ∧
-  (∀ x, (blockPoly ((eB x).map (algebraMap O (FractionRing O)))
-    ((eB x * r g₀ x * eB x + s x).map (algebraMap O (FractionRing O)))).Separable)
-
 end Formalism.RepresentationBoundsCohomology.ringDataObjects

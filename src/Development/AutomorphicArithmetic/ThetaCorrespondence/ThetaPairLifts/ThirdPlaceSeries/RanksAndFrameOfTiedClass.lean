@@ -134,11 +134,9 @@ namespace GlobalTheory.RankSplit
 
 open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain
 
-private lemma span_prime_isMaximal' {p : ℕ} (hp : p.Prime) : (Ideal.span {(p : ℤ)}).IsMaximal :=
-  PrincipalIdealRing.isMaximal_of_irreducible (Nat.prime_iff_prime_int.mp hp).irreducible
 private lemma liesOver_span_of_prime_natCast_mem {A : Type*} [CommRing A] {p : ℕ} (hp : p.Prime) (P : Ideal A) [hP : P.IsPrime]
     (h : (p : A) ∈ P) : P.LiesOver (Ideal.span {(p : ℤ)}) := by
-  refine ⟨(span_prime_isMaximal' hp).eq_of_le (Ideal.IsPrime.comap (algebraMap ℤ A)).ne_top ?_⟩
+  refine ⟨(Formalism.MainNotions.BridgeLemma.span_isMaximal hp).eq_of_le (Ideal.IsPrime.comap (algebraMap ℤ A)).ne_top ?_⟩
   rw [Ideal.span_singleton_le_iff_mem, Ideal.under, Ideal.mem_comap]
   simpa using h
 
@@ -148,7 +146,7 @@ theorem ncard_primesOver_of_norm {E : Type} [Field E] [NumberField E] {p : ℕ} 
   classical
   have hp0 : Ideal.span {(p : ℤ)} ≠ ⊥ := by
     simp [hp.ne_zero]
-  haveI := span_prime_isMaximal' hp
+  haveI := Formalism.MainNotions.BridgeLemma.span_isMaximal hp
   rw [← Ideal.sum_ramification_inertia (R := ℤ) (S := 𝓞 E) ℚ E hp0,
     ← IsDedekindDomain.coe_primesOverFinset hp0 (𝓞 E), Set.ncard_coe_finset, Finset.card_eq_sum_ones]
   refine Finset.sum_congr rfl fun P hP => ?_

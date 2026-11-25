@@ -141,18 +141,6 @@ theorem existsUnique_torusCompat {f : S' ⟶ S} {F : G'.left ⟶ G.left}
       simp
     · simp
 
-theorem TorusCompat.of_comp_right {f' : S'' ⟶ S'} {f : S' ⟶ S} {F' : G''.left ⟶ G'.left}
-    {F : G'.left ⟶ G.left} (hF : IsPullback F G'.hom G.hom f) (hF' : F' ≫ G'.hom = G''.hom ≫ f')
-    {i'' : splitTorus S'' X ⟶ G''} {i' : splitTorus S' X ⟶ G'} {i : splitTorus S X ⟶ G}
-    (h'' : TorusCompat (f' ≫ f) (F' ≫ F) i'' i) (h : TorusCompat f F i' i) :
-    TorusCompat f' F' i'' i' := by
-  rw [torusCompat_iff] at h'' h ⊢
-  rw [bcMap_comp] at h''
-  apply hF.hom_ext
-  · simp only [Category.assoc] at h'' ⊢
-    rw [← h, h'']
-  · simp [hF', bcMap_hom]
-
 private theorem torusCompat_mul_comp [GrpObj G'] [GrpObj G] {f : S' ⟶ S} {F : G'.left ⟶ G.left}
     (hF : IsGrpPullback G' G f F) {i' : splitTorus S' X ⟶ G'} {i : splitTorus S X ⟶ G} [IsMonHom i]
     (h : TorusCompat f F i' i) {T : Over S'} (u v : T ⟶ splitTorus S' X) :

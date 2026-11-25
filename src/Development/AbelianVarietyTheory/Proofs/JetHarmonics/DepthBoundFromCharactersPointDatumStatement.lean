@@ -1137,7 +1137,7 @@ theorem depth_bound_of_chars : Laws → Laws2 → Laws4 → TwistBaseChangeState
   have hGV : GermValSt := GlobalTheory.GermValuation.main hL hL4 hTW jA jR jS jX hG
   have hJ : JetsSt := GlobalTheory.GermJets.jets hL hL4 hTW jA jR jS jX hG
   have hP : PullGermSt := GlobalTheory.PullGerm.germ_pullback hL hL4 hTW jA jR jS jX GlobalTheory.JetRoad.rosIdSt hG
-  have hE : EigGermSt := GlobalTheory.T.derivative_congruence_germ_integral_translate hL hL4 hTW jA jR jS jX GlobalTheory.JetRoad.rosIdSt jB hG
+  have hE : EigGermSt := _root_.GlobalTheory.EigenGerm.eigen_germ hL hL4 hTW jA jR jS jX GlobalTheory.JetRoad.rosIdSt jB hG
   classical
   let _ := H.starRing
   have hp' : p.Prime := hp.out

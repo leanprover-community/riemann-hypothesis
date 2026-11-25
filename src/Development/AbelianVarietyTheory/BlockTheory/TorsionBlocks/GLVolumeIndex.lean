@@ -174,8 +174,6 @@ def entries {m n : Type} (A : Matrix m n 𝒪[F]) : m → n → F := fun i j => 
 def groupSet {n : Type} [Fintype n] [DecidableEq n] (H : Subgroup (GL n 𝒪[F])) : Set (n → n → F) :=
   {x | ∃ k ∈ H, entries k.val = x}
 
-def zetaFrom (q : ℝ) (c n : ℕ) : ℝ := (qE q (c + 1) n)⁻¹
-
 variable [MeasurableSpace F]
 
 def volAdd (ν : Measure F) (m n : Type) [Fintype m] [Fintype n] : Measure (m → n → F) :=

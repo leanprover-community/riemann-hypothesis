@@ -183,53 +183,8 @@ theorem exists_rep {T : Submonoid (MRingOver S ι)} {β : K → ℤ}
     {x : LocalizedModule T (MRingOver S ι ⧸ V)} (hx : x ∈ locPart ι (quotPart S V) T β) :
     ∃ (g : MRingOver S ι) (t : T) (a : K → ℕ), IsMultiHomog (t : MRingOver S ι) a ∧
       IsMultiHomog g (fun k => (β k + a k).toNat) ∧ ((∀ k, 0 ≤ β k + a k) ∨ g = 0) ∧
-      x = LocalizedModule.mk (Ideal.Quotient.mk V g) t := by
-  induction hx using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨m, t, a, ht, hm, rfl⟩ := hx
-    obtain ⟨g, hg, hd, rfl⟩ := exists_homog_of_mem_quotPart hm
-    exact ⟨g, t, a, ht, hg, hd, rfl⟩
-  | zero =>
-    refine ⟨0, 1, 0, ?_, CellLocEval.isMultiHomog_zero _, Or.inr rfl, ?_⟩
-    · simpa using CellLocEval.isMultiHomog_C (S := S) (ι := ι) 1
-    · rw [map_zero, LocalizedModule.zero_mk]
-  | add x x' _ _ h h' =>
-    obtain ⟨g, t, a, ht, hg, hd, rfl⟩ := h
-    obtain ⟨g', t', a', ht', hg', hd', rfl⟩ := h'
-    rcases hd with hd | rfl
-    swap
-    · exact ⟨g', t', a', ht', hg', hd', by rw [map_zero, LocalizedModule.zero_mk, zero_add]⟩
-    rcases hd' with hd' | rfl
-    swap
-    · exact ⟨g, t, a, ht, hg, Or.inl hd, by rw [map_zero, LocalizedModule.zero_mk, add_zero]⟩
-    refine ⟨(t' : MRingOver S ι) * g + (t : MRingOver S ι) * g', t * t', a + a', ?_, ?_, Or.inl ?_, ?_⟩
-    · simpa using CellLocEval.isMultiHomog_mul ht ht'
-    · have e1 : (fun k => (β k + ((a + a') k : ℕ)).toNat) = a' + (fun k => (β k + a k).toNat) := by
-        funext k
-        have := hd k
-        simp only [Pi.add_apply, Nat.cast_add]
-        omega
-      have e2 : (fun k => (β k + ((a + a') k : ℕ)).toNat) = a + (fun k => (β k + a' k).toNat) := by
-        funext k
-        have := hd' k
-        simp only [Pi.add_apply, Nat.cast_add]
-        omega
-      refine CellLocEval.isMultiHomog_add ?_ ?_
-      · rw [e1]; exact CellLocEval.isMultiHomog_mul ht' hg
-      · rw [e2]; exact CellLocEval.isMultiHomog_mul ht hg'
-    · intro k
-      have := hd k
-      simp only [Pi.add_apply, Nat.cast_add]
-      omega
-    · rw [LocalizedModule.mk_add_mk]
-      congr 1
-  | smul s x _ h =>
-    obtain ⟨g, t, a, ht, hg, hd, rfl⟩ := h
-    refine ⟨s • g, t, a, ht, CellLocEval.isMultiHomog_smul s hg, ?_, ?_⟩
-    · rcases hd with hd | rfl
-      · exact Or.inl hd
-      · exact Or.inr (smul_zero s)
-    · rw [LocalizedModule.smul'_mk, ← Ideal.Quotient.mkₐ_eq_mk S, map_smul]
+      x = LocalizedModule.mk (Ideal.Quotient.mk V g) t :=
+  by apply _root_.GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.CellLocEval.exists_rep; assumption
 
 end Rep
 

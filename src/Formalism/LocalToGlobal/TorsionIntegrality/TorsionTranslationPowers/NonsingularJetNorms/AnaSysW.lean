@@ -14,9 +14,9 @@ public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationPr
 import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.QuasiPeriodConstUnique
 import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.SigmaLogDeriv2
 public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.LogarithmicSubstitution.BaseChangeCompatible
+import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.LogarithmicSubstitution.InVarAddInVarNeZero
 public import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.LogarithmicSubstitution.LogSigmaOnePullbackSpec
 import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.LogarithmicSubstitution.OneAddMulDerivLogSubst
-public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.NonsingularJetNorms.AnaSys
 public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.NonsingularJetNorms.ExistsFinitePartOneIdeleSplitCongruenceQuotient
 import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.BridgeTwoMore
 import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.ChordEquation
@@ -35,6 +35,10 @@ namespace Formalism.L2.Th1.E
 namespace AnaSysW
 
 open Formalism.L2.Th1
+
+private theorem ev_notMem (L : PeriodPair) (t : ℂ) (ht : t ∉ L.lattice) :
+    ∀ᶠ z in nhds (0 : ℂ), z + t ∉ L.lattice :=
+  (L.isClosed_lattice.isOpen_compl.preimage (continuous_add_const t)).mem_nhds (by simpa using ht)
 
 variable (l : ℕ) [Fact l.Prime] (L : PeriodPair) (ι : ℂ ≃+* ℂ_[l]) (W : WeierstrassCurve ℂ_[l])
 
@@ -144,7 +148,7 @@ theorem cc_phW : constantCoeff (phW l L ι W) = 0 := by
   exact B.Ph.constantCoeff_phO _ _ (lg0 (W := W)) (lg1 (W := W))
 
 theorem inW_sgStar : inW l ι W (F.sgStar L) = X * B.fExp (-(phW l L ι W)) := by
-  have hT : F.taylor0 (F.sgStar L) = B.sgStar (F.s2 L) (F.pSeries L) := AnaSys.taylorSgStar L
+  have hT : F.taylor0 (F.sgStar L) = B.sgStar (F.s2 L) (F.pSeries L) := F.taylorSgStar L
   have hM := (B.Map.baseChangeCompatible ℂ ℂ_[l] (ι : ℂ →+* ℂ_[l]) (F.s2 L) 0 0 (F.pSeries L) 0
     PowerSeries.X 0 (by simp) (by simp) (by simp)).2.1
   have hD := (B.Ph.logSigmaPullbackSpec ℂ_[l] (ι (F.s2 L)) (PowerSeries.map (ι : ℂ →+* ℂ_[l]) (F.pSeries L))
@@ -153,21 +157,8 @@ theorem inW_sgStar : inW l ι W (F.sgStar L) = X * B.fExp (-(phW l L ι W)) := b
   rw [hT, hM]
   exact hD
 
-theorem fExp_cancel : B.fExp (phW l L ι W) * B.fExp (-(phW l L ι W)) = 1 := by
-  have h1 : MvPowerSeries.constantCoeff (phW l L ι W) = 0 := cc_phW (l := l) (L := L) (ι := ι) (W := W)
-  have h2 : MvPowerSeries.constantCoeff (-(phW l L ι W)) = 0 := by rw [map_neg, h1, neg_zero]
-  rw [← B.fExp_add h1 h2, add_neg_cancel]
-  have h0 : MvPowerSeries.constantCoeff (0 : PowerSeries ℂ_[l]) = 0 := map_zero _
-  have e : (B.fExp (0 : PowerSeries ℂ_[l]) : PowerSeries ℂ_[l]) = B.fExp (0 : PowerSeries ℂ_[l]) * B.fExp (0 : PowerSeries ℂ_[l]) := by
-    have e' := B.fExp_add h0 h0
-    rw [add_zero] at e'
-    exact e'
-  have c := B.constantCoeff_fExp h0
-  have hne : (B.fExp (0 : PowerSeries ℂ_[l]) : PowerSeries ℂ_[l]) ≠ 0 := by
-    intro hz
-    rw [hz, map_zero] at c
-    exact zero_ne_one c
-  exact mul_left_cancel₀ hne (e.symm.trans (mul_one _).symm)
+theorem fExp_cancel : B.fExp (phW l L ι W) * B.fExp (-(phW l L ι W)) = 1 :=
+  B.ParO.fExp_mul_neg (cc_phW (l := l) (L := L) (ι := ι) (W := W))
 
 theorem cc_gW (t : ℂ) : constantCoeff (gW l L ι W t) = ι (F.opU L t (F.sgStar L) 0) := by
   have h1 : MvPowerSeries.constantCoeff (phW l L ι W) = 0 := cc_phW (l := l) (L := L) (ι := ι) (W := W)
@@ -222,21 +213,14 @@ theorem nonsing (hU : Unif l L ι W) (t : ℂ) (ht : t ∉ L.lattice) :
   have h2 := hU.2
   simp only [A.g₂, A.g₃, WeierstrassCurve.c₄, WeierstrassCurve.c₆, WeierstrassCurve.b₂,
     WeierstrassCurve.b₄, WeierstrassCurve.b₆] at h1 h2
-  have hn : (curveL l L ι).toAffine.Nonsingular (ι (L.weierstrassP t)) (ι (L.derivWeierstrassP t) / 2) := by
-    first
-    | exact AnaSys.nonsing (l := l) (L := L) (ι := ι) t ht
-  have he : (curveL l L ι).toAffine.Equation (ι (L.weierstrassP t)) (ι (L.derivWeierstrassP t) / 2) := by
-    first
-    | exact hn.1
-  rw [WeierstrassCurve.Affine.equation_iff] at he
-  simp only [curveL, A.shortW] at he
+  have hd := congrArg ι (L.derivWeierstrassP_sq t ht)
+  simp only [map_pow, map_sub, map_mul, map_ofNat] at hd
   have heq : W.toAffine.Equation (xc l L ι W t) (yc l L ι W t) := by
     rw [WeierstrassCurve.Affine.equation_iff]
     simp only [xc, yc, WeierstrassCurve.b₂]
-    linear_combination he + (ι (L.weierstrassP t) / 4) * h1 + (1 / 4) * h2
-  first
-  | (haveI : W.IsElliptic := ⟨isUnit_iff_ne_zero.mpr hΔ⟩
-     exact (WeierstrassCurve.Affine.equation_iff_nonsingular).mp heq)
+    linear_combination hd / 4 + (ι (L.weierstrassP t) / 4) * h1 + (1 / 4) * h2
+  have : W.IsElliptic := ⟨isUnit_iff_ne_zero.mpr hΔ⟩
+  exact (WeierstrassCurve.Affine.equation_iff_nonsingular).mp heq
 
 theorem ptW_notMem (hU : Unif l L ι W) (t : ℂ) (ht : t ∉ L.lattice) :
     ptW l L ι W t = .some _ _ (nonsing hU t ht) := by
@@ -321,16 +305,14 @@ def yf : ℂ → ℂ := fun z => (1 / 2) * (L.derivWeierstrassP (z + t) + (-V.a�
 
 theorem T_xf (ht : t ∉ L.lattice) : T (xf L V t) (F.taylor0 (xf L V t)) := by
   refine ⟨?_, rfl⟩
-  have h : AnalyticAt ℂ (fun z => L.weierstrassP (z + t)) 0 := by
-    first
-    | exact (AnaSys.T_wp (L := L) (t := t) ht).1
+  have h : AnalyticAt ℂ (fun z => L.weierstrassP (z + t)) 0 :=
+    (L.analyticOnNhd_weierstrassP _ (by simpa using ht)).fun_comp (analyticAt_id.add analyticAt_const)
   exact h.add analyticAt_const
 
 theorem T_yf (ht : t ∉ L.lattice) : T (yf L V t) (F.taylor0 (yf L V t)) := by
   refine ⟨?_, rfl⟩
-  have h : AnalyticAt ℂ (fun z => L.derivWeierstrassP (z + t)) 0 := by
-    first
-    | exact (AnaSys.T_dwp (L := L) (t := t) ht).1
+  have h : AnalyticAt ℂ (fun z => L.derivWeierstrassP (z + t)) 0 :=
+    (L.analyticOnNhd_derivWeierstrassP _ (by simpa using ht)).fun_comp (analyticAt_id.add analyticAt_const)
   have hx := (T_xf L V t ht).1
   exact analyticAt_const.mul (h.add ((analyticAt_const.mul hx).add analyticAt_const))
 
@@ -365,7 +347,7 @@ theorem flowC (h2 : A.g₂ V = L.g₂) (h3 : A.g₃ V = L.g₃) (ht : t ∉ L.la
       (T.mul hr (T.const hr V.a₄) hx)) (T.const hr V.a₆)).2
     refine hl.symm.trans (Eq.trans ?_ hq)
     apply F.Taylor.taylor0_congr
-    filter_upwards [AnaSys.ev_notMem L t ht] with z hz
+    filter_upwards [ev_notMem L t ht] with z hz
     have h := L.derivWeierstrassP_sq (z + t) hz
     rw [← h2, ← h3] at h
     simp only [xf, yf, A.g₂, A.g₃, WeierstrassCurve.c₄, WeierstrassCurve.c₆, WeierstrassCurve.b₂,
@@ -378,7 +360,7 @@ theorem flowC (h2 : A.g₂ V = L.g₂) (h3 : A.g₃ V = L.g₃) (ht : t ∉ L.la
     rw [← F.Taylor.taylor0_deriv]
     refine Eq.trans ?_ hq
     apply F.Taylor.taylor0_congr
-    filter_upwards [AnaSys.ev_notMem L t ht] with z hz
+    filter_upwards [ev_notMem L t ht] with z hz
     rw [(hasDeriv_xf L V t z hz).deriv]
     simp only [yf]
     ring
@@ -391,7 +373,7 @@ theorem flowC (h2 : A.g₂ V = L.g₂) (h3 : A.g₃ V = L.g₃) (ht : t ∉ L.la
     rw [← F.Taylor.taylor0_deriv]
     refine Eq.trans ?_ hq
     apply F.Taylor.taylor0_congr
-    filter_upwards [AnaSys.ev_notMem L t ht] with z hz
+    filter_upwards [ev_notMem L t ht] with z hz
     rw [(hasDeriv_yf L V t z hz).deriv, ← h2]
     simp only [xf, yf, A.g₂, WeierstrassCurve.c₄, WeierstrassCurve.b₂, WeierstrassCurve.b₄]
     ring
@@ -440,7 +422,7 @@ theorem prod_notMem (hU : Unif l L ι W) (P Q : ℂ) (hQ : Q ∉ L.lattice) (hP 
   have hev : (fun z => F.opU L (P + Q) (F.sgStar L) z * F.opU L (P - Q) (F.sgStar L) z) =ᶠ[nhds 0]
       fun z => F.opU L Q (F.sgStar L) 0 ^ 2 * (xf L (W0 l ι W) Q 0 + (-1) * xf L (W0 l ι W) P z) *
         (F.opU L P (F.sgStar L) z * F.opU L P (F.sgStar L) z) := by
-    filter_upwards [AnaSys.ev_notMem L P hP] with z hz
+    filter_upwards [ev_notMem L P hP] with z hz
     rw [F.translateProduct L P Q z hQ hz]
     simp only [xf, zero_add]
     ring
@@ -469,8 +451,7 @@ theorem prod_mem (hU : Unif l L ι W) (P Q : ℂ) (hQ : Q ∉ L.lattice) (hP : P
     filter_upwards [L.compl_lattice_sdiff_singleton_mem_nhds 0] with z hz
     by_cases h0 : z = 0
     · subst h0
-      rw [AnaSys.opU_zero_eq L P hP]
-      ring
+      simp [F.opU, ((F.sgStarBasic L).2.2.1 P).2 hP]
     · have hzL : z ∉ L.lattice := fun h => hz ⟨h, h0⟩
       have hzP : z + P ∉ L.lattice := fun h => hzL (by simpa using L.lattice.sub_mem h hP)
       rw [F.translateProduct L P Q z hQ hzP, L.weierstrassP_add_coe z ⟨P, hP⟩,

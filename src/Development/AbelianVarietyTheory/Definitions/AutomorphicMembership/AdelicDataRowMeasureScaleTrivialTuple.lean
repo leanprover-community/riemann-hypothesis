@@ -432,20 +432,10 @@ theorem nonempty_realMeas (D : D7) : Nonempty (RealMeas D) := by
 def memberBes (D : D7) (u : D.what₂.Word) : BesDat (D.sp.X 0) (D.sp.Y 0) (D.sp.iXY 0) :=
   GlobalTheory.BesselCompare.toBes (GlobalTheory.IndefiniteRowSideFullHecke.BesselData.memberDatum D u)
 
-def PlaceOver (D : D7) (ε : AE D) (𝔭 : Ideal (𝓞 D.host.K)) : Prop :=
-  ∀ π ∈ 𝔭, π ≠ 0 → GlobalTheory.IndefiniteRowSideFullHecke.BesselData.PlaceDivides D ε (algebraMap (𝓞 D.host.K) (𝓞 D.host.E) π)
-
 structure Pos1 (D : D7) where
   piT : D.what₂.Word → 𝓞 D.host.E
-  piT_norm : ∀ u, GlobalTheory.IndefiniteRowSideFullHecke.BesselData.IsNormGen D (piT u) (D.mem u).A.T
   gP : Fin 2 → Ideal (𝓞 D.host.K)
-  gP_prime : ∀ i, (gP i).IsPrime
-  gP_over : ∀ i, (D.host.g i : 𝓞 D.host.K) ∈ gP i
   dat : D.what₂.Word → GlobalTheory.IndefiniteRowSideFullHecke.BesselData.PosDatum (D.sp.X 0) (D.sp.Y 0) (D.sp.iXY 0)
-  dat_bes : ∀ u, (dat u).bes = GlobalTheory.IndefiniteRowSideFullHecke.BesselData.memberDatum D u
-  dat_p : ∀ u a, (dat u).p a = 1
-  dat_places : ∀ u ε, IsSplitIdem D ε →
-    ((∃ a, (dat u).ε a = ε) ↔ (GlobalTheory.IndefiniteRowSideFullHecke.BesselData.PlaceDivides D ε (piT u) ∨ ∃ i, PlaceOver D ε (gP i)))
 
 structure RecFun (D : D7) (θ : InfF D) (ψ : AddChar (AF D.host.F) ℂ) where
   chr : D.what₂.Tup → ℕ → IdC D

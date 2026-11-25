@@ -133,9 +133,6 @@ private theorem cmp_cont {v : Pl F} (w : PlacesOver E v) : Continuous (GM.cmp (n
 
 private theorem liesOver_under (w : Pl E) : w.asIdeal.LiesOver (w.under (𝓞 F)).asIdeal := ⟨rfl⟩
 
-private theorem under_eq {v : Pl F} (w : PlacesOver E v) : w.1.under (𝓞 F) = v :=
-  HeightOneSpectrum.ext w.2.over.symm
-
 private theorem finite_under (S : Set (Pl F)) (hS : S.Finite) :
     {w : Pl E | w.under (𝓞 F) ∈ S}.Finite := by
   refine (hS.biUnion fun v _ => Set.finite_range (Subtype.val : PlacesOver E v → Pl E)).subset ?_
@@ -242,7 +239,7 @@ private theorem phi_eq (T : Ty σ n q w₀) (L : GM.Loc σ n q w₀) (ψ : ∀ v
     L.φ v = GM.prodFn fun u : PlacesOver E v => h u.1 := by
   have hother : ∀ (u : PlacesOver E v), v ∉ T.sp → h u.1 = dflt T u.1 := fun u hv => by
     refine h2 u.1 fun v' hv' e => hv ?_
-    have : v' = v := by rw [← under_eq (T.mk' v'), ← e, under_eq u]
+    have : v' = v := by rw [← TY.under_of_over (T.mk' v'), ← e, TY.under_of_over u]
     rwa [← this]
   by_cases hsp : v ∈ T.sp
   · rw [(hF.split v hsp).1]
@@ -253,7 +250,7 @@ private theorem phi_eq (T : Ty σ n q w₀) (L : GM.Loc σ n q w₀) (ψ : ∀ v
       rw [Function.update_self, h1 v hsp]
     · rw [Function.update_of_ne hu, h2 u.1 fun v' hv' e => hu ?_,
         dflt_of_triv T u.1 (T.triv v (sp_split T hsp).2 u)]
-      have : v' = v := by rw [← under_eq (T.mk' v'), ← e, under_eq u]
+      have : v' = v := by rw [← TY.under_of_over (T.mk' v'), ← e, TY.under_of_over u]
       subst this
       exact Subtype.ext e
   by_cases hS : v ∈ T.S
@@ -274,7 +271,7 @@ private theorem phi_eq (T : Ty σ n q w₀) (L : GM.Loc σ n q w₀) (ψ : ∀ v
     rw [(L.off v hvS hvq).1, ← unit_prod v]
     congr 1
     funext u
-    have hu := T.off u.1 (by rw [under_eq]; exact hS) (by rw [under_eq]; exact hvq)
+    have hu := T.off u.1 (by rw [TY.under_of_over]; exact hS) (by rw [TY.under_of_over]; exact hvq)
     rw [hother u hsp, dflt_of_triv T u.1 hu.2, hu.1]
 
 end Main
@@ -309,7 +306,7 @@ theorem UpperTheory.exists_pos_const_typed_test_function_bound :
   have hpS : ∀ i, p i ∈ T.sp := fun i => (hsp _).2 ⟨i, rfl⟩
   have hwi : Function.Injective fun i => (T.mk' (p i)).1 := fun i j e => hp (by
     have e' : (T.mk' (p i)).1 = (T.mk' (p j)).1 := e
-    rw [← under_eq (T.mk' (p i)), e', under_eq])
+    rw [← TY.under_of_over (T.mk' (p i)), e', TY.under_of_over])
   obtain ⟨h, hh1, hh2⟩ := exists_ext (X := fun w : Pl E => Gw n w → ℂ) (fun i => (T.mk' (p i)).1) hwi
     (fun i => ψ (p i)) (dflt T)
   have h1 : ∀ v ∈ T.sp, h (T.mk' v).1 = ψ v := fun v hv => by
@@ -323,7 +320,7 @@ theorem UpperTheory.exists_pos_const_typed_test_function_bound :
     refine hcof.mono fun w hw => ?_
     have hu := T.off w hw.1 hw.2
     have hne : ∀ v ∈ T.sp, w ≠ (T.mk' v).1 := fun v hv e => hw.1 (by
-      rw [e, under_eq]; exact (sp_split T hv).1)
+      rw [e, TY.under_of_over]; exact (sp_split T hv).1)
     rw [h2 w hne, dflt_of_triv T w hu.2, hu.1]
   obtain ⟨e, -, he, ht⟩ := GM.avgE F E n hn (insert q L.S) aE L.φ (fun v hv => by
       rcases Finset.mem_insert.1 hv with hvq | hv
@@ -374,100 +371,9 @@ open GroundTheory.Automorphic.CuspidalSpectrum GroundTheory.Global GroundTheory.
 open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Geo UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C Formalism.BasicNotions GlobalTheory.PRep GlobalTheory.CuspRep GlobalTheory.SmGL GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets UpperTheory.ConvolutionTheory.L1
 open scoped ComplexConjugate Classical InnerProductSpace
 
-section Abs
-
-variable {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
-
-private theorem rho_typed (J : ∀ w : Pl K, Subgroup (Gw n w)) (χ : ∀ w : Pl K, Gw n w → ℂ) (f : LL μ)
-    (hf : ∀ w, f ∈ eigL μ w (J w) (χ w)) (P : Finset (Pl K))
-    (hP : ∀ w ∉ P, J w = GLnLocal.integralGL (w.adicCompletion K) n ∧ χ w = 1) (R : Finset (Pl K)) :
-    ∀ g : AdelicGLn.FiniteAdelicGL K n, (∀ w ∈ R, finAt w (finEmb K n g) ∈ J w) →
-      (∀ w ∈ P, w ∉ R → finAt w (finEmb K n g) = 1) →
-      (∀ w ∉ P, finAt w (finEmb K n g) ∈ GLnLocal.integralGL (w.adicCompletion K) n) →
-      rhoF μ g f = (∏ w ∈ R, χ w (finAt w (finEmb K n g))) • f := by
-  obtain ⟨-, -, -, -, -, hmul, hone, -⟩ := UpperTheory.ConvolutionTheory.Tf.commPrj K n μ ⊥
-  have heig : ∀ w, ∀ x ∈ J w, rhoF μ (AdelicGLn.localEmbedding w x) f = χ w x • f := fun w x hx => by
-    have := hf w
-    simp only [eigL, Submodule.mem_iInf, LinearMap.mem_eqLocus] at this
-    simpa [rhoL] using this x hx
-  induction R using Finset.induction_on with
-  | empty =>
-    intro g _ h1 h2
-    have hfix : f ∈ fixF μ (levOn P fun _ => ⊥) := by
-      rw [UpperTheory.ConvolutionTheory.C.fixLev K n μ P]
-      refine Submodule.mem_inf.2 ⟨?_, ?_⟩
-      · refine Submodule.mem_iInf _ |>.2 fun v => Submodule.mem_iInf _ |>.2 fun hv => ?_
-        refine ((UpperTheory.ConvolutionTheory.Tf.commPrj K n μ _).2.1 f).2 ?_
-        rintro _ ⟨x, hx, rfl⟩
-        obtain ⟨e1, e2⟩ := hP v hv
-        have := heig v x (by rw [e1]; exact hx)
-        rw [this, e2]
-        simp
-      · refine Submodule.mem_iInf _ |>.2 fun v => Submodule.mem_iInf _ |>.2 fun hv => ?_
-        refine ((UpperTheory.ConvolutionTheory.Tf.commPrj K n μ _).2.1 f).2 ?_
-        rintro _ ⟨x, hx, rfl⟩
-        rw [Subgroup.mem_bot.1 hx, map_one, hone]
-        rfl
-    have hg : g ∈ levOn P (fun _ => ⊥) := by
-      intro v
-      by_cases hv : v ∈ P
-      · simp only [hv, if_true]
-        exact Subgroup.mem_bot.2 (h1 v hv (Finset.notMem_empty v))
-      · simp only [hv, if_false]
-        exact h2 v hv
-    simpa using ((UpperTheory.ConvolutionTheory.Tf.commPrj K n μ _).2.1 f).1 hfix g hg
-  | insert a R ha ih =>
-    intro g h0 h1 h2
-    obtain ⟨-, e1, e2, -, -⟩ := UpperTheory.ConvolutionTheory.Tf.locEmb K n a
-    set x := finAt a (finEmb K n g) with hx
-    set g' := (AdelicGLn.localEmbedding a x)⁻¹ * g with hg'
-    have hc : ∀ w, w ≠ a → finAt w (finEmb K n g') = finAt w (finEmb K n g) := fun w hw => by
-      rw [hg', map_mul, finAt_mul, map_inv, finAt_inv, e2 w hw]
-      simp
-    have hca : finAt a (finEmb K n g') = 1 := by
-      rw [hg', map_mul, finAt_mul, map_inv, finAt_inv, e1]
-      simp [hx]
-    have key := ih g' (fun w hw => by
-        have hwa : w ≠ a := fun h => ha (h ▸ hw)
-        rw [hc w hwa]
-        exact h0 w (Finset.mem_insert_of_mem hw))
-      (fun w hw hwR => by
-        by_cases hwa : w = a
-        · subst hwa; exact hca
-        · rw [hc w hwa]
-          exact h1 w hw (by simp [hwa, hwR]))
-      (fun w hw => by
-        by_cases hwa : w = a
-        · subst hwa; rw [hca]; exact one_mem _
-        · rw [hc w hwa]; exact h2 w hw)
-    have hgg : g = AdelicGLn.localEmbedding a x * g' := by simp [hg']
-    have hprod : ∏ w ∈ R, χ w (finAt w (finEmb K n g')) = ∏ w ∈ R, χ w (finAt w (finEmb K n g)) :=
-      Finset.prod_congr rfl fun w hw => by
-        rw [hc w fun h => ha (h ▸ hw)]
-    have hstep : rhoF μ g f = rhoF μ (AdelicGLn.localEmbedding a x) (rhoF μ g' f) := by
-      conv_lhs => rw [hgg, hmul]
-      rfl
-    rw [hstep, key, hprod, map_smul, heig a x (h0 a (Finset.mem_insert_self a R)), smul_smul,
-      Finset.prod_insert ha, mul_comm]
-
-end Abs
-
 section SlopeTestRemainingChoices
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
-
-private theorem under_over' {v : Pl F} (w : PlacesOver E v) : w.1.under (𝓞 F) = v :=
-  HeightOneSpectrum.ext w.2.over.symm
-
-private theorem cmp_atFin' {v : Pl F} (w : PlacesOver E v) (g : AdelicGLn.AdelicGL E n) :
-    GM.cmp w (mapGL n (atFin v) g) = finAt w.1 g := by
-  ext i j
-  rfl
-
-private theorem fin_above' (v : Pl F) : {w : Pl E | w.under (𝓞 F) = v}.Finite := by
-  refine (Set.finite_range (Subtype.val : PlacesOver E v → Pl E)).subset ?_
-  rintro w rfl
-  exact ⟨⟨w, ⟨rfl⟩⟩, rfl⟩
 
 private theorem chr_one {G : Type} [Group G] [TopologicalSpace G] {J : Subgroup G} {χ : G → ℂ} (h : IsChr J χ) : χ 1 = 1 := by
   have h1 := h.2.2 1 J.one_mem 1 J.one_mem
@@ -530,7 +436,7 @@ private theorem at_place {σ : E ≃ₐ[F] E} {q : Pl F} {w₀ : PlacesOver E q}
       rw [← (L.off v hvL hvq).2.2.1]
       exact hx
     have hoff : ∀ u : PlacesOver E v, T.J u.1 = GLnLocal.integralGL (u.1.adicCompletion E) n ∧ T.χ u.1 = 1 := fun u =>
-      T.off u.1 (by rwa [under_over']) (by rwa [under_over'])
+      T.off u.1 (by rwa [TY.under_of_over]) (by rwa [TY.under_of_over])
     refine easy (fun u => ?_) fun u => (hoff u).2
     rw [(hoff u).1]
     exact hu u
@@ -549,9 +455,9 @@ theorem UpperTheory.typed_vectors_le_fixed_of_fits_level :
   have hloc := fun v : Pl F => at_place hq T L hF v _ (hX v)
   have hJ : ∀ w : Pl E, finAt w (finEmb E n g) ∈ T.J w := fun w => by
     have := (hloc (w.under (𝓞 F))).1 ⟨w, ⟨rfl⟩⟩
-    rwa [cmp_atFin'] at this
+    rwa [TY.cmp_atFin] at this
   have hfin : {w : Pl E | w.under (𝓞 F) ∈ insert q T.S}.Finite := by
-    refine ((insert q T.S).finite_toSet.biUnion fun v _ => fin_above' (E := E) v).subset ?_
+    refine ((insert q T.S).finite_toSet.biUnion fun v _ => TY.finite_over (E := E) v).subset ?_
     intro w hw
     exact Set.mem_biUnion (x := w.under (𝓞 F)) hw rfl
   set P : Finset (Pl E) := hfin.toFinset with hPdef
@@ -559,7 +465,7 @@ theorem UpperTheory.typed_vectors_le_fixed_of_fits_level :
     have : w.under (𝓞 F) ∉ insert q T.S := fun h => hw (hfin.mem_toFinset.2 h)
     rw [Finset.mem_insert, not_or] at this
     exact T.off w this.2 this.1
-  have hr := rho_typed μ T.J T.χ f hfw P hP P g (fun w _ => hJ w) (fun w h1 h2 => absurd h1 h2)
+  have hr := TY.rho_typed μ T.J T.χ f hfw P hP P g (fun w _ => hJ w) (fun w h1 h2 => absurd h1 h2)
     (fun w hw => by rw [← (hP w hw).1]; exact hJ w)
   have hone : ∏ w ∈ P, T.χ w (finAt w (finEmb E n g)) = 1 := by
     have ht := UpperTheory.ConvolutionTheory.Tf.tensEProd F E n (fun w => (T.J w : Set (Gw n w)).indicator (T.χ w))
@@ -597,111 +503,9 @@ open GroundTheory.Automorphic GroundTheory.Automorphic.Reduction GroundTheory.Au
 open GroundTheory.Automorphic.CuspidalSpectrum GroundTheory.Global GroundTheory.Global.SemiLocal
 open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Geo UpperTheory.ConvolutionTheory UpperTheory.ConvolutionTheory.C Formalism.BasicNotions GlobalTheory.PRep GlobalTheory.CuspRep GlobalTheory.SmGL GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets UpperTheory.ConvolutionTheory.L1
 open scoped ComplexConjugate Classical InnerProductSpace
-open UpperTheory.ConvolutionTheory.L1.TY (prj_mem prj_self mem_eigIn)
+open UpperTheory.ConvolutionTheory.L1.TY (prj_mem prj_self mem_eigIn prj_eigIn_comp_prj trace_sm
+  rhoL_comm arch_comm oloc_comm oloc_fix oinf_congr)
 namespace UpperTheory.ConvolutionTheory.L1.SideTr
-
-section Hil
-variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
-
-private theorem prj_mem_cl {V : Submodule ℂ H} (hV : IsClosed (V : Set H)) (v : H) : v ∈ V.topologicalClosure ↔ v ∈ V := by
-  rw [hV.submodule_topologicalClosure_eq]
-
-private theorem prj_adj (V : Submodule ℂ H) : ContinuousLinearMap.adjoint (prj V) = prj V :=
-  (isSelfAdjoint_starProjection _).adjoint_eq
-
-private theorem prj_comm {V : Submodule ℂ H} (hV : IsClosed (V : Set H)) (T : H →L[ℂ] H)
-    (hT : ContinuousLinearMap.adjoint T = T) (h : ∀ v ∈ V, T v ∈ V) : T * prj V = prj V * T := by
-  refine ContinuousLinearMap.ext fun v => ?_
-  show T (prj V v) = prj V (T v)
-  symm
-  refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero ((prj_mem_cl hV _).2 (h _ (prj_mem hV v))) fun w hw => ?_
-  rw [← map_sub, ← ContinuousLinearMap.adjoint_inner_right, hT]
-  exact Submodule.starProjection_inner_eq_zero v _ ((prj_mem_cl hV _).2 (h w ((prj_mem_cl hV _).1 hw)))
-
-private theorem eigIn_closed {W : Submodule ℂ H} (hW : IsClosed (W : Set H)) (A : H →L[ℂ] H) (x : ℝ) :
-    IsClosed (eigIn W A x : Set H) := by
-  have : (eigIn W A x : Set H) = (W : Set H) ∩ {v | A v = (x : ℂ) • v} := by
-    ext v
-    simp [eigIn]
-  rw [this]
-  exact hW.inter (isClosed_eq A.continuous (continuous_const_smul _))
-
-private theorem prj_inf {P X : Submodule ℂ H} (hP : IsClosed (P : Set H)) (hX : IsClosed (X : Set H))
-    (h : ∀ v ∈ X, prj P v ∈ X) : prj X * prj P = prj (X ⊓ P) ∧ prj P * prj X = prj (X ⊓ P) := by
-  have hc := prj_comm hX (prj P) (prj_adj P) h
-  have hXP : IsClosed ((X ⊓ P : Submodule ℂ H) : Set H) := by
-    rw [Submodule.coe_inf]; exact hX.inter hP
-  have key : prj X * prj P = prj (X ⊓ P) := by
-    refine ContinuousLinearMap.ext fun v => ?_
-    show prj X (prj P v) = (X ⊓ P).topologicalClosure.starProjection v
-    symm
-    refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero ?_ fun w hw => ?_
-    · refine (prj_mem_cl hXP _).2 ⟨prj_mem hX _, ?_⟩
-      have := congrArg (fun S : H →L[ℂ] H => S v) hc
-      simp only [ContinuousLinearMap.mul_apply] at this
-      rw [← this]
-      exact prj_mem hP _
-    · have hw' := (prj_mem_cl hXP _).1 hw
-      have hs : ∀ (Q : Submodule ℂ H) (a b : H), ⟪prj Q a, b⟫_ℂ = ⟪a, prj Q b⟫_ℂ := fun Q a b => by
-        rw [← ContinuousLinearMap.adjoint_inner_right, prj_adj]
-      rw [inner_sub_left, hs, hs, prj_self hw'.1, prj_self hw'.2, sub_self]
-  exact ⟨key, hc.trans key⟩
-
-private theorem core (Ty Fx V : Submodule ℂ H) (hTy : IsClosed (Ty : Set H)) (hFx : IsClosed (Fx : Set H))
-    (hV : IsClosed (V : Set H)) (hle : Ty ≤ Fx) (Oa : H →L[ℂ] H) (hOa : ContinuousLinearMap.adjoint Oa = Oa)
-    (hOT : ∀ v ∈ Ty, Oa v ∈ Ty) (hOF : ∀ v ∈ Fx, Oa v ∈ Fx) (hVT : ∀ v ∈ Ty, prj V v ∈ Ty) (x : ℝ) :
-    prj (eigIn V (Oa ∘L prj Fx) x) * prj Ty = prj (eigIn (V ⊓ Ty) Oa x) ∧
-    prj Ty * prj (eigIn V (Oa ∘L prj Fx) x) = prj (eigIn (V ⊓ Ty) Oa x) ∧
-    prj (eigIn V (Oa ∘L prj Fx) x) * (Oa ∘L prj Fx) = (x : ℂ) • prj (eigIn V (Oa ∘L prj Fx) x) := by
-  set A := Oa ∘L prj Fx with hA
-  set X := eigIn V A x with hXd
-  have hXc : IsClosed (X : Set H) := eigIn_closed hV A x
-  have hOP : Oa * prj Ty = prj Ty * Oa := prj_comm hTy Oa hOa hOT
-  have hOFx : Oa * prj Fx = prj Fx * Oa := prj_comm hFx Oa hOa hOF
-  have hVP : prj V * prj Ty = prj Ty * prj V := prj_comm hTy (prj V) (prj_adj V) hVT
-  have hFP : prj Fx * prj Ty = prj Ty := by
-    refine ContinuousLinearMap.ext fun v => ?_
-    exact prj_self (hle (prj_mem hTy v))
-  have hPF : prj Ty * prj Fx = prj Ty :=
-    (prj_comm hFx (prj Ty) (prj_adj Ty) fun v _ => hle (prj_mem hTy v)).trans hFP
-  have hAP : A * prj Ty = prj Ty * A := by
-    show Oa * prj Fx * prj Ty = prj Ty * (Oa * prj Fx)
-    rw [mul_assoc, hFP, hOP, ← mul_assoc, ← hOP, mul_assoc, hPF, hOP]
-  have hAadj : star A = A := by
-    show star (Oa * prj Fx) = Oa * prj Fx
-    rw [star_mul, ContinuousLinearMap.star_eq_adjoint, ContinuousLinearMap.star_eq_adjoint, hOa, prj_adj, hOFx]
-  have heq : X ⊓ Ty = eigIn (V ⊓ Ty) Oa x := by
-    ext v
-    simp only [Submodule.mem_inf, mem_eigIn, hXd]
-    have hA1 : v ∈ Ty → A v = Oa v := fun hv => by
-      show Oa (prj Fx v) = Oa v
-      rw [prj_self (hle hv)]
-    constructor
-    · rintro ⟨⟨h1, h2⟩, h3⟩
-      exact ⟨⟨h1, h3⟩, by rwa [← hA1 h3]⟩
-    · rintro ⟨⟨h1, h3⟩, h2⟩
-      exact ⟨⟨h1, by rwa [hA1 h3]⟩, h3⟩
-  have hPX : ∀ v ∈ X, prj Ty v ∈ X := by
-    intro v hv
-    obtain ⟨h1, h2⟩ := mem_eigIn.1 hv
-    refine mem_eigIn.2 ⟨?_, ?_⟩
-    · have := congrArg (fun S : H →L[ℂ] H => S v) hVP
-      simp only [ContinuousLinearMap.mul_apply, prj_self h1] at this
-      rw [← this]
-      exact prj_mem hV _
-    · have := congrArg (fun S : H →L[ℂ] H => S v) hAP
-      simp only [ContinuousLinearMap.mul_apply] at this
-      rw [this, h2, map_smul]
-  obtain ⟨k1, k2⟩ := prj_inf hTy hXc hPX
-  rw [heq] at k1 k2
-  refine ⟨k1, k2, ?_⟩
-  have hAX : A * prj X = (x : ℂ) • prj X := by
-    refine ContinuousLinearMap.ext fun v => ?_
-    exact (mem_eigIn.1 (prj_mem hXc v)).2
-  have hsX : star (prj X) = prj X := by
-    rw [ContinuousLinearMap.star_eq_adjoint, prj_adj]
-  have := congrArg star hAX
-  rwa [star_mul, star_smul, hAadj, hsX, RCLike.star_def, Complex.conj_ofReal] at this
 
 private theorem alg {R : Type} [Ring R] [Algebra ℂ R] (PX P PZ A Oa Ui Bp U : R) (k x : ℂ)
     (h1 : PX * P = PZ) (h2 : P * PX = PZ) (h3 : PX * A = x • PX) (h4 : Ui * A = A * Ui)
@@ -720,55 +524,6 @@ private theorem alg {R : Type} [Ring R] [Algebra ℂ R] (PX P PZ A Oa Ui Bp U : 
     rw [h4]
   rw [e1, smul_mul_assoc, mul_smul_comm, ← mul_assoc, ← mul_assoc, h3, smul_mul_assoc, smul_mul_assoc, smul_smul, ← e2,
     mul_assoc PX]
-
-private theorem trace_sm (c : ℂ) (S : H →L[ℂ] H) : trace (c • S) = c * trace S := by
-  simp only [trace, ContinuousLinearMap.smul_apply, inner_smul_right, tsum_mul_left]
-
-end Hil
-
-section Ops
-variable {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
-
-private theorem rhoL_mul (w : Pl K) (g h : Gw n w) : rhoL μ w (g * h) = rhoL μ w g ∘L rhoL μ w h := by
-  have := (UpperTheory.ConvolutionTheory.Tf.commPrj K n μ ⊥).2.2.2.2.2.1
-  simp only [rhoL, map_mul, this]
-
-private alias rhoL_comm := _root_.UpperTheory.ConvolutionTheory.L1.TY.rhoL_comm
-
-private theorem arch_comm (a : archGroup K n) (w : Pl K) (g : Gw n w) :
-    Commute (rightRegularRep (rationalGLOne (K := K) (n := n)) μ (archP K n a)) (rhoL μ w g) := by
-  show rightRegularRep (rationalGLOne (K := K) (n := n)) μ (archP K n a) * rightRegularRep (rationalGLOne (K := K) (n := n)) μ (MultiplicityOne.finProj K n (AdelicGLn.localEmbedding w g)) =
-    rightRegularRep (rationalGLOne (K := K) (n := n)) μ (MultiplicityOne.finProj K n (AdelicGLn.localEmbedding w g)) * rightRegularRep (rationalGLOne (K := K) (n := n)) μ (archP K n a)
-  rw [← UnitaryRep.map_mul, ← UnitaryRep.map_mul, archimedeanProjection_apply, MultiplicityOne.finProj_mul_archProj_comm]
-
-private theorem oloc_comm {w : Pl K} [MeasurableSpace (Gw n w)] {m : Measure (Gw n w)} {ψ : Gw n w → ℂ}
-    {Bo : LL μ →L[ℂ] LL μ} (h : IsOloc μ w m ψ Bo) (R : LL μ →L[ℂ] LL μ) (hR : ∀ g, Commute R (rhoL μ w g)) :
-    Commute R Bo := by
-  refine ContinuousLinearMap.ext fun v => ext_inner_left ℂ fun u => ?_
-  show ⟪u, R (Bo v)⟫_ℂ = ⟪u, Bo (R v)⟫_ℂ
-  rw [← ContinuousLinearMap.adjoint_inner_left R, h, h]
-  refine integral_congr_ae (Filter.Eventually.of_forall fun g => ?_)
-  show ψ g * _ = ψ g * _
-  congr 1
-  rw [ContinuousLinearMap.adjoint_inner_left]
-  have := congrArg (fun S : LL μ →L[ℂ] LL μ => S v) (hR g).eq
-  simp only [ContinuousLinearMap.mul_apply] at this
-  rw [this]
-
-private theorem oloc_fix {w : Pl K} [MeasurableSpace (Gw n w)] [BorelSpace (Gw n w)] {m : Measure (Gw n w)} [m.IsHaarMeasure]
-    {ψ : Gw n w → ℂ} {Bo : LL μ →L[ℂ] LL μ} (h : IsOloc μ w m ψ Bo) (J : Subgroup (Gw n w))
-    (hJ : ∀ u ∈ J, ∀ g, ψ (u * g) = ψ g) (v : LL μ) : Bo v ∈ fixL μ w J := by
-  refine ((UpperTheory.ConvolutionTheory.Tf.commPrj K n μ _).2.1 _).2 ?_
-  rintro _ ⟨u, hu, rfl⟩
-  refine ext_inner_left ℂ fun a => ?_
-  show ⟪a, rhoL μ w u (Bo v)⟫_ℂ = ⟪a, Bo v⟫_ℂ
-  rw [← ContinuousLinearMap.adjoint_inner_left (rhoL μ w u), h, h,
-    ← integral_mul_left_eq_self (μ := m) (fun g => ψ g * ⟪a, rhoL μ w g v⟫_ℂ) u]
-  refine integral_congr_ae (Filter.Eventually.of_forall fun g => ?_)
-  show ψ g * _ = ψ (u * g) * _
-  rw [hJ u hu, rhoL_mul, ContinuousLinearMap.comp_apply, ContinuousLinearMap.adjoint_inner_left]
-
-end Ops
 
 section Ty
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
@@ -808,11 +563,6 @@ private theorem typed_step (T : Ty σ n q w₀) (Bo : LL μ →L[ℂ] LL μ) (w�
 
 end Ty
 
-private theorem oinf_congr {K : Type} [Field K] [NumberField K] {n : ℕ} (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
-    {ν₁ ν₂ : Measure (archGroup K n)} [ν₁.IsHaarMeasure] [ν₂.IsHaarMeasure] (h : ν₁ = ν₂) (β : TI K n) :
-    Oinf μ ν₁ β = Oinf μ ν₂ β := by
-  subst h; rfl
-
 end UpperTheory.ConvolutionTheory.L1.SideTr
 
 
@@ -851,7 +601,7 @@ theorem UpperTheory.ConvolutionTheory.L1.sideTrace :
   have hVT : ∀ v ∈ T.typed μ, prj V v ∈ T.typed μ := by
     refine comm_typed μ T _ fun w g => ?_
     exact ((UpperTheory.ConvolutionTheory.Tf.innerOps E n μ).2.2.2.1 _ V hVc (IsSummandOf.inv hV)).symm
-  obtain ⟨k1, k2, k3⟩ := core (T.typed μ) (fixF μ (GM.levE L.UE)) V (typed_closed μ T) hcp.1 hVc hle (Oinf μ νE aE) hOsa hOT hOFx hVT (y ^ (m + 1))
+  obtain ⟨k1, k2, k3⟩ := prj_eigIn_comp_prj (T.typed μ) (fixF μ (GM.levE L.UE)) V (typed_closed μ T) hcp.1 hVc hle (Oinf μ νE aE) hOsa hOT hOFx hVT (y ^ (m + 1))
   have hθP : Commute θ.U (prj (T.typed μ)) := by
     have h0 := (UpperTheory.ConvolutionTheory.L1.twistPerm F E σ hσ m n μ θ hθ).2.2 q w₀ T ∅
     have h1 : (⨅ (w : Pl E) (_ : w.under (𝓞 F) ∉ (∅ : Set (Pl F))), eigL μ w (T.J w) (T.χ w)) = T.typed μ := by

@@ -391,10 +391,6 @@ instance faithfullyFlat_WCb : Module.FaithfullyFlat ℤ_[l] (WCb l) := by
   rw [Submodule.restrictScalars_mem, RingHom.mem_ker, map_one] at h3
   exact one_ne_zero h3
 
-theorem one_tmul_injective (T : Type) [AddCommGroup T] [Module ℤ_[l] T] :
-    Function.Injective fun t : T => (1 : WCb l) ⊗ₜ[ℤ_[l]] t :=
-  Module.FaithfullyFlat.tensorProduct_mk_injective (A := ℤ_[l]) (B := WCb l) T
-
 theorem SemiBC.finite_projective {A B M N : Type} [CommRing A] [CommRing B] [AddCommGroup M] [Module A M]
     [AddCommGroup N] [Module B N] {f : A →+* B} {u : M →ₛₗ[f] N} (h : SemiBC u) [Module.Finite A M]
     [Module.Projective A M] : Module.Finite B N ∧ Module.Projective B N := by

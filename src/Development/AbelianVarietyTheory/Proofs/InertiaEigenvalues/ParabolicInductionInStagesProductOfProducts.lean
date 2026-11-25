@@ -117,11 +117,6 @@ theorem pr_succ {a t N : ℕ} (z : Fin (a + 1) → IrrGL (k := k))
     Iso (pr z hz) (two e (one (z 0)) (pr (fun i : Fin a => z i.succ) hx)) :=
   mp_head (fun i => (z i).1) hz (fun i => one (z i)) hx e
 
-theorem of_iso {d h : ℕ} (y : Fin d → Fin h → IrrGL (k := k)) (N : Fin d → ℕ) {M c : ℕ} (hN : ∀ i, ∑ j, (y i j).1 = N i)
-    (hM : ∑ i, N i = M) (z : Fin c → IrrGL (k := k)) (hz : ∑ p, (z p).1 = M)
-    (H : Iso (mp N hM fun i => pr (y i) (hN i)) (pr z hz)) :
-    Nonempty ((multiProd (stdBlocks N hM) fun i => prodIrr (y i) (hN i)).Equiv (prodIrr z hz)) := H
-
 attribute [irreducible] one two mp pr Iso Sm
 
 theorem pr_congr {a b N : ℕ} {x : Fin a → IrrGL (k := k)} {z : Fin b → IrrGL (k := k)} (h : List.ofFn x = List.ofFn z)

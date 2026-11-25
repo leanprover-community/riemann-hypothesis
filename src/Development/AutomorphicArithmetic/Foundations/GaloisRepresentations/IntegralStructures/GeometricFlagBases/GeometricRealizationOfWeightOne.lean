@@ -917,10 +917,6 @@ open scoped TensorProduct Classical
 
 namespace GlobalTheory.LKMid.Pair
 
-theorem dot_conjTranspose_mul_mul {n : ℕ} (M N : Matrix (Fin n) (Fin n) ℂ) (y z : Fin n → ℂ) :
-    star y ⬝ᵥ (Mᴴ * N * M) *ᵥ z = star (M *ᵥ y) ⬝ᵥ N *ᵥ (M *ᵥ z) := by
-  rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec, Matrix.star_mulVec]
-
 theorem mark_unique : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (P : Pair G) (μ μ' : ℂ), G.a = 1 →
     P.Mark μ → P.Mark μ' → μ = μ' := by
   intro p _ G P μ μ' ha hm hm'
@@ -936,7 +932,7 @@ theorem mark_unique : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (P : Pair G) 
   have hn := _root_.GlobalTheory.LKMid.Pair.mark_norm_sq p G P μ ⟨v, hv, x, hx, hxp⟩
   obtain ⟨-, -, hlaw⟩ := _root_.GlobalTheory.LKMid.pair_form_laws p G P v
 
-  have e := dot_conjTranspose_mul_mul (G.psi v P.γ) (G.gram v * G.psi v ((P.β⁻¹ : G.Cˣ) : G.C)) x x'
+  have e := GlobalTheory.LKCx.PsiBound.form_conj (G.psi v P.γ) (G.gram v * G.psi v ((P.β⁻¹ : G.Cˣ) : G.C)) x x'
   rw [hlaw, hx, hx', Matrix.mulVec_smul, Matrix.smul_mulVec, star_smul, smul_dotProduct,
     dotProduct_smul, dotProduct_smul, smul_eq_mul, smul_eq_mul, smul_eq_mul] at e
   have hc0 : ((P.c : ℚ) : ℝ) ≠ 0 := by exact_mod_cast P.c.ne_zero
@@ -952,7 +948,7 @@ theorem mark_unique : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (P : Pair G) 
     exact hne (mul_left_cancel₀ hμ0 (hμ.trans h1))
 
   obtain ⟨Z, hZ⟩ := _root_.GlobalTheory.LKMid.Pair.gram_psi_inv_congr p G P v
-  rw [hZ, dot_conjTranspose_mul_mul] at horth hxp hxp'
+  rw [hZ, GlobalTheory.LKCx.PsiBound.form_conj] at horth hxp hxp'
   have hx'0 : x' ≠ 0 := by
     rintro rfl; simp at hxp'
   have hY : (Z : Matrix (Fin G.n) (Fin G.n) ℂ) *ᵥ x' ≠ 0 := by

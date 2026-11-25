@@ -112,12 +112,12 @@ theorem ookRedPsi (hX : X.Ok) (hPr : Pr.Ok) (c : LocCst X (rowSG Pr sel mu)) (hs
           redP P (LocE.entB q k₀ (c + 1) n' c n (fun i => i + 1) (fun i => i + 1) y p p') := by
       intro p p' hp hp'
       rw [ocbBEnt_entB]
-      exact hred _ _ (ocbPhi_fIdx_lt hk hp) (ocbPhi_fIdx_lt hk' hp')
+      exact hred _ _ (ocbPhi_fIdx_lt hp) (ocbPhi_fIdx_lt hp')
     have hI : ∀ p p', p < n + c → p' < n' + (c + 1) →
         IntAt P (LocE.entB q k₀ (c + 1) n' c n (fun i => i + 1) (fun i => i + 1) y p p') := by
       intro p p' hp hp'
       rw [ocbBEnt_entB]
-      exact hint _ _ (ocbPhi_fIdx_lt hk hp) (ocbPhi_fIdx_lt hk' hp')
+      exact hint _ _ (ocbPhi_fIdx_lt hp) (ocbPhi_fIdx_lt hp')
     have hz : ∀ x : E, IntAt P x → (redP P x = 0 ↔ IntAt P (x / (q : E))) := by
       intro x hx
       constructor

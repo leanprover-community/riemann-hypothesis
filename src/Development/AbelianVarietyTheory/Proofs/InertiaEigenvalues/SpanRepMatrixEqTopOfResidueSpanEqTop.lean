@@ -61,16 +61,6 @@ section -- clump:auto
 
 namespace GlobalTheory.SpanOfResidue
 
-theorem mem_smul_top_of_entries {A : Type} [CommRing A] {r : ℕ} (I : Ideal A)
-    (d : Matrix (Fin r) (Fin r) A) (hd : ∀ i j, d i j ∈ I) :
-    d ∈ I • (⊤ : Submodule A (Matrix (Fin r) (Fin r) A)) := by
-  rw [Matrix.matrix_eq_sum_single d]
-  refine Submodule.sum_mem _ fun i _ => Submodule.sum_mem _ fun j _ => ?_
-  have h : Matrix.single i j (d i j) = d i j • Matrix.single i j (1 : A) := by
-    rw [Matrix.smul_single, smul_eq_mul, mul_one]
-  rw [h]
-  exact Submodule.smul_mem_smul (hd i j) Submodule.mem_top
-
 theorem span_eq_top_of_residue {ι A : Type} [CommRing A] [IsLocalRing A] {r : ℕ}
     (f : ι → Matrix (Fin r) (Fin r) A)
     (h : Submodule.span (IsLocalRing.ResidueField A)

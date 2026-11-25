@@ -458,7 +458,6 @@ section
 open GlobalTheory.RatWeilOp
 namespace PositivityTheory.SiegelWeilFormula.Tunit
 open TBij TBij.Adp
-attribute [-instance] CStarMatrix.instHMulOfFintypeOfMulOfAddCommMonoid
 theorem exists_chart_k (d : SD_k σ) : ∃ (τ : d.κ ≃ TBij_k.Adp.Ix d)
     (d' : Darboux (symp (R := AF F) (cA σ) (-1) (incM F d.A.J) (dbl (incM F d.Y.J))) d.κ),
     GlobalTheory.TowU.IsRat d' ∧ ∀ w, d'.e w = TBij_k.Adp.c0 d τ w := by
@@ -576,7 +575,6 @@ theorem tHeis_k : THeis_k := by
       (invOf_two_add_invOf_two : (⅟(2 : AF F) + ⅟2 = 1))
 section
 open TBij.Adp KTunit
-attribute [-instance] CStarMatrix.instHMulOfFintypeOfMulOfAddCommMonoid
 local instance (priority := high)  {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ] :
     MeasurableSpace (κ → AF F) := borel _
 theorem tUnit_k : TUnit_k := by

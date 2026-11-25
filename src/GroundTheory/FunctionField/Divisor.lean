@@ -48,20 +48,6 @@ theorem deg_nonneg {D : Divisor k K} (hD : 0 ≤ D) : 0 ≤ deg D := by
 
 variable [IsFunctionField k K]
 
-theorem eq_zero_of_deg_eq_zero {D : Divisor k K} (hD : 0 ≤ D) (h : deg D = 0) : D = 0 := by
-  rw [deg_eq_sum] at h
-  have hnn : ∀ v ∈ D.support, 0 ≤ D v * v.deg := fun v _ =>
-    mul_nonneg (by simpa using Finsupp.le_def.1 hD v) (Int.natCast_nonneg _)
-  have h0 := (Finset.sum_eq_zero_iff_of_nonneg hnn).1 h
-  ext v
-  by_cases hv : v ∈ D.support
-  · have := h0 v hv
-    have hdeg : (0 : ℤ) < v.deg := by exact_mod_cast v.deg_pos
-    rcases mul_eq_zero.1 this with h' | h'
-    · simpa using h'
-    · omega
-  · simpa using hv
-
 end Divisor
 
 variable [IsFunctionField k K]

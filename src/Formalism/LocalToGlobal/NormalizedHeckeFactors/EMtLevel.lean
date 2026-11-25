@@ -103,7 +103,7 @@ namespace Formalism.L2
 
 
 
-structure NormalizedTwistCompatibility (D : D7) (C : NChoice D) (I : TwIn D) where
+structure NormalizedTwistCompatibility (D : D7) (C : NChoice D) (_I : TwIn D) where
 
   gal : NGalTied D
 
@@ -127,7 +127,6 @@ structure NormalizedTwistCompatibility (D : D7) (C : NChoice D) (I : TwIn D) whe
 
   exp : NExpTied D
 
-  choice : NChoiceTied D C I (avDesign D)
 
   eMt_level : ∀ (w : D.what₂.places.Pl) (j : ℕ) (h1 : 1 ≤ j) (h2 : j ≤ D.R.m)
     (hw : TwistedAt D w) (hA : NX.AdmTw D (C.twI w) (C.k' w) (C.Q w) ((C.psi' w).comp (D.ntw.art (C.twI w) (C.Q w)))),

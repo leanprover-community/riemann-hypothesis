@@ -117,44 +117,4 @@ theorem _root_.GlobalTheory.Cyc.Model.isActC_actC :
     _root_.GlobalTheory.Cyc.IsActC (_root_.GlobalTheory.Cyc.Model.actC (l := l)) :=
   ⟨fun g x => _root_.GlobalTheory.Cyc.Model.extHom_coe g x, fun g y => norm_cyc_extHom g y⟩
 
-open Polynomial in
-variable {l : ℕ} [Fact l.Prime] in
-theorem _root_.GlobalTheory.Cyc.Model.cyc_irred (n : ℕ) :
-    Irreducible (cyclotomic (l ^ (n + 1)) ℚ_[l]) := by
-  have hP : (Ideal.span {(l : ℤ_[l])}).IsPrime :=
-    PadicInt.maximalIdeal_eq_span_p (p := l) ▸ (IsLocalRing.maximalIdeal.isMaximal _).isPrime
-  have hnu : ¬ IsUnit (l : ℤ_[l]) := fun h => hP.ne_top (Ideal.span_singleton_eq_top.2 h)
-  have hE := cyclotomic_prime_pow_comp_X_add_one_isEisensteinAt l n
-  have hmap : taylor (1 : ℤ_[l]) (cyclotomic (l ^ (n + 1)) ℤ_[l]) =
-      ((cyclotomic (l ^ (n + 1)) ℤ).comp (X + 1)).map (Int.castRingHom ℤ_[l]) := by
-    rw [taylor_apply, Polynomial.map_comp, map_cyclotomic]; simp
-  have hmon : (taylor (1 : ℤ_[l]) (cyclotomic (l ^ (n + 1)) ℤ_[l])).Monic := by
-    rw [taylor_apply]; exact (cyclotomic.monic _ _).comp_X_add_C 1
-  have hdeg : (taylor (1 : ℤ_[l]) (cyclotomic (l ^ (n + 1)) ℤ_[l])).natDegree =
-      ((cyclotomic (l ^ (n + 1)) ℤ).comp (X + 1)).natDegree := by
-    rw [natDegree_taylor, natDegree_comp, natDegree_cyclotomic, natDegree_cyclotomic,
-      show (X + 1 : ℤ[X]) = X + C 1 by simp, natDegree_X_add_C, mul_one]
-  have hZ : Irreducible (cyclotomic (l ^ (n + 1)) ℤ_[l]) := by
-    rw [← MulEquiv.irreducible_iff (taylorEquiv (1 : ℤ_[l]))]
-    change Irreducible (taylor (1 : ℤ_[l]) _)
-    refine irreducible_of_eisenstein_criterion hP ?_ ?_ ?_ ?_ hmon.isPrimitive
-    · rw [hmon.leadingCoeff]; exact fun h => hP.ne_top ((Ideal.eq_top_iff_one _).2 h)
-    · intro k hk
-      rw [degree_eq_natDegree hmon.ne_zero, Nat.cast_lt, hdeg] at hk
-      obtain ⟨d, hd⟩ := Ideal.mem_span_singleton.1 (hE.mem hk)
-      rw [hmap, coeff_map, Ideal.mem_span_singleton, hd]
-      exact ⟨d, by simp⟩
-    · rw [degree_eq_natDegree hmon.ne_zero, natDegree_taylor, natDegree_cyclotomic, Nat.cast_pos]
-      exact Nat.totient_pos.2 (pow_pos (Fact.out : l.Prime).pos _)
-    · rw [taylor_coeff_zero, eval_one_cyclotomic_prime_pow, Ideal.span_singleton_pow,
-        Ideal.mem_span_singleton]
-      rintro ⟨c, hc⟩
-      apply hnu
-      have hl : (l : ℤ_[l]) ≠ 0 := by exact_mod_cast (Fact.out : l.Prime).ne_zero
-      refine isUnit_iff_exists_inv.2 ⟨c, mul_left_cancel₀ hl ?_⟩
-      rw [mul_one, ← mul_assoc, ← pow_two]; exact hc.symm
-  have h := (cyclotomic.monic (l ^ (n + 1)) ℤ_[l]).irreducible_iff_irreducible_map_fraction_map
-    (K := ℚ_[l]) |>.1 hZ
-  rwa [map_cyclotomic] at h
-
 end GlobalTheory.Cyc.Model

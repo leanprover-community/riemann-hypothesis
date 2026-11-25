@@ -47,10 +47,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor (Datum Level Moduli Coeff)
 open scoped TensorProduct
 
-def Side (D : D7) (σ : D.what₂.LL →+* ℂ) : Prop :=
-  ∀ x : D.host.K, σ (D.embE (algebraMap D.host.K D.host.E x)) =
-    D.what₂.embLL (D.embE (algebraMap D.host.K D.host.E x))
-
 def SitsAt (D : D7) (σ : D.what₂.LL →+* ℂ) (τ τ' : D.what₂.Tau) : Prop :=
   ∃ t : D.host.E →+* D.what₂.LL, D.what₂.embLL.comp t = tauE D τ ∧ σ.comp t = tauE D τ'
 
@@ -69,10 +65,6 @@ def IsCover (V : HSp D) {G0 : Type} [Group G0] (Lift : G0 → GA D V → Prop) :
     ∀ κ, Lift 1 κ ↔ κ ∈ levSet V (D.host.g 0 * D.host.g 1)
 
 variable (T : CoreJ D) (j : ℕ)
-
-def rdK (w : WeightFamilies.Wt D j) (s : T.Q.c.F →+* ℂ) (c : (T.U j s).Comp → ℂ) : T.R j →ₛₗ[s] (GA D (T.V j s) → ℂ) :=
-  ((lieFac (T.Q.Dw j) (xiR D) (wtA w) : ℂ) •
-    adel (T.V j s) (T.dict j s) (muPin (T.V j s) (T.dict j s) (T.mu j s) c)).comp (rdU (T.U j s))
 
 variable [Algebra T.Q.c.F D.what₂.LL]
 

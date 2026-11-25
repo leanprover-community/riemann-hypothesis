@@ -257,30 +257,6 @@ section Forms
 
 variable {A : Type} [CommRing A] {r : ℕ} (σ : A →+* A)
 
-theorem hform_eq (J : Matrix (Fin r) (Fin r) A) (x y : Fin r → A) :
-    hform σ J x y = (σ ∘ x) ⬝ᵥ (J *ᵥ y) := by
-  simp [hform, dotProduct, Matrix.mulVec, Finset.mul_sum, mul_assoc]
-
-theorem hform_mulVec (J g : Matrix (Fin r) (Fin r) A) (x y : Fin r → A) :
-    hform σ J (g *ᵥ x) (g *ᵥ y) = hform σ (cT σ g * J * g) x y := by
-  have h2 : σ ∘ (g *ᵥ x) = (g.map σ) *ᵥ (σ ∘ x) := by
-    funext i; simp [Matrix.mulVec, dotProduct]
-  rw [hform_eq, hform_eq, h2, ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, cT,
-    Matrix.dotProduct_mulVec _ (g.map σ)ᵀ, Matrix.vecMul_transpose]
-
-theorem hform_single (J : Matrix (Fin r) (Fin r) A) (i j : Fin r) :
-    hform σ J (Pi.single i 1) (Pi.single j 1) = J i j := by
-  simp [hform, Pi.single_apply, apply_ite σ]
-
-theorem mem_UJ_iff (J : Matrix (Fin r) (Fin r) A) (g : GL (Fin r) A) :
-    g ∈ UJ σ J ↔ ∀ x y, hform σ J ((g : Matrix (Fin r) (Fin r) A) *ᵥ x)
-      ((g : Matrix (Fin r) (Fin r) A) *ᵥ y) = hform σ J x y := by
-  show cT σ (g : Matrix (Fin r) (Fin r) A) * J * g = J ↔ _
-  constructor
-  · intro h x y; rw [hform_mulVec, h]
-  · intro h; ext i j
-    rw [← hform_single σ (_ * J * _), ← hform_mulVec, h, hform_single]
-
 end Forms
 
 section Core

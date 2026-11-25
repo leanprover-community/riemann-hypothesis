@@ -80,12 +80,6 @@ open GlobalTheory.KZ GlobalTheory.K4 GlobalTheory.NeedB GlobalTheory.KEdge
 
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ}
 
-def tInv (l N R : ℕ) : ZMod N := ((l : ZMod N) ^ R)⁻¹
-
-def uIdxMu (l N R : ℕ) (x : ZMod N) : Fin 2 → ℚ := ![1 / (l : ℚ) ^ R + ((x * tInv l N R).val : ℚ) / N, 0]
-
-def vIdxMu (l N R : ℕ) : Fin 2 → ℚ := ![((tInv l N R).val : ℚ) / N, 1 / (l : ℚ) ^ R]
-
 abbrev Om (X : Tower Ω ε) : Type := AlgebraicClosure X.K
 
 attribute [local instance] algMdl
@@ -107,10 +101,6 @@ def gR (l N : ℕ) (r₀ : ZMod l) : SL(2, ℤ) :=
   ⟨!![1, 0; cR l N r₀, 1], by simp [Matrix.det_fin_two]⟩
 
 
-
-theorem cR_mod (l N : ℕ) [Fact l.Prime] (hN : (N : ZMod l) ≠ 0) (r₀ : ZMod l) : ((cR l N r₀ : ℤ) : ZMod l) = -r₀ := by
-  simp only [cR, Int.cast_mul, Int.cast_natCast, ZMod.natCast_zmod_val]
-  rw [mul_comm (-r₀), ← mul_assoc, mul_inv_cancel₀ hN, one_mul]
 
 
 open scoped MatrixGroups TensorProduct in
@@ -174,12 +164,6 @@ def secT (X : Tower Ω ε) (l : ℕ) [Fact l.Prime] (w : ℕ) (a : X.K) : X.Fn l
 
 def shArg (M : ℕ) (s : Ω ≃ₐ[ℚ] Ω) (y : (ZMod M)ˣ) : Ω ≃ₐ[ℚ] Ω :=
   (repM M y)⁻¹ * s * repM M (y * (cycM M s)⁻¹)
-
-theorem vecMul_gR (l N : ℕ) [Fact l.Prime] (hN : (N : ZMod l) ≠ 0) (r₀ : ZMod l) :
-    (![r₀, 1] : Fin 2 → ZMod l) ᵥ* ((GlobalTheory.ZetaB.gR l N r₀ : Matrix (Fin 2) (Fin 2) ℤ).map (Int.castRingHom (ZMod l))) =
-      ![0, 1] := by
-  ext i
-  fin_cases i <;> simp [GlobalTheory.ZetaB.gR, Matrix.vecMul, dotProduct, Fin.sum_univ_two, GlobalTheory.ZetaB.cR_mod l N hN]
 
 def lnFn (X : Tower Ω ε) (l : ℕ) [Fact l.Prime] (n : ℕ) : Submodule ℤ_[l] (X.Fn l) :=
   Submodule.pi Set.univ fun _ => (idl l) ^ n • (⊤ : Submodule ℤ_[l] (X.Khat l))

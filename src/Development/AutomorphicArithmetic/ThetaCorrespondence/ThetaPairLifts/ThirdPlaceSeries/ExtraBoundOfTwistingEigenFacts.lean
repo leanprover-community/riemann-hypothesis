@@ -764,26 +764,6 @@ open Formalism.MainNotions Formalism.MainNotions.N
 
 namespace GlobalTheory.TheoremTClosing
 
-section Mono
-
-variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
-    [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
-    {B BdR : Type} [CommRing B] [CommRing BdR] [Algebra Qp B] [Algebra K₀ B] [IsScalarTower Qp K₀ B]
-    [Algebra Qp BdR] [Algebra K₀ BdR] [Algebra K BdR] [IsScalarTower Qp K BdR]
-    [IsScalarTower K₀ K BdR] [IsScalarTower Qp K₀ BdR]
-    (PD : PeriodData G Qp K₀ K B BdR)
-    {LL : Type} [Field LL] [Algebra Qp LL] [TopologicalSpace LL]
-    {O : Type} [CommRing O] [Algebra O LL]
-
-theorem liftF_of_le {T₁ T₂ : LocLat G Qp LL O} (F : LatHom T₁.L T₂.L) {e e' : ℕ}
-    (hF : F.LiftF PD e) (he : e ≤ e') : F.LiftF PD e' := by
-  intro c hc
-  obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le he
-  rw [pow_add, mul_comm, mul_smul]
-  exact (F.ImF PD).smul_mem _ (hF c hc)
-
-end Mono
-
 theorem main : GlobalTheory.Published.BhattScholzeCrystallineLattices → GlobalTheory.Published.FontaineBcris → ∀ C : ℕ, 40 ≤ C →
     ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW), Formalism.MainNotions.ElementDenominator.HodgeTateFromSandwich D HW F C := by
   intro hBS hFB C hC D HW F _ l _ K' h hN hF hS LL
@@ -826,7 +806,7 @@ theorem main : GlobalTheory.Published.BhattScholzeCrystallineLattices → Global
   have horb := _root_.GlobalTheory.BK.maxPeriod_bounds l e a hlp (Nat.one_le_iff_ne_zero.2 (NeZero.ne a)) he Sig' N hS1 hS2 hS3 h2N
   rw [hS4] at hcore horb
   refine ⟨horb.2.1, ?_⟩
-  exact liftF_of_le _ g hcore (Nat.mul_le_mul_right _ (by omega))
+  exact GlobalTheory.StepLiftPf.liftF_mono_loc _ g hcore (Nat.mul_le_mul_right _ (by omega))
 
 end GlobalTheory.TheoremTClosing
 end -- clump:auto

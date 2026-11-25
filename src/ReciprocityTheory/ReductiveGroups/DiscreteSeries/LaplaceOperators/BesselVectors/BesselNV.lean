@@ -221,15 +221,8 @@ theorem mul_mem_UH (k r : ℕ) {g x : Mat k r} (hg : g ∈ UH (Hpk k r)) (hx : x
         simp only [Matrix.mul_assoc]
     _ = Hpk k r := by rw [hg', hx']
 
-theorem inv_mem_UH (k r : ℕ) (g : Mat k r) (hg : g ∈ UH (Hpk k r)) : g⁻¹ ∈ UH (Hpk k r) := by
-  have hg' : gᴴ * Hpk k r * g = Hpk k r := hg
-  have e := mul_inv_UH k r hg
-  show (g⁻¹)ᴴ * Hpk k r * g⁻¹ = Hpk k r
-  calc (g⁻¹)ᴴ * Hpk k r * g⁻¹ = (g⁻¹)ᴴ * (gᴴ * Hpk k r * g) * g⁻¹ := by rw [hg']
-    _ = (g * g⁻¹)ᴴ * Hpk k r * (g * g⁻¹) := by
-        rw [Matrix.conjTranspose_mul]
-        simp only [Matrix.mul_assoc]
-    _ = Hpk k r := by rw [e]; simp
+theorem inv_mem_UH (k r : ℕ) (g : Mat k r) (hg : g ∈ UH (Hpk k r)) : g⁻¹ ∈ UH (Hpk k r) :=
+  by apply _root_.ReciprocityTheory.ChartRestriction.DS.Lap.inv_mem_UH'; assumption
 
 end ReciprocityTheory.ChartRestriction.DS.Lap.S0.Core
 end -- clump:auto

@@ -337,9 +337,6 @@ theorem norm_at_la (hd : d.AxH 𝒜) (h : d.S1) (c : ι) (la : IsDedekindDomain.
   d.norm_at_la_A hd h c la ϖ hϖ hϖ2 y hy
 
 
-open MeasureTheory in
-alias norm_at_sg := _root_.ReciprocityTheory.ChartRestriction.G.T0.Data.norm_at_sg_B
-
 end Data
 
 end ReciprocityTheory.ChartRestriction.G.T0

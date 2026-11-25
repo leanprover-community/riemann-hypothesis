@@ -180,9 +180,6 @@ def diaT (u : Pr.Word) : DiaG (E := X.E) (ST := Pr.vT u) := fun P =>
 
 def colDia (R : Ranks) (u : Pr.Word) (j : ℕ) : DiaG (E := X.E) (ST := Pr.vT u) := if j < R.m then 1 else diaT u
 
-def colPt (u : Pr.Word) (j : ℕ) (d : ColDeco X Pr u (R.N j)) : UAd hc (R.N j) :=
-  ptOfD hc (R.N j) (Pr.vT u) Pr.vGs (colDia R u j) d
-
 end Cols
 
 end Formalism.L2.Col

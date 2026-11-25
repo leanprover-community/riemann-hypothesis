@@ -12,50 +12,7 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.SandwichRhoAction
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SmoothWordsAll
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.SmoothnessOnGoodSet
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.WordIntegralScaling
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
@@ -307,88 +264,12 @@ variable {k r : ℕ}
 theorem orbital_measurability_weak_threshold : Formalism.FourierDecayAlt.P.WeakThresholdClauses.JDomMeasW := by
   intro k r Wp Wq _ _ _ _ _ _ D A m F hThr hF u v hu hv hl g hg
   obtain ⟨c, hc⟩ := hF
-  have hc0 : 0 ≤ c := cc_nonneg hc
   have hgG : g ∈ GV k r := hg.1
   have hA : 0 ≤ A := by
     have h1 := hThr.1
     have h2 : (0 : ℝ) ≤ 6 * (r : ℝ) * (m : ℝ) := by positivity
     linarith
-  have hwu : ∀ x ∈ lr u v, unitLie k r x.2 := unit_lr' hu hv
-  have hwt : LRt ((lr u v).map Prod.fst) := lrt_lr u v
-  have hwl : (lr u v).length ≤ m := by rw [length_lr]; exact hl
-  have hx : ContinuousOn (fun p => sgs p g) {p : SS k r | D.inSS p} := B6.conjugated_pair_continuous_on D g
-  have hxG : ∀ p ∈ {p : SS k r | D.inSS p}, sgs p g ∈ GV k r := fun p hp => B7.sgs_mem D hp hgG
-  have hmain : ContinuousOn (fun p => W ((lr u v).map (adM p)) F (sgs p g)) {p : SS k r | D.inSS p} := by
-    intro p₀ hp₀
-    have hAL : AllLie ((lr u v).map (adM p₀)) := by
-      intro y hy
-      obtain ⟨y', hy', rfl⟩ := List.mem_map.mp hy
-      exact adM_lie hp₀ (hwu y' hy').1
-    have hck : CkOn ((0 : ℕ) : ℕ∞) (GV k r) (W ((lr u v).map (adM p₀)) F) :=
-      smooth_on_of_word_derivatives ((lr u v).map (adM p₀)) hAL 0 (ckOn_mono (by simpa using hwl) hc.1)
-    have hsec : ContinuousWithinAt (fun p => W ((lr u v).map (adM p₀)) F (sgs p g)) {p : SS k r | D.inSS p} p₀ :=
-      ((B6.continuousOn_of_contDiffOn_group hck).comp hx hxG) p₀ hp₀
-    let Kf : SS k r → ℝ := fun p => 1 + ((lr u v).map fun x => ‖(adM p x).2‖ + ‖(adM p₀ x).2‖).sum
-    let εf : SS k r → ℝ := fun p => ((lr u v).map fun x => ‖(adM p x).2 - (adM p₀ x).2‖).sum
-    have hKc : ContinuousOn Kf {p : SS k r | D.inSS p} :=
-      continuousOn_const.add (cont_sum _ (fun x p => ‖(adM p x).2‖ + ‖(adM p₀ x).2‖) (lr u v)
-        (fun x _ => (adM_cont D x).norm.add continuousOn_const))
-    have hεc : ContinuousOn εf {p : SS k r | D.inSS p} :=
-      cont_sum _ (fun x p => ‖(adM p x).2 - (adM p₀ x).2‖) (lr u v)
-        (fun x _ => ((adM_cont D x).sub continuousOn_const).norm)
-    have hε0 : εf p₀ = 0 := by simp [εf]
-    let Bf : SS k r → ℝ := fun p => ((lr u v).length : ℝ) * (Kf p ^ m * εf p * c)
-    have hBc : ContinuousWithinAt Bf {p : SS k r | D.inSS p} p₀ :=
-      continuousWithinAt_const.mul ((((hKc p₀ hp₀).pow m).mul (hεc p₀ hp₀)).mul continuousWithinAt_const)
-    have hB0 : Bf p₀ = 0 := by simp [Bf, hε0]
-    have hd : Tendsto (fun p => W ((lr u v).map (adM p)) F (sgs p g) - W ((lr u v).map (adM p₀)) F (sgs p g))
-        (𝓝[{p : SS k r | D.inSS p}] p₀) (𝓝 0) := by
-      have hBt : Tendsto Bf (𝓝[{p : SS k r | D.inSS p}] p₀) (𝓝 0) := by
-        have := hBc.tendsto; rwa [hB0] at this
-      refine squeeze_zero_norm' ?_ hBt
-      filter_upwards [self_mem_nhdsWithin] with p hp
-      have hxp := hxG p hp
-      have hK1 : 1 ≤ Kf p := le_add_of_nonneg_right (List.sum_nonneg (by
-        intro y hy
-        obtain ⟨y', _, rfl⟩ := List.mem_map.mp hy
-        positivity))
-      have hT := tele hc hc0 hK1 (adM p) (adM p₀) (lr u v) [] (by simp)
-        (by
-          intro x hx
-          have hmK := le_sum_map (fun x => ‖(adM p x).2‖ + ‖(adM p₀ x).2‖) (fun _ => by positivity) (lr u v) hx
-          have hmε := le_sum_map (fun x => ‖(adM p x).2 - (adM p₀ x).2‖) (fun _ => norm_nonneg _) (lr u v) hx
-          refine ⟨rfl, rfl, adM_lie hp (hwu x hx).1, adM_lie hp₀ (hwu x hx).1, ?_, ?_, hmε⟩
-          · have := norm_nonneg (adM p₀ x).2
-            show ‖(adM p x).2‖ ≤ Kf p
-            simp only [Kf]; linarith
-          · have := norm_nonneg (adM p x).2
-            show ‖(adM p₀ x).2‖ ≤ Kf p
-            simp only [Kf]; linarith)
-        (by simpa using hwt) (by simpa using hwl) _ hxp
-      simp only [List.nil_append] at hT
-      have h1 : 1 ≤ gN (sgs p g) ^ A := Real.one_le_rpow (BetaSesquilinearity.gN_ge_one hxp) hA
-      calc ‖W ((lr u v).map (adM p)) F (sgs p g) - W ((lr u v).map (adM p₀)) F (sgs p g)‖
-          ≤ gN (sgs p g) ^ A * ‖W ((lr u v).map (adM p)) F (sgs p g) - W ((lr u v).map (adM p₀)) F (sgs p g)‖ :=
-            le_mul_of_one_le_left (norm_nonneg _) h1
-        _ ≤ Bf p := hT
-    have hdc : ContinuousWithinAt
-        (fun p => W ((lr u v).map (adM p)) F (sgs p g) - W ((lr u v).map (adM p₀)) F (sgs p g))
-        {p : SS k r | D.inSS p} p₀ := by
-      have e0 : (fun p => W ((lr u v).map (adM p)) F (sgs p g) - W ((lr u v).map (adM p₀)) F (sgs p g)) p₀ = 0 :=
-        sub_self _
-      unfold ContinuousWithinAt
-      rw [e0]
-      exact hd
-    refine (hdc.add hsec).congr (fun p _ => ?_) ?_
-    · simp
-    · simp
-  have hΦ : ContinuousOn (fun p => rho D p (dLR (u.map (AdL p)) (v.map (AdR p)) F) g) {p : SS k r | D.inSS p} := by
-    have e : (fun p => rho D p (dLR (u.map (AdL p)) (v.map (AdR p)) F) g) =
-        fun p => B6.Sd D p (W ((lr u v).map (adM p)) F (sgs p g)) := by
-      funext p
-      rw [B6.rho_eq, dLR_eq, lr_ad]
-    rw [e]
-    exact (B6.Sd_continuousOn D).clm_apply hmain
+  have hΦ := continuousOn_rho_dLR D hc hA u v hu hv hl hgG
   have := hΦ.aestronglyMeasurable (μ := D.μSS) (B6.measurableSet_inSS D)
   have hr : D.μSS.restrict {p | D.inSS p} = D.μSS := Measure.restrict_eq_self_of_ae_mem (B5.ae_inSS D)
   rwa [hr] at this

@@ -144,10 +144,6 @@ theorem mu (h : MUQ φ e) {a : ι → ℤ} (ha : ∀ i, e i = a i) : MU φ a := 
   subst hab
   exact hm
 
-theorem add_const (h : MUQ φ e) (h1 : MU φ (fun _ => 1)) (c : ℤ) : MUQ φ (fun i => e i + c) := by
-  obtain ⟨a, ha, hm⟩ := h
-  exact ⟨fun i => a i + c, fun i => by simp [ha], hm.add_const h1 c⟩
-
 end MUQ
 
 end UpperTheory

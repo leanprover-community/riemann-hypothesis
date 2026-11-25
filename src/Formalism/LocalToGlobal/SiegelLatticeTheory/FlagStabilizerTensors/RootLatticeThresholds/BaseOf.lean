@@ -171,8 +171,7 @@ theorem fromX (u u' : D.what₂.Word) (e : InfinitePlace D.host.E ≃ D.what₂.
     (m₀ : Fin (nfE D) → Formalism.FourierDecayAlt.B.Mat D.R.k D.R.rS)
     (top : ∀ j : Fin (nfE D), (Formalism.FourierDecayAlt.B.Mat D.R.k D.R.rS → (X.Vloc u' (tauE X e j) →L[ℂ] X.Vloc u (tauE X e j))) →
       List Formalism.FourierDecayAlt.C.Letter → Formalism.FourierDecayAlt.C.LPt → Formalism.FourierDecayAlt.C.LPt → ℂ) (A₀ : ℝ)
-    (Mo : ModelsFor (sOf (carrierIn X C u u' e he hv CA de de' l grid grid1 fc χ sg ν' m₀ top A₀))) :
-    (CarrierOf (carrierIn X C u u' e he hv CA de de' l grid grid1 fc χ sg ν' m₀ top A₀) Mo).FromX := by
+    : (CarrierOf (carrierIn X C u u' e he hv CA de de' l grid grid1 fc χ sg ν' m₀ top A₀)).FromX := by
   intro v
   have hw : tauE X e ((tauE X e).symm v) = v := Equiv.apply_symm_apply _ v
   have hT := transpC X C v

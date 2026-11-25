@@ -7,50 +7,7 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.DensFibV
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.TensAll
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.TensTop
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Connected.Separation
-import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
-import Mathlib.Topology.Sheaves.Init
 import ReciprocityTheory.GeneralLinearIntegers.AlgebraMapIntMemOint
 
 @[expose] public section
@@ -95,11 +52,6 @@ variable [FiniteDimensional F E]
 export PI.VolStabSW.SdDualW (trace_one_tmul)
 
 
-include b in
-theorem trace_nondeg [Algebra.IsSeparable F E] (z : Fv F v ⊗[F] E)
-    (h : ∀ w, Algebra.trace (Fv F v) (Fv F v ⊗[F] E) (w * z) = 0) : z = 0 := by
-  apply PI.VolStabSW.SdDualW.trace_nondeg <;> assumption
-
 end Nondeg
 
 section Dual
@@ -114,14 +66,6 @@ def phiL : (Fin a → Fin M → Fv F v ⊗[F] E) →ₗ[Fv F v] (Fin a × Fin M 
   toFun Y q := BR (Fv F v) σ J (eT v b q) Y
   map_add' Y Y' := by funext q; simp [BR_add_right]
   map_smul' s Y := by funext q; simp [BR_smul_right]
-
-include b in
-theorem bound_alt
-    (hN : ∀ Y : Fin a → Fin M → Fv F v ⊗[F] E, (∀ X, BR (Fv F v) σ J X Y = 0) → Y = 0)
-    (c : Fv F v) : ∃ K, IsCompact K ∧
-      {y | ∀ x ∈ latSub v b a M, BR (Fv F v) σ J x y ∈
-        (fun s => c * s) '' (v.adicCompletionIntegers F : Set (Fv F v))} ⊆ K := by
-  apply PI.VolStabSW.SdDualW.bound_alt <;> assumption
 
 include b in
 theorem dualAt_alt
@@ -157,84 +101,6 @@ export PI.VolStabSW.SdDualW (isOpen_latA isCompact_latA)
 
 def latS (σ : E →ₐ[F] E) : AddSubgroup (Fv F v ⊗[F] E) :=
   latA v b ⊔ (latA v b).map (sigR (Fv F v) σ).toAddMonoidHom
-
-theorem mem_latS (σ : E →ₐ[F] E) (z : Fv F v ⊗[F] E) :
-    z ∈ latS v b σ ↔ ∃ x ∈ latA v b, ∃ y ∈ latA v b, x + sigR (Fv F v) σ y = z := by
-  simp only [latS, AddSubgroup.mem_sup, AddSubgroup.mem_map]
-  constructor
-  · rintro ⟨x, hx, _, ⟨y, hy, rfl⟩, rfl⟩
-    exact ⟨x, hx, y, hy, rfl⟩
-  · rintro ⟨x, hx, y, hy, rfl⟩
-    exact ⟨x, hx, _, ⟨y, hy, rfl⟩, rfl⟩
-
-theorem isCompact_latS (σ : E →ₐ[F] E) : IsCompact (latS v b σ : Set (Fv F v ⊗[F] E)) := by
-  have e : (latS v b σ : Set (Fv F v ⊗[F] E)) =
-      (fun p : (Fv F v ⊗[F] E) × (Fv F v ⊗[F] E) => p.1 + sigR (Fv F v) σ p.2) ''
-        ((latA v b : Set (Fv F v ⊗[F] E)) ×ˢ (latA v b : Set (Fv F v ⊗[F] E))) := by
-    ext z
-    rw [SetLike.mem_coe, mem_latS]
-    constructor
-    · rintro ⟨x, hx, y, hy, rfl⟩
-      exact ⟨(x, y), ⟨hx, hy⟩, rfl⟩
-    · rintro ⟨⟨x, y⟩, ⟨hx, hy⟩, rfl⟩
-      exact ⟨x, hx, y, hy, rfl⟩
-  rw [e]
-  have := locallyCompact_Fv F v
-  exact ((isCompact_latA v b).prod (isCompact_latA v b)).image
-    (continuous_fst.add ((continuous_sigR (Fv F v) σ).comp continuous_snd))
-
-theorem isOpen_latS (σ : E →ₐ[F] E) : IsOpen (latS v b σ : Set (Fv F v ⊗[F] E)) :=
-  AddSubgroup.isOpen_mono le_sup_left (isOpen_latA v b)
-
-theorem smul_mem_latA {s : Fv F v} (hs : s ∈ v.adicCompletionIntegers F) {x : Fv F v ⊗[F] E}
-    (hx : x ∈ latA v b) : s • x ∈ latA v b := by
-  intro k
-  rw [crd_smul]
-  exact mul_mem hs (hx k)
-
-theorem smul_mem_latS (σ : E →ₐ[F] E) {s : Fv F v} (hs : s ∈ v.adicCompletionIntegers F)
-    {z : Fv F v ⊗[F] E} (hz : z ∈ latS v b σ) : s • z ∈ latS v b σ := by
-  rw [mem_latS] at hz ⊢
-  obtain ⟨x, hx, y, hy, rfl⟩ := hz
-  exact ⟨s • x, smul_mem_latA v b hs hx, s • y, smul_mem_latA v b hs hy, by
-    rw [smul_add, sigR_smul]⟩
-
-theorem trace_sigR (σ : E →ₐ[F] E) (hσ : ∀ x, σ (σ x) = x) (w : Fv F v ⊗[F] E) :
-    Algebra.trace (Fv F v) (Fv F v ⊗[F] E) (sigR (Fv F v) σ w) =
-      Algebra.trace (Fv F v) (Fv F v ⊗[F] E) w := by
-  let B := Algebra.TensorProduct.basis (Fv F v) (Module.finBasis F E)
-  have hB : ∀ k, B k = (1 : Fv F v) ⊗ₜ[F] (Module.finBasis F E) k := fun k =>
-    Algebra.TensorProduct.basis_apply _ _
-  let eσ : E ≃ₐ[F] E := AlgEquiv.ofBijective σ
-    ⟨σ.toRingHom.injective, fun x => ⟨σ x, hσ x⟩⟩
-  have htr : ∀ e : E, Algebra.trace F E (σ e) = Algebra.trace F E e := fun e =>
-    Algebra.trace_eq_of_algEquiv eσ e
-  conv_lhs => rw [← B.sum_repr w]
-  conv_rhs => rw [← B.sum_repr w]
-
-  rw [map_sum, map_sum, map_sum]
-  refine Finset.sum_congr rfl fun k _ => ?_
-  rw [sigR_smul, map_smul, map_smul, hB]
-  have : sigR (Fv F v) σ ((1 : Fv F v) ⊗ₜ[F] (Module.finBasis F E) k) =
-      (1 : Fv F v) ⊗ₜ[F] σ ((Module.finBasis F E) k) := by simp [sigR]
-  rw [this, trace_one_tmul, trace_one_tmul, htr]
-
-def latH (σ : E →ₐ[F] E) (a : ℕ) : AddSubgroup (HermR (Fv F v) σ a) where
-  carrier := {S | ∀ p q, (S : Matrix (Fin a) (Fin a) (Fv F v ⊗[F] E)) p q ∈ latS v b σ}
-  zero_mem' := by intro p q; simp
-  add_mem' := by
-    intro S T hS hT p q
-    simpa using add_mem (hS p q) (hT p q)
-  neg_mem' := by
-    intro S hS p q
-    simpa using neg_mem (hS p q)
-
-theorem latH_eq (σ : E →ₐ[F] E) (a : ℕ) :
-    (latH v b σ a : Set (HermR (Fv F v) σ a)) = Subtype.val ⁻¹'
-      ((Set.univ.pi fun _ => Set.univ.pi fun _ => (latS v b σ : Set (Fv F v ⊗[F] E))) :
-        Set (Matrix (Fin a) (Fin a) (Fv F v ⊗[F] E))) := by
-  ext S
-  exact ⟨fun h p _ q _ => h p q, fun h p q => h p (Set.mem_univ _) q (Set.mem_univ _)⟩
 
 export PI.VolStabSW.SdDualW (iota iota_mem pairHerm_iota dualAt_H)
 

@@ -211,8 +211,6 @@ end Local
 
 section Lin
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 open GlobalTheory.FlipMatch (coX coY pairM)
 open scoped GlobalTheory.VacAny ValuativeRel
 

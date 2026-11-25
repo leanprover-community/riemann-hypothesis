@@ -106,12 +106,6 @@ theorem red_sqZero (R : LAlg R₀) : (red R).SqZero := by
     have key : ∀ b : DualNumber R, TrivSqZeroExt.fst (b * DualNumber.eps) = 0 := fun b => by simp
     exact key a
 
-def onePlusEta (R : LAlg R₀) (a : R) : (dual R)ˣ where
-  val := 1 + eta R * (incl R).1 a
-  inv := 1 - eta R * (incl R).1 a
-  val_inv := by linear_combination (-((incl R).1 a) ^ 2) * eta_mul_eta R
-  inv_val := by linear_combination (-((incl R).1 a) ^ 2) * eta_mul_eta R
-
 variable (B : BX R₀)
 
 end GlobalTheory.IndefiniteRowSideFullHecke.EtaDualPairing
@@ -314,8 +308,6 @@ open ReciprocityTheory.PGsh ReciprocityTheory.PGsh.Up ReciprocityTheory.PGsh.Be2
 open ReciprocityTheory.ChartRestriction.G.Chart (sp spMap)
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.exists_tangentChartMatrix_of_basis : ∀ (R₀ : Type) [CommRing R₀] (B : BX R₀) (O : LAlg R₀) (g : ℕ) (F : FGLaw (O : Type) g) (Y : ∀ R : LAlg R₀, LHom O R → (Fin g → (R : Type)) → B.G R), BXChart B O F.F Y → ∀ gb : Module.Basis (Fin g) R₀ B.gg, ∃ S : Matrix (Fin g) (Fin g) (O : Type), IsUnit S ∧ TanMat B O Y gb S := by
-  first | exact @GlobalTheory.ChF.exists_tanMat
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.ExistsTangentChartMatrixOfBasisStatement =====

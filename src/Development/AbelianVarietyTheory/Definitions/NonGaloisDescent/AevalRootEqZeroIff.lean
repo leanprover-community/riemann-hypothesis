@@ -79,10 +79,6 @@ abbrev Csr (s : B →+* B) : Type := {P : B[X] // IsCsr s P}
 
 def Csr.mul (P Q : Csr s) : Csr s := ⟨P.1 * Q.1, P.2.mul Q.2⟩
 
-abbrev Csr.Factorisation (P : Csr s) : Type := {p : Csr s × Csr s // p.1.1 * p.2.1 = P.1}
-
-def Csr.mulFactorisation (P₁ P₂ : Csr s) : (P₁.mul P₂).Factorisation := ⟨(P₁, P₂), rfl⟩
-
 def Alg (P : Csr s) : Type := AdjoinRoot P.1
 
 variable (P : Csr s)

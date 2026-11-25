@@ -313,7 +313,7 @@ theorem UpperTheory.ConvolutionTheory.RankTwoDescent.satU_of :
     SatU := by
   intro E _ _ _ D P ω χ hc hu _ w α β hB
   obtain ⟨κ, hn, hκ⟩ := exists_norm (isUnitary_of_cenN hc hu)
-  have hD := (GlobalTheory.T.cuspForm_sqIntegrable_and_isDiscrete_splitCentre E 2).2 _ hn
+  have hD := (_root_.GlobalTheory.ResW.cuspForm_isSqInt_and_isDiscrete E 2).2 _ hn
   have hU : GlobalTheory.LGrp.IsUnitarisable ((P.twist κ).locRep w) := PositivityTheory.Rg.Rs.SatakeHermitian.isUnitarisable_locRepD hD w
   have hB' : GlobalTheory.LFun.HasSatGL w ((P.twist κ).locRep w) {α * κ.val w, β * κ.val w} := by
     simpa using CG.HasSat.twist (π := CG.mk P) hB (hκ w).1

@@ -439,9 +439,6 @@ private structure IsVal (e : EMap G D) (b : BMap G D) (p : PMap G D) {M : Model 
   spec : ∀ (c : R.A) (v : M.T n) (x : (D.H a).N n), b.β a n x = c • e.e a n v →
     ∀ φ, p.κ a n x φ = R.i c * C (M.toV n v) φ
 
-private theorem tB_pow_ne (hF : R.Facts) (m : ℕ) : R.i (R.t ^ m) ≠ 0 := by
-  rw [map_pow]; exact pow_ne_zero _ hF.t_ne
-
 private theorem exists_val (hF : R.Facts) (e : EMap G D) (b : BMap G D) (p : PMap G D) {M : Model l K} (hM : G M)
     (a : D.Ch M) (n : ℕ) : ∃ C, IsVal e b p a n C := by
   obtain ⟨N, hN⟩ := b.surj a hM n
@@ -453,8 +450,8 @@ private theorem exists_val (hF : R.Facts) (e : EMap G D) (b : BMap G D) (p : PMa
     have h1 := hm (x - x') (by rw [map_sub, h, sub_self])
     have h2 := congrArg (fun y => p.κ a n y φ) h1
     simp only [p.lin a hM, map_zero, AddMonoidHom.zero_apply, map_sub, AddMonoidHom.sub_apply] at h2
-    exact sub_eq_zero.mp ((mul_eq_zero.mp h2).resolve_left (tB_pow_ne hF m))
-  have hu := tB_pow_ne hF (R := R) N
+    exact sub_eq_zero.mp ((mul_eq_zero.mp h2).resolve_left (CrystallineSemistableComparison.t_pow_ne hF m))
+  have hu := CrystallineSemistableComparison.t_pow_ne hF (R := R) N
   let c0 : M.T n → Module.Dual K (HdR M.q n) → R.B := fun v φ => (R.i (R.t ^ N))⁻¹ * p.κ a n (xs v) φ
   have spec0 : ∀ (c : R.A) (v : M.T n) (x : (D.H a).N n), b.β a n x = c • e.e a n v →
       ∀ φ, p.κ a n x φ = R.i c * c0 v φ := by
@@ -532,7 +529,7 @@ private theorem IsVal.equi {n : ℕ} {C : M.V n →+ (Module.Dual K (HdR M.q n) 
     have h1 := hC.spec (R.σA σ (R.t ^ N)) (M.actT n σ v) ((D.H a).act n σ x) (by
       rw [b.act a hM, hx, hL.act_smul, e.act a hM]) φ
     rw [p.act a hM, hC.spec _ _ _ hx, map_mul, hF.i_σ] at h1
-    exact (mul_left_cancel₀ ((map_ne_zero _).mpr (tB_pow_ne hF N)) h1).symm
+    exact (mul_left_cancel₀ ((map_ne_zero _).mpr (CrystallineSemistableComparison.t_pow_ne hF N)) h1).symm
   · intro x y hx hy
     rw [map_add (f := _), map_add (f := _), Pi.add_apply, hx, hy, map_add (f := _), Pi.add_apply, map_add (f := _)]
 
@@ -555,7 +552,7 @@ private theorem IsVal.cup {i j : ℕ} {Ci : M.V i →+ (Module.Dual K (HdR M.q i
   rw [hij.spec _ _ _ h2] at h3
   simp only [hi.spec _ _ _ hX, hj.spec _ _ _ hY] at h3
   rw [map_mul] at h3
-  refine mul_left_cancel₀ (mul_ne_zero (tB_pow_ne hF N) (tB_pow_ne hF N')) (h3.trans ?_)
+  refine mul_left_cancel₀ (mul_ne_zero (CrystallineSemistableComparison.t_pow_ne hF N) (CrystallineSemistableComparison.t_pow_ne hF N')) (h3.trans ?_)
   simp only [Finset.mul_sum]
   exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
 
@@ -607,11 +604,11 @@ private theorem IsVal.van {n : ℕ} {C : M.V n →+ (Module.Dual K (HdR M.q n) �
     exact map_sum ({ toFun := fun f => f ψ, map_zero' := rfl, map_add' := fun _ _ => rfl } : (Module.Dual K (HdR M.q n) →+ R.B) →+ R.B) _ _
   rw [heval] at h2
   simp only [p.lin a hM, hC.spec _ _ _ (hxs _)] at h2
-  have h3 := (mul_eq_zero.mp ((mul_eq_zero.mp h2).resolve_left (tB_pow_ne hF m))).resolve_left (tB_pow_ne hF u)
+  have h3 := (mul_eq_zero.mp ((mul_eq_zero.mp h2).resolve_left (CrystallineSemistableComparison.t_pow_ne hF m))).resolve_left (CrystallineSemistableComparison.t_pow_ne hF u)
   have h4 : R.i (R.t ^ N) * ∑ k, R.i (c k) * C (M.toV n (v k)) ψ = 0 := by
     rw [Finset.mul_sum, ← h3]
     exact Finset.sum_congr rfl fun _ _ => by ring
-  exact (mul_eq_zero.mp h4).resolve_left (tB_pow_ne hF N)
+  exact (mul_eq_zero.mp h4).resolve_left (CrystallineSemistableComparison.t_pow_ne hF N)
 
 private theorem inj_conn (hF : R.Facts) (hS : EtSide G) (hL : D.Laws G) (e : EMap G D) (b : BMap G D) (p : PMap G D)
     {M : Model l K} (hM : G M) {d : ℕ} (hd : M.Conn d) (a : D.Ch M) (j : ℕ) {ι : Type} [Fintype ι]

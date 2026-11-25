@@ -58,8 +58,6 @@ section -- clump:auto
 
 noncomputable section
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.LocLanglands GlobalTheory.SplitRead GlobalTheory.CuspRep in
 theorem UpperTheory.One.M.goodI_of_sph {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n : ℕ}
     (π : Irr k n) (h : IsSpherical π.π) : UpperTheory.One.M.GoodI π :=
@@ -84,22 +82,6 @@ namespace GlobalTheory.DepthZeroAssembly
 open GlobalTheory.WeilDeligne (WD)
 open GlobalTheory.SplitRead.BlockParam (twistIrr)
 
-theorem locDZ_of_split_reg_m : ∀ (hL : GlobalTheory.Published.LocalLanglandsGL) (D : D7), SplitLoc hL D → RegLoc hL D → LocDZ hL D := by
-  intro hL D hS hR k v χ hχ u π ρ f ht hlab hser hsq hnr hx
-  obtain ⟨π₁, π₂, hsph, e, y, hy1, hy2⟩ := hS k v χ hχ u π ρ f ht hlab hser hnr hx
-  obtain ⟨hm1, hl1⟩ := hR k v π₁ ρ f hser hsq ⟨y, hy1, hy2⟩
-  have L : RecLaws (rcAt hL D (D.naut.plGw k v)) :=
-    (GlobalTheory.CuspRep.ParLaws.isRec_locRec hL (D.nd.plOm.2 (D.naut.plGw k v))).recLaws
-  have e' : Nonempty (π.π.Equiv (GlobalTheory.SmGL.prod₂ π₁.π (twistIrr π₂ χ hχ).π)) := e
-  have e1 := L.prod D.R.r D.R.t π₁ (twistIrr π₂ χ hχ) π e'
-  have e2 := UpperTheory.One.M.Old.rlTwist L D.R.t χ (Irr.ofDet 1 χ hχ) π₂ (twistIrr π₂ χ hχ) (UpperTheory.One.M.goodI_of_sph π₂ hsph) ⟨.refl _⟩ ⟨.refl _⟩
-  have hu := (L.sph _ π₂).2 hsph
-  refine ⟨?_, ?_⟩
-  · rw [e1, WD.monomial_sum_iff, e2, WD.monomial_char_iff _ _ (L.dim _ _)]
-    exact ⟨hm1, WD.unr_mono0 _ hu⟩
-  · unfold labAt at hl1 hlab ⊢
-    rw [e1, WD.lab_lpSum, e2, lab_lpChar_of_unr _ _ _ _ hu (L.dim _ _) u hlab, hl1, L.dim]
-
 end GlobalTheory.DepthZeroAssembly
 end
 end -- clump:auto
@@ -116,7 +98,6 @@ section -- clump:auto
 
 section
 noncomputable section
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Polynomial NumberField IsDedekindDomain GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.RowTie GlobalTheory.SplitRead
 namespace GlobalTheory.TameType

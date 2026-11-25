@@ -135,12 +135,6 @@ theorem IsRestrictedProd.haar_loc {μ : Measure (GAd σ J)} (h : IsRestrictedPro
 
 theorem IsRestrictedProd.haar {μ : Measure (GAd σ J)} (h : IsRestrictedProd σ J L μa μf μ) : μ.IsHaarMeasure := (isRestrictedProd_iff.1 h).2.2.1
 
-theorem IsRestrictedProd.isCylProd {μ : Measure (GAd σ J)} (h : IsRestrictedProd σ J L μa μf μ) :
-    IsCylProd (fun w => projArch σ J w) (fun v => proj σ J v) (fun v => (stabLoc σ J L v : Set (GLoc σ J v)))
-      μa μf μ := by
-  unfold IsRestrictedProd IsHaarProd at h
-  exact h.2.2.2
-
 theorem IsRestrictedProd.eventually_eq_one {μ : Measure (GAd σ J)} (h : IsRestrictedProd σ J L μa μf μ) :
     ∀ᶠ v in cofinite, μf v (stabLoc σ J L v) = 1 := (isRestrictedProd_iff.1 h).2.2.2.1
 
@@ -252,16 +246,6 @@ theorem IsRestrictedProd.smul_arch [DecidableEq (InfinitePlace F)] (h : IsRestri
     (w : InfinitePlace F) {x : ℝ≥0} (hx : x ≠ 0) :
     IsRestrictedProd σ J L (Function.update μa w (x • μa w)) μf (x • μ) := isRestrictedProd_iff_isProdMeasure.2
     (IsRestrProd.smul_inf (isRestrictedProd_iff_isProdMeasure.1 h) w hx)
-
-theorem IsRestrictedProd.measure_level (h : IsRestrictedProd σ J L μa μf μ) {A : ∀ w, Set (GArch σ J w)}
-    (hA : ∀ w, MeasurableSet (A w)) :
-    μ {g | (∀ w, projArch σ J w g ∈ A w) ∧ g ∈ levelOpen σ J L} =
-      (∏ w, μa w (A w)) * ∏ᶠ v, μf v (stabLoc σ J L v) := by
-  have e : {g | (∀ w, projArch σ J w g ∈ A w) ∧ g ∈ levelOpen σ J L} =
-      {g | (∀ w, projArch σ J w g ∈ A w) ∧ ∀ v, proj σ J v g ∈ stabLoc σ J L v} :=
-    Set.ext fun g => and_congr Iff.rfl mem_levelOpen
-  rw [e]
-  exact h.isCylProd.measure_level (fun v => (isOpen_stabLoc σ J L v).measurableSet) hA
 
 theorem IsRestrictedProdFin.measure_level {ν : Measure (GFin σ J)} (h : IsRestrictedProdFin σ J L μf ν) :
     ν (levelOffFin σ J L ∅) = ∏ᶠ v, μf v (stabLoc σ J L v) := by

@@ -159,7 +159,7 @@ theorem foldr_vac_on {D : D7} {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar 
   | nil =>
     intro _ _ f hf
     refine ⟨⟨hf.1, ?_⟩, fun h => h⟩
-    rw [GlobalTheory.T.homLatticeAtPlaces_congr_localLattices D S T N M N' M' hN hM hN' hM' _ (fun x hx => absurd hx List.not_mem_nil)]
+    rw [_root_.GlobalTheory.FinPl.LatCong.latO_congr D S T N M N' M' hN hM hN' hM' _ (fun x hx => absurd hx List.not_mem_nil)]
     exact hf.2
   | cons p l ih =>
     intro hnd hc f hf
@@ -210,7 +210,7 @@ theorem GlobalTheory.VacRebase.rebase_vac : ∀ (D : D7) (ψ : AddChar (AF D.hos
     (fun p hp => ⟨hc1 p, hc2 p ((hmem p).1 hp)⟩) f hin
   have hout' : GlobalTheory.FinPl.Vac ψ S T N N' (· ∉ l) f := by
     refine ⟨hout.1, ?_⟩
-    rw [GlobalTheory.T.homLatticeAtPlaces_congr_localLattices D S T N M N' M' hN hM hN' hM' _ (fun x hx => by
+    rw [_root_.GlobalTheory.FinPl.LatCong.latO_congr D S T N M N' M' hN hM hN' hM' _ (fun x hx => by
       obtain ⟨a, b⟩ := hoff x (fun h => hx ((hmem x).2 h)); exact ⟨a.symm, b.symm⟩)]
     exact hout.2
   have v2 := GlobalTheory.VacRebase.foldr_vac_off hψ c (· ∉ l) N N' l (fun p _ => hc1 p) (fun p hp h => h hp) f hout'

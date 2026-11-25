@@ -76,16 +76,8 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
 
 theorem exists_horizontal_solutions (hH : Formalism.MainNotions.LiftingTheory.coreH W) (hA : Formalism.MainNotions.LiftingTheory.CaseA W) (T : LocLat G Qp LL O)
     (hT : IsCrys PD T.ρ) (i : ZMod n) {d : ℕ} (b : Fin d → W.DD T)
-    (hb : Formalism.MainNotions.LiftingTheory.IsFrameΔ W T i b) : ∃ sol, IsHor W T i b sol := by
-  have h3 := (hH hA T hT i).2.2.1 d b hb 0
-    ⟨0, Formalism.MainNotions.UnusedSlot80.Relay2.InNΔi_zero W T i, (smul_zero _).symm⟩
-  choose sol hsol using fun k : Fin d => (h3 (Pi.single k 1)).1
-  refine ⟨sol, hb, fun k => ⟨(hsol k).1, ?_⟩⟩
-  rw [(hsol k).2]
-  funext m
-  by_cases h : m = k
-  · subst h; simp
-  · simp [h]
+    (hb : Formalism.MainNotions.LiftingTheory.IsFrameΔ W T i b) : ∃ sol, IsHor W T i b sol :=
+  by apply _root_.Formalism.MainNotions.UnusedSlot80.UnivF.hor_exists <;> assumption
 
 theorem horizontal_frame_structure (hH : Formalism.MainNotions.LiftingTheory.coreH W) (hP9 : Formalism.MainNotions.DeltaInvariantLattices.P9W W) :
     Formalism.MainNotions.N.FrobeniusPowerSeries.HorFrameCore W := by

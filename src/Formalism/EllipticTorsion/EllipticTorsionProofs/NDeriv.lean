@@ -37,12 +37,6 @@ private theorem coeff_subst_congr_lemma {R : Type*} [CommRing R] {σ : Type*}
       have h1 : x.1.degree < n := by omega
       rw [ih x.1 h1, zero_mul]
 
-theorem pderiv_subst (g : PowerSeries R) {a : MvPowerSeries σ R}
-    (ha : MvPowerSeries.constantCoeff a = 0) (i : σ) :
-    MvPowerSeries.pderiv (R := R) i (g.subst a) =
-      (derivative g).subst a * MvPowerSeries.pderiv (R := R) i a := by
-  apply Formalism.L2.Th1.C.IntegralMvPolynomialLemmas.pderiv_subst <;> assumption
-
 end Chain
 
 section Integral
@@ -71,13 +65,6 @@ theorem integral_pow {F : MvPowerSeries σ K} (hF : Formalism.G.IntegralMv F) (n
   | zero => rw [pow_zero]; exact integral_one
   | succ n ih => rw [pow_succ]; exact integral_mul ih hF
 
-theorem integral_pderiv {F : MvPowerSeries σ K} (hF : Formalism.G.IntegralMv F) (i : σ) :
-    Formalism.G.IntegralMv (MvPowerSeries.pderiv (R := K) i F) := by
-  intro d
-  rw [← mem_unitBall, MvPowerSeries.coeff_pderiv]
-  refine Subring.mul_mem _ (mem_unitBall.2 (hF _)) ?_
-  exact Subring.add_mem _ (natCast_mem _ _) (Subring.one_mem _)
-
 theorem integral_subst {c : PowerSeries K} (hc : ∀ n, ‖coeff n c‖ ≤ 1)
     {f : MvPowerSeries σ K} (hf0 : MvPowerSeries.constantCoeff f = 0)
     (hf : Formalism.G.IntegralMv f) : Formalism.G.IntegralMv (c.subst f) := by
@@ -100,19 +87,5 @@ end Integral
 end Formalism.ELL.SubstitutionCoefficientCongruence
 
 namespace Formalism.ELL
-
-theorem N_partial_derivative : NPderiv := by
-  intro K _ _ _ σ G hG i
-  obtain ⟨f, hf0, hf, rfl⟩ := hG
-  unfold logOnePlus
-  rw [SubstitutionCoefficientCongruence.pderiv_subst _ hf0]
-  refine SubstitutionCoefficientCongruence.integral_mul ?_ (SubstitutionCoefficientCongruence.integral_pderiv hf i)
-  refine SubstitutionCoefficientCongruence.integral_subst ?_ hf0 hf
-  intro n
-  unfold PowerSeries.log
-  rw [PowerSeries.coeff_derivative, PowerSeries.coeff_mk, if_neg (Nat.succ_ne_zero n)]
-  have hn : ((n : K) + 1) ≠ 0 := by exact_mod_cast Nat.succ_ne_zero n
-  rw [map_div₀, map_pow, map_neg, map_one, map_natCast, Nat.cast_succ, div_mul_cancel₀ _ hn,
-    norm_pow, norm_neg, norm_one, one_pow]
 
 end Formalism.ELL

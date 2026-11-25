@@ -126,7 +126,7 @@ theorem isPolarized_twist {π : CuspSub E a} (hc : π.IsCsd) {ν : HChar E} {s :
     change ψ.locInf v (-1) * (quadChar E ^ a).locInf v (-1) = (-1) ^ a
     rw [locInf_pow, h2, quadChar_locInf, one_mul]
   · rw [map_mul, map_pow, compNorm_quadChar, one_pow, mul_one, h1]
-    exact GlobalTheory.T.isConjugateDualTwistBy_twist_of_conjSelfDual hc ν
+    exact _root_.GlobalTheory.ConjDualTwist.isConjDualBy_twist_thetaChar hc ν
 
 theorem expo_mul (χ χ' : HChar E) (τ : E →+* ℂ) : expo (χ * χ') τ = expo χ τ + expo χ' τ := by
   have h := (CG.hasInfChar_ofChar χ τ).twist χ'

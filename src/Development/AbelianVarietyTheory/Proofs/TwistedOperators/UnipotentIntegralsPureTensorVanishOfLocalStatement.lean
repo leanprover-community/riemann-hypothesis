@@ -212,13 +212,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ConstantTermVanishing
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 
-theorem _root_.GlobalTheory.T.unipotentIntegrals_pureTensor_vanish_of_local : ∀ (D : D7) (V : HSp D) (𝔉 : IsoFlag V) (fa : ∀ w, GArch D.sp.cm.sig V.gram w → ℂ)
-    (ff : ∀ v, GLoc D.sp.cm.sig V.gram v → ℂ), (∀ w, fa w ∈ CcArch D.sp.cm.sig V.gram w) →
-    IsFinFamily D.sp.cm.sig V.gram (frameLat V) ff → ∀ v : HeightOneSpectrum (𝓞 D.host.F),
-    (∀ (ν : Measure (NLoc 𝔉 v)) [ν.IsHaarMeasure] (x y : GLoc D.sp.cm.sig V.gram v),
-      ∫ n : NLoc 𝔉 v, ff v (x * n * y) ∂ν = 0) →
-    UnipIntegralsVanish 𝔉 (tensor D.sp.cm.sig V.gram fa ff) := by
-  first | exact @GlobalTheory.TestConstTerm.unipIntegralsVanish_tensor
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

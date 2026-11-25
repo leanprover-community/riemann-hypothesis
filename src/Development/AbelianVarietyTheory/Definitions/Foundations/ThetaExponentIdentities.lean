@@ -359,11 +359,6 @@ def toWt (Dw : Datum H) (v : D.what₂.Tau → ℕ → ℤ) : Weight Dw :=
 
 variable {Dw : Datum H}
 
-theorem toWt_apply (v : D.what₂.Tau → ℕ → ℤ) {τ : Psi H} {t : D.what₂.Tau} (h : τ.1 = DV.tauEmb D t)
-    (i : Fin (Dw.p + Dw.q)) : toWt Dw v τ i = v t i := by
-  rw [toWt, sum_eq_single t (fun s _ hs => if_neg fun e => hs ?_) (by simp), if_pos h]
-  exact GlobalTheory.WeightExponents.tauEmb_injective D (e.symm.trans h)
-
 def psiOf {T : Par D} (h : T.PinHost) (t : D.what₂.Tau) : Psi T.H := ⟨DV.tauEmb D t, h.2.2.2 t⟩
 
 theorem psiOf_bijective {T : Par D} (h : T.Pins) : Function.Bijective (psiOf h.1) := by
@@ -372,9 +367,6 @@ theorem psiOf_bijective {T : Par D} (h : T.Pins) : Function.Bijective (psiOf h.1
   obtain ⟨t, ht⟩ := ((GlobalTheory.WeightExponents.weight_exponents D T h 1 hj
     (WeightAlgebra.wscalar D 1 0 Even.zero)).2.2.1 τ.1).1 τ.2
   exact ⟨t, Subtype.ext ht.symm⟩
-
-theorem toWt_psiOf {T : Par D} (h : T.PinHost) {Dw : Datum T.H} (v : D.what₂.Tau → ℕ → ℤ) (t : D.what₂.Tau)
-    (i : Fin (Dw.p + Dw.q)) : toWt Dw v (psiOf h t) i = v t i := toWt_apply v rfl i
 
 variable {T : Par D} {j : ℕ}
 
@@ -399,50 +391,6 @@ def thetaExp (Dw : Datum H) (v : D.what₂.Tau → ℕ → ℤ) : WTZ D.host.E :
 
 variable (D) in
 def plainExp (Dw : Datum H) (v : D.what₂.Tau → ℕ → ℤ) : WTZ D.host.E := wtOf Dw (toWt Dw v) 0
-
-theorem thetaExp_kap_eq (h : T.Pins) (hj : InR D j) (w : WeightFamilies.Wt D j) (hn : w.n = D.R.nV)
-    (hw : Formalism.L2.Geo.wtOf w = DV.kapW D j) : thetaExp D (T.Dw j) (kap D j) = wtZ (wtA w) w.n := by
-  obtain ⟨hp, hq, hr⟩ := sig_eq h hj
-  obtain ⟨-, -, hΨ, hΨ', hA⟩ := GlobalTheory.WeightExponents.weight_exponents D T h j hj w
-  have hp' : (T.Dw j).p = (D.R.sigW j).1 := hp
-  have hq' : (T.Dw j).q = (D.R.sigW j).2 := hq
-  refine Prod.ext (funext fun ⟨τ, i⟩ => ?_) ?_
-  · show _ = ((wtA w (τ, i) : ℕ) : ℤ)
-    by_cases hτ : InPsi T.H τ
-    · obtain ⟨t, rfl⟩ := (hΨ τ).1 hτ
-      rw [(hA t i).1, ext0]
-      by_cases hi : i < (T.Dw j).p
-      · refine (wtOf_big _ _ (psiOf h.1 t) i hi).trans ?_
-        rw [toWt_psiOf, GlobalTheory.IndefiniteRowSideFullHecke.DescentConstants.kap, dite_eq_left (by show i < _; omega), ← hw, dite_eq_left (by omega)]
-        simp only [Formalism.L2.Geo.wtOf, Formalism.L2.Geo.wtOfN, hn]
-        rw [dite_eq_left (by omega)]; ring
-      · rw [dite_eq_right (by omega)]
-        simp only [thetaExp, wtOf]
-        unfold InPsi at hτ
-        rw [dite_eq_left hτ, dite_eq_right hi]; rfl
-    · obtain ⟨t, rfl⟩ := (hΨ' τ).1 hτ
-      rw [(hA t i).2, ext0]
-      by_cases hi : i < (T.Dw j).q
-      · refine (wtOf_small _ _ (psiOf h.1 t) i hi).trans ?_
-        rw [toWt_psiOf, GlobalTheory.IndefiniteRowSideFullHecke.DescentConstants.kap, dite_eq_left (by show (T.Dw j).p + _ < _; omega), ← hw, dite_eq_left (by omega)]
-        simp only [Formalism.L2.Geo.wtOf, Formalism.L2.Geo.wtOfN, hn]
-        rw [dite_eq_right (by omega), dite_eq_left (by omega)]
-        have e : ∀ (a : Fin (D.R.sigW j).2) (b : Fin (D.R.sigW j).2), (a : ℕ) + b + 1 = (D.R.sigW j).2 → Fin.rev a = b :=
-          fun a b hab => Fin.ext (by rw [Fin.val_rev]; omega)
-        rw [e _ ⟨i, by omega⟩ (by simp only; omega)]; ring
-      · rw [dite_eq_right (by omega)]
-        simp only [thetaExp, wtOf]
-        unfold InPsi at hτ
-        rw [dite_eq_right hτ]
-        split_ifs <;> first | rfl
-  · obtain ⟨a, ha⟩ := w.n_even
-    show 2 * ((D.R.nV / 2 : ℕ) : ℤ) = ((w.n : ℕ) : ℤ)
-    omega
-
-theorem thetaExp_kap_kapTop (h : T.Pins) (hK : DV.KapDef D) (i : Fin D.R.m) :
-    thetaExp D (T.Dw ((i : ℕ) + 1)) (kap D ((i : ℕ) + 1)) =
-      wtZ (wtA (Formalism.IndefR.FWT.kapTop D i)) (Formalism.IndefR.FWT.kapTop D i).n :=
-  thetaExp_kap_eq h ⟨Nat.le_add_left _ _, i.2⟩ _ rfl (GlobalTheory.RecordWeightVec.wtOf_kapTop D hK i).2
 
 end Transport
 

@@ -211,10 +211,6 @@ def KsIso.bc (A : Arith.FormsL L0 Ks WL W G) :
     rw [NX.BC.bc_rho_incl, (NX.BC.incl_injective Ks L0 L WL).eq_iff]
   chi _ := rfl
 
-theorem KsIso.bc_j (A : Arith.FormsL L0 Ks WL W G) (σ : L →+* ℂ) (x : A.WK) :
-    (NX.BC.bc L A).j σ ((KsIso.bc L A).φ x : NX.BC.BCW Ks L0 L WL) = A.j (σ.comp (algebraMap L0 L)) x :=
-  NX.BC.bc_j_incl L A σ x
-
 end BC
 
 section Fm

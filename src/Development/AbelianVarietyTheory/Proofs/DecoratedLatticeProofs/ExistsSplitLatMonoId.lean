@@ -99,17 +99,6 @@ theorem exists_ne_zero {𝔟 : FI D} (h : 𝔟 ≠ 0) : ∃ b ∈ 𝔟, b ≠ 0 
   push_neg at hc
   exact h (FractionalIdeal.eq_zero_iff.2 hc)
 
-theorem exists_ne_zero_dualC (𝔟 : FI D) : ∃ c ∈ dualC 𝔟, c ≠ 0 := by
-  obtain ⟨a, ha, hint⟩ := 𝔟.isFractional
-  refine ⟨star (algebraMap (𝓞 D.host.E) D.host.E a), fun b hb => ?_, ?_⟩
-  · obtain ⟨r, hr⟩ := hint b hb
-    have : star b * star (algebraMap (𝓞 D.host.E) D.host.E a) = star (algebraMap (𝓞 D.host.E) D.host.E r) := by
-      rw [hr, Algebra.smul_def, star_mul', mul_comm]
-    rw [this]
-    exact GlobalTheory.HypLattice.star_mem_int ⟨r, rfl⟩
-  · rw [Ne, star_eq_zero]
-    exact (map_ne_zero_iff _ (IsFractionRing.injective (𝓞 D.host.E) D.host.E)).2 (nonZeroDivisors.ne_zero ha)
-
 theorem dualC_le_span {𝔟 : FI D} (h : 𝔟 ≠ 0) : ∃ γ : D.host.E, dualC 𝔟 ≤ Submodule.span (𝓞 D.host.E) {γ} := by
   obtain ⟨β, hβ, hβ0⟩ := exists_ne_zero h
   refine ⟨(star β)⁻¹, fun c hc => ?_⟩
@@ -117,10 +106,6 @@ theorem dualC_le_span {𝔟 : FI D} (h : 𝔟 ≠ 0) : ∃ γ : D.host.E, dualC 
   have hs : star β ≠ 0 := by rwa [Ne, star_eq_zero]
   refine Submodule.mem_span_singleton.2 ⟨o, ?_⟩
   rw [Algebra.smul_def, ho, mul_comm (star β), mul_assoc, mul_inv_cancel₀ hs, mul_one]
-
-theorem mulVec_single_smul {n : ℕ} (M : Matrix (Fin S.rank) (Fin n) D.host.E) (i : Fin n) {a b : D.host.E} (hb : b ≠ 0) :
-    M *ᵥ Pi.single i a = (a * b⁻¹) • (M *ᵥ Pi.single i b) := by
-  rw [← Matrix.mulVec_smul, ← Pi.single_smul', smul_eq_mul, mul_assoc, inv_mul_cancel₀ hb, mul_one]
 
 variable {L₀ : Lat S₀} {𝔟 : ℕ → FI D}
 

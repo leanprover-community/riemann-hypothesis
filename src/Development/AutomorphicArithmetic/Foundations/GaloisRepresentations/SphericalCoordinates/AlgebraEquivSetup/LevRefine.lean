@@ -80,12 +80,6 @@ def MemAct : Prop := ∀ (X M M' : Type) [Group X] [Group M] [Group M'] (T : TyL
 def MemDeck : Prop := ∀ (X M : Type) [Group X] [Group M] (T : TyLev X M) (K : Subgroup X), T.Triv K → ∀ k ∈ K,
   (∀ u ∈ T.K₀, k * u * k⁻¹ ∈ T.K₀) → T.Acts (memFn T.K₀ T.K₀ T.K₀ k) 1 1
 
-def RelOf : Prop := ∀ (X M J : Type) [Group X] [Group M] (T : TyLev X M) (ψ : J → X → ℂ) (c : J → ℂ) (h : J → X) (hu : X) (u' : X → ℂ),
-  (∀ j, T.Acts (ψ j) (c j) (h j)) → T.L.pr hu = 1 → u' ∈ Hecke ℂ T.K₀ →
-  (∀ i j, conv T.K₀ (T.tf (h i)) (T.tf (h j)) = conv T.K₀ (T.tf (h j)) (T.tf (h i))) →
-  (∀ j, conv T.K₀ (T.tf hu) (T.tf (h j)) = conv T.K₀ (T.tf (h j)) (T.tf hu)) → conv T.K₀ u' (T.tf hu) = T.tf 1 →
-  Spc.Rel (conv T.K₀) ψ (T.tf 1) (T.tf hu) u'
-
 def SphComm : Prop := ∀ (E : Type) [Field E] [NumberField E] (n : ℕ) (w : Plc E) (t t' : GL (Fin n) (w.adicCompletion E)),
   conv (KGL w (n := n)) (dosetInd ℂ (KGL w (n := n)) t) (dosetInd ℂ (KGL w (n := n)) t') = conv (KGL w (n := n)) (dosetInd ℂ (KGL w (n := n)) t') (dosetInd ℂ (KGL w (n := n)) t)
 

@@ -17,11 +17,8 @@ theorem cntCl_equiv {α : Type} (f g : α → α) (hgf : ∀ a, g (f a) = a) (hf
     (X Y : Set α) (R R' : α → α → Prop)
     (hX : ∀ a, f a ∈ Y ↔ a ∈ X) (hR : ∀ a b, R' (f a) (f b) ↔ R a b) :
     Cnt.cntCl Y R' = Cnt.cntCl X R := by
-  have hinj : Function.Injective (fun O : Set α => f ⁻¹' O) := by
-    intro O O' h
-    ext y
-    have := Set.ext_iff.mp h (g y)
-    simpa only [Set.mem_preimage, hfg] using this
+  have hinj : Function.Injective (fun O : Set α => f ⁻¹' O) :=
+    Set.preimage_injective.2 fun y => ⟨g y, hfg y⟩
   have himg : (fun O : Set α => f ⁻¹' O) '' {O | ∃ a ∈ Y, O = {b | b ∈ Y ∧ R' a b}} =
       {O | ∃ a ∈ X, O = {b | b ∈ X ∧ R a b}} := by
     ext O

@@ -312,14 +312,6 @@ theorem exists_rat_small (L : HermLB p) (s₀ : L.B.Sec) (hs₀ : genericPoint X
 
 end Generic
 
-theorem eq_zero_of_genVal' {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E}
-    {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {r : ℕ} {U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r}
-    {Z : Comp Xo c} {G : WTZ E} {f : Rul Xo c} (hf : f ∈ cuspOn U Z G) (h0 : genVal Z f = 0) : f = 0 := by
-  refine secZ_eq_zero_of_genVal hf.1.1 fun Z' => ?_
-  by_cases hZ : Z' = Z
-  · rw [hZ, h0]
-  · exact evC_eq_zero (GlobalTheory.Reg.genFrEx_and_genFromTest _ _ _ _ _ _).1 hZ hf.2
-
 
 end PositivityTheory.Xj7N.Inj
 
@@ -403,7 +395,7 @@ theorem small_sections_injective_of_self_intersection_bound (hK : _root_.GlobalT
     have h2 := hψinj (mul_right_cancel₀ hc h1)
     have h3 : genVal Z ((f : Rul Y.d.Xo₂ Y.d.c₂) - (g : Rul Y.d.Xo₂ Y.d.c₂)) = 0 := by
       rw [map_sub, h2, sub_self]
-    exact Subtype.ext (sub_eq_zero.1 (eq_zero_of_genVal' (Submodule.sub_mem _ f.2 g.2) h3))
+    exact Subtype.ext (sub_eq_zero.1 (GlobalTheory.DegTop.eq_zero_of_genVal (Submodule.sub_mem _ f.2 g.2) h3))
   rw [← hinj.encard_image]
   exact Set.encard_le_encard (Set.image_subset_iff.2 fun f hf => hSf f hf)
 end PositivityTheory.Xj7N.Inj

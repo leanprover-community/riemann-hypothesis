@@ -160,7 +160,6 @@ structure ThT {w : ColW B f T} {Z : w.Lt} {Wt : Set B.places.Pl} {nch : NChoice 
     Type 1 where
   provA : TH.ProvA
   all : Formalism.L2.Theta.AllTied (w.D Z) th provA
-  weq : Formalism.L2.Theta.WeilCompatibleEquivariance all.W
   chr : ThetaChrTied (w.D Z) (TC.cf w.I w.l Z) nch n.tp th
   same : Formalism.L2.JoinChr.SameChr all.T chr
   std : Formalism.L2.Theta.IsStdChar (w.D Z) all.W.ψ (-1)

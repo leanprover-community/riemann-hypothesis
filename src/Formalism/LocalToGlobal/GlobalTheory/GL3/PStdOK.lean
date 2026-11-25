@@ -25,26 +25,8 @@ open Formalism.L2.Th1.F (cmTheta)
 
 theorem selfDual_img {V W : Type*} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W] (H : Sesq V) (H' : Sesq W)
     (g : V ≃ₗ[ℂ] W) (hg : IsIsom H H' (g : V →ₗ[ℂ] W)) (Λ : AddSubgroup V) (h : IsSelfDual H Λ) :
-    IsSelfDual H' (imgLat (g : V →ₗ[ℂ] W) Λ) := by
-  apply le_antisymm
-  · intro x hx
-    refine ⟨g.symm x, ?_, g.apply_symm_apply x⟩
-    rw [← h]
-    intro y hy
-    obtain ⟨m, hm⟩ := hx (g y) ⟨y, hy, rfl⟩
-    refine ⟨m, ?_⟩
-    rw [← hm]
-    have := hg (g.symm x) y
-    simp only [LinearEquiv.coe_coe, LinearEquiv.apply_symm_apply] at this
-    simp only [altE, this]
-  · rintro _ ⟨x, hx, rfl⟩ _ ⟨y, hy, rfl⟩
-    rw [← h] at hx
-    obtain ⟨m, hm⟩ := hx y hy
-    refine ⟨m, ?_⟩
-    rw [← hm]
-    have := hg x y
-    simp only [altE]
-    exact congrArg Complex.im this
+    IsSelfDual H' (imgLat (g : V →ₗ[ℂ] W) Λ) :=
+  by apply _root_.GlobalTheory.FourthRootStd.selfDual_image <;> assumption
 
 variable {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ}
 

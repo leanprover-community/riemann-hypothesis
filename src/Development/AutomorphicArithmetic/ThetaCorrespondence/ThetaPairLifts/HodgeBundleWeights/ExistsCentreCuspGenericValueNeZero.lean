@@ -1447,8 +1447,6 @@ section Cover
 
 open GlobalTheory.CovTop GlobalTheory.PrincCore Formalism.MainNotions Formalism.BasicNotions.TH Formalism.L2.Theta
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {T : CoreJ D} {j : ℕ} {Y : Deep T.toCore j} {e : ℕ} {o : ℝ}
 
 theorem level_eq (hT : LawsJ T) (hG : Y.Good e o) : Y.d.l₂.M = D.host.g 0 * D.host.g 1 * Y.d.pd := by

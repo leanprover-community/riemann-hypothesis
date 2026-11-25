@@ -1194,89 +1194,11 @@ end Step
 section Laws
 variable [MeasurableSpace k] [BorelSpace k] {ψ : AddChar k Circle} {ν : Measure k} [ν.IsAddHaarMeasure]
 
-theorem sourceLaw : SourceLaw ψ ν :=
-  fun _ _ _ _ _ _ _ hc _ _ _ _ _ hJ _ H h' h _ hu g hm => source_law hc hJ H h' h hu g hm
-
-theorem exists_char {a b : Type} [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b] (μ : kˣ →* ℂˣ)
-    (S : Subgroup (GL b k)) {f : Matrix b a k → ℂ} (hf : f ≠ 0) (H : ∀ g ∈ S, ∃ z : ℂ, om μ 1 g f = z • f) :
-    ∃ χ : S →* ℂˣ, ∀ g : S, om μ 1 (g : GL b k) f = (χ g : ℂ) • f := by
-  choose z hz using H
-  have h0 : ∀ g : S, z g g.2 ≠ 0 := fun g e => (om_ne_zero μ 1 (g : GL b k)).2 hf (by rw [hz g g.2, e, zero_smul])
-  refine ⟨MonoidHom.mk' (fun g => Units.mk0 _ (h0 g)) fun g g' => Units.ext (smul_left_injective ℂ hf ?_),
-    fun g => hz g g.2⟩
-  have := om_mul μ 1 1 (g : GL b k) g' f
-  rw [hz g' g'.2, om_smul, hz g g.2, smul_smul, mul_one, mul_comm] at this
-  exact (hz _ (g * g').2).symm.trans this
-
-omit [BorelSpace k] [ν.IsAddHaarMeasure] in
-theorem xi_eq_smul {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {c : ℕ} (μ : kˣ →* ℂˣ)
-    (Φ : Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k → ℂ) (J : Subgroup (GL (n ⊕ Fin c) k)) (b h' h) :
-    xi ψ ν μ Φ J b h' h = (((volNat ν b (Cgrp J h))⁻¹ : ℝ) : ℂ) • flat ψ ν μ Φ h' h := rfl
-
-theorem targetLaw : TargetLaw ψ ν := by
-  intro n n' _ _ _ _ c hc μ P' P Φ hΦ _ hJ H h' h
-  refine ⟨fun u hu => target_law hc hJ H h' h hu, fun h0 => ?_⟩
-  obtain ⟨χ, hχ⟩ := exists_char μ (prX (Cgrp P.J h)) h0 fun g ⟨u, hu, hm⟩ =>
-    ⟨_, target_law hc hJ H h' h hu g (mem_Cgrp.1 hm).2⟩
-  refine ⟨χ, fun g u hu hm => smul_left_injective ℂ h0 ((hχ g).symm.trans (target_law hc hJ H h' h hu g hm)),
-    fun g => ⟨hχ g, fun b => ?_, fun V' V _ _ _ _ π' π θ hθ φ => ?_⟩⟩
-  · rw [xi_eq_smul, om_smul, hχ, smul_comm]
-  · rw [← hθ 1 g φ (flat ψ ν μ Φ h' h) (opE_mem_SB 1 ψ ν (om_mem_SB μ h' h hΦ)), map_one, Module.End.one_apply]
-    exact (congrArg _ (hχ g)).trans (map_smul _ _ _)
-
 variable {s : ℕ} {X : ℕ → Type} [∀ j, Fintype (X j)] [∀ j, DecidableEq (X j)] {Z : Type} [Fintype Z] [DecidableEq Z]
 
 omit [MeasurableSpace k] [BorelSpace k] in
 theorem isCO_lev {T : Chain k s X Z} (hT : T.Regular) (j c h) : IsCO (T.lev j c h).J :=
   ⟨(hT.2.2 j c h).1, (hT.2.2 j c h).2.1⟩
-
-omit [MeasurableSpace k] [BorelSpace k] in
-theorem psi_law (ψ : AddChar k Circle) {T : Chain k s X Z} (hL : T.Laws) (h) {u} (hu : u ∈ N k (X s) (0 + 1) 1)
-    (g : GL (X s) k) (hm : h⁻¹ * (u * embX (0 + 1) g) * h ∈ (T.lev s (0 + 1) rfl).J) (y : X (s + 1) → k) :
-    om (T.mu (s + 1)) g 1 (fun x₀ => T.Psi h x₀ y) =
-      ((ψ (simpleSum u) : ℂ)⁻¹ * ((T.lev s (0 + 1) rfl).lam ⟨_, hm⟩ : ℂ)) • fun x₀ => T.Psi h x₀ y := by
-  obtain rfl : u = 1 := Units.ext (Matrix.ext fun r t => Model.mem_N_iff.1 hu r t (by
-    rcases r with r | r <;> rcases t with t | t <;> simp [lev]))
-  have e : om (T.mu (s + 1)) (embX (0 + 1) g) 1 (om (T.mu (s + 1)) h 1 (T.Phi s 0 rfl)) =
-      ((T.lev s (0 + 1) rfl).lam ⟨_, hm⟩ : ℂ) • om (T.mu (s + 1)) h 1 (T.Phi s 0 rfl) := by
-    rw [← om_smul, ← (hL.1 s 0 rfl).1 ⟨_, hm⟩, ← om_mul, ← om_mul]; simp [mul_assoc]
-  have d : Matrix.GeneralLinearGroup.det (embX (0 + 1) g) = Matrix.GeneralLinearGroup.det g :=
-    Units.ext (by simp [Matrix.GeneralLinearGroup.val_det_apply, Radical.embX_val])
-  funext x
-  have w : withCol x y * (embX (0 + 1) g).val = withCol (x * g.val) y := by
-    simp [withCol, Radical.embX_val, fromBlocks_multiply]
-  have := congrFun e (withCol x y)
-  rw [om, d] at this
-  simp only [inv_one, Units.val_one, Matrix.one_mul, w] at this
-  rw [om, Radical.simpleSum_eq_zero (by simp [Matrix.one_apply])]
-  simpa [Chain.Psi, nabs_one] using this
-
-theorem entry_target {T : Chain k s X Z} (hT : T.Regular) (hL : T.Laws) (j c) (H : j + 1 + c = s) (h' h) {u}
-    (hu : u ∈ N k (X (j + 1)) (c + 1) 1) (g) (hm : h⁻¹ * (u * embX (c + 1) g) * h ∈ (T.lev (j + 1) (c + 1) (by omega)).J) :
-    om (T.mu (j + 1)) 1 g (T.entry ψ ν j c H h' h) =
-      ((ψ (simpleSum u) : ℂ) * ((((T.lev (j + 1) (c + 1) (by omega)).lam ⟨_, hm⟩)⁻¹ : ℂˣ) : ℂ)) •
-        T.entry ψ ν j c H h' h := by
-  rw [Chain.entry, xi_eq_smul, om_smul,
-    target_law (by omega) (isCO_lev hT _ _ _) (hL.1 j (c + 1) (by omega)) h' h hu g hm, smul_comm]
-
-theorem chainInvariant : ChainInvariant ψ ν := by
-  intro s X _ _ Z _ _ T hT hL
-  refine ⟨?_, fun h u hu => psi_law ψ hL h hu⟩
-  rintro j c H h' h h'' g ⟨u, hu, hm⟩ x x'
-  have hm := (mem_Cgrp.1 hm).2
-  rw [entry_target hT hL j (c + 1) _ h' h hu g hm, show T.entry ψ ν (j + 1) c H h h'' = _ from xi_eq_smul _ _ _ _ _ _, om_smul,
-    source_law (by omega) (isCO_lev hT _ _ _) (hL.1 (j + 1) (c + 1) (by omega)) h h'' hu g hm]
-  have := Circle.coe_ne_zero (ψ (simpleSum u))
-  simp only [Pi.smul_apply, smul_eq_mul, Units.val_inv_eq_inv_val]
-  field_simp
-
-theorem chainInvariantLast : ChainInvariantLast ψ ν := by
-  rintro j X _ _ Z _ _ T hT hL h' h g ⟨u, hu, hm⟩ x x' y
-  have hm := (mem_Cgrp.1 hm).2
-  rw [entry_target hT hL j 0 _ h' h hu g hm, psi_law ψ hL h hu g hm]
-  have := Circle.coe_ne_zero (ψ (simpleSum u))
-  simp only [Pi.smul_apply, smul_eq_mul, Units.val_inv_eq_inv_val]
-  field_simp
 
 theorem reps_finite (hψ : HasConductor ψ 1) {T : Chain k s X Z} (hT : T.Regular) {A : RepFam k s X}
     (hA : T.IsRepSystem A ψ ν) (j : ℕ) : ∀ c h, (A j c h).Finite := by
@@ -1363,23 +1285,6 @@ theorem cosetMeasure : CosetMeasure ν := by
       (fun u hu g => by rw [_root_.GlobalTheory.StepAvg.integral_translate_indicator k ν n c hc J hJ h hC m u hu g, hv, ENNReal.toReal_mul]) μG f hf
     exact ⟨fun hz => (QuotInt.quotInt_unique_exists k n c 1 le_rfl hc ν m μG f).1 _ _ hz key, fun e => e ▸ key⟩
 
-theorem volumeCancels : VolumeCancels ν := by
-  intro n _ _ c hc J hJ b h m hm μG hμG h1 f hf
-  obtain ⟨hC, -, -, -, H⟩ := cosetMeasure (ν := ν) n c hc J hJ h
-  obtain ⟨s1, s2⟩ := isOpen_isCompact_conj b (SplitFlip.isOpen_KO (n := n ⊕ Fin c)) SplitFlip.isCompact_KO
-  obtain ⟨s3, s4⟩ := volN_ne_zero_ne_top ν 1 s1 s2
-  have hm' : (rescale ν b m).IsHaarMeasure :=
-    Measure.IsHaarMeasure.smul m (ENNReal.inv_ne_zero.2 s4) (ENNReal.inv_ne_top.2 s3)
-  have key := (H _ hm').2.2.2.2 μG hμG f hf
-  refine ⟨_, (key _).2 rfl, fun z' hz => (key _).1 hz, ?_⟩
-  have m0 : (m (prX (Cgrp J h))).toReal ≠ 0 :=
-    (ENNReal.toReal_pos (hC.1.measure_ne_zero m ⟨1, one_mem _⟩) hC.2.measure_lt_top.ne).ne'
-  rw [(H m hm).2.2.2.1 b, h1, ← mul_assoc, ← Complex.ofReal_mul]
-  congr 2
-  have := (volNat_Cgrp_pos ν hJ.1 hJ.2 b h).ne'
-  simp only [ENNReal.toReal_one]
-  field_simp
-
 end Volumes
 
 section First
@@ -1423,12 +1328,6 @@ theorem firstVertexChains (hψ : HasConductor ψ 1) : FirstVertexChains ψ ν :=
       (_root_.GlobalTheory.TwistVertex.firstVertex_twist k ψ hψ s t κ δ hδ η)
 
 end First
-
-theorem entries_wellDefined : GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum.Statement := by
-  intro k _ _ _ _ _ _ ψ ν hψ hν
-  have := hν.1
-  exact ⟨stepWellDefined hψ, chainFinite hψ, cosetMeasure, volumeCancels, targetLaw, sourceLaw, chainInvariant,
-    chainInvariantLast, firstVertexChains hψ⟩
 
 end GlobalTheory.UnfoldedEntries
 end -- clump:auto

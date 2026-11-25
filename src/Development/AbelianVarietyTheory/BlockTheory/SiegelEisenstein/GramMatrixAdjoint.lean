@@ -103,9 +103,6 @@ variable {θ : InfFam D} {m n : ℕ} {T : Matrix (Fin m) (Fin m) D.host.E}
 
 def s0 (m n : ℕ) : ℂ := (m : ℂ) / 2 - (n : ℂ) / 2
 
-def sect (α : GG D n → ℝ≥0) (ω : Rep θ n T) (Φ : Sch θ m n) (s : ℂ) (g : GG D n) : ℂ :=
-  ((α g : ℝ) : ℂ) ^ (s - s0 m n) * (ω (g, 1) Φ).1 0
-
 end Weil
 
 end GlobalTheory.IndefiniteRowSideFullHecke.GramMatrixBlocks

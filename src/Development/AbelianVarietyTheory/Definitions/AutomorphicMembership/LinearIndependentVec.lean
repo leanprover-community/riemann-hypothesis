@@ -80,11 +80,6 @@ theorem valR_zero_fn {X : Scheme.{0}} {R : Type} [CommRing R] (x : Sp R ⟶ X) (
 theorem spMap_valMap {X : Scheme.{0}} {R : Type} [CommRing R] {U : X.Opens} (hU : IsAffineOpen U) (x : Sp R ⟶ X)
     (h : ⊤ ≤ x ⁻¹ᵁ U) : spMap (valMap x U h).hom ≫ hU.fromSpec = x := specMap_valMap_fromSpec hU x h
 
-theorem le_preimage_of_eq {X : Scheme.{0}} {R : Type} [CommRing R] {U : X.Opens} {hU : IsAffineOpen U}
-    {φ : Γ(X, U) →+* R} {x : Sp R ⟶ X} (hx : spMap φ ≫ hU.fromSpec = x) : ⊤ ≤ x ⁻¹ᵁ U := by
-  subst hx
-  exact le_preimage_specMap_fromSpec hU (CommRingCat.ofHom φ)
-
 
 open Classical in
 variable (Dw) in
@@ -250,23 +245,6 @@ theorem isLB_grLB : (grLB hZ e).IsLB := by
       (le_preimage_mono x (inf_le_left.trans inf_le_left) h) (le_preimage_mono x (inf_le_left.trans inf_le_right) h)
       (le_preimage_mono x inf_le_right h)]
 
-theorem diagAt_iff_chg (c c' : IntChart Z) {k : Type} [Field k] (φ : Γ(Z.X, c.U) →+* k) (φ' : Γ(Z.X, c'.U) →+* k)
-    (hx : spMap φ ≫ c.aff.fromSpec = spMap φ' ≫ c'.aff.fromSpec) (σ : E →+* ℂ) (d : Fin (Dw.mult σ) → k) :
-    DiagAt (Y Z.i).t (spMap φ ≫ c.aff.fromSpec ≫ Z.π) (c'.w.bc φ' σ) (c.w.bc φ σ) d ↔
-      d = fun a => valR (spMap φ ≫ c.aff.fromSpec) _ (c.chg c' hZ σ a a) := by
-  have h : ⊤ ≤ (spMap φ ≫ c.aff.fromSpec) ⁻¹ᵁ c.U := le_preimage_of_eq rfl
-  have h' := le_preimage_of_eq hx.symm
-  have hd := c.diag c' hZ _ h h' σ
-  rw [funext (c.vec_eq φ rfl h σ), funext (c'.vec_eq φ' hx.symm h' σ)] at hd
-  rw [← Category.assoc, diagAt_iff (tan_bc c'.int φ' hx.symm σ) (tan_bc c.int φ rfl σ)]
-  exact ⟨fun h₁ => h₁.unique (linInd_bc c'.int φ' hx.symm σ) hd, fun h₁ => by rw [h₁]; exact hd⟩
-
-theorem isGrLB_grLB : IsGrLB Z e (grLB hZ e) := by
-  refine ⟨isLB_grLB hZ e, IntChart.aff, IntChart.w, IntChart.int, fun c c' k _ φ φ' d hx _ hd => ?_⟩
-  refine (valR_prod_zpow _ (le_preimage_inf (le_preimage_of_eq rfl) (le_preimage_of_eq hx.symm)) _ e).trans (Finset.prod_congr rfl fun σ _ => ?_)
-  rw [(diagAt_iff_chg hZ c c' φ φ' hx σ (d σ)).1 (hd σ)]
-  rfl
-
 
 def grCls : (∀ σ : E →+* ℂ, Fin (Dw.mult σ) → ℤ) →+ CechPic.Pic Z.X :=
   AddMonoidHom.mk' (fun e => cls _ (isLB_grLB hZ e)) fun e e' => by
@@ -311,8 +289,6 @@ theorem isSmoothProjCurve : VB.IsSmoothProjCurve k c.C :=
   ⟨⟨c.integral, c.dim, c.n, _, inferInstance, c.strHom_eq.symm⟩, c.strHom_eq ▸ c.smooth⟩
 
 theorem isProjCurve : VB.IsProjCurve k c.C := c.isSmoothProjCurve.toIsProjCurve
-
-def degOf (L : LB X) : ℤ := VB.degLB k (L.pull c.f)
 
 def degPic : CechPic.Pic X →+ ℤ := c.isProjCurve.degPic.comp (CechPic.pull c.f)
 

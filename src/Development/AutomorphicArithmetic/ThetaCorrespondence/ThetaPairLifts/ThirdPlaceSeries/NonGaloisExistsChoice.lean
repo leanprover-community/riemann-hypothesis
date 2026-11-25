@@ -1198,7 +1198,7 @@ theorem hasTuples_of_conj : GlobalTheory.Published.DiscreteSeriesCover → Globa
     obtain ⟨A0, R0, F0, v0, O0, hL0, hE0, hxi0, htr⟩ := GlobalTheory.BaseRestrict.restrict_to_base T R F κ v₀ O ph j B hL
     have hT0 := htr _ _ _ _ hlev
     have hT0a := htr _ _ _ _ hleva
-    obtain ⟨T', A', R', F', v', O', hL', hE', htup⟩ := GlobalTheory.T.realisation_extends_by_newTuples_keeping_laws h1 h2 h3 hDS hCW T R0 F0 κ v0 O0 ph j B hH hL0 Bool
+    obtain ⟨T', A', R', F', v', O', hL', hE', htup⟩ := _root_.GlobalTheory.TupExt.extend_tuples h1 h2 h3 hDS hCW T R0 F0 κ v0 O0 ph j B hH hL0 Bool
       (fun b => if b then R.xiH t ^ a else R.xiH t) (fun b => if b then R.xi t ^ a else R.xi t) (fun _ => R.Q t)
       (fun b => if b then (fun PP => R.xiR t PP ^ a) else R.xiR t)
       (fun b => by cases b <;> assumption)

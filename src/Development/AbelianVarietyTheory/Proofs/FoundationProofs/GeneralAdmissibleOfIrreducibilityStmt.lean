@@ -144,13 +144,6 @@ section -- clump:auto
 
 namespace GlobalTheory.TraceFormNondegenerate
 
-theorem eq_zero_of_trace_mul {K : Type} [Field K] {n : ℕ} (X : Matrix (Fin n) (Fin n) K)
-    (h : ∀ Y : Matrix (Fin n) (Fin n) K, Matrix.trace (X * Y) = 0) : X = 0 := by
-  ext i j
-  have hij := h (Matrix.single j i 1)
-  rw [Matrix.trace_mul_single] at hij
-  simpa using hij
-
 theorem span_eq_top_of_trace_eq {Γ K : Type} [Monoid Γ] [Field K] {n : ℕ}
     (M N : Γ →* Matrix (Fin n) (Fin n) K)
     (htr : ∀ g : Γ, Matrix.trace (M g) = Matrix.trace (N g))

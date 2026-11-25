@@ -41,7 +41,7 @@ variable {D : ℕ} {X : Type*} [TopologicalSpace X] {A : FinHolAtlas D X}
 namespace RegCharts
 
 def ofPotentialCharts [CompactSpace X] (P : PotentialCharts A) (om : LocPot X)
-    (om_pot : IsPotential A om) (om_pos : IsPosPot A om) : RegCharts A where
+    (_om_pot : IsPotential A om) (_om_pos : IsPosPot A om) : RegCharts A where
   n := P.N
   ψ := P.chart
   compat := P.compat
@@ -49,8 +49,6 @@ def ofPotentialCharts [CompactSpace X] (P : PotentialCharts A) (om : LocPot X)
   W' j := (P.chart j).target ∩ (P.chart j).symm ⁻¹' P.mid j
   W'' j := (P.chart j).target ∩ (P.chart j).symm ⁻¹' P.inner j
   isOpen_kappaOpenNeighbourhood j := (P.chart j).open_target
-  isOpen_alt j := (P.chart j).isOpen_inter_preimage_symm (P.isOpen_mid j)
-  isOpen_alt_alt j := (P.chart j).isOpen_inter_preimage_symm (P.isOpen_inner j)
   W_subset _ := subset_rfl
   isCompact_closure_middle j :=
     (closure_image_subset (P.chart j) (P.closure_mid j)).1.of_isClosed_subset isClosed_closure
@@ -73,18 +71,8 @@ def ofPotentialCharts [CompactSpace X] (P : PotentialCharts A) (om : LocPot X)
     rw [(P.chart j).left_inv hs]
     exact hj
   θ := P.th
-  θ_pot := P.th_pot
   om := om
-  om_pot := om_pot
-  om_pos := om_pos
   q := P.q
-  q_smooth := P.q_smooth
-  q_θ j y hy _ := by
-    obtain ⟨V, hV, hyV, G, hG, hq⟩ := P.q_th j y y ⟨P.th.mem_U y, hy⟩
-    refine ⟨V, hV, hyV, fun x => -G x, fun k => (hG k).neg, fun x hx _ => ?_⟩
-    have := hq x hx
-    simp only [Complex.neg_re]
-    linarith
 
 variable [CompactSpace X] (P : PotentialCharts A) (om : LocPot X) (om_pot : IsPotential A om)
   (om_pos : IsPosPot A om)

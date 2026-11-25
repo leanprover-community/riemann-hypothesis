@@ -175,7 +175,7 @@ theorem UpperTheory.exists_local_zeta_data_realizing_standard_pair :
   haveI := GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.borelFv v.1
   have hν : GlobalTheory.LFun.IsHecke F E X.ν := ⟨hα.1.div' hβ.1, fun x => by
     rw [GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Chars.ν, MonoidHom.div_apply, hα.2, hβ.2, div_one]⟩
-  have h1 := (GlobalTheory.T.splitPlaceCharacterComponent_smooth_unitary_conductor F E X.ν hν v (B.τ v)).2.1
+  have h1 := (_root_.GlobalTheory.ChrWLocal.chrW_local F E X.ν hν v (B.τ v)).2.1
   have hdiv : chrW X.ν (B.τ v) = chrW X.α (B.τ v) / chrW X.β (B.τ v) := by
     ext x
     simp [chrW, GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Chars.ν, GlobalTheory.LFun.locChar]

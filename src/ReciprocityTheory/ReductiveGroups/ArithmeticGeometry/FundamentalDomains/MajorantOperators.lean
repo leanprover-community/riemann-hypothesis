@@ -36,25 +36,8 @@ theorem maj_nonneg {z : Frame X.Ψ r} (hz : z ∈ X.dom) (τ : X.Ψ) (v : Fin r 
   · exact (X.maj_pos hz τ hv).le
 
 theorem Hf_cs {z : Frame X.Ψ r} (hz : z ∈ X.dom) (τ : X.Ψ) (u w : Fin r → ℂ) :
-    ‖X.Hf z τ u w‖ ^ 2 ≤ X.maj z τ u * X.maj z τ w := by
-  by_cases hw : w = 0
-  · rw [hw, Hf_zero_right, maj_zero hz]
-    simp
-  have hmw := X.maj_pos hz τ hw
-  have hww : X.Hf z τ w w = (X.maj z τ w : ℂ) := X.Hf_self hz τ w
-  have hne : X.Hf z τ w w ≠ 0 := by
-    rw [hww]
-    exact_mod_cast hmw.ne'
-  have hd := UnipotentCoefficientShift.maj_decomp hz τ u w hne
-  rw [hww, norm_div, Complex.norm_real, Real.norm_of_nonneg hmw.le] at hd
-  have h0 := maj_nonneg hz τ (u - (X.Hf z τ u w / (X.maj z τ w : ℂ)) • w)
-  have e : (‖X.Hf z τ u w‖ / X.maj z τ w) ^ 2 * X.maj z τ w = ‖X.Hf z τ u w‖ ^ 2 / X.maj z τ w := by
-    have := hmw.ne'
-    field_simp
-  have h1 : ‖X.Hf z τ u w‖ ^ 2 / X.maj z τ w ≤ X.maj z τ u := by
-    rw [hd, ← e]
-    linarith
-  exact (div_le_iff₀ hmw).mp h1
+    ‖X.Hf z τ u w‖ ^ 2 ≤ X.maj z τ u * X.maj z τ w :=
+  by apply _root_.ReciprocityTheory.ChartRestriction.G.FD.MajorantConjugateTransfer.cs; assumption
 
 theorem mem_Uz_iff (z : Frame X.Ψ r) (ξ : Fin r → E) (u : X.Ψ → Fin r → ℂ) :
     u ∈ X.Uz z ξ ↔ ∀ τ : X.Ψ, hermC τ.1 X.Gm (u τ) (Data.emb τ.1 ξ) = 0 ∧

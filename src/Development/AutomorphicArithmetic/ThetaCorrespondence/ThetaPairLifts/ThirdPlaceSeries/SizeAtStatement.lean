@@ -58,8 +58,6 @@ open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.
 
 namespace GlobalTheory.BigTop.Fun.SizeProof
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Main
 
 variable {D : D7} {L : SizeData₂ D}
@@ -102,7 +100,6 @@ open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain
 open Formalism.L2 Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links
 open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.RowClaim
 namespace GlobalTheory.BigTop.Fun.SizeProof
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 section Sizes
 variable {D : D7} {L : SizeData₂ D}
 end Sizes

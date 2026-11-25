@@ -38,10 +38,6 @@ def Eg' {M n' : ℕ} (ε : Fin M → Bool) (ε' : Fin n' → Bool) (a b : Fin n'
     Module.End ℂ (MvPolynomial (Fin M × Fin n') ℂ) :=
   -∑ i, bpl ε ε' i b * bop ε ε' i a
 
-def NN {M n' : ℕ} (ε : Fin M → Bool) (ε' : Fin n' → Bool) :
-    Module.End ℂ (MvPolynomial (Fin M × Fin n') ℂ) :=
-  ∑ i, Eg ε ε' i i
-
 def CCR : Prop :=
   ∀ (M n' : ℕ) (ε : Fin M → Bool) (ε' : Fin n' → Bool) (i j : Fin M) (a b : Fin n'),
     bop ε ε' i a * bpl ε ε' j b - bpl ε ε' j b * bop ε ε' i a = (if i = j ∧ a = b then 1 else 0) ∧

@@ -430,9 +430,6 @@ theorem dirPolyDeriv_eq_sum_coeff_taylor (P : MvPolynomial σ ℂ) (f : (σ → 
 @[simp] theorem constantCoeff_taylor (f : (σ → ℂ) → ℂ) :
     MvPowerSeries.constantCoeff (taylor f) = f 0 := constantCoeff_taylorDir _ f
 
-theorem taylor_add (hf : AnalyticAt ℂ f 0) (hg : AnalyticAt ℂ g 0) :
-    taylor (f + g) = taylor f + taylor g := taylorDir_add _ hf hg
-
 @[simp] theorem taylor_const (c : ℂ) :
     taylor (fun _ : σ → ℂ => c) = MvPowerSeries.C c := taylorDir_const _ c
 
@@ -440,10 +437,6 @@ theorem taylor_add (hf : AnalyticAt ℂ f 0) (hg : AnalyticAt ℂ g 0) :
 
 theorem taylor_mul (hf : AnalyticAt ℂ f 0) (hg : AnalyticAt ℂ g 0) :
     taylor (f * g) = taylor f * taylor g := taylorDir_mul _ hf hg
-
-theorem taylor_sum {κ : Type*} (s : Finset κ) {F : κ → (σ → ℂ) → ℂ}
-    (hF : ∀ k ∈ s, AnalyticAt ℂ (F k) 0) :
-    taylor (fun z => ∑ k ∈ s, F k z) = ∑ k ∈ s, taylor (F k) := taylorDir_sum _ s hF
 
 theorem taylor_fderiv (hf : AnalyticAt ℂ f 0) (i : σ) :
     taylor (fun z => fderiv ℂ f z (Pi.single i 1)) = MvPowerSeries.pderiv (R := ℂ) i (taylor f) :=

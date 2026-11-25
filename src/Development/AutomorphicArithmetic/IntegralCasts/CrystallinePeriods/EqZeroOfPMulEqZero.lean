@@ -181,9 +181,6 @@ theorem eq_zero_of_p_mul_eq_zero {x : Acris p R} (h : (p : Acris p R) * x = 0) :
   rw [Ideal.Quotient.eq_zero_iff_mem, AcrisZero.mem_span_pow_iff]
   exact ⟨b, hab⟩
 
-theorem p_mul_cancel {x y : Acris p R} (h : (p : Acris p R) * x = p * y) : x = y :=
-  sub_eq_zero.1 (eq_zero_of_p_mul_eq_zero (by rw [mul_sub, h, sub_self]))
-
 theorem p_mem_nonZeroDivisors : (p : Acris p R) ∈ nonZeroDivisors (Acris p R) :=
   mem_nonZeroDivisors_iff_left.2 fun _ h => eq_zero_of_p_mul_eq_zero h
 
@@ -278,9 +275,6 @@ theorem algebraMap_injective : Function.Injective (algebraMap (Acris p R) (Bcris
 end BcrisPlus
 
 namespace Bcris
-
-theorem logTeich_mul (η η' : tateModule p R) : logTeich (η * η') = logTeich η + logTeich η' := by
-  simp [logTeich, Acris.logTeich_mul]
 
 @[simp] theorem logTeich_one : logTeich (1 : tateModule p R) = 0 := by simp [logTeich]
 

@@ -82,7 +82,7 @@ theorem psi_qS_eq_one : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar
   have hg : adj (rat x₀) * (gA W * rat x₀) = 0 := by
     have h : x₀ᴴ * HSpace.gram W * x₀ = 0 := by rw [Matrix.mul_assoc]; exact hx₀
     rw [gram_rat W h, rat_zero]
-  have hq := ((GlobalTheory.T.mixedModelCentralTerms_via_gramMatrices D).1 V V₀ W ρ d).2.1 c (rat x₀)
+  have hq := ((_root_.GlobalTheory.CentralGram.central D).1 V V₀ W ρ d).2.1 c (rat x₀)
   have h0 : GlobalTheory.IndefiniteRowSideFullHecke.SkewGramHalfModule.gramSkew W (rat x₀) = 0 := by
     rw [GlobalTheory.IndefiniteRowSideFullHecke.SkewGramHalfModule.gramSkew, hg, Matrix.transpose_zero, smul_zero]
   rw [HypDec.qS, hq, h0]
@@ -109,7 +109,7 @@ theorem conjBessel_isTh : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdCh
     obtain ⟨u, hu⟩ := GlobalTheory.T.transvection_isUnitaryAdelic D B.V B.V₀ ρ B.d (GlobalTheory.IndefiniteRowSideFullHecke.TransvectionAction.ratVec a) v hv0
     obtain ⟨hfix, hus⟩ := hv u hu
     have huN : u ∈ Nfix B.d j :=
-      ⟨GlobalTheory.T.transvection_strictUpper_mem_flagUnipotentRadical D B.V B.V₀ ρ B.d (GlobalTheory.IndefiniteRowSideFullHecke.TransvectionAction.ratVec a) v hvT u hu, Subgroup.mem_iInf.2 hfix⟩
+      ⟨_root_.GlobalTheory.TransvFlag.transv_mem_flagN D B.V B.V₀ ρ B.d (GlobalTheory.IndefiniteRowSideFullHecke.TransvectionAction.ratVec a) v hvT u hu, Subgroup.mem_iInf.2 hfix⟩
     have hval : psiBes ψ B.d 1 z u = psiE ψ s := by
       rw [psiBes, hus, map_one, one_mul]
     refine ⟨v, u, star (psiE ψ s), hv0, hu, huN, ?_, ?_⟩

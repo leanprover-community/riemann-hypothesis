@@ -84,72 +84,18 @@ public import Development.AutomorphicSpectrum.Statements.GeometryStatements.Prop
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PropFTopHolds
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagHeight
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.NefPolarization
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Topology.Sheaves.Init
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Objects
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Algebra.MvPolynomial.Funext
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Algebra.Order.Star.Int
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.PermFinTwoUniv
-import Mathlib.Topology.Sheaves.Presheaf
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Algebra.Azumaya.Basic
-import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
-import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
 import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGood
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRed
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedB
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedE
-import Mathlib.Tactic.TypeStar
 import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffAtOfIsPotential
 import ReciprocityTheory.AnalyticForms.PotentialTheory.IntegrableOnTargetOfTsupport
 import ReciprocityTheory.AnalyticForms.PotentialTheory.Stokes
@@ -988,126 +934,11 @@ private theorem exists_cuspData_cuspWeight_eq_of_torus_invariant (K : Type) [Fin
     simp only [L, Q]
     rw [Complex.sq_norm, Complex.normSq_add_mul_I]
     ring
-  have hLne : ∀ w : Fin 2 → ℤ, w ≠ 0 → L w ≠ 0 := by
-    intro w hw h
-    have hq := hL w
-    rw [h, norm_zero] at hq
-    have hA := mul_nonneg (sq_nonneg ε) (sq_nonneg ((w 0 : ℤ) : ℝ))
-    have hB := sq_nonneg ((w 1 : ℤ) : ℝ)
-    simp only [Q] at hq
-    have h1 : ((w 1 : ℤ) : ℝ) ^ 2 = 0 := by linarith
-    have h2 : ε ^ 2 * ((w 0 : ℤ) : ℝ) ^ 2 = 0 := by linarith
-    have h2' : ((w 0 : ℤ) : ℝ) ^ 2 = 0 := by
-      rcases mul_eq_zero.mp h2 with h3 | h3
-      · exact absurd h3 (pow_ne_zero 2 hε.ne')
-      · exact h3
-    have e0' : w 0 = 0 := by exact_mod_cast (pow_eq_zero_iff two_ne_zero).mp h2'
-    have e1' : w 1 = 0 := by exact_mod_cast (pow_eq_zero_iff two_ne_zero).mp h1
-    apply hw
-    funext i
-    fin_cases i <;> simp [e0', e1']
   let σ : ((Σ k, J k) → ℂ) → ℝ := fun z => Real.sqrt (s z)
   have hσ : ∀ z, σ z ^ 2 = s z := fun z => Real.sq_sqrt (hs z).le
-  have hσpos : ∀ z, 0 < σ z := fun z => Real.sqrt_pos.mpr (hs z)
-  have hsT : ∀ z ∈ D.Xo, ∀ c : K → ℂ, (∀ k, c k ≠ 0) → s (torusSmul c z) = s z := by
-    intro z hz c hc
-    simp only [s, hT z hz c hc]
-  have hC : ∀ z, 0 ≤ (n : ℝ) * ((D.N - D.j : ℕ) : ℝ) * s z := fun z => by
-    have := hs z
-    positivity
   let Cd : CuspData D ℤ (Fin 2 → ℤ) :=
-    { rank := 2
-      basis := Pi.basisFun ℤ (Fin 2)
-      form := fm
-      alt := fun v => by rw [hfm]; ring
-      unimod := by
-        rw [Matrix.det_fin_two]
-        simp [Matrix.of_apply, hfm, Pi.basisFun_apply]
-      emb := fun _ => Int.castRingHom ℂ
-      normSq := fun z v => ((n : ℝ) * ((D.N - D.j : ℕ) : ℝ) * s z * (ε ^ 2 + 1) + 1) *
-        (((v 0 : ℤ) : ℝ) ^ 2 + ((v 1 : ℤ) : ℝ) ^ 2)
-      normSq_pos := by
-        intro z _ v hv
-        have hC1 : 0 < (n : ℝ) * ((D.N - D.j : ℕ) : ℝ) * s z * (ε ^ 2 + 1) + 1 := by
-          have := hC z
-          positivity
-        apply mul_pos hC1
-        by_contra hle
-        push_neg at hle
-        have h1 : ((v 0 : ℤ) : ℝ) ^ 2 = 0 := by nlinarith [sq_nonneg ((v 0 : ℤ) : ℝ), sq_nonneg ((v 1 : ℤ) : ℝ)]
-        have h2 : ((v 1 : ℤ) : ℝ) ^ 2 = 0 := by nlinarith [sq_nonneg ((v 0 : ℤ) : ℝ), sq_nonneg ((v 1 : ℤ) : ℝ)]
-        have e0' : v 0 = 0 := by exact_mod_cast (pow_eq_zero_iff two_ne_zero).mp h1
-        have e1' : v 1 = 0 := by exact_mod_cast (pow_eq_zero_iff two_ne_zero).mp h2
-        apply hv
-        funext i
-        fin_cases i <;> simp [e0', e1']
-      form_le := by
-        intro z _ v w
-        rw [hfm]
-        push_cast
-        have hC1 : 1 ≤ (n : ℝ) * ((D.N - D.j : ℕ) : ℝ) * s z * (ε ^ 2 + 1) + 1 := by
-          have := hC z
-          have : 0 ≤ (n : ℝ) * ((D.N - D.j : ℕ) : ℝ) * s z * (ε ^ 2 + 1) := by positivity
-          linarith
-        set C := (n : ℝ) * ((D.N - D.j : ℕ) : ℝ) * s z * (ε ^ 2 + 1) + 1
-        set A := ((v 0 : ℤ) : ℝ) ^ 2 + ((v 1 : ℤ) : ℝ) ^ 2 with hA
-        set B := ((w 0 : ℤ) : ℝ) ^ 2 + ((w 1 : ℤ) : ℝ) ^ 2 with hB
-        have hA0 : 0 ≤ A := by positivity
-        have hB0 : 0 ≤ B := by positivity
-        have hlag : (((v 0 : ℤ) : ℝ) * ((w 1 : ℤ) : ℝ) - ((v 1 : ℤ) : ℝ) * ((w 0 : ℤ) : ℝ)) ^ 2 ≤ A * B := by
-          rw [hA, hB]
-          nlinarith [sq_nonneg (((v 0 : ℤ) : ℝ) * ((w 0 : ℤ) : ℝ) + ((v 1 : ℤ) : ℝ) * ((w 1 : ℤ) : ℝ))]
-        have hAB : A * B ≤ (C * A) * (C * B) := by
-          have hCC : 1 ≤ C * C := by nlinarith
-          nlinarith [mul_nonneg hA0 hB0]
-        linarith
-      lie := fun z _ v _ => ((σ z : ℝ) : ℂ) * L v
-      lie_add := by
-        intro z τ v w
-        funext c
-        simp only [L, Pi.add_apply]
-        push_cast
-        ring
-      lie_smul := by
-        intro z τ a v
-        funext c
-        simp only [L, Pi.smul_apply, smul_eq_mul, Int.coe_castRingHom]
-        push_cast
-        ring
-      lie_le := by
-        intro z _ v
-        have hterm : ‖((σ z : ℝ) : ℂ) * L v‖ ^ 2 = s z * Q v := by
-          rw [norm_mul, mul_pow, Complex.norm_real, Real.norm_eq_abs, sq_abs, hσ, hL]
-        simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
-        rw [hterm]
-        have h1 := hC z
-        have h2 := mul_nonneg (hC z) (sq_nonneg ((v 0 : ℤ) : ℝ))
-        have h3 := mul_nonneg (hC z) (mul_nonneg (sq_nonneg ε) (sq_nonneg ((v 1 : ℤ) : ℝ)))
-        have h4 := sq_nonneg ((v 0 : ℤ) : ℝ)
-        have h5 := sq_nonneg ((v 1 : ℤ) : ℝ)
-        show (n : ℝ) * (((D.N - D.j : ℕ) : ℝ) * (s z * (ε ^ 2 * ((v 0 : ℤ) : ℝ) ^ 2 + ((v 1 : ℤ) : ℝ) ^ 2))) ≤ _
-        nlinarith
-      inj := by
-        intro z _ τ I hI ρ v hvI hli
-        have hρ : ρ ≤ 1 := card_le_one_of_linearIndependent_cross_zero I (fun a ha b hb => by rw [← hfm]; exact hI a ha b hb)
-          ρ v hvI hli
-        rcases Nat.le_one_iff_eq_zero_or_eq_one.mp hρ with rfl | rfl
-        · exact linearIndependent_empty_type
-        · rw [linearIndependent_unique_iff]
-          intro h
-          have h1 := congrFun h ⟨0, hmN⟩
-          simp only [Pi.zero_apply] at h1
-          rcases mul_eq_zero.mp h1 with h2 | h2
-          · exact (hσpos z).ne' (by exact_mod_cast h2)
-          · exact hLne _ (hli.ne_zero default) h2
-      torus := by
-        intro z hz c hc
-        have h := hsT z hz c hc
-        constructor
-        · funext v
-          simp only [h]
-        · funext τ v w
-          simp only [σ, h] }
+    { form := fm
+      lie := fun z _ v _ => ((σ z : ℝ) : ℂ) * L v }
   have hent : ∀ z τ (w : Fin 2 → ℤ),
       (∑ c : Fin (D.N - D.j), (starRingEnd ℂ) (Cd.lie z τ w c) * Cd.lie z τ w c).re
         = ((D.N - D.j : ℕ) : ℝ) * (s z * Q w) := by

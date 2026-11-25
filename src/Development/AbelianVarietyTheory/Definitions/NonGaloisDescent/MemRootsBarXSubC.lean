@@ -50,8 +50,6 @@ open Polynomial Formalism.CyclotomicNorms
 
 variable (g : ℕ) [hg : Fact g.Prime]
 
-theorem N_pos {d : ℕ} (hd : 0 < d) : 0 < g ^ d - 1 := Nat.sub_pos_of_lt (Nat.one_lt_pow hd.ne' hg.out.one_lt)
-
 
 open Formalism.MainNotions.ArithmeticCylinders
 variable {g}

@@ -333,9 +333,6 @@ def uFi (b : Fin (D.R.rS + 1)) : (D.s.atP p).Ep := (((uF_unit Zd p b).unit⁻¹ 
 theorem uFi_mul (b : Fin (D.R.rS + 1)) : uFi Zd p b * uF Zd p b = 1 :=
   IsUnit.val_inv_mul (uF_unit Zd p b)
 
-theorem mul_uFi (b : Fin (D.R.rS + 1)) : uF Zd p b * uFi Zd p b = 1 := by
-  rw [mul_comm]; exact uFi_mul Zd p b
-
 def Cm (ξ : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) (𝓞 D.host.E)) :
     Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) (D.s.atP p).Ep :=
   Matrix.diagonal (uFi Zd p) * ξ.map (fun x => (D.s.atP p).ιE (x : D.host.E)) * Matrix.diagonal (uF Zd p)

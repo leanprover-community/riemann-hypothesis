@@ -314,7 +314,7 @@ theorem lPos_of_rapidDecay : GlobalTheory.Published.CuspRapidDecay → ∀ D : D
   subst hj0
   have hc := hw.com
   obtain ⟨hr, hL, hflat⟩ := hs
-  have hle := GlobalTheory.T.chain_stage_forms_twisted_level_le_finer_level D c w hw 0 hj s ⟨hr, hL, hflat⟩ hr
+  have hle := _root_.GlobalTheory.FlatLevel.flatLe D c w hw 0 hj s ⟨hr, hL, hflat⟩ hr
   have hB' := isPar_flat_of_le hr hle u B hB
   have hbd : GlobalTheory.LFun.Bounded (GlobalTheory.LFun.above D.host.E (c.S : Set (HeightOneSpectrum (𝓞 D.host.F)))) B D.R.r ((D.R.r : ℝ) / 2) :=
     GlobalTheory.LiftPole.Bounded.mono (bounded_first_member hCRD hc hj hflat _ B hB') (by linarith)
@@ -351,8 +351,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (SplitPro
 open GlobalTheory.IndefiniteRowSideFullHecke.VolumeFlatSection (Blocks parahoric datum)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-theorem _root_.GlobalTheory.T.chain_first_stage_L_values_positive : GlobalTheory.Published.CuspRapidDecay → ∀ D : D7, LPos D := by
-  first | exact @GlobalTheory.ChainTw.lPos_of_rapidDecay
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ChainFirstStageLValuesPositiveStatement =====

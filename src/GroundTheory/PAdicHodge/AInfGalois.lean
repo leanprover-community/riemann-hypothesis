@@ -99,17 +99,6 @@ theorem coe_untilt_preTiltMap (x : 𝒪K♭) :
       φ ((PreTilt.untilt x : normInteger K) : K) := by
   rw [untilt_preTiltMap, coe_integerMap]
 
-theorem preTiltMap_injective : Function.Injective (preTiltMap (p := p) φ hφ) := by
-  refine (injective_iff_map_eq_zero _).2 fun x hx => ?_
-  have h1 := coe_untilt_preTiltMap φ hφ x
-  rw [hx, IsPerfectoidField.untilt_zero, ZeroMemClass.coe_zero, eq_comm,
-    map_eq_zero_iff φ φ.injective] at h1
-  exact (IsPerfectoidField.untilt_eq_zero_iff p).1 (Subtype.ext h1)
-
-
-variable (p) in
-def tiltMap : K♭ →+* L♭ :=
-  IsFractionRing.map (preTiltMap_injective (p := p) φ hφ)
 
 theorem ringHom_ext_wittVector_preTilt {f g : WittVector p 𝒪K♭ →+* normInteger L}
     (h : ∀ a, f (WittVector.teichmuller p a) = g (WittVector.teichmuller p a)) : f = g := by

@@ -274,14 +274,6 @@ theorem ratIn_le {x y c : ℝ} (hy : y ≤ c) (hc : 0 ≤ c) : ((Formalism.MainN
   · exact (RowBSize.ratIn_lt h).le.trans hy
   · rw [RowBSize.ratIn_of_not_lt h]; simpa using hc
 
-theorem one_le_hB {D : D7} (L : SizeData₂ D) : 1 ≤ TwistedPlaces.hB L := by
-  unfold TwistedPlaces.hB
-  have := RowBSize.one_le_b' L
-  have := L.Sc_pos
-  have := L.etaSz_pos
-  have : (0 : ℝ) ≤ D.R.t := by positivity
-  linarith
-
 theorem etaP_nonneg {D : D7} (L : SizeData₂ D) : 0 ≤ TwistedPlaces.eta₃ L := by
   unfold TwistedPlaces.eta₃
   have := L.etaSz_pos
@@ -292,10 +284,10 @@ theorem placeWeight_nonneg {D : D7} (L : SizeData₂ D) : 0 ≤ TwistedPlaces.wP
 
 theorem coreE_nonneg {D : D7} (L : SizeData₂ D) (l : ℕ) : 0 ≤ coreE L l := by
   unfold coreE
-  have h1 : 0 ≤ TwistedPlaces.hB L / l := div_nonneg (by linarith [one_le_hB L]) (by positivity)
+  have h1 : 0 ≤ TwistedPlaces.hB L / l := div_nonneg (by linarith [Formalism.MainNotions.TwistedPlaces.one_le_hB L]) (by positivity)
   have h2 : 0 ≤ Real.logb l (TwistedPlaces.hB L) := by
     unfold Real.logb
-    exact div_nonneg (Real.log_nonneg (one_le_hB L)) (Real.log_natCast_nonneg l)
+    exact div_nonneg (Real.log_nonneg (Formalism.MainNotions.TwistedPlaces.one_le_hB L)) (Real.log_natCast_nonneg l)
   linarith
 
 theorem flat_nonneg {D : D7} (L : SizeData₂ D) (bd : Prop) (l : ℕ) : 0 ≤ flat L bd l := by
@@ -565,19 +557,11 @@ open NumberField IsDedekindDomain Formalism Formalism.ConjugateSelfDual Reciproc
 
 namespace GlobalTheory.NLinkMono
 
-theorem mul_rpow_self_mono {x C C' : ℝ} (hx : 1 ≤ x) (h : C ≤ C') (h0 : 0 ≤ C') :
-    C * x ^ C ≤ C' * x ^ C' := by
-  have hxp : 0 < x := lt_of_lt_of_le one_pos hx
-  rcases le_or_gt 0 C with hC | hC
-  · exact mul_le_mul h (Real.rpow_le_rpow_of_exponent_le hx h) (Real.rpow_nonneg hxp.le _) h0
-  · have : C * x ^ C ≤ 0 := mul_nonpos_of_nonpos_of_nonneg hC.le (Real.rpow_nonneg hxp.le _)
-    exact this.trans (mul_nonneg h0 (Real.rpow_nonneg hxp.le _))
-
 theorem main : ∀ (D : D7) (L : SizeData₂ D) (P : ParameterChoice' D L) (X : KillingConditions.HubData D) (C C' : ℝ), C ≤ C' → 0 ≤ C' → (StarF L X.ρ C → StarF L X.ρ C') ∧ (StarH L C → StarH L C') ∧ (KillingConditions.BBLe L X C → KillingConditions.BBLe L X C') ∧ (TwistedPlaces.ParametersPolynomiallyBounded L C P → TwistedPlaces.ParametersPolynomiallyBounded L C' P) := by
   intro D L P X C C' h h0
   have hx : 1 ≤ L.sc.x := L.sc.one_lt_alt.le
   have hxp : 0 < L.sc.x := lt_of_lt_of_le one_pos hx
-  have hCx := mul_rpow_self_mono hx h h0
+  have hCx := GlobalTheory.NLink.mul_rpow_self_le hx h h0
   have hlog : 0 ≤ Real.log L.sc.x := Real.log_nonneg hx
   have hb : 0 ≤ L.sc.b := (Real.exp_pos _).le
   have hLg : 0 ≤ TwistedPlaces.large₂ L := Real.rpow_nonneg hxp.le _

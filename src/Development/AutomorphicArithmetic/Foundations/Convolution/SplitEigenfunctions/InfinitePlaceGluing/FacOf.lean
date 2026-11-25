@@ -1120,13 +1120,6 @@ private theorem em_nU {E : Type} [Field E] [NumberField E] (D : Dat ℚ E) (x : 
   simp only [UpperTheory.ConvolutionTheory.RankTwoDescent.em, nE, Matrix.GeneralLinearGroup.map_apply, gl_val]
   fin_cases i <;> fin_cases j <;> simp [nU, Dat.mkE]
 
-private theorem em_sc {E : Type} [Field E] [NumberField E] (z : (A ℚ)ˣ) :
-    em E (Matrix.GeneralLinearGroup.scalar (Fin 2) z) = Matrix.GeneralLinearGroup.scalar (Fin 2) (ideleEmbedding ℚ E z) := by
-  refine Units.ext ?_
-  ext i j
-  simp only [UpperTheory.ConvolutionTheory.RankTwoDescent.em, Matrix.GeneralLinearGroup.map_apply, sc_val, coe_ideleEmbedding]
-  by_cases e : i = j <;> simp [e, Matrix.diagonal]
-
 private theorem Wo_lev {E : Type} [Field E] [NumberField E] (D : Dat ℚ E) {φ : GL (Fin 2) (A E) → ℂ} {N : ℕ}
     (hl : ∀ k, Lev N k → ∀ g, φ (g * em E k) = φ g) {κ : GL (Fin 2) (A ℚ)} (hκ : Lev N κ) (h : GL (Fin 2) (A E)) :
     Wo D φ (h * em E κ) = Wo D φ h := by
@@ -1150,7 +1143,7 @@ theorem UpperTheory.whittaker_diagTorus_mul_iwasawa_eq :
       _ = _ := by rw [aE_mD]; simp only [mul_assoc]
   have hN : ideleNorm ℚ E (ideleEmbedding ℚ E ζ⁻¹) = ζ⁻¹ ^ 2 := by
     rw [ideleNorm_ideleEmbedding, Module.finrank_eq_card_basis D.b, Fintype.card_fin]
-  rw [e, map_mul, Wo_lev D hl hκ, map_mul, map_mul, em_nU D, em_sc, hn, hz, hN, map_pow]
+  rw [e, map_mul, Wo_lev D hl hκ, map_mul, map_mul, em_nU D, UpperTheory.ConvolutionTheory.RankTwoDescent.Nz.em_scalar, hn, hz, hN, map_pow]
   simp
 end -- clump:auto
 end -- clump:auto

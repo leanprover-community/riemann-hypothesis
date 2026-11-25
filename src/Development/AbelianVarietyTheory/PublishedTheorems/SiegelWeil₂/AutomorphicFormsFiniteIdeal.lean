@@ -60,10 +60,6 @@ def IsMaxCompactInf (V : HSp D) (K : Subgroup (GA D V)) : Prop :=
   (∀ k ∈ K, k ∈ GinfC V) ∧ IsCompact (K : Set (GA D V)) ∧
     ∀ K' : Subgroup (GA D V), (∀ k ∈ K', k ∈ GinfC V) → IsCompact (K' : Set (GA D V)) → K ≤ K' → K' = K
 
-abbrev LieC (V : HSp D) : Type := ⨁ τ : D.what₂.Tau, ℂ ⊗[ℝ] LieAt V τ
-
-abbrev Env (V : HSp D) : Type := UniversalEnvelopingAlgebra ℂ (LieC V)
-
 end GlobalTheory.AutFinLit
 
 namespace GlobalTheory.Published

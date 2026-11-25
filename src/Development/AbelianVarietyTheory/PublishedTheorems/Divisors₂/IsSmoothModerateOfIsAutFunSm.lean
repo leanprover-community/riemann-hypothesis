@@ -278,24 +278,6 @@ theorem exists_unit_torus {A : Type} [CommRing A] {s : A →+* A} (hs : ∀ a, s
   exact ⟨⟨M d, M d⁻¹, hM d, hM'⟩, show cT s (M d) * J * M d = J by rw [hU, Matrix.mul_assoc, hM', Matrix.mul_one],
     hX d, hY d, rfl⟩
 
-theorem exists_isRealLine (h : IsCMExt F E σ) (hJ : IsHermND σ J) {w : InfinitePlace F} (τ : EmbOver E w)
-    {Z : Matrix (Fin n) (Fin n) ℂ} (hZ : Zᴴ * J.map τ.1 + J.map τ.1 * Z = 0) :
-    ∃ γ, IsRealLine σ J γ ∧ ∀ t : ℝ, archMat σ J τ (projArch σ J w (γ t)) = NormedSpace.exp (t • Z) := by
-  have hd : IsUnit (J.map τ.1).det := by
-    rw [← RingHom.mapMatrix_apply, ← RingHom.map_det]
-    exact (IsUnit.mk0 _ hJ.2).map _
-  have hy : ∀ t : ℝ, ∃ y : GArch σ J w, archMat σ J τ y = NormedSpace.exp (t • Z) := fun t => by
-    obtain ⟨u, hu⟩ := Matrix.isUnit_exp (t • Z)
-    have h1 := GlobalTheory.SmoothForms.exp_mem_UH (X := t • Z) hd (by
-      rw [conjTranspose_smul, star_trivial, Matrix.smul_mul, Matrix.mul_smul, ← smul_add, hZ, smul_zero])
-    refine ⟨(archEquiv J h τ).symm ⟨u, show _ * _ * _ = _ from hu ▸ h1⟩, ?_⟩
-    rw [GlobalTheory.Orb.archMat_eq_archEquiv J h, MulEquiv.apply_symm_apply]
-    exact hu
-  choose y hy using hy
-  exact ⟨fun t => embArch σ J w (y t), ⟨w, τ, Z, hZ, fun t => ⟨y t, rfl, hy t⟩⟩, fun t => by
-    rw [projArch_embArch_self, hy]⟩
-
-
 variable (σ J) in
 theorem isSmoothModerate_const (c : ℂ) : IsSmoothModerate σ J fun _ => c := by
   refine ⟨fun _ _ _ => rfl, ⟨⊤, isOpen_univ, fun _ _ _ _ => rfl⟩, continuous_const, fun _ _ _ _ => contDiff_const, 0,

@@ -61,13 +61,6 @@ theorem h_smul_left (x y : n → A) (c : A) : D.h (c • x) y = D.σA c * D.h x 
   simp only [h, hform, Pi.smul_apply, smul_eq_mul, map_mul, Finset.mul_sum]
   exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
 
-theorem h_sub_left (x x' y : n → A) : D.h (x - x') y = D.h x y - D.h x' y := by
-  simp only [h, hform, Pi.sub_apply, map_sub, sub_mul, Finset.sum_sub_distrib]
-
-theorem h_sum_left {ι : Type} (s : Finset ι) (x : ι → n → A) (y : n → A) :
-    D.h (∑ i ∈ s, x i) y = ∑ i ∈ s, D.h (x i) y := by
-  exact map_sum (AddMonoidHom.mk' (fun x => D.h x y) fun a b => D.h_add_left a b y) x s
-
 structure Hyp : Prop where
   σσ : ∀ x, D.σA (D.σA x) = x
   herm : ∀ i j, D.σA (D.JA j i) = D.JA i j

@@ -41,7 +41,7 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.Sie
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.HeckeTateFunctionalEquationCM
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.RationalDualityOfAllCoefficients
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.HilbertKodairaSpencer
-public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GaussManinPeriods
+public import Development.AbelianVarietyTheory.Definitions.Divisors.IsKSValueOneOfRetraction
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.CuspDiscreteDecompositionGL
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsNormLeHeightPow
 public import Development.AbelianVarietyTheory.PublishedTheorems.PublishedFoundations.NonemptyAlgHomOfIsRayOfDvd
@@ -126,7 +126,6 @@ structure LitCM : Prop where
   dr : AbelianDeRham
   dual : AbelianDualCrystal
   per : PeriodComparison
-  gmp : GaussManinPeriods
   st : SerreTateGoodReductionSt
   cm : EllipticMainTheoremCM
   hj : HilbertClassFieldJ

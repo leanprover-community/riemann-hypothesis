@@ -829,11 +829,6 @@ namespace UpperTheory.V.Z.Kato.Joint
 def twb (N : ℕ) (s : ℂ) (b : ℤ) : ℤ → ℂ := fun B =>
   (if (B : ZMod N) = b then 1 else 0) - s * (if (B : ZMod N) = -b then 1 else 0)
 
-theorem Uo_iterate {R : Type*} [CommRing R] (l m : ℕ) (f : ℕ → R) (i : ℕ) : (Uo l)^[m] f i = f (l ^ m * i) := by
-  induction m generalizing f with
-  | zero => simp
-  | succ m ih => rw [Function.iterate_succ_apply, ih, Uo, pow_succ', mul_assoc]
-
 private def hz {N : ℕ} [NeZero N] (θ : DirichletCharacter ℂ N) (z : ZMod N) : ℂ :=
   ∑ y : ZMod N, θ y * ZMod.stdAddChar (y * z)
 
@@ -934,7 +929,7 @@ theorem ser_eq_Zm {l : ℕ} [hl : Fact l.Prime] (ι : PadicAlgCl l ≃+* ℂ) (N
     · simp [h]
     · simp only [h, if_false, Int.cast_mul, Int.cast_natCast, ZMod.natCast_zmod_val, ← hu]
       exact wsum θ u _ _ _
-  rw [Uo_iterate, ser, up]
+  rw [GlobalTheory.zs_iter_Uo, ser, up]
   generalize l ^ m * i = n
 
   simp only [coPtMu, ← mul_eq_cmul, mul, map_sum, map_mul, RingEquiv.apply_symm_apply, Finset.mul_sum, Zm]
@@ -1049,7 +1044,7 @@ theorem UpperTheory.V.Z.Kato.Joint.avgEq :
       IsCoprime.mul_left (Nat.isCoprime_iff_coprime.mpr (ZMod.val_coe_unit_coprime u)) ha
     have key := Zm_sum Finset.univ k l (hat θ) _ _ _ _
       (fun A d => ι (ψ ((A : ZMod (l ^ m)) * (d : ZMod (l ^ m))⁻¹))) (twb_sum θ χ hχ b hb) (l ^ m * i)
-    simp only [ser_eq_Zm_of_parity ι N θ m k ψ _ _ hk ho (hu _) hs, frm, Uo_iterate]
+    simp only [ser_eq_Zm_of_parity ι N θ m k ψ _ _ hk ho (hu _) hs, frm, GlobalTheory.zs_iter_Uo]
     calc _ = θ (a : ZMod N) * ∑ u : (ZMod N)ˣ, (θ * χ) u * Zm k l (hat θ) (twb N (θ (-1)) (((u : ZMod N).val : ℤ) * b))
             (fun A d => ι (ψ ((A : ZMod (l ^ m)) * (d : ZMod (l ^ m))⁻¹))) (l ^ m * i) := by
           rw [Finset.mul_sum]
@@ -1177,17 +1172,6 @@ private theorem norm_le_of_pow {l : ℕ} [Fact l.Prime] (ι : PadicAlgCl l ≃+*
   have h1 : ‖ι.symm z‖ ^ n = 1 := by rw [← norm_pow, ← map_pow, h, map_one, norm_one]
   exact ((pow_eq_one_iff_of_nonneg (norm_nonneg _) hn).mp h1).le
 
-private theorem hat_std {N : ℕ} [NeZero N] (φ : ZMod N → ℂ) (d : ℤ) :
-    GlobalTheory.EisM.hat φ d = ∑ y : ZMod N, φ y * ZMod.stdAddChar (y * (d : ZMod N)) := by
-  unfold GlobalTheory.EisM.hat
-  refine Finset.sum_nbij' (fun i => (i : ZMod N)) (fun y => y.val) (fun _ _ => Finset.mem_univ _)
-    (fun y _ => Finset.mem_range.mpr (ZMod.val_lt y)) (fun i hi => ZMod.val_cast_of_lt (Finset.mem_range.mp hi))
-    (fun y _ => ZMod.natCast_zmod_val y) (fun i _ => ?_)
-  have h : ((i : ZMod N)) * (d : ZMod N) = (((i : ℤ) * d : ℤ) : ZMod N) := by push_cast; rfl
-  rw [h, ZMod.stdAddChar_coe]
-  push_cast
-  rfl
-
 private theorem norm_two' {l : ℕ} [hl : Fact l.Prime] (h : l ≠ 2) : ‖(2 : PadicAlgCl l)‖ = 1 := by
   have h1 : (2 : PadicAlgCl l) = algebraMap ℚ_[l] (PadicAlgCl l) ((2 : ℕ) : ℚ_[l]) := by
     rw [map_natCast]; rfl
@@ -1203,7 +1187,7 @@ theorem UpperTheory.V.Z.Kato.Joint.hatW :
     have h0 : ZMod.dft (fun y : ZMod N => θ y) = 0 := by
       funext k
       have := hc (-k)
-      rw [hat_std] at this
+      rw [GlobalTheory.EisM.hat_eq_sum_std] at this
       rw [ZMod.dft_apply, Pi.zero_apply, ← this]
       refine Finset.sum_congr rfl fun y _ => ?_
       simp [mul_comm]
@@ -1211,7 +1195,7 @@ theorem UpperTheory.V.Z.Kato.Joint.hatW :
     simp at h1
   · have h2 : ι.symm 2 = 2 := map_ofNat _ 2
 
-    rw [map_div₀, norm_div, h2, norm_two' hl, div_one, hat_std, map_sum]
+    rw [map_div₀, norm_div, h2, norm_two' hl, div_one, GlobalTheory.EisM.hat_eq_sum_std, map_sum]
     refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg zero_le_one fun y _ => ?_
     rw [map_mul, norm_mul]
     refine mul_le_one₀ ?_ (norm_nonneg _) ?_
@@ -1223,7 +1207,7 @@ theorem UpperTheory.V.Z.Kato.Joint.hatW :
     · refine norm_le_of_pow ι _ N (NeZero.ne N) ?_
       rw [← AddChar.map_nsmul_eq_pow]
       simp
-  · rw [hat_std, hat_std]
+  · rw [GlobalTheory.EisM.hat_eq_sum_std, GlobalTheory.EisM.hat_eq_sum_std]
     simp
 end -- clump:auto
 end -- clump:auto

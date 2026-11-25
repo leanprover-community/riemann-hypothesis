@@ -120,15 +120,4 @@ theorem cycMod_surjective (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure 
   obtain ⟨s, hs⟩ := GlobalTheory.InertiaPowers.cycMod_Ine_surjective l Ω A hA r x
   exact ⟨_, hs⟩
 
-theorem cycMod_repC [IsAlgClosure ℚ Ω] (l : ℕ) [Fact l.Prime] (r : ℕ) (x : (ZMod (l ^ r))ˣ) :
-    cycMod ℚ Ω l r (repC (Ω := Ω) l r x) = x :=
-  Classical.epsilon_spec (cycMod_surjective Ω l r x)
-
-theorem galB_section_zero (X : Tower Ω ε) (l : ℕ) [Fact l.Prime] (s : Ω ≃ₐ[ℚ] Ω) (w : ℕ) (a : X.Khat l) :
-    X.galB l s (fun u => (u 0) ^ w • a) = fun u => (u 0) ^ w • X.kmap l (X.gal s) a := by
-  funext u
-  show X.kmap l (X.gal s)
-      (((![u 0, (cyclotomicCharacter Ω l s.toRingEquiv : ℤ_[l]) * u 1] : Fin 2 → ℤ_[l]) 0) ^ w • a) = _
-  rw [map_smul, Matrix.cons_val_zero]
-
 end GlobalTheory.K4

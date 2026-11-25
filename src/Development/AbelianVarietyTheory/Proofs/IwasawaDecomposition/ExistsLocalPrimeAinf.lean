@@ -368,8 +368,6 @@ end General
 
 variable {l : ℕ} [Fact l.Prime]
 
-alias alg_tower := _root_.GlobalTheory.MemLoc.algebraMap_ainf_acris_eq
-
 theorem dR_inj : Function.Injective (algebraMap (Per.BdRp l) (Per.BdR l)) := (_root_.GlobalTheory.MemLoc.BdRField.bdR_isField l).2.1
 
 theorem ev_zero (y : Per.BdRp l) : y ∈ Per.FilP l 0 := by

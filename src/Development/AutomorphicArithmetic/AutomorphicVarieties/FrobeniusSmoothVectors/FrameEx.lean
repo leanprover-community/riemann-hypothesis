@@ -1147,16 +1147,6 @@ private theorem pG_nat {F : Type} [Field F] [NumberField F] (S : Finset (HeightO
   rw [hc, Nat.cast_mul]
   exact Ideal.mul_mem_right _ _ (Ideal.absNorm_mem _)
 
-private theorem pG_lc {H M : Type} [Group H] [TopologicalSpace H] [IsTopologicalGroup H] [Group M]
-    (φ : H →* M) (h : IsOpen (φ.ker : Set H)) : IsLocallyConstant φ := by
-  rw [IsLocallyConstant.iff_eventually_eq]
-  intro x
-  have ho : IsOpen ((fun y => x⁻¹ * y) ⁻¹' (φ.ker : Set H)) := h.preimage (by fun_prop)
-  filter_upwards [ho.mem_nhds (show x ∈ (fun y => x⁻¹ * y) ⁻¹' (φ.ker : Set H) by simp)] with y hy
-  have : φ (x⁻¹ * y) = 1 := hy
-  rw [map_mul, map_inv, inv_mul_eq_one] at this
-  exact this.symm
-
 theorem UpperTheory.V.GC.phiGam :
     ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (l : ℕ) [Fact l.Prime] (S : Finset (HeightOneSpectrum (𝓞 F))) (K : Subgroup (G F Ω)) (Γ : Type) [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [CompactSpace Γ] [T2Space Γ] [TotallyDisconnectedSpace Γ] (π : G F Ω →* Γ), GLink l S K π → Alg.PhiCond Γ l := by
   intro F Ω _ _ _ _ _ l hl S K Γ _ _ _ _ _ _ π hL H hH
@@ -1213,7 +1203,7 @@ theorem UpperTheory.V.GC.phiGam :
   refine Finite.of_injective (β := {φ : G E Ω → ZMod l | IsLocallyConstant φ ∧ (∀ a b, φ (a * b) = φ a + φ b) ∧
       ∀ A : ValuationSubring Ω, ¬ A.valuation (N : Ω) < 1 → ∀ g ∈ Ine (F := E) A, φ g = 0} ×
       (H ⧸ e.range → Multiplicative (ZMod l)))
-    (fun φ => (⟨fun g => Multiplicative.toAdd (φ.1 (e g)), ((pG_lc φ.1 φ.2).comp_continuous he).comp _,
+    (fun φ => (⟨fun g => Multiplicative.toAdd (φ.1 (e g)), ((UpperTheory.Reformulated.B.LocallyConstantOfKernel.lc_of_ker φ.1 φ.2).comp_continuous he).comp _,
       fun a b => by simp only [map_mul, toAdd_mul], fun A hA g hg => by
         show Multiplicative.toAdd (φ.1 (e g)) = 0
         rw [hker A hA g hg, map_one, toAdd_one]⟩, fun q => φ.1 q.out)) ?_

@@ -79,7 +79,7 @@ theorem cmHost_conj_sqrtNegDisc (H : Host E) : starRingEnd ℂ H.rt0 = -H.rt0 :=
       have : H.rt0.re * H.rt0.im = 0 := by linarith
       exact (mul_eq_zero.1 this).resolve_left hne
     rw [this] at hre
-    nlinarith [mul_self_nonneg H.rt0.re]
+    linarith only [hre, hd, mul_self_nonneg H.rt0.re]
   apply Complex.ext <;> simp [h0]
 
 theorem host_emb_rt_sq (H : Host E) (τ : E →+* ℂ) : τ (H.rt : E) ^ 2 = H.rt0 ^ 2 := by

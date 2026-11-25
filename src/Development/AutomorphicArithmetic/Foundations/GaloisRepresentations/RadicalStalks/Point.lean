@@ -1801,7 +1801,7 @@ theorem UpperTheory.Gal.Ord.rankV :
   let A₁ := (Over.pullback (spMap (frobR p k hk))).obj A
   have hπ : IsGrpPullback A₁ A _ _ := isGrpPullback_pullback A (spMap (frobR p k hk))
   have hA₁ : IsAbelianScheme A₁ := isAbelianScheme_pullback_obj _ A hA
-  obtain ⟨F, hFm, hF⟩ := GlobalTheory.T.exists_relativeFrobenius_grpScheme_charP p k hk A A₁ _ hπ
+  obtain ⟨F, hFm, hF⟩ := _root_.GlobalTheory.RelFrobGrp.main p k hk A A₁ _ hπ
   obtain ⟨t₁, ht⟩ := exists_tower hk t hπ
   have mπ := grpMor_of_isGrpPullback hπ
   have hid : (frobR p k hk).comp σ = RingHom.id k := RingHom.ext fun x => (frobR_apply p k hk _).trans (hσ x)

@@ -528,10 +528,6 @@ def toBdR : Bcris p R →+* BdR p R :=
     toBdR p R (logTeich η) = algebraMap _ _ (BdRPlus.logTeich η) := by
   rw [logTeich, toBdR_algebraMap_acris, Acris.toBdRPlus_logTeich]
 
-variable (p R) in
-def fil (i : ℤ) : AddSubgroup (Bcris p R) :=
-  (BdR.fil p R i).toAddSubgroup.comap (toBdR p R).toAddMonoidHom
-
 end Bcris
 
 namespace Bst
@@ -547,10 +543,6 @@ def toBdR : Bst p R →+* BdR p R :=
 @[simp] theorem toBdR_algebraMap_padic (a : ℚ_[p]) :
     toBdR p R (algebraMap _ _ a) = algebraMap _ _ a := by
   rw [IsScalarTower.algebraMap_apply _ (Bcris p R), toBdR_algebraMap, Bcris.toBdR_algebraMap_padic]
-
-variable (p R) in
-def fil (i : ℤ) : AddSubgroup (Bst p R) :=
-  (BdR.fil p R i).toAddSubgroup.comap (toBdR p R).toAddMonoidHom
 
 end Bst
 

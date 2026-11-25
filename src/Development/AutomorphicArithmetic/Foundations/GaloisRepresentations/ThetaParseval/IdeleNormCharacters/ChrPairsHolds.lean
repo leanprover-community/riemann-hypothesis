@@ -405,7 +405,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 theorem _root_.GlobalTheory.T.heckeCharCM_eta_local_eq_neg_one_pow_val_inert : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∀ μ : HChar E,
     (∀ x, μ.1 (GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.ideleMap (maximalRealSubfield E) E x) = (GlobalTheory.GalOfCusp.quadChar E).1 x) →
@@ -423,8 +422,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain GlobalTheory.CuspRep GlobalTheory.UnitaryBC Formalism.L2.Host
-
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace UpperTheory.ConvolutionTheory.D.MultiplierQuotient
 
@@ -663,12 +660,12 @@ private theorem consistent (hU : GlobalTheory.BCT.Unr E) (w₀ : HeightOneSpectr
     (GlobalTheory.GalOfCusp.quadChar E).1 b = psi e (diagUnits E k * ideleMap (maximalRealSubfield E) E b * u) := by
   obtain ⟨⟨hx1, hx2⟩, hx3⟩ := hx
   have hu1 := offUnits_le_unitIdl w₀ hu
-  have hCu := GlobalTheory.T.cmExtensionIdeleConj_mem_finiteUnitIdeles E u hu1
+  have hCu := _root_.GlobalTheory.ConjUnit.ideleConj_mem_unitIdl E u hu1
   set C := ideleConj (maximalRealSubfield E) E with hCdef
   set I := ideleMap (maximalRealSubfield E) E b with hI
   set c : Eˣ →* Eˣ := Units.map (conj (maximalRealSubfield E) E).toRingEquiv.toRingHom.toMonoidHom with hc
   have hCx : C (diagUnits E k * I * u) = diagUnits E (c k) * I * C u := by
-    rw [map_mul, map_mul, hI, GlobalTheory.T.cmExtensionIdeleConj_ideleMap_maxRealSubfield]
+    rw [map_mul, map_mul, hI, _root_.GlobalTheory.ConjIdeleReal.ideleConj_ideleMap]
     congr 2
     exact GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.ideleConj_principalIdele (maximalRealSubfield E) E k
   set x := diagUnits E k * I * u with hxdef
@@ -709,7 +706,7 @@ private theorem consistent (hU : GlobalTheory.BCT.Unr E) (w₀ : HeightOneSpectr
   have hb'E : ideleMap (maximalRealSubfield E) E b' ∈ GlobalTheory.Mem.Chr.unitIdl E := by
     have : ideleMap (maximalRealSubfield E) E b' = x * u⁻¹ := by rw [hxb, mul_inv_cancel_right]
     rw [this]; exact mul_mem hx1 (inv_mem hu1)
-  rw [hηb, eta_eq_infSign hU b' (GlobalTheory.T.mem_finiteUnitIdeles_of_map_maxRealSubfield E b' hb'E), hxb, (psi e).map_mul _ u, psi_off e w₀ hu, mul_one,
+  rw [hηb, eta_eq_infSign hU b' (_root_.GlobalTheory.UnitDown.unit_down E b' hb'E), hxb, (psi e).map_mul _ u, psi_off e w₀ hu, mul_one,
     psi_ideleMap e he]
 
 private theorem quadChar_norm (b : Ideles (maximalRealSubfield E)) :
@@ -776,7 +773,7 @@ theorem UpperTheory.ConvolutionTheory.D.muEx :
       ∀ z : (Cinf E)ˣ, (chiInf μ z : ℂ) = ∏ v, (z.1 v / (‖z.1 v‖ : ℂ)) ^ e v) ∧ ∀ w ∈ S, μ.UnrAt w := by
   intro E _ _ _ hU S hS e he
   obtain ⟨w₀, hw₀, hSw⟩ := exists_split_avoid S hS
-  obtain ⟨V, hVo, hV⟩ := GlobalTheory.T.exists_isOpen_subgroup_adicUnits_no_rootsOfUnity E w₀
+  obtain ⟨V, hVo, hV⟩ := _root_.GlobalTheory.RootOpen.exists_open_subgroup_no_roots E w₀
   let α : Eˣ × (Neutral.B1.Ideles (maximalRealSubfield E) × offUnits w₀) →* Neutral.B1.Ideles E :=
     (Neutral.B1.diagUnits E).coprod ((GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.ideleMap (maximalRealSubfield E) E).coprod (offUnits w₀).subtype)
   let a : Eˣ × (Neutral.B1.Ideles (maximalRealSubfield E) × offUnits w₀) →* ℂˣ :=

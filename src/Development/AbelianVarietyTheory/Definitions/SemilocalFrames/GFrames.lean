@@ -134,8 +134,6 @@ def St : Subgroup G.GLV := A.rat fun p => (G.S p).St
 
 def K0 : Subgroup G.GLV := A.rat fun p => (G.S p).K0
 
-def H0 : Subgroup G.GLV := A.rat fun p => (G.S p).H0
-
 def stabD (d : G.Dat) : Subgroup G.GLV :=
   A.rat fun p => (G.S p).H0 ⊓ MulAction.stabilizer (G.S p).GLV (d p)
 

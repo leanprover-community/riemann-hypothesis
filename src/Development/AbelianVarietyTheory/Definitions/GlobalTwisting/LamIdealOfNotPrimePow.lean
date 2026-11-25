@@ -282,11 +282,6 @@ def fam : LFam where
         (fun p _ => mul_nonneg (ao_nonneg _) (ao_nonneg _)) hm)
       unfold ao; split_ifs <;> simp
 
-theorem res_fam : fam.res 1 = 1 / 2 := by
-  have : (((1 / 2 : ℝ) * Fintype.card (ZMod 1) : ℝ) : ℂ) = 1 / 2 := by simp
-  rw [LFam.res, if_pos rfl]
-  exact this
-
 end OddFam
 
 end GlobalTheory.Hk

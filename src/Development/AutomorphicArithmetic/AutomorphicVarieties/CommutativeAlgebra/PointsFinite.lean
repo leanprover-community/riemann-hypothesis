@@ -212,14 +212,15 @@ private theorem pf_vanish {O X σ S : Type} [CommRing O] [AddCommGroup X] [Finit
 section Core
 
 variable {O X R K : Type} [CommRing O] [AddCommGroup X] [CommRing R] [Algebra O R] (W : WPres O X R)
-  [Field K] [Algebra O K] (ξ : W.A →ₐ[O] K)
+  [CommRing K] [Algebra O K] (ξ : W.A →ₐ[O] K)
 
 private theorem pf_zprod (m : W.σ →₀ ℕ) :
     ((m.prod fun s k => W.zA s ^ k : W.A) : R) = W.π (monomial m 1) := by
   rw [pf_monomial]
   exact map_finsuppProd W.A.val _ _
 
-private theorem pf_nonint (n : W.σ →₀ ℕ) (hn : n ≠ 0) (h0 : Finsupp.weight W.wt n = 0)
+private theorem pf_nonint {K : Type} [Field K] [Algebra O K] (ξ : W.A →ₐ[O] K)
+    (n : W.σ →₀ ℕ) (hn : n ≠ 0) (h0 : Finsupp.weight W.wt n = 0)
     (ha : (n.prod fun s k => ξ (W.zA s) ^ k) ≠ 0) :
     ¬ IsIntegral O (n.prod fun s k => ξ (W.zA s) ^ k)⁻¹ := by
   classical
@@ -337,7 +338,7 @@ private theorem pf_agree (hι : Function.Injective ι)
   rw [Ideal.bot_mul, Ideal.mem_bot, sub_eq_zero] at hc'
   rw [hc', hc]
 
-private theorem pf_factor [DecidableEq X] (hι : Function.Injective ι)
+theorem UpperTheory.V.Alg.wpres_factor_of_adic [DecidableEq X] (hι : Function.Injective ι)
     (hg : ∀ s, ι (g (MvPowerSeries.X s)) = t (Multiplicative.ofAdd (W.wt s)) * ξ (W.zA s))
     (J : Ideal B) [IsHausdorff J B] (hJ : ∀ s, g (MvPowerSeries.X s) ∈ J)
     (h0 : ∀ x ∈ W.gr 0, ∃ c, ι c = ξ x) :
@@ -368,6 +369,13 @@ private theorem pf_factor [DecidableEq X] (hι : Function.Injective ι)
     have hFx' : (x : R) = W.π F := hFx.symm
     rw [← key j F hF x hFx', ← hf, ← hFx']
     rfl
+
+theorem UpperTheory.V.Alg.wpres_act_one [DecidableEq X] : act W.gr 1 ξ = ξ := by
+  refine AlgHom.ext fun x => ?_
+  induction x using DirectSum.Decomposition.inductionOn W.gr with
+  | zero => rw [map_zero, map_zero]
+  | add a b ha hb => rw [map_add (f := _), map_add (f := _), ha, hb]
+  | @homogeneous j x => rw [act_of_mem W.gr 1 ξ x.2]; simp
 
 end Core
 
@@ -433,7 +441,7 @@ theorem UpperTheory.V.Alg.points_finite :
       Subtype.ext (mul_div_cancel₀ _ hp0).symm
     rw [this]
     exact Ideal.mul_mem_right _ _ (Ideal.mem_map_of_mem _ hp.not_isUnit)
-  obtain ⟨f, hf⟩ := pf_factor W ξ B.val t (GlobalTheory.mvEvalAdic O J yB hyB) Subtype.val_injective
+  obtain ⟨f, hf⟩ := wpres_factor_of_adic W ξ B.val t (GlobalTheory.mvEvalAdic O J yB hyB) Subtype.val_injective
     (fun s => by rw [GlobalTheory.mvEvalAdic_X]; rfl) J (fun s => by rw [GlobalTheory.mvEvalAdic_X]; exact hyB s)
     (fun x hx => by
       have h1 : ξ x ∈ Submodule.span O (T : Set K) := hT ▸ Submodule.mem_map_of_mem hx

@@ -224,9 +224,6 @@ namespace GlobalTheory.WeylBij
 
 open GlobalTheory.WeylFourier GlobalTheory.RatWeilOp
 
-theorem schA_le_span_pure : ∀ (F : Type) [Field F] [NumberField F] (κ : Type) [Fintype κ], ∀ Φ ∈ schA F κ,
-    Φ ∈ Submodule.span ℂ {Ψ : (κ → AF F) → ℂ | ∃ (f : SInf F κ) (φ : ∀ v : Pl (F := F), (κ → Fv F v) → ℂ),
-      GlobalTheory.RatWeilOp.IsFam φ ∧ Ψ = GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure f φ} := _root_.GlobalTheory.SchASpan.mem_span_pure
 
 end GlobalTheory.WeylBij
 

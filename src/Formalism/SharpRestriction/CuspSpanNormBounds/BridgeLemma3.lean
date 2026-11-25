@@ -8,51 +8,7 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OppositeWeyl
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentHeisenbergDecomposition
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LowestKTypeMultiplicity
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
 import Formalism.SharpRestriction.CuspSpanNormBounds.AuxiliarySlotStates
@@ -288,69 +244,6 @@ open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Fo
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 variable {k r : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
-
-abbrev cal_Ix (k r : ℕ) := Fin (2 * r + k + 1) × Fin (2 * r + k + 1)
-
-def hermitianRealPartUnit (ab : cal_Ix k r) : Mat k r := hpart1 (Hpk k r) (Matrix.single ab.1 ab.2 1)
-def hermitianImagPartUnit (ab : cal_Ix k r) : Mat k r := hpart2 (Hpk k r) (Matrix.single ab.1 ab.2 1)
-
-def cal_expE : List (cal_Ix k r) → List (ℂ × List (Mat k r))
-  | [] => [(1, [])]
-  | ab :: w => ((cal_expE w).map fun cv => (cv.1, hermitianRealPartUnit ab :: cv.2)) ++
-      ((cal_expE w).map fun cv => (Complex.I * cv.1, hermitianImagPartUnit ab :: cv.2))
-
-theorem cal_Hh : (Hpk k r)ᴴ = Hpk k r := (hpkFacts k r).1
-theorem cal_HH : Hpk k r * Hpk k r = 1 := (hpkFacts k r).2.1
-theorem cal_Hinv : (Hpk k r)⁻¹ = Hpk k r := Matrix.inv_eq_right_inv cal_HH
-
-theorem cal_twoI : (1 / (2 * Complex.I) : ℂ) = -(Complex.I / 2) := by
-  rw [eq_comm, eq_div_iff (mul_ne_zero two_ne_zero Complex.I_ne_zero)]
-  linear_combination (-1 : ℂ) * Complex.I_sq
-
-theorem cal_hpart1_lie (Z : Mat k r) : inLie k r (hpart1 (Hpk k r) Z) := by
-  unfold inLie hpart1
-  rw [cal_Hinv, conjTranspose_smul, conjTranspose_sub, conjTranspose_mul, conjTranspose_mul, conjTranspose_conjTranspose,
-    cal_Hh, Matrix.smul_mul, Matrix.mul_smul, Matrix.sub_mul, Matrix.mul_sub]
-  have e1 : Hpk k r * (Z * Hpk k r) * Hpk k r = Hpk k r * Z := by
-    rw [Matrix.mul_assoc, Matrix.mul_assoc, cal_HH, Matrix.mul_one]
-  have e2 : Hpk k r * (Hpk k r * Zᴴ * Hpk k r) = Zᴴ * Hpk k r := by
-    rw [Matrix.mul_assoc, ← Matrix.mul_assoc, cal_HH, Matrix.one_mul]
-  rw [e1, e2]
-  have : star (1 / 2 : ℂ) = 1 / 2 := by simp
-  rw [this, ← smul_add]
-  simp
-
-theorem cal_hpart2_lie (Z : Mat k r) : inLie k r (hpart2 (Hpk k r) Z) := by
-  unfold inLie hpart2
-  rw [cal_twoI, cal_Hinv, conjTranspose_smul, conjTranspose_add, conjTranspose_mul, conjTranspose_mul,
-    conjTranspose_conjTranspose, cal_Hh, Matrix.smul_mul, Matrix.mul_smul, Matrix.add_mul, Matrix.mul_add]
-  have e1 : Hpk k r * (Z * Hpk k r) * Hpk k r = Hpk k r * Z := by
-    rw [Matrix.mul_assoc, Matrix.mul_assoc, cal_HH, Matrix.mul_one]
-  have e2 : Hpk k r * (Hpk k r * Zᴴ * Hpk k r) = Zᴴ * Hpk k r := by
-    rw [Matrix.mul_assoc, ← Matrix.mul_assoc, cal_HH, Matrix.one_mul]
-  rw [e1, e2]
-  have : star (-(Complex.I / 2) : ℂ) = Complex.I / 2 := by
-    simp [Complex.conj_I]
-    ring
-  rw [this, neg_smul, add_comm (Hpk k r * Z)]
-  simp
-
-theorem hermitian_real_part_index_lie (ab : cal_Ix k r) : inLie k r (hermitianRealPartUnit ab) := cal_hpart1_lie _
-theorem hermitian_imag_part_index_lie (ab : cal_Ix k r) : inLie k r (hermitianImagPartUnit ab) := cal_hpart2_lie _
-
-theorem cal_expE_lie (w : List (cal_Ix k r)) : ∀ cv ∈ cal_expE w, ∀ X ∈ cv.2, inLie k r X := by
-  induction w with
-  | nil => intro cv h; simp [cal_expE] at h; simp [h]
-  | cons ab w ih =>
-    intro cv h X hX
-    simp only [cal_expE, List.mem_append, List.mem_map] at h
-    rcases h with ⟨cv', h', rfl⟩ | ⟨cv', h', rfl⟩
-    · rcases List.mem_cons.1 hX with rfl | hX
-      · exact hermitian_real_part_index_lie ab
-      · exact ih cv' h' X hX
-    · rcases List.mem_cons.1 hX with rfl | hX
-      · exact hermitian_imag_part_index_lie ab
-      · exact ih cv' h' X hX
 
 end Formalism.MainNotions.BridgeLemma₃
 

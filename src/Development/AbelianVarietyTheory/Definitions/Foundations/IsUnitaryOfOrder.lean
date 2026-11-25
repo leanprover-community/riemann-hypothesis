@@ -217,10 +217,6 @@ structure IsEtaT (χ : HChar H.E) : Prop where
   res : χ.ResEta H.F
   inf : χ.HasInf (embPsi H) (fun _ => 1)
 
-def etaAlg (χ : HChar H.E) (v : HeightOneSpectrum (𝓞 H.E)) : ℂ := χ.valTw (1 / 2) v
-
-def EtaTExists : Prop := ∃ χ : HChar H.E, IsEtaT H χ
-
 structure IsChiPsi (χ : HChar H.E) : Prop where
   unitary : χ.IsUnitary
   unr : ∀ v, χ.UnrAt v
@@ -249,16 +245,12 @@ structure IsMu0 (P : PiBar H) (W : Omg H) (e : R.Psi → ℚ) (j : ℕ) (χ : HC
   atg : ∀ (k : Fin 2) (w : HeightOneSpectrum (𝓞 H.E)), P.Div k w → ∀ (a : ℕ) (ha : a.Coprime (H.g k)) (x : H.Eˣ),
     (x : H.E) = (a : H.E) → χ.locK w x = (W.om k (ZMod.unitOfCoprime a ha) ^ (2 * (j + 1)))⁻¹
 
-def Mu0Exists (P : PiBar H) (W : Omg H) (e : R.Psi → ℚ) (j : ℕ) : Prop := ∃ χ : HChar H.E, IsMu0 P W e j χ
-
 structure IsDelta (p : ℕ) (χ : HChar H.E) : Prop where
   fin : ∃ n : ℕ, 0 < n ∧ χ.OrderDvd n
   triv : χ.TrivOn H.F
   tame : ∀ v, χ.TameAt v
   unr : ∀ v, ¬ OverP H p v → χ.UnrAt v
   ine : ∀ v, OverP H p v → ∀ n : ℕ, (∀ x, IsUnitAt v x → χ.loc v x ^ n = 1) ↔ 15 ∣ n
-
-def DeltaExists (p : ℕ) : Prop := ∃ χ : HChar H.E, IsDelta (H := H) p χ
 
 structure IsPsi (l : ℕ) (Q : Finset (HeightOneSpectrum (𝓞 H.E))) (χ : HChar H.E) : Prop where
   ord : ∃ a : ℕ, χ.OrderDvd (l ^ a)
@@ -285,14 +277,6 @@ section General
 variable {L : Type} [Field L] [NumberField L] {F : Type} [Field F] [NumberField F] [Algebra F L]
 
 namespace HChar
-
-theorem resFin_apply (χ : HChar L) (v : HeightOneSpectrum (𝓞 F)) (k : Fˣ) :
-    χ.resFin v k = ∏ P ∈ aboveF (L := L) F v, χ.locK P (upF F k) := by
-  simp [HChar.resFin]
-
-theorem resInf_apply (χ : HChar L) (w : InfinitePlace F) (k : Fˣ) :
-    χ.resInf w k = ∏ w' ∈ aboveInf (L := L) F w, χ.locInf w' (atInf w' (upF F k)) := by
-  simp [HChar.resInf]
 
 theorem LevelLe.mul {χ χ' : HChar L} {v : HeightOneSpectrum (𝓞 L)} {n : ℕ} (h : χ.LevelLe v n) (h' : χ'.LevelLe v n) :
     (χ * χ').LevelLe v n := fun x hx hx' => by

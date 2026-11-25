@@ -160,18 +160,8 @@ theorem eventually_eq_chart (φ : Sm E a) (hlev : IsOpen {k | finRep E a k φ = 
   exact congrArg (fun ψ : Sm E a => ψ.1 (finGL E a (JointCont.finPart g x₀) * infGL E a (JointCont.infPart g x))) hx'
 
 theorem continuous_unip_mul (φ : Sm E a) (hlev : IsOpen {k | finRep E a k φ = φ}) (g : GA E a) :
-    Continuous fun x : BlockIx a r → Ad E => φ.1 (unip x * g) := by
-  refine continuous_iff_continuousAt.2 fun x₀ => ?_
-  have hf₀ : ContDiffOn ℝ ∞ (chart φ.1 (finGL E a (JointCont.finPart g x₀))) (invSet E a) := φ.2 _
-  have hA : ContinuousAt (fun x : BlockIx a r → Ad E =>
-      chart φ.1 (finGL E a (JointCont.finPart g x₀)) (toL (JointCont.infPart g x).val)) x₀ :=
-    ContinuousAt.comp (g := chart φ.1 (finGL E a (JointCont.finPart g x₀)))
-      (hf₀.continuousOn.continuousAt (isOpen_invSet.mem_nhds (val_mem_invSet _)))
-      (JointCont.continuous_infPart g).continuousAt
-  have hE : (fun x : BlockIx a r → Ad E => φ.1 (unip x * g)) =ᶠ[𝓝 x₀]
-      fun x => chart φ.1 (finGL E a (JointCont.finPart g x₀)) (toL (JointCont.infPart g x).val) :=
-    eventually_eq_chart φ hlev g x₀
-  exact hA.congr hE.symm
+    Continuous fun x : BlockIx a r → Ad E => φ.1 (unip x * g) :=
+  by apply _root_.GlobalTheory.CompanionTheory.CTFin.Central.continuous_unip_mul; assumption
 
 theorem exists_bound_unip_mul (φ : Sm E a) (hleft : ∀ (γ : GL (Fin a) E) (g : GA E a), φ.1 (ratGL E a γ * g) = φ.1 g)
     (hlev : IsOpen {k | finRep E a k φ = φ}) (g : GA E a) :

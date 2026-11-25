@@ -1021,16 +1021,9 @@ variable {G : Type} [Group G] {Qp K₀ K K₀' K' : Type} [Field Qp] [Field K₀
     {U : Type} [AddCommGroup U] [Module LL U] [Module Qp U] [IsScalarTower Qp LL U]
     {W : Type} [AddCommGroup W] [Module LL W] [Module Qp W] [IsScalarTower Qp LL W]
 
-theorem actVB_resH (ρ : Representation LL G V) (h : PC.H) (x : V ⊗[Qp] B) :
-    actVB PC.PD' (PC.resH ρ) h x = actVB PC.PD ρ h x := by
-  induction x using TensorProduct.induction_on with
-  | zero => simp
-  | add a c ha hc => simp only [map_add (f := _), ha, hc]
-  | tmul v c => simp [actVB, PC.actB_eq, PotCrysData.resH]
-
 theorem mem_Dpcris (ρ : Representation LL G V) (x : V ⊗[Qp] B) :
     x ∈ PC.Dpcris ρ ↔ ∀ h : PC.H, actVB PC.PD ρ h x = x := by
-  simp only [PotCrysData.Dpcris, mem_Dcris, actVB_resH]
+  simp only [PotCrysData.Dpcris, mem_Dcris, Formalism.WeaklyAdmissibleFiltrations.pc_actVB_res]
 
 theorem act_mem_Dpcris (ρ : Representation LL G V) (g : G) (x : V ⊗[Qp] B) (hx : x ∈ PC.Dpcris ρ) :
     actVB PC.PD ρ g x ∈ PC.Dpcris ρ := by
@@ -1411,10 +1404,6 @@ theorem first_le (f r t CT N r' e n : ℕ) (C : ℝ) (hC : 8 * (CT : ℝ) ≤ C)
     _ = 4 * (f : ℝ) * n * (C * (n : ℝ) ^ 2 * ((n : ℝ) + e + t)) := by ring
 
 end GlobalTheory.TypePrimeEta
-
-namespace GlobalTheory
-
-end GlobalTheory
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PadicValNatPowSubOneLe =====

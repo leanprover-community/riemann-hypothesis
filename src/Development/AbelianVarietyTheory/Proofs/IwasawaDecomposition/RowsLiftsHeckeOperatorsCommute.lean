@@ -357,36 +357,6 @@ section -- clump:auto
 
 namespace GlobalTheory.SmulMemOfIsLattice
 
-theorem exists_smul_mem_of_isLattice {E : Type} [inst : Field E] [NumberField E] {n : ℕ}
-    (B : Submodule (NumberField.RingOfIntegers E) (Formalism.L2.Col.Sp E n))
-    (hB : Submodule.IsFullLattice E B) (x : Formalism.L2.Col.Sp E n) :
-    ∃ r ∈ nonZeroDivisors (NumberField.RingOfIntegers E), r • x ∈ B := by
-  have hx : x ∈ Submodule.span E (B : Set (Formalism.L2.Col.Sp E n)) := by
-    rw [hB.span_eq_top]; exact Submodule.mem_top
-  induction hx using Submodule.span_induction with
-  | mem y hy => exact ⟨1, one_mem _, by simpa using hy⟩
-  | zero => exact ⟨1, one_mem _, by simp⟩
-  | add y z _ _ hy hz =>
-    obtain ⟨r, hr, hry⟩ := hy
-    obtain ⟨s, hs, hsz⟩ := hz
-    refine ⟨r * s, mul_mem hr hs, ?_⟩
-    rw [smul_add]
-    refine B.add_mem ?_ ?_
-    · rw [mul_comm, mul_smul]; exact B.smul_mem _ hry
-    · rw [mul_smul]; exact B.smul_mem _ hsz
-  | smul c y _ hy =>
-    obtain ⟨r, hr, hry⟩ := hy
-    obtain ⟨a, b, hb, rfl⟩ := IsFractionRing.div_surjective (A := NumberField.RingOfIntegers E) c
-    refine ⟨r * b, mul_mem hr hb, ?_⟩
-    have hb0 : algebraMap (NumberField.RingOfIntegers E) E b ≠ 0 :=
-      IsFractionRing.to_map_ne_zero_of_mem_nonZeroDivisors hb
-    have h : (r * b) • ((algebraMap (NumberField.RingOfIntegers E) E a / algebraMap (NumberField.RingOfIntegers E) E b) • y) = a • (r • y) := by
-      rw [← algebraMap_smul E (r * b), ← algebraMap_smul E a, ← algebraMap_smul E r y, smul_smul, smul_smul, map_mul]
-      congr 1
-      field_simp
-    rw [h]
-    exact B.smul_mem _ hry
-
 end GlobalTheory.SmulMemOfIsLattice
 end -- clump:auto
 end -- clump:auto
@@ -667,10 +637,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory Formalism.L2.Col GlobalTheory.InertExchange
 open Classical
 
-theorem _root_.GlobalTheory.T.submodulePatchAtPrime_isLattice_locP : ∀ {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ} (P : HeightOneSpectrum (𝓞 E)) (A B : Submodule (𝓞 E) (Sp E n)), Submodule.IsFullLattice E A → Submodule.IsFullLattice E B → Submodule.IsLattice E (patchAt P A B) ∧ ∀ Q : HeightOneSpectrum (𝓞 E), localization₂ Q.asIdeal (patchAt P A B) = localization₂ Q.asIdeal (if Q = P then A else B) := by
-  intro E _ _ _ n P A B hA hB
-  first
-  | exact GlobalTheory.InertExchange.patchAt_isLattice_locP P A B hA hB
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SubmodulePatchAtPrimeIsLatticeLocPStatement =====

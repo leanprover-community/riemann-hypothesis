@@ -342,21 +342,6 @@ section Unitary
 variable {n : Type*} [Fintype n] [DecidableEq n]
 variable {k E : Type*} [Field k] [Field E] [Algebra k E]
 
-def invTransposeGL : Monoid.End (GL n E) where
-  toFun g := ⟨Matrix.transpose ((g⁻¹ : GL n E) : Matrix n n E), Matrix.transpose (g : Matrix n n E),
-    by rw [← Matrix.transpose_mul, Units.mul_inv, Matrix.transpose_one],
-    by rw [← Matrix.transpose_mul, Units.inv_mul, Matrix.transpose_one]⟩
-  map_one' := Units.ext (by
-    show Matrix.transpose (((1 : GL n E)⁻¹ : GL n E) : Matrix n n E) = 1
-    simp)
-  map_mul' := fun a b => Units.ext (by
-    show Matrix.transpose (((a * b)⁻¹ : GL n E) : Matrix n n E) =
-      Matrix.transpose ((a⁻¹ : GL n E) : Matrix n n E) * Matrix.transpose ((b⁻¹ : GL n E) : Matrix n n E)
-    rw [mul_inv_rev, Units.val_mul, Matrix.transpose_mul])
-
-def thetaGL (σ : E ≃ₐ[k] E) (J : GL n E) : Monoid.End (GL n E) :=
-  (MulAut.conj J).toMonoidHom.comp (invTransposeGL.comp (sigmaGL σ))
-
 variable [TopologicalSpace E] [MeasurableSpace (GL n E)]
 
 end Unitary

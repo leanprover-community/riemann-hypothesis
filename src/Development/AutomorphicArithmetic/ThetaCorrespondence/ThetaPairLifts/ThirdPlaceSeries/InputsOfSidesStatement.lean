@@ -548,71 +548,8 @@ open Formalism.MainNotions.S Formalism.IndefR.Mult Formalism.IndefR.Lev GlobalTh
 variable {D : D7}
 
 theorem hatSelfDual_of {V : HSp D} {Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)} (h : IsSelfDualC V Λ) :
-    HatSelfDual D.sp.cm.sig V.gram Λ := by
-  obtain ⟨-, -, -, -, hcc, -, -, hG, hdet, -⟩ := GlobalTheory.Member.latHat_eq_hat_and_gram D V
-  have h1 : ∀ s ∈ Formalism.L2.Herm.intAf D.host.F D.host.E,
-      Formalism.UG.sigR D.sp.cm.sig (Formalism.L2.Herm.Af D.host.F) s ∈ Formalism.L2.Herm.intAf D.host.F D.host.E :=
-    fun _ h => sigR_int h
-  have h2 : ∀ z, z ∈ GlobalTheory.AdLat.hat1 D.host.F
-      ((1 : FractionalIdeal (nonZeroDivisors (𝓞 D.host.E)) D.host.E) : Set D.host.E) ↔
-      swp D.host.F D.host.E z ∈ Formalism.L2.Herm.intAf D.host.F D.host.E := by
-    intro z
-    rw [← GlobalTheory.LatDual.integralTensorAdeles_eq_adelicCompletion_one]
-    exact GlobalTheory.IdemSupport.mem_intAE_iff z
-  have h3 : ∀ x, D.sp.cm.sig x = GlobalTheory.Member.cF D x := fun _ => rfl
-  have hmem : ∀ v : Fin V.rank → D.host.E, (∀ y ∈ Λ, (∑ a, ∑ b, v a * V.gram.transpose a b * GlobalTheory.Member.cF D (y b)) ∈
-      (1 : FractionalIdeal (nonZeroDivisors (𝓞 D.host.E)) D.host.E)) ↔ v ∈ Λ := by
-    intro v
-    rw [h.2 v]
-    refine forall₂_congr fun y _ => ?_
-    rw [FractionalIdeal.mem_one_iff]
-    have e : ∑ a, ∑ b, v a * V.gram.transpose a b * GlobalTheory.Member.cF D (y b) = ∑ i, ∑ j, star (y i) * V.gram i j * v j := by
-      rw [Finset.sum_comm]
-      refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-      rw [Matrix.transpose_apply]
-      change v j * V.gram i j * star (y i) = _
-      ring
-    rw [e]
-  have hsp : Submodule.span D.host.E (Λ : Set (Fin V.rank → D.host.E)) = ⊤ := by
-    apply top_unique
-    intro y _
-    let pairing (x z : Fin V.rank → D.host.E) :=
-      ∑ a, ∑ b, star (x a) * V.gram a b * z b
-    obtain ⟨s, hgen⟩ := h.1.fg
-    obtain ⟨d, hdint⟩ := IsLocalization.exist_integer_multiples (nonZeroDivisors (𝓞 D.host.E)) s (pairing · y)
-    have hd0 : (d : 𝓞 D.host.E) ≠ 0 := mem_nonZeroDivisors_iff_ne_zero.mp d.property
-    have hdE : (d : 𝓞 D.host.E) • y ∈ Λ := by
-      apply (h.2 _).2
-      intro x hx
-      show IsLocalization.IsInteger (𝓞 D.host.E) (pairing x ((d : 𝓞 D.host.E) • y))
-      have hscale (z : Fin V.rank → D.host.E) :
-          pairing z ((d : 𝓞 D.host.E) • y) = (d : 𝓞 D.host.E) • pairing z y := by
-        simp only [pairing, Pi.smul_apply, Algebra.smul_def, Finset.sum_mul,
-          mul_assoc, mul_left_comm, mul_comm]
-      rw [hscale]
-      refine Submodule.span_induction
-        (p := fun z _ => IsLocalization.IsInteger (𝓞 D.host.E) ((d : 𝓞 D.host.E) • pairing z y))
-        ?_ ?_ ?_ ?_ (hgen.symm ▸ hx)
-      · intro z hz
-        exact hdint z hz
-      · simp [pairing, IsLocalization.isInteger_zero]
-      · intro z z' _ _ hz hz'
-        convert IsLocalization.isInteger_add hz hz' using 1
-        simp only [pairing, Pi.add_apply, star_add, add_mul, Finset.sum_add_distrib, smul_add]
-      · intro a z _ hz
-        have ha : IsLocalization.IsInteger (𝓞 D.host.E) (star (a : D.host.E)) := by
-          refine ⟨⟨star (a : D.host.E), ?_⟩, rfl⟩
-          exact a.2.map (starRingEnd D.host.E).toIntAlgHom
-        convert IsLocalization.isInteger_mul ha hz using 1
-        simp only [pairing, Pi.smul_apply, Algebra.smul_def, star_mul', Finset.mul_sum, Finset.sum_mul,
-          mul_assoc, mul_left_comm, mul_comm]
-    have hspan := Submodule.subset_span (R := D.host.E) hdE
-    have hn : ((d : 𝓞 D.host.E) : D.host.E) ≠ 0 := by exact_mod_cast hd0
-    have hy := (Submodule.span D.host.E (Λ : Set (Fin V.rank → D.host.E))).smul_mem
-      (((d : 𝓞 D.host.E) : D.host.E)⁻¹) hspan
-    rwa [← IsScalarTower.algebraMap_smul D.host.E (d : 𝓞 D.host.E) y,
-      smul_smul, inv_mul_cancel₀ hn, one_smul] at hy
-  exact hatL_selfDual_gen (GlobalTheory.Member.cF D) D.sp.cm.sig h3 V.gram Λ h.1.fg hsp hcc hG hdet hmem h1 h2
+    HatSelfDual D.sp.cm.sig V.gram Λ :=
+  by apply _root_.GlobalTheory.IntHalfLat.hatSelfDual; assumption
 
 end LocalLift
 

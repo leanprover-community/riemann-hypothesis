@@ -158,7 +158,7 @@ theorem unramDoublingInert : UnramDoublingInert := by
   intro L _ _ _ ϖ σ q n hU _ _ μ _ hμ χ hχ s Φ hΦ α w hw
   have hq : q ≠ 0 := by have := hU.2.2.2.2.2.1; omega
   have hq0 : (q : ℂ) ≠ 0 := Nat.cast_ne_zero.2 hq
-  have hF : FracExists := _root_.GlobalTheory.InertZeta.fracExists_of_smith T.elementaryDivisors_exist_discretelyValued
+  have hF : FracExists := _root_.GlobalTheory.InertZeta.fracExists_of_smith _root_.GlobalTheory.InertZeta.elementaryDivisors_exist_discretely_valued
   have hsec : (fun g => Φ (io1 σ n g) * w g) = fun g => varX q n (χ ϖ) s ^ len (mat g) * w g := funext fun g => by
     rw [section_eq _root_.GlobalTheory.FrameCompletion.completion hU hχ hΦ g (hF L ϖ n hU.2.2.2.1 _ (det_mat_ne_zero g))]
   have hint : ∀ Z, HasSum (fun x : GU σ n ⧸ KU σ n => varX q n (χ ϖ) s ^ len (mat x.out) * w x.out) Z →
@@ -173,9 +173,9 @@ theorem unramDoublingInert : UnramDoublingInert := by
     fun k hk => ?_)⟩
   · obtain ⟨φ, hφ, h1, -⟩ := Final.SphericalExistsU L ϖ σ q n (n / 2) hU (by omega) (by omega) (fun i => (α i : ℂ))
       fun i => (α i).ne_zero
-    have h2 := hasSum_spherical hF (T.leviRadicalProductLength_of_lattice_steps T.lattice_add_vector_det_valuation T.dual_inter_eq_sum' _root_.GlobalTheory.InertZeta.RowSpan.spanEq_holds T.unitary_heisenberg_radical_coordinates)
-      (_root_.GlobalTheory.InertZeta.count_of_heis T.unitary_heisenberg_radical_coordinates (_root_.GlobalTheory.InertZeta.latIndex_of_smith T.elementaryDivisors_exist_discretelyValued) T.traceZero_integers_index_in_uniformizer_multiples) (T.small_corner_of_heisenberg_duality T.unitary_heisenberg_radical_coordinates T.dual_inter_eq_sum') T.length_count_generating_series_formula (_root_.GlobalTheory.InertZeta.cosetSurj_of_leviExists _root_.GlobalTheory.InertZeta.leviExists)
-      T.unitary_iwasawa_cells_disjoint _root_.GlobalTheory.InertZeta.leviExists (_root_.GlobalTheory.InertZeta.sphTrans _root_.GlobalTheory.InertZeta.leviExists) _root_.GlobalTheory.InertZeta.smallRank _root_.GlobalTheory.InertZeta.step hU (n / 2) n (by omega) (by omega)
+    have h2 := hasSum_spherical hF (_root_.GlobalTheory.InertZeta.pointwise_of_steps _root_.GlobalTheory.InertZeta.addVec _root_.GlobalTheory.InertZeta.dual_inter_eq_sum _root_.GlobalTheory.InertZeta.RowSpan.spanEq_holds _root_.GlobalTheory.InertZeta.HeisCoord.Heisenberg₂)
+      (_root_.GlobalTheory.InertZeta.count_of_heis _root_.GlobalTheory.InertZeta.HeisCoord.Heisenberg₂ (_root_.GlobalTheory.InertZeta.latIndex_of_smith _root_.GlobalTheory.InertZeta.elementaryDivisors_exist_discretely_valued) _root_.GlobalTheory.InertZeta.traceIndex) (_root_.GlobalTheory.InertZeta.smallCorner_of_heis_dual _root_.GlobalTheory.InertZeta.HeisCoord.Heisenberg₂ _root_.GlobalTheory.InertZeta.dual_inter_eq_sum) _root_.GlobalTheory.InertZeta.genFun_holds (_root_.GlobalTheory.InertZeta.cosetSurj_of_leviExists _root_.GlobalTheory.InertZeta.leviExists)
+      _root_.GlobalTheory.InertZeta.cosetInj _root_.GlobalTheory.InertZeta.leviExists (_root_.GlobalTheory.InertZeta.sphTrans _root_.GlobalTheory.InertZeta.leviExists) _root_.GlobalTheory.InertZeta.smallRank _root_.GlobalTheory.InertZeta.step hU (n / 2) n (by omega) (by omega)
       (fun i => (α i : ℂ)) (varX q n (χ ϖ) s) (varY q (χ ϖ) s) φ (fun i => (α i).ne_zero) (by
         rw [varX, varY, neg_add, neg_add, Complex.cpow_add _ _ hq0, Complex.cpow_add _ _ hq0, Complex.cpow_neg_one,
           Complex.cpow_neg _ (n : ℂ), Complex.cpow_natCast]

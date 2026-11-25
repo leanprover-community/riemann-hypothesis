@@ -56,7 +56,7 @@ theorem noCommonZero_of_chartIndep : Formalism.MainNotions.ModuliIntegralCharts.
 
   obtain ⟨st, hnab⟩ := h.nabPin j hj
 
-  obtain ⟨f, hf, hne⟩ := GlobalTheory.T.exists_thetaGenerator_reading_ne_zero_at_frame hC _ _ _ _ _ _ σ D.R.r (Formalism.L2.PjFree.Unf.ofPj (T.U j σ))
+  obtain ⟨f, hf, hne⟩ := _root_.GlobalTheory.ThetaNoZero.exists_thGen_rdU_ne_zero hC _ _ _ _ _ _ σ D.R.r (Formalism.L2.PjFree.Unf.ofPj (T.U j σ))
     ((Formalism.L2.PjFree.goodEmb_iff σ).mpr hσ) ((Formalism.L2.PjFree.isUnf_ofPj _).mpr (h.unf j hj σ hσ)) hr1
     (2 * xiR D) (by linarith) (fun k τ => hc σ hσ k τ) (wtA w) w.n (dom_wtA w) hn (by omega) st (T.nab j)
     hnab k x hx

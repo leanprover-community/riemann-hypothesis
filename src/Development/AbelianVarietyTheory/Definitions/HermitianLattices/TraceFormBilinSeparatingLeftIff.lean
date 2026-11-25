@@ -80,14 +80,6 @@ theorem herm_eq_dotProduct (G : Matrix (Fin r) (Fin r) E) (x y : Fin r → E) :
     herm G x y = x ⬝ᵥ G *ᵥ fun b => cc (y b) := by
   simp [herm, dotProduct, mulVec, Finset.mul_sum, mul_assoc]
 
-theorem herm_mulVec {s : ℕ} (G : Matrix (Fin r) (Fin r) E) (γ : Matrix (Fin r) (Fin s) E)
-    (x y : Fin s → E) : herm G (γ *ᵥ x) (γ *ᵥ y) = herm (γᵀ * G * γ.map cc) x y := by
-  have h : (fun b => cc ((γ *ᵥ y) b)) = γ.map cc *ᵥ fun b => cc (y b) := by
-    funext b
-    simp [mulVec, dotProduct, cc_sum]
-  rw [herm_eq_dotProduct, herm_eq_dotProduct, h, ← mulVec_mulVec, ← mulVec_mulVec,
-    dotProduct_mulVec x, vecMul_transpose]
-
 def IsConjAdj (B : LinearMap.BilinForm ℚ (Fin r → E)) : Prop :=
   ∀ (a : E) (x y : Fin r → E), B (a • x) y = B x (cc a • y)
 

@@ -169,8 +169,6 @@ theorem ranks_le {P : ParameterChoice' D L} (T : ParamsT D L P) :
 variable {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
   {Y0 : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y0 cX} {Csz : ℝ} (p : PtAt ex Csz) (i : Fin D.R.m)
 
-theorem unitE_eq : unitE p = (D.R.f : ℝ) * D.R.m * L.sc.b * L.sc.L * Real.log (Real.log L.sc.x) := rfl
-
 theorem dim_eq : GlobalTheory.CompHt.dimFlag (dat p i) = D.R.f * D.R.r.choose 2 := by
   exact GlobalTheory.SlopeRec.dimFlag_eq p.fw.laws.pins ⟨Nat.le_add_left 1 i, i.2⟩
 
@@ -236,7 +234,7 @@ theorem numAt {P : ParameterChoice' D L} (T : ParamsT D L P) (hll : 1 ≤ Real.l
   have hlf : Real.log D.R.f ≤ L.sc.L :=
     hlb ▸ Real.log_le_log (by linarith) ((le_mul_of_one_le_right (by linarith) hr).trans hfr)
   refine ⟨hL, hb, by linarith, hll, ?_, ?_, by linarith, ?_, ?_, ?_⟩
-  · rw [unitE_eq]
+  · rw [GlobalTheory.CovTop.WtShape.unit_eq]
     refine le_mul_of_one_le_left ?_ (by linarith)
     have : 0 ≤ L.sc.L := by linarith
     have : 0 ≤ Real.log (Real.log L.sc.x) := by linarith

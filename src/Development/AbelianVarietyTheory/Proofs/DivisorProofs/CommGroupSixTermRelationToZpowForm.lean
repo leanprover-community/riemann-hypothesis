@@ -63,29 +63,6 @@ noncomputable section
 namespace GlobalTheory.AdjPolLocal
 open GlobalTheory.MulPull GlobalTheory.PrimNorm GlobalTheory.PrimNormPol
 
-theorem commGroup_sixTerm_relation_to_zpow_form {G : Type} [CommGroup G] {p q r s t u o : G}
-    (h : p * q⁻¹ * r⁻¹ * o = s * t⁻¹ * u⁻¹ * o) :
-    p ^ (1 : ℤ) * (q ^ (-1 : ℤ) * (r ^ (-1 : ℤ) * (s ^ (-1 : ℤ) * (t ^ (1 : ℤ) * u ^ (1 : ℤ))))) = 1 := by
-  have h' := mul_right_cancel h
-  have e : p ^ (1 : ℤ) * (q ^ (-1 : ℤ) * (r ^ (-1 : ℤ) * (s ^ (-1 : ℤ) * (t ^ (1 : ℤ) * u ^ (1 : ℤ))))) =
-      (p * q⁻¹ * r⁻¹) * (s * t⁻¹ * u⁻¹)⁻¹ := by
-    apply Additive.ofMul.injective
-    simp only [ofMul_mul, ofMul_inv, ofMul_zpow]
-    abel
-  rw [e, h', mul_inv_cancel]
-
-theorem commGroup_sixTerm_zpow_form_to_relation {G : Type} [CommGroup G] {p q r s t u o : G}
-    (h : p ^ (1 : ℤ) * (q ^ (-1 : ℤ) * (r ^ (-1 : ℤ) * (s ^ (-1 : ℤ) * (t ^ (1 : ℤ) * u ^ (1 : ℤ))))) = 1) :
-    p * q⁻¹ * r⁻¹ * o = s * t⁻¹ * u⁻¹ * o := by
-  congr 1
-  have e : p ^ (1 : ℤ) * (q ^ (-1 : ℤ) * (r ^ (-1 : ℤ) * (s ^ (-1 : ℤ) * (t ^ (1 : ℤ) * u ^ (1 : ℤ))))) =
-      (p * q⁻¹ * r⁻¹) * (s * t⁻¹ * u⁻¹)⁻¹ := by
-    apply Additive.ofMul.injective
-    simp only [ofMul_mul, ofMul_inv, ofMul_zpow]
-    abel
-  rw [e, mul_inv_eq_one] at h
-  exact h
-
 theorem le_val_one_add_pow_sub {G : Type} [CommGroup G] {D a b : G} (h : 1 = D * (1 * a⁻¹ * b⁻¹ * 1)) : D = a * b := by
   rw [_root_.one_mul, _root_.mul_one, eq_comm, ← mul_inv, mul_inv_eq_one] at h
   exact h

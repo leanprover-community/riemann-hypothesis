@@ -69,7 +69,7 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Number
 open Formalism.L2.NT
 namespace Formalism.L2
 
-structure NTiedAllAlt (D : D7) (C : NChoice D) (I : TwIn D) where
+structure NTiedAllAlt (D : D7) (C : NChoice D) (_I : TwIn D) where
   gal : _root_.Formalism.L2.NGalTiedAlt D
   cover : NormalizedLocalCompatibility D gal.mt
   chiD : NC.NChiData D
@@ -79,7 +79,6 @@ structure NTiedAllAlt (D : D7) (C : NChoice D) (I : TwIn D) where
   tw : NTwTied D twF
   nct : NChTie D C
   exp : NExpTied D
-  choice : NChoiceTied D C I (avDesign D)
   cf : Host.CharFrame D
   tp : Host.TupTied D cf C
   plB : D.what₂.places.Pl → ValuationSubring ℂ
@@ -108,28 +107,19 @@ variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : MainNotions.G.Inst 
   {cX : ExtraC}
 structure TiedDataSAlt (ex : Extra D L hT Gi Gl K Y cX) where
   host : Host.HostTied D
-  level : Host.LevelTied D
   cols : Forms.ColsTiedSym D
   full : Forms.ColsFullS cols
-  extra : Forms.ColsExtraTiedS full ex
   provA : TH.ProvA
   theta : Theta.AllTied D ex.th provA
   twIn : TwIn D
   n : _root_.Formalism.L2.NTiedAllAlt D ex.nch twIn
-  frameN : Host.SameFrameN host n.gal.fr.jE
   thetaChr : Host.ThetaChrTied D n.cf ex.nch n.tp ex.th
   chrVal : Host.ValLL0 D n.cf
   chrDt : Host.DtTied D n.cf
-  chrN : Host.NCharTied D n.cf ex.nch n.tp
-  chrGal : Host.NGalChrTied D n.cf ex.nch n.tp
   chrPsi : Host.PsiChoiceCompatible D n.cf ex.nch n.tp
-  sameChr : JoinChr.SameChr theta.T thetaChr
   what₂ : Rows.RowsCompatible D host n.cf n.tp
   tw : Forms.SymmetricTwistedColumnsAtPrimes n.tp cols ex.tw
-  emt : Rows.EMtTied D cols tw
   g : G.GroupCompatibilityAll D hT ex.cmp
-  herm_eq : g.herm = full.1.to0
-  forms_eq : g.forms = fun u => (cols.forms u).to0
 def ExtraDataSelfDual (ex : Extra D L hT Gi Gl K Y cX) : Prop := Nonempty (_root_.Formalism.L2.TiedDataSAlt ex)
 end
 def SecondChernLinkedClass : FamClass := fun {_} Fm =>

@@ -215,38 +215,12 @@ open Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.Fourier
 section hpk
 variable (k r : ℕ)
 
-theorem Hpk_out {i : Fin (2 * r + k + 1)} (h : i.val < r ∨ r + k < i.val) (j : Fin (2 * r + k + 1)) :
-    Hpk k r i j = if j.val = 2 * r + k - i.val then 1 else 0 :=
-  ReciprocityTheory.ChartRestriction.DS.Xi.StepA.Hpk_out k r h j
-
-theorem Hpk_mid {i : Fin (2 * r + k + 1)} (h : ¬(i.val < r ∨ r + k < i.val)) (j : Fin (2 * r + k + 1)) :
-    Hpk k r i j = if j.val = i.val then (if i.val = r + k then -1 else 1) else 0 :=
-  ReciprocityTheory.ChartRestriction.DS.Xi.StepA.Hpk_mid k r h j
-
-theorem Hpk_mulVec (v : Fin (2 * r + k + 1) → ℂ) (i : Fin (2 * r + k + 1)) :
-    (Hpk k r *ᵥ v) i = if i.val < r ∨ r + k < i.val then v ⟨2 * r + k - i.val, by omega⟩
-      else if i.val = r + k then -v i else v i :=
-  ReciprocityTheory.ChartRestriction.DS.Xi.StepA.Hpk_mulVec k r v i
-
-theorem Hpk_mulVec_mulVec (v : Fin (2 * r + k + 1) → ℂ) : Hpk k r *ᵥ (Hpk k r *ᵥ v) = v :=
-  ReciprocityTheory.ChartRestriction.DS.Xi.StepA.Hpk_mulVec_mulVec k r v
-
-theorem mat_eq_of_mulVec {A B : Mat k r} (h : ∀ v, A *ᵥ v = B *ᵥ v) : A = B := by
-  ext i j
-  simpa [Matrix.mulVec_single_one] using congrFun (h (Pi.single j 1)) i
-
 theorem Hpk_sq : Hpk k r * Hpk k r = 1 :=
   ReciprocityTheory.ChartRestriction.DS.Xi.StepA.Hpk_sq k r
-
-theorem UH_left_inv {g : Mat k r} (hg : g ∈ GV k r) : Hpk k r * gᴴ * Hpk k r * g = 1 :=
-  ReciprocityTheory.ChartRestriction.DS.Xi.StepA.UH_left_inv k r hg
 
 end hpk
 
 variable {k r : ℕ}
-
-theorem GV_inv_mul {g : Mat k r} (hg : g ∈ GV k r) : g⁻¹ * g = 1 :=
-  ReciprocityTheory.ChartRestriction.DS.Xi.StepA.UH_inv_mul k r hg
 
 theorem GV_mul_inv {g : Mat k r} (hg : g ∈ GV k r) : g * g⁻¹ = 1 :=
   ReciprocityTheory.ChartRestriction.DS.Xi.StepA.UH_mul_inv k r hg

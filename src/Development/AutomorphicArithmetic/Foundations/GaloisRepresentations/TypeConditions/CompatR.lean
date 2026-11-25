@@ -50,16 +50,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations Formalism.ConjugateSelfDual ReciprocityTheory.Gal
-
-namespace GlobalTheory.PointRepAboveL
-
-theorem place_unique {D : D7} {i : D.nd.Loc} {τ : D.host.E →+* Qbar (D.nd.l i)} {w w' : PlE D.host}
-    (h : InducesW D.nd i τ w) (h' : InducesW D.nd i τ w') : w' = w := by
-  apply HeightOneSpectrum.ext
-  ext x
-  rw [← h x, h' x]
-
-end GlobalTheory.PointRepAboveL
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AdmG2PairOfAdmissible =====
@@ -70,7 +60,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.WeaklyAdmissibleFiltrations Formalism.ConjugateSelfDual ReciprocityTheory.Gal
-open GlobalTheory.PointRepAboveL
 
 noncomputable section
 
@@ -93,7 +82,7 @@ theorem compatR (D : D7) (h0 : SumRepresentations.tie0 D) (h2 : AutomorphicGaloi
   refine ⟨(hdR w hw).2 (hl w hw hn).1, ?_, fun τ hτ => ?_⟩
   · rw [hWD w (Or.inr (hl w hw hn).1)]
     exact (hl w hw hn).2.1
-  · rw [hJ τ (fun w' h' => by rw [place_unique hτ h']; exact (hl w hw hn).1)]
+  · rw [hJ τ (fun w' h' => by rw [UpperTheory.GalS.ind_unique hτ h']; exact (hl w hw hn).1)]
     exact (hl w hw hn).2.2 τ hτ
 
 end UpperTheory.GalS

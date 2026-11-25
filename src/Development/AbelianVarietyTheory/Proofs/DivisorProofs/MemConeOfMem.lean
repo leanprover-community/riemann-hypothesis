@@ -83,8 +83,6 @@ section Covers
 
 variable {F : Type} [Field F] [NumberField F] {Y : Var F}
 
-def Lies (V' V : Cover Y) (π : V'.X ⟶ V.X) : Prop := ∃ g : V'.G ⟶ V.G, g ≫ V.j = V'.j ≫ π ∧ g ≫ V.π = V'.π
-
 end Covers
 
 end GlobalTheory.VertForm

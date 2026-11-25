@@ -358,9 +358,6 @@ def K2 (u u' : Word) : s.Cu u' →L[ℂ] s.Cu u := KOf s u u' (RelevantZeroGramT
 def IdCellDiag (u : Word) : Prop :=
   HasSum (fun t : {t : s.Term u u // s.isId t} => s.aTerm u u t.1) (ContinuousLinearMap.id ℂ (s.Cu u))
 
-def IdCellOff (u u' : Word) : Prop :=
-  HasSum (fun t : {t : s.Term u u' // s.isId t} => s.aTerm u u' t.1) 0
-
 end Kernel
 
 section Pinned
@@ -484,14 +481,6 @@ section KernelD
 variable (D : Formalism.BasicNotions.D7)
 
 def KD (u u' : D.what₂.Word) : D.s.Cu u' →L[ℂ] D.s.Cu u := Kmat D.s u u'
-
-def ramCu (u : D.what₂.Word) : Submodule ℂ (D.s.Cu u) :=
-  Submodule.comap ((D.s_Cu u : D.s.Cu u →ₗ[ℂ] (D.mem u).A.Mu0))
-    (Submodule.comap (D.mem u).A.Mu0.subtype (D.mem u).A.Mram)
-
-def PiU (u : D.what₂.Word) : D.s.Cu u →L[ℂ] D.s.Cu u :=
-  haveI := FiniteDimensional.complete ℂ (ramCu D u)
-  (ramCu D u).subtypeL.comp (ramCu D u).orthogonalProjectionOnto
 
 def hsSqD (u u' : D.what₂.Word) : ℝ := hsNormSq (KD D u u')
 

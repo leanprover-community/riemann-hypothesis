@@ -128,38 +128,6 @@ end GlobalTheory.EtC.GalSmooth
 namespace GlobalTheory.EtC
 
 
-open GalSmooth in
-theorem galois_sec_isLocallyConstant : ∀ (R : Type) [CommRing R] (F : Shv R), Finitary F →
-    ∀ (K Ω : Type) [Field K] [Field Ω] [Algebra K Ω] [Algebra.IsAlgebraic K Ω]
-      (x : Sec F (Spec (CommRingCat.of Ω))),
-      IsLocallyConstant (fun τ : Ω ≃ₐ[K] Ω => Sec.res (Spec.map (CommRingCat.ofHom (τ : Ω →+* Ω))) x) := by
-  intro R _ F hF K Ω _ _ _ _ x
-  classical
-  obtain ⟨s, y, hy⟩ := (((_root_.GlobalTheory.EtC.FilteredElements.preservesFilteredColimits_modules_iff_elements (ULift.{1} R) (onRings F)).2.1 hF) (Finset Ω) (diag Ω) (cocone Ω)
-    (coconeIsColimit Ω)).1 x
-  have key : ∀ τ : Ω ≃ₐ[K] Ω, Sec.res (Spec.map (CommRingCat.ofHom (τ : Ω →+* Ω))) x =
-      ((onRings F).map (CommRingCat.ofHom ((τ : Ω →+* Ω).comp (sr Ω s).subtype))).hom y := by
-    intro τ
-    rw [← hy, cocone_ι]
-    show _ = ((onRings F).map (CommRingCat.ofHom (sr Ω s).subtype ≫ CommRingCat.ofHom (τ : Ω →+* Ω))).hom y
-    rw [Functor.map_comp]
-    rfl
-  rw [IsLocallyConstant.iff_eventually_eq]
-  intro τ₀
-  haveI : FiniteDimensional K (IntermediateField.adjoin K (s : Set Ω)) :=
-    IntermediateField.finiteDimensional_adjoin (fun a _ => Algebra.IsIntegral.isIntegral a)
-  have hopen : IsOpen {σ : Ω ≃ₐ[K] Ω | τ₀⁻¹ * σ ∈ (IntermediateField.adjoin K (s : Set Ω)).fixingSubgroup} :=
-    (IntermediateField.fixingSubgroup_isOpen _).preimage (continuous_const.mul continuous_id)
-  filter_upwards [hopen.mem_nhds (by simp [one_mem])] with τ hτ
-  have hs : Set.EqOn (τ : Ω →+* Ω) (τ₀ : Ω →+* Ω) (s : Set Ω) := fun b hb => by
-    have h1 := (IntermediateField.mem_fixingSubgroup_iff _ _).1 hτ b (IntermediateField.subset_adjoin K _ hb)
-    have h2 := congrArg τ₀ h1
-    simpa [AlgEquiv.mul_apply] using h2
-  have hc : (τ : Ω →+* Ω).comp (sr Ω s).subtype = (τ₀ : Ω →+* Ω).comp (sr Ω s).subtype := by
-    ext a
-    exact RingHom.eqOn_set_closure hs a.2
-  rw [key τ, key τ₀, hc]
-
 end GlobalTheory.EtC
 
 end

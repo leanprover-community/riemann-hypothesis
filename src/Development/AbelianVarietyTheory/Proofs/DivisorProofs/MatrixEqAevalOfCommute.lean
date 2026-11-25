@@ -76,11 +76,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.SepCentralizer
 
-theorem exists_ne_zero_aeval_eq_zero {K V : Type} [Field K] [AddCommGroup V] [Module K V]
-    [FiniteDimensional K V] (g : Module.End K V) (p : K[X]) (hp : Irreducible p)
-    (hdvd : p ∣ g.charpoly) : ∃ w : V, w ≠ 0 ∧ aeval g p w = 0 := by
-  apply Formalism.IrreducibleCountingLemmas.Z.exists_ne_zero_aeval_eq_zero <;> assumption
-
 theorem exists_annihilator_eq {K V : Type} [Field K] [AddCommGroup V] [Module K V]
     [FiniteDimensional K V] (g : Module.End K V) (hs : g.charpoly.Separable) (d : K[X]) :
     d ∣ g.charpoly → ∃ e : V, aeval g d e = 0 ∧ ∀ q : K[X], aeval g q e = 0 → d ∣ q := by

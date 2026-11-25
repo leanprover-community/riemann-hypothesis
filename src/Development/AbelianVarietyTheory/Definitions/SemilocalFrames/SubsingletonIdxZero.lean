@@ -56,9 +56,6 @@ namespace GlobalTheory.Mom
 
 abbrev Mat (k r : ℕ) := Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ
 
-def sgnCN (k r : ℕ) : Fin (2 * r + k + 1) → Bool := fun i =>
-  if i.val < k - 1 then true else decide ((i.val - (k - 1)) % 2 = 0)
-
 structure HRep (k r : ℕ) where
   H : Type
   [nG : NormedAddCommGroup H]

@@ -73,7 +73,7 @@ theorem exists_theta_ne_zero_record : Formalism.MainNotions.ModuliIntegralCharts
   intro hC D T h j hj w hn hM σ hσ k x hx
   obtain ⟨_, _, _, _, hr1, hxi, hDF, _, hc, _⟩ := _root_.GlobalTheory.SupDict.record_dictionary D T h j hj w
   obtain ⟨st, hnab⟩ := h.nabPin j hj
-  obtain ⟨f, hf, hne⟩ := GlobalTheory.T.exists_thetaGenerator_reading_ne_zero_at_frame hC _ _ _ _ (T.Q.Xo j) T.Q.c σ D.R.r (Formalism.L2.PjFree.Unf.ofPj (T.U j σ))
+  obtain ⟨f, hf, hne⟩ := _root_.GlobalTheory.ThetaNoZero.exists_thGen_rdU_ne_zero hC _ _ _ _ (T.Q.Xo j) T.Q.c σ D.R.r (Formalism.L2.PjFree.Unf.ofPj (T.U j σ))
     ((Formalism.L2.PjFree.goodEmb_iff σ).2 hσ) ((Formalism.L2.PjFree.isUnf_ofPj _).2 (h.toLawsCore.unf j hj σ hσ)) hr1
     (2 * xiR D) (mul_pos two_pos hxi) (hc σ hσ) (wtA w) w.n (dom_wtA w) hn (by omega) st (T.nab j) hnab k x hx
   refine ⟨f, hf, ?_⟩

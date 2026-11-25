@@ -195,15 +195,6 @@ open UpperTheory.V.U3 UpperTheory.V.Base UpperTheory.V.Th.End3
 
 attribute [local instance 10000] IsDiscreteValuationRing.toIsLocalRing
 
-private theorem block_triangular_diag_mul {k : Type} [CommRing k] {n : ℕ} (A B : Matrix (Fin n) (Fin n) k)
-    (hA : A.BlockTriangular id) (hB : B.BlockTriangular id) (i : Fin n) :
-    (A * B) i i = A i i * B i i := by
-  rw [Matrix.mul_apply]
-  refine Finset.sum_eq_single i (fun j _ hj => ?_) (by simp)
-  rcases lt_or_gt_of_ne hj with h | h
-  · rw [hA (show id j < id i from h), zero_mul]
-  · rw [hB (show id i < id j from h), mul_zero]
-
 private theorem flag_match {H k : Type} [Field k] (T : H → Matrix (Fin 3) (Fin 3) k) (ψ : Fin 3 → H → k)
     (D : Fin 3 → H → k) (Q : GL (Fin 3) k)
     (tri : ∀ g, (Q.val * T g * (Q⁻¹).val).BlockTriangular id)
@@ -239,7 +230,7 @@ private theorem flag_match {H k : Type} [Field k] (T : H → Matrix (Fin 3) (Fin
           (T (g 2) - ψ 2 (g 2) • 1) * (Q⁻¹).val := by simp only [Matrix.mul_assoc]
       _ = _ := by rw [hQ]; simp only [Matrix.mul_one, Matrix.mul_assoc]
   have h4 := congrFun (congrFun h0 b) b
-  rw [block_triangular_diag_mul _ _ (hUt 0) ((hUt 1).mul (hUt 2)), block_triangular_diag_mul _ _ (hUt 1) (hUt 2)] at h4
+  rw [UpperTheory.Reformulated.B.Qk9.tri_diag _ _ (hUt 0) ((hUt 1).mul (hUt 2)), UpperTheory.Reformulated.B.Qk9.tri_diag _ _ (hUt 1) (hUt 2)] at h4
   exact mul_ne_zero (hUd 0) (mul_ne_zero (hUd 1) (hUd 2)) h4
 
 private theorem theta_tri {k : Type} [Field k] (b : GL (Fin 3) k) (hb : b.val.BlockTriangular id) :
@@ -250,7 +241,7 @@ private theorem theta_tri {k : Type} [Field k] (b : GL (Fin 3) k) (hb : b.val.Bl
     exact Matrix.blockTriangular_inv_of_blockTriangular hb
   have hd : ∀ i, ((b⁻¹ : GL (Fin 3) k)).val i i = (b.val i i)⁻¹ := fun i => by
     have h1 := congrFun (congrFun (Units.mul_inv b) i) i
-    rw [block_triangular_diag_mul _ _ hb hc, Matrix.one_apply_eq] at h1
+    rw [UpperTheory.Reformulated.B.Qk9.tri_diag _ _ hb hc, Matrix.one_apply_eq] at h1
     exact eq_inv_of_mul_eq_one_right h1
   have he : ∀ i j, (theta b).val i j = ((b⁻¹ : GL (Fin 3) k)).val j.rev i.rev := fun i j => by
     rw [theta_val, Matrix.mul_apply, Finset.sum_eq_single j.rev]
@@ -602,54 +593,6 @@ section -- clump:auto
 
 
 section
-section SlopeTestRemainingChoices
-open IsLocalRing UpperTheory.V UpperTheory.V.U3 UpperTheory.V.Alg UpperTheory.V.HV
-private theorem loc_of_int {O R A : Type} [CommRing O] [CommRing R] [IsLocalRing R] [Algebra O R] [CommRing A]
-    [Nontrivial A] [Algebra O A] [Algebra.IsIntegral O A] (f : R →ₐ[O] A) : IsLocalHom f := by
-  let g : R →+* f.range := f.rangeRestrict
-  have hg : Function.Surjective g := f.rangeRestrict_surjective
-  haveI : IsLocalRing f.range := IsLocalRing.of_surjective' g hg
-  have hl : IsLocalHom g := IsLocalHom.of_surjective _ hg
-  haveI : Algebra.IsIntegral f.range A := Algebra.IsIntegral.tower_top (R := O)
-  have h2 : IsLocalHom (algebraMap f.range A) := Algebra.IsIntegral.isLocalHom _ _
-  exact ⟨fun x hx => hl.map_nonunit x (h2.map_nonunit (g x) hx)⟩
-private theorem norm_le {l : ℕ} [Fact l.Prime] {c : Coef l} {R : Type} [CommRing R] [Algebra c.O R] [IsCO c.O R]
-    {f : R →ₐ[c.O] PadicAlgCl l} (hf : IsLocPt f) (x : R) : ‖f x‖ ≤ 1 := by
-  obtain ⟨-, -, hl, -⟩ := UpperTheory.V.abelian₂.dvr_finite l c.O
-  have hz : (l : R) ∈ maximalIdeal R := fun h => by
-    have h1 : IsUnit (algebraMap c.O R (l : c.O)) := by rwa [map_natCast]
-    exact hl (IsLocalHom.map_nonunit _ h1)
-  have hp : 0 < ‖((l : ℕ) : PadicAlgCl l)‖ := norm_pos_iff.2 (Nat.cast_ne_zero.2 (Fact.out : l.Prime).ne_zero)
-  by_contra hx
-  obtain ⟨n, hn⟩ := pow_unbounded_of_one_lt (‖((l : ℕ) : PadicAlgCl l)‖⁻¹) (not_le.1 hx)
-  have h1 := hf (x ^ n * l) (Ideal.mul_mem_left _ _ hz)
-  rw [map_mul, map_pow, map_natCast, norm_mul, norm_pow] at h1
-  have h2 := mul_lt_mul_of_pos_right hn hp
-  rw [inv_mul_cancel₀ hp.ne'] at h2
-  exact lt_asymm h1 h2
-private theorem factor {l : ℕ} [Fact l.Prime] {c : Coef l} {R : Type} [CommRing R] [Algebra c.O R] [IsCO c.O R]
-    (f : R →ₐ[c.O] PadicAlgCl l) (hf : IsLocPt f) :
-    ∃ (A : Subalgebra c.O (PadicAlgCl l)) (h : IsDiscreteValuationRing A) (_ : Module.Finite c.O A) (f' : R →ₐ[c.O] A),
-      IsAdicComplete (@maximalIdeal A _ h.toIsLocalRing) A ∧ ∀ x, (f' x : PadicAlgCl l) = f x := by
-  haveI := (UpperTheory.V.abelian₂.dvr_finite l c.O).1
-  obtain ⟨E, hE⟩ := Loc.ptFin (l := l) R ((TrivSqZeroExt.inlAlgHom c.O _ _).comp f) hf
-  have hE' : ∀ a, f a ∈ E.1 := fun a => (hE a).1
-  haveI := E.2
-  obtain ⟨h1, h2, -⟩ := UpperTheory.V.abelian₂.dvr_intClosure l E.1
-  let j : E.1 →ₐ[ℤ_[l]] PadicAlgCl l := E.1.val.restrictScalars ℤ_[l]
-  have hj : Function.Injective j := Subtype.val_injective
-  let e := (integralClosure ℤ_[l] E.1).equivMapOfInjective j hj
-  let B := (integralClosure ℤ_[l] E.1).map j
-  have hB : ∀ x, f x ∈ B := fun x =>
-    ⟨⟨f x, hE' x⟩, (isIntegral_algHom_iff j hj).1 (_root_.GlobalTheory.BlochKatoIntegralScalars.isIntegral_of_norm_le_one _ (norm_le hf x)), rfl⟩
-  let A : Subalgebra c.O (PadicAlgCl l) := { B.toSubsemiring with algebraMap_mem' := fun a => f.commutes a ▸ hB _ }
-  have d1 : IsDiscreteValuationRing B := IsDiscreteValuationRing.RingEquivClass.isDiscreteValuationRing e
-  have d2 : Module.Finite ℤ_[l] B := Module.Finite.equiv e.toLinearEquiv
-  haveI : Module.Finite ℤ_[l] A := d2
-  haveI d3 : IsDiscreteValuationRing A := d1
-  exact ⟨A, d3, Module.Finite.of_restrictScalars_finite ℤ_[l] c.O A, f.codRestrict A hB, (UpperTheory.V.abelian₂.dvr_finite l A).1,
-    fun _ => rfl⟩
-end SlopeTestRemainingChoices
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N Formalism.BasicNotions Formalism.BasicNotions.Loc GlobalTheory.GalOfCusp Matrix IsLocalRing
 open UpperTheory.V UpperTheory.V.Base UpperTheory.V.HV UpperTheory.V.Alg UpperTheory.V.U3 UpperTheory.V.Z.J
 open Formalism.GaloisCohomology Polynomial UpperTheory.V.Th in
@@ -691,11 +634,9 @@ theorem UpperTheory.V.Z.J.rigIUE_alt :
   have hk : Pr.LinkHyp c N e D.η D.cc B (l * N * (discr K).natAbs) :=
     ⟨D.gd.e_pos, dvd_mul_right _ _,
       mul_ne_zero (mul_ne_zero hl.out.ne_zero (NeZero.ne N)) (Int.natAbs_ne_zero.2 (discr_ne_zero K)), hram, hB, hσ⟩
-  obtain ⟨A, hA1, hA2, f', hA3, hf'⟩ := factor f hf
-  haveI : IsLocalRing A := hA1.toIsLocalRing
-  have ho := Pr.ordPt_of_gd hI.loc D g₁ hM U S B hB' A f' (loc_of_int f')
-  have e1 : UnitaryThreeInertia.push A.val (U3.push f' S.r.hom) = U3.push f S.r.hom :=
-    MonoidHom.ext fun g => SemidirectProduct.ext (Units.ext (Matrix.ext fun a b => hf' _)) rfl
+  obtain ⟨A, hDVR, hfin, hfA, hcomp, hlocal⟩ := Pr.exists_finite_dvr_of_point c f
+  have ho := Pr.ordPt_of_gd hI.loc D g₁ hM U S B hB' A (f.codRestrict A hfA) hlocal
+  have push_eq : UnitaryThreeInertia.push A.val (U3.push (f.codRestrict A hfA) S.r.hom) = U3.push f S.r.hom := rfl
   have had := _root_.UpperTheory.V.Z.J.admissible_typeI_even_level_alt hI hH hU D hM S f hf hr ι hT hA
   have he := D.gd.e_pos
   have hfr : FreeAt l (D.rhoK _ hr) :=
@@ -704,9 +645,9 @@ theorem UpperTheory.V.Z.J.rigIUE_alt :
         intro i j hij
         fin_cases i <;> fin_cases j <;> simp at hij ⊢ <;> omega) had.unl
   have key := _root_.UpperTheory.V.Z.Win.Dn.rigEnd3_alt hH hL Ω l ι c N e ψ D.η D.cc g₁ B _ hk hΨ hF A _ ho
-    (Pr.matIrr_open_gd D g₁ hM B hB A _ ho (by rw [e1]; exact hT)) K D.gd.quad D.η_ker (D.rhoK _ hr)
-    (fun s => by rw [e1]; rfl) hA hfr
-  rwa [e1] at key
+    (Pr.matIrr_open_gd D g₁ hM B hB A _ ho hT) K D.gd.quad D.η_ker (D.rhoK _ hr)
+    (fun _ => rfl) hA hfr
+  rwa [push_eq] at key
 end
 end -- clump:auto
 end -- clump:auto

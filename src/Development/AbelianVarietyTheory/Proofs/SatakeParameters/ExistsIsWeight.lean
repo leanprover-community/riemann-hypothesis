@@ -150,7 +150,7 @@ theorem exists_isWeight : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
         ← Complex.ofReal_exp, show Real.log (w ((x : maximalRealSubfield E) : E)) / 2 + Real.log (w ((x : maximalRealSubfield E) : E)) / 2 =
           Real.log (w ((x : maximalRealSubfield E) : E)) by ring, Real.exp_log (e2 ▸ e1.2), ← e2]
       exact e1.1
-    have hN : ideleNorm E (infId E u) = infDiag x := GlobalTheory.T.ideleMapOfAlgebra_maximalRealSubfield_injective E (by rw [GlobalTheory.T.ideleMap_normToMaxReal_infiniteIdele, hu, ← InfType.infDiag_eq, GlobalTheory.T.ideleMap_infDiag_maxRealSubfield_cm])
+    have hN : ideleNorm E (infId E u) = infDiag x := _root_.GlobalTheory.IdeleMapInjective.ideleMap_injective E (by rw [_root_.GlobalTheory.GalReal.ideleMap_ideleNorm_infId, hu, ← InfType.infDiag_eq, _root_.GlobalTheory.InfDiagExt.ideleMap_infDiag])
     have e1 : ((χ.inf x : ℂˣ) : ℂ) = ((chiInf (compNorm E χ) u : ℂˣ) : ℂ) := by
       rw [HChar.inf, MonoidHom.comp_apply, ← hN]; rfl
     rw [e1, chiInf_eq_prod _ k hk]

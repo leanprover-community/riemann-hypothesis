@@ -141,8 +141,6 @@ open GlobalTheory.SeeSaw (idV dI FI)
 open ValuativeRel
 open GlobalTheory.Core.Mi.LatMatch
 
-theorem _root_.GlobalTheory.T.exists_normOneIdele_with_splitPlace_component : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (p : SplitPt D k) (c₀ : k), c₀ ≠ 0 → ∃ c : AE D, NormOneAt p.v c ∧ p.pr c = c₀ := by
-  first | exact @GlobalTheory.Core.Mi.LatMatch.exists_normOneAt_pr
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsNormOneIdeleWithSplitPlaceComponentStatement =====

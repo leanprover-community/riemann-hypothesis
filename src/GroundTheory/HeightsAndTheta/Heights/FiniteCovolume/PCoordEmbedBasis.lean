@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StCoordEmbedBasis
 public import Mathlib.NumberTheory.NumberField.CanonicalEmbedding.Basic
-import Mathlib.Tactic.Linter.Style
 
 @[expose] public section
 

@@ -84,8 +84,4 @@ namespace GlobalTheory.Published
 
 open Formalism.BasicNotions Formalism.BasicNotions.Loc
 
-def TateDualCrystalline : Prop :=
-  ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P), Nonempty (LocTied l P AI) →
-    ∀ K : FinExt l, GlobalTheory.HTW.TateDualRule (P.PD K)
-
 end GlobalTheory.Published

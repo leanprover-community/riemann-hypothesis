@@ -144,7 +144,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory
 
@@ -197,7 +196,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 theorem _root_.GlobalTheory.T.finprod_eq_finprod_mem_fibres_of_section' : ∀ {α γ M : Type} [CommMonoid M] (p : α → γ) (S : Set α) (f : α → M), (∀ x, ∃! s, s ∈ S ∧ p s = p x) → (Function.mulSupport f).Finite → ∏ᶠ x, f x = ∏ᶠ s ∈ S, ∏ᶠ x ∈ {x | p x = p s}, f x := by
   first | exact @GlobalTheory.finprod_eq_finprod_mem_fibres_of_section
@@ -227,7 +225,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.ProdForm
 
@@ -324,8 +321,6 @@ noncomputable section
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace GlobalTheory.ProdForm
 theorem resNe : ∀ (K : Type) [Field K] (P Q : K[X]), P.Monic → Q.Monic → IsCoprime P Q → resultant P Q ≠ 0 := by
   intro K _ P Q _ _ hc
@@ -368,7 +363,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 
@@ -467,7 +461,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.CharpolyInt
 
@@ -544,7 +537,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.ConjSelfRecip
 
@@ -670,7 +662,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 namespace GlobalTheory.BCT
 
 theorem valuation_eq_or_eq_conj_of_under_eq : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (w u : Pl E), u.under (𝓞 (maximalRealSubfield E)) = w.under (𝓞 (maximalRealSubfield E)) → (∀ y : E, w.valuation E y = u.valuation E y) ∨ (∀ y : E, w.valuation E y = u.valuation E (IsCMField.complexConj E y)) := by
@@ -738,7 +729,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.FinChar
 
@@ -834,7 +824,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 
@@ -917,8 +906,6 @@ noncomputable section
 open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT
 open scoped Classical TensorProduct
 
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 namespace GlobalTheory.CompanionTheory.resultantFactorHypotheses
 
 theorem resultant_factors_prod_eq_one {E : Type} [Field E] [NumberField E] [IsCMField E] (μ : HChar E)
@@ -932,7 +919,7 @@ theorem resultant_factors_prod_eq_one {E : Type} [Field E] [NumberField E] [IsCM
   let k : Eˣ := Units.mk0 R hR0
   let kc : Eˣ := Units.map (MonoidHomClass.toMonoidHom c) k
   set d : E := ((-1) ^ a * P₁.coeff 0) ^ b * ((-1) ^ b * P₂.coeff 0) ^ a with hd
-  have hH : c R * d = (-1) ^ (a * b) * R := GlobalTheory.T.conj_resultant_of_ell_polys E a b P₁ P₂ h₁ h₂
+  have hH : c R * d = (-1) ^ (a * b) * R := _root_.GlobalTheory.ResConj.conj_resultant E a b P₁ P₂ h₁ h₂
   have hsq : ((-1 : E) ^ (a * b)) * (-1) ^ (a * b) = 1 := by
     rw [← mul_pow, neg_one_mul, neg_neg, one_pow]
   have hd1 : (-1) ^ (a * b) * d = R * (c R)⁻¹ := by
@@ -965,7 +952,7 @@ theorem resultant_factors_prod_eq_one {E : Type} [Field E] [NumberField E] [IsCM
     have hdl : ((-1) ^ a * (atPl w P₁).coeff 0) ^ b * ((-1) ^ b * (atPl w P₂).coeff 0) ^ a =
         algebraMap E (w.adicCompletion E) d := by
       simp [atPl, Polynomial.coeff_map, hd]
-    obtain ⟨hAm, hAn⟩ := GlobalTheory.T.absHalf_mul_and_absHalf_neg_one E w
+    obtain ⟨hAm, hAn⟩ := _root_.GlobalTheory.AbsHalf.absHalf_mul_neg_one E w
     have hA0 : ∀ x : E, x ≠ 0 → algebraMap E (w.adicCompletion E) x ≠ 0 := fun x hx => (_root_.map_ne_zero _).2 hx
     by_cases hsp : IsSplitAt w
     · obtain ⟨u, hu, huw⟩ := hsp
@@ -998,7 +985,7 @@ theorem resultant_factors_prod_eq_one {E : Type} [Field E] [NumberField E] [IsCM
         simp [map_mul, map_pow]
       have hchar : ((μ.loc w (Units.mk0 _ hne) : ℂˣ) : ℂ) = ((μ.locK w k : ℂˣ) : ℂ) * ((μ.locK u k : ℂˣ) : ℂ) := by
         rw [hunit]
-        have h1 := GlobalTheory.T.unitaryHeckeCharCM_splitPlace_mul_conjPlace_eq_one E μ e hμ w u hu huw k
+        have h1 := _root_.GlobalTheory.BCT.SplitChar.locK_mul_locK_conj E μ e hμ w u hu huw k
         have h2 : μ.locK w kc = (μ.locK u k)⁻¹ := eq_inv_of_mul_eq_one_right h1
         change ((μ.locK w (k * kc⁻¹) : ℂˣ) : ℂ) = _
         rw [map_mul, map_inv, h2, inv_inv, Units.val_mul]
@@ -1006,7 +993,7 @@ theorem resultant_factors_prod_eq_one {E : Type} [Field E] [NumberField E] [IsCM
           absHalf w (algebraMap E (w.adicCompletion E) R) * absHalf u (algebraMap E (u.adicCompletion E) R) := by
         rw [← map_pow, ← map_div₀, hd2, map_mul, map_mul, map_pow, map_neg, map_one,
           hAm _ _ (pow_ne_zero _ (neg_ne_zero.2 one_ne_zero)) (mul_ne_zero (hA0 R hR0) (hA0 _ hcR0)),
-          hAm _ _ (hA0 R hR0) (hA0 _ hcR0), GlobalTheory.T.absHalf_conjugatePlace_eq E w u hu huw R]
+          hAm _ _ (hA0 R hR0) (hA0 _ hcR0), _root_.GlobalTheory.BCT.AbsHalfConj.absHalf_conjPl E w u hu huw R]
         have hpow : ∀ n : ℕ, absHalf w ((-1 : w.adicCompletion E) ^ n) = 1 := by
           intro n
           induction n with
@@ -1068,7 +1055,7 @@ theorem delta_eventually_one {E : Type} [Field E] [NumberField E] [IsCMField E] 
   have hR0 : resultant P₁ P₂ ≠ 0 := GlobalTheory.ProdForm.resNe E P₁ P₂ h₁.1 h₂.1 hc
   set R := resultant P₁ P₂ with hR
   set d : E := ((-1) ^ a * P₁.coeff 0) ^ b * ((-1) ^ b * P₂.coeff 0) ^ a with hd
-  have hH : IsCMField.complexConj E R * d = (-1) ^ (a * b) * R := GlobalTheory.T.conj_resultant_of_ell_polys E a b P₁ P₂ h₁ h₂
+  have hH : IsCMField.complexConj E R * d = (-1) ^ (a * b) * R := _root_.GlobalTheory.ResConj.conj_resultant E a b P₁ P₂ h₁ h₂
   have hd0 : d ≠ 0 := by
     intro h0; rw [h0, mul_zero] at hH
     exact hR0 (by simpa using hH.symm)

@@ -4,53 +4,7 @@ public import Formalism.FrobeniusOrbits.DiscrMaximalRealCyclotomic
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.CoprimeTwoPow
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ZsmulGeneratorEqZeroOfProjection
 public import Formalism.FrobeniusOrbits.HostThickExists
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Algebra.Order.Star.Int
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -77,25 +31,6 @@ theorem units_ne_one_iff (x : ℤˣ) : x ≠ 1 ↔ x = -1 := by
 end Misc2
 
 open Misc2
-
-theorem hostPartner : HostPartner := by
-  intro e τ hτ
-  rw [mem_Psi_iff] at hτ
-  refine ⟨?_, ?_, ?_⟩
-  · intro g hg
-    simp only [Set.mem_ofPred_eq, mem_Psi_iff, units_ne_one_iff] at hg
-    show _ ∈ Psi e
-    rw [mem_Psi_iff]
-    simp [cc, c0, hg, hτ]
-  · intro g _ g' _ hgg
-    simpa using hgg
-  · intro t ht
-    rw [SetLike.mem_coe, mem_Psi_iff] at ht
-    refine ⟨(cc e)⁻¹ * t * τ⁻¹, ?_, ?_⟩
-    · simp only [Set.mem_ofPred_eq, mem_Psi_iff]
-      simp [cc, c0, ht, hτ]
-    · simp only
-      group
 
 namespace Misc2
 
@@ -158,36 +93,6 @@ theorem card_extended_galois_group (e : ℕ) [Fintype (GG e)] : (Fintype.card (G
   push_cast; rfl
 
 end Misc2
-
-open Classical in
-theorem hostCharSum : HostCharSum := by
-  intro e
-  refine ⟨fun χ => ?_, fun g => ?_⟩
-  · have hpt : ∀ g : GG e, 2 * (if g ∉ Psi e then starRingEnd ℂ ((χ g : ℂˣ) : ℂ) else 0) =
-        conjHom χ g - twHom e χ g := by
-      intro g
-      simp only [twHom, conjHom, MonoidHom.mul_apply, MonoidHom.coe_comp, Function.comp_apply,
-        Units.coeHom_apply, RingHom.toMonoidHom_eq_coe, MonoidHom.coe_coe, chC_apply, mem_Psi_iff]
-      rcases Int.units_eq_one_or g.1.2 with h | h <;> rw [h] <;> simp <;> ring
-    have hA := sum_hom_units (conjHom χ)
-    have hB := sum_hom_units (twHom e χ)
-    simp only [conjHom_eq_one_iff, twHom_eq_one_iff, Nat.cast_ite, Nat.cast_zero] at hA hB
-    have hS : 2 * (∑ g ∈ Finset.univ.filter (fun g : GG e => g ∉ Psi e),
-        starRingEnd ℂ ((χ g : ℂˣ) : ℂ)) =
-        (∑ g : GG e, conjHom χ g) - ∑ g : GG e, twHom e χ g := by
-      rw [Finset.sum_filter, Finset.mul_sum, ← Finset.sum_sub_distrib]
-      exact Finset.sum_congr rfl (fun g _ => hpt g)
-    rw [hA, hB, card_extended_galois_group] at hS
-    have hne := chC_ne_one e
-    split_ifs at hS ⊢ with h1 h2 h2
-    · exact absurd (h1.symm.trans h2) (Ne.symm hne)
-    · linear_combination hS / 2
-    · linear_combination hS / 2
-    · linear_combination hS / 2
-  · simp only [chD, chQ, MonoidHom.coe_comp, Function.comp_apply, MonoidHom.coe_fst,
-      MonoidHom.coe_snd, Prod.ext_iff]
-    rcases Int.units_eq_one_or g.1.1 with h | h <;> rcases Int.units_eq_one_or g.1.2 with h' | h' <;>
-      rw [h, h'] <;> decide
 
 end Formalism.FrobeniusOrbits
 end -- clump:auto

@@ -168,9 +168,6 @@ section PairSub
 
 variable {V : Type*} [AddCommGroup V] [Module ℂ V]
 
-theorem rdw_sub_fst (a b : Pr V) : (a - b).1 = a.1 - b.1 := rfl
-theorem rdw_sub_snd (a b : Pr V) : (a - b).2.unop = a.2.unop - b.2.unop := rfl
-
 end PairSub
 
 theorem radial_wave_radial : RDWaveRad := by

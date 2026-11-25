@@ -1416,12 +1416,6 @@ theorem eq_of_sum_abs_le_one (κ : Fin m → ℤ) (h : ∑ i, |κ i| ≤ 1) :
     · subst hi; rw [e, Pi.neg_apply, Pi.single_eq_same]
     · rw [Pi.neg_apply, Pi.single_eq_of_ne hi, hz i hi, neg_zero]
 
-theorem single_ne_zero' (k : Fin m) : (Pi.single k 1 : Fin m → ℤ) ≠ 0 := fun h => by
-  simpa using congrFun h k
-
-theorem neg_single_ne_zero' (k : Fin m) : (-Pi.single k 1 : Fin m → ℤ) ≠ 0 := fun h => by
-  simpa using congrFun h k
-
 theorem single_ne_neg_single (k l : Fin m) : (Pi.single k 1 : Fin m → ℤ) ≠ -Pi.single l 1 := fun h => by
   have := congrFun h k
   rw [Pi.single_eq_same, Pi.neg_apply] at this

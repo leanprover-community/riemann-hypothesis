@@ -149,10 +149,6 @@ def B0 (ep : ℂ_[L.l]) (be : MvPowerSeries (ZMod L.d) ℂ_[L.l]) : Prop :=
       L.Tht ep = U * MvPowerSeries.subst (jetLogG L.l L.d (β := Fin L.N0 × Fin L.N1))
         (expS ℂ_[L.l] (sg • L.beSum be))
 
-def AdmB : Prop :=
-  ∃ ep : ℂ_[L.l], ‖ep‖ = 1 ∧ ∃ be : MvPowerSeries (ZMod L.d) ℂ_[L.l],
-    L.B0 ep be ∧ B1 L.l L.d be ∧ B2 L.l L.d be ∧ B3 L.l L.d be ∧ B4 L.l L.d be
-
 def HidaSetting (a : ℝ) : Prop :=
   (L.l : ℝ) ≤ a ∧ (∀ s, ((L.nu s).cells.card : ℝ) ≤ a) ∧
     2 * Real.logb L.l a + 2 ≤ (L.N0 : ℝ) - 1

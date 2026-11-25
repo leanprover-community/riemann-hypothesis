@@ -159,46 +159,4 @@ def Ext (ι : (_root_.Formalism.CyclotomicNorms.Fbar g)ˣ →* ℂˣ)
     (ω : _root_.Formalism.CyclotomicNorms.Fbar g →*₀ ℂ) : Prop :=
   ∀ u : (_root_.Formalism.CyclotomicNorms.Fbar g)ˣ, ((ι u : ℂˣ) : ℂ) = ω u
 
-open Polynomial in
-variable {g : ℕ} [Fact g.Prime] in
-theorem _root_.GlobalTheory.GoodCharsCompare.exists_ext {ι : (_root_.Formalism.CyclotomicNorms.Fbar g)ˣ →* ℂˣ}
-    (hι : Function.Injective ι) :
-    ∃ ω : _root_.Formalism.CyclotomicNorms.Fbar g →*₀ ℂ, Function.Injective ω ∧ _root_.GlobalTheory.GoodCharsCompare.Ext ι ω := by
-  classical
-  let f : _root_.Formalism.CyclotomicNorms.Fbar g → ℂ := fun x => if h : x = 0 then 0 else ((ι (Units.mk0 x h) : ℂˣ) : ℂ)
-  have hf0 : ∀ x (hx : x ≠ 0), f x = ((ι (Units.mk0 x hx) : ℂˣ) : ℂ) := fun x hx => dif_neg hx
-  have hfz : f 0 = 0 := dif_pos rfl
-  let ω : _root_.Formalism.CyclotomicNorms.Fbar g →*₀ ℂ :=
-    { toFun := f
-      map_zero' := hfz
-      map_one' := by
-        show f 1 = 1
-        rw [hf0 1 one_ne_zero, Units.mk0_one, map_one, Units.val_one]
-      map_mul' := by
-        intro a b
-        show f (a * b) = f a * f b
-        by_cases ha : a = 0
-        · rw [ha, zero_mul, hfz, zero_mul]
-        by_cases hb : b = 0
-        · rw [hb, mul_zero, hfz, mul_zero]
-        rw [hf0 a ha, hf0 b hb, hf0 (a * b) (mul_ne_zero ha hb), Units.mk0_mul, map_mul,
-          Units.val_mul] }
-  refine ⟨ω, ?_, ?_⟩
-  · intro a b hab
-    change f a = f b at hab
-    by_cases ha : a = 0 <;> by_cases hb : b = 0
-    · rw [ha, hb]
-    · exfalso
-      rw [ha, hfz, hf0 b hb] at hab
-      exact Units.ne_zero _ hab.symm
-    · exfalso
-      rw [hb, hfz, hf0 a ha] at hab
-      exact Units.ne_zero _ hab
-    · rw [hf0 a ha, hf0 b hb] at hab
-      have := hι (Units.ext hab)
-      simpa using congrArg Units.val this
-  · intro u
-    show _ = f u
-    rw [hf0 u u.ne_zero, Units.mk0_val]
-
 end GlobalTheory.GoodCharsCompare

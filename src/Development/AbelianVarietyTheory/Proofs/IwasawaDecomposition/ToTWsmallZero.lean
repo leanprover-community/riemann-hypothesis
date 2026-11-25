@@ -814,7 +814,7 @@ variable {μ : Measure (GA D V)} {𝓕 : Set (GA D V)}
 
 theorem lift_add_left (hθ : IsInfFam θ) (hκ : IsKerSys θ V W κ) (hq : IsQuot V μ 𝓕) {F : GA D V → ℂ}
     (hF : F ∈ Decay θ V) (f f' : M) : lift κ μ 𝓕 (f + f') F = lift κ μ 𝓕 f F + lift κ μ 𝓕 f' F := by
-  have I := (GlobalTheory.T.thetaKernelLift_converges_continuous_growth_deriv D θ hθ V W M κ hκ μ 𝓕 hq F hF).1
+  have I := (_root_.GlobalTheory.Mem.Lift.lift_conv_cont_growth_deriv D θ hθ V W M κ hκ μ 𝓕 hq F hF).1
   funext h
   simp only [lift, map_add (f := _), Pi.add_apply, add_mul]
   exact integral_add (I f h) (I f' h)
@@ -824,8 +824,8 @@ theorem lift_add_right (hθ : IsInfFam θ) (hκ : IsKerSys θ V W κ) (hq : IsQu
     lift κ μ 𝓕 f (F + F') = lift κ μ 𝓕 f F + lift κ μ 𝓕 f F' := by
   funext h
   simp only [lift, Pi.add_apply, mul_add]
-  exact integral_add ((GlobalTheory.T.thetaKernelLift_converges_continuous_growth_deriv D θ hθ V W M κ hκ μ 𝓕 hq F hF).1 f h)
-    ((GlobalTheory.T.thetaKernelLift_converges_continuous_growth_deriv D θ hθ V W M κ hκ μ 𝓕 hq F' hF').1 f h)
+  exact integral_add ((_root_.GlobalTheory.Mem.Lift.lift_conv_cont_growth_deriv D θ hθ V W M κ hκ μ 𝓕 hq F hF).1 f h)
+    ((_root_.GlobalTheory.Mem.Lift.lift_conv_cont_growth_deriv D θ hθ V W M κ hκ μ 𝓕 hq F' hF').1 f h)
 
 theorem lift_smul_left (c : ℂ) (F : GA D V → ℂ) (f : M) : lift κ μ 𝓕 (c • f) F = c • lift κ μ 𝓕 f F := by
   funext h
@@ -881,7 +881,7 @@ theorem compat_Rder (hθ : IsInfFam θ) (hκ : IsKerSys θ V W κ) (hq : IsQuot 
     {X : Matrix (Fin W.rank) (Fin W.rank) ℂ} (hX : X ∈ lieAt W τ) : Compat θ κ μ 𝓕 (Rder θ W τ X) := fun f => by
   obtain ⟨f', e⟩ := hκ.derW τ X hX f
   exact ⟨f', fun g => funext fun h => (e g h).deriv, fun F hF => funext fun h =>
-    ((GlobalTheory.T.thetaKernelLift_converges_continuous_growth_deriv D θ hθ V W M κ hκ μ 𝓕 hq F hF).2.2.2 τ X hX f f' e h).deriv⟩
+    ((_root_.GlobalTheory.Mem.Lift.lift_conv_cont_growth_deriv D θ hθ V W M κ hκ μ 𝓕 hq F hF).2.2.2 τ X hX f f' e h).deriv⟩
 
 theorem compat_gelf (hθ : IsInfFam θ) (hκ : IsKerSys θ V W κ) (hq : IsQuot V μ 𝓕) (τ : D.what₂.Tau) (k : ℕ) :
     Compat θ κ μ 𝓕 (gelf θ W τ k) := by
@@ -1091,7 +1091,7 @@ theorem IsKerSys.lift (hP : GlobalTheory.Published.CuspRapidDecay) (hθ : IsInfF
     {𝓕 : Set (GA D V)} (hq : IsQuot V μ 𝓕) {F : GA D V → ℂ} (hF : IsCuspForm θ V F) (f : M) :
     (∀ h, IntegrableOn (fun g => κ f g h * F g) 𝓕 μ) ∧ IsAutFunSm θ W fun h => ∫ g in 𝓕, κ f g h * F g ∂μ := by
   have hD := GlobalTheory.T.smoothCuspForm_mem_unitaryRapidDecayForms hP D θ hθ V F hF
-  obtain ⟨h1, h2, ⟨N, h3⟩, h4⟩ := GlobalTheory.T.thetaKernelLift_converges_continuous_growth_deriv D θ hθ V W M κ hκ μ 𝓕 hq F hD
+  obtain ⟨h1, h2, ⟨N, h3⟩, h4⟩ := _root_.GlobalTheory.Mem.Lift.lift_conv_cont_growth_deriv D θ hθ V W M κ hκ μ 𝓕 hq F hD
   let L : M → GA D W → ℂ := fun f h => ∫ g in 𝓕, κ f g h * F g ∂μ
   have hd : ∀ f τ, ∀ X ∈ lieAt W τ, ∃ f', ∀ h,
       HasDerivAt (fun t : ℝ => L f (h * oneP θ W τ X t)) (L f' h) 0 := fun f τ X hX =>

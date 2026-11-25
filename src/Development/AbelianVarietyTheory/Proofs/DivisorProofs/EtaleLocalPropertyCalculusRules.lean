@@ -83,9 +83,6 @@ theorem loc_trans (U : Scheme.{0}) (P : ∀ V : Scheme.{0}, (V ⟶ U) → Prop)
   have := hP W' (k' ≫ k) (T.downward_closed hk k')
   simpa [Category.assoc] using this
 
-theorem loc_top (U : Scheme.{0}) : Loc U fun _ _ => True :=
-  loc_of_forall U _ fun _ _ => trivial
-
 theorem loc_finset (U : Scheme.{0}) {ι : Type} (P : ι → ∀ V : Scheme.{0}, (V ⟶ U) → Prop)
     (h : ∀ i, Loc U (P i)) (s : Finset ι) : Loc U fun V g => ∀ i ∈ s, P i V g := by
   classical

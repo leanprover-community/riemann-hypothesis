@@ -82,7 +82,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT NumberField IsDedekindDomain Polynomial GlobalTheory.HeightCounting GlobalTheory.RowTie GlobalTheory.SplitRead GlobalTheory.NPin GlobalTheory.PendOf
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 noncomputable section
 
@@ -191,7 +190,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT NumberField IsDedekindDomain Polynomial GlobalTheory.HeightCounting GlobalTheory.RowTie GlobalTheory.SplitRead GlobalTheory.NPin GlobalTheory.PendOf
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.LiftOther
 
@@ -281,14 +279,10 @@ namespace GlobalTheory.TrivOutsideGen
 
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
 
-theorem coe_mul_mat (x y : GAf L n) :
-    ((x * y).1 : Matrix (Fin n) (Fin n) (AL L)) =
-      (x.1 : Matrix (Fin n) (Fin n) (AL L)) * (y.1 : Matrix (Fin n) (Fin n) (AL L)) := rfl
-
 theorem map_inv_mul_map (x : GAf L n) (w : HeightOneSpectrum (𝓞 (maximalRealSubfield L))) :
     ((x⁻¹).1 : Matrix (Fin n) (Fin n) (AL L)).map (compAt L w) *
       (x.1 : Matrix (Fin n) (Fin n) (AL L)).map (compAt L w) = 1 := by
-  rw [← Matrix.map_mul, ← coe_mul_mat, inv_mul_cancel]
+  rw [← Matrix.map_mul, ← GlobalTheory.SplitAdelic.mul_coe, inv_mul_cancel]
   exact Matrix.map_one _ (map_zero _) (map_one _)
 
 theorem map_inv_eq_one (x : GAf L n) (w : HeightOneSpectrum (𝓞 (maximalRealSubfield L)))
@@ -342,7 +336,7 @@ theorem mem_of_trivOutside_of_local : ∀ {L : Type} [Field L] [NumberField L] [
     rw [key]
     refine K.mul_mem hpK (ih _ ?_ ?_)
     · intro w hw
-      rw [coe_mul_mat, Matrix.map_mul]
+      rw [GlobalTheory.SplitAdelic.mul_coe, Matrix.map_mul]
       by_cases hwv : w = v
       · subst hwv
         rw [← hpv, map_inv_mul_map]
@@ -354,7 +348,7 @@ theorem mem_of_trivOutside_of_local : ∀ {L : Type} [Field L] [NumberField L] [
       obtain ⟨q, hqK, hqT, hqw⟩ := hloc w (Finset.mem_insert_of_mem hw)
       refine ⟨q, hqK, hqT, ?_⟩
       have hwv : w ≠ v := fun h => hv (h ▸ hw)
-      rw [hqw, coe_mul_mat, Matrix.map_mul, hpinv w hwv, one_mul]
+      rw [hqw, GlobalTheory.SplitAdelic.mul_coe, Matrix.map_mul, hpinv w hwv, one_mul]
 
 end GlobalTheory.TrivOutsideGen
 end -- clump:auto
@@ -382,7 +376,6 @@ section -- clump:auto
 @[expose] public section
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT NumberField IsDedekindDomain Polynomial GlobalTheory.HeightCounting GlobalTheory.RowTie GlobalTheory.SplitRead GlobalTheory.NPin GlobalTheory.PendOf
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace GlobalTheory.SplitCompat
 
@@ -429,7 +422,6 @@ section -- clump:auto
 
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT NumberField IsDedekindDomain Polynomial GlobalTheory.HeightCounting GlobalTheory.RowTie GlobalTheory.SplitRead GlobalTheory.NPin GlobalTheory.PendOf
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 namespace GlobalTheory.LiftOther
 end GlobalTheory.LiftOther
 namespace GlobalTheory.LiftOther
@@ -520,7 +512,6 @@ section -- clump:auto
 
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT NumberField IsDedekindDomain Polynomial GlobalTheory.HeightCounting GlobalTheory.RowTie GlobalTheory.SplitRead GlobalTheory.NPin GlobalTheory.PendOf
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 alias _root_.GlobalTheory.T.lift_through_completion_iso_alt := _root_.GlobalTheory.LiftOther.main_alt_alt
 end

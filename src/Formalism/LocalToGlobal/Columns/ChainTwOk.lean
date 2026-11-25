@@ -412,7 +412,7 @@ theorem facts {k₀ m t j n' c n : ℕ} (h : Nums k₀ m t j n' c n) :
     simp [add_mul]
   refine ⟨?_, ?_, ?_, ?_, ?_, he1, ?_⟩ <;> omega
 
-theorem fIdx_lt {k₀ c n p : ℕ} (_hk : k₀ ≤ n) (hp : p < n + c) : fIdx k₀ c n p < n + c := by
+theorem fIdx_lt {k₀ c n p : ℕ} (hp : p < n + c) : fIdx k₀ c n p < n + c := by
   unfold PI.OneCosetSharp.LocE.fIdx
   split_ifs <;> omega
 
@@ -428,8 +428,8 @@ theorem ent_unit {k₀ m t j n' c n : ℕ} (hN : Nums k₀ m t j n' c n) (τ : F
   obtain ⟨hk, hc1, hlt, hle, hle2, heq1, heq2⟩ := facts hN
   have hR := fIdx_eq_cases k₀ c n p
   have hS := fIdx_eq_cases k₀ (c + 1) n' p'
-  have hrl : PI.OneCosetSharp.LocE.fIdx k₀ c n p < n + c := fIdx_lt (by omega) hp
-  have hsl : PI.OneCosetSharp.LocE.fIdx k₀ (c + 1) n' p' < n' + (c + 1) := fIdx_lt hk hp'
+  have hrl : PI.OneCosetSharp.LocE.fIdx k₀ c n p < n + c := fIdx_lt hp
+  have hsl : PI.OneCosetSharp.LocE.fIdx k₀ (c + 1) n' p' < n' + (c + 1) := fIdx_lt hp'
   rw [entry_embedMatrix k₀ _ _ p p' hrl hsl]
   generalize PI.OneCosetSharp.LocE.fIdx k₀ c n p = r at hR hrl ⊢
   generalize PI.OneCosetSharp.LocE.fIdx k₀ (c + 1) n' p' = s at hS hsl ⊢
@@ -442,8 +442,8 @@ theorem ent_τ0 {k₀ m t j n' c n : ℕ} (hN : Nums k₀ m t j n' c n) {p p' : 
   obtain ⟨hk, hc1, hlt, hle, hle2, heq1, heq2⟩ := facts hN
   have hR := fIdx_eq_cases k₀ c n p
   have hS := fIdx_eq_cases k₀ (c + 1) n' p'
-  have hrl : PI.OneCosetSharp.LocE.fIdx k₀ c n p < n + c := fIdx_lt (by omega) hp
-  have hsl : PI.OneCosetSharp.LocE.fIdx k₀ (c + 1) n' p' < n' + (c + 1) := fIdx_lt hk hp'
+  have hrl : PI.OneCosetSharp.LocE.fIdx k₀ c n p < n + c := fIdx_lt hp
+  have hsl : PI.OneCosetSharp.LocE.fIdx k₀ (c + 1) n' p' < n' + (c + 1) := fIdx_lt hp'
   rw [entry_embedMatrix k₀ _ _ p p' hrl hsl]
   generalize PI.OneCosetSharp.LocE.fIdx k₀ c n p = r at hR hrl ⊢
   generalize PI.OneCosetSharp.LocE.fIdx k₀ (c + 1) n' p' = s at hS hsl ⊢

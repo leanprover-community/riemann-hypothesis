@@ -935,11 +935,6 @@ theorem exists_glob (a : ∀ (R : CommRingCat.{0}), (Spec R ⟶ Y) → R)
 
 variable (Q : X ⟶ Y) [Flat Q] [Surjective Q]
 
-theorem appTop_inj : Function.Injective Q.appTop.hom := fun a b h => by
-  have : Epi Q := Flat.epi_of_flat_of_surjective _
-  apply mOf_inj
-  rw [← cancel_epi Q, comp_mOf, comp_mOf, h]
-
 theorem desc_top [QuasiCompact Q] (ρ : Γ(X, ⊤))
     (hρ : ∀ {Z : Scheme.{0}} (y1 y2 : Z ⟶ X), y1 ≫ Q = y2 ≫ Q → y1.appTop.hom ρ = y2.appTop.hom ρ) :
     ∃ v : Γ(Y, ⊤), Q.appTop.hom v = ρ := by

@@ -341,43 +341,4 @@ namespace GlobalTheory.Cyc
 
 open Cont
 
-theorem continuation_to_open_disc : ∀ (l : ℕ) [Fact l.Prime], ∀ (LL : FinExt l) (s r n M : ℕ) [NeZero n], 1 ≤ s → ∀ (t τ : PowerSeries ↥LL.1), PowerSeries.constantCoeff t = 0 → (1 + PowerSeries.X) * PowerSeries.derivative t = 1 → XX l ↥LL.1 s * τ = t → ∀ (U : ZMod n → Matrix (Fin r) (Fin r) (PowerSeries ↥LL.1)) (Pm : ZMod n → Matrix (Fin r) (Fin r) (PowerSeries ↥(OL LL))) (Cm : ZMod n → Matrix (Fin r) (Fin r) ↥LL.1) (ρ : ℝ), 0 < ρ → (∀ i, QQ l ↥LL.1 s ^ M • U i = (Pm i).map (PowerSeries.map (algebraMap ↥(OL LL) ↥LL.1)) * (U (i - 1)).map (phi l ↥LL.1) * (Cm i).map PowerSeries.C) → (∀ i a b, (∀ r : ℝ, 0 < r → r < ρ → Filter.Tendsto (fun k : ℕ => ‖((PowerSeries.coeff k (U i a b) : ↥LL.1) : Om l)‖ * r ^ k) Filter.atTop (nhds 0))) → ∀ i a b, (∀ r : ℝ, 0 < r → r < 1 → Filter.Tendsto (fun k : ℕ => ‖((PowerSeries.coeff k (τ ^ M * U i a b) : ↥LL.1) : Om l)‖ * r ^ k) Filter.atTop (nhds 0)) := by
-  intro l hl LL s r n M _ hs t τ h0 h1 hτ U Pm Cm ρ hρ hU hc i a b x hx hx1
-  have hX : XX l ↥LL.1 s ≠ 0 := fun h => by
-    rw [h, zero_mul] at hτ
-    simp [← hτ] at h1
-  have hQ : QQ l ↥LL.1 s * phi l ↥LL.1 τ = (l : (↥LL.1)⟦X⟧) * τ := by
-    apply mul_left_cancel₀ hX
-    rw [← mul_assoc, ← (XX_QQ_properties l _ s hs).1, ← map_mul, hτ, phi_log_series l _ t h0 h1, ← hτ]
-    ring
-  have hl0 : (l : ↥LL.1) ≠ 0 := by exact_mod_cast hl.out.ne_zero
-  have hinv : C (((l : ↥LL.1) ^ M)⁻¹) * (l : (↥LL.1)⟦X⟧) ^ M = 1 := by
-    rw [← map_natCast (C (R := ↥LL.1)), ← map_pow, ← map_mul, inv_mul_cancel₀ (pow_ne_zero _ hl0), map_one]
-  obtain ⟨y, hxy, hy1⟩ := exists_between hx1
-  have key := continuation_abstract (phi l ↥LL.1) (phi_X_const l _) _ (inv_lt_one l) (bd_phi_X l LL)
-    (fun i : ZMod n => i - 1) (fun i => τ ^ M • U i)
-    (fun i => (Pm i).map (PowerSeries.map (algebraMap ↥(OL LL) ↥LL.1)))
-    (fun i => C (((l : ↥LL.1) ^ M)⁻¹) • (Cm i).map C)
-    (fun z hz hz1 i a b => ⟨1, bd_map _ (norm_OL l LL) hz hz1.le _⟩)
-    (fun z hz hz1 i a b => ex_mul hz ⟨_, bd_C z _⟩ ⟨_, bd_C z _⟩)
-    (fun i => by
-      have e : (τ ^ M • U (i - 1)).map (phi l ↥LL.1) =
-          phi l ↥LL.1 τ ^ M • (U (i - 1)).map (phi l ↥LL.1) := by
-        ext1 a b
-        simp
-      simp only [e, Matrix.mul_smul, Matrix.smul_mul, ← hU, smul_smul]
-      congr 1
-      have : phi l ↥LL.1 τ ^ M * QQ l ↥LL.1 s ^ M = (l : (↥LL.1)⟦X⟧) ^ M * τ ^ M := by
-        rw [← mul_pow, mul_comm, hQ, mul_pow]
-      linear_combination -(C (((l : ↥LL.1) ^ M)⁻¹)) * this - τ ^ M * hinv)
-    (min (ρ / 2) (1 / 2)) (by positivity)
-    (fun i a b => by
-      have hz : 0 < min (ρ / 2) (1 / 2) := by positivity
-      obtain ⟨c, hc'⟩ := bd_tau l LL s t τ h0 h1 hτ _ hz ((min_le_right _ _).trans_lt (by norm_num))
-      exact ex_mul hz ⟨_, hc'.pow hz M⟩
-        (bd_of_tendsto (hc i a b _ hz ((min_le_left _ _).trans_lt (by linarith)))))
-    y (hx.trans hxy) hy1 i a b
-  obtain ⟨c, hc⟩ := key
-  exact hc.tendsto hx hxy
-
 end GlobalTheory.Cyc

@@ -91,10 +91,10 @@ theorem exists_integral_ne_zero (hSA : GlobalTheory.Published.StrongApproxSU) (h
       unfold Places.W0; convert Finset.mem_image_of_mem _ this)
   have hv0 := (hti.2.2.1 _).2 ⟨_, hw0, rfl⟩
   have hd : 0 < (spW G i j).rank + (spW₁ G i j).rank := by have := hT.geo.aBig; omega
-  obtain ⟨f, hf, h0⟩ := exists_I_ne_zero_at hm hc hco hla hl (GlobalTheory.T.theta_distribution_rational_points_invariant_triple Bs Γ X om om' hT 1 (one_mem _)) hv0
-    (GlobalTheory.T.weilRepresentationLocality_tensorModelVW Bs Γ X om om' hT _) (GlobalTheory.T.strongApproximation_splitPlace_skewHermitian_unitary hSA Bs Γ X om om' hT ⟨_, hT.chars.sub hv0⟩)
+  obtain ⟨f, hf, h0⟩ := exists_I_ne_zero_at hm hc hco hla hl (_root_.GlobalTheory.RatInvTheta.thetaSum_rat_inv Bs Γ X om om' hT 1 (one_mem _)) hv0
+    (GlobalTheory.T.weilRepresentationLocality_tensorModelVW Bs Γ X om om' hT _) (_root_.GlobalTheory.SplitApprox.strongApprox_split hSA Bs Γ X om om' hT ⟨_, hT.chars.sub hv0⟩)
     (H := Set.range (blkU _ _ e h.JWW)) fun x => by
-      obtain ⟨s, g, h1, h2⟩ := GlobalTheory.T.exists_detOne_mul_blockUnitary_decomposition _ _ e h.JWW hd x
+      obtain ⟨s, g, h1, h2⟩ := _root_.GlobalTheory.DetDecomp.exists_detOne_mul_blkU _ _ e h.JWW hd x
       exact ⟨s, _, ⟨g, rfl⟩, h1, h2⟩
   obtain ⟨φ, hφ, hP, _, ⟨g, rfl⟩, hne⟩ := exists_I_ne_zero_kind hm hc hco (H := Set.range (blkU _ _ e h.JWW))
     (by rintro _ ⟨x, rfl⟩ _ ⟨y, rfl⟩; exact ⟨x * y, (blkU_mul _ _ e h.JWW x y).symm⟩)
@@ -128,14 +128,14 @@ theorem exists_integral_ne_zero (hSA : GlobalTheory.Published.StrongApproxSU) (h
   refine ⟨M, hM, a, τ, τ', n, Φ, hnat, hF, g.1, g.2, ?_⟩
   have hfd := (hM.vtx (.grid (i + 1) (j + 1)) ⟨i.2, j.2⟩).haar_fund
   simp only [hker]
-  rw [integral_const_mul, GlobalTheory.T.setIntegral_conjugate_scaled_unitaryGroup_eq _ 1 one_ne_zero h.JW _ _ hfd.1 hfd.2 Γ.M.dom (h.μW ▸ hT.geo.hM.dom)
+  rw [integral_const_mul, _root_.GlobalTheory.ConjUIntegral.setIntegral_conjU_eq _ 1 one_ne_zero h.JW _ _ hfd.1 hfd.2 Γ.M.dom (h.μW ▸ hT.geo.hM.dom)
     (fun x => GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.theta om _ x _) fun γ hγ x => ?_, ← h.μW]
   · exact mul_ne_zero hξ hne
   · have e3 : ((γ * x, blkU _ _ e h.JWW (g.1, g.2)) : UB Γ.V.J × UB Γ.W.J) = (γ, 1) * (x, blkU _ _ e h.JWW (g.1, g.2)) := by
       simp
     simp only [GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.theta]
     rw [e3, map_mul, Module.End.mul_apply,
-      GlobalTheory.T.theta_distribution_rational_points_invariant_triple Bs Γ X om om' hT γ hγ 1 (one_mem _) _ (hT.weil.isUSplitting.pres _ _ ha.1)]
+      _root_.GlobalTheory.RatInvTheta.thetaSum_rat_inv Bs Γ X om om' hT γ hγ 1 (one_mem _) _ (hT.weil.isUSplitting.pres _ _ ha.1)]
 
 open Formalism.IndefR GlobalTheory.RowTest GlobalTheory.RowClaim
 

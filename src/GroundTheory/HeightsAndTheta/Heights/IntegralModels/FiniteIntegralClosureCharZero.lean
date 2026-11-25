@@ -198,24 +198,8 @@ open scoped nonZeroDivisors
 
 namespace GroundTheory.Heights₂.Heights.Model
 
-theorem isJacobsonRing_int : IsJacobsonRing ℤ := by
-  rw [isJacobsonRing_iff_prime_eq]
-  intro P hP
-  by_cases h0 : P = ⊥
-  · subst h0
-    refine le_antisymm (fun x hx => ?_) Ideal.le_jacobson
-    rw [Ideal.mem_jacobson_iff] at hx
-    obtain ⟨z₁, hz₁⟩ := hx 1
-    obtain ⟨z₂, hz₂⟩ := hx 2
-    rw [Ideal.mem_bot] at hz₁ hz₂ ⊢
-    have e1 : (x + 1) * z₁ = 1 := by linear_combination hz₁
-    have e2 : (2 * x + 1) * z₂ = 1 := by linear_combination hz₂
-    have h1 : IsUnit (x + 1) := ⟨⟨x + 1, z₁, e1, (mul_comm _ _).trans e1⟩, rfl⟩
-    have h2 : IsUnit (2 * x + 1) := ⟨⟨2 * x + 1, z₂, e2, (mul_comm _ _).trans e2⟩, rfl⟩
-    rw [Int.isUnit_iff] at h1 h2
-    omega
-  · have : P.IsMaximal := IsPrime.to_maximal_ideal h0
-    exact Ideal.jacobson_eq_self_of_isMaximal
+theorem isJacobsonRing_int : IsJacobsonRing ℤ :=
+  _root_.ReciprocityTheory.AnForm.R.IntegerToRational.isJacobsonRing_int
 
 theorem exists_prime_mem_of_isMaximal (A : Type*) [CommRing A] [Algebra.FiniteType ℤ A]
     (𝔪 : Ideal A) [𝔪.IsMaximal] : ∃ p : ℕ, p.Prime ∧ (p : A) ∈ 𝔪 := by

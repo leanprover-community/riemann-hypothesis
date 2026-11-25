@@ -362,7 +362,7 @@ theorem ramUnitary_holds : ∀ D : D7, GlobalTheory.FinPl.RamUnitary D := by
   obtain ⟨hA', eA'⟩ := hB.2.1 φ' hφ'
   rw [eA, eA']
   have hO : OperatorIdentities k n (GA D S → ℂ) q (resChar χ hχ q) :=
-    ((GlobalTheory.PairOp.pairOperatorStatement k q χ hχ n).1 (GA D S → ℂ)).2
+    (GlobalTheory.PairOp.pairOperatorStatement k q χ hχ n (GA D S → ℂ)).2
   set X := FFStar q (resChar χ hχ q) φ with hX
   set X' := FFStar q (resChar χ hχ q) φ' with hX'
   have cX : ∀ Q, IsContAut S (X Q) := fun Q => by
@@ -434,7 +434,7 @@ theorem kerX_of_clsPinD : ∀ (D : D7) (c : Comm D) (𝒯 : Type) (t : 𝒯 → 
   intro j hj y P
   have hj1 : j + 1 ≤ D.R.m := hj
   obtain ⟨hpos, hab⟩ := hρ.rk j hj
-  obtain ⟨hB, ν, hν1, hνL, hmain⟩ := GlobalTheory.T.thetaLifts_all_charts_eq_classSum D c ρ hc hρ j hj1 hab
+  obtain ⟨hB, ν, hν1, hνL, hmain⟩ := _root_.GlobalTheory.SeeSaw.lift_eq_classSum D c ρ hc hρ j hj1 hab
   obtain ⟨m', y', s, hinv, havg⟩ := @GlobalTheory.KJAvg.avg_span D.what₂.Tau _ (ρ.N j) (ρ.N (j + 1)) hab hpos (ρ.lam j) (ρ.n j)
     (GinfC (c.X j)) _ _ _ _ hB ν hν1 hνL (fun k τ => ρ.r j (Nat.le_of_succ_le hj1) k.1 τ) (hρ.uni j _) (ρ.fr j y).1
     (castP (ρ.hN j (Nat.le_of_succ_le hj1)) (ρ.hN (j + 1) hj1) P)
@@ -528,7 +528,7 @@ theorem rdX_of_clsPinD : ∀ (D : D7) (c : Comm D) (𝒯 : Type) (t : 𝒯 → T
   obtain ⟨ρ, hρ, H⟩ := hP
   refine ⟨fun z => ∏ τ, (Matrix.trace (ρ.r j hj z τ) / (ρ.N j : ℂ)) ^ (∑ i, (ρ.lam j τ).w i), fun s ψ hψ α y => ?_⟩
   obtain ⟨⟨A, hA⟩, -⟩ := H s
-  obtain ⟨h1, -, h3, h4⟩ := GlobalTheory.T.seesaw_scalar_forms_laws_on_class_data D c (t s) ρ A hc hρ hA.1 j hj ψ hψ α
+  obtain ⟨h1, -, h3, h4⟩ := _root_.GlobalTheory.SeeSaw.scalarForm_laws D c (t s) ρ A hc hρ hA.1 j hj ψ hψ α
   refine ⟨h1 y, fun z hz hzc g => ?_⟩
   have hdet : ∀ τ, IsUnit (ρ.r j hj z τ).det := fun τ =>
     Matrix.isUnit_det_of_left_inverse ((Matrix.mem_unitaryGroup_iff').1 ((hρ.uni j hj).uni ⟨z, hz⟩ τ))
@@ -787,7 +787,7 @@ theorem kBack_of_classData : ∀ (D : D7) (c : Comm D) (t : Tup c) (ρ : RealD c
   refine ⟨hK j hj, fun w => ?_⟩
   have hj1 : j + 1 ≤ D.R.m := hj
   have hab : ρ.N j ≤ ρ.N (j + 1) := (hρ.rk j hj).2
-  obtain ⟨hB, ν, hν, -, hL⟩ := GlobalTheory.T.thetaLifts_all_charts_eq_classSum D c ρ hc hρ j hj1 hab
+  obtain ⟨hB, ν, hν, -, hL⟩ := _root_.GlobalTheory.SeeSaw.lift_eq_classSum D c ρ hc hρ j hj1 hab
   haveI := hB
   haveI := hν
   set z : D.what₂.Tau → Matrix (Fin (ρ.N (j + 1))) (Fin (ρ.N (j + 1))) ℂ :=

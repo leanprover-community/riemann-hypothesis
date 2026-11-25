@@ -1153,7 +1153,6 @@ open UpperTheory.Gal.CertificateRingHomMap (GUf Plc comp cj lev GLw mat)
 open UpperTheory.Gal.LocalSmoothExtension UpperTheory.Gal.W2.Seed
 open UpperTheory.Gal.Int.Geo UpperTheory.Gal.Int.Geo.Pl
 open scoped TensorProduct Classical
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace UpperTheory.Gal.Spc
 
@@ -1278,7 +1277,6 @@ open UpperTheory.Gal.Int.Geo
 open UpperTheory.Gal.Int.Geo.Pl (Frame)
 open GlobalTheory.LFun (KGL)
 open scoped TensorProduct Classical
-attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 namespace UpperTheory.Gal.Spc
 
@@ -1529,9 +1527,6 @@ private theorem tensor_comm {R Q C : Type} [CommRing R] [Algebra ℚ R] [CommRin
   rw [map_mul, h3, one_mul, map_sub, map_mul, map_mul, h1, h1, map_zero] at h4
   exact sub_eq_zero.1 h4
 
-private theorem afp_ext {p : ℕ} {a b : AfP p} (h : ∀ v : AwayP p, AfP.eval v a = AfP.eval v b) : a = b :=
-  RestrictedProduct.ext (fun v : AwayP p => v.1.adicCompletion ℚ) (fun v => (v.1.adicCompletionIntegers ℚ : Set (v.1.adicCompletion ℚ))) h
-
 private def placeZ (q : ℕ) (hq : q.Prime) : HeightOneSpectrum ℤ where
   asIdeal := Ideal.span {(q : ℤ)}
   isPrime := (Ideal.span_singleton_prime (by exact_mod_cast hq.ne_zero)).2 (Nat.prime_iff_prime_int.1 hq)
@@ -1659,7 +1654,7 @@ private theorem rho_idem {p q : ℕ} [Fact p.Prime] (hq : q.Prime) (hqp : q ≠ 
     exact absurd h7 (not_le.2 h6)
   refine ⟨(h01 _).resolve_left fun h0 => ?_, hA⟩
   have hz : T.ρ e = 0 := by
-    refine afp_ext fun v => ?_
+    refine GlobalTheory.AdeleSplitP.finiteAdeleRingAway_ext fun v => ?_
     by_cases hv : v = placeAway hq hp hqp
     · rw [hv, h0, map_zero]
     · rw [hA v hv, map_zero]
@@ -1678,11 +1673,11 @@ private def secAdd {p : ℕ} (v₀ : AwayP p) : v₀.1.adicCompletion ℚ →+ A
     simp only [Set.mem_setOf_eq, Pi.single_eq_of_ne this]
     exact zero_mem _⟩
   map_zero' := by
-    refine afp_ext fun v => ?_
+    refine GlobalTheory.AdeleSplitP.finiteAdeleRingAway_ext fun v => ?_
     show (Pi.single v₀ (0 : v₀.1.adicCompletion ℚ) : ∀ v : AwayP p, v.1.adicCompletion ℚ) v = 0
     simp
   map_add' x y := by
-    refine afp_ext fun v => ?_
+    refine GlobalTheory.AdeleSplitP.finiteAdeleRingAway_ext fun v => ?_
     show (Pi.single v₀ (x + y) : ∀ v : AwayP p, v.1.adicCompletion ℚ) v =
       (Pi.single v₀ x : ∀ v : AwayP p, v.1.adicCompletion ℚ) v + (Pi.single v₀ y : ∀ v : AwayP p, v.1.adicCompletion ℚ) v
     simp [Pi.single_add]
@@ -1695,7 +1690,7 @@ private theorem eval_secAdd {p : ℕ} (v₀ : AwayP p) (x) : AfP.eval v₀ (secA
 private theorem secAdd_eval {p : ℕ} (v₀ : AwayP p) (r a : AfP p) (h1 : AfP.eval v₀ r = 1)
     (h0 : ∀ v, v ≠ v₀ → AfP.eval v r = 0) : secAdd v₀ (AfP.eval v₀ a) = r * a := by
   classical
-  refine afp_ext fun v => ?_
+  refine GlobalTheory.AdeleSplitP.finiteAdeleRingAway_ext fun v => ?_
   rw [map_mul]
   by_cases hv : v = v₀
   · subst hv

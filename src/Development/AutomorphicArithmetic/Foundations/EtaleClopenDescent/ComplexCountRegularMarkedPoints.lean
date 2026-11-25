@@ -299,9 +299,6 @@ variable {p : ℕ} [Fact p.Prime]
 theorem sh_mul' (G : HTGroup p) (a b : G.C) : sh G (a * b) = sh G b * sh G a := by
   simp only [sh, map_mul, MulOpposite.unop_mul]
 
-theorem sh_unit_mul_inv (G : HTGroup p) (y : G.Cˣ) : sh G (y : G.C) * sh G ((y⁻¹ : G.Cˣ) : G.C) = 1 := by
-  rw [← sh_mul', Units.inv_mul]; simp [sh]
-
 theorem conj_of_rel (p : ℕ) [Fact p.Prime] (G : HTGroup p) (P P' : Pair G) (B y y' : G.Cˣ) (s s' : ℚ)
     (hs : 0 < s) (hs' : 0 < s')
     (hP : (P.β : G.C) = algebraMap ℚ G.C s * (y * B * sh G y))
@@ -316,7 +313,7 @@ theorem conj_of_rel (p : ℕ) [Fact p.Prime] (G : HTGroup p) (P P' : Pair G) (B 
       rw [← hP', hβ, hP, mul_smul, mul_smul_comm, smul_mul_assoc]
     have E2 := congrArg (fun X => (a : G.C) * X * sh G a) E
     have ha1 : (a : G.C) * y' = 1 := Units.inv_mul y'
-    have ha2 : sh G (y' : G.C) * sh G a = 1 := sh_unit_mul_inv G y'
+    have ha2 : sh G (y' : G.C) * sh G a = 1 := GlobalTheory.CxRegPair.sh_mul_sh_inv G y'
     have L : (a : G.C) * (s' • ((y' : G.C) * B * sh G y')) * sh G a = s' • (B : G.C) := by
       rw [mul_smul_comm, smul_mul_assoc]
       congr 1

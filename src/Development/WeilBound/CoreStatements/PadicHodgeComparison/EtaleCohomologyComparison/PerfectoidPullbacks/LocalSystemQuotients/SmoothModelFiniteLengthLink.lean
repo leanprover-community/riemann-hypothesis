@@ -346,18 +346,8 @@ theorem cochain_exact (a b : IdF A) (ha : ∀ T, a.S T = ⊤) :
 
 theorem pull_toSq_bijective (a b : IdF A) (ha : ∀ T, a.S T = ⊤) :
     (∀ j, Subsingleton (CH.H (sq b (IdF.bot A)) j)) →
-      ∀ j, Function.Bijective ((toSq a b ha).pull j) := by
-  intro hv j
-  obtain ⟨hf, hfg, hg⟩ := cochain_exact a b ha
-  obtain ⟨δ, -, -, hex, hex2, -⟩ := CrystallineSemistableComparison.P.les _ _ hf hfg hg
-  constructor
-  · rw [injective_iff_map_eq_zero]
-    intro x hx
-    obtain ⟨y, rfl⟩ := (hex j x).1 hx
-    rw [(hv j).elim y 0, map_zero]
-  · intro y
-    obtain ⟨x, hx⟩ := (hex2 j y).1 ((hv (j + 1)).elim _ _)
-    exact ⟨x, hx⟩
+      ∀ j, Function.Bijective ((toSq a b ha).pull j) :=
+  by intros; apply _root_.GlobalTheory.CompanionTheory.KIso.toSq_bij; assumption
 
 end GlobalTheory.CompanionTheory.LengthOneCochainExactness
 end -- clump:auto

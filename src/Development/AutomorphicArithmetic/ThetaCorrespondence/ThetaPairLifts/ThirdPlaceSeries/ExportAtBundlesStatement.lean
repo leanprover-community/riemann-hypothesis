@@ -1145,26 +1145,8 @@ section Ideals
 variable {E : Type} [Field E] [NumberField E]
 
 theorem exists_order_nat (T : Finset (HeightOneSpectrum (𝓞 E))) (n : HeightOneSpectrum (𝓞 E) → ℕ) :
-    ∃ α : Eˣ, ∀ v ∈ T, v.valuation E (α : E) = exp (-(n v : ℤ)) := by
-  choose π hπ using fun v : HeightOneSpectrum (𝓞 E) => v.intValuation_exists_uniformizer
-  obtain ⟨y, hy⟩ := IsDedekindDomain.exists_forall_sub_mem_ideal (s := T) (fun v => v.asIdeal) (fun v => n v + 1)
-    (fun v _ => v.prime) (fun v _ w _ h e => h (HeightOneSpectrum.ext e)) (fun v => π v.1 ^ n v.1)
-  have key : ∀ v ∈ T, v.intValuation y = exp (-(n v : ℤ)) := fun v hv => by
-    have h1 := (v.intValuation_le_pow_iff_mem _ _).2 (hy v hv)
-    have h2 : v.intValuation (π v ^ n v) = exp (-(n v : ℤ)) := by
-      rw [map_pow, hπ, ← exp_nsmul]; simp
-    rw [← h2]
-    refine Valuation.map_eq_of_sub_lt _ (h1.trans_lt ?_)
-    rw [h2, exp_lt_exp]
-    push_cast
-    omega
-  by_cases h0 : y = 0
-  · refine ⟨1, fun v hv => ?_⟩
-    have := key v hv
-    rw [h0, map_zero] at this
-    exact absurd this.symm exp_ne_zero
-  · exact ⟨Units.mk0 (y : E) (by exact_mod_cast h0), fun v hv => by
-      rw [← key v hv]; exact v.valuation_of_algebraMap y⟩
+    ∃ α : Eˣ, ∀ v ∈ T, v.valuation E (α : E) = exp (-(n v : ℤ)) :=
+  by apply _root_.GlobalTheory.EtaProduct.exists_val_eq
 
 theorem exists_order (T : Finset (HeightOneSpectrum (𝓞 E))) (n : HeightOneSpectrum (𝓞 E) → ℤ) :
     ∃ α : Eˣ, ∀ v ∈ T, v.valuation E (α : E) = exp (-n v) := by

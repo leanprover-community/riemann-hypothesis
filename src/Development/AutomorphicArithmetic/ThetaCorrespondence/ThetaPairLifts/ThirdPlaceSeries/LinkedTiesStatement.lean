@@ -1058,11 +1058,11 @@ namespace GlobalTheory.PlugPt
 theorem ties_of_tiesB_alt : ∀ (D : D7) (O : GlobalTheory.EX.OB.Obj D) (c : ℝ) (b : BdPt D O c), TiesB D O c b →
     GlobalTheory.FinalJoin2.FieldSmall D O.L → b.RealisedCondition → GlobalTheory.EX.DQ.TwAllAt D O.ex.nch O.ex.xd → b.CompatibilityConditions := by
   intro D O c b h hF hR htw
-  obtain ⟨hc, hpb, -, hL, hD⟩ := GlobalTheory.T.pathCoreConditions_of_intrinsicConditions D O c b h hF
-  obtain ⟨hT, hRay⟩ := h
+  obtain ⟨hc, hpb, -, -, hD⟩ := GlobalTheory.T.pathCoreConditions_of_intrinsicConditions D O c b h hF
+  obtain ⟨hT, -⟩ := h
   exact
-    { real := hR, core := hc, pb := hpb, types := hT.types, series := hT.series, level := hL, data := hD,
-      psiVal := hT.psiVal, ray := hT.small.ray, roots := hT.small.roots, rayQ := hRay, twist := htw }
+    { real := hR, core := hc, pb := hpb, types := hT.types, data := hD,
+      psiVal := hT.psiVal, twist := htw }
 end GlobalTheory.PlugPt
 end
 end -- clump:auto

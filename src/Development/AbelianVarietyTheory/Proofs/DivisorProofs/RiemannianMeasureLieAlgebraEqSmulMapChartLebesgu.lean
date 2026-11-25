@@ -154,48 +154,11 @@ theorem gramVol_eq_norm_det (b : OrthonormalBasis ι 𝕜 V) (v : ι → V) :
   ext j
   simpa [Basis.toMatrix_apply] using (b.sum_repr (v j)).symm
 
-theorem norm_det_inner [FiniteDimensional 𝕜 V] (hι : Fintype.card ι = finrank 𝕜 V)
-    (w v : ι → V) :
-    ‖(Matrix.of fun i j => ⟪w i, v j⟫_𝕜).det‖ = gramVol 𝕜 w * gramVol 𝕜 v := by
-  let b : OrthonormalBasis ι 𝕜 V :=
-    (stdOrthonormalBasis 𝕜 V).reindex (Fintype.equivFinOfCardEq hι).symm
-  have : (Matrix.of fun i j => ⟪w i, v j⟫_𝕜) = (b.toBasis.toMatrix w)ᴴ * b.toBasis.toMatrix v := by
-    ext i j
-    simp [Matrix.mul_apply, Basis.toMatrix_apply, b.repr_apply_apply, b.sum_inner_mul_inner]
-  rw [this, det_mul, det_conjTranspose, norm_mul, norm_star, gramVol_eq_norm_det b,
-    gramVol_eq_norm_det b]
-
-theorem gramVol_mul_gramVol_of_biorthogonal [FiniteDimensional 𝕜 V]
-    (hι : Fintype.card ι = finrank 𝕜 V) {w v : ι → V}
-    (h : ∀ i j, ⟪w i, v j⟫_𝕜 = if i = j then 1 else 0) : gramVol 𝕜 w * gramVol 𝕜 v = 1 := by
-  rw [← norm_det_inner hι]
-  have : (Matrix.of fun i j => ⟪w i, v j⟫_𝕜) = 1 := by
-    ext i j; simp [h, Matrix.one_apply]
-  simp [this]
-
 section NormDet
 
 variable [FiniteDimensional 𝕜 V]
 
-theorem normDet_eq_gramVol (T : V →ₗ[𝕜] W) (b : OrthonormalBasis ι 𝕜 V) :
-    T.normDet = gramVol 𝕜 (fun i => T (b i)) :=
-  (gramVol_eq_of_sq T.normDet_nonneg (by simpa using T.normDet_sq_eq_det_gram b)).symm
-
-theorem normDet_mul_normDet_of_inner_eq [FiniteDimensional 𝕜 W] {S T : V →ₗ[𝕜] W}
-    (h : finrank 𝕜 V = finrank 𝕜 W) (hST : ∀ x y, ⟪S x, T y⟫_𝕜 = ⟪x, y⟫_𝕜) :
-    S.normDet * T.normDet = 1 := by
-  let b := stdOrthonormalBasis 𝕜 V
-  rw [normDet_eq_gramVol _ b, normDet_eq_gramVol _ b]
-  refine gramVol_mul_gramVol_of_biorthogonal (by simpa using h) fun i j => ?_
-  rw [hST, orthonormal_iff_ite.mp b.orthonormal]
-
-abbrev detNorm (T : V ≃ₗ[𝕜] W) : ℝ := (T : V →ₗ[𝕜] W).normDet
-
 variable [FiniteDimensional 𝕜 W]
-
-def invAdjoint (T : V ≃ₗ[𝕜] W) : V ≃ₗ[𝕜] W :=
-  LinearEquiv.ofLinearMap (LinearMap.adjoint (T.symm : W →ₗ[𝕜] V)) (LinearMap.adjoint (T : V →ₗ[𝕜] W))
-    (by rw [← LinearMap.adjoint_comp]; simp) (by rw [← LinearMap.adjoint_comp]; simp)
 
 end NormDet
 
@@ -462,15 +425,6 @@ theorem addHaar_eq_gram {ι ι' F G : Type} [Fintype ι] [DecidableEq ι] [Finty
   rw [h1, h2, h3, h4]
 
 open scoped ComplexConjugate
-
-theorem re_inner_skew {ι : Type} [Fintype ι] {r : ℕ} (s : Fin r → ℝ) (hs : ∀ a, s a * s a = 1)
-    (Y Y' : ι × Fin r × Fin r → ℂ)
-    (hY : ∀ τ a b, Y (τ, b, a) = -((s a * s b : ℝ) : ℂ) * conj (Y (τ, a, b)))
-    (hY' : ∀ τ a b, Y' (τ, b, a) = -((s a * s b : ℝ) : ℂ) * conj (Y' (τ, a, b))) :
-    ∑ p, (conj (Y p) * Y' p).re =
-      2 * ∑ q : ι × {p : Fin r × Fin r // p.2 < p.1},
-        (conj (Y (q.1, q.2.1.1, q.2.1.2)) * Y' (q.1, q.2.1.1, q.2.1.2)).re +
-      ∑ τ, ∑ a, (Y (τ, a, a)).im * (Y' (τ, a, a)).im := _root_.GlobalTheory.skew_family_inner_re_split s hs Y Y' hY hY'
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 

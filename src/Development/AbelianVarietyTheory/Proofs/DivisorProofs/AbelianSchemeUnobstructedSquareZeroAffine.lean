@@ -102,18 +102,6 @@ theorem surjective_spMap_of_sq {A B : Type} [CommRing A] [CommRing B] (π : A �
   rw [← range_comap_of_surjective B π hπ] at hx
   exact hx
 
-theorem pt_dual_le_of_fst : ∀ (R : Type) [CommRing R] (H : Over (Sp R)) (D : Type) [CommRing D] [Algebra R D]
-      (Z : Over.mk (spMap (algebraMap R (DualNumber D))) ⟶ H) (U : H.left.Opens),
-      ⊤ ≤ (spOver (TrivSqZeroExt.fstHom R D D) ≫ Z).left ⁻¹ᵁ U → ⊤ ≤ Z.left ⁻¹ᵁ U := by
-  intro R _ H D _ _ Z U h x _
-  have hs : Function.Surjective (spMap ((TrivSqZeroExt.fstHom R D D : DualNumber D →ₐ[R] D) : DualNumber D →+* D)) :=
-    surjective_spMap_of_sq _ (fun d ↦ ⟨TrivSqZeroExt.inl d, rfl⟩) fun a ha ↦ by
-      have h0 : a.fst = 0 := ha
-      ext <;> simp [h0]
-  obtain ⟨y, rfl⟩ := hs x
-  have hy := h (show y ∈ (⊤ : (Sp D).Opens) from trivial)
-  simpa [Over.comp_left, PDiv.spOver_left] using hy
-
 end GlobalTheory.PtExt
 end -- clump:auto
 end -- clump:auto
@@ -528,7 +516,7 @@ theorem injective_baseChange {R : Type} [CommRing R] (A : Over (Sp R)) [GrpObj A
 theorem retract : ∀ (R : Type) [CommRing R] (A : Over (Sp R)) [GrpObj A] (g : ℕ), IsAbelianScheme A → SmoothOfRelativeDimension g A.hom → ∀ U : AffOp A.left, ∃ r : Ω[Sec A.hom U.unop.1⁄R] →ₗ[Sec A.hom U.unop.1] (Sec A.hom U.unop.1 ⊗[R] GlobalTheory.InvForm.InvForm A), ∀ w : GlobalTheory.InvForm.InvForm A, r (evForm A.hom U w.1) = 1 ⊗ₜ w := by
   intro R _ A _ g hab hdim U
   have hsurj : Function.Surjective (LinearMap.liftBaseChange (Sec A.hom U.unop.1) (evForm A.hom U ∘ₗ (InvForm A).subtype)) := by
-    rw [← LinearMap.range_eq_top, eq_top_iff, ← GlobalTheory.T.span_invariantOneForms_affineOpen_abelianScheme_eq_top R A g hab hdim U, Submodule.span_le]
+    rw [← LinearMap.range_eq_top, eq_top_iff, ← _root_.GlobalTheory.InvSpan.span_invForm_eq_top R A g hab hdim U, Submodule.span_le]
     rintro _ ⟨w, rfl⟩
     exact ⟨1 ⊗ₜ w, by simp⟩
   let e := LinearEquiv.ofBijective _ ⟨injective_baseChange A hab U, hsurj⟩
@@ -691,7 +679,7 @@ theorem isBaseChange_invForm : ∀ (R : Type) [CommRing R] (A : Over (Sp R)) [Gr
   let f := evForm A.hom U ∘ₗ (InvForm A).subtype
   let L := f.liftBaseChange (Sec A.hom U.unop.1)
   have hs : Function.Surjective L := by
-    rw [← LinearMap.range_eq_top, eq_top_iff, ← GlobalTheory.T.span_invariantOneForms_affineOpen_abelianScheme_eq_top R A g hab hdim U]
+    rw [← LinearMap.range_eq_top, eq_top_iff, ← _root_.GlobalTheory.InvSpan.span_invForm_eq_top R A g hab hdim U]
     refine Submodule.span_le.2 ?_
     rintro _ ⟨w, rfl⟩
     exact ⟨1 ⊗ₜ w, by simp [L, f]⟩

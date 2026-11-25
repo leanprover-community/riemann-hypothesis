@@ -125,18 +125,8 @@ theorem star_intOE {a : I.E} (ha : a ∈ Formalism.UG.intOE I.E) : star a ∈ Fo
   obtain ⟨o, rfl⟩ := ha
   exact ⟨⟨star (o : I.E), (NumberField.RingOfIntegers.isIntegral_coe o).map (starRingEnd I.E).toIntAlgHom⟩, rfl⟩
 
-theorem sigA_mem {a : I.E ⊗[I.F] Af I.F} (ha : a ∈ IntAf I.F I.E) : sigA I a ∈ IntAf I.F I.E := by
-  have hsub : (Set.range (fun x : Formalism.UG.intOE I.E => (x : I.E) ⊗ₜ[I.F] (1 : Af I.F)) ∪
-      Set.range (fun y : Formalism.UG.intAd I.F => (1 : I.E) ⊗ₜ[I.F] (y : Af I.F))) ⊆
-      ((IntAf I.F I.E).comap (sigA I) : Set (I.E ⊗[I.F] Af I.F)) := by
-    rintro _ (⟨x, rfl⟩ | ⟨y, rfl⟩)
-    · show sigA I _ ∈ IntAf I.F I.E
-      rw [sigA_tmul]
-      exact Subring.subset_closure (Or.inl ⟨⟨star (x : I.E), star_intOE I x.2⟩, rfl⟩)
-    · show sigA I _ ∈ IntAf I.F I.E
-      rw [sigA_tmul, star_one]
-      exact Subring.subset_closure (Or.inr ⟨y, rfl⟩)
-  exact Subring.closure_le.2 hsub ha
+theorem sigA_mem {a : I.E ⊗[I.F] Af I.F} (ha : a ∈ IntAf I.F I.E) : sigA I a ∈ IntAf I.F I.E :=
+  by apply _root_.PIW.NormChiNBi.sigA_int; assumption
 
 theorem inclE_mem {a : I.E} (ha : a ∈ Formalism.UG.intOE I.E) :
     Formalism.UG.inclE (F := I.F) (Af I.F) a ∈ IntAf I.F I.E := by

@@ -179,53 +179,12 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Fo
 variable (D : D7)
 
 theorem natMul_of (b : 𝓞 D.host.E) (hb : b ≠ 0) :
-    ∃ n : ℕ, n ≠ 0 ∧ ∃ t : 𝓞 D.host.E, (n : 𝓞 D.host.E) = t * b := by
-  have hI : (Ideal.span {b}).comap (algebraMap ℤ (𝓞 D.host.E)) ≠ ⊥ :=
-    Ideal.comap_ne_bot_of_integral_mem hb (Ideal.mem_span_singleton_self b)
-      (Algebra.IsIntegral.isIntegral b)
-  obtain ⟨m, hm, hm0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hI
-  rw [Ideal.mem_comap, Ideal.mem_span_singleton'] at hm
-  obtain ⟨a, ha⟩ := hm
-  obtain ⟨n, rfl | rfl⟩ := Int.eq_nat_or_neg m
-  · refine ⟨n, by exact_mod_cast hm0, a, ?_⟩
-    rw [ha]
-    simp
-  · refine ⟨n, by simpa using hm0, -a, ?_⟩
-    rw [neg_mul, ha]
-    simp
+    ∃ n : ℕ, n ≠ 0 ∧ ∃ t : 𝓞 D.host.E, (n : 𝓞 D.host.E) = t * b :=
+  Formalism.L2.Ker.Cd.IntegralLatticeDensity.FL.natMul_of (Formalism.L2.Ker.Car.ofRec D) b hb
 
 theorem exists_int_mul (T : Finset D.host.E) :
-    ∃ m : ℤ, m ≠ 0 ∧ ∀ x ∈ T, IsIntegral ℤ ((m : D.host.E) * x) := by
-  classical
-  have h1 : ∀ x : D.host.E, ∃ m : ℤ, m ≠ 0 ∧ IsIntegral ℤ ((m : D.host.E) * x) := by
-    intro x
-    obtain ⟨a, b, hb, rfl⟩ := IsFractionRing.div_surjective (A := 𝓞 D.host.E) x
-    obtain ⟨n, hn, t, ht⟩ := natMul_of D b (nonZeroDivisors.ne_zero hb)
-    refine ⟨n, by exact_mod_cast hn, ?_⟩
-    have hb' : algebraMap (𝓞 D.host.E) D.host.E b ≠ 0 :=
-      IsFractionRing.to_map_ne_zero_of_mem_nonZeroDivisors hb
-    have h2 : ((n : ℤ) : D.host.E) * (algebraMap (𝓞 D.host.E) D.host.E a /
-        algebraMap (𝓞 D.host.E) D.host.E b) = algebraMap (𝓞 D.host.E) D.host.E (t * a) := by
-      rw [map_mul, Int.cast_natCast, ← map_natCast (algebraMap (𝓞 D.host.E) D.host.E), ht, map_mul]
-      field_simp
-    rw [h2]
-    exact NumberField.RingOfIntegers.isIntegral_coe _
-  have hcast : ∀ m : ℤ, IsIntegral ℤ (m : D.host.E) := fun m => by
-    simpa using (isIntegral_algebraMap : IsIntegral ℤ (algebraMap ℤ D.host.E m))
-  refine Finset.induction_on T ⟨1, one_ne_zero, by simp⟩ ?_
-  intro a s _ ih
-  obtain ⟨m, hm, hs⟩ := ih
-  obtain ⟨k, hk, ha'⟩ := h1 a
-  refine ⟨m * k, mul_ne_zero hm hk, fun x hx => ?_⟩
-  rcases Finset.mem_insert.1 hx with rfl | hx
-  · have h3 : ((m * k : ℤ) : D.host.E) * x = (m : D.host.E) * ((k : D.host.E) * x) := by
-      push_cast; ring
-    rw [h3]
-    exact (hcast m).mul ha'
-  · have h3 : ((m * k : ℤ) : D.host.E) * x = (k : D.host.E) * ((m : D.host.E) * x) := by
-      push_cast; ring
-    rw [h3]
-    exact (hcast k).mul (hs x hx)
+    ∃ m : ℤ, m ≠ 0 ∧ ∀ x ∈ T, IsIntegral ℤ ((m : D.host.E) * x) :=
+  Formalism.L2.Ker.Cd.IntegralLatticeDensity.FL.exists_int_mul (Formalism.L2.Ker.Car.ofRec D) T
 
 theorem one_mem_inverse_halfDifferent : (1 : D.host.E) ∈ (D.host.AA0 : Submodule (𝓞 D.host.E) D.host.E) :=
   Formalism.L2.Ker.Cd.IntegralLatticeDensity.FL.one_mem_inverse_halfDifferent (Formalism.L2.Ker.Car.ofRec D)

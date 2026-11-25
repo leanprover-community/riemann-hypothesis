@@ -52,8 +52,6 @@ noncomputable section
 
 namespace GlobalTheory.BigTop.Fun
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem cloud_mem_Icc_Sc {D : D7} (L : SizeData₂ D) (τ i : ℕ) :
     0 ≤ cloud D τ i ∧ (cloud D τ i : ℝ) ≤ L.Sc := by
   unfold cloud
@@ -183,11 +181,6 @@ theorem design_lines_of_ranks (x eps B : ℝ) (c k m f t : ℕ) (hx : 20480 ≤ 
 
 end GlobalTheory.BigTop.Fun
 
-namespace GlobalTheory.BigTop.Fun
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-end GlobalTheory.BigTop.Fun
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -204,10 +197,6 @@ section
 open Formalism.BasicNotions Formalism.MainNotions NumberField Formalism.L2.Indef Formalism.L2.Indef.Tree GlobalTheory.BigTop GlobalTheory.BigTop.Fun
 noncomputable section
 namespace GlobalTheory.BigTop.Fun
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-end GlobalTheory.BigTop.Fun
-namespace GlobalTheory.BigTop.Fun
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 theorem rankGapBound_alt : _root_.GlobalTheory.BigTop.Fun.RankGapBound' := by
   refine ⟨0, fun CF _ => ⟨1, one_pos, fun eps heps heps1 => ⟨⟨0, fun _ => 0, fun _ => 0, fun _ => 0⟩,
     fun Fm CH hF _ => ?_⟩⟩⟩

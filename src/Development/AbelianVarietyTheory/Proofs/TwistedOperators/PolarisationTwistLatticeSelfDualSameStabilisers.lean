@@ -243,19 +243,6 @@ open Matrix
 
 section Dual
 
-theorem mem_span_of {E : Type} [Field E] [NumberField E] {n : ℕ} {𝔟 : FractionalIdeal (𝓞 E)⁰ E} (h𝔟 : 𝔟 ≠ 0)
-    {Λ M : Submodule (𝓞 E) (Fin n → E)} (h : ∀ a ∈ 𝔟, ∀ x ∈ Λ, a • x ∈ M) :
-    ∀ x ∈ Λ, x ∈ Submodule.span E (M : Set (Fin n → E)) := by
-  intro x hx
-  have h1m : (1 : E) ∈ 𝔟⁻¹ * 𝔟 := by rw [inv_mul_cancel₀ h𝔟]; exact FractionalIdeal.one_mem_one _
-  have key : (1 : E) • x ∈ Submodule.span E (M : Set (Fin n → E)) := by
-    refine FractionalIdeal.mul_induction_on (C := fun e => e • x ∈ Submodule.span E (M : Set (Fin n → E))) h1m
-      (fun c _ a ha => ?_) (fun e e' he he' => ?_)
-    · rw [mul_smul]
-      exact Submodule.smul_mem _ c (Submodule.subset_span (h a ha x hx))
-    · rw [add_smul]; exact add_mem he he'
-  rwa [one_smul] at key
-
 theorem fg_of_le_fg' {E : Type} [Field E] [NumberField E] {n : ℕ} {N P : Submodule (𝓞 E) (Fin n → E)} (hP : P.FG)
     (hle : N ≤ P) : N.FG := by
   haveI := isNoetherian_of_fg_of_noetherian P hP

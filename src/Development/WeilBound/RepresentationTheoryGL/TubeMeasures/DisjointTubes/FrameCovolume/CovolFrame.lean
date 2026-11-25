@@ -1075,7 +1075,7 @@ theorem tube : VolSt → StabSt → IdxSt → TubeSt := by
       Measure.pi m (B k) := by
     intro k
     rw [← hcard]
-    exact GlobalTheory.T.archimedean_mass_product_lower_bound_unitary_pq D.host.E V.rank D.what₂.Tau _ _ X₀.Ψ X₀.Gm x₀ σ A e a₀ π m ρ₀ (by omega) hid hπc hπ hπe hm
+    exact _root_.GlobalTheory.CovTop.VolUp.MassLow.massLow D.host.E V.rank D.what₂.Tau _ _ X₀.Ψ X₀.Gm x₀ σ A e a₀ π m ρ₀ (by omega) hid hπc hπ hπe hm
       (F k) (hFm k)
 
   have hvolU : 0 < ReciprocityTheory.ChartRestriction.DS.volU V.rank := by

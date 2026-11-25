@@ -282,28 +282,6 @@ def FCrys.pullback {R' : Type} [CommRing R'] (g : R →+* R') (E : FCrys l R) : 
   Φ_bc P := E.Φ_bc (P.restrict g)
   Φ_nat f := E.Φ_nat (f.restrict g)
 
-def Obj.crys (l : ℕ) [hl : Fact l.Prime] : Obj l ℤ_[l] where
-  A := ℤ_[l]
-  D := Delta.ofLift l (RingHom.id _)
-    (fun x hx => (mul_eq_zero.1 hx).resolve_left (by exact_mod_cast hl.out.ne_zero))
-    (fun a => by
-      have : a - a ^ l ∈ RingHom.ker (PadicInt.toZMod (p := l)) := by
-        simp [RingHom.mem_ker]
-      rw [PadicInt.ker_toZMod, PadicInt.maximalIdeal_eq_span_p, Ideal.mem_span_singleton] at this
-      obtain ⟨b, hb⟩ := this
-      exact ⟨b, by simp only [RingHom.id_apply]; linear_combination hb⟩)
-  I := Ideal.span {(l : ℤ_[l])}
-  inv := invertible_span_singleton (mem_nonZeroDivisors_of_ne_zero (by exact_mod_cast hl.out.ne_zero))
-  complete := by
-    rw [sup_idem, ← PadicInt.maximalIdeal_eq_span_p]; infer_instance
-  l_mem := Ideal.mem_sup_left (Ideal.mem_span_singleton_self _)
-  bdd := ⟨1, fun x _ => by
-    have : ((l : ℕ) : ℤ_[l] ⧸ Ideal.span {(l : ℤ_[l])}) = 0 := by
-      rw [← map_natCast (Ideal.Quotient.mk _), Ideal.Quotient.eq_zero_iff_mem]
-      exact Ideal.mem_span_singleton_self _
-    simp [this]⟩
-  str := Ideal.Quotient.mk _
-
 theorem semiBC_self {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) : SemiBC f.toSemilinearMap := by
   intro Q _ _ v
   refine ⟨LinearMap.toSpanSingleton B Q (v 1), fun x => ?_, fun w hw => ?_⟩

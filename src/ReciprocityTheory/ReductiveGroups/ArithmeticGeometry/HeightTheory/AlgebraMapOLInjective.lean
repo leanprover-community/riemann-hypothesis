@@ -23,19 +23,8 @@ namespace ValPl
 
 open IsDedekindDomain WithZero IsLocalRing
 
-theorem wt_add_eq_zero {a b : WithTop ℤ} (ha : 0 ≤ a) (hb : 0 ≤ b) (h : a + b = 0) : a = 0 := by
-  induction a using WithTop.recTopCoe with
-  | top => simp at h
-  | coe a =>
-    induction b using WithTop.recTopCoe with
-    | top => simp at h
-    | coe b =>
-      have ha' : (0 : ℤ) ≤ a := by exact_mod_cast ha
-      have hb' : (0 : ℤ) ≤ b := by exact_mod_cast hb
-      have h' : a + b = 0 := by exact_mod_cast h
-      have ha0 : a = 0 := by omega
-      rw [ha0]
-      first | rfl
+theorem wt_add_eq_zero {a b : WithTop ℤ} (ha : 0 ≤ a) (hb : 0 ≤ b) (h : a + b = 0) : a = 0 :=
+  by apply _root_.PI.HtPlacesSumWork.valPl_wt_add_eq_zero <;> assumption
 
 section
 variable {S L : Type*} [CommRing S] [IsDedekindDomain S] [Field L] [Algebra S L]

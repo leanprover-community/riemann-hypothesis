@@ -108,14 +108,4 @@ theorem isLieComb_tanComb {G : Over (Sp R)} [GrpObj G] {m : ℕ} (c : Fin m → 
 end Geo
 
 
-open Classical in
-def rigVal {K : Type} [Field K] [NumberField K] {P : Out.PolAV (Sp K)} {AA : Over (Sp (𝓞 K))} [GrpObj AA]
-    {φ : P.A.left ⟶ AA.left} {MM : RigLB AA} {N : ℕ} (w : LB.Iso (MM.L.pull φ) (lbPow P.L N))
-    (i₀ : (lbPow P.L N).ι) : K :=
-  if h : ∃ p : PUnit → MM.L.ι,
-      ⊤ ≤ (spMap (algebraMap (𝓞 K) K)) ⁻¹ᵁ (show (Sp (𝓞 K)).Opens from (MM.L.pull (eSec AA)).U p) then
-    valR (X := P.A.left) (eSec P.A) _ (w.s (i₀, h.choose)).val *
-      valR (X := Sp (𝓞 K)) (spMap (algebraMap (𝓞 K) K)) _ (MM.rig.s h.choose).val
-  else 0
-
 end GlobalTheory.SecJet

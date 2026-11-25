@@ -178,9 +178,6 @@ section Char
 
 variable {R : Type*} [CommRing R]
 
-def locLen (P : Ideal R) [P.IsPrime] (M : Type*) [AddCommGroup M] [Module R M] : ℕ∞ :=
-  Module.length (Localization.AtPrime P) (LocalizedModule P.primeCompl M)
-
 def coinvLen (g : R) (M : Type*) [AddCommGroup M] [Module R M] : ℕ∞ :=
   Module.length R (QuotSMulTop g M)
 

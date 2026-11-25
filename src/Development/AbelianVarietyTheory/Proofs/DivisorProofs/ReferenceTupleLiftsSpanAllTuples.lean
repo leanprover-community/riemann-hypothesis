@@ -378,7 +378,7 @@ theorem liftsSpan_all_clauses : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (P
     obtain ⟨O', a, b, -⟩ := GlobalTheory.PinnedTuples.exists_pins_of_base D G Pl0 T0 A T R κ v₀ O hC.lev hC.grp.chiW hC.fam hC.models
       hC.thP.vP h1 h2 hW i hO hG'
     exact ⟨O', a, b⟩
-  exact liftsSpan_of_guard_core GlobalTheory.T.adelicLift_eq_factor_mul_geometricClassSum T R F κ v₀ O i hC h1 h2 hW hpb hio hO hex hG
+  exact liftsSpan_of_guard_core _root_.GlobalTheory.PtIdCore.point_identity_core T R F κ v₀ O i hC h1 h2 hW hpb hio hO hex hG
     (GlobalTheory.ClassSumSpanCore.classSumsSpan_core D G Pl0 T0 A T R F κ v₀ O hsz hC hW hio i hO h0)
 
 end GlobalTheory.LiftSpanClauses

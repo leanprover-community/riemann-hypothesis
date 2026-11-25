@@ -209,9 +209,9 @@ theorem int_of_unit_tops : ∀ {D : D7} (m n : ℕ), n ≤ m → ∀ (Z : Finset
   have hfV : toEAf D e • topL n (u * (γ⁻¹ : GL (Fin n) (EAf D)).1) = topL n (u * (γ⁻¹ : GL (Fin n) (EAf D)).1) := by
     rw [hVeq]
     exact smul_mul_fix _ _ _ hfU
-  obtain ⟨w, hw, hwe⟩ := GlobalTheory.T.exists_integral_inverse_at_splitPlaces_of_units Z e he _ (det_mem hUi) fun PP hPP =>
+  obtain ⟨w, hw, hwe⟩ := _root_.GlobalTheory.LocalInvIdem.exists_inv Z e he _ (det_mem hUi) fun PP hPP =>
     isUnit_res_det PP hUi (by rw [← topL_redM]; exact hU PP hPP)
-  obtain ⟨w', hw', hwe'⟩ := GlobalTheory.T.exists_integral_inverse_at_splitPlaces_of_units Z e he _ (det_mem hVi) fun PP hPP =>
+  obtain ⟨w', hw', hwe'⟩ := _root_.GlobalTheory.LocalInvIdem.exists_inv Z e he _ (det_mem hVi) fun PP hPP =>
     isUnit_res_det PP hVi (by rw [← topL_redM]; exact hV PP hPP)
   have hγ := adj_eq _ _ _ (toEAf D e) w' hUeq hwe' hfU
   have hγi := adj_eq _ _ _ (toEAf D e) w hVeq hwe hfV

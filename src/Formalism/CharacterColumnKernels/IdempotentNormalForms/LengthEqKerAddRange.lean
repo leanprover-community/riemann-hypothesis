@@ -25,18 +25,6 @@ namespace Formalism.NG
 
 universe u
 
-def epsImg (O : Type*) {OO M : Type*} [CommRing O] [Ring OO] [Algebra O OO] [AddCommGroup M]
-    [Module OO M] [Module O M] [IsScalarTower O OO M] (ε : OO) : Submodule O M :=
-  LinearMap.range (DistribSMul.toLinearMap O M ε)
-
-def epsIdeal (O : Type*) {OO : Type*} [CommRing O] [Ring OO] [Algebra O OO] (ε : OO) :
-    Submodule O OO :=
-  LinearMap.range (LinearMap.mulLeft O ε)
-
-abbrev EpsDual (O OO Q : Type*) [CommRing O] [Ring OO] [Algebra O OO] [AddCommGroup Q] [Module O Q]
-    (ε : OO) : Type _ :=
-  epsIdeal O ε →ₗ[O] Q
-
 section EpsDual
 variable (O OO Q : Type*) [CommRing O] [Ring OO] [Algebra O OO] [AddCommGroup Q] [Module O Q]
   (ε : OO)

@@ -894,7 +894,7 @@ theorem suppFirst_holds (D : D7) : SuppFirst D := by
       rw [Prod.mk_one_one, map_one]
       rfl
   · intro h hne
-    refine _root_.GlobalTheory.FinPl.placesToAdeles_all D J.W LW P hsdW (jacGrp J.d) h ?_
+    refine _root_.GlobalTheory.FinPl.placesToAdeles D J.W LW P hsdW (jacGrp J.d) h ?_
     intro v hv
     obtain ⟨x, hx, y, hy, rfl⟩ := ((_root_.GlobalTheory.FinPl.localComponents D (· = v)).2 J.W).1 h
     refine ⟨x, hx, y, hy, rfl, ?_⟩

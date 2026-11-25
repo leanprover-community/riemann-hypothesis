@@ -1795,18 +1795,8 @@ theorem isIntegral_of_pow_eq_one {x : ℂ} {k : ℕ} (hk : 0 < k) (hx : x ^ k = 
   ⟨Polynomial.X ^ k - Polynomial.C 1, Polynomial.monic_X_pow_sub_C 1 hk.ne', by simp [hx]⟩
 
 theorem rootCoord_isIntegral {f j m : ℕ} (ζ : Fin f → Matrix (Fin j) (Fin m) ℂ) (hζ : IsRootMatrix ζ)
-    (p : Σ _ : Fin f, PlIdx j m) : IsIntegral ℤ (rootCoord ζ p) := by
-  refine IsIntegral.det fun a b => ?_
-  simp only [colsOf, Matrix.submatrix_apply, id, onePipe, Matrix.of_apply]
-  generalize (p.2.1.orderEmbOfFin p.2.2) b = c
-  refine Fin.addCases (fun c => ?_) (fun c => ?_) c
-  · rw [Fin.append_left, Matrix.one_apply]
-    split_ifs
-    · exact isIntegral_one
-    · exact isIntegral_zero
-  · rw [Fin.append_right]
-    obtain ⟨k, hk, hx⟩ := hζ p.1 a c
-    exact isIntegral_of_pow_eq_one hk hx
+    (p : Σ _ : Fin f, PlIdx j m) : IsIntegral ℤ (rootCoord ζ p) :=
+  by apply _root_.GroundTheory.Heights₂.Heights.RootDivisorSupportEmpty.isIntegral_rootCoord; assumption
 
 end RootPointsFiniteAlt
 

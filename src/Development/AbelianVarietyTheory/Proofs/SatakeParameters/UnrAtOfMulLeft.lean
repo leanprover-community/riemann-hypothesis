@@ -96,11 +96,6 @@ theorem tameAt_mul {E : Type} [Field E] [NumberField E] {χ χ' : HChar E} {w : 
   change χ.loc w x * χ'.loc w x = 1
   rw [h x hx hx', h' x hx hx', one_mul]
 
-theorem unrAt_mul {E : Type} [Field E] [NumberField E] {χ χ' : HChar E} {w : HeightOneSpectrum (𝓞 E)}
-    (h : χ.UnrAt w) (h' : χ'.UnrAt w) : (χ * χ').UnrAt w := fun x hx => by
-  change χ.loc w x * χ'.loc w x = 1
-  rw [h x hx, h' x hx, one_mul]
-
 theorem unrAt_of_mul_left {E : Type} [Field E] [NumberField E] {χ χ' : HChar E} {w : HeightOneSpectrum (𝓞 E)}
     (h : χ.UnrAt w) (h' : (χ * χ').UnrAt w) : χ'.UnrAt w := fun x hx => by
   have := h' x hx

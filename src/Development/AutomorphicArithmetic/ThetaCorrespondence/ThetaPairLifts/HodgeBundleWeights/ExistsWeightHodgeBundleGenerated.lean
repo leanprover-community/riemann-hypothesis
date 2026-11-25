@@ -217,7 +217,7 @@ theorem exists_weight_sections_nonvanishing : _root_.GlobalTheory.CovTop.Hypothe
   obtain ⟨TF⟩ := @_root_.GlobalTheory.CompHS.TorFlagEx.nonempty_torFlag_alt hP _ _ _ _ _ _ _ Y.d.Xo₂ Y.d.c₂ hD
   have hV := @GlobalTheory.VarFlag.isVariety₀_flag _ _ _ _ _ _ _ _ _ TF Z hY.geo
   have hC : ∀ la, CuspIso TF.X Z Y.U la := fun la =>
-    ⟨GlobalTheory.T.cuspForms_extend_vanish_compactifiedFlagSpace D T j Y e o hY hf Z TF la, @GlobalTheory.HSApp.vanBd_le_space D T j Y e o hY hf Z TF la⟩
+    ⟨_root_.GlobalTheory.CompHS.cusp_extends_comp D T j Y e o hY hf Z TF la, @GlobalTheory.HSApp.vanBd_le_space D T j Y e o hY hf Z TF la⟩
   have hW := GlobalTheory.HSApp.gaps_of_wtBig _ _ _ P hB
   have h₁ : FreeOnOpen TF.X Z Y.U P.u₁ :=
     _root_.GlobalTheory.HSApp.globally_generated_on_open_of_weight_gap_ge hP hGD hQ hN hPr hT hL _ _ _ _ _ _ TF Z _ Y.U hY.geo hD _ (hW _ (by simp)).2 (hC _)

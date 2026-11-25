@@ -52,16 +52,6 @@ theorem SS_inv {I : FI} (hI : SS I) : SS I⁻¹ := by
   have h := SS_one _ (hx _ (hI y hy))
   rwa [star_mul, star_star, mul_comm] at h
 
-theorem SS_mul {I J : FI} (hI : SS I) (hJ : SS J) : SS (I * J) := by
-  intro x hx
-  refine FractionalIdeal.mul_induction_on hx ?_ ?_
-  · intro a ha b hb
-    rw [star_mul']
-    exact FractionalIdeal.mul_mem_mul (hI a ha) (hJ b hb)
-  · intro a b ha hb
-    rw [star_add]
-    exact Submodule.add_mem _ ha hb
-
 theorem SS_aaD (a : Fin D.R.rS) : SS (aaD D a) := by
   rw [Formalism.L2.SG.SplitPrimeNormLemmas.IntG.aaD_eq]
   have : ddS D ^ (D.R.rS - (a : ℕ)) = (((Formalism.L2.SG.NGCut.LeadingMinorIntegrality.dI D ^ (D.R.rS - (a : ℕ)) : Ideal (𝓞 D.host.E)) : FI)) := by

@@ -1200,7 +1200,7 @@ theorem UpperTheory.V.Z.Mult.Pi.seenTrA :
   have hcv : UpperTheory.V.Z.Tf.GlobalTraceComparison.Asm.cv N (two φ₁ φ₂ w false) (two φ₁ φ₂ w true) g =
       ∑ᶠ q : GLw n w ⧸ N, two φ₁ φ₂ w false q.out * two φ₁ φ₂ w true (q.out⁻¹ * g) := by
     unfold UpperTheory.V.Z.Tf.GlobalTraceComparison.Asm.cv
-    rw [GlobalTheory.T.haarIntegralNormalizedOpenCompact_eq_finite_level_sum _ N N _ le_rfl (fun k hk x => hr k hk x) (by simp)]
+    rw [_root_.GlobalTheory.BCT.HintLevel.hint_level _ N N _ le_rfl (fun k hk x => hr k hk x) (by simp)]
     simp
   have hpr : ∀ x : GLw n w, ((x, 1) : GLw n w × GLw 0 w)⁻¹ * (g, 1) = (x⁻¹ * g, 1) := fun x =>
     Prod.ext rfl (Subsingleton.elim _ _)

@@ -77,9 +77,6 @@ theorem conj_conj (x : D.host.E) : D.host.conj (D.host.conj x) = x := by
 theorem mem_F_iff (x : D.host.E) : x ∈ D.host.F ↔ D.host.conj x = x :=
   D.host.conjE_mem_hostF_iff x
 
-theorem d_ne_zero : ((D.host.d : ℕ) : D.host.E) ≠ 0 :=
-  Nat.cast_ne_zero.mpr D.host.hyp.2.1.ne_zero
-
 end GlobalTheory.DesignBC
 
 namespace GlobalTheory.DesignBC

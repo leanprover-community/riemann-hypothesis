@@ -52,15 +52,8 @@ open Formalism.FourierDecayAlt.S3
 
 section Count
 
-theorem card_lt_pairs (n : ℕ) : Nat.card {p : Fin n × Fin n // p.1 < p.2} = n * (n - 1) / 2 := by
-  rw [Nat.card_eq_fintype_card, Fintype.card_subtype, Finset.card_filter, Fintype.sum_prod_type_right]
-  have h : ∀ j : Fin n, ∑ i : Fin n, (if i < j then 1 else 0) = (j : ℕ) := by
-    intro j
-    rw [← Finset.card_filter]
-    have e : Finset.filter (fun i : Fin n => i < j) Finset.univ = Finset.Iio j := by ext i; simp
-    rw [e, Fin.card_Iio]
-  simp_rw [h]
-  rw [Fin.sum_univ_eq_sum_range (fun i => i) n, Finset.sum_range_id]
+theorem card_lt_pairs (n : ℕ) : Nat.card {p : Fin n × Fin n // p.1 < p.2} = n * (n - 1) / 2 :=
+  by apply _root_.Formalism.LogVandermondeBounds.StandardLattice.card_lt_pairs
 
 variable {A : Type} [CommRing A]
 

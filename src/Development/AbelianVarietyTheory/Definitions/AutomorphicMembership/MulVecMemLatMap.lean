@@ -56,11 +56,6 @@ section Tri
 
 variable {m : ℕ} {u v : Matrix (Fin m) (Fin m) E}
 
-theorem up_one : IsUp (1 : Matrix (Fin m) (Fin m) E) :=
-  fun _ _ => ⟨fun h => Matrix.one_apply_ne h.ne', fun h => h ▸ Matrix.one_apply_eq _⟩
-
-def IsStrict (A : Matrix (Fin m) (Fin m) E) : Prop := ∀ i j, j ≤ i → A i j = 0
-
 def simpleSum {r : ℕ} (A : Matrix (Fin (r + 1)) (Fin (r + 1)) E) : E := ∑ a : Fin r, A a.castSucc a.succ
 
 end Tri

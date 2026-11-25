@@ -678,7 +678,7 @@ theorem grF_eq_pull : ∀ (F : Type) [Field F] (σ : F →+* ℂ) (X Y : Var F) 
       ∀ i j : Fin (m r.1), i < j → ((B₀ * B⁻¹) r.1).map (ratVal · w) i j = 0 := by
     intro w hAw hBw
     have hp := ((Fr.mem_iff hAw).1 hBw) r.1
-    refine ⟨GlobalTheory.T.isHolomorphicUnitMatrixAt_rational_matrix_values F σ Y (m r.1) ((B₀ * B⁻¹) r.1) w (fun i j => mem_O_ratOf.1 (hp.1 i j)) hp.2.1
+    refine ⟨_root_.GlobalTheory.ChernCalc.holUnitAt_ratVal F σ Y (m r.1) ((B₀ * B⁻¹) r.1) w (fun i j => mem_O_ratOf.1 (hp.1 i j)) hp.2.1
       (mem_O_ratOf.1 hp.2.2.1), fun i j hij => ?_⟩
     rw [Matrix.map_apply, hp.2.2.2 i j i.2 hij]
     exact ratVal_zero' w

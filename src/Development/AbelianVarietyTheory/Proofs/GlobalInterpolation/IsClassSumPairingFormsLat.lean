@@ -224,21 +224,6 @@ section Coeff
 
 open GlobalTheory.TestLat.Compare
 
-theorem pairBDualK : PairBDualK := by
-  intro K _ _ ι _ n lam M hM x
-  letI : StarRing K := starRingOfComm
-  have h := GlobalTheory.TransDual.nabDelDual K ι n lam (fun _ => 1) M (fun _ => Matrix.conjTranspose_one) (fun _ => by simp) hM
-  have e : (fun τ => hdualFr (1 : Matrix (Fin n) (Fin n) K) (M τ)) = fun τ => dualFr (M τ) := by
-    funext τ
-    ext y
-    rw [hdualFr_triv, Matrix.one_mulVec]
-  have e2 : ∀ y, pairK lam (fun _ => 1) y x = pairBK lam x y := fun y => by
-    rw [pairK_apply, pairBK_apply, pairP_trivial]
-    exact pairingBSymm_holds K ι n lam _ _
-  rw [e] at h
-  rw [← h.1, ← h.2]
-  simp [Formalism.HermitianLatticesTheory.dual, Formalism.E.hdual, Submodule.mem_iInf, e2]
-
 variable {K : Type} [Field K] {ι : Type} [Fintype ι] {n : ℕ} (lam : ι → DomWeight n)
 
 theorem pairK_one_basis [StarRing K] (i j : VVIdx lam) :

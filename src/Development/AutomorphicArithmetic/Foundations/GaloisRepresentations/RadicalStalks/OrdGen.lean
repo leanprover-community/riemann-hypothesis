@@ -104,10 +104,6 @@ section
 variable {p : ℕ} [Fact p.Prime] {k : Type} [Field k] {A₀ : Over (Sp k)} [GrpObj A₀]
   {A' : Over (Sp (DualNumber k))} [GrpObj A'] {i : A₀.left ⟶ A'.left}
 
-private theorem resMor (h : IsGrpPullback A₀ A' (epsRed k) i) :
-    GrpMor (dp0 (DualNumber k)) (𝟙 _) A' (dp0 k) (𝟙 _) A₀ (TrivSqZeroExt.fstHom k k k).toRingHom (epsRed k) i :=
-  GrpMor.of_isGrpPullback (isDPMorphism_of_eq_bot _ rfl _ _) (by simp; rfl) h
-
 private theorem frob_sq (hk : (p : k) = 0) (hT : (p : DualNumber k) = 0) :
     GlobalTheory.VB.frob A₀.left p (cast_left p k hk A₀) ≫ i = i ≫ GlobalTheory.VB.frob A'.left p (cast_left p _ hT A') :=
   GlobalTheory.VB.frob_naturality p (cast_left p _ hT A') i (cast_left p k hk A₀)
@@ -120,31 +116,31 @@ private theorem pow_dual (hk : (p : k) = 0) (r : DualNumber k) :
 
 private theorem res_frob (hk : (p : k) = 0) (hT : (p : DualNumber k) = 0)
     (h : IsGrpPullback A₀ A' (epsRed k) i) (c : primDR A') :
-    (resMor h).pull (frobDR p _ hT A' c) = frobDR p k hk A₀ ((resMor h).pull c) := by
+    (GlobalTheory.CechKS.fibMor h).pull (frobDR p _ hT A' c) = frobDR p k hk A₀ ((GlobalTheory.CechKS.fibMor h).pull c) := by
   have F' := frobMor p _ hT A' (cast_left p _ hT A')
   have F₀ := frobMor p k hk A₀ (cast_left p k hk A₀)
-  have M := F'.comp (resMor h)
-  refine (GrpMor.pull_pull F' (resMor h) M (fun _ ↦ rfl) rfl c).trans
-    (GrpMor.pull_pull (resMor h) F₀ M (fun r ↦ ?_) (frob_sq hk hT) c).symm
+  have M := F'.comp (GlobalTheory.CechKS.fibMor h)
+  refine (GrpMor.pull_pull F' (GlobalTheory.CechKS.fibMor h) M (fun _ ↦ rfl) rfl c).trans
+    (GrpMor.pull_pull (GlobalTheory.CechKS.fibMor h) F₀ M (fun r ↦ ?_) (frob_sq hk hT) c).symm
   simp [TrivSqZeroExt.fst_pow]
 
 private theorem lift_frob (hk : (p : k) = 0) (hT : (p : DualNumber k) = 0)
     (h : IsGrpPullback A₀ A' (epsRed k) i) (c : primDR A') :
     (liftMor (epsDP k) h).pull (frobDR p _ hT A' c) =
-      (constMor A₀).pull (frobDR p k hk A₀ ((resMor h).pull c)) := by
+      (constMor A₀).pull (frobDR p k hk A₀ ((GlobalTheory.CechKS.fibMor h).pull c)) := by
   have F' := frobMor p _ hT A' (cast_left p _ hT A')
   have F₀ := frobMor p k hk A₀ (cast_left p k hk A₀)
   have M := F'.comp (liftMor (epsDP k) h)
-  have N := (resMor h).comp F₀
+  have N := (GlobalTheory.CechKS.fibMor h).comp F₀
   have e₁ := GrpMor.pull_pull F' (liftMor (epsDP k) h) M (fun _ ↦ rfl) rfl c
-  have e₂ := GrpMor.pull_pull (resMor h) F₀ N (fun _ ↦ rfl) rfl c
+  have e₂ := GrpMor.pull_pull (GlobalTheory.CechKS.fibMor h) F₀ N (fun _ ↦ rfl) rfl c
   have e₃ := GrpMor.pull_pull N (constMor A₀) M (fun r ↦ by
     simp [frobR_apply, pow_dual hk r]) (by simpa using frob_sq hk hT) c
   exact e₁.trans (e₃.symm.trans (congrArg _ e₂.symm))
 
 private theorem res_iter (hk : (p : k) = 0) (hT : (p : DualNumber k) = 0)
     (h : IsGrpPullback A₀ A' (epsRed k) i) (n : ℕ) (c : primDR A') :
-    (resMor h).pull ((frobDR p _ hT A')^[n] c) = (frobDR p k hk A₀)^[n] ((resMor h).pull c) := by
+    (GlobalTheory.CechKS.fibMor h).pull ((frobDR p _ hT A')^[n] c) = (frobDR p k hk A₀)^[n] ((GlobalTheory.CechKS.fibMor h).pull c) := by
   induction n with
   | zero => rfl
   | succ n ih => rw [Function.iterate_succ_apply', Function.iterate_succ_apply', res_frob hk hT h, ih]
@@ -166,7 +162,7 @@ private theorem vanish (hk : (p : k) = 0) (hT : (p : DualNumber k) = 0)
       push (epsDP k) (epsRed k) g₀ d ((liftMor (epsDP k) h).pull ((frobDR p _ hT A')^[n + 1] c)) :=
     (LinearMap.congr_fun (crysToDR_push (epsDP k) h h g₀ g' hg d) _).symm
   have e₂ : (liftMor (epsDP k) h).pull ((frobDR p _ hT A')^[n + 1] c) =
-      (constMor A₀).pull ((frobDR p k hk A₀)^[n + 1] ((resMor h).pull c)) := by
+      (constMor A₀).pull ((frobDR p k hk A₀)^[n + 1] ((GlobalTheory.CechKS.fibMor h).pull c)) := by
     rw [Function.iterate_succ_apply', lift_frob hk hT h, res_iter hk hT h,
       Function.iterate_succ_apply']
   rw [e₁, e₂, corr_push hd g₀, push_apply, hx, map_zero]

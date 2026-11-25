@@ -285,10 +285,10 @@ theorem charCocycle_eq_bockInt [NeZero n] (χ : G → ZMod n) (ψ : Additive G �
   constructor
   · rw [le_div_iff₀ hn]
     have : (0 : ℚ) ≤ r := by positivity
-    nlinarith
+    linarith only []
   · rw [div_lt_iff₀ hn]
     have : (r : ℚ) < n := by exact_mod_cast hlt
-    nlinarith
+    linarith only [this]
 
 theorem exists_cocycle_cupPairing_δ_bockSeq (hn : n ≠ 0) (A : Rep.{0} (ULift.{0} ℤ) G)
     [IsDiscreteRep A] (z : cocycles (zmodRep.{0} G n) 1) (a : A.ρ.invariants) :

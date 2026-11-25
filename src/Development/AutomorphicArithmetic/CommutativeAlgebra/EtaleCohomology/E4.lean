@@ -359,16 +359,9 @@ theorem dim_le_of_stdSmooth1 (R S : Type) [CommRing R] [CommRing S] [Algebra R S
   rw [MvPolynomial.ringKrullDim_of_isNoetherianRing] at h1
   simpa using h1
 
-theorem dim_affineOpen {X : Scheme.{0}} {V : X.Opens} (hV : IsAffineOpen V) :
-    topologicalKrullDim (V : Set X) = ringKrullDim Γ(X, V) := by
-  have h1 : topologicalKrullDim (V : Set X) = topologicalKrullDim (Spec Γ(X, V)) :=
-    (Scheme.homeoOfIso hV.isoSpec).isHomeomorph.topologicalKrullDim_eq
-  rw [h1]
-  exact PrimeSpectrum.topologicalKrullDim_eq_ringKrullDim _
-
 theorem dim_affineOpen_Spec_le (A : CommRingCat.{0}) {U : (Spec A).Opens} (hU : IsAffineOpen U) :
     ringKrullDim Γ(Spec A, U) ≤ ringKrullDim A := by
-  rw [← dim_affineOpen hU, ← PrimeSpectrum.topologicalKrullDim_eq_ringKrullDim (R := A)]
+  rw [← GlobalTheory.AmpleBig.topologicalKrullDim_affineOpen hU, ← PrimeSpectrum.topologicalKrullDim_eq_ringKrullDim (R := A)]
   exact topologicalKrullDim_subspace_le _ _
 
 theorem LeafDimBound_of : LateralTheory.E.LeafDescendVCut.LeafDimBound := by
@@ -381,7 +374,7 @@ theorem LeafDimBound_of : LateralTheory.E.LeafDescendVCut.LeafDimBound := by
   let _ : Algebra Γ(Sp R, U) Γ(D0, V) := (q.appLE U V e).hom.toAlgebra
   have : Algebra.IsStandardSmoothOfRelativeDimension 1 Γ(Sp R, U) Γ(D0, V) := hs
   refine ⟨(V : Set D0), V.isOpen, hx, ?_⟩
-  rw [dim_affineOpen hV]
+  rw [GlobalTheory.AmpleBig.topologicalKrullDim_affineOpen hV]
   calc ringKrullDim Γ(D0, V) ≤ ringKrullDim Γ(Sp R, U) + 1 := dim_le_of_stdSmooth1 _ _
     _ ≤ ringKrullDim R + 1 := by
       gcongr
@@ -401,10 +394,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory LateralTheory.E.E4 Topology
 
 namespace LateralTheory.E.LeafDimOpenPf
-
-theorem dim_mono {X : Type*} [TopologicalSpace X] {S T : Set X} (h : S ⊆ T) :
-    topologicalKrullDim S ≤ topologicalKrullDim T :=
-  (IsEmbedding.inclusion h).isInducing.topologicalKrullDim_le
 
 theorem dim_basicOpen (k A : Type) [Field k] [CommRing A] [IsDomain A] [Algebra k A]
     [Algebra.FiniteType k A] (g : A) (hg : g ≠ 0) {n : ℕ} (hn : Algebra.trdeg k A = n) :
@@ -450,7 +439,7 @@ theorem LeafDimOpen_of : LateralTheory.E.LeafCloseBCut.LeafDimOpen := by
       (GlobalTheory.topologicalKrullDim_eq_of_isEmbedding
         (j0.isOpenEmbedding.isEmbedding.comp IsEmbedding.subtypeVal)
         (by rw [Set.range_comp]; exact congrArg _ Subtype.range_coe)).symm
-    _ ≤ topologicalKrullDim U := dim_mono (by rintro _ ⟨q, hq, rfl⟩; exact hsub hq)
+    _ ≤ topologicalKrullDim U := GlobalTheory.QCoh.topologicalKrullDim_mono (by rintro _ ⟨q, hq, rfl⟩; exact hsub hq)
 
 end LateralTheory.E.LeafDimOpenPf
 end -- clump:auto
@@ -1200,10 +1189,6 @@ open CategoryTheory Limits AlgebraicGeometry Opposite LateralTheory.E.E4 Lateral
 
 namespace LateralTheory.E.LocallyQuasiFiniteGraphSpreadingOut
 
-theorem toR_sk {k Ω : Type} [Field k] [Field Ω] [Algebra k Ω] (R : Subalgebra k Ω) :
-    toR R ≫ Spec.map (CommRingCat.ofHom (algebraMap k R)) = Spec.map (CommRingCat.ofHom (algebraMap k Ω)) := by
-  rw [← Spec.map_comp]; rfl
-
 abbrev cmp {A B K X : Scheme.{0}} (p : X ⟶ K) (a : A ⟶ B) (b : B ⟶ K) (c : A ⟶ K) (h : a ≫ b = c) :
     pullback c p ⟶ pullback b p :=
   pullback.lift (pullback.fst c p ≫ a) (pullback.snd _ _)
@@ -1224,8 +1209,8 @@ theorem LeafSpreadLQFGraph_of (hM : LateralTheory.E.SpreadingOutQuasiFiniteness.
   obtain ⟨S, hRS, hSfg, hS⟩ := hM k Ω R hRfg
     (pullback.fst (Spec.map (CommRingCat.ofHom (algebraMap k Ω))) p) (pullback.lift c0 e he.symm)
     (pullback.fst (Spec.map (CommRingCat.ofHom (algebraMap k R))) p) (pullback.lift q f hf.symm) v0
-    (cmp p (toR R) _ _ (toR_sk R))
-    ⟨hLFT, inferInstance, inferInstance⟩ (by rw [pullback.lift_fst]; exact hq) (paste p _ _ _ (toR_sk R))
+    (cmp p (toR R) _ _ (LateralTheory.E.LeafDescendMapPf.toR_base R))
+    ⟨hLFT, inferInstance, inferInstance⟩ (by rw [pullback.lift_fst]; exact hq) (paste p _ _ _ (LateralTheory.E.LeafDescendMapPf.toR_base R))
     (by rw [pullback.lift_fst, pullback.lift_fst]; exact hpb) (by
       apply pullback.hom_ext
       · simp only [Category.assoc, pullback.lift_fst, pullback.lift_fst_assoc]; exact hpb.w.symm

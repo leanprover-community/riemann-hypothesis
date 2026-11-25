@@ -77,12 +77,6 @@ theorem trace_reduction : TrStep := by
   rw [← hy]
   exact_mod_cast hxy
 
-theorem alg_inj (D : D7) : Function.Injective (algebraMap (𝓞 D.host.F) (𝓞 D.host.E)) := by
-  intro a b h
-  have h' := congrArg ((↑) : 𝓞 D.host.E → D.host.E) h
-  ext
-  simpa using h'
-
 theorem ddS_ne (D : D7) : ddS D ≠ 0 :=
   PI.ScalarPairDr.W.ddS_ne_zero D
 

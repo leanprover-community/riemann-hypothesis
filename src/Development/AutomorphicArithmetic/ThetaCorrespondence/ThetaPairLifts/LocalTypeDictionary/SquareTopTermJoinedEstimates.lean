@@ -473,8 +473,8 @@ theorem exists_isBottom_of_isCoprime (hL : L.Is μ₀) (G : GridData L sc)
   obtain ⟨t0, ht⟩ := (GlobalTheory.TwoTorsionPt.exists_point D ⊤ δ hδ).1
   refine ⟨δ, t0, fun i j => ?_⟩
   obtain ⟨χν, hν, hw⟩ := GlobalTheory.BottomNu.exists_heckeU_nu_inv hL G i j
-  obtain ⟨χβ, hβ⟩ := exists_betaInv_heckeU hL G i j
-  obtain ⟨χα, hα⟩ := exists_heckeU_alphaH hL G i j
+  obtain ⟨χβ, hβ⟩ := exists_betaInv_heckeU G i j
+  obtain ⟨χα, hα⟩ := exists_heckeU_alphaH hL i j
   obtain ⟨P, h1, h2, h3, h4, h5⟩ := _root_.GlobalTheory.FunObj.StdDatum.exists_bottom_big hL G hm hδ ht i j χβ hβ χν hν hw
   obtain ⟨P', h1', h2', h3', h4', h5'⟩ := _root_.GlobalTheory.BotPairSmall.smallPair_exists hL G hm' hδ ht i j χα hα χν hν hw
   exact ⟨P, P', ⟨⟨h1, h1', h2, h2'.trans h2.symm⟩, h3, h3', h4, h4', ⟨h5, h5'⟩⟩⟩
@@ -1455,7 +1455,6 @@ open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTh
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 open GlobalTheory.NormSum (Pair Tup)
 open Classical
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.SqTop.BotNeFormula
 
 theorem bottomTheta_ne_zero_of_innerProduct_formula : _root_.GlobalTheory.FunPr.ThetaLocalInputs → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.ThetaIntegralsAgree → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.LocalMatching →
@@ -1570,7 +1569,6 @@ open GlobalTheory.CMVal (IsHeckeL)
 
 noncomputable section
 namespace GlobalTheory.NormAdelic
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ t0 : ℂ} {Q : ℕ} {P : Pair D cc δ t0 Q}
 
@@ -1605,7 +1603,6 @@ section -- clump:auto
 noncomputable section
 
 open NumberField Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum GlobalTheory.NormRatio
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.NormRatio
 
@@ -1641,7 +1638,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum GlobalTheory.NormRatio
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.NormRatio
 
@@ -1672,8 +1668,6 @@ section -- clump:auto
 @[expose] public section
 
 open NumberField Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum GlobalTheory.NormRatio
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.VacuumNorm
 

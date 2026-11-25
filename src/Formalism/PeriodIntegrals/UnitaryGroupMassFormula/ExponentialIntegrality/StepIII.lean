@@ -1,17 +1,11 @@
 module
-
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ExponentialIntegrality.Development
 public import Mathlib.Analysis.Normed.Field.Instances
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ExponentialIntegrality.InvNatCastMemWittIntegers
-
 @[expose] public section
-
 noncomputable section
-
 namespace PI.ExpIntWProof
-
 open PI
-
 theorem div_pow_mem (h : KeyW) (p : ℕ) [hp : Fact p.Prime] :
     ∀ k : ℕ, ∀ y : ℂ_[p], y ∈ Wp p → ‖y‖ ≤ ((p : ℝ)⁻¹) ^ k → y / (p : ℂ_[p]) ^ k ∈ Wp p := by
   intro k
@@ -20,29 +14,20 @@ theorem div_pow_mem (h : KeyW) (p : ℕ) [hp : Fact p.Prime] :
   | succ k ih =>
     intro y hy hnorm
     have hpos : (0 : ℝ) < (p : ℝ)⁻¹ := inv_pos.mpr (by exact_mod_cast hp.out.pos)
-    have hpinv : (p : ℝ)⁻¹ < 1 := inv_lt_one_of_one_lt₀ (by exact_mod_cast hp.out.one_lt)
-    have hlt : ‖y‖ < 1 :=
-      lt_of_le_of_lt hnorm (pow_lt_one₀ hpos.le hpinv (Nat.succ_ne_zero k))
-    have h1 : y / (p : ℂ_[p]) ∈ PI.Wp p := h p y hy hlt
-    have h2 : ‖y / (p : ℂ_[p])‖ ≤ ((p : ℝ)⁻¹) ^ k := by
-      rw [norm_div, norm_p, div_le_iff₀ hpos, ← pow_succ]
-      exact hnorm
-    have h3 := ih _ h1 h2
-    rwa [div_div, ← pow_succ'] at h3
+    simpa only [div_div, ← pow_succ'] using ih (y / (p : ℂ_[p]))
+      (h p y hy (hnorm.trans_lt (pow_lt_one₀ hpos.le
+        (inv_lt_one_of_one_lt₀ (by exact_mod_cast hp.out.one_lt)) (Nat.succ_ne_zero k))))
+      (by rwa [norm_div, norm_p, div_le_iff₀ hpos, ← pow_succ])
 
 theorem stepIII_of_key (h : KeyW) : StepIII := by
-  intro p hp x hx hnorm
-  obtain ⟨k, hk⟩ := hx
-  have hp0 : (p : ℂ_[p]) ≠ 0 := by exact_mod_cast hp.out.ne_zero
-  have hn : ‖(p : ℂ_[p]) ^ k * x‖ ≤ ((p : ℝ)⁻¹) ^ k := by
-    rw [norm_mul, norm_pow, norm_p]
-    exact mul_le_of_le_one_right (by positivity) hnorm
-  have h3 := div_pow_mem h p k _ hk hn
-  rwa [mul_div_cancel_left₀ _ (pow_ne_zero k hp0)] at h3
+  intro p hp x ⟨k, hk⟩ hnorm
+  rw [← mul_div_cancel_left₀ x (pow_ne_zero k
+    (show (p : ℂ_[p]) ≠ 0 from by exact_mod_cast hp.out.ne_zero))]
+  apply div_pow_mem h p k _ hk
+  rw [norm_mul, norm_pow, norm_p]
+  exact mul_le_of_le_one_right (by positivity) hnorm
 
 theorem expIntW_of_key (h1 : StepI) (h : KeyW) : ExpIntW :=
   expIntW_of_steps h1 (stepIII_of_key h)
-
 end PI.ExpIntWProof
-
 end

@@ -22,19 +22,11 @@ variable {n : ℕ}
 
 section Wt
 
-theorem partialSum_finset_sum_eq {ι : Type*} (s : Finset ι) (f : ι → Fin n → ℝ) (k : ℕ) :
-    kirrPs k (∑ i ∈ s, f i) = ∑ i ∈ s, kirrPs k (f i) := by
-  simp only [kirrPs, Finset.sum_apply]
-  exact Finset.sum_comm
-
 theorem rootCone_entry_int (k : ℕ) (μ ν : Fin n → ℝ) : kirrPs k (μ + ν) = kirrPs k μ + kirrPs k ν := by
   simp only [kirrPs, Pi.add_apply, Finset.sum_add_distrib]
 
 theorem partialSum_sub (k : ℕ) (μ ν : Fin n → ℝ) : kirrPs k (μ - ν) = kirrPs k μ - kirrPs k ν := by
   simp only [kirrPs, Pi.sub_apply, Finset.sum_sub_distrib]
-
-theorem partialSum_smul (k : ℕ) (c : ℝ) (μ : Fin n → ℝ) : kirrPs k (c • μ) = c * kirrPs k μ := by
-  simp only [kirrPs, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
 
 theorem partialSum_single (k : ℕ) (a : Fin n) :
     kirrPs k (Pi.single a (1 : ℝ)) = if a.val < k then 1 else 0 := by

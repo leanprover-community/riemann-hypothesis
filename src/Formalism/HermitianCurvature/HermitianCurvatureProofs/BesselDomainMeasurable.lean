@@ -241,18 +241,11 @@ lemma le_sum_map {α : Type*} (f : α → ℝ) (hf : ∀ x, 0 ≤ f x) (l : List
     obtain ⟨z, -, rfl⟩ := List.mem_map.mp hy
     exact hf z) _ (List.mem_map_of_mem hx)
 
-theorem bessel_domain_measurable : JFxDs2.JDomMeas := by
-  intro k r Wp Wq _ _ _ _ _ _ D A m F hThr hF u v hu hv hl g hg
-  obtain ⟨c, hc⟩ := hF
+theorem continuousOn_rho_dLR [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] (D : RealPlaceData k r Wp Wq) {A c : ℝ} {m : ℕ} {F : Mat k r → (Wq →L[ℂ] Wp)} (hc : CCle A m F c)
+    (hA : 0 ≤ A) (u v : List (Mat k r)) (hu : ∀ X ∈ u, unitLie k r X) (hv : ∀ X ∈ v, unitLie k r X)
+    (hl : u.length + v.length ≤ m) {g : Mat k r} (hgG : g ∈ GV k r) :
+    ContinuousOn (fun p => rho D p (dLR (u.map (AdL p)) (v.map (AdR p)) F) g) {p : SS k r | D.inSS p} := by
   have hc0 : 0 ≤ c := cc_nonneg hc
-  have hgG : g ∈ GV k r := hg.1
-  have hA : 0 ≤ A := by
-    have h1 : (0 : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) ^ 2 := sq_nonneg _
-    have h2 := lt_of_le_of_lt h1 hThr
-    have h3 : (0 : ℝ) < 9 * ((r : ℝ) + 1) := by positivity
-    rw [lt_div_iff₀ h3, zero_mul] at h2
-    have : (0 : ℝ) ≤ 6 * (r : ℝ) * (m : ℝ) := by positivity
-    linarith
   have hwu : ∀ x ∈ lr u v, unitLie k r x.2 := unit_lr' hu hv
   have hwt : LRt ((lr u v).map Prod.fst) := lrt_lr u v
   have hwl : (lr u v).length ≤ m := by rw [length_lr]; exact hl
@@ -322,13 +315,25 @@ theorem bessel_domain_measurable : JFxDs2.JDomMeas := by
     refine (hdc.add hsec).congr (fun p _ => ?_) ?_
     · simp
     · simp
-  have hΦ : ContinuousOn (fun p => rho D p (dLR (u.map (AdL p)) (v.map (AdR p)) F) g) {p : SS k r | D.inSS p} := by
-    have e : (fun p => rho D p (dLR (u.map (AdL p)) (v.map (AdR p)) F) g) =
-        fun p => B6.Sd D p (W ((lr u v).map (adM p)) F (sgs p g)) := by
-      funext p
-      rw [B6.rho_eq, dLR_eq, lr_ad]
-    rw [e]
-    exact (B6.Sd_continuousOn D).clm_apply hmain
+  have e : (fun p => rho D p (dLR (u.map (AdL p)) (v.map (AdR p)) F) g) =
+      fun p => B6.Sd D p (W ((lr u v).map (adM p)) F (sgs p g)) := by
+    funext p
+    rw [B6.rho_eq, dLR_eq, lr_ad]
+  rw [e]
+  exact (B6.Sd_continuousOn D).clm_apply hmain
+
+theorem bessel_domain_measurable : JFxDs2.JDomMeas := by
+  intro k r Wp Wq _ _ _ _ _ _ D A m F hThr hF u v hu hv hl g hg
+  obtain ⟨c, hc⟩ := hF
+  have hgG : g ∈ GV k r := hg.1
+  have hA : 0 ≤ A := by
+    have h1 : (0 : ℝ) ≤ ((2 * r + k + 1 : ℕ) : ℝ) ^ 2 := sq_nonneg _
+    have h2 := lt_of_le_of_lt h1 hThr
+    have h3 : (0 : ℝ) < 9 * ((r : ℝ) + 1) := by positivity
+    rw [lt_div_iff₀ h3, zero_mul] at h2
+    have : (0 : ℝ) ≤ 6 * (r : ℝ) * (m : ℝ) := by positivity
+    linarith
+  have hΦ := continuousOn_rho_dLR D hc hA u v hu hv hl hgG
   have := hΦ.aestronglyMeasurable (μ := D.μSS) (B6.measurableSet_inSS D)
   have hr : D.μSS.restrict {p | D.inSS p} = D.μSS := Measure.restrict_eq_self_of_ae_mem (B5.ae_inSS D)
   rwa [hr] at this

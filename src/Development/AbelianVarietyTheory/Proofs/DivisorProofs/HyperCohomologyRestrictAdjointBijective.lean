@@ -74,24 +74,5 @@ def counitCoef {R : Type} [CommRing R] {C C' : Type} [Category.{0} C] [Category.
     change mp F (adj.counit.app V) (r • b) = r • mp F (adj.counit.app V) b
     exact map_smul _ r b
 
-theorem main : ∀ (R : Type) [CommRing R] (C C' : Type) [Category.{0} C] [Category.{0} C']
-    (F : C ⥤ CommAlgCat.{0} R) (G : C' ⥤ C) (H : C ⥤ C'), (G ⊣ H) →
-    Function.Bijective (pullHyp1 (CoefMap.restrict F G)) := by
-  intro R _ C C' _ _ F G H adj
-  have hl : ∀ c, pullHyp1 (counitCoef F adj) (pullHyp1 (CoefMap.restrict F G) c) = c := by
-    intro c
-    rw [← pullHyp1_comp]
-    exact (pullHyp1_eq_of_natTrans _ (CoefMap.id F) adj.counit (fun T b ↦ rfl) c).trans
-      (pullHyp1_id c)
-  have hr : ∀ c, pullHyp1 (CoefMap.restrict F G) (pullHyp1 (counitCoef F adj) c) = c := by
-    intro c
-    rw [← pullHyp1_comp]
-    refine ((pullHyp1_eq_of_natTrans (CoefMap.id (G ⋙ F))
-      ((counitCoef F adj).comp (CoefMap.restrict F G)) adj.unit (fun T b ↦ ?_) c).symm.trans
-      (pullHyp1_id c))
-    change mp F (adj.counit.app (G.obj T)) (mp F (G.map (adj.unit.app T)) b) = b
-    exact (mp_comp F (G.map (adj.unit.app T)) (adj.counit.app (G.obj T)) b).symm.trans
-      ((congrArg (fun ξ ↦ mp F ξ b) (adj.left_triangle_components T)).trans (mp_id F (G.obj T) b))
-  exact ⟨Function.LeftInverse.injective hl, Function.RightInverse.surjective hr⟩
 
 end GlobalTheory.AdjHyp

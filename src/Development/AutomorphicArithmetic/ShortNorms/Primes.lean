@@ -1015,12 +1015,6 @@ theorem card_ray_le (hK : Module.finrank ℚ K = 2) (hM : M ≠ 0) :
 
 end
 
-theorem addChar_eq_one_or_neg_one {G : Type} [AddCommGroup G] (χ : AddChar G ℂ) (h : χ * χ = 1) (g : G) :
-    χ g = 1 ∨ χ g = -1 := by
-  have : χ g * χ g = 1 := by
-    rw [← AddChar.mul_apply, h, AddChar.one_apply]
-  exact mul_self_eq_one_iff.1 this
-
 theorem exists_lFam_ray : ∀ d M : ℕ, d.Prime → d % 4 = 3 → 100 ≤ d → 3 ≤ M → ∃ 𝓕 : LFam, 𝓕.B = (4 * (d : ℝ) * (M : ℝ) ^ 2) ∧
     ∀ p : ℕ, p.Prime → 𝓕.lam 0 p ≠ 0 → GlobalTheory.Mem.An.NormOne d M p := by
   intro d M hd hd4 hd100 hM
@@ -1074,9 +1068,9 @@ theorem exists_lFam_ray : ∀ d M : ℕ, d.Prime → d % 4 = 3 → 100 ≤ d →
     sq := fun χ hχ n => GlobalTheory.Hk.RaySq.conv_real_char K M (by omega) D (fun g => (χ (Additive.ofMul g)).re) (by simp) ?_ ?_ n }, rfl, hl.2.2⟩
   · intro g h
     rw [ofMul_mul, AddChar.map_add_eq_mul]
-    rcases addChar_eq_one_or_neg_one χ hχ (Additive.ofMul g) with h1 | h1 <;> simp [h1]
+    rcases GlobalTheory.Hk.LFamPos.pm_one χ hχ (Additive.ofMul g) with h1 | h1 <;> simp [h1]
   · intro g
-    rcases addChar_eq_one_or_neg_one χ hχ (Additive.ofMul g) with h1 | h1 <;> simp [h1]
+    rcases GlobalTheory.Hk.LFamPos.pm_one χ hχ (Additive.ofMul g) with h1 | h1 <;> simp [h1]
 
 end GlobalTheory.Hk
 end -- clump:auto

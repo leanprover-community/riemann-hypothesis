@@ -84,7 +84,7 @@ private theorem pair_over {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam
     ⟨GlobalTheory.FockThetaOnto.crd (D := D) (show Matrix (Fin S.rank) (Fin S.rank) D.host.E from (sgn ε S).gram) hG e,
       fun u => by rw [← hg]; rfl, fun _ => rfl⟩
   obtain ⟨h1, h2⟩ := GlobalTheory.T.algebraicVectors_correspond_schrodinger_thetaMap D ψ θ hθ ε S X A B e.symm Bs hP.base hP.psi Vs Ws _ _ _ _ hP.JV hP.JW hV hW hc M hP.good cS hcS
-  obtain ⟨om₁, hom₁, hw⟩ := GlobalTheory.T.exists_weilRep_orientedPair_rationalSchrodinger D ψ θ hθ ε S X A B e.symm Bs hP.base hP.psi Vs Ws _ _ _ _ hP.JV hP.JW hV hW hc M
+  obtain ⟨om₁, hom₁, hw⟩ := _root_.GlobalTheory.SquareAgree.exists_weil_of_oriented D ψ θ hθ ε S X A B e.symm Bs hP.base hP.psi Vs Ws _ _ _ _ hP.JV hP.JW hV hW hc M
     hP.good cS hcS χ χ' ω hω
   have dV : Vs.J.det ≠ 0 := by
     obtain ⟨w⟩ : Nonempty (InfinitePlace D.host.F) := inferInstance

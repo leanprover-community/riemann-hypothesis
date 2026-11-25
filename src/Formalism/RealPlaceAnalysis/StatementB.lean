@@ -27,9 +27,6 @@ def lsh {n : ℕ} (ν : Fin n → ℂ) : Fin n → ℂ := fun a => ν a + ((n : 
 def Amat {n : ℕ} (l : Fin n → ℂ) : Matrix (Fin n) (Fin n) ℂ :=
   Matrix.of fun a b => if a = b then l a else if a < b then -1 else 0
 
-def vand {n : ℕ} (l : Fin n → ℂ) : ℂ :=
-  ∏ a, ∏ b ∈ univ.filter (fun b => a < b), (l a - l b)
-
 def EpowCov : Prop :=
   ∀ (A : Type) [Ring A] (n : ℕ) (E : Fin n → Fin n → A), GlRel E →
     ∀ (k : ℕ) (a b c d : Fin n),

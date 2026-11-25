@@ -49,14 +49,6 @@ theorem eventually_smul_sub {W : Type} [AddCommGroup W] [Module K W] [Topologica
 
 variable [T2Space X]
 
-theorem reach_of_approx (π : K) (hπ : Tendsto (fun k : ℕ => π ^ k) atTop (𝓝 0))
-    (L : AddSubgroup V) (hLc : IsCompact (L : Set V)) (hπL : ∀ w ∈ L, π • w ∈ L)
-    (D : V →+ X) (hDc : Continuous D) (hDs : ∀ (t : K) w, D (t • w) = t • D w)
-    (P : AddSubgroup X) (hPc : IsCompact (P : Set X))
-    (hbase : ∀ p ∈ P, ∃ l ∈ L, p - D l ∈ smulSub π P) :
-    ∀ p ∈ P, ∃ l ∈ L, D l = p :=
-  PI.VolStabS.reach_of_approx π hπ L hLc hπL D hDc hDs P hPc hbase
-
 theorem filt_abstract [ContinuousMul K] (π : K) (hπ0 : π ≠ 0) (hπ : Tendsto (fun k : ℕ => π ^ k) atTop (𝓝 0))
     (L : AddSubgroup V) (hLo : IsOpen (L : Set V)) (hLc : IsCompact (L : Set V))
     (hπL : ∀ w ∈ L, π • w ∈ L)

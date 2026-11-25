@@ -144,12 +144,6 @@ def ExpTan {g : ℕ} (e : Fin g ≃ Σ τ : E →+* ℂ, Fin (Dw.mult τ))
 variable {g : ℕ} {e : Fin g ≃ Σ τ : E →+* ℂ, Fin (Dw.mult τ)}
   {F : FamilyUnif Xo (σ.comp (IntermediateField.inclusion c.le).toRingHom) (fun j => relab c σ (e j).1)}
 
-theorem derivAt_exists {i : Fin F.n} {P : (F.Di i).La →+ (Fin g → ℂ)}
-    (hP : IsPeriod (F.Di i) (fun j => relab c σ (e j).1) P) (w : Fin g → ℂ) :
-    ∃ v : Sp (DualNumber (CAt σ)) ⟶ Xo.univ.t.G.left, IsDerivAt0 (fun z => (F.ex i P z).left) w v := by
-  obtain ⟨v, hv, -⟩ := (F.ex_diff i P hP).1 w
-  exact ⟨_, hv⟩
-
 end Fam
 
 section Main
@@ -188,10 +182,6 @@ section Per
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 
 
-open Classical in
-def bdet (X : Data E r) (b : Frame X.Ψ r) : ℂ :=
-  ∏ τ : X.Ψ, ∏ j : Fin r, b τ j j ^ (if X.p0 ≤ (j : ℕ) then (1 : ℤ) else -1)
-
 end Per
 
 section Fam
@@ -204,10 +194,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheo
 
 abbrev PerAt : Prop :=
   ∀ k, ∀ x ∈ (M.X k).dom, IsPeriod (F.Di k) (fun j => relab c σ (e j).1) (pmOf e M k x)
-
-def lieOf (hP : PerAt e F M) (k : Fin F.n) (x : (M.X k).dom) (τ : E →+* ℂ) (i : Fin (Dw.mult τ)) :
-    Sp (DualNumber (CAt σ)) ⟶ Xo.univ.t.G.left :=
-  (derivAt_exists (hP k x.1 x.2) (eb e τ i)).choose
 
 def LieEig : Prop :=
   ∀ i (P : (F.Di i).La →+ (Fin g → ℂ)), IsPeriod (F.Di i) (fun j => relab c σ (e j).1) P →
@@ -247,10 +233,6 @@ section Gam
 open scoped Matrix
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
-
-theorem det_map_ne (τ : E →+* ℂ) (γ : GL (Fin r) E) : ((γ : Matrix (Fin r) (Fin r) E).map τ).det ≠ 0 := by
-  rw [← RingHom.mapMatrix_apply, ← RingHom.map_det]
-  exact (map_ne_zero τ).2 (Matrix.isUnits_det_units γ).ne_zero
 
 end Gam
 

@@ -120,11 +120,6 @@ lemma orth_prj [IsCMField E] {dim : (E →+* ℂ) → ℕ} {I : Submodule ℤ (V
 
 abbrev conjO [IsCMField E] (α : 𝓞 E) : 𝓞 E := IsCMField.ringOfIntegersComplexConj E α
 
-lemma emb_conjO [IsCMField E] (α : 𝓞 E) (τ : E →+* ℂ) :
-    τ ((conjO α : 𝓞 E) : E) = (starRingEnd ℂ) (τ (α : E)) := by
-  simp [conjO, NumberField.IsCMField.coe_ringOfIntegersComplexConj,
-    NumberField.IsCMField.complexEmbedding_complexConj]
-
 lemma act_apply {dim : (E →+* ℂ) → ℕ} (α : 𝓞 E) (v : Vsp dim) (i : Idx dim) :
     act α v i = i.1 (α : E) * v i := rfl
 

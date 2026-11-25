@@ -70,11 +70,6 @@ theorem pr_fst_sum (P : M.Par) {ι : Type} (s : Finset ι) (g : ι → (MA.DQ P)
     (∑ i ∈ s, g i).1 = ∑ i ∈ s, (g i).1 := by
   exact map_sum (prFst P) g s
 
-theorem op_sum_apply (P : M.Par) {ι : Type} (s : Finset ι) (g : ι → (MA.DQ P).Op) (y : (MA.DQ P).R) :
-    (∑ i ∈ s, g i) y = ∑ i ∈ s, g i y := by
-  first
-  | exact LinearMap.sum_apply s g y
-
 theorem actA_mul (P : M.Par) (a b : MA.A P (MA.DQ P)) (x : M.Ty P → MA.SmQ P.r P.TT) :
     MA.actA P (a * b) x = MA.actA P a (MA.actA P b x) := by
   funext π

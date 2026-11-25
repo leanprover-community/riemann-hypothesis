@@ -106,9 +106,6 @@ section Cob
 
 variable {c : Coef l} {A : ValuationSubring Ω} {j : Ω →+* Qbar l}
 
-theorem sub_mem_cob {w : Ω} (hw : w ∈ A) : (fun s : G ℚ Ω => j (s w) - j w) ∈ cob c A j :=
-  Submodule.subset_span ⟨w, hw, rfl⟩
-
 end Cob
 
 def HTCoIn (c : Coef l) (A : ValuationSubring Ω) (j : Ω →+* Qbar l) (Z : ∀ r : ℕ, G ℚ Ω → (ZMod (l ^ r))ˣ → Qbar l)
@@ -124,10 +121,6 @@ variable {c : Coef l} {A : ValuationSubring Ω} {j : Ω →+* Qbar l} {Z Z' : �
 namespace HTCoIn
 
 end HTCoIn
-
-theorem htCoIn_lamv (hj : ReciprocityTheory.Neutral.Cmp.Compat l A j) {f : G ℚ Ω → Qbar l} (hf : f ∈ cob c A j) (m c₀ : ℕ)
-    (y : (ZMod (l ^ m))ˣ) (h : Qbar l) : HTCoIn c A j (fun r s _ => h * lamv l r s + f s) m c₀ y h :=
-  ⟨hj, f, hf, fun _ _ _ => by simp [Cg]⟩
 
 end Co
 

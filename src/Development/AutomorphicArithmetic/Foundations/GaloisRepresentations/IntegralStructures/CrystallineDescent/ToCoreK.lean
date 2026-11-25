@@ -1048,22 +1048,12 @@ private theorem unram_of_forall {E : Type} [Field E] [NumberField E] [IsCMField 
       ((PrimeSpectrum.le_iff_specializes q ⟨Q, hQ.isPrime⟩).mp hqQ) hU
   exact ⟨inferInstance, inferInstance⟩
 
-private theorem under_eq_of_inert {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-    {v : HeightOneSpectrum (𝓞 F)} {w : HeightOneSpectrum (𝓞 E)} (h : Formalism.UG.IsInertAt F E v w) :
-    w.under (𝓞 F) = v := by
-  apply HeightOneSpectrum.ext
-  have hle : v.asIdeal ≤ (w.under (𝓞 F)).asIdeal := by
-    show v.asIdeal ≤ w.asIdeal.comap (algebraMap (𝓞 F) (𝓞 E))
-    rw [← Ideal.map_le_iff_le_comap]
-    exact h.le
-  exact (v.isMaximal.eq_of_le (w.under (𝓞 F)).isPrime.ne_top hle).symm
-
 private theorem not_split_of_inert {E : Type} [Field E] [NumberField E] [IsCMField E]
     {v : HeightOneSpectrum (𝓞 (maximalRealSubfield E))} {w : HeightOneSpectrum (𝓞 E)}
     (h : Formalism.UG.IsInertAt (maximalRealSubfield E) E v w) : ¬ GlobalTheory.UnitaryBC.IsSplitAt w := by
   rintro ⟨u, hne, hu⟩
   apply hne
-  have hv : u.under (𝓞 (maximalRealSubfield E)) = v := hu.trans (under_eq_of_inert h)
+  have hv : u.under (𝓞 (maximalRealSubfield E)) = v := hu.trans (GlobalTheory.LFun.under_eq_of_isInertAt h)
   have hle : w.asIdeal ≤ u.asIdeal := by
     rw [← show Ideal.map (algebraMap (𝓞 (maximalRealSubfield E)) (𝓞 E)) v.asIdeal = w.asIdeal from h, Ideal.map_le_iff_le_comap, ← hv]
     exact le_rfl
@@ -1084,7 +1074,7 @@ theorem UpperTheory.Gal.TP.Sub.baseNG_holds :
       std := hstd
       inert := fun v w h => by
         obtain ⟨a, b, c⟩ := hI w (not_split_of_inert h)
-        rw [under_eq_of_inert h] at a b c
+        rw [GlobalTheory.LFun.under_eq_of_isInertAt h] at a b c
         exact ⟨a, b, PositivityTheory.Mix.psiUnr_of_not_le hstd v c⟩
       psiP := fun v hv => absurd hv (by simp [hP]) }
 end -- clump:auto

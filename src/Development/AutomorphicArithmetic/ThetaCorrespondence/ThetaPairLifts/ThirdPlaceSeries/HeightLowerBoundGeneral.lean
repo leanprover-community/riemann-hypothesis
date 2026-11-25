@@ -595,10 +595,6 @@ section Places
 
 variable {K : Type} [Field K] [NumberField K]
 
-theorem vLa_nat_nonneg (la : HeightOneSpectrum (𝓞 K)) {n : ℕ} (hn : n ≠ 0) : 0 ≤ vLa la (n : K) := by
-  have := vAdd_int_nonneg la (a := (n : 𝓞 K)) (by simpa using hn)
-  simpa [vLa, Formalism.BasicNotions.vAdd] using this
-
 theorem vLa_pos {la : HeightOneSpectrum (𝓞 K)} {q : ℕ} (hq : q ≠ 0) (h : (q : 𝓞 K) ∈ la.asIdeal) :
     0 < vLa la (q : K) := by
   have h1 : la.valuation K (q : K) < 1 := by
@@ -645,7 +641,7 @@ theorem exists_spread {S : Finset ℕ} {a : ℕ → ℝ} {s : ℝ} (h : PrimeSum
       exact ⟨e₂, by rw [h3, h1, Finset.sum_insert hq]; ring, fun la => by rw [h4, h2, Finset.sum_insert hq]; ring⟩
   obtain ⟨e', h1, h2⟩ := all S fun q hq => (hp q hq).ne_zero
   have hn : ∀ la, ∀ q ∈ S, 0 ≤ (vLa la (q : K) : ℝ) * a q := fun la q hq =>
-    mul_nonneg (by exact_mod_cast vLa_nat_nonneg la (hp q hq).ne_zero) (h0 q)
+    mul_nonneg (by exact_mod_cast GlobalTheory.CovHtCmp.vLa_natCast_nonneg la (hp q hq).ne_zero) (h0 q)
   refine ⟨e', by linarith, fun la q => ?_⟩
   rw [h2]
   by_cases hq : q ∈ S

@@ -97,8 +97,4 @@ theorem latAt_isFullLattice : ∀ (D : D7) (ρ : Setup D.ntw), ρ.Good → ∀ (
   rw [SetLike.coe_injective ((GlobalTheory.RepsCompare.coe_hLat _ _).trans hΛ.symm)]
   exact { toIsLattice := Submodule.IsLattice.of_fg D.host.E hΛfg, span_eq_top := hΛspan }
 
-theorem latAt_isLattice (D : D7) (ρ : Setup D.ntw) (hρ : ρ.Good) (i : D.ntw.Tw) (j : Fin D.R.m) (b : Bool)
-    (h : GA D (Vc D j)) : Submodule.IsLattice D.host.E ((ρ.B i j b).latAt (finPt (Vc D j) h)) :=
-  (latAt_isFullLattice D ρ hρ i j b h).toIsLattice
-
 end GlobalTheory.LatFull

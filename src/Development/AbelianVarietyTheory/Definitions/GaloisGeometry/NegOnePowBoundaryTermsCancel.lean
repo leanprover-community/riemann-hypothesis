@@ -123,14 +123,6 @@ def bk (m n k : ℕ) (h : m + n ≤ k) : Fin (n + 1) → Fin (k + 1) := fun b =>
 theorem bk_mono (m n k : ℕ) (h : m + n ≤ k) : Monotone (bk m n k h) := fun a b hab =>
   show m + (a : ℕ) ≤ m + b from Nat.add_le_add_left hab m
 
-theorem val_succAbove_lt {n : ℕ} (i : Fin (n + 2)) (a : Fin (n + 1)) (h : (a : ℕ) < i) :
-    (i.succAbove a : ℕ) = a := by
-  rw [Fin.succAbove_of_castSucc_lt _ _ (by simpa [Fin.lt_def] using h)]; simp
-
-theorem val_succAbove_ge {n : ℕ} (i : Fin (n + 2)) (a : Fin (n + 1)) (h : (i : ℕ) ≤ a) :
-    (i.succAbove a : ℕ) = a + 1 := by
-  rw [Fin.succAbove_of_le_castSucc _ _ (by simpa [Fin.le_def] using h)]; simp [Fin.val_succ]
-
 section Cup
 
 variable (μ : Mult F)
@@ -252,12 +244,6 @@ namespace LB
 
 variable {L}
 
-def triv : LB L where
-  g _ _ _ _ := 1
-  g_map := fun {_ _ _ _} _ {_} _ _ => (map_one _).symm
-  g_self _ := rfl
-  g_comp _ _ _ := mul_one 1
-
 def mul (E E' : LB L) : LB L where
   g α β _ y := E.g α β y * E'.g α β y
   g_map := fun {_ _ _ _} φ {_} h1 h2 => by
@@ -267,34 +253,6 @@ def mul (E E' : LB L) : LB L where
 
 end LB
 
-def IsDPLog {B : Type} [CommRing B] {J : Ideal B} (δ : DividedPowers J) (v a : B) : Prop :=
-  v - 1 ∈ J ∧ ∃ N : ℕ, (∀ n, N ≤ n → ((n - 1).factorial : B) * δ.dpow n (v - 1) = 0) ∧
-    a = ∑ n ∈ Finset.Ico 1 N, (-1) ^ (n + 1) * ((n - 1).factorial : B) * δ.dpow n (v - 1)
-
-theorem isDPLog_one {B : Type} [CommRing B] {J : Ideal B} (δ : DividedPowers J) : IsDPLog δ 1 0 := by
-  refine ⟨by rw [sub_self]; exact J.zero_mem, 1, fun n hn => ?_, by simp⟩
-  rw [sub_self, δ.dpow_eval_zero (by omega), mul_zero]
-
 variable {L}
-
-def chainUnit (u : ∀ {T T' : Thick L}, (T ⟶ T') → T'.Bˣ) (s : ComposableArrows (Thick L) 2) :
-    (s.obj (Fin.last 2)).B :=
-  let a : (s.obj (Fin.last 2)).B := (s.map' 1 2).φ ↑(u (s.map' 0 1))
-  let b : (s.obj (Fin.last 2)).B := (u (s.map' 1 2)).val
-  let c : (s.obj (Fin.last 2)).B := (u (s.map' 0 2))⁻¹.val
-  a * b * c
-
-def IsFirstChernClassOfLineBundle (E : LB L) (z : H L 2) : Prop :=
-  ∃ (u : ∀ {T T' : Thick L}, (T ⟶ T') → T'.Bˣ) (ℓ : LinearMap.ker (CatH.d (O L) 2)),
-    (∀ {T T' : Thick L} (φ : T ⟶ T'),
-      Units.map (Ideal.Quotient.mk T'.J).toMonoidHom (u φ) = E.g T'.α T.α T'.y) ∧
-    (∀ s : ComposableArrows (Thick L) 2, IsDPLog (s.obj (Fin.last 2)).δ (chainUnit u s) (ℓ.1 s)) ∧
-    Submodule.Quotient.mk ℓ = z
-
-theorem firstChernClass_trivialBundle : IsFirstChernClassOfLineBundle (LB.triv : LB L) 0 := by
-  refine ⟨fun _ => 1, 0, fun φ => map_one _, fun s => ?_, Submodule.Quotient.mk_zero _⟩
-  have e : chainUnit (fun _ => 1) s = 1 := by simp [chainUnit]
-  rw [e]
-  exact isDPLog_one (s.obj (Fin.last 2)).δ
 
 end GlobalTheory.LogCris

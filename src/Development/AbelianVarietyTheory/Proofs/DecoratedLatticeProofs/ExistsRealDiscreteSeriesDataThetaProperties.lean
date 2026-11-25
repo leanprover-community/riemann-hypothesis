@@ -105,7 +105,7 @@ theorem exists_record_theta_all :
   intro hD hH
   obtain ⟨X, hX, d1, q5, a1, a2, a3, a5⟩ := GlobalTheory.RealPlaceTheta.exists_record_theta hD hH
   exact ⟨X, hX, a1, a2, a3,
-    _root_.GlobalTheory.TowerDrop.archimedeanRallisFourth_of_discreteSeriesBlattner X (GlobalTheory.FockDeg.degrees_and_adjoints X) (GlobalTheory.FockAlg.fock_structure X) d1 q5, a5⟩
+    _root_.GlobalTheory.TowerDrop.archimedeanRallisFourth_of_discreteSeriesBlattner X (GlobalTheory.FockDeg.degrees_and_adjoints X) (_root_.GlobalTheory.JointHarm.fock_polynomials X) d1 q5, a5⟩
 
 end GlobalTheory.RealPlaceTheta
 end -- clump:auto

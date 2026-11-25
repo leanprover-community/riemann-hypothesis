@@ -1550,7 +1550,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-theorem symDist_of : PI.ExpTri → PI.SymDist := PI.SymDistWork.symDist_of
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Formalism.PeriodIntegrals.OrbitalBoundsConclusion.SymDist =====

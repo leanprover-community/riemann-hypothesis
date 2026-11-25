@@ -37,9 +37,6 @@ lemma perron_Sz_eq_zero_of_le_one {x : ℝ} (hx : x ≤ 1) : Formalism.Sz x = 0 
   subst hn1
   simp [ArithmeticFunction.vonMangoldt_apply_one]
 
-lemma perron_continuous_mxS (n : ℕ) : Continuous (Formalism.mxS n) :=
-  Formalism.continuous_mxS n
-
 lemma perron_Sz_continuousAt (y : ℝ) : ContinuousAt (fun x => (Formalism.Sz x : ℂ)) y := by
   rw [perron_Sz_eq_Sa]
   exact (Complex.continuous_ofReal.comp

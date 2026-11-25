@@ -93,10 +93,6 @@ end ModFam
 def lead {K : Type} [CommRing K] {n : ℕ} (Z : Matrix (Fin n) (Fin n) K) (l : ℕ) (hl : l ≤ n) : K :=
   (Z.submatrix (Fin.castLE hl) (Fin.castLE hl)).det
 
-def GZ {F E : Type} [Field F] [Field E] [Algebra F E] (sig : E →ₐ[F] E) {r : ℕ} (T T' : F)
-    (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) E) : E :=
-  Z.det * sig Z.det - algebraMap F E (T * T') * (lead Z r (Nat.le_succ r) * sig (lead Z r (Nat.le_succ r)))
-
 def psiInf {E : Type} [Field E] [NumberField E] (x : E) : ℂ :=
   Complex.exp (2 * Real.pi * Complex.I * ((Algebra.trace ℚ E x : ℚ) : ℂ))
 

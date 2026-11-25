@@ -412,9 +412,6 @@ def CBData.sq {m : ℕ} {c : Fin (m + 1) → ℕ} {Xc : ∀ i, InfinitePlace K �
 def FoOf (P : IndefCore Df0 Df1 Dc Sp N) : ℝ :=
   ∑ j, ∑ y ∈ P.base.Tw, lw y * ((ramw y : ℝ) * N.F0 y j)
 
-def boundB (P : IndefCore Df0 Df1 Dc Sp N) (LG E3 : ℝ) (E2 : Bs.J → ℝ) : ℝ :=
-  (∑ j, N.l3 j) + 2 * FoOf P + LG + (∑ j, (N.E1 j + E2 j)) + E3
-
 def shiftZ (sg : HeightOneSpectrum (𝓞 K) → ℝ) : HeightOneSpectrum (𝓞 K) → ℤ := fun w => ⌊sg w⌋
 
 def shiftLat {d : ℕ} (Nu : Submodule (𝓞 K) (Fin d → K)) (sg : HeightOneSpectrum (𝓞 K) → ℝ) :

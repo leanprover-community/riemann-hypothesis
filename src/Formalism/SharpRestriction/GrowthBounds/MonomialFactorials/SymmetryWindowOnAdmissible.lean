@@ -396,17 +396,8 @@ theorem xiMons_free (n : ℕ) : ∀ β ∈ xiMons (r := r) G n, ∀ x, β (Forma
   simp only [Formalism.GM.M.chainEmb, Formalism.GM.M.xiVar, Sum.inl.injEq, Prod.mk.injEq] at hc
   exact Fin.castSucc_ne_last _ hc.1
 
-theorem xiMons_mem (n : ℕ) : ∀ β ∈ xiMons (r := r) G n, (monomial β (1 : ℚ_[p])) ∈ Formalism.GM.M.XiPolZ p N r G.T.t n := by
-  classical
-  intro β hβ
-  obtain ⟨h1, h2, -⟩ := xiMons_spec G n β hβ
-  refine ⟨?_, Formalism.GM.M.intPol_monomial' β⟩
-  show monomial β (1 : ℚ_[p]) ∈ MvPolynomial.restrictSupport ℚ_[p] _
-  rw [MvPolynomial.mem_restrictSupport_iff, support_monomial, if_neg one_ne_zero]
-  intro m hm
-  rw [Finset.coe_singleton, Set.mem_singleton_iff] at hm
-  subst hm
-  exact ⟨h1, h2⟩
+theorem xiMons_mem (n : ℕ) : ∀ β ∈ xiMons (r := r) G n, (monomial β (1 : ℚ_[p])) ∈ Formalism.GM.M.XiPolZ p N r G.T.t n :=
+  by intros; apply _root_.Formalism.MainNotions.G.SymmetricFormBlocks.mono_mem_xiPolZ; assumption
 
 end Gen
 

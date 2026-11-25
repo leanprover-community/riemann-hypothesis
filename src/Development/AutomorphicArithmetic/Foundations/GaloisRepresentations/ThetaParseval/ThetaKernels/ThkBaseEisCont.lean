@@ -97,7 +97,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
   GlobalTheory.SplitFlip GlobalTheory.SplitWeil GlobalTheory.StdFrames Formalism.L2.DIV
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation (spV spW spW₁ spV₁ alpha beta Num skewGram blk conjU)
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels (Base Spc Model HasExp SplitsFully Chars)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar borelKw borelSpaceKw
 theorem exists_int_add_conj_eq_one_of_base_good_k : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
   [Algebra F E] {σ : E →ₐ[F] E}
     (B : Base F E), GoodK σ B → ∃ θ : 𝓞 E, (θ : E) + σ θ = 1 := by

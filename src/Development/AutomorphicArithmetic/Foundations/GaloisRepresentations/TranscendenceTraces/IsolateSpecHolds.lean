@@ -1839,8 +1839,6 @@ theorem phiEx_holds : PhiEx := @phiEx_of @locFinSec_holds
 
 theorem fL_holds : FL := @fL_of @phiEx_holds
 
-theorem rpBasic_holds : RpBasic := @rpBasic_of
-
 theorem rpOp_holds : RpOp := @rpOp_of @_root_.UpperTheory.Gal.TranscendenceTraces.imgBasic_of
 
 theorem opEq_holds : OpEq := @opEq_of @fL_holds @_root_.UpperTheory.Gal.TranscendenceTraces.rpBasic_of @rpOp_holds

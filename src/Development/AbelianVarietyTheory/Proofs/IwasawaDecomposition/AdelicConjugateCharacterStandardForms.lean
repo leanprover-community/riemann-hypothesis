@@ -64,16 +64,6 @@ namespace GlobalTheory.MulEqIntegerExists
 
 open NumberField
 
-theorem exists_mul_eq_integer {E : Type} [Field E] [NumberField E] (c : E) :
-    ∃ a b : RingOfIntegers E, b ≠ 0 ∧ (algebraMap (RingOfIntegers E) E b) * c
-      = algebraMap (RingOfIntegers E) E a := by
-  obtain ⟨a, b, hb, rfl⟩ := IsFractionRing.div_surjective (A := RingOfIntegers E) c
-  have hb0 : b ≠ 0 := nonZeroDivisors.ne_zero hb
-  refine ⟨a, b, hb0, ?_⟩
-  have : algebraMap (RingOfIntegers E) E b ≠ 0 :=
-    fun h => hb0 (IsFractionRing.injective (RingOfIntegers E) E (by rw [h, map_zero]))
-  rw [mul_div_assoc', mul_div_cancel_left₀ _ this]
-
 theorem exists_smul_mem {E : Type} [Field E] [NumberField E] {n : ℕ}
     (L : Submodule (RingOfIntegers E) (Fin n → E))
     (hL : Submodule.span E (L : Set (Fin n → E)) = ⊤) (y : Fin n → E) :

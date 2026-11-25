@@ -76,21 +76,6 @@ theorem jetLin_monomial (J : (DVar ι a b →₀ ℕ) → K) (m : ((ι × Fin b 
   unfold jetLin
   rw [Module.Basis.constr_basis, MvPolynomial.smul_monomial, smul_eq_mul]
 
-theorem jetLin_sum {κ : Type} (s : Finset κ) (J : κ → (DVar ι a b →₀ ℕ) → K) :
-    jetLin (fun m => ∑ i ∈ s, J i m) = ∑ i ∈ s, jetLin (J i) := by
-  refine (basisMonomials ((ι × Fin b × Fin b) ⊕ DVar ι a b) K).ext fun m => ?_
-  unfold jetLin
-
-  simp only [LinearMap.sum_apply, Module.Basis.constr_basis, map_sum]
-
-theorem jetOp_sum {κ : Type} (s : Finset κ) (lam : ι → DomWeight a) (lam' : ι → DomWeight b) (J : κ → (DVar ι a b →₀ ℕ) → K)
-    (n : ι → ℕ) : jetOp lam lam' (fun m => ∑ i ∈ s, J i m) n = ∑ i ∈ s, jetOp lam lam' (J i) n := by
-  unfold jetOp jetMap
-  rw [jetLin_sum]
-  refine LinearMap.ext fun P => ?_
-
-  simp only [LinearMap.sum_apply, LinearMap.comp_apply, map_sum]
-
 end Jet
 
 section Props

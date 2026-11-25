@@ -145,22 +145,6 @@ open scoped InnerProductSpace ContDiff Topology
 
 noncomputable section
 
-namespace UpperTheory.Lit.Bur.HWSpanType.Derived
-
-open Formalism.REAL
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
-theorem exists_derived_action : ∀ (k : ℕ) (W : Type) [NormedAddCommGroup W] [InnerProductSpace ℂ W]
-    [FiniteDimensional ℂ W] (π : Matrix (Fin k) (Fin k) ℂ → (W →L[ℂ] W)),
-    PI.UpqRep.IsURepOn (PI.UpqRep.UJset (PI.UpqRep.allPos k)) π →
-    ∃ E : Fin k → Fin k → Module.End ℂ W, Formalism.REAL.GlRel E ∧ Formalism.REAL.IsUnitary (PI.UpqRep.allPos k) E ∧
-      ∀ Z : Matrix (Fin k) (Fin k) ℂ, Zᴴ = -Z → ∀ v,
-        HasDerivAt (fun t : ℝ => π (NormedSpace.exp ((t : ℂ) • Z)) v) (∑ a, ∑ b, Z a b • E a b v) 0 :=
-  @GlobalTheory.UnitaryDerived.exists_derived_action
-
-end UpperTheory.Lit.Bur.HWSpanType.Derived
-
 namespace UpperTheory.Lit.Bur.HWSpanType.Wt
 
 theorem weight_cdom_of_mem_kSpan :
@@ -200,14 +184,6 @@ theorem isWeight_of_isWtOn (E : Fin k → Fin k → Module.End ℂ W)
       HasDerivAt (fun t : ℝ => π (NormedSpace.exp ((t : ℂ) • Z)) v) (∑ a, ∑ b, Z a b • E a b v) 0)
     (μ : Fin k → ℝ) (v : W) (hv : IsWtOn (Kset (allPos k)) π μ v) : Formalism.REAL.IsWeight E μ v := by
   apply GlobalTheory.UnitaryHighestWeight.isWeight_of_isWtOn <;> assumption
-
-theorem stable_of_derived [FiniteDimensional ℂ W] (hπ : IsURepOn (UJset (allPos k)) π)
-    (E : Fin k → Fin k → Module.End ℂ W)
-    (hE : ∀ Z : Matrix (Fin k) (Fin k) ℂ, Zᴴ = -Z → ∀ v,
-      HasDerivAt (fun t : ℝ => π (NormedSpace.exp ((t : ℂ) • Z)) v) (∑ a, ∑ b, Z a b • E a b v) 0)
-    (S : Submodule ℂ W) (hS : Formalism.REAL.KStable (allPos k) E S) :
-    ∀ g ∈ UJset (allPos k), ∀ v ∈ S, π g v ∈ S :=
-  GlobalTheory.UnitaryHighestWeight.stable_of_derived hπ E hE S hS
 
 end UpperTheory.Lit.Bur.HWSpanType.Wt
 
@@ -283,7 +259,7 @@ theorem exists_type_of_highest [FiniteDimensional ℂ W] (hπ : IsURepOn (UJset 
     IsHCTypeU k u (compress π (Formalism.REAL.kSpan (allPos k) E x)) := by
   set S := Formalism.REAL.kSpan (allPos k) E x with hSdef
   have hxm : x ∈ S := Formalism.REAL.mem_compactSpan x
-  have hst := stable_of_derived hπ E hE S (_root_.Formalism.REAL.compact_span_stable x)
+  have hst := GlobalTheory.UnitaryHighestWeight.stable_of_derived hπ E hE S (_root_.Formalism.REAL.compact_span_stable x)
   have hc : ∀ g ∈ UJset (allPos k), ∀ v : S, (compress π S g v : W) = π g v :=
     fun g hg v => coe_compress (hst g hg v v.2)
   have hone : (1 : Matrix (Fin k) (Fin k) ℂ) ∈ UJset (allPos k) := by
@@ -505,7 +481,7 @@ namespace UpperTheory.Lit.Bur.HWSpanType
 
 theorem exists_hcType_of_irred : ∀ {k : ℕ} {Wp : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [FiniteDimensional ℂ Wp] [Nontrivial Wp] {ρ : Matrix (Fin k) (Fin k) ℂ → (Wp →L[ℂ] Wp)} (hρ : PI.UpqRep.IsURepOn (PI.UpqRep.UJset (PI.UpqRep.allPos k)) ρ) (hirr : ∀ S : Submodule ℂ Wp, (∀ g ∈ PI.UpqRep.UJset (PI.UpqRep.allPos k), ∀ v ∈ S, ρ g v ∈ S) → S = ⊥ ∨ S = ⊤), ∃ (u : Fin k → ℝ) (Wq : Type) (_ : NormedAddCommGroup Wq) (_ : InnerProductSpace ℂ Wq) (ρ' : Matrix (Fin k) (Fin k) ℂ → (Wq →L[ℂ] Wq)) (T : Wp ≃ₗ[ℂ] Wq), PI.UpqRep.IsHCTypeU k u ρ' ∧ ∀ h ∈ PI.UpqRep.UJset (PI.UpqRep.allPos k), ∀ w, T (ρ h w) = ρ' h (T w) := by
   intro k Wp _ _ _ _ ρ hρ hirr
-  obtain ⟨E, hgl, hun, hE⟩ := Derived.exists_derived_action k Wp ρ hρ
+  obtain ⟨E, hgl, hun, hE⟩ := GlobalTheory.UnitaryDerived.exists_derived_action k Wp ρ hρ
   have hQ : CompanionTheory.D.DSIC.KStab (PI.UpqRep.allPos k) E (⊤ : Submodule ℂ Wp) := fun _ _ _ _ _ => trivial
   obtain ⟨μ, x, -, hx0, hx⟩ := UpperTheory.Lit.Bur.KShift.exists_highest hgl (UpperTheory.Lit.Bur.KShift.kUnit_of hun) hQ top_ne_bot
   have hlow : PI.UpqRep.lowK (PI.UpqRep.allPos k) (μ + GlobalTheory.IndefiniteRowSideFullHecke.HarishChandraRootData.rhoU k) = μ := by
@@ -516,7 +492,7 @@ theorem exists_hcType_of_irred : ∀ {k : ℕ} {Wp : Type} [NormedAddCommGroup W
     rw [hlow]; exact hx
   have htype := exists_type_of_highest hρ E hgl hun hE _ x hx0 hΛ
   set S := Formalism.REAL.kSpan (PI.UpqRep.allPos k) E x with hS
-  have hst := Wt.stable_of_derived hρ E hE S (_root_.Formalism.REAL.compact_span_stable x)
+  have hst := GlobalTheory.UnitaryHighestWeight.stable_of_derived hρ E hE S (_root_.Formalism.REAL.compact_span_stable x)
   have hxS : x ∈ S := Formalism.REAL.mem_compactSpan x
   have htop : S = ⊤ := (hirr S hst).resolve_left fun h => hx0 (by
     rw [h] at hxS; exact (Submodule.mem_bot ℂ).1 hxS)

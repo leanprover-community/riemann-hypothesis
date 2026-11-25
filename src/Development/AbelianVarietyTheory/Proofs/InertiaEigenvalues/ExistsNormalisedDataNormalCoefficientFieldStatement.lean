@@ -138,7 +138,7 @@ theorem exists_pins_normal : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 
   have hfam := hC.fam
   have hmodels := hC.models
   have hvP : R.thP_vP := hC.thP.vP
-  obtain ⟨hpb, hV, hlev⟩ := GlobalTheory.T.baseTuple_pins_orientation_standardFrame_levelMap D G Pl0 T0 A T R κ v₀ O hL hT i hO
+  obtain ⟨hpb, hV, hlev⟩ := _root_.GlobalTheory.BasePins.orient_std_lev D G Pl0 T0 A T R κ v₀ O hL hT i hO
   obtain ⟨gramR, c0R, c0L, htie, hc0O⟩ := hO.2.lift.c0
   haveI : Nonempty T0 := ⟨A.μ0⟩
   let rep : T0 → T0 := fun t => Function.invFun R.Q (R.Q t)

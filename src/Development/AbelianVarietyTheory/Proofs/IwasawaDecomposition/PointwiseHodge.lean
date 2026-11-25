@@ -502,12 +502,6 @@ theorem curv_inv_one_sub_gram (w ξ η : ReciprocityTheory.L2DbarEstimates.V n) 
 
 end ModelCurv
 
-theorem curv_modelGram_tauBar : ∀ {n p q : ℕ} (Z : ReciprocityTheory.L2DbarEstimates.V n →ₗ[ℂ] Matrix (Fin p) (Fin q) ℂ)
-    (w ξ η : ReciprocityTheory.L2DbarEstimates.V n), (1 - (Z w)ᴴ * Z w).PosDef →
-    curv (fun u => (1 - (Z u)ᴴ * Z u)⁻¹) w ξ η =
-      -((1 - (Z w)ᴴ * Z w)⁻¹ * (Z η)ᴴ * (1 - Z w * (Z w)ᴴ)⁻¹ * Z ξ)ᵀ :=
-  fun Z w ξ η hw => curv_inv_one_sub_gram Z w ξ η hw
-
 end GlobalTheory.PointChern
 end -- clump:auto
 end -- clump:auto
@@ -836,24 +830,6 @@ namespace GlobalTheory.PointChernScale
 
 open Matrix
 open scoped ComplexOrder
-
-theorem curv_tauBar {n p q : ℕ} (Z : ReciprocityTheory.L2DbarEstimates.V n →ₗ[ℂ] Matrix (Fin p) (Fin q) ℂ) (w ξ η : ReciprocityTheory.L2DbarEstimates.V n)
-    (hw : (1 - (Z w)ᴴ * Z w).PosDef) :
-    curv (fun u => (1 - (Z u)ᴴ * Z u)⁻¹) w ξ η =
-      -((1 - (Z w)ᴴ * Z w)⁻¹ * (Z η)ᴴ * (1 - Z w * (Z w)ᴴ)⁻¹ * Z ξ)ᵀ := _root_.GlobalTheory.PointChern.curv_modelGram_tauBar Z w ξ η hw
-
-theorem exists_factor {p : ℕ} (P : Matrix (Fin p) (Fin p) ℂ) (hP : P.PosDef) :
-    ∃ A : Matrix (Fin p) (Fin p) ℂ, IsUnit A.det ∧ Aᴴ * A = P := _root_.GlobalTheory.posDef_eq_conjTranspose_mul_self_of_isUnit_det P hP
-
-theorem posDef_swap {p q : ℕ} (z : Matrix (Fin p) (Fin q) ℂ) (h : (1 - zᴴ * z).PosDef) :
-    (1 - z * zᴴ).PosDef := _root_.GlobalTheory.PosDefSwap.main z h
-
-theorem chernPoly_conj {n r : ℕ} (F : ReciprocityTheory.L2DbarEstimates.V n → Matrix (Fin r) (Fin r) ℂ) (v v' : ReciprocityTheory.L2DbarEstimates.V n)
-    (J : Matrix (Fin n) (Fin n) ℂ) (S : Matrix (Fin r) (Fin r) ℂ) (hS : IsUnit S.det)
-    (h : ∀ a b, curv F v (coordVec a) (coordVec b) =
-      S⁻¹ * (∑ c, ∑ d, (J c a * starRingEnd ℂ (J d b)) • curv F v' (coordVec c) (coordVec d)) * S) (k : ℕ) :
-    chernPoly F v k = aeval (fun x : Fin n × Fin n => ∑ a, ∑ b, C (J x.1 a * starRingEnd ℂ (J x.2 b)) * X (a, b))
-      (chernPoly F v' k) := _root_.GlobalTheory.ChernConj.chernPoly_conj_subst F v v' J S hS h k
 
 theorem chernPoly_reindex {n a b : ℕ} (e : Fin a ≃ Fin b) (F : ReciprocityTheory.L2DbarEstimates.V n → Matrix (Fin a) (Fin a) ℂ)
     (v : ReciprocityTheory.L2DbarEstimates.V n) (k : ℕ) : chernPoly (fun u => reindex e e (F u)) v k = chernPoly F v k := _root_.GlobalTheory.ChernReindex.chernPoly_reindex e F v k

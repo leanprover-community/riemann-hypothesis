@@ -6,18 +6,6 @@ public import Formalism.FlagUnipotentLattices.CardSubmodulesAndLinearEquivBounds
 public import Formalism.HyperbolicPlaceProducts.SubgroupIndexCounts.CountO
 public import Formalism.HyperbolicPlaceProducts.SecondLevelArithmeticNorm
 public import Mathlib.Data.Nat.Choose.Dvd
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.TotallySplit
-import Mathlib.Tactic.Lemma
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.HyperbolicPlaceProducts.SubgroupIndexCounts.DetIndexProductHyperbolicInequality, Formalism.HyperbolicPlaceProducts.ArithmeticCountRevised, Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.IdealsOfNormEqIndexSet

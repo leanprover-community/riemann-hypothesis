@@ -1731,9 +1731,6 @@ open BBTie
 section Tied
 
 
-variable (D) in
-def LocTied : Prop := ∀ p : PlF D, Nonempty (Formalism.L2.S.LocIso (D.s.atP p) (Formalism.L2.S.locC D p))
-
 
 
 

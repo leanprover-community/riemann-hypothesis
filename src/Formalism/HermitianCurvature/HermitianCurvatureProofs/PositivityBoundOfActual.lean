@@ -32,19 +32,8 @@ theorem psd_of_rep {α ι H : Type} [Fintype ι] [NormedAddCommGroup H] [InnerPr
   exact Matrix.posSemidef_sum _ fun k _ => (Matrix.posSemidef_gram ℂ _).transpose
 
 theorem psd_smul {α : Type} (Y : Finset α) (k : α → α → ℂ) (a : ℝ) (ha : 0 ≤ a) (hk : TB.PSDOn Y k) :
-    TB.PSDOn Y (fun x y => (a : ℂ) * k x y) := by
-  rw [PBA.psd_iff_qf] at hk ⊢
-  refine ⟨fun x hx y hy => ?_, fun c => ?_⟩
-  · rw [hk.1 x hx y hy, map_mul, Complex.conj_ofReal]
-  · have : PBA.qf Y (fun x y => (a : ℂ) * k x y) c = (a : ℂ) * PBA.qf Y k c := by
-      unfold PBA.qf
-      rw [Finset.mul_sum]
-      refine Finset.sum_congr rfl fun x _ => ?_
-      rw [Finset.mul_sum]
-      refine Finset.sum_congr rfl fun y _ => ?_
-      ring
-    rw [this, Complex.re_ofReal_mul]
-    exact mul_nonneg ha (hk.2 c)
+    TB.PSDOn Y (fun x y => (a : ℂ) * k x y) :=
+  by apply _root_.Formalism.FourierDecayAlt.P.RecursionWithDensities.B1.psd_smul <;> assumption
 
 section top
 

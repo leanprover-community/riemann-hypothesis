@@ -966,27 +966,6 @@ namespace GlobalTheory.HeckeInt
 
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω]
 
-theorem exists_pre_exp [IsAlgClosed Ω] (ε : Ω →+* ℂ) (x : ℚ) :
-    ∃ ω : Ω, ε ω = Complex.exp (2 * Real.pi * Complex.I * (x : ℂ)) := by
-  haveI : CharZero Ω := charZero_of_injective_algebraMap (algebraMap ℚ Ω).injective
-  have hn : x.den ≠ 0 := x.den_nz
-  haveI : NeZero ((x.den : ℕ) : Ω) := ⟨by exact_mod_cast hn⟩
-  haveI : NeZero x.den := ⟨hn⟩
-  obtain ⟨ζ, hζ⟩ := HasEnoughRootsOfUnity.exists_primitiveRoot Ω x.den
-  have hζ' := hζ.map_of_injective ε.injective
-  have hz : (Complex.exp (2 * Real.pi * Complex.I * (x : ℂ))) ^ x.den = 1 := by
-    rw [← Complex.exp_nat_mul]
-    have hx : (x : ℂ) * (x.den : ℂ) = (x.num : ℂ) := by exact_mod_cast Rat.mul_den_eq_num x
-    have : (x.den : ℂ) * (2 * Real.pi * Complex.I * (x : ℂ)) = (x.num : ℂ) * (2 * Real.pi * Complex.I) := by
-      linear_combination (2 * Real.pi * Complex.I) * hx
-    rw [this, Complex.exp_int_mul_two_pi_mul_I]
-  obtain ⟨i, -, hi⟩ := hζ'.eq_pow_of_pow_eq_one hz
-  exact ⟨ζ ^ i, by rw [map_pow]; exact hi⟩
-
-theorem eps_eOm [IsAlgClosed Ω] (ε : Ω →+* ℂ) (x : ℚ) :
-    ε (eOm ε x) = Complex.exp (2 * Real.pi * Complex.I * (x : ℂ)) :=
-  Function.invFun_eq (exists_pre_exp ε x)
-
 theorem sub_coeff (ε : Ω →+* ℂ) (q : ℕ) (hq : 0 < q) (j : ℚ) (φ : HahnSeries ℚ Ω) (s : ℚ) :
     (sub ε 1 j (q : ℚ) φ).coeff s = eOm ε (s * j) * φ.coeff ((q : ℚ) * s) := by
   have hq' : (0 : ℚ) < (q : ℚ) := by exact_mod_cast hq
@@ -1009,7 +988,7 @@ theorem sum_eOm [IsAlgClosed Ω] (ε : Ω →+* ℂ) (q : ℕ) (hq : 0 < q) (s :
   apply ε.injective
   have hz : ∀ j : ℕ, ε (eOm ε (s * (j : ℚ))) = (Complex.exp (2 * Real.pi * Complex.I * (s : ℂ))) ^ j := by
     intro j
-    rw [eps_eOm, ← Complex.exp_nat_mul]
+    rw [GlobalTheory.CyclotomicQExpansion.eOm_spec, ← Complex.exp_nat_mul]
     congr 1
     push_cast; ring
 

@@ -133,17 +133,12 @@ private theorem aw_pb {I J K : Cx R} (μ : Pair I J K) {E' E : Spc} (π : E' ⟶
   refine Finset.sum_congr rfl fun p _ => ?_
   rw [ev_pb, ev_pb, sub_map, sub_map]
 
-private theorem aw_unique {I J K : Cx R} (μ : Pair I J K) {E : Spc} {n m k : ℤ} (hk : n + m = k)
-    {a : Cochain ((chains R).obj E) I n} {b : Cochain ((chains R).obj E) J m} {c c' : Cochain ((chains R).obj E) K k}
-    (h : μ.IsAW hk a b c) (h' : μ.IsAW hk a b c') : c = c' :=
-  ((_root_.GlobalTheory.EtC.isAW_existsUnique_biadditive R μ hk).1 a b).unique h h'
-
 private theorem aw_zero {I J K : Cx R} (μ : Pair I J K) {E : Spc} {n m k : ℤ} (hk : n + m = k)
     (a : Cochain ((chains R).obj E) I n) : μ.IsAW hk a (0 : Cochain ((chains R).obj E) J m) 0 := by
   obtain ⟨z, hz, -⟩ := (_root_.GlobalTheory.EtC.isAW_existsUnique_biadditive R μ hk).1 a (0 : Cochain ((chains R).obj E) J m)
   have h2 := (_root_.GlobalTheory.EtC.isAW_existsUnique_biadditive R μ hk).2.2 a 0 0 z z hz hz
   rw [add_zero] at h2
-  have h3 : z + z = z := aw_unique μ hk h2 hz
+  have h3 : z + z = z := GlobalTheory.EtC.CupSpec.isAW_unique μ hk h2 hz
   have h4 : z = 0 := by simpa using h3
   exact h4 ▸ hz
 

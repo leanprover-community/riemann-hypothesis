@@ -22,9 +22,4 @@ def inertiaK : Subgroup (GK l K) := Subgroup.closure (inertiaSet l K)
 
 variable {l K}
 
-def unrK {R : Type} [CommRing R] {M : Type} [AddCommGroup M] [Module R M] [TopologicalSpace M]
-    [IsTopologicalAddGroup M] [ContinuousConstSMul R M] (rho : Representation R (GK l K) M) :
-    Submodule R (H1 rho) :=
-  H1ur rho (inertiaK l K)
-
 end Formalism.GaloisCohomology

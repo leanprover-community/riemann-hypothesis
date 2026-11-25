@@ -192,7 +192,7 @@ theorem card_le (A B : Finset (G →* ℂˣ)) (hd : Disjoint A B) (D : Finset G)
   have h4 : (Fintype.card G : ℝ) ≤ (#D : ℝ) * ((#A : ℝ) + #B) := by
     have : (Fintype.card G : ℝ) * ((#A : ℝ) + #B) ≤ ((#D : ℝ) * ((#A : ℝ) + #B)) * ((#A : ℝ) + #B) := by
       rw [← h1, h2]
-      nlinarith [h3]
+      linarith only [h3]
     exact le_of_mul_le_mul_right this hpos
   exact_mod_cast h4
 

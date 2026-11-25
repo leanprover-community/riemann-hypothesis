@@ -572,53 +572,8 @@ theorem UpperTheory.V.Z.Win.RR.rigII_a_alt :
   have hN := hH.litN
   have hframe := Fr.gd_ex ⟨⟨hN.coh.lf, hN.coh.lt, hN.coh.le, hN.coh.gf, hN.coh.ge, hN.coh.pt⟩, hN.coh.uo, hN.coh.gw⟩
     Ω K l c N e ψ D B hB
-  have hfactor : ∃ (A : Subalgebra c.O (PadicAlgCl l)) (_ : IsDiscreteValuationRing A)
-      (_ : Module.Finite c.O A), ∀ x, f x ∈ A := by
-    have := (dvrFacts l c.O).2.2.2.1
-    obtain ⟨E, hE⟩ := Loc.ptFin (l := l) S.R ((TrivSqZeroExt.inlAlgHom c.O _ _).comp f) hf
-    have := E.2
-    have integral_of_norm (x : PadicAlgCl l) (hx : ‖x‖ ≤ 1) : IsIntegral ℤ_[l] x := by
-      have hi : IsIntegral ℚ_[l] x := Algebra.IsIntegral.isIntegral x
-      change spectralValue (minpoly ℚ_[l] x) ≤ 1 at hx
-      rw [spectralValue_le_one_iff (minpoly.monic hi)] at hx
-      have hlifts : minpoly ℚ_[l] x ∈ Polynomial.lifts (algebraMap ℤ_[l] ℚ_[l]) :=
-        (Polynomial.lifts_iff_coeff_lifts _).mpr fun n => ⟨⟨_, hx n⟩, rfl⟩
-      obtain ⟨q, hq, -, hqm⟩ := Polynomial.lifts_and_degree_eq_and_monic hlifts (minpoly.monic hi)
-      exact ⟨q, hqm, by
-        rw [← Polynomial.aeval_def, ← Polynomial.aeval_map_algebraMap ℚ_[l], hq, minpoly.aeval]⟩
-    have hint (x : S.R) : IsIntegral ℤ_[l] (f x) := by
-      obtain ⟨a, ha⟩ := IsCO.res_surj (O := c.O) x
-      have ha' : IsIntegral ℤ_[l] (f (algebraMap c.O S.R a)) := by
-        rw [f.commutes]
-        exact (IsIntegral.of_finite (R := ℤ_[l]) a).map (IsScalarTower.toAlgHom ℤ_[l] c.O (PadicAlgCl l))
-      have hsum := (integral_of_norm _ (hf _ ha).le).add ha'
-      rwa [← map_add, sub_add_cancel] at hsum
-    obtain ⟨hDVR, hfin, -⟩ := UpperTheory.V.abelian₂.dvr_intClosure l E.1
-    let j : E.1 →ₐ[ℤ_[l]] PadicAlgCl l := E.1.val.restrictScalars ℤ_[l]
-    have hj : Function.Injective j := Subtype.val_injective
-    let equiv := (integralClosure ℤ_[l] E.1).equivMapOfInjective j hj
-    let B₀ := (integralClosure ℤ_[l] E.1).map j
-    have hB₀ : ∀ x, f x ∈ B₀ := fun x =>
-      ⟨⟨f x, (hE x).1⟩, (isIntegral_algHom_iff j hj).1 (hint x), rfl⟩
-    let A : Subalgebra c.O (PadicAlgCl l) :=
-      { B₀.toSubsemiring with algebraMap_mem' := fun a => f.commutes a ▸ hB₀ _ }
-    have hA : IsDiscreteValuationRing B₀ := IsDiscreteValuationRing.RingEquivClass.isDiscreteValuationRing equiv
-    have hAfin : Module.Finite ℤ_[l] B₀ := Module.Finite.equiv equiv.toLinearEquiv
-    have : Module.Finite ℤ_[l] A := hAfin
-    exact ⟨A, hA, Module.Finite.of_restrictScalars_finite ℤ_[l] c.O A, hB₀⟩
-  obtain ⟨A, hA1, hA2, hfA⟩ := hfactor
-  haveI : Module.Finite ℤ_[l] A := Module.Finite.trans c.O A
-  haveI := (UpperTheory.V.abelian₂.dvr_finite l A).1
-  have hlocal : IsLocalHom (f.codRestrict A hfA) := by
-    let fA := f.codRestrict A hfA
-    let g : S.R →+* fA.range := fA.rangeRestrict
-    have hg : IsLocalHom g := IsLocalHom.of_surjective _ fA.rangeRestrict_surjective
-    have : Algebra.IsIntegral c.O A := Algebra.IsIntegral.of_finite c.O A
-    have : Algebra.IsIntegral fA.range A := Algebra.IsIntegral.tower_top (R := c.O)
-    have hi : IsLocalHom (algebraMap fA.range A) := Algebra.IsIntegral.isLocalHom _ _
-    exact ⟨fun x hx => hg.map_nonunit x (hi.map_nonunit (g x) hx)⟩
+  obtain ⟨A, hDVR, hfin, hfA, hcomp, hlocal⟩ := Pr.exists_finite_dvr_of_point c f
   have hord := Pr.ordPt_of_gd hC.loc D g₁ hM U S B hBj A (f.codRestrict A hfA) hlocal
-  have hpush : UnitaryThreeInertia.push A.val (U3.push (f.codRestrict A hfA) S.r.hom) = U3.push f S.r.hom := rfl
   have hM1 : 1 ≤ N * (discr K).natAbs := Nat.one_le_iff_ne_zero.2 (mul_ne_zero (NeZero.ne N) hd0)
   have hm : StrictAnti ![(e : ℤ), -(e : ℤ)] := by
     intro i j hij

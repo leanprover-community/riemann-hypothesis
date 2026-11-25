@@ -713,7 +713,7 @@ theorem exists_theta_section_alt_alt : _root_.GlobalTheory.CovTop.PublishedHodge
     omega
   obtain ⟨θ, hθ, hb⟩ := _root_.GlobalTheory.ThetaSteep.exists_section_of_theta_datum Z h1 hL hM TF (fun τ => (hfl Z τ).1.some) hdeg
   exact ⟨θ, hθ, fun la _ f hf' => vanBd_le_space _ _ _ Y _ _ hY.1 hf Z TF la
-    (mul_mem_vanBd TF.X Z _ θ ((GlobalTheory.T.cuspForms_extend_vanish_compactifiedFlagSpace _ _ _ Y _ _ hY.1 hf Z TF _).space_le hf')),
+    (mul_mem_vanBd TF.X Z _ θ ((_root_.GlobalTheory.CompHS.cusp_extends_comp _ _ _ Y _ _ hY.1 hf Z TF _).space_le hf')),
     fun y _ ν hν φ hφ j hj m hm => hb y ν hν φ hφ j hj m hm⟩
 end GlobalTheory.ThetaSteep
 end
@@ -1226,8 +1226,8 @@ theorem GlobalTheory.FlatValZero.flat_val_zero_at_integral_point_stalk : _root_.
     rw [← hb, ← Spec.map_comp] at h1
     exact ⟨b.hom a, congrArg (fun q => CommRingCat.Hom.hom q a) (Spec.map_injective h1)⟩
   have ha' : io a ≠ 0 := (map_ne_zero io).2 ha
-  have h1 := (GlobalTheory.KeyValZero.mem_range_iff T _).1 (ho a)
-  have h2 := (GlobalTheory.KeyValZero.mem_range_iff T _).1 (ho a⁻¹)
+  have h1 := (GlobalTheory.ThetaSteep.mem_range_iff T _).1 (ho a)
+  have h2 := (GlobalTheory.ThetaSteep.mem_range_iff T _).1 (ho a⁻¹)
   have h3 := vV_mul (V := T.V) ha' ((map_ne_zero io).2 (inv_ne_zero ha))
   rw [← map_mul, mul_inv_cancel₀ ha, map_one, show vV T.V (1 : T.Fr) = 0 by simp [vV]] at h3
   omega
@@ -1408,7 +1408,7 @@ theorem exists_cusp_value_le_phi_of_hilbertSamuel_alt : _root_.GlobalTheory.CovT
       subst hla
       exact hN x hx' l1 ι p hp i hi
   obtain ⟨f, hf0, hfb⟩ := hJ x hx' l0 ι p hp i hi Y hY Z TF la hla (1 / 2500) hnum y hy T io y' g φT hg hφT hpt
-  have hE : Extends TF.X Z Y.U la := GlobalTheory.T.cuspForms_extend_vanish_compactifiedFlagSpace (Fm.D x ι) p.T.toCore ((i : ℕ) + 1) Y _ _ hY.1 hfin Z TF la
+  have hE : Extends TF.X Z Y.U la := _root_.GlobalTheory.CompHS.cusp_extends_comp (Fm.D x ι) p.T.toCore ((i : ℕ) + 1) Y _ _ hY.1 hfin Z TF la
   refine ⟨hE.equiv f, ?_⟩
   have e : ofSpace TF.X Z Y.U la (hE.equiv f) = f := hE.equiv.symm_apply_apply f
   rw [e]
@@ -1690,7 +1690,7 @@ theorem valuation_multiplicity_of_consecutive_run_alt : _root_.GlobalTheory.CovT
     have h : 4 ≤ (Fm.D x ι).R.ord := (Fm.D x ι).host.four_le_n'
     omega
   have hCI : ∀ la, CuspIso TF.X Z Y.U la := fun la =>
-    ⟨GlobalTheory.T.cuspForms_extend_vanish_compactifiedFlagSpace _ _ _ Y _ _ hY.1 hf Z TF _, vanBd_le_space _ _ _ Y _ _ hY.1 hf Z TF _⟩
+    ⟨_root_.GlobalTheory.CompHS.cusp_extends_comp _ _ _ Y _ _ hY.1 hf Z TF _, vanBd_le_space _ _ _ Y _ _ hY.1 hf Z TF _⟩
   have hfree := _root_.GlobalTheory.T.hodge_bundle_base_point_free_on_open hP' hGD hQ hP.q15 hP.q16 hT.toroidalChartsForFan hL _ _ _ _ _ _ TF Z _ Y.U hY.1.geo
     hB.one_le _ (gaps_of_wtBig _ _ _ _ hB _ List.mem_cons_self).2 (hCI _)
   refine valMult_of_section TF.X Z Y.U (GlobalTheory.VarFlag.isVariety₀_flag _ _ _ _ _ _ TF Z hY.1.geo) hCI ?_ hfree θ hθ

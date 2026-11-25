@@ -203,17 +203,9 @@ theorem smul_mem_Ry (g : Gm L N) {h : HS L N} (hh : h ∈ Ry L N) : g • h ∈ 
 
 variable (L N)
 
-def Simp (p : ℕ) : Type := {s : Fin (p + 1) → Cell L N // StrictMono s}
-
 variable {L N}
 
-def Simp.del {p : ℕ} (i : Fin (p + 2)) (s : Simp L N (p + 1)) : Simp L N p :=
-  ⟨fun j => s.1 (i.succAbove j), s.2.comp (Fin.strictMono_succAbove i)⟩
-
 variable (L N)
-
-def bd (p : ℕ) : (Simp L N (p + 1) →₀ ℤ) →ₗ[ℤ] (Simp L N p →₀ ℤ) :=
-  ∑ i : Fin (p + 2), (-1 : ℤ) ^ (i : ℕ) • Finsupp.lmapDomain ℤ ℤ (Simp.del i)
 
 def I0 : ℕ := absD L ^ N * dd L N ^ dd L N
 
