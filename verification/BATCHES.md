@@ -114,8 +114,10 @@ the workflow does").
 
 While the batch's pull request is open, it is labelled `building`. Each open pull request whose
 head commit is in the branch is labelled `batch-building` and `frozen`, in place of
-`batch queue`. Each is asked once, in a comment, not to push until the batch has landed or been
-closed. The workflow lists them in a comment of its own on the batch's pull request. In a stack
+`batch queue`. Each is asked once, in a comment that names the commit the batch took, not to push
+until the batch has landed or been closed. That comment is kept up to date: when the batch takes
+a newer head of the pull request, the comment is edited to name it, and no new one is posted. The
+workflow lists them in a comment of its own on the batch's pull request. In a stack
 of batches, what the branch shares with a batch it is stacked on belongs to that batch instead
 (see [Several batches at once](#several-batches-at-once)).
 
@@ -161,12 +163,13 @@ A pull request that is pushed to after the batch took its commit stays in the ba
 commit. As soon as the push comes in, it is told that the batch lands only that commit, and is
 labelled `awaiting-author`: a push to a `frozen` pull request runs only this, not a whole sync.
 If the batch's branch has the new head already, as when the merge of `main` the batch was built
-from is pushed to the pull request afterwards, nothing is said, and the batch's record takes the
-new head.
-If its new head is merged into the branch, the batch holds that one instead, and
-`awaiting-author` comes off again, as it does when the pull request is pushed back to the commit
-the batch took. Only a label the workflow put on for the push comes off: one a person put on
-stays.
+from is pushed to the pull request afterwards, nothing new is said, and the batch's record takes
+the new head. If its new head is merged into the branch later, the batch holds that one instead.
+Either way, the comment that said the pull request is frozen is edited to name the new head, and
+so is the one that said it was pushed to, if there was one: it then says that the batch builds and
+lands the new head and nothing more is needed. `awaiting-author` comes off again, as it does when
+the pull request is pushed back to the commit the batch took. Only a label the workflow put on for
+the push comes off: one a person put on stays.
 
 When the batch is merged, what it contained loses `batch-building` and `frozen`. A pull request
 whose head has moved on since the batch took it stays open, and is told what landed and what did
