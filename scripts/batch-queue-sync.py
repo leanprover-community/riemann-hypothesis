@@ -87,7 +87,9 @@ line or branch name to match.
 
 A pull request that is pushed to after the batch took its commit is still in the batch, at that
 commit. It is told that the batch lands only that commit, and is labelled `awaiting-author`, as
-soon as the push comes in (see `pushed`) or else by the next sync. If the batch then takes its
+soon as the push comes in (see `pushed`) or else by the next sync, unless the batch's branch has
+the new head already, as when the merge of main the batch was built from is pushed to the pull
+request afterwards: then nothing is said, and the record takes the new head. If the batch then takes its
 new head, or it is pushed back to the commit the batch took, `awaiting-author` comes off again,
 but only if this workflow put it on along with that comment: a label a person put on stays. When
 the batch is merged, GitHub marks merged each pull request whose head commit is in it and whose
@@ -97,8 +99,8 @@ with a comment saying where its commit went, since GitHub does not mark it merge
 
 The description of a batch assembled by hand lists pull requests under headings ending with a
 colon. Those listed under a heading that says "left out" or "not included" are told so in a
-comment quoting the heading and their entry, and are labelled `awaiting-author`. `batch queue`
-stays on them. The quote puts the pull requests it names in code spans, so that it does not
+comment quoting the heading and their entry. The comment only informs: no label changes, and
+`batch queue` stays on them. One labelled `deferred` is not told. The quote puts the pull requests it names in code spans, so that it does not
 mention each of them. A pull request this batch told before, whatever its entry and heading say
 now, or another batch told it is left out under the same heading, is not told again: that comment
 is brought up to date instead, which notifies nobody.
@@ -175,6 +177,9 @@ CHANGED, LATEST = _labels.CHANGED, _labels.LATEST
 PRIORITY, WAITING = _labels.PRIORITY, _labels.WAITING
 # What a pull request in a batch assembled by hand carries (see `batch-labels.py`).
 IN_BATCH = _labels.IN_BATCH
+# A pull request the maintainers want left out of batches for now, labelled by hand (see the
+# `## Batches` section of AGENTS.md). It is never told that a batch leaves it out.
+DEFERRED = "deferred"
 PREFIX = _labels.PREFIX
 # The name `start` gives a batch branch. Any other `batch/...` branch is not this script's.
 OWN_BATCH = re.compile(r"batch/[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{6}(?:-[0-9]+)?")
@@ -1196,10 +1201,16 @@ def keep_in_step(gh, batch, pulls, held, main, log):
 def tell_members(gh, batch, pulls, main, log):
     """Tell each pull request in a batch assembled by hand, once, that it is frozen, and once that
     it was pushed to after the batch took it, if it was. The note remembers it. Returns whether
-    everything was told, False when the run is cut short."""
+    everything was told, False when the run is cut short.
+
+    A member whose head is not the commit the note holds may have been pushed to with a commit the
+    batch already has, as when the merge of `main` that the batch was built from is pushed to the
+    pull request afterwards. The batch is asked first (see `has_head`). If it has the new head, that
+    becomes the member's commit in the note, it counts as told it is frozen if it was told so at
+    the old one, and nothing is said."""
     note, number, since = batch["note"], batch["number"], 0
-    told, pushed, waiting = note["told"], note["pushed"], note["waiting"]
-    for key, commit in sorted(note["members"].items(), key=lambda entry: int(entry[0])):
+    found, told, pushed, waiting = note["members"], note["told"], note["pushed"], note["waiting"]
+    for key, commit in sorted(found.items(), key=lambda entry: int(entry[0])):
         pr = pulls.get(int(key))
         if pr is None or by_hand(pr) or (told.get(key) == commit and (pr["sha"] == commit or pushed.get(key) == commit)):
             continue
@@ -1207,6 +1218,21 @@ def tell_members(gh, batch, pulls, main, log):
             log.append(f"only {gh.remaining} requests left this hour: stopped telling what is in the batch #{number}, "
                        "and the next run carries on")
             return False
+        if pr["sha"] != commit and pushed.get(key) != commit:
+            inside = has_head(gh, batch, pr["sha"])
+            if inside is None:
+                log.append(f"GitHub did not say whether the batch #{number} has the new head of #{key}: "
+                           "the next run asks again")
+                continue
+            if inside:
+                found[key] = pr["sha"]
+                if told.get(key) == commit:
+                    told[key] = pr["sha"]
+                commit, since = pr["sha"], since + 1
+                log.append(f"#{key} was pushed to with `{commit[:10]}`, which the batch #{number} has already: "
+                           "recorded at that commit, and nothing said")
+                if told.get(key) == commit:
+                    continue
         if told.get(key) != commit and announce(gh, batch, pr["number"], FROZEN_NOTE.format(number=number, sha=commit),
                                                  frozen_text(number, commit, pr, main)):
             told[key], since = commit, since + 1
@@ -1222,6 +1248,14 @@ def tell_members(gh, batch, pulls, main, log):
             save(gh, batch)
             since = 0
     return True
+
+
+def has_head(gh, batch, sha):
+    """Whether the branch of `batch` has the commit `sha`: from its commits, when this run listed
+    them, or else with one request. None when GitHub did not say."""
+    if batch.get("commits") is not None:
+        return sha in batch["commits"]
+    return contains(gh, batch["sha"], sha)
 
 
 def announce(gh, batch, number, marker, text):
@@ -1380,8 +1414,10 @@ def left_out_digest(heading, entry):
 def tell_left_out(gh, batch, pulls, held, main, log):
     """Tell each open pull request a batch's description lists as left out what it says.
 
-    The comment quotes the heading and the pull request's entry, and the pull request is
-    labelled `awaiting-author`. One that this batch told before is not told again, whatever its
+    The comment quotes the heading and the pull request's entry, and only informs: it asks
+    nothing of the author, whose pull request is not handed back, since many headings give a
+    reason the author cannot act on. One labelled `deferred` is not told at all. One that this
+    batch told before is not told again, whatever its
     entry or its heading now says, and neither is one whose latest such comment, from another
     batch, was for the same kind of reason (the same heading, see `left_out_digest`): that
     comment is brought up to date with what the description says now, which notifies nobody, so
@@ -1419,7 +1455,8 @@ def tell_left_out(gh, batch, pulls, held, main, log):
         # The conflict-labels workflow looks only at pull requests into main that are not drafts.
         left_to_it = (_labels.conflict_labels_on() and int(key) in conflicts and pr is not None
                       and pr["base"] == main and not pr.get("draft"))
-        if pr is None or key in found or held.get(key) or pr["batch"] or left_to_it or key in moved:
+        if (pr is None or key in found or held.get(key) or pr["batch"] or left_to_it or key in moved
+                or DEFERRED in pr["labels"]):
             left.pop(key, None)
             continue
         entry = listed.get(int(key))
@@ -1450,16 +1487,14 @@ def tell_left_out(gh, batch, pulls, held, main, log):
             # record, is not told that it no longer is either.
             if ours is not None and tell(
                     gh, pr["number"], comments, NO_LONGER_LEFT_OUT.format(number=number),
-                    f"The description of batch #{number} no longer lists this pull request as left out. If you were "
-                    "waiting on that, comment `ready`."):
+                    f"The description of batch #{number} no longer lists this pull request as left out."):
                 log.append(f"told #{key} that the batch #{number} no longer lists it as left out")
             left.pop(key, None)
             continue
         heading, text = (unlinked(part, gh.repo) for part in entry)
         marker = f"<!-- batch-queue-left-out {json.dumps({'batch': number, 'digest': digest}, sort_keys=True)} -->"
         body = (f"{marker}\nBatch #{number} leaves this pull request out. Its description says:\n\n> {heading}\n>\n"
-                f"> {text}\n\nOnce you have dealt with that, comment `ready` to hand this pull request back to the "
-                "maintainers.\n")
+                f"> {text}\n\nThis is for your information: it changes no label of this pull request.\n")
         # This batch's own comment is brought up to date whatever its entry now says, its heading
         # too. So is another batch's for the same kind of reason.
         earlier = ours if ours is not None else latest if previous == digest else None
@@ -1470,8 +1505,7 @@ def tell_left_out(gh, batch, pulls, held, main, log):
                 log.append(f"brought up to date what #{key} was told about being left out, for the batch #{number}")
         elif announce(gh, batch, pr["number"], marker, body[len(marker) + 1:].rstrip("\n")):
             left[key], since = seen, since + 1
-            relabel(gh, pr, add=WAITING)
-            log.append(f"told #{key} that the batch #{number} leaves it out: now `{WAITING}`")
+            log.append(f"told #{key} that the batch #{number} leaves it out")
         if since >= SAVE_EVERY:
             save(gh, batch)
             since = 0
@@ -1751,13 +1785,15 @@ def landed(gh, batch, key, pr, main, main_sha, log):
         return
     if pr["sha"] != commit:
         again = look(gh, pr, {})[0] == pr["sha"]
+        # The labels first, so that a run cut short between the two leaves them rather than the
+        # comment without them: the next run finds the comment and does not post it again.
+        relabel(gh, pr, add=(WAITING, QUEUED, FROZEN) if again else WAITING)
         tell(gh, pr["number"], None, LANDED_BEFORE_PUSH.format(number=number, sha=commit),
              f"Batch #{number} has landed on `{main}` with commit `{commit[:10]}` of this pull request. What was "
              f"pushed here after it, up to `{pr['sha'][:10]}`, has not landed, so this pull request stays open. "
              + (f"That commit was queued, so it is back in the batch queue." if again else
                 f"Merge `{main}` into this branch and comment `ready`, or close this pull request if nothing is left "
                 "to change."))
-        relabel(gh, pr, add=(WAITING, QUEUED, FROZEN) if again else WAITING)
         log.append(f"#{key} was pushed to after the batch #{number} took it: told what landed, now `{WAITING}`"
                    + (f" and `{QUEUED}` again" if again else ""))
     else:
@@ -1924,8 +1960,10 @@ def pushed(gh, number):
     It reads the open pull requests and the records of the batches assembled by hand that are being
     built. The pull request's own batch is the lowest of them, in the order `stack` puts them in,
     whose record holds it: a record written before batches were stacked may hold it too, and
-    otherwise one record does. If that batch holds it at another commit than its head, it is told
-    so and labelled `awaiting-author`, as `tell_members` does (see `tell_pushed`). If it was pushed
+    otherwise one record does. If that batch holds it at another commit than its head, and its
+    branch does not have the new head as well (one request, see `has_head`), it is told so and
+    labelled `awaiting-author`, as `tell_members` does (see `tell_pushed`). If the branch has the
+    new head, nothing is said, and the next sync records it at that commit. If it was pushed
     back to that commit instead, `awaiting-author` comes off, if the workflow put it on when it told
     it so, as `unwait` does. Its labels are then brought in step, as `reconcile` does for every open
     pull request: one whose head has moved on from the commit its batch or the queue took is
@@ -1950,7 +1988,15 @@ def pushed(gh, number):
         if commit is None:
             continue
         if commit != pr["sha"] and kept(batch["note"], "pushed").get(key) != commit:
-            tell_pushed(gh, batch["number"], commit, pr, main, log)
+            inside = has_head(gh, batch, pr["sha"])
+            if inside:
+                log.append(f"#{key} was pushed to with `{pr['sha'][:10]}`, which the batch #{batch['number']} has "
+                           "already: nothing to say")
+            elif inside is None:
+                log.append(f"GitHub did not say whether the batch #{batch['number']} has the new head of #{key}: "
+                           "the next sync asks again")
+            else:
+                tell_pushed(gh, batch["number"], commit, pr, main, log)
         elif commit == pr["sha"] and WAITING in pr["labels"] and (
                 key in (batch["note"].get("waiting") or ()) or key not in kept(batch["note"], "pushed")
                 and handed_back(gh, batch["number"], key, [commit])):
