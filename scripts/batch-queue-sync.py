@@ -1048,10 +1048,11 @@ def look_through(gh, batch, by, pulls, before, gone, log):
     written, the branch's commits are listed again, a request for each hundred of them, and so
     they are when the batch has just been labelled `building` again. What has arrived is added.
     What was found before stays as long as the commit it was found at is still there, even after
-    its author has pushed again, unless its new head is in the branch too and has that commit in it,
-    which costs a request (see `contains`): after a push back to an earlier commit, or of a
-    rewritten one, the batch still lands the commit it was found at, and `tell_members` tells the
-    pull request so. `before` is the pull
+    its author has pushed again, unless its new head is in the branch too and is not an earlier
+    commit than that one, which costs a request (see `contains`). After a push back to an earlier
+    commit, the branch has the new head only as part of the commit it was found at, which the batch
+    still lands, and `tell_members` tells the pull request so. When GitHub does not say, nothing is
+    set, as when the branch could not be listed. `before` is the pull
     requests that some note says were labelled `batch queue` before a batch took them, and `gone`
     the batches assembled by hand that were merged or closed and are being tidied up after.
 
@@ -1080,8 +1081,14 @@ def look_through(gh, batch, by, pulls, before, gone, log):
         for key, commit in found.items():
             if commit not in commits:
                 continue
-            if now.get(key, commit) != commit and not contains(gh, now[key], commit):
-                now[key] = commit  # also when GitHub did not say: `tell_members` asks again
+            if now.get(key, commit) != commit:
+                earlier = contains(gh, commit, now[key])
+                if earlier is None:
+                    log.append(f"GitHub did not say whether #{key} was pushed back to an earlier commit than the one "
+                               f"the batch #{number} took: the next run looks again")
+                    return
+                if earlier:
+                    now[key] = commit
             now.setdefault(key, commit)
         found = now
         if set(below) != set(note.get("below", {})):

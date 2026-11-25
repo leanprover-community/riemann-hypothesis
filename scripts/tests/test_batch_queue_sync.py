@@ -1856,6 +1856,53 @@ class Pushed(unittest.TestCase):
                 self.assertEqual(len(self.pushes(gh, 12)), 1)
                 self.assertEqual(gh.pulls[12]["labels"], IN | {WAITING})
 
+    def test_a_push_back_unanswered_is_asked_about_again(self):
+        gh = Fake()
+        queue(gh, 11)
+        gh.add_pull(12, "head12-first")
+        gh.inside[sha("head12")] = {sha("head12-first")}
+        gh.push(12, "head12")
+        queue(gh, 12)
+        by_hand(gh, 11, 12)
+        sync(gh)
+        gh.push(12, "head12-first")
+        # Whether the new head has the commit the batch took in it.
+        ancestry = rf"compare/{sha('head12-first')}\.\.\.{sha('head12')}\?per_page=1"
+        gh.fail("GET", ancestry, 502)
+        self.assertEqual(batch.pushed(gh, 12)[0], "GitHub did not say whether the batch #1018 has the new head of #12, "
+                         f"with `{short('head12')}` in it: the next sync asks again")
+        gh.fail("GET", ancestry, 502)
+        self.assertIn("GitHub did not say whether the batch #1018 has the new head of #12, with "
+                      f"`{short('head12')}` in it: the next run asks again", sync(gh))
+        self.assertEqual((self.pushes(gh, 12), gh.pulls[12]["labels"]), ([], IN))
+        # When the branch is listed again, the question is the other way round.
+        old = gh.pulls[1018]["sha"]
+        new = sha("kim-moved")
+        gh.inside[new], gh.commits[new] = gh.inside[old] | {old}, {"message": "Merge", "parents": [{"sha": old}]}
+        gh.refs[HAND], gh.pulls[1018]["sha"] = new, new
+        gh.touch(1018)
+        gh.fail("GET", rf"compare/{sha('head12')}\.\.\.{sha('head12-first')}\?per_page=1", 502)
+        self.assertIn("GitHub did not say whether #12 was pushed back to an earlier commit than the one the batch "
+                      "#1018 took: the next run looks again", sync(gh))
+        self.assertEqual(note(gh.said(1018)[0])["members"]["12"], sha("head12"))
+        sync(gh)
+        self.assertEqual(len(self.pushes(gh, 12)), 1)
+
+    def test_a_new_head_merged_on_top_is_taken_though_it_lacks_the_old_commit(self):
+        # Rewritten, and merged into the branch on top of the commit the batch took: the batch
+        # holds the new head, whichever commit it has besides.
+        gh = self.built()
+        gh.push(12, "head12-rewritten")
+        old, head = gh.pulls[1018]["sha"], sha("head12-rewritten")
+        new = sha("kim-with-12-rewritten")
+        gh.inside[new] = gh.inside[old] | {old, head}
+        gh.commits[new] = {"message": "Merge PR #12 into batch", "parents": [{"sha": old}, {"sha": head}]}
+        gh.refs[HAND], gh.pulls[1018]["sha"] = new, new
+        gh.touch(1018)
+        sync(gh)
+        self.assertEqual(note(gh.said(1018)[0])["members"]["12"], head)
+        self.assertEqual((self.pushes(gh, 12), gh.pulls[12]["labels"]), ([], IN))
+
     def test_a_batch_or_a_closed_pull_request_is_not_looked_at(self):
         gh = self.built()
         self.assertEqual(batch.pushed(gh, 1018), ["#1018 holds a batch: the sync looks after it"])
