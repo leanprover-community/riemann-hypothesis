@@ -1192,6 +1192,11 @@ class Members(unittest.TestCase):
         self.assertEqual([gh.pulls[n]["labels"] for n in (22, 23, 24)], [set(), set(), set()])
         self.assertEqual([len(self.left(gh, n)) for n in (11, 22, 23, 24)], [0, 1, 1, 0])
         self.assertIn("told #23 that the batch #1018 leaves it out", log)
+        # The record says so too.
+        record = gh.said(1018)[0]
+        self.assertIn("Those this description lists as left out are told why, unless they are `deferred` or a batch "
+                      "being built contains them: the comment only informs.", record)
+        self.assertNotIn(WAITING, record)
         # Nothing new: nothing said, nothing read. (#21 is queued, so the queue reads it again.)
         gh.reads = []
         sync(gh)
