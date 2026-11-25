@@ -629,7 +629,7 @@ theorem iwasawa_majorant (n r : ℕ) (J P : Matrix (Fin n) (Fin n) ℂ) (X Y : M
     have hd : IsUnit (Rᴴ * R).det := by rw [hR]; exact (Matrix.isUnit_iff_isUnit_det _).1 hG.isUnit
     rw [Matrix.det_mul] at hd
     exact isUnit_of_mul_isUnit_right hd
-  letI := Matrix.invertibleOfIsUnitDet R hRu
+  let := Matrix.invertibleOfIsUnitDet R hRu
   have hBt : (R⁻¹).BlockTriangular id := blockTriangular_inv_of_blockTriangular hRt
   have hRi : R⁻¹ * R = 1 := Matrix.nonsing_inv_mul R hRu
   have hRi' : R * R⁻¹ = 1 := Matrix.mul_nonsing_inv R hRu
@@ -991,7 +991,7 @@ theorem exists_finset_sep_levi : ∀ (D : D7) (θ : D.what₂.Tau → (Ainf D.ho
   intro D θ hθ V U hU ε fr hfr W _ _ _ ρ hρ c m X Y hW T hT
   classical
   obtain ⟨C, hC⟩ := exists_decomp D θ hθ V U hU ε fr hfr m X Y hW T
-  haveI := fun τ => GlobalTheory.CompanionTheory.CTFin.UniSol.finiteDimensional_coeffSpan (ρ τ)
+  have := fun τ => GlobalTheory.CompanionTheory.CTFin.UniSol.finiteDimensional_coeffSpan (ρ τ)
   choose S hS using fun τ => exists_finset_sep (GlobalTheory.Published.AutFin.coeffSpan (ρ τ))
   refine ⟨(C ×ˢ Fintype.piFinset S).image fun p => p.1 * kInf θ V ε fr p.2, fun φ hφ h0 => ?_⟩
   funext g
@@ -1033,7 +1033,7 @@ theorem finiteDimensional_of_parts {G : Type} [Group G] {ι : Type} [Fintype ι]
 
   let R : G → (G → ℂ) →ₗ[ℂ] ((∀ i, H i) → ℂ) := fun b => LinearMap.funLeft ℂ ℂ fun x => P x * b
   have hfin : ∀ b, FiniteDimensional ℂ (Submodule.span ℂ (R b '' 𝓒)) := fun b => by
-    haveI := fun i => hcore i b
+    have := fun i => hcore i b
     refine finiteDimensional_of_slices (fun i => Submodule.span ℂ (sliceSet 𝓒 (H i) L b)) _ ?_
     rintro _ ⟨φ, hφ, rfl⟩ i x
     have e : ∀ t : H i, Function.update x i t = Pi.mulSingle i t * Function.update x i 1 := fun t => by
@@ -1053,7 +1053,7 @@ theorem finiteDimensional_of_parts {G : Type} [Group G] {ι : Type} [Fintype ι]
     exact Submodule.mem_map_of_mem hφ
   let Ψ : Submodule.span ℂ 𝓒 →ₗ[ℂ] (∀ b : B, Submodule.span ℂ (R b.1 '' 𝓒)) :=
     LinearMap.pi fun b => ((R b.1).comp (Submodule.span ℂ 𝓒).subtype).codRestrict _ fun φ => hmap b.1 φ.1 φ.2
-  haveI := fun b : B => hfin b.1
+  have := fun b : B => hfin b.1
   refine FiniteDimensional.of_injective Ψ ((injective_iff_map_eq_zero Ψ).2 fun φ hφ => ?_)
   refine Subtype.ext (hB φ.1 φ.2 fun b hb g hg => ?_)
   obtain ⟨x, rfl⟩ : g ∈ P.range := hrange ▸ hg
