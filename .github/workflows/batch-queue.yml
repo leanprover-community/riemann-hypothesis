@@ -48,8 +48,9 @@ name: batch queue
 # When it is closed without being merged, what it contained loses its labels too, and the ones
 # that were queued go back to `batch queue`. The sync job runs when that pull request is opened,
 # edited, pushed to, closed or reopened. When a `frozen` pull request is pushed to, the `pushed`
-# job tells it, if a batch took an earlier commit of it, and labels it `changed after frozen`,
-# without a whole sync. A pull
+# job tells it, if a batch took an earlier commit of it, without a whole sync. It labels the pull
+# request `changed after frozen` when its head has moved on from the commit its batch or the queue
+# took, and takes that label off when it was pushed back to that commit. A pull
 # request labelled `batch queue` that holds a batch like this waits in the queue like any other.
 # `verification/BATCHES.md` says how to assemble such a batch, and `scripts/batch-labels.py`
 # names the labels; the `if:` of the sync job below names some of them too.
