@@ -50,9 +50,6 @@ end Nu
 noncomputable def psiT (D : D7) {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) (τ : D.what₂.Tau) : D.host.E →+* ℂ_[p] :=
   lam.comp ((embT D τ).codRestrict Qbar (embT_mem D τ))
 
-theorem lamC_embT (D : D7) {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) (τ : D.what₂.Tau) (x : D.host.E) :
-    lamC lam (embT D τ x) = psiT D lam τ x := lamC_mem' lam (embT_mem D τ x)
-
 end Formalism.MainNotions.GL3Theta
 
 namespace Formalism.MainNotions.GL3Theta

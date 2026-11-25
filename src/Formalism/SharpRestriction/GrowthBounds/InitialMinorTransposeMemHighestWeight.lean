@@ -722,15 +722,6 @@ theorem dec_of_binomDecay {p : ℕ} {f : ℕ → ℚ} (h : BinomDecay p f) : Dec
     have e : (1 / 4 : ℝ) * (j : ℝ) + 0 = (j : ℝ) / 4 := by ring
     rw [e]; exact h1
 
-theorem binomDecay_of_dec {p : ℕ} {f : ℕ → ℚ} (h : Dec p (1 / 4) 0 f) : BinomDecay p f := by
-  intro j
-  rw [mahlerCoef_eq_mah]
-  rcases h j with h0 | h1
-  · exact Or.inl h0
-  · refine Or.inr ?_
-    have e : (1 / 4 : ℝ) * (j : ℝ) + 0 = (j : ℝ) / 4 := by ring
-    rw [← e]; exact h1
-
 theorem binomial_basis_approximation (p : ℕ) [Fact p.Prime] :
     (∀ (K : ℕ) (f : Fin K → ℕ → ℚ), (∀ k, BinomDecay p (f k)) → ∀ c : ℕ,
       ∃ b : (Fin K → ℕ) → ℚ,

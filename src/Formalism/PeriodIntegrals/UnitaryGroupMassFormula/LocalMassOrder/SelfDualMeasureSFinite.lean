@@ -105,9 +105,6 @@ variable [FiniteDimensional F E] (R : Type) [CommRing R] [Algebra F R] [Topologi
 
 attribute [local instance] isModTop_tens isTopRing_tens
 
-theorem continuous_crd (k : Fin d) : Continuous (fun y : R ⊗[F] E => crd b R y k) :=
-  IsModuleTopology.continuous_of_linearMap ((Algebra.TensorProduct.basis R b).coord k)
-
 include b in
 theorem isOpen_linIndep (hU : IsOpen {r : R | IsUnit r}) (hL : LIP R) {a M : ℕ} :
     IsOpen {X : Fin a → Fin M → R ⊗[F] E | LinearIndependent (R ⊗[F] E) X} := by

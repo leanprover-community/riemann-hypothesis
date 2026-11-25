@@ -140,7 +140,6 @@ def eS (T : GoodSet K G) (s : T.S) : MonoidAlgebra K G :=
 
 def eG (T : GoodSet K G) : MonoidAlgebra K G := ∑ s, eS T s
 
-
 open Classical in
 def eps (P : Pair K G) : MonoidAlgebra K G :=
   ((Nat.card P.H : ℕ) : K)⁻¹ • ∑ x : G, if h : x ∈ P.H then
@@ -246,22 +245,6 @@ theorem tens_mul (a b : ∀ i, MonoidAlgebra ℂ (G i)) :
   rw [← Finset.prod_mul_distrib]
   rfl
 
-theorem tens_one : tens (fun i => (1 : MonoidAlgebra ℂ (G i))) = 1 := by
-  classical
-  ext g
-  rw [tens_coeff]
-  simp only [MonoidAlgebra.one_def, MonoidAlgebra.coeff_single, Finsupp.single_apply]
-  rw [Finset.prod_boole]
-  simp [funext_iff, eq_comm]
-
-theorem sum_tens {P : ι → Type} [∀ i, Fintype (P i)] [DecidableEq ι]
-    (E : ∀ i, P i → MonoidAlgebra ℂ (G i)) :
-    ∑ p : ∀ i, P i, tens (fun i => E i (p i)) = tens (fun i => ∑ q, E i q) := by
-  ext g
-  rw [tens_coeff, MonoidAlgebra.coeff_sum, Finsupp.finsetSum_apply]
-  simp only [tens_coeff, MonoidAlgebra.coeff_sum, Finsupp.finsetSum_apply]
-  rw [Finset.prod_univ_sum, Fintype.piFinset_univ]
-
 variable [DecidableEq ι]
 
 def plc (i : ι) (a : MonoidAlgebra ℂ (G i)) : MonoidAlgebra ℂ (∀ i, G i) :=
@@ -307,7 +290,6 @@ theorem mapDomain_mulSingle (i : ι) (a : MonoidAlgebra ℂ (G i)) :
     exact hg fun j hj => Pi.mulSingle_eq_of_ne (Finset.ne_of_mem_erase hj) _
 
 variable {P : ι → Type} [∀ i, Fintype (P i)]
-
 
 open Classical in
 def eGood (E : ∀ i, P i → MonoidAlgebra ℂ (G i)) (good : (∀ i, P i) → Prop) :
@@ -406,22 +388,6 @@ theorem monicOf_inj {K : Type} [Field K] {N : ℕ} (a b : Fin N → K)
     Polynomial.coeff_C_mul_X_pow, Fin.val_inj] at hc
   simpa [i.isLt.ne, Finset.sum_ite_eq, Finset.sum_ite_eq'] using hc
 
-theorem ESer_sum (D : D7) (kv : Σ k : Fin 2, D.nd.PlG k) : ∑ p, ESer D kv p = 1 := by
-  classical
-  obtain ⟨S, hS, hsum⟩ := D.ntypes.eSer_sum kv.1
-  rw [← hsum]
-  have himg : ∑ p, ESer D kv p =
-      ∑ f ∈ Finset.univ.image (fun p : Fin D.R.r → ZMod (D.host.g kv.1) => Formalism.CyclotomicNorms.monicOf p),
-        D.ntypes.eSer kv.1 f := by
-    rw [Finset.sum_image fun a _ b _ h => monicOf_inj a b h]
-    rfl
-  rw [himg]
-  symm
-  refine Finset.sum_subset (fun f hf => ?_) fun f _ hf => ?_
-  · obtain ⟨hm, hd, -⟩ := (hS f).1 hf
-    exact Finset.mem_image.2 ⟨_, Finset.mem_univ _, Formalism.CyclotomicNorms.Sqf.monicOf_coeffs f hm hd⟩
-  · exact D.ntypes.eSer_zero _ _ fun hh => hf ((hS f).2 hh)
-
 theorem e0_eq (D : D7) [DecidableEq (Σ k : Fin 2, D.nd.PlG k)] : D.ntypes.e0 = eGood (ESer D) (goodVec D) := by
   classical
   ext g
@@ -443,7 +409,6 @@ theorem atPlace_eq (D : D7) [DecidableEq (Σ k : Fin 2, D.nd.PlG k)] (k : Fin 2)
   all_goals rfl
 
 end Ten
-
 
 end GoodType
 

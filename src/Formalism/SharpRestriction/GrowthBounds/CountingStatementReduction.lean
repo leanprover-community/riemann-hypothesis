@@ -927,97 +927,6 @@ end Formalism.MainNotions.G.CountingStatementReduction
 
 namespace Formalism.MainNotions.G.CountingStatementReduction
 
-open Formalism.MainNotions.G
-
-theorem integral_form_exponent_le_ceil (p a r n : ℕ) (hn : n + 1 ≤ r) (l : ℕ) (hl : l ≤ 8 * a) :
-    N0 (n + 1) * deF p (n + 1) l ≤ ⌈Formalism.MainNotions.flipOneThree.kappaOneExponent p a r⌉₊ := by
-  have hN0 : N0 (n + 1) ≤ r ^ 2 := by
-    unfold N0
-    calc (n + 1) * (n + 1 - 1) / 2 ≤ (n + 1) * (n + 1 - 1) := Nat.div_le_self _ _
-      _ ≤ r * r := Nat.mul_le_mul hn (by omega)
-      _ = r ^ 2 := (sq r).symm
-  have hde : deF p (n + 1) l ≤ Nat.log p (8 * a + r) := by
-    unfold deF
-    exact Nat.log_mono_right (by omega)
-  have hlog : (Nat.log p (8 * a + r) : ℝ) ≤ Real.logb p (8 * (a : ℝ) + r) := by
-    have := Real.natLog_le_logb (8 * a + r) p
-    push_cast at this
-    exact this
-  have h1 : ((N0 (n + 1) * deF p (n + 1) l : ℕ) : ℝ) ≤ Formalism.MainNotions.flipOneThree.kappaOneExponent p a r := by
-    unfold Formalism.MainNotions.flipOneThree.kappaOneExponent Formalism.MainNotions.flipOneThree.lgA
-    have hA : ((N0 (n + 1) : ℕ) : ℝ) ≤ (r : ℝ) ^ 2 := by exact_mod_cast hN0
-    have hB : ((deF p (n + 1) l : ℕ) : ℝ) ≤ Real.logb p (8 * (a : ℝ) + r) :=
-      (Nat.cast_le.mpr hde).trans hlog
-    have hB0 : (0 : ℝ) ≤ ((deF p (n + 1) l : ℕ) : ℝ) := Nat.cast_nonneg _
-    push_cast
-    have hmul := mul_le_mul hA hB hB0 (sq_nonneg (r : ℝ))
-    linarith
-  exact_mod_cast h1.trans (Nat.le_ceil _)
-
-theorem mq_top_of_irr {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] {n : ℕ} [NeZero n]
-    {V : Type} [AddCommGroup V] [Module (KK O) V] [Module O V] [IsScalarTower O (KK O) V]
-    (E : GLOps n (KK O) V) (lam : Fin n → ℤ) (v : V) (hirr : IsIrrHW E lam v)
-    (M : Submodule O V) (hM : UZLattice (O := O) E M) (hv : v ∈ M) : MQ (K := KK O) M = ⊤ := by
-  have hE : ∀ a b, ∀ y ∈ MQ (K := KK O) M, E a b y ∈ MQ (K := KK O) M := by
-    intro a b y hy
-    induction hy using Submodule.span_induction with
-    | mem x hx =>
-      apply Submodule.subset_span
-      by_cases hab : a = b
-      · subst hab
-        have hg : binomE E a 1 ∈ UZgens E := Or.inr ⟨a, 1, rfl⟩
-        have := hM.1 _ hg x hx
-        simpa [binomE] using this
-      · have hg : divPowE E a b 1 ∈ UZgens E := Or.inl ⟨a, b, 1, hab, rfl⟩
-        have := hM.1 _ hg x hx
-        simpa [divPowE] using this
-    | zero => simp
-    | add x y _ _ hx hy => simpa using Submodule.add_mem _ hx hy
-    | smul c x _ hx => simpa using Submodule.smul_mem _ c hx
-  have hU : ∀ u ∈ Umon E, ∀ y ∈ MQ (K := KK O) M, u y ∈ MQ (K := KK O) M := by
-    intro u hu
-    induction hu using Submonoid.closure_induction with
-    | mem u hu =>
-      obtain ⟨⟨a, b⟩, rfl⟩ := hu
-      exact hE a b
-    | one => intro y hy; simpa using hy
-    | mul u w _ _ hu hw => intro y hy; simpa using hu _ (hw y hy)
-  rw [eq_top_iff, ← hirr.2.2.2]
-  apply Submodule.span_le.mpr
-  rintro x ⟨u, hu, rfl⟩
-  exact hU u hu v (Submodule.subset_span hv)
-
-theorem weight_condition_of_integral_form (D : Formalism.BasicNotions.D7) (X : Formalism.MainNotions.flipOneThree.Inst) (h : Formalism.MainNotions.CovariantDegrees.NablaDeltaComparisonField D) :
-    Formalism.MainNotions.flipOneThree.adm2 D X := by
-  intro n V _ _ _ _ E lam v hn _ hirr hl
-  obtain ⟨hA, hB⟩ := h X.p X.L.n' X.O X.setting X.instance_ring_standard (n + 1) lam V E v hirr
-  refine ⟨fun x hx => ?_, fun M hM hv hwt => ?_⟩
-  · have hx' := hA x hx
-    have hle := integral_form_exponent_le_ceil X.p X.L.a X.r n hn (ellWt lam) hl
-    obtain ⟨k, hk⟩ := Nat.exists_eq_add_of_le hle
-    have : ((X.p : KK X.O) ^ ⌈Formalism.MainNotions.flipOneThree.kappaOneExponent X.p X.L.a X.r⌉₊) • x =
-        ((X.p : X.O) ^ k) • (((X.p : X.O) ^ (N0 (n + 1) * deF X.p (n + 1) (ellWt lam))) • x) := by
-      rw [hk, smul_smul, ← pow_add, add_comm, ← algebraMap_smul (KK X.O) (((X.p : X.O)) ^ _ )]
-      simp
-    rw [this]
-    exact Submodule.smul_mem _ _ hx'
-  · apply hB M hM (mq_top_of_irr E lam v hirr M hM hv)
-    intro x
-    constructor
-    · rintro ⟨hxM, hxw⟩
-      exact hwt x hxM hxw
-    · rintro ⟨c, rfl⟩
-      refine ⟨M.smul_mem c hv, ?_⟩
-      rw [← algebraMap_smul (KK X.O) c v]
-      exact Submodule.smul_mem _ _ hirr.2.2.1.2.1
-
-theorem weight_condition_from_integral_form (D : Formalism.BasicNotions.D7) (X : Formalism.MainNotions.flipOneThree.Inst) : Formalism.MainNotions.flipOneThree.adm2 D X :=
-  weight_condition_of_integral_form D X (Formalism.MainNotions.G.GLWeightTheory.nabla_delta_comparison_field D)
-
-end Formalism.MainNotions.G.CountingStatementReduction
-
-namespace Formalism.MainNotions.G.CountingStatementReduction
-
 open Formalism.MainNotions.flipOneThree Formalism.MainNotions.G MvPolynomial
 
 def subOps (K : Type) [Field K] {N r n : ℕ} (Lt : Letters (Fin N)) (S : Set (Fin N)) (φ : Fin n → Fin r) :
@@ -1093,7 +1002,6 @@ theorem isoProj_of_set (E : GLOps n K V) (lam : Fin n → ℤ) (e : Module.End K
     IsIsoProj E lam e :=
   ⟨fun x hx => h.1 lam rfl x hx, fun mu hmu x hx => h.2 mu (by simpa using hmu) x hx⟩
 
-
 open Classical in
 theorem setProj_eq_sum (E : GLOps n K V) (hT : (⨆ mu : Fin n → ℤ, isoSub E mu) = ⊤) (T : Set (Fin n → ℤ))
     (e : Module.End K V) (he : IsIsoProjSet E T e) (ee : (Fin n → ℤ) → Module.End K V)
@@ -1124,7 +1032,6 @@ theorem setProj_eq_sum (E : GLOps n K V) (hT : (⨆ mu : Fin n → ℤ, isoSub E
     exact Finset.sum_congr rfl fun mu _ => (map_add _ _ _).symm
 
 end Abs
-
 
 open Classical in
 theorem subOps_int (D : Formalism.BasicNotions.D7) (p n' : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
@@ -2325,7 +2232,6 @@ def blockForm (b : SegBlock s r) :
     MvPolynomial (BVar (2 * s + 1) r S.t) (KK O) → MvPolynomial (BVar (2 * s + 1) r S.t) (KK O) → KK O :=
   fun f g => ((specConst p S b : ℕ) : KK O) * fock f g
 
-
 open Classical in
 def segSub (aTop : Fin s → ℕ)
     (L₂ : SegBlock s r → Submodule O (MvPolynomial (BVar (2 * s + 1) r S.t) (KK O))) :
@@ -2335,7 +2241,6 @@ def segSub (aTop : Fin s → ℕ)
 theorem fock_zero_right' {R : Type*} [CommSemiring R] {σ : Type*} (F : MvPolynomial σ R) :
     fock F (0 : MvPolynomial σ R) = 0 := by
   unfold fock; simp
-
 
 open Classical in
 theorem segSub_good (aTop : Fin s → ℕ) (aPlus : ℕ) (m D : ℝ)
@@ -2626,7 +2531,6 @@ def segSubMap (aTop : Fin s → ℕ)
   map_add' := fun x y => by funext b; apply Subtype.ext; rfl
   map_smul' := fun c x => by funext b; apply Subtype.ext; rfl
 
-
 open Classical in
 def segSubEquiv (aTop : Fin s → ℕ)
     (L₂ : SegBlock s r → Submodule O (MvPolynomial (BVar (2 * s + 1) r S.t) (KK O))) :
@@ -2764,7 +2668,6 @@ namespace Formalism.MainNotions.G.CountingStatementReduction
 
 open Formalism.MainNotions.flipOneThree Formalism.MainNotions.G Finset
 
-
 open Classical in
 theorem double_count {α δ : Type*} (A : Finset α) (Dl : Finset δ) (rel : δ → α → Prop)
     (n rk m : δ → α → ℝ) (ε K : ℝ) (hε : 0 ≤ ε) (hK : 0 ≤ K)
@@ -2901,7 +2804,6 @@ theorem segPos_ne_next (TT : Finset (Fin n')) (j : Fin (numSeg TT)) (i : Fin (se
   · omega
   · omega
 
-
 open Classical in
 def realW (TT : Finset (Fin n')) (j : Fin (numSeg TT)) (a0 : ℕ) (aTop : Fin (segS TT j) → ℕ) (aPlus : ℕ) :
     Fin n' → ℕ :=
@@ -2952,11 +2854,9 @@ def mCl (dl : DCl X) (aTop : Fin X.s → ℕ) : ℕ :=
             (fun i => coarseC X.L.p (X.S C0 CE1 CE2) aTop (Formalism.MainNotions.ColumnSystems.digitBlock dl.1 dl.2) i) *
     Formalism.MainNotions.ColumnSystems.symDim (X.L.m + 1) ((X.S C0 CE1 CE2).bPlus : ℤ)
 
-
 open Classical in
 def keptSum (f : SegBlock X.s X.r → ℕ) (aTop : Fin X.s → ℕ) : ℕ :=
   ∑ᶠ b : SegBlock X.s X.r, if Kept X.p X.r (X.S C0 CE1 CE2) aTop b then f b else 0
-
 
 open Classical in
 def clSum (f : SegBlock X.s X.r → ℕ) (aTop : Fin X.s → ℕ) (dl : DCl X) : ℕ :=
@@ -3002,7 +2902,6 @@ theorem clSum_eq_sum {aTop : Fin X.s → ℕ} (hfin : {b | Kept X.p X.r (X.S C0 
     rw [Finset.mem_coe, hfin.mem_toFinset]
     by_contra hk
     exact hb (if_neg fun h => hk h.1)
-
 
 open Classical in
 theorem keptSum_eq_classes {aTop : Fin X.s → ℕ} (hfin : {b | Kept X.p X.r (X.S C0 CE1 CE2) aTop b}.Finite)
@@ -3067,11 +2966,9 @@ theorem rank_ge {D : Formalism.BasicNotions.D7} {CYb Cde Ck CD Cb Cc : ℝ} (hH 
 
 variable (C0 CE1 CE2 X)
 
-
 open Classical in
 def MCl (aTop : Fin X.s → ℕ) : ℝ :=
   ∑ dl ∈ (clSet C0 CE1 CE2 X).filter (fun dl => Compat C0 CE1 CE2 X dl aTop), (mCl C0 CE1 CE2 X dl aTop : ℝ)
-
 
 open Classical in
 def DigitClassDimensionComparison (g : (Fin X.s → ℕ) → ℕ → SegBlock X.s X.r → ℕ) (ε : ℝ) : Prop :=
@@ -3093,7 +2990,6 @@ theorem meanBox_eq (κ : (Fin X.s → ℕ) → ℕ → ℝ) :
     meanBox X κ = (∑ a ∈ box X, κ a.1 a.2) / (X.winA.card : ℝ) ^ (X.s + 1) := by
   unfold meanBox box
   rw [Finset.sum_product]
-
 
 open Classical in
 theorem mean_of_classes {D : Formalism.BasicNotions.D7} {CYb Cde Ck CD Cb Cc : ℝ} (hH : flipOneThree.HI C0 CYb Cde Ck CD Cb Cc X)
@@ -3210,7 +3106,6 @@ theorem card_Ev (k n : ℕ) : (Ev k n).card = (k + n - 1).choose n := by
     rw [Finset.mem_finsuppAntidiag]
     exact ⟨(mem_Ev e).1 he, Finset.subset_univ _⟩
 
-
 open Classical in
 theorem card_Ev_digits (k a P : ℕ) (hP : 0 < P) :
     (Ev k a).card = ∑ ρ ∈ Fintype.piFinset (fun _ : Fin k => range P),
@@ -3287,7 +3182,6 @@ theorem symDim_choose (r n : ℕ) : Formalism.MainNotions.ColumnSystems.symDim (
   have e3 : r + 1 - 1 = r := by omega
   rw [e1, e3]
 
-
 open Classical in
 theorem symDim_digits (r a P : ℕ) (hP : 0 < P) :
     ∑ ρ ∈ Fintype.piFinset (fun _ : Fin (r + 1) => range P),
@@ -3345,12 +3239,10 @@ section Flat
 
 variable (C0 CE1 CE2 : ℝ) (X : flipOneThree.Inst)
 
-
 open Classical in
 def fA (i : Fin X.s) (ρ : Fin (X.r + 1) → ℕ) : ℕ :=
   if (∑ c, ρ c ≤ (X.S C0 CE1 CE2).bTop i ∧ (X.S C0 CE1 CE2).P X.p i ∣ (X.S C0 CE1 CE2).bTop i - ∑ c, ρ c) then
     Formalism.MainNotions.ColumnSystems.symDim (X.r + 1) ((((X.S C0 CE1 CE2).bTop i - ∑ c, ρ c) / (X.S C0 CE1 CE2).P X.p i : ℕ) : ℤ) else 0
-
 
 open Classical in
 def fC (i : Fin X.s) (a : ℕ) (ρ : Fin (X.r + 1) → ℕ) : ℕ :=
@@ -3401,7 +3293,6 @@ theorem mCl_factor (rz ry : Fin X.s → Fin (X.r + 1) → ℕ) (hrz : rz ∈ dig
       · by_contra hn
         exact h2 i (Finset.mem_univ i) (by unfold fC; exact if_neg hn)
     rw [hz, mul_zero]
-
 
 open Classical in
 theorem MCl_eq (hp : 0 < X.p) (aTop : Fin X.s → ℕ) :

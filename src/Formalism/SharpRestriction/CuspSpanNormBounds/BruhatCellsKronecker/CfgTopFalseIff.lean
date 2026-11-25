@@ -83,7 +83,6 @@ theorem vOne_arith (D : D7) (τ : D.what₂.Tau) : ∀ d j : ℕ, j + d + 2 = D.
     push_cast
     ring
 
-
 open Classical in
 def cfgOf (D : D7) (τ : D.what₂.Tau) : Sz.Cfg where
   k := D.R.k
@@ -114,9 +113,6 @@ theorem isWord_deOf (D : D7) (u : D.what₂.Word) : Sz.IsWord D.R.k (deOf D u) :
     rw [deOf, dite_eq_right hn]
 
 theorem cfg_top_iff (D : D7) (τ : D.what₂.Tau) : (cfgOf D τ).top = true ↔ IsTop D τ := by
-  simp [cfgOf]
-
-theorem cfg_top_false_iff (D : D7) (τ : D.what₂.Tau) : (cfgOf D τ).top = false ↔ ¬ IsTop D τ := by
   simp [cfgOf]
 
 theorem cfg_v (D : D7) (τ : D.what₂.Tau) (i : ℕ) (h1 : 1 ≤ i) (h2 : i ≤ D.R.k - 1) :

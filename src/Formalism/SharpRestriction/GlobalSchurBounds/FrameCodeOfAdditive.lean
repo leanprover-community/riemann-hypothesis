@@ -57,9 +57,6 @@ variable (D : D7)
 theorem tE_mul (g g' : D.R.GG) : tE D (g * g') = tE D g + tE D g' := by
   show (UpperTheory.Comparison₂.toE D.R.toFrame (g * g')).toAdd = (UpperTheory.Comparison₂.toE D.R.toFrame g).toAdd + (UpperTheory.Comparison₂.toE D.R.toFrame g').toAdd
   rw [map_mul, toAdd_mul]
-theorem tE_one : tE D 1 = 0 := by
-  show (UpperTheory.Comparison₂.toE D.R.toFrame 1).toAdd = 0
-  rw [map_one, toAdd_one]
 theorem tE_pow (g : D.R.GG) (i : ℕ) : tE D (g ^ i) = i • tE D g := by
   show (UpperTheory.Comparison₂.toE D.R.toFrame (g ^ i)).toAdd = i • (UpperTheory.Comparison₂.toE D.R.toFrame g).toAdd
   rw [map_pow, toAdd_pow]
@@ -326,14 +323,6 @@ theorem tHe_apply (t : HH D) : tHe D t = tH D t := rfl
 
 def TTm : Finset D.R.A := D.host.TT.map (tHe D).toEmbedding
 
-theorem sum_lifts (m : ℕ) (f : ℕ → ℝ) : ∑ j : Fin m, f (j + 1) = ∑ j ∈ Icc 1 m, f j := by
-  induction m with
-  | zero => simp
-  | succ m ih =>
-    rw [Fin.sum_univ_castSucc]
-    simp only [Fin.coe_castSucc, Fin.val_last]
-    rw [Finset.sum_Icc_succ_top (by omega), ih]
-
 end Formalism.MainNotions.ZetaZeroFreeRegion.Br
 
 end
@@ -478,7 +467,6 @@ namespace Formalism.MainNotions.Lnk
 open Formalism.BasicNotions Formalism.D5 Formalism.FrobeniusOrbits Formalism.LFunctionChainParameters Formalism.LFunctionChainParameters.LHost Formalism.MainNotions.GlobalTheoryTheory Formalism.MainNotions.ZetaZeroFreeRegion Formalism.MainNotions.ZetaZeroFreeRegion.Br
 
 theorem frame_code_of_additive (e : Formalism.HC.Frame) (γ : e.GG) : mcode e (UpperTheory.Comparison₂.toE e γ).toAdd = gcode e γ := rfl
-
 
 open Classical in
 theorem ASK_congr {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H] (A : characterSumData.ArithData H) (N : ℕ) (a : ℝ) (t : H)

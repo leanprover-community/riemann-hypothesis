@@ -153,13 +153,6 @@ theorem fock_eq_sum_right (F G : MvPolynomial σ K) :
     fock F G = ∑ α ∈ G.support, F.coeff α * G.coeff α * (fact α : K) :=
   fock_eq_sum F G G.support (Or.inr (Finset.Subset.refl _))
 
-theorem dg_eq_sum_f (f : (σ →₀ ℕ) → K) (F : MvPolynomial σ K) :
-    dg f F = ∑ α ∈ F.support, monomial α (f α * F.coeff α) := by
-  conv_lhs => rw [← support_sum_monomial_coeff F]
-
-  rw [map_sum]
-  exact Finset.sum_congr rfl fun α _ => dg_monomial f α _
-
 theorem support_dg_subset (f : (σ →₀ ℕ) → K) (F : MvPolynomial σ K) :
     (dg f F).support ⊆ F.support := by
   intro α hα

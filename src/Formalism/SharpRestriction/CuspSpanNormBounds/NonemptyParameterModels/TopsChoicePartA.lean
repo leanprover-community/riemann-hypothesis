@@ -20,7 +20,6 @@ open Matrix MeasureTheory
 open scoped ContDiff
 open Formalism.QuantumDeterminants Formalism.MainNotions.S.TopsChoicePartA Formalism.MainNotions.S.LevR
 
-
 theorem hermitian_form_basis_vectors {n : ℕ} (H : Matrix (Fin n) (Fin n) ℂ) (i j : Fin n) : herm H (bvec i) (bvec j) = H j i := by
   simp [herm, bvec, dotProduct, Pi.single_apply, Matrix.col_apply]
 
@@ -417,40 +416,6 @@ theorem haar_probability_compact_subgroup {k r : ℕ} (S : Set (Matrix (Fin (2 *
       ← Measure.map_map hm (continuous_const_mul _).measurable, map_mul_left_eq_self]
 
 variable (k r : ℕ)
-
-theorem split_form_middle_row (c : Fin (k + 1)) (m : Fin (2 * r + k + 1)) :
-    Hpk k r (wI k r c) m = if m = wI k r c then Hb k c c else 0 := by
-  by_cases hm : m ∈ Set.range (wI k r)
-  · obtain ⟨d, rfl⟩ := hm
-    rw [split_form_middle_block_eq]
-    by_cases hcd : d = c
-    · rw [hcd, if_pos rfl]
-    · rw [if_neg (fun h => hcd (middle_block_index_injective k r h))]
-      unfold Hb
-      rw [Matrix.diagonal_apply, if_neg (fun h => hcd h.symm)]
-  · have hc := c.2
-    have h1 := outside_middle_block_index k r m hm
-    rw [if_neg (fun h => hm ⟨c, h.symm⟩)]
-    unfold Hpk
-    rw [if_neg (by simp only [wI]; omega), if_neg (by simp only [wI]; omega),
-      if_neg (by
-        rintro ⟨-, -, h⟩
-        exact hm ⟨c, h⟩)]
-
-theorem basis_index_trichotomy (i : Fin (2 * r + k + 1)) :
-    (∃ a, i = eI k r a) ∨ (∃ a, i = esI k r a) ∨ ∃ c, i = wI k r c := by
-  by_cases hi : i ∈ Set.range (wI k r)
-  · obtain ⟨c, rfl⟩ := hi
-    exact Or.inr (Or.inr ⟨c, rfl⟩)
-  · have h2 := i.2
-    rcases outside_middle_block_index k r i hi with h | h
-    · exact Or.inl ⟨⟨i.val, h⟩, Fin.ext rfl⟩
-    · exact Or.inr (Or.inl ⟨⟨2 * r + k - i.val, by omega⟩, Fin.ext (by simp only [esI]; omega)⟩)
-
-theorem signature_form_diag_sq_one (c : Fin (k + 1)) : Hb k c c * Hb k c c = 1 := by
-  unfold Hb
-  rw [Matrix.diagonal_apply_eq]
-  split_ifs <;> norm_num
 
 theorem split_form_matrix_sq_one : Hpk k r * Hpk k r = 1 := by
   apply ReciprocityTheory.ChartRestriction.DS.Mult1.InvChr.Hpk_sq

@@ -82,7 +82,6 @@ section Law
 
 variable {S : Type} [CommRing S] {d : ℕ}
 
-
 open MvPowerSeries Formalism.FG.SolveVAux in
 alias coeff_single_subst' := _root_.UpperTheory.Reformulated.B.LinearTermOfSubstitution.main
 
@@ -126,38 +125,7 @@ theorem jetTan_eq {κ : Type} [DecidableEq κ] (ℓ : κ) :
 
 variable {y x}
 
-theorem Tv_smul (a : S) (v : Fin 1 × Fin d → S) : Tv y x (a • v) = smT y.x a (Tv y x v) := by
-  unfold Tv smT
-  rw [← Category.assoc, homAt_comp, tanV_smul]
-
-theorem Tv_zero (h0 : homAt y.x (jetAug : Jet S (Fin 1 × Fin d) 1 →ₐ[S] S) ≫ x 1 = 1) : Tv y x 0 = 1 := by
-  unfold Tv
-  rw [tanV_zero, ← homAt_comp, Category.assoc]
-  erw [h0]
-  exact MonObj.comp_one _
-
-theorem Tv_add (F : Germ.FGLaw S d)
-    (hlaw : homAt y.x (jetSubstP 1 fun p : Fin 1 × Fin d => psTrunc 1 (F.F p.2)) ≫ x 1 =
-      jpt y d x 1 (0 : Fin 2) * jpt y d x 1 (1 : Fin 2)) (v w : Fin 1 × Fin d → S) :
-    Tv y x (v + w) = Tv y x v * Tv y x w := by
-  apply GlobalTheory.EigDir.Tv_add <;> assumption
-
 end Pts
-
-section Sep
-
-attribute [local instance] Over.cartesianMonoidalCategory
-
-variable {X0 : Scheme.{0}} {S : Type} [CommRing S] (x0 : Sp S ⟶ X0) {G : Over X0} [GrpObj G] [IsCommMonObj G]
-
-theorem localization_quotient_separated_dvd {T A : Type} [DecidableEq T] (φ : A → (G ⟶ G)) (hφ : ∀ a, IsMonHom (φ a)) (χ : T → A → S)
-    (hsep : ∀ τ τ', τ ≠ τ' → ∃ a, IsUnit (χ τ a - χ τ' a)) :
-    ∀ (n : ℕ) (s : Finset T) (W : T → (overAt x0 (DualNumber S) ⟶ G)), s.card = n →
-      (∀ τ a, W τ ≫ φ a = smT x0 (χ τ a) (W τ)) → (∀ τ, smT x0 0 (W τ) = 1) →
-      ∏ τ ∈ s, W τ = 1 → ∀ τ ∈ s, W τ = 1 := by
-  apply GlobalTheory.EigDir.localization_quotient_separated_dvd <;> assumption
-
-end Sep
 
 section Pts2
 
@@ -167,28 +135,9 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : D
 variable {Xo : Moduli Dw l} {c : Coeff l} {S : Type} [CommRing S] [Algebra c.F S] {y : FrPt Xo c S} {d : ℕ}
 variable {x : ∀ m, jO y d m 1 ⟶ Xo.univ.t.G}
 
-theorem Tv_sum (h0 : Tv y x 0 = 1) (hadd : ∀ v w, Tv y x (v + w) = Tv y x v * Tv y x w) {κ : Type}
-    (s : Finset κ) (f : κ → Fin 1 × Fin d → S) : Tv y x (∑ k ∈ s, f k) = ∏ k ∈ s, Tv y x (f k) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simpa using h0
-  | insert k s hk ih => rw [Finset.sum_insert hk, Finset.prod_insert hk, hadd, ih]
-
 def Dt (y : FrPt Xo c S) (x : ∀ m, jO y d m 1 ⟶ Xo.univ.t.G) (j : Fin d) :
     overAt y.x (DualNumber S) ⟶ Xo.univ.t.G :=
   homAt y.x (jetTan ((0 : Fin 1), j) : Jet S (Fin 1 × Fin d) (0 + 1) →ₐ[S] DualNumber S) ≫ x 1
-
-theorem combT_Dt (h0 : Tv y x 0 = 1) (hadd : ∀ v w, Tv y x (v + w) = Tv y x v * Tv y x w) (w : Fin d → S) :
-    combT y.x (Dt y x) w = Tv y x (fun p => w p.2) :=
-  _root_.GlobalTheory.EigDir.combT_Dt h0 hadd w
-
-theorem Tv_act (a : 𝓞 E) (act : Fin d → MvPowerSeries (Fin 1 × Fin d) S)
-    (hact : x 1 ≫ Xo.univ.t.act.act a =
-      homAt y.x (jetSubstP 1 fun p : Fin 1 × Fin d => psTrunc 1 (act p.2)) ≫ x 1)
-    (v : Fin 1 × Fin d → S) :
-    Tv y x v ≫ Xo.univ.t.act.act a =
-      Tv y x (fun p => ∑ j, ReciprocityTheory.ChartRestriction.G.TB.dLin act p.2 j * v ((0 : Fin 1), j)) :=
-  _root_.GlobalTheory.EigDir.Tv_act a act hact v
 
 end Pts2
 

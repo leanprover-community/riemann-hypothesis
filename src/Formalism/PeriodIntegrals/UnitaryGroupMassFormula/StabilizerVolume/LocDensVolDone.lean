@@ -385,11 +385,6 @@ open NumberField IsDedekindDomain MeasureTheory Topology Filter Formalism.MainNo
 
 variable {F : Type} [Field F] [NumberField F]
 
-theorem af_add (y z : Af F) (w : HeightOneSpectrum (𝓞 F)) : (y + z) w = y w + z w := rfl
-theorem af_sub (y z : Af F) (w : HeightOneSpectrum (𝓞 F)) : (y - z) w = y w - z w := rfl
-theorem af_neg (y : Af F) (w : HeightOneSpectrum (𝓞 F)) : (-y) w = -y w := rfl
-theorem af_zero (w : HeightOneSpectrum (𝓞 F)) : (0 : Af F) w = 0 := rfl
-
 theorem adele_pairing_zero_add (y z : Af F) : pairA F 0 (y + z) = pairA F 0 y + pairA F 0 z := by
   refine Prod.ext ?_ ?_
   · show (0 : Ainf F) = 0 + 0
@@ -417,23 +412,6 @@ theorem singleV_ne (v w : HeightOneSpectrum (𝓞 F)) (h : w ≠ v) (t : Fv F v)
   first
   | exact Pi.single_eq_of_ne h t
 
-theorem ev_pow_mul_sub (v : HeightOneSpectrum (𝓞 F)) {W : Set (Fv F v)} (hW : W ∈ 𝓝 (0 : Fv F v)) :
-    ∃ n : ℕ, ∀ s ∈ v.adicCompletionIntegers F, unifV v ^ n * s ∈ W := by
-  obtain ⟨γ, hγ⟩ := (Valued.is_topological_valuation W).mp hW
-  obtain ⟨n, hn⟩ := ((unifV_spec v).2.1.eventually
-    ((Valued.is_topological_valuation _).mpr ⟨γ, subset_rfl⟩)).exists
-  refine ⟨n, fun s hs => hγ ?_⟩
-  have hs' : Valued.v s ≤ 1 := hs
-  have hs'' : Valued.v.restrict s ≤ 1 := by
-    first
-      | simpa using hs'
-  show Valued.v.restrict (unifV v ^ n * s) < _
-  rw [map_mul]
-  have h1 : Valued.v.restrict (unifV v ^ n) * Valued.v.restrict s ≤ Valued.v.restrict (unifV v ^ n) := by
-    first
-      | exact mul_le_of_le_one_right' hs''
-  exact lt_of_le_of_lt h1 hn
-
 def U0 (I : Finset (HeightOneSpectrum (𝓞 F))) (n : HeightOneSpectrum (𝓞 F) → ℕ) :
     AddSubgroup (Af F) where
   carrier := {y | (∀ w, y w ∈ w.adicCompletionIntegers F) ∧
@@ -449,98 +427,6 @@ def U0 (I : Finset (HeightOneSpectrum (𝓞 F))) (n : HeightOneSpectrum (𝓞 F)
     refine ⟨fun w => ?_, fun w hw => ?_⟩
     · rw [af_neg]; exact neg_mem (hy1 w)
     · rw [af_neg, mul_neg]; exact neg_mem (hy2 w hw)
-
-theorem isOpen_adelic_neighbourhood (I : Finset (HeightOneSpectrum (𝓞 F))) (n : HeightOneSpectrum (𝓞 F) → ℕ) :
-    IsOpen (U0 I n : Set (Af F)) := by
-  have hO : ∀ w : HeightOneSpectrum (𝓞 F), IsOpen (w.adicCompletionIntegers F : Set (Fv F w)) := by
-    intro w
-    first
-      | exact Valued.isOpen_valuationSubring _
-  have hev : ∀ w : HeightOneSpectrum (𝓞 F), Continuous fun y : Af F => y w := by
-    intro w
-    first
-      | exact RestrictedProduct.continuous_eval w
-  have h1 : IsOpen {y : Af F | ∀ w, y w ∈ w.adicCompletionIntegers F} := by
-    first
-      | exact RestrictedProduct.isOpen_forall_mem hO
-  have h2 : IsOpen {y : Af F | ∀ w ∈ I, (unifV w ^ n w)⁻¹ * y w ∈ w.adicCompletionIntegers F} := by
-    have e : {y : Af F | ∀ w ∈ I, (unifV w ^ n w)⁻¹ * y w ∈ w.adicCompletionIntegers F} =
-        ⋂ w ∈ I, {y : Af F | (unifV w ^ n w)⁻¹ * y w ∈ w.adicCompletionIntegers F} := by
-      ext y
-      simp
-    rw [e]
-    exact isOpen_biInter_finset fun w _ => (hO w).preimage (continuous_const.mul (hev w))
-  exact h1.inter h2
-
-theorem adele_character_trivial_open (ψ : AddChar (AF F) ℂ) (hψ : IsCharAF F ψ) :
-    ∃ (I : Finset (HeightOneSpectrum (𝓞 F))) (n : HeightOneSpectrum (𝓞 F) → ℕ),
-      ∀ y ∈ U0 I n, ψ (pairA F 0 y) = 1 := by
-  classical
-  set U : Set (AF F) := {x | 1 / 2 < (ψ x).re} with hUdef
-  have hU : IsOpen U := isOpen_lt continuous_const (Complex.continuous_re.comp hψ.1)
-  let Φ : (∀ v : HeightOneSpectrum (𝓞 F),
-      ((v.adicCompletionIntegers F : Set (v.adicCompletion F)))) → AF F :=
-    fun x => pairA F 0 (RestrictedProduct.structureMap _ _ Filter.cofinite x)
-  have hΦ : Continuous Φ :=
-    continuous_const.prodMk RestrictedProduct.isEmbedding_structureMap.continuous
-  let x0 : ∀ v : HeightOneSpectrum (𝓞 F), ((v.adicCompletionIntegers F : Set (v.adicCompletion F))) :=
-    fun v => ⟨0, zero_mem _⟩
-  have hx0 : Φ x0 = 0 := by
-    show pairA F 0 _ = 0
-    have : (RestrictedProduct.structureMap _ _ Filter.cofinite x0 : Af F) = 0 := by
-      apply RestrictedProduct.ext
-      intro j
-      rfl
-    rw [this]
-    rfl
-  have hx0U : x0 ∈ Φ ⁻¹' U := by
-    simp only [Set.mem_preimage, hx0, hUdef, Set.mem_setOf_eq, AddChar.map_zero_eq_one,
-      Complex.one_re]
-    norm_num
-  obtain ⟨I, u, hu, hsub⟩ := isOpen_pi_iff.1 (hU.preimage hΦ) x0 hx0U
-  have hn : ∀ w : HeightOneSpectrum (𝓞 F), ∃ m : ℕ, w ∈ I → ∀ s ∈ w.adicCompletionIntegers F,
-      ∃ h : unifV w ^ m * s ∈ ((w.adicCompletionIntegers F : Set (w.adicCompletion F))),
-        (⟨unifV w ^ m * s, h⟩ : ((w.adicCompletionIntegers F : Set (w.adicCompletion F)))) ∈ u w := by
-    intro w
-    by_cases hw : w ∈ I
-    · obtain ⟨t, ht, hte⟩ := isOpen_induced_iff.1 (hu w hw).1
-      have h0 : (0 : Fv F w) ∈ t := by
-        have := (hu w hw).2
-        rw [← hte] at this
-        exact this
-      obtain ⟨m, hm⟩ := ev_pow_mul_sub w (ht.mem_nhds h0)
-      refine ⟨m, fun _ s hs => ⟨mul_mem (pow_mem (unifV_spec w).2.2 m) hs, ?_⟩⟩
-      rw [← hte]
-      exact hm s hs
-    · exact ⟨0, fun h => absurd h hw⟩
-  choose n hn using hn
-  refine ⟨I, n, ?_⟩
-  have hbig : ∀ y ∈ U0 I n, 1 / 2 < (ψ (pairA F 0 y)).re := by
-    intro y hy
-    let x : ∀ v : HeightOneSpectrum (𝓞 F), ((v.adicCompletionIntegers F : Set (v.adicCompletion F))) :=
-      fun w => ⟨y w, hy.1 w⟩
-    have hx : x ∈ (I : Set _).pi u := by
-      intro w hw
-      have hne : unifV w ^ n w ≠ 0 := pow_ne_zero _ (unifV_spec w).1
-      obtain ⟨h, hmem⟩ := hn w hw _ (hy.2 w hw)
-      have e : (⟨unifV w ^ n w * ((unifV w ^ n w)⁻¹ * y w), h⟩ :
-          ((w.adicCompletionIntegers F : Set (w.adicCompletion F)))) = x w := by
-        apply Subtype.ext
-        show unifV w ^ n w * ((unifV w ^ n w)⁻¹ * y w) = y w
-        rw [mul_inv_cancel_left₀ hne]
-      rw [← e]
-      exact hmem
-    have e : Φ x = pairA F 0 y := by
-      show pairA F 0 _ = _
-      congr 1
-    have := hsub hx
-    simp only [Set.mem_preimage, e, hUdef, Set.mem_setOf_eq] at this
-    exact this
-  intro y hy
-  apply eq_one_of_pow _ (hψ.2.1 _)
-  intro k
-  rw [← AddChar.map_nsmul_eq_pow, ← pairA_nsmul0]
-  exact hbig _ (AddSubgroup.nsmul_mem _ hy _)
 
 def lamPsi (ψ : AddChar (AF F) ℂ) : Submodule (𝓞 F) F where
   carrier := {a | ∀ r : 𝓞 F, ψ (pairA F 0 (algebraMap F (Af F) ((r : F) * a))) = 1}
@@ -583,12 +469,6 @@ theorem algebraMap_AF (a : F) :
     rw [add_zero]
   · show algebraMap F (Af F) a = 0 + algebraMap F (Af F) a
     rw [zero_add]
-
-theorem psi_fin_of_char (ψ : AddChar (AF F) ℂ) (hψ : IsCharAF F ψ) (a : F) (h : ψ (pairA F 0 (algebraMap F (Af F) a)) = 1) :
-    chiInf ψ (algebraMap F (InfiniteAdeleRing F) a) = 1 := by
-  have h1 := hψ.2.2.1 a
-  rw [algebraMap_AF, AddChar.map_add_eq_mul, h, mul_one] at h1
-  exact h1
 
 theorem condExact_of (hS : SAf) (hC : ChInf) : CondExact := by
   intro F _ _ ψ hψ

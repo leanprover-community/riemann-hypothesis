@@ -608,16 +608,6 @@ def chL (D : D7) (u : D.what₂.Word) : (j : ℕ) → (Fn D u 0 →ₗ[ℂ] Fn D
   | 0 => LinearMap.id
   | j + 1 => (KT D u j).comp (chL D u j)
 
-lemma colT_eq (φ : Fn D u 0) : colT D u φ = chL D u D.R.m φ := by
-  have : ∀ j, Formalism.ThetaLiftIndependence.chainOpM (D.mem u).C.wt (D.mem u).C.Kmap j φ = chL D u j φ := by
-    intro j
-    induction j with
-    | zero => rfl
-    | succ j ih =>
-      show (D.mem u).C.K j (Formalism.ThetaLiftIndependence.chainOpM (D.mem u).C.wt (D.mem u).C.Kmap j φ) = KT D u j (chL D u j φ)
-      rw [ih]; rfl
-  exact this _
-
 lemma rat_of_into {i j : ℕ} (w : D.what₂.places.Pl) (f : Fn D u i →ₗ[ℂ] Fn D u j)
     (A : Submodule (Ow D w) (Vl D u i)) (B : Submodule (Ow D w) (Vl D u j)) (h : Into D u w f A B)
     (hA : Submodule.span D.what₂.LL (A : Set (Vl D u i)) = ⊤) (x : Vl D u i) :
@@ -637,7 +627,6 @@ lemma S_span (i : ℕ) (w : D.what₂.places.Pl) :
     Submodule.span D.what₂.LL ((D.fm u).S i w : Set (Vl D u i)) = ⊤ := by
   rw [eq_top_iff, ← ((D.fm u).lat_good i).2.2]
   exact Submodule.span_mono (fun x hx => Submodule.subset_span hx)
-
 
 variable (D u) in
 def LatticeChainWithoutLast (C : ℝ) : Prop :=
@@ -1144,7 +1133,6 @@ lemma Nlam_eq (hS : HidaSetting D u) (hR : Rat0 D u) (w : D.what₂.places.Pl) :
   refine Finset.sum_congr rfl (fun v hv => ?_)
   exact Int.toNat_of_nonneg (hS.2.2 _ (mem_VV hv).2)
 
-
 lemma dense_embLL (D : D7) : DenseRange D.what₂.embLL := by
   have hv : (InfinitePlace.mk D.what₂.embLL).IsComplex := IsTotallyComplex.isComplex _
   have hd := denseRange_embedding_of_isComplex _ hv
@@ -1307,7 +1295,6 @@ theorem Pt_integral (P : Pend D u) (h4 : ArchimedeanSignatureMatching P) (hPF : 
   have := D.inLoc_of_mem_locW (D.plEq.symm p) (D.fm u).ptLat.L y hy
   rwa [Equiv.apply_symm_apply, e] at this
 
-
 variable (D u) in
 def ClassMapInjectiveBijectiveNorms : Prop :=
   Function.Injective (D.fm u).til ∧
@@ -1321,7 +1308,6 @@ theorem classMap_estimate_of_partial (P : Pend D u) (h4 : ArchimedeanSignatureMa
   ⟨h.1, h.2.1, h.2.2.1,
     ⟨PRat_of P h4 h.2.2.1, Pt_integral P h4 h.2.2.1 _, h.2.2.2 _⟩,
     cplx_of_place (PRat_of P h4 h.2.2.1) (fun x => h.2.2.2 _ (InfinitePlace.mk D.what₂.embLL) x)⟩
-
 
 end Formalism.MainNotions.product_first_zeroth_parts
 end -- clump:auto

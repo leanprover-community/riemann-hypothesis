@@ -21,10 +21,6 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 
 def IsU (z : Fv F v ⊗[F] E) : Prop := ∃ w ∈ OEv (E := E) v, z * w = 1
 
-theorem sigR_algebraMap (a : Fv F v) :
-    sigR (Fv F v) σ (algebraMap (Fv F v) (Fv F v ⊗[F] E) a) = algebraMap (Fv F v) (Fv F v ⊗[F] E) a := by
-  simp [Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.sigR, Algebra.TensorProduct.algebraMap_apply, Algebra.TensorProduct.map_tmul]
-
 theorem sigR_mem {z : Fv F v ⊗[F] E} (hz : z ∈ OEv (E := E) v) : sigR (Fv F v) σ z ∈ OEv (E := E) v := by
   apply Formalism.L2.SG.Pf.NcVal.VolUHm.sigR_mem <;> assumption
 

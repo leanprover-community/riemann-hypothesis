@@ -163,20 +163,8 @@ theorem pW_pU (H : D.Hyp) (v : n → A) : D.pW (D.pU v) = 0 := by
 theorem pU_e (H : D.Hyp) (b : Fin r) : D.pU (D.e b) = D.e b := by
   simp [pU_apply, pX_apply, pXv_apply, pz_apply, fe H, H.ee, ze H, ite_smul]
 
-theorem pU_f (H : D.Hyp) (b : Fin r) : D.pU (D.f b) = D.f b := by
-  simp [pU_apply, pX_apply, pXv_apply, pz_apply, H.ff, H.ef, zf H, ite_smul]
-
-theorem pU_z_eq (H : D.Hyp) : D.pU D.z = D.z := by
-  simp [pU_apply, pX_apply, pXv_apply, pz_apply, H.fz, H.ez, H.zz]
-
 theorem pW_e (H : D.Hyp) (b : Fin r) : D.pW (D.e b) = 0 := by
   rw [pW_apply, pU_e H, sub_self]
-
-theorem pW_f (H : D.Hyp) (b : Fin r) : D.pW (D.f b) = 0 := by
-  rw [pW_apply, pU_f H, sub_self]
-
-theorem orthogonal_proj_normal_zero (H : D.Hyp) : D.pW D.z = 0 := by
-  rw [pW_apply, pU_z_eq H, sub_self]
 
 theorem pW_pX (H : D.Hyp) (u : n → A) : D.pW (D.pX u) = 0 := by
   rw [pX_apply]

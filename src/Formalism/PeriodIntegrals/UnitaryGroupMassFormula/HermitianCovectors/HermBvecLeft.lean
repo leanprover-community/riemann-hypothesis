@@ -29,12 +29,6 @@ lemma sig_sig (k r : ℕ) (i : Fin (2 * r + k + 1)) : sig k r (sig k r i) = i :=
 
 def sgn (k r : ℕ) (i : Fin (2 * r + k + 1)) : ℂ := if i.val = r + k then -1 else 1
 
-lemma sgn_sig (k r : ℕ) (i : Fin (2 * r + k + 1)) : sgn k r (sig k r i) = sgn k r i := by
-  have hi := i.isLt
-  unfold sgn
-  rw [sig_val]
-  split_ifs <;> first | rfl | (exfalso; omega)
-
 lemma Hpk_eq (k r : ℕ) (i j : Fin (2 * r + k + 1)) :
     Hpk k r i j = if j = sig k r i then sgn k r i else 0 := by
   have hi := i.isLt

@@ -129,10 +129,6 @@ section Alg
 
 variable {N : ℕ}
 
-theorem coe_smul (r : 𝓞 E) (v : Fin N → E) : (r : E) • v = r • v := by
-  first
-  | rfl
-
 theorem pres_one_sub {L : Submodule (𝓞 E) (Fin N → E)} {e : Matrix (Fin N) (Fin N) E}
     (he : Pres L e) : Pres L (1 - e) := by
   intro y hy

@@ -347,36 +347,6 @@ variable {S : Type} [CommRing S] (s : S →+* S) {n : ℕ} (J : Matrix (Fin n) (
 def r1 (c : S) (u v : Fin n → S) : Matrix (Fin n) (Fin n) S :=
   1 - c • vecMulVec v (vecMul (fun i => s (u i)) J)
 
-theorem reflection_mulVec (c : S) (u v z : Fin n → S) :
-    r1 s J c u v *ᵥ z = z - (c * hform s J u z) • v := by
-  have hf : hform s J u z = (fun i => s (u i)) ⬝ᵥ (J *ᵥ z) := by
-    simp only [hform, dotProduct, Matrix.mulVec, Finset.mul_sum, mul_assoc]
-  rw [r1, Matrix.sub_mulVec, Matrix.one_mulVec, hf, Matrix.dotProduct_mulVec]
-  ext i
-  simp only [Pi.sub_apply, Pi.smul_apply, smul_eq_mul, Matrix.mulVec, dotProduct, Matrix.smul_apply,
-    Matrix.vecMulVec_apply]
-  congr 1
-  rw [Finset.mul_sum, Finset.sum_mul]
-  exact Finset.sum_congr rfl fun j _ => by ring
-
-theorem hform_mulVec (T : Matrix (Fin n) (Fin n) S) (z w : Fin n → S) :
-    hform s J (T *ᵥ z) (T *ᵥ w) = hform s (cT s T * J * T) z w := by
-  have hf : ∀ (M : Matrix (Fin n) (Fin n) S) (x y : Fin n → S),
-      hform s M x y = (fun i => s (x i)) ⬝ᵥ (M *ᵥ y) := by
-    intro M x y
-    simp only [hform, dotProduct, Matrix.mulVec, Finset.mul_sum, mul_assoc]
-  have hσ : (fun i => s ((T *ᵥ z) i)) = (T.map s) *ᵥ (fun i => s (z i)) :=
-    funext fun i => RingHom.map_mulVec s T z i
-  rw [hf, hf, hσ, ← Matrix.vecMul_transpose, ← Matrix.dotProduct_mulVec, Matrix.mulVec_mulVec,
-    Matrix.mulVec_mulVec]
-  simp only [cT, Matrix.mul_assoc]
-
-theorem hform_mem (g : GL (Fin n) S) (hg : g ∈ UJ s J) (z w : Fin n → S) :
-    hform s J ((g : Matrix (Fin n) (Fin n) S) *ᵥ z) ((g : Matrix (Fin n) (Fin n) S) *ᵥ w) =
-      hform s J z w := by
-  rw [hform_mulVec]
-  rw [show cT s (g : Matrix (Fin n) (Fin n) S) * J * (g : Matrix (Fin n) (Fin n) S) = J from hg]
-
 private lemma hform_single_single_stabilizer_orbit_volume (M : Matrix (Fin n) (Fin n) S) (a b : Fin n) :
     hform s M (Pi.single a 1) (Pi.single b 1) = M a b := by
   simp [hform, Pi.single_apply, apply_ite s]
@@ -402,60 +372,6 @@ theorem mem_UJ_of (hdet : IsUnit J.det) (T : Matrix (Fin n) (Fin n) S)
   refine ⟨Matrix.nonsingInvUnit T hdT, ?_, rfl⟩
   show cT s T * J * T = J
   exact hM
-
-theorem step (hs : ∀ z, s (s z) = z) (hJ : IsHerm s J) (hdet : IsUnit J.det)
-    (a b : Fin n → S) (hab : hform s J b b = hform s J a a) (hu : IsUnit (hform s J a a))
-    (lam : S) (hlam : lam * s lam = 1) (hc : IsUnit (hform s J a a - s lam * hform s J b a)) :
-    ∃ g : GL (Fin n) S, g ∈ UJ s J ∧ (g : Matrix (Fin n) (Fin n) S) *ᵥ a = b ∧
-      ∀ z, hform s J a z = 0 → hform s J b z = 0 → (g : Matrix (Fin n) (Fin n) S) *ᵥ z = z := by
-  have hconj := hform_conj s J hs hJ
-  obtain ⟨c, hc_def⟩ : ∃ c, hform s J a a - s lam * hform s J b a = c := ⟨_, rfl⟩
-  rw [hc_def] at hc
-  obtain ⟨ci, hci⟩ : ∃ ci, c * ci = 1 := hc.exists_right_inv
-  have e2 : ci * c = 1 := by rw [mul_comm]; exact hci
-  have e3 : s ci * s c = 1 := by rw [← map_mul, e2, map_one]
-  obtain ⟨u, hu_def⟩ : ∃ u, a - lam • b = u := ⟨_, rfl⟩
-  have hua : hform s J u a = c := by
-    rw [← hu_def, hform_sub_left, hform_smul_left, hc_def]
-  have huu : hform s J u u = c + s c := by
-    rw [← hu_def, ← hc_def]
-    simp only [hform_sub_left, hform_sub_right, hform_smul_left, hform_smul_right, map_sub, map_mul,
-      hs, hconj]
-    linear_combination (s lam * lam) * hab + hform s J a a * hlam
-  have key1 : ∀ z w, hform s J (r1 s J ci u u *ᵥ z) (r1 s J ci u u *ᵥ w) = hform s J z w := by
-    intro z w
-    rw [reflection_mulVec, reflection_mulVec]
-    simp only [hform_sub_left, hform_sub_right, hform_smul_left, hform_smul_right, map_mul, hconj, huu]
-    linear_combination (hform s J z u * hform s J u w * s ci) * e2 +
-      (hform s J z u * hform s J u w * ci) * e3
-  obtain ⟨g1, hg1U, hg1⟩ := mem_UJ_of s J hdet _ key1
-  obtain ⟨βi, hβ⟩ : ∃ βi, hform s J a a * βi = 1 := hu.exists_right_inv
-  have hsβ : s (hform s J a a) = hform s J a a := hconj a a
-  have hsβi : s βi = βi := by
-    have h1 : hform s J a a * s βi = 1 := by rw [← hsβ, ← map_mul, hβ, map_one]
-    calc s βi = s βi * (hform s J a a * βi) := by rw [hβ, mul_one]
-      _ = (hform s J a a * s βi) * βi := by ring
-      _ = βi := by rw [h1, one_mul]
-  have key2 : ∀ z w, hform s J (r1 s J ((1 - s lam) * βi) b b *ᵥ z)
-      (r1 s J ((1 - s lam) * βi) b b *ᵥ w) = hform s J z w := by
-    intro z w
-    rw [reflection_mulVec, reflection_mulVec]
-    simp only [hform_sub_left, hform_sub_right, hform_smul_left, hform_smul_right, map_mul, hconj, hab,
-      map_sub, map_one, hs, hsβi]
-    linear_combination (hform s J z b * hform s J b w * βi) * hlam +
-      (hform s J z b * hform s J b w * (1 - lam) * (1 - s lam) * βi) * hβ
-  obtain ⟨g2, hg2U, hg2⟩ := mem_UJ_of s J hdet _ key2
-  refine ⟨g2 * g1, mul_mem hg2U hg1U, ?_, ?_⟩
-  · rw [Units.val_mul, ← mulVec_mulVec, hg1, hg2, reflection_mulVec s J ci u u, hua, e2, one_smul, ← hu_def,
-      sub_sub_cancel, reflection_mulVec, hform_smul_right, hab, ← sub_smul]
-    conv_rhs => rw [← one_smul S b]
-    congr 1
-    linear_combination hlam + (s lam * lam - lam) * hβ
-  · intro z hz1 hz2
-    have hzu : hform s J u z = 0 := by
-      rw [← hu_def, hform_sub_left, hform_smul_left, hz1, hz2, mul_zero, sub_zero]
-    rw [Units.val_mul, ← mulVec_mulVec, hg1, hg2, reflection_mulVec s J ci u u, hzu, mul_zero, zero_smul, sub_zero,
-      reflection_mulVec, hz2, mul_zero, zero_smul, sub_zero]
 
 theorem orb_orth (hs : ∀ z, s (s z) = z) (hJ : IsHerm s J) (hdet : IsUnit J.det) :
     ∀ (k : ℕ) (x y : Fin k → Fin n → S), (∀ i j, i ≠ j → hform s J (x i) (x j) = 0) →

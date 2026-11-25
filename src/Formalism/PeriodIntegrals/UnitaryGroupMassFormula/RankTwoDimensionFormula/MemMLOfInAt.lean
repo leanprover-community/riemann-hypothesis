@@ -38,20 +38,6 @@ theorem hA_unit (g : X.B.I.Gf) (x y : VA X.B.I) :
     hA X.B.I (X.B.I.fmat g *ᵥ x) (X.B.I.fmat g *ᵥ y) = hA X.B.I x y :=
   hform_mulVec' _ _ _ g.2 x y
 
-theorem hA_adj (g : X.B.I.Gf) (x y : VA X.B.I) :
-    hA X.B.I x (X.B.I.fmat g *ᵥ y) = hA X.B.I (X.B.I.fmat g⁻¹ *ᵥ x) y := by
-  conv_lhs => rw [← hA_unit X g⁻¹ x (X.B.I.fmat g *ᵥ y)]
-  rw [Matrix.mulVec_mulVec, fmat_inv_mul, Matrix.one_mulVec]
-
-theorem mem_mL_of_InAt {d : VA X.B.I} (hd : d ∈ X.B.I.Lf) (h : InAt X.B.I X.B.g X.B.g d) :
-    d ∈ mL X.B.I X.B.g := by
-  apply Formalism.L2.SG.NormCut.mem_mL_of_InAt <;> assumption
-
-theorem mem_Mo_eb {v : VA X.B.I} (hv : v ∈ X.B.I.Lf) (he : ∀ a, ZMod' X.B.I X.B.g (hA X.B.I (X.e0 a) v))
-    (hz : ZMod' X.B.I X.B.g (hA X.B.I X.z0 v)) (hb : ∀ l, ZMod' X.B.I X.B.g (hA X.B.I (X.bw l) v)) :
-    v ∈ Mo X.B.I X.B.g (Set.range X.e0 ∪ Set.range X.bw) := by
-  apply Formalism.L2.SG.NormCut.mem_Mo_eb <;> assumption
-
 def Par (x : X.B.I.Gf) : Prop :=
   x ∈ X.B.I.Kset ∧ (∀ a, X.B.I.fmat x *ᵥ X.e0 a ∈ Mo X.B.I X.B.g (Set.range X.e0)) ∧
     ∀ j, X.B.I.fmat x *ᵥ X.bw j ∈ Mo X.B.I X.B.g (Set.range X.e0 ∪ Set.range X.bw)

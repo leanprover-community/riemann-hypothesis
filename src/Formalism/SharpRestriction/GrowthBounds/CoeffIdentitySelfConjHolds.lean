@@ -370,7 +370,6 @@ variable {C : Type} [Field C] {V : VF C}
 
 end FrobP
 
-
 namespace FrobP
 
 variable {C : Type} [Field C] {V : VF C}
@@ -381,7 +380,6 @@ theorem mm_l : V.MM (V.l : C) := by
   exact zero_lt_one
 
 end FrobP
-
 
 end Formalism.L2.FormalSeriesBounds
 end -- clump:auto
@@ -576,10 +574,6 @@ namespace Formalism.L2.FormalSeriesBounds
 namespace RootsP
 
 variable {C : Type} [Field C] {V : VF C}
-
-private lemma ge0_zero_lemma_2 : V.Ge 0 (0 : C) := by
-  simp only [VF.Ge, AddValuation.map_zero]
-  exact le_top
 
 private lemma ge0_add_lemma_4 {x y : C} (hx : V.Ge 0 x) (hy : V.Ge 0 y) : V.Ge 0 (x + y) := by
   simp only [VF.Ge] at hx hy ⊢
@@ -1379,7 +1373,6 @@ theorem rescale_HH (X : RawChart C d I κ) (x z : κ → PowerSeries C) (hx : �
   · exact rescale_inV w 1 (z q.2)
 
 end SelfConjPoints
-
 
 open SelfConjPoints in
 theorem r1sHResc (C : Type) [Field C] (d : ℕ) (I : Fin 2 → Type) [∀ g, Fintype (I g)] (κ : Type) [Fintype κ]

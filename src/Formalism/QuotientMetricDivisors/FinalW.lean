@@ -368,10 +368,6 @@ theorem latticeGlue : LatticeGlue := lattice_gluing
 
 alias height_constant_bound := _root_.Formalism.DivisionValues.height_constant_first
 
-theorem shiftMu : ShiftMu := by
-  unfold ShiftMu
-  exact shift_slope_mu
-
 theorem shiftEx : ShiftEx := by
   unfold ShiftEx
   exact shift_existence

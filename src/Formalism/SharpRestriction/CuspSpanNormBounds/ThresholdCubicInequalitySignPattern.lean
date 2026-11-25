@@ -18,15 +18,6 @@ namespace Formalism.MainNotions
 
 open Formalism.BasicNotions Formalism.MainNotions.S NumberField IsDedekindDomain
 
-theorem two_le_absNorm (D : D7) (p : HeightOneSpectrum (𝓞 D.host.F)) : 2 ≤ Ideal.absNorm p.asIdeal := by
-  have h0 : Ideal.absNorm p.asIdeal ≠ 0 := by
-    rw [Ne, Ideal.absNorm_eq_zero_iff]
-    exact p.ne_bot
-  have h1 : Ideal.absNorm p.asIdeal ≠ 1 := by
-    rw [Ne, Ideal.absNorm_eq_one_iff]
-    exact p.isPrime.ne_top
-  omega
-
 theorem sc_one_lt_L {D : D7} (large₂ : SizeData₂ D) : 1 < large₂.sc.L :=
   Real.one_lt_rpow large₂.sc.one_lt_alt large₂.sc.eps_pos
 

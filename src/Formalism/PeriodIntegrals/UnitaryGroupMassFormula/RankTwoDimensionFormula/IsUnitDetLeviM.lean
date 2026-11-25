@@ -53,34 +53,9 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 
-theorem fmat_mul (x y : X.B.I.Gf) : X.B.I.fmat (x * y) = X.B.I.fmat x * X.B.I.fmat y := by
-  simp [AutInst.fmat]
-
-theorem fmat_inv_mul (x : X.B.I.Gf) : X.B.I.fmat x⁻¹ * X.B.I.fmat x = 1 := by
-  simp [AutInst.fmat]
-
-theorem fixes_mul {x y : X.B.I.Gf} {v : VA X.B.I} (hx : X.B.I.fmat x *ᵥ v = v) (hy : X.B.I.fmat y *ᵥ v = v) :
-    X.B.I.fmat (x * y) *ᵥ v = v := by
-  rw [_root_.Formalism.L2.SG.PoincareInHH.Cut.fmat_mul, ← Matrix.mulVec_mulVec, hy, hx]
-
 theorem fixes_inv {x : X.B.I.Gf} {v : VA X.B.I} (hx : X.B.I.fmat x *ᵥ v = v) : X.B.I.fmat x⁻¹ *ᵥ v = v := by
   calc X.B.I.fmat x⁻¹ *ᵥ v = X.B.I.fmat x⁻¹ *ᵥ (X.B.I.fmat x *ᵥ v) := by rw [hx]
     _ = v := by rw [Matrix.mulVec_mulVec, _root_.Formalism.L2.SG.PoincareInHH.Cut.fmat_inv_mul, Matrix.one_mulVec]
-
-theorem mem_mL_of_Kset {x : X.B.I.Gf} (hx : x ∈ X.B.I.Kset) (m : ℕ) {y : VA X.B.I} (hy : y ∈ mL X.B.I m) :
-    X.B.I.fmat x *ᵥ y ∈ mL X.B.I m := by
-  unfold mL at *
-  induction hy using Submodule.span_induction with
-  | mem y hy =>
-    obtain ⟨w, hw, rfl⟩ := hy
-    refine Submodule.subset_span ⟨X.B.I.fmat x *ᵥ w, ?_, ?_⟩
-    · exact (hx w).1 hw
-    · rw [Matrix.mulVec_smul]
-  | zero => simp
-  | add a b _ _ ha hb => rw [Matrix.mulVec_add]; exact Submodule.add_mem _ ha hb
-  | smul c a _ ha =>
-    rw [Subring.smul_def, Matrix.mulVec_smul, ← Subring.smul_def]
-    exact Submodule.smul_mem _ c ha
 
 end FixAux
 

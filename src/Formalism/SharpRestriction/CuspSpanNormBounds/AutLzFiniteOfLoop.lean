@@ -34,22 +34,6 @@ end Formalism.MainNotions.S.Lem.Comparison₂
 
 end A
 
-section B
-open Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.BasicNotions NumberField
-
-namespace Formalism.MainNotions.S.Lem.Comparison₂
-
-theorem one_mem_NLam {D : D7} (Λ : Submodule (𝓞 D.host.E) (VS D).V) {T : D.host.E} (F : LFlag (D.sp.Y 0) D.R.rS T) :
-    (1 : (VS D).V ≃ₗ[D.host.E] (VS D).V) ∈ NLam Λ F := by
-  simp only [NLam, IsAutLam, Set.mem_setOf_eq]
-  refine ⟨⟨?_, ?_⟩, fun j x _ => by simp, fun x _ => by simp⟩
-  · exact (Formalism.HermitianLatticesTheory.isom _).one_mem
-  · ext x
-    simp [Formalism.HermitianLatticesTheory.gmap]
-
-end Formalism.MainNotions.S.Lem.Comparison₂
-end B
-
 section C
 open scoped Classical
 namespace Formalism.MainNotions.S.Lem.Cnt
@@ -119,7 +103,6 @@ open Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups
 namespace Formalism.MainNotions.S.Lem.Glob
 
 variable {D : Formalism.BasicNotions.D7}
-
 
 end Formalism.MainNotions.S.Lem.Glob
 end E

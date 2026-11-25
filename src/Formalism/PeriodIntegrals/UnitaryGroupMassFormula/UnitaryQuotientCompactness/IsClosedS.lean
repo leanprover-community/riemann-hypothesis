@@ -20,11 +20,6 @@ open PI PI.QuotSetU
 
 variable {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ}
 
-lemma isClosed_UH : IsClosed (UH (Hpk k r)) := by
-  have hc : Continuous fun g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ => gᴴ * Hpk k r * g :=
-    ((continuous_id.matrix_conjTranspose).matrix_mul continuous_const).matrix_mul continuous_id
-  exact isClosed_eq hc continuous_const
-
 lemma isClosed_N : IsClosed (Nset k r) := by
   apply GlobalTheory.ProdHaar.isClosed_Nset
 

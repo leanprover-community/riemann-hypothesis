@@ -276,23 +276,6 @@ theorem vAdd_of_inCodiff {x : K} (hx : x ≠ 0) (h : InCodiff x) (la : HeightOne
 
 end NormalFormTwo
 
-theorem had_cols (n : ℕ) (M : Matrix (Fin n) (Fin n) ℂ) :
-    ‖M.det‖ ≤ ∏ j, Real.sqrt (∑ i, ‖M i j‖ ^ 2) := by
-  refine (Formalism.LatticeBaseChangeAlt.complexHadamard n M (∑ i, ∑ j, ‖M i j‖) fun i j => ?_).1
-  calc ‖M i j‖ ≤ ∑ j', ‖M i j'‖ :=
-        Finset.single_le_sum (f := fun j' => ‖M i j'‖) (fun _ _ => norm_nonneg _) (Finset.mem_univ j)
-    _ ≤ ∑ i', ∑ j', ‖M i' j'‖ :=
-        Finset.single_le_sum (f := fun i' => ∑ j', ‖M i' j'‖)
-          (fun _ _ => Finset.sum_nonneg fun _ _ => norm_nonneg _) (Finset.mem_univ i)
-
-theorem had_onb {E : Type} [NormedAddCommGroup E] [InnerProductSpace ℂ E] (ρ : ℕ) (w x : Fin ρ → E)
-    (hw : Orthonormal ℂ w) :
-    ‖(Matrix.of fun l k => inner ℂ (w l) (x k)).det‖ ≤ ∏ k, ‖x k‖ := by
-  refine (had_cols ρ _).trans ?_
-  refine Finset.prod_le_prod₀ (fun _ _ => Real.sqrt_nonneg _) fun k _ => ?_
-  rw [Real.sqrt_le_left (norm_nonneg _)]
-  simpa using hw.sum_inner_products_le (x k) (s := Finset.univ)
-
 theorem had_inner' {E : Type} [NormedAddCommGroup E] [InnerProductSpace ℂ E] (ρ : ℕ) (a x : Fin ρ → E) :
     ‖(Matrix.of fun i k => inner ℂ (a i) (x k)).det‖ ≤ (∏ i, ‖a i‖) * ∏ k, ‖x k‖ := by
   apply GlobalTheory.PlueckerBound.norm_det_inner_le
@@ -1621,7 +1604,6 @@ theorem zPoly_cf (X : PJ D B P j) {wL w0 : WeightFamilies.Wt D j} {N : ℕ} (w :
   exact Cf_word p0 padd pmul _ hs θ hθ al
 
 end GPPacket
-
 
 theorem len_sat_le {R F : Type} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [Field F] [Algebra R F]
     [IsFractionRing R F] {V1 : Type} [AddCommGroup V1] [Module F V1] [Module R V1] [IsScalarTower R F V1]

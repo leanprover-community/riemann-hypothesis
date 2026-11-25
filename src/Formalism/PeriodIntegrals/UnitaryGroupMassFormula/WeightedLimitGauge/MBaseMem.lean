@@ -67,22 +67,6 @@ lemma emb_mid (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) (q j : Fin (2 * r + 
 
 def Em (k r : ℕ) : Matrix (Fin (2 * r + k + 1)) (Fin (k + 1)) ℂ := fun i m => if i = wI k r m then 1 else 0
 
-lemma Em_mul_mid {X : Type*} (A : Matrix (Fin (k + 1)) X ℂ) (i : Fin (2 * r + k + 1)) (x : X) (hi : mid k r i) :
-    (Em k r * A) i x = A (midx hi) x := by
-  apply Formalism.FourierDecayAlt.P.B2x3.Em_mul_mid <;> assumption
-
-lemma Em_mul_out {X : Type*} (A : Matrix (Fin (k + 1)) X ℂ) (i : Fin (2 * r + k + 1)) (x : X) (hi : ¬ mid k r i) :
-    (Em k r * A) i x = 0 :=
-  _root_.Formalism.FourierDecayAlt.P.B2x3.Em_mul_out A i x hi
-
-lemma mul_EmT_mid {X : Type*} [Fintype X] (A : Matrix X (Fin (k + 1)) ℂ) (j : Fin (2 * r + k + 1)) (x : X) (hj : mid k r j) :
-    (A * (Em k r)ᵀ) x j = A x (midx hj) := by
-  apply Formalism.FourierDecayAlt.P.B2x3.mul_EmT_mid <;> assumption
-
-lemma mul_EmT_out {X : Type*} [Fintype X] (A : Matrix X (Fin (k + 1)) ℂ) (j : Fin (2 * r + k + 1)) (x : X) (hj : ¬ mid k r j) :
-    (A * (Em k r)ᵀ) x j = 0 :=
-  _root_.Formalism.FourierDecayAlt.P.B2x3.mul_EmT_out A j x hj
-
 lemma EmT_Em : (Em k r)ᵀ * Em k r = 1 := by
   apply Formalism.FourierDecayAlt.P.B2x3.EmT_Em
 
@@ -100,9 +84,6 @@ lemma emb_eq (μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) :
 
 lemma Hpk_Em : Hpk k r * Em k r = Em k r * Hb k := by
   apply Formalism.FourierDecayAlt.P.B2x3.Hpk_Em
-
-lemma EmT_Q : (Em k r)ᵀ * (1 - Em k r * (Em k r)ᵀ) = 0 := by
-  rw [Matrix.mul_sub, Matrix.mul_one, ← Matrix.mul_assoc, EmT_Em, Matrix.one_mul, sub_self]
 
 lemma Q_Em : (1 - Em k r * (Em k r)ᵀ) * Em k r = 0 := by
   rw [Matrix.sub_mul, Matrix.one_mul, Matrix.mul_assoc, EmT_Em, Matrix.mul_one, sub_self]
