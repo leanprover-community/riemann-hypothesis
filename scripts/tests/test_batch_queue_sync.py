@@ -1604,7 +1604,7 @@ class Reconciling(unittest.TestCase):
     def test_a_pull_request_queued_before_frozen_existed_is_frozen(self):
         gh = Fake()
         gh.add_pull(31, "head31")
-        gh.say(31, f"<!-- batch-queue-approved {sha('head31')} -->\nQueued at this commit.")
+        gh.say(31, f"<!-- batch-queue-approved {sha('head31')} -->\nApproved for batching at this commit.")
         gh.label(31, add=QUEUED)
         log = sync(gh)
         self.assertEqual(gh.pulls[31]["labels"], QF)
@@ -1617,7 +1617,7 @@ class Reconciling(unittest.TestCase):
         gh = Fake()
         queue(gh, 33)
         gh.add_pull(31, "head31")
-        gh.say(31, f"<!-- batch-queue-approved {sha('head31')} -->\nQueued at this commit.")
+        gh.say(31, f"<!-- batch-queue-approved {sha('head31')} -->\nApproved for batching at this commit.")
         gh.label(31, add=QUEUED)
         gh.add_pull(34, "head34", labels=[QUEUED])  # labelled by hand: no `batch` stands for it
         sync(gh)
