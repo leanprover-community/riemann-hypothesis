@@ -208,6 +208,42 @@ class Message(unittest.TestCase):
         self.assertIn("`batch/?x??@y`", text)
 
 
+class Stale(unittest.TestCase):
+    """A pull request whose branch carries commits that the batch it builds on no longer has."""
+
+    def decided(self, labels_=()):
+        case = pr(5, labels_=labels_, depends=[900])
+        return case, labels.decide(case, "main", BATCHES, {900: Comparison("clean")}, {"on": [900], "prs": [11]})
+
+    def test_it_is_told_once_for_each_head_of_the_batch_and_handed_back(self):
+        case, decision = self.decided()
+        self.assertEqual(decision["stale"], {900: {"head": B["sha"], "prs": [11]}})
+        self.assertTrue(labels.needs_told(case, decision, BATCHES))
+        add, remove, notes = labels.plan(case, decision, set(), BATCHES, set())
+        self.assertEqual((add, remove, [number for number, _ in notes]), ({WAITING}, set(), [900]))
+        self.assertTrue(notes[0][1].startswith(f"<!-- conflict-labels-stale 900 {B['sha']} -->\n"))
+        # Told about this head already: nothing to read, nothing to say.
+        known = {"told": set(), "stale": {(900, B["sha"])}}
+        self.assertFalse(labels.needs_told(case, decision, BATCHES, known))
+        self.assertEqual(labels.plan(case, decision, None, BATCHES, None), (set(), set(), []))
+        self.assertEqual(labels.plan(case, decision, set(), BATCHES, known["stale"]), (set(), set(), []))
+        # A new head of the batch is told again.
+        self.assertTrue(labels.needs_told(case, decision, BATCHES, {"told": set(), "stale": {(900, "0" * 40)}}))
+
+    def test_what_the_author_is_told(self):
+        text = labels.stale_message(batch(900, ref="batch/b9-on-1313"), [11, 12])
+        for needed in ("carries commits of #11, #12 that #900", "`batch/b9-on-1313` was rebuilt without them",
+                       "GitHub marks #11, #12 merged", "new branch from the batch's current branch",
+                       "`git cherry-pick`", "comment `ready`", "never by rebasing", f"`{WAITING}`"):
+            self.assertIn(needed, text)
+
+    def test_nothing_carried_is_nothing_to_say(self):
+        case = pr(5, depends=[900])
+        decision = labels.decide(case, "main", BATCHES, {900: Comparison("clean")}, {"on": [900], "prs": []})
+        self.assertEqual(decision["stale"], {})
+        self.assertFalse(labels.needs_told(case, decision, BATCHES))
+
+
 # ---------------------------------------------------------------------------------------------
 # Whole runs against a stand-in for GitHub.
 
@@ -221,6 +257,8 @@ class Fake(labels.GitHub):
         # What a later read finds for whether a pull request merges, as {number: [states]}.
         self.later = {}
         self.left = 5000
+        # The pull requests whose comments were read, in order.
+        self.comment_reads = []
 
     def add(self, number, *, ref=None, own=False, base="main", labels_=(), mergeable="MERGEABLE", body="",
             draft=False):
@@ -249,6 +287,7 @@ class Fake(labels.GitHub):
                                    "pullRequest": self.node(number) if number in self.pulls else None,
                                    "pullRequests": {"nodes": nodes}}}
         if query == labels.COMMENTS:
+            self.comment_reads.append(variables["number"])
             nodes = [{"body": body, "author": author} for body, author in self.comments.get(variables["number"], [])]
             return {"repository": {"pullRequest": {"comments": {
                 "pageInfo": {"hasNextPage": False, "endCursor": None}, "nodes": nodes}}}}
@@ -300,21 +339,25 @@ class Fake(labels.GitHub):
         return [labels.TOLD.match(body).group(1) for body, _ in self.comments.get(number, []) if labels.TOLD.match(body)]
 
 
-def comparing(table):
-    """A stand-in for `compare_all` that answers from {(pull request, batch): Comparison}."""
+def comparing(table, stale=None):
+    """A stand-in for `compare_all` that answers from {(pull request, batch): Comparison}, and
+    finds what `stale` says each pull request carries, as {number: {"on": [...], "prs": [...]}}."""
     seen = []
 
-    def compare(repo, main, building, candidates, log):
+    def compare(repo, main, building, candidates, log, *, watch=None, carried=None):
         seen.append((sorted(building), sorted(candidates)))
+        compare.watch = watch
+        if carried is not None:
+            carried.update({number: found for number, found in (stale or {}).items() if number in candidates})
         return {number: {other: table.get((number, other), Comparison("apart")) for other in building}
                 for number in candidates}
     compare.seen = seen
     return compare
 
 
-def run(gh, number=None, table=None):
+def run(gh, number=None, table=None, stale=None, known=None):
     with contextlib.redirect_stdout(io.StringIO()):
-        return labels.sync(gh, number, compare=comparing(table or {}))
+        return labels.sync(gh, number, compare=comparing(table or {}, stale), known=known)
 
 
 class Included(unittest.TestCase):
@@ -385,9 +428,9 @@ class Runs(unittest.TestCase):
         gh = self.scene()
         inner = comparing({(1, 900): CONFLICT})
 
-        def compare(*args):
+        def compare(*args, **options):
             gh.pulls[1]["headRefOid"] = "f" * 40  # its author pushes while the sweep compares
-            return inner(*args)
+            return inner(*args, **options)
         with contextlib.redirect_stdout(io.StringIO()):
             log = labels.sync(gh, None, compare=compare)
         self.assertEqual(gh.pulls[1]["labels"], set())
@@ -572,7 +615,7 @@ class Runs(unittest.TestCase):
         gh = self.scene()
         gh.pulls[1]["labels"].add(BATCH_CONFLICT)
 
-        def broken(*args):
+        def broken(*args, **options):
             raise RuntimeError("git failed")
         with contextlib.redirect_stdout(io.StringIO()):
             labels.sync(gh, compare=broken)
@@ -584,6 +627,106 @@ class Runs(unittest.TestCase):
         gh.comments[1] = [("<!-- conflict-labels-batch 900 -->\nfake", {"__typename": "User", "login": "someone"})]
         run(gh, table={(1, 900): CONFLICT})
         self.assertEqual(gh.told_about(1), ["900", "900"])
+
+    # Two separate stacks: every sweep compares with both.
+
+    def stacks(self):
+        gh = self.scene()
+        gh.pulls[900]["labels"].add(LATEST)
+        gh.add(910, ref="batch/c1", own=True, labels_=[BUILDING, LATEST])
+        return gh
+
+    def test_with_two_stacks_a_steady_state_reads_no_comments(self):
+        gh, known = self.stacks(), {}
+        table = {(1, 900): CONFLICT, (1, 910): CONFLICT}
+        run(gh, table=table, known=known)
+        self.assertEqual((gh.told_about(1), gh.comment_reads), (["900", "910"], [1]))
+        self.assertEqual(known[1], {"told": {900, 910}, "stale": set()})
+        gh.comment_reads.clear()
+        for _ in range(2):
+            run(gh, table=table, known=known)
+        self.assertEqual((gh.comment_reads, gh.told_about(1)), ([], ["900", "910"]))
+
+    def test_with_two_stacks_and_nothing_kept_each_sweep_reads_once(self):
+        gh = self.stacks()
+        table = {(1, 900): CONFLICT, (1, 910): CONFLICT}
+        run(gh, table=table)
+        run(gh, table=table)
+        self.assertEqual((gh.comment_reads, gh.told_about(1)), ([1, 1], ["900", "910"]))
+
+    def test_with_two_stacks_a_new_conflict_is_still_told(self):
+        gh, known = self.stacks(), {}
+        run(gh, table={(1, 900): CONFLICT}, known=known)
+        gh.pulls[1]["labels"].discard(WAITING)  # `ready`
+        gh.comment_reads.clear()
+        run(gh, table={(1, 900): CONFLICT}, known=known)
+        self.assertEqual(gh.comment_reads, [])
+        # The other stack's batch moves on, and now conflicts too.
+        run(gh, table={(1, 900): CONFLICT, (1, 910): CONFLICT}, known=known)
+        self.assertEqual((gh.comment_reads, gh.told_about(1)), ([1], ["900", "910"]))
+        self.assertEqual(gh.pulls[1]["labels"], {BATCH_CONFLICT, WAITING})
+
+    def test_what_is_kept_is_only_for_open_pull_requests(self):
+        gh, known = self.scene(), {77: {"told": {900}, "stale": set()}}
+        run(gh, table={(1, 900): CONFLICT}, known=known)
+        self.assertEqual(sorted(known), [1])
+
+    def test_the_state_file_round_trips(self):
+        known = {1: {"told": {900, 910}, "stale": {(900, "a" * 40)}}, 2: {"told": set(), "stale": set()}}
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "state.json"
+            self.assertEqual(labels.load_state(path), {})
+            labels.save_state(path, known)
+            self.assertEqual(labels.load_state(path), known)
+            path.write_text("not json")
+            self.assertEqual(labels.load_state(path), {})
+
+    # A pull request that builds on a batch rebuilt without one of its pull requests.
+
+    def dependent(self):
+        gh = self.scene()
+        gh.add(5, body="Builds on the batch.\n\n- [ ] depends on: #900\n", mergeable="CONFLICTING")
+        gh.add(11)  # taken out of the batch, and still carried by #5
+        return gh
+
+    def test_a_dependent_carrying_what_the_batch_dropped_is_told_once_for_each_head(self):
+        gh, known = self.dependent(), {}
+        stale = {5: {"on": [900], "prs": [11]}}
+        compare = comparing({}, stale)
+        with contextlib.redirect_stdout(io.StringIO()):
+            log = labels.sync(gh, None, compare=compare, known=known)
+        self.assertEqual(compare.watch[5], {"on": [900], "exclude": [900]})
+        self.assertEqual(compare.watch[1], {"on": [], "exclude": [900]})
+        self.assertIn("#5: add `awaiting-author`, because it is told about a batch; tell it that its branch carries "
+                      "commits #900 no longer has", log)
+        [said] = [body for body, _ in gh.comments[5]]
+        self.assertTrue(said.startswith(f"<!-- conflict-labels-stale 900 {900:040x} -->\n"))
+        self.assertEqual(gh.pulls[5]["labels"], {WAITING})  # and no `main-conflict`: it depends on the batch
+        # Told once for this head, whether or not the next run knows it already.
+        gh.pulls[5]["labels"].discard(WAITING)
+        run(gh, stale=stale, known=known)
+        run(gh, stale=stale)
+        self.assertEqual((len(gh.comments[5]), gh.pulls[5]["labels"]), (1, set()))
+        # The batch is rebuilt again, and #5 still carries #11.
+        gh.pulls[900]["headRefOid"] = "e" * 40
+        run(gh, stale=stale, known=known)
+        self.assertEqual(len(gh.comments[5]), 2)
+        self.assertTrue(gh.comments[5][1][0].startswith(f"<!-- conflict-labels-stale 900 {'e' * 40} -->\n"))
+        self.assertEqual(gh.pulls[5]["labels"], {WAITING})
+
+    def test_one_pull_request_alone_is_not_looked_at_for_this(self):
+        gh = self.dependent()
+        compare = comparing({}, {5: {"on": [900], "prs": [11]}})
+        with contextlib.redirect_stdout(io.StringIO()):
+            labels.sync(gh, 5, compare=compare)
+        self.assertEqual((compare.watch, gh.comments.get(5)), ({}, None))
+
+    def test_a_conflict_and_a_stale_branch_read_the_comments_once(self):
+        gh = self.dependent()
+        run(gh, table={(5, 900): CONFLICT}, stale={5: {"on": [900], "prs": [11]}})
+        self.assertEqual(gh.comment_reads, [5])
+        self.assertEqual(sorted(body.split(" ")[1] for body, _ in gh.comments[5]),
+                         ["conflict-labels-batch", "conflict-labels-stale"])
 
 
 # ---------------------------------------------------------------------------------------------
@@ -686,6 +829,52 @@ class CompareAll(unittest.TestCase):
             decided = labels.decide(pr(number), "main", building, results[number])["batch"]
             self.assertEqual(decided, number in (1, 4, 6), number)
         self.assertTrue(any(line.startswith("fetched 8 heads") for line in log), log)
+
+
+class Rebuilt(unittest.TestCase):
+    """`stale_in`, on a batch rebuilt without one of its pull requests."""
+
+    def test_a_dependent_still_carrying_a_pull_request_taken_out_is_found(self):
+        with tempfile.TemporaryDirectory() as root:
+            o = Origin(root)
+            ten = o.pull(10, o.main, lambda: o.edit("a.txt", 3, "ten"))
+            eleven = o.pull(11, o.main, lambda: o.edit("b.txt", 3, "eleven"))
+
+            def assemble(*heads):
+                o.git("checkout", "--quiet", "--detach", o.main)
+                for head in heads:
+                    o.git("merge", "--quiet", "--no-ff", "--no-edit", head)
+                head = o.git("rev-parse", "HEAD")
+                o.git("checkout", "--quiet", "main")
+                return head
+            old = assemble(ten, eleven)
+            # Started from the batch's branch, and merged it in: both carry #11.
+            o.pull(12, old, lambda: o.edit("c.txt", 3, "twelve"))
+            o.pull(14, o.main, lambda: o.edit("c.txt", 7, "fourteen"), merge=old)
+            # The batch is rebuilt without #11, by force-push.
+            new = assemble(ten)
+            o.git("update-ref", "refs/pull/900/head", new)
+            # Merged the batch as it is now, and merged its own other work in.
+            side = o.pull(16, o.main, lambda: o.edit("c.txt", 12, "sixteen, first"))
+            o.pull(13, new, lambda: o.edit("c.txt", 5, "thirteen"), merge=side)
+            # Merged #11 itself, and says it depends on it.
+            o.pull(15, o.main, lambda: o.edit("c.txt", 9, "fifteen"), merge=eleven)
+            candidates = {number: pr(number) for number in (11, 12, 13, 14, 15)}
+            watch = {number: {"on": [900] if number in (12, 13) else [], "exclude": [900]} for number in candidates}
+            watch[15]["exclude"] = [11, 900]
+            carried, log = {}, []
+            labels.compare_all(REPO, "main", {900: batch(900)}, candidates, log, origin=f"file://{root}",
+                               watch=watch, carried=carried)
+            # #11 is pushed to after it was taken out: what #12 and #14 carry is still its own.
+            o.pull(11, eleven, lambda: o.edit("b.txt", 4, "eleven, again"))
+            again = {}
+            labels.compare_all(REPO, "main", {900: batch(900)}, candidates, [], origin=f"file://{root}",
+                               watch=watch, carried=again)
+        # #14 says nothing, but shares commits with the batch's branch. #13 carries only its own
+        # work, and #15 a pull request it depends on.
+        self.assertEqual(carried, {12: {"on": [900], "prs": [11]}, 14: {"on": [900], "prs": [11]}})
+        self.assertIn("#12 carries commits of #11 that #900 no longer has", log)
+        self.assertEqual(again, carried)
 
 
 # ---------------------------------------------------------------------------------------------
