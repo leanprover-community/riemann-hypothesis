@@ -833,8 +833,6 @@ variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensiona
 def evalDiag (x : V) : (V →L[ℝ] V →L[ℝ] ℂ) →L[ℝ] ℂ :=
   (ContinuousLinearMap.apply ℝ ℂ x).comp (ContinuousLinearMap.apply ℝ (V →L[ℝ] ℂ) x)
 
-@[simp] theorem evalDiag_apply (x : V) (B : V →L[ℝ] V →L[ℝ] ℂ) : evalDiag x B = B x x := rfl
-
 theorem norm_evalDiag_le (x : V) : ‖evalDiag x‖ ≤ ‖x‖ * ‖x‖ :=
   ContinuousLinearMap.opNorm_le_bound _ (by positivity)
     (fun B => (B.le_opNorm₂ x x).trans_eq (by ring))
@@ -999,13 +997,10 @@ theorem contDiffOn_gaussMoment (n : ℕ) :
         rw [fderivWithin_of_isOpen isOpen_negDef hB, fderiv_gaussMoment_apply μ ys hB])
     exact_mod_cast this
 
-
 omit [MeasurableSpace V] [BorelSpace V] in
 def toCont (N : V →ₗ[ℝ] V →ₗ[ℝ] ℂ) : V →L[ℝ] V →L[ℝ] ℂ :=
   LinearMap.toContinuousLinearMap
     ((LinearMap.toContinuousLinearMap : (V →ₗ[ℝ] ℂ) ≃ₗ[ℝ] (V →L[ℝ] ℂ)).toLinearMap ∘ₗ N)
-
-
 
 omit [MeasurableSpace V] [BorelSpace V] in
 def pairForm (M : ℝ → V →ₗ[ℝ] V →ₗ[ℝ] ℂ) (p : ℝ × ℝ) : V →L[ℝ] V →L[ℝ] ℂ :=

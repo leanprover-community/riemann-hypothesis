@@ -187,20 +187,16 @@ def std (n : ℕ) : HolAtlas (V n) n :=
 
 def Pt : Type := {x : A.ι × M // x.2 ∈ (A.e x.1).source}
 
-
 variable {A} in
 abbrev Pt.pt (x : A.Pt) : M := x.1.2
 
-
 variable {A} in
 abbrev Pt.ch (x : A.Pt) : OpenPartialHomeomorph M (V n) := A.e x.1.1
-
 
 variable {A} in
 abbrev Pt.crd (x : A.Pt) : V n := x.ch x.pt
 
 abbrev Fld : Type := A.Pt → Alt n
-
 
 open Classical in
 def loc (α : A.Fld) (i : A.ι) (v : V n) : Alt n :=
@@ -340,12 +336,6 @@ def IsArForm (q : ℕ) (η : h.Fld) : Prop :=
     swap (η σ' x') = (-1 : ℂ) ^ q • η σ x
 
 def integral (η : h.Fld) : ℝ := ∑ᶠ σ, (h.atlas σ).integral (η σ)
-
-theorem smoothOn {σ : k →+* ℂ} {m : Type} {U : Set (CxPts p σ)} {G : CxPts p σ → Matrix m m ℂ}
-    (H : ∀ y ∈ U, MInfAt G y) (i j : m) : (h.atlas σ).SmoothOn U fun y => G y i j := fun c v hv => by
-  have := (H _ hv.2 i j).contDiffAt_chart c (c.e.map_target hv.1)
-  erw [c.e.right_inv hv.1] at this
-  exact this.contDiffWithinAt
 
 def seq {S : ShortComplex X.Modules} (hS : S.ShortExact) {r s : ℕ} {h₁ : VMetric p S.X₁ r} {h₂ : VMetric p S.X₂ (r + s)}
     {h₃ : VMetric p S.X₃ s} (H₁ : h₁.IsCInf) (H₂ : h₂.IsCInf) (H₃ : h₃.IsCInf) (σ : k →+* ℂ) :

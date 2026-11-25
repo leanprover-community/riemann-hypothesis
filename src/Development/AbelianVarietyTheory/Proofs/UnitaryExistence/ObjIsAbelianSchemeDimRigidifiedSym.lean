@@ -60,25 +60,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 
 noncomputable section
 
-namespace GlobalTheory.ObjDim
-
-open ReciprocityTheory.ChartRestriction.G.Chart (sp JetR zR IsUnivChart jetLift jetLift_zR jet_ext jetAug_zR tmap tvec eigLat)
-
-theorem isGrpPullback_id {S : Scheme.{0}} (G : Over S) [GrpObj G] : IsGrpPullback G G (𝟙 S) (𝟙 G.left) := by
-  refine ⟨IsPullback.of_horiz_isIso ⟨by simp⟩, fun T x y x₀ y₀ hx hy => ?_⟩
-  let j : Over.mk (T.hom ≫ 𝟙 S) ⟶ T := Over.homMk (𝟙 T.left) (by simp)
-  have e₁ : x₀ = j ≫ x := Over.OverMorphism.ext (by simp [hx, j])
-  have e₂ : y₀ = j ≫ y := Over.OverMorphism.ext (by simp [hy, j])
-  rw [e₁, e₂, ← MonObj.comp_mul]
-  simp [j]
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E]
-
-variable {H : Host E} {D : Datum H} {l : Level H} {B : Type} [CommRing B] {b : Base l B} {S : Scheme.{0}}
-  {s : S ⟶ Sp B}
-
-end GlobalTheory.ObjDim
-
 namespace GlobalTheory
 
 def objPolAV {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H} {B : Type}

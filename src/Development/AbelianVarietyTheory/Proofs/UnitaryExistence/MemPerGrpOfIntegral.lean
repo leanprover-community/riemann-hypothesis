@@ -221,10 +221,6 @@ noncomputable def transl {K : Type} [TopologicalSpace K] {f : (Fin g → ℂ) �
     (hf : Differentiable ℂ f) (γ : C(K, Fin g → ℂ)) (z : Fin g → ℂ) : C(K, ℂ) :=
   ⟨fun k => f (z + γ k), hf.continuous.comp (continuous_const.add γ.continuous)⟩
 
-@[simp] theorem transl_apply {K : Type} [TopologicalSpace K] {f : (Fin g → ℂ) → ℂ}
-    (hf : Differentiable ℂ f) (γ : C(K, Fin g → ℂ)) (z : Fin g → ℂ) (k : K) :
-    transl hf γ z k = f (z + γ k) := rfl
-
 theorem differentiable_transl {K : Type} [TopologicalSpace K] [CompactSpace K]
     {f : (Fin g → ℂ) → ℂ} (hf : Differentiable ℂ f) (γ : C(K, Fin g → ℂ)) :
     Differentiable ℂ (transl hf γ) := by
@@ -946,7 +942,6 @@ theorem exists_prod_ne_zero {σ κ W : Type} [Fintype σ] [NormedAddCommGroup W]
 
 variable {g : ℕ} {Hm : Matrix (Fin g) (Fin g) ℂ}
 
-
 open scoped MatrixOrder in
 theorem exists_theta (hH : Hm.PosDef) (Λ : AddSubgroup (Fin g → ℂ)) [hd : DiscreteTopology Λ]
     (hΛ : ∀ v, (∀ a ∈ Λ, ∃ k : ℤ, (star v ⬝ᵥ Hm.mulVec a).im = k) ↔ v ∈ Λ) :
@@ -1435,7 +1430,6 @@ theorem mem_smul_iff {L : Lt E r} (hL : SelfD X L) {M : ℕ} (hM : M ≠ 0) {P Q
       rw [this, hk, hk']
       push_cast
       ring
-
 
 open scoped ComplexOrder in
 theorem exists_jet_ne_zero (hs : IsSympl X bas) (hd : x ∈ X.dom) {L : Lt E r} (hL : SelfD X L) {M : ℕ}

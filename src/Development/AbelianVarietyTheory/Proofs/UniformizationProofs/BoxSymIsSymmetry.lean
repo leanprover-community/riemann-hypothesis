@@ -86,37 +86,6 @@ theorem gm_boxGen (F : J → (X' ⟶ X)) (φ : K → (Y ⟶ X')) (ε : K → ℤ
   refine (map_prod (gm r z _) _ _).trans (Finset.prod_congr rfl fun i _ => ?_)
   exact gm_res_eq_gm r z _ h _
 
-private theorem gm_lin_lemma_2 {X X' Z : Scheme.{0}} (L : LB X) {J : Type} [Fintype J]
-    (F : J → (X' ⟶ X)) (y : Z ⟶ X') (z : Z) (j j' : J → L.ι) (e : ℤ)
-    (hy : y z ∈ (L.LinComb F fun _ => 1).U j ⊓ (L.LinComb F fun _ => 1).U j') :
-    gm y z ((L.LinComb F fun _ => 1).U j ⊓ (L.LinComb F fun _ => 1).U j')
-        ((L.LinComb F fun _ => 1).g j j') ^ e =
-      ∏ i, gm y z ((L.pull (F i)).U (fun _ => j i) ⊓ (L.pull (F i)).U (fun _ => j' i))
-        ((L.pull (F i)).g (fun _ => j i) (fun _ => j' i)) ^ e := by
-  rw [Finset.prod_zpow]
-  congr 1
-  unfold LB.pull LB.LinComb at *
-  dsimp only at *
-  refine (map_prod _ _ _).trans (Finset.prod_congr rfl fun i _ => ?_)
-  rw [zpow_one, Fintype.prod_unique, zpow_one]
-  refine (gm_res_eq_gm y z _ hy _).trans (gm_res_eq_gm y z _ ?_ _).symm
-  unfold LB.wchart at hy ⊢
-  exact ⟨Set.mem_iInter.2 fun _ => Set.mem_iInter.1 hy.1 i, Set.mem_iInter.2 fun _ => Set.mem_iInter.1 hy.2 i⟩
-
-theorem trF_box (F : J → (X' ⟶ X)) (φ : K → (Y ⟶ X')) (ε : K → ℤ) (r : Z ⟶ Y) (z : Z)
-    (jj jj' : K → (LB.LinComb L F (fun _ => 1)).ι)
-    (h : r z ∈ LB.wchart (LB.LinComb L F (fun _ => 1)) φ jj)
-    (h' : r z ∈ LB.wchart (LB.LinComb L F (fun _ => 1)) φ jj') :
-    trF (L := LB.LinComb L F (fun _ => 1)) φ ε r z jj jj' =
-      ∏ i, trF (L := L.pull (F i)) φ ε r z (fun k _ => jj k i) (fun k _ => jj' k i) := by
-  unfold trF
-  rw [Finset.prod_comm]
-  refine Finset.prod_congr rfl fun k _ => ?_
-  have hk : (r ≫ φ k) z ∈ (L.LinComb F fun _ => 1).U (jj k) ⊓ (L.LinComb F fun _ => 1).U (jj' k) := by
-    unfold LB.wchart at h h'
-    exact ⟨Set.mem_iInter.1 h k, Set.mem_iInter.1 h' k⟩
-  exact gm_lin_lemma_2 L F (r ≫ φ k) z (jj k) (jj' k) (ε k) hk
-
 private theorem gm_pullU_eq_gm_comp' {X Y Z : Scheme.{0}} (f : Y ⟶ X) (r : Z ⟶ Y) (z : Z) (V : X.Opens)
     (hz : r z ∈ f ⁻¹ᵁ V) (a : Γ(X, V)ˣ) : gm r z (f ⁻¹ᵁ V) (pullU f V a) = gm (r ≫ f) z V a := by
   have hz' : (r ≫ f) z ∈ V := by simpa using hz
@@ -176,7 +145,6 @@ theorem eSec_comp_hom {G' G : Over S} [GrpObj G'] [GrpObj G] (f : G' ⟶ G) [IsM
   rw [← Over.comp_left, IsMonHom.one_hom]
 
 end GlobalTheory.BoxSymmetry
-
 
 open GlobalTheory.BoxSymmetry in
 theorem GlobalTheory.boxSym_isSymmetry : ∀ S : Scheme.{0}, BoxSymSt (S := S) := by

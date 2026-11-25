@@ -66,9 +66,6 @@ noncomputable def restr {X : Type} (V : Submodule ℂ (X → ℂ)) (W : Submodul
     W →ₗ[ℂ] (P → ℂ) :=
   LinearMap.pi (fun x : P => (LinearMap.proj (R := ℂ) (φ := fun _ : X => ℂ) x.1).comp (V.subtype.comp W.subtype))
 
-lemma restr_apply {X : Type} (V : Submodule ℂ (X → ℂ)) (W : Submodule ℂ V) (P : Finset X)
-    (w : W) (x : P) : restr V W P w x = ((w : V) : X → ℂ) x := rfl
-
 lemma exists_finset_ker_eq_bot {X : Type} (V : Submodule ℂ (X → ℂ)) (W : Submodule ℂ V)
     [FiniteDimensional ℂ W] : ∃ P : Finset X, LinearMap.ker (restr V W P) = ⊥ := by
   classical

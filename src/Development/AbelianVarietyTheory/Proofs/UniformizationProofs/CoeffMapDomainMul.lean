@@ -188,10 +188,6 @@ def gaussValAlg : Valuation (AddMonoidAlgebra R G) Γ₀ where
 theorem gaussValAlg_le_iff {f : AddMonoidAlgebra R G} {γ : Γ₀} :
     gaussValAlg v f ≤ γ ↔ ∀ m, v (f.coeff m) ≤ γ := coeffSup_le_iff v.map_zero
 
-@[simp] theorem gaussValAlg_single (m : G) (a : R) :
-    gaussValAlg v (AddMonoidAlgebra.single m a) = v a :=
-  coeffSup_single v.map_zero m a
-
 theorem gaussValAlg_eq_zero_iff {f : AddMonoidAlgebra R G} :
     gaussValAlg v f = 0 ↔ ∀ m, v (f.coeff m) = 0 := coeffSup_eq_zero_iff v.map_zero
 
@@ -208,15 +204,6 @@ def gaussVal : Valuation (MvPolynomial σ R) Γ₀ := gaussValAlg v
 
 theorem gaussVal_eq_zero_iff_forall {f : MvPolynomial σ R} :
     gaussVal v f = 0 ↔ ∀ m, v (AddMonoidAlgebra.coeff f m) = 0 := gaussValAlg_eq_zero_iff v
-
-@[simp] theorem gaussVal_monomial (m : σ →₀ ℕ) (a : R) :
-    gaussVal v (monomial m a) = v a := gaussValAlg_single v m a
-
-@[simp] theorem gaussVal_C (a : R) : gaussVal v (C a : MvPolynomial σ R) = v a :=
-  gaussVal_monomial v 0 a
-
-@[simp] theorem gaussVal_X (i : σ) : gaussVal v (X i : MvPolynomial σ R) = 1 :=
-  (gaussVal_monomial v _ 1).trans v.map_one
 
 theorem gaussVal_supp :
     (gaussVal v).supp = v.supp.map (C : R →+* MvPolynomial σ R) := by
@@ -258,12 +245,6 @@ variable {R Γ σ τ : Type*} [CommRing R] [LinearOrderedAddCommMonoidWithTop Γ
 
 def gaussAddVal : AddValuation (MvPolynomial σ R) Γ :=
   AddValuation.ofValuation (gaussVal (AddValuation.toValuation v))
-
-@[simp] theorem gaussAddVal_C (a : R) : gaussAddVal v (C a : MvPolynomial σ R) = v a :=
-  gaussVal_C (AddValuation.toValuation v) a
-
-@[simp] theorem gaussAddVal_X (i : σ) : gaussAddVal v (X i : MvPolynomial σ R) = 0 :=
-  gaussVal_X (AddValuation.toValuation v) i
 
 end Additive
 

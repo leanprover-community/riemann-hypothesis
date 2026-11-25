@@ -54,7 +54,6 @@ section General
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
 
-
 omit [NumberField E] in
 theorem star_mem_int {x : E} (h : x ∈ (algebraMap (𝓞 E) E).range) : star x ∈ (algebraMap (𝓞 E) E).range := by
   obtain ⟨b, rfl⟩ := h
@@ -124,15 +123,6 @@ theorem mem_idealSum {v : Fin ρ → Y.V} {J : Fin ρ → FractionalIdeal (𝓞 
 
 theorem fg_idealSum (v : Fin ρ → Y.V) (J : Fin ρ → FractionalIdeal (𝓞 E)⁰ E) : (idealSum Y v J).FG :=
   Submodule.fg_iSup _ fun i => (FractionalIdeal.fg_of_isNoetherianRing le_rfl (J i)).map _
-
-theorem mem_span_idealSum (v : Fin ρ → Y.V) {J : Fin ρ → FractionalIdeal (𝓞 E)⁰ E} (hJ : ∀ i, J i ≠ 0) (i : Fin ρ) :
-    v i ∈ Submodule.span E (idealSum Y v J : Set Y.V) := by
-  obtain ⟨a, ha, ha0⟩ : ∃ a ∈ J i, a ≠ 0 := by
-    by_contra h
-    push Not at h
-    exact hJ i (FractionalIdeal.eq_zero_iff.2 h)
-  have := Submodule.smul_mem _ a⁻¹ (Submodule.subset_span (R := E) (smul_mem_idealSum v i ha))
-  rwa [smul_smul, inv_mul_cancel₀ ha0, one_smul] at this
 
 theorem hT_swap (Y : HSpace E) (x y : Y.V) : Y.hT x y = star (Y.hT y x) := (Y.herm.eq y x).symm
 

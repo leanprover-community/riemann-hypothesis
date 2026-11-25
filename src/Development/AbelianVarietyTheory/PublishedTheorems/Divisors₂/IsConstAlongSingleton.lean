@@ -59,7 +59,6 @@ namespace GlobalTheory.StdPar
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   (σ : E →ₐ[F] E) {n : ℕ} (J : Matrix (Fin n) (Fin n) E) {r : ℕ}
 
-
 variable (F) in
 def colSpan (C : Matrix (Fin n) (Fin r) E) (I : Set (Fin r)) : Submodule (AF F ⊗[F] E) (Fin n → AF F ⊗[F] E) :=
   Submodule.span _ ((fun i => (adMat F C)ᵀ i) '' I)
@@ -121,11 +120,9 @@ def IsConstAlong (φ c : GAd σ J → ℂ) : Prop :=
 def IsCuspOn (K : Subgroup (GAd σ J)) (ψ : GAd σ J → ℂ) : Prop :=
   IsAutOn σ J X Y S K ψ ∧ ∀ S' : Finset (Fin r), S ⊂ S' → IsConstAlong σ J X S' ψ 0
 
-
 section Empty
 
 variable {σ J X Y}
-
 
 omit [NumberField E] in
 theorem unip_empty : unip σ J X ∅ = ⊥ := eq_bot_iff.2 fun g hg => by
@@ -138,16 +135,11 @@ theorem unip_empty : unip σ J X ∅ = ⊥ := eq_bot_iff.2 fun g hg => by
 omit [NumberField E] in
 @[simp] theorem levi_empty : levi σ J X Y ∅ = ⊤ := by simp [levi]
 
-@[simp] theorem leviOne_empty : leviOne σ J X Y ∅ = ⊤ := by simp [leviOne]
-
 end Empty
-
 
 omit [NumberField E] in
 theorem isConstAlong_const (c : ℂ) : IsConstAlong σ J X S (fun _ => c) fun _ => c := fun μ 𝓕 _ _ h _ => by
   simp [Measure.real, h]
-
-
 
 section Single
 

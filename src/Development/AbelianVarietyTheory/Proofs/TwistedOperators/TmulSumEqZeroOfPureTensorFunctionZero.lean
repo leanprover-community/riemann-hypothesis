@@ -73,9 +73,6 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 def finPr {κ : Type} (φ : ∀ v : Pl F, (κ → Fv F v) → ℂ) : (κ → Af F) → ℂ :=
   fun y => ∏ᶠ v, φ v fun i => evalV F v (y i)
 
-theorem pure_eq {κ : Type} [Fintype κ] (f : SInf F κ) (φ : ∀ v : Pl F, (κ → Fv F v) → ℂ) :
-    pure f φ = pureA F f (finPr φ) := rfl
-
 def pt {κ : Type} (x : κ → mixedEmbedding.mixedSpace F) (y : κ → Af F) : κ → AF F :=
   fun i => ((InfiniteAdeleRing.ringEquiv_mixedSpace F).symm (x i), y i)
 
@@ -90,7 +87,6 @@ theorem _root_.GlobalTheory.ThK.ModelPol.pureA_pt {κ : Type}
   change f (fun i => (InfiniteAdeleRing.ringEquiv_mixedSpace F)
     ((InfiniteAdeleRing.ringEquiv_mixedSpace F).symm (x i))) * g y = f x * g y
   simp only [RingEquiv.apply_symm_apply]
-
 
 section
 
@@ -195,7 +191,6 @@ theorem sum_local_eq_zero (vac : ∀ v : Pl F, (κ → Fv F v) → ℂ) (h0 : �
 
 section Forms
 
-
 variable (F κ) in
 def coeL : SInf F κ →ₗ[ℂ] ((κ → mixedEmbedding.mixedSpace F) → ℂ) where
   toFun f := f
@@ -205,12 +200,10 @@ def coeL : SInf F κ →ₗ[ℂ] ((κ → mixedEmbedding.mixedSpace F) → ℂ) 
 variable (F κ) in
 theorem coeL_injective : Function.Injective (coeL F κ) := fun _ _ h => SchwartzMap.ext (congrFun h)
 
-
 variable (F κ) in
 def Xf (T : Finset (Pl F)) : Option T → Type
   | none => κ → mixedEmbedding.mixedSpace F
   | some v => κ → Fv F v
-
 
 variable (F κ) in
 def Vf (T : Finset (Pl F)) : ∀ l : Option T, Submodule ℂ (Xf F κ T l → ℂ)

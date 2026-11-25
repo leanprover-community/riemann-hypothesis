@@ -87,7 +87,6 @@ end GlobalTheory.FinPl.VLast.KernPf
 
 namespace GlobalTheory.FinPl.VLast.KernPf
 
-
 end GlobalTheory.FinPl.VLast.KernPf
 end -- clump:auto
 end -- clump:auto
@@ -248,9 +247,6 @@ namespace GlobalTheory.ProjCore
 
 variable {D : D7}
 
-theorem rat_entry' {m n : ℕ} (A : Matrix (Fin m) (Fin n) D.host.E) (i : Fin m) (j : Fin n) :
-    (rat A : Mx D m n) i j = (1 : AF D.host.F) ⊗ₜ[D.host.F] A i j := rfl
-
 theorem rat_mul_mem_hatMx {m n : ℕ} {ΛS : Submodule (𝓞 D.host.E) (Fin n → D.host.E)}
     {ΛT : Submodule (𝓞 D.host.E) (Fin m → D.host.E)} (M : Matrix (Fin m) (Fin m) D.host.E)
     (hM : ∀ y ∈ ΛT, M *ᵥ y ∈ ΛT) (I : Ideal (𝓞 D.host.E)) {z : Mx D m n} (hz : z ∈ hatMx (I • homLat ΛS ΛT)) :
@@ -362,7 +358,6 @@ end GlobalTheory.LastSeeSaw
 namespace GlobalTheory.LastSeeSaw
 
 variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ}
-
 
 open GlobalTheory.FinPl.VLast.KernPf (wittCoreRestrictionHom wittCoreRestrictionHom_apply wittDecomposition_rankZero_ext_restriction) in
 theorem lastLat_rankZero (hψ : IsStdChar D ψ (-1)) (J : JacL D 0) {X T L'' : HSp D} (o : OrthDec X T L'')

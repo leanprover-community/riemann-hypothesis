@@ -90,19 +90,6 @@ open ReciprocityTheory.ChartRestriction.G.Out.LBxP
 
 variable {X X' Y : Scheme.{0}} (L : LB X) {J K : Type} [Fintype J] [Fintype K]
 
-lemma gU_pull_box_g (F : J → (X' ⟶ X)) (a : Y ⟶ X') (i j : J → L.ι) (y : Y)
-    (hy : y ∈ a ⁻¹ᵁ ((LB.LinComb L F (fun _ => 1)).U i ⊓ (LB.LinComb L F (fun _ => 1)).U j))
-    (hy' : ∀ m, y ∈ (a ≫ F m) ⁻¹ᵁ (L.U (i m) ⊓ L.U (j m))) :
-    gU y hy (pullU a _ ((LB.LinComb L F (fun _ => 1)).g i j)) =
-      ∏ m, gU y (hy' m) (pullU (a ≫ F m) _ (L.g (i m) (j m))) := by
-  refine (gU_pullU a _ y hy _).trans ?_
-  have e := gU_lcg L F (fun _ => 1) i j (a.base y) hy
-  refine (congrArg (Units.map (RingHom.toMonoidHom (a.stalkMap y).hom)) e).trans ?_
-  refine (map_prod _ _ _).trans (Finset.prod_congr rfl fun m _ => ?_)
-  refine (congrArg (Units.map (RingHom.toMonoidHom (a.stalkMap y).hom)) (zpow_one _)).trans ?_
-  refine (gU_pullU a _ y _ _).symm.trans ?_
-  exact gU_pullU_comp a (F m) _ _ y _ _
-
 lemma isGen_boxGen (F : J → (X' ⟶ X)) (φ : K → (Y ⟶ X')) (ε : K → ℤ)
     (t : ∀ i, LB.Gen (LB.LinComb (L.pull (F i)) φ ε)) (ht : ∀ i, (t i).IsGen) :
     (GeneratorPullback.boxGen L F φ ε t).IsGen := by

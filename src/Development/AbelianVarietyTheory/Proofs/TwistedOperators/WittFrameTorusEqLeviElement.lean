@@ -195,9 +195,6 @@ def torusMat {r : ℕ} (t : Fin r → ℝ) (ht : ∀ i, t i ≠ 0) : GL (Fin r) 
     by rw [diagonal_mul_diagonal, ← diagonal_one]; exact congrArg diagonal (funext fun i => by
       rw [← map_mul, inv_mul_cancel₀ (ht i), map_one])⟩
 
-theorem torusMat_val {r : ℕ} (t : Fin r → ℝ) (ht : ∀ i, t i ≠ 0) :
-    (torusMat (D := D) t ht).1 = diagonal fun i => realE D (t i) := rfl
-
 theorem adj_torusMat_inv {r : ℕ} (t : Fin r → ℝ) (ht : ∀ i, t i ≠ 0) :
     GlobalTheory.MixModel.adj ((torusMat (D := D) t ht)⁻¹).1 = diagonal fun i => realE D (t i)⁻¹ := by
   change (Matrix.map (diagonal fun i => realE D (t i)⁻¹) (cA D))ᵀ = _

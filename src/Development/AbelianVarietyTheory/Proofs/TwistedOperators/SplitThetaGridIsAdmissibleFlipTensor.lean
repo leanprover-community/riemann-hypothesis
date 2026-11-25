@@ -152,7 +152,6 @@ theorem pairwise_of_isPath {γ : List Edge} (h : IsPath γ) :
 
 end GlobalTheory.FlipPathPairwise
 
-
 open GlobalTheory.FlipPathPairwise in
 theorem GlobalTheory.SplitFlip.isPath_flipPath : ∀ {γ : List Edge} {i j : ℕ}, IsPath γ → PassesThrough i j γ →
     IsPath (flipPath i j γ) := by
@@ -1113,12 +1112,6 @@ attribute [local instance 10000] GlobalTheory.SplitWeil.matrixMeasurableSpace
 open GlobalTheory.TopLevelInv
 
 noncomputable section
-namespace GlobalTheory.FlipAdm
-
-theorem isPath_flipPath {γ : List Edge} {i j : ℕ} (hγ : IsPath γ) (h : PassesThrough i j γ) :
-    IsPath (flipPath i j γ) := _root_.GlobalTheory.SplitFlip.isPath_flipPath hγ h
-
-end GlobalTheory.FlipAdm
 
 noncomputable section
 namespace GlobalTheory.FlipAdm

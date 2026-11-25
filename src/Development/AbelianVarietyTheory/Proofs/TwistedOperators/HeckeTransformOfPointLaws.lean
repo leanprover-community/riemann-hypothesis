@@ -485,58 +485,6 @@ theorem heckeKer_tors (o : Ob D l s) (P : Ideal (𝓞 E)) {p : ℕ} (hp : 0 < p)
     (x : Sp k ⟶ S) : o.t.HeckeKer (Over.mk x) D P p 0 (torsSub o.t (Over.mk x) p) :=
   heckeKer_zero o k x (Spec.preimage (x ≫ s)).hom (Spec.map_preimage (x ≫ s)).symm P p hp
 
-theorem heckeSet_torsSet (o : Ob D l s) (P : Ideal (𝓞 E)) {p : ℕ} (hp : 0 < p) :
-    HeckeSet D o.t P p 0 (torsSet o p) := fun k _ _ x =>
-  ⟨_, fun z => by rw [range_subset_torsSet, comp_act_natCast]; exact mem_tors_span o.t z p,
-    heckeKer_tors o P hp k x⟩
-
-theorem eq_torsSub (o : Ob D l s) (P : Ideal (𝓞 E)) {p : ℕ} (hp : 0 < p) (k : Type) [Field k] [IsAlgClosed k]
-    (x : Sp k ⟶ S) (C : Subgroup (Over.mk x ⟶ o.t.G)) (hC : o.t.HeckeKer (Over.mk x) D P p 0 C) :
-    C = torsSub o.t (Over.mk x) p := by
-  have hT := (heckeKer_tors o P hp k x).2.2.2.2.1
-  have h1 := hC.2.2.2.2.1
-  have h2 := hC.2.2.2.2.2
-  rw [pow_zero, _root_.mul_one] at h2
-  have fT : Finite (torsSub o.t (Over.mk x) p) := Nat.finite_of_card_ne_zero (hT ▸ pow_ne_zero _ hp.ne')
-  have fC : Finite C := Nat.finite_of_card_ne_zero (h1 ▸ pow_ne_zero _ hp.ne')
-  have e1 : C ⊓ torsSub o.t (Over.mk x) p = torsSub o.t (Over.mk x) p :=
-    Subgroup.eq_of_le_of_card_ge inf_le_right h2.le
-  exact (Subgroup.eq_of_le_of_card_ge (e1 ▸ inf_le_left) (h1.trans hT.symm).le).symm
-
-theorem eq_torsSet (o : Ob D l s) (P : Ideal (𝓞 E)) {p : ℕ} (hp : 0 < p) {K : Set o.t.G.left}
-    (hK : HeckeSet D o.t P p 0 K) : K = torsSet o p :=
-  set_ext fun k _ _ x z => by
-    obtain ⟨C, hC, hk⟩ := hK k x
-    rw [← hC, eq_torsSub o P hp k x C hk, range_subset_torsSet, comp_act_natCast]
-    exact mem_tors_span o.t z p
-
-theorem torsSet_pull {S' : Scheme.{0}} {s' : S' ⟶ Sp (KA l)} (o' : Ob D l s') (o : Ob D l s) {f : S' ⟶ S}
-    (n : ObjMap o' o f) (p : ℕ) : torsSet o' p = n.toSABMap.φ ⁻¹' torsSet o p :=
-  set_ext fun k _ _ x z => by
-    have hc := n.cart.1
-    let z₀ : Over.mk (x ≫ f) ⟶ o.t.G := Over.homMk (z.left ≫ n.cm.F) (by
-      rw [Category.assoc, hc.w, ← Category.assoc, Over.w z]; rfl)
-    have e0 : Set.range z.left ⊆ n.toSABMap.φ ⁻¹' torsSet o p ↔ Set.range z₀.left ⊆ torsSet o p := by
-      constructor
-      · rintro h _ ⟨w, rfl⟩; exact h ⟨w, rfl⟩
-      · rintro h _ ⟨w, rfl⟩; exact h ⟨w, rfl⟩
-    have he : (η[o'.t.G] : 𝟙_ (Over S') ⟶ o'.t.G).left ≫ n.cm.F = f ≫ (η[o.t.G] : 𝟙_ (Over S) ⟶ o.t.G).left := by
-      have := n.cm.e_comm
-      rw [n.base] at this
-      exact this
-    have h1 : (1 : Over.mk x ⟶ o'.t.G).left ≫ n.cm.F = (1 : Over.mk (x ≫ f) ⟶ o.t.G).left :=
-      ((Category.assoc x _ _).trans (congrArg (x ≫ ·) he)).trans (Category.assoc x f _).symm
-    have h2 : (z ≫ o'.t.act.act (p : 𝓞 E)).left ≫ n.cm.F = (z₀ ≫ o.t.act.act (p : 𝓞 E)).left := by
-      rw [Over.comp_left, Over.comp_left, Category.assoc, n.act]
-      exact (Category.assoc _ _ _).symm
-    rw [e0, range_subset_torsSet, range_subset_torsSet]
-    constructor
-    · intro h
-      exact Over.OverMorphism.ext (by rw [← h2, h, h1])
-    · intro h
-      refine Over.OverMorphism.ext (hc.hom_ext (by rw [h2, h, h1]) ?_)
-      rw [Over.w, Over.w]
-
 theorem isHecke_mul [IsLocallyNoetherian S] (o : Ob D l s) (P : Ideal (𝓞 E)) {p : ℕ} (hp : 0 < p) : IsHecke o o P p 0 (o.t.act.act (p : 𝓞 E)) := by
   have hg := (GlobalTheory.obj_isAbelianScheme_dim_rigidified_sym E H D l _ _ S s o).2.1
   have hL : Out.Laws := GlobalTheory.abelianSchemeLaws_all.1
@@ -574,10 +522,6 @@ theorem isHecke_mul [IsLocallyNoetherian S] (o : Ob D l s) (P : Ideal (𝓞 E)) 
       HeckePoint.eq_of_modEq _ o.eta_add hM (hp'.of_dvd (Nat.dvd_lcm_left _ _)),
       HeckePoint.eq_of_modEq _ o.etaA_add o.etaA_ker (hp'.of_dvd (Nat.dvd_lcm_right _ _)), one_nsmul]
     exact ⟨rfl, rfl⟩
-
-theorem etSet_torsSet [IsLocallyNoetherian S] (o : Ob D l s) {p : ℕ} (hp : 0 < p) : EtSet o.t.G (torsSet o p) := by
-  obtain ⟨-, K, -, h1, h2, -⟩ := (isHecke_iff o o ⊤ p 0 _).1 (isHecke_mul o ⊤ hp)
-  exact eq_torsSet o ⊤ hp h1 ▸ h2
 
 def univId (Xo : Moduli D l) : Ob D l (𝟙 Xo.X ≫ Xo.s) :=
   { Xo.univ with geom := fun k _ _ x β hx => Xo.univ.geom k x β (by rw [← hx, Category.id_comp]) }
@@ -1156,7 +1100,6 @@ theorem isLieImg_comb {Ω : Type} [Field Ω] {x x' : Sp Ω ⟶ Xo.X} {ψ : Gx x 
   have := congrArg (·.left) key
   simp only [Over.comp_left, tanMap_left] at this
   exact this
-
 
 open GlobalTheory.IndefiniteRowSideFullHecke.HeckePrimeDetection (TotalAt FunAt) in
 theorem hkVal_frBor : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (P : Ideal (𝓞 E)) (p i : ℕ) (a : (E →+* ℂ) × ℕ → ℕ) (n : ℕ), admitted l P p → GlobalTheory.IndefiniteRowSideFullHecke.HeckePrimeDetection.TotalAt Xo c P p i → GlobalTheory.IndefiniteRowSideFullHecke.HeckePrimeDetection.FunAt Xo c P p i → ∀ f ∈ sec Xo c a n, ∀ (Ω : Type) [Field Ω] [IsAlgClosed Ω] [Algebra c.F Ω] (t : Ix Dw → Ωˣ) (y y' : FrPt Xo c Ω), FrBor t y y' → hkVal (K := c.F) (fun S _ _ => FrPt Xo c S) (fun φ y z => FrMap φ y z) (fun Ω _ _ _ y => hkKer (Xo := Xo) P p i Ω y) (fun Ω _ _ _ y C z => hkRelFr P p i (hkTr Xo c p) Ω y C z) f y' = wchar (ex Dw a n) t * hkVal (K := c.F) (fun S _ _ => FrPt Xo c S) (fun φ y z => FrMap φ y z) (fun Ω _ _ _ y => hkKer (Xo := Xo) P p i Ω y) (fun Ω _ _ _ y C z => hkRelFr P p i (hkTr Xo c p) Ω y C z) f y := by
@@ -1835,7 +1778,6 @@ theorem rdU_mem_SS (hσ : Formalism.L2.PjFree.GoodEmb c σ) (hU : Formalism.L2.P
     (norm_nonneg _)).trans_eq (by ring)
 
 end Cusp
-
 
 open Formalism.BasicNotions Formalism.L2.Pj in
 theorem cuspTransform : GlobalTheory.IndefiniteRowSideFullHecke.SplitOffDetection.CuspTransform := by
