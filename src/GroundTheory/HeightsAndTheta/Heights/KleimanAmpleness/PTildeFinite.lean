@@ -197,7 +197,6 @@ theorem FinGradedSub.embedC_mem_cocyDeg (n : ℕ) (s : Cech.Cochain (fun I : Cha
     M.embedC c n s ∈ Cech.cocyDeg (fun _ : StdCell N => ConeLaurent S x) (M.coneDeg c) (supportRes S x) n :=
   ⟨LinearMap.mem_ker.mpr (by rw [← M.embedC_d, LinearMap.mem_ker.mp hs, map_zero]), M.embedC_mem c n s⟩
 
-set_option synthInstance.maxHeartbeats 100000 in
 def FinGradedSub.embedH (n : ℕ) :
     (M.tildeSys c).H n →ₗ[S]
       Cech.Hdeg (fun _ : StdCell N => ConeLaurent S x) (M.coneDeg c) (supportRes S x) n :=
@@ -222,7 +221,6 @@ def FinGradedSub.embedH (n : ℕ) :
             (Cech.d (fun _ : StdCell N => ConeLaurent S x) (supportRes S x) n)
         exact Submodule.mem_map.mpr ⟨M.embedC c n t, M.embedC_mem c n t, by rw [← M.embedC_d, ht]; rfl⟩)
 
-set_option synthInstance.maxHeartbeats 100000 in
 theorem FinGradedSub.embedH_injective (n : ℕ) : Function.Injective (M.embedH c n) := by
   rw [injective_iff_map_eq_zero]
   intro y hy

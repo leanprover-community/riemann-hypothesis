@@ -965,7 +965,6 @@ theorem _root_.GlobalTheory.T.exists_continuous_period_basis_along_arc : ∀ (E 
         rw [hsre']
         refine (abs_sub _ _).trans ?_
         rw [abs_neg, abs_of_pos (by positivity)]
-      have h4 : 0 ≤ w.im - 1 := by linarith
       have h5 : 0 ≤ |Real.log ρ₀| + 2 * Real.pi * |R| + 1 := by positivity
       nlinarith [Real.pi_pos]
     have hpow : (1 + ‖sOf w‖) ^ k ≤ D ^ k * w.im ^ k := by

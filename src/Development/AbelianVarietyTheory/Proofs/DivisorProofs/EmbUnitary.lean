@@ -62,10 +62,6 @@ theorem emb_unitary (c : R →+* R) {A : Matrix n (Fin 2) R} {B : Matrix (Fin 2)
     rw [hP, hP']
     calc H * (X - 1) + (cT c X - 1) * H + (cT c X - 1) * H * (X - 1) = cT c X * H * X - H := by noncomm_ring
       _ = 0 := by rw [hX, sub_self]
-  have h1' : ∀ Z : Matrix n n R, cT c A * (J * Z) = H * (B * Z) := fun Z => by
-    rw [← Matrix.mul_assoc, h1, Matrix.mul_assoc]
-  have h1'' : ∀ {k : Type} [Fintype k] (Z : Matrix n k R), cT c A * (J * Z) = H * (B * Z) := fun Z => by
-    rw [← Matrix.mul_assoc, h1, Matrix.mul_assoc]
   have h2' : ∀ {k : Type} (Z : Matrix (Fin 2) k R), J * (A * Z) = cT c B * (H * Z) := fun Z => by
     rw [← Matrix.mul_assoc, h2, Matrix.mul_assoc]
   have hBA' : ∀ {k : Type} (Z : Matrix (Fin 2) k R), B * (A * Z) = Z := fun Z => by
@@ -75,8 +71,6 @@ theorem emb_unitary (c : R →+* R) {A : Matrix n (Fin 2) R} {B : Matrix (Fin 2)
   rw [← hP]
   have e : (1 + cT c B * P' * cT c A) * J * (1 + A * P * B) =
       J + cT c B * ((H * P + P' * H + P' * H * P) * B) := by
-    have hAB' : ∀ {k : Type} (Z : Matrix (Fin 2) k R), cT c A * (cT c B * Z) = Z := fun Z => by
-      rw [← Matrix.mul_assoc, ← cT_mul, hBA, cT_one, Matrix.one_mul]
     simp only [Matrix.add_mul, Matrix.mul_add, Matrix.one_mul, Matrix.mul_one, Matrix.mul_assoc, h1, h2', hBA']
     abel
   rw [e, key, Matrix.zero_mul, Matrix.mul_zero, add_zero]

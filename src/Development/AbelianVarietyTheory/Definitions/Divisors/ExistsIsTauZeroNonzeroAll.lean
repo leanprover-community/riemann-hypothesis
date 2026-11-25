@@ -515,7 +515,6 @@ def tauExpr {S : Type} [CommRing S] {k : ℕ} {J : Type} [Fintype J] {n : ℕ} (
 theorem map_tauExpr {S T : Type} [CommRing S] [CommRing T] (φ : S →+* T) {k : ℕ} {J : Type} [Fintype J] {n : ℕ}
     (cf : J → ℤ) (x : J → Fin n → LatMod Dw k) (w : LatMod Dw k → S) :
     φ (tauExpr cf x w) = tauExpr cf x (fun q => φ (w q)) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp only [tauExpr, map_prod, map_sum, map_mul, map_intCast]
 
 theorem tauExpr_scale {S : Type} [CommRing S] {k : ℕ} {J : Type} [Fintype J] {n : ℕ} (cf : J → ℤ)

@@ -77,7 +77,6 @@ theorem cartan_eq_one {n : ℕ} {G s B : Matrix (Fin n) (Fin n) ℂ} (hB : Bᴴ 
   have hPd : P.PosDef := by
     have := h3.conjTranspose_mul_mul_same (B := B) (Matrix.mulVec_injective_of_isUnit hu)
     simpa [hP, Matrix.mul_assoc] using this
-  have hC : (Bᴴ * G) * B = 1 := hB
   have hPP : P * P = 1 := by
     have : P * P = Bᴴ * G * s * (B * (Bᴴ * G)) * s * B := by simp only [hP, Matrix.mul_assoc]
     rw [this, hBi, Matrix.mul_one, Matrix.mul_assoc (Bᴴ * G), h1, Matrix.mul_one]
@@ -143,8 +142,6 @@ theorem hAt_coord {τ : D.what₂.Tau} (hS : (BS τ)ᴴ * gramAt D S τ * BS τ 
   set Q := BT τ
   set GS := gramAt D S τ
   set GT := gramAt D T τ
-  have hP1 : (Pᴴ * GS) * P = 1 := hS
-  have hP2 : P * (Pᴴ * GS) = 1 := mul_eq_one_comm.1 hP1
   have hP3 : GS * P * Pᴴ = 1 := mul_eq_one_comm.1 (by rw [← Matrix.mul_assoc]; exact hS)
   have hGS : GS⁻¹ = P * Pᴴ := Matrix.inv_eq_right_inv (by rw [← Matrix.mul_assoc]; exact hP3)
   have hQ1 : (Qᴴ * GT) * Q = 1 := hT

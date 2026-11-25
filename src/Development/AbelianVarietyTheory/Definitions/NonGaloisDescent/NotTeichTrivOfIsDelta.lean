@@ -69,10 +69,6 @@ theorem isLamTieFull_of_labels (J A : ∀ i, X.abelian₂ i → Fin D.R.m) (S : 
   obtain ⟨lam, rfl, rfl, rfl, rfl⟩ := hall i hi j a s b hs hs'
   exact ⟨lam, rfl, h2 lam⟩
 
-namespace IsLamTieFull
-
-end IsLamTieFull
-
 end Record
 
 end GlobalTheory.LamTie

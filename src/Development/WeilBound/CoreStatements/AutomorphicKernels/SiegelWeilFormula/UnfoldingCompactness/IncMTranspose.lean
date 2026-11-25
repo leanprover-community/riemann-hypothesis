@@ -29,10 +29,7 @@ theorem incM_mul' {α β γ : Type} [Fintype β] (A : Matrix α β E) (C : Matri
 theorem incM_transpose' {α β : Type} (A : Matrix α β E) : incM F Aᵀ = (incM F A)ᵀ := rfl
 
 theorem incM_map_cA {α β : Type} (A : Matrix α β E) : (incM F A).map (cA σ) = incM F (A.map σ) := by
-  ext i j
-  show Algebra.TensorProduct.map (AlgHom.id (AF F) (AF F)) σ
-    ((1 : AF F) ⊗ₜ[F] A i j) = (1 : AF F) ⊗ₜ[F] σ (A i j)
-  rw [Algebra.TensorProduct.map_tmul, AlgHom.id_apply]
+  apply GlobalTheory.ThK.Dbl.incM_conj
 
 theorem map_cA_mul {α β γ : Type} [Fintype β] (A : Matrix α β (AE F E)) (C : Matrix β γ (AE F E)) :
     (A * C).map (cA σ) = A.map (cA σ) * C.map (cA σ) := Matrix.map_mul (f := (cA σ).toRingHom)

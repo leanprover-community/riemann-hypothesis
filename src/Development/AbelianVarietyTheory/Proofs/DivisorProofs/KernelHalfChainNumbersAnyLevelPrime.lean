@@ -527,7 +527,6 @@ theorem sum_filter_ge {J : Type} [Fintype J] {m : ℕ} (hm : 2 ≤ m) (eJ : J �
     simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_insert, Finset.mem_singleton]
     constructor
     · intro h
-      have h2 := (eJ l).2
       rcases (by omega : (eJ l).1 = m - 2 ∨ (eJ l).1 = m - 1) with h3 | h3
       · left
         rw [Equiv.eq_symm_apply]
@@ -800,9 +799,7 @@ theorem kerSide_of_meansS {J Emb α : Type} [Fintype J] [Fintype Emb] [Fintype �
   have hLL := L_le_La N
   have hg0 : (1 : ℝ) ≤ N.g 0 := by exact_mod_cast (N.g_prime 0).one_lt.le
   have hg1 : (1 : ℝ) ≤ N.g 1 := by exact_mod_cast (N.g_prime 1).one_lt.le
-  have hT1 : (1 : ℝ) ≤ T := by exact_mod_cast (by omega : 1 ≤ T)
   have hlg0 : 0 ≤ Real.log ((N.g 0 : ℝ) * N.g 1) := Real.log_nonneg (one_le_mul_of_one_le_of_one_le hg0 hg1)
-  have hlT0 : 0 ≤ Real.log (T : ℝ) := Real.log_nonneg hT1
   have hlog : Real.log ((N.g 0 : ℝ) * N.g 1 * T) = Real.log ((N.g 0 : ℝ) * N.g 1) + Real.log (T : ℝ) :=
     Real.log_mul (by positivity) (by positivity)
   have hU0 : 0 ≤ errUnit N T := by
@@ -810,7 +807,6 @@ theorem kerSide_of_meansS {J Emb α : Type} [Fintype J] [Fintype Emb] [Fintype �
     rw [hlog]
     positivity
   set C : ℝ := CK + 2 * E + 2 * Ct + 20 + 2 * max CY 0 with hC
-  have hC0 : 0 ≤ C := by positivity
   have hX0 : 0 ≤ E * errUnit N T := mul_nonneg hE hU0
   unfold KerSide
   refine ⟨fun l => (N.R.N (eJ l).1 : ℝ) * (N.R.N ((eJ l).1 + 1) : ℝ),
@@ -877,7 +873,6 @@ theorem kerSide_of_meansS {J Emb α : Type} [Fintype J] [Fintype Emb] [Fintype �
     have b1 := (hS.2.1 1).2
     have h6 : 2 * max CY 0 + 2 ≤ C := by rw [hC]; linarith
     have c0 : CY * N.sc.L ≤ max CY 0 * N.sc.L := mul_le_mul_of_nonneg_right (le_max_left _ _) (by linarith)
-    have c1 : 2 ≤ 2 * N.sc.L := by linarith
     calc _ ≤ (2 * max CY 0 + 2) * N.sc.L := by linarith
       _ ≤ C * N.sc.L := mul_le_mul_of_nonneg_right h6 (by linarith)
   · refine hP _ fun l v => ?_

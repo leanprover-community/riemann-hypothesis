@@ -51,13 +51,8 @@ theorem exists_maximal_compact_infinite :
             inv_mem' := fun {k} hk => ⟨(atGrp σ X (evI F)).inv_mem hk.1, fun w => by
               have e0 : (mat k⁻¹).map (piInf (τ w)) * (mat k).map (piInf (τ w)) = 1 := by
                 rw [← Matrix.map_mul, ← mat_mul', inv_mul_cancel, mat_one', Matrix.map_one _ (map_zero _) (map_one _)]
-              have e1 : (mat k).map (piInf (τ w)) * (mat k⁻¹).map (piInf (τ w)) = 1 := mul_eq_one_comm.1 e0
-              have h := (hk.2 w).eq
-              calc _ = (mat k⁻¹).map (piInf (τ w)) * X.θ w * ((mat k).map (piInf (τ w)) * (mat k⁻¹).map (piInf (τ w))) := by
-                    rw [e1, mul_one]
-                _ = (mat k⁻¹).map (piInf (τ w)) * (X.θ w * (mat k).map (piInf (τ w))) * (mat k⁻¹).map (piInf (τ w)) := by
-                    simp only [mul_assoc]
-                _ = _ := by rw [← h, ← mul_assoc, e0, one_mul]⟩ }, rfl⟩
+              exact Commute.units_inv_left (u := ⟨(mat k).map (piInf (τ w)), (mat k⁻¹).map (piInf (τ w)),
+                mul_eq_one_comm.1 e0, e0⟩) (hk.2 w)⟩ }, rfl⟩
 
 
 variable (E) in

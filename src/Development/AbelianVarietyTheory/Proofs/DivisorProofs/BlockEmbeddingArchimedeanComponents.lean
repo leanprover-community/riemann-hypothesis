@@ -255,8 +255,6 @@ theorem GlobalTheory.BlockForms.exists_archComp_of_isBlockEmb : ∀ (F E : Type)
       rw [Matrix.map_map]
       exact congrArg Units.val (map_cornerGL_of_zero (sInf E) ((GlobalTheory.LFun.finTens F E).comp Φ.symm.toRingHom)
         (finTens_symm_sInf hs) y⁻¹)
-    have hA : ∀ {m p : Type} (M : Matrix m p E), (adMat F M).map (GlobalTheory.LFun.finTens F E) =
-        M.map (inclR (F := F) (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Af F)) := fun M => map_inclR_map (sndA F) M
     have hC : ∀ {m p : Type} (M : Matrix m p (AF F ⊗[F] E)), (Formalism.UG.cT (sigR (AF F) σ) M).map (GlobalTheory.LFun.finTens F E) =
         Formalism.UG.cT (sigR (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Af F) σ) (M.map (GlobalTheory.LFun.finTens F E)) := fun M => map_cT_sigR_map (sndA F) σ M
     show ι (infGL E d y) ∈ MonoidHom.ker _

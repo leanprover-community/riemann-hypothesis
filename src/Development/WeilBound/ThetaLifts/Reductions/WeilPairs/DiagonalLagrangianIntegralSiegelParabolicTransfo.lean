@@ -164,14 +164,9 @@ theorem lagrInt_lin {nS nT : ℕ} (ν : Measure (WOF F E nS nT)) (𝓕 : Set (WO
   simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul]
   rw [integral_add (hf.const_mul a) (hg.const_mul b), integral_const_mul, integral_const_mul]
 
-theorem mtF_mul (σ : E →ₐ[F] E) {n : ℕ} (J : Matrix (Fin n) (Fin n) E) (a b : GAF σ J) :
-    mtF σ J (a * b) = mtF σ J a * mtF σ J b := by
-  unfold mtF
-  rw [map_mul, Units.val_mul]
-
 theorem mtF_inv_mul (σ : E →ₐ[F] E) {n : ℕ} (J : Matrix (Fin n) (Fin n) E) (a : GAF σ J) :
     mtF σ J a⁻¹ * mtF σ J a = 1 := by
-  rw [← mtF_mul, inv_mul_cancel]
+  rw [← GlobalTheory.WeilPartsF.mtF_mul, inv_mul_cancel]
   unfold mtF
   rw [map_one, Units.val_one]
 

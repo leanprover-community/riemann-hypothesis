@@ -292,10 +292,7 @@ theorem lin_indep {K A : Type} [Field K] [IsAlgClosed K] [Ring A] [Algebra K A]
   obtain ⟨a, ha, s, hs⟩ := exists_kills S0 (t.erase F0)
     (fun G hG => ht (Finset.mem_coe.mpr (Finset.mem_of_mem_erase (Finset.mem_coe.mp hG))))
     (by rw [← hF]; simp)
-  obtain ⟨l, hl⟩ : ∃ l : Module.Dual K S0, l (a • s) ≠ 0 := by
-    by_contra hcon
-    push Not at hcon
-    exact hs ((Module.forall_dual_apply_eq_zero_iff K _).mp hcon)
+  obtain ⟨l, hl⟩ : ∃ l : Module.Dual K S0, l (a • s) ≠ 0 := Module.Projective.exists_dual_ne_zero K hs
   obtain ⟨u, hu⟩ := _root_.Bl.ScalarIdentities.goal1 (A := A) S0 (l.smulRight s)
   have hlin : Algebra.lsmul K K S0 (u * a) = (l ∘ₗ Algebra.lsmul K K S0 a).smulRight s := by
     ext v

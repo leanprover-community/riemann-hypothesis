@@ -323,7 +323,3 @@ theorem epsQU_frob {w : PlE H} (hl : w ∉ placesOver H.E (N.l i)) {B : Valuatio
 end Eps
 
 end GlobalTheory.StringDecomp
-
-namespace GlobalTheory.StringDecomp
-
-end GlobalTheory.StringDecomp

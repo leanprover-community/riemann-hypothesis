@@ -118,8 +118,6 @@ namespace GlobalTheory.PlaceProducts
 
 open Classical
 
-set_option synthInstance.maxHeartbeats 400000
-
 variable {D : D7}
 
 alias mt_mul := _root_.GlobalTheory.BesselCompare.mt_mul
@@ -163,11 +161,9 @@ theorem pe_idem (v : Pl D) : pe D v * pe D v = pe D v :=
 def peT (D : D7) (T : Finset (Pl D)) : AE D := ∑ v ∈ T, pe D v
 
 theorem inf_peT (T : Finset (Pl D)) : infPart D (peT D T) = 0 := by
-  set_option synthInstance.maxHeartbeats 100000 in
     rw [peT, map_sum]; exact Finset.sum_eq_zero fun v _ => inf_pe v
 
 theorem comp_peT (T : Finset (Pl D)) (w : Pl D) : compAt D w (peT D T) = if w ∈ T then 1 else 0 := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp [peT, map_sum, comp_pe]
 
 theorem pe_mul_peT {v : Pl D} {T : Finset (Pl D)} (hv : v ∉ T) : pe D v * peT D T = 0 :=
@@ -205,8 +201,6 @@ end GlobalTheory.PlaceProducts
 namespace GlobalTheory.PlaceProducts
 
 open Classical Matrix
-
-set_option synthInstance.maxHeartbeats 400000
 
 variable {D : D7}
 
@@ -297,8 +291,6 @@ namespace GlobalTheory.PlaceProducts
 
 open Classical
 
-set_option synthInstance.maxHeartbeats 400000
-
 theorem hom_loc {A B : Type} [CommRing A] [CommRing B] (φ : A →+* B) (e a b : A) :
     φ (e * a + (1 - e) * b) = φ e * φ a + (1 - φ e) * φ b := by
   simp only [map_add (f := _), map_mul, map_sub, map_one]
@@ -312,7 +304,6 @@ theorem hom_loc_zero {A B : Type} [CommRing A] [CommRing B] (φ : A →+* B) {e 
   rw [hom_loc, he, zero_mul, zero_add, sub_zero, one_mul]
 
 
-set_option maxHeartbeats 1000000 in
 theorem finite_place_products : ∀ (D : D7) (S : HSp D) (L : Lat S) (P : Pl D → Prop) (κ : GA D S), IsSelfDualC S L →
     InK S L P κ → ∀ Fs : Finset (Pl D), ∃ l : List (GA D S), (∀ y ∈ l, ∃ v, P v ∧ InK S L (· = v) y) ∧
       (∀ i j, infPart D (Formalism.L2.Theta.mt S l.prod i j) = infPart D (Formalism.L2.Theta.mt S κ i j)) ∧

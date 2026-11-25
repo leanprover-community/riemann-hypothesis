@@ -59,10 +59,6 @@ private theorem hasSubst_finite_of_constantCoeff_eq_zero {σ τ : Type} [Finite 
   first
   | exact MvPowerSeries.hasSubst_of_constantCoeff_zero ha
 
-private theorem hasSubst_vec_pair_of_constantCoeff_eq_zero {τ : Type} {a b : MvPowerSeries τ K} (ha : constantCoeff a = 0)
-    (hb : constantCoeff b = 0) : HasSubst ![a, b] :=
-  hasSubst_finite_of_constantCoeff_eq_zero fun i => by fin_cases i <;> first | exact ha | exact hb
-
 private theorem mvSubst_add_of_hasSubst {ι κ : Type} {φ : ι → MvPowerSeries κ K} (hφ : HasSubst φ)
     (f g : MvPowerSeries ι K) : subst φ (f + g) = subst φ f + subst φ g := by
   first
@@ -86,14 +82,6 @@ private theorem mvSubst_powerSeries_subst_of_constantCoeff_eq_zero {ι κ : Type
   show subst b (subst (fun _ : Unit => a) f) = subst (fun _ : Unit => subst b a) f
   rw [subst_comp_subst_apply h1 hb]
 
-theorem constantCoeff_first_two_of_three {F : MvPowerSeries (Fin 2) K} (hF0 : constantCoeff F = 0) :
-    constantCoeff (in3 F) = 0 := by
-  unfold in3
-  have hx : ∀ i : Fin 2, constantCoeff (![(X 0 : MvPowerSeries (Fin 3) K), X 1] i) = 0 := by
-    intro i; fin_cases i <;> simp
-  first
-  | exact constantCoeff_subst_eq_zero (hasSubst_finite_of_constantCoeff_eq_zero hx) hx hF0
-
 theorem cob_add {F : MvPowerSeries (Fin 2) K} (hF0 : constantCoeff F = 0) (f g : PowerSeries K) :
     cob F (f + g) = cob F f + cob F g := by
   have hX : ∀ i : Fin 2, constantCoeff (X i : MvPowerSeries (Fin 2) K) = 0 := fun i => by simp
@@ -105,8 +93,8 @@ theorem diffOne_add {F : MvPowerSeries (Fin 2) K} (hF0 : constantCoeff F = 0)
     (H H' : MvPowerSeries (Fin 2) K) : d1 F (H + H') = d1 F H + d1 F H' := by
   have hX : ∀ i : Fin 3, constantCoeff (X i : MvPowerSeries (Fin 3) K) = 0 := fun i => by simp
   unfold d1
-  rw [mvSubst_add_of_hasSubst (hasSubst_vec_pair_of_constantCoeff_eq_zero (constantCoeff_first_two_of_three hF0) (hX 2)), mvSubst_add_of_hasSubst (hasSubst_vec_pair_of_constantCoeff_eq_zero (hX 0) (hX 2)),
-    mvSubst_add_of_hasSubst (hasSubst_vec_pair_of_constantCoeff_eq_zero (hX 1) (hX 2))]
+  rw [mvSubst_add_of_hasSubst (Formalism.InvariantFactorPaths.G7.GramFrameCompositionLinFacts.hs2 (Formalism.InvariantFactorPaths.G7.CoboundarySeries.constantCoeff_first_two_of_three hF0) (hX 2)), mvSubst_add_of_hasSubst (Formalism.InvariantFactorPaths.G7.GramFrameCompositionLinFacts.hs2 (hX 0) (hX 2)),
+    mvSubst_add_of_hasSubst (Formalism.InvariantFactorPaths.G7.GramFrameCompositionLinFacts.hs2 (hX 1) (hX 2))]
   ring
 
 theorem swap_variables_add (H H' : MvPowerSeries (Fin 2) K) : swap2 (H + H') = swap2 H + swap2 H' := by
@@ -170,11 +158,11 @@ theorem coboundary_commutes_homomorphism {F FE : MvPowerSeries (Fin 2) K} {θ : 
       subst ![at1 (0 : Fin 3) θ, at1 (1 : Fin 3) θ, at1 (2 : Fin 3) θ] (in3 FE) := key
   unfold d1
   rw [mvSubst_sub_of_hasSubst hφ3, mvSubst_sub_of_hasSubst hφ3,
-    _root_.Formalism.L2.Th1.D.Pair.subst2_comp (_root_.Formalism.InvariantFactorPaths.G7.FrobeniusSubstitution.hasSubst_pair (_root_.Formalism.InvariantFactorPaths.G7.GramFrameCompositionLinFacts.constantCoeff_law_first_two_of_three hF0) (hX3 2)) (hat2 0) (hat2 1),
+    _root_.Formalism.L2.Th1.D.Pair.subst2_comp (_root_.Formalism.InvariantFactorPaths.G7.FrobeniusSubstitution.hasSubst_pair (_root_.Formalism.InvariantFactorPaths.G7.CoboundarySeries.constantCoeff_first_two_of_three hF0) (hX3 2)) (hat2 0) (hat2 1),
     _root_.Formalism.L2.Th1.D.Pair.subst2_comp (_root_.Formalism.InvariantFactorPaths.G7.FrobeniusSubstitution.hasSubst_pair (hX3 0) (hX3 2)) (hat2 0) (hat2 1),
     _root_.Formalism.L2.Th1.D.Pair.subst2_comp (_root_.Formalism.InvariantFactorPaths.G7.FrobeniusSubstitution.hasSubst_pair (hX3 1) (hX3 2)) (hat2 0) (hat2 1),
-    _root_.Formalism.L2.Th1.D.Pair.subst2_comp hφ3 (_root_.Formalism.InvariantFactorPaths.G7.GramFrameCompositionLinFacts.constantCoeff_law_first_two_of_three hFE0) (hX3 2), _root_.Formalism.L2.Th1.D.Pair.subst2_comp hφ3 (hX3 0) (hX3 2), _root_.Formalism.L2.Th1.D.Pair.subst2_comp hφ3 (hX3 1) (hX3 2)]
-  simp only [_root_.Formalism.InvariantFactorPaths.G7.FrobeniusSubstitution.subst_single_var (_root_.Formalism.InvariantFactorPaths.G7.FrobeniusSubstitution.hasSubst_pair (_root_.Formalism.InvariantFactorPaths.G7.GramFrameCompositionLinFacts.constantCoeff_law_first_two_of_three hF0) (hX3 2)), _root_.Formalism.InvariantFactorPaths.G7.FrobeniusSubstitution.subst_single_var (_root_.Formalism.InvariantFactorPaths.G7.FrobeniusSubstitution.hasSubst_pair (hX3 0) (hX3 2)),
+    _root_.Formalism.L2.Th1.D.Pair.subst2_comp hφ3 (_root_.Formalism.InvariantFactorPaths.G7.CoboundarySeries.constantCoeff_first_two_of_three hFE0) (hX3 2), _root_.Formalism.L2.Th1.D.Pair.subst2_comp hφ3 (hX3 0) (hX3 2), _root_.Formalism.L2.Th1.D.Pair.subst2_comp hφ3 (hX3 1) (hX3 2)]
+  simp only [_root_.Formalism.InvariantFactorPaths.G7.FrobeniusSubstitution.subst_single_var (_root_.Formalism.InvariantFactorPaths.G7.FrobeniusSubstitution.hasSubst_pair (_root_.Formalism.InvariantFactorPaths.G7.CoboundarySeries.constantCoeff_first_two_of_three hF0) (hX3 2)), _root_.Formalism.InvariantFactorPaths.G7.FrobeniusSubstitution.subst_single_var (_root_.Formalism.InvariantFactorPaths.G7.FrobeniusSubstitution.hasSubst_pair (hX3 0) (hX3 2)),
     _root_.Formalism.InvariantFactorPaths.G7.FrobeniusSubstitution.subst_single_var (_root_.Formalism.InvariantFactorPaths.G7.FrobeniusSubstitution.hasSubst_pair (hX3 1) (hX3 2)), subst_X hφ3]
   first
   | (rw [key']; rfl)
@@ -325,7 +313,7 @@ theorem simeq_coboundary_of_simeq_zero {F : MvPowerSeries (Fin 2) K} (hF0 : cons
     {μ : MvPowerSeries (Fin 2) K} (h : Simeq μ 0) : Simeq (d1 F μ) 0 := by
   have hX : ∀ i : Fin 3, constantCoeff (X i : MvPowerSeries (Fin 3) K) = 0 := fun i => by simp
   unfold d1
-  exact simeq_sub_zero_of_simeq_zero (simeq_sub_zero_of_simeq_zero (sim_pair (_root_.Formalism.InvariantFactorPaths.G7.GramFrameCompositionLinFacts.constantCoeff_law_first_two_of_three hF0) (hX 2) (integral_law_first_two_of_three hF) (integral_X_kummer_theta_logarithms _) h)
+  exact simeq_sub_zero_of_simeq_zero (simeq_sub_zero_of_simeq_zero (sim_pair (_root_.Formalism.InvariantFactorPaths.G7.CoboundarySeries.constantCoeff_first_two_of_three hF0) (hX 2) (integral_law_first_two_of_three hF) (integral_X_kummer_theta_logarithms _) h)
     (sim_pair (hX 0) (hX 2) (integral_X_kummer_theta_logarithms _) (integral_X_kummer_theta_logarithms _) h))
     (sim_pair (hX 1) (hX 2) (integral_X_kummer_theta_logarithms _) (integral_X_kummer_theta_logarithms _) h)
 
@@ -853,10 +841,6 @@ theorem theta_integer_is_theta_log : ThetaInZIsThetaLog := by
   have h := Pair.exp_log expSpec hl hcc
   rw [CohomologyFunctoriality₂.log_coord l ν r0 r1 _ _ ϖ μ x hϖ hμ0 hμ] at h
   exact h
-
-namespace CohomologyFunctoriality₂
-
-end CohomologyFunctoriality₂
 
 theorem kernel_of_f : KernelOfF := by
   intro p _ K0 _ _ _ _ σ hU hζ F hF be hF1 hF2 K _ _ _ j ν r0 r1 _ hj hϖ om oms hO hT U0 Φ hU0 hΦ0

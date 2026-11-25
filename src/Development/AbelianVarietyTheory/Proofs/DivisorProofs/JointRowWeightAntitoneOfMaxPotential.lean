@@ -178,7 +178,6 @@ theorem sum_lt_swap {N : ℕ} (v : Fin N → ℕ) (a b : Fin N) (hab : (b : ℕ)
     rw [Function.comp_apply, Equiv.swap_apply_of_ne_of_ne hc.1 hc.2]
   rw [hrest, Finset.sum_pair hne, Finset.sum_pair hne]
   simp only [Function.comp_apply, Equiv.swap_apply_left, Equiv.swap_apply_right]
-  have hb : (b : ℕ) < N := b.isLt
   have hk : N - (a : ℕ) = (N - (b : ℕ)) + 1 := by omega
   rw [hk]
   have : (N - (b : ℕ) + 1) * v a + (N - b) * v b < (N - (b : ℕ) + 1) * v b + (N - b) * v a := by nlinarith

@@ -98,9 +98,7 @@ theorem hom_shift {ζ : ℂ_[q]} (hζ : ‖ζ - 1‖ < 1) : Hom (shiftS ζ) := b
 theorem bd_X : Bd 1 (X : ℂ_[q]⟦X⟧) := by
   intro n; rw [coeff_X]; split_ifs <;> simp
 
-theorem bdd_C (c : ℂ_[q]) : Bdd (C c : ℂ_[q]⟦X⟧) := by
-  refine ⟨‖c‖, fun n => ?_⟩
-  rw [coeff_C]; split_ifs <;> simp
+theorem bdd_C (c : ℂ_[q]) : Bdd (C c : ℂ_[q]⟦X⟧) := GlobalTheory.MomOne.SmallTranslate.bdd_C c
 
 theorem bdd_add {f g : ℂ_[q]⟦X⟧} (hf : Bdd f) (hg : Bdd g) : Bdd (f + g) := by
   obtain ⟨A, hA⟩ := hf

@@ -27,8 +27,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Ud9.exists_indep_of_sat :
-    ∀ {R E : Type} [inst : CommRing R] [IsDomain R] [IsNoetherianRing R]
-    [inst_3 : AddCommGroup E] [inst_4 : _root_.Module R E] [Module.Finite R E] [Module.IsTorsionFree R E] (T : Set E)
+    ∀ {R E : Type} [CommRing R] [IsDomain R] [IsNoetherianRing R]
+    [AddCommGroup E] [_root_.Module R E] [Module.Finite R E] [Module.IsTorsionFree R E] (T : Set E)
     (F : Submodule R E),
     (∀ (x : E), x ∈ F ↔ ∃ (a : R), a ≠ (0 : R) ∧ a • x ∈ Submodule.span R T) →
       ∃ (f : Fin (Module.finrank R ↥F) → E), (∀ (j : Fin (Module.finrank R ↥F)), f j ∈ T) ∧ LinearIndependent R f := by

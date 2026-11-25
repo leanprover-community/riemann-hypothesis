@@ -11,17 +11,6 @@ open Formalism.BasicNotions NumberField IsDedekindDomain Formalism.ConjugateSelf
 
 namespace Formalism.MainNotions.N.K.Norm
 
-section Adic
-
-variable {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [TopologicalSpace O]
-  [IsTopologicalRing O]
-
-theorem continuous_of_mul {X : Type} [TopologicalSpace X] (hadic : IsAdic (IsLocalRing.maximalIdeal O))
-    {c : O} (hc : c ≠ 0) {f : X → O} (hf : Continuous fun x => c * f x) : Continuous f := by
-  apply GlobalTheory.BlockJumpsCompare.continuous_of_mul <;> assumption
-
-end Adic
-
 section Rec
 
 variable {D : D7} (i : D.nd.Loc) (r : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV) (D.nd.O i)))
@@ -64,7 +53,7 @@ theorem rhoCont_of (hd : TruncatedSeriesCountingIdentities.SemisimpleDecompositi
   have hne : b1 * b2 ≠ 0 := mul_ne_zero hb1 hb2
   unfold RhoCont
   refine continuous_pi fun a => continuous_pi fun b => ?_
-  refine continuous_of_mul (D.nd.O_adic i) hne ?_
+  refine GlobalTheory.BlockJumpsCompare.continuous_of_mul (D.nd.O_adic i) hne ?_
   have h2 : Continuous fun g => ((b1 * b2) • rO D.nd i (rN i r ρ π) π g) (Fin.castAdd D.R.t a) (Fin.castAdd D.R.t b) :=
     (continuous_apply_apply _ _).comp hcont
   refine h2.congr (fun g => ?_)

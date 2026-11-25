@@ -113,10 +113,6 @@ def aRay (g : D.G) (n : ℕ) : ℝ := ((idealsIn D g n).ncard : ℝ)
 
 def lamRay (g : D.G) (n : ℕ) : ℝ := ∑ᶠ I ∈ idealsIn D g n, lamIdeal I
 
-namespace RayCount
-
-end RayCount
-
 end Ray
 
 def qForm (α γ l θ₁ θ₂ : ℝ) (v : ℤ × ℤ) : ℝ := α * (v.1 + θ₁ + l * v.2) ^ 2 + γ * (v.2 + θ₂) ^ 2

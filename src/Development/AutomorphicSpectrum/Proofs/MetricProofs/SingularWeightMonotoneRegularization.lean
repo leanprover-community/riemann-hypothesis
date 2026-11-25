@@ -115,7 +115,7 @@ theorem tendstoUniformlyOn_self {α β : Type*} [UniformSpace β] (f : α → β
   exact Filter.Eventually.of_forall fun _ y _ => refl_mem_uniformity hv
 
 theorem isRegFamilyC2_const (A : FinHolAtlas e X) (s : X → X → ℂ) (u : X → ℝ) :
-    IsRegFamilyC2 A s u (fun _ => u) := fun j K _ _ =>
+    IsRegFamilyC2 A s u (fun _ => u) := fun _ _ _ _ =>
   ⟨tendstoUniformlyOn_self _ _ _, tendstoUniformlyOn_self _ _ _, tendstoUniformlyOn_self _ _ _⟩
 
 theorem isPsh_add_rsmul (A : FinHolAtlas e X) (Θ th : LocPot X) (u : X → ℝ) {ε : ℝ}

@@ -57,7 +57,3 @@ theorem normV_zpow_deg_eq {K L Ω : Type} [Field Ω] [Field K] [NumberField K] [
   linarith
 
 end GlobalTheory.LocLanglands
-
-namespace GlobalTheory.LocLanglands
-
-end GlobalTheory.LocLanglands

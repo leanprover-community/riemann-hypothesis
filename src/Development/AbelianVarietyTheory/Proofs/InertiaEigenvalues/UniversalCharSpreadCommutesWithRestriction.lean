@@ -35,11 +35,8 @@ theorem surj_conj {B : Type} [CommGroup B] (χ : G D.host.E N.Om →* B) (hA : A
   have hκ : ∀ x, D.host.conj (D.host.conj x) = x := fun x => by
     rw [← hst, ← hst, IsCMField.complexConj_apply_apply]
   have hc : ∀ x, X.cc (algebraMap D.host.E N.Om x) =
-      algebraMap D.host.E N.Om (D.host.conj x) := fun x => by
-    apply j.injective
-    rw [hj, ← hst]
-    exact (IsCMField.complexEmbedding_complexConj D.host.E
-      (j.comp (algebraMap D.host.E N.Om)) x).symm
+      algebraMap D.host.E N.Om (D.host.conj x) :=
+    GlobalTheory.TwistDet.cc_algebraMap X
   have hs' : ∀ x, X.cc.symm (algebraMap D.host.E N.Om x) =
       algebraMap D.host.E N.Om (D.host.conj x) := fun x => by
     rw [RingEquiv.symm_apply_eq, hc, hκ]

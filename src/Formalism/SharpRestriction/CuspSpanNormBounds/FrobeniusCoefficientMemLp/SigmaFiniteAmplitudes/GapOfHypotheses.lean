@@ -20,17 +20,6 @@ section -- clump:auto
 
 noncomputable section
 
-namespace Formalism.MainNotions.NearParameterGap
-
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.OnePlaceEstimates
-
-theorem consts (k r : ℕ) (hk : 1 ≤ k) :
-    Formalism.FourierDecayAlt.ThreeDimData.Mexp r ≤ (2 * (r : ℝ) + 2) ^ 2 / 2 ∧ 0 ≤ Formalism.FourierDecayAlt.ThreeDimData.Mexp r ∧
-    Formalism.FourierDecayAlt.ThreeDimData.AS k r ≤ 2 * (2 * (r : ℝ) + k + 1) ^ 3 ∧ 0 ≤ Formalism.FourierDecayAlt.ThreeDimData.AS k r ∧
-    Formalism.FourierDecayAlt.ThreeDimData.AG k r ≤ 4 * (2 * (r : ℝ) + k + 1) ^ 3 ∧ 0 ≤ Formalism.FourierDecayAlt.ThreeDimData.AG k r := by
-  apply CompanionTheory.WaveGrid.GapSizes.consts <;> assumption
-
-end Formalism.MainNotions.NearParameterGap
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -168,7 +157,7 @@ theorem gap_of_hypotheses (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT
     linarith
   ·
     have hk1 : 1 ≤ D.R.k := by omega
-    obtain ⟨cM, -, cS, cS0, cG, cG0⟩ := Formalism.MainNotions.NearParameterGap.consts D.R.k D.R.rS hk1
+    obtain ⟨cM, -, cS, cS0, cG, cG0⟩ := CompanionTheory.WaveGrid.GapSizes.consts D.R.k D.R.rS hk1
     have eN : ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) = N := by rw [hNdef, hr]
     have eM : (2 * (D.R.rS : ℝ) + 2) = m := by rw [hmdef, ← hrS]; push_cast; ring
     have eN' : 2 * (D.R.rS : ℝ) + D.R.k + 1 = N := by rw [← eN]; push_cast; ring
@@ -190,7 +179,7 @@ theorem gap_of_hypotheses (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT
     rw [hrS1]; exact g3
   ·
     have hk1 : 1 ≤ D.R.k := by omega
-    obtain ⟨cM, -, cS, cS0, cG, cG0⟩ := Formalism.MainNotions.NearParameterGap.consts D.R.k D.R.rS hk1
+    obtain ⟨cM, -, cS, cS0, cG, cG0⟩ := CompanionTheory.WaveGrid.GapSizes.consts D.R.k D.R.rS hk1
     have eN : ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) = N := by rw [hNdef, hr]
     have eM : (2 * (D.R.rS : ℝ) + 2) = m := by rw [hmdef, ← hrS]; push_cast; ring
     have eN' : 2 * (D.R.rS : ℝ) + D.R.k + 1 = N := by rw [← eN]; push_cast; ring

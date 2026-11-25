@@ -432,8 +432,6 @@ namespace GlobalTheory.InertConvMul
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
   {v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))} {w : HeightOneSpectrum (𝓞 L)}
 
-set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 1000000 in
 theorem conv_of (Dv : InertDatum L n v w) (U : Subgroup (GAf L n))
     (hU : ∀ κ, TrivOutside {v} κ → (κ ∈ U ↔ κ ∈ Umax L n))
     (hA : ∀ x : GAf L n, Dv.loc x ∈ GU Dv.σw n)

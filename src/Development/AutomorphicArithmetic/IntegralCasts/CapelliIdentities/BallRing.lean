@@ -8,7 +8,7 @@ public import Mathlib.Analysis.Normed.Group.Ultra
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.ClosedUnitBallSubring.ballRing :
-    (K : Type) → [inst : NormedField K] → [IsUltrametricDist K] → Subring K :=
+    (K : Type) → [NormedField K] → [IsUltrametricDist K] → Subring K :=
   fun K _ _ =>
     { carrier := {x : K | ‖x‖ ≤ 1}
       mul_mem' := fun {a b} ha hb => by

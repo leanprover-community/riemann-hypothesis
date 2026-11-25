@@ -8,7 +8,6 @@ import Mathlib.Tactic.Linter.Style
 
 noncomputable section
 open CategoryTheory Limits AlgebraicGeometry MvPolynomial
-attribute [local instance] MvPolynomial.gradedAlgebra
 
 namespace LateralTheory.EtaleTrace.Cov
 

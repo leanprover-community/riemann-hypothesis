@@ -50,7 +50,7 @@ public import Mathlib.Analysis.InnerProductSpace.PiL2
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qh52.exists_orthonormal_basis_sesquilinear :
-    ∀ {V : Type} [inst : AddCommGroup V] [inst_1 : _root_.Module ℂ V]
+    ∀ {V : Type} [AddCommGroup V] [_root_.Module ℂ V]
     [FiniteDimensional ℂ V] (B : V →ₗ[ℂ] V →ₗ⋆[ℂ] ℂ),
     (∀ (a b : V), ((B : V → V →ₗ⋆[ℂ] ℂ) b : V → ℂ) a = Star.star (((B : V → V →ₗ⋆[ℂ] ℂ) a : V → ℂ) b)) →
       (∀ (a : V), a ≠ (0 : V) → (0 : ℝ) < (((B : V → V →ₗ⋆[ℂ] ℂ) a : V → ℂ) a).re) →

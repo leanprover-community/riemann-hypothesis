@@ -440,7 +440,6 @@ theorem log_prod_le {ι : Type} [Fintype ι] (a : ι → ℝ) (c : ℝ) (h0 : �
 
 end GlobalTheory.InfSize
 
-
 open GlobalTheory.InfSize in
 theorem GlobalTheory.InfSize.main : ∃ CF0 : ℝ, ∀ CF : ℝ, CF0 ≤ CF → ∃ K0 : ℝ, ∀ ε : ℝ, ∃ x₀ : ℝ, ∀ (D : D7) (large₂ : SizeData₂ D), large₂.sc.eps = ε → x₀ ≤ large₂.sc.x →
     ∀ (Γ : Type) [Group Γ] [Fintype Γ] (Pl0 T : Type) (A : FamIn D.what₂.LL Γ Pl0 T D.R.m)
@@ -510,23 +509,6 @@ open Formalism.DivisionValues (vw lw)
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-private theorem funEquiv_symm_mapVV {K ι : Type} [Field K] [CharZero K] [Fintype ι] {n : ℕ} (φ : K →+* ℂ)
-    (σ : ι → DomWeight n) (v : VV K fun τ => (σ τ).dual) :
-    (GlobalTheory.FunObj.funEquiv σ).symm (GlobalTheory.CoefModel.mapVV φ (fun τ => (σ τ).dual) v) =
-      GlobalTheory.CoefModel.mapVV φ σ ((GlobalTheory.FunObj.funEquiv σ).symm v) := by
-  have h1 : IsFunForm σ ((funEquiv σ).symm v) v := by
-    have := isFunForm_funEquiv σ ((funEquiv σ).symm v)
-    rwa [LinearEquiv.apply_symm_apply] at this
-  have h2 := GlobalTheory.BrRat.isFunForm_map φ σ h1
-  have h3 := (isFunForm_iff_eq σ _ _).1 h2
-  rw [LinearEquiv.symm_apply_eq]
-  exact h3
-
-theorem _root_.GlobalTheory.T.branchingPairing_extendScalars : ∀ {K ι : Type} [Field K] [CharZero K] [Fintype ι] {n N : ℕ} (φ : K →+* ℂ) (σ : ι → DomWeight n) (hN : N = n + 1)
-    (Λ : ι → DomWeight N) (u : VV K Λ) (v : VV K fun τ => (σ τ).dual),
-    GlobalTheory.FunObj.brPair σ hN Λ (GlobalTheory.CoefModel.mapVV φ Λ u) (GlobalTheory.CoefModel.mapVV φ (fun τ => (σ τ).dual) v) =
-      φ (GlobalTheory.BrPairF.brPairF σ hN Λ u v) :=
-  _root_.GlobalTheory.BrPairF.brPair_mapVV
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.BranchingPairingExtendScalarsStatement =====
@@ -844,7 +826,6 @@ open IsDedekindDomain NumberField Matrix GlobalTheory.ChiGrid GlobalTheory.FunOb
 open Formalism.DivisionValues (vw lw)
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 end -- clump:auto
 end -- clump:auto
@@ -1455,7 +1436,6 @@ open Formalism.DivisionValues (vw lw)
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
 theorem _root_.GlobalTheory.T.placeValuation_localDegree_arithmetic : ∀ {K : Type} [Field K] [NumberField K] [StarRing K],
     (∀ (w : HeightOneSpectrum (𝓞 K)) (a b : K), a ≠ 0 → b ≠ 0 → Formalism.DivisionValues.vw w (a * b) = Formalism.DivisionValues.vw w a + Formalism.DivisionValues.vw w b) ∧
     (∀ (w : HeightOneSpectrum (𝓞 K)) (m d : ℕ), 0 < d → m ∣ d →
@@ -1556,7 +1536,7 @@ theorem finPair : FinPairK := by
     have hIS := fun τ => GlobalTheory.WtInterlace.weights_top_grid ch.G τ
     refine ⟨GlobalTheory.BrPairF.brPairF _ ch.G.sp.topDec.rank.symm _ u0 v0, ?_, ?_⟩
     · rw [← hu0, ← hv0]
-      exact (GlobalTheory.T.branchingPairing_extendScalars D.what₂.embLL _ _ _ u0 v0).symm
+      exact (GlobalTheory.BrPairF.brPair_mapVV D.what₂.embLL _ _ _ u0 v0).symm
     · have h4 := GlobalTheory.BrPairLocal.finLocal (labLL D) ch.G.sp.topDec.rank.symm (wt ch.G (.top D.R.m)) (listedWt ch.G (.grid D.R.m D.R.m))
         (fun τ => (hIS τ).1) (fun τ => (hIS τ).2) _ _ (full_grid_corner ch.S.toGridChoice y) (GlobalTheory.T.mem_vertexLatticeOrthonormalCoords_topNode_iff ch.S.toGridChoice y) w
         (s • u0) (s' • v0) hsu hsv
@@ -1609,7 +1589,7 @@ theorem infPair : InfPairK := by
   obtain ⟨v0, hv0, hB'⟩ := hv
   refine ⟨GlobalTheory.BrPairF.brPairF _ ch.G.sp.topDec.rank.symm _ u0 v0, ?_, ?_⟩
   · rw [← hu0, ← hv0]
-    exact (GlobalTheory.T.branchingPairing_extendScalars D.what₂.embLL _ _ _ u0 v0).symm
+    exact (GlobalTheory.BrPairF.brPair_mapVV D.what₂.embLL _ _ _ u0 v0).symm
   · obtain ⟨hn1, hn2, h7⟩ := GlobalTheory.T.branchingPairing_archimedean_bound_fockNorm σ ch.G.sp.topDec.rank.symm (wt ch.G (.top D.R.m)) (listedWt ch.G (.grid D.R.m D.R.m))
       (fun τ => (hIS τ).1) (fun τ => (hIS τ).2) u0 v0
     refine h7.trans ?_

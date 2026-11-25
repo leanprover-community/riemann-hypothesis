@@ -519,21 +519,12 @@ theorem natCast_resField_eq_zero (F : Type) [Field F] [NumberField F]
     (v : HeightOneSpectrum (𝓞 F)) (p : ℕ) (h : (p : 𝓞 F) ∈ v.asIdeal) : (p : kv F v) = 0 := by
   apply _root_.GlobalTheory.Mem.Top.ColOwe.natCast_kv_eq_zero <;> assumption
 
-theorem range_of_pow_g (B : Base) (i : Fin 2) (z : ℂ) (hz : z ^ B.host.g i = 1) : ∃ r : B.LL, B.embLL r = z := by
-  have hp := B.host.g_prime i
-  obtain ⟨ζ, -, hζ⟩ := B.roots_Ks (B.host.g i * (B.host.g i - 1)) (by fin_cases i <;> simp)
-  have hne : B.host.g i * (B.host.g i - 1) ≠ 0 := mul_ne_zero hp.ne_zero (by have := hp.two_le; omega)
-  have hprim := Complex.isPrimitiveRoot_exp _ hne
-  have : NeZero (B.host.g i * (B.host.g i - 1)) := ⟨hne⟩
-  obtain ⟨k, -, hk⟩ := hprim.eq_pow_of_pow_eq_one (ξ := z) (by rw [pow_mul, hz, one_pow])
-  exact ⟨ζ ^ k, by rw [map_pow, hζ, hk]⟩
-
 end GlobalTheory.Mem.Col2.TC.PsiRat
 
 open GlobalTheory.Mem.Col2.TC.PsiRat in
 theorem GlobalTheory.Mem.Col2.TC.additiveCharacter_typePrimes_values_coefficientField : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)), ∀ (G : GLoc (I.rec7 l Z).host.F (I.rec7 l Z).host.E (sigD (I.rec7 l Z)) (I.rec7 l Z).host.g), I.IdG l Z G → ∀ j v h x, ∃ r : B.LL, B.embLL r = G.psi0 j v h x := by
   intro B X I _ _ l Z G _ j v h x
-  refine range_of_pow_g B j _ ?_
+  refine GlobalTheory.Mem.Top.ColOwe.mem_range_of_pow_g B j _ ?_
   rw [← AddChar.map_nsmul_eq_pow, nsmul_eq_mul]
   have h0 := natCast_resField_eq_zero _ v _ h
   erw [h0]

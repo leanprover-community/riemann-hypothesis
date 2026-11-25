@@ -160,7 +160,6 @@ end GlobalTheory.CompanionTheory.Ar.Cusp.Univ.MemBall
 
 namespace GlobalTheory.CompanionTheory.Ar.Cusp.Univ
 
-
 open MemBall in
 theorem mem_ballDom_iff_posDef_bigZe {Ψ : Type} [Fintype Ψ] [DecidableEq Ψ] {j j' n g : ℕ} (e : Ix Ψ j j' ≃ Fin g)
     (q : Ψ × Fin j × Fin j' ≃ Fin n) (t : Fin n → ℂ) :
@@ -935,23 +934,15 @@ theorem span_single_eq_eigSp {ι : Type} (σ : Ψ → (𝓞 E →+* ℂ)) (e : I
       obtain ⟨i, rfl⟩ := h2 k hs
       exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
 
-
 omit [NumberField E] in
 theorem conj_ne (σ : Ψ → (𝓞 E →+* ℂ)) (h : IsCMFam σ) (τ τ' : Ψ) : σ τ' ≠ (starRingEnd ℂ).comp (σ τ) :=
   fun hc => ((h.2 (σ τ)).1 ⟨τ, rfl⟩) ⟨τ', hc⟩
-
 
 omit [NumberField E] in
 theorem conj_comp_inj {s t : 𝓞 E →+* ℂ} (h : (starRingEnd ℂ).comp s = (starRingEnd ℂ).comp t) : s = t := by
   ext a
   have := congrArg (starRingEnd ℂ) (RingHom.congr_fun h a)
   simpa using this
-
-
-omit [NumberField E] in
-theorem conj_conj_comp (s : 𝓞 E →+* ℂ) : (starRingEnd ℂ).comp ((starRingEnd ℂ).comp s) = s := by
-  ext a
-  simp
 
 theorem span_single_eigenspace [IsCMField E] [Fintype Ψ] (σ : Ψ → (𝓞 E →+* ℂ)) (e : Ix Ψ j j' ≃ Fin g)
     (B : 𝓞 E →+* Module.End ℂ (Fin g → ℂ)) (hcm : IsCMFam σ) (hB : ∀ a x k, B a x k = emb σ (e.symm k) a * x k) (τ : Ψ) :
@@ -969,7 +960,7 @@ theorem span_single_eigenspace [IsCMField E] [Fintype Ψ] (σ : Ψ → (𝓞 E �
         exact ⟨b, rfl⟩
       · have h : (starRingEnd ℂ).comp (σ τ') = σ τ := hk
         refine absurd ?_ (conj_ne σ hcm τ τ')
-        rw [← h, conj_conj_comp]
+        rw [← h, LevelTowerAlt.cj_cj]
   · refine span_single_eq_eigSp σ e B hB _ (fun i : Fin j => e (Sum.inr i, τ)) (fun i => ?_) fun k hk => ?_
     · simp [emb]
     · obtain ⟨⟨u, τ'⟩, rfl⟩ := e.surjective k

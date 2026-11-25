@@ -49,10 +49,6 @@ open scoped CategoryTheory.Obj
 
 namespace GlobalTheory.PolDeg.Taut
 
-end GlobalTheory.PolDeg.Taut
-
-namespace GlobalTheory.PolDeg.Taut
-
 variable {R : Type} [CommRing R] [IsDomain R]
 
 theorem gm_jK_unitOn (w : Rˣ) (z : (TK R).left) :
@@ -66,21 +62,5 @@ theorem gm_jK_unitOn (w : Rˣ) (z : (TK R).left) :
     (Scheme.ΓSpecIso_inv_naturality (CommRingCat.ofHom (algebraMap R (FractionRing R))))
   simp only [CommRingCat.hom_comp, RingHom.comp_apply, CommRingCat.hom_ofHom] at this
   exact this.symm
-
-end GlobalTheory.PolDeg.Taut
-
-namespace GlobalTheory.PolDeg.Taut
-
-end GlobalTheory.PolDeg.Taut
-
-namespace GlobalTheory.PolDeg.Taut
-
-end GlobalTheory.PolDeg.Taut
-
-namespace GlobalTheory.PolDeg.Taut
-
-end GlobalTheory.PolDeg.Taut
-
-namespace GlobalTheory.PolDeg.Taut
 
 end GlobalTheory.PolDeg.Taut

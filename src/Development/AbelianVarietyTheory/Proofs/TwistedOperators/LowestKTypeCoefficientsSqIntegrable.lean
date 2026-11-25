@@ -136,9 +136,9 @@ def frameEquiv (B : Matrix (Fin p ⊕ Fin q) (Fin n) ℂ) (hB : Bᴴ * Formalism
     inUJ_conj hB hn (g : Formalism.UG.Upq p q).2⟩
   invFun k := (⟨(unitsConj (frameInv ε B) B (mul_frameInv hB hn) (frameInv_mul hB)).symm k.1,
     upq_conj hB hn k.2⟩ : Formalism.UG.Upq p q)
-  left_inv g := Subtype.ext ((unitsConj _ _ _ _).symm_apply_apply _)
-  right_inv k := Subtype.ext ((unitsConj _ _ _ _).apply_symm_apply _)
-  map_mul' g k := Subtype.ext (map_mul (unitsConj _ _ _ _) _ _)
+  left_inv _ := Subtype.ext ((unitsConj _ _ _ _).symm_apply_apply _)
+  right_inv _ := Subtype.ext ((unitsConj _ _ _ _).apply_symm_apply _)
+  map_mul' _ _ := Subtype.ext (map_mul (unitsConj _ _ _ _) _ _)
   continuous_toFun := ((unitsConj _ _ _ _).continuous.comp continuous_subtype_val).subtype_mk _
   continuous_invFun := ((unitsConj _ _ _ _).symm.continuous.comp continuous_subtype_val).subtype_mk _
 

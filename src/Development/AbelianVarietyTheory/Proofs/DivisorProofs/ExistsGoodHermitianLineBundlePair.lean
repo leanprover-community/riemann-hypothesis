@@ -338,13 +338,11 @@ theorem exists_good_pair : GlobalTheory.Published.ArCalc → ∀ (k : Type) [Com
       have := hs_le σ y
       have h4 : Real.exp (-(((1 : ℤ) : ℝ) * c)) ≤ 1 := by
         apply Real.exp_le_one_iff.2; push_cast; linarith
-      have h5 := P.nu_nonneg 0 1 σ y (e s₀)
       nlinarith [Real.exp_pos (-(((1 : ℤ) : ℝ) * c))]⟩
     s_ne := hsne
     t_mem := ⟨htH, fun σ y => by
       rw [Pair.nu_shiftA]
       have := ht_le σ y
-      have h5 := P.nu_nonneg (-1) b σ y (e' u)
       calc P.nu (-1) b σ y (e' u) * Real.exp (-((b : ℤ) * c)) ≤ C * C⁻¹ :=
             mul_le_mul this hexpb (Real.exp_pos _).le hCpos.le
         _ = 1 := mul_inv_cancel₀ hCpos.ne'⟩

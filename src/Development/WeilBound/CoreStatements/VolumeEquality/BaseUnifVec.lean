@@ -23,17 +23,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi
 open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp GlobalTheory.VerticalDeriv GlobalTheory.FibreDeriv
 
-theorem vecHolPre {V V' : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] [NormedAddCommGroup V'] [NormedSpace ℂ V']
-    {X : Scheme.{0}} {B : Set V} {C : Set V'} {y : V → (Sp ℂ ⟶ X)} {φ : V' → V} (h : IsHolTo B y)
-    (hC : IsOpen C) (hφ : DifferentiableOn ℂ φ C) (hm : Set.MapsTo φ C B) : IsHolTo C (fun c => y (φ c)) := by
-  intro U f
-  have hs : {c ∈ C | ⊤ ≤ y (φ c) ⁻¹ᵁ U} = C ∩ φ ⁻¹' {b ∈ B | ⊤ ≤ y b ⁻¹ᵁ U} := by
-    ext c
-    exact ⟨fun hc => ⟨hc.1, hm hc.1, hc.2⟩, fun hc => ⟨hc.1, hc.2.2⟩⟩
-  refine ⟨?_, ?_⟩
-  · rw [hs]; exact hφ.continuousOn.isOpen_inter_preimage hC (h U f).1
-  · exact (h U f).2.comp (hφ.mono fun c hc => hc.1) fun c hc => ⟨hm hc.1, hc.2⟩
-
 theorem vecDetAn {n g : ℕ} {h : (Fin n → ℂ) → Matrix (Fin g) (Fin g) ℂ} {t₀ : Fin n → ℂ}
     (hh : ∀ a b, AnalyticAt ℂ (fun t => h t a b) t₀) : AnalyticAt ℂ (fun t => (h t).det) t₀ := by
   simp only [Matrix.det_apply']
@@ -75,7 +64,7 @@ theorem vecSlice {n g : ℕ} {V : Set (Fin n → ℂ)} {Z : Scheme.{0}} {e : (Fi
 
 theorem vecMono {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] {X : Scheme.{0}} {B C : Set V} {y : V → (Sp ℂ ⟶ X)}
     (h : IsHolTo B y) (hC : IsOpen C) (hm : C ⊆ B) : IsHolTo C y := by
-  have k := vecHolPre (φ := id) h hC differentiableOn_id hm
+  have k := GlobalTheory.HolPeriods.isHolTo_comp (φ := id) h hC differentiableOn_id hm
   exact k
 
 theorem liftFam {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {X X' : Scheme.{0}} {t : SAB H X}

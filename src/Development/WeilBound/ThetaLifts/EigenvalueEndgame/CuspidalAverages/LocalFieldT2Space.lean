@@ -242,10 +242,7 @@ open Filter Topology GlobalTheory.WeilM Matrix
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {n d : ℕ}
 
 variable (k) in
-theorem local_field_t2Space : T2Space k := by
-  letI := IsTopologicalAddGroup.rightUniformSpace k
-  haveI := isUniformAddGroup_of_addCommGroup (G := k)
-  infer_instance
+theorem local_field_t2Space : T2Space k := GlobalTheory.LGrp.t2Space_of_nonarchimedeanLocalField k
 
 variable (k) in
 theorem loc_neBot : NeBot (𝓝[≠] (0 : k)) := by

@@ -128,25 +128,6 @@ theorem norm_wProj_le (j : ℤ) (x : H) : ‖wProj σ j x‖ ≤ ‖x‖ := by
 
 end GroundTheory.Automorphic.ArchWhittaker
 
-namespace GroundTheory.Automorphic.ArchWhittaker
-
-open Matrix NormedSpace Complex MeasureTheory intervalIntegral Filter Topology Set
-open scoped Matrix.Norms.L2Operator Real InnerProductSpace ContDiff
-
-variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
-variable (σ : UnitaryRep FiltrationCocycleLiftCriterion H)
-
-end GroundTheory.Automorphic.ArchWhittaker
-
-namespace GroundTheory.Automorphic.ArchWhittaker
-
-open Matrix NormedSpace Complex MeasureTheory intervalIntegral Filter Topology Set
-open scoped Matrix.Norms.L2Operator Real InnerProductSpace ContDiff
-
-variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
-variable (σ : UnitaryRep FiltrationCocycleLiftCriterion H)
-
-end GroundTheory.Automorphic.ArchWhittaker
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: GroundTheory.AutomorphicForms.ArchimedeanWhittaker.Weights =====

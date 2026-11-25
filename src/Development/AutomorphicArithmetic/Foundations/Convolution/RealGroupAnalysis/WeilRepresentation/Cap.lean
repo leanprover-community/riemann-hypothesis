@@ -257,7 +257,6 @@ theorem UpperTheory.ConvolutionTheory.R2.Fo.eopLift :
       simp only [Submodule.coe_add, Submodule.coe_sum, Submodule.coe_smul, Pi.add_apply, Finset.sum_apply, Pi.smul_apply,
         smul_eq_mul, hΛ _ (hE _) φ hφ, hΛ f hf _ h1]
     have h3 : Λ f (O.dL D Y φ) = ∑ σ : E →+* ℂ, ∑ k, ∑ l, coord σ (Y k l) • Λ f (O.dE D σ k l φ) := by
-      set_option synthInstance.maxHeartbeats 100000 in
         simp only [Ops.dL, LinearMap.sum_apply, LinearMap.smul_apply, map_sum, map_smul]
     rw [h2, h3, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun σ _ => ?_

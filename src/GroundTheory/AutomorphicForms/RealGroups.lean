@@ -45,17 +45,6 @@ instance : LocallyCompactSpace (upperPosSubgroup n ℂ) :=
 noncomputable def kbInvHomeomorphC : GL n ℂ ≃ₜ unitaryGroup n ℂ × upperPosSubgroup n ℂ :=
   kbInvHomeomorph_RCLike
 
-theorem kbInvHomeomorphC_equivariant (q : unitaryGroup n ℂ × upperPosSubgroup n ℂ) (g : GL n ℂ) :
-    kbInvHomeomorphC (Unitary.toUnits q.1 * g * ((q.2 : GL n ℂ))⁻¹) = q * kbInvHomeomorphC g :=
-  kbInvHomeomorph_RCLike_equivariant q g
-
-theorem haarGLComplex_eq_smul_map_kbHomeomorph (μ₀ : Measure (Matrix n n ℂ)) [μ₀.IsAddHaarMeasure]
-    (μK : Measure (unitaryGroup n ℂ)) [μK.IsHaarMeasure]
-    (μB : Measure (upperPosSubgroup n ℂ)) [μB.IsHaarMeasure] :
-    ∃ c : ℝ≥0, c ≠ 0 ∧
-      haarGLComplex μ₀ = c • Measure.map kbHomeomorph (μK.prod μB.inv) :=
-  haarGL_eq_smul_map_kbHomeomorph (haarGLComplex μ₀) μK μB
-
 theorem lintegral_haarGLComplex_iwasawa (μ₀ : Measure (Matrix n n ℂ)) [μ₀.IsAddHaarMeasure]
     (μK : Measure (unitaryGroup n ℂ)) [μK.IsHaarMeasure]
     (μB : Measure (upperPosSubgroup n ℂ)) [μB.IsHaarMeasure] :

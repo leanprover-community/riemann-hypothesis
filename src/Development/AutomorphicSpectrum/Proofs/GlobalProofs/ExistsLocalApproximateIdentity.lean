@@ -241,7 +241,3 @@ end
 
 open NumberField IsDedekindDomain MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.Published.SiegelOneVector GlobalTheory.CompanionTheory.Hypotheses₂.OneV
 open scoped TensorProduct ENNReal
-
-namespace GlobalTheory.CompanionTheory.Hypotheses₂.OneV.DxEuler
-
-end GlobalTheory.CompanionTheory.Hypotheses₂.OneV.DxEuler

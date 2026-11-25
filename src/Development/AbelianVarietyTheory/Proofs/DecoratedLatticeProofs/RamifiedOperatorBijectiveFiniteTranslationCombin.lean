@@ -72,11 +72,9 @@ theorem formAt_eq (β : Frame p S n) (P : Pair k n) {φ : Form k n (GA D S → �
 theorem sum_single_sum (β : Frame p S n) {ι : Type} (s : Finset ι) (g : ι → GL n k) (a : ι → ℂ)
     (φ₀ : GA D S → ℂ) :
     (∑ i ∈ s, Finsupp.single (g i) (a i)).sum (fun h b => b • β.rep h φ₀) = ∑ i ∈ s, a i • β.rep (g i) φ₀ := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | @insert i s hi ih =>
-    simp only [Finset.sum_insert hi, Finsupp.sum_add_index' (h := fun h b => b • β.rep h φ₀) (fun h => zero_smul ℂ (β.rep h φ₀)) (fun h _ _ => add_smul _ _ (β.rep h φ₀)), Finsupp.sum_single_index (h := fun h b => b • β.rep h φ₀) (zero_smul ℂ _), ih]
+  rw [← Finsupp.sum_finsetSum_index (h := fun h b => b • β.rep h φ₀) (fun h => zero_smul ℂ (β.rep h φ₀))
+    (fun h _ _ => add_smul _ _ (β.rep h φ₀))]
+  exact Finset.sum_congr rfl fun i _ => Finsupp.sum_single_index (zero_smul ℂ _)
 
 section Ops
 

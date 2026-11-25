@@ -683,14 +683,6 @@ theorem ratC_sum (T : Forms0 D u) {ι : Type} (s : Finset ι) (h : ι → (D.mem
   rw [map_sum, Finset.sum_apply, Finset.sum_apply]
   exact Finset.sum_congr rfl fun i hi => hPe i hi z
 
-theorem fnOf_trR (s : D.what₂.Tau → ℤ) (M : D.what₂.Tau → Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) ℂ)
-    (P : MvPolynomial (D.what₂.Tau × Fin (D.R.N 0) × Fin (D.R.N 0)) ℂ) (g : GL (Fin (D.R.N 0)) D.host.E)
-    (hg : g ∈ UJ (sigD D : D.host.E →+* D.host.E) (gramN D 0 (Nat.zero_le _)))
-    (y : Frames (gramC (gramN D 0 (Nat.zero_le _)) (embT D))) :
-    fnOf _ s M P (frameTranslate (embT D) (fun τ x => embedding_conj_compat D τ x) g hg y) =
-      fnOf _ s (fun τ => M τ * atInf (embT D) (g : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) τ) P y := by
-  simp only [fnOf, LinearMap.coe_mk, AddHom.coe_mk, frameTranslate, Matrix.mul_assoc]
-
 theorem atInf_ratO (M : Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) D.host.E) (τ : D.what₂.Tau) (a b : Fin (D.R.N 0)) :
     atInf (embT D) M τ a b ∈ ratO D := by
   show embT D τ (M a b) ∈ ratO D
@@ -716,7 +708,7 @@ theorem ratC_tr (T : Forms0 D u) (hC : LocalLatticeBases.ChiFin0 T)
       fnOf _ (shiftOf (lamT u 0)) (fun τ => N τ * (1 : D.what₂.Tau → Matrix (Fin (D.R.N 0)) (Fin (D.R.N 0)) ℂ) τ) P
         (T.val0.eY z) := by
     intro z
-    rw [hPe, Equiv.apply_symm_apply, fnOf_trR]
+    rw [hPe, Equiv.apply_symm_apply, PI.UnitaryGroupMassFormula.IAT.fnOf_tr]
     simp only [hNdef, Pi.one_apply, one_mul, mul_one]
   have e2 : ((((T.cls0.lev.chi κ)⁻¹ : ℂˣ)) : ℂ) = D.what₂.embLL r⁻¹ := by
     rw [map_inv₀, Units.val_inv_eq_inv_val]

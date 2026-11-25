@@ -120,7 +120,7 @@ theorem UpperTheory.V.Z.Sym.Al.isoCopy :
       Representation.IntertwiningMap.equivLinearMapAsModule ν μ
         ((q i).intertwiningMap_of_isIntertwiningMap ν μ (hq i))
     have hinj : Function.Injective (LinearMap.pi Q) := by
-      set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+      rw [injective_iff_map_eq_zero]
       intro x hx
       exact hsep x fun i => congrFun hx i
     have hNs : IsSemisimpleModule (MonoidAlgebra ℂ H) ν.asModule :=

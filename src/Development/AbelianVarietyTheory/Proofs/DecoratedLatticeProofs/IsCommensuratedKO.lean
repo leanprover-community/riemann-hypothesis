@@ -421,18 +421,6 @@ theorem isInt_and_mul_torus_iff {ϖ : kˣ} (hϖ : valuation k (ϖ : k) = uniform
   · intro h
     exact ⟨fun i j => ((key _ _).2 (h i j)).1, fun i j => ((key _ _).2 (h i j)).2⟩
 
-theorem out_eq_mul {r : GL (Fin n) k} {c : GL (Fin n) k ⧸ KO k (Fin n)}
-    (h : (r : GL (Fin n) k ⧸ KO k (Fin n)) = c) : ∃ κ ∈ KO k (Fin n), c.out = r * κ := by
-  subst h
-  obtain ⟨κ, hκ⟩ := QuotientGroup.mk_out_eq_mul (KO k (Fin n)) r
-  exact ⟨κ, κ.2, hκ⟩
-
-theorem smul_out (u : GL (Fin n) k) (c : GL (Fin n) k ⧸ KO k (Fin n)) :
-    ∃ κ ∈ KO k (Fin n), (u • c).out = u * c.out * κ := by
-  apply out_eq_mul
-  conv_rhs => rw [← QuotientGroup.out_eq' c]
-  rfl
-
 theorem hasSum_pair (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     (n : ℕ) (ϖ : kˣ) (hϖ : valuation k (ϖ : k) = uniformizer k) (e : Fin n → ℤ) (g : GL (Fin n) k)
     (hg : g ∈ cell k (Fin n) ϖ e) (X : ℂ) (hX : ∀ i : Fin n, ‖(resCard k : ℂ) ^ (i : ℕ) * X ^ 2‖ < 1) :
@@ -450,7 +438,7 @@ theorem hasSum_pair (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [
       {h : GL (Fin n) k ⧸ KO k (Fin n) // (∀ i j, (h.out⁻¹ : GL (Fin n) k).1 i j ∈ 𝒪[k]) ∧
         (∀ i j, (h.out⁻¹ * g : GL (Fin n) k).1 i j ∈ 𝒪[k])} :=
     (MulAction.toPerm u).subtypeEquiv fun c => by
-      obtain ⟨κ, hκ, h⟩ := smul_out u c
+      obtain ⟨κ, hκ, h⟩ := GlobalTheory.HeckeShift.out_smul u c
       refine Iff.trans ?_ (hP (u • c).out).symm
       have : (u * c.out * κ)⁻¹ * u = κ⁻¹ * c.out⁻¹ := by group
       rw [h, this, isInt_KO_mul_iff (inv_mem hκ)]
@@ -460,7 +448,7 @@ theorem hasSum_pair (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [
   simp only [inv_one, mul_one] at hN
   rw [← E.hasSum_iff]
   refine (congrArg (HasSum · _) (funext fun c => ?_)).mpr hN
-  obtain ⟨κ, hκ, h⟩ := smul_out u c.1
+  obtain ⟨κ, hκ, h⟩ := GlobalTheory.HeckeShift.out_smul u c.1
   have hE : (E c).1.out = u * c.1.out * κ := h
   have hj := ord_nonneg_of_le_one (valuation_det_le_one (A := c.1.out⁻¹) c.2)
   have habs : ∑ i, |e i| = ∑ i, e i - 2 * ∑ i, min (e i) 0 := by

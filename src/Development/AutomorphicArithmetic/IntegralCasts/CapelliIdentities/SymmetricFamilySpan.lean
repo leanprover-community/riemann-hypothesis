@@ -18,7 +18,7 @@ private theorem UpperTheory.Reformulated.B.SymmetricFamilySpan.prod_span_mem {R 
   simpa only [e, SetLike.mem_coe] using h t ht
 
 theorem UpperTheory.Reformulated.B.SymmetricFamilySpan.symFam_span :
-    ∀ {O : Type} [inst : CommRing O] [inst_1 : IsDomain O] {C0 CE1 CE2 : ℝ}
+    ∀ {O : Type} [CommRing O] [IsDomain O] {C0 CE1 CE2 : ℝ}
     {X : Formalism.MainNotions.ColumnSystems.Loc} (β : Formalism.MainNotions.ColumnSystems.Pf.GlobalTheory X)
     (G :
       (j : Fin (Formalism.MainNotions.G.numSeg X.TT)) →

@@ -636,7 +636,7 @@ theorem pnorm_le_of_bdd : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (om : GA D S 
   intro D S T C om hW Lv hn M hw hM hMm B hB f' _hbase c c' z φ hz _hγ _hk v₀ μ _hvac _hμ ep cf hepcf gL hgL F
     _hFd hFb hFφ hφb
   obtain ⟨K, hKφ⟩ := hφb
-  obtain ⟨o, b, -, -, hob, -⟩ := GlobalTheory.Ker.exists_orthonormalisation D.host.E T.rank C.X
+  obtain ⟨o, b, hob⟩ := GlobalTheory.Ker.exists_orthonormalisation D.host.E T.rank C.X
   have hJ := (GlobalTheory.Ker.onBasis_frame_period D S T C).2
   have hmv : ∀ a, C.IsB (C.mvB a B) := fun a => ((hJ B hB).2.2.2.2.2 a).1
   have hdom : ∀ a, C.xB (C.mvB a B) ∈ C.X.dom := fun a => (hJ _ (hmv a)).2.1
@@ -835,7 +835,7 @@ theorem exists_real_point {D : D7} {S T : HSp D} (C : Ctx S T)
 
 theorem frame_decomp : ∀ (D : D7) (S T : HSp D) (C : Ctx S T) (B : C.Bas), C.IsB B → ∀ x ∈ C.X.dom, ∃ a ∈ GinfC T, ∃ b ∈ Bor C.X.Ψ T.rank, x = rmul (C.xB (C.mvB a B)) b := by
   intro D S T C B hB x hx
-  obtain ⟨o, b, -, -, hob, -⟩ := GlobalTheory.Ker.exists_orthonormalisation D.host.E T.rank C.X
+  obtain ⟨o, b, hob⟩ := GlobalTheory.Ker.exists_orthonormalisation D.host.E T.rank C.X
   obtain ⟨hon, hbB, hxeq, -, -⟩ := hob x hx
   have hz : IsONFr C.X (C.xB B) := GlobalTheory.Ker.ONBasis.isONFr_xB C hB
   have hzdom : C.xB B ∈ C.X.dom := GlobalTheory.Ker.ONBasis.mem_dom C.X hz

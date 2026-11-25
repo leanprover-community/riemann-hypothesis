@@ -345,7 +345,6 @@ theorem main (W R : Type) [CommRing W] [IsDomain W] [CommRing R] [IsDomain R] [I
       linarith [hpos' χ hχ]
     have hni : 0 < n i := by
       have h1 : (M : ℤ) * δ' i χ χ = 2 * (n i : ℤ) := (hsm i χ).symm.trans (hn i)
-      have h3 : (1 : ℤ) ≤ M := by exact_mod_cast hM
       have : (0 : ℤ) < n i := by nlinarith
       exact_mod_cast this
     refine Ideal.mul_mem_left _ _ ?_
@@ -368,7 +367,6 @@ theorem main (W R : Type) [CommRing W] [IsDomain W] [CommRing R] [IsDomain R] [I
       rw [Finset.mul_sum, Nat.cast_sum, Finset.mul_sum]
       exact Finset.sum_congr rfl fun i _ => h1 i
     rw [hB] at hlt
-    have h3 : (1 : ℤ) ≤ M := by exact_mod_cast hM
     have hsum : n ≤ ∑ i, k i := by
       have : (n : ℤ) ≤ ((∑ i, k i : ℕ) : ℤ) := by nlinarith
       exact_mod_cast this

@@ -104,7 +104,7 @@ theorem main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E →
     rw [← htu, ← hmτ]
     group
   obtain ⟨s, hs1, hs2⟩ := GlobalTheory.CompanionTheory.UnitaryCorrection.main (w.adicCompletion E) (cj w) hcc hcv
-    (GlobalTheory.T.norm_one_unit_hilbert_ninety E hU w hw) n (wexp n l) hanti.injective hrev u hord m0 hm0e.1 hm0e.2.1
+    (GlobalTheory.CompanionTheory.UnitNormLocal.exists_unit_norm_eq E hU w hw) n (wexp n l) hanti.injective hrev u hord m0 hm0e.1 hm0e.2.1
     (by rw [hδe]; exact hδU)
   have hm1 : m0 * GlobalTheory.SmGL.diagT (w.adicCompletion E) (Fin n) s ∈ iwGL n w :=
     mul_mem hm0 (diagT_mem_iwGL w n s hs1)

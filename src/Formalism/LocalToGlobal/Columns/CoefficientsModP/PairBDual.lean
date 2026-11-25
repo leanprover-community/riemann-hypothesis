@@ -53,8 +53,7 @@ theorem pb_invTr_inv_mulVec (B : GL (Fin n) K) (x : Fin n → K) (a : Fin n) :
 
 theorem pb_isBasisAt_dualFr (w : HeightOneSpectrum (𝓞 K)) (M : Submodule (𝓞 K) (Fin n → K)) (hfg : M.FG)
     (B : GL (Fin n) K) (hB : IsBasisAt w M B) : IsBasisAt w (dualFr M) (inside₂ K n B) := by
-  intros
-  apply _root_.GlobalTheory.DualWeylDual.isBasisAt_dualFr <;> assumption
+  apply GlobalTheory.DualWeylDual.isBasisAt_dualFr <;> assumption
 
 end Tools
 

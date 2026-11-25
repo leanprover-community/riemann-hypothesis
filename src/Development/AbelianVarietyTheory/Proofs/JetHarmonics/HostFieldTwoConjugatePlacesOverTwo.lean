@@ -17,6 +17,7 @@ public import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.OEOsInject
 public import Development.AutomorphicArithmetic.CMTraceForms.CmDatumDiscriminantDepthBounds
 public import Formalism.LocalRingCardinality.HostCls
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.StChartF
+import GroundTheory.GlobalFields.SemilocalAlgebras.NormTrace
 import Mathlib.Algebra.AffineMonoid.Basic
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -251,23 +252,6 @@ private theorem det_linearForms_basis_change {A M O κ : Type} [CommRing A] [Add
     rw [map_smul, Algebra.smul_def]
   rw [key, Matrix.det_mul, Matrix.det_transpose, RingHom.map_det, RingHom.mapMatrix_apply]
 
-private theorem det_blockDiagonal'_eq_prod_det {s : ℕ} {m : Fin s → Type} [∀ i, Fintype (m i)] [∀ i, DecidableEq (m i)]
-    {O : Type} [CommRing O] (d : ∀ i, Matrix (m i) (m i) O) :
-    (Matrix.blockDiagonal' d).det = ∏ i, (d i).det := by
-  rw [(Matrix.blockTriangular_blockDiagonal' d).det_fintype]
-  refine Finset.prod_congr rfl fun k _ => ?_
-  let e : m k ≃ {x : (Σ i, m i) // x.1 = k} :=
-    { toFun := fun a => ⟨⟨k, a⟩, rfl⟩
-      invFun := fun x => cast (congrArg m x.2) x.1.2
-      left_inv := fun a => rfl
-      right_inv := by
-        rintro ⟨⟨i, a⟩, rfl⟩
-        rfl }
-  rw [← Matrix.det_submatrix_equiv_self e]
-  congr 1
-  ext a b
-  simp [Matrix.toSquareBlock_def, Matrix.blockDiagonal'_apply, e]
-
 private theorem valuation_intCast_eq_pow_padicValInt {C : Type} [Field C] [CharZero C] {v : Valuation C NNReal} {O : Type}
     [CommRing O] [Algebra O C] (hv : v.Integers O) (p : ℕ) [hp : Fact p.Prime]
     (hpO : ¬ IsUnit (p : O)) (a : ℤ) (ha : a ≠ 0) :
@@ -487,7 +471,7 @@ theorem UpperTheory.discr_CMDatum_eq_prod_places :
           rw [tauExt_comp_star_eq_tauExt_sig, UpperTheory.PlacesDiscr.sig_sig]
           exact hz2 _ i (hE i b) j hij (B j a)
     have hdetN : (Matrix.of fun m k => tauExt (ρ k) (γs m)).det = ∏ i, ((A i).det * (A i).det) := by
-      rw [hblock, det_blockDiagonal'_eq_prod_det]
+      rw [hblock, GroundTheory.Global.SemiLocal.det_blockDiagonal']
       simp only [Matrix.det_fromBlocks_zero₂₁]
     have hcι : Fintype.card (Module.Free.ChooseBasisIndex ℤ (𝓞 E))
         = Fintype.card (Σ i : Fin s, (Fin (w i).n ⊕ Fin (w i).n)) := by
@@ -844,11 +828,6 @@ namespace UpperTheory.TraceSumEquivalence
 
 end UpperTheory.TraceSumEquivalence
 
-open UpperTheory.TraceSumEquivalence in
-theorem UpperTheory.trace_form_decomposition_CMDatum :
-    ∀ (E : Type) [Field E] [NumberField E] (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C], v.Integers O → ∀ [Algebra ℤ_[p] O] (e : ℤ_[p] ⊗[ℤ] 𝓞 E), e * e = e →
-      Nonempty (Fin (Module.finrank ℤ_[p] (LinearMap.range (LinearMap.mulLeft ℤ_[p] e))) ≃ Emb (O := O) e) ∧ Nat.card (𝓞 E →+* O) = Module.finrank ℚ E := by
-  apply GlobalTheory.EmbCount.card_emb
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.CMTraceForms.TraceFormDecompositionCMDatum =====
@@ -900,7 +879,7 @@ theorem UpperTheory.splitPlaces_discriminantDepth_of_splitAt :
   have hsq : ∀ σ : 𝓞 E →+* O, σ H.rt ^ 2 = -(H.d : O) := fun σ => by
     rw [← map_pow, H.rt_sq]; simp
   have hsurj : Function.Surjective τO := by
-    have hc := (UpperTheory.trace_form_decomposition_CMDatum E p C v O hv 0 (by simp)).2
+    have hc := (GlobalTheory.EmbCount.card_emb E p C v O hv 0 (by simp)).2
     haveI : Finite (𝓞 E →+* O) := Nat.finite_of_card_ne_zero (by omega)
     refine (hinj.bijective_of_nat_card_le ?_).2
     rw [hc, Nat.card_eq_fintype_card, Embeddings.card E ℂ]
@@ -956,7 +935,7 @@ theorem UpperTheory.splitPlaces_discriminantDepth_of_splitAt :
     rw [← map_sum, hsum, hs]
   obtain ⟨hn, hvd⟩ := UpperTheory.discr_CMDatum_eq_prod_places E p C v O hv s w horth hone hcross
   have t : ∀ i, Fin (w i).n ≃ Emb (O := O) (w i).e := fun i =>
-    (UpperTheory.trace_form_decomposition_CMDatum E p C v O hv (g i) (hg i).1).1.some
+    (GlobalTheory.EmbCount.card_emb E p C v O hv (g i) (hg i).1).1.some
   obtain ⟨vdi, hv1, hv2⟩ := hvd t
   have hup : ∀ (x y : ℤ_[p] ⊗[ℤ] 𝓞 E) (σ : 𝓞 E →+* O), x * y = x → σ ∈ Emb (O := O) x → σ ∈ Emb (O := O) y := by
     intro x y σ hxy hx

@@ -69,9 +69,6 @@ def cPsi (δ : D.host.E) (v : D.what₂.Tau) : ℂ := 4 * (Real.pi : ℂ) / plEm
 
 def kaV (δ : D.host.E) (v : D.what₂.Tau) : ℝ := 2 * Real.pi / ‖plEmb D v δ‖
 
-def dualPsi (δ : D.host.E) (L : Submodule ℤ D.host.E) : Set D.host.E :=
-  {l | ∀ c ∈ L, ∃ z : ℤ, Algebra.trace ℚ D.host.E (l * c / δ) = (z : ℚ)}
-
 def FullLat (L : Submodule ℤ D.host.E) : Prop :=
   L.FG ∧ Submodule.span ℚ (L : Set D.host.E) = ⊤
 

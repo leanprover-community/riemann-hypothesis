@@ -573,12 +573,6 @@ theorem dV_ne : dV v ≠ 0 := by
   · exact h.choose_spec.1
   · exact one_ne_zero
 
-theorem alp_ne (r : ℕ) (a : Fin (r + 1)) : alp v r a ≠ 0 := by
-  unfold alp
-  split_ifs
-  · exact pow_ne_zero _ (inv_ne_zero (dV_ne v))
-  · exact one_ne_zero
-
 end Alg
 
 section Main
@@ -619,7 +613,7 @@ theorem uo_of_mem {y : HA (Fv F v) σ J}
         sc (E := E) v (alp v r b) := by
       rw [sc_mul]
       congr 1
-      field_simp [alp_ne v r a]
+      field_simp [PI.LocMassTypW.alp_ne' v r a]
     calc c a * sc (E := E) v (alp v r a)
         = uMat v x a b * (sc (E := E) v ((alp v r a)⁻¹ * alp v r b) *
             sc (E := E) v (alp v r a)) := by simp only [c]; ring

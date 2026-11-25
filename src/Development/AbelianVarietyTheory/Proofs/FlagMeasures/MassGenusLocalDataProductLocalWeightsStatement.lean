@@ -630,16 +630,6 @@ variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
 variable {M : Model F E} {V : Type} [AddCommGroup V] [Module E V] {H : HermSp M V} {r : ℕ}
 
-theorem perpX_of (Fr : FrameD H r) {k : V} (h : ∀ a : Fin r, H.h k (Fr.f a.castSucc) = 0) :
-    k ∈ H.perp (H.X Fr.f) := by
-  intro x hx
-  unfold HermSp.X at hx
-  induction hx using Submodule.span_induction with
-  | mem x hx => obtain ⟨a, rfl⟩ := hx; exact h a
-  | zero => rw [H.h_herm 0 _, H.h_zero_left, map_zero]
-  | add x y _ _ hx hy => rw [H.h_herm (x + y) _, H.h_add_left, map_add (f := _), ← H.h_herm, ← H.h_herm, hx, hy, add_zero]
-  | smul c x _ hx => rw [H.h_herm (c • x) _, H.h_smul_left, map_mul, ← H.h_herm, hx, mul_zero]
-
 theorem mkW_eq (Fr : FrameD H r) {x y : ↥(H.perp (H.X Fr.f))} (h : (x : V) - y ∈ H.X Fr.f) :
     H.mkW Fr.f x = H.mkW Fr.f y := by
   unfold HermSp.mkW

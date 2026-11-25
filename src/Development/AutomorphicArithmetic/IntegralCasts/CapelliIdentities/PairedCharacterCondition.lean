@@ -6,8 +6,8 @@ public import Mathlib.NumberTheory.NumberField.Basic
 
 noncomputable def UpperTheory.Reformulated.B.PairedCharacterCondition.TrScale :
     Prop :=
-    ∀ (K : Type) [inst : Field K] [NumberField K] (V : Type) [inst_2 : AddCommGroup V] [inst_3 : _root_.Module K V]
-      [inst_4 : _root_.Module (NumberField.RingOfIntegers K) V] [IsScalarTower (NumberField.RingOfIntegers K) K V]
+    ∀ (K : Type) [Field K] [NumberField K] (V : Type) [AddCommGroup V] [_root_.Module K V]
+      [_root_.Module (NumberField.RingOfIntegers K) V] [IsScalarTower (NumberField.RingOfIntegers K) K V]
       (M : Submodule (NumberField.RingOfIntegers K) V),
       Submodule.span K (↑M : Set V) = ⊤ → ∀ (f : V), ∃ (m : ℤ), m ≠ (0 : ℤ) ∧ (↑m : K) • f ∈ M
 

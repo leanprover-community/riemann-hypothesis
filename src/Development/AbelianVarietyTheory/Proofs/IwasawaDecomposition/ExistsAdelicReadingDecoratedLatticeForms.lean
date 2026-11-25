@@ -357,8 +357,6 @@ namespace GlobalTheory.Mem.R3.BrgRead
 
 
 
-alias embLL_labLL_eq := _root_.GlobalTheory.CoefSpace.embLL_labLL
-
 theorem gram_V (X : Stages) (h : DiagSpaces X.toD7.sp) (i : Fin X.toD7.R.m) : (Vc X.toD7 i).gram = 1 := by
   obtain ⟨hs, -, -, -, -, hV⟩ := h
   have h1 := hV ((i : ℕ) + 1)
@@ -446,7 +444,7 @@ theorem exists_brgL : ∀ (X : Stages) (px : PreX X.B.toPre) (I : Col2.ColIn X.B
       tie := ⟨gramR, c0R, c0L,
         { ranks := ⟨rfl, rfl, rfl⟩
           v0 := rfl
-          tauL_ok := fun τ => RingHom.ext fun x => embLL_labLL_eq τ x
+          tauL_ok := fun τ => RingHom.ext fun x => GlobalTheory.CoefSpace.embLL_labLL τ x
           pl_inj := fun a b h => Subtype.ext h
           q := fun P => rfl
           S_fin := Set.toFinite _

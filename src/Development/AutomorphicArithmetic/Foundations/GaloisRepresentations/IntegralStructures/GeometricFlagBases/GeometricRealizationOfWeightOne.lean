@@ -367,10 +367,6 @@ end GlobalTheory.LKDef.TermPair
 
 namespace GlobalTheory.LKDef.TermPair
 
-theorem mem_map_conj {H : Type} [Group H] (K : Subgroup H) (a x : H) :
-    x ∈ K.map (MulAut.conj a).toMonoidHom ↔ a⁻¹ * x * a ∈ K := by
-  rw [Subgroup.mem_map_equiv]; simp [MulAut.conj_symm_apply]
-
 theorem conj_mem_iff {H : Type} [Group H] (K : Subgroup H) (a h k y : H) (hk : k ∈ K) :
     (a * h * k)⁻¹ * y * (a * h * k) ∈ K ↔ h⁻¹ * (a⁻¹ * y * a) * h ∈ K := by
   have e : (a * h * k)⁻¹ * y * (a * h * k) = k⁻¹ * (h⁻¹ * (a⁻¹ * y * a) * h) * k := by group
@@ -442,7 +438,7 @@ theorem termAt_eq (P : DPair G) (hm : (P.γ, P.c) ∈ GlobalTheory.LKCx.grp G P.
         Subgroup.centralizer {(⟨(P.γ, P.c), hm⟩ : GlobalTheory.LKCx.grp G P.β)} : Subgroup _) =
         Nat.card (stab (GlobalTheory.LKCx.toAfF G P.β x t hx) (GlobalTheory.LKCx.toP1 G P.β) Kf K' h ⊓ Subgroup.centralizer {(⟨(P.γ, P.c), hm⟩ : GlobalTheory.LKCx.grp G P.β)} : Subgroup _) := by
       refine card_eq_of_conj _ _ v fun w => ?_
-      simp only [stab, Subgroup.mem_inf, Subgroup.mem_comap, mem_map_conj, MonoidHom.prod_apply, Prod.fst_mul,
+      simp only [stab, Subgroup.mem_inf, Subgroup.mem_comap, GlobalTheory.HeckeTrace.mem_map_conj, MonoidHom.prod_apply, Prod.fst_mul,
         Prod.snd_mul]
       rw [conj_mem_iff _ _ _ _ _ hk1, conj_mem_iff _ _ _ _ _ hk2, map_mul, map_mul, map_mul, map_mul, map_inv,
         map_inv]
@@ -465,7 +461,7 @@ theorem termAt_eq (P : DPair G) (hm : (P.γ, P.c) ∈ GlobalTheory.LKCx.grp G P.
   · intro h
     have hmem : ∀ w, Subgroup.inclusion hle w ∈ stab (GlobalTheory.LKCx.toAfF G P.β x t hx) (GlobalTheory.LKCx.toP1 G P.β) Kf K' (((1 : G.GAf), z) * h) ↔
         w ∈ stab (P.toAf x t hx) (P.toQr 1 z) Kf K' h := fun w => by
-      simp only [stab, Subgroup.mem_inf, Subgroup.mem_comap, mem_map_conj, Prod.fst_mul, Prod.snd_mul, one_mul, e1, e2]
+      simp only [stab, Subgroup.mem_inf, Subgroup.mem_comap, GlobalTheory.HeckeTrace.mem_map_conj, Prod.fst_mul, Prod.snd_mul, one_mul, e1, e2]
       have e3 : (z * h.2)⁻¹ * (GlobalTheory.LKCx.toP1 G P.β) (Subgroup.inclusion hle w) * (z * h.2) =
           h.2⁻¹ * (z⁻¹ * (GlobalTheory.LKCx.toP1 G P.β) (Subgroup.inclusion hle w) * z) * h.2 := by group
       rw [e3]
@@ -684,7 +680,6 @@ theorem conjAct_smul_eq_map' {H : Type} [Group H] (g : H) (S : Subgroup H) :
   rfl
 end GlobalTheory.DefVanish
 
-
 open GlobalTheory.DefVanish in
 theorem GlobalTheory.LKDef.DForm.centSum_eq_zero_of_orbK : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p), G.a = 1 →
     ∀ (L : G.Level) (f : G.GAf → ℂ), IsTest (MonoidHom.id _) L.K.toSubgroup L.K.toSubgroup f →
@@ -819,12 +814,6 @@ def MoveDefInv : Prop :=
     ∀ (Kf : Subgroup G.GAf) (f : G.GAf → ℂ) (r : ℕ) (K : Subgroup (Gr G r)) (φ : Gr G r → ℂ),
       0 < r → (∀ k ∈ Kf, ∀ g, f (k⁻¹ * g * k) = f g) → (∀ k ∈ K, ∀ g, φ (k⁻¹ * g * sigG G r k) = φ g) →
       markedSumIrr G wt sel Kf f r K φ = dSumIrr G wt Kf f r K φ
-
-namespace MoveEx
-
-open GlobalTheory.LKTrip.Example GlobalTheory.LKMid.Example
-
-end MoveEx
 
 end GlobalTheory.LKDef
 end -- clump:auto

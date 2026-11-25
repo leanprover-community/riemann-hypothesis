@@ -392,9 +392,6 @@ private theorem move_central {G : Type} [Group G] (C g D W : G) (hc : ∀ x, C *
   calc W⁻¹ * (g * (C * D) * g⁻¹ * W) = (W⁻¹ * C) * (g * D * g⁻¹ * W) := by rw [e5]; group
     _ = _ := by rw [e6]; group
 
-private theorem evU_val {K : Type} [Field K] {τ a : K} (h : a * a = τ * a - 1) (z : (Etau K τ)ˣ) :
-    ((evU h z : Kˣ) : K) = (z : Etau K τ).re + a * (z : Etau K τ).im := rfl
-
 private theorem quot_pow_zero {R : Type} [CommRing R] (I : Ideal R) : Subsingleton (R ⧸ I ^ 0) :=
   Ideal.Quotient.subsingleton_iff.2 (by rw [pow_zero, Ideal.one_eq_top])
 
@@ -467,10 +464,10 @@ private theorem diagonal_orbit_admissible : OkDOrb := by
       ((eD hs).comp j) hj (t * h) ha
     obtain ⟨hre, him⟩ := re_im hz
     have hb : ((evU (root_right (t * h)) z : kˣ) : k) = 1 + ((t * h)⁻¹ : kˣ) := by
-      rw [evU_val, hre, him, mul_one]
+      rw [UpperTheory.V.Z.Sym.Sig.ev_coe, hre, him, mul_one]
     have hzL : evU (root_left (t * h)) z = (t * h) * evU (root_right (t * h)) z := by
       apply Units.ext
-      rw [Units.val_mul (t * h) _, hb, evU_val, hre, him, mul_one, mul_add, mul_one, Units.mul_inv, add_comm]
+      rw [Units.val_mul (t * h) _, hb, UpperTheory.V.Z.Sym.Sig.ev_coe, hre, him, mul_one, mul_add, mul_one, Units.mul_inv, add_comm]
     obtain ⟨hFK, hOK⟩ := hK _ hb
     have hjz := hj z
     rw [hzL] at hjz

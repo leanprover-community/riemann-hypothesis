@@ -164,7 +164,6 @@ open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheor
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
 open Matrix
 
-alias _root_.GlobalTheory.T.idempotentCut_mem_latticeStabilizer_of_productLevel := _root_.GlobalTheory.CutProdLev.cutGL_mem_St_of_mem_prodLev
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.IdempotentCutMemLatticeStabilizerOfProductLevelStatement =====
@@ -177,8 +176,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.ExpansionInvariance
 open Matrix
-
-
 
 namespace GlobalTheory.IdemPairCpt
 
@@ -239,9 +236,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.L2.DIV
 open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.ExpansionInvariance
-
-
-
 
 noncomputable section
 
@@ -344,7 +338,7 @@ theorem keep_stdLatO : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G 
     simp only [Matrix.map_apply, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul]
     linear_combination h3
   have hK : GlobalTheory.UnitaryIdemCut.cutGL b hb (finG (G.V (.top (j + 1))) k) ∈ St (S.βp (j + 1)) :=
-    GlobalTheory.T.idempotentCut_mem_latticeStabilizer_of_productLevel _ _ _ _ _ hk b hb fun w ⟨PP, hPP, hw⟩ => by
+    GlobalTheory.CutProdLev.cutGL_mem_St_of_mem_prodLev _ _ _ _ _ hk b hb fun w ⟨PP, hPP, hw⟩ => by
       rw [hcb]
       rcases GlobalTheory.IdemSupport.eq_or_eq_cP hw with rfl | rfl
       · rw [(hca _).1 (Or.inl hPP)]; ring
@@ -405,15 +399,6 @@ namespace GlobalTheory.VacMoveLow
 
 variable {D : D7}
 
-theorem halfInd_isSBHalf {S T : HSp D} (e : AE D) (Λ : AddSubgroup (WO S T)) : IsSBHalf e Λ (halfInd e Λ) := by
-  refine ⟨fun x hx => ?_, 1, one_pos, fun u hu hu' x => ?_, fun x hx => ?_⟩
-  · by_contra h; exact hx (ite_eq_right fun h' => h h'.2)
-  · rw [one_smul]
-    have h1 : IsHalf e (x + u) ↔ IsHalf e x := forall₂_congr fun i j => by
-      rw [Matrix.add_apply, mul_add, hu' i j, add_left_inj]
-    exact halfInd_congr (and_congr (AddSubgroup.add_mem_cancel_right _ hu) h1)
-  · rw [one_smul]; by_contra h; exact hx (ite_eq_right fun h' => h h'.1)
-
 theorem om_base_law {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D} {χS χT : (AE D)ˣ →* Circle}
     {om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)} (hW : IsWeilDatumO ψ S T χS χT om)
     {ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)} {ΛT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)}
@@ -426,7 +411,7 @@ theorem om_base_law {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D} {χS χT : (A
   have he' : e * e = e := (GlobalTheory.PlaceModelSum.isOrthSum_of_isIdemSum he).idem
   have key := GlobalTheory.SplitLinear.splitLinearModel D ψ S T χS χT om hW ΛS ΛT hS hT P e he f₀ hf hv 1 one_ne_zero Tm hTm 1 h
     (GlobalTheory.SplitLinear.suppAt_one e S) hh _ _ (GlobalTheory.VecInv.isDetAt_detAt e he' S 1) (GlobalTheory.VecInv.isDetAt_detAt e he' T h)
-    _ (halfInd_isSBHalf e _)
+    _ (Formalism.IndefR.Fin.LevelGroupLemmas.sbHalf_halfInd e _)
   have h0 : Tm (halfInd e (latO S T ΛS ΛT fun _ => True)) = f₀ := by simpa using hTm.vac
   rw [h0] at key
   refine ⟨(splitFacO χS χT (GlobalTheory.VecInv.detAt e he' S 1) (GlobalTheory.VecInv.detAt e he' T h) : ℂ) *
@@ -444,9 +429,6 @@ theorem compAt_fin {θ : InfFam D} {V : HSp D} {h : GA D V} (hh : h ∈ GfC V) (
     compAt θ τ (Formalism.L2.Theta.mt V h) = 1 := by
   apply _root_.GlobalTheory.RealWeil.compAt_fin <;> assumption
 
-theorem actO_one_one {S T : HSp D} (u : WO S T) : actO S T 1 1 u = u := by
-  simp [actO]
-
 theorem om_keep_vac {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {S T : HSp D} {χS χT : (AE D)ˣ →* Circle}
     {om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)} (hW : IsWeilDatumO ψ S T χS χT om) (hθ : IsInfFam θ)
     (kS : S.SigOK) (kT : T.SigOK) {sS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.rank) ℂ}
@@ -462,8 +444,8 @@ theorem om_keep_vac {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {S T : HSp 
   have hf' := GlobalTheory.WeilVacMove.isVacO_om D ψ θ S T χS χT om hW hθ sS sS sT sT _ _ _ _ 1 h
     (fun τ => by rw [compAt_fin (one_mem _) τ, Matrix.mul_one, Matrix.one_mul])
     (fun τ => by rw [compAt_fin hh τ, Matrix.mul_one, Matrix.one_mul])
-    (fun u => ⟨fun hu => ⟨actO S T 1 h⁻¹ u, (hk _).2 (by rw [← GlobalTheory.SplitLinear.actO_mul, mul_one, mul_inv_cancel, actO_one_one]; exact hu),
-        by rw [← GlobalTheory.SplitLinear.actO_mul, mul_one, mul_inv_cancel, actO_one_one]⟩,
+    (fun u => ⟨fun hu => ⟨actO S T 1 h⁻¹ u, (hk _).2 (by rw [← GlobalTheory.SplitLinear.actO_mul, mul_one, mul_inv_cancel, Formalism.IndefR.Fin.LevelGroupLemmas.actO_one]; exact hu),
+        by rw [← GlobalTheory.SplitLinear.actO_mul, mul_one, mul_inv_cancel, Formalism.IndefR.Fin.LevelGroupLemmas.actO_one]⟩,
       fun ⟨u₀, hu₀, e⟩ => e ▸ (hk u₀).1 hu₀⟩) f hf
   obtain ⟨c, -, hc⟩ := GlobalTheory.VacUnique.vacUniqueO D ψ θ hf.1 hθ S T sS sT kS kT cS cT ΛS ΛT hS hT f _ hf hf'
   exact ⟨c, hc⟩
@@ -520,8 +502,6 @@ namespace GlobalTheory.VacMoveLow
 
 variable {D : D7}
 
-
-
 theorem exists_cut_pair (V : HSp D) {e : AE D} (he : e * e = e) (hc : e * cA D e = 0) :
     ∃ κe κo : GA D V →* GA D V, (∀ g, g = κe g * κo g) ∧ (∀ g, SuppAt e V (κe g)) ∧ (∀ g ∈ GfC V, κo g ∈ GfC V) ∧
       (∀ g, Formalism.L2.Theta.mt V (κo g) = (1 - (e + cA D e)) • Formalism.L2.Theta.mt V g +
@@ -573,7 +553,7 @@ theorem halfInd_move {S T : HSp D} {e : AE D} (Λ : AddSubgroup (WO S T)) {h he 
     exact ⟨h1, h2⟩
   · rintro ⟨h1, h2⟩
     have e2 := hfix _ h2
-    rw [← GlobalTheory.SplitLinear.actO_mul, mul_one, mul_inv_cancel, actO_one_one] at e2
+    rw [← GlobalTheory.SplitLinear.actO_mul, mul_one, mul_inv_cancel, Formalism.IndefR.Fin.LevelGroupLemmas.actO_one] at e2
     rw [← e2] at h1 h2
     exact ⟨h1, h2⟩
 
@@ -1187,7 +1167,6 @@ open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheor
 noncomputable section
 
 namespace GlobalTheory.ExpansionInvariance
-
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {U : Set T} in
 theorem colMapV_congr (S : GridChoice W U) (t : T)

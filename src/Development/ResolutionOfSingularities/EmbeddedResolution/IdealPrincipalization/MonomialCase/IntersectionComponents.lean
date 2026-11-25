@@ -86,7 +86,6 @@ theorem isClosed_of_mem_intersectionComponents {Y : Scheme.{u}} (L : List Y.Idea
 theorem intersectionComponents_finite (T : MarkedIdealWithBoundary.{u}) (hT : T.IsAdmissible)
     (J : Finset (Fin T.boundary.length)) : (intersectionComponents T.boundary J).Finite := by
   have := hT.isNoetherian
-  have : TopologicalSpace.NoetherianSpace ↥(intersectionIdeal T.boundary J).subscheme := inferInstance
   have h : intersectionComponents T.boundary J =
       (fun D => ⇑(intersectionIdeal T.boundary J).subschemeι '' D) ''
         irreducibleComponents ↥(intersectionIdeal T.boundary J).subscheme := by
@@ -131,7 +130,6 @@ theorem isOpen_preimage_sUnion_intersectionComponents (T : MarkedIdealWithBounda
     (𝒞 : Set (Set ↥T.scheme)) (h𝒞 : 𝒞 ⊆ intersectionComponents T.boundary J) :
     IsOpen (⇑(intersectionIdeal T.boundary J).subschemeι ⁻¹' ⋃₀ 𝒞) := by
   have := hT.isNoetherian
-  have : TopologicalSpace.NoetherianSpace ↥(intersectionIdeal T.boundary J).subscheme := inferInstance
   have hinj : Function.Injective ⇑(intersectionIdeal T.boundary J).subschemeι :=
     (Scheme.Hom.isClosedEmbedding (intersectionIdeal T.boundary J).subschemeι).injective
   have key : ⇑(intersectionIdeal T.boundary J).subschemeι ⁻¹' ⋃₀ 𝒞 =
@@ -158,9 +156,6 @@ theorem componentUnionIdeal_support_eq_sUnion (T : MarkedIdealWithBoundary.{u}) 
     (hop : IsOpen (⇑(intersectionIdeal T.boundary J).subschemeι ⁻¹' ⋃₀ 𝒞)) :
     (↑(componentUnionIdeal T.boundary J 𝒞 hop).support : Set ↥T.scheme) = ⋃₀ 𝒞 := by
   have := hT.isNoetherian
-  have : TopologicalSpace.NoetherianSpace ↥(intersectionIdeal T.boundary J).subscheme := inferInstance
-  have hqc : QuasiCompact ((componentUnionOpens T.boundary J 𝒞 hop).ι ≫
-      (intersectionIdeal T.boundary J).subschemeι) := inferInstance
   have hsub : ⋃₀ 𝒞 ⊆ Set.range ⇑(intersectionIdeal T.boundary J).subschemeι := by
     rintro x ⟨C, hC, hxC⟩
     obtain ⟨D, hD, rfl⟩ := (mem_intersectionComponents_iff_exists_irreducibleComponent _ _ _).mp (h𝒞 hC)

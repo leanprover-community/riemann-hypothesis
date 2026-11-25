@@ -35,7 +35,7 @@ private theorem isIso_r {S : Scheme.{0}} (A : Sq (𝟙 S)) : IsIso A.r := A.pb.i
 
 private def resInv {S : Scheme.{0}} {R : Type} [CommRing R] (F : Shv R) (A : Sq (𝟙 S)) : Sec F A.V →+ Sec F A.U :=
   haveI := isIso_r A
-  AddMonoidHom.mk' (fun a => Sec.res (inv A.r) a) (fun a b => map_add _ _ _)
+  AddMonoidHom.mk' (fun a => Sec.res (inv A.r) a) (fun _ _ => map_add _ _ _)
 
 private theorem resInv_apply {S : Scheme.{0}} {R : Type} [CommRing R] (F : Shv R) (A : Sq (𝟙 S)) [IsIso A.r] (a : Sec F A.V) :
     resInv F A a = Sec.res (inv A.r) a := rfl

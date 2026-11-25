@@ -466,7 +466,6 @@ private theorem isIso_subschemeι_comap_bot {X X' : Scheme.{u}} (π : X' ⟶ X) 
 
 theorem ker_preimage_ι_comp_of_isIso {X Y : Scheme.{u}} (f : X ⟶ Y) [IsIso f] (U : Y.Opens) :
     ((f ⁻¹ᵁ U).ι ≫ f).ker = U.ι.ker := by
-  have : IsIso (AlgebraicGeometry.morphismRestrict f U) := inferInstance
   rw [← (isPullback_morphismRestrict f U).w]
   exact Scheme.Hom.ker_comp_of_isIso ..
 

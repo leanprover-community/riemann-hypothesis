@@ -82,8 +82,8 @@ private theorem thetaR_exp (D : InfD σ m) (n : ℕ) (i : Fin (m + 1)) (X : Arch
 
 private def thetaL (D : InfD σ m) (n : ℕ) (i : Fin (m + 1)) : archLie E n →L[ℝ] archLie F n where
   toFun Y := ⟨thetaR D n i (Y : ArchMatrix E n), Submodule.mem_top⟩
-  map_add' X Y := Subtype.ext (map_add (thetaR D n i) _ _)
-  map_smul' c X := Subtype.ext (map_real_smul (thetaR D n i) (continuous_thetaR D n i) c _)
+  map_add' _ _ := Subtype.ext (map_add (thetaR D n i) _ _)
+  map_smul' c _ := Subtype.ext (map_real_smul (thetaR D n i) (continuous_thetaR D n i) c _)
   cont := ((continuous_thetaR D n i).comp continuous_subtype_val).subtype_mk _
 
 private theorem compA_expG (D : InfD σ m) (n : ℕ) (i : Fin (m + 1)) (Y : archLie E n) :

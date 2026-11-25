@@ -31,8 +31,6 @@ import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsLatticeEmb
 
 @[expose] public section
 
-set_option synthInstance.maxHeartbeats 400000
-
 noncomputable section
 
 namespace GlobalTheory.CovTop.BadRep
@@ -46,7 +44,6 @@ open GlobalTheory.LevDesc (transl)
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.FieldBC
 
 
-set_option maxHeartbeats 1000000 in
 theorem pull_data : ∀ (D : D7) (T : CoreJ D) (j : ℕ) (Y : Deep T.toCore j) (e : ℕ) (o : ℝ), LawsJ T → InR D j → Y.Good e o →
     ∀ (a : (D.host.E →+* ℂ) × ℕ → ℕ) (n : ℕ), Dom a n → ∀ (G : Type) [Group G]
     (lev : G → (T.Q.Dw j).La →ₗ[𝓞 D.host.E] (T.Q.Dw j).La),

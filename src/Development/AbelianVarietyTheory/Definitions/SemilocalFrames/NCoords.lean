@@ -20,9 +20,6 @@ section Ring
 
 variable {A : Type} [CommRing A]
 
-def sideM {n a b : ℕ} (P : Matrix (Fin n) (Fin a) A) (Q : Matrix (Fin n) (Fin b) A) :
-    Matrix (Fin n) (Fin (a + b)) A := fun i => Fin.append (P i) (Q i)
-
 end Ring
 
 section Glob

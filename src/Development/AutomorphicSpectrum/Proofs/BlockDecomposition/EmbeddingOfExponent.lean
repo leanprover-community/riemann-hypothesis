@@ -584,23 +584,17 @@ namespace GlobalTheory.CompanionTheory.CentralDom
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 variable {N : ℕ}
 
-theorem coe_diagPow (l : Fin N → ℤ) :
-    ((Zls.diagPow k N l : GL (Fin N) k) : Matrix (Fin N) (Fin N) k) =
-      Matrix.diagonal fun i => ((Zls.unifU k ^ l i : kˣ) : k) := by
-  ext i j
-  simp [Zls.diagPow, Matrix.diagonal_apply]
-
 theorem diagPow_add (l l' : Fin N → ℤ) :
     Zls.diagPow k N (l + l') = Zls.diagPow k N l * Zls.diagPow k N l' := by
   apply Units.ext
-  rw [Units.val_mul, coe_diagPow, coe_diagPow, coe_diagPow, Matrix.diagonal_mul_diagonal]
+  rw [Units.val_mul, GlobalTheory.CompanionTheory.HeckeJacquet.coe_diagPow, GlobalTheory.CompanionTheory.HeckeJacquet.coe_diagPow, GlobalTheory.CompanionTheory.HeckeJacquet.coe_diagPow, Matrix.diagonal_mul_diagonal]
   congr 1
   funext i
   rw [Pi.add_apply, _root_.zpow_add, Units.val_mul]
 
 theorem diagPow_zero : Zls.diagPow k N 0 = 1 := by
   apply Units.ext
-  rw [coe_diagPow]
+  rw [GlobalTheory.CompanionTheory.HeckeJacquet.coe_diagPow]
   simp
 
 theorem diagPow_neg (l : Fin N → ℤ) : Zls.diagPow k N (-l) = (Zls.diagPow k N l)⁻¹ := by
@@ -621,7 +615,7 @@ theorem diagPow_pow (l : Fin N → ℤ) (j : ℕ) :
 theorem conj_apply (l : Fin N → ℤ) (y : GL (Fin N) k) (i j : Fin N) :
     ((Zls.diagPow k N l * y * (Zls.diagPow k N l)⁻¹ : GL (Fin N) k) : Matrix (Fin N) (Fin N) k) i j =
       ((Zls.unifU k ^ (l i - l j) : kˣ) : k) * (y : Matrix (Fin N) (Fin N) k) i j := by
-  rw [← diagPow_neg, Units.val_mul, Units.val_mul, coe_diagPow, coe_diagPow, Matrix.mul_diagonal,
+  rw [← diagPow_neg, Units.val_mul, Units.val_mul, GlobalTheory.CompanionTheory.HeckeJacquet.coe_diagPow, GlobalTheory.CompanionTheory.HeckeJacquet.coe_diagPow, Matrix.mul_diagonal,
     Matrix.diagonal_mul, Pi.neg_apply, sub_eq_add_neg, _root_.zpow_add, Units.val_mul]
   ring
 
@@ -744,7 +738,7 @@ theorem leviEmb_zLevi (d : Fin h → ℕ) (hd : ∑ a, d a = N) (w : Fin h → �
   ext i j
   obtain ⟨⟨a, i⟩, rfl⟩ := (stdBlocks d hd).surjective i
   obtain ⟨⟨b, j⟩, rfl⟩ := (stdBlocks d hd).surjective j
-  rw [coe_diagPow]
+  rw [GlobalTheory.CompanionTheory.HeckeJacquet.coe_diagPow]
   by_cases hab : a = b
   · subst hab
     have hs : (leviEmb k (stdBlocks d hd) (zLevi d w) : Matrix (Fin N) (Fin N) k)
@@ -826,7 +820,7 @@ theorem exists_central_strictlyDominant : ∀ (k : Type) [Field k] [ValuativeRel
     rw [hemb]
     apply mem_parab.2
     intro i j hij
-    rw [coe_diagPow, Matrix.diagonal_apply_ne]
+    rw [GlobalTheory.CompanionTheory.HeckeJacquet.coe_diagPow, Matrix.diagonal_apply_ne]
     intro e
     subst e
     exact lt_irrefl _ hij
@@ -834,7 +828,7 @@ theorem exists_central_strictlyDominant : ∀ (k : Type) [Field k] [ValuativeRel
     rw [hemb]
     apply (mem_parabLower_iff k).2
     intro b b' i j hlt
-    rw [coe_diagPow, Matrix.diagonal_apply_ne]
+    rw [GlobalTheory.CompanionTheory.HeckeJacquet.coe_diagPow, Matrix.diagonal_apply_ne]
     exact stdBlocks_ne d hd i j (fun e => hlt.ne (congrArg Sigma.fst e))
   have hcent : ∀ x : Levi k (Bl d), a * x = x * a := zLevi_comm d _
   refine ⟨a, hcent, ⟨⟨?_, ?_, ?_⟩, ?_⟩, ?_⟩
@@ -1516,10 +1510,6 @@ theorem exists_intertwiningMap_piTensor_ofChar {k : Type} [Field k] [ValuativeRe
   rw [LinearEquiv.map_eq_zero_iff] at h1
   exact (smul_ne_zero hw (tprod_one_ne_zero n)) h1
 
-theorem chartotensor : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ) {V : Type} [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin n) k) V) (ξ : Fin n → (kˣ →* ℂˣ)) (hξ : ∀ a, IsSmoothChar (ξ a)) (hd : ∑ a, (IrrGL.ofChar (ξ a) (hξ a)).1 = n) (f : Jacquet π (unipRad k (stdBlocks (fun a => (IrrGL.ofChar (ξ a) (hξ a)).1) hd)) →ₗ[ℂ] ℂ), f ≠ 0 → (∀ t w, f (jac (stdBlocks (fun a => (IrrGL.ofChar (ξ a) (hξ a)).1) hd) π t w) = PositivityTheory.Lbc.torusChar ξ t * f w) → ∃ g : (jac (stdBlocks (fun a => (IrrGL.ofChar (ξ a) (hξ a)).1) hd) π).IntertwiningMap (piTensor fun a => (IrrGL.ofChar (ξ a) (hξ a)).rep), ∃ w, g w ≠ 0 := by
-  intro k _ _ _ _ n V _ _ π ξ hξ hd f hf hfe
-  exact exists_intertwiningMap_piTensor_ofChar n π ξ hξ hd f hf hfe
-
 end GlobalTheory.CompanionTheory.CharTensor
 
 end
@@ -1772,8 +1762,6 @@ open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.SplitWe
 
 namespace GlobalTheory.CompanionTheory.GlFrob
 
-
-
 theorem embedding_of_exponent : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [CharZero k] (n : ℕ) (hd1 : ∑ _a : Fin n, 1 = n) (V : Type) [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin n) k) V), IsSmooth π → IsAdmissible π → π.IsIrreducible → ∀ (ξ : Fin n → kˣ →* ℂˣ) (hξ : ∀ a, IsSmoothChar (ξ a)) (hd : ∑ a, (IrrGL.ofChar (ξ a) (hξ a)).1 = n), (∃ v : Jacquet π (unipRad k (stdBlocks (fun _ : Fin n => 1) hd1)), v ≠ 0 ∧ ∀ t : Levi k (fun _ : Fin n => Fin 1), v ∈ Module.End.maxGenEigenspace (jac (stdBlocks (fun _ : Fin n => 1) hd1) π t) (PositivityTheory.Lbc.torusChar ξ t)) → ∃ f : π.IntertwiningMap (prodIrr (fun a => IrrGL.ofChar (ξ a) (hξ a)) hd), Function.Injective f := by
   intro k _ _ _ _ _ n hd1 V _ _ π hs ha hirr ξ hξ hd hv
   obtain ⟨v, hv0, hv⟩ := hv
@@ -1813,7 +1801,7 @@ theorem embedding_of_exponent : ∀ (k : Type) [Field k] [ValuativeRel k] [Topol
     (jac (stdBlocks (fun _ : Fin n => 1) hd1) π) hcomm
     (fun m => PositivityTheory.Lbc.KM k n (Zls.Km k n (m + 1)) (fun _ : Fin n => 1) hd1) hanti hpow hsm hfd
     (GlobalTheory.CompanionTheory.PinLift.torusCharHom ξ) v hv0 hv
-  obtain ⟨g, w, hg⟩ := _root_.GlobalTheory.CompanionTheory.CharTensor.chartotensor n π ξ hξ hd f hf0 hf
+  obtain ⟨g, w, hg⟩ := _root_.GlobalTheory.CompanionTheory.CharTensor.exists_intertwiningMap_piTensor_ofChar n π ξ hξ hd f hf0 hf
   obtain ⟨G, x, hx⟩ := GlobalTheory.CompanionTheory.FrobInv.exists_map_prodIrr (fun a => IrrGL.ofChar (ξ a) (hξ a)) hd π hs g ⟨w, hg⟩
   refine ⟨G, ?_⟩
   have hso : IsSimpleOrder (Subrepresentation π) := hirr

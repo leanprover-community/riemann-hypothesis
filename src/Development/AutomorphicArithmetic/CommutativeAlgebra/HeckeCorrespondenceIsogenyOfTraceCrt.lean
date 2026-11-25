@@ -30,7 +30,7 @@ private theorem cartIso {φ : A.left ⟶ B.left} (h : IsGrpPullback A B (𝟙 X)
   apply Over.OverMorphism.ext
   let j : Over.mk (T.hom ≫ 𝟙 X) ⟶ T := Over.homMk (𝟙 T.left) (by simp)
   have key := h.2 T x y (j ≫ x ≫ (Over.isoMk (asIso φ) hw).hom) (j ≫ y ≫ (Over.isoMk (asIso φ) hw).hom)
-    (by simp [j, he]) (by simp [j, he])
+    (by simp [j]) (by simp [j])
   rw [← MonObj.comp_mul] at key
   simpa [j, he] using key.symm
 

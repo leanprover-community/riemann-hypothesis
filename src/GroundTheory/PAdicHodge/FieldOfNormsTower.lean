@@ -152,12 +152,6 @@ structure NormTower where
   value_zpow : ∀ n, ∀ y ∈ E n, y ≠ 0 → ∃ j : ℤ, nrm K y = value n ^ j
   value_succ : ∀ n, value (n + 1) ^ (p ^ k n) = value n
 
-namespace NormTower
-
-variable {K Ω p} (t : NormTower K Ω p)
-
-end NormTower
-
 end Tower
 
 end GroundTheory.PAdicHodge

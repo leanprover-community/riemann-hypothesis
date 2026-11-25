@@ -1399,20 +1399,3 @@ theorem isotropic_cone_finite_measure : Formalism.FourierDecayAlt.B2.ConeFinite 
   rw [hnull, add_zero]
 
 end Formalism.FourierDecayAlt.P
-
-namespace Formalism.FourierDecayAlt.P.B2x8
-
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
-
-section dj
-variable {k r : ℕ}
-
-end dj
-
-end Formalism.FourierDecayAlt.P.B2x8
-
-namespace Formalism.FourierDecayAlt.P
-
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2 Formalism.FourierDecayAlt.P.B2x8
-
-end Formalism.FourierDecayAlt.P

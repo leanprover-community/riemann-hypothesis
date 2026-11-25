@@ -216,11 +216,8 @@ lemma s1c2_UH_of_isom {ι : Type*} [Fintype ι] [DecidableEq ι] (H p : Matrix �
   ext i j
   rw [← s1c2_herm_single (pᴴ * H * p) i j, ← s1c2_herm_conj, h, s1c2_herm_single]
 
-open Formalism.QuantumDeterminants.WeylGroupFacts in
-lemma s1c2_Hh (k r : ℕ) : (Hpk k r)ᴴ = Hpk k r := Formalism.QuantumDeterminants.GBasic.Hpk_herm k r
-
 lemma s1c2_hzz (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) : herm (Hpk k r) z z = -((Tz k r z : ℝ) : ℂ) := by
-  have h := ggHerm_swap (Hpk k r) (s1c2_Hh k r) z z
+  have h := ggHerm_swap (Hpk k r) (Formalism.QuantumDeterminants.GBasic.Hpk_herm k r) z z
   have him : (herm (Hpk k r) z z).im = 0 := by
     have h2 := congrArg Complex.im h
     simp only [Complex.star_def, Complex.conj_im] at h2
@@ -335,7 +332,7 @@ lemma s1c2_om_eq (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) (hz' : inWb k 
 
 lemma s1c2_herm_mid (k r : ℕ) (z' d : Fin (2 * r + k + 1) → ℂ) (hz' : inWb k r z')
     (hd : ∀ i : Fin (2 * r + k + 1), r ≤ i.val → i.val ≤ r + k → d i = 0) : herm (Hpk k r) d z' = 0 := by
-  rw [ggHerm_swap _ (s1c2_Hh k r)]
+  rw [ggHerm_swap _ (Formalism.QuantumDeterminants.GBasic.Hpk_herm k r)]
   have : herm (Hpk k r) z' d = 0 := by
     simp only [herm, dotProduct, ggHpk_mulVec_Wb k r z' hz', Pi.star_apply]
     refine Finset.sum_eq_zero fun i _ => ?_
@@ -496,9 +493,9 @@ theorem dual_vector_norm_on_group : DualVectorNormOnGroup := by
     ext a b
     simp only [Matrix.of_apply, Matrix.map_apply, s1c2_hL_apply, Zhat]
     rw [← ggHerm_unitary _ g hg, Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv g hgu, Matrix.one_mulVec,
-      ggHerm_swap _ (s1c2_Hh k r)]
+      ggHerm_swap _ (Formalism.QuantumDeterminants.GBasic.Hpk_herm k r)]
   have key := dual_vector_norm_sq _ (hermitianSesquilinearForm (Hpk k r))
-    (fun x y => by simp only [s1c2_hL_apply]; exact ggHerm_swap _ (s1c2_Hh k r) y x) r
+    (fun x y => by simp only [s1c2_hL_apply]; exact ggHerm_swap _ (Formalism.QuantumDeterminants.GBasic.Hpk_herm k r) y x) r
     (fun a => g⁻¹ *ᵥ fvec k r z a) (fvec k r z') (Tz k r z) (Tz k r z') hT'.ne'
     (fun a b => by simp only [s1c2_hL_apply]; rw [ggHerm_unitary _ _ hgi, s1c2_gram_f k r z hz])
     (fun a b => by simp only [s1c2_hL_apply]; rw [s1c2_gram_f k r z' hz'])
@@ -549,7 +546,7 @@ open Formalism.QuantumDeterminants.WeylGroupFacts in
 theorem nilpotent_model_computation_holds : RankTwoNilpotentGroup := by
   intro k r z hz a e v he hv
   set H := Hpk k r with hHdef
-  have hH : Hᴴ = H := s1c2_Hh k r
+  have hH : Hᴴ = H := Formalism.QuantumDeterminants.GBasic.Hpk_herm k r
   set Y := rankTwoSkewMatrix H e v with hY
   obtain ⟨heX, hX, hYf, hY0, -, hYe, hYv⟩ := lie_algebra_nilpotent_part_holds _ (hermitianSesquilinearForm H)
     (fun x y => by simp only [s1c2_hL_apply]; exact ggHerm_swap _ hH y x) r (fvec k r z) (Tz k r z)

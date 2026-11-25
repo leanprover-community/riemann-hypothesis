@@ -167,7 +167,6 @@ theorem skewPart_split {d e : AE D} (he : cA D e = -e) (hde : d * e = 1) (x : Mx
   rw [sub_add_add_cancel]
   exact this
 
-set_option synthInstance.maxHeartbeats 400000 in
 theorem continuous_skewPart : Continuous (skewPartHom D n) := by
   haveI : IsTopologicalAddGroup (Mx D n n) := (lattice_Mx D n n).1
   have h : Continuous fun x : Mx D n n => x - adj x := continuous_id.sub (continuous_adj (D := D) (m := n) (n := n))
@@ -182,8 +181,6 @@ theorem lr_skew_symm (a : GL (Fin n) (AE D)) :
   fun s hs => (skewConj (a⁻¹).1 ⟨s, hs⟩).2
 
 
-set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 1000000 in
 theorem map_skewConj : ∀ (D : D7) (r : ℕ) (κ : Measure (skewA D r)), κ.IsAddHaarMeasure → ∀ a : GL (Fin r) (AE D), κ.map (skewConj a.1) = ((absA D (Matrix.GeneralLinearGroup.det a) ^ r)⁻¹ : ℝ≥0) • κ := by
   intro D n κ hκ a
   obtain ⟨i1, i2, i3, i4, -, -⟩ := lattice_Mx D n n

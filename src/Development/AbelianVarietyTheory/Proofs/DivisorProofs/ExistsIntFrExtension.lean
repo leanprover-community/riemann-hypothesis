@@ -225,8 +225,6 @@ theorem thetaFrame_trait :
       show h ≫ g0 ≫ (snd (Over.mk x) A).left = 𝟙 _ ≫ (snd (Over.mk x) A).left
       rw [g0s, hφ, Category.id_comp]
   let s : LB.Sec (PPx x) := thfPull1 Xo.univ.t.PP.L h hφ s1
-  have hsf : ∀ j : Fin 1 → Xo.univ.t.PP.L.ι, s.f j = (h.appLE _ _ (chart_le_pullback_open _ h hφ j)).hom (s1.f (fun _ => j 0)) :=
-    fun j => rfl
   let θ2 := thfPull G.PP.L m2.φ θ
   have hI2 : IsoMaps w2 σ' θ2 := fun (i : PUnit → G.PP.L.ι) k => fn_ext fun y hy => by
     have h₁ : (G.PP.L.pull m2.φ).U i ⊓ t'.PP.L.U k ≤ m2.φ ⁻¹ᵁ G.PP.L.U (i PUnit.unit) :=

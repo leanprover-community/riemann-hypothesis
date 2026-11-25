@@ -16,10 +16,6 @@ namespace Formalism.InvariantFactorPaths.BranchingDimensions
 
 open Letters
 
-namespace TTyp
-
-end TTyp
-
 private theorem le_div_of_mul_le_of_pos' {x y z : ℝ} (hz : 0 < z) (h : x * z ≤ y) : x ≤ y / z := by
   exact (le_div_iff₀ hz).2 h
 

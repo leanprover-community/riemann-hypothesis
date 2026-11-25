@@ -94,18 +94,6 @@ theorem tendsto_of_forall_local_on_tsupport {E : Type*} [NormedAddCommGroup E] [
   exact (tendsto_finsetSum _ fun i _ => hNf i.1 i.2 (g i) (hgs i) (hgc i) (hgN i)).congr'
     (hTs.mono fun ε h => h.symm)
 
-theorem tendsto_of_forall_local {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] {ι : Type*} {l : Filter ι} (T : ι → (E → ℝ) → ℝ) (L : (E → ℝ) → ℝ)
-    (hT : ∀ f g : E → ℝ, ContDiff ℝ ∞ f → HasCompactSupport f → ContDiff ℝ ∞ g →
-      HasCompactSupport g → ∀ᶠ ε in l, T ε (f + g) = T ε f + T ε g)
-    (hL : ∀ f g : E → ℝ, ContDiff ℝ ∞ f → HasCompactSupport f → ContDiff ℝ ∞ g →
-      HasCompactSupport g → L (f + g) = L f + L g)
-    (hloc : ∀ p : E, ∃ N ∈ 𝓝 p, ∀ f : E → ℝ, ContDiff ℝ ∞ f → HasCompactSupport f →
-      tsupport f ⊆ N → Tendsto (fun ε => T ε f) l (𝓝 (L f)))
-    (f : E → ℝ) (hf : ContDiff ℝ ∞ f) (hfc : HasCompactSupport f) :
-    Tendsto (fun ε => T ε f) l (𝓝 (L f)) :=
-  tendsto_of_forall_local_on_tsupport T L hT hL f hf hfc fun p _ => hloc p
-
 end GroundTheory.Heights₂.Heights
 end -- clump:auto
 end -- clump:auto

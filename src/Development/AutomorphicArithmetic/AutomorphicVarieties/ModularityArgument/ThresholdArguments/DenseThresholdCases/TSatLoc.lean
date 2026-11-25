@@ -48,5 +48,5 @@ open NumberField IsDedekindDomain GlobalTheory.CuspRep GlobalTheory.LFun GlobalT
 theorem UpperTheory.V.Af.satake_local_of_printed_results :
     _root_.UpperTheory.V.Af.Hypotheses' → UpperTheory.V.Af.SatLoc := by
   intros
-  apply _root_.GlobalTheory.RealGal.SatLocProof.main <;> assumption
+  apply GlobalTheory.RealGal.SatLocProof.main <;> assumption
 end

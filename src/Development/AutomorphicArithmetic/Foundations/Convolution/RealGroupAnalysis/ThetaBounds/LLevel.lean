@@ -46,11 +46,6 @@ theorem sFin_fst (x : Af K) : (GlobalTheory.CuspRep.sFin K x).1 = 0 := rfl
 
 end GlobalTheory.HenQ
 
-namespace GlobalTheory.HenQ
-
-variable {K : Type} [Field K] [NumberField K] {n : ℕ}
-
-end GlobalTheory.HenQ
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

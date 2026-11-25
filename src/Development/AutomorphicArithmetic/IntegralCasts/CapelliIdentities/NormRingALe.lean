@@ -5,15 +5,15 @@ public import Mathlib.NumberTheory.Padics.Complex
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.Qi27.muPrime :
-    (l : ℕ) → [inst : Fact (Nat.Prime l)] → Set ℂ_[l] :=
+    (l : ℕ) → [Fact (Nat.Prime l)] → Set ℂ_[l] :=
     fun (l : ℕ) [Fact (Nat.Prime l)] ↦ {ζ : ℂ_[l] | ∃ (n : ℕ), (0 : ℕ) < n ∧ ¬l ∣ n ∧ ζ ^ n = (1 : ℂ_[l])}
 
 noncomputable def UpperTheory.Reformulated.B.Qi27.ringA :
-    (l : ℕ) → [inst : Fact (Nat.Prime l)] → Subring ℂ_[l] :=
+    (l : ℕ) → [Fact (Nat.Prime l)] → Subring ℂ_[l] :=
     fun (l : ℕ) [Fact (Nat.Prime l)] ↦ Subring.closure (UpperTheory.Reformulated.B.Qi27.muPrime l)
 
 theorem UpperTheory.Reformulated.B.Qi27.norm_ringA_le :
-    ∀ {l : ℕ} [hl : Fact (Nat.Prime l)] {x : ℂ_[l]}, x ∈ UpperTheory.Reformulated.B.Qi27.ringA l → ‖x‖ ≤ (1 : ℝ) := by
+    ∀ {l : ℕ} [Fact (Nat.Prime l)] {x : ℂ_[l]}, x ∈ UpperTheory.Reformulated.B.Qi27.ringA l → ‖x‖ ≤ (1 : ℝ) := by
   intro l hl x hx
   unfold UpperTheory.Reformulated.B.Qi27.ringA at hx
   induction hx using Subring.closure_induction with

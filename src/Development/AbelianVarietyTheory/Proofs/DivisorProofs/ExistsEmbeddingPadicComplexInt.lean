@@ -90,7 +90,7 @@ theorem exists_embedding_padicComplexInt :
   haveI : Finite (IsLocalRing.ResidueField T.V) := hT
   obtain ⟨p, hp, _, hfin⟩ := GlobalTheory.exists_padicInt_algebra_finite T.V
   have hinj : Function.Injective (algebraMap ℤ_[p] T.V) := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro a ha
     by_contra h0
     obtain ⟨n, u, rfl⟩ := IsDiscreteValuationRing.eq_unit_mul_pow_irreducible h0

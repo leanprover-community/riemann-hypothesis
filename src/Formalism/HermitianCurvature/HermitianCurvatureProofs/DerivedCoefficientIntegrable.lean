@@ -474,11 +474,6 @@ open MeasureTheory Filter Topology Finset
 open scoped ComplexConjugate
 noncomputable section
 
-theorem dS_zero (B : Base) {A A' : Type} (T : Fn B A → Fn B A') (u : Fn B A) : dS B T u 0 = T u := by
-  funext ω a
-  have h : mulF B (fun _ : ℝ => (1:ℝ)) u = u := by funext ω a; simp [mulF]
-  simp [dS, conjS, h]
-
 theorem ds_zero {B : Base} (S : Step B) (Y : ℝ) : S.ds Y 0 = S.gX Y := dS_zero B _ _
 
 theorem dsMeas : DsMeas := by

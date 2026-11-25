@@ -276,41 +276,6 @@ theorem ptx_int (G : LogFGL v d) {p : ℕ} (hp : p.Prime) {γ : Fin d → Fin d 
     rw [ptx_eq]
     exact isIntV_vecMul_inv hγ hdet hw b
 
-private theorem lgCurve_const_zero (G : LogFGL v d) (a : Fin d) :
-    G.lgCurve (fun _ => (0 : PowerSeries C)) a = 0 := by
-  have h0 : HasSubst (fun _ : Fin d => (0 : PowerSeries C)) := by
-    first
-    | exact MvPowerSeries.hasSubst_of_constantCoeff_zero (fun _ => by simp)
-  ext j
-  rw [map_zero]
-  change MvPowerSeries.coeff (Finsupp.single () j) (subst _ (G.lg a)) = 0
-  rw [MvPowerSeries.coeff_subst h0]
-  apply finsum_eq_zero_of_forall_eq_zero
-  intro e
-  by_cases he : e = 0
-  · subst he
-    rw [coeff_zero_eq_constantCoeff_apply, G.lg_const a, zero_smul]
-  · obtain ⟨s, hs⟩ : ∃ s, e s ≠ 0 := by
-      by_contra! hcon
-      exact he (Finsupp.ext hcon)
-    rw [Finsupp.prod, Finset.prod_eq_zero (Finsupp.mem_support_iff.mpr hs) (by simp [hs]),
-      map_zero, smul_zero]
-
-private theorem lc_zero_eq_tangent_of_constantCoeff_eq_zero (G : LogFGL v d) (p : ℕ) (ga : Fin d → PowerSeries C)
-    (h0 : ∀ b, PowerSeries.constantCoeff (ga b) = 0) : G.lc p ga 0 = tangent ga := by
-  funext a
-  have hk : ∀ b, (PowerSeries.X : PowerSeries C) ^ 1 ∣ ga b - (fun _ => (0 : PowerSeries C)) b := by
-    intro b
-    show (PowerSeries.X : PowerSeries C) ^ 1 ∣ ga b - 0
-    rw [pow_one, sub_zero]
-    exact PowerSeries.X_dvd_iff.mpr (h0 b)
-  have h1 := lgCurve_sub_dvd (β := fun _ => (0 : PowerSeries C)) G h0 (fun _ => by simp) 1 hk a
-  simp only [lgCurve_const_zero, sub_zero] at h1
-  have h2 := PowerSeries.X_pow_dvd_iff.mp h1 1 (by norm_num)
-  rw [map_sub, sub_eq_zero] at h2
-  show PowerSeries.coeff (p ^ 0) (G.lgCurve ga a) = PowerSeries.coeff 1 (ga a)
-  rw [pow_zero, h2]
-
 theorem ptx_type {h : ℕ} (ty : Fin d → ZMod h) (G : LogFGL v d) {p : ℕ} (hp : p.Prime)
     {γ : Fin d → Fin d → PowerSeries C} (hγ : ∀ a, IsCurve v (γ a)) (hdet : v (tmat γ).det = 0)
     (hγty : ∀ b, G.IsOfType p ty (ty b) (γ b)) (ga : Fin d → PowerSeries C) (i : ZMod h)
@@ -319,7 +284,7 @@ theorem ptx_type {h : ℕ} (ty : Fin d → ZMod h) (G : LogFGL v d) {p : ℕ} (h
   have ht : ∀ b c, ty c ≠ ty b → tangent (γ b) c = 0 := by
     intro b c hc
     have h0 := (hγty b).2 0 c (by simpa using hc)
-    rwa [lc_zero_eq_tangent_of_constantCoeff_eq_zero G p (γ b) (fun c' => (hγ b c').1)] at h0
+    rwa [ReciprocityTheory.ChartRestriction.G.Sh.PTb.lc_at_zero_eq_tangent G p (γ b) (fun c' => (hγ b c').1)] at h0
   intro n
   induction n using Nat.strong_induction_on with
   | _ n ih =>

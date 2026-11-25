@@ -1275,7 +1275,3 @@ theorem tTool2_of [NeZero n] [IsDomain O] [IsLocalRing O] [IsAdicComplete (IsLoc
     exact fp_pull W T' i j _ (hermFlagUnipotent_anisotropic_vector_sub_mem W hinj hO2 h9 hH hR hsp hA h2 F hT hT' i hj hz hz')
 
 end Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
-
-namespace Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
-
-end Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData

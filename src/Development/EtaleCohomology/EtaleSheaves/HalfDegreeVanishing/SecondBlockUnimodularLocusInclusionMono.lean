@@ -123,7 +123,7 @@ def U2 : Spc where
     exact ConcreteCategory.congr_hom (NatTrans.congr_app ((PB (bsumOf V W)).map_comp f g) X) x.1
 
 def f2 : U2 V W ⟶ PB (bsumOf V W) where
-  app n := { app := fun X => TypeCat.ofHom Subtype.val, naturality := fun _ _ _ => rfl }
+  app _ := { app := fun _ => TypeCat.ofHom Subtype.val, naturality := fun _ _ _ => rfl }
   naturality _ _ _ := rfl
 
 theorem secondBlockUnimodularLocus_inclusion_mono : Mono (f2 V W) := by

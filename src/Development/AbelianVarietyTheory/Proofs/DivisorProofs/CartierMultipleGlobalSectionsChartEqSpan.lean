@@ -98,7 +98,7 @@ theorem exists_basis_of_finite : ∀ (R F : Type) [CommRing R] [IsDomain R] [IsN
   have hl : ∀ r, l (algebraMap R B r) = c₀ r := fun r => IsLocalization.lift_eq hu r
   have hinj := IsLocalization.injective B p.primeCompl_le_nonZeroDivisors
   have hli : Function.Injective l := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro z hz
     obtain ⟨⟨r, s⟩, e⟩ := IsLocalization.surj p.primeCompl z
     have h0 : c₀ r = 0 := by rw [← hl, ← e, map_mul, hz, zero_mul]
@@ -174,7 +174,7 @@ theorem mem_spanBy_of_forall_height_one : ∀ (R R₁ F F₁ : Type) [CommRing R
   classical
   have hθ : ∀ r, θ (c₀ r) = c₁ (ρ r) := fun r => RingHom.congr_fun hcomp r
   have hc₁ : Function.Injective c₁ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro r hr
     have := hlin 1 (fun _ => 1) (fun g hg => by
       funext i

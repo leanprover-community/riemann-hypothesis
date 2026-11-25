@@ -237,7 +237,6 @@ end Formalism.FourierDecayAlt.P.CutMP.SmoothTransferRegularity.ChartCovPf
 
 namespace Formalism.FourierDecayAlt.P.CutMP.SmoothTransferRegularity
 
-
 open ChartCovPf in
 theorem chart_covariance_holds : ChartCov := by
   intro k r d O U κ Φ hC x hx ξ
@@ -867,9 +866,6 @@ theorem vfW_contDiffOn {O : Set (Fin d → ℝ)} (hO : IsOpen O) :
       simp only [vfW, List.length_cons]
       exact vfD_contDiffOn hO ih (hV V (List.mem_cons_self ..))
 
-theorem glev0 {k r : ℕ} {g : B.Mat k r} (hg : g ∈ B.GV k r) : g ∈ Q.Glev k r 0 :=
-  ⟨hg, fun _ ha => absurd ha (Nat.not_lt_zero _)⟩
-
 def mulLC {k r : ℕ} (X : B.Mat k r) : B.Mat k r →L[ℝ] B.Mat k r :=
   LinearMap.toContinuousLinearMap (LinearMap.mulLeft ℝ X)
 
@@ -920,15 +916,15 @@ theorem right_chart_holds : RwChart := by
 
   have h1 : ∀ n : ℕ, n ≤ 2 * r + k + 1 → ContDiffOn ℝ (n : WithTop ℕ∞) (fun x => u (κ x)) O := by
     intro n hn x hx
-    obtain ⟨V, F, hVo, hxV, hF, hFu⟩ := hu (κ x) ⟨glev0 (hκO x hx).1, hOm x hx⟩
+    obtain ⟨V, F, hVo, hxV, hF, hFu⟩ := hu (κ x) ⟨Formalism.FourierDecayAlt.P.WordKeyIdentity.glev0 (hκO x hx).1, hOm x hx⟩
     have hxV' : κ x ∈ V := hxV
     have hev : ∀ᶠ y in 𝓝[O] x, κ y ∈ V := (hκ.continuousOn x hx) (hVo.mem_nhds hxV')
     have hFκ : ContDiffWithinAt ℝ (n : WithTop ℕ∞) (fun y => F (κ y)) O x :=
       ((hF.contDiffAt (hVo.mem_nhds hxV')).of_le (by exact_mod_cast hn)).comp_contDiffWithinAt x
         ((hκ x hx).of_le (by exact_mod_cast le_top))
-    refine hFκ.congr_of_eventuallyEq ?_ (hFu _ hxV' (glev0 (hκO x hx).1))
+    refine hFκ.congr_of_eventuallyEq ?_ (hFu _ hxV' (Formalism.FourierDecayAlt.P.WordKeyIdentity.glev0 (hκO x hx).1))
     filter_upwards [hev, self_mem_nhdsWithin] with y hyV hyO
-    exact hFu _ hyV (glev0 (hκO y hyO).1)
+    exact hFu _ hyV (Formalism.FourierDecayAlt.P.WordKeyIdentity.glev0 (hκO y hyO).1)
 
   have hDΦ : ContDiffOn ℝ ∞ (fun g => fderiv ℝ Φ g) U :=
     ((contDiffOn_infty_iff_fderiv_of_isOpen hU).1 hΦ).2
@@ -1070,30 +1066,6 @@ theorem wsEvalR_map_mul (p : Polynomial ℂ) (φ : List (B.Mat k r) → List (B.
     simp only [wsEvalR, List.map_cons, List.sum_cons] at ih ⊢
     rw [ih, smul_add, Polynomial.eval_mul, mul_smul]
 
-theorem fexp_words : ∀ (gens : List (GenW k r)), (∀ gn ∈ gens, ∀ dX ∈ gn.2, B.inLie k r dX.2) →
-    ∀ t ∈ fexp gens, t.2.length ≤ gens.length ∧ ∀ X ∈ t.2, B.inLie k r X
-  | [], _, t, ht => by
-    simp only [fexp, List.mem_singleton] at ht
-    subst ht
-    simp
-  | gn :: gs, hL, t, ht => by
-    have hL' : ∀ g ∈ gs, ∀ dX ∈ g.2, B.inLie k r dX.2 := fun g hg => hL g (List.mem_cons_of_mem _ hg)
-    have ih := fexp_words gs hL'
-    simp only [fexp, List.mem_append, List.mem_map, List.mem_flatMap] at ht
-    rcases ht with ⟨s, hs, rfl⟩ | ⟨dX, hdX, s, hs, rfl⟩
-    · have := (ih s hs).1
-      refine ⟨?_, (ih s hs).2⟩
-      show s.2.length ≤ (gn :: gs).length
-      simp only [List.length_cons]; omega
-    · have := (ih s hs).1
-      refine ⟨?_, ?_⟩
-      · show (dX.2 :: s.2).length ≤ (gn :: gs).length
-        simp only [List.length_cons]; omega
-      · intro X hX
-        rcases List.mem_cons.1 hX with rfl | hX
-        · exact hL gn (by simp) dX hdX
-        · exact (ih s hs).2 X hX
-
 theorem ws_hasDerivAt {O : Set (B.Mat k r)} (hO : IsOpen O) {x X : B.Mat k r} (hx : x ∈ O)
     (hxG : x ∈ B.GV k r) (hX : B.inLie k r X) (u : ℂ) (f : B.Mat k r → E) :
     ∀ ws : List (Polynomial ℂ × List (B.Mat k r)), (∀ t ∈ ws, Rep ((1 : ℕ) : ℕ∞) O (B.Rw t.2 f)) →
@@ -1125,7 +1097,7 @@ theorem right_generator_word_evaluation (u : ℂ) : ∀ (gens : List (GenW k r))
     have hL' : ∀ g ∈ gs, ∀ dX ∈ g.2, B.inLie k r dX.2 := fun g hg => hL g (List.mem_cons_of_mem _ hg)
     have hf' : Rep (gs.length : ℕ∞) O f := rep_mono (by exact_mod_cast (by simp : gs.length ≤ (gn :: gs).length)) hf
     have IH := right_generator_word_evaluation u gs O f hO hL' hf'
-    have hW := fexp_words gs hL'
+    have hW := Formalism.FourierDecayAlt.P.CutMP.SmoothTransferRegularity.FExpL.fexp_words gs hL'
     have hrep : ∀ t ∈ fexp gs, Rep ((1 : ℕ) : ℕ∞) O (B.Rw t.2 f) := fun t ht =>
       rep_Rw hO hf t.2 (hW t ht).2 1 (by have := (hW t ht).1; simp only [List.length_cons]; omega)
     have hD : ∀ X, B.inLie k r X → RdV X (wsEvalR (fexp gs) u f) x =

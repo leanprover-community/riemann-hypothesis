@@ -352,10 +352,6 @@ theorem isMult_nonneg [MeasurableSpace (G n)] {μ : Measure (G n)} {E : KMod n} 
   · rw [max_eq_left hT]; exact (hks i).1
   · rw [max_eq_right hT.le]; exact isBump_zero_of_neg (hks i).1 hT
 
-theorem mem_GLs_mul {x y : Mat n} (hx : x ∈ GLs n) (hy : y ∈ GLs n) : x * y ∈ GLs n := by
-  simp only [GLs, Set.mem_setOf_eq, Matrix.det_mul] at *
-  exact mul_ne_zero hx hy
-
 theorem unitary_mem_GLs (k : Matrix.unitaryGroup (Fin n) ℂ) : k.1 ∈ GLs n := by
   have h := Matrix.UnitaryGroup.det_isUnit k
   exact h.ne_zero
@@ -369,21 +365,10 @@ theorem isMult_props [MeasurableSpace (G n)] {μ : Measure (G n)} {E : KMod n} {
   · have hs : ContDiffOn ℝ ∞ (fun y => ∑ i, c i • ks i y) (GLs n) :=
       ContDiffOn.sum fun i _ => ((hks i).2.1).const_smul (c i)
     exact hs.congr fun y hy => hk y hy
-  · have hy' : k₁.1 * y * k₂.1 ∈ GLs n := mem_GLs_mul (mem_GLs_mul (unitary_mem_GLs k₁) hy) (unitary_mem_GLs k₂)
+  · have hy' : k₁.1 * y * k₂.1 ∈ GLs n := PositivityTheory.RgBcC.LfSt.UnitaryConjTransposeTrace.mem_GLs_mul (PositivityTheory.RgBcC.LfSt.UnitaryConjTransposeTrace.mem_GLs_mul (unitary_mem_GLs k₁) hy) (unitary_mem_GLs k₂)
     rw [hk _ hy', hk y hy, Finset.mul_sum, Finset.sum_mul]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [(hks i).2.2.2.1 y hy k₁ k₂, mul_smul_comm, smul_mul_assoc]
-
-theorem inv_mem_GLs {x : Mat n} (hx : x ∈ GLs n) : x⁻¹ ∈ GLs n := by
-  have hu : IsUnit x.det := isUnit_iff_ne_zero.2 hx
-  exact (Matrix.isUnit_nonsing_inv_det x hu).ne_zero
-
-theorem conjTranspose_mem_GLs {x : Mat n} (hx : x ∈ GLs n) : xᴴ ∈ GLs n := by
-  simp only [GLs, Set.mem_setOf_eq, Matrix.det_conjTranspose, star_ne_zero] at *
-  exact hx
-
-theorem tw_mem_GLs {x d : Mat n} (hx : x ∈ GLs n) (hd : d ∈ GLs n) : x⁻¹ * d * xᴴ⁻¹ ∈ GLs n :=
-  mem_GLs_mul (mem_GLs_mul (inv_mem_GLs hx) hd) (inv_mem_GLs (conjTranspose_mem_GLs hx))
 
 theorem lAsm : LAsm := by
   classical
@@ -434,7 +419,7 @@ theorem lAsm : LAsm := by
     by_contra hne
     have hle : lg (x⁻¹ * diagonal z * xᴴ⁻¹) ≤ R := by
       by_contra! hgt
-      exact hne (hd ▸ hsuppk _ (hd ▸ tw_mem_GLs hx hdG) hgt)
+      exact hne (hd ▸ hsuppk _ (hd ▸ PositivityTheory.RgBcC.LfSt.UnitaryConjTransposeTrace.tw_mem hx hdG) hgt)
     have := hR' 1 ⟨zero_le_one, le_refl _⟩ x hx x hx (by simp) hle
     linarith
   obtain ⟨hint, heq1⟩ := hE1 n lam E Fr ε ι S Γ T hCx μ σ c hσ hσ2 hform k hksm.continuousOn hkeq hkΓ d R' hR1
@@ -538,21 +523,7 @@ theorem map_thE [MeasurableSpace (G n)] [BorelSpace (G n)] (μ : Measure (G n)) 
   have := mulEquivHaarChar_smul_map μ (thE (n := n))
   rwa [h1, one_smul] at this
 
-theorem mem_GLs_mul {x y : Mat n} (hx : x ∈ GLs n) (hy : y ∈ GLs n) : x * y ∈ GLs n := by
-  simp only [GLs, Set.mem_setOf_eq, Matrix.det_mul] at *
-  exact mul_ne_zero hx hy
-
-theorem inv_mem_GLs {x : Mat n} (hx : x ∈ GLs n) : x⁻¹ ∈ GLs n :=
-  (Matrix.isUnit_nonsing_inv_det x (isUnit_iff_ne_zero.2 hx)).ne_zero
-
-theorem cT_mem_GLs {x : Mat n} (hx : x ∈ GLs n) : xᴴ ∈ GLs n := by
-  simp only [GLs, Set.mem_setOf_eq, Matrix.det_conjTranspose, star_ne_zero] at *
-  exact hx
-
 theorem one_mem_GLs : (1 : Mat n) ∈ GLs n := by simp [GLs]
-
-theorem unitary_mem_GLs (κ : Matrix.unitaryGroup (Fin n) ℂ) : κ.1 ∈ GLs n :=
-  (Matrix.UnitaryGroup.det_isUnit κ).ne_zero
 
 theorem hs_cT (y : Mat n) : GlobalTheory.CompanionTheory.LengthGL.hs yᴴ = GlobalTheory.CompanionTheory.LengthGL.hs y := by
   unfold GlobalTheory.CompanionTheory.LengthGL.hs
@@ -563,7 +534,7 @@ theorem lg_cT {y : Mat n} (hy : y ∈ GLs n) : lg yᴴ = lg y := by
   rw [GlobalTheory.CompanionTheory.LengthGL.lg_eq, GlobalTheory.CompanionTheory.LengthGL.lg_eq, hs_cT, ← Matrix.conjTranspose_nonsing_inv, hs_cT]
 
 theorem lg_cT_inv {y : Mat n} (hy : y ∈ GLs n) : lg yᴴ⁻¹ = lg y := by
-  rw [GlobalTheory.CompanionTheory.LengthGL.lg_inv (cT_mem_GLs hy), lg_cT hy]
+  rw [GlobalTheory.CompanionTheory.LengthGL.lg_inv (PositivityTheory.RgBcC.LfSt.UnitaryConjTransposeTrace.conjTranspose_mem_GLs hy), lg_cT hy]
 
 theorem diag_unitary {z : Fin n → ℂ} (hz : ∀ a, ‖z a‖ = 1) : diagonal z ∈ Matrix.unitaryGroup (Fin n) ℂ := by
   rw [Matrix.mem_unitaryGroup_iff]
@@ -604,7 +575,7 @@ theorem end0 : End0 := by
         F (σ v) * ((c : ℂ) * ((hOf v).det ^ n)⁻¹) := by
     intro v hv
     have hyG : σ v ∈ GLs n := GlobalTheory.CompanionTheory.ConeHaar.det_ne_of_gram (hσ2 v hv) hv
-    have hmem : d.val * (σ v)ᴴ⁻¹ ∈ GLs n := mem_GLs_mul hdG (inv_mem_GLs (cT_mem_GLs hyG))
+    have hmem : d.val * (σ v)ᴴ⁻¹ ∈ GLs n := PositivityTheory.RgBcC.LfSt.UnitaryConjTransposeTrace.mem_GLs_mul hdG (PositivityTheory.RgBcC.LfSt.UnitaryConjTransposeTrace.inv_mem_GLs (PositivityTheory.RgBcC.LfSt.UnitaryConjTransposeTrace.conjTranspose_mem_GLs hyG))
     have hk1 : k ((σ (oPt n))⁻¹ * d.val * (σ v)ᴴ⁻¹) = E.ρ U0⁻¹ * k (d.val * (σ v)ᴴ⁻¹) := by
       have h := hkeq _ hmem U0⁻¹ 1
       rw [map_one, mul_one] at h
@@ -621,11 +592,11 @@ theorem end0 : End0 := by
     have h1 : ContinuousOn (fun y : Mat n => y⁻¹) (GLs n) :=
       GlobalTheory.CompanionTheory.LengthGL.contDiffOn_inv.continuousOn
     have h2 : Continuous (fun y : Mat n => yᴴ) := continuous_id.matrix_conjTranspose
-    exact h1.comp h2.continuousOn fun y hy => cT_mem_GLs hy
+    exact h1.comp h2.continuousOn fun y hy => PositivityTheory.RgBcC.LfSt.UnitaryConjTransposeTrace.conjTranspose_mem_GLs hy
   have hcont_k : ContinuousOn (fun y : Mat n => k (d.val * yᴴ⁻¹)) (GLs n) :=
-    hkc.comp (continuousOn_const.mul hcont_ci) fun y hy => mem_GLs_mul hdG (inv_mem_GLs (cT_mem_GLs hy))
+    hkc.comp (continuousOn_const.mul hcont_ci) fun y hy => PositivityTheory.RgBcC.LfSt.UnitaryConjTransposeTrace.mem_GLs_mul hdG (PositivityTheory.RgBcC.LfSt.UnitaryConjTransposeTrace.inv_mem_GLs (PositivityTheory.RgBcC.LfSt.UnitaryConjTransposeTrace.conjTranspose_mem_GLs hy))
   have hcont_Fr : ContinuousOn (fun y : Mat n => Fr y⁻¹) (GLs n) :=
-    hCx.smooth.continuousOn.comp GlobalTheory.CompanionTheory.LengthGL.contDiffOn_inv.continuousOn fun y hy => inv_mem_GLs hy
+    hCx.smooth.continuousOn.comp GlobalTheory.CompanionTheory.LengthGL.contDiffOn_inv.continuousOn fun y hy => PositivityTheory.RgBcC.LfSt.UnitaryConjTransposeTrace.inv_mem_GLs hy
   have hcont_B : ContinuousOn (fun y : Mat n => k (d.val * yᴴ⁻¹) * Γ * T * Fr y⁻¹) (GLs n) :=
     ((hcont_k.mul continuousOn_const).mul continuousOn_const).mul hcont_Fr
   have hFcont : ContinuousOn F (GLs n) := by
@@ -633,7 +604,7 @@ theorem end0 : End0 := by
     exact this
   have hkz : ∀ y ∈ GLs n, Rk < lg y → k (d.val * yᴴ⁻¹) = 0 := by
     intro y hy hlt
-    apply hRk _ (mem_GLs_mul hdG (inv_mem_GLs (cT_mem_GLs hy)))
+    apply hRk _ (PositivityTheory.RgBcC.LfSt.UnitaryConjTransposeTrace.mem_GLs_mul hdG (PositivityTheory.RgBcC.LfSt.UnitaryConjTransposeTrace.inv_mem_GLs (PositivityTheory.RgBcC.LfSt.UnitaryConjTransposeTrace.conjTranspose_mem_GLs hy)))
     rw [hd, lg_diag_mul hz, lg_cT_inv hy]; exact hlt
   have hFsupp : ∃ R, ∀ y ∈ GLs n, R < lg y → F y = 0 :=
     ⟨Rk, fun y hy hlt => by simp only [hFdef, hkz y hy hlt, zero_mul, mul_zero, ContinuousLinearMap.coe_zero, map_zero]⟩
@@ -647,13 +618,13 @@ theorem end0 : End0 := by
       rw [Matrix.conjTranspose_mul, Matrix.mul_inv_rev, hstar]
     have hinvκ : (y * κ.1)⁻¹ = (κ⁻¹ : Matrix.unitaryGroup (Fin n) ℂ).1 * y⁻¹ := by
       rw [Matrix.mul_inv_rev, Matrix.inv_eq_left_inv hκ']; rfl
-    have hmem : d.val * yᴴ⁻¹ ∈ GLs n := mem_GLs_mul hdG (inv_mem_GLs (cT_mem_GLs hy))
+    have hmem : d.val * yᴴ⁻¹ ∈ GLs n := PositivityTheory.RgBcC.LfSt.UnitaryConjTransposeTrace.mem_GLs_mul hdG (PositivityTheory.RgBcC.LfSt.UnitaryConjTransposeTrace.inv_mem_GLs (PositivityTheory.RgBcC.LfSt.UnitaryConjTransposeTrace.conjTranspose_mem_GLs hy))
     have hk2 : k (d.val * (y * κ.1)ᴴ⁻¹) = k (d.val * yᴴ⁻¹) * E.ρ κ := by
       have h := hkeq _ hmem 1 κ
       rw [map_one, one_mul] at h
       rw [hci, ← h]; congr 1; simp [mul_assoc]
     have hFr2 : Fr (y * κ.1)⁻¹ = E.ρ κ⁻¹ * Fr y⁻¹ := by
-      rw [hinvκ, hCx.mul _ (unitary_mem_GLs _) _ (inv_mem_GLs hy), hCx.onK]
+      rw [hinvκ, hCx.mul _ (unitary_mem_GLs _) _ (PositivityTheory.RgBcC.LfSt.UnitaryConjTransposeTrace.inv_mem_GLs hy), hCx.onK]
     have hΓρ : Γ * E.ρ κ = E.ρ κ * Γ := by rw [← hCx.onK κ]; exact hCx.ΓFr _ (unitary_mem_GLs κ)
     have hTρ : T * E.ρ κ = E.ρ κ * T := hCx.TK κ
     have hρρ : E.ρ κ * E.ρ κ⁻¹ = 1 := by rw [← map_mul, mul_inv_cancel, map_one]
@@ -701,7 +672,7 @@ theorem end0 : End0 := by
     have hBw : ∀ y : G n, B y (S 0 w) = hh (d * thE y) := by
       intro y
       have hyG := GlobalTheory.CompanionTheory.LengthGL.mem_GLs_val y
-      have hcG : (y.val)ᴴ ∈ GLs n := cT_mem_GLs hyG
+      have hcG : (y.val)ᴴ ∈ GLs n := PositivityTheory.RgBcC.LfSt.UnitaryConjTransposeTrace.conjTranspose_mem_GLs hyG
       have hθ : T (Fr (y.val)⁻¹ (S 0 w)) = Fr (y.val)ᴴ (T (S 0 w)) := by
         have h := hCx.S0θ _ hcG
         rw [Matrix.conjTranspose_conjTranspose] at h
@@ -732,20 +703,20 @@ theorem end0 : End0 := by
     have hfCE : f ∈ CE E := by
       refine ⟨?_, fun g hg κ => ?_⟩
       · have h1 : ContDiffOn ℝ ∞ (fun x : Mat n => Fr x⁻¹) (GLs n) :=
-          hCx.smooth.comp GlobalTheory.CompanionTheory.LengthGL.contDiffOn_inv fun y hy => inv_mem_GLs hy
+          hCx.smooth.comp GlobalTheory.CompanionTheory.LengthGL.contDiffOn_inv fun y hy => PositivityTheory.RgBcC.LfSt.UnitaryConjTransposeTrace.inv_mem_GLs hy
         exact ((ContinuousLinearMap.apply ℂ E.V (S 0 v)).restrictScalars ℝ).contDiff.comp_contDiffOn h1
       · have hκ' : star κ.1 * κ.1 = 1 := Matrix.mem_unitaryGroup_iff'.1 κ.2
         have hinvκ : (g * κ.1)⁻¹ = (κ⁻¹ : Matrix.unitaryGroup (Fin n) ℂ).1 * g⁻¹ := by
           rw [Matrix.mul_inv_rev, Matrix.inv_eq_left_inv hκ']; rfl
         simp only [hfdef]
-        rw [hinvκ, hCx.mul _ (unitary_mem_GLs _) _ (inv_mem_GLs hg), hCx.onK, ContinuousLinearMap.mul_apply]
+        rw [hinvκ, hCx.mul _ (unitary_mem_GLs _) _ (PositivityTheory.RgBcC.LfSt.UnitaryConjTransposeTrace.inv_mem_GLs hg), hCx.onK, ContinuousLinearMap.mul_apply]
     have hact : act μ E k f 1 = val (infOf lam) • f 1 := heig (infOf lam) f hfCE (hCx.eig v) 1 one_mem_GLs
     have hI2 : ∫ y, hh y ∂μ = act μ E k f 1 := by
       unfold act
       congr 1; funext y
       have hyG := GlobalTheory.CompanionTheory.LengthGL.mem_GLs_val y
       simp only [hhdef, hfdef, one_mul, hS0v]
-      rw [hCx.mul _ (inv_mem_GLs hyG) _ hdG, ContinuousLinearMap.mul_apply]
+      rw [hCx.mul _ (PositivityTheory.RgBcC.LfSt.UnitaryConjTransposeTrace.inv_mem_GLs hyG) _ hdG, ContinuousLinearMap.mul_apply]
     have hf1 : f 1 = v := by simp only [hfdef, inv_one, hCx.one, ContinuousLinearMap.one_apply, hS0v]
     rw [hI1, hI2, hact, hf1, ContinuousLinearMap.smul_apply, ContinuousLinearMap.mul_apply, ContinuousLinearMap.mul_apply]
   rw [hIF, trL_apply, hCx.S0Γ, ContinuousLinearMap.coe_mul, LinearMap.trace_mul_comm, ← ContinuousLinearMap.coe_mul,

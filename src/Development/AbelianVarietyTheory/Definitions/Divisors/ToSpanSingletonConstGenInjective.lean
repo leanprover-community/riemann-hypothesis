@@ -610,15 +610,8 @@ namespace Action
 
 variable {Λ : Type*} [Semiring Λ] (ρ : Action Λ G)
 
-def onTate (B : Type) [CommRing B] [Algebra O B] : Λ →+* Module.End ℤ_[p] (G.TateOver B) :=
-  (tateEnd G B).toRingHom.comp ρ
-
 def onTateAlg [Algebra ℤ_[p] Λ] (B : Type) [CommRing B] [Algebra O B] :
     Λ →ₐ[ℤ_[p]] Module.End ℤ_[p] (G.TateOver B) := (tateEnd G B).comp ρ.toAlgHom
-
-def onLie : Λ →+* Module.End O G.Lie := (lieEnd G).comp ρ
-
-def onOmegaDual : Λ →+* Module.End O G.dual.omega := (omegaDualEnd G).comp ρ
 
 def dual {Λ : Type*} [CommSemiring Λ] (ρ : Action Λ G) : Action Λ G.dual where
   toFun a := End.of (dualHom G G (ρ a).asHom)

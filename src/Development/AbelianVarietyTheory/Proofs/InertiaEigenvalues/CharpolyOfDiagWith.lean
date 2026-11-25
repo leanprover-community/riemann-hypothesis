@@ -257,8 +257,7 @@ theorem mem_NΔl_iff (hr : ∀ a, (∃ b, J b = a) ↔ ∀ δ ∈ W.DelF, W.γ�
     exact ⟨c, by rw [hxa, th_apply]; simp only [hc]⟩
   · rintro ⟨c, rfl⟩
     refine ⟨⟨th_mem_N W T J b i c, fun δ hδ => ?_⟩, th W T J b i c, th_mem_N W T J b i c, ?_⟩
-    · set_option synthInstance.maxHeartbeats 100000 in
-        rw [th_apply, map_sum]
+    · rw [th_apply, map_sum]
       refine Finset.sum_congr rfl fun k _ => ?_
       rw [γD_smulA, γA_single, (hb _).2 δ hδ, (hr _).1 ⟨_, rfl⟩ δ hδ]
     · change (letE i : LetA O n) • th W T J b i c = _

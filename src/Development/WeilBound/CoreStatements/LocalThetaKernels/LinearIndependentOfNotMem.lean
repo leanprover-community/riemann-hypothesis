@@ -48,7 +48,7 @@ private lemma key {R : Type} [NormedRing R] [NormedAlgebra ℂ R] {a : R}
 end EqOneOfPowersNearOne
 
 theorem UpperTheory.Reformulated.B.Yhd7.main :
-    ∀ {R : Type} [inst : NormedRing R] [NormedAlgebra ℂ R] {a : R},
+    ∀ {R : Type} [NormedRing R] [NormedAlgebra ℂ R] {a : R},
       (∀ (p : ℕ), ‖a ^ p - (1 : R)‖ < (1 / 2 : ℝ)) → a = (1 : R) := by
   intro R _ _ a h
   by_contra hne

@@ -18,7 +18,6 @@ theorem div_gap_step (h : W.Hyp) (hd : W.IsDiv) (τ : ι) (a b : Fin N) (hab : (
   obtain ⟨h41, -, h43⟩ := h.h4 τ a b hab
   have h2 := h.h2.1
   rw [(hd τ).2 a b hab]
-  have hN : (0 : ℤ) ≤ N := by positivity
   split_ifs with hb
   · have := h43 hb
     refine ⟨Int.ediv_nonneg (by linarith) hM.le, ?_⟩
@@ -59,7 +58,6 @@ theorem divided_entries : ∀ (ι : Type) [Fintype ι] (N : ℕ) (W : Wts ι N),
   have hp := h.p_lt
   have hc := h.weightConst_nonneg
   have hi := i.2
-  have hN : (0 : ℤ) ≤ N := by positivity
   let a : Fin N := ⟨W.kc - 1, by omega⟩
   have ha : (a : ℕ) + 1 = W.kc := by simp only [a]; omega
   have hu : W.u τ a = 0 := h.anchor τ a ha

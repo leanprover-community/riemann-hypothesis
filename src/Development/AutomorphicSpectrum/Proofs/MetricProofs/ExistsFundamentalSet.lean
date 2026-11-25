@@ -126,7 +126,6 @@ theorem RiemLat.left_inv_gram (R : RiemLat E g Λ) {ι : Type} [Fintype ι] [Dec
   ext i j
   have h1 : R.form (y i) (b j) = ∑ k, b.repr (y i) k * R.form (b k) (b j) := by
     have e : R.form (∑ k, b.repr (y i) k • b k) (b j) = ∑ k, b.repr (y i) k * R.form (b k) (b j) := by
-      set_option synthInstance.maxHeartbeats 100000 in
         simp only [map_sum, LinearMap.sum_apply, map_smul, LinearMap.smul_apply, smul_eq_mul]
     rwa [b.sum_repr] at e
   have h2 : R.form (y i) (b j) = if i = j then 1 else 0 := by

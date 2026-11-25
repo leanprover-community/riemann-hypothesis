@@ -127,12 +127,6 @@ theorem map_baseChangeEquiv_submoduleOf (A B : Submodule R V) :
   rw [LinearEquiv.symm_apply_apply]
   rfl
 
-noncomputable def baseChangeSubquotEquiv (A B : Submodule R V) :
-    S ⊗[R] (A ⧸ B.submoduleOf A) ≃ₗ[S]
-      A.baseChange S ⧸ (B.baseChange S).submoduleOf (A.baseChange S) :=
-  baseChangeQuotEquiv S (B.submoduleOf A) ≪≫ₗ
-    Submodule.Quotient.equiv _ _ (baseChangeEquiv S A) (map_baseChangeEquiv_submoduleOf S A B)
-
 theorem lift_rank_baseChange.{u, v, w} {R : Type u} (S : Type v) [CommRing R] [CommRing S]
     [Algebra R S] [Module.Flat R S] [NoZeroDivisors S] [FaithfulSMul R S]
     {V : Type w} [AddCommGroup V] [Module R V] (A : Submodule R V) :

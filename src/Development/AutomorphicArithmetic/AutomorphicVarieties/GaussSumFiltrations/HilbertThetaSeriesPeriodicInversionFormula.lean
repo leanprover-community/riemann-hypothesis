@@ -32,14 +32,6 @@ namespace GlobalTheory.HilbertThetaSeries.LatBasis
 section Emb
 variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F]
 
-theorem rhom_eq (v : InfinitePlace F) (x : F) : rhom x v = reAt v x := by
-  show InfinitePlace.embedding_of_isReal (IsTotallyReal.isReal v) x = (v.embedding x).re
-  rw [← InfinitePlace.embedding_of_isReal_apply (IsTotallyReal.isReal v) x, Complex.ofReal_re]
-
-theorem coe_reAt (v : InfinitePlace F) (x : F) : ((reAt v x : ℝ) : ℂ) = v.embedding x := by
-  rw [← rhom_eq]
-  exact InfinitePlace.embedding_of_isReal_apply (IsTotallyReal.isReal v) x
-
 theorem emb_bij : Function.Bijective (fun v : InfinitePlace F => RingHom.equivRatAlgHom F ℂ v.embedding) := by
   refine (RingHom.equivRatAlgHom F ℂ).bijective.comp
     ⟨fun v w h => InfinitePlace.embedding_injective F h, fun φ => ?_⟩
@@ -101,7 +93,7 @@ variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F] {κ : Type} [Fin
 
 noncomputable def em (v : InfinitePlace F) : F →+* ℝ := InfinitePlace.embedding_of_isReal (IsTotallyReal.isReal v)
 
-theorem reAt_eq (v : InfinitePlace F) (x : F) : reAt v x = em v x := (rhom_eq v x).symm
+theorem reAt_eq (v : InfinitePlace F) (x : F) : reAt v x = em v x := (GlobalTheory.HilbertThetaSeries.RatSlash.rhom_apply v x).symm
 
 noncomputable def eM (R : Matrix κ κ ℝ) : (κ → F) →+ (InfinitePlace F × κ → ℝ) where
   toFun x p := ∑ j, R p.2 j * em p.1 (x j)
@@ -150,7 +142,7 @@ theorem det_aM_one (ω : Module.Basis (InfinitePlace F) ℚ F) : (aM ω 1).det ^
     simp only [Algebra.embeddingsMatrixReindex, Algebra.embeddingsMatrix, Matrix.reindex_apply,
       Matrix.submatrix_apply, Matrix.of_apply, Equiv.refl_symm, Equiv.coe_refl, id,
       Equiv.symm_symm, Matrix.map_apply, Matrix.transpose_apply, aM, one_mul]
-    rw [← reAt_eq, coe_reAt]
+    rw [← reAt_eq, GlobalTheory.HilbertThetaSeries.RatSlash.ofReal_reAt]
     rfl
   have hdet : (((aM ω 1)ᵀ).map (fun r : ℝ => (r : ℂ))).det = (((aM ω 1).det : ℝ) : ℂ) := by
     have h3 := RingHom.map_det Complex.ofRealHom (aM ω 1)ᵀ
@@ -429,7 +421,6 @@ theorem lattice_matrix : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal
 
 end GlobalTheory.HilbertThetaSeries.LatBasis
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.GaussSumFiltrations.ExistsRealMatrixForLatticeAndDualWithDet =====
@@ -697,7 +688,6 @@ theorem wcos : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (κ : 
 
 end GlobalTheory.WCos
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.GaussSumFiltrations.HilbertThetaSeriesCosetInversionFormula =====
@@ -803,7 +793,6 @@ theorem thetaSeries_periodic_slash_frickeMatrix : ∀ (F : Type) [Field F] [Numb
   ring
 
 end GlobalTheory.HilbertThetaSeries
-
 
 end -- clump:auto
 end -- clump:auto

@@ -373,12 +373,10 @@ namespace GlobalTheory.TContMul
 
 variable {l : ℕ} [Fact l.Prime]
 
-alias exists_pow_smul_mem := _root_.GlobalTheory.LatticePowerScalar.exists_pow_smul_mem_lattice
-
 theorem main : ∀ (l : ℕ) [Fact l.Prime] (LL : FinExt l) (T : QLat LL) (v : T.V), ∃ n : ℕ, ∃ x ∈ T.L.T, x = ((l : ↥LL.1) ^ n) • v := by
   intro l _ LL T v
   have hv : v ∈ Submodule.span ↥LL.1 (T.L.T : Set T.V) := by rw [T.L.span]; trivial
-  obtain ⟨n, hn⟩ := exists_pow_smul_mem LL T v hv
+  obtain ⟨n, hn⟩ := GlobalTheory.LatticePowerScalar.exists_pow_smul_mem_lattice LL T v hv
   exact ⟨n, _, hn, rfl⟩
 
 end GlobalTheory.TContMul
@@ -890,8 +888,6 @@ section -- clump:auto
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BK GlobalTheory.BKReal GlobalTheory.BKGal GlobalTheory.Per Matrix
 open scoped Formalism.Per
 
-set_option synthInstance.maxHeartbeats 400000
-
 namespace GlobalTheory.TContInj
 
 theorem bcris_nontrivial (l : ℕ) [Fact l.Prime] : Nontrivial (Per.Bcris l) := by
@@ -902,7 +898,7 @@ theorem bcris_nontrivial (l : ℕ) [Fact l.Prime] : Nontrivial (Per.Bcris l) := 
 
 theorem zl_bcris_injective (l : ℕ) [Fact l.Prime] : Function.Injective (algebraMap ℤ_[l] (Per.Bcris l)) := by
   haveI := bcris_nontrivial l
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro z hz
   by_contra h0
   have hu : IsUnit (algebraMap ℤ_[l] (Per.Bcris l) z) := by
@@ -983,7 +979,6 @@ theorem actB_tmul (T : QLat LL) (g : Gl l) (o : OB l ↥(OL LL)) (x : ↥T.L.T) 
     actB (sQ l) T g (o ⊗ₜ[↥(OL LL)] x) = (galOB ↥(OL LL) (sQ l g) o) ⊗ₜ[↥(OL LL)] T.actT g x :=
   TensorProduct.map_tmul _ _ _ _
 
-set_option maxHeartbeats 1000000 in
 theorem actB_mul_a (T : QLat LL) (g h : Gl l) (o : OB l ↥(OL LL)) (x : ↥T.L.T) :
     actB (sQ l) T (g * h) (o ⊗ₜ[↥(OL LL)] x) = actB (sQ l) T g (actB (sQ l) T h (o ⊗ₜ[↥(OL LL)] x)) := by
   have e1 := actB_tmul T (g*h) o x
@@ -1015,7 +1010,6 @@ theorem pow_le_mem (T : QLat LL) {k n : ℕ} (hk : k ≤ n) (v : T.V) (hv : (l :
   exact lpow_smul_mem T _ _ hv
 
 
-set_option maxHeartbeats 2000000 in
 theorem cocycle (T : QLat LL) (b : TW (OB l ↥(OL LL)) T) (c : Gl l → T.V) (hc : IsCobOf (sQ l) T b c)
     (g h : Gl l) : c (g * h) = c g + T.ρ g (c h) := by
   obtain ⟨n1, h1⟩ := _root_.GlobalTheory.IntegralPowerScalar.exists_pow_smul_mem T (c g)

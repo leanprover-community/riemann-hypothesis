@@ -88,7 +88,6 @@ theorem cay_mem {ε : Fin (2 * r + k + 1) → Bool} {P : Mat k r} (hP : Formalis
     _ = Jm ε := by
         rw [hPJP, hg', ← hR, Matrix.mul_assoc, h1, Matrix.mul_one]
 
-
 open scoped Matrix.Norms.Operator in
 theorem cay_inG {ε : Fin (2 * r + k + 1) → Bool} {P : Mat k r} (hP : Formalism.MainNotions.S.IsCayley k r ε P)
     {Y : Mat k r} (hY : Y ∈ Formalism.MainNotions.S.lieOf (Formalism.QuantumDeterminants.Nset k r)) : inG ε (P * Y * P⁻¹) := by
@@ -1225,9 +1224,6 @@ theorem psiM_K {ε : Fin (2 * r + k + 1) → Bool} {Λ : Fin (2 * r + k + 1) →
     rw [this, mul_one]
   · rw [psiM_zero T μ hg, psiM_zero T μ (fun h => hg ((inUJ_kmul hκ).1 h)), mul_zero]
 
-theorem psiGen_cont (z : Fin (2 * r + k + 1) → ℂ) (c : Fin r → ℂ) : Continuous (Formalism.MainNotions.S.psiGen k r z c) := by
-  apply ReciprocityTheory.ChartRestriction.DS.Lap.CurveContinuity.psiGen_cont
-
 theorem norm_psiGen (z : Fin (2 * r + k + 1) → ℂ) (c : Fin r → ℂ) (g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) :
     ‖Formalism.MainNotions.S.psiGen k r z c g‖ = 1 := by
   unfold Formalism.MainNotions.S.psiGen
@@ -1485,7 +1481,7 @@ theorem b7b : WhittakerSchurOrthogonality := by
         psiCoef T μ P T.w T.w ((1 : Mat k r)⁻¹ * (Matrix.of p.1 * Matrix.of p.2 * 1))) := by
       exact (coef_meas T μ hcont T.w T.w).comp hc1.measurable
     have h2 : Continuous (fun p : Mt k r × Mt k r => star (ψ (Matrix.of p.2))) :=
-      continuous_star.comp ((psiGen_cont _ _).comp continuous_snd)
+      continuous_star.comp ((ReciprocityTheory.ChartRestriction.DS.Lap.CurveContinuity.psiGen_cont _ _).comp continuous_snd)
     have h3 : AEStronglyMeasurable (fun p : Mt k r × Mt k r => π (Matrix.of p.1)⁻¹ ξ) (μW.prod μN) := by
       have hc : ContinuousOn (fun x : Mt k r => π' (star (StandardBasisEmbedding.blk (Matrix.of x))) ξ)
           {x | Matrix.of x ∈ UWset k r (z0 k r)} :=

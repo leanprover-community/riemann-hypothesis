@@ -54,11 +54,9 @@ def LevMatch (B : Base S T) (t : Twist D Circle) (φ : GAf D.host.E n ≃* Bridg
   (∀ g, g ∈ J ↔ φ g ∈ B.levJ t) ∧
     ∀ g (h : g ∈ J) (h' : φ g ∈ B.levJ t), e ((χ ⟨g, h⟩ : Kˣ) : K) = ((B.levLam t ⟨φ g, h'⟩ : ℂˣ) : ℂ)
 
-theorem finite_kP (P : Pl D.host.E) : Finite (kP P) := Ideal.finiteQuotientOfFreeOfNeBot _ P.ne_bot
-
 theorem isOfFinOrder_levFn {m : ℕ} (β : GL (Fin m) (Lev.EAf D)) (L : Formalism.L2.DIV.LevDat D.host.E ℂ m) (x : GL (Fin m) (Lev.EAf D)) :
     IsOfFinOrder (levFn β L x) := by
-  haveI : ∀ P : Pl D.host.E, Finite (kP P) := finite_kP
+  haveI : ∀ P : Pl D.host.E, Finite (kP P) := GlobalTheory.IndefiniteRowSideFullHecke.GoodIdempotentBadPlaces.finite_kP
   have hprod : ∀ {ι : Type} (s : Finset ι) (f : ι → ℂˣ), (∀ i ∈ s, IsOfFinOrder (f i)) → IsOfFinOrder (∏ i ∈ s, f i) :=
     fun s f h => Finset.prod_induction f IsOfFinOrder (fun _ _ => IsOfFinOrder.mul) IsOfFinOrder.one h
   unfold levFn

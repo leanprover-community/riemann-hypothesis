@@ -2,6 +2,7 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.MembDefs
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.DerivativeValuationBounds
+import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.ValuationLambdaFieldProperties
 import Mathlib.Tactic.Lemma
 
 @[expose] public section
@@ -18,27 +19,11 @@ section Sm
 
 variable {R : Type} [CommRing R] {ι : Type} {n : ℕ} [NeZero n]
 
-private lemma eq_zero_of_mem_sDegs_C (LL : Letters ι) (S : Set ι) (c : R) (j : Fin n) :
-    ∀ d ∈ sDegs LL S j (C c : MvPolynomial (ι × Fin n) R), d = 0 := by
-  intro d hd
-  simp only [sDegs, Finset.mem_biUnion] at hd
-  obtain ⟨m, hm, hdm⟩ := hd
-  have ht : twistSub LL S j (C c : MvPolynomial (ι × Fin n) R) = MvPolynomial.C (coefL R n c) := by
-    simp [twistSub]
-  rw [ht] at hm hdm
-  rw [MvPolynomial.coeff_C] at hdm
-  split_ifs at hdm with hm0
-  · have h1 := LaurentPolynomial.support_C_mul_T
-      ((algebraMap (MvPolynomial (Fin n × Fin n) R) (GLCoord R n)) (MvPolynomial.C c)) 0
-    rw [LaurentPolynomial.T_zero, mul_one] at h1
-    exact Finset.mem_singleton.mp (h1 hdm)
-  · simp at hdm
-
 theorem valS_C_nnR (LL : Letters ι) (S : Set ι) (c : R) :
     0 ≤ valS LL S (C c : MvPolynomial (ι × Fin n) R) := by
   unfold valS
   refine Finset.le_inf fun d hd => ?_
-  rw [eq_zero_of_mem_sDegs_C LL S c _ d hd]
+  rw [Set.mem_singleton_iff.mp (Formalism.MainNotions.SelectionLemmas.Pf.sDegs_C LL S _ c d hd)]
   rfl
 
 private lemma sDegs_smul_subset_sDegs (LL : Letters ι) (S : Set ι) (c : R) (F : MvPolynomial (ι × Fin n) R)

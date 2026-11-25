@@ -146,7 +146,6 @@ theorem substituted_factorization_exists (hd : d.AxH 𝒜) (h : d.S1) (x : Fin (
     letI : Algebra (KTp K d.D d.N) (OmS (Ω c) d.D d.N) :=
       ((algebraMap (KTf K d.D d.N) (OmS (Ω c) d.D d.N)).comp
         (algebraMap (KTp K d.D d.N) (KTf K d.D d.N))).toAlgebra
-    set_option synthInstance.maxHeartbeats 100000 in
     haveI : IsScalarTower (KTp K d.D d.N) (KTf K d.D d.N) (OmS (Ω c) d.D d.N) :=
       IsScalarTower.of_algebraMap_eq (fun _ => rfl)
     let y := algebraMap (Ω c) (OmS (Ω c) d.D d.N) a

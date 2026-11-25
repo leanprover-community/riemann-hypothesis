@@ -469,34 +469,14 @@ theorem UpperTheory.G2.RowLab.exists_idempotent : ∀ (E : Type) [Field E] [Numb
 
 namespace UpperTheory.G2.RowLab
 
-lemma pos_add (N : NumDatum) (l : ℕ) (z : RPl N.R) (s t : ℕ) :
-    N.pos l (N.pos l z s) t = N.pos l z (s + t) := by
-  unfold NumDatum.pos
-  refine Prod.ext ?_ ?_
-  · dsimp only
-    by_cases h : N.cls l = PrimeClass.signal <;> by_cases hs : Odd s <;> by_cases ht : Odd t <;>
-      simp [h, hs, ht, Nat.odd_add, ← Nat.not_odd_iff_even]
-  · dsimp only
-    rw [add_smul, add_assoc]
-
-lemma pos_mul_period (N : NumDatum) (l : ℕ) (z : RPl N.R) (c : ℕ) :
-    N.pos l z (N.ordP l * c) = z :=
-  by apply _root_.GlobalTheory.LevelsOrbits.pos_mul_period
-
 lemma pos_mod (N : NumDatum) (l : ℕ) (z : RPl N.R) (e : ℕ) :
     N.pos l z (e % N.ordP l) = N.pos l z e := by
-  conv_rhs => rw [← Nat.div_add_mod e (N.ordP l), ← pos_add, pos_mul_period]
+  conv_rhs => rw [← Nat.div_add_mod e (N.ordP l), ← GlobalTheory.LevelsOrbits.pos_add, GlobalTheory.LevelsOrbits.pos_mul_period]
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E}
 
 lemma inPsi_conj_iff (τ : E →+* ℂ) : InPsi H (ComplexEmbedding.conjugate τ) ↔ ¬ InPsi H τ := by
   apply GlobalTheory.InertLabelling.inPsi_conj_iff
-
-lemma embK_conj_bar {lv : Level H} (c : Coeff lv) (τ : E →+* ℂ) (x : 𝓞 E) :
-    embK c τ (H.bar x) = embK c (ComplexEmbedding.conjugate τ) x := by
-  apply Subtype.ext
-  rw [embK_coe, embK_coe, H.bar_eq, IsCMField.complexEmbedding_complexConj]
-  rfl
 
 lemma conj_conj (τ : E →+* ℂ) : ComplexEmbedding.conjugate (ComplexEmbedding.conjugate τ) = τ :=
   ComplexEmbedding.involutive_conjugate E τ
@@ -600,13 +580,13 @@ theorem exists_lab {lv : Level H} (c : Coeff lv) (N : NumDatum) (pl : RPl N.R �
     dsimp only [tau]
     rw [e]
     unfold tauN
-    rw [← pos_add]
+    rw [← GlobalTheory.LevelsOrbits.pos_add]
     by_cases h : Even a.val
     · rw [ite_eq_left h, ite_eq_right (fun hh => Nat.even_add_one.1 hh h)]
       exact hf _ _
     · rw [ite_eq_right h, ite_eq_left (Nat.even_add_one.2 h)]
       have := hf (N.pos V.l o.1 a.val) (H.bar x)
-      simp only [emA3, RingHom.comp_apply, embK_conj_bar, conj_conj] at this ⊢
+      simp only [emA3, RingHom.comp_apply, GlobalTheory.InertLabelling.embK_conj_bar, conj_conj] at this ⊢
       exact this
   have hsep : ∀ x x' : {z // z ∈ Z} × ZMod (2 * N.ordP V.l), x ≠ x' →
       ∃ a : 𝓞 E, V.v (emA3 io ι (tau x.1 x.2) a - emA3 io ι (tau x'.1 x'.2) a) = 0 := fun x x' hx =>

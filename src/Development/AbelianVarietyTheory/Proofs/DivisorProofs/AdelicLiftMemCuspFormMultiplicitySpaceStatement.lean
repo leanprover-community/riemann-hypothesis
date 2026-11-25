@@ -488,7 +488,6 @@ theorem exists_coef_any {BS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.rank)
             Complex.I * (omDir S T τ (cplxO 1 (cart M τ) (X * cplxO 1 (cart M τ) u)) τ u' : ℝ)) =
         (if c = d then ν a b else 0) + (if d = c then ν b a else 0) := by
   have hT := GlobalTheory.Chain.VacVec.cart_isCartanInv M
-  have hu := (Matrix.isUnit_iff_isUnit_det _).1 (M.fr_unit τ)
   obtain ⟨ε, hε, -, ht⟩ := hBT
   let o : Matrix (Fin T.rank) (Fin T.rank) ℂ → Fin T.rank → Fin T.rank → ℝ := fun W a b =>
     2 * (tauE D τ D.host.xi0 * ((BT τ)ᴴ * gramAt D T τ * W * BT τ) a b).re

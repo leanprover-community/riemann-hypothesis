@@ -81,8 +81,6 @@ def etaF (𝔭 : Ideal (𝓞 H.F)) : ℤ := if (primesOver 𝔭 (𝓞 H.E)).ncar
 
 def MuPM : Prop := ∀ x : H.E, (∃ m : ℕ, 0 < m ∧ x ^ m = 1) → x = 1 ∨ x = -1
 
-def CoprimeFifteen : Prop := Nat.Coprime H.QS 15
-
 def Exact : Prop := ∀ l : ℕ, l.Prime → l ∣ H.QS →
   ∃ u : (ZMod H.condN)ˣ, (u : ZMod H.condN).val ≡ 1 [MOD H.condN / l] ∧ H.art u ≠ 1
 

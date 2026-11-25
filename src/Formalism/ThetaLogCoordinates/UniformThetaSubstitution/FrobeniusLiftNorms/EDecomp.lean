@@ -1,5 +1,7 @@
 module
 
+import Formalism.EllipticTorsion.EllipticTorsionProofs.NDeriv
+
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.StatementE
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TheoremSFromKOneOf
 public import Formalism.FormalGroupWitt.FormalGroupWittProofs.SolveV
@@ -20,7 +22,7 @@ namespace Formalism.InvariantFactorPaths.G7
 open Formalism.DworkPowerSeriesWeights (Integral low_subst_of_low)
 open Formalism.FG.SolveVAux (Low low_zero low_mono low_add low_sub low_mul low_pow low_one_iff low_mul_sub
   low_of_zero)
-open Formalism.FG.IntegralSubstitution (integral_mul integral_pow integral_one)
+open Formalism.ELL.SubstitutionCoefficientCongruence (integral_mul integral_pow integral_one)
 open TwoS (Cg cg_refl cg_trans cg_sum cg_mul cg_pow cg_frob_add cg_frob_sum
   integral_add integral_neg integral_sum integral_C integral_X integral_zero coeff_sPos)
 

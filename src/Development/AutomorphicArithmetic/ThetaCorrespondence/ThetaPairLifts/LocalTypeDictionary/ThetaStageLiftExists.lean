@@ -95,9 +95,6 @@ open GlobalTheory.ConstRatio (NegIdx Factor)
 
 open scoped TensorProduct
 
-
-theorem _root_.GlobalTheory.T.seesawTriple_firstFiniteDatum_riggedFrames : ∀ {D : D7} {T : Type} {A A' WW : HSp D} (X : Tri T A A' WW) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (α β : T → ((AE D)ˣ →* Circle)) (νH : T → Formalism.L2.Host.HChar D.host.E) (S : T → Finset (HeightOneSpectrum (𝓞 D.host.E))) (FA : GlobalTheory.ChainFr.Fr A) (FW : GlobalTheory.ChainFr.Fr WW), (∀ τ, (GlobalTheory.SquareComm.frSgn true FA).cart τ = -X.rA.s τ) → (∀ τ, FW.cart τ = X.rW.s τ) → X.Is ψ θ α β νH S → ∀ t, GlobalTheory.SquareComm.IsFinF ψ θ true FA FW (X.f t) := by
-  first | exact @GlobalTheory.FrDict.fst_isFinF
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.SeesawTripleFirstFiniteDatumRiggedFramesStatement =====
@@ -154,18 +151,6 @@ namespace GlobalTheory.StageDict
 
 open GlobalTheory.ChainFr
 
-theorem gBig_two {P Q S : GP} (hP : GBig P) (hQ : GBig Q)
-    (h : ∀ {D : D7} {T : Type} {Lc : LevCh D T} {sc : Consts} (G : GridData Lc sc) (μ₀ : T) (C x b : ℝ),
-      P G μ₀ C x b → Q G μ₀ C x b → S G μ₀ C x b) : GBig S := by
-  obtain ⟨CF1, h1⟩ := hP
-  obtain ⟨CF2, h2⟩ := hQ
-  refine ⟨max CF1 CF2, fun ε CF hCF => ?_⟩
-  obtain ⟨C1, x1, g1⟩ := h1 ε CF (le_of_max_le_left hCF)
-  obtain ⟨C2, x2, g2⟩ := h2 ε CF (le_of_max_le_right hCF)
-  exact ⟨max C1 C2, max x1 x2, fun C hC D large₂ he hx hr T Lc μ₀ hμ G => h G μ₀ _ _ _
-    (g1 C (le_of_max_le_left hC) D large₂ he (le_of_max_le_left hx) hr T Lc μ₀ hμ G)
-    (g2 C (le_of_max_le_right hC) D large₂ he (le_of_max_le_right hx) hr T Lc μ₀ hμ G)⟩
-
 theorem dictionary_at_stage : GBig fun {D} {T} {Lc} {sc} G _ _ _ _ => ∀ (W : G.Weil) (i j : Fin D.R.m) (p q : ℕ) (A A' WW : HSp D)
     (X : Tri T A A' WW), GlobalTheory.SqTower.IsStageC W i j p q X →
     ∃ (FA : GlobalTheory.ChainFr.Fr A) (FA' : GlobalTheory.ChainFr.Fr A') (FW : GlobalTheory.ChainFr.Fr WW) (a b : D.what₂.Tau → ℚ), ∀ t : T,
@@ -175,7 +160,7 @@ theorem dictionary_at_stage : GBig fun {D} {T} {Lc} {sc} G _ _ _ _ => ∀ (W : G
       GlobalTheory.SquareComm.IsFinF W.ψ W.θ true FA FW (X.f t) ∧ GlobalTheory.SquareComm.IsFinF W.ψ W.θ false FA' FW (X.f' t) ∧
       (∀ P g h, thetaKO (X.ω t) g h (GlobalTheory.SquareComm.fockF W.ψ W.θ true FA FW (X.f t) P) = X.ker W.ψ W.θ t P h g) ∧
       ∀ P g h, thetaKO (X.ω' t) g h (GlobalTheory.SquareComm.fockF W.ψ W.θ false FA' FW (X.f' t) P) = X.ker' W.ψ W.θ t P h g := by
-  refine gBig_two _root_.GlobalTheory.SquareInfGap.square_infExp_gap GlobalTheory.T.towerStage_finitePlaces_unramified_or_split ?_
+  refine GlobalTheory.StageFinMatch.gBig_two' _root_.GlobalTheory.SquareInfGap.square_infExp_gap GlobalTheory.T.towerStage_finitePlaces_unramified_or_split ?_
   intro D T Lc sc G μ₀ C x b hinf hram W i j p q A A' WW X hX
   obtain ⟨hp, hq, hrA, hrA', hnA, hnA', hnW, hXi⟩ := hX
   obtain ⟨a, b, hab⟩ := hinf W i j
@@ -186,7 +171,7 @@ theorem dictionary_at_stage : GBig fun {D} {T} {Lc} {sc} G _ _ _ _ => ∀ (W : G
   have e2 : ∀ τ, (rigFr X.rW hXi.rigW).cart τ = X.rW.s τ := cart_rigFr X.rW hXi.rigW
   refine ⟨rigFr X.rA hXi.rigA, rigFr X.rA' hXi.rigA', rigFr X.rW hXi.rigW, a, b, fun t => ⟨?_,
     fun τ => ⟨(hab t τ).1, (hab t τ).2.1⟩,
-    GlobalTheory.T.seesawTriple_firstFiniteDatum_riggedFrames X _ _ _ _ _ _ _ _ e1 e2 hXi t, GlobalTheory.T.seesawTriple_secondFiniteDatum_isFinite_rigging X _ _ _ _ _ _ _ _ e1' e2 hXi t, ?_, ?_⟩⟩
+    GlobalTheory.FrDict.fst_isFinF X _ _ _ _ _ _ _ _ e1 e2 hXi t, GlobalTheory.T.seesawTriple_secondFiniteDatum_isFinite_rigging X _ _ _ _ _ _ _ _ e1' e2 hXi t, ?_, ?_⟩⟩
   · refine
       { hecA := (hXi.weil' t).hecS
         hecB := (hXi.weil t).hecS

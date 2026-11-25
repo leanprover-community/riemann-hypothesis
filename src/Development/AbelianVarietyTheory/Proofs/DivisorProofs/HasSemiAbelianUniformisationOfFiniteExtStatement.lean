@@ -953,10 +953,6 @@ open GlobalTheory.Mum
 
 namespace GlobalTheory.GalClosure
 
-end GlobalTheory.GalClosure
-
-namespace GlobalTheory.GalClosure
-
 theorem isGal_integralClosure_of_tower (R : Type) [CommRing R] [IsDomain R] [IsIntegrallyClosed R] (L : Type) [Field L]
     [Algebra (FractionRing R) L] [FiniteDimensional (FractionRing R) L] [IsGalois (FractionRing R) L] [Algebra R L]
     [IsScalarTower R (FractionRing R) L] :

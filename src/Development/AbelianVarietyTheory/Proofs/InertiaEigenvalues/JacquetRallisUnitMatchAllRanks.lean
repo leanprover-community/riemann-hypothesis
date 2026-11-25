@@ -576,15 +576,10 @@ namespace GlobalTheory.JR.MeasTransport
 
 variable {F E : Type} [NontriviallyNormedField F] [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E]
 
-theorem star_smul_vec [hU : Unram F E] {r : ℕ} (a : F) (c : Fin r → E) : star (a • c) = a • star c := by
-  funext i
-  show star (a • c i) = a • star (c i)
-  rw [Algebra.smul_def, Algebra.smul_def, star_mul', hU.star_fix, mul_comm]
-
 def trForm [Unram F E] (r : ℕ) : LinearMap.BilinForm F (Fin r → E) :=
   LinearMap.mk₂ F (fun c b => Algebra.trace F E (star c ⬝ᵥ b))
     (fun c c' b => by simp only [star_add, add_dotProduct, map_add (f := _)])
-    (fun a c b => by simp only [star_smul_vec, smul_dotProduct, map_smul])
+    (fun a c b => by simp only [GlobalTheory.JR.PiSelfDual.star_smul_F, smul_dotProduct, map_smul])
     (fun c b b' => by simp only [dotProduct_add, map_add (f := _)])
     (fun a c b => by simp only [dotProduct_smul, map_smul])
 

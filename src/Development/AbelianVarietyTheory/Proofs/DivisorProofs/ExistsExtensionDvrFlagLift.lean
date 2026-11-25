@@ -127,10 +127,3 @@ theorem exists_split_baseChange (W : Type) [CommRing W] [IsDomain W] [IsDiscrete
 end Split
 
 end GlobalTheory.UnifTrait
-
-namespace GlobalTheory.UnifTrait
-
-open IsLocalRing
-
-
-end GlobalTheory.UnifTrait

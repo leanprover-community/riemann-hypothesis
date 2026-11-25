@@ -94,23 +94,7 @@ theorem local_ext (hM : FrameMeasStatement (E := E)) (hx0 : IsOrth X x0)
   simpa using this
 
 theorem dense_cell {x : Frame X.Ψ r} (hx : x ∈ X.dom) : x ∈ closure (cell D) := by
-  have hmat : ∀ τ : X.Ψ, Continuous fun x : Frame X.Ψ r => mat x τ := fun τ =>
-    continuous_pi fun i => continuous_pi fun j =>
-      (continuous_apply j).comp ((continuous_apply i).comp (continuous_apply τ))
-  have hgram : ∀ τ : X.Ψ, Continuous fun x : Frame X.Ψ r => gram τ.1 X.Gm (mat x τ) := by
-    intro τ
-    refine continuous_pi fun a => continuous_pi fun b => ?_
-    simp only [gram, Matrix.of_apply, hermC, col, mat, starRingEnd_apply]
-    fun_prop
-  have hopen : IsOpen X.dom := by
-    have e : X.dom = ⋂ τ : X.Ψ, ({x | (mat x τ).det ≠ 0} ∩
-        ⋂ i : Fin (r + 1), {x | 0 < psgn X.p0 i * (dmin X.Gm x τ i).re}) := by
-      ext x; simp [Data.dom, GG]
-    rw [e]
-    refine isOpen_iInter_of_finite fun τ => IsOpen.inter ?_ (isOpen_iInter_of_finite fun i => ?_)
-    · exact isOpen_ne_fun (hmat τ).matrix_det continuous_const
-    · refine isOpen_lt continuous_const (continuous_const.mul (Complex.continuous_re.comp ?_))
-      exact ((hgram τ).matrix_submatrix _ _).matrix_det
+  have hopen : IsOpen X.dom := FourierCoefficientDomain.isOpen_dom X
   rw [Metric.mem_closure_iff]
   intro ε hε
   obtain ⟨δ, hδ, hball⟩ := Metric.isOpen_iff.1 hopen x hx

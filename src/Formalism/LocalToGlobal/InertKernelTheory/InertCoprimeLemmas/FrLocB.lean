@@ -25,10 +25,7 @@ section Gen
 
 variable {K : Type*} [Field K] [NumberField K]
 
-theorem spanPrime (p : ℕ) [hp : Fact p.Prime] : (Ideal.span {(p : ℤ)}).IsPrime :=
-  (Ideal.span_singleton_prime (by exact_mod_cast hp.out.ne_zero)).mpr (Nat.prime_iff_prime_int.mp hp.out)
-
-attribute [local instance] spanPrime
+attribute [local instance] Formalism.FrobeniusOrbits.SplitK.span_prime
 
 abbrev Sp (K : Type*) [Field K] [NumberField K] (p : ℕ) [Fact p.Prime] : Submonoid (𝓞 K) :=
   Algebra.algebraMapSubmonoid (𝓞 K) (Ideal.span {(p : ℤ)}).primeCompl

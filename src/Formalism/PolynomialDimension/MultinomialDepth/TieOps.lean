@@ -632,10 +632,6 @@ end Formalism.CountingSumsFrames.TO
 
 namespace Formalism.CountingSumsFrames.TO
 
-end Formalism.CountingSumsFrames.TO
-
-namespace Formalism.CountingSumsFrames.TO
-
 open Formalism.GM Formalism.GM.M Formalism.GM.DimensionMonotonicity MvPolynomial Finset
 
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
@@ -2082,7 +2078,3 @@ theorem mmwZ_polZ [NeZero r] {K : ℕ} (LLw : Letters K) {q : ℕ} (J : Fin q �
     (Submodule.mem_inf.mp hg).1).1).1).1, (Submodule.mem_inf.mp hg).2⟩
 
 end Formalism.CountingSumsFrames.TO
-
-namespace Formalism.CountingSumsFrames
-
-end Formalism.CountingSumsFrames

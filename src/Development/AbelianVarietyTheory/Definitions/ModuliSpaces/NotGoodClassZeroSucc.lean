@@ -159,37 +159,6 @@ theorem zero_hasTh_unit {J : Type} {N : ℕ} (hN : Odd N) (b : TBase o (N ^ 2)) 
   simp only [hv]
   rfl
 
-def thetaFamZero (n N : ℕ) (hN : Odd N) (J : Type) (b : TBase ℂ (N ^ 2)) :
-    ThetaFam (g := 0) (J := J) (b := b) n (RingHom.id ℂ) (fun _ => True) where
-  MM := Sp ℂ
-  s := spMap (RingHom.id ℂ)
-  qproj := by
-    haveI := GlobalTheory.ProjSpace.Model.isIso_str_zero (R := ℂ)
-    exact ⟨0, inv (PSpace.str ℂ 0), inferInstance, inferInstance, by simp [spMap]⟩
-  flat := by simp only [spMap, CommRingCat.ofHom_id, Spec.map_id]; infer_instance
-  reduced := inferInstance
-  univ := zeroObj J b _
-  dense := by rw [zero_fromC]; exact dense_univ
-  loc := fun R _ _ β x _ => ⟨fun _ => 1, zero_hasTh hN b β x _, fun F hF => by
-    have h0 : MvPolynomial.eval₂ (RingHom.id ℂ) (fun _ => 1) F = 0 := by
-      simp only [thIdeal, Ideal.mem_iInf] at hF
-      exact hF (zeroObj J b _) (fun _ => 1) ⟨trivial, zero_hasTh hN b (RingHom.id ℂ) _ _⟩
-    have h1 := congrArg β h0
-    rw [MvPolynomial.eval₂_comp_left, map_zero] at h1
-    simpa [Function.comp_def] using h1, fun q hq a => ⟨0, (Ideal.ne_top_iff_one q).1 hq.ne_top⟩⟩
-  pts := fun R _ β v hv => by
-    haveI : Subsingleton (Ix 0 (N ^ 2)) := ⟨fun _ _ => funext fun i => Fin.elim0 i⟩
-    have hu : IsUnit (v 0) := by
-      by_contra hn
-      obtain ⟨m, hm, hmv⟩ := exists_max_ideal_of_mem_nonunits (mem_nonunits_iff.2 hn)
-      obtain ⟨c, hc⟩ := hv.2 m hm.isPrime 0
-      exact hc (by rwa [Subsingleton.elim (0 + (N / n) • c) 0])
-    refine ⟨spMap β, ⟨by simp [spMap], zero_hasTh_unit hN b β _ _ v hu.unit fun a => ?_⟩, fun y hy => ?_⟩
-    · rw [Subsingleton.elim a 0]; rfl
-    · simpa [spMap] using hy.1
-  rep := fun S s' t _ _ => ⟨s', ⟨by simp [spMap], tmap_zero _ t _⟩, fun y hy => by simpa [spMap] using hy.1⟩
-  unram := fun K _ x _ h _ _ => by simpa [spMap] using h
-
 theorem linComb_g_one {X Y : Scheme.{0}} (M : LB X) (hg : ∀ i j, M.g i j = 1) {K : Type} [Fintype K]
     (φ : K → (Y ⟶ X)) (ε : K → ℤ) (j j' : (LB.LinComb M φ ε).ι) : (LB.LinComb M φ ε).g j j' = 1 :=
   Finset.prod_eq_one fun _ _ => by rw [hg, map_one]; erw [map_one]; exact one_zpow _

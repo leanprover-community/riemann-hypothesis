@@ -34,7 +34,3 @@ theorem eventually_coreProperty_mono_fewerCores {KP : ∀ B : Base, Fr B.toPre �
   exact ⟨R, largeBaseProperty_anti hQ hR, hr _ _ (fun _ _ _ _ _ t => ⟨hQ' _ _ _ _ _ t.1, t.2⟩) h⟩
 
 end GlobalTheory.HeightCounting.Up
-
-namespace GlobalTheory.HeightCounting.Up
-
-end GlobalTheory.HeightCounting.Up

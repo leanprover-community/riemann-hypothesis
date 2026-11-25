@@ -197,7 +197,6 @@ open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComp
 noncomputable section
 namespace GlobalTheory.EtC.RedChern
 
-set_option backward.isDefEq.respectTransparency false
 
 theorem delta_two_eq : (SimplexCategory.δ (2 : Fin 3) : SimplexCategory.mk 1 ⟶ SimplexCategory.mk 2) =
     SimplexCategory.subinterval 0 1 (by omega) := by

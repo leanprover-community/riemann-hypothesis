@@ -20,8 +20,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor NumberField Formalism.L2.Pj
 open MvPowerSeries
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 theorem psJet_pow {R κ : Type} [CommRing R] [Fintype κ] [DecidableEq κ] (m : ℕ) (f : MvPowerSeries κ R) (k : ℕ) :
     psJet m (f ^ k) = psJet m f ^ k := by
   induction k with
@@ -240,8 +238,6 @@ namespace Formalism.MainNotions.ModuliIntegralCharts.H1
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor NumberField Formalism.L2.Pj
 open MvPowerSeries ExpTieAlg ExpTieGerm ExpTiePf
-
-attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem tie_holds : TieSt := by
   intro E _ _ _ H Dw l Xo c _ _ S _ _ _ y C φ hφ e he k F f hf

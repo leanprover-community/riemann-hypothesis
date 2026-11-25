@@ -1042,7 +1042,7 @@ theorem exists_loc {R K L : Type} [CommRing R] [IsDomain R] [Field K] [Field L] 
     obtain ⟨⟨a, ⟨s, k, rfl⟩⟩, h⟩ := IsLocalization.surj (Submonoid.powers g) x
     exact ⟨a, k, by simpa using h⟩
   have hinj : Function.Injective Φ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro x hx
     obtain ⟨a, k, h⟩ := hsurj x
     have h1 := congrArg Φ h

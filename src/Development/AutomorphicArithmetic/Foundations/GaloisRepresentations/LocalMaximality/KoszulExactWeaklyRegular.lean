@@ -104,7 +104,6 @@ private def dd (r : κ → R) (c : Finset κ → N) : Finset κ → N :=
 
 private theorem dd_map {N' : Type} [AddCommGroup N'] [Module R N'] (φ : N →ₗ[R] N') (r : κ → R)
     (c : Finset κ → N) (t : Finset κ) : dd r (fun s => φ (c s)) t = φ (dd r c t) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp [dd, map_sum]
 
 private theorem dd_add (r : κ → R) (a b : Finset κ → N) (t : Finset κ) :

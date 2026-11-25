@@ -145,80 +145,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 
 namespace GlobalTheory
 
-private lemma pairing_smul_left' {p : ℕ} [NeZero p] {M M' : Type} [AddCommGroup M] [AddCommGroup M']
-    [Module (ZMod p) M] (β : M →+ M' →+ ZMod p) (a : ZMod p) (v : M) (m' : M') :
-    β (a • v) m' = a * β v m' := by
-  have h : a • v = a.val • v := by
-    conv_lhs => rw [← ZMod.natCast_zmod_val a]
-    exact Nat.cast_smul_eq_nsmul (ZMod p) a.val v
-  rw [h, map_nsmul, AddMonoidHom.nsmul_apply, nsmul_eq_mul, ZMod.natCast_zmod_val]
-
-theorem exists_sum_mul_of_finite_torsion (l : ℕ) [Fact l.Prime] (M M' : Type) [AddCommGroup M]
-    [AddCommGroup M'] [Module (ZMod l) M] (β : M →+ M' →+ ZMod l) (S : Set M)
-    (hS : S.Finite) :
-    ∃ (ι : Type) (s : Finset ι) (c : ι → M →+ ZMod l) (d : ι → M' →+ ZMod l),
-      ∀ m ∈ S, ∀ m' : M', β m m' = ∑ k ∈ s, c k m * d k m' := by
-  classical
-  haveI : NeZero l := ⟨(Fact.out : l.Prime).ne_zero⟩
-  let b := Module.Basis.ofVectorSpace (ZMod l) M
-  refine ⟨_, hS.toFinset.biUnion (fun m => (b.repr m).support),
-    fun i => (b.coord i).toAddMonoidHom, fun i => β (b i), ?_⟩
-  intro m hm m'
-  have hsub : (b.repr m).support ⊆ hS.toFinset.biUnion (fun m => (b.repr m).support) :=
-    Finset.subset_biUnion_of_mem (fun m => (b.repr m).support) (hS.mem_toFinset.2 hm)
-  have hm' : m = ∑ i ∈ (b.repr m).support, b.repr m i • b i := by
-    conv_lhs => rw [← b.linearCombination_repr m]
-    rw [Finsupp.linearCombination_apply, Finsupp.sum]
-  conv_lhs => rw [hm']
-
-  rw [map_sum, AddMonoidHom.finsetSum_apply]
-  simp only [pairing_smul_left', LinearMap.toAddMonoidHom_coe, Module.Basis.coord_apply]
-  refine Finset.sum_subset hsub ?_
-  intro k _ hk
-  have hz : b.repr m k = 0 := by
-    by_contra h
-    exact hk (Finsupp.mem_support_iff.2 h)
-  rw [hz, zero_mul]
-
-theorem inv_cup_pairing_of_inv_cup_characters : ∀ (Γ : Type) [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [CompactSpace Γ] (l : ℕ) [Fact l.Prime] (μ : Representation (ZMod (l ^ 1)) Γ (ZMod (l ^ 1))), (∀ g m, μ g m = m) → ∀ (e : H2 μ →ₗ[ZMod (l ^ 1)] ZMod (l ^ 1)) (I : Γ → Prop) (u : ZMod (l ^ 1)) (γ φ : Γ), (∀ z y : Γ → ZMod (l ^ 1), Continuous z → Continuous y → (∀ g h, z (g * h) = z g + z h) → (∀ g h, y (g * h) = y g + y h) → (∀ g, I g → y g = 0) → ∀ w : Z2 μ, (∀ g h, w.1 (g, h) = z g * y h) → e (Submodule.Quotient.mk w) = u * (z γ * y φ)) → ∀ (M M' : Type) [AddCommGroup M] [TopologicalSpace M] [DiscreteTopology M] [AddCommGroup M'] [TopologicalSpace M'] [DiscreteTopology M'], (∀ m : M, l • m = 0) → ∀ (β : M →+ M' →+ ZMod (l ^ 1)) (x : Γ → M) (y : Γ → M'), Continuous x → Continuous y → (∀ g h, x (g * h) = x g + x h) → (∀ g h, y (g * h) = y g + y h) → (∀ g, I g → y g = 0) → ∀ w : Z2 μ, (∀ g h, w.1 (g, h) = β (x g) (y h)) → e (Submodule.Quotient.mk w) = u * β (x γ) (y φ) := by
-  intro Γ _ _ _ _ l _ μ hμ e I u γ φ hchar M M' _ _ _ _ _ _ hl β x y hxc hyc hxa hya hyI w hw
-  classical
-  haveI hp : Fact (l ^ 1).Prime := ⟨by rw [pow_one]; exact Fact.out⟩
-  haveI : NeZero (l ^ 1) := ⟨hp.out.ne_zero⟩
-  letI : Module (ZMod (l ^ 1)) M :=
-    AddCommGroup.zmodModule (fun m => by rw [pow_one]; exact hl m)
-  have hfin : (Set.range x).Finite := (isCompact_range hxc).finite_of_discrete
-  obtain ⟨ι, s, c, d, hdec⟩ :=
-    exists_sum_mul_of_finite_torsion (l ^ 1) M M' β (Set.range x) hfin
-  have hmem : ∀ k, (fun q : Γ × Γ => c k (x q.1) * d k (y q.2)) ∈ Z2 μ := by
-    intro k
-    rw [mem_cocycles2]
-    refine ⟨?_, ?_⟩
-    · exact ((continuous_of_discreteTopology.comp hxc).comp continuous_fst).mul
-        ((continuous_of_discreteTopology.comp hyc).comp continuous_snd)
-    · intro g h k'
-      simp only [hμ, hxa, hya, map_add (f := _)]
-      ring
-  let W : ι → Z2 μ := fun k => ⟨_, hmem k⟩
-  have hWsum : w = ∑ k ∈ s, W k := by
-    apply Subtype.ext
-    funext q
-    rcases q with ⟨g, h⟩
-    rw [Submodule.coe_sum, Finset.sum_apply, hw g h]
-    exact hdec (x g) ⟨g, rfl⟩ (y h)
-  have hW : ∀ k, e (Submodule.Quotient.mk (W k)) = u * (c k (x γ) * d k (y φ)) := fun k =>
-    hchar (fun g => c k (x g)) (fun g => d k (y g))
-      (continuous_of_discreteTopology.comp hxc) (continuous_of_discreteTopology.comp hyc)
-      (fun g h => by simp only [hxa, map_add (f := _)]) (fun g h => by simp only [hya, map_add (f := _)])
-      (fun g hg => by simp only [hyI g hg, map_zero]) (W k) (fun g h => rfl)
-  have hq : (Submodule.Quotient.mk (∑ k ∈ s, W k) : H2 μ) =
-      ∑ k ∈ s, (Submodule.Quotient.mk (W k) : H2 μ) :=
-    map_sum (Submodule.mkQ _) W s
-
-  rw [hWsum, hq, map_sum]
-  simp only [hW]
-  rw [← Finset.mul_sum, ← hdec (x γ) ⟨γ, rfl⟩ (y φ)]
-
 end GlobalTheory
 end -- clump:auto
 end -- clump:auto
@@ -637,7 +563,7 @@ theorem iota_natCast (x : ℕ) : iota l n x = ((l ^ n * x : ℕ) : ZMod (l ^ (n 
   rw [iota_apply, pow_mul_val]
 
 theorem iota_injective : Function.Injective (iota l n) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro b hb
   rw [iota_apply, CharP.cast_eq_zero_iff (ZMod (l ^ (n + 1))) (l ^ (n + 1)), pow_succ,
     Nat.mul_dvd_mul_iff_left (pow_pos (Fact.out : l.Prime).pos n)] at hb
@@ -834,7 +760,7 @@ theorem mk_eq_zero_of_rational (hT : LocalTateDuality) {F Ω : Type} [Field F] [
   have hr : Set.range Bw.toLL = Set.range (algebraMap ↥(Loc.OL Bw.LL) ↥Bw.LL.1) :=
     Bw.eO.surjective.range_comp (algebraMap ↥(Loc.OL Bw.LL) ↥Bw.LL.1)
   obtain ⟨n, a, ha, e⟩ := _root_.GlobalTheory.exists_zmod_pow_coboundary_of_rational_coboundary (Dec (F := F) A) l (fun g => ((cycZ F Ω l g : ℤ_[l]ˣ) : ℤ_[l])) O ↥Bw.LL.1 Bw.toLL
-    (GlobalTheory.BlochKatoIntegralScalars.toLL_injective Bw) (hr ▸ GlobalTheory.LocalIntegers.isOpen_integers l Bw.LL)
+    (Formalism.MainNotions.N.Br.toLL_inj Bw) (hr ▸ GlobalTheory.LocalIntegers.isOpen_integers l Bw.LL)
     (Nat.cast_ne_zero.2 (Fact.out : l.Prime).ne_zero)
     (fun x => by
       obtain ⟨n, hn⟩ := GlobalTheory.BlochKatoIntegralScalars.exists_pow_mul_mem_OL Bw.LL (fun (_ : Unit) (_ : Fin 1) => x)
@@ -951,10 +877,6 @@ theorem mem_NS {S : Set (HeightOneSpectrum (𝓞 F))} {v : HeightOneSpectrum (�
   exact ⟨v, hv, A, hA, hσ⟩
 
 omit [NumberField F] in
-theorem conj_root {c : Ω ≃+* Ω} (hc : IsCMConjOm F Ω c) {ζ : Ω} (hζ : IsPrimitiveRoot ζ (l ^ 1)) :
-    c ζ = ζ ^ (-1 : ZMod (l ^ 1)).val :=
-  GlobalTheory.NewRecip.conj_root hc hζ
-
 theorem eq_zero_of_forall_dual {n : ℕ} [Fact n.Prime] {K : Type} [AddCommGroup K] [Module (ZMod n) K] (k : K)
     (h : ∀ lam : K →+ ZMod n, lam k = 0) : k = 0 :=
   (Module.forall_dual_apply_eq_zero_iff (ZMod n) k).1 fun φ => h φ.toAddMonoidHom
@@ -1119,9 +1041,6 @@ theorem loc_eq_zero_of_subsingleton (hK : IsRes i K) (hρ : IsDual i s ρ) (lam 
   rw [← lam_natCast_mul, ← eps_eq hK, ← red_dot hρ, e, y.2.2]
   simp only [map_add (f := _), map_sub, dotProduct_add, sub_dotProduct]
   abel
-
-theorem continuous_cConj : Continuous (cConj X) :=
-  GlobalTheory.NewRecip.continuous_cConj
 
 theorem local_pair (hT : TameLocal) {bkP : BKPh X} (h : GalHyp bkP i s) (hK : IsRes i K) (hρ : IsDual i s ρ)
     {ζ : N.Om} (hζ : IsPrimitiveRoot ζ (X.l i ^ 1)) {inv : InvFam D.host.E N.Om (X.l i) 1}

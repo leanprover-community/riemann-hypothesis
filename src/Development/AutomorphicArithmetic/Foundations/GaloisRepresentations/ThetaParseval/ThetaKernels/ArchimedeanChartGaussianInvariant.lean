@@ -339,7 +339,7 @@ def ins_k (e : AE F E) (δ : E) (x : ((Fin L.n → AE F E) × AF F) × Matrix (F
 theorem continuous_ins_k (e : AE F E) (δ : E) : Continuous (ins_k L e δ) := by
   refine continuous_pi fun r => continuous_pi fun c => ?_
   unfold ins_k
-  have hcA := continuous_cA' (σ := σ)
+  have hcA := GlobalTheory.EisBL.DoubledGroupTopology.continuous_cA (σ := σ)
   by_cases hr : r = L.i₀ <;> by_cases hc : c = L.i₀ <;> simp only [hr, hc, dite_true, dite_false] <;> fun_prop
 theorem ins_mem_k (hB : GoodK σ d.B) {ε : ℤˣ}
     (hε : d.b.1ᵀ * dbl d.Y.J * d.b.1.map σ = fromBlocks 0 1 (((ε : ℤ) : E) • 1) 0) {δ : E}

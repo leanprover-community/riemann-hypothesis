@@ -35,19 +35,6 @@ theorem liftVec_inj {v w : Fin (2 * r' + k + 1) → ℂ} (h : liftVec k i r' v =
   first
     | simpa using hj
 
-private theorem levPos_injective : Function.Injective (levPos k i r') := by
-  intro a b h
-  apply Fin.ext
-  have h' := congrArg Fin.val h
-  simp only [levPos, Fin.val_mk] at h'
-  omega
-
-private theorem liftVec_apply_levPos (x : Fin (2 * r' + k + 1) → ℂ) (j : Fin (2 * r' + k + 1)) :
-    liftVec k i r' x (levPos k i r' j) = x j := by
-  have hj := j.isLt
-  have hj' : (j : ℕ) ≤ 2 * r' + k := by omega
-  simp [liftVec, levPos, hj']
-
 private theorem liftVec_apply_eq_zero_of_not_mem_range (x : Fin (2 * r' + k + 1) → ℂ) (p : Fin (2 * (i + r') + k + 1))
     (hp : p ∉ Set.range (levPos k i r')) : liftVec k i r' x p = 0 := by
   simp only [liftVec]
@@ -64,26 +51,11 @@ private theorem liftVec_dotProduct_eq_dotProduct_levPos (x : Fin (2 * r' + k + 1
     liftVec k i r' x ⬝ᵥ w = x ⬝ᵥ (fun j => w (levPos k i r' j)) := by
   unfold dotProduct
   symm
-  apply Fintype.sum_of_injective (levPos k i r') levPos_injective
+  apply Fintype.sum_of_injective (levPos k i r') PIQnLT.lev_inj
   · intro p hp
     simp only [liftVec_apply_eq_zero_of_not_mem_range x p hp, zero_mul]
   · intro j
-    simp only [liftVec_apply_levPos]
-
-private theorem hpk_levPos_levPos (j q : Fin (2 * r' + k + 1)) :
-    Hpk k (i + r') (levPos k i r' j) (levPos k i r' q) = Hpk k r' j q := by
-  obtain ⟨jv, hjv⟩ := j
-  obtain ⟨qv, hqv⟩ := q
-  simp only [Hpk, levPos, Fin.ext_iff, Fin.val_mk]
-  have e1 : (jv + i < i + r' ∧ jv + i + (qv + i) = 2 * (i + r') + k) ↔ (jv < r' ∧ jv + qv = 2 * r' + k) := by
-    omega
-  have e2 : (qv + i < i + r' ∧ jv + i + (qv + i) = 2 * (i + r') + k) ↔ (qv < r' ∧ jv + qv = 2 * r' + k) := by
-    omega
-  have e3 : (i + r' ≤ jv + i ∧ jv + i ≤ i + r' + k ∧ jv + i = qv + i) ↔ (r' ≤ jv ∧ jv ≤ r' + k ∧ jv = qv) := by
-    omega
-  have e4 : (jv + i = i + r' + k) ↔ (jv = r' + k) := by
-    omega
-  simp only [e1, e2, e3, e4]
+    simp only [PIQnLT.liftVec_lev]
 
 private theorem hpk_levPos_apply_eq_zero_of_outside (j : Fin (2 * r' + k + 1)) (q : Fin (2 * (i + r') + k + 1))
     (hq : ¬(i ≤ q.val ∧ q.val < 2 * r' + k + 1 + i)) :
@@ -96,7 +68,7 @@ private theorem hpk_mulVec_liftVec_apply_levPos (x : Fin (2 * r' + k + 1) → �
     (Hpk k (i + r') *ᵥ liftVec k i r' x) (levPos k i r' j) = (Hpk k r' *ᵥ x) j := by
   simp only [Matrix.mulVec]
   rw [dotProduct_comm, liftVec_dotProduct_eq_dotProduct_levPos]
-  simp only [hpk_levPos_levPos]
+  simp only [PIQnLT.hpk_lev]
   exact dotProduct_comm _ _
 
 private theorem star_liftVec (y : Fin (2 * r' + k + 1) → ℂ) :
@@ -104,14 +76,6 @@ private theorem star_liftVec (y : Fin (2 * r' + k + 1) → ℂ) :
   funext p
   simp only [liftVec, Pi.star_apply]
   split_ifs <;> simp
-
-private theorem herm_hpk_liftVec_liftVec (x y : Fin (2 * r' + k + 1) → ℂ) :
-    herm (Hpk k (i + r')) (liftVec k i r' x) (liftVec k i r' y) = herm (Hpk k r') x y := by
-  unfold herm
-  rw [star_liftVec, liftVec_dotProduct_eq_dotProduct_levPos]
-  congr 1
-  funext j
-  exact hpk_mulVec_liftVec_apply_levPos x j
 
 private theorem herm_bvec_liftVec_eq_zero_of_outside (y : Fin (2 * r' + k + 1) → ℂ) (q : Fin (2 * (i + r') + k + 1))
     (hq : ¬(i ≤ q.val ∧ q.val < 2 * r' + k + 1 + i)) :
@@ -143,7 +107,7 @@ theorem unitB_lift {m : ℕ} (Bs : Fin m → Fin (2 * r' + k + 1) → ℂ) (a b 
   simp only [Matrix.of_apply]
   by_cases hp : i ≤ p.val ∧ p.val < 2 * r' + k + 1 + i
   · by_cases hq : i ≤ q.val ∧ q.val < 2 * r' + k + 1 + i
-    · rw [dite_eq_left hp, dite_eq_left hq, liftVec_apply_of_mid _ p hp, bvec_eq_liftVec_bvec_of_mid q hq, herm_hpk_liftVec_liftVec]
+    · rw [dite_eq_left hp, dite_eq_left hq, liftVec_apply_of_mid _ p hp, bvec_eq_liftVec_bvec_of_mid q hq, PI.QnLevBasicsW.herm_lift]
     · rw [dite_eq_left hp, dite_eq_right hq, herm_bvec_liftVec_eq_zero_of_outside _ q hq, mul_zero]
   · rw [dite_eq_right hp]
     have h0 : liftVec k i r' (Bs a) p = 0 := by
@@ -201,11 +165,11 @@ theorem frame_lift {m : ℕ} (z : Fin (2 * r' + k + 1) → ℂ) (Bs : Fin m → 
       exact h1 a _ (show p.val - i < r' ∨ r' + k < p.val - i by omega)
     · simp only [liftVec]
       rw [dite_eq_right hm]
-  · simp only [herm_hpk_liftVec_liftVec]
+  · simp only [PI.QnLevBasicsW.herm_lift]
     exact h2 a b
   · simp only [List.mem_singleton] at hv
     subst hv
-    simp only [herm_hpk_liftVec_liftVec]
+    simp only [PI.QnLevBasicsW.herm_lift]
     exact h3 a z (List.mem_singleton_self z)
 
 theorem continuous_ιLev : Continuous (ιLev k i r') := by
@@ -341,19 +305,9 @@ theorem projL_embL (x : Mt k 0) : projL k r' (embL k r' x) = x := by
   have hq' : (q : ℕ) ≤ k := by omega
   simp [projL, embL, ιLev, levPos, hp', hq']
 
-theorem glev_closed (k r : ℕ) (i : Fin (r + 1)) : IsClosed (Glev k r i) := by
-  unfold Glev
-  simp only [Set.setOf_and, Set.setOf_forall, Set.setOf_mem_eq]
-  refine IsClosed.inter ?_ (isClosed_iInter fun a => isClosed_iInter fun _ => IsClosed.inter ?_ ?_)
-  · unfold UH
-    first
-      | exact isClosed_eq (by fun_prop) continuous_const
-  all_goals first
-    | exact isClosed_eq (by fun_prop) continuous_const
-
 theorem glev_measurable (k r : ℕ) (i : Fin (r + 1)) : @MeasurableSet (Mt k r) _ (Glev k r i) := by
   first
-    | exact (glev_closed k r i).measurableSet
+    | exact (QnRdSkewW.glev_closed k r i).measurableSet
 
 theorem haar_glev (μ0 : Measure (Mt k 0)) (h0 : Formalism.FourierDecayAlt.B.IsHaarOn (Formalism.FourierDecayAlt.B.GV k 0) μ0) :
     Formalism.FourierDecayAlt.B.IsHaarOn (Glev k r' (Fin.last r')) (μ0.map (embL k r')) := by

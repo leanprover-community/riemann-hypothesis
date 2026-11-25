@@ -84,7 +84,3 @@ theorem mem_window (L : SizeData₂ D) (a : ℤ) (ha : |(a : ℝ)| ≤ Formalism
 end GlobalTheory.LiftExpSplit
 
 end
-
-namespace GlobalTheory.LiftExpSplit
-
-end GlobalTheory.LiftExpSplit

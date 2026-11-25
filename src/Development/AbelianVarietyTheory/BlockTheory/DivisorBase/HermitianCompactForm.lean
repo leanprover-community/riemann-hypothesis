@@ -101,7 +101,7 @@ end Homology
 variable {D : Datum H} {l : Level H}
 
 def chi (c : Coeff l) (τ : E →+* ℂ) : 𝓞 E →+* c.F :=
-  (τ.comp (algebraMap (𝓞 E) E)).codRestrict c.F (fun a => c.conj τ _)
+  (τ.comp (algebraMap (𝓞 E) E)).codRestrict c.F (fun _ => c.conj τ _)
 
 abbrev toX (Xo : Moduli D l) (c : Coeff l) : Xo.XF c ⟶ Xo.X := pullback.fst _ _
 

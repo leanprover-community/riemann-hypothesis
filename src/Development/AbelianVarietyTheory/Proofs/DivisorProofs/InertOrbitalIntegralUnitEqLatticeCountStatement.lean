@@ -630,11 +630,6 @@ theorem norm_unit [IsAdicComplete (maximalIdeal O) O] [Finite (ResidueField O)] 
   rw [ResidueField.map_residue, ← map_mul] at hw'
   have hm : u - w * s w ∈ maximalIdeal O := by
     rw [← residue_eq_zero_iff, map_sub, hw', sub_self]
-  obtain ⟨v, hv⟩ := hu.exists_right_inv
-  have hsv : s v = v := by
-    have := congrArg s hv
-    rw [map_mul, hsu, map_one] at this
-    linear_combination v * this - s v * hv
   have hwu : IsUnit (w * s w) := by
     apply unit_of_not_mem
     intro h
@@ -698,7 +693,6 @@ theorem exists_unit_length (c : E →+* E) (s : O →+* O) (hs : ∀ x, s (s x) 
     (hdual : ∀ y ∈ W, (∀ z ∈ L, h y z ∈ (algebraMap O E).range) → y ∈ L) :
     ∃ e ∈ L, ∃ u : O, IsUnit u ∧ algebraMap O E u = h e e := by
   by_contra hcon
-  have inj := IsFractionRing.injective O E
   have h0 : ∀ e ∈ L, ∀ a : O, algebraMap O E a = h e e → a ∈ maximalIdeal O := by
     intro e he a hae
     by_contra hn
@@ -873,10 +867,6 @@ open scoped Classical TensorProduct
 open GlobalTheory.UnitLemma GlobalTheory.InertUnitOrb
 
 noncomputable section
-
-namespace GlobalTheory.InertUnitOrb.LatOnto
-
-end GlobalTheory.InertUnitOrb.LatOnto
 
 namespace GlobalTheory.InertUnitOrb.LatOnto
 

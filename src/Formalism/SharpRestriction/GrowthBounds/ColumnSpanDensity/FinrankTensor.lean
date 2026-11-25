@@ -35,14 +35,6 @@ private theorem choose_succ_eq_choose_mul_div (A m : ℕ) :
   rw [eq_div_iff (by positivity)]
   exact_mod_cast h
 
-theorem prodA (m A : ℕ) :
-    ∏ j : Fin m, (((A : ℚ) + ((j : ℕ) : ℚ) + 1) / (((j : ℕ) : ℚ) + 1)) = ((A + m).choose m : ℚ) := by
-  apply _root_.Formalism.MainNotions.ColumnSystems.Pf.prodUp <;> assumption
-
-theorem prodB (m B : ℕ) :
-    ∏ j : Fin m, (((B : ℚ) + (m : ℚ) - ((j : ℕ) : ℚ)) / ((m : ℚ) - ((j : ℕ) : ℚ))) = ((B + m).choose m : ℚ) := by
-  apply _root_.Formalism.MainNotions.ColumnSystems.Pf.prodDown <;> assumption
-
 theorem weylDim_const (m : ℕ) (d : ℤ) : weylDim m (fun _ => d) = 1 := by
   unfold weylDim
   refine Finset.prod_eq_one fun i _ => Finset.prod_eq_one fun j _ => ?_
@@ -96,7 +88,7 @@ theorem weylDim_hwt_eq (m A B : ℕ) : weylDim (m + 2) (hwt m A B) = (dimHar (m 
   simp only [Fin.snoc_castSucc, Fin.snoc_last, Fin.coe_castSucc, Fin.val_last]
   push_cast
   try simp only [sub_zero, sub_neg_eq_add, zero_add]
-  rw [prodA m A, prodB m B]
+  rw [Formalism.MainNotions.ColumnSystems.Pf.prodUp m A, Formalism.MainNotions.ColumnSystems.Pf.prodDown m B]
   unfold dimHar dimPol
   have hle : (if A = 0 ∨ B = 0 then 0 else (A - 1 + (m + 1)).choose (m + 1) * (B - 1 + (m + 1)).choose (m + 1)) ≤
       (A + (m + 1)).choose (m + 1) * (B + (m + 1)).choose (m + 1) := by
@@ -123,7 +115,7 @@ theorem weylDim_vec (m d : ℕ) :
   rw [hz, weylDim_cons_eq_prod_mul, weylDim_const, mul_one]
   push_cast
   try simp only [sub_zero]
-  rw [prodA (m + 1) d]
+  rw [Formalism.MainNotions.ColumnSystems.Pf.prodUp (m + 1) d]
 
 theorem weylDim_cov (m d : ℕ) :
     weylDim (m + 2) (Fin.cons (d : ℤ) (Fin.snoc (fun _ : Fin m => (d : ℤ)) 0)) = (dimPol (m + 1) d : ℚ) := by
@@ -134,7 +126,7 @@ theorem weylDim_cov (m d : ℕ) :
   try simp only [sub_self, zero_add, sub_zero]
   have h1 : (∏ j : Fin m, (((j : ℕ) : ℚ) + 1) / (((j : ℕ) : ℚ) + 1)) = 1 :=
     Finset.prod_eq_one fun j _ => div_self (by positivity)
-  rw [prodB m d, h1, one_mul, choose_add_succ_succ_eq_choose_mul_div d m]
+  rw [Formalism.MainNotions.ColumnSystems.Pf.prodDown m d, h1, one_mul, choose_add_succ_succ_eq_choose_mul_div d m]
   ring
 
 theorem finrank_tensor (Kf : Type) [Field Kf] (S : Type) [Fintype S] [DecidableEq S] (k n : ℕ)

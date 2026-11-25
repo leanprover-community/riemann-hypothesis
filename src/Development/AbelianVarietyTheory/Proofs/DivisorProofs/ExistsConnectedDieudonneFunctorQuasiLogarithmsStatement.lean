@@ -440,34 +440,6 @@ namespace GlobalTheory.Katz
 
 variable {R S : Type} [CommRing R] [CommRing S] (σ : R →+* S) {d : ℕ} {τ : Type}
 
-theorem map_powerSeriesEvalTwoGroups (c : MvPowerSeries (Fin d ⊕ Fin d) R) {u v : Fin d → MvPowerSeries τ R}
-    (hu : ∀ i, constantCoeff (u i) = 0) (hv : ∀ i, constantCoeff (v i) = 0) :
-    MvPowerSeries.map σ (at2 c u v) =
-      at2 (MvPowerSeries.map σ c) (fun i => MvPowerSeries.map σ (u i))
-        (fun i => MvPowerSeries.map σ (v i)) := by
-  have hs : HasSubst (Sum.elim u v) :=
-    hasSubst_of_constantCoeff_zero (fun s => by cases s <;> simp [hu, hv])
-  unfold at2
-  rw [map_subst hs]
-  congr 1
-  funext s
-  cases s <;> rfl
-
-theorem constantCoeff_powerSeriesEvalTwoGroups_zero_of {c : MvPowerSeries (Fin d ⊕ Fin d) R}
-    (hc : constantCoeff c = 0) {u v : Fin d → MvPowerSeries τ R}
-    (hu : ∀ i, constantCoeff (u i) = 0) (hv : ∀ i, constantCoeff (v i) = 0) :
-    constantCoeff (at2 c u v) = 0 := by
-  have h0 : ∀ s, constantCoeff (Sum.elim u v s) = 0 := fun s => by cases s <;> simp [hu, hv]
-  exact constantCoeff_subst_eq_zero (hasSubst_of_constantCoeff_zero h0) h0 hc
-
-theorem map_op_of_const (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) R) {u v : Fin d → MvPowerSeries τ R}
-    (hu : ∀ i, constantCoeff (u i) = 0) (hv : ∀ i, constantCoeff (v i) = 0) :
-    (fun i => MvPowerSeries.map σ (op μ u v i)) =
-      op (fun i => MvPowerSeries.map σ (μ i)) (fun i => MvPowerSeries.map σ (u i))
-        (fun i => MvPowerSeries.map σ (v i)) := by
-  funext i
-  exact map_powerSeriesEvalTwoGroups σ (μ i) hu hv
-
 theorem isLaw_map (R S : Type) [CommRing R] [CommRing S] (σ : R →+* S) (d : ℕ)
     (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) R) (h : IsLaw μ) :
     IsLaw (fun i => MvPowerSeries.map σ (μ i)) := by
@@ -1349,8 +1321,6 @@ theorem exists_base_isConn_katz : ∀ (p : ℕ) [Fact p.Prime],
         chartPull_red (c k G h) (c k' G' h') (hlaw k G h) (hlaw k' G' h') (hc k G h) (hc k' G' h') s _
           (hP k k' σ G G' _ _ (c k G h) (c k' G' h') _ _ (hlaw k G h) (hlaw k' G' h') (hc k G h) (hc k' G' h') s)
           (ρ k G h) (ρ k' G' h') (hρ k G h) (hρ k' G' h') (r k G h) (r k' G' h') (hr k G h) (hr k' G' h') m }
-  have hid : ∀ {k : Type} [Field k] (G : PDivGroup p k) (n : ℕ) (a : G.A n),
-      (SemiHom.ofHom (𝟙 G)).app n a = a := fun G n a => rfl
   refine ⟨B, @fun k _ _ _ G h d' cc μ' hμ' hcc =>
     { toFun := P k k (RingHom.id k) G G _ _ (c k G h) cc _ _ (hlaw k G h) hμ' (hc k G h) hcc
         (SemiHom.ofHom (𝟙 G))

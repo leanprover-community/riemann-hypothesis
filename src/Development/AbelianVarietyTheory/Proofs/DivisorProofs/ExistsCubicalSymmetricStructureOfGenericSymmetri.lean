@@ -135,14 +135,6 @@ theorem symB_iff_sym {A : Over (Sp K)} [GrpObj A] {M : LB A.left} (hM : M.IsLB) 
     obtain ⟨U, hU, ht⟩ := h s
     exact ⟨U, hU, (e U).symm ▸ ht⟩
 
-namespace Example
-
-section Proj
-open GlobalTheory.ProjSpace MvPolynomial
-
-end Proj
-
-end Example
 end GlobalTheory.ZV
 end
 end -- clump:auto

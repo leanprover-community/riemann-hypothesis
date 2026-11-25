@@ -85,14 +85,10 @@ theorem dv_sum (T : LocLat G Qp LL O) (e : ℕ) {d : ℕ} (b : Fin d → W.DD T)
   · intro a s ha ih
     rw [Finset.sum_insert ha, Finset.sum_insert ha, dv_add, ih]
 
-theorem dv_eq_sum (T : LocLat G Qp LL O) (e : ℕ) {d : ℕ} (b : Fin d → W.DD T) (c₀ : Fin d → LL) :
-    dv W T e b c₀ = ∑ m, c₀ m • dv W T e b (Pi.single m 1) := by
-  apply _root_.Formalism.MainNotions.N.FrobeniusPowerSeries.ArcLengthTwoLifting.dv_eq_sum_single <;> assumption
-
 theorem dvO_eq (T : LocLat G Qp LL O) (e : ℕ) {d : ℕ} (b : Fin d → W.DD T) (c₀ : Fin d → O) :
     dvO W T e b c₀ = ∑ m, algebraMap O LL (c₀ m) • dv W T e b (Pi.single m 1) := by
   first
-  | (unfold dvO; exact dv_eq_sum W T e b _)
+  | (unfold dvO; exact Formalism.MainNotions.N.FrobeniusPowerSeries.TC.dv_eq_sum W T e b _)
 
 theorem dvO_single (T : LocLat G Qp LL O) (e : ℕ) {d : ℕ} (b : Fin d → W.DD T) (k : Fin d) :
     dvO W T e b (Pi.single k 1) = dv W T e b (Pi.single k 1) := by

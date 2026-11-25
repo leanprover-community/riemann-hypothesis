@@ -18,9 +18,6 @@ open Formalism.FourierDecayAlt.S3
 
 section Count
 
-theorem card_lt_pairs (n : ℕ) : Nat.card {p : Fin n × Fin n // p.1 < p.2} = n * (n - 1) / 2 := by
-  apply Formalism.LogVandermondeBounds.StandardLattice.card_lt_pairs
-
 theorem card_matrix (m n K : Type) [Finite m] [Finite n] :
     Nat.card (Matrix m n K) = Nat.card K ^ (Nat.card m * Nat.card n) := by
   show Nat.card (m → n → K) = _
@@ -52,7 +49,7 @@ def uniEquiv (n : ℕ) : {u : Matrix (Fin n) (Fin n) A // IsUpUni u} ≃ ({p : F
 
 theorem card_uni (K : Type) [Field K] [Fintype K] (n : ℕ) :
     Nat.card {u : Matrix (Fin n) (Fin n) K // IsUpUni u} = Fintype.card K ^ (n * (n - 1) / 2) := by
-  rw [Nat.card_congr (uniEquiv (A := K) n), Nat.card_fun, card_lt_pairs, Nat.card_eq_fintype_card]
+  rw [Nat.card_congr (uniEquiv (A := K) n), Nat.card_fun, Formalism.LogVandermondeBounds.StandardLattice.card_lt_pairs, Nat.card_eq_fintype_card]
 
 noncomputable def upUniGEquiv (n : ℕ) : upUniG A n ≃ {u : Matrix (Fin n) (Fin n) A // IsUpUni u} where
   toFun g := ⟨g.1.1, g.2⟩

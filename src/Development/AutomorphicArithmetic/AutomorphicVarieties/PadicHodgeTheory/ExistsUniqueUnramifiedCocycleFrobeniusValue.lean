@@ -58,9 +58,9 @@ private theorem topGroup_SD (ρ : Representation A G V) [TopologicalSpace G] [To
 private def SDsub (ρ : Representation A G V) (L : AddSubgroup V) (hL : ∀ g, ∀ y ∈ L, ρ g y ∈ L) :
     Subgroup (SD ρ) where
   carrier := {p | p.1 ∈ L}
-  mul_mem' := fun {p q} hp hq => L.add_mem hp (hL _ _ hq)
+  mul_mem' := fun {_ _} hp hq => L.add_mem hp (hL _ _ hq)
   one_mem' := L.zero_mem
-  inv_mem' := fun {p} hp => L.neg_mem (hL _ _ hp)
+  inv_mem' := fun {_} hp => L.neg_mem (hL _ _ hp)
 
 private theorem all_of_closed [TopologicalSpace G] [IsTopologicalGroup G] {I : Subgroup G} {σ : G}
     (hd : (I ⊔ Subgroup.zpowers σ).topologicalClosure = ⊤) (H : Subgroup G) (hH : IsClosed (H : Set G))

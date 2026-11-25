@@ -25,8 +25,8 @@ theorem range_res (K : IntermediateField F Ω) :
 
 theorem index_fix [IsAlgClosure F Ω] (Q : QCM F Ω) :
     Q.K.fixingSubgroup.index = 2 ∧ IsOpen (Q.K.fixingSubgroup : Set (G F Ω)) := by
-  haveI : IsGalois F Ω := IsAlgClosure.isGalois F Ω
-  haveI : FiniteDimensional F Q.K := Module.finite_of_finrank_eq_succ Q.two
+  have : IsGalois F Ω := IsAlgClosure.isGalois F Ω
+  have : FiniteDimensional F Q.K := Module.finite_of_finrank_eq_succ Q.two
   exact ⟨by rw [← IntermediateField.finrank_eq_fixingSubgroup_index, Q.two], Q.K.fixingSubgroup_isOpen⟩
 
 
@@ -58,7 +58,7 @@ theorem main : ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F
   intro F Ω _ _ _ _ _
   refine ⟨sign, ?_, fun Q => ⟨by rw [ker_sign, range_res], by rw [ker_sign]; exact (index_fix Q).2⟩⟩
   intro Q Q' h
-  haveI : IsGalois F Ω := IsAlgClosure.isGalois F Ω
+  have : IsGalois F Ω := IsAlgClosure.isGalois F Ω
   have hk : Q.K.fixingSubgroup = Q'.K.fixingSubgroup := by rw [← ker_sign, ← ker_sign, h]
   apply QCM.ext'
   rw [← InfiniteGalois.fixedField_fixingSubgroup Q.K, ← InfiniteGalois.fixedField_fixingSubgroup Q'.K, hk]

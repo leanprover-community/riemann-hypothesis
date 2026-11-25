@@ -47,7 +47,7 @@ structure PlSide (D : D7) where
 
 
 structure WDSide (D : D7) (T : GlobalTheory.RowTie.WDTie D.nd D.naut) where
-  wdOf : ∀ (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) {a}, (G D.host.E D.nd.Om →* GL (Fin a) (Qbar l)) → ∀ w, D.naut.LP w
+  wdOf : ∀ (l : ℕ) [Fact l.Prime] (_ : Qbar l ≃+* ℂ) {a}, (G D.host.E D.nd.Om →* GL (Fin a) (Qbar l)) → ∀ w, D.naut.LP w
   wdOf_dim : ∀ (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) {a} (r : G D.host.E D.nd.Om →* GL (Fin a) (Qbar l)) w, D.naut.lpDim (wdOf l ι r w) = a
   wdOf_unr : ∀ (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) {a} (r : G D.host.E D.nd.Om →* GL (Fin a) (Qbar l)) w, w ∉ placesOver D.host.E l →
     Continuous (fun g => ((r g : GL (Fin a) (Qbar l)) : Matrix (Fin a) (Fin a) (Qbar l))) →
@@ -67,10 +67,10 @@ structure WDSide (D : D7) (T : GlobalTheory.RowTie.WDTie D.nd D.naut) where
   wdOf_mono0 : ∀ (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) {a} (r : G D.host.E D.nd.Om →* GL (Fin a) (Qbar l)) w, w ∉ placesOver D.host.E l →
     Continuous (fun g => ((r g : GL (Fin a) (Qbar l)) : Matrix (Fin a) (Fin a) (Qbar l))) →
     (D.naut.mono0 (wdOf l ι r w) ↔ (r '' (Ine (F := D.host.E) (D.nd.plOm.1 w) : Set (G D.host.E D.nd.Om))).Finite)
-  IsCrysW : ∀ (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) {a}, (G D.host.E D.nd.Om →* GL (Fin a) (Qbar l)) → PlE D.host → Prop
-  IsPotCrysW : ∀ (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) {a}, (G D.host.E D.nd.Om →* GL (Fin a) (Qbar l)) → PlE D.host → Prop
-  IsdRW : ∀ (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) {a}, (G D.host.E D.nd.Om →* GL (Fin a) (Qbar l)) → PlE D.host → Prop
-  jumpsW : ∀ (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) {a}, (G D.host.E D.nd.Om →* GL (Fin a) (Qbar l)) → (D.host.E →+* Qbar l) →
+  IsCrysW : ∀ (l : ℕ) [Fact l.Prime] (_ : Qbar l ≃+* ℂ) {a}, (G D.host.E D.nd.Om →* GL (Fin a) (Qbar l)) → PlE D.host → Prop
+  IsPotCrysW : ∀ (l : ℕ) [Fact l.Prime] (_ : Qbar l ≃+* ℂ) {a}, (G D.host.E D.nd.Om →* GL (Fin a) (Qbar l)) → PlE D.host → Prop
+  IsdRW : ∀ (l : ℕ) [Fact l.Prime] (_ : Qbar l ≃+* ℂ) {a}, (G D.host.E D.nd.Om →* GL (Fin a) (Qbar l)) → PlE D.host → Prop
+  jumpsW : ∀ (l : ℕ) [Fact l.Prime] (_ : Qbar l ≃+* ℂ) {a}, (G D.host.E D.nd.Om →* GL (Fin a) (Qbar l)) → (D.host.E →+* Qbar l) →
     Multiset ℤ
   wdOf_unrL : ∀ (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) {a} (r : G D.host.E D.nd.Om →* GL (Fin a) (Qbar l)) w, w ∈ placesOver D.host.E l →
     Continuous (fun g => ((r g : GL (Fin a) (Qbar l)) : Matrix (Fin a) (Fin a) (Qbar l))) →

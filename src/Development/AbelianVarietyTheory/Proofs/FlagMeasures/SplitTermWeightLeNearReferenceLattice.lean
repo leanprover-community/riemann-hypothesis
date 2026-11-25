@@ -1224,9 +1224,6 @@ theorem line_le {A : Submodule (𝓞 K) K} {v : V} {S : Submodule K V} (h : v �
   exact S.smul_mem t h
 
 omit [NumberField K] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] in
-alias e_mem_X := _root_.GlobalTheory.UnipStab.e_mem_X
-
-omit [NumberField K] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] in
 theorem lastVector_mem_jointSpan_left (F F' : FlagD H r) : F.z ∈ V0 F F' :=
   Submodule.mem_sup_right (Submodule.subset_span (by simp))
 
@@ -1234,8 +1231,8 @@ theorem normalForm_baseLattice_le_dualSpan_sup_line (N : NF H r) : N.P0 ≤ rs (
   unfold NF.P0
   refine sup_le (sup_le (sup_le (iSup_le fun a => line_le ?_) (iSup_le fun a => iSup_le fun _ => line_le ?_))
     (line_le ?_)) (iSup_le fun a => iSup_le fun ha => line_le ?_)
-  · exact Submodule.mem_sup_left (Submodule.mem_sup_left (Submodule.mem_sup_left (e_mem_X _ a)))
-  · exact Submodule.mem_sup_left (Submodule.mem_sup_left (Submodule.mem_sup_right (e_mem_X _ a)))
+  · exact Submodule.mem_sup_left (Submodule.mem_sup_left (Submodule.mem_sup_left (GlobalTheory.UnipStab.e_mem_X _ a)))
+  · exact Submodule.mem_sup_left (Submodule.mem_sup_left (Submodule.mem_sup_right (GlobalTheory.UnipStab.e_mem_X _ a)))
   · exact Submodule.mem_sup_left (lastVector_mem_jointSpan_left _ _)
   · exact Submodule.mem_sup_right (Submodule.subset_span ⟨a, ha, rfl⟩)
 

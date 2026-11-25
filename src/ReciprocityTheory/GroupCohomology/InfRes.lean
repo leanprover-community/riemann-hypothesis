@@ -138,11 +138,3 @@ theorem cocycle_one (M : TRep R G) (x : M.coch.X 1) (hx : M.coch.d 1 x = 0) : x.
 end
 
 end ReciprocityTheory.Coh.InflationRestrictionInvariants
-
-namespace ReciprocityTheory.Coh
-
-open InflationRestrictionInvariants
-
-universe u
-
-end ReciprocityTheory.Coh

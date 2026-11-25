@@ -178,11 +178,6 @@ theorem tmul_ne_zero_of_ne {P Q : Type} [AddCommGroup P] [Module ℂ P] [AddComm
     one_smul] at this
   exact hx this
 
-theorem pure_neg {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ] (f : SInf F κ)
-    (φ : ∀ v : Pl F, (κ → Fv F v) → ℂ) : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure (-f) φ = -GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure f φ := by
-  funext x
-  simp [GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure, neg_mul]
-
 theorem exists_not_polZero : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
     (Bs : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Base F E) (a a' : ℕ) (G : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Geo σ a a') (Xc : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Chars F E)
     (om : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep σ G.V G.W) (om' : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep σ G.V' G.W) (R : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.RealMaps F a a')
@@ -219,7 +214,7 @@ theorem exists_not_polZero : ∀ (F E : Type) [Field F] [NumberField F] [Field E
     let g : Fin (m + 1) → SInf F (Fin a × Fin (a + a')) := Fin.cons (-f) f'
     let χ : Fin (m + 1) → ∀ v : Pl F, (Fin a × Fin (a + a') → Fv F v) → ℂ := Fin.cons φ φ'
     have h0 : ∑ i, GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.pure (g i) (χ i) = 0 := by
-      simp only [Fin.sum_univ_succ, g, χ, Fin.cons_zero, Fin.cons_succ, pure_neg, ← hΦ, neg_add_cancel]
+      simp only [Fin.sum_univ_succ, g, χ, Fin.cons_zero, Fin.cons_succ, GlobalTheory.PolKer.RelV.pure_neg, ← hΦ, neg_add_cancel]
     have hout : ∀ i, ∀ v ∉ T, χ i v = G.M.vac v := by
       intro i v hv
       induction i using Fin.cases with
@@ -367,7 +362,6 @@ open NumberField IsDedekindDomain
 open scoped TensorProduct
 
 namespace GlobalTheory.PolKer
-
 
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels in
 theorem polMatch_zero_iff_polZero : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
@@ -672,8 +666,7 @@ theorem polarization_zero_of_compact : _root_.GlobalTheory.FunPr.ThetaLocalInput
   have hρ : ∀ i, R.p (D (f i)) = ρ (R.p (f i)) := fun i =>
     (GlobalTheory.ThK.RealUniq.induced_apply π hπ (D.restrict hDm) ker0 ⟨f i, (hf i).1⟩).symm
   refine ⟨T, hT, m, fun i => D (f i), φ, fun i => ⟨hDm _ (hf i).1, (hf i).2⟩, ?_, ?_⟩
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+  · rw [map_sum]
     exact Finset.sum_congr rfl fun i _ => hpure i
   · have := congrArg (LinearMap.rTensor _ ρ) hz
 

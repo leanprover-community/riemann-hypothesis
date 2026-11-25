@@ -749,7 +749,6 @@ theorem UpperTheory.ConvolutionTheory.L1.pairPosition :
     congr 1
     funext g
     simp [UpperTheory.ConvolutionTheory.L1.glueA]
-  set_option synthInstance.maxHeartbeats 200000 in
   have hc1 : c = 1 := by
     refine UpperTheory.ConvolutionTheory.L1.pairPosition_one (νE.map (archEquiv E n).symm) c ?_
     have h := hμ

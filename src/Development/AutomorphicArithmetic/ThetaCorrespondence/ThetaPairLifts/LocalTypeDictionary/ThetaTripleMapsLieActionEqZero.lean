@@ -143,10 +143,6 @@ theorem exists_line_conjU (θ : InfFam D) (M : HSp D) (τ : D.what₂.Tau) (Y : 
 
 end GlobalTheory.TripleAssembly.LieInv
 
-namespace GlobalTheory.TripleAssembly.LieInv
-
-end GlobalTheory.TripleAssembly.LieInv
-
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -166,12 +162,6 @@ open scoped TensorProduct ComplexConjugate
 open GlobalTheory.SquareComm
 open scoped GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 noncomputable section
-namespace GlobalTheory.TripleAssembly.LieInv
-end GlobalTheory.TripleAssembly.LieInv
-namespace GlobalTheory.TripleAssembly.LieInv
-end GlobalTheory.TripleAssembly.LieInv
-namespace GlobalTheory.TripleAssembly.LieInv
-end GlobalTheory.TripleAssembly.LieInv
 namespace GlobalTheory.TripleAssembly.LieInv
 variable {D : D7}
 theorem thetaLift_lie_derivative_eq_zero (hP : _root_.GlobalTheory.FunPr.ThetaLocalInputs) {k : ℕ} (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (ε : Bool) {M X : HSp D}

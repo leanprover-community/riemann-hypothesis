@@ -71,9 +71,6 @@ structure FinTower (Γ : PDivGroup p R) (G : Over (Sp R)) [GrpObj G] : Type wher
 
   res : ∀ n, spOver (Γ.res n : Γ.A (n + 1) →ₐ[R] Γ.A n) ≫ y (n + 1) = y n
 
-def FinTower.ofTower {Γ : PDivGroup p R} {G : Over (Sp R)} [GrpObj G] (t : Γ.TorsionTower G) : FinTower Γ G :=
-  ⟨t.y, t.mul, t.inj, fun n B _ _ _ => t.surj n B, t.res⟩
-
 def IsWeilHom {𝒜 ℬ : PDivGroup p R} {A B : Over (Sp R)} [GrpObj A] [GrpObj B] (t : 𝒜.TorsionTower A)
     (u : ℬ.TorsionTower B) (P : LB (A ⊗ B).left) (w : 𝒜 ⟶ ℬ.dual) : Prop :=
   ∀ n, ∃ U : (𝒜.A n ⊗[R] ℬ.A n)ˣ,

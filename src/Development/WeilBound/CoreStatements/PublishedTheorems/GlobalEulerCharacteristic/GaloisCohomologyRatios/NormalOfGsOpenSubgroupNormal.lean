@@ -85,13 +85,7 @@ theorem normal_of_gsOpenSubgroup_normal
 
 open scoped Classical in
 theorem card_infinitePlace_eq (K : FiniteSubfield) : Fintype.card (InfinitePlace K.1) =
-    Fintype.card {v : InfinitePlace K.1 // v.IsReal} + Fintype.card {v : InfinitePlace K.1 // v.IsComplex} := by
-  have h2 : Fintype.card {v : InfinitePlace K.1 // v.IsComplex} =
-      Fintype.card {v : InfinitePlace K.1 // ¬ v.IsReal} :=
-    Fintype.card_congr (Equiv.subtypeEquivRight fun v => InfinitePlace.not_isReal_iff_isComplex.symm)
-  have h := Fintype.card_subtype_compl (fun v : InfinitePlace K.1 => v.IsReal)
-  have h3 := Fintype.card_subtype_le (fun v : InfinitePlace K.1 => v.IsReal)
-  rw [h2, h]
-  omega
+    Fintype.card {v : InfinitePlace K.1 // v.IsReal} + Fintype.card {v : InfinitePlace K.1 // v.IsComplex} :=
+  InfinitePlace.card_eq_nrRealPlaces_add_nrComplexPlaces K.1
 
 end PositivityTheory.Lit1.GEN.X

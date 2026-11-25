@@ -79,7 +79,7 @@ instance countable_hostE (D : D7) : Countable D.host.E := by
 instance countable_GLR (D : D7) : Countable (Formalism.L2.SG.PairVal.GLR D) :=
   Function.Injective.countable
     (f := fun g : Formalism.L2.SG.PairVal.GLR D => fun i j => (g : Formalism.L2.SG.PairVal.MatR D) i j)
-    (fun a b h => Units.ext (Matrix.ext fun i j => congrFun (congrFun h i) j))
+    (fun _ _ h => Units.ext (Matrix.ext fun i j => congrFun (congrFun h i) j))
 
 private theorem isHaarOnSet_conj {I : Formalism.MainNotions.S.AutInst} {S : Set I.Ginf} {μ : Measure I.Ginf}
     (h : IsHaarOnSet I S μ) (c : I.Ginf) :

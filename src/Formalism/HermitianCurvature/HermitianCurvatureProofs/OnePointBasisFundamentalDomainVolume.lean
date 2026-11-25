@@ -525,15 +525,3 @@ end germ
 end
 
 end Formalism.FourierDecayAlt.P.TBBx5
-
-namespace Formalism.FourierDecayAlt.P.TBBx5
-
-open Formalism.FourierDecayAlt
-
-end Formalism.FourierDecayAlt.P.TBBx5
-
-namespace Formalism.FourierDecayAlt.P
-
-open Formalism.FourierDecayAlt
-
-end Formalism.FourierDecayAlt.P

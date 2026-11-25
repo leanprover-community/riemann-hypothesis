@@ -417,42 +417,6 @@ theorem exists_spread {x : Y.X} (a : CxExt σ (Y.X.presheaf.stalk x)) :
 
 def regSet (f : Y.FnC σ) : Set (Y.pts σ) := {y | RegC y f}
 
-theorem RegC.exists_nhds (h : RegC y f) : ∃ N : Set (Y.pts σ), IsOpen N ∧ y ∈ N ∧
-    N ⊆ regSet f ∧ (Y.an σ).HoloOn N fun z => val z f := by
-  obtain ⟨c, a, b, hb, hab, -⟩ := h
-  obtain ⟨U, A, hU, hA, eA⟩ := exists_spread a
-  obtain ⟨V, B, hV, hB, eB⟩ := exists_spread b
-  have key : ∀ z, z ∈ ptsIn Y.str σ U → z ∈ ptsIn Y.str σ V → B z ≠ 0 →
-      HasVal z f (A z / B z) := by
-    intro z zU zV hz
-    obtain ⟨a', ha', ha''⟩ := eA z zU
-    obtain ⟨b', hb', hb''⟩ := eB z zV
-    refine ⟨a', b', by rw [hb'']; exact hz, ?_, ?_⟩
-    · rw [ha', hb']; exact hab
-    · rw [ha'', hb'']; field_simp
-  have yV : y ∈ ptsIn Y.str σ V := Var.mem_ptsIn_iff.mpr hV
-  have hBy : B y ≠ 0 := by
-    obtain ⟨b', hb', hb''⟩ := eB y yV
-    have e : b' = b := germIncl_injective y hb'
-    rw [← hb'', e]; exact hb
-  refine ⟨ptsIn Y.str σ U ∩ (ptsIn Y.str σ V ∩ B ⁻¹' {0}ᶜ),
-    (isOpen_ptsIn U).inter ((hB.continuousOn (isOpen_ptsIn V)).isOpen_inter_preimage
-      (isOpen_ptsIn V) isOpen_compl_singleton),
-    ⟨Var.mem_ptsIn_iff.mpr hU, yV, hBy⟩, fun z hz => ⟨_, key z hz.1 hz.2.1 hz.2.2⟩, ?_⟩
-  refine ((hA.mono (show ptsIn Y.str σ U ∩ (ptsIn Y.str σ V ∩ B ⁻¹' {0}ᶜ) ⊆
-    ptsIn Y.str σ U from fun z hz => hz.1)).mul
-    ((hB.mono (show ptsIn Y.str σ U ∩ (ptsIn Y.str σ V ∩ B ⁻¹' {0}ᶜ) ⊆
-      ptsIn Y.str σ V from fun z hz => hz.2.1)).inv
-      (show ∀ z ∈ ptsIn Y.str σ U ∩ (ptsIn Y.str σ V ∩ B ⁻¹' {0}ᶜ), B z ≠ 0 from
-        fun z hz => hz.2.2))).congr ?_
-  intro z hz
-  rw [(key z hz.1 hz.2.1 hz.2.2).val_eq, div_eq_mul_inv]
-
-theorem holoOn_val (f : Y.FnC σ) : (Y.an σ).HoloOn (regSet f) fun z => val z f := by
-  choose N hN hyN hNs hNh using fun z : regSet f => (show RegC z.1 f from z.2).exists_nhds
-  exact AnRead.holoOn_of_cover (R := Y.an σ) hN (fun z hz => ⟨⟨z, hz⟩, hyN ⟨z, hz⟩⟩)
-    fun j => (hNh j).mono Set.inter_subset_right
-
 end Var
 
 end GlobalTheory.ProjVar

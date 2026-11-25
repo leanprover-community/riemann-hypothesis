@@ -26,7 +26,6 @@ noncomputable abbrev algOpKT (la : HeightOneSpectrum (𝓞 K)) : Algebra (Op D N
 theorem isFractionRing_OT :
     letI := algOTKT (K := K) D N
     IsFractionRing (OT K D N) (KTf K D N) := by
-  set_option synthInstance.maxHeartbeats 200000 in
   letI := algOTKT (K := K) D N
   have hinj : Function.Injective (algebraMap (OT K D N) (KTf K D N)) :=
     (IsFractionRing.injective (KTp K D N) (KTf K D N)).comp
@@ -61,7 +60,6 @@ theorem isFractionRing_OT :
 theorem isFractionRing_Op (la : HeightOneSpectrum (𝓞 K)) :
     letI := algOpKT (K := K) D N la
     IsFractionRing (Op D N la) (KTf K D N) := by
-  set_option synthInstance.maxHeartbeats 200000 in
   letI := algOTKT (K := K) D N
   letI := algOpKT (K := K) D N la
   haveI := isFractionRing_OT (K := K) D N

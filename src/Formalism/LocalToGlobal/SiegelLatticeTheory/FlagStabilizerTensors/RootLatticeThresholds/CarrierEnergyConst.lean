@@ -48,11 +48,7 @@ theorem anum_pow : Anum D ^ D.R.f =
   field_simp
   ring
 
-theorem rdE_pos' : 0 < D.host.rdE := by
-  unfold Formalism.BasicNotions.Host.rdE
-  apply Real.rpow_pos_of_pos
-  have h := NumberField.discr_ne_zero (K := D.host.E)
-  exact abs_pos.mpr (by exact_mod_cast h)
+theorem rdE_pos' : 0 < D.host.rdE := Formalism.MainNotions.S.rdE_pos D
 
 theorem energy_constant_nonneg (P : Parts X u u') : 0 ≤ P.Gam0 := by
   unfold Formalism.L2.SG.Pf.Carrier.Parts.Gam0 Formalism.FourierDecayAlt.D.GamLev

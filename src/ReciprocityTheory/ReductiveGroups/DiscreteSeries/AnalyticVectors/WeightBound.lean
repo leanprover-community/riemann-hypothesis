@@ -224,7 +224,16 @@ theorem sqrt_nsq_add_le (x y : Fin n → ℝ) : √(nsq (x + y)) ≤ √(nsq x) 
 
 theorem sqrt_nsq_sum_le {ι : Type*} (s : Finset ι) (f : ι → Fin n → ℝ) :
     √(nsq (∑ i ∈ s, f i)) ≤ ∑ i ∈ s, √(nsq (f i)) := by
-  apply _root_.ReciprocityTheory.ChartRestriction.DS.sqrt_nsq_sum_le <;> assumption
+  classical
+  induction s using Finset.induction_on with
+  | empty =>
+    simp only [Finset.sum_empty]
+    exact le_of_eq (by
+      rw [show nsq (0 : Fin n → ℝ) = 0 by unfold nsq dot; simp]
+      simp)
+  | insert a s ha ih =>
+    rw [Finset.sum_insert ha, Finset.sum_insert ha]
+    exact (sqrt_nsq_add_le _ _).trans (add_le_add le_rfl ih)
 
 theorem sqrt_nsq_add_ncSum_le {j : ℕ} {ω : Fin n → ℝ} (hω : IsNCSum ε j ω)
     (x : Fin n → ℝ) :

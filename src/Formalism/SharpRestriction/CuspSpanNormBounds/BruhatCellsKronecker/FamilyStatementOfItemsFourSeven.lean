@@ -817,10 +817,6 @@ theorem scale_base_rpow_eq_exp (y : ℝ) : large₂.sc.b ^ y = Real.exp (large�
   unfold Scale.b
   rw [Real.exp_mul]
 
-theorem log_scale_base_eq : Real.log large₂.sc.b = large₂.sc.L := by
-  unfold Scale.b
-  rw [Real.log_exp]
-
 theorem window_radius_pos (w : D.what₂.Word) : 0 < Tr D w := by
   unfold Tr
   exact_mod_cast (D.mem w).A.T_prime.pos
@@ -1019,7 +1015,7 @@ theorem product_clause_at_record (C' Cl Cg cb Cu cT CT C0 A C C2 Ch : ℝ) (hC :
   have hS0 : 0 < S := lt_of_lt_of_le one_pos hS1
   have hs0 : 0 ≤ Real.log S := Real.log_nonneg hS1
   have hSe : S = Real.exp (Real.log S) := (Real.exp_log hS0).symm
-  rw [log_scale_base_eq]
+  rw [Formalism.MainNotions.BridgeLemma.log_b]
   have hR1 : 1 ≤ Real.exp (C2 * (D.R.m : ℝ) ^ 6 * D.R.f * large₂.sc.L) * S ^ (C2 * (D.R.m : ℝ) ^ 4) :=
     one_le_mul_of_one_le_of_one_le (Real.one_le_exp (by positivity)) (Real.one_le_rpow hS1 (by positivity))
   rcases P.eq_empty_or_nonempty with rfl | ⟨τ₀, _⟩
@@ -2437,4 +2433,3 @@ end Formalism.MainNotions.BridgeLemma
 namespace Formalism.MainNotions.BridgeLemma
 
 end Formalism.MainNotions.BridgeLemma
-

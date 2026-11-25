@@ -205,7 +205,6 @@ theorem block_bounds (t : ℕ) : ∀ e ∈ block t, -(((t : ℚ) + 1) / 2) < e �
   have : ∃ k < t, ((t : ℚ) - 1) / 2 - (k : ℕ) = e := by simpa [block] using he
   obtain ⟨k, hk, rfl⟩ := this
   have h1 : (k : ℚ) < t := by exact_mod_cast hk
-  have h2 : (0 : ℚ) ≤ k := Nat.cast_nonneg k
   constructor <;> linarith
 
 theorem block_length (t : ℕ) : (block t).length = t := by simp [block]

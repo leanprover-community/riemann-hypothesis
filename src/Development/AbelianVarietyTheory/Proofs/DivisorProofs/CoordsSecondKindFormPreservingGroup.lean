@@ -103,7 +103,6 @@ theorem exists_coords_second_kind [FiniteDimensional ℝ 𝔸] {S : Set 𝔸} (h
   have h4 : HasStrictFDerivAt Φ ((ContinuousLinearEquiv.refl ℝ 𝔸 : 𝔸 ≃L[ℝ] 𝔸) : 𝔸 →L[ℝ] 𝔸) 0 := by
     refine (hP.mul' h2).congr_fderiv ?_
     ext1 z
-    have e1 : (List.ofFn fun i => NormedSpace.exp ((0 : Fin d → ℝ) i • Z i)).prod = 1 := by simp
     simp [hpc]
   have hΦ0 : Φ 0 = 1 := by
     show P 0 * NormedSpace.exp (0 - p 0) = 1

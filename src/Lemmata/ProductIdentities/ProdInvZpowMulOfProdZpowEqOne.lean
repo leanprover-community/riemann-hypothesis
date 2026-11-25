@@ -16,7 +16,7 @@ import Lemmata.MovedPointExistence.ExistsMoved
 namespace Bl.ProductIdentities
 
 theorem goal1 :
-  ∀ {n : Type} [inst : Fintype.{0} n] [inst_1 : DecidableEq.{1} n] (A : Real → Matrix.{0, 0, 0} n n Complex)
+  ∀ {n : Type} [Fintype.{0} n] [DecidableEq.{1} n] (A : Real → Matrix.{0, 0, 0} n n Complex)
   (A' : Matrix.{0, 0, 0} n n Complex),
   Eq.{1} (A 0) 1 →
     (∀ (i j : n), HasDerivAt.{0, 0} (fun (t : Real) ↦ A t i j) (A' i j) 0) →

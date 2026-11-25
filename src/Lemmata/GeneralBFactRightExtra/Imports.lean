@@ -11,7 +11,7 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NormPowSubPo
 namespace Bl.general_b_fact_right'''
 
 theorem goal1 :
-  ∀ {K : Type} [inst : NormedField.{0} K] [IsUltrametricDist.{0} K] {p : Nat} {a b : K},
+  ∀ {K : Type} [NormedField.{0} K] [IsUltrametricDist.{0} K] {p : Nat} {a b : K},
   LE.le.{0} (Norm.norm.{0} a) 1 →
     LE.le.{0} (Norm.norm.{0} b) 1 →
       LE.le.{0} (Norm.norm.{0} (HSub.hSub.{0, 0, 0} a b)) (Inv.inv.{0} (Nat.cast.{0} p)) →

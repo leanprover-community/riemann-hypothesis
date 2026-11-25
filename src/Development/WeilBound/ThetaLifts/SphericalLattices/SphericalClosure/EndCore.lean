@@ -689,28 +689,6 @@ variable {n d : ℕ} {X : Spc F E n} {W : Spc F E d} {B : Base F E} {M : Model �
 theorem det_of {m : ℕ} (J : Matrix (Fin m) (Fin m) E) (τ : E →+* ℂ) (hJ : (J.map τ).det ≠ 0) : J.det ≠ 0 := fun h0 =>
   hJ (((RingHom.map_det _ J).symm.trans (congrArg _ h0)).trans (map_zero _))
 
-theorem detX (hp : IsPair B M χX χW om r s r' s') : X.J.det ≠ 0 := by
-  obtain ⟨w⟩ : Nonempty (InfinitePlace F) := inferInstance
-  exact det_of _ _ (GlobalTheory.WeilSchrodingerHerm.det_ne_zero_of_hasSig (hp.herm.sig w))
-
-theorem detW (hp : IsPair B M χX χW om r s r' s') : W.J.det ≠ 0 := by
-  obtain ⟨w⟩ : Nonempty (InfinitePlace F) := inferInstance
-  exact det_of _ (B.emb w).1 fun h0 =>
-    GlobalTheory.WeilSchrodingerHerm.det_ne_zero_of_hasSig (hp.skew.sig w) (by rw [Matrix.det_smul, h0, mul_zero])
-
-theorem I_left (hU : Unimod) (hT : ThetaBasic) (hp : IsPair B M χX χW om r s r' s') {Φ : Fn F n d} (hΦ : Φ ∈ schA F _)
-    (g₀ : UA σ X.J) : M.I om (om (g₀, 1) Φ) = M.I om Φ := by
-  funext h
-  obtain ⟨h1, -, h3⟩ := hU F E σ hp.base.cm n X.J 1 (fun i j => by simpa using hp.herm.herm i j) (detX hp)
-  have h2 := h3 _ hp.good.haar
-  have := hp.good.haar
-  have : BorelSpace (UA σ X.J) := ⟨rfl⟩
-  have e : ∀ g, theta om (om (g₀, 1) Φ) g h = theta om Φ (g * g₀) h := fun g => by
-    simp only [theta, ← Module.End.mul_apply, ← map_mul, Prod.mk_mul_mk, mul_one]
-  simp only [Model.I, e]
-  exact L2.integral_right hp.good.dom (fun g => theta om Φ g h) (fun γ hγ g => by
-    simpa using ((hT F E σ B n d X W M χX χW om r s r' s' hp).1 Φ hΦ).2.1 γ hγ 1 (one_mem _) g h) g₀
-
 theorem theta_add (hp : IsPair B M χX χW om r s r' s') {Φ Ψ : Fn F n d} (hΦ : Φ ∈ schA F _) (hΨ : Ψ ∈ schA F _) (g h) :
     theta om (Φ + Ψ) g h = theta om Φ g h + theta om Ψ g h := by
   simp only [theta, map_add (f := _)]

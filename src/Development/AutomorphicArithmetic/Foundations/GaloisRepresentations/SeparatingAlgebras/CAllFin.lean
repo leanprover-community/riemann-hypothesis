@@ -642,10 +642,6 @@ theorem frame (hD : DenomBdd) (hR : RhoBound) (hL : LatFacts) (hE : LevelEx) {E 
 
 end UpperTheory.Gal.Gen.Loc
 
-namespace UpperTheory.Gal.Gen
-
-end UpperTheory.Gal.Gen
-
 end
 end -- clump:auto
 end -- clump:auto

@@ -24,23 +24,8 @@ theorem norm_natCast_padicComplex (p : Nat.Primes) (n : ℕ) :
   have h := PadicComplex.norm_extends' (p : ℕ) (n : ℚ_[p])
   simpa using h
 
-def unitBall : ValuationSubring K where
-  carrier := {a | ‖j a‖ ≤ 1}
-  mul_mem' := fun {a b} ha hb => by
-    simp only [Set.mem_setOf_eq, map_mul, norm_mul] at *
-    exact mul_le_one₀ ha (norm_nonneg _) hb
-  one_mem' := by simp
-  add_mem' := fun {a b} ha hb => by
-    simp only [Set.mem_setOf_eq, map_add (f := _)] at *
-    exact (IsUltrametricDist.norm_add_le_max _ _).trans (max_le ha hb)
-  zero_mem' := by simp
-  neg_mem' := fun {a} ha => by
-    simpa using ha
-  mem_or_inv_mem' := fun a => by
-    simp only [Set.mem_setOf_eq, map_inv₀, norm_inv]
-    rcases le_total ‖j a‖ 1 with h | h
-    · exact Or.inl h
-    · exact Or.inr (inv_le_one_of_one_le₀ h)
+def unitBall : ValuationSubring K :=
+  (NormedField.valuation (K := ℂ_[p])).valuationSubring.comap j
 
 theorem mem_unitBall {a : K} : a ∈ unitBall j ↔ ‖j a‖ ≤ 1 := Iff.rfl
 

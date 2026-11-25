@@ -1064,15 +1064,10 @@ section -- clump:auto
 open UpperTheory.V.Z.Kato.Joint
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2 GlobalTheory.KZ
 
-private theorem norm_l_lt_one (l : ℕ) [Fact l.Prime] : ‖((l : ℕ) : Qbar l)‖ < 1 := by
-  have h : ((l : ℕ) : Qbar l) = algebraMap ℚ_[l] (PadicAlgCl l) ((l : ℕ) : ℚ_[l]) := by simp
-  rw [h, PadicAlgCl.norm_extends]
-  exact Padic.norm_p_lt_one
-
 private theorem cg_scale {l : ℕ} [Fact l.Prime] (K : Qbar l) : ∃ N : ℕ, ∀ m, N ≤ m → ∀ (c₀ : ℕ) (u x y : Qbar l),
     ‖u‖ = 1 → Cg (2 * m) x y → Cg (m - c₀) (u * K * y) (u * K * x) := by
   have hl0 : 0 ≤ ‖((l : ℕ) : Qbar l)‖ := norm_nonneg _
-  have hl1 := norm_l_lt_one l
+  have hl1 := GlobalTheory.norm_natCast_prime_qbar l
   obtain ⟨N, hN⟩ : ∃ N : ℕ, ‖((l : ℕ) : Qbar l)‖ ^ N * ‖K‖ ≤ 1 := by
     rcases eq_or_ne ‖K‖ 0 with hK | hK
     · exact ⟨0, by rw [hK, mul_zero]; exact zero_le_one⟩

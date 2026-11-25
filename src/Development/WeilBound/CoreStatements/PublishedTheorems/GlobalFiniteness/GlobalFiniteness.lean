@@ -307,7 +307,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.DYdc5.main.{u_1} :
-    ∀ {R : Type u_1} [inst : CommRing R] (P : Ideal R) [hP : P.IsPrime] (t : ℕ),
+    ∀ {R : Type u_1} [CommRing R] (P : Ideal R) [P.IsPrime] (t : ℕ),
       t ≠ (0 : ℕ) → (↑t : R) ∈ P → ∃ (p : ℕ), Nat.Prime p ∧ p ∣ t ∧ (↑p : R) ∈ P := by
   intro R _ P hP t
   induction t using Nat.strong_induction_on with

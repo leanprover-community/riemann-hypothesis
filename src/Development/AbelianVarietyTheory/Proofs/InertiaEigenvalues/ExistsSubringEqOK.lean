@@ -21,10 +21,6 @@ noncomputable section
 
 namespace GlobalTheory.JR.Et
 
-theorem charpoly_dvd_pow_of_aeval_zero {R : Type*} [CommRing R] {n : Type*} [Fintype n] [DecidableEq n]
-    (M : Matrix n n R) (p : R[X]) (hp : aeval M p = 0) : M.charpoly ∣ p ^ Fintype.card n := by
-  exact GlobalTheory.SepCharpoly.charpoly_dvd_pow_of_aeval_eq_zero M p hp
-
 variable {F E : Type} [NontriviallyNormedField F] [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E]
 
 theorem aeval_self_charpoly_lmul (A : Et F E) (z : A.K) :
@@ -58,7 +54,7 @@ theorem mem_OK_iff_isIntegral [IsUltrametricDist F] (A : Et F E) (z : A.K) :
     have h2 : aeval (LinearMap.toMatrixAlgEquiv bs (Algebra.lmul F A.K z))
         (p.map (algebraMap (NormedField.valuation (K := F)).integer F)) = 0 := by
       rw [aeval_algHom_apply, h1, map_zero]
-    have h3 := charpoly_dvd_pow_of_aeval_zero _ _ h2
+    have h3 := GlobalTheory.SepCharpoly.charpoly_dvd_pow_of_aeval_eq_zero _ _ h2
     have h4 : (LinearMap.toMatrixAlgEquiv bs (Algebra.lmul F A.K z)).charpoly =
         LinearMap.charpoly (Algebra.lmul F A.K z) := LinearMap.charpoly_toMatrix _ bs
     rw [h4, ← Polynomial.map_pow] at h3

@@ -1,5 +1,7 @@
 module
 
+import Formalism.EllipticTorsion.EllipticTorsionProofs.NDeriv
+
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TopsChoicePartA
 public import Formalism.FormalGroupWitt.FormalGroupWittProofs.SolveV
 public import Formalism.FormalGroupWitt.FormalGroupWittProofs.IntegralSubstVector
@@ -63,7 +65,7 @@ theorem class_multiplication : ClassMul := by
   intro K ι _ _ pp hh F V h0 hV hF
   rw [inClass_iff h0] at hF ⊢
   obtain ⟨U, hU, h⟩ := hF
-  refine ⟨fun i => U i * V, fun i => Formalism.FG.IntegralSubstitution.integral_mul (hU i) hV, fun M => ?_⟩
+  refine ⟨fun i => U i * V, fun i => Formalism.ELL.SubstitutionCoefficientCongruence.integral_mul (hU i) hV, fun M => ?_⟩
   have e : F * V - clSum pp hh (fun i => U i * V) M = (F - clSum pp hh U M) * V := by
     simp only [clSum, sub_mul, Finset.sum_mul]
     congr 1
@@ -127,7 +129,7 @@ theorem integral_chU {K ι : Type} [NormedField K] [IsUltrametricDist K] {Y : Mv
   have hY' : Integral (-Y) := fun m => by rw [map_neg, norm_neg]; exact hY m
   rw [chT, MvPowerSeries.coeff_C_mul, norm_mul]
   exact mul_le_one₀ (IsUltrametricDist.norm_natCast_le_one K _) (norm_nonneg _)
-    (Formalism.FG.IntegralSubstitution.integral_mul (Formalism.FG.IntegralSubstitution.integral_pow hY' a) (hU _) n)
+    (Formalism.ELL.SubstitutionCoefficientCongruence.integral_mul (Formalism.ELL.SubstitutionCoefficientCongruence.integral_pow hY' a) (hU _) n)
 
 theorem sum_triangle {A : Type} [AddCommMonoid A] (g : ℕ → ℕ → A) (M : ℕ) :
     ∑ i ∈ range M, ∑ b ∈ range (i + 1), g b (i - b) =

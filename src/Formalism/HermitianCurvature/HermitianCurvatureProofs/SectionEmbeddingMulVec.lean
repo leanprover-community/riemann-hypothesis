@@ -131,11 +131,11 @@ theorem section_embedding_mul_vec (z z' : Fin (2 * r + k + 1) → ℂ) (μsec : 
   let f : (Fin (2 * r + k + 1) → ℂ) →ₗ[ℂ] (Fin (2 * r + k + 1) → ℂ) :=
     { toFun := fun v => NF.muZ k r μsec ζ *ᵥ (SSn.prWv k r z' v - herm (Hpk k r) (SSn.prWv k r z' v) ν • ν)
       map_add' := fun x y => by
-        rw [← Matrix.mulVec_add, TF.prWv_add, DU.hadd_l, add_smul]
+        rw [← Matrix.mulVec_add, TF.prWv_add, Formalism.FourierDecayAlt.P.Qx8.herm_add_left', add_smul]
         congr 1
         abel
       map_smul' := fun c x => by
-        rw [TF.prWv_smul, DU.hsmul_l, RingHom.id_apply, ← Matrix.mulVec_smul, smul_sub, smul_smul] }
+        rw [TF.prWv_smul, Formalism.FourierDecayAlt.P.Qx8.herm_smul_left', RingHom.id_apply, ← Matrix.mulVec_smul, smul_sub, smul_smul] }
   have e : SSn.io0 k r z z' μsec ζ = LinearMap.toMatrix' f := by
     ext i j
     rw [LinearMap.toMatrix'_apply]

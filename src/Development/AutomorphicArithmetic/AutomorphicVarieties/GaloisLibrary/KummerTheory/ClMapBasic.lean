@@ -18,30 +18,14 @@ private theorem clMapBasic_lemma {K K' K'' : Type} [Field K] [NumberField K] [Fi
   obtain ⟨I, rfl⟩ := ClassGroup.mk0_surjective c
   rw [class_map_mk0, class_map_mk0, class_map_mk0]
   congr 1
-  apply Subtype.ext
-  show Ideal.map _ _ = Ideal.map _ (Ideal.map _ _)
-  ext y
-  rw [clMapBasic_mem, clMapBasic_mem]
-  constructor
-  · rintro ⟨x, hx, rfl⟩
-    exact ⟨RingOfIntegers.mapRingEquiv τ x, (clMapBasic_mem τ _ _).mpr ⟨x, hx, rfl⟩, rfl⟩
-  · rintro ⟨z, hz, rfl⟩
-    obtain ⟨x, hx, rfl⟩ := (clMapBasic_mem τ _ _).mp hz
-    exact ⟨x, hx, rfl⟩
+  exact Subtype.ext (Ideal.map_map (I := I.1) (RingOfIntegers.mapRingEquiv τ).toRingHom
+    (RingOfIntegers.mapRingEquiv τ').toRingHom).symm
 private theorem clMap_refl_apply {K : Type} [Field K] [NumberField K] (c : ClassGroup (𝓞 K)) :
     clMap (RingEquiv.refl K) c = c := by
   obtain ⟨I, rfl⟩ := ClassGroup.mk0_surjective c
   rw [class_map_mk0]
   congr 1
-  apply Subtype.ext
-  show Ideal.map _ _ = _
-  ext y
-  rw [clMapBasic_mem]
-  constructor
-  · rintro ⟨x, hx, rfl⟩
-    exact hx
-  · intro hy
-    exact ⟨y, hy, rfl⟩
+  exact Subtype.ext (Ideal.map_id I.1)
 
 theorem UpperTheory.V.Kum.clMapBasic :
     ∀ (K K' K'' : Type) [Field K] [NumberField K] [Field K'] [NumberField K'] [Field K''] [NumberField K''] (τ : K ≃+* K') (τ' : K' ≃+* K''),

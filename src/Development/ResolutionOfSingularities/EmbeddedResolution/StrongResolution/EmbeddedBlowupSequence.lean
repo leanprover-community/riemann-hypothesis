@@ -257,7 +257,6 @@ theorem exists_totalSpaceZeroIso :
     ∃ e : T.totalSpace 0 ≅ Y,
       (coprod.inl : T.strictTransform 0 ⟶ T.totalSpace 0) ≫ e.hom ≫
           (T.emb ≫ T.ambientSeq.isoZero.inv) = T.strictTransformι 0 := by
-  have : AlgebraicGeometry.IsClosedImmersion (T.emb ≫ T.ambientSeq.isoZero.inv) := inferInstance
   obtain ⟨u, hu⟩ := exists_kerSubschemeIso_of_isClosedImmersion
     (T.emb ≫ T.ambientSeq.isoZero.inv)
   have hB : IsInitial (T.detachedCoprod 0) := initialIsInitial

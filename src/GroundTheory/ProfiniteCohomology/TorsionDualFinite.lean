@@ -126,10 +126,4 @@ theorem card_hom [Finite G] : Nat.card (G →+ QZ) = Nat.card G :=
 
 end QZ
 
-namespace QZDual
-
-variable {N : Type*} [AddCommGroup N] [TopologicalSpace N] [DiscreteTopology N]
-
-end QZDual
-
 end GroundTheory.ProfCoh

@@ -722,20 +722,8 @@ private theorem inj_of_prod {n : ℕ} {A : Type} [CommRing A] [IsDomain A] {a b 
 private theorem lam_lift {n : ℕ} {R S H G : Type} [CommRing R] [CommRing S] [Group H] [Group G]
     {E : GDet n R H} {D : GDet n S G} {f : R →+* S} {φ : H →* G}
     (h : D.comap φ = E.map f) (i : ℕ) (y : MonoidAlgebra R H) :
-    D.lam i (MonoidAlgebra.mapDomainRingHom S φ (MonoidAlgebra.mapRingHom H f y)) = f (E.lam i y) := by
-  rw [← ((UpperTheory.V.CA.d_gmap E).2.2.1 f y).2 i, ← h]
-  unfold GDet.lam
-  generalize MonoidAlgebra.mapRingHom H f y = z
-  apply congrArg (fun p : Polynomial S => (-1) ^ i * p.coeff (n - i))
-  change D.D (Polynomial S) _ = D.D (Polynomial S) (MonoidAlgebra.mapDomainRingHom (Polynomial S) φ _)
-  congr 1
-  rw [map_sub]
-  congr 1
-  · simp
-  · induction z using MonoidAlgebra.induction_linear with
-    | zero => simp
-    | add a b ha hb => simp only [map_add (f := _), ha, hb]
-    | single g r => simp
+    D.lam i (MonoidAlgebra.mapDomainRingHom S φ (MonoidAlgebra.mapRingHom H f y)) = f (E.lam i y) :=
+  (lam_push h.symm i y).symm
 
 private theorem rep_comap {n : ℕ} {A G H : Type} [CommRing A] [Group G] [Group H]
     (ρ : G →* Matrix (Fin n) (Fin n) A) (φ : H →* G) : (GDet.ofRep ρ).comap φ = GDet.ofRep (ρ.comp φ) := by
@@ -1558,20 +1546,8 @@ private theorem gDet_tr_map_mapRingHom {n : ℕ} {R R' G : Type} [CommRing R] [C
 
 private theorem gDet_tr_comap_eq_tr_mapDomainRingHom {n : ℕ} {R G H : Type} [CommRing R] [Group G] [Group H]
     (D : GDet n R G) (φ : H →* G) (x : MonoidAlgebra R H) :
-    (D.comap φ).tr x = D.tr (MonoidAlgebra.mapDomainRingHom R φ x) := by
-  unfold GDet.tr GDet.lam GDet.chi GDet.comap
-  dsimp only
-  rw [MonoidHom.comp_apply]
-  congr 3
-  congr 1
-  show MonoidAlgebra.mapDomainRingHom (Polynomial R) φ _ = _
-  rw [map_sub]
-  congr 1
-  · simp [MonoidAlgebra.mapDomainRingHom_apply]
-  · ext a
-    simp [MonoidAlgebra.mapDomainRingHom_apply, MonoidAlgebra.mapRingHom]
-    rw [Finsupp.mapDomain_mapRange _ _ _ _ (fun a b => Polynomial.C_add)]
-    simp
+    (D.comap φ).tr x = D.tr (MonoidAlgebra.mapDomainRingHom R φ x) :=
+  comap_tr D φ x
 
 theorem UpperTheory.V.Pa.Core.patched_trace_local_charPoly_approx_annihilated :
     ∀ (l : ℕ) [Fact l.Prime] (L : Loc) (G0 : Glob l L) (T : TWGrp G0) (Λ : Lim T) (n : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [IsCoef l O] [Algebra ℤ_[l] O] (r : Resid G0.frame O n) (B : Type) [CommRing B] [Algebra O B] [IsCO O B] (u : Pair r B) (J : Ideal B) (D : ℕ) (A : TWAut u J Unit D T) (W : RRObj Λ A) (m : RMaps W), Adapted T (r := r) → ∀ (v : L.Vl) (g : Fin n → L.Gv v) (ga : Fin n → Ph0 Λ) (h : Ph0 Λ), (∀ i, πo0 Λ (ga i) = Λ.G.φ v (g i)) → ∀ j : ℕ, ∀ᶠ N in (Λ.U : Filter ℕ), ∃ a' : W.R, W.t.D.tr (MonoidAlgebra.single h 1 * (List.ofFn fun i => MonoidAlgebra.single (ga i) (1 : W.R) - MonoidAlgebra.single 1 ((W.t.ψ v i (g i) : W.Rˣ) : W.R)).prod) - a' ∈ maximalIdeal W.R ^ j ∧ (m.ρ N a' = 0 ∨ ∀ x : (A.A N).M, (fEl (T.Nq N) (A.A N).U * m.ρ N a') ^ A.ex • x = 0) := by

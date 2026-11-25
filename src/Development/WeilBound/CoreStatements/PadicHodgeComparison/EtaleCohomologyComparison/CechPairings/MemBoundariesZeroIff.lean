@@ -38,8 +38,7 @@ theorem cls_smul {K : Cx.{w} R} {n : ℕ} (r : R) (a : K.X n) (ha : K.d n a = 0)
 theorem cls_zero' {K : Cx.{w} R} {n : ℕ} (h) : K.cls (n := n) 0 h = 0 := rfl
 
 theorem mem_boundaries_zero_iff {K : Cx.{w} R} (a : K.X 0) : a ∈ K.B 0 ↔ a = 0 := by
-  show a ∈ (⊥ : Submodule R (K.X 0)) ↔ _
-  exact Submodule.mem_bot R
+  exact CrystallineSemistableComparison.Cx.mem_B_zero
 
 theorem mem_Bs {K : Cx.{w} R} {n : ℕ} (a : K.X (n + 1)) : a ∈ K.B (n + 1) ↔ ∃ b, K.d n b = a := Iff.rfl
 

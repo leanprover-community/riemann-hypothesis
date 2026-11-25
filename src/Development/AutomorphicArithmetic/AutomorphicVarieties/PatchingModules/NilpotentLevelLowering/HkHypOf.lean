@@ -849,8 +849,7 @@ private theorem bern_ev {O H E : Type} [CommRing O] [IsDomain O] [Ring H] [Algeb
     congr 1
     rw [Hk.Bern.one, Finset.sum_mul, Finset.mul_sum]
     exact Finset.sum_congr rfl fun w _ => (hkBern O n _ _ b).2 z hz w
-  · set_option synthInstance.maxHeartbeats 100000 in
-      simp only [AlgHom.comp_apply, ← map_mul, ← map_sum]
+  · simp only [AlgHom.comp_apply, ← map_mul, ← map_sum]
     rw [hkSum O n _ _ b hF ι a c hd]
   · simp only [AlgHom.comp_apply]
     rw [← map_mul, ← map_mul, hkSandwich O n _ _ b hF y, map_mul]

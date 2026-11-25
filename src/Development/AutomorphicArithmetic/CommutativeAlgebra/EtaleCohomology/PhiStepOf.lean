@@ -158,7 +158,7 @@ theorem UpperTheory.Gal.crystallineComparison.annPer_of :
     apply hm_inj
     exact congrArg Subtype.val hab
   obtain ⟨hfin', hle⟩ := hB V ρ
-  haveI : Module.Finite L (Dinv σ ρ) := Module.Finite.of_injective φ hφ
+  have : Module.Finite L (Dinv σ ρ) := Module.Finite.of_injective φ hφ
   have hge : finrank L (Dinv σ ρ) ≤ finrank L (Dinv σ' ρ) :=
     LinearMap.finrank_le_finrank_of_injective hφ
   have heq : finrank L (Dinv σ ρ) = finrank L (Dinv σ' ρ) := by omega
@@ -256,8 +256,8 @@ theorem UpperTheory.Gal.crystallineComparison.boundSt_of :
   refine ⟨?_, fun f g => ?_⟩
   · intro U _ _ _ _ _ ρ
     rw [dinv_σSt]
-    haveI := LL.2
-    haveI : FiniteDimensional ℚ_[l] U := Module.Finite.trans ↥LL.1 U
+    have := LL.2
+    have : FiniteDimensional ℚ_[l] U := Module.Finite.trans ↥LL.1 U
     obtain ⟨hfin, hb⟩ := GlobalTheory.CrysSst.finrank_Dst_le P AI T (GlobalTheory.PstCoeff.resQ ρ)
     have hD : Dst P (GlobalTheory.PstCoeff.resQ ρ) = (Dst P ρ).restrictScalars ℚ_[l] := by
       ext x
@@ -267,8 +267,8 @@ theorem UpperTheory.Gal.crystallineComparison.boundSt_of :
       rw [hD, finrank_mul_finrank]
       rfl
     have hfin' : FiniteDimensional ℚ_[l] ↥((Dst P ρ).restrictScalars ℚ_[l]) := hD ▸ hfin
-    haveI : Module.Finite ℚ_[l] ↥(Dst P ρ) := hfin'
-    haveI hL : FiniteDimensional ↥LL.1 ↥(Dst P ρ) :=
+    have : Module.Finite ℚ_[l] ↥(Dst P ρ) := hfin'
+    have hL : FiniteDimensional ↥LL.1 ↥(Dst P ρ) :=
       Module.Finite.of_restrictScalars_finite ℚ_[l] ↥LL.1 ↥(Dst P ρ)
     refine ⟨hL, ?_⟩
     have hV : finrank ℚ_[l] U = finrank ℚ_[l] ↥LL.1 * finrank ↥LL.1 U :=
@@ -374,11 +374,11 @@ theorem UpperTheory.Gal.crystallineComparison.joinAbs_of :
   intro hEmb hSubq hOfAnn hAnnSub hAnnExt hAdmExact
   intro F G B _ _ _ _ σ ψ hσψ L _ _ e hB V _ _ _ ρ q n T hAdm hAnn U _ _ ρU i TU θ hi hinj hT hTg hTT hnil
     W _ _ _ _ ρW I _ C _ _ ρC f hsub hf hsep
-  letI : Module F U := Module.compHom _ (algebraMap F L)
-  haveI : IsScalarTower F L U := IsScalarTower.of_algebraMap_smul fun _ _ => rfl
-  letI : ∀ a, Module F (C a) := fun a => Module.compHom _ (algebraMap F L)
-  haveI : ∀ a, IsScalarTower F L (C a) := fun a => IsScalarTower.of_algebraMap_smul fun _ _ => rfl
-  haveI : Module.Finite L U := Module.Finite.of_injective i hinj
+  let : Module F U := Module.compHom _ (algebraMap F L)
+  have : IsScalarTower F L U := IsScalarTower.of_algebraMap_smul fun _ _ => rfl
+  let : ∀ a, Module F (C a) := fun a => Module.compHom _ (algebraMap F L)
+  have : ∀ a, IsScalarTower F L (C a) := fun a => IsScalarTower.of_algebraMap_smul fun _ _ => rfl
+  have : Module.Finite L U := Module.Finite.of_injective i hinj
   obtain ⟨hE1, hE2⟩ := hAnnExt F G B σ ψ L V ρ
   have hAdmL := hE1 e hAdm
   have hAnnL := hE2 q n T hAnn
@@ -691,10 +691,10 @@ theorem admissible_of_pi_decomposition {e : ℕ} (hB : Bound σ L e) {W : Type} 
     · have e := fun (u : ℕ) (z : C i) => LinearMap.congr_fun (hz i t h) z
       simp only [LinearMap.comp_apply, LinearMap.zero_apply] at e
       rw [e 0, e 0, map_zero]
-  haveI : ∀ i, Module.Finite L (C i) := fun i =>
+  have : ∀ i, Module.Finite L (C i) := fun i =>
     Module.Finite.of_surjective (pr i) fun y => ⟨inc i y, LinearMap.congr_fun (ho i) y⟩
-  haveI : ∀ i, Module.Finite L (Dinv σ (ρC i)) := fun i => (hB (C i) (ρC i)).1
-  haveI : Module.Finite L (Dinv σ ρ) := (hB W ρ).1
+  have : ∀ i, Module.Finite L (Dinv σ (ρC i)) := fun i => (hB (C i) (ρC i)).1
+  have : Module.Finite L (Dinv σ ρ) := (hB W ρ).1
   let Ψ : Dinv σ ρ →ₗ[L] ∀ i, Dinv σ (ρC i) :=
     LinearMap.pi fun i => (tm (F := F) (B := B) (pr i)).restrict fun x hx => tm_mem σ (hE i) hx
   have hΨ : Function.Surjective Ψ := by
@@ -957,7 +957,6 @@ end UpperTheory.Ru.crystallineComparison.JQ
 open UpperTheory.Ru.crystallineComparison.JQ in
 theorem UpperTheory.Ru.crystallineComparison.joinQ :
     UpperTheory.Ru.crystallineComparison.JoinQ := by
-  set_option synthInstance.maxHeartbeats 200000 in
     intro l _ P AI hT E Ω _ _ _ Gw O _ _ _ Bw f q n ϑ a r₀ r _ hgr hin
     obtain ⟨V, _, _, _, ρ, T, b, hcr, hann, hb, hbg, hbT⟩ := hin
     obtain ⟨c, hc⟩ := hgr
@@ -977,7 +976,7 @@ theorem UpperTheory.Ru.crystallineComparison.joinQ :
         (IntermediateField.subset_adjoin _ _ ⟨(i, j), rfl⟩)
     let Θ : Matrix (Fin 1) (Fin (n + 1)) (Om l) := Matrix.of fun _ j => ϑ j
     let L : FinExt l := entExt (entExt Bw.LL M) Θ
-    haveI := L.2
+    have := L.2
     let φ : ↥L.1 →+* Om l := algebraMap ↥L.1 (Om l)
     have hle : (entExt Bw.LL M).1 ≤ L.1 := le_entExt _ _
     have hLL : Bw.LL.1 ≤ L.1 := (le_entExt _ _).trans hle
@@ -1185,7 +1184,7 @@ private theorem nil_transfer {R S M W : Type} [CommRing R] [CommRing S] [AddComm
 theorem UpperTheory.Gal.crystallineComparison.nilRho_of :
     NilRho := by
   intro l _ P ι E Ω _ _ _ _ _ A w h O _ _ _ Bw hj LL V _ _ _ _ _ ρ hV Q g
-  haveI := hV.finite
+  have := hV.finite
   exact nil_transfer (ι.toRingHom.comp (algebraMap ↥LL.1 (Om l))) (wdMk P ι ρ) (wdMk_zero P ι ρ)
     (wdMk_add P ι ρ) (wdMk_smul P ι ρ) (fun _ _ => wd_ext P ι ρ) _ _
     (wdRho_mk P ι Bw h hj ρ g) Q
@@ -1293,7 +1292,7 @@ end Abstract
 theorem UpperTheory.Gal.crystallineComparison.nilWeil_of :
     NilWeil := by
   intro l _ P E Ω _ _ _ _ _ A w h O _ _ _ Bw hj LL V _ _ _ _ _ ρ hV hs Q hN g hg
-  haveI := hV.finite
+  have := hV.finite
   obtain ⟨N, hN⟩ := hN
   have hSD : Dst P ρ ≤ Dpst P ρ := fun s hs =>
     (mem_Dpst P ρ).mpr ⟨Bw.Kw, fun g _ => (mem_Dst P ρ).mp hs g⟩
@@ -1352,10 +1351,10 @@ theorem UpperTheory.Gal.crystallineComparison.phiKNil_of :
   unfold PhiKOfNil
   intro l _ P AI hT ι E Ω _ _ _ _ _ A w h O _ _ _ Bw hj a r LL r' hm hcr Q hN s u hu hQ
   obtain ⟨T⟩ := hT
-  haveI := LL.2
+  have := LL.2
   have hSst : IsSst P (Bw.repE LL r') := GlobalTheory.CrysSst.isSst_of_isCrys P AI T _ hcr
   have hV : IsPst P (Bw.repE LL r') := _root_.GlobalTheory.GalCut.IwaAll.isPst_of_isSst P AI T _ hSst
-  haveI := hV.finite
+  have := hV.finite
   have hd : deg (frob h)⁻¹ = -1 := by rw [deg_inv, deg_frob]
   have h1 := hW l P E Ω A w h O Bw hj LL _ (Bw.repE LL r') hV hSst Q hN _ hd
   have h2 := nil_of_eq _ hQ (hR l P ι E Ω A w h O Bw hj LL _ (Bw.repE LL r') hV Q _ h1)

@@ -298,8 +298,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc GlobalTheory.WeilDeligne
 open GlobalTheory.Pst GlobalTheory.TripleGal Module TensorProduct Polynomial Formalism.MainNotions.N
 open UpperTheory.Lit.CharWD GlobalTheory.Published
-set_option synthInstance.maxHeartbeats 400000
-set_option maxHeartbeats 800000
 
 private theorem letter_lift {L U D M : Type} [Field L] [Field U] [AddCommGroup D] [Module L D] (m : U →+* End L D)
     (F : Type) [Field F] [Algebra L F] (τ : U →+* F) [AddCommGroup M] [Module F M] (g : D →+ M)
@@ -345,7 +343,6 @@ private theorem dQ_inv {ρ₁ : Representation ↥L₁.1 ↥(GK K) V₁} {ρ₂ 
   | zero => simp
   | tmul v b => rw [tensQ_tmul, tensQ_tmul, e]
   | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
-
 
 open EnlargeCoeff in
 private theorem dQ_bij {ρ₁ : Representation ↥L₁.1 ↥(GK K) V₁} {ρ₂ : Representation ↥L₂.1 ↥(GK K) V₂}
@@ -404,7 +401,6 @@ private theorem exists_semi {K L₁ L₂ : FinExt l}
   refine ⟨fun y => Φ y, fun z y => ?_, hΦ⟩
   rw [← hθ]
   exact @LinearMap.map_smul _ _ _ _ _ _ _ (Module.compHom _ θ) Φ _ _
-
 
 open EnlargeCoeff in
 private theorem eig_conj {L₁ L₂ : FinExt l}
@@ -625,17 +621,11 @@ section -- clump:auto
 open UpperTheory.Lit.CharWD GlobalTheory.Published
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.WeilDeligne GlobalTheory.LocLanglands
 
-private theorem val_int_le {L Ω : Type} [Field L] [NumberField L] [Field Ω] [Algebra L Ω]
-    (A : ValuationSubring Ω) (x : 𝓞 L) : algebraMap L Ω x ∈ A := by
-  obtain ⟨y, hy⟩ := (IsIntegrallyClosed.isIntegral_iff (R := A) (K := Ω)).1
-    ((x.isIntegral_coe.algebraMap (B := Ω)).tower_top (A := A))
-  exact hy ▸ y.2
-
 private theorem place_above {F L Ω : Type} [Field F] [NumberField F] [Field L] [NumberField L] [Field Ω]
     [Algebra F L] [Algebra F Ω] [Algebra L Ω] [IsScalarTower F L Ω] {v : HeightOneSpectrum (𝓞 F)}
     {A : ValuationSubring Ω} (hA : IsPlaceOver A v) :
     ∃ w : HeightOneSpectrum (𝓞 L), IsPlaceOver A w ∧ normV v ≤ normV w := by
-  let φ : 𝓞 L →+* A := ((algebraMap L Ω).comp (algebraMap (𝓞 L) L)).codRestrict A.toSubring (val_int_le A)
+  let φ : 𝓞 L →+* A := ((algebraMap L Ω).comp (algebraMap (𝓞 L) L)).codRestrict A.toSubring (GlobalTheory.LocLanglands.TraceCompl.algebraMap_int_mem A)
   let P : Ideal (𝓞 L) := (IsLocalRing.maximalIdeal A).comap φ
   have hP : ∀ x : 𝓞 L, A.valuation (algebraMap L Ω (x : L)) < 1 ↔ x ∈ P :=
     fun x => (A.valuation_lt_one_iff (φ x)).symm
@@ -715,7 +705,7 @@ theorem UpperTheory.Lit.CharWD.exField :
   have hq : normV w' = normV w := by
     refine le_antisymm (norm_le_of_pow w' (one_lt_normV w) fun x => ?_) hle
     rw [← h']
-    have h3 := hact.2 _ ((A.valuation_le_one_iff _).2 (val_int_le A x))
+    have h3 := hact.2 _ ((A.valuation_le_one_iff _).2 (GlobalTheory.LocLanglands.TraceCompl.algebraMap_int_mem A x))
     rw [show (σ : G F Ω) (algebraMap F' Ω x) = algebraMap F' Ω x from hσF x] at h3
     simpa using h3
   refine ⟨F', nf, ac, w', h', ?_, fun s s' hd hs => ?_⟩
@@ -783,7 +773,6 @@ private theorem alpha_res {F F' Ω : Type} [Field F] [NumberField F] [Field F'] 
   rw [alpha, alpha, h1, h2, h3]
   push_cast
   ring
-
 
 private theorem eig_res {F F' Ω : Type} [Field F] [NumberField F] [Field F'] [NumberField F'] [Field Ω]
     [Algebra F Ω] [Algebra F' Ω] [IsAlgClosure F Ω] [IsAlgClosure F' Ω]
@@ -971,12 +960,6 @@ private theorem ord_zero [Nonempty (Emb l w)] (u : (w.adicCompletion F)ˣ) (hu :
   exact GlobalTheory.SmGL.ord_eq_zero_iff.2 ((ValuativeRel.isEquiv (ValuativeRel.valuation (w.adicCompletion F))
       (Valued.v : Valuation (w.adicCompletion F) (WithZero (Multiplicative ℤ)))).eq_one_iff_eq_one.2
       (le_antisymm (not_lt.1 h2) (not_lt.1 h1)))
-
-private theorem continuous_rank_one_rep {Γ K : Type} [Group Γ] [TopologicalSpace Γ] [Field K] [TopologicalSpace K] (μ : Γ →* Kˣ)
-    (hμ : Continuous μ) : Continuous fun g => ((rk1 μ g : GL (Fin 1) K) : Matrix (Fin 1) (Fin 1) K) := by
-  refine continuous_matrix fun i j => ?_
-  fin_cases i; fin_cases j
-  simpa [rk1, Function.comp_def] using Units.continuous_val.comp hμ
 
 variable (ι : Qbar l ≃+* ℂ) (h : IsPlaceOver A w)
   {O : Type} [CommRing O] [Algebra ℤ_[l] O] [TopologicalSpace O] (Bw : LocBridge l F Ω (Dec (F := F) A) O)

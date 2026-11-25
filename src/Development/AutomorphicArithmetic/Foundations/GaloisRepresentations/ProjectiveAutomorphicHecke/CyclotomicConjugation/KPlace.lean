@@ -14,7 +14,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.UnipotentFundamentalDomain.val_two :
-    ∀ (K : Type) [inst : Field K] [inst_1 : NumberField K],
+    ∀ (K : Type) [Field K] [NumberField K],
     Module.finrank ℚ K ≤ (2 : ℕ) →
       ∀ (P Q : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers K)),
         P ≠ Q →

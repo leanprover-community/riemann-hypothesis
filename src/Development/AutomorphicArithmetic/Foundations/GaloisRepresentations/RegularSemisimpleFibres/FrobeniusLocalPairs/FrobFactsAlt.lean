@@ -83,19 +83,6 @@ def bor {F₀ : Type} [Field F₀] {n : ℕ} (θ : Fin n → (F₀ˣ →* ℂˣ)
 def borCard (F₀ : Type) [Field F₀] (n : ℕ) : ℕ :=
   Nat.card {g : GL (Fin n) F₀ // (g : Matrix (Fin n) (Fin n) F₀).BlockTriangular id}
 
-def indBor {F₀ : Type} [Field F₀] {n : ℕ} (t : GL (Fin n) F₀ →* GL (Fin n) F₀) (θ : Fin n → (F₀ˣ →* ℂˣ)) (g : GL (Fin n) F₀) : ℂ :=
-  (borCard F₀ n : ℂ)⁻¹ * ∑ᶠ x : GL (Fin n) F₀, bor θ (x⁻¹ * g * t x)
-
-def TorFin : Prop :=
-  ∀ (F₀ : Type) [Field F₀] [Fintype F₀] (n : ℕ) (θ : Fin n → (F₀ˣ →* ℂˣ)) (W : Type) [AddCommGroup W] [Module ℂ W]
-    [FiniteDimensional ℂ W] (r : Representation ℂ (GL (Fin n) F₀) W),
-    (∀ a b, indBor (MonoidHom.id _) θ (b⁻¹ * a * b) = indBor (MonoidHom.id _) θ a) ∧
-    ((∃ x : W, x ≠ 0 ∧ ∀ g, bor θ g ≠ 0 → r g x = bor θ g • x) →
-      LinearMap.trace ℂ W (∑ᶠ g, indBor (MonoidHom.id _) (fun i => (θ i)⁻¹) g • r g) ≠ 0) ∧
-    ∀ (t : GL (Fin n) F₀ →* GL (Fin n) F₀) (A : W →ₗ[ℂ] W), (∀ g, r (t g) ∘ₗ A = A ∘ₗ r g) →
-      LinearMap.trace ℂ W (∑ᶠ g, indBor t (fun i => (θ i)⁻¹) g • (r g ∘ₗ A)) ≠ 0 →
-      ∃ x : W, x ≠ 0 ∧ ∀ g, bor θ g ≠ 0 → r g x = bor θ g • x
-
 def FinAct : Prop :=
   ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (F₀ : Type) [Field F₀] [Fintype F₀]
     (rd : 𝒪[k] →+* F₀), Function.Surjective rd → ∀ (n : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V]

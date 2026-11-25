@@ -33,10 +33,6 @@ structure LinOn (w : HeightOneSpectrum (𝓞 K)) (N : Submodule (𝓞 K) V) {A :
   add : ∀ x ∈ N, ∀ y ∈ N, g (x + y) = g x + g y
   smul : ∀ (a : 𝓞 K), ∀ x ∈ N, g (a • x) = Ideal.Quotient.mk w.asIdeal a • g x
 
-namespace LinOn
-
-end LinOn
-
 end Frame
 
 section Mass

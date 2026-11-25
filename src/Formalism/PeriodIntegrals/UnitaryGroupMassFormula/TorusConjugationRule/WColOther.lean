@@ -58,24 +58,6 @@ lemma w_col_other (l : Fin r) (a : ℂ) (s p : Fin (2 * r + k + 1)) (hp1 : p ≠
     (hp2 : p ≠ esI k r l) : w1 k r l a s p = if s = p then 1 else 0 := by
   apply _root_.Formalism.FourierDecayAlt.Q.LeftMultiplicationRule.reflection_off_support <;> assumption
 
-lemma w_row_e (l : Fin r) (a : ℂ) (q : Fin (2 * r + k + 1)) :
-    w1 k r l a (eI k r l) q = if q = esI k r l then (star a)⁻¹ else 0 := by
-  have hne : eI k r l ≠ esI k r l := e_ne_es l
-  unfold w1
-  by_cases h : q = esI k r l
-  · subst h
-    simp [hne, hne.symm]
-  · simp [h, hne]
-
-lemma w_row_es (l : Fin r) (a : ℂ) (q : Fin (2 * r + k + 1)) :
-    w1 k r l a (esI k r l) q = if q = eI k r l then a else 0 := by
-  have hne : eI k r l ≠ esI k r l := e_ne_es l
-  unfold w1
-  by_cases h : q = eI k r l
-  · subst h
-    simp
-  · simp [h, hne.symm]
-
 lemma w_row_other (l : Fin r) (a : ℂ) (s q : Fin (2 * r + k + 1)) (hs1 : s ≠ eI k r l)
     (hs2 : s ≠ esI k r l) : w1 k r l a s q = if s = q then 1 else 0 := by
   apply _root_.Formalism.FourierDecayAlt.Q.LeftMultiplicationRule.reflection_off_support_row <;> assumption
@@ -134,9 +116,6 @@ private lemma conjTranspose_mul_Hpk_mul_apply (A : Mx k r) (p q : Fin (2 * r + k
   refine Finset.sum_congr rfl fun y _ => ?_
   rw [Matrix.mul_apply]
   simp only [Matrix.conjTranspose_apply, hpk_col_lemma, mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
-
-lemma w_uh (l : Fin r) (a : ℂ) (ha : a ≠ 0) : w1 k r l a ∈ UH (Hpk k r) := by
-  apply Formalism.FourierDecayAlt.Q.LeftMultiplicationRule.weyl_cell_mem_unitary <;> assumption
 
 lemma w_fix (l : Fin r) (a : ℂ) (x : Fin (2 * r + k + 1)) (h1 : x ≠ eI k r l) (h2 : x ≠ esI k r l) :
     w1 k r l a *ᵥ bvec x = bvec x := by

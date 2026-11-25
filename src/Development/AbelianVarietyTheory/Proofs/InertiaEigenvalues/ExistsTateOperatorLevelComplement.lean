@@ -27,8 +27,6 @@ namespace GlobalTheory.Cyc.TateS
 
 variable {l : ℕ} [Fact l.Prime]
 
-alias Ks_mono := _root_.GlobalTheory.TateDecomp.Ks_mono
-
 theorem Gj_le (K : FinExt l) (j : ℕ) {g : GQ l} (hg : g ∈ Gj K j) :
     g ∈ (K0 K).fixingSubgroup := fun x => hg ⟨x.1, (le_sup_left : _ ≤ Ks K j) x.2⟩
 
@@ -84,14 +82,14 @@ def algC (K : FinExt l) : Subring (PadicComplex l) where
     rintro _ _ ⟨m, hm⟩ ⟨n, hn⟩
     obtain ⟨a, ha, rfl⟩ := mem_inC.1 hm
     obtain ⟨b, hb, rfl⟩ := mem_inC.1 hn
-    exact ⟨max m n, mem_inC.2 ⟨a + b, add_mem (Ks_mono K (le_max_left _ _) ha)
-      (Ks_mono K (le_max_right _ _) hb), map_add _ _ _⟩⟩
+    exact ⟨max m n, mem_inC.2 ⟨a + b, add_mem (GlobalTheory.TateDecomp.Ks_mono K (le_max_left _ _) ha)
+      (GlobalTheory.TateDecomp.Ks_mono K (le_max_right _ _) hb), map_add _ _ _⟩⟩
   mul_mem' := by
     rintro _ _ ⟨m, hm⟩ ⟨n, hn⟩
     obtain ⟨a, ha, rfl⟩ := mem_inC.1 hm
     obtain ⟨b, hb, rfl⟩ := mem_inC.1 hn
-    exact ⟨max m n, mem_inC.2 ⟨a * b, mul_mem (Ks_mono K (le_max_left _ _) ha)
-      (Ks_mono K (le_max_right _ _) hb), map_mul _ _ _⟩⟩
+    exact ⟨max m n, mem_inC.2 ⟨a * b, mul_mem (GlobalTheory.TateDecomp.Ks_mono K (le_max_left _ _) ha)
+      (GlobalTheory.TateDecomp.Ks_mono K (le_max_right _ _) hb), map_mul _ _ _⟩⟩
   neg_mem' := by
     rintro _ ⟨m, hm⟩
     obtain ⟨a, ha, rfl⟩ := mem_inC.1 hm
@@ -124,7 +122,7 @@ theorem mem_Xalg (K : FinExt l) {j i : ℕ} (hi : j < i) {z y : Om l}
 
 theorem Xalg_alg (K : FinExt l) (j : ℕ) {x : PadicComplex l} (hx : x ∈ Xalg K j) : x ∈ algC K :=
   Xalg_le_of K j (algC K).toAddSubgroup (fun i _ _ _ hz hy _ =>
-    coe_mem_algC K (mul_mem (_root_.GlobalTheory.TateDecomp.root_mem_Ks K hz.pow_eq_one) (Ks_mono K (Nat.sub_le i 1) hy))) hx
+    coe_mem_algC K (mul_mem (_root_.GlobalTheory.TateDecomp.root_mem_Ks K hz.pow_eq_one) (GlobalTheory.TateDecomp.Ks_mono K (Nat.sub_le i 1) hy))) hx
 
 theorem int_decomp (K : FinExt l) {j : ℕ} (hj : 1 ≤ j) (c : ℕ) : ∀ x : Om l, x ∈ Ks K (j + c) →
     ‖x‖ ≤ 1 → ∃ o ∈ Ks K j, ∃ d ∈ Xalg K j,
@@ -243,7 +241,7 @@ theorem solve_alg (hact : IsActC act) (hχ : IsCyc χ) (K : FinExt l) {j : ℕ} 
   have hη1 : η - 1 ≠ 0 := sub_ne_zero.2 (hη.ne_one hp.one_lt)
   have hj1 : 1 ≤ j + b := by have := hj.1; omega
   have hmem : ∀ {e : Om l}, IsPrimitiveRoot e l → e - 1 ∈ Ks K (j + b) := fun h =>
-    sub_mem (Ks_mono K hj1 (_root_.GlobalTheory.TateDecomp.root_mem_Ks K (by rw [pow_one, h.pow_eq_one]))) (one_mem _)
+    sub_mem (GlobalTheory.TateDecomp.Ks_mono K hj1 (_root_.GlobalTheory.TateDecomp.root_mem_Ks K (by rw [pow_one, h.pow_eq_one]))) (one_mem _)
   set w : Om l := (ζ₀ - 1) / (η - 1) * y with hw
   have hwK : w ∈ Ks K (j + b) := mul_mem (div_mem (hmem hζ₀) (hmem hη)) hy
   have hw1 : ‖w‖ ≤ 1 := by
@@ -291,7 +289,7 @@ theorem zeta_sub_one_mem (K : FinExt l) {j : ℕ} (hj : 1 ≤ j) {ζ : PadicComp
   have hp : l.Prime := Fact.out
   refine ⟨?_, ?_⟩
   · obtain ⟨ζ₀, rfl, hζ₀⟩ := prim_lift hp.ne_zero hζ
-    exact mem_inC.2 ⟨ζ₀ - 1, sub_mem (Ks_mono K hj (_root_.GlobalTheory.TateDecomp.root_mem_Ks K (by rw [pow_one, hζ₀.pow_eq_one])))
+    exact mem_inC.2 ⟨ζ₀ - 1, sub_mem (GlobalTheory.TateDecomp.Ks_mono K hj (_root_.GlobalTheory.TateDecomp.root_mem_Ks K (by rw [pow_one, hζ₀.pow_eq_one])))
       (one_mem _), by rw [map_sub, map_one]⟩
   · have h1 : ‖ζ‖ = 1 := by
       have := congrArg norm hζ.pow_eq_one
@@ -320,7 +318,7 @@ theorem est_pow (hact : IsActC act) (hχ : IsCyc χ) (K : FinExt l) {j : ℕ} (h
       (act g d - d) / (l : PadicComplex l) ^ n := by
     rw [map_div₀, map_pow, map_natCast, hwa]
   obtain ⟨o, ho, d', hd', hod⟩ := int_decomp K hj.1 m (a / (l : Om l) ^ n)
-    (div_mem (Ks_mono K (Nat.le_add_left _ _) ha) (pow_mem (natCast_mem _ _) _))
+    (div_mem (GlobalTheory.TateDecomp.Ks_mono K (Nat.le_add_left _ _) ha) (pow_mem (natCast_mem _ _) _))
     (by
       rw [← norm_coe, hcoe, norm_div, div_le_one (norm_pos_iff.2 hlC), hnl]
       exact hn)

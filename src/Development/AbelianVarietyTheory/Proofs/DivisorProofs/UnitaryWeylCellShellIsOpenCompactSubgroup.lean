@@ -279,7 +279,6 @@ theorem shellU_open_compact_subgroup : ∀ (L : Type) [Field L] [Valued L (WithZ
   intro L _ _ _ ϖ σ q h n k hk hn y hyK hy
   have hA := val_rev_lo_of_last k hk hn
   have hrv : ((lo k).rev : Fin n).val = n - ((lo k).val + 1) := Fin.val_rev _
-  have hlt := (lo k).isLt
   let m : Fin n := ⟨(lo k).val + 1, by omega⟩
   have ham : m.val = (lo k).val + 1 := rfl
   have hma : ((lo k).rev : Fin n).val = m.val + 1 := by rw [ham]; omega

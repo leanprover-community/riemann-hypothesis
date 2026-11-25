@@ -257,7 +257,7 @@ theorem PositivityTheory.Xgn.test_order_sections : ∀ (E : Type) [Field E] [Num
   obtain ⟨AA, hAA⟩ := ord_hopf P RC hR
   have hret := ord_ret P RC hsec
   rw [← hAA] at hret
-  obtain ⟨⟨AW, hAW⟩, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.GR.ret_hopf_factor p C v RC hvI hvp _ AA _ (TestPt.toNAdd sc) (TestPt.fromNAdd pq)
+  obtain ⟨⟨AW, hAW⟩, -⟩ := _root_.PositivityTheory.HtPt.Re.ret_hopf p C v RC hvI hvp _ AA _ (TestPt.toNAdd sc) (TestPt.fromNAdd pq)
     (fun z => funext fun k => hsec.1 (z k)) hret
   rw [hAA] at hAW
   have hAW' : AW.carrier = TestPt.testOrdW P sc RC := hAW

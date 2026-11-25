@@ -662,14 +662,6 @@ theorem mul_mul (c c' : K) (x : V ⊗[Qp] BdR) :
   | add x y hx hy => simp only [map_add (f := _), hx, hy]
   | tmul v z => simp only [mulVdR_tmul, map_mul, mul_assoc]
 
-theorem mul_add' (c c' : K) (x : V ⊗[Qp] BdR) :
-    mulVdR (K := K) (LL := LL) (c + c') x =
-      mulVdR (K := K) (LL := LL) c x + mulVdR (K := K) (LL := LL) c' x := by
-  induction x using TensorProduct.induction_on with
-  | zero => simp
-  | add x y hx hy => simp only [map_add (f := _), hx, hy]; abel
-  | tmul v z => simp only [mulVdR_tmul, map_add (f := _), add_mul, TensorProduct.tmul_add]
-
 theorem mul_smul' (r : Qp) (c : K) (x : V ⊗[Qp] BdR) :
     mulVdR (K := K) (LL := LL) (r • c) x = r • mulVdR (K := K) (LL := LL) c x := by
   induction x using TensorProduct.induction_on with
@@ -683,7 +675,7 @@ def projMap (τ : K →ₐ[Qp] LL) (x : V ⊗[Qp] BdR) : K ⊗[Qp] K →ₗ[Qp] 
   TensorProduct.lift (LinearMap.mk₂ Qp (fun a c => τ a • mulVdR (K := K) (LL := LL) c x)
     (fun a a' c => by rw [map_add (f := _), add_smul])
     (fun r a c => by rw [map_smul, smul_assoc])
-    (fun a c c' => by rw [mul_add', smul_add])
+    (fun a c c' => by rw [GlobalTheory.HubLoc.mu_add, smul_add])
     (fun r a c => by rw [mul_smul', smul_comm]))
 
 theorem proj_mem (τ : K →ₐ[Qp] LL) {n : ℕ} (α β : Fin n → K)
@@ -1296,11 +1288,6 @@ namespace GlobalTheory.Cyc.InvKilled
 
 variable {l : ℕ} [Fact l.Prime]
 
-theorem exists_pow_smul_mem (K LL : FinExt l) (T : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)) (v : T.V) :
-    ∃ n : ℕ, (l : ↥LL.1) ^ n • v ∈ T.L.T := by
-  first
-  | (apply _root_.GlobalTheory.IntegerRingPowers.main <;> assumption)
-
 theorem killed_of_coordinates {G : Type} [Group G] [TopologicalSpace G] {Qp LL O : Type} [Field Qp]
     [Field LL] [CharZero LL] [Algebra Qp LL] [CommRing O] [Algebra O LL] [TopologicalSpace LL]
     (T : LocLat G Qp LL O) [Module ℤ_[l] ↥T.L.T]
@@ -1388,7 +1375,7 @@ theorem killed_of_coord (K LL : FinExt l) (T : LocLat ↥(GK K) ℚ_[l] ↥LL.1 
       ∀ a, ‖(l : ℚ_[l]) ^ c * y a‖ ≤ 1)
     (v : T.V) (hw : ∀ g : ↥(GK K), T.ρ g v - v ∈ T.L.T) : (l : ↥LL.1) ^ c • v ∈ T.L.T := by
   obtain ⟨b, hb, -⟩ := hM
-  obtain ⟨n, hn⟩ := exists_pow_smul_mem K LL T v
+  obtain ⟨n, hn⟩ := GlobalTheory.IntegerRingPowers.main K LL T v
   refine @killed_of_coordinates l _ _ _ _ _ _ _ _ _ _ _ _ _ _ T (zlMod LL T) ?_
     (fun g => actTZ LL T g) (fun _ _ => rfl) d b (fun g => M g) hb c
     (fun y hy => H y fun σ hσ => hy ⟨σ, hσ⟩) v hw n hn

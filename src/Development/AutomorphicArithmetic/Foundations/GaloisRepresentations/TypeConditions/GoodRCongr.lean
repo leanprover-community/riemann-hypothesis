@@ -71,9 +71,6 @@ theorem isoInf_eq (D : D7) (Pa : List (Formalism.BasicNotions.Part D.naut.CG)) (
 
 end GlobalTheory.GalIsoBC
 
-namespace GlobalTheory.GalIsoBC
-
-end GlobalTheory.GalIsoBC
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsGaloisRepBaseChange =====

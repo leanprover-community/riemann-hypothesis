@@ -19,7 +19,7 @@ noncomputable def UpperTheory.Reformulated.B.Yha8.blkA :
 
 noncomputable def UpperTheory.Reformulated.B.Yha8.blkB :
     {n : ℕ} → ℕ → Finset (Fin n) :=
-    fun {n : ℕ} (j : ℕ) ↦ (UpperTheory.Reformulated.B.Yha8.blkA j)ᶜ
+    fun {_ : ℕ} (j : ℕ) ↦ (UpperTheory.Reformulated.B.Yha8.blkA j)ᶜ
 
 theorem UpperTheory.Reformulated.B.Yha8.main :
     ∀ {n : ℕ} (j : ℕ) (Q S : Matrix (Fin n) (Fin n) ℂ),

@@ -204,30 +204,6 @@ theorem sum_smul_sum_smul (s : Finset (A × A)) (m : M) :
 
 end Tame
 
-section DualBasis
-
-variable {G : Type*} [Group G] [Fintype G] {A : Type*} [CommRing A] [MulSemiringAction G A]
-  {M : Type*} [AddCommGroup M] [Module A M] [DistribMulAction G M] [SMulDistribClass G A M]
-  {N : Type*} [AddCommGroup N] [Module A N] [DistribMulAction G N] [SMulDistribClass G A N]
-
-
-variable (B : Type*) [CommRing B] [Algebra B A] [SMulCommClass G B A]
-  [FaithfulSMul B A] [Algebra.IsInvariant B A G]
-  [Module B M] [IsScalarTower B A M] [SMulCommClass G B M]
-
-
-end DualBasis
-
-section TameDescent
-
-variable {G : Type*} [Group G] [Finite G] {A : Type*} [CommRing A] [MulSemiringAction G A]
-  (B : Type*) [CommRing B] [Algebra B A] [SMulCommClass G B A]
-  [FaithfulSMul B A] [Algebra.IsInvariant B A G]
-  (M : Type*) [AddCommGroup M] [Module A M] [DistribMulAction G M] [SMulDistribClass G A M]
-  [Module B M] [IsScalarTower B A M] [SMulCommClass G B M]
-
-end TameDescent
-
 section Free
 
 variable {G : Type*} [Group G] {A : Type*} [CommRing A] [MulSemiringAction G A]
@@ -305,31 +281,6 @@ variable (M : Type*) [AddCommGroup M] [Module A M] [DistribMulAction G M] [SMulD
   [Module B M] [IsScalarTower B A M] [SMulCommClass G B M]
 
 end Free
-
-section FullyFaithful
-
-variable {G : Type*} [Group G] {A : Type*} [CommRing A] [MulSemiringAction G A]
-  {B : Type*} [CommRing B] [Algebra B A]
-  {M : Type*} [AddCommGroup M] [Module A M] [DistribMulAction G M] [SMulDistribClass G A M]
-  [Module B M] [IsScalarTower B A M] [SMulCommClass G B M]
-  {N : Type*} [AddCommGroup N] [Module A N] [DistribMulAction G N] [SMulDistribClass G A N]
-  [Module B N] [IsScalarTower B A N] [SMulCommClass G B N]
-
-end FullyFaithful
-
-section BaseChange
-
-variable (G : Type*) [Group G] (A : Type*) [CommRing A] [MulSemiringAction G A]
-  (B : Type*) [CommRing B] [Algebra B A] [SMulCommClass B G A]
-  (N : Type*) [AddCommGroup N] [Module B N]
-
-variable [SMulCommClass G B A]
-
-variable [FaithfulSMul B A] [Algebra.IsInvariant B A G]
-
-
-
-end BaseChange
 
 end FreeQuotient
 

@@ -126,18 +126,6 @@ def HidaSetting : Prop :=
 
 def admS : Prop := (D.mem u).C.StabZero
 
-def TrIso : Prop :=
-  ∀ i, i ≤ D.R.m → ∀ v c, ∀ φ ∈ (D.fm u).Fi i, ∀ ψ ∈ (D.fm u).Fi i,
-    (∀ x : (D.fm u).lv i v c, (D.fm u).fv i v c x = 1 →
-      (D.fm u).ipV i c ((D.fm u).upT i v c x (φ ((D.fm u).up i v c x))) ((D.fm u).upT i v c x (ψ ((D.fm u).up i v c x))) =
-        (D.fm u).ipV i ((D.fm u).up i v c x) (φ ((D.fm u).up i v c x)) (ψ ((D.fm u).up i v c x))) ∧
-    (∀ g : Module.Dual ((D.mem u).A.Fv v) ((D.fm u).lk i v c), g ≠ 0 →
-      (D.fm u).ipV i c ((D.fm u).dnT i v c g (φ ((D.fm u).dn i v c g))) ((D.fm u).dnT i v c g (ψ ((D.fm u).dn i v c g))) =
-        (D.fm u).ipV i ((D.fm u).dn i v c g) (φ ((D.fm u).dn i v c g)) (ψ ((D.fm u).dn i v c g))) ∧
-    ∀ a : ((D.mem u).A.Fv v)ˣ,
-      (D.fm u).ipV i c ((D.fm u).dilT i v a c (φ ((D.fm u).dil i v a c))) ((D.fm u).dilT i v a c (ψ ((D.fm u).dil i v a c))) =
-        (D.fm u).ipV i ((D.fm u).dil i v a c) (φ ((D.fm u).dil i v a c)) (ψ ((D.fm u).dil i v a c))
-
 def Conclusion1 : Prop :=
   (∀ i, i ≤ D.R.m → ∀ v, ∀ φ ∈ (D.fm u).Fi i,
     Uop D u i v φ ∈ (D.fm u).Fi i ∧ Dop D u i v φ ∈ (D.fm u).Fi i ∧ ∀ a, dia D u i v a φ ∈ (D.fm u).Fi i) ∧

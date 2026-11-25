@@ -27,29 +27,6 @@ variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} (B : LocBase0 H what�
 def bjC (hI : OsInt B) (i : LocT B) (g : (what₂.MjLat (jOf B i)).gen) : BjC B hI i :=
   (bjRel B hI i).mkQ (Pi.basisFun (OOf B i) _ g)
 
-theorem bjC_sum (hI : OsInt B) (i : LocT B) (c : (what₂.MjLat (jOf B i)).gen → OOf B i) :
-    ∑ g, c g • bjC B hI i g = Submodule.Quotient.mk c := by
-  have e : ∑ g, c g • Pi.basisFun (OOf B i) _ g = c := by
-    simpa using (Pi.basisFun (OOf B i) ((what₂.MjLat (jOf B i)).gen)).sum_repr c
-
-  simp only [bjC, ← map_smul, ← map_sum, e]
-  rfl
-
-theorem bjC_span (hI : OsInt B) (i : LocT B) :
-    Submodule.span (OOf B i) (Set.range (bjC B hI i)) = ⊤ := by
-  rw [eq_top_iff]
-  rintro x -
-  induction x using Submodule.Quotient.induction_on with
-  | H c =>
-    rw [← bjC_sum]
-    exact Submodule.sum_mem _ (fun g _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨g, rfl⟩))
-
-theorem bjC_rel (hI : OsInt B) (i : LocT B) (c : (what₂.MjLat (jOf B i)).gen → OOf B i) :
-    ∑ g, c g • bjC B hI i g = 0 ↔
-      c ∈ Submodule.span (OOf B i) ((fun r => (sOfC B hI i) ∘ r) '' Formalism.L2.latRel (what₂.MjLat (jOf B i))) := by
-  rw [bjC_sum, Submodule.Quotient.mk_eq_zero]
-  rfl
-
 def idealAt {j : ℕ} {w : what₂.places.Pl} (p : ℕ × what₂.places.Pl) (hp : p = (j, w))
     (I : Ideal (heckeAlg0 B p.1 p.2)) : Ideal (heckeAlg0 B j w) := by
   subst hp; exact I

@@ -160,11 +160,6 @@ theorem pairA_mul (α β : Af D.host.F) :
     rw [zero_mul]
   · rfl
 
-theorem pair_tmul_mul (α β : Af D.host.F) (a b : D.host.E) :
-    ((pairA D.host.F 0 α) ⊗ₜ[D.host.F] a : AE D) * (pairA D.host.F 0 β ⊗ₜ[D.host.F] b) =
-      pairA D.host.F 0 (α * β) ⊗ₜ[D.host.F] (a * b) := by
-  rw [Algebra.TensorProduct.tmul_mul_tmul, pairA_mul]
-
 def Good (v : Pl D) (α : Af D.host.F) : Prop :=
   α ∈ intAf D.host.F ∧ ∀ w, w ≠ v → evalV D.host.F w α = 0
 
@@ -220,7 +215,7 @@ theorem smul_latV_mem_latA (S : HSp D) (L : Lat S) (v : Pl D) {ε : Af D.host.F}
     have g := hε.mul ⟨hβ1, hβ2⟩
     refine ⟨ε * β, g.1, g.2, c, hc, x, hx, ?_⟩
     funext i
-    rw [Pi.smul_apply, smul_eq_mul, pair_tmul_mul, one_mul]
+    rw [Pi.smul_apply, smul_eq_mul, GlobalTheory.SeeSaw.IdVMul.tmul_mul_tmul', one_mul]
   | zero => rw [smul_zero]; exact zero_mem _
   | add x y _ _ h1 h2 => rw [smul_add]; exact add_mem h1 h2
   | neg x _ h => rw [smul_neg]; exact neg_mem h
@@ -248,7 +243,7 @@ theorem mem_latA_fwd (S : HSp D) (L : Lat S) (v : Pl D) (y : Fin S.rank → AE D
       have g := Good.mul (v := v) ⟨hβ1, hβ2⟩ ⟨hα1, hα2⟩
       refine ⟨β * α, g.1, g.2, 1, rfl, o • x, L.smul_mem o hx, ?_⟩
       funext i
-      rw [Pi.smul_apply, smul_eq_mul, pair_tmul_mul, one_mul, Pi.smul_apply, Algebra.smul_def, ← mul_assoc]
+      rw [Pi.smul_apply, smul_eq_mul, GlobalTheory.SeeSaw.IdVMul.tmul_mul_tmul', one_mul, Pi.smul_apply, Algebra.smul_def, ← mul_assoc]
       congr 2
       exact ho.symm
     | zero => rw [zero_smul]; exact zero_mem _
@@ -270,7 +265,7 @@ theorem mem_latA_bwd (S : HSp D) (L : Lat S) (v : Pl D) (y : Fin S.rank → AE D
       have e : ((pairA D.host.F 0 (GlobalTheory.SelfDualAt.indP (D := D) (· = v))) ⊗ₜ[D.host.F] (c * d) : AE D) =
           ((pairA D.host.F 0 (GlobalTheory.SelfDualAt.indP (D := D) (· = v))) ⊗ₜ[D.host.F] c) *
             ((pairA D.host.F 0 (GlobalTheory.SelfDualAt.indP (D := D) (· = v))) ⊗ₜ[D.host.F] d) := by
-        rw [pair_tmul_mul, indicatorAdele_mul_self]
+        rw [GlobalTheory.SeeSaw.IdVMul.tmul_mul_tmul', indicatorAdele_mul_self]
       rw [e, mul_smul]
       refine smul_latV_mem_latA S L v hε hc (h _ ?_)
       unfold idV

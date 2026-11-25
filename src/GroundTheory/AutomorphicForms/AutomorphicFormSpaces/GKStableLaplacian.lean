@@ -29,11 +29,8 @@ theorem exists_monic_aeval_apply_eq_zero {M : Type*} [AddCommGroup M] [Module �
   by_cases hv0 : v = 0
   · refine ⟨Polynomial.X, Polynomial.monic_X, by simp, ?_⟩
     simp [hv0]
-  have hmemk : ∀ k : ℕ, (T ^ k) v ∈ V := by
-    intro k
-    induction k with
-    | zero => simpa using hv
-    | succ k ih => rw [pow_succ', Module.End.mul_apply]; exact hV _ ih
+  have hmemk : ∀ k : ℕ, (T ^ k) v ∈ V := fun k =>
+    Module.End.pow_apply_mem_of_forall_mem k hV v hv
   set m := Module.finrank ℂ V
   let u : Fin (m + 1) → M := fun i => (T ^ (i : ℕ)) v
   have hspan : Submodule.span ℂ (range u) ≤ V := by

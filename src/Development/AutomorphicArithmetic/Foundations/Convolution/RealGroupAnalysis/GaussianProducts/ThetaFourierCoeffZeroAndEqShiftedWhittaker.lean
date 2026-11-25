@@ -31,7 +31,7 @@ private theorem conj_ne {F E : Type} [Field F] [NumberField F] [Field E] [Number
   intro h
   have hl := Fintype.linearIndependent_iff.1 D.b.linearIndependent ![ξ 0, -ξ 1] (by
     simp only [Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one, D.b0, D.b1, Algebra.smul_def, map_neg]
-    simp only [Matrix.cons_val_fin_one, mul_one, map_neg]
+    simp only [mul_one]
     linear_combination h)
   apply hξ
   ext i

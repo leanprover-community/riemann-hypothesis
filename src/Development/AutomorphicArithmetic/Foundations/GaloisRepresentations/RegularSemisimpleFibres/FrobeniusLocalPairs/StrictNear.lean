@@ -75,7 +75,6 @@ private theorem fixB {ι : Type} [Fintype ι] (r c : ValueGroupWithZero E) (hc :
     exact Valuation.map_sub_lt _ (Valuation.map_add_lt _ h3 (hm1 j)) h2
   exact lt_irrefl _ this
 
-
 omit [TopologicalSpace E] [IsNonarchimedeanLocalField E] in
 private theorem boundB {n : ℕ} {r : ValueGroupWithZero E} (hr : r < 1) (M : Matrix (Fin n) (Fin n) E)
     (hM : ∀ i j, valuation E (M i j - (1 : Matrix (Fin n) (Fin n) E) i j) ≤ r) (y : Fin n → E)
@@ -355,21 +354,6 @@ private theorem strict_near {r : ValueGroupWithZero E} (hr : r < 1) {t s : Fin n
   rw [key, key]
   exact ht i j hij
 
-private theorem ball_sg {r : ValueGroupWithZero E} {σ : E ≃+* E} (hσ : Isom σ) {a : GL (Fin n) E}
-    (ha : a ∈ ball n r) : sg σ a ∈ ball n r := by
-  simp only [ball, Set.mem_setOf_eq] at ha ⊢
-  intro i j
-  have h : ((sg σ a : GL (Fin n) E) : Matrix (Fin n) (Fin n) E) i j - (1 : Matrix (Fin n) (Fin n) E) i j
-      = σ ((a : Matrix (Fin n) (Fin n) E) i j - (1 : Matrix (Fin n) (Fin n) E) i j) := by
-    rw [sg, GeneralLinearGroup.map_apply, map_sub]
-    congr 1
-    by_cases hij : i = j
-    · subst hij
-      simp
-    · simp [Matrix.one_apply_ne hij]
-  rw [h, hσ]
-  exact ha i j
-
 private theorem diag_ball {r : ValueGroupWithZero E} {s : Fin n → Eˣ} (hs : Near r s) :
     diagT E (Fin n) s ∈ ball n r := by
   intro i j
@@ -452,7 +436,7 @@ theorem UpperTheory.Gal.InertialTypesAlt.L.suppE :
         rw [← hy]
         group
       refine ⟨κ⁻¹, binv κ hκ, diagT E (Fin n) (d * UpperTheory.Gal.InertialTypesAlt.L.sgT σ u / u / t) * sg σ κ,
-        bmul _ (UpperTheory.Gal.InertialTypesAlt.L.diag_ball hs) _ (UpperTheory.Gal.InertialTypesAlt.L.ball_sg hσ hκ), t, ht, ?_⟩
+        bmul _ (UpperTheory.Gal.InertialTypesAlt.L.diag_ball hs) _ (UpperTheory.ConvolutionTheory.Loc.ball_sgB hσ hκ), t, ht, ?_⟩
       rw [hδ]
       calc (y * diagT E (Fin n) u * κ)⁻¹ * (y * diagT E (Fin n) d * (sg σ y)⁻¹)
             * sg σ (y * diagT E (Fin n) u * κ)

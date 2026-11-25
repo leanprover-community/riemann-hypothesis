@@ -28,7 +28,6 @@ open CrystallineSemistableComparison.Onto GlobalTheory.CompanionTheory.Surjectio
 
 variable {K : Type} [Field K] {n d : ℕ}
 
-
 variable (K n d) in
 def tau : Bp K n d := ∏ e, MvPolynomial.X e
 
@@ -257,21 +256,16 @@ theorem baseChange_loc {B A P P' Q Q' : Type} [CommRing B] [CommRing A] [CommRin
 
 variable {K : Type} [Field K] {n d : ℕ}
 
-theorem mon_congr {M : AddSubmonoid (Gam n d)} {g g' : Gam n d} (e : g = g') (hg : g ∈ M) (hg' : g' ∈ M) :
-    mon K g hg = mon K g' hg' := by
-  subst e
-  rfl
-
 theorem mon_sum {ι : Type} {M : AddSubmonoid (Gam n d)} (s : Finset ι) (g : ι → Gam n d) (hg : ∀ j, g j ∈ M) :
     mon K (∑ j ∈ s, g j) (sum_mem fun j _ => hg j) = ∏ j ∈ s, mon K (g j) (hg j) := by
   classical
   induction s using Finset.induction_on with
   | empty =>
     simp only [Finset.prod_empty]
-    exact mon_congr (K := K) Finset.sum_empty _ M.zero_mem
+    exact GlobalTheory.CompanionTheory.SurjectionOntoH4.ThetaUnique.mon_congr (K := K) Finset.sum_empty _ M.zero_mem
   | insert a s ha ih =>
     rw [Finset.prod_insert ha, ← ih, mon_mul]
-    exact mon_congr (Finset.sum_insert ha) _ _
+    exact GlobalTheory.CompanionTheory.SurjectionOntoH4.ThetaUnique.mon_congr (Finset.sum_insert ha) _ _
 
 def cE (S : Finset (Fin d)) (k : Fin d) : Gam n d := ∑ j ∈ S, ratE k j
 
@@ -467,27 +461,16 @@ theorem isBaseChange_restrict {P Q U M V N : Type*} [CommRing P] [CommRing Q] [A
 theorem mem_span_of_mem_span {Q R N : Type*} [CommRing Q] [CommRing R] [Algebra Q R] [AddCommGroup N] [Module R N]
     [Module Q N] [IsScalarTower Q R N] (G : Set R) (hG : ∀ r : R, r ∈ Submodule.span Q G) (X : Set N)
     (hX : ∀ c ∈ G, ∀ x ∈ X, c • x ∈ X) {y : N} (hy : y ∈ Submodule.span R X) : y ∈ Submodule.span Q X := by
-  have h1 : ∀ (r : R), ∀ x ∈ X, r • x ∈ Submodule.span Q X := by
-    intro r x hx
-    have hr := hG r
-    induction hr using Submodule.span_induction with
-    | mem c hc => exact Submodule.subset_span (hX c hc x hx)
-    | zero => rw [zero_smul]; exact Submodule.zero_mem _
-    | add a b _ _ ha hb => rw [add_smul]; exact Submodule.add_mem _ ha hb
-    | smul q a _ ha => rw [smul_assoc]; exact Submodule.smul_mem _ q ha
-  induction hy using Submodule.span_induction with
-  | mem x hx => exact Submodule.subset_span hx
-  | zero => exact Submodule.zero_mem _
-  | add a b _ _ ha hb => exact Submodule.add_mem _ ha hb
-  | smul r x _ hx =>
-    have h2 : ∀ z ∈ Submodule.span Q X, r • z ∈ Submodule.span Q X := by
-      intro z hz
-      induction hz using Submodule.span_induction with
-      | mem x hx => exact h1 r x hx
-      | zero => rw [smul_zero]; exact Submodule.zero_mem _
-      | add a b _ _ ha hb => rw [smul_add]; exact Submodule.add_mem _ ha hb
-      | smul q a _ ha => rw [smul_comm r q a]; exact Submodule.smul_mem _ q ha
-    exact h2 x hx
+  let P := Submodule.span Q X
+  have hgen (r : R) (x : N) (hx : x ∈ X) : r • x ∈ P := by
+    have hle : Submodule.span Q G ≤ P.comap ((LinearMap.toSpanSingleton R N x).restrictScalars Q) :=
+      Submodule.span_le.2 fun c hc => Submodule.subset_span (hX c hc x hx)
+    exact hle (hG r)
+  have hstable (r : R) : P ≤ P.comap (DistribSMul.toLinearMap Q N r) :=
+    Submodule.span_le.2 (hgen r)
+  let P' : Submodule R N :=
+    { P.toAddSubmonoid with smul_mem' := fun r _ hz => hstable r hz }
+  exact (show Submodule.span R X ≤ P' from Submodule.span_le.2 Submodule.subset_span) hy
 
 theorem isBaseChange_core {P Q R₀ R M N U V : Type*} [CommRing P] [CommRing Q] [CommRing R₀] [CommRing R]
     [Algebra P Q] [Algebra P R₀] [Algebra P R] [Algebra Q R] [Algebra R₀ R] [IsScalarTower P Q R] [IsScalarTower P R₀ R]
@@ -710,9 +693,6 @@ section -- clump:auto
 
 open CrystallineSemistableComparison.Onto GlobalTheory.CompanionTheory.SurjectionOntoH4
 
-theorem _root_.GlobalTheory.T.chart_forms_base_change : ∀ {K : Type} [Field K] {n d : ℕ} {A : Type} [CommRing A] [Algebra K A] (C : ChartRings K A n d) {S : Finset (Fin d)} (θ : R0 K n d S →ₐ[K] C.R S) (hθ : ∀ b, θ (poly n K S b) = toR C S (phi C b)), IsBaseChange (Aa C) (thetaLin C θ hθ) → ∀ a : ℕ, IsBaseChange (Aa C) (psi C θ hθ a) := by
-  intro K _ n d A _ _ C S θ hθ hb a
-  exact GlobalTheory.CompanionTheory.SurjectionOntoH4.isBaseChange_psi C θ hθ hb a
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartFormsBaseChangeStatement =====
@@ -725,7 +705,6 @@ section -- clump:auto
 noncomputable section
 namespace GlobalTheory.CompanionTheory.SurjectionOntoH4.ThetaOne
 open CrystallineSemistableComparison.Onto GlobalTheory.CompanionTheory.SurjectionOntoH4
-
 
 open TensorProduct in
 theorem isBaseChange_of_presentation {B A P Q ι : Type} [CommRing B] [CommRing A] [CommRing P] [CommRing Q]
@@ -1244,7 +1223,6 @@ theorem coord_sum {n : ℕ} (D : Fin n → W) (l : Λ) :
   rw [map_sum, Finsupp.coe_finsetSum, Finset.sum_apply]
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [map_zsmul, Finsupp.smul_apply]
-
 
 open Classical in
 def contr {n : ℕ} (C : (Fin (n + 1) → ι) → W) (a : ∀ l, good' l → ι) (i : Fin n → ι) : W :=
@@ -1835,7 +1813,7 @@ theorem h4a : ChartFormsCechExact := by
   have h1 := model_ex (K := K) (n := n) (d := d) a
   have h2 : ExP (fun S => relA C S a) (fun {S T} h => relMap (C.res h) (res_mem_I C (S := S) (T := T) h) a) := by
     refine _root_.GlobalTheory.CompanionTheory.SurjectionOntoH4.ExFlat.exP_flat (B := Bp K n d) (A := Aa C) (fun S => relOm K (I0 n K S) a) (fun S => relA C S a) _ ?_ _ ?_
-      (fun S => psi C (θ S) (hθ S) a) (fun S => GlobalTheory.T.chart_forms_base_change C (θ S) (hθ S) (bc S) a) ?_ h1
+      (fun S => psi C (θ S) (hθ S) a) (fun S => GlobalTheory.CompanionTheory.SurjectionOntoH4.isBaseChange_psi C (θ S) (hθ S) (bc S) a) ?_ h1
     · intro S T h
       refine ⟨map_add _, fun b ω => Subtype.ext ?_⟩
       change omMap (incl (cone_mono h)) a ((b • ω : relOm K (I0 n K S) a) : Om K (R0 K n d S) a) =

@@ -69,7 +69,7 @@ theorem finrank_fixed {R G M K L : Type} [Field R] [Group G] [AddCommGroup M] [M
   have hΦ : ∀ x, Φ₀ x = ∑ i, m (b i) (x i) := fun x => by
     simp [Φ₀]
   have hinj : Function.Injective Φ₀ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro x hx
     have h3 : ∀ σ : L ≃ₐ[K] L, ∑ i, m (σ (b i)) (x i) = 0 := fun σ => by
       have := congrArg (A (s σ)) hx
@@ -96,8 +96,7 @@ theorem finrank_fixed {R G M K L : Type} [Field R] [Group G] [AddCommGroup M] [M
       exact D'.sum_mem fun i _ => hm _ _ (hDD (x i).2)
     · intro x hx
       refine ⟨fun i => ⟨∑ σ, A (s σ) (m (μ i) x), (hD _).2 fun g => ?_⟩, ?_⟩
-      · set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum, ← Equiv.sum_comp (Equiv.mulLeft (ε g))
+      · rw [map_sum, ← Equiv.sum_comp (Equiv.mulLeft (ε g))
           (fun σ => A (s σ) (m (μ i) x))]
         refine Finset.sum_congr rfl fun σ _ => ?_
         rw [← Module.End.mul_apply, ← map_mul]

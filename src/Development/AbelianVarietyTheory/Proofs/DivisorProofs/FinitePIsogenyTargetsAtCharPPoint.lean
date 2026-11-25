@@ -310,9 +310,6 @@ theorem inK_of_inK {A B B' : Over (Sp k)} [GrpObj A] [GrpObj B] [GrpObj B'] (π 
 
 end GlobalTheory.IwLevel.KerDet
 
-namespace GlobalTheory.IwLevel
-
-end GlobalTheory.IwLevel
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -1012,10 +1009,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open ReciprocityTheory.ChartRestriction.G.Out (RingAct)
 open scoped CategoryTheory.Obj NumberField
 open GlobalTheory.IwLevel
-
-namespace GlobalTheory.HTLieFix
-
-end GlobalTheory.HTLieFix
 
 namespace GlobalTheory.HTLieFix
 

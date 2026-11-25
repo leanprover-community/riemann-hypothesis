@@ -1337,7 +1337,6 @@ theorem exists_bigCell : (∀ {O : Type} [CommRing O] [IsLocalRing O] (c : O →
     exact hP0U
   let p : GlobalTheory.DblVac.UD σ W := ⟨u, hu⟩
   have hp : GlobalTheory.DblVac.matD p = glueW hw P0 := rfl
-  have hp' : GlobalTheory.DblVac.matD p⁻¹ = glueW hw P0' := rfl
   have hmul : ∀ a c : GlobalTheory.DblVac.UD σ W, GlobalTheory.DblVac.matD (a * c) = GlobalTheory.DblVac.matD a * GlobalTheory.DblVac.matD c :=
     fun _ _ => rfl
   have hpl : ∀ z ∈ GlobalTheory.DblVac.latD W v, GlobalTheory.DblVac.matD p *ᵥ z ∈ GlobalTheory.DblVac.latD W v :=

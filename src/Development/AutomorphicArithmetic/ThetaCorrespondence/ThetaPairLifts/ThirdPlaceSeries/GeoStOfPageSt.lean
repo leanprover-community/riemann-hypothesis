@@ -347,7 +347,7 @@ theorem isLattice_of_spanK {F K : Type} [Field F] [NumberField F] [Field K] [Num
     (z : (Fin n → K) ≃ₗ[K] K ⊗[F] C) (M : Submodule (𝓞 F) C) (h : IsLatIn ⊤ (spanK z (M : Set C))) :
     Submodule.IsFullLattice F M := by
   have hinj : Function.Injective (coordMap z) := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro x hx
     have h1 : z.symm ((1 : K) ⊗ₜ[F] x) = 0 := hx
     rw [LinearEquiv.map_eq_zero_iff] at h1

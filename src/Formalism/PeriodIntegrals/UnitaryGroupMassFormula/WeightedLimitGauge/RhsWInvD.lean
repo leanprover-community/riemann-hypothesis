@@ -33,43 +33,17 @@ open scoped ENNReal
 
 namespace PI.RhsWLim.W.RI
 
-theorem polish_of_lcsc (Y : Type) [TopologicalSpace Y] [LocallyCompactSpace Y] [T2Space Y]
-    [SecondCountableTopology Y] : PolishSpace Y := by
-  apply PI.AprimeInfA.polish_of_lcsc
-
 section Abstract
 
 variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G]
   [T2Space G] [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G]
 
-theorem meas_avg (H : Subgroup G) (ν : Measure H) [SFinite ν] {f : G → ℝ≥0∞} (hf : Measurable f) :
-    Measurable (fun g : G => ∫⁻ h, f (g * (h : G)) ∂ν) := by
-  have hc : Continuous (fun p : G × H => p.1 * (p.2 : G)) :=
-    continuous_fst.mul (continuous_subtype_val.comp continuous_snd)
-  exact (hf.comp hc.measurable).lintegral_prod_right'
-
-theorem avg_mul_mem (H : Subgroup G) (ν : Measure H) [ν.IsMulLeftInvariant] (f : G → ℝ≥0∞)
-    (g : G) (k : H) : ∫⁻ h, f (g * k * (h : G)) ∂ν = ∫⁻ h, f (g * (h : G)) ∂ν := by
-  have := lintegral_mul_left_eq_self (μ := ν) (fun h : H => f (g * (h : G))) k
-  simpa [mul_assoc] using this
-
-theorem avg_out (H : Subgroup G) (ν : Measure H) [ν.IsMulLeftInvariant] (f : G → ℝ≥0∞) (g : G) :
-    ∫⁻ h, f ((g : G ⧸ H).out * (h : G)) ∂ν = ∫⁻ h, f (g * (h : G)) ∂ν := by
-  obtain ⟨k, hk⟩ := QuotientGroup.mk_out_eq_mul H g
-  rw [hk]
-  exact avg_mul_mem H ν f g k
-
-theorem meas_avg_q (H : Subgroup G) (ν : Measure H) [SFinite ν] [ν.IsMulLeftInvariant]
-    {f : G → ℝ≥0∞} (hf : Measurable f) :
-    Measurable (fun q : G ⧸ H => ∫⁻ h, f (q.out * (h : G)) ∂ν) := by
-  apply _root_.PI.VolStabS.meas_avg_q <;> assumption
-
 theorem lint_eq (H : Subgroup G) (ν : Measure H) [ν.IsMulLeftInvariant] [IsFiniteMeasure ν]
     (μ : Measure G) [SFinite μ] (hr : ∀ k : H, μ.map (· * (k : G)) = μ) (f : G → ℝ≥0∞) (hf : Measurable f) :
     ν univ * ∫⁻ g, f g ∂μ =
       ∫⁻ q, (∫⁻ h, f (q.out * (h : G)) ∂ν) ∂(μ.map (QuotientGroup.mk : G → G ⧸ H)) := by
-  rw [lintegral_map (meas_avg_q H ν hf) measurable_quotient_mk'']
-  have e1 : ∀ g : G, ∫⁻ h, f ((g : G ⧸ H).out * (h : G)) ∂ν = ∫⁻ h, f (g * (h : G)) ∂ν := avg_out H ν f
+  rw [lintegral_map (PI.AprimeInfA.meas_avg_q H ν hf) measurable_quotient_mk'']
+  have e1 : ∀ g : G, ∫⁻ h, f ((g : G ⧸ H).out * (h : G)) ∂ν = ∫⁻ h, f (g * (h : G)) ∂ν := PI.AprimeInfA.avg_out H ν f
   rw [lintegral_congr e1]
   have hmeas2 : AEMeasurable (Function.uncurry fun (g : G) (h : H) => f (g * (h : G))) (μ.prod ν) := by
     have hc2 : Continuous (fun p : G × H => p.1 * (p.2 : G)) :=
@@ -92,8 +66,8 @@ theorem desc_uniq (H : Subgroup G) (hH : IsClosed (H : Set G)) (ν : Measure H) 
   classical
   haveI : IsFiniteMeasure ν := ⟨lt_top_iff_ne_top.2 hfin⟩
   haveI : IsClosed (H : Set G) := hH
-  haveI : PolishSpace G := polish_of_lcsc G
-  haveI : PolishSpace (G ⧸ H) := polish_of_lcsc _
+  haveI : PolishSpace G := PI.AprimeInfA.polish_of_lcsc G
+  haveI : PolishSpace (G ⧸ H) := PI.AprimeInfA.polish_of_lcsc _
   haveI : BorelSpace (G ⧸ H) := CosetSpace.borelSpace
   have hmk : ∀ g : G, iotaQ H p (g : G ⧸ H) = p g := by
     intro g

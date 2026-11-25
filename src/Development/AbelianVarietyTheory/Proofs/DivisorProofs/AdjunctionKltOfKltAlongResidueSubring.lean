@@ -960,7 +960,6 @@ theorem ordQ_mapDomain_residue_eq {L K : Type} [Field L] [Field K] (cL : ℂ →
 
   let uS : S.ring := ⟨u, hSQ _ u.2⟩
   have huS : IsUnit uS := by
-    have h1 : (u : L) ∈ S.ring := hSQ _ u.2
     have h2 : (u : L)⁻¹ ∈ S.ring := by
       rw [← S.ord_nonneg_iff (inv_ne_zero hu0), S.ord_inv, hSu]; simp
     exact IsUnit.of_mul_eq_one (⟨_, h2⟩ : S.ring) (Subtype.ext (mul_inv_cancel₀ hu0))

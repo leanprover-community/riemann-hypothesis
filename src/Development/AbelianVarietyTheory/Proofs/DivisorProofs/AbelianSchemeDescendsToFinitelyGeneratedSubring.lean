@@ -21,7 +21,6 @@ open CategoryTheory Limits AlgebraicGeometry MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi
 open scoped CategoryTheory.Obj
 
-set_option backward.isDefEq.respectTransparency false
 
 namespace GlobalTheory.AbelianLimit
 

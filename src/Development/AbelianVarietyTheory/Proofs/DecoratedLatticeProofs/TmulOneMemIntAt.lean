@@ -69,8 +69,7 @@ theorem intAt_neg {a : AE D} (ha : a ∈ intAt D (· = v)) : -a ∈ intAt D (· 
 
 theorem pairA_zero_mul (α β : Af D.host.F) :
     pairA D.host.F 0 α * pairA D.host.F 0 β = pairA D.host.F 0 (α * β) := by
-  show ((0 : Ainf D.host.F) * 0, α * β) = ((0 : Ainf D.host.F), α * β)
-  rw [zero_mul]
+  exact (GlobalTheory.FinPlLoc.pairA_mul α β).symm
 
 theorem evalV_single_self (v : Pl D) : evalV D.host.F v (singleV D.host.F v 1) = 1 := by
   classical

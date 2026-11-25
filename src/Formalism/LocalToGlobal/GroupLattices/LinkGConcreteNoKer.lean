@@ -211,7 +211,6 @@ theorem bc_map {R R' X X' Y Y' : Type*} [CommRing R] [CommRing R'] [AddCommGroup
   congr 1
   exact Set.image_congr fun a _ => (hT a).symm
 
-
 include hφ in
 theorem bc_nablaLTw (m : ℕ) (lam : Fin (m + 1) → ℤ) (g : Matrix (Fin (m + 1)) (Fin (m + 1)) K)
     (hg : IsUnit g.det) :
@@ -226,7 +225,6 @@ theorem map_blockEmb {S : Type} {k n : ℕ} (s : S) (F : MvPolynomial (Fin k × 
     MvPolynomial.map φK (blockEmb K s F) = blockEmb K' s (MvPolynomial.map φK F) := by
   unfold blockEmb
   exact (MvPolynomial.map_rename φK _ F)
-
 
 include hφ in
 theorem bc_tensorLat {S : Type} [Fintype S] {k n : ℕ} (M : S → Submodule R (MvPolynomial (Fin k × Fin n) K))
@@ -274,7 +272,6 @@ theorem bc_tensorLat {S : Type} [Fintype S] {k n : ℕ} (M : S → Submodule R (
     rw [map_prod]
     exact Finset.prod_congr rfl fun s _ => map_blockEmb φK s (F s)
 
-
 include hφ in
 theorem bc_colSpan {k : ℕ} (g : Matrix (Fin k) (Fin k) K) :
     BC (vecS φ φK hφ k) (colSpan R g) (colSpan R' (g.map φK)) := by
@@ -284,7 +281,6 @@ theorem bc_colSpan {k : ℕ} (g : Matrix (Fin k) (Fin k) K) :
     rw [← Set.range_comp]; rfl
   rw [h1] at h0
   exact h0
-
 
 include hφ in
 theorem base_change_H0 (hinj : Function.Injective (algebraMap R K)) (hinj' : Function.Injective (algebraMap R' K'))
@@ -713,11 +709,6 @@ namespace Formalism.MainNotions.TraceSpectra
 open Formalism.MainNotions.G Formalism.GradedWeylDivisibility Formalism.MainNotions.SourceCleaning Formalism.MainNotions.Pf14 Formalism.MainNotions.PlaneGramData Formalism.MainNotions.TestSideCounting Formalism.MainNotions.TestSideWords Formalism.MainNotions.PairMembershipBlocks
 open Formalism.MainNotions.TestSideWords.TwistedFiltration.G3 Formalism.MainNotions.G.GLWeightTheory
 
-theorem ceil_le_of_geZ {x : WithTop ℤ} {t : ℝ} (h : geZ x t) : ((⌈t⌉ : ℤ) : WithTop ℤ) ≤ x := by
-  cases x with
-  | top => exact le_top
-  | coe k => exact WithTop.coe_le_coe.2 (Int.ceil_le.2 (h k rfl))
-
 theorem geZ_of_ceil_le {x : WithTop ℤ} {t : ℝ} (h : ((⌈t⌉ : ℤ) : WithTop ℤ) ≤ x) : geZ x t := by
   intro k hk
   subst hk
@@ -1007,7 +998,7 @@ theorem restChain_of (hVA : ValAeval) (hVF : ValFilt) (hNN : ValNN) (hPM : PhMon
     refine le_trans ?_ (flt_valS_mul_ge _ _ _ _)
     have h1 : ((⌈t j i.val⌉ : ℤ) : WithTop ℤ) ≤ valS Dt.modelLet (Dt.chainML j i)
         (chi Fr Dt.nL (KK O) j (MvPolynomial.map (algebraMap O (KK O)) (A (segZ j)))) := by
-      refine le_trans (ceil_le_of_geZ (ht j i.val hu)) ?_
+      refine le_trans (Formalism.MainNotions.Proposition5Numerics.ceil_le_of_geZ (ht j i.val hu)) ?_
       rw [← Formalism.MainNotions.G.Joints.StandardMonomialSpace.valS_map (algebraMap O (KK O)) (IsFractionRing.injective O (KK O))]
       exact val_chi Dt hVA hV hT j i _ (hsuppA j)
     have h2 : (0 : WithTop ℤ) ≤ valS Dt.modelLet (Dt.chainML j i) (∏ j' ∈ Finset.univ.erase j,
@@ -1104,11 +1095,6 @@ theorem ph_monomial_mul (β : TL J Dt.nL r × Fin r →₀ ℕ) (c : KK O) (M : 
   have h := phMon p O r J Dt M a
   rw [h, monomial_mul]
 
-theorem multideg_add' {ι : Type} {n : ℕ} (a b : ι × Fin n →₀ ℕ) (x : ι) :
-    multideg (a + b) x = multideg a x + multideg b x := by
-  unfold multideg
-  simp [Finset.sum_add_distrib]
-
 theorem phExp_inl (M : ML J Dt.nL r × Fin r →₀ ℕ) (j : ZMod J) (l : Fin (Dt.nL j)) (a : Fin r) :
     phExp Dt M (⟨j, Sum.inl l⟩, a) = M (ML.ll j l, a) := by
   simp [phExp]
@@ -1150,7 +1136,7 @@ theorem compPh : CompPh := by
   have key : ∀ mo : ML J Dt.nL r × Fin r →₀ ℕ, ((∀ x, multideg (β + phExp Dt mo) x = d x) ↔
       ∀ x, multideg β x + phDeg Dt (fun y => multideg mo y) x = d x) := by
     intro mo
-    simp only [multideg_add', multideg_phExp]
+    simp only [Formalism.MainNotions.ColumnSystems.Pf.multideg_add, multideg_phExp]
   unfold filtQ
   conv_lhs => rw [F.as_sum]
 

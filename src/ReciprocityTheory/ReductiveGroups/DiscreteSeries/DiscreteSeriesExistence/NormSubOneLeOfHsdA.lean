@@ -266,7 +266,7 @@ theorem bumpA_conj {δ : ℝ} {k : Matrix (Fin n) (Fin n) ℂ} (hk : k ∈ Matri
   unfold bumpA
   rw [hsdA_conj hk]
 
-theorem tsupport_bumpA (δ : ℝ) : tsupport (bumpA (n := n) δ) ⊆ {g | hsdA g ≤ δ} := closure_minimal (fun g hg => (hsdA_lt_of_bumpA hg).le) (isClosed_le contDiff_hsdA.continuous continuous_const)
+theorem tsupport_bumpA (δ : ℝ) : tsupport (bumpA (n := n) δ) ⊆ {g | hsdA g ≤ δ} := closure_minimal (fun _ hg => (hsdA_lt_of_bumpA hg).le) (isClosed_le contDiff_hsdA.continuous continuous_const)
 
 theorem hasCompactSupport_bumpA (δ : ℝ) : HasCompactSupport (bumpA (n := n) δ) := by
   haveI : ProperSpace (Matrix (Fin n) (Fin n) ℂ) := by

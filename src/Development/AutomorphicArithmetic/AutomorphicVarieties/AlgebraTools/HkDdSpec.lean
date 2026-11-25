@@ -17,7 +17,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qi3.finset_prod_dvd_of_prime_of_dvd_imp_eq :
-    ∀ {M ι : Type} [inst : CommRing M] (f : ι → M) (y : M)
+    ∀ {M ι : Type} [CommRing M] (f : ι → M) (y : M)
     (s : Finset ι),
     (∀ a ∈ s, Prime (f a)) → (∀ a ∈ s, ∀ b ∈ s, f a ∣ f b → a = b) → (∀ a ∈ s, f a ∣ y) → ∏ a ∈ s, f a ∣ y := by
   intro M ι inst f y s

@@ -76,7 +76,7 @@ lemma ginv_xcofL_esI (z z' : Fin (2 * r + k + 1) → ℂ) {y : B.Mat k r} (hy : 
   have hu : IsUnit y.det := Formalism.QuantumDeterminants.WeylGroupFacts.isUnit_of_uh hy
   rw [← herm_bvec_eI (y⁻¹ *ᵥ xcofL k r z z' y) a, ← fvec_lt z' a,
     ← Formalism.FourierDecayAlt.P.TwoByOneBlock.herm_UH hy, mulVec_mulVec, Matrix.mul_nonsing_inv _ hu, one_mulVec,
-    hm_symm _ hH]
+    Formalism.FourierDecayAlt.P.TwoByOneBlock.herm_symm _ hH]
   unfold xcofL
   rw [hm_sum_r]
   have := adj_row (Zhat k r z z' y) ⟨a.val, by omega⟩ (by

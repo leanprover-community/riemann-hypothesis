@@ -284,7 +284,7 @@ theorem GlobalTheory.StdUnn.sch_dRho_dualHalf : ∀ (D : D7) (ψ : AddChar (AF D
         Complex.exp ((Real.pi * Complex.I) *
           ((t * GlobalTheory.IndefiniteRowSideFullHecke.HermitianSymplecticScalars.symplAt (GlobalTheory.Size.posSp D A.rank) B τ Y (compAt θ τ x) : ℝ) : ℂ)) := by
       rw [e2]; exact e
-    rw [symplO_eq_two_half, AddChar.map_add_eq_mul, e3, ← Complex.exp_add]
+    rw [GlobalTheory.RatSelfDual.symplO_eq_add, AddChar.map_add_eq_mul, e3, ← Complex.exp_add]
     congr 1
     push_cast
     ring

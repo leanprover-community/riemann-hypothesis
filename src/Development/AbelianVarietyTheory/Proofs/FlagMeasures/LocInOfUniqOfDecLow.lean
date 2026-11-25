@@ -155,11 +155,6 @@ variable {k r : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
 end GlobalTheory.SOrb.CCBridge
 
-namespace GlobalTheory.SOrb
-
-open Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.BetaSesquilinearity GlobalTheory.SOrb.CCBridge
-
-end GlobalTheory.SOrb
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

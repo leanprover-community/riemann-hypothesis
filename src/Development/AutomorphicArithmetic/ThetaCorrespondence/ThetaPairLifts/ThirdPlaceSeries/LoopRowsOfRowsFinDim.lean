@@ -1192,8 +1192,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Finset
 
 namespace GlobalTheory.CritLevel
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem sq_le_two_pow (k : ℕ) (hk : 4 ≤ k) : k ^ 2 ≤ 2 ^ k := by
   induction k, hk using Nat.le_induction with
   | base => norm_num
@@ -1617,8 +1615,6 @@ noncomputable section
 
 namespace GlobalTheory.LoopRowBoundsGap
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 theorem rows_along_family : Formalism.HermitianLatticesTheory.SiegelMassRatio → GlobalTheory.GapIn.Hyp → BpJoin.ThmBpDS → ∀ Cg cb Cu cT CT C0 A C1 cV CGam : ℝ, ∃ C₀ thr : ℝ, ∀ (eps : ℝ) (Fm : FamP eps), Fm.CGam = CGam → thr ≤ sC' Fm → thr ≤ sCl Fm → PX.RanksF Fm C0 Cg cb Cu cT CT → (OwnEv Fm fun C' Cl x i => Cnt.Hyp0 (Fm.D x i) (Fm.L x i) C' Cl Cg cb Cu cT CT C0 → ∀ u, UnitaryVolumeMass.FormAt (Fm.D x i) u) ∧ ∀ (X : ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, TermTie (Fm.D x i)) (Y : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x) (u u' : (Fm.D x i).what₂.Word), LoopTie (Fm.D x i) (Fm.L x i) (X x hx i) u u' C1), rows_TiesF Fm C1 X Y → (∀ x (hx : Fm.x1 < x) (i : Fm.Ix x) (u u' : (Fm.D x i).what₂.Word), wordPairTermInjective (X x hx i) (Y x hx i u u')) → (∀ x (i : Fm.Ix x) (u u' : (Fm.D x i).what₂.Word), wordPairBetaLattice (Fm.D x i) u u') → (OwnEv Fm fun C' Cl x i => ∀ (hx : Fm.x1 < x) u u', VanishingOnXAndXPlus.TermVolumeSmallCellBound (Fm.D x i) (Fm.L x i) (X x hx i) u u' C1 (Y x hx i u u') C' Cl Cg cb Cu cT CT C0 A cV) → ∀ C ≥ C₀, OwnEv Fm fun C' Cl x i => ∀ (hx : Fm.x1 < x) u u', Cnt.Hyp (Fm.D x i) (Fm.L x i) u u' C' Cl Cg cb Cu cT CT C0 A → RowsND (X x hx i) (Y x hx i u u') C ∧ RowsDeg (X x hx i) (Y x hx i u u') C ∧ RowsOne (X x hx i) (Y x hx i u u') C := by
   intro hSMR hH hBp Cg cb Cu cT CT C0 A C1 cV CGam
   obtain ⟨c3, cH, cS, c4, thr1, HC⟩ := _root_.GlobalTheory.RowCounts.uniform_counts hSMR Cg cb Cu cT CT C0 A
@@ -1853,7 +1849,7 @@ theorem loopRows_of_rowsFinDim_alt :
       ∀ sel : SSel 𝒞, (∀ {eps : ℝ} (Fm : FamP eps), 𝒞 Fm → TuSize Fm) → LoopRowS 3 𝒞 sel := by
   intro hFin hUT 𝒞 hT sel hTu
   exact _root_.GlobalTheory.LoopRowsCloseGap.loop_rows_closed_gap (GlobalTheory.GapIn.hyp_of_uniqGap _root_.GlobalTheory.uniqGap_and_besselOfW.1) _root_.GlobalTheory.uniqGap_and_besselOfW.2 _root_.GlobalTheory.discreteSeriesCoef_pointwiseBound
-    GlobalTheory.wuDecayOfGap hFin 𝒞 sel hTu (_root_.GlobalTheory.ranks_and_frame_of_tied_class_alt hUT 𝒞 hT).1
+    CompanionTheory.Lime.BM.wuDecayOfGap_holds' hFin 𝒞 sel hTu (_root_.GlobalTheory.ranks_and_frame_of_tied_class_alt hUT 𝒞 hT).1
 end GlobalTheory.LoopRowsByName
 end
 end -- clump:auto

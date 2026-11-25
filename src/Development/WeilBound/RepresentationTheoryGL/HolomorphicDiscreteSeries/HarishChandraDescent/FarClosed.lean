@@ -64,13 +64,9 @@ theorem adjSign_symm (a b : Fin n) : adjSign ε b a = adjSign ε a b := by
   · simp [adjSign, h]
   · simp [adjSign, h, Ne.symm h]
 
-private theorem re_inner_self_eq_norm_sq' (x : M) : (⟪x, x⟫_ℂ).re = ‖x‖ ^ 2 := by
-  rw [@norm_sq_eq_re_inner ℂ]
-  rfl
-
 theorem term (hU : IsInfUnitary ε E) (a b : Fin n) (x : M) :
     (⟪(E a b * E b a) x, x⟫_ℂ).re = (if ε a = ε b then (1 : ℝ) else -1) * ‖E b a x‖ ^ 2 := by
-  rw [Module.End.mul_apply, hU a b, adjSign_real, Complex.re_ofReal_mul, re_inner_self_eq_norm_sq']
+  rw [Module.End.mul_apply, hU a b, adjSign_real, Complex.re_ofReal_mul, PositivityTheory.RgHe3.CasimirBoundOperators.re_inner_self]
 
 theorem inner_sum_re (T : Fin n → Fin n → Module.End ℂ M) (s : Fin n → Finset (Fin n)) (x : M) :
     (⟪(∑ a, ∑ b ∈ s a, T a b) x, x⟫_ℂ).re = ∑ a, ∑ b ∈ s a, (⟪T a b x, x⟫_ℂ).re := by
@@ -1509,23 +1505,6 @@ variable {n : ℕ}
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-theorem isUnit_of_mem {ε : Fin n → Bool} {g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ UJset ε) : IsUnit g := by
-  have hg' : gᴴ * Jm ε * g = Jm ε := hg
-  have hJJ : Jm ε * Jm ε = 1 := by
-    delta Jm
-    rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
-    congr 1
-    funext a
-    split_ifs <;> norm_num
-  have hli : (Jm ε * gᴴ * Jm ε) * g = 1 := by
-    calc Jm ε * gᴴ * Jm ε * g = Jm ε * (gᴴ * Jm ε * g) := by simp only [Matrix.mul_assoc]
-      _ = 1 := by rw [hg', hJJ]
-  exact (Matrix.isUnit_iff_isUnit_det g).mpr (Matrix.isUnit_det_of_left_inverse hli)
-
-theorem inG_conj {ε : Fin n → Bool} {g X : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ UJset ε) (hX : inG ε X) :
-    inG ε (g * X * g⁻¹) := by
-  apply ReciprocityTheory.ChartRestriction.DS.Lap.Base.inG_conj_unitary <;> assumption
-
 theorem smooth_translate {ε : Fin n → Bool} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} (hσ : IsURepOn (UJset ε) σ) {g : Matrix (Fin n) (Fin n) ℂ}
     (hg : g ∈ UJset ε) {v : H} (hv : IsSmoothVecU ε σ v) : IsSmoothVecU ε σ (σ g v) := by
@@ -1562,7 +1541,7 @@ theorem dS_conj {ε : Fin n → Bool} {H : Type} [NormedAddCommGroup H] [InnerPr
     {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} (hσ : IsURepOn (UJset ε) σ) {g X : Matrix (Fin n) (Fin n) ℂ}
     (hg : g ∈ UJset ε) (hX : inG ε X) {v : H} (hv : IsSmoothVecU ε σ v) :
     σ g (dS σ X v) = dS σ (g * X * g⁻¹) (σ g v) := by
-  have hdet : IsUnit g.det := (Matrix.isUnit_iff_isUnit_det g).mp (isUnit_of_mem hg)
+  have hdet : IsUnit g.det := (Matrix.isUnit_iff_isUnit_det g).mp (ReciprocityTheory.ChartRestriction.DS.Lap.Base.isUnit_of_mem_indefiniteUnitary hg)
   have h1UJ : inUJ ε (1 : Matrix (Fin n) (Fin n) ℂ) := by
     show (1 : Matrix (Fin n) (Fin n) ℂ)ᴴ * Jm ε * 1 = Jm ε
     simp
@@ -1571,10 +1550,10 @@ theorem dS_conj {ε : Fin n → Bool} {H : Type} [NormedAddCommGroup H] [InnerPr
     intro t
     have hs : (t : ℂ) • (g * X * g⁻¹) = g * ((t : ℂ) • X) * g⁻¹ := by
       rw [mul_smul_comm, smul_mul_assoc]
-    rw [Matrix.one_mul, hs, Matrix.exp_conj g _ (isUnit_of_mem hg), Matrix.mul_assoc (g * _),
+    rw [Matrix.one_mul, hs, Matrix.exp_conj g _ (ReciprocityTheory.ChartRestriction.DS.Lap.Base.isUnit_of_mem_indefiniteUnitary hg), Matrix.mul_assoc (g * _),
       Matrix.nonsing_inv_mul g hdet, Matrix.mul_one]
   rw [orbit_dS hσ hX hv hg, dS_eq_rdV,
-    rdV_congr (f' := fun h => σ (h * g) v) (fun h hh => ?_) h1UJ (inG_conj hg hX)]
+    rdV_congr (f' := fun h => σ (h * g) v) (fun h hh => ?_) h1UJ (ReciprocityTheory.ChartRestriction.DS.Lap.Base.inG_conj_unitary hg hX)]
   · delta ReciprocityTheory.ChartRestriction.DS.S7.RdV
     simp only [key]
   · show (σ h) ((σ g) v) = (σ (h * g)) v
@@ -1611,8 +1590,8 @@ theorem adjoint_equation_holds : AdEq := by
   apply Subtype.ext
   have hx : IsSmoothVecU ε ρ (x : H) := (mem_smD_iff ε ρ x).mp x.2
   obtain ⟨h1, h2, hX, -⟩ := smc_cpart (ε := ε) X
-  have hc1 := inG_conj hg h1
-  have hc2 := inG_conj hg h2
+  have hc1 := ReciprocityTheory.ChartRestriction.DS.Lap.Base.inG_conj_unitary hg h1
+  have hc2 := ReciprocityTheory.ChartRestriction.DS.Lap.Base.inG_conj_unitary hg h2
   have hsplit : g * X * g⁻¹ = g * S7.cpart1 ε X * g⁻¹ + Complex.I • (g * S7.cpart2 ε X * g⁻¹) := by
     conv_lhs => rw [hX]
     rw [Matrix.mul_add, Matrix.add_mul, Matrix.mul_smul, Matrix.smul_mul]

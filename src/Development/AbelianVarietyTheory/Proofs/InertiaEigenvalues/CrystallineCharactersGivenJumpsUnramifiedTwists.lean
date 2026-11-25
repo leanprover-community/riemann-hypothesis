@@ -265,13 +265,6 @@ theorem ιV_act (g : G) (w : V ⊗[Qp] B) :
     simp [ιV, actVB, actVdR, AlgebraTensorModule.map_tmul, PD.ι_comm]
   | add x y hx hy => simp only [map_add (f := _), hx, hy]
 
-theorem ιV_mem_DdR {w : V ⊗[Qp] B} (hw : w ∈ Dcris PD ρ) :
-    ιV PD (LL := LL) (V := V) w ∈ DdR PD ρ := by
-  simp only [Dcris, DdR, Submodule.mem_iInf, LinearMap.mem_ker, LinearMap.sub_apply,
-    LinearMap.id_apply, sub_eq_zero] at hw ⊢
-  intro g
-  rw [← ιV_act, hw g]
-
 theorem ιV_mul (a : K₀) (w : V ⊗[Qp] B) :
     ιV PD (LL := LL) (V := V) (mulVB (B := B) (V := V) (LL := LL) a w) =
       mulVdR (BdR := BdR) (V := V) (LL := LL) (algebraMap K₀ K a) (ιV PD (LL := LL) (V := V) w) := by
@@ -287,7 +280,7 @@ theorem ιV_mem_DdRE (hs : Function.Surjective (algebraMap K₀ K)) (τ : K →�
   unfold DcrisL at hw
   unfold DdRE
   rw [Submodule.mem_inf] at hw ⊢
-  refine ⟨ιV_mem_DdR PD ρ hw.1, ?_⟩
+  refine ⟨GlobalTheory.DRFil.ιV_mem_DdR PD ρ hw.1, ?_⟩
   have h2 := hw.2
   simp only [Submodule.mem_iInf, LinearMap.mem_ker, LinearMap.sub_apply, LinearMap.smul_apply,
     LinearMap.id_apply, sub_eq_zero] at h2 ⊢
@@ -295,9 +288,6 @@ theorem ιV_mem_DdRE (hs : Function.Surjective (algebraMap K₀ K)) (τ : K →�
   obtain ⟨a, rfl⟩ := hs c
   rw [← ιV_mul, h2 a, map_smul]
   simp
-
-theorem FilV_anti : Antitone fun a : ℤ => FilV PD (LL := LL) (V := V) a :=
-  antitone_int_of_succ_le (Formalism.MainNotions.N.Pv.LocalLengthBound.rk_filV_succ PD)
 
 end General
 
@@ -352,7 +342,7 @@ theorem jumps_of_exact_degree : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (A
     fun c => ⟨⟨c.1, c.2, hA.1 c.2⟩, rfl⟩
   obtain ⟨w, hwD, hin, hout⟩ := hw τ
   have hx := ιV_mem_DdRE (P.PD K) (charRep μ) hs τ hwD
-  have key := inf_of_line _ h1 _ (FilV_anti (P.PD K)) hx (d τ) hin hout
+  have key := inf_of_line _ h1 _ (Formalism.MainNotions.N.Pv.LocalLengthBound.rk_filV_anti (P.PD K)) hx (d τ) hin hout
   have fk : ∀ c : ℤ, (finrank ↥LL.1 ↥(FildR (P.PD K) (charRep μ) τ c) : ℤ) = if c ≤ d τ then 1 else 0 := by
     intro c
     unfold FildR
@@ -378,8 +368,6 @@ section -- clump:auto
 
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations Formalism.MainNotions.N TensorProduct Module
 open Classical
-
-
 
 theorem GlobalTheory.exists_letter_vector_exact_degree : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P), LocTied l P AI → ∀ (K LL : FinExt l) (x : P.R.B), IsUnit x → ∀ c : ↥(GK K) →* (↥(K0 K))ˣ, (∀ g : ↥(GK K), P.actQ (g : GQ l) x = algebraMap ↥(K0 K) P.R.B ((c g : (↥(K0 K))ˣ) : ↥(K0 K)) * x) → ∀ (μ : ↥(GK K) →* (↥LL.1)ˣ) (τ₀' τ' : ↥(K0 K) →ₐ[ℚ_[l]] ↥LL.1) (j : ℕ), (∀ g : ↥(GK K), ((μ g : (↥LL.1)ˣ) : ↥LL.1) * τ₀' ((c g : (↥(K0 K))ˣ) : ↥(K0 K)) = 1) → (∀ a : ↥(K0 K), τ' ((⇑(P.PD K).σ)^[j] a) = τ₀' a) → ∀ d : ℤ, P.ιB ((⇑P.φB)^[j] x) ∈ (P.PD K).Fil d → P.ιB ((⇑P.φB)^[j] x) ∉ (P.PD K).Fil (d + 1) → ∃ w ∈ DcrisL (P.PD K) (charRep μ) τ', ιV (P.PD K) (LL := ↥LL.1) (V := ↥LL.1) w ∈ FilV (P.PD K) (LL := ↥LL.1) (V := ↥LL.1) d ∧ ιV (P.PD K) (LL := ↥LL.1) (V := ↥LL.1) w ∉ FilV (P.PD K) (LL := ↥LL.1) (V := ↥LL.1) (d + 1) := by
   intro l _ P AI hT K LL x hx c hc μ τ₀' τ' j hμ hτ d hd hd1
@@ -500,7 +488,7 @@ theorem GlobalTheory.exists_letter_vector_exact_degree : ∀ (l : ℕ) [Fact l.P
     let h0 : ↥(K0 K) →ₗ[ℚ_[l]] P.R.BdR ⧸ (((P.PD K).Fil 1).restrictScalars ℚ_[l]) :=
       q ∘ₗ (IsScalarTower.toAlgHom ℚ_[l] ↥(K0 K) P.R.BdR).toLinearMap
     have hinj : Function.Injective h0 := by
-      set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+      rw [injective_iff_map_eq_zero]
       intro k hk
       have hk' : algebraMap ↥(K0 K) P.R.BdR k ∈ (P.PD K).Fil 1 := by
         have := (Submodule.Quotient.mk_eq_zero _).1 hk
@@ -1074,7 +1062,6 @@ theorem hasJumps_prod (hT : LocTied l P AI)
     · simp [h]
 
 end GlobalTheory.CrysCharJumps
-
 
 open GlobalTheory.CrysCharJumps Classical in
 theorem GlobalTheory.CrysCharJumps.adm20_of_fonOf :

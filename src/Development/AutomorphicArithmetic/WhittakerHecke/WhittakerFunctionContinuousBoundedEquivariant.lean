@@ -43,7 +43,6 @@ theorem UpperTheory.whittakerFunction_continuous_bounded_equivariant :
     rw [e]
     haveI : IsFiniteMeasure ((adeleMeasurePi (ι := Fin 2) ℚ).restrict (FS2 ℚ)) :=
       ⟨by simpa using (measure_mono hs).trans_lt hC.measure_lt_top⟩
-    set_option synthInstance.maxHeartbeats 200000 in
     exact continuous_parametric_integral_of_continuous
       ((hφ.cont.comp (((cont_nE D).comp continuous_snd).mul continuous_fst)).mul
         (UpperTheory.ConvolutionTheory.R2.Pp.cont_ψ.comp ((continuous_apply 1).comp continuous_snd))) hC

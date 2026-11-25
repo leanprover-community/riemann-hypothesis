@@ -56,12 +56,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ} {T : E}
 
-theorem Xflag_mono (F : LFlag S r T) (j : ℕ) : Xflag F j ≤ Xflag F (j + 1) := by
-  show Submodule.span E (F.fl.e '' {i | i.1 < j}) ≤ Submodule.span E (F.fl.e '' {i | i.1 < j + 1})
-  exact Submodule.span_mono (Set.image_mono fun i hi => by
-    simp only [Set.mem_setOf_eq] at hi ⊢
-    omega)
-
 theorem X_le_orth (F : LFlag S r T) : Xsp F ≤ orth S (Xsp F) := by
   apply _root_.Formalism.MainNotions.LatticeGluingRadicals.c_X_iso <;> assumption
 
@@ -353,8 +347,7 @@ theorem residue_onto (c : Fin r) :
       · rw [← Ideal.Quotient.eq_zero_iff_mem]
 
         simpa [map_sum, map_mul, hα', mk] using hz
-      · set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum]
+      · rw [map_sum]
         push_cast
         refine Finset.sum_congr rfl fun i _ => ?_
         rw [hT_osmul_right, ho]; ring)

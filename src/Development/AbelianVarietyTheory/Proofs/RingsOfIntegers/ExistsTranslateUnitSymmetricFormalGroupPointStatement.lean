@@ -208,8 +208,7 @@ theorem compV_of (φ : Pt V 1 d) (x : Sm B n) (hx : GP x.1) : compV φ x.1 = com
     exact hx k
 
 theorem constantCoeff_act_eq_zero (o : O) (x : Sm B n) (hx : GP x.1) : GP (Sm.act B o x).1 := by
-  rw [Sm.act_val, compV_of _ x hx]
-  exact gp_comp1 _ _ (fun i => B.A.const o i) hx
+  exact GlobalTheory.TransUnit.ThetaLaw.constantCoeff_act_eq_zero B o x hx
 
 theorem constantCoeff_inv_eq_zero (x : Sm B n) (hx : GP x.1) : GP (x⁻¹).1 := by
   rw [Sm.inv_val, ← Sm.act_val]

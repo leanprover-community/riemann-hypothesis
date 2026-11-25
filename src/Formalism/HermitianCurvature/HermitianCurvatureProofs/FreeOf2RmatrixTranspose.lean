@@ -49,9 +49,7 @@ theorem free_eU {a c : S} (hc : c ≠ a) (k l : Fin 2) : FreeOf c (eU a k l : Sl
   fun i j => Wd1.eU_comm_of_ne hc i j k l
 
 theorem freeOf2_mul {c : S} {M N : M2 (SlopeTestRemainingChoices S A)} (hM : FreeOf2 c M) (hN : FreeOf2 c N) : FreeOf2 c (M * N) := by
-  intro i j
-  rw [Matrix.mul_apply, Fin.sum_univ_two]
-  exact free_add (free_mul (hM _ _) (hN _ _)) (free_mul (hM _ _) (hN _ _))
+  exact Formalism.FourierDecayAlt.P.Fr6.freeOf2_mul_of_free hM hN
 
 theorem freeOf2_transpose {c : S} {M : M2 (SlopeTestRemainingChoices S A)} (hM : FreeOf2 c M) : FreeOf2 c Mᵀ :=
   fun i j => hM j i

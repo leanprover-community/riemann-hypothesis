@@ -347,7 +347,6 @@ theorem mem_heckeEig_of_mem_typeSum (D : D7) (i : D.nd.Loc) (S : Sec D i) (x : D
     rw [Formalism.MainNotions.TruncatedSeriesCountingIdentities.Br.EigSpan_holds D.nd i]; exact Submodule.mem_top
   obtain ⟨f, hf, hsum⟩ := (Submodule.mem_iSup_iff_exists_finsupp _ w).1 hvtop
   have hΦv : S.Φ w = ∑ y ∈ f.support, S.Φ (f y) := by
-    set_option synthInstance.maxHeartbeats 100000 in
       rw [← hsum, Finsupp.sum, map_sum]
   have hind := GlobalTheory.PendOf.PrTypeProof.typeSum_indep D i
   have key : ∀ y, y ≠ x → f y = 0 := by

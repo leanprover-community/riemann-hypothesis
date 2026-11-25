@@ -127,11 +127,11 @@ theorem Chase_of : DiagramChase₂ := by
     rw [hdC, map_sub, map_sub,
       pp3' (f' := (psi _ _ _ (hinf (c.π.app j0))).inv) (g' := pullback.fst _ _) (k' := rL D c j0 (e.hom ⁻¹ᵁ U) (g1 ≫ f1)) (by
         apply (cancel_mono (Scheme.Opens.ι _)).1
-        simp [Category.assoc, rL, rT, Scheme.Hom.resLE_comp_ι_assoc, psi_inv_fst, (reassoc_of% psi_inv_fst), psi_inv_snd, pullback.condition_assoc, Cone.w]
+        simp [Category.assoc, rL, psi_inv_fst, pullback.condition_assoc]
         all_goals simp [← Category.assoc, psi_inv_fst, pullback.condition]),
       pp3' (f' := (psi _ _ _ (hinf (c.π.app j0))).inv) (g' := pullback.snd _ _) (k' := rL D c j0 (e.hom ⁻¹ᵁ V) (g1 ≫ f1)) (by
         apply (cancel_mono (Scheme.Opens.ι _)).1
-        simp [Category.assoc, rL, rT, Scheme.Hom.resLE_comp_ι_assoc, psi_inv_fst, (reassoc_of% psi_inv_fst), psi_inv_snd, pullback.condition_assoc, Cone.w]
+        simp [Category.assoc, rL, psi_inv_snd]
         all_goals simp [← Category.assoc, psi_inv_fst, pullback.condition]),
       ha2, hb2, pp3 (psi_inv_fst _ _ _ _), pp3 (psi_inv_snd _ _ _ _), sub_self]
   obtain ⟨k4, g4, hk4⟩ := (pW (m + 1) i).2 k3 (g1 ≫ f1) dC hd

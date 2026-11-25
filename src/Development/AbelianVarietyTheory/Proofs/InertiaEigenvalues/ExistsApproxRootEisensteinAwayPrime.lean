@@ -11,11 +11,6 @@ open scoped Formalism.Per NNReal
 
 namespace GlobalTheory.BSP
 
-theorem eval_derivative_scaleRoots_mul {R : Type*} [CommRing R] (P : Polynomial R) (s x : R) :
-    (Polynomial.derivative (P.scaleRoots s)).eval (s * x) =
-      s ^ (P.natDegree - 1) * (Polynomial.derivative P).eval x := by
-  apply GlobalTheory.Henselisation.eval_derivative_scaleRoots_mul
-
 theorem exists_approx_root_scaleRoots {R : Type*} [CommRing R] (P : Polynomial R) (hP : 0 < P.natDegree)
     (t x b : R) (c : ℕ) (hb : P.eval x ∣ b * (Polynomial.derivative P).eval x - t ^ c) (n : ℕ) :
     ∃ (m : ℕ) (q : R), P.eval x ∣ q - t ^ m * x ∧ P.eval x ^ (n + 1) ∣ (P.scaleRoots (t ^ m)).eval q := by
@@ -39,7 +34,7 @@ theorem exists_approx_root_scaleRoots {R : Type*} [CommRing R] (P : Polynomial R
       obtain ⟨k, hk⟩ := Polynomial.binomExpansion (P.scaleRoots (s * r)) (r * q) h
       have h0 : (P.scaleRoots (s * r)).eval (r * q) = r ^ (e + 1) * (P.scaleRoots s).eval q := by
         rw [Polynomial.scaleRoots_mul, Polynomial.scaleRoots_eval_mul, Polynomial.natDegree_scaleRoots, he]
-      have h1 := eval_derivative_scaleRoots_mul P (s * r) x
+      have h1 := GlobalTheory.Henselisation.eval_derivative_scaleRoots_mul P (s * r) x
       rw [he, Nat.add_sub_cancel] at h1
       obtain ⟨y, hy⟩ := Polynomial.sub_dvd_eval_sub (r * q) (s * r * x)
         (Polynomial.derivative (P.scaleRoots (s * r)))

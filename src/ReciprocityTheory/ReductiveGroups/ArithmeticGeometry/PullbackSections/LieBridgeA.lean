@@ -44,7 +44,7 @@ instance : SMul S (TanM x0 G) := ⟨fun a v => mkT (smT x0 a (tv v)) (smT_mem a 
 theorem tv_smul (a : S) (v : TanM x0 G) : tv (a • v) = smT x0 a (tv v) := rfl
 
 instance : Module S (TanM x0 G) where
-  one_smul v := tanM_ext (smT_unit x0 _)
+  one_smul _ := tanM_ext (smT_unit x0 _)
   mul_smul a b v := tanM_ext (smT_smT x0 a b (tv v)).symm
   smul_zero a := tanM_ext (smT_one' x0 a)
   smul_add a u v := tanM_ext (smT_mul x0 a (tv u) (tv v))

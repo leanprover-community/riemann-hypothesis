@@ -15,8 +15,7 @@ namespace PositivityTheory.SiegelWeilFormula.KFP
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 
 theorem dZ_mul_dZ_inv (n : ℕ) {ζ : ℂ} (hζ : ζ ≠ 0) : dZ n ζ⁻¹ * dZ n ζ = 1 := by
-  simp only [dZ, Matrix.fromBlocks_multiply, Matrix.mul_one, Matrix.mul_zero, add_zero, zero_add, Matrix.mul_smul,
-    smul_smul, mul_inv_cancel₀ hζ, one_smul, smul_zero, Matrix.fromBlocks_one]
+  exact PositivityTheory.SiegelWeilFormula.Krd.dZ_inv_mul hζ
 
 theorem rot_cols' (n m : ℕ) {ζ : ℂ} (hζ : ζ ≠ 0) (s : ℤˣ) (t x y : ℝ) (Ww : Matrix (Fin m) (Fin n) ℂ) (D : M2 n)
     (hD : dZ n ζ * D = yrotM n s t * dZ n ζ) :

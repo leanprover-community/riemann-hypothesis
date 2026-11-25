@@ -217,8 +217,12 @@ theorem weight_wLet (X : Loc) (x : X.TT × Bool) (μ : (X.TT × Bool) × Fin (X.
 
 variable (C0 CE1 CE2 : ℝ) (X : Loc) [NeZero X.m] (j : Fin (numSeg X.TT))
 
-theorem TD_wLet (x : X.TT × Bool) (b : SegBlock (segS X.TT j) X.m)
-    (hk : Kept X.p X.m (X.seg C0 CE1 CE2 j) (segATop X.TT X.aT j) b) (ho : b.oPlus ≤ segAPlus X.TT X.aT j) :
+theorem TD_wLet_of_bounds (x : X.TT × Bool) (b : SegBlock (segS X.TT j) X.m)
+    (hdig : DigitsOK X.p (X.seg C0 CE1 CE2 j) (segATop X.TT X.aT j) b)
+    (hw : ∀ i : Fin (segS X.TT j), (i : ℕ) < (X.seg C0 CE1 CE2 j).sigma → b.w i ≤ coarseA X.p (X.seg C0 CE1 CE2 j) b i)
+    (hsig : ∀ i : Fin (segS X.TT j), (i : ℕ) < (X.seg C0 CE1 CE2 j).sigma → b.sg i ≤ coarseC X.p (X.seg C0 CE1 CE2 j) (segATop X.TT X.aT j) b i)
+    (hoBound : ∀ i : Fin (segS X.TT j), (X.seg C0 CE1 CE2 j).sigma ≤ (i : ℕ) → b.o i ≤ coarseA X.p (X.seg C0 CE1 CE2 j) b i)
+    (ho : b.oPlus ≤ segAPlus X.TT X.aT j) :
     TD C0 CE1 CE2 X j b (wLet X x) =
       (if segNext X.TT j = x.1.val then hhDegs X.TT X.aT X.bT x else 0) +
         ∑ i, (if segPos X.TT j i = x.1.val then hhDegs X.TT X.aT X.bT x else 0) := by
@@ -248,7 +252,7 @@ theorem TD_wLet (x : X.TT × Bool) (b : SegBlock (segS X.TT j) X.m)
       · have w1 : ∀ c, wLet X (topOdd X j i, false) ((topOdd X j i, true), c) = 0 := fun c => ite_eq_right (by simp)
         have w2 : ∀ c, wLet X (topOdd X j i, false) ((topOdd X j i, false), c) = 1 := fun c => ite_eq_left rfl
         simp only [w1, w2, mul_zero, mul_one, zero_add, add_zero]
-        have hd := hk.1.2.2 i
+        have hd := hdig.2.2 i
         have hPC : (X.seg C0 CE1 CE2 j).P X.p i * coarseC X.p (X.seg C0 CE1 CE2 j) (segATop X.TT X.aT j) b i =
             segATop X.TT X.aT j i - ∑ c, b.ry i c := Nat.mul_div_cancel' hd.2
         have hdeg : hhDegs X.TT X.aT X.bT (topOdd X j i, false) = segATop X.TT X.aT j i := by
@@ -260,7 +264,7 @@ theorem TD_wLet (x : X.TT × Bool) (b : SegBlock (segS X.TT j) X.m)
             else coarseC X.p (X.seg C0 CE1 CE2 j) (segATop X.TT X.aT j) b i) =
             coarseC X.p (X.seg C0 CE1 CE2 j) (segATop X.TT X.aT j) b i := by
           split_ifs with hs
-          · have := (hk.2.2.1 i hs).2.2.1
+          · have := hsig i hs
             omega
           · rfl
         rw [hin, hPC, hdeg]
@@ -269,7 +273,7 @@ theorem TD_wLet (x : X.TT × Bool) (b : SegBlock (segS X.TT j) X.m)
       · have w1 : ∀ c, wLet X (topOdd X j i, true) ((topOdd X j i, true), c) = 1 := fun c => ite_eq_left rfl
         have w2 : ∀ c, wLet X (topOdd X j i, true) ((topOdd X j i, false), c) = 0 := fun c => ite_eq_right (by simp)
         simp only [w1, w2, mul_zero, mul_one, add_zero]
-        have hd := hk.1.2.1 i
+        have hd := hdig.2.1 i
         have hPA : (X.seg C0 CE1 CE2 j).P X.p i * coarseA X.p (X.seg C0 CE1 CE2 j) b i =
             (X.seg C0 CE1 CE2 j).bTop i - ∑ c, b.rz i c := Nat.mul_div_cancel' hd.2
         have hdeg : hhDegs X.TT X.aT X.bT (topOdd X j i, true) = (X.seg C0 CE1 CE2 j).bTop i := by
@@ -280,9 +284,9 @@ theorem TD_wLet (x : X.TT × Bool) (b : SegBlock (segS X.TT j) X.m)
             coarseA X.p (X.seg C0 CE1 CE2 j) b i - b.w i + b.w i
             else coarseA X.p (X.seg C0 CE1 CE2 j) b i - b.o i + b.o i) = coarseA X.p (X.seg C0 CE1 CE2 j) b i := by
           split_ifs with hs
-          · have := (hk.2.2.1 i hs).2.1
+          · have := hw i hs
             omega
-          · have := (hk.2.1 i (not_lt.1 hs)).1
+          · have := hoBound i (not_lt.1 hs)
             omega
         rw [hin, hPA, hdeg]
         have := hd.1

@@ -205,10 +205,6 @@ def latLoc (F : Type) [Field F] [NumberField F] [Algebra F E] (Λ : Submodule (�
       rw [map_mul]
     rw [this]; exact Submodule.smul_mem _ _ (ha v)
 
-theorem levelafC_int (m : ℤ) : levelafC E (m : 𝓞 F) = inclE (F := F) 𝔸 (m : E) := by
-  simp only [levelafC, inclE, map_intCast]
-  rw [← Algebra.TensorProduct.includeRight_apply, map_intCast]
-
 end Lattice
 
 end Formalism.L2.G.Triv

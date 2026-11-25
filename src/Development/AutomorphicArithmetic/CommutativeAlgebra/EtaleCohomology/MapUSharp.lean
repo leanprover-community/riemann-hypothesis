@@ -1655,7 +1655,6 @@ private theorem wzSum {P : Type} (q n : ℕ) {I : Fin (n + 1) → Type} [∀ j, 
     rw [Multiset.map_map]
     rfl
   have key : ∀ a : Fin (n + 1) → ℕ, Φ (pts a v) = ∑ j, a j • G j := fun a => by
-    set_option synthInstance.maxHeartbeats 100000 in
       simp only [pts, map_sum, map_nsmul, hG]
   have h0 : ∑ j, wEv q j • G j = ∑ j, wOd q j • G j := by rw [← key, ← key, h]
   rw [Fintype.sum_sigma]

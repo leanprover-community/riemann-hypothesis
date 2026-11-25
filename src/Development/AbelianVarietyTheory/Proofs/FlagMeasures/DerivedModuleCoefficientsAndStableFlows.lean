@@ -410,7 +410,7 @@ theorem weight_iff (hσ : IsURepOn (UJset ε) σ) (hD : IsDer ε σ V E) (μ : F
       refine (hw (fun b => t * e b) hmem).trans ?_
       congr 1
       congr 1
-      rw [Finset.sum_eq_single a (fun b _ hb => by simp [he, Pi.single_apply, hb]) (by simp)]
+      rw [Finset.sum_eq_single a (fun b _ hb => by simp [he, hb]) (by simp)]
       simp only [he, Pi.single_eq_same, mul_one]
       push_cast
       ring
@@ -423,7 +423,7 @@ theorem weight_iff (hσ : IsURepOn (UJset ε) σ) (hD : IsDer ε σ V E) (μ : F
     have hu := hL.unique hR
     rw [exp_zero_smul, rep_one hσ, act_diag] at hu
     simp only [Complex.ofReal_zero, zero_mul, Complex.exp_zero, one_smul] at hu
-    rw [Finset.sum_eq_single a (fun b _ hb => by simp [he, Pi.single_apply, hb]) (by simp)] at hu
+    rw [Finset.sum_eq_single a (fun b _ hb => by simp [he, hb]) (by simp)] at hu
     simp only [he, Pi.single_eq_same, Complex.ofReal_one, one_mul] at hu
     apply smul_right_injective V Complex.I_ne_zero
     apply Subtype.ext

@@ -26,12 +26,6 @@ section Reindex
 
 variable {X : Scheme.{0}} {Ω : Type} [Field Ω]
 
-theorem inChart_comp_equiv (ξ : Spec (CommRingCat.of Ω) ⟶ X) {κ κ' : Type} (e : κ' ≃ κ) (x : κ → Ω) (c : κ')
-    (p : Cpt ξ) : InChart ξ (x ∘ e) c p ↔ InChart ξ x (e c) p := by
-  unfold InChart
-  refine and_congr Iff.rfl ⟨fun h c' => ?_, fun h c' => h _⟩
-  simpa using h (e.symm c')
-
 theorem coordTie_comp_equiv {o : Type} [CommRing o] [Algebra o Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X} {κ κ' : Type}
     (e : κ' ≃ κ) {x : κ → Ω} (h : CoordTie o ξ x) : CoordTie o ξ (x ∘ e) := by
   intros

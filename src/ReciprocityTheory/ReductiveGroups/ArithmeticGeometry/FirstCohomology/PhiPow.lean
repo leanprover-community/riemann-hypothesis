@@ -21,14 +21,7 @@ open scoped CategoryTheory.Obj
 
 variable {R : Type} [CommRing R] [IsDomain R] {D : DegPre R} {F : Type} [Field F] [Algebra (FractionRing R) F]
 
-theorem trPt_one : DegPre.trPt D F 1 = 𝟙 _ := by
-  have h1 : fst (TF (R := R) F) D.P.A ≫ (1 : TF (R := R) F ⟶ D.P.A) = 1 := by
-    show _ ≫ (toUnit _ ≫ η) = toUnit _ ≫ η
-    rw [comp_toUnit_assoc]
-  simp only [DegPre.trPt, h1]
-  rw [show padd D.P.A (D.prB F) 1 = D.prB F * 1 from rfl, _root_.mul_one]
-  first
-    | exact lift_fst_snd
+theorem trPt_one : DegPre.trPt D F 1 = 𝟙 _ := GlobalTheory.UU.SchurComp.trPt_one
 
 theorem trPt_mul (m m' : TF (R := R) F ⟶ D.P.A) :
     DegPre.trPt D F m ≫ DegPre.trPt D F m' = DegPre.trPt D F (m * m') := by

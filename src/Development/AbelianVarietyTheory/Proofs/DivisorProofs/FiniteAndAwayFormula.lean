@@ -274,7 +274,6 @@ theorem sum_clause {p : PtAt ex Csz} {CF C : ℝ} (d : FunIn p CF) (hC0 : 0 ≤ 
     (Tf : Finset (GlobalTheory.SumSize.PlL D)) (dF : GlobalTheory.SumSize.PlL D → ℤ) (hF : ∀ w, dF w = ⌊dl w⌋) :
     2 * ∑ w ∈ Tf, lw w * (dF w : ℝ) ≤ (d.data (fun _ => 1) Tf dF).bFP C p.Z.b := by
   have hb : 1 ≤ p.Z.b := _root_.Formalism.MainNotions.Lnk.one_le_b L.sc
-  have hb0 : 0 ≤ p.Z.b := by linarith
   have hL : 0 ≤ Real.log p.Z.b := Real.log_nonneg hb
   have h1 : ∑ w ∈ Tf, lw w * (dF w : ℝ) ≤ ∑ w ∈ Tf, lw w * dl w := by
     refine Finset.sum_le_sum fun w _ => mul_le_mul_of_nonneg_left ?_ (_root_.Formalism.DivisionValues.lw_nonneg' w)

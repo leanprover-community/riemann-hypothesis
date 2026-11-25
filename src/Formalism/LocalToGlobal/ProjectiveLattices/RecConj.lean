@@ -33,13 +33,6 @@ theorem not_good_conj {σ : c.F →+* ℂ} (h : GoodEmb c σ) : ¬ GoodEmb c ((s
   rw [h] at h'
   exact rt0_conj_ne_lemma h'
 
-private theorem imaginary_root_conj_lemma_2 : (starRingEnd ℂ) H.rt0 = -H.rt0 := by
-  have h1 : ((starRingEnd ℂ) H.rt0) ^ 2 = H.rt0 ^ 2 := by
-    rw [← map_pow, H.sqrt_neg_disc_sq, map_neg, map_natCast]
-  rcases sq_eq_sq_iff_eq_or_eq_neg.mp h1 with h | h
-  · exact absurd h rt0_conj_ne_lemma
-  · exact h
-
 theorem goodOf_conj (σ : c.F →+* ℂ) : goodOf c ((starRingEnd ℂ).comp σ) = goodOf c σ := by
   apply _root_.GlobalTheory.CompHt.goodOf_conj <;> assumption
 

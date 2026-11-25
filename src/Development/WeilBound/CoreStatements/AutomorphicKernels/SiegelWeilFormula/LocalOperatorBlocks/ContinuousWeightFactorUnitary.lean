@@ -52,7 +52,7 @@ theorem inG_nU {b : Matrix (Fin n) (Fin n) ℂ} (hb : bᴴ = b) : InG (nU b) := 
   simp [InG, nU, JJ, Matrix.fromBlocks_conjTranspose, Matrix.fromBlocks_multiply, hb]
 
 theorem inG_JJ : InG (JJ n) := by
-  simp [InG, JJ, Matrix.fromBlocks_conjTranspose, Matrix.fromBlocks_multiply, ← Matrix.fromBlocks_one]
+  simp [InG, JJ, Matrix.fromBlocks_conjTranspose, Matrix.fromBlocks_multiply]
 
 
 open scoped Classical in

@@ -166,8 +166,6 @@ namespace GlobalTheory.HeckeLiftScalar
 
 open ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.ThetaTrace GlobalTheory.HeckeFrCompare GlobalTheory.MoveValues GlobalTheory.HeckeValues
 
-
-
 theorem hkPtC_values_lie : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (σ : c.F →+* ℂ) (p : ℕ) (y z : FrPt Xo c (CAt σ)) (C : Subgroup (Over.mk y.x ⟶ Xo.univ.t.G)),
   HkPtC p y C z →
   ∃ (ψ : pullback Xo.univ.t.G.hom y.x ⟶ pullback Xo.univ.t.G.hom z.x)
@@ -238,8 +236,6 @@ noncomputable section
 namespace GlobalTheory.HeckeLiftReps
 
 open ReciprocityTheory.ChartRestriction.G.Out GlobalTheory.ThetaTrace GlobalTheory.HeckeFrCompare GlobalTheory.MoveValues GlobalTheory.HeckeValues
-
-
 
 theorem core_reps (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H)
     (Xo : Moduli Dw l) (c : Coeff l) (σ : c.F →+* ℂ) (P : Ideal (𝓞 E)) (p i : ℕ)
@@ -412,8 +408,6 @@ theorem core_reps (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E
   have hf := hfr (w + wm m) j (jm m) hjw hjm'
   rw [map_add (f := _)] at hf
   rw [hf]; ring
-
-
 
 theorem hecke_lift_reps : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (σ : c.F →+* ℂ) (r : ℕ) (U : Formalism.L2.PjFree.Unf Xo c σ r), Formalism.L2.PjFree.GoodEmb c σ → Formalism.L2.PjFree.IsUnf U →
   ∀ (P : Ideal (𝓞 E)) (p i : ℕ) (k k' : U.Comp) (x : (U.X k).dom) (x' : (U.X k').dom) (C : Subgroup (Over.mk (U.un k x).x ⟶ Xo.univ.t.G)) (z : FrPt Xo c (CAt σ)) (t : Ix Dw → (CAt σ)ˣ),
@@ -828,12 +822,6 @@ theorem perVec_qsmul (Wt : UnfAt U k x) (q : ℚ) (v : Fin r → D.host.E) :
   · simp
   · simp
 
-theorem hermForm_natCast_smul {g : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) (n m : ℕ) (z w : Fin g → ℂ) :
-    hermForm Hm ((n : ℂ) • z) ((m : ℂ) • w) = (n : ℂ) * m * hermForm Hm z w := by
-  simp only [hermForm, star_smul, Matrix.mulVec_smul, dotProduct_smul, smul_dotProduct, smul_eq_mul,
-    RCLike.star_def, Complex.conj_natCast]
-  ring
-
 theorem herm_natCast_smul (G : Matrix (Fin r) (Fin r) D.host.E) (n m : ℕ) (u w : Fin r → D.host.E) :
     herm G ((n : D.host.E) • u) ((m : D.host.E) • w) = (n : D.host.E) * m * herm G u w := by
   simp only [herm, cc, Pi.smul_apply, smul_eq_mul, map_mul, map_natCast, Finset.mul_sum]
@@ -856,7 +844,7 @@ theorem im_hermForm_perVec (Wt : UnfAt U k x) (Y : UnitAt Wt) (u w : Fin r → D
     rw [Nat.cast_smul_eq_nsmul, Nat.cast_smul_eq_nsmul]
   rw [hs n u, hs m w, perVec_qsmul, perVec_qsmul, ← hs n u, ← hs m w, herm_natCast_smul] at h
   simp only [Rat.cast_natCast] at h
-  rw [hermForm_natCast_smul] at h
+  rw [GlobalTheory.AHPhase.hermForm_nsmul] at h
   have ht : Algebra.trace ℚ D.host.E (-(U.X k).ξ0 * ((n : D.host.E) * m * herm (U.X k).Gm u w)) =
       (n * m : ℚ) * Algebra.trace ℚ D.host.E (-(U.X k).ξ0 * herm (U.X k).Gm u w) := by
     rw [show -(U.X k).ξ0 * ((n : D.host.E) * m * herm (U.X k).Gm u w) =
@@ -1184,8 +1172,6 @@ theorem gform {g n : ℕ} {Hm : Matrix (Fin g) (Fin g) ℂ} (hH : Hm.IsHermitian
   field_simp
   linear_combination (-(θ (z + lam m) * fr (z + lam m))) * e2
 
-
-
 theorem geo_sum (hσ : GoodEmb c σ) (hU : IsUnf U) {P : Ideal (𝓞 E)} {p i : ℕ} {k k' : U.Comp} (x : (U.X k).dom)
     (x' : (U.X k').dom) (hu : ∀ τ' i', ‖dmin (U.X k).Gm x.1 τ' i'‖ = 1) (hu' : ∀ τ' i', ‖dmin (U.X k').Gm x'.1 τ' i'‖ = 1)
     (C : Subgroup (Over.mk (U.un k x).x ⟶ Xo.univ.t.G)) (z : FrPt Xo c (CAt σ)) (t : Ix Dw → (CAt σ)ˣ)
@@ -1310,9 +1296,6 @@ theorem colB_mul (M : Matrix (Fin (Wc D i).rank) (Fin (Wc D i).rank) D.host.E)
   exact Finset.sum_comm
 
 end Columns
-
-
-
 
 theorem theta_prod_eq_phased_sum : ∀ (D : D7), GlobalTheory.IndefiniteRowSideFullHecke.HeckePrimeDetection.HeckePointLaws → GlobalTheory.IndefiniteRowSideFullHecke.SplitLinearModelNorm.SplitLinearModel D → GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedCharacter.VacFixed D →
     ∀ (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : FamIn D.what₂.LL G Pl0 T0 D.R.m)
@@ -1571,7 +1554,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Form
 open Formalism.L2.NTheta (IsIdemAt)
 noncomputable section
 
-
 theorem _root_.GlobalTheory.T.heckePointThetaTrace_eq_phasedTranslateSum : ∀ (D : D7), GlobalTheory.IndefiniteRowSideFullHecke.HeckePrimeDetection.HeckePointLaws → GlobalTheory.IndefiniteRowSideFullHecke.SplitLinearModelNorm.SplitLinearModel D → GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedCharacter.VacFixed D →
     ∀ (G : Type) [Group G] [Fintype G] (Pl0 T0 : Type) (A : FamIn D.what₂.LL G Pl0 T0 D.R.m)
     (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F) (F : Face D A)
@@ -1791,7 +1773,6 @@ theorem cancel {ι : Type} [Fintype ι] {u ph K K' μ q w : ℂ} {e θ : ι → 
   linear_combination h1 - μ * q * u * ph * K * (∏ a, θ a) * h3
 
 end GlobalTheory.HeckeGenConst
-
 
 open GlobalTheory.HeckeGenConst GlobalTheory.IndefiniteRowSideFullHecke.OrthonormalLatticeThetaValues in
 theorem GlobalTheory.HeckeGenConst.generator_constant : ∀ (D : D7), GlobalTheory.IndefiniteRowSideFullHecke.HeckePrimeDetection.HeckePointLaws → GlobalTheory.IndefiniteRowSideFullHecke.SplitLinearModelNorm.SplitLinearModel D → GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedCharacter.VacFixed D →

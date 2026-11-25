@@ -85,12 +85,7 @@ theorem fdl_cgauss_int {c : ℝ} (hc : 0 < c) : Integrable (fun z : ℂ => Real.
   exact (div_pos Real.pi_pos hc).ne'
 
 theorem fdl_wab_zero_pos {ε : Fin n → Bool} (ab : PCoord ε) : 0 < wab (0 : Fin n → ℝ) ab.1.1 ab.1.2 := by
-  obtain ⟨⟨a, b⟩, hab⟩ := ab
-  have h : (b : ℕ) < (a : ℕ) := hab.1
-  have h' : ((b : ℕ) : ℝ) < ((a : ℕ) : ℝ) := by exact_mod_cast h
-  show 0 < (0 : Fin n → ℝ) b - (0 : Fin n → ℝ) a + ((a : ℕ) : ℝ) - ((b : ℕ) : ℝ)
-  simp only [Pi.zero_apply, sub_zero, zero_add]
-  linarith
+  exact ReciprocityTheory.ChartRestriction.DS.fdU_wab_zero_pos ab
 
 theorem fdl_gauss (ε : Fin n → Bool) :
     ∫⁻ y : PCoord ε → ℂ, ENNReal.ofReal (Real.exp (-Qf (0 : Fin n → ℝ) y)) = ENNReal.ofReal (PiW ε 0) := by

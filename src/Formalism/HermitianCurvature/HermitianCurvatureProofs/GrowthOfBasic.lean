@@ -223,7 +223,7 @@ lemma exp_mul_one_sub_le (y : ℝ) : Real.exp y * (1 - y) ≤ 1 := by
   have e : Real.exp y * Real.exp (-y) = 1 := by rw [← Real.exp_add]; simp
   linarith [mul_le_mul_of_nonneg_left h hp.le]
 
-private theorem exp_le_quad_lemma (x : ℝ) (h0 : 0 ≤ x) (h1 : x ≤ 1 / 2) :
+private theorem exp_le_quad_lemma (x : ℝ) (h1 : x ≤ 1 / 2) :
     Real.exp x ≤ 1 + x + 2 * x ^ 2 := by
   have h := exp_mul_one_sub_le x
   have eq1 : (1 + x + 2 * x ^ 2) * (1 - x) = 1 + x ^ 2 * (1 - 2 * x) := by ring
@@ -256,7 +256,7 @@ theorem t_EtaZero : SqrtSumSqLeOneAddInvPowSix := by
   rw [← hu] at hPg hA
   rw [h14] at hA hε hε'
   have hE : Real.exp (6 * u) ≤ 1 + 7 * u := by
-    have := exp_le_quad_lemma (6 * u) (by linarith) (by linarith)
+    have := exp_le_quad_lemma (6 * u) (by linarith)
     linarith [mul_nonneg hu0.le hw]
   have hF : Real.exp (u ^ 2) ≤ 1 + u := by
     have hu2_le : u ^ 2 ≤ (1 / 1000) * u := by
@@ -265,7 +265,7 @@ theorem t_EtaZero : SqrtSumSqLeOneAddInvPowSix := by
     have hu4_le : (u ^ 2) ^ 2 ≤ (1 / 1000) ^ 2 * u ^ 2 :=
       calc (u ^ 2) ^ 2 = u ^ 2 * u ^ 2 := sq (u ^ 2)
         _ ≤ (1 / 1000) ^ 2 * u ^ 2 := mul_le_mul_of_nonneg_right (pow_le_pow_left₀ hu0.le hu1 2) (sq_nonneg u)
-    have := exp_le_quad_lemma (u ^ 2) (by positivity) (by linarith)
+    have := exp_le_quad_lemma (u ^ 2) (by linarith)
     linarith
   have hM : A + 2 * ε ≤ 1 + 3 * u := by
     have h1 : (1 + u) * Real.exp (u ^ 2) ≤ (1 + u) * (1 + u) :=
@@ -1119,7 +1119,3 @@ theorem t_PairBoundFromLocal : PairBoundFromLocal := by
 end From
 
 end Formalism.FourierDecayAlt.P.GrowthPolynomialOperator
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

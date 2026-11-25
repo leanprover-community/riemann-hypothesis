@@ -112,11 +112,6 @@ theorem IsFiniteQC.of_epi (φ : F ⟶ G) [Epi φ] [IsFiniteQC F] [G.IsQuasicoher
     have := finite_sections F hU
     .of_surjective (appLinear φ U) (surjective_app_of_epi φ hU)⟩
 
-theorem IsFiniteQC.of_iso (e : F ≅ G) [IsFiniteQC F] : IsFiniteQC G :=
-  have : G.IsQuasicoherent :=
-    (SheafOfModules.isQuasicoherent X.ringCatSheaf).prop_of_iso e IsFiniteQC.isQuasicoherent
-  .of_epi e.hom
-
 
 variable (F) in
 theorem isNoetherian_sections [IsLocallyNoetherian X] [IsFiniteQC F] (hU : IsAffineOpen U) :
@@ -424,9 +419,6 @@ theorem support_subset_of_mono (φ : F ⟶ G) [Mono φ] : support F ⊆ support 
 
 theorem support_subset_of_epi (φ : F ⟶ G) [Epi φ] : support G ⊆ support F :=
   fun x (_ : Nontrivial _) ↦ (stalkLinear_surjective φ x).nontrivial
-
-theorem support_eq_of_iso (e : F ≅ G) : support F = support G :=
-  (support_subset_of_mono e.hom).antisymm (support_subset_of_mono e.inv)
 
 theorem support_subset_union_of_exact {S : ShortComplex X.Modules} (hS : S.Exact) :
     support S.X₂ ⊆ support S.X₁ ∪ support S.X₃ := by

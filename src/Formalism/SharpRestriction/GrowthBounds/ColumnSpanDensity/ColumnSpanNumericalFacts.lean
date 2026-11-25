@@ -1,6 +1,7 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.MeanDefs
+import Mathlib.Algebra.Order.Interval.Finset.Basic
 import Mathlib.Tactic.Linter.Style
 import Formalism.PolynomialDimension.WeylDim
 
@@ -29,34 +30,13 @@ structure ColumnSpanNumericalFacts (K : Cst) (X : Dat) : Prop where
 theorem sum_pi_cast {ι : Type} [Fintype ι] [DecidableEq ι] (lo hi : ℕ) (g : (ι → ℤ) → ℝ) :
     ∑ aa ∈ Fintype.piFinset (fun _ : ι => Finset.Icc (lo : ℤ) (hi : ℤ)), g aa =
       ∑ A ∈ Fintype.piFinset (fun _ : ι => Finset.Icc lo hi), g (fun s => (A s : ℤ)) := by
-  refine Finset.sum_nbij' (fun aa s => (aa s).toNat) (fun A s => (A s : ℤ)) ?_ ?_ ?_ ?_ ?_
-  · intro aa haa
-    simp only [Fintype.mem_piFinset, Finset.mem_Icc] at haa ⊢
-    intro s
-    have := haa s
-    omega
-  · intro A hA
-    simp only [Fintype.mem_piFinset, Finset.mem_Icc] at hA ⊢
-    intro s
-    have := hA s
-    omega
-  · intro aa haa
-    simp only [Fintype.mem_piFinset, Finset.mem_Icc] at haa
-    funext s
-    have := haa s
-    show ((aa s).toNat : ℤ) = aa s
-    omega
-  · intro A _
-    funext s
-    show ((A s : ℤ)).toNat = A s
-    omega
-  · intro aa haa
-    simp only [Fintype.mem_piFinset, Finset.mem_Icc] at haa
-    congr 1
-    funext s
-    have := haa s
-    show aa s = ((aa s).toNat : ℤ)
-    omega
+  have hIcc : Finset.Icc (lo : ℤ) (hi : ℤ) = (Finset.Icc lo hi).image Nat.cast := by
+    ext x
+    simp only [Finset.mem_Icc, Finset.mem_image]
+    exact ⟨fun ⟨h1, h2⟩ => ⟨x.toNat, ⟨by omega, by omega⟩, by omega⟩,
+      fun ⟨n, ⟨h1, h2⟩, h3⟩ => by omega⟩
+  simp_rw [hIcc, Fintype.piFinset_image]
+  exact Finset.sum_image fun A _ B _ h => funext fun s => Nat.cast_injective (congrFun h s)
 
 theorem card_Icc_cast (lo hi : ℕ) : (Finset.Icc (lo : ℤ) (hi : ℤ)).card = (Finset.Icc lo hi).card := by
   rw [Int.card_Icc, Nat.card_Icc]
@@ -188,32 +168,12 @@ theorem sum_first {ι : Type} [Fintype ι] [DecidableEq ι] (a ua lb ub c : ℕ)
         sub_le a ua (fun A => ∑ B ∈ pb, kf A B)
           (fun A => Finset.sum_nonneg fun B _ => hkf A B)
 
-private theorem sum_piFinset_Icc_shift_eq {ι : Type} [Fintype ι] [DecidableEq ι] (lo hi c : ℕ) (g : (ι → ℕ) → ℝ) :
+private theorem sum_piFinset_Icc_shift_eq {ι : Type} [Fintype ι] [DecidableEq ι] (lo hi c : ℕ)
+    (g : (ι → ℕ) → ℝ) :
     ∑ A ∈ Fintype.piFinset (fun _ : ι => Finset.Icc lo hi), g (fun s => A s + c) =
       ∑ A ∈ Fintype.piFinset (fun _ : ι => Finset.Icc (lo + c) (hi + c)), g A := by
-  refine Finset.sum_nbij' (fun A s => A s + c) (fun A s => A s - c) ?_ ?_ ?_ ?_ ?_
-  · intro A hA
-    simp only [Fintype.mem_piFinset, Finset.mem_Icc] at hA ⊢
-    intro s
-    have := hA s
-    omega
-  · intro A hA
-    simp only [Fintype.mem_piFinset, Finset.mem_Icc] at hA ⊢
-    intro s
-    have := hA s
-    omega
-  · intro A _
-    funext s
-    show A s + c - c = A s
-    omega
-  · intro A hA
-    simp only [Fintype.mem_piFinset, Finset.mem_Icc] at hA
-    funext s
-    have := hA s
-    show A s - c + c = A s
-    omega
-  · intro A _
-    rfl
+  simp_rw [← Finset.image_add_right_Icc, Fintype.piFinset_image]
+  exact (Finset.sum_image fun A _ B _ h => funext fun s => add_right_cancel (congrFun h s)).symm
 
 theorem mean_of (K : Cst) (hKp : K.Pos) (X : Dat) (hF : ColumnSpanNumericalFacts K X) (R : RS X.p X.n') (h0 : Avg K X R 0)
     (hc : Avg K X R X.ccl) (hx : MeanX K X R) :

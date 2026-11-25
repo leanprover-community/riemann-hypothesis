@@ -115,10 +115,6 @@ section Main
 
 variable {F E : Type} [Field F] [Field E] [Algebra F E]
 
-theorem JR_hypOne (R : Type) [CommRing R] [Algebra F R] {M : ℕ} (J : Matrix (Fin M) (Fin M) E) :
-    JR (F := F) R (hypOne J) = hypOne (JR (F := F) R J) :=
-  map_hypOne (inclR R) J
-
 theorem exists_HA (R : Type) [CommRing R] [Algebra F R] (σ : E →ₐ[F] E) {M : ℕ}
     {J : Matrix (Fin M) (Fin M) E} (hJ : J.det ≠ 0) {κ : Matrix (Fin M) (Fin M) (R ⊗[F] E)}
     (hκ : cT (sigR R σ) κ * JR (F := F) R J * κ = JR (F := F) R J) :
@@ -170,7 +166,7 @@ theorem stageInt_eq_of_e0 : ∀ (F E : Type) [Field F] [NumberField F] [Field E]
   have hfixV : U.mulVec (Fin.cons 1 fun _ => 0) = Fin.cons 1 fun _ => 0 := congrFun hfix 0
   have h0 := col_zero hfixV
   have hUu : cT (sigR R σ) U * hypOne (JR (F := F) R J) * U = hypOne (JR (F := F) R J) := by
-    rw [← JR_hypOne]
+    rw [← GlobalTheory.CompanionTheory.WeilSiegel.HypUnit.JR_hypOne]
     exact (show HR R σ (hypOne J) from u).2
   have h1 := row_one _ _ hUu h0
   obtain ⟨k, hk⟩ := exists_HA R σ hJ.2 (lowerB_isometry _ _ hUu h0)
@@ -301,8 +297,6 @@ theorem exists_seq_cover {X G : Type} [TopologicalSpace X] [SecondCountableTopol
 end GlobalTheory.CompanionTheory.WeilSiegel.HypStage
 
 namespace GlobalTheory.CompanionTheory.WeilSiegel.HypStage
-
-
 
 theorem local_stages : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M : ℕ) (J : Matrix (Fin M) (Fin M) E), IsHermND σ J → ∀ n : ℕ, 1 ≤ n → 2 * n < M → ∀ (h₀ : ∀ a b : Fin n, σ ((0 : Matrix (Fin n) (Fin n) E) b a) = (0 : Matrix (Fin n) (Fin n) E) a b) (h₁ : ∀ a b : Fin (n + 1), σ ((0 : Matrix (Fin (n + 1)) (Fin (n + 1)) E) b a) = (0 : Matrix (Fin (n + 1)) (Fin (n + 1)) E) a b) (h₂ : ∀ a b : Fin 1, σ ((0 : Matrix (Fin 1) (Fin 1) E) b a) = (0 : Matrix (Fin 1) (Fin 1) E) a b) (R : Type) [CommRing R] [Algebra F R] [TopologicalSpace R] [MeasurableSpace R] [BorelSpace R], IsLocR R → ∀ (d : ℕ) (b : Module.Basis (Fin d) F E) (lam : Measure R), lam.IsAddHaarMeasure → ∀ m m₁ m', IsGramFibFree R σ (hypOne J) (n + 1) (coordW R b lam (n + 1) (M + 2)) (coordHerm R σ b lam (n + 1)) m → IsGramFibFree R σ (hypOne J) 1 (coordW R b lam 1 (M + 2)) (coordHerm R σ b lam 1) m₁ → IsGramFibFree R σ J n (coordW R b lam n M) (coordHerm R σ b lam n) m' → ∀ φ : (Fin (n + 1) → Fin (M + 2) → R ⊗[F] E) → ℝ≥0∞, Measurable φ → ∃ Ψ : (Fin 1 → Fin (M + 2) → R ⊗[F] E) → ℝ≥0∞, Measurable Ψ ∧ (∀ g : HA R σ (hypOne J), Ψ (actW R σ (hypOne J) g (e0 _ M)) = stageInt R σ J b lam (m' (hermOf R σ (0 : Matrix (Fin n) (Fin n) E) h₀)) φ g) ∧ ∫⁻ X, φ X ∂(m (hermOf R σ (0 : Matrix (Fin (n + 1)) (Fin (n + 1)) E) h₁)) = ∫⁻ y, Ψ y ∂(m₁ (hermOf R σ (0 : Matrix (Fin 1) (Fin 1) E) h₂)) := by
   intro F E _ _ _ _ _ σ hCM M J hJ n hn hnM h₀ h₁ h₂ R _ _ _ _ _ hLoc d b lam hlam m m₁ m' hm hm₁ hm' φ hφ

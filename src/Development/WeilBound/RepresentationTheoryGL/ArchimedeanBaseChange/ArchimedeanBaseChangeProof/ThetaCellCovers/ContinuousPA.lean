@@ -136,10 +136,7 @@ theorem continuous_pA : Continuous (pA E) := by
   exact ((continuous_infEq E).comp (continuous_pi fun _ => Complex.continuous_ofReal)).prodMk continuous_const
 
 theorem card_places : (2 : ℝ) * Fintype.card (InfinitePlace E) = Module.finrank ℚ E := by
-  rw [IsTotallyComplex.finrank, InfinitePlace.card_eq_nrRealPlaces_add_nrComplexPlaces,
-    IsTotallyComplex.nrRealPlaces_eq_zero]
-  push_cast
-  ring
+  exact GlobalTheory.CompanionTheory.TorNorm.two_card
 
 theorem logAbs_pA (t : ℝ) : logAbs (pA E (Real.exp t)) = Module.finrank ℚ E * t := by
   simp only [logAbs, cV_pA, cW_pA, norm_one, Real.log_one, finsum_zero, add_zero, Complex.norm_real, Real.norm_eq_abs,

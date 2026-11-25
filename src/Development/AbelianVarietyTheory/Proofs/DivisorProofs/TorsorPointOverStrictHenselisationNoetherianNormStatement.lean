@@ -173,10 +173,6 @@ noncomputable section
 
 namespace GlobalTheory.EnlargeBaseChange
 
-end GlobalTheory.EnlargeBaseChange
-
-namespace GlobalTheory.EnlargeBaseChange
-
 open IsLocalRing Polynomial in
 open scoped TensorProduct in
 private theorem exists_ringHom_tensor_of_comp_eq {R S E : Type} [CommRing R] [CommRing S]

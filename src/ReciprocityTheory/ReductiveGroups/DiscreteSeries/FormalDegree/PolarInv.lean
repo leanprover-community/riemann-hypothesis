@@ -72,7 +72,7 @@ theorem polarInv_apply (ε : Fin n → Bool) (S : Set (UJ ε)) (hS : MeasurableS
   have hF : Measurable F := measurable_one.indicator hT
   have hpm : Measurable (intMuCD_pM ε) := (polarM_continuous ε).measurable
   have hJ : Measurable (fun z : PCoord ε → ℂ => ENNReal.ofReal (Jac z)) :=
-    ENNReal.measurable_ofReal.comp (jac_continuous ε).measurable
+    ENNReal.measurable_ofReal.comp (ReciprocityTheory.ChartRestriction.DS.pb_jac_continuous ε).measurable
   change Measure.comap (intMuCD_eM ε) (muPolarMat ε) S = _
   rw [he.comap_apply, ← lintegral_indicator_one hT]
   change (∫⁻ x, F x ∂(Measure.map (intMuCD_pM ε) ((dk ε).prod (volume.withDensity _)))) = _

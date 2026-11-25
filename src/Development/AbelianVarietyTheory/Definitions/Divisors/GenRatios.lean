@@ -31,10 +31,8 @@ open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestric
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
   {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {r : ℕ} (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ r)
 
-set_option synthInstance.maxHeartbeats 100000 in
 def BirOn (Z : Comp Xo c) (G : WTZ E) : Prop := GenRatios (genPoint Z (cuspOn U Z G))
 
-set_option synthInstance.maxHeartbeats 100000 in
 def ValMult (Z : Comp Xo c) (G G' : WTZ E) : Prop :=
   ∃ (a : ℕ) (θ : Rul Xo c), 1 ≤ a ∧ genVal Z θ ≠ 0 ∧ ∀ (k : ℕ), 1 ≤ k → ∀ f ∈ cuspOn U Z ((a * k) • G'),
     θ ^ k * f ∈ cuspOn U Z ((a * k) • G) ∧ ValBound (genPoint Z (cuspOn U Z G)) (a * k) (genVal Z (θ ^ k * f))

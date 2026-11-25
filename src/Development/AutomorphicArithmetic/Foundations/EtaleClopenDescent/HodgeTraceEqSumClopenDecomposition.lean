@@ -61,8 +61,7 @@ open TensorProduct in
 private theorem projTrace_comm (u : M →ₗ[R] N) (v : N →ₗ[R] M) :
     projTrace R N (u ∘ₗ v) = projTrace R M (v ∘ₗ u) := by
   obtain ⟨t, rfl⟩ := (dualTensorHom_bijective (R := R) (M := M) (N := N)).2 u
-  induction t using TensorProduct.induction_on with
-  | zero => simp
+  induction t using TensorProduct.inductionOn with
   | add a b ha hb => simp only [map_add (f := _), LinearMap.add_comp, LinearMap.comp_add, ha, hb]
   | tmul ξ n =>
     have e1 : dualTensorHom R M N (ξ ⊗ₜ n) ∘ₗ v = (ξ ∘ₗ v).smulRight n := by ext; simp
@@ -200,8 +199,7 @@ private theorem sum_app {X : Scheme.{0}} {F G : X.Modules} {ι : Type} (t : Fins
   classical
   induction t using Finset.induction_on with
   | empty =>
-    simp only [Finset.sum_empty, Scheme.Modules.Hom.zero_app]
-    rfl
+    simp
   | insert a t ha ih =>
     rw [Finset.sum_insert ha, Finset.sum_insert ha, Scheme.Modules.Hom.add_app, ← ih]
     rfl

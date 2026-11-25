@@ -703,7 +703,6 @@ open UpperTheory.Gal.CertificateRingHomMap (GUf Gam0 Plc GLw AfQ sim mat comp ra
 open UpperTheory.Gal.W2.Seed (Arith Setup)
 open scoped TensorProduct Classical
 open GlobalTheory.CongL GlobalTheory.RoadWGeo Formalism.MainNotions.N Formalism.BasicNotions Formalism.ConjugateSelfDual UpperTheory.Gal.Int.Geo UpperTheory.Gal.Int.Geo.Pl
-attribute [local instance] Ideal.Quotient.field
 open Neutral.B1 ReciprocityTheory.Gal
 
 namespace UpperTheory.Gal.Int.Geo.Pl
@@ -771,7 +770,6 @@ theorem pr_of_sameK {x : E} {w w' : Plc E} (h : SameK x w w') : pr w = pr w' :=
   (pr_eq (pr_prime w) ((h _ (by simp)).1 (pr_mem w))).symm
 
 end
-
 
 theorem master (h : All) {E : Type} [Field E] [NumberField E] [IsCMField E] {l : ℕ} [Fact l.Prime] (ι : Qbar l ≃+* ℂ) {a : ℕ}
     (ha : Odd a) {d : ℕ} (hd : FieldOK E l d) {x : E} (hx : x ^ 2 = -(d : E)) {w₀ : Plc E} (h0 : ((l : ℕ) : 𝓞 E) ∈ w₀.asIdeal)
@@ -959,13 +957,6 @@ open scoped TensorProduct Classical
 
 namespace UpperTheory.Gal.Int.Geo.Pl
 
-private theorem prime_under {E : Type} [Field E] [NumberField E] (u : Plc E) : ∃ l : ℕ, l.Prime ∧ (l : 𝓞 E) ∈ u.asIdeal := by
-  haveI := u.isPrime
-  haveI : Finite (𝓞 E ⧸ u.asIdeal) := Ideal.finiteQuotientOfFreeOfNeBot _ u.ne_bot
-  refine ⟨ringChar (𝓞 E ⧸ u.asIdeal), CharP.char_is_prime (𝓞 E ⧸ u.asIdeal) _, Ideal.Quotient.eq_zero_iff_mem.1 ?_⟩
-  rw [map_natCast]
-  exact (ringChar.spec _ _).2 dvd_rfl
-
 private theorem span_le_pow {R : Type} [CommRing R] {I : Ideal R} {l m e : ℕ} (hl : (l : R) ∈ I) (h : l ^ e ∣ m) :
     Ideal.span {(m : R)} ≤ I ^ e := by
   obtain ⟨c, rfl⟩ := h
@@ -990,7 +981,7 @@ theorem siteEx_of (hS : Sides) (hD : Dict) (hL : LevBasic) (hSt : StabOf) : Site
     refine hst k' h1 fun u hu i j => ?_
     obtain ⟨z, hz, hz'⟩ := ((hD E A n p S F k').2.2.1 𝔟 h0).1 h2 u (hT u hu).1 i j
     exact ⟨z, Ideal.map_mono (hle u hu) hz, hz'⟩
-  choose l hl hlu using fun u : Plc E => prime_under u
+  choose l hl hlu using fun u : Plc E => UpperTheory.Gal.Int.Geo.Pl.exists_prime_mem u
   obtain ⟨t, ht, htp⟩ := Nat.exists_infinite_primes (Q.sup q + p + 3)
   have hr : ∀ q₀ : ℕ, ∃ r : ℤ, ∀ w ∈ Q, q w = q₀ → (q₀ : ℤ) ∣ r ^ 2 - A.tr * r + A.nm ∧ A.ω - (r : 𝓞 E) ∈ w.asIdeal := fun q₀ => by
     by_cases h : ∃ w ∈ Q, q w = q₀

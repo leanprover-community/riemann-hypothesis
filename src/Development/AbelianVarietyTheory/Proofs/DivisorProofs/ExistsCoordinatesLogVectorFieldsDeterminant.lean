@@ -534,7 +534,6 @@ theorem GlobalTheory.LogPole.exists_coord_logDet : ∀ (E : Type) [Field E] [Num
   have h3 := _root_.GlobalTheory.exists_coords_extending_regularParams c.F Γ(TF.Y.X, U.1) (TF.Y.X.presheaf.stalk x₀)
     (U.2.primeIdealOf ⟨x₀, hx₀⟩).asIdeal Dw.dim hrank m a hRsp
   obtain ⟨x, e, hxe, bs, hbs⟩ := h3
-  have hxe' : (fun j => x (e j)) = a := funext hxe
   have hI : ((LogKS.boundary TF.Y).ideal U).map (algebraMap Γ(TF.Y.X, U.1) (TF.Y.X.presheaf.stalk x₀)) =
       Ideal.span {algebraMap Γ(TF.Y.X, U.1) (TF.Y.X.presheaf.stalk x₀) (∏ j ∈ J, x (e j))} := by
     simp only [hxe]; exact hIa

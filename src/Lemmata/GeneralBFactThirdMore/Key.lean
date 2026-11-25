@@ -8,7 +8,7 @@ public import Mathlib.NumberTheory.NumberField.Basic
 namespace Bl.general_b_fact_third'
 
 theorem goal1 :
-  ∀ {E : Type} [inst : Field.{0} E] [NumberField.{0} E] {n : Nat}
+  ∀ {E : Type} [Field.{0} E] [NumberField.{0} E] {n : Nat}
   (L : Submodule.{0, 0} (NumberField.RingOfIntegers.{0} E) (Fin n → E)),
   Eq.{1} (Submodule.span.{0, 0} E (SetLike.coe.{0, 0} L)) Top.top.{0} →
     ∀ (w : Fin n → E),

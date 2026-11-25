@@ -254,8 +254,6 @@ theorem existsMaxContactControlledTransforms_of_comapLeControlled (h : MaxContac
     | zero =>
       intro hi
       have := sm 0 hi
-      have : AlgebraicGeometry.Smooth u.isoZero.hom := inferInstance
-      have : AlgebraicGeometry.Smooth (u.isoZero.hom ≫ q) := inferInstance
       show strictTransformMaxContactIdeal u hN 0 ≤ maxContactIdeal k (u.projectionToBase 0 ≫ q) (u.ideal 0) μ
       have e1 : maxContactIdeal k (u.projectionToBase 0 ≫ q) (u.ideal 0) μ =
           maxContactIdeal k (u.isoZero.hom ≫ q) (A'.comap u.isoZero.hom) μ :=
@@ -936,7 +934,6 @@ private theorem mul_le_right {X : Scheme.{u}} (I J : X.IdealSheafData) :
 
 private theorem eq_of_comp_ι_eq {X : Scheme.{u}} (U : X.Opens) {W : Scheme.{u}}
     {a b : W ⟶ U.toScheme} (h : a ≫ U.ι = b ≫ U.ι) : a = b := by
-  have : Mono U.ι := inferInstance
   exact (cancel_mono U.ι).mp h
 
 private theorem hom_ext_of_comp_ι_eq_of_opens_cover {X Y : Scheme.{u}} {ι : Type u} (W : ι → X.Opens)

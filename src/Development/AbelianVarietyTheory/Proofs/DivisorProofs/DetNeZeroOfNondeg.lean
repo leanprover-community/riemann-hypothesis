@@ -56,11 +56,11 @@ theorem exists_isTransport (D : D7) (B : Base D.host.F D.host.E) (hB : B.IsGood 
     (om : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep D.sp.cm.sig X Y) (hom : Mo.IsWeil B.ψ χX χW om) :
     ∃ ω : GA D S × GA D T →* Module.End ℂ (Formalism.IndefR.Datum.WO S T → ℂ),
       Formalism.IndefR.Datum.IsWeilDatumO B.ψ S T χW χX ω ∧ IsTransport B.ψ Mo.co ω om := by
-  have hψ : IsStdChar D B.ψ (-1) := GlobalTheory.T.isStdChar_neg_one_of_standardTraceAdelicAddChar D B.ψ hB.std
+  have hψ : IsStdChar D B.ψ (-1) := GlobalTheory.StdCharFromIsStd.isStdChar_of_isStd D B.ψ hB.std
   have rS := GlobalTheory.T.restrictsToQuadraticSignPow_idelic_restriction D χW S.rank rW
   have rT := GlobalTheory.T.restrictsToQuadraticSignPow_idelic_restriction D χX T.rank rX
   obtain ⟨ω, hω⟩ := GlobalTheory.weilRepresentationUnitaryPair D B.ψ S T χW χX hψ hcW hcX rS rT
-  obtain ⟨om₀, hom₀⟩ := GlobalTheory.T.exists_weilDatum_transport_adelicSchwartz_thetaTransform D B.ψ hψ S T χW χX hcW hcX rS rT X.J Y.J (-1) eA eB
+  obtain ⟨om₀, hom₀⟩ := GlobalTheory.ThetaTransform.exists_isTransport D B.ψ hψ S T χW χX hcW hcX rS rT X.J Y.J (-1) eA eB
     (Fin T.rank × Fin S.rank) Mo.co hMo.rat ω hω
   have h2 := GlobalTheory.T.transportedWeil_preserves_schwartz_heisenberg_equivariant D B.ψ hψ S T χW χX hcW hcX rS rT X.J Y.J (-1) eA eB _ Mo.co hMo.rat ω hω om₀ hom₀
   have h3 := GlobalTheory.T.transportedWeilDatum_keeps_admissible_forms D B.ψ hψ S T χW χX hcW hcX rS rT X.J Y.J (-1) eA eB _ Mo.co hMo.rat ω hω om₀ hom₀

@@ -299,10 +299,4 @@ theorem placesOf_conj_val (w : (placesOf K).Pl) (x : K) :
 
 end Coherence
 
-theorem bridge_unit_rule_holds : Formalism.BasicNotions.bridge_unit_rule := by
-  intro K _ _ l w hl hlw
-  obtain rfl := PlacesToy.prime_mem_unique w hl (PlacesToy.resCharW_prime w) hlw
-    (PlacesToy.resCharW_mem w)
-  exact PlacesToy.vAdd_resCharW w
-
 end Formalism.BasicNotions.Examples₂

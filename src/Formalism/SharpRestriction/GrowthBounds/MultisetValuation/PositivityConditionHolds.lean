@@ -67,14 +67,7 @@ theorem sx_expS_eq {ι : Type} {f : MvPowerSeries ι (K0 p)} (hf : MvPowerSeries
   ext n
   unfold mvExp
   rw [PowerSeries.coeff_subst (PowerSeries.HasSubst.of_constantCoeff_zero hf)]
-  have hord : (1 : ℕ∞) ≤ f.order := by
-    apply MvPowerSeries.le_order
-    intro d hd
-    have hd0 : d = 0 := by
-      have : Finsupp.degree d = 0 := by exact_mod_cast Nat.lt_one_iff.mp (by exact_mod_cast hd)
-      exact (Finsupp.degree_eq_zero_iff d).mp this
-    rw [hd0, MvPowerSeries.coeff_zero_eq_constantCoeff]
-    exact hf
+  have hord : (1 : ℕ∞) ≤ f.order := MvPowerSeries.one_le_order_iff_constCoeff_eq_zero.mpr hf
   have hz : ∀ d : ℕ, Finsupp.degree n < d → MvPowerSeries.coeff n (f ^ d) = 0 := by
     intro d hd
     apply MvPowerSeries.coeff_of_lt_order

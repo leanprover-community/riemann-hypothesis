@@ -401,10 +401,6 @@ theorem continuous_pZ (Z : SubM k n) : Continuous (pZ Z : Mat k n → _) := cont
 
 theorem isClosed_Bz (Z : SubM k n) : IsClosed (Bz Z) := isClosed_Bz_shared Z
 
-omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
-theorem pZ_conj (Z : SubM k n) {g : GLn k n} (hg : g ∈ Gz Z) (x : Mat k n) :
-    pZ Z (g.val * x * g⁻¹.val) = pZ Z x := pZ_conj_shared Z hg x
-
 private theorem mul_ind_mem {X : Type} [TopologicalSpace X] {U s : Set X} (hs : IsClopen s)
     {F : X → ℂ} (hF : F ∈ supportedIn U) : F * s.indicator 1 ∈ supportedIn U :=
   ⟨⟨hF.1.1.mul ((IsLocallyConstant.iff_exists_open _).2 fun x => by
@@ -447,7 +443,7 @@ theorem local_descent_holds : LocStep (k := k) := by
       · refine ⟨univ, isOpen_univ, mem_univ _, fun W hW _ => ?_⟩
         set φ : Sp k m → ℂ := (q ⁻¹' W).indicator 1
         have hφa : ∀ p, φ (act g p) = φ p := fun p => by
-          simp only [φ, indicator_apply, mem_preimage, q, pZ_conj Z hg, act, Pi.one_apply]
+          simp only [φ, indicator_apply, mem_preimage, q, PositivityTheory.RgUd.T.pZ_conj_shared Z hg, act, Pi.one_apply]
         have hsplit : (h - fun p => h (act g p)) * φ = h * φ - fun p => (h * φ) (act g p) := funext fun p => by
           simp only [Pi.mul_apply, Pi.sub_apply, hφa]; ring
         rw [hsplit, map_sub, hinv g hg _ (mul_ind_mem (hW.preimage hq) hh), sub_self]

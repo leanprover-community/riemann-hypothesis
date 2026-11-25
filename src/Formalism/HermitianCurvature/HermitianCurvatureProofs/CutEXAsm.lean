@@ -435,8 +435,6 @@ end asm
 
 section closed
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem det_upUni {n : ℕ} {u : Matrix (Fin n) (Fin n) ℂ} (hu : Formalism.DoubleCosetMeasures.IsUpUni u) : u.det = 1 := by
   rw [Matrix.det_of_upperTriangular hu.1]
   simp [hu.2]

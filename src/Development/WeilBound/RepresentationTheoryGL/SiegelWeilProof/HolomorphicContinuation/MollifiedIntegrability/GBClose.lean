@@ -865,11 +865,6 @@ theorem contDiff_dirC {f : E n → ℂ} (hf : ContDiff ℝ (⊤ : ℕ∞) f) (w 
 theorem contDiff_Dkl {f : E n → ℂ} (hf : ContDiff ℝ (⊤ : ℕ∞) f) (k l : Fin n) :
     ContDiff ℝ (⊤ : ℕ∞) (Dkl k l f) := contDiff_dirC hf _
 
-theorem herm_isHermitian (y : E n) : (herm y).IsHermitian := by
-  ext i j
-  simp only [conjTranspose_apply, herm]
-  apply Complex.ext <;> simp <;> ring
-
 theorem dP_pos (y : E n) : 0 < dP y := by
   have hH := herm_isHermitian y
   have h1 : (1 + herm y * herm y).PosDef := by

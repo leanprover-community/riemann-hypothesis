@@ -272,8 +272,6 @@ theorem transUnif_factor (u : HolUnif A M g) {Hm : Matrix (Fin g) (Fin g) ℂ} {
           Real.pi / 2 * ((l : Fin g → ℂ) ⬝ᵥ Hm.mulVec (star (l : Fin g → ℂ)))) := by
     rw [← Complex.exp_add]; ring_nf
   rw [hexp]
-  have nE := Complex.exp_ne_zero (Real.pi * (z ⬝ᵥ Hm.mulVec (star (l : Fin g → ℂ))) +
-          Real.pi / 2 * ((l : Fin g → ℂ) ⬝ᵥ Hm.mulVec (star (l : Fin g → ℂ))))
   field_simp
 
 end GlobalTheory.TorusRM.TransFrame

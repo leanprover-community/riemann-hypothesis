@@ -44,13 +44,6 @@ theorem isOpen_not_liesIn (C : Closeds Y) : IsOpen {y : CxPts p σ | ¬ LiesIn y
   have : {y : CxPts p σ | ¬ LiesIn y C} = ptsIn p σ C.compl := Set.ext fun y => (mem_ptsIn (y := y) (U := C.compl)).symm
   exact this ▸ isOpen_ptsIn _
 
-namespace IsDivNorm
-
-variable {R : AnRead p σ d} {C : Closeds Y} {n : CxPts p σ → ℝ} (h : IsDivNorm R C n)
-include h
-
-end IsDivNorm
-
 abbrev ChartForm (p : Y ⟶ Sp k) (σ : k →+* ℂ) (d : ℕ) : Type := AlgChart p σ d → CxPts p σ → (Fin d → ℂ) → ℝ
 
 def ddcForm (f : CxPts p σ → ℝ) : ChartForm p σ d := fun c y ξ => c.levi f y ξ / Real.pi

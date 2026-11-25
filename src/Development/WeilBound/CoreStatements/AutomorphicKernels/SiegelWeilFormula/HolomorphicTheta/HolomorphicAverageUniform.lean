@@ -275,13 +275,6 @@ theorem split_re_im (v : EE n) :
   field_simp
   ring
 
-private theorem herm_Hpk_smul_left (k : EE n) (hk : (Matrix.of k).IsHermitian) (t : ℝ) :
-    (Matrix.of ((t : ℂ) • k)).IsHermitian := by
-  ext i j
-  have h2 := congrFun (congrFun hk i) j
-  simp only [Matrix.conjTranspose_apply, Matrix.of_apply] at h2 ⊢
-  simp [h2]
-
 theorem const_of_transl (G : EE n → ℂ) (hG : DifferentiableOn ℂ G (Dom n))
     (hT : ∀ W ∈ Dom n, ∀ k : EE n, (Matrix.of k).IsHermitian → G (W + k) = G W) :
     ∀ W ∈ Dom n, ∀ W' ∈ Dom n, G W = G W' := by
@@ -297,7 +290,8 @@ theorem const_of_transl (G : EE n → ℂ) (hG : DifferentiableOn ℂ G (Dom n))
       have hcomp := (hGd.restrictScalars ℝ).comp_hasDerivAt_of_eq (0 : ℝ) hc (by simp)
       have hfun : (G ∘ fun t : ℝ => W + (t : ℂ) • k) = fun _ => G W := by
         funext t
-        exact hT W hW _ (herm_Hpk_smul_left k hk t)
+        exact hT W hW _
+          (hk.smul ((Complex.im_eq_zero_iff_isSelfAdjoint _).1 (Complex.ofReal_im t)))
       rw [hfun] at hcomp
       simpa using hcomp.unique (hasDerivAt_const _ _)
     refine ContinuousLinearMap.ext fun v => ?_
@@ -327,8 +321,7 @@ private theorem exp_trace_mul_H_const_on_dom (H : EE n → ℂ) (hH : Differenti
     fun_prop
   · intro W hW k hk
     have hof : Matrix.of (c • k) = c • Matrix.of k := rfl
-    have hh : (Matrix.of (c • k)).IsHermitian := by
-      rw [hof, Matrix.IsHermitian, Matrix.conjTranspose_smul, hcs, hk.eq]
+    have hh : (Matrix.of (c • k)).IsHermitian := hk.smul hcs
     have hWk : W + k = W + c • (c • k) := by
       ext i j
       simp [smul_smul, hc]

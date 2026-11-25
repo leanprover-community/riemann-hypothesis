@@ -85,7 +85,7 @@ theorem parIndMap_injective {α n : Type} {m : α → Type} [Fintype α] [Linear
     {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
     (e : (Σ a, m a) ≃ n) {ρ : Representation ℂ (Levi k m) V} {σ : Representation ℂ (Levi k m) W}
     (f : ρ.IntertwiningMap σ) (hf : Function.Injective f) :
-    Function.Injective (parIndMap e f) := fun x y h =>
+    Function.Injective (parIndMap e f) := fun _ _ h =>
   Subtype.ext (Subtype.ext (funext fun g => hf
     (congrArg (fun z : IndSp e σ => z.1.1 g) h)))
 

@@ -308,7 +308,6 @@ theorem ordGe_of_lgSum_radii (v : AddValuation C (WithTop ℝ)) (p : ℕ) (hp : 
       linear_combination (n : ℝ) * hg'1
     have e2 : g' * (1 + ((n + 1 : ℕ) : ℝ) * ((p : ℝ) - 1)) = g' + 2 * ((n : ℝ) + 1) := by
       push_cast; linear_combination ((n : ℝ) + 1) * hg'1
-    have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
     have hre' := hre e
     rw [hr a]
     split_ifs with hga
@@ -837,7 +836,6 @@ theorem big_arith {i q k m p : ℕ} (hi : i + 1 ≤ k + m) (hk : k ≤ m * p) (h
 
 theorem big_bound {i q k m p c : ℕ} (hi : i + 1 ≤ k + m) (hk : k ≤ m * p) (hq : q ≤ m) (hp : 2 ≤ p) :
     boundInert p q i c ≤ 5 * (m : ℝ) * c / ((p : ℝ) - 1) := by
-  have hp0 : (0 : ℝ) < p := by exact_mod_cast (by omega : 0 < p)
   have hp1 : (0 : ℝ) < (p : ℝ) - 1 := by
     have : (2 : ℝ) ≤ p := by exact_mod_cast hp
     linarith
@@ -908,7 +906,6 @@ theorem oscLe_inert_large : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
   simp only [hw]
   rw [Finset.sum_ite, ← Finset.sum_div, ← Finset.sum_div, ← add_div, ← Finset.mul_sum, hSS]
   refine div_le_div_of_nonneg_right ?_ hp1.le
-  have hm0 : (0 : ℝ) ≤ m := Nat.cast_nonneg _
   have h5 : 5 * (m : ℝ) * ∑ f ∈ Finset.univ.filter (fun f : Lt1 Dw => IsBig k f), (cx f : ℝ) ≤ 5 * m * (F * Mb) :=
     mul_le_mul_of_nonneg_left hB (by positivity)
   have h6 : 5 * (m : ℝ) * (F * Mb) ≤ 6 * F * m * Mb := by
@@ -1090,8 +1087,6 @@ theorem boundFine_le {p N q i c m M : ℕ} (hp : 2 ≤ p) (hq : q ≤ m) (hi : N
   have hiN' : (i : ℝ) ≤ N := by exact_mod_cast hiN
   have hc' : (1 : ℝ) ≤ c := by exact_mod_cast hc
   have hcM' : (c : ℝ) ≤ M := by exact_mod_cast hcM
-  have hq0 : (0 : ℝ) ≤ q := Nat.cast_nonneg _
-  have hm0 : (0 : ℝ) ≤ m := Nat.cast_nonneg _
   have hl0 : 0 ≤ Real.logb p c := Real.logb_nonneg (by linarith) hc'
   have hl : Real.logb p c ≤ Real.logb p M := Real.logb_le_logb_of_le (by linarith) (by linarith) hcM'
   have hp1 : (0 : ℝ) < (p : ℝ) - 1 := by linarith
@@ -1599,8 +1594,6 @@ theorem oscLe_eOf : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : 
   have hp : p.Prime := Fact.out
   have hp2le : (2 : ℝ) ≤ p := by exact_mod_cast hp.two_le
   have hp1 : (0 : ℝ) < (p : ℝ) - 1 := by linarith
-  have hF : (0 : ℝ) ≤ F := Nat.cast_nonneg _
-  have hm : (0 : ℝ) ≤ m := Nat.cast_nonneg _
   have hFmMb : (0 : ℝ) ≤ F * m * Mb := by positivity
   unfold eOf
   split_ifs with h1 hS' h3 h4

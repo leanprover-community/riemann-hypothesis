@@ -216,12 +216,6 @@ open GlobalTheory.Amp.Swap GlobalTheory.DegVol.Swap
 
 variable {k r j : ℕ}
 
-theorem upperIn_0 (β : Fin r → ℕ) : upperIn β 0 = 1 := by
-  ext a b
-  by_cases h : a < b
-  · simp [upperIn, upper, h, h.ne]
-  · simp [upperIn, upper, h, Matrix.one_apply]
-
 private lemma wI_eq_mI (m : Fin (k + 1)) : wI k r m = UEmb.mI k r m := Fin.ext (by simp [wI, UEmb.mI])
 
 theorem pOf_mul_we (q : PPar k r) (u : Matrix (Fin r) (Fin r) ℂ) (a : Fin (k + 1)) (b : Fin r) :
@@ -308,7 +302,7 @@ theorem cancel (β : Fin r → ℕ) (p q w : (UTin β → ℂ) × PTop k r j)
     (h : crd k r j β p * crd k r j β q = crd k r j β w) (hp : p.1 = 0) :
     pTop k r j p.2 * pTop k r j q.2 = pTop k r j w.2 := by
   have hm := upperIn_mul β p q w h
-  rw [hp, upperIn_0, one_mul] at hm
+  rw [hp, GlobalTheory.DegVol.RefCovTop.upperIn_of_zero, one_mul] at hm
   set U := upperIn β q.1 with hUdef
   have hT : U.IsUpperTriangular := by
     intro a b hba
@@ -322,7 +316,7 @@ theorem cancel (β : Fin r → ℕ) (p q w : (UTin β → ℂ) × PTop k r j)
     rw [← UEmb.uEmb_mul, Matrix.mul_nonsing_inv _ hU, UEmb.uEmb_one]
   have h' : pTop k r j p.2 * pTop k r j q.2 * uEmb k r U = pTop k r j w.2 * uEmb k r U := by
     have h2 := h
-    simp only [crd, hp, upperIn_0, UEmb.uEmb_one, mul_one, hm] at h2
+    simp only [crd, hp, GlobalTheory.DegVol.RefCovTop.upperIn_of_zero, UEmb.uEmb_one, mul_one, hm] at h2
     rw [mul_assoc]
     exact h2
   calc pTop k r j p.2 * pTop k r j q.2
@@ -349,7 +343,7 @@ theorem crd_mul : ∀ (k r j : ℕ) (β : Fin r → ℕ), crd k r j β 0 = 1 ∧
       ext a b
       simp only [skewM, Matrix.zero_apply]
       split_ifs <;> simp
-    simp only [crd, Prod.fst_zero, Prod.snd_zero, upperIn_0, UEmb.uEmb_one, mul_one, pTop, pOf,
+    simp only [crd, Prod.fst_zero, Prod.snd_zero, GlobalTheory.DegVol.RefCovTop.upperIn_of_zero, UEmb.uEmb_one, mul_one, pTop, pOf,
       Pi.zero_apply, dite_eq_ite, ite_self, hS]
     exact Rad.pEl_zero
   · have hc := cancel β p q w h hp

@@ -92,7 +92,7 @@ theorem dlBridge' : DlBridge := by
   refine ⟨hu, fun N x => ?_⟩
   set q : ℝ := ((qV E w : ℕ) : ℝ) with hq
   have hn : nabs (w.adicCompletion E) ϖ = q⁻¹ := by
-    rw [GlobalTheory.GLDoubling.nabs_unif hu, GlobalTheory.T.residue_card_eq_abs_norm]
+    rw [GlobalTheory.GLDoubling.nabs_unif hu, GlobalTheory.CompanionTheory.ResCardAbsNorm.resCard_completion_eq_absNorm]
     rfl
   have hqpos : 0 < q := by
     have := nabs_pos' (w.adicCompletion E) ϖ

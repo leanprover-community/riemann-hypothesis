@@ -102,30 +102,16 @@ end Tens
 
 section Wt
 
-theorem rhoN_tw (ε : Fin n → Bool) (a : Fin n) : rhoN (ε ∘ Fin.rev) a = -rhoN ε (Fin.rev a) := by
-  apply ReciprocityTheory.ChartRestriction.DS.Lap.LemK.DualRepresentationReversal.rhoN_rev
-
-theorem rhoC_tw (ε : Fin n → Bool) (a : Fin n) : rhoC (ε ∘ Fin.rev) a = -rhoC ε (Fin.rev a) := by
-  apply ReciprocityTheory.ChartRestriction.DS.Lap.LemK.DualRepresentationReversal.rhoC_rev
-
 theorem lowK_tw (ε : Fin n → Bool) (ν : Fin n → ℝ) :
     lowK (ε ∘ Fin.rev) (fun a => -ν (Fin.rev a)) = fun a => -lowK ε ν (Fin.rev a) := by
   funext a
-  simp only [lowK, Pi.add_apply, Pi.sub_apply, rhoN_tw, rhoC_tw]
+  simp only [lowK, Pi.add_apply, Pi.sub_apply, ReciprocityTheory.ChartRestriction.DS.Lap.LemK.DualRepresentationReversal.rhoN_rev, ReciprocityTheory.ChartRestriction.DS.Lap.LemK.DualRepresentationReversal.rhoC_rev]
   ring
 
 theorem casVal_tw (lam : Fin n → ℝ) : casVal (fun a => -lam (Fin.rev a)) = casVal lam := by
   unfold casVal nsq dot
   simp only [neg_mul_neg]
   rw [sum_rev (fun a => lam a * lam a)]
-
-theorem pOf_tw (ε : Fin n → Bool) : pOf (ε ∘ Fin.rev) = pOf ε := by
-  unfold pOf
-  refine Finset.card_nbij' Fin.rev Fin.rev ?_ ?_ ?_ ?_ <;> intro b hb <;> simp_all
-
-theorem qOf_tw (ε : Fin n → Bool) : qOf (ε ∘ Fin.rev) = qOf ε := by
-  unfold qOf
-  refine Finset.card_nbij' Fin.rev Fin.rev ?_ ?_ ?_ ?_ <;> intro b hb <;> simp_all
 
 theorem gapLap_tw {ε : Fin n → Bool} {lam : Fin n → ℝ} {h : ℝ} (hg : GapLap ε lam h) :
     GapLap (ε ∘ Fin.rev) (fun a => -lam (Fin.rev a)) h := by
@@ -307,7 +293,7 @@ theorem dualLowestKType_of_standard (hK : EigenspaceWeightConeStandard n) : Eige
   have hgap' := gapLap_tw hgap
   obtain ⟨K1, K2⟩ := hK (ε ∘ Fin.rev) (fun a => -lam (Fin.rev a)) h H (fun g => σ (phiR g)) D (twE ε E) V
     (Fin.rev s) (urep_tw hσ) (derived_tw hD) hV' hc' (fun k hk v hv => hVK _ (phiR_K hk) v hv) hint'
-    hgap'.1 hgap' (by rwa [pOf_tw]) (by rwa [qOf_tw])
+    hgap'.1 hgap' (by rwa [ReciprocityTheory.ChartRestriction.DS.Lap.LemK.DualRepresentationReversal.pOf_rev]) (by rwa [ReciprocityTheory.ChartRestriction.DS.Lap.LemK.DualRepresentationReversal.qOf_rev])
   have hθ : thV (fun a => -lam (Fin.rev a)) (Fin.rev s) = thVd lam s := by simp [thV, thVd]
   have hG : genSub (twE ε E) V = genSub E V := genSub_tw ε E V
   have hW : lowK (ε ∘ Fin.rev) ((fun a => -lam (Fin.rev a)) + Pi.single (Fin.rev s) 1) =

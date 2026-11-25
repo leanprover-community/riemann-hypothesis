@@ -151,7 +151,6 @@ theorem ringHom_exists_generator_of_finite_range {k : Type} [Field k] {C : Type}
   · rw [hg]
     exact fun h => u.ne_zero (Subtype.ext h)
   · set y : χ₀.range := ⟨χ₀ b, ⟨b, rfl⟩⟩
-    have hy0 : y ≠ 0 := fun h => hb (congrArg Subtype.val h)
     have hyu : IsUnit y := by
       have hpow := ringHom_pow_eq_one_of_finite_range χ₀ b hb _ dvd_rfl
       exact ⟨Units.ofPowEqOne y (Nat.card χ₀.range).factorial

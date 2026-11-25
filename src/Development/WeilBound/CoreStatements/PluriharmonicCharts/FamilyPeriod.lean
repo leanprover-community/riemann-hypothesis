@@ -717,7 +717,7 @@ theorem model_periods {Xo : Moduli D l} {c : Coeff l} {Y : Model Xo c (algebraMa
     fun a s hs t => ?_⟩, fun v hv => ?_⟩
   · obtain ⟨Hm, hR, hH⟩ := (hall u hu).2.2.1
     obtain ⟨w, hw1, hw2⟩ := hw u
-    have hg := GlobalTheory.T.chart_lattice_tangent_coordinates E H D l Xo _ n 0 C 𝔐.X 𝔐.t _ mX Ω 𝔐.ξ 𝔐.Li 𝔐.M r (fun k => b (f k))
+    have hg := GlobalTheory.CompanionTheory.Ar.RiemGram.gramAt_of_isRiem E H D l Xo _ n 0 C 𝔐.X 𝔐.t _ mX Ω 𝔐.ξ 𝔐.Li 𝔐.M r (fun k => b (f k))
       (fun k => x (ea (f k))) u Hm (fun k => w (f k)) hR (fun k => hw1 _) (fun k => hw2 _)
     rw [← hpt u (hsub hu)]
     convert hg using 4 with _ i' _ j'

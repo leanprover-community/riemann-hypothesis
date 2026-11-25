@@ -1752,8 +1752,6 @@ theorem c2_holds_alt : C2 := by
   · intro h
     exact absurd (Finset.mem_univ _) h
 
-attribute [local instance 100] LieRing.ofAssociativeRing
-
 end PartC2
 
 theorem r2_basis_holds : PowerSeriesFreeBasis := r2_basis_of_r1 r1_holds general_basis_holds

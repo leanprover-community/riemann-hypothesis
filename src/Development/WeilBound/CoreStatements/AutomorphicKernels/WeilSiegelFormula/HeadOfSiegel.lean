@@ -360,12 +360,6 @@ section Blocks
 
 variable {R : Type} [CommRing R] {n : ℕ}
 
-theorem block_matrix_mul_comm_ring (a b c d a' b' c' d' : Matrix (Fin n) (Fin n) R) :
-    blk4 a b c d * blk4 a' b' c' d' =
-      blk4 (a * a' + b * c') (a * b' + b * d') (c * a' + d * c') (c * b' + d * d') := by
-  unfold blk4
-  rw [Matrix.submatrix_mul_equiv, Matrix.fromBlocks_multiply]
-
 theorem blk4_map_alt {S : Type} [CommRing S] (f : R →+* S) (a b c d : Matrix (Fin n) (Fin n) R) :
     (blk4 a b c d).map f = blk4 (a.map f) (b.map f) (c.map f) (d.map f) := by
   unfold blk4
@@ -417,7 +411,7 @@ theorem rat_form {n : ℕ} (g : Matrix (Fin (n + n)) (Fin (n + n)) D.host.E)
     exact Matrix.ext fun i j => hP i j
   rw [hc] at hg
   refine ⟨M.toBlocks₁₁, M.toBlocks₁₂, M.toBlocks₂₂, hg, ?_⟩
-  rw [hg, jst_eq, block_matrix_conj_transpose, block_matrix_mul_comm_ring, block_matrix_mul_comm_ring] at hu
+  rw [hg, jst_eq, block_matrix_conj_transpose, GlobalTheory.StdUnn.Frame.submatrix_fromBlocks_mul, GlobalTheory.StdUnn.Frame.submatrix_fromBlocks_mul] at hu
   have h := block_matrix_injective hu
   simp at h
   exact ⟨h.1, h.2.1⟩
@@ -497,9 +491,9 @@ theorem ratLevi {n : ℕ} (a d : Matrix (Fin n) (Fin n) D.host.E) (had : aᴴ * 
   have h1 : a * dᴴ = 1 := mul_eq_one_comm.mp hda
   have h2 : d * aᴴ = 1 := mul_eq_one_comm.mp had
   refine ⟨?_, ?_, ?_⟩
-  · rw [block_matrix_mul_comm_ring]; simp [h1, h2, block_matrix_diagonal_one_eq_one]
-  · rw [block_matrix_mul_comm_ring]; simp [had, hda, block_matrix_diagonal_one_eq_one]
-  · rw [jst_eq, block_matrix_conj_transpose, block_matrix_mul_comm_ring, block_matrix_mul_comm_ring]; simp [had, hda]
+  · rw [GlobalTheory.StdUnn.Frame.submatrix_fromBlocks_mul]; simp [h1, h2, block_matrix_diagonal_one_eq_one]
+  · rw [GlobalTheory.StdUnn.Frame.submatrix_fromBlocks_mul]; simp [had, hda, block_matrix_diagonal_one_eq_one]
+  · rw [jst_eq, block_matrix_conj_transpose, GlobalTheory.StdUnn.Frame.submatrix_fromBlocks_mul, GlobalTheory.StdUnn.Frame.submatrix_fromBlocks_mul]; simp [had, hda]
 
 theorem core {n : ℕ} {V : HSp D} {ψ : AddChar (AF D.host.F) ℂ} {χ : (AE D)ˣ →* Circle} {θ : InfFam D}
     {μ : Measure (Mx D V.rank n)} {ω : G D n →* Module.End ℂ (schwartzA θ V.rank n)}
@@ -521,7 +515,7 @@ theorem core {n : ℕ} {V : HSp D} {ψ : AddChar (AF D.host.F) ℂ} {χ : (AE D)
     simp only [mat, map_inv]
     rfl
   have hnEl : mat nEl = blk4 1 ((b * aᴴ).map (incA D)) 0 1 := by
-    rw [mat_mul', hinv, hmat, hg, ← Matrix.map_mul, block_matrix_mul_comm_ring]
+    rw [mat_mul', hinv, hmat, hg, ← Matrix.map_mul, GlobalTheory.StdUnn.Frame.submatrix_fromBlocks_mul]
     have h1 : a * dᴴ = 1 := mul_eq_one_comm.mp hda
     have h2 : d * aᴴ = 1 := mul_eq_one_comm.mp had
     simp [h1, h2, blk4_map_alt]
@@ -538,7 +532,6 @@ theorem core {n : ℕ} {V : HSp D} {ψ : AddChar (AF D.host.F) ℂ} {χ : (AE D)
 end GlobalTheory.CompanionTheory.EisCellsPInv
 
 namespace GlobalTheory.CompanionTheory.EisCellsPInv
-
 
 theorem pInv : PositivityTheory.GramSchwartzFunctions.EC.PInv := by
   intro D n V ψ χ θ μ ω hS Φ γ hγ g
@@ -650,14 +643,7 @@ open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.EC
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.theta_sum_invariant_weyl_involution : ∀ (D : D7) (n : ℕ) (V : HSp D) ψ χ θ μ ω, HidaSetting D n V ψ χ θ μ ω →
-  ∀ g : G D n, mat g = blk4 0 1 (-1) 0 →
-  ∀ Φ : schwartzA θ V.rank n,
-    ∑' ξ : Matrix (Fin V.rank) (Fin n) D.host.E, (ω g Φ).1 (ξ.map (incA D)) =
-      ∑' ξ : Matrix (Fin V.rank) (Fin n) D.host.E, Φ.1 (ξ.map (incA D)) := by
-  first | exact @GlobalTheory.CompanionTheory.ThetaPoisson.theta_weyl
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThetaSumInvariantWeylInvolutionStatement =====
@@ -690,7 +676,7 @@ theorem thetaInv : PositivityTheory.GramSchwartzFunctions.EC.ThetaInv := by
         exact this.symm }
   have hle : GF D n ≤ S := _root_.GlobalTheory.CompanionTheory.RatGen.GF_le_of_levi_unip_weyl D n S (fun g a hg Φ => GlobalTheory.T.theta_sum_invariant_levi_element D n V ψ χ θ μ ω hS g a hg Φ)
     (fun g b hg Φ => GlobalTheory.T.theta_sum_invariant_unipotent_translate D n V ψ χ θ μ ω hS g b hg Φ)
-    (fun g hg Φ => GlobalTheory.T.theta_sum_invariant_weyl_involution D n V ψ χ θ μ ω hS g hg Φ)
+    (fun g hg Φ => GlobalTheory.CompanionTheory.ThetaPoisson.theta_weyl D n V ψ χ θ μ ω hS g hg Φ)
   intro Φ γ hγ
   exact hle hγ Φ
 
@@ -750,16 +736,12 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 
 namespace GlobalTheory.CompanionTheory.SiegelAssembly
 
-theorem two_mul_finrank_isotropic_le {E : Type} [Field E] [NumberField E] [StarRing E] (B : HSpace E)
-    (W : Submodule E B.V) (hW : ∀ x ∈ W, ∀ y ∈ W, B.hT x y = 0) : 2 * Module.finrank E W ≤ B.rank := by
-  apply _root_.GlobalTheory.SiegelFormula.Model.two_mul_finrank_le <;> assumption
-
 theorem two_mul_wittIdx_le_rank {E : Type} [Field E] [NumberField E] [StarRing E] (B : HSpace E) :
     2 * Formalism.MainNotions.SchurIrreducible.wittIdx B ≤ B.rank := by
   obtain ⟨W, h, hW⟩ := Nat.sSup_mem (s := {k | ∃ W : Submodule E B.V, Module.finrank E W = k ∧
     ∀ x ∈ W, ∀ y ∈ W, B.hT x y = 0}) ⟨_, ⊥, rfl, by simp⟩ (GlobalTheory.SiegelFormula.Model.bddAbove_witt B)
   rw [Formalism.MainNotions.SchurIrreducible.wittIdx, ← h]
-  exact two_mul_finrank_isotropic_le B W hW
+  exact GlobalTheory.SiegelFormula.Model.two_mul_finrank_le B W hW
 
 theorem exists_isRowBasis {D : D7} {n : ℕ} (U : Submodule D.host.E (Fin n → D.host.E)) :
     ∃ c, IsRowBasis U c := by
@@ -852,13 +834,7 @@ open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC GlobalTheory.CompanionTheory.SiegelND
 open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.frame_integral_eq_theta_part_nondegenerate : ∀ (D : D7) (r : ℕ) (V : HSp D) (θ : InfFam D), IsInfFam θ → ∀ ν : Measure (GA D V), ν.IsHaarMeasure →
-  ∀ φ : Mx D V.rank r → ℂ, φ ∈ schwartzA θ V.rank r → GlobalTheory.SiegelFormula.absThetaInt V ν φ < ⊤ →
-  ∀ (μH : Measure (GA D V)) (𝓕 : Set (GA D V)), μH.IsHaarMeasure → IsFundamentalDomain (GQ V) 𝓕 μH →
-  ∀ β : HermE D r, β.1.det ≠ 0 → IfrB V ν φ β = thetaPartD V μH 𝓕 φ β := by
-  first | exact @GlobalTheory.CompanionTheory.SiegelND.ThetaGlue.ifrB_eq_thetaPartD
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FrameIntegralEqThetaPartNondegenerateStatement =====
@@ -888,7 +864,7 @@ theorem siegelND : PositivityTheory.GramSchwartzFunctions.BC.SiegelND := by
   have hc := GlobalTheory.CompanionTheory.SiegelND.Coef.coefN_eq_theta D.host.F D.host.E D.sp.cm.sig
     hCM V.rank V.gram hJ r hr ψ hψ dx hdx db hdb μH 𝓕 hμH h𝓕 _
     (GlobalTheory.T.schwartz_function_schwartz_bruhat D θ hθ V.rank r φ hφ) β.1 hT hβ
-  rw [GlobalTheory.T.frame_integral_eq_theta_part_nondegenerate D r V θ hθ ν hν φ hφ habs μH 𝓕 hμH h𝓕 β hβ, hW φ β, hc]
+  rw [GlobalTheory.CompanionTheory.SiegelND.ThetaGlue.ifrB_eq_thetaPartD D r V θ hθ ν hν φ hφ habs μH 𝓕 hμH h𝓕 β hβ, hW φ β, hc]
   rfl
 
 end PositivityTheory.PfWsf.Hand.Merge
@@ -911,10 +887,6 @@ theorem head_of_two (hE : PositivityTheory.GramSchwartzFunctions.EisCells) (hB :
 theorem big_of_three (h1 : PositivityTheory.GramSchwartzFunctions.BC.PoissonHerm) (h2 : PositivityTheory.GramSchwartzFunctions.BC.SiegelND) (h3 : PositivityTheory.GramSchwartzFunctions.BC.SiegelDeg) :
     PositivityTheory.GramSchwartzFunctions.BigCell :=
   GlobalTheory.CompanionTheory.WeilSiegel.bigCell_of_poisson_siegel GlobalTheory.CompanionTheory.HermVol.exists_isCovolOneH h1 GlobalTheory.CompanionTheory.SplitGram.hasSum_IfrB h2 h3
-
-end PositivityTheory.PfWsf.Top
-
-namespace PositivityTheory.PfWsf.Top
 
 end PositivityTheory.PfWsf.Top
 

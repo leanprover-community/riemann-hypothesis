@@ -985,12 +985,6 @@ private theorem isUnit_restrict {V : Scheme.{0}} (s : Γ(V, ⊤)) (U : V.Opens) 
   rw [h1]
   exact h0.map (U.ι.appLE (V.basicOpen s) ⊤ hle).hom
 
-private theorem uV_congr {K : Type} [CommRing K] {W Z Y : Scheme.{0}} {q : Z ⟶ Spec (CommRingCat.of K)}
-    {i : W ⟶ Z} {π : Y ⟶ Z} {D : E.LineData Y} {d : ℕ} (B : Blow q i π D d) (α : B.ι) (k : Fin d)
-    {V : Scheme.{0}} {f g : V ⟶ Y} (e : f = g) (h : ⊤ ≤ f ⁻¹ᵁ (B.c α).C k) (h' : ⊤ ≤ g ⁻¹ᵁ (B.c α).C k) :
-    uV B α k f h = uV B α k g h' := by
-  subst e; rfl
-
 theorem UpperTheory.Gal.KunnethLefschetz.G.PX.ontoField :
     ∀ {K : Type} [CommRing K] {W Z Y : Scheme.{0}} {q : Z ⟶ Spec (CommRingCat.of K)} {i : W ⟶ Z} {π : Y ⟶ Z} {D : E.LineData Y} {d : ℕ} (B : Blow q i π D d) {T : Scheme.{0}} (j : T ⟶ Y) (r : T ⟶ W) (hsq : IsPullback j r π i) (v : Fin d → Γ(TP B j, ⊤)), IsV B j v → ∀ {V : Scheme.{0}} (a₀ : V ⟶ WP B) (v₀ : Um d Γ(V, ⊤)) (x : V), ∃ (U : V.Opens) (a : (U : Scheme.{0}) ⟶ TP B j) (u : (Γ((U : Scheme.{0}), ⊤))ˣ), x ∈ U ∧ a ≫ rhoP B j r hsq.w = U.ι ≫ a₀ ∧ a.appTop.hom ∘ v = (u : Γ((U : Scheme.{0}), ⊤)) • (U.ι.appTop.hom ∘ v₀.1) := by
   intro K _ W Z Y q i π D d B T j r hsq v hv V a₀ v₀ x
@@ -1033,7 +1027,7 @@ theorem UpperTheory.Gal.KunnethLefschetz.G.PX.ontoField :
     rw [hι, ha₁]
     simp only [a₂, Category.assoc]
     rfl
-  · rw [hv', uV_congr B α k hpath h' hy, huv]
+  · rw [hv', uV_eq' B α k hpath h' hy, huv]
     rfl
 end -- clump:auto
 end -- clump:auto

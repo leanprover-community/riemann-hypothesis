@@ -29,22 +29,6 @@ namespace Formalism.HermitianLatticeCounting.P
 
 namespace DualLatticeIndexBis
 
-end DualLatticeIndexBis
-
-namespace DualLatticeIndexBis
-
-end DualLatticeIndexBis
-
-namespace DualLatticeIndexBis
-
-end DualLatticeIndexBis
-
-namespace DualLatticeIndexBis
-
-end DualLatticeIndexBis
-
-namespace DualLatticeIndexBis
-
 lemma relIndex_ideal_smul {R U : Type*} [CommRing R] [IsDedekindDomain R] [AddCommGroup U] [Module R U]
     (htf : ∀ a : R, a ≠ 0 → ∀ x : U, a • x = 0 → x = 0) (M N : Submodule R U) (hNM : N ≤ M)
     (A J : Ideal R) (hA : A ≠ ⊥) (hJ : J ≠ ⊥) (hAM : A • M ≤ N) :

@@ -62,18 +62,8 @@ theorem isOpen_coreH {K : Subgroup (GL n k)} (hK : IsOpen (K : Set (GL n k))) :
   have hC : IsClosed (((K.subgroupOf (KO k n)).normalCore : Subgroup (KO k n)) : Set (KO k n)) :=
     Subgroup.normalCore_isClosed _ (Subgroup.isClosed_of_isOpen _ hU)
   have hO := Subgroup.isOpen_of_isClosed_of_finiteIndex _ hC
-  obtain ⟨t, ht, hts⟩ := isOpen_induced_iff.1 hO
-  convert ht.inter GlobalTheory.SplitFlip.isOpen_KO using 1
-  ext x
-  constructor
-  · rintro ⟨y, hy, rfl⟩
-    have hyt : y ∈ Subtype.val ⁻¹' t := by rw [hts]; exact hy
-    exact ⟨hyt, y.2⟩
-  · rintro ⟨hxt, hxK⟩
-    refine ⟨⟨x, hxK⟩, ?_, rfl⟩
-    have : (⟨x, hxK⟩ : KO k n) ∈ Subtype.val ⁻¹' t := hxt
-    rw [hts] at this
-    exact this
+  rw [coreH, Subgroup.coe_map]
+  exact GlobalTheory.SplitFlip.isOpen_KO.isOpenEmbedding_subtypeVal.isOpenMap _ hO
 
 
 variable (k) in

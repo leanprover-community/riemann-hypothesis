@@ -82,8 +82,3 @@ theorem exists_col {ι : Type} [Fintype ι] {n : ℕ} (m a : ι × Fin n →₀ 
   rw [← colM_apply, ← colM_apply, hcon b (heq b (Finset.mem_univ b)).ge]
 
 end GlobalTheory.SymbolCols
-
-namespace GlobalTheory
-
-
-end GlobalTheory

@@ -88,12 +88,6 @@ theorem sign_Pt (t : ℕ) (ht : t < k + 1) :
 theorem rowsR_val (t : Fin (k + 1)) (j : Fin (r + k)) :
     (rowsR k r t j).val = if j.val < r + t.val then j.val else j.val + 1 := rfl
 
-theorem rowsR_strictMono (t : Fin (k + 1)) : StrictMono (rowsR k r t) := by
-  intro j₁ j₂ h
-  rw [Fin.lt_def, rowsR_val, rowsR_val]
-  rw [Fin.lt_def] at h
-  split_ifs <;> omega
-
 theorem residue_rows_injective {t t' : Fin (k + 1)} (h : rowsR k r t = rowsR k r t') : t = t' := by
   by_contra hne
   rcases lt_or_gt_of_ne (fun e => hne (Fin.ext e) : t.val ≠ t'.val) with hl | hl
@@ -107,7 +101,7 @@ theorem residue_rows_injective {t t' : Fin (k + 1)} (h : rowsR k r t = rowsR k r
 theorem rowsR_mem (t : Fin (k + 1)) : rowsR k r t ∈ jSetR k r := by
   classical
   simp only [jSetR, Finset.mem_filter, Finset.mem_univ, true_and]
-  convert rowsR_strictMono t
+  convert Formalism.FourierDecayAlt.P.CutMP.InvEig.rowsR_smono t
 
 section det
 
@@ -209,12 +203,12 @@ theorem claimA (J : Fin (r + k) → Fin (2 * r + k + 1)) (hJ : StrictMono J) (σ
       have := j.isLt
       split_ifs <;> omega
   have hcard : S.card = r + k := by
-    rw [hSimg, Finset.card_image_of_injective _ (rowsR_strictMono t).injective, Finset.card_univ, Fintype.card_fin]
+    rw [hSimg, Finset.card_image_of_injective _ (Formalism.FourierDecayAlt.P.CutMP.InvEig.rowsR_smono t).injective, Finset.card_univ, Fintype.card_fin]
   have hJeq : J = rowsR k r t := by
     have e1 := Finset.orderEmbOfFin_unique hcard (f := J) (fun j => by
       simp only [S, Finset.mem_filter, Finset.mem_univ, true_and]; exact hJS j) hJ
     have e2 := Finset.orderEmbOfFin_unique hcard (f := rowsR k r t) (fun j => by
-      rw [hSimg]; exact Finset.mem_image_of_mem _ (Finset.mem_univ _)) (rowsR_strictMono t)
+      rw [hSimg]; exact Finset.mem_image_of_mem _ (Finset.mem_univ _)) (Formalism.FourierDecayAlt.P.CutMP.InvEig.rowsR_smono t)
     rw [e1, e2]
   refine ⟨t, hJeq, ?_⟩
   ext q
@@ -297,7 +291,7 @@ theorem det_formula (J : Fin (r + k) → Fin (2 * r + k + 1)) (hJ : StrictMono J
       ring
     · by_contra hne
       have hp : ∏ i, colR k r z x (rowsR k r t₀) i (σ i) ≠ 0 := fun h0 => hne (by rw [h0, smul_zero])
-      obtain ⟨t, ht, hσt⟩ := claimA z x v h1 h2 _ (rowsR_strictMono t₀) σ hp
+      obtain ⟨t, ht, hσt⟩ := claimA z x v h1 h2 _ (Formalism.FourierDecayAlt.P.CutMP.InvEig.rowsR_smono t₀) σ hp
       exact hσ (by rw [hσt, ← residue_rows_injective ht])
   · rw [Finset.sum_eq_zero (fun t _ => ite_eq_right (fun e => hex ⟨t, e⟩))]
     refine Finset.sum_eq_zero fun σ _ => ?_
@@ -309,9 +303,6 @@ theorem det_formula (J : Fin (r + k) → Fin (2 * r + k + 1)) (hJ : StrictMono J
 end det2
 
 section pt
-
-theorem hpk_mulVec_eI (a : Fin r) (w : Fin (2 * r + k + 1) → ℂ) : (Hpk k r *ᵥ w) (eI k r a) = w (esI k r a) := by
-  apply Formalism.FourierDecayAlt.Q.TInvW.H_eI
 
 variable {c : Fin r → ℂ} {g : Q.Mx k r}
 
@@ -356,7 +347,7 @@ theorem ginvH_wCell_mul_apply_eq_zero (z : Fin (2 * r + k + 1) → ℂ) (hz : in
   have ep : p = eI k r ⟨p.val, hp⟩ := Fin.ext rfl
   rw [ep]
   unfold ginvH
-  rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, hpk_mulVec_eI]
+  rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, Formalism.FourierDecayAlt.Q.TInvW.H_eI]
   simp only [Matrix.mulVec, dotProduct, Matrix.conjTranspose_apply]
   have hcol : ∀ j, (Q.wCell k r (Fin.last r) c * g) j (esI k r ⟨p.val, hp⟩) =
       ((star (c ⟨p.val, hp⟩))⁻¹ • bvec (eI k r ⟨p.val, hp⟩)) j := by
@@ -364,7 +355,7 @@ theorem ginvH_wCell_mul_apply_eq_zero (z : Fin (2 * r + k + 1) → ℂ) (hz : in
     rw [← x_esI hg]
     simp [Matrix.mulVec, dotProduct, bvec, Pi.single_apply]
   simp only [hcol, Pi.smul_apply, bvec, Pi.single_apply, smul_eq_mul, mul_ite, mul_one, mul_zero]
-  have := hpk_mulVec_eI (k := k) ⟨p.val, hp⟩ z
+  have := Formalism.FourierDecayAlt.Q.TInvW.H_eI (k := k) ⟨p.val, hp⟩ z
   simp only [Matrix.mulVec, dotProduct] at this
   rw [Finset.sum_eq_single (eI k r ⟨p.val, hp⟩) (fun b _ hb => by rw [ite_eq_right hb, star_zero, zero_mul]) (by simp),
     ite_eq_left rfl, this, hz (esI k r ⟨p.val, hp⟩) (Or.inr (by simp only [esI]; omega)), mul_zero]

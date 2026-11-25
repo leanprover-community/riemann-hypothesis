@@ -1246,10 +1246,6 @@ theorem seq_of_iso {k : Type} [Field k] {X X' : Scheme.{0}} {g : X ⟶ Sp k} {E 
 
 end GlobalTheory.CompanionTheory.Hypotheses₂.CentreOver
 
-namespace GlobalTheory.CompanionTheory.Hypotheses₂
-
-
-end GlobalTheory.CompanionTheory.Hypotheses₂
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

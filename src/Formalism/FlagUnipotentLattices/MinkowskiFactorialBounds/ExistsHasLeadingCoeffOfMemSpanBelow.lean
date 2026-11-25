@@ -1204,7 +1204,7 @@ lemma sig_norm (σ : K →+* ℂ) (hσ : ∀ x : K, σ (star x) = star (σ x)) (
 
 lemma negperp_gen (σ : K →+* ℂ) (h : U →ₗ[K] U →ₗ⋆[K] K) (hσ : ∀ x : K, σ (star x) = star (σ x))
     (herm : ∀ x y : U, star (h x y) = h y x) (A N : Submodule K U)
-    (hN : ∀ n ∈ N, ∀ u ∈ A, h n u = 0) (z₀ : U) (_hz₀ : z₀ ∈ A)
+    (hN : ∀ n ∈ N, ∀ u ∈ A, h n u = 0) (z₀ : U)
     (pos : ∀ w ∈ A, h w z₀ = 0 → w ∉ N → 0 < (σ (h w w)).re)
     (z : U) (hz : z ∈ A) (hzn : (σ (h z z)).re < 0) (w : U) (hw : w ∈ A) (hwz : h w z = 0)
     (hwN : w ∉ N) : 0 < (σ (h w w)).re := by
@@ -1282,7 +1282,7 @@ lemma reverseCS_gen (σ : K →+* ℂ) (h : U →ₗ[K] U →ₗ⋆[K] K) (hσ :
   have hwwre : 0 ≤ (σ (h w w)).re := by
     by_cases hwN : w ∈ N
     · rw [hN w hwN w hwA, map_zero, Complex.zero_re]
-    · exact (negperp_gen σ h hσ herm A N hN z₀ hz₀ pos z hz hzn w hwA hwz hwN).le
+    · exact (negperp_gen σ h hσ herm A N hN z₀ pos z hz hzn w hwA hwz hwN).le
   have him_zz := herm_im σ h hσ herm z
   have him_ww := herm_im σ h hσ herm w
   have him_z'z' := herm_im σ h hσ herm z'
@@ -1309,7 +1309,7 @@ lemma reverseCS_gen (σ : K →+* ℂ) (h : U →ₗ[K] U →ₗ⋆[K] K) (hσ :
     have hw0 : h w w = 0 := (mul_eq_zero.1 h0).resolve_left hα
     have hwN : w ∈ N := by
       by_contra hwN
-      have h4 := negperp_gen σ h hσ herm A N hN z₀ hz₀ pos z hz hzn w hwA hwz hwN
+      have h4 := negperp_gen σ h hσ herm A N hN z₀ pos z hz hzn w hwA hwz hwN
       rw [hw0, map_zero, Complex.zero_re] at h4
       exact lt_irrefl _ h4
     refine ⟨β / h z z, ?_⟩

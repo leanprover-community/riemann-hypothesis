@@ -45,7 +45,7 @@ def piP : stab R (Sum.inl '' (Set.univ : Set ι) : Set (ι ⊕ ι)) →* GL ι R
     by rw [← blk_mul _ _ (fun r c => (mem_stab_univ.1 q.2 r c).1), Units.inv_mul, blk_one]⟩
   map_one' := Units.ext (by simp [blk_one])
   map_mul' a b := Units.ext (by
-    simp only [Subgroup.coe_mul, Units.val_mul, Units.val_mk]
+    simp only [Subgroup.coe_mul, Units.val_mul]
     exact blk_mul _ _ (fun r c => (mem_stab_univ.1 b.2 r c).1))
 
 theorem dual_mul (σ : R →+* R) (a b : Matrix ι ι R) : (aᵀ.map σ) * (bᵀ.map σ) = ((b * a)ᵀ).map σ := by
@@ -62,7 +62,7 @@ def jG (σ : R →+* R) : GL ι R →* GL (ι ⊕ ι) R where
       simp [Matrix.map_one _ (map_zero σ) (map_one σ)]⟩
   map_one' := Units.ext (by simp [Matrix.map_one _ (map_zero σ) (map_one σ)])
   map_mul' a b := Units.ext (by
-    simp only [Units.val_mul, Units.val_mk, Matrix.fromBlocks_multiply, _root_.mul_inv_rev]
+    simp only [Units.val_mul, Matrix.fromBlocks_multiply, _root_.mul_inv_rev]
     simp [Matrix.transpose_mul, Matrix.map_mul])
 
 theorem jG_val (σ : R →+* R) (m : GL ι R) : ((jG σ m : GL (ι ⊕ ι) R) : Matrix (ι ⊕ ι) (ι ⊕ ι) R) =

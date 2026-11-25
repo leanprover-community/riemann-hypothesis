@@ -586,115 +586,8 @@ theorem exp_of_hasQ {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} 
     (hmem : T.an f = ((fun z => g (UpperHalfPlane.ofComplex z) : ℂ → ℂ) : Mero))
     (hA' : HasQ M (fun τ => g τ * ee (-((k : ℂ) / M) * (τ : ℂ))) A') :
     (∀ n : ℕ, ε ((T.exp f).coeff (((k : ℚ) + n) / M)) = A' n) ∧
-      ∀ r : ℚ, (∀ n : ℕ, r ≠ ((k : ℚ) + n) / M) → (T.exp f).coeff r = 0 := by
-  classical
-  obtain ⟨φ, C, hφ, hsum⟩ := T.an_exp f
-  have hMq : (M : ℚ) ≠ 0 := by exact_mod_cast hM.ne'
-  have hMc : (M : ℂ) ≠ 0 := by exact_mod_cast hM.ne'
-  let ι : ℕ → ℚ := fun n => ((k : ℚ) + n) / M
-  have hι : Function.Injective ι := by
-    intro n m h
-    simp only [ι] at h
-    rw [div_left_inj' hMq, add_right_inj] at h
-    exact_mod_cast h
-  let B : ℚ → ℂ := fun r => if h : ∃ n, ι n = r then A' h.choose else 0
-  have hBι : ∀ n, B (ι n) = A' n := by
-    intro n
-    have h : ∃ m, ι m = ι n := ⟨n, rfl⟩
-    simp only [B, dite_eq_left h]
-    rw [hι h.choose_spec]
-  have hB0 : ∀ r, r ∉ Set.range ι → B r = 0 := by
-    intro r hr
-    simp only [B]
-    rw [dite_eq_right]
-    exact hr
-  have hBsum : ∀ z : ℂ, 0 < z.im →
-      HasSum (fun r : ℚ => B r * Complex.exp (2 * Real.pi * Complex.I * (r : ℂ) * z)) (g (UpperHalfPlane.ofComplex z)) := by
-    intro z hz
-    have h2 := (hA' ⟨z, hz⟩).mul_left (ee ((k : ℂ) / M * z))
-    rw [← hι.hasSum_iff (fun r hr => by simp [hB0 r hr])]
-    have e1 : ((fun r : ℚ => B r * Complex.exp (2 * Real.pi * Complex.I * (r : ℂ) * z)) ∘ ι) = fun n : ℕ =>
-        ee ((k : ℂ) / M * z) * (A' n * Complex.exp (2 * Real.pi * Complex.I * n * z / M)) := by
-      funext n
-      simp only [Function.comp_apply, hBι, ι, ee]
-      rw [mul_left_comm, ← Complex.exp_add]
-      congr 2
-      push_cast
-      field_simp
-    have e2 : g (UpperHalfPlane.ofComplex z) = ee ((k : ℂ) / M * z) * (g ⟨z, hz⟩ * ee (-((k : ℂ) / M) * z)) := by
-      simp only [UpperHalfPlane.ofComplex_apply_of_im_pos hz]
-      rw [mul_left_comm, ee, ee, ← Complex.exp_add]
-      have : 2 * Real.pi * Complex.I * ((k : ℂ) / M * z) + 2 * Real.pi * Complex.I * (-((k : ℂ) / M) * (z : ℂ)) = 0 := by
-        ring
-      rw [this, Complex.exp_zero, mul_one]
-    rw [e1, e2]
-    simpa using h2
-  have hgerm : φ =ᶠ[Filter.codiscreteWithin Hs] fun z => g (UpperHalfPlane.ofComplex z) := by
-    have := hφ.symm.trans hmem
-    exact Filter.Germ.coe_eq.mp this
-  let S : Set ℂ := {z | C < z.im ∧ 0 < z.im ∧ φ z = g (UpperHalfPlane.ofComplex z)}
-  have hS : ∀ y : ℝ, ∃ z ∈ S, y < z.im := by
-    intro y
-    set Y := max (max y C) 0 + 1 with hY
-    set w : ℂ := Complex.I * Y
-    have hwim : w.im = Y := by simp [w]
-    have hw : w ∈ Hs := by
-      show 0 < w.im
-      rw [hwim]; have := le_max_right (max y C) 0; linarith
-    have h1 := mem_codiscreteWithin_iff_forall_mem_nhdsNE.mp hgerm w hw
-    have h2 : Metric.ball w (1 / 2) ∈ nhdsWithin w {w}ᶜ :=
-      nhdsWithin_le_nhds (Metric.ball_mem_nhds w (by norm_num))
-    obtain ⟨z, hz1, hz2⟩ := Filter.nonempty_of_mem (Filter.inter_mem h1 h2)
-    have hdist : |z.im - Y| < 1 / 2 := by
-      have := Complex.abs_im_le_norm (z - w)
-      rw [Metric.mem_ball, dist_eq_norm] at hz2
-      rw [Complex.sub_im, hwim] at this
-      linarith
-    have hyY : y ≤ max (max y C) 0 := le_trans (le_max_left _ _) (le_max_left _ _)
-    have hCY : C ≤ max (max y C) 0 := le_trans (le_max_right _ _) (le_max_left _ _)
-    have h0Y : 0 ≤ max (max y C) 0 := le_max_right _ _
-    have hzim : max (max y C) 0 + 1 / 2 < z.im := by
-      have := (abs_lt.mp hdist).1; linarith
-    have hzH : z ∈ Hs := show 0 < z.im by linarith
-    refine ⟨z, ⟨by linarith, by linarith, ?_⟩, by linarith⟩
-    rcases hz1 with h | h
-    · exact h
-    · exact absurd hzH h
-  let d : ℚ → ℂ := fun r => ε ((T.exp f).coeff r) - B r
-  have hd : d = 0 := by
-    refine GlobalTheory.KExp.uniq d ?_ S ?_ (Complex.I * (|C| + 1)) ?_ hS
-    · have hR : (Set.range ι).IsWF := by
-        have : Set.range ι = ι '' Set.univ := Set.image_univ.symm
-        rw [this]
-        refine (Set.IsPWO.image_of_monotone (Set.isPWO_of_wellQuasiOrderedLE _) ?_).isWF
-        intro n m h
-        simp only [ι]
-        gcongr
-      refine ((T.exp f).isWF_support.union hR).mono ?_
-      · intro r hr
-        by_contra hn
-        simp only [Set.mem_union, not_or] at hn
-        apply hr
-        simp only [d, hB0 r hn.2]
-        have : (T.exp f).coeff r = 0 := by simpa [HahnSeries.support] using hn.1
-        simp [this]
-    · intro z hz
-      have := (hsum z hz.1).sub (hBsum z hz.2.1)
-      rw [hz.2.2, sub_self] at this
-      simpa [d, sub_mul] using this
-    · have hzi : C < (Complex.I * (|C| + 1)).im := by
-        simp; have := le_abs_self C; linarith
-      have hzp : 0 < (Complex.I * (|C| + 1)).im := by simp; positivity
-      have := ((hsum _ hzi).summable.sub (hBsum _ hzp).summable)
-      simpa [d, sub_mul] using this
-  have hdr : ∀ r, ε ((T.exp f).coeff r) = B r := fun r => sub_eq_zero.mp (congrFun hd r)
-  refine ⟨fun n => by rw [hdr]; exact hBι n, fun r hr => ?_⟩
-  have hr' : r ∉ Set.range ι := by
-    rintro ⟨n, rfl⟩
-    exact hr n rfl
-  have := hdr r
-  rw [hB0 r hr'] at this
-  exact (map_eq_zero_iff ε ε.injective).mp this
+      ∀ r : ℚ, (∀ n : ℕ, r ≠ ((k : ℚ) + n) / M) → (T.exp f).coeff r = 0 :=
+  GlobalTheory.KExp.exp_of_hasQ T f g hM k A' hmem hA'
 
 end GlobalTheory.SiegTwo
 end -- clump:auto
@@ -713,9 +606,6 @@ open scoped UpperHalfPlane
 open GlobalTheory.Sieg GlobalTheory.QFam GlobalTheory.KummerEisensteinGalois
 
 namespace GlobalTheory.Sieg.EisQ
-
-theorem ee_int_mul' (n : ℤ) (z : ℂ) : ee (n * z) = ee z ^ n := by
-  simp only [ee, ← Complex.exp_int_mul]; congr 1; ring
 
 theorem hasSum_point {M : ℕ} (hM : 0 < M) (a A e : ℤ) (w : ℤ → ℤ → ℂ) :
     HasSum (fun p : ℤ × ℤ => if p.2 = e ∧ a + M * p.1 = A then w (a + M * p.1) p.2 else 0)
@@ -790,7 +680,7 @@ theorem fTerm_eq (j : ℕ) {M : ℕ} (hM : 0 < M) (a b : ℤ) (τ : ℍ) (p : �
   unfold fTerm
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one, hc]
   split_ifs with h
-  · rw [← ee_int_mul', mul_right_comm]
+  · rw [← GlobalTheory.Sieg.DlogOne.ee_int_mul, mul_right_comm]
     congr 1
     · congr 1
       · congr 2
@@ -850,7 +740,7 @@ theorem eisensteinFxConstantTerm_rationalIndex_eq (j : ℕ) {M : ℕ} (hM : 0 < 
     unfold frc
     rw [div_eq_zero_iff, or_iff_left hQ, Int.cast_eq_zero, Int.dvd_iff_emod_eq_zero]
   have he : ee ((((b : ℚ) / M : ℚ)) : ℂ) = ee (1 / (M : ℂ)) ^ b := by
-    rw [← ee_int_mul']; congr 1; push_cast; ring
+    rw [← GlobalTheory.Sieg.DlogOne.ee_int_mul]; congr 1; push_cast; ring
   unfold f0 const0
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one, fract_eq, h0, he]
   split_ifs

@@ -90,19 +90,15 @@ theorem jet_real {f m r t b g dF R : ℝ} (hf0 : 0 ≤ f) (hm0 : 0 ≤ m) (hr0 :
   have hb1 : (1 : ℝ) ≤ b := by linarith
   have hfr : f * r ≤ t ^ 2 := by rw [sq]; exact mul_le_mul hf hr hr0 (by linarith)
   have hfm : f * m ≤ t ^ 2 := by rw [sq]; exact mul_le_mul hf hm hm0 (by linarith)
-  have ht2 : 0 ≤ t ^ 2 := by positivity
   have h5 : 5 * t ^ 2 ≤ b := by
     have : t ^ 3 = t * t ^ 2 := by ring
     nlinarith [hp 3 (by norm_num)]
   have hdb : dF ≤ b ^ 2 := by
-    have h1 : f * r * (2 * (2 * b) + 1) ≤ t ^ 2 * (5 * b) := mul_le_mul hfr (by linarith) (by linarith) ht2
     nlinarith
   have hN0 : 0 ≤ 2 * f * m := by positivity
   have hN : 2 * f * m ≤ b := by nlinarith
   have hN3 : (2 * f * m) ^ 3 ≤ b := by
     have h1 : (2 * f * m) ^ 3 ≤ (2 * t ^ 2) ^ 3 := pow_le_pow_left₀ hN0 (by linarith) 3
-    have h2 : t ^ 7 = t * t ^ 6 := by ring
-    have h3 : (2 * t ^ 2) ^ 3 = 8 * t ^ 6 := by ring
     have h4 : 0 ≤ t ^ 6 := by positivity
     nlinarith
   have hrb : r ≤ b := hr.trans (by simpa using hp 1 (by norm_num))
@@ -120,7 +116,6 @@ theorem jet_real {f m r t b g dF R : ℝ} (hf0 : 0 ≤ f) (hm0 : 0 ≤ m) (hr0 :
   refine ⟨by linarith, ?_, ?_⟩
   · have h1 : dF * (2 * Real.sqrt (2 * f * m)) ≤ b ^ 2 * (2 * b) :=
       mul_le_mul hdb (by linarith) (by positivity) (by positivity)
-    have h2 : b ^ 2 * (2 * b) = 2 * b ^ 3 := by ring
     linarith
   · rw [div_le_iff₀ (by linarith)]
     have h1 : r * (2 * f * m) ≤ b ^ 2 := by rw [sq]; exact mul_le_mul hrb hN hN0 (by linarith)
@@ -130,7 +125,6 @@ theorem jet_real {f m r t b g dF R : ℝ} (hf0 : 0 ≤ f) (hm0 : 0 ≤ m) (hr0 :
     have h3 : R * (2 * f * m) ^ 3 ≤ b * b := mul_le_mul hR hN3 (by positivity) (by linarith)
     have h4 : R * (2 * f * m) ^ 3 * (r * (2 * f * m) / 4 + 2 * dF ^ 2) ≤ b * b * (3 * b ^ 4) :=
       mul_le_mul h3 (by linarith) (by positivity) (by positivity)
-    have h5 : b * b * (3 * b ^ 4) = 3 * b ^ 6 := by ring
     linarith
 
 alias finrank_host := _root_.Formalism.MainNotions.StandardLattice.finrank_host
@@ -154,7 +148,6 @@ theorem jetNum_of_sizes {D : D7} {L : SizeData₂ D} (S : SizesAt L) {dF : ℕ}
   have hsb : Real.sqrt L.sc.b ≤ L.sc.b := Real.sqrt_le_iff.2 ⟨by linarith, by nlinarith⟩
   have hq : (1 : ℝ) ≤ D.host.q := by exact_mod_cast D.host.hyp.1.one_lt.le
   have hd' : (1 : ℝ) ≤ D.host.d := by exact_mod_cast D.host.hyp.2.1.one_lt.le
-  have hn : (1 : ℝ) ≤ D.R.n := by exact_mod_cast D.R.ord_pos
   have hqd : (1 : ℝ) ≤ (D.host.q : ℝ) * D.host.d := by nlinarith
   have hs : Real.sqrt ((D.host.q : ℝ) * D.host.d) ≤ (D.host.q : ℝ) * D.host.d := by
     rw [Real.sqrt_le_left (by linarith)]

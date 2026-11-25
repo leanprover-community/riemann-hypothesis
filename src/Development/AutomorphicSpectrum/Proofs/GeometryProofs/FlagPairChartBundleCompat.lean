@@ -503,16 +503,6 @@ section -- clump:auto
 open ReciprocityTheory.ChartRestriction.G.Geo (ChartBundle chartRing)
 open GlobalTheory.CompanionTheory.Ar.Num (dotDual)
 
-namespace GlobalTheory.CompanionTheory.Ar.DualPair
-
-theorem dualRevTri : ∀ (Ω : Type) [Field Ω] (r : ℕ) (w w' v v' : Module.Basis (Fin r) Ω (Fin r → Ω)),
-    (∀ i j, w i ⬝ᵥ v j = if i = j.rev then 1 else 0) → (∀ i j, w' i ⬝ᵥ v' j = if i = j.rev then 1 else 0) →
-    (∀ i j, i < j → w.repr (w' i) j = 0) →
-    (∀ i j, i < j → v.repr (v' i) j = 0) ∧ ∀ i, v.repr (v' i) i * w.repr (w' i.rev) i.rev = 1 := by
-  intro Ω _ r w w' v v' h1 h2 h3
-  exact PositivityTheory.Xgn.dual_basis_reverse_triangular Ω r w w' v v' h1 h2 h3
-
-end GlobalTheory.CompanionTheory.Ar.DualPair
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.ReversedDualTriangular =====
@@ -594,7 +584,7 @@ theorem dualPair : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuation
   intro O _ _ _ Ω _ _ K _ _ J _ y ϖ r B B' w w' x x' f g h
   obtain ⟨v, hv⟩ := _root_.GlobalTheory.CompanionTheory.Ar.DualRev.dotDualRevBasis Ω r w
   obtain ⟨v', hv'⟩ := _root_.GlobalTheory.CompanionTheory.Ar.DualRev.dotDualRevBasis Ω r w'
-  obtain ⟨htri, hdiag⟩ := _root_.GlobalTheory.CompanionTheory.Ar.DualPair.dualRevTri Ω r w w' v v' hv hv' h.sameFlag
+  obtain ⟨htri, hdiag⟩ := _root_.PositivityTheory.Xgn.dual_basis_reverse_triangular Ω r w w' v v' hv hv' h.sameFlag
   have hdual : ∀ B₀ : ChartBundle O (segreVec y) r (Fin r → Ω),
       IsDualLat O y (dotForm Ω r) B₀.lat (dualBundle B₀).lat := by
     intro B₀

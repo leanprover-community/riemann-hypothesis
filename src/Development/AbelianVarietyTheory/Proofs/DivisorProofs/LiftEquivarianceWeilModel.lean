@@ -65,8 +65,4 @@ theorem proj (hg : R.models_gW) (σ : D.what₂.LL →+* ℂ) (y : (R.HW i σ).H
 
 end GlobalTheory.GalLift.Transl
 
-namespace GlobalTheory.GalLift
-
-end GlobalTheory.GalLift
-
 end

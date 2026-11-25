@@ -84,10 +84,4 @@ def SZbP (D : D7) (L : SizeData₂ D) (C : ℝ) (u : D.what₂.Word) : ℝ :=
 
 end Formalism.BasicNotions.DV
 
-namespace Formalism.BasicNotions
-
-open Formalism.MainNotions.G
-
-end Formalism.BasicNotions
-
 end

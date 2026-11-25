@@ -89,8 +89,7 @@ theorem exists_locAt_split_iff (B : Base) (h2 : Module.finrank B.host.F B.host.E
 
 theorem nonempty_conj_embedding (EE : Type) [NormedAddCommGroup EE] [InnerProductSpace ℂ EE] (d D : ℕ) (h : d ≤ D)
     (b : OrthonormalBasis (Fin d) ℂ EE) : Nonempty (EE →ₗᵢ⋆[ℂ] EuclideanSpace ℂ (Fin D)) := by
-  intros
-  apply _root_.GlobalTheory.Mem.SpectralModel.exists_conjIsom <;> assumption
+  apply GlobalTheory.Mem.SpectralModel.exists_conjIsom <;> assumption
 
 theorem exists_innerProductSpace (V : Type) [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V] (ip : V → V → ℂ)
     (hs : ∀ x y, (starRingEnd ℂ) (ip y x) = ip x y) (hp : ∀ x, x ≠ 0 → 0 < (ip x x).re)

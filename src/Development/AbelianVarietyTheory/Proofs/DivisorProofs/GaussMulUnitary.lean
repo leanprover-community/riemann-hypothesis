@@ -32,7 +32,4 @@ theorem compAt_adj' {θ : InfFam D} (hθ : IsInfFam θ) (τ : D.what₂.Tau) {m 
 
 end GlobalTheory.VacKInf.LeviFix
 
-namespace GlobalTheory.VacKInf
-
-end GlobalTheory.VacKInf
 end

@@ -221,9 +221,6 @@ theorem coeff_mvExp_two {τ : Type} {F : MvPowerSeries τ C} (hF : ((2 : ℕ) : 
   rw [hm]
   simp [Finset.sum_range_succ, h2, coeff_one, hm0]
 
-theorem ge_zero_of_pow_eq_one (V : VF C) {N : ℕ} (hN : N ≠ 0) {a : C} (ha : a ^ N = 1) : V.Ge 0 a := by
-  apply GlobalTheory.RowLaw.PureTypical.ge_of_pow_eq_one <;> assumption
-
 theorem ge_zero_of_sub_mul (V : VF C) {N : ℕ} (hN : V.v (N : C) = 0) {a b z : C} (ha : a ^ N = 1)
     (hb : b ^ N = 1) (hab : a ≠ b) (hz : V.Ge 0 ((a - b) * z)) : V.Ge 0 z := by
   have hN0 : N ≠ 0 := by
@@ -231,7 +228,7 @@ theorem ge_zero_of_sub_mul (V : VF C) {N : ℕ} (hN : V.v (N : C) = 0) {a b z : 
     rw [Nat.cast_zero, V.v.map_zero] at hN
     exact WithTop.top_ne_zero hN
   obtain ⟨n, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hN0
-  have hbi := ge_zero_of_pow_eq_one V hN0 hb
+  have hbi := GlobalTheory.RowLaw.PureTypical.ge_of_pow_eq_one V hN0 hb
   set η := a * b ^ n with hη
   have hηN : η ^ (n + 1) = 1 := by
     rw [hη, mul_pow, ← pow_mul, mul_comm n, pow_mul]
@@ -246,7 +243,7 @@ theorem ge_zero_of_sub_mul (V : VF C) {N : ℕ} (hN : V.v (N : C) = 0) {a b z : 
     have := geom_sum_mul η (n + 1)
     rw [hηN, sub_self] at this
     exact (mul_eq_zero.1 this).resolve_right hne
-  have hηi := ge_zero_of_pow_eq_one V (Nat.succ_ne_zero n) hηN
+  have hηi := GlobalTheory.RowLaw.PureTypical.ge_of_pow_eq_one V (Nat.succ_ne_zero n) hηN
   have hS : V.Ge 0 (∑ i ∈ Finset.range (n + 1), ∑ j ∈ Finset.range i, η ^ j) :=
     VF.Ge.sum fun i _ => VF.Ge.sum fun j _ => hηi.pow j
   have hE : (∑ i ∈ Finset.range (n + 1), ∑ j ∈ Finset.range i, η ^ j) * (η - 1) = -((n + 1 : ℕ) : C) := by

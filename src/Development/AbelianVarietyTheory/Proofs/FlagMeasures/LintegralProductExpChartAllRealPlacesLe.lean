@@ -137,7 +137,6 @@ theorem dOp_chart_le {n : ℕ} {ε : Fin n → Bool} {s : ℝ} {E : Fin (n ^ 2) 
           NormedSpace.map_exp T hTc _
       _ = NormedSpace.exp (x i • T (E i)) := by rw [map_smul, Complex.coe_smul]
   haveI : CompleteSpace (EuclideanSpace ℂ (Fin n) →L[ℂ] EuclideanSpace ℂ (Fin n)) := by
-    set_option synthInstance.maxHeartbeats 100000 in
       infer_instance
   obtain ⟨-, B, hB, hBn, -, -, -⟩ := GlobalTheory.ProductChart.exists_deriv_prod hs t' (n ^ 2) (fun i => T (E i))
     (fun i => ContinuousLinearMap.proj i) hEn ht'

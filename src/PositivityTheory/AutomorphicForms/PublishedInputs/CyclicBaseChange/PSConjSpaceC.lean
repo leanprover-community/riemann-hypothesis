@@ -42,10 +42,7 @@ theorem cc_ext {x y : Cinf E} (h : ∀ τ, cc τ x = cc τ y) : x = y :=
   funext fun w => (cc_embedding w x).symm.trans ((h _).trans (cc_embedding w y))
 
 theorem conj_ne (τ : E →+* ℂ) : ComplexEmbedding.conjugate τ ≠ τ := fun h =>
-  (InfinitePlace.not_isReal_iff_isComplex.mpr (IsTotallyComplex.isComplex (InfinitePlace.mk τ)))
-    (InfinitePlace.isReal_iff.2 (by
-      rcases InfinitePlace.embedding_mk_eq τ with e | e <;> rw [e] <;>
-        [exact ComplexEmbedding.isReal_iff.2 h; exact ComplexEmbedding.isReal_iff.2 (by rw [h]; exact h)]))
+  NumberField.IsTotallyComplex.complexEmbedding_not_isReal τ (ComplexEmbedding.isReal_iff.2 h)
 
 theorem cc_conj (τ : E →+* ℂ) (x : Cinf E) :
     cc (ComplexEmbedding.conjugate τ) x = starRingEnd ℂ (cc τ x) := by

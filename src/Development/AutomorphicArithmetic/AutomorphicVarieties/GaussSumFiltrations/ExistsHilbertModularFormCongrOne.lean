@@ -191,7 +191,6 @@ private theorem ez_at_imaginary_unit_shift_eq {F : Type} [Field F] [NumberField 
   congr 1
   simp only [mul_add, Finset.sum_add_distrib]
 
-
 open GlobalTheory.HilbertThetaSeries.QUniq in
 theorem GlobalTheory.HilbertThetaSeries.hasQ_unique : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (f : Hn F → ℂ) (a b : F → ℂ),
     HasQ f a → HasQ f b → a = b := by
@@ -514,7 +513,6 @@ theorem coefAt_eq_coef (hΨ : Sys k Ψ) (ha : ∀ y, HasQ ((((absF y ^ ((k : ℝ
 
 end GlobalTheory.HilbertThetaSeries.LiftExp
 
-
 open GlobalTheory.HilbertThetaSeries.LiftExp in
 theorem GlobalTheory.HilbertThetaSeries.lift_hasExp : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (k : ℕ) (Ψ : GL (Fin 2) (Af F) → Hn F → ℂ) (φ : GA F 2 → ℂ) (a : (Af F)ˣ → F → ℂ), Sys k Ψ → IsLift k Ψ φ → (∀ y, HasQ ((((absF y ^ ((k : ℝ) / 2) : ℝ) : ℂ))⁻¹ • Ψ (aff y 0)) (a y)) → ∃ c : Ideal (𝓞 F) → ℂ, HasExp φ k (fun y => a y 0) c ∧ ∀ 𝔪, 𝔪 ≠ ⊥ → ∃ y, c 𝔪 = a y 1 := by
   classical
@@ -538,7 +536,6 @@ theorem GlobalTheory.HilbertThetaSeries.lift_hasExp : ∀ (F : Type) [Field F] [
   refine QUniq.hasSum_congr' h2 fun ξ => ?_
   rw [Function.comp_apply, Function.update_of_ne (ne_zero_of_tp ξ.2), coefAt_eq_coef hΨ ha c hc yf ξ.1 ξ.2]
   rfl
-
 
 end -- clump:auto
 end -- clump:auto
@@ -721,7 +718,6 @@ theorem main : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (p : �
 
 end GlobalTheory.QPow
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.GaussSumFiltrations.HilbertQExpPadicCongruencePowPrimePow =====
@@ -883,7 +879,6 @@ theorem finite_index : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F
 
 end GlobalTheory.HilbertThetaSeries.StabFin
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.GaussSumFiltrations.StabilizerEqScalarMulCongruenceMulFinset =====
@@ -971,7 +966,6 @@ end GlobalTheory.HilbertThetaSeries.GaussSumOrbitFiniteness
 
 namespace GlobalTheory.HilbertThetaSeries
 
-
 open GlobalTheory.HilbertThetaSeries.GaussSumOrbitFiniteness in
 theorem orbit_seed_finite_congr : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (p : ℕ) [Fact p.Prime] (ι : Qbar p ≃+* ℂ), p ≠ 2 → ∀ δ : F, IsDel p δ → ∀ θ : Hn F → ℂ, Seed ι δ θ → ∀ y : (Af F)ˣ, AtP p δ y → {f | ∃ γ, Stab (aff y 0) γ ∧ f = sl (p - 1) (toInf γ) θ}.Finite ∧ (∀ γ, Stab (aff y 0) γ → ∀ γ', InG p δ γ' → Small ι (p : ℝ)⁻¹ (sl0 (p - 1) (toInf γ') (sl (p - 1) (toInf γ) θ) - 1)) ∧ Stab (aff y 0) (1 : GL (Fin 2) F) ∧ ∀ γ γ' : GL (Fin 2) F, Stab (aff y 0) γ → Stab (aff y 0) γ' → Stab (aff y 0) (γ * γ') ∧ Stab (aff y 0) γ⁻¹ := by
   intro F _ _ _ p _ ι hp2 δ hδ θ hθ y hy
@@ -1044,7 +1038,6 @@ theorem orbit_seed_finite_congr : ∀ (F : Type) [Field F] [NumberField F] [IsTo
     exact max_le le_rfl hc1
 
 end GlobalTheory.HilbertThetaSeries
-
 
 end -- clump:auto
 end -- clump:auto
@@ -1224,7 +1217,6 @@ theorem avg_pow : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (p 
 
 end GlobalTheory.HilbertThetaSeries.OrbitAvg
 
-
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -1251,11 +1243,6 @@ lemma pos_iff (γ : GL (Fin 2) F) : Pos (toInf γ) ↔ TP γ.val.det := by
   unfold Pos TP
   rw [h]
   rfl
-
-lemma scal_comm {R : Type} [CommRing R] (z : Rˣ) (g : GL (Fin 2) R) :
-    g * Matrix.GeneralLinearGroup.scalar (Fin 2) z = Matrix.GeneralLinearGroup.scalar (Fin 2) z * g := by
-  ext1
-  exact ((Matrix.scalar_commute (z : R) (fun _ => Commute.all _ _) g.val).eq).symm
 
 def Rel (g g' : GL (Fin 2) (Af F)) (γ : GL (Fin 2) F) : Prop :=
   TP γ.val.det ∧ ∃ (z : (Af F)ˣ) (u : GL (Fin 2) (Af F)), u ∈ KLev F 2 1 ∧
@@ -1293,7 +1280,7 @@ lemma Rel.symm {g g' : GL (Fin 2) (Af F)} {γ : GL (Fin 2) F} (h : Rel g g' γ) 
   have e' : g' = (Matrix.GeneralLinearGroup.scalar (Fin 2) z)⁻¹ * (toFin γ * g) * u⁻¹ := by
     rw [e]; group
   rw [e', map_inv, map_inv, ← map_inv (Matrix.GeneralLinearGroup.scalar (Fin 2)), ← mul_assoc, ← mul_assoc,
-    scal_comm]
+    GlobalTheory.HilbertThetaSeries.AdelicLift.scalar_comm]
   group
 
 lemma Rel.trans {g g' g'' : GL (Fin 2) (Af F)} {γ γ' : GL (Fin 2) F} (h : Rel g g' γ) (h' : Rel g' g'' γ') :
@@ -1301,7 +1288,7 @@ lemma Rel.trans {g g' g'' : GL (Fin 2) (Af F)} {γ γ' : GL (Fin 2) F} (h : Rel 
   obtain ⟨hγ, z, u, hu, e⟩ := h
   obtain ⟨hγ', z', u', hu', e'⟩ := h'
   refine ⟨tp_mul hγ' hγ, z * z', u' * u, mul_mem hu' hu, ?_⟩
-  rw [map_mul, mul_assoc, e, ← mul_assoc, ← mul_assoc, scal_comm, mul_assoc _ (toFin γ'), e', map_mul]
+  rw [map_mul, mul_assoc, e, ← mul_assoc, ← mul_assoc, GlobalTheory.HilbertThetaSeries.AdelicLift.scalar_comm, mul_assoc _ (toFin γ'), e', map_mul]
   group
 
 theorem main : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (k : ℕ) (Y : Finset (Af F)ˣ) (f : (Af F)ˣ → Hn F → ℂ), (∀ g : GL (Fin 2) (Af F), ∃ γ : GL (Fin 2) F, TP γ.val.det ∧ ∃ y ∈ Y, ∃ u ∈ KLev F 2 1, toFin γ * g = aff y 0 * u) → (∀ y ∈ Y, Hol (f y) ∧ Gr (f y) ∧ ∀ γ, Stab (aff y 0) γ → sl k (toInf γ) (f y) = f y) → ∃ Ψ : GL (Fin 2) (Af F) → Hn F → ℂ, Sys k Ψ ∧ ∀ g, ∃ (γ : GL (Fin 2) F) (z : (Af F)ˣ), TP γ.val.det ∧ ∃ y ∈ Y, ∃ u ∈ KLev F 2 1, toFin γ * g = Matrix.GeneralLinearGroup.scalar (Fin 2) z * aff y 0 * u ∧ Ψ g = sl k (toInf γ) (f y) := by
@@ -1345,7 +1332,6 @@ theorem main : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (k : �
     exact ⟨c g, z, hγ, y g, (hy g).1, u, hu, e, rfl⟩
 
 end GlobalTheory.HilbertThetaSeries.SysOfStab
-
 
 end -- clump:auto
 end -- clump:auto
@@ -1427,7 +1413,6 @@ theorem GlobalTheory.HilbertThetaSeries.finite_reps : ∀ (F : Type) [Field F] [
       generalize (Units.map (algebraMap F (Af F)).toMonoidHom) ξ = a
       generalize (Units.map (algebraMap F (Af F)).toMonoidHom) (ξf y0) = b
       rw [mul_comm a⁻¹ b, mul_assoc b, ← mul_assoc a⁻¹, ← mul_assoc a⁻¹, inv_mul_cancel, one_mul, ← mul_assoc]
-
 
 end -- clump:auto
 end -- clump:auto
@@ -1593,7 +1578,6 @@ theorem cusp_inf_one : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F
   exact (Q _ _ _ _ 0 hsum S1).2.2.2.1 (by rw [hc, one_mul]; exact max_le le_rfl hc1)
 
 end GlobalTheory.HilbertThetaSeries.CuspOne
-
 
 end -- clump:auto
 end -- clump:auto

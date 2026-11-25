@@ -319,11 +319,6 @@ theorem tieB : TieB := tieB_of integrality_of_letter_log
 
 end Formalism.MainNotions.DIV.Bridge.OneLetterJetKernel
 
-namespace Formalism.MainNotions.DIV.Bridge.DworkPowerSeriesWeights
-
-open Formalism.MainNotions Formalism.MainNotions.DIV.Bridge.OneLetterJetKernel
-
-end Formalism.MainNotions.DIV.Bridge.DworkPowerSeriesWeights
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

@@ -30,11 +30,11 @@ def EtaleDerivedDegreeZeroHomologyLocallyLifts : Prop := ∀ (B : Scheme.{0}) (q
   Cov U (fun U' a => ∃ x : (OU B q).obj U' ⟶ M, (H0 B q).map ((OU B q).map a) ≫ t = (H0 B q).map x)
 
 def EtaleDerivedDegreeZeroHomologyKernelLocallyVanishes : Prop := ∀ (B : Scheme.{0}) (q : ℕ) (M : DerivedCategory (SShv B q)) (U : B.Etale)
-  (x : (OU B q).obj U ⟶ M), (H0 B q).map x = 0 → Cov U (fun U' a => (OU B q).map a ≫ x = 0)
+  (x : (OU B q).obj U ⟶ M), (H0 B q).map x = 0 → Cov U (fun _ a => (OU B q).map a ≫ x = 0)
 
 def LeafSheafIso : Prop := ∀ (B : Scheme.{0}) (q : ℕ) (F G : SShv B q) (g : F ⟶ G),
   (∀ (U : B.Etale) (t : (H0 B q).obj ((OU B q).obj U) ⟶ F), t ≫ g = 0 →
-    Cov U (fun U' a => (H0 B q).map ((OU B q).map a) ≫ t = 0)) →
+    Cov U (fun _ a => (H0 B q).map ((OU B q).map a) ≫ t = 0)) →
   (∀ (U : B.Etale) (s : (H0 B q).obj ((OU B q).obj U) ⟶ G),
     Cov U (fun U' a => ∃ t : (H0 B q).obj ((OU B q).obj U') ⟶ F, (H0 B q).map ((OU B q).map a) ≫ s = t ≫ g)) →
   IsIso g

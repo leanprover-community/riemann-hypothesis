@@ -91,14 +91,9 @@ theorem inMultiple_zero {c : ZMod n} {e : ℕ} {f : LetA O n} : InFP W T c e f 0
 
 theorem inMultiple_sum {c : ZMod n} {e : ℕ} {f : LetA O n} {ι : Type} (s : Finset ι) (x : ι → W.DD T)
     (h : ∀ i ∈ s, InFP W T c e f (x i)) : InFP W T c e f (∑ i ∈ s, x i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => rw [Finset.sum_empty]; exact inMultiple_zero W
-  | insert a s ha ih =>
-    rw [Finset.sum_insert ha]
-    obtain ⟨y, hy, hxy⟩ := h a (Finset.mem_insert_self a s)
-    obtain ⟨y', hy', hxy'⟩ := ih fun i hi => h i (Finset.mem_insert_of_mem hi)
-    exact ⟨y + y', (Pp W T c e).add_mem hy hy', by rw [hxy, hxy', smul_add]⟩
+  refine Finset.sum_induction x (InFP W T c e f) (fun _ _ ⟨y, hy, hxy⟩ ⟨y', hy', hxy'⟩ => ?_)
+    (inMultiple_zero W) h
+  exact ⟨y + y', (Pp W T c e).add_mem hy hy', by rw [hxy, hxy', smul_add]⟩
 
 theorem InI_γ (hT : IsCrys PD T.ρ) (hP2 : Formalism.MainNotions.DeltaInvariantLattices.P2W W)
     (hpi0 : ∃ u ∈ W.AΔ, W.γA W.gam W.π₀ = W.π₀ * u) {c : ZMod n} {w : W.DD T}
@@ -143,7 +138,6 @@ theorem InI_smulO {c : ZMod n} (o : O) {w : W.DD T} (h : InI W T c w) : InI W T 
 
 theorem InI_sum {c : ZMod n} {ι : Type} (s : Finset ι) (x : ι → W.DD T) (h : ∀ i ∈ s, InI W T c (x i)) :
     InI W T c (∑ i ∈ s, x i) := by
-  classical
   have hadd : ∀ x y, InI W T c x → InI W T c y → InI W T c (x + y) := by
     rintro x y ⟨hx1, hx2, u, hu, hul, hux⟩ ⟨hy1, hy2, u', hu', hul', hux'⟩
     refine ⟨?_, ?_, u + u', (W.NΔ T).add_mem hu hu', ?_, ?_⟩
@@ -155,11 +149,7 @@ theorem InI_sum {c : ZMod n} {ι : Type} (s : Finset ι) (x : ι → W.DD T) (h 
     · rw [map_add (f := _), add_sub_add_comm, hux, hux', smul_add]
   have hzero : InI W T c 0 := ⟨by unfold InLet; rw [smul_zero], fun δ _ => map_zero _, 0,
     (W.NΔ T).zero_mem, smul_zero _, by rw [map_zero, sub_zero, smul_zero]⟩
-  induction s using Finset.induction_on with
-  | empty => rw [Finset.sum_empty]; exact hzero
-  | insert a s ha ih =>
-    rw [Finset.sum_insert ha]
-    exact hadd _ _ (h a (Finset.mem_insert_self a s)) (ih fun i hi => h i (Finset.mem_insert_of_mem hi))
+  exact Finset.sum_induction x (InI W T c) hadd hzero h
 
 theorem InI_iter (hT : IsCrys PD T.ρ) (hP2 : Formalism.MainNotions.DeltaInvariantLattices.P2W W)
     (hpi0 : ∃ u ∈ W.AΔ, W.γA W.gam W.π₀ = W.π₀ * u) {c : ZMod n} {w : W.DD T} (h : InI W T c w) (i : ℕ) :

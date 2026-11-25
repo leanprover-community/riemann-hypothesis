@@ -56,7 +56,6 @@ theorem exists_iso {O Ω : Type} [CommRing O] [IsDomain O] [IsLocalRing O] [IsNo
     (l' : LBIso Q.L (B'.L.pull j')) :
     ∃ E : B.A.left ⟶ B'.A.left, IsGrpPullback B.A B'.A (𝟙 _) E ∧ LBIso B.L (B'.L.pull E) ∧ j ≫ E = j' := by
   have hg : GlobalTheory.IsGenericPointHom (S := Sp O) (spMap (algebraMap O Ω)) := .fractionField O Ω
-  have hn := GlobalTheory.Published.SemiAbelianHomExtension.isNormalScheme_spec O
   obtain ⟨E, ⟨hm, hE⟩, -⟩ := GlobalTheory.semiAbelianHomExtension_holds.generic_existsUnique_iso_of_extensions
     (GlobalTheory.IsNormalScheme.pred _) hg (GlobalTheory.isSemiAbelian_of_isAbelianScheme _ B.isAb)
     (GlobalTheory.isSemiAbelian_of_isAbelianScheme _ B'.isAb) hj hj'

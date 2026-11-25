@@ -9,7 +9,7 @@ public import Mathlib.Algebra.BigOperators.Group.Finset.Sigma
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.DoubleSumDiagonalOffDiagonal.main.{u_3} :
-    ∀ {n : ℕ} {M : Type u_3} [inst : AddCommMonoid M]
+    ∀ {n : ℕ} {M : Type u_3} [AddCommMonoid M]
     (F : Fin n → Fin n → M),
     ∑ a : Fin n, ∑ b : Fin n, F a b =
       ∑ a : Fin n, F a a + ∑ a : Fin n, ∑ b : Fin n, if a < b then F a b + F b a else (0 : M) := by

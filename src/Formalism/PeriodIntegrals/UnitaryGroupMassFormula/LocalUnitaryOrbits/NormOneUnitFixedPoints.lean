@@ -357,13 +357,9 @@ theorem int_of_sc {r : Fv F v} (h : sc (E := E) v r ∈ OEv (E := E) v) : r ∈ 
   apply sc_mul_ne_one v (hv.le : r⁻¹ ∈ v.adicCompletionIntegers F) hv h
   rw [_root_.PI.OmLocU.sc_mul, inv_mul_cancel₀ hr0, sc_one]
 
-theorem fix_sc (hcm : IsCMExt F E σ) (s : Fv F v ⊗[F] E) (hs : sigR (Fv F v) σ s = s) :
-    ∃ r : Fv F v, s = sc (E := E) v r := by
-  apply PI.OmLocU.UnN.fix_sc <;> assumption
-
 theorem fix_int_sc (hcm : IsCMExt F E σ) {s : Fv F v ⊗[F] E} (hs0 : s ∈ OEv (E := E) v)
     (hs : sigR (Fv F v) σ s = s) : ∃ r ∈ v.adicCompletionIntegers F, s = sc (E := E) v r := by
-  obtain ⟨r, hr⟩ := fix_sc σ v hcm s hs
+  obtain ⟨r, hr⟩ := PI.OmLocU.UnN.fix_sc σ v hcm s hs
   exact ⟨r, int_of_sc v (hr ▸ hs0), hr⟩
 
 def redR : v.adicCompletionIntegers F →+* 𝓞 F ⧸ v.asIdeal where
@@ -382,9 +378,6 @@ theorem sc_mem {r : Fv F v} (hr : r ∈ v.adicCompletionIntegers F) : sc (E := E
 
 theorem sc_eq (r : Fv F v) :
     sc (E := E) v r = (Algebra.TensorProduct.includeLeftRingHom : Fv F v →+* Fv F v ⊗[F] E) r := rfl
-
-theorem sigR_sc' (r : Fv F v) : sigR (Fv F v) σ (sc (E := E) v r) = sc (E := E) v r := by
-  simp [sigR, sc, Algebra.TensorProduct.map_tmul]
 
 theorem norm_le_one_of {x : Fv F v} (hx : x ∈ v.adicCompletionIntegers F) : ‖x‖ ≤ 1 :=
   Valued.toNormedField.norm_le_one_iff.2 hx
@@ -505,7 +498,7 @@ theorem normOne_of (hRes : PI.OmLocU.Red.ResAlg σ J ψ v) : PI.OmLocU.Orb.NormO
   have hyi : y ∈ v.adicCompletionIntegers F := Valued.toNormedField.norm_le_one_iff.1 hy
   refine ⟨sc (E := E) v x + sc (E := E) v y * θ, oEv_add v (sc_mem v hxi) (oEv_mul v (sc_mem v hyi) hθ0), ?_⟩
   have hl : sigR (Fv F v) σ (sc (E := E) v x + sc (E := E) v y * θ) = sc (E := E) v x + sc (E := E) v y * θs := by
-    rw [map_add (f := _), map_mul, sigR_sc', sigR_sc']
+    rw [map_add (f := _), map_mul, PI.OmLocU.sigR_sc, PI.OmLocU.sigR_sc]
   rw [hl]
   have e1 : (sc (E := E) v x + sc (E := E) v y * θs) * (sc (E := E) v x + sc (E := E) v y * θ) =
       sc (E := E) v x * sc (E := E) v x + sc (E := E) v x * sc (E := E) v y * (θ + θs) +

@@ -207,8 +207,6 @@ namespace Scale
 
 variable {D : D7} {n : ℕ}
 
-alias coefFn_translate := _root_.GlobalTheory.ExportSeries.Onto.coefFn_actP
-
 theorem coefFn_map {K : Type} [Field K] (σ : K →+* ℂ) (lam : D.what₂.Tau → DomWeight n) (F : Formalism.L2.DIV.Pol K D.what₂.Tau n) :
     coefFn (RingHom.id ℂ) lam (MvPolynomial.map σ F) = coefFn σ lam F := by
   funext x
@@ -322,7 +320,7 @@ theorem exists_scale (hlev : R.toLevCh.Is A.μ0) (hth : R.IsThP) (hc : (R.cV j).
       obtain ⟨v, rfl⟩ := e.surjective w
       change coefLin _ (e.symm ((R.cV j).ρ h (e v))) y = coefLin _ (e.symm (e v)) _
       rw [he h h.2, e.symm_apply_apply, e.symm_apply_apply]
-      exact coefFn_translate _ _ _ _)
+      exact GlobalTheory.ExportSeries.Onto.coefFn_actP _ _ _ _)
   refine ⟨c, fun h0 => hΔ0 ?_, fun F => ?_⟩
   · have h1 := LinearMap.congr_fun hcc w₀
     rw [h0, zero_smul, LinearMap.comp_apply, hw] at h1

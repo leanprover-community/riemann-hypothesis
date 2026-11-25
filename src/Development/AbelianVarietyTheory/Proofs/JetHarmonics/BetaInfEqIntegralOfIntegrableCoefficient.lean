@@ -168,12 +168,6 @@ theorem coef_continuousOn (H : SqIntegrable D α) {A B : Mat k r → (Wq →L[�
       (Sd_continuousOn D p₀ hp₀).clm_apply h1
     exact hsInner_continuous.continuousAt.comp_continuousWithinAt (h2.prodMk continuousWithinAt_const)
 
-theorem coef_dilate (_H : SqIntegrable D α) (A B : Mat k r → (Wq →L[ℂ] Wp)) {p : SS k r} (hp : D.inSS p) {x y : ℝ}
-    (hx : 0 < x) (hy : 0 < y) :
-    Ph D A B (dilation₂ (x, y) p) =
-      Ph D (fun g => A (aDil k r x * g * (aDil k r y)⁻¹)) (fun g => B (aDil k r x * g * (aDil k r y)⁻¹)) p :=
-  ph_dil_of_changeOfVariables P.dilation_unipotent_weyl_measure A B hp hx hy
-
 theorem coef_hasDerivAt (H : SqIntegrable D α) {A B A1 B1 : Mat k r → (Wq →L[ℂ] Wp)} {cA cB : ℝ}
     (hA : admitted α cA A) (hA1 : admitted α cA A1) (hB : admitted α cB B) (hB1 : admitted α cB B1)
     {p : SS k r} (hp : D.inSS p) {a b : ℝ → Mat k r} {κ : ℝ → ℝ} {t₀ : ℝ} {s : Set ℝ} (hs : s ∈ 𝓝 t₀)

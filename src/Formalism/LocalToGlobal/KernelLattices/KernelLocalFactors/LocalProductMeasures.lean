@@ -171,13 +171,9 @@ theorem xs_intU (v : HeightOneSpectrum (𝓞 F)) (a : Eˣ)
     rw [← ht]
     exact add_mem t.2 (xs_one_sub v)
 
-theorem xs_unit_of_oneAt {P : HeightOneSpectrum (𝓞 E)} {a : E} (h : OneAt P a) : P.valuation E a = 1 := by
-  have h1 := Valuation.map_one_add_of_lt (v := P.valuation E) h
-  rwa [add_sub_cancel] at h1
-
 theorem xs_wild (v : HeightOneSpectrum (𝓞 F)) (a : Eˣ)
     (h : ∀ P : HeightOneSpectrum (𝓞 E), P.asIdeal.under (𝓞 F) = v.asIdeal → OneAt P (a : E)) : locId E v a ∈ wildAt E v := by
-  obtain ⟨u, hu⟩ := b_intU _ (xs_intU v a fun P hP => xs_unit_of_oneAt (h P hP))
+  obtain ⟨u, hu⟩ := b_intU _ (xs_intU v a fun P hP => Formalism.L2.Ker.ab_one_val (h P hP))
   rw [← hu]
   apply tpWild_proof' v u (by rw [hu]; exact xs_supp v a)
   intro P
@@ -696,9 +692,6 @@ theorem hk_le_exp {x : WithZero (Multiplicative ℤ)} (h : x < 1) : x ≤ WithZe
     rw [WithZero.exp_le_exp]
     omega
 
-theorem hk_val_one {P : HeightOneSpectrum (𝓞 E)} {a : E} (h : OneAt P a) : P.valuation E a = 1 := by
-  apply _root_.Formalism.L2.Ker.xs_unit_of_oneAt <;> assumption
-
 theorem hk_valued_sub (P : HeightOneSpectrum (𝓞 E)) (a : Eˣ) :
     Valued.v (((atFin P a : (P.adicCompletion E)ˣ) : P.adicCompletion E) - 1) = P.valuation E ((a : E) - 1) := by
   have e : ((atFin P a : (P.adicCompletion E)ˣ) : P.adicCompletion E) - 1 = (((a : E) - 1 : E) : P.adicCompletion E) := by
@@ -710,7 +703,7 @@ theorem hk_valued_sub (P : HeightOneSpectrum (𝓞 E)) (a : Eˣ) :
 theorem hk_tame (χ : HChar E) {P : HeightOneSpectrum (𝓞 E)} (h : χ.TameAt P) (a : Eˣ) (ha : OneAt P (a : E)) : χ.locK P a = 1 := by
   refine h (atFin P a) ?_ ?_
   · show Valued.v _ = 1
-    rw [_root_.PI.HeckeProdW.valued_atFin, hk_val_one ha]
+    rw [_root_.PI.HeckeProdW.valued_atFin, Formalism.L2.Ker.ab_one_val ha]
   · rw [hk_valued_sub]
     exact hk_le_exp ha
 
@@ -1009,7 +1002,6 @@ end Ord
 section Ratio
 
 variable {X : Fields} {n : ℕ}
-
 
 open Classical in
 def zFac (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) (SB : Finset (HeightOneSpectrum (𝓞 X.E)))
@@ -1423,7 +1415,6 @@ open Classical
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
   (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (G : ChGlob X R.m)
-
 
 variable (Pr) in
 def RmOf : Set (HeightOneSpectrum (𝓞 X.F)) := {v | ∃ P ∈ rowSG Pr sel mu, P.asIdeal.under (𝓞 X.F) = v.asIdeal}

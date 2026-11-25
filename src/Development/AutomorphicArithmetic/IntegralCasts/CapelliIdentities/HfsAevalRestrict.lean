@@ -11,14 +11,8 @@ theorem UpperTheory.Reformulated.B.Qh20.hfs_aeval_restrict :
     (↑(((Polynomial.aeval (LinearMap.restrict f h) : Polynomial L → ↥p →ₗ[L] ↥p) q : ↥p → ↥p) x) : W) =
       ((Polynomial.aeval f : Polynomial L → Module.End L W) q : W → W) (↑x : W) := by
   intro L W _ _ _ f p h q x
-  have hpow : ∀ (n : ℕ) (y : p), ((((LinearMap.restrict f h) ^ n) y : p) : W) = (f ^ n) (y : W) := by
-    intro n
-    induction n with
-    | zero => intro y; rfl
-    | succ n ih =>
-      intro y
-      rw [pow_succ, pow_succ, Module.End.mul_apply, Module.End.mul_apply, ih]
-      rfl
+  have hpow : ∀ (n : ℕ) (y : p), ((((LinearMap.restrict f h) ^ n) y : p) : W) = (f ^ n) (y : W) :=
+    fun n y => by rw [Module.End.pow_restrict n h, LinearMap.coe_restrict_apply]
   induction q using Polynomial.induction_on' with
   | add a b ha hb =>
     rw [map_add (f := _), map_add (f := _), LinearMap.add_apply, LinearMap.add_apply, Submodule.coe_add, ha, hb]

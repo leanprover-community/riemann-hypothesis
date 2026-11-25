@@ -99,7 +99,7 @@ theorem contDiff_of_additive {k : ℕ} (f : (Fin k → ℝ) → ℂ) (h0 : f 0 =
 def rmul {m n p : ℕ} (Q : Mx D n p) : Mx D m n →+ Mx D m p where
   toFun x := x ⬝ Q
   map_zero' := Matrix.zero_mul _
-  map_add' x y := Matrix.add_mul _ _ _
+  map_add' _ _ := Matrix.add_mul _ _ _
 
 theorem continuous_rmul {m n p : ℕ} (Q : Mx D n p) : Continuous (rmul (m := m) Q) :=
   continuous_id.matrix_mul continuous_const

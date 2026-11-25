@@ -18,11 +18,6 @@ namespace Formalism.F
 
 universe u v
 
-theorem linearIndependent_coe_basis'' {E : Type*} [NormedAddCommGroup E]
-    [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] (L : Submodule ℤ E) [DiscreteTopology L]
-    {ι : Type*} [Fintype ι] (b : Basis ι ℤ L) : LinearIndependent ℝ (fun i => (b i : E)) :=
-  linearIndependent_coe_basis L b
-
 theorem det_gram_basis_pos {E : Type*} [NormedAddCommGroup E]
     [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] (L : Submodule ℤ E) [DiscreteTopology L]
     {ι : Type*} [Fintype ι] [DecidableEq ι] (b : Basis ι ℤ L) :

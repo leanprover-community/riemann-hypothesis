@@ -889,7 +889,7 @@ theorem main (P : Polynomial ℤ_[ℓ]) (cG : ℤ_[ℓ]) (hcG : cG ≠ 0)
 
 end CocyclePolynomialSubmodules
 
-theorem uClaim_of (hU : UGraded) (_hG : GradedStep) : UClaim := by
+theorem uClaim_of (hU : UGraded) : UClaim := by
   intro ℓ _ A _ _ B M D _ _ _ _ W s J hs hs2 hv hJ h1 h2 h3 h4
   have hcG : (∏ i ∈ Finset.Icc 1 M, ((B.u : ℤ_[ℓ]) ^ i - 1)) ≠ 0 := by
     rw [Finset.prod_ne_zero_iff]
@@ -920,7 +920,7 @@ section -- clump:auto
 namespace Formalism.LIFT
 
 theorem lift_WBTail : WBTail := wBTail_of gammaGradedStep_holds (lagrangeIdealCyc_of lagrangian_ideal_holds)
-theorem lift_LemmaU : LemmaU := lemmaU_of (uClaim_of (uGraded_of gammaGradedStep_holds) gammaGradedStep_holds) uChase_proof
+theorem lift_LemmaU : LemmaU := lemmaU_of (uClaim_of (uGraded_of gammaGradedStep_holds)) uChase_proof
 
 end Formalism.LIFT
 end -- clump:auto

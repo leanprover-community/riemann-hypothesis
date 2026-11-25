@@ -40,17 +40,6 @@ theorem cc_lev_pi (c : ZMod n) (ζ : LL) (hζ : ∃ j : ℕ, IsPrimitiveRoot ζ 
   rw [map_add (f := _), map_one, map_mul, PowerSeries.constantCoeff_C, hE0, mul_one] at this
   linear_combination this
 
-theorem cc_lev_q_one (c : ZMod n) : PowerSeries.constantCoeff (W.lev c 1 W.q) = (PD.p : LL) := by
-  have hq : W.q = (fun _ => PowerSeries.mk fun k => PowerSeries.coeff (k + 1) W.q₀) * letπ +
-      (PD.p : LetA O n) := by
-    funext i
-    simp only [LocWach.q, Pi.add_apply, Pi.mul_apply, letπ, Pi.natCast_apply]
-    conv_lhs => rw [PowerSeries.eq_shift_mul_X_add_const W.q₀]
-    rw [Formalism.MainNotions.N.Ln34.CrystallineExponents.constantCoeff_q_zero_eq_p, map_natCast]
-  rw [hq, map_add (f := _), map_mul, map_natCast, map_add (f := _), map_mul,
-    cc_lev_pi W c 1 ⟨0, by rw [pow_zero]; exact IsPrimitiveRoot.one⟩, sub_self, mul_zero, zero_add,
-    map_natCast]
-
 theorem qroot_prim (hs : W.s = 1) (hp : (PD.p : LL) ≠ 0) {c : ZMod n} {ζ : LL}
     (h : Formalism.MainNotions.DeltaInvariantLattices.QRoot W c ζ) : IsPrimitiveRoot ζ PD.p := by
   apply +allowSynthFailures _root_.Formalism.MainNotions.N.Ln34.CrystallineExponents.qroot_prim <;> assumption
@@ -70,16 +59,8 @@ theorem lev_q_eq (c : ZMod n) {ζ : LL} (hζ : IsPrimitiveRoot ζ PD.p) (hp : (P
     rw [hE'] at this
     simp only [Nat.cast_zero, zero_add, mul_one] at this
     rw [← this, PowerSeries.coeff_zero_eq_constantCoeff_apply, hE0]
-  have hpow : ∀ k : ℕ, PowerSeries.coeff 1 (E ^ k) = k := by
-    intro k
-    induction k with
-    | zero => simp [PowerSeries.coeff_one]
-    | succ k ih =>
-      rw [pow_succ, PowerSeries.coeff_mul, Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]
-      simp only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add, Nat.sub_zero,
-        Nat.sub_self, PowerSeries.coeff_zero_eq_constantCoeff_apply, map_pow, hE0, one_pow, hE1, ih]
-      push_cast
-      ring
+  have hpow : ∀ k : ℕ, PowerSeries.coeff 1 (E ^ k) = k := fun k => by
+    rw [PowerSeries.coeff_one_pow, hE1, hE0, one_pow, mul_one, mul_one]
   have hF0 : PowerSeries.constantCoeff (E ^ PD.p - 1) = 0 := by
     rw [map_sub, map_pow, hE0, one_pow, map_one, sub_self]
   obtain ⟨w, hw⟩ := PowerSeries.X_dvd_iff.2 hF0

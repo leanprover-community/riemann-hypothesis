@@ -107,20 +107,6 @@ theorem integrable_volGL_of_lintegral {k : Type} [Field k] [ValuativeRel k] [Top
     _ ≤ ∫⁻ X, I X ∂(volM μ (Fin n) (Fin n)) := lintegral_mono' Measure.restrict_le_self le_rfl
     _ < ⊤ := hI
 
-theorem integrable_haarVol_of_lintegral {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
-    [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (n : ℕ) (σ s : ℝ) (hs : s ≤ σ - n)
-    (hI : ∫⁻ X : Matrix (Fin n) (Fin n) k, (intM k (Fin n) (Fin n)).indicator (fun Y => ENNReal.ofReal
-      (if h : Y.det = 0 then 0 else nabs k (Units.mk0 Y.det h)) ^ s) X
-        ∂(volM (Measure.addHaar : Measure k) (Fin n) (Fin n)) < ⊤) :
-    Integrable (fun g : GL (Fin n) k => (intM k (Fin n) (Fin n)).indicator (fun _ => (1 : ℝ)) g.val *
-      nabs k (gdet g) ^ σ) (haarVol (KO k (Fin n))) := by
-  obtain ⟨_, _⟩ := Model.secondCountable_and_t2_local_field (k := k)
-  have : BorelSpace (GL (Fin n) k) := borel_GL
-  have : SecondCountableTopology (GL (Fin n) k) := secondCountable_GL
-  have : (volGL (Measure.addHaar : Measure k) (Fin n)).IsHaarMeasure := isHaarMeasure_volGL _
-  have : (haarVol (KO k (Fin n))).IsHaarMeasure := isHaarMeasure_haarVol_KO
-  rw [Measure.isMulLeftInvariant_eq_smul (haarVol (KO k (Fin n))) (volGL (Measure.addHaar : Measure k) (Fin n))]
-  exact (integrable_volGL_of_lintegral _ n σ s hs hI).smul_measure_nnreal
 
 end GlobalTheory.GJTransfer
 end -- clump:auto

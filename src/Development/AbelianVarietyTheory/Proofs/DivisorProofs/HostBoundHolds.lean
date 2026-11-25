@@ -45,7 +45,6 @@ theorem hostNum_of_sizes {D : D7} {L : SizeData₂ D} (P : ParameterChoice' D L)
   have hx0 : 0 < L.sc.x := by linarith
   have he := L.sc.eps_pos
   have he' := L.sc.eps_lt
-  have hL := Pm.one_le_L L
   have hf := Pm.two_le_f D
   have hr := Pm.six_le_r D
   have hrt := Pm.r_le_alt_alt D

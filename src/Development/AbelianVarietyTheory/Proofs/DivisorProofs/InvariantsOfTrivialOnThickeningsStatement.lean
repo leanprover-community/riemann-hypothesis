@@ -886,8 +886,6 @@ theorem quot_tensor_level : ∀ (R : Type) [CommRing R] (I : Ideal R) (R' : Type
     set Λ : (C ⧸ K) ⊗[R] R' →ₐ[R] C' ⧸ (I ^ (e + 1)).map (algebraMap R C') :=
       Algebra.TensorProduct.lift (Ideal.Quotient.liftₐ K _ hvan)
         ((Ideal.Quotient.mkₐ R _).comp (IsScalarTower.toAlgHom R R' C')) (fun _ _ => Commute.all _ _) with hΛ
-    have hL : ∀ c : C, Ideal.Quotient.liftₐ K _ hvan (Ideal.Quotient.mk K c) =
-        Ideal.Quotient.mk ((I ^ (e + 1)).map (algebraMap R C')) (c : C') := fun c => rfl
     set G : O ⊗[R] R' →ₐ[R] (C ⧸ K) ⊗[R] R' :=
       Algebra.TensorProduct.map ((gm e).toAlgHom.comp (Ideal.Quotient.mkₐ R _)) (AlgHom.id R R') with hG
     have hGs : Function.Surjective G :=

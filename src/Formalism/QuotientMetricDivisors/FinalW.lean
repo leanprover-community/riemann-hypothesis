@@ -25,10 +25,6 @@ noncomputable section
 
 namespace Formalism.DivisionValues
 
-namespace place_log_sum
-
-end place_log_sum
-
 theorem prime_log_sum_bound : PrimeLogSum := by
   intro Y hY s hs
   have hn : 1 ≤ ⌊Y⌋₊ := Nat.le_floor (by exact_mod_cast hY)
@@ -45,14 +41,6 @@ theorem prime_log_sum_bound : PrimeLogSum := by
     _ ≤ Real.log Y + Real.log 4 := by
         have := Real.log_le_log hnR hfl
         linarith
-
-namespace place_log_sum
-
-end place_log_sum
-
-namespace place_log_sum
-
-end place_log_sum
 
 end Formalism.DivisionValues
 end -- clump:auto

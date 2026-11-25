@@ -34,7 +34,7 @@ abbrev onT {T T' : LocLat G Qp LL O} (f : LatHom T.L T'.L) : ↥T.L.T →ₗ[O] 
   (f.f.restrictScalars O).restrict f.T_le
 
 theorem onT_inj {T Y Z : LocLat G Qp LL O} {ι : LatHom T.L Y.L} {π : LatHom Y.L Z.L}
-    (h : IsSESLat (Qp := Qp) ι π) : Function.Injective (onT ι) := fun a b hab =>
+    (h : IsSESLat (Qp := Qp) ι π) : Function.Injective (onT ι) := fun _ _ hab =>
   Subtype.ext (h.1 (congrArg Subtype.val hab))
 
 theorem onT_surj {T Y Z : LocLat G Qp LL O} {ι : LatHom T.L Y.L} {π : LatHom Y.L Z.L}

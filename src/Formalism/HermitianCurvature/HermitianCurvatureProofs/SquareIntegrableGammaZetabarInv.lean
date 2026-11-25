@@ -142,9 +142,6 @@ set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx2.R2
-end Formalism.FourierDecayAlt.P.MAx2.R2
-
-namespace Formalism.FourierDecayAlt.P.MAx2.R2
 open Formalism.FourierDecayAlt.MA
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.YangianSpanCharacter.T Matrix
@@ -1025,10 +1022,6 @@ variable {k : ℕ} {T T' : ℝ} {uu uu' : ℕ → ℝ}
 end
 
 end Formalism.FourierDecayAlt.P.MAx2.J0
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P
 
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false

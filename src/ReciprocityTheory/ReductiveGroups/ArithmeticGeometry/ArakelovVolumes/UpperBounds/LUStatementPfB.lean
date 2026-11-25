@@ -112,7 +112,7 @@ theorem lminors_ne {x : Frame X.Ψ r} (hΔ : DeltaF X x0 x ≠ 0) (τ : X.Ψ) (k
   rw [Finset.prod_ne_zero_iff] at h1
   exact h1 k (Finset.mem_univ _)
 
-theorem bF_mem {x : Frame X.Ψ r} (_hx : x ∈ X.dom) (hΔ : DeltaF X x0 x ≠ 0) : bF X x0 x ∈ Bor X.Ψ r := by
+theorem bF_mem {x : Frame X.Ψ r} (hΔ : DeltaF X x0 x ≠ 0) : bF X x0 x ∈ Bor X.Ψ r := by
   show ∀ τ : X.Ψ, (mat (bF X x0 x) τ).det ≠ 0 ∧ ∀ a c : Fin r, c < a → bF X x0 x τ a c = 0
   intro τ
   have hM := lminors_ne hΔ τ
@@ -142,7 +142,7 @@ theorem split_eq (hx0 : IsOrth X x0) (x : Frame X.Ψ r) :
 
 theorem zF_mem (hx0 : IsOrth X x0) {x : Frame X.Ψ r} (hx : x ∈ X.dom) (hΔ : DeltaF X x0 x ≠ 0) :
     zF X x0 x ∈ OmF X x0 := by
-  have hb := bF_mem hx hΔ
+  have hb := bF_mem hΔ
   have hsplit := split_eq hx0 x
   show cpt X x0 (zF X x0 x) ∈ X.dom
   have h1 : cpt X x0 (zF X x0 x) = rmul x (ExtFPf.invF X (bF X x0 x)) := by

@@ -89,7 +89,6 @@ theorem rho_bounds {ι : Type} [Fintype ι] {N : ℕ} (W : GlobalTheory.MeanTop.
   have hG := GlobalTheory.MeanTop.divided_gaps ι N W h hd
   have hp1 := h.kc_lt
   have hp2 := h.p_lt
-  have hT := h.h1
   have h0 : (0 : ℝ) < W.h0 := by
     have := h.h2.1
     have := h.weightConst_nonneg
@@ -102,7 +101,6 @@ theorem rho_bounds {ι : Type} [Fintype ι] {N : ℕ} (W : GlobalTheory.MeanTop.
     intro τ a l hal
     have d1 : (0 : ℝ) < (W.u1 τ a : ℝ) - W.u1 τ l := sub_pos.2 (by exact_mod_cast (hA τ).1 hal)
     have d2 : (0 : ℝ) < (W.u' τ a : ℝ) - W.u' τ l := sub_pos.2 (by exact_mod_cast (hA τ).2.1 hal)
-    have hal' : (a : ℕ) < l := hal
     refine ⟨(div_pos d2 d1).le, ?_⟩
     by_cases hc : (a : ℕ) < W.p ∧ W.p ≤ l
     · have e : (W.u' τ a : ℝ) - W.u' τ l = (W.u1 τ a : ℝ) - W.u1 τ l - 3 * N := by
@@ -113,7 +111,6 @@ theorem rho_bounds {ι : Type} [Fintype ι] {N : ℕ} (W : GlobalTheory.MeanTop.
       have g' : W.h0 ≤ 2 * W.T * (W.u1 τ a - W.u1 τ l) :=
         g.trans (mul_le_mul_of_nonneg_left (by linarith) (by positivity))
       have g'' : (W.h0 : ℝ) ≤ 2 * W.T * ((W.u1 τ a : ℝ) - W.u1 τ l) := by exact_mod_cast g'
-      have hN : (0 : ℝ) ≤ N := Nat.cast_nonneg _
       rw [e]
       refine ⟨(div_le_one d1).2 (by linarith), ?_⟩
       rw [one_sub_div d1.ne', div_le_div_iff₀ d1 h0]
@@ -265,7 +262,6 @@ theorem mainT_le (hom : |(ofRecord D L p.Del p.h0).logOm| ≤ 3 * L.sc.L) :
   have hr : (D.R.r : ℝ) + 1 = D.R.k + D.R.m := by exact_mod_cast (by unfold Ranks.r; omega : D.R.r + 1 = D.R.k + D.R.m)
   have h1 : (((i : ℕ) + 1 : ℕ) : ℝ) ≤ D.R.m := by exact_mod_cast hi
   have h2 : (1 : ℝ) ≤ (((i : ℕ) + 1 : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ (i : ℕ) + 1)
-  have h3 : (0 : ℝ) ≤ D.R.k := Nat.cast_nonneg _
   have hc : |((D.R.k : ℝ) + (((i : ℕ) + 1 : ℕ) : ℝ) - 1) - ((D.R.m : ℝ) - (((i : ℕ) + 1 : ℕ) : ℝ))| ≤ D.R.r :=
     abs_le.2 ⟨by linarith, by linarith⟩
   rw [e, Finset.mul_sum]
@@ -328,7 +324,6 @@ theorem sizeAt_of {PP A : ℝ} (hH : HostNum D L PP A 1) (hW : WtNum p i PP) : S
     have := mul_le_mul_of_nonneg_left (show ∑ ρ : RPl D.R, (((D.hc (tauPl D ρ)).e i : ℚ) : ℝ) ≤ 3 * kap p i by linarith)
       (show 0 ≤ 3 * (D.R.r : ℝ) * L.sc.L by positivity)
     linarith
-  have hX0 : 0 ≤ L.sc.x ^ A := by positivity
   refine ⟨hb1, ?_, ?_, ?_, hm9.trans (mul_le_mul_of_nonneg_right hPL hk0),
     hbk.trans (mul_le_mul_of_nonneg_right (by linarith) hk0), fun hi => ?_⟩
   · rw [hW.unit]

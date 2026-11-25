@@ -37,13 +37,7 @@ theorem tau_over (hbij : Function.Bijective (algebraMap K₀ K)) (c : ZMod n) :
 theorem dvO_letter (T : LocLat G Qp LL O) (c' : ZMod n) {d : ℕ} (b : Fin d → W.DD T)
     (hb : Formalism.MainNotions.LiftingTheory.IsFrameΔ W T c' b) (e : ℕ) (c₀ : Fin d → O) :
     dvO W T e b c₀ ∈ DcrisL PD T.ρ (W.emb (c' + (e : ZMod n))) := by
-  unfold dvO dv
-  refine Submodule.sum_mem _ fun m _ => Submodule.smul_mem _ _ ?_
-  have hbN : b m ∈ W.N T := (hb.1 m).1.1
-  have hbl : (letE c' : LetA O n) • b m = b m := _root_.Formalism.MainNotions.LiftingTheory.frame_letE_fix W T c' (hb.1 m).2
-  have hcl : cmpD W T (b m) ∈ DcrisL PD T.ρ (W.emb c') := by
-    rw [Formalism.MainNotions.UnusedSlot80.ArcF.cmpD_of_mem W T hbN]; exact Formalism.MainNotions.UnusedSlot80.ArcF.cmp_mem_letter W T c' hbN hbl
-  exact Formalism.MainNotions.UnusedSlot80.ArcF.φVB_pow_letter W T c' hcl e
+  exact Formalism.MainNotions.N.Ln17.frobenius_vector_mem_dcris W T c' b hb e c₀
 
 variable [IsDomain O]
 

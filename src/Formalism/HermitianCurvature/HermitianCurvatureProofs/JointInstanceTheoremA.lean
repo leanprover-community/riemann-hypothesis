@@ -200,7 +200,3 @@ theorem t_DiagScale : DiagScale := by
 end kernels
 
 end Formalism.FourierDecayAlt.P.Jx7
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

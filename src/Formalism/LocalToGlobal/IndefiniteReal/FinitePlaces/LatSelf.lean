@@ -39,8 +39,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta IsDedekindDomain NumberField
 open scoped TensorProduct Pointwise
 
-
-
 namespace Formalism.IndefR.Fin.PDA
 
 open Formalism.IndefR.Fin Formalism.IndefR.Datum
@@ -68,8 +66,6 @@ theorem AA_ne_zero : D.host.AA ≠ 0 := by
   have h := xi_AA_AAbar (D := D)
   rw [h0, mul_zero, zero_mul] at h
   exact dual_ne_zero' h.symm
-
-
 
 theorem mem_AA_of_trace {z : D.host.E}
     (h : ∀ c ∈ D.host.AA, Algebra.trace D.host.F D.host.E (D.host.xi0 * (star c * z)) ∈ invDiff D.host.F) :
@@ -256,8 +252,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta IsDedekindDomain NumberField Polynomial
 open scoped TensorProduct
 
-
-
 namespace Formalism.IndefR.Fin
 
 open Formalism.IndefR.Datum
@@ -325,8 +319,6 @@ theorem approx_Af (a : Af D.host.F) (N : ℕ) (hN : 0 < N) :
 theorem isAlg_Z (e : D.host.E) : IsAlgebraic ℤ e :=
   (IsFractionRing.isAlgebraic_iff ℤ ℚ D.host.E).2 (Algebra.IsAlgebraic.isAlgebraic e)
 
-
-
 theorem approx_AfE (N : ℕ) (hN : 0 < N) (z : Af D.host.F ⊗[D.host.F] D.host.E) :
     ∃ w : D.host.E, ∃ y ∈ intAE D, z = (1 : Af D.host.F) ⊗ₜ[D.host.F] w + N • y := by
   induction z using TensorProduct.induction_on with
@@ -367,15 +359,11 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta IsDedekindDomain NumberField Polynomial
 open scoped TensorProduct
 
-
-
 namespace Formalism.IndefR.Fin
 
 open Formalism.IndefR.Datum
 
 variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ}
-
-
 
 theorem exists_sub_pairA_ratW_mem_latO (S T : HSp D) {ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)}
     {ΛT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)}
@@ -405,8 +393,6 @@ theorem exists_sub_pairA_ratW_mem_latO (S T : HSp D) {ΛS : Submodule (𝓞 D.ho
   apply hbox
   · intro i j; rw [Matrix.of_apply, finPart_jF]; exact hy i j
   · intro i j; rw [Matrix.of_apply, infPart_jF]
-
-
 
 theorem ann_rat_mem (hψ : IsStdChar D ψ (-1)) (S T : HSp D) {ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)}
     {ΛT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)}
@@ -504,8 +490,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.IndefR.Datum
 open scoped TensorProduct
 
-
-
 namespace Formalism.IndefR.Fin.PDB
 
 variable {D : D7}
@@ -575,7 +559,6 @@ lemma nsmul_mul_nsmul {R : Type*} [CommRing R] {m n p : Type*} [Fintype n] (a b 
 lemma nsmul_mul_three {R : Type*} [CommRing R] {m n p q : Type*} [Fintype n] [Fintype p] (a b d : ℕ) (A : Matrix m n R)
     (B : Matrix n p R) (C : Matrix p q R) : (a • A) * (b • B) * (d • C) = (a * b * d) • (A * B * C) := by
   rw [nsmul_mul_nsmul, nsmul_mul_nsmul]
-
 
 lemma four_terms {S T : HSp D} {ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)}
     {ΛT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)} {c c' kH kG : ℕ}
@@ -677,8 +660,6 @@ lemma finite_part_finite_embedding (w : Af D.host.F ⊗[D.host.F] D.host.E) : fi
 lemma integral_of_finite_embedding {w : Af D.host.F ⊗[D.host.F] D.host.E} (hw : w ∈ intAE D) : IntF (finiteEmbeddingTensor D w) :=
   ⟨by rw [mul_fI_eq, finite_part_finite_embedding], by rw [finite_part_finite_embedding]; exact hw⟩
 
-
-
 lemma intAE_decomp (N : ℕ) (hN : 0 < N) {w : Af D.host.F ⊗[D.host.F] D.host.E} (hw : w ∈ intAE D) :
     ∃ x : 𝓞 D.host.E, ∃ w' ∈ intAE D, w = (1 : Af D.host.F) ⊗ₜ[D.host.F] (x : D.host.E) + N • w' := by
   induction hw using AddSubgroup.closure_induction with
@@ -717,8 +698,6 @@ lemma intAE_decomp (N : ℕ) (hN : 0 < N) {w : Af D.host.F ⊗[D.host.F] D.host.
     rw [TensorProduct.tmul_neg, nsmul_neg']
     abel
 
-
-
 lemma intAE_residues (N : ℕ) (hN : 0 < N) :
     ∃ R : Finset (Af D.host.F ⊗[D.host.F] D.host.E), ∀ w ∈ intAE D, ∃ r ∈ R, ∃ w' ∈ intAE D, w = r + N • w' := by
   classical
@@ -737,8 +716,6 @@ lemma intAE_residues (N : ℕ) (hN : 0 < N) :
   rw [TensorProduct.tmul_add, h2, nsmul_add']
   abel
 
-
-
 lemma intF_residues (N : ℕ) (hN : 0 < N) :
     ∃ R : Finset (AE D), ∀ y : AE D, IntF y → ∃ r ∈ R, ∃ y' : AE D, IntF y' ∧ y = r + N • y' := by
   classical
@@ -748,8 +725,6 @@ lemma intF_residues (N : ℕ) (hN : 0 < N) :
   refine ⟨finiteEmbeddingTensor D r, Finset.mem_image_of_mem _ hr, finiteEmbeddingTensor D w', integral_of_finite_embedding hw', ?_⟩
   have hy' : y = finiteEmbeddingTensor D (finPart D y) := by rw [← mul_fI_eq, hy.1]
   rw [hy', e, map_add (f := _), map_nsmul]
-
-
 
 lemma mat_residues (m n : ℕ) (N : ℕ) (hN : 0 < N) :
     ∃ R : Finset (Mx D m n), ∀ Z : Mx D m n, (∀ i j, IntF (Z i j)) →
@@ -764,7 +739,6 @@ lemma mat_residues (m n : ℕ) (N : ℕ) (hN : 0 < N) :
   ext i j
   rw [Matrix.add_apply, Matrix.smul_apply, Matrix.of_apply, Matrix.of_apply]
   exact hyeq i j
-
 
 lemma nsmul_cancel_AE {x y : AE D} {k : ℕ} (hk : 0 < k) (h : k • x = k • y) : x = y := by
   have hk' : ((k : D.host.F)) ≠ 0 := by exact_mod_cast hk.ne'
@@ -783,8 +757,6 @@ lemma nsmul_cancel_Mx {m n : ℕ} {X Y : Mx D m n} {k : ℕ} (hk : 0 < k) (h : k
   apply nsmul_cancel_AE hk
   have h1 := congrFun (congrFun h i) j
   simpa using h1
-
-
 
 lemma exists_finset_half_decomp {S T : HSp D} {ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)}
     {ΛT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)} (hS : IsSelfDualC S ΛS) (hT : IsSelfDualC T ΛT)
@@ -879,8 +851,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.IndefR.Datum
 open scoped TensorProduct
 
-
-
 namespace Formalism.IndefR.Fin.PDA
 
 open Formalism.IndefR.Fin
@@ -888,26 +858,6 @@ open Formalism.IndefR.Fin
 variable {D : D7}
 
 abbrev fI (D : D7) : AE D := algebraMap (AF D.host.F) (AE D) (pairA D.host.F 0 1)
-
-theorem pairA_mul_one (α : Af D.host.F) : pairA D.host.F 0 α * pairA D.host.F 0 1 = pairA D.host.F 0 α :=
-  Prod.ext (by show (0 : Ainf D.host.F) * 0 = 0; rw [mul_zero]) (by show α * 1 = α; rw [mul_one])
-
-theorem splitIdem_mul_fI {e' : AE D} (h : IsSplitIdem D e') : e' * fI D = e' := by
-  obtain ⟨h1, h2, v, ε, ⟨α, rfl, -, -⟩, h3⟩ := h
-  have he : e' = e' * algebraMap (AF D.host.F) (AE D) (pairA D.host.F 0 α) := by
-    rw [← h3, mul_add, h1, h2, add_zero]
-  calc e' * fI D = e' * algebraMap (AF D.host.F) (AE D) (pairA D.host.F 0 α) * fI D := by rw [← he]
-    _ = e' * algebraMap (AF D.host.F) (AE D) (pairA D.host.F 0 α * pairA D.host.F 0 1) := by
-        rw [map_mul, mul_assoc]
-    _ = e' := by rw [pairA_mul_one, ← he]
-
-theorem idemSum_mul_fI {e : AE D} {P : Finset (Formalism.L2.DIV.Pl D.host.E)} (he : IsIdemSum e P) :
-    e * fI D = e ∧ cA D e * fI D = cA D e := by
-  obtain ⟨⟨es, hes, rfl⟩, -⟩ := he
-
-  rw [Finset.sum_mul, map_sum, Finset.sum_mul]
-  exact ⟨Finset.sum_congr rfl fun PP hPP => splitIdem_mul_fI (hes PP hPP).1,
-    Finset.sum_congr rfl fun PP hPP => splitIdem_mul_fI (_root_.Formalism.IndefR.Fin.isSplitIdem_cA (hes PP hPP).1)⟩
 
 theorem idemSum_int {P : Finset (Formalism.L2.DIV.Pl D.host.E)} {e : AE D} (he : IsIdemSum e P) :
     finPart D e ∈ intAE D ∧ finPart D (cA D e) ∈ intAE D := by
@@ -956,7 +906,7 @@ variable {S T}
 theorem placeLatDualIi_of (hL : LatSelfDual D) : PlaceLatDualIi D := by
   intro ψ hψ S T ΛS ΛT hS hT P e he y hy
   have hL4 := (hL ψ hψ S T ΛS ΛT hS hT).2.2.2
-  obtain ⟨hfe, hfc⟩ := idemSum_mul_fI he
+  obtain ⟨hfe, hfc⟩ := Formalism.IndefR.Fin.PDB.idemSum_mul_fI he
   have hie := (idemSum_int he).1
   have hee := idemSum_mul_self he
   have hy0 : y.map (infPart D) = 0 := half_infPart hfc hy
@@ -973,7 +923,7 @@ theorem placeLatDualIi_of (hL : LatSelfDual D) : PlaceLatDualIi D := by
 theorem placeLatDualIii_of (hL : LatSelfDual D) : PlaceLatDualIii D := by
   intro ψ hψ S T ΛS ΛT hS hT P e he x hx
   have hL4 := (hL ψ hψ S T ΛS ΛT hS hT).2.2.2
-  obtain ⟨hfe, -⟩ := idemSum_mul_fI he
+  obtain ⟨hfe, -⟩ := Formalism.IndefR.Fin.PDB.idemSum_mul_fI he
   have hic := (idemSum_int he).2
   have hee := idemSum_mul_self he
   have hcc : cA D e * cA D e = cA D e := by rw [← map_mul, hee]
@@ -1006,8 +956,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta IsDedekindDomain NumberField Polynomial
 open scoped TensorProduct
 
-
-
 namespace Formalism.IndefR.Fin
 
 open Formalism.IndefR.Datum
@@ -1037,8 +985,6 @@ noncomputable section
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta IsDedekindDomain NumberField Polynomial
 open scoped TensorProduct
-
-
 
 namespace Formalism.IndefR.Fin
 

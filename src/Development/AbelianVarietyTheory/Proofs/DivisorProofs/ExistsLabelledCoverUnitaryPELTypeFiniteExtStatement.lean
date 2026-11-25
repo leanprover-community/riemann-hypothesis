@@ -638,7 +638,7 @@ theorem exists_base (R₁ : Type) [CommRing R₁] [IsDomain R₁] [CharZero R₁
     have := pb.lift_gen ζ hmin
     rwa [IsPrimitiveRoot.integralPowerBasis_gen] at this
   have hσ : Function.Injective σ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro x hx
     have hb : RingHom.ker σ = ⊥ := by
       refine Ideal.eq_bot_of_comap_eq_bot (R := ℤ) ?_

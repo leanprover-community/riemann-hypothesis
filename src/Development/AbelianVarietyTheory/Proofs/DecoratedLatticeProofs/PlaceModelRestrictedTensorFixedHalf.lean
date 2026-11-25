@@ -90,7 +90,7 @@ theorem isPlaceModel_tensR : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T 
       by_cases h0 : Φ (t - b • t) = 0
       · rw [h0]; ring
       · have e1 : symplO S T t y = symplO S T (t - b • t) y + symplO S T (b • t) y := by
-          rw [← symplO_add_left', sub_add_cancel]
+          rw [← GlobalTheory.LatVac.symplO_add_left, sub_add_cancel]
         rw [e1, symplO_half_zero hab (hΦ.1 _ h0) hy, zero_add]
         ring
     simp only [LinearMap.comp_apply, tensR_apply]

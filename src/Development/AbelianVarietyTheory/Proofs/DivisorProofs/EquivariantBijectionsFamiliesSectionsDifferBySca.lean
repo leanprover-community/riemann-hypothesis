@@ -64,7 +64,6 @@ theorem eq_smul_of_commute {S : Scheme.{0}} [IsLocallyNoetherian S] (P : PolAV S
       right_inv := fun _ => rfl
       map_add' := fun _ _ => rfl }
   have hj : ∀ (c : F) v, j (σ c • v) = c • j v := fun _ _ => rfl
-  have hσ : ∀ c : F, σ.symm (σ c) = c := σ.symm_apply_apply
   obtain ⟨c, hc⟩ := Module.End.exists_eigenvalue T
   refine ⟨c, ?_⟩
   have key := hirr (Module.End.eigenspace T c) fun θ hθ v v' hvv hv => by

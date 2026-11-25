@@ -173,7 +173,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.CentralizerOrbitSumConjugate =====
@@ -458,7 +457,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinsumRegroupFibreBijStatement =====
@@ -658,11 +656,8 @@ end Generic
 
 variable {p : ℕ} [Fact p.Prime] {G : HTGroup p}
 
-theorem sh_mul (a b : G.C) : sh G (a * b) = sh G b * sh G a := by
-  simp only [sh, map_mul, MulOpposite.unop_mul]
-
 theorem sh_units (y : G.Cˣ) : sh G (y : G.C) * sh G ((y⁻¹ : G.Cˣ) : G.C) = 1 := by
-  rw [← sh_mul, Units.inv_mul]; simp [sh]
+  rw [← GlobalTheory.LKMid.PairConj.sh_mul, Units.inv_mul]; simp [sh]
 
 theorem key (y v : G.Cˣ) (β : G.C) (s : ℚ) :
     ((y * v * y⁻¹ : G.Cˣ) : G.C) * (algebraMap ℚ G.C s * (y * β * sh G y)) * sh G ((y * v * y⁻¹ : G.Cˣ) : G.C) =
@@ -670,7 +665,7 @@ theorem key (y v : G.Cˣ) (β : G.C) (s : ℚ) :
   calc ((y * v * y⁻¹ : G.Cˣ) : G.C) * (algebraMap ℚ G.C s * (y * β * sh G y)) * sh G ((y * v * y⁻¹ : G.Cˣ) : G.C)
       = s • ((y : G.C) * v * (((y⁻¹ : G.Cˣ) : G.C) * y) * β * (sh G y * sh G ((y⁻¹ : G.Cˣ) : G.C)) *
           sh G v * sh G y) := by
-        simp only [Units.val_mul, sh_mul, ← Algebra.smul_def, mul_smul_comm, smul_mul_assoc, mul_assoc]
+        simp only [Units.val_mul, GlobalTheory.LKMid.PairConj.sh_mul, ← Algebra.smul_def, mul_smul_comm, smul_mul_assoc, mul_assoc]
     _ = _ := by
         rw [Units.inv_mul, sh_units, mul_one, mul_one, Algebra.smul_def]; simp only [mul_assoc]
 
@@ -775,7 +770,6 @@ theorem triv_rel (P Q : Pair G) (y : G.Cˣ) (s : ℚ) (hs : s ≠ 0)
 end GlobalTheory.LKMid.RelMove
 
 namespace GlobalTheory.LKMid.Pair
-
 
 open GlobalTheory.LKMid.RelMove in
 theorem term_eq_of_rel : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (P Q : Pair G) (Kf : Subgroup G.GAf)
@@ -1087,7 +1081,6 @@ theorem cls_part
   simp only [hpt]
   rw [_root_.GlobalTheory.CxUnfoldGen.cls_eq_of_uniq p G v _ Kf f hf K' f' hf' β x t hx hu y₀]
   rfl
-
 
 include hf hf' in
 theorem cxSumAtM_unfold

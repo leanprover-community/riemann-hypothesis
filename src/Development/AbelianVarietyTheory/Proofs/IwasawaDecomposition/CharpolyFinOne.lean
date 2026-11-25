@@ -68,15 +68,3 @@ theorem fracMap_eq {O0 O : Type} [CommRing O0] [IsDomain O0] [ValuationRing O0] 
     rw [h2, map_inv₀, GlobalTheory.IndefiniteRowSideFullHecke.LatticeConditions.fracMap_alg, ← h1, map_inv₀, inv_inv]
 
 end GlobalTheory.HeightCounting.FitRho
-
-namespace GlobalTheory.HeightCounting.FitRho
-
-open Formalism.L2.NR
-
-
-end GlobalTheory.HeightCounting.FitRho
-
-namespace GlobalTheory.HeightCounting
-
-
-end GlobalTheory.HeightCounting

@@ -409,9 +409,6 @@ def CBData.sq {m : ℕ} {c : Fin (m + 1) → ℕ} {Xc : ∀ i, InfinitePlace K �
     {Kj : ∀ j : Fin m, Matrix (Fin (c j.succ)) (Fin (c j.castSucc)) K} (D : CBData Xc Kj) (j : Fin m) (v : InfinitePlace K) : ℝ :=
   Formalism.DimensionVariation.cbSq (Fintype.card (D.AA j.castSucc)) (Fintype.card (D.AA j.succ)) (D.hcl j.castSucc) (D.hcl j.succ) (D.tmax j v)
 
-def FoOf (P : IndefCore Df0 Df1 Dc Sp N) : ℝ :=
-  ∑ j, ∑ y ∈ P.base.Tw, lw y * ((ramw y : ℝ) * N.F0 y j)
-
 def shiftZ (sg : HeightOneSpectrum (𝓞 K) → ℝ) : HeightOneSpectrum (𝓞 K) → ℤ := fun w => ⌊sg w⌋
 
 def shiftLat {d : ℕ} (Nu : Submodule (𝓞 K) (Fin d → K)) (sg : HeightOneSpectrum (𝓞 K) → ℝ) :

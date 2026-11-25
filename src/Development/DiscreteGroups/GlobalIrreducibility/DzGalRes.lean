@@ -37,10 +37,7 @@ theorem val_alg_lt_one_of_mem (x : 𝓞 E') (hx : x ∈ w'.asIdeal) :
   exact (HeightOneSpectrum.valuation_lt_one_iff_mem (K := E') w' x).mpr hx
 
 theorem val_alg_le_one (x : 𝓞 E') : Valued.v (algebraMap E' (w'.adicCompletion E') (x : E')) ≤ 1 := by
-  have e : Valued.v (algebraMap E' (w'.adicCompletion E') (x : E')) = w'.valuation E' (x : E') :=
-    HeightOneSpectrum.valuedAdicCompletion_eq_valuation' (R := 𝓞 E') w' (x : E')
-  rw [e]
-  exact w'.valuation_le_one x
+  exact DiscreteGroups.sglob.DzType.val_le_one_int w' x
 
 variable {a' : Weil h' →* (w'.adicCompletion E')ˣ} (ha' : IsLocalArtin h' a') {K : Type} [Field K]
   {red : 𝓞 E' →+* K} (hk : RingHom.ker red = w'.asIdeal)

@@ -25,18 +25,7 @@ theorem heckeVec_pairProd (ρ : Representation ℂ (G₁ × G₂) V) {K₁ : Sub
     heckeVec ρ (K₁.prod K₂) (fun g => h₁ g.1 * h₂ g.2) x =
       heckeVec (ρ.comp (MonoidHom.inl G₁ G₂)) K₁ h₁ (heckeVec (ρ.comp (MonoidHom.inr G₁ G₂)) K₂ h₂ x) := by
   classical
-  let e : (G₁ × G₂) ⧸ K₁.prod K₂ ≃ (G₁ ⧸ K₁) × (G₂ ⧸ K₂) :=
-    { toFun := fun c => ((c.out.1 : G₁ ⧸ K₁), (c.out.2 : G₂ ⧸ K₂))
-      invFun := fun p => (((p.1.out, p.2.out) : G₁ × G₂) : (G₁ × G₂) ⧸ K₁.prod K₂)
-      left_inv := fun c => by
-        conv_rhs => rw [← c.out_eq']
-        exact QuotientGroup.eq.2 (Subgroup.mem_prod.2
-          ⟨QuotientGroup.eq.1 (QuotientGroup.out_eq' _), QuotientGroup.eq.1 (QuotientGroup.out_eq' _)⟩)
-      right_inv := fun p => by
-        obtain ⟨k, hk⟩ := QuotientGroup.mk_out_eq_mul (K₁.prod K₂) ((p.1.out, p.2.out) : G₁ × G₂)
-        simp only [hk, Prod.fst_mul, Prod.snd_mul]
-        rw [QuotientGroup.mk_mul_of_mem _ (Subgroup.mem_prod.1 k.2).1,
-          QuotientGroup.mk_mul_of_mem _ (Subgroup.mem_prod.1 k.2).2, QuotientGroup.out_eq', QuotientGroup.out_eq'] }
+  let e := QuotientGroup.prodEquiv K₁ K₂
   have hbi : IsBiInv (K₁.prod K₂) (fun g : G₁ × G₂ => h₁ g.1 * h₂ g.2) := fun a b g => by
     have e1 := hh₁.1 ⟨_, (Subgroup.mem_prod.1 a.2).1⟩ ⟨_, (Subgroup.mem_prod.1 b.2).1⟩ g.1
     have e2 := hh₂.1 ⟨_, (Subgroup.mem_prod.1 a.2).2⟩ ⟨_, (Subgroup.mem_prod.1 b.2).2⟩ g.2
@@ -48,7 +37,8 @@ theorem heckeVec_pairProd (ρ : Representation ℂ (G₁ × G₂) V) {K₁ : Sub
     refine (hf1.prod hf2).subset fun p hp => ⟨fun h0 => hp ?_, fun h0 => hp ?_⟩
     · simp [F, h0]
     · simp [F, h0]
-  rw [heckeVec_eq_of_section hbi hx (fun c => ((e c).1.out, (e c).2.out)) (fun c => e.left_inv c)]
+  rw [heckeVec_eq_of_section hbi hx (fun c => ((e c).1.out, (e c).2.out)) fun c =>
+    e.injective (Prod.ext (QuotientGroup.out_eq' _) (QuotientGroup.out_eq' _))]
   rw [show (∑ᶠ c, (fun g : G₁ × G₂ => h₁ g.1 * h₂ g.2) ((e c).1.out, (e c).2.out) •
       ρ ((e c).1.out, (e c).2.out) x) = ∑ᶠ c, F (e c) from rfl, finsum_comp_equiv e, finsum_curry F hF]
   simp only [heckeVec]

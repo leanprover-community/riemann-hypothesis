@@ -44,10 +44,6 @@ abbrev SelB (𝒜 : FamClass) (sel : Formalism.L2.TSel 𝒜) (selS : SelS 𝒜 s
     Formalism.IndefR.RealTB ((sel Fm hc).2 x hx h i) (selP Fm hc x hx h i).1 (selC Fm hc x hx h i).c.face (selC Fm hc x hx h i).Sp
       (ZscAt sel selP selDH Fm hc x hx h i) (selS Fm hc x hx h i)
 
-def EvSel {𝒜 : FamClass} (sel : Formalism.L2.TSel 𝒜) {eps : ℝ} (Fm : FamP eps) (hc : 𝒜 Fm)
-    (Q : ∀ (x : ℝ) (hx : Fm.x1 < x) (h : (sel Fm hc).1 ≤ x) (i : Fm.Ix x), Prop) : Prop :=
-  ∃ x0 : ℝ, ∀ x (hx : Fm.x1 < x) (h : (sel Fm hc).1 ≤ x), x0 ≤ x → ∀ i : Fm.Ix x, Q x hx h i
-
 end GlobalTheory.Cp
 
 namespace GlobalTheory.Fc

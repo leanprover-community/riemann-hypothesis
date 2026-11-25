@@ -20,12 +20,6 @@ structure Dat (K : Type*) [Field K] where
   ex : PowerSeries K
   ph : PowerSeries K
 
-namespace Dat
-
-variable {K : Type*} [Field K] (g : Dat K) {σ : Type*}
-
-end Dat
-
 end PI.FglPhSplit
 
 end

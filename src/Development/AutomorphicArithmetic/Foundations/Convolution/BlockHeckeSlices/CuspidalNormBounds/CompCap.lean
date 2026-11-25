@@ -847,14 +847,12 @@ theorem UpperTheory.ConvolutionTheory.BW.sliceCapR :
     rw [UpperTheory.V.Fb.map_qdet]; simp only [uC_genC]; rfl
   have e2 : j1 E r s = uC E (r + s) (((r * Module.finrank ℚ E : ℕ) : ℂ)⁻¹ •
       ∑ τ : E →+* ℂ, ∑ i : Fin r, genC τ (Fin.castAdd s i) (Fin.castAdd s i)) := by
-    set_option synthInstance.maxHeartbeats 100000 in
       simp only [map_smul, map_sum, uC_genC]; rfl
   have h1 : ρ (capR r s τ u F) = cap τ u (ρ F) := by
     have := GlobalTheory.GLSlice.aeval_qdet_slice (Fin.castAddEmb s) (lev (Ad E) r s (zt E r t, m)) F τ (u + ((r : ℂ) - 1) / 2) Polynomial.X
     simp only [Polynomial.aeval_X] at this
     exact this.symm
   have h2 : ∀ G, ρ (j1 E r s G) = j0 E r (ρ G) := fun G => by
-    set_option synthInstance.maxHeartbeats 100000 in
       simp only [j1, j0, LinearMap.smul_apply, LinearMap.sum_apply, map_smul, map_sum, ρ, GlobalTheory.GLSlice.Eop_slice,
       Fin.castAddEmb_apply]
   have h3 : ∀ (P : Polynomial ℂ) G, ρ (Polynomial.aeval (j1 E r s) P G) = Polynomial.aeval (j0 E r) P (ρ G) := fun P => by

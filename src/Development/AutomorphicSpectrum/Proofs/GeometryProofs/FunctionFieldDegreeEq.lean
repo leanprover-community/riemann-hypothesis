@@ -208,7 +208,6 @@ theorem deg_eq_of_surjective (B : Type) [CommRing B] [Algebra k B] [Algebra B K]
   rw [Place.deg, ← hker]
   exact (Ideal.quotientKerAlgEquivOfSurjective hs).toLinearEquiv.finrank_eq.symm
 
-
 omit [IsFunctionField k K] in
 theorem deg_ofHeightOneSpectrum (B : Type) [CommRing B] [IsDedekindDomain B] [Algebra B K]
     [IsFractionRing B K] [Algebra k B] [IsScalarTower k B K]
@@ -617,8 +616,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Crv GlobalTheory.CompanionTheory.Ar.Conj
 
-theorem _root_.GlobalTheory.CompanionTheory.Relay.length_formula_sum_valuations : ∀ (k K A : Type) [Field k] [Field K] [Algebra k K] [GroundTheory.FunctionField.IsFunctionField k K] [CommRing A] [IsDomain A] [Algebra k A] [Algebra A K] [IsScalarTower k A K] [IsLocalRing A] [IsNoetherianRing A] [IsFractionRing A K] [Algebra.EssFiniteType k A], ¬ IsField A → ∀ f : A, f ≠ 0 → (((Module.length A (A ⧸ Ideal.span {f})).toNat * Module.finrank k (IsLocalRing.ResidueField A) : ℕ) : ℤ) = ∑ᶠ v ∈ {v : GroundTheory.FunctionField.Place k K | (∀ a : A, v.valuation (algebraMap A K a) ≤ 1) ∧ ∀ a ∈ IsLocalRing.maximalIdeal A, v.valuation (algebraMap A K a) < 1}, (v.deg : ℤ) * v.ord (algebraMap A K f) := by
-  first | exact @PositivityTheory.HtPt.Plen.len_places
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LengthFormulaSumValuations =====
@@ -681,7 +678,6 @@ include hc in
 theorem prod_valuation_pos (e : B → ℕ) : 0 < ∏ k, v.valuation (w ⟨k, c k⟩) ^ e k := by
   rw [← valuation_prod]
   exact zero_lt_iff.2 ((Valuation.ne_zero_iff _).2 (prod_ne_zero hc e))
-
 
 include hc hle in
 theorem valuation_aeval_le {g : MRing J} {e : B → ℕ} (hg : IsMultiHomog g e) :
@@ -874,7 +870,6 @@ theorem theta_surjective (hPW : P ≤ W) {c : ∀ k, J k} (hc : ∀ k, (X ⟨k, 
   have h3 : theta hPW c hc u = residue _ x * theta hPW c hc v := by
     simp only [theta, RingHom.comp_apply, h1, map_mul]
   rw [map_mul, h3, mul_assoc, mul_comm (theta hPW c hc v), h2, mul_one]
-
 
 omit [P.IsPrime] [W.IsPrime] in
 def chartHom {K : Type} [Field K] (w : (Σ k, J k) → K) (c : ∀ k, J k) : MRing J →+* chartRingZ w c :=
@@ -1301,7 +1296,7 @@ theorem local_term (w : (Σ k, J k) → K) (hbir : Birational w) (k : B) (c : J 
       obtain ⟨g, hg⟩ := hF.mul_inv_cancel hf0
       exact IsUnit.of_mul_eq_one _ hg
     exact ((isUnit_iff hVW f hs ht (hc' k) hy).1 hu) hxW
-  have key := _root_.GlobalTheory.CompanionTheory.Relay.length_formula_sum_valuations (ZMod p) K (locRing (mCoordIdeal w) W) hnf f hf0
+  have key := _root_.PositivityTheory.HtPt.Plen.len_places (ZMod p) K (locRing (mCoordIdeal w) W) hnf f hf0
   have hset : {v : Place (ZMod p) K | (∀ a : locRing (mCoordIdeal w) W, v.valuation (algebraMap _ K a) ≤ 1) ∧
       ∀ a ∈ maximalIdeal (locRing (mCoordIdeal w) W), v.valuation (algebraMap _ K a) < 1} =
       {v : Place (ZMod p) K | Dom v w W} := by

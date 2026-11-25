@@ -69,7 +69,6 @@ theorem swp_stable {Γ : AddSubgroup (V × Z)} (hs : ∀ a ∈ R, ∀ v ∈ Γ, 
   have := hs a ha _ (mem_swp.1 h)
   exact mem_swp.2 this
 
-
 include hR in
 theorem comap_inl (hb : IsBaseChange C b) (hb' : IsBaseChange C b')
     (Γ : AddSubgroup (V × Z)) (N : ℕ) (hs : ∀ a ∈ R, ∀ v ∈ Γ, a • v ∈ Γ)
@@ -91,7 +90,6 @@ theorem comap_inl (hb : IsBaseChange C b) (hb' : IsBaseChange C b')
   ext x
   simp only [AddSubgroup.mem_comap, AddMonoidHom.inr_apply, AddMonoidHom.inl_apply]
   exact (mem_swp (Γ := spanOver RC (Prod.map b b' '' Γ))).symm
-
 
 include hR in
 theorem inf_top_prod (hb : IsBaseChange C b) (hb' : IsBaseChange C b')
@@ -130,7 +128,6 @@ variable {o Ω C : Type} [CommRing o] [Field Ω] [Field C] [Algebra o Ω] [Algeb
   {S Sc : Type} [AddCommGroup S] [Module Ω S] [AddCommGroup Sc] [Module C Sc] [Module Ω Sc]
   [IsScalarTower Ω C Sc]
   (a : A →ₗ[Ω] Ac) (b : B →ₗ[Ω] Bc) (c : S →ₗ[Ω] Sc)
-
 
 include hR in
 theorem core (ha : IsBaseChange C a) (hb : IsBaseChange C b) (hc : IsBaseChange C c)
@@ -365,8 +362,8 @@ theorem summand_step {n : ℕ} {L : AddSubgroup (Fin n → Ω)} (i : Fin n)
 theorem locFree_step (R : Subalgebra o Ω) {n : ℕ} {L : AddSubgroup (Fin n → Ω)} (hL : LocFree R n L)
     (i : Fin n) (h₀ : Summand L (annSub Ω n i)) (h₁ : Summand L (annSub Ω n ((i : ℕ) + 1))) :
     LocFree R 1 ((L ⊓ (annSub Ω n i).toAddSubgroup).map (Pi.evalAddMonoidHom (fun _ => Ω) i)) := by
-  have hA := ((_root_.GlobalTheory.CompanionTheory.Ar.Num.summand_of_locFree_quot R (annSub Ω n i) n 0 L hL).2 h₀).1
-  have hB := ((_root_.GlobalTheory.CompanionTheory.Ar.Num.summand_of_locFree_quot R (LinearMap.ker (stepCoord Ω i)) _ 0 _ hA).2 (summand_step i h₁)).2
+  have hA := ((_root_.PositivityTheory.Xgn.summand_iff_locFree_quot R (annSub Ω n i) n 0 L hL).2 h₀).1
+  have hB := ((_root_.PositivityTheory.Xgn.summand_iff_locFree_quot R (LinearMap.ker (stepCoord Ω i)) _ 0 _ hA).2 (summand_step i h₁)).2
   have hr : Module.finrank Ω (annSub Ω n i) - Module.finrank Ω (LinearMap.ker (stepCoord Ω i)) = 1 := by
     have h := LinearMap.finrank_range_add_finrank_ker (stepCoord Ω i)
     rw [LinearMap.range_eq_top.2 (stepCoord_surjective i), finrank_top, Module.finrank_self] at h
@@ -387,7 +384,7 @@ theorem main : ∀ {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] {F : Typ
   refine ⟨fun τ i => locFree_step R (hg τ).1 i (h2.ann τ i) (h2.ann τ ((i : ℕ) + 1)), ?_⟩
   intro C _ _ _ _ RC hRC τ i
   have haf := ((hbc C RC hRC).2 τ).1
-  have hs := (_root_.GlobalTheory.CompanionTheory.Ar.Num.summand_baseChange R RC hRC (bcMap Ω C (Fin n)) (isBaseChange_bcMap Ω C _)
+  have hs := (_root_.PositivityTheory.Xgn.t_summand_bc R RC hRC (bcMap Ω C (Fin n)) (isBaseChange_bcMap Ω C _)
     (D.af R p (χ τ)) (annSub Ω n i) (hg τ).1.1 (h2.ann τ i)).2
   rw [span_bcMap_annSub] at hs
   unfold LieLatticeData.dId
@@ -510,7 +507,7 @@ theorem stepKer : ∀ {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] {F : 
         rintro _ ⟨⟨c, m⟩, h, rfl⟩
         exact ⟨c, h⟩)).2
   · have hst := stepGraph_stable D hB τ (χ τ) i
-    rw [(_root_.GlobalTheory.CompanionTheory.Ar.Num.kernel_graph_base_change D R p w χ hχ hB hG1 C RC hRC τ).2 i]
+    rw [(_root_.PositivityTheory.Xgn.kernel_lattice_base_change D R p w χ hχ hB hG1 C RC hRC τ).2 i]
     let sw := (AddEquiv.prodComm (M := Ω) (N := Fin (r τ) → Ω)).toAddMonoidHom
     let Δ' : AddSubgroup ((Fin (r τ) → Ω) × Ω) := (D.stepGraph τ (χ τ) i).map sw
     have hst' : ∀ a ∈ R, ∀ v ∈ Δ', a • v ∈ Δ' := by
@@ -623,8 +620,7 @@ private theorem loc_free_base_change {o Ω C : Type} [CommRing o] [Field Ω] [Fi
         refine ⟨fun q => a * algebraMap Ω C (av q), fun q => ?_, ?_⟩
         · obtain ⟨n, hn⟩ := hav q
           exact ⟨n, by rw [mul_left_comm, ← map_pow, ← map_mul]; exact mul_mem ha (hRC _ hn)⟩
-        · set_option synthInstance.maxHeartbeats 100000 in
-            simp only [map_sum, map_smul, Finset.smul_sum]
+        · simp only [map_sum, map_smul, Finset.smul_sum]
           refine Finset.sum_congr rfl fun q _ => ?_
           rw [← algebraMap_smul C (av q), smul_smul]
       | zero => exact ⟨0, fun q => ⟨0, by simp⟩, by simp⟩
@@ -692,14 +688,14 @@ theorem main : ∀ {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] {F : Typ
   refine ⟨fun τ => ⟨hkL τ, fun i => ⟨hdL τ i, hsL τ i⟩⟩, ?_⟩
   intro C _ _ _ _ RC hRC
   have hbc := h68.2 C RC hRC
-  have h69 := _root_.GlobalTheory.CompanionTheory.Ar.Num.kernel_graph_base_change D R p w χ hc hB hG1 C RC hRC
+  have h69 := _root_.PositivityTheory.Xgn.kernel_lattice_base_change D R p w χ hc hB hG1 C RC hRC
   have h70 := _root_.PositivityTheory.Xgn.image_lattice_base_change D R p w χ hc hB hG1 haf C RC hRC
   refine ⟨⟨fun τ i => ?_, fun τ i => ?_, fun τ i => ?_, fun τ => ?_⟩,
     fun τ => ⟨_root_.GlobalTheory.CompanionTheory.Ar.Num.LatticeGoodness.KerBC.main D R p w χ hc hB hG1 hG2 haf C RC hRC τ,
       fun i => ⟨hdB C RC hRC τ i, hsB C RC hRC τ i⟩⟩⟩
   · beta_reduce
     rw [(hbc.2 τ).1, ← span_bcMap_annSub Ω C n i]
-    exact (_root_.GlobalTheory.CompanionTheory.Ar.Num.summand_baseChange R RC hRC (bcMap Ω C (Fin n)) (isBaseChange_bcMap Ω C (Fin n))
+    exact (_root_.PositivityTheory.Xgn.t_summand_bc R RC hRC (bcMap Ω C (Fin n)) (isBaseChange_bcMap Ω C (Fin n))
       (D.af R p (χ τ)) (annSub Ω n i) (h68.1 τ).1.1 (hG2.ann τ i)).1
   · rw [(h69 τ).1 i]
     exact loc_free_base_change R RC hRC (hG2.kk τ i)

@@ -146,7 +146,6 @@ theorem lintegral_nuG (Γ : Set (GL (Fin k) E)) (d : ℕ) {Φ : GA E k → ℝ�
 theorem measurable_blkU_mul (m : ℕ) :
     Measurable fun p : (UnipotentBlockColumnIndex k m m → Ad E) × GA E k => (blkU p.1 * p.2 : GA E k) :=
   by
-    set_option synthInstance.maxHeartbeats 200000 in
       exact (((continuous_posU (isNil_blk k m m)).comp continuous_fst).mul continuous_snd).measurable
 
 theorem lintegral_nuD_succ (m d : ℕ) (hm : m = k - (d + 1)) [SFinite (nuD E k d)] {Φ : GA E k → ℝ≥0∞}
@@ -188,7 +187,6 @@ def innerI (d : ℕ) (F : GA E k → ℝ≥0∞) (g u : GA E k) : ℝ≥0∞ := 
 theorem measurable_innerI (d : ℕ) [SFinite (nuD E k d)] {F : GA E k → ℝ≥0∞} (hF : Measurable F) (g : GA E k) :
     Measurable (innerI d F g) :=
   by
-    set_option synthInstance.maxHeartbeats 200000 in
       exact Measurable.lintegral_prod_right' (f := fun p : GA E k × GA E k => F (p.1 * (g * p.2)))
         (hF.comp (measurable_fst.mul (measurable_snd.const_mul g)))
 

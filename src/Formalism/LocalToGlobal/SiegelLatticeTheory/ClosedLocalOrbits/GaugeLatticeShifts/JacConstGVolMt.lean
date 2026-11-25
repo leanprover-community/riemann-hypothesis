@@ -672,10 +672,6 @@ instance (k : ℕ) : IsFiniteMeasure (Gauge.muGauge (εT k)) := by
   unfold Gauge.muGauge
   exact ⟨by rw [Measure.smul_apply, smul_eq_mul]; exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top (measure_lt_top _ _)⟩
 
-theorem volU_pos (k : ℕ) : 0 < Formalism.MainNotions.S.UnitaryVolumeMass.volU k := by
-  unfold Formalism.MainNotions.S.UnitaryVolumeMass.volU
-  exact Finset.prod_pos fun i _ => by positivity
-
 theorem gauge_measure_univ : nu0 k r Set.univ = ENNReal.ofReal (Formalism.MainNotions.S.UnitaryVolumeMass.volU k) := by
   rw [nu0, Measure.map_apply cont_phi.measurable MeasurableSet.univ, Set.preimage_univ, (gaugeVolU k).2]
 
@@ -701,7 +697,7 @@ theorem gauge_measure_is_haar : IsHaarOn (SW k r) (nu0 k r) := by
   haveI : IsFiniteMeasure (nu0 k r) := by
     unfold nu0
     infer_instance
-  have hpos : 0 < ENNReal.ofReal (Formalism.MainNotions.S.UnitaryVolumeMass.volU k) := ENNReal.ofReal_pos.mpr (volU_pos k)
+  have hpos : 0 < ENNReal.ofReal (Formalism.MainNotions.S.UnitaryVolumeMass.volU k) := ENNReal.ofReal_pos.mpr (Formalism.L2.SG.Pf.Jac.volU_pos k)
   refine ⟨inferInstance, ?_, ?_, ?_⟩
   · intro h
     have hu := gauge_measure_univ (k := k) (r := r)

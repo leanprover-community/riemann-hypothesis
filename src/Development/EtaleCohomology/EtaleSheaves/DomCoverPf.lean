@@ -39,7 +39,7 @@ private theorem UpperTheory.Reformulated.B.Qn19.commonDenom {R L : Type} [CommRi
       exact ⟨d * c, by rw [map_mul, map_mul, hd]; ring⟩
 
 theorem UpperTheory.Reformulated.B.Qn19.aicFrac :
-    ∀ (R L : Type) [inst : CommRing R] [inst_1 : CommRing L] (φ : R →+* L),
+    ∀ (R L : Type) [CommRing R] [CommRing L] (φ : R →+* L),
       UpperTheory.Reformulated.B.Qn19.AIC R →
         (∀ (z : L), ∃ (a : R) (b : R), IsUnit ((φ : R → L) b) ∧ z * (φ : R → L) b = (φ : R → L) a) → UpperTheory.Reformulated.B.Qn19.AIC L := by
   intro R L _ _ φ hR h p hp hdeg

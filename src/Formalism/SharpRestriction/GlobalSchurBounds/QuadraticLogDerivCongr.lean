@@ -1585,7 +1585,3 @@ end Formalism.MainNotions.Lnk
 
 end
 
-namespace Formalism.MainNotions
-
-end Formalism.MainNotions
-

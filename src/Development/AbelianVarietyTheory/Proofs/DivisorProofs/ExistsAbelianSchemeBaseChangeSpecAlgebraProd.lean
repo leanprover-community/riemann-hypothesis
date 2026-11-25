@@ -15,7 +15,6 @@ open scoped CategoryTheory.Obj
 
 namespace GlobalTheory
 
-set_option backward.isDefEq.respectTransparency false in
 theorem exists_baseChange_spAlg_prod (R D : Type) [CommRing R] [CommRing D] [Algebra R D]
     (B : Over (Sp R)) [GrpObj B] (g : ℕ) :
     IsAbelianScheme B → SmoothOfRelativeDimension g B.hom →

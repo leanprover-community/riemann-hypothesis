@@ -418,9 +418,6 @@ theorem step1 (lam : Fin n → ℤ) (hl : StrictAnti lam) (ν : Fin n → ℤ) (
 
 end GlobalTheory.CompanionTheory.RealCount.LemmaH
 
-namespace GlobalTheory.CompanionTheory.RealCount
-
-end GlobalTheory.CompanionTheory.RealCount
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DominantEqOfNormGe =====

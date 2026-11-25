@@ -349,7 +349,6 @@ theorem contractFracMap_mk (f : MRing (fun k => ι' (j k)) F) :
   simp [contractFracMap, contractQuot]
   rfl
 
-
 end SplitRelDeg
 
 end
@@ -492,7 +491,6 @@ theorem subst_homog {K : Type*} [DecidableEq K] {ι : K → Type} {M : ℕ} {F :
   exact this
 
 end FlagLineDegreeProof
-
 
 open FlagLineDegreeProof in
 theorem FlagLineDegree.proof : FlagLineDegree.Statement := by
@@ -880,7 +878,6 @@ theorem chartMon_not_mem {W : Ideal (MRing (bundleIdx ι M) F)} [hW : W.IsPrime]
   exact hc k (hW.mem_of_pow_mem _ hk)
 
 end FlagLineSectionProof
-
 
 open FlagLineSectionProof in
 theorem FlagLineSection.proof : FlagLineSection.Statement := by
@@ -1336,7 +1333,6 @@ open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo IntermediateField.alg
 
 noncomputable section
 
-
 set_option maxHeartbeats 400000 in
 theorem SpanBundleTrdegLe.proof : SpanBundleTrdegLe.Statement := by
   intro F _ Ω _ _ K _ ι y M i G c a H _hc hH hGH Φ _ _ s
@@ -1538,7 +1534,6 @@ section -- clump:auto
 set_option maxSynthPendingDepth 1
 
 namespace GroundTheory.Heights₂.Heights.NumbersDVR
-
 
 open GroundTheory.Heights₂.Heights.FieldNumbers in
 theorem DivPushForwardLocalZero : FieldNumbers.DivPushForwardLocal.Statement.{0} := by

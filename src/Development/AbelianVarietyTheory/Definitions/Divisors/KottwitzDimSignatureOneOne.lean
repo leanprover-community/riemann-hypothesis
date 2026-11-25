@@ -55,7 +55,6 @@ theorem KSDim.rank_eq {d : ℕ} (h : KSDim ρ φ Fil Z d) :
   obtain ⟨f, hf, hu⟩ := h
   have key : ∀ (g : H →ₗ[k] H) (c : Fin d → k), (∀ x ∈ Fil, g x - ∑ i, c i • f i x ∈ Fil) ↔
       cls Fil g = ∑ i, c i • cls Fil (f i) := fun g c => by
-    set_option synthInstance.maxHeartbeats 100000 in
       simp only [← map_smul, ← map_sum, cls_eq_iff, LinearMap.sum_apply, LinearMap.smul_apply]
   have li : LinearIndependent k fun i => cls Fil (f i) := by
     rw [Fintype.linearIndependent_iff]

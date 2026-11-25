@@ -54,14 +54,6 @@ def IsNormSymm (L : RigLB G) (w : LB.Iso L.L (L.L.pull (GrpObj.inv (X := G)).lef
 
 end Symm
 
-namespace PowerDatum
-
-variable {j : ℕ} {G' G : Over S} [GrpObj G'] [GrpObj G] (P : PowerDatum j G' G)
-
-variable [IsCommMonObj G'] [IsCommMonObj G]
-
-end PowerDatum
-
 end GlobalTheory.IndefiniteRowSideFullHecke.PowerGroupDatum
 end -- clump:auto
 end -- clump:auto

@@ -827,10 +827,6 @@ theorem factVSig : FactVSig R F E := by
 
 end sig
 
-namespace Rows
-
-end Rows
-
 theorem factLpF : FactLpF := by
   intro l d _ Ds hl hD
   have hl' : (2 : ℝ) ≤ l := by exact_mod_cast hl

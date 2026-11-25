@@ -394,7 +394,6 @@ theorem frame_ex (P : CrystallineSemistableComparison.HT.HTPre l K.1) (e : IsoFa
     have := (P.fin M hM a n).1
     exact LinearEquiv.finiteDimensional (eqv e M.q a (n - a) n (add_sub_fin a))
   have : FiniteDimensional ℚ_[l] (EtV (K := K) M.q n) := hfd
-  set_option synthInstance.maxHeartbeats 200000 in
   exact ⟨⟨_, Module.finBasis ℚ_[l] (EtV (K := K) M.q n), fun a => _,
     fun a => Module.finBasis K.1 (HodgeV (K := K) M.q n a)⟩, sum_e e hM hr _⟩
 

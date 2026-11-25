@@ -61,7 +61,6 @@ theorem UpperTheory.ConvolutionTheory.Tf.tensMeas :
       ∀ (β : CompactlySupportedContinuousMap (archGroup K n) ℂ) (e : CompactlySupportedContinuousMap (AdelicGLn.FiniteAdelicGL K n) ℂ) (Θ : normOneGL (K := K) (n := n) → ℂ), Continuous Θ →
         ∫ x : normOneGL (K := K) (n := n), kbar β (infPart K n (x : AdelicGLn.AdelicGL K n)) * e (finPart K n (x : AdelicGLn.AdelicGL K n)) * Θ x ∂μ =
           c * ∫ a, ∫ h, β a * e h * Θ (archP K n a * MultiplicityOne.finProj K n h) ∂m ∂ν := by
-  set_option synthInstance.maxHeartbeats 200000 in
   intro K _ _ n hn μ _ ν _ m _
   have hm : (ν.prod m).IsHaarMeasure := inferInstance
   have hμA : (Measure.map (infFinEquiv K n) (ν.prod m)).IsHaarMeasure :=

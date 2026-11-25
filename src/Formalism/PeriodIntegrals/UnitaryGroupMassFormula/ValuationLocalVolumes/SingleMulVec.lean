@@ -109,7 +109,7 @@ theorem det_corOne {a : ℕ} (T : Matrix (Fin (a + 1)) (Fin (a + 1)) K) (i₀ : 
     (T + Matrix.single i₀ i₀ t).det = t * (T.submatrix i₀.succAbove i₀.succAbove).det := by
 
   rw [Matrix.det_succ_row _ i₀, Finset.sum_eq_single i₀
-    (fun j _ hj => by simp [hr, Matrix.single_apply, Ne.symm hj]) (by simp)]
+    (fun j _ hj => by simp [hr, Ne.symm hj]) (by simp)]
   have hsub : (T + Matrix.single i₀ i₀ t).submatrix i₀.succAbove i₀.succAbove =
       T.submatrix i₀.succAbove i₀.succAbove := by
     ext a b

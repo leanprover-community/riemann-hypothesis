@@ -24,24 +24,17 @@ variable {p : ℕ} [hp : Fact p.Prime]
 private theorem not_prime_dvd_padicInt_unit (w : ℤ_[p]ˣ) : ¬ (p : ℤ_[p]) ∣ (w : ℤ_[p]) :=
   fun h => PadicInt.prime_p.not_unit (isUnit_of_dvd_unit h (Units.isUnit _))
 
-lemma emult_eq_valuation {x : ℤ_[p]} (hx : x ≠ 0) :
-    emultiplicity (p : ℤ_[p]) x = x.valuation := by
-  have hP : Prime (p : ℤ_[p]) := PadicInt.prime_p
-  conv_lhs => rw [PadicInt.unitCoeff_spec hx]
-  rw [emultiplicity_mul hP, emultiplicity_eq_zero.mpr (not_prime_dvd_padicInt_unit _), zero_add,
-    emultiplicity_pow_self_of_prime hP]
-
 lemma valuation_eq_of_emult {x : ℤ_[p]} {n : ℕ} (h : emultiplicity (p : ℤ_[p]) x = n) :
     x.valuation = n := by
   have hx : x ≠ 0 := by
     rintro rfl
     simp at h
-  rw [emult_eq_valuation hx] at h
+  rw [Formalism.WindowSums.zv_emult_eq_val hx] at h
   exact_mod_cast h
 
 lemma emult_of_valuation_one {x : ℤ_[p]} (hx : x ≠ 0) (h1 : x.valuation = 1) :
     emultiplicity (p : ℤ_[p]) x = 1 := by
-  rw [emult_eq_valuation hx, h1, Nat.cast_one]
+  rw [Formalism.WindowSums.zv_emult_eq_val hx, h1, Nat.cast_one]
 
 lemma p_dvd_of_valuation_one {x : ℤ_[p]} (hx : x ≠ 0) (h1 : x.valuation = 1) :
     (p : ℤ_[p]) ∣ x := by
@@ -49,11 +42,6 @@ lemma p_dvd_of_valuation_one {x : ℤ_[p]} (hx : x ≠ 0) (h1 : x.valuation = 1)
   by_contra hn
   rw [emultiplicity_eq_zero.mpr hn] at h
   exact zero_ne_one h
-
-lemma not_dvd_of_dvd_sub_one {u : ℤ_[p]} (h : (p : ℤ_[p]) ∣ u - 1) : ¬ (p : ℤ_[p]) ∣ u := by
-  intro hu
-  have h1 : (p : ℤ_[p]) ∣ 1 := by simpa using dvd_sub hu h
-  exact PadicInt.prime_p.not_unit (isUnit_of_dvd_one h1)
 
 lemma dvd_of_natCast_dvd_natCast {m : ℕ} (h : (p : ℤ_[p]) ∣ (m : ℤ_[p])) : p ∣ m := by
   have h1 := (PadicInt.norm_lt_one_iff_dvd _).mpr h
@@ -65,7 +53,7 @@ lemma emult_pow_sub_one (hodd : p ≠ 2) {u : ℤ_[p]} (hdvd : (p : ℤ_[p]) ∣
     emultiplicity (p : ℤ_[p]) (u ^ k - 1) = ((1 + padicValNat p k : ℕ) : ℕ∞) := by
   have hP : Prime (p : ℤ_[p]) := PadicInt.prime_p
   have hp1 : Odd p := hp.out.odd_of_ne_two hodd
-  have hu : ¬ (p : ℤ_[p]) ∣ u := not_dvd_of_dvd_sub_one hdvd
+  have hu : ¬ (p : ℤ_[p]) ∣ u := Formalism.WindowSums.zv_not_dvd_of_dvd_sub_one hdvd
   obtain ⟨e, m, hm, rfl⟩ := Nat.exists_eq_pow_mul_and_not_dvd hk p hp.out.ne_one
   have hm0 : m ≠ 0 := by
     rintro rfl

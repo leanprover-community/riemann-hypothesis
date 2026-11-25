@@ -11,20 +11,6 @@ open NumberField GlobalTheory.CuspRep
 
 noncomputable section
 
-section LieGrowth
-
-open MeasureTheory Topology Matrix GroundTheory.Automorphic
-
-namespace GlobalTheory.CuspStab.LieGrowth
-
-open GlobalTheory.CompanionTheory.ArchSmooth
-
-variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a : ℕ}
-
-end GlobalTheory.CuspStab.LieGrowth
-
-end LieGrowth
-
 namespace GlobalTheory.CuspStab
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a : ℕ}

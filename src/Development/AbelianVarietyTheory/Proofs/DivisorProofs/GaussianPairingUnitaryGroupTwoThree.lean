@@ -62,7 +62,6 @@ theorem half_add_self (X : Matrix ι ι ℂ) : (1 / 2 : ℂ) • (X + X) = X := 
 theorem half_eq {p : Matrix ι ι ℂ} (pp : p * p = p) {g h : Matrix ι ι ℂ} (hg : h * g = 1) :
     (1 / 2 : ℂ) • (1 + (p - (1 - p)) * h * (p - (1 - p)) * g) =
       (p - (1 - p)) * h * (p * g * p - (1 - p) * g * (1 - p)) := by
-  have pp' : ∀ x, p * (p * x) = p * x := fun x => by rw [← mul_assoc, pp]
   have hg' : ∀ x, h * (g * x) = x := fun x => by rw [← mul_assoc, hg, one_mul]
   rw [← half_add_self ((p - (1 - p)) * h * (p * g * p - (1 - p) * g * (1 - p)))]
   congr 1

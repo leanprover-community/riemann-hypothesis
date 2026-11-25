@@ -73,7 +73,6 @@ theorem isOpenImmersion_ι_comp_blowdown (S : EmbeddedBlowupSequence k Y pY) (i 
     AlgebraicGeometry.IsOpenImmersion (U.ι ≫ S.blowdown i) := by
   have : CategoryTheory.IsIso (S.blowdown i ∣_ S.ambientCenterSupportCompl i) :=
     S.isIso_blowdown_restrict_ambientCenterSupportCompl i hi
-  have : AlgebraicGeometry.IsOpenImmersion (S.blowdown i ∣_ S.ambientCenterSupportCompl i) := inferInstance
   have hle : U ≤ (TopologicalSpace.Opens.map (S.blowdown i).base).obj (S.ambientCenterSupportCompl i) := by
     intro x hx
     exact hU hx

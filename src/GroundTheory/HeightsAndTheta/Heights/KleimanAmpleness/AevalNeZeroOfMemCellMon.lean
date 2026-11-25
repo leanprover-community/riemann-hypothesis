@@ -25,13 +25,6 @@ section Poly
 
 variable {S : Type} [CommRing S] {K : Type} {ι : K → Type} [∀ k, Fintype (ι k)]
 
-theorem isMultiHomog_mul' {f g : MRingOver S ι} {a b : K → ℕ} (hf : IsMultiHomog f a)
-    (hg : IsMultiHomog g b) : IsMultiHomog (f * g) (a + b) := by
-  classical
-  intro m hm k
-  obtain ⟨m1, hm1, m2, hm2, rfl⟩ := Finset.mem_add.mp (MvPolynomial.support_mul f g hm)
-  simp only [Finsupp.add_apply, Finset.sum_add_distrib, Pi.add_apply, hf m1 hm1 k, hg m2 hm2 k]
-
 theorem isMultiHomog_X_pow [DecidableEq K] (k : K) (i : ι k) (n : ℕ) :
     IsMultiHomog (X ⟨k, i⟩ ^ n : MRingOver S ι) (Pi.single k n) := by
   classical
@@ -86,7 +79,7 @@ theorem cellMon_isMultiHomog [DecidableEq K] {B : ∀ k, Finset (ι k)} {t : MRi
   | mul f g _ _ hf hg =>
     obtain ⟨a, ha⟩ := hf
     obtain ⟨b, hb⟩ := hg
-    exact ⟨a + b, isMultiHomog_mul' ha hb⟩
+    exact ⟨a + b, Bridge.isMultiHomog_mul ha hb⟩
 
 
 omit [∀ k, Fintype (ι k)] in
@@ -116,12 +109,12 @@ theorem cellSec_mul (y : (Σ k, ι k) → Ω) {γ δ : K → ℤ} {B : ∀ k, Fi
     rw [Submodule.span_mul_span] at hab
     refine Submodule.span_mono ?_ hab
     rintro z ⟨u, ⟨g, t, c, ht, htc, hc, hg, rfl⟩, v, ⟨g', t', c', ht', htc', hc', hg', rfl⟩, rfl⟩
-    refine ⟨g * g', t * t', c + c', mul_mem ht ht', isMultiHomog_mul' htc htc', fun k => ?_, ?_, ?_⟩
+    refine ⟨g * g', t * t', c + c', mul_mem ht ht', Bridge.isMultiHomog_mul htc htc', fun k => ?_, ?_, ?_⟩
     · have := hc k
       have := hc' k
       simp only [Pi.add_apply, Nat.cast_add]
       omega
-    · convert isMultiHomog_mul' hg hg' using 1
+    · convert Bridge.isMultiHomog_mul hg hg' using 1
       funext k
       have := hc k
       have := hc' k
@@ -149,7 +142,7 @@ theorem cellSec_shift [DecidableEq K] (y : (Σ k, ι k) → Ω) (γ : K → ℤ)
     obtain ⟨s, t', ht', rfl⟩ := cellMon_split hB' ht
     obtain ⟨a', ha'⟩ := cellMon_isMultiHomog ht'
     have hne : X ⟨k, i⟩ ^ s * t' ≠ 0 := fun h => ht0 (by rw [h, map_zero])
-    have haa := isMultiHomog_unique hta (isMultiHomog_mul' (isMultiHomog_X_pow k i s) ha') hne
+    have haa := isMultiHomog_unique hta (Bridge.isMultiHomog_mul (isMultiHomog_X_pow k i s) ha') hne
     have ht'0 := aeval_ne_zero_of_mem_cellMon hB ht'
     refine ⟨s, fun r' hr' => ?_⟩
     obtain ⟨d, rfl⟩ : ∃ d, r' = s + d := ⟨r' - s, by omega⟩
@@ -165,7 +158,7 @@ theorem cellSec_shift [DecidableEq K] (y : (Σ k, ι k) → Ω) (γ : K → ℤ)
         omega
       · simp only [Pi.single_eq_of_ne hk] at h2 ⊢
         omega
-    · convert isMultiHomog_mul' (isMultiHomog_X_pow k i d) hg using 1
+    · convert Bridge.isMultiHomog_mul (isMultiHomog_X_pow k i d) hg using 1
       funext k'
       have h1 := hγ k'
       have h2 := congrFun haa k'

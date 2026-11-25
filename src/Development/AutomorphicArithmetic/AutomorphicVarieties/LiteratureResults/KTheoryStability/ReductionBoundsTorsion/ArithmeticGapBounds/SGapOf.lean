@@ -1337,11 +1337,6 @@ def rep {Λ S : Type} [Group Λ] [Group S] (j : Λ →* S) (B K : Subgroup Λ)
     (c : Quotient (QuotientGroup.rightRel (B.subgroupOf K))) : S :=
   j ((c.out : K) : Λ)
 
-theorem card_quot {Λ : Type} [Group Λ] (B K : Subgroup Λ) :
-    Nat.card (Quotient (QuotientGroup.rightRel (B.subgroupOf K))) = (B.subgroupOf K).index := by
-  rw [Nat.card_congr (QuotientGroup.quotientRightRelEquivQuotientLeftRel (B.subgroupOf K))]
-  rfl
-
 theorem countable_map {Λ S : Type} [Group Λ] [Countable Λ] [Group S] (j : Λ →* S) (K : Subgroup Λ) :
     Countable (K.map j) := by
   have : ((K.map j : Subgroup S) : Set S).Countable := by
@@ -1387,14 +1382,14 @@ theorem unfold_fd (Λ S : Type) [Group Λ] [Countable Λ] [Group S] [MeasurableS
   haveI : Countable (K.map j) := countable_map j K
   haveI : Countable (B.map j) := countable_map j B
   haveI : Finite (Quotient (QuotientGroup.rightRel (B.subgroupOf K))) :=
-    Nat.finite_of_card_ne_zero (by rw [card_quot]; exact hi)
+    Nat.finite_of_card_ne_zero (by rw [PositivityTheory.KB.SpectralGap.PGap.card_cosets]; exact hi)
   letI := Fintype.ofFinite (Quotient (QuotientGroup.rightRel (B.subgroupOf K)))
   have hrepΓ : ∀ c, rep j B K c ∈ K.map j := fun c => ⟨((c.out : K) : Λ), c.out.2, rfl⟩
   have hBK' : B.map j ≤ K.map j := Subgroup.map_mono hBK
   have hn : ((B.subgroupOf K).index : ℝ) ≠ 0 := by exact_mod_cast hi
   have hcard : (Finset.univ : Finset (Quotient (QuotientGroup.rightRel (B.subgroupOf K)))).card
       = (B.subgroupOf K).index := by
-    rw [Finset.card_univ, ← Nat.card_eq_fintype_card, card_quot]
+    rw [Finset.card_univ, ← Nat.card_eq_fintype_card, PositivityTheory.KB.SpectralGap.PGap.card_cosets]
   have hmp : ∀ a : S, MeasurePreserving (fun x => a • x) μ μ := fun a => measurePreserving_smul a μ
   have hemb : ∀ a : S, MeasurableEmbedding (fun x : S => a • x) :=
     fun a => measurableEmbedding_const_smul a

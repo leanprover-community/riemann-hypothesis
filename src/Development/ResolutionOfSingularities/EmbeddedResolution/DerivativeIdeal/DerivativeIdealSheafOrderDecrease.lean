@@ -123,7 +123,6 @@ theorem orderAtLeastLocus_subset_orderAtLeastLocus_derivIdealSheafIterate (k : T
 private theorem formallySmooth_of_ringEquiv (k : Type u) [CommRing k] (R : Type u)
     [CommRing R] [Algebra k R] (e : k ≃+* R) (he : ∀ x : k, e x = algebraMap k R x) :
     Algebra.FormallySmooth k R := by
-  have : Algebra.FormallySmooth k k := inferInstance
   exact Algebra.FormallySmooth.of_equiv (AlgEquiv.ofRingEquiv (f := e) (fun x => he x))
 
 theorem formallySmooth_sections (k : Type u) [Field k] {X : Scheme.{u}}
@@ -150,7 +149,6 @@ theorem formallySmooth_sections (k : Type u) [Field k] {X : Scheme.{u}}
 private theorem isNoetherianRing_sections_of_smooth (k : Type u) [Field k] {X : Scheme.{u}}
     (p : X ⟶ Spec (CommRingCat.of k)) [AlgebraicGeometry.Smooth p] (U : X.Opens)
     (hU : IsAffineOpen U) : IsNoetherianRing Γ(X, U) := by
-  have : IsNoetherianRing k := inferInstance
   have hQ : RingHom.Smooth (p.appLE ⊤ U (le_preimage_top k p U)).hom :=
     (AlgebraicGeometry.smooth_iff p).mp ‹AlgebraicGeometry.Smooth p›
       (isAffineOpen_top (Spec (CommRingCat.of k))) hU (le_preimage_top k p U)
@@ -193,10 +191,8 @@ private theorem finite_kaehlerDifferential_of_isLocalization (k A B : Type u) [C
     (hfin : Module.Finite A (KaehlerDifferential k A)) :
     Module.Finite B (KaehlerDifferential k B) := by
   have := hfin
-  have : IsLocalizedModule M (KaehlerDifferential.map k k A B) := inferInstance
   have hbc : IsBaseChange B (KaehlerDifferential.map k k A B) :=
     IsLocalizedModule.isBaseChange M B (KaehlerDifferential.map k k A B)
-  have : Module.Finite B (TensorProduct A B (KaehlerDifferential k A)) := inferInstance
   exact Module.Finite.equiv hbc.equiv
 
 theorem finite_kaehlerDifferential_stalk (k : Type u) [Field k] {X : Scheme.{u}}
@@ -223,8 +219,6 @@ private theorem free_kaehlerDifferential_of_formallySmooth (k : Type u) [Field k
     Module.Free A (KaehlerDifferential k A) := by
   have _h1 : Module.FinitePresentation A (KaehlerDifferential k A) :=
     Module.finitePresentation_of_finite ..
-  have _h2 : Module.Projective A (KaehlerDifferential k A) := inferInstance
-  have _h3 : Module.Flat A (KaehlerDifferential k A) := inferInstance
   exact Module.free_of_flat_of_isLocalRing
 
 theorem free_kaehlerDifferential_stalk (k : Type u) [Field k] {X : Scheme.{u}}

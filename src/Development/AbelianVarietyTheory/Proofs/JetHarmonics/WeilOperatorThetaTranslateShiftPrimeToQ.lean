@@ -112,13 +112,11 @@ theorem shift_pow (ζ : ℂ_[q]) (hζ : ‖ζ - 1‖ < 1) (f : ℂ_[q]⟦X⟧) (
   | succ k ih =>
     rw [pow_succ, (h2 _ _ ⟨1, bd_pow f hf k⟩ ⟨1, hf⟩).2, ih, pow_succ]
 
-alias zc_natCast := _root_.GlobalTheory.MomOne.ShiftComp.zc_natCast
-
 theorem zc_sub_one (a : ℤ_[q]) : zc (a - 1) = zc a - 1 := by simp [zc]
 
 theorem coprime_pred (m : ℕ) (hm : 1 ≤ m) (h : ‖(m : ℂ_[q])‖ < 1) : Nat.Coprime (m - 1) q := by
   have hn := (GlobalTheory.MomOne.MulSeries.mulS_laws q).2.2.2.2.2
-  rw [← zc_natCast, hn] at h
+  rw [← GlobalTheory.MomOne.ShiftComp.zc_natCast, hn] at h
   have h1 : (q : ℤ) ∣ (m : ℤ) := by
     rw [← PadicInt.norm_int_lt_one_iff_dvd]; simpa using h
   have h2 : q ∣ m := by exact_mod_cast h1
@@ -342,9 +340,6 @@ theorem norm_natCast_eq_one {s : ℕ} (h : Nat.Coprime s q) : ‖(s : ℤ_[q])�
   rw [PadicInt.norm_natCast_eq_one_iff]
   exact h.symm
 
-theorem hasSubst_mulS (a : ℤ_[q]) : HasSubst (mulS a : ℂ_[q]⟦X⟧) :=
-  HasSubst.of_constantCoeff_zero' ((MulSeries.mulS_laws q).1 a).2.1
-
 theorem subst_mulS_cancel {a : ℤ_[q]} (ha : ‖a‖ = 1) {f g : ℂ_[q]⟦X⟧}
     (h : f.subst (mulS a : ℂ_[q]⟦X⟧) = g.subst (mulS a : ℂ_[q]⟦X⟧)) : f = g := by
   obtain ⟨u, rfl⟩ := PadicInt.isUnit_iff.mpr ha
@@ -436,7 +431,7 @@ theorem main : ∀ (d q : ℕ) [Fact q.Prime] (M : Mdl q) (ω : ℂ_[q]) (θ : �
     simp only [U1]
     field_simp
   rw [(hring _ _ hψa hWs).2.1, hψh, hscale _ (hWd.analyticAt 0), hscale _ (hWUd.analyticAt 0),
-    ← subst_mul (hasSubst_mulS _)] at hprod
+    ← subst_mul (GlobalTheory.MomOne.MulSeries.hasSubst_mulS _)] at hprod
   rw [← subst_mulS_cancel hsn hprod, _root_.GlobalTheory.MomOne.ThShift.theta_shift d q M ω θ hd hd16 hsp hOK hM hθ hgood n y hg,
     ← ((Shift.shift_laws q _ hAt.2.1).2.1 _ _ hfb hθb).2, ← (hring _ _ hfa (hθd.analyticAt 0)).2.1]
   congr 1

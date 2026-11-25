@@ -293,7 +293,6 @@ theorem badInt_notMem {μ₀ : T} (hL : L.Is μ₀) {G : GridData L sc} {t : T}
     (hde : Nat.Coprime D.host.pde (D.host.QS * D.host.q) ∧ Nat.Coprime D.host.pde' (D.host.QS * D.host.q))
     (hc : ∀ P ∈ L.Q t, ((Ideal.absNorm D.host.ccK : ℕ) : 𝓞 D.host.E) ∉ P.asIdeal) {w : Pl D.host.E} (hw : w ∈ locPl G t) :
     ((badInt D : ℕ) : 𝓞 D.host.E) ∉ w.asIdeal := by
-  have hq : D.host.q.Prime := D.host.hyp.1
   have hp : ∀ p : ℕ, Nat.Coprime p (D.host.QS * D.host.q) → p ∈ D.host.levelPrimes → Nat.Coprime (badInt D) p :=
     fun p h2 h3 => Nat.Coprime.mul_left h2.symm (D.host.ccK_coprime p (by simp [h3]))
   rcases locPl_cases hw with ⟨a, -⟩ | ⟨-, -, b⟩

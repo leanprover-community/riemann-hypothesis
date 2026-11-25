@@ -338,8 +338,7 @@ theorem fock_data (h : IsCMExt F E σ) (hfr : Framed τ JA JB a b A C) {Φ : Ten
       ← Matrix.sum_mul, ← Matrix.mul_sum, ← expand, hc]
     simp only [Matrix.transpose_mul, Matrix.mul_assoc]
     rw [← Matrix.mul_assoc (C w)ᵀ, ← Matrix.transpose_mul, h2, Matrix.transpose_one, Matrix.one_mul]
-  · set_option synthInstance.maxHeartbeats 100000 in
-      simp only [hU, ← map_add (f := _), ← map_sum, ← map_smul]
+  · simp only [hU, ← map_add (f := _), ← map_sum, ← map_smul]
     congr 1
     rw [Fintype.sum_prod_type, sumPl, LinearMap.sum_apply, Finset.smul_sum]
     refine Finset.sum_congr rfl fun w _ => ?_
@@ -469,12 +468,6 @@ theorem box_D (hdd : IsDblCoord (cA σ) (-1) JA JB d dd) {D Dd} (hD : IsD d D) (
   ring
 
 end PositivityTheory.RL.Up
-
-namespace PositivityTheory.RL
-
-open Up
-
-end PositivityTheory.RL
 
 end
 end -- clump:auto
@@ -1491,7 +1484,6 @@ namespace PositivityTheory.ThKR
 open PositivityTheory.RL PositivityTheory.RL.Up
 
 theorem lieSecond2 (hM : LocalLift) : GlobalTheory.RealLift.DerEx → GlobalTheory.RealLift.LieSecond := by
-  set_option backward.isDefEq.respectTransparency false in
     intro hD0 F E _ _ _ _ _ σ α β κ _ _ _ _ _ P Q R S ψ τ JA JB d a b A C Φ om χ m hcm hψ hfr hΦ hW hm γ hγ Y hY T
     obtain ⟨hom, dd, omd, hdd, ⟨-, homd, hS⟩, hres⟩ := hW
     obtain ⟨D, hD⟩ := hD0 F E σ α β κ ψ JA JB d hψ

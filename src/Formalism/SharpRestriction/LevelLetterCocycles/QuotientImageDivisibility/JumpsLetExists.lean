@@ -63,41 +63,17 @@ theorem tmul_mem_filV (a : ℤ) (x : V) {y : BdR} (hy : y ∈ PD.Fil a) :
   (mem_FilV_iff' PD a _).mpr
     ⟨x ⊗ₜ[Qp] (⟨y, hy⟩ : (PD.Fil a).restrictScalars Qp), by simp⟩
 
-theorem filV_exh (z : V ⊗[Qp] BdR) : ∃ a : ℤ, z ∈ FilV PD (LL := LL) (V := V) a := by
-  induction z using TensorProduct.induction_on with
-  | zero => exact ⟨0, Submodule.zero_mem _⟩
-  | tmul x y =>
-    obtain ⟨a, ha⟩ := PD.Fil_exh y
-    exact ⟨a, tmul_mem_filV PD a x ha⟩
-  | add z₁ z₂ h₁ h₂ =>
-    obtain ⟨a₁, ha₁⟩ := h₁
-    obtain ⟨a₂, ha₂⟩ := h₂
-    exact ⟨min a₁ a₂, add_mem (filVB_anti PD (min_le_left _ _) ha₁)
-      (filVB_anti PD (min_le_right _ _) ha₂)⟩
-
 private theorem exists_int_finset_subset_FilV (s : Finset (V ⊗[Qp] BdR)) :
     ∃ a : ℤ, ∀ z ∈ s, z ∈ Formalism.WeaklyAdmissibleFiltrations.FilV PD (LL := LL) (V := V) a := by
   induction s using Finset.induction_on with
   | empty => exact ⟨0, by simp⟩
   | @insert x s hx ih =>
     obtain ⟨a, ha⟩ := ih
-    obtain ⟨c, hc⟩ := filV_exh PD (LL := LL) x
+    obtain ⟨c, hc⟩ := Formalism.MainNotions.N.Ln34.CrystallineExponents.filV_exh PD (LL := LL) x
     refine ⟨min a c, fun z hz => ?_⟩
     rcases Finset.mem_insert.mp hz with rfl | hz
     · exact filVB_anti PD (min_le_right _ _) hc
     · exact filVB_anti PD (min_le_left _ _) (ha z hz)
-
-theorem exists_le_filV (D : Submodule LL (V ⊗[Qp] BdR)) [FiniteDimensional LL D] :
-    ∃ a : ℤ, D ≤ FilV PD (LL := LL) (V := V) a := by
-  obtain ⟨s, hs⟩ := (Module.Finite.iff_fg (N := D)).mp inferInstance
-  obtain ⟨a, ha⟩ := exists_int_finset_subset_FilV PD (LL := LL) (V := V) s
-  refine ⟨a, ?_⟩
-  rw [← hs]
-  exact Submodule.span_le.mpr fun z hz => ha z (Finset.mem_coe.mp hz)
-
-theorem exists_inf_filV_eq_bot (D : Submodule LL (V ⊗[Qp] BdR)) [FiniteDimensional LL D] :
-    ∃ a : ℤ, D ⊓ FilV PD (LL := LL) (V := V) a = ⊥ := by
-  apply Formalism.MainNotions.N.Ln34.CrystallineExponents.exists_inf_filV_eq_bot
 
 end Fil
 
@@ -143,8 +119,8 @@ theorem mem_vanI_at (hFr : IsFractionRing O LL) (T : LocLat G Qp LL O) (c : ZMod
   have hfl : ∀ a, Formalism.MainNotions.WachCoordinates.FilLev W T c 0 a =
       Formalism.MainNotions.DeltaInvariantLattices.ιDi W T c ⊓ FilV PD (LL := LL) (V := T.V) a :=
     fun a => Formalism.MainNotions.UnusedSlot80.LevR.filLev_zero W T c a
-  obtain ⟨a₀, h₀⟩ := exists_le_filV PD (Formalism.MainNotions.DeltaInvariantLattices.ιDi W T c)
-  obtain ⟨a₁, h₁⟩ := exists_inf_filV_eq_bot PD (Formalism.MainNotions.DeltaInvariantLattices.ιDi W T c)
+  obtain ⟨a₀, h₀⟩ := Formalism.MainNotions.N.Ln34.CrystallineExponents.exists_le_filV PD (Formalism.MainNotions.DeltaInvariantLattices.ιDi W T c)
+  obtain ⟨a₁, h₁⟩ := Formalism.MainNotions.N.Ln34.CrystallineExponents.exists_inf_filV_eq_bot PD (Formalism.MainNotions.DeltaInvariantLattices.ιDi W T c)
   let e : Fin r → ℤ → T.V ⊗[Qp] BdR := fun m => W.levN T c ζ ⟨b m, hbN m⟩
   have he : ∀ m k, e m k ∈ Formalism.MainNotions.DeltaInvariantLattices.ιDi W T c ⊓ FilV PD (LL := LL) (V := T.V) (-k) :=
     fun m k => hfl (-k) ▸ h4.1 _ k
@@ -256,8 +232,8 @@ theorem jumpsLet_exists (hA : Formalism.MainNotions.LiftingTheory.CaseA W) (hD :
       DdRE PD T.ρ (tauOf W hA.1 i) ⊓ FilV PD (LL := LL) (V := T.V) a₁ = ⊥ := by
     intro i
     have := ((hD hA.1 T.V T.ρ hT).2 (tauOf W hA.1 i)).1
-    obtain ⟨a₀, h₀⟩ := exists_le_filV PD (DdRE PD T.ρ (tauOf W hA.1 i))
-    obtain ⟨a₁, h₁⟩ := exists_inf_filV_eq_bot PD (DdRE PD T.ρ (tauOf W hA.1 i))
+    obtain ⟨a₀, h₀⟩ := Formalism.MainNotions.N.Ln34.CrystallineExponents.exists_le_filV PD (DdRE PD T.ρ (tauOf W hA.1 i))
+    obtain ⟨a₁, h₁⟩ := Formalism.MainNotions.N.Ln34.CrystallineExponents.exists_inf_filV_eq_bot PD (DdRE PD T.ρ (tauOf W hA.1 i))
     exact ⟨a₀, a₁, h₀, h₁⟩
   choose a₀ a₁ h₀ h₁ using hex
   refine ⟨fun i => (-(a₀ i)).toNat, fun i => (a₁ i).toNat, fun τ i hτ a ha => ?_⟩

@@ -87,8 +87,6 @@ def stA (sc : Consts) : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E :=
 def stAbar (sc : Consts) : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E :=
   D.host.AAbar * ((P.modul sc : Ideal (𝓞 D.host.E)) : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E)⁻¹
 
-def sigma0 (sc : Consts) : ℝ := ∑ v ∈ P.S0, (P.depth sc v : ℝ) * Real.log (Ideal.absNorm v.asIdeal)
-
 theorem mem_S0_of_sum_eq {v : Pl D.host.F} : v ∈ P.S0 ↔ v = P.v0 ∨ v ∈ S1 D := by simp [S0]
 
 theorem under_w {v : Pl D.host.F} (h : v ∈ P.S0) : (P.w v).under (𝓞 D.host.F) = v := P.w_over v h

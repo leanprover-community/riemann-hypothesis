@@ -356,7 +356,7 @@ theorem monoAt_of_splitW {S S₀ : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ) {L :
     (hL₀ : IsSelfDualC S₀ L₀) (H : SplitW p d L L₀) : MonoAt d L L₀ p.v := by
   have hX : ∀ i u, atW p u ∈ latV S L (· = p.v) → atW p ((colProj d.qX d.e i).map (prE p) *ᵥ u) ∈ latV S L (· = p.v) := by
     intro i u hu
-    rw [colProj_map, H, map_mulVec, map_mulVec, map_mulVec, SeeSaw.SplitLat.qX_e, SeeSaw.SplitLat.qY_e, SeeSaw.SplitLat.wittDecomposition_coreProj_mul_e_eq_zero, mo, mz, mz, Matrix.one_mulVec,
+    rw [colProj_map, H, map_mulVec, map_mulVec, map_mulVec, GlobalTheory.MixPer.qX_e, SeeSaw.SplitLat.qY_e, SeeSaw.SplitLat.wittDecomposition_coreProj_mul_e_eq_zero, mo, mz, mz, Matrix.one_mulVec,
       Matrix.zero_mulVec, Matrix.zero_mulVec, atW_zero]
     exact ⟨single_int i (((H u).1 hu).1 i), fun _ => zero_mem _, zero_mem _⟩
   have hY : ∀ i u, atW p u ∈ latV S L (· = p.v) → atW p ((colProj d.qY d.e' i).map (prE p) *ᵥ u) ∈ latV S L (· = p.v) := by
@@ -438,11 +438,11 @@ theorem splitW_of_frame {S S₀ : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ) {L : 
   have hX : ∀ t : Fin ρ, (d.qX.map (prE p) *ᵥ (F.β *ᵥ c)) t = lam t * c (Sum.inr ⟨t.val, by omega⟩) := by
     intro t
     rw [Matrix.mulVec_mulVec, Matrix.mulVec, dotProduct, Finset.sum_eq_single (Sum.inr ⟨t.val, by omega⟩),
-      k3 _ t t _ rfl, SeeSaw.SplitLat.qX_e, mo, Matrix.one_apply_eq, mul_one]
+      k3 _ t t _ rfl, GlobalTheory.MixPer.qX_e, mo, Matrix.one_apply_eq, mul_one]
     · rintro (a | j) _ hne
       · rw [k1, SeeSaw.SplitLat.qX_i₀, mz, Matrix.zero_mul, Matrix.zero_apply, zero_mul]
       · rcases tri j with ⟨i, h⟩ | h | ⟨i, h⟩
-        · rw [k3 _ t i j h, SeeSaw.SplitLat.qX_e, mo, Matrix.one_apply_ne, mul_zero, zero_mul]
+        · rw [k3 _ t i j h, GlobalTheory.MixPer.qX_e, mo, Matrix.one_apply_ne, mul_zero, zero_mul]
           rintro rfl
           exact hne (congrArg Sum.inr (Fin.ext h))
         · rw [k2 _ t j h, SeeSaw.SplitLat.qX_i₀, mz, Matrix.zero_mul, Matrix.zero_apply, zero_mul]

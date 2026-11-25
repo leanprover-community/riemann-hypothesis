@@ -495,7 +495,6 @@ theorem tsum_alt (p : ℕ) (hp : 1 < p) (a b : ℝ) :
   rw [← tsum_even_add_odd (by rw [ge]; exact hs.mul_right _) (by rw [go]; exact hs.mul_right _), ge, go,
     tsum_mul_right, tsum_mul_right, tsum_geometric_of_lt_one r0 r1]
   have h2 : (p : ℝ) ^ 2 - 1 ≠ 0 := by nlinarith
-  have h3 : (1 : ℝ) - r ^ 2 ≠ 0 := by linarith
   have hp0 : (p : ℝ) ≠ 0 := by linarith
   rw [hr]
   field_simp

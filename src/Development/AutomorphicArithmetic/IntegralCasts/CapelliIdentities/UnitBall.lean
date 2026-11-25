@@ -9,11 +9,11 @@ public import Mathlib.RingTheory.MvPowerSeries.Inverse
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.UnitBallLemmas.IsIntP :
-    {p : ℕ} → [inst : Fact (Nat.Prime p)] → ℂ_[p] → Prop :=
+    {p : ℕ} → [Fact (Nat.Prime p)] → ℂ_[p] → Prop :=
     fun {p : ℕ} [Fact (Nat.Prime p)] (x : ℂ_[p]) ↦ ‖x‖ ≤ (1 : ℝ)
 
 noncomputable def UpperTheory.Reformulated.B.UnitBallLemmas.IntegralMv.{u_1} :
-    {σ : Type u_1} → {p : ℕ} → [inst : Fact (Nat.Prime p)] → MvPowerSeries σ ℂ_[p] → Prop :=
+    {σ : Type u_1} → {p : ℕ} → [Fact (Nat.Prime p)] → MvPowerSeries σ ℂ_[p] → Prop :=
     fun {σ : Type u_1} {p : ℕ} [Fact (Nat.Prime p)] (F : MvPowerSeries σ ℂ_[p]) ↦
       ∀ (n : σ →₀ ℕ), UpperTheory.Reformulated.B.UnitBallLemmas.IsIntP ((MvPowerSeries.coeff n : MvPowerSeries σ ℂ_[p] → ℂ_[p]) F)
 
@@ -21,7 +21,7 @@ private noncomputable def UpperTheory.Reformulated.B.UnitBallLemmas.unitBall (p 
   UpperTheory.Reformulated.B.ClosedUnitBallSubring.ballRing ℂ_[p]
 
 theorem UpperTheory.Reformulated.B.UnitBallLemmas.intMv_inv.{u_1} :
-    ∀ {p : ℕ} [inst : Fact (Nat.Prime p)] {σ : Type u_1} {F : MvPowerSeries σ ℂ_[p]},
+    ∀ {p : ℕ} [Fact (Nat.Prime p)] {σ : Type u_1} {F : MvPowerSeries σ ℂ_[p]},
       UpperTheory.Reformulated.B.UnitBallLemmas.IntegralMv F →
         (MvPowerSeries.constantCoeff : MvPowerSeries σ ℂ_[p] → ℂ_[p]) F = (1 : ℂ_[p]) →
           ∃ (G : MvPowerSeries σ ℂ_[p]), UpperTheory.Reformulated.B.UnitBallLemmas.IntegralMv G ∧ F * G = (1 : MvPowerSeries σ ℂ_[p]) := by

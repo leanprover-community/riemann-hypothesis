@@ -711,10 +711,6 @@ theorem adjoint_mem_base_level : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {
 
 end GlobalTheory.LamPrimeTransport
 
-namespace GlobalTheory.LamPrimeTransport
-
-end GlobalTheory.LamPrimeTransport
-
 end
 end -- clump:auto
 end -- clump:auto

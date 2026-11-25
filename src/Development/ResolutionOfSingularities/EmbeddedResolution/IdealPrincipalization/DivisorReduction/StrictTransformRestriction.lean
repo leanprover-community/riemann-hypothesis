@@ -76,7 +76,6 @@ theorem comap_strictTransform_of_iso {X X₁ X₁' : Scheme.{u}} (π : X₁ ⟶ 
   have hcomp : (strictTransformι π Z D ≫ inv f.hom) ≫ f.hom
       = strictTransformι π Z D := by
     rw [Category.assoc, IsIso.inv_hom_id, Category.comp_id]
-  have : QuasiCompact (strictTransformι π Z D ≫ inv f.hom) := inferInstance
   have : QuasiCompact ((strictTransformι π Z D ≫ inv f.hom) ≫ f.hom) := by
     rw [hcomp]
     infer_instance

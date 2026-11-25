@@ -85,9 +85,3 @@ theorem labO_transp {C : LabelConv K} (O : LabelMap K C) {α β : Type} [Fintype
   exact key _ _ _ _
 
 end GlobalTheory.SerOSys.TranspLabel
-
-namespace GlobalTheory.SerOSys.TranspLabel
-
-variable {K : Type} [Field K] [Fintype K] [DecidableEq K]
-
-end GlobalTheory.SerOSys.TranspLabel

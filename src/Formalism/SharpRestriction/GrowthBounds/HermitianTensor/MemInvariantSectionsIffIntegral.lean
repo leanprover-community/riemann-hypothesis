@@ -22,16 +22,7 @@ variable {O K : Type} [CommRing O] [Field K] [Algebra O K]
 
 private theorem rowAct_mul_lemma_0 {k n : ℕ} (g h : Matrix (Fin k) (Fin k) K) (F : MvPolynomial (Fin k × Fin n) K) :
     rowAct K g (rowAct K h F) = rowAct K (h * g) F := by
-  have e : (rowAct K (n := n) g).comp (rowAct K (n := n) h) = rowAct K (n := n) (h * g) := by
-    apply MvPolynomial.algHom_ext
-    intro v
-
-    simp only [AlgHom.comp_apply, rowAct, aeval_X, map_sum, map_mul, aeval_C, algebraMap_eq,
-    Matrix.mul_apply, Finset.mul_sum, Finset.sum_mul]
-    rw [Finset.sum_comm]
-    refine Finset.sum_congr rfl (fun _ _ => Finset.sum_congr rfl (fun _ _ => ?_))
-    ring
-  exact AlgHom.congr_fun e F
+  rw [_root_.Formalism.UG.P.wlocal_rowAct_mul]; rfl
 
 private theorem mem_nablaLTw_lemma (m : ℕ) (lam : Fin (m + 1) → ℤ) (g : Matrix (Fin (m + 1)) (Fin (m + 1)) K)
     (hg : IsUnit g.det) (F : MvPolynomial (Fin (m + 1) × Fin (m + 1)) K) :

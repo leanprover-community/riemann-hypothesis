@@ -249,8 +249,6 @@ theorem cycleHeights_of_arCalc (H : ArCalc) : CycleHeights :=
 
 namespace CycleHeights
 
-theorem heightProjection (H : CycleHeights) : HeightProjection := H.2.2
-
 variable {k : Type} [CommRing k] {X Y : Scheme.{0}} {p : X ⟶ Sp k} {q : Y ⟶ Sp k} {D e : ℕ}
 
 theorem existsUnique (H : CycleHeights) (hX : IsArithVar p D) (L : HermLB p) : ∃! h, L.IsArithHeight h :=

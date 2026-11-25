@@ -40,45 +40,4 @@ theorem restricted_mem_weightSpace_iff (mu : Fin n → ℤ) (x : W) :
   rw [Subtype.ext_iff]
   simp
 
-theorem restricted_isHWV_iff (lam : Fin n → ℤ) (v : W) : IsHWV (restrictStableOperators E W h) lam v ↔ IsHWV E lam (v : V) := by
-  unfold IsHWV
-  rw [restricted_mem_weightSpace_iff]
-  refine and_congr (by simp) (and_congr Iff.rfl ?_)
-  refine forall_congr' fun a => forall_congr' fun b => forall_congr' fun _ => ?_
-  rw [Subtype.ext_iff]
-  simp
-
-theorem restricted_isGLRep [CharZero K] (hE : IsGLRep E) : IsGLRep (restrictStableOperators E W h) := by
-  refine ⟨?_, ?_, ?_⟩
-  · intro a b c d
-    ext x
-    have h1 := congrArg (fun f : Module.End K V => f (x : V)) (hE.1 a b c d)
-    simp only [LinearMap.sub_apply, Module.End.mul_apply] at h1
-    simp only [LinearMap.sub_apply, Module.End.mul_apply, Submodule.coe_sub, restricted_operator_coe]
-    rw [h1]
-    split_ifs <;> simp
-  · intro x
-    obtain ⟨W0, hfd, hx0, hst⟩ := hE.2.1 (x : V)
-    refine ⟨W0.comap W.subtype, ?_, hx0, fun a b y hy => hst a b _ hy⟩
-    have h1 : FiniteDimensional K ((W0.comap W.subtype).map W.subtype) :=
-      Submodule.finiteDimensional_of_le (Submodule.map_comap_le _ _)
-    exact LinearEquiv.finiteDimensional
-      (Submodule.equivMapOfInjective W.subtype W.injective_subtype (W0.comap W.subtype)).symm
-  · rw [eq_top_iff]
-    intro x _
-    have hx : (x : V) ∈ ⨆ mu, weightSp E mu := by rw [hE.2.2]; trivial
-    obtain ⟨f, hf, hsum⟩ := (Submodule.mem_iSup_iff_exists_finsupp _ _).1 hx
-    have hmem := weight_components_mem_invariant E W (fun a => h a a) f.support f (fun mu _ => hf mu)
-      (by have : ∑ mu ∈ f.support, f mu = (x : V) := hsum
-          rw [this]; exact x.2)
-    have hx2 : x = ∑ mu ∈ f.support.attach, (⟨f mu.1, hmem mu.1 mu.2⟩ : W) := by
-      apply Subtype.ext
-      rw [Submodule.coe_sum]
-      simp only
-      rw [Finset.sum_attach f.support (fun mu => f mu)]
-      exact hsum.symm
-    rw [hx2]
-    refine Submodule.sum_mem _ fun mu _ => ?_
-    exact Submodule.mem_iSup_of_mem mu.1 ((restricted_mem_weightSpace_iff E W h mu.1 _).2 (hf mu.1))
-
 end Formalism.MainNotions.G.GLWeightTheory

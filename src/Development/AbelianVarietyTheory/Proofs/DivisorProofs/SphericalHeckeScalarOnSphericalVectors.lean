@@ -660,10 +660,6 @@ theorem spherical_scalar : ∀ {D : D7} {V : HSp D} {n : ℕ} (hF : D.host.F = m
         apply hfixBack
         rw [hRop a ha]
         exact hopfix _ x hx.2
-      have hx'' : ∀ k ∈ K, rtHom D.host.E n k (principalLevelFrame.Hecke₃ Q B x) = principalLevelFrame.Hecke₃ Q B x := by
-        apply hfixBack
-        rw [hBop x hx.2]
-        exact hopfix _ x hx.2
       rw [hBop _ hx', hRop a ha, hRop a ha, hBop x hx.2]
       exact GlobalTheory.T.sphericalHeckeCombinations_commute_fixedVectors V Pr _ _ _ (rtA V) _ (hfixA x hx.2)
 

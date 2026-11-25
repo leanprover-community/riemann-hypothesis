@@ -47,19 +47,8 @@ theorem place_part_orthogonal {P ι : Type*} [Fintype P] [Fintype ι] {v w : P} 
 theorem exists_decomp_of_mem_iSup {P E : Type*} [Fintype P] [AddCommGroup E] [Module ℝ E]
     (p : P → Submodule ℝ E) {x : E} (hx : x ∈ ⨆ v, p v) :
     ∃ f : P → E, (∀ v, f v ∈ p v) ∧ ∑ v, f v = x := by
-  classical
-  induction hx using Submodule.iSup_induction' with
-  | mem i y hy =>
-    refine ⟨Pi.single i y, fun v => ?_, by simp⟩
-    by_cases h : v = i
-    · subst h
-      simpa using hy
-    · simp [h]
-  | zero => exact ⟨0, fun v => zero_mem _, by simp⟩
-  | add y z _ _ ihy ihz =>
-    obtain ⟨f, hf, rfl⟩ := ihy
-    obtain ⟨g, hg, rfl⟩ := ihz
-    exact ⟨f + g, fun v => add_mem (hf v) (hg v), by simp [Finset.sum_add_distrib]⟩
+  obtain ⟨f, hf, rfl⟩ := (Submodule.mem_iSup_iff_exists_finsupp p x).1 hx
+  exact ⟨f, hf, (Finsupp.sum_fintype f (fun _ xi => xi) fun _ => rfl).symm⟩
 
 theorem inner_zero_of_orthogonal_parts {P E : Type*} [Fintype P] [NormedAddCommGroup E]
     [InnerProductSpace ℝ E]
@@ -338,10 +327,8 @@ theorem htImage_of (h1 : PlLat) (h2 : PlaceSplit) (h3 : GramBlock) : HtImage := 
   set Q := Formalism.F.quot L N with hQ
   haveI := hQd
 
-  have hπU : ∀ y ∈ U, Uᗮ.starProjection y = 0 := by
-    intro y hy
-    rw [Submodule.starProjection_orthogonal_val, (Submodule.starProjection_eq_self_iff).2 hy,
-      sub_self]
+  have hπU : ∀ y ∈ U, Uᗮ.starProjection y = 0 := fun _ hy =>
+    Submodule.starProjection_orthogonal_apply_eq_zero hy
   have hπ : ∀ z, Φ (Uᗮ.starProjection z) = Φ z := by
     intro z
     rw [Submodule.starProjection_orthogonal_val, map_sub]

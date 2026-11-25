@@ -90,15 +90,7 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 variable {d : SD σ} (L : LD d)
 
 theorem countable_nF (n : ℕ) (Y : Spc F E n) (b : GL (Fin n ⊕ Fin n) E) : Countable (nF σ Y b) := by
-  have : Countable E := (Module.finBasis ℚ E).equivFun.injective.countable
-  have : Countable (Matrix (Fin n) (Fin n) E) := inferInstanceAs (Countable (Fin n → Fin n → E))
-  refine Function.Injective.countable (f := fun ν : nF σ Y b => Classical.choose (kunf.mem_nF_iff.1 ν.2)) ?_
-  intro ν ν' h
-  have h1 := Classical.choose_spec (kunf.mem_nF_iff.1 ν.2)
-  have h2 := Classical.choose_spec (kunf.mem_nF_iff.1 ν'.2)
-  apply Subtype.ext; apply Subtype.ext
-  rw [h1, h2]
-  exact congrArg _ h
+  exact PositivityTheory.SiegelWeilFormula.kunf.countable_nF
 
 theorem nA_inst (n : ℕ) (Y : Spc F E n) (b : GL (Fin n ⊕ Fin n) E) (ε : ℤˣ)
     (hε : b.1ᵀ * dbl Y.J * b.1.map σ = Matrix.fromBlocks 0 1 (((ε : ℤ) : E) • 1) 0) :

@@ -25,10 +25,6 @@ open GlobalTheory.CompanionTheory.Ar.PB.WSq GlobalTheory.CompanionTheory.Ar.PB.W
 
 namespace GlobalTheory.CompanionTheory.Ar.PB.WSq.Fib.ValNe
 
-private theorem aeval_eq_eval_map_intCast {K : Type} {ι : K → Type} (w : (Σ k, ι k) → ℂ) (f : MRing ι) :
-    MvPolynomial.aeval w f = MvPolynomial.eval w (MvPolynomial.map (Int.castRingHom ℂ) f) := by
-  rw [MvPolynomial.eval_map, MvPolynomial.aeval_def, algebraMap_int_eq]
-
 theorem exists_isValueAt_of_regAt {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {Ω : Type} [Field Ω]
     {x : (Σ k, ι k) → Ω} {t : Ω} {z : (Σ k, ι k) → ℂ} (hz : z ∈ mcPts (mCoordIdeal x))
     (ht : RegAt x (mCoordIdeal z) t) : ∃ v, IsValueAt x t z v := by

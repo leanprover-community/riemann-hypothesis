@@ -80,11 +80,3 @@ theorem mem_orb_iff (u w : Pl E) :
 
 end GlobalTheory.EulerTwRestr
 
-namespace GlobalTheory.EulerTwRestr
-
-open GlobalTheory.EulerTw
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
-
-end GlobalTheory.EulerTwRestr
-

@@ -22,13 +22,7 @@ namespace PositivityTheory.Rg.Sw.Glob.DecH
 
 variable {n : ℕ}
 
-theorem jj_mul_jj : JJ n * JJ n = -1 := by
-  unfold JJ
-  rw [fromBlocks_multiply]
-  simp only [Matrix.mul_zero, Matrix.mul_one, Matrix.mul_neg,
-    add_zero, zero_add, neg_zero]
-  rw [← fromBlocks_one, fromBlocks_neg]
-  simp
+theorem jj_mul_jj : JJ n * JJ n = -1 := PositivityTheory.Rg.Sw.AbsSt.IwaPf.JJ_mul_self
 
 theorem inG_dual {g : M2 n} (h : InG g) : g * JJ n * gᴴ = JJ n := by
   apply _root_.PositivityTheory.Rg.Sw.AbsSt.IwaPf.inG_rows <;> assumption

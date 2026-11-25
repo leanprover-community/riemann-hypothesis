@@ -345,22 +345,10 @@ theorem cpt_sig {n r s : ℕ} {M : Matrix (Fin n) (Fin n) ℂ} (h : HasSig M r s
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n : ℕ}
 
-
 variable (F) in
 def fA : Af F →+ AF F := AddMonoidHom.inr (Ainf F) (Af F)
 
 theorem fA_mul (x : Af F) (a : AF F) : fA F x * a = fA F (x * a.2) := Prod.ext (zero_mul _) rfl
-
-theorem cont_realAd : Continuous (realAd F) := by
-  refine Continuous.prodMk (Continuous.comp (g := (InfiniteAdeleRing.ringEquiv_mixedSpace F).symm) (continuous_pi fun v => ?_)
-    (continuous_algebraMap ℝ _)) continuous_const
-  rcases v.isReal_or_isComplex with hv | hv
-  · rw [(InfinitePlace.Completion.isometry_extensionEmbeddingOfIsReal hv).isEmbedding.continuous_iff]
-    exact ((continuous_apply _).comp continuous_fst).congr fun y =>
-      (congrFun (congrArg Prod.fst ((InfiniteAdeleRing.ringEquiv_mixedSpace F).apply_symm_apply y)) ⟨v, hv⟩).symm
-  · rw [(InfinitePlace.Completion.isometry_extensionEmbedding v).isEmbedding.continuous_iff]
-    exact ((continuous_apply _).comp continuous_snd).congr fun y =>
-      (congrFun (congrArg Prod.snd ((InfiniteAdeleRing.ringEquiv_mixedSpace F).apply_symm_apply y)) ⟨v, hv⟩).symm
 
 theorem exists_arch_section (h : IsCMExt F E σ) (τ : ∀ w : InfinitePlace F, EmbOver E w) :
     ∃ T : (InfinitePlace F → ℂ) → AE F E, Continuous T ∧ ∀ a, a = T (fun w => piInf (τ w) a) + fA F 1 • a := by
@@ -370,7 +358,7 @@ theorem exists_arch_section (h : IsCMExt F E σ) (τ : ∀ w : InfinitePlace F, 
     rw [Algebra.smul_def, map_mul, PositivityTheory.ThKEst.LatArchPf.piInf_alg]
   refine ⟨fun z => ∑ w, (realAd F (z w).re • x (Pi.single w 1) + realAd F (z w).im • x (Pi.single w Complex.I)),
     continuous_finsetSum _ fun w _ =>
-      by have := cont_realAd (F := F); fun_prop, fun a => ?_⟩
+      by have := PositivityTheory.ThKEst.ExponentialLineExistence.continuous_realAd (F := F); fun_prop, fun a => ?_⟩
   rw [← sub_eq_iff_eq_add, ← sub_eq_zero]
   refine eq_zero_of_piInf σ h τ _ (fun c hc => ?_) fun w => ?_
   · have h1 : c.1 = 0 := (InfiniteAdeleRing.ringEquiv_mixedSpace F).map_eq_zero_iff.1 hc
@@ -383,7 +371,6 @@ theorem exists_arch_section (h : IsCMExt F E σ) (τ : ∀ w : InfinitePlace F, 
     rw [show evInf F w (fA F 1) = 0 from rfl, Finset.sum_eq_single w (fun v _ hv => by simp [Pi.single_eq_of_ne hv.symm])
       (by simp)]
     simp
-
 
 variable (F E) in
 def lamF : AddSubgroup (AE F E) where
@@ -791,7 +778,6 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
   {B : Base F E} {G : Geo σ a a'} {X : Chars F E} {om : Rep σ G.V G.W} {om' : Rep σ G.V' G.W}
   {R : RealMaps F a a'} {Rf : FinMaps F a a'}
 
-
 variable (B G R Rf) in
 def On (T : Finset (Pl F)) (Φ : Fn F a (a + a')) (Φ' : Fn F a' (a + a')) : Prop :=
   ∃ (m m' : ℕ) (f : Fin m → SInf F _) (φ : Fin m → ∀ v : Pl F, (_ → Fv F v) → ℂ)
@@ -1186,9 +1172,6 @@ theorem I_smul {Y : Spc F E n} {W : Spc F E d} (M : Model σ Y W) (o : Rep σ Y 
     M.I o (c • Φ) = c • M.I o Φ := funext fun h => by
   simp only [Model.I, theta_smul, integral_const_mul, Pi.smul_apply, smul_eq_mul]
 
-theorem I_zero {Y : Spc F E n} {W : Spc F E d} (M : Model σ Y W) (o : Rep σ Y W) : M.I o 0 = 0 := by
-  simpa using I_smul M o 0 0
-
 def matched (hm : IsMatched B G X om om' R Rf) : Submodule ℂ (Fn F a (a + a') × Fn F a' (a + a')) where
   carrier := {y | PolMatch B G X R Rf y.1 y.2}
   zero_mem' := pm_zero
@@ -1217,14 +1200,14 @@ theorem exists_maps (hD : KDecay) (hF : Factor) (hm : IsMatched B G X om om' R R
     have h0 : y.1.1 = 0 := h
     have h1 : PolMatch B G X R Rf y.1.1 y.1.2 := y.2.2
     change comb G om om' s t y.1 = 0
-    rw [comb, f2 y.1.2 y.2.1 (h0 ▸ h1), h0, I_zero, smul_zero, smul_zero, add_zero]
+    rw [comb, f2 y.1.2 y.2.1 (h0 ▸ h1), h0, PositivityTheory.ThKG.I_zero, smul_zero, smul_zero, add_zero]
   have k : ∀ y ∈ pairs B G X R Rf, C y.1 = comb G om om' s t y := fun y hy => hC ⟨y, hy⟩
   obtain ⟨C', hC'⟩ := exists_fac (LinearMap.snd ℂ _ _ ∘ₗ (matched hm).subtype) (C ∘ₗ LinearMap.fst ℂ _ _ ∘ₗ (matched hm).subtype)
     fun y h => by
       have h0 : y.1.2 = 0 := h
       have h1 : PolMatch B G X R Rf y.1.1 y.1.2 := y.2
       change C y.1.1 = 0
-      rw [k y.1 ⟨h0 ▸ zero_mem _, h1⟩, comb, f1 _ (h0 ▸ h1), h0, I_zero, smul_zero, smul_zero, add_zero]
+      rw [k y.1 ⟨h0 ▸ zero_mem _, h1⟩, comb, f1 _ (h0 ▸ h1), h0, PositivityTheory.ThKG.I_zero, smul_zero, smul_zero, add_zero]
   exact ⟨C, C', k, fun Φ Φ' h => hC' ⟨(Φ, Φ'), h⟩⟩
 
 end TC

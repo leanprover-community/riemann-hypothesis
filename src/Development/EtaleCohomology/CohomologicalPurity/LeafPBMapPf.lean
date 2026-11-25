@@ -191,7 +191,6 @@ theorem eMap_bij (N : ℕ) (R : Type) [CommRing R] (n : ℕ) (A : Type) [CommRin
     · exact (k2 x).trans hx1
 
 theorem LeafPBMap_of : LeafPBMap := by
-  set_option synthInstance.maxHeartbeats 100000 in
     exact fun N R _ =>
       ⟨cstV N (sp R), prod.lift (fMap N (sp R)) (pullback.fst _ _), prod.lift_snd _ _,
         by rw [prod.lift_fst_assoc]; exact fMap_line N (sp R), fun n A _ => eMap_bij N R n A⟩

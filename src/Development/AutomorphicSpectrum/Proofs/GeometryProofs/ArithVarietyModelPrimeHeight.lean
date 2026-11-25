@@ -839,7 +839,7 @@ namespace GlobalTheory.CompanionTheory.Ar.Num.FamEx.SeqFam
 
 theorem emb_injective {E : Type} [Field E] [NumberField E] {Ω : Type} [Field Ω] [CharZero Ω] (g : 𝓞 E →+* Ω) :
     Function.Injective g := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro a ha
   have hk : RingHom.ker g = ⊥ := by
     apply Ideal.eq_bot_of_comap_eq_bot (R := ℤ)
@@ -890,7 +890,7 @@ theorem seqfam_holds : GlobalTheory.CompanionTheory.Ar.HT.FarguesHodgeTate → �
     rw [hwΩ, htΩ, ← map_mul, ← htp, map_natCast]
 
   have hOinj : Function.Injective (algebraMap O Ω) := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro x hx
     obtain ⟨a, s, rfl⟩ := IsLocalization.exists_mk'_eq m.primeCompl x
     have h1 : algebraMap O Ω (IsLocalization.mk' O a s) * algebraMap O Ω (algebraMap A O s) =

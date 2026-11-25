@@ -377,119 +377,6 @@ noncomputable section
 
 namespace PositivityTheory.Xgn.NumericalTriviality
 
-section Germ
-
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Crv GlobalTheory.CompanionTheory.Ar.Conj GlobalTheory.CompanionTheory.Ar.Flat GlobalTheory.CompanionTheory.Ar.Fl
-open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
-
-
-open GlobalTheory.CompanionTheory.Ar.Flat.DegZ in
-theorem germ_degZero_prime : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) [StarRing (𝓞 E)], (∀ a : 𝓞 E, star a = H.bar a) → ∀ (X : Scheme.{0}) (t : SAB H X) (Ω : Type) [Field Ω] [CharZero Ω] (ξ : Sp Ω ⟶ X) (d r : ℕ) (M : LieModel t.G ξ (Fin d → Ω)) (S : GermSys t ξ M) (ρ : 𝓞 E →+* Module.End Ω (Fin d → Ω)) (𝓗 : HodgeLat M.lat ρ H.bar r) (O : Type) [CommRing O] [Algebra O Ω] (O' : Type) [CommRing O'] (s : X ⟶ Sp O') [IsSeparated s] [LocallyOfFiniteType s] (p : ℕ) (σ : E →+* Ω), p.Prime → Function.Injective (algebraMap O Ω) → (∀ (q : Cpt ξ) (o : O), algebraMap O Ω o ∈ regAt ξ q) → IsCptGen ξ → PowFns t → S.Gives 𝓗 → (∀ q : Cpt ξ, (p : X.residueField q.1) = 0 → FibPF t q.1) → Nat.card (E →+* Ω) = Module.finrank ℚ E → (∀ (s' : E →+* Ω) (a : 𝓞 E), s' (a : E) ∈ (algebraMap O Ω).range) → 𝓗.DegZero σ (p : Ω) := by
-  intro E _ _ _ H _ hstar X t Ω _ _ ξ d r M S ρ 𝓗 O _ _ O' _ s _ _ p σ hp hinj hreg hξ hpow hgive hfib hcard hrange
-    u hu hsp Γ
-  haveI : Fact p.Prime := ⟨hp⟩
-  have hσ : ∀ (q : Cpt ξ) (a : 𝓞 E), σ (a : E) ∈ regAt ξ q := fun q a => by
-    obtain ⟨o, ho⟩ := hrange σ a
-    exact ho ▸ hreg q o
-  let τ : ∀ q : Cpt ξ, 𝓞 E →+* X.presheaf.stalk q.1 := fun q =>
-    (GlobalTheory.CompanionTheory.Ar.ValHom.stalkEquiv ξ hξ q).symm.toRingHom.comp
-      ((σ.comp (algebraMap (𝓞 E) E)).codRestrict (regAt ξ q) (hσ q))
-  have hτ : ∀ (q : Cpt ξ) (a : 𝓞 E), genMap ξ q (τ q a) = σ (a : E) := fun q a => by
-    have := GlobalTheory.CompanionTheory.Ar.ValHom.stalkEquiv_coe ξ hξ q (τ q a)
-    rw [← this]
-    simp [τ]
-  let q0 : Cpt ξ := ⟨centre Γ.η, Γ.η_spec⟩
-  let qi : Γ.C.I → Cpt ξ := fun i => ⟨centre (Γ.z i), FibreCurve.z_spec Γ i⟩
-  let v0 : X.presheaf.stalk q0.1 →+* Γ.κ := (Scheme.stalkClosedPointTo Γ.η).hom
-  let vi : ∀ i, X.presheaf.stalk (qi i).1 →+* (Γ.C.v i).valuationSubring :=
-    fun i => (Scheme.stalkClosedPointTo (Γ.z i)).hom
-  have hpκ : (p : Γ.κ) = 0 := by
-    obtain ⟨hh, s0, hs0, hs1⟩ := Γ.η_zero
-    have e : (p : X.presheaf.stalk q0.1) = s0 := hξ.inj q0 ((map_natCast _ p).trans hs0.symm)
-    have h3 := congrArg v0 e
-    rw [map_natCast] at h3
-    exact h3.trans hs1
-  haveI : CharP Γ.κ p := (CharP.charP_iff_prime_eq_zero hp).2 hpκ
-  obtain ⟨F, hF0, hFi⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Flat.DegZ.GermFam.germ_family E H hstar X t Ω ξ d M S O' s _ p Γ hξ hpow hfib
-  choose hFB φ' ψ' lam' he hφ hψ hlam using hFi
-  choose xs A hxs hfr hpr using _root_.GlobalTheory.CompanionTheory.Ar.Flat.DegZ.Frame.exists_basis_frame E H X t Ω ξ d r M S ρ 𝓗 σ u hξ hgive hσ hu hsp
-  have hdet := fun q => (_root_.GlobalTheory.CompanionTheory.Ar.Flat.HodgeLat.quot_det_bundle X Ω ξ E (Fin d → Ω) M.lat ρ H.bar r 𝓗 σ u hσ hu hsp).2.2 q (A q) (hfr q)
-  choose Mt hAM hMt using fun i => exists_trans S hgive σ (qi i) q0 (FibreCurve.generic_centre_specializes Γ i) (τ q0) (hτ q0)
-    (he i) (hxs q0) hu (hpr (qi i)) (hpr q0)
-  let χ : 𝓞 E →+* Γ.κ := v0.comp (τ q0)
-  have hsq : ∀ i, ((Γ.C.v i).valuationSubring.subtype).comp (vi i) =
-      v0.comp (X.presheaf.stalkSpecializes (FibreCurve.generic_centre_specializes Γ i)).hom := fun i => by
-    have key := ProjectiveLinePlaces.stalk_square (FibreCurve.generic_centre_specializes Γ i) (Scheme.stalkClosedPointTo (Γ.z i))
-      (Scheme.stalkClosedPointTo Γ.η) (CommRingCat.ofHom (Γ.C.v i).valuationSubring.subtype)
-      ((Scheme.Spec_stalkClosedPointTo_fromSpecStalk Γ.η).trans ((Γ.z_gen i).symm.trans
-        (congrArg (Spec.map (CommRingCat.ofHom (Γ.C.v i).valuationSubring.subtype) ≫ ·)
-          (Scheme.Spec_stalkClosedPointTo_fromSpecStalk (Γ.z i))).symm))
-    exact RingHom.ext fun s => (congrArg (fun g => g.hom s) key).symm
-  have hτs : ∀ i a, (X.presheaf.stalkSpecializes (FibreCurve.generic_centre_specializes Γ i)).hom (τ (qi i) a) = τ q0 a :=
-    fun i a => hξ.inj q0 ((ProjectiveLinePlaces.genMap_specializes (FibreCurve.generic_centre_specializes Γ i) q0.2 (qi i).2 _).trans
-      ((hτ (qi i) a).trans (hτ q0 a).symm))
-  have hχ : ∀ i a, Γ.C.v i (χ a) ≤ 1 := fun i a => by
-    have e : χ a = ((vi i (τ (qi i) a) : (Γ.C.v i).valuationSubring) : Γ.κ) :=
-      (congrArg v0 (hτs i a).symm).trans (RingHom.congr_fun (hsq i) (τ (qi i) a)).symm
-    rw [e]
-    exact (vi i (τ (qi i) a)).2
-  let x₀ : Fin r → (Fin d → Γ.κ) × (Fin d → Γ.κ) := fun l => vmap v0 (xs q0 l)
-  let x : ∀ i : Γ.C.I, Fin r → (Fin d → (Γ.C.v i).valuationSubring) × (Fin d → (Γ.C.v i).valuationSubring) :=
-    fun i j => vmap (vi i) (xs (qi i) j)
-  let N : Γ.C.I → Matrix (Fin r) (Fin r) Γ.κ := fun i => (Mt i).map v0
-  have hx₀ : IsHBasis F.B x₀ := _root_.GlobalTheory.CompanionTheory.Ar.Flat.DegZ.isHBasis_map E _ _ v0 d r _ _ _ hF0 (hxs q0)
-  have hx : ∀ i, IsHBasis (F.Bi i) (x i) := fun i => _root_.GlobalTheory.CompanionTheory.Ar.Flat.DegZ.isHBasis_map E _ _ (vi i) d r _ _ _ (hFB i) (hxs (qi i))
-  have hrel : ∀ i j, transH (F.φ i) (F.ψ i) (F.lam i) (vmap (Γ.C.v i).valuationSubring.subtype (x i j)) -
-      ∑ l, N i j l • x₀ l ∈ eigW F.B χ := fun i j => by
-    have h1 := vmap_mem_eigW hF0 (τ q0) (hMt i j)
-    have h2 := vmap_rel v0 (vi i) (Γ.C.v i).valuationSubring.subtype _ (hsq i) (φ' i) (ψ' i) (lam' i)
-      (xs (qi i) j) (Mt i j) (xs q0)
-    rw [hφ i, hψ i, hlam i]
-    exact h2 ▸ h1
-  obtain ⟨hne, hfin, hsum⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Flat.DegProd.curve_deg E Γ.κ Γ.C p d r F χ
-    (GlobalTheory.T.charpoly_splits_of_embeddings E Ω O Γ.κ (v0.comp ((GlobalTheory.CompanionTheory.Ar.ValHom.stalkEquiv ξ hξ q0).symm.toRingHom.comp
-      ((algebraMap O Ω).codRestrict (regAt ξ q0) (hreg q0)))) hinj hcard hrange) hχ x₀ x N hx₀ hx hrel
-  have hNdet : ∀ i, (N i).det = v0 (Mt i).det := fun i => (RingHom.map_det v0 (Mt i)).symm
-  have hAdet : ∀ i, (A (qi i)).det = genMap ξ q0 (Mt i).det * (A q0).det := fun i => by
-    rw [hAM i, Matrix.det_mul]
-    exact congrArg (· * (A q0).det) (RingHom.map_det (genMap ξ q0) (Mt i)).symm
-  have hunit : ∀ i, IsUnit (Mt i).det := fun i => by
-    have h1 : IsUnit (v0 (Mt i).det) := isUnit_iff_ne_zero.2 (hNdet i ▸ hne i)
-    haveI : IsLocalHom v0 := inferInstanceAs (IsLocalHom (Scheme.stalkClosedPointTo Γ.η).hom)
-    exact (isUnit_map_iff v0 _).1 h1
-  refine ⟨(A q0).det, fun i => (A (qi i)).det, fun i => ((N i).det)⁻¹, hdet q0,
-    fun i => ⟨FibreCurve.z_spec Γ i, hdet (qi i)⟩, fun i => ⟨inv_ne_zero (hne i), ?_⟩, ?_, ?_⟩
-  · obtain ⟨w, hw⟩ := hunit i
-    have hw0 : genMap ξ q0 (w : X.presheaf.stalk q0.1) * genMap ξ q0 ((w⁻¹ : _ˣ) : X.presheaf.stalk q0.1) = 1 := by
-      rw [← map_mul, Units.mul_inv, map_one]
-    have hv0 : v0 (w : X.presheaf.stalk q0.1) * v0 ((w⁻¹ : _ˣ) : X.presheaf.stalk q0.1) = 1 := by
-      rw [← map_mul, Units.mul_inv, map_one]
-    refine ⟨Γ.η_spec, ((w⁻¹ : _ˣ) : X.presheaf.stalk q0.1), ?_, ?_⟩
-    · have e0 := (hdet q0).1
-      have e1 : (A (qi i)).det = genMap ξ q0 (w : X.presheaf.stalk q0.1) * (A q0).det :=
-        (hAdet i).trans (congrArg (fun z => genMap ξ q0 z * (A q0).det) hw.symm)
-      have e2 : genMap ξ q0 ((w⁻¹ : _ˣ) : X.presheaf.stalk q0.1) =
-          (A q0).det / (genMap ξ q0 (w : X.presheaf.stalk q0.1) * (A q0).det) := by
-        generalize genMap ξ q0 ((w⁻¹ : _ˣ) : X.presheaf.stalk q0.1) = b at hw0
-        generalize genMap ξ q0 (w : X.presheaf.stalk q0.1) = a at hw0
-        have ha : a ≠ 0 := left_ne_zero_of_mul_eq_one hw0
-        rw [eq_div_iff (mul_ne_zero ha e0)]
-        linear_combination (A q0).det * hw0
-      exact e2.trans (congrArg ((A q0).det / ·) e1.symm)
-    · have e3 : (N i).det = v0 (w : X.presheaf.stalk q0.1) := (hNdet i).trans (congrArg v0 hw.symm)
-      exact (eq_inv_of_mul_eq_one_right hv0).trans (congrArg (·⁻¹) e3.symm)
-  · refine hfin.subset fun i hi h1 => hi ?_
-    rw [map_inv₀, h1, inv_one]
-  · have : ∀ i, (Γ.C.w i : ℤ) * (-WithZero.log (Γ.C.v i ((N i).det)⁻¹)) =
-        (Γ.C.w i : ℤ) * WithZero.log (Γ.C.v i (N i).det) := fun i => by
-      rw [map_inv₀, WithZero.log_inv, neg_neg]
-    simp only [this]
-    exact hsum
-
-end Germ
-
 section Agree
 
 open AlgebraicGeometry CategoryTheory Limits NumberField GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Flat
@@ -807,10 +694,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem mem_abLocus_of_map {X Y : Scheme.{0}} {G : Over X} {G' : Over Y} {f : X ⟶ Y} {φ : G.left ⟶ G'.left}
-    (h : IsPullback φ G.hom G'.hom f) {x : X} (hx : f x ∈ abLocus G') : x ∈ abLocus G :=
-  _root_.GlobalTheory.CompanionTheory.Ar.HodgeBasic.mem_abLocus_of_map h hx
-
 theorem genPt_max {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X} (h : IsCptGen ξ) (z : X)
     (hz : z ⤳ genPt ξ) : z = genPt ξ := by
   have hF : IsField (X.presheaf.stalk (genPt ξ)) :=
@@ -848,7 +731,6 @@ theorem cst_mem (𝔐 : HodgeCpt Y S y) (q : Cpt 𝔐.ξ) (o : 𝓞 c.F) : 𝔐.
   letI algΩ : Algebra (𝓞 c.F) Ω := (𝔐.cst.comp (algebraMap (𝓞 c.F) c.F)).toAlgebra
   exact _root_.GlobalTheory.CompanionTheory.Ar.Flat.DegZ.RegBase.algebraMap_mem_regAt_of_base 𝔐.X Ω 𝔐.ξ (𝓞 c.F) (𝔐.f ≫ Y.s) 𝔐.cst_over q o
 
-
 open CptHodge in
 theorem exists_hodgeLat (𝔐 : HodgeCpt Y S y)
     (hFibY : ∀ (p : ℕ), p.Prime → ∀ z : Y.X, (p : Y.X.residueField z) = 0 → FibPF Y.t z) (p : ℕ) (hp : p.Prime) :
@@ -864,7 +746,7 @@ theorem exists_hodgeLat (𝔐 : HodgeCpt Y S y)
   haveI hprop : IsProper s₀ := LocModel.isProper_of_coordTie 𝔐.all 𝔐.tie s₀
   haveI hLN : IsLocallyNoetherian 𝔐.X := LocallyOfFiniteType.isLocallyNoetherian s₀
   have hFib : ∀ (p : ℕ), p.Prime → ∀ z : 𝔐.X, (p : 𝔐.X.residueField z) = 0 → FibPF 𝔐.t z := fun p hp z hz =>
-    (GlobalTheory.T.fibre_power_free_pullback E H _ _ _ 𝔐.t 𝔐.f 𝔐.m z).2 (hFibY p hp _ (by
+    (PositivityTheory.HtPt.Cf.fibpf_pull E H _ _ _ 𝔐.t 𝔐.f 𝔐.m z).2 (hFibY p hp _ (by
       rwa [← map_natCast (𝔐.f.residueFieldMap z).hom p, map_eq_zero] at hz))
   haveI : ∀ x : 𝔐.X, _root_.IsReduced (𝔐.X.presheaf.stalk x) := fun x => by
     have := (𝔐.normal x).1
@@ -877,7 +759,7 @@ theorem exists_hodgeLat (𝔐 : HodgeCpt Y S y)
       (congrArg 𝔐.ξ₀ (Subsingleton.elim (α := PrimeSpectrum 𝔐.Ω₀) _ _)))
   have hPow : PowFns 𝔐.t := GlobalTheory.T.powFns_of_abelian_generic E H 𝔐.X 𝔐.t hred hLN (fun z hz => by
     rw [← hz _ (𝔐.all z)]
-    refine mem_abLocus_of_map 𝔐.m.cart.1 ?_
+    refine GlobalTheory.CompanionTheory.Ar.HodgeBasic.mem_abLocus_of_map 𝔐.m.cart.1 ?_
     rw [hf0]
     exact generic_mem_abLocus (O := 𝓞 c.F) Y _ (genPt_max 𝔐.gen₀))
   obtain ⟨hcard, hfac⟩ := emb_factor (E := E) c 𝔐.cst
@@ -923,10 +805,11 @@ theorem exists_hodgeLat (𝔐 : HodgeCpt Y S y)
     have h1 : IsIntegral ℤ (tauIn c τ' a) :=
       (RingOfIntegers.isIntegral a).map (tauIn c τ').toIntAlgHom
     exact ⟨⟨tauIn c τ' a, h1⟩, (hτ' a).symm⟩
-  have hdeg : ∀ σ : E →+* Ω, 𝓗.DegZero σ (p : Ω) := fun σ =>
-    germ_degZero_prime E H hstar 𝔐.X 𝔐.t Ω 𝔐.ξ d (D.p + D.q) M G ρ' 𝓗 (𝓞 c.F) ℤ s₀ p σ hp
-      (𝔐.cst.injective.comp RingOfIntegers.coe_injective) (cst_mem 𝔐) hgen
-      hPow hG (fun q h => hFib p hp q.1 h) hcard hint
+  have hdeg : ∀ σ : E →+* Ω, 𝓗.DegZero σ (p : Ω) := fun σ => by
+    simpa only [map_natCast] using
+      germ_degZero_of_dvd E H hstar 𝔐.X 𝔐.t Ω 𝔐.ξ d (D.p + D.q) M G ρ' 𝓗 (𝓞 c.F) ℤ s₀ p p σ hp
+        dvd_rfl (𝔐.cst.injective.comp RingOfIntegers.coe_injective) (cst_mem 𝔐) hgen hPow hG
+        (fun q h => hFib p hp q.1 h) hcard hint
   have htr := _root_.GlobalTheory.CompanionTheory.Ar.Flat.hodgeLat_transport 𝔐.X Ω 𝔐.ξ E (Fin d → Ω) 𝔐.Li e M.lat ρ' 𝔐.ρ H.bar (D.p + D.q) 𝓗 hρ'
   rw [lat_map M 𝔐.M e he] at htr
   obtain ⟨𝓗', h'⟩ := htr

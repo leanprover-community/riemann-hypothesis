@@ -677,8 +677,6 @@ variable {l : ℕ} [Fact l.Prime]
 
 alias hinf_le_gj := _root_.GlobalTheory.Cyc.AlmostTrace.Hinf_le_Gj
 
-alias gj_le := _root_.GlobalTheory.Cyc.cyclotomicTowerLevelGaloisSubgroup_le_fixingSubgroup_base
-
 alias norm_l_lt := _root_.GlobalTheory.TateDecomp.norm_l_lt
 
 theorem norm_chiC {χ : GQ l →* ℚ_[l]ˣ} (hχ : IsCyc χ) (j : ℤ) (g : GQ l) : ‖chiC χ j g‖ = 1 := by
@@ -688,7 +686,7 @@ theorem norm_chiC {χ : GQ l →* ℚ_[l]ˣ} (hχ : IsCyc χ) (j : ℤ) (g : GQ 
 theorem chiC_hinf {χ : GQ l →* ℚ_[l]ˣ} (hχ : IsCyc χ) (K : FinExt l) (j : ℤ) {h : GQ l}
     (hh : h ∈ Hinf K) : chiC χ j h = 1 := by
   have : χ h = 1 :=
-    ((GlobalTheory.Cyc.cyc_basic l χ hχ).2.2 K h (gj_le K 0 (hinf_le_gj K 0 hh))).2.1 hh
+    ((GlobalTheory.Cyc.cyc_basic l χ hχ).2.2 K h (GlobalTheory.Cyc.cyclotomicTowerLevelGaloisSubgroup_le_fixingSubgroup_base K 0 (hinf_le_gj K 0 hh))).2.1 hh
   simp [chiC, this]
 
 theorem chiC_neg_mul (χ : GQ l →* ℚ_[l]ˣ) (j : ℤ) (g : GQ l) :
@@ -721,7 +719,7 @@ theorem eigen_of_norm_le {act : GQ l →* (PadicComplex l ≃+* PadicComplex l)}
     intro a
     simp only [twAct, Pi.smul_apply, smul_eq_mul, Matrix.mulVec, dotProduct]
     exact hmul _ hc _ ((Xj K m).sum_mem fun b _ =>
-      hmul _ (hU g hg.1 a b) _ (hstab g (gj_le K m hg.1) _ (hx b)))
+      hmul _ (hU g hg.1 a b) _ (hstab g (GlobalTheory.Cyc.cyclotomicTowerLevelGaloisSubgroup_le_fixingSubgroup_base K m hg.1) _ (hx b)))
   have hK : ∀ a, twAct act χ u U g y0 a - y0 a ∈ inC (Ks K m) := by
     intro a
     rw [CycPerturb.mem_inC_iff]

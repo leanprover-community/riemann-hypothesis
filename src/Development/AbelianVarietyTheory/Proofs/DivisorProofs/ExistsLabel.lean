@@ -185,7 +185,6 @@ lemma killed_eq_image {d : ℕ} [NeZero d] {s e : ℕ} (h : s * e = d) :
     killed d s = (Finset.range s).image fun j => ((e * j : ℕ) : ZMod d) := by
   have hd : 0 < d := Nat.pos_of_ne_zero (NeZero.ne d)
   have hs : 0 < s := Nat.pos_of_mul_pos_right (h ▸ hd)
-  have he : 0 < e := Nat.pos_of_mul_pos_left (h ▸ hd)
   ext x
   rw [mem_killed, Finset.mem_image]
   constructor
@@ -668,7 +667,6 @@ theorem exists_regular_exponent_of_sum_sq_eq :
   rw [heq, hs] at hle2
   push_cast at hle2
   have he' : (0 : ℤ) < e := by exact_mod_cast he
-  have hs' : (2 : ℤ) ≤ s := by exact_mod_cast hs2
   have := le_of_mul_le_mul_left hle2 he'
   nlinarith
 

@@ -327,7 +327,3 @@ end reg
 end
 
 end Formalism.FourierDecayAlt.P.TBBx4
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

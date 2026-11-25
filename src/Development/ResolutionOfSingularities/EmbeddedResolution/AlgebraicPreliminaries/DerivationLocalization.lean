@@ -24,7 +24,6 @@ private theorem exists_liftToLocalization (D : Derivation R S N) (M : Submonoid 
   have hu : ∀ y : M, IsUnit ((algebraMap S (Module.End S N)) (y : S)) := fun y => by
     rw [← (Algebra.lsmul S (A := S') S N).commutes (y : S)]
     exact (IsLocalization.map_units (M := M) S' y).map (Algebra.lsmul S (A := S') S N).toMonoidHom
-  have : IsLocalizedModule M (KaehlerDifferential.map R R S S') := inferInstance
   refine ⟨(LinearMap.extendScalarsOfIsLocalization M S'
       (IsLocalizedModule.lift M (KaehlerDifferential.map R R S S')
         D.liftKaehlerDifferential hu)).compDer (KaehlerDifferential.D R S'), fun s => ?_⟩

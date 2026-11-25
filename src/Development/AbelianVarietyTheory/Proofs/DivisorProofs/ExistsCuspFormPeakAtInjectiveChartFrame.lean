@@ -343,7 +343,6 @@ theorem exists_tendstoLocallyUniformlyOn_ultrafilter {E : Type*} [NormedAddCommG
   obtain ⟨r, hr, M, hrU, hM⟩ := hb c hc
   have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM 0 c (mem_ball_self hr))
   set L : ℝ := (2 * M + 1) / r with hL
-  have hL0 : 0 < L := by positivity
   have hlip : ∀ k, ∀ z ∈ ball c r, dist (F k z) (F k c) ≤ L * dist z c := by
     intro k z hz
     refine Complex.dist_le_div_mul_dist_of_mapsTo_ball ((hF k).mono hrU) (fun w hw => ?_) hz
@@ -758,7 +757,6 @@ theorem hormander_peak : ∃ C : ℝ, 0 ≤ C ∧ ∀ (E : Type) [Field E] [Numb
           ring
       _ ≤ _ := by
           gcongr
-          have hS' : 2 ≤ S + 1 := by linarith
           have h4 : (4 : ℝ) ≤ Real.exp (2 * S) := by
             have h1 : S + 1 ≤ Real.exp S := Real.add_one_le_exp S
             have h2 : Real.exp (2 * S) = Real.exp S * Real.exp S := by
@@ -1506,7 +1504,6 @@ theorem const_le (f r : ℕ) : (4 * (f : ℝ) * (r : ℝ) ^ 2 + 1) * ((f : ℝ) 
     15 * ((f : ℝ) * r) ^ 8 := by
   have hl : Real.log 2 ≤ 1 := by
     have := Real.log_le_sub_one_of_pos (show (0 : ℝ) < 2 by norm_num); linarith
-  have hl0 : 0 ≤ Real.log 2 := Real.log_nonneg (by norm_num)
   rcases Nat.eq_zero_or_pos f with hf | hf
   · subst hf; simp
   rcases Nat.eq_zero_or_pos r with hr | hr
@@ -1528,8 +1525,6 @@ theorem const_le (f r : ℕ) : (4 * (f : ℝ) * (r : ℝ) ^ 2 + 1) * ((f : ℝ) 
     have h := mul_le_mul_of_nonneg_left hl (show 0 ≤ 3 * (r : ℝ) by positivity)
     refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left ?_ (by positivity)) (by positivity)
     linarith
-  have he : (4 * (f : ℝ) * (r : ℝ) ^ 2 + 1) * ((f : ℝ) * (3 * (r : ℝ))) =
-      12 * ((f : ℝ) ^ 2 * (r : ℝ) ^ 3) + 3 * a := by rw [ha]; ring
   linarith
 
 theorem ballSum_le : ∃ C : ℝ, 0 ≤ C ∧ ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : ReciprocityTheory.ChartRestriction.G.FD.Data E r) (x y : ReciprocityTheory.ChartRestriction.G.FD.Frame X.Ψ r), 0 < X.p0 → X.p0 < r → ReciprocityTheory.ChartRestriction.G.AR.Up.IsOrth X x → ReciprocityTheory.ChartRestriction.G.AR.Up.IsOrth X y → (∀ γ ∈ X.Γ, ∀ z z' : ReciprocityTheory.L2DbarEstimates.V (ReciprocityTheory.ChartRestriction.G.AR.Inst.nd X), ‖z‖ ≤ 1 / (100 * (r : ℝ) ^ 2) → ‖z'‖ ≤ 1 / (100 * (r : ℝ) ^ 2) → ∀ b ∈ Bor X.Ψ r, lact γ (ReciprocityTheory.ChartRestriction.G.AR.Inst.cpt X x z) = rmul (ReciprocityTheory.ChartRestriction.G.AR.Inst.cpt X x z') b → γ = 1) → ReciprocityTheory.ChartRestriction.G.AR.Up.muF X x (Metric.ball (0 : ReciprocityTheory.L2DbarEstimates.V (ReciprocityTheory.ChartRestriction.G.AR.Inst.nd X)) (1 / (100 * (r : ℝ) ^ 2)) ∩ ReciprocityTheory.ChartRestriction.G.AR.Up.OmF X x) * ∑' γ : X.Γ, ENNReal.ofReal (ReciprocityTheory.ChartRestriction.G.AR.Up.PoinPf.kaY X x (4 * (X.Ψ.card : ℝ) * (r : ℝ) ^ 2 + 1) (lact γ.1 y)) ≤ ENNReal.ofReal (Real.exp (C * ((X.Ψ.card : ℝ) * r) ^ 8)) * ∫⁻ z, ENNReal.ofReal (ReciprocityTheory.ChartRestriction.G.AR.Up.kaF X y (4 * (X.Ψ.card : ℝ) * (r : ℝ) ^ 2 + 1) z) ∂(ReciprocityTheory.ChartRestriction.G.AR.Up.muF X y) := by

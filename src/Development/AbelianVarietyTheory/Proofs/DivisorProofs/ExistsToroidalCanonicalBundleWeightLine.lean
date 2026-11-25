@@ -1079,41 +1079,9 @@ theorem GlobalTheory.LogKSDiv.exists_spread_eigFrame : ∀ (E : Type) [Field E] 
   have hφl : φ = lam.comp φ₀ := spMap_inj (by
     rw [← hφ, ← ReciprocityTheory.ChartRestriction.G.PullbackSections.spMap_comp_spMap, hφ₀, ← Category.assoc, hpt, Category.assoc])
   subst hφl
-  have vec_bc_of_chart {S : Type} [CommRing S] {X : Scheme.{0}} {t : SAB H X} {x : Sp S ⟶ X} {n : ℕ}
-      {xc : ∀ m : ℕ, ReciprocityTheory.ChartRestriction.G.Chart.sp (R₀ := S) (ReciprocityTheory.ChartRestriction.G.Chart.JetR S (Fin n) m) ⟶ (Over.pullback x).obj t.G}
-      (C : ReciprocityTheory.ChartRestriction.G.Chart.Chart ((Over.pullback x).obj t.G)) (hx : ReciprocityTheory.ChartRestriction.G.Chart.IsUnivChart _ n xc)
-      {S' : Type} [CommRing S'] (ψ : S →+* S') {x' : Sp S' ⟶ X} (h : x' = spMap ψ ≫ x) :
-      ∃ (xc' : ∀ m : ℕ, ReciprocityTheory.ChartRestriction.G.Chart.sp (R₀ := S') (ReciprocityTheory.ChartRestriction.G.Chart.JetR S' (Fin n) m) ⟶ (Over.pullback x').obj t.G),
-        ReciprocityTheory.ChartRestriction.G.Chart.IsUnivChart _ n xc' ∧ ∀ cc : Fin n → S, vec t x' xc' (ψ ∘ cc) = spMap (dualMap ψ) ≫ vec t x xc cc := by
-    subst h
-    letI : Algebra S S' := ψ.toAlgebra
-    obtain ⟨x₁, hx₁, hcomp⟩ := LieChart.univChart_baseChange_of_chart (R := S) (R' := S') _ C n xc hx
-    have h₁ := IsGrpPullback.comp
-      (isGrpPullback_pullback ((Over.pullback x).obj t.G) (ReciprocityTheory.ChartRestriction.G.Chart.fB S S'))
-      (isGrpPullback_pullback t.G x)
-    obtain ⟨e, he, hφ⟩ := grpPullback_iso h₁
-      (isGrpPullback_pullback t.G (ReciprocityTheory.ChartRestriction.G.Chart.fB S S' ≫ x))
-    refine ⟨fun m => x₁ m ≫ e.hom, gfp_chart_iso e hx₁, fun cc => ?_⟩
-    have key : (ReciprocityTheory.ChartRestriction.G.Chart.tvec (x := fun m => x₁ m ≫ e.hom) (algebraMap S S' ∘ cc)).left =
-        (ReciprocityTheory.ChartRestriction.G.Chart.tvec (x := x₁) (algebraMap S S' ∘ cc)).left ≫ e.hom.left := by
-      show (_ ≫ x₁ 1 ≫ e.hom).left = (_ ≫ x₁ 1).left ≫ e.hom.left
-      rw [Over.comp_left, Over.comp_left, Over.comp_left, Category.assoc]
-    show (ReciprocityTheory.ChartRestriction.G.Chart.tvec (x := fun m => x₁ m ≫ e.hom) (algebraMap S S' ∘ cc)).left ≫ pullback.fst _ _ = _
-    rw [key, Category.assoc, hφ, ← Category.assoc, hcomp cc, Category.assoc]
-    rfl
   obtain ⟨xL, hxL, hvL⟩ := vec_bc_of_chart C hxc lam hpt
   choose B hB using fun τ i => vec_exists hxL _ (f.tan τ i)
-  have exists_projectors {L : Type} [CommRing L] (φ : c.F →+* L) {x : Sp L ⟶ TF.Y.X} {n : ℕ}
-      {xc : ∀ m : ℕ, sp (R₀ := L) (ReciprocityTheory.ChartRestriction.G.Chart.JetR L (Fin n) m) ⟶ (Over.pullback x).obj TF.Y.t.G}
-      (hx : IsUnivChart _ n xc) :
-      ∃ P : (E →+* ℂ) → Matrix (Fin n) (Fin n) L, ∀ {k : Type} [CommRing k] (ψ : L →+* k) {x' : Sp k ⟶ TF.Y.X}
-        {xc' : ∀ m : ℕ, sp (R₀ := k) (ReciprocityTheory.ChartRestriction.G.Chart.JetR k (Fin n) m) ⟶ (Over.pullback x').obj TF.Y.t.G}
-        (hx' : IsUnivChart _ n xc'), (∀ cc : Fin n → L, vec TF.Y.t x' xc' (ψ ∘ cc) = spMap (dualMap ψ) ≫ vec TF.Y.t x xc cc) → ∀ τ v, Matrix.mulVec ((P τ).map ψ) v ∈ eig c (ψ.comp φ) hx' τ ∧
-          (v ∈ eig c (ψ.comp φ) hx' τ → Matrix.mulVec ((P τ).map ψ) v = v) := by
-    first
-    | exact _root_.GlobalTheory.ShFam.EigSpread.exists_projectors
-    | apply _root_.GlobalTheory.ShFam.EigSpread.exists_projectors <;> assumption
-  obtain ⟨P, hP⟩ := exists_projectors φ₀ hxc
+  obtain ⟨P, hP⟩ := exists_projectors c φ₀ hxc
   have hPL := hP lam hxL hvL
   have hBe : ∀ τ i, B τ i ∈ eig c (lam.comp φ₀) hxL τ := fun τ i =>
     (vec_eig_iff hxL _ _).1 fun a => by rw [← hB]; exact f.eig τ i a

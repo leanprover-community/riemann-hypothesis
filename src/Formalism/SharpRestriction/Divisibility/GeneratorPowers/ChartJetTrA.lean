@@ -13,8 +13,6 @@ namespace Formalism.MainNotions.ModuliIntegralCharts.H1.JetTr
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section Ring
 
 variable {V K : Type} [CommRing V] [CommRing K] (f : V →+* K)

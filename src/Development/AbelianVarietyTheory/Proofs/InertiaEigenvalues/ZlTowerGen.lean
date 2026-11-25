@@ -12,8 +12,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct GlobalTheor
 
 namespace GlobalTheory.WeakClosed
 
-set_option synthInstance.maxHeartbeats 400000
-
 instance vrOCb (l : ℕ) [Fact l.Prime] : ValuationRing (OCb l) :=
   (GlobalTheory.TiltAlgClosed.isAlgClosed_tilt_and_valuationRing l).2
 

@@ -344,43 +344,30 @@ theorem UpperTheory.BernoulliSumsFrobeniusOrbits.shares_of_counts :
     rw [← h1]
     push_cast
     ring
-  have hcardA0 : (Finset.univ.filter fun x : A => x ∈ A0).card = n := by
-    rw [hn_def, Nat.card_eq_fintype_card, Fintype.card_subtype]
-  have hsumN : ∑ γ : A, (T.filter fun t => t - γ ∈ A0).card = T.card * n := by
-    simp_rw [Finset.card_filter]
-    rw [Finset.sum_comm]
-    have inner : ∀ t : A, (∑ γ : A, if t - γ ∈ A0 then 1 else 0) = n := by
-      intro t
-      have h2 := Equiv.sum_comp (Equiv.subLeft t) (fun x => if x ∈ A0 then (1:ℕ) else 0)
-      simp only [Equiv.subLeft_apply] at h2
-      rw [h2, ← Finset.card_filter]
-      exact hcardA0
-    rw [Finset.sum_congr rfl (fun t _ => inner t), Finset.sum_const, smul_eq_mul]
-  have hsum : (∑ γ : A, ((T.filter fun t => t - γ ∈ A0).card : ℝ)) = n * T.card := by
-    have h3 := congrArg (Nat.cast : ℕ → ℝ) hsumN
-    push_cast at h3
-    rw [h3]
+  let q : A → A ⧸ A0 := fun a => (a : A ⧸ A0)
+  let observed (c : A ⧸ A0) : ℝ := (T.filter fun t => q t = c).card
+  let expected (c : A ⧸ A0) : ℝ := 3 / 4 * δ * n + if c = 0 then δ * n / 4 else 0
+  have hIndex : Fintype.card (A ⧸ A0) = m := Nat.card_eq_fintype_card.symm
+  have hObserved : ∑ c, observed c = (T.card : ℝ) := by
+    simpa only [observed, Nat.cast_sum] using congrArg (Nat.cast : ℕ → ℝ)
+      (Finset.card_eq_sum_card_fiberwise (f := q) (s := T) (t := univ)
+        (fun _ _ => Finset.mem_univ _)).symm
+  have hExpected : ∑ c, expected c = (3 * m + 1) / 4 * δ * n := by
+    simp [expected, Finset.sum_add_distrib, hIndex, nsmul_eq_mul]
     ring
-  have hf : (∑ γ : A, (if γ ∈ A0 then δ else 3 / 4 * δ) * (n:ℝ)) = (3 * m + 1) / 4 * δ * n * n := by
-    have hpt : ∀ γ : A, (if γ ∈ A0 then δ else 3 / 4 * δ) * (n:ℝ)
-        = 3 / 4 * δ * n + (if γ ∈ A0 then δ / 4 * n else 0) := by
-      intro γ
-      split_ifs <;> ring
-    rw [Finset.sum_congr rfl (fun γ _ => hpt γ), Finset.sum_add_distrib, ← Finset.sum_filter,
-      Finset.sum_const, Finset.sum_const, hcardA0, Finset.card_univ, nsmul_eq_mul, nsmul_eq_mul, hA]
-    ring
-  have hdiff : |(n:ℝ) * T.card - (3 * m + 1) / 4 * δ * n * n| ≤ m * n * D := by
-    rw [← hsum, ← hf, ← Finset.sum_sub_distrib]
-    calc _ ≤ ∑ γ : A, |((T.filter fun t => t - γ ∈ A0).card : ℝ) - (if γ ∈ A0 then δ else 3 / 4 * δ) * n| :=
-          Finset.abs_sum_le_sum_abs _ _
-      _ ≤ ∑ γ : A, D := Finset.sum_le_sum fun γ _ => hc γ
-      _ = m * n * D := by rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, hA]
-  have hn0 : (0:ℝ) < n := by linarith
+  have hClass (c : A ⧸ A0) : |observed c - expected c| ≤ D := by
+    obtain ⟨a, rfl⟩ := QuotientAddGroup.mk_surjective c
+    dsimp only [observed, expected, q]
+    simp only [QuotientAddGroup.eq_iff_sub_mem, QuotientAddGroup.eq_zero_iff]
+    split_ifs with ha
+    · simpa [ha, show 3 / 4 * δ * n + δ * n / 4 = δ * n by ring] using hc a
+    · simpa [ha] using hc a
   have hT : |(T.card : ℝ) - (3 * m + 1) / 4 * δ * n| ≤ m * D := by
-    have he : (n:ℝ) * T.card - (3 * m + 1) / 4 * δ * n * n = n * ((T.card : ℝ) - (3 * m + 1) / 4 * δ * n) := by ring
-    rw [he, abs_mul, abs_of_pos hn0] at hdiff
-    have h4 : (n:ℝ) * |(T.card : ℝ) - (3 * m + 1) / 4 * δ * n| ≤ n * (m * D) := by linarith
-    exact le_of_mul_le_mul_left h4 hn0
+    rw [← hObserved, ← hExpected, ← Finset.sum_sub_distrib]
+    calc _ ≤ ∑ c, |observed c - expected c| := Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ _ : A ⧸ A0, D := Finset.sum_le_sum fun c _ => hClass c
+      _ = _ := by simp [hIndex, nsmul_eq_mul]
+  have hn0 : (0 : ℝ) < n := by linarith
   have hδn : 0 < δ * n := mul_pos hδ hn0
   have hηδ : η * (δ * n) ≤ δ * n := mul_le_of_le_one_left (le_of_lt hδn) hη
   have hmD : 0 ≤ (m:ℝ) * D := mul_nonneg (by linarith) hD
@@ -517,36 +504,24 @@ private lemma marginal {α β : Type} [Fintype α] [Fintype β] [DecidableEq α]
 private lemma fin_sum_eq (n : ℕ) (q : ℕ → ℝ) (F : Finset ℕ → ℝ) :
     (∑ S : Finset (Fin n), pw (fun i : Fin n => q i) S * F (S.map Fin.valEmbedding)) =
       exP q (range n) F := by
+  let e := (Finset.mapEmbedding (Fin.valEmbedding : Fin n ↪ ℕ)).toEmbedding
+  have hrange : (univ : Finset (Fin n)).map Fin.valEmbedding = range n := by
+    rw [Fin.map_valEmbedding_univ, Nat.Iio_eq_range]
+  have hpow : (range n).powerset = (univ : Finset (Finset (Fin n))).map e := by
+    ext T
+    rw [mem_powerset, mem_map, ← hrange, subset_map_iff]
+    change (∃ u ⊆ (univ : Finset (Fin n)), T = u.map Fin.valEmbedding) ↔
+      ∃ u ∈ (univ : Finset (Finset (Fin n))), u.map Fin.valEmbedding = T
+    simp only [subset_univ, mem_univ, true_and, eq_comm (a := T)]
   unfold exP
-  refine Finset.sum_bij (fun S _ => S.map Fin.valEmbedding) ?_ ?_ ?_ ?_
-  · intro S _
-    rw [mem_powerset]
-    intro x hx
-    obtain ⟨i, _, rfl⟩ := mem_map.mp hx
-    simp
-  · intro S _ S' _ h
-    exact Finset.map_injective _ h
-  · intro T hT
-    refine ⟨univ.filter (fun i : Fin n => (i : ℕ) ∈ T), mem_univ _, ?_⟩
-    ext x
-    simp only [mem_map, mem_filter, mem_univ, true_and, Fin.valEmbedding_apply]
-    constructor
-    · rintro ⟨i, hi, rfl⟩; exact hi
-    · intro hx
-      exact ⟨⟨x, mem_range.mp (mem_powerset.mp hT hx)⟩, hx, rfl⟩
-  · intro S _
-    have e : range n \ S.map Fin.valEmbedding = (univ \ S).map Fin.valEmbedding := by
-      ext x
-      simp only [mem_sdiff, mem_range, mem_map, mem_univ, true_and, Fin.valEmbedding_apply]
-      constructor
-      · rintro ⟨hx, hx'⟩
-        exact ⟨⟨x, hx⟩, fun h => hx' ⟨_, h, rfl⟩, rfl⟩
-      · rintro ⟨i, hi, rfl⟩
-        refine ⟨i.2, ?_⟩
-        rintro ⟨j, hj, hji⟩
-        exact hi (Fin.ext hji ▸ hj)
-    rw [e, prod_map, prod_map]
-    rfl
+  rw [hpow, Finset.sum_map]
+  refine Finset.sum_congr rfl fun S _ => ?_
+  have hdiff : range n \ S.map Fin.valEmbedding = (univ \ S).map Fin.valEmbedding := by
+    rw [Finset.map_sdiff, hrange]
+  change _ = ((∏ a ∈ S.map Fin.valEmbedding, q a) *
+    ∏ a ∈ range n \ S.map Fin.valEmbedding, (1 - q a)) * F (S.map Fin.valEmbedding)
+  rw [hdiff, prod_map, prod_map]
+  rfl
 
 private lemma bernoulliExpectation_mem_and (q : ℕ → ℝ) {S : Finset ℕ} {i₀ : ℕ} (hm : i₀ ∈ S) (A : Finset ℕ → Prop) :
     exP q S (fun T => ind (i₀ ∈ T ∧ A T)) =

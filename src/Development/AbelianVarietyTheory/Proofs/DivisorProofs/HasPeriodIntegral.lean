@@ -80,7 +80,7 @@ theorem baseChange_bijective_of_ker {O : Type} [CommRing O] {M N : Type} [AddCom
     refine TensorProduct.ext' fun c m => ?_
     rw [LinearMap.lTensor_tmul, LinearMap.smul_apply, LinearMap.id_apply, ← TensorProduct.smul_tmul,
       Algebra.smul_def, ha, zero_mul, TensorProduct.zero_tmul, LinearMap.zero_apply]
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro x hx
   obtain ⟨y, rfl⟩ := (hex' x).1 hx
   rw [hz, LinearMap.zero_apply]
@@ -986,10 +986,6 @@ open MvPowerSeries GlobalTheory GlobalTheory.Katz GlobalTheory.QLog GlobalTheory
 
 noncomputable section
 
-namespace GlobalTheory.QLog.FrobPeriod
-
-end GlobalTheory.QLog.FrobPeriod
-
 namespace GlobalTheory.QLog
 
 open MvPowerSeries in
@@ -1063,8 +1059,6 @@ private lemma subst_inr_zero_pderiv_coboundary_eq {Q : Type} [CommRing Q] {d : �
   have he0 : HasSubst (Sum.elim (fun k : Fin d => (X k : MvPowerSeries (Fin d) Q))
       fun _ : Fin d => 0) := hasSubst_of_constantCoeff_zero (by rintro (k | k) <;> simp)
   have hν : HasSubst ν := hasSubst_of_constantCoeff_zero hν0
-  have hL : HasSubst (fun k : Fin d => (X (Sum.inl k) : MvPowerSeries (Fin d ⊕ Fin d) Q)) :=
-    hasSubst_of_constantCoeff_zero (by simp)
   have hR : HasSubst (fun k : Fin d => (X (Sum.inr k) : MvPowerSeries (Fin d ⊕ Fin d) Q)) :=
     hasSubst_of_constantCoeff_zero (by simp)
   rw [map_sub, map_sub, _root_.GlobalTheory.PSChain.pderiv_subst_chain _ hν0, _root_.GlobalTheory.PSChain.pderiv_subst_chain _ (by simp),
@@ -1406,7 +1400,6 @@ theorem hasPeriod_add_smul (t : G.Tate) {f g : MvPowerSeries (Fin d) F.Q} {y y' 
 theorem hasPeriod_map_zero (t : G.Tate) (s : MvPowerSeries (Fin d) F.B) (hs : constantCoeff s = 0) :
     c.HasPeriod F.θ t (map (algebraMap F.B F.Q) s) 0 := by
   have hz := hasPeriod_zero c F.frame t
-  have hd : DIn (⊤ : Ideal F.B) (0 : MvPowerSeries (Fin d) F.Q) := din_of_in (in_zero ⊤)
   first
   | exact (_root_.GlobalTheory.QLog.hasPeriod_linear p C v O hv ε hε F G d c μ' hL hμ 0 0 t 0 0 0 hz hz).2 s hs
 

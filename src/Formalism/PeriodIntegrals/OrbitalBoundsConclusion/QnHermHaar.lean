@@ -50,10 +50,6 @@ open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 section Linfty
 attribute [local instance] Matrix.linftyOpNormedRing Matrix.linftyOpNormedAlgebra
 
-lemma tst_exp_hasSum_linfty {n : ℕ} (X : Matrix (Fin n) (Fin n) ℂ) :
-    HasSum (fun j : ℕ => ((j.factorial : ℂ)⁻¹) • X ^ j) (NormedSpace.exp X) :=
-  NormedSpace.exp_series_hasSum_exp' (𝕂 := ℂ) X
-
 end Linfty
 
 private theorem exp_entry_lemma_2 {n : ℕ} (X : Matrix (Fin n) (Fin n) ℂ) (j l : Fin n) :
@@ -72,10 +68,6 @@ private theorem smul_mulVec_lemma {n : ℕ} (c : ℂ) (M : Matrix (Fin n) (Fin n
     (c • M) *ᵥ v = c • (M *ᵥ v) := by
   ext x
   simp [Matrix.mulVec, dotProduct, Finset.mul_sum, mul_assoc]
-
-lemma tst_exp_mulVec {n : ℕ} (X : Matrix (Fin n) (Fin n) ℂ) (v : Fin n → ℂ) (hv : X *ᵥ v = 0) :
-    NormedSpace.exp X *ᵥ v = v :=
-  _root_.PI.QnHermHaar.HermitianAdjointLemmas.exp_mulVec_fix X v hv
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 

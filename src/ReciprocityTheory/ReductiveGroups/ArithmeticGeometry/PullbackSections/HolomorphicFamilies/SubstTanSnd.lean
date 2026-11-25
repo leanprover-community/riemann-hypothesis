@@ -14,8 +14,6 @@ namespace ReciprocityTheory.ChartRestriction.G.PullbackSections.Pf.EigD
 
 open MvPolynomial CategoryTheory Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {V : Type} [CommRing V] {d : ℕ}
 
 abbrev zk (k : Fin d) : Jet V (Fin 1 × Fin d) 1 := Ideal.Quotient.mk _ (X ((0 : Fin 1), k))

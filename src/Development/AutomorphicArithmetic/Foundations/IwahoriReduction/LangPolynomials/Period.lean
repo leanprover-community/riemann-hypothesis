@@ -40,15 +40,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2 GlobalTheory.KZ GlobalTheory.Col UpperTheory.Kd.C7
 
-namespace UpperTheory.Kd.C7.LangPolynomialRoots
-
-open GlobalTheory.LangWitt
-
-variable {p : ℕ} [hp : Fact p.Prime] {k : Type} [Field k] [CharP k p] [IsAlgClosed k]
-  {W : Type} [CommRing W]
-
-end UpperTheory.Kd.C7.LangPolynomialRoots
-
 private theorem exists_pow_char_sub_mul_eq {K : Type} [Field K] [IsAlgClosed K] (p : ℕ) [hp : Fact p.Prime]
     (lam c : K) : ∃ e : K, e ^ p - lam * e = c := by
   have h2 : 2 ≤ p := hp.out.two_le
@@ -521,22 +512,6 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.MainNotions.N GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.HV GlobalTheory.Ord2 GlobalTheory.KZ GlobalTheory.Col UpperTheory.Kd.C7
 open scoped Matrix
-
-namespace UpperTheory.Kd.C7
-
-section
-variable {l : ℕ} [Fact l.Prime] {Ω : Type} [Field Ω] [Algebra ℚ Ω] {A : ValuationSubring Ω} {j : Ω →+* Qbar l}
-  (Φ : Fr l A j) {c : Coef l} (β : Bas c)
-
-end
-
-section
-variable {l : ℕ} [Fact l.Prime] {Ω : Type} [Field Ω] [Algebra ℚ Ω] {A : ValuationSubring Ω} {j : Ω →+* Qbar l}
-  (Φ : Fr l A j) {c : Coef l} (β : Bas c)
-
-end
-
-end UpperTheory.Kd.C7
 
 private theorem ringHom_algebraMap_padicInt_eq {l : ℕ} [Fact (Nat.Prime l)] {R : Type} [CommRing R] [Algebra ℤ_[l] R]
     (hH : IsHausdorff (Ideal.span {(l : R)}) R) (f : R →+* R) (z : ℤ_[l]) :

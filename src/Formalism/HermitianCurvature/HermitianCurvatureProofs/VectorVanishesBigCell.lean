@@ -246,7 +246,3 @@ theorem bigCellVan : PBJ.BigCellVan := by
   · rfl
 
 end Formalism.FourierDecayAlt.P.PBM
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

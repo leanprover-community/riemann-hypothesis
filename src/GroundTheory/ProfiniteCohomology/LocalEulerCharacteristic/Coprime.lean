@@ -240,10 +240,7 @@ section Card
 variable (l : ℕ) [Fact l.Prime]
 
 theorem natCard_eq_pow_finrank_zmod (V : Type*) [AddCommGroup V] [Module (ZMod l) V] [Finite V] :
-    Nat.card V = l ^ Module.finrank (ZMod l) V := by
-  have : NeZero l := ⟨(Fact.out : l.Prime).ne_zero⟩
-  have := Fintype.ofFinite V
-  rw [Nat.card_eq_fintype_card, Module.card_eq_pow_finrank (K := ZMod l) (V := V), ZMod.card]
+    Nat.card V = l ^ Module.finrank (ZMod l) V := (FiniteField.pow_finrank_eq_natCard l V).symm
 
 theorem finrank_eq_of_natCard_zmod {V : Type*} [AddCommGroup V] [Module (ZMod l) V] [Finite V]
     {r : ℕ} (h : Nat.card V = l ^ r) : Module.finrank (ZMod l) V = r := by

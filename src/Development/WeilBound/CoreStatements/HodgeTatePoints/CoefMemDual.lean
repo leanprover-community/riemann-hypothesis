@@ -12,9 +12,9 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.FinitelyGeneratedHomology.omHT_fg :
-    ∀ {A K : Type} [inst : CommRing A] [inst_1 : Field K] [inst_2 : Algebra A K] {E : Type} [inst_3 : Field E]
-      [inst_4 : NumberField E] {c : E ≃+* E} {p R N : ℕ} {Ω : Type} [inst_5 : AddCommGroup Ω] [inst_6 : _root_.Module K Ω]
-      [inst_7 : _root_.Module A Ω] [inst_8 : IsScalarTower A K Ω] (D : GlobalTheory.CompanionTheory.Ar.HT.HTChart A K c p R N Ω) (σ : E →+* K),
+    ∀ {A K : Type} [CommRing A] [Field K] [Algebra A K] {E : Type} [Field E]
+      [NumberField E] {c : E ≃+* E} {p R N : ℕ} {Ω : Type} [AddCommGroup Ω] [_root_.Module K Ω]
+      [_root_.Module A Ω] [IsScalarTower A K Ω] (D : GlobalTheory.CompanionTheory.Ar.HT.HTChart A K c p R N Ω) (σ : E →+* K),
       (D.omHT σ).FG := by
   intro A K _ _ _ E _ _ c p R N Ω _ _ _ _ D σ
   have hZ : (LinearMap.range D.h.toIntLinearMap).FG := Submodule.fg_range _

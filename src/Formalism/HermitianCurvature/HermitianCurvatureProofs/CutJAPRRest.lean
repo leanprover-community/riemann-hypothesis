@@ -1609,7 +1609,7 @@ theorem nu0'_facts (Bs : B.RealPlaceData (n + 1) r Wp Wq) {ζ : ℂ}
         (SSn.unitH (n + 1) r (SSn.prWv (n + 1) r Bs.z' ((NF.muZ (n + 1) r Bs.μsec ζ)⁻¹ *ᵥ Bs.z))) = 0
       have h0 : herm (Hpk (n + 1) r) (Fr' a)
           (SSn.prWv (n + 1) r Bs.z' ((NF.muZ (n + 1) r Bs.μsec ζ)⁻¹ *ᵥ Bs.z)) = 0 := by
-        rw [DU.prWv_of hy, DU.hadd_r, DU.hsmul_r, hFr'.2.2 a ((NF.muZ (n + 1) r Bs.μsec ζ)⁻¹ *ᵥ Bs.z) (by simp),
+        rw [DU.prWv_of hy, Formalism.FourierDecayAlt.P.Qx8.herm_add_right', DU.hsmul_r, hFr'.2.2 a ((NF.muZ (n + 1) r Bs.μsec ζ)⁻¹ *ᵥ Bs.z) (by simp),
           hFr'.2.2 a Bs.z' (by simp), mul_zero, add_zero]
       unfold SSn.unitH
       rw [DU.hsmul_r, h0, mul_zero]

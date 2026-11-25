@@ -360,15 +360,6 @@ namespace Formalism.L2.SG.Pf.NcS.IntWittPf
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.SG.Sub Formalism.L2.SG.LocVol NumberField IsDedekindDomain Filter
 open scoped TensorProduct
 
-theorem norm_id {S : Type} [CommRing S] (B p q a b D Θ : S) (h : Θ ^ 2 = D) :
-    (B - (p - q * Θ) * (a + b * Θ)) * (B - (p + q * Θ) * (a - b * Θ)) =
-      (B - p * a + q * b * D) ^ 2 - D * (q * a - p * b) ^ 2 := by
-  linear_combination (q * b * (2 * (B - p * a) + q * b * (Θ ^ 2 + D)) - (p * b - q * a) ^ 2) * h
-
-theorem norm_one {S : Type} [CommRing S] (p q D Θ : S) (h : Θ ^ 2 = D) :
-    (p + q * Θ) * (p - q * Θ) = p ^ 2 - D * q ^ 2 := by
-  linear_combination (-q ^ 2) * h
-
 theorem core_loc {R S : Type} [CommRing R] [IsLocalRing R] [CommRing S] (ι : R →+* S) (s : S →+* S)
     (O : Subring S) (hιO : ∀ r, ι r ∈ O) (Θ : S) (hΘO : Θ ∈ O) (D Bt P Q a b : R)
     (hΘ : Θ ^ 2 = ι D) (hsΘ : s Θ = -Θ) (hsι : ∀ r, s (ι r) = ι r) (hPQ : P ^ 2 - D * Q ^ 2 = 1)
@@ -420,13 +411,13 @@ theorem core_loc {R S : Type} [CommRing R] [IsLocalRing R] [CommRing S] (ι : R 
   have hsL : s L = M := by rw [hL, hM, map_add (f := _), map_mul, hsι, hsι, hsΘ]; ring
   have hsM : s M = L := by rw [hL, hM, map_sub, map_mul, hsι, hsι, hsΘ]; ring
   have hLM : L * M = 1 := by
-    rw [hL, hM, norm_one _ _ _ _ hΘ, ← map_pow, ← map_pow, ← map_mul, ← map_sub, hnorm i, map_one]
+    rw [hL, hM, PIW.AdelicOrbitU.norm_one _ _ _ _ hΘ, ← map_pow, ← map_pow, ← map_mul, ← map_sub, hnorm i, map_one]
   set c : S := ι Bt - M * (ι a + ι b * Θ) with hc
   set sc : S := ι Bt - L * (ι a - ι b * Θ) with hsc
   have hcc : c * sc = ι (f i) := by
     rw [hc, hsc, hL, hM]
     simp only [f, map_sub, map_add (f := _), map_mul, map_pow]
-    exact norm_id _ _ _ _ _ _ _ hΘ
+    exact PIW.AdelicOrbitU.norm_id _ _ _ _ _ _ _ hΘ
   obtain ⟨u, hu⟩ := hi
   have hLO : L ∈ O := O.add_mem (hιO _) (O.mul_mem (hιO _) hΘO)
   have hMO : M ∈ O := O.sub_mem (hιO _) (O.mul_mem (hιO _) hΘO)
@@ -1052,7 +1043,6 @@ variable {D : D7} (X : HidaSetting D) (hb : AdBridgeIso X.B.I) (hK : X.LevelSubg
   (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep) (δ : ∀ p : PlF D, (D.s.atP p).Fp)
   (i0 i0' : ∀ _ : NumberField.InfinitePlace X.B.I.F, Fin D.R.k) (νq : X.B.I.Ginf → Measure X.B.I.Ginf)
 
-
 variable [Fact Formalism.HermitianLattices.Ext.L3.HermRepUnram] in
 theorem ncTieAllS_of (hSplit : Formalism.L2.SG.Pf.NcSplitS.SplitOm) (hRB : Formalism.L2.SG.Pf.NcReal.RealBracket)
     (hHyp : HypX X hb FdN FdN' u u') (hMC : MeasCompatψ X ψ) (hStd : StdHyp X.B.I.cm.sig X.B.I.J ψ)
@@ -1126,7 +1116,6 @@ theorem ncTieAllS_of (hSplit : Formalism.L2.SG.Pf.NcSplitS.SplitOm) (hRB : Forma
   exact Formalism.L2.SG.Pf.NcLeaves.ncTieC_of_leaves X hb hK FdN FdN' u u' X0 ψ T sd C Th vR Q M δ i0 i0' νq a' ha
     hP hM hMs hL hO hTy hV hVG hStd.2.2.1 hStd.2.2.2 hcong hRR hS hR hVo hVt hIx hOm hFD hPC
 
-
 variable [Fact Formalism.HermitianLattices.Ext.L3.HermRepUnram] in
 theorem ncTie0All_of (hRB : Formalism.L2.SG.Pf.NcReal.RealBracket) (hSW : PI.VolStabS.MassDataS.SWXS)
     (hHyp : HypX X hb FdN FdN' u u') (hMC : MeasCompatψ X ψ) (hStd : StdHyp X.B.I.cm.sig X.B.I.J ψ)
@@ -1184,7 +1173,6 @@ variable {D : D7} (X : HidaSetting D) (hb : AdBridgeIso X.B.I) (hK : X.LevelSubg
   (vR : Formalism.L2.SG.TermDef.Term D u u' F0 what₂ → ℝ) (Q : Formalism.L2.SG.PairVal.PairSys D u u' F0 what₂)
   (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep) (δ : ∀ p : PlF D, (D.s.atP p).Fp)
   (i0 i0' : ∀ _ : NumberField.InfinitePlace X.B.I.F, Fin D.R.k) (νq : X.B.I.Ginf → Measure X.B.I.Ginf)
-
 
 variable [Fact PI.AprimeInfW.GaugeVolUD] [Fact Formalism.L2.SG.Pf.WB.RhsWLim] [Fact Formalism.HermitianLattices.Ext.L3.HermRepUnram] in
 theorem ncTieC_of_closed (hCov : Formalism.L2.SG.Pf.NcReal.JX.CovolRef) (hSW : PI.VolStabS.MassDataS.SWXS)

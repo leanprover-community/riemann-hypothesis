@@ -340,18 +340,13 @@ theorem card_low (k : ℕ) : Fintype.card (Low k) = k * (k - 1) / 2 := by
     Finset.card_eq_sum_ones, Finset.sum_filter, Fintype.sum_prod_type]
   exact Finset.sum_congr rfl fun a _ => h1 a
 
-private theorem prod_two_pi_pow_div_factorial_eq_two_pow_mul_prod (n : ℕ) :
-    ∏ i ∈ Finset.range n, (2 * Real.pi) ^ (i + 1) / (i.factorial : ℝ) =
-      2 ^ (∑ i ∈ Finset.range n, i) * ∏ i ∈ Finset.range n, 2 * Real.pi ^ (i + 1) / (i.factorial : ℝ) := by
-  induction n with
-  | zero => simp
-  | succ n ih =>
-    rw [Finset.prod_range_succ, Finset.prod_range_succ, Finset.sum_range_succ, ih, pow_add]
-    ring
-
 theorem volU_ratio (k : ℕ) : Formalism.MainNotions.S.UnitaryVolumeMass.volU k = 2 ^ Fintype.card (Low k) * ReciprocityTheory.ChartRestriction.DS.volU k := by
-  rw [card_low, ← Finset.sum_range_id]
-  exact prod_two_pi_pow_div_factorial_eq_two_pow_mul_prod k
+  rw [card_low, ← Finset.sum_range_id, ← Finset.prod_pow_eq_pow_sum (Finset.range k) _ (2 : ℝ)]
+  change ∏ i ∈ Finset.range k, (2 * Real.pi) ^ (i + 1) / (i.factorial : ℝ) =
+    (∏ i ∈ Finset.range k, (2 : ℝ) ^ i) *
+      ∏ i ∈ Finset.range k, 2 * Real.pi ^ (i + 1) / (i.factorial : ℝ)
+  rw [← Finset.prod_mul_distrib]
+  exact Finset.prod_congr rfl fun i _ => by rw [mul_pow, pow_succ']; ring
 
 end Formalism.L2.SG.Pf.GV
 

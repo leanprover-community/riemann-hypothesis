@@ -87,9 +87,7 @@ theorem eq_of_preimage_eq (β : X' ⟶ X) [Surjective β] {U V : X.Opens} (h : �
 
 theorem app_rs (β : X' ⟶ X) {U V : X.Opens} (h : V ≤ U) (x : Γ(X, U)) :
     (β.app V).hom (rs X h x) = rs X' (β.preimage_mono h) ((β.app U).hom x) := by
-  have := GlobalTheory.LB.appLE_resG β h le_rfl x
-  rw [Scheme.Hom.appLE_eq_app] at this
-  exact this
+  exact GlobalTheory.SectionKernel.app_rs β h x
 
 theorem exists_lift_pow (β : X' ⟶ X) [IsClosedImmersion β] [Surjective β]
     (hsq : ∀ (W : X.Opens) (x y : Γ(X, W)), (β.app W).hom x = 0 → (β.app W).hom y = 0 → x * y = 0)

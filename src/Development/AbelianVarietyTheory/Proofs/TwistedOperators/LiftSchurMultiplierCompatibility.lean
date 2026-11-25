@@ -298,7 +298,7 @@ theorem rel_dnFrom (hl : R.toLevCh.Is A.μ0) (hi : R.models_inf) (hY : R.models_
       (R.ItY k) (hc.ItY t k hn).ne (R.CC t (k + 1)) (fun U w => (multT_value _ _ _ _ _ U.2 w).1)
       (R.βY (k + 1)) (R.datYt t (k + 1) R.triv) _ (meas_chain hY hY' t (k + 1) hn).1 _ (meas_chain hY hY' t (k + 1) hn).2
       (R.ioY t k) (hc.ioY t k (by omega)) g0 κ hκ g0 κ' hκ' _
-      (GlobalTheory.T.stepVector_lift_pair_flagLevel_realized_chain R hl hi hc.ωY hc.vY t k hn g0 κ κ' hκ hκ') F F' (hF κ' hκ') v g
+      (GlobalTheory.StepVecLaw.stepVec_lifts R hl hi hc.ωY hc.vY t k hn g0 κ κ' hκ hκ') F F' (hF κ' hκ') v g
 
 theorem rel_ioX (hl : R.toLevCh.Is A.μ0) (hi : R.models_inf) (hY : R.models_νY) (hY' : R.models_νY') (hc : R.IsChain)
     (hX : R.models_νX) (hcX : R.models_cX) (hHX : R.models_HX)

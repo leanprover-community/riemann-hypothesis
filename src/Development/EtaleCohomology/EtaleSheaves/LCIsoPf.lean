@@ -9,7 +9,7 @@ open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC LateralTheory.E.t_
 
 namespace LateralTheory.E.LCIsoPf
 
-def TwTriv : Prop := ∀ (q : ℕ) (i : ℤ) (S : Scheme.{0}) (ζ : Prim q Γ(S, ⊤)),
+def TwTriv : Prop := ∀ (q : ℕ) (i : ℤ) (S : Scheme.{0}) (_ : Prim q Γ(S, ⊤)),
   ∃ e : ∀ (X : Scheme.{0}) (_s : X ⟶ S), Sec (tw q 0) X ≃+ Sec (tw q i) X,
     ∀ {X Y : Scheme.{0}} (s : X ⟶ S) (t : Y ⟶ S) (f : Y ⟶ X), f ≫ s = t → ∀ x : Sec (tw q 0) X,
       Sec.res f (e X s x) = e Y t (Sec.res f x)
@@ -19,7 +19,7 @@ def Tw0 : Prop := ∀ (q : ℕ),
     ∀ {V U : Scheme.{0}} (g : V ⟶ U) (hV : IsUnit (q : Γ(V, ⊤))) (hU : IsUnit (q : Γ(U, ⊤))) (a : LocallyConstant U (ZMod q)),
       Sec.res g (c U hU a) = c V hV (a.comap g.base.hom)
 
-def SecIso : Prop := ∀ (q : ℕ) (i : ℤ) (S : Scheme.{0}) (ζ : Prim q Γ(S, ⊤)),
+def SecIso : Prop := ∀ (q : ℕ) (i : ℤ) (S : Scheme.{0}) (_ : Prim q Γ(S, ⊤)),
   ∃ e : ∀ (X : Scheme.{0}) (_s : X ⟶ S), LocallyConstant X (ZMod q) ≃+ Sec (tw q i) X,
     ∀ {X Y : Scheme.{0}} (s : X ⟶ S) (t : Y ⟶ S) (f : Y ⟶ X), f ≫ s = t → ∀ g : LocallyConstant X (ZMod q),
       Sec.res f (e X s g) = e Y t (g.comap f.base.hom)

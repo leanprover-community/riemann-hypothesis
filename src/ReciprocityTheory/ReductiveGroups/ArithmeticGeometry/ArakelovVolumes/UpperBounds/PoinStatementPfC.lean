@@ -40,36 +40,8 @@ def SumBallStatement : Prop :=
 
 alias cont_cpt' := _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.PairUnfoldPf.cpt_cont
 
-private theorem gram_continuous_comp {α : Type*} [TopologicalSpace α] (τ : E →+* ℂ)
-    (G : Matrix (Fin r) (Fin r) E) {f : α → Matrix (Fin r) (Fin r) ℂ} (hf : Continuous f) :
-    Continuous fun a => ReciprocityTheory.ChartRestriction.G.FD.gram τ G (f a) := by
-  refine continuous_pi fun a => continuous_pi fun b => ?_
-  simp only [ReciprocityTheory.ChartRestriction.G.FD.gram, ReciprocityTheory.ChartRestriction.G.FD.hermC, ReciprocityTheory.ChartRestriction.G.FD.col,
-    Matrix.of_apply]
-  refine continuous_finsetSum _ fun k _ => continuous_finsetSum _ fun l _ => ?_
-  refine ((hf.matrix_elem k a).mul continuous_const).mul ?_
-  first
-    | exact Complex.continuous_conj.comp (hf.matrix_elem l b)
-
 theorem isOpen_Bset (X : Data E r) (x : Frame X.Ψ r) (ρ : ℝ) : IsOpen (Bset X x ρ) := by
-  have hdom : IsOpen X.dom := by
-    have he : X.dom = ⋂ τ : X.Ψ, ({y : Frame X.Ψ r | (mat y τ).det ≠ 0} ∩
-        ⋂ i : Fin (r + 1), {y : Frame X.Ψ r | 0 < psgn X.p0 i * (dmin X.Gm y τ i).re}) := by
-      ext y
-      simp only [Data.dom, GG, Set.mem_setOf_eq, Set.mem_iInter, Set.mem_inter_iff]
-    rw [he]
-    refine isOpen_iInter_of_finite fun τ => IsOpen.inter ?_ (isOpen_iInter_of_finite fun i => ?_)
-    · have hmat : Continuous fun y : Frame X.Ψ r => mat y τ := by
-        first
-          | exact continuous_apply τ
-      exact isOpen_ne_fun hmat.matrix_det continuous_const
-    · have hmat : Continuous fun y : Frame X.Ψ r => mat y τ := by
-        first
-          | exact continuous_apply τ
-      have hdm : Continuous fun y : Frame X.Ψ r => dmin X.Gm y τ i := by
-        unfold dmin lminor
-        exact ((gram_continuous_comp τ.1 X.Gm hmat).matrix_submatrix _ _).matrix_det
-      exact isOpen_lt continuous_const (continuous_const.mul (Complex.continuous_re.comp hdm))
+  have hdom : IsOpen X.dom := FourierCoefficientDomain.isOpen_dom X
   have hB : Bset X x ρ = {w : V (nd X) | ‖w‖ < ρ} ∩ cpt X x ⁻¹' X.dom := by
     ext w
     rfl

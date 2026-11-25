@@ -22,7 +22,7 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
   GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting
 
 abbrev RowP : Type 1 :=
-  ∀ (K : Ctx) (B : Base) (f : Fr B.toPre) (T : TwDat B) (w : ColW B f T) (Z : w.Lt) (Wt : Set B.places.Pl) (hX : B.fields.Ok)
+  ∀ (_ : Ctx) (B : Base) (f : Fr B.toPre) (T : TwDat B) (w : ColW B f T) (Z : w.Lt) (Wt : Set B.places.Pl) (hX : B.fields.Ok)
     (z : Dat (w.st Z) w.I hX T Wt) (p0 : BaseLevelRowSide (w.D Z)), Read z.R.toRealDat z.F.lv2 p0 → Prop
 
 def OverRows (p : RowP) : Prop :=

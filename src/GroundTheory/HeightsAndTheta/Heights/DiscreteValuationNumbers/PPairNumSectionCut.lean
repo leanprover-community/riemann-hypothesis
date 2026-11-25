@@ -8,6 +8,7 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.OfSt
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PFlagIndependenceAlgebra
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PPairNumberExpansionIndependence
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PVerticalDivisorsCommute
+import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PPairNumberExpansionKoszul
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section
@@ -76,38 +77,13 @@ theorem vNumL_add_of_divCycle_ne_zero {O : Type} [CommRing O] [IsDomain O] [IsDi
     (hW : divCycle P s W ≠ 0) (hϖW : (C ϖ : MRing ι O) ∈ W) (a₁ a₂ : K → ℤ) (l : List (K → ℤ))
     (hl : e ≤ l.length) :
     vNumL W ((a₁ + a₂) :: l) = vNumL W (a₁ :: l) + vNumL W (a₂ :: l) := by
-  have hPmh : IsMultiHomogIdeal P := hP.multiProj.multiHomog
-  have : P.IsPrime := hP.multiProj.isPrime
-  have hϖP : (C ϖ : MRing ι O) ∉ P := by
-    intro h
-    have h' : ϖ ∈ P.comap (C : O →+* MRing ι O) := h
-    rw [hP.noTorsion, Ideal.mem_bot] at h'
-    exact hϖ.ne_zero h'
   unfold divCycle at hW
   split_ifs at hW with hW''
   swap
   · exact absurd rfl hW
-  have hWm : IsMultiHomogIdeal W :=
-    MinimalPrimeMultiHomog.full O K ι _ W (SupSpanMultiHomog.full O K ι P s c hPmh hs) hW''.1
-  have hWp : W.IsPrime := hW''.1.1.1
-  have hPW : P ≤ W := le_sup_left.trans hW''.1.1.2
-  have hlt : P < W := lt_of_le_of_ne hPW (fun h => hϖP (h ▸ hϖW))
-  have hdrop := DimStrictDrop.full (MRing ι O) P W hlt
-  rw [hP.dim] at hdrop
-  have hdim : ringKrullDim (MRing ι (IsLocalRing.ResidueField O) ⧸ specialIdeal W) <
-      ((l.length + 2 + Fintype.card K : ℕ) : WithBot ℕ∞) := by
-    rw [SpecialQuotDim.full O ϖ hϖ K ι W hϖW]
-    refine lt_of_lt_of_le (lt_natCast_of_add_one_le hdrop) ?_
-    exact_mod_cast (by omega : e + 1 + 1 + Fintype.card K ≤ l.length + 2 + Fintype.card K)
-  have key := IntNumAddFirst.full (IsLocalRing.ResidueField O) K ι l.length (specialIdeal W)
-    (SpecialIdealCorresp.full O ϖ hϖ K ι P W hWp hϖW).1 (SpecialIdealMultiHomog.full O K ι W hWm)
-    hdim a₁ a₂ l.get
-  have e' : ∀ c, vNumL W (c :: l) =
-      intNum (IsLocalRing.ResidueField O) (specialIdeal W) (Matrix.vecCons c l.get) := by
-    intro c
-    change _ = vNum W (Matrix.vecCons c l.get)
-    rw [vNum_vecCons_eq, List.ofFn_get]
-  rw [e', e', e', key]
+  exact vNumL_add_of_special hϖ hP
+    (MinimalPrimeMultiHomog.full O K ι _ W (SupSpanMultiHomog.full O K ι P s c hP.multiProj.multiHomog hs) hW''.1)
+    hW''.1.1.1 (le_sup_left.trans hW''.1.1.2) hϖW a₁ a₂ l hl
 
 end Additivity
 

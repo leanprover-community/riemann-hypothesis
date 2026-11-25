@@ -248,10 +248,7 @@ theorem posDef_all {n : ℕ} {H : Matrix (Fin n) (Fin n) K}
 
 theorem herm_of_pos {v0 : InfinitePlace K} (hv0 : IsConjAt v0) {n : ℕ}
     {H : Matrix (Fin n) (Fin n) K} (hpos : (H.map v0.embedding).PosDef) : Hᴴ = H := by
-  ext i k
-  apply v0.embedding.injective
-  rw [Matrix.conjTranspose_apply, hv0 (H k i), starRingEnd_apply]
-  exact hpos.isHermitian.apply i k
+  apply Formalism.DivisionValues.R0.conjTranspose_eq_of_posDef <;> assumption
 
 theorem isUnit_of_pos {σ : K →+* ℂ} {n : ℕ}
     {H : Matrix (Fin n) (Fin n) K} (hpos : (H.map σ).PosDef) : IsUnit H := by
@@ -461,32 +458,6 @@ theorem commuting_twist : CommTwist := by
   show extSpan σ Z = extSpan (twist σ) Z
   rw [extSpan_eq_range Z e h1 h2, extSpan_eq_range Z e h1 h2, heq]
 
-
-namespace FinitelyNonzeroLinear
-
-section Cx
-
-variable {n : ℕ} {Hc : Matrix (Fin n) (Fin n) ℂ}
-
-end Cx
-
-section Diag
-
-variable {K : Type} [Field K] {n : ℕ}
-
-end Diag
-
-end FinitelyNonzeroLinear
-
-namespace FinitelyNonzeroLinear
-
-section Dich
-
-variable {n : ℕ} {Hc : Matrix (Fin n) (Fin n) ℂ}
-
-end Dich
-
-end FinitelyNonzeroLinear
 
 
 

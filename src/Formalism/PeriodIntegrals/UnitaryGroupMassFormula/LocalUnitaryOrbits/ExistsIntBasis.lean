@@ -70,31 +70,20 @@ theorem isCompact_oev : IsCompact (OEv (E := E) v) := by
     ext z
     constructor
     · intro hz
+      let f : 𝓞 E →ₗ[ℤ] Fv F v ⊗[F] E :=
+        { toFun := fun x => inclR (F := F) (Fv F v) (x : E)
+          map_add' := fun p q => by rw [← map_add (f := _)]; rfl
+          map_smul' := fun r p => by
+            rw [RingHom.id_apply, show ((r • p : 𝓞 E) : E) = r • (p : E) from
+              map_zsmul (algebraMap (𝓞 E) E) r p, map_zsmul] }
       have h1 : z ∈ Submodule.span (v.adicCompletionIntegers F) (Set.range g) := by
         refine (Submodule.span_le.2 ?_) hz
         rintro _ ⟨x, _, rfl⟩
-        have hx : x ∈ Submodule.span ℤ (Set.range s) := by rw [hs]; exact Submodule.mem_top
-        induction hx using Submodule.span_induction with
-        | mem y hy =>
-          obtain ⟨i, rfl⟩ := hy
-          exact Submodule.subset_span ⟨i, rfl⟩
-        | zero => simpa using Submodule.zero_mem _
-        | add p q _ _ hp hq =>
-          have e1 : inclR (F := F) (Fv F v) (((p + q : 𝓞 E)) : E) =
-              inclR (F := F) (Fv F v) (p : E) + inclR (F := F) (Fv F v) (q : E) := by
-            rw [← map_add (f := _)]
-            rfl
-          show inclR (F := F) (Fv F v) (((p + q : 𝓞 E)) : E) ∈ _
-          rw [e1]
-          exact Submodule.add_mem _ (hp trivial) (hq trivial)
-        | smul r p _ hp =>
-          have e1 : inclR (F := F) (Fv F v) (((r • p : 𝓞 E)) : E) =
-              r • inclR (F := F) (Fv F v) (p : E) := by
-            rw [show ((r • p : 𝓞 E) : E) = r • (p : E) from map_zsmul (algebraMap (𝓞 E) E) r p,
-              map_zsmul]
-          show inclR (F := F) (Fv F v) (((r • p : 𝓞 E)) : E) ∈ _
-          rw [e1]
-          exact zsmul_mem (hp trivial) r
+        have hle : Submodule.span ℤ (Set.range s) ≤
+            ((Submodule.span (v.adicCompletionIntegers F) (Set.range g)).restrictScalars ℤ).comap
+              f :=
+          Submodule.span_le.2 (Set.range_subset_iff.2 fun i => Submodule.subset_span ⟨i, rfl⟩)
+        exact hle (hs ▸ Submodule.mem_top)
       rw [Submodule.mem_span_range_iff_exists_fun] at h1
       obtain ⟨c, rfl⟩ := h1
       exact ⟨fun i => (c i : Fv F v), fun i _ => (c i).2, rfl⟩

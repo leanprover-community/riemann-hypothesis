@@ -113,15 +113,8 @@ private theorem cc_unique (w : InfinitePlace K) (f g : w.Completion →+* ℂ) (
   exact DFunLike.coe_injective (hd.equalizer hf hg (funext h))
 
 private theorem conj_unitary {n : ℕ} {M : Matrix (Fin n) (Fin n) ℂ} (h : M ∈ unitaryGroup (Fin n) ℂ) :
-    M.map (starRingEnd ℂ) ∈ unitaryGroup (Fin n) ℂ := by
-  rw [mem_unitaryGroup_iff] at h ⊢
-  have h2 := congrArg (RingHom.mapMatrix (starRingEnd ℂ)) h
-  rw [map_mul, map_one] at h2
-  have e : star (M.map (starRingEnd ℂ)) = RingHom.mapMatrix (starRingEnd ℂ) (star M) := by
-    ext i j
-    simp [Matrix.star_apply]
-  rw [e]
-  exact h2
+    M.map (starRingEnd ℂ) ∈ unitaryGroup (Fin n) ℂ :=
+  Matrix.map_star_mem_unitaryGroup_iff.mpr h
 
 private theorem co_unitary {n : ℕ} (τ : K →+* ℂ) (M : Matrix (Fin n) (Fin n) (mixedSpace K)) :
     M.map (co τ) ∈ unitaryGroup (Fin n) ℂ ↔ M.map (complexComp ⟨mk τ, cpx _⟩) ∈ unitaryGroup (Fin n) ℂ := by

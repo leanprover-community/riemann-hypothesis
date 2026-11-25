@@ -327,7 +327,6 @@ theorem mem_block {t : ℕ} {v : ℚ} (h : v ∈ block t) :
   simp only [block_eq, List.mem_map, List.mem_range] at h
   obtain ⟨m, hm, rfl⟩ := h
   have h1 : (m : ℚ) + 1 ≤ t := by exact_mod_cast hm
-  have h2 : (0 : ℚ) ≤ m := Nat.cast_nonneg m
   exact ⟨by linarith, by linarith, -1 - m, by push_cast; ring⟩
 
 theorem block_pairwise (t : ℕ) : (block t).Pairwise (· > ·) := by

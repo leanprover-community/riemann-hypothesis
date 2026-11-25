@@ -92,7 +92,6 @@ lemma isLocallyFraction_twistFrac {u : A} (hu : u ∈ 𝒜 1) (k : ℤ)
   ⟨W, x.2, 𝟙 W, (-k).toNat, k.toNat, by omega, u ^ k.toNat, u ^ (-k).toNat,
     pow_mem_of_mem_one hu _, pow_mem_of_mem_one hu _, fun y => pow_nmem (hW y) _, fun _ => rfl⟩
 
-set_option backward.isDefEq.respectTransparency.types false in
 lemma isLocallyFraction_val_section {W : Opens (ProjectiveSpectrum.top 𝒜)}
     (t : (ProjectiveSpectrum.Proj.structureSheaf 𝒜).obj.obj (op W)) :
     (isLocallyFraction 𝒜 0).pred (fun x : W => (t.1 x).val) := fun x => by

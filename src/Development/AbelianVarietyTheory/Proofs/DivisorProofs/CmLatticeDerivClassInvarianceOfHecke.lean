@@ -381,7 +381,6 @@ theorem ExpSum.deriv {D : Set ℂ} {V : Set (Φ → ℂ)} (hU : IsOpen U) (hV : 
 
 end Deriv
 
-
 open Classical in
 theorem differentiableOn_wirtWord_mul_exp_comp : ∀ (Φ I : Type) [Fintype Φ] [Fintype I] (U : Set (I → ℂ)) (V : Set (Φ → ℂ)) (D : Set ℂ) (G : ℂ → (Φ → ℂ) → ℂ) (t : (I → ℂ) → Φ → ℂ) (b l : (I → ℂ) → ℂ), IsOpen U → IsOpen V → Set.MapsTo t U V → ContDiffOn ℝ ∞ t U → ContDiffOn ℝ ∞ b U → ContDiffOn ℝ ∞ l U → (∀ σ ∈ D, ContDiffOn ℝ ∞ (G σ) V) → (∀ w : List (Φ × Bool), ∀ y ∈ V, DifferentiableOn ℂ (fun σ => wirtWord w (G σ) y) D) → ∀ w : List (I × Bool), ∀ z ∈ U, DifferentiableOn ℂ (fun σ => wirtWord w (fun z' => b z' * Complex.exp (-σ * l z') * G σ (t z')) z) D := by
   intro Φ I _ _ U V D G t b l hU hV hmaps ht hb hl hGs hGh w z hz
@@ -712,10 +711,6 @@ theorem exists_equiv (E : Type) [Field E] [NumberField E] [IsCMField E] (I : Typ
       exact (hk i (Or.inr h.symm)).trans (hk j (Or.inl rfl)).symm
   · intro f
     let fc : F →+* ℂ := Complex.ofRealHom.comp f
-    have hfc : ComplexEmbedding.IsReal fc := by
-      rw [ComplexEmbedding.isReal_iff]
-      ext a
-      simp [fc]
     let w : InfinitePlace E := (IsCMField.equivInfinitePlace E).symm (InfinitePlace.mk fc)
     obtain ⟨i, hi, _⟩ := hφ w.embedding
     have hmk : InfinitePlace.mk (φ i) = w := by
@@ -861,15 +856,6 @@ namespace GlobalTheory.WeightTwoCompare
 
 variable {E : Type} [Field E] [NumberField E] {I : Type} [Fintype I]
 
-theorem prodCpow {J : Type} (t : Finset J) (f : J → ℝ) (hf : ∀ j, 0 ≤ f j) (w : ℂ) :
-    ∏ j ∈ t, ((f j : ℝ) : ℂ) ^ w = (((∏ j ∈ t, f j : ℝ)) : ℂ) ^ w := by
-  classical
-  induction t using Finset.induction_on with
-  | empty => simp
-  | insert a s ha ih =>
-    rw [Finset.prod_insert ha, Finset.prod_insert ha, ih, Complex.ofReal_mul,
-      Complex.mul_cpow_ofReal_nonneg (hf a) (Finset.prod_nonneg fun j _ => hf j)]
-
 theorem norm_cpow_eq_exp {h : ℂ} (hh : h ≠ 0) (σ : ℂ) :
     ((‖h‖ : ℝ) : ℂ) ^ (-2 * σ) = Complex.exp (-σ * ((Real.log (Complex.normSq h) : ℝ) : ℂ)) := by
   have hn : ((‖h‖ : ℝ) : ℂ) ≠ 0 := by exact_mod_cast norm_ne_zero_iff.2 hh
@@ -887,9 +873,6 @@ theorem defCoord_eq (φ : I → E →+* ℂ) (e : I ≃ Emb (maximalRealSubfield
     defCoord φ z ((a : E) + (b : E) * θ) i =
       (1 + z i) / (2 * (Real.pi : ℂ) * Complex.I) * latPt (modPt φ e θ z) (a, b) (e i) := by
   have h1 := one_add_ne_zero hz i
-  have hπ : (2 * (Real.pi : ℂ) * Complex.I) ≠ 0 := by
-    have : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
-    exact mul_ne_zero (mul_ne_zero two_ne_zero this) Complex.I_ne_zero
   simp only [defCoord, latPt, modPt, Equiv.symm_apply_apply, map_add (f := _), map_mul, he, Complex.conj_ofReal]
   field_simp
   ring
@@ -913,7 +896,7 @@ theorem defTerm_eq (φ : I → E →+* ℂ) (e : I ≃ Emb (maximalRealSubfield 
     rw [mul_inv, mul_pow]
   have h2 : ∏ i, ((‖c i * w (e i)‖ : ℝ) : ℂ) ^ (-2 * σ) =
       ((‖homFac z‖ : ℝ) : ℂ) ^ (-2 * σ) * ((‖∏ τ, w τ‖ : ℝ) : ℂ) ^ (-2 * σ) := by
-    rw [prodCpow _ _ (fun i => norm_nonneg _), hc, hw, norm_prod, norm_prod,
+    rw [GlobalTheory.CMVal.ObjModel.prod_cpow _ _ (fun i => norm_nonneg _), hc, hw, norm_prod, norm_prod,
       ← Complex.mul_cpow_ofReal_nonneg (Finset.prod_nonneg fun i _ => norm_nonneg _)
         (Finset.prod_nonneg fun i _ => norm_nonneg _), ← Complex.ofReal_mul, ← Finset.prod_mul_distrib]
     simp only [norm_mul]

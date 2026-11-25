@@ -324,9 +324,3 @@ theorem hermPairing_separating {G : Matrix (Fin r) (Fin r) E} (hG : G.det ≠ 0)
 end NumberField
 
 end GlobalTheory.LocalLattice
-
-namespace GlobalTheory
-
-open LocalLattice
-
-end GlobalTheory

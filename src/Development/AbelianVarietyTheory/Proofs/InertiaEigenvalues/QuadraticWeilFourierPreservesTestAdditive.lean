@@ -17,8 +17,6 @@ namespace GlobalTheory.JR.WeilQuad.FourierTest
 
 variable {F E : Type} [NontriviallyNormedField F] [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E]
 
-alias finite_F_L := _root_.GlobalTheory.JR.EtMeas.finite_L
-
 def beta (A : Et F E) (x : A.K) : LinearMap.BilinForm F A.L :=
   LinearMap.mk₂ F (fun y' y => Algebra.trace F A.K (x * Algebra.trace A.K A.L (star y' * y)))
     (by intro a b c; simp only [star_add, add_mul, map_add (f := _), mul_add])
@@ -34,7 +32,7 @@ theorem beta_apply (A : Et F E) (x : A.K) (y' y : A.L) :
 theorem algMap_inj (A : Et F E) (hK : IsField A.K) (hL : IsField A.L) :
     Function.Injective (algebraMap A.K A.L) := by
   haveI : Nontrivial A.L := ⟨hL.exists_pair_ne⟩
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro k hk
   by_contra hne
   obtain ⟨k', hk'⟩ := hK.mul_inv_cancel hne
@@ -92,8 +90,6 @@ theorem beta_nondeg [Unram F E] (A : Et F E) (hK : IsField A.K) (hL : IsField A.
     (beta A x).Nondegenerate :=
   ((beta_isSymm A hK hL x).isRefl.nondegenerate_iff_separatingLeft).2 (beta_sepLeft A hK hL x)
 
-alias cont_psi := _root_.GlobalTheory.JR.DualLattice.stdChar_continuous
-
 end GlobalTheory.JR.WeilQuad.FourierTest
 
 
@@ -105,14 +101,14 @@ theorem GlobalTheory.JR.WeilQuad.fOp_isTest_add : ∀ (F E : Type) [Nontrivially
   intro F E _ _ _ _ _ A ψ x μ ω h φ hφ
   obtain ⟨hK, hL, hψ, hsd, -⟩ := h
   haveI := hsd.1
-  haveI := finite_F_L A
+  haveI := GlobalTheory.JR.EtMeas.finite_L A
   have hker : A.kerL ψ (x : A.K) = fun a b => ψ (beta A x a b) := rfl
   have hint : ∀ f : A.L → ℂ, IsTest f → ∀ y, Integrable (fun y' => f y' * A.kerL ψ (x : A.K) y' y) μ := by
     intro f hf y
     rw [hker]
     refine Continuous.integrable_of_hasCompactSupport ?_ (hf.2.mul_right)
     exact hf.1.continuous.mul
-      ((cont_psi hψ).comp (IsModuleTopology.continuous_of_linearMap ((beta A x).flip y)))
+      ((GlobalTheory.JR.DualLattice.stdChar_continuous hψ).comp (IsModuleTopology.continuous_of_linearMap ((beta A x).flip y)))
   refine ⟨?_, fun φ' hφ' => ?_⟩
   · have := (GlobalTheory.JR.SelfDualUniq.selfDual_exists_unique_isTest F E ψ hψ A.L (beta A x)
       (beta_isSymm A hK hL x) (beta_nondeg A hK hL x)).2 μ hsd.1 φ hφ

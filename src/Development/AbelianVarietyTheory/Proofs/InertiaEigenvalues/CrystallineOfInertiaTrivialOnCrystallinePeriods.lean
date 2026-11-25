@@ -102,7 +102,6 @@ theorem le_span_restrict (T : LocTied l P AI) (hc : IsCrys (P.PD K) ρ) :
   obtain ⟨h2, -⟩ := finite_le₀ (P.PD K') (fracInv_of_tied T K') (ρ.comp (Subgroup.inclusion (GK_le h)))
   rw [isCrys_iff_finrank] at hc hc'
   let e : Module.Basis (Fin (Module.finrank ℚ_[l] V)) ↥(K0 K) (DcrisK₀ (P.PD K) ρ) := by
-    set_option synthInstance.maxHeartbeats 200000 in
       exact Module.finBasisOfFinrankEq ↥(K0 K) _ hc
   have hB := indepB (P.PD K) (fracInv_of_tied T K) ρ e e.linearIndependent
   let d : Fin (Module.finrank ℚ_[l] V) → ↥(DcrisK₀ (P.PD K') (ρ.comp (Subgroup.inclusion (GK_le h)))) :=

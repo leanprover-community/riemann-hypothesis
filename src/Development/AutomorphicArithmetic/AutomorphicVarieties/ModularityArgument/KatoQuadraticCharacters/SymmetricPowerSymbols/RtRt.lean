@@ -335,14 +335,8 @@ noncomputable section
 
 namespace GlobalTheory.SiegDist
 
-lemma ee_add (a b : ℂ) : ee (a + b) = ee a * ee b := by
-  unfold ee; rw [← Complex.exp_add]; ring_nf
-
 lemma ee_int_mul (n : ℤ) (z : ℂ) : ee (n * z) = ee z ^ n := by
   unfold ee; rw [← Complex.exp_int_mul]; ring_nf
-
-lemma ee_nat_mul (n : ℕ) (z : ℂ) : ee (n * z) = ee z ^ n := by
-  unfold ee; rw [← Complex.exp_nat_mul]; ring_nf
 
 lemma ee_ne_zero (z : ℂ) : ee z ≠ 0 := Complex.exp_ne_zero _
 
@@ -375,14 +369,14 @@ theorem sg_distribution : ∀ (c m : ℕ) (x : Fin 2 → ℚ) (τ : ℍ), admitt
       = cth c (ee (τ : ℂ)) (ee ((((x 0 : ℂ) + a) * τ + x 1) / m) * ee ((b : ℂ) / m)) := by
     intro a b
     unfold sg
-    rw [← ee_add]
+    rw [← GlobalTheory.Sieg.Model.ee_add]
     congr 2
     simp [pt]
     field_simp
     ring
   have hpow : ∀ a : ℕ, ee ((((x 0 : ℂ) + a) * τ + x 1) / m) ^ m = ee (pt x τ) * ee (τ : ℂ) ^ a := by
     intro a
-    rw [← ee_nat_mul, ← ee_nat_mul, ← ee_add]
+    rw [← GlobalTheory.Sieg.Model.ee_nat_mul, ← GlobalTheory.Sieg.Model.ee_nat_mul, ← GlobalTheory.Sieg.Model.ee_add]
     congr 1
     simp only [pt]
     field_simp
@@ -390,7 +384,7 @@ theorem sg_distribution : ∀ (c m : ℕ) (x : Fin 2 → ℚ) (τ : ℍ), admitt
   have hND : ∀ n : ℤ, ee (τ : ℂ) ^ n * ee (pt x τ) ^ c ≠ 1 := by
     intro n h
     have h' : ee ((((n : ℚ) + c * x 0 : ℚ) : ℂ) * τ + ((c * x 1 : ℚ) : ℂ)) = 1 := by
-      rw [← h, ← ee_int_mul, ← ee_nat_mul, ← ee_add]
+      rw [← h, ← ee_int_mul, ← GlobalTheory.Sieg.Model.ee_nat_mul, ← GlobalTheory.Sieg.Model.ee_add]
       congr 1; simp only [pt]; push_cast; ring
     obtain ⟨h0, k, hk⟩ := ee_eq_one _ _ τ h'
     apply hnot

@@ -161,7 +161,6 @@ end ExpLemmas
 theorem unifCls_exp_one_iff {n : ℕ} (hn : 0 < n) (x : ℤ) :
     Complex.exp (-(2 * Real.pi * Complex.I) * (x : ℂ) / n) = 1 ↔ (n : ℤ) ∣ x := by
   have hn' : (n : ℂ) ≠ 0 := by exact_mod_cast hn.ne'
-  have h2 : (2 * Real.pi * Complex.I : ℂ) ≠ 0 := Complex.two_pi_I_ne_zero
   rw [Complex.exp_eq_one_iff]
   constructor
   · rintro ⟨k, hk⟩

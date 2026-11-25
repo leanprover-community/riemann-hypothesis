@@ -211,25 +211,9 @@ private theorem not_isUnit_of_mem_maximalIdeal {R : Type u} [CommRing R] [IsLoca
 
 private theorem specResidueField_eq_zero_of_not_isUnit {X : Scheme.{u}} (x : ↥X)
     (t : Γ(Spec (X.residueField x), ⊤)) (ht : ¬ IsUnit t) : t = 0 := by
-  have h2 : (Scheme.ΓSpecIso (X.residueField x)).inv.hom
-      ((Scheme.ΓSpecIso (X.residueField x)).hom.hom t) = t := by
-    have e1 := congrArg CommRingCat.Hom.hom
-      (Iso.hom_inv_id (Scheme.ΓSpecIso (X.residueField x)))
-    rw [CommRingCat.hom_comp, CommRingCat.hom_id] at e1
-    exact DFunLike.congr_fun e1 t
+  let e := (Scheme.ΓSpecIso (X.residueField x)).commRingCatIsoToRingEquiv
   by_contra hne
-  have hne0 : (Scheme.ΓSpecIso (X.residueField x)).hom.hom t ≠ 0 := by
-    intro h0
-    apply hne
-    rw [← h2, h0]
-    exact map_zero _
-  have hu : IsUnit ((Scheme.ΓSpecIso (X.residueField x)).hom.hom t) :=
-    isUnit_iff_ne_zero.mpr hne0
-  have hu2 : IsUnit ((Scheme.ΓSpecIso (X.residueField x)).inv.hom
-      ((Scheme.ΓSpecIso (X.residueField x)).hom.hom t)) :=
-    hu.map (Scheme.ΓSpecIso (X.residueField x)).inv.hom
-  rw [h2] at hu2
-  exact ht hu2
+  exact ht ((isUnit_map_iff e t).1 (e.map_ne_zero_iff.2 hne).isUnit)
 
 private theorem fromSpecResidueField_appTop_eq_zero {X : Scheme.{u}} (x : ↥X)
     (hx : x ∈ (⊤ : X.Opens)) (s : Γ(X, ⊤))

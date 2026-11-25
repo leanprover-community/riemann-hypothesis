@@ -51,7 +51,7 @@ def coordTup {E : Type} [Field E] [NumberField E] [StarRing E] (W : HSpace E) (x
   fun _ i => W.frame.repr x i
 
 def UnfoldAt (D : D7) : letI := D.host.cmStar;
-    ∀ (W W' : HSpace D.host.E) (_P _Q _P' _Q' : ℕ) (_β : D.host.E) (_x : W.V), Prop :=
+    ∀ (W _ : HSpace D.host.E) (_P _Q _P' _Q' : ℕ) (_β : D.host.E) (_x : W.V), Prop :=
   letI := D.host.cmStar
   fun W W' P Q P' Q' β x =>
   ∀ (μ : Measure (HA (AF D.host.F) D.sp.cm.sig W.gram))

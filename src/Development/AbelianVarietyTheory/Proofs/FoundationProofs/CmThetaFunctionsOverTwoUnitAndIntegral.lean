@@ -11,48 +11,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CmThetaTo
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsTraceOneEvenNormUnitAtTwo
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsogenyFibresEvenThetaSigmaStarSquareQuotient
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SigmaStarSquareQuotientInModelParameter
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.PowerSeries.Inverse
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZeroOfCurveCoordNorm
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CmThetaTaylorCoeffAlgebraicAndConjugate
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExpMvNegLogMvMul
@@ -62,7 +20,6 @@ import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntSerOfIsWq
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntegralJAndAlgebraicData
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TaylorSeriesInParameterRescaleOfAlgebraic
 import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.FamilyLogGammaSmallHolds
-import Mathlib.Algebra.Order.Star.Real
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntegralSeriesOfCommonDivisorLineProducts, Development.AbelianVarietyTheory.Proofs.FoundationProofs.PowerSeriesCoeffNormLeOneFunctionalEquationPadic, Development.AbelianVarietyTheory.Proofs.FoundationProofs.CoeffNormLeOneOfIsogenySeriesIdentities, Development.AbelianVarietyTheory.Proofs.FoundationProofs.EvenThetaDoubleTranslateMul, Development.AbelianVarietyTheory.Proofs.FoundationProofs.EvenThetaTranslateSqEqSigmaStar, Development.AbelianVarietyTheory.Proofs.FoundationProofs.CmThetaFunctionsOverTwoUnitAndIntegral
@@ -288,14 +245,10 @@ theorem constantCoeff_lineSer {K : Type*} [CommRing K] (e : PowerSeries K) (x : 
 
 variable {p : ℕ} [Fact p.Prime]
 
-theorem norm_sub_le_max' (a b : ℂ_[p]) : ‖a - b‖ ≤ max ‖a‖ ‖b‖ := by
-  have := IsUltrametricDist.norm_add_le_max a (-b)
-  rwa [norm_neg, ← sub_eq_add_neg] at this
-
 theorem norm_coeff_lineSer_le {e : PowerSeries ℂ_[p]} (he : IntSer e) (x : ℂ_[p]) (n : ℕ) :
     ‖PowerSeries.coeff n (lineSer e x)‖ ≤ max 1 ‖x‖ := by
   rw [coeff_lineSer]
-  refine (norm_sub_le_max' _ _).trans (max_le_max (he n) ?_)
+  refine (GlobalTheory.ThetaPar.unit_of_double_integral_sub _ _).trans (max_le_max (he n) ?_)
   split_ifs <;> simp
 
 theorem exists_norm_coeff_lineSer {e : PowerSeries ℂ_[p]} (he : IntSer e)
@@ -307,7 +260,7 @@ theorem exists_norm_coeff_lineSer {e : PowerSeries ℂ_[p]} (he : IntSer e)
     exact max_le le_rfl hx
   · refine ⟨2, ?_⟩
     rw [max_eq_right hx.le]
-    have h1 := norm_sub_le_max' (PowerSeries.coeff 2 e) (PowerSeries.coeff 2 (lineSer e x))
+    have h1 := GlobalTheory.ThetaPar.unit_of_double_integral_sub (PowerSeries.coeff 2 e) (PowerSeries.coeff 2 (lineSer e x))
     have h2 : PowerSeries.coeff 2 e - PowerSeries.coeff 2 (lineSer e x) = x := by
       rw [coeff_lineSer]; simp
     rw [h2] at h1
@@ -602,8 +555,6 @@ alias lamC_coe := _root_.Formalism.L2.KerInert.ISd.lamC_of_mem
 
 alias lamC_mul := _root_.GlobalTheory.ThetaParam.lamC_mul
 
-alias lamC_one := _root_.GlobalTheory.ThetaParam.lamC_one
-
 theorem lamC_neg_one (lam : Qbar →+* ℂ_[p]) : lamC lam (-1) = -1 := by
   rw [lamC_coe lam (neg_mem (one_mem _)), ← map_one lam, ← map_neg]; rfl
 
@@ -634,7 +585,6 @@ theorem IntSer.inv {f : PowerSeries ℂ_[p]} (hf : IntSer f) (h : ‖PowerSeries
     IntSer f⁻¹ := (GlobalTheory.EvenTheta.SerRing.series_ring_laws p).2.2.2.2.1 f hf h
 theorem IntSer.sq {f : PowerSeries ℂ_[p]} (hf : IntSer f) : IntSer (f ^ 2) := by
   rw [_root_.sq]; exact hf.mul hf
-alias intSer_iff := _root_.GlobalTheory.CMNormPhi.intSer_iff'
 
 theorem int_of_sq {f : PowerSeries ℂ_[p]} (hb : BddSer f) (h : IntSer (f ^ 2)) : IntSer f := by
   intro n
@@ -658,14 +608,11 @@ theorem atU_mul {F G : ℂ → ℂ} (hF : AlgEnt F) (hG : AlgEnt G) :
 theorem atU_add {F G : ℂ → ℂ} (hF : AlgEnt F) (hG : AlgEnt G) :
     AlgEnt (fun z => F z + G z) ∧ g.atU (fun z => F z + G z) = g.atU F + g.atU G :=
   ((GlobalTheory.SerTransport.transport p g).1 F G hF hG).2
-alias atU_smul := _root_.GlobalTheory.ThetaUnit.atU_smul'
 theorem atU_sq {F : ℂ → ℂ} (hF : AlgEnt F) :
     AlgEnt (fun z => F z ^ 2) ∧ g.atU (fun z => F z ^ 2) = g.atU F ^ 2 := by
   simp only [_root_.sq]
   exact atU_mul g hF hF
 end General
-
-alias thetaTranslation_zero := _root_.GlobalTheory.ThetaParam.thetaTranslation_zero
 
 section Two
 variable {g : GL3Theta.G1 2} {t₀ : ℂ} (hok : g.Ok) (hlat : IsLat g.abelian₂) (hdisc : TaylorLogMetric.discr g.abelian₂ = 1)
@@ -679,12 +626,12 @@ theorem rational_lattice_point_zero (Λ : AddSubgroup ℂ) : InRationalLattice �
 include halg in
 theorem alg_sg : AlgEnt (sgStar g.abelian₂) := by
   have := halg 0 (rational_lattice_point_zero _)
-  rwa [thetaTranslation_zero] at this
+  rwa [GlobalTheory.ThetaParam.thetaTranslation_zero] at this
 
 include hlat halg hnm htwo in
 theorem alg_th : AlgEnt (GL3Theta.th0 g.abelian₂ t₀) := by
   have := (_root_.GlobalTheory.EvenThetaTorsion.algebraicTaylor_torsionTranslate_evenTheta_alt g.abelian₂ hlat halg t₀ hnm htwo 0 (rational_lattice_point_zero _)).1
-  rwa [thetaTranslation_zero] at this
+  rwa [GlobalTheory.ThetaParam.thetaTranslation_zero] at this
 
 include hok hlat h2 h3 hwp halg in
 theorem atU_sqTh {v : ℂ} (hv : v ∉ g.abelian₂) (hq : InRationalLattice g.abelian₂ v) :
@@ -697,7 +644,7 @@ theorem atU_th_sq : PowerSeries.constantCoeff (g.atU (GL3Theta.th0 g.abelian₂ 
     g.atU (GL3Theta.th0 g.abelian₂ t₀) ^ 2 = ePhi1 g.lam g.abelian₂ g.C g.wq ^ 2 * lineSer g.wq⁻¹ (xAt g t₀) := by
   obtain ⟨-, h0, -, hsq, -⟩ := GlobalTheory.EvenTheta.evenThetaTwoTorsion_basic_properties g.abelian₂ hlat t₀ hnm htwo
   have ha := alg_th hlat halg hnm htwo
-  refine ⟨by rw [((GlobalTheory.SerTransport.transport 2 g).2.2.1 _ ha).2, h0, lamC_one], ?_⟩
+  refine ⟨by rw [((GlobalTheory.SerTransport.transport 2 g).2.2.1 _ ha).2, h0, Formalism.MainNotions.Ext.CutA.lamC_one], ?_⟩
   rw [← (atU_sq g ha).2, ← (atU_sqTh hok hlat h2 h3 hwp halg hnm ⟨2, two_pos, by exact_mod_cast htwo⟩).2]
   exact congrArg _ (funext hsq)
 
@@ -721,7 +668,7 @@ theorem int_th {β : ℂ} {k : ℕ} (hβ : β ∈ Qbar) (hn : ‖lamC g.lam β�
   have hxe : ∀ v w, wpF g.abelian₂ v = wpF g.abelian₂ w → xAt g v = xAt g w := fun v w h => by
     simp only [xAt, h]
   refine _root_.GlobalTheory.EvenTheta.intSer_of_isogeny_identities 2 k g.wq⁻¹ h (ePhi1 g.lam g.abelian₂ g.C g.wq ^ 2) _ (xAt g t₀) (xAt g (β * t₀))
-    (fun i => xAt g (Q i)) (fun j => xAt g (Q' j)) hw hw0 (intSer_iff.1 (hh ▸ hint)) hh0 (hh1 ▸ hn) ?_
+    (fun i => xAt g (Q i)) (fun j => xAt g (Q' j)) hw hw0 (GlobalTheory.CMNormPhi.intSer_iff'.1 (hh ▸ hint)) hh0 (hh1 ▸ hn) ?_
     (by rw [map_pow, hE, one_pow]) hf0 hf2 ?_ ?_ ?_ ⟨j0, hxe _ _ hj0⟩ ⟨j1, hxe _ _ hj1⟩ ?_
   · rw [Nat.cast_mul, norm_mul]
     have h1 : ‖((2 : ℕ) : ℂ_[2])‖ < 1 := by
@@ -783,7 +730,7 @@ theorem exists_tau {t : ℂ} (ht : GL3Theta.Tors1 2 g.abelian₂ t) : ∃ τ : P
   obtain ⟨-, -, -, hE, -⟩ := GlobalTheory.EvenTheta.DatumBasic.datum_basic 2 g hok hlat h2 h3 hdisc
   obtain ⟨a, b⟩ := htr t ht
   obtain ⟨c, d⟩ := (GlobalTheory.SerTransport.transport 2 g).2.2.1 _ (halg t (tors_laQ ht))
-  refine ⟨_, intSer_iff.1 a, ?_, c, d ▸ b, ?_⟩
+  refine ⟨_, GlobalTheory.CMNormPhi.intSer_iff'.1 a, ?_, c, d ▸ b, ?_⟩
   · rw [map_mul, PowerSeries.constantCoeff_inv, hE, inv_one, one_mul, b]
   · rw [← mul_assoc, PowerSeries.mul_inv_cancel _ (by rw [hE]; exact one_ne_zero), one_mul]
 
@@ -794,7 +741,7 @@ theorem norm_xAt_tors {t : ℂ} (ht : GL3Theta.Tors1 2 g.abelian₂ t) : ‖xAt 
   obtain ⟨τ, a1, -, a3, a4, a5⟩ := exists_tau hok hlat hdisc h2 h3 halg htr ht
   obtain ⟨τ', b1, -, b3, b4, b5⟩ := exists_tau hok hlat hdisc h2 h3 halg htr (tors_neg ht)
   obtain ⟨c1, c2⟩ := atU_sqTh hok hlat h2 h3 hwp halg ht.1 (tors_laQ ht)
-  have e := (atU_smul g (mul_mem a3 b3) c1).2
+  have e := (GlobalTheory.ThetaUnit.atU_smul' g (mul_mem a3 b3) c1).2
   rw [funext (hlat.sqTh_mul ht.1), (atU_mul g (halg _ (tors_laQ ht)) (halg _ (tors_laQ (tors_neg ht)))).2,
     a5, b5, c2, lamC_mul _ a3 b3] at e
   set c := lamC g.lam (U1 g.abelian₂ t (sgStar g.abelian₂) 0) * lamC g.lam (U1 g.abelian₂ (-t) (sgStar g.abelian₂) 0) with hc
@@ -835,7 +782,7 @@ theorem transl_sq {t : ℂ} (ht : GL3Theta.Tors1 2 g.abelian₂ t) : ∃ H : Pow
   have hs1 := halg _ (tors_laQ ht)
   have hs2 := halg _ (tors_laQ (tors_two ht))
   have hs0 := alg_sg halg
-  have e := (atU_smul g (mul_mem a3 a3) (atU_sq g hA).1).2
+  have e := (GlobalTheory.ThetaUnit.atU_smul' g (mul_mem a3 a3) (atU_sq g hA).1).2
   have id1 : (fun z => U1 g.abelian₂ t (sgStar g.abelian₂) 0 * U1 g.abelian₂ t (sgStar g.abelian₂) 0 *
       U1 g.abelian₂ t (GL3Theta.th0 g.abelian₂ t₀) z ^ 2) = fun z =>
       (-1) * (U1 g.abelian₂ (2 * t) (sgStar g.abelian₂) z * sgStar g.abelian₂ z) +
@@ -843,8 +790,8 @@ theorem transl_sq {t : ℂ} (ht : GL3Theta.Tors1 2 g.abelian₂ t) : ∃ H : Pow
         U1 g.abelian₂ t (sgStar g.abelian₂) z ^ 2 := by
     funext z
     linear_combination _root_.GlobalTheory.EvenTheta.IsLat.evenTheta_translate_sq_eq_sigmaStar g.abelian₂ hlat t₀ hnm htwo t ht.1 z
-  have m1 := atU_smul g (neg_mem (one_mem _)) (atU_mul g hs2 hs0).1
-  have m2 := atU_smul g (mul_mem (sub_mem w1 w0) (mul_mem a3 a3)) (atU_sq g hs1).1
+  have m1 := GlobalTheory.ThetaUnit.atU_smul' g (neg_mem (one_mem _)) (atU_mul g hs2 hs0).1
+  have m2 := GlobalTheory.ThetaUnit.atU_smul' g (mul_mem (sub_mem w1 w0) (mul_mem a3 a3)) (atU_sq g hs1).1
   rw [id1, (atU_add g m1.1 m2.1).2, m1.2, m2.2, (atU_mul g hs2 hs0).2, (atU_sq g hs1).2, (atU_sq g hA).2,
     a5, b5, hσ, lamC_neg_one, lamC_mul _ (sub_mem w1 w0) (mul_mem a3 a3), lamC_mul _ a3 a3] at e
   set c := lamC g.lam (U1 g.abelian₂ t (sgStar g.abelian₂) 0) with hc
@@ -917,8 +864,8 @@ theorem transl_bdd {t : ℂ} (ht : GL3Theta.Tors1 2 g.abelian₂ t) :
     field_simp
     linear_combination this
   have e := (atU_mul g hA hA0).2
-  have m1 := atU_smul g hc1 (atU_sq g hAs).1
-  have m2 := atU_smul g hc2 (atU_sq g hs1).1
+  have m1 := GlobalTheory.ThetaUnit.atU_smul' g hc1 (atU_sq g hAs).1
+  have m2 := GlobalTheory.ThetaUnit.atU_smul' g hc2 (atU_sq g hs1).1
   rw [hid, (atU_add g m1.1 m2.1).2, m1.2, m2.2, (atU_sq g hAs).2, (atU_sq g hs1).2, a5, b2, mul_pow] at e
   have hb := (((_root_.GlobalTheory.ThetaTransl.bdd_C (lamC g.lam c₁)).mul (hE2.mul b1).bdd).add
     ((_root_.GlobalTheory.ThetaTransl.bdd_C (lamC g.lam c₂)).mul (hE2.mul a1.sq).bdd)).mul (hf.inv (by rw [hf0, norm_one])).bdd
@@ -980,9 +927,9 @@ theorem atTwo : ∀ D : D7, GL3Theta.atTwo D := by
     have e3 : (expMv (-GL3Theta.logMv (g.atU (GL3Theta.th0 g.abelian₂ t₀))) : PowerSeries ℂ_[2]) =
         (g.atU (GL3Theta.th0 g.abelian₂ t₀))⁻¹ :=
       (PowerSeries.eq_inv_iff_mul_eq_one (by rw [hf0]; exact one_ne_zero)).2 e2
-    exact intSer_iff.2 (e3 ▸ hf.inv (by rw [hf0, norm_one]))
+    exact GlobalTheory.CMNormPhi.intSer_iff'.2 (e3 ▸ hf.inv (by rw [hf0, norm_one]))
   · obtain ⟨k1, k2⟩ := transl_int hok hlat' hdisc h2 h3 hwp' halg hnm ht₀.1 htr hf hx ht
-    exact ⟨intSer_iff.2 k1, k2⟩
+    exact ⟨GlobalTheory.CMNormPhi.intSer_iff'.2 k1, k2⟩
 
 end GlobalTheory.EvenTheta
 end -- clump:auto

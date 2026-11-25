@@ -87,7 +87,7 @@ private lemma third {n : ℕ} (hn : 0 < n) [Module.Finite ℤ M] (g : M →+ M)
     rw [← QuotientAddGroup.mk_nsmul, QuotientAddGroup.eq_zero_iff]
     exact (memN _).2 ⟨y, rfl⟩
   have ginj : Function.Injective G := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro u hu
     obtain ⟨y, rfl⟩ := QuotientAddGroup.mk_surjective u
     rw [QuotientAddGroup.map_mk, QuotientAddGroup.eq_zero_iff] at hu

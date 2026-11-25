@@ -1014,7 +1014,6 @@ open GlobalTheory.BigOn.Exp.TwConj GlobalTheory.IdemSupport
 open Formalism.L2.Host (HChar IsDelta IsPsi)
 
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.BigOn.Exp.TwConj
 open LevAt in
 theorem twLevAt_holds_alt : GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Published.GlobalArtinReciprocity → GlobalTheory.Published.RayClassFieldSt → _root_.GlobalTheory.BigOn.Exp.TwAdmAlt → _root_.GlobalTheory.BigOn.Exp.TwistCharacter →

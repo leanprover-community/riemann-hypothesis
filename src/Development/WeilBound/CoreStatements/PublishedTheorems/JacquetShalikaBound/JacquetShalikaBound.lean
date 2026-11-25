@@ -53,18 +53,15 @@ theorem cM_eq_of {k : ℕ} (x : Fin (k + 1) → F) {i j : Fin n} (hj : (j : ℕ)
   simp only [cM, Matrix.of_apply]
   rw [dite_eq_left ⟨hj, hi⟩]
 
-theorem col_val (k : ℕ) (x : Fin (k + 1) → F) :
-    ((col n k x : GL (Fin n) F) : Matrix (Fin n) (Fin n) F) = 1 + cM n k x := rfl
-
 theorem col_inv_val (k : ℕ) (x : Fin (k + 1) → F) :
     (((col n k x)⁻¹ : GL (Fin n) F) : Matrix (Fin n) (Fin n) F) = 1 - cM n k x := rfl
 
 theorem col_mem (k : ℕ) (x : Fin (k + 1) → F) : col n k x ∈ unipotent F n := by
   refine ⟨fun i j hij => ?_, fun i => ?_⟩
   · have hij' : (j : ℕ) < i := hij
-    rw [col_val, Matrix.add_apply, Matrix.one_apply_ne (by intro e; subst e; omega),
+    rw [GlobalTheory.CompanionTheory.JSBound.col_coe, Matrix.add_apply, Matrix.one_apply_ne (by intro e; subst e; omega),
       cM_eq_zero_of_ne x (by omega), add_zero]
-  · rw [col_val, Matrix.add_apply, Matrix.one_apply_eq, cM_eq_zero_of_ne x (by omega), add_zero]
+  · rw [GlobalTheory.CompanionTheory.JSBound.col_coe, Matrix.add_apply, Matrix.one_apply_eq, cM_eq_zero_of_ne x (by omega), add_zero]
 
 theorem superdiagSum_cM {k : ℕ} (hk : k + 1 < n) (x : Fin (k + 1) → F) :
     Whittaker.superdiagSum (cM n k x) = x (Fin.last k) := by
@@ -88,7 +85,7 @@ theorem superdiagSum_cM {k : ℕ} (hk : k + 1 < n) (x : Fin (k + 1) → F) :
 
 theorem psiN_col (ψ : AddChar F ℂ) {k : ℕ} (hk : k + 1 < n) (x : Fin (k + 1) → F) :
     Whittaker.psiN ψ (col n k x) = ψ (x (Fin.last k)) := by
-  rw [Whittaker.psiN, col_val, Whittaker.superdiagSum_add, Whittaker.superdiagSum_one, zero_add,
+  rw [Whittaker.psiN, GlobalTheory.CompanionTheory.JSBound.col_coe, Whittaker.superdiagSum_add, Whittaker.superdiagSum_one, zero_add,
     superdiagSum_cM hk]
 
 theorem mul_cM {k : ℕ} {M : Matrix (Fin n) (Fin n) F}
@@ -160,7 +157,7 @@ theorem inU_conj (ψ : AddChar F ℂ) {k : ℕ} (g : GL (Fin n) F) (hg : inU (k 
   have hinv := (unipotent F n).inv_mem hcol
   have hv : ((col n k x * g * (col n k x)⁻¹ : GL (Fin n) F) : Matrix (Fin n) (Fin n) F) =
       (g : Matrix (Fin n) (Fin n) F) + cM n k x * (g : Matrix (Fin n) (Fin n) F) - cM n k x := by
-    rw [Units.val_mul, Units.val_mul, col_val, col_inv_val]
+    rw [Units.val_mul, Units.val_mul, GlobalTheory.CompanionTheory.JSBound.col_coe, col_inv_val]
     exact conj_expand (mul_cM (fun i j hj => hc i j (by omega)) x) (cM_mul k x x)
   refine ⟨col n k x * g * (col n k x)⁻¹, ⟨(unipotent F n).mul_mem hcg hinv, fun i j hj => ?_⟩,
     (inv_mul_cancel_right _ _).symm, ?_⟩
@@ -566,24 +563,6 @@ section Lat
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
 
-
-open GroundTheory.Automorphic.GLnLocal in
-theorem exists_pow_mul_mem_integer (a : F) :
-    ∃ M : ℕ, (uniformizer F : F) ^ M * a ∈ 𝒪[F] := by
-  apply GlobalTheory.CompanionTheory.SatakeBound.LargeLattice.exists_pow_mul_mem
-
-
-theorem lat_mono {m M M' : ℕ} (h : M ≤ M') : lat F m M ⊆ lat F m M' := by
-  intro x hx
-  simp only [lat, Set.mem_ofPred_eq] at hx ⊢
-  exact fun i => GlobalTheory.CompanionTheory.JSBound.unif_pow_mul_mem_of_le h (hx i)
-
-theorem exists_mem_lat {m : ℕ} (y : Fin m → F) : ∃ M, y ∈ lat F m M := by
-  choose N hN using fun i => exists_pow_mul_mem_integer (y i)
-  refine ⟨Finset.univ.sup N, ?_⟩
-  simp only [lat, Set.mem_ofPred_eq]
-  exact fun i => GlobalTheory.CompanionTheory.JSBound.unif_pow_mul_mem_of_le (Finset.le_sup (Finset.mem_univ i)) (hN i)
-
 theorem add_mem_lat {m M : ℕ} {x y : Fin m → F} (hx : x ∈ lat F m M) (hy : y ∈ lat F m M) :
     x + y ∈ lat F m M := by
   simp only [lat, Set.mem_ofPred_eq] at hx hy ⊢
@@ -632,8 +611,8 @@ theorem equivariant_of_steps : L0 → ColumnsMirabolic → ColumnsUnipotent → 
   obtain ⟨g', x₀, hg', rfl, hpsi⟩ := hd1 g hg
   obtain ⟨M₁, hM₁⟩ := hChar ((ρ (g' * col n k x₀)) u) u'
   obtain ⟨M₂, hM₂⟩ := hChar u u'
-  obtain ⟨M₃, hM₃⟩ := exists_mem_lat x₀
-  have hx₀ : x₀ ∈ lat F (k + 1) (M₁ + M₂ + M₃) := lat_mono (by omega) hM₃
+  obtain ⟨M₃, hM₃⟩ := GlobalTheory.CompanionTheory.SatakeBound.LargeLattice.exists_mem_lat x₀
+  have hx₀ : x₀ ∈ lat F (k + 1) (M₁ + M₂ + M₃) := GlobalTheory.CompanionTheory.SatakeBound.LargeLattice.lat_mono (by omega) hM₃
   have hpt : ∀ x : Fin (k + 1) → F,
       ψ (-x (Fin.last k)) * (B u') ((ρ (col n k x)) ((ρ (g' * col n k x₀)) u)) =
         GroundTheory.Automorphic.Whittaker.psiN ψ g' * ψ (x₀ (Fin.last k)) *
@@ -1394,7 +1373,6 @@ variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchim
 theorem unif_ne_zero : (uniformizer F : F) ≠ 0 := by
   intro h0
   exact (irreducible_uniformizer F).ne_zero (Subtype.ext h0)
-
 
 variable (F) in
 def scal (m M : ℕ) : GL (Fin m) F where

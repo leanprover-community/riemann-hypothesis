@@ -287,7 +287,6 @@ variable {K K' V V' : Type} [Field K] [NumberField K] [_root_.NumberField.IsTota
   [Algebra K K'] [AddCommGroup V] [Module K V] [AddCommGroup V'] [Module K' V'] {κ : Type} [Fintype κ] [DecidableEq κ]
   {b' : Basis κ K' V'} {X' : InfinitePlace K' → Matrix κ κ ℂ} {N : (K →+* ℂ) → V → ℝ} {N' : (K' →+* ℂ) → V' → ℝ}
 
-
 omit [_root_.NumberField.IsTotallyComplex K] [NumberField K] in
 theorem cnorm_cols (hG' : IsGram b' X' N') (φ : V →ₛₗ[algebraMap K K'] V')
     (ht : ∀ σ' x, N' σ' (φ x) = N (σ'.comp (algebraMap K K')) x) {j : ℕ} (e : Fin j → V) (w : InfinitePlace K')
@@ -567,7 +566,6 @@ section One
 variable {K V : Type} [Field K] [NumberField K] [AddCommGroup V] [Module K V] [Module (𝓞 K) V]
   [IsScalarTower (𝓞 K) K V] {N : (K →+* ℂ) → V → ℝ} {L : Submodule (𝓞 K) V}
 
-
 omit [Module K V] [IsScalarTower (𝓞 K) K V] in
 theorem fg_of_le (hL : L.FG) {M : Submodule (𝓞 K) V} (hM : M ≤ L) : M.FG := by
   haveI : IsNoetherian (𝓞 K) L := isNoetherian_of_fg_of_noetherian L hL
@@ -607,7 +605,6 @@ variable {K K' V V' : Type} [Field K] [NumberField K] [Field K'] [NumberField K'
   [AddCommGroup V'] [Module K' V'] [Module (𝓞 K') V'] [IsScalarTower (𝓞 K') K' V']
   (ι : V →ₛₗ[algebraMap K K'] V')
 
-
 omit [NumberField K] [NumberField K'] in
 theorem map_mem_of_mem_span {s : Set V} {P : Submodule (𝓞 K') V'} (hs : ∀ x ∈ s, ι x ∈ P) {x : V}
     (hx : x ∈ Submodule.span (𝓞 K) s) : ι x ∈ P := by
@@ -621,7 +618,6 @@ theorem map_mem_of_mem_span {s : Set V} {P : Submodule (𝓞 K') V'} (hs : ∀ x
       rfl
     rw [this]; exact P.smul_mem _ hx
 
-
 omit [NumberField K] [NumberField K'] in
 theorem fg_span_image {L : Submodule (𝓞 K) V} (hL : L.FG) :
     (Submodule.span (𝓞 K') (ι '' (L : Set V))).FG := by
@@ -631,7 +627,6 @@ theorem fg_span_image {L : Submodule (𝓞 K) V} (hL : L.FG) :
   · refine Submodule.span_le.2 ?_
     rintro _ ⟨x, hx, rfl⟩
     exact map_mem_of_mem_span ι (fun y hy => Submodule.subset_span (Set.mem_image_of_mem _ hy)) hx
-
 
 omit [NumberField K] [NumberField K'] [IsScalarTower (𝓞 K) K V] [IsScalarTower (𝓞 K') K' V'] in
 theorem span_image_ne_bot
@@ -891,8 +886,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option synthInstance.maxHeartbeats 200000
-
 section
 section
 set_option synthInstance.maxHeartbeats 400000
@@ -907,7 +900,7 @@ theorem covering_lambda_all_places_alt : _root_.GlobalTheory.CovTop.PublishedHod
   have hc : _root_.GlobalTheory.CovTop.LiftsCondition fun Fm x _ ι p i _ A =>
       slopeMax_sq (nrmK p.fw i) (latW (p.T.U ((i : ℕ) + 1)) (Gk p i)) ≤
         (Fm.L x ι).sc.x ^ A * (Fm.L x ι).sc.b := by
-    refine Closed.imp (Closed.and hG (Closed.and (_root_.GlobalTheory.CovTop.Sizes.hostN_alt 1) _root_.GlobalTheory.T.lift_weight_numerator)) ?_
+    refine Closed.imp (Closed.and hG (Closed.and (_root_.GlobalTheory.CovTop.Sizes.hostN_alt 1) _root_.GlobalTheory.CovTop.WtShape.wtN_z)) ?_
     rintro eps Fm CH - ⟨⟨_, -, h1⟩, ⟨A, hA, h2⟩, ⟨_, -, h3⟩⟩
     obtain ⟨x0, h⟩ := h1.and (h2.and h3)
     refine ⟨2 * A + 4, by linarith, x0, fun x hx hle ι p hp i => ?_⟩

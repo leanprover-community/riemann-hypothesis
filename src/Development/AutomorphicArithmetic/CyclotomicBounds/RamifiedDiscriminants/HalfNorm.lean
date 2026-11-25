@@ -143,10 +143,6 @@ open NumberField IsDedekindDomain UniqueFactorizationMonoid
 
 namespace GlobalTheory.DifferentElement
 
-end GlobalTheory.DifferentElement
-
-namespace GlobalTheory.DifferentElement
-
 theorem mult_ratio (E : Type) [Field E] [NumberField E] [IsGalois ℚ E] (l : ℕ) (hl : l.Prime) (P : Ideal (𝓞 E))
     (hP : P.IsPrime) (hlP : (l : 𝓞 E) ∈ P) :
     (multiplicity P (differentIdeal ℤ (𝓞 E)) : ℚ) / (multiplicity P (Ideal.span {(l : 𝓞 E)}) : ℚ) =
@@ -169,10 +165,6 @@ theorem mult_ratio (E : Type) [Field E] [NumberField E] [IsGalois ℚ E] (l : �
 
 end GlobalTheory.DifferentElement
 
-namespace GlobalTheory.DifferentElement
-
-
-end GlobalTheory.DifferentElement
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

@@ -153,7 +153,6 @@ theorem exists_strictTransform_iso (P : ChartPushforward S S') (i : ℕ) (hi : i
   have hA' : Scheme.Hom.ker (S'.strictTransformι i) = S'.strictTransformIdeal i := by
     rw [S'.strictTransformι_eq_subschemeι]
     exact Scheme.IdealSheafData.ker_subschemeι _
-  have : AlgebraicGeometry.IsClosedImmersion (S.strictTransformι i ≫ P.levelMap i hi) := inferInstance
   have hker : Scheme.Hom.ker (S'.strictTransformι i) = Scheme.Hom.ker (S.strictTransformι i ≫ P.levelMap i hi) := by
     rw [Scheme.Hom.ker_comp, hA, hA', hmap]
   have := AlgebraicGeometry.IsClosedImmersion.isIso_lift (S'.strictTransformι i)

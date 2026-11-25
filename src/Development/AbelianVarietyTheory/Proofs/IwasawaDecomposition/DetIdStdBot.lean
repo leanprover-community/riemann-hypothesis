@@ -30,10 +30,6 @@ structure StdKerTie {L : SizeData₂ (I.rec7 l Z)} {hT : GatTies (I.rec7 l Z)} {
   δ : t.δ = I.J.δ
   O : I.StdO l Z Y.Qp t.O
 
-namespace StdKerEmpty
-
-end StdKerEmpty
-
 end GlobalTheory.Mem.Col2.TC
 
 end

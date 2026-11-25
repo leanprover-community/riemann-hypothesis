@@ -813,7 +813,7 @@ theorem wq_unit {l : ℕ} [hl : Fact l.Prime] (a : ℕ) [NeZero a] (w : Wq l a) 
 end Bridge.RamInt
 
 open GlobalTheory.BKReal Bridge.RamInt in
-theorem Bridge.exists_powerSeries_eval_eq : ∀ {l : ℕ} [hl : Fact (Nat.Prime l)] (a : ℕ) [inst : NeZero a] {e : ℕ} [NeZero e] (ϖ : GlobalTheory.BKReal.PiSys l e) (x : ↥(Formalism.BasicNotions.Loc.OL (GlobalTheory.BKReal.PiSys.field a ϖ))), ∃ (y : PowerSeries (GlobalTheory.BKReal.Wq l a)), (Formalism.Per.θ l) ((GlobalTheory.BKReal.PiSys.ev a ϖ) y) = (GlobalTheory.Prism.intToOC (GlobalTheory.BKReal.PiSys.field a ϖ)) x := by
+theorem Bridge.exists_powerSeries_eval_eq : ∀ {l : ℕ} [Fact (Nat.Prime l)] (a : ℕ) [NeZero a] {e : ℕ} [NeZero e] (ϖ : GlobalTheory.BKReal.PiSys l e) (x : ↥(Formalism.BasicNotions.Loc.OL (GlobalTheory.BKReal.PiSys.field a ϖ))), ∃ (y : PowerSeries (GlobalTheory.BKReal.Wq l a)), (Formalism.Per.θ l) ((GlobalTheory.BKReal.PiSys.ev a ϖ) y) = (GlobalTheory.Prism.intToOC (GlobalTheory.BKReal.PiSys.field a ϖ)) x := by
   intro l hl a inst e _ ϖ x
   have hspec : PiSys.ev a ϖ PowerSeries.X = ϖ.teich ∧
       ∀ w : Wq l a, PiSys.ev a ϖ (PowerSeries.C w) = wA l a w := by

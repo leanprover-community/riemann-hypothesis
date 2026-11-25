@@ -389,16 +389,25 @@ theorem exists_lower (y : (Σ k, ι k) → Ω) (A : HermLine ι) (q : ℕ) (w : 
     _ = M * A.h z * (Q * R) := by ring
     _ = M * A.h z := by rw [hQR, mul_one]
 
-end SectionBounded
-
-
-open SectionBounded in
-theorem SectionBounded.proof : SectionBounded.Statement := by
-  intro K _ ι _ Ω _ y A q w hw hgen hsm n s hs
+theorem exists_bound_of_lower (y : (Σ k, ι k) → Ω) (A : HermLine ι) (n : ℕ) {s : Ω}
+    (hs : s ∈ chartLat y A.a n)
+    (hlow : ∀ c : (∀ k, ι k), (∀ k, y ⟨k, c k⟩ ≠ 0) →
+      ∃ M : ℝ, 0 ≤ M ∧ ∀ z : (Σ k, ι k) → ℂ, z ∈ mcPts (mCoordIdeal y) →
+        (∀ k i, ‖z ⟨k, i⟩‖ ≤ ‖z ⟨k, c k⟩‖) → (∀ k, z ⟨k, c k⟩ ≠ 0) →
+        ∏ k, ‖z ⟨k, c k⟩‖ ^ A.a k ≤ M * A.h z) :
+    ∃ S : ℝ, 0 ≤ S ∧ ∀ (dg dh : K → ℕ) (g h : MRing ι) (z : (Σ k, ι k) → ℂ),
+      IsMultiHomog g dg → IsMultiHomog h dh → (∀ k, (dg k : ℤ) = dh k + n * A.a k) →
+      aeval y g = s * aeval y h → z ∈ mcPts (mCoordIdeal y) →
+      ‖eval z (map (Int.castRingHom ℂ) g)‖ ≤
+        S * ‖eval z (map (Int.castRingHom ℂ) h)‖ * A.h z ^ n := by
   classical
-  choose M hM0 hM using fun c hc => exists_lower y A q w hw hgen hsm c hc
+  choose M hM0 hM using hlow
   choose B hB0 hB using fun c hc => exists_upper y A.a n hs c hc
-  refine ⟨∑ c : (∀ k, ι k), if hc : (∀ k, y ⟨k, c k⟩ ≠ 0) then B c hc * M c hc ^ n else 0, ?_⟩
+  refine ⟨∑ c : (∀ k, ι k), if hc : (∀ k, y ⟨k, c k⟩ ≠ 0) then B c hc * M c hc ^ n else 0,
+    Finset.sum_nonneg fun c' _ => by
+      split_ifs with hc'
+      · exact mul_nonneg (hB0 c' hc') (pow_nonneg (hM0 c' hc') n)
+      · exact le_rfl, ?_⟩
   intro dg dh g h z hg hh hdeg hgy hz
   have hmax : ∀ k, ∃ i, ∀ i', ‖z ⟨k, i'⟩‖ ≤ ‖z ⟨k, i⟩‖ := fun k => by
     obtain ⟨i0, _⟩ := hz.1 k
@@ -438,6 +447,15 @@ theorem SectionBounded.proof : SectionBounded.Statement := by
         mul_le_mul_of_nonneg_left h3 (mul_nonneg (hB0 c hyc) (norm_nonneg _))
     _ = (B c hyc * M c hyc ^ n) * ‖eval z (map (Int.castRingHom ℂ) h)‖ * A.h z ^ n := by ring
     _ ≤ _ := by gcongr
+
+end SectionBounded
+
+
+open SectionBounded in
+theorem SectionBounded.proof : SectionBounded.Statement := by
+  intro K _ ι _ Ω _ y A q w hw hgen hsm n s hs
+  obtain ⟨S, -, hS⟩ := exists_bound_of_lower y A n hs fun c hc => exists_lower y A q w hw hgen hsm c hc
+  exact ⟨S, hS⟩
 
 end
 

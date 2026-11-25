@@ -501,8 +501,6 @@ theorem gmPhi_bijective_prod (h6 : DivisorNaturality) (q : ℕ) [NeZero q] (T₁
     rw [this]
     rw [he] at hψpull
     exact hγ.comp hψpull
-  have hu₁ : IsUnit (q : T₁) := by simpa using hq.map f₁
-  have hu₂ : IsUnit (q : T₂) := by simpa using hq.map f₂
   have hcomm : β ∘ (gmPhi q (T₁ × T₂) i) =
       (Prod.map (gmPhi q T₁ i) (gmPhi q T₂ i)) ∘
         (fun x : Ht q (sp (T₁ × T₂)) 0 (i - 1) => (pull _ (spMap f₁) _ 0 x, pull _ (spMap f₂) _ 0 x)) := by

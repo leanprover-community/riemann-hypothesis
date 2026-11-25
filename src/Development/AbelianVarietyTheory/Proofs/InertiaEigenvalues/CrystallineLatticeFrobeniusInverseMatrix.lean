@@ -83,10 +83,7 @@ theorem frob_inverse {R : Type} [CommRing R] [IsDomain R] {d : ℕ} (Φ : R →+
   exact (mul_eq_zero.1 h5).resolve_left hdet
 
 theorem radius_mem (l : ℕ) [hl : Fact l.Prime] (K : FinExt l) (bk : BK K) : 0 < bk.ρ₀ ∧ bk.ρ₀ < 1 := by
-  have h1 : (1 : ℝ≥0) < (l : ℝ≥0) := by exact_mod_cast hl.out.one_lt
-  have h2 : (0 : ℝ) < (bk.Ep.natDegree : ℝ) := by exact_mod_cast bk.deg_pos
-  refine ⟨NNReal.rpow_pos (lt_trans zero_lt_one h1), ?_⟩
-  exact NNReal.rpow_lt_one_of_one_lt_of_neg h1 (neg_lt_zero.2 (one_div_pos.2 h2))
+  exact GlobalTheory.BSP.ρ₀_pos_lt_one bk
 
 end GlobalTheory.BSP.crystallineLattice_frobenius_inverse_matrix
 

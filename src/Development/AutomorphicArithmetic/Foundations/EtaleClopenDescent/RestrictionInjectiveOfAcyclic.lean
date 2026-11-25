@@ -69,7 +69,6 @@ private lemma lan_mono {C D : Type 1} [Category.{0} C] [Category.{0} D] (G : C â
       | exact (Category.assoc _ _ _).trans hâ‚ƒ
   exact NatTrans.mono_of_mono_app _
 
-set_option backward.isDefEq.respectTransparency false in
 private lemma incl_flat (S : Scheme.{0}) : RepresentablyFlat (incl S) := by
   have : PreservesFiniteLimits (incl S) :=
     inferInstanceAs (PreservesFiniteLimits (Scheme.Etale.forget S))

@@ -63,10 +63,8 @@ local instance t2AE : T2Space (AE D) := (Formalism.IndefR.Eqv.ae_facts D).2.1
 
 local instance topAddAE : IsTopologicalAddGroup (AE D) := inferInstance
 
-set_option synthInstance.maxHeartbeats 400000 in
 local instance contSubVec (n : ℕ) : ContinuousSub (Fin n → AE D) := inferInstance
 
-set_option synthInstance.maxHeartbeats 400000 in
 local instance contSubMx (m n : ℕ) : ContinuousSub (Mx D m n) := inferInstance
 
 local instance t2Mx (m n : ℕ) : T2Space (Mx D m n) := (lattice_Mx D m n).2.2.2.1

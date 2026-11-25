@@ -194,7 +194,6 @@ theorem isFactorAH_divUnif {M M' : LB A.left} (u : HolUnif A M g) (u' : HolUnif 
       rw [u.ex_add, (u.ker _).2 l.2, _root_.mul_one]
     have e' := h'.2.2 ⟨l.1, mem_of_ex_eq u u' hex l.2⟩ p.1 z (by rw [hex]; exact h1)
     have e := h.2.2 l p.2 z h2
-    have n1 := u.fr_ne p.2 z h2
     have n2 := u.fr_ne p.2 (z + l) (by rw [hl]; exact h2)
     have nχ : χ l ≠ 0 := by
       intro h0; have := h.2.1 l; rw [h0, norm_zero] at this; exact zero_ne_one this
@@ -202,8 +201,6 @@ theorem isFactorAH_divUnif {M M' : LB A.left} (u : HolUnif A M g) (u' : HolUnif 
     rw [e', e]
     simp only [Matrix.sub_mulVec, dotProduct_sub, mul_sub]
     rw [show ∀ a b c d : ℂ, a - b + (c - d) = (a + c) - (b + d) from fun _ _ _ _ => by ring, Complex.exp_sub]
-    have ne := Complex.exp_ne_zero (↑Real.pi * (z ⬝ᵥ H.mulVec (star (l : Fin g → ℂ))) +
-        ↑Real.pi / 2 * ((l : Fin g → ℂ) ⬝ᵥ H.mulVec (star (l : Fin g → ℂ))))
     field_simp
 
 end GlobalTheory.AHBundle
@@ -292,7 +289,6 @@ theorem ahFactor_trivial_of_theta : ∀ (g : ℕ) (Λ : Submodule ℤ (Fin g →
     rw [hE]
     have n1 := hθ0 z
     have n2 : χ ⟨l, hl⟩ ≠ 0 := fun h => by have := hχ ⟨l, hl⟩; rw [h, norm_zero] at this; exact zero_ne_one this
-    have n3 := Complex.exp_ne_zero (Real.pi * (z ⬝ᵥ Hm.mulVec (star l)) + Real.pi / 2 * (l ⬝ᵥ Hm.mulVec (star l)))
     field_simp
 
   have him : ∀ w : Fin g → ℂ, ∀ l ∈ Λ, (w ⬝ᵥ Hm.mulVec (star l)).im = 0 := by

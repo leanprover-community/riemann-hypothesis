@@ -106,30 +106,14 @@ theorem measure_inter_band_lt_top (μ : Measure Ad3.R.G2) [μ.IsHaarMeasure] {�
       set_option synthInstance.maxHeartbeats 200000 in
         exact (hF.measure_eq_tsum E).symm
 
-theorem exists_probability_haar :
-    ∃ m : Measure Ad3.R.KA, m.IsHaarMeasure ∧ IsProbabilityMeasure m := by
-  haveI : CompactSpace Ad3.R.KA := isCompact_iff_compactSpace.1 isCompact_maxCompact
-  haveI : WeaklyLocallyCompactSpace Ad3.R.KA := by
-    set_option synthInstance.maxHeartbeats 200000 in
-      exact inferInstance
-  let K₀ : TopologicalSpace.PositiveCompacts Ad3.R.KA := ⊤
-  set_option synthInstance.maxHeartbeats 200000 in
-    refine ⟨Measure.haarMeasure K₀, inferInstance, ⟨?_⟩⟩
-  have h := by
-    set_option synthInstance.maxHeartbeats 200000 in
-      exact Measure.haarMeasure_self (K₀ := K₀)
-  simpa [K₀] using h
-
-theorem setup_of_ideleDomain : Ad3.R.D0 → Ad3.R.G0 := by
-  rintro ⟨𝓓, h1, h2, h3⟩
+theorem setup_of_ideleDomain : Ad3.R.G0 := by
   obtain ⟨μ, hμ, hr⟩ := exists_isHaarMeasure_isMulRightInvariant (K := ℚ) (n := 2) (by norm_num)
-  obtain ⟨mK, hK, hP⟩ := exists_probability_haar
   haveI : DiscreteTopology (AdelicGLn.rationalGL ℚ 2) := AdelicGLn.discreteTopology_rationalGL ℚ 2
   have hF : IsFundamentalDomain (AdelicGLn.diagonal ℚ 2).range
       (RightCosetSpace.fundamentalDomain (AdelicGLn.rationalGL ℚ 2)) μ :=
     RightCosetSpace.isFundamentalDomain_fundamentalDomain (AdelicGLn.rationalGL ℚ 2) μ
-  exact ⟨μ, _, mK, 𝓓, ⟨hμ, hr, hF, RightCosetSpace.measurableSet_fundamentalDomain _,
-    measure_inter_band_lt_top μ hF, hK, hP, h1, h2, h3⟩⟩
+  exact ⟨μ, _, ⟨hμ, hr, hF, RightCosetSpace.measurableSet_fundamentalDomain _,
+    measure_inter_band_lt_top μ hF⟩⟩
 
 end GlobalTheory.CompanionTheory.RSGlobal
 

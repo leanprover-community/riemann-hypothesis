@@ -67,12 +67,6 @@ theorem weight_vector_monomial_weight [CharZero K] (LL : Letters ι) (S : Set ι
   have h2 := mul_right_cancel₀ hc h
   exact_mod_cast h2
 
-theorem monomial_mem_weightSpace (LL : Letters ι) (S : Set ι) (m : ι × Fin n →₀ ℕ) (c : K) :
-    monomial m c ∈ weightSp (glOps K n LL S) (wtS LL S m) := by
-  rw [polynomial_mem_weightSpace_iff]
-  intro a
-  rw [diagonal_derivation_monomial, smul_monomial, smul_eq_mul]
-
 theorem polynomial_isGLRep (LL : Letters ι) (S : Set ι) : IsGLRep (glOps K n LL S) := by
   apply _root_.Formalism.MainNotions.G.Joints.isGLRep_glOps <;> assumption
 

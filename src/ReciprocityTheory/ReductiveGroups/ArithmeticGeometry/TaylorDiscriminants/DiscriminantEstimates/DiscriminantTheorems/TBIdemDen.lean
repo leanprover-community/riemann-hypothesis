@@ -67,7 +67,6 @@ theorem idemEval : IdemEvalSt := by
   intro E _ _ C _ _ _ ι _ _ b τ σ
   classical
   have hev : evAt σ (idemOf b τ) = ∑ i, σ (trDual b i) * τ (b i) := by
-    set_option synthInstance.maxHeartbeats 100000 in
       simp only [evAt, idemOf, map_sum, Algebra.TensorProduct.productMap_apply_tmul,
       AlgHom.id_apply, RingHom.toRatAlgHom_apply]
   rw [hev]

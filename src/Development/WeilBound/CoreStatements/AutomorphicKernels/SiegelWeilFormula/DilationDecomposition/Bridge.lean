@@ -81,9 +81,7 @@ theorem continuous_lowG : Continuous (lowG : ℝ → GR n) := by
       ((continuous_lowU : Continuous (lowU : ℝ → M2 n)).comp continuous_neg)⟩
   exact h.subtype_mk _
 
-theorem JJ_mul_JJ : JJ n * JJ n = -1 := by
-  rw [JJ, fromBlocks_multiply, ← fromBlocks_one, fromBlocks_neg]
-  simp
+theorem JJ_mul_JJ : JJ n * JJ n = -1 := PositivityTheory.Rg.Sw.AbsSt.DF.JJ_mul_self
 
 theorem mul_JJ_mul_conj {M : M2 n} (h : InG M) : M * JJ n * Mᴴ = JJ n := by
   apply _root_.PositivityTheory.Rg.Sw.AbsSt.IwaPf.inG_rows <;> assumption

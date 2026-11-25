@@ -116,12 +116,6 @@ theorem eb_phi_inj (v : X.Pl) (j : ℕ) : Function.Injective (eb_phi X v j) := b
   obtain ⟨h1, h2, h3⟩ := h
   rw [h1, Fin.ext h2, h3]
 
-theorem eb_eps_inj (v : X.Pl) (j : ℕ) : Function.Injective (ea_eps X v j) := by
-  rintro ⟨a1, a2, a3⟩ ⟨b1, b2, b3⟩ h
-  simp only [ea_eps, Sigma.mk.injEq, heq_eq_eq, true_and, Prod.mk.injEq, EmbeddingLike.apply_eq_iff_eq] at h
-  obtain ⟨h1, h2, h3⟩ := h
-  rw [h1, h2, h3]
-
 theorem eb_fac (v : X.Pl) (j : ℕ) (K' : Type) [Field K'] (I : X.ColCh j) (s : ea_S X v) (c : Fin (ea_colN X v j s)) :
     MvPolynomial.rename (ea_eps X v j) (MvPolynomial.map
       (MvPolynomial.rename (eb_phi X v j) : MvPolynomial _ K' →ₐ[K'] MvPolynomial _ K').toRingHom
@@ -190,7 +184,7 @@ theorem eb_poly (v : X.Pl) (j : ℕ) (K' : Type) [Field K'] (I : X.ColCh j) :
 theorem eb_jet (v : X.Pl) (j : ℕ) (K' : Type) [Field K'] (F : MvPowerSeries (X.ZA j) K') (I : X.ColCh j) :
     applyD (X.PIv j I v) F = MvPolynomial.rename (eb_phi X v j)
       (Formalism.DworkPowerSeriesWeights.frameJet (ea_colN X v j) (ea_hts X v j) (ea_hp X v j) (ea_Ic X v j I) (resV (ea_eps X v j) F)) := by
-  rw [eb_applyD, eb_poly, eb_J_rename _ (eb_eps_inj X v j), eb_J_map]
+  rw [eb_applyD, eb_poly, eb_J_rename _ (Formalism.MainNotions.FormalGroupSystem.Pf.ea_eps_inj X v j), eb_J_map]
   rfl
 
 theorem eb_brJet : ea_BrJet X := by

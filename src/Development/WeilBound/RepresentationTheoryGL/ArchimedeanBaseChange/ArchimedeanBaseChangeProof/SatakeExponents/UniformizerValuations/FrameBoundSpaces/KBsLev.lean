@@ -24,17 +24,6 @@ namespace PositivityTheory.Rg.BcB.F
 
 attribute [local instance] borelG borelF borelA
 
-section RL
-variable (hR : Rd.ReadLimit) (E : Type) [Field E] [NumberField E] [IsCMField E]
-
-def rlW₁ := (hR E).choose
-def rlW₂ := (hR E).choose_spec.choose
-def rlΩ₁ := (hR E).choose_spec.choose_spec.choose
-def rlΩ₂ := (hR E).choose_spec.choose_spec.choose_spec.choose
-def rlΘ₁ := (hR E).choose_spec.choose_spec.choose_spec.choose_spec.choose
-def rlΘ₂ := (hR E).choose_spec.choose_spec.choose_spec.choose_spec.choose_spec.choose
-end RL
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
 structure Frame0 (hR : Rd.ReadLimit) (π : Submodule ℂ (UA E n → ℂ)) (S : Finset (Pl E)) : Type 1 where

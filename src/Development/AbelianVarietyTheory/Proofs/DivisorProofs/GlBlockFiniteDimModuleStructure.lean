@@ -177,8 +177,6 @@ lemma casVal_lt {μ ν : Ix p q → ℚ} (hμ : ∀ a b, posC a b → ∃ k : �
     obtain ⟨k, hk⟩ := hμ a b hab
     obtain ⟨l, hl⟩ := hν a b hab
     have := rho_lt hab
-    have h1 : (0 : ℚ) ≤ k := Nat.cast_nonneg k
-    have h2 : (0 : ℚ) ≤ l := Nat.cast_nonneg l
     simp only [Pi.add_apply]
     linarith
   rw [casVal_eq, casVal_eq]

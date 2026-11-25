@@ -489,7 +489,6 @@ theorem aut_eq_one (S : Set (HeightOneSpectrum (𝓞 E))) (hS : S.Finite) (F : T
   · rintro ⟨v, _ | _⟩
     exacts [nQ v, nP v]
 
-set_option maxHeartbeats 16000000 in
 theorem rootOne_mem_ray [_root_.NumberField.IsTotallyComplex E] (φ : E →+* ℂ) {n p : ℕ} (hn : n ≠ 0) (hp : p ∣ n)
     {M : IntermediateField ℚ ℂ} (hM : IsRayFieldIn φ (natIdeal E n) M) : rootOne p ∈ M := by
   classical

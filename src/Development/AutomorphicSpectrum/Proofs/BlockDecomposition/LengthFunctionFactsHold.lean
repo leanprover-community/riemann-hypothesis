@@ -264,7 +264,7 @@ theorem lg_unitary (x : Mat n) (k₁ k₂ : Matrix.unitaryGroup (Fin n) ℂ) : l
     hs_left_unitary (k := star k₂.1) (by rw [s₂]; exact u₂),
     hs_right_unitary (k := star k₁.1) (by rw [s₁]; exact v₁)]
 
-theorem lgFacts : LgFacts := fun n =>
+theorem lgFacts : LgFacts := fun _ =>
   ⟨fun x _ y _ => lg_mul_le x y, fun _ hx => lg_inv hx, fun x _ k₁ k₂ => lg_unitary x k₁ k₂,
     contDiffOn_lg, isCompact_G, isCompact_Mat, 2, fun _ hx p => fderiv_lg_le hx (hs_bs p)⟩
 

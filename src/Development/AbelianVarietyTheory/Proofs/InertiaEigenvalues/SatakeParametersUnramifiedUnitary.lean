@@ -211,13 +211,6 @@ theorem heckeVec_eq_sum (ρ : Representation ℂ G V) (K : Subgroup G) (h : G �
   refine finsum_eq_sum_of_support_subset _ fun c hc => hS c fun h0 => hc ?_
   simp [h0]
 
-theorem mem_of_mem_iSup {ι : Type} (ρ : Representation ℂ G V) (σ : Representation ℂ G W) (hσ : σ.IsIrreducible)
-    (f : ι → W →ₗ[ℂ] V) (hf : ∀ i g u, f i (σ g u) = ρ g (f i u)) (K : Set G) (Z : Submodule ℂ V)
-    (hZ : ∀ i v, (∀ k ∈ K, σ k v = v) → f i v ∈ Z) (φ : V)
-    (hK : ∀ k ∈ K, ρ k φ = φ) (hφ : φ ∈ ⨆ i, LinearMap.range (f i)) : φ ∈ Z := by
-  first
-  | (rename_i h_3 h_4 h_5 h_6 h_7; revert G V W h_3 h_4 h_5 h_6 h_7 ι ρ σ hσ f hf K Z hZ φ hK hφ; exact @_root_.GlobalTheory.InvariantSupremum.fixed_mem_of_mem_iSup_range)
-
 end Abstract
 
 end GlobalTheory.InertHeckeEigen
@@ -288,7 +281,7 @@ theorem GlobalTheory.InertHeckeEigen.heckeVec_eq_satU_of_fixed : ∀ (L : Type) 
           refine Finset.sum_congr rfl fun c _ => ?_
           rw [map_smul, hfi]
       _ = lam • fi i v := by rw [e2, map_smul]
-  have hφZ := mem_of_mem_iSup ((RU L n).comp (locU n w).subtype) (σ.ρ.comp p) hirr fi hfi _ Z hZ φ
+  have hφZ := GlobalTheory.InvariantSupremum.fixed_mem_of_mem_iSup_range ((RU L n).comp (locU n w).subtype) (σ.ρ.comp p) hirr fi hfi _ Z hZ φ
     (fun k hk => hfix k hk) hmem
   rw [hT]
   exact ((hZ' φ).1 hφZ).2

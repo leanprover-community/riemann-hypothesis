@@ -142,8 +142,8 @@ private lemma core {G W V : Type} [Group G] [TopologicalSpace G] [IsTopologicalG
   exact hne' (by rw [h0, map_zero])
 
 theorem UpperTheory.Reformulated.B.HasFixedVector.hasFixed :
-    ∀ {F : Type} [inst : Field F] [inst_1 : NumberField F] {n : ℕ} {V : Type} [inst_2 : AddCommGroup V]
-      [inst_3 : _root_.Module ℂ V] {ρ : Representation ℂ (GL (Fin n) (GlobalTheory.CuspRep.Af F)) V}
+    ∀ {F : Type} [Field F] [NumberField F] {n : ℕ} {V : Type} [AddCommGroup V]
+      [_root_.Module ℂ V] {ρ : Representation ℂ (GL (Fin n) (GlobalTheory.CuspRep.Af F)) V}
       {w : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F)}
       {σ : GlobalTheory.CuspRep.SmIrr (GL (Fin n) (IsDedekindDomain.HeightOneSpectrum.adicCompletion F w))},
       UpperTheory.V.Af.LocIsotypic ρ w σ →

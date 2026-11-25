@@ -417,10 +417,3 @@ theorem integral_of_frMap (T : CDVR) [Algebra c.F T.V] (io : c.F →+* T.Fr) : l
         hσ' _ (𝟙 _) p i k hi hk, tri _ (𝟙 _) p _ i k hp' hi hk, Units.val_mul, _root_.mul_assoc]
 
 end GlobalTheory.Reg.ChartInhab
-
-namespace GlobalTheory.Reg
-
-open AlgebraicGeometry CategoryTheory Limits NumberField IsDedekindDomain
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.Reg
-
-end GlobalTheory.Reg

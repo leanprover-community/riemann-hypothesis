@@ -1186,7 +1186,6 @@ theorem inner_pt (w : InfinitePlace I.E) (y z : Fin I.n → I.E) :
   have hc := I.cm.cmUnram.2.1
   have h1 : w.embedding (Formalism.UG.hform (starRingEnd I.E) I.J y z) =
       star (fun i => w.embedding (y i)) ⬝ᵥ (I.J.map w.embedding *ᵥ fun i => w.embedding (z i)) := by
-    set_option synthInstance.maxHeartbeats 100000 in
       simp only [Formalism.UG.hform, map_sum, map_mul, dotProduct, Matrix.mulVec, Matrix.map_apply, Pi.star_apply,
       Finset.mul_sum, starRingEnd_apply, hc, mul_assoc]
   rw [sg, inner_opM, hf, h1, ← frm_pt I x w y, ← frm_pt I x w z, Matrix.star_mulVec,

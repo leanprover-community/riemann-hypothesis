@@ -349,12 +349,12 @@ variable {V V' : Type*} [AddCommGroup V] [Module ℂ V] [AddCommGroup V'] [Modul
 theorem inl_absSpace_le (f : End ℂ V) (g : End ℂ V') (r : ℝ) :
     (absSpace f r).map (LinearMap.inl ℂ V V') ≤ absSpace (f.prodMap g : End ℂ (V × V')) r :=
   map_absSpace_le (f := f) (g := (f.prodMap g : End ℂ (V × V'))) (LinearMap.inl ℂ V V')
-    (fun x => Prod.ext rfl (map_zero g).symm) r
+    (fun _ => Prod.ext rfl (map_zero g).symm) r
 
 theorem inr_absSpace_le (f : End ℂ V) (g : End ℂ V') (r : ℝ) :
     (absSpace g r).map (LinearMap.inr ℂ V V') ≤ absSpace (f.prodMap g : End ℂ (V × V')) r :=
   map_absSpace_le (f := g) (g := (f.prodMap g : End ℂ (V × V'))) (LinearMap.inr ℂ V V')
-    (fun x => Prod.ext (map_zero f).symm rfl) r
+    (fun _ => Prod.ext (map_zero f).symm rfl) r
 
 theorem mem_absSpace_prodMap (f : End ℂ V) (g : End ℂ V') (r : ℝ) (v : V × V') :
     v ∈ absSpace (f.prodMap g : End ℂ (V × V')) r ↔ v.1 ∈ absSpace f r ∧ v.2 ∈ absSpace g r := by

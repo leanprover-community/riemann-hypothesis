@@ -192,7 +192,7 @@ theorem key_X {TA TB : E} (A : FlagG S r TA) (B : FlagG S r TB) (hdet : (Zhat A 
       induction hy using Submodule.span_induction with
       | mem y hy =>
         obtain ⟨i, rfl⟩ := hy
-        rw [← fvec_cs, hΩ.2]
+        rw [← PI.UnitaryGroupMassFormula.BetaLUniq.GN.fvec_castSucc, hΩ.2]
         simp [Fin.castSucc_ne_last]
       | zero => simp
       | add a b _ _ ha hb => rw [map_add (f := _), LinearMap.add_apply, ha, hb, add_zero]
@@ -233,8 +233,6 @@ variable {D : Formalism.BasicNotions.D7} (Zd : LocDat D) {u u' : D.what₂.Word}
   {what₂ : Finset (Submodule (𝓞 D.host.E) (VS D).V)}
 
 variable (u u' F0 what₂)
-
-
 
 theorem betaRat_holds : BetaRat Zd u u' F0 what₂ := by
   intro γ Z F'₂ φ φ' Λ₂ hB
@@ -1551,8 +1549,6 @@ theorem scal_rep (hrows : IsRowReps D F0 what₂) (γ : TermDef.Term D u u' F0 w
     ⟨bp, ip, hps, hpsc⟩
 
 variable (Zd : LocDat D)
-
-
 
 theorem lprExist_of (hI : Formalism.L2.SG.Pf.ScalarFramePf.IotaStep) : LprExist Zd u u' F0 what₂ := by
   intro hrows γ Z hC F'' hP p

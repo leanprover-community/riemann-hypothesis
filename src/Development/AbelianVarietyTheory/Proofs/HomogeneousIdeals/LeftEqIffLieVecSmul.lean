@@ -555,9 +555,3 @@ theorem lieMult_iff (n : ℕ) :
 end Fibre
 
 end GlobalTheory.Diag
-
-namespace GlobalTheory
-
-open Diag
-
-end GlobalTheory

@@ -11,12 +11,7 @@ namespace GlobalTheory.CompanionTheory.LamGap
 
 theorem sum_lt_indicator (N m : ℕ) (h : m ≤ N) :
     (∑ i : Fin N, if (i : ℕ) < m then 1 else 0) = m := by
-  rw [Fin.sum_univ_eq_sum_range (fun i => if i < m then 1 else 0) N, Finset.sum_boole]
-  have hf : (Finset.range N).filter (fun i => i < m) = Finset.range m := by
-    ext i
-    simp only [Finset.mem_filter, Finset.mem_range]
-    omega
-  rw [hf, Finset.card_range, Nat.cast_id]
+  rw [Finset.sum_boole, Fin.card_filter_val_lt, Nat.cast_id, min_eq_right h]
 
 theorem sum_ge_indicator (N m : ℕ) :
     (∑ i : Fin N, if m ≤ (i : ℕ) then 1 else 0) = N - m := by

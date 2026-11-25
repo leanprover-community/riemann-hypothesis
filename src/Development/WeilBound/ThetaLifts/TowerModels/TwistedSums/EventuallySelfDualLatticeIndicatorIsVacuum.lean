@@ -55,13 +55,6 @@ theorem psi_of_at (ψ : AddChar (AF F) ℂ) {v : HeightOneSpectrum (𝓞 F)} {a 
   conv_lhs => rw [eq_of_at ha]
   rfl
 
-end Tw.VacIndic
-
-namespace Tw.VacIndic
-open _root_.GlobalTheory
-
-variable {F : Type} [Field F] [NumberField F]
-
 theorem eq_one_of_pow (z : ℂ) (h : ∀ n : ℕ, ‖z ^ n - 1‖ < 1 / 2) : z = 1 := by
   apply Bl.SecondBlockLemmaN.goal1 <;> assumption
 
@@ -117,13 +110,6 @@ theorem eventually_psiLoc_eq_one (ψ : AddChar (AF F) ℂ) (hψ : Continuous ψ)
   rw [← psiLoc_nsmul]
   exact small _ (nsmul_mem hc n)
 
-end Tw.VacIndic
-
-namespace Tw.VacIndic
-open _root_.GlobalTheory
-
-variable {F : Type} [Field F] [NumberField F]
-
 theorem indicator_int_mem_SB {κ : Type} [Fintype κ] (v : HeightOneSpectrum (𝓞 F)) :
     Set.indicator {x : κ → Fv F v | ∀ k, x k ∈ v.adicCompletionIntegers F} 1 ∈ GlobalTheory.WeilM.SB (κ → Fv F v) := by
   set S : Set (κ → Fv F v) := {x | ∀ k, x k ∈ v.adicCompletionIntegers F} with hS
@@ -149,13 +135,6 @@ theorem indicator_int_ne_zero {κ : Type} (v : HeightOneSpectrum (𝓞 F)) :
   rw [Set.indicator_of_mem (show (0 : κ → Fv F v) ∈ {x : κ → Fv F v | ∀ k, x k ∈ v.adicCompletionIntegers F} from
     fun k => zero_mem _)] at this
   exact one_ne_zero this
-
-end Tw.VacIndic
-
-namespace Tw.VacIndic
-open _root_.GlobalTheory
-
-variable {F : Type} [Field F] [NumberField F]
 
 section AtLemmas
 
@@ -220,12 +199,7 @@ theorem acts_indicator {κ : Type} [Fintype κ] {W : Type} [AddCommGroup W] [Mod
       Set.indicator_of_notMem (show (fun i => evFin F v (x i)) ∉ {y : κ → Fv F v | ∀ k, y k ∈ O} from hx)]
     simp
 
-end Tw.VacIndic
-
-namespace Tw.VacIndic
-open _root_.GlobalTheory
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
+variable {E : Type} [Field E] [NumberField E] [Algebra F E]
 
 theorem cA_smul (σ : E →ₐ[F] E) (c : AF F) (z : AE F E) : cA σ (c • z) = c • cA σ z := map_smul (cA σ) c z
 
@@ -260,11 +234,6 @@ theorem symp_smul_incM (σ : E →ₐ[F] E) (θ : E) (A : Matrix (Fin n) (Fin n)
   rw [symp, hTens_smul_incM, mul_smul_comm, map_smul, ← map_mul, trace_inclR, smul_eq_mul]
   rfl
 
-end Tw.VacIndic
-
-namespace Tw.VacIndic
-open _root_.GlobalTheory
-
 section SympAdd
 
 variable {R E' : Type} [CommRing R] [CommRing E'] [Algebra R E'] (c : E' →ₐ[R] E') (ξ : E')
@@ -292,8 +261,6 @@ theorem symp_zero_right (x : Matrix α β E') : symp c ξ JA JB x 0 = 0 := by
 
 end SympAdd
 
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-
 theorem exists_gen {n d : ℕ} (LX : Submodule (𝓞 E) (Fin n → E)) (LY : Submodule (𝓞 E) (Fin d → E))
     (hX : LX.IsLattice E) (hY : LY.IsLattice E) :
     ∃ G : Finset (Matrix (Fin n) (Fin d) E), ∀ x ∈ LX, ∀ y ∈ LY, vecMulVec x y ∈ AddSubgroup.closure (G : Set _) := by
@@ -317,13 +284,6 @@ theorem exists_gen {n d : ℕ} (LX : Submodule (𝓞 E) (Fin n → E)) (LY : Sub
   | zero => rw [show vecMulVec (0 : Fin n → E) y = 0 by ext; simp [vecMulVec_apply]]; exact zero_mem _
   | add x x' _ _ h h' => rw [show vecMulVec (x + x') y = vecMulVec x y + vecMulVec x' y by ext; simp [vecMulVec_apply, add_mul]]; exact add_mem h h'
   | smul m x _ h => rw [show vecMulVec (m • x) y = m • vecMulVec x y by ext; simp [vecMulVec_apply, mul_assoc]]; exact zsmul_mem h m
-
-end Tw.VacIndic
-
-namespace Tw.VacIndic
-open _root_.GlobalTheory
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
 theorem at_zero {v : HeightOneSpectrum (𝓞 F)} : At (evFin F v) (0 : AF F) := fun u _ => smul_zero u
 
@@ -359,13 +319,6 @@ theorem latAtV_le (X : Spc F E n) (Y : Spc F E d) (G : Finset (Matrix (Fin n) (F
   | zero => rw [incM_zero, smul_zero]; exact zero_mem _
   | add g g' _ _ h h' => rw [incM_add, smul_add]; exact add_mem h h'
   | neg g _ h => rw [incM_neg, smul_neg]; exact neg_mem h
-
-end Tw.VacIndic
-
-namespace Tw.VacIndic
-open _root_.GlobalTheory
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
 theorem isVac_indicator_of_theta {σ : E →ₐ[F] E} (B : Base F E) (hB : B.IsGood σ) {n d : ℕ} (X : Spc F E n)
     (Y : Spc F E d) (r s r' s' : ℕ) (hX : X.IsHerm σ B r s) (hY : Y.IsSkew σ B r' s')
@@ -450,11 +403,6 @@ theorem isVac_indicator_of_theta {σ : E →ₐ[F] E} (B : Base F E) (hB : B.IsG
   rw [← hS, hval, one_smul]
   exact acts_indicator co B.ψ v γ h1 h2 (fun k => (hA γ hγ' k).1) (fun k => (hA γ hγ' k).2.1)
     (fun k => (hA γ hγ' k).2.2.1) (fun k => (hA γ hγ' k).2.2.2)
-
-end Tw.VacIndic
-
-namespace Tw.VacIndic
-open _root_.GlobalTheory
 
 theorem eventually_isVac_indicator : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
     (B : Base F E), B.IsGood σ → ∀ {n d : ℕ} (X : Spc F E n) (Y : Spc F E d) (r s r' s' : ℕ),

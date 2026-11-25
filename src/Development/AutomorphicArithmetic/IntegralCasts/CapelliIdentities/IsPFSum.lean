@@ -14,7 +14,7 @@ section -- clump:auto
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.PolynomialFunction₂.IsPF :
-    {A : Type} → [inst : Ring A] → [Algebra ℂ A] → (ℂ → A) → Prop :=
+    {A : Type} → [Ring A] → [Algebra ℂ A] → (ℂ → A) → Prop :=
   fun {A} _ _ f => ∃ p : Polynomial A, ∀ Y : ℂ, f Y = Polynomial.eval (algebraMap ℂ A Y) p
 end -- clump:auto
 end -- clump:auto
@@ -26,7 +26,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.IsPFSum.isPF_sum :
-    ∀ {A : Type} [inst : Ring A] [inst_1 : Algebra ℂ A] {ι : Type} (s : Finset ι) {f : ι → ℂ → A},
+    ∀ {A : Type} [Ring A] [Algebra ℂ A] {ι : Type} (s : Finset ι) {f : ι → ℂ → A},
       (∀ i ∈ s, UpperTheory.Reformulated.B.PolynomialFunction₂.IsPF (f i)) → UpperTheory.Reformulated.B.PolynomialFunction₂.IsPF fun (Y : ℂ) ↦ ∑ i ∈ s, f i Y := by
   intro A _ _ ι s f h
   classical

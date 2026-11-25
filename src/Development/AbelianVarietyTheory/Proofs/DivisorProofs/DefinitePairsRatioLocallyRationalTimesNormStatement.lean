@@ -114,7 +114,7 @@ theorem isIntB_of_trace_mem :
           (E * ((1 : v.adicCompletion ℚ) ⊗ₜ[ℚ] bL i)) ∈ v.adicCompletionIntegers ℚ) →
         IsIntB v bL E := by
   intro L _ _ κ bL
-  haveI : Fintype κ := FiniteDimensional.fintypeBasisIndex bL
+  have : Fintype κ := FiniteDimensional.fintypeBasisIndex bL
   have hd : Algebra.discr ℚ bL ≠ 0 := Algebra.discr_not_zero_of_basis ℚ bL
   obtain ⟨S, hS⟩ := exists_finset_algebraMap_mem
     (insert (Algebra.discr ℚ bL)⁻¹
@@ -193,7 +193,7 @@ theorem isIntegral_of_isIntB : ∀ (v : HeightOneSpectrum ℤ) (C : Type) [Ring 
     (b : Module.Basis κ ℚ C), IsIntB v b 1 → (∀ y z, IsIntB v b y → IsIntB v b z → IsIntB v b (y * z)) →
       ∀ y, IsIntB v b y → IsIntegral (v.adicCompletionIntegers ℚ) y := by
   intro v C _ _ _ κ b h1 hmul y hy
-  haveI : Fintype κ := FiniteDimensional.fintypeBasisIndex b
+  have : Fintype κ := FiniteDimensional.fintypeBasisIndex b
   set e := Algebra.TensorProduct.basis (v.adicCompletion ℚ) b with he
   have hsmul : ∀ (a : v.adicCompletionIntegers ℚ) (x : v.adicCompletion ℚ ⊗[ℚ] C),
       a • x = (a : v.adicCompletion ℚ) • x := fun a x => (algebraMap_smul (v.adicCompletion ℚ) a x).symm
@@ -491,9 +491,9 @@ theorem small_iff (x : lam v bL h1 hmul) :
 
 theorem isAdicComplete :
     IsAdicComplete (Ideal.span {unif v bL h1 hmul π}) (lam v bL h1 hmul) := by
-  haveI : Fintype κ := FiniteDimensional.fintypeBasisIndex bL
+  have : Fintype κ := FiniteDimensional.fintypeBasisIndex bL
   have key := mem_pow_iff v bL h1 hmul π hπ
-  haveI hO := Formalism.BasicNotions.Examples₂.adicInt_isAdicComplete (K := ℚ) v
+  have hO := Formalism.BasicNotions.Examples₂.adicInt_isAdicComplete (K := ℚ) v
   set e := Algebra.TensorProduct.basis (v.adicCompletion ℚ) bL with he
   refine { toIsHausdorff := ⟨fun x hx => ?_⟩, toIsPrecomplete := ⟨fun f hf => ?_⟩ }
   · suffices h : (x : v.adicCompletion ℚ ⊗[ℚ] L) = 0 from Subtype.ext h
@@ -547,8 +547,8 @@ theorem exists_sqrt : ∀ (v : HeightOneSpectrum ℤ) (L : Type) [Field L] [Numb
       ∀ g : v.adicCompletion ℚ ⊗[ℚ] L, IsIntB v bL g → g ^ 2 = u → IsSmallB v bL (g - 1) → g = ↑f := by
   intro v L _ _ κ bL h2 h1 hmul _ u hu hsu
   obtain ⟨π, hπ⟩ := Formalism.BasicNotions.Examples₂.adicInt_exists_unif (K := ℚ) v
-  haveI := isAdicComplete v bL h1 hmul π hπ
-  haveI : HenselianRing (lam v bL h1 hmul) (Ideal.span {unif v bL h1 hmul π}) :=
+  have := isAdicComplete v bL h1 hmul π hπ
+  have : HenselianRing (lam v bL h1 hmul) (Ideal.span {unif v bL h1 hmul π}) :=
     IsAdicComplete.henselianRing _ _
   have hI := small_iff v bL h1 hmul π hπ
   have hjac : ∀ x ∈ Ideal.span {unif v bL h1 hmul π}, IsUnit (x + 1) := fun x hx => by
@@ -643,8 +643,8 @@ theorem reduced_case (S : Type) [CommRing S] [Finite S] [IsReduced S] (h2 : IsUn
   have key : ∀ I : MaximalSpectrum S, ∃ a b : S ⧸ I.asIdeal,
       a ^ 2 - (Ideal.Quotient.mk I.asIdeal d) * b ^ 2 = Ideal.Quotient.mk I.asIdeal s := by
     intro I
-    letI : Field (S ⧸ I.asIdeal) := Ideal.Quotient.field I.asIdeal
-    haveI : Finite (S ⧸ I.asIdeal) := Finite.of_surjective _ Ideal.Quotient.mk_surjective
+    let : Field (S ⧸ I.asIdeal) := Ideal.Quotient.field I.asIdeal
+    have : Finite (S ⧸ I.asIdeal) := Finite.of_surjective _ Ideal.Quotient.mk_surjective
     have h2' : (2 : S ⧸ I.asIdeal) ≠ 0 := by
       have := (h2.map (Ideal.Quotient.mk I.asIdeal)).ne_zero
       rwa [map_ofNat] at this
@@ -691,7 +691,7 @@ theorem finiteRing_sq_sub_mul_sq_eq_of_card (n : ℕ) : ∀ (S : Type) [CommRing
     rw [← hn]
     classical
     cases nonempty_fintype S
-    haveI : Finite (S ⧸ I) := Finite.of_surjective _ Ideal.Quotient.mk_surjective
+    have : Finite (S ⧸ I) := Finite.of_surjective _ Ideal.Quotient.mk_surjective
     cases nonempty_fintype (S ⧸ I)
     rw [Nat.card_eq_fintype_card, Nat.card_eq_fintype_card]
     apply Fintype.card_lt_of_surjective_not_injective (Ideal.Quotient.mk I) Ideal.Quotient.mk_surjective
@@ -700,7 +700,7 @@ theorem finiteRing_sq_sub_mul_sq_eq_of_card (n : ℕ) : ∀ (S : Type) [CommRing
     apply hinj
     rw [map_zero, Ideal.Quotient.eq_zero_iff_mem]
     exact Ideal.subset_span rfl
-  haveI : Finite (S ⧸ I) := Finite.of_surjective _ Ideal.Quotient.mk_surjective
+  have : Finite (S ⧸ I) := Finite.of_surjective _ Ideal.Quotient.mk_surjective
   obtain ⟨a', b', hab'⟩ := ih _ hlt (S ⧸ I) rfl (h2.map (Ideal.Quotient.mk I)) _ _
     (hd.map (Ideal.Quotient.mk I)) (hs.map (Ideal.Quotient.mk I))
   obtain ⟨a0, rfl⟩ := Ideal.Quotient.mk_surjective a'
@@ -813,14 +813,14 @@ theorem GlobalTheory.ResidueNorm.exists_norm_mod_small : ∀ (v : HeightOneSpect
       zero_mem' := isSmallB_zero v bL
       smul_mem' := fun a b hb => hsm _ _ (hPi a) hb }, fun x => Iff.rfl⟩
 
-  haveI : Finite κ := Module.Finite.finite_basis bL
-  haveI : Finite (ℤ ⧸ v.asIdeal) := Ideal.finiteQuotientOfFreeOfNeBot v.asIdeal v.ne_bot
-  haveI : Finite (IsLocalRing.ResidueField (v.adicCompletionIntegers ℚ)) :=
+  have : Finite κ := Module.Finite.finite_basis bL
+  have : Finite (ℤ ⧸ v.asIdeal) := Ideal.finiteQuotientOfFreeOfNeBot v.asIdeal v.ne_bot
+  have : Finite (IsLocalRing.ResidueField (v.adicCompletionIntegers ℚ)) :=
     Finite.of_equiv _ (GroundTheory.Global.residueFieldEquiv (K := ℚ) v).toEquiv
   let φ : P → κ → IsLocalRing.ResidueField (v.adicCompletionIntegers ℚ) := fun x i =>
     IsLocalRing.residue _ ⟨_, hPi x i⟩
   let out := Function.surjInv (Ideal.Quotient.mk_surjective (I := I))
-  haveI : Finite (P ⧸ I) := by
+  have : Finite (P ⧸ I) := by
     refine Finite.of_injective (fun q => φ (out q)) fun q1 q2 h => ?_
     rw [← Function.surjInv_eq (Ideal.Quotient.mk_surjective (I := I)) q1,
       ← Function.surjInv_eq (Ideal.Quotient.mk_surjective (I := I)) q2, Ideal.Quotient.eq, hmemI]
@@ -904,7 +904,7 @@ theorem good_eventually : ∀ (L : Type) [Field L] [NumberField L] (c : L →ₐ
       (∀ x, IsSmallB v bL x → IsSmallB v bL (Algebra.TensorProduct.map (AlgHom.id ℚ (v.adicCompletion ℚ)) c x)) ∧
       IsIntB v bL ((1 : v.adicCompletion ℚ) ⊗ₜ[ℚ] θ) ∧ IsIntB v bL ((1 : v.adicCompletion ℚ) ⊗ₜ[ℚ] θ⁻¹) := by
   intro L _ _ c κ bL θ
-  haveI : Fintype κ := FiniteDimensional.fintypeBasisIndex bL
+  have : Fintype κ := FiniteDimensional.fintypeBasisIndex bL
   have ev := fun (q : ℚ) => rat_mem_adicCompletionIntegers_eventually q
   have hc : ∀ᶠ v : HeightOneSpectrum ℤ in Filter.cofinite, ∀ t : κ × κ × κ,
       algebraMap ℚ (v.adicCompletion ℚ) (bL.repr (bL t.1 * bL t.2.1) t.2.2) ∈ v.adicCompletionIntegers ℚ :=

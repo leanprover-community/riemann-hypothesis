@@ -106,7 +106,4 @@ theorem polarM_isClosedEmbedding (ε : Fin n → Bool) : Topology.IsClosedEmbedd
 
 end Emb
 
-theorem jac_continuous (ε : Fin n → Bool) : Continuous (fun z : PCoord ε → ℂ => Jac z) :=
-  pb_jac_continuous ε
-
 end ReciprocityTheory.ChartRestriction.DS

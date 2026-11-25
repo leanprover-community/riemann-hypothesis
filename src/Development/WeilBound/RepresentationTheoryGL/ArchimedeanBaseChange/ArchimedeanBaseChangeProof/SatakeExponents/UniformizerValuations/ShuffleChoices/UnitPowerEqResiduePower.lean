@@ -28,11 +28,8 @@ theorem unit_power_eq_residue_power {E : Type} [Field E] [NumberField E] (w : Pl
   rw [dite_eq_left (qh_ne_zero' w)]
 
 theorem zpow_finsum' {ι : Type} (u : ℂˣ) (s : Finset ι) (f : ι → ℤ) :
-    u ^ (∑ i ∈ s, f i) = ∏ i ∈ s, u ^ f i := by
-  refine Finset.induction_on s ?_ ?_
-  · simp
-  · intro a t ha ih
-    rw [Finset.sum_insert ha, Finset.prod_insert ha, _root_.zpow_add, ih]
+    u ^ (∑ i ∈ s, f i) = ∏ i ∈ s, u ^ f i :=
+  map_prod (zpowersHom ℂˣ u) (fun i => Multiplicative.ofAdd (f i)) s
 
 theorem dl_mul_pw {E : Type} [Field E] [NumberField E] (w : Pl E) {m : ℕ} (ξ : Fin m → ℂˣ) (y : Fin m → ℤ) :
     dl w y * pw ξ y = ((∏ i, (ξ i * qU w ((m : ℤ) - 1 - 2 * (i : ℕ))) ^ y i : ℂˣ) : ℂ) := by

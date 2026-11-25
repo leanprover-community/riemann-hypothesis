@@ -227,15 +227,12 @@ theorem v_lt_a {i : ℕ} (h1 : 2 ≤ i) (h2 : i ≤ D.R.k) : ((Γ).v i : ℚ) < 
 theorem weightX_above {j : ℕ} (hj : j + 1 ≤ D.R.m) {x y : ℚ} (hx : x ∈ (Γ).weightX j) (hy : y ∈ (Γ).blockMPlus (j + 1)) : y < x := by
   have hm : 1 ≤ D.R.m := by omega
   have hk : 2 ≤ D.R.k := by have := D.R.m_add_three_le_k; omega
-  have ht : (0 : ℚ) ≤ D.R.t := by positivity
-  have hg : (0 : ℚ) ≤ (Γ).ga := by positivity
   obtain ⟨y1, y2⟩ := blockMPlus_bd D C τ hy
   have hbe := num_be D C τ (l := 1) le_rfl hm
   have he1 : ((Γ).e 1 : ℚ) ≤ (Γ).e (j + 1) := by
     rcases Nat.eq_zero_or_pos j with rfl | h
     · exact le_rfl
     · linarith [num_e_lt D C τ (l := 1) (l' := j + 1) le_rfl (by omega) hj]
-  have hlow : y < -((Γ).b 1 : ℚ) := by linarith
   have hc2 := num_cloud D C τ (i := 2) le_rfl hk
   have ham : (Γ).a (Γ).m = (Γ).v 2 + (Γ).ga + 1 / 2 := (Γ).a_m
   rcases GridData.mem_weightX.1 hx with h | h | ⟨i, h1, h2, h⟩ | ⟨l, h1, h2, h⟩
@@ -355,7 +352,6 @@ theorem card_Ms : ((Icc 1 (Γ).m).biUnion (Γ).blockM).card = D.R.m * D.R.t := b
   · intro i hi j hj hij
     have hi := mem_Icc.1 hi
     have hj := mem_Icc.1 hj
-    have ht : (0 : ℚ) ≤ D.R.t := by positivity
     refine disjoint_left.2 fun x h1 h2 => ?_
     obtain ⟨a1, a2⟩ := blockM_bd D C τ h1
     obtain ⟨b1, b2⟩ := blockM_bd D C τ h2
@@ -385,7 +381,6 @@ theorem lows_le {x : ℚ} (hx : x ∈ (Γ).lows) : x ≤ -((Γ).b 1 : ℚ) := by
 theorem Ms_lt {x : ℚ} (hx : x ∈ (Icc 1 (Γ).m).biUnion (Γ).blockM) : x < -((Γ).b 1 : ℚ) := by
   obtain ⟨l, hl, hx⟩ := mem_biUnion.1 hx
   have hl := mem_Icc.1 hl
-  have ht : (0 : ℚ) ≤ D.R.t := by positivity
   have hbe := num_be D C τ hl.1 hl.2
   have hb := num_b_le D C τ le_rfl hl.1 hl.2
   linarith [(blockM_bd D C τ hx).2]
@@ -399,7 +394,6 @@ theorem low_lt_a {x : ℚ} (h : x ≤ -((Γ).b 1 : ℚ)) : x < (Γ).a (Γ).m := 
   linarith [cloud_gt D C τ (x := ((Γ).v 2 : ℚ)) (GridData.mem_cloud.2 ⟨2, le_rfl, hk, rfl⟩)]
 
 theorem disj_lows_Ms : Disjoint (Γ).lows ((Icc 1 (Γ).m).biUnion (Γ).blockM) := by
-  have ht : (0 : ℚ) ≤ D.R.t := by positivity
   have hm : (Γ).m = D.R.m := rfl
   refine disjoint_left.2 fun x h0 h2 => ?_
   obtain ⟨l, h1, h1', rfl⟩ := GridData.mem_lows.1 h0

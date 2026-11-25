@@ -692,8 +692,6 @@ namespace GlobalTheory.LeviUnip
 
 variable {n n₀ a : ℕ} {j : Fin a → ℕ}
 
-theorem uone {ε : Fin n → Bool} : uMat (1 : UJ ε) = 1 := rfl
-
 theorem col_mem {B : ∀ i, Matrix (Fin n) (Fin (j i)) ℂ} {W : Fin (a + 1) → Submodule ℂ (Fin n → ℂ)}
     (hB : SpansFlag B W) {k : Fin (a + 1)} {i : Fin a} (hi : i.castSucc < k) (u : Fin (j i) → ℂ) :
     B i *ᵥ u ∈ W k := by

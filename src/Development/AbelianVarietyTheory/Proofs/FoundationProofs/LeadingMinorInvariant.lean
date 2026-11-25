@@ -224,9 +224,3 @@ lemma exists_S (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z)
     rw [Matrix.mul_assoc, hmF, ← Matrix.mul_assoc, hF]
 
 end GlobalTheory.LeadingMinorInv
-
-namespace GlobalTheory
-
-open Formalism.QuantumDeterminants LeadingMinorInv
-
-end GlobalTheory

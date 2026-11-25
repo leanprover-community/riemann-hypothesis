@@ -14,8 +14,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.ExistsNsmulMemClosure.exists_nsmul_mem_closure.{u_1} :
-    ∀ {V : Type u_1} [inst : AddCommGroup V]
-    [inst_1 : _root_.Module ℚ V] (s : Set V),
+    ∀ {V : Type u_1} [AddCommGroup V]
+    [_root_.Module ℚ V] (s : Set V),
     ∀ w ∈ Submodule.span ℚ s, ∃ (k : ℕ), (0 : ℕ) < k ∧ k • w ∈ AddSubgroup.closure s := by
   intro V _ _ s w hw
   induction hw using Submodule.span_induction with

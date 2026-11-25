@@ -420,7 +420,6 @@ theorem good_top_grid : Good 0 1 1 ((Γ).weightX D.R.m) (entries ((Γ).parD D.R.
       have e2 := num_b_le D C τ (i := i + 1) (j := j) (by omega) h2 (by omega)
       have e3 := chiGrid_row_entries_lower_bound D C τ h1 (by omega) hx
       have e4 := chiGrid_row_entries_upper_bound D C τ (by omega) (by omega) hy
-      have ht : (0 : ℚ) ≤ D.R.t := by positivity
       linarith
   have memU : ∀ y ∈ (Ico 1 (1 + D.R.m)).biUnion (fun i => (Γ).blockC' i ∪ {(Γ).a i}) ∪
       (Ico 1 (1 + D.R.m)).biUnion (fun i => (Γ).blockC i), ∃ i, 1 ≤ i ∧ i ≤ D.R.m ∧
@@ -623,7 +622,6 @@ theorem low_mem_weightX : -((Γ).e D.R.m : ℚ) - (D.R.t : ℚ) / 2 ∈ (Γ).wei
 
 theorem min_weightX {y : ℚ} (hy : y ∈ (Γ).weightX D.R.m) : -((Γ).e D.R.m : ℚ) - (D.R.t : ℚ) / 2 ≤ y := by
   have hm2 := D.R.two_le_m
-  have hz := low_mem_weightX D C τ
   obtain ⟨j, hj⟩ : ∃ j, D.R.m = j + 1 := ⟨D.R.m - 1, by omega⟩
   have hz' : -((Γ).e D.R.m : ℚ) - (D.R.t : ℚ) / 2 ∈ (Γ).blockMPlus D.R.m := by
     have et : ((Γ).t : ℚ) = D.R.t := rfl

@@ -30,12 +30,8 @@ theorem sz_mono {r r' : ℝ} {x : ℂ} (hx : Sz l lam r x) (h : r ≤ r') : Sz l
   obtain ⟨hx, hx'⟩ := hx
   exact ⟨hx, hx'.trans (Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hl.out.one_lt.le) h)⟩
 
-theorem norm_nat_le (n : ℕ) : ‖(n : ℂ_[l])‖ ≤ 1 := by
-  induction n with
-  | zero => simp
-  | succ n ih =>
-    push_cast
-    exact (IsUltrametricDist.norm_add_le_max _ _).trans (max_le ih (by simp))
+theorem norm_nat_le (n : ℕ) : ‖(n : ℂ_[l])‖ ≤ 1 :=
+  IsUltrametricDist.norm_natCast_le_one ℂ_[l] n
 
 theorem sz_nat (n : ℕ) : Sz l lam 0 (n : ℂ) := by
   refine ⟨natCast_mem _ n, ?_⟩

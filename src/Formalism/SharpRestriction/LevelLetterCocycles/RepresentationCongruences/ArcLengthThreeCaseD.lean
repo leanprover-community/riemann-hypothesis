@@ -277,16 +277,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
 
 variable [FiniteDimensional Qp LL]
 
-theorem ArcLengthThreeDescent.letE_mem (W : LocWach PD LL O v n) (c : ZMod n) : (letE (O := O) c : LetA O n) ∈ W.AΔ := by
-  show ∀ δ ∈ W.DelF, W.γA δ (letE c) = letE c
-  intro δ _
-  funext i
-  show (W.γ₀ δ) ((letE c : LetA O n) i) = (letE c : LetA O n) i
-  by_cases h : i = c
-  · subst h
-    simp [Formalism.BasicNotions.letE]
-  · simp [Formalism.BasicNotions.letE, h]
-
 theorem ArcLengthThreeDescent.split [IsDomain O] [IsDiscreteValuationRing O] [IsAdicComplete (IsLocalRing.maximalIdeal O) O]
     (W : LocWach PD LL O v n) (hcase : Formalism.MainNotions.LiftingTheory.CaseA W) (hP9 : Formalism.MainNotions.DeltaInvariantLattices.P9W W)
     (T : LocLat G Qp LL O) (hT : IsCrys PD T.ρ) (hO : ∀ x : O, 0 ≤ v (algebraMap O LL x))
@@ -330,7 +320,7 @@ theorem ArcLengthThreeDescent.split [IsDomain O] [IsDiscreteValuationRing O] [Is
     have := congrArg (algebraMap O W.EE) hX₂
     simpa [lE, map_mul, map_pow, map_natCast] using this
   have he := _root_.Formalism.MainNotions.LiftingTheory.letter_idempotent_sq (O := O) (n := n) c
-  have heM := ArcLengthThreeDescent.letE_mem W c
+  have heM := Formalism.MainNotions.N.FrobeniusPowerSeries.TypesD.letE_mem W c
   have hpsM : ∀ s : ℕ, ps W s ∈ W.AΔ := fun s => by rw [Br.ps_eq]; exact Br.cst_mem _
   have hlM : lA W ∈ W.AΔ := by rw [Br.lA_eq]; exact Br.cst_mem _
   obtain ⟨u₀, hu₀, hf1e⟩ := hf1

@@ -577,7 +577,7 @@ structure RestY (Y₀ : NExp R H rows₀ LL₀ N₀ X₀) (what₂ : Rows.Data R
   eAlg_def : ∀ i b (g : G0g N₀), (Y₀.eAlg i b).coeff g =
     IsFractionRing.map (A := X₀.O0 i) (B := X₀.O i) (K := FractionRing (X₀.O0 i))
       (L := FractionRing (X₀.O i)) (X₀.O_inj i) ((if b then x.emb0 i else x.emb0b i) (eLL0 g))
-  twPsi : ∀ i j b k (ψ : G H.E N₀.Om →* (X₀.Ok i k)ˣ),
+  twPsi : ∀ i j b k (_ : G H.E N₀.Om →* (X₀.Ok i k)ˣ),
     Y₀.Fm i j b →ₗ[X₀.O i] (X₀.Ok i k ⊗[X₀.O i] Y₀.Fm i j b)
   twPsi_one : ∀ i j b k (f : Y₀.Fm i j b), twPsi i j b k 1 f = (1 : X₀.Ok i k) ⊗ₜ[X₀.O i] f
   twDel : ∀ i j b (Q : Finset (PlE H)) (M : ℕ),

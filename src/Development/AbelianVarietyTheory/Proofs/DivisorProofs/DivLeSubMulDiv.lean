@@ -88,9 +88,6 @@ theorem gaps_of_wtBig : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (
   · obtain ⟨h₁, h₂, h₃⟩ := hmain τ k h
     have h₄ := gap_kap_le τ h
     push_cast at h₄
-    have hC : (0 : ℤ) ≤ (((dimFlag Dw + 1).choose 2 : ℕ) : ℤ) := by positivity
-    have hD : (0 : ℤ) ≤ (dimFlag Dw : ℤ) := by positivity
-    have hN : (2 : ℤ) ≤ (Dw.p : ℤ) + Dw.q := by omega
     have hb : (0 : ℤ) ≤ ((dimFlag Dw : ℤ) + 2) * gap (P.ub τ) k := by
       apply mul_nonneg <;> linarith
     try simp only [Pi.sub_apply, Pi.smul_apply, gap_sub, gap_nsmul]

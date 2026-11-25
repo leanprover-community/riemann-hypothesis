@@ -709,16 +709,6 @@ instance Cube.extendScalars_additive {S : Type u'} [CommRing S] (f : R →+* S) 
     letI := ((algebraMap S S).comp f).toAlgebra
     exact ModuleCat.hom_ext (LinearMap.baseChange_add g.hom h.hom)
 
-noncomputable def cubeExtendScalarsIso [LinearOrder ι] [Finite ι] {S : Type u'} [CommRing S]
-    (f : R →+* S) (A : Cube.{v} ι R) :
-    ((ModuleCat.extendScalars f).mapHomologicalComplex _).obj (cubeComplex A) ≅
-      cubeComplex (A ⋙ ModuleCat.extendScalars f) :=
-  haveI : ∀ p, IsIso ((cubeComparison (ModuleCat.extendScalars f) A).f p) :=
-    Cube.isIso_termComparison (ModuleCat.extendScalars f) A
-  haveI := HomologicalComplex.Hom.isIso_of_components
-    (cubeComparison (ModuleCat.extendScalars f) A)
-  asIso (cubeComparison _ A)
-
 noncomputable def cechExtendScalarsIso [LinearOrder ι] [Finite ι] {S : Type u'} [CommRing S]
     (f : R →+* S) (A : Cube.{v} ι R) :
     ((ModuleCat.extendScalars f).mapHomologicalComplex _).obj (cechComplex A) ≅

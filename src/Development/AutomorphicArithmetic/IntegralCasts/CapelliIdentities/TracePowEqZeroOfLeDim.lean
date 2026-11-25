@@ -10,7 +10,7 @@ public import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
 
 theorem UpperTheory.Reformulated.B.Qh19.trace_pow_eq_zero_of_le_dim.{u_1} :
     ∀ {K : Type u_1}
-    [inst : Field K] (r : ℕ) (N : Matrix (Fin r) (Fin r) K),
+    [Field K] (r : ℕ) (N : Matrix (Fin r) (Fin r) K),
     (∀ (k : ℕ), (1 : ℕ) ≤ k → k ≤ r → (N ^ k).trace = (0 : K)) → ∀ (k : ℕ), (1 : ℕ) ≤ k → (N ^ k).trace = (0 : K) := by
   intro K _ r N h k
   induction k using Nat.strong_induction_on with

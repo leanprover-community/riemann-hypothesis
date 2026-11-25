@@ -38,7 +38,7 @@ abbrev Dr (Ω : Type) {L : Type} [Field Ω] [Field L] [Algebra Ω L] (A : Subalg
   Algebra.adjoin Ω ((A : Set L) ∪ {u⁻¹})
 
 theorem le_Dr_A {Ω L : Type} [Field Ω] [Field L] [Algebra Ω L] (A : Subalgebra Ω L) (u : L) : A ≤ Dr Ω A u :=
-  fun x hx => Algebra.subset_adjoin (Set.mem_union_left _ hx)
+  fun _ hx => Algebra.subset_adjoin (Set.mem_union_left _ hx)
 
 theorem le_Dr_B {Ω L : Type} [Field Ω] [Field L] [Algebra Ω L] (A B : Subalgebra Ω L) (u : L)
     (h : Algebra.adjoin Ω ((A : Set L) ∪ {u⁻¹}) = Algebra.adjoin Ω ((B : Set L) ∪ {u})) : B ≤ Dr Ω A u := by

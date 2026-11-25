@@ -151,7 +151,6 @@ theorem c_le (L : SizeData₂ D) (j : Fin D.R.m) (τ : D.what₂.Tau) (hv : Vals
   have ht0 := D.R.t_odd.pos
   have hk := D.R.m_add_three_le_k
   have hm2 := D.R.two_le_m
-  have hm : 0 < D.R.m := by omega
   by_cases hj : (j : ℕ) + 1 < D.R.m
   · have h := hv.2.2.2 ⟨D.R.m - 1, by omega⟩ (by simp; omega)
     have hrow : D.R.k - 1 + (D.R.m - 1) + D.R.t = (Vc D j).rank - 1 := by omega

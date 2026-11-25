@@ -109,10 +109,6 @@ theorem negTwist_mem (P : LocPrime l) (K LL : FinExt l) (e : ℕ) (g : ↥(GK K)
   rw [this, Units.val_pow_eq_pow_val]
   exact Subalgebra.pow_mem _ (cyc_mem P K LL _) e
 
-def tateLat (P : LocPrime l) (K LL : FinExt l) (e : ℕ) :
-    Lattice (O := ↥(OL LL)) (charRep (negTwist P K LL e)) :=
-  charLat Subtype.val_injective _ fun g => ⟨⟨_, negTwist_mem P K LL e g⟩, rfl⟩
-
 variable {P : LocPrime l} (AI : LocAinf l P)
 
 def piS (s : ℕ) : Ainf l := WittVector.teichmuller l (AI.εroot s) - 1

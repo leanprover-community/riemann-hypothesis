@@ -203,8 +203,4 @@ theorem lowK_holPar (h : HolOK p q κ) {lam : Fin n → ℝ} {ε : Fin n → Boo
 
 end GlobalTheory.HolDS
 
-namespace GlobalTheory.Published
-
-end GlobalTheory.Published
-
 end

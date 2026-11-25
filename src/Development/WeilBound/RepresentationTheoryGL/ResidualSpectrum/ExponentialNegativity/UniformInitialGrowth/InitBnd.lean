@@ -86,7 +86,7 @@ theorem pFin_diag (r : Fin n → ℝ) (hr : ∀ i, 0 < r i) :
   · exact map_zero _
 
 theorem pFin_tor (x : Fin n → ℝ) : Matrix.GeneralLinearGroup.map (pFin E) (An.tor E x) = 1 :=
-  pFin_diag (fun i => Real.exp (x i)) (fun i => Real.exp_pos _)
+  pFin_diag (fun i => Real.exp (x i)) (fun _ => Real.exp_pos _)
 
 variable [_root_.NumberField.IsTotallyComplex E]
 

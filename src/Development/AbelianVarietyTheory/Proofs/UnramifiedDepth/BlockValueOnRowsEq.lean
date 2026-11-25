@@ -620,16 +620,9 @@ end GlobalTheory.BlockValue
 
 open scoped BigOperators in
 variable {C : Type} [Field C] {σ κ : Type} in
-private lemma coeff_mvExp_eq_sum_range_degree_succ (f : MvPowerSeries σ C) (m : σ →₀ ℕ) :
-    MvPowerSeries.coeff m (_root_.Formalism.IncomingBounds.mvExp f) =
-      ∑ k ∈ Finset.range (m.degree + 1), MvPowerSeries.coeff m (f ^ k) / (k.factorial : C) :=
-  rfl
-
-open scoped BigOperators in
-variable {C : Type} [Field C] {σ κ : Type} in
 private lemma mvExp_zero_unramified_depth : _root_.Formalism.IncomingBounds.mvExp (0 : MvPowerSeries σ C) = 1 := by
   ext m
-  rw [coeff_mvExp_eq_sum_range_degree_succ, Finset.sum_eq_single 0]
+  rw [GlobalTheory.DiagBlock.coeff_mvExp', Finset.sum_eq_single 0]
   · simp
   · intro k _ hk
     simp [zero_pow hk]
@@ -651,7 +644,7 @@ private lemma coeff_mvExp_eq_sum_range_of_degree_lt (f : MvPowerSeries σ C)
     (hf : MvPowerSeries.constantCoeff f = 0) (m : σ →₀ ℕ) (N : ℕ) (hN : m.degree < N) :
     MvPowerSeries.coeff m (_root_.Formalism.IncomingBounds.mvExp f) =
       ∑ k ∈ Finset.range N, MvPowerSeries.coeff m (f ^ k) / (k.factorial : C) := by
-  rw [coeff_mvExp_eq_sum_range_degree_succ]
+  rw [GlobalTheory.DiagBlock.coeff_mvExp']
   refine Finset.sum_subset (fun x hx => by simp only [Finset.mem_range] at hx ⊢; omega) fun k _ hk => ?_
   rw [Finset.mem_range, not_lt] at hk
   rw [coeff_pow_eq_zero_of_degree_lt_unramified_depth f hf k m (by omega), zero_div]
@@ -781,7 +774,7 @@ variable {C : Type} [Field C] {σ κ : Type} in
 private lemma onlyIn_mvExp {S : σ → Prop} {f : MvPowerSeries σ C}
     (hf : _root_.GlobalTheory.BlockValue.OnlyIn S f) : _root_.GlobalTheory.BlockValue.OnlyIn S (_root_.Formalism.IncomingBounds.mvExp f) := by
   intro m hm
-  rw [coeff_mvExp_eq_sum_range_degree_succ] at hm
+  rw [GlobalTheory.DiagBlock.coeff_mvExp'] at hm
   obtain ⟨k, -, hk⟩ := Finset.exists_ne_zero_of_sum_ne_zero hm
   exact onlyIn_pow hf k m fun h => hk (by rw [h, zero_div])
 
@@ -939,7 +932,7 @@ private lemma lead_zero_mvExp (π : σ → κ) (f : MvPowerSeries σ C) :
     have hdeg : (m.mapDomain π).degree = 0 := by rw [h0, map_zero]
     rw [Finsupp.degree_mapDomain] at hdeg
     exact (Finsupp.degree_eq_zero_iff m).1 hdeg
-  · rw [coeff_mvExp_eq_sum_range_degree_succ]
+  · rw [GlobalTheory.DiagBlock.coeff_mvExp']
     simp
 
 open scoped BigOperators in
@@ -961,7 +954,6 @@ private lemma mapDomain_sideRow_inr {n : ℕ} (m : _root_.Formalism.IncomingBoun
   simp [Fintype.sum_sum_type, Fintype.sum_prod_type, _root_.GlobalTheory.BlockValue.sideRow, Finsupp.single_apply]
   rw [Finset.sum_eq_single ρ (fun b _ hb => by simp [hb]) (by simp)]
   simp
-
 
 open scoped BigOperators in
 variable {C : Type} [Field C] {σ κ : Type} in

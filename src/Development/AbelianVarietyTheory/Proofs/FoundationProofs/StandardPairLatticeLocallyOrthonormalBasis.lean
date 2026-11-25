@@ -12,58 +12,14 @@ public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HeckeCharacterTrivialNearOne
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Formalism.LocalToGlobal.ProjectiveLattices.HostRank
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.PicardGroup
-import Mathlib.Tactic.Polynomial.Basic
 import Development.AbelianVarietyTheory.Definitions.Foundations.NormSumPairRankZeroOfCurveCoordNorm
 
 -- This file was produced by scripts/clump.py from the modules listed below.
@@ -821,14 +777,6 @@ theorem binary_one_mod : ∀ (p : ℕ) (u v : ℚ), p.Prime → padicNorm p u = 
   exact lt_of_le_of_lt padicNorm.nonarchimedean (max_lt (lt_of_le_of_lt padicNorm.nonarchimedean
     (max_lt (h2 _ _ hum) (h2 _ _ hvn))) h1)
 
-theorem exists_unit_vector : ∀ (K V : Type) [Field K] [CharZero K] [AddCommGroup V] [Module K V] (σ : K →+* K) (h : V →ₗ[K] V →ₛₗ[σ] K) (p d : ℕ) (θ : K) (O : Subring K) (L : AddSubgroup V), p.Prime → d.Prime → θ ^ 2 = -(d : K) → σ θ = -θ → (∀ x : K, ∃ a b : ℚ, x = (a : K) + (b : K) * θ) → (∀ x ∈ O, σ x ∈ O) → (1 + θ) / 2 ∈ O → (∀ r : ℚ, (r : K) ∈ O ↔ padicNorm p r ≤ 1) → (∀ x y : V, h y x = σ (h x y)) → (∀ x : V, h x x = 0 → x = 0) → (∀ a ∈ O, ∀ x ∈ L, a • x ∈ L) → (∀ x ∈ L, ∀ y ∈ L, h x y ∈ O) → (∀ x : V, ∃ m : ℕ, (p : K) ^ m • x ∈ L) → ∀ W : Submodule K V, (∀ x ∈ W, (∀ y ∈ L, y ∈ W → h x y ∈ O) → x ∈ L) → (∃ x ∈ W, x ≠ 0) → ∃ y ∈ L, y ∈ W ∧ ∃ u : ℚ, h y y = (u : K) ∧ padicNorm p u = 1 := _root_.GlobalTheory.exists_unit_norm_of_selfDual_hermitian_lattice
-
-theorem exists_one_mod : ∀ (K V : Type) [Field K] [CharZero K] [AddCommGroup V] [Module K V] (σ : K →+* K) (h : V →ₗ[K] V →ₛₗ[σ] K) (p d : ℕ) (θ : K) (O : Subring K) (L : AddSubgroup V), p.Prime → d.Prime → θ ^ 2 = -(d : K) → σ θ = -θ → (∀ x : K, ∃ a b : ℚ, x = (a : K) + (b : K) * θ) → (∀ x ∈ O, σ x ∈ O) → (1 + θ) / 2 ∈ O → (∀ r : ℚ, (r : K) ∈ O ↔ padicNorm p r ≤ 1) → (∀ x y : V, h y x = σ (h x y)) → (∀ x : V, h x x = 0 → x = 0) → (∀ a ∈ O, ∀ x ∈ L, a • x ∈ L) → (∀ x ∈ L, ∀ y ∈ L, h x y ∈ O) → (∀ x : V, ∃ m : ℕ, (p : K) ^ m • x ∈ L) → (∀ u v : ℚ, padicNorm p u = 1 → padicNorm p v = 1 → ∃ a b : ℤ, padicNorm p (u * (a : ℚ) ^ 2 + v * (b : ℚ) ^ 2 - 1) < 1) → (∀ W : Submodule K V, (∀ x ∈ W, (∀ y ∈ L, y ∈ W → h x y ∈ O) → x ∈ L) → (∃ x ∈ W, x ≠ 0) → ∃ y ∈ L, y ∈ W ∧ ∃ u : ℚ, h y y = (u : K) ∧ padicNorm p u = 1) → ∀ W : Submodule K V, (∀ x ∈ W, (∀ y ∈ L, y ∈ W → h x y ∈ O) → x ∈ L) → (∃ e ∈ W, h e e = 1) → ∃ y ∈ L, y ∈ W ∧ ∃ u : ℚ, h y y = (u : K) ∧ padicNorm p (u - 1) < 1 := _root_.GlobalTheory.selfDual_lattice_exists_norm_one_mod
-
-theorem exists_norm_one : ∀ (K V : Type) [Field K] [CharZero K] [AddCommGroup V] [Module K V] (σ : K →+* K) (h : V →ₗ[K] V →ₛₗ[σ] K) (p d : ℕ) (θ : K) (O : Subring K) (L : AddSubgroup V), p.Prime → d.Prime → θ ^ 2 = -(d : K) → σ θ = -θ → (∀ x : K, ∃ a b : ℚ, x = (a : K) + (b : K) * θ) → (∀ x ∈ O, σ x ∈ O) → (1 + θ) / 2 ∈ O → (∀ r : ℚ, (r : K) ∈ O ↔ padicNorm p r ≤ 1) → (∀ x y : V, h y x = σ (h x y)) → (∀ x : V, h x x = 0 → x = 0) → (∀ a ∈ O, ∀ x ∈ L, a • x ∈ L) → (∀ x ∈ L, ∀ y ∈ L, h x y ∈ O) → (∀ x : V, ∃ m : ℕ, (p : K) ^ m • x ∈ L) → ∀ W : Submodule K V, (∃ e ∈ W, h e e = 1) → (∃ y ∈ L, y ∈ W ∧ ∃ u : ℚ, h y y = (u : K) ∧ padicNorm p (u - 1) < 1) → ∃ z ∈ L, z ∈ W ∧ h z z = 1 := _root_.GlobalTheory.exists_lattice_norm_one_of_norm_one_mod
-
-theorem orthonormal_of_diagonal : ∀ (K V : Type) [Field K] [NumberField K] [AddCommGroup V] [Module K V] (σ : K →+* K) (h : V →ₗ[K] V →ₛₗ[σ] K) (d : ℕ) (θ : K), 0 < d → θ ^ 2 = -(d : K) → σ θ = -θ → (∀ x : K, ∃ a b : ℚ, x = (a : K) + (b : K) * θ) → ∀ (r : ℕ) (v : Fin r → V) (a : Fin r → ℚ), (∀ i, 0 < a i) → (∀ i j, h (v i) (v j) = if i = j then (a i : K) else 0) → IsSquare (∏ i, a i) → ∃ e : Fin r → V, ∀ i j, h (e i) (e j) = if i = j then 1 else 0 := _root_.GlobalTheory.SqDet.exists_orthonormal_of_diag_pos_isSquare
-
 theorem exists_local_ring : ∀ (K : Type) [Field K] [CharZero K] (p : ℕ), p.Prime → ∃ O : Subring K, (∀ x : K, x ∈ O ↔ ∃ s : ℕ, Nat.Coprime s p ∧ IsIntegral ℤ ((s : K) * x)) ∧ ∀ r : ℚ, (r : K) ∈ O ↔ padicNorm p r ≤ 1 := by
   intro K _ _ p hp
   haveI : Fact p.Prime := ⟨hp⟩
@@ -869,8 +817,6 @@ theorem exists_local_ring : ∀ (K : Type) [Field K] [CharZero K] (p : ℕ), p.P
     · have : ((r.den : ℕ) : K) * (r : K) = (r.num : K) := by
         rw [← Rat.cast_natCast, ← Rat.cast_mul, Rat.den_mul_eq_num, Rat.cast_intCast]
       rw [this]; exact isIntegral_algebraMap (R := ℤ) (x := r.num)
-
-theorem host_quadratic : ∀ D : D7, Module.finrank D.host.K D.host.E = fF D ∧ ∃ (σ : D.host.K →+* D.host.K) (θ : D.host.K), (∀ x : D.host.K, ((σ x : D.host.K) : D.host.E) = D.host.conj (x : D.host.E)) ∧ θ ^ 2 = -(D.host.d : D.host.K) ∧ σ θ = -θ ∧ (∀ x : D.host.K, ∃ a b : ℚ, x = (a : D.host.K) + (b : D.host.K) * θ) ∧ IsIntegral ℤ ((1 + θ) / 2) ∧ (∀ y : D.host.E, D.host.conj (D.host.conj y) = y) ∧ (∀ y : D.host.E, Algebra.trace D.host.K D.host.E (D.host.conj y) = σ (Algebra.trace D.host.K D.host.E y)) ∧ ∀ y : D.host.E, y ≠ 0 → ∃ a : ℚ, 0 < a ∧ Algebra.trace D.host.K D.host.E (y * D.host.conj y) = (a : D.host.K) := _root_.GlobalTheory.QuadSubfield.quadratic_subfield
 
 theorem mem_iff_entries : ∀ (D : D7) (N N' : ℕ) (x : Matrix (Fin N') (Fin N) D.host.E), x ∈ YYl D (stdL D N) (stdL D N') ↔ ∀ i j, x i j ∈ D.host.AA0 := by
   intro D N N' x
@@ -944,10 +890,10 @@ theorem local_frame : ∀ (K V : Type) [Field K] [CharZero K] [AddCommGroup V] [
   | succ n ih =>
     intro W e hW he hee
     have h0 : ∃ e ∈ W, h e e = 1 := ⟨e 0, he 0, by simpa using hee 0 0⟩
-    obtain ⟨z, hzL, hzW, hz⟩ := exists_norm_one K V σ h p d θ O L hp hd hθ hσ hK hO hω hQ hh hdef hL hLL hb W h0
-      (exists_one_mod K V σ h p d θ O L hp hd hθ hσ hK hO hω hQ hh hdef hL hLL hb
+    obtain ⟨z, hzL, hzW, hz⟩ := GlobalTheory.exists_lattice_norm_one_of_norm_one_mod K V σ h p d θ O L hp hd hθ hσ hK hO hω hQ hh hdef hL hLL hb W h0
+      (GlobalTheory.selfDual_lattice_exists_norm_one_mod K V σ h p d θ O L hp hd hθ hσ hK hO hω hQ hh hdef hL hLL hb
         (fun u v => binary_one_mod p u v hp)
-        (exists_unit_vector K V σ h p d θ O L hp hd hθ hσ hK hO hω hQ hh hdef hL hLL hb) W hW h0)
+        (GlobalTheory.exists_unit_norm_of_selfDual_hermitian_lattice K V σ h p d θ O L hp hd hθ hσ hK hO hω hQ hh hdef hL hLL hb) W hW h0)
     obtain ⟨e', he', hee', hez⟩ := exists_orthonormal_perp K V σ h hh hdef W n e z he hee hzW hz
     obtain ⟨b, hb1, hb2⟩ := ih (W ⊓ LinearMap.ker (h.flip z)) e' (by
       intro x hx hy
@@ -1030,7 +976,7 @@ theorem hYY_single (D : D7) {N N' : ℕ} (x : Matrix (Fin N') (Fin N) D.host.E) 
 
 theorem exists_orthonormal (D : D7) (N N' : ℕ) (hev : Even (N * N')) :
     ∃ e : Fin (fF D * N * N') → Matrix (Fin N') (Fin N) D.host.E, Orthonormal D e := by
-  obtain ⟨hf, σ, θ, hσ, hθ, hσθ, hK, -, hc, ht, hp⟩ := host_quadratic D
+  obtain ⟨hf, σ, θ, hσ, hθ, hσθ, hK, -, hc, ht, hp⟩ := GlobalTheory.QuadSubfield.quadratic_subfield D
   obtain ⟨h₁, hh₁⟩ := exists_form D σ hσ 1 1
   obtain ⟨h, hh⟩ := exists_form D σ hσ N N'
   obtain ⟨w, hw0, hw⟩ := exists_orthogonal D.host.K (Matrix (Fin 1) (Fin 1) D.host.E) σ h₁
@@ -1048,7 +994,7 @@ theorem exists_orthonormal (D : D7) (N N' : ℕ) (hev : Even (N * N')) :
   have h11 : ∀ x y : Matrix (Fin 1) (Fin 1) D.host.E,
       hYY D x y = Algebra.trace D.host.K D.host.E (x 0 0 * D.host.conj (y 0 0)) := by
     intro x y; simp [hYY]
-  obtain ⟨e, he⟩ := orthonormal_of_diagonal D.host.K _ σ h D.host.d θ D.host.hyp.2.1.pos hθ hσθ hK (fF D * N * N')
+  obtain ⟨e, he⟩ := GlobalTheory.SqDet.exists_orthonormal_of_diag_pos_isSquare D.host.K _ σ h D.host.d θ D.host.hyp.2.1.pos hθ hσθ hK (fF D * N * N')
     (fun t => Matrix.single (ε.symm t).2 (ε.symm t).1.2 (w (ε.symm t).1.1 0 0))
     (fun t => a (ε.symm t).1.1) (fun t => ha0 _) (by
       intro s t
@@ -1114,7 +1060,7 @@ theorem trace_integral (D : D7) {x y : D.host.E} (hx : x ∈ D.host.AA0) (hy : y
 theorem odd_one : ∀ D : D7, odd1 D := by
   intro D N N' hev p hp
   obtain ⟨e, he⟩ := exists_orthonormal D N N' hev
-  obtain ⟨hf, σ, θ, hσ, hθ, hσθ, hK, hω, hc, ht, hpos⟩ := host_quadratic D
+  obtain ⟨hf, σ, θ, hσ, hθ, hσθ, hK, hω, hc, ht, hpos⟩ := GlobalTheory.QuadSubfield.quadratic_subfield D
   obtain ⟨h, hh⟩ := exists_form D σ hσ N N'
   obtain ⟨O, hO, hQ⟩ := exists_local_ring D.host.K p hp
   have hLL : ∀ x ∈ locLat D N N' p, ∀ y ∈ locLat D N N' p, h x y ∈ O := by

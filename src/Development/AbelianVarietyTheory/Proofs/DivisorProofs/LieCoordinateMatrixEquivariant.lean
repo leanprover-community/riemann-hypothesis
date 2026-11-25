@@ -23,7 +23,3 @@ theorem mul_embeddingScalar_eq_coord_mul {E : Type} [Field E] (τ : E →+* ℂ)
   · split_ifs <;> simp [Pi.single_eq_of_ne hw]
 
 end GlobalTheory.WigAlg
-
-namespace GlobalTheory.WigAlg
-
-end GlobalTheory.WigAlg

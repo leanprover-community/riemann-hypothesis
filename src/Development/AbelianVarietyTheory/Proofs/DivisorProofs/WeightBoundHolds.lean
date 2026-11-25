@@ -99,10 +99,6 @@ theorem wtNum_at (P : ParameterChoice' D L) (T : ParamsT D L P) (hS : SizesAt L)
   have hS0 := L.Sc_pos
   have hη0 := L.etaSz_pos
   have h40 : 40 * (L.Sc + L.etaSz) ≤ L.sc.w'' D.R.n := le_trans (mul_le_mul_of_nonneg_right hP (by linarith)) hwid
-  have hrη : (D.R.r : ℝ) ≤ L.etaSz := by
-    refine le_trans ?_ P.t_le_eta
-    exact_mod_cast (by have := D.R.rank_add_five_le; omega : D.R.r ≤ D.R.t)
-  have hr0 : (0 : ℝ) ≤ D.R.r := Nat.cast_nonneg _
   have hlen : lenT p i T.PP ≤ T.TO := by
     unfold lenT; rw [hD]; exact Nat.ceil_le.2 (len_le D L P T)
   have hlen' : 4 * T.Dp + 4 ≤ lenT p i T.PP := by
@@ -175,11 +171,9 @@ theorem wtNum_at (P : ParameterChoice' D L) (T : ParamsT D L P) (hS : SizesAt L)
       (anchor (dat p i) (wtA (p.κ i)) (p.κ i).n (D.R.k - 1) τ : ℝ)
     rw [anchor_real p i τ t ht, eN, Int.cast_natCast]
     have := hanc t
-    have h5 : 0 ≤ (D.R.r : ℝ) * lenT p i T.PP := by positivity
     nlinarith
   · intro τ a b hab
     obtain ⟨t, ht⟩ := exists_tau p τ
-    have hb := b.2
     have hd : ((uW p i τ a - uW p i τ b : ℤ) : ℝ) =
         sgR D t a - sgR D t (a + 1) - 1 + if (a : ℕ) + 1 = D.R.k + i then (D.R.r : ℝ) else 0 := by
       rw [Int.cast_sub, uW_real p i τ t ht, uW_real p i τ t ht, hab, ← entR_step]; ring

@@ -171,7 +171,6 @@ theorem detachedToCoprod_succ_of_lt (s i : ℕ) (h : s < i) :
 
 theorem detachedToCoprod_self (i : ℕ) :
     S.detachedToCoprod i (i + 1) (Nat.lt_succ_self i) = S.detachedCoprodInr i := by
-  set_option backward.isDefEq.respectTransparency false in
     simp [detachedToCoprod, detachedCoprodInr_eq]
 
 theorem detachedCoprod_hom_ext (i : ℕ) {T : Scheme.{u}} {f g : S.detachedCoprod i ⟶ T}

@@ -27,8 +27,7 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
 
 theorem tmul_mem_filV (x : V) {y : BdR} {a : ℤ} (hy : y ∈ PD.Fil a) :
     x ⊗ₜ[Qp] y ∈ FilV PD (LL := LL) (V := V) a :=
-  ⟨x ⊗ₜ[Qp] (⟨y, hy⟩ : ↥((PD.Fil a).restrictScalars Qp)), by
-    simp [TensorProduct.AlgebraTensorModule.map_tmul]⟩
+  Formalism.MainNotions.N.Ln17.tmul_mem_filtration x hy
 
 theorem filV_exh (z : V ⊗[Qp] BdR) : ∃ a, z ∈ FilV PD (LL := LL) (V := V) a := by
   apply _root_.Formalism.MainNotions.N.Ln17.filtration_exhaustive <;> assumption

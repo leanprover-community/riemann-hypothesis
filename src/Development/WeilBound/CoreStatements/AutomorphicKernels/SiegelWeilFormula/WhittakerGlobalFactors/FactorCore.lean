@@ -481,16 +481,14 @@ theorem eventually_good (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) {d M n : ℕ
     refine sum_mem_intE bs v _ _ fun k _ => sum_mem_intE bs v _ _ fun l _ => ?_
     rw [Algebra.TensorProduct.tmul_mul_tmul]
     exact tmul_mem_intE bs v (mul_mem (he k) (he' l)) (h2 k l)
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [eq_sum_tmul bs (Fv F v) e, map_sum]
+  · rw [eq_sum_tmul bs (Fv F v) e, map_sum]
     refine sum_mem_intE bs v _ _ fun k _ => ?_
     have : sigR (Fv F v) σ ((Algebra.TensorProduct.basis (Fv F v) bs).repr e k ⊗ₜ[F] bs k) =
         (Algebra.TensorProduct.basis (Fv F v) bs).repr e k ⊗ₜ[F] σ (bs k) := by
       simp [sigR]
     rw [this]
     exact tmul_mem_intE bs v (he k) (h3 k)
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [eq_sum_tmul bs (Fv F v) e, map_sum]
+  · rw [eq_sum_tmul bs (Fv F v) e, map_sum]
     refine sum_mem fun k _ => ?_
     rw [GlobalTheory.CompanionTheory.SW.HermSd.trace_tmul]
     exact mul_mem (he k) (h4 k)

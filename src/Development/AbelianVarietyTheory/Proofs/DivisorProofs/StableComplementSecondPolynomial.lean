@@ -150,7 +150,7 @@ theorem heckeVec_eq_of_isCompAlong {L : Type} [Field L] [NumberField L] [IsCMFie
           refine Finset.sum_congr rfl fun c _ => ?_
           rw [map_smul, hfi]
       _ = lam • fi i v := by rw [e2, map_smul]
-  have hφZ := mem_of_mem_iSup ((RU L n).comp (locU n w).subtype) (σ.comp p) hirr fi hfi _ Z hZ φ
+  have hφZ := GlobalTheory.InvariantSupremum.fixed_mem_of_mem_iSup_range ((RU L n).comp (locU n w).subtype) (σ.comp p) hirr fi hfi _ Z hZ φ
     (fun k hk => hfix k hk) hmem
   rw [hT]
   exact ((hZ' φ).1 hφZ).2

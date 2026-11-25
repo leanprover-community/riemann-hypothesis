@@ -380,10 +380,6 @@ end fib
 
 end TLC
 
-private theorem herm_Hpk_swap {k r : ℕ} (v w : Fin (2 * r + k + 1) → ℂ) :
-    herm (Hpk k r) w v = star (herm (Hpk k r) v w) := by
-  apply _root_.Formalism.FourierDecayAlt.P.CutMP.Gauge.GC.KPt.herm_conj <;> assumption
-
 private theorem exists_isFrameOf_singleton_of_Tz_pos {k r : ℕ} {z' : Fin (2 * r + k + 1) → ℂ} (hk : 1 ≤ k) (hz' : inWb k r z')
     (hT' : 0 < Tz k r z') : ∃ B0 : Fin k → Fin (2 * r + k + 1) → ℂ, IsFrameOf k r [z'] B0 := by
   obtain ⟨n, rfl⟩ : ∃ n, k = n + 1 := ⟨k - 1, by omega⟩
@@ -420,7 +416,7 @@ private theorem exists_isFrameOf_singleton_of_Tz_pos {k r : ℕ} {z' : Fin (2 * 
   · refine Fin.cases ?_ (fun i => ?_) i <;> refine Fin.cases ?_ (fun j => ?_) j
     · simpa using hee
     · simp only [Fin.cons_zero, Fin.cons_succ]
-      rw [herm_Hpk_swap _ e, hBs.2.2 _ e (by simp), star_zero, ite_eq_right (Fin.succ_ne_zero j).symm]
+      rw [Formalism.FourierDecayAlt.P.CutMP.Gauge.GC.KPt.herm_conj _ e, hBs.2.2 _ e (by simp), star_zero, ite_eq_right (Fin.succ_ne_zero j).symm]
     · simp only [Fin.cons_zero, Fin.cons_succ]
       rw [hBs.2.2 _ e (by simp), ite_eq_right (Fin.succ_ne_zero i)]
     · simp only [Fin.cons_succ]

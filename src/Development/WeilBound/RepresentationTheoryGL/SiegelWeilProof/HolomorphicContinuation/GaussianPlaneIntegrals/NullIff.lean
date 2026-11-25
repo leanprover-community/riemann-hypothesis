@@ -173,9 +173,6 @@ theorem actP_actP (g h g' h' : Matrix ι ι ℂ) (z : (ι × A) ⊕ (ι × B) �
     refine Finset.sum_congr rfl fun l _ => Finset.sum_congr rfl fun j _ => ?_
     ring
 
-theorem totalDegree_sub_le (g h : Matrix ι ι ℂ) (p : PV ι A B) : (sub g h p).totalDegree ≤ p.totalDegree :=
-  _root_.UpperTheory.Reformulated.B.TotalDegreeLinear.main g h p
-
 theorem continuous_coeff_sub {K : Type} [TopologicalSpace K] (g h : K → Matrix ι ι ℂ) (hg : Continuous g)
     (hh : Continuous h) (p : PV ι A B) : ∀ m, Continuous fun k => AddMonoidAlgebra.coeff (sub (g k) (h k) p) m := by
   classical
@@ -271,7 +268,7 @@ theorem avg : Avg := by
       (fun f => Finsupp.equivFunOnFinite.symm (fun s => (f s : ℕ)))).filter (fun m => (m.sum fun _ e => e) ≤ d)
   have hsupp : ∀ k, (F k).support ⊆ S := by
     intro k m hm
-    have hdeg : (m.sum fun _ e => e) ≤ d := (le_totalDegree hm).trans (totalDegree_sub_le _ _ _)
+    have hdeg : (m.sum fun _ e => e) ≤ d := (le_totalDegree hm).trans (PositivityTheory.Rg.Sw.FFTSteps.AsmA.totalDegree_sub_le _ _ _)
     refine Finset.mem_filter.2 ⟨Finset.mem_image.2 ⟨fun s => ⟨m s, Nat.lt_succ_of_le ?_⟩, Finset.mem_univ _, ?_⟩, hdeg⟩
     · exact (Finsupp.le_degree ..).trans hdeg
     · ext s; simp
@@ -715,18 +712,6 @@ theorem actZ_diagonal (a b : ι → ℂ) (z : (ι × A) ⊕ (ι × B) → ℂ) :
   · simp [actZ, diagonal_apply]
   · simp [actZ, diagonal_apply]
 
-theorem differentiable_eval' {σ : Type} (p : MvPolynomial σ ℂ) (f : ℂ → σ → ℂ)
-    (hf : ∀ v, Differentiable ℂ (fun c => f c v)) :
-    Differentiable ℂ (fun c => MvPolynomial.eval (f c) p) := by
-  induction p using MvPolynomial.induction_on with
-  | C a => simp
-  | add p q hp hq =>
-    simp only [map_add (f := _)]
-    exact hp.add hq
-  | mul_X p v hp =>
-    simp only [map_mul, MvPolynomial.eval_X]
-    exact hp.mul (hf v)
-
 theorem eval_inv (p : PV ι A B) (hp : IsInv p) (u : Matrix ι ι ℂ) (hu : u ∈ Matrix.unitaryGroup ι ℂ)
     (z : (ι × A) ⊕ (ι × B) → ℂ) : eval (actZ u (u.map star) z) p = eval z p := by
   rw [← eval_sub, hp u hu]
@@ -741,7 +726,7 @@ theorem eval_diag (p : PV ι A B) (hp : IsInv p) (a : ι → ℝ) (z : (ι × A)
       funext c
       simp only [hF, actZ_diagonal]
     rw [hF']
-    apply differentiable_eval'
+    apply GlobalTheory.PairingInvariants.differentiable_eval
     intro v
     rcases v with x | y
     · simp only [Sum.elim_inl]
@@ -1119,21 +1104,13 @@ theorem gs_half (c : ℝ) (x : Fin m → Fin n → ℂ) : gs c x = gs (c / 2) x 
   push_cast
   ring
 
-theorem integrable_gauss1 {c : ℝ} (hc : 0 < c) : Integrable (fun z : ℂ => Real.exp (-(c * ‖z‖ ^ 2))) := by
-  have h := GaussianFourier.integrable_cexp_neg_mul_sq_norm_add (V := ℂ) (b := (c : ℂ)) (by simpa using hc) 0 0
-  refine h.norm.congr (ae_of_all _ fun z => ?_)
-  simp only [zero_mul, add_zero, Complex.norm_exp]
-  norm_cast
-  rw [neg_mul]
-
 theorem exp_sum_sum (c : ℝ) (x : Fin m → Fin n → ℂ) :
     Real.exp (-(c * ∑ a, ∑ i, ‖x a i‖ ^ 2)) = ∏ a, ∏ i, Real.exp (-(c * ‖x a i‖ ^ 2)) := by
   simp only [Finset.mul_sum, ← Finset.sum_neg_distrib, Real.exp_sum]
 
 theorem integrable_gs_row {c : ℝ} (hc : 0 < c) :
     Integrable (fun y : Fin n → ℂ => ∏ i, Real.exp (-(c * ‖y i‖ ^ 2))) := by
-  exact Integrable.fintype_prod (f := fun _ z => Real.exp (-(c * ‖z‖ ^ 2))) (fun _ => integrable_gauss1 hc)
-
+  exact Integrable.fintype_prod (f := fun _ z => Real.exp (-(c * ‖z‖ ^ 2))) (fun _ => PositivityTheory.Rg.Sw.FFTSteps.CA.integrable_gauss_plane hc)
 
 theorem integrable_gs_prod {c : ℝ} (hc : 0 < c) :
     Integrable (fun x : Fin m → Fin n → ℂ => ∏ a, ∏ i, Real.exp (-(c * ‖x a i‖ ^ 2))) := by

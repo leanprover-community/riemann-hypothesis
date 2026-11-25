@@ -728,7 +728,6 @@ theorem tendsto_of_abs_sub_le_eventually (a q : ℕ → ℝ) (I G W V C : ℝ) (
     (h : ∀ ε : ℝ, 0 < ε → ∀ᶠ m in atTop, |a m - I - ε * W| ≤ C * (G + ε * V - q m)) : Tendsto a atTop (𝓝 I) := by
   rw [Metric.tendsto_nhds]
   intro e he
-  have hK : 0 < |W| + C * |V| + 1 := by positivity
   set ε := e / (2 * (|W| + C * |V| + 1)) with hε
   have hε0 : 0 < ε := by positivity
   have hq' := Metric.tendsto_nhds.1 hq (e / (2 * (C + 1))) (by positivity)

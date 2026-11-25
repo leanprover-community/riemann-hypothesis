@@ -32,7 +32,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 
 namespace GlobalTheory.CompanionTheory.TraceJac
 
@@ -253,7 +252,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 
 namespace GlobalTheory.CompanionTheory.TraceJac
 
@@ -310,7 +308,6 @@ theorem trace_radical (π : R) (hπ : Irreducible π) (y z : integralClosure R L
     have h3 : Matrix.trace ((Algebra.leftMulMatrix (Module.Free.chooseBasis R (integralClosure R L)) y).map
         (IsLocalRing.residue R)) = IsLocalRing.residue R
           (Matrix.trace (Algebra.leftMulMatrix (Module.Free.chooseBasis R (integralClosure R L)) y)) := by
-      set_option synthInstance.maxHeartbeats 100000 in
         simp [Matrix.trace, map_sum]
     rw [← h3]
     exact h2.eq_zero
@@ -643,7 +640,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 
 namespace GlobalTheory.CompanionTheory.TraceJac
 
@@ -840,7 +836,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 
 namespace GlobalTheory.CompanionTheory.TraceJac
 
@@ -1055,7 +1050,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open MvPolynomial
 
 namespace GlobalTheory.CompanionTheory.TraceJac
@@ -1121,7 +1115,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 

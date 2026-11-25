@@ -213,15 +213,7 @@ theorem isEdge_of_basis [IsDomain W] [IsFractionRing W Qq] (p n' r : ℕ) (hp0 :
       exact Nat.card_unique
   rw [Finset.prod_congr rfl (fun c _ => hfac c)]
   have hcardF : (Finset.univ.filter fun c : Fin k => c.val < r).card = r := by
-    have hF : (Finset.univ.filter fun c : Fin k => c.val < r) = Finset.univ.map (Fin.castLEEmb hr) := by
-      ext c
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_map, Fin.castLEEmb_apply]
-      constructor
-      · intro hc
-        exact ⟨⟨c.val, hc⟩, Fin.ext rfl⟩
-      · rintro ⟨a, rfl⟩
-        exact a.isLt
-    rw [hF, Finset.card_map, Finset.card_univ, Fintype.card_fin]
+    rw [Fin.card_filter_val_lt, min_eq_right hr]
   rw [Finset.prod_ite, Finset.prod_const, Finset.prod_const_one, mul_one, ← pow_mul, hcardF]
 
 end Col

@@ -85,7 +85,7 @@ theorem main_alt_alt : GlobalTheory.Published.HarishChandraFinite → GlobalTheo
               exact mul_pos hc (hpos x hx hx0)
             stab := fun h x hx => GlobalTheory.FinTypesRows.minf_stable (X.PW j) hcc h hx
             inv := fun h x hx y hy => by
-              rw [GlobalTheory.T.schur_pairing_invariant_under_standard_group D (Wc D j) _ X.R.θ (X.R.MW j (sg0 D X.A)) D.R.r (X.PW j) (X.R.νW j) (X.R.fdW j) hSA hSig hθ
+              rw [GlobalTheory.SchurPairingInvariant.ipM_actM D (Wc D j) _ X.R.θ (X.R.MW j (sg0 D X.A)) D.R.r (X.PW j) (X.R.νW j) (X.R.fdW j) hSA hSig hθ
                 hHaar hFD h x hx y hy]
             smooth := fun x hx => GlobalTheory.FinTypesRows.minf_smooth (X.PW j) hx
             adm := fun N hN => GlobalTheory.FinTypesRows.minf_adm (X.PW j) hHA hSig hθ (GlobalTheory.FinTypesRows.levN_open (X.PW j) hStd) N hN

@@ -565,7 +565,6 @@ section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH NumberField IsDedekindDomain Formalism.L2 Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.IndefR.FWT Formalism.IndefR.NX Formalism.L2.Pj
 open Formalism.L2.Rows
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 end
 end
 end -- clump:auto
@@ -595,90 +594,9 @@ namespace GroupAverageFixedPoints
 section
 noncomputable section
 open scoped TensorProduct
-open Module
-namespace GlobalTheory.CompanionTheory.LatSpan
-section Rep
-variable {F M Γ : Type} [Field F] [AddCommGroup M] [Module F M] [Group Γ] [Fintype Γ]
-variable (a : Γ →* Module.End F M) (P : Subgroup Γ) [Fintype P] (t : P →* Fˣ) (E : Module.End F M)
-end Rep
-section Ext
-variable {O K K'' Fm : Type} [CommRing O] [Field K] [Algebra O K] [IsFractionRing O K]
-  [Field K''] [Algebra O K''] [Algebra K K''] [IsScalarTower O K K'']
-  [AddCommGroup Fm] [Module K Fm] [Module O Fm] [IsScalarTower O K Fm]
-end Ext
-end GlobalTheory.CompanionTheory.LatSpan
-noncomputable section
 open Module NumberField
-namespace GlobalTheory.CompanionTheory.LatSpan
-section Main
-variable {LL O K K'' Fm WL Γ : Type} [Field LL] [CharZero LL] [AddCommGroup WL] [Module LL WL]
-  [CommRing O] [Field K] [Algebra O K] [IsFractionRing O K]
-  [Field K''] [Algebra O K''] [Algebra K K''] [IsScalarTower O K K'']
-  [AddCommGroup Fm] [Module K Fm] [Module O Fm] [IsScalarTower O K Fm] [Group Γ] [Fintype Γ]
-end Main
-section Lat
-variable {LL Oe K'' V T : Type} [Field LL] [NumberField LL] [AddCommGroup V] [Module LL V] [Module (𝓞 LL) V]
-  [IsScalarTower (𝓞 LL) LL V] [CommRing Oe] [IsDomain Oe] [Field K''] [Algebra Oe K''] [IsFractionRing Oe K'']
-  [AddCommGroup T] [Module K'' T] [Module Oe T] [IsScalarTower Oe K'' T]
-end Lat
-end GlobalTheory.CompanionTheory.LatSpan
-end
-end
-end
-section
 noncomputable section
-open scoped TensorProduct
-open Module NumberField
-namespace GlobalTheory.CompanionTheory.LatSpan
-open GlobalTheory.IndefiniteRowSideFullHecke.SemilinearExtensionBases
-section Form
-variable {Ks LL WL : Type} [Field Ks] [Field LL] [Algebra Ks LL]
-  [AddCommGroup WL] [Module LL WL] [Module Ks WL] [IsScalarTower Ks LL WL]
-  {WK : Submodule Ks WL}
-  {O K K'' : Type} [CommRing O] [IsDomain O] [Field K] [Algebra O K] [IsFractionRing O K] [Algebra Ks K]
-  [Field K''] [Algebra O K''] [Algebra K K''] [IsScalarTower O K K'']
-  {Fm : Type} [AddCommGroup Fm] [Module K Fm] [Module O Fm] [IsScalarTower O K Fm]
-end Form
-section Iso
-open Formalism.IndefR.NX Formalism.IndefR.Arith
-variable {LL Ks Ks' WL WL' G G' : Type} [Field LL] [NumberField LL] [Field Ks] [NumberField Ks] [Algebra Ks LL]
-  [Field Ks'] [NumberField Ks'] [Algebra Ks' LL]
-  [AddCommGroup WL] [Module LL WL] [Module Ks WL] [IsScalarTower Ks LL WL] [Module (𝓞 LL) WL] [IsScalarTower (𝓞 LL) LL WL]
-  [Module (𝓞 Ks) WL] [IsScalarTower (𝓞 Ks) Ks WL]
-  [AddCommGroup WL'] [Module LL WL'] [Module Ks' WL'] [IsScalarTower Ks' LL WL'] [Module (𝓞 LL) WL']
-  [IsScalarTower (𝓞 LL) LL WL'] [Module (𝓞 Ks') WL'] [IsScalarTower (𝓞 Ks') Ks' WL']
-  {W W' : (LL →+* ℂ) → Type} [∀ σ, NormedAddCommGroup (W σ)] [∀ σ, InnerProductSpace ℂ (W σ)]
-  [∀ σ, NormedAddCommGroup (W' σ)] [∀ σ, InnerProductSpace ℂ (W' σ)] [Group G] [Group G']
-end Iso
-end GlobalTheory.CompanionTheory.LatSpan
-end
-end
-section
 noncomputable section
-open scoped TensorProduct
-open Module NumberField
-namespace GlobalTheory.CompanionTheory.LatSpan
-open GlobalTheory.IndefiniteRowSideFullHecke.SemilinearExtensionBases GlobalTheory.IndefiniteRowSideFullHecke.FractionalBaseInclusion Formalism.BasicNotions Formalism.IndefR.NX
-section PiLocalization₂
-variable {D : D7} (c : NChoice D) (w : D.what₂.places.Pl)
-attribute [local instance] algKK
-variable {c w}
-end PiLocalization₂
-end GlobalTheory.CompanionTheory.LatSpan
-noncomputable section
-namespace GlobalTheory.CompanionTheory.LatSpan
-section Alg
-variable {k A G : Type} [Field k] [Ring A] [Algebra k A] [Group G]
-end Alg
-end GlobalTheory.CompanionTheory.LatSpan
-noncomputable section
-namespace GlobalTheory.CompanionTheory.LatSpan
-open GlobalTheory.IndefiniteRowSideFullHecke.SemilinearExtensionBases GlobalTheory.IndefiniteRowSideFullHecke.FractionalBaseInclusion Formalism.BasicNotions Formalism.IndefR.NX Formalism.IndefR.Arith
-section Stage2
-variable {D : D7} {c : NChoice D} {w : D.what₂.places.Pl}
-attribute [local instance] algKK
-end Stage2
-end GlobalTheory.CompanionTheory.LatSpan
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH NumberField IsDedekindDomain Formalism.L2 Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.IndefR.FWT Formalism.IndefR.NX Formalism.L2.Pj
 open Formalism.L2.Rows
 namespace GlobalTheory.CompanionTheory.LatSpan
@@ -757,7 +675,6 @@ section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH NumberField IsDedekindDomain Formalism.L2 Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Cx Formalism.IndefR.FWT Formalism.IndefR.NX Formalism.L2.Pj
 open Formalism.L2.Rows
 open scoped TensorProduct
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 end
 end
 end -- clump:auto

@@ -4,7 +4,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitsAbs
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
 open CategoryTheory AlgebraicGeometry DividedPowers GroundTheory.PAdicHodge GlobalTheory.LogCris CrystallineSemistableComparison CrystallineSemistableComparison.PAlg CrystallineSemistableComparison.B
 
 noncomputable section

@@ -169,20 +169,3 @@ theorem nontrivial_of_tensor {Pr Pf Pi : Type*} [AddCommGroup Pr] [Module ℂ Pr
   rw [← e.apply_symm_apply u, hz (e.symm u), map_zero]
 
 end GlobalTheory.SquareRel
-
-namespace GlobalTheory.SquareRel
-
-open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation (alpha beta)
-
-variable {D : D7} {Pr Pf Pi : Type*} [AddCommGroup Pr] [Module ℂ Pr] [AddCommGroup Pf] [Module ℂ Pf]
-  [AddCommGroup Pi] [Module ℂ Pi]
-
-end GlobalTheory.SquareRel
-
-namespace GlobalTheory.SquareRel
-
-open GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation (alpha beta)
-
-variable {D : D7}
-
-end GlobalTheory.SquareRel

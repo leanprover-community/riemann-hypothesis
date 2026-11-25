@@ -32,7 +32,6 @@ theorem aT_comm (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotal
 open GroundTheory.Automorphic GroundTheory.Automorphic.AutomorphicForm in
 theorem continuous_ctn {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {N : ℕ} (r : ℕ)
     {φ : GA E N → ℂ} (hφ : Continuous φ) : Continuous (An.ctn (K := E) (n := N) r φ) := by
-  set_option synthInstance.maxHeartbeats 200000 in
     haveI : SecondCountableTopology (GA E N) := inferInstance
     haveI : FirstCountableTopology (GA E N) := inferInstance
     obtain ⟨C, hC, hDC⟩ := exists_isCompact_superset_unipFundamentalDomain (K := E) (n := N) (r := r)
@@ -52,7 +51,6 @@ theorem continuous_ctn {E : Type} [Field E] [NumberField E] [_root_.NumberField.
     exact continuous_const.mul (h.congr fun g => (e g).symm)
 
 theorem main : ExpNegGlue := by
-  set_option synthInstance.maxHeartbeats 200000 in
     intro hDict hL2 E _ _ _ N φ hA hSq r hr0 hrN c hc
     obtain ⟨haR, hsplit, hlat, hct⟩ := hDict E N
     have hctn := (hct φ hA r hr0 hrN).2

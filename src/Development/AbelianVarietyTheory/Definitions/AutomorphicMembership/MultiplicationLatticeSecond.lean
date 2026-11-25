@@ -39,15 +39,6 @@ def HasDR (Z : Mdl Y i₀) : Prop :=
 def IsDRFlag (Z Z' : Mdl Y i₀) : Prop :=
   Z'.i = Z.i ∧ HasDR Z' ∧ (∃ f, IsMap Z' Z f) ∧ ∀ Z'' : Mdl Y i₀, HasDR Z'' → (∃ g, IsMap Z'' Z g) → ∃ h, IsMap Z'' Z' h
 
-def IsGrLB (Z : Mdl Y i₀) (e : ∀ σ : E →+* ℂ, Fin (Dw.mult σ) → ℤ) (L : LB Z.X) : Prop :=
-  L.IsLB ∧ ∃ (hU : ∀ i, IsAffineOpen (L.U i)) (w : ∀ i, Vecs Dw (Y Z.i).t Γ(Z.X, L.U i)), (∀ i, IntFrame Z (hU i) (w i)) ∧
-    ∀ (i i' : L.ι) (k : Type) [Field k] (φ : Γ(Z.X, L.U i) →+* k) (φ' : Γ(Z.X, L.U i') →+* k)
-      (d : ∀ σ : E →+* ℂ, Fin (Dw.mult σ) → k),
-      spMap φ ≫ (hU i).fromSpec = spMap φ' ≫ (hU i').fromSpec → Set.range (spMap φ ≫ (hU i).fromSpec) ⊆ Z.opn →
-      (∀ σ a, ∃ cf : Fin (Dw.mult σ) → k, cf a = d σ a ∧ (∀ b, a < b → cf b = 0) ∧
-        IsCombAtG (Y Z.i).t (spMap φ ≫ (hU i).fromSpec ≫ Z.π) ((w i').bc φ' σ) cf ((w i).bc φ σ a)) →
-      valR (spMap φ ≫ (hU i).fromSpec) _ (L.g i i').val = ∏ σ, ∏ a, d σ a ^ e σ a
-
 def Mdl.genO (Z : Mdl Y i₀) : Z.X.Opens := Z.X.basicOpen ((p : ℕ) : Γ(Z.X, ⊤))
 
 end Free

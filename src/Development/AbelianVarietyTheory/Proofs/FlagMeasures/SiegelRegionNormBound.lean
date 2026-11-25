@@ -403,9 +403,6 @@ theorem continuous_opn {N : ℕ} : Continuous fun x : Matrix (Fin N) (Fin N) ℂ
   (LinearMap.continuous_of_finiteDimensional
     (Matrix.toEuclideanCLM (𝕜 := ℂ) (n := Fin N)).toAlgEquiv.toLinearMap).norm
 
-theorem one_le_opn {k r : ℕ} {x : Mat k r} (hx : x ∈ GG k r) : 1 ≤ opn x := by
-  apply GlobalTheory.SgInf.OpNormU.one_le_opn <;> assumption
-
 theorem eucl_le_sum {N : ℕ} (v : Fin N → ℂ) : eucl v ≤ ∑ i, ‖v i‖ := by
   unfold eucl
   rw [Real.sqrt_le_left (Finset.sum_nonneg fun i _ => norm_nonneg _)]
@@ -505,7 +502,7 @@ theorem frame_image_bound : ∀ (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ)
   obtain ⟨hu', Q, hQ, eQ⟩ := exists_S k r z' hz' s' hs'
   set x : Mat k r := s * γ * s'⁻¹ with hx
   have hxG : x ∈ GG k r := g2 _ (g2 _ hu _ (hreg hγ).1) _ (g3 s' hu').2
-  have hx1 : 1 ≤ opn x := one_le_opn hxG
+  have hx1 : 1 ≤ opn x := GlobalTheory.SgInf.OpNormU.one_le_opn hxG
   have hxs : x * s' = s * γ := by
     rw [hx, Matrix.mul_assoc, nonsing_inv_mul _ (g3 s' hu').1, Matrix.mul_one]
   have eZ : Pᴴ * Zhat k r z z' x * Q = Zhat k r z z' γ := by

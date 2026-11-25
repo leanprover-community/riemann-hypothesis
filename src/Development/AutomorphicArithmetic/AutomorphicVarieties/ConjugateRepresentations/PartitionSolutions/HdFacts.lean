@@ -52,12 +52,6 @@ private theorem hd_cons' {I M : Type} [AddCommGroup M] (c : List I → M) (i : I
   · refine Finset.sum_congr rfl fun j _ => ?_
     simp [pow_succ]
 
-private theorem hd_sub' {I M : Type} [AddCommGroup M] (c c' : List I → M) (x : List I) :
-    hd (fun y => c y - c' y) x = hd c x - hd c' x := by
-  unfold hd
-  rw [← Finset.sum_sub_distrib]
-  exact Finset.sum_congr rfl fun j _ => smul_sub _ _ _
-
 private theorem hd_hd' {I M : Type} [AddCommGroup M] (x : List I) :
     ∀ c : List I → M, hd (hd c) x = 0 := by
   apply _root_.UpperTheory.V.Lit.Geo.hd_hd <;> assumption

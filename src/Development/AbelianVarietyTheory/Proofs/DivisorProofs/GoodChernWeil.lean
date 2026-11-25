@@ -181,14 +181,6 @@ section Rev
 
 variable {r : Type} [Fintype r] [DecidableEq r]
 
-theorem charpolyRev_map {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) (M : Matrix r r A) :
-    (M.map f).charpolyRev = M.charpolyRev.map f := by
-  unfold Matrix.charpolyRev
-  rw [← Polynomial.coe_mapRingHom, RingHom.map_det]
-  congr 1
-  ext i j : 1
-  by_cases h : i = j <;> simp [h]
-
 theorem charpolyRev_smul {A : Type} [CommRing A] (c : A) (M : Matrix r r A) :
     (c • M).charpolyRev = M.charpolyRev.comp (Polynomial.C c * Polynomial.X) := by
   unfold Matrix.charpolyRev
@@ -210,7 +202,7 @@ theorem aeval_chernPoly (c : ℂ) (G : V n → Matrix r r ℂ) (v : V n) (k : �
     refine congrArg _ (Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_)
     ring
   unfold chernPoly
-  rw [e, ← Polynomial.coeff_map, ← charpolyRev_map, hM, charpolyRev_smul, Polynomial.comp_C_mul_X_coeff, smul_eq_C_mul,
+  rw [e, ← Polynomial.coeff_map, ← GlobalTheory.ChernCalc.HoloPull.charpolyRev_map, hM, charpolyRev_smul, Polynomial.comp_C_mul_X_coeff, smul_eq_C_mul,
     map_pow, mul_comm]
 
 end Rev
@@ -235,7 +227,6 @@ theorem kappa_div : kappa ^ n / (Complex.I / 2) ^ n = (((Real.pi ^ n)⁻¹ : ℝ
   field_simp
 
 end GlobalTheory.ChernTopDens
-
 
 open GlobalTheory.ChernTopDens in
 theorem GlobalTheory.ChernCalc.dens_chernAt_re (n : ℕ) (ι : Type) (m : ι → ℕ) (R : MvPolynomial (ι × ℕ) ℝ) (G : V n → Mat m ℂ)
@@ -396,7 +387,6 @@ theorem cInfAt_neg_log_normSq_ratVal {F : Type} [Field F] {X : Var F} {σ : F �
   exact cInfAt_ratVal_on (κ := Unit) (f := fun _ => u) (fun _ => hu.regAt) hO hG (ratVal_ne_zero hu)
 
 end GlobalTheory.ChernCalc
-
 
 theorem GlobalTheory.ChernCalc.cInfAt_logUnit_grD : ∀ (F : Type) [Field F] (σ : F →+* ℂ) (X : Var F) (ι : Type) [Finite ι] (m k : ι → ℕ) (E : Fr (ratOf X) m k)
     (H : Mat m X.Fn → CxPts X.str σ → Mat m ℂ), IsMetricFr E H → ∀ (y : CxPts X.str σ), ∀ A ∈ E.S (under y),
@@ -1245,8 +1235,8 @@ theorem cInfAt_finset_sum {ι : Type} (s : Finset ι) {f : ι → CxPts X.str σ
 theorem exists_cInf_bump (y : CxPts X.str σ) {U : Set (CxPts X.str σ)} (hU : U ∈ 𝓝 y) :
     ∃ χ : CxPts X.str σ → ℝ, (∀ z, CInfAt χ z) ∧ (∀ z, 0 ≤ χ z) ∧ 0 < χ y ∧ tsupport χ ⊆ U := by
   classical
-  haveI := CxPts.compactSpace σ X.isProjOver
-  haveI := CxPts.t2Space_cxPts_of_isProjOver σ X.isProjOver
+  have := CxPts.compactSpace σ X.isProjOver
+  have := CxPts.t2Space_cxPts_of_isProjOver σ X.isProjOver
   obtain ⟨c, hc⟩ := AlgChart.exists_mem_source (D := X.dim) y
   obtain ⟨K, hKy, hKc, hKV⟩ :=
     exists_mem_nhds_isClosed_subset (inter_mem hU (c.e.open_source.mem_nhds hc))
@@ -1288,7 +1278,7 @@ theorem exists_cInf_bump (y : CxPts X.str σ) {U : Set (CxPts X.str σ)} (hU : U
 
 theorem exists_cInf_partition : ∀ {F : Type} [Field F] {σ : F →+* ℂ} {X : Var F} (W : CxPts X.str σ → Set (CxPts X.str σ)), (∀ y, W y ∈ 𝓝 y) → ∃ (s : Finset (CxPts X.str σ)) (ρ : s → CxPts X.str σ → ℝ), (∀ i y, CInfAt (ρ i) y) ∧ (∀ i, tsupport (ρ i) ⊆ W i) ∧ ∀ y, ∑ i, ρ i y = 1 := by
   intro F _ σ X W hW
-  haveI := CxPts.compactSpace σ X.isProjOver
+  have := CxPts.compactSpace σ X.isProjOver
   choose χ hχ h0 hpos hs using fun y => exists_cInf_bump y (hW y)
   obtain ⟨s, hcov⟩ := CompactSpace.elim_nhds_subcover (fun y => {z | 0 < χ y z})
     fun y => (hχ y y).continuousAt.eventually (lt_mem_nhds (hpos y))
@@ -1585,8 +1575,8 @@ namespace GlobalTheory.GoodTop
 theorem goodTopChernForm : GlobalTheory.Published.GoodTopChernForm := by
   intro F _ σ X m E O H H₀ hH hG hH₀ t ht
   rw [hasChernIntegral_iff] at ht ⊢
-  haveI := X.smooth_str
-  haveI : SecondCountableTopology (CxPts X.str σ) := inferInstance
+  have := X.smooth_str
+  have : SecondCountableTopology (CxPts X.str σ) := inferInstance
   have hp : ∀ y : CxPts X.str σ, ∃ e S A W c, y ∈ W ∧ GoodPatch E O H e S A W c := fun y => by
     by_cases hy : y ∈ ptsIn X.str σ O
     · exact _root_.GlobalTheory.GoodTop.exists_goodPatch_of_mem E O H hH y hy

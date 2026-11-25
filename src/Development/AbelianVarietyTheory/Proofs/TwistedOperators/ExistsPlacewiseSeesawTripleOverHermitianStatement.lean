@@ -295,10 +295,7 @@ theorem mem_skLat (S : HSp D) {d : ℕ} (e : Fin S.rank ≃ Fin d) (y : Fin d �
   rw [Submodule.mem_map_equiv]
   rfl
 
-theorem AA_ne : D.host.AA ≠ 0 := fun h => by
-  have := Formalism.IndefR.Fin.factPrincipalDatum D.R D.host
-  rw [h, mul_zero, zero_mul, zero_mul] at this
-  exact zero_ne_one this
+theorem AA_ne : D.host.AA ≠ 0 := GlobalTheory.SkewLat.DualPair.AA_ne
 
 theorem skLat_isLattice (S : HSp D) {d : ℕ} (e : Fin S.rank ≃ Fin d) : Submodule.IsLattice D.host.E (skLat S e) := by
   have hL := GlobalTheory.SkewLat.PairLatLattice.scLat_isLattice (_root_.GlobalTheory.SkewLat.DualPair.AA_ne (D := D)) (GlobalTheory.PlaceModel.isSelfDualC_latFrame S).1
@@ -519,8 +516,7 @@ noncomputable section
 namespace GlobalTheory.TripleBaseChars
 
 theorem exists_placeIdem (D : D7) (v : HeightOneSpectrum (𝓞 D.host.F)) : ∃ ε, IsPlaceIdem D v ε :=
-  ⟨_, GlobalTheory.AdelicU.singleFin v 1, rfl, GlobalTheory.AdelicU.evalV_singleFin_self v 1,
-    fun _ h => GlobalTheory.AdelicU.evalV_singleFin_ne h 1⟩
+  GlobalTheory.IdemSupport.exists_placeIdem v
 
 theorem exists_good_place (D : D7) (P₀ : Finset (HeightOneSpectrum (𝓞 D.host.F))) :
     ∃ v₁ : HeightOneSpectrum (𝓞 D.host.F), v₁ ∉ P₀ ∧ GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.SplitsFully D.host.E v₁ ∧

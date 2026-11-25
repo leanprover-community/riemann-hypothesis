@@ -621,7 +621,7 @@ theorem UpperTheory.V.Cj.H.casimir_resolvent_projection :
         have := (c1 φ.1 φ.1 s 0 (hg _ φ.2).2.1 (hg _ φ.2).2.1).2
         simpa only [zero_smul, add_zero, Submodule.coe_smul, RingHom.id_apply] using this }
   have hf : Function.Injective f := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro φ h
     exact Subtype.ext (c2 φ.1 (hg _ φ.2).1 (hg _ φ.2).2.1 h)
   obtain ⟨P, Q, S, h1, h2, h3, h4, h5, h6⟩ := transport (GlobalTheory.AutomorphicL2Unitary.R (latticeGL E a) μ) f hf
@@ -722,7 +722,7 @@ theorem UpperTheory.V.Cj.H.opLift :
       map_add' := fun v w => hadd v.1 v.2 w.1 w.2
       map_smul' := fun s v => hsm s v.1 v.2 }
   have hc : Function.Injective c := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro v hv
     exact Subtype.ext (hinj v.1 (hG v.1 v.2).1 (hG v.1 v.2).2.1 hv)
   have key : ∀ φ ∈ gard μ, ∃ φ' ∈ gard μ, cl μ φ' = T (cl μ φ) := by
@@ -1265,7 +1265,6 @@ private theorem shift_mul {r : ℝ} {χ : HChar E} (hχ : IsTw (a := a) r χ) (X
 
 private theorem casA_mul {r : ℝ} {χ : HChar E} (hχ : IsTw (a := a) r χ) (c : ℝ) {n : ℕ} (e : Fin n → Herm E a)
     (φ : Sm E a) : casA 0 c e (mulChi a χ φ) = mulChi a χ (casA r c e φ) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp only [casA, cas, LinearMap.sub_apply, LinearMap.sum_apply, mul_apply_eq_comp, LinearMap.smul_apply,
     one_apply_eq_self, map_sub, map_sum, map_smul, shift_mul hχ]
 

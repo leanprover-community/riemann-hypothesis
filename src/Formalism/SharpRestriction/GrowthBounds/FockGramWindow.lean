@@ -54,14 +54,6 @@ namespace Formalism.MainNotions.G.SymmetricFormBlocks
 
 open MvPolynomial Finset Formalism.MainNotions.G Formalism.MainNotions.flipOneThree Formalism.MainNotions.G.CountingStatementReduction
 
-variable (C0 CE1 CE2 : ℝ) (X : flipOneThree.Inst)
-
-end Formalism.MainNotions.G.SymmetricFormBlocks
-
-namespace Formalism.MainNotions.G.SymmetricFormBlocks
-
-open MvPolynomial Finset Formalism.MainNotions.G Formalism.MainNotions.flipOneThree Formalism.MainNotions.G.CountingStatementReduction
-
 theorem winA_sum (X : flipOneThree.Inst) (f : ℕ → ℝ) :
     ∑ aPlus ∈ X.winA, f aPlus = ∑ j ∈ Finset.range X.winA.card, f (X.L.a + j) := by
   unfold flipOneThree.Inst.winA
@@ -1482,9 +1474,6 @@ theorem main (hp2 : p ≠ 2) (B : V → V → ℚ_[p]) (L : Submodule ℤ_[p] V)
 
 end PI.LatMinWork
 
-namespace PI
-
-end PI
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MinimalLatticeNorm.NormTwoEqOne =====

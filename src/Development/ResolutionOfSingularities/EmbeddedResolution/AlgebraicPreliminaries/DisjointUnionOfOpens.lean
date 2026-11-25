@@ -121,7 +121,6 @@ theorem exists_affine_etale_cover_of_isReduced {k : Type u} [Field k] (Y : Schem
       IsAffine W ∧ IsReduced W ∧ LocallyOfFiniteType q ∧ QuasiCompact q ∧
         Etale g ∧ Surjective g ∧ g ≫ p = q := by
   have hsub : Subsingleton ↥(Spec (CommRingCat.of k)) := subsingleton_spec_of_field k
-  have hcs : CompactSpace ↥(Spec (CommRingCat.of k)) := inferInstance
   have hcY : CompactSpace ↥Y := by
     constructor
     have h := (‹QuasiCompact p›).isCompact_preimage Set.univ isOpen_univ isCompact_univ
@@ -129,7 +128,6 @@ theorem exists_affine_etale_cover_of_isReduced {k : Type u} [Field k] (Y : Schem
   obtain ⟨ι, hι, U, hUaff, hUsup⟩ := exists_finite_affine_cover Y
   have : Finite ι := hι
   have hW : IsAffine (sigmaOpens Y U) := isAffine_sigmaOpens Y U hUaff
-  have : CompactSpace ↥(sigmaOpens Y U) := inferInstance
   refine ⟨sigmaOpens Y U, sigmaOpensDesc Y U ≫ p, sigmaOpensDesc Y U, hW,
     isReduced_sigmaOpens Y U, ?_, ?_, etale_sigmaOpensDesc Y U,
     surjective_sigmaOpensDesc Y U hUsup, rfl⟩

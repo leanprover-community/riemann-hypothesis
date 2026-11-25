@@ -16,10 +16,6 @@ open TensorProduct
 noncomputable section
 namespace GlobalTheory.CxPointsSep
 
-theorem eq_zero_of_forall_algHom {k A : Type} [Field k] [IsAlgClosed k] [CommRing A] [Algebra k A]
-    [IsReduced A] [Algebra.FiniteType k A] (a : A) (h : ∀ e : A →ₐ[k] k, e a = 0) : a = 0 := by
-  apply (config := { allowSynthFailures := true }) GlobalTheory.ZH.ConePrime.eq_zero_of_forall_algHom <;> assumption
-
 theorem isReduced_complex_tensor (D : Type) [CommRing D] [IsDomain D] [Algebra ℚ D]
     [Algebra.FiniteType ℚ D] : IsReduced (ℂ ⊗[ℚ] D) := by
   set K := FractionRing D
@@ -72,7 +68,7 @@ theorem exists_det_ne_zero (B : Type) [CommRing B] [IsDomain B] [CharZero B] [Al
     have hℓv : ∀ v, ℓ v = ∑ i, v i * c i := fun v => by
       rw [LinearMap.pi_apply_eq_sum_univ ℓ v]; rfl
     have hu : ∑ i, c i • ((1 : ℂ) ⊗ₜ[ℚ] g (f i)) = 0 := by
-      apply eq_zero_of_forall_algHom (k := ℂ)
+      apply GlobalTheory.ZH.ConePrime.eq_zero_of_forall_algHom (k := ℂ)
       intro φ
       have h0 : ℓ (fun j => pt φ (f j)) = 0 := hle (Submodule.subset_span ⟨pt φ, rfl⟩)
       rw [hℓv] at h0

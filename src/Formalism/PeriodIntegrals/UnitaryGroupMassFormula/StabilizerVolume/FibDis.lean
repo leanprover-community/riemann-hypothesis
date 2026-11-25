@@ -41,10 +41,6 @@ export PI.VolStabSW.Glue (G G_spec)
 variable [OpensMeasurableSpace X] [T2Space X] [LocallyCompactSpace X]
   [IsFiniteMeasureOnCompacts ν] [ν.IsOpenPosMeasure]
 
-theorem dens_unique {g1 g2 : X → ℝ} (h1 : Continuous g1) (h2 : Continuous g2)
-    (h : ∀ S, IsCompact S → ∫ b in S, g1 b ∂ν = ∫ b in S, g2 b ∂ν) : g1 = g2 :=
-  _root_.PI.VolStabSW.Glue.dens_unique h1 h2 h
-
 export PI.VolStabSW.Glue (dens_nonneg)
 
 variable [IsFiniteMeasureOnCompacts μ] [OpensMeasurableSpace V]
@@ -91,9 +87,6 @@ def DisintStep : Prop :=
         Continuous (fun b => ∫ v, φ v ∂(fib b)) ∧
         ∀ S : Set X, IsCompact S → ∫ v in f ⁻¹' (ι '' S), φ v ∂μ = ∫ b in S, ∫ v, φ v ∂(fib b) ∂ν) →
       ∀ φ : V → ENNReal, Measurable φ → ∫⁻ v in U, φ v ∂μ = ∫⁻ b, ∫⁻ v, φ v ∂(fib b) ∂ν
-
-theorem fibOfDens_of (hDis : DisintStep) : FibOfDens :=
-  _root_.PI.VolStabSW.Glue.fibOfDens_of hDis
 
 end PI.VolStabS.Glue
 end -- clump:auto

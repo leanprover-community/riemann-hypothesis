@@ -305,8 +305,7 @@ theorem logCartier_rounding_family : ∀ (K : Type) [Field K] (p : ℕ) [Fact p.
   · intro ha
     subst ha
     exact (hT y0).2.1 η (hη y0)
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+  · rw [map_sum]
     simp_rw [_root_.GlobalTheory.cartierMap_smul_logWedge K p n x γ hγ]
     rw [← hQη]
     have h2 := hhom η

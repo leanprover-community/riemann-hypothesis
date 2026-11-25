@@ -136,7 +136,7 @@ theorem subst_first_coboundary_three {F : MvPowerSeries (Fin 2) K} (hF0 : consta
     simp only [subst_X h3]
     first | rfl
   unfold d1
-  rw [mvSubst_sub h3, mvSubst_sub h3, subst2_comp h3 (_root_.Formalism.InvariantFactorPaths.G7.GramFrameCompositionLinFacts.constantCoeff_law_first_two_of_three hF0) (hX 2),
+  rw [mvSubst_sub h3, mvSubst_sub h3, subst2_comp h3 (_root_.Formalism.InvariantFactorPaths.G7.CoboundarySeries.constantCoeff_first_two_of_three hF0) (hX 2),
     subst2_comp h3 (hX 0) (hX 2), subst2_comp h3 (hX 1) (hX 2), e1]
   simp only [subst_X h3]
   first | rfl

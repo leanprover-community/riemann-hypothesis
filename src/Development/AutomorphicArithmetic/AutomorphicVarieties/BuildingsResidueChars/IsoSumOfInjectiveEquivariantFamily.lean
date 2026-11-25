@@ -27,7 +27,7 @@ theorem UpperTheory.isoSum_of_injective_equivariant_family :
       map_mul' := fun a b => by ext; simp }
   let j : Y →ₗ[ℂ] (I → N) := LinearMap.pi fun i => φ i ∘ₗ Y.subtype
   have hj : Function.Injective j := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro y hy
     exact Subtype.ext (hinj y y.2 fun i => congrFun hy i)
   have hs : ∀ i g x, LinearMap.single ℂ (fun _ : I => N) i (ρ' g x) = P g (LinearMap.single ℂ (fun _ : I => N) i x) := by

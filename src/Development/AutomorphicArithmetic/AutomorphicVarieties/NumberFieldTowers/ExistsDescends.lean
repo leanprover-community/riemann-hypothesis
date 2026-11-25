@@ -1021,6 +1021,24 @@ section -- clump:auto
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.GaloisCohomology UpperTheory.V UpperTheory.V.LDataCardLeFinrank UpperTheory.V.Base UpperTheory.V.Kum UpperTheory.V.Tower
 
+private theorem mem_conjCond_iff {F Ω R M : Type} [Field F] [Field Ω] [Algebra F Ω]
+    [CommRing R] [AddCommGroup M] [Module R M] (U : Subgroup (G F Ω)) [U.Normal]
+    (g : G F Ω) (T : M →ₗ[R] M) (f : U → M) :
+    f ∈ conjCond U g.toRingEquiv T ↔ ∀ u, f u = T (f (conjHom U g u)) := by
+  constructor
+  · intro hf u
+    exact hf _ u (fun x => by
+      change (u : G F Ω) (g x) = g ((g⁻¹ * (u : G F Ω) * g) x)
+      rw [AlgEquiv.mul_apply, AlgEquiv.mul_apply, AlgEquiv.aut_inv, AlgEquiv.apply_symm_apply])
+  · intro hf u u' huu
+    have hconj : conjHom U g u' = u := by
+      apply Subtype.ext
+      ext x
+      change g⁻¹ ((u' : G F Ω) (g x)) = (u : G F Ω) x
+      rw [show (u' : G F Ω) (g x) = g ((u : G F Ω) x) from huu x,
+        AlgEquiv.aut_inv, AlgEquiv.symm_apply_apply]
+    simpa only [hconj] using hf u'
+
 theorem UpperTheory.V.Tower.desc :
     ∀ (k L Ω : Type) [Field k] [NumberField k] [Field L] [NumberField L] [Field Ω] [Algebra k L] [Algebra k Ω] [Algebra L Ω] [IsScalarTower k L Ω] [IsAlgClosure k Ω] [IsAlgClosure L Ω] (l : ℕ) [Fact l.Prime] (D : LData L Ω l) (e : ℤ) (U : Subgroup (G k Ω)) [U.Normal], e ≠ 0 → Procyc L Ω l → cycU l U = cycU l (galOf k L Ω) →
         ∃ Φ : Sha D e ≃ₗ[ℤ_[l]] ShaD l l U (galOf k L Ω) e, IsDesc L D e U Φ.toLinearMap := by
@@ -1055,8 +1073,6 @@ theorem UpperTheory.V.Tower.desc :
         (((cycZ k Ω l ^ (-e)) g : ℤ_[l]ˣ) : ℤ_[l]) • (χ : cycU l U → QZ l) (conjHom (cycU l U) g w) := by
     intro g χ w
     rfl
-  have hq : ∀ (h : G L Ω) (m : QZ l),
-      qzG L Ω l e h m = (((cycZ L Ω l ^ (-e)) h : ℤ_[l]ˣ) : ℤ_[l]) • m := fun h m => rfl
   have hqE : ∀ (h : G L Ω) (m : QZ l),
       (((cycZ k Ω l ^ (-e)) (galEmb k L Ω h) : ℤ_[l]ˣ) : ℤ_[l]) • m = qzG L Ω l e h m := by
     intro h m
@@ -1072,61 +1088,42 @@ theorem UpperTheory.V.Tower.desc :
       exact w.2
     obtain ⟨u, hu, huw⟩ := hw
     exact ⟨⟨u, hu⟩, Subtype.ext huw⟩
+  have hconjE (h : G L Ω) (u : cycU l (⊤ : Subgroup (G L Ω))) :
+      conjHom (cycU l U) (galEmb k L Ω h) (E u) =
+        E (conjHom (cycU l (⊤ : Subgroup (G L Ω))) h u) := by
+    apply Subtype.ext
+    change (galEmb k L Ω h)⁻¹ * galEmb k L Ω u * galEmb k L Ω h =
+      galEmb k L Ω (h⁻¹ * (u : G L Ω) * h)
+    rw [map_mul, map_mul, map_inv]
   have key : ∀ χ : Dinf l l U, χ ∈ ShaD l l U (galOf k L Ω) e ↔
       ((Ψ χ : Dinf l l (⊤ : Subgroup (G L Ω))) : cycU l (⊤ : Subgroup (G L Ω)) → QZ l) ∈
         EqHom l (Uinf L Ω l) (qzG L Ω l e) := by
     intro χ
-    have hX : ((Ψ χ : Dinf l l (⊤ : Subgroup (G L Ω))) : cycU l (⊤ : Subgroup (G L Ω)) → QZ l) ∈
-        XDual l (Uinf L Ω l) ℤ_[l] (QZ l) := (Ψ χ).2
     have hΨE : ∀ u, ((Ψ χ : Dinf l l (⊤ : Subgroup (G L Ω))) :
         cycU l (⊤ : Subgroup (G L Ω)) → QZ l) u = (χ : cycU l U → QZ l) (E u) :=
       fun u => hΨ χ u (E u) rfl
     constructor
     · intro hinv
-      refine Submodule.mem_inf.2 ⟨hX, (Submodule.mem_iInf _).2 fun h => ?_⟩
-      intro u u' huu
-      rw [hΨE, hΨE]
+      refine Submodule.mem_inf.2 ⟨(Ψ χ).2, (Submodule.mem_iInf _).2 fun h => ?_⟩
+      rw [mem_conjCond_iff]
+      intro u
       have hg : galEmb k L Ω h ∈ galOf k L Ω := fun x => h.commutes x
       have hinvg := (Representation.mem_invariants _ _).1 hinv ⟨_, hg⟩
-      have h2 : ((dTw l l U e (galEmb k L Ω h) χ : Dinf l l U) : cycU l U → QZ l) (E u') =
-          (χ : cycU l U → QZ l) (E u') :=
-        congrArg (fun y : Dinf l l U => (y : cycU l U → QZ l) (E u')) hinvg
-      rw [hdTw] at h2
-      have hconj : conjHom (cycU l U) (galEmb k L Ω h) (E u') = E u := by
-        apply Subtype.ext
-        show (galEmb k L Ω h)⁻¹ * galEmb k L Ω u' * galEmb k L Ω h = galEmb k L Ω u
-        rw [← map_inv, ← map_mul, ← map_mul]
-        congr 1
-        ext x
-        show h⁻¹ ((u' : G L Ω) (h x)) = (u : G L Ω) x
-        rw [show (u' : G L Ω) (h x) = h ((u : G L Ω) x) from huu x, AlgEquiv.aut_inv,
-          AlgEquiv.symm_apply_apply]
-      rw [hconj, hqE] at h2
-      exact h2.symm
+      have h2 := congrArg (fun y : Dinf l l U => (y : cycU l U → QZ l) (E u)) hinvg
+      change ((dTw l l U e (galEmb k L Ω h) χ : Dinf l l U) : cycU l U → QZ l) (E u) = _ at h2
+      rw [hdTw, hconjE, hqE] at h2
+      simpa only [hΨE] using h2.symm
     · intro hE
-      obtain ⟨_, hC⟩ := Submodule.mem_inf.1 hE
-      rw [Submodule.mem_iInf] at hC
+      have hC := (Submodule.mem_iInf _).1 (Submodule.mem_inf.1 hE).2
       refine (Representation.mem_invariants _ _).2 fun g => ?_
       obtain ⟨h, hh⟩ := hlift g g.2
       apply Subtype.ext
       funext w
-      show ((dTw l l U e (g : G k Ω) χ : Dinf l l U) : cycU l U → QZ l) w = (χ : cycU l U → QZ l) w
-      rw [hdTw]
-      obtain ⟨u', rfl⟩ := hEsurj w
-      have hu : h⁻¹ * (u' : G L Ω) * h ∈ cycU l (⊤ : Subgroup (G L Ω)) := by
-        refine Subgroup.mem_inf.2 ⟨Subgroup.mem_top _, ?_⟩
-        rw [MonoidHom.mem_ker, map_mul, map_mul, map_inv,
-          MonoidHom.mem_ker.1 (Subgroup.mem_inf.1 u'.2).2, mul_one, inv_mul_cancel]
-      have hcond := hC h ⟨_, hu⟩ u' (fun x => by
-        show (u' : G L Ω) (h x) = h ((h⁻¹ * (u' : G L Ω) * h) x)
-        rw [AlgEquiv.mul_apply, AlgEquiv.mul_apply, AlgEquiv.aut_inv, AlgEquiv.apply_symm_apply])
-      rw [hΨE, hΨE] at hcond
-      have hconj : conjHom (cycU l U) (g : G k Ω) (E u') = E ⟨_, hu⟩ := by
-        apply Subtype.ext
-        show (g : G k Ω)⁻¹ * galEmb k L Ω u' * (g : G k Ω) = galEmb k L Ω (h⁻¹ * (u' : G L Ω) * h)
-        rw [← hh, map_mul, map_mul, map_inv]
-      rw [hconj, ← hh, hqE]
-      exact hcond.symm
+      obtain ⟨u, rfl⟩ := hEsurj w
+      change ((dTw l l U e (g : G k Ω) χ : Dinf l l U) : cycU l U → QZ l) (E u) = _
+      rw [← hh, hdTw, hconjE, hqE]
+      have hcond := (mem_conjCond_iff _ _ _ _).1 (hC h) u
+      simpa only [hΨE] using hcond.symm
   have hR : ∀ x : Sha D e, resInf D e (x : H1 (qzTw D e)) ∈ EqHom l (Uinf L Ω l) (qzG L Ω l e) := by
     intro x
     rw [← resInfOnto L Ω l D e he hpro]

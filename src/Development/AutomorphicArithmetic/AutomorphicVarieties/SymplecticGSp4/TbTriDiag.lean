@@ -566,8 +566,6 @@ private theorem tb_desc (D : Raw Ω c) (r' : G ℚ Ω →* M4 (DualNumber (Padic
   exact ⟨K, hK, inferInstance, mapRep (F' : R →+* DualNumber K) ρ.hom, fun _ => rfl,
     ⟨R, inferInstance, inferInstance, inferInstance, ρ, F', hpt, rfl⟩, fun g i j => ⟨rfl, rfl⟩⟩
 
-set_option synthInstance.maxHeartbeats 200000 in
-set_option maxHeartbeats 1000000 in
 private theorem tb_atL (D : Raw Ω c) (hD : D.Good) (hP : Loc.LocalPublishedTheorems) (r : G ℚ Ω →* M4 (PadicAlgCl l)) (hr : D.EPt r)
     (r' : G ℚ Ω →* M4 (DualNumber (PadicAlgCl l))) (hr' : D.PtIn _ r') (h : ∀ g, tbFst (r' g) = r g)
     (φ : D.Gp l →* Formalism.BasicNotions.Loc.GQ l) (hφ : Topology.IsOpenEmbedding φ)

@@ -9,8 +9,8 @@ public import Mathlib.Analysis.Calculus.ContDiff.Operations
 noncomputable def UpperTheory.Reformulated.B.SmoothOnAdditive.SmOn.{u_1, u_3} :
     {E : Type u_1} →
       {V : Type u_3} →
-        [inst : NormedAddCommGroup E] →
-          [NormedSpace ℝ E] → [inst : NormedAddCommGroup V] → [NormedSpace ℝ V] → Set E → (E → V) → Prop :=
+        [NormedAddCommGroup E] →
+          [NormedSpace ℝ E] → [NormedAddCommGroup V] → [NormedSpace ℝ V] → Set E → (E → V) → Prop :=
     fun {E : Type u_1} {V : Type u_3} [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup V] [NormedSpace ℝ V]
         (A : Set E) (f : E → V) ↦
       ∀ a ∈ A, ∃ (U : Set E) (F : E → V), IsOpen U ∧ a ∈ U ∧ ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) F U ∧ ∀ g ∈ U, g ∈ A → f g = F g
@@ -39,8 +39,8 @@ end UpperTheory.Reformulated.B.SmoothOnAdditive.Helpers
 
 open UpperTheory.Reformulated.B.SmoothOnAdditive.Helpers in
 theorem UpperTheory.Reformulated.B.SmoothOnAdditive.main.{u_1, u_2, u_3} :
-    ∀ {E : Type u_1} {V : Type u_2} {ι : Type u_3} [inst : NormedAddCommGroup E] [inst_1 : NormedSpace ℝ E]
-      [inst_2 : NormedAddCommGroup V] [inst_3 : NormedSpace ℝ V] {A : Set E} {f : ι → E → V} (s : Finset ι),
+    ∀ {E : Type u_1} {V : Type u_2} {ι : Type u_3} [NormedAddCommGroup E] [NormedSpace ℝ E]
+      [NormedAddCommGroup V] [NormedSpace ℝ V] {A : Set E} {f : ι → E → V} (s : Finset ι),
       (∀ i ∈ s, UpperTheory.Reformulated.B.SmoothOnAdditive.SmOn A (f i)) → UpperTheory.Reformulated.B.SmoothOnAdditive.SmOn A fun (a : E) ↦ ∑ i ∈ s, f i a := by
   intro E V ι _ _ _ _ A f s
   classical

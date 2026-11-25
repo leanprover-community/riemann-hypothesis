@@ -97,8 +97,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 
 namespace GlobalTheory.Mem.Col2.TC
 
-
-
 theorem laws_of_ok : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → I.Laws := by
   intro B X I h
   have hch := _root_.GlobalTheory.Mem.Col2.TC.ok_chains I h
@@ -116,7 +114,7 @@ theorem laws_of_ok : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → I.
       fmL := fun u a => (hall u a).2
       xi0 := h.trueColumnChoices_heckeChar_reference_eq_one
       idx0 := fun a => (hch B.u₀ a).2.1
-      bij0 := fun u a b => (GlobalTheory.T.cl0_bijective_and_deco_eq I h u a b).1
+      bij0 := fun u a b => (GlobalTheory.Mem.Col2.ClsZero.stepZero_classes_bijective_same_deco I h u a b).1
       lat := fun u a => (hch u a).2.2 }
 
 end GlobalTheory.Mem.Col2.TC

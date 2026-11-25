@@ -112,7 +112,7 @@ def LocFinAff : Prop := ∀ {W V U : Scheme.{0}} [IsAffine U] (π : W ⟶ V) (r 
     ∃ s : pullback r g ⟶ W, s ≫ π = pullback.fst r g
 
 def LocFinGeo : Prop := ∀ {W V U : Scheme.{0}} (π : W ⟶ V) (r : V ⟶ U) [Etale π] [Surjective π] [IsFinite r],
-  Loc U fun U' g => ∃ s : pullback r g ⟶ W, s ≫ π = pullback.fst r g
+  Loc U fun _ g => ∃ s : pullback r g ⟶ W, s ≫ π = pullback.fst r g
 
 def CoverOne : Prop := ∀ (R : Type) [CommRing R] {F G : Shv R} (f : F ⟶ G) (V : Scheme.{0}) (b : Sec G V),
   (Loc V fun W k => ∃ a : Sec F W, Sec.map f a = Sec.res k b) →

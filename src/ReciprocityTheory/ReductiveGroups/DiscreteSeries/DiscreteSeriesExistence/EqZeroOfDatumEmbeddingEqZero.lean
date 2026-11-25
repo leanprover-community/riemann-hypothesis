@@ -113,26 +113,15 @@ def datumEmbeddingToL2 (hP : IsPsiFor ε lam T Ψ) (v₀ : T.V) : T.V →ₗ[ℂ
   map_add' := datumEmbedding_add hP v₀
   map_smul' := datumEmbedding_smul hP v₀
 
-private theorem toL2_congr_of_eq_on_umat (F G : Matrix (Fin n) (Fin n) ℂ → ℂ)
-    (h : ∀ g : Formalism.REAL.UJ ε, F (Formalism.MainNotions.S.umat g) = G (Formalism.MainNotions.S.umat g)) : toL2 ε F = toL2 ε G := by
-  have hfg : (fun g : Formalism.REAL.UJ ε => F (Formalism.MainNotions.S.umat g)) = fun g => G (Formalism.MainNotions.S.umat g) := funext h
-  unfold toL2
-  by_cases hF : MemLp (fun g : Formalism.REAL.UJ ε => F (Formalism.MainNotions.S.umat g)) 2 (Formalism.REAL.muG ε)
-  · have hG : MemLp (fun g : Formalism.REAL.UJ ε => G (Formalism.MainNotions.S.umat g)) 2 (Formalism.REAL.muG ε) := hfg ▸ hF
-    rw [dite_eq_left hF, dite_eq_left hG]
-    exact MemLp.toLp_congr _ _ (Filter.Eventually.of_forall h)
-  · have hG : ¬ MemLp (fun g : Formalism.REAL.UJ ε => G (Formalism.MainNotions.S.umat g)) 2 (Formalism.REAL.muG ε) := hfg ▸ hF
-    rw [dite_eq_right hF, dite_eq_right hG]
-
 theorem rightRegular_datumEmbedding (hP : IsPsiFor ε lam T Ψ) (v₀ v : T.V) (k : S7.KG ε) :
     rreg ε (S7.toMK k) (uniformisationL2 ε Ψ v₀ v) = uniformisationL2 ε Ψ v₀ (T.op k v) := by
   have hk : S7.toMK k ∈ UJset ε := by
     simp [S7.toMK, UJset]
     exact (k : S7.UJ ε).2
   rw [uniformisationL2, uniformisationL2, rightRegular_toL2 ε _ hk]
-  apply toL2_congr_of_eq_on_umat
-  intro x
-  have h1 := hP.1 1 k (Formalism.MainNotions.S.umat x) x.2
+  apply toL2_congr_of_forall_inUJ_eq
+  intro x hx
+  have h1 := hP.1 1 k x hx
   rw [show S7.toMK (1 : S7.KG ε) = 1 by simp [S7.toMK], one_mul] at h1
   simp only [jfun]
   rw [h1]

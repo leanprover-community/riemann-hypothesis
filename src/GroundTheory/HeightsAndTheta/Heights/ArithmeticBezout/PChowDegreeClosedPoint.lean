@@ -84,8 +84,7 @@ theorem ChowDegreeClosedPoint.proof (hField : ClosedPointChartField.Statement)
     let ys : Fin n → K := fun j => (y i)⁻¹ * y j
     have hker : J ≤ RingHom.ker (aeval (R := F) ys).toRingHom := by
       refine sup_le (fun g hg => ?_) ((Ideal.span_le).mpr ?_)
-      · set_option synthInstance.maxHeartbeats 100000 in
-        rw [RingHom.mem_ker, AlgHom.toRingHom_eq_coe, AlgHom.coe_toRingHom,
+      · rw [RingHom.mem_ker, AlgHom.toRingHom_eq_coe, AlgHom.coe_toRingHom,
           ← sum_homogeneousComponent g, map_sum]
         refine Finset.sum_eq_zero fun d _ => ?_
         rw [aeval_smul_of_isHomogeneous (homogeneousComponent_isHomogeneous d g),

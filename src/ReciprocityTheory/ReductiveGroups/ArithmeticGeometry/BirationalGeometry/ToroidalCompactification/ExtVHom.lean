@@ -223,8 +223,6 @@ section RigPull
 
 open MonoidalCategory CartesianMonoidalCategory
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {S S' : Scheme.{0}} {G : Over S} {G' : Over S'} [GrpObj G] [IsCommMonObj G] [GrpObj G'] [IsCommMonObj G']
 
 private theorem pullU_pullU_eq_pullU_comp {X Y Z : Scheme.{0}} (b : Z ⟶ Y) (a : Y ⟶ X) (W : X.Opens) (u : Γ(X, W)ˣ) :

@@ -1645,10 +1645,8 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.truncKer :
     (isOpenQuotientMap_mk (Gam K (2 + 2))).isQuotientMap.secondCountableTopology
       (isOpenQuotientMap_mk (Gam K (2 + 2))).isOpenMap
   haveI : MeasurableSpace.CountablyGenerated (RightCosetSpace (Gam K (2 + 2))) := by
-    set_option synthInstance.maxHeartbeats 200000 in
       exact BorelSpace.countablyGenerated
   haveI : IsSeparable (quotientMeasure (Gam K (2 + 2)) μ) := by
-    set_option synthInstance.maxHeartbeats 200000 in
       exact isSeparable_of_sigmaFinite _
   haveI : SecondCountableTopology (Lp ℂ 2 (quotientMeasure (Gam K (2 + 2)) μ)) := Lp.SecondCountableTopology
   haveI : TopologicalSpace.SeparableSpace (Lp ℂ 2 (quotientMeasure (Gam K (2 + 2)) μ)) :=

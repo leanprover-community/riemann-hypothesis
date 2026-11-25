@@ -59,7 +59,6 @@ theorem exists_away_bijective_of_fg {A B : Type} [CommRing A] [CommRing B] [Alge
   rw [Subsingleton.elim y 0, map_zero]
 
 
-set_option backward.isDefEq.respectTransparency.types false in
 theorem near_isIso_of_finitePresentation {R : Type} [CommRing R] {Y X : Scheme.{0}} (s : X ⟶ Sp R)
     (f : Y ⟶ X) (K : Type) [Field K] [Algebra R K] [hcl : IsClosedImmersion f]
     [LocallyOfFinitePresentation s] [LocallyOfFinitePresentation (f ≫ s)] [Flat (f ≫ s)]

@@ -66,7 +66,3 @@ theorem rep_smul {p : ℕ} [Fact p.Prime] (G : HTGroup p) (v : InfinitePlace G.F
   exact ⟨c, c.ne_zero, by rw [← hc, Units.smul_def]⟩
 
 end GlobalTheory.CxUnfold
-
-namespace GlobalTheory.CxUnfold
-
-end GlobalTheory.CxUnfold

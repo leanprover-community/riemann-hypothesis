@@ -53,17 +53,6 @@ open Formalism.BasicNotions.TH Formalism.IndefR.Datum
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem gram_det_ne {D : D7} (V : HSp D) : V.gram.det ≠ 0 := by
-  apply _root_.GlobalTheory.VolHeckeCompare.gram_det_ne_zero <;> assumption
-
-end GlobalTheory.MassLinkSD
-
-namespace GlobalTheory.MassLinkSD
-
-open Formalism.BasicNotions.TH Formalism.IndefR.Datum
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 end GlobalTheory.MassLinkSD
 
 namespace GlobalTheory.MassLinkSD
@@ -83,8 +72,6 @@ noncomputable section
 
 open scoped Matrix ComplexConjugate nonZeroDivisors
 open NumberField ReciprocityTheory.ChartRestriction.G.FD Formalism.BasicNotions Formalism.BasicNotions.TH
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace PositivityTheory.Rg.Sw.Glob.WEq
 
@@ -199,8 +186,6 @@ noncomputable section
 open scoped Matrix ComplexConjugate nonZeroDivisors
 open NumberField Formalism.BasicNotions Formalism.BasicNotions.TH
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace PositivityTheory.Rg.Sw.Glob.WEq
 
 theorem coord_hT (D : D7) [IsCMField D.host.E] (hst : ∀ z : D.host.E, star z = IsCMField.complexConj D.host.E z)
@@ -288,7 +273,7 @@ theorem wittLBeq : WittLBeq := by
     simp only [hG₁, Matrix.transpose_apply, HSpace.gram, ReciprocityTheory.ChartRestriction.G.FD.cc]
     rw [← hst]
     exact this
-  have hd : G₁.det ≠ 0 := by rw [hG₁, Matrix.det_transpose]; exact GlobalTheory.MassLinkSD.gram_det_ne V
+  have hd : G₁.det ≠ 0 := by rw [hG₁, Matrix.det_transpose]; exact GlobalTheory.AutFunCounterexample.gram_det_ne V
   have key : ∀ ρ : D.what₂.Tau, ∃ Q : Matrix (Fin r) (Fin r) ℂ, Q.det ≠ 0 ∧
       (dSgn r k).map (tauE D ρ) = Qᵀ * G₁.map (tauE D ρ) * Q.map (starRingEnd ℂ) := by
     intro ρ
@@ -448,8 +433,6 @@ theorem exists_pair {n : Type} [Fintype n] [DecidableEq n] {G : Matrix n n E} (h
     rw [hf_add_left, hf_add_right, hf_add_right, hf_smul_left, hf_smul_left, hf_smul_right, hf_smul_right, hz, hw0, hzw,
       cc_neg, cc_div_two, haa, ← ha]
     ring
-
-
 
 theorem split {n : Type} [Fintype n] [DecidableEq n] {G : Matrix n n E} (hG : ∀ a b, FD.cc (G a b) = G b a)
     (hd : G.det ≠ 0) {z : n → E} (hz0 : z ≠ 0) (hz : hf G z z = 0) :
@@ -673,8 +656,6 @@ private theorem posIndex_negIndex_eq_one_add_of_hyperbolic_split {n : Type} [Fin
   · rw [← negIndex_congr (G.map τ) hQ, hmap, hblk, negIndex_submatrix_equiv,
       negIndex_fromBlocks hH1 hH2, h2]
 
-
-
 theorem main_iso : ∀ (k : ℕ) {n : Type} [Fintype n] [DecidableEq n] (G : Matrix n n E),
     (∀ a b, FD.cc (G a b) = G b a) → G.det ≠ 0 → 2 * k < Fintype.card n →
     (∀ τ : E →+* ℂ, k ≤ posIndex (G.map τ) ∧ k ≤ negIndex (G.map τ)) →
@@ -768,12 +749,9 @@ noncomputable section
 open scoped Matrix ComplexConjugate
 open Matrix Formalism.BasicNotions Formalism.BasicNotions.TH GlobalTheory.Inertia NumberField
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 namespace PositivityTheory.Rg.Sw.Glob
 
 open ReciprocityTheory.ChartRestriction.G
-
 
 theorem wittLBlt : WittLBlt := by
   intro D V k hk hS

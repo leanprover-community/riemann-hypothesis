@@ -270,7 +270,6 @@ theorem isGenericallyFree_quotient_bot {A : Type u} [CommRing A] [IsDomain A] (�
 theorem isGenericallyFree_quotient (hNN : GenericNoetherNormalisation.Statement.{u}) (n : ℕ) :
     ∀ (A : Type u) [CommRing A] [IsDomain A] [IsNoetherianRing A] (q : Ideal (MvPolynomial (Fin n) A)),
       q.IsPrime → IsGenericallyFree A (MvPolynomial (Fin n) A ⧸ q) := by
-  set_option synthInstance.maxHeartbeats 400000 in
   induction n with
   | zero =>
     intro A _ _ _ q _

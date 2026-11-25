@@ -51,9 +51,6 @@ theorem G_eq {L : PeriodPair} {c : ℂ} {τ : ℍ} (h : IsTauOf L c τ) {k : ℕ
   rw [h1, tsum_mul_left, H, hE]
   ring
 
-theorem sixVal : riemannZeta 6 = (Real.pi : ℂ) ^ 6 / 945 := by
-  apply DiscrNeWork.zeta6
-
 theorem g₂_eq {L : PeriodPair} {c : ℂ} {τ : ℍ} (h : IsTauOf L c τ) :
     L.g₂ = (c ^ 4)⁻¹ * (4 * (Real.pi : ℂ) ^ 4 / 3) * E₄ τ := by
   rw [PeriodPair.g₂, G_eq h (k := 4) (by norm_num) ⟨2, rfl⟩,
@@ -65,7 +62,7 @@ theorem g₂_eq {L : PeriodPair} {c : ℂ} {τ : ℍ} (h : IsTauOf L c τ) :
 theorem g₃_eq {L : PeriodPair} {c : ℂ} {τ : ℍ} (h : IsTauOf L c τ) :
     L.g₃ = (c ^ 6)⁻¹ * (8 * (Real.pi : ℂ) ^ 6 / 27) * E₆ τ := by
   rw [PeriodPair.g₃, G_eq h (k := 6) (by norm_num) ⟨3, rfl⟩,
-    show ((6 : ℕ) : ℂ) = 6 by norm_num, sixVal]
+    show ((6 : ℕ) : ℂ) = 6 by norm_num, DiscrNeWork.zeta6]
   have hE : E (k := 6) (by norm_num) τ = E₆ τ := rfl
   rw [hE]
   ring

@@ -138,8 +138,6 @@ theorem valIntAt_of (hcore : WeylLatticeDescent) (hfrac : IsFractionRing G.O G.K
 
 end Gen2
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 variable {D : D7} {X : Formalism.L2.Herm.Herm0 D}
 
 def RestExB (D : D7) : Prop :=
@@ -338,8 +336,6 @@ theorem latO_of (tE : Tau → E →+* LL)
       Matrix.map_one _ (map_zero _) (map_one _), Matrix.submatrix_one_equiv]
 
 end Gen
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} {X : Formalism.L2.Herm.Herm0 D}
 

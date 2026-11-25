@@ -597,8 +597,7 @@ theorem sum_mem_Sw_k (w : InfinitePlace F) (s : Fin (Module.finrank F E) → AF 
     (s k).1 w' = 0) :
     ∑ k, s k • kfour.bsA F E k ∈ Sw_k d w := by
   refine ⟨fun w' hw' => ?_, ?_⟩
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+  · rw [map_sum]
     refine sum_eq_zero fun k _ => ?_
     rw [St.piInf_smul, (hs k).2 w' hw', map_zero, zero_mul]
   · rw [Finset.smul_sum]

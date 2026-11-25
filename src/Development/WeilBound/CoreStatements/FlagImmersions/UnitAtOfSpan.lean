@@ -36,10 +36,7 @@ theorem evC_mul (w : (Σ k, J k) → ℂ) (f g : MRing J) : evC w (f * g) = evC 
 
 theorem evC_conj (w : (Σ k, J k) → ℂ) (f : MRing J) :
     evC (fun p => (starRingEnd ℂ) (w p)) f = (starRingEnd ℂ) (evC w f) := by
-  simp only [evC, MvPolynomial.eval_map]
-  rw [MvPolynomial.eval₂_eq', MvPolynomial.eval₂_eq']
-
-  simp [map_sum, map_prod, map_pow, map_mul]
+  apply GlobalTheory.CompanionTheory.Ar.Flat.evC_conj
 
 theorem contDiff_evC (f : MRing J) : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) fun w : (Σ k, J k) → ℂ => evC w f := by
   simp only [_root_.GlobalTheory.CompanionTheory.Ar.Flat.OverUnique.evC_eq_aeval]

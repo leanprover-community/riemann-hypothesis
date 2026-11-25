@@ -112,11 +112,6 @@ lemma eabV_comb {f f' : Matrix (Fin n) (Fin n) ℂ → E} (hf : SmoothOnGV ε f)
     (rdLinV_of vector_right_derivative_extends n ε E f f' _ _ 0 c g hf hf' h2 h2 hg).2.2]
   module
 
-lemma hasDerivAt_rdV {f : Matrix (Fin n) (Fin n) ℂ → E} (hf : SmoothOnGV ε f)
-    {X : Matrix (Fin n) (Fin n) ℂ} (hX : inG ε X) :
-    HasDerivAt (fun t : ℝ => f (NormedSpace.exp ((t : ℂ) • X))) (RdV X f 1) 0 := by
-  apply GlobalTheory.UnitaryDerived.hasDerivAt_rdV <;> assumption
-
 end Gen
 
 section Rep
@@ -145,7 +140,7 @@ lemma rep_inner (hσ : IsURepOn (UJset ε) σ) {g : Matrix (Fin n) (Fin n) ℂ} 
 lemma rep_skew (hσ : IsURepOn (UJset ε) σ) {u v : H} (hu : SmoothOnGV ε (fun g => σ g u))
     (hv : SmoothOnGV ε (fun g => σ g v)) {X : Matrix (Fin n) (Fin n) ℂ} (hX : inG ε X) :
     ⟪RdV X (fun x => σ x u) 1, v⟫_ℂ = -⟪u, RdV X (fun x => σ x v) 1⟫_ℂ := by
-  have h := (hasDerivAt_rdV hu hX).inner ℂ (hasDerivAt_rdV hv hX)
+  have h := (GlobalTheory.UnitaryDerived.hasDerivAt_rdV hu hX).inner ℂ (GlobalTheory.UnitaryDerived.hasDerivAt_rdV hv hX)
   have e : (fun t : ℝ => ⟪σ (NormedSpace.exp ((t : ℂ) • X)) u,
       σ (NormedSpace.exp ((t : ℂ) • X)) v⟫_ℂ) = fun _ => ⟪u, v⟫_ℂ := by
     funext t
@@ -241,6 +236,6 @@ theorem smoothVec_unitary_module : ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type
       rw [h]
       simp [unitAct_coe]
     rw [e]
-    exact hasDerivAt_rdV u.2 hX
+    exact GlobalTheory.UnitaryDerived.hasDerivAt_rdV u.2 hX
 
 end GlobalTheory.SmoothVecMod

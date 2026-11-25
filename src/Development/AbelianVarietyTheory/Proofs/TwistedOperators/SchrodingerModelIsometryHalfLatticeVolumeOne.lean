@@ -66,7 +66,6 @@ theorem heisO_eigen {l : WO S T} {f : WO S T → ℂ} (h : heisO ψ S T l f = f)
       ψ (symplO S T l y + symplO S T l x) • heisO ψ S T y (heisO ψ S T x f) := by
   rw [heisO_comm ψ S T l y, heisO_comm ψ S T l x, h, heisO_smul, smul_smul, AddChar.map_add_eq_mul]
 
-
 open Classical in
 theorem ipO_translates (hψ : IsStdChar D ψ (-1)) (hS : IsSelfDualC S ΛS) (hT : IsSelfDualC T ΛT) {a : AE D}
     (ha : IsSplitIdem D a) {μ : Measure (WO S T)} {𝓕 : Set (WO S T)} (hμ : IsCovolOne (ratL T S) μ 𝓕)
@@ -125,7 +124,6 @@ theorem halfInd_add {a : AE D} {Λ : AddSubgroup (WO S T)} {l : WO S T} (hl : l 
   unfold halfInd
   refine if_congr (and_congr (Λ.add_mem_cancel_right hl) ⟨fun h => ?_, fun h => _root_.GlobalTheory.HalfCoordSB.isHalf_add h hl'⟩) rfl rfl
   simpa using _root_.GlobalTheory.HalfCoordSB.isHalf_sub h hl'
-
 
 open Classical in
 theorem integral_waves (hψ : IsStdChar D ψ (-1)) (hS : IsSelfDualC S ΛS) (hT : IsSelfDualC T ΛT) {a : AE D}
@@ -232,7 +230,7 @@ theorem placeModel_isometry : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ 
   refine ⟨(hκ.2.2.1.measure_pos _ ⟨κ 0, 0, ⟨zero_mem _, fun _ _ => mul_zero _⟩, rfl⟩).ne',
     hκ.2.2.2.measure_lt_top.ne, ?_⟩
   obtain ⟨w1, w2⟩ := GlobalTheory.T.schwartzBruhatHalf_span_modulated_translates D ψ S T ΛS ΛT hψ hS hT a ha.1 ha.2.1 (infPart_splitIdem ha)
-  obtain ⟨c1, c2⟩ := GlobalTheory.T.isSchwartzBruhatHalf_iff_pullback_matrix D S T v m n a _ κ hκ
+  obtain ⟨c1, c2⟩ := GlobalTheory.HalfCoordSB.isSBHalf_iff_pull D S T v m n a _ κ hκ
   have I := GlobalTheory.T.theta_inner_product_hermitian D ψ S T μ 𝓕 hψ hμ
   set W := {Ψ : WO S T → ℂ | ∃ x y : WO S T, IsHalf a x ∧ IsHalf (cA D a) y ∧
     Ψ = fun t => ψ (symplO S T t y) * halfInd a (latO S T ΛS ΛT fun _ => True) (t + x)} with hW

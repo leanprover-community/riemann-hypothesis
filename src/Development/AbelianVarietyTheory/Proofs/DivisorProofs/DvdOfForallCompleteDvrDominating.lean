@@ -60,7 +60,6 @@ theorem dvd_of_forall_complete_dvr : ∀ (R : Type) [CommRing R] [IsDomain R] [I
     (GlobalTheory.discreteValuationRing_dominating_noetherian_local R K K).2.2 V hdom
   have hd := H (AdicCompletion (maximalIdeal V) V) hc _ hρi hρl
   let a : V := ⟨algebraMap R K g, h g⟩
-  let b : V := ⟨algebraMap R K f, h f⟩
   have ha : a ≠ 0 := fun e => hg' (congrArg Subtype.val e)
   obtain ⟨c, hcab⟩ := dvd_of_map_dvd_of_valuationRing (algebraMap V (AdicCompletion (maximalIdeal V) V))
     (GlobalTheory.algebraMap_adicCompletion_injective_of_dvr V) ha hd

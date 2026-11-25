@@ -30,8 +30,8 @@ private def cmpEquiv (n : ℕ) {v : Pl F} (w : PlacesOver E v) (hw : ∀ u : Pla
     GL (Fin n) (CompletionsOver E v) ≃ₜ* Gw n w.1 where
   toFun := GM.cmp w
   invFun := mapGL n ((evalEquiv w hw).symm : w.1.adicCompletion E →+* CompletionsOver E v)
-  left_inv g := Units.ext (Matrix.ext fun _ _ => (evalEquiv w hw).symm_apply_apply _)
-  right_inv g := Units.ext (Matrix.ext fun _ _ => (evalEquiv w hw).apply_symm_apply _)
+  left_inv _ := Units.ext (Matrix.ext fun _ _ => (evalEquiv w hw).symm_apply_apply _)
+  right_inv _ := Units.ext (Matrix.ext fun _ _ => (evalEquiv w hw).apply_symm_apply _)
   map_mul' := map_mul _
   continuous_toFun := Continuous.units_map _ (continuous_id.matrix_map (continuous_apply w))
   continuous_invFun := Continuous.units_map _ (continuous_id.matrix_map (evalEquiv_symm_cont w hw))

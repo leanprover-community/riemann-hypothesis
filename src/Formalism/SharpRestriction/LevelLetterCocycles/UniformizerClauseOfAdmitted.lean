@@ -572,7 +572,6 @@ end Formalism.MainNotions.RamifiedCoefficientChains.S9.AdB
 
 noncomputable section
 
-
 namespace Formalism.MainNotions.RamifiedCoefficientChains.S9.AdL
 
 open Module Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.RamifiedCoefficientChains
@@ -693,7 +692,6 @@ end Formalism.MainNotions.RamifiedCoefficientChains.S9.AdL
 
 noncomputable section
 
-
 namespace Formalism.MainNotions.RamifiedCoefficientChains.S9.AdM
 
 open Module Submodule Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.RamifiedCoefficientChains Formalism.MainNotions.RamifiedCoefficientChains.S9 Formalism.MainNotions.RamifiedCoefficientChains.S9.ShB TensorProduct
@@ -723,10 +721,6 @@ theorem filLev_zero_high (hbij : Function.Bijective (algebraMap K₀ K)) (T : Lo
   have hx0 := Formalism.MainNotions.UnusedSlot80.LevC.fil_high W T i τ hover hbij.2 H (hJ τ hτ) u hu (by simpa using hxD) hxF
   simp [hx0]
 
-theorem ring_clauses_at_uniformizer (h9 : Formalism.MainNotions.DeltaInvariantLattices.P9W W) (hA : Formalism.MainNotions.LiftingTheory.CaseA W) (T : LocLat G Qp LL O)
-    (hT : IsCrys PD T.ρ) : Formalism.MainNotions.RamifiedCoefficientChains.Sh.BT.Ring9 W := by
-  apply _root_.Formalism.MainNotions.RamifiedCoefficientChains.S9.GM.ring_clauses_at_uniformizer <;> assumption
-
 theorem adaptBas_of (hE : Formalism.MainNotions.RamifiedCoefficientChains.DcrisExactStrict PD LL) (hC : Formalism.MainNotions.RamifiedCoefficientChains.CrysSubQuot PD LL)
     (hQ : Formalism.MainNotions.RamifiedCoefficientChains.DdREqDcris PD LL) (h3 : Formalism.MainNotions.DeltaInvariantLattices.P3W W) (h5 : Formalism.MainNotions.DeltaInvariantLattices.P5W W)
     (h9 : Formalism.MainNotions.DeltaInvariantLattices.P9W W) (hV : Formalism.MainNotions.WachCoordinates.Br.ValRing (LL := LL) O v) : AdaptBas W := by
@@ -736,7 +730,7 @@ theorem adaptBas_of (hE : Formalism.MainNotions.RamifiedCoefficientChains.DcrisE
   have hT : IsCrys PD T₂.ρ := hS.2.2.2.2.2.1.2.1
   obtain ⟨hdom, hdvr, hfr⟩ := hS.2.2.2.1
   have := hdom; have := hdvr; have := hfr
-  have hR9 := ring_clauses_at_uniformizer W h9 hCA T₂ hT
+  have hR9 := Formalism.MainNotions.RamifiedCoefficientChains.S9.GM.ring_clauses_at_uniformizer W h9 hCA T₂ hT
   have hηb := Formalism.MainNotions.N.Pv.LocalLengthBound.rk_eta_lt W hS i
 
   obtain ⟨e, he⟩ := (Formalism.MainNotions.RamifiedCoefficientChains.Sh.basTool_of W h9 hCA T₂ hT (i - 1)).1
@@ -980,8 +974,6 @@ theorem uniformizer_clause_of_admitted (hA : admitted D HW F Cm CR CA CB CK) : F
 theorem level_tools_of_admitted' (hA : admitted D HW F Cm CR CA CB CK) : Formalism.MainNotions.WachCoordinates.adm7 D HW F Cm :=
   Formalism.MainNotions.UnusedSlot80.tools_unramified_statement D HW F Cm ⟨fun l _ K s LL h => (hA.1 l K s LL h).2.2.1, laurent_clause_of_admitted' D HW F Cm hA,
     uniformizer_clause_of_admitted D HW F Cm hA⟩
-
-
 
 theorem dual_lemma_of_admitted (hA : admitted D HW F Cm CR CA CB CK) (l : ℕ) [Fact l.Prime] (K LL : Loc.FinExt l)
     (hg : Loc.Good K 1 LL) [NeZero (Module.finrank ℚ_[l] ↥(Loc.K0 K))] : LemmaDN ((HW l).W K 1 LL hg) := by

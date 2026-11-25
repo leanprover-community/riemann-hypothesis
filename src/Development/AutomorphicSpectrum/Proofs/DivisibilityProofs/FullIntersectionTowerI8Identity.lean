@@ -149,7 +149,6 @@ theorem ht_cancel {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E
   subst e
   exact sabCancel pullCubCancel E H _ _ _ _ _ _ _ _ m n
 
-
 theorem stHt : SquareStatements.StHt := by
   intro E _ _ _ H D l Xo c Y S Ω Ω' _ _ K K' _ _ J J' _ _ y y' A A' h i j ⟨hdom, hf, hcst, hext, hjo⟩ hR _ hvb
   haveI : CharZero Ω := charZero_of_injective_ringHom A.cst.injective
@@ -347,7 +346,7 @@ theorem antisymmetry_transposition_factor : AntisymmetryFibreSquares := by
   have hjN : T.j ≤ N := T.j_lt.le
   have hdim : Top.dimFl Ψ N = antisymDegree Ψ N := by
     simp [Top.dimFl, antisymDegree, Nat.choose_two_right]
-  have harith : IsArithVar (PFl Ψ N) (Top.dimFl Ψ N + 1) := hdim ▸ (_root_.GlobalTheory.CompanionTheory.Ar.PB.flag_isArithVar_and_image Ψ N hN).1
+  have harith : IsArithVar (PFl Ψ N) (Top.dimFl Ψ N + 1) := hdim ▸ (_root_.PositivityTheory.Xgp.t_fl_arith Ψ N hN).1
   obtain ⟨m, d, S', K, _, ι, _, P, Re', hm, ⟨F⟩, hPB, hdeg⟩ := hSq B c
   obtain ⟨⟨c₀, hc₀, hfl⟩, hprop⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.proportional hIn Ψ N T.j hN hjN
   obtain ⟨-, hv⟩ := hprop (d + 1) S' F.dim F.unif
@@ -520,7 +519,6 @@ theorem baseInc_injective : Function.Injective (baseInc (ι := ι) blk) := by
   obtain ⟨rfl, h2⟩ := h
   cases h2
   rfl
-
 
 open Classical in
 def extDeg (b : NonPluckerBlocks blk → ℕ) : K → ℕ := fun k => if h : ∀ p, blk p ≠ some k then b ⟨k, h⟩ else 0
@@ -777,7 +775,6 @@ theorem isPt_of_birational {z : (Σ k, ι k) → L} (hb : Birational z) {d : ℕ
     exact Module.finrank_pos
   exact (numMap L L (RingHom.id L) K ι z d hb hz h0).1
 
-
 open Classical in
 theorem intNum_cmp (hP : NumPull) {K₂ : Type} [Fintype K₂] {ι₂ : K₂ → Type} [∀ k, Fintype (ι₂ k)] (y : (Σ k, ι k) → Ω)
     {κ₁ : K₁ → K} {v₁ : (Σ k, ι₁ k) → Σ k, ι k} {κ₂ : K₂ → K} {v₂ : (Σ k, ι₂ k) → Σ k, ι k} (h₁ : IsBlockMap κ₁ v₁)
@@ -798,7 +795,6 @@ theorem intNum_cmp (hP : NumPull) {K₂ : Type} [Fintype K₂] {ι₂ : K₂ →
   refine numEq ptDim hP (unitZero ptDim) ℚ L K ι K ι z z d _ _ hz hz fun j => ?_
   obtain ⟨f, g, hfg⟩ := h j
   exact valEq_of_lineIso hz.1 hfg
-
 
 open Classical MeasureTheory ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M in
 theorem degNum_eq (hI : PB.Inputs) {d : ℕ} {σ : Type} {S : PB.AnSys d σ} {P : Ideal (MRing ι)} (Re : PB.Realis S P)
@@ -945,8 +941,8 @@ theorem stCmp : StCmp := by
     _root_.GlobalTheory.CompanionTheory.Relay.twisted_hodge_tie_compare PositivityTheory.UnitarySelfGeneration.cmpHodgeTiedAlt _root_.GlobalTheory.thetaUnifAV_closed E H D l Xo c O β Y (HostAut.refl H) (Iso.refl Xo.X) hsab (Equiv.refl _) S n M M' T T'
       hβ (by simp) (fun τ => by ext; rfl)
       (Indep.imageCpt_refl_of_genPt E H D l Xo c O β Y S _ _ _ _ _ _ _ _ T.A T'.A hβ hgen) hR
-  have hJ := _root_.GlobalTheory.CompanionTheory.Ar.Cmp.hermLine_pull_blockMap M.K M.ι K ι κ v hbv
-  have hJ' := _root_.GlobalTheory.CompanionTheory.Ar.Cmp.hermLine_pull_blockMap M'.K M'.ι K ι κ' v' hbv'
+  have hJ := _root_.PositivityTheory.UnitarySelfGeneration.j_pull M.K M.ι K ι κ v hbv
+  have hJ' := _root_.PositivityTheory.UnitarySelfGeneration.j_pull M'.K M'.ι K ι κ' v' hbv'
   have hmpp : IsMultiProjPrime (mCoordIdeal y) := harith.2.1
   obtain ⟨hc1, -, -, hc4⟩ := _root_.PositivityTheory.UnitarySelfGeneration.i_comb K ι (mCoordIdeal y)
     {z | z ∈ mcPts (mCoordIdeal y) ∧ evC z b ≠ 0} hmpp (fun z hz => hz.1)

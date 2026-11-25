@@ -62,10 +62,6 @@ theorem cmul_vp_vp (p : ℕ) (hp : 0 < p) (f g : ℕ → K) (r : ℕ) :
 
 end GlobalTheory.KummerEisensteinGalois.UpSplit
 
-namespace GlobalTheory.KummerEisensteinGalois
-
-
-end GlobalTheory.KummerEisensteinGalois
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

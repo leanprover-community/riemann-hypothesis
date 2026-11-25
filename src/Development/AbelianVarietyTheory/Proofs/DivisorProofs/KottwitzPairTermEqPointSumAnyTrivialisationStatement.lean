@@ -79,10 +79,12 @@ theorem term_eq_termAt : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (P : Pair 
     apply Subtype.ext
     apply Prod.ext
     · have e : x₀ = (g : (AfP p ⊗[ℚ] G.C)ˣ × (AfP p)ˣ).1 * x := by rw [hgx, inv_mul_cancel_right]
-      simp only [toAf, MonoidHom.comp_apply, MonoidHom.codRestrict_apply, MulEquiv.coe_toMonoidHom, MulAut.conj_apply, inv_inv, Subgroup.coe_mul, Subgroup.coe_inv, Prod.fst_mul, Prod.fst_inv, MonoidHom.prodMap, MonoidHom.prod_apply, Subgroup.coe_subtype]
+      change x₀ * _ * x₀⁻¹ = (g : (AfP p ⊗[ℚ] G.C)ˣ × (AfP p)ˣ).1 * (x * _ * x⁻¹) *
+        (g : (AfP p ⊗[ℚ] G.C)ˣ × (AfP p)ˣ).1⁻¹
       rw [e]; group
-    · simp only [toAf, MonoidHom.comp_apply, MonoidHom.codRestrict_apply, MulEquiv.coe_toMonoidHom, MulAut.conj_apply, inv_inv, Subgroup.coe_mul, Subgroup.coe_inv, Prod.snd_mul, Prod.snd_inv, MonoidHom.prodMap, MonoidHom.prod_apply, Subgroup.coe_subtype]
+    · change _ = (g : (AfP p ⊗[ℚ] G.C)ˣ × (AfP p)ˣ).2 * _ * (g : (AfP p ⊗[ℚ] G.C)ˣ × (AfP p)ˣ).2⁻¹
       rw [mul_comm, inv_mul_cancel_left]
+      rfl
   have hQr : P.toQr r z₀ = (MulAut.conj g₂⁻¹).toMonoidHom.comp (P.toQr r z) := by
     ext y : 1
     have := hcz (locC G y.1) (hcent y)

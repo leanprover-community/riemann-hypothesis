@@ -325,8 +325,6 @@ instance isMonHom_biMap [GrpObj T] (x z : T ⟶ A) [IsMonHom x] [IsMonHom z] (q 
 def biLB (L : LB G.left) (x z : T ⟶ A) : LB T.left :=
   LB.LinComb L (fun q => (biMap t P h x z q).left) (biExp P.n)
 
-theorem isLB_biLB {L : LB G.left} (hL : L.IsLB) (x z : T ⟶ A) : (biLB t P h L x z).IsLB := LB.isLB_linComb hL _ _
-
 def bi (c : Pic G.left) (x z : T ⟶ A) : Pic T.left :=
   ∑ i, ∑ j, lam c (x ≫ crd t P i) (z ≫ crd t P j ≫ a.act (gram P h i j))
 
@@ -438,21 +436,9 @@ theorem theta_isSymmetric (w : O) {L : RigLB G} (c : CubicalStr G L) (hs : L.IsS
     (theta t P h w L).IsSymmetric :=
   haveI := b.hom w; biRig_isSymmetric t P h (𝟙 A) (b.act w) c hs
 
-theorem cls_poi (L : RigLB G) : cls _ (poi t P h L).isLB = bi t P h (cls L.L L.isLB) (fst A A) (snd A A) :=
-  cls_biLB t P h L.isLB _ _ _
-
 theorem cls_theta (w : O) (L : RigLB G) :
     cls _ (theta t P h w L).isLB = bi t P h (cls L.L L.isLB) (𝟙 A) (b.act w) :=
   cls_biLB t P h L.isLB _ _ _
-
-theorem biLB_iso_pull (L : RigLB G) (x z : T ⟶ A) :
-    LBIso (biLB t P h L.L x z) ((poi t P h L).L.pull (lift x z).left) := by
-  refine (cls_eq_iff (isLB_biLB t P h L.isLB x z) (LB.isLB_linComb (poi t P h L).isLB _ _)).1 ?_
-  rw [cls_biLB t P h L.isLB, cls_pull (poi t P h L).isLB, cls_poi, pull_bi, lift_fst, lift_snd]
-
-theorem theta_iso_pull (w : O) (L : RigLB G) :
-    LBIso (theta t P h w L).L ((poi t P h L).L.pull (lift (𝟙 A) (b.act w)).left) :=
-  biLB_iso_pull t P h L _ _
 
 section ThetaLaws
 
@@ -728,10 +714,6 @@ variable (t : SAB H X) (Λ : Unim E)
 def isTensor : IsTensor (tens t Λ).G (tens t Λ).act t.G t.act Λ.L := Λ.pres.isTensor t.act
 
 def poi : RigLB ((tens t Λ).G ⊗ (tens t Λ).G) := HermTensor.poi (isTensor t Λ) Λ.pres Λ.hInt t.PP
-
-theorem pp_iso_pull :
-    LBIso (tens t Λ).PP.L ((poi t Λ).L.pull (lift (𝟙 (tens t Λ).G) ((tens t Λ).act.act H.w0)).left) :=
-  theta_iso_pull (isTensor t Λ) Λ.pres Λ.hInt H.w0 t.PP
 
 variable {t} {t' : SAB H X'} {f : X' ⟶ X} (m : SABMap t' t f)
 

@@ -149,7 +149,6 @@ theorem exists_basis (n : ℕ) (L : Submodule (𝓞 E) (Fin n → E)) (hL : Subm
 
 end GlobalTheory.HermLocDualBasis
 
-
 open GlobalTheory.HermLocDualBasis in
 theorem GlobalTheory.HermLocDualBasis.exists_locDualBasis : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E]
     [Algebra F E] (σ : E →ₐ[F] E)
@@ -263,14 +262,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-namespace GlobalTheory.IntSmulMemSubmodule
-
-theorem exists_int_smul_mem {E : Type} [inst : Field E] [NumberField E] {n : ℕ}
-    (L : Submodule (NumberField.RingOfIntegers E) (Fin n → E)) (hL : Submodule.IsFullLattice E L)
-    (w : Fin n → E) : ∃ (N : ℤ), N ≠ (0 : ℤ) ∧ N • w ∈ L := by
-  apply GlobalTheory.LatAlmostAll.exists_int_smul_mem <;> assumption
-
-end GlobalTheory.IntSmulMemSubmodule
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.ImportsBisSide =====
@@ -327,8 +318,8 @@ theorem core {n d : ℕ} (X : Spc F E n) (Y : Spc F E d) (hX : X.L.IsFullLattice
     (i : Fin n) (j : Fin d) (t : Fv F v) (x : E) :
     ∃ X₀ : Matrix (Fin n) (Fin d) E,
       Matrix.single i j (GlobalTheory.EmbChart.atPlace v t ⊗ₜ[F] x) - GlobalTheory.EmbChart.atPlace v 1 • incM F X₀ ∈ latAtV X Y v := by
-  obtain ⟨N, hN, hNx⟩ := _root_.GlobalTheory.IntSmulMemSubmodule.exists_int_smul_mem X.L hX (Pi.single i x)
-  obtain ⟨N', hN', hNy⟩ := _root_.GlobalTheory.IntSmulMemSubmodule.exists_int_smul_mem Y.L hY (Pi.single j 1)
+  obtain ⟨N, hN, hNx⟩ := _root_.GlobalTheory.IntegerMultipleMembership.exists_int_smul_mem X.L hX (Pi.single i x)
+  obtain ⟨N', hN', hNy⟩ := _root_.GlobalTheory.IntegerMultipleMembership.exists_int_smul_mem Y.L hY (Pi.single j 1)
   have hK : ((N * N' : ℤ) : F) ≠ 0 := Int.cast_ne_zero.2 (mul_ne_zero hN hN')
   obtain ⟨s, hs⟩ := exists_sub_mem v t hK
   set r := (algebraMap F (Fv F v) ((N * N' : ℤ) : F))⁻¹ * (t - algebraMap F (Fv F v) s) with hr
@@ -593,14 +584,6 @@ theorem decomp_sum (σ : E →ₐ[F] E) {n d : ℕ} (J : Matrix (Fin n) (Fin n) 
   refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun m _ => ?_
   ring
 
-theorem incM_smul {m k : Type} (c : F) (Z : Matrix m k E) : incM F (c • Z) = algebraMap F (AF F) c • incM F Z := by
-  ext i j
-  simp only [incM, Matrix.map_apply, Matrix.smul_apply]
-  rw [Algebra.smul_def c, Algebra.smul_def (algebraMap F (AF F) c), map_mul]
-  congr 1
-  rw [← IsScalarTower.algebraMap_apply]
-  exact (Algebra.TensorProduct.includeRight : E →ₐ[F] AF F ⊗[F] E).commutes c
-
 theorem inv_mem_O {v : Pl (F := F)} {t : 𝓞 F} (ht : t ∉ v.asIdeal) :
     algebraMap F (Fv F v) ((t : F))⁻¹ ∈ v.adicCompletionIntegers F := by
   rw [HeightOneSpectrum.mem_adicCompletionIntegers]
@@ -679,7 +662,7 @@ theorem lemD (σ : E →ₐ[F] E) (B : Base F E) {n d r s r' s' : ℕ} (X : Spc 
     hpX k, _, hwY k, ?_⟩
   · rw [GlobalTheory.EmbChart.evFin_atPlace]
     exact inv_mem_O hc0
-  · rw [hvm, incM_smul, smul_smul, GlobalTheory.EmbChart.atPlace_mul_right, one_mul, AlgHom.commutes]
+  · rw [hvm, GlobalTheory.MixXEvUniq.incM_smul, smul_smul, GlobalTheory.EmbChart.atPlace_mul_right, one_mul, AlgHom.commutes]
 
 theorem latAtV_selfDual : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E)
     (a a' : ℕ) (G : Geo σ a a') (X : Chars F E) (om : Rep σ G.V G.W) (om' : Rep σ G.V' G.W), IsTriple B G X om om' →
@@ -1561,7 +1544,7 @@ theorem acts_vacCond_of_mem_KAt_left : ∀ (F E : Type) [Field F] [NumberField F
     rw [smul_zero, e0]
     funext x
     simp [Darboux.rho, schr]
-  have hrφ : Rest (evFin F v) φ r := GlobalTheory.T.complementaryAdelicSchwartz_of_nonzero_local v φ₁ φ r h0 hφ hr
+  have hrφ : Rest (evFin F v) φ r := GlobalTheory.RestCofactor.rest_of_rest v φ₁ φ r h0 hφ hr
   set γ' := actAB (cA σ) (k⁻¹, (1 : UA σ G.W.J)) γ
   have eγ' : γ' = mat k⁻¹ * γ := by
     simp [γ', actAB, mat]

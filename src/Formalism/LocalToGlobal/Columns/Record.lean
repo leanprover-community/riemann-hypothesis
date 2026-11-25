@@ -614,10 +614,6 @@ theorem modP.ext_funAt (P : HeightOneSpectrum (𝓞 E)) (M : Submodule (𝓞 E) 
     unfold modP.ext
     rw [dite_eq_right fun h => hx ((mem_locP P M x).2 h)]
 
-namespace DecoSet
-
-end DecoSet
-
 end MoveLemmas
 
 private theorem rec_intDel_full {K : Type} [Field K] [NumberField K] [StarRing K]

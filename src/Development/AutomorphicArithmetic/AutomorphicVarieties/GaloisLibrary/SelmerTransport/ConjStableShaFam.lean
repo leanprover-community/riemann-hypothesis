@@ -5,6 +5,15 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibra
 public import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.TotallyRealRoots.LeNuIffPowMemPrinc
 import Std.Tactic.BVDecide.Normalize.Prop
 
+/-!
+# Arithmetic local conditions and cyclotomic subgroups
+
+`UpperTheory.V.Base.shaFam` selects the local conditions used by `ShaU`, and
+`conjStable_shaFam` supplies the stability needed for `shaRep` and `shaEig`.
+The tower section defines the finite-level subgroups `levU`, the cyclotomic
+kernel subgroup `cycU`, and the principal subgroup `gamU` used in control.
+-/
+
 @[expose] public section
 
 noncomputable section
@@ -94,6 +103,12 @@ end Fields
 section Sha
 
 variable (k Ω : Type) [Field k] [NumberField k] [Field Ω] [Algebra k Ω] (l : ℕ)
+
+/-- The local family consisting of all inertia subgroups and the decomposition
+subgroups at valuation subrings with `A.valuation (l : Ω) < 1`.
+In `ShaU`, classes therefore restrict trivially to inertia everywhere and to these
+decomposition subgroups. The definition uses valuation subrings, without choosing
+a finite list of places. -/
 
 def shaFam : Set (Subgroup (G k Ω)) :=
   {D | (∃ A : ValuationSubring Ω, A.valuation (l : Ω) < 1 ∧ D = Dec (F := k) A) ∨
@@ -188,11 +203,22 @@ variable (k Ω) in
 def chiO (O : Type) [CommRing O] [Algebra ℤ_[l] O] : G k Ω →* Oˣ :=
   (Units.map (algebraMap ℤ_[l] O).toMonoidHom).comp (cycZ k Ω l)
 
+/-- Elements of `U` whose cyclotomic character lies in the principal subgroup
+`KStar.TotallyRealRoots.princ l n`. -/
+
 def levU (U : Subgroup (G k Ω)) (n : ℕ) : Subgroup (G k Ω) := U ⊓ (KStar.TotallyRealRoots.princ l n).comap (cycZ k Ω l)
+
+/-- The subgroup of `U` on which the `l`-adic cyclotomic character is trivial.
+It lies in every `levU l U n` by `cycU_le_levU`. -/
 
 def cycU (U : Subgroup (G k Ω)) : Subgroup (G k Ω) := U ⊓ (cycZ k Ω l).ker
 
+/-- Principal level used in cyclotomic control: level two at `l = 2`, level one
+otherwise. -/
+
 def qExp (l : ℕ) : ℕ := if l = 2 then 2 else 1
+
+/-- The principal cyclotomic subgroup `levU l U (qExp l)`. -/
 
 abbrev gamU (U : Subgroup (G k Ω)) : Subgroup (G k Ω) := levU l U (qExp l)
 

@@ -836,13 +836,6 @@ section Ops
 
 variable {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ]
 
-private theorem acts_zero₀ (T : Module.End ℂ ((κ → AF F) → ℂ)) :
-    Acts (evI F) ⇑T ⇑(0 : SInf F κ) ⇑(0 : SInf F κ) := by
-  intro r _
-  have e : tens (evI F) (⇑(0 : SInf F κ)) r = 0 := by funext y; simp [tens]
-  rw [e, map_zero]
-
-
 open scoped Classical in
 theorem acts_comb_eq (T : Module.End ℂ ((κ → AF F) → ℂ)) (c : ℂ) {f f₁ g g₁ h : SInf F κ}
     (hf : Acts (evI F) ⇑T ⇑f ⇑f₁) (hg : Acts (evI F) ⇑T ⇑g ⇑g₁) (hh : Acts (evI F) ⇑T ⇑(c • f + g) ⇑h) :
@@ -902,19 +895,6 @@ private theorem hecke_div {F E : Type} [Field F] [NumberField F] [Field E] [Numb
     GlobalTheory.LFun.IsHecke F E (χ / χ') :=
   ⟨h.1.div' h'.1, fun x => by simp only [MonoidHom.div_apply, h.2 x, h'.2 x, div_self']⟩
 
-private theorem resEta_div {R A : Type} [CommRing R] [CommRing A] [Algebra R A] {K : Subgroup Rˣ}
-    {χ χ' : Aˣ →* Circle} {n m k : ℕ} (h : ResEtaPow K χ n) (h' : ResEtaPow K χ' m) (hk : k = n + m) :
-    ResEtaPow K (χ / χ') k := by
-  subst hk
-  intro a
-  have e := h a
-  have e' := h' a
-  rw [MonoidHom.div_apply, Circle.coe_div, e, e']
-  split_ifs
-  · simp
-  · rw [pow_add]
-    rcases neg_one_pow_eq_or ℂ m with hm | hm <;> rw [hm] <;> ring
-
 theorem realTransfer' : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
     (Bs : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Base F E) (a a' : ℕ) (G : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Geo σ a a') (Xc : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Chars F E)
     (om : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep σ G.V G.W) (om' : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep σ G.V' G.W)
@@ -941,7 +921,7 @@ theorem realTransfer' : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Nu
   obtain ⟨w₀⟩ := (inferInstance : Nonempty (InfinitePlace F))
   have dV' : G.V'.J.det ≠ 0 := det_ne_sig_map (Bs.emb w₀).1 1 (by rw [one_smul]; exact hg.hV'.sig w₀)
   have dW : G.W.J.det ≠ 0 := det_ne_sig_map (Bs.emb w₀).1 Complex.I (hg.hW.sig w₀)
-  have hres := resEta_div hc.resα hc.resβ (Nat.add_comm a a')
+  have hres := GlobalTheory.ThK.RealUniq.resEtaPow_div' hc.resα hc.resβ (Nat.add_comm a a')
   have hhk := hecke_div hc.heckeα hc.heckeβ
   have hLie := _root_.GlobalTheory.RealLieFock.lie_deriv_pol F E σ hT.base.cm a' (a + a') G.V' G.W G.M' Bs.ψ Xc.α (Xc.α / Xc.β) om' hT.base.std
     hg.hV'.herm dV' hg.hW.skew dW hc.resα hres hc.heckeα hhk hT.weil' Bs.emb hg.hV'.cartan hg.hW.cartan
@@ -965,7 +945,7 @@ theorem realTransfer' : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Nu
     intro k hk
     refine exists_op P (fun f f₁ => Acts (evI F) (om' (1, k)) ⇑f ⇑f₁)
       (fun f hf => ?_) (fun f f₁ f₂ h₁ h₂ => (GlobalTheory.RealLift.actsLaws F _ f f₁ f₂).2.2.2.1 _ h₁ h₂)
-      (acts_zero₀ _) (fun c f f₁ g g₁ hf hg h₁ h₂ => ?_)
+      (GlobalTheory.ThK.RealUniq.acts_zero _) (fun c f f₁ g g₁ hf hg h₁ h₂ => ?_)
     · obtain ⟨f₁, h₁⟩ := (hCpt k hk f hf).1
       exact ⟨f₁, (hCpt k hk f hf).2 f₁ h₁, h₁⟩
     · have hs : c • f + g ∈ P := add_mem (P.smul_mem c hf) hg
@@ -1019,7 +999,7 @@ theorem realTransfer' : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Nu
     have hx' : R.p' (x : SInf F _) = 0 := hx
     show R.p' ((g x : ↥P) : SInf F _) = 0
     rcases hgI with ⟨k, hk, hA⟩ | ⟨γ, hγ, hA⟩
-    · have h := hM.real.cpt k hk 0 (G.M.Pol Bs.ψ Bs.emb).zero_mem x x.2 0 _ (acts_zero₀ _) (hA x)
+    · have h := hM.real.cpt k hk 0 (G.M.Pol Bs.ψ Bs.emb).zero_mem x x.2 0 _ (GlobalTheory.ThK.RealUniq.acts_zero _) (hA x)
         (by rw [hx', map_zero])
       rw [map_zero] at h
       exact h.symm
@@ -1068,16 +1048,6 @@ theorem hecke_div {F E : Type} [Field F] [NumberField F] [Field E] [NumberField 
     exact hc
   · rw [MonoidHom.div_apply, h.2 x, h'.2 x, div_one]
 
-theorem resEta_div {R A : Type} [CommRing R] [CommRing A] [Algebra R A] {K : Subgroup Rˣ}
-    {χ χ' : Aˣ →* Circle} {n m k : ℕ} (h : ResEtaPow K χ n) (h' : ResEtaPow K χ' m) (hk : k = n + m) :
-    ResEtaPow K (χ / χ') k := by
-  subst hk
-  intro x
-  rw [MonoidHom.div_apply, Circle.coe_div, h x, h' x]
-  split_ifs
-  · exact div_one 1
-  · rw [pow_add, div_eq_mul_inv, ← inv_pow, inv_neg, inv_one]
-
 end GlobalTheory.HoweGlobalPair
 
 end
@@ -1113,7 +1083,6 @@ theorem ext_mem_SB (φ : ∀ v : T, ↥(SB (Fin n × Fin d → Fv F v.1))) (v : 
   · rw [ext_of_mem M T φ ⟨v, hv⟩]; exact (φ ⟨v, hv⟩).2
   · rw [ext_of_not_mem M T φ v hv]; exact hvac v
 
-
 omit hvac in
 include hstd in
 theorem ext_std (φ : ∀ v : T, ↥(SB (Fin n × Fin d → Fv F v.1))) :
@@ -1121,12 +1090,10 @@ theorem ext_std (φ : ∀ v : T, ↥(SB (Fin n × Fin d → Fv F v.1))) :
   filter_upwards [ext_vac M T φ, hstd] with v h1 h2
   rw [h1, h2]
 
-
 include hstd in
 theorem rest_ext (f : SInf F (Fin n × Fin d)) (φ : ∀ v : T, ↥(SB (Fin n × Fin d → Fv F v.1))) :
     Rest (evI F) ⇑f (fun x => ∏ᶠ v, ext M T φ v fun i => evFin F v (x i)) :=
   GlobalTheory.ThK.EvUniqInf.rest_pure f _ (ext_mem_SB M T hvac φ) (ext_std M T hstd φ)
-
 
 include hstd in
 theorem acts_ext [DecidableEq T] (f : SInf F (Fin n × Fin d))
@@ -1152,7 +1119,6 @@ end
 noncomputable section
 
 open scoped Classical
-
 
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.HoweGlobalPair.Transfer in
 open GlobalTheory.HoweGlobal.Transfer (ext ext_of_mem ext_of_not_mem ext_update ext_vac mem_of_pure mem_of_tprod) in
@@ -1274,7 +1240,6 @@ open scoped Matrix
 noncomputable section
 
 namespace GlobalTheory.HoweGlobalPair.FinPlaceSmall
-
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 
@@ -1694,7 +1659,7 @@ theorem stageVp : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberFi
   obtain ⟨w₀⟩ := (inferInstance : Nonempty (InfinitePlace F))
   have dV' : G.V'.J.det ≠ 0 := det_ne_sig_map (Bs.emb w₀).1 1 (by rw [one_smul]; exact hg.hV'.sig w₀)
   have dW : G.W.J.det ≠ 0 := det_ne_sig_map (Bs.emb w₀).1 Complex.I (hg.hW.sig w₀)
-  have hres := resEta_div hc.resα hc.resβ (Nat.add_comm a a')
+  have hres := GlobalTheory.ThK.RealUniq.resEtaPow_div' hc.resα hc.resβ (Nat.add_comm a a')
   have hhk := hecke_div hc.heckeα hc.heckeβ
   have hlie := _root_.GlobalTheory.RealLieFockX.lie_deriv_polX F E σ hTr.base.cm a' (a + a') G.V' G.W G.M' Bs.ψ Xc.α (Xc.α / Xc.β) om' hTr.base.std
     hg.hV'.herm dV' hg.hW.skew dW hc.resα hres hc.heckeα hhk hTr.weil' Bs.emb hg.hV'.cartan hg.hW.cartan

@@ -619,18 +619,6 @@ end PartRP
 
 end PieceR
 
-namespace Formalism.MainNotions.LowestKTypeMultiplicity
-
-end Formalism.MainNotions.LowestKTypeMultiplicity
-
-namespace Formalism.MainNotions.LowestKTypeMultiplicity
-
-end Formalism.MainNotions.LowestKTypeMultiplicity
-
-namespace Formalism.MainNotions.LowestKTypeMultiplicity
-
-end Formalism.MainNotions.LowestKTypeMultiplicity
-
 section PieceC2
 
 open MeasureTheory Matrix Finset
@@ -681,14 +669,6 @@ end
 
 end PieceL0
 
-namespace Formalism.MainNotions.LowestKTypeMultiplicity
-
-end Formalism.MainNotions.LowestKTypeMultiplicity
-
-namespace Formalism.MainNotions.LowestKTypeMultiplicity
-
-end Formalism.MainNotions.LowestKTypeMultiplicity
-
 section PieceL3
 
 open MeasureTheory Matrix
@@ -721,14 +701,6 @@ end Formalism.MainNotions.LowestKTypeMultiplicity
 end
 
 end PieceL3
-
-namespace Formalism.MainNotions.LowestKTypeMultiplicity
-
-end Formalism.MainNotions.LowestKTypeMultiplicity
-
-namespace Formalism.MainNotions.LowestKTypeMultiplicity
-
-end Formalism.MainNotions.LowestKTypeMultiplicity
 
 section PieceL6
 
@@ -849,20 +821,4 @@ end Formalism.MainNotions.LowestKTypeMultiplicity
 end
 
 end PieceL7
-
-namespace Formalism.MainNotions.LowestKTypeMultiplicity
-
-end Formalism.MainNotions.LowestKTypeMultiplicity
-
-namespace Formalism.MainNotions.LowestKTypeMultiplicity
-
-end Formalism.MainNotions.LowestKTypeMultiplicity
-
-namespace Formalism.MainNotions.LowestKTypeMultiplicity
-
-end Formalism.MainNotions.LowestKTypeMultiplicity
-
-namespace Formalism.MainNotions.LowestKTypeMultiplicity
-
-end Formalism.MainNotions.LowestKTypeMultiplicity
 

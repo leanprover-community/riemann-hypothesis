@@ -95,7 +95,6 @@ theorem card_residueField (B : InvAlg K) (hu : B.g * B.σ B.g = 1) (hi : IsInteg
     (hl : IsLocalRing (Algebra.adjoin K.O ({B.g} : Set B.A))) :
     ∃ d : ℕ, Odd d ∧
       Nat.card (@IsLocalRing.ResidueField (Algebra.adjoin K.O ({B.g} : Set B.A)) _ hl) = K.q ^ (2 * d) := by
-  set_option synthInstance.maxHeartbeats 200000 in
   classical
   haveI := hl
   haveI : Module.Finite K.O (Algebra.adjoin K.O ({B.g} : Set B.A)) :=

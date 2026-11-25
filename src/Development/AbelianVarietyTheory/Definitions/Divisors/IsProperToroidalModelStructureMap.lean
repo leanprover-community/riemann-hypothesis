@@ -250,14 +250,6 @@ def HasToricChart (Z : Model Xo c β) (x : gen Z) : Prop :=
     (P : PELUnif (maximalIdeal (ChartRing k m d)) t) (γ : Fin m → levelForms H l.M' P.D.toPre.X),
     ξ (closedPoint _) = x ∧ IsToricChart Z ξ P γ
 
-namespace IsToricChart
-
-variable {Z : Model Xo c β} {k : Type} [Field k] {m d : ℕ} {ξ : Sp (ChartRing k m d) ⟶ gen Z}
-  {t : SAB H (Sp (ChartRing k m d))} {P : PELUnif (maximalIdeal (ChartRing k m d)) t}
-  {γ : Fin m → levelForms H l.M' P.D.toPre.X}
-
-end IsToricChart
-
 end Charts
 
 section Model
@@ -290,12 +282,6 @@ theorem isProper_toroidalModel_structureMap (Y : Model Xo c β) : IsProper Y.s :
 theorem isProper_genStr (Y : Model Xo c β) : IsProper (genStr Y) :=
   haveI := isProper_toroidalModel_structureMap Y
   inferInstance
-
-namespace TorModel
-
-variable {Y : Model Xo c β} (T : TorModel Y)
-
-end TorModel
 
 end Model
 

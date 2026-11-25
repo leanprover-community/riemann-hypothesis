@@ -200,13 +200,6 @@ structure GMap (K : Type) [Field K] (σ : K →+* ℂ) (G : Type) [Group G] [Fin
 
 attribute [instance] GMap.acgK GMap.modK GMap.fdK GMap.acgV GMap.modV
 
-namespace GMap
-
-variable {K : Type} [Field K] {σ : K →+* ℂ} {G : Type} [Group G] [Fintype G] {T : GoodSet K G}
-  {EE : Type} [AddCommGroup EE] [Module ℂ EE] {ρE : Representation ℂ G EE} (M : GMap K σ G T EE ρE)
-
-end GMap
-
 end Lemma8
 
 namespace Ten

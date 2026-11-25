@@ -788,10 +788,6 @@ namespace PI.PC
 
 open Real
 
-theorem log_thirty : log 30 = log 2 + log 3 + log 5 := by
-  rw [← log_mul (by norm_num) (by norm_num), ← log_mul (by norm_num) (by norm_num)]
-  norm_num
-
 theorem log_six : log 6 = log 2 + log 3 := by
   rw [← log_mul (by norm_num) (by norm_num)]
   norm_num
@@ -804,7 +800,7 @@ theorem chebyshevConstantNumeric : ANum := by
   have h5 := log_five_gt_d9
   have h5' := log_five_lt_d9
   unfold ANum chA
-  rw [log_thirty]
+  rw [PI.PC.stir_log_thirty]
   constructor <;> norm_num at * <;> linarith
 
 theorem lcmUpto_le_three_pow : ∀ n < 30, Nat.lcmUpto n ≤ 3 ^ n := by

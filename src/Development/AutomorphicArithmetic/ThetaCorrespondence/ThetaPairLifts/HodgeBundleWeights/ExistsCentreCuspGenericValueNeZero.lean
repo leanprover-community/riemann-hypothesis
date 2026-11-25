@@ -296,7 +296,7 @@ theorem lintegral_lt_top' (hMI : MeasInvStatement (E := E)) {r : ℕ} {X : Data 
     (OntoB.cd_cpt X x0).continuous.measurable (measurableSet_le (measurable_rhX h0) measurable_const)
   have hSμ : muF X x0 (cpt X x0 ⁻¹' S) < ⊤ := by
     refine lt_of_le_of_lt (measure_mono_ae ?_) (SublevelFin.muF_sublevel_lt_top hMI r X x0 h0 ε)
-    filter_upwards [ae_mem_OmF X x0] with z hz h
+    filter_upwards [ReciprocityTheory.ChartRestriction.G.AR.Up.FundSetPf.ae_OmF' X x0] with z hz h
     have h' : rhX X x0 (cpt X x0 z) ≤ ε := h
     rw [rhX_cpt h0 hz] at h'
     exact h'
@@ -305,7 +305,7 @@ theorem lintegral_lt_top' (hMI : MeasInvStatement (E := E)) {r : ℕ} {X : Data 
       (cpt X x0 ⁻¹' S).indicator (fun _ => ENNReal.ofReal (2 * (K * Real.exp (bb * ε)))) z +
         ENNReal.ofReal 2 * ENNReal.ofReal (‖(χ (rhF X x0 z) : ℂ) - F z‖ ^ 2 *
           Real.exp (-(phla X la (cpt X x0 z) + ψ (cpt X x0 z))) / kaF X x0 bb z) := by
-    filter_upwards [ae_mem_OmF X x0] with z hz
+    filter_upwards [ReciprocityTheory.ChartRestriction.G.AR.Up.FundSetPf.ae_OmF' X x0] with z hz
     have hk : 0 < kaF X x0 bb z := Real.exp_pos _
     set w := Real.exp (-phla X la (cpt X x0 z)) / kaF X x0 bb z with hw
     set w' := Real.exp (-(phla X la (cpt X x0 z) + ψ (cpt X x0 z))) / kaF X x0 bb z with hw'
@@ -391,7 +391,7 @@ theorem exists_approx'
   obtain ⟨P, hP, hPF⟩ := hExt r X x0 h0 la F hF fun K _ _ => by
     refine (lintegral_mono' Measure.restrict_le_self le_rfl).trans_lt
       (lt_of_le_of_lt (lintegral_mono_ae ?_) hfin)
-    filter_upwards [ae_mem_OmF X x0] with z hz
+    filter_upwards [ReciprocityTheory.ChartRestriction.G.AR.Up.FundSetPf.ae_OmF' X x0] with z hz
     refine ENNReal.ofReal_le_ofReal (le_div_self (by positivity) (hka z) ?_)
     rw [← hκF z hz]; exact (hκ1 _ hz).2
 
@@ -415,7 +415,7 @@ theorem exists_approx'
   refine ⟨F, P, hF, ?_, hP, hPF, ?_, fun g hg hne => ?_⟩
   · unfold InAt
     refine lt_of_eq_of_lt (lintegral_congr_ae ?_) hfin
-    filter_upwards [ae_mem_OmF X x0] with z hz
+    filter_upwards [ReciprocityTheory.ChartRestriction.G.AR.Up.FundSetPf.ae_OmF' X x0] with z hz
     have hz' : cpt X x0 z ∈ X.dom := hz
     rw [Set.indicator_of_mem hz', ← ENNReal.ofReal_mul (div_nonneg (by positivity) (hka z).le), add_zero]
     congr 1
@@ -1582,8 +1582,6 @@ section -- clump:auto
 section
 
 noncomputable section
-namespace GlobalTheory.CentreCusp
-end GlobalTheory.CentreCusp
 open NumberField GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.DegCmp GlobalTheory.DegVal GlobalTheory.CovTop ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta
 open scoped ENNReal NNReal
 namespace GlobalTheory.CentreCusp

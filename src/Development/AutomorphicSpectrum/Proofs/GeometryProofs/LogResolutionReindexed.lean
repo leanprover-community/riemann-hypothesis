@@ -87,7 +87,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.ImplicitRootAnalyticStatement =====
@@ -159,15 +158,10 @@ theorem sameOrbit_restr {bk : K₀ → K} (bx : ∀ k, J₀ k ≃ J (bk k)) {a b
   obtain ⟨s, hs, rfl⟩ := h
   exact ⟨fun k => s (bk k), fun k => hs _, rfl⟩
 
-theorem isMultiHomog_one' : IsMultiHomog (1 : MRing J₀) (0 : K₀ → ℕ) := by
-  intro m hm k
-  rw [MvPolynomial.support_one, Finset.mem_singleton] at hm
-  simp [hm]
-
 theorem isMultiHomog_prod' {X : Type} (s : Finset X) {f : X → MRing J₀} {a : X → K₀ → ℕ}
     (h : ∀ x ∈ s, IsMultiHomog (f x) (a x)) : IsMultiHomog (∏ x ∈ s, f x) (∑ x ∈ s, a x) := by
   induction s using Finset.induction_on with
-  | empty => simpa using isMultiHomog_one'
+  | empty => simpa using GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBounded.homog_one
   | insert x s hx ih =>
     rw [Finset.prod_insert hx, Finset.sum_insert hx]
     exact isMultiHomog_mul' (h x (Finset.mem_insert_self x s))

@@ -236,7 +236,7 @@ def scM (q : X ⟶ Spec (CommRingCat.of O)) (ρ : O →+* k) (m : ℕ)
     (Q : ObjectProperty (Thick (Wc.L l (B.schFn q) ρ m))) :
     CH.Mor (Q.ι ⋙ Wc.OM l (B.schFn q) ρ m) (CH.modF (sP Q).A) (Ideal.Quotient.mk (Ideal.span {(l : WittVector l k) ^ m})) where
   G := 𝟭 _
-  τ T := { toFun := fun x => x, map_add' := fun _ _ => rfl, map_smul' := fun _ _ => rfl }
+  τ _ := { toFun := fun x => x, map_add' := fun _ _ => rfl, map_smul' := fun _ _ => rfl }
   nat _ _ := rfl
 
 theorem scM_bij (q : X ⟶ Spec (CommRingCat.of O)) (ρ : O →+* k) (m : ℕ)

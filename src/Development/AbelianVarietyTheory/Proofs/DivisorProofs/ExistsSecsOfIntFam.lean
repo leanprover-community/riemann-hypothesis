@@ -409,12 +409,6 @@ theorem pull_fst_app_injective {K L : Type} [Field K] [Field L] (ψ : K →+* L)
 
 variable {A : Type} [CommRing A] {X Y Z : Scheme.{0}}
 
-theorem scal_mul' (p : Y ⟶ Sp A) (a b : A) : scal p (a * b) = scal p a * scal p b := by
-  unfold scal; rw [map_mul, map_mul]
-
-theorem scal_one' (p : Y ⟶ Sp A) : scal p 1 = 1 := by
-  unfold scal; rw [map_one, map_one]
-
 theorem scal_comp' (f : Z ⟶ Y) (p : Y ⟶ Sp A) (r : A) : scal (f ≫ p) r = f.appTop.hom (scal p r) := by
   unfold scal; rw [Scheme.Hom.comp_appTop]; rfl
 
@@ -436,10 +430,10 @@ alias gs_zero'' := _root_.GlobalTheory.UU.SchurComp.gs_zero
 abbrev sg (g : Z ⟶ Sp A) (z : Z) (a : A) : Z.presheaf.stalk z := gs (𝟙 Z) z ⊤ (scal g a)
 
 theorem sg_mul (g : Z ⟶ Sp A) (z : Z) (a b : A) : sg g z (a * b) = sg g z a * sg g z b := by
-  unfold sg; rw [scal_mul', gs_mul _ z ⊤ trivial]
+  unfold sg; rw [GlobalTheory.Mum.TraitRescale.scal_mul, gs_mul _ z ⊤ trivial]
 
 theorem sg_one (g : Z ⟶ Sp A) (z : Z) : sg g z 1 = 1 := by
-  unfold sg; rw [scal_one', gs_eq _ z ⊤ trivial, map_one, map_one]
+  unfold sg; rw [GlobalTheory.Mum.TraitRescale.scal_one, gs_eq _ z ⊤ trivial, map_one, map_one]
 
 theorem sg_isUnit {F : Type} [Field F] (g : Z ⟶ Sp F) (z : Z) {a : F} (ha : a ≠ 0) : IsUnit (sg g z a) :=
   have h1 : sg g z a * sg g z a⁻¹ = 1 := by rw [← sg_mul, mul_inv_cancel₀ ha, sg_one]
@@ -987,11 +981,6 @@ noncomputable section
 
 namespace GlobalTheory.Mum.Rescale
 
-theorem sval_secScale {X Y Z : Scheme.{0}} {L : LB X} {K : Type} [Fintype K] {φ : K → (Y ⟶ X)} {ε : K → ℤ}
-    (c : Γ(Y, ⊤)) (s : LB.Sec (LB.LinComb L φ ε)) (r : Z ⟶ Y) (z : Z) {J : (Z ⟶ X) → L.ι} (hJ : Good L z J) :
-    sval (ReciprocityTheory.ChartRestriction.G.DVR.SecOps.secScale c s) r z J = gs r z ⊤ c * sval s r z J :=
-  (gs_mul r z _ (hJ.mem φ r) _ _).trans (congrArg (· * _) (gs_res r z le_top (hJ.mem φ r) c))
-
 theorem gs_scal {V : Type} [CommRing V] {Y Z : Scheme.{0}} (q : Y ⟶ Sp V) (r : Z ⟶ Y) (z : Z) (a : V) :
     gs r z ⊤ (scal q a) = cst (r ≫ q) z a :=
   gs_pull r q z ⊤ trivial _
@@ -1066,7 +1055,7 @@ theorem rescale : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], Base
   let σ₁ : SecK C.P.L.L T.β 1 := ReciprocityTheory.ChartRestriction.G.DVR.SecOps.secScale (scal T.G.hom (v : W)) s'
   have hC₁ : T.Carries (v : W) σ' σ₁ := by
     intro Z r z J J' hJ hJ'
-    rw [sval_secScale _ _ _ _ hJ, hs₁ Z r z J J' hJ hJ', pow_one, _root_.mul_assoc]
+    rw [GlobalTheory.KunnethDomain.sval_scale _ _ _ _ hJ, hs₁ Z r z J J' hJ hJ', pow_one, _root_.mul_assoc]
   have hα : Flat C.α := MorphismProperty.of_isPullback (P := @Flat) C.α_cart.1.flip (_root_.GlobalTheory.Mum.Modif.flat_gp R C.toModif)
   refine ⟨σ₁, ⟨σ', f', hC₁, hP, hX⟩, fun Z p p' hpp z J hJ => ?_⟩
   rw [gs_scal, ReciprocityTheory.ChartRestriction.G.H1.cst_one, _root_.one_mul]

@@ -152,8 +152,6 @@ noncomputable section
 open MeasureTheory Complex
 open scoped Real RealInnerProductSpace ComplexConjugate FourierTransform SchwartzMap
 namespace GlobalTheory.RealWeil.SchurSchwartz
-end GlobalTheory.RealWeil.SchurSchwartz
-namespace GlobalTheory.RealWeil.SchurSchwartz
 variable {l : Type} [Fintype l]
 theorem weil_schwartz_schur_lemma : _root_.GlobalTheory.FunPr.ThetaLocalInputs → ∀ (l : Type) [Fintype l] (U : GlobalTheory.RealWeil.Sch l →ₗ[ℂ] GlobalTheory.RealWeil.Sch l),
     (∀ (w : l ⊕ l → ℝ) (h h₁ : GlobalTheory.RealWeil.Sch l), ⇑h₁ = GlobalTheory.RealWeil.rhoFun w ⇑h →

@@ -21,8 +21,6 @@ open scoped Classical
 
 local instance factT (D : D7) (k : Fin 2) : Fact (D.host.g k).Prime := ⟨D.host.g_prime k⟩
 
-alias trace_alg := _root_.GlobalTheory.GLq.TrIdem.trace_asAlgebraHom
-
 section Finite
 
 variable {g : ℕ} [Fact g.Prime]
@@ -57,7 +55,7 @@ theorem hasLabel_of_isCuspOf (L : LabelDatum g) {d : ℕ} {P : (ZMod g)[X]} {χ 
 theorem labelsCusp (L : LabelDatum g) (h5 : 5 ≤ g) (hG : Green) :
     TameGen.LabelsCusp (OfLabel.ofLabel L h5 hG) L := fun d τ P hP h0 => by
   obtain ⟨h1, h2⟩ := tr_eSerC_eq L hP.2.1.2.1 (hasLabel_of_isCuspOf L hP)
-  rw [← trace_alg] at h1
+  rw [← GlobalTheory.GLq.TrIdem.trace_asAlgebraHom] at h1
   exact h2 (h1.symm.trans ((congrArg _ h0).trans (map_zero _)))
 
 end Finite

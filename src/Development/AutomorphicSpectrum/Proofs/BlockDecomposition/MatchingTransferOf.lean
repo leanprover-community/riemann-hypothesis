@@ -128,20 +128,12 @@ theorem conv_unit {K L : Subgroup G} (hle : L ≤ K) (hidx : L.relIndex K ≠ 0)
 end Generic
 
 theorem cone_anti {m : ℕ} {l : Fin m → ℤ} (h : Cone l) : Antitone l := by
-  have key : ∀ d : ℕ, ∀ i j : Fin m, (j : ℕ) = i + d → l j ≤ l i := by
-    intro d
-    induction d with
-    | zero =>
-      intro i j e
-      exact le_of_eq (congrArg l (Fin.ext e))
-    | succ d ih =>
-      intro i j e
-      have hlt : (i : ℕ) + d < m := by have := j.2; omega
-      have h1 := ih i ⟨i + d, hlt⟩ rfl
-      have h2 := h.1 ⟨i + d, hlt⟩ j (by simp only []; omega)
+  cases m with
+  | zero => exact fun i => Fin.elim0 i
+  | succ m =>
+    exact Fin.antitone_iff_succ_le.mpr fun i => by
+      have := h.1 i.castSucc i.succ (by simp)
       linarith
-  intro i j hij
-  exact key (j - i) i j (by have : (i : ℕ) ≤ j := hij; omega)
 
 theorem cone_add {m : ℕ} {l l' : Fin m → ℤ} (h : Cone l) (h' : Cone l') : Cone (l + l') := by
   refine ⟨fun i j e => ?_, fun i => ?_⟩

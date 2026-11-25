@@ -17,8 +17,6 @@ namespace PositivityTheory.AdelicQuotientData
 
 namespace ShellSummation
 
-set_option synthInstance.maxHeartbeats 400000
-
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {k : ℕ}
 
 omit [_root_.NumberField.IsTotallyComplex E] in
@@ -102,7 +100,6 @@ theorem summ (c : ℝ) (hc : 0 < c) : Summable fun j : ℤ => Real.exp (-c * |(j
 end ShellSummation
 
 open ShellSummation in
-set_option synthInstance.maxHeartbeats 400000 in
 theorem volume_shell_of : Q1 → Q2 → D0 → N3 → W0 → V1 := by
   intro hQ1 hQ2 hD0 hN3 hW0 E _ _ _ k μ _ hk β hβ
   obtain ⟨hpos, hmul, hcont, hrat, -, -, hcen, hcomm, -⟩ := hD0 E k

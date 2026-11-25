@@ -229,7 +229,6 @@ theorem UpperTheory.V.GradeZeroInterpolatingElement.ptLift :
     simpa using h1
   let s' : Set M.SS := Subtype.val ⁻¹' (s : Set M.S)
   have hs' : s'.Finite := s.finite_toSet.preimage Subtype.val_injective.injOn
-  set_option synthInstance.maxHeartbeats 200000 in
   have hgen : Algebra.adjoin c.O (Set.range M.toSS ∪ s') = ⊤ := by
     rw [eq_top_iff]
     rintro y -

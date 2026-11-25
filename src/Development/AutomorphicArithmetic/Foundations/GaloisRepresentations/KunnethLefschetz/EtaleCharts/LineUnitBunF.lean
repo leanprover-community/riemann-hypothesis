@@ -201,8 +201,8 @@ def wFun {V : Scheme.{0}} {k : ℕ} (y : Fin (k + 1) → (V ⟶ P.T')) (hy : ∀
     ComposableArrows (Um d Γ(V, ⊤)) k where
   obj i := P.v (y i)
   map {i j} _ := ⟨(P.g _ _ (P.ρ_eq (hy i j)), P.w _ _ (hy i j)), P.gv _ _ _ _⟩
-  map_id i := Subtype.ext (Prod.ext (P.g_self _ _) (P.w_self _ _))
-  map_comp {i j l} _ _ := Subtype.ext (Prod.ext (P.g_coc _ _ _ _ _).symm (P.w_coc _ _ _ _ _).symm)
+  map_id _ := Subtype.ext (Prod.ext (P.g_self _ _) (P.w_self _ _))
+  map_comp {_ _ _} _ _ := Subtype.ext (Prod.ext (P.g_coc _ _ _ _ _).symm (P.w_coc _ _ _ _ _).symm)
 
 theorem wFun_res {U V : Scheme.{0}} {k : ℕ} (s : V ⟶ U) (y : Fin (k + 1) → (U ⟶ P.T'))
     (hy : ∀ i j, y i ≫ P.e = y j ≫ P.e) (y' : Fin (k + 1) → (V ⟶ P.T'))

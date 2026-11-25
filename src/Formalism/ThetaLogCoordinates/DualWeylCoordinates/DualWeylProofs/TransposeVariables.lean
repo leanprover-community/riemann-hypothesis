@@ -41,13 +41,7 @@ def qn_D (n : ℕ) (a b : Fin n) :
 
 theorem qn_D_apply (n : ℕ) (a b : Fin n) (f : MvPolynomial (Fin n × Fin n) ℚ) :
     qn_D n a b f = ∑ l : Fin n, X (l, a) * pderiv (l, b) f := by
-  unfold qn_D
-  have h := map_sum (Derivation.coeFnAddMonoidHom (R := ℚ) (A := MvPolynomial (Fin n × Fin n) ℚ)
-    (M := MvPolynomial (Fin n × Fin n) ℚ)) (fun l : Fin n => (X (l, a) : MvPolynomial (Fin n × Fin n) ℚ) • pderiv (l, b))
-    Finset.univ
-  have h2 := congrFun h f
-  simp only [Finset.sum_apply] at h2
-  exact h2.trans (Finset.sum_congr rfl fun l _ => by simp [Derivation.coeFnAddMonoidHom, smul_eq_mul])
+  simp [qn_D, smul_eq_mul]
 
 theorem qn_E_eq (n : ℕ) (a b : Fin n) (f : MvPolynomial (Fin n × Fin n) ℚ) :
     glOps ℚ n (rowLetters n) Set.univ a b f = qn_D n a b f := by
@@ -63,61 +57,44 @@ theorem qn_D_X (n : ℕ) (a b : Fin n) (l c : Fin n) :
     simp
   · simp [hc]
 
-theorem qn_deriv_rowGen (n : ℕ) (a b : Fin n) (hab : a ≠ b) (f : MvPolynomial (Fin n × Fin n) ℚ) :
-    Polynomial.derivative (rowGen ℚ a b (transposeVariables ℚ n f)) = rowGen ℚ a b (transposeVariables ℚ n (qn_D n a b f)) := by
-  have hX : ∀ i : Fin n × Fin n, Polynomial.derivative (rowGen ℚ a b (transposeVariables ℚ n (X i))) =
-      rowGen ℚ a b (transposeVariables ℚ n (qn_D n a b (X i))) := by
-    rintro ⟨l, c⟩
-    rw [qn_D_X, qn_T_X]
-    by_cases hc : c = b
-    · subst hc
-      simp [rowGen, qn_T_X, hab]
-    · simp [rowGen, hc]
+private lemma qn_deriv_rowGen_mul (n : ℕ) (a b : Fin n) (c : Polynomial (MvPolynomial (Fin n × Fin n) ℚ))
+    (hX : ∀ i : Fin n × Fin n,
+      c * Polynomial.derivative (rowGen ℚ a b (transposeVariables ℚ n (X i))) =
+        rowGen ℚ a b (transposeVariables ℚ n (qn_D n a b (X i))))
+    (f : MvPolynomial (Fin n × Fin n) ℚ) :
+    c * Polynomial.derivative (rowGen ℚ a b (transposeVariables ℚ n f)) =
+      rowGen ℚ a b (transposeVariables ℚ n (qn_D n a b f)) := by
   induction f using MvPolynomial.induction_on with
   | C r =>
-    have hD : qn_D n a b (C r) = 0 := by
-      rw [qn_D_apply]
-      simp
-    rw [hD]
-    simp [transposeVariables, rowGen]
-  | add p q hp hq =>
-    simp only [map_add (f := _), hp, hq]
-  | mul_X p i hp =>
-    have hL : qn_D n a b (p * X i) = p * qn_D n a b (X i) + X i * qn_D n a b p := by
-      rw [Derivation.leibniz]
-      simp [smul_eq_mul]
-    rw [hL]
-    simp only [map_add (f := _), map_mul, Polynomial.derivative_mul, hp, hX i]
-    ring
-
-theorem qn_deriv_rowGen_diag (n : ℕ) (a : Fin n) (f : MvPolynomial (Fin n × Fin n) ℚ) :
-    (1 + Polynomial.X) * Polynomial.derivative (rowGen ℚ a a (transposeVariables ℚ n f)) =
-      rowGen ℚ a a (transposeVariables ℚ n (qn_D n a a f)) := by
-  have hX : ∀ i : Fin n × Fin n, (1 + Polynomial.X) * Polynomial.derivative (rowGen ℚ a a (transposeVariables ℚ n (X i))) =
-      rowGen ℚ a a (transposeVariables ℚ n (qn_D n a a (X i))) := by
-    rintro ⟨l, c⟩
-    rw [qn_D_X, qn_T_X]
-    by_cases hc : c = a
-    · subst hc
-      simp [rowGen, qn_T_X]
-      ring
-    · simp [rowGen, hc]
-  induction f using MvPolynomial.induction_on with
-  | C r =>
-    have hD : qn_D n a a (C r) = 0 := by
-      rw [qn_D_apply]
-      simp
+    have hD : qn_D n a b (C r) = 0 := by rw [qn_D_apply]; simp
     rw [hD]
     simp [transposeVariables, rowGen]
   | add p q hp hq =>
     simp only [map_add (f := _), mul_add, hp, hq]
   | mul_X p i hp =>
-    have hL : qn_D n a a (p * X i) = p * qn_D n a a (X i) + X i * qn_D n a a p := by
+    have hL : qn_D n a b (p * X i) = p * qn_D n a b (X i) + X i * qn_D n a b p := by
       rw [Derivation.leibniz]
       simp [smul_eq_mul]
     rw [hL, map_mul, map_mul, Polynomial.derivative_mul, mul_add, ← mul_assoc,
-      mul_left_comm (1 + Polynomial.X) (rowGen ℚ a a (transposeVariables ℚ n p)), hp, hX i]
+      mul_left_comm c (rowGen ℚ a b (transposeVariables ℚ n p)), hp, hX i]
     simp only [map_add (f := _), map_mul]
     ring
+
+theorem qn_deriv_rowGen (n : ℕ) (a b : Fin n) (hab : a ≠ b) (f : MvPolynomial (Fin n × Fin n) ℚ) :
+    Polynomial.derivative (rowGen ℚ a b (transposeVariables ℚ n f)) = rowGen ℚ a b (transposeVariables ℚ n (qn_D n a b f)) := by
+  simpa using qn_deriv_rowGen_mul n a b 1 (fun ⟨l, c⟩ => by
+    rw [qn_D_X, qn_T_X]
+    by_cases hc : c = b
+    · subst hc; simp [rowGen, qn_T_X, hab]
+    · simp [rowGen, hc]) f
+
+theorem qn_deriv_rowGen_diag (n : ℕ) (a : Fin n) (f : MvPolynomial (Fin n × Fin n) ℚ) :
+    (1 + Polynomial.X) * Polynomial.derivative (rowGen ℚ a a (transposeVariables ℚ n f)) =
+      rowGen ℚ a a (transposeVariables ℚ n (qn_D n a a f)) :=
+  qn_deriv_rowGen_mul n a a (1 + Polynomial.X) (fun ⟨l, c⟩ => by
+    rw [qn_D_X, qn_T_X]
+    by_cases hc : c = a
+    · subst hc; simp [rowGen, qn_T_X]; ring
+    · simp [rowGen, hc]) f
 
 end Formalism.InvariantFactorPaths.ColumnFamilies

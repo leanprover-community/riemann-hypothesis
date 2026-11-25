@@ -604,28 +604,16 @@ section PrSpan
 
 variable {K : Type} [Field K] (O : ValuationSubring K) {n : ℕ} (P : Matrix (Fin n) (Fin n) K)
 
-theorem prA_add_left (β β' x : Fin n → K) : pr P (β + β') x = pr P β x + pr P β' x := by
-  simp [pr, add_dotProduct]
-
-theorem prA_smul_left (c : K) (β x : Fin n → K) : pr P (c • β) x = c * pr P β x := by
-  simp [pr, smul_dotProduct]
-
-theorem prA_add_right (β x y : Fin n → K) : pr P β (x + y) = pr P β x + pr P β y := by
-  simp [pr, mulVec_add, dotProduct_add]
-
-theorem prA_smul_right (c : K) (β x : Fin n → K) : pr P β (c • x) = c * pr P β x := by
-  simp [pr, mulVec_smul, dotProduct_smul]
-
 theorem pr_span_left {S : Set (Fin n → K)} {x : Fin n → K} (h : ∀ β ∈ S, pr P β x ∈ O) :
     ∀ β ∈ Submodule.span O S, pr P β x ∈ O := by
   intro β hβ
   induction hβ using Submodule.span_induction with
   | mem y hy => exact h y hy
   | zero => simp [pr]
-  | add a b _ _ ha hb => rw [prA_add_left]; exact add_mem ha hb
+  | add a b _ _ ha hb => rw [PI.UnitaryGroupMassFormula.ScXuExists.pr_add_left]; exact add_mem ha hb
   | smul c a _ ha =>
     have : c • a = (c : K) • a := rfl
-    rw [this, prA_smul_left]
+    rw [this, PI.UnitaryGroupMassFormula.ScXuExists.pr_smul_left]
     exact mul_mem c.2 ha
 
 theorem pr_span_right {S : Set (Fin n → K)} {β : Fin n → K} (h : ∀ x ∈ S, pr P β x ∈ O) :
@@ -634,10 +622,10 @@ theorem pr_span_right {S : Set (Fin n → K)} {β : Fin n → K} (h : ∀ x ∈ 
   induction hx using Submodule.span_induction with
   | mem y hy => exact h y hy
   | zero => simp [pr]
-  | add a b _ _ ha hb => rw [prA_add_right]; exact add_mem ha hb
+  | add a b _ _ ha hb => rw [PI.UnitaryGroupMassFormula.ScXuExists.pr_add_right]; exact add_mem ha hb
   | smul c a _ ha =>
     have : c • a = (c : K) • a := rfl
-    rw [this, prA_smul_right]
+    rw [this, PI.UnitaryGroupMassFormula.ScXuExists.pr_smul_right]
     exact mul_mem c.2 ha
 
 end PrSpan
@@ -1251,7 +1239,6 @@ namespace PI.UnitaryGroupMassFormula.ScXuExists.BrB
 open NumberField IsDedekindDomain Matrix PI.UnitaryGroupMassFormula.AdIndexEq PI.UnitaryGroupMassFormula.ScXuExists
 open scoped TensorProduct
 open Formalism.MainNotions.S PI.ScRefExists
-
 
 theorem split_unitary_projection_compatibility : BridgeB := by
   intro I g r k e f z Rf _hH v _hv _hsum p1 hp1 T hT

@@ -154,7 +154,6 @@ theorem exists_period_matrix_of_isDR : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrim
       (P.PD K).invdR (w j) fun g => by rw [P.PD_actdR]; exact hwfix _ ⟨g, rfl⟩ j
     choose c hc using hwK
     have hQw : Q0 *ᵥ w = 0 := by simpa using hwN
-    set_option synthInstance.maxHeartbeats 100000 in
     have hsum : ∑ j, c j • bK j = 0 := by
       apply Subtype.ext
       funext i

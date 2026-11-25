@@ -62,8 +62,8 @@ theorem stab_X {β : (VS D).V ≃ₗ[D.host.E] (VS D).V} (hβ : β ∈ stabF D (
 
 def indW (β : (VS D).V ≃ₗ[D.host.E] (VS D).V) (hβ : β ∈ stabF D (X.Fu u)) :
     WbQ D (X.Fu u) →ₗ[D.host.E] WbQ D (X.Fu u) :=
-  Submodule.mapQ _ _ ((β : (VS D).V →ₗ[D.host.E] (VS D).V).restrict (fun x hx => stab_perpS hβ hx))
-    (fun x hx => stab_X hβ hx)
+  Submodule.mapQ _ _ ((β : (VS D).V →ₗ[D.host.E] (VS D).V).restrict (fun _ hx => stab_perpS hβ hx))
+    (fun _ hx => stab_X hβ hx)
 
 theorem indW_mk (β : (VS D).V ≃ₗ[D.host.E] (VS D).V) (hβ : β ∈ stabF D (X.Fu u))
     (x : perpS (VS D) (X.Fu u).X) :

@@ -41,7 +41,6 @@ theorem rank_le_bigN : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} (G 
     have e : D.R.m * (D.R.t + sLen D + 1) = D.R.m * (sLen D - 1) + D.R.m * (D.R.t + 1) + D.R.m := by
       conv_lhs => rw [← hs]
       ring
-    have h2 : j * (D.R.t + 1) ≤ D.R.m * (D.R.t + 1) := h1
     omega
 
 end GlobalTheory.DefRank

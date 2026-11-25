@@ -138,9 +138,6 @@ def toMtP : MtildeV W Ch sel mu P →ₛₗ[σ] MtP W Ch sel mu P σ := toCForm 
 
 theorem toMtilde_injective : Function.Injective (toMtP W Ch sel mu P σ) := toCForm_injective σ W.sgTrue _ _
 
-def rowKH : Subgroup (FrmG (rowTyG Ch P) (levQX R sel mu)) :=
-  (rowTyK Ch).grp.comap ((rowTyG Ch P).grp.subtype.comp ((MonoidHom.fst _ _).comp (MonoidHom.snd _ _)))
-
 end Rows
 
 section Per

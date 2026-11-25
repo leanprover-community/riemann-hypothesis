@@ -96,7 +96,6 @@ theorem valued_map_eq (s : w.adicCompletion E →+* w.adicCompletion E) (hs : Co
     exact this
   have hp0 : p ≠ 0 := by
     intro h; rw [h, map_zero] at hvp; exact WithZero.exp_ne_zero hvp.symm
-  have hsp0 : s p ≠ 0 := (map_ne_zero s).2 hp0
   have hvsp : Valued.v (s p) = Valued.v p := by
     apply le_antisymm
     · rw [hvp]; apply le_exp_neg_one; apply lt_one_of_map s hs; rw [hvp]

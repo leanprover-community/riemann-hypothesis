@@ -408,7 +408,6 @@ theorem boundary_comap_iteratedPreimage_succ (U₀ : (s.toSequenceOfBlowups.sche
             ((s.toSequenceOfBlowups.center t).comap (iteratedPreimage T j hj I₀ E₀ s U₀ t).ι)] := by
   have : AlgebraicGeometry.IsNoetherian (s.toSequenceOfBlowups.schemeAt (t + 1)) :=
     MarkedSequenceOfBlowups.isNoetherian_schemeAt effectiveCartierSupportContainsNoComponent hV s (t + 1) ht
-  have : AlgebraicGeometry.IsLocallyNoetherian (s.toSequenceOfBlowups.schemeAt (t + 1)) := inferInstance
   have hex : (Blowup.exceptionalIdeal (s.toSequenceOfBlowups.transitionMapSucc t) (s.toSequenceOfBlowups.center t)).comap
         (iteratedPreimage T j hj I₀ E₀ s U₀ (t + 1)).ι =
       Blowup.exceptionalIdeal (restrictedBlowupMorphism T j hj I₀ E₀ s U₀ t)
@@ -542,8 +541,6 @@ theorem ker_restrictedEmbedding_succ [AlgebraicGeometry.IsNoetherian T.scheme]
       ((ambientBlowupSeq hres hno T j hj I₀ E₀ s hpr).obj (t + 1)) :=
     isNoetherian_ambientBlowupSequence_schemeAt (T.boundary.get ⟨j, hj⟩).subschemeι
       (MarkedBlowupSequenceData.ofMarkedSequence s).toBlowupSequenceData hres hno hpr (t + 1) htle
-  have : AlgebraicGeometry.IsLocallyNoetherian
-      ((ambientBlowupSeq hres hno T j hj I₀ E₀ s hpr).obj (t + 1)) := inferInstance
   have hker : Scheme.Hom.ker (embeddingIntoAmbient hres hno T j hj I₀ E₀ s hpr (t + 1)) =
       Blowup.strictTransform ((ambientBlowupSeq hres hno T j hj I₀ E₀ s hpr).map t)
         ((ambientBlowupSeq hres hno T j hj I₀ E₀ s hpr).center t)
@@ -889,7 +886,6 @@ private theorem ker_comp_eq_ker_subschemeι_comp {A S P : Scheme.{u}} (g : A ⟶
 private theorem imageIdealSheaf_iso_hom_comp_eq {A S P : Scheme.{u}} (e : A ≅ S) (f : S ⟶ P)
     (C : A.IdealSheafData) :
     _root_.FunctorialResolution.Blowup.schemeImageIdeal (e.hom ≫ f) C = _root_.FunctorialResolution.Blowup.schemeImageIdeal f (C.comap e.inv) := by
-  have : AlgebraicGeometry.IsClosedImmersion (C.subschemeι ≫ e.hom) := inferInstance
   have hker : Scheme.Hom.ker (C.subschemeι ≫ e.hom) = C.comap e.inv := by
     rw [← _root_.FunctorialResolution.EmbeddedResolution.imageIdealSheaf_eq_ker]
     exact imageIdealSheaf_hom_eq_comap_inv e C

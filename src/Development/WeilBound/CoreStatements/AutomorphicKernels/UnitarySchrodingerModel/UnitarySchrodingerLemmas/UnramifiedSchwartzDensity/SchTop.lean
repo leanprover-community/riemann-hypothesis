@@ -798,7 +798,7 @@ theorem exists_ring_section {A : Type} [Ring A] [TopologicalSpace A] [IsTopologi
       simp only [map_add (f := _), add_mul, mul_add])
     (by
       intro u v v'
-      simp only [map_add (f := _), add_mul, mul_add])
+      simp only [map_add (f := _), mul_add])
     (by
       have h1 : Continuous (fun p : (Fin N → ℝ) × (Fin N → ℝ) => e.symm p.1) :=
         he'.comp continuous_fst

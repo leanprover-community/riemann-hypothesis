@@ -110,11 +110,3 @@ theorem transvection_apply' {n : ℕ} (a a' : Fin n) (d : L) (i j : Fin n) :
 alias ordL_one := _root_.Formalism.UG.P.fSatake_ord_one
 
 end GlobalTheory.UnipShiftU
-
-namespace GlobalTheory.UnipShiftU
-
-end GlobalTheory.UnipShiftU
-
-namespace GlobalTheory.UnipShiftU
-
-end GlobalTheory.UnipShiftU

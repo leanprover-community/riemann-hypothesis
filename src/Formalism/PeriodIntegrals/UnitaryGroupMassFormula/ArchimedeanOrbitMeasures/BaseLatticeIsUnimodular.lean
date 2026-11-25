@@ -29,10 +29,6 @@ def IsCMUnram (K : Type*) [Field K] [NumberField K] [StarRing K] : Prop :=
 
 end HcS.HermitianLatticesTheory
 
-namespace HcS.HermitianLatticesTheory
-
-
-end HcS.HermitianLatticesTheory
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -150,12 +146,6 @@ structure HSpace (E : Type) [Field E] [NumberField E] [StarRing E] where
   baseLattice_isUnimodular : HcS.HermitianLatticesTheory.IsUnimodular hT L0
 
 attribute [instance] HSpace.acg HSpace.modE HSpace.modO HSpace.tower HSpace.fd
-
-namespace HSpace
-
-variable {E : Type} [Field E] [NumberField E] [StarRing E]
-
-end HSpace
 
 namespace Spaces
 

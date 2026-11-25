@@ -87,11 +87,5 @@ theorem holoMap_comp {e₁ e₂ e₃ : ℕ} {X Y Z : Type} [TopologicalSpace X] 
 end GlobalTheory.CompanionTheory.Ar.PB.CovMap
 
 noncomputable section
-namespace GlobalTheory.CompanionTheory.Ar.PB.CovMap
-
-end GlobalTheory.CompanionTheory.Ar.PB.CovMap
 
 noncomputable section
-namespace GlobalTheory.CompanionTheory.Ar.PB.CovMap
-
-end GlobalTheory.CompanionTheory.Ar.PB.CovMap

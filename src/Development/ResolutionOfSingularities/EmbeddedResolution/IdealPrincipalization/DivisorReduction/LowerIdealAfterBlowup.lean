@@ -366,7 +366,6 @@ private theorem ker_opensι_preimage_iso_comp {A B C : Scheme.{u}} (e : A ≅ B)
     Scheme.Hom.ker (CategoryTheory.CategoryStruct.comp (Scheme.Opens.ι (e.hom ⁻¹ᵁ V))
         (CategoryTheory.CategoryStruct.comp e.hom g))
       = Scheme.Hom.ker (CategoryTheory.CategoryStruct.comp (Scheme.Opens.ι V) g) := by
-  have : IsIso (e.hom ∣_ V) := inferInstance
   have h1 : CategoryTheory.CategoryStruct.comp (Scheme.Opens.ι (e.hom ⁻¹ᵁ V))
       (CategoryTheory.CategoryStruct.comp e.hom g)
       = CategoryTheory.CategoryStruct.comp (e.hom ∣_ V)

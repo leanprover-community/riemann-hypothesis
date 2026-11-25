@@ -165,7 +165,6 @@ theorem cent_sim_pos : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (P : Pair G)
   have hq0 : q ≠ 0 := by intro h; rw [h] at hpos; simp at hpos
   have hs : star l * l = (((y.2 : ℚˣ) : ℚ) : ℂ) := by
     rw [← mul_assoc] at key; have := mul_right_cancel₀ hq0 key; rw [mul_comm] at this; exact this
-  have hsre : ((((y.2 : ℚˣ) : ℚ) : ℂ)).re = ((y.2 : ℚˣ) : ℚ) := by simp
   have hnn : (0 : ℝ) ≤ (((y.2 : ℚˣ) : ℚ) : ℝ) := by
     have : (star l * l).re = Complex.normSq l := by
       rw [mul_comm, Complex.star_def, Complex.mul_conj]; simp

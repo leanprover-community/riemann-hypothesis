@@ -1536,9 +1536,6 @@ theorem cls_nsmul {Y : Scheme.{0}} {Λ : Type} [AddCommGroup Λ] {B : Λ → LB 
 
 end GlobalTheory.OrbitSep
 
-namespace GlobalTheory.OrbitSep
-
-end GlobalTheory.OrbitSep
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

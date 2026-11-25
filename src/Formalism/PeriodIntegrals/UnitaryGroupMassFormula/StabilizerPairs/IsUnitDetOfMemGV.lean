@@ -1,10 +1,9 @@
 module
 
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MapConjLebesgueCommonStabilizerNormalForm
+import Formalism.FormalDegreeBessel.FinalG
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerPairs.ConverseStep
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.InvariantOperatorUnderJacquet
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitQuotientTopology.IsClosedRStab
 
 @[expose] public section
@@ -43,14 +42,14 @@ lemma sgI_eq_iff (i : Fin (2 * r + k + 1)) : sgI k r i.val = r + k ↔ i.val = r
   unfold sgI
   split_ifs <;> constructor <;> intro <;> omega
 
-theorem hpk_mul_self : Hpk k r * Hpk k r = 1 := by
-  apply GlobalTheory.Amp.RConj.H_sq
+theorem hpk_mul_self : Hpk k r * Hpk k r = 1 :=
+  (hpkFacts k r).2.1
 
 theorem hpk_det_ne : (Hpk k r).det ≠ 0 := by
   exact Matrix.det_ne_zero_of_left_inverse (hpk_mul_self (k := k) (r := r))
 
-theorem hpk_conjTranspose : (Hpk k r)ᴴ = Hpk k r := by
-  apply _root_.Formalism.FourierDecayAlt.P.Qx7.Hh <;> assumption
+theorem hpk_conjTranspose : (Hpk k r)ᴴ = Hpk k r :=
+  (hpkFacts k r).1
 
 theorem mem_GV_iff {g : B.Mat k r} : g ∈ B.GV k r ↔ gᴴ * Hpk k r * g = Hpk k r := Iff.rfl
 

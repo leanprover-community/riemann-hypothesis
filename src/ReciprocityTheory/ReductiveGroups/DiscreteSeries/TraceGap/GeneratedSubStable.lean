@@ -404,10 +404,6 @@ theorem dot_positiveRootSum (lam : Fin n → ℝ) (Ph : Finset (Fin n × Fin n))
   have := Lap.LemK.cone_norm_dot_root lam x.1 x.2 1
   simpa using this
 
-theorem normSq_nonneg_alt (u : Fin n → ℝ) : 0 ≤ nsq u := by
-  unfold nsq dot
-  exact sum_nonneg fun i _ => mul_self_nonneg (u i)
-
 end Weights
 
 section Form
@@ -462,7 +458,7 @@ theorem highestWeight_extraction {ε : Fin n → Bool} {lam : Fin n → ℝ} (hl
   have hdb : 0 ≤ dot lam (μ - fockWt ε s - lowK ε lam) := Lap.LemK.cone_norm_dot_nonneg lam _ hlam.antitone hν
   have hdp : 0 ≤ ∑ x ∈ gcPh ε s, (lam x.1 - lam x.2) :=
     sum_nonneg fun x hx => sub_nonneg.2 (hlam.antitone (hPh x hx).1.le)
-  have hnn := normSq_nonneg_alt ((μ - fockWt ε s - lowK ε lam) + phSum (gcPh ε s))
+  have hnn := ReciprocityTheory.ChartRestriction.DS.nsq_nonneg' ((μ - fockWt ε s - lowK ε lam) + phSum (gcPh ε s))
   have hPh0 : gcPh ε s = ∅ := by
     by_contra hne
     have : 0 < ∑ x ∈ gcPh ε s, (lam x.1 - lam x.2) :=

@@ -121,7 +121,6 @@ theorem one_le_rank (h : LawsJ T) (hj : InR D j) : 1 ≤ (T.Q.Dw j).p + (T.Q.Dw 
 
 section
 
-set_option synthInstance.maxHeartbeats 400000 in
 variable {g : LevGrp T j} {k : GA D (T.V j σ)} {hr : (T.V j σ).rank = D.R.r} {a : (D.host.E →+* ℂ) × ℕ → ℕ} {n : ℕ}
   {ρ : LevGrp T j →* (T.cuspA j a n →ₗ[T.Q.c.F] T.cuspA j a n)}
 

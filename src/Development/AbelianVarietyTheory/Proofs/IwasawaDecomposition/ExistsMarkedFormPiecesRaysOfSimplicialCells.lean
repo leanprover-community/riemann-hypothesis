@@ -18,6 +18,7 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Exist
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CellRayInConeOfMarkedFormPieces
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ConeMatchRaysAfterDroppingZeroCoords
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsSemilinearPullbackOfMarkedOrbitIndicator
+public import CompanionTheory.SpectralGeometry.CountingDefinitions.VoronoiMeans.VorFunEvalEqFineMean
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NonnegSumSmulIntBilinFormToRealMemPsdCone
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -66,7 +67,7 @@ open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.Toroi
 
 namespace GlobalTheory.PolFan.OrbMark
 
-private theorem cmOrd_host {E : Type} [Field E] [NumberField E] [IsCMField E] (H : Host E) :
+theorem cmOrd_host {E : Type} [Field E] [NumberField E] [IsCMField E] (H : Host E) :
     GlobalTheory.CompanionTheory.Ar.Fan.CMOrd (𝓞 E) H.bar := by
   refine ⟨fun σ a => ?_, ?_, inferInstance, inferInstance⟩
   · have hσ : Function.Injective σ :=

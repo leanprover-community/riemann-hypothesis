@@ -487,7 +487,6 @@ theorem conj_sq : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberFi
     rw [← atV_sub, ← atV_add, mul_one, ← hK]
     congr 1
     ring
-  have h2' : (2 : AF F) * ⅟2 = 1 := mul_invOf_self 2
   have hιF : ∀ t : F, inclR (F := F) (AF F) (algebraMap F E t) =
       algebraMap (AF F) (AE F E) (algebraMap F (AF F) t) := fun t => by
     show Algebra.TensorProduct.includeRight (algebraMap F E t) = _

@@ -85,7 +85,6 @@ theorem exists_hom [TopologicalSpace R] [IsTopologicalRing R] (σ : R →+* R) (
       ∀ g, ((φ g).1.1 : Matrix m m R) = 1 + a * ((g.1.1 : Matrix n n R) - 1) * b := by
   let φ₀ : kerU σ p J →* GL m R :=
     (Units.map (cjHom e a b hba hea)).comp ((UJ σ J).subtype.comp (kerU σ p J).subtype)
-  have hφ₀ : ∀ g, (φ₀ g : Matrix m m R) = 1 + a * ((g.1.1 : Matrix n n R) - 1) * b := fun g => rfl
   have hc : Continuous φ₀ := by
     have h1 : Continuous (cjHom e a b hba hea) := by
       show Continuous fun g : Matrix n n R => 1 + a * (g - 1) * b

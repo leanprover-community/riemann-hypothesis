@@ -63,18 +63,10 @@ abbrev ksbConj (τ : E →+* ℂ) : E →+* ℂ := (starRingEnd ℂ).comp τ
 theorem ksbConj_ksbConj (τ : E →+* ℂ) : ksbConj (ksbConj τ) = τ := by
   ext x; simp [ksbConj]
 
-theorem ksb_emb_rt (τ : E →+* ℂ) : τ (H.rt : E) = H.rt0 ∨ τ (H.rt : E) = -H.rt0 := by
-  have h1 : ((H.rt : E)) ^ 2 = -(H.d : E) := by
-    have := congrArg (algebraMap (𝓞 E) E) H.rt_sq
-    simpa using this
-  have h : (τ (H.rt : E)) ^ 2 = H.rt0 ^ 2 := by
-    rw [← map_pow, h1, map_neg, map_natCast, H.sqrt_neg_disc_sq]
-  exact sq_eq_sq_iff_eq_or_eq_neg.1 h
-
 theorem ksbConj_mem_iff (τ : E →+* ℂ) : ksbConj τ (H.rt : E) = H.rt0 ↔ ¬ τ (H.rt : E) = H.rt0 := by
   have hne : -H.rt0 ≠ H.rt0 := fun h => _root_.GlobalTheory.ModelsExist.rt0_ne_zero H (by linear_combination -h / 2)
   simp only [ksbConj, RingHom.comp_apply]
-  rcases ksb_emb_rt (H := H) τ with h | h
+  rcases GlobalTheory.ModelsExist.emb_rt_eq_or (H := H) τ with h | h
   · rw [h, _root_.GlobalTheory.ModelsExist.rt0_conj_neg_ne_zero]; simp [hne]
   · rw [h, map_neg, _root_.GlobalTheory.ModelsExist.rt0_conj_neg_ne_zero, neg_neg]; exact iff_of_true rfl hne
 

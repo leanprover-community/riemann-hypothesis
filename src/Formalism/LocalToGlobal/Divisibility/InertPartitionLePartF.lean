@@ -436,9 +436,3 @@ theorem typesSep3_of (hc : Col.PairComm (F3.F.R F3.F.μ0).op) (hsep2 : F3.F.Type
 end DefFam3
 
 end Formalism.L2.DIV
-
-namespace Formalism.L2.DIV.Test3
-
-open Formalism.DivisionValues Formalism.L2.Indef Formalism.L2.Col Formalism.L2.NCov Formalism.L2.DIV Formalism.L2.DIV.Test
-
-end Formalism.L2.DIV.Test3

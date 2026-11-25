@@ -79,13 +79,6 @@ structure AdLift (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (e : FamE D) (
     a • pt D (tor0 D cc δ) δ (z c c' k) ∈ La0 D (tor0 D cc δ) (D.R.N i) (D.R.N (i + 1))
   dg : D.what₂.Tau → ℕ
 
-namespace AdLift
-
-variable {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} {e : FamE D} {Q : DtAd D} {u : D.what₂.Word}
-  {C : ColumnChain D.R D.what₂.Tau (D.hcW u)} {O : LiftObj D C} {i : ℕ} (A : AdLift D cc δ e Q O i)
-
-end AdLift
-
 
 
 def br (D : D7) {u : D.what₂.Word} (C : ColumnChain D.R D.what₂.Tau (D.hcW u)) (mt : ℕ → D.Dt →* ℂˣ) : Prop :=

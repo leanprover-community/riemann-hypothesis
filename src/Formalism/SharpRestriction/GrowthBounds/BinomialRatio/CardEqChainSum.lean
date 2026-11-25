@@ -36,18 +36,10 @@ theorem strip_iff {nu mu : Fin r → ℤ} {g : ℕ} : Strip nu mu g ↔ HStrip m
       rw [hj]; exact h2 i h
     · rw [← Finset.sum_sub_distrib]; exact h3
 
-theorem anti_of_step {f : Fin r → ℤ} (h : ∀ (a : Fin r) (ha : a.1 + 1 < r), f ⟨a.1 + 1, ha⟩ ≤ f a) : Antitone f := by
-  have H : ∀ (d a : ℕ) (ha : a < r) (hb : a + d < r), f ⟨a + d, hb⟩ ≤ f ⟨a, ha⟩ := by
-    intro d
-    induction d with
-    | zero => intro a ha hb; exact le_rfl
-    | succ d ih =>
-      intro a ha hb
-      exact le_trans (h ⟨a + d, by omega⟩ hb) (ih a ha (by omega))
-  intro a b hab
-  have hb : b = ⟨a.1 + (b.1 - a.1), by have := b.2; omega⟩ := Fin.ext (by simp; omega)
-  rw [hb]
-  exact H _ a.1 a.2 _
+theorem anti_of_step {f : Fin r → ℤ} (h : ∀ (a : Fin r) (ha : a.1 + 1 < r), f ⟨a.1 + 1, ha⟩ ≤ f a) : Antitone f :=
+  match r, f, h with
+  | 0, _, _ => fun i => Fin.elim0 i
+  | _ + 1, _, h => Fin.antitone_iff_succ_le.mpr fun i => h i.castSucc i.succ.isLt
 
 theorem hstrip_anti {nu mu : Fin r → ℤ} {b : ℕ} (h : HStrip nu mu b) : Antitone nu ∧ Antitone mu :=
   ⟨anti_of_step fun a ha => le_trans (h.1 _) (h.2.1 a ha), anti_of_step fun a ha => le_trans (h.2.1 a ha) (h.1 a)⟩

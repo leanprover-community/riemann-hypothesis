@@ -55,14 +55,6 @@ open MvPolynomial Filter
 
 namespace GlobalTheory
 
-namespace SatHilb
-
-attribute [local instance] MvPolynomial.gradedAlgebra
-
-variable {ι K : Type*} [Field K]
-
-end SatHilb
-
 open MvPolynomial Filter in
 attribute [local instance] MvPolynomial.gradedAlgebra in
 private lemma homogeneousComponent_add_X_pow_mul {K : Type} [Field K] {N : ℕ} (j : Fin N) (m n : ℕ)

@@ -22,7 +22,7 @@ theorem dsum_stronglyMeasurable : ∀ {D : D7} {ρ p : ℕ} (ψ : AddChar (AF D.
   intro D ρ p ψ hψ b₀ Φ hΦ hs
   haveI := (GlobalTheory.T.countable_matrices_and_cosets D ρ p).1
   haveI : BorelSpace (Mx D ρ p) := ⟨rfl⟩
-  obtain ⟨_, _, _, _, _, hc⟩ := GlobalTheory.T.heisenberg_character_bilinear_laws ψ hψ b₀
+  obtain ⟨_, _, _, _, _, hc⟩ := GlobalTheory.CompanionTheory.FJE.chv_facts ψ hψ b₀
   have hterm : ∀ ξ : Matrix (Fin ρ) (Fin p) D.host.E, Measurable fun v : Mx D ρ p × Mx D ρ p =>
       GlobalTheory.CompanionTheory.FJE.chv ψ b₀ v.2 (GlobalTheory.CompanionTheory.FJE.rt ξ) * Φ (GlobalTheory.CompanionTheory.FJE.rt ξ + v.1) := by
     intro ξ

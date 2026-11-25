@@ -268,10 +268,6 @@ namespace UpperTheory.Kd.L.One
 
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ}
 
-private theorem eOm_zero' : eOm ε 0 = 1 := by
-  have h : Function.invFun ε (ε 1) = 1 := Function.leftInverse_invFun ε.injective 1
-  simpa [eOm] using h
-
 private theorem gal_sl_g [IsAlgClosed Ω] (X : Tower Ω ε) {M : ℕ} (hM : M ≠ 0) {s : Ω ≃ₐ[ℚ] Ω} (hs : s ∈ fixMu Ω M)
     (g : SL(2, ℤ)) {f : X.K} (hf : f ∈ topL X M) : X.gal s (X.sl (ofSL g) f) = X.sl (ofSL g) (X.gal s f) := by
   rw [mem_lev_iff] at hf
@@ -311,7 +307,7 @@ private theorem gal_sl_diag (X : Tower Ω ε) {D : ℕ} (hD : 0 < D) (s : Ω ≃
     have := X.exp_upper (toGQ !![(D : ℤ), 0; 0, 1]) (by rw [ent_diag hD]; simp) h (r / D)
     simp only [ent_diag hD] at this
     simp at this
-    rw [div_mul_cancel₀ _ hD', eOm_zero', one_mul] at this
+    rw [div_mul_cancel₀ _ hD', GlobalTheory.DlRescale.eOm_zero, one_mul] at this
     exact this
   rw [X.gal_exp, key, key, X.gal_exp]
 

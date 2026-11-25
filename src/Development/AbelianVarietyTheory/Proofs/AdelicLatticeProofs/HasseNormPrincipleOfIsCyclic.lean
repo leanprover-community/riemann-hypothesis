@@ -1394,17 +1394,13 @@ open scoped WithZero TensorProduct
 
 namespace GlobalTheory.CNorm
 
-theorem index_eq_relIndex_mul_index_sup_normThm {G : Type} [CommGroup G] (U W : Subgroup G) :
-    W.index = W.relIndex U * (U ⊔ W).index := by
-  rw [← Subgroup.relIndex_mul_index (le_sup_right : W ≤ U ⊔ W), Subgroup.relIndex_sup_right]
-
 theorem inf_le_of_index_count_normThm {G : Type} [CommGroup G] (p : ℕ) (hp : 0 < p)
     (U W D N : Subgroup G) (s k t : ℕ)
     (hWD : W ≤ D) (hND : N ≤ D) (hk : k + 1 = 2 * s) (hW0 : W.index ≠ 0)
     (hW : W.index ≤ p ^ (2 * s)) (hWU : W.relIndex U = p ^ k) (hD : p ^ t ≤ D.index)
     (hN0 : N.relIndex U ≠ 0) (hN : p * N.relIndex U ≤ p ^ t) : D ⊓ U ≤ N := by
-  have e1 := index_eq_relIndex_mul_index_sup_normThm U W
-  have e2 := index_eq_relIndex_mul_index_sup_normThm U D
+  have e1 := GlobalTheory.QNorm.index_eq_relIndex_mul_index_sup U W
+  have e2 := GlobalTheory.QNorm.index_eq_relIndex_mul_index_sup U D
   have h4 : p ^ (2 * s) = p ^ k * p := by
     rw [← pow_succ, hk]
   have hUW0 : (U ⊔ W).index ≠ 0 := by

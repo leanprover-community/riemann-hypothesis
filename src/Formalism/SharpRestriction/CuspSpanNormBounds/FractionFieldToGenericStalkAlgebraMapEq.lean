@@ -255,10 +255,6 @@ theorem Kk_succ (M : Model F E) (m : ℕ) (w w' : Pt E (m + 1)) :
 
 end Model
 
-namespace Pt
-
-end Pt
-
 end Formalism.MainNotions.S.Loc
 
 end

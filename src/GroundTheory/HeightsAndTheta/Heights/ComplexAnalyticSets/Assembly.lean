@@ -1361,10 +1361,6 @@ theorem eval_linPoly {n d : ℕ} (A : Matrix (Fin d) (Fin n) ℂ) (z : Fin n →
   ext i
   simp [GroundTheory.Heights₂.Heights.ComplexSets.linPoly, Matrix.mulVec, dotProduct]
 
-theorem finrank_real_fin_complex (d : ℕ) : Module.finrank ℝ (Fin d → ℂ) = 2 * d := by
-  rw [Module.finrank_pi_fintype, Finset.sum_const, Finset.card_univ, Fintype.card_fin,
-    Complex.finrank_real_complex, smul_eq_mul, mul_comm]
-
 theorem ZeroSetOpenMass.proof
     (hG : GroundTheory.Heights₂.Heights.ComplexSets.GenericProjectionFinite.Statement)
     (hD : GroundTheory.Heights₂.Heights.ComplexSets.DiscriminantCover.Statement)
@@ -1397,7 +1393,7 @@ theorem ZeroSetOpenMass.proof
   obtain ⟨K, hK⟩ : ∃ K, LipschitzWith K (fun z : Fin n → ℂ => A.mulVec z) :=
     ⟨_, (LinearMap.toContinuousLinearMap (Matrix.mulVecLin A)).lipschitz⟩
   have hpos : 0 < μH[((2 * d : ℕ) : ℝ)] U' := by
-    rw [← finrank_real_fin_complex d]
+    rw [← GroundTheory.Heights₂.Heights.SheetOnlyNull.finrank_real_fin_complex d]
     exact hU'.measure_pos _ ⟨_, hzU'⟩
   have hle := hK.hausdorffMeasure_image_le (by positivity : (0 : ℝ) ≤ ((2 * d : ℕ) : ℝ)) (g '' U')
   rw [himg] at hle

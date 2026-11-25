@@ -353,8 +353,6 @@ theorem exists_cols_det_ne_zero {R : Type} [CommRing R] [IsDomain R] {d : ℕ} {
 
 variable {l : ℕ} [Fact l.Prime] {K : FinExt l} (bk : BK K)
 
-alias injective_of_topBasis := _root_.GlobalTheory.BSP.TopBasis.injective
-
 theorem evW_mem (s : bk.S) : bk.evW s ∈ bk.OE := fun _ => ⟨0, s, 0, by simp⟩
 
 theorem exists_cols (hinj : Function.Injective bk.iA) {d : ℕ} {ι : Type}
@@ -428,7 +426,7 @@ theorem exists_height_of_periods (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk : B
   obtain ⟨-, -, ⟨hρ0, hρ1, -⟩, -⟩ := GlobalTheory.BSP.flat_disc l K bk
   obtain ⟨ι, TB, k, v, Zf, hnull, hvZ, hsum⟩ := hbd
   have hinj : Function.Injective bk.iA := (_root_.GlobalTheory.BSP.toDisc_injective_of_topBasis l K bk _ bk.ev ι TB _ hρ0 hρ1).1
-  have hev := injective_of_topBasis TB
+  have hev := GlobalTheory.BSP.TopBasis.injective TB
   have hτ0 : τ ≠ 0 := (_root_.GlobalTheory.BSP.isUnit_inclW_of_isPer l K bk τ hτ).2.2.1
   have hl0 : (l : Ainf l) ≠ 0 := WittVector.p_ne_zero l (OCb l)
   obtain ⟨j₀, hj₀⟩ : ∃ j : bk.DS bk.ρ₀ →+* bk.DA bk.ρ₀, IsDiscMap (l := _) (u := _) (ρ := _) bk.ev j :=

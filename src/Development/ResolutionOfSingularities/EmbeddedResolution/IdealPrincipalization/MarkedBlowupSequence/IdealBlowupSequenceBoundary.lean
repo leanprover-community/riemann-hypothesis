@@ -25,7 +25,6 @@ theorem inStrictNormalCrossingPositionAt_comap_iso {X X₀ : Scheme.{u}} {k : Ty
   have hiso : IsIso (e.hom.resLE U (e.hom ⁻¹ᵁ U) le_rfl) := by
     rw [Scheme.Hom.resLE_eq_morphismRestrict]; infer_instance
   have hcet : AlgebraicGeometry.Etale c.map := c.isEtale
-  have hAet : AlgebraicGeometry.Etale (e.hom.resLE U (e.hom ⁻¹ᵁ U) le_rfl) := inferInstance
   have hmem : x₀ ∈ e.hom ⁻¹ᵁ U := hxU
   refine inStrictNormalCrossingPositionAt_of_exists_etaleChart
     ⟨e.hom ⁻¹ᵁ U, hmem, m,

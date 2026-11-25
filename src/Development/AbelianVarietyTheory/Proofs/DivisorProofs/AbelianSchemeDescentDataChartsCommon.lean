@@ -224,7 +224,6 @@ theorem exists_extension : ∀ (A Ω : Type) [CommRing A] [IsRegularLocalRing A]
 
   let ub : ResidueField A →+* Ω := Ideal.Quotient.lift (maximalIdeal A) u
     (fun x hx => (RingHom.mem_ker).1 (hker ▸ hx))
-  have hub : ∀ x, ub (residue A x) = u x := fun x => rfl
   letI : Algebra (ResidueField A) Ω := ub.toAlgebra
   have hpu : p.map u = (p.map (residue A)).map ub := by
     rw [Polynomial.map_map]; congr 1
@@ -417,7 +416,7 @@ theorem lTensor_map_injective {O : Type*} [CommRing O] [Algebra O A] [Module O M
     induction y with
     | add a b ha hb => simp only [map_add (f := _), ha, hb]
     | tmul m a => simp [t, j]
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro x hx
   obtain ⟨y, rfl⟩ := ht x
   have h0 := hc y

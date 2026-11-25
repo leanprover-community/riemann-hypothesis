@@ -344,16 +344,12 @@ theorem fockAct1_eq (Z : Mat p q) : fockAct1 p q r s Z = omAct p q r s (kr1 r s 
 theorem fockAct2_eq (Z : Mat r s) : fockAct2 p q r s Z = omAct p q r s (kr2 p q Z) := rfl
 
 theorem lineMatrixKroneckerLeftFactor_conjTranspose (Z : Mat p q) : kr1 r s Zᴴ = (kr1 r s Z)ᴴ := by
-  ext ⟨a, c⟩ ⟨b, d⟩
-  by_cases h : c = d
-  · subst h; simp [kr1]
-  · simp [kr1, h, Ne.symm h]
+  unfold kr1
+  rw [Matrix.conjTranspose_kronecker, Matrix.conjTranspose_one]
 
 theorem lineMatrixKroneckerRightFactor_conjTranspose (Z : Mat r s) : kr2 p q Zᴴ = (kr2 p q Z)ᴴ := by
-  ext ⟨a, c⟩ ⟨b, d⟩
-  by_cases h : a = b
-  · subst h; simp [kr2]
-  · simp [kr2, h, Ne.symm h]
+  unfold kr2
+  rw [Matrix.conjTranspose_kronecker, Matrix.conjTranspose_one]
 
 theorem lineMatrixKroneckerLeftFactor_eq_zero_of_isKC {Z : Mat p q} (hZ : IsKC Z) (l l' : Ln p q r s) (h : linePos l ≠ linePos l') :
     kr1 r s Z l l' = 0 := by

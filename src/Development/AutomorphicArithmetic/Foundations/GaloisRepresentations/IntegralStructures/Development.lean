@@ -441,11 +441,7 @@ private theorem conjInvT_eq {E : Type} [Field E] [NumberField E] [IsCMField E] (
   Units.ext (Matrix.ext fun i j => GlobalTheory.LFun.ConjPlace.invT_val _ g i j)
 
 private theorem invT_invT {R : Type} [CommRing R] {a : ℕ} (h : GL (Fin a) R) : invT a R (invT a R h) = h := by
-  apply Units.ext
-  change ((invT a R h)⁻¹ : GL (Fin a) R).val.transpose = h.val
-  rw [← map_inv]
-  change (((h⁻¹)⁻¹ : GL (Fin a) R).val.transpose).transpose = h.val
-  rw [inv_inv, Matrix.transpose_transpose]
+  simp
 
 open GlobalTheory.SplitPts in
 private theorem conjInvT_symm_eq {E : Type} [Field E] [NumberField E] [IsCMField E] (w : HeightOneSpectrum (𝓞 E)) {a : ℕ}
@@ -512,7 +508,7 @@ section -- clump:auto
 open scoped IntermediateField TensorProduct Matrix Pointwise NumberField Topology ContDiff NNReal ENNReal Polynomial DirectSum BigOperators InnerProductSpace Manifold
 
 theorem UpperTheory.Reformulated.B.AdjoinForm.adjoin_form :
-    ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E]
+    ∀ {E : Type} [Field E] [NumberField E]
     {d : ℕ},
     (0 : ℕ) < d → ∀ {x : E}, x ^ (2 : ℕ) = -(↑d : E) → ∀ y ∈ ℚ⟮x⟯, ∃ (s : ℚ) (t : ℚ), y = (↑s : E) + (↑t : E) * x := by
   intro E _ _ d _ x hx y hy
@@ -543,8 +539,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.CMConjNegOfSqEqNegPos.conj_alt_bis :
-    ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E]
-    [inst_2 : NumberField.IsCMField E] {d : ℕ},
+    ∀ {E : Type} [Field E] [NumberField E]
+    [NumberField.IsCMField E] {d : ℕ},
     (0 : ℕ) < d → ∀ {x : E}, x ^ (2 : ℕ) = -(↑d : E) → (NumberField.IsCMField.complexConj E : E → E) x = -x := by
   intro E _ _ _ d hd x hx
   let φ : E →+* ℂ := Classical.choice (inferInstance : Nonempty _)
@@ -835,13 +831,15 @@ namespace UpperTheory.Gal.Int.Div
 
 section
 
-variable {E : Type} [Field E] [NumberField E] [IsCMField E]
+variable {E : Type} [Field E]
+
+private theorem apart_symm {w u : HeightOneSpectrum (𝓞 E)} (h : Apart w u) : Apart u w := Ne.symm h
+
+variable [NumberField E] [IsCMField E]
 
 private theorem apart_cpl {w u : HeightOneSpectrum (𝓞 E)} (hu : IsSplitAt u) : Apart w (cpl u) ↔ Apart w u := by
   unfold Apart
   rw [(GlobalTheory.SplitPts.over_split hu).2.1]
-
-private theorem apart_symm {w u : HeightOneSpectrum (𝓞 E)} (h : Apart w u) : Apart u w := Ne.symm h
 
 private theorem mem_cpl (hC : CplMem) {l : ℕ} {u : HeightOneSpectrum (𝓞 E)} (h : ((l : ℕ) : 𝓞 E) ∈ u.asIdeal) :
     ((l : ℕ) : 𝓞 E) ∈ (cpl u).asIdeal := (hC E u l l (by simp)).2 h
@@ -1007,7 +1005,7 @@ open GlobalTheory.GalCut GlobalTheory.UnitaryBC GlobalTheory.Cong GlobalTheory.P
 
 namespace GlobalTheory.Cong.OffTLimit
 
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {l : ℕ} [Fact l.Prime] {a : ℕ}
+variable {E : Type} [Field E] {l : ℕ}
 
 theorem apart_of_not_mem {w₀ w : HeightOneSpectrum (𝓞 E)} (h₀ : ((l : ℕ) : 𝓞 E) ∈ w₀.asIdeal)
     (hw : ((l : ℕ) : 𝓞 E) ∉ w.asIdeal) : Apart w w₀ := by
@@ -1017,6 +1015,8 @@ theorem apart_of_not_mem {w₀ w : HeightOneSpectrum (𝓞 E)} (h₀ : ((l : ℕ
     rw [HeightOneSpectrum.under_asIdeal, Ideal.under_def, Ideal.mem_comap, map_natCast]; exact h₀
   rw [← h, HeightOneSpectrum.under_asIdeal, Ideal.under_def, Ideal.mem_comap, map_natCast] at h1
   exact h1
+
+variable [NumberField E] [Fact l.Prime] {a : ℕ}
 
 theorem z_eq_of_equiv {ι : Qbar l ≃+* ℂ} {Kw : Levels E a} {J : Type} (O : LocOps l ι Kw J) (j : J)
     {σ σ' : SmIrr (GL (Fin a) ((O.pl j).adicCompletion E))} (e : σ.ρ.Equiv σ'.ρ)
@@ -1032,7 +1032,6 @@ theorem z_eq_of_equiv {ι : Qbar l ≃+* ℂ} {Kw : Levels E a} {J : Type} (O : 
     simp only [MonoidHom.one_apply, Units.val_one, one_smul] at this ⊢
     rw [← he, this]
   have hop : e.toLinearEquiv (opOf σ.ρ (O.f j) v) = opOf σ'.ρ (O.f j) (e.toLinearEquiv v) := by
-    set_option synthInstance.maxHeartbeats 100000 in
       simp only [opOf, Finsupp.sum, map_sum, map_smul, he]
   have h2 := O.act j σ' _ hv'
   rw [← hop, O.act j σ v hv, map_smul] at h2
@@ -1041,9 +1040,6 @@ theorem z_eq_of_equiv {ι : Qbar l ≃+* ℂ} {Kw : Levels E a} {J : Type} (O : 
 
 end GlobalTheory.Cong.OffTLimit
 
-namespace GlobalTheory.Cong
-
-end GlobalTheory.Cong
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.SatakeParameters.ApartOfNotMem =====
@@ -1325,7 +1321,7 @@ theorem exists_trace_limit : ∀ (l : ℕ) [Fact l.Prime] (Γ : Type) [Group Γ]
     (Units.continuous_val.comp (hρ i)).matrix_trace
   have hLc : IsComplete (L : Set (PadicAlgCl l)) := by
     have : FiniteDimensional ℚ_[l] L.toSubalgebra.toSubmodule := hL
-    exact Submodule.complete_of_finiteDimensional L.toSubalgebra.toSubmodule
+    exact Submodule.isComplete_of_finiteDimensional L.toSubalgebra.toSubmodule
   have conv : ∀ A : Set I, PolyApprox θ (η '' A) → ∀ ε > 0, ∃ F : Finset I, (↑F ⊆ A) ∧
       ∃ c : I → PadicAlgCl l, ∀ P : MvPolynomial J ℤ,
         ‖MvPolynomial.aeval θ P - ∑ i ∈ F, c i * MvPolynomial.aeval (η i) P‖ ≤ ε := by
@@ -1386,7 +1382,7 @@ theorem exists_trace_limit : ∀ (l : ℕ) [Fact l.Prime] (Γ : Type) [Group Γ]
       refine ⟨θ '' {j | ‖θ j - ∑ i ∈ F, c i * trc (ρ i) g‖ ≤ e / 5 + e / 5},
         Filter.image_mem_map (hbd g F c _ hc _ (by positivity)), ?_⟩
       rintro _ ⟨j, hj, rfl⟩ _ ⟨j', hj', rfl⟩
-      simp only [Set.mem_setOf_eq] at hj hj'
+      simp only [Set.mem_ofPred_eq] at hj hj'
       rw [dist_eq_norm]
       calc ‖θ j - θ j'‖ = ‖(θ j - ∑ i ∈ F, c i * trc (ρ i) g) - (θ j' - ∑ i ∈ F, c i * trc (ρ i) g)‖ := by
             congr 1; abel
@@ -1439,7 +1435,7 @@ theorem exists_trace_limit : ∀ (l : ℕ) [Fact l.Prime] (Γ : Type) [Group Γ]
       rw [e0, e2]
       exact hc _
     have h := hsub hmem
-    simp only [Set.mem_setOf_eq, Ψ] at h
+    simp only [Set.mem_ofPred_eq, Ψ] at h
     exact h
   refine ⟨t, htL, fun F c ε hc g => ?_, fun A hA => ⟨?_, ?_⟩⟩
   · have := core F c ε hc (MvPolynomial.X g)
@@ -1610,7 +1606,6 @@ open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory
 open GlobalTheory.GalCut GlobalTheory.UnitaryBC GlobalTheory.Cong GlobalTheory.Published GlobalTheory.AboveL GlobalTheory.CongL
 
 namespace UpperTheory.Gal.Lim
-
 
 open GlobalTheory.Cong.OffTLimit GlobalTheory.CongL.UnitLim in
 theorem limWU4_of : ∀ (Rk : ℕ → Prop) (Ty : UnitaryAutomorphicTypeClass) (Gen : ℕ → ℕ → Multiset ℂˣ → Prop) (Wt : SeedWtU),

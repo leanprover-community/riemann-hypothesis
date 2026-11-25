@@ -202,20 +202,13 @@ theorem exists_lattice_norm_ge_pow {ϖ : Fv F v} (hϖ0 : 0 < ‖ϖ‖) (hϖ1 : �
   have := card_le_lattice_norm lam h1 b hb y hy hsep
   simpa [Fintype.card_fun, Fintype.card_bool, Fintype.card_fin] using this
 
-theorem cvSigR_smul (σ : E →ₐ[F] E) (t : Fv F v) (x : Fv F v ⊗[F] E) :
-    sigR (Fv F v) σ (t • x) = t • sigR (Fv F v) σ x := by
-  rw [Algebra.smul_def, Algebra.smul_def, map_mul]
-  congr 1
-  rw [Algebra.TensorProduct.algebraMap_apply]
-  simp [sigR, Algebra.TensorProduct.map_tmul]
-
 theorem smul_mem_herm (σ : E →ₐ[F] E) (t : Fv F v) {S : Matrix (Fin n) (Fin n) (Fv F v ⊗[F] E)}
     (hS : S ∈ HermR (Fv F v) σ n) : t • S ∈ HermR (Fv F v) σ n := by
   have hS' : ∀ a b, sigR (Fv F v) σ (S b a) = S a b := hS
   show ∀ a b, sigR (Fv F v) σ ((t • S) b a) = (t • S) a b
   intro a b
   simp only [Matrix.smul_apply]
-  rw [cvSigR_smul, hS' a b]
+  rw [PositivityTheory.SiegelWeilFormula.SwLocFin.sigR_smul, hS' a b]
 
 def scH (σ : E →ₐ[F] E) (n : ℕ) {t : Fv F v} (ht : t ≠ 0) : HermR (Fv F v) σ n ≃+ HermR (Fv F v) σ n where
   toFun b := ⟨t • b.1, smul_mem_herm σ t b.2⟩
@@ -606,7 +599,6 @@ namespace PositivityTheory.SiegelWeilFormula.SwLocFin.DualA
 
 open HeckeCharacterZeroLocus.SiegelWeilU NumberField IsDedekindDomain MeasureTheory GlobalTheory.Cont PositivityTheory.PfSWUS.Loc Filter Topology
 open scoped TensorProduct Matrix
-
 
 open Classical in
 theorem setIntegral_char_subgroup {G : Type*} [AddCommGroup G] [MeasurableSpace G] [MeasurableAdd G]

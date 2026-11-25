@@ -185,7 +185,6 @@ theorem log_ncard_ball_exp_le : ∀ (G : Type) [AddCommGroup G] (Λ : ℕ → Ad
   have hbig : R * (Q : ℝ) ^ e ≤ Real.exp (3 * m) := by
     have h4 : (4 : ℝ) ≤ Real.exp 3 := by
       have := Real.add_one_le_exp 3; linarith
-    have hQ0 : (0 : ℝ) ≤ Q := Nat.cast_nonneg _
     calc R * (Q : ℝ) ^ e ≤ R * (4 * R) ^ e := by gcongr
       _ = 4 ^ e * R ^ (e + 1) := by ring
       _ ≤ Real.exp 3 ^ e * Real.exp (2 * m) := by gcongr

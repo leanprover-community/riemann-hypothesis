@@ -220,9 +220,4 @@ def pbKF {g c : ℕ} (kf : KF g c) : ct.Sec (ct.keySh c) :=
 
 end At
 
-def keyTrue (ct : At S κ p) : KeySt ct where
-  piPP := ct.piPP
-  keySh := ct.keySh
-  keySh_inv _ := ct.isInv_keySh
-
 end GlobalTheory.LocM

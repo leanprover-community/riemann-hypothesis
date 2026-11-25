@@ -40,7 +40,6 @@ theorem log_level_le (P : ParameterChoice' D L) :
   have hc0 : LevelStarExponents.condE D ≠ 0 := by
     unfold LevelStarExponents.condE
     exact mul_ne_zero (mul_ne_zero D.host.QS_pos.ne' D.host.hyp.1.ne_zero) D.host.hyp.2.1.ne_zero
-  have hc1 : (1 : ℝ) ≤ LevelStarExponents.condE D := by exact_mod_cast Nat.one_le_iff_ne_zero.2 hc0
   have hc : Real.log (LevelStarExponents.condE D) ≤ L.sc.L := by
     have ht : (1 : ℝ) ≤ (D.R.t : ℝ) ^ 150 := one_le_pow₀ L.t_win.1
     have a : (LevelStarExponents.condE D : ℝ) ^ 36 ≤ L.sc.b ^ ((1 : ℝ) / 2) :=

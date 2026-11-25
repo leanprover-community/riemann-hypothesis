@@ -115,10 +115,6 @@ theorem not_le_differentIdeal_of_psiUnr {F : Type} [Field F] [NumberField F] {ψ
   have hc1 : 0 ≤ c := by
     by_contra! hneg
     obtain ⟨π, hπ⟩ := HeightOneSpectrum.valuation_exists_uniformizer F v
-    have hπ0 : π ≠ 0 := by
-      rintro rfl
-      rw [map_zero] at hπ
-      exact exp_ne_zero hπ.symm
     set x : Fv F v := ((π⁻¹ : F) : v.adicCompletion F) with hx
     have hvx : Valued.v x = exp 1 := by
       rw [hx, HeightOneSpectrum.valuedAdicCompletion_eq_valuation', map_inv₀, hπ, ← exp_neg, neg_neg]

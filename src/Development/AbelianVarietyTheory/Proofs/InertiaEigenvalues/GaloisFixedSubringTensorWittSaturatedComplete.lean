@@ -30,7 +30,6 @@ theorem fix_of_sum {R : Type} [CommRing R] (p : ℕ)
   intro k
   obtain ⟨r, hr⟩ := hy k
   have hsum : f (∑ i ∈ Finset.range k, (p : R) ^ i * x i) = ∑ i ∈ Finset.range k, (p : R) ^ i * x i := by
-    set_option synthInstance.maxHeartbeats 100000 in
       simp [map_sum, map_mul, map_pow, map_natCast, hx]
   have hfy : f y - ∑ i ∈ Finset.range k, (p : R) ^ i * x i = (p : R) ^ k * f r := by
     rw [← hsum, ← map_sub, hr, map_mul, map_pow, map_natCast]

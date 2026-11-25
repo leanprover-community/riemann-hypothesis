@@ -135,11 +135,6 @@ theorem surjective_spMap_fst' (R : Type) [CommRing R] : Surjective (spMap (TrivS
     rw [this]; exact zero_mem _
   exact this
 
-theorem spMap_fst_comp' (R : Type) [CommRing R] :
-    spMap (TrivSqZeroExt.fstHom R R R).toRingHom ≫ spMap (algebraMap R (DualNumber R)) = 𝟙 _ := by
-  rw [← Spec.map_comp, ← Spec.map_id]
-  congr 1
-
 end Geo
 
 section Group
@@ -149,12 +144,11 @@ variable {R : Type} [CommRing R] (G : Over (Sp R)) [GrpObj G] [IsCommMonObj G] (
 def transl : tEpsG (𝟙 (Sp R)) ⊗ G ⟶ G :=
   snd _ G * (fst _ G ≫ tv v)
 
-
 variable (R) in
 def redPt : Over.mk (𝟙 (Sp R)) ⟶ tEpsG (𝟙 (Sp R)) :=
   Over.homMk (spMap (TrivSqZeroExt.fstHom R R R).toRingHom) (by
     change _ ≫ spMap _ ≫ 𝟙 _ = 𝟙 _
-    rw [Category.comp_id, spMap_fst_comp'])
+    rw [Category.comp_id, GlobalTheory.InvFieldRing.spMap_fst_comp])
 
 theorem redPt_smT : redPt R ≫ Formalism.L2.Pj.homAt (𝟙 (Sp R)) (tm ((0 : R) • (LinearMap.id : R →ₗ[R] R))) = redPt R := by
   apply Over.OverMorphism.ext

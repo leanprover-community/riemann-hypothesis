@@ -698,18 +698,6 @@ theorem lowerUni_transv {N : ℕ} {ca cb : Fin N} (h : ca < cb) (t : ℂ) :
     rintro ⟨rfl, rfl⟩
     exact absurd h (not_lt.2 hrs.le)
 
-theorem minor_analytic {m N : ℕ} {V : Set (Fin m → ℂ)} {A : (Fin m → ℂ) → Matrix (Fin N) (Fin N) ℂ}
-    (hA : ∀ r s, AnalyticOnNhd ℂ (fun u => A u r s) V) (I J : Finset (Fin N)) :
-    AnalyticOnNhd ℂ (fun u => minorIJ (A u) I J) V := by
-  unfold minorIJ
-  by_cases e : I.card = J.card
-  · simp only [dite_eq_left e, Matrix.det_apply]
-    refine Finset.analyticOnNhd_fun_sum _ fun σ _ => ?_
-    simp only [Units.smul_def, zsmul_eq_mul]
-    exact analyticOnNhd_const.mul (Finset.analyticOnNhd_fun_prod _ fun i _ => hA _ _)
-  · simp only [dite_eq_right e]
-    exact analyticOnNhd_const
-
 theorem mul_analytic {m N : ℕ} {V : Set (Fin m → ℂ)} {A : (Fin m → ℂ) → Matrix (Fin N) (Fin N) ℂ}
     (hA : ∀ r s, AnalyticOnNhd ℂ (fun u => A u r s) V) (C : Matrix (Fin N) (Fin N) ℂ) (r s : Fin N) :
     AnalyticOnNhd ℂ (fun u => (A u * C) r s) V := by
@@ -775,7 +763,7 @@ theorem GlobalTheory.CompanionTheory.Ar.PB.WSq.FC.dens_w : ∀ (K : Type) [Finty
     cases o with
     | none =>
       exact Finset.analyticOnNhd_fun_sum _ fun I _ => (hreg _ I).mul
-        (FC.DensW.minor_analytic (FC.DensW.mul_analytic (hhan τ) _) _ _)
+        (GlobalTheory.CompanionTheory.Ar.PB.WSq.FC.DensR.analytic_minorIJ (FC.DensW.mul_analytic (hhan τ) _) _ _)
     | some k =>
       by_cases hk : ∀ p, M.blk p ≠ some k
       · have e : ∀ u, FC.wVec M (BM.F l) (FC.bvec BM l (bp u)) (fun τ' => hh τ' u) τ a k₀ ca cb t ⟨some k, mm⟩ =
@@ -788,7 +776,7 @@ theorem GlobalTheory.CompanionTheory.Ar.PB.WSq.FC.dens_w : ∀ (K : Type) [Finty
             ∑ I, valAt M.x ((BM.F l).u ⟨k, mm⟩ I) (FC.bvec BM l (bp u)) * minorIJ (hh p.1 u) I (stepCols N j p.2) :=
           fun u => (FC.DensW.wVec_some M (BM.F l) _ _ τ a k₀ ca cb t k mm).trans (FC.flagPt_step M (BM.F l) (FC.bvec BM l (bp u)) (fun τ' => hh τ' u) hp' mm)
         simp only [e]
-        exact Finset.analyticOnNhd_fun_sum _ fun I _ => (hreg _ I).mul (FC.DensW.minor_analytic (hhan p.1) _ _)
+        exact Finset.analyticOnNhd_fun_sum _ fun I _ => (hreg _ I).mul (GlobalTheory.CompanionTheory.Ar.PB.WSq.FC.DensR.analytic_minorIJ (hhan p.1) _ _)
   obtain ⟨x', hx'V, b', hb', h', hh', ho', hmin⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.WSq.Dens.dens_core K ι Φ y Ψ N j M n BM (Option K)
     (fun o => ι (o.getD k₀)) _ ⊤ (d + 2) RW rfl l
     (fun c h => FC.wVec M (BM.F l) (FC.bvec BM l c) h τ a k₀ ca cb t) _ hT han

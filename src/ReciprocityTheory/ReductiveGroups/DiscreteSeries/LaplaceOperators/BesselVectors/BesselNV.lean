@@ -170,13 +170,10 @@ theorem hpk_mulVec (v : Fin (2 * r + k + 1) → ℂ) (i : Fin (2 * r + k + 1)) :
       else if i.val = r + k then -v i else v i := by
   apply ReciprocityTheory.ChartRestriction.DS.Mult1.TopH.hpk_mulVec
 
-theorem hpk_mulVec_mulVec (v : Fin (2 * r + k + 1) → ℂ) : Hpk k r *ᵥ (Hpk k r *ᵥ v) = v := by
-  apply ReciprocityTheory.ChartRestriction.DS.Xi.StepA.Hpk_mulVec_mulVec <;> assumption
-
 theorem hpk_sq : Hpk k r * Hpk k r = 1 := by
   apply Matrix.ext_of_mulVec_single
   intro i
-  rw [← Matrix.mulVec_mulVec, hpk_mulVec_mulVec, Matrix.one_mulVec]
+  rw [← Matrix.mulVec_mulVec, ReciprocityTheory.ChartRestriction.DS.Xi.StepA.Hpk_mulVec_mulVec, Matrix.one_mulVec]
 
 end hpk
 
@@ -399,8 +396,6 @@ open scoped InnerProductSpace
 namespace ReciprocityTheory.ChartRestriction.DS.Lap.TopNV
 
 open ReciprocityTheory.ChartRestriction.DS ReciprocityTheory.ChartRestriction.DS.Lap
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 def BesselNVUnder (Gap : ℕ → ∀ r : ℕ, (Fin (2 * r + 2) → ℝ) → Prop) : Prop :=
   ∀ (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) (c : Fin r → ℂ) (u : Fin k → ℝ) (v : Fin (k - 1) → ℝ)

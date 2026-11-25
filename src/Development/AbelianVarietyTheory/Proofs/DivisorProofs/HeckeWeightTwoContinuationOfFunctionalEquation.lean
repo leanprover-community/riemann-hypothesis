@@ -819,7 +819,6 @@ theorem summable_qClass_two [IsTotallyReal F] (𝔞 𝔟 : Frac F) (z : Emb F �
   set K : ℝ := ((2 * f + n).factorial : ℝ) / (2 * Real.pi * m) ^ (2 * f + n) with hK
   set C : ℝ := K / (nrm 𝔞 * κ) with hC
   have hK0 : 0 < K := by positivity
-  have hC0 : 0 < C := by positivity
   have key : ∀ ν b : F, ν ∈ (𝔞 : FractionalIdeal (𝓞 F)⁰ F) → ν ≠ 0 → b ≠ 0 → (∀ τ : Emb F, 0 < τ (ν * b)) →
       ‖qTerm 𝔞 2 z (ν, b)‖ ≤
         C * ((|((Algebra.norm ℚ b : ℚ) : ℝ)| ^ 2)⁻¹ * ‖remb F (ν * b)‖⁻¹ ^ n) := by
@@ -922,7 +921,6 @@ theorem summable_qClass_two [IsTotallyReal F] (𝔞 𝔟 : Frac F) (z : Emb F �
       rw [tsum_mul_left, tsum_mul_left, Real.rpow_neg (abs_nonneg _), Real.rpow_two]
       have hH : ∑' ν, ‖ι c ν‖⁻¹ ^ n ≤ ∑' v : latOf N, ‖v‖⁻¹ ^ n :=
         tsum_comp_le_tsum_of_inj hL (fun _ => by positivity) (hι c)
-      have hB : 0 ≤ (Bf c ^ 2)⁻¹ := by positivity
       calc C * ((Bf c ^ 2)⁻¹ * ∑' ν, ‖ι c ν‖⁻¹ ^ n) ≤ C * ((Bf c ^ 2)⁻¹ * ∑' v : latOf N, ‖v‖⁻¹ ^ n) := by
             gcongr
         _ = _ := by simp only [hBf]; ring

@@ -56,34 +56,25 @@ lemma qh_mem_iff (mu : Fin n → ℤ) (f : GLCoord R n) :
       (∀ a c : Fin n, a < c → b.val a c = 0) → (∀ a, (u a : R') = b.val a a) →
       evGLR (b * g) f = ((∏ a, u a ^ mu a : R'ˣ) : R') * evGLR g f := by
   have key : ∀ (R' : Type) [CommRing R'] (u : Fin n → R'ˣ),
-      ((∏ a, u a ^ mu a : R'ˣ) : R') * ((∏ a, u a ^ (-(mu a)).toNat : R'ˣ) : R') =
-        ((∏ a, u a ^ (mu a).toNat : R'ˣ) : R') := by
+      ((∏ a, u a ^ mu a : R'ˣ) : R') * (∏ a, (u a : R') ^ (-(mu a)).toNat) =
+        ∏ a, (u a : R') ^ (mu a).toNat := by
     intro R' _ u
-    rw [← Units.val_mul, ← Finset.prod_mul_distrib]
-    congr 2
-    funext a
-    exact qh_zpow_split _ _
+    have hprod : (∏ a, u a ^ mu a) * (∏ a, u a ^ (-mu a).toNat) = ∏ a, u a ^ (mu a).toNat := by
+      rw [← Finset.prod_mul_distrib]
+      exact Finset.prod_congr rfl fun a _ => qh_zpow_split (u a) (mu a)
+    simpa [Units.coe_prod] using congrArg Units.val hprod
   constructor
   · intro hf R' _ _ b g u hb hu
     have h := hf R' b g hb
-    simp only [← hu] at h
-    have e1 : ∏ a, (u a : R') ^ (-(mu a)).toNat = ((∏ a, u a ^ (-(mu a)).toNat : R'ˣ) : R') := by
-      simp
-    have e2 : ∏ a, (u a : R') ^ (mu a).toNat = ((∏ a, u a ^ (mu a).toNat : R'ˣ) : R') := by
-      simp
-    rw [e1, e2, ← key R' u] at h
+    simp only [← hu, ← key R' u] at h
     apply (Units.mul_left_inj (∏ a, u a ^ (-(mu a)).toNat : R'ˣ)).1
-    rw [h]; ring
+    simp only [Units.coe_prod, Units.val_pow_eq_pow_val] at h ⊢; rw [h]; ring
   · intro hf R' _ _ b g hb
-    have h := hf R' b g (fun a => (qh_diag_isUnit b hb a).unit) hb (fun a => rfl)
-    set u : Fin n → R'ˣ := fun a => (qh_diag_isUnit b hb a).unit with hu
-    have hu' : ∀ a, b.val a a = (u a : R') := fun a => rfl
-    simp only [hu']
-    have e1 : ∏ a, (u a : R') ^ (-(mu a)).toNat = ((∏ a, u a ^ (-(mu a)).toNat : R'ˣ) : R') := by
-      simp
-    have e2 : ∏ a, (u a : R') ^ (mu a).toNat = ((∏ a, u a ^ (mu a).toNat : R'ˣ) : R') := by
-      simp
-    rw [e1, e2, ← key R' u, h]; ring
+    set u : Fin n → R'ˣ := fun a => (qh_diag_isUnit b hb a).unit
+    have h := hf R' b g u hb (fun _ => rfl)
+    change evGLR (b * g) f * ∏ a, (u a : R') ^ (-(mu a)).toNat =
+      (∏ a, (u a : R') ^ (mu a).toNat) * evGLR g f
+    rw [← key R' u, h]; ring
 
 lemma qh_zero_mem (mu : Fin n → ℤ) : (0 : GLCoord R n) ∈ inducedSections R mu := by
   intro R' _ _ b g _; simp

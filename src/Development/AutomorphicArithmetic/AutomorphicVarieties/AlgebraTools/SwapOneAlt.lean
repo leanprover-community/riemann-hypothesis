@@ -47,22 +47,3 @@ private theorem swap_one {R : Type} [CommRing R] {n : ℕ} {q : R} {H : Type} [R
   unfold Bern.one
   rw [Finset.mul_sum, Finset.smul_sum, ← sub_eq_zero, ← Finset.sum_sub_distrib]
   exact hsum
-
-theorem UpperTheory.V.AlgebraTools.hkOne :
-    ∀ (R : Type) [CommRing R] (n : ℕ) (q : R) (H : Type) [Ring H] [Algebra R H] (b : Bern n q H),
-      (∀ w, b.T w * b.one = q ^ invN w • b.one) ∧ b.one * b.one = poin (n := n) q • b.one := by
-  intro R _ n q H _ _ b
-  have hinv := UpperTheory.V.AlgebraTools.hkInv n
-  have p1 : ∀ w, b.T w * b.one = q ^ invN w • b.one := by
-    refine UpperTheory.V.AlgebraTools.hkInd n _ ?_ ?_
-    · rw [b.T_one, one_mul]
-      simp [invN, hinv.2.2.1]
-    · intro a c h w hw ih
-      rw [b.T_mul a c h w hw, mul_assoc, ih, mul_smul_comm, swap_one b h, smul_smul,
-        (hinv.1 a c h w hw).2.2, pow_succ]
-  refine ⟨p1, ?_⟩
-  show (∑ w, b.T w) * b.one = _
-  rw [Finset.sum_mul]
-  simp_rw [p1]
-  rw [← Finset.sum_smul]
-  rfl

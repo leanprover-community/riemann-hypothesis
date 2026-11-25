@@ -63,13 +63,6 @@ lemma s5b7_quot_ge (p : Ideal O) [hp : p.IsMaximal] [Finite (O ⧸ p)] (Y : Type
       (fun h0 => hp.ne_top ((Ideal.eq_top_iff_one p).mpr (by simpa [h0] using p.neg_mem hs1)))
       (congrArg Subtype.val h)).trans ((finrank_range_le_card y).trans_eq (Fintype.card_fin _))
 
-lemma s5b7_smul_top_pi {R : Type} [CommRing R] (I : Ideal R) (n : ℕ) (x : Fin n → R) :
-    x ∈ I • (⊤ : Submodule R (Fin n → R)) ↔ ∀ i, x i ∈ I := mem_ideal_smul_top_pi_iff I n x
-
-lemma s5b7_smul_top_prod {R M N : Type} [CommRing R] [AddCommGroup M] [Module R M] [AddCommGroup N]
-    [Module R N] (I : Ideal R) : I • (⊤ : Submodule R (M × N)) =
-      (I • (⊤ : Submodule R M)).prod (I • (⊤ : Submodule R N)) := ideal_smul_top_prod I
-
 theorem s5b7_quot (p : Ideal O) [hp : p.IsMaximal] [Finite (O ⧸ p)] (Y : Type) [AddCommGroup Y]
     [Module O Y] [Module.Finite O Y] [Module.Projective O Y] :
     Nat.card (Y ⧸ p • (⊤ : Submodule O Y)) = Nat.card (O ⧸ p) ^ finrank O Y := by
@@ -89,12 +82,12 @@ theorem s5b7_quot (p : Ideal O) [hp : p.IsMaximal] [Finite (O ⧸ p)] (Y : Type)
       (p • (⊤ : Submodule O Q)).toAddSubgroup.index =
       Nat.card (O ⧸ p) ^ finrank O Y * Nat.card (O ⧸ p) ^ finrank O Q := by
     calc _ = (p • (⊤ : Submodule O (Y × Q))).toAddSubgroup.index := by
-            rw [s5b7_smul_top_prod, ← AddSubgroup.index_prod]; rfl
+            rw [Formalism.HermitianLatticeCounting.P.ideal_smul_top_prod, ← AddSubgroup.index_prod]; rfl
       _ = (p • (⊤ : Submodule O (Fin n → O))).toAddSubgroup.index :=
             (Nat.card_congr (Submodule.Quotient.equiv _ _ e
               (by rw [Submodule.map_smul'', Submodule.map_top, e.range])).toEquiv).symm
       _ = (AddSubgroup.pi Set.univ fun _ : Fin n => p.toAddSubgroup).index := by
-            congr 1; ext x; simp only [Submodule.mem_toAddSubgroup, s5b7_smul_top_pi,
+            congr 1; ext x; simp only [Submodule.mem_toAddSubgroup, Formalism.HermitianLatticeCounting.P.mem_ideal_smul_top_pi_iff,
               AddSubgroup.mem_pi, Set.mem_univ, forall_true_left]
       _ = _ := by
             rw [AddSubgroup.index_pi, ← pow_add, hrank]

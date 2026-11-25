@@ -81,7 +81,6 @@ theorem khw_map (f : M →ₗ[ℂ] M') (hf : ∀ a b x, f (E a b x) = E' a b (f 
 
 theorem casimir_map (f : M →ₗ[ℂ] M') (hf : ∀ a b x, f (E a b x) = E' a b (f x)) (x : M) :
     f (casimir E x) = casimir E' (f x) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp [casimir, LinearMap.sum_apply, map_sum, hf]
 
 end Intertwine

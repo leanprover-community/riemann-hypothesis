@@ -205,7 +205,7 @@ private theorem line {K : Type} [Field K] [Algebra (ResidueField O) K] {A : F.G0
       rw [RingHom.mem_ker, RingHom.comp_apply, RingHom.mem_ker.mp (tA hx), map_zero]
     have heq : (φ : Polynomial K →+* K).comp ξA = ξ := pt_uniq hF S hξ hφ tξ tφ (fun g => by
       rw [RingHom.comp_apply, vA g, ← vξ g]
-      simp [φ, Polynomial.coe_aeval_eq_eval])
+      simp [φ])
     intro x hx
     rw [RingHom.mem_ker, ← heq, RingHom.comp_apply, RingHom.mem_ker.mp hx, map_zero]
 

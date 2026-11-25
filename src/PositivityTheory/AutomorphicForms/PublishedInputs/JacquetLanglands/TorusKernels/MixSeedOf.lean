@@ -37,11 +37,6 @@ namespace UpperTheory.Esk.DeterminantRepresentatives
 
 variable {F : Type} [Field F] [NumberField F]
 
-theorem norm_one' {w : Pl F} {x : w.adicCompletion F} (h : Valued.v x = 1) : ‖x‖ = 1 := by
-  have := (Valued.toNormedField.norm_le_one_iff (x := x)).2 h.le
-  have h2 := (Valued.toNormedField.one_le_norm_iff (x := x)).2 h.ge
-  exact le_antisymm this h2
-
 theorem fin_supp (y : (Af F)ˣ) : Function.HasFiniteMulSupport fun w : Pl F => ‖pLoc F w (y : Af F)‖ := by
   have h1 := Filter.eventually_cofinite.1 (y : Af F).2
   have h2 := Filter.eventually_cofinite.1 ((y⁻¹ : (Af F)ˣ) : Af F).2
@@ -52,7 +47,7 @@ theorem fin_supp (y : (Af F)ˣ) : Function.HasFiniteMulSupport fun w : Pl F => �
   have a2 : Valued.v (pLoc F w ((y⁻¹ : (Af F)ˣ) : Af F)) ≤ 1 := hc.2
   have a3 : Valued.v (pLoc F w (y : Af F)) * Valued.v (pLoc F w ((y⁻¹ : (Af F)ˣ) : Af F)) = 1 := by
     rw [← map_mul, ← map_mul, Units.mul_inv, map_one, map_one]
-  refine hw (norm_one' (le_antisymm a1 ?_))
+  refine hw (UpperTheory.Esk.MonomialSupportLemmas.nrm_unit (le_antisymm a1 ?_))
   calc 1 = _ := a3.symm
     _ ≤ Valued.v (pLoc F w (y : Af F)) * 1 := mul_le_mul_right a2 _
     _ = _ := mul_one _

@@ -282,10 +282,6 @@ noncomputable section
 
 namespace GlobalTheory.EtC.PrCx
 
-end GlobalTheory.EtC.PrCx
-
-namespace GlobalTheory.EtC.PrCx
-
 open SimplexCategory Finsupp
 
 variable {N : ℕ}

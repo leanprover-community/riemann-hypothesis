@@ -133,7 +133,3 @@ theorem radRedInj : NF.RadRedInj := by
   · exact (h0 (x, g) hx).trans (h0' (x, g) hx).symm
 
 end Formalism.FourierDecayAlt.P.NFRadRedA
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

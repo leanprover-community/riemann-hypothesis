@@ -224,11 +224,11 @@ theorem exists_sub_star_notMem (H : Host E) (ℓ : Nat.Primes) (m : Ideal (locRi
 variable {H : Host E}
 
 theorem sesq_zero_left (D : Datum H) (y : D.La) : sesq D 0 y = 0 := by
-  have := (_root_.GlobalTheory.CompanionTheory.Ar.Fl.Sesq.form_of_datum E H D).2.2.2.1 0 0 y
+  have := (_root_.PositivityTheory.Xgf.sesq_sesquilinear_skew_hermitian E H D).2.2.2.1 0 0 y
   simpa using this
 
 theorem sesq_zero_right (D : Datum H) (y : D.La) : sesq D y 0 = 0 := by
-  have := (_root_.GlobalTheory.CompanionTheory.Ar.Fl.Sesq.form_of_datum E H D).2.2.2.2.1 0 y 0
+  have := (_root_.PositivityTheory.Xgf.sesq_sesquilinear_skew_hermitian E H D).2.2.2.2.1 0 y 0
   simpa using this
 
 theorem sesq_sum_left (D : Datum H) {ι : Type} (s : Finset ι) (a : ι → 𝓞 E) (x : ι → D.La) (y : D.La) :
@@ -237,8 +237,8 @@ theorem sesq_sum_left (D : Datum H) {ι : Type} (s : Finset ι) (a : ι → 𝓞
   induction s using Finset.induction_on with
   | empty => simp [sesq_zero_left]
   | insert i s hi ih =>
-    rw [Finset.sum_insert hi, Finset.sum_insert hi, (_root_.GlobalTheory.CompanionTheory.Ar.Fl.Sesq.form_of_datum E H D).2.1, ih,
-      (_root_.GlobalTheory.CompanionTheory.Ar.Fl.Sesq.form_of_datum E H D).2.2.2.1]
+    rw [Finset.sum_insert hi, Finset.sum_insert hi, (_root_.PositivityTheory.Xgf.sesq_sesquilinear_skew_hermitian E H D).2.1, ih,
+      (_root_.PositivityTheory.Xgf.sesq_sesquilinear_skew_hermitian E H D).2.2.2.1]
 
 theorem sesq_sum_right (D : Datum H) {ι : Type} (s : Finset ι) (a : ι → 𝓞 E) (x : ι → D.La) (y : D.La) :
     sesq D y (∑ i ∈ s, a i • x i) = ∑ i ∈ s, IsCMField.complexConj E (a i : E) * sesq D y (x i) := by
@@ -246,14 +246,14 @@ theorem sesq_sum_right (D : Datum H) {ι : Type} (s : Finset ι) (a : ι → �
   induction s using Finset.induction_on with
   | empty => simp [sesq_zero_right]
   | insert i s hi ih =>
-    rw [Finset.sum_insert hi, Finset.sum_insert hi, (_root_.GlobalTheory.CompanionTheory.Ar.Fl.Sesq.form_of_datum E H D).2.2.1, ih,
-      (_root_.GlobalTheory.CompanionTheory.Ar.Fl.Sesq.form_of_datum E H D).2.2.2.2.1]
+    rw [Finset.sum_insert hi, Finset.sum_insert hi, (_root_.PositivityTheory.Xgf.sesq_sesquilinear_skew_hermitian E H D).2.2.1, ih,
+      (_root_.PositivityTheory.Xgf.sesq_sesquilinear_skew_hermitian E H D).2.2.2.2.1]
 
 theorem eq_zero_of_sesq_eq_zero (D : Datum H) (y : D.La) (h : ∀ z, sesq D y z = 0) : y = 0 := by
   apply D.unimod.1
   rw [map_zero]
   ext z
-  have := (_root_.GlobalTheory.CompanionTheory.Ar.Fl.Sesq.form_of_datum E H D).1 1 y z
+  have := (_root_.PositivityTheory.Xgf.sesq_sesquilinear_skew_hermitian E H D).1 1 y z
   rw [one_smul, h z] at this
   simpa using this.symm
 
@@ -284,12 +284,12 @@ theorem gram_det_ne_zero (D : Datum H) {I : Type} [Fintype I] [DecidableEq I] (x
     induction hw using Submodule.span_induction with
     | mem w hw => obtain ⟨n, rfl⟩ := hw; exact h1 n
     | zero => exact sesq_zero_right D y
-    | add u w _ _ hu hw => rw [(_root_.GlobalTheory.CompanionTheory.Ar.Fl.Sesq.form_of_datum E H D).2.2.1, hu, hw, add_zero]
-    | smul a w _ hw => rw [(_root_.GlobalTheory.CompanionTheory.Ar.Fl.Sesq.form_of_datum E H D).2.2.2.2.1, hw, mul_zero]
+    | add u w _ _ hu hw => rw [(_root_.PositivityTheory.Xgf.sesq_sesquilinear_skew_hermitian E H D).2.2.1, hu, hw, add_zero]
+    | smul a w _ hw => rw [(_root_.PositivityTheory.Xgf.sesq_sesquilinear_skew_hermitian E H D).2.2.2.2.1, hw, mul_zero]
   have h3 : y = 0 := by
     refine eq_zero_of_sesq_eq_zero D y fun z => ?_
     have := h2 _ (hspan z)
-    rw [← Nat.cast_smul_eq_nsmul (𝓞 E), (_root_.GlobalTheory.CompanionTheory.Ar.Fl.Sesq.form_of_datum E H D).2.2.2.2.1] at this
+    rw [← Nat.cast_smul_eq_nsmul (𝓞 E), (_root_.PositivityTheory.Xgf.sesq_sesquilinear_skew_hermitian E H D).2.2.2.2.1] at this
     simpa [hN0] using this
   have h4 := Fintype.linearIndependent_iff.1 hli c h3
   apply hv
@@ -414,7 +414,7 @@ theorem exists_diag_basis (H : Host E) (D : Datum H) (n : ℕ) (hn : n = D.p + D
   obtain ⟨x, hx⟩ := _root_.GlobalTheory.CompanionTheory.Relay.exists_local_basis' E D.La (Fin n) (ℓ : ℕ) ℓ.2 (by simp [D.rank, hn])
   obtain ⟨δ, hδ, hδ0, hδc, hδj⟩ := _root_.GlobalTheory.CompanionTheory.Relay.exists_real_different_generator E H.unram ℓ
   have hδE : (δ : E) ≠ 0 := by exact_mod_cast hδ0
-  have hint := (_root_.GlobalTheory.CompanionTheory.Ar.Fl.Sesq.form_of_datum E H D).2.2.2.2.2.2 δ hδ
+  have hint := (_root_.PositivityTheory.Xgf.sesq_sesquilinear_skew_hermitian E H D).2.2.2.2.2.2 δ hδ
   have hmem : ∀ a b, (δ : E) * sesq D (x a) (x b) ∈ locRing E ℓ := fun a b => by
     obtain ⟨c, hc⟩ := hint (x a) (x b)
     rw [hc]
@@ -424,7 +424,7 @@ theorem exists_diag_basis (H : Host E) (D : Datum H) (n : ℕ) (hn : n = D.p + D
   have hG : Gᴴ = -G := by
     ext a b
     rw [Matrix.conjTranspose_apply, Matrix.neg_apply, coe_star_locRing, hGc, Subring.coe_neg, hGc, map_mul, hδc,
-      (_root_.GlobalTheory.CompanionTheory.Ar.Fl.Sesq.form_of_datum E H D).2.2.2.2.2.1 (x b) (x a)]
+      (_root_.PositivityTheory.Xgf.sesq_sesquilinear_skew_hermitian E H D).2.2.2.2.2.1 (x b) (x a)]
     ring
   have hGdet : ((G.det : locRing E ℓ) : E) = (δ : E) ^ n * (gramE D x).det := by
     have h1 : (locRing E ℓ).subtype.mapMatrix G = (δ : E) • gramE D x := by

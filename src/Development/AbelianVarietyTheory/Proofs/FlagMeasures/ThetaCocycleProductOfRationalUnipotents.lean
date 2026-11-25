@@ -98,10 +98,6 @@ noncomputable section
 
 namespace GlobalTheory.DcosetCompl
 
-end GlobalTheory.DcosetCompl
-
-namespace GlobalTheory.DcosetCompl
-
 section Flags
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : Formalism.BasicNotions.HSpace E} {r : ℕ}

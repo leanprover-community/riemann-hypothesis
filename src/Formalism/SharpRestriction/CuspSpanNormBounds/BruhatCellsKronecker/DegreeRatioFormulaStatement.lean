@@ -50,11 +50,7 @@ theorem sza_card_Tau (D : D7) : Fintype.card D.what₂.Tau = D.R.f := by
   rw [← Nat.card_eq_fintype_card, Nat.card_congr D.eTau]
   exact (factCardPsi D.R D.host).1
 
-theorem sza_m_eq (D : D7) : 2 * D.R.rS + 2 = D.R.m := by
-  obtain ⟨j, hj⟩ := D.R.m_even
-  have h2 := D.R.two_le_m
-  unfold Formalism.BasicNotions.Ranks.rS
-  omega
+theorem sza_m_eq (D : D7) : 2 * D.R.rS + 2 = D.R.m := Formalism.MainNotions.two_rS_add_two D
 
 def szaMass (D : D7) (M : ℕ) : ℝ :=
   Formalism.HermitianLatticesTheory.mass (Formalism.HermitianLatticesTheory.massTelescope_form D.host.E M) (Formalism.HermitianLatticesTheory.massTelescope_lat D.host.E M)

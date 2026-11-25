@@ -69,11 +69,6 @@ alias hasDerivAt_clm := _root_.GlobalTheory.ThetaLineDeriv.hasDerivAt_clm_comp_o
 
 end GlobalTheory.ThetaLineDeriv
 
-namespace GlobalTheory.ThetaLineDeriv
-open GlobalTheory.WeilM GlobalTheory.LFun Filter Topology
-open scoped Classical
-
-end GlobalTheory.ThetaLineDeriv
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.RestrictionLineOperatorSum =====
@@ -91,8 +86,6 @@ open GlobalTheory.Grid GlobalTheory.Doubling GlobalTheory.ChainFr GlobalTheory.I
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open GlobalTheory.SquareComm GlobalTheory.SquareAgree
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
-namespace GlobalTheory.ThetaLineDeriv
-end GlobalTheory.ThetaLineDeriv
 namespace GlobalTheory.ThetaLineDeriv
 open GlobalTheory.WeilM GlobalTheory.LFun Filter Topology
 open scoped Classical

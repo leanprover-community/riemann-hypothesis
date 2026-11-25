@@ -179,10 +179,6 @@ open AlgebraicGeometry CategoryTheory Limits
 
 namespace GlobalTheory.RelDimFibCrit
 
-end GlobalTheory.RelDimFibCrit
-
-namespace GlobalTheory.RelDimFibCrit
-
 open AlgebraicGeometry CategoryTheory Limits in
 private lemma specMap_residueFieldMap_conj_eq_ofHom_map {R S : CommRingCat.{0}} (φ : R ⟶ S)
     (p : PrimeSpectrum S) :

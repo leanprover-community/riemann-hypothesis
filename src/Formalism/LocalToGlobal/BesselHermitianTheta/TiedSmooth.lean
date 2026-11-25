@@ -50,9 +50,6 @@ structure IsAutFunSm (φ : GA D V → ℂ) : Prop extends IsAutFun V φ where
     ∀ x, ∃ C : ℝ, ∀ g ∈ GinfC V,
       ‖(l.foldr (fun p f => Rder θ V p.1 p.2 f) φ) (x * g)‖ ≤ C * normInf θ V g ^ N
 
-def ThetaSmoothnessCondition {X : ThetaX D} (T : ThetaTied D X) : Prop :=
-  AllSome (IsInfFam (D := D)) fun θ => ∀ V : HSp D, V.SigOK → Set.range (T.ev V) = {φ | IsAutFunSm θ V φ}
-
 end Formalism.L2.Theta
 
 end

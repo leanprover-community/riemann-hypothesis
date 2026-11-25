@@ -93,9 +93,7 @@ theorem rorth_actM_smul {M : Type*} [AddCommGroup M] [Module ℂ M]
 theorem rorth_actM_single {M : Type*} [AddCommGroup M] [Module ℂ M]
     (E : Fin n → Fin n → Module.End ℂ M) (a b : Fin n) :
     actM E (Matrix.single a b (1 : ℂ)) = E a b := by
-  first
-    | exact _root_.ReciprocityTheory.ChartRestriction.DS.actM_single'
-    | apply _root_.ReciprocityTheory.ChartRestriction.DS.actM_single' <;> first | assumption | rfl | infer_instance
+  exact ReciprocityTheory.ChartRestriction.DS.actM_single' E a b
 
 theorem rorth_mem_UJset {ε : Fin n → Bool} {k : Matrix (Fin n) (Fin n) ℂ} (hk : k ∈ Kset ε) :
     k ∈ UJset ε := by

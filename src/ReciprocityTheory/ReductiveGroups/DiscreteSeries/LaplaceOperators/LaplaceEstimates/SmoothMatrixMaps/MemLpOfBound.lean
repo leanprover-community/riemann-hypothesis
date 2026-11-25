@@ -36,9 +36,7 @@ variable {n : ℕ}
 theorem frob_eq (g : Matrix (Fin n) (Fin n) ℂ) : frob g = Real.sqrt (Formalism.REAL.hs g) := rfl
 
 theorem frob_mul_le (A B : Matrix (Fin n) (Fin n) ℂ) : frob (A * B) ≤ frob A * frob B := by
-  first
-    | exact _root_.ReciprocityTheory.ChartRestriction.DS.Lap.S0.DecDeriv.frob_mul_le
-    | apply _root_.ReciprocityTheory.ChartRestriction.DS.Lap.S0.DecDeriv.frob_mul_le <;> first | assumption | rfl | infer_instance
+  exact ReciprocityTheory.ChartRestriction.DS.Lap.S0.DecDeriv.frob_mul_le A B
 
 theorem entry_le_frob (g : Matrix (Fin n) (Fin n) ℂ) (i j : Fin n) : ‖g i j‖ ≤ frob g := by
   rw [frob]

@@ -480,8 +480,6 @@ namespace GlobalTheory.WachTensor
 open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.UnitDualParts GlobalTheory.EtaleExact
 open GlobalTheory.IndefiniteRowSideFullHecke.CrystallineSubrepresentation (LocQuotCrys LocTensorCrys LocDualCrys)
 
-set_option synthInstance.maxHeartbeats 400000
-
 variable {l : ℕ} [Fact l.Prime]
 
 private theorem frobW_surjective_lemma : Function.Surjective (frobW l) := by

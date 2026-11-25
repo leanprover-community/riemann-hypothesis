@@ -21,7 +21,6 @@ namespace GlobalTheory.LKCx.PolyArch
 theorem roots_eig_any (p : ℕ) [Fact p.Prime] (G : HTGroup p) (v : InfinitePlace G.F) (γ : G.C) (w : ℂ)
     (hw : (minpoly G.F γ).eval₂ v.embedding w = 0) : ∃ x : Fin G.n → ℂ, x ≠ 0 ∧ G.psi v γ *ᵥ x = w • x := by
   letI : Algebra G.F ℂ := v.embedding.toAlgebra
-  have hτ : algebraMap G.F ℂ = v.embedding := rfl
   let ψF : G.C →ₐ[G.F] Matrix (Fin G.n) (Fin G.n) ℂ :=
     { G.psi v with
       commutes' := fun x => by
@@ -93,7 +92,3 @@ theorem roots_eig_any (p : ℕ) [Fact p.Prime] (G : HTGroup p) (v : InfinitePlac
   exact hR0 (Polynomial.leadingCoeff_eq_zero.1 (by rw [Polynomial.leadingCoeff, hRd]; exact hc))
 
 end GlobalTheory.LKCx.PolyArch
-
-namespace GlobalTheory.LKCx
-
-end GlobalTheory.LKCx

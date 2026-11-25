@@ -6,7 +6,7 @@ public import Mathlib.Algebra.BigOperators.GroupWithZero.Action
 @[expose] public section
 
 @[reducible] noncomputable def UpperTheory.Reformulated.B.Qf7.GLOps.{u_2, u_3} :
-    ℕ → (K : Type u_2) → (V : Type u_3) → [inst : Field K] → [inst_1 : AddCommGroup V] → [_root_.Module K V] → Type u_3 :=
+    ℕ → (K : Type u_2) → (V : Type u_3) → [Field K] → [AddCommGroup V] → [_root_.Module K V] → Type u_3 :=
     fun (n : ℕ) (K : Type u_2) (V : Type u_3) [Field K] [AddCommGroup V] [_root_.Module K V] ↦
       Fin n → Fin n → Module.End K V
 
@@ -14,9 +14,9 @@ noncomputable def UpperTheory.Reformulated.B.Qf7.weightSp.{u_2, u_3} :
     {n : ℕ} →
       {K : Type u_2} →
         {V : Type u_3} →
-          [inst : Field K] →
-            [inst_1 : AddCommGroup V] →
-              [inst_2 : _root_.Module K V] → UpperTheory.Reformulated.B.Qf7.GLOps n K V → (Fin n → ℤ) → Submodule K V :=
+          [Field K] →
+            [AddCommGroup V] →
+              [_root_.Module K V] → UpperTheory.Reformulated.B.Qf7.GLOps n K V → (Fin n → ℤ) → Submodule K V :=
     fun {n : ℕ} {K : Type u_2} {V : Type u_3} [Field K] [AddCommGroup V] [_root_.Module K V]
         (E : UpperTheory.Reformulated.B.Qf7.GLOps n K V) (mu : Fin n → ℤ) ↦
       ⨅ (a : Fin n), LinearMap.ker (E a a - (↑(mu a) : K) • (1 : Module.End K V))
@@ -31,7 +31,7 @@ private theorem UpperTheory.Reformulated.B.Qf7.apply_of_mem_weightSp {n : ℕ} {
   exact h
 
 theorem UpperTheory.Reformulated.B.Qf7.weight_components_mem_invariant.{u_1, u_2} :
-    ∀ {n : ℕ} {K : Type u_1} {V : Type u_2} [inst : Field K] [inst_1 : AddCommGroup V] [inst_2 : _root_.Module K V]
+    ∀ {n : ℕ} {K : Type u_1} {V : Type u_2} [Field K] [AddCommGroup V] [_root_.Module K V]
       [CharZero K] (E : UpperTheory.Reformulated.B.Qf7.GLOps n K V) (W : Submodule K V),
       (∀ (a : Fin n), ∀ x ∈ W, (E a a : V → V) x ∈ W) →
         ∀ (s : Finset (Fin n → ℤ)) (f : (Fin n → ℤ) → V),

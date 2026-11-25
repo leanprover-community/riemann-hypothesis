@@ -55,10 +55,6 @@ theorem bijective_of_injective_sesq [FiniteDimensional E V]
   rw [key]
   exact congrFun hc j
 
-namespace HermitianForm
-
-end HermitianForm
-
 end GroundTheory.Automorphic
 
 end

@@ -62,9 +62,9 @@ private theorem UpperTheory.Reformulated.B.AlgebraicPointIntegral.factor {O : Ty
     exact e2.symm
 
 theorem UpperTheory.Reformulated.B.AlgebraicPointIntegral.algpt_int :
-    ∀ {O : Type} [inst : CommRing O] [inst_1 : IsDomain O]
-    [inst_2 : IsDiscreteValuationRing O] [IsAdicComplete (IsLocalRing.maximalIdeal O) O] {R : Type} [inst_4 : CommRing R]
-    [inst_5 : Algebra O R] [inst_6 : IsLocalRing R] {K : Type} [inst_7 : Field K] [inst_8 : Algebra O K]
+    ∀ {O : Type} [CommRing O] [IsDomain O]
+    [IsDiscreteValuationRing O] [IsAdicComplete (IsLocalRing.maximalIdeal O) O] {R : Type} [CommRing R]
+    [Algebra O R] [IsLocalRing R] {K : Type} [Field K] [Algebra O K]
     [FaithfulSMul O K] [Algebra.IsAlgebraic O K] (f : R →ₐ[O] K),
     ∀ a ∈ IsLocalRing.maximalIdeal R, IsIntegral O ((f : R → K) a) := by
   intro O _ _ _ _ R _ _ _ K _ _ _ _ f a ha

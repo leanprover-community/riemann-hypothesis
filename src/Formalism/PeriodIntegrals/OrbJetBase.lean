@@ -111,12 +111,7 @@ structure Loc where
 
   J : Formalism.BasicNotions.JetLoc
 
-  rank_lt_alt : J.N0 < J.N1
-
   nu : ZMod J.d → YoungDiagram
-  nu_rows : ∀ s, (nu s).colLen 0 ≤ J.N0
-
-  TT : Finset (ZMod J.d)
 
 namespace Loc
 
@@ -159,10 +154,7 @@ structure Loc1 where
 
   J : Formalism.BasicNotions.JetLoc1
 
-  rank_lt_alt : J.N0 < J.N1
-
   nu : YoungDiagram
-  nu_rows : nu.colLen 0 ≤ J.N0
 
 namespace Loc1
 
@@ -204,11 +196,6 @@ def ThmOne (C : ℝ) : Prop :=
 
 end Loc1
 
-theorem N_pred_lt (R : Formalism.BasicNotions.Ranks) (j : ℕ) (h : 1 ≤ j) : R.N (j - 1) < R.N j := by
-  obtain ⟨j', rfl⟩ : ∃ j', j = j' + 1 := ⟨j - 1, by omega⟩
-  simp only [Formalism.BasicNotions.Ranks.N, Nat.add_sub_cancel, Nat.succ_mul]
-  omega
-
 end PI.OrbJet.OJ
 
 namespace PI.OrbJet
@@ -223,20 +210,6 @@ abbrev Pl (D : D7) : Type := Bool × HH D
 structure Ent (D : D7) where
 
   nu : D.what₂.Word → ℕ → Pl D → YoungDiagram
-
-  nu_row : ∀ u i, i < D.R.m → ∀ z r, (((nu u i z).rowLen r : ℕ) : ℝ) =
-    if r < D.R.N i then DV.nuRow D u (i + 1) (tauPl D z) r else 0
-
-  nu_rows : ∀ u i z, (nu u i z).colLen 0 ≤ D.R.N i
-
-  Th : ∀ u μ (w : D.what₂.places.Pl) (i : ℕ), (D.chTw u μ).cls i → (D.chTw u μ).cls (i + 1) →
-    MvPowerSeries (Pl D × Fin (D.R.N i) × Fin (D.R.N (i + 1))) ℂ_[D.what₂.places.resChar w]
-
-  ep : ∀ w : D.what₂.places.Pl, ℂ_[D.what₂.places.resChar w]
-
-  be : ∀ w : D.what₂.places.Pl, Pl D → MvPowerSeries (ZMod (nP D (D.what₂.places.resChar w))) ℂ_[D.what₂.places.resChar w]
-
-  sg : ∀ w : D.what₂.places.Pl, Pl D → ℂ_[D.what₂.places.resChar w]
 
 variable {D : D7}
 
@@ -259,17 +232,12 @@ def orbLoc (E : Ent D) (p : ℕ) [Fact p.Prime] (h : OrbOK D p) (u : D.what₂.W
     (Th : MvPowerSeries (ZMod (nP D p) × Fin (D.R.N i) × Fin (D.R.N (i + 1))) ℂ_[p]) : OJ.Loc where
   J := { l := p, five_le_l := h.five, d := nP D p, d_even := h.even, two_le_d := h.two, N0 := D.R.N i, N1 := D.R.N (i + 1),
          Th := Th }
-  rank_lt_alt := OJ.N_pred_lt D.R (i + 1) (Nat.le_add_left 1 i)
   nu := fun s => E.nu u i (orbMap D p z s)
-  nu_rows := fun s => E.nu_rows u i (orbMap D p z s)
-  TT := Finset.univ.filter fun s : ZMod (nP D p) => IsTopPl D (orbMap D p z s)
 
 def oneLoc (E : Ent D) (p : ℕ) [Fact p.Prime] (h5 : 5 ≤ p) (u : D.what₂.Word) (i : ℕ) (z : Pl D)
     (Th : MvPowerSeries (ZMod 1 × Fin (D.R.N i) × Fin (D.R.N (i + 1))) ℂ_[p]) : OJ.Loc1 where
   J := { l := p, five_le_l := h5, N0 := D.R.N i, N1 := D.R.N (i + 1), Th := Th }
-  rank_lt_alt := OJ.N_pred_lt D.R (i + 1) (Nat.le_add_left 1 i)
   nu := E.nu u i z
-  nu_rows := E.nu_rows u i z
 
 def OrbitThetaExpansion (Lc : OJ.Loc) (ep sg : ℂ_[Lc.l]) (be : MvPowerSeries (ZMod Lc.d) ℂ_[Lc.l]) : Prop :=
   ∃ U : MvPowerSeries (ZMod Lc.d × Fin Lc.N0 × Fin Lc.N1) ℂ_[Lc.l], (∀ m, ‖MvPowerSeries.coeff m U‖ ≤ 1) ∧

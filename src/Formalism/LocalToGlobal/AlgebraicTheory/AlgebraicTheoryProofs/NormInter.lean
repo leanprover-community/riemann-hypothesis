@@ -25,10 +25,6 @@ section Reps
 
 variable {V : Type} [AddCommGroup V]
 
-theorem relIdx_eq_card {Λ₁ Λ₂ : AddSubgroup V} {S : Finset V} (hS : IsReps Λ₁ Λ₂ S) :
-    relIdx Λ₁ Λ₂ = S.card := by
-  apply Formalism.L2.AlgTh.RepresentativeBijection.relIdx_eq_card <;> assumption
-
 theorem semiChar_congr [Module ℂ V] {H : Sesq V} {Λ : AddSubgroup V} {α α' : V → ℂ} (h : IsSemiChar H Λ α)
     (he : ∀ x ∈ Λ, α' x = α x) : IsSemiChar H Λ α' := by
   refine ⟨fun x hx => by rw [he x hx]; exact h.1 x hx, fun x hx y hy => ?_⟩
@@ -117,7 +113,7 @@ theorem inter_isom (H : Sesq V) (H' : Sesq W) (hH : IsHerm H) (hH' : IsHerm H') 
     exact hG _ (hmem A x hx) (g z)
   rw [Formalism.L2.Th1.H.interReps _ _ hH _ _ _ hαV _ hGV _ hS z,
     Formalism.L2.Th1.H.interReps _ _ hH' _ _ _ hα' _ hG _ hS' (g z),
-    relIdx_eq_card hS, relIdx_eq_card hS', Finset.card_image_of_injective _ g.injective]
+    Formalism.L2.AlgTh.RepresentativeBijection.relIdx_eq_card hS, Formalism.L2.AlgTh.RepresentativeBijection.relIdx_eq_card hS', Finset.card_image_of_injective _ g.injective]
   congr 1
   simp only [sumU]
   rw [Finset.sum_image (fun x _ y _ hxy => g.injective hxy)]
@@ -161,7 +157,7 @@ theorem relative_index_fourth_power {Λ₁ Λ₂ : AddSubgroup (n → ℂ)} (h12
     relIdx (pow4 Λ₁) (pow4 Λ₂) = relIdx Λ₁ Λ₂ ^ 4 := by
   classical
   obtain ⟨S, hS⟩ := (Formalism.L2.Th1.H.repsExist _ Λ₁ Λ₂ h12).1
-  rw [relIdx_eq_card (representatives_fourth_power hS), relIdx_eq_card hS,
+  rw [Formalism.L2.AlgTh.RepresentativeBijection.relIdx_eq_card (representatives_fourth_power hS), Formalism.L2.AlgTh.RepresentativeBijection.relIdx_eq_card hS,
     Finset.card_image_of_injective _ asm_injective, Fintype.card_piFinset, Finset.prod_const,
     Finset.card_univ, Fintype.card_fin]
 

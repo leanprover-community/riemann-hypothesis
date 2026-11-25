@@ -36,19 +36,15 @@ namespace DiscreteGroups.T1.G.CP
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
-theorem lAbs_mul (x y : GA E n) : logAbs (x * y).val.det = logAbs x.val.det + logAbs y.val.det := by
-  rw [Units.val_mul, Matrix.det_mul]
-  exact (D1.logAbsBasic E).2.1 _ _ (Matrix.isUnits_det_units x) (Matrix.isUnits_det_units y)
-
 theorem lAbs_one : logAbs (1 : GA E n).val.det = 0 := by
-  have h := lAbs_mul (E := E) (n := n) 1 1
+  have h := DiscreteGroups.T1.G.Dcy.logAbs_det_mul' (E := E) (n := n) 1 1
   rw [mul_one] at h
   linarith
 
 theorem lAbs_pow (k : GA E n) (m : ℕ) : logAbs (k ^ m).val.det = m * logAbs k.val.det := by
   induction m with
   | zero => rw [pow_zero, Nat.cast_zero, zero_mul]; exact lAbs_one
-  | succ m ih => rw [pow_succ, lAbs_mul, ih]; push_cast; ring
+  | succ m ih => rw [pow_succ, DiscreteGroups.T1.G.Dcy.logAbs_det_mul', ih]; push_cast; ring
 
 theorem eq_zero_of_nat_mul_le {a C : ℝ} (h : ∀ m : ℕ, (m : ℝ) * |a| ≤ C) : a = 0 := by
   by_contra ha
@@ -410,8 +406,6 @@ open UpperTheory.V.Z.Tf.GlobalTraceComparison
 open UpperTheory.V.Af.Bc (cPl)
 open scoped Classical
 
-set_option synthInstance.maxHeartbeats 200000
-
 namespace UpperTheory.Zero.ConvolutionTheory.EB
 
 attribute [local instance] borelG borelF borelA borelH
@@ -437,11 +431,11 @@ private theorem typeB_untwist {K : Subgroup (GL (Fin n) (Af E))} {W : Submodule 
   have hψ : ∀ y, ψ.1 y = Complex.exp (-(z * logAbs y.val.det)) * φ.1 y := fun y => by
     rw [h y, mul_comm (ψ.1 y), ← mul_assoc, ← Complex.exp_add, neg_add_cancel, Complex.exp_zero, one_mul]
   refine ⟨fun u hu g => ?_, fun g => ?_⟩
-  · rw [hψ, hψ g, hT.1 u hu g, DiscreteGroups.T1.G.CP.lAbs_mul, lAbs_fin (hK hu), add_zero]
+  · rw [hψ, hψ g, hT.1 u hu g, DiscreteGroups.T1.G.Dcy.logAbs_det_mul', lAbs_fin (hK hu), add_zero]
   · have e : (fun k : Kinf E n => ψ.1 (g * infGL E n (Unitary.toUnits k))) =
         Complex.exp (-(z * logAbs g.val.det)) • fun k : Kinf E n => φ.1 (g * infGL E n (Unitary.toUnits k)) := by
       funext k
-      rw [hψ, DiscreteGroups.T1.G.CP.lAbs_mul, lAbs_inf, add_zero]
+      rw [hψ, DiscreteGroups.T1.G.Dcy.logAbs_det_mul', lAbs_inf, add_zero]
       rfl
     rw [e]
     exact W.smul_mem _ (hT.2 g)

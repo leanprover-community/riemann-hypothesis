@@ -168,9 +168,6 @@ open MeasureTheory Filter Topology PositivityTheory.RgEis GlobalTheory.Companion
 
 namespace GlobalTheory.CompanionTheory.TubeFourier
 
-theorem re_dot_pt_eq_rdot (x y t : ℝ × ℝ) : (dot (pt x y) t).re = rdot x t := by
-  simp [dot, pt, rdot]
-
 theorem integrable_gaussian_plane :
     Integrable (fun y : ℝ × ℝ => Real.exp (-(y.1 ^ 2 + y.2 ^ 2))) (volume : Measure (ℝ × ℝ)) := by
   have h1 : Integrable (fun x : ℝ => Real.exp (-1 * x ^ 2)) := integrable_exp_neg_mul_sq one_pos
@@ -203,7 +200,7 @@ theorem phi_joint_continuous (X : Type) [NormedAddCommGroup X] [NormedSpace ℂ 
     fun_prop
   have hnorm : ∀ y t : ℝ × ℝ, ‖Complex.exp (-dot (pt x y) t)‖ = Real.exp (-rdot x t) := by
     intro y t
-    rw [Complex.norm_exp, Complex.neg_re, re_dot_pt_eq_rdot]
+    rw [Complex.norm_exp, Complex.neg_re, GlobalTheory.CompanionTheory.TubeFourier.re_dot_pt]
   rw [continuous_iff_continuousAt]
   intro p₀
   obtain ⟨U, hU, M, hM⟩ := hb p₀.2
@@ -376,11 +373,6 @@ theorem dot_add_smul (p v : ℂ × ℂ) (τ : ℂ) (t : ℝ × ℝ) :
     dot (p + τ • v) t = dot p t + τ * dot v t := by
   simp [dot]
   ring
-
-theorem norm_cexp_dot (l : ℂ × ℂ) (t : ℝ × ℝ) :
-    ‖Complex.exp (dot l t)‖ = Real.exp (rdot (l.1.re, l.2.re) t) := by
-  rw [Complex.norm_exp]
-  simp [dot, rdot]
 
 theorem norm_dot_le (v : ℂ × ℂ) (t : ℝ × ℝ) :
     ‖dot v t‖ ≤ (‖v.1‖ + ‖v.2‖) * (|t.1| + |t.2|) := by
@@ -642,17 +634,6 @@ theorem dot_pt_eq (x y t : ℝ × ℝ) :
     dot (pt x y) t = ((rdot x t : ℝ) : ℂ) + Complex.I * ((rdot y t : ℝ) : ℂ) := by
   apply Complex.ext <;> simp [dot, pt, rdot]
 
-theorem integrable_gaussian_prod :
-    Integrable (fun y : ℝ × ℝ => Real.exp (-(y.1 ^ 2 + y.2 ^ 2))) := by
-  have h1 : Integrable (fun x : ℝ => Real.exp (-1 * x ^ 2)) := integrable_exp_neg_mul_sq one_pos
-  have h2 := h1.mul_prod h1
-  rw [← Measure.volume_eq_prod] at h2
-  refine h2.congr (Eventually.of_forall fun y => ?_)
-  simp only
-  rw [← Real.exp_add]
-  congr 1
-  ring
-
 theorem phi_eq_smul {X : Type} [NormedAddCommGroup X] [NormedSpace ℂ X] [CompleteSpace X]
     (G : ℂ × ℂ → X) (x t : ℝ × ℝ) :
     phi G x t = Complex.exp (-((rdot x t : ℝ) : ℂ)) •
@@ -680,7 +661,7 @@ theorem inv_phi_eq : ∀ (X : Type) [NormedAddCommGroup X] [NormedSpace ℂ X] [
     ∀ y : ℝ × ℝ, inv (phi G x) (pt x y) = G (pt x y) := by
   intro X _ _ _ G x hc ⟨M, hM⟩ hphic ⟨ε, hε, M', hM'⟩ y
   have hint : Integrable (fun y : ℝ × ℝ => G (pt x y)) :=
-    Integrable.mono' (integrable_gaussian_prod.const_mul M) hc.aestronglyMeasurable
+    Integrable.mono' (GlobalTheory.CompanionTheory.TubeFourier.integrable_gaussian_plane.const_mul M) hc.aestronglyMeasurable
       (Eventually.of_forall fun y => hM y)
   have hdx : ∀ t, dot (pt x 0) t = ((rdot x t : ℝ) : ℂ) := by
     intro t; rw [dot_pt_eq]; simp [rdot]
@@ -762,13 +743,6 @@ theorem shiftFst_bound {Ω : Set (ℝ × ℝ)} {G : ℂ × ℂ → X} (hG : Gaus
     _ = Real.exp ((|a| + |b|) * |t.1| + |c| * |t.2|) * |M₀| *
           Real.exp (-(l.1.im ^ 2 + l.2.im ^ 2)) := by ring
 
-theorem integrable_exp_neg_sq_prod :
-    Integrable (fun y : ℝ × ℝ => Real.exp (-y.1 ^ 2) * Real.exp (-y.2 ^ 2)) := by
-  have h := (integrable_exp_neg_mul_sq one_pos).mul_prod (integrable_exp_neg_mul_sq one_pos)
-  rw [← MeasureTheory.Measure.volume_eq_prod] at h
-  refine h.congr (Filter.Eventually.of_forall fun y => ?_)
-  simp only [neg_mul, one_mul]
-
 theorem shiftFst_integrable {Ω : Set (ℝ × ℝ)} {G : ℂ × ℂ → X} (hG : GaussTube G Ω) {a b c : ℝ}
     (hs : ∀ s ∈ Set.Icc a b, (s, c) ∈ Ω) (t : ℝ × ℝ) {s : ℝ} (hsm : s ∈ Set.Icc a b) :
     Integrable (fun y : ℝ × ℝ => Complex.exp (-dot (pt (s, c) y) t) • G (pt (s, c) y)) := by
@@ -788,7 +762,7 @@ theorem shiftFst_integrable {Ω : Set (ℝ × ℝ)} {G : ℂ × ℂ → X} (hG :
   have hE : Continuous (fun y => Complex.exp (-GlobalTheory.CompanionTheory.TubeFourier.dot (GlobalTheory.CompanionTheory.TubeFourier.pt (s, c) y) t)) :=
     (hpair.comp htp).neg.cexp
   refine MeasureTheory.Integrable.mono'
-    (GlobalTheory.CompanionTheory.TubeFourier.integrable_exp_neg_sq_prod.const_mul M)
+    (GlobalTheory.CompanionTheory.TubeFourier.integrable_gauss_prod.const_mul M)
     (hE.smul hGc).aestronglyMeasurable (Filter.Eventually.of_forall fun y => ?_)
   refine (hM (GlobalTheory.CompanionTheory.TubeFourier.pt (s, c) y) hsm rfl).trans (le_of_eq ?_)
   show M * Real.exp (-(y.1 ^ 2 + y.2 ^ 2)) = M * (Real.exp (-y.1 ^ 2) * Real.exp (-y.2 ^ 2))

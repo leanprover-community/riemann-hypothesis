@@ -72,14 +72,4 @@ def FromBase (Q : Data V) (τ₀ : Gens Q) {W₀ : Type} [CommRing W₀] (ιb : 
       val (τ₀ a b) (toUnit T).left z J' =
         lamVal w (lift (toUnit T ≫ Q.c a) (toUnit T ≫ Q.c b)).left z J J' * val (τ₁ a b) (T.hom ≫ spMap ιb) z J
 
-def UnifOver {o : Type} [CommRing o] {ζ : o} {g n : ℕ} (F : SFam g n ζ) {S : Scheme.{0}} (j : F.X ⟶ S) [IsLocalRing V]
-    (ξ : Sp V ⟶ S) (Q : Data V) : Prop :=
-  IsCN V ∧ ∀ (R' : Type) [CommRing R'] [IsDomain R'] [IsLocalRing R'] (ρ : V →+* R'), IsCN R' → Function.Injective ρ →
-    ρ.Finite → ∀ (D : DegData R' (maximalIdeal R')) (ε : D.toPre.X ≃+ Q.X), Refines Q ρ D.toPre ε →
-      ∃ (G' : Over (Sp R')) (_ : GrpObj G') (_ : IsCommMonObj G') (A : PolAV (Sp (FractionRing R')))
-        (_ : Unif (maximalIdeal R') D A G') (y' : Sp (FractionRing R') ⟶ F.X) (α : A.A.left ⟶ F.univ.A.left)
-        (α₂ : (G2 A.A).left ⟶ (G2 F.univ.A).left),
-        IsSemiAbelian G' ∧ y' ≫ j = jK R' ≫ spMap ρ ≫ ξ ∧ IsGrpPullback A.A F.univ.A y' α ∧
-          IsSquare α α₂ ∧ LBIso (abelian₂ A.A A.L) (F.univ.P.pull α₂)
-
 end GlobalTheory.Poinc.Sep

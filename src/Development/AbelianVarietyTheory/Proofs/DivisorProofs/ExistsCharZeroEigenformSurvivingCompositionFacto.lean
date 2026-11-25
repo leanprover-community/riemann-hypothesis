@@ -299,10 +299,6 @@ end GlobalTheory.DeligneSerre
 
 namespace GlobalTheory.DeligneSerre
 
-end GlobalTheory.DeligneSerre
-
-namespace GlobalTheory.DeligneSerre
-
 theorem unitBall_prime (R : Type) [CommRing R] (l : ℕ) [Fact l.Prime] (χ : R →+* PadicAlgCl l)
     (h : ∀ p, ‖χ p‖ ≤ 1) : ∃ P : Ideal R, P.IsPrime ∧ ∀ p, p ∈ P ↔ ‖χ p‖ < 1 := by
   refine ⟨{ carrier := {p | ‖χ p‖ < 1}, add_mem' := ?_, zero_mem' := ?_, smul_mem' := ?_ }, ?_,

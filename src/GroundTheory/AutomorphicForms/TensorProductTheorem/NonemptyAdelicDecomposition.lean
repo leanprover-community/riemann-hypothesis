@@ -284,12 +284,6 @@ theorem nonempty_decomposition (hirr : Mx.IsIrreducible) (hadm : Mx.IsAdmissible
     isAdmissible₂ := hπ₂adm
     equiv := Φ' }⟩
 
-namespace Decomposition
-
-variable {Mx}
-
-end Decomposition
-
 end GKLModule
 
 end GKTensor
@@ -459,12 +453,6 @@ theorem nonempty_tensorDecomposition {ρ : Representation ℂ (FiniteAdelicGL K 
       (g := e.toMulEquiv.toMonoidHom) (fun x => e.symm_apply_apply x)).trans
       (equivComp Φ e.toMulEquiv.toMonoidHom) }⟩
 
-namespace TensorDecomposition
-
-variable {ρ : Representation ℂ (FiniteAdelicGL K n) V}
-
-end TensorDecomposition
-
 end AdelicGLn
 
 end GroundTheory.Automorphic
@@ -540,12 +528,6 @@ theorem nonempty_adelicDecomposition {V : Type u} [AddCommGroup V] [Module ℂ V
   obtain ⟨D⟩ := Mx.nonempty_decomposition hirr hadm
   obtain ⟨T⟩ := AdelicGLn.nonempty_tensorDecomposition D.isAdmissible₂ D.isIrreducible₂
   exact ⟨⟨D, T⟩⟩
-
-namespace AdelicDecomposition
-
-variable {V : Type u} [AddCommGroup V] [Module ℂ V] {Mx : AdelicGKModule K n V}
-
-end AdelicDecomposition
 
 
 variable (K n) in

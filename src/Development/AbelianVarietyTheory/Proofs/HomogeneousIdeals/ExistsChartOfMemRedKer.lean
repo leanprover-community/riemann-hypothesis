@@ -60,8 +60,6 @@ open TrivSqZeroExt (inl inr)
 
 namespace GlobalTheory.SqZero
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 variable {R : Type} [CommRing R]
 
 section Maps

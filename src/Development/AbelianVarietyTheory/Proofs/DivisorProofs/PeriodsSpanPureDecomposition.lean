@@ -160,9 +160,6 @@ theorem exists_adjoint_similitude : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (
   have hc0 : c ≠ 0 := by
     rintro rfl
     exact hp1 (by simpa using hc)
-  have hk0 : k ≠ 0 := by
-    rintro rfl
-    exact hp1 (by simpa using hk)
   have hcZ : (c : ℤ) ≠ 0 := by exact_mod_cast hc0
 
   have ginj : Function.Injective g := by

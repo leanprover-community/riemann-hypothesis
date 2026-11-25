@@ -230,7 +230,7 @@ theorem exists_jRel [StarRing (𝓞 E)] (hstar : ∀ a : 𝓞 E, star a = H.bar 
       (LB.mulGen t.PP.L _ _ _ _ w' (LB.invGen t.PP.L _ _ w))
       (mulGen_isGen _ _ _ _ _ _ _ hw' (invGen_isGen _ _ _ _ hw)) (fun U _ h => by
         rw [Fintype.prod_sum_type]
-        simp only [Sum.elim_inl, Sum.elim_inr, Pi.neg_apply, zpow_neg, Finset.prod_inv_distrib, mul_inv_cancel])
+        simp only [Sum.elim_inl, Sum.elim_inr, zpow_neg, Finset.prod_inv_distrib, mul_inv_cancel])
     have := jeq_of_VV t x0 (m := m)
       (f := E2 (B'.ad a) (gen 0 : Q S d 2) (gen 1) * E2 ε (gen 0) (ac (AQ B'.A (H.bar a)) (gen 1)))
       (g := E2 (B.ad a) (ac Φ (gen 0)) (ac Φ (gen 1)) * E2 ε (ac (AQ B'.A a) (gen 0)) (gen 1)) fun y J hJ => by

@@ -51,15 +51,7 @@ theorem rk_mulVB_Dcris (c : K₀) {x : V ⊗[Qp] B} (hx : x ∈ Dcris PD ρ) :
 theorem rk_ιV_mul (c : K₀) (y : V ⊗[Qp] B) :
     ιV PD (LL := LL) (V := V) (mulVB (K₀ := K₀) (B := B) (V := V) (LL := LL) c y) =
       mulVdR (K := K) (BdR := BdR) (V := V) (LL := LL) (algebraMap K₀ K c)
-        (ιV PD (LL := LL) (V := V) y) := by
-  induction y using TensorProduct.induction_on with
-  | zero => simp
-  | tmul w b =>
-    simp only [ιV, mulVB, mulVdR, AlgebraTensorModule.map_tmul, LinearMap.id_apply,
-      LinearMap.coe_restrictScalars, AlgHom.toLinearMap_apply, LinearMap.mulLeft_apply, map_mul,
-      AlgHom.commutes]
-    rw [← IsScalarTower.algebraMap_apply K₀ K BdR]
-  | add x y hx hy => simp only [map_add (f := _), hx, hy]
+        (ιV PD (LL := LL) (V := V) y) := Formalism.MainNotions.UnusedSlot80.UnivC.ιV_mul c y
 
 theorem rk_mulVdR_FilV (c : K) (a : ℤ) {y : V ⊗[Qp] BdR} (hy : y ∈ FilV PD (LL := LL) (V := V) a) :
     mulVdR (K := K) (BdR := BdR) (V := V) (LL := LL) c y ∈ FilV PD (LL := LL) (V := V) a := by

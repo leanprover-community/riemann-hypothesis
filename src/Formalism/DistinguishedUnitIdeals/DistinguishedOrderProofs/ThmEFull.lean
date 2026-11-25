@@ -576,10 +576,6 @@ theorem cob_sum (L : Lat B n V) {ι : Type} (s : Finset ι) (y z : ι → ZMod n
   exact cob_add L (h c (Finset.mem_insert_self c s))
     (ih fun c' hc' => h c' (Finset.mem_insert_of_mem hc'))
 
-theorem lc_pow (B : Base O) (k : ℕ) : B.lc ^ k = C ((B.ℓ : O) ^ k) := by
-  unfold Base.lc
-  rw [map_pow]
-
 end
 
 theorem combine {O : Type} [CommRing O] {n : ℕ} {V₁ V₂ : Type} [AddCommGroup V₁]
@@ -637,7 +633,7 @@ theorem thmE_of (h1 : RhoExists) (h2 : RhoLin) (h3 : RhoFun) (h4 : Step1) : ThmE
       hZsmul (ac c) (Y1 c, Z1 c) (hZrho c hc (W1 c) (hW1 c hc) (Y1 c) (Z1 c) (hR c hc))
   · have e : 2 * rr + 4 * sig + 2 * a₀ + 2 * kap =
         (rr + 2 * sig + 2 * a₀ + 2 * kap) + (rr + 2 * sig) := by ring
-    simp only [lc_pow] at hcob ⊢
+    simp only [Formalism.ExponentWindows.E.IteratedPhiHomomorphisms.lc_pow] at hcob ⊢
     simp only [Prod.fst_sum, Prod.snd_sum]
     rw [e, combine h.f Cu.cuts (B.ℓ : O) _ (rr + 2 * sig) (rr + 2 * sig + 2 * a₀ + 2 * kap) rfl
         ac mc ham κ.1 yc Y1,

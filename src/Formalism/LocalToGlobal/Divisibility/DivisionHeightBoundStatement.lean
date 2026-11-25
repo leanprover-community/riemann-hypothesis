@@ -338,10 +338,6 @@ open Formalism.LatticeIndexTer (ph)
 
 namespace UniformCovolumeTail
 
-end UniformCovolumeTail
-
-namespace UniformCovolumeTail
-
 
 
 theorem stepDiSharp (J Pl Emb : Type) [Fintype J] [Fintype Pl] [Fintype Emb] [Nonempty Emb] (r : ℕ)
@@ -1006,10 +1002,6 @@ namespace Formalism.DivisionValues
 
 namespace DivisorInequalityBounds
 
-end DivisorInequalityBounds
-
-namespace DivisorInequalityBounds
-
 theorem eKaux (C0 f N La m L e : ℝ) (hC0 : 1 ≤ C0) (hf : 1 ≤ f) (hN : 1 ≤ N)
     (h : e ≤ C0 * (f * N ^ 2 * La + f * m ^ 3 * N ^ 2 * L)) :
     e ≤ C0 * (f * N ^ 2 * (La + 1) + f * m ^ 3 * N ^ 2 * L) := by
@@ -1064,46 +1056,6 @@ end DivisorInequalityBounds
 
 theorem divisor_inequality_explicit : DivIneqRecord := DivisorInequalityBounds.divIneqRecord_of divisor_inequality
 
-section Rho
-
-open Formalism.DivisionValues.RationalHermitianForm Formalism.DivisionValues.StepBAux Formalism.DivisionValues.ConjugateWeightGram
-
-namespace DivisorInequalityBounds
-
-section LocalW
-
-variable {K : Type} [Field K] [NumberField K] [StarRing K]
-
-end LocalW
-
-end DivisorInequalityBounds
-
-namespace DivisorInequalityBounds
-
-end DivisorInequalityBounds
-
-end Rho
-
-namespace DivisorInequalityBounds
-
-end DivisorInequalityBounds
-
-
-namespace DivisorInequalityBounds
-
-end DivisorInequalityBounds
-
-namespace DivisorInequalityBounds
-
-end DivisorInequalityBounds
-
-namespace DivisorInequalityBounds
-
-end DivisorInequalityBounds
-
-namespace DivisorInequalityBounds
-
-end DivisorInequalityBounds
 
 end Formalism.DivisionValues
 end -- clump:auto
@@ -1321,14 +1273,6 @@ theorem chain_coupled_bound : ChainCB := by
       Real.log_le_log (pow_pos (hjpos j v) 2) (pow_le_pow_left₀ (hjpos j v).le (hop j v) 2))
     rw [← Real.log_prod (fun j _ => pow_ne_zero 2 (hjpos j v).ne'), Finset.prod_pow]
     exact Real.log_le_log (pow_pos (hpos v) 2) (pow_le_pow_left₀ (hpos v).le (key v) 2)
-
-namespace CB
-
-end CB
-
-namespace CB
-
-end CB
 
 end Formalism.DimensionVariation
 end -- clump:auto

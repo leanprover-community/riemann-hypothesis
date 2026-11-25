@@ -1437,11 +1437,6 @@ theorem p'_unit (hS : HidaSetting a a' ϖ α β ν) (hν : IsUnram ν) (hα : Is
 end Clauses2
 end PositivityTheory.ThK.SplitLoc.Unr
 
-namespace PositivityTheory.ThK.SplitLoc
-
-open Unr GlobalTheory.SplitFlip GlobalTheory.SplitWeil
-
-end PositivityTheory.ThK.SplitLoc
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

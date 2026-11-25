@@ -62,14 +62,6 @@ theorem weylDim_eq_prod_Ioi (n : ℕ) (lam : Fin n → ℤ) :
   push_cast
   rfl
 
-theorem finiteDimensional_nablaSq (K : Type) [Field K] (n : ℕ) (lam : DomWeight n) :
-    FiniteDimensional K (nablaSq K n lam) := by
-  obtain ⟨b, ⟨-, hb, -⟩, -⟩ := Formalism.GradedWeylDivisibility.sSBasis K n n lam.natW
-  have : Finite (Formalism.GradedWeylDivisibility.ssIdx n n lam.natW) := (Formalism.GradedWeylDivisibility.sSIdxFinite n n _).to_subtype
-  unfold nablaSq
-  rw [← hb]
-  exact FiniteDimensional.span_of_finite K (Set.finite_range b)
-
 theorem finrank_nablaSq (K : Type) [Field K] (n : ℕ) (lam : DomWeight n) :
     (Module.finrank K (nablaSq K n lam) : ℚ) = Formalism.CountingSumsFrames.weylDim n lam.w := by
   refine (Formalism.L2.G.Model.weyl_dualWeyl K n lam.natW (factNatW n lam).1).trans ?_

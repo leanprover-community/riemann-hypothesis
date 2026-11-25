@@ -16,26 +16,14 @@ theorem tprod_tail_cut : ∀ (ι : Type) [DecidableEq ι] (a : ι → ℝ) (S S'
     Summable (fun v => |a v - 1|) → S ⊆ S' →
       ∏' v : {v // v ∉ S}, a v.1 = (∏ v ∈ S' \ S, a v) * ∏' v : {v // v ∉ S'}, a v.1 := by
   intro ι _ a S S' hsum hSS'
-  have hmul : ∀ T : Set ι, Multipliable (T.mulIndicator a) := by
-    intro T
-    have hs : Summable fun v => ‖T.mulIndicator a v - 1‖ := by
-      refine Summable.of_nonneg_of_le (fun v => norm_nonneg _) (fun v => ?_) hsum
-      by_cases hv : v ∈ T
-      · simp [Set.mulIndicator_of_mem hv, Real.norm_eq_abs]
-      · simp [Set.mulIndicator_of_notMem hv]
-    have h := multipliable_one_add_of_summable hs
-    simpa using h
-  have e1 : (∏' v : {v // v ∉ S}, a v.1) = ∏' v, Set.mulIndicator {v | v ∉ S} a v :=
-    tprod_subtype {v | v ∉ S} a
-  have e2 : (∏' v : {v // v ∉ S'}, a v.1) = ∏' v, Set.mulIndicator {v | v ∉ S'} a v :=
-    tprod_subtype {v | v ∉ S'} a
-  have hdis : Disjoint (↑(S' \ S) : Set ι) {v | v ∉ S'} :=
-    Set.disjoint_left.mpr fun v hv hv' => hv' (Finset.mem_sdiff.mp hv).1
-  have hunion : (↑(S' \ S) : Set ι) ∪ {v | v ∉ S'} = {v | v ∉ S} := by
-    ext v
-    simp only [Set.mem_union, Finset.mem_coe, Finset.mem_sdiff, Set.mem_ofPred_eq]
-    grind
-  rw [e1, e2, ← hunion, Set.mulIndicator_union_of_disjoint hdis,
-    Multipliable.tprod_mul (hmul _) (hmul _), ← prod_eq_tprod_mulIndicator]
+  have htail : Multipliable (fun v : {v // v ∉ S'} => a v.1) := by
+    simpa [Function.comp_def] using
+      Real.multipliable_one_add_of_summable (hsum.of_abs.subtype (· ∉ S'))
+  have hd : Disjoint (↑(S' \ S) : Set ι) (↑S')ᶜ :=
+    Set.disjoint_compl_right_iff_subset.mpr Finset.sdiff_subset
+  have h := HasProd.mul_disjoint hd ((S' \ S).hasProd a) htail.hasProd
+  rw [Finset.coe_sdiff, ← compl_sdiff_compl,
+    Set.sdiff_union_of_subset (Set.compl_subset_compl.mpr (Finset.coe_subset.mpr hSS'))] at h
+  exact h.tprod_eq
 
 end GlobalTheory.CompanionTheory.SW.TailCut

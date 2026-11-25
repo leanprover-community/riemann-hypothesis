@@ -7,5 +7,5 @@ import Mathlib.Tactic.Linter.Style
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.CapelliIdentity₂.intRing :
-    (p : ℕ) → [inst : Fact (Nat.Prime p)] → Subring ℂ_[p] :=
+    (p : ℕ) → [Fact (Nat.Prime p)] → Subring ℂ_[p] :=
   fun p _ => UpperTheory.Reformulated.B.ClosedUnitBallSubring.ballRing ℂ_[p]

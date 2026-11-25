@@ -1050,7 +1050,7 @@ open CategoryTheory Limits AlgebraicGeometry MvPolynomial CrystallineSemistableC
 
 namespace UpperTheory.Gal.KunnethLefschetz.G
 
-private theorem stdC (A : Type) [CommRing A] (D : ℕ) :
+theorem stdC (A : Type) [CommRing A] (D : ℕ) :
     (MvPolynomial.C : A →+* MvPolynomial (Fin D) A).IsStandardSmoothOfRelativeDimension D := by
   let P₀ : Algebra.Presentation A (MvPolynomial (Fin D) A) (Fin D) Empty :=
     { __ := Algebra.Generators.mvPolynomial A (Fin D)
@@ -1217,7 +1217,7 @@ private theorem std_pres {R B : Type} [CommRing R] [CommRing B] (f : R →+* B) 
   rw [e]
   exact RingHom.isStandardSmoothOfRelativeDimension_respectsIso.1 _ _ (stdC R d)
 
-private theorem etale_chart {A E B : Type} [CommRing A] [CommRing E] [CommRing B] {D : ℕ}
+theorem etale_chart {A E B : Type} [CommRing A] [CommRing E] [CommRing B] {D : ℕ}
     (p : A →+* E) (ψ : E →+* B) (s : Fin D → E) (y : Fin D → B) (j : Fin D)
     (hφ : (eval₂Hom p s).Etale)
     (surj : Function.Surjective (eval₂Hom ψ y))
@@ -1331,7 +1331,7 @@ private theorem etale_chart {A E B : Type} [CommRing A] [CommRing E] [CommRing B
     RingHom.isStableUnderCobaseChange_toMorphismProperty_iff.2 RingHom.Etale.isStableUnderBaseChange
   exact (RingHom.toMorphismProperty @RingHom.Etale).of_isPushout hpo hφ
 
-private theorem ofPts {X Y : Scheme.{0}} (f : X ⟶ Y) (n : ℕ)
+theorem ofPts {X Y : Scheme.{0}} (f : X ⟶ Y) (n : ℕ)
     (H : ∀ x : X, ∃ O : X.Opens, x ∈ O ∧ SmoothOfRelativeDimension n (O.ι ≫ f)) :
     SmoothOfRelativeDimension n f := by
   have hL : IsZariskiLocalAtSource (@SmoothOfRelativeDimension.{0} n) :=
@@ -1341,7 +1341,7 @@ private theorem ofPts {X Y : Scheme.{0}} (f : X ⟶ Y) (n : ℕ)
   refine (IsZariskiLocalAtSource.iff_of_iSup_eq_top (P := @SmoothOfRelativeDimension n) O ?_).2 hO
   exact top_le_iff.1 fun x _ => TopologicalSpace.Opens.mem_iSup.2 ⟨x, hx x⟩
 
-private theorem chart {X Y : Scheme.{0}} (f : X ⟶ Y) (n : ℕ) {U : Y.Opens} {V : X.Opens}
+theorem chart {X Y : Scheme.{0}} (f : X ⟶ Y) (n : ℕ) {U : Y.Opens} {V : X.Opens}
     (hU : IsAffineOpen U) (hV : IsAffineOpen V) (e : V ≤ f ⁻¹ᵁ U)
     (h : RingHom.IsStandardSmoothOfRelativeDimension n (f.appLE U V e).hom) :
     SmoothOfRelativeDimension n (V.ι ≫ f) := by

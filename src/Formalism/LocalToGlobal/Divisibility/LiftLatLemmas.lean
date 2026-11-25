@@ -707,14 +707,6 @@ namespace Formalism.L2.DIV.LiftTest
 
 end Formalism.L2.DIV.LiftTest
 
-namespace Formalism.L2.DIV
-
-namespace BlockDat
-
-end BlockDat
-
-end Formalism.L2.DIV
-
 namespace Formalism.L2.DIV.LiftTest
 
 end Formalism.L2.DIV.LiftTest

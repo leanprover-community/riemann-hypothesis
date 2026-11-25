@@ -1147,10 +1147,10 @@ theorem deltaTerm_eq : ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) (
   intro p τ k Q hp hk
   have hN' : (N : ℝ) ≠ 0 := by exact_mod_cast hN.ne'
   have hSh : ∑ σ, Sh j σ (pk τ k * Q) = k * degFl (pkLow j τ (k - 1) * Q) := by
-    rw [Finset.sum_congr rfl (fun σ _ => (_root_.GlobalTheory.CompanionTheory.Ar.Top.sh_tot_pk_mul Ψ N j τ σ k Q hk).1)]
+    rw [Finset.sum_congr rfl (fun σ _ => (_root_.RootFieldNumerics.shift_power_sum_mul Ψ N j τ σ k Q hk).1)]
     simp
   have hTot : ∑ σ, Tot σ (pk τ k * Q) = if k = 1 then N * degFl Q else 0 := by
-    rw [Finset.sum_congr rfl (fun σ _ => (_root_.GlobalTheory.CompanionTheory.Ar.Top.sh_tot_pk_mul Ψ N j τ σ k Q hk).2)]
+    rw [Finset.sum_congr rfl (fun σ _ => (_root_.RootFieldNumerics.shift_power_sum_mul Ψ N j τ σ k Q hk).2)]
     by_cases h1 : k = 1 <;> simp [h1]
   rw [hSh, hTot]
   by_cases h1 : k = 1
@@ -1278,7 +1278,7 @@ theorem exists_finite_identity (II : IntersectionSystem) (T : RootTower Ψ N) (h
           ∑ p ∈ (Finset.Ioc B₀ B).filter (fun p => p.Prime ∧ p ∉ T.bad), restTerm T.j p (frob p τ) k Q) + E B := by
   have hN : 2 ≤ N := by have := T.j_pos; have := T.j_lt; omega
   obtain ⟨κ, hκ⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Top.deltaTerm_eq Ψ N T.j frob T.j_lt.le (by omega) hshape
-  obtain ⟨-, hSh, hTot, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Top.degFl_Sh_Tot_linear Ψ N
+  obtain ⟨-, hSh, hTot, -⟩ := _root_.RootFieldNumerics.degFl_Sh_Tot_linear_and_degFl_eq_zero_off_dim Ψ N
   choose ΦS hΦS using hSh
   choose ΦT hΦT using hTot
   obtain ⟨C, B₁, hC⟩ := hBA
@@ -1345,16 +1345,16 @@ theorem GlobalTheory.CompanionTheory.Ar.Top.exists_identAt : ∀ II : Intersecti
     obtain ⟨E₁, hE₁, h₁⟩ := hid τ₀ 1 le_rfl (by omega) Q₁ hQ₁'
     obtain ⟨E₂, hE₂, h₂⟩ := hid τ₀ 2 (by omega) hN Q₂ hQ₂'
     have hn : ∑ σ, Tot σ (pk τ₀ 1 * Q₁) ≠ 0 := by
-      have h5 := fun σ => (_root_.GlobalTheory.CompanionTheory.Ar.Top.sh_tot_pk_mul Ψ N T.j τ₀ σ 1 Q₁ le_rfl).2
+      have h5 := fun σ => (_root_.RootFieldNumerics.shift_power_sum_mul Ψ N T.j τ₀ σ 1 Q₁ le_rfl).2
       simp only [h5, hd₁]
       simp
       omega
     have hs₂ : ∑ σ, Sh T.j σ (pk τ₀ 2 * Q₂) ≠ 0 := by
-      have h5 := fun σ => (_root_.GlobalTheory.CompanionTheory.Ar.Top.sh_tot_pk_mul Ψ N T.j τ₀ σ 2 Q₂ (by omega)).1
+      have h5 := fun σ => (_root_.RootFieldNumerics.shift_power_sum_mul Ψ N T.j τ₀ σ 2 Q₂ (by omega)).1
       simp only [h5]
       simp [hd₂]
     have ht₂ : ∑ σ, Tot σ (pk τ₀ 2 * Q₂) = 0 := by
-      have h5 := fun σ => (_root_.GlobalTheory.CompanionTheory.Ar.Top.sh_tot_pk_mul Ψ N T.j τ₀ σ 2 Q₂ (by omega)).2
+      have h5 := fun σ => (_root_.RootFieldNumerics.shift_power_sum_mul Ψ N T.j τ₀ σ 2 Q₂ (by omega)).2
       simp [h5]
     obtain ⟨A₀, b₀, ha, hb⟩ := tendsto_coeffs_of_tests hvol.ne' hn hs₂ ht₂
       (hrest τ₀ 1 Q₁) (hrest τ₀ 2 Q₂) hE₁ hE₂ h₁ h₂

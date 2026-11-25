@@ -581,7 +581,3 @@ theorem locSec : NFRadRedS.LocSec := by
   exact pt hz hz' hT hsec ha₀ hgl hG hg.2
 
 end Formalism.FourierDecayAlt.P.NFRadRedLocSec
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

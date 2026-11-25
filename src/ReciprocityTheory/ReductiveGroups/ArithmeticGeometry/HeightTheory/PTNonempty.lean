@@ -20,33 +20,18 @@ namespace ReciprocityTheory.ChartRestriction.G.T0
 
 open NumberField Cardinal
 
-private lemma countable_of_intermediateField_fg {K Ω : Type} [Field K] [Countable K] [Field Ω] [Algebra K Ω]
-    (hfg : (⊤ : IntermediateField K Ω).FG) : Countable Ω := by
-  obtain ⟨S, hS⟩ := hfg
-  haveI : Countable (MvPolynomial (S : Set Ω) K) := by
-    first
-    | infer_instance
-  let f : MvPolynomial (S : Set Ω) K × MvPolynomial (S : Set Ω) K → Ω := fun pq =>
-    MvPolynomial.aeval (fun x : (S : Set Ω) => (x : Ω)) pq.1 /
-      MvPolynomial.aeval (fun x : (S : Set Ω) => (x : Ω)) pq.2
-  have hf : Function.Surjective f := by
-    intro x
-    have hx : x ∈ IntermediateField.adjoin K (S : Set Ω) := by
-      rw [hS]; exact IntermediateField.mem_top
-    obtain ⟨r, hr, t, ht, rfl⟩ := (IntermediateField.mem_adjoin_iff_div).mp hx
-    rw [Algebra.adjoin_eq_range] at hr ht
-    obtain ⟨p, rfl⟩ := hr
-    obtain ⟨q, rfl⟩ := ht
-    exact ⟨(p, q), rfl⟩
-  exact hf.countable
-
 theorem exists_embedding_over {K Ω : Type} [Field K] [NumberField K] [Field Ω] [Algebra K Ω]
     (hfg : (⊤ : IntermediateField K Ω).FG) (sg : K →+* ℂ) :
     ∃ P : Ω →+* ℂ, P.comp (algebraMap K Ω) = sg := by
   haveI hKc : Countable K := by
     first
     | exact (Module.finBasis ℚ K).equivFun.injective.countable
-  haveI hΩc : Countable Ω := countable_of_intermediateField_fg hfg
+  haveI hΩc : Countable Ω := by
+    obtain ⟨S, hS⟩ := hfg
+    refine Cardinal.mk_le_aleph0_iff.mp ?_
+    rw [Cardinal.mk_congr (IntermediateField.topEquiv (F := K) (E := Ω)).toEquiv.symm, ← hS]
+    exact (IntermediateField.cardinalMk_adjoin_le K (S : Set Ω)).trans
+      (sup_le (sup_le Cardinal.mk_le_aleph0 (Cardinal.finset_card_lt_aleph0 S).le) le_rfl)
   letI : Algebra K ℂ := sg.toAlgebra
   haveI : FaithfulSMul K ℂ := by
     first

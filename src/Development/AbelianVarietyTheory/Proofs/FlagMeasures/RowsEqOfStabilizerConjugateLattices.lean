@@ -78,12 +78,10 @@ theorem dual_symm (hh : ∀ x y, star (h x y) = h y x) {e c : Fin r → V}
 
 theorem pair_sum_e {e c : Fin r → V} (hd : ∀ a b, h (c a) (e b) = if a = b then 1 else 0)
     (s : Fin r → K) (b : Fin r) : h (c b) (∑ a, s a • e a) = s b := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp [map_sum, map_smul, hd, Finset.sum_ite_eq]
 
 theorem pair_sum_zero {x : V} {c : Fin r → V} (H : ∀ a, h x (c a) = 0) (s : Fin r → K) :
     h x (∑ a, s a • c a) = 0 := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp [map_sum, map_smul, H]
 
 theorem coord {e c : Fin r → V} (hd : ∀ a b, h (c a) (e b) = if a = b then 1 else 0) {v : V}
@@ -113,7 +111,6 @@ variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V]
 
 theorem pair_first (s : Fin r → K) (e : Fin r → V) (y : V) :
     h (∑ a, s a • e a) y = ∑ a, star (s a) * h (e a) y := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp [map_sum, LinearMap.map_smulₛₗ, starRingEnd_apply]
 
 theorem P_iso (hh : ∀ x y, star (h x y) = h y x) {e : Fin r → V} (hee : ∀ a b, h (e a) (e b) = 0)

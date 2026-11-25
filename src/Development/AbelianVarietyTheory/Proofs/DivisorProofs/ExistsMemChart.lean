@@ -73,8 +73,6 @@ instance algebra : Algebra ℚ Γ(ratFibre p, ⊤) := algebraΓOfHom (snd p)
 theorem isPullback : IsPullback (fst p) (snd p) (p ≫ spMap (Int.castRingHom k))
     (spMap (Int.castRingHom ℚ)) := IsPullback.of_hasPullback _ _
 
-theorem strHom_eq : strHom ℚ (ratFibre p) = snd p := GlobalTheory.strHom_eq fun _ => rfl
-
 end ratFibre
 
 

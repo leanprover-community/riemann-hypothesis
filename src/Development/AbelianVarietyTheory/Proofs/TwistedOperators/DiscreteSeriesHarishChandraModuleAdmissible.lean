@@ -122,8 +122,6 @@ open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
 open GlobalTheory.ArchRec
 
-theorem _root_.GlobalTheory.T.exists_fockPolynomialIso_graded_isometry : ∀ (p q r s a b : ℕ) (ε : Fin a → Bool) (ε' : Fin b → Bool) (e : Ix p q ≃ Fin a) (e' : Ix r s ≃ Fin b), SignCompat ε e → SignCompat ε' e' → ∃ κ : LPol b a ≃ₗ[ℂ] Pol p q r s, IsPolyIso ε ε' e e' κ ∧ Graded κ ∧ ∀ P Q, fockIp (κ P) (κ Q) = fockIp P Q := by
-  first | exact @GlobalTheory.ArchRec.SignedRename.exists_isPolyIso_graded_isometry
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsFockPolynomialIsoGradedIsometryStatement =====
@@ -465,8 +463,6 @@ open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
 open GlobalTheory.ArchRec
 
-theorem _root_.GlobalTheory.T.fockVectors_matrixCoefficients_eq_fockRepresentation : ∀ (p q r s n : ℕ) (T₀ : GrpData (p * r + q * s) (p * s + q * r)) (T₁ : GrpData p q) (T₂ : GrpData r s) (F : FockData T₀ T₁ T₂) (ι Z : Type) (G fr : Mn n) (ε : Fin n → Bool) (br : Bool) (e : Ix p q ≃ Fin n) (A : Mn n → (Z → ℂ) → (Z → ℂ)) (pt : MvPolynomial ι ℂ → (Z → ℂ)) (ip : (Z → ℂ) → (Z → ℂ) → ℂ) (Θ : Submodule ℂ (Z → ℂ)) (κ : MvPolynomial ι ℂ ≃ₗ[ℂ] Pol p q r s) (c : ℚ) (m : ℤ) (N : ℝ), 1 ≤ p + q → IsUnit fr → frᴴ * Formalism.REAL.Jm ε * fr = G → SignCompat ε e → (m : ℚ) = 2 * c → Side A pt κ (phiFr fr br e) c (fockAct1 p q r s) → L2UnitaryRepresentationData G A pt ip Θ → Fischer pt ip κ N → Coef F A pt ip κ (phiFr fr br e) m N := by
-  first | exact @GlobalTheory.ArchRec.FockCoef.coef_of_side
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockVectorsMatrixCoefficientsEqFockRepresentatioStatement =====
@@ -488,8 +484,6 @@ open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
 open GlobalTheory.ArchRec
 
-theorem _root_.GlobalTheory.T.fockVectors_realPlace_act_as_fockPolynomials : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D) (ω : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)) (τ : D.what₂.Tau), IsInfFam θ → ∀ (sS frS : Mn S.rank) (εS : Fin S.rank → Bool) (sT frT : Mn T.rank) (εT : Fin T.rank → Bool), IsFrameOf (gramAt D S τ) sS εS frS → IsFrameOf (gramAt D T τ) sT εT frT → ∀ (aS aT : ℚ) (pt : LPol T.rank S.rank →ₗ[ℂ] (WO S T → ℂ)), Function.Injective pt → LieAt ψ θ τ ω εS frS εT frT aS aT pt → ∀ (p q r s : ℕ) (e : Ix p q ≃ Fin S.rank) (e' : Ix r s ≃ Fin T.rank), SignCompat εS e → SignCompat εT e' → ∀ κ : LPol T.rank S.rank ≃ₗ[ℂ] Pol p q r s, IsPolyIso εS εT e e' κ → Side (actSrc θ ω τ) pt κ (phiFr frS true e) aT (fockAct1 p q r s) ∧ Side (actTgt θ ω τ) pt κ (phiFr frT false e') aS (fockAct2 p q r s) := by
-  first | exact @GlobalTheory.ArchRec.SideAt.side_at
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockVectorsRealPlaceActAsFockPolynomialsStatement =====
@@ -511,8 +505,6 @@ open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
 open GlobalTheory.ArchRec
 
-theorem _root_.GlobalTheory.T.lieAlgebrasAtPlace_act_fockVectors_by_fockOperators : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D) (χS χT : (AE D)ˣ →* Circle) (ω : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)) (τ : D.what₂.Tau), IsInfFam θ → IsWeilDatumO ψ S T χS χT ω → ∀ aS aT : ℚ, HasInfExp D χS τ aS → HasInfExp D χT τ aT → ∀ (sS frS : Mn S.rank) (εS : Fin S.rank → Bool) (sT frT : Mn T.rank) (εT : Fin T.rank → Bool), IsFrameOf (gramAt D S τ) sS εS frS → IsFrameOf (gramAt D T τ) sT εT frT → ∀ f, IsThetaFunO ψ S T f → IsFockVacAt (heisO ψ S T) θ τ (cplxO sS sT) f → LieAt ψ θ τ ω εS frS εT frT aS aT (ptAt ψ θ S T τ sS sT frS⁻¹ frT⁻¹ f) := by
-  first | exact @GlobalTheory.ArchRec.LieAtPlace.lieAt_of_vacAt
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.LieAlgebrasAtPlaceActFockVectorsByFockOperatorsStatement =====
@@ -748,17 +740,6 @@ open GlobalTheory.ArchRec
 
 namespace GlobalTheory.ArchRec.NoLiftTransfer
 
-theorem conj_trace {p q : ℕ} {Z : Mat p q} (hZ : Z ∈ upq p q) : (starRingEnd ℂ) Z.trace = -Z.trace := by
-  have h : Zᴴ * Jm p q + Jm p q * Z = 0 := hZ
-
-  have h2 : Jm p q * Zᴴ * Jm p q + Z = 0 := by
-    have h' := congrArg (fun X => Jm p q * X) h
-    simpa [mul_add, ← mul_assoc, _root_.GlobalTheory.RealPar.KStabLie.Jm_sq] using h'
-  have h3 : (Jm p q * Zᴴ * Jm p q).trace + Z.trace = 0 := by rw [← Matrix.trace_add, h2, Matrix.trace_zero]
-  rw [Matrix.trace_mul_comm, ← mul_assoc, _root_.GlobalTheory.RealPar.KStabLie.Jm_sq, one_mul, Matrix.trace_conjTranspose] at h3
-  rw [starRingEnd_apply]
-  exact eq_neg_of_add_eq_zero_left h3
-
 def invConj {A B : Type} [AddCommGroup A] [Module ℂ A] [AddCommGroup B] [Module ℂ B] (u : A → B)
     (hb : Function.Bijective u) (hadd : ∀ x y, u (x + y) = u x + u y)
     (hsmul : ∀ (z : ℂ) x, u (z • x) = conj z • u x) : B →ₛₗ[starRingEnd ℂ] A where
@@ -795,7 +776,7 @@ theorem noLift_of_pairNo : ∀ (D : D7) (V : HSp D) (S : D.what₂.Tau → SPar)
     intro Y hY P x
     set t : ℂ := (c₁ : ℂ) * Y.trace with ht_def
 
-    have ht : conj t = -t := by rw [ht_def, map_mul, conj_trace hY, map_ratCast, mul_neg]
+    have ht : conj t = -t := by rw [ht_def, map_mul, GlobalTheory.Chain.RealIt.LocalFromCover.trace_conj hY, map_ratCast, mul_neg]
     have hX : phiFr (M.fr τ) b₁ e₁ Y ∈ lieAt V τ := by rw [← hK.lie]; exact ⟨Y, hY, rfl⟩
     have hpol : PolDer A pt (phiFr (M.fr τ) b₁ e₁ Y) (κ.symm P) (κ.symm (a₁ Y P + t • P)) :=
       (hS.der Y hY _ _).2 (by simp only [LinearEquiv.apply_symm_apply, ht_def])
@@ -862,8 +843,6 @@ open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
 open GlobalTheory.ArchRec
 
-theorem _root_.GlobalTheory.T.noThetaTensorIntertwiner_lowerTowerMembers : ∀ (X : ProvA), DiscreteSeriesBlattner X → admQ5 X → ∀ (t : ℕ) (al be ga de : List ℚ), HypA t al be ga de → ∀ i : ℕ, 1 ≤ i → (i ≤ al.length + de.length + t → i ≤ ga.length + be.length → TensNo (fockAct1 _ _ (al.length + de.length + t - i) (ga.length + be.length - i)) (fockAct2 _ _ _ _) (X.ds _ _ (lamA al be ga de))) ∧ ((∀ x ∈ al ++ be ++ ga ++ de, ((t : ℚ) + 3) / 2 ≤ |x|) → i ≤ al.length + be.length → i ≤ ga.length + de.length → TensNo (fockAct2 (al.length + be.length - i) (ga.length + de.length - i) _ _) (fockAct1 _ _ _ _) (X.ds _ _ (lamA' t al be ga de))) := by
-  first | exact @GlobalTheory.LowerTower.no_map_lower
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.NoThetaTensorIntertwinerLowerTowerMembersStatement =====
@@ -1000,8 +979,6 @@ open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
 open GlobalTheory.ArchRec
 
-theorem _root_.GlobalTheory.T.realPlaceGroups_act_unitarily_weakly_on_theta : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D) (χS χT : (AE D)ˣ →* Circle) (ω : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)) (τ : D.what₂.Tau), IsInfFam θ → IsWeilDatumO ψ S T χS χT ω → ∀ (frS : Mn S.rank) (εS : Fin S.rank → Bool) (frT : Mn T.rank) (εT : Fin T.rank → Bool) (aS aT : ℚ) (pt : LPol T.rank S.rank →ₗ[ℂ] (WO S T → ℂ)), (∀ P, IsThetaFunO ψ S T (pt P)) → LieAt ψ θ τ ω εS frS εT frT aS aT pt → ∀ (μ : Measure (WO S T)) (𝓕 : Set (WO S T)), μ.IsAddHaarMeasure → IsAddFundamentalDomain (ratL T S) 𝓕 μ → ∃ Θ, L2UnitaryRepresentationData (gramAt D S τ) (actSrc θ ω τ) pt (ipTh μ 𝓕) Θ ∧ L2UnitaryRepresentationData (gramAt D T τ) (actTgt θ ω τ) pt (ipTh μ 𝓕) Θ := by
-  first | exact @GlobalTheory.ThetaL2InnerProduct.exists_l2_unitary_theta_of_fundamentalDomain
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.RealPlaceGroupsActUnitarilyWeaklyOnThetaStatement =====
@@ -1013,13 +990,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum
 
-namespace GlobalTheory.ArchRec
-
-theorem itLine_of_hypotheses :
-    GlobalTheory.Published.DiscreteSeriesCover → GlobalTheory.Published.HarishChandraModules → ∀ D : D7, GlobalTheory.Chain.ItLine D :=
-  GlobalTheory.T.realThetaIntertwiners_proportional_of_discreteSeries
-
-end GlobalTheory.ArchRec
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.RealThetaIntertwinersProportionalOfHarishChandra =====
@@ -1041,8 +1011,6 @@ open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
 open GlobalTheory.ArchRec
 
-theorem _root_.GlobalTheory.T.realThetaIntertwiners_proportional_of_harishChandra : GlobalTheory.Published.DiscreteSeriesCover → GlobalTheory.Published.HarishChandraModules → ∀ D : D7, GlobalTheory.Chain.ItLine D := by
-  first | exact @GlobalTheory.ArchRec.itLine_of_hypotheses
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.RealThetaIntertwinersProportionalOfHarishChandraStatement =====
@@ -1064,8 +1032,6 @@ open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
 open GlobalTheory.ArchRec
 
-theorem _root_.GlobalTheory.T.signCompatibleNumbering_of_wittTower_lower : ∀ (D : D7) (T T' : HSp D) (i : ℕ) (τ : D.what₂.Tau) (fr : Mn T.rank) (ε : Fin T.rank → Bool) (fr' : Mn T'.rank) (ε' : Fin T'.rank → Bool) (r s : ℕ) (e : Ix r s ≃ Fin T.rank), IsWittLower T T' i → frᴴ * Formalism.REAL.Jm ε * fr = gramAt D T τ → IsUnit fr → fr'ᴴ * Formalism.REAL.Jm ε' * fr' = gramAt D T' τ → IsUnit fr' → SignCompat ε e → i ≤ r ∧ i ≤ s ∧ ∃ e' : Ix (r - i) (s - i) ≃ Fin T'.rank, SignCompat ε' e' := by
-  first | exact @GlobalTheory.WittSign.signCompat_of_isWittLower
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.SignCompatibleNumberingOfWittTowerLowerStatement =====
@@ -1087,8 +1053,6 @@ open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
 open GlobalTheory.ArchRec
 
-theorem _root_.GlobalTheory.T.splittingHeckeChar_exists_archimedeanExponent : ∀ (D : D7) (θ : InfFam D) (χ : (AE D)ˣ →* Circle) (n : ℕ) (τ : D.what₂.Tau), IsInfFam θ → IsHeckeChar D χ → ResEta D χ n → ∃ a : ℚ, HasInfExp D χ τ a := by
-  first | exact @GlobalTheory.SplitCharExp.exists_hasInfExp
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.SplittingHeckeCharExistsArchimedeanExponentStatement =====
@@ -1110,8 +1074,6 @@ open MeasureTheory Matrix
 open scoped TensorProduct InnerProductSpace ComplexConjugate
 open GlobalTheory.ArchRec
 
-theorem _root_.GlobalTheory.T.thetaChainStep_centred_block_parameters : ∀ (D : D7) (k : Fin D.R.m) (τ : D.what₂.Tau), ∃ al be ga de : List ℚ, Centred D al be ga de ∧ parA (Ptw D) k τ = signed (al ++ be) (ga ++ de) (alT D k τ) ∧ parA (Ptw D) (k + 1) τ = signed (al ++ block D.R.t ++ de) (ga ++ be) (alS D k τ) := by
-  first | exact @GlobalTheory.ArchRec.ParChain.parChain
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ThetaChainStepCentredBlockParametersStatement =====
@@ -1366,19 +1328,19 @@ theorem exists_real {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {S T : HSp 
       (phiFr frS true e) (phiFr frT false e') aT aS κ := by
   have hψ : IsStdChar D ψ (-1) := hω.std
   obtain ⟨ς, hςg, -, hςpt⟩ := GlobalTheory.T.fockVectors_adaptedBasis_unitary_substitution D ψ θ S T τ hψ hf.inf sS frS εS sT frT εT fS fT BS BT hf.onS hf.onT
-  obtain ⟨κ₀, hκp, hκg, hκip⟩ := GlobalTheory.T.exists_fockPolynomialIso_graded_isometry p q r s S.rank T.rank εS εT e e' he he'
-  have hL := GlobalTheory.T.lieAlgebrasAtPlace_act_fockVectors_by_fockOperators D ψ θ S T χS χT ω τ hf.inf hω aS aT hS hT sS frS εS sT frT εT fS fT f hf.theta hf.vac
+  obtain ⟨κ₀, hκp, hκg, hκip⟩ := GlobalTheory.ArchRec.SignedRename.exists_isPolyIso_graded_isometry p q r s S.rank T.rank εS εT e e' he he'
+  have hL := GlobalTheory.ArchRec.LieAtPlace.lieAt_of_vacAt D ψ θ S T χS χT ω τ hf.inf hω aS aT hS hT sS frS εS sT frT εT fS fT f hf.theta hf.vac
   obtain ⟨hth, hrest⟩ := GlobalTheory.T.fockVectors_at_one_realPlace_over_vacuum D ψ θ S T τ hψ hf.inf sS frS εS sT frT εT fS fT f hf.theta hf.vac
   obtain ⟨hinj, hfis⟩ := hrest hf.ne
   let L : LPol T.rank S.rank →ₗ[ℂ] (WO S T → ℂ) :=
     pureTensorL (fun k : Fin T.rank × Fin S.rank => aPlus (heisO ψ S T) θ τ (cplxO sS sT) (unitMap frS⁻¹ frT⁻¹ k.1 k.2)) f
   have hLpt : ∀ P, L P = ptAt ψ θ S T τ sS sT frS⁻¹ frT⁻¹ f P := fun P => rfl
-  obtain ⟨hs1, hs2⟩ := GlobalTheory.T.fockVectors_realPlace_act_as_fockPolynomials D ψ θ S T ω τ hf.inf sS frS εS sT frT εT fS fT aS aT L hinj hL p q r s e e' he he' κ₀ hκp
+  obtain ⟨hs1, hs2⟩ := GlobalTheory.ArchRec.SideAt.side_at D ψ θ S T ω τ hf.inf sS frS εS sT frT εT fS fT aS aT L hinj hL p q r s e e' he he' κ₀ hκp
   have hσ := hςpt f hf.theta
   refine ⟨ς.trans κ₀, hςg.trans hκg, hs1.comp ς hσ, hs2.comp ς hσ, ?_⟩
   rintro ip ⟨μ, 𝓕, hμ, h𝓕, rfl⟩
   obtain ⟨N, hN⟩ := hfis μ 𝓕 hμ h𝓕
-  obtain ⟨Θ, hΘ1, hΘ2⟩ := GlobalTheory.T.realPlaceGroups_act_unitarily_weakly_on_theta D ψ θ S T χS χT ω τ hf.inf hω frS εS frT εT aS aT L hth hL μ 𝓕 hμ h𝓕
+  obtain ⟨Θ, hΘ1, hΘ2⟩ := GlobalTheory.ThetaL2InnerProduct.exists_l2_unitary_theta_of_fundamentalDomain D ψ θ S T χS χT ω τ hf.inf hω frS εS frT εT aS aT L hth hL μ 𝓕 hμ h𝓕
   refine ⟨N, Θ, ⟨hN.1, fun P Q => ?_⟩, hΘ1.comp ς hσ, hΘ2.comp ς hσ⟩
   rw [hσ P, hσ Q, hN.2, LinearEquiv.trans_apply, LinearEquiv.trans_apply, hκip]
   rfl
@@ -1454,7 +1416,7 @@ theorem lift_down (h : Good D X) (h1 : Formalism.MainNotions.SchurIrreducible.Ar
   refine ⟨_root_.GlobalTheory.ArchRec.Lift.liftLaw_of_pairLaw _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ hN hM hR.s₂ hR.s₁ hJ hPL, fun ip hip => ?_⟩
   obtain ⟨m, hm⟩ := hm
   obtain ⟨K, Θ, hF, hL1, -⟩ := hR.l2 ip hip
-  have hC : Coef (X.fock _ _ _ _) A pt ip κ (phiFr (M.fr τ) b e) m K := GlobalTheory.T.fockVectors_matrixCoefficients_eq_fockRepresentation _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ (rank_pos hd.1).1 (M.fr_unit τ) (M.fr_gram τ) hM.ord.1 hm hR.s₁ hL1 hF
+  have hC : Coef (X.fock _ _ _ _) A pt ip κ (phiFr (M.fr τ) b e) m K := GlobalTheory.ArchRec.FockCoef.coef_of_side _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ (rank_pos hd.1).1 (M.fr_unit τ) (M.fr_gram τ) hM.ord.1 hm hR.s₁ hL1 hF
   refine _root_.GlobalTheory.ArchRec.ZetaTransfer.zetaLaw_of_cover _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ (h1.1 t al be ga de hd) ?_ hM hN.ord.1 hm hC fun Φ hΦ => ((hJ Φ).1 hΦ).symm
   intro v hv
   obtain ⟨-, -, hgap⟩ := hd.2
@@ -1489,9 +1451,9 @@ theorem noLowerTarget {T : HSp D} {p q r s : ℕ} {lam : Ix p q → ℚ} {aT : �
   obtain ⟨e, u, hu⟩ := hS MS hPS
   obtain ⟨e₀, he₀⟩ := hT MT hPT
   obtain ⟨εT, fT⟩ := frame_of_adapted hf.onT
-  obtain ⟨hir, his, e', he'⟩ := GlobalTheory.T.signCompatibleNumbering_of_wittTower_lower D T T' i τ (MT.fr τ) (MT.ε τ) BT⁻¹ εT r s e₀ hW (MT.fr_gram τ)
+  obtain ⟨hir, his, e', he'⟩ := GlobalTheory.WittSign.signCompat_of_isWittLower D T T' i τ (MT.fr τ) (MT.ε τ) BT⁻¹ εT r s e₀ hW (MT.fr_gram τ)
     (MT.fr_unit τ) fT.2.1 fT.1 he₀
-  obtain ⟨aS, haS⟩ := GlobalTheory.T.splittingHeckeChar_exists_archimedeanExponent D θ χS _ τ hf.inf hω.hecS hω.resS
+  obtain ⟨aS, haS⟩ := GlobalTheory.SplitCharExp.exists_hasInfExp D θ χS _ τ hf.inf hω.hecS hω.resS
   obtain ⟨κ, hR⟩ := exists_real hω haS hχT (isFrameOf_model MS τ) fT hf hu.ord.1 he'
   exact GlobalTheory.T.noThetaMap_models_of_noPairing_covers _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ hu hR.s₁ (hno i hi hir his)
 
@@ -1504,23 +1466,23 @@ theorem noLowerSource {T : HSp D} {p q r s : ℕ} {lam : Ix r s → ℚ} {aS : �
   obtain ⟨e', u, hu⟩ := hT MT hPT
   obtain ⟨e₀, he₀⟩ := hS MS hPS
   obtain ⟨εS, fS⟩ := frame_of_adapted hf.onS
-  obtain ⟨hip, hiq, e, he⟩ := GlobalTheory.T.signCompatibleNumbering_of_wittTower_lower D V S' i τ (MS.fr τ) (MS.ε τ) BS⁻¹ εS p q e₀ hW (MS.fr_gram τ)
+  obtain ⟨hip, hiq, e, he⟩ := GlobalTheory.WittSign.signCompat_of_isWittLower D V S' i τ (MS.fr τ) (MS.ε τ) BS⁻¹ εS p q e₀ hW (MS.fr_gram τ)
     (MS.fr_unit τ) fS.2.1 fS.1 he₀
-  obtain ⟨aT, haT⟩ := GlobalTheory.T.splittingHeckeChar_exists_archimedeanExponent D θ χT _ τ hf.inf hω.hecT hω.resT
+  obtain ⟨aT, haT⟩ := GlobalTheory.SplitCharExp.exists_hasInfExp D θ χT _ τ hf.inf hω.hecT hω.resT
   obtain ⟨κ, hR⟩ := exists_real hω hχS haT fS (isFrameOf_model MT τ) hf he hu.ord.1
   exact GlobalTheory.T.noThetaMap_models_of_noPairing_covers _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ hu hR.s₂ (hno i hi hip hiq)
 
 theorem pairNo_small (h : Good D X) (hd : HypA t al be ga de) (i : ℕ) (hi : 1 ≤ i) (h1 : i ≤ al.length + de.length + t)
     (h2 : i ≤ ga.length + be.length) :
     PairNo (fockAct1 _ _ (al.length + de.length + t - i) (ga.length + be.length - i)) (X.ds _ _ (lamA al be ga de)) := by
-  have hT := (GlobalTheory.T.noThetaTensorIntertwiner_lowerTowerMembers X h.ds h.hc t al be ga de hd i hi).1 h1 h2
+  have hT := (GlobalTheory.LowerTower.no_map_lower X h.ds h.hc t al be ga de hd i hi).1 h1 h2
   exact GlobalTheory.T.no_invariant_theta_pairing_of_no_tensor_intertwiner _ _ _ _ _ _ _ _ _ (isGK_fock _ _ _ _).1 (isGK_fock _ _ _ _).2 (_root_.GlobalTheory.FockAlg.fock_lie_and_commute _ _ _ _).2.2.2
     (discreteSeries_harishChandraModule_admissible h.hc (rank_pos hd).1 _) hT
 
 theorem pairNo_large (h : Good D X) (hd : HypA t al be ga de) (hf : ∀ x ∈ al ++ be ++ ga ++ de, ((t : ℚ) + 3) / 2 ≤ |x|)
     (i : ℕ) (hi : 1 ≤ i) (h1 : i ≤ al.length + be.length) (h2 : i ≤ ga.length + de.length) :
     PairNo (fockAct2 (al.length + be.length - i) (ga.length + de.length - i) _ _) (X.ds _ _ (lamA' t al be ga de)) := by
-  have hT := (GlobalTheory.T.noThetaTensorIntertwiner_lowerTowerMembers X h.ds h.hc t al be ga de hd i hi).2 hf h1 h2
+  have hT := (GlobalTheory.LowerTower.no_map_lower X h.ds h.hc t al be ga de hd i hi).2 hf h1 h2
   exact GlobalTheory.T.no_invariant_theta_pairing_of_no_tensor_intertwiner _ _ _ _ _ _ _ _ _ (isGK_fock _ _ _ _).2 (isGK_fock _ _ _ _).1
     (fun Y Z => ((_root_.GlobalTheory.FockAlg.fock_lie_and_commute _ _ _ _).2.2.2 Z Y).symm) (discreteSeries_harishChandraModule_admissible h.hc (rank_pos hd).2 _) hT
 
@@ -1541,7 +1503,7 @@ variable {X : ProvA}
 
 theorem chainLower (h : Good D X) : ChainLower D := by
   intro k τ V W
-  obtain ⟨al, be, ga, de, ⟨hA, hF, -⟩, h1, h2⟩ := GlobalTheory.T.thetaChainStep_centred_block_parameters D k τ
+  obtain ⟨al, be, ga, de, ⟨hA, hF, -⟩, h1, h2⟩ := GlobalTheory.ArchRec.ParChain.parChain D k τ
   refine ⟨noLowerTarget (fun M hM => ?_) (fun M hM => ?_) (fun i hi hr hs => pairNo_small h hA i hi hr hs),
     noLowerSource (fun M hM => ?_) (fun M hM => ?_) (fun i hi hp hq => pairNo_large h hA hF i hi hp hq)⟩
   · obtain ⟨-, e, u, hu⟩ := tie_small h hA M τ true true (hM.trans h1)
@@ -1565,7 +1527,7 @@ theorem pairLower (h : Good D X) : PairLower D := by
 
 theorem chainTop (h : Good D X) (h1 : Formalism.MainNotions.SchurIrreducible.ArchimedeanRallisFirst X) (h3 : Formalism.MainNotions.SchurIrreducible.ArchimedeanRallisUpDownLine X) (hg : NodeGap D) : ChainTop D := by
   intro k τ V W
-  obtain ⟨al, be, ga, de, ⟨hA, -, hG⟩, e1, e2⟩ := GlobalTheory.T.thetaChainStep_centred_block_parameters D k τ
+  obtain ⟨al, be, ga, de, ⟨hA, -, hG⟩, e1, e2⟩ := GlobalTheory.ArchRec.ParChain.parChain D k τ
   have hd : Formalism.MainNotions.SchurIrreducible.DataAR D.R.t al be ga de := ⟨hA, hG hg⟩
   refine ⟨?_, ?_, ?_⟩
   · intro ψ θ χS χT ω hω hS hT PS PT MS MT hPS hPT BS BT f hf
@@ -1625,7 +1587,7 @@ theorem itLaw (hP : GlobalTheory.Chain.ItPair D) (hL : GlobalTheory.Chain.ItLine
   have hθ : IsInfFam θ := fun ρ => (hf ρ).inf ρ
   have hC : GlobalTheory.Chain.ChainPar D k := by
     intro τ
-    obtain ⟨al, be, ga, de, ⟨hA, hF, hG⟩, h1, h2⟩ := GlobalTheory.T.thetaChainStep_centred_block_parameters D k τ
+    obtain ⟨al, be, ga, de, ⟨hA, hF, hG⟩, h1, h2⟩ := GlobalTheory.ArchRec.ParChain.parChain D k τ
     refine ⟨al, be, ga, de, ⟨hA, hG hg⟩, hF, ?_, ?_⟩
     · rw [h1, alT_eq]
     · rw [h2, alS_eq]
@@ -1655,7 +1617,7 @@ theorem archOnRecord_of_cover (hDS : GlobalTheory.Published.DiscreteSeriesCover)
   obtain ⟨Y, hpar, hds, hq5, hy1, -, hy3, -⟩ := _root_.GlobalTheory.RealPlaceTheta.exists_record_theta hDS hHC
   have hG : Good D Y := ⟨hpar, hds, hq5, GlobalTheory.T.thetaModels_are_coverDiscreteSeries_of_harishChandra hDS hHC D⟩
   exact ⟨⟨chainLower hG, pairLower hG⟩, fun hg => ⟨chainTop hG hy1 hy3 hg, pairTop hG hy1 hy3 hg,
-    itLaw (GlobalTheory.T.exists_uniformRealThetaIntertwiner_chainStep hDS hHC D) (GlobalTheory.T.realThetaIntertwiners_proportional_of_harishChandra hDS hHC D) hg,
+    itLaw (GlobalTheory.T.exists_uniformRealThetaIntertwiner_chainStep hDS hHC D) (GlobalTheory.Chain.RealLine.itLine_of_discreteSeries hDS hHC D) hg,
     ioLaw (GlobalTheory.T.lowestKTypeFockMap_exists_of_discreteSeries hDS hHC D) (GlobalTheory.T.lowestKTypeFockMap_unique_of_discreteSeries hDS hHC D) (GlobalTheory.T.lowestKTypeFockMap_harmonic_of_discreteSeries hDS hHC D)⟩⟩
 
 theorem archOnRecord (hDS : GlobalTheory.Published.DiscreteSeriesCover) (hHC : GlobalTheory.Published.HarishChandraModules) (D : D7) :

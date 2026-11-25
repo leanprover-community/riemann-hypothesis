@@ -475,7 +475,3 @@ theorem hasModel {X : Scheme.{0}} (q : X ⟶ Sp V) [LocallyOfFinitePresentation 
     (quasiSeparated_iff_quasiSeparatedSpace q₀).mpr inferInstance, hqcq₀, hφ⟩
 
 end GlobalTheory.SpreadScheme
-
-namespace GlobalTheory
-
-end GlobalTheory

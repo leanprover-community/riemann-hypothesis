@@ -1493,17 +1493,6 @@ noncomputable section
 namespace GlobalTheory.JR.WeilQuad
 open scoped Pointwise
 
-theorem isStableGauss_unique {F E : Type} [NontriviallyNormedField F] [NontriviallyNormedField E]
-    [NormedAlgebra F E] [StarRing E] (A : Et F E) (ψ : AddChar F ℂ) (x : A.K) (μ : Measure A.L) (u : A.K)
-    {G G' : ℂ} (h : IsStableGauss A ψ x μ u G) (h' : IsStableGauss A ψ x μ u G') : G = G' := by
-  haveI : IsTopologicalAddGroup A.L := IsModuleTopology.topologicalAddGroup F A.L
-  obtain ⟨Λ₀, ho, hc, hG⟩ := h
-  obtain ⟨Λ₁, ho', hc', hG'⟩ := h'
-  have hs : ((Λ₀ ⊔ Λ₁ : AddSubgroup A.L) : Set A.L) = (Λ₀ : Set A.L) + (Λ₁ : Set A.L) := AddSubgroup.add_normal Λ₀ Λ₁
-  have hO : IsOpen ((Λ₀ ⊔ Λ₁ : AddSubgroup A.L) : Set A.L) := AddSubgroup.isOpen_mono le_sup_left ho
-  have hC : IsCompact ((Λ₀ ⊔ Λ₁ : AddSubgroup A.L) : Set A.L) := by rw [hs]; exact hc.add hc'
-  rw [← hG _ hO hC le_sup_left, ← hG' _ hO hC le_sup_right]
-
 theorem absK_units_mul {F E : Type} [NontriviallyNormedField F] [NontriviallyNormedField E]
     [NormedAlgebra F E] [StarRing E] (A : Et F E) (a b : A.Kˣ) :
     A.absK ((a * b : A.Kˣ) : A.K) = A.absK a * A.absK b := by
@@ -1520,7 +1509,7 @@ theorem gauss_transform : ∀ (F E : Type) [NontriviallyNormedField F] [Nontrivi
   by_cases hu : ∃ y, A.NL y = u
   · have h1 := _root_.GlobalTheory.JR.WeilQuad.GaussTrans.main F E A ψ x μ ω hH 1 u hu G₁ (by simpa using hG₁)
     rw [one_mul] at h1
-    rw [isStableGauss_unique A ψ x μ _ hG h1, (hω u).1 hu]; ring
+    rw [GlobalTheory.JR.WeilQuad.NonNorm.stable_unique A ψ x μ _ hG h1, (hω u).1 hu]; ring
   · obtain ⟨ϖ, hϖ, hGϖ⟩ := _root_.GlobalTheory.JR.WeilQuad.NonNorm.gauss_at_uniformiser F E A ψ x μ ω hH G₁ hG₁
     have hps : ϖ * (ϖ⁻¹ * u) = u := mul_inv_cancel_left ϖ u
     have hs : ∃ y, A.NL y = ((ϖ⁻¹ * u : A.Kˣ) : A.K) := by

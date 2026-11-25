@@ -763,9 +763,6 @@ theorem eq_zero_of_linearIndependent_int {Y ι : Type} [Fintype ι] {f : ι → 
 
 end GlobalTheory.PolFan
 
-namespace GlobalTheory.PolFan
-
-end GlobalTheory.PolFan
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

@@ -171,39 +171,6 @@ theorem val_vw_map (hv : v.Integers O) (h0 : (p : C) ≠ 0) (hp : ¬ IsUnit (p :
 
 end Val
 
-private theorem comp_mem_pow_iff {R : Type} [CommRing R] (a : R) (n : ℕ) (x : R) :
-    x ∈ (Ideal.span {a} ^ n • ⊤ : Submodule R R) ↔ a ^ n ∣ x := by
-  rw [Ideal.span_singleton_pow, smul_eq_mul, Ideal.mul_top, Ideal.mem_span_singleton]
-
-private theorem comp_dual_dvd_iff {O : Type} [CommRing O] (p n : ℕ) (x : DualNumber O) :
-    (p : DualNumber O) ^ n ∣ x ↔ (p : O) ^ n ∣ x.fst ∧ (p : O) ^ n ∣ x.snd := by
-  have e : (p : DualNumber O) ^ n = TrivSqZeroExt.inl ((p : O) ^ n) := by
-    rw [← TrivSqZeroExt.inl_pow, TrivSqZeroExt.inl_natCast]
-  rw [e]
-  constructor
-  · rintro ⟨y, rfl⟩
-    exact ⟨⟨y.fst, by simp⟩, ⟨y.snd, by simp⟩⟩
-  · rintro ⟨⟨a, ha⟩, b, hb⟩
-    exact ⟨TrivSqZeroExt.inl a + TrivSqZeroExt.inr b, by ext <;> simp [ha, hb]⟩
-
-private theorem comp_isAdicComplete_dualNumber {O : Type} [CommRing O] (p : ℕ)
-    [h : IsAdicComplete (Ideal.span {(p : O)}) O] :
-    IsAdicComplete (Ideal.span {(p : DualNumber O)}) (DualNumber O) := {
-  haus' x hx := by
-    simp only [SModEq.zero, comp_mem_pow_iff, comp_dual_dvd_iff] at hx
-    refine TrivSqZeroExt.ext (h.toIsHausdorff.haus x.fst fun n => ?_)
-      (h.toIsHausdorff.haus x.snd fun n => ?_)
-    · rw [SModEq.zero, comp_mem_pow_iff]; exact (hx n).1
-    · rw [SModEq.zero, comp_mem_pow_iff]; exact (hx n).2,
-  prec' f hf := by
-    simp only [SModEq.sub_mem, comp_mem_pow_iff, comp_dual_dvd_iff] at hf ⊢
-    obtain ⟨a, ha⟩ := h.toIsPrecomplete.prec (f := fun n => (f n).fst) fun {m n} hmn => by
-      rw [SModEq.sub_mem, comp_mem_pow_iff]; exact (hf hmn).1
-    obtain ⟨b, hb⟩ := h.toIsPrecomplete.prec (f := fun n => (f n).snd) fun {m n} hmn => by
-      rw [SModEq.sub_mem, comp_mem_pow_iff]; exact (hf hmn).2
-    simp only [SModEq.sub_mem, comp_mem_pow_iff] at ha hb
-    exact ⟨TrivSqZeroExt.inl a + TrivSqZeroExt.inr b, fun n => ⟨by simpa using ha n, by simpa using hb n⟩⟩ }
-
 section Comparison₂
 
 variable {p : ℕ} [Fact p.Prime] {C : Type} [Field C] {v : Valuation C ℝ≥0} {O : Type} [CommRing O]
@@ -260,7 +227,7 @@ theorem LieTie.unique {Y S : Scheme.{0}} {ψ : P.A.A.left ⟶ Y} {s : Y ⟶ S} {
   haveI := HodgeTateCompare.isLocalRing_dualNumber (O := O)
   have hp : ¬ IsUnit (p : DualNumber O) := fun h => (Fact.out : ¬ IsUnit (p : O)) (by
     simpa using h.map (TrivSqZeroExt.fstHom O O O))
-  exact Subtype.ext ((existsUnique_left hp (comp_isAdicComplete_dualNumber p) xG.1).unique h1 (e2 ▸ h1'))
+  exact Subtype.ext ((existsUnique_left hp (GlobalTheory.HTLat.OmegaRank.isAdicComplete_dualNumber p) xG.1).unique h1 (e2 ▸ h1'))
 
 
 

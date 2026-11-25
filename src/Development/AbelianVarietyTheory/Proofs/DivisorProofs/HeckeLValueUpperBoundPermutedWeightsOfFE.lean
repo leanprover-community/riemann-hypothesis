@@ -166,7 +166,6 @@ theorem kap_add_le (large₂ : SizeData₂ D) (h : GlobalTheory.IndefiniteRowSid
     simp only [GlobalTheory.SignedHC.GridData.mid, GlobalTheory.SignedHC.GridData.a, hm, hg]
     have hg0 : (0 : ℝ) ≤ gap D 1 := by positivity
     have hi' : ((i : ℕ) : ℝ) + 1 ≤ D.R.m := by exact_mod_cast hi
-    have hv' : ((G0.v 2 : ℚ) : ℝ) ≤ large₂.Sc := by exact_mod_cast hv
     have c1 : ((D.R.m - (i : ℕ) - 1 : ℕ) : ℝ) = D.R.m - (i : ℕ) - 1 := by
       rw [Nat.cast_sub (by omega), Nat.cast_sub (by omega)]; simp
     have c2 : ((D.R.m - (i : ℕ) : ℕ) : ℝ) = D.R.m - (i : ℕ) := by
@@ -194,7 +193,6 @@ theorem sizes (c : ℝ) : GBig fun {D} _ _ {sc} G _ C x b => ∀ (i j : Fin D.R.
   have hpde : Real.log (D.host.pde : ℝ) ≤ large₂.sc.L ∧ Real.log (D.host.pde' : ℝ) ≤ large₂.sc.L :=
     hSA.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1
 
-  have hx1 : 1 < large₂.sc.x := by linarith
   have hLpos : 0 < large₂.sc.L := Real.rpow_pos_of_pos (by linarith) _
   have hlogb : Real.log large₂.sc.b = large₂.sc.L := Real.log_exp _
   have hb1 : 1 ≤ large₂.sc.b := Real.one_le_exp hLpos.le
@@ -202,7 +200,6 @@ theorem sizes (c : ℝ) : GBig fun {D} _ _ {sc} G _ C x b => ∀ (i j : Fin D.R.
     rw [Real.le_log_iff_exp_le (by linarith)]
     have := Real.exp_one_lt_d9
     linarith
-  have hf0 : (0 : ℝ) ≤ D.R.f := Nat.cast_nonneg _
 
   have h1 : c * (Module.finrank ℚ D.host.E : ℝ) ≤ 2 * |c| * D.R.f := by
     rw [Formalism.L2.Pj.hostSize_finrank D]; push_cast
@@ -240,7 +237,6 @@ theorem sizes (c : ℝ) : GBig fun {D} _ _ {sc} G _ C x b => ∀ (i j : Fin D.R.
     have hk : ∀ τ, Real.log (1 + ((kap D 1 i j s τ : ℝ) + s)) ≤ 5 + large₂.sc.L := by
       intro τ
       have k1 := kap_add_le large₂ hS i j hs τ
-      have k0 : (0 : ℝ) ≤ (kap D 1 i j s τ : ℝ) + s := by positivity
       calc Real.log (1 + ((kap D 1 i j s τ : ℝ) + s)) ≤ Real.log (6 * large₂.sc.b) :=
             Real.log_le_log (by linarith) (by linarith)
         _ = Real.log 6 + large₂.sc.L := by rw [Real.log_mul (by norm_num) (by linarith), hlogb]
@@ -339,8 +335,6 @@ theorem factor_three_halves_le {c : ℝ} (hc : 1 ≤ c) :
   have h2 : Real.Gamma (3 / 2 + c) ≤ Real.Gamma (1 + c + 1) :=
     Real.Gamma_strictMonoOn_Ici.monotoneOn (Set.mem_Ici.2 (by linarith)) (Set.mem_Ici.2 (by linarith)) (by linarith)
   rw [Real.Gamma_add_one (by linarith)] at h2
-  have hg : 0 ≤ Real.Gamma (3 / 2 + c) := (Real.Gamma_pos_of_pos (by linarith)).le
-  have hp : 0 ≤ (2 * Real.pi) ^ (-(1 + c)) := by positivity
   calc 2 * (2 * Real.pi) ^ (-(3 / 2 + c)) * Real.Gamma (3 / 2 + c)
       ≤ 2 * (2 * Real.pi) ^ (-(1 + c)) * Real.Gamma (3 / 2 + c) := by gcongr
     _ ≤ 2 * (2 * Real.pi) ^ (-(1 + c)) * ((1 + c) * Real.Gamma (1 + c)) := by gcongr
@@ -394,7 +388,6 @@ theorem norm_heckeL_one_le : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
     unfold Finsupp.prod
     exact Finset.prod_pos fun v _ => pow_pos (Nat.pos_of_ne_zero fun h => v.ne_bot (Ideal.absNorm_eq_zero_iff.1 h)) _
   have hA1 : (1 : ℝ) ≤ (A : ℝ) := by exact_mod_cast hApos
-  have hZ0 : 0 ≤ Z := by positivity
   set F : ℝ := ‖archFactor n (3 / 2)‖ with hF_def
   have hF0 : 0 ≤ F := norm_nonneg _
 
@@ -439,9 +432,6 @@ theorem norm_heckeL_one_le : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
   have hG : 0 < ‖archFactor n 1‖ := norm_pos_iff.2 (GlobalTheory.LValNe.archFactor_ne_zero hg)
   have hrat := archFactor_three_halves_le m hpos
   rw [e1, norm_mul] at h1
-  have hP0 : 0 ≤ ∏ i, (1 + (m i : ℝ)) :=
-    Finset.prod_nonneg fun i _ => by have : (0 : ℝ) < m i := by exact_mod_cast hpos i
-                                     linarith
   have key : ‖archFactor n 1‖ * ‖Λ 1‖ ≤ ‖archFactor n 1‖ * (Z * (A : ℝ) * ∏ i, (1 + (m i : ℝ))) := by
     refine h1.trans ?_
     have : A * F * Z ≤ A * (‖archFactor n 1‖ * ∏ i, (1 + (m i : ℝ))) * Z := by gcongr

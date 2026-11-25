@@ -56,7 +56,7 @@ theorem isPst_of_isCrys (T : LocTied l P AI) {K LL : FinExt l} {V : Type} [AddCo
   have hup := GlobalTheory.PstRank.rank_DpstUr_le P hdom hreg ρ
   obtain ⟨hfin, -⟩ := GlobalTheory.RegularRing.finite_le₀ (P.PD K) hf ρ
   have hd := (GlobalTheory.RegularRing.isCrys_iff_finrank (P.PD K) ρ).1 hc
-  let e := set_option synthInstance.maxHeartbeats 200000 in
+  let e :=
     Module.finBasisOfFinrankEq ↥(K0 K) _ hd
   have hB := GlobalTheory.RegularRing.indepB (P.PD K) hf ρ e e.linearIndependent
   have hmem : ∀ i, crisIncl P ↥LL.1 V (TensorProduct.comm ℚ_[l] P.R.B V (e i : P.R.B ⊗[ℚ_[l]] V)) ∈ Dpst P ρ := by

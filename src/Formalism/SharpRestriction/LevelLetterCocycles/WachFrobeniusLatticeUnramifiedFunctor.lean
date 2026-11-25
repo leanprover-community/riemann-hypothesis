@@ -303,8 +303,7 @@ theorem wach_frobenius_divisibility_unique_solution [IsDomain O] (hR : RingA W) 
       simpa [Formalism.ExponentWindows.E.Lat.dφ, t] using this
     refine ⟨∑ i, (z i).d, ⟨?_, ?_⟩, ?_⟩
     · exact mul_mem_sum T _ _ hzd
-    · set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, ← sum_shift (fun i => W.φD T (z i).d), ← Finset.sum_sub_distrib]
+    · rw [map_sum, ← sum_shift (fun i => W.φD T (z i).d), ← Finset.sum_sub_distrib]
       rw [Finset.sum_congr rfl fun i _ => hdzi i, sum_letE_smul]
     · rintro Z ⟨⟨yZ, hyZ, rfl⟩, hZ⟩
       let z' : ZMod n → DV I T := fun i => toDV I ((letE i : LetA O n) • (W.π₀ ^ M • yZ))

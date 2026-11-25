@@ -95,7 +95,7 @@ def restrictIsoOfLinear {U : X.Opens}
           (φ (g ''ᵁ W) ((g.image_le_opensRange W).trans hg)).map_smul ((g.appIso W).inv a) s
         left_inv := LinearEquiv.symm_apply_apply _
         right_inv := LinearEquiv.apply_symm_apply _ })
-    fun {V W} h s => hφ _ (g.image_mono h) s
+    fun {_ _} h s => hφ _ (g.image_mono h) s
 
 
 set_option backward.isDefEq.respectTransparency false in

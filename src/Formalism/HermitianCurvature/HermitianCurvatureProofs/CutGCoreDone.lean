@@ -752,23 +752,6 @@ private theorem hsVec_injective_apply {Wp Wq : Type} [NormedAddCommGroup Wp] [In
   apply ContinuousLinearMap.coe_injective
   exact (stdOrthonormalBasis ℂ Wq).toBasis.ext (fun i => by simpa using h' i)
 
-private theorem toSm_smul_hermitian_curvature (P : M.Par) (c : ℂ) (u : MA.Qp P.r P.TT → ℂ) :
-    MA.toSm P (c • u) = c • MA.toSm P u := by
-  unfold MA.toSm
-  by_cases hu : u ∈ MA.smSub P.r P.TT
-  · rw [dite_eq_left hu, dite_eq_left (Subalgebra.smul_mem _ hu c)]
-    rfl
-  · rw [dite_eq_right hu]
-    by_cases hc : c = 0
-    · subst hc
-      rw [zero_smul, smul_zero, dite_eq_left (Subalgebra.zero_mem _)]
-      rfl
-    · rw [smul_zero, dite_eq_right]
-      intro hm
-      apply hu
-      have := Subalgebra.smul_mem _ hm c⁻¹
-      rwa [smul_smul, inv_mul_cancel₀ hc, one_smul] at this
-
 theorem radial_constant_of_point_and_line (hPt : GTKPt) (hLine : GTKLine) : GTRConst := by
   intro Wp Wq _ _ _ _ _ _ P Bs X d h
   obtain ⟨Qr, hQ⟩ := hPt Wp Wq P Bs X d h
@@ -857,7 +840,7 @@ theorem radial_constant_of_point_and_line (hPt : GTKPt) (hLine : GTKLine) : GTRC
     rfl
   · intro hρ
     exact absurd (Finset.mem_univ ρ) hρ
-  · rw [ite_eq_left rfl, hR, toSm_smul_hermitian_curvature]
+  · rw [ite_eq_left rfl, hR, Formalism.FourierDecayAlt.P.CutMP.toSm_smul]
     rfl
 
 end

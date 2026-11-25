@@ -256,11 +256,11 @@ theorem exists_unit_one_add_generator (r : ℝ) (hr : 0 < r) :
     rw [← h2, hcN]
     rfl
 
-theorem fundamental_domain_integral_invariance {μ : Measure G2} {𝓕 : Set G2} {mK : Measure KA} {𝓓 : Set Jd} (h : Set0 μ 𝓕 mK 𝓓)
+theorem fundamental_domain_integral_invariance {μ : Measure G2} {𝓕 : Set G2} (h : Set0 μ 𝓕)
     (T : G2 → G2) (hT : T = inv2 ∨ (∃ h, T = fun g => g * h) ∨ ∃ z : Jd, T = fun g => dg2 z z * g) :
     (∀ F : G2 → ℝ≥0∞, LInv F → ∫⁻ g in 𝓕, F (T g) ∂μ = ∫⁻ g in 𝓕, F g ∂μ) ∧
     ∀ F : G2 → ℂ, LInv F → ∫ g in 𝓕, F (T g) ∂μ = ∫ g in 𝓕, F g ∂μ := by
-  obtain ⟨haar, right, fd, -, -, -, -, -, -, -⟩ := h
+  obtain ⟨haar, right, fd, -, -⟩ := h
   rcases hT with rfl | ⟨h', rfl⟩ | ⟨z, rfl⟩
   · let Tm : G2 ≃ᵐ G2 :=
       { toEquiv := inv2Equiv.toEquiv
@@ -282,7 +282,7 @@ theorem fundamental_domain_integral_invariance {μ : Measure G2} {𝓕 : Set G2}
         simp only [MeasurableEquiv.coe_mulLeft, Equiv.refl_apply]
         rw [← mul_assoc, ← mul_assoc, central_diagonal_commute])
 
-theorem level {μ : Measure G2} {𝓕 : Set G2} {mK : Measure KA} {𝓓 : Set Jd} (h : Set0 μ 𝓕 mK 𝓓) :
+theorem level {μ : Measure G2} {𝓕 : Set G2} (h : Set0 μ 𝓕) :
     μ {g | Dt g = 1} = 0 := by
   classical
   haveI := h.haar
@@ -379,7 +379,7 @@ theorem level {μ : Measure G2} {𝓕 : Set G2} {mK : Measure KA} {𝓓 : Set Jd
   simp only [hinvS, hzero, tsum_zero]
 
 theorem rankinSelberg_measure_facts : Ad3.R.G1a := by
-  intro μ 𝓕 mK 𝓓 h
+  intro μ 𝓕 h
   exact ⟨level h, exists_unit_one_add_generator, fun T hT => ⟨fun F _ hF => (fundamental_domain_integral_invariance h T hT).1 F hF,
     fun F _ hF => (fundamental_domain_integral_invariance h T hT).2 F hF⟩⟩
 

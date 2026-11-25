@@ -33,13 +33,6 @@ theorem llPos_lt (j : ℤ) (l l' : ℕ) (hll : l < l') (hl' : l' < (Fr.LLset j).
   rw [e l (by omega), e l' hl']
   exact hs (a := ⟨l, by rw [hlen]; omega⟩) (b := ⟨l', by rw [hlen]; exact hl'⟩) hll
 
-private theorem fr_le_fr_of_le_of_valid (hV : Fr.Valid L₁ N₁) (j : ℤ) :
-    ∀ i i', i ≤ i' → i' < r → Fr.fr j i ≤ Fr.fr j i' := by
-  intro i i' hii' hi'
-  induction i', hii' using Nat.le_induction with
-  | base => exact le_rfl
-  | succ k hik ih => exact (ih (by omega)).trans (hV.2.2.1 j k (by omega)).le
-
 private theorem llPos_mem_LLset' (j : ℤ) (l : ℕ) (hl : l < (Fr.LLset j).card) : llPos Fr j l ∈ Fr.LLset j := by
   unfold llPos
   have hlen : ((Fr.LLset j).sort (· ≤ ·)).length = (Fr.LLset j).card := Finset.length_sort _

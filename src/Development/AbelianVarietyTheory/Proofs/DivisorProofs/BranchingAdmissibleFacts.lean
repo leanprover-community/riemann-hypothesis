@@ -218,7 +218,6 @@ theorem rowGen_initMinor {r m s : ℕ} (a b : Fin r) (I : Fin s → Fin r) (hs :
     simp [rowGen_X, e1]
 
 theorem xi_raise (lam sg : Fin n → ℕ) (l j : Fin n) (h : l < j) : rE K n n l j (xiB K lam sg) = 0 := by
-  have h' : l.val < j.val := h
   have key : rowGen K l.castSucc j.castSucc (xiB K lam sg) = Polynomial.C (xiB K lam sg) := by
     unfold xiB
     rw [map_prod, map_prod]

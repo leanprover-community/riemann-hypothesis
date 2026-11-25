@@ -1671,9 +1671,6 @@ theorem globalCores : Formalism.FourierDecayAlt.PB.GlobalCores :=
 
 end Formalism.FourierDecayAlt.P.HilbertSchmidtNorm
 
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Formalism.HermitianCurvature.HermitianCurvatureProofs.SecondDerivativeHolds =====

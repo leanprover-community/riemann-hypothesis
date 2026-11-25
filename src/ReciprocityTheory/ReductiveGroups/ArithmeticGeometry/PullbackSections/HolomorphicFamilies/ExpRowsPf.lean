@@ -78,17 +78,7 @@ theorem isDerivAt0_unique {e : (Fin g → ℂ) → (Sp ℂ ⟶ Y)} {w : Fin g �
 
 theorem isDerivAt0_comp_hom {Y' : Scheme.{0}} {e : (Fin g → ℂ) → (Sp ℂ ⟶ Y)} {w : Fin g → ℂ}
     {v : Sp (DualNumber ℂ) ⟶ Y} (hv : IsDerivAt0 e w v) (φ : Y ⟶ Y') :
-    IsDerivAt0 (fun z => e z ≫ φ) w (v ≫ φ) := by
-  refine ⟨by rw [← Category.assoc, hv.1], fun U h f => ?_⟩
-  have h' : ⊤ ≤ v ⁻¹ᵁ (φ ⁻¹ᵁ U) := h
-  have key := hv.2 (φ ⁻¹ᵁ U) h' (φ.app U f)
-  simp only [← valAt'_comp]
-  rw [← key]
-  have hc : (v ≫ φ).appLE U ⊤ h = φ.app U ≫ v.appLE (φ ⁻¹ᵁ U) ⊤ h' := by
-    first
-    | exact Scheme.Hom.comp_appLE v φ U ⊤ h
-  rw [hc]
-  rfl
+    IsDerivAt0 (fun z => e z ≫ φ) w (v ≫ φ) := GlobalTheory.PointUnif.deriv_comp hv φ
 
 theorem isDerivAt0_smul {e : (Fin g → ℂ) → (Sp ℂ ⟶ Y)} {w : Fin g → ℂ} {v : Sp (DualNumber ℂ) ⟶ Y}
     (hv : IsDerivAt0 e w v) (cc : ℂ) : IsDerivAt0 e (cc • w) (spMap (epsMul cc) ≫ v) := by

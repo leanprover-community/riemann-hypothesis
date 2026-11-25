@@ -72,10 +72,10 @@ theorem mem_band_dia {γ : GL (Fin 2) ℚ} {g : G2} : dia2 γ * g ∈ band ↔ g
   simp [band, Dt_mul, Dt_dia]
 
 theorem fundamental_domain_integral_central_vanishing : Ad3.R.G1a → Ad3.R.G1 := by
-  intro hA μ 𝓕 mK 𝓓 hS F hF hB hL
+  intro hA μ 𝓕 hS F hF hB hL
   haveI := hS.haar
   haveI := hS.right
-  obtain ⟨-, hz, hT⟩ := hA μ 𝓕 mK 𝓓 hS
+  obtain ⟨-, hz, hT⟩ := hA μ 𝓕 hS
   have hbM := measurableSet_band
   have Fm : Measurable F := hF.measurable
   have hIndL : LInv (band.indicator F) := by
@@ -179,7 +179,6 @@ theorem fundamental_domain_integral_central_vanishing : Ad3.R.G1a → Ad3.R.G1 :
       rw [Set.mem_smul_set_iff_inv_smul_mem, Subgroup.smul_def, smul_eq_mul]
       exact hinv _ (γ⁻¹).2 x
     haveI := countable_range
-    set_option synthInstance.maxHeartbeats 200000 in
     have hμt : μ t = 0 := hS.fd.measure_zero_of_invariant t hts h0
     set U : Set G2 := {g | 1 < Dt g ∧ Dt g < 2 ∧ F g ≠ 0} with hU
     have hUo : IsOpen U := by

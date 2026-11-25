@@ -738,25 +738,6 @@ variable {θ : InfF D} {X : ThetaX D} {T : ThetaTied D X} {W : WeilTied D X T} {
 
 include h
 
-theorem eq_of_isInfFam {θ' : InfF D} (h' : IsInfFam θ') : θ' = θ :=
-  ((GlobalTheory.AutFunCompare.isInfFam_iff θ').1 h').trans ((GlobalTheory.AutFunCompare.isInfFam_iff θ).1 h.inf).symm
-
-theorem afTiedSm : ThetaSmoothnessCondition T := ⟨⟨θ, h.inf⟩, fun _ h' V _ => by rw [h.eq_of_isInfFam h']; exact h.forms V⟩
-
-theorem formSub : FormSub D := fun θ' h' V φ => by
-  rw [h.eq_of_isInfFam h']
-  refine ⟨fun hφ => ?_, fun hφ => Submodule.subset_span hφ⟩
-  have : AFs θ V ≤ LinearMap.range (T.ev V) := Submodule.span_le.2 (by rw [LinearMap.coe_range, h.forms V])
-  have h2 : φ ∈ Set.range (T.ev V) := this hφ
-  rwa [h.forms V] at h2
-
-theorem typTied (ht : TypAdd D) : TypTied T := ⟨⟨θ, h.inf⟩, fun _ h' V hV P hP => by
-  intros
-  rename_i F
-  rw [h.eq_of_isInfFam h', h.typ, mem_TypS h.formSub ht h.inf hV hP]
-  have : T.ev V F ∈ Set.range (T.ev V) := ⟨F, rfl⟩
-  rw [h.forms V] at this
-  exact ⟨fun k => k.2, fun k => ⟨this, k⟩⟩⟩
 
 theorem petC_eq (V : HSp D) : T.petC V = Rc.petC V := by
   unfold ThetaTied.petC RecFun.petC; rw [h.petF, h.petR]

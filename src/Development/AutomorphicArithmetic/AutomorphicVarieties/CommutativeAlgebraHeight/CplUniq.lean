@@ -35,9 +35,9 @@ private theorem UpperTheory.Reformulated.B.LevelOfCongruence.level {C R T : Type
   exact RingHom.liftOfSurjective_comp_apply _ hs ⟨_, hker⟩ c
 
 theorem UpperTheory.Reformulated.B.LevelOfCongruence.cu_ex :
-    ∀ {C R : Type} [inst : CommRing C] [inst_1 : CommRing R] [inst_2 : Algebra C R] [inst_3 : IsLocalRing R] {x : Ideal C},
+    ∀ {C R : Type} [CommRing C] [CommRing R] [Algebra C R] [IsLocalRing R] {x : Ideal C},
       UpperTheory.V.CA.IsCplAt x R →
-        ∀ {T : Type} [inst_4 : CommRing T] (J : Ideal T) [IsAdicComplete J T] (f : C →+* T),
+        ∀ {T : Type} [CommRing T] (J : Ideal T) [IsAdicComplete J T] (f : C →+* T),
           x ≤ Ideal.comap f J →
             ∃ (F : R →+* T), F.comp (Algebra.algebraMap C R) = f ∧ IsLocalRing.maximalIdeal R ≤ Ideal.comap F J := by
   intro C R _ _ _ _ x h T _ J _ f hx

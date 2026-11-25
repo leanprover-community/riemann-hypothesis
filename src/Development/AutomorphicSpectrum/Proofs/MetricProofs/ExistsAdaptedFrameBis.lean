@@ -456,9 +456,9 @@ end UpperTheory.Reformulated.B.Gwb8
 
 open UpperTheory.Reformulated.B.Gwb8 Matrix GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp GlobalTheory.CompanionTheory.Ar.Cusp.Dict in
 theorem UpperTheory.Reformulated.B.Gwb8.exists_adapted_at :
-    ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E] [inst_2 : NumberField.IsCMField E] {Ψ : Type}
-      [inst_3 : Fintype Ψ] {j j' n g : ℕ} {Λ : Type} [inst_4 : AddCommGroup Λ]
-      [inst_5 : _root_.Module (NumberField.RingOfIntegers E) Λ] {F : GlobalTheory.CompanionTheory.Ar.Cusp.UnivFam E Ψ j j' n g Λ}
+    ∀ {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E] {Ψ : Type}
+      [Fintype Ψ] {j j' n g : ℕ} {Λ : Type} [AddCommGroup Λ]
+      [_root_.Module (NumberField.RingOfIntegers E) Λ] {F : GlobalTheory.CompanionTheory.Ar.Cusp.UnivFam E Ψ j j' n g Λ}
       (C : GlobalTheory.CompanionTheory.Ar.Cusp.Dict.LatEmb F) (R : GlobalTheory.CompanionTheory.Ar.Cusp.RiemLat E g Λ),
       R.form = F.form →
         R.HasSig F.σ j j' →

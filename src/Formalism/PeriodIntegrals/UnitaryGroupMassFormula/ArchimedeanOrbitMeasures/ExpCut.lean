@@ -137,17 +137,13 @@ def PsiInvU : Prop := ∀ (n : ℕ) (ε : Fin n → Bool) (m h : Submodule ℝ (
         expR ε (L₀ p.1 : EuclideanSpace ℝ (Fin n × Fin n × Bool)) *
           expR ε (L₁ p.2 : EuclideanSpace ℝ (Fin n × Fin n × Bool))
 
-theorem unrealify_zero' (n : ℕ) : unrealify (0 : EuclideanSpace ℝ (Fin n × Fin n × Bool)) = 0 := by
-  funext i j
-  apply Complex.ext <;> simp [unrealify]
-
 theorem psiE_zero {n : ℕ} (ε : Fin n → Bool) (m h : Submodule ℝ (EuclideanSpace ℝ (Fin n × Fin n × Bool)))
     {ι η : Type} [Fintype ι] [Fintype η] (L₀ : EuclideanSpace ℝ ι ≃ₗᵢ[ℝ] m) (L₁ : EuclideanSpace ℝ η ≃ₗᵢ[ℝ] h) :
     psiE ε m h L₀ L₁ 0 = 0 := by
   have hr : realifyFun (0 : Matrix (Fin n) (Fin n) ℂ) = 0 := by
     funext q
     simp [realifyFun]
-  simp [psiE, unrealify_zero', hr]
+  simp [psiE, Formalism.MainNotions.S.Gauge.unrealify_zero, hr]
 
 theorem cayPsiU_of (hS : PsiSmoothU) (hM : PsiMeasU) (hI : PsiInvU) : CayPsiU := by
   intro n ε m h hmh horth ι η _ _ L₀ L₁

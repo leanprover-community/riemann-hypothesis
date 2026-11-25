@@ -11,7 +11,7 @@ noncomputable def UpperTheory.Reformulated.B.Qh21.UpU.{u_1} :
       ∀ (i j : Fin N), (j < i → U i j = (0 : K)) ∧ (i = j → U i j = (1 : K))
 
 theorem UpperTheory.Reformulated.B.Qh21.upU_mul.{u_1} :
-    ∀ {K : Type u_1} [inst : Field K] {N : ℕ} {A B : Matrix (Fin N) (Fin N) K},
+    ∀ {K : Type u_1} [Field K] {N : ℕ} {A B : Matrix (Fin N) (Fin N) K},
       UpperTheory.Reformulated.B.Qh21.UpU A → UpperTheory.Reformulated.B.Qh21.UpU B → UpperTheory.Reformulated.B.Qh21.UpU (A * B) := by
   intro K _ N A B hA hB i j
   have hz : j ≤ i → ∀ k : Fin N, k ≠ i → A i k * B k j = 0 := by

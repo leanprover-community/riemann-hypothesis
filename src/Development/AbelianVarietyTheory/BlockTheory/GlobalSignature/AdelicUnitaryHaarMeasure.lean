@@ -37,16 +37,6 @@ def UnimodularOver (R : Type) [CommRing R] [Algebra F R] [TopologicalSpace R] (�
 
 end Points
 
-def AdelicUnitaryHaar : Prop :=
-  ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-    (σ : E →ₐ[F] E), IsCMExt F E σ →
-    ∀ (M : ℕ) (J : Matrix (Fin M) (Fin M) E), IsHermND σ J →
-      UnimodularOver (AF F) σ J ∧ UnimodularOver (Ainf F) σ J ∧ UnimodularOver (Af F) σ J ∧
-      (∀ v : HeightOneSpectrum (𝓞 F), UnimodularOver (Fv F v) σ J) ∧
-      IsDiscreteWithDomains (ratPts (AF F) σ J) ∧
-      ∀ x : Fin 1 → Fin M → E, hE σ J (x 0) (x 0) ≠ 0 →
-        IsDiscreteWithDomains (HstabFin (AF F) σ J x)
-
 theorem isUnimodularLC_of_commGroup (G : Type) [CommGroup G] [TopologicalSpace G]
     [IsTopologicalGroup G] [T2Space G] [LocallyCompactSpace G] [SecondCountableTopology G]
     [MeasurableSpace G] [BorelSpace G] : IsUnimodularLC G :=

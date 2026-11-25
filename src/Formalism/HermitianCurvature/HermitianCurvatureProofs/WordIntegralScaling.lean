@@ -51,11 +51,3 @@ theorem rw_scale {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] (v : Lis
   exact h
 
 end Formalism.FourierDecayAlt.P.WordIntegralScaling
-
-namespace Formalism.FourierDecayAlt.P
-
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
-
-open scoped Matrix.Norms.Elementwise
-
-end Formalism.FourierDecayAlt.P

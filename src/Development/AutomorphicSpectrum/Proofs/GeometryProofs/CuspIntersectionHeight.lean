@@ -79,10 +79,6 @@ theorem ValAt.unique {X : Scheme.{0}} {Ω : Type} [Field Ω] {R : Type} [CommRin
   obtain ⟨hs', s', hsa', rfl⟩ := h'
   exact congrArg (Scheme.stalkClosedPointTo z).hom (hξ.inj ⟨centre z, hs⟩ (hsa.trans hsa'.symm))
 
-namespace CoordInhab
-
-end CoordInhab
-
 end GlobalTheory.CompanionTheory.Ar
 end -- clump:auto
 end -- clump:auto
@@ -235,25 +231,6 @@ end Final
 
 end GlobalTheory.CompanionTheory.Ar.ProvConj
 
-namespace GlobalTheory.CompanionTheory.Ar.ProvParts
-
-section An
-
-open MeasureTheory _root_.Metric Filter Topology ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.AnForm.M.FinHolAtlas
-open scoped ContDiff
-open GlobalTheory.CompanionTheory.Ar.Giv
-
-section PullTop
-
-variable {e : ℕ} {X : Type} [TopologicalSpace X]
-
-end PullTop
-
-end An
-
-open ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.ArakelovGeometry GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
-
-end GlobalTheory.CompanionTheory.Ar.ProvParts
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

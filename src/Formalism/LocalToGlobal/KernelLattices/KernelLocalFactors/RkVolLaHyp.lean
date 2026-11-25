@@ -676,11 +676,6 @@ section Lat
 variable {D : Car} {X : Fields} (s : Seam D X) {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base D cc δ)
 
 
-include B in
-theorem sc_pos : 0 < (TaylorLogMetric.area (Formalism.L2.Ker.Cd.TaylorLogMetric.lamOf D cc δ))⁻¹ := by
-  rw [show TaylorLogMetric.area (Formalism.L2.Ker.Cd.TaylorLogMetric.lamOf D cc δ) = Formalism.L2.Th1.F.area B.L from B.areaOK]
-  exact inv_pos.2 (Formalism.L2.Th1.F.areaPos_thm B.L)
-
 theorem delta_ne (hcc : Formalism.L2.Ker.Cd.TaylorLogMetric.IsCurveIdeal D cc) (hδ : Formalism.L2.Ker.Cd.TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ) : δ ≠ 0 :=
   Formalism.L2.Ker.Cd.IntegralLatticeDensity.delta_nonzero_link D cc hcc δ hδ
 
@@ -711,21 +706,6 @@ theorem La_theta {x : Formalism.L2.Ker.Cd.TaylorLogMetric.VC D a b} (hx : x ∈ 
   | zero => rw [smul_zero]; exact zero_mem _
   | add x y _ _ h1 h2 => rw [smul_add]; exact add_mem h1 h2
   | neg x _ h => rw [smul_neg]; exact neg_mem h
-
-theorem theta_laF {b₀ : ℤ} (hb : Odd b₀) {x : DVar X.Tau a b → ℂ} (hx : x ∈ s.laF B.tor L L') :
-    cmTheta b₀ D.host.d • x ∈ s.laF B.tor L L' := by
-  obtain ⟨k, rfl⟩ := hb
-  have h1 : cmTheta (2 * k + 1) D.host.d = (k : ℂ) + cmTheta 1 D.host.d := by
-    unfold cmTheta
-    push_cast
-    ring
-  show s.flatV a b (cmTheta (2 * k + 1) D.host.d • x) ∈ Formalism.L2.Ker.Cd.TaylorLogMetric.La D B.tor L L'
-  rw [map_smul, h1, add_smul]
-  refine add_mem ?_ (La_theta B hx)
-  have h2 : ((k : ℂ) • s.flatV a b x) = k • s.flatV a b x := by
-    rw [← Int.cast_smul_eq_zsmul ℂ]
-  rw [h2]
-  exact AddSubgroup.zsmul_mem _ hx k
 
 alias odd_of_cmOK := _root_.Formalism.L2.Ker.KS.Lat.odd_of_cmOK
 

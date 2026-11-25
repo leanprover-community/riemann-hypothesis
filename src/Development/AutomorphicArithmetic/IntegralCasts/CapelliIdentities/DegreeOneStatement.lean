@@ -9,7 +9,7 @@ import Std.Tactic.BVDecide.Normalize.Prop
 open MvPowerSeries Finsupp in
 theorem UpperTheory.Reformulated.B.LinearTermOfSubstitution.main :
     ∀ {S : Type}
-    [inst : CommRing S] {σ τ : Type} [inst_1 : Fintype σ] [DecidableEq σ] [DecidableEq τ] (a : σ → MvPowerSeries τ S),
+    [CommRing S] {σ τ : Type} [Fintype σ] [DecidableEq σ] [DecidableEq τ] (a : σ → MvPowerSeries τ S),
     (∀ (s : σ), (MvPowerSeries.constantCoeff : MvPowerSeries τ S → S) (a s) = (0 : S)) →
       ∀ (f : MvPowerSeries σ S) (t : τ),
         (MvPowerSeries.coeff fun₀ | t => (1 : ℕ) : MvPowerSeries τ S → S) (MvPowerSeries.subst a f) =

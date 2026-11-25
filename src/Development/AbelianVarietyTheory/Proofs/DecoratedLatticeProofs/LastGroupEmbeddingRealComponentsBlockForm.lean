@@ -128,9 +128,6 @@ theorem isBlock_of_entries {p q N n : ℕ} (hp : p = N) (hq : q = n) (hN : N = n
 
 end GlobalTheory.Mem.Col2.TC.BlockMatrixCriteria
 
-namespace GlobalTheory.Mem.Col2.TC
-
-end GlobalTheory.Mem.Col2.TC
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsBlockOfEntries =====

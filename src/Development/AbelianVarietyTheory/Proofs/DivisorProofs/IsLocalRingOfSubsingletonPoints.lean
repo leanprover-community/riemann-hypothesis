@@ -863,24 +863,18 @@ theorem finrank_range_baseChange_of_idem {R S M : Type} [CommRing R] [CommRing S
       Module.finrank R (LinearMap.range e) := by
   let r : M →ₗ[R] LinearMap.range e := e.rangeRestrict
   let i : LinearMap.range e →ₗ[R] M := (LinearMap.range e).subtype
-  have hri : r ∘ₗ i = LinearMap.id := by
-    refine LinearMap.ext fun x => Subtype.ext ?_
-    obtain ⟨y, hy⟩ := x.2
-    change e x.1 = x.1
-    rw [← hy]
-    exact LinearMap.congr_fun he y
+  have hproj := (LinearMap.isProj_range_iff_isIdempotentElem e).2 he
+  have hri : r ∘ₗ i = LinearMap.id :=
+    LinearMap.ext fun x => Subtype.ext (hproj.map_id x x.2)
   have hir : e = i ∘ₗ r := LinearMap.ext fun _ => rfl
   have hS : r.baseChange S ∘ₗ i.baseChange S = LinearMap.id := by
     rw [← LinearMap.baseChange_comp, hri, LinearMap.baseChange_id]
-  have hsurj : Function.Surjective (r.baseChange S) := fun x =>
-    ⟨i.baseChange S x, LinearMap.congr_fun hS x⟩
-  have hinj : Function.Injective (i.baseChange S) := fun x y hxy => by
-    have := congrArg (r.baseChange S) hxy
-    rwa [← LinearMap.comp_apply, hS, ← LinearMap.comp_apply, hS] at this
+  have hleft : Function.LeftInverse (r.baseChange S) (i.baseChange S) :=
+    LinearMap.congr_fun hS
   have h2 : e.baseChange S = i.baseChange S ∘ₗ r.baseChange S := by
     rw [← LinearMap.baseChange_comp, ← hir]
-  rw [h2, LinearMap.range_comp_of_range_eq_top _ (LinearMap.range_eq_top.2 hsurj),
-    LinearMap.finrank_range_of_inj hinj, Module.finrank_baseChange]
+  rw [h2, LinearMap.range_comp_of_range_eq_top _ (LinearMap.range_eq_top.2 hleft.surjective),
+    LinearMap.finrank_range_of_inj hleft.injective, Module.finrank_baseChange]
 
 def quotEquivRange {R A : Type} [CommRing R] [CommRing A] [Algebra R A] (f : A →ₐ[R] A)
     (I : Ideal A) (h : RingHom.ker f = I) : (A ⧸ I) ≃ₗ[R] LinearMap.range f.toLinearMap :=

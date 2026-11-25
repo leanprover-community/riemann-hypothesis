@@ -284,7 +284,6 @@ theorem exists_approx_core (s : Pl F) (T₁ : Finset (InfinitePlace F))
   classical
   let xF : Af F := ∑ v ∈ T₂, singleV F v (cF v)
   have hev : ∀ v, evalV F v xF = ∑ v' ∈ T₂, evalV F v (singleV F v' (cF v')) := fun v => by
-    set_option synthInstance.maxHeartbeats 100000 in
       simp only [xF, map_sum]
   have hxT : ∀ v ∈ T₂, evalV F v xF = cF v := fun v hv => by
     rw [hev, Finset.sum_eq_single v (fun v' _ hne => StrongApprox.evalV_single_ne hne.symm _)

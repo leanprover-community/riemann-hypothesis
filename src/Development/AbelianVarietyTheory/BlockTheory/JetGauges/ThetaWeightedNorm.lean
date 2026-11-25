@@ -161,12 +161,6 @@ structure ThetaIn (X : Data E r) where
   curvB : Everywhere X fun Lv =>
     19 / 10 * ((nd X : ℝ) + 2) * T * Lv (rh X) ≤ Lv (phla X Fp) - Lv (phK X)
 
-namespace ThetaIn
-
-variable {X : Data E r} (I : ThetaIn X)
-
-end ThetaIn
-
 end
 
 end GlobalTheory.IndefiniteRowSideFullHecke.ThetaWeightedNorm

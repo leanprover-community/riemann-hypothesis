@@ -200,11 +200,11 @@ theorem eq_placeOfEmbedding {w : PlacesOver F.1 v}
   refine (DFunLike.congr_fun key _).trans ?_
   rw [AlgHom.comp_apply, Pi.evalAlgHom_apply, Pi.single_eq_same, map_one]
 
-section Decomposition
+section PlaceDecomposition
 
-variable [F.1.fixingSubgroup.Normal]
+variable [Normal K.1 F.1]
 
-theorem decompHom_smul_placeOfEmbedding
+theorem decompHom_smul_placeOfEmbedding'
     (σ : Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1)) :
     decompHom (v.adicCompletion K.1) (embedLevel ι F) σ • placeOfEmbedding ι F =
       placeOfEmbedding ι F := by
@@ -225,11 +225,56 @@ theorem decompHom_smul_placeOfEmbedding
   calc τ • w₀ = τ • (τ⁻¹ • w₀) := by rw [h]
     _ = w₀ := smul_inv_smul τ w₀
 
-def localDecompHom :
+def placeDecompHom :
     Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1) →*
       MulAction.stabilizer Gal(F.1/K.1) (placeOfEmbedding ι F).1.asIdeal :=
   (decompHom (v.adicCompletion K.1) (embedLevel ι F)).codRestrict _ fun σ ↦
-    congrArg (fun u : PlacesOver F.1 v ↦ u.1.asIdeal) (decompHom_smul_placeOfEmbedding ι F σ)
+    MulAction.mem_stabilizer_iff.2
+      (congrArg (fun u : PlacesOver F.1 v ↦ u.1.asIdeal) (decompHom_smul_placeOfEmbedding' ι F σ))
+
+theorem coe_placeDecompHom (σ : Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1)) :
+    (placeDecompHom ι F σ : Gal(F.1/K.1)) = decompHom (v.adicCompletion K.1) (embedLevel ι F) σ :=
+  rfl
+
+theorem ι_placeDecompHom_apply
+    (σ : Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1)) (x : F.1) :
+    ι ((placeDecompHom ι F σ : Gal(F.1/K.1)) x : F.1) = σ (ι x) :=
+  decompHom_apply (Kv := v.adicCompletion K.1) (embedLevel ι F) σ x
+
+theorem continuous_placeDecompHom : Continuous (placeDecompHom ι F) :=
+  (continuous_decompHom (embedLevel ι F)).subtype_mk _
+
+theorem completionEmbedding_placeDecompHom_smul
+    (σ : Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1))
+    (y : (placeOfEmbedding ι F).1.adicCompletion F.1) :
+    completionEmbedding ι F (placeDecompHom ι F σ • y) = σ (completionEmbedding ι F y) := by
+  have : (completionEmbedding ι F).comp
+      (decompositionAlgEquiv v (placeOfEmbedding ι F).1 (placeDecompHom ι F σ)).toAlgHom =
+      σ.toAlgHom.comp (completionEmbedding ι F) := by
+    apply algHom_ext_adicCompletion
+    intro x
+    change completionEmbedding ι F (decompositionAlgEquiv v (placeOfEmbedding ι F).1
+      (placeDecompHom ι F σ) (algebraMap F.1 _ x)) = σ (completionEmbedding ι F (algebraMap F.1 _ x))
+    rw [decompositionAlgEquiv_algebraMap, completionEmbedding_algebraMap,
+      completionEmbedding_algebraMap, ι_placeDecompHom_apply]
+  exact DFunLike.congr_fun this y
+
+end PlaceDecomposition
+
+section Decomposition
+
+variable [F.1.fixingSubgroup.Normal]
+
+theorem decompHom_smul_placeOfEmbedding
+    (σ : Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1)) :
+    decompHom (v.adicCompletion K.1) (embedLevel ι F) σ • placeOfEmbedding ι F =
+      placeOfEmbedding ι F :=
+  decompHom_smul_placeOfEmbedding' ι F σ
+
+def localDecompHom :
+    Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1) →*
+      MulAction.stabilizer Gal(F.1/K.1) (placeOfEmbedding ι F).1.asIdeal :=
+  placeDecompHom ι F
 
 theorem coe_localDecompHom
     (σ : Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1)) :
@@ -239,25 +284,16 @@ theorem coe_localDecompHom
 theorem ι_localDecompHom_apply
     (σ : Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1)) (x : F.1) :
     ι ((localDecompHom ι F σ : Gal(F.1/K.1)) x : F.1) = σ (ι x) :=
-  decompHom_apply (Kv := v.adicCompletion K.1) (embedLevel ι F) σ x
+  ι_placeDecompHom_apply ι F σ x
 
 theorem continuous_localDecompHom : Continuous (localDecompHom ι F) :=
-  (continuous_decompHom (embedLevel ι F)).subtype_mk _
+  continuous_placeDecompHom ι F
 
 theorem completionEmbedding_smul
     (σ : Gal(AlgebraicClosure (v.adicCompletion K.1)/v.adicCompletion K.1))
     (y : (placeOfEmbedding ι F).1.adicCompletion F.1) :
-    completionEmbedding ι F (localDecompHom ι F σ • y) = σ (completionEmbedding ι F y) := by
-  have : (completionEmbedding ι F).comp
-      (decompositionAlgEquiv v (placeOfEmbedding ι F).1 (localDecompHom ι F σ)).toAlgHom =
-      σ.toAlgHom.comp (completionEmbedding ι F) := by
-    apply algHom_ext_adicCompletion
-    intro x
-    change completionEmbedding ι F (decompositionAlgEquiv v (placeOfEmbedding ι F).1
-      (localDecompHom ι F σ) (algebraMap F.1 _ x)) = σ (completionEmbedding ι F (algebraMap F.1 _ x))
-    rw [decompositionAlgEquiv_algebraMap, completionEmbedding_algebraMap,
-      completionEmbedding_algebraMap, ι_localDecompHom_apply]
-  exact DFunLike.congr_fun this y
+    completionEmbedding ι F (localDecompHom ι F σ • y) = σ (completionEmbedding ι F y) :=
+  completionEmbedding_placeDecompHom_smul ι F σ y
 
 def localUnitsMor :
     Rep.res (localDecompHom ι F) (Rep.ofMulDistribMulAction

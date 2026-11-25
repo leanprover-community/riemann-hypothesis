@@ -18,7 +18,7 @@ private theorem UpperTheory.Reformulated.B.Ydb5.le_order_iff {σ R : Type*} [Com
     rw [map_sub, h d hd, sub_self]
 
 theorem UpperTheory.Reformulated.B.Ydb5.existsUnique_fixedPoint.{u_1, u_2} :
-    ∀ {σ : Type u_1} {R : Type u_2} [inst : CommRing R] (Φ : MvPowerSeries σ R → MvPowerSeries σ R),
+    ∀ {σ : Type u_1} {R : Type u_2} [CommRing R] (Φ : MvPowerSeries σ R → MvPowerSeries σ R),
       (∀ (f g : MvPowerSeries σ R) (n : ℕ), (↑n : ℕ∞) ≤ (f - g).order → (↑(n + (1 : ℕ)) : ℕ∞) ≤ (Φ f - Φ g).order) →
         ∃! f : MvPowerSeries σ R, Φ f = f := by
   intro σ R _ Φ h

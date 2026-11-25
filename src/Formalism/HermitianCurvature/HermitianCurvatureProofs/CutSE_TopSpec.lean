@@ -644,9 +644,6 @@ theorem hs_neg_l (A C : Wq →L[ℂ] Wp) : B.hsInner (-A) C = -B.hsInner A C := 
 theorem hs_neg_r (A C : Wq →L[ℂ] Wp) : B.hsInner A (-C) = -B.hsInner A C := by
   rw [← neg_one_smul ℂ C, _root_.Formalism.FourierDecayAlt.P5.HerB.hs_smul_right]; simp
 
-theorem hs_zero_l (C : Wq →L[ℂ] Wp) : B.hsInner 0 C = 0 := by
-  rw [← zero_smul ℂ (0 : Wq →L[ℂ] Wp), _root_.Formalism.FourierDecayAlt.P5.hsInner_smul_left]; ring
-
 theorem hs_zero_r (A : Wq →L[ℂ] Wp) : B.hsInner A 0 = 0 := by
   rw [← zero_smul ℂ (0 : Wq →L[ℂ] Wp), _root_.Formalism.FourierDecayAlt.P5.HerB.hs_smul_right]; simp
 
@@ -922,7 +919,7 @@ theorem sumPt_plus (X : ActualOps k r z z' π π') (L : R.LevelData (Pr (RadSp k
   have hct : conj (p l) ≠ 0 := (map_ne_zero _).mpr ht
   simp only [vl, map_zero, ZeroMemClass.coe_zero, Pi.zero_apply, Submodule.coe_add, Submodule.coe_sub,
     Submodule.coe_neg, Submodule.coe_smul, Pi.add_apply, Pi.sub_apply, Pi.neg_apply, Pi.smul_apply, opv1, opv2, opv4,
-    opv5, sub_eq_add_neg, _root_.Formalism.FourierDecayAlt.P5.HerB.hs_add_left, _root_.Formalism.FourierDecayAlt.P5.HerB.hs_add_right, _root_.Formalism.FourierDecayAlt.P5.hsInner_smul_left, _root_.Formalism.FourierDecayAlt.P5.HerB.hs_smul_right, hs_neg_l, hs_neg_r, hs_zero_l, hs_zero_r, map_inv₀,
+    opv5, sub_eq_add_neg, _root_.Formalism.FourierDecayAlt.P5.HerB.hs_add_left, _root_.Formalism.FourierDecayAlt.P5.HerB.hs_add_right, _root_.Formalism.FourierDecayAlt.P5.hsInner_smul_left, _root_.Formalism.FourierDecayAlt.P5.HerB.hs_smul_right, hs_neg_l, hs_neg_r, Formalism.FourierDecayAlt.P5.HerA.hsInner_zero_left, hs_zero_r, map_inv₀,
     hY, Complex.conj_conj]
   field_simp
   ring
@@ -944,7 +941,7 @@ theorem sumPt_minus (X : ActualOps k r z z' π π') (L : R.LevelData (Pr (RadSp 
   have hct : conj (p l) ≠ 0 := (map_ne_zero _).mpr ht
   simp only [vl, map_zero, ZeroMemClass.coe_zero, Pi.zero_apply, Submodule.coe_add, Submodule.coe_sub,
     Submodule.coe_neg, Submodule.coe_smul, Pi.add_apply, Pi.sub_apply, Pi.neg_apply, Pi.smul_apply, opv1, opv2, opv4,
-    opv5, sub_eq_add_neg, _root_.Formalism.FourierDecayAlt.P5.HerB.hs_add_left, _root_.Formalism.FourierDecayAlt.P5.HerB.hs_add_right, _root_.Formalism.FourierDecayAlt.P5.hsInner_smul_left, _root_.Formalism.FourierDecayAlt.P5.HerB.hs_smul_right, hs_neg_l, hs_neg_r, hs_zero_l, hs_zero_r, map_inv₀,
+    opv5, sub_eq_add_neg, _root_.Formalism.FourierDecayAlt.P5.HerB.hs_add_left, _root_.Formalism.FourierDecayAlt.P5.HerB.hs_add_right, _root_.Formalism.FourierDecayAlt.P5.hsInner_smul_left, _root_.Formalism.FourierDecayAlt.P5.HerB.hs_smul_right, hs_neg_l, hs_neg_r, Formalism.FourierDecayAlt.P5.HerA.hsInner_zero_left, hs_zero_r, map_inv₀,
     hY, Complex.conj_conj, map_neg]
   field_simp
   ring
@@ -1095,10 +1092,6 @@ variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [Norm
   [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] {S : Type} [Fintype S] [DecidableEq S]
   {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {π : Mx k r → (Wp →L[ℂ] Wp)} {π' : Mx k r → (Wq →L[ℂ] Wq)}
 
-theorem glue_succ_self (l : Fin r) (c : Fin r → ℂ) (t : ℂ) (c' : Cf r l.succ) :
-    glue l.succ (Function.update c l t) c' l = t := by
-  simp [glue]
-
 theorem eU_mem (K : Submodule ℂ (RadSp k r z z' π π')) (a : S) (i j : Fin 2) (v : Ix S → RadSp k r z z' π π')
     (hv : ∀ b, v b ∈ K) (y : Ix S) : act (eU a i j : SlopeTestRemainingChoices S (Pr (RadSp k r z z' π π'))) v y ∈ K := by
   rw [action_elementary_unit_apply]
@@ -1164,7 +1157,7 @@ theorem core (X : ActualOps k r z z' π π') (L : R.LevelData (Pr (RadSp k r z z
       (hL2 _ _ hu hv) (hL2 _ _ hu hE) (hL2 _ _ (hop2 2 0 u hu) hE) (hL2 _ _ hu (hop2 5 3 _ hE))
       (fun c' g => by
         simp only [hsSum]
-        rw [sumPt_minus X L hAL l le hp hY u v _ (by rw [glue_succ_self]; exact ht) (Matrix.of g), glue_succ_self]
+        rw [sumPt_minus X L hAL l le hp hY u v _ (by rw [Formalism.FourierDecayAlt.P5.glue_succ_update]; exact ht) (Matrix.of g), Formalism.FourierDecayAlt.P5.glue_succ_update]
         ring)
     have hleib := (hLb u _ hu hE).1
     have hpr := hprod true
@@ -1186,7 +1179,7 @@ theorem core (X : ActualOps k r z z' π π') (L : R.LevelData (Pr (RadSp k r z z
       (hL2 _ _ hu hv) (hL2 _ _ hu hE) (hL2 _ _ (hop2 5 3 u hu) hE) (hL2 _ _ hu (hop2 2 0 _ hE))
       (fun c' g => by
         simp only [hsSum]
-        rw [sumPt_plus X L hAL l le hp hY u v _ (by rw [glue_succ_self]; exact ht) (Matrix.of g), glue_succ_self]
+        rw [sumPt_plus X L hAL l le hp hY u v _ (by rw [Formalism.FourierDecayAlt.P5.glue_succ_update]; exact ht) (Matrix.of g), Formalism.FourierDecayAlt.P5.glue_succ_update]
         ring)
     have hleib := (hLb u _ hu hE).2
     have hpr := hprod false
@@ -1203,7 +1196,6 @@ theorem core (X : ActualOps k r z z' π π') (L : R.LevelData (Pr (RadSp k r z z
 end Core
 
 end OneLetterPf
-
 
 open OneLetterPf in
 theorem one_letter_density_estimate (hL : LeibnizCls) (hS : DensSmoothCls) : OneLetterDens := by

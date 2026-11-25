@@ -28,10 +28,6 @@ theorem trG_closedEmb {n : ℕ} (hn : n = 2 * r + k + 1) (ε : Fin n → Bool) {
     Topology.IsClosedEmbedding (fun γ : Formalism.REAL.UJ ε => (Matrix.of.symm (Formalism.L2.SG.RealObj.trG Q Qi γ) : Mt k r)) := by
   apply _root_.Formalism.L2.SG.Pf.WuBL.trG_closedEmb' <;> assumption
 
-private theorem isUnit_det_of_mem_UH_Hpk {g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
-    (hg : g ∈ UH (Hpk k r)) : IsUnit g.det := by
-  apply _root_.Formalism.L2.SG.Pf.Jac.unit_of_UH <;> assumption
-
 private theorem measurable_inv_apply (i j : Fin (2 * r + k + 1)) :
     Measurable fun x : Mt k r => (Matrix.of x)⁻¹ i j := by
   have e : (fun x : Mt k r => (Matrix.of x)⁻¹ i j) =
@@ -94,7 +90,7 @@ theorem muS_swap {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hT : 0 < T
     _ = Formalism.MainNotions.S.muS μW μN := by
         unfold Formalism.MainNotions.S.muS
         refine Measure.map_congr (hae.mono fun p hp => ?_)
-        have hu := isUnit_det_of_mem_UH_Hpk hp.1
+        have hu := _root_.Formalism.L2.SG.Pf.Jac.unit_of_UH hp.1
         funext i j
         show ((Matrix.of p.1 * Matrix.of p.2 * (Matrix.of p.1)⁻¹) * Matrix.of p.1) i j =
           (Matrix.of p.1 * Matrix.of p.2) i j
@@ -127,7 +123,7 @@ theorem muS_loc {n : ℕ} (hn : n = 2 * r + k + 1) (ε : Fin n → Bool) {Q : Ma
   have hUHrange : ∀ M : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ, M ∈ UH (Hpk k r) →
       ∃ γ : Formalism.REAL.UJ ε, Formalism.L2.SG.RealObj.trG Q Qi γ = M := by
     intro M hM
-    have hMd := isUnit_det_of_mem_UH_Hpk hM
+    have hMd := _root_.Formalism.L2.SG.Pf.Jac.unit_of_UH hM
     have hQd : IsUnit (Q.det * Qi.det) := by
       rw [← Matrix.det_mul, h2, Matrix.det_one]
       exact isUnit_one

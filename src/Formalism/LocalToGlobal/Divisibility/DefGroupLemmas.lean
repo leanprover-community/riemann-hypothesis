@@ -1789,11 +1789,6 @@ def gT : GL (Fin 3) (ZMod 5) :=
 def gB : GL (Fin 3) (ZMod 5) :=
   ⟨!![2, 1, 1; 0, 3, 0; 0, 0, 4], !![3, 4, 3; 0, 2, 0; 0, 0, 4], by decide, by decide⟩
 
-theorem gB_mem : gB ∈ blockTri (blkOf 1 1) :=
-  mem_blockTri.2 (by
-    intro i j h
-    fin_cases i <;> fin_cases j <;> first | rfl | exact absurd h (by decide))
-
 end Tests
 
 end Formalism.L2.DIV

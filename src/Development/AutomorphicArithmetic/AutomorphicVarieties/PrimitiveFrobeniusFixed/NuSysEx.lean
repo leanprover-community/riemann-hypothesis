@@ -636,13 +636,6 @@ private theorem der_div (τ : ℕ → G ℚ Ω) (L : List ℕ) (u v : Ω) : der 
   | nil => rfl
   | cons q L ih => simp only [der, ih, der1, map_div₀, div_pow, Finset.prod_div_distrib]
 
-private theorem der_pow (τ : ℕ → G ℚ Ω) (L : List ℕ) (u : Ω) (k : ℕ) : der τ L (u ^ k) = der τ L u ^ k := by
-  induction L with
-  | nil => rfl
-  | cons q L ih =>
-    simp only [der, ih, der1, map_pow, ← Finset.prod_pow]
-    exact Finset.prod_congr rfl fun i _ => by rw [← pow_mul, ← pow_mul, mul_comm]
-
 private theorem der_prod (τ : ℕ → G ℚ Ω) (L : List ℕ) (S : Finset ℕ) (f : ℕ → Ω) :
     der τ L (∏ i ∈ S, f i) = ∏ i ∈ S, der τ L (f i) := by
   induction L with
@@ -768,12 +761,12 @@ theorem UpperTheory.V.ML.kolStep :
   replace hstep := hstep q hq.one_le (wfix _ hτN)
   have hnrm : nrm q (τ q) (der τ L (x (q * n))) = (der τ L (x n) / φ⁻¹ (der τ L (x n))) ^ s n q := by
     have h1 := congrArg (der τ L) (hs.norm n q hq hadm' (τ q) hτFn hτq.2 φ hφP)
-    rw [der_pow, der_div, ← ycomm, nrm, der_prod] at h1
+    rw [UpperTheory.V.ML.di_der_pow, der_div, ← ycomm, nrm, der_prod] at h1
     rw [← h1, nrm]
     exact Finset.prod_congr rfl fun i _ => wcomm _
   have hcong : ∀ B : ValuationSubring Ω, Over B q →
       Pr B (der τ L (x (q * n)) / φ⁻¹ (der τ L (x n)) ^ s n q) := by
-    rw [ycomm, ← der_pow, ← der_div]
+    rw [ycomm, ← UpperTheory.V.ML.di_der_pow, ← der_div]
     refine pr_der τ L fun B hB => pr_of_sub ?_ (hs.cong n q hq hadm' φ hφP B hB)
     rw [map_pow, unit_gal (hs.unit n hadm) _ B (hAr B hB), one_pow]
   have hhom := (kolHom Ω M F n a hFn hMF ζ hζ δ hδ _ y0 yfix κ hκ).1

@@ -980,8 +980,7 @@ theorem substitution_comp_relation (hd : d.AxH 𝒜) (c : ι) :
     AlgHom.restrictScalars_apply]
   simp only [Data.relationEliminateColumn, aeval_X]
   split_ifs with ht
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_neg, map_sum]
+  · rw [map_neg, map_sum]
     simp only [map_mul, hrho]
 
     have htot : ∑ k, (d.affineRowCombination c 0 * X (t.1.succ, k) - d.affineRowCombination c t.1.succ * X (0, k)) *

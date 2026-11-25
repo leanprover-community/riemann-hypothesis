@@ -106,7 +106,3 @@ theorem rep_of {E : Spc} (ω : Hl l E 0 0)
     rw [h1, zero_smul]
 
 end LateralTheory.EtaleTrace.H0LimitCoherence
-
-namespace LateralTheory.EtaleTrace
-
-end LateralTheory.EtaleTrace

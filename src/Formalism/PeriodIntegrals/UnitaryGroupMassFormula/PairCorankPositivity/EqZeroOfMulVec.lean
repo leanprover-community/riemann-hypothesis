@@ -41,13 +41,8 @@ theorem det_mul_last {r : ℕ} (A : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (v : F
     Even.neg_one_pow ⟨r, rfl⟩, one_mul]
 
 theorem eq_zero_of_mulVec {n : Type} [Fintype n] [DecidableEq n] (A : Matrix n n E) (v : n → E)
-    (hA : A.det ≠ 0) (h : A *ᵥ v = 0) : v = 0 := by
-  have key : A.adjugate *ᵥ (A *ᵥ v) = A.det • v := by
-    rw [Matrix.mulVec_mulVec, Matrix.adjugate_mul]
-    ext i
-    simp [Matrix.mulVec, dotProduct, Matrix.smul_apply, Matrix.one_apply]
-  rw [h, Matrix.mulVec_zero] at key
-  exact (smul_eq_zero.1 key.symm).resolve_left hA
+    (hA : A.det ≠ 0) (h : A *ᵥ v = 0) : v = 0 :=
+  Matrix.eq_zero_of_mulVec_eq_zero hA h
 
 theorem Dl_top {S : HSpace E} {r : ℕ} {T T' : E} (F : FlagG S r T) (F' : FlagG S r T') :
     Dl F F' (r + 1) = (Zhat F F').det := by

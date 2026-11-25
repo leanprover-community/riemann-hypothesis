@@ -68,29 +68,6 @@ private theorem orderAtLeastLocus_subset_support_of_isMaxContactHypersurface (k 
     rw [hbase] at h3
     exact h3
 
-private theorem orderAtLeastLocus_comap_iso_eq_empty {X Y : Scheme.{u}} (e : X ≅ Y)
-    (J : Y.IdealSheafData) (n : ℕ) (hJ : orderAtLeastLocus J n = ∅) :
-    orderAtLeastLocus (J.comap e.hom) n = ∅ := by
-  rw [_root_.FunctorialResolution.EmbeddedResolution.orderAtLeastLocus_comap_iso_hom_eq_preimage e J n, hJ, Set.preimage_empty]
-
-private theorem orderAtLeastLocus_eq_empty_of_comap_iso {X Y : Scheme.{u}} (e : X ≅ Y)
-    (J : Y.IdealSheafData) (n : ℕ) (hJ : orderAtLeastLocus (J.comap e.hom) n = ∅) :
-    orderAtLeastLocus J n = ∅ := by
-  rw [_root_.FunctorialResolution.EmbeddedResolution.orderAtLeastLocus_comap_iso_hom_eq_preimage e J n] at hJ
-  have hsurj : ∀ y : ↥Y, ∃ x : ↥X, e.hom x = y := by
-    intro y
-    refine ⟨e.inv y, ?_⟩
-    simp
-  ext y
-  simp only [Set.mem_empty_iff_false, iff_false]
-  intro hy
-  obtain ⟨x, hx⟩ := hsurj y
-  have hmem : x ∈ (⇑e.hom ⁻¹' orderAtLeastLocus J n) := by
-    simp only [Set.mem_preimage, hx]
-    exact hy
-  rw [hJ] at hmem
-  exact hmem
-
 private theorem orderAtLeastLocus_append_eq_empty {k : Type u} [Field k] {X : Scheme.{u}}
     {p : X ⟶ Spec (CommRingCat.of k)} {I : X.IdealSheafData} {m : ℕ} {E : List X.IdealSheafData}
     (s : MarkedBlowupSequenceData p I m E)
@@ -108,13 +85,13 @@ private theorem orderAtLeastLocus_append_eq_empty {k : Type u} [Field k] {X : Sc
       have hobj : (s.appendToBlowupSequenceData t).obj (s.length + t.length) = s.obj (s.length + t.length) :=
         MarkedBlowupSequenceData.appendToBlowupSequenceData_schemeAt_of_le_length s t hle
       rw [MarkedBlowupSequenceData.appendIdeal_of_le_length s t hle]
-      exact orderAtLeastLocus_comap_iso_eq_empty (eqToIso hobj) _ _ (hs hz _ (by omega))
+      exact (orderAtLeastLocus_comap_iso_eq_empty_iff (eqToIso hobj) _ _).2 (hs hz _ (by omega))
     · have hgt : s.length < s.length + t.length := by omega
       have hobj : (s.appendToBlowupSequenceData t).obj (s.length + t.length)
           = t.obj (s.length + t.length - s.length) :=
         MarkedBlowupSequenceData.appendToBlowupSequenceData_schemeAt_of_length_lt s t hgt
       rw [MarkedBlowupSequenceData.appendIdeal_of_length_lt s t hgt]
-      exact orderAtLeastLocus_comap_iso_eq_empty (eqToIso hobj) _ _ (ht _ (by omega))
+      exact (orderAtLeastLocus_comap_iso_eq_empty_iff (eqToIso hobj) _ _).2 (ht _ (by omega))
   exact key _ (MarkedBlowupSequenceData.append_length s t hinv)
 
 private theorem orderAtLeastLocus_derivedTriple_ideal_length_eq_empty (hstar : MaxContactCoverProperties.{u}) (P : ℕ → Prop)
@@ -304,9 +281,9 @@ theorem orderAtLeastLocus_coverMarkedBlowupData_eq_empty (hstar : MaxContactCove
     exact hlow _ rfl
   · intro hz i hi
     subst hi
-    refine orderAtLeastLocus_eq_empty_of_comap_iso
+    refine (orderAtLeastLocus_comap_iso_eq_empty_iff
       (BlowupSequenceData.ofSequenceOfBlowups (A 0 (reduceAlongHypersurfaceTriple T h.valid hinv A hft)).toSequenceOfBlowups).isoZero
-      _ _ ?_
+      _ _).1 ?_
     refine Eq.trans (hcs 0 (Nat.zero_le _)) ?_
     rw [← MaxContactCoverData.derivedTriple_mult (MaxContactCoverData.coverTriple T h.valid)
       (separateAllBoundary T h.valid hinv A) hft

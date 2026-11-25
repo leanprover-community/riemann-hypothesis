@@ -1324,7 +1324,7 @@ theorem two_orbits [NonarchimedeanGroup G] {Q P : Subgroup G} {w : G}
   let O : S.toSubmodule →ₗ[ℂ] cIndSpace H₂ τ₂ :=
     ((resInd σ H₂ hH₂ τ₂ E₂ hE₂).comp S.toSubmodule.subtype).codRestrict _ mem2
   have hOinj : Function.Injective O := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro f hf
     refine Subtype.ext (Subtype.ext (Subtype.ext (funext fun g => ?_)))
     rcases hcov g with h | ⟨q, hq, p, hp, rfl⟩

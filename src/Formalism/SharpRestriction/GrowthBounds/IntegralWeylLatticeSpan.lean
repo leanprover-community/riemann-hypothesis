@@ -29,7 +29,7 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.G Number
 
 namespace Formalism.L2.G
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar Formalism.BasicNotions.factResChar
+attribute [local instance] Formalism.BasicNotions.factResChar
 
 variable (D : D7) (H : FullTiedNoG D)
   (I0 : ∀ u (w : D.what₂.places.Pl), GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w) →

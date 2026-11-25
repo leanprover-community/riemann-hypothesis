@@ -114,8 +114,7 @@ theorem wtf_id_appLE {X : Scheme.{0}} (U : X.Opens) (h : U ≤ (𝟙 X : X ⟶ X
 
 theorem wtf_appLE_congr {X Y : Scheme.{0}} {f g : X ⟶ Y} (e : f = g) (U : Y.Opens) (V : X.Opens)
     (h : V ≤ f ⁻¹ᵁ U) (h' : V ≤ g ⁻¹ᵁ U) : f.appLE U V h = g.appLE U V h' := by
-  subst e
-  rfl
+  exact GlobalTheory.FramedBaseChange.appLE_eq_of_eq e U V h h'
 
 theorem wtf_ppx_le {S T : Type} [CommRing S] [CommRing T] {x : Sp S ⟶ Xo.X} {x' : Sp T ⟶ Xo.X}
     (pm : Gx x' ⟶ Gx x)
@@ -347,11 +346,6 @@ theorem rdIndep_laws (hS : ReciprocityTheory.ChartRestriction.G.Out.SecBaseChang
 
 end ReciprocityTheory.ChartRestriction.G.PullbackSections
 
-namespace ReciprocityTheory.ChartRestriction.G.PullbackSections
-
-open Formalism.L2.Pj
-
-end ReciprocityTheory.ChartRestriction.G.PullbackSections
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

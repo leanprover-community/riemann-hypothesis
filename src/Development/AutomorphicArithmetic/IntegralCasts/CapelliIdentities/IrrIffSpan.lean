@@ -38,8 +38,8 @@ private theorem UpperTheory.Reformulated.B.Qe4.subalgebra_eq_top {K V : Type*} [
   exact r.2
 
 theorem UpperTheory.Reformulated.B.Qe4.irrIffSpan :
-    ∀ {K G ι : Type} [inst : Field K] [IsAlgClosed K] [inst_2 : Group G]
-    [inst_3 : Fintype ι] [inst_4 : DecidableEq ι] (ρ : G →* Matrix ι ι K),
+    ∀ {K G ι : Type} [Field K] [IsAlgClosed K] [Group G]
+    [Fintype ι] [DecidableEq ι] (ρ : G →* Matrix ι ι K),
     (∀ (N : Submodule K (ι → K)), (∀ (g : G), ∀ v ∈ N, ((ρ : G → Matrix ι ι K) g).mulVec v ∈ N) → N = ⊥ ∨ N = ⊤) ↔
       Submodule.span K (Set.range (⇑ρ : G → Matrix ι ι K)) = ⊤ := by
   intro K G ι _ _ _ _ _ ρ

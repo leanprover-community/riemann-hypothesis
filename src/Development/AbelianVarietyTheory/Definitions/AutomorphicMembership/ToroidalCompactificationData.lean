@@ -154,13 +154,6 @@ structure IsBdOf (B : s.Bd L) : Prop where
   metOm : ∀ k f t, (coOm (s.fd k) s.j_le f.1 (s.lab L k t))ᴴ * (B k).metOm (s.zOf L k f) t *
     coOm (s.fd k) s.j_le f.1 (s.lab L k t) = x.gramOm L k f t
 
-namespace IsBdOf
-
-variable {x L} {B B' : s.Bd L} (h : IsBdOf x L B) (k : s.Comp) {z : Pt D.what₂.Tau j (N - j)}
-include h
-
-end IsBdOf
-
 end Domain
 
 end GlobalTheory.ShFam

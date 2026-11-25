@@ -236,7 +236,6 @@ theorem eq_of_formPoly_eq {n : ℕ} {a b : (Fin n → σ) → ℝ}
 
 theorem eval_formPoly {n : ℕ} (a : (Fin n → σ) → ℝ) (l : σ → ℝ) :
     eval l (PB.formPoly n a) = ∑ w, a w * ∏ j, l (w j) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp [PB.formPoly, map_sum, map_prod]
 
 end Words

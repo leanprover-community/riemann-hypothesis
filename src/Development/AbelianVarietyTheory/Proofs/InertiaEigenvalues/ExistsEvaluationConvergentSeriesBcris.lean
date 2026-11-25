@@ -1367,7 +1367,6 @@ theorem crisFrobenius_periodT_eq_prime_smul (P : LocPrime l) (K : FinExt l) : P.
   rwa [P.PD_φ, P.period_datum_t_eq, P.PD_p] at h
 
 
-set_option maxHeartbeats 1000000 in
 theorem exists_eval : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P), LocTied l P AI → ∀ (K : FinExt l) (s : ℕ) (LL : FinExt l), Good K s LL → ∀ (Γ : GamS P K s LL) (R : WSer Γ) (I : IoS AI R), IoW I → ∀ β : RA LL →+* ↥LL.1 ⊗[ℚ_[l]] P.R.B, IsBeta AI β → ∃ J, IsEval I β J := by
   intro l _ P AI T K s LL hG Γ R I hW β hβ
   obtain ⟨N, _, _, c, b, κ, φ, γ, t, ⟨hκb, hφb, hκφ, hγb, hκγ, hκt⟩, hc, hb, hbo, hκc, ⟨hφ, hφc⟩, hγ, hs, hlog, hcl⟩ :=
@@ -1378,7 +1377,6 @@ theorem exists_eval : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAin
   let μ : ℕ → N := fun s => b ((1 : ↥(OL LL)) ⊗ₜ[ℤ_[l]] (WittVector.teichmuller l (AI.εroot s) - 1))
   have hμ : ∀ s, Small (μ s) := hs
   have hc' : Bdd c := hc
-  set_option synthInstance.maxHeartbeats 200000 in
   let f : LetA ↥(OL LL) (Module.finrank ℚ_[l] ↥(K0 K)) →+* N := b.comp I.io.toRingHom
   have hf : ∀ a, f a = b (I.io a) := fun _ => rfl
   have hfπ : f letπ = μ s := congrArg b I.io_π
@@ -1469,7 +1467,6 @@ theorem exists_eval : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAin
       simp
     have hev : ∀ x : ℕ → ↥LL.1, π (∑ k ∈ Finset.range m, c (x k) * τ ^ k) =
         ∑ k ∈ Finset.range m, ι (x k) * ((((l : ℚ_[l]) ^ s)⁻¹) • P.ιB P.tB) ^ k := fun x => by
-      set_option synthInstance.maxHeartbeats 100000 in
         simp only [map_sum, map_mul π, map_pow π, hπc, hπτ]
     have hlim : Tendsto (fun M : ℕ => Polynomial.eval₂ c (μ s) (trunc M (a i)) - ∑ k ∈ Finset.range m,
         c (coeff k (Polynomial.aeval (C ζ * exp ↥LL.1 - 1) (trunc M (a i)))) * τ ^ k) atTop
@@ -1482,7 +1479,6 @@ theorem exists_eval : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAin
       exact h)
     rw [Set.mem_setOf_eq, ← hπ, map_sub, hev] at hmem
     have e2 : π (∑ j, f (letE j) * ev c (μ s) (a j)) = π (ev c (μ s) (a i)) := by
-      set_option synthInstance.maxHeartbeats 100000 in
         simp [map_sum, map_mul π, hπE]
     rw [← hπ, e2]
     exact (Set.ext_iff.1 (P.PD_Fil _ K m) _).1 hmem

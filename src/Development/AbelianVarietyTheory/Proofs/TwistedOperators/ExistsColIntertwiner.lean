@@ -143,9 +143,9 @@ theorem exists_local_lift : ∀ (N n : ℕ) (hn : n ≤ N) (ν : Fin N → ℕ) 
         ((h.map star).det ^ x₁ * (g.map star).det ^ x₃) • subst2 (h.map star) ((g.map star)⁻¹)ᵀ (cj P) := by
       simp only [cj]
       rw [map_star_smul, map_star_subst2, Contraction.inv_transpose hg,
-        Contraction.inv_transpose (map_star_mem hg)]
+        Contraction.inv_transpose (GlobalTheory.ConjTwist.map_star_mem hg)]
       simp only [Contraction.det_map_star, star_mul', star_zpow₀]
-    have key := hI₀ (h.map star) (map_star_mem hh) (g.map star) (map_star_mem hg) (cj P)
+    have key := hI₀ (h.map star) (GlobalTheory.ConjTwist.map_star_mem hh) (g.map star) (GlobalTheory.ConjTwist.map_star_mem hg) (cj P)
     simp only [zpow_zero, one_smul, map_star_map_star] at key
     show LinearMap.adjoint (I₀ (cj _)) (σ g v) = σ' h (LinearMap.adjoint (I₀ (cj P)) v)
     rw [hQ]

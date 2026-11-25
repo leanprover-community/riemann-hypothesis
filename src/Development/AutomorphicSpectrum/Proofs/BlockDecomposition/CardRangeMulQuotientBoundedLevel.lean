@@ -20,8 +20,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Rd1.sum_comp_surj :
-    ∀ {A B : Type} [inst : AddCommGroup A] [inst_1 : AddCommGroup B]
-    [inst_2 : Fintype A] [inst_3 : Fintype B] (π : A →+ B),
+    ∀ {A B : Type} [AddCommGroup A] [AddCommGroup B]
+    [Fintype A] [Fintype B] (π : A →+ B),
     Function.Surjective (⇑π : A → B) →
       ∀ (G : B → ℂ), (↑(Fintype.card B) : ℂ) * ∑ a : A, G ((π : A → B) a) = (↑(Fintype.card A) : ℂ) * ∑ b : B, G b := by
   intro A B _ _ _ _ π hπ G

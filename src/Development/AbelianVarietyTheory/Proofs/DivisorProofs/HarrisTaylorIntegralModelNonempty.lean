@@ -245,7 +245,7 @@ theorem localization_away_injective_of_dvd (R : Type) [CommRing R] [IsNoetherian
     simpa using hle hx
   refine ⟨t, ht, ?_⟩
   intro c ⟨d, hd⟩ κ hκ
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro x hx
   obtain ⟨⟨a, m⟩, rfl⟩ := IsLocalization.mk'_surjective (Submonoid.powers c) x
   have hspec := IsLocalization.mk'_spec (Localization.Away c) a m
@@ -829,7 +829,6 @@ theorem exists_spread_of_pullbacks : ∀ (g n : ℕ) (B : Type) [CommRing B] (ζ
     hinj _ ⟨r₀ * s, by ring⟩ lr (lamc _ hr)
   let er : Localization.Away (r₀ * t₁ * s) ≃+* R₁ :=
     RingEquiv.ofBijective lr.rangeRestrict ⟨fun x y hxy => hlinj (congrArg Subtype.val hxy), lr.rangeRestrict_surjective⟩
-  have erv : ∀ x, (er x : Localization.AtPrime 𝔭) = lr x := fun _ => rfl
   obtain ⟨⟨d', hd'⟩, -⟩ := GlobalTheory.siegPre_pullback g n B ζ (Sp R) (Sp (Localization.Away (r₀ * t₁ * s)))
     (spMap β) (spMap ((algebraMap R (Localization.Away (r₀ * t₁ * s))).comp β))
     (spMap (algebraMap R (Localization.Away (r₀ * t₁ * s)))) d (spc _ _).symm

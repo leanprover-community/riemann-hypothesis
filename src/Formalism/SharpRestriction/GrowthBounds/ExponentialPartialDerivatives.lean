@@ -365,11 +365,6 @@ theorem pderiv_eval_single {n : ℕ} {a : Fin 1 → Pt C n dd} (ha : Z0 a) (f : 
 theorem germEval_oneStandardPoint_self (f : PS C 1 dd) : ev (n := 1) ![pt C dd 0] f = f := by
   apply _root_.Formalism.L2.FormalSeriesBounds.LogEx.ev_self1 <;> assumption
 
-theorem constantCoeff_pderiv {σ : Type} (q : σ) (f : MvPowerSeries σ C) :
-    constantCoeff (pderiv (R := C) q f) = coeff (Finsupp.single q 1) f := by
-  rw [← coeff_zero_eq_constantCoeff_apply, coeff_pderiv, zero_add]
-  simp
-
 theorem ev_zero_pt {n : ℕ} (f : PS C 1 dd) : ev (n := n) (![0] : Fin 1 → Pt C n dd) f = MvPowerSeries.C (constantCoeff f) := by
   apply Formalism.L2.FormalSeriesBounds.OActLog.ev_zero_pt
 
@@ -382,7 +377,7 @@ theorem ex_lin (Y : FBChart C V O dd) (i m : Fin dd) :
   unfold comp1 at h
 
   rw [pderiv_eval_single hZ, map_sum] at h
-  simp only [map_mul, constantCoeff_ev hZ, constantCoeff_pderiv] at h
+  simp only [map_mul, constantCoeff_ev hZ, Formalism.L2.FormalSeriesBounds.OActLog.cc_pderiv] at h
   have hl : ∀ k, coeff (Finsupp.single ((0 : Fin 1), k) 1) (Y.lg m) = if k = m then 1 else 0 := by
     intro k
     rw [Y.lg_lin m _ (by simp), coeff_X]
@@ -392,7 +387,7 @@ theorem ex_lin (Y : FBChart C V O dd) (i m : Fin dd) :
       intro e
       exact hk (Prod.mk.inj (Finsupp.single_left_injective one_ne_zero e)).2
   simp only [hl, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h
-  rw [← constantCoeff_pderiv] at h
+  rw [← Formalism.L2.FormalSeriesBounds.OActLog.cc_pderiv] at h
   change constantCoeff (pderiv (R := C) ((0 : Fin 1), i) (Y.ex m)) =
     coeff (Finsupp.single ((0 : Fin 1), i) 1) (X ((0 : Fin 1), m) : PS C 1 dd) at h
   rw [h, coeff_X]
@@ -474,7 +469,6 @@ theorem ex_add (Y : FBChart C V O dd) (j : Fin dd) :
   exact (hPS j).symm
 
 end RowTiePCEqEx
-
 
 open RowTiePCEqEx in
 theorem exDer_holds {C : Type} [Field C] [CharZero C] {V : VF C} {O : Type} [CommRing O] [StarRing O] {dd : ℕ}
@@ -909,7 +903,6 @@ theorem addM_self : AddM V (Y.rawSelf p) := by
     exact intS_sum _ fun col _ => hGsg col _ fun i => hv (col, i)
 
 end CEqGen
-
 
 open CEqGen in
 theorem cEqSelf_holds : CEqSelfSt := by

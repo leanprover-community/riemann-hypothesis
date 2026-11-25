@@ -127,64 +127,14 @@ theorem BlowUpHorizontalChartLength.full : BlowUpHorizontalChartLength.Statement
     · exact absurd rfl hW
   obtain ⟨-, hBW, hWrel⟩ := le_and_isRelevant_of_divCycle_ne_zero hW
   set W₀ := W.comap (liftForm (ι := ι) (J := J) (R := O)) with hW₀
-  obtain ⟨hW₀p, hPW₀, hrel₀, -⟩ := comap_liftForm_facts hWp hBW hWrel
-  have hϖW₀ : (C ϖ : MRing ι O) ∉ W₀ := by rw [Ideal.mem_comap, liftForm_C]; exact hϖW
-  obtain ⟨j₀, hj₀⟩ := hloc W₀ hW₀p hPW₀ hrel₀ hϖW₀
-  choose v w hv hvw using hj₀
-
-  have huj₀ : u j₀ ∉ P := by
-    intro h
-    obtain ⟨j, hj⟩ := hex
-    have h1 : v j * u j ∈ P := by
-      have := P.add_mem (hvw j) (P.mul_mem_left (w j) h)
-      rwa [sub_add_cancel] at this
-    exact hj ((hPp.mem_or_mem h1).resolve_left fun h' => hv j (hPW₀ h'))
-
-  obtain ⟨u₀, a, hu₀W, hrelP⟩ : ∃ (u₀ : MRing ι O) (a : J → MRing ι O), u₀ ∉ W₀ ∧
-      ∀ j, u₀ * u j - u j₀ * a j ∈ P := by
-    have := hW₀p
-    refine ⟨∏ j, v j, fun j => w j * ∏ j' ∈ Finset.univ.erase j, v j',
-      fun h => W₀.primeCompl.prod_mem (fun j _ => hv j) h, fun j => ?_⟩
-    have e : (∏ j, v j) * u j - u j₀ * (w j * ∏ j' ∈ Finset.univ.erase j, v j') =
-        (∏ j' ∈ Finset.univ.erase j, v j') * (v j * u j - w j * u j₀) := by
-      rw [← Finset.mul_prod_erase Finset.univ v (Finset.mem_univ j)]; ring
-    rw [e]
-    exact P.mul_mem_left _ (hvw j)
-  have hu₀P : u₀ ∉ P := fun h => hu₀W (hPW₀ h)
-  have ha₀ : a j₀ ∉ W₀ := by
-    intro h
-    have h1 : u j₀ * (u₀ - a j₀) ∈ P := by
-      have := hrelP j₀
-      rwa [show u₀ * u j₀ - u j₀ * a j₀ = u j₀ * (u₀ - a j₀) by ring] at this
-    have h2 : u₀ - a j₀ ∈ W₀ := hPW₀ ((hPp.mem_or_mem h1).resolve_left huj₀)
-    exact hu₀W (by simpa using W₀.add_mem h2 h)
-
-  have hrelB : ∀ j, newVar j * liftForm (a j₀) - newVar j₀ * liftForm (a j) ∈ blowUpOf P u := by
-    intro j
-    apply mem_blowUpOf_of_sub
-    have e : u₀ * (u j * a j₀ - u j₀ * a j) =
-        a j₀ * (u₀ * u j - u j₀ * a j) - a j * (u₀ * u j₀ - u j₀ * a j₀) := by ring
-    have h1 : u₀ * (u j * a j₀ - u j₀ * a j) ∈ P := by
-      rw [e]; exact P.sub_mem (P.mul_mem_left _ (hrelP j)) (P.mul_mem_left _ (hrelP j₀))
-    exact (hPp.mem_or_mem h1).resolve_left hu₀P
-
+  obtain ⟨hW₀p, hPW₀, j₀, u₀, a, huj₀, -, hrelP, ha₀, hrelB, hW𝔮⟩ :=
+    exists_chartSubst_data_of_minimalPrime hPp hex hloc hmin hWrel hϖW
   have := hW₀p
   set 𝔮 := W₀.map (Polynomial.C : MRing ι O →+* Polynomial (MRing ι O)) with h𝔮
   set Jx := (P ⊔ Ideal.span {x}).map (Polynomial.C : MRing ι O →+* Polynomial (MRing ι O)) with hJx
   set I := blowUpOf P u ⊔ Ideal.span {liftForm x} with hI
   let φ : MRing (extIdx ι J) O →+* Polynomial (MRing ι O) := (aeval (R := O) (chartSubst a)).toRingHom
   have hφ : ∀ F, φ F = aeval (chartSubst a) F := fun _ => rfl
-  have hxW : liftForm x ∈ W := hmin.1.2 (Ideal.mem_sup_right (Ideal.mem_span_singleton_self _))
-  have hW𝔮 : W = 𝔮.comap φ := by
-    refine le_antisymm ?_ ?_
-    · refine hmin.2 ⟨Ideal.comap_isPrime _ _, sup_le (fun G hG => ?_) ((Ideal.span_singleton_le_iff_mem _).mpr ?_)⟩
-        (fun G hG => ?_)
-      · exact Ideal.map_mono hPW₀ (aeval_chartSubst_mem_of_mem_blowUpOf hPp huj₀ hrelP hG)
-      · rw [Ideal.mem_comap, hφ, aeval_chartSubst_liftForm]
-        exact Ideal.mem_map_of_mem _ hxW
-      · exact mem_of_aeval_chartSubst_mem hWp le_rfl j₀ ha₀ (fun j => hBW (hrelB j)) hG
-    · intro G hG
-      exact mem_of_aeval_chartSubst_mem hWp le_rfl j₀ ha₀ (fun j => hBW (hrelB j)) hG
   have hlfa : ∀ m : ℕ, liftForm (a j₀ ^ m) ∉ W := fun m h =>
     ha₀ (hW₀p.mem_of_pow_mem m (show a j₀ ^ m ∈ W₀ from h))
   have hCa : ∀ e : ℕ, Polynomial.C (a j₀ ^ e) ∉ 𝔮 := by
@@ -312,46 +262,8 @@ theorem BlowUpHorizontalMinimal.full : BlowUpHorizontalMinimal.Statement.{u} := 
     · exact absurd rfl hW
   obtain ⟨hWp, hBW, hWrel⟩ := le_and_isRelevant_of_divCycle_ne_zero hW
   set W₀ := W.comap (liftForm (ι := ι) (J := J) (R := O)) with hW₀
-  obtain ⟨hW₀p, hPW₀, hrel₀, -⟩ := comap_liftForm_facts hWp hBW hWrel
-  have hϖW₀ : (C ϖ : MRing ι O) ∉ W₀ := by rw [Ideal.mem_comap, liftForm_C]; exact hϖW
-  obtain ⟨j₀, hj₀⟩ := hloc W₀ hW₀p hPW₀ hrel₀ hϖW₀
-  choose v w hv hvw using hj₀
-
-  have huj₀ : u j₀ ∉ P := by
-    intro h
-    obtain ⟨j, hj⟩ := hex
-    have h1 : v j * u j ∈ P := by
-      have := P.add_mem (hvw j) (P.mul_mem_left (w j) h)
-      rwa [sub_add_cancel] at this
-    exact hj ((hPp.mem_or_mem h1).resolve_left fun h' => hv j (hPW₀ h'))
-
-  obtain ⟨u₀, a, hu₀W, hrelP⟩ : ∃ (u₀ : MRing ι O) (a : J → MRing ι O), u₀ ∉ W₀ ∧
-      ∀ j, u₀ * u j - u j₀ * a j ∈ P := by
-    have := hW₀p
-    refine ⟨∏ j, v j, fun j => w j * ∏ j' ∈ Finset.univ.erase j, v j',
-      fun h => W₀.primeCompl.prod_mem (fun j _ => hv j) h, fun j => ?_⟩
-    have e : (∏ j, v j) * u j - u j₀ * (w j * ∏ j' ∈ Finset.univ.erase j, v j') =
-        (∏ j' ∈ Finset.univ.erase j, v j') * (v j * u j - w j * u j₀) := by
-      rw [← Finset.mul_prod_erase Finset.univ v (Finset.mem_univ j)]; ring
-    rw [e]
-    exact P.mul_mem_left _ (hvw j)
-  have hu₀P : u₀ ∉ P := fun h => hu₀W (hPW₀ h)
-  have ha₀ : a j₀ ∉ W₀ := by
-    intro h
-    have h1 : u j₀ * (u₀ - a j₀) ∈ P := by
-      have := hrelP j₀
-      rwa [show u₀ * u j₀ - u j₀ * a j₀ = u j₀ * (u₀ - a j₀) by ring] at this
-    have h2 : u₀ - a j₀ ∈ W₀ := hPW₀ ((hPp.mem_or_mem h1).resolve_left huj₀)
-    exact hu₀W (by simpa using W₀.add_mem h2 h)
-
-  have hrelB : ∀ j, newVar j * liftForm (a j₀) - newVar j₀ * liftForm (a j) ∈ blowUpOf P u := by
-    intro j
-    apply mem_blowUpOf_of_sub
-    have e : u₀ * (u j * a j₀ - u j₀ * a j) =
-        a j₀ * (u₀ * u j - u j₀ * a j) - a j * (u₀ * u j₀ - u j₀ * a j₀) := by ring
-    have h1 : u₀ * (u j * a j₀ - u j₀ * a j) ∈ P := by
-      rw [e]; exact P.sub_mem (P.mul_mem_left _ (hrelP j)) (P.mul_mem_left _ (hrelP j₀))
-    exact (hPp.mem_or_mem h1).resolve_left hu₀P
+  obtain ⟨hW₀p, hPW₀, j₀, _, a, huj₀, -, hrelP, ha₀, hrelB, -⟩ :=
+    exists_chartSubst_data_of_minimalPrime hPp hex hloc hmin hWrel hϖW
 
   have hxW : liftForm x ∈ W := hmin.1.2 (Ideal.mem_sup_right (Ideal.mem_span_singleton_self _))
   refine ⟨⟨hW₀p, sup_le hPW₀ ((Ideal.span_singleton_le_iff_mem _).mpr hxW)⟩, fun P' hP' hP'W₀ => ?_⟩

@@ -262,11 +262,8 @@ theorem IsolatedPointsCountPrime.exists_dim_eq {n : ℕ} (J : Ideal (MvPolynomia
 
 theorem IsolatedPointsCountPrime.eval_aeval {n m : ℕ} (Q : Fin m → MvPolynomial (Fin n) ℂ)
     (f : MvPolynomial (Fin m) ℂ) (x : Fin n → ℂ) :
-    eval x (aeval Q f) = eval (fun i => eval x (Q i)) f := by
-  induction f using MvPolynomial.induction_on with
-  | C a => simp
-  | add p p' hp hp' => rw [map_add (f := _), map_add (f := _), hp, hp', map_add (f := _)]
-  | mul_X p i hp => rw [map_mul, map_mul, hp, aeval_X, map_mul, eval_X]
+    eval x (aeval Q f) = eval (fun i => eval x (Q i)) f :=
+  comp_aeval_apply Q (aeval x) f
 
 theorem IsolatedPointsCountPrime.exists_eval_ne_zero {d : ℕ} {Δ : MvPolynomial (Fin d) ℂ} (hΔ : Δ ≠ 0)
     {w : Fin d → ℂ} {S : Set (Fin d → ℂ)} (hS : S ∈ 𝓝 w) : ∃ w' ∈ S, eval w' Δ ≠ 0 := by

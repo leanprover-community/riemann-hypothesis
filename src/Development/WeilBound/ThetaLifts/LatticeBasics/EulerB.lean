@@ -55,7 +55,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.OrthogonalGroupLemmas.aux1 :
-    ∀ (F : Type) [inst : Field F] [inst_1 : NumberField F] {a b : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF F},
+    ∀ (F : Type) [Field F] [NumberField F] {a b : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF F},
       a ∈
           {a : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF F |
             GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.evI F a = (0 : NumberField.mixedEmbedding.mixedSpace F) ∧
@@ -81,7 +81,7 @@ theorem UpperTheory.Reformulated.B.OrthogonalGroupLemmas.aux1 :
     exact add_mem (ha.2 v) (hb.2 v)
 
 theorem UpperTheory.Reformulated.B.OrthogonalGroupLemmas.aux2 :
-    ∀ (F : Type) [inst : Field F] [inst_1 : NumberField F],
+    ∀ (F : Type) [Field F] [NumberField F],
       GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.evI F (0 : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF F) = (0 : NumberField.mixedEmbedding.mixedSpace F) ∧
         ∀ (v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F)),
           (GlobalTheory.AdelicU.evFin F v : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF F → Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv F v) (0 : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF F) ∈
@@ -92,7 +92,7 @@ theorem UpperTheory.Reformulated.B.OrthogonalGroupLemmas.aux2 :
   exact zero_mem _
 
 theorem UpperTheory.Reformulated.B.OrthogonalGroupLemmas.aux3 :
-    ∀ (F : Type) [inst : Field F] [inst_1 : NumberField F] {a : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF F},
+    ∀ (F : Type) [Field F] [NumberField F] {a : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF F},
       a ∈
           {a : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF F |
             GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.evI F a = (0 : NumberField.mixedEmbedding.mixedSpace F) ∧
@@ -112,7 +112,7 @@ theorem UpperTheory.Reformulated.B.OrthogonalGroupLemmas.aux3 :
     exact neg_mem (ha.2 v)
 
 noncomputable def UpperTheory.Reformulated.B.OrthogonalGroupLemmas.Oh :
-    (F : Type) → [inst : Field F] → [inst_1 : NumberField F] → AddSubgroup (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF F) :=
+    (F : Type) → [Field F] → [NumberField F] → AddSubgroup (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF F) :=
     fun (F : Type) [inst : Field F] [inst_1 : NumberField F] ↦
       {
         carrier :=
@@ -125,7 +125,7 @@ noncomputable def UpperTheory.Reformulated.B.OrthogonalGroupLemmas.Oh :
         neg_mem' := @UpperTheory.Reformulated.B.OrthogonalGroupLemmas.aux3 F inst inst_1 : AddSubgroup (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF F) }
 
 theorem UpperTheory.Reformulated.B.OrthogonalGroupLemmas.lat_gen :
-    ∀ {F E : Type} [inst : Field F] [inst_1 : NumberField F] [inst_2 : Field E] [NumberField E] [inst_4 : Algebra F E]
+    ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
       {n : ℕ} {Y : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Spc F E n},
       Submodule.IsLattice E Y.L →
         ∃ (m : ℕ) (x : Fin m → ↥Y.L),

@@ -261,23 +261,11 @@ variable (b : Pol p q r 0 →ₗ[ℂ] Pol p q 0 s →ₗ[ℂ] ℂ)
 
 theorem sumL {ι : Type} [Fintype ι] (F : ι → Module.End ℂ (Pol p q r 0)) (t : Pol p q r 0 ⊗[ℂ] Pol p q 0 s) :
     (∑ i, F i).rTensor (Pol p q 0 s) t = ∑ i, (F i).rTensor (Pol p q 0 s) t := by
-  classical
-  have key : ∀ S : Finset ι, (∑ i ∈ S, F i).rTensor (Pol p q 0 s) t = ∑ i ∈ S, (F i).rTensor (Pol p q 0 s) t := by
-    intro S
-    induction S using Finset.induction_on with
-    | empty => simp
-    | insert j S hj ih => rw [Finset.sum_insert hj, Finset.sum_insert hj, LinearMap.rTensor_add, LinearMap.add_apply, ih]
-  exact key Finset.univ
+  simp only [← LinearMap.coe_rTensorHom, map_sum, LinearMap.sum_apply]
 
 theorem sumR {ι : Type} [Fintype ι] (F : ι → Module.End ℂ (Pol p q 0 s)) (t : Pol p q r 0 ⊗[ℂ] Pol p q 0 s) :
     (∑ i, F i).lTensor (Pol p q r 0) t = ∑ i, (F i).lTensor (Pol p q r 0) t := by
-  classical
-  have key : ∀ S : Finset ι, (∑ i ∈ S, F i).lTensor (Pol p q r 0) t = ∑ i ∈ S, (F i).lTensor (Pol p q r 0) t := by
-    intro S
-    induction S using Finset.induction_on with
-    | empty => simp
-    | insert j S hj ih => rw [Finset.sum_insert hj, Finset.sum_insert hj, LinearMap.lTensor_add, LinearMap.add_apply, ih]
-  exact key Finset.univ
+  simp only [← LinearMap.coe_lTensorHom, map_sum, LinearMap.sum_apply]
 
 end Form
 

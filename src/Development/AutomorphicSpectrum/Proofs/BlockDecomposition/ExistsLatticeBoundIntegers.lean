@@ -65,8 +65,6 @@ section -- clump:auto
 open GroundTheory.PAdicHodge Formalism.Per6 DividedPowers CrystallineSemistableComparison CrystallineSemistableComparison.Pb CrystallineSemistableComparison.Pb.Lat
 open Polynomial
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.LatOKElem

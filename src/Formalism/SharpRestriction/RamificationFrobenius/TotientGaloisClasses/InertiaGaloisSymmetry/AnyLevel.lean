@@ -365,9 +365,6 @@ theorem exceptional_character_condition : (host Ξ e hH hc he hs).ExceptionalCha
   rw [h4] at h5
   norm_num at h5
 
-theorem o_eq_level : (frame Ξ e).o = (Level.ofSub Ξ).o := by
-  rw [o_eq]
-  rfl
 
 end Host
 

@@ -502,8 +502,6 @@ noncomputable section
 
 namespace Formalism.ZeroFreeDirichlet
 
-
-
 lemma le_of_second_difference_bound {y c₀ C N eY ey h : ℝ} (hy : 2 ≤ y) (hc0 : 0 < c₀) (hc01 : c₀ ≤ 1) (hC : 0 ≤ C)
     (hh : h = Real.exp (-(c₀ / 2) * Real.sqrt (Real.log y)))
     (hey0 : 0 ≤ ey) (heY0 : 0 ≤ eY) (hey : ey ≤ h ^ 2) (heY : eY ≤ h ^ 2)
@@ -964,18 +962,10 @@ noncomputable section
 
 namespace Formalism.ZeroFreeDirichlet
 
-lemma log_analytic_conductor_pos (q : ℕ) [NeZero q] (t : ℝ) : 0 < Real.log ((q : ℝ) * (|t| + 2)) := by
-  have hq : (1:ℝ) ≤ q := by
-    have h1 : 1 ≤ q := Nat.one_le_iff_ne_zero.mpr (NeZero.ne q)
-    exact_mod_cast h1
-  apply Real.log_pos
-  have ht := abs_nonneg t
-  nlinarith
-
 lemma zero_free_region_mono {c c' : ℝ} (h : c ≤ c') {q : ℕ} [NeZero q] {s : ℂ} (hs : InRegion c q s) :
     InRegion c' q s := by
   unfold InRegion at hs ⊢
-  have hL := log_analytic_conductor_pos q s.im
+  have hL := Formalism.ZeroFreeDirichlet.log_conductor_pos_real q s.im
   have h2 : c / Real.log (↑q * (|s.im| + 2)) ≤ c' / Real.log (↑q * (|s.im| + 2)) := by
     first
       | exact div_le_div_of_nonneg_right h hL.le
@@ -984,7 +974,7 @@ lemma zero_free_region_mono {c c' : ℝ} (h : c ≤ c') {q : ℕ} [NeZero q] {s 
 lemma half_le_of_real_in_region {c₁ : ℝ} (h : c₁ ≤ 1 / 20) {q : ℕ} [NeZero q] {β : ℝ} (hs : InRegion c₁ q (β : ℂ)) :
     1 / 2 ≤ β := by
   unfold InRegion at hs
-  have hL := log_analytic_conductor_pos q (β:ℂ).im
+  have hL := Formalism.ZeroFreeDirichlet.log_conductor_pos_real q (β:ℂ).im
   have h2 : (2:ℝ) ≤ (q:ℝ) * (|(β:ℂ).im| + 2) := by
     have hq : (1:ℝ) ≤ q := by
       have h1 : 1 ≤ q := Nat.one_le_iff_ne_zero.mpr (NeZero.ne q)
@@ -1285,7 +1275,6 @@ open Complex MeasureTheory
 noncomputable section
 
 namespace Formalism.ZeroFreeDirichlet
-
 
 theorem chebyshev_character_explicit_general (hP : PerronChi) (hRS : RectShiftChi) (c₁ C C₀ : ℝ) (hc₁ : 0 < c₁)
     (hc₁' : c₁ ≤ 1 / 20) (hC : 0 ≤ C) (hC₀ : 0 ≤ C₀)

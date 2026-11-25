@@ -97,7 +97,7 @@ private theorem coprime_pow_congr {l : ℕ} [hl : Fact (Nat.Prime l)] {x : Padic
     rwa [← pow_mul, mul_right_comm, ← pow_succ]
 
 theorem UpperTheory.Reformulated.B.ExistsRootCongruence.exists_root_congr :
-    ∀ {l : ℕ} [inst : Fact (Nat.Prime l)] {x : PadicAlgCl l},
+    ∀ {l : ℕ} [Fact (Nat.Prime l)] {x : PadicAlgCl l},
     ‖x‖ = (1 : ℝ) → ∃ (m : ℕ) (ζ : PadicAlgCl l), ¬l ∣ m ∧ ζ ^ m = (1 : PadicAlgCl l) ∧ ‖x - ζ‖ < (1 : ℝ) := by
   intro l _ x hx
   obtain ⟨m, hm, h⟩ := coprime_pow_congr hx

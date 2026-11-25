@@ -48,12 +48,7 @@ theorem string_forces_long_part : ∀ (E : Type) [Field E] [NumberField E] (w : 
     T.map (fun z => (z : ℂ)) →
   ∃ i, t ≤ d i := by
   intro E _ _ w c d S T t ν ht hS hν hsum hle
-  have hN1 : 1 < Ideal.absNorm w.asIdeal := by
-    have h0 : Ideal.absNorm w.asIdeal ≠ 0 := by
-      rw [Ne, Ideal.absNorm_eq_zero_iff]; exact w.ne_bot
-    have h1 : Ideal.absNorm w.asIdeal ≠ 1 := by
-      rw [Ne, Ideal.absNorm_eq_one_iff]; exact w.isPrime.ne_top
-    omega
+  have hN1 : 1 < Ideal.absNorm w.asIdeal := NumberField.HeightOneSpectrum.one_lt_absNorm w
   set N := Ideal.absNorm w.asIdeal with hN
   have hmem : ν * ((N : ℕ) : ℂ) ^ (((t : ℂ) - 1) / 2 - ((0 : ℕ) : ℂ)) ∈ T.map (fun z => (z : ℂ)) :=
     Multiset.mem_of_le hle (Multiset.mem_map.2 ⟨0, Multiset.mem_range.2 (by omega), rfl⟩)

@@ -73,7 +73,7 @@ theorem chain_ext {N k : ℕ} {U : Scheme.{0}} {m : ℕ} (x y : ComposableArrows
       have hy := (y.map' i.val (i.val + 1)).2 j
       have hu' := hu ⟨i.val, hlt⟩
       change (x.obj i).1 j = (y.obj i).1 j
-      erw [hx, hy, hu', e]
+      rw [hx, hy, hu', e]
   exact ComposableArrows.ext (fun i => hobj (m - i.val) i (by omega))
     (fun i hi => (Vec.hom_subsingleton N k U _ _).elim _ _)
 

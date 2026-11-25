@@ -477,10 +477,6 @@ end Formalism.MainNotions.TwistedPlaces
 
 end
 
-namespace Formalism.MainNotions.TwistedPlaces
-
-end Formalism.MainNotions.TwistedPlaces
-
 noncomputable section
 
 namespace Formalism.MainNotions.TwistedPlaces
@@ -929,20 +925,6 @@ end Point
 theorem Nc_nonneg : 0 ≤ L.Nc := by
   apply _root_.Formalism.MainNotions.Nc_nonneg <;> assumption
 
-theorem gset_ne_two (P : ParameterChoice' D L) : ∀ l ∈ gset D, l ≠ 2 := by
-  obtain ⟨Y, hY1, -, -, hY4⟩ := P.g_Y
-  have hk := k_ge_five D
-  have hb := one_le_b L
-  have h8 : (2 : ℝ) < ((D.R.k : ℝ) * L.sc.b) ^ 8 := by
-    have : (5 : ℝ) ≤ (D.R.k : ℝ) * L.sc.b := by nlinarith only [hk, hb]
-    have : (5 : ℝ) ^ 8 ≤ ((D.R.k : ℝ) * L.sc.b) ^ 8 := by gcongr
-    linarith
-  intro l hl h2
-  unfold gset at hl
-  have hg : ∀ i, (2 : ℝ) < D.host.g i := fun i => by linarith [(hY4 i).1]
-  rcases Finset.mem_insert.1 hl with h | h
-  · have := hg 0; rw [← h, h2] at this; norm_num at this
-  · have := hg 1; rw [← Finset.mem_singleton.1 h, h2] at this; norm_num at this
 
 theorem export_bound_of_admissible (P : ParameterChoice' D L) {C : ℝ} (hL : Large L.sc.x L.sc.eps C) (hAdm : admitted L P C) :
     aux₃ L (2000 * (|C| + 1) ^ 3) := by

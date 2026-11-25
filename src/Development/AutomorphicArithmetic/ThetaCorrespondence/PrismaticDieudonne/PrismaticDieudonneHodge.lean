@@ -182,8 +182,8 @@ theorem hasDatum_of_matrices : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C]
   have : IsIntegrallyClosedIn O C :=
     (isIntegrallyClosed_iff_isIntegrallyClosedIn C).1 inferInstance
   obtain ⟨hfin, hproj⟩ := GlobalTheory.PDiv.omega_finite_projective p C v O hv G.dual
-  haveI := hfin
-  haveI := hproj
+  have := hfin
+  have := hproj
   have hζ : IsPrimitiveRoot (root ε).untilt p := by simpa [zeta] using hε 1
   set σ := sumIdx hdk with hσ
   set D := datumOf ε hdk Fa Ga Ψ Ψ' hGF hF hΨ with hD
@@ -503,7 +503,7 @@ theorem mu_dvd (hv : v.Integers O) (hε : IsPrimitiveSystem ε) (w : Ainf p O)
 
 theorem mu_sq_dvd (hv : v.Integers O) (hε : IsPrimitiveSystem ε) (w : Ainf p O)
     (h : mu ε ^ 2 ∣ (p : Ainf p O) * w) : mu ε ^ 2 ∣ w := by
-  haveI := GlobalTheory.AinfXi.isDomain_ainf (p := p) hv
+  have := GlobalTheory.AinfXi.isDomain_ainf (p := p) hv
   obtain ⟨w', rfl⟩ := mu_dvd hv hε w (dvd_trans (dvd_pow_self _ two_ne_zero) h)
   rw [sq, mul_left_comm] at h
   rw [sq]
@@ -528,7 +528,7 @@ theorem dvd_of_eq_zero (x y : Ainf p O) (h : a ε x + τ ε * a ε y = 0) :
 
 theorem eq_zero_of_dvd (hv : v.Integers O) (hε : IsPrimitiveSystem ε) (x y : Ainf p O)
     (h : mu ε ^ 2 ∣ (p : Ainf p O) * x + mu ε * y) : a ε x + τ ε * a ε y = 0 := by
-  haveI := GlobalTheory.AinfXi.isDomain_ainf (p := p) hv
+  have := GlobalTheory.AinfXi.isDomain_ainf (p := p) hv
   obtain ⟨z, hz⟩ := h
   obtain ⟨x', rfl⟩ := mu_dvd hv hε x ⟨-y + mu ε * z, by linear_combination hz⟩
   have hy : y = mu ε * z - p * x' := by
@@ -575,7 +575,7 @@ variable {p : ℕ} [Fact p.Prime] {O : Type} [CommRing O] [Fact ¬IsUnit (p : O)
 
 theorem tau_mul (hv : v.Integers O) (hε : IsPrimitiveSystem ε) (y : Ainf p O) :
     τ ε * a ε y = 0 ↔ mu ε ∣ y := by
-  haveI := GlobalTheory.AinfXi.isDomain_ainf (p := p) hv
+  have := GlobalTheory.AinfXi.isDomain_ainf (p := p) hv
   constructor
   · intro h
     have := dvd_of_eq_zero (ε := ε) 0 y (by rw [map_zero, zero_add]; exact h)
@@ -604,13 +604,13 @@ theorem sat (hv : v.Integers O) (b : O) (h : (p : O) * b = 0) : b = 0 := by
     have := congrArg (algebraMap O C) h0
     rw [map_natCast, map_zero] at this
     exact (Nat.cast_ne_zero.2 (Fact.out : p.Prime).ne_zero) this
-  haveI : IsDomain O := (algebraMap O C).domain_nontrivial |> fun _ =>
+  have : IsDomain O := (algebraMap O C).domain_nontrivial |> fun _ =>
     Function.Injective.isDomain (algebraMap O C) hv.hom_inj
   exact (mul_eq_zero.1 h).resolve_left hp
 
 theorem lim_series (u0 : Ainf p O) (u : ℕ → Ainf p O) : ∃ L : Ainf p O, ∀ n,
     (p : Ainf p O) ^ n ∣ (u0 + ∑ k ∈ Finset.range n, (p : Ainf p O) ^ k * u k) - L := by
-  haveI : IsAdicComplete (Ideal.span {(p : Ainf p O)}) (Ainf p O) :=
+  have : IsAdicComplete (Ideal.span {(p : Ainf p O)}) (Ainf p O) :=
     WittVector.isAdicCompleteIdealSpanP
   obtain ⟨L, hL⟩ := IsPrecomplete.prec' (I := Ideal.span {(p : Ainf p O)})
     (fun N => u0 + ∑ k ∈ Finset.range N, (p : Ainf p O) ^ k * u k) (by
@@ -626,7 +626,7 @@ theorem lim_series (u0 : Ainf p O) (u : ℕ → Ainf p O) : ∃ L : Ainf p O, �
 
 theorem complete (hv : v.Integers O) (hε : IsPrimitiveSystem ε) :
     IsAdicComplete (Ideal.span {(p : BR ε)}) (BR ε) := by
-  haveI : IsAdicComplete (Ideal.span {(p : Ainf p O)}) (Ainf p O) :=
+  have : IsAdicComplete (Ideal.span {(p : Ainf p O)}) (Ainf p O) :=
     WittVector.isAdicCompleteIdealSpanP
   refine { haus' := ?_, prec' := ?_ }
   · intro x hx
@@ -823,13 +823,6 @@ variable {p : ℕ} [Fact p.Prime] {O : Type} [CommRing O] [Fact ¬IsUnit (p : O)
 
 alias frob_phiInv := _root_.GlobalTheory.Dieudonne.frobenius_phiInv
 
-theorem phiInv_ofPadic' (c : ℤ_[p]) : phiInv p O (ofPadic p O c) = ofPadic p O c := by
-  ext n
-  simp only [phiInv, ofPadic, RingHom.coe_comp, Function.comp_apply, WittVector.map_coeff]
-  exact RingHom.congr_fun (RingHom.ext_zmod
-    (((_root_.frobeniusEquiv (PreTilt O p) p).symm : PreTilt O p →+* PreTilt O p).comp
-      (ZMod.castHom (dvd_refl p) (PreTilt O p))) (ZMod.castHom (dvd_refl p) (PreTilt O p))) _
-
 def frobT (G : PDivGroup p O) (y : TDual G) : TDual G where
   toFun t := WittVector.frobenius (y t)
   map_add' s t := by rw [map_add (f := _), map_add (f := _)]
@@ -840,7 +833,7 @@ def xiPhiInvT (ε : PreTilt O p) (G : PDivGroup p O) (m : TDual G) : TDual G whe
   toFun t := xi ε * phiInv p O (m t)
   map_add' s t := by rw [map_add (f := _), map_add (f := _), mul_add]
   map_smul' c t := by
-    rw [LinearMap.map_smulₛₗ, smul_eq_mul, map_mul, phiInv_ofPadic', smul_eq_mul, mul_left_comm]
+    rw [LinearMap.map_smulₛₗ, smul_eq_mul, map_mul, GlobalTheory.DetInv.PsiPhi.phiInv_ofPadic, smul_eq_mul, mul_left_comm]
 
 def frobLatt (G : PDivGroup p O) :
     latt G →ₛₗ[(WittVector.frobenius : Ainf p O →+* Ainf p O)] latt G where
@@ -857,7 +850,6 @@ def frobLatt (G : PDivGroup p O) :
     rw [LinearMap.smul_apply, smul_eq_mul, map_mul]; rfl
 
 end GlobalTheory.PDivLat.Frob
-
 
 open GlobalTheory.PDivLat.Frob in
 theorem GlobalTheory.PDivLat.exists_frobenius_latt : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∃ φ : ∀ G : PDivGroup p O, latt G →ₛₗ[(WittVector.frobenius : Ainf p O →+* Ainf p O)] latt G, (∀ G y t, (φ G y).1 t = WittVector.frobenius (y.1 t)) ∧ ∀ G m, ∃ n, φ G n = (WittVector.frobenius (xi ε) : Ainf p O) • m := by
@@ -1217,12 +1209,12 @@ theorem main : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C]
     rcases mul_eq_zero.1 h2 with h | h
     · exact absurd h hν
     · simpa using h
-  · haveI : ValuationRing O := ValuationRing.of_integers v hv
-    haveI : Module.Free O ((Fin G.height → O) ⧸ LinearMap.ker D.bb) := by
-      haveI : Module.Free O (LinearMap.range D.bb) :=
+  · have : ValuationRing O := ValuationRing.of_integers v hv
+    have : Module.Free O ((Fin G.height → O) ⧸ LinearMap.ker D.bb) := by
+      have : Module.Free O (LinearMap.range D.bb) :=
         GlobalTheory.free_of_finite_of_isTorsionFree_of_valuationRing O _
       exact Module.Free.of_equiv (D.bb.quotKerEquivRange).symm
-    haveI : Module.Free O ((Fin G.height → O) ⧸ D.Fil) := by
+    have : Module.Free O ((Fin G.height → O) ⧸ D.Fil) := by
       change Module.Free O ((Fin G.height → O) ⧸ LinearMap.ker D.bb); infer_instance
     obtain ⟨N', hN'⟩ := GlobalTheory.exists_isCompl_of_projective_quotient D.Fil
     let ρ : (Fin G.height → O) →ₗ[O] O :=
@@ -1272,7 +1264,7 @@ theorem lie_eq_zero_of_dlog {p : ℕ} [Fact p.Prime] (C : Type) [Field C] [IsAlg
     [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O] (hv : v.Integers O)
     {ε : PreTilt O p} {hε : IsPrimitiveSystem ε} {G : PDivGroup p O} (hD : HasDatum hε G)
     (x : G.Lie) (hx : ∀ χ, x (dlog G χ) = 0) : x = 0 := by
-  haveI : IsIntegrallyClosedIn O C := isIntegrallyClosedIn_iff.2 ⟨hv.hom_inj, fun h =>
+  have : IsIntegrallyClosedIn O C := isIntegrallyClosedIn_iff.2 ⟨hv.hom_inj, fun h =>
     hv.exists_of_le_one (hv.isIntegral_iff_v_le_one.1 h)⟩
   obtain ⟨D, e, fil, lie, -, hb⟩ := hD
   have hG : Function.Surjective (G.pairing O).flip := (G.pairing_flip_bijective C).2
@@ -1288,16 +1280,16 @@ theorem lie_eq_zero_of_dlog {p : ℕ} [Fact p.Prime] (C : Type) [Field C] [IsAlg
 
 theorem exists_smul_mem_span_dlog : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ G : PDivGroup p O, HasDatum hε G → ∃ c : O, c ≠ 0 ∧ ∀ w : G.omega, c • w ∈ Submodule.span O (Set.range (dlog G)) := by
   intro p _ C _ _ _ v O _ _ _ _ _ hv ε hε G hD
-  haveI : ValuationRing O := ValuationRing.of_integers v hv
-  haveI : Module.Finite O G.omega := (GlobalTheory.PDiv.omega_finite_projective p C v O hv G).1
+  have : ValuationRing O := ValuationRing.of_integers v hv
+  have : Module.Finite O G.omega := (GlobalTheory.PDiv.omega_finite_projective p C v O hv G).1
   set S := Submodule.span O (Set.range (dlog G)) with hS
   let T := Submodule.torsion O (G.omega ⧸ S)
   let π : G.omega →ₗ[O] (G.omega ⧸ S) ⧸ T := T.mkQ ∘ₗ S.mkQ
   have hπ : Function.Surjective π := T.mkQ_surjective.comp S.mkQ_surjective
-  haveI : Module.Flat O ((G.omega ⧸ S) ⧸ T) := by
+  have : Module.Flat O ((G.omega ⧸ S) ⧸ T) := by
     rw [Module.Flat.flat_iff_torsion_eq_bot_of_isBezout]
     exact Submodule.QuotientTorsion.torsion_eq_bot
-  haveI : Module.Free O ((G.omega ⧸ S) ⧸ T) := Module.free_of_flat_of_isLocalRing
+  have : Module.Free O ((G.omega ⧸ S) ⧸ T) := Module.free_of_flat_of_isLocalRing
   let b := Module.Free.chooseBasis O ((G.omega ⧸ S) ⧸ T)
   have hcoord : ∀ i, b.coord i ∘ₗ π = 0 := fun i =>
     lie_eq_zero_of_dlog C hv hD _ fun χ => by
@@ -1372,15 +1364,14 @@ theorem muPair_mem [IsDomain O] {ε : PreTilt O p} (hε : IsPrimitiveSystem ε) 
 
 end GlobalTheory.PDivLat.HodgeNat
 
-
 open GlobalTheory.PDivLat.HodgeNat in
 theorem GlobalTheory.PDivLat.iota_natural : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ (G H : PDivGroup p O) (f : G ⟶ H), HasDatum hε G → HasDatum hε H → ∀ (M : Type) [AddCommGroup M] [Module O M] (r : latt G →ₛₗ[WittVector.fontaineTheta O p] M) (M' : Type) [AddCommGroup M'] [Module O M'] (r' : latt H →ₛₗ[WittVector.fontaineTheta O p] M') (u : M' →ₗ[O] M) (ι : G.omega →ₗ[O] M) (ι' : H.omega →ₗ[O] M'), Function.Surjective r → (∀ m, r m = 0 ↔ ∃ n, m = xi ε • n) → (∀ y, u (r' y) = r (lattMap f y)) → (∀ (χ : G.dual.Tate) (y : latt G), (∀ t, y.1 t = Sandwich.mu ε * ofPadic p O (epsPairing hε G t χ)) → ι (dlog G χ) = r y) → (∀ (χ : H.dual.Tate) (y : latt H), (∀ t, y.1 t = Sandwich.mu ε * ofPadic p O (epsPairing hε H t χ)) → ι' (dlog H χ) = r' y) → ∀ w, u (ι' w) = ι (omegaMap G H f w) := by
   intro p _ C _ _ _ v O _ _ _ _ _ hv ε hε G H f hG hH M _ _ r M' _ _ r' u ι ι' hrs hrk hu hι hι' w
   obtain ⟨hfree, hfin, -⟩ := _root_.GlobalTheory.PDivLat.latt_free_finrank p C v O hv ε hε G hG
-  haveI : Nontrivial (Ainf p O) := (ReciprocityTheory.PGsh.Ainf.theta_surj p O hv).nontrivial
+  have : Nontrivial (Ainf p O) := (ReciprocityTheory.PGsh.Ainf.theta_surj p O hv).nontrivial
   obtain ⟨hMfree, -, -⟩ := Dieudonne.free_of_reduction (ReciprocityTheory.PGsh.Ainf.theta_surj p O hv)
     (theta_xi_eq_zero hε) r hrs fun m hm => (hrk m).1 hm
-  haveI := hMfree
+  have := hMfree
 
   have key : ∀ χ : H.dual.Tate, u (ι' (dlog H χ)) = ι (omegaMap G H f (dlog H χ)) := by
     intro χ
@@ -1547,8 +1538,6 @@ noncomputable section
 open CategoryTheory Opposite Matrix GlobalTheory GlobalTheory.PDivGroup GlobalTheory.Sandwich GlobalTheory.IndefiniteRowSideFullHecke.EpsilonPairingZeta GlobalTheory.PDivLat
 
 namespace GlobalTheory.PDivLat
-
-
 
 theorem prismaticDieudonneHodgeAt_of_hasDatum : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), (∀ G : PDivGroup p O, HasDatum hε G) → GlobalTheory.Published.PrismaticDieudonneHodgeAt ε := by
   intro p _ C _ _ _ v O _ _ _ _ _ hv ε hε hD
@@ -1765,8 +1754,8 @@ theorem primitive {p : ℕ} [Fact p.Prime] {O : Type} [CommRing O] {ζ : ℕ →
 
 theorem farguesExact_of_hodge (hP : GlobalTheory.Published.PrismaticDieudonneHodge) : GlobalTheory.CompanionTheory.Ar.HT.FarguesExact := by
   intro p _ C _ _ _ v O _ _ _ hv hp hO G ζ h0 h h1 B hB x
-  haveI : IsDomain O := hv.hom_inj.isDomain (algebraMap O C)
-  haveI : Fact ¬IsUnit (p : O) := ⟨fun hu => by
+  have : IsDomain O := hv.hom_inj.isDomain (algebraMap O C)
+  have : Fact ¬IsUnit (p : O) := ⟨fun hu => by
     have := hv.one_of_isUnit hu
     rw [map_natCast] at this
     exact hp.ne this⟩
@@ -1835,7 +1824,7 @@ namespace UpperTheory.Lit
 
 theorem prismaticDieudonneHodge : GlobalTheory.Published.PrismaticDieudonneHodge := by
   intro p _ C _ _ _ v O _ _ hv _ _ ε hε
-  haveI : IsDomain O := hv.hom_inj.isDomain (algebraMap O C)
+  have : IsDomain O := hv.hom_inj.isDomain (algebraMap O C)
   have hs : IsPrimitiveSystem ε := fun n => GlobalTheory.Dieudonne.isPrimitiveRoot_untilt_root hε n
   exact _root_.GlobalTheory.PDivLat.prismaticDieudonneHodgeAt_of_hasDatum p C v O hv ε hs (_root_.GlobalTheory.PDivLat.hasDatum_of_conn_dual_conn p C v O hv ε hs
     (hasDatum_biconn_of GlobalTheory.BRing.exists_bFrame GlobalTheory.QLog.WindowMat.window_matrices _root_.GlobalTheory.WinLift.Top.window_lift

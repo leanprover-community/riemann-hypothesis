@@ -313,7 +313,7 @@ theorem exists_aeval_finite_of_ringKrullDim_eq_one : ∀ (k A : Type) [Field k] 
 theorem aeval_injective_of_finite_of_not_isField : ∀ (k A : Type) [Field k] [CommRing A] [IsDomain A] [Algebra k A] (y : A),
     (Polynomial.aeval (R := k) y).Finite → ¬ IsField A → Function.Injective (Polynomial.aeval (R := k) y) := by
   intro k A _ _ _ _ y hy hA
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   by_contra! hne
   obtain ⟨p, hp, hp0⟩ := hne
   have hyi : IsIntegral k y := (show IsAlgebraic k y from ⟨p, hp0, hp⟩).isIntegral

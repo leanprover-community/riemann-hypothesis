@@ -788,9 +788,6 @@ theorem side_zero_of_local_properness (hPr : ProperLeftVariablesDomain) : CutHB.
 
 end Formalism.FourierDecayAlt.P.SliceIntegralLemmas
 
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Formalism.HermitianCurvature.HermitianCurvatureProofs.SideZeroOfLocalProperness =====

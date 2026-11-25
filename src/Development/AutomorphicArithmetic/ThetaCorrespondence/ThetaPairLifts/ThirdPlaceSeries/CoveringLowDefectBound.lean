@@ -507,10 +507,6 @@ theorem sizes_at {PP A : ℝ} (hW : WtNum p i PP) (hH : HostNum D L PP A 1) (hS 
 
 end GlobalTheory.CovTop.DefSizes
 
-namespace GlobalTheory.CovTop.DefSizes
-
-end GlobalTheory.CovTop.DefSizes
-
 end
 end -- clump:auto
 end -- clump:auto
@@ -527,14 +523,6 @@ section
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2 Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Pj Formalism.IndefR.Links Formalism.IndefR.FWT ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.BigTop GlobalTheory.CovTop GlobalTheory.DefPt GlobalTheory.FlatLine
 noncomputable section
-namespace GlobalTheory.CovTop.DefSizes
-variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
-  {Y0 : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y0 cX} {Csz : ℝ} (p : PtAt ex Csz) (i : Fin D.R.m)
-end GlobalTheory.CovTop.DefSizes
-namespace GlobalTheory.CovTop.DefSizes
-variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
-  {Y0 : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y0 cX} {Csz : ℝ} (p : PtAt ex Csz) (i : Fin D.R.m)
-end GlobalTheory.CovTop.DefSizes
 namespace GlobalTheory.CovTop.DefSizes
 theorem parameters_scale_rank_gap_bounds :
     _root_.GlobalTheory.CovTop.LiftsCondition fun Fm x _ ι p i _ C => (i : ℕ) + 1 = (Fm.D x ι).R.m → |(ofRecord (Fm.D x ι) (Fm.L x ι) p.Del p.h0).logOm| *

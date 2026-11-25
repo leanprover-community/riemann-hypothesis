@@ -349,7 +349,6 @@ theorem chart_mult_le : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (
   obtain ⟨w, hwL, hli, hwB⟩ := exists_short_basis_at X x hdom ε hε hmin
   set Bd : ℝ := (2 * fdeg E * r : ℝ) ^ 4 * dE E ^ 2 / (4 * ε) with hBd
   have hd : 0 ≤ dE E := abs_nonneg _
-  have hBd0 : 0 ≤ Bd := by positivity
   set T : Set (Fin r → E) := {v | v ∈ X.L' ∧ ∑ τ, X.maj x τ (Data.emb τ.1 v) ≤ 4 * Bd} with hT
   have hTc := _root_.GlobalTheory.LatCount.encard_le E r X x ε (4 * Bd) hdom hε (by positivity) hmin
   have hTfin : T.Finite := by

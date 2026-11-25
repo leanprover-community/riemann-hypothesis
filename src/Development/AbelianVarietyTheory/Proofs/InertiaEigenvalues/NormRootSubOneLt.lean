@@ -131,8 +131,6 @@ theorem exists_reps {G : Type*} [Group G] (H U : Subgroup G) [U.FiniteIndex] :
     obtain ⟨q, -, rfl⟩ := Finset.mem_image.1 hs
     rw [(key q).1 hs']
 
-alias sum_shift := _root_.GlobalTheory.TranslateSum.sum_translate_eq
-
 alias norm_pow_sub_pow_le := _root_.GlobalTheory.PowerDifferenceNormInertiaEigenvalues.norm_pow_sub_pow_le
 
 variable {l : ℕ} [Fact l.Prime]
@@ -204,7 +202,7 @@ theorem rel_trace (hn : ∀ (g : GQ l) (x : Om l), ‖g x‖ = ‖x‖) (K : Fin
     intro y hy n hnL
 
     rw [map_sum]
-    refine sum_shift L.fixingSubgroup E.fixingSubgroup T hT hT' (fun g => g y) ?_ n hnL
+    refine GlobalTheory.TranslateSum.sum_translate_eq L.fixingSubgroup E.fixingSubgroup T hT hT' (fun g => g y) ?_ n hnL
     intro g v hv hv'
     have : v ∈ (L ⊔ E).fixingSubgroup := by rw [hsup]; exact ⟨hv, hv'⟩
     change g (v y) = g y
@@ -473,7 +471,7 @@ theorem main : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) 
 
     rw [map_sum]
     simp only [hF]
-    exact sum_shift (Hinf K) L.fixingSubgroup S hS hS' F (fun g v _ hv => hFv g v hv) h hh
+    exact GlobalTheory.TranslateSum.sum_translate_eq (Hinf K) L.fixingSubgroup S hS hS' F (fun g v _ hv => hFv g v hv) h hh
   have hu : IsUnit (∑ s ∈ S, F s) := by
     apply WittVector.isUnit_of_coeff_zero_ne_zero
 

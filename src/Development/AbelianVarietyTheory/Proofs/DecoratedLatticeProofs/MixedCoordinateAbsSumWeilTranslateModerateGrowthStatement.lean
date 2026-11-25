@@ -69,8 +69,7 @@ theorem map_infPart_nsmul {D : D7} {m r : ℕ} (n : ℕ) (u : Mx D m r) (hu : u.
 
 theorem map_infPart_actO {D : D7} {S T : HSp D} (g : GA D S) (h : GA D T) (u : WO S T)
     (hu : u.map (infPart D) = 0) : (actO S T g h u).map (infPart D) = 0 := by
-  unfold actO
-  rw [Matrix.map_mul, Matrix.map_mul, hu, Matrix.mul_zero, Matrix.zero_mul]
+  exact GlobalTheory.LatNhds.actO_fin g h hu
 
 theorem actO_actO_inv {D : D7} {S T : HSp D} (g : GA D S) (h : GA D T) (x : WO S T) :
     actO S T g h (actO S T g⁻¹ h⁻¹ x) = x := by

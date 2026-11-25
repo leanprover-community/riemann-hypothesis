@@ -903,9 +903,6 @@ def piL (e f : Fin r → S.V) : S.V →ₗ[E] S.V := LinearMap.id - ∑ c, (S.hT
 theorem piL_apply (e f : Fin r → S.V) (x : S.V) : piL e f x = x - ∑ c, S.hT (f c) x • e c := by
   simp [piL]
 
-theorem herm_star (x y : S.V) : star (S.hT x y) = S.hT y x := by
-  exact S.herm.eq x y
-
 theorem related_gen (hH : HeisOp) (hSk : SkewSolve) {T T' : E} (Λ : Submodule (𝓞 E) S.V) (F : LFlag S r T)
     (f : Fin r → S.V)
     (hint : ∀ x ∈ Λ, ∀ y ∈ Λ, ∃ o : 𝓞 E, (o : E) = S.hT x y)
@@ -929,7 +926,7 @@ theorem related_gen (hH : HeisOp) (hSk : SkewSolve) {T T' : E} (Λ : Submodule (
   set e := F.fl.e with he_def
   have hee : ∀ a b, S.hT (e a) (e b) = 0 := F.fl.e_iso
   have hfe : ∀ a b, S.hT (f a) (e b) = if a = b then 1 else 0 := fun a b => by
-    rw [← herm_star, hef b a]
+    rw [← PI.TermsAtPtFiniteW.HeisW.hsym, hef b a]
     by_cases h : b = a
     · subst h; simp
     · simp [h, Ne.symm h]
@@ -986,10 +983,10 @@ theorem related_gen (hH : HeisOp) (hSk : SkewSolve) {T T' : E} (Λ : Submodule (
     rcases lt_trichotomy c d with h | h | h
     · simp [s, h, not_lt.2 h.le, h.ne']
     · subst h
-      have hh : star (S.hT (a c) (a c)) = S.hT (a c) (a c) := herm_star _ _
+      have hh : star (S.hT (a c) (a c)) = S.hT (a c) (a c) := PI.TermsAtPtFiniteW.HeisW.hsym _ _
       simp only [s, lt_irrefl, ite_false, ite_true, star_neg, star_mul', hh]
       linear_combination (-(S.hT (a c) (a c))) * hθ
-    · simp [s, h, not_lt.2 h.le, h.ne', herm_star]
+    · simp [s, h, not_lt.2 h.le, h.ne', PI.TermsAtPtFiniteW.HeisW.hsym]
   have haa : ∀ c d, S.hT (a c) (a d) = (((nd * nQ) ^ 2 : ℕ) : E) * S.hT (a' c) (a' d) := by
     intro c d
     rw [haa', haa', map_smul, LinearMap.map_smulₛₗ, LinearMap.smul_apply]
@@ -1017,7 +1014,7 @@ theorem related_gen (hH : HeisOp) (hSk : SkewSolve) {T T' : E} (Λ : Submodule (
   have hn1e : ∀ c, n1 (e c) = e c := by
     intro c
     rw [hn1act, heisFun]
-    have : ∀ c', S.hT (a c') (e c) = 0 := fun c' => by rw [← herm_star, hea]; simp
+    have : ∀ c', S.hT (a c') (e c) = 0 := fun c' => by rw [← PI.TermsAtPtFiniteW.HeisW.hsym, hea]; simp
     simp [hee, this]
   have hrow : ∀ c b, S.hT (e c) (n1 (frame y1 b)) = β c b := fun c b => by
     rw [← hn1e c, hiso1, hβ1]
@@ -1048,7 +1045,7 @@ theorem related_gen (hH : HeisOp) (hSk : SkewSolve) {T T' : E} (Λ : Submodule (
     abel
 
   have hcol : ∀ d a0, S.hT (n1 (frame y1 a0)) (e d) = star (β d a0) := fun d a0 => by
-    rw [← herm_star, hrow]
+    rw [← PI.TermsAtPtFiniteW.HeisW.hsym, hrow]
   have hid : ∀ a0 b, ∑ c, (star (β c a0) * x' c b + star (x' c a0) * β c b) = 0 := by
     intro a0 b
     have h := hgram a0 b
@@ -1162,7 +1159,7 @@ theorem gram_frame {T' : E} (F : LFlag S r T') (a b : Fin (r + 1)) :
   refine Fin.lastCases ?_ (fun i => ?_) a <;> refine Fin.lastCases ?_ (fun j => ?_) b
   · simpa [frame, FlagG.fvec] using F.fl.z_norm
   · simpa [frame, FlagG.fvec, Fin.castSucc_ne_last] using
-      (show S.hT F.fl.z (F.fl.e j) = 0 by rw [← herm_star, F.fl.z_orth j]; simp)
+      (show S.hT F.fl.z (F.fl.e j) = 0 by rw [← PI.TermsAtPtFiniteW.HeisW.hsym, F.fl.z_orth j]; simp)
   · simpa [frame, FlagG.fvec, Fin.castSucc_ne_last] using F.fl.z_orth i
   · simpa [frame, FlagG.fvec, Fin.castSucc_ne_last] using F.fl.e_iso i j
 
@@ -1225,11 +1222,11 @@ theorem fixedZhat_of (hH : HeisOp) (hSk : SkewSolve) (hS : ShortFin) (hRD : Rows
   obtain ⟨R, hRfin, ρ, hρ⟩ := hRF D.host.E (VS D).V Λ hlat.fg ((ndS D * nQ) ^ 2) (by positivity)
   set nd := ndS D with hnd_def
   have hfe : ∀ a b, (VS D).hT (f a) (F0.e b) = if a = b then 1 else 0 := fun a b => by
-    rw [← herm_star, hef b a]
+    rw [← PI.TermsAtPtFiniteW.HeisW.hsym, hef b a]
     by_cases h : b = a
     · subst h; simp
     · simp [h, Ne.symm h]
-  have hze : ∀ c, (VS D).hT F0.z (F0.e c) = 0 := fun c => by rw [← herm_star, F0.z_orth c]; simp
+  have hze : ∀ c, (VS D).hT F0.z (F0.e c) = 0 := fun c => by rw [← PI.TermsAtPtFiniteW.HeisW.hsym, F0.z_orth c]; simp
   have hfz : ∀ c, (VS D).hT (f c) F0.z = 0 := fun c => (hLp F0.z hzL c).2
   have hmemE : ∀ (x : D.host.E) (w : (VS D).V), IntE x → w ∈ Λ → x • w ∈ Λ := by
     rintro x w ⟨o, rfl⟩ hw
@@ -1305,7 +1302,7 @@ theorem fixedZhat_of (hH : HeisOp) (hSk : SkewSolve) (hS : ShortFin) (hRD : Rows
     smul_eq_mul, gram_frame]
   have hpin : ∀ y ∈ Y, (VS D).hT (piL F0.e f (yv y.1)) (piL F0.e f (yv y.1)) = (VS D).hT (yv y.1) (yv y.1) := by
     intro y hy
-    have h1 : ∀ c, (VS D).hT (yv y.1) (F0.e c) = 0 := fun c => by rw [← herm_star, hyve y hy c]; simp
+    have h1 : ∀ c, (VS D).hT (yv y.1) (F0.e c) = 0 := fun c => by rw [← PI.TermsAtPtFiniteW.HeisW.hsym, hyve y hy c]; simp
 
     simp [piL_apply, map_sub, map_sum, LinearMap.sub_apply, LinearMap.sum_apply, LinearMap.map_smulₛₗ,
     hyve y hy, h1, F0.e_iso]
@@ -1314,7 +1311,7 @@ theorem fixedZhat_of (hH : HeisOp) (hSk : SkewSolve) (hS : ShortFin) (hRD : Rows
       (VS D).hT (yv y0.1) (yv y0.1)) + ((Tu D u : ℕ) : D.host.E) * hzc * star hzc with hK_def
   have hxK : ∀ y ∈ Y, (VS D).hT (xf y.1) (xf y.1) = K := by
     intro y hy
-    have hιz : (VS D).hT (ι2 y.1) F0.z = star (hz y.1) := by rw [← herm_star]
+    have hιz : (VS D).hT (ι2 y.1) F0.z = star (hz y.1) := by rw [← PI.TermsAtPtFiniteW.HeisW.hsym]
     have hιι : (VS D).hT (ι2 y.1) (ι2 y.1) = (((nd * nv : ℕ) : D.host.E)) ^ 2 * (VS D).hT (yv y0.1) (yv y0.1) := by
       simp only [ι2, LinearMap.map_smulₛₗ, LinearMap.smul_apply, map_smul, smul_eq_mul, starRingEnd_apply,
         star_natCast, hpin y hy, hyvn]

@@ -251,7 +251,6 @@ theorem le_dim_quotient_horizontal (A : Type) [CommRing A] [IsDomain A] [CharZer
       obtain ⟨y, rfl⟩ := hy
       exact ⟨x + y, map_add _ _ _⟩
   have : (RingHom.ker φ).IsPrime := by
-    set_option synthInstance.maxHeartbeats 200000 in
       exact RingHom.ker_isPrime _
   have hc : (RingHom.ker φ).comap (algebraMap A (ℚ ⊗[ℤ] A)) = q := by
     ext a
@@ -408,7 +407,7 @@ theorem bijective_comp (F : Type) [Field F] [NumberField F] :
     exact IsLocalization.ringHom_ext (nonZeroDivisors (𝓞 F)) hfg
   · intro τ
     have hinj : Function.Injective τ := by
-      set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+      rw [injective_iff_map_eq_zero]
       intro x hx
       by_contra hne
       have h := Ideal.comap_ne_bot_of_integral_mem hne (show x ∈ RingHom.ker τ from hx)

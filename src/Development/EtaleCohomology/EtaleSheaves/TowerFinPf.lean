@@ -32,7 +32,7 @@ theorem relY_of_iso {A B A' B' : HomotopyCategory (Shv R) (ComplexShape.up ℤ)}
 
 theorem relY_zero {A B : HomotopyCategory (Shv R) (ComplexShape.up ℤ)} (g : A ⟶ B) (hA : IsZero A) (hB : IsZero B) :
     Tri.RelY (Yres R F) n g :=
-  ⟨fun y => ⟨0, hA.eq_of_src _ _⟩, fun _ _ _ => hB.eq_of_src _ _⟩
+  ⟨fun _ => ⟨0, hA.eq_of_src _ _⟩, fun _ _ _ => hB.eq_of_src _ _⟩
 
 theorem isZero_cx {K : Cx R} (h : ∀ i, IsZero (K.X i)) : IsZero K := by
   rw [IsZero.iff_id_eq_zero]

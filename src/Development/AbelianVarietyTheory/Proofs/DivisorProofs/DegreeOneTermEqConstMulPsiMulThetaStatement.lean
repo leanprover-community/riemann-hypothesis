@@ -160,8 +160,6 @@ theorem formEq_prod {V : Type} [CommRing V] [IsDomain V] (D : DegPre V) (g : GtP
       rw [c0, MonObj.comp_one, Hom.one_def]
     have e1 : (padd D.P.A (𝟙 D.P.A) (toUnit D.P.A ≫ η[D.P.A])) = 𝟙 D.P.A := by
       rw [← e2, c0, MonObj.comp_one, padd, ← Hom.mul_def, _root_.mul_one]
-    have e3 : padd D.P.A (DegPre.cT D (𝟙_ _) mu) g.b = D.c mu * g.b := by
-      rw [padd, ← Hom.mul_def, DegPre.cT, hu, Category.id_comp]
     have e4 : DegPre.cT D (𝟙_ _) mu = D.c mu := by rw [DegPre.cT, hu, Category.id_comp]
     have e5 : DegPre.zeroT D (𝟙_ (Over (Sp V))) = η[D.P.A] := by rw [DegPre.zeroT, hu, Category.id_comp]
     intro U _ h

@@ -110,12 +110,6 @@ open IsLocalRing GlobalTheory.Pat
 
 namespace GlobalTheory.Pat
 
-theorem unit_mul_pow_of_maximalIdeal_eq_span {S : Type} [CommRing S] [IsLocalRing S] [IsNoetherianRing S]
-    {π : S} (hm : maximalIdeal S = Ideal.span {π}) {x : S} (hx : x ≠ 0) :
-    ∃ (k : ℕ) (u : S), IsUnit u ∧ x = π ^ k * u := by
-  first
-  | (apply _root_.GlobalTheory.PowMulUnit.exists_eq_pow_mul_unit <;> assumption)
-
 theorem dvr_of_maximalIdeal_eq_span {S : Type} [CommRing S] [IsLocalRing S] [IsNoetherianRing S]
     {π : S} (hm : maximalIdeal S = Ideal.span {π}) (hreg : ∀ a : S, π * a = 0 → a = 0) :
     ∃ _ : IsDomain S, IsDiscreteValuationRing S ∧ Irreducible π := by

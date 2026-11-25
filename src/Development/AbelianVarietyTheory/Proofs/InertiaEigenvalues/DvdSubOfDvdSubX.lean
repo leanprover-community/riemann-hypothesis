@@ -24,16 +24,6 @@ variable {R S : Type} [CommRing R] [CommRing S] {l : ℕ}
 
 open PowerSeries in
 variable {R S : Type} [CommRing R] [CommRing S] {l : ℕ} in
-private lemma subsingleton_of_isHausdorff_whole_ideal {I : Ideal R} [IsHausdorff I R] (h : I = ⊤) :
-    Subsingleton R := by
-  subst h
-  refine ⟨fun x y => ?_⟩
-  have key : ∀ z : R, z = 0 := fun z =>
-    IsHausdorff.haus ‹_› z fun n => by simp [Ideal.top_pow, SModEq.top]
-  rw [key x, key y]
-
-open PowerSeries in
-variable {R S : Type} [CommRing R] [CommRing S] {l : ℕ} in
 private lemma order_map_toNat_eq_natDegree_of_isDistinguishedAt {I : Ideal R} {p : Polynomial R}
     (H : p.IsDistinguishedAt I) (hI : I ≠ ⊤) :
     ((map (Ideal.Quotient.mk I)) (p : R⟦X⟧)).order.toNat = p.natDegree := by
@@ -51,8 +41,8 @@ theorem _root_.GlobalTheory.NB.LT.exists_poly_mod [Nontrivial R] {I : Ideal R} [
     ∃ r : Polynomial R, r.degree < p.degree ∧ (p : R⟦X⟧) ∣ a - r := by
   have hI : I ≠ ⊤ := by
     intro h
-    have := subsingleton_of_isHausdorff_whole_ideal (I := I) h
-    exact not_subsingleton R this
+    subst h
+    exact not_subsingleton R (IsHausdorff.subsingleton (inferInstance : IsHausdorff (⊤ : Ideal R) R))
   have D := H.isWeierstrassDivisorAt' (I := I)
   have hd := D.isWeierstrassDivisionAt_div_mod a
   refine ⟨D.mod a, ?_, D.div a, sub_eq_iff_eq_add.mpr hd.eq_mul_add⟩
@@ -66,7 +56,9 @@ variable {R S : Type} [CommRing R] [CommRing S] {l : ℕ} in
 theorem _root_.GlobalTheory.NB.LT.poly_dvd_of_dvd {I : Ideal R} [IsAdicComplete I R] {p : Polynomial R}
     (H : p.IsDistinguishedAt I) {r : Polynomial R} (h : (p : R⟦X⟧) ∣ (r : R⟦X⟧)) : p ∣ r := by
   by_cases hI : I = ⊤
-  · have := subsingleton_of_isHausdorff_whole_ideal (I := I) hI
+  · have : Subsingleton R := by
+      subst hI
+      exact IsHausdorff.subsingleton (inferInstance : IsHausdorff (⊤ : Ideal R) R)
     rw [Subsingleton.elim r 0]
     exact dvd_zero p
   have hm := H.monic

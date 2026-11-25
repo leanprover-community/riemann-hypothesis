@@ -233,12 +233,6 @@ end GlobalTheory.UnitLemma.SgnProd
 
 namespace GlobalTheory.UnitLemma.SgnProd
 
-theorem det_trace_ne_zero {K : UQ} (B : InvAlg K) (hsep : B.P.Separable)
-    (e : Module.Basis (Fin (Module.finrank K.E B.A)) K.E B.A) :
-    (Matrix.of fun k l : Fin (Module.finrank K.E B.A) =>
-      Algebra.trace K.E B.A (B.g ^ (k : ℕ) * e l)).det ≠ 0 := by
-  apply GlobalTheory.UnitLemma.Move.det_trace_ne_zero <;> assumption
-
 theorem trace_mat_toMatrix {E A : Type} [Field E] [CommRing A] [Algebra E A] {ι κ : Type} [Fintype ι]
     [DecidableEq ι] (b : Module.Basis ι E A) (x : κ → A) (f : ι → A) :
     (Matrix.of fun k l => Algebra.trace E A (x k * f l)) =
@@ -451,7 +445,7 @@ theorem sgnLat_prod : ∀ (K : UQ) (B₁ B₂ : InvAlg K), (B₁.P * B₂.P).Sep
         Algebra.trace K.E B₁.A (B₁.g ^ (k : ℕ) * e₁ l)).det * (Matrix.of fun k l : Fin (finrank K.E B₂.A) =>
         Algebra.trace K.E B₂.A (B₂.g ^ (k : ℕ) * e₂ l)).det :=
     hdet.trans ((det_trace_lift (B₁.g, B₂.g) e₁ e₂ x hx).trans hL7)
-  have hne := det_trace_ne_zero (B₁.prod B₂) (by rw [hP]; exact hsep) bF
+  have hne := GlobalTheory.UnitLemma.Move.det_trace_ne_zero (B₁.prod B₂) (by rw [hP]; exact hsep) bF
   rw [hchain] at hne ⊢
   simp only [mul_ne_zero_iff] at hne
   obtain ⟨⟨⟨-, hR⟩, h₁⟩, h₂⟩ := hne
@@ -950,8 +944,6 @@ open GlobalTheory.UnitLemma Polynomial
 
 namespace GlobalTheory.UnitLemma.LinPair
 
-alias exists_smul_mem_of_mem_span := _root_.GlobalTheory.ClearDenominatorsIntegral.clear_denominators
-
 end GlobalTheory.UnitLemma.LinPair
 
 open GlobalTheory.UnitLemma.LinPair in
@@ -972,7 +964,7 @@ theorem GlobalTheory.UnitLemma.InvAlg.lin_fst_snd : ∀ (K : UQ) (B₁ B₂ : In
     have hy : (y, (0 : B₂.A)) ∈ Submodule.span K.E (M : Set (B₁.A × B₂.A)) := by
       rw [hspan]
       exact Submodule.mem_top
-    obtain ⟨d, hd, hdy⟩ := exists_smul_mem_of_mem_span K M hy
+    obtain ⟨d, hd, hdy⟩ := GlobalTheory.ClearDenominatorsIntegral.clear_denominators K M hy
     have hdE : algebraMap K.O K.E d ≠ 0 := by
       rw [Ne, ← (algebraMap K.O K.E).map_zero]
       exact fun h => hd (IsFractionRing.injective K.O K.E h)

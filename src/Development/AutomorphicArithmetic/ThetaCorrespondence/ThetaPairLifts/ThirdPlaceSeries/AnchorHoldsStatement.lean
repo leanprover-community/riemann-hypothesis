@@ -330,9 +330,6 @@ theorem anchorAt_of {PP A : ℝ} (P : ParameterChoice' D L) (hw : WtNum p i PP) 
 
 end GlobalTheory.CovTop.AnchorRd
 
-namespace GlobalTheory.CovTop
-
-end GlobalTheory.CovTop
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -350,10 +347,6 @@ section
 noncomputable section
 open NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.L2 Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Pj Formalism.IndefR.Links Formalism.IndefR.FWT
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.AllWt GlobalTheory.CompHt GlobalTheory.BigTop GlobalTheory.CovTop
-namespace GlobalTheory.CovTop.AnchorRd
-variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
-  {Y0 : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y0 cX} {Csz : ℝ} (p : PtAt ex Csz) (i : Fin D.R.m)
-end GlobalTheory.CovTop.AnchorRd
 namespace GlobalTheory.CovTop
 theorem anchor_holds_alt : _root_.GlobalTheory.CovTop.AnchorCondition := by
   refine Closed.imp (Closed.and _root_.GlobalTheory.CovTop.WtShape.wtN_z (_root_.GlobalTheory.CovTop.Sizes.hostN_alt 1)) ?_

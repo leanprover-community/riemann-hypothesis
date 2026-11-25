@@ -46,7 +46,7 @@ private theorem slope_map_eq_of_norm_eq {G E F : Type} [AddCommGroup G]
     have hmem : α₁ g ∈ (H.map α₁).toIntSubmodule := AddSubgroup.mem_map_of_mem α₁ hg
     have h1 := h ⟨α₁ g, hmem⟩ (by
       have hy' := hy
-      simp only [Subtype.dist_eq, ZeroMemClass.coe_zero, dist_zero_right] at hy' ⊢
+      simp only [dist_zero_right] at hy' ⊢
       change ‖α₂ g‖ < ε at hy'
       change ‖α₁ g‖ < ε
       rw [← hn']

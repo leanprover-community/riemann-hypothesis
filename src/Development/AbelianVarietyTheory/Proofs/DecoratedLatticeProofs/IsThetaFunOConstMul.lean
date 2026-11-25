@@ -93,9 +93,3 @@ theorem isThetaFunO_kap {L L'' : HSp D} (τ : Matrix (Fin L.rank) (Fin L''.rank)
 
 end GlobalTheory.LastSeeSaw
 end
-
-noncomputable section
-namespace GlobalTheory.LastSeeSaw
-
-end GlobalTheory.LastSeeSaw
-end

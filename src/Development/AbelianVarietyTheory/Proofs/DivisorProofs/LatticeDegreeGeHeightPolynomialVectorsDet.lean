@@ -321,7 +321,6 @@ theorem finsum_log_iSup_int {ι : Type} [Finite ι] {x : ι → 𝓞 K} (hx : x 
     ∑ᶠ v : FinitePlace K, Real.log (⨆ i, v (x i)) = -Real.log (Ideal.absNorm (Ideal.span (Set.range x))) := by
   obtain ⟨i₀, hi₀⟩ := Function.ne_iff.1 hx
   have hi : (x i₀ : K) ≠ 0 := by exact_mod_cast hi₀
-  have hz : (fun i => (x i : K)) ≠ 0 := Function.ne_iff.2 ⟨i₀, hi⟩
   have hpos : ∀ v : FinitePlace K, 0 < ⨆ i, v (x i) := fun v =>
     lt_of_lt_of_le (FinitePlace.pos_iff.2 hi) (le_ciSup (f := fun i => v (x i)) (Set.finite_range _).bddAbove i₀)
   have h := NumberField.absNorm_mul_finprod_finitePlace_eq_one hx
@@ -983,9 +982,6 @@ theorem finPart_sub_mean_le_deg : ∀ (F V : Type) [Field F] [NumberField F] [Ad
     · rw [h0, Nat.cast_zero, Real.log_zero]
       exact Real.log_nonneg (by exact_mod_cast Nat.one_le_iff_ne_zero.mpr hidx)
     · exact Real.log_le_log (by exact_mod_cast h0) (by exact_mod_cast hind)
-  have hkey : ∑ᶠ q : FinitePlace F, Real.log (gaussAbs q g) ≤
-      Real.log (L.toAddSubgroup.relIndex M.toAddSubgroup : ℝ) - Real.log |((Algebra.norm ℚ δ : ℚ) : ℝ)| := by
-    linarith
   calc _ = ((∑ᶠ q : FinitePlace F, Real.log (gaussAbs q g)) - (∑ σ : F →+* ℂ, Real.log (nm.gram σ ⇑b).det.re) / 2) /
         (Module.finrank ℚ F : ℝ) := by ring
     _ ≤ (Real.log (L.toAddSubgroup.relIndex M.toAddSubgroup : ℝ) - 1 / 2 * (2 * Real.log |((Algebra.norm ℚ δ : ℚ) : ℝ)| +

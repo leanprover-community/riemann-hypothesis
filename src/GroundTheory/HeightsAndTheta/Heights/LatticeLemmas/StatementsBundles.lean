@@ -174,12 +174,6 @@ def quot : HermitianBundle K :=
 
 end HermitianBundle
 
-namespace HermitianBundle
-
-variable (M : HermitianBundle K) (F : Submodule (𝓞 K) M.carrier) (hF : M.Saturated F)
-
-end HermitianBundle
-
 section BaseChange
 
 variable {L : Type*} [Field L] [NumberField L] [Algebra K L]

@@ -96,8 +96,6 @@ private lemma subst_pderiv_inr_cob1_eq_sum_sub_C {R : Type} [CommRing R] {d : �
   have hE : HasSubst (Sum.elim (X : Fin d → MvPowerSeries (Fin d) R) (0 : Fin d → MvPowerSeries (Fin d) R)) :=
     hasSubst_of_constantCoeff_zero (by rintro (i | i) <;> simp)
   have hM : HasSubst μ := hasSubst_of_constantCoeff_zero hμ
-  have hL : HasSubst (fun i : Fin d => (X (Sum.inl i) : MvPowerSeries (Fin d ⊕ Fin d) R)) :=
-    hasSubst_of_constantCoeff_zero (by simp)
   have hR : HasSubst (fun i : Fin d => (X (Sum.inr i) : MvPowerSeries (Fin d ⊕ Fin d) R)) :=
     hasSubst_of_constantCoeff_zero (by simp)
   unfold _root_.GlobalTheory.Katz.cob1 _root_.GlobalTheory.Katz.inL _root_.GlobalTheory.Katz.inR

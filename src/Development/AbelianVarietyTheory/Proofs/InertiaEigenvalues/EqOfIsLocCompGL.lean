@@ -23,22 +23,10 @@ structure IsTensorOf (T : ∀ i, (π i).V →ₗ[ℂ] (π' i).V) (Θ : Module.En
   comm : ∀ i o φ, T i ((π i).op o φ) = (π' i).op o (T i φ)
   prod : ∀ φ, Θ (prodForm φ) = prodForm fun i => T i (φ i)
 
-namespace IsTensorOf
-
-variable {T : ∀ i, (π i).V →ₗ[ℂ] (π' i).V} {Θ : Module.End ℂ ((∀ i, GA E (n i)) → ℂ)}
-
-end IsTensorOf
-
 variable {h : ∑ i, n i = N}
 
 
 
-
-namespace IsTensorOf
-
-variable {T : ∀ i, (π i).V →ₗ[ℂ] (π' i).V} {Θ : Module.End ℂ ((∀ i, GA E (n i)) → ℂ)}
-
-end IsTensorOf
 
 theorem mem_Sm_of_one {f : GA E a → ℂ} (hf : ∀ g, ContDiffAt ℝ ∞ (chart f g) (oneL E a)) : f ∈ Sm E a := by
   rintro g x ⟨y, hy⟩
@@ -66,13 +54,6 @@ theorem contDiffAt_chart_mul {f : GA E a → ℂ} {g : GA E a} {y : GL (Fin a) (
   rw [e1]
   exact hf
 
-
-namespace IsTensorOf
-
-variable {T : ∀ i, (π i).V →ₗ[ℂ] (π' i).V} {Θ : Module.End ℂ ((∀ i, GA E (n i)) → ℂ)}
-
-
-end IsTensorOf
 
 
 end GlobalTheory.DiscSMO

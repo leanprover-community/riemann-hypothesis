@@ -10,7 +10,8 @@ namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial
 
-theorem specFirstVar_isWeightedHomogeneous {k n : ℕ} (u : Fin n → ℂ) (ij : Fin (k + 1) × Fin n) :
+theorem specFirstVar_isWeightedHomogeneous' {R : Type*} [CommSemiring R] {k n : ℕ} (u : Fin n → R)
+    (ij : Fin (k + 1) × Fin n) :
     IsWeightedHomogeneous (groupWeight k n) (specFirstVar u ij)
       (fun i : Fin k => groupWeight (k + 1) n ij i.succ) := by
   obtain ⟨i, j⟩ := ij
@@ -26,12 +27,12 @@ theorem specFirstVar_isWeightedHomogeneous {k n : ℕ} (u : Fin n → ℂ) (ij :
       funext i
       simp [groupWeight, Pi.single_apply]
     rw [h1]
-    simpa [specFirstVar] using isWeightedHomogeneous_X ℂ (groupWeight k n) (i', j)
+    simpa [specFirstVar] using isWeightedHomogeneous_X R (groupWeight k n) (i', j)
 
-theorem SpecFirstHomog.proof : SpecFirstHomog.Statement := by
-  intro n k δ f u hf
+theorem isMultiHomog_specFirst {R : Type*} [CommSemiring R] {k n δ : ℕ}
+    {f : MvPolynomial (Fin (k + 1) × Fin n) R} (u : Fin n → R) (hf : Heights.IsMultiHomog δ f) :
+    Heights.IsMultiHomog δ (specFirst f u) := by
   unfold Heights.IsMultiHomog specFirst
-
   rw [f.as_sum, map_sum]
   refine IsWeightedHomogeneous.sum _ _ _ fun d hd => ?_
   rw [bind₁_monomial]
@@ -46,6 +47,14 @@ theorem SpecFirstHomog.proof : SpecFirstHomog.Statement := by
   rw [hdeg]
   refine IsWeightedHomogeneous.C_mul ?_ _
   refine IsWeightedHomogeneous.prod _ _ _ fun ij _ => ?_
-  exact (specFirstVar_isWeightedHomogeneous u ij).pow _
+  exact (specFirstVar_isWeightedHomogeneous' u ij).pow _
+
+theorem specFirstVar_isWeightedHomogeneous {k n : ℕ} (u : Fin n → ℂ) (ij : Fin (k + 1) × Fin n) :
+    IsWeightedHomogeneous (groupWeight k n) (specFirstVar u ij)
+      (fun i : Fin k => groupWeight (k + 1) n ij i.succ) :=
+  specFirstVar_isWeightedHomogeneous' u ij
+
+theorem SpecFirstHomog.proof : SpecFirstHomog.Statement :=
+  fun _ _ _ _ u hf => isMultiHomog_specFirst u hf
 
 end GroundTheory.Heights₂.Heights

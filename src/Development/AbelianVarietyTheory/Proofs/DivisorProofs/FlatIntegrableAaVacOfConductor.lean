@@ -216,7 +216,6 @@ theorem abs_expo_le : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpac
     rcases Nat.eq_zero_or_pos G.m with h | h
     · simp [h]
     · have h1 : ((G.m - 1 : ℕ) : ℤ) = (G.m : ℤ) - 1 := by push_cast [Nat.cast_sub h]; ring
-      have h2 : (1 : ℤ) ≤ G.m := by exact_mod_cast h
       rw [h1]; nlinarith
   have hT : 0 ≤ (N : ℤ) ^ 2 * (|a| + |a'|) := by positivity
   unfold expo
@@ -606,8 +605,6 @@ theorem aaElt_elt_off (w : Pl D.host.E) (i j : ℕ) (hi : i ≠ (bareGrid w).m) 
 
 theorem rank_le_bigN (w : Pl D.host.E) (i j : ℕ) (hi : i ≤ (bareGrid w).m) (hj : j ≤ (bareGrid w).m) :
     (bareGrid w).rank (i, j) ≤ bigN D := by
-  have h1 := Nat.mul_le_mul_right D.R.t hj
-  have h2 := Nat.mul_le_mul_right (sLen D) hi
   have hr : D.R.r ≤ D.R.k + D.R.m := by
     have : D.R.r = D.R.k + D.R.m - 1 := rfl
     omega
@@ -750,7 +747,6 @@ theorem path_apow_pow (w : Pl D.host.E) : ∃ n : ℤ, ((oppositePath D.R.m).map
       have : S ≤ D.R.m * bigN D ^ 2 := by nlinarith
       exact_mod_cast this
     have hm1 : (1 : ℤ) ≤ D.R.m := by have := D.R.two_le_m; omega
-    have hN : (0 : ℤ) ≤ bigN D := by positivity
     rw [abs_mul, abs_of_nonneg (by positivity : (0 : ℤ) ≤ S)]
     have h3 : |a - a'| ≤ |a| + |a'| := abs_sub _ _
     have h4 : (D.R.m : ℤ) * bigN D ^ 2 ≤ D.R.m ^ 3 * bigN D ^ 2 := by

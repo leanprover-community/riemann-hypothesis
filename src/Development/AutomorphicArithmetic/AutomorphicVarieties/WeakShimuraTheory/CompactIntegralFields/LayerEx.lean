@@ -60,7 +60,6 @@ private theorem le_field {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ 
     letI : Algebra F ℂ := ψ.toAlgebra
     haveI : Algebra.IsAlgebraic ℚ Ω := IsAlgClosure.isAlgebraic
     haveI : Algebra.IsAlgebraic F Ω := Algebra.IsAlgebraic.tower_top (K := ℚ) F
-    set_option synthInstance.maxHeartbeats 200000 in
     let φ₀ : Ω →ₐ[F] ℂ := IsAlgClosed.lift (M := ℂ) (R := F) (S := Ω)
     let φ : Ω →+* ℂ := φ₀.toRingHom
     letI : Algebra Ω ℂ := φ.toAlgebra

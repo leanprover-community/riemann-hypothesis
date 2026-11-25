@@ -79,7 +79,7 @@ theorem exists_factor_generic {R : Type} [CommRing R] [IsDomain R] {k : Type} [F
     (w : Sp k) (hw : τ w = (⊥ : PrimeSpectrum R)) : ∃ κ : FractionRing R →+* k, τ = spMap κ ≫ jK R := by
   obtain ⟨φ, rfl⟩ := Spec.map_surjective τ
   have hφ : Function.Injective φ.hom := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro a ha
     have h1 : PrimeSpectrum.comap φ.hom w = ⊥ := hw
     have h2 : a ∈ (PrimeSpectrum.comap φ.hom w).asIdeal := by

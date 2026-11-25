@@ -109,22 +109,22 @@ theorem isFinite_of_tmap_injective (hl : (l : K) ≠ 0) {A B : AbVar K} (f : A �
   have hpi : Function.Injective (tmap l A C p) := by
     rw [tmap_comp, LinearMap.coe_comp] at hf
     exact hf.of_comp
-  obtain ⟨hA1, hA2, hA3, -, -⟩ := GlobalTheory.T.tateModule_free_finrank_two_mul_dim K l hl A
-  obtain ⟨hC1, hC2, hC3, -, -⟩ := GlobalTheory.T.tateModule_free_finrank_two_mul_dim K l hl C
+  obtain ⟨hA1, hA2, hA3, -, -⟩ := GlobalTheory.AV.AbVar.tl_free_finrank K l hl A
+  obtain ⟨hC1, hC2, hC3, -, -⟩ := GlobalTheory.AV.AbVar.tl_free_finrank K l hl C
   have h1 : 2 * A.dim ≤ 2 * C.dim := by
     rw [← hA3, ← hC3]
     exact LinearMap.finrank_le_finrank_of_injective hpi
-  have h2 : C.dim ≤ A.dim := (GlobalTheory.T.abelianVariety_dim_le_of_finite_and_of_surjective K A C p).2 hp
+  have h2 : C.dim ≤ A.dim := (GlobalTheory.AV.DimLe.dim_le K A C p).2 hp
   have h3 : A.dim = C.dim := le_antisymm (by omega) h2
-  have hpf : IsFinite p.hom.left := GlobalTheory.T.isFinite_of_surjective_of_dim_eq' K A C p h3 hp
+  have hpf : IsFinite p.hom.left := GlobalTheory.AV.AbVar.isFinite_of_surjective_of_dim_eq K A C p h3 hp
   haveI := hi
   rw [comp_hom, Over.comp_left]
   infer_instance
 
 theorem tmap_injective_of_vmap_injective (hl : (l : K) ≠ 0) {A B : AbVar K} (f : A ⟶ B)
     (hv : Function.Injective (vmap l f)) : Function.Injective (tmap l A B f) := by
-  obtain ⟨hA1, -, -, -, -⟩ := GlobalTheory.T.tateModule_free_finrank_two_mul_dim K l hl A
-  obtain ⟨hB1, -, -, -, -⟩ := GlobalTheory.T.tateModule_free_finrank_two_mul_dim K l hl B
+  obtain ⟨hA1, -, -, -, -⟩ := GlobalTheory.AV.AbVar.tl_free_finrank K l hl A
+  obtain ⟨hB1, -, -, -, -⟩ := GlobalTheory.AV.AbVar.tl_free_finrank K l hl B
   have hinj : ∀ (X : AbVar K) [Module.Free ℤ_[l] (Tl l X)],
       Function.Injective (fun t : Tl l X => (1 : ℚ_[l]) ⊗ₜ[ℤ_[l]] t) := by
     intro X _
@@ -162,7 +162,6 @@ end GlobalTheory.AV.AbVar.IsogTate
 
 namespace GlobalTheory.AV.AbVar
 
-
 open IsogTate in
 theorem isFinite_iff_tmap_injective_and_isIsogeny_iff_vmap_bijective : ∀ (K : Type) [Field K] (l : ℕ) [Fact l.Prime],
     (l : K) ≠ 0 → ∀ (A B : AbVar K) (f : A ⟶ B),
@@ -172,8 +171,8 @@ theorem isFinite_iff_tmap_injective_and_isIsogeny_iff_vmap_bijective : ∀ (K : 
     ⟨fun h => tmap_injective_of_finite_ker l f ((GlobalTheory.T.isFinite_iff_finite_ker' K A B f).1 h), isFinite_of_tmap_injective l hl f⟩
   refine ⟨h1, fun h => vmap_bijective_of_isIsogeny l f h, fun h => ?_⟩
   have hfin := h1.2 (tmap_injective_of_vmap_injective l hl f h.1)
-  obtain ⟨-, -, -, hA4, hA5⟩ := GlobalTheory.T.tateModule_free_finrank_two_mul_dim K l hl A
-  obtain ⟨-, -, -, hB4, hB5⟩ := GlobalTheory.T.tateModule_free_finrank_two_mul_dim K l hl B
+  obtain ⟨-, -, -, hA4, hA5⟩ := GlobalTheory.AV.AbVar.tl_free_finrank K l hl A
+  obtain ⟨-, -, -, hB4, hB5⟩ := GlobalTheory.AV.AbVar.tl_free_finrank K l hl B
   have hd : 2 * A.dim = 2 * B.dim := by
     rw [← hA5, ← hB5]
     exact (LinearEquiv.ofBijective _ h).finrank_eq

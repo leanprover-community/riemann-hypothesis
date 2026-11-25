@@ -170,15 +170,7 @@ theorem field_mat {K : Type*} [Field K] {n m : ℕ} (A0 A B0 B : Matrix (Fin n) 
     (Matrix.toLin' Bᵀ) (Matrix.toLin' M0ᵀ) (Matrix.toLin' Mᵀ) (inj hL0) (inj hL) (sec hM0) (sec hM)
     (fun w => by simp [Matrix.toLin'_apply, Matrix.mulVec_mulVec, hC'])
   refine ⟨LinearMap.toMatrix' (e : (Fin n → K) →ₗ[K] (Fin n → K)), ?_, ?_, ?_⟩
-  · have h : LinearMap.toMatrix' (e : (Fin n → K) →ₗ[K] (Fin n → K)) *
-        LinearMap.toMatrix' (e.symm : (Fin n → K) →ₗ[K] (Fin n → K)) = 1 := by
-      rw [← LinearMap.toMatrix'_comp]
-      have h2 : (e : (Fin n → K) →ₗ[K] (Fin n → K)) ∘ₗ (e.symm : (Fin n → K) →ₗ[K] (Fin n → K)) =
-          LinearMap.id := by
-        ext x
-        simp
-      rw [h2, LinearMap.toMatrix'_id]
-    exact (Matrix.isUnit_iff_isUnit_det _).mpr (Matrix.isUnit_det_of_right_inverse h)
+  · exact LinearMap.isUnit_toMatrix'_iff.2 ((Module.End.isUnit_iff _).2 e.bijective)
   · rw [← LinearMap.toMatrix'_toLin' A0, ← LinearMap.toMatrix'_comp]
     have h : (e : (Fin n → K) →ₗ[K] (Fin n → K)) ∘ₗ Matrix.toLin' A0 = Matrix.toLin' A :=
       LinearMap.ext he1

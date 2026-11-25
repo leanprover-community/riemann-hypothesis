@@ -548,10 +548,6 @@ namespace GlobalTheory.Models.ThroughLine
 
 variable {k G : Type} [Field k] [Group G]
 
-alias exists_ker := _root_.GlobalTheory.Models.SubModel.exists_ker
-
-alias exists_coker := _root_.GlobalTheory.Models.SubModel.exists_coker
-
 theorem sameSS_three {s t u : ℕ} {M : Type} [AddCommGroup M] [Module k M] {π : Representation k G M}
     (C : (Fin s ⊕ Unit) ⊕ Fin t → Ob k G) (e : Fin u ≃ (Fin s ⊕ Unit) ⊕ Fin t)
     (h : SameSS π (((piRep fun a => (C (.inl (.inl a))).ρ).prod (C (.inl (.inr ()))).ρ).prod
@@ -574,8 +570,8 @@ end GlobalTheory.Models.ThroughLine
 open GlobalTheory.Models.ThroughLine in
 theorem GlobalTheory.Models.ModTh.exists_jordanHolder_through_line : ∀ {k G : Type} [Field k] [Group G] {l n : ℕ} [Fact l.Prime] [CharP k l] [NeZero n] {R : RingPG k l} (F : DFun R n G) {r : ℕ} {Dt : TopData n r} (M : ModTh F Dt) (B A₁ : Ob k G) (χ : G →* kˣ) (j : (Fin A₁.m → k) →ₗ[k] (Fin B.m → k)) (p : (Fin A₁.m → k) →ₗ[k] (Fin 1 → k)) (N : Lats k n B.m), M.Model B N → IsHom A₁ B j → Function.Injective j → IsHom A₁ (chr χ) p → Function.Surjective p → ∃ (s : ℕ) (C : Fin s → Ob k G) (L : ∀ a, Lats k n (C a).m) (a₀ : Fin s), (∀ a, M.Model (C a) (L a)) ∧ (∀ a, IsSimpleModule (MonoidAlgebra k G) (C a).ρ.asModule) ∧ SameSS B.ρ (piRep fun a => (C a).ρ) ∧ (∀ i x, sen ((F.D B).γ i) (N i) x = ∑ a, sen ((F.D (C a)).γ i) (L a i) x) ∧ (⟨C a₀, L a₀⟩ : Σ A : Ob k G, Lats k n A.m) = ⟨chr χ, F.push A₁ (chr χ) p (F.pre A₁ B j N)⟩ := by
   intro k G _ _ l n _ _ _ R F r Dt M B A₁ χ j p N hN hj hji hp hps
-  obtain ⟨K, f, hf, hfi, hfe⟩ := exists_ker A₁ (chr χ) p hp
-  obtain ⟨Q, q, hq, hqs, hqe⟩ := exists_coker A₁ B j hj
+  obtain ⟨K, f, hf, hfi, hfe⟩ := GlobalTheory.Models.SubModel.exists_ker A₁ (chr χ) p hp
+  obtain ⟨Q, q, hq, hqs, hqe⟩ := GlobalTheory.Models.SubModel.exists_coker A₁ B j hj
   have hA := _root_.GlobalTheory.Models.SubModel.model_pre F M A₁ B j N hj hji hN
   have hK := _root_.GlobalTheory.Models.SubModel.model_pre F M K A₁ f _ hf hfi hA
   have hL := GlobalTheory.Models.ModTh.model_push_of_surjective F M A₁ (chr χ) p _ hp hps hA

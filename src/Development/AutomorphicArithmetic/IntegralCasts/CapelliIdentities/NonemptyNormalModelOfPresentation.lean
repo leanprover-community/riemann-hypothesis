@@ -118,7 +118,7 @@ private theorem UpperTheory.Reformulated.B.Gc5.nonempty_normalModel_of_extension
 
 theorem UpperTheory.Reformulated.B.Gc5.nonempty_normalModel_of_presentation :
     ∀ {n : ℕ}
-    (J : Ideal (MvPolynomial (Fin n) ℂ)) (R : Type) [inst : CommRing R] [IsDomain R] [inst_2 : Algebra ℂ R]
+    (J : Ideal (MvPolynomial (Fin n) ℂ)) (R : Type) [CommRing R] [IsDomain R] [Algebra ℂ R]
     (π : MvPolynomial (Fin n) ℂ →ₐ[ℂ] R),
     Function.Surjective (⇑π : MvPolynomial (Fin n) ℂ → R) →
       RingHom.ker π = J →

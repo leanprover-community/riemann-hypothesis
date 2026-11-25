@@ -64,7 +64,7 @@ theorem exists_domBy_chart : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k,
     (i.comp (chRing ℤ x c).toSubring.subtype).codRestrict W.toSubring fun a => hch a a.2
   let P : Ideal (chRing ℤ x c) := (IsLocalRing.maximalIdeal W).comap φ
   have hPp : P.IsPrime := Ideal.comap_isPrime _ _
-  obtain ⟨q, ⟨hq, hP⟩, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.chart_prime_point ℤ Ω _ x M c hxc P hPp
+  obtain ⟨q, ⟨hq, hP⟩, -⟩ := _root_.PositivityTheory.HtPt.Ma.prime_pt ℤ Ω _ x M c hxc P hPp
   have hu : ∀ u (hu : u ∈ chRing ℤ x c), i u ≠ 0 → (i u)⁻¹ ∈ W → unitAt M.ξ q u := by
     intro u hu h0 h1
     by_contra hn
@@ -78,7 +78,7 @@ theorem exists_domBy_chart : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k,
       by_contra hn
       exact hm ((IsLocalRing.mem_maximalIdeal _).2 hn)
     exact ((isUnit_valuationSubring_iff W (φ ⟨v, hv⟩)).1 this).2
-  have hdesc := (_root_.GlobalTheory.CompanionTheory.Ar.chart_regAt_localisation ℤ Ω _ x M c q hq).2
+  have hdesc := (_root_.PositivityTheory.HtPt.Ma.regat_loc ℤ Ω _ x M c q hq).2
   refine ⟨q, hq, fun a ha => ?_, fun a ha ha0 hinv => ?_⟩
   · obtain ⟨u, huc, v, hvc, hvu, rfl⟩ := (hdesc a).1 ha
     rw [map_div₀, div_eq_mul_inv]

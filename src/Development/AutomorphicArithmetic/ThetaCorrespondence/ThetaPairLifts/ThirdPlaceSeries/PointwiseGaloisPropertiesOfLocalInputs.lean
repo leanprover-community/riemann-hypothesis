@@ -198,10 +198,6 @@ theorem nonempty_ix (hH : Holds R F) : Nonempty A3.A.fam.base.Ix := by
 
 end GlobalTheory.HeightCounting.Up.ThirdIdx
 
-namespace GlobalTheory.HeightCounting.Up.ThirdIdx
-
-end GlobalTheory.HeightCounting.Up.ThirdIdx
-
 end
 end -- clump:auto
 end -- clump:auto
@@ -219,12 +215,6 @@ section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.IndefR.NX ReciprocityTheory.Aut Formalism.AUTREP NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
 
 noncomputable section
-namespace GlobalTheory.HeightCounting.Up.ThirdIdx
-open Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.L2.Rows
-variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type} {A3 : FamIn3 D.what₂.LL G Pl0 I0 (List ℕ) T D.R.m}
-  {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat3 D A3 Ks} {F : Face3 D A3}
-  {cG : G0 R.Pg D.R.r ≃* G0g D.nd} {X0 : BaseLevelRowSide D} {Y : Read (A3 := A3) R.toRealDat F.lv2 X0}
-end GlobalTheory.HeightCounting.Up.ThirdIdx
 namespace GlobalTheory.HeightCounting.Up.ThirdIdx
 open GlobalTheory.HeightCounting.Fin3
 
@@ -766,7 +756,7 @@ theorem third_place_linked_data_exists : ∀ hL : _root_.UpperTheory.Zero.LLC.Re
     ⟨Q₀, hcf₀, hch₀, htp₀, hrep₀, eq_of_heq hM₀⟩
   obtain ⟨Q, hcf, hch, htup, hrep, hM⟩ :=
     Eq.mp (congrArg CompatibleChoice (linkedDataIndices_eq hL x L l)) choice₀
-  obtain ⟨x', hx'⟩ := GlobalTheory.T.fittingLaterStages_row_is_constructionState hX.weil hX.ds hP.hc hP.decay K B f T w P (oL x L) (hfits P x l _ L hB hO) x.G_eq
+  obtain ⟨x', hx'⟩ := GlobalTheory.Mem.R3.Rw.st_of_fits hX.weil hX.ds hP.hc hP.decay K B f T w P (oL x L) (hfits P x l _ L hB hO) x.G_eq
     x.etaF (bkL L)
   obtain ⟨o, fits', G_eq', etaF', bk', m, cp, co, s, r, pn⟩ := x'
   dsimp only at hx'

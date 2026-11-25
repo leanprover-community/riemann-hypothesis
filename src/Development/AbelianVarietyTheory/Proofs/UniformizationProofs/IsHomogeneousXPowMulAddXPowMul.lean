@@ -58,8 +58,6 @@ namespace GlobalTheory.ProjQuot
 
 open MvPolynomial GlobalTheory.ProjSpace GlobalTheory.ThickeningDetermines
 
-attribute [local instance] MvPolynomial.gradedAlgebra
-
 section Algebra
 
 variable {R A σ : Type} [CommRing R] [CommRing A] [Algebra R A] {r : σ → A} {i : σ}

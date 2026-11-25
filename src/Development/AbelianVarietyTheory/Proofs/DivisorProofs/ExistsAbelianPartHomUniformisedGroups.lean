@@ -32,7 +32,6 @@ theorem exists_hom_of_levels {R : Type} [CommRing R] [IsDomain R] [IsNoetherianR
     (hc : ∀ e, thickMap R I e Y ≫ f (e + 1) = f e) :
     ∃ g : Y ⟶ Z, ∀ e, pullback.fst Y.hom (thick R I e) ≫ g.left = f e := by
   have w₁ : (fst Y Z).left ≫ Y.hom = (Y ⊗ Z).hom := Over.w _
-  have w₂ : (snd Y Z).left ≫ Z.hom = (Y ⊗ Z).hom := Over.w _
   have sm : Smooth (Y ⊗ Z).hom := by
     show Smooth (pullback.fst Y.hom Z.hom ≫ Y.hom)
     infer_instance

@@ -68,10 +68,6 @@ theorem ioIntegral_of (hZ : CapelliZ) (hL : LiftMod) (hV : ZScalarVanish) : IoIn
   rw [map_smul]
   exact (sub_eq_zero.mp h0).symm
 
-theorem sqAct_smul {k : ℕ} (mu : DomWeight k) (g : GL (Fin k) ℂ) (c : ℂ)
-    (x : MvPolynomial (Fin k × Fin k) ℂ) : sqAct ℂ k mu g (c • x) = c • sqAct ℂ k mu g x := by
-  rw [sqAct, sqAct, map_smul, smul_comm]
-
 theorem gTLower_of_steps (hN : Numbers) (hX : XiFacts) (hE : IoExists) (hP4 : IoIntegral)
     (hA : AdjointBr) (hB : BrIntegral) : PI.GTLower := by
   intro n N h lam sg hI
@@ -86,11 +82,11 @@ theorem gTLower_of_steps (hN : Numbers) (hX : XiFacts) (hE : IoExists) (hP4 : Io
   have I3 : ∀ (g : GL (Fin n) ℂ), ∀ s ∈ nablaSq ℂ n sg,
       io (sqAct ℂ n sg g s) = sqAct ℂ N lam (embGL ℂ n N h g) (io s) := by
     intro g s hs
-    rw [hio, hio, hE2 g s hs, sqAct_smul]
+    rw [hio, hio, hE2 g s hs, PI.WGL.io_sqAct_smul]
   have I4 : io (extremal ℂ n sg) = c • xi ℂ h lam sg := by rw [hio, hx]
   have I5 : LastWeight lam sg io := by
     intro a s hs
-    rw [hio, sqAct_smul, hW a s hs, smul_comm]
+    rw [hio, PI.WGL.io_sqAct_smul, hW a s hs, smul_comm]
   have I1 : ∀ s ∈ nablaSq ℤ n sg, ∃ f ∈ nablaSq ℤ N lam,
       io (MvPolynomial.map (Int.castRingHom ℂ) s) = MvPolynomial.map (Int.castRingHom ℂ) f := by
     intro s hs
@@ -342,13 +338,8 @@ theorem nf_sqAct_adj' {N : ℕ} (lam : DomWeight N) (g : GL (Fin N) ℂ) (x y : 
     normFock lam x (sqAct ℂ N lam g y) = normFock lam (sqAct ℂ N lam (gStar g) x) y := by
   rw [nf_sqAct_adj, gStar_gStar]
 
-theorem natW_anti {N : ℕ} (lam : DomWeight N) : Antitone lam.natW := by
-  intro i j hij
-  unfold DomWeight.natW
-  exact Int.toNat_le_toNat (by have := lam.anti hij; linarith)
-
 theorem extremal_mem {N : ℕ} (lam : DomWeight N) : extremal ℂ N lam ∈ nablaSq ℂ N lam :=
-  Formalism.GradedWeylDivisibility.hwMem ℂ N N le_rfl lam.natW (natW_anti lam)
+  Formalism.GradedWeylDivisibility.hwMem ℂ N N le_rfl lam.natW (PI.WHw.natW_antitone lam)
 
 theorem extremal_ne {N : ℕ} (lam : DomWeight N) : extremal ℂ N lam ≠ 0 :=
   Formalism.GradedWeylDivisibility.hwNe ℂ N N le_rfl lam.natW
@@ -479,7 +470,7 @@ theorem adjointBr_of (h3 : PI.HwIrred) (h5 : PI.SchurFock) (hN : Numbers) (hX : 
     intro g x hx
     rw [hmemU] at hx ⊢
     refine ⟨sqAct_mem_nabla sg g x hx.1, ?_⟩
-    rw [hioEq g x hx.1, hB4, hx.2, sqAct_smul]
+    rw [hioEq g x hx.1, hB4, hx.2, PI.WGL.io_sqAct_smul]
   have hall : ∀ s ∈ nablaSq ℂ n sg, br (io s) = κ • s := by
     rcases (h3 n sg).2.1 U inf_le_left hUst with hU | hU
     · exfalso
@@ -704,9 +695,6 @@ theorem rat_of_pairings {ι : Type*} [Fintype ι] (β : ι → MvPolynomial σ �
 
 end fock
 
-theorem natW_anti {N : ℕ} (lam : DomWeight N) : Antitone lam.natW := by
-  apply _root_.PI.WGL.Adj.natW_anti <;> assumption
-
 private theorem map_initMinor {R S : Type*} [CommRing R] [CommRing S] (φ : R →+* S)
     {r n s : ℕ} (I : Fin s → Fin r) (hs : s ≤ n) :
     MvPolynomial.map φ (initMinor R I hs) = initMinor S I hs := by
@@ -766,11 +754,6 @@ private theorem fockF_swap_eq_star {σ : Type*} [DecidableEq σ] (f g : MvPolyno
   simp only [star_mul', star_star, star_natCast]
   ring
 
-theorem normFock_swap {N : ℕ} (lam : DomWeight N) (f g : MvPolynomial (Fin N × Fin N) ℂ) :
-    normFock lam g f = star (normFock lam f g) := by
-  unfold normFock
-  rw [star_div₀, ← fockF_swap_eq_star f g, ← fockF_swap_eq_star (extremal ℂ N lam) (extremal ℂ N lam)]
-
 theorem fockF_ext_ne {N : ℕ} (lam : DomWeight N) :
     fockF (extremal ℂ N lam) (extremal ℂ N lam) ≠ 0 := by
   rw [extremal_map, brFockF_map]
@@ -785,7 +768,7 @@ end BrInt
 open BrInt Formalism.REAL Formalism.GradedWeylDivisibility in
 theorem brIntegral_of (h2 : Formalism.BasicNotions.FactDelDualNabla) (h3 : PI.HwIrred) : BrIntegral := by
   intro n N h lam sg hI io br hI1 hI2 hB2 hT f hf
-  have hfN : f ∈ nablaSq ℤ N lam := weylLeDual ℤ N N le_rfl lam.natW (natW_anti lam) hf
+  have hfN : f ∈ nablaSq ℤ N lam := weylLeDual ℤ N N le_rfl lam.natW (PI.WHw.natW_antitone lam) hf
   have hFd : map (Int.castRingHom ℂ) f ∈ delSq ℂ N lam := by
     rw [← (h3 N lam).1]
     exact dualWeylMap ℤ ℂ (Int.castRingHom ℂ) N N lam.natW f hfN
@@ -844,7 +827,7 @@ theorem brIntegral_of (h2 : Formalism.BasicNotions.FactDelDualNabla) (h3 : PI.Hw
     obtain ⟨z, hz⟩ := hpair g hg
     refine ⟨z, ?_⟩
     apply (Rat.cast_injective (α := ℂ))
-    rw [← normFock_map, ← hG0, ← mapZC, normFock_swap, hz]
+    rw [← normFock_map, ← hG0, ← mapZC, PI.WGL.Adj.nf_herm, hz]
     simp)
   refine ⟨f0, hf0, ?_⟩
   rw [hG0, ← hf0eq, ← mapZC]

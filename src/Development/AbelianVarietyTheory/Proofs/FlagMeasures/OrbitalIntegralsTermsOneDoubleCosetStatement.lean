@@ -13,6 +13,7 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ClassFrameNormal
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FormTransp
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.RealDecomp
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ClassFrameCut
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.NilradicalLatticeZMemSpan
 import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.RightRegularIsometricMultiplicative
 import Mathlib.Algebra.Order.Floor.Extended
@@ -76,54 +77,14 @@ namespace GlobalTheory.CosetOrbital
 
 open Formalism.L2.SG.TermOp.Vanish Formalism.L2.SG.Pf.FormTranspose
 
-theorem sum_norm_sq_basis_indep {Wq Wp : Type} [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq]
-    [FiniteDimensional ℂ Wq] [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [FiniteDimensional ℂ Wp]
-    {ι : Type} [Fintype ι] (T : Wq →L[ℂ] Wp) (b e : OrthonormalBasis ι ℂ Wq) :
-    ∑ i, ‖T (b i)‖ ^ 2 = ∑ i, ‖T (e i)‖ ^ 2 := by
-  haveI := FiniteDimensional.complete ℂ Wq
-  haveI := FiniteDimensional.complete ℂ Wp
-  set c := stdOrthonormalBasis ℂ Wp
-  have key : ∀ f : OrthonormalBasis ι ℂ Wq,
-      ∑ i, ‖T (f i)‖ ^ 2 = ∑ k, ‖ContinuousLinearMap.adjoint T (c k)‖ ^ 2 := by
-    intro f
-    have h1 : ∀ i, ‖T (f i)‖ ^ 2 = ∑ k, ‖⟪ContinuousLinearMap.adjoint T (c k), f i⟫_ℂ‖ ^ 2 := by
-      intro i
-      rw [← c.sum_sq_norm_inner_right (T (f i))]
-      refine Finset.sum_congr rfl fun k _ => ?_
-      rw [ContinuousLinearMap.adjoint_inner_left]
-    simp_rw [h1]
-    rw [Finset.sum_comm]
-    refine Finset.sum_congr rfl fun k _ => ?_
-    exact f.sum_sq_norm_inner_left _
-  rw [key b, key e]
-
 theorem norm_hsEmb_unitary {Wq Wp : Type} [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq]
     [FiniteDimensional ℂ Wq] [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [FiniteDimensional ℂ Wp]
     (c : ℂ) (hc : ‖c‖ = 1) (A : Wp ≃ₗᵢ[ℂ] Wp) (B : Wq ≃ₗᵢ[ℂ] Wq) (O : Wq →L[ℂ] Wp) :
     ‖Formalism.L2.SG.PackageTie.hsEmb (c • ((A.toContinuousLinearEquiv : Wp →L[ℂ] Wp).comp
       (O.comp (B.symm.toContinuousLinearEquiv : Wq →L[ℂ] Wq))))‖ =
       ‖Formalism.L2.SG.PackageTie.hsEmb O‖ := by
-  have hsq : ∀ T : Wq →L[ℂ] Wp, ‖Formalism.L2.SG.PackageTie.hsEmb T‖ ^ 2 =
-      ∑ i, ‖T (stdOrthonormalBasis ℂ Wq i)‖ ^ 2 := by
-    intro T
-    rw [PiLp.norm_sq_eq_of_L2]
-    simp [Formalism.L2.SG.PackageTie.hsEmb]
-  have h2 : ‖Formalism.L2.SG.PackageTie.hsEmb (c • ((A.toContinuousLinearEquiv : Wp →L[ℂ] Wp).comp
-      (O.comp (B.symm.toContinuousLinearEquiv : Wq →L[ℂ] Wq))))‖ ^ 2 =
-      ‖Formalism.L2.SG.PackageTie.hsEmb O‖ ^ 2 := by
-    rw [hsq, hsq]
-    have e1 : ∀ i, ‖(c • ((A.toContinuousLinearEquiv : Wp →L[ℂ] Wp).comp
-        (O.comp (B.symm.toContinuousLinearEquiv : Wq →L[ℂ] Wq)))) (stdOrthonormalBasis ℂ Wq i)‖ ^ 2 =
-        ‖O (((stdOrthonormalBasis ℂ Wq).map B.symm) i)‖ ^ 2 := by
-      intro i
-      simp [norm_smul, hc]
-    simp_rw [e1]
-    exact sum_norm_sq_basis_indep O _ _
-  have h0 : 0 ≤ ‖Formalism.L2.SG.PackageTie.hsEmb O‖ := norm_nonneg _
-  have h0' := norm_nonneg (Formalism.L2.SG.PackageTie.hsEmb (c • ((A.toContinuousLinearEquiv : Wp →L[ℂ] Wp).comp
-      (O.comp (B.symm.toContinuousLinearEquiv : Wq →L[ℂ] Wq)))))
-  nlinarith [sq_nonneg (‖Formalism.L2.SG.PackageTie.hsEmb O‖ - ‖Formalism.L2.SG.PackageTie.hsEmb (c • ((A.toContinuousLinearEquiv : Wp →L[ℂ] Wp).comp
-      (O.comp (B.symm.toContinuousLinearEquiv : Wq →L[ℂ] Wq))))‖)]
+  rw [map_smul, norm_smul, hc, one_mul]
+  exact Formalism.L2.SG.Pf.RowForm.ClassFrameOperators.norm_hsEmb_conj A B O
 
 variable {D : D7} (X : HidaSetting D)
 

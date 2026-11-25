@@ -100,7 +100,5 @@ def BottomRelation (z : GA D (D.sp.Y 0)) {u : D.what₂.Word} (d : _root_.Global
       _root_.GlobalTheory.MiTop.IsPairing' W u (z * (show GA D (D.sp.Y 0) from W.Q.tS)) (T v) C b →
       _root_.GlobalTheory.MiTop.IsPairing' W u (z * (show GA D (D.sp.Y 0) from W.Q.tS)) (T' v) C' b' → α * b + α' * b' = 0
 end GlobalTheory.MiTop
-namespace GlobalTheory.MiTop
-end GlobalTheory.MiTop
 end
 end

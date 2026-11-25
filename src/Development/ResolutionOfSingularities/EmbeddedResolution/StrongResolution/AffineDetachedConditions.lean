@@ -218,7 +218,6 @@ private theorem support_weakTransform_subset_range_or_boundary {k : Type u} [Fie
       intro hj x hx
       have hjlt : j < S.ambientLength := hj
       have hNs : AlgebraicGeometry.IsNoetherian (S.ambientLevel (j + 1)) := hN (j + 1) hj
-      have hNSs : TopologicalSpace.NoetherianSpace ↥(S.ambientLevel (j + 1)) := inferInstance
       have hxp : x ∈ (Blowup.exceptionalIdeal (S.ambientBlowupMorphism j) (S.ambientCenter j)
           * principalizationSequenceIdeal S (j + 1)).support := by
         rw [Scheme.IdealSheafData.support_mul, ← SetLike.mem_coe, TopologicalSpace.Closeds.coe_sup]
@@ -275,7 +274,6 @@ private theorem detachedClopenInCenter_of_isNoetherian_of_support {k : Type u} [
       ((S.ambientCenter i).subschemeι ≫ S.schemeAtToSpec i) := S.principalizationSequence.smooth_center_subschemeι i hi
   have hredW : AlgebraicGeometry.IsReduced (S.ambientCenter i).subscheme :=
     smooth_isReduced ((S.ambientCenter i).subschemeι ≫ S.schemeAtToSpec i) hsmW
-  have hNW : TopologicalSpace.NoetherianSpace ↥(S.ambientCenter i).subscheme := inferInstance
   have hrangeA : Set.range ⇑(S.strictTransformι i).base
       = (((S.strictTransformIdeal i).support : TopologicalSpace.Closeds ↥(S.ambientLevel i))
           : Set ↥(S.ambientLevel i)) := by

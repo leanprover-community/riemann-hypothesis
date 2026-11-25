@@ -518,8 +518,7 @@ private theorem split_data (O X R R' κ : Type) [CommRing O] [IsLocalRing O] [Is
       rw [map_add (f := _), hqi, map_sum]
       simp [hZ2]
     refine ⟨i v + ∑ l, Z l, ?_, by rw [hqz]; exact hv, ?_⟩
-    · set_option synthInstance.maxHeartbeats 100000 in
-        simp only [v, map_add (f := _), hφi, map_sum]
+    · simp only [v, map_add (f := _), hφi, map_sum]
       rw [Finset.mul_sum, ← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl fun l _ => ?_
       rw [hZ1, hc (cd l) _ (Submodule.smul_mem _ _ (hεp l)), MonoidHom.inv_apply,

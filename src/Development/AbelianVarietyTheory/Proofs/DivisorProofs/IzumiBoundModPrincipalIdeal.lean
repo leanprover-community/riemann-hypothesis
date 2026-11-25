@@ -392,7 +392,7 @@ noncomputable def toCompletion (hpm : (p : C) ∈ maximalIdeal C) :
 
 theorem algebraMap_injective [IsNoetherianRing C] :
     Function.Injective (algebraMap C (AdicCompletion (maximalIdeal C) C)) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro x hx
   have hmem : x ∈ ⨅ n : ℕ, maximalIdeal C ^ n := by
     rw [Submodule.mem_iInf]
@@ -569,7 +569,6 @@ theorem exists_prime_not_mem_forall_gt_eq_maximalIdeal (C : Type) [CommRing C] [
     ∃ q : Ideal C, q.IsPrime ∧ x ∉ q ∧ ∀ P : Ideal C, P.IsPrime → q < P → P = maximalIdeal C := by
   classical
 
-  have hnil : ¬ IsNilpotent x := fun h => hx (IsNilpotent.eq_zero h)
   haveI : Nontrivial (Localization.Away x) :=
     (IsLocalization.injective (Localization.Away x)
       (powers_le_nonZeroDivisors_of_noZeroDivisors hx)).nontrivial

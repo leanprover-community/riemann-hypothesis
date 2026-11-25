@@ -149,11 +149,8 @@ private theorem idem_mul {R : Type} [CommRing R] {E a b : R} (hE : E * E = E) :
     (1 - E + E * a) * (1 - E + E * b) = 1 - E + E * (a * b) := by
   linear_combination (1 - a - b + a * b) * hE
 
-private theorem det_mem {k : ℕ} {N : Matrix (Fin k) (Fin k) (EAf D)} (h : IsIntM N) : N.det ∈ OO := by
-  let A : Matrix (Fin k) (Fin k) OO := fun i j => ⟨N i j, h i j⟩
-  have : N = (OO).subtype.mapMatrix A := rfl
-  rw [this, ← RingHom.map_det]
-  exact (A.det).2
+private theorem det_mem {k : ℕ} {N : Matrix (Fin k) (Fin k) (EAf D)} (h : IsIntM N) : N.det ∈ OO :=
+  GlobalTheory.Harm.det_mem_of_forall_mem _ _ h
 
 private theorem exists_unitFactor {e : AE D} (hE : toEAf D e * toEAf D e = toEAf D e) {k : ℕ} (κ : GL (Fin k) (EAf D)) :
     ∃ x : (AE D)ˣ, infPart D (x : AE D) = 1 ∧ toEAf D (x : AE D) = 1 - toEAf D e + toEAf D e * κ.1.det ∧

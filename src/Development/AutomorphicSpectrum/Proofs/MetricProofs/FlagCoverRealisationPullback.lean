@@ -93,18 +93,11 @@ theorem mfac_ne (a i : Fin N) {h : Matrix (Fin N) (Fin N) ℂ} (hh : IsBlockDiag
   rw [h2] at h1
   exact right_ne_zero_of_mul_eq_one h1.symm
 
-theorem minor_w_ne {h : Matrix (Fin N) (Fin N) ℂ} (hh : IsBlockDiag j h) (hd : h.det ≠ 0) :
-    minorIJ h (wIdx N j) (wIdx N j) ≠ 0 ∧ minorIJ h (omIdx N j) (omIdx N j) ≠ 0 := by
-  have h1 := MinorCalc.minorIJ_mul_of_support h⁻¹ h (wIdx N j) _ (MinorCalc.support_wIdx hh)
-  have h2 := MinorCalc.minorIJ_mul_of_support h⁻¹ h (omIdx N j) _ (MinorCalc.support_omIdx hh)
-  rw [Matrix.nonsing_inv_mul _ hd.isUnit, CPts.minorIJ_one] at h1 h2
-  exact ⟨right_ne_zero_of_mul_eq_one h1.symm, right_ne_zero_of_mul_eq_one h2.symm⟩
-
 theorem sum_detFac (hj : j ≤ N) {a b : Fin N} (hb : (b : ℕ) = a + 1) (hab : (b : ℕ) < j ∨ j ≤ (a : ℕ))
     {T : Matrix (Fin N) (Fin N) ℂ} (hT : IsBlockDiag j T) (hd : T.det ≠ 0) :
     ∑ i, (xiCoef () a ((), i) : ℝ) * (Real.log ‖detFac j i T‖ -
       if IsProperStep N j i then 0 else Real.log ‖mfac j a i T‖) = 0 := by
-  obtain ⟨hw, ho⟩ := minor_w_ne hT hd
+  obtain ⟨hw, ho⟩ := GlobalTheory.CompanionTheory.Ar.PB.WSq.Sec.Move.minor_ne hT hd
   have ha := a.2
   have hb' := b.2
   have key : ∀ i : Fin N, (a : ℕ) ≤ i + 1 → (i : ℕ) ≤ a + 1 → (Real.log ‖detFac j i T‖ -

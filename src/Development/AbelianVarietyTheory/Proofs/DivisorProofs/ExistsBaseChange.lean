@@ -40,7 +40,7 @@ theorem finiteDimensional_adForms [FiniteDimensional ℂ W] [Finite I] (hy : Bri
   let ev : Bridge.AdForms ι ρ J χ →ₗ[ℂ] (I → W) :=
     (LinearMap.funLeft ℂ W y).comp (Bridge.AdForms ι ρ J χ).subtype
   refine FiniteDimensional.of_injective ev ?_
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro F hF
   exact Subtype.ext (eq_zero_of_reps hy F.2 fun i => congrFun hF i)
 
@@ -65,7 +65,6 @@ theorem adInner_self_pos [Fintype I] (hy : Bridge.IsReps ι J y) (hs : ∀ i, Fi
   refine Finset.sum_pos' (fun j _ => by positivity) ⟨i, Finset.mem_univ _, ?_⟩
   haveI := hs i
   have h1 : (0 : ℝ) < (Nat.card (Bridge.stab ι J (y i)) : ℝ) := by exact_mod_cast Nat.card_pos
-  have h2 : 0 < ‖F (y i)‖ := norm_pos_iff.2 hi
   positivity
 
 end

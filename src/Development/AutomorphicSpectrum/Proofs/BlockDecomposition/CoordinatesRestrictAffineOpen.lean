@@ -24,7 +24,7 @@ theorem rs_comp_strV {O : Type} [CommRing O] {X : Scheme.{0}} (q : X ⟶ Spec (C
   rw [← CommRingCat.hom_comp, Category.assoc, Scheme.Hom.appLE_map]
 
 theorem main : ∀ {O : Type} [CommRing O] {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of O)} {V W : X.Opens} {d : ℕ}
-    (c : Coord q V d) (h : W ≤ V) (hW : IsAffineOpen W), ∃ c' : Coord q W d, ∀ i, c'.t i = rs h (c.t i) := by
+    (c : Coord q V d) (h : W ≤ V) (_ : IsAffineOpen W), ∃ c' : Coord q W d, ∀ i, c'.t i = rs h (c.t i) := by
   intro O _ X q V W d c h hW
   refine ⟨⟨hW, fun i => rs h (c.t i), ?_⟩, fun i => rfl⟩
   have e1 : MvPolynomial.eval₂Hom (strV q W) (fun i => rs h (c.t i)) =

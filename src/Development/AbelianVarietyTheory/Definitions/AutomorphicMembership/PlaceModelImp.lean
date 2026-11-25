@@ -26,8 +26,8 @@ variable {B : Base} {C : Cols B} {a : Late B C} (b : Late B C)
 
 theorem cd_eq (c c' : CDHaar) : c = c' := by
   have h : c.cd = c'.cd := funext fun P => funext fun Q => by
-    obtain ⟨x, h0, ht, h1, h2⟩ := c.trick P Q
-    exact GlobalTheory.CompactDualUnique.eq_cd c' P Q _ _ x (c.haar P Q) (c.haar _ 0) (c.prob _) h0 ht h1 h2
+    obtain ⟨x, _, _, h1, h2⟩ := c.trick P Q
+    exact GlobalTheory.CompactDualUnique.eq_cd c' P Q _ _ x (c.haar P Q) (c.haar _ 0) (c.prob _) h1 h2
   cases c; cases c'; cases h; rfl
 
 def ds {V : HSp a.D} {S : a.D.what₂.Tau → SPar} (M : DSModel V S) : @DSModel b.D ((V)) ((S)) where

@@ -133,14 +133,6 @@ end GlobalTheory.BigOn.Exp
 
 namespace GlobalTheory.BigOn.Exp
 
-end GlobalTheory.BigOn.Exp
-
-namespace GlobalTheory.BigOn.Exp
-
-end GlobalTheory.BigOn.Exp
-
-namespace GlobalTheory.BigOn.Exp
-
 theorem isAlgebraic_of_pow_eq_one {ζ : ℂ} {n : ℕ} (hn : n ≠ 0) (h : ζ ^ n = 1) : IsAlgebraic ℚ ζ :=
   ⟨Polynomial.X ^ n - Polynomial.C 1, Polynomial.X_pow_sub_C_ne_zero (Nat.pos_of_ne_zero hn) 1, by simp [h]⟩
 

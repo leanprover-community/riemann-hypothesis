@@ -33,14 +33,6 @@ structure GAll where
   a : GC.HH D → ℤ
   b : GC.HH D → ℤ
 
-namespace GAll
-
-variable (A : GAll) (K : G.Consts)
-
-
-
-end GAll
-
 def allOf {D : D7} {L : SizeData₂ D} (X : G.Inst D L) : GAll := ⟨viewD D, viewL L, viewX X, G.aL L, G.bL L⟩
 
 theorem host_cls_eq {R R' : Ranks} {H : Host R} {H' : Host R'} (hq : H.q = H'.q) (hd : H.d = H'.d)

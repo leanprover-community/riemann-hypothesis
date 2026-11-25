@@ -270,22 +270,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.LocScalar
 
-theorem place_ι_mul {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-    (p : Place D k) (x y : k) : p.ι (x * y) = p.ι x * p.ι y := by
-  have hx : p.e * p.ι x = p.ι x := by rw [← p.ι_π, p.π_ι]
-  have := p.ι_π (p.ι x * p.ι y)
-  rw [map_mul, p.π_ι, p.π_ι] at this
-  rw [this, ← mul_assoc, hx]
-
-theorem place_ι_one {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-    (p : Place D k) : p.ι 1 = p.e := by
-  have := p.ι_π 1
-  rwa [map_one, mul_one] at this
-
-theorem place_π_e {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-    (p : Place D k) : p.π p.e = 1 := by
-  rw [← place_ι_one, p.π_ι]
-
 theorem exists_isLoc_scalar : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (p : Place D k) (V : HSp D) (Z : Type) [Fintype Z] [DecidableEq Z] (F : Frame k V.rank Z) (c : kˣ) (zk : GL Z k), (zk : Matrix Z Z k) = (c : k) • (1 : Matrix Z Z k) → ∃ z : GA D V, p.IsLoc F z zk := by
   intros
   apply _root_.GlobalTheory.LocMod.Witness.exists_isLoc <;> assumption

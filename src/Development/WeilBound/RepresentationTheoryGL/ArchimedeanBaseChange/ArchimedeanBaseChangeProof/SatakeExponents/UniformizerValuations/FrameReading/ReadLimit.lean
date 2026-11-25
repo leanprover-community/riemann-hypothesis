@@ -64,12 +64,11 @@ structure BlockOut (B : Block E) {Γ : Type} (g : Γ → BGen B) (a₀ : Γ) (t�
       (χ ⟨X, StarAlgebra.subset_adjoin ℂ _ (Or.inr rfl)⟩ /
         χ ⟨(g a₀).op, StarAlgebra.subset_adjoin ℂ _ (Or.inl ⟨a₀, rfl⟩)⟩ ^ jX) • F
 
-def ReadLimit : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E],
-  ∃ (Wf₁ : ∀ a b : ℕ, Mods E a → Mods E b → Submodule ℂ (Kinf E a → ℂ))
+abbrev ReadLimitSpec (Wf₁ : ∀ a b : ℕ, Mods E a → Mods E b → Submodule ℂ (Kinf E a → ℂ))
     (Wf₂ : ∀ a b : ℕ, Mods E a → Mods E b → Submodule ℂ (Kinf E b → ℂ))
     (Ωf₁ Ωf₂ : ∀ a b : ℕ, Mods E a → Mods E b → ∀ M : ℕ, Set (Submodule ℂ (Kinf E M → ℂ)))
     (Θf₁ Θf₂ : ∀ a b : ℕ, Mods E a → Mods E b → Subgroup (GL (Fin a) (Af E)) → Subgroup (GL (Fin b) (Af E)) → ∀ M : ℕ,
-      Set (Subgroup (GL (Fin M) (Af E)))),
+      Set (Subgroup (GL (Fin M) (Af E)))) : Prop :=
   (∀ a b Ma Mb, FiniteDimensional ℂ (Wf₁ a b Ma Mb) ∧ FiniteDimensional ℂ (Wf₂ a b Ma Mb) ∧
     KTypes E (Ωf₁ a b Ma Mb) ∧ KTypes E (Ωf₂ a b Ma Mb) ∧ (∀ M, (Ωf₁ a b Ma Mb M).Nonempty ∧ (Ωf₂ a b Ma Mb M).Nonempty) ∧
     Wf₁ a b Ma Mb ≠ ⊥ ∧ Wf₂ a b Ma Mb ≠ ⊥) ∧
@@ -105,6 +104,32 @@ def ReadLimit : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E],
     Nonempty (BlockOut B g a₀ t₀ X tX jX χ K₁ K₂ (Wf₁ B.a B.b B.Ma B.Mb) (Wf₂ B.a B.b B.Ma B.Mb)
       (Θf₁ B.a B.b B.Ma B.Mb K₁ K₂) (Θf₂ B.a B.b B.Ma B.Mb K₁ K₂) (Ωf₁ B.a B.b B.Ma B.Mb) (Ωf₂ B.a B.b B.Ma B.Mb))
 
+def ReadLimit : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E],
+  ∃ (Wf₁ : ∀ a b : ℕ, Mods E a → Mods E b → Submodule ℂ (Kinf E a → ℂ))
+    (Wf₂ : ∀ a b : ℕ, Mods E a → Mods E b → Submodule ℂ (Kinf E b → ℂ))
+    (Ωf₁ Ωf₂ : ∀ a b : ℕ, Mods E a → Mods E b → ∀ M : ℕ, Set (Submodule ℂ (Kinf E M → ℂ)))
+    (Θf₁ Θf₂ : ∀ a b : ℕ, Mods E a → Mods E b → Subgroup (GL (Fin a) (Af E)) → Subgroup (GL (Fin b) (Af E)) → ∀ M : ℕ,
+      Set (Subgroup (GL (Fin M) (Af E)))),
+  ReadLimitSpec Wf₁ Wf₂ Ωf₁ Ωf₂ Θf₁ Θf₂
+
 end PositivityTheory.Rg.BcB.F.Rd
+
+namespace PositivityTheory.Rg.BcB.F
+
+section RL
+variable (hR : Rd.ReadLimit) (E : Type) [Field E] [NumberField E] [IsCMField E]
+
+def rlW₁ := (hR E).choose
+def rlW₂ := (hR E).choose_spec.choose
+def rlΩ₁ := (hR E).choose_spec.choose_spec.choose
+def rlΩ₂ := (hR E).choose_spec.choose_spec.choose_spec.choose
+def rlΘ₁ := (hR E).choose_spec.choose_spec.choose_spec.choose_spec.choose
+def rlΘ₂ := (hR E).choose_spec.choose_spec.choose_spec.choose_spec.choose_spec.choose
+
+theorem rl_spec : Rd.ReadLimitSpec (rlW₁ hR E) (rlW₂ hR E) (rlΩ₁ hR E) (rlΩ₂ hR E) (rlΘ₁ hR E) (rlΘ₂ hR E) :=
+  (hR E).choose_spec.choose_spec.choose_spec.choose_spec.choose_spec.choose_spec
+end RL
+
+end PositivityTheory.Rg.BcB.F
 
 end

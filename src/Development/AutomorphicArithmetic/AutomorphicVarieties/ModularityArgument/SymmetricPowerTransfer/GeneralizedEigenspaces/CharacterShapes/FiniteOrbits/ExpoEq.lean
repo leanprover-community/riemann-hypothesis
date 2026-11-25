@@ -59,11 +59,6 @@ private theorem abs_one_eq {k : Type} [Field k] [ValuativeRel k] [TopologicalSpa
   apply eq_inv_of_mul_eq_one_left
   rw [← absPow_add, show (1 : ℂ) + -1 = 0 by ring, h0]
 
-private theorem abs_zero_eq {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] :
-    absPow k 0 = 1 := by
-  ext x
-  simp
-
 theorem UpperTheory.V.Z.Sym.So.expoEq :
     UpperTheory.V.Z.Sym.So.ExpoEq := by
   intro k _ _ _ _ a
@@ -73,7 +68,7 @@ theorem UpperTheory.V.Z.Sym.So.expoEq :
     rfl
   have hZ : ∀ x : kˣ, absPow k 0 x = 1 := by
     intro x
-    rw [abs_zero_eq]
+    rw [GlobalTheory.SmGL.absPow_zero]
     rfl
   refine ⟨?_, ?_, ?_⟩
   · intro d

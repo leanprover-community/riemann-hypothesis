@@ -115,7 +115,7 @@ lemma herm_out_wb {v u : Fin (2 * r + k + 1) → ℂ}
 lemma herm_wb_out {u v : Fin (2 * r + k + 1) → ℂ} (hu : inWb k r u)
     (hv : ∀ i : Fin (2 * r + k + 1), r ≤ i.val → i.val ≤ r + k → v i = 0) :
     herm (Hpk k r) u v = 0 := by
-  rw [hm_symm _ _root_.Formalism.FourierDecayAlt.P.Ux1.hpk_herm v u, herm_out_wb hv hu, star_zero]
+  rw [Formalism.FourierDecayAlt.P.TwoByOneBlock.herm_symm _ _root_.Formalism.FourierDecayAlt.P.Ux1.hpk_herm v u, herm_out_wb hv hu, star_zero]
 
 lemma wbPart_mid (v : Fin (2 * r + k + 1) → ℂ) :
     ∀ i : Fin (2 * r + k + 1), r ≤ i.val → i.val ≤ r + k → (v - wbPart k r v) i = 0 := by
@@ -279,7 +279,7 @@ lemma xi_hermitian_cofactor_det {z z' : Fin (2 * r + k + 1) → ℂ} {y : B.Mat 
   rw [star_mul']
   congr 1
   simp only [Zhat, fv_last]
-  exact hm_symm _ _root_.Formalism.FourierDecayAlt.P.Ux1.hpk_herm (y *ᵥ z') (fvec k r z a)
+  exact Formalism.FourierDecayAlt.P.TwoByOneBlock.herm_symm _ _root_.Formalism.FourierDecayAlt.P.Ux1.hpk_herm (y *ᵥ z') (fvec k r z a)
 
 lemma omW_ne {z z' : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) (hz' : C2.StdZ k r z') {y : B.Mat k r}
     (hy : y ∈ B.GV k r) (hG : 0 < Gf k r z z' y) : omW k r z z' y ≠ 0 := by

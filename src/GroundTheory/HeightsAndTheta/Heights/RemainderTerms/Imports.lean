@@ -1436,13 +1436,9 @@ namespace GroundTheory.Heights₂.Heights.RestTerms
 
 open Finset
 
-theorem SchRootOfUnityVandermondeNe.rootOfUnity_isPrimitiveRoot {k : ℕ} (hk : 1 ≤ k) : IsPrimitiveRoot (rootOfUnity k) k := by
-  unfold rootOfUnity
-  exact Complex.isPrimitiveRoot_exp k (by omega)
-
 theorem SchRootOfUnityVandermondeNe.proof : SchRootOfUnityVandermondeNe.Statement := by
   intro k hk
-  have hz := SchRootOfUnityVandermondeNe.rootOfUnity_isPrimitiveRoot hk
+  have hz := GroundTheory.Heights₂.Heights.RestTerms.SchPowerSumAtRootsOfUnity.rootOfUnity_isPrimitiveRoot hk
   unfold vandermondeOf
   refine Finset.prod_ne_zero_iff.mpr fun i _ => Finset.prod_ne_zero_iff.mpr fun j hj => ?_
   rw [sub_ne_zero]

@@ -170,7 +170,7 @@ private theorem exists_common_ring_same_kernel {A K L : Type} [CommRing A] [Fiel
   letI : Algebra (A ⧸ RingHom.ker f) K := (RingHom.kerLift f).toAlgebra
   letI : Algebra (A ⧸ RingHom.ker f) L := (Ideal.Quotient.lift _ g fun a ha => by rwa [h] at ha).toAlgebra
   have h2 : Function.Injective (algebraMap (A ⧸ RingHom.ker f) L) := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro a ha
     obtain ⟨a, rfl⟩ := Ideal.Quotient.mk_surjective a
     rw [Ideal.Quotient.eq_zero_iff_mem, h]

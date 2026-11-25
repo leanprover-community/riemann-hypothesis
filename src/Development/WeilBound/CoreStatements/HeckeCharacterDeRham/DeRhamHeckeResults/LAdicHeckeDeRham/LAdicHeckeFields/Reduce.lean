@@ -79,13 +79,6 @@ open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual Recipro
 open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal GlobalTheory.CompanionTheory.LTHodge
 open scoped Classical
 
-namespace GlobalTheory.CompanionTheory.LTHodge
-
-theorem exists_lubinTateChar : ∀ {l : ℕ} [Fact l.Prime] (K : FinExt l), ∃ χ : ↥(GK K) →* (↥K.1)ˣ, IsLTChar K χ ∧
-    Continuous (fun g => (((χ g : (↥K.1)ˣ) : ↥K.1) : Om l)) ∧ ∀ g, ‖(((χ g : (↥K.1)ˣ) : ↥K.1) : Om l)‖ = 1 :=
-  fun K => GlobalTheory.CompanionTheory.LTHodge.CharEx.exists_ltChar K
-
-end GlobalTheory.CompanionTheory.LTHodge
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -435,7 +428,6 @@ open ValuativeRel GroundTheory.LocalField GroundTheory.LocalField.FormalGroup
 open scoped GroundTheory.PAdicHodge.CyclNorms
 
 namespace GlobalTheory.CompanionTheory.LTLink
-
 
 open GroundTheory.Global GroundTheory.Global.SemiLocal in
 theorem local_restriction_abelianization_artin : ∀ {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] (w : HeightOneSpectrum (𝓞 E)) {Ωv : Type} [Field Ωv] [Algebra (w.adicCompletion E) Ωv]
@@ -1399,8 +1391,6 @@ open scoped Topology
 
 variable {l : ℕ} [Fact l.Prime]
 
-
-
 theorem fil_of_unramified (P : LocPrime l) (AI : LocAinf l P) (Ti : LocTied l P AI) (K LL : FinExt l)
     (T : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)) (hI : ∀ g ∈ IK K, ∀ x, T.ρ g x = x)
     (y : T.V ⊗[ℚ_[l]] P.R.BdR) (hy : y ∈ DdR (P.PD K) T.ρ) :
@@ -1534,7 +1524,6 @@ theorem fil_line (P : LocPrime l) (AI : LocAinf l P) (Ti : LocTied l P AI) (K LL
   fil_of_unramified P AI Ti K LL (lineLoc K LL ρ μ hρ hμ hO)
     (fun g hg (x : Fin 1 → ↥LL.1) => (hρ g x).trans (by rw [hI g hg, one_smul])) y hy
 
-
 set_option maxHeartbeats 1600000 in
 theorem multV_of_fil (P : LocPrime l) (AI : LocAinf l P) (Ti : LocTied l P AI) (K LL : FinExt l) (ρ : Representation ↥LL.1 ↥(GK K) (Fin 1 → ↥LL.1))
     (hDR : IsDR (P.PD K) ρ)
@@ -1570,8 +1559,6 @@ section Main
 
 open NumberField IsDedekindDomain Neutral.B1 Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.L2.Host
 open GlobalTheory.HeckeGal GlobalTheory.Pst GlobalTheory.TripleGal
-
-
 
 open scoped Classical in
 theorem isdRJ_zero_of_trivial_on_open_inertia :
@@ -1703,7 +1690,7 @@ theorem lubinTate_at_embedding (HP : LTPeriods) : ∀ {E Ω : Type} [Field E] [N
       ∀ (x : (w.adicCompletion E)ˣ) (σ : ↥(Dec (F := E) A)), IsUnitAt w x → (σ : G E Ω) ∈ Ine (F := E) A →
         art (localIdele E w x) = toAb E Ω σ → ((lam σ : ↥LL'.1) : Qbar l) = j.1 x := by
   intro E Ω _ _ _ _ _ l _ P AI hT w A hA O _ _ _ Bw hI art hart LL' hLL j
-  obtain ⟨χ, hχ, hc, hn⟩ := _root_.GlobalTheory.CompanionTheory.LTHodge.exists_lubinTateChar Bw.Kw
+  obtain ⟨χ, hχ, hc, hn⟩ := _root_.GlobalTheory.CompanionTheory.LTHodge.CharEx.exists_ltChar Bw.Kw
   obtain ⟨φ, τ, hφc, hφ, hτ, hu⟩ := _root_.GlobalTheory.CompanionTheory.EmbBridge.embeddings_of_continuous w A hA O Bw hI LL' hLL j
   have hper := HP P AI hT Bw.Kw χ hχ hc
   have hsplit : ∀ (μ : ↥Bw.Kw.1 →ₐ[ℚ_[l]] Om l) (x : ↥Bw.Kw.1), μ x ∈ LL'.1 :=

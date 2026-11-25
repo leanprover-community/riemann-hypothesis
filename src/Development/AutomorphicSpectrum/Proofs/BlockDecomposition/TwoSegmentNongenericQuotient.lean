@@ -85,10 +85,3 @@ theorem not_isGeneric_quotRep {ψ : AddChar k Circle} (hψ : Continuous ψ) (h1 
   exact h2
 
 end GlobalTheory.CompanionTheory.BZSeg.TwoSeg
-
-namespace GlobalTheory.CompanionTheory.BZSeg
-
-open GlobalTheory.CompanionTheory.BZSeg.TwoSeg
-
-
-end GlobalTheory.CompanionTheory.BZSeg

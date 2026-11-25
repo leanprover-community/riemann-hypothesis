@@ -41,14 +41,8 @@ variable {n' r : ℕ} [NeZero n']
 
 theorem fr_lt {F : Frames n' r} {L₁ N₁ : ℕ} (hV : F.Valid L₁ N₁) (j : ℤ) :
     ∀ k i, i < k → k < r → F.fr j i < F.fr j k := by
-  intro k i hik hk
-  induction k with
-  | zero => omega
-  | succ k ih =>
-    rcases Nat.lt_succ_iff_lt_or_eq.1 hik with h | h
-    · exact lt_trans (ih h (by omega)) (hV.2.2.1 j k hk)
-    · subst h
-      exact hV.2.2.1 j i hk
+  intros
+  apply Formalism.MainNotions.G.WittFrameLocaliserOrders.frame_entries_strictMono <;> assumption
 
 theorem seg_of {F : Frames n' r} {L₁ N₁ : ℕ} (hV : F.Valid L₁ N₁) (hr : 1 ≤ r) (s : ℤ) :
     ∃ j : ℤ, F.fr (j - 1) (r - 1) < s ∧ s ≤ F.fr j (r - 1) := by

@@ -363,8 +363,7 @@ theorem exists_rat (Y : R3.Read (A3 := A3) R.toRealDat F.lv2 X0) (hlev : R.toLev
         Module.End ℂ (MMap (R.MW i (sg0 D A3.A)))) ∘ₗ (R.HW i (sg0 D A3.A)).e)
     (by
       rintro (_ | p | t) x
-      · set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Sum.elim_inl, LinearMap.comp_apply, LinearMap.sub_apply, LinearMap.sum_apply, LinearMap.smul_apply,
+      · simp only [Sum.elim_inl, LinearMap.comp_apply, LinearMap.sub_apply, LinearMap.sum_apply, LinearMap.smul_apply,
           Module.End.one_apply, map_sub, map_sum]
         congr 1
         exact Finset.sum_congr rfl fun g _ => by rw [map_smulₛₗ, map_smul, hact']

@@ -432,9 +432,6 @@ theorem nrat_map_Xsp {T : D.host.E} (F : LFlag (D.sp.Y 0) D.R.rS T) {n : (VS D).
   | add y y' _ _ h h' => rw [map_add]; exact add_mem h h'
   | smul c y _ h => rw [map_smul]; exact Submodule.smul_mem _ c h
 
-theorem one_mem_NRat {T : D.host.E} (F : LFlag (D.sp.Y 0) D.R.rS T) : (1 : (VS D).V ≃ₗ[D.host.E] (VS D).V) ∈ NRat F :=
-  ⟨one_mem _, fun j x _ => by simp, fun x _ => by simp⟩
-
 end NR
 
 end GlobalTheory.Unfold.RowCls
@@ -548,7 +545,7 @@ theorem clsRow_ngSet : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.w
   have hlam' : t.lam' = t'.lam' := congrArg (fun r => (r.2.1 : Submodule (𝓞 D.host.E) (VS D).V)) hr
   have hmem : t'.lin ∈ nmlOf Y u u' t := by
     rw [hn]
-    exact ⟨1, one_mem_NRat _, 1, one_mem_NRat _, by simp⟩
+    exact ⟨1, GlobalTheory.HL.NmlCoset.one_mem _, 1, GlobalTheory.HL.NmlCoset.one_mem _, by simp⟩
   obtain ⟨n, hnn, n', hnn', he⟩ := hmem
   exact nonGeneric_terms_same_coset_corank_one t t' ht hlam hlam' n hnn n' hnn' he
 
@@ -568,8 +565,6 @@ section -- clump:auto
 open scoped Classical ENNReal
 open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.Unfold
 
-theorem _root_.GlobalTheory.T.nonGeneric_term_classes_eq_rows_in_double_coset : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word), ConcTie X Y → ClsRow (Y.tO u u').ngSet (clsOf Y u u') := by
-  first | exact @GlobalTheory.Unfold.RowCls.clsRow_ngSet
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.NonGenericTermClassesEqRowsInDoubleCosetStatement =====
@@ -591,7 +586,7 @@ theorem famNG_holds : FamNG := by
   intro Cg cb Cw cT CT C0
   refine ⟨0, 0, fun C' Cl _ _ D large₂ X Y u u' hC => ?_⟩
   have hT : ConcTie X Y := hC.2.2
-  exact ⟨rfl, GlobalTheory.T.nonGeneric_term_classes_eq_rows_in_double_coset D X Y u u' hT, (GlobalTheory.NGClass.ngClass_rows D X Y u u' hT).2.1⟩
+  exact ⟨rfl, GlobalTheory.Unfold.RowCls.clsRow_ngSet D X Y u u' hT, (GlobalTheory.NGClass.ngClass_rows D X Y u u' hT).2.1⟩
 
 end GlobalTheory.SnFam
 end -- clump:auto
@@ -607,8 +602,6 @@ section -- clump:auto
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.FourierDecayAlt Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.SnFam
 open scoped Classical
 
-theorem _root_.GlobalTheory.T.non_generic_corank_one_terms_family_cut_by_defect : GlobalTheory.SnFam.FamNG := by
-  first | exact @GlobalTheory.SnFam.famNG_holds
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.NonGenericCorankOneTermsFamilyCutByDefectStatement =====
@@ -689,8 +682,6 @@ section -- clump:auto
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.FourierDecayAlt Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.SnFam
 open scoped Classical
 
-theorem _root_.GlobalTheory.T.nongeneric_row_statements_of_family_statements : FamNG → (FamilyWeightSumUnfoldingIdentity → Formalism.L2.SG.FamDefs.OrbitFamilyIdentityNonGeneric) ∧ (WeightsFam → Formalism.L2.SG.FamDefs.WeightsNG) ∧ (FamilyGroupSumFactorsWeightAmplitude → Formalism.L2.SG.FamDefs.ProductStructureNonGeneric) ∧ (ExistFam → Formalism.L2.SG.FamDefs.ExistNG) := by
-  first | exact @GlobalTheory.SnFamNG.leaves_of_fam
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.NongenericRowStatementsOfFamilyStatementsStatement =====
@@ -707,13 +698,9 @@ namespace GlobalTheory.NGRowClose
 theorem rowNGP_of_formNGVanish (hSW : PI.VolStabS.MassDataS.SWXS) (hC : StepChoiceConstantsC)
     (hP : StepPinExists) (hF : Formalism.L2.SG.NGVanish.FormNGC) (hB : StepThmBPinnedP) :
     RowNGP := by
-  obtain ⟨h5, hw, h4, he⟩ := GlobalTheory.T.nongeneric_row_statements_of_family_statements GlobalTheory.T.non_generic_corank_one_terms_family_cut_by_defect
-  exact _root_.GlobalTheory.rowNGP_of_leaves hC hP hF hB (h5 _root_.GlobalTheory.SnFam.familyRowWeightSumUnfoldingIdentity_proof) (hw (GlobalTheory.T.familyGenericMassPositiveBounded_proof hSW))
+  obtain ⟨h5, hw, h4, he⟩ := GlobalTheory.SnFamNG.leaves_of_fam GlobalTheory.SnFam.famNG_holds
+  exact _root_.GlobalTheory.rowNGP_of_leaves hC hP hF hB (h5 _root_.GlobalTheory.SnFam.familyRowWeightSumUnfoldingIdentity_proof) (hw (GlobalTheory.WeightsFamPf.weightsFam_of hSW))
     (h4 _root_.GlobalTheory.FamilyNormRational.familyGroupSumFactorsRowWeightAmplitude) (he _root_.GlobalTheory.SnFam.existFam)
-
-theorem close : PI.VolStabS.MassDataS.SWXS → StepChoiceConstantsC → StepPinExists →
-    Formalism.L2.SG.NGVanish.FormNGC → StepThmBPinnedP → RowNGP :=
-  fun hSW hC hP hF hB => rowNGP_of_formNGVanish hSW hC hP hF hB
 
 end GlobalTheory.NGRowClose
 end -- clump:auto
@@ -747,7 +734,7 @@ theorem rowNGP_of_siegelWeil_of_stepChoice :
     HeckeCharacterZeroLocus.SiegelWeilU.SiegelWeilUnitaryConvergent → Formalism.L2.SG.NGAnalytic.StepChoiceConstantsC →
       Formalism.L2.SG.NGAnalytic.StepThmBPinnedC → Formalism.L2.SG.RowsPos.RowNGP := by
   intro h hB hT
-  refine _root_.GlobalTheory.NGRowClose.close (GlobalTheory.St.swxs_of_siegelWeil h) hB GlobalTheory.stepPinExists_and_formNGC.1 GlobalTheory.stepPinExists_and_formNGC.2 ?_
+  refine _root_.GlobalTheory.NGRowClose.rowNGP_of_formNGVanish (GlobalTheory.St.swxs_of_siegelWeil h) hB GlobalTheory.stepPinExists_and_formNGC.1 GlobalTheory.stepPinExists_and_formNGC.2 ?_
   intro Cg cb Cw cT CT C0 _ _ A
   obtain ⟨CB, h0, a, b, H⟩ := hT Cg cb Cw cT CT C0 A
   exact ⟨CB, h0, a, b, fun C' Cl h1 h2 D large₂ X Y u u' _ => H C' Cl h1 h2 D large₂ X Y u u'⟩

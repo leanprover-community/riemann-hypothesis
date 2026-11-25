@@ -667,7 +667,6 @@ theorem exists_gen_near_of_finFlat : ∀ (R : Type) [CommRing R] [IsDomain R] [I
   obtain ⟨σ, hσ⟩ := _root_.GlobalTheory.GenRestrict.exists_gen_restrict Z' (L.pull k') hL' _ _ hle s (fun z₀ hz₀ => hV₁ z₀ (by
     rw [Scheme.Hom.comp_apply, ← hcomm]
     exact hf1 hz₀))
-  have hsurjp : Function.Surjective (p.app (Y.basicOpen f)).hom := (hbij _).2
   let e := RingEquiv.ofBijective (p.app (Y.basicOpen f)).hom (hbij _)
   haveI hm : (Ideal.comap e.symm.toRingHom M).IsMaximal :=
     Ideal.comap_isMaximal_of_surjective _ e.symm.surjective

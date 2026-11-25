@@ -70,14 +70,10 @@ theorem UpperTheory.Gal.G3.pTwFEt :
   have e1 : {w : Spec (CommRingCat.of K) ⟶ X.Z m // w ≫ X.tr m j 1 b.1 b.2 = x} ≃
       Σ y : {y : Spec (CommRingCat.of K) ⟶ X.Z i // y ≫ s = x},
         {w : Spec (CommRingCat.of K) ⟶ X.Z m // w ≫ r = y.1} :=
-    { toFun := fun w => ⟨⟨w.1 ≫ r, by rw [Category.assoc, hc, w.2]⟩, ⟨w.1, rfl⟩⟩
-      invFun := fun p => ⟨p.2.1, by rw [← hc, ← Category.assoc, p.2.2, p.1.2]⟩
-      left_inv := fun w => rfl
-      right_inv := by
-        rintro ⟨⟨y, hy⟩, ⟨w, hw⟩⟩
-        change w ≫ r = y at hw
-        subst hw
-        rfl }
+    (Equiv.sigmaSubtypeFiberEquivSubtype (fun w : Spec (CommRingCat.of K) ⟶ X.Z m => w ≫ r)
+      (fun w => by
+        change _ ↔ (w ≫ r) ≫ s = x
+        rw [Category.assoc, show r ≫ s = _ from hc])).symm
   have hcount : Nat.card {y : Spec (CommRingCat.of K) ⟶ X.Z i // y ≫ s = x} * (X.K m).relIndex (X.K i) =
       (X.K m).relIndex (X.K j) := by
     rw [← h1.2.2 K x, Nat.card_congr e1, Nat.card_sigma]

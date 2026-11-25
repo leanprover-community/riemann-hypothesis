@@ -246,10 +246,6 @@ end PositivityTheory.ResPlug.WeightsCompactStabilizer
 
 namespace PositivityTheory.ResPlug.WeightsCompactStabilizer
 
-end PositivityTheory.ResPlug.WeightsCompactStabilizer
-
-namespace PositivityTheory.ResPlug.WeightsCompactStabilizer
-
 open GlobalTheory.CompanionTheory.Hypotheses₂ GlobalTheory.CompanionTheory.Hypotheses₂.SncBlowup FunctorialResolution
 
 theorem gCentre : _root_.PositivityTheory.ResPlug.BlowupCentre.GCentre := PositivityTheory.ResPlug.BlowupCentre.gCentre

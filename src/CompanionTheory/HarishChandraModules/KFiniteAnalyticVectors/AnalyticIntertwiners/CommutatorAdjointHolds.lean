@@ -221,12 +221,8 @@ theorem exists_log_A (n : ℕ) : ∃ L : (Fin n → Fin n → ℂ) → (Fin n �
   · filter_upwards [hs.eventually_left_inverse] with Y hY
     exact hY
 
-theorem Jm_sq_A : Jm ε * Jm ε = 1 := by
-  unfold Jm
-  rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
-  congr 1
-  funext a
-  split_ifs <;> norm_num
+theorem Jm_sq_A : Jm ε * Jm ε = 1 :=
+  S7.Jm_mul_self ε
 
 theorem exp_theta_A {Y : Matrix (Fin n) (Fin n) ℂ} (h : NormedSpace.exp Y ∈ Formalism.MainNotions.S.UJset ε) :
     NormedSpace.exp (Jm ε * (-Yᴴ) * Jm ε) = NormedSpace.exp Y := by

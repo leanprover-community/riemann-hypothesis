@@ -110,7 +110,7 @@ theorem flatFB_mulcol : ∀ (D : D7), GlobalTheory.FinPl.FlatLaws D → OmLoc D 
   intro D hFL _ k _ _ _ _ _ _ p ψ ψk hχ σ J B st s hs n n' _ _ _ _ c G₀ FW FA F₀ FV hjac _ hbes Tm hTm r q hq b Φ Φ' hΦ'
   obtain ⟨i, rfl, hi, hfree⟩ := hq
   have hc : c = 2 * σ + 1 := hbes.1
-  have hκ : ∀ m : ℕ, s * p.xi ^ m ≠ 0 := fun m => mul_ne_zero hs (pow_ne_zero _ (xi_ne p))
+  have hκ : ∀ m : ℕ, s * p.xi ^ m ≠ 0 := fun m => mul_ne_zero hs (pow_ne_zero _ (GlobalTheory.LocMod.Witness.xi_ne p))
   let i₀ : Fin (σ + 1) := ⟨i.val, by omega⟩
   let zk : Matrix (Fin (σ + 1)) (Fin B.V.rank) k :=
     Matrix.of fun i' β => if i' = i₀ then b * (s * p.xi ^ (σ + 1 - i.val)) * FV.γ r β else 0
@@ -833,9 +833,6 @@ theorem mxAt_rowMx {ρ m : ℕ} (l : Fin ρ) (v : Fin m → k) : GlobalTheory.Fi
     · exact ⟨_, ite_eq_left h⟩
     · exact ⟨0, (ite_eq_right h).trans (map_zero _).symm⟩
 
-theorem pr_ne_zero {a : D.host.E} (ha : a ≠ 0) : p.pr a ≠ 0 :=
-  (_root_.map_ne_zero (p.π.comp (incA D))).2 ha
-
 theorem up_single {S T : HSp D} {Y Y' : Type} [Fintype Y] [DecidableEq Y] [Fintype Y'] [DecidableEq Y']
     (FS : Frame k S.rank Y') (FT : Frame k T.rank Y) (r : Y) (q : Y') (a : k) (row : Fin T.rank) (col : Fin S.rank) :
     p.up FS FT (Matrix.single r q a) row col = p.ι (FT.β row r * a * FS.γ q col) := by
@@ -1167,8 +1164,8 @@ theorem GlobalTheory.LocMod.flatFB_trans_free : ∀ (D : D7), GlobalTheory.FinPl
     simp [symplO, hO, ch, Matrix.single]
   · have hj : σ < j.val := hq j rfl
     have hjc := j.isLt
-    have hξ : p.xi ≠ 0 := TransLaw.pr_ne_zero p GlobalTheory.ChiGrid.cmHost_imaginaryGenerator_ne_zero
-    have hz : p.hz B ≠ 0 := TransLaw.pr_ne_zero p B.line.2
+    have hξ : p.xi ≠ 0 := GlobalTheory.LocMod.MulRow.pr_ne p GlobalTheory.ChiGrid.cmHost_imaginaryGenerator_ne_zero
+    have hz : p.hz B ≠ 0 := GlobalTheory.LocMod.MulRow.pr_ne p B.line.2
     have hhh : -p.xi ^ 2 * p.hz B ≠ 0 := mul_ne_zero (neg_ne_zero.2 (pow_ne_zero _ hξ)) hz
     obtain ⟨i, hi⟩ : ∃ i : Fin (σ + 1), j.val + i.val + 1 = 2 * (σ + 1) :=
       ⟨⟨2 * σ + 1 - j.val, by omega⟩, by simp only; omega⟩

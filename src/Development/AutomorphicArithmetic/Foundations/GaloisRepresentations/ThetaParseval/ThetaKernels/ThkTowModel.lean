@@ -292,56 +292,6 @@ noncomputable section
 namespace Tw.VacAny
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice IsDedekindDomain
   NumberField MeasureTheory Matrix Classical _root_.GlobalTheory _root_.GlobalTheory.VacAny
-private theorem supported_sum {F : Type} [Field F] [NumberField F]
-    {v : HeightOneSpectrum (𝓞 F)} {ι : Type} (s : Finset ι) {f : ι → AF F}
-    (h : ∀ i ∈ s, At (GlobalTheory.AdelicU.evFin F v) (f i)) :
-    At (GlobalTheory.AdelicU.evFin F v) (∑ i ∈ s, f i) := by
-  intro u hu
-  rw [Finset.smul_sum]
-  exact Finset.sum_eq_zero fun i hi => h i hi u hu
-
-private theorem supported_neg {F : Type} [Field F] [NumberField F]
-    {v : HeightOneSpectrum (𝓞 F)} {x : AF F}
-    (h : At (GlobalTheory.AdelicU.evFin F v) x) :
-    At (GlobalTheory.AdelicU.evFin F v) (-x) := by
-  intro u hu
-  rw [smul_neg, h u hu, neg_zero]
-private theorem supported_atPlace {F : Type} [Field F] [NumberField F]
-    {v : HeightOneSpectrum (𝓞 F)} (t : Fv F v) :
-    At (GlobalTheory.AdelicU.evFin F v)
-      (GlobalTheory.EmbChart.atPlace v t) := by
-  intro u hu
-  rw [smul_eq_mul, mul_comm, GlobalTheory.EmbChart.atPlace_mul_right, hu, mul_zero, map_zero]
-
-private theorem supported_sub {F : Type} [Field F] [NumberField F]
-    {v : HeightOneSpectrum (𝓞 F)} {x y : AF F}
-    (hx : At (GlobalTheory.AdelicU.evFin F v) x)
-    (hy : At (GlobalTheory.AdelicU.evFin F v) y) :
-    At (GlobalTheory.AdelicU.evFin F v) (x - y) := by
-  intro u hu
-  rw [smul_sub, hx u hu, hy u hu, sub_self]
-
-private theorem evFin_invOf_two_local {F : Type} [Field F] [NumberField F]
-    {v : HeightOneSpectrum (𝓞 F)} :
-    GlobalTheory.AdelicU.evFin F v (⅟(2 : AF F)) = ⅟(2 : Fv F v) := by
-  refine (invOf_eq_right_inv ?_).symm
-  have h : GlobalTheory.AdelicU.evFin F v (2 * ⅟(2 : AF F)) = 1 := by
-    rw [mul_invOf_self, map_one]
-  rwa [map_mul, map_ofNat] at h
-
-private theorem supported_mul_right {F : Type} [Field F] [NumberField F]
-    {v : HeightOneSpectrum (𝓞 F)} {x : AF F}
-    (hx : At (GlobalTheory.AdelicU.evFin F v) x) (y : AF F) :
-    GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.At (GlobalTheory.AdelicU.evFin F v) (x * y) := by
-  intro u hu
-  rw [smul_eq_mul, ← mul_assoc, show u * x = 0 from hx u hu, zero_mul]
-
-private theorem supported_mul_left {F : Type} [Field F] [NumberField F]
-    {v : HeightOneSpectrum (𝓞 F)} (x : AF F) {y : AF F}
-    (hy : At (GlobalTheory.AdelicU.evFin F v) y) :
-    At (GlobalTheory.AdelicU.evFin F v) (x * y) := by
-  rw [mul_comm]
-  exact supported_mul_right hy x
 
 theorem exists_isVac_any_darboux_k : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ
   : E →ₐ[F] E}
@@ -389,8 +339,8 @@ theorem exists_isVac_any_darboux_k : ∀ {F E : Type} [Field F] [NumberField F] 
         := by
     intro a i
     rw [(hcomp a i).1, (hcomp a i).2]
-    exact ⟨supported_sum _ fun m _ => supported_mul_right (supported_atPlace _) _,
-      supported_sum _ fun m _ => supported_mul_right (supported_atPlace _) _⟩
+    exact ⟨GlobalTheory.VacAny.at_sum _ fun m _ => GlobalTheory.VacAny.at_mul_right (GlobalTheory.VacAny.at_atPlace _) _,
+      GlobalTheory.VacAny.at_sum _ fun m _ => GlobalTheory.VacAny.at_mul_right (GlobalTheory.VacAny.at_atPlace _) _⟩
   have hev : ∀ a, ((fun i => GlobalTheory.AdelicU.evFin F v ((co.e (γf a)).1 i)),
       (fun i => GlobalTheory.AdelicU.evFin F v ((co.e (γf a)).2 i))) = ∑ m, (a m : Fv F v) • u m := by
     intro a
@@ -432,7 +382,7 @@ theorem exists_isVac_any_darboux_k : ∀ {F E : Type} [Field F] [NumberField F] 
       GlobalTheory.AdelicU.evFin F v ((co.e (γf a)).1 ⬝ᵥ (co.e (γf b)).2) =
         (∑ m, (a m : Fv F v) • u m).1 ⬝ᵥ (∑ m, (b m : Fv F v) • u m).2 := by
     intro a b
-    refine ⟨supported_sum _ fun i _ => supported_mul_right (hAt a i).1 _, ?_⟩
+    refine ⟨GlobalTheory.VacAny.at_sum _ fun i _ => GlobalTheory.VacAny.at_mul_right (hAt a i).1 _, ?_⟩
     rw [← hev a, ← hev b]
 
     simp only [dotProduct, map_sum, map_mul]
@@ -443,9 +393,9 @@ theorem exists_isVac_any_darboux_k : ∀ {F E : Type} [Field F] [NumberField F] 
     simp only [χ]
     rw [hadd, _root_.Tw.VacCocycle.psi_half_symp_add_k B hB X Y r s r' s' hX hY θ hθ v _ (hmem a) _ (hmem b), co.form]
     congr 1
-    have hz := supported_neg (supported_mul_left (⅟(2 : AF F))
-      (supported_sub (hdot a b).1 (hdot b a).1))
-    rw [hψ _ hz, map_neg, map_mul, map_sub, (hdot a b).2, (hdot b a).2, evFin_invOf_two_local]
+    have hz := GlobalTheory.VacAny.at_neg (GlobalTheory.VacAny.at_mul_left (⅟(2 : AF F))
+      (GlobalTheory.VacAny.at_sub (hdot a b).1 (hdot b a).1))
+    rw [hψ _ hz, map_neg, map_mul, map_sub, (hdot a b).2, (hdot b a).2, GlobalTheory.VacAny.evFin_invOf_two]
   obtain ⟨φ, hφSB, hφ0, hφ⟩ := GlobalTheory.VacLoc.exists_schr_eigen v (GlobalTheory.VacAny.psiV B.ψ v)
     (GlobalTheory.VacAny.continuous_psiV hB.std.1 v)
     (Tw.PsiNontriv.psiV_ne_one B.ψ hB.std v) u χ (Tw.ContSymp.continuous_psi_symp_atPlace σ B.ψ hB.std.1 X.J Y.J (θ : E)

@@ -24,15 +24,12 @@ lemma partial_dz (s : ℂ) (N : ℕ) :
 
 lemma one_lt_identity {s : ℂ} (hs : 1 < s.re) : (s - 1) * riemannZeta s = s - Dz s := by
   have hsum : Summable (dz s) := (summable_norm_dz (by linarith)).of_norm
-  have hf : Summable (fun n : ℕ => 1 / ((n : ℂ) + 1) ^ s) := by
-    simpa [Nat.cast_add, Nat.cast_one] using (summable_nat_add_iff 1).mpr (Complex.summable_one_div_nat_cpow.mpr hs)
-  have hz : HasSum (fun n : ℕ => 1 / ((n : ℂ) + 1) ^ s) (riemannZeta s) := by
-    rw [zeta_eq_tsum_one_div_nat_add_one_cpow hs]; exact hf.hasSum
+  have hz : HasSum (fun n : ℕ => 1 / (n : ℂ) ^ s) (riemannZeta s) := by
+    rw [zeta_eq_tsum_one_div_nat_cpow hs]
+    exact (Complex.summable_one_div_nat_cpow.mpr hs).hasSum
   have hG : HasSum (fun i : ℕ => ((((i : ℝ) + 1) + 1 : ℝ) : ℂ) ^ (-s)) (riemannZeta s - 1) := by
-    have h1 := (hasSum_nat_add_iff' 1).mpr hz
-    simp only [Finset.sum_range_one, Nat.cast_zero, zero_add, one_cpow, div_one] at h1
-    refine h1.congr_fun fun n => ?_
-    rw [show ((((n : ℝ) + 1) + 1 : ℝ) : ℂ) = (((n + 1 : ℕ) : ℂ) + 1) by push_cast; ring, cpow_neg, one_div]
+    simpa [Finset.sum_range_succ, Complex.zero_cpow (Complex.ne_zero_of_one_lt_re hs),
+      Complex.cpow_neg, one_div, add_assoc, one_add_one_eq_two] using (hasSum_nat_add_iff' 2).mpr hz
   have hc : Tendsto (fun N : ℕ => (((N : ℝ) + 1 : ℝ) : ℂ) ^ (1 - s)) atTop (𝓝 0) := by
     rw [tendsto_zero_iff_norm_tendsto_zero]
     refine ((tendsto_rpow_neg_atTop (sub_pos.mpr hs)).comp

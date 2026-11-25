@@ -973,20 +973,9 @@ theorem finsum_block {K S Q J J₁ J₂ : Type} [Field K] [CommRing S] [Algebra 
   haveI : Fintype Q := Fintype.ofFinite Q
   rw [finsum_eq_sum_of_fintype, finsum_eq_sum_of_fintype, finsum_eq_sum_of_fintype,
     Finset.sum_mul_sum, ← Fintype.sum_prod_type']
-  let eq : (Fin (n₁ + n₂) → Q) ≃ (Fin n₁ → Q) × (Fin n₂ → Q) :=
-    { toFun := fun q => (fun i => q (Fin.castAdd n₂ i), fun j => q (Fin.natAdd n₁ j))
-      invFun := fun p => Fin.append p.1 p.2
-      left_inv := by
-        intro q
-        funext i
-        refine Fin.addCases (fun i => ?_) (fun j => ?_) i
-        · simp
-        · simp
-      right_inv := by
-        intro p
-        ext i <;> simp }
+  let eq := (Fin.appendEquiv (α := Q) n₁ n₂).symm
   refine Fintype.sum_equiv eq _ _ (fun q => ?_)
-  simp only [eq, Equiv.coe_fn_mk]
+  simp only [eq, Fin.appendEquiv_symm_apply]
   have hJ : ∀ (a : Fin n₁ → Q) (b : Fin n₂ → Q), ∑ i : J, A₁ a (e i).1 * A₂ b (e i).2 = (∑ i, A₁ a i) * ∑ j, A₂ b j := by
     intro a b
     rw [Finset.sum_mul_sum, ← Fintype.sum_prod_type']

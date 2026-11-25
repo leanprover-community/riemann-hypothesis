@@ -203,7 +203,7 @@ theorem UpperTheory.exists_isSBHalf_theta_of_selfDual_lattices :
   obtain ⟨hB, rfl, -, -, ⟨r, s, hV⟩, ⟨r', s', hW⟩, hM⟩ := hP
   have hcm := hB.cm
   have hstd := hB.std
-  have hψ := GlobalTheory.T.isStdChar_neg_one_of_standardTraceAdelicAddChar D _ hstd
+  have hψ := GlobalTheory.StdCharFromIsStd.isStdChar_of_isStd D _ hstd
   have ht' : ∀ v, t₀ v = (t₁ v).comp D.sp.cm.sig := fun v => AlgHom.ext (ht v)
   choose z hz0 hz using fun v : P => UpperTheory.exists_ne_zero_linearModel_vacuum_eq_smul _ _ _ Bs _ _ Vs Ws M r s r' s' hB hV hW hM v.1 (t₁ v) (t₀ v) (ht v)
     (b v) (c v) (ι v) (hι v)

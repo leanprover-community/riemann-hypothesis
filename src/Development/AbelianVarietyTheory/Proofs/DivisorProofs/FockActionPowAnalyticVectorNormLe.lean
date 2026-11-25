@@ -223,7 +223,6 @@ theorem oneStep_pderiv (h : IsFockIP ι) (i : σ) : OneStep ι (pderiv i).toLine
   intro d P hP
   refine ⟨((totalDegree_pderiv_le_self i P).trans hP).trans (Nat.le_succ _), ?_⟩
   have := (_root_.GlobalTheory.FockNormBound.fock_norm_bounds σ H ι h i d P hP).2
-  have h2 := sq_nonneg ‖ι P‖
   change ‖ι (pderiv i P)‖ ^ 2 ≤ _
   nlinarith
 
@@ -239,11 +238,9 @@ theorem OneStep.comp {A B : Module.End ℂ (MvPolynomial σ ℂ)} (hA : OneStep 
   obtain ⟨h1, h2⟩ := hB d P hP
   obtain ⟨h3, h4⟩ := hA (d + 1) _ h1
   refine ⟨h3, ?_⟩
-  have hd : (0 : ℝ) ≤ d := Nat.cast_nonneg d
   refine (pow_le_pow_iff_left₀ (norm_nonneg _) (by positivity) two_ne_zero).1 ?_
   push_cast at h4
   have h5 := mul_le_mul_of_nonneg_left h2 (show (0 : ℝ) ≤ (d : ℝ) + 1 + 1 by positivity)
-  have h6 := sq_nonneg ‖ι P‖
   change ‖ι (A (B P))‖ ^ 2 ≤ _
   nlinarith
 end

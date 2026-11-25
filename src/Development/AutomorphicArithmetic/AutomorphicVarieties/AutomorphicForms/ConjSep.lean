@@ -33,7 +33,7 @@ theorem Sep.comp (h : Sep σ ρ ρ') (e : H →* G) : Sep σ (ρ.comp e) (ρ'.co
   exact ⟨p, h1, fun g v => h2 _ v, h3⟩
 
 theorem Sep.of_injective (f : V →ₗ[ℂ] V') (hf : ∀ g v, f (ρ g v) = ρ' g (f v)) (hi : Function.Injective f) :
-    Sep (RingEquiv.refl ℂ) ρ ρ' := fun x hx =>
+    Sep (RingEquiv.refl ℂ) ρ ρ' := fun _ hx =>
   ⟨f.toAddMonoidHom, fun c v => map_smul f c v, hf, (map_ne_zero_iff f hi).2 hx⟩
 
 theorem Sep.of_equiv (T : V ≃ₗ[ℂ] V') (hT : ∀ g v, T (ρ g v) = ρ' g (T v)) :

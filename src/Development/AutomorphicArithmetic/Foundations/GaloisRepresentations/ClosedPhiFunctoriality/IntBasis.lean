@@ -120,7 +120,7 @@ private theorem exists_bounded_independent_spanning_family {l : ℕ} [Fact (Nat.
         | cast i => exact hc i
       · push Not at hb
         obtain ⟨j1, hj1⟩ := hb
-        haveI : Nonempty (Fin m) := ⟨j1⟩
+        have : Nonempty (Fin m) := ⟨j1⟩
         obtain ⟨j0, hj0⟩ := Finite.exists_max (fun j => ‖(a j : Om l)‖)
         have ha1 : 1 < ‖(a j0 : Om l)‖ := lt_of_lt_of_le hj1 (hj0 j1)
         have ha0 : a j0 ≠ 0 := by

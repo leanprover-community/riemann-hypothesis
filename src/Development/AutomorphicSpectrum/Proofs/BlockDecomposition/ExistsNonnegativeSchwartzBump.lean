@@ -87,7 +87,7 @@ theorem exists_bump : ∀ (F : Type) [Field F] [NumberField F] (κ : Type) [Fint
   let P : (κ → mixedEmbedding.mixedSpace F) × (κ → FiniteAdeleRing (𝓞 F) F) → (κ → AdeleRing (𝓞 F) F) :=
     fun p i => ((InfiniteAdeleRing.ringEquiv_mixedSpace F).symm (p.1 i), p.2 i)
   have hP : Continuous P := continuous_pi fun i =>
-    Continuous.prodMk ((GlobalTheory.Core.Rk.RapidInt.continuous_ofMixed F).comp ((continuous_apply i).comp continuous_fst))
+    Continuous.prodMk ((PositivityTheory.ThKF0.Split.continuous_ofMixed F).comp ((continuous_apply i).comp continuous_fst))
       ((continuous_apply i).comp continuous_snd)
   let y₀ : κ → mixedEmbedding.mixedSpace F := fun i => InfiniteAdeleRing.ringEquiv_mixedSpace F (z₀ i).1
   let w₀ : κ → FiniteAdeleRing (𝓞 F) F := fun i => (z₀ i).2

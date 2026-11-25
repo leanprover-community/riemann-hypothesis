@@ -25,13 +25,9 @@ theorem genMap_germ (U : X.Opens) (h : genPt ξ ∈ U) (q : Cpt ξ) (hq : q.1 �
     genMap ξ q (X.presheaf.germ U q.1 hq t) = secVal ξ U h t :=
   _root_.GlobalTheory.CompanionTheory.Ar.TieVB.genMap_germ U h q hq t
 
-theorem isUnit_iff_unitAt {q : Cpt ξ} (hi : Function.Injective (genMap ξ q)) (s : X.presheaf.stalk q.1) :
-    IsUnit s ↔ unitAt ξ q (genMap ξ q s) := by
-  apply GlobalTheory.CompanionTheory.Ar.TieVB.isUnit_iff_unitAt <;> assumption
-
 theorem mem_basicOpen_iff (hg : IsCptGen ξ) (U : X.Opens) (h : genPt ξ ∈ U) (q : Cpt ξ) (hq : q.1 ∈ U)
     (t : Γ(X, U)) : q.1 ∈ X.basicOpen t ↔ unitAt ξ q (secVal ξ U h t) := by
-  rw [Scheme.mem_basicOpen X t q.1 hq, isUnit_iff_unitAt (hg.inj q), genMap_germ U h q hq]
+  rw [Scheme.mem_basicOpen X t q.1 hq, GlobalTheory.CompanionTheory.Ar.TieVB.isUnit_iff_unitAt (hg.inj q), genMap_germ U h q hq]
 
 theorem exists_unitAt_of_sum (hg : IsCptGen ξ) (p : Cpt ξ) {k : ℕ} (f c : Fin k → Ω)
     (hf : ∀ l, f l ∈ regAt ξ p) (hc : ∀ l, c l ∈ regAt ξ p) (h1 : ∑ l, c l * f l = 1) :
@@ -42,7 +38,7 @@ theorem exists_unitAt_of_sum (hg : IsCptGen ξ) (p : Cpt ξ) {k : ℕ} (f c : Fi
   by_contra hno
   have hmem : ∀ l, c' l * f' l ∈ IsLocalRing.maximalIdeal (X.presheaf.stalk p.1) := fun l => by
     refine Ideal.mul_mem_left _ _ ((IsLocalRing.mem_maximalIdeal _).2 fun hu => hno ⟨l, ?_⟩)
-    have := (isUnit_iff_unitAt (hg.inj p) (f' l)).1 hu
+    have := (GlobalTheory.CompanionTheory.Ar.TieVB.isUnit_iff_unitAt (hg.inj p) (f' l)).1 hu
     rwa [hf'] at this
   have := Ideal.sum_mem _ fun l (_ : l ∈ Finset.univ) => hmem l
   rw [hs] at this
@@ -52,10 +48,10 @@ theorem unitAt_or_of_add (hg : IsCptGen ξ) (p : Cpt ξ) {s t : Ω} (hs : s ∈ 
     (h : unitAt ξ p (s + t)) : unitAt ξ p s ∨ unitAt ξ p t := by
   obtain ⟨s', rfl⟩ := hs
   obtain ⟨t', rfl⟩ := ht
-  rw [← map_add (f := _), ← isUnit_iff_unitAt (hg.inj p)] at h
+  rw [← map_add (f := _), ← GlobalTheory.CompanionTheory.Ar.TieVB.isUnit_iff_unitAt (hg.inj p)] at h
   rcases IsLocalRing.isUnit_or_isUnit_of_isUnit_add h with h | h
-  · exact Or.inl ((isUnit_iff_unitAt (hg.inj p) _).1 h)
-  · exact Or.inr ((isUnit_iff_unitAt (hg.inj p) _).1 h)
+  · exact Or.inl ((GlobalTheory.CompanionTheory.Ar.TieVB.isUnit_iff_unitAt (hg.inj p) _).1 h)
+  · exact Or.inr ((GlobalTheory.CompanionTheory.Ar.TieVB.isUnit_iff_unitAt (hg.inj p) _).1 h)
 
 theorem unitAt_mul {p : Cpt ξ} {s t : Ω} (hs : unitAt ξ p s) (ht : unitAt ξ p t) : unitAt ξ p (s * t) :=
   ⟨mul_ne_zero hs.1 ht.1, mul_mem hs.2.1 ht.2.1, by rw [mul_inv]; exact mul_mem hs.2.2 ht.2.2⟩
@@ -163,12 +159,6 @@ theorem smul_mem_reg {p : Cpt ξ} (N : Submodule (regAt ξ p) E) {a : Ω} (ha : 
     (h : e ∈ N) : a • e ∈ N :=
   N.smul_mem ⟨a, ha⟩ h
 
-theorem exists_den_span (hT : CoordTie o ξ x) {c : κ} {p : Cpt ξ} (hp : InChart ξ x c p) (M : AddSubgroup E)
-    (hM : ∀ a ∈ chartRing o x c, ∀ e ∈ M, a • e ∈ M) {e : E}
-    (he : e ∈ Submodule.span (regAt ξ p) (M : Set E)) :
-    ∃ s ∈ chartRing o x c, unitAt ξ p s ∧ s • e ∈ M := by
-  apply GlobalTheory.CompanionTheory.Ar.TieVB.exists_den_span <;> assumption
-
 theorem coords_mem {p : Cpt ξ} {r : ℕ} {b : Fin r → E} (hli : LinearIndependent Ω b) {a : Fin r → Ω}
     (h : ∑ i, a i • b i ∈ Submodule.span (regAt ξ p) (Set.range b)) (i : Fin r) : a i ∈ regAt ξ p := by
   obtain ⟨a', ha'⟩ := (Submodule.mem_span_range_iff_exists_fun _).1 h
@@ -263,7 +253,7 @@ theorem exists_uniform (hT : CoordTie o ξ x) {L : Lat ξ E} {r : ℕ} (hVB : L.
     rintro _ ⟨i, rfl⟩ p hp hu
     rw [(hfr₀ p hp hu).2]
     exact Submodule.subset_span ⟨i, rfl⟩
-  obtain ⟨s₀, hs₀, hu₀, hM⟩ := exists_den_span hT hq M hMs he'
+  obtain ⟨s₀, hs₀, hu₀, hM⟩ := GlobalTheory.CompanionTheory.Ar.TieVB.exists_den_span hT hq M hMs he'
   obtain ⟨n, hn⟩ := exists_pow_smul_mem hT hVB hc hh hM
   refine ⟨h ^ n * s₀, mul_mem (pow_mem hh n) hs₀, unitAt_mul (unitAt_pow huq n) hu₀, fun p hp => ?_⟩
   rw [mul_smul]

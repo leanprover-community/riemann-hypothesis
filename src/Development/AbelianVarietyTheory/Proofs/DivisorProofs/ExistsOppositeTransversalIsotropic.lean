@@ -76,41 +76,6 @@ namespace GlobalTheory.RealTheta
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
-theorem bar_algebraMap (H : Host E) (r : 𝓞 (maximalRealSubfield E)) :
-    H.bar (algebraMap _ (𝓞 E) r) = algebraMap _ (𝓞 E) r := by
-  apply RingOfIntegers.ext
-  rw [H.bar_eq]
-  have h1 : ((algebraMap (𝓞 (maximalRealSubfield E)) (𝓞 E) r : 𝓞 E) : E) =
-      algebraMap (maximalRealSubfield E) E (algebraMap (𝓞 (maximalRealSubfield E)) (maximalRealSubfield E) r) := by
-    rw [← IsScalarTower.algebraMap_apply (𝓞 (maximalRealSubfield E)) (maximalRealSubfield E) E]
-    exact (IsScalarTower.algebraMap_apply (𝓞 (maximalRealSubfield E)) (𝓞 E) E r).symm
-  rw [h1]
-  exact (IsCMField.complexConj E).commutes _
-
-theorem sub_bar_mem_pow_succ (H : Host E) (𝔭 : Ideal (𝓞 E)) (n : ℕ) (hn : 1 ≤ n)
-    (h : ∀ c, c - H.bar c ∈ 𝔭 ^ n) (c : 𝓞 E) : c - H.bar c ∈ 𝔭 ^ (n + 1) := by
-  haveI := H.unram
-  let L : 𝓞 E →ₗ[𝓞 (maximalRealSubfield E)] (𝓞 E ⧸ 𝔭 ^ (n + 1)) :=
-    { toFun := fun c => Ideal.Quotient.mk _ (c - H.bar c)
-      map_add' := fun a b => by rw [← map_add (f := _), map_add H.bar]; congr 1; ring
-      map_smul' := fun r a => by
-        rw [Algebra.smul_def, map_mul, bar_algebraMap, ← mul_sub, RingHom.id_apply, Algebra.smul_def, map_mul,
-          Ideal.Quotient.mk_algebraMap] }
-  let D : Derivation (𝓞 (maximalRealSubfield E)) (𝓞 E) (𝓞 E ⧸ 𝔭 ^ (n + 1)) :=
-    Derivation.mk' L fun a b => by
-      show Ideal.Quotient.mk _ (a * b - H.bar (a * b)) =
-        a • Ideal.Quotient.mk _ (b - H.bar b) + b • Ideal.Quotient.mk _ (a - H.bar a)
-      rw [Algebra.smul_def, Algebra.smul_def, Ideal.Quotient.algebraMap_eq, ← map_mul, ← map_mul, ← map_add (f := _),
-        Ideal.Quotient.eq]
-      have hab : (a - H.bar a) * (b - H.bar b) ∈ 𝔭 ^ (n + 1) :=
-        Ideal.pow_le_pow_right (by omega : n + 1 ≤ n + n) (by rw [pow_add]; exact Ideal.mul_mem_mul (h a) (h b))
-      have : a * b - H.bar (a * b) - (a * (b - H.bar b) + b * (a - H.bar a)) = -((a - H.bar a) * (b - H.bar b)) := by
-        rw [map_mul]; ring
-      rw [this]; exact neg_mem hab
-  have hD : D c = 0 := by
-    rw [← Derivation.liftKaehlerDifferential_comp_D, Subsingleton.elim (KaehlerDifferential.D _ _ c) 0, map_zero]
-  exact Ideal.Quotient.eq_zero_iff_mem.1 hD
-
 theorem exists_sub_bar_notMem (H : Host E) {𝔭 : Ideal (𝓞 E)} (h𝔭 : 𝔭 ≠ ⊤) : ∃ c, c - H.bar c ∉ 𝔭 := by
   apply _root_.GlobalTheory.IsoCols.exists_sub_bar_notMem <;> assumption
 

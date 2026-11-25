@@ -133,9 +133,6 @@ lemma inLie_sub {X Y : Mat k r} (hX : inLie k r X) (hY : inLie k r Y) : inLie k 
 private lemma hpk_sq_lemma : Hpk k r * Hpk k r = 1 := by
   apply _root_.ReciprocityTheory.ChartRestriction.DS.Mult1.InvCC.hpk_sq <;> assumption
 
-lemma hpk_inv : (Hpk k r)⁻¹ = Hpk k r := by
-  exact Matrix.inv_eq_left_inv hpk_sq_lemma
-
 lemma hpk_isUnit : IsUnit (Hpk k r) := by
   exact ⟨⟨Hpk k r, Hpk k r, hpk_sq_lemma, hpk_sq_lemma⟩, rfl⟩
 

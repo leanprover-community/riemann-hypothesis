@@ -56,9 +56,7 @@ variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.w
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
 
 theorem nP_pos' (F : Face D A) (b : Bool) : 0 < RealDat.nP F b := by
-  have hcard : 0 < Nat.card (F.lvl b).P := Nat.card_pos
-  unfold RealDat.nP
-  exact_mod_cast hcard
+  exact Formalism.IndefR.Links.RealDat.nP_pos b
 
 end Defs
 

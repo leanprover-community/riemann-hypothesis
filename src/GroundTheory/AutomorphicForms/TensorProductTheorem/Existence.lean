@@ -94,7 +94,7 @@ theorem genQuotRep_mk (g : L) (u : (genSubrep σ N).toSubmodule) :
 def genQuotMap : Representation.IntertwiningMap (genSubrep σ N).toRepresentation
     (genQuotRep hσ hKc hKo N) where
   toLinearMap := (genKernel hσ hKc hKo N).mkQ
-  isIntertwining' g := LinearMap.ext fun _ => rfl
+  isIntertwining' _ := LinearMap.ext fun _ => rfl
 
 include hσ in
 theorem isSmooth_genSubrep : IsSmooth (genSubrep σ N).toRepresentation := by

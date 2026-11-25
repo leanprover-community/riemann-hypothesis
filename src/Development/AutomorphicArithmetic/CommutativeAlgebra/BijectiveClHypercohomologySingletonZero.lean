@@ -16,7 +16,6 @@ open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComp
 private lemma sec_comp {A B C : Shv ℤ} (p : A ⟶ B) (q : B ⟶ C) {V : Scheme.{0}} (x : Sec A V) :
     Sec.map (p ≫ q) x = Sec.map q (Sec.map p x) := rfl
 
-set_option backward.isDefEq.respectTransparency false in
 private lemma exists_lift {M F : Shv ℤ} (g : M ⟶ (res ℤ F).X 0) (hg : g ≫ (res ℤ F).d 0 1 = 0) :
     ∃ f : M ⟶ F, f ≫ resι ℤ F = g := by
   classical
@@ -126,7 +125,6 @@ private lemma bijective_cl_abs {C : Type*} [Category C] [Preadditive C] [HasZero
       rw [Cocycle.ofHom_coe, Cochain.ofHom_v, ← cancel_epi eM.inv, sgl_f, hf]
     · exact (hz p hp).eq_of_src _ _
 
-set_option backward.isDefEq.respectTransparency false in
 theorem UpperTheory.bijective_cl_hypercohomology_singleton_zero :
     ∀ (M F : Shv ℤ), Function.Bijective (cl : (M ⟶ F) → HK ℤ (sgl M) F 0) := fun _ F =>
   haveI := (_root_.GlobalTheory.EtC.ResBasic.res_basic ℤ F).2.2.1

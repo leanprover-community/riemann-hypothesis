@@ -470,8 +470,7 @@ theorem isLogJ_add : ∀ (l : ℕ) [Fact l.Prime] (a b : Per.Ainf l) (y y' : Per
     simp only [map_add (f := _), map_mul]
     push_cast at hE ⊢
     linear_combination hsa + hsb - hE
-  · set_option synthInstance.maxHeartbeats 200000 in
-    simp only [map_add (f := algebraMap (Per.Acris0 l) (Per.Acris l)), map_mul, map_natCast]
+  · simp only [map_add (f := algebraMap (Per.Acris0 l) (Per.Acris l)), map_mul, map_natCast]
     push_cast
     linear_combination hza + hzb
 

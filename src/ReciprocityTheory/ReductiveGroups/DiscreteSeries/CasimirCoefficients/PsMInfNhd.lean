@@ -525,35 +525,15 @@ lemma continuousOn_fderiv_phiM (μ : Fin n → ℤ) : ContinuousOn (fderiv ℂ (
 lemma continuousOn_phiM (μ : Fin n → ℤ) : ContinuousOn (PhiM μ) (OmegaSet n) := by
   exact fun z hz => (contDiffAt_phiM μ hz).continuousAt.continuousWithinAt
 
-lemma continuous_toMK' : Continuous fun k : KG ε => toMK k := by
-  first
-    | fun_prop
-
-lemma continuous_toMK_inv : Continuous fun k : KG ε => toMK k⁻¹ := by
-  exact continuous_toMK'.comp continuous_inv
-
-lemma continuous_P (T : KType ε Λ) : Continuous fun k : KG ε => T.op k * projW T * T.op k⁻¹ := by
-  have hop : Continuous fun k : KG ε => T.op k := continuous_subtype_val.comp T.cont
-  exact (hop.mul continuous_const).mul (hop.comp continuous_inv)
-
 private lemma toMK_conjTranspose_mul_self (k : KG ε) : (toMK k)ᴴ * toMK k = 1 := by
   have h : toM (k : UJ ε) ∈ Kset ε := k.2
   obtain ⟨hU, -⟩ := h
   first
   | exact Unitary.star_mul_self_of_mem hU
 
-lemma toMK_inv_eq (k : KG ε) : toMK k⁻¹ = (toMK k)ᴴ := by
-  have hu : star (toMK k) * toMK k = 1 := toMK_conjTranspose_mul_self k
-  have hv : toMK k * toMK k⁻¹ = 1 := by
-    first
-    | exact Units.mul_inv _
-  calc toMK k⁻¹ = (star (toMK k) * toMK k) * toMK k⁻¹ := by rw [hu, Matrix.one_mul]
-    _ = star (toMK k) * (toMK k * toMK k⁻¹) := by rw [Matrix.mul_assoc]
-    _ = (toMK k)ᴴ := by rw [hv, Matrix.mul_one]; rfl
-
 lemma conj_mem_omega {x : Matrix (Fin n) (Fin n) ℂ} (hx : x.PosDef) (k : KG ε) :
     toMK k⁻¹ * x * toMK k ∈ OmegaSet n := by
-  rw [toMK_inv_eq]
+  rw [ReciprocityTheory.ChartRestriction.DS.S7.Ps1.toMK_inv_eq]
   have hinj : Function.Injective (toMK k).mulVec := fun v w h => by
     have h2 := congrArg (toMK k)ᴴ.mulVec h
     simpa [Matrix.mulVec_mulVec, toMK_conjTranspose_mul_self] using h2
@@ -599,14 +579,14 @@ def Ek (T : KType ε Λ) (μ : Fin n → ℤ) (x : Matrix (Fin n) (Fin n) ℂ)
 
 lemma continuous_B (A : Matrix (Fin n) (Fin n) ℂ) : Continuous fun k : KG ε => toMK k⁻¹ * A * toMK k := by
   first
-    | exact (continuous_toMK_inv.matrix_mul continuous_const).matrix_mul continuous_toMK'
+    | exact (ReciprocityTheory.ChartRestriction.DS.S7.Ps1.continuous_toMK_inv.matrix_mul continuous_const).matrix_mul ReciprocityTheory.ChartRestriction.DS.S7.Ps1.continuous_toMK'
 
 lemma continuous_Gint (T : KType ε Λ) (μ : Fin n → ℤ) {x : Matrix (Fin n) (Fin n) ℂ}
     (hx : x.PosDef) : Continuous (Gint T μ x) := by
   have hphi : Continuous fun k : KG ε => PhiM μ (toMK k⁻¹ * x * toMK k) :=
     (continuousOn_phiM μ).comp_continuous (continuous_B x) (fun k => conj_mem_omega hx k)
   show Continuous fun k => PhiM μ (toMK k⁻¹ * x * toMK k) • (T.op k * projW T * T.op k⁻¹)
-  exact hphi.smul (continuous_P T)
+  exact hphi.smul (ReciprocityTheory.ChartRestriction.DS.S7.Ps1.continuous_P T)
 
 lemma continuous_DkL (T : KType ε Λ) (μ : Fin n → ℤ) {x : Matrix (Fin n) (Fin n) ℂ} (hx : x.PosDef)
     (Y : Matrix (Fin n) (Fin n) ℂ) : Continuous fun k => DkL T μ x k Y := by
@@ -620,7 +600,7 @@ lemma continuous_DkL (T : KType ε Λ) (μ : Fin n → ℤ) {x : Matrix (Fin n) 
   have harg : Continuous fun k : KG ε => toMK k⁻¹ * x * toMK k * Y - Y * (toMK k⁻¹ * x * toMK k) :=
     (hB.matrix_mul continuous_const).sub (continuous_const.matrix_mul hB)
   simp only [DkL_apply]
-  exact ((hd.clm_apply harg).smul (continuous_P T)).add
+  exact ((hd.clm_apply harg).smul (ReciprocityTheory.ChartRestriction.DS.S7.Ps1.continuous_P T)).add
     (hphi.smul ((hop.mul continuous_const).mul (hop.comp continuous_inv)))
 
 lemma continuous_Ek (T : KType ε Λ) (μ : Fin n → ℤ) {x : Matrix (Fin n) (Fin n) ℂ} (hx : x.PosDef)
@@ -970,8 +950,6 @@ open scoped ComplexOrder ContDiff ENNReal
 namespace ReciprocityTheory.ChartRestriction.DS.S7
 
 open ReciprocityTheory.ChartRestriction.DS
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 variable {n : ℕ}
 
@@ -1354,7 +1332,7 @@ lemma pt (T : KType ε (lowK ε lam)) (μ : Fin n → ℤ) (hμ : IsMu lam μ) {
       _ = Jm ε * (toMK k⁻¹ * A * toMK k) := by rw [hk2]; simp only [Matrix.mul_assoc]
   have hBb : IsBlock ε (toMK k⁻¹ * A * toMK k) := (kfa_comm_iff_block ε _).mp hBJ
   have hBh : (toMK k⁻¹ * A * toMK k)ᴴ = toMK k⁻¹ * A * toMK k := by
-    rw [InfKA.toMK_inv_eq]; simp [Matrix.conjTranspose_mul, hAh, Matrix.mul_assoc]
+    rw [ReciprocityTheory.ChartRestriction.DS.S7.Ps1.toMK_inv_eq]; simp [Matrix.conjTranspose_mul, hAh, Matrix.mul_assoc]
   have hdB : T.dτ (toMK k⁻¹ * A * toMK k) = T.op k⁻¹ * T.dτ A * T.op k := by
     have h := dtau_conj T k⁻¹ hA
     rw [inv_inv] at h

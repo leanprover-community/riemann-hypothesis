@@ -822,18 +822,9 @@ theorem det_conjT {r : ℕ} {M x : Matrix (Fin r) (Fin r) ℂ} (hM : M.det ≠ 0
     show x.map (starRingEnd ℂ) = (starRingEnd ℂ).mapMatrix x from rfl, ← RingHom.map_det]
   exact mul_ne_zero (mul_ne_zero hx hM) ((map_ne_zero _).2 hx)
 
-theorem conjT_mul {r : ℕ} (M x y : Matrix (Fin r) (Fin r) ℂ) :
-    (x * y)ᵀ * M * (x * y).map (starRingEnd ℂ) = yᵀ * (xᵀ * M * x.map (starRingEnd ℂ)) * y.map (starRingEnd ℂ) := by
-  rw [Matrix.transpose_mul, Matrix.map_mul]
-  simp only [Matrix.mul_assoc]
-
-theorem conjT_one {r : ℕ} (M : Matrix (Fin r) (Fin r) ℂ) :
-    (1 : Matrix (Fin r) (Fin r) ℂ)ᵀ * M * (1 : Matrix (Fin r) (Fin r) ℂ).map (starRingEnd ℂ) = M := by
-  simp
-
 theorem conjT_cancel {r : ℕ} {x : Matrix (Fin r) (Fin r) ℂ} (hx : x.det ≠ 0) (M : Matrix (Fin r) (Fin r) ℂ) :
     (x⁻¹)ᵀ * (xᵀ * M * x.map (starRingEnd ℂ)) * (x⁻¹).map (starRingEnd ℂ) = M := by
-  rw [← conjT_mul, Matrix.mul_nonsing_inv _ hx.isUnit, conjT_one]
+  rw [← GlobalTheory.PeterssonFrameChange.form_mul', Matrix.mul_nonsing_inv _ hx.isUnit, GlobalTheory.PeterssonFrameChange.form_one']
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
@@ -895,8 +886,8 @@ theorem rigid : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ)
       intro σ
       by_cases hσ : σ = τ
       · subst hσ
-        rw [Function.update_self, conjT_mul, conjT_mul, hu, conjT_cancel hd]
-      · rw [Function.update_of_ne hσ, conjT_one])
+        rw [Function.update_self, GlobalTheory.PeterssonFrameChange.form_mul', GlobalTheory.PeterssonFrameChange.form_mul', hu, conjT_cancel hd]
+      · rw [Function.update_of_ne hσ, GlobalTheory.PeterssonFrameChange.form_one'])
     have hm := hmul g a ha
     rw [h] at hm
     obtain ⟨γ, hγ, hm⟩ := hm
@@ -1197,7 +1188,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formali
 open scoped ENNReal TensorProduct
 
 variable {D : D7}
-
 
 open Classical in
 def archHom (V : HSp D) (τ : D.host.E →+* ℂ) : GA D V →* Matrix (Fin V.rank) (Fin V.rank) ℂ :=

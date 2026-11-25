@@ -1080,10 +1080,6 @@ private theorem logSize_centre (τ : ℝ) :
     (pi_norm_le_iff_of_nonneg (abs_nonneg τ)).2 fun _ => by simp
   gcongr
 
-private theorem logSize_inv' (g : GA E n) : logSize (g⁻¹) = logSize g := by
-  unfold logSize
-  rw [inv_inv, add_comm]
-
 private theorem deg_top (g : GA E n) : deg g ⊤ = deg (1 : GA E n) ⊤ + logAbs g.val.det := by
   have e : (((1 : Matrix (Fin n) (Fin n) E)ᵀ : Matrix (Fin n) (Fin n) E) : Fin n → Fin n → E) =
       ⇑(Pi.basisFun E (Fin n)) := by
@@ -1441,7 +1437,7 @@ theorem trFin_pf : TrFin := by
   let c : (B → ℂ) →ₗ[ℂ] LinearMap.range L :=
     L.rangeRestrict.comp (Fintype.linearCombination ℂ w)
   have hA : Function.Injective A := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro r hr0
     apply Subtype.ext
     rw [hr r]

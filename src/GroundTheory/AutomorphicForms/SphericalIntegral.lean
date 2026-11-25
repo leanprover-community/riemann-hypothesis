@@ -61,13 +61,8 @@ def indicatorHecke (U : Set (GL (Fin n) F)) (hc : IsCompact U) (ho : IsOpen U)
   HeckeAlgebraLevel.mk _ _ (HeckeAlgebra.mk μ (U.indicator fun _ => (1 : ℂ))
     (indicator_mem_locallyConstantCompactSupport hc ho 1)) fun k hk x => by
       simp only [HeckeAlgebra.coe_mk]
-      constructor
-      · by_cases h : x ∈ U
-        · rw [Set.indicator_of_mem h, Set.indicator_of_mem ((hU k hk x).1.2 h)]
-        · rw [Set.indicator_of_notMem h, Set.indicator_of_notMem (fun h' => h ((hU k hk x).1.1 h'))]
-      · by_cases h : x ∈ U
-        · rw [Set.indicator_of_mem h, Set.indicator_of_mem ((hU k hk x).2.2 h)]
-        · rw [Set.indicator_of_notMem h, Set.indicator_of_notMem (fun h' => h ((hU k hk x).2.1 h'))]
+      exact ⟨Set.indicator_const_eq_indicator_const (hU k hk x).1,
+        Set.indicator_const_eq_indicator_const (hU k hk x).2⟩
 
 
 variable (μ) in

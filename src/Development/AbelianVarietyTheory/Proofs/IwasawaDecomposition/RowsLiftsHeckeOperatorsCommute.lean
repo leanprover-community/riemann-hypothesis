@@ -631,39 +631,6 @@ open Module
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
 
-private theorem isFullLattice_of_unimodular {L : Submodule (𝓞 E) (Sp E n)}
-    (hL : Submodule.IsLattice E L) (hu : IsUnimodular (hStd E n) L) :
-    Submodule.IsFullLattice E L := by
-  let := hL
-  refine { span_eq_top := ?_ }
-  let W := Submodule.span E (L : Set (Sp E n))
-  change W = ⊤
-  by_contra h
-  let e : Sp E n ≃ₗ⋆[E] Sp E n := starLinearEquiv E
-  let g : Sp E n →ₗ[E] Module.Dual E W :=
-    (LinearMap.domRestrict' W).comp ((hStd E n).comp e.toLinearMap)
-  have hdim : finrank E (Module.Dual E W) < finrank E (Sp E n) := by
-    rw [Subspace.dual_finrank_eq]
-    exact Submodule.finrank_lt h
-  obtain ⟨x, hx, hx₀⟩ :=
-    Submodule.exists_mem_ne_zero_of_ne_bot (LinearMap.ker_ne_bot_of_finrank_lt (f := g) hdim)
-  -- Every multiple of the orthogonal vector lies in the self-dual lattice.
-  have hsmul (a : E) : a • e x ∈ L := by
-    rw [← hu, dualBasic_mem_dual]
-    intro y hy
-    apply hStd_mem_one_symm
-    have hxy : hStd E n (e x) y = 0 :=
-      congrArg (fun f : Module.Dual E W => f ⟨y, Submodule.subset_span hy⟩) (LinearMap.mem_ker.mp hx)
-    simp [LinearMap.map_smulₛₗ, LinearMap.smul_apply, hxy]
-  let i : E →ₗ[𝓞 E] L :=
-    ((LinearMap.toSpanSingleton E _ (e x)).restrictScalars (𝓞 E)).codRestrict L hsmul
-  let : Module.Finite (𝓞 E) L := Module.Finite.iff_fg.mpr hL.fg
-  let : Module.Finite (𝓞 E) E := Module.Finite.of_injective i fun a b hab =>
-    smul_left_injective E (fun hzero => hx₀ (e.map_eq_zero_iff.mp hzero)) (congrArg Subtype.val hab)
-  exact RingOfIntegers.not_isField E
-    (isField_of_isIntegral_of_isField (IsFractionRing.injective (𝓞 E) E) (Field.toIsField E))
-
-
 theorem exchange : ∀ {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ} (P : HeightOneSpectrum (𝓞 E)),
   conjPrime₂ P = P → (∃ x : 𝓞 E, cO E x - x ∉ P.asIdeal) →
   ∀ (X Z : Submodule (𝓞 E) (Sp E n)), Submodule.IsLattice E X → Submodule.IsLattice E Z →
@@ -733,8 +700,8 @@ theorem exchange : ∀ {E : Type} [Field E] [NumberField E] [StarRing E] {n : �
         localization₂ Q.asIdeal (patchAt P (gmap h Y) Y) = localization₂ Q.asIdeal (if Q = P then gmap h Y else Y) := by
     intro h hh Y hY hu
     exact _root_.GlobalTheory.InertExchange.patchAt_isLattice_locP P (gmap h Y) Y
-      (isFullLattice_of_unimodular (gmap_lattice h Y hY) (unimodG h hh Y hu))
-      (isFullLattice_of_unimodular hY hu)
+      (Formalism.L2.Col.hcnt_isFullLattice_of_unimodular (gmap_lattice h Y hY) (unimodG h hh Y hu))
+      (Formalism.L2.Col.hcnt_isFullLattice_of_unimodular hY hu)
   have locσ := fun Y hY hu => (patch_lat_loc g hg Y hY hu).2
   have latσ := fun Y hY hu => (patch_lat_loc g hg Y hY hu).1
   refine ⟨fun Y => patchAt P (gmap g Y) Y, ?_, ?_, ?_, ?_, ?_, ?_⟩

@@ -124,10 +124,6 @@ theorem small_of {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {μ₀ : T} (
   have hB := natAbs_le_maxWt D sc.cGap i j τ
   have hB1 := (le_max_left _ _).trans hB
   have hB2 := (le_max_right _ _).trans hB
-  have c1 : ((wtA D sc.cGap i j τ).natAbs : ℤ) = |wtA D sc.cGap i j τ| := Int.natCast_natAbs _
-  have c2 : ((wtA' D sc.cGap i j τ).natAbs : ℤ) = |wtA' D sc.cGap i j τ| := Int.natCast_natAbs _
-  have hB1' : ((wtA D sc.cGap i j τ).natAbs : ℤ) ≤ maxWt D sc.cGap := by exact_mod_cast hB1
-  have hB2' : ((wtA' D sc.cGap i j τ).natAbs : ℤ) ≤ maxWt D sc.cGap := by exact_mod_cast hB2
   have n_le : (X.n τ : ℤ) ≤ 2 * maxWt D sc.cGap := by linarith
   exact_mod_cast n_le
 

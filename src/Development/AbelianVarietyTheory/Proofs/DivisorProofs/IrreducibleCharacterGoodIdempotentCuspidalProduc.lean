@@ -799,12 +799,6 @@ theorem exists_sorted {C : LabelConv K} (O : LabelMap K C) (b : Fin r → Fin s)
       show Matrix.reindex e e ((q.1⁻¹ : GL (Fin r) K) : Matrix (Fin r) (Fin r) K) i j = 0
       simp only [Matrix.reindex_apply, Matrix.submatrix_apply]
       exact h2 _ _ hij
-  have hlevi : ∀ (p : parab K b') (c : Fin s),
-      levi K b c ⟨A p.1, hpar p⟩ = (glEquiv K (ec c)).symm (levi K b' c p) := by
-    intro p c
-    apply Units.ext
-    ext i j
-    rfl
   have hinfl : ∀ p : parab K b', infl K b lam ⟨A p.1, hpar p⟩ = infl K b' lam' p := by
     intro p
     unfold infl

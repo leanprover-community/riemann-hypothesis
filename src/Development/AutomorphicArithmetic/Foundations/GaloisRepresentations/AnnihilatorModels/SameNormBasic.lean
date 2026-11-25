@@ -45,7 +45,7 @@ def SplitsBC : Prop :=
 
 def SplitsOfEquiv : Prop :=
   ∀ (R S B : Type) [CommRing R] [CommRing S] [CommRing B] [Algebra R S] [Algebra R B] (I : Type)
-    (e : B ⊗[R] S ≃ₐ[B] (I → B)), ∃ z : I → (S →ₐ[R] B), Splits z
+    (_ : B ⊗[R] S ≃ₐ[B] (I → B)), ∃ z : I → (S →ₐ[R] B), Splits z
 
 def SplitsField : Prop :=
   ∀ (R S K : Type) [CommRing R] [CommRing S] [Field K] [IsAlgClosed K] [Algebra R S] [Algebra R K],

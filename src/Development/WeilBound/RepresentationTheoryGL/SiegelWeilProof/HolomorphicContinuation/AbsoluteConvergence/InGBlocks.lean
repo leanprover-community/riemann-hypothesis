@@ -16,10 +16,7 @@ open PositivityTheory.Rg.Sw
 
 variable {n : ℕ}
 
-theorem JJ_mul_self : JJ n * JJ n = -1 := by
-  ext i j
-  rcases i with i | i <;> rcases j with j | j <;>
-    simp [JJ, fromBlocks_multiply, Matrix.one_apply]
+theorem JJ_mul_self : JJ n * JJ n = -1 := PositivityTheory.Rg.Sw.LVs.JJ_mul_JJ
 
 theorem inG_blocks (g : M2 n) (h : InG g) :
     g.toBlocks₁₁ᴴ * g.toBlocks₂₁ - g.toBlocks₂₁ᴴ * g.toBlocks₁₁ = 0 ∧

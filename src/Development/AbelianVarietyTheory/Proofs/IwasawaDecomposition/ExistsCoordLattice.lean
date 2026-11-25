@@ -6,60 +6,8 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Exist
 public import Mathlib.RingTheory.Localization.Module
 public import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IrreducibleOfValued
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ElementaryDivisorsInvHeckeElementSplitPlace
-import Mathlib.RingTheory.PicardGroup
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LatticeElementaryDivisors, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCoordLattice
@@ -420,51 +368,6 @@ theorem splitLab_getD {n k i : ℕ} (hk : k ≤ n) (hi : i < n) :
   · rw [List.getD_append_right _ _ _ _ (by simpa using h)]
     have : i - (n - k) < k := by omega
     simp [this]
-
-theorem exists_coord_lattice {D : D7} (V : HSp D) : ∃ L : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E),
-    (L : Set (Fin V.rank → D.host.E)) = L0c D V ∧ L.FG ∧
-      Submodule.span D.host.E (L : Set (Fin V.rank → D.host.E)) = ⊤ := by
-  let ι := V.frame.equivFun
-  refine ⟨V.L0.map (ι.restrictScalars (𝓞 D.host.E)).toLinearMap, ?_, V.standardTuple_isLattice.fg.map _, ?_⟩
-  · ext x
-    rw [SetLike.mem_coe, Submodule.mem_map_equiv]
-    change ι.symm x ∈ V.L0 ↔ ∑ i, x i • V.frame i ∈ V.L0
-    rw [Module.Basis.equivFun_symm_apply]
-  · have hspan : Submodule.span D.host.E (V.L0 : Set V.V) = ⊤ := by
-      let W := Submodule.span D.host.E (V.L0 : Set V.V)
-      change W = ⊤
-      by_contra hW
-      let e : V.V ≃ₗ⋆[D.host.E] V.V :=
-        (ι.trans (starLinearEquiv D.host.E)).trans ι.symm
-      let g : V.V →ₗ[D.host.E] Module.Dual D.host.E W :=
-        (LinearMap.domRestrict' W).comp (V.hT.comp e.toLinearMap)
-      have hdim : Module.finrank D.host.E (Module.Dual D.host.E W) < Module.finrank D.host.E V.V := by
-        rw [Subspace.dual_finrank_eq]
-        exact Submodule.finrank_lt hW
-      obtain ⟨x, hx, hx₀⟩ :=
-        Submodule.exists_mem_ne_zero_of_ne_bot (LinearMap.ker_ne_bot_of_finrank_lt (f := g) hdim)
-      have hsmul (a : D.host.E) : a • e x ∈ V.L0 := by
-        rw [← V.baseLattice_isUnimodular]
-        simp only [Formalism.HermitianLatticesTheory.dual, Formalism.E.hdual,
-          Submodule.mem_iInf, Submodule.mem_comap, LinearMap.restrictScalars_apply]
-        intro y hy
-        have hxy : V.hT (e x) y = 0 :=
-          congrArg (fun f : Module.Dual D.host.E W => f ⟨y, Submodule.subset_span hy⟩)
-            (LinearMap.mem_ker.mp hx)
-        have hyx : V.hT y (e x) = 0 := by
-          rw [(V.herm.eq (e x) y).symm, hxy, map_zero]
-        simp [hyx]
-      let i : D.host.E →ₗ[𝓞 D.host.E] V.L0 :=
-        ((LinearMap.toSpanSingleton D.host.E _ (e x)).restrictScalars (𝓞 D.host.E)).codRestrict V.L0 hsmul
-      let : Module.Finite (𝓞 D.host.E) V.L0 := Module.Finite.iff_fg.mpr V.standardTuple_isLattice.fg
-      let : Module.Finite (𝓞 D.host.E) D.host.E := Module.Finite.of_injective i fun a b hab =>
-        smul_left_injective D.host.E (fun hzero => hx₀ (e.map_eq_zero_iff.mp hzero)) (congrArg Subtype.val hab)
-      exact RingOfIntegers.not_isField D.host.E
-        (isField_of_isIntegral_of_isField (R := 𝓞 D.host.E) (S := D.host.E)
-          (FaithfulSMul.algebraMap_injective _ _) (Field.toIsField _))
-    have : ((V.L0.map (ι.restrictScalars (𝓞 D.host.E)).toLinearMap : Submodule _ _) : Set _) =
-        ι.toLinearMap '' (V.L0 : Set V.V) := rfl
-    rw [this, Submodule.span_image, hspan, Submodule.map_top, LinearEquiv.range]
 
 theorem finPart_cA (D : D7) (x : Formalism.L2.Theta.AE D) :
     finPart D (cA D x) = sigR (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Af D.host.F) D.sp.cm.sig (finPart D x) := by

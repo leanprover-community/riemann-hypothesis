@@ -927,7 +927,3 @@ theorem nonStatPhase : NonStatPhase := by
     (fun x hx k => hBk Ω g P hΩ hg hP hne x hx (hder x hx) k) q le_rfl S a ha hc hsupp hb
 
 end Formalism.FourierDecayAlt.P.WirtingerIntegrationByParts
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

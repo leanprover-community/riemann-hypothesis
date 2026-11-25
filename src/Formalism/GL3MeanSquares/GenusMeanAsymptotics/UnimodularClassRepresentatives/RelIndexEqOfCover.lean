@@ -3,6 +3,7 @@ module
 public import Mathlib.Basic.Real.Basic
 public import Mathlib.GroupTheory.Index
 public import Mathlib.Order.CompletePartialOrder
+import Mathlib.Data.Set.Card.Arithmetic
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.Tactic.TypeStar
 public import Mathlib.Algebra.BigOperators.Ring.Finset
@@ -92,21 +93,9 @@ theorem relIndex_cocycle (A B C : Subgroup G) (hAC : C.relIndex A ≠ 0) (hBA : 
 
 theorem ncard_biUnion_finset {ι X : Type*} (s : Finset ι) (f : ι → Set X)
     (hf : ∀ i ∈ s, (f i).Finite) (hd : (s : Set ι).PairwiseDisjoint f) :
-    (⋃ i ∈ s, f i).ncard = ∑ i ∈ s, (f i).ncard := by
-  classical
-  revert hf hd
-  refine Finset.induction_on s (by simp) ?_
-  intro a s ha ih hf hd
-  have hfa : (f a).Finite := hf a (Finset.mem_insert_self a s)
-  have hfs : (⋃ i ∈ s, f i).Finite :=
-    Set.Finite.biUnion s.finite_toSet fun i hi => hf i (Finset.mem_insert_of_mem hi)
-  have hdisj : Disjoint (f a) (⋃ i ∈ s, f i) := by
-    rw [Set.disjoint_iUnion₂_right]
-    intro i hi
-    exact hd (by simp) (by simp [hi]) (fun h => ha (h ▸ hi))
-  rw [Finset.set_biUnion_insert, Finset.sum_insert ha, Set.ncard_union_eq hdisj hfa hfs,
-    ih (fun i hi => hf i (Finset.mem_insert_of_mem hi))
-      (hd.subset (Finset.coe_subset.2 (Finset.subset_insert a s)))]
+    (⋃ i ∈ s, f i).ncard = ∑ i ∈ s, (f i).ncard :=
+  (Set.Finite.ncard_biUnion s.finite_toSet hf hd).trans
+    (finsum_mem_coe_finset (fun i => (f i).ncard) s)
 
 theorem sum_relIndex_fibre {X Y : Type*} [MulAction G X] [MulAction G Y] (π : X → Y)
     (hπ : ∀ (g : G) x, π (g • x) = g • π x) (A : Set X) (hA : ∀ g : G, ∀ x ∈ A, g • x ∈ A)

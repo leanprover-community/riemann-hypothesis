@@ -134,8 +134,17 @@ theorem sep {Y X : Scheme.{0}} (m : Y ⟶ X) {W₀ : X.Opens} (hW : IsAffineOpen
   Y.sheaf.eq_of_locally_eq' (fun i : {f : Γ(X, W₀) // X.basicOpen f ≤ W} => m ⁻¹ᵁ X.basicOpen i.1)
     (m ⁻¹ᵁ W) (fun i => homOfLE (m.preimage_mono i.2)) (cover m hW h) s t (fun i => e i.1 i.2)
 
-theorem exists_locDer : ∀ (R : Type) [CommRing R] (Y X : Scheme.{0}) (q : Y ⟶ Sp ℂ) (p : X ⟶ Sp R) (m : Y ⟶ X) (D : R → ℂ) (W₀ : X.Opens), IsAffineOpen W₀ → ∀ d₀ : Γ(X, W₀) → Γ(Y, m ⁻¹ᵁ W₀), (∀ a b, d₀ (a + b) = d₀ a + d₀ b) → (∀ a b, d₀ (a * b) = (m.app W₀).hom a * d₀ b + (m.app W₀).hom b * d₀ a) → (∀ r, d₀ (constFn p W₀ r) = constFn q (m ⁻¹ᵁ W₀) (D r)) → ∃ d, LocDer q p m D W₀ d ∧ d W₀ = d₀ := by
-  intro R _ Y X q p m D W₀ hW d₀ hadd hmul hbase
+theorem exists_locDer_data (K : Type) [CommRing K] (R : Type) [CommRing R] (Y X : Scheme.{0}) (q : Y ⟶ Sp K)
+    (p : X ⟶ Sp R) (m : Y ⟶ X) (D : R → K) (W₀ : X.Opens) (hW : IsAffineOpen W₀)
+    (d₀ : Γ(X, W₀) → Γ(Y, m ⁻¹ᵁ W₀)) (hadd : ∀ a b, d₀ (a + b) = d₀ a + d₀ b)
+    (hmul : ∀ a b, d₀ (a * b) = (m.app W₀).hom a * d₀ b + (m.app W₀).hom b * d₀ a)
+    (hbase : ∀ r, d₀ (constFn p W₀ r) = constFn q (m ⁻¹ᵁ W₀) (D r)) :
+    ∃ d : ∀ W : X.Opens, Γ(X, W) → Γ(Y, m ⁻¹ᵁ W),
+      (∀ W ≤ W₀, ∀ a b, d W (a + b) = d W a + d W b) ∧
+      (∀ W ≤ W₀, ∀ a b, d W (a * b) = (m.app W).hom a * d W b + (m.app W).hom b * d W a) ∧
+      (∀ W W' (h' : W' ≤ W), W ≤ W₀ → ∀ a, d W' (resG X h' a) = resG Y (m.preimage_mono h') (d W a)) ∧
+      (∀ W ≤ W₀, ∀ r, d W (constFn p W r) = constFn q (m ⁻¹ᵁ W) (D r)) ∧
+      d W₀ = d₀ := by
   have H : ∀ f : Γ(X, W₀), ∃ δ : Γ(X, X.basicOpen f) → Γ(Y, m ⁻¹ᵁ X.basicOpen f),
       (∀ a b, δ (a + b) = δ a + δ b) ∧
       (∀ a b, δ (a * b) = (m.app _).hom a * δ b + (m.app _).hom b * δ a) ∧
@@ -184,7 +193,7 @@ theorem exists_locDer : ∀ (R : Type) [CommRing R] (Y X : Scheme.{0}) (q : Y �
     exact ⟨t, fun f k => ht ⟨f, k⟩⟩
   choose t ht using G
   classical
-  refine ⟨fun W s => if h : W ≤ W₀ then t W h s else 0, ⟨?_, ?_, ?_, ?_⟩, ?_⟩
+  refine ⟨fun W s => if h : W ≤ W₀ then t W h s else 0, ?_, ?_, ?_, ?_, ?_⟩
   · intro W h a b
     simp only [dite_eq_left h]
     refine sep m hW h _ _ (fun f k => ?_)
@@ -206,5 +215,10 @@ theorem exists_locDer : ∀ (R : Type) [CommRing R] (Y X : Scheme.{0}) (q : Y �
     simp only [dite_eq_left (le_refl W₀)]
     refine sep m hW le_rfl _ _ (fun f k => ?_)
     rw [ht W₀ _ _ f k, δres]
+
+theorem exists_locDer : ∀ (R : Type) [CommRing R] (Y X : Scheme.{0}) (q : Y ⟶ Sp ℂ) (p : X ⟶ Sp R) (m : Y ⟶ X) (D : R → ℂ) (W₀ : X.Opens), IsAffineOpen W₀ → ∀ d₀ : Γ(X, W₀) → Γ(Y, m ⁻¹ᵁ W₀), (∀ a b, d₀ (a + b) = d₀ a + d₀ b) → (∀ a b, d₀ (a * b) = (m.app W₀).hom a * d₀ b + (m.app W₀).hom b * d₀ a) → (∀ r, d₀ (constFn p W₀ r) = constFn q (m ⁻¹ᵁ W₀) (D r)) → ∃ d, LocDer q p m D W₀ d ∧ d W₀ = d₀ :=
+  fun R _ Y X q p m D W₀ hW d₀ hadd hmul hbase =>
+    let ⟨d, ha, hm, hr, hb, h0⟩ := exists_locDer_data ℂ R Y X q p m D W₀ hW d₀ hadd hmul hbase
+    ⟨d, ⟨ha, hm, hr, hb⟩, h0⟩
 
 end GlobalTheory.LocDerExt

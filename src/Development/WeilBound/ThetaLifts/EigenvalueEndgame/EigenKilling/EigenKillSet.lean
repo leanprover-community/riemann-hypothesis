@@ -154,10 +154,6 @@ theorem trace_vec {k : Type} [Field k] (C : Matrix (Fin n) (Fin d) k) (p : Fin n
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
 
-theorem piW_inc (t : E →ₐ[F] Fv F v) (x : E) : piW t (inclR (F := F) (AF F) x) = t x := by
-  change evFin F v 1 * t x = t x
-  rw [map_one, one_mul]
-
 theorem at_lift (c : Fv F v) (u : Matrix (Fin n) (Fin d) (AE F E)) : At (evFin F v) (liftV v c • u) := fun a ha => by
   rw [smul_smul, ← smul_eq_mul, at_liftV v c a ha, zero_smul]
 
@@ -666,7 +662,7 @@ theorem map_form (t : E →ₐ[F] Fv F v) (J : Matrix (Fin d) (Fin d) E) (x y : 
   simp [form, dotProduct, mulVec]
 
 theorem map_inc {m m' : ℕ} (t : E →ₐ[F] Fv F v) (A : Matrix (Fin m) (Fin m') E) : (incM F A).map (piW t) = A.map t :=
-  Matrix.ext fun i j => by rw [incM, map_apply, map_apply, map_apply]; exact piW_inc t (A i j)
+  Matrix.ext fun i j => by rw [incM, map_apply, map_apply, map_apply]; exact PositivityTheory.Member.ZakTransform.piW_inc t (A i j)
 
 theorem mid_eq (z : Matrix (Fin n) (Fin d₁) (AE F E)) (A : Matrix (Fin d) (Fin d₁) E) :
     incM F (1 : Matrix (Fin n) (Fin n) E) * z * (incM F A)ᵀ = z * (incM F A)ᵀ := by
@@ -679,7 +675,7 @@ theorem map_mid (t : E →ₐ[F] Fv F v) (z : Matrix (Fin n) (Fin d₁) (AE F E)
 theorem map_vv (t : E →ₐ[F] Fv F v) (a : Fin n → AE F E) (x : Fin d → E) :
     (vecMulVec a (incV F x)).map (piW t) = vecMulVec (fun i => piW t (a i)) fun j => t (x j) := by
   ext i j
-  simp [vecMulVec_apply, incV, piW_inc]
+  simp [vecMulVec_apply, incV, PositivityTheory.Member.ZakTransform.piW_inc]
 
 theorem soLower_of (hMx : PositivityTheory.ThKG.MixW) : SoLower := by
   intro F E _ _ _ _ _ σ B n d d₁ X W W₁ M M₁ χX χW om om₁ r s r' s' r₁ s₁ H i₀ i₁ hp hp₁ hH hn hd hν e ei ev he hl φ hφ
@@ -785,14 +781,14 @@ theorem soLower_of (hMx : PositivityTheory.ThKG.MixW) : SoLower := by
     obtain ⟨ε, ε0, ε1, ε2⟩ := exists_pair hB.cm t 1 0
     have z2 : ∀ {m : ℕ} (c : Fv F B.v₁) (p : Fin n → E) (q : Fin m → E),
         (liftV B.v₁ c • ε • incM F (vecMulVec p q)).map (piW (t.comp σ)) = 0 := fun c p q => by
-      rw [← smul_assoc, map_vec _ _ (piW_inc _), Algebra.smul_def, map_mul, ε2, mul_zero, zero_smul]
+      rw [← smul_assoc, map_vec _ _ (PositivityTheory.Member.ZakTransform.piW_inc _), Algebra.smul_def, map_mul, ε2, mul_zero, zero_smul]
     have ev1 : ∀ {m : ℕ} {Z : Spc F E m} (N : Model σ X Z), (∀ x u : Matrix (Fin n) (Fin m) (AE F E), At (evFin F B.v₁) x →
         x.map (piW t) = 0 → evFin F B.v₁ (sy σ X Z x u) =
           ((X.J.map t * x.map (piW (t.comp σ)) * (Z.J.map t)ᵀ)ᵀ * u.map (piW t)).trace) → ∀ x, At (evFin F B.v₁) x →
         x.map (piW t) = 0 → ∀ c p q, sy σ X Z x (liftV B.v₁ c • ε • incM F (vecMulVec p q)) =
           liftV B.v₁ (-((fun i => t (p i)) ⬝ᵥ coB σ X Z t x *ᵥ fun j => t (q j)) * c) := fun N hN x hx h0 c p q => by
       have k1 := hN x (ε • incM F (vecMulVec p q)) hx h0
-      rw [map_vec _ _ (piW_inc _), ε1, one_smul, trace_vec] at k1
+      rw [map_vec _ _ (PositivityTheory.Member.ZakTransform.piW_inc _), ε1, one_smul, trace_vec] at k1
       rw [sy_smul N, mul_comm (liftV _ _), mul_liftV, k1, coB_eq, Matrix.neg_mul, Matrix.neg_mul, neg_mulVec, dotProduct_neg, neg_neg]
     refine eigen_kill_set M hB.cm hB.std dX dW hι ((LinearMap.proj (coB σ X W₁ t x₁)).comp (ι₁ ∘ₗ ev B.v₁))
       {b | (∃ c p q, b = (liftV B.v₁ c • ε • incM F (vecMulVec p (H.ι *ᵥ q)),

@@ -68,22 +68,16 @@ theorem fin_conductor (χ : Af F → ℂ) (hc : Continuous χ) (hadd : ∀ x y, 
       ∀ d ∈ differentIdeal ℤ (𝓞 F), ∀ v : HeightOneSpectrum (𝓞 F), (z * algebraMap F (Af F) (d : F)) v ∈ v.adicCompletionIntegers F := by
   apply _root_.GlobalTheory.SnMass.Inhab.fin_conductor <;> assumption
 
-theorem single_same (v : HeightOneSpectrum (𝓞 F)) (y : Fv F v) : singleV F v y v = y := by
-  classical
-  exact RestrictedProduct.single_eq_same (fun w : HeightOneSpectrum (𝓞 F) => w.adicCompletionIntegers F) v y
+theorem single_same (v : HeightOneSpectrum (𝓞 F)) (y : Fv F v) : singleV F v y v = y :=
+  _root_.GlobalTheory.SnMass.Inhab.single_same v y
 
 theorem single_ne (v : HeightOneSpectrum (𝓞 F)) (y : Fv F v) {w : HeightOneSpectrum (𝓞 F)} (hw : w ≠ v) :
-    singleV F v y w = 0 := by
-  classical
-  exact RestrictedProduct.single_eq_of_ne (fun w : HeightOneSpectrum (𝓞 F) => w.adicCompletionIntegers F) y hw
+    singleV F v y w = 0 :=
+  _root_.GlobalTheory.SnMass.Inhab.single_ne v y hw
 
 theorem single_mul (v : HeightOneSpectrum (𝓞 F)) (y : Fv F v) (t : Af F) :
-    singleV F v y * t = singleV F v (y * t v) := by
-  refine RestrictedProduct.ext _ _ fun w => ?_
-  change singleV F v y w * t w = singleV F v (y * t v) w
-  by_cases hw : w = v
-  · subst hw; rw [single_same, single_same]
-  · rw [single_ne v _ hw, single_ne v _ hw, zero_mul]
+    singleV F v y * t = singleV F v (y * t v) :=
+  _root_.GlobalTheory.SnMass.Inhab.single_mul v y t
 
 theorem psiV_ne_one_of_trace {ψ : AddChar (AF F) ℂ} (h : IsCharAF F ψ)
     (hinf : ∀ a : F, psiInf F ψ (algebraMap F (Ainf F) a) =

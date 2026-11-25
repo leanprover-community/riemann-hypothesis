@@ -668,8 +668,8 @@ private theorem cont_em : Continuous (em E) := by
   exact Continuous.units_map _ hM
 
 private theorem sc_idele : SecondCountableTopology (IdeleGroup ℚ) := by
-  haveI : SecondCountableTopology (A ℚ) := GroundTheory.Automorphic.secondCountableTopology_adeleRing ℚ
-  haveI : SecondCountableTopology (A ℚ)ᵐᵒᵖ := MulOpposite.opHomeomorph.symm.isEmbedding.secondCountableTopology
+  have : SecondCountableTopology (A ℚ) := GroundTheory.Automorphic.secondCountableTopology_adeleRing ℚ
+  have : SecondCountableTopology (A ℚ)ᵐᵒᵖ := MulOpposite.opHomeomorph.symm.isEmbedding.secondCountableTopology
   exact Units.isEmbedding_embedProduct.secondCountableTopology
 
 private theorem cont_in {φ : GL (Fin 2) (A E) → ℂ} (hc : Continuous φ) (t : (A ℚ)ˣ) :
@@ -679,15 +679,15 @@ private theorem cont_in {φ : GL (Fin 2) (A E) → ℂ} (hc : Continuous φ) (t 
 private theorem inner_int (M : Meas ℚ) {φ : GL (Fin 2) (A E) → ℂ} (hc : Continuous φ) {B : ℝ}
     (hB : ∀ g, ‖φ g‖ ≤ B) (t : (A ℚ)ˣ) :
     IntegrableOn (fun g : G1 ℚ => φ (em E (gl g * dM t))) M.D M.μ := by
-  haveI : IsFiniteMeasure (M.μ.restrict M.D) := ⟨by simpa using UpperTheory.ConvolutionTheory.R2.M.volD ℚ M⟩
+  have : IsFiniteMeasure (M.μ.restrict M.D) := ⟨by simpa using UpperTheory.ConvolutionTheory.R2.M.volD ℚ M⟩
   exact Integrable.of_bound (cont_in hc t).aestronglyMeasurable B (ae_of_all _ fun g => hB _)
 
 private theorem outer_int (M : Meas ℚ) (U : UMeas) (χ : HChar ℚ) (hχ : ∀ a, ‖((χ.1 a : ℂˣ) : ℂ)‖ = 1)
     {φ : GL (Fin 2) (A E) → ℂ} (hc : Continuous φ) {B : ℝ} (hB : ∀ g, ‖φ g‖ ≤ B) :
     Integrable (fun t => ((χ.1 t : ℂˣ) : ℂ) * ∫ g in M.D, φ (em E (gl g * dM t)) ∂M.μ) U.υ := by
-  haveI := U.prob
-  haveI : IsFiniteMeasure (M.μ.restrict M.D) := ⟨by simpa using UpperTheory.ConvolutionTheory.R2.M.volD ℚ M⟩
-  haveI := sc_idele
+  have := U.prob
+  have : IsFiniteMeasure (M.μ.restrict M.D) := ⟨by simpa using UpperTheory.ConvolutionTheory.R2.M.volD ℚ M⟩
+  have := sc_idele
   have hF : Continuous fun t : IdeleGroup ℚ => ∫ g in M.D, φ (em E (gl g * dM t)) ∂M.μ := by
     refine continuous_of_dominated (bound := fun _ => B) ?_ ?_ (integrable_const B) ?_
     · exact fun t => (cont_in hc t).aestronglyMeasurable
@@ -1013,8 +1013,8 @@ private theorem nv_split (hE : Module.finrank ℚ E = 2) {w w' : H.P E} (hne : w
     (h : w'.under (𝓞 ℚ) = w.under (𝓞 ℚ)) : normV w = normV (w.under (𝓞 ℚ)) := by
   have hww' : w'.asIdeal ≠ w.asIdeal := fun e => hne (HeightOneSpectrum.ext e).symm
   set p := w.under (𝓞 ℚ) with hp
-  haveI := w.isMaximal
-  haveI : w.asIdeal.LiesOver p.asIdeal := ⟨rfl⟩
+  have := w.isMaximal
+  have : w.asIdeal.LiesOver p.asIdeal := ⟨rfl⟩
   have hf := Ideal.absNorm_eq_pow_inertiaDeg'_of_liesOver w.asIdeal p.asIdeal p.isPrime p.ne_bot
   have hsub : ({w'.asIdeal, w.asIdeal} : Finset (Ideal (𝓞 E))) ⊆
       IsDedekindDomain.primesOverFinset p.asIdeal (𝓞 E) := by

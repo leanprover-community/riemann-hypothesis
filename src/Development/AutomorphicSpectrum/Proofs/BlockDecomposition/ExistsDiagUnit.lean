@@ -27,19 +27,11 @@ theorem ordL_of_eq {x : L} {u : Multiplicative ℤ}
   rw [WithZero.coe_unzero, h]
 
 theorem ordL_mul_of_ne {a b : L} (ha : a ≠ 0) (hb : b ≠ 0) :
-    ordL (a * b) = ordL a + ordL b := by
-  have ha' : Valued.v a ≠ 0 := (Valuation.ne_zero_iff _).2 ha
-  have hb' : Valued.v b ≠ 0 := (Valuation.ne_zero_iff _).2 hb
-  obtain ⟨u, hu⟩ := WithZero.ne_zero_iff_exists.1 ha'
-  obtain ⟨w, hw⟩ := WithZero.ne_zero_iff_exists.1 hb'
-  have hab : Valued.v (a * b) = ((u * w : Multiplicative ℤ) : WithZero (Multiplicative ℤ)) := by
-    rw [map_mul, ← hu, ← hw, WithZero.coe_mul]
-  rw [ordL_of_eq hab, ordL_of_eq hu.symm, ordL_of_eq hw.symm, toAdd_mul]
-  ring
+    ordL (a * b) = ordL a + ordL b :=
+  Formalism.UG.P.fSatake_ord_mul ha hb
 
-theorem ordL_congr {a b : L} (h : Valued.v a = Valued.v b) : ordL a = ordL b := by
-  unfold ordL
-  simp only [h]
+theorem ordL_congr {a b : L} (h : Valued.v a = Valued.v b) : ordL a = ordL b :=
+  Formalism.UG.P.fSatake_ord_of_v h
 
 theorem val_mul_entry_le {ι : Type} [Fintype ι] {A B : Matrix ι ι L}
     (hA : ∀ i j, Valued.v (A i j) ≤ 1) (hB : ∀ i j, Valued.v (B i j) ≤ 1) (i j : ι) :

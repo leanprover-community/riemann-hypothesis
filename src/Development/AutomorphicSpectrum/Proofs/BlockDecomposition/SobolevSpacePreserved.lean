@@ -240,7 +240,7 @@ theorem mol_ae_lConv : ∀ (n : ℕ) [MeasurableSpace (G n)] [BorelSpace (G n)] 
   have hφv : Continuous (fun y : G n => φ y.val) := hφc.comp Units.continuous_val
 
   have hcont : Continuous (fun y : G n => φ y.val • lT μ V y x) :=
-    hφv.smul (GlobalTheory.T.regular_representation_continuous n μ V hU x).2
+    hφv.smul (GlobalTheory.CompanionTheory.PresSobA.translations_strongly_continuous n μ V hU x).2
   have hK : IsCompact ((Units.val : G n → Mat n) ⁻¹' tsupport φ) := by
     refine ((GlobalTheory.CompanionTheory.SobGL.HaarDom.isOpenEmbedding_valG n).isInducing.isCompact_preimage_iff
       ?_).2 hφ.2.1
@@ -355,7 +355,6 @@ theorem exists_compact_support {K B : Set (Mat n)} (hK : IsCompact K) (hKs : K �
     · simp
 
 end GlobalTheory.CompanionTheory.PresSobA.MolDiff
-
 
 open GlobalTheory.CompanionTheory.PresSobA.MolDiff in
 theorem GlobalTheory.CompanionTheory.PresSobA.mol_differentiableAt :
@@ -628,7 +627,7 @@ theorem setIntegral_ae (hU : Unimod) {f : Mat n → V} (X : Mat n) (hf : ContDif
     (⇑(∫ s in Set.Ioc a b, rR μ V (expC X s) (cls μ (Rd X f))) : G n → V) =ᵐ[μ]
       fun z => ∫ s in Set.Ioc a b, Rd X f (z.val * (expC X s).val) := by
   have hc : Continuous (fun s : ℝ => rR μ V (expC X s) (cls μ (Rd X f))) :=
-    ((GlobalTheory.T.regular_representation_continuous n μ V hU (cls μ (Rd X f))).1).comp (GlobalTheory.T.matrix_exp_curve_derivative n X).1
+    ((GlobalTheory.CompanionTheory.PresSobA.translations_strongly_continuous n μ V hU (cls μ (Rd X f))).1).comp (GlobalTheory.T.matrix_exp_curve_derivative n X).1
   have hint : Integrable (fun s : ℝ => rR μ V (expC X s) (cls μ (Rd X f)))
       (volume.restrict (Set.Ioc a b)) := hc.integrableOn_Ioc
   refine GlobalTheory.T.lp_integral_ae_pointwise ℝ (G n) V (volume.restrict (Set.Ioc a b)) μ _
@@ -845,7 +844,7 @@ theorem orbit_deriv (hU : Unimod) {f : Mat n → V} (X : Mat n) (hf : ContDiffOn
     (h0 : MemLp (fun y : G n => f y.val) 2 μ) (h1 : MemLp (fun y : G n => Rd X f y.val) 2 μ) :
     HasDerivAt (fun t : ℝ => rR μ V (expC X t) (cls μ f)) (cls μ (Rd X f)) 0 := by
   have hc : Continuous (fun s : ℝ => rR μ V (expC X s) (cls μ (Rd X f))) :=
-    (GlobalTheory.T.regular_representation_continuous n μ V hU _).1.comp (GlobalTheory.T.matrix_exp_curve_derivative n X).1
+    (GlobalTheory.CompanionTheory.PresSobA.translations_strongly_continuous n μ V hU _).1.comp (GlobalTheory.T.matrix_exp_curve_derivative n X).1
   have hd := intervalIntegral.integral_hasDerivAt_right (a := (0 : ℝ)) (b := 0)
     (hc.intervalIntegrable _ _) hc.aestronglyMeasurable.stronglyMeasurableAtFilter hc.continuousAt
   simp only [expC_zero, rR_one hU] at hd
@@ -905,7 +904,6 @@ theorem limit_sob (hS : SobG) (g : ℕ → Mat n → V) (x : List (Bool × Fin n
 
 end GlobalTheory.CompanionTheory.PresSobA
 
-
 open GlobalTheory.CompanionTheory.PresSobA in
 theorem GlobalTheory.CompanionTheory.PresSobA.presSob : PresSob := by
   intro n _ _ μ _ V _ _ _ S hLg hU hRC hS hcomm f hf
@@ -946,7 +944,7 @@ theorem GlobalTheory.CompanionTheory.PresSobA.presSob : PresSob := by
       funext fun k => (cls_of_ae μ (hae k w)).2
     rw [this, Metric.tendsto_nhds]
     intro ε hε
-    have hc : Continuous (fun y : G n => lT μ V y (x w)) := (GlobalTheory.T.regular_representation_continuous n μ V hU _).2
+    have hc : Continuous (fun y : G n => lT μ V y (x w)) := (GlobalTheory.CompanionTheory.PresSobA.translations_strongly_continuous n μ V hU _).2
     have h1 : {y : G n | dist (lT μ V y (x w)) (x w) < ε / 2} ∈ 𝓝 (1 : G n) := by
       have h2 := (hc.tendsto (1 : G n))
       rw [lT_one] at h2

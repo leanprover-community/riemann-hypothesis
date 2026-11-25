@@ -52,10 +52,6 @@ structure admitted (ι : Qbar l ≃+* ℂ) (e : ℕ) (W : R2 Ω l) : Prop where
     ∀ s : ↥(Dec (F := ℚ) A), (s : G ℚ Ω) ∈ Ine (F := ℚ) A →
       κ 0 s = cycBar ℚ Ω l s ^ (e : ℤ) * χ s ∧ κ 1 s = cycBar ℚ Ω l s ^ (-(e : ℤ)) * χ s
 
-def VanishOrd : Prop :=
-  ∀ (l : ℕ) [Fact l.Prime], l ≠ 2 → ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ι : Qbar l ≃+* ℂ) (e : ℕ), 1 ≤ e →
-    ∀ W : R2 Ω l, admitted ι e W → BlochKatoSelmerVanishes l (Loc.colRep W)
-
 structure Nf (e : ℕ) (S : Finset Pl) (A : ValuationSubring Ω) (W : R2 Ω l) : Prop where
   l_odd : l ≠ 2
   e_pos : 1 ≤ e

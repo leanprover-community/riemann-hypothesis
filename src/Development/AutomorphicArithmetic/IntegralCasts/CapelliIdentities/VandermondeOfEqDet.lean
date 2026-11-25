@@ -14,7 +14,7 @@ for `i < j`. Reversing the column order in [DLMF 1.3.13](https://dlmf.nist.gov/1
 reverses the signs of the factors. In Mathlib this is `Matrix.det_projVandermonde`
 with the first family constantly `1`. -/
 theorem UpperTheory.Reformulated.B.Qm12.vandermondeOf_eq_det.{u_1} :
-    ∀ {m : ℕ} {R : Type u_1} [inst : CommRing R] (v : Fin m → R),
+    ∀ {m : ℕ} {R : Type u_1} [CommRing R] (v : Fin m → R),
       UpperTheory.Reformulated.B.Qm12.vandermondeOf v =
         ((Matrix.of : (Fin m → Fin m → R) → Matrix (Fin m) (Fin m) R) fun (i j : Fin m) ↦
             v i ^ (m - (1 : ℕ) - (↑j : ℕ))).det := by

@@ -110,11 +110,9 @@ private theorem dense {O R : Type} [CommRing O] [CommRing R] [IsLocalRing R] [Al
   obtain ⟨μ, hμ, hspan⟩ := part_span O R ℤ W S 0 (fun m hm => hm.1)
   obtain ⟨b, hb, hfb⟩ := hspan (f - low) hg
   refine ⟨W.π low, ?_, ?_⟩
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+  · rw [map_sum]
     exact Subalgebra.sum_mem _ fun m _ => key m
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [← map_sub, hfb, map_sum]
+  · rw [← map_sub, hfb, map_sum]
     refine Ideal.sum_mem _ fun m hm => ?_
     obtain ⟨s, hs⟩ := (hμ (Finset.mem_coe.mpr hm)).2
     have e : MvPowerSeries.monomial m (1 : O) =

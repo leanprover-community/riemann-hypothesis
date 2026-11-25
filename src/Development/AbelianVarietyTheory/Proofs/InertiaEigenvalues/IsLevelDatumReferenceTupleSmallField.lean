@@ -23,8 +23,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Form
 open Formalism.L2.Host (embLL0)
 open scoped TensorProduct
 
-set_option maxHeartbeats 1600000
-
 noncomputable section
 
 namespace GlobalTheory.RefDatumLev

@@ -3,7 +3,7 @@ module
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsVertPointNagata
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsVertPointLengthSteps
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PVertPointResidue
-import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PCurveVertPointMultChart
+public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PCurveVertPointMultChart
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section
@@ -16,7 +16,7 @@ open ReciprocityTheory.ChartRestriction.G.Geo MvPolynomial
 
 noncomputable section
 
-private def mvPolyUnitEquiv' (R : Type*) [CommRing R] : MvPolynomial Unit R ≃+* Polynomial R :=
+def mvPolyUnitEquiv (R : Type*) [CommRing R] : MvPolynomial Unit R ≃+* Polynomial R :=
   let f : MvPolynomial Unit R →+* Polynomial R :=
     MvPolynomial.eval₂Hom Polynomial.C (fun _ : Unit => Polynomial.X)
   let g : Polynomial R →+* MvPolynomial Unit R :=
@@ -38,16 +38,16 @@ private def mvPolyUnitEquiv' (R : Type*) [CommRing R] : MvPolynomial Unit R ≃+
     map_mul' := f.map_mul
     map_add' := f.map_add }
 
-private def mNagataUnitEquiv' (R : Type*) [CommRing R] [IsLocalRing R] :
+def mNagataUnitEquiv (R : Type*) [CommRing R] [IsLocalRing R] :
     Targets.mNagataRing Unit R ≃+* nagataRing R := by
-  let e : MvPolynomial Unit R ≃+* Polynomial R := mvPolyUnitEquiv' R
+  let e : MvPolynomial Unit R ≃+* Polynomial R := mvPolyUnitEquiv R
   have hM : Ideal.map e.toRingHom
       ((IsLocalRing.maximalIdeal R).map (MvPolynomial.C : R →+* MvPolynomial Unit R)) =
       (IsLocalRing.maximalIdeal R).map (Polynomial.C : R →+* Polynomial R) := by
     rw [Ideal.map_map]
     congr 1
     ext r
-    simp [e, mvPolyUnitEquiv']
+    simp [e, mvPolyUnitEquiv]
   have hS : Submonoid.map e.toMonoidHom
       ((IsLocalRing.maximalIdeal R).map (MvPolynomial.C : R →+* MvPolynomial Unit R)).primeCompl =
       ((IsLocalRing.maximalIdeal R).map (Polynomial.C : R →+* Polynomial R)).primeCompl := by
@@ -65,6 +65,12 @@ private def mNagataUnitEquiv' (R : Type*) [CommRing R] [IsLocalRing R] :
       simpa using h'
   exact IsLocalization.ringEquivOfRingEquiv (Targets.mNagataRing Unit R) (nagataRing R) e hS
 
+theorem mNagataUnitEquiv_algebraMap {R : Type*} [CommRing R] [IsLocalRing R] (p : MvPolynomial Unit R) :
+    mNagataUnitEquiv R (algebraMap (MvPolynomial Unit R) (Targets.mNagataRing Unit R) p) =
+      algebraMap (Polynomial R) (nagataRing R) (mvPolyUnitEquiv R p) := by
+  unfold mNagataUnitEquiv
+  exact IsLocalization.ringEquivOfRingEquiv_eq _ _
+
 theorem VertPointMultChart.proof (hCh : VertPointChart.Statement) (hN : VertPointNagata.Statement) :
     VertPointMultChart.Statement := by
   intro T _ K' _ _ y s hP hs hsP W hW t ht a b hb hab
@@ -73,26 +79,24 @@ theorem VertPointMultChart.proof (hCh : VertPointChart.Statement) (hN : VertPoin
     (by simpa using hab) hmax (fun p => hrat p.2) fun a' b' hb' hab' => by
       obtain ⟨Φ, hsurj, hker, hΦ⟩ := hN T K' y s hP hs hsP W hW t ht
         (fun u => a' ⟨(), u⟩) (fun u => b' ⟨(), u⟩) (fun u => hb' ⟨(), u⟩) (fun u => hab' ⟨(), u⟩)
-      let η := mNagataUnitEquiv' (Localization.AtPrime (curvePtIdeal y W))
+      let η := mNagataUnitEquiv (Localization.AtPrime (curvePtIdeal y W))
       refine ⟨η.symm.toRingHom.comp Φ, η.symm.surjective.comp hsurj, ?_, fun f => ?_⟩
       · ext x
         rw [RingHom.mem_ker, RingHom.comp_apply, map_eq_zero_iff η.symm.toRingHom η.symm.injective,
           ← RingHom.mem_ker, hker]
       · rw [RingHom.comp_apply, hΦ f]
         apply η.injective
-        change η (η.symm _) = mNagataUnitEquiv' _ (algebraMap _ _ _)
-        rw [η.apply_symm_apply]
-        unfold mNagataUnitEquiv'
-        rw [IsLocalization.ringEquivOfRingEquiv_eq]
+        change η (η.symm _) = mNagataUnitEquiv _ (algebraMap _ _ _)
+        rw [η.apply_symm_apply, mNagataUnitEquiv_algebraMap]
         congr 1
         symm
-        have hm : ∀ q, mvPolyUnitEquiv' (Localization.AtPrime (curvePtIdeal y W)) q =
+        have hm : ∀ q, mvPolyUnitEquiv (Localization.AtPrime (curvePtIdeal y W)) q =
             MvPolynomial.eval₂Hom Polynomial.C (fun _ : Unit => Polynomial.X) q := fun _ => rfl
         induction f using MvPolynomial.induction_on with
         | C n =>
           rw [aeval_C, aeval_C]
           exact RingHom.congr_fun (RingHom.ext_int
-            ((mvPolyUnitEquiv' _).toRingHom.comp (algebraMap ℤ _)) (algebraMap ℤ _)) n
+            ((mvPolyUnitEquiv _).toRingHom.comp (algebraMap ℤ _)) (algebraMap ℤ _)) n
         | add p q hp hq => simp only [map_add, hp, hq]
         | mul_X p i hp =>
           rcases i with ⟨⟨⟩, u⟩

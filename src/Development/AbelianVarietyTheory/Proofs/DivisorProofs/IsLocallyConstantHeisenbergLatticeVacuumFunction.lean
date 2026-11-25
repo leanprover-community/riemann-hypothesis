@@ -64,18 +64,10 @@ namespace GlobalTheory.IsotropicVectorExistence
 
 theorem key {z : ℂ} (k : ℕ) (h : ∀ n : ℕ, ‖z ^ n - (1 : ℂ)‖ < (1 / 2 : ℝ)) :
     (3 / 2 : ℝ) ^ k * ‖z - 1‖ ≤ ‖z ^ (2 ^ k) - 1‖ := by
-  intros
-  apply _root_.GlobalTheory.PowerTwoNormLowerBound.norm_pow_two_pow_sub_one_ge <;> assumption
+  apply GlobalTheory.PowerTwoNormLowerBound.norm_pow_two_pow_sub_one_ge <;> assumption
 
 theorem main : ∀ {z : ℂ}, (∀ (n : ℕ), ‖z ^ n - (1 : ℂ)‖ < (1 / 2 : ℝ)) → z = (1 : ℂ) := by
-  intro z h
-  by_contra hne
-  have hpos : 0 < ‖z - 1‖ := norm_pos_iff.mpr (sub_ne_zero.mpr hne)
-  obtain ⟨k, hk⟩ := pow_unbounded_of_one_lt (1 / (2 * ‖z - 1‖)) (by norm_num : (1 : ℝ) < 3 / 2)
-  rw [div_lt_iff₀ (by positivity)] at hk
-  have a := key k h
-  have b := h (2 ^ k)
-  nlinarith
+  exact GlobalTheory.PowerTwoNormLowerBound.main
 
 end GlobalTheory.IsotropicVectorExistence
 end -- clump:auto

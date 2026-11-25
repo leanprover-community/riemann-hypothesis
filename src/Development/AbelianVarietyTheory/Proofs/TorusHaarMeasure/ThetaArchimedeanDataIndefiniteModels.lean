@@ -847,13 +847,6 @@ section -- clump:auto
 @[expose] public section
 
 open ReciprocityTheory.ChartRestriction.G.I2
-
-namespace GlobalTheory
-
-theorem theta_bound_tStatement : TStatement :=
-  tOf ext_all_inputs _root_.ReciprocityTheory.ChartRestriction.G.I2.split_holds (gSup ext_all_inputs.1) dim
-
-end GlobalTheory
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TorusSplitting.ThetaBound =====
@@ -946,7 +939,7 @@ theorem extra_weight_exists : ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (
   have hρ : 0 < WeightFamilies.rho D j := by
     show 0 < D.R.m - j
     omega
-  have key := GlobalTheory.ThetaWeight.exists_weight GlobalTheory.theta_bound_tStatement D.host.E D.R.r (e k).toX
+  have key := GlobalTheory.ThetaWeight.exists_weight ReciprocityTheory.ChartRestriction.G.I2.T_holds D.host.E D.R.r (e k).toX
     (exists_isIso _ cu hρ)
     ⟨⟨T.Q.H.w0, _root_.UpperTheory.Reformulated.B.Ue6.even_im_hermitian_sub _ _ (_root_.GlobalTheory.CMConjugationOfSquareRoot.conj_halfIntegralGenerator T.Q.H)⟩, by rw [hPf, hPr]; nlinarith, by rw [hPf, hPr]; exact hf2,
       by rw [hPr]; exact hrd, D.R.m, by omega, by rw [hPf]; exact hm4,

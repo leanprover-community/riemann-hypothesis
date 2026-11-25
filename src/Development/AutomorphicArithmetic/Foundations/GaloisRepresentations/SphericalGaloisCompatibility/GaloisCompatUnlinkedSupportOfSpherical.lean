@@ -257,10 +257,6 @@ private theorem opt_ofChar (ξ : kˣ →* ℂˣ) (hξ) :
   obtain ⟨_, h2⟩ := h.choose_spec
   exact congrArg some (IrrGL.ofChar_inj.1 h2).symm
 
-private theorem chs_cons_ofChar (ξ : kˣ →* ℂˣ) (hξ) (s : Multiset (IrrGL (k := k))) :
-    chs (IrrGL.ofChar ξ hξ ::ₘ s) = ξ ::ₘ chs s :=
-  Multiset.filterMap_cons_some _ _ _ (opt_ofChar ξ hξ)
-
 private theorem mem_chs_iff (s : Multiset (IrrGL (k := k))) (ξ : kˣ →* ℂˣ) :
     ξ ∈ chs s ↔ ∃ hξ, IrrGL.ofChar ξ hξ ∈ s := by
   unfold chs
@@ -294,7 +290,7 @@ private theorem pol_eq_lp (s : Multiset (IrrGL (k := k))) (θ : kˣ →* ℂˣ) 
     rw [pol_cons, ih]
     by_cases hy : ∃ ξ : kˣ →* ℂˣ, ∃ hξ, y = IrrGL.ofChar ξ hξ
     · obtain ⟨ξ, hξ, rfl⟩ := hy
-      rw [chs_cons_ofChar]
+      rw [UpperTheory.Gal.GamX.chs_cons]
       by_cases hu : IsUnram (ξ * θ)
       · have h : ∃ ξ' : kˣ →* ℂˣ, (∃ hξ', (IrrGL.ofChar ξ hξ : IrrGL (k := k)) = IrrGL.ofChar ξ' hξ') ∧ IsUnram (ξ' * θ) :=
           ⟨ξ, ⟨hξ, rfl⟩, hu⟩
@@ -490,14 +486,10 @@ open UpperTheory.Gal.GamX
 private theorem lp_zero' : UpperTheory.Gal.GamX.lp (0 : Multiset ℂˣ) = 1 := by
   simp [UpperTheory.Gal.GamX.lp]
 
-private theorem lp_cons' (a : ℂˣ) (A : Multiset ℂˣ) :
-    UpperTheory.Gal.GamX.lp (a ::ₘ A) = (1 - Polynomial.C (a : ℂ) * Polynomial.X) * UpperTheory.Gal.GamX.lp A := by
-  simp [UpperTheory.Gal.GamX.lp]
-
 private theorem lp_eval_zero (A : Multiset ℂˣ) : (UpperTheory.Gal.GamX.lp A).eval 0 = 1 := by
   induction A using Multiset.induction_on with
   | empty => simp [lp_zero']
-  | cons a A ih => rw [lp_cons', Polynomial.eval_mul, ih]; simp
+  | cons a A ih => rw [UpperTheory.Gal.GamX.lp_cons, Polynomial.eval_mul, ih]; simp
 
 private theorem lp_ne_zero (A : Multiset ℂˣ) : UpperTheory.Gal.GamX.lp A ≠ 0 := by
   intro h
@@ -522,7 +514,7 @@ private theorem lp_roots (A : Multiset ℂˣ) :
   induction A using Multiset.induction_on with
   | empty => simp [lp_zero']
   | cons a A ih =>
-    rw [lp_cons', Polynomial.roots_mul (by rw [← lp_cons']; exact lp_ne_zero _), lin_roots, ih,
+    rw [UpperTheory.Gal.GamX.lp_cons, Polynomial.roots_mul (by rw [← UpperTheory.Gal.GamX.lp_cons]; exact lp_ne_zero _), lin_roots, ih,
       Multiset.map_cons, Multiset.singleton_add]
 
 theorem UpperTheory.Gal.GamX.lpInj :
@@ -764,7 +756,6 @@ open GroundTheory.Global.SemiLocal
 open scoped Classical
 
 open UpperTheory.Gal.GamX
-
 
 theorem UpperTheory.Gal.GamX.twValsOf :
     UpperTheory.Gal.GamX.TwValsOf := by

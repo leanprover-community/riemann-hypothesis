@@ -164,7 +164,6 @@ theorem exists_geoFun_eq (hProp : PB.Proportional) (hI : PB.Inputs) (II : Inters
 
 end RealProp
 
-
 open RealProp in
 theorem rootTower_proportional_of_unif : PB.Proportional → PB.Inputs → ∀ II : IntersectionSystem,
     IsFullIntersectionSystem II → ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) [Nonempty Ψ] (T : RootTower Ψ N)
@@ -177,7 +176,7 @@ theorem rootTower_proportional_of_unif : PB.Proportional → PB.Inputs → ∀ I
     obtain ⟨κ, hκ, h⟩ := exists_geoFun_eq hProp hI II hII R hU c
     refine ⟨κ, hκ, ?_, h⟩
     rw [RootTower.vol, h, mul_div_assoc, div_self hrho.ne', mul_one]
-  obtain ⟨Φd, hΦd⟩ := (_root_.GlobalTheory.CompanionTheory.Ar.Top.degFl_Sh_Tot_linear Ψ N).1
+  obtain ⟨Φd, hΦd⟩ := (_root_.RootFieldNumerics.degFl_Sh_Tot_linear_and_degFl_eq_zero_off_dim Ψ N).1
   refine ⟨fun c => ?_, fun B c F => ?_, fun B B' c => ?_⟩
   · obtain ⟨κ, hκ, hv, -⟩ := hvol c
     rw [hv]
@@ -200,7 +199,7 @@ theorem rootTower_proportional_of_unif : PB.Proportional → PB.Inputs → ∀ I
       · simp only [LinearMap.sub_apply, LinearMap.comp_apply, LinearMap.smul_apply, AlgHom.toLinearMap_apply,
           hΦd, smul_eq_mul, rename_monomial]
         rw [geoFun_monomial_of_ne _ _ (by rwa [degree_mapDomain_some]),
-          (_root_.GlobalTheory.CompanionTheory.Ar.Top.degFl_Sh_Tot_linear Ψ N).2.2.2 _ _ (isHomogeneous_monomial _ rfl) hm, mul_zero, sub_zero]
+          (_root_.RootFieldNumerics.degFl_Sh_Tot_linear_and_degFl_eq_zero_off_dim Ψ N).2.2.2 _ _ (isHomogeneous_monomial _ rfl) hm, mul_zero, sub_zero]
     have h2 := LinearMap.congr_fun hL F
     simp only [LinearMap.sub_apply, LinearMap.comp_apply, LinearMap.smul_apply, AlgHom.toLinearMap_apply,
       hΦd, smul_eq_mul, LinearMap.zero_apply] at h2

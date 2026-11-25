@@ -55,18 +55,14 @@ def invP (p : B.SS k r) : B.SS k r :=
 theorem map_invM_eq {U : Set (B.Mat k r)} (hU : B2.IsClosedSubgroup U) {μ : Measure (Formalism.QuantumDeterminants.Mt k r)}
     (hμ : B.IsHaarOn U μ) : μ.map B2.invM = μ := Formalism.FourierDecayAlt.P.haar_measure_inversion k r U μ hU hμ
 
-theorem ae_of_haarB {U : Set (B.Mat k r)} {μ : Measure (Formalism.QuantumDeterminants.Mt k r)} (hμ : B.IsHaarOn U μ) :
-    ∀ᵐ x ∂μ, Matrix.of x ∈ U := by
-  rw [ae_iff]; exact hμ.conc
-
 theorem ae_SS {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] (D : B.RealPlaceData k r Wp Wq)
     [SigmaFinite D.μW] [SigmaFinite D.μN] [SigmaFinite D.μW'] :
     ∀ᵐ p ∂D.μSS, Matrix.of p.1.1 ∈ Formalism.QuantumDeterminants.UWset k r D.z ∧ Matrix.of p.1.2 ∈ Formalism.QuantumDeterminants.Nset k r ∧
       Matrix.of p.2.1 ∈ Formalism.QuantumDeterminants.UWset k r D.z' ∧ Matrix.of p.2.2 ∈ Formalism.QuantumDeterminants.Nset k r := by
-  have hW := ae_of_haarB D.haarW
-  have hN := ae_of_haarB D.haarN
-  have hW' := ae_of_haarB D.haarW'
+  have hW := Formalism.FourierDecayAlt.P.B7.ae_mem D.haarW
+  have hN := Formalism.FourierDecayAlt.P.B7.ae_mem D.haarN
+  have hW' := Formalism.FourierDecayAlt.P.B7.ae_mem D.haarW'
   have e1 : ∀ᵐ p ∂D.μSS, Matrix.of p.1.1 ∈ Formalism.QuantumDeterminants.UWset k r D.z :=
     Measure.quasiMeasurePreserving_fst.ae (Measure.quasiMeasurePreserving_fst.ae hW)
   have e2 : ∀ᵐ p ∂D.μSS, Matrix.of p.1.2 ∈ Formalism.QuantumDeterminants.Nset k r :=

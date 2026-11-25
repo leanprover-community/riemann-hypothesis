@@ -64,7 +64,6 @@ theorem exists_blowupChart_family_isPullback_covering {X X₁ : Scheme.{u}} {k :
       (∀ x : ↥X₁, x ∈ π ⁻¹ᵁ U → ∃ (s : Fin m) (hs : s ∈ S), x ∈ (F s hs).domain) := by
   classical
   have : AlgebraicGeometry.Etale c.map := c.isEtale
-  have : AlgebraicGeometry.Flat c.map := inferInstance
   have hcomap : Z.comap U.ι = (coordSubspaceIdeal k m S).comap c.map := by
     rw [← restrictIdeal_eq_comap_ι, hZ, EtaleChart.coordIdeal_eq_comap_coordSubspaceIdeal]
   have hres : Blowup.IsBlowupAlongIdealSheaf (π ∣_ U) ((coordSubspaceIdeal k m S).comap c.map) := by

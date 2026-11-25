@@ -424,7 +424,6 @@ theorem coeff_ode : ∀ (K W : Type) [Group K] [TopologicalSpace K] [AddCommGrou
   rw [Polynomial.aeval_eq_sum_range] at hc
   calc ∑ j ∈ Finset.range ((LinearMap.charpoly D).natDegree + 1), (LinearMap.charpoly D).coeff j * L (D ^ j)
       = L (∑ j ∈ Finset.range ((LinearMap.charpoly D).natDegree + 1), (LinearMap.charpoly D).coeff j • D ^ j) := by
-        set_option synthInstance.maxHeartbeats 100000 in
           simp [map_sum, smul_eq_mul]
     _ = 0 := by rw [hc, map_zero]
 
@@ -974,7 +973,7 @@ theorem cuspFinite : ∀ (D : D7) (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.h
       rw [hg φ.1 (smooth_of_mem φ)] at h1
       refine Subtype.ext ?_
       rw [Submodule.coe_smul, ← h1]
-      simp [Submodule.coe_sum, der]) bK
+      simp [der]) bK
     obtain ⟨_, b'⟩ := bd_span μ hθ (E : Set (Mc θ V))
       (Set.range X ∪ Set.range fun b => (fr τ)⁻¹ * y b * fr τ) (by
         rintro _ (⟨a, rfl⟩ | ⟨b, rfl⟩)

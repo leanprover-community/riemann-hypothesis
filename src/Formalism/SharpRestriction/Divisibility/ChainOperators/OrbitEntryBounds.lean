@@ -1249,7 +1249,7 @@ namespace Formalism.MainNotions.DIV.Lemmas.OrbitEntryBounds
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.G Formalism.MainNotions.OrbitPlaces
 
 def toEnt {D : D7} (E : OrbitPlaces.Ent D) : PI.OrbJet.Ent D :=
-  ⟨E.nu, E.nu_row, E.nu_rows, E.Th, E.ep, E.be, E.sg⟩
+  ⟨E.nu⟩
 
 theorem addition_bound_holds (D : D7) (E : OrbitPlaces.Ent D) : OrbitPlaces.OrbitsAddLowerBound E := by
   intro p _ h u i hi R hR ep sg be hbe β hβ Th hTh

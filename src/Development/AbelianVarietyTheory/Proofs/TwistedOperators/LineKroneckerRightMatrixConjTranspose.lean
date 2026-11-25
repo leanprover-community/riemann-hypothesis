@@ -64,17 +64,13 @@ variable {σ : Type} [DecidableEq σ] {H : Type} [NormedAddCommGroup H] [InnerPr
 theorem monomial_eq_smul (m : σ →₀ ℕ) (c : ℂ) :
     monomial m c = c • (monomial m 1 : MvPolynomial σ ℂ) := by simp [smul_monomial]
 
-theorem inner_X_mul (h : IsFockIP ι) (i : σ) (P Q : MvPolynomial σ ℂ) :
-    inner ℂ (ι (X i * P)) (ι Q) = inner ℂ (ι P) (ι (pderiv i Q)) := by
-  apply GlobalTheory.FockDeg.inner_X_mul <;> assumption
-
 theorem inner_pderiv (h : IsFockIP ι) (i : σ) (P Q : MvPolynomial σ ℂ) :
     inner ℂ (ι (pderiv i P)) (ι Q) = inner ℂ (ι P) (ι (X i * Q)) := by
-  rw [← inner_conj_symm, ← inner_X_mul h, inner_conj_symm]
+  rw [← inner_conj_symm, ← GlobalTheory.FockDeg.inner_X_mul h, inner_conj_symm]
 
 theorem inner_polar (h : IsFockIP ι) (u v : σ) (P Q : MvPolynomial σ ℂ) :
     inner ℂ (ι (polar ℂ u v P)) (ι Q) = inner ℂ (ι P) (ι (polar ℂ v u Q)) := by
-  rw [polar_apply, polar_apply, inner_X_mul h, inner_pderiv h]
+  rw [polar_apply, polar_apply, GlobalTheory.FockDeg.inner_X_mul h, inner_pderiv h]
 
 theorem inner_colOp (h : IsFockIP ι) {I J : Type*} [Fintype I] (z : I × J → σ) (k l : J)
     (P Q : MvPolynomial σ ℂ) :
@@ -229,7 +225,7 @@ theorem inner_upOp {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   by_cases e : linePos l' = linePos l
   · simp [h l' l e]
   · cases h1 : linePos l <;> cases h2 : linePos l' <;> simp_all [mul_assoc]
-    rw [inner_smul_left, inner_smul_right, inner_X_mul hι, inner_X_mul hι]
+    rw [inner_smul_left, inner_smul_right, GlobalTheory.FockDeg.inner_X_mul hι, GlobalTheory.FockDeg.inner_X_mul hι]
 
 theorem fischer {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     {ι : Pol p q r s →ₗ[ℂ] H} (hι : IsFockIP ι) (hinj : Function.Injective ι)

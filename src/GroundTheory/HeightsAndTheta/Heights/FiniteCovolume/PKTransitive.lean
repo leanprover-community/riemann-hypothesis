@@ -13,7 +13,7 @@ noncomputable section
 
 theorem KTransitive.proof (ι : Type*) [Fintype ι] [DecidableEq ι]
     (h₁ : IsotropicSplit.Statement ι) (h₂ : EigenReflectionMaps.Statement ι)
-    (h₃ : PhaseOnMinus.Statement ι) (_h₄ : EigenspacesOrthogonal.Statement ι) :
+    (h₃ : PhaseOnMinus.Statement ι) :
     KTransitive.Statement ι := by
   intro H P hmaj z z' hz hz' hzH hz'H
   obtain ⟨ha, hb, hab⟩ := h₁ H P hmaj z hzH

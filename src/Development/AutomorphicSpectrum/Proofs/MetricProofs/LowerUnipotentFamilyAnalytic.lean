@@ -28,16 +28,8 @@ theorem mul_elem_apply (A : Matrix (Fin N) (Fin N) ℂ) (ca cb r s : Fin N) (t :
 
 theorem elem_mul_elem {ca cb : Fin N} (hne : ca ≠ cb) (t u : ℂ) :
     (1 + Matrix.single cb ca t : Matrix (Fin N) (Fin N) ℂ) * (1 + Matrix.single cb ca u) =
-      1 + Matrix.single cb ca (t + u) := by
-  ext r s
-  rw [mul_elem_apply]
-  by_cases h : s = ca
-  · subst h
-    by_cases hr : cb = r
-    · subst hr
-      simp [Matrix.add_apply, hne, Ne.symm hne]
-    · simp [Matrix.add_apply, Matrix.one_apply, hne, hr, Ne.symm hr]
-  · simp [Matrix.add_apply, h, Ne.symm h]
+      1 + Matrix.single cb ca (t + u) :=
+  Matrix.transvection_mul_transvection_same (i := cb) (j := ca) hne.symm t u
 
 theorem mul_elem_cancel {ca cb : Fin N} (hne : ca ≠ cb) (A : Matrix (Fin N) (Fin N) ℂ) (t : ℂ) :
     A * (1 + Matrix.single cb ca t) * (1 + Matrix.single cb ca (-t)) = A := by

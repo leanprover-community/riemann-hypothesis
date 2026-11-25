@@ -27,7 +27,6 @@ theorem analyticOnNhd_orbit_pol : ∀ (p q r s : ℕ) (T0 : GrpData (p * r + q *
   rw [h0]
   refine ⟨fun a _ => ?_, fun k => ?_⟩
   · set S : ℝ := 4 * ∑ l, ∑ l', ‖Y l l'‖ with hS
-    have hS0 : 0 ≤ S := by positivity
     refine analyticAt_of_bound f hf ((2 : ℝ) ^ ((P.totalDegree : ℝ) / 2 + 1) * ‖F.ι P‖) (S + 1)⁻¹
       (by positivity) (fun k t => ?_) a
     have hb := (_root_.GlobalTheory.FockAnalytic.omAct_pow_norm_le p q r s F.H F.ι (isFockIsometry_of_fockData F) Y P.totalDegree k P le_rfl).2

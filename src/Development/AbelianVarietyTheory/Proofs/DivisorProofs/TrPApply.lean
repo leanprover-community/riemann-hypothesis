@@ -68,11 +68,4 @@ theorem mixedTracePairing_apply {κ : Type} [Fintype κ] (x y : κ → mixedEmbe
 variable {F} {E : Type} [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n d d₁ : ℕ} {X : Spc F E n}
   {W : Spc F E d} {W₁ : Spc F E d₁}
 
-def lagSet (M : Model σ X W) (M₁ : Model σ X W₁) (H' : Plane E d d₁) :
-    Set ((Fin n × Fin d → mixedEmbedding.mixedSpace F) × (Fin n × Fin d → mixedEmbedding.mixedSpace F)) :=
-  {l | ∃ u ∈ iso0 (F := F) n H', At (evI F) u ∧ ∃ z : Matrix (Fin n) (Fin d₁) (AE F E), At (evI F) z ∧
-    arch F (M₁.co.e z).1 = 0 ∧
-    l = (arch F (M.co.e (u + incM F (1 : Matrix (Fin n) (Fin n) E) * z * (incM F H'.ι)ᵀ)).1,
-      arch F (M.co.e (u + incM F (1 : Matrix (Fin n) (Fin n) E) * z * (incM F H'.ι)ᵀ)).2)}
-
 end GlobalTheory.ArchSch

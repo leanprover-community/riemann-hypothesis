@@ -134,16 +134,10 @@ private theorem prod_conj {K : Type} [Field K] {n : ℕ} (V : Matrix (Fin n) (Fi
       ← mul_assoc, h 0, mul_assoc, Matrix.diagonal_mul_diagonal]
     simp only [Fin.prod_univ_succ]
 
-private theorem exists_diag {K : Type} [Field K] {n : ℕ} (P : Matrix (Fin n) (Fin n) K) (α : Fin n → K)
-    (hα : Function.Injective α)
-    (hP : P.charpoly = ∏ i, (Polynomial.X - Polynomial.C (α i))) :
-    ∃ V : Matrix (Fin n) (Fin n) K, IsUnit V ∧ P * V = V * Matrix.diagonal α :=
-  _root_.UpperTheory.Reformulated.B.ExistsDiagonalization.exists_diag P α hα hP
-
 theorem UpperTheory.V.Pa.Lev.pairRel :
     ∀ (K : Type) [Field K] (n : ℕ) (P T : Matrix (Fin n) (Fin n) K) (α β : Fin n → K), Function.Injective α → P * T = T * P → P.charpoly = ∏ i, (Polynomial.X - Polynomial.C (α i)) → (∀ a : ℕ, (P ^ a * T).trace = ∑ i, α i ^ a * β i) → ∀ i, (List.ofFn fun i' => if i' = i then 1 else P - α i' • (1 : Matrix (Fin n) (Fin n) K)).prod * (T - β i • (1 : Matrix (Fin n) (Fin n) K)) = 0 := by
   intro K _ n P T α β hα hc hP htr i
-  obtain ⟨V, hV, hPV⟩ := exists_diag P α hα hP
+  obtain ⟨V, hV, hPV⟩ := UpperTheory.Reformulated.B.ExistsDiagonalization.exists_diag P α hα hP
   obtain ⟨V', h1, h2⟩ := isUnit_iff_exists.1 hV
   obtain ⟨S, hS⟩ : ∃ S, S = V' * T * V := ⟨_, rfl⟩
   have hTV : T * V = V * S := by

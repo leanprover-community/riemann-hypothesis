@@ -61,8 +61,6 @@ namespace GlobalTheory.LieExt
 
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Chart
 
-attribute [local instance] Over.cartesianMonoidalCategory
-
 section Count
 
 variable {S S' : Scheme.{0}} {G : Over S} [GrpObj G] {G' : Over S'} [GrpObj G'] {f : S' ⟶ S} {F : G'.left ⟶ G.left}

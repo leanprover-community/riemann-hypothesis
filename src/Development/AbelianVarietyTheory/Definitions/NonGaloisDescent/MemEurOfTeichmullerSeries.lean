@@ -156,14 +156,6 @@ def E0loc : Subalgebra ℤ_[l] (WCb l) where
 
 def E0 : Subalgebra ℤ_[l] (WCb l) := clAlg (E0loc io)
 
-def simpleRoots : Set (WCb l) :=
-  {y | ∃ f : Polynomial (WCb l), f.Monic ∧ (∀ i, f.coeff i ∈ E0 io) ∧ f.eval y = 0 ∧
-    IsUnit (f.derivative.eval y)}
-
-def EurAlg : Subalgebra ℤ_[l] (WCb l) := Algebra.adjoin ℤ_[l] (simpleRoots io)
-
-def Eur : Subalgebra ℤ_[l] (WCb l) := clAlg (EurAlg io)
-
 variable {io}
 
 variable (io)
@@ -183,20 +175,8 @@ variable {G : Type} [Group G] [TopologicalSpace G]
 scoped instance smulTW (LL : FinExt l) (T : LocLat G ℚ_[l] ↥LL.1 ↥(OL LL)) : SMul (RW LL) (TW (RW LL) T) :=
   leftSMulGen _ _ _
 
-def EurT (LL : FinExt l) (io : PowerSeries ℤ_[l] →ₐ[ℤ_[l]] Ainf l) (T : LocLat G ℚ_[l] ↥LL.1 ↥(OL LL)) :
-    Submodule ↥(OL LL) (TW (RW LL) T) :=
-  Submodule.span ↥(OL LL) {z | ∃ w ∈ Eur io, ∃ t : ↥T.L.T,
-    z = ((1 : ↥(OL LL)) ⊗ₜ[ℤ_[l]] w) ⊗ₜ[↥(OL LL)] t}
-
 variable {LL : FinExt l} {io : PowerSeries ℤ_[l] →ₐ[ℤ_[l]] Ainf l} {T : LocLat G ℚ_[l] ↥LL.1 ↥(OL LL)}
 
 end Module
-
-def FonD {P : LocPrime l} (AI : LocAinf l P) (K LL : FinExt l)
-    (io : PowerSeries ℤ_[l] →ₐ[ℤ_[l]] Ainf l) (T : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)) :
-    Submodule ↥(OL LL) (TW (RW LL) T) :=
-  EurT LL io T ⊓ ⨅ g : {g : ↥(GK K) // P.χQ (g : GQ l) = 1},
-    LinearMap.eqLocus (TWact (AI.gRW LL (g.1 : GQ l)) T g.1)
-      (LinearMap.id : TW (RW LL) T →ₗ[↥(OL LL)] TW (RW LL) T)
 
 end GlobalTheory.Cyc

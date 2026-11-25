@@ -63,13 +63,6 @@ section -- clump:auto
 
 open MvPolynomial Formalism.BasicNotions.TH
 
-namespace GlobalTheory.LowStable
-
-theorem X_mul_pderiv_totalDegree_le {σ : Type} (u v : σ) (g : MvPolynomial σ ℂ) :
-    (X u * pderiv v g).totalDegree ≤ g.totalDegree := by
-  apply GlobalTheory.KFixIrr.LowStable.deg_X_pderiv
-
-end GlobalTheory.LowStable
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.LowIrreducibleKStable =====
@@ -102,7 +95,6 @@ def Qf (e : Fin n → ℤ) (g : Mat n) : ℂ := ∏ j, GlobalTheory.CompanionThe
 
 def wf (e : Fin n → ℤ) (m : ℤ) (p : MvPolynomial (Fin n × Fin n) ℂ) : Mat n → ℂ :=
   (GLs n).indicator fun g => Qf e g * g.det ^ m * evP p g
-
 
 open scoped ComplexOrder in
 theorem gm_ne_zero (j : Fin n) {g : Mat n} (hg : g ∈ GLs n) : GlobalTheory.CompanionTheory.ModelS.gm j g ≠ 0 := by
@@ -541,7 +533,7 @@ theorem Tp_mem (a b : Fin n) (d : ℕ) {q : MvPolynomial (Fin n × Fin n) ℂ}
   have hN := (MvPolynomial.mem_restrictTotalDegree _ _ _).1 hq
   simp only [Tp, LinearMap.sum_apply]
   refine Submodule.sum_mem _ fun c _ => ?_
-  exact (MvPolynomial.mem_restrictTotalDegree _ _ _).2 ((GlobalTheory.LowStable.X_mul_pderiv_totalDegree_le _ _ q).trans hN)
+  exact (MvPolynomial.mem_restrictTotalDegree _ _ _).2 ((GlobalTheory.KFixIrr.LowStable.deg_X_pderiv _ _ q).trans hN)
 
 end GlobalTheory.CompanionTheory.ModelS.FFin
 end -- clump:auto
@@ -563,7 +555,6 @@ open PositivityTheory.RgTw (Mat)
 open GlobalTheory.CompanionTheory.GLK (e1 e2 f1)
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 
 open GlobalTheory.CompanionTheory.ModelS.FFin in
 theorem GlobalTheory.CompanionTheory.ModelS.FFin.fRaw_finite (n : ℕ) (lam : Fin n → ℤ) (hl : Antitone lam) (lev : Fin n → ℕ)
@@ -608,7 +599,6 @@ open scoped ContDiff ComplexConjugate InnerProductSpace
 open PositivityTheory.RgBcC PositivityTheory.RgBcC.Real PositivityTheory.RgBcC.RealD
 open PositivityTheory.RgTw (Mat)
 open GlobalTheory.CompanionTheory.GLK (e1 e2 f1)
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 end -- clump:auto
 end -- clump:auto

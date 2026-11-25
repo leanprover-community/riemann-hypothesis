@@ -714,7 +714,6 @@ theorem main : ∀ (A : Type) [CommRing A] [IsLocalRing A] (k : Type) [Field k] 
   have hfst : ∀ r, (Ψ r).fst = r := fun r => (RingHom.congr_fun hid r).symm
   let L : ChartRing k m d →ₗ[ℤ] ChartRing k m d :=
     (AddMonoidHom.mk' (fun r => (Ψ r).snd) (fun x y => by simp)).toIntLinearMap
-  have hL : ∀ r, L r = (Ψ r).snd := fun r => rfl
   refine ⟨{ toLinearMap := L
             map_one_eq_zero' := by
               show (Ψ 1).snd = 0
@@ -896,7 +895,6 @@ theorem logDer_extend_chartRing : ∀ (E : Type) [Field E] [NumberField E] [IsCM
     simp only [TopologicalSpace.Opens.coe_compl, Set.mem_preimage, Set.mem_compl_iff, SetLike.mem_coe]
     rw [mem_genBd]
     unfold GlobalTheory.LogKS.interior Model.j
-    have hc : ∀ w, (Y.jQ ≫ pullback.fst Y.s (spMap (RingHom.id c.F))) w = genι Y (Y.jQ w) := fun w => rfl
     simp only [Set.mem_range]
     constructor
     · rintro h ⟨w, hw⟩

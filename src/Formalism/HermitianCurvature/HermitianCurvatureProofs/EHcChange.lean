@@ -59,16 +59,10 @@ theorem hp_decomp (Z : Mat k r) : hpart1 (Hpk k r) Z + Complex.I • hpart2 (Hpk
   norm_num
 
 theorem hpart1_add' (Z W : Mat k r) : hpart1 (Hpk k r) (Z + W) = hpart1 (Hpk k r) Z + hpart1 (Hpk k r) W := by
-  simp only [hpart1, Matrix.conjTranspose_add, Matrix.mul_add, Matrix.add_mul]
-  rw [← smul_add]
-  congr 1
-  abel
+  exact Formalism.FourierDecayAlt.P.LieDecompositionLocal.hpart1_add Z W
 
 theorem hpart2_add' (Z W : Mat k r) : hpart2 (Hpk k r) (Z + W) = hpart2 (Hpk k r) Z + hpart2 (Hpk k r) W := by
-  simp only [hpart2, Matrix.conjTranspose_add, Matrix.mul_add, Matrix.add_mul]
-  rw [← smul_add]
-  congr 1
-  abel
+  exact Formalism.FourierDecayAlt.P.LieDecompositionLocal.hpart2_add Z W
 
 theorem hp1_real (x : ℝ) (Z : Mat k r) : hpart1 (Hpk k r) ((x : ℂ) • Z) = (x : ℂ) • hpart1 (Hpk k r) Z := by
   have hs : star (x : ℂ) = (x : ℂ) := Complex.conj_ofReal x

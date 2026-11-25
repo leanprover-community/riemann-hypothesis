@@ -21,10 +21,6 @@ def Kills {G : Type} [Group G] (φ Y : G → ℂ) : Prop :=
   ∀ (V : Type) [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V] (ρ : Representation ℂ G V),
     ∑ᶠ g, star (Y g) * LinearMap.trace ℂ V (ρ g) = 0 → ∑ᶠ g, star (φ g) • ρ g = 0
 
-namespace IsoPart
-
-end IsoPart
-
 def IsCl {G : Type} [Group G] (f : G → ℂ) : Prop := ∀ x y : G, f (y⁻¹ * x * y) = f x
 
 def Reg (q m k : ℕ) : Prop := ∀ i : ℕ, 0 < i → i < m → ¬ k * q ^ i ≡ k [MOD q ^ m - 1]

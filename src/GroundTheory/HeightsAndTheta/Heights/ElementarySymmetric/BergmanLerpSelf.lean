@@ -179,15 +179,6 @@ lemma measurePreserving_mulVec {D : ℕ} {N : Matrix (Fin D) (Fin D) ℂ}
       hdet]
     simp
 
-lemma gaussDiscMass_pos {lam R : ℝ} (hl : 0 ≤ lam) (hR : 0 < R) : 0 < gaussDiscMass lam R := by
-  unfold gaussDiscMass
-  split_ifs with h
-  · positivity
-  · have hl' : 0 < lam := lt_of_le_of_ne hl (Ne.symm h)
-    have : Real.exp (-lam * R ^ 2) < 1 := by
-      rw [← Real.exp_zero]; exact Real.exp_lt_exp.2 (by nlinarith [sq_pos_of_pos hR])
-    exact div_pos (mul_pos Real.pi_pos (by linarith)) hl'
-
 lemma tendsto_inv_gaussDiscMass {lam : ℝ} (hl : 0 ≤ lam) :
     Tendsto (fun R => 1 / gaussDiscMass lam R) atTop (𝓝 (lam / Real.pi)) := by
   rcases hl.eq_or_lt with h | h
@@ -217,7 +208,6 @@ lemma det_smul_re {D : ℕ} {H : Matrix (Fin D) (Fin D) ℂ} {lam : Fin D → �
   rw [this, Complex.ofReal_re]
 
 end ChartBergmanBound
-
 
 open ChartBergmanBound in
 theorem ChartBergmanBound.proof (hP : PolydiscSubmean.Statement) (hT : ComplexTaylorTwo.Statement) :

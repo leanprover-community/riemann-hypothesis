@@ -181,9 +181,6 @@ theorem applyAt0_monomial' (D : D7) {N N' : ℕ} (α : Mono D N N') (G : VC D N 
 
 end GlobalTheory.MovedKappaEx
 
-namespace GlobalTheory.MovedKappaEx
-
-end GlobalTheory.MovedKappaEx
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

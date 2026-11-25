@@ -81,29 +81,6 @@ theorem srat_flag {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D) {u' :
     rw [map_smul, ← smul_sub]
     exact Submodule.smul_mem _ a hy
 
-private theorem gmap_mul_lemma {D : D7} (a b : (VS D).V ≃ₗ[D.host.E] (VS D).V)
-    (L : Submodule (𝓞 D.host.E) (VS D).V) :
-    Formalism.HermitianLatticesTheory.gmap (a * b) L = Formalism.HermitianLatticesTheory.gmap a (Formalism.HermitianLatticesTheory.gmap b L) := by
-  ext x
-  simp only [Formalism.HermitianLatticesTheory.gmap, Submodule.mem_map, LinearMap.coe_restrictScalars, LinearEquiv.coe_coe,
-    LinearEquiv.mul_apply]
-  constructor
-  · rintro ⟨y, hy, rfl⟩
-    exact ⟨b y, ⟨y, hy, rfl⟩, rfl⟩
-  · rintro ⟨_, ⟨y, hy, rfl⟩, rfl⟩
-    exact ⟨y, hy, rfl⟩
-
-private theorem gmap_one_explicit_D {D : D7} (L : Submodule (𝓞 D.host.E) (VS D).V) :
-    Formalism.HermitianLatticesTheory.gmap (1 : (VS D).V ≃ₗ[D.host.E] (VS D).V) L = L := by
-  ext x
-  simp only [Formalism.HermitianLatticesTheory.gmap, Submodule.mem_map, LinearMap.coe_restrictScalars, LinearEquiv.coe_coe,
-    LinearEquiv.coe_one, id_eq, exists_eq_right]
-
-private theorem gmap_inv_of_gmap_eq {D : D7} (a : (VS D).V ≃ₗ[D.host.E] (VS D).V)
-    (L M : Submodule (𝓞 D.host.E) (VS D).V) (h : Formalism.HermitianLatticesTheory.gmap a L = M) :
-    Formalism.HermitianLatticesTheory.gmap a⁻¹ M = L := by
-  rw [← h, ← gmap_mul_lemma, inv_mul_cancel, gmap_one_explicit_D]
-
 theorem leviFinC_of (h : LeviStabFinC) : LeviFinC := by
   intro D X Y u'
   let P : Submodule (𝓞 D.host.E) (VS D).V → Submodule (𝓞 D.host.E) (VS D).V → Prop := fun Λ₁ Λ₂ =>
@@ -125,8 +102,8 @@ theorem leviFinC_of (h : LeviStabFinC) : LeviFinC := by
     (Formalism.HermitianLatticesTheory.isom (VS D).hT).mul_mem ((Formalism.HermitianLatticesTheory.isom (VS D).hT).inv_mem hσ₀) hσ
   have hρS : s₀⁻¹ * s ∈ Srat X u' := (Srat X u').mul_mem ((Srat X u').inv_mem hS₀) hS
   have hρΛ : Formalism.HermitianLatticesTheory.gmap (σ₀⁻¹ * σ) Λ₂ = Λ₂ := by
-    rw [gmap_mul_lemma, hmap]
-    exact gmap_inv_of_gmap_eq σ₀ Λ₂ Λ₁ hmap₀
+    rw [gmap_mul, hmap]
+    exact gmap_inv hmap₀
   obtain ⟨τ, hτ, hτo⟩ := hT2 (σ₀⁻¹ * σ) (s₀⁻¹ * s) hρL hρI hρS hρΛ
   obtain ⟨hτI, hτΛ, t, ht, htS⟩ := hT1 τ hτ
   refine ⟨σ₀ * τ, Finset.mem_image.mpr ⟨τ, hτ, rfl⟩, ?_⟩
@@ -134,8 +111,8 @@ theorem leviFinC_of (h : LeviStabFinC) : LeviFinC := by
     rw [mul_inv_rev, mul_assoc]
   rw [heq]
   refine ⟨⟨(Formalism.HermitianLatticesTheory.isom (VS D).hT).mul_mem ((Formalism.HermitianLatticesTheory.isom (VS D).hT).inv_mem hτI) hρI, ?_⟩, ?_, hτo⟩
-  · rw [gmap_mul_lemma, hρΛ]
-    exact gmap_inv_of_gmap_eq τ Λ₂ Λ₂ hτΛ
+  · rw [gmap_mul, hρΛ]
+    exact gmap_inv hτΛ
   · exact srat_flag X (Formalism.L2.SG.TermOp.Vanish.ratLink_mul X (Formalism.L2.SG.TermOp.Vanish.ratLink_inv X ht) hρL)
       ((Srat X u').mul_mem ((Srat X u').inv_mem htS) hρS)
 

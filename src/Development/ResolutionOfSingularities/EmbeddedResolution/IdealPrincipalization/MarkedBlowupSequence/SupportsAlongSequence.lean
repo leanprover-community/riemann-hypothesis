@@ -59,7 +59,6 @@ theorem MarkedIdealWithBoundary.IsAdmissible.isNoetherian {T : MarkedIdealWithBo
     AlgebraicGeometry.IsNoetherian T.scheme := by
   have : AlgebraicGeometry.LocallyOfFiniteType T.structMap := hV.locallyOfFiniteType
   have : AlgebraicGeometry.QuasiCompact T.structMap := hV.quasiCompact
-  have : AlgebraicGeometry.IsNoetherian (Spec (CommRingCat.of T.base)) := inferInstance
   exact isNoetherian_of_locallyOfFiniteType T.structMap
 
 end FunctorialResolution.EmbeddedResolution

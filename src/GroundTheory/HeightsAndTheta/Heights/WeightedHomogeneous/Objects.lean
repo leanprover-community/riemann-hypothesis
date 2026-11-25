@@ -52,8 +52,6 @@ namespace AddBlockData
 
 variable {P : ArithVariety n} (D : AddBlockData P)
 
-def extSizes : Option ι → ℕ := fun o ↦ o.elim D.size n
-
 def den (d : ι → ℕ) (g : ((k : ι) → Fin (n k + 1)) → Fin (D.size + 1) → MvPolynomial (Coord n) ℤ)
     {r : ℕ} (G : Fin r → MvPolynomial (Coord n) ℤ) (δ : Fin r → ι → ℕ) (z : Cone n ℂ) : ℝ :=
   (∑ c, ∑ j, ‖evalCone z (g c j)‖ ^ 2) +

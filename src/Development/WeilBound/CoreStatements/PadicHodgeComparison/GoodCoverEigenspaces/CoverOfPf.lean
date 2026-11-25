@@ -83,24 +83,6 @@ end BaseChange
 
 end GlobalTheory.Strata
 
-namespace GlobalTheory.Strata
-
-variable {X : Scheme.{0}} {ι : Type} (I : ι → X.IdealSheafData)
-
-section FibreStr
-
-variable {O : Type} [CommRing O] (p : X ⟶ Spec (CommRingCat.of O)) (ϖ : O)
-
-end FibreStr
-
-section BaseChangeStr
-
-variable {X' : Scheme.{0}} (f : X' ⟶ X)
-
-end BaseChangeStr
-
-end GlobalTheory.Strata
-
 namespace GlobalTheory.Strata.Example
 
 open MvPolynomial
@@ -168,38 +150,6 @@ def res (t : ℕ) (n i : ℤ) : HQ l (sch.obj (Ystr J t)) n i →ₗ[ℚ_[l]] HQ
 
 end GlobalTheory.EtC.WSS
 
-namespace GlobalTheory.EtC.WSS
-
-open GlobalTheory.EtC GlobalTheory.Strata
-
-variable (l : ℕ) [Fact l.Prime] {ι : Type} [Fintype ι] [LinearOrder ι] {Z : Scheme.{0}} (J : ι → Z.IdealSheafData)
-
-end GlobalTheory.EtC.WSS
-
-namespace GlobalTheory.EtC.WSS
-
-open GlobalTheory.EtC GlobalTheory.Strata
-
-variable (l : ℕ) [Fact l.Prime] {ι : Type} [Fintype ι] [LinearOrder ι] {Z : Scheme.{0}} (J : ι → Z.IdealSheafData)
-
-end GlobalTheory.EtC.WSS
-
-namespace GlobalTheory.EtC.WSS
-
-open GlobalTheory.EtC GlobalTheory.Strata
-
-variable (l : ℕ) [Fact l.Prime] {ι : Type} [Fintype ι] [LinearOrder ι]
-
-section Galois
-
-variable {k : Type} [Field k] (Ω : Type) [Field Ω] [Algebra k Ω] {V : Scheme.{0}} (p : V ⟶ Spec (CommRingCat.of k))
-  (I : ι → V.IdealSheafData)
-
-variable (a b w : ℤ)
-
-end Galois
-
-end GlobalTheory.EtC.WSS
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

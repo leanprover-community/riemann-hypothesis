@@ -19,14 +19,6 @@ open MeasureTheory GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.SatakeB
 
 namespace GlobalTheory.OrdShellInt
 
-end GlobalTheory.OrdShellInt
-
-namespace GlobalTheory.OrdShellInt
-
-end GlobalTheory.OrdShellInt
-
-namespace GlobalTheory.OrdShellInt
-
 open ValuativeRel
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
@@ -45,21 +37,6 @@ theorem ord_zpow (x : kˣ) (n : ℤ) : ord k (x ^ n) = n * ord k x := by
 
 end GlobalTheory.OrdShellInt
 
-namespace GlobalTheory.OrdShellInt
-
-open ValuativeRel
-
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-
-variable [MeasurableSpace k] [BorelSpace k]
-
-end GlobalTheory.OrdShellInt
-
-namespace GlobalTheory.OrdShellInt
-
-open ValuativeRel
-
-end GlobalTheory.OrdShellInt
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.MeasureCballZpow =====
@@ -141,10 +118,6 @@ theorem diagT_conj_tor (ϖ : kˣ) (x : Fin n → ℤ) (s : Fin n → kˣ) :
   group
 
 end GlobalTheory.CompanionTheory.IwJac.DCoset
-
-namespace GlobalTheory.CompanionTheory.IwJac
-
-end GlobalTheory.CompanionTheory.IwJac
 
 end
 end -- clump:auto

@@ -305,28 +305,16 @@ open Polynomial
 private theorem prod_X_sub_C_dvd_of_eval_eq_zero_of_injOn {O : Type*} [CommRing O] [IsDomain O] (c : ℤ → O) :
     ∀ (s : Finset ℤ), Set.InjOn c (↑s : Set ℤ) → ∀ Q : O[X], (∀ k ∈ s, Q.eval (c k) = 0) →
       (∏ k ∈ s, (X - C (c k))) ∣ Q := by
-  intro s
-  induction s using Finset.induction_on with
-  | empty => intro _ Q _; simp
-  | @insert a s ha ih =>
-    intro hinj Q hQ
-    have hroot : Q.IsRoot (c a) := hQ a (Finset.mem_insert_self a s)
-    obtain ⟨Q', hQ'⟩ : (X - C (c a)) ∣ Q := by
-      first
-        | exact Polynomial.dvd_iff_isRoot.mpr hroot
-    have hinj' : Set.InjOn c (↑s : Set ℤ) :=
-      hinj.mono (Finset.coe_subset.mpr (Finset.subset_insert a s))
-    have hQ'0 : ∀ k ∈ s, Q'.eval (c k) = 0 := by
-      intro k hk
-      have h1 : Q.eval (c k) = 0 := hQ k (Finset.mem_insert_of_mem hk)
-      rw [hQ', eval_mul, eval_sub, eval_X, eval_C] at h1
-      have hne : c k - c a ≠ 0 := by
-        intro h
-        have hka : k = a := hinj (by simp [hk]) (by simp) (sub_eq_zero.mp h)
-        exact ha (hka ▸ hk)
-      exact (mul_eq_zero.mp h1).resolve_left hne
-    rw [Finset.prod_insert ha, hQ']
-    exact mul_dvd_mul_left _ (ih hinj' Q' hQ'0)
+  intro s hc Q hQ
+  obtain rfl | hne := eq_or_ne Q 0
+  · exact dvd_zero _
+  have hroots : s.val.map c ≤ Q.roots := by
+    refine (Multiset.le_iff_subset (s.nodup.map_on fun _ hx _ hy => hc hx hy)).2 ?_
+    intro x hx
+    obtain ⟨k, hk, rfl⟩ := Multiset.mem_map.mp hx
+    exact (Polynomial.mem_roots hne).2 (hQ k hk)
+  simpa only [Finset.prod, Multiset.map_map, Function.comp_def] using
+    (Multiset.prod_X_sub_C_dvd_iff_le_roots hne (s.val.map c)).2 hroots
 
 theorem smul_eq_zero_of_aeval_prod {O : Type*} [CommRing O] [IsDomain O] {V : Type*} [AddCommGroup V] [Module O V]
     (T : Module.End O V) (S₁ S₂ : Finset ℤ) (c : ℤ → O) (d : O) (x : V)

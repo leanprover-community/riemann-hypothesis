@@ -125,12 +125,6 @@ end Flag
 
 open MvPolynomial
 
-namespace Flag
-
-open MvPolynomial Finset
-
-end Flag
-
 end RestTerms
 
 end GroundTheory.Heights₂.Heights

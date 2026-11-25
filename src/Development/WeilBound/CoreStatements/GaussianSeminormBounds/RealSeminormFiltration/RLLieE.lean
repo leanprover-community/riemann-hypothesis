@@ -63,7 +63,7 @@ theorem exists_co : ∃ n : ℕ, Nonempty (Co F κ (Fin n)) := by
 theorem at_pt (y : κ → mixedEmbedding.mixedSpace F) : At (evI F) (SeminormBoundRestriction.pt y 0) := (SeminormBoundRestriction.at_iff _).2 fun _ => rfl
 
 theorem evI_pt (y : κ → mixedEmbedding.mixedSpace F) (z : κ → Af F) : (fun i => evI F (SeminormBoundRestriction.pt y z i)) = y :=
-  funext fun i => RingEquiv.apply_symm_apply _ _
+  funext fun _ => RingEquiv.apply_symm_apply _ _
 
 theorem realAd_one {M : Type} [AddCommGroup M] [Module (AF F) M] {a : M} (h : At (evI F) a) : realAd F 1 • a = a := by
   have := h (1 - realAd F 1) (by

@@ -80,19 +80,6 @@ def KoszulCechComplex.Statement : Prop :=
       (∀ φ, kosCech S ι V R p n (kosD z p n φ) = kosD z p (n + 1) (kosCech S ι V R (p + 1) n φ)) ∧
       (∀ φ, kosD z p n (kosD z (p + 1) n φ) = 0)
 
-section Inhabitants
-
-namespace KoszulCech
-
-variable {S : Type} [CommRing S] {K : Type} [Fintype K] [LinearOrder K] {ι : K → Type} [∀ k, Fintype (ι k)]
-  [∀ k, LinearOrder (ι k)]
-
-
-end KoszulCech
-
-
-end Inhabitants
-
 end
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel

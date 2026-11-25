@@ -205,12 +205,6 @@ def RegAt (ev : X₁.M.Z.presheaf.stalk z₁ →+* V₁) : Prop :=
 
 variable (Φ : VPre (id : ℤ → ℤ) g W (X₁.M.Z.presheaf.stalk z₁))
 
-def HasTraitsR : Prop :=
-  ∀ (T : Trait F) (ev : X₁.M.Z.presheaf.stalk z₁ →+* T.V), IsLocalHom ev → RegAt X₁ z₁ ev →
-    jK T.V ≫ spMap ev ≫ X₁.M.Z.fromSpecStalk z₁ ≫ X₁.π = T.y ≫ i →
-    ∃ (y : Φ.Y) (f : T.V →+* Φ.V y) (e : Φ.X y ≃+ T.D.toPre.X), Φ.m y = 1 ∧ IsPrincipalIdealRing (Φ.V y) ∧
-      Function.Injective f ∧ IsLocalHom f ∧ f.comp ev = Φ.ev y ∧
-      ∀ k, Φ.t y k = f T.ϖ ∧ ∀ a b, Φ.δ y k a b = T.β (e a) (e b)
 end Sep
 
 end GlobalTheory.Poinc

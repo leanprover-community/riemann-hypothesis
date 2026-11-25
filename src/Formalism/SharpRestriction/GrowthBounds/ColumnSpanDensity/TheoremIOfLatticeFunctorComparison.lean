@@ -489,9 +489,6 @@ namespace Formalism.MainNotions.flipOneThree.Pf
 
 open Formalism.MainNotions.G Formalism.MainNotions.flipOneThree
 
-theorem kF_nonneg (X : Dat) (K : Cst) (R : RS X.p X.n') (al be : X.TT → ℕ) : 0 ≤ X.kF K R al be :=
-  Real.sInf_nonneg fun _ h => h.1
-
 open Classical in
 theorem kText_nonneg (X : Dat) (K : Cst) (R : RS X.p X.n') (hb : 0 < X.b') (aa bb : X.TT → ℤ) :
     0 ≤ X.kText K R aa bb := by
@@ -499,9 +496,9 @@ theorem kText_nonneg (X : Dat) (K : Cst) (R : RS X.p X.n') (hb : 0 < X.b') (aa b
   have h1 : 0 ≤ (if X.Inside aa bb then
       X.kF K R (fun s => (aa s - X.ccl).toNat) (fun s => (bb s - X.ccl).toNat) else 1) := by
     split_ifs
-    · exact kF_nonneg _ _ _ _ _
+    · exact Formalism.MainNotions.flipOneThree.Pf.kF_nonneg' _ _ _ _ _
     · exact zero_le_one
-  have h2 := kF_nonneg X K R (fun s => (aa s + X.ccl).toNat) (fun s => (bb s + X.ccl).toNat)
+  have h2 := Formalism.MainNotions.flipOneThree.Pf.kF_nonneg' X K R (fun s => (aa s + X.ccl).toNat) (fun s => (bb s + X.ccl).toNat)
   have h3 : 0 ≤ 12 * (X.N : ℝ) * X.k * X.ccl / X.b' := by
     unfold Dat.k
     positivity
@@ -607,21 +604,8 @@ section
 
 variable {n' : ℕ}
 
-theorem evenTops_mono (TT : Finset (Fin n')) : StrictMono (evenTops TT).get :=
-  (Finset.sortedLT_sort _).strictMono_get
-
 theorem segDists_mono (TT : Finset (Fin n')) (j : Fin (numSeg TT)) : StrictMono (segDists TT j).get :=
   (Finset.sortedLT_sort _).strictMono_get
-
-theorem next_min (TT : Finset (Fin n')) (j : Fin (numSeg TT)) (e : Fin n') (he : e ∈ TT)
-    (hev : Even e.val) (hne : e ≠ segStart TT j) :
-    0 < cdist (segStart TT j) (segNext TT j) ∧
-      cdist (segStart TT j) (segNext TT j) ≤ cdist (segStart TT j) e := by
-  apply Formalism.MainNotions.ColumnSystems.Pf.next_min <;> assumption
-
-theorem segNext_spec (TT : Finset (Fin n')) (j : Fin (numSeg TT)) :
-    segNext TT j ∈ TT ∧ Even (segNext TT j).val :=
-  (mem_evenTops TT _).1 (List.get_mem _ _)
 
 theorem other_even (TT : Finset (Fin n')) (h2 : 2 ≤ numSeg TT) (j : Fin (numSeg TT)) :
     ∃ e ∈ TT, Even e.val ∧ e ≠ segStart TT j := by
@@ -630,7 +614,7 @@ theorem other_even (TT : Finset (Fin n')) (h2 : 2 ≤ numSeg TT) (j : Fin (numSe
 theorem segG_eq (TT : Finset (Fin n')) (h2 : 2 ≤ numSeg TT) (j : Fin (numSeg TT)) :
     segG TT j = cdist (segStart TT j) (segNext TT j) ∧ 0 < segG TT j ∧ segG TT j < n' := by
   obtain ⟨e, he, hev, hne⟩ := other_even TT h2 j
-  have h := (next_min TT j e he hev hne).1
+  have h := (Formalism.MainNotions.ColumnSystems.Pf.next_min TT j e he hev hne).1
   have e1 : segG TT j = cdist (segStart TT j) (segNext TT j) := by
     unfold segG
     rw [ite_eq_right (by omega)]
@@ -667,7 +651,7 @@ theorem prev_segPos (TT : Finset (Fin n')) (h2 : 2 ≤ numSeg TT) (j : Fin (numS
           have : x.val + n' - x.val = n' := by omega
           rw [this, Nat.mod_self]
         omega
-      have := (next_min TT j x' hx' hx'e hne).2
+      have := (Formalism.MainNotions.ColumnSystems.Pf.next_min TT j x' hx' hx'e hne).2
       rw [← hx] at this
       omega
   refine ⟨h1, ?_⟩
@@ -710,7 +694,7 @@ theorem odd_in_seg (TT : Finset (Fin n')) (h2 : 2 ≤ numSeg TT) (y : Fin n') (h
     have hge' : cdist x (segNext TT j) ≤ d := by
       rw [← hjx, ← hG]
       omega
-    have hn := segNext_spec TT j
+    have hn := Formalism.MainNotions.ColumnSystems.Pf.next_mem TT j
     have hnx : (x.val + cdist x (segNext TT j)) % n' = (segNext TT j).val :=
       congrArg Fin.val (posAdd_cdist x (segNext TT j))
     have h4 : ((segNext TT j).val + (d - cdist x (segNext TT j))) % n' = y.val := ar4 x.isLt hdn hge' hnx hxy'
@@ -742,7 +726,7 @@ theorem restOddTops : RestOddTops := by
     have h' : segPos TT j i = segPos TT j' i' := h
     have a1 := prev_segPos TT h2 j i
     have a2 := prev_segPos TT h2 j' i'
-    have hj : j = j' := (evenTops_mono TT).injective (by
+    have hj : j = j' := (Formalism.MainNotions.G.TopChoiceBounds.bs_mono TT).injective (by
       show segStart TT j = segStart TT j'
       rw [← a1.2, ← a2.2, h'])
     subst hj
@@ -942,7 +926,6 @@ def Cst.TM2 (K : Cst) : ℝ := max K.TLP 400
 theorem div_small (x w Yb c : ℝ) (hw : 0 < w) (hYb : 400 ≤ Yb) (h : x * Yb ≤ c * w) : x / w ≤ c / Yb := by
   rw [div_le_div_iff₀ hw (by linarith)]
   linarith
-
 
 theorem threshold_density_facts (K : Cst) (hK : K.Pos) : TransportedAlt K (fun _ => DensityNumericalFacts K) := by
   refine ⟨K.TM2, 1, lt_of_lt_of_le (by norm_num) (le_max_right _ _), one_pos, fun CH hCH _ _ X h => ?_⟩

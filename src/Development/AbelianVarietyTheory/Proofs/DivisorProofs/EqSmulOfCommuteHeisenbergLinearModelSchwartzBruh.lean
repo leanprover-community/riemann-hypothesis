@@ -40,14 +40,9 @@ theorem cind_mem {X : Type} [AddCommGroup X] [TopologicalSpace X] [IsTopological
     by_cases hY : Y - y ∈ L
     · exact ⟨_, hK, hY, fun Z hZ => by simp only [cind, ite_eq_left (show Z - y ∈ L from hZ), ite_eq_left hY]⟩
     · exact ⟨_, hKc.isOpen_compl, hY, fun Z hZ => by simp only [cind, ite_eq_right (show Z - y ∉ L from hZ), ite_eq_right hY]⟩
-  · have himg : {Z : X | Z - y ∈ L} = (fun Z => Z + y) '' (L : Set X) := by
-      ext Z
-      constructor
-      · intro h
-        exact ⟨Z - y, h, sub_add_cancel Z y⟩
-      · rintro ⟨W, hW, rfl⟩
-        show W + y - y ∈ L
-        rwa [add_sub_cancel_right]
+  · have himg : {Z : X | Z - y ∈ L} = (fun Z => Z + y) '' (L : Set X) :=
+      (congrFun (Set.image_eq_preimage_of_inverse (f := fun Z => Z + y) (g := fun Z => Z - y)
+        (fun Z => add_sub_cancel_right Z y) (fun Z => sub_add_cancel Z y)) (L : Set X)).symm
     refine IsCompact.of_isClosed_subset (himg ▸ hc.image (continuous_add_const y)) (isClosed_tsupport _)
       (closure_minimal ?_ hKc)
     intro Z hZ

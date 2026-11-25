@@ -123,7 +123,6 @@ abbrev chartClosure (y : (Σ k, ι k) → Ω) [CharZero Ω] {D : ℕ} (L : Fin (
   integralClosure (Algebra.adjoin ℚ (Set.range fun k => aeval y (L k) / aeval y (L a))) Ω
 
 
-set_option maxHeartbeats 1600000 in
 theorem proof (hG : PullFormsGeneric.Statement) (hS : PullSectionIntegral.Statement)
     (hR : CharpolyRootLift.Statement) : FibreNormDehomRoots.Statement := by
   classical

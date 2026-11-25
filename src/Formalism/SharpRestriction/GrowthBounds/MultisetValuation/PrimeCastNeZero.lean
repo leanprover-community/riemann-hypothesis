@@ -17,12 +17,6 @@ attribute [local instance] Formalism.MainNotions.G.GAtP.ringO Formalism.MainNoti
 
 variable {p : ℕ} [Fact p.Prime] {X : Sys p}
 
-theorem prime_cast_ne_zero : ((p : ℕ) : K0 p) ≠ 0 := by
-  have h1 : ((p : ℕ) : WW p) ≠ 0 := WittVector.p_nonzero p (kb p)
-  have h2 : algebraMap (WW p) (K0 p) ((p : ℕ) : WW p) ≠ 0 :=
-    (map_ne_zero_iff _ (IsFractionRing.injective (WW p) (K0 p))).2 h1
-  simpa using h2
-
 theorem pKf_ne (Y : Pend X) : ((p : ℕ) : X.G.Kf) ≠ 0 := by
   apply _root_.Formalism.MainNotions.FormalGroupSystem.Pf.pK_ne <;> assumption
 

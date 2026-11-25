@@ -250,7 +250,6 @@ namespace GlobalTheory.LiftGlue
 open CategoryTheory.Limits
 
 
-set_option backward.isDefEq.respectTransparency false in
 theorem exists_glue_desc (B₀ : Scheme.{0}) (𝒰 : Set B₀.Opens)
     (hbas : ∀ U ∈ 𝒰, ∀ (W : B₀.Opens) (x : B₀), x ∈ U → x ∈ W → ∃ V ∈ 𝒰, x ∈ V ∧ V ≤ U ∧ V ≤ W)
     (hcov : sSup 𝒰 = ⊤) (F : 𝒰 ⥤ Scheme.{0})

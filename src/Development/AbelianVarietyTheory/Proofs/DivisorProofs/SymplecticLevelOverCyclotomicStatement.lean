@@ -1215,11 +1215,6 @@ theorem exists_equiv (n : ℕ) (φ φ' : L → G) (hφ : ∀ a c, φ (a + c) = �
 
 end GlobalTheory.UPel.TensorTorsionNsmul
 
-namespace GlobalTheory.UPel
-
-open scoped TensorProduct
-
-end GlobalTheory.UPel
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

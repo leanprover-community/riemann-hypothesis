@@ -100,12 +100,6 @@ theorem sum_embeddings {E : Type} [Field E] [NumberField E] [_root_.NumberField.
       · rw [InfinitePlace.mk_conjugate_eq, InfinitePlace.mk_embedding]
   rw [hf, Finset.sum_pair hne]
 
-theorem atEmb_embedding {E : Type} [Field E] (v : InfinitePlace E) (z : ℂ) :
-    atEmb v.embedding z = (Pi.single v z : Cinf E) := by
-  unfold atEmb
-  rw [ite_eq_left (by rw [InfinitePlace.mk_embedding])]
-  congr 1 <;> simp
-
 theorem map_single_atEmb {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a : ℕ} {N : Type} [AddCommGroup N]
     [Module ℂ N] [Module ℝ N] [IsScalarTower ℝ ℂ N] (φ : Lie E a →ₗ[ℝ] N) (τ : E →+* ℂ) (i j : Fin a) (z : ℂ) :
     φ (toL (Matrix.single i j (atEmb τ z))) =
@@ -195,7 +189,7 @@ theorem frameCas : FrameCas := by
   let w : InfinitePlace E → Fin a → Fin a → Module.End ℂ M := fun v i j => starRingEnd ℂ c • Q v i j + c • Q v j i
   have hs : ∀ v i j z, φ (toL (Matrix.single i j (Pi.single v z : Cinf E))) = z • P v i j + starRingEnd ℂ z • Q v i j := by
     intro v i j z
-    rw [← atEmb_embedding]
+    rw [← PositivityTheory.Rg.Cz.J.atEmb_embedding]
     exact map_single_atEmb φ v.embedding i j z
   have hadd : ∀ A B : Matrix (Fin a) (Fin a) (Cinf E), φ (toL (A + B)) = φ (toL A) + φ (toL B) :=
     fun A B => φ.map_add (toL A) (toL B)

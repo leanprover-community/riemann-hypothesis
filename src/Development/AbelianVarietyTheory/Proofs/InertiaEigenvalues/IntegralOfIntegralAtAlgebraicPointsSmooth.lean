@@ -121,7 +121,7 @@ theorem exists_integral_point_through (O B : Type) [CommRing O] [IsDomain O] [Is
   have hfin : Module.Finite O D' := PrimeAvoidanceFibre.finite_of_fibre ϖ hϖ hex huniq
 
   have hOinj : Function.Injective (algebraMap O D') := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     by_contra hne
     push Not at hne
     obtain ⟨c, hc, hc0⟩ := hne
@@ -273,7 +273,7 @@ theorem exists_integral_point_of_complete_case :
   haveI : P.IsPrime := hPmin.isPrime
   haveI : IsDomain (O' ⊗[O] B ⧸ P) := Ideal.Quotient.isDomain P
   have hinj : Function.Injective (algebraMap O' (O' ⊗[O] B ⧸ P)) := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro a ha
     by_contra ha0
     have ha' : Ideal.Quotient.mk P (a ⊗ₜ[O] (1 : B)) = 0 := ha

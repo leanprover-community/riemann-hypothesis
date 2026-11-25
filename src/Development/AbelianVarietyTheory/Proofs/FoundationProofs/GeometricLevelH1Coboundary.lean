@@ -644,11 +644,9 @@ theorem h1_killed_by_zeta_sub_one_geo : ∀ (p : ℕ) [Fact p.Prime], p ≠ 2 �
   have hperm : ∑ g ∈ E, σ g y * c (σ g) = x := by
     rw [hx, ← Finset.sum_image (f := fun g' => g' y * c g') hσinj, himg]
   have hhx : h x = ∑ g ∈ E, h (g y) * h (c g) := by
-    set_option synthInstance.maxHeartbeats 100000 in
       rw [hx, map_sum]; simp only [map_mul]
   have hζ : h (T.ζ j) = T.ζ j := (((mem_geoTop_iff T h).mp hh).2 j).1
   have hsumh : ∑ g ∈ E, h (g y) = T.ζ j - 1 := by
-    set_option synthInstance.maxHeartbeats 100000 in
       rw [← map_sum, hsum, map_sub, map_one, hζ]
   have step : ∀ g ∈ E, Cong (p := p) k (h (g y) * h (c g)) (σ g y * c (σ g) - h (g y) * c h) := by
     intro g hg
@@ -939,10 +937,6 @@ theorem isInt_natCast (n : ℕ) : IsInt (p := p) (n : Ω) := by
 
 theorem isInt_map (g : Gal p Ω) {x : Ω} (hx : IsInt (p := p) x) : IsInt (p := p) (g x) := hx.map g
 
-alias cong_refl := _root_.GlobalTheory.K5.TateGeo.cong_refl'
-
-alias cong_add := _root_.GlobalTheory.K5.TateGeo.cong_add'
-
 theorem cong_sub {k : ℕ} {x y x' y' : Ω} (h1 : Cong (p := p) k x y) (h2 : Cong (p := p) k x' y') :
     Cong (p := p) k (x - x') (y - y') := by
   obtain ⟨z1, hz1, e1⟩ := h1
@@ -1112,9 +1106,9 @@ theorem coker_part (hp : p ≠ 2) (hΩ : IsClo p Ω) (T : Tower p Ω) (k : ℕ) 
       simp only [ha1, map_sub, map_mul, hπdef, fix_pi T hg]; ring
     rw [e]
     exact cong_congr (by simp [ha1, AlgEquiv.mul_apply]) rfl
-      (cong_sub (cong_mul_left hπ (hcoc g hg h hh)) (cong_refl k _))
+      (cong_sub (cong_mul_left hπ (hcoc g hg h hh)) (GlobalTheory.K5.TateGeo.cong_refl' k _))
   have a1Hi : ∀ h ∈ Ggeo p Ω ⊓ ⨅ n, Gn T n, Cong (p := p) k (a1 h) 0 :=
-    fun h hh => cong_congr rfl (sub_self _) (cong_sub (hx1c h hh) (cong_refl k (h x1 - x1)))
+    fun h hh => cong_congr rfl (sub_self _) (cong_sub (hx1c h hh) (GlobalTheory.K5.TateGeo.cong_refl' k (h x1 - x1)))
   have isInt_a1 : ∀ g ∈ Ggeo p Ω, IsInt (p := p) (a1 g) := fun g hg =>
     (hπ.mul (ha.1 g hg)).sub ((isInt_map g hx1).sub hx1)
 
@@ -1125,10 +1119,10 @@ theorem coker_part (hp : p ≠ 2) (hΩ : IsClo p Ω) (T : Tower p Ω) (k : ℕ) 
     have hG := (mem_Hi hh).1
     have h' := conj_Hi T hτG hτq hh
     have e1 : Cong (p := p) k (a1 (h * τ)) (h z) :=
-      _root_.GlobalTheory.K5.TateGeo.cong_trans' (a1coc h hG τ hτG) (cong_congr rfl (zero_add _) (cong_add (a1Hi h hh) (cong_refl k _)))
+      _root_.GlobalTheory.K5.TateGeo.cong_trans' (a1coc h hG τ hτG) (cong_congr rfl (zero_add _) (GlobalTheory.K5.TateGeo.cong_add' (a1Hi h hh) (GlobalTheory.K5.TateGeo.cong_refl' k _)))
     have e2 : Cong (p := p) k (a1 (τ * (τ⁻¹ * h * τ))) z :=
       _root_.GlobalTheory.K5.TateGeo.cong_trans' (a1coc τ hτG _ (mem_Hi h').1)
-        (cong_congr rfl (by rw [map_zero, add_zero]) (cong_add (cong_refl k z) (cong_map τ (a1Hi _ h'))))
+        (cong_congr rfl (by rw [map_zero, add_zero]) (GlobalTheory.K5.TateGeo.cong_add' (GlobalTheory.K5.TateGeo.cong_refl' k z) (cong_map τ (a1Hi _ h'))))
     have e3 : τ * (τ⁻¹ * h * τ) = h * τ := by group
     rw [e3] at e2
     exact _root_.GlobalTheory.K5.TateGeo.cong_trans' (_root_.GlobalTheory.K5.TateGeo.cong_symm' e1) e2
@@ -1154,7 +1148,7 @@ theorem coker_part (hp : p ≠ 2) (hΩ : IsClo p Ω) (T : Tower p Ω) (k : ℕ) 
   have bτ : Cong (p := p) k (b τ) 0 := by
     have h1 : Cong (p := p) k (π ^ 2 * z) (π * o + (τ w - w)) := by
       rw [← hdec]; exact cong_congr (by ring) rfl (cong_mul_left hπ hyc)
-    have := cong_sub h1 (cong_refl k ((τ w - w) + π * o))
+    have := cong_sub h1 (GlobalTheory.K5.TateGeo.cong_refl' k ((τ w - w) + π * o))
     refine cong_congr ?_ (by ring) this
     simp only [hb, kum_tau T hk hκ hτG hτq, hz]; ring
   have bpow : ∀ s : ℕ, Cong (p := p) k (b (τ ^ s)) 0 := by
@@ -1164,7 +1158,7 @@ theorem coker_part (hp : p ≠ 2) (hΩ : IsClo p Ω) (T : Tower p Ω) (k : ℕ) 
     | succ s ih =>
       rw [pow_succ]
       exact _root_.GlobalTheory.K5.TateGeo.cong_trans' (bcoc _ (pow_mem hτG s) τ hτG)
-        (cong_congr rfl (by rw [map_zero, add_zero]) (cong_add ih (cong_map _ bτ)))
+        (cong_congr rfl (by rw [map_zero, add_zero]) (GlobalTheory.K5.TateGeo.cong_add' ih (cong_map _ bτ)))
   have bG : ∀ g ∈ Ggeo p Ω, Cong (p := p) k (b g) 0 := by
     classical
     intro g hg
@@ -1173,7 +1167,7 @@ theorem coker_part (hp : p ≠ 2) (hΩ : IsClo p Ω) (T : Tower p Ω) (k : ℕ) 
     have hg' : τ ^ s * h ∈ Ggeo p Ω := mul_mem (pow_mem hτG s) (mem_Hi hh).1
     have e0 : Cong (p := p) k (b (τ ^ s * h)) 0 :=
       _root_.GlobalTheory.K5.TateGeo.cong_trans' (bcoc _ (pow_mem hτG s) h (mem_Hi hh).1)
-        (cong_congr rfl (by rw [map_zero, add_zero]) (cong_add (bpow s) (cong_map _ (bHi h hh))))
+        (cong_congr rfl (by rw [map_zero, add_zero]) (GlobalTheory.K5.TateGeo.cong_add' (bpow s) (cong_map _ (bHi h hh))))
     have hx1' := hag x1 (by simp)
     have hw' := hag w (by simp)
     have hq' := hag (T.qq k) (by simp)
@@ -1182,7 +1176,7 @@ theorem coker_part (hp : p ≠ 2) (hΩ : IsClo p Ω) (T : Tower p Ω) (k : ℕ) 
     have e1 : Cong (p := p) k (b (τ ^ s * h)) (b g) := by
       simp only [hb, ha1, hx1', hw', hκ']
       exact cong_sub (cong_sub (cong_mul_left (hπ.pow 2)
-        (cong_sub (cong_mul_left hπ ha') (cong_refl k _))) (cong_refl k _)) (cong_refl k _)
+        (cong_sub (cong_mul_left hπ ha') (GlobalTheory.K5.TateGeo.cong_refl' k _))) (GlobalTheory.K5.TateGeo.cong_refl' k _)) (GlobalTheory.K5.TateGeo.cong_refl' k _)
     exact _root_.GlobalTheory.K5.TateGeo.cong_trans' (_root_.GlobalTheory.K5.TateGeo.cong_symm' e1) e0
 
   obtain ⟨r, hr, hrG, hpr⟩ := p_eq (p := p) T
@@ -1190,7 +1184,7 @@ theorem coker_part (hp : p ≠ 2) (hΩ : IsClo p Ω) (T : Tower p Ω) (k : ℕ) 
     (hr.pow 3).mul ((hπ.pow 2).mul hx1 |>.add hw), fun g hg => ?_⟩
   · simp only [map_mul, map_pow, hrG g hg, hπdef, fix_pi T hg, hoG g hg]
   · have := cong_mul_left (hr.pow 3) (bG g hg)
-    have e := cong_add this (cong_refl k (g (r ^ 3 * (π ^ 2 * x1 + w)) - r ^ 3 * (π ^ 2 * x1 + w)))
+    have e := GlobalTheory.K5.TateGeo.cong_add' this (GlobalTheory.K5.TateGeo.cong_refl' k (g (r ^ 3 * (π ^ 2 * x1 + w)) - r ^ 3 * (π ^ 2 * x1 + w)))
     refine cong_congr ?_ (by ring) e
     simp only [hb, ha1, map_mul, map_pow, map_add (f := _), hrG g hg, hπdef, fix_pi T hg, hpr]
     ring
@@ -1205,7 +1199,7 @@ theorem kern_part (hp : p ≠ 2) (hΩ : IsClo p Ω) (T : Tower p Ω) (k : ℕ) (
   obtain ⟨τ, hτG, hτq⟩ := _root_.GlobalTheory.K5.TauGen.main p hp Ω hΩ T
   have hxinv : ∀ h ∈ Ggeo p Ω ⊓ ⨅ n, Gn T n, Cong (p := p) k (h x) x := by
     intro h hh
-    have := cong_add (_root_.GlobalTheory.K5.TateGeo.cong_symm' (hxc h (mem_Hi hh).1)) (cong_refl k x)
+    have := GlobalTheory.K5.TateGeo.cong_add' (_root_.GlobalTheory.K5.TateGeo.cong_symm' (hxc h (mem_Hi hh).1)) (GlobalTheory.K5.TateGeo.cong_refl' k x)
     exact cong_congr (by ring) (by rw [kum_Hi T hκ hh]; simp) this
   obtain ⟨y, hy, ⟨N, hyN⟩, hyc⟩ := _root_.GlobalTheory.K5.geo_invariants_from_finite_level p hp Ω hΩ T k 1 le_rfl x hx hxinv
   have h1 : Cong (p := p) k o (τ x - x) := by
@@ -1407,12 +1401,10 @@ theorem fix_range (hψ : IsReb T L ψ) (g : Gal p Ω) (hg : g (T.qq L) = T.qq L)
 def up (hψ : IsReb T L ψ) (g : Gal p Ω) (hg : g (T.qq L) = T.qq L) : Gal p (RebT Ω ψ) :=
   AlgEquiv.ofRingEquiv (f := (g.toRingEquiv : RebT Ω ψ ≃+* RebT Ω ψ)) (fun a => fix_range hψ g hg a)
 
-alias isAlgZp_zeta := _root_.GlobalTheory.K5.Dense.isAlgZp_zeta
-
 theorem mem_H (hψ : IsReb T L ψ) {g : Gal p (RebT Ω ψ)} (hg : g ∈ Ggeo p (RebT Ω ψ)) :
     down hψ g ∈ Ggeo p Ω ⊓ Gn T L := by
   have hgeo : down hψ g ∈ Ggeo p Ω := fun x hx => hg x ((isAlgZp_iff hψ x).2 hx)
-  refine Subgroup.mem_inf.2 ⟨hgeo, (GlobalTheory.K5.Basic.mem_gn T L _).2 ⟨hgeo _ (isAlgZp_zeta T L), ?_⟩⟩
+  refine Subgroup.mem_inf.2 ⟨hgeo, (GlobalTheory.K5.Basic.mem_gn T L _).2 ⟨hgeo _ (GlobalTheory.K5.GeoLevel.isAlgZp_zeta T L), ?_⟩⟩
   have h : g (ψ (qO p)) = ψ (qO p) := g.commutes (qO p)
   rw [hψ.par] at h
   exact h

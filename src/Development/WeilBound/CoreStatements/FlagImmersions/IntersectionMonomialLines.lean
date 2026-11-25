@@ -39,7 +39,6 @@ theorem intersection_monomial_lines : ∀ II : IntersectionSystem, IsIntersectio
   intro II hII K _ ι _ P d J ℓ w hP hℓ
   set m : J →₀ ℕ := ∑ k, Finsupp.single (w k) 1 with hm
   have hdeg : m.degree = d := by
-    set_option synthInstance.maxHeartbeats 100000 in
       simp [hm, map_sum, Finsupp.degree_single]
   set L : List J := (Finsupp.toMultiset m).toList with hL
   have hML : (L : Multiset J) = Finset.univ.val.map w := by

@@ -10,8 +10,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.FlagFib

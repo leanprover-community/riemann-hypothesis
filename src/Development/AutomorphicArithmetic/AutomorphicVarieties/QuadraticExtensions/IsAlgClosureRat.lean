@@ -757,7 +757,7 @@ theorem UpperTheory.V.Two.embedQZ :
       have h3 := hιinj h2
       simpa using h3
     exact hg (by rw [hgt, map_zero])
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro x hx
   have hxi : ∀ x : D, LinearMap.pi y x = 0 → ∀ i, y i x = 0 := by
     intro x hx i
@@ -1070,10 +1070,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.GaloisCohomology UpperTheory.V UpperTheory.V.LDataCardLeFinrank UpperTheory.V.Base UpperTheory.V.Kum UpperTheory.V.Two
 open scoped Pointwise
 
-private theorem not_lt_one_of_coprime {Ω : Type} [Field Ω] (A : ValuationSubring Ω) {p m : ℕ} (h : p.Coprime m)
-    (hp : A.valuation (p : Ω) < 1) : ¬ A.valuation (m : Ω) < 1 := by
-  apply _root_.not_valuation_lt_one_of_coprime_of_lt_one <;> assumption
-
 theorem UpperTheory.V.Two.ineTwo :
     ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (M : AbF) (p : ℕ) (A : ValuationSubring Ω), p.Coprime (2 * M.m) → A.valuation (p : Ω) < 1 → Ine (F := ℚ) A ≤ cycU 2 (abU Ω (withI M)) := by
   intro Ω _ _ _ M p A hcop hp
@@ -1084,12 +1080,12 @@ theorem UpperTheory.V.Two.ineTwo :
     exact Nat.Coprime.mul_right hM (by simpa using Nat.Coprime.pow_right 2 h2)
   intro g hg
   refine ⟨?_, ?_⟩
-  · have := ineChar Ω (withI M).m A (not_lt_one_of_coprime A hW hp) hg
+  · have := ineChar Ω (withI M).m A (not_valuation_lt_one_of_coprime_of_lt_one A hW hp) hg
     rw [MonoidHom.mem_ker] at this
     show galChar Ω (withI M).m g ∈ (withI M).H
     rw [this]
     exact Subgroup.one_mem _
-  · exact (places ℚ Ω 2 A).2.2.2 (not_lt_one_of_coprime A h2 hp) hg
+  · exact (places ℚ Ω 2 A).2.2.2 (not_valuation_lt_one_of_coprime_of_lt_one A h2 hp) hg
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.QuadraticExtensions.IneTwo =====

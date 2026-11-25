@@ -19,7 +19,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.IrreducibleOfSpanningMatrices.irreducible_of_span_eq_top :
-    ∀ {K G ι : Type} [inst : Field K] [inst_1 : Fintype ι]
+    ∀ {K G ι : Type} [Field K] [Fintype ι]
     [DecidableEq ι] (f : G → Matrix ι ι K),
     Submodule.span K (Set.range f) = ⊤ →
       ∀ (N : Submodule K (ι → K)), (∀ (g : G), ∀ v ∈ N, (f g).mulVec v ∈ N) → N = ⊥ ∨ N = ⊤ := by
@@ -57,7 +57,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qe1.span_map_ringHom_eq_top :
-    ∀ {k K G ι : Type} [inst : Field k] [inst_1 : Field K]
+    ∀ {k K G ι : Type} [Field k] [Field K]
     [Fintype ι] [DecidableEq ι] (φ : k →+* K) (f : G → Matrix ι ι k),
     Submodule.span k (Set.range f) = ⊤ → Submodule.span K (Set.range fun (g : G) ↦ (f g).map (⇑φ : k → K)) = ⊤ := by
   intro k K G ι _ _ _ _ φ f h

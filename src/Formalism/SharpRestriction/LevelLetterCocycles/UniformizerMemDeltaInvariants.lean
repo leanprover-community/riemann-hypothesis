@@ -30,18 +30,6 @@ theorem qp_mem (hπ : W.π₀ ∈ W.AΔ) : Formalism.MainNotions.LiftingTheory.q
 def QhP (i : ZMod n) (h : ℕ) : Submodule O (W.DD T) :=
   (PhiPullΔ W T i).map ((Formalism.MainNotions.LiftingTheory.qp W ^ h) • (LinearMap.id : W.DD T →ₗ[O] W.DD T))
 
-private lemma exists_pow_eq_one_mul {Γ : Type} [CommGroup Γ] {a b : Γ} (ha : ∃ k : ℕ, 0 < k ∧ a ^ k = 1)
-    (hb : ∃ k : ℕ, 0 < k ∧ b ^ k = 1) : ∃ k : ℕ, 0 < k ∧ (a * b) ^ k = 1 := by
-  obtain ⟨k, hk, hak⟩ := ha
-  obtain ⟨m, hm, hbm⟩ := hb
-  refine ⟨k * m, Nat.mul_pos hk hm, ?_⟩
-  rw [mul_pow, pow_mul, hak, one_pow, one_mul, mul_comm, pow_mul, hbm, one_pow]
-
-private lemma exists_pow_eq_one_inv {Γ : Type} [CommGroup Γ] {a : Γ} (ha : ∃ k : ℕ, 0 < k ∧ a ^ k = 1) :
-    ∃ k : ℕ, 0 < k ∧ a⁻¹ ^ k = 1 := by
-  obtain ⟨k, hk, hak⟩ := ha
-  exact ⟨k, hk, by rw [inv_pow, hak, inv_one]⟩
-
 theorem uniformizer_mem_delta_invariants : W.π₀ ∈ W.AΔ := by
   apply _root_.Formalism.MainNotions.N.FrobeniusPowerSeries.TypesA.pi0_mem_ADelta <;> assumption
 

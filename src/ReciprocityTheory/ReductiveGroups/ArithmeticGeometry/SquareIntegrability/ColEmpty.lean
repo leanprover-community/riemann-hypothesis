@@ -274,9 +274,6 @@ private theorem norm_sq_eq_re_Hf_self (v : EuclideanSpace ℂ ι) : ‖v‖ ^ 2 
   rw [EuclideanSpace.norm_eq, Real.sq_sqrt (Finset.sum_nonneg fun i _ => sq_nonneg _)]
   simp only [Hf, Complex.re_sum, Complex.mul_conj, Complex.ofReal_re, Complex.normSq_eq_norm_sq]
 
-private theorem Hf_neg_left' (a c : EuclideanSpace ℂ ι) : Hf (-a) c = -Hf a c := by
-  simp [Hf, Finset.sum_neg_distrib]
-
 private theorem Hf_neg_right' (a c : EuclideanSpace ℂ ι) : Hf a (-c) = -Hf a c := by
   simp [Hf, Finset.sum_neg_distrib]
 
@@ -431,7 +428,7 @@ theorem ctU_cancel (q : ℕ) (b : EuclideanSpace ℂ ι) (F : EuclideanSpace ℂ
   funext t
   have e : (q * Real.pi * Hf t b - q * Real.pi * Hf b b / 2 : ℂ) +
       (q * Real.pi * Hf (t - b) (-b) - q * Real.pi * Hf (-b) (-b) / 2) = 0 := by
-    simp only [_root_.ReciprocityTheory.ChartRestriction.G.I2.Col.Hf_sub_l, Hf_neg_right', Hf_neg_left', neg_neg]
+    simp only [_root_.ReciprocityTheory.ChartRestriction.G.I2.Col.Hf_sub_l, Hf_neg_right', ReciprocityTheory.ChartRestriction.G.I2.FPw.Hf_neg_left, neg_neg]
     ring
   simp only [ctU]
   rw [← mul_assoc, ← Complex.exp_add, e, Complex.exp_zero, one_mul, sub_neg_eq_add, sub_add_cancel]
@@ -984,8 +981,6 @@ theorem ct_dK_le (hI : IsSplit P I) : Col.dK (IR I) ≤ dstar (E := E) P.m := by
   have h1 : Col.dK (IR I) = 2 * PT.f E * ρ := hr
   rw [h1, dstar]
   exact Nat.mul_le_mul_left _ hρ
-
-
 
 theorem ct_deriv (hP : Ext.PackingCount) (hGT : Ext.GaussianTailBound) (hI : IsSplit P I)
     (c : ℕ) (hc : c ≤ DF) (σ : E →+* ℂ) (x0 u : Vsp X.dim) (hu : u = Col.uc (IR I) x0)

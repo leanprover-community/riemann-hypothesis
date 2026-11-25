@@ -188,7 +188,7 @@ private theorem rr_inv (σ τ : E ≃ₐ[F] E) (h : σ * τ = 1) {v : Pl F} (w :
 private theorem mapGL_rr_inv (σ τ : E ≃ₐ[F] E) (h : σ * τ = 1) {v : Pl F} (w : PlacesOver E v)
     (hw : ∀ u : PlacesOver E v, u = w) (n : ℕ) (g : Gw n w.1) :
     mapGL n (rr σ w hw) (mapGL n (rr τ w hw) g) = g :=
-  Units.ext (Matrix.ext fun a b => rr_inv σ τ h w hw _)
+  Units.ext (Matrix.ext fun _ _ => rr_inv σ τ h w hw _)
 
 private def sOf (σ : E ≃ₐ[F] E) {v : Pl F} (w : PlacesOver E v) (hw : ∀ u : PlacesOver E v, u = w) (n : ℕ) :
     Gw n w.1 ≃ₜ* Gw n w.1 where

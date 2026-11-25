@@ -280,7 +280,6 @@ theorem levLaws : LevLaws (H.W K s LL h) := by
 
 theorem laws : Laws H F h := by
   have : FiniteDimensional ℚ_[l] ↥LL.1 := LL.2
-  set_option synthInstance.maxHeartbeats 200000 in
   exact ⟨levLaws H h, ⟨fun e => GlobalTheory.TorsionBoundCompare.ioE_φ _ Subtype.val_injective e,
     fun g e => GlobalTheory.TorsionBoundCompare.ioE_γ _ Subtype.val_injective g e⟩,
     GlobalTheory.TrivCrys.isCrys_lat_of_trivial _ (H.W K s LL h).one_triv⟩

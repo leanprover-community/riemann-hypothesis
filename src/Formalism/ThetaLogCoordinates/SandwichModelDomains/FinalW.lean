@@ -336,13 +336,6 @@ theorem rgl_support_swp (f : MvPolynomial (Fin r × Fin n) R) :
       f.support.image (Finsupp.mapDomain (Equiv.prodComm (Fin r) (Fin n))) := by
   rw [rgl_swp_apply, support_rename_of_injective (Equiv.injective _)]
 
-theorem rgl_weight_colW (m : Fin r × Fin n →₀ ℕ) (s : Fin n) :
-    Finsupp.weight (colW r n) m s = ∑ a : Fin r, m (a, s) := by
-  classical
-  rw [Finsupp.weight_apply, Finsupp.sum_fintype _ _ (by simp), Finset.sum_apply, Fintype.sum_prod_type]
-  refine Finset.sum_congr rfl fun a _ => ?_
-  simp [colW, Pi.single_apply]
-
 end general
 
 variable {p : ℕ} [Fact p.Prime] {r n : ℕ}
@@ -429,7 +422,7 @@ theorem swap_polynomial_compat : SwpPol := by
   obtain ⟨m, hm, rfl⟩ := Finset.mem_image.mp (Finset.mem_coe.mp hm')
   have hw : Finsupp.weight (colW r n) m = ν := hf (mem_support_iff.mp hm)
   simp only [rgl_mapDomain_apply]
-  rw [← rgl_weight_colW, hw]
+  rw [← Formalism.GradedWeylDivisibility.lhwline_weight_col, hw]
   rfl
 
 theorem swpInt_statement : SwpInt := by

@@ -62,18 +62,6 @@ end
 section
 variable {m : ℕ} {L : Lev (per l K) m} (hL : L.Good) (M : Model l K) (s : ℕ)
   (hQ : ∀ T, QB L M s T → QA L M s (((nmB M hL).mor 0).obj T))
-  (d : ∀ n, RedIn (B.DD false (PAlg.base l) n) (B.κb (okToOC l K) false n) L.γ l n)
-  (hc : ∀ n (c : Acris l), (d n).ρ ((PAlg.base l).cris n c) = Ideal.Quotient.mk _ (L.lam c))
-
-namespace CupProductChain
-
-end CupProductChain
-
-end
-
-section
-variable {m : ℕ} {L : Lev (per l K) m} (hL : L.Good) (M : Model l K) (s : ℕ)
-  (hQ : ∀ T, QB L M s T → QA L M s (((nmB M hL).mor 0).obj T))
 
 def cupOf (rH : ∀ n j, M.Hc false n j →ₛₗ[L.lam] HM (QA L M s) none ((l : L.A) ^ n) j) :
     Cup (chainOf hL M s hQ rH) where

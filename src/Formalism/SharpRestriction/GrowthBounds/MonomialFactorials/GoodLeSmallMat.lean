@@ -21,14 +21,8 @@ def GoodLeSmallMat : Prop :=
 theorem B_sum_left {p : ℕ} [Fact p.Prime] {σ ι : Type} (B : MvPolynomial σ ℚ_[p] → MvPolynomial σ ℚ_[p] → ℚ_[p])
     (hsm : ∀ (c : ℚ_[p]) u v, B (c • u) v = c * B u v) (hadd : ∀ u u' v, B (u + u') v = B u v + B u' v)
     (s : Finset ι) (g : ι → MvPolynomial σ ℚ_[p]) (v : MvPolynomial σ ℚ_[p]) :
-    B (∑ i ∈ s, g i) v = ∑ i ∈ s, B (g i) v := by
-  classical
-  have h0 : B 0 v = 0 := by
-    have := hsm 0 0 v
-    simpa using this
-  induction s using Finset.induction_on with
-  | empty => simpa using h0
-  | insert a s ha ih => rw [Finset.sum_insert ha, hadd, ih, Finset.sum_insert ha]
+    B (∑ i ∈ s, g i) v = ∑ i ∈ s, B (g i) v :=
+  map_sum (AddMonoidHom.mk ⟨(B · v), by simpa using hsm 0 0 v⟩ (hadd · · v)) g s
 
 theorem goodLeSmall_of (h : GoodLeSmallMat) : GoodLeSmall := by
   intro p _ σ B L W D _ _ hsm hadd hsy m f hf _ hspan horth

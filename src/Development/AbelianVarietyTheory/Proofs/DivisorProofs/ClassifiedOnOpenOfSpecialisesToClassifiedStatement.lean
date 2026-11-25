@@ -928,12 +928,12 @@ theorem exists_qkPt_of_divFrom : ∀ {E : Type} [Field E] [NumberField E] [IsCMF
     LinearMap.mk₂ ℤ (fun u v => ε k (x u) (H.w0 • x v) + ε k (x v) (H.w0 • x u))
       (fun m₁ m₂ n => by simp only [map_add (f := _), smul_add, LinearMap.add_apply]; ring)
       (fun c m n => by
-        simp only [map_zsmul, LinearMap.smul_apply, LinearMap.map_smul, smul_eq_mul]
+        simp only [map_zsmul, LinearMap.smul_apply, smul_eq_mul]
         rw [smul_comm H.w0 c (x m)]
         simp only [LinearMap.map_smul, smul_eq_mul]; ring)
       (fun m n₁ n₂ => by simp only [map_add (f := _), smul_add, LinearMap.add_apply]; ring)
       (fun c m n => by
-        simp only [map_zsmul, LinearMap.smul_apply, LinearMap.map_smul, smul_eq_mul]
+        simp only [map_zsmul, LinearMap.smul_apply, smul_eq_mul]
         rw [smul_comm H.w0 c (x n)]
         simp only [LinearMap.map_smul, smul_eq_mul]; ring)
   have hne : ∀ i, algebraMap R (FractionRing R) (s i) ≠ 0 := fun i =>

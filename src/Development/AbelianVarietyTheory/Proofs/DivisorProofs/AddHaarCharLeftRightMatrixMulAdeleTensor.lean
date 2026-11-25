@@ -112,12 +112,6 @@ section Gen
 
 open MeasureTheory Topology Matrix NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.GaugeEx GlobalTheory.ModuLR
 
-theorem chi_adele (F : Type) [Field F] [NumberField F] {κ : Type} [Fintype κ] [DecidableEq κ]
-    (M : Matrix κ κ (AF F)) (hM : IsUnit M.det) :
-    (addEquivAddHaarChar (mulVecCE M hM) : ℝ) =
-      (modu (Ainf F) (fstA F M.det) : ℝ) * ∏ᶠ v, ‖evalV F v (sndA F M.det)‖ := by
-  apply GlobalTheory.JacSubst.chi_AF_split
-
 theorem addEquivAddHaarChar_mulVecCE_adele (F : Type) [Field F] [NumberField F] {κ : Type} [Fintype κ]
     [DecidableEq κ] (M : Matrix κ κ (AF F)) (hM : IsUnit M.det) :
     addEquivAddHaarChar (mulVecCE M hM) = distribHaarChar (AF F) hM.unit := by

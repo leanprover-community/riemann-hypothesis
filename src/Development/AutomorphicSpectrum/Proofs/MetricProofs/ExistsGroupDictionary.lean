@@ -297,9 +297,6 @@ section Arch
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {Ψ : Type} [Fintype Ψ] {j j' n g : ℕ} {Λ : Type}
   [AddCommGroup Λ] [Module (𝓞 E) Λ]
 
-theorem plc_bijective (F : UnivFam E Ψ j j' n g Λ) : Function.Bijective (plc F) := by
-  apply GlobalTheory.CompanionTheory.Ar.Cusp.Dict.plc_bijective
-
 theorem emb_ne (F : UnivFam E Ψ j j' n g Λ) (τ : Ψ) (h : (plc F τ).embedding ≠ embOf (F.σ τ)) :
     (plc F τ).embedding = ComplexEmbedding.conjugate (embOf (F.σ τ)) :=
   (InfinitePlace.embedding_mk_eq (embOf (F.σ τ))).resolve_left h
@@ -614,7 +611,6 @@ theorem exists_of_stab (C : LatEmb F) (γ : latticeStab C.h C.e.range) :
   rw [C.form_eq, C.form_eq, hφ, hφ]
   exact congrArg (fun t => Algebra.trace ℚ E (C.xi * t)) hu
 
-
 open scoped Pointwise in
 theorem exists_of_aut (C : LatEmb F) (φ : autGrp (E := E) F.form) :
     ∃ γ : latticeStab C.h C.e.range, ∀ x,
@@ -681,15 +677,6 @@ theorem eqvBy_symm {E : Type} [Field E] [NumberField E] [IsCMField E] {g : ℕ} 
   simp only [LinearEquiv.coe_one, id_eq] at this ⊢
   rw [this, LinearEquiv.symm_apply_apply]
 
-theorem zero_mem_ballDom {Ψ : Type} [Fintype Ψ] {j j' n : ℕ} (q : Ψ × Fin j × Fin j' ≃ Fin n) :
-    (0 : Fin n → ℂ) ∈ ballDom q := by
-  intro τ
-  have : ballMat q 0 τ = 0 := by
-    ext a b
-    simp [ballMat]
-  rw [this]
-  simpa using Matrix.PosDef.one
-
 theorem star_mulVec_dot {m k : Type} [Fintype m] [Fintype k] (c : Matrix m k ℂ) (y : k → ℂ) :
     star (c *ᵥ y) ⬝ᵥ (c *ᵥ y) = star y ⬝ᵥ ((cᴴ * c) *ᵥ y) := by
   rw [star_mulVec, ← Matrix.mulVec_mulVec, Matrix.dotProduct_mulVec (star y) cᴴ]
@@ -699,7 +686,7 @@ theorem groupDict_nonempty : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
   intro E _ _ _ Ψ _ j j' n g Λ _ _ H F
   classical
   obtain ⟨C⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Cusp.Dict.LatEmbEx.exists_latEmb E Ψ j j' n g Λ H F
-  have h0 : (0 : Fin n → ℂ) ∈ ballDom F.q := zero_mem_ballDom F.q
+  have h0 : (0 : Fin n → ℂ) ∈ ballDom F.q := GlobalTheory.CompanionTheory.Ar.Cusp.Dict.LatEmbEx.zero_mem_ballDom F.q
   have hform : ∀ t, (F.R t).form = F.form := F.form_eq
   obtain ⟨A0, hA0⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Adapted.exists_isAdapted E Ψ j j' n g Λ F C (F.R 0) (hform 0) (F.sig 0 h0)
   have fct := fun τ => _root_.GlobalTheory.CompanionTheory.Ar.Cusp.Dict.cinv_facts E Ψ j j' n g Λ F C τ (A0 τ) (hA0.unit τ)

@@ -1337,9 +1337,6 @@ theorem Log_sgI_val (i : Fin (2 * r + k + 1)) : ((sgI k r i).val = r + k ↔ i.v
   unfold sgI
   split_ifs <;> simp_all <;> omega
 
-theorem hpk_sq : Hpk k r * Hpk k r = 1 := by
-  apply _root_.PI.SwBig.GU.Hpk_sq <;> assumption
-
 theorem logG : LogG := by
   intro k r
   have hE : HasStrictFDerivAt (NormedSpace.exp : Mat k r → Mat k r)
@@ -1348,7 +1345,7 @@ theorem logG : LogG := by
     exact hasStrictFDerivAt_exp_zero
   obtain ⟨ε, hε, hleft⟩ := Metric.eventually_nhds_iff.1 hE.eventually_left_inverse
   set H := Hpk k r
-  have hHH : H * H = 1 := hpk_sq
+  have hHH : H * H = 1 := PI.SwBig.GU.Hpk_sq
   have hHu : IsUnit H := (Matrix.isUnit_iff_isUnit_det _).2 (Matrix.isUnit_det_of_right_inverse hHH)
   have hHi : H⁻¹ = H := Matrix.inv_eq_right_inv hHH
   set C := ‖H‖ * ‖H‖ + 1

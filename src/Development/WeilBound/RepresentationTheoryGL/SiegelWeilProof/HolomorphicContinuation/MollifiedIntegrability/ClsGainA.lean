@@ -56,18 +56,6 @@ theorem det_one_add_sq (s : ℂ) (hs : s = 1 ∨ s = -1) (y : E n) :
     (1 + herm y * herm y).det = ((Complex.normSq (1 - (Complex.I * s) • herm y).det : ℝ) : ℂ) := by
   rw [← sq_smul s hs, det_mul, ← conjT_X s hs y, det_conjTranspose, Complex.star_def, Complex.mul_conj]
 
-theorem dP_eq (y : E n) : (1 + herm y * herm y).det = ((dP y : ℝ) : ℂ) := by
-  unfold dP
-  rw [det_one_add_sq 1 (Or.inl rfl) y, Complex.ofReal_re]
-
-theorem dP_pos (y : E n) : 0 < dP y := by
-  have h := dP_eq y
-  rw [det_one_add_sq 1 (Or.inl rfl) y] at h
-  have h2 := congrArg Complex.re h
-  simp only [Complex.ofReal_re] at h2
-  rw [← h2]
-  exact Complex.normSq_pos.2 (det_X_ne 1 (Or.inl rfl) y)
-
 theorem continuous_of' : Continuous fun B : MC n => Matrix.of B :=
   continuous_matrix fun i j => continuous_apply_apply i j
 
@@ -95,8 +83,8 @@ theorem isOpen_OmS (s : ℂ) : IsOpen (OmS (n := n) s) := by
 theorem herm_mem_OmS (s : ℂ) (hs : s = 1 ∨ s = -1) (y : E n) : (herm y : MC n) ∈ OmS s := by
   refine ⟨det_X_ne s hs y, det_Y_ne s hs y, ?_⟩
   show (1 + herm y * herm y).det ∈ Complex.slitPlane
-  rw [dP_eq]
-  exact Complex.ofReal_mem_slitPlane.2 (dP_pos y)
+  rw [WR.B.det_one_add_eq]
+  exact Complex.ofReal_mem_slitPlane.2 (WR.B.dP_pos y)
 
 def EntAn (M : MC n → Matrix (Fin n) (Fin n) ℂ) (B₀ : MC n) : Prop := ∀ i j, AnalyticAt ℂ (fun B => M B i j) B₀
 
@@ -186,8 +174,8 @@ theorem an_clsC (s z : ℂ) (p q : ℕ) (R : MvPolynomial (Bool × Fin n × Fin 
 theorem clsC_herm (s z : ℂ) (p q : ℕ) (R : MvPolynomial (Bool × Fin n × Fin n) ℂ) (y : E n) :
     clsC s z p q R (herm y) = cls s z p q R y := by
   unfold clsC cls uM vM evUV
-  have e : (1 + Matrix.of (herm y : MC n) * Matrix.of (herm y : MC n)).det = ((dP y : ℝ) : ℂ) := dP_eq y
-  rw [e, Complex.cpow_def_of_ne_zero (by exact_mod_cast (dP_pos y).ne'), mul_comm (Complex.log _) (-z)]
+  have e : (1 + Matrix.of (herm y : MC n) * Matrix.of (herm y : MC n)).det = ((dP y : ℝ) : ℂ) := WR.B.det_one_add_eq y
+  rw [e, Complex.cpow_def_of_ne_zero (by exact_mod_cast (WR.B.dP_pos y).ne'), mul_comm (Complex.log _) (-z)]
   rfl
 
 theorem ext : Ext := by

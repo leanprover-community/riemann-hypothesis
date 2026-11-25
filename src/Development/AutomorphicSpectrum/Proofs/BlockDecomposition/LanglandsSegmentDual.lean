@@ -19,7 +19,7 @@ open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.Loc
 namespace GlobalTheory.CompanionTheory.SegLDual
 
 theorem lSegDual : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-    (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (hZ : GlobalTheory.Published.SegmentRepresentation), LSegDual k := by
+    (_ : GlobalTheory.Published.IrreducibleAdmissibleGL) (_ : GlobalTheory.Published.SegmentRepresentation), LSegDual k := by
   intro k _ _ _ _ hA hZ Δ N V _ _ π hπ
   obtain ⟨hd, hco⟩ := id hπ
   have hsm : IsSmooth π := hco.isSubquotient.isSmooth (isSmooth_prodIrr _ hd)

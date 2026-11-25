@@ -116,8 +116,7 @@ theorem sa_lat (T : Finset (HeightOneSpectrum (𝓞 F))) (x : ∀ p, (L p).Ep) (
     rw [h1, Finset.mul_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [hβ i, ← hcp, Algebra.smul_def, map_mul, mul_assoc]
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+  · rw [map_sum]
     refine (L p).O.sum_mem fun i _ => ?_
     rw [existsLatticeAutomorphismApprox F E sig p (L p) (t i) (b i)]
     exact local_integral_of_substitution F E sig p (L p) (t i) (b i) (ht2 i p hp) (hbint i)

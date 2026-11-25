@@ -77,7 +77,3 @@ theorem rmChar' : RmChar := by
   exact gt_eq_weyl lam hlam t ht hinj
 
 end PositivityTheory.RgBcC.Cxc
-
-namespace PositivityTheory.RgBcC
-
-end PositivityTheory.RgBcC

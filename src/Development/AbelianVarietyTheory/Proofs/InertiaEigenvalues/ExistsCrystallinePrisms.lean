@@ -1101,7 +1101,7 @@ variable {K}
 
 theorem iota_injective (τ : ZMod a) : Function.Injective (iota t K τ) := by
   have := Fintype.ofFinite (Fq l a)
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro w hw
   by_contra h0
   obtain ⟨m, b, hb, rfl⟩ := WittVector.exists_eq_pow_p_mul w h0
@@ -1275,7 +1275,7 @@ theorem emb_injective (t : Wq l a →ₐ[ℤ_[l]] O) (τ : ZMod a) :
   haveI : Nontrivial O :=
     ⟨⟨0, 1, fun h => one_ne_zero (by simpa using congrArg (algebraMap O K) h.symm : (1 : K) = 0)⟩⟩
   have ht : Function.Injective t := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro x hx
     by_contra h0
     obtain ⟨m, b, rfl⟩ := WittVector.exists_eq_pow_p_mul' x h0

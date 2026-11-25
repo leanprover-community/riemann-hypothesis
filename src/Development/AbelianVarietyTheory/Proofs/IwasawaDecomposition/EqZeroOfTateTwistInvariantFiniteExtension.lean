@@ -205,9 +205,6 @@ theorem Fz_mono_of (C : CycData l) : Monotone fun n => Fz (C.ζ n) := by
   rw [IntermediateField.adjoin_simple_le_iff, ← zeta_pow_of C a m]
   exact pow_mem_Fz _ _
 
-theorem Fz_mono (C : Core l) : Monotone fun n => Fz (C.ζ n) :=
-  Fz_mono_of (toCycData C)
-
 theorem chi_eq_one_of (C : CycData l) (g : GQ l) (hg : g ∈ (⨆ n, Fz (C.ζ n)).fixingSubgroup) : C.χ g = 1 := by
   apply Units.ext
   apply PadicInt.ext_of_toZModPow.mp

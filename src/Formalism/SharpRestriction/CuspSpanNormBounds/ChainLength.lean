@@ -21,17 +21,6 @@ section LocalTheory
 open Formalism.MainNotions.S.Loc MeasureTheory ComplexConjugate
 
 
-def FamilyVolumeFourth {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
-    {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
-    (M : Model F E) (r k n : ℕ) (C : ℝ) : Prop :=
-  ∀ (ϖ : 𝒪[F]), Irreducible ϖ →
-  ∀ (V : Type) [AddCommGroup V] [Module E V] (H : HermSp M V), Module.finrank E V = n →
-  (∀ (t : Term V M r), H.IsGeneric t →
-    |H.dens ϖ t.abelian₂ (H.gram (H.MMfam t)) - 1| ≤
-      C * (2 * (r : ℝ) + 2) * (Nat.card 𝓀[F] : ℝ) ^ (-((k : ℤ) - 2 * r - 2))) ∧
-  (∀ (t₁ t₂ : Term V M r), H.IsGeneric t₁ → H.IsGeneric t₂ → H.IsScalarPair t₁ t₂ →
-    H.dens ϖ t₁.abelian₂ (H.gram (H.MMfam t₁)) = H.dens ϖ t₂.abelian₂ (H.gram (H.MMfam t₂)))
-
 end LocalTheory
 
 def adm6 (D : Formalism.BasicNotions.D7) : Prop :=

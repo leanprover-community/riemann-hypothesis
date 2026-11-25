@@ -21,18 +21,10 @@ theorem rpow_digitSum_le (p : ℕ) (hp : 2 ≤ p) (n : ℕ) :
   have hpos : (0 : ℝ) < (p : ℝ) - 1 := by linarith
   have hdig : ∀ d : ℕ, d < p → (p : ℝ) ^ ((d : ℝ) / ((p : ℝ) - 1)) ≤ (d : ℝ) + 1 := by
     intro d hd
-    have hd' : (d : ℝ) ≤ (p : ℝ) - 1 := by
-      have h1 : d + 1 ≤ p := hd
-      have h2 : (d : ℝ) + 1 ≤ p := by exact_mod_cast h1
-      linarith
-    have ht0 : 0 ≤ (d : ℝ) / ((p : ℝ) - 1) := div_nonneg (Nat.cast_nonneg _) hpos.le
-    have ht1 : (d : ℝ) / ((p : ℝ) - 1) ≤ 1 := (div_le_one hpos).mpr hd'
-    have h := Real.geom_mean_le_arith_mean2_weighted ht0 (sub_nonneg.mpr ht1)
-      (by linarith : (0 : ℝ) ≤ p) zero_le_one (add_sub_cancel _ _)
-    rw [Real.one_rpow, mul_one] at h
-    have e : (d : ℝ) / ((p : ℝ) - 1) * p + (1 - (d : ℝ) / ((p : ℝ) - 1)) * 1 = (d : ℝ) + 1 := by
-      field_simp
-      ring
+    have hd' : (d : ℝ) + 1 ≤ p := by exact_mod_cast (hd : d + 1 ≤ p)
+    have h := rpow_one_add_le_one_add_mul_self (s := (p : ℝ) - 1) (by linarith)
+      (div_nonneg (Nat.cast_nonneg d) hpos.le) ((div_le_one hpos).mpr (by linarith))
+    rw [add_sub_cancel, div_mul_cancel₀ _ hpos.ne'] at h
     linarith
   induction n using Nat.strong_induction_on with
   | _ n ih =>
@@ -46,7 +38,6 @@ theorem rpow_digitSum_le (p : ℕ) (hp : 2 ≤ p) (n : ℕ) :
         exact_mod_cast Nat.mod_add_div n p
       have hlt : ((n % p : ℕ) : ℝ) + 1 ≤ p := by
         exact_mod_cast (Nat.mod_lt n (by omega : 0 < p))
-      have hm0 : (0 : ℝ) ≤ ((n / p : ℕ) : ℝ) := Nat.cast_nonneg _
       calc (p : ℝ) ^ (((n % p : ℕ) : ℝ) / ((p : ℝ) - 1)) *
             (p : ℝ) ^ ((((Nat.digits p (n / p)).sum : ℕ) : ℝ) / ((p : ℝ) - 1))
           ≤ (((n % p : ℕ) : ℝ) + 1) * (((n / p : ℕ) : ℝ) + 1) :=
@@ -96,7 +87,6 @@ theorem content_detPow_bounds : ∀ (C : Type) [Field C] [CharZero C] (v : AddVa
   classical
   obtain ⟨-, hint, hdiag, hrows⟩ := _root_.GlobalTheory.DetPowShape.detPow_shape C i c
   have hp1 : (1 : ℝ) < p := by exact_mod_cast hp.one_lt
-  have hpos : (0 : ℝ) < (p : ℝ) - 1 := by linarith
   have key : ∀ α ∈ (detPow C i c).support,
       (∑ k, ((α k : ℕ) : ℝ)) = (i : ℝ) * c ∧ ∀ k, α k ≤ c := by
     intro α hα

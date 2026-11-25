@@ -129,8 +129,6 @@ section -- clump:auto
 
 open scoped NNReal
 
-theorem _root_.GlobalTheory.T.frobeniusPowEquation_dvd_all_pow : ∀ (l : ℕ) [Fact l.Prime] (R : Type) [CommRing R] (u : R), ((l : ℕ) : R) = 0 → u ∈ nonZeroDivisors R → ∀ (κ : Type) [Fintype κ] (D : κ → R) (c : κ → κ → R) (h : ℕ), (∀ j, u ^ h * D j = ∑ i, D i ^ l * c i j) → (∀ j (M : ℕ), ∃ c : ℕ, ∀ n : ℕ, u ^ (M * n) ∣ u ^ c * D j ^ n) → ∀ (m : ℕ) j, u ^ m ∣ D j := by
-  first | exact @GlobalTheory.phiEq_dvd_all_pow
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FrobeniusPowEquationDvdAllPowStatement =====
@@ -413,7 +411,7 @@ theorem key : ∀ (l : ℕ) [Fact l.Prime] (R : Type) [CommRing R] (u : R), ((l 
     exact hpts O (f.comp φ) h1 h2 h3 j
   have hb : ∀ j (M : ℕ), ∃ c : ℕ, ∀ n : ℕ, φ u ^ (M * n) ∣ φ u ^ c * φ (D j) ^ n := fun j M =>
     _root_.GlobalTheory.s_points_kpt l R' (φ u) (φ (D j)) hl' hu' hunit (hpts' j) M
-  obtain ⟨y, hy⟩ := GlobalTheory.T.frobeniusPowEquation_dvd_all_pow l R' (φ u) hl' hu' κ (fun i => φ (D i)) (fun i j => φ (c i j)) h heq' hb m j
+  obtain ⟨y, hy⟩ := GlobalTheory.phiEq_dvd_all_pow l R' (φ u) hl' hu' κ (fun i => φ (D i)) (fun i j => φ (c i j)) h heq' hb m j
   obtain ⟨⟨a, s⟩, rfl⟩ := IsLocalization.mk'_surjective S y
   have h2 : φ (D j * s) = φ (u ^ m * a) := by
     rw [map_mul, hy, map_mul, map_pow, mul_assoc, IsLocalization.mk'_spec]

@@ -235,7 +235,7 @@ def isPowDeg_pow : IsPowDeg (pow D j) D j where
   w_rig := ⟨_, mapsAt_idIso_pow D.P.L _ _ 1 _ (pow D j).rig_gen,
     corr_boxAt D.P.L _ _ 1 (fun _ => eSec D.P.A) (eSec_pr (pw D j)) (fun _ => D.rig)⟩
   xe := AddEquiv.refl _
-  c_pr := fun x i => tuple_pr (pw D j) _ i
+  c_pr := fun _ i => tuple_pr (pw D j) _ i
   w_psi := fun x => ⟨_, mapsAt_idIso_pow D.P.L _ _ (-1) _ ((pow D j).psi_gen x),
     corr_boxAt D.P.L _ _ (-1) (fun i => ptK (D.c (x i))) (ptK_tuple_pr D j x) (fun i => D.psi (x i))⟩
 

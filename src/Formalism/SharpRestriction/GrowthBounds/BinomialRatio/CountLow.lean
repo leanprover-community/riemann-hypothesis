@@ -478,7 +478,7 @@ theorem match_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ} (hCD : ChainDimAt)
   intro X _ hD hI hc j m hm hmA rz ry hdig
   obtain ⟨Ψ, hinj, hΨ⟩ := hML X hD hI hc j m hm hmA rz ry hdig
   have hfin := cl_Fs_finite hCD hMU X hD hI hc j m hm rz ry hdig
-  rw [chainCount_eq, ← finsum_curry3 (Fs C0 CE1 CE2 X j m rz ry) hfin]
+  rw [chainCount_eq, ← finsum_curry₃ (Fs C0 CE1 CE2 X j m rz ry) hfin]
   have key := cl_prod_le (fun x : (Fin (2 * segS X.TT j + 1 + 1) → Fin (X.m + 1) → ℤ) × (Fin X.m → ℤ) =>
       IsPair (((X.seg C0 CE1 CE2 j).A0 X.p - (⌈m⌉₊ : ℤ)).toNat) (clA C0 CE1 CE2 X j rz ry)
           (clC C0 CE1 CE2 X j rz ry) x.1 x.2 ∧

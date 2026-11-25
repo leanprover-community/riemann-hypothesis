@@ -26,16 +26,8 @@ lemma countable_valueGroupWithZero : Countable (ValueGroupWithZero F) :=
   haveI : Countable (WithZero (Multiplicative ℤ)) := inferInstanceAs (Countable (Option ℤ))
   Countable.of_equiv _ (IsNonarchimedeanLocalField.valueGroupWithZeroIsoInt F).toEquiv.symm
 
-lemma sigmaCompactSpace : SigmaCompactSpace F := by
-  have := countable_valueGroupWithZero F
-  refine SigmaCompactSpace.of_countable
-    (Set.range fun γ : ValueGroupWithZero F => {x : F | valuation F x ≤ γ})
-    (Set.countable_range _) ?_ ?_
-  · rintro _ ⟨γ, rfl⟩
-    exact IsNonarchimedeanLocalField.isCompact_closedBall F γ
-  · ext x
-    simp only [Set.sUnion_range, Set.mem_iUnion, Set.mem_ofPred_eq, Set.mem_univ, iff_true]
-    exact ⟨_, le_rfl⟩
+lemma sigmaCompactSpace : SigmaCompactSpace F :=
+  _root_.GroundTheory.Automorphic.Measures.sigmaCompactSpace F
 
 lemma secondCountableTopology : SecondCountableTopology F := by
   have := _root_.GroundTheory.Automorphic.Measures.sigmaCompactSpace F

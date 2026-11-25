@@ -98,13 +98,7 @@ theorem mm_mul_ge {a b : C} (ha : V.MM a) (hb : V.Ge 0 b) : V.MM (a * b) := by
   exact lt_of_lt_of_le ha (le_add_of_nonneg_right hb')
 
 theorem mm_sum {ι : Type} (s : Finset ι) (f : ι → C) (hf : ∀ i ∈ s, V.MM (f i)) : V.MM (∑ i ∈ s, f i) := by
-  induction s using Finset.induction_on with
-  | empty =>
-    rw [Finset.sum_empty]
-    exact mm_zero
-  | insert i s hi ih =>
-    rw [Finset.sum_insert hi]
-    exact mm_add (hf i (Finset.mem_insert_self i s)) (ih fun j hj => hf j (Finset.mem_insert_of_mem hj))
+  exact Finset.sum_induction f V.MM (fun _ _ => mm_add) mm_zero hf
 
 end MM
 

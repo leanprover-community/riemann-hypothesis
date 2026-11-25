@@ -143,7 +143,6 @@ theorem eq_of_card_filter (n : ℕ) : ∀ P Q : ℚ_[l][X], P.natDegree = n → 
     have hr' : ∀ b : PadicAlgCl l, b ∉ Q.aroots (PadicAlgCl l) := by
       intro b hb
       obtain ⟨a, haP, hab⟩ := exists_root_minpoly_eq_of_card_eq Q P hP.ne_zero (fun c => (hc c).symm) b hb
-      have hint : IsIntegral ℚ_[l] b := Algebra.IsIntegral.isIntegral b
       exact hr a haP
     rw [monic_eq_one_of_no_root hP hr, monic_eq_one_of_no_root hQ hr']
 

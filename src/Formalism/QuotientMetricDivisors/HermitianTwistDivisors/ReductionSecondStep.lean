@@ -103,10 +103,7 @@ theorem gram_ne [_root_.NumberField.IsTotallyComplex K] {d : ℕ}
   rw [h]; simp
 
 theorem std_li (d : ℕ) : LinearIndependent K (fun i => (Pi.single i 1 : Fin d → K)) := by
-  have : (fun i => (Pi.single i 1 : Fin d → K)) = ⇑(Pi.basisFun K (Fin d)) := by
-    funext i; simp [Pi.basisFun_apply]
-  rw [this]
-  exact (Pi.basisFun K (Fin d)).linearIndependent
+  exact Formalism.DivisionValues.imageLcv_std_li d
 
 theorem image_li {d : ℕ} (φ : Matrix (Fin d) (Fin d) K) (hφ : IsUnit φ.det)
     (e : Fin d → Fin d → K) (he : LinearIndependent K e) :

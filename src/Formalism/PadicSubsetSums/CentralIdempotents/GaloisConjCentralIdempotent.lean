@@ -111,9 +111,3 @@ theorem galoisConjCentralIdempotent : BcZIdem := by
   rw [zIdem_coeff, zIdem_coeff, finrank_bc, h, map_mul, map_div₀, map_natCast, map_natCast]
 
 end Formalism.IrreducibleCountingLemmas.TYPES
-
-namespace Formalism.IrreducibleCountingLemmas.TYPES
-
-variable (K : Type) [Field K] [Fintype K] [DecidableEq K]
-
-end Formalism.IrreducibleCountingLemmas.TYPES

@@ -32,16 +32,6 @@ section -- clump:auto
 
 open NumberField Module ReciprocityTheory.GeometryOfNumbersTheory
 
-namespace GlobalTheory.LatticeExtension
-
-variable {K K' : Type} [Field K] [NumberField K] [Field K'] [NumberField K'] [Algebra K K']
-  {V V' : Type} [AddCommGroup V] [Module (𝓞 K) V] [AddCommGroup V'] [Module (𝓞 K) V']
-  [Module (𝓞 K') V'] [IsScalarTower (𝓞 K) (𝓞 K') V'] (φ : V →ₗ[𝓞 K] V')
-
-variable [Module K V] [IsScalarTower (𝓞 K) K V] [Module K' V'] [IsScalarTower (𝓞 K') K' V']
-
-end GlobalTheory.LatticeExtension
-
 open NumberField Module in
 open scoped nonZeroDivisors in
 open scoped ComplexOrder in

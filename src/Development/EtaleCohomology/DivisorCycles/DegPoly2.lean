@@ -65,15 +65,8 @@ theorem deg_iff_not_li {F : Type} [Field F] {N n : ℕ} (x : Mat F N) :
   constructor
   · rintro ⟨q, hq0, hqd, hqx⟩
     refine ⟨fun b => q.coeff b, ?_, ?_⟩
-    · have h1 : q = ∑ i ∈ Finset.range (n+1), Polynomial.monomial i (q.coeff i) :=
-        q.as_sum_range' (n+1) (by omega)
-      have h2 : Polynomial.aeval x q = ∑ b : Fin (n+1), q.coeff b • x ^ (b : ℕ) := by
-        conv_lhs => rw [h1]
-
-        rw [map_sum, ← Fin.sum_univ_eq_sum_range (fun i => Polynomial.aeval x (Polynomial.monomial i (q.coeff i)))]
-        refine Finset.sum_congr rfl (fun b _ => ?_)
-        rw [Polynomial.aeval_monomial, Algebra.smul_def]
-      rw [h2] at hqx
+    · rw [Polynomial.aeval_eq_sum_range' (n := n + 1) (by omega),
+        ← Fin.sum_univ_eq_sum_range] at hqx
       funext p
       have := congrArg (fun M : Mat F N => M p.1 p.2) hqx
       simpa [Matrix.sum_apply, Finset.sum_apply] using this

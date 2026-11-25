@@ -389,7 +389,7 @@ theorem factsAt_ofFive : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 :
   · have h : ChiAt R i σ (T.chiW ((i : ℕ) + 1) (res T σ)) := tie.chiR i σ hg
     rw [hs] at h
     rw [(GlobalTheory.ConjCharUnique.conjChar_unique_ofFive R F hR i σ).1 _ _ hμ h]
-    exact FactsLat.muVal_cast hV (tie.laws.muVal _ hin _ hg')
+    exact GlobalTheory.HolDict.muVal_castDict hV (tie.laws.muVal _ hin _ hg')
   · have h := GlobalTheory.EtaConjType.resEta_hasInfExp_of_isEtaConj_ofFive R F hR i σ hK η' hη
     exact (hypConj_of_chars_ofFive R F hR i σ hl.1 hl.2).2 μ' η' hμ hη h.1 h.2
 
@@ -456,7 +456,7 @@ theorem facts_lat_ofFive : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T0
   · have h1 := (tie.chiR i D.what₂.embLL (by rw [hs]; exact hg)).2.2.2.2 rfl
     rw [hs] at h1
     rw [← h1]
-    exact muVal_cast O.hV (tie.laws.muVal _ hin _ hg)
+    exact GlobalTheory.HolDict.muVal_castDict O.hV (tie.laws.muVal _ hin _ hg)
   · rw [hp, hq]
     simp only [Ranks.sigW]
     omega
@@ -787,32 +787,6 @@ end
 section
 
 noncomputable section
-
-namespace GlobalTheory.GalOne.PhaseAt
-
-section General
-
-open MvPolynomial Formalism.BasicNotions Formalism.L2.DIV
-
-end General
-
-section Letters
-
-open NumberField Matrix Complex
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.FD GlobalTheory GlobalTheory.ThFr GlobalTheory.Dict GlobalTheory.AdTh GlobalTheory.ClsVal
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor hiding Level Host
-open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj
-open scoped TensorProduct Classical ComplexConjugate
-open GlobalTheory.AdTh.PhaseMap
-
-variable {D : D7} {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} {Dw : Datum H} {m n : ℕ} {l : Geo.Tor.Level H} (c : Coeff l)
-  (φ : c.F →+* ℂ) {e : D.what₂.Tau → D.what₂.Tau}
-
-variable {lt : LtN Dw n → FVar D m n}
-
-end Letters
-
-end GlobalTheory.GalOne.PhaseAt
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Datum Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.FWT Formalism.L2.Pj
 open MeasureTheory IsDedekindDomain NumberField Matrix
@@ -1970,9 +1944,9 @@ theorem zak_class_term_conj_ofFive : ∀ {D : D7} {G : Type} [Group G] [Fintype 
     obtain ⟨⟨v', hv'⟩, -, h, -⟩ :=
       TensVac.vacua _ _ X g bas idx _ hS.2.2.2.2.2.2.2 hS.2.2.2.1 _ hw hw' L hL 1 _ hΛ
     rw [h v hv.1 v' hv']
-    exact Const.isSB_smul_tf _ hv'.1
+    exact GlobalTheory.Dict.ShortVal.isSB_smul _ hv'.1
   rw [mul_assoc a, ← hval] at hE
-  have key := zak_sum hS hZ (Const.isSB_smul_tf _ hsb) hE (fun q => inC O.c' (O.w () k q)) Y
+  have key := zak_sum hS hZ (GlobalTheory.Dict.ShortVal.isSB_smul _ hsb) hE (fun q => inC O.c' (O.w () k q)) Y
     ((Nat.card (Fin (Vc D i).rank → LevQ (T.Q.Dw ((i : ℕ) + 1)) (O.dδ ()).l₂) : ℕ) : ℂ)⁻¹
 
   rw [hsum _ (Nat.pos_of_ne_zero (DualMark.level_ne _)) dvd_rfl Y₀ hY₀, map_smul, gphi, finsum_eq_sum_of_fintype,

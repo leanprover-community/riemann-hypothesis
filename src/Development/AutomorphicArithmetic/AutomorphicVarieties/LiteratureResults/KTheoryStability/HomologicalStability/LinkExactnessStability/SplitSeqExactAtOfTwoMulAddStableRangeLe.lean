@@ -740,8 +740,7 @@ theorem dblRow_exact : ∀ (V W : Type) (D : Set (List V × List W)) (a b : ℕ)
     obtain ⟨h2, h3⟩ := hyw w hw hl
     obtain ⟨z0, hz0, rfl⟩ := Finset.mem_image.1 hw
     exact ⟨h2, h3, (hsupp z0 hz0).2.2⟩
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+  · rw [map_sum]
     simp only [hbd_incl]
     conv_rhs => rw [decomp x]
     refine Finset.sum_congr rfl fun w hw => ?_

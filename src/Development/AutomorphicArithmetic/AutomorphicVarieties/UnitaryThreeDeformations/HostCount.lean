@@ -389,7 +389,7 @@ theorem UpperTheory.finrank_unramified_cocycles_eq_finrank_invariants :
     group
   let ev : W →ₗ[k] N := ((LinearMap.proj φ).comp W.subtype).codRestrict N (fun y => hev y.1 y.2)
   have hinj : Function.Injective ev := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro y hy
     have hyφ : y.1 φ = 0 := congrArg Subtype.val hy
     obtain ⟨⟨hcont, hc⟩, h0⟩ := (hW y.1).1 y.2
@@ -839,7 +839,6 @@ theorem UpperTheory.Reformulated.B.Qe18.hc_avg :
     calc ∑ q : D ⧸ N, z q.out = ∑ q : D ⧸ N, z (g • q).out := h1.symm
       _ = ∑ q : D ⧸ N, (z g + ρ g (z q.out)) := Finset.sum_congr rfl fun q _ => h2 q
       _ = (N.index : k) • z g + ρ g (∑ q : D ⧸ N, z q.out) := by
-        set_option synthInstance.maxHeartbeats 100000 in
           rw [Finset.sum_add_distrib, Finset.sum_const, Finset.card_univ, hcard, map_sum,
           Nat.cast_smul_eq_nsmul]
   refine ⟨-((N.index : k)⁻¹ • ∑ q : D ⧸ N, z q.out), fun g => ?_⟩
@@ -914,7 +913,7 @@ private theorem hc_tame :
   haveI : Module.Finite k W := by
     let r' : W →ₗ[k] B1 (ρ.comp I.subtype : Representation k I M) := r.codRestrict _ fun z => hr ▸ ⟨z, rfl⟩
     refine Module.Finite.of_injective (r'.prod ((LinearMap.proj φ).comp W.subtype)) ?_
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro z hz
     have z1 := ((hW _).1 z.2).1
     have e1 : r z = 0 := congrArg (fun p => p.1.1) hz

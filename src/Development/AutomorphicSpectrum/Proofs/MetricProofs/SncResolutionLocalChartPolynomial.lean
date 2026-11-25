@@ -15,23 +15,6 @@ namespace GlobalTheory.CompanionTheory.Ar.Cmp.SncRes.ChartInv
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
-theorem proj_diag_ne_zero_iff (z : (Σ k, ι k) → ℂ) (k : K) (i : ι k) :
-    SncRes.proj z ⟨k, (i, i)⟩ ≠ 0 ↔ z ⟨k, i⟩ ≠ 0 := by
-  simp only [SncRes.proj]
-  constructor
-  · intro h h0
-    apply h
-    simp [h0]
-  · intro h
-    have hn : (0 : ℝ) < ‖z ⟨k, i⟩‖ := norm_pos_iff.2 h
-    have hpos : (0 : ℝ) < ∑ j, ‖z ⟨k, j⟩‖ ^ 2 := by
-      refine lt_of_lt_of_le (pow_pos hn 2) ?_
-      exact Finset.single_le_sum (f := fun j => ‖z ⟨k, j⟩‖ ^ 2)
-        (fun j _ => by positivity) (Finset.mem_univ i)
-    have hden : ((∑ j, ‖z ⟨k, j⟩‖ ^ 2 : ℝ) : ℂ) ≠ 0 := by
-      exact_mod_cast hpos.ne'
-    exact div_ne_zero (mul_ne_zero h ((map_ne_zero _).2 h)) hden
-
 theorem isOpen_alt_bis (P : Ideal (MvPolynomial (Σ k, ι k) ℂ)) (p : (k : K) → ι k) :
     IsOpen (SncRes.src P p) := by
   apply _root_.GlobalTheory.CompanionTheory.Ar.Cmp.SncRes.Top.isOpen_alt_bis <;> assumption

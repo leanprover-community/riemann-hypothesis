@@ -147,8 +147,8 @@ private theorem cj_count {l : ℕ} [Fact l.Prime] (P : LocPrime l) (K L : FinExt
 theorem UpperTheory.Prune.card_jumps :
     ∀ (D : D7) (T : GlobalTheory.RowTie.WDTie D.nd D.naut) (Wd : WDSide D T) (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (a : ℕ)
         (r : G D.host.E D.nd.Om →* GL (Fin a) (Qbar l)) (τ : D.host.E →+* Qbar l) (w : PlE D.host)
-        (hr : Continuous fun g => ((r g : GL (Fin a) (Qbar l)) : Matrix (Fin a) (Fin a) (Qbar l)))
-        (hτ : ∀ x : 𝓞 D.host.E, x ∈ w.asIdeal ↔ ‖τ (x : D.host.E)‖ < 1) (hd : Wd.IsdRW l ι r w),
+        (_ : Continuous fun g => ((r g : GL (Fin a) (Qbar l)) : Matrix (Fin a) (Fin a) (Qbar l)))
+        (_ : ∀ x : 𝓞 D.host.E, x ∈ w.asIdeal ↔ ‖τ (x : D.host.E)‖ < 1) (_ : Wd.IsdRW l ι r w),
         Multiset.card (Wd.jumpsW l ι r τ) = a := by
   intro D T Wd l _ ι a r τ w hr hτ hd
   have hw : w ∈ placesOver D.host.E l := by

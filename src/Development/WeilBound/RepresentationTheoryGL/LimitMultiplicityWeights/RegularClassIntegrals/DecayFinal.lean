@@ -160,16 +160,6 @@ namespace MainStatements.WeightKernel.Dec.DDerMemc
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
   {n : ℕ} {J : Matrix (Fin n) (Fin n) E}
 
-theorem exp_entry (Z : Matrix (Fin n) (Fin n) ℂ) (i j : Fin n) :
-    ContDiff ℝ ∞ fun t : ℝ => (NormedSpace.exp (t • Z)) i j := by
-  open scoped Matrix.Norms.Operator in
-  have h1 : ContDiff ℝ ∞ fun t : ℝ => (NormedSpace.exp (t • Z) : Matrix (Fin n) (Fin n) ℂ) := by
-    have : ContDiff ℝ ∞ (NormedSpace.exp : Matrix (Fin n) (Fin n) ℂ → Matrix (Fin n) (Fin n) ℂ) :=
-      contDiff_iff_contDiffAt.2 fun x => (NormedSpace.exp_analytic (𝕂 := ℝ) x).contDiffAt
-    exact this.comp (contDiff_id.smul contDiff_const)
-  open scoped Matrix.Norms.Operator in
-  exact (LinearMap.toContinuousLinearMap (Matrix.entryLinearMap ℝ ℂ i j)).contDiff.comp h1
-
 theorem lineSm (h : IsCMExt F E σ) {b : ℝ → GAd σ J} (hb : IsRealLine σ J b) :
     ContDiff ℝ ∞ fun t => infCoord σ J (projInf σ J (b t)) := by
   classical
@@ -187,12 +177,12 @@ theorem lineSm (h : IsCMExt F E σ) {b : ℝ → GAd σ J} (hb : IsRealLine σ J
     rcases infEmb_eq_or_conj h τ τ' with e | e
     · have : ∀ t, archMat σ J τ' (y t) i j = (NormedSpace.exp (t • Z)) i j := fun t => by
         rw [← e1 t, ← e]; rfl
-      simp only [this]; exact exp_entry Z i j
+      simp only [this]; exact GlobalTheory.Orb.contDiff_exp_smul_entry Z i j
     · have : ∀ t, archMat σ J τ' (y t) i j = conj ((NormedSpace.exp (t • Z)) i j) := fun t => by
         rw [← e1 t]
         change infEmb τ' _ = _
         rw [e]; rfl
-      simp only [this]; exact Complex.conjCLE.contDiff.comp (exp_entry Z i j)
+      simp only [this]; exact Complex.conjCLE.contDiff.comp (GlobalTheory.Orb.contDiff_exp_smul_entry Z i j)
   · simp only [projArch_embArch_ne σ J hu]
     exact contDiff_const
 
@@ -300,7 +290,6 @@ include hι h1
 
 variable [T2Space H] [SecondCountableTopology H] [MeasurableSpace H] [BorelSpace H] (μ : Measure H) [μ.IsHaarMeasure]
 
-
 end Abstract
 
 section Unitary
@@ -314,8 +303,6 @@ variable {x : Matrix (Fin n) (Fin 1) E} {L : Submodule (𝓞 E) (Fin n → E)} {
   {h : GAd σ J → ℝ}
 
 end Unitary
-
-
 
 end GlobalTheory.LaurentAut
 end
@@ -506,7 +493,6 @@ noncomputable section
 
 namespace GlobalTheory.ThK.CuspTransfer.Smooth
 
-
 end GlobalTheory.ThK.CuspTransfer.Smooth
 
 open GlobalTheory.SiegelSet (IsRealLine)
@@ -524,12 +510,7 @@ theorem line_fam (h : IsCMExt F E σ) {γ : ℝ → GAd σ J} (hγ : IsRealLine 
   exact GlobalTheory.Orb.isSmoothRealFam_embArch h τ fun i j => by
     simp only [e2]; exact GlobalTheory.Orb.contDiff_exp_smul_entry Z i j
 
-
-
-
-
 end GlobalTheory.ThK.CuspTransfer.Smooth
-
 
 end
 end -- clump:auto

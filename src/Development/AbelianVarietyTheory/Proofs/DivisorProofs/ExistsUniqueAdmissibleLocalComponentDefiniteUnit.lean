@@ -112,7 +112,6 @@ theorem exists_unique_locComp : ∀ (E : Type) [Field E] [NumberField E] [IsCMFi
   refine ⟨?_, ?_⟩
   · obtain ⟨σ₀, hadm, hirr, f, hf0, hfm, hf⟩ := GlobalTheory.DefU.LocAdm.exists_admissible_comp E n ⟨π, hπ⟩ w
     let ρ : Representation ℂ (UL n w) σ₀.V := σ₀.ρ.comp e.toMulEquiv.symm.toMonoidHom
-    have hρ : ∀ g v, ρ g v = σ₀.ρ (e.symm g) v := fun _ _ => rfl
     let σ : SmIrr (UL n w) :=
       { V := σ₀.V
         ρ := ρ

@@ -64,10 +64,6 @@ noncomputable section
 
 namespace GlobalTheory.HermSD
 
-end GlobalTheory.HermSD
-
-namespace GlobalTheory.HermSD
-
 theorem eq_of_test_haar {V : Type} [AddCommGroup V] [TopologicalSpace V]
     [IsTopologicalAddGroup V] [LocallyCompactSpace V] [SecondCountableTopology V]
     [MeasurableSpace V] [BorelSpace V] {κ P : Measure V} {χ : V → V → ℂ}
@@ -102,13 +98,6 @@ theorem eq_of_test_haar {V : Type} [AddCommGroup V] [TopologicalSpace V]
 
 end GlobalTheory.HermSD
 
-namespace GlobalTheory.HermSD
-
-end GlobalTheory.HermSD
-
-namespace GlobalTheory.HermSD
-
-end GlobalTheory.HermSD
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

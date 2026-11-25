@@ -1029,7 +1029,6 @@ theorem dens_ofValues_ddc_pow (n : ℕ) (u : V n → ℝ) (v : V n) (hu : ContDi
   have hk : kappa = Complex.I / 2 * ((Real.pi : ℂ)⁻¹) := by
     rw [GlobalTheory.HermFrame.kappa]; field_simp
   have h2 : (Complex.I / 2) ^ n ≠ 0 := pow_ne_zero _ (by simp)
-  have hπ : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
   rw [hk, show ∀ d : ℂ, (n.factorial : ℂ) * ((Complex.I / 2 * ((Real.pi : ℂ))⁻¹) ^ n * d) / (Complex.I / 2) ^ n =
       (((n.factorial / Real.pi ^ n : ℝ)) : ℂ) * d from fun d => by
     rw [mul_pow]; field_simp; push_cast; ring, Complex.re_ofReal_mul]

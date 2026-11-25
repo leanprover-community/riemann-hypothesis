@@ -200,7 +200,7 @@ theorem PositivityTheory.Xgn.image_lattice_base_change : ∀ {o Ω : Type} [Comm
     have hv' := (_root_.PositivityTheory.Xgn.A_dotdual_bc.mem_dotDual R _ v).1 hv
     have hmem : w • (Pi.single i 1 : Fin n → Ω) ∈ D.af R p (χ τ) :=
       hw τ ⟨Pi.single i 1, (_root_.PositivityTheory.Xgn.GoodLatticeBaseChange.mem_stdLat R _).2 (fun j => by
-        by_cases h : j = i <;> simp [h, Pi.single_apply, R.one_mem, R.zero_mem]), rfl⟩
+        by_cases h : j = i <;> simp [h, R.one_mem, R.zero_mem]), rfl⟩
     have := hv' _ hmem
     simpa [smul_dotProduct, single_dotProduct] using this
   have hHst : ∀ a ∈ R, ∀ v ∈ D.hh R p (χ τ), a • v ∈ D.hh R p (χ τ) := by

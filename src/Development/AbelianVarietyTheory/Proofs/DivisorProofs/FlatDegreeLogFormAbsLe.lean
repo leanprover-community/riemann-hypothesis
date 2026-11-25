@@ -112,8 +112,4 @@ theorem abs_flatDegVal_le (p : PtAt ex Csz) (i : Fin D.R.m) {PP A M : ℝ} (hH :
 
 end GlobalTheory.CovTop.FlatSz
 
-namespace GlobalTheory.CovTop.FlatSz
-
-end GlobalTheory.CovTop.FlatSz
-
 end

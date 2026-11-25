@@ -124,7 +124,7 @@ theorem ext_germ {f f' : H0 p B O}
 def restr (h : O' ≤ O) : H0 p B O →ₗ[k] H0 p B O' where
   toFun f := (toMod B).presheaf.map (homOfLE h).op f
   map_add' _ _ := map_add _ _ _
-  map_smul' c f := (map_smul_resG h _ _).trans
+  map_smul' c _ := (map_smul_resG h _ _).trans
     (congrArg (· • _) (DFunLike.congr_fun (TopForm.resG_comp_algX p h) c))
 
 @[simp] theorem germ_restr (h : O' ≤ O) (i : B.ι) (y : Y) (hy : y ∈ O') (hi : y ∈ B.U i)

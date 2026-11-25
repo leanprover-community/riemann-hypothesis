@@ -79,14 +79,10 @@ theorem mem_OL_of_norm_le_one (K : FinExt l) (x : ↥K.1) (h : ‖((x : ↥K.1) 
     (algebraMap ↥K.1 (Om l)).injective
   exact (isIntegral_algHom_iff _ hinj).1 (isIntegral_of_norm_le_one _ h)
 
-theorem compactSpace_GK (K : FinExt l) : CompactSpace ↥(GK K) := by
-  have := K.2
-  exact isCompact_iff_compactSpace.mp (IntermediateField.fixingSubgroup_isClosed K.1).isCompact
-
 theorem norm_le_one (K : FinExt l) (χ : ↥(GK K) →* (↥K.1)ˣ)
     (hc : Continuous (fun g => (((χ g : (↥K.1)ˣ) : ↥K.1) : Om l))) (g : ↥(GK K)) :
     ‖(((χ g : (↥K.1)ˣ) : ↥K.1) : Om l)‖ ≤ 1 := by
-  haveI := compactSpace_GK K
+  haveI := GlobalTheory.UnramifiedCrys.compactSpace_GK K
   obtain ⟨M, hM⟩ := (isCompact_range hc).isBounded.exists_norm_le
   have hpow : ∀ n : ℕ, ‖(((χ g : (↥K.1)ˣ) : ↥K.1) : Om l)‖ ^ n ≤ M := fun n => by
     have := hM _ ⟨g ^ n, rfl⟩
@@ -241,11 +237,6 @@ section Main
 
 variable {B : Type} [CommRing B] {S : Subring B} {F : ℕ → Ideal B} {ϖ : B}
 
-theorem pow_mem_F (env : PerEnv S F ϖ) {x : B} (hx : x ∈ F 1) (k : ℕ) : x ^ k ∈ F k := by
-  induction k with
-  | zero => simp [env.top]
-  | succ k ih => rw [pow_succ]; exact env.mul_le k 1 (Ideal.mul_mem_mul ih hx)
-
 theorem exists_near_ideal (hϖ : ϖ ∈ S) (J : Ideal B) (m : ℕ) :
     ∃ I : Ideal S, ∀ x : S, x ∈ I ↔ Near S ϖ J m (x : B) := by
   refine ⟨Ideal.span {(⟨ϖ, hϖ⟩ : S) ^ m} ⊔ J.comap S.subtype, fun x => ⟨fun hx => ?_, ?_⟩⟩
@@ -305,7 +296,7 @@ theorem finiteRing_sq_sub_mul_sq_eq_of_card {R C : Type} [CommRing R] [CommRing 
       rw [← map_pow]
       refine hmF _ ?_
       rw [SubmonoidClass.coe_pow]
-      exact pow_mem_F env hf k
+      exact GlobalTheory.CompanionTheory.LTPer.LogGal.pow_mem_F env hf k
     have e : mk (v' 0) ^ M = mk (v' 0 ^ M - ϖ' ^ 1 * s0') + mk ϖ' * mk s0' := by
       simp only [map_sub, map_mul, map_pow, pow_one]
       ring
@@ -440,7 +431,6 @@ theorem map_subst_comm {A B : Type} [CommRing A] [CommRing B] (h : A →+* B) {F
   rw [PowerSeries.map_subst (PowerSeries.HasSubst.of_constantCoeff_zero hG),
     PowerSeries.map_subst (PowerSeries.HasSubst.of_constantCoeff_zero hF)] at h2
   exact h2
-
 
 open GlobalTheory.CompanionTheory.LTHodge.CharEx GroundTheory.LocalField GroundTheory.LocalField.FormalGroup ValuativeRel in
 theorem exists_series_comm : ∀ {l : ℕ} [Fact l.Prime] (K : FinExt l) (π : ↥(OL K)), Irreducible π → ∀ a : ↥(OL K),
@@ -653,7 +643,6 @@ theorem exists_ltIter_mem_one (ϖ' : B) (hϖ : ϖ * ϖ' = 1) (θ : B →+* C) (h
 end GlobalTheory.CompanionTheory.LTPer.Nonv
 
 namespace GlobalTheory.CompanionTheory.LTPer
-
 
 open GlobalTheory.CompanionTheory.LTPer.Nonv in
 theorem exists_ltIter_eq_zero_of_tends : ∀ {B : Type} [CommRing B] {S : Subring B} {F : ℕ → Ideal B} {ϖ : B} {C : Type} [NormedField C] [IsUltrametricDist C], PerEnv S F ϖ → ∀ (ϖ' : B), ϖ * ϖ' = 1 →
@@ -975,7 +964,6 @@ open scoped Classical
 namespace GlobalTheory.CompanionTheory.LTPer.LogConv
 
 variable {B : Type} [CommRing B] {S : Subring B} {ϖ : B} {J : Ideal B}
-
 
 theorem near_mul {a b : ℕ} {x y : B} (hx : Near S ϖ J a x) (hy : Near S ϖ J b y) :
     Near S ϖ J (a + b) (x * y) := by

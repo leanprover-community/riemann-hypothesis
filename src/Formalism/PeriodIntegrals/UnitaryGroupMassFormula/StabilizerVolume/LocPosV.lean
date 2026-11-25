@@ -77,16 +77,9 @@ theorem locPos_holds : LocPos := by
   have hQcl : IsClosed {x | x - X1 ∈ Λ 0} :=
     (AddSubgroup.isClosed_of_isOpen _ (hΛo 0)).preimage (continuous_id.sub continuous_const)
   have hQc : IsCompact {x | x - X1 ∈ Λ 0} := by
-    have e : {x | x - X1 ∈ Λ 0} = (fun w => w + X1) '' (Λ 0 : Set (Fin a → Fin M → Fv F v ⊗[F] E)) := by
-      ext z
-      simp only [mem_ofPred_eq, mem_image, SetLike.mem_coe]
-      constructor
-      · intro hz
-        exact ⟨z - X1, hz, by abel⟩
-      · rintro ⟨w, hw, rfl⟩
-        simpa using hw
-    rw [e]
-    exact (hΛc 0).image (continuous_id.add continuous_const)
+    rw [show {x | x - X1 ∈ Λ 0} = Homeomorph.addRight (-X1) ⁻¹' (Λ 0 : Set _) by
+      ext x; simp [sub_eq_add_neg]]
+    exact (Homeomorph.addRight (-X1)).isCompact_preimage.mpr (hΛc 0)
   refine ⟨{x | x - X1 ∈ Λ 0}.indicator 1, ⟨(LocallyConstant.indicator
     (LocallyConstant.const _ (1 : ℂ)) ⟨hQcl, hQo⟩).isLocallyConstant,
     HasCompactSupport.intro' hQc hQcl fun Y hY => Set.indicator_of_notMem hY _⟩, ?_⟩

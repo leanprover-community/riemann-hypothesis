@@ -28,19 +28,20 @@ private lemma zii_plus0_le {κ : ℕ} (lam : Fin (κ + 1) → ℤ) (h : Antitone
   unfold wt
   exact Finset.single_le_sum (f := plus lam) (fun i _ => zii_plus_nonneg lam h i) (Finset.mem_univ 0)
 
-private lemma zii_log_le {a L v W : ℝ} (ha : 1 ≤ a) (hv : 1 ≤ v) (hL : 1 ≤ L)
-    (hlog : Real.log (a * v) ≤ L) (hW0 : 0 < W) (hW : W ≤ 9 * a ^ 2) : Real.log W ≤ 10 * L := by
+private lemma log_le_mul_of_le (c : ℝ) {k a L v x : ℝ} (hc : 1 ≤ c) (hk : c + 1 ≤ k)
+    (ha : 1 ≤ a) (hv : 1 ≤ v) (hL : 1 ≤ L) (hlog : Real.log (a * v) ≤ L) (hx0 : 0 < x)
+    (hx : x ≤ c * a ^ 2) : Real.log x ≤ k * L := by
   have ha0 : 0 < a := by linarith
-  have h1 : Real.log W ≤ Real.log (9 * a ^ 2) := Real.log_le_log hW0 hW
-  have h2 : Real.log (9 * a ^ 2) = Real.log 9 + 2 * Real.log a := by
-    rw [Real.log_mul (by norm_num) (pow_pos ha0 2).ne', Real.log_pow, Nat.cast_ofNat]
-  have h3 : Real.log 9 ≤ 8 := by
-    have := Real.log_le_sub_one_of_pos (by norm_num : (0:ℝ) < 9)
-    linarith
-  have h4 : Real.log a ≤ L := by
-    have : Real.log a ≤ Real.log (a * v) := Real.log_le_log ha0 (le_mul_of_one_le_right ha0.le hv)
-    linarith
-  linarith
+  have h1 := Real.log_le_log hx0 hx
+  have h2 : Real.log (c * a ^ 2) = Real.log c + 2 * Real.log a := by
+    rw [Real.log_mul (by linarith) (pow_pos ha0 2).ne', Real.log_pow, Nat.cast_ofNat]
+  have h3 := Real.log_le_sub_one_of_pos (by linarith : 0 < c)
+  have h4 := (Real.log_le_log ha0 (le_mul_of_one_le_right ha0.le hv)).trans hlog
+  have h5 : Real.log x ≤ (c - 1) * 1 + 2 * L := by linarith
+  calc
+    Real.log x ≤ (c - 1) * L + 2 * L := h5.trans (by gcongr)
+    _ = (c + 1) * L := by ring
+    _ ≤ k * L := by gcongr
 
 theorem zeta_proposition_second : PropZ_ii := by
   intro C₀ hC
@@ -90,7 +91,7 @@ theorem zeta_proposition_second : PropZ_ii := by
       have e2 : ((κ:ℝ) + 1) * (b' + S) ≤ a * (2 * a) :=
         mul_le_mul hKa (by linarith) (by linarith) (by linarith)
       have hlog : Real.log ((plus (lam ρ) 0 : ℝ) + (κ:ℝ) + 1) ≤ 10 * L :=
-        zii_log_le ha1 hv1 hL1 hN.log_av (by linarith) (by
+        log_le_mul_of_le 9 (by norm_num) (by norm_num) ha1 hv1 hL1 hN.log_av (by linarith) (by
           have : a * (2 * a) = 2 * a ^ 2 := by ring
           linarith)
       have f1 := mul_le_mul_of_nonneg_right hWb hlogK0
@@ -104,7 +105,7 @@ theorem zeta_proposition_second : PropZ_ii := by
         linarith
       have e2 : ((κ:ℝ) + 1 + 3) * S ≤ (4 * a) * a := mul_le_mul (by linarith) (by linarith) hS0 (by linarith)
       have hlog : Real.log ((plus (lam ρ) 0 : ℝ) + (κ:ℝ) + 1) ≤ 10 * L :=
-        zii_log_le ha1 hv1 hL1 hN.log_av (by linarith) (by
+        log_le_mul_of_le 9 (by norm_num) (by norm_num) ha1 hv1 hL1 hN.log_av (by linarith) (by
           have : (4 * a) * a = 4 * a ^ 2 := by ring
           linarith)
       have f1 := mul_le_mul_of_nonneg_right (hw.trans e1) hlogK0
@@ -181,20 +182,6 @@ theorem zeta_proposition_second : PropZ_ii := by
 private lemma positive_part_head_le_weight {κ : ℕ} (lam : Fin (κ + 1) → ℤ) (h : Antitone lam) :
     0 ≤ plus lam 0 ∧ plus lam 0 ≤ wt (plus lam) := ⟨zii_plus_nonneg lam h 0, zii_plus0_le lam h⟩
 
-private lemma ziii_log {a L v x : ℝ} (ha : 1 ≤ a) (hv : 1 ≤ v) (hL : 1 ≤ L)
-    (hlog : Real.log (a * v) ≤ L) (hx0 : 0 < x) (hx : x ≤ 7 * a ^ 2) : Real.log x ≤ 8 * L := by
-  have ha0 : 0 < a := by linarith
-  have h1 : Real.log x ≤ Real.log (7 * a ^ 2) := Real.log_le_log hx0 hx
-  have h2 : Real.log (7 * a ^ 2) = Real.log 7 + 2 * Real.log a := by
-    rw [Real.log_mul (by norm_num) (pow_pos ha0 2).ne', Real.log_pow, Nat.cast_ofNat]
-  have h3 : Real.log 7 ≤ 6 := by
-    have := Real.log_le_sub_one_of_pos (by norm_num : (0:ℝ) < 7)
-    linarith
-  have h4 : Real.log a ≤ L := by
-    have : Real.log a ≤ Real.log (a * v) := Real.log_le_log ha0 (le_mul_of_one_le_right ha0.le hv)
-    linarith
-  linarith
-
 private lemma ziii_place {C₀ K b' S L lkv logT W lst lg U : ℝ} (hC : 0 ≤ C₀) (hK : 1 ≤ K)
     (hlkv : 0 ≤ lkv) (hT : 0 ≤ logT)
     (hW : W ≤ U + 4 * K * (b' + S)) (hlg : lg ≤ 8 * L) (hlst : lst ≤ (2 + C₀) * (b' + S)) :
@@ -224,7 +211,7 @@ private lemma ziii_top {C₀ K a b' S L v logT W p lst At bt : ℝ} (hC : 0 ≤ 
     linarith
   have haa : a ≤ a ^ 2 := le_self_pow₀ (le_trans hb1 hba) two_ne_zero
   have hlg : Real.log (p + K) ≤ 8 * L :=
-    ziii_log (by linarith) hv hL hlog (by linarith) (by
+    log_le_mul_of_le 7 (by norm_num) (by norm_num) (by linarith) hv hL hlog (by linarith) (by
       have : a * (3 * a) = 3 * a ^ 2 := by ring
       linarith)
   have hlst : lst ≤ (2 + C₀) * (b' + S) := by
@@ -251,7 +238,7 @@ private lemma ziii_other {C₀ K a b' S L v logT W p lst : ℝ} (hC : 0 ≤ C₀
   have hKS : (K + 3) * S ≤ 4 * a * a := mul_le_mul hK3 hSa hS (by linarith)
   have haa : a ≤ a ^ 2 := le_self_pow₀ (le_trans hb1 hba) two_ne_zero
   have hlg : Real.log (p + K) ≤ 8 * L :=
-    ziii_log (by linarith) hv hL hlog (by linarith) (by
+    log_le_mul_of_le 7 (by norm_num) (by norm_num) (by linarith) hv hL hlog (by linarith) (by
       have : 4 * a * a = 4 * a ^ 2 := by ring
       linarith)
   have hlst : lst ≤ (2 + C₀) * (b' + S) := by

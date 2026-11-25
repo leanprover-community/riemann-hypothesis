@@ -604,39 +604,6 @@ theorem exists_opens_preimage_le_of_isClosedMap {F Y : Scheme.{0}} (φ : F ⟶ Y
     by_contra h
     exact hp ⟨p, h, rfl⟩
 
-theorem exists_basicOpen_le_of_finite {A : Type} [CommRing A] (s : Set (PrimeSpectrum A)) (hs : s.Finite)
-    (U : Set (PrimeSpectrum A)) (hU : IsOpen U) (hsU : s ⊆ U) :
-    ∃ b : A, s ⊆ PrimeSpectrum.basicOpen b ∧ (PrimeSpectrum.basicOpen b : Set (PrimeSpectrum A)) ⊆ U := by
-  obtain ⟨I, hI⟩ := (PrimeSpectrum.isClosed_iff_zeroLocus_ideal _).1 hU.isClosed_compl
-  by_cases hne : s = ∅
-  · subst hne
-    exact ⟨0, by simp, by simp⟩
-  obtain ⟨a, ha⟩ := Set.nonempty_iff_ne_empty.2 hne
-  have key : ¬ ((I : Set A) ⊆ ⋃ i ∈ s, (i.asIdeal : Set A)) := by
-    rw [Ideal.subset_union_prime_finite hs a a (fun i _ _ _ => i.2)]
-    rintro ⟨i, hi, hle⟩
-    have : i ∈ Uᶜ := by rw [hI]; exact hle
-    exact this (hsU hi)
-  obtain ⟨b, hb, hb'⟩ := Set.not_subset.1 key
-  refine ⟨b, fun i hi h => hb' (Set.mem_iUnion₂.2 ⟨i, hi, h⟩), fun i hi => ?_⟩
-  by_contra h
-  have : i ∈ PrimeSpectrum.zeroLocus (I : Set A) := hI ▸ h
-  exact hi (this hb)
-
-theorem exists_basicOpen_le_of_finite' {G : Scheme.{0}} {W : G.Opens} (hW : IsAffineOpen W) (s : Set G) (hs : s.Finite)
-    (hsW : s ⊆ W) (U : G.Opens) (hsU : s ⊆ U) : ∃ b : Γ(G, W), s ⊆ G.basicOpen b ∧ G.basicOpen b ≤ U := by
-  obtain ⟨b, h₁, h₂⟩ := exists_basicOpen_le_of_finite (A := Γ(G, W)) (hW.fromSpec ⁻¹' s)
-    (hs.preimage hW.fromSpec.isOpenEmbedding.injective.injOn) _
-    (hW.fromSpec ⁻¹ᵁ U).2 (fun p hp => hsU hp)
-  refine ⟨b, fun p hp => ?_, ?_⟩
-  · have : p ∈ Set.range hW.fromSpec := by rw [hW.range_fromSpec]; exact hsW hp
-    obtain ⟨q, rfl⟩ := this
-    rw [← hW.fromSpec_image_basicOpen]
-    exact ⟨q, h₁ hp, rfl⟩
-  · rw [← hW.fromSpec_image_basicOpen]
-    rintro _ ⟨q, hq, rfl⟩
-    exact h₂ hq
-
 theorem exists_affine_preimage_eq_basicOpen {F G Y : Scheme.{0}} (κ : F ⟶ G) [IsClosedImmersion κ] (φ : F ⟶ Y)
     (hφ : IsClosedMap φ) {W : G.Opens} (hW : IsAffineOpen W) (y : Y) (hfin : (κ '' {p | φ p = y}).Finite)
     (hy : ∀ p, φ p = y → κ p ∈ W) :
@@ -645,7 +612,8 @@ theorem exists_affine_preimage_eq_basicOpen {F G Y : Scheme.{0}} (κ : F ⟶ G) 
   obtain ⟨_, ⟨O₁, hO₁, rfl⟩, hyO₁, hO₁N⟩ := Y.isBasis_affineOpens.exists_subset_of_mem_open hyN N.2
   let U : G.Opens := ⟨(κ '' ((φ ⁻¹ᵁ O₁ : F.Opens) : Set F)ᶜ)ᶜ,
     (κ.isClosedEmbedding.isClosedMap _ (φ ⁻¹ᵁ O₁).2.isClosed_compl).isOpen_compl⟩
-  obtain ⟨b₁, hb₁, hb₁'⟩ := exists_basicOpen_le_of_finite' hW _ hfin (by rintro _ ⟨p, hp, rfl⟩; exact hy p hp) U (by
+  obtain ⟨b₁, hb₁, hb₁'⟩ := GlobalTheory.exists_basicOpen_le_of_finite hW U hfin
+    (by rintro _ ⟨p, hp, rfl⟩; exact hy p hp) (by
     rintro _ ⟨p, hp, rfl⟩ ⟨q, hq, e⟩
     obtain rfl := κ.isClosedEmbedding.injective e
     apply hq

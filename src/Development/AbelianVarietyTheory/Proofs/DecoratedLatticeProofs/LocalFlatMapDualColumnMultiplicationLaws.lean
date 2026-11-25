@@ -62,8 +62,6 @@ theorem iota_mul (p : Place D k) (x : k) (m : AE D) : p.ι x * m = p.ι (x * p.�
   rw [map_mul, p.π_ι] at h2
   rw [h2, ← mul_assoc, _root_.GlobalTheory.LocMod.Witness.e_ι]
 
-alias xi_ne := _root_.GlobalTheory.LocMod.Witness.xi_ne
-
 theorem map_iota_mul (p : Place D k) {a b c : ℕ} (zk : Matrix (Fin a) (Fin b) k) (x : Mx D b c) :
     (zk.map p.ι : Mx D a b) ⬝ x = (zk * x.map p.π).map p.ι := by
   ext i j
@@ -143,7 +141,7 @@ theorem law_dual_col : ∀ (D : D7), FlatLaw D → GlobalTheory.FinPl.FlatLaws D
   intro D _ hFL _ k _ _ _ _ _ _ p ν _ ψ ψk hχ ρ B J st s hs n n' _ _ _ _ c FA F₀ FV G₀ FW _ hbes hjac Tm hTm r q hq b Φ Φ' hΦ'
   obtain ⟨i, rfl, hi, hfree⟩ := hq
   have hc : c = 2 * ρ := hjac.1
-  have hκ : ∀ m : ℕ, s * p.xi ^ m ≠ 0 := fun m => mul_ne_zero hs (pow_ne_zero _ (xi_ne p))
+  have hκ : ∀ m : ℕ, s * p.xi ^ m ≠ 0 := fun m => mul_ne_zero hs (pow_ne_zero _ (GlobalTheory.LocMod.Witness.xi_ne p))
   let i₀ : Fin ρ := ⟨i.val, hi⟩
   let zk : Matrix (Fin ρ) (Fin J.W.rank) k :=
     Matrix.of fun i' β => if i' = i₀ then b * (s * p.xi ^ (ρ - i.val)) * FW.γ r β else 0

@@ -32,19 +32,10 @@ namespace PositivityTheory.RL.Delta
 open Complex
 open scoped Real ContDiff
 
-theorem dense_hasCompactSupport : ∀ (n : ℕ), Dense {f : SchwartzMap (Fin n → ℝ) ℂ | HasCompactSupport (f : (Fin n → ℝ) → ℂ)} :=
-  fun _ => SchwartzMap.dense_hasCompactSupport
-
-theorem exists_div (n : ℕ) (f : SchwartzMap (Fin n → ℝ) ℂ)
-    (hf : tsupport (f : (Fin n → ℝ) → ℂ) ⊆ Metric.ball 0 1) (h0 : f 0 = 0) :
-    ∃ g : Fin n → SchwartzMap (Fin n → ℝ) ℂ, (∀ i, HasCompactSupport (g i : (Fin n → ℝ) → ℂ)) ∧
-      ∀ x, f x = ∑ i, (cexp (2 * π * I * x i) - 1) * g i x :=
-  GlobalTheory.CompanionTheory.DiracComb.exists_div n f hf h0
-
 theorem zero_of_ball (n : ℕ) (T : SchwartzMap (Fin n → ℝ) ℂ →L[ℂ] ℂ)
     (hχ : ∀ (i : Fin n) (f g : SchwartzMap (Fin n → ℝ) ℂ), (∀ x, g x = cexp (2 * π * I * x i) * f x) → T g = T f)
     (f : SchwartzMap (Fin n → ℝ) ℂ) (hf : tsupport (f : (Fin n → ℝ) → ℂ) ⊆ Metric.ball 0 1) (h0 : f 0 = 0) : T f = 0 := by
-    obtain ⟨g, hg, hg'⟩ := exists_div n f hf h0
+    obtain ⟨g, hg, hg'⟩ := GlobalTheory.CompanionTheory.DiracComb.exists_div n f hf h0
     have hsm : ∀ i, ContDiff ℝ ∞ (fun x : Fin n → ℝ => cexp (2 * π * I * x i) * g i x) := by
       intro i
       refine ContDiff.mul ?_ ((g i).smooth ⊤)
@@ -100,7 +91,7 @@ theorem eq_delta (n : ℕ) (T : SchwartzMap (Fin n → ℝ) ℂ →L[ℂ] ℂ)
     BoundedContinuousFunction.evalCLM ℂ 0 ∘L SchwartzMap.toBoundedContinuousFunctionCLM ℂ _ _
   have hcl : IsClosed {f : SchwartzMap (Fin n → ℝ) ℂ | T f = T ψ * S f} :=
     isClosed_eq T.continuous (continuous_const.mul S.continuous)
-  refine closure_minimal (t := {f : SchwartzMap (Fin n → ℝ) ℂ | T f = T ψ * S f}) ?_ hcl (dense_hasCompactSupport n f)
+  refine closure_minimal (t := {f : SchwartzMap (Fin n → ℝ) ℂ | T f = T ψ * S f}) ?_ hcl (GlobalTheory.CompanionTheory.DiracComb.dense_hasCompactSupport n f)
   intro f hf
   have := hA (f - f 0 • ψ) (HasCompactSupport.sub hf (HasCompactSupport.smul_left (f := fun _ => f 0) h₁)) (by
     show f 0 - f 0 • ψ 0 = 0

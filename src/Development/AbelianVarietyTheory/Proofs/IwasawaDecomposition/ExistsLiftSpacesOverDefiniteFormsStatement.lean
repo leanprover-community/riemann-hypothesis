@@ -369,7 +369,7 @@ theorem exists_embed {K N W : Type} [Field K] [AddCommGroup N] [Module ℂ N] [N
     rw [← inner_conj_symm, h1]
     exact hC.herm ⟨_, hm v⟩ ⟨_, hm (j x)⟩
   refine ⟨J, ?_, hr, hall, hJ⟩
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro u hu
   have h := hall u u
   rw [show ip (J u) (J u) = ip 0 (J u) by rw [hu], hz] at h

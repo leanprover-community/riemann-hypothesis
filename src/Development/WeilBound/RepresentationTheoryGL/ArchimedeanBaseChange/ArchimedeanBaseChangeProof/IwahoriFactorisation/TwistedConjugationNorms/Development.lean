@@ -181,7 +181,7 @@ section Val
 
 variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))]
 
-alias ordL_eq_neg_log' := _root_.GlobalTheory.LGrp.ordL_eq
+alias GlobalTheory.LGrp.ordL_eq := _root_.GlobalTheory.LGrp.ordL_eq
 
 theorem v_ne_zero' {y : L} (hy : y ≠ 0) : Valued.v y ≠ 0 := (Valuation.ne_zero_iff _).2 hy
 
@@ -232,13 +232,6 @@ theorem tdiag_mul_diagT {w : Pl E} {a : ℕ} (ϖ : (w.adicCompletion E)ˣ) (x : 
     tdiag ϖ x * GlobalTheory.SmGL.diagT _ (Fin a) u = GlobalTheory.SmGL.diagT _ (Fin a) (fun i => ϖ ^ x i * u i) := by
   rw [tdiag, ← map_mul]; rfl
 
-theorem nv_strictAnti {a : ℕ} {x : Fin a → ℤ} (hx : StrictAnti x) : StrictAnti (nv x) := by
-  intro i j hij
-  have h1 := hx hij
-  have h2 := hx (Fin.rev_lt_rev.mpr hij)
-  unfold nv
-  omega
-
 theorem twisted_conj_diagonal_valuation_units (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (a : ℕ) (x : Fin a → ℤ) (hx : StrictAnti x)
     (D D' : Fin a → (w.adicCompletion E)ˣ) (hD : ∀ i, WithZero.log (Valued.v (D i : w.adicCompletion E)) = -x i)
     (hD' : ∀ i, WithZero.log (Valued.v (D' i : w.adicCompletion E)) = -x i) (h : GLw a w)
@@ -255,7 +248,7 @@ theorem twisted_conj_diagonal_valuation_units (hU : Unr E) (w : Pl E) (hw : ¬ I
       ∀ i, ordL ((GlobalTheory.SmGL.diagT _ (Fin a) (F * fun i => (Units.map (cj w).toMonoidHom (F i.rev))⁻¹)).val i i) = nv x i := by
     intro F hF
     refine ⟨fun i j hij => by rw [diagT_val_apply, ite_eq_right hij], fun i => ?_⟩
-    rw [diagT_val_apply, ite_eq_left rfl, ordL_eq_neg_log', Pi.mul_apply, logv_mul, logv_inv, logv_cj hU, hF, hF]
+    rw [diagT_val_apply, ite_eq_left rfl, GlobalTheory.LGrp.ordL_eq, Pi.mul_apply, logv_mul, logv_inv, logv_cj hU, hF, hF]
     unfold nv
     ring
   obtain ⟨-, hoff⟩ := diagonal_conj_distinct_valuations_eq w a (nv x) (nv_strictAnti hx).injective _ _ h (hent D hD) (hent D' hD') hN
@@ -280,7 +273,7 @@ theorem le_and_half_le_prod_one_sub_exp_neg_of_bounds (hU : Unr E) (w : Pl E) (h
     ∃ z ∈ twCent (thL a w) (tdiag ϖ x * τ), ∃ s ∈ TO a w, h = z * s := by
   have hϖv : WithZero.log (Valued.v (ϖ : w.adicCompletion E)) = -1 := by
     have := hϖ.1
-    rw [ordL_eq_neg_log'] at this
+    rw [GlobalTheory.LGrp.ordL_eq] at this
     omega
   have hϖc : Units.map (cj w).toMonoidHom ϖ = ϖ := Units.ext hϖ.2
   obtain ⟨u, rfl, hu⟩ := TO_diagT hτ
@@ -572,8 +565,6 @@ open NumberField IsDedekindDomain Matrix Polynomial GlobalTheory.BCT GlobalTheor
 open scoped Classical
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-theorem _root_.GlobalTheory.T.unitary_level_subgroup_properties : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∀ (w : Pl E), ¬ IsSplitAt w → ∀ (n : ℕ) (b : GLw n w), IsWitt n w b → ∀ (ϖ : (w.adicCompletion E)ˣ) (l : Fin (n / 2) → ℤ), IsUnifAt ϖ → Cone l → IsOpen (KL n w : Set (UL n w)) ∧ IsCompact (KL n w : Set (UL n w)) ∧ IsLevel (MonoidHom.id _) (KL n w) (iwU n w b) ∧ (iwU n w b).relIndex (KL n w) ≠ 0 ∧ IsCompact {g : UL n w | fU n w b ϖ l g ≠ 0} := by
-  exact @GlobalTheory.CompanionTheory.IwLevels.levels_unitary
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryLevelSubgroupPropertiesStatement =====
@@ -599,8 +590,8 @@ theorem unitary_hecke_orbit_single_coset (hU : Unr E) (w : Pl E) (hw : ¬ IsSpli
     (∃ p₀, OneCoset (MonoidHom.id (UL n w)) (iwU n w b) γ {g | fU n w b ϖ l g ≠ 0} p₀) ∧
       CentOK (MonoidHom.id (UL n w)) (KL n w) (iwU n w b) γ ∧ HasVals γ.1.val.charpoly (wexp n l) := by
   obtain ⟨p₀, u, h1, -, h3, h4, h5⟩ := s2raw hU w hw n b hb ϖ hϖ l hl γ hP
-  obtain ⟨-, hKc, hI, -, -⟩ := GlobalTheory.T.unitary_level_subgroup_properties E hU w hw n b hb ϖ l hϖ hl
-  have hIc : IsCompact (iwU n w b : Set (UL n w)) := (GlobalTheory.T.unitary_iwahori_facts E hU w hw n b hb).2.2.1
+  obtain ⟨-, hKc, hI, -, -⟩ := GlobalTheory.CompanionTheory.IwLevels.levels_unitary E hU w hw n b hb ϖ l hϖ hl
+  have hIc : IsCompact (iwU n w b : Set (UL n w)) := (GlobalTheory.CompanionTheory.UnitaryWitt.unitary_hyperbolic_basis E hU w hw n b hb).2.2.1
   have hC : IsCompact (((iwU n w b).map (MulAut.conj p₀).toMonoidHom : Subgroup (UL n w)) : Set (UL n w)) := by
     rw [Subgroup.coe_map]
     exact hIc.image ((continuous_const.mul continuous_id).mul continuous_const)
@@ -626,28 +617,6 @@ open GlobalTheory.BCT GlobalTheory.UnitaryBC Formalism.UG
 open scoped Classical
 
 namespace PositivityTheory.Rg.Bc.ArchbcB.B.M4
-
-section Generic
-
-variable {G : Type} [Group G] [TopologicalSpace G]
-
-theorem g1 [IsTopologicalGroup G] [T2Space G] (θ : G →* G) (K I : Subgroup G) (hKo : IsOpen (K : Set G))
-    (hKc : IsCompact (K : Set G)) (hθK : ∀ k ∈ K, θ k ∈ K) (hI : IsLevel θ K I) (δ : G) (X : Set G)
-    (hXc : IsCompact X) (hXI : ∀ i ∈ I, ∀ g : G, (i * g ∈ X ↔ g ∈ X) ∧ (g * i ∈ X ↔ g ∈ X))
-    (hC : CentOK θ K I δ) (p₀ : G) (h1 : OneCoset θ I δ X p₀) :
-    twOrb θ K δ (X.indicator 1) = ((I.relIndex K : ℕ) : ℂ)⁻¹ := by
-  first
-    | (apply twisted_orbital_integral_indicator_inv_index <;> assumption)
-
-theorem g2 (θ : G →* G) (K : Subgroup G) (S : Set G) (wt f : G → ℂ) (δ₀ : G) (c : ℂ) (hS : δ₀ ∈ S)
-    (hinv : ∀ δ ∈ S, ∀ g : G, g⁻¹ * δ * θ g ∈ S)
-    (hval : ∀ g : G, wt (g⁻¹ * δ₀ * θ g) * twOrb θ K (g⁻¹ * δ₀ * θ g) f = c)
-    (hone : ∀ δ ∈ S, wt δ * twOrb θ K δ f ≠ 0 → ∃ g : G, δ = g⁻¹ * δ₀ * θ g) :
-    clSum θ K S wt f = c := by
-  first
-    | (apply twisted_class_sum_eq_single_orbit <;> assumption)
-
-end Generic
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
@@ -764,7 +733,7 @@ theorem thL_diag (w : Pl E) (hw : ¬ IsSplitAt w) (a : ℕ) {g : GLw a w} (hg : 
 
 theorem TO_le_iw (w : Pl E) (a : ℕ) {s : GLw a w} (hs : s ∈ TO a w) : s ∈ iwGL a w := by
   have hd : IsDiag s := hs.1
-  rw [(GlobalTheory.T.iwahori_and_maximal_compact_criteria E w a s).1]
+  rw [(GlobalTheory.CompanionTheory.IwEntries.iwGL_KGL_entries E w a s).1]
   refine ⟨fun i j => ?_, fun i j => ?_, fun i j hij => ?_⟩
   · by_cases h : i = j
     · subst h; exact (hs.2 i).le
@@ -839,7 +808,6 @@ theorem continuous_conj {G : Type} [Group G] [TopologicalSpace G] [IsTopological
 end Local
 
 end S1
-
 
 open S1 in
 theorem s1 (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (ϖ : (w.adicCompletion E)ˣ) (hϖ : IsUnifAt ϖ) (a : ℕ) (y : Fin a → ℤ)
@@ -971,7 +939,7 @@ theorem k1 (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (n : ℕ) (b : GLw n w)
     (hQ : γ.1.val.charpoly = Q₁ * Q₂) (hm₁ : Q₁.Monic) (hm₂ : Q₂.Monic) (hc₁ : IsCsr w Q₁) (hc₂ : IsCsr w Q₂) :
     kapSign n w Q₁ γ.1 = 1 := by
   obtain ⟨-, -, hV⟩ := s2 hU w hw n b hb ϖ hϖ l hl γ hP
-  obtain ⟨hanti, hrev⟩ := GlobalTheory.T.weight_exponent_strictly_antitone n l hl
+  obtain ⟨hanti, hrev⟩ := GlobalTheory.CompanionTheory.Wexp.wexp_strictAnti_rev n l hl
   refine Kap.kapSign_eq_one_of_vals hU w n γ.1 γ.2 (wexp n l) hanti.injective ?_ hV Q₁
   intro i j h
   exact hanti.injective (h.trans (hrev i).symm)
@@ -1420,7 +1388,7 @@ theorem uniqR (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (n : ℕ) (b : GLw n
     (hQ : γ.1.val.charpoly = γ'.1.val.charpoly) : ∃ g : UL n w, γ' = g⁻¹ * γ * g := by
   obtain ⟨p₀, u, hu, hγ, -, -, hQγ⟩ := s2raw hU w hw n b hb ϖ hϖ l hl γ hP
   obtain ⟨p₁, u', hu', hγ', -, -, hQγ'⟩ := s2raw hU w hw n b hb ϖ hϖ l hl γ' hP'
-  have hinj : Function.Injective (wexp n l) := (GlobalTheory.T.weight_exponent_strictly_antitone n l hl).1.injective
+  have hinj : Function.Injective (wexp n l) := (GlobalTheory.CompanionTheory.Wexp.wexp_strictAnti_rev n l hl).1.injective
   have huu : (fun i => (u i : w.adicCompletion E)) = fun i => (u' i : w.adicCompletion E) :=
     GlobalTheory.T.roots_eq_of_distinct_valuations (w.adicCompletion E) n (wexp n l) hinj (fun i => (u i : w.adicCompletion E))
       (fun i => (u' i : w.adicCompletion E)) hu hu' (by rw [← hQγ, ← hQγ', hQ])

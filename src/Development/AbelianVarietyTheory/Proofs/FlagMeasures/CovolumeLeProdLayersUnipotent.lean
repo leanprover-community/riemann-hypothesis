@@ -178,7 +178,7 @@ theorem exists_continuous_section (n d m : ℕ) (ε : Fin n → Bool)
     refine Finset.sum_congr rfl fun i _ => ?_
     have := jInv_smul ε (x i) (E i)
     unfold jInv at this
-    rw [this, inv_eq_neg_of_inG (hG i).2, smul_neg]
+    rw [this, Formalism.REAL.lie_algebra_signature_conj (hG i).2, smul_neg]
   let X : (Fin d → ℝ) → Matrix (Fin n) (Fin n) ℂ := fun x => iter ε (Y x) m
   have hXc : Continuous X := (continuous_iter ε m).comp hYc
   have hfix : ∀ x, X x = Y x - (1 / 2 : ℝ) • (jInv ε (X x) * X x) := fun x => by

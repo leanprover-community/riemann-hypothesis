@@ -109,8 +109,6 @@ theorem dilation_big_cell_formula : Formalism.FourierDecayAlt.B.DilBigCell := by
        push_cast
        ring)
 
-private lemma star_ofReal_eq_self (x : ℝ) : star (x : ℂ) = x := Complex.conj_ofReal x
-
 theorem dilation_mem_group : Formalism.FourierDecayAlt.B.DilMem := by
   apply _root_.Formalism.FourierDecayAlt.P.B4.aDil_mem <;> assumption
 

@@ -622,7 +622,3 @@ theorem fockBil_apply {N r : ℕ} (LL : Letters N)
 end S6
 
 end Formalism.GM.TM
-
-namespace Formalism.GM
-
-end Formalism.GM

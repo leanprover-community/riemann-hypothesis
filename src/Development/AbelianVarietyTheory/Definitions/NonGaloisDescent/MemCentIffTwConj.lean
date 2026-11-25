@@ -94,16 +94,13 @@ theorem Phi_transpose : (Phi n R)ᵀ = ((-1 : R) ^ (n - 1)) • Phi n R := by
     rw [this, ← pow_add, show (i : ℕ) + j + i = 2 * i + j by ring, pow_add, pow_mul]; simp
   · rw [ite_eq_right h, ite_eq_right (by omega)]; simp
 
-theorem theta_one : theta (1 : Matrix (Fin n) (Fin n) R) = 1 := by
-  simp [theta, Phi_mul_transpose]
-
 theorem theta_mul (g h : Matrix (Fin n) (Fin n) R) : theta (g * h) = theta g * theta h := by
   simp only [theta, Matrix.mul_inv_rev, Matrix.conjTranspose_mul, Matrix.mul_assoc]
   rw [← Matrix.mul_assoc (Phi n R)ᵀ (Phi n R), transpose_mul_Phi, Matrix.one_mul]
 
 theorem theta_mul_theta_inv {g : Matrix (Fin n) (Fin n) R} (hg : IsUnit g) :
     theta g * theta g⁻¹ = 1 := by
-  rw [← theta_mul, Matrix.mul_nonsing_inv _ ((Matrix.isUnit_iff_isUnit_det g).mp hg), theta_one]
+  rw [← theta_mul, Matrix.mul_nonsing_inv _ ((Matrix.isUnit_iff_isUnit_det g).mp hg), GlobalTheory.Tw.PhiConjugateTranspose.theta_one]
 
 theorem theta_inv_eq {g : Matrix (Fin n) (Fin n) R} (hg : IsUnit g) :
     (theta g)⁻¹ = Phi n R * gᴴ * (Phi n R)ᵀ := by

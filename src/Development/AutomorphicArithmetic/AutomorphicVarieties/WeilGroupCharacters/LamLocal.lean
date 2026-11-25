@@ -207,7 +207,7 @@ private theorem units_pack (l : ℕ) [Fact l.Prime] (M : Type) [CommGroup M] (o 
         intro x y
         rw [← ofAdd_add]
         congr 1
-        ext <;> simp [smul_add, mul_add])
+        ext <;> simp [mul_add])
   let τ : Additive U →ₗ[ℤ_[l]] Additive U := LinearMap.id - s ∘ₗ f
   have hτ : ∀ z, f (τ z) = 0 := by intro z; simp [τ, hfs]
   have hττ : ∀ w, f w = 0 → τ w = w := by intro w hw; simp [τ, hw]

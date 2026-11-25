@@ -52,7 +52,7 @@ variable {N r : ℕ} [NeZero r] {D : BlockData N}
 
 theorem xi_free {b : ℕ} {g : MvPolynomial (BVar N r D.T.t) ℚ_[p]} (hg : g ∈ XiPolZ p N r D.T.t b)
     {v : BVar N r D.T.t} (hv : ∀ c, v ≠ xiVar N r D.T.t c) : pderiv v g = 0 :=
-  ProjS.pderiv_of_free v g (fun m hm => (xi_supp hg hm).1 v hv)
+  ProjS.pderiv_of_free v g (fun _ hm => (xi_supp hg hm).1 v hv)
 
 theorem tieF_gen (hB : D.BlockOK) (i : Fin D.T.t) (y : MvPolynomial (Fin N × Fin r) ℚ_[p])
     (g : MvPolynomial (BVar N r D.T.t) ℚ_[p]) (hw : ∀ c, pderiv (wv D i c) g = 0)

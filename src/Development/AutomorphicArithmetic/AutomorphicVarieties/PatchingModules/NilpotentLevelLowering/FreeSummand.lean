@@ -438,8 +438,7 @@ theorem UpperTheory.V.AlgebraTools.mvPowerSeries_span_monomials :
     rw [Submodule.restrictScalars_top] at h2
     rw [← h2, Submodule.restrictScalars_mem]
     exact h1
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+  · rw [map_sum]
     refine Submodule.sum_mem _ fun α _ => ?_
     have e := map_smul (Ideal.Quotient.mkₐ Λ (Ideal.span (Set.range w)))
       (MvPowerSeries.coeff (Finsupp.equivFunOnFinite.symm fun s => (α s : ℕ)) f)
@@ -606,19 +605,6 @@ private theorem fs_abs {Λ R M P : Type} [CommRing Λ] [CommRing R] [IsLocalRing
   show b.equivFun (f m') = r • b.equivFun (f m)
   rw [hf, LinearEquiv.map_smul]
 
-private theorem fs_gen {σ : Type} [Fintype σ] [DecidableEq σ] (n : σ → ℕ) [∀ s, NeZero (n s)]
-    (S : Submonoid (∀ s, Multiplicative (ZMod (n s))))
-    (h : ∀ s : σ, (Pi.mulSingle s (Multiplicative.ofAdd (1 : ZMod (n s))) : ∀ s, Multiplicative (ZMod (n s))) ∈ S)
-    (g : ∀ s, Multiplicative (ZMod (n s))) : g ∈ S := by
-  have key : ∀ s, Pi.mulSingle s (g s) ∈ S := by
-    intro s
-    have : Pi.mulSingle s (g s) = (Pi.mulSingle s (Multiplicative.ofAdd (1 : ZMod (n s))) : ∀ s, Multiplicative (ZMod (n s))) ^ (Multiplicative.toAdd (g s)).val := by
-      rw [← Pi.mulSingle_pow, ← ofAdd_nsmul, nsmul_one, ZMod.natCast_zmod_val, ofAdd_toAdd]
-    rw [this]
-    exact S.pow_mem (h s) _
-  rw [← Finset.univ_prod_mulSingle g]
-  exact S.prod_mem fun s _ => key s
-
 private def fsAgree {Λ S M : Type} [CommRing Λ] [CommRing S] [Algebra Λ S] [AddCommGroup M] [Module Λ M]
     (N : Submodule Λ M) (act : S →ₐ[Λ] Module.End Λ N) (θ : S →ₐ[Λ] Module.End Λ M) : Subalgebra Λ S where
   carrier := {z | ∀ m : N, (act z m : M) = θ z m}
@@ -668,7 +654,7 @@ theorem UpperTheory.V.Pa.Lev.freeSummand :
           exact ⟨w * w', A.mul_mem hw hw', by rw [map_mul, hwx, hwy, map_mul]⟩
         one_mem' := ⟨1, A.one_mem, by rw [map_one, map_one]⟩ }
     intro g
-    exact fs_gen (fun p : Fin q × Fin n => l ^ a p.1) T (fun p => ⟨_, hgen p, hφX p⟩) g
+    exact grEx_gen (fun p : Fin q × Fin n => l ^ a p.1) T (fun p => ⟨_, hgen p, hφX p⟩) g
   have hsurjA : ∀ y, ∃ w ∈ A, φ w = y := by
     intro y
     induction y using MonoidAlgebra.induction_on with

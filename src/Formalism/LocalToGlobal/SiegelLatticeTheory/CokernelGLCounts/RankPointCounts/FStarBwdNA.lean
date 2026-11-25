@@ -29,8 +29,7 @@ theorem coe_ne_zero {d : 𝓞 E} (hd : d ≠ 0) : (d : E) ≠ 0 := by
   intro h; apply hd; exact RingOfIntegers.coe_eq_zero_iff.1 h
 
 theorem isInt_star {a : E} (h : IsIntegral ℤ a) : IsIntegral ℤ (star a) := by
-  have h2 := h.map ((starRingEnd E : E →+* E).toIntAlgHom)
-  exact h2
+  exact GlobalTheory.LoopC.RowSplit.star_int h
 
 theorem intO {a : E} (h : IsIntegral ℤ a) : ∃ o : 𝓞 E, (o : E) = a := ⟨⟨a, h⟩, rfl⟩
 

@@ -37,7 +37,7 @@ private theorem dualCl_eq_of_eq_contra (hA : GlobalTheory.Published.IrreducibleA
     (GlobalTheory.ContraRefl.evEquiv (GlobalTheory.SqIntUnit.compactOpen_basis k x.1) (isAdmissible_rep hA x)).symm⟩
 
 theorem dualCl_dualCl : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
-    [IsNonarchimedeanLocalField k] (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (x : IrrGL (k := k)),
+    [IsNonarchimedeanLocalField k] (_ : GlobalTheory.Published.IrreducibleAdmissibleGL) (x : IrrGL (k := k)),
     dualCl (dualCl x) = x := by
   intro k _ _ _ _ hA x
   exact dualCl_eq_of_eq_contra hA x _ (dualCl_eq_of hA x)

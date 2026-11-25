@@ -241,12 +241,6 @@ private theorem nU_rat (c : ℚ) : ∃ γ, nU (algebraMap ℚ (A ℚ) c) = ratS 
   ext i j
   fin_cases i <;> fin_cases j <;> simp
 
-private theorem nU_plus (b c : A ℚ) : nU (b + c) = nU b * nU c := by
-  refine Subtype.ext ?_
-  change !![1, b + c; 0, 1] = !![1, b; 0, 1] * !![1, c; 0, 1]
-  ext i j
-  fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two, add_comm]
-
 private theorem rat_sl (γ : GL (Fin 2) ℚ) (h : Dt γ = 1) : ∃ g, ratGL ℚ 2 γ = gl (ratS ℚ g) :=
   ⟨⟨γ.val, congrArg Units.val h⟩, Units.ext rfl⟩
 
@@ -335,7 +329,7 @@ theorem ext : Ext := by
     · exact hu.cusp _
     · obtain ⟨γ, hγ⟩ := nU_rat c
       change u (nU (algebraMap ℚ (A ℚ) c + b) * sl x) = u (nU b * sl x)
-      rw [nU_plus, hγ, mul_assoc]
+      rw [nU_add, hγ, mul_assoc]
       exact hu.left γ _
 
 end UpperTheory.ConvolutionTheory.RankTwoDescent.Cp

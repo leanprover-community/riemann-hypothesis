@@ -276,27 +276,10 @@ theorem map_inv_eq_one (x : GAf L n) (w : HeightOneSpectrum (𝓞 (maximalRealSu
   have := map_inv_mul_map x w
   rwa [h, mul_one] at this
 
-theorem adele_eq_zero (z : AL L) (hz : ∀ w, compAt L w z = 0) : z = 0 := by
-  have hcard : Module.finrank (maximalRealSubfield L) L = 2 :=
-    Algebra.IsQuadraticExtension.finrank_eq_two _ _
-  let b : Module.Basis (Fin 2) (maximalRealSubfield L) L := Module.finBasisOfFinrankEq _ _ hcard
-  obtain ⟨A, B, hAB⟩ := GlobalTheory.tensor_exists_decomp b z
-  have hw : ∀ w, A w = 0 ∧ B w = 0 := by
-    intro w
-    have h := hz w
-    rw [hAB] at h
-    apply GlobalTheory.tensor_decomp_eq_zero b
-    simp [ReciprocityTheory.Aut.compAt, Algebra.TensorProduct.map_tmul] at h
-    exact h
-  have hA : A = 0 := DFunLike.ext _ _ fun w => (hw w).1
-  have hB : B = 0 := DFunLike.ext _ _ fun w => (hw w).2
-  rw [hAB, hA, hB]
-  simp
-
 theorem eq_one_of_trivOutside_empty (y : GAf L n) (hy : TrivOutside (∅ : Set _) y) : y = 1 := by
   refine Subtype.ext (Units.ext (Matrix.ext fun i j => ?_))
   rw [← sub_eq_zero]
-  apply adele_eq_zero
+  apply GlobalTheory.InertUmax.eq_zero_of_compAt
   intro w
   have h1 := congrFun (congrFun (hy w (Set.notMem_empty w)) i) j
   simp only [Matrix.map_apply] at h1
@@ -379,8 +362,6 @@ section -- clump:auto
 
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT NumberField IsDedekindDomain Polynomial GlobalTheory.HeightCounting GlobalTheory.RowTie GlobalTheory.SplitRead GlobalTheory.NPin GlobalTheory.PendOf
-namespace GlobalTheory.LiftOther
-end GlobalTheory.LiftOther
 namespace GlobalTheory.LiftOther
 theorem main_alt_alt : ∀ (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (D : D7) (P : _root_.GlobalTheory.NPin.CharacterChoiceData hL D) (i : D.nd.Loc) (PI : D.naut.AV i) (k : Fin 2) (v : D.nd.PlG k) (s : SplitPlace D.host.E), s.w = D.naut.plGw k v → ∀ c : s.v.adicCompletion (maximalRealSubfield D.host.E) ≃+* s.w.adicCompletion D.host.E, Continuous c → (∀ x : D.host.E, c (s.i x) = algebraMap D.host.E (s.w.adicCompletion D.host.E) x) → ∀ L : G0g D.nd → GAf D.host.E D.R.nV, IsTypeGroupBlockLift D D.R.nV L → ∀ F ∈ D.naut.typeV i PI, ∀ (h : GL (Fin D.R.r) (ZMod (D.host.g k))) (g : G0g D.nd), g ⟨k, v⟩ = h → (∀ kv, kv ≠ ⟨k, v⟩ → g kv = 1) → ∃ x : GAf D.host.E D.R.nV, TrivOutside {s.v} x ∧ IsLiftN h (Matrix.GeneralLinearGroup.map c.toRingHom (s.loc D.R.nV x)) ∧ NG.rt D.host.E D.R.nV (L g) ((P.M.loc i).real F) = NG.rt D.host.E D.R.nV x ((P.M.loc i).real F) := by
   intro hL D P i PI k v s hs c hc hcs L hLift F hF h g hg1 hg2

@@ -63,16 +63,8 @@ open GlobalTheory.FinPl
 variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
 theorem exists_not_int : ∃ x : k, x ∉ 𝒪[k] := by
-  obtain ⟨r, hr0, hr1⟩ := Valuation.IsNontrivial.exists_lt_one (v := valuation k)
-  refine ⟨r⁻¹, fun h => ?_⟩
-  have h1 : valuation k r⁻¹ ≤ 1 := h
-  have hr : r ≠ 0 := hr0
-  have : (1 : ValueGroupWithZero k) ≤ valuation k r := by
-    calc (1 : ValueGroupWithZero k) = valuation k (r * r⁻¹) := by rw [mul_inv_cancel₀ hr, map_one]
-      _ = valuation k r * valuation k r⁻¹ := map_mul _ _ _
-      _ ≤ valuation k r * 1 := by gcongr
-      _ = valuation k r := mul_one _
-  exact absurd hr1 (not_lt.2 this)
+  obtain ⟨x, hx⟩ := Valuation.IsNontrivial.exists_one_lt (v := valuation k)
+  exact ⟨x, fun h => not_le.2 hx h⟩
 
 theorem mul_sec' (q : SplitPt D k) (a : AE D) (b : k) : a * q.sec b = q.sec (q.pr a * b) := by
   rw [mul_comm, FrameLat.sec_mul_right, mul_comm]

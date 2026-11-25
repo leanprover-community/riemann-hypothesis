@@ -40,74 +40,21 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.AtLinAdap
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CombOfTied
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsStandardBasesLatticeAtPlaceOfAdaptedBases
 import Development.AutomorphicArithmetic.CyclotomicBounds.SmallFacts
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.ReduceModChar
 import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.AnalyticIdentityTheorems.QuasiPeriodConstUniqueOf
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Data.Nat.Choose.Multinomial
 import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
 import Std.Tactic.BVDecide.Normalize.Bool
 import Formalism.GaussJetBounds.StatementH
 import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
 import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.StatementG
 import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.IsTransSys
-import Mathlib.Tactic.TypeStar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.RingTheory.Valuation.Integral
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.RingTheory.PiTensorProduct
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MulVSubRight
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.NumberTheory.RamificationInertia.Galois
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.IntEasy
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.IsAdmissibleFlagPairOfUnitriangularLeftAutomorph
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.SelfDualLatticeNorms.HalfPeriodStandardCM
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.SelfDualLatticeNorms.LocNormAmbOfOf
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.SatakeParameters.NormDgenEqOne, Development.AbelianVarietyTheory.Proofs.SatakeParameters.DualFrameColumnsScaledStandardVectors, Development.AbelianVarietyTheory.Proofs.SatakeParameters.DualFrameHermitianFormTraceRealPlaces, Development.AbelianVarietyTheory.Proofs.SatakeParameters.DualFramePairedBlocksDiagonalModRoot, Development.AbelianVarietyTheory.Proofs.SatakeParameters.DualLocalBasesPairDualModRootMinusD, Development.AutomorphicArithmetic.CyclotomicBounds.RamifiedDiscriminants.FixedIod, Development.AbelianVarietyTheory.Proofs.SatakeParameters.InertiaInvolutionRealPlacePairs, Development.AbelianVarietyTheory.Proofs.SatakeParameters.NormNatCastOfCoprime, Development.AbelianVarietyTheory.Proofs.SatakeParameters.PadicNormLeOneHostBaseModuleAtD, Development.AbelianVarietyTheory.Proofs.SatakeParameters.PairEmbeddingsCongrModRootMinusD, Development.AbelianVarietyTheory.Proofs.SatakeParameters.DualLocalBasesEigenframeAtRamifiedPrime, Development.AbelianVarietyTheory.Proofs.SatakeParameters.NormLeOfMemSq, Development.AbelianVarietyTheory.Proofs.SatakeParameters.ShapeNormalisedThetaCombinationsDualBasesAtD, Development.AbelianVarietyTheory.Proofs.SatakeParameters.KernelDatumThetaSeriesShapeAtDAdaptedBases
@@ -441,14 +388,6 @@ theorem sigmaOf_mul (g h : R.GG) : H.sigmaOf (g * h) = H.sigmaOf g * H.sigmaOf h
   unfold Host.sigmaOf
   exact map_mul _ g h
 
-theorem sigmaOf_one : H.sigmaOf 1 = 1 := by
-  unfold Host.sigmaOf
-  exact map_one _
-
-theorem galE_sigmaOf (g : R.GG) : H.galE (H.sigmaOf g) = g := by
-  unfold Host.sigmaOf
-  exact MulEquiv.apply_symm_apply _ _
-
 theorem sigmaOf_sqrt_neg (g : R.GG) (h : g.1.2 = -1) : H.sigmaOf g H.sqrtMinusD = -H.sqrtMinusD := by
   have := H.galE_bE (H.sigmaOf g)
   rw [galE_sigmaOf, h] at this
@@ -514,10 +453,6 @@ open Formalism.FrobeniusOrbits Formalism.TwoAdicCyclotomicDecomposition
 open Formalism.L2.Th1.CM (MaximalUnramifiedExtension)
 open Formalism.MainNotions.G (plGG)
 
-theorem embT_tauPl (D : D7) (z : Bool × HH D) : TaylorLogMetric.embT D (tauPl D z) = D.host.emb (plGG D z) := by
-  unfold TaylorLogMetric.embT tauPl
-  rw [Equiv.apply_symm_apply]
-
 theorem eTau_tauPl (D : D7) (z : Bool × HH D) : (D.eTau (tauPl D z) : D.R.GG) = plGG D z := by
   unfold tauPl
   rw [Equiv.apply_symm_apply]
@@ -553,7 +488,7 @@ theorem inertia_pairs : ∀ (D : D7) (p : ℕ) [Fact p.Prime], p = D.host.d → 
     rw [← AlgEquiv.mul_apply, ← sigmaOf_mul]
     have : sInv D.R * sInv D.R = 1 := by
       refine Prod.ext (Prod.ext ?_ ?_) ?_ <;> simp [sInv]
-    rw [this, sigmaOf_one]
+    rw [this, GlobalTheory.InducedType.sigmaOf_one]
     rfl
   · intro y
     change D.host.sigmaOf (sInv D.R) (D.host.sigmaOf (D.R.cc) y) = D.host.sigmaOf (D.R.cc) (D.host.sigmaOf (sInv D.R) y)
@@ -561,7 +496,7 @@ theorem inertia_pairs : ∀ (D : D7) (p : ℕ) [Fact p.Prime], p = D.host.d → 
   · intro z z' h
     have h' : ∀ x, D.host.φ₀ (D.host.sigmaOf (plGG D z) x) = D.host.φ₀ (D.host.sigmaOf (plGG D z') x) := fun x => by
       have := RingHom.congr_fun h x
-      simp only [embT_tauPl] at this
+      simp only [GlobalTheory.InertCompare.embT_tauPl] at this
       exact this
     have hs : D.host.sigmaOf (plGG D z) = D.host.sigmaOf (plGG D z') :=
       AlgEquiv.ext fun x => D.host.φ₀.injective (h' x)
@@ -629,12 +564,6 @@ theorem exists_common_smul {R V : Type*} [CommRing R] [AddCommGroup V] [Module R
   | add x y _ _ hx hy => rw [smul_add]; exact N.add_mem hx hy
   | smul a x _ hx => rw [smul_comm]; exact N.smul_mem _ hx
 
-theorem norm_natCast_of_coprime {p : ℕ} [Fact p.Prime] {s : ℕ} (h : Nat.Coprime s p) :
-    ‖(s : ℂ_[p])‖ = 1 := by
-  have h1 : (s : ℂ_[p]) = algebraMap ℚ_[p] ℂ_[p] (s : ℚ_[p]) := by simp
-  rw [h1, norm_algebraMap']
-  exact Padic.norm_natCast_eq_one_iff.2 h.symm
-
 theorem general {E : Type*} [Field E] {p : ℕ} [Fact p.Prime] (ρ : E →+* ℂ_[p]) {N N' : ℕ}
     (L L₁ : Submodule (𝓞 E) (Fin N → E)) (L' L₁' : Submodule (𝓞 E) (Fin N' → E))
     (P : Matrix (Fin N) (Fin N) E) (P' : Matrix (Fin N') (Fin N') E) (hfg : L₁.FG)
@@ -654,7 +583,7 @@ theorem general {E : Type*} [Field E] {p : ℕ} [Fact p.Prime] (ρ : E →+* ℂ
   have hn : ∀ n : ℕ, Nat.Coprime n p → ‖ρ (((n : 𝓞 E)) : E)‖ = 1 := by
     intro n hn
     rw [RingOfIntegers.coe_eq_algebraMap, map_natCast, map_natCast]
-    exact norm_natCast_of_coprime hn
+    exact GlobalTheory.HeckeVal.norm_natCast_eq_one hn
   have hsm : ∀ {k : ℕ} (n : ℕ) (x : Fin k → E), (n : 𝓞 E) • x = (n : E) • x := by
     intro k n x
     rw [Nat.cast_smul_eq_nsmul, Nat.cast_smul_eq_nsmul]
@@ -734,13 +663,6 @@ open Formalism.MainNotions.G (HH)
 
 namespace GlobalTheory.IntegralAtPlace
 
-theorem norm_le_one_of_isIntegral {p : ℕ} [Fact p.Prime] {x : ℂ_[p]}
-    (hx : IsIntegral ℤ x) : ‖x‖ ≤ 1 := by
-  have h : x ∈ (NormedField.valuation (K := ℂ_[p])).integer :=
-    (Valuation.integer.integers (NormedField.valuation (K := ℂ_[p]))).mem_of_integral hx.tower_top
-  rw [Valuation.mem_integer_iff, NormedField.valuation_apply] at h
-  exact_mod_cast h
-
 theorem norm_le_one : ∀ (D : D7) (p : ℕ) [Fact p.Prime], p = D.host.d → ∀ (φ : D.host.E →+* ℂ_[p]) (a : D.host.E), a ∈ D.host.AA0 → ‖φ a‖ ≤ 1 := by
   intro D p hpF hpd φ a ha
   obtain ⟨-, -, hqd, -, hd2⟩ := hypOdd_of_hostHyp D.host.hyp
@@ -751,7 +673,7 @@ theorem norm_le_one : ∀ (D : D7) (p : ℕ) [Fact p.Prime], p = D.host.d → �
       have := congrArg φ hx
       rw [Polynomial.hom_eval₂, map_zero] at this
       rwa [RingHom.ext_int (φ.comp (algebraMap ℤ D.host.E)) (algebraMap ℤ ℂ_[p])] at this
-    exact norm_le_one_of_isIntegral h
+    exact GlobalTheory.NormSum.KernelAt.norm_le_one_of_isIntegral h
   let Q : Ideal (𝓞 D.host.E) :=
     { carrier := {y | ‖φ (y : D.host.E)‖ < 1}
       add_mem' := fun {x y} hx hy => by

@@ -188,8 +188,6 @@ variable (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchim
   (ι : Type) [Fintype ι] [DecidableEq ι]
 
 theorem prodFinLen : ProdFinLen F ι := _root_.GlobalTheory.CompanionTheory.ProdLen.prodFinLen F ι
-theorem subOfNonNil' : SubOfNonNil' F ι :=
-  GlobalTheory.T.subquotient_of_non_nilpotent_variant F ι
 
 end PositivityTheory.Rg.BcN.F2.Final
 end -- clump:auto
@@ -300,7 +298,7 @@ theorem sub_of_pow {n : ℕ} (D : Pre E n) (w : Pl E) (K' : Subgroup (GLw n w)) 
     GlobalTheory.LeviFactor.finiteDimensional_fixed_of_hasFiniteLength
       (fun Y _ _ π hs hi => GlobalTheory.CompanionTheory.SmGLBridge.irreducibleAdmissible (w.adicCompletion E) (Fin n) Y π hs hi)
       hsm hfl K' he.1 he.2.1
-  refine PositivityTheory.Rg.BcN.F2.Final.subOfNonNil' (w.adicCompletion E) (Fin n) K' e he P.V P.ρ P.smooth P.irred _
+  refine GlobalTheory.T.subquotient_of_non_nilpotent_variant (w.adicCompletion E) (Fin n) K' e he P.V P.ρ P.smooth P.irred _
     (prodAt D w) hsm hfl ?_ ?_
   · intro W _ _ τ hs hi hsub hemp v hv
     exact hkill ⟨W, τ, hs, hi⟩ hsub hemp v hv
@@ -654,7 +652,6 @@ open NumberField IsDedekindDomain Matrix Filter
 open GlobalTheory.CuspRep GlobalTheory.PRep Formalism.UG Formalism.BasicNotions GlobalTheory.UnitaryBC Formalism.L2.Host GlobalTheory.BCT PositivityTheory.Rg.BcB.One PositivityTheory.Rg.BcB.F.F5
 open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation PositivityTheory.Rg.BcB.G8 PositivityTheory.Rg.BcB.F.RS PositivityTheory.Rg.BcN.F2
 open scoped Classical TensorProduct
-
 
 namespace PositivityTheory.Rg.BcB.F.Tail.PSc
 

@@ -254,10 +254,7 @@ lemma cont_Dmin (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) (l : Fin (r + 2
   exact ((continuous_matrix fun a b => cont_Zhat k r z z' a b).matrix_submatrix _ _).matrix_det
 
 lemma cont_Gf (k r : ℕ) (z z' : Fin (2 * r + k + 1) → ℂ) : Continuous (Gf k r z z') := by
-  have h1 := Complex.continuous_normSq.comp (cont_Dmin k r z z' (Fin.last (r + 1)))
-  have h2 := Complex.continuous_normSq.comp (cont_Dmin k r z z' ⟨r, by omega⟩)
-  unfold Gf
-  exact h1.sub (continuous_const.mul h2)
+  exact Formalism.FourierDecayAlt.P.BetaSesquilinearity.Gf_cont z z'
 
 lemma cont_DjU (k j ρ : ℕ) : Continuous (DjU k j ρ) := by
   have h : Continuous (fun g : B.Mat k (j + ρ) => Zh k j ρ g) :=
@@ -339,7 +336,3 @@ theorem phiSuppGOfParts : PhiSuppGOfParts := by
 end supp
 
 end Formalism.FourierDecayAlt.P.Ux8
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

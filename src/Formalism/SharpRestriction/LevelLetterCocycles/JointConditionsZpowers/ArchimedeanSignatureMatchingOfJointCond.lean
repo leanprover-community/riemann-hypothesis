@@ -19,9 +19,7 @@ section Roots
 variable {g : ℕ} [Fact g.Prime]
 
 theorem card_rootsBar (a : (ZMod g)[X]) : Multiset.card (Formalism.CyclotomicNorms.rootsBar a) = a.natDegree := by
-  unfold Formalism.CyclotomicNorms.rootsBar
-  rw [Polynomial.splits_iff_card_roots.1 (IsAlgClosed.splits (a.map (algebraMap (ZMod g) (Formalism.CyclotomicNorms.Fbar g)))),
-    Polynomial.natDegree_map]
+  exact GlobalTheory.TameLabels.card_rootsBar a
 
 end Roots
 

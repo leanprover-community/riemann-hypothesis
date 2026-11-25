@@ -181,9 +181,3 @@ theorem exists_mat_subset (w : Pl E) (n : ℕ) {C : Set (Matrix (Fin n) (Fin n) 
   exact le_trans (Finset.le_sup (f := fun p : Fin n × Fin n => N₀ p.1 p.2) (Finset.mem_univ (i, j))) hN
 
 end GlobalTheory.PrincCong
-
-namespace GlobalTheory.PrincCong
-
-open Filter Topology
-
-end GlobalTheory.PrincCong

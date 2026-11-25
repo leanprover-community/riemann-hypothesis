@@ -53,7 +53,6 @@ theorem row_eq {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (v : Fin (D.R.
     (i : Fin (D.R.rS + 1 + D.R.rS)) :
     X.ιE ((gramE X.B.I.cm.sig X.B.I.J (tupH (frameOf X u')) *ᵥ v) i) =
       ∑ j, (VS D).hT (wF X u' i) (wF X u' j) * X.ιE (v j) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp only [Matrix.mulVec, dotProduct, gram_eq, map_sum, map_mul, RingEquiv.apply_symm_apply]
 
 theorem detNZ_holds : DetNZ := by

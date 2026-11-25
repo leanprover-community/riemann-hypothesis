@@ -156,13 +156,8 @@ theorem om_P (i a : Fin d) :
   exact h
 
 theorem d_evF (h : PS k 1 d) (v : Fin 2 × Fin d) :
-    pderiv (R := k) v (ev (n := 2) ![G.F] h) = ∑ c, ev (n := 2) ![G.F] (pderiv (R := k) ((0 : Fin 1), c) h) * pderiv (R := k) v (G.F c) := by
-  have hF : CZ (![G.F] : Fin 1 → Pt k 2 d) := by
-    intro j i
-    fin_cases j
-    simpa using G.const i
-  rw [pderiv_ev hF, Fintype.sum_prod_type]
-  simp
+    pderiv (R := k) v (ev (n := 2) ![G.F] h) = ∑ c, ev (n := 2) ![G.F] (pderiv (R := k) ((0 : Fin 1), c) h) * pderiv (R := k) v (G.F c) :=
+  _root_.ReciprocityTheory.ChartRestriction.G.TB.WickVanishing.Nab.d_F G h v
 
 private alias CZ_pt_vector := _root_.ReciprocityTheory.ChartRestriction.G.TB.LogPf.cz1
 

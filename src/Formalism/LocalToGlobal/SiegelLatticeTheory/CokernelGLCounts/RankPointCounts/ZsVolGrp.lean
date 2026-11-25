@@ -21,12 +21,10 @@ section Uni
 variable {R : Type*} [CommRing R] {n : ℕ}
 
 theorem det_lo {l : Matrix (Fin n) (Fin n) R} (h1 : ∀ a, l a a = 1) (h2 : ∀ a b, a < b → l a b = 0) : l.det = 1 := by
-  rw [Matrix.det_of_lowerTriangular l (fun i j hij => h2 i j hij)]
-  exact Finset.prod_eq_one fun i _ => h1 i
+  apply PI.TermAttrConst.UnitaryGroupMassFormula.det_lower_one <;> assumption
 
 theorem det_up {l : Matrix (Fin n) (Fin n) R} (h1 : ∀ a, l a a = 1) (h2 : ∀ a b, b < a → l a b = 0) : l.det = 1 := by
-  rw [Matrix.det_of_upperTriangular (fun i j hij => h2 i j hij)]
-  exact Finset.prod_eq_one fun i _ => h1 i
+  apply PI.TermAttrConst.UnitaryGroupMassFormula.det_upper_one <;> assumption
 
 theorem inv_eq_adj {l : Matrix (Fin n) (Fin n) R} (h : l.det = 1) : l⁻¹ = l.adjugate := by
   rw [Matrix.inv_def, h, Ring.inverse_one, one_smul]

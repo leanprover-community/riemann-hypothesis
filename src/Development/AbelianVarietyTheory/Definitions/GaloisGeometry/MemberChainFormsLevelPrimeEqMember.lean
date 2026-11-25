@@ -161,11 +161,9 @@ def loc (i : ℕ) (hi : i + 1 ≤ D.R.m) : LocIn X0 u w hg (Z.lv Fl ht) i (Z.Fo 
     (Z.S i hi).B
 
 theorem loc_Uloc (i : ℕ) (hi : i + 1 ≤ D.R.m) : (Z.loc Fl ht i hi).Uloc = fun β => ulocOf (Z.Fo i hi) β := by
-  set_option backward.isDefEq.respectTransparency false in
     rfl
 
 theorem frRat (i : ℕ) (hi : i + 1 ≤ D.R.m) (β : (Z.Fo i hi).Ch) : FrRatJ ((Z.loc Fl ht i hi).t β) (Z.loc Fl ht i hi).B := by
-  set_option backward.isDefEq.respectTransparency false in
     intro w' h
     rfl
 
@@ -295,7 +293,6 @@ theorem formsInMem_mid (F : FormsTiedSym D u Ch chOf) (dt : MemDt F) (i : ℕ) (
 
 theorem formsInMem_fin [∀ i, Finite (Ch i)] (F : FormsTiedSym D u Ch chOf) (dt : MemDt F) (i : ℕ) (hi : i + 1 ≤ D.R.m) :
     Finite (formsInMem F dt i hi).Ch := by
-  set_option backward.isDefEq.respectTransparency false in
     by_cases h : i + 1 = D.R.m
     · rw [formsInMem_top F dt i hi h]
       exact (inferInstance : Finite Unit)
@@ -478,7 +475,6 @@ section Rec
 
 theorem formsInMem_bad {u : D.what₂.Word} {Ch : ℕ → Type} {chOf : ∀ i, (D.mem u).C.cls i → Ch i} (F : FormsTiedSym D u Ch chOf)
     (dt : MemDt F) (i : ℕ) (hi : i + 1 ≤ D.R.m) : (formsInMem F dt i hi).bad = badG D := by
-  set_option backward.isDefEq.respectTransparency false in
     by_cases h : i + 1 = D.R.m
     · rw [formsInMem_top F dt i hi h]
       try rfl
@@ -488,7 +484,6 @@ theorem formsInMem_bad {u : D.what₂.Word} {Ch : ℕ → Type} {chOf : ∀ i, (
 
 theorem formsInMem_ok {u : D.what₂.Word} {Ch : ℕ → Type} {chOf : ∀ i, (D.mem u).C.cls i → Ch i} (F : FormsTiedSym D u Ch chOf)
     (dt : MemDt F) (i : ℕ) (hi : i + 1 ≤ D.R.m) (w : D.what₂.places.Pl) : (formsInMem F dt i hi).okW w := by
-  set_option backward.isDefEq.respectTransparency false in
     by_cases h : i + 1 = D.R.m
     · rw [formsInMem_top F dt i hi h]
       exact trivial
@@ -516,14 +511,6 @@ variable {D : D7} (X0 : Formalism.L2.Herm.Herm0 D) (u : D.what₂.Word) (w : D.w
 def ChartBaseLatticeEqSelfDualAtP (Fo : FormsIn M (i + 1) hi) (p : ℕ) : Prop :=
   ∀ β (w' : HeightOneSpectrum (𝓞 D.host.F)), ((p : ℕ) : 𝓞 D.host.F) ∈ w'.asIdeal →
     Formalism.L2.Herm.locL w' (lbOf Fo β) = Formalism.L2.Herm.locL w' (Formalism.L2.Herm.crdLat (D.sp.X (i + 1)) (D.sp.X (i + 1)).L0)
-
-end GlobalTheory.Port
-end
-section
-namespace GlobalTheory.Port
-open Formalism Formalism.MainNotions Formalism.MainNotions.G Formalism.BasicNotions Formalism.L2.G Formalism.L2.G.Cmp Formalism.L2.Forms Formalism.UG NumberField IsDedekindDomain Matrix Formalism.MainNotions.G.CmpJ Formalism.MainNotions.G.CmpJ.AgreeLv
-variable {D : D7} {u : D.what₂.Word} {Ch : ℕ → Type} {chOf : ∀ i, (D.mem u).C.cls i → Ch i}
-
 
 end GlobalTheory.Port
 end

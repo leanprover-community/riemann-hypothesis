@@ -5,8 +5,6 @@ public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCoh
 
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris DividedPowers
@@ -71,7 +69,6 @@ structure LevSys.Good (S : LevSys R) : Prop where
   dK : ∀ m (k : K), S.dB m (algebraMap K _ k) = algebraMap K _ k
   ddp : ∀ m, IsDPMorphism (S.L (m + 1)).γ (S.L m).γ (S.dA m)
   ddpB : ∀ m, IsDPMorphism (S.L (m + 1)).γB (S.L m).γB (S.dB m)
-  dσ : ∀ m g a, S.dA m ((S.L (m + 1)).σA g a) = (S.L m).σA g (S.dA m a)
   dσB : ∀ m g b, S.dB m ((S.L (m + 1)).σB g b) = (S.L m).σB g (S.dB m b)
   cpl : ∀ y : ∀ m, (S.L m).B, (∀ m, S.dB m (y (m + 1)) = y m) → ∃! x : R.P, ∀ m, (S.L m).toB x = y m
 

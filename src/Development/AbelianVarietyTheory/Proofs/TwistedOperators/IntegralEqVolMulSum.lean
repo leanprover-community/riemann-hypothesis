@@ -398,9 +398,3 @@ theorem finCl_regroup_prod {ι κ : Type} [Fintype ι] [DecidableEq ι] [Fintype
         exact Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => by ring
 
 end GlobalTheory.ClassRegroup
-
-namespace GlobalTheory.ClassRegroup
-
-variable {D : D7}
-
-end GlobalTheory.ClassRegroup

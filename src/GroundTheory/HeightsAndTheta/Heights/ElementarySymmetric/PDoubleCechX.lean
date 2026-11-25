@@ -482,7 +482,6 @@ section Ends
 variable {F : Type} [Field F] {K : Type} [Fintype K] [LinearOrder K] {ι : K → Type} [∀ k, LinearOrder (ι k)]
   {Ω : Type} [Field Ω] [Algebra F Ω] {N : ℕ} {x : Fin (N + 1) → Ω} {y : (Σ k, ι k) → Ω}
 
-set_option synthInstance.maxHeartbeats 100000 in
 theorem DoubleCech.T_equiv (T : Kleiman.SubSystem F x Ω) (n : ℕ) :
     Nonempty (T.H n ≃ₗ[F] Staircase.H (fun p => Kleiman.Cech.d (fun J => ↥(T.sub J)) T.res p) n) := by
   cases n <;> exact ⟨LinearEquiv.refl F _⟩
@@ -523,7 +522,6 @@ theorem DoubleCech.B_equiv {B : (∀ k, Finset (ι k)) → Submodule F Ω}
 
 end Ends
 
-set_option synthInstance.maxHeartbeats 100000 in
 theorem DoubleCech.proof (hS : Staircase.Statement) (hSq : CellDSq.Statement) : DoubleCech.Statement := by
   intro F _ K _ _ ι _ _ Ω _ _ y N x T B M hy hx hB hM hMJ hMI hcol hrow n
   classical

@@ -14,7 +14,7 @@ open GlobalTheory.GalCut GlobalTheory.UnitaryBC GlobalTheory.Cong
 namespace GlobalTheory.CongL
 
 def UnitaryAutomorphicTypeClass : Type 1 :=
-  ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (l a : ℕ), HeightOneSpectrum (𝓞 E) → Submodule ℂ (UA E a → ℂ) → Prop
+  ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (_ a : ℕ), HeightOneSpectrum (𝓞 E) → Submodule ℂ (UA E a → ℂ) → Prop
 
 def FieldOK (E : Type) [Field E] [NumberField E] [IsCMField E] (l d : ℕ) [Fact l.Prime] : Prop :=
   ImQ E d ∧ SqAt d l ∧ Even (Module.finrank ℚ (maximalRealSubfield E)) ∧

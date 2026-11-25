@@ -63,38 +63,6 @@ lemma hMap_snd (Y : Over (Spec (CommRingCat.of R))) (Y' : Over (Spec (CommRingCa
   first
   | exact pullback.lift_snd _ _ _
 
-lemma sE_trans : thickTrans R' I' e ≫ sE φ hφ (e + 1) = sE φ hφ e ≫ thickTrans R I e := by
-  simp only [sE, thickTrans, ← Spec.map_comp]
-  congr 1
-  all_goals first | rfl | (ext x; simp [φe])
-
-lemma hMap_thick (Y : Over (Spec (CommRingCat.of R))) (Y' : Over (Spec (CommRingCat.of R')))
-    (b : Y' ⟶ (Over.pullback (specOf φ)).obj Y) :
-    thickMap R' I' e Y' ≫ hMap (hφ := hφ) (e := e + 1) Y Y' b =
-      hMap (hφ := hφ) (e := e) Y Y' b ≫ thickMap R I e Y := by
-  have hthick (Z : Over (Spec (CommRingCat.of R))) :
-      thickMap R I e Z ≫ pullback.fst Z.hom (thick R I (e + 1)) =
-        pullback.fst Z.hom (thick R I e) := by
-    simp only [thickMap, pullback.map]
-    rw [pullback.lift_fst]
-    simp
-  have hthick' (Z : Over (Spec (CommRingCat.of R'))) :
-      thickMap R' I' e Z ≫ pullback.fst Z.hom (thick R' I' (e + 1)) =
-        pullback.fst Z.hom (thick R' I' e) := by
-    simp only [thickMap, pullback.map]
-    rw [pullback.lift_fst]
-    simp
-  apply pullback.hom_ext
-  · simp only [Category.assoc, hMap_fst]
-    rw [← Category.assoc, hthick' Y']
-    rw [hthick Y, hMap_fst]
-  · rw [Category.assoc, Category.assoc, hMap_snd]
-    simp only [thickMap, pullback.map]
-    erw [pullback.lift_snd_assoc, pullback.lift_snd]
-    simp only [Category.assoc, sE_trans]
-    simp only [← Category.assoc]
-    rw [hMap_snd]
-
 lemma isGrpPullback_hMap (Y : Over (Spec (CommRingCat.of R))) [GrpObj Y]
     (Y' : Over (Spec (CommRingCat.of R'))) [GrpObj Y']
     (b : Y' ≅ (Over.pullback (specOf φ)).obj Y) [IsMonHom b.hom] :

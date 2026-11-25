@@ -653,23 +653,6 @@ open scoped BigOperators
 
 namespace GlobalTheory
 
-namespace GradedBezoutCount
-
-open GradedBezout
-
-variable {K T : Type*} [Field K] [CommRing T] [Algebra K T] {𝒜 : ℕ → Submodule K T}
-  [GradedAlgebra 𝒜]
-
-
-variable {ι : Type*} [Finite ι] {x : ι → T} (hx : ∀ i, x i ∈ 𝒜 1)
-  (hfin : Module.Finite (Algebra.adjoin K (Set.range x)) T)
-include hx hfin
-
-
-
-
-end GradedBezoutCount
-
 open Matrix Polynomial in
 open scoped BigOperators in
 private theorem exists_scale_of_homogeneousCore_ker_eq {K T : Type} [Field K] [CommRing T]

@@ -748,7 +748,6 @@ private theorem nsmul_order_of_ker_le {A B C D : Type*}
     have hr := hker _ hz
     rwa [map_nsmul e, e.apply_symm_apply, r.map_nsmul, ht] at hr
 
-set_option maxHeartbeats 8000000 in
 include hℓ hS in
 theorem exists_char_order_gsDecomp (b : ℕ) :
     ∃ χ : Additive Gal(AlgebraicClosure (v.1.adicCompletion K.1)/v.1.adicCompletion K.1) →ₜ+ QZ,

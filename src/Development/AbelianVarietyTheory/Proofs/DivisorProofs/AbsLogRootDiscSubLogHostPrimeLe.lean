@@ -36,8 +36,6 @@ theorem rootDiscr_le_of_intermediateField {E : Type} [Field E] [NumberField E]
     rw [Nat.cast_natAbs]
   rw [e1, e2]
   change _ ^ ((k : ℝ))⁻¹ ≤ _
-  have hkR : (0 : ℝ) < k := by exact_mod_cast hk
-  have hmR : (0 : ℝ) < m := by exact_mod_cast hm
   calc ((discr K).natAbs : ℝ) ^ (k : ℝ)⁻¹
       = (((discr K).natAbs : ℝ) ^ m) ^ (((k * m : ℕ) : ℝ))⁻¹ := by
         rw [← Real.rpow_natCast, ← Real.rpow_mul (by positivity)]

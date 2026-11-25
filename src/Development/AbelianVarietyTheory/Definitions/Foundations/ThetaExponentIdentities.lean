@@ -52,8 +52,6 @@ def cTw (j : ℕ) : ℕ := ceilEight (max (D.R.r + (dX D j + 1).choose 2 + 2) (8
 def nCol (j : ℕ) : ℕ :=
   ceilEight (max (D.R.f * (pp D j * (pp D j + 1) + qq D j * (qq D j + 1))) (8 * D.R.f * D.R.r + 4))
 
-def eZero (j : ℕ) : ℝ := (D.R.f : ℝ) * D.R.r * ((cTw D j : ℝ) + 4 * D.R.r)
-
 def bigR : ℝ := D.host.rdE ^ 7
 
 def degStar : ℝ := 7 * (D.R.f : ℝ) * D.R.k * L.sc.b

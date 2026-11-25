@@ -158,15 +158,6 @@ def form (k : Fin C.m ⊕ Fin C.N) : LinearMap.BilinForm ℤ (Fin C.T.r → ℤ)
 def δ (k : Fin C.m) : LinearMap.BilinForm ℤ C.Q.X := pull C.e.toIntLinearEquiv.toLinearMap (C.form (.inl k))
 end Taut
 
-def IsMumPol {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R] (Q : Data R) (G₁ : Over (Sp R)) [GrpObj G₁] [IsCommMonObj G₁]
-    (P : LB (G2 G₁).left) : Prop :=
-  IsCN R ∧ Q.IsPos (maximalIdeal R) ∧ IsSemiAbelian G₁ ∧ IsBiRig G₁ P ∧
-  ∀ (R' : Type) [CommRing R'] [IsDomain R'] [IsLocalRing R'] (ρ : R →+* R'), IsCN R' → Function.Injective ρ → ρ.Finite →
-    ∀ (D : DegData R' (maximalIdeal R')) (ε : D.toPre.X ≃+ Q.X), Refines Q ρ D.toPre ε →
-      ∃ (G' : Over (Sp R')) (_ : GrpObj G') (_ : IsCommMonObj G') (π : G'.left ⟶ G₁.left) (π₂ : (G2 G').left ⟶ (G2 G₁).left)
-        (A : PolAV (Sp (FractionRing R'))) (U : Unif (maximalIdeal R') D A G'),
-        IsGrpPullback G' G₁ (spMap ρ) π ∧ IsSquare π π₂ ∧ LBIso (abelian₂ G' U.LG.L) (P.pull π₂)
-
 def SameFib {S S' T : Scheme.{0}} (A : Over S) [GrpObj A] [IsCommMonObj A] (P : LB (G2 A).left) (f : T ⟶ S)
     (A' : Over S') [GrpObj A'] [IsCommMonObj A'] (P' : LB (G2 A').left) (f' : T ⟶ S') : Prop :=
   ∃ (H : Over T) (_ : GrpObj H) (_ : IsCommMonObj H) (a : H.left ⟶ A.left) (a₂ : (G2 H).left ⟶ (G2 A).left)

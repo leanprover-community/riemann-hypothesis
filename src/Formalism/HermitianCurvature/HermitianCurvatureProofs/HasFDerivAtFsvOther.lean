@@ -83,7 +83,7 @@ theorem qminorOp_smulC {t : ℕ}
       α • (List.ofFn fun k : Fin t => Formalism.QuantumDeterminants.Top Eop (u - ((k : ℕ) : ℂ)) (a (σ k)) (b k)).foldr (fun T h => T h) f :=
     foldr_smulC (List.ofFn fun k : Fin t => Formalism.QuantumDeterminants.Top Eop (u - ((k : ℕ) : ℂ)) (a (σ k)) (b k))
       (fun T hT => by
-        simp only [List.mem_ofFn, Set.mem_range] at hT
+        simp only [List.mem_ofFn] at hT
         obtain ⟨k, rfl⟩ := hT
         exact top_smulC hE _ _ _) α f
   rw [hT, smul_comm]

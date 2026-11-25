@@ -65,25 +65,6 @@ def upLift {V W : HSp D} (om : GA D V × GA D W →* Module.End ℂ (WO V W → 
     (f : WO V W → ℂ) (φ : GA D W → ℂ) : GA D V → ℂ :=
   fun h => ∫ g in 𝓖, star (thetaKO om h g f) * φ g ∂ν
 
-def RallisConv (D : D7) : Prop :=
-  ∀ (θ : InfFam D) (ψ : AddChar (AF D.host.F) ℂ) (V W : HSp D) (χV χW : (AE D)ˣ →* Circle)
-    (om : GA D V × GA D W →* Module.End ℂ (WO V W → ℂ)), IsInfFam θ → IsWeilDatumO ψ V W χV χW om → V.SigOK → V.IsPosDef →
-    2 * W.rank < V.rank →
-    ∀ (νV : Measure (GA D V)) (𝓗 : Set (GA D V)) (νW : Measure (GA D W)) (𝓖 : Set (GA D W))
-      (μ : Measure (WO V W)) (𝓕 : Set (WO V W)),
-      νV.IsHaarMeasure → IsFundamentalDomain (GQ V) 𝓗 νV → νW.IsHaarMeasure → IsFundamentalDomain (GQ W) 𝓖 νW →
-      μ.IsAddHaarMeasure → IsAddFundamentalDomain (ratL W V) 𝓕 μ → μ 𝓕 = 1 →
-      ∀ (f₁ f₂ : WO V W → ℂ) (φ₁ φ₂ : GA D W → ℂ), IsThetaFunO ψ V W f₁ → IsThetaFunO ψ V W f₂ →
-        IsAutFunSm θ W φ₁ → IsCuspFun W φ₁ → IsAutFunSm θ W φ₂ → IsCuspFun W φ₂ →
-        (∀ h, IntegrableOn (fun g => star (thetaKO om h g f₁) * φ₁ g) 𝓖 νW) ∧
-        IntegrableOn (fun h => star (upLift om νW 𝓖 f₁ φ₁ h) * upLift om νW 𝓖 f₂ φ₂ h) 𝓗 νV ∧
-        Integrable (fun g => thetaIP μ 𝓕 (om (1, g) f₂) f₁ * ∫ x in 𝓖, star (φ₁ x) * φ₂ (x * g) ∂νW) νW ∧
-        ∫ h in 𝓗, star (upLift om νW 𝓖 f₁ φ₁ h) * upLift om νW 𝓖 f₂ φ₂ h ∂νV =
-          ((νV 𝓗).toReal : ℂ) * ∫ g, thetaIP μ 𝓕 (om (1, g) f₂) f₁ * (∫ x in 𝓖, star (φ₁ x) * φ₂ (x * g) ∂νW) ∂νW
-
-
-
-
 theorem thetaInner_smul_left {S T' : HSp D} (μ : Measure (WO S T')) (𝓕 : Set (WO S T')) (a : ℂ) (f f' : WO S T' → ℂ) :
     thetaIP μ 𝓕 (a • f) f' = star a * thetaIP μ 𝓕 f f' := by
   unfold thetaIP

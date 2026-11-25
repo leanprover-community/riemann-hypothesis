@@ -40,7 +40,6 @@ theorem lamInf_eq {E : Type} [Field E] [NumberField E] [IsCMField E] {I : Type} 
   unfold lamInf
   rw [← Finset.prod_mul_distrib]
   refine Finset.prod_congr rfl fun i _ => ?_
-  have h1 : φ i α ≠ 0 := by simp
   have h2 : starRingEnd ℂ (φ i α) ≠ 0 := by simp
   have h3 : ((κ i : ℤ) + s) = ((κ i + s : ℕ) : ℤ) := by push_cast; ring
   rw [h3, zpow_natCast, div_pow, inv_pow]
@@ -84,7 +83,6 @@ theorem classInvariance : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
   unfold lamFin
   rw [map_mul, map_mul, hfu, mul_one, IdeleModule.modF_mul, IdeleModule.modF_mul, hmu, mul_one, hma, Units.val_mul]
   have hF : ((finPart χ y : ℂˣ) : ℂ) ≠ 0 := Units.ne_zero _
-  have hA : ((finPart χ a : ℂˣ) : ℂ) ≠ 0 := Units.ne_zero _
   have hB : ((χ.inf α : ℂˣ) : ℂ) ≠ 0 := Units.ne_zero _
   have hA' : ((finPart χ a : ℂˣ) : ℂ) = (((χ.inf α : ℂˣ) : ℂ))⁻¹ := eq_inv_of_mul_eq_one_left hAB
   have hn' : ((|((Algebra.norm ℚ (α : E) : ℚ) : ℝ)| : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hn

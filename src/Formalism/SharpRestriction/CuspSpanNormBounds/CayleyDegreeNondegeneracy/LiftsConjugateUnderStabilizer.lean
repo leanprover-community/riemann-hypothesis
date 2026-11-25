@@ -24,10 +24,7 @@ section Cl
 variable {D : D7}
 
 theorem partial_isotropic_top {T : D.host.E} (F0 : FlagG (VS D) D.R.rS T) : F0.Xa D.R.rS = F0.X := by
-  unfold FlagG.Xa FlagG.X
-  congr 1
-  ext x
-  simp
+  exact GlobalTheory.MeanGenus.Xa_top D F0
 
 theorem partial_isotropic_le {T : D.host.E} (F0 : FlagG (VS D) D.R.rS T) (j : ℕ) : F0.Xa j ≤ F0.X :=
   Submodule.span_mono (Set.image_subset_range _ _)

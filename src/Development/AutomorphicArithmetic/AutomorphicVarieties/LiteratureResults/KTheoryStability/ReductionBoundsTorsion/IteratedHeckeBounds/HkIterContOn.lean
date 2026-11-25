@@ -277,7 +277,7 @@ theorem comp_Hk_iter {k : ℕ} (q : GK L N) (ω : Form (HS L N) k) (u : Fin k �
 
 theorem Hk_contOn {k : ℕ} (q : GK L N) {ω : Form (HS L N) k} (hω : ContinuousOn ω (Pos L N)) :
     ContinuousOn (Hk q ω) (Pos L N) :=
-  mn_contOn (Sg q) _ fun c => pb_contOn _ hω
+  mn_contOn (Sg q) _ fun _ => pb_contOn _ hω
 
 
 theorem intP_Hk {k : ℕ} (q : GK L N) {ω : Form (HS L N) k} (hω : ContinuousOn ω (Pos L N))

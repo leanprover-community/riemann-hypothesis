@@ -192,8 +192,8 @@ theorem det_pull {L : Lat ξ V} {r m : ℕ} {s : Fin m → V} {U : Submodule Ω 
     have hcf' := hcf _ trivial hU₂
     obtain ⟨T, hT⟩ := exists_mat (Ω := Ω) (b := c) (s := s) fun k => by
       rw [hsU, ← hc]; exact Submodule.subset_span ⟨k, rfl⟩
-    refine ⟨T.det, GlobalTheory.CompanionTheory.Relay.det_lattice_frame_gen X Ω ξ V L r s c T _ hs hcf' hT, ?_⟩
-    have h2 := GlobalTheory.CompanionTheory.Relay.det_lattice_frame_gen X' Ω' ξ' V' (L.pull ξ' f j) r b₀ (fun k => j (c k)) (T₁ * i.mapMatrix T) q hb₀
+    refine ⟨T.det, LevelTowerAlt.determinant_lattice_generator X Ω ξ V L r s c T _ hs hcf' hT, ?_⟩
+    have h2 := LevelTowerAlt.determinant_lattice_generator X' Ω' ξ' V' (L.pull ξ' f j) r b₀ (fun k => j (c k)) (T₁ * i.mapMatrix T) q hb₀
       (frame_pull hj (hli _ _ hcf'.1) h hreg hcf') fun k => by
 
         rw [hT k, map_sum]

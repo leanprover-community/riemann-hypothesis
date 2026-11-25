@@ -451,9 +451,7 @@ theorem intZ_decay (K : Set ℂ) (hK : IsCompact K) (hKH : K ⊆ halfPlane) (N :
     refine ⟨2 ^ (N + 1) * |C0| + 2 * B, fun σ hσ ν y hν hy => ?_⟩
     set E : ℝ := (m : ℝ) + 1 - a - 2 * b - 2 * σ.re with hE
     have hyp : 0 < |y| := abs_pos.2 hy
-    have hnp : 0 < |ν| := abs_pos.2 hν
     have hx : |ν * y| = |ν| * |y| := abs_mul ν y
-    have hpN : 0 < (1 + |ν * y|) ^ N := by positivity
     have hB0 : 0 ≤ B := by rw [hB]; have := Real.pi_pos; positivity
     refine le_trans ?_ (le_of_eq (by ring : (2 ^ (N + 1) * |C0| + 2 * B) * |y| ^ E / (1 + |ν * y|) ^ (N + 1) =
       (2 ^ (N + 1) * |C0| + 2 * B) * |y| ^ E / (1 + |ν * y|) ^ (N + 1)))
@@ -469,7 +467,6 @@ theorem intZ_decay (K : Set ℂ) (hK : IsCompact K) (hKH : K ⊆ halfPlane) (N :
       have hE3 : (((m + 1 : ℕ) : ℝ) + 1 - (a : ℝ) - 2 * ((b + 1 : ℕ) : ℝ) - 2 * σ.re) = E - 1 := by rw [hE]; push_cast; ring
       rw [hE1] at e1; rw [hE2] at e2; rw [hE3] at e3
       set X : ℝ := |y| ^ (E - 1) / (1 + |ν * y|) ^ N with hX
-      have hX0 : 0 ≤ X := by positivity
       have hσb : ‖-σ - (b : ℂ)‖ ≤ |R| + b := by
         calc ‖-σ - (b : ℂ)‖ ≤ ‖σ‖ + ‖(b : ℂ)‖ := by rw [← norm_neg σ]; exact norm_sub_le _ _
           _ ≤ |R| + b := by rw [Complex.norm_natCast]; gcongr; exact (hR σ hσ).trans (le_abs_self R)
@@ -649,7 +646,6 @@ theorem iteratedDeriv_hTrans_bound :
           linarith
         rw [he, abs_neg]
         refine le_trans ?_ (Nat.le_ceil _)
-        have hj : (0 : ℝ) ≤ j := Nat.cast_nonneg j
         calc |1 + (j : ℝ) + 2 * σ.re| ≤ |1 + (j : ℝ)| + |2 * σ.re| := abs_add_le _ _
           _ = 1 + j + 2 * |σ.re| := by
               rw [abs_of_nonneg (by linarith), abs_mul, abs_of_pos (by norm_num : (0:ℝ) < 2)]
@@ -889,7 +885,6 @@ theorem norm_iteratedFDeriv_fourierFactor_le :
     · have := inv_nonneg.2 hβp.le; linarith
     · have := (one_le_inv₀ hβp).2 h; linarith
   have hA1 : 1 ≤ A := by have := abs_nonneg (ν * β); linarith
-  have hApos : 0 < A := by linarith
   have hy : β * t ≠ 0 := mul_ne_zero hβ ht.ne'
   have hyB : |β * t| + |β * t|⁻¹ ≤ M * B := by
     rw [abs_mul, abs_of_pos ht, mul_inv, hBdef, mul_add]
@@ -911,7 +906,6 @@ theorem norm_iteratedFDeriv_fourierFactor_le :
       |C j| * (M * B) ^ s j / (μ * A) ^ (N + k) := by
     intro j
     refine (hC j σ hσ ν (β * t) hν hy).trans ?_
-    have hX : 0 ≤ (|β * t| + |β * t|⁻¹) ^ s j := by positivity
     calc C j * (|β * t| + |β * t|⁻¹) ^ s j / (1 + |ν * (β * t)|) ^ (N + k)
         ≤ |C j| * (|β * t| + |β * t|⁻¹) ^ s j / (1 + |ν * (β * t)|) ^ (N + k) := by
           gcongr
@@ -939,8 +933,6 @@ theorem norm_iteratedFDeriv_fourierFactor_le :
         gcongr
         exact hh j
     _ = (k.choose i : ℝ) * (2 * Real.pi) ^ i * (|C j| * M ^ s j / μ ^ (N + k)) * (B ^ (k + s j) / A ^ N) := by
-        have hA0 : A ≠ 0 := hApos.ne'
-        have hμ0 : μ ≠ 0 := hμ.ne'
         rw [mul_pow, mul_pow, pow_add, pow_add]
         field_simp
         rw [mul_pow, mul_pow, pow_add]

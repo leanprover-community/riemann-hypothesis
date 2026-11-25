@@ -563,11 +563,6 @@ theorem adj_diagonal {n : ℕ} (f : Fin n → AE D) :
     adj (Matrix.diagonal f) = Matrix.diagonal (fun i => cA D (f i)) := by
   ext i j; simp [adj, Matrix.diagonal_apply]; split_ifs <;> simp_all [eq_comm]
 
-theorem mul_tail₃ {a m n p k : ℕ} {A : Mx D a m} {B : Mx D m n} {B' : Mx D n p} {C : Mx D a p}
-    (h : A * (B * B') = C) (X : Mx D p k) :
-    A * (B * (B' * X)) = C * X := by
-  rw [← h]; simp only [Matrix.mul_assoc]
-
 theorem mul_tail₄ {a m n p q k : ℕ} {A : Mx D a m} {B : Mx D m n} {B' : Mx D n p} {B'' : Mx D p q} {C : Mx D a q}
     (h : A * (B * (B' * B'')) = C) (X : Mx D q k) :
     A * (B * (B' * (B'' * X))) = C * X := by

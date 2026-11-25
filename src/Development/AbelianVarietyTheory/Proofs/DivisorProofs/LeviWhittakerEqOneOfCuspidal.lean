@@ -780,8 +780,6 @@ theorem eig_colChar_vecMul_ne_bot (F : Type) [Field F] (ψ : AddChar F ℂ) (r :
         split_ifs with hij
         · refine c1 i j fun hi => ?_
           have h1 : j.val = i.val + 1 := hij.1.1
-          have h2 : k.val < j.val := hij.2
-          have h3 : i.val < k.val := hi
           omega
         · rfl
     have e : σ u (σ h⁻¹ v) = σ h⁻¹ (σ (h * u * h⁻¹) v) := by
@@ -885,7 +883,6 @@ theorem step [Fintype F] (ψ : AddChar F ℂ) (hψ : ψ ≠ 1) {V : Type} [AddCo
         simp [colChar, this]
   · obtain ⟨i, hi⟩ := Function.ne_iff.1 hl0
     obtain ⟨hik, hbi⟩ := hl i hi
-    have hik' : i.val < k.val := hik
     let k' : Fin r := ⟨k.val - 1, by omega⟩
     have hk' : k'.val + 1 = k.val := by show k.val - 1 + 1 = k.val; omega
     have hbk : b k' = b k := by
@@ -987,7 +984,6 @@ theorem exists_blocks (b : Fin r → ℕ) (hb : Monotone b) :
     constructor
     · intro h
       have h1 : i < j := (f c).lt_iff_lt.1 (show (f c i).val < (f c j).val by omega)
-      have h1' : i.val < j.val := h1
       by_contra hc
       have h2 : i.val + 1 < j.val := by omega
       let m : Fin (T c).card := ⟨i.val + 1, h2.trans j.2⟩

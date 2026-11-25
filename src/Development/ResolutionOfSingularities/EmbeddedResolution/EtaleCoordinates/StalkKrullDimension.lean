@@ -354,7 +354,6 @@ private theorem exists_ltSeries_of_isMaximal_mvPolynomial (k : Type u) [Field k]
     intro M hM
     have := hM
     have hJ : IsJacobsonRing (MvPolynomial (Fin n) k) := by
-      have : Algebra.FiniteType k (MvPolynomial (Fin n) k) := inferInstance
       exact isJacobsonRing_of_finiteType (A := k)
     let φ : MvPolynomial (Fin (n + 1)) k ≃+* Polynomial (MvPolynomial (Fin n) k) :=
       (MvPolynomial.finSuccEquiv k n).toRingEquiv

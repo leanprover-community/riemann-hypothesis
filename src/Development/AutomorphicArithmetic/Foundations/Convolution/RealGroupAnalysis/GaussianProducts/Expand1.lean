@@ -300,12 +300,6 @@ private theorem mkE_eq (u t : A F) : D.mkE u t = u • BB 0 + t • BB 1 := by
 private theorem coordinate_embedNorm_zero (u t : A F) : D.co (D.mkE u t) 0 = u := by simp
 private theorem coordinate_embedNorm_one (u t : A F) : D.co (D.mkE u t) 1 = t := by simp
 
-private theorem mkE_co (z : A E) : D.mkE (D.co z 0) (D.co z 1) = z := by
-  rw [mkE_eq]
-  have := (BB).sum_repr z
-  rw [Fin.sum_univ_two] at this
-  exact this
-
 private theorem θ_mul : rt D.θ * rt D.θ = ι (rt D.δ) := by
   rw [← map_mul, ← sq, D.sq, AdeleBaseChange.adeleMap_algebraMap]
 
@@ -334,7 +328,7 @@ private theorem nu_pos (h : GL (Fin 2) (A E)) (v : InfinitePlace F) :
   have hn : ((nu F h : (A F)ˣ) : A F) = Algebra.norm (A F) h.val.det := rfl
   have hv : TR.pInf F (nu F h : A F) v =
       (TR.pInf F (D.co h.val.det 0) v) ^ 2 - TR.pInf F (rt D.δ) v * (TR.pInf F (D.co h.val.det 1) v) ^ 2 := by
-    rw [hn, ← mkE_co D h.val.det, norm_mkE, coordinate_embedNorm_zero, coordinate_embedNorm_one]
+    rw [hn, ← UpperTheory.ConvolutionTheory.R2.Dat.mkE_co D h.val.det, norm_mkE, coordinate_embedNorm_zero, coordinate_embedNorm_one]
     simp [map_sub, map_mul, map_pow]
   have hne : TR.pInf F (nu F h : A F) v ≠ 0 := by
     intro h0

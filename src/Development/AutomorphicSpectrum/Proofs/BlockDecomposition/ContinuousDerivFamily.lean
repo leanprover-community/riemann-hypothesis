@@ -188,7 +188,7 @@ theorem wholo_growForms (v : ℂ → modFun σ Y) {S : Set ℂ} (hS : IsOpen S)
     (hc : ContinuousOn (fun y : ℂ × G2 σ Y => (v y.1).1 y.2) (S ×ˢ Set.univ))
     (hb : ∀ Q : Set ℂ, Q ⊆ S → IsCompact Q → ∃ (C : ℝ) (N : ℕ), ∀ s ∈ Q, ∀ x, ‖(v s).1 x‖ ≤ C * (ht2 x : ℝ) ^ N) :
     WHolo {μ | IsGrowForm μ} v S := fun μ hμ =>
-  differentiableOn_form (h := fun x : G2 σ Y => (ht2 x : ℝ)) (fun x => NNReal.coe_nonneg _)
+  differentiableOn_form (h := fun x : G2 σ Y => (ht2 x : ℝ)) (fun _ => NNReal.coe_nonneg _)
     (fun _ _ _ hg hA => mem_modFun hg hA) μ hμ v hS hd hc hb
 
 end GlobalTheory.CompanionTheory.WeakHolo

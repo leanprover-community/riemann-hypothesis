@@ -441,7 +441,7 @@ theorem sCompact_of (hFL : FinLevi X u) (hNO : NOCocompact X u) (hND : NDenseAt 
       simp only [Subgroup.coe_mul]
       group
 
-theorem psiUnit_holds : PsiUnit X u := fun n _ =>
+theorem psiUnit_holds : PsiUnit X u := fun _ _ =>
   le_of_eq (Formalism.L2.SG.TermOp.KExpCut.psiUnit X _)
 
 theorem iUnfold_of_NO (hK : X.LevelSubgroupCharacter) (hFL : FinLevi X u) (hNO : NOCocompact X u) (hND : NDenseAt X u) :

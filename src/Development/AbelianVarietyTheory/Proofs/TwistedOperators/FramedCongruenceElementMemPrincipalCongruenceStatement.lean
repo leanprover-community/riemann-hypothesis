@@ -297,7 +297,7 @@ theorem modul_witness : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} (G
     obtain ⟨v', hv'S, hpow⟩ := (Ideal.IsPrime.prod_le (Formalism.DivisionValues.conjPl (G.pl.w v)).isPrime).1 hle
     have h1 := eqOf v' _ (Ideal.IsPrime.le_of_pow_le hpow)
     have h2 : v' = v := by
-      rw [← G.pl.under_w hv'S, ← G.pl.under_w hv, h1, GlobalTheory.ChainTw.ParInv.under_conjPl]
+      rw [← G.pl.under_w hv'S, ← G.pl.under_w hv, h1, GlobalTheory.ChainInv.under_conjPl]
     subst h2
     exact hconj h1.symm
 

@@ -145,13 +145,10 @@ theorem polar_inv {S U : Matrix ι ι ℂ} (h1 : S * S = 1) (h2 : Sᴴ = S) (hU 
 theorem jm_mul_self (R S : ℕ) : Jm R S * Jm R S = 1 := by
   simp [Jm, Formalism.UG.Jpq, Matrix.fromBlocks_multiply, Matrix.fromBlocks_one]
 
-theorem jm_conjTranspose (R S : ℕ) : (Jm R S)ᴴ = Jm R S := by
-  simp [Jm, Formalism.UG.Jpq, Matrix.fromBlocks_conjTranspose]
-
 theorem polar (R S : ℕ) (u : Mat R S) (hu : uᴴ * Jm R S * u = Jm R S) :
     ∃ k q : Mat R S, kᴴ * Jm R S * k = Jm R S ∧
       Jm R S * k = k * Jm R S ∧ qᴴ * Jm R S * q = Jm R S ∧ Jm R S * q * Jm R S * q = 1 ∧ u = k * q * q :=
-  polar_inv (jm_mul_self R S) (jm_conjTranspose R S) hu
+  polar_inv (jm_mul_self R S) (GlobalTheory.RealPar.KStabLie.Jm_ct R S) hu
 
 end GlobalTheory.UnitaryPolar
 end -- clump:auto
@@ -248,7 +245,6 @@ theorem zeta_eq' (x : ℝ) : (1 - 2 * I * x) / (1 + 2 * I * x) =
 
 theorem rot_eq (x : ℝ) : upperUnip x * lowerUnip (2 * x / (1 + 4 * x ^ 2)) * upperUnip x =
     !![(1 + 2 * I * x) / (1 - 2 * I * x), 0; 0, (1 - 2 * I * x) / (1 + 2 * I * x)] := by
-  have h3 : (1 + 4 * x ^ 2) ≠ 0 := by positivity
   rw [zeta_eq, zeta_eq']
   generalize hc : (1 - 4 * x ^ 2) / (1 + 4 * x ^ 2) = c
   generalize hs : (4 * x) / (1 + 4 * x ^ 2) = s
@@ -305,8 +301,6 @@ theorem inPlane_ct (M : Matrix (Fin 2) (Fin 2) ℂ) : (inPlane i0 j0 M)ᴴ = inP
   simp [inPlane, Matrix.conjTranspose_mul, emb_ct, embT_ct, Matrix.mul_assoc]
 theorem inPlane_mem (M : Matrix (Fin 2) (Fin 2) ℂ) (h : Mᴴ * signatureOneOneForm * M = signatureOneOneForm) :
     (inPlane i0 j0 M)ᴴ * Jm R S * inPlane i0 j0 M = Jm R S := by
-  have e1 : ∀ Z : Matrix (Fin R ⊕ Fin S) (Fin R ⊕ Fin S) ℂ, (emb i0 j0)ᵀ * (Jm R S * Z) = signatureOneOneForm * ((emb i0 j0)ᵀ * Z) :=
-    fun Z => by rw [← Matrix.mul_assoc, embT_Jm, Matrix.mul_assoc]
   have e2 : ∀ Z : Matrix (Fin 2) (Fin R ⊕ Fin S) ℂ, Jm R S * (emb i0 j0 * Z) = emb i0 j0 * (signatureOneOneForm * Z) :=
     fun Z => by rw [← Matrix.mul_assoc, Jm_emb, Matrix.mul_assoc]
   have e3 : ∀ Z : Matrix (Fin 2) (Fin R ⊕ Fin S) ℂ, (emb i0 j0)ᵀ * (emb i0 j0 * Z) = Z := fun Z => by
@@ -417,7 +411,6 @@ theorem norm_eq_one_of_compact {G : Type*} [Group G] [TopologicalSpace G] [Compa
   have h2 := hle a⁻¹
   have h3 := hle a
   have h4 : 0 ≤ ‖f a‖ := norm_nonneg _
-  have h5 : 0 ≤ ‖f a⁻¹‖ := norm_nonneg _
   nlinarith
 
 theorem fromBlocks_mem (R S : ℕ) (a : Matrix (Fin R) (Fin R) ℂ) (d : Matrix (Fin S) (Fin S) ℂ)

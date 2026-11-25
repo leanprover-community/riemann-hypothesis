@@ -92,35 +92,6 @@ open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.Loc
 namespace PositivityTheory.Groth
 open CompanionTheory.Groth (Cls Tri sq)
 
-section TriLemmas
-
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-
-theorem tri_coe_decW (Δ : Segment k) : ((decW Δ : List (IrrGL (k := k))) : Multiset (IrrGL (k := k))) = Δ.ms := by
-  unfold decW Segment.ms
-  rw [← GlobalTheory.CompanionTheory.ZcWords.reverse_ofFn, Multiset.coe_reverse, Fin.univ_val_map]
-
-theorem tri_coe_flatten_decW (L : List (Segment k)) :
-    (((L.map decW).flatten : List (IrrGL (k := k))) : Multiset (IrrGL (k := k))) = (L : Multiset (Segment k)).bind Segment.ms :=
-  _root_.CompanionTheory.Groth.tri_coe_flatten_decW L
-
-theorem tri_msupp_of_inShW {𝔪 : Multiset (Segment k)} {w : List (IrrGL (k := k))} (H : InShW 𝔪 w) :
-    msupp 𝔪 = (w : Multiset (IrrGL (k := k))) := by
-  obtain ⟨L, rfl, hs⟩ := H
-  unfold msupp
-  rw [← tri_coe_flatten_decW]
-  exact Multiset.coe_eq_coe.mpr (_root_.GlobalTheory.CompanionTheory.Comb.shuffle_perm_flatten _ _ hs).symm
-
-theorem tri_msupp_wtW {h : ℕ} {Γ : Fin h → Segment k} {𝔫 : Multiset (Segment k)} (H : IsOrderedForm Γ 𝔫) :
-    msupp 𝔫 = (wtW Γ : Multiset (IrrGL (k := k))) :=
-  _root_.CompanionTheory.Groth.tri_msupp_wtW H
-
-theorem tri_sqLen_map_toA (𝔪 : Multiset (Segment k)) : Comb.sqLen (𝔪.map toA) = sq 𝔪 := by
-  rw [Comb.sqLen, Multiset.map_map]
-  rfl
-
-end TriLemmas
-
 theorem tri (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (c : Cls k) :
     Tri k :=
   _root_.CompanionTheory.Groth.tri k c
@@ -137,14 +108,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-namespace PositivityTheory.Groth
-open CompanionTheory.Groth (Cls altSum assoc comm jCls jSeg mulCls multOne one prodList)
-
-theorem groth_of_cls (H : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], Cls k) :
-    GlobalTheory.Published.GrothendieckRingPolynomial :=
-  _root_.CompanionTheory.Groth.groth_of_cls H
-
-end PositivityTheory.Groth
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.WeilBound.CoreStatements.AutomorphicKernels.GrothendieckRingPolynomial.GrothOfCls =====

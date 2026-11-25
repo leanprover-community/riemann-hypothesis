@@ -14,51 +14,22 @@ open Formalism.FourierDecayAlt.M Formalism.FourierDecayAlt Finset
 namespace Formalism.FourierDecayAlt.P.Mx3
 
 theorem rho_eq (P : Par) (π : Ty P) (i : ℕ) (h : 1 ≤ i ∧ i ≤ P.k - 1) :
-    rho P π i = P.lo i + (((π ⟨i - 1, by omega⟩ : Fin _) : ℕ) : ℝ) := by
-  simp only [rho, dite_eq_left h]
+    rho P π i = P.lo i + (((π ⟨i - 1, by omega⟩ : Fin _) : ℕ) : ℝ) :=
+  _root_.Formalism.FourierDecayAlt.P.Mx4.rho_eq P π i h
 
-theorem tyInterlaces : TyInterlaces := by
-  intro P hP π i hi
-  have h := Finset.mem_Icc.1 hi
-  have hg := hP.gap i hi
-  rw [rho_eq P π i h]
-  have hb : ((π ⟨i - 1, by omega⟩ : Fin _) : ℕ) ≤ P.wid i := by
-    have := (π ⟨i - 1, by omega⟩).2
-    have e : i - 1 + 1 = i := by omega
-    simp only [e] at this
-    omega
-  have hw : (P.wid i : ℝ) ≤ P.hi i - P.lo i := Nat.floor_le (by linarith)
-  have hb' : (((π ⟨i - 1, by omega⟩ : Fin _) : ℕ) : ℝ) ≤ P.wid i := by exact_mod_cast hb
-  have h0 : (0 : ℝ) ≤ (((π ⟨i - 1, by omega⟩ : Fin _) : ℕ) : ℝ) := Nat.cast_nonneg _
-  have a1 : P.hi i ≤ P.u i - 1 / 2 := by unfold Par.hi; linarith [min_le_left (P.u i) (P.u' i)]
-  have a2 : P.hi i ≤ P.u' i - 1 / 2 := by unfold Par.hi; linarith [min_le_right (P.u i) (P.u' i)]
-  have a3 : P.u (i + 1) + 1 / 2 ≤ P.lo i := by unfold Par.lo; linarith [le_max_left (P.u (i + 1)) (P.u' (i + 1))]
-  have a4 : P.u' (i + 1) + 1 / 2 ≤ P.lo i := by unfold Par.lo; linarith [le_max_right (P.u (i + 1)) (P.u' (i + 1))]
-  refine ⟨by linarith, by linarith, by linarith, by linarith⟩
+theorem tyInterlaces : TyInterlaces :=
+  _root_.Formalism.FourierDecayAlt.P.Mx4.tyInterlaces
 
-theorem rhoUp : RhoUp := by
-  intro P l π π' hU i hi
-  have h := Finset.mem_Icc.1 hi
-  rw [rho_eq P π i h, rho_eq P π' i h, hU ⟨i - 1, by omega⟩]
-  have e : i - 1 + 1 = i := by omega
-  simp only [e]
-  split_ifs <;> push_cast <;> ring
+theorem rhoUp : RhoUp :=
+  _root_.Formalism.FourierDecayAlt.P.Mx4.rhoUp
 
 theorem mono (k : ℕ) (u u' ρ : ℕ → ℝ) (h : I.Interlaces k u u' ρ) :
-    ∀ d i, 1 ≤ i → i + d ≤ k → u (i + d) ≤ u i ∧ u' (i + d) ≤ u' i := by
-  intro d
-  induction d with
-  | zero => intro i _ _; simp
-  | succ d ih =>
-    intro i h1 h2
-    have a := ih i h1 (by omega)
-    have b := h (i + d) (Finset.mem_Icc.2 ⟨by omega, by omega⟩)
-    have e : i + (d + 1) = i + d + 1 := by ring
-    rw [e]
-    constructor <;> linarith [b.1, b.2.1, b.2.2.1, b.2.2.2]
+    ∀ d i, 1 ≤ i → i + d ≤ k → u (i + d) ≤ u i ∧ u' (i + d) ≤ u' i :=
+  _root_.Formalism.FourierDecayAlt.P.Mx4.mono k u u' ρ h
 
 theorem val_congr (P : Par) (π : Ty P) (a b : Fin (P.k - 1)) (h : a = b) :
-    ((π a : Fin _) : ℕ) = ((π b : Fin _) : ℕ) := by subst h; rfl
+    ((π a : Fin _) : ℕ) = ((π b : Fin _) : ℕ) :=
+  _root_.Formalism.FourierDecayAlt.P.Mx4.val_congr P π a b h
 
 theorem lo_int (P : Par) (hP : P.OK) (i : ℕ) (hi : i ∈ Icc 1 (P.k - 1)) : ∃ n : ℤ, P.lo i - P.u 1 - 1 / 2 = n :=
   _root_.Formalism.FourierDecayAlt.P.Mx4.lo_int P hP i hi
@@ -66,15 +37,11 @@ theorem lo_int (P : Par) (hP : P.OK) (i : ℕ) (hi : i ∈ Icc 1 (P.k - 1)) : �
 theorem hi_int (P : Par) (hP : P.OK) (i : ℕ) (hi : i ∈ Icc 1 (P.k - 1)) : ∃ n : ℤ, P.hi i - P.u 1 + 1 / 2 = n :=
   _root_.Formalism.FourierDecayAlt.P.Mx4.hi_int P hP i hi
 
-theorem floor_of_int (x : ℝ) (h0 : 0 ≤ x) (z : ℤ) (hz : x = z) : ((⌊x⌋₊ : ℕ) : ℝ) = x := by
-  have hz0 : 0 ≤ z := by have : (0 : ℝ) ≤ (z : ℝ) := hz ▸ h0; exact_mod_cast this
-  obtain ⟨n, rfl⟩ := Int.eq_ofNat_of_zero_le hz0
-  rw [hz]; simp
+theorem floor_of_int (x : ℝ) (h0 : 0 ≤ x) (z : ℤ) (hz : x = z) : ((⌊x⌋₊ : ℕ) : ℝ) = x :=
+  _root_.Formalism.FourierDecayAlt.P.Mx4.floor_of_int x h0 z hz
 
-theorem wid_eq (P : Par) (hP : P.OK) (i : ℕ) (hi : i ∈ Icc 1 (P.k - 1)) : (P.wid i : ℝ) = P.hi i - P.lo i := by
-  obtain ⟨a, ha⟩ := lo_int P hP i hi
-  obtain ⟨b, hb⟩ := hi_int P hP i hi
-  exact floor_of_int _ (by linarith [hP.gap i hi]) (b - a - 1) (by push_cast; linarith)
+theorem wid_eq (P : Par) (hP : P.OK) (i : ℕ) (hi : i ∈ Icc 1 (P.k - 1)) : (P.wid i : ℝ) = P.hi i - P.lo i :=
+  _root_.Formalism.FourierDecayAlt.P.Mx4.wid_eq P hP i hi
 
 theorem tyComplete : TyComplete := by
   intro P hP
@@ -128,84 +95,19 @@ theorem nrm_pos (P : Par) (hP : P.OK) (l : ℕ) (hl : l ∈ Icc 1 (P.k - 1)) (π
   by apply _root_.Formalism.FourierDecayAlt.P.Mx4.nrm_pos <;> assumption
 
 theorem nrm_down (P : Par) (l : ℕ) (hl : l ∈ Icc 1 (P.k - 1)) (π π' : Ty P) (hU : Up P l π π') :
-    NrmDown P l π' = Nrm P l π := by
-  have hr := rhoUp P l π π' hU
-  have hrl := hr l hl
-  rw [ite_eq_left rfl] at hrl
-  unfold NrmDown Nrm
-  rw [hrl]
-  have e1 : ∏ j ∈ (Icc 1 (P.k - 1)).erase l, (rho P π' j - (rho P π l + 1) + 1) =
-      ∏ j ∈ (Icc 1 (P.k - 1)).erase l, (rho P π j - rho P π l) := by
-    refine Finset.prod_congr rfl ?_
-    intro j hj
-    rw [hr j (Finset.mem_of_mem_erase hj), ite_eq_right (Finset.ne_of_mem_erase hj)]; ring
-  have e2 : ∏ j ∈ (Icc 1 (P.k - 1)).erase l, (rho P π' j - (rho P π l + 1)) =
-      ∏ j ∈ (Icc 1 (P.k - 1)).erase l, (rho P π j - rho P π l - 1) := by
-    refine Finset.prod_congr rfl ?_
-    intro j hj
-    rw [hr j (Finset.mem_of_mem_erase hj), ite_eq_right (Finset.ne_of_mem_erase hj)]; ring
-  rw [e1, e2]
-  congr 3
-  ring
+    NrmDown P l π' = Nrm P l π :=
+  _root_.Formalism.FourierDecayAlt.P.Mx4.nrm_down P l hl π π' hU
 
 theorem top (P : Par) (hP : P.OK) (l : ℕ) (hl : l ∈ Icc 1 (P.k - 1)) (π : Ty P) (h : ¬ ∃ π', Up P l π π') :
-    rho P π l = P.hi l := by
-  have hl' := Finset.mem_Icc.1 hl
-  have e : l - 1 + 1 = l := by omega
-  by_contra hne
-  apply h
-  have hlt : ((π ⟨l - 1, by omega⟩ : Fin _) : ℕ) < P.wid l := by
-    by_contra hge
-    apply hne
-    have h2 := (π ⟨l - 1, by omega⟩).2
-    simp only [e] at h2
-    have h3 : ((π ⟨l - 1, by omega⟩ : Fin _) : ℕ) = P.wid l := by omega
-    rw [rho_eq P π l hl', h3, wid_eq P hP l hl]; ring
-  refine ⟨fun i => if hi : (i : ℕ) + 1 = l then ⟨(π i : ℕ) + 1, ?_⟩ else π i, ?_⟩
-  · have : i = ⟨l - 1, by omega⟩ := Fin.ext (by simp; omega)
-    rw [val_congr P π _ _ this, hi]; omega
-  · intro i
-    by_cases hi : (i : ℕ) + 1 = l <;> simp [hi]
+    rho P π l = P.hi l :=
+  _root_.Formalism.FourierDecayAlt.P.Mx4.top P hP l hl π h
 
 theorem bot (P : Par) (l : ℕ) (hl : l ∈ Icc 1 (P.k - 1)) (π : Ty P) (h : ¬ ∃ π', Up P l π' π) :
-    rho P π l = P.lo l := by
-  have hl' := Finset.mem_Icc.1 hl
-  by_contra hne
-  apply h
-  have hpos : 0 < ((π ⟨l - 1, by omega⟩ : Fin _) : ℕ) := by
-    by_contra hge
-    apply hne
-    have h3 : ((π ⟨l - 1, by omega⟩ : Fin _) : ℕ) = 0 := by omega
-    rw [rho_eq P π l hl', h3]; simp
-  refine ⟨fun i => if hi : (i : ℕ) + 1 = l then ⟨(π i : ℕ) - 1, ?_⟩ else π i, ?_⟩
-  · have := (π i).2; omega
-  · intro i
-    by_cases hi : (i : ℕ) + 1 = l
-    · have : i = ⟨l - 1, by omega⟩ := Fin.ext (by simp; omega)
-      have h5 := val_congr P π _ _ this
-      simp [hi]; omega
-    · simp [hi]
+    rho P π l = P.lo l :=
+  _root_.Formalism.FourierDecayAlt.P.Mx4.bot P l hl π h
 
-theorem nrmFacts : NrmFacts := by
-  intro P hP l hl π
-  have hl' := Finset.mem_Icc.1 hl
-  refine ⟨fun π' hU => ⟨nrm_pos P hP l hl π π' hU, nrm_down P l hl π π' hU⟩, ?_, ?_⟩
-  · intro h
-    have ht := top P hP l hl π h
-    unfold Nrm I.qpoly
-    have : ∏ i ∈ Icc 1 P.k, ((-rho P π l - 1 + 1 / 2 + P.u i) * (-rho P π l - 1 + 1 / 2 + P.u' i)) = 0 := by
-      apply Finset.prod_eq_zero (i := l) (Finset.mem_Icc.2 ⟨hl'.1, by omega⟩)
-      rw [ht]; unfold Par.hi
-      rcases min_choice (P.u l) (P.u' l) with h | h <;> rw [h] <;> ring
-    rw [this]; simp
-  · intro h
-    have ht := bot P l hl π h
-    unfold NrmDown I.qpoly
-    have : ∏ i ∈ Icc 1 P.k, ((-rho P π l + 1 / 2 + P.u i) * (-rho P π l + 1 / 2 + P.u' i)) = 0 := by
-      apply Finset.prod_eq_zero (i := l + 1) (Finset.mem_Icc.2 ⟨by omega, by omega⟩)
-      rw [ht]; unfold Par.lo
-      rcases max_choice (P.u (l + 1)) (P.u' (l + 1)) with h | h <;> rw [h] <;> ring
-    rw [this]; simp
+theorem nrmFacts : NrmFacts :=
+  _root_.Formalism.FourierDecayAlt.P.Mx4.nrmFacts
 
 theorem num_zero (P : Par) (hP : P.OK) (l : ℕ) (hl : l ∈ Icc 1 (P.k - 1)) (π : Ty P) (h : ¬ ∃ π', Up P l π π') :
     I.qpoly P.k P.T P.T' P.u P.u' (-rho P π l - 1) = 0 := by

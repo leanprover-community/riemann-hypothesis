@@ -22,50 +22,11 @@ public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.Cub
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.AllUniformizationLawsHold
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ThetaUniformisationComplexAbelianVariety
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.ExistsSiegPre
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.WeilIsGrpPullbackOfCommute
 import Mathlib.AlgebraicGeometry.ValuativeCriterion
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
 import Development.AbelianVarietyTheory.Definitions.TeichmullerDepth.IsEigBasisIff
@@ -73,8 +34,6 @@ import ReciprocityTheory.DualLattices.FormalChartAtZero
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.StChartF
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.DualLattices.CotangentSurjective
 import ReciprocityTheory.DualLattices.SqZeroOfSpan
 import Mathlib.Algebra.Order.Star.Real
@@ -631,10 +590,6 @@ namespace GlobalTheory
 section
 open Polynomial
 
-private theorem zpMap_map_aeval {R' R : Type} [CommRing R'] [CommRing R] (π : R' →+* R)
-    (f : ℤ[X]) (x : R') : π (Polynomial.aeval x f) = Polynomial.aeval (π x) f :=
-  (Polynomial.aeval_algHom_apply π.toIntAlgHom x f).symm
-
 private theorem zpMap_general {B R : Type} [CommRing B] [CommRing R]
     (f : ℤ[X]) (ζ : B) (S : Submonoid ℕ) (h0 : Polynomial.aeval ζ f = 0)
     (hinj : ∀ g : ℤ[X], Polynomial.aeval ζ g = 0 → f ∣ g)
@@ -734,7 +689,7 @@ private theorem zpMap_main (p : ℕ) (C : Type) [Field C] [IsAlgClosed C] [CharZ
   have hmin := cyclotomic_eq_minpoly hprim hpos
   have hcoe : ∀ g : ℤ[X], ((Polynomial.aeval (Geo.Tor.zetaZP p M) g : Geo.Tor.ZP p M) : ℂ)
       = Polynomial.aeval ((Geo.Tor.zetaZP p M : Geo.Tor.ZP p M) : ℂ) g :=
-    fun g => zpMap_map_aeval (Geo.Tor.ZP p M).subtype g _
+    fun g => GlobalTheory.ringHom_aeval_eq_aeval_apply (Geo.Tor.ZP p M).subtype g _
   have h0 : Polynomial.aeval (Geo.Tor.zetaZP p M) (cyclotomic M ℤ) = 0 := by
     apply Subtype.ext
     rw [hcoe, hmin]
@@ -747,7 +702,7 @@ private theorem zpMap_main (p : ℕ) (C : Type) [Field C] [IsAlgClosed C] [CharZ
   have hminw := cyclotomic_eq_minpoly hw hpos
   have hz : Polynomial.aeval z (cyclotomic M ℤ) = 0 := by
     apply hv.hom_inj
-    rw [zpMap_map_aeval, map_zero, hminw]
+    rw [GlobalTheory.ringHom_aeval_eq_aeval_apply, map_zero, hminw]
     exact minpoly.aeval _ _
   have hsurj : ∀ b : Geo.Tor.ZP p M, ∃ n ∈ zpMap_S p, ∃ g : ℤ[X],
       b * (n : Geo.Tor.ZP p M) = Polynomial.aeval (Geo.Tor.zetaZP p M) g := by
@@ -767,7 +722,7 @@ private theorem zpMap_main (p : ℕ) (C : Type) [Field C] [IsAlgClosed C] [CharZ
     intro b hb
     obtain ⟨n, hn, g, hg⟩ := hsurj b
     have h1 : Polynomial.aeval (algebraMap O C z) g = 0 := by
-      rw [← zpMap_map_aeval, ← hβ, ← zpMap_map_aeval, ← hg, map_mul, hb, zero_mul, map_zero]
+      rw [← GlobalTheory.ringHom_aeval_eq_aeval_apply, ← hβ, ← GlobalTheory.ringHom_aeval_eq_aeval_apply, ← hg, map_mul, hb, zero_mul, map_zero]
     have h2 : cyclotomic M ℤ ∣ g := by
       rw [hminw]
       exact minpoly.isIntegrallyClosed_dvd (hw.isIntegral hpos) h1
@@ -777,7 +732,7 @@ private theorem zpMap_main (p : ℕ) (C : Type) [Field C] [IsAlgClosed C] [CharZ
   · intro k _ gk
     haveI : NeZero (M : k) := ⟨by simpa using (hMu.map gk).ne_zero⟩
     rw [← isRoot_cyclotomic_iff, hβ, IsRoot.def, ← map_cyclotomic_int, ← algebraMap_int_eq,
-      eval_map_algebraMap, ← zpMap_map_aeval, hz, map_zero]
+      eval_map_algebraMap, ← GlobalTheory.ringHom_aeval_eq_aeval_apply, hz, map_zero]
 
 end
 

@@ -103,10 +103,6 @@ theorem inK_of_lam [IsCommMonObj B] {O : LB B.left} (hO : O.IsLB) (hu : ∃ u : 
 
 end GlobalTheory.UU.KTwist
 
-namespace GlobalTheory.UU
-
-end GlobalTheory.UU
-
 end
 end -- clump:auto
 end -- clump:auto

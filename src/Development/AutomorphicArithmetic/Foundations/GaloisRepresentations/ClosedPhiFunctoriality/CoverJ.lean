@@ -40,8 +40,8 @@ theorem coverJ_holds : CoverJ := by
     intro ρ'
     by_cases h : Continuous ρ'
     · obtain ⟨L, hLf, hL⟩ := _root_.GlobalTheory.CompactRepField.exists_finiteDimensional_entries_mem_of_continuous l Γ a ρ' h
-      haveI := hLf
-      haveI := L₀.2
+      have := hLf
+      have := L₀.2
       let L' : FinExt l := ⟨L ⊔ L₀.1, inferInstance⟩
       have hL' : ∀ g i j, ((ρ' g : GL (Fin a) (Om l)) : Matrix (Fin a) (Fin a) (Om l)) i j ∈ L'.1 := fun g i j =>
         (le_sup_left : L ≤ L ⊔ L₀.1) (hL g i j)

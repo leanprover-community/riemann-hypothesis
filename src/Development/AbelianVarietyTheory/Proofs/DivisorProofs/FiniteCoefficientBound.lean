@@ -567,7 +567,6 @@ theorem factor_stair (t : T) (P : Pl D.host.E) (hs : 1 ≤ (locGrid G t P).s) (e
       Finset.sum_eq_zero fun a _ => by simp [f]
     rw [h1, zero_add]
     have h2 : ∀ p : Fin ((locGrid G t P).m - 1 - j), |f (Sum.inr p)| ≤ (e : ℤ) * (D.R.m : ℤ) := fun p => by
-      have hp : p.val < D.R.m - 1 - j := p.2
       have : p.val + 1 ≤ D.R.m := by omega
       simp only [f, Sum.elim_inr]
       rw [abs_of_nonneg (by positivity)]
@@ -661,7 +660,6 @@ theorem coefficient_local_term_at_split_place {μ₀ : T} (hL : L.Is μ₀) (S :
   have hm2 : (((locGrid G t P).m - 2 : ℕ) : ℝ) ≤ D.R.m := by
     have : (locGrid G t P).m - 2 ≤ D.R.m := by show D.R.m - 2 ≤ D.R.m; omega
     exact_mod_cast this
-  have hB0 : 0 ≤ B := by positivity
   calc ∑ _i : Fin ((locGrid G t P).m - 2), B * v = (((locGrid G t P).m - 2 : ℕ) : ℝ) * (B * v) := by simp
     _ ≤ (D.R.m : ℝ) * (B * v) := mul_le_mul_of_nonneg_right hm2 (by positivity)
     _ = expAt G P * v := by rw [hB, expAt]; ring
@@ -809,8 +807,6 @@ theorem loss_dlF {C b : ℝ} (hC : 2 ≤ C) (hb : 1 ≤ b) (hf : 1 ≤ D.R.f) :
     have hL : 0 ≤ Real.log b := Real.log_nonneg hb
     have hmN : (D.R.m : ℝ) ≤ bigN D := by exact_mod_cast m_le_bigN
     have hf' : (1 : ℝ) ≤ D.R.f := by exact_mod_cast hf
-    have hm0 : (0 : ℝ) ≤ D.R.m := by positivity
-    have hN0 : (0 : ℝ) ≤ bigN D := by positivity
     have h3 : (2 : ℝ) ≤ C * D.R.f * b := by
       have : (1 : ℝ) ≤ D.R.f * b := one_le_mul_of_one_le_of_one_le hf' hb
       nlinarith

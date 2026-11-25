@@ -31,9 +31,6 @@ theorem uh_isUnit {g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (
   rw [h0, mul_zero] at h
   exact hH.ne_zero h.symm
 
-theorem n_sub {g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hg : g ∈ Nset k r) :
-    g ∈ UH (Hpk k r) := hg.1
-
 def Good (L : LocBessel k r) (x : PairSp k r) : Prop :=
   Matrix.of x.1.2 ∈ Nset k r ∧ Matrix.of x.2.2 ∈ Nset k r ∧ Matrix.of x.1.1 ∈ UWset k r L.z ∧
     Matrix.of x.2.1 ∈ UWset k r L.z'
@@ -63,7 +60,7 @@ theorem good_stabAct (L : LocBessel k r) {γ a : Matrix (Fin (2 * r + k + 1)) (F
       b * m ∈ Nset k r ↔ m ∈ Nset k r := by
     intro b hb m
     refine ⟨fun h => ?_, fun h => Formalism.QuantumDeterminants.WeylGroupFacts.mem_n_mul hb h⟩
-    have hu := uh_isUnit (n_sub hb)
+    have hu := uh_isUnit (PI.AmpOrbQuot.nset_uh hb)
     have := Formalism.QuantumDeterminants.WeylGroupFacts.mem_n_mul (Formalism.QuantumDeterminants.WeylGroupFacts.mem_n_inv hb) h
     rwa [← Matrix.mul_assoc, Matrix.nonsing_inv_mul _ hu, Matrix.one_mul] at this
   show (a * Matrix.of x.1.2 ∈ Nset k r ∧ γ⁻¹ * a * γ * Matrix.of x.2.2 ∈ Nset k r ∧

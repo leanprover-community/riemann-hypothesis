@@ -128,7 +128,3 @@ theorem frame_of (Bs : B.RealPlaceData k r Wp Wq) : ∃ (ν' : Fin (2 * r + k + 
 end frame
 
 end Formalism.FourierDecayAlt.P.HaarMassHermitianCurvature
-
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P

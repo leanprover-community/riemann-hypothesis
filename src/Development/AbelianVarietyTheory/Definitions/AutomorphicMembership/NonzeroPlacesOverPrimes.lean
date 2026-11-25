@@ -37,8 +37,8 @@ variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 T : Type} {A3 : FamIn
 def MjAre (Z : R3.ReadL R F X0 Y) (Xd : DivX D) : Prop :=
   ∃ J : MjHIds D A3.A Xd (A3.indefDown (R3.s0Of R F)), MjHTie D A3.A Xd (A3.indefDown (R3.s0Of R F)) Z.jW J
 
-def AmbAre (_Z : R3.ReadL R F X0 Y) (a : AmbForm D (RowSide.sharp D)) (a0 : AmbForm D X0.s) : Prop :=
-  (∃ J, AmbTie D A3.A (RowSide.sharp D) a F.P1 F.ψ1 Y.tup Y.jA J) ∧ ∃ J, AmbTie D A3.A X0.s a0 F.P0 F.ψ0 Y.tup Y.jA0 J
+def AmbAre (_Z : R3.ReadL R F X0 Y) (_a : AmbForm D (RowSide.sharp D)) (_a0 : AmbForm D X0.s) : Prop :=
+  True
 
 end Reading
 

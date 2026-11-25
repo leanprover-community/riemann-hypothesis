@@ -146,13 +146,6 @@ def Lifts (S : SES W₀ W₁ W₂) (c : O) : Prop :=
 
 end Hyp
 
-namespace WachMod
-
-variable {D : Type} [AddCommGroup D] [Module A D] [Module O D] [IsScalarTower O A D]
-  (W : WachMod B M D)
-
-end WachMod
-
 section Gal
 
 variable {D : Type} [AddCommGroup D] [Module A D] [Module O D] [IsScalarTower O A D]

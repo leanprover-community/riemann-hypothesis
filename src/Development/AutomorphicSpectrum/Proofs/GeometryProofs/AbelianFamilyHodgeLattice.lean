@@ -599,13 +599,13 @@ private theorem gen_fac {x : X} (h : x ⤳ p) {S : CommRingCat.{0}} (k : X.presh
 end UpperTheory.Reformulated.B.Ga4
 
 theorem UpperTheory.Reformulated.B.Ga4.exists_value_basis :
-    ∀ {X : AlgebraicGeometry.Scheme} {Ω : Type} [inst : Field Ω]
-    {ξ : AlgebraicGeometry.Spec (CommRingCat.of Ω) ⟶ X} {G : CategoryTheory.Over X} [inst_1 : CategoryTheory.GrpObj G]
-    {Li : Type} [inst_2 : AddCommGroup Li] [inst_3 : _root_.Module Ω Li] [CategoryTheory.IsCommMonObj G]
+    ∀ {X : AlgebraicGeometry.Scheme} {Ω : Type} [Field Ω]
+    {ξ : AlgebraicGeometry.Spec (CommRingCat.of Ω) ⟶ X} {G : CategoryTheory.Over X} [CategoryTheory.GrpObj G]
+    {Li : Type} [AddCommGroup Li] [_root_.Module Ω Li] [CategoryTheory.IsCommMonObj G]
     [AlgebraicGeometry.Smooth G.hom],
     GlobalTheory.CompanionTheory.Ar.IsCptGen ξ →
       ∀ (M : GlobalTheory.CompanionTheory.Ar.LieModel G ξ Li) (z : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Sp ℂ ⟶ X)
-        (h : GlobalTheory.CompanionTheory.Ar.genPt ξ ⤳ GlobalTheory.CompanionTheory.Ar.centre z) {V I : Type} [inst_6 : AddCommGroup V] [inst_7 : _root_.Module ℂ V]
+        (h : GlobalTheory.CompanionTheory.Ar.genPt ξ ⤳ GlobalTheory.CompanionTheory.Ar.centre z) {V I : Type} [AddCommGroup V] [_root_.Module ℂ V]
         (Mz : GlobalTheory.CompanionTheory.Ar.LieModel G z V) [Fintype I] (F : I → Li),
         LinearIndependent Ω F →
           M.lat ⟨GlobalTheory.CompanionTheory.Ar.centre z, h⟩ = Submodule.span (↥(GlobalTheory.CompanionTheory.Ar.regAt ξ ⟨GlobalTheory.CompanionTheory.Ar.centre z, h⟩)) (Set.range F) →

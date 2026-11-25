@@ -24,9 +24,7 @@ theorem of_cont (k r : ℕ) : Continuous (fun g : Mt k r => (Matrix.of g : Mat k
     simp only [Matrix.of_apply]; exact (continuous_apply j).comp (continuous_apply i)
 
 theorem gN_cont (k r : ℕ) : Continuous (fun M : Mat k r => Formalism.FourierDecayAlt.B.gN M) := by
-  unfold Formalism.FourierDecayAlt.B.gN
-  exact Real.continuous_sqrt.comp (continuous_finsetSum _ fun i _ => continuous_finsetSum _ fun j _ =>
-    Complex.continuous_normSq.comp (continuous_id.matrix_elem i j))
+  exact ReciprocityTheory.ChartRestriction.DS.Lap.S0.IntS.gN_continuous k r
 
 theorem UW_inv_mem {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} {h : Mat k r} (hh : h ∈ UWset k r z) :
     h⁻¹ ∈ UWset k r z := by
@@ -42,14 +40,7 @@ theorem UH_closed (k r : ℕ) : IsClosed (UH (Hpk k r) : Set (Mat k r)) :=
     continuous_const
 
 theorem UW_closed (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) : IsClosed (UWset k r z) := by
-  have e : UWset k r z = UH (Hpk k r) ∩ ((⋂ a : Fin r, ({g : Mat k r | g *ᵥ bvec (eI k r a) = bvec (eI k r a)} ∩
-      {g | g *ᵥ bvec (esI k r a) = bvec (esI k r a)})) ∩ {g | g *ᵥ z = z}) := by
-    ext g; simp only [UWset, Set.mem_ofPred_eq, Set.mem_inter_iff, Set.mem_iInter]
-  rw [e]
-  exact (UH_closed k r).inter ((isClosed_iInter fun a =>
-    (isClosed_eq (continuous_id.matrix_mulVec continuous_const) continuous_const).inter
-      (isClosed_eq (continuous_id.matrix_mulVec continuous_const) continuous_const)).inter
-    (isClosed_eq (continuous_id.matrix_mulVec continuous_const) continuous_const))
+  exact Formalism.FourierDecayAlt.P.B6.isClosed_UWset k r z
 
 theorem psiGen_cont (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) (c : Fin r → ℂ) :
     Continuous (fun M : Mat k r => Formalism.MainNotions.S.psiGen k r z c M) := by

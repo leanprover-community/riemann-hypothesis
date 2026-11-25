@@ -39,7 +39,8 @@ theorem arch (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimens
   have : T (f - f 0 • f₀) = 0 := by
 
     rw [e, map_sum]
-    exact Finset.sum_eq_zero fun i _ => GlobalTheory.CharFormDeriv.charForm_kills_linear_mul V T hT (L i) (h i) (g i) (hg i)
+    exact Finset.sum_eq_zero fun i _ =>
+      GlobalTheory.CharFormDeriv.charForm_kills_linear_mul T (L i) (fun t => hT (t • L i)) (h i) (g i) (hg i)
   rw [map_sub, map_smul, sub_eq_zero] at this
   rw [this, smul_eq_mul, mul_comm]
 

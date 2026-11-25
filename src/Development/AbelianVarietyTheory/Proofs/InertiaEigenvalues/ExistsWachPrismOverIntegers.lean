@@ -742,7 +742,6 @@ theorem exists_str {R S C : Type} [CommRing R] [CommRing S] [CommRing C] (f : S 
   rw [RingEquiv.eq_symm_apply, Subtype.ext_iff]
   rfl
 
-set_option synthInstance.maxHeartbeats 200000 in
 theorem ker_theta_io (AI : LocAinf l P) (hs : 1 ≤ s) (hK : K.1 ≤ Ks K s) (io : (WK K)⟦X⟧ →+* Ainf l)
     (hX : io X = WittVector.teichmuller l (AI.εroot s) - 1)
     (hC : ∀ w : WK K, Formalism.Per.θ l (io (C w)) = intToOC (unr K) w) :
@@ -796,7 +795,6 @@ theorem coeff_not_isUnit (K : FinExt l) : ¬ IsUnit (l : WK K) := by
   obtain ⟨_, -, -, lu, -⟩ := GlobalTheory.Per.integers_completeDVR l (unr K)
   exact lu
 
-set_option synthInstance.maxHeartbeats 200000 in
 def prismS (P : LocPrime l) (hs : 1 ≤ s) (f : (WK K)⟦X⟧ →+* OC l) (hf : RingHom.ker f = Ideal.span {QQ l (WK K) s})
     (str : ↥(OL K) →+* (WK K)⟦X⟧ ⧸ Ideal.span {QQ l (WK K) s}) : Obj l ↥(OL K) where
   A := (WK K)⟦X⟧

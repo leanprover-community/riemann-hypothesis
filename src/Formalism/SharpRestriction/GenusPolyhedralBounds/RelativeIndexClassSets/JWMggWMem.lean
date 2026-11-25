@@ -319,10 +319,6 @@ open MvPolynomial
 variable (X : PJ D B P j) (la : HeightOneSpectrum (𝓞 B.KO)) {N : ℕ} {wL : WeightFamilies.Wt D j} (w : Fin N → B.Cusp j wL)
   (wF : WeightFamilies.Wt D j) (T : ℕ)
 
-theorem Kp_charZero' : CharZero (Kp X la N) :=
-  have := Kl_charZero X la
-  charZero_of_injective_algebraMap (algebraMap (X.Kl la) (Kp X la N)).injective
-
 def gN (θ : B.Cusp j wF) (m : Fin (WeightFamilies.dimY D j) →₀ ℕ) : Rp X la N :=
   secPow X la w m * sec X la w 0 ^ (T - m.degree) * emb X la N (X.inc wF θ)
 
@@ -421,7 +417,7 @@ attribute [local instance] LwAlgKl
 theorem in64 (hB : InBasis G la) : ∀ x ∈ Submodule.span (Kp X la G.N) (sectionMonomialGenerators G la),
     rhoK X la G.w wF (a0 D j T) T x = 0 → x = 0 := by
   intro x hx h0
-  have := Kp_charZero' X la (N := G.N)
+  have := Formalism.MainNotions.Gaps.EtaleWeightGaps.Kp_charZero X la (N := G.N)
   obtain ⟨c, hc, hxc⟩ := exists_coeff_of_mem_span G la hx
 
   have hbase : ∀ b : Fin G.del → Kp X la G.N,

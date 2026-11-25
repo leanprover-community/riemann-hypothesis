@@ -41,8 +41,6 @@ private theorem key {F M : Type} [Field F] [AddCommGroup M] [Module F M] (u : (E
   have hz := zpow_apply_eig (u ^ f) _ c hc (by rw [Units.val_pow_eq_pow_val, hu]; exact hφ') (-d)
   rw [End.mul_apply, ← mul_neg, zpow_mul, zpow_natCast, hz, map_smul, hs', mul_smul]
 
-set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 800000 in
 theorem UpperTheory.weil_deligne_rank_one_line :
     UpperTheory.V.Af.Wd.Line := by
   intro F Ω _ _ _ _ _ l _ P ι w A h O _ _ _ Bw hj L V _ _ _ _ _ ρ h1 hV x hx0 c hc hφ σ s hs y

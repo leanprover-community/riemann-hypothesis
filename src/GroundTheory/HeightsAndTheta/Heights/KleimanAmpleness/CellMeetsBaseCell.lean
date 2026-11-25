@@ -20,10 +20,6 @@ theorem cellSec_mono [∀ k, Fintype (ι k)] (y : (Σ k, ι k) → Ω) (γ : K �
 
 variable [LinearOrder K] [∀ k, LinearOrder (ι k)]
 
-theorem subset_baseCell (k₀ : K) {N : ℕ} (e : ι k₀ ≃ Fin (N + 1)) (J : Finset (Fin (N + 1)))
-    (I : ∀ k, Finset (ι k)) (k : K) : I k ⊆ baseCell k₀ e J I k := by
-  apply RowLocCover.subset_baseCell
-
 theorem baseCell_mono (k₀ : K) {N : ℕ} (e : ι k₀ ≃ Fin (N + 1)) {J J' : Finset (Fin (N + 1))}
     {I I' : ∀ k, Finset (ι k)} (hJ : J ⊆ J') (hI : ∀ k, I k ⊆ I' k) (k : K) :
     baseCell k₀ e J I k ⊆ baseCell k₀ e J' I' k := by
@@ -33,26 +29,21 @@ theorem baseCell_mono (k₀ : K) {N : ℕ} (e : ι k₀ ≃ Fin (N + 1)) {J J' :
     exact Finset.union_subset_union (hI k) (Finset.map_subset_map.mpr hJ)
   · rw [Function.update_of_ne hk, Function.update_of_ne hk]; exact hI k
 
-theorem cellMeets_baseCell (y : (Σ k, ι k) → Ω) (k₀ : K) {N : ℕ} (e : ι k₀ ≃ Fin (N + 1))
-    (J : Kleiman.Chart (IndefiniteRowSideFullHecke.Kleiman2.blockVec y k₀ ∘ e.symm)) {I : ∀ k, Finset (ι k)} (hI : CellMeets y I) :
-    CellMeets y (baseCell k₀ e J.1 I) := by
-  apply _root_.GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.RowLocCover.cellMeets_baseCell <;> assumption
-
 theorem ModelCechRefine.proof (hC : CechContract.Statement) (hR : ModelRowExact.Statement)
     (hD : DoubleCech.Statement) : ModelCechRefine.Statement := by
   intro F _ K _ _ ι _ _ Ω _ _ y k₀ N e hM γ T hT n
   have hM0 : ∀ (J : Kleiman.Chart (IndefiniteRowSideFullHecke.Kleiman2.blockVec y k₀ ∘ e.symm)) I, ¬ CellMeets y I →
       cellSec F y γ (baseCell k₀ e J.1 I) = ⊥ := fun J I hI => by
     unfold cellSec
-    rw [ite_eq_right fun h => hI fun k i hi => h k i (subset_baseCell k₀ e J.1 I k hi)]
+    rw [ite_eq_right fun h => hI fun k i hi => h k i (GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.RowLocCover.subset_baseCell k₀ e J.1 I k hi)]
   have hMJ : ∀ (J J' : Kleiman.Chart (IndefiniteRowSideFullHecke.Kleiman2.blockVec y k₀ ∘ e.symm)) I, J.1 ⊆ J'.1 →
       cellSec F y γ (baseCell k₀ e J.1 I) ≤ cellSec F y γ (baseCell k₀ e J'.1 I) := fun J J' I h => by
     by_cases hI : CellMeets y I
-    · exact cellSec_mono y γ (baseCell_mono k₀ e h fun _ => subset_rfl) (cellMeets_baseCell y k₀ e J' hI)
+    · exact cellSec_mono y γ (baseCell_mono k₀ e h fun _ => subset_rfl) (GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.RowLocCover.cellMeets_baseCell y k₀ e J' hI)
     · rw [hM0 J I hI]; exact bot_le
   refine (hD F K ι Ω y N _ T (cellSec F y γ) (fun J I => cellSec F y γ (baseCell k₀ e J.1 I)) hM.1 ?_
     (fun I hI => by unfold cellSec; rw [ite_eq_right hI]) hM0 hMJ
-    (fun J I I' h hI' => cellSec_mono y γ (baseCell_mono k₀ e subset_rfl h) (cellMeets_baseCell y k₀ e J hI'))
+    (fun J I I' h hI' => cellSec_mono y γ (baseCell_mono k₀ e subset_rfl h) (GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.RowLocCover.cellMeets_baseCell y k₀ e J hI'))
     ?_ ?_ n)
   · obtain ⟨i, hi⟩ := hM.1 k₀
     exact ⟨e i, by simpa [IndefiniteRowSideFullHecke.Kleiman2.blockVec] using hi⟩

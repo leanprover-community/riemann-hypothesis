@@ -129,9 +129,6 @@ theorem exists_support_of_stTw2_ne_zero (a b : ℕ) (w : Pl E) (Q₁ Q₂ : (w.a
 
 end GlobalTheory.BCT.GeoFin
 
-namespace GlobalTheory.BCT.GeoFin
-
-end GlobalTheory.BCT.GeoFin
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -303,9 +300,6 @@ theorem resMap : ∀ (K L : Type) [Field K] [Field L] (f : K →+* L) (P Q : K[X
   exact Polynomial.resultant_map_map P Q _ _ f
 end GlobalTheory.ProdForm
 
-namespace GlobalTheory.ProdForm
-
-end GlobalTheory.ProdForm
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

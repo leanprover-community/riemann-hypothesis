@@ -10,13 +10,11 @@ open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComp
 
 namespace GlobalTheory
 
-set_option backward.isDefEq.respectTransparency false in
 instance instWEqLBEtRings (R : Type) [CommRing R] : (Scheme.etaleTopology.{0}).WEqualsLocallyBijective (ModuleCat.{1} (ULift.{1} R)) := by
   have : EssentiallySmall.{1} Scheme.{0} := inferInstance
   exact GrothendieckTopology.WEqualsLocallyBijective.ofEssentiallySmall _
 
 
-set_option backward.isDefEq.respectTransparency false in
 theorem etale_affine_of_mem {U : Scheme.{0}} {S : Sieve U} (hS : S ∈ Scheme.etaleTopology U) (u : U) :
     ∃ (V : Scheme.{0}) (j : V ⟶ U) (v : V), IsAffine V ∧ Etale j ∧ j v = u ∧ S j := by
   obtain ⟨𝒰, hle⟩ := Scheme.mem_grothendieckTopology_iff.1 hS
@@ -29,7 +27,6 @@ theorem etale_affine_of_mem {U : Scheme.{0}} {S : Sieve U} (hS : S ∈ Scheme.et
   refine ⟨_, (𝒰.X i).affineCover.f k ≫ 𝒰.f i, w, inferInstance, inferInstance, ?_, S.downward_closed hi _⟩
   rw [Scheme.Hom.comp_apply, hw, hy]
 
-set_option backward.isDefEq.respectTransparency false in
 theorem ofRings_loc : ∀ (R : Type) [CommRing R]
     (M : CommRingCat.{0} ⥤ ModuleCat.{1} (ULift.{1} R)) (U : Scheme.{0}),
     (∀ (x : Sec (ofRings R M) U) (u : U),

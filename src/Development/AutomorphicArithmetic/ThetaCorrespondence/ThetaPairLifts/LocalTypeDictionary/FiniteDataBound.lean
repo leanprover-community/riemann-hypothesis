@@ -550,32 +550,6 @@ namespace UpperTheory.FourierBlockTranspose
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-private theorem mk_eq_iff {ϖ : kˣ} (hϖ : IsUnif ϖ) (e : ℕ) (a b : 𝒪[k]) :
-    (Ideal.Quotient.mk (IsLocalRing.maximalIdeal 𝒪[k] ^ e) a = Ideal.Quotient.mk _ b) ↔
-      (((ϖ ^ e)⁻¹ : kˣ) : k) * ((a : k) - b) ∈ 𝒪[k] := by
-  rw [Ideal.Quotient.eq, hϖ.maximalIdeal_eq, Ideal.span_singleton_pow, Ideal.mem_span_singleton']
-  have hϖ0 : (ϖ : k) ≠ 0 := ϖ.ne_zero
-  constructor
-  · rintro ⟨c, hc⟩
-    have hc' : (c : k) * (ϖ : k) ^ e = (a : k) - b := by
-      simpa using congrArg Subtype.val hc
-    rw [← hc', Units.val_inv_eq_inv_val, Units.val_pow_eq_pow_val]
-    have : ((ϖ : k) ^ e)⁻¹ * ((c : k) * (ϖ : k) ^ e) = c := by
-      field_simp
-    rw [this]
-    exact c.2
-  · intro h
-    refine ⟨⟨_, h⟩, ?_⟩
-    apply Subtype.ext
-    simp only [MulMemClass.coe_mul, SubmonoidClass.coe_pow, AddSubgroupClass.coe_sub,
-      Units.val_inv_eq_inv_val, Units.val_pow_eq_pow_val]
-    field_simp
-
-private theorem mul_mem_int {A C B : Type} [Fintype C] {X : Matrix A C k} {Y : Matrix C B k}
-    (hX : ∀ i j, X i j ∈ 𝒪[k]) (hY : ∀ i j, Y i j ∈ 𝒪[k]) (i : A) (j : B) : (X * Y) i j ∈ 𝒪[k] := by
-  rw [Matrix.mul_apply]
-  exact sum_mem fun c _ => mul_mem (hX i c) (hY c j)
-
 private theorem sum_res_mul_left {A B : Type} [Fintype A] [DecidableEq A] [Fintype B] [DecidableEq B]
     (ϖ : kˣ) (e : ℕ) (hϖ : IsUnif ϖ) (f : Matrix A B k → ℂ)
     (hf : ∀ Z Z' : Matrix A B k, (∀ i j, Z' i j ∈ 𝒪[k]) → f (Z + Z') = f Z)
@@ -584,13 +558,13 @@ private theorem sum_res_mul_left {A B : Type} [Fintype A] [DecidableEq A] [Finty
       ∑ S : A → B → Res (k := k) e, f ((ϖ ^ e)⁻¹ • liftRes S) := by
   obtain ⟨hMi, hMinv⟩ := (mem_KO_iff M).1 hM
   have hint : ∀ (S : A → B → Res (k := k) e) (i : A) (j : B), (M.val * liftRes S) i j ∈ 𝒪[k] :=
-    fun S i j => mul_mem_int hMi (liftRes_mem S) i j
+    fun S i j => GlobalTheory.ResSumInv.mul_mem_int hMi (liftRes_mem S) i j
   let σ : (A → B → Res (k := k) e) → (A → B → Res (k := k) e) := fun S i j =>
     Ideal.Quotient.mk _ ⟨(M.val * liftRes S) i j, hint S i j⟩
   have hclose : ∀ (S : A → B → Res (k := k) e) (i : A) (j : B),
       (((ϖ ^ e)⁻¹ : kˣ) : k) * (liftRes (σ S) i j - (M.val * liftRes S) i j) ∈ 𝒪[k] := by
     intro S i j
-    have h := (mk_eq_iff hϖ e (Quotient.out (σ S i j)) ⟨_, hint S i j⟩).1
+    have h := (GlobalTheory.ResSumInv.mk_eq_iff hϖ e (Quotient.out (σ S i j)) ⟨_, hint S i j⟩).1
       (by rw [Ideal.Quotient.mk_out])
     simpa [liftRes] using h
   have hinj : Function.Injective σ := by
@@ -598,11 +572,11 @@ private theorem sum_res_mul_left {A B : Type} [Fintype A] [DecidableEq A] [Finty
     funext i j
     have hd : ∀ a b, ((((ϖ ^ e)⁻¹ : kˣ) : k) • (M.val * (liftRes S - liftRes S'))) a b ∈ 𝒪[k] := by
       intro a b
-      have h1 := (mk_eq_iff hϖ e _ _).1 (congrFun (congrFun h a) b)
+      have h1 := (GlobalTheory.ResSumInv.mk_eq_iff hϖ e _ _).1 (congrFun (congrFun h a) b)
       simpa [Matrix.mul_sub, Matrix.sub_apply, Matrix.smul_apply] using h1
-    have h2 := mul_mem_int hMinv hd i j
+    have h2 := GlobalTheory.ResSumInv.mul_mem_int hMinv hd i j
     rw [Matrix.mul_smul, ← Matrix.mul_assoc, Units.inv_mul, Matrix.one_mul] at h2
-    have h3 := (mk_eq_iff hϖ e (Quotient.out (S i j)) (Quotient.out (S' i j))).2
+    have h3 := (GlobalTheory.ResSumInv.mk_eq_iff hϖ e (Quotient.out (S i j)) (Quotient.out (S' i j))).2
       (by simpa [liftRes, Matrix.sub_apply, Matrix.smul_apply] using h2)
     rwa [Ideal.Quotient.mk_out, Ideal.Quotient.mk_out] at h3
   refine Fintype.sum_bijective σ (Finite.injective_iff_bijective.1 hinj) _ _ ?_
@@ -626,7 +600,7 @@ theorem UpperTheory.fourierSum_block_transpose_inv_eq :
       (∀ i, ∀ j ∈ Assignment.one.block D₁ D₂, ((ϖ ^ e : kˣ) : k) * Z i j ∈ 𝒪[k]) →
       (∀ i, ∀ j ∈ Assignment.one.block D₁ D₂, ((ϖ ^ e : kˣ) : k) * (g * Z) i j ∈ 𝒪[k]) := by
     intro g hg Z hZ i j hj
-    have h := mul_mem_int hg
+    have h := GlobalTheory.ResSumInv.mul_mem_int hg
       (Y := Matrix.of fun (a : A) (b : Assignment.one.block D₁ D₂) => ((ϖ ^ e : kˣ) : k) * Z a b)
       (fun a b => hZ a b b.2) i ⟨j, hj⟩
     rw [Matrix.mul_apply] at h
@@ -822,9 +796,6 @@ private theorem not_touch_inner {γ : List Edge} {i j : ℕ} (hγ : IsPath γ) (
   rw [ht] at h3
   exact hγ.eq_of_vertexDiff_eq hb hθ (by simp only [Edge.tgt] at h4; omega)
 
-private theorem nodup_of_isPath {γ : List Edge} (hγ : IsPath γ) : γ.Nodup :=
-  hγ.pairwise_vertexDiff.imp fun {a b} h hab => by subst hab; exact lt_irrefl _ h
-
 theorem UpperTheory.nu_det_mul_sliceB_block_action :
     ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {G : Grid k} (ϖ : kˣ) (e : ℕ) (St : G.PiLocalization₂) (i j : ℕ), PassesThrough i j St.path → St.IsAdmissible .one ϖ e → ∀ u ∈ St.level (i, j), ∀ (x : G.Args) (Z : Matrix (Fin (G.rank (i, j))) (G.Cols i j) k), (G.nu i j (gdet u⁻¹) : ℂ) * G.sliceB i j St.tensor x (fromCols (u.valᵀ * Z.toCols₁) ((u⁻¹).val * Z.toCols₂)) = G.sliceB i j St.tensor x Z := by
   intro k _ _ _ _ G ϖ e St i j hpt hadm u hu x Z
@@ -834,7 +805,7 @@ theorem UpperTheory.nu_det_mul_sliceB_block_action :
   have hθ : Edge.theta i j ∈ γ := hpt.subset (by simp)
   have hx : Edge.ex i j ∈ γ := hpt.subset (by simp)
   have hnt := fun b hb h1 h2 => not_touch_inner (b := b) hpath hθ hx hb h1 h2
-  have hnd := nodup_of_isPath hpath
+  have hnd := GlobalTheory.SplitFlip.PathSplit.nodup_of_isPath hpath
   obtain ⟨l₁, l₂, hγ⟩ := hpt
   have hin : (i, j) ∈ innerVertices γ := by
     subst hγ
@@ -1106,7 +1077,6 @@ theorem phiA_mem {A D : Type} [Fintype A] [DecidableEq A] {n : ℕ} [Fintype D] 
     simpa using Lo_mul (chiZ_KO hϖ hν q ((Fintype.card D : ℂ) / 2) hu) this
   · by_cases h : j ∈ P <;> simp [blockUnits, h]
 
-
 omit [MeasurableSpace k] [BorelSpace k] in
 theorem chiZ_unif {ν : kˣ →* ℂˣ} {ϖ : kˣ} (hϖ : IsUnif ϖ) (hq : resCard k ≠ 0) {B : ℕ} (d : ℕ)
     (h1 : (ν ϖ : ℂ) ∈ Lo (resCard k) B) (h2 : (ν ϖ⁻¹ : ℂ) ∈ Lo (resCard k) B) :
@@ -1177,7 +1147,7 @@ theorem flips_mem {G : Grid k} {ψ : AddChar k Circle} {ϖ : kˣ} {e : ℕ} (hϖ
     obtain _ | ⟨hp, hc'⟩ := hc
     obtain ⟨x1, x2, x3, x4, x5⟩ := hν x List.mem_cons_self
     have := ih (S.flip .one ψ ϖ e x) _ (fun y hy => hν y (List.mem_cons_of_mem _ hy)) hc' (fun X => ?_)
-      (GlobalTheory.T.splitThetaGrid_isAdmissible_flipTensor ψ ϖ e hϖ hψc he S x x1 hp hJ hT)
+      (GlobalTheory.FlipAdm.isAdmissible_flip ψ ϖ e hϖ hψc he S x x1 hp hJ hT)
       (flip_mem hϖ hψc hq hψ x1 x2 x3 x4 x5 S hp (hJ _).1 (hJ _).2 hT hF) z
     · rw [List.length_cons, Nat.succ_mul, add_comm (l.length * _), ← add_assoc]
       exact this
@@ -1788,8 +1758,6 @@ open IsDedekindDomain NumberField GlobalTheory.ChiGrid GlobalTheory.FunObj Globa
 open Formalism.DivisionValues (vw lw)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField GlobalTheory.FunObj.borelKw
   GlobalTheory.FunObj.borelSpaceKw
-namespace GlobalTheory.FunDat
-end GlobalTheory.FunDat
 noncomputable section
 namespace GlobalTheory.FunDat
 theorem finDatK_alt : _root_.GlobalTheory.FunPr.ThetaLocalInputs → FinDatK := fun _ => finDatK_of GlobalTheory.T.flips_loss_bounded_at_exceptional_places _root_.GlobalTheory.UnfoldLoss.unfold_loss

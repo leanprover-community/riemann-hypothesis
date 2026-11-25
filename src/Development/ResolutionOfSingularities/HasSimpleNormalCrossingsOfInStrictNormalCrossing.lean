@@ -235,7 +235,6 @@ theorem strictNormalCrossingsRestrictToClopen : StrictNormalCrossingsRestrictToC
   intro k _ W p _ E Z hE hZ T hTclosed hcomp y
   have hsmZ : AlgebraicGeometry.Smooth (Z.subschemeι ≫ p) :=
     smooth_subschemeι_comp_of_hasStrictNormalCrossingsWith Z E hZ
-  have hsmT : AlgebraicGeometry.Smooth (T.ι ≫ (Z.subschemeι ≫ p)) := inferInstance
   obtain ⟨V, hV, hyV, n, c, γ, hγ, hinjγ, hmem⟩ :=
     exists_etaleChart_coord_mem_primeIdealOf_on_clopen p E Z hZ T hcomp y
   obtain ⟨U, hyU, hU⟩ : ∃ U : W.Opens, (T.ι ≫ Z.subschemeι).base y ∈ U ∧ IsAffineOpen U := by
@@ -384,7 +383,6 @@ private theorem boundaryInStrictNormalCrossingPosition {k : Type u} [Field k] [C
       have hlt : n < S.ambientLength := hn
       have : AlgebraicGeometry.IsNoetherian (S.ambientLevel (n + 1)) :=
         isNoetherian_ambientLevel S (n + 1) hn
-      have : TopologicalSpace.NoetherianSpace ↥(S.ambientLevel (n + 1)) := inferInstance
       have hE : InStrictNormalCrossingPosition (S.ambientBlowups.projectionToBase n ≫ S.ambientToSpec)
           (S.principalizationSequence.boundary n) := ih (Nat.le_of_lt hlt)
       have hZE : HasStrictNormalCrossingsWith (S.ambientBlowups.projectionToBase n ≫ S.ambientToSpec) (S.ambientBlowups.center n)
@@ -772,10 +770,6 @@ theorem inl_comp_totalSpaceToBase (j : ℕ) :
 theorem centersLieOverSingularLocus_of_inducedCentersLieOverSingularLocus (h : S.TransitionsAreBlowups)
     (hc : S.InducedCentersLieOverSingularLocus h) : S.CentersLieOverSingularLocus := by
   intro i hi p hp
-  have : AlgebraicGeometry.QuasiCompact (S.centerOffDetached i).subschemeι := inferInstance
-  have : AlgebraicGeometry.QuasiCompact
-      ((S.centerOffDetached i).subschemeι ≫ (coprod.inl : S.strictTransform i ⟶ S.totalSpace i)) :=
-    inferInstance
   have hcomap : (S.centerOnTotalSpace i).comap (coprod.inl : S.strictTransform i ⟶ S.totalSpace i)
       = S.centerOffDetached i := by
     have hk := Blowup.ker_comp_coprod_inl_comap_inl (Y := S.discardedUnion i) (S.centerOffDetached i).subschemeι
@@ -1041,8 +1035,6 @@ private theorem isOpenImmersion_preimage_ι_comp_of_ker_comap_eq {X X₁ A₀ A�
     (hker : (AlgebraicGeometry.Scheme.Hom.ker ι₁).comap (Scheme.Opens.ι (π ⁻¹ᵁ V))
       = ((AlgebraicGeometry.Scheme.Hom.ker ι₀).comap (Scheme.Opens.ι V)).comap (π ∣_ V)) :
     AlgebraicGeometry.IsOpenImmersion (Scheme.Opens.ι (ι₁ ⁻¹ᵁ (π ⁻¹ᵁ V)) ≫ m) := by
-  have hciα : AlgebraicGeometry.IsClosedImmersion ((ι₁ ∣_ (π ⁻¹ᵁ V)) ≫ (π ∣_ V)) :=
-    inferInstance
   have hk1 := FunctorialResolution.EmbeddedResolution.ker_comap_ι_eq_ker_morphismRestrict ι₁ (π ⁻¹ᵁ V)
   have hk0 := FunctorialResolution.EmbeddedResolution.ker_comap_ι_eq_ker_morphismRestrict ι₀ V
   have hcomp := FunctorialResolution.Blowup.comap_ker_comp_of_isOpenImmersion (ι₁ ∣_ (π ⁻¹ᵁ V)) (π ∣_ V)
@@ -1125,7 +1117,6 @@ private theorem isIso_stalkMap_strictTransformToZero_of_avoidsCenters
       intro hj a ha
       have hjlt : j < S.ambientLength := Nat.lt_of_succ_le hj
       have hNoe : AlgebraicGeometry.IsNoetherian (S.ambientLevel (j + 1)) := hN (j + 1) hj
-      have hNs : TopologicalSpace.NoetherianSpace ↥(S.ambientLevel (j + 1)) := inferInstance
       obtain ⟨hnc, hcl⟩ := (S.toEmbeddedBlowupSequence.avoidsCenters_succ_iff j ((S.strictTransformι (j + 1)).base a)).mp ha
       have haO : a ∈ (S.strictTransformι (j + 1) ⁻¹ᵁ
           (S.ambientBlowupMorphism j ⁻¹ᵁ (S.ambientCenter j).support.compl)) := hnc

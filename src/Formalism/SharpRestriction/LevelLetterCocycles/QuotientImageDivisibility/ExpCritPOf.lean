@@ -261,8 +261,7 @@ theorem indep_phi_cmp (hdom : IsDomain O) (hFr : IsFractionRing O LL)
     refine ⟨?_, fun δ hδ => ?_⟩
     · rw [hz, Finset.smul_sum]
       exact Finset.sum_congr rfl fun m _ => by rw [smul_comm, (he.1 m).2.1]
-    · set_option synthInstance.maxHeartbeats 100000 in
-      rw [hz, map_sum]
+    · rw [hz, map_sum]
       exact Finset.sum_congr rfl fun m _ => by rw [map_smul, (he.1 m).2.2 δ hδ]
   have hcz : W.cmp T ⟨z, hzN⟩ = 0 := by
     have e1 : (⟨z, hzN⟩ : ↥(W.N T)) = ∑ m, o m • (⟨e m, (he.1 m).1⟩ : ↥(W.N T)) :=

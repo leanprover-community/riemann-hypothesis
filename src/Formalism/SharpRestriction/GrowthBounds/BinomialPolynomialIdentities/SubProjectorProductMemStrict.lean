@@ -122,7 +122,7 @@ def lowerLabels (lam : ∀ i, Λ i) (i : κ) : Set (Λ i) := {a | J.dom i a ∧ 
 def strictLowerLabels (lam : ∀ i, Λ i) (i : κ) : Set (Λ i) := {a | J.dom i a ∧ J.le i a (lam i) ∧ a ≠ lam i}
 
 theorem lower_part_eq_span (lam : ∀ i, Λ i) (i : κ) :
-    J.Pl ⊓ componentSum J i (lowerLabels J lam i) = Submodule.span K (J.b '' {x | J.P x i ∈ lowerLabels J lam i}) := J.low i (lowerLabels J lam i) (fun a ha => ha.1) (fun a ha c hc hca => ⟨hc, J.le_trans i c a (lam i) hca ha.2⟩)
+    J.Pl ⊓ componentSum J i (lowerLabels J lam i) = Submodule.span K (J.b '' {x | J.P x i ∈ lowerLabels J lam i}) := J.low i (lowerLabels J lam i) (fun _ ha => ha.1) (fun a ha c hc hca => ⟨hc, J.le_trans i c a (lam i) hca ha.2⟩)
 
 theorem strict_lower_part_eq_span (lam : ∀ i, Λ i) (i : κ) :
     J.Pl ⊓ componentSum J i (strictLowerLabels J lam i) = Submodule.span K (J.b '' {x | J.P x i ∈ strictLowerLabels J lam i}) := by
@@ -140,7 +140,7 @@ theorem joint_lower_part_stable (lam : ∀ i, Λ i) (i : κ) (a : Λ i) (x : V) 
   simp only [jointLowerPart, Submodule.mem_inf, Submodule.mem_iInf] at hx ⊢
   exact ⟨J.stab i a x hx.1, fun k => component_sum_stable J k _ i a x (hx.2 k)⟩
 
-theorem strict_joint_lower_le (lam : ∀ i, Λ i) : strictJointLower J lam ≤ jointLowerPart J lam := iSup_le fun j => inf_le_left
+theorem strict_joint_lower_le (lam : ∀ i, Λ i) : strictJointLower J lam ≤ jointLowerPart J lam := iSup_le fun _ => inf_le_left
 
 theorem sub_projector_mem_strict (lam : ∀ i, Λ i) (k : κ) (x : V) (hx : x ∈ jointLowerPart J lam) :
     x - J.e k (lam k) x ∈ strictLowerPart J lam k := by

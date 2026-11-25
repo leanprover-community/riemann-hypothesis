@@ -135,8 +135,7 @@ theorem conjHomotopyFun_cupCochain (g : Γ) {r s m : ℕ} (h : r + 1 + (s + 1) =
   · rw [sum_tmul]
     refine sum_congr rfl fun i hi => ?_
     rw [cupCochain_seqTuple_prismSeq_of_le g h F E Y (by simp at hi; omega), smul_tmul']
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, tmul_sum, smul_sum]
+  · rw [map_sum, tmul_sum, smul_sum]
     refine sum_congr rfl fun j _ => ?_
     rw [cupCochain_seqTuple_prismSeq_add g h F E Y j, map_smul, tmul_smul, smul_smul, pow_add]
 

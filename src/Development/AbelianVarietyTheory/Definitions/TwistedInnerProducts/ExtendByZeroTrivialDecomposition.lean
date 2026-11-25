@@ -102,10 +102,10 @@ def auxiliaryFrames : Frames G where
   oz := lineDec G.sp.dec0
   ζ ρ := fun _ => (-D.host.xi0) ^ ρ
   line ρ := GlobalTheory.SeeSaw.Model.isLineVec_nLine (xiPow_ne D ρ)
-  lnk ρ := lnkScale _ _ _ (funext fun _ => pow_succ' _ _)
+  lnk _ := lnkScale _ _ _ (funext fun _ => pow_succ' _ _)
   V₀ ρ := GlobalTheory.Doubling.hsum (G.V (.core (2 * ρ + 2))) (negSp (pLine D))
   dB := besselWittDecomposition G
-  oB ρ _ := GlobalTheory.OrthSumExists.orthDecHsum D _ _
+  oB _ _ := GlobalTheory.OrthSumExists.orthDecHsum D _ _
   nB ρ h := (Inhab.nonempty_volN (besselWittDecomposition G ρ h)).some
   dJ := jacobiWittDecomposition G
   nJ ρ h := (Inhab.nonempty_volN (jacobiWittDecomposition G ρ h)).some

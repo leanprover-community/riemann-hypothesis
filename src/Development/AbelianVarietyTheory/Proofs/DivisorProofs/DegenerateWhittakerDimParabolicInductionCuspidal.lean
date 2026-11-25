@@ -274,7 +274,6 @@ theorem edge_iff (hb : Monotone b) (h1 : ∀ a c : Fin r, a < c → b (w a) = b 
   constructor
   · rintro ⟨e1, -⟩
     have hac : a < c := (lt_iff h1 h).2 (by rw [Fin.lt_def]; omega)
-    have hac' : a.val < c.val := hac
     have hc : c.val = a.val + 1 := by
       by_contra hne
       let e : Fin r := ⟨a.val + 1, by have := c.2; omega⟩
@@ -476,7 +475,7 @@ theorem surj (h1 : χ 1 = 1) (hχ : ∀ u ∈ U, ∀ u' ∈ U, χ (u * u') = χ 
 theorem finrank_eig_coind : ∀ (G : Type) [Group G] (P U : Subgroup G) (V : Type) [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V] (σ : Representation ℂ P V) (χ : G → ℂ), χ 1 = 1 → (∀ u ∈ U, ∀ u' ∈ U, χ (u * u') = χ u * χ u') → ∀ (ι : Type) [Fintype ι] (x : ι → G), (∀ i i' : ι, ∀ p ∈ P, ∀ u ∈ U, p * x i = x i' * u → i = i') → (∀ g : G, (∃ i : ι, ∃ p ∈ P, ∃ u ∈ U, g = p * x i * u) ∨ ∃ y : G, (∃ p ∈ P, ∃ u ∈ U, g = p * y * u) ∧ eig σ {p | y⁻¹ * (p : G) * y ∈ U} (fun p => χ (y⁻¹ * (p : G) * y)) = ⊥) → finrank ℂ (eig (Representation.coind P.subtype σ) (U : Set G) χ) = ∑ i : ι, finrank ℂ (eig σ {p | (x i)⁻¹ * (p : G) * x i ∈ U} (fun p => χ ((x i)⁻¹ * (p : G) * x i))) := by
   intro G _ P U V _ _ _ σ χ h1 hχ ι _ x hx hcov
   have hinj : Function.Injective (evalMap (U := U) σ χ x) := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro φ hφ
     apply Subtype.ext
     apply Subtype.ext
@@ -671,8 +670,6 @@ theorem edgeSum_cut_mul (j : ℕ) {u u' : GL (Fin r) F} (hu : u ∈ unip F r) (h
   split_ifs with h
   · have h' := h.1
     refine unip_mul_entry hu hu' (show a.val < c.val by omega) fun l h1 h2 => ?_
-    have h1' : a.val < l.val := h1
-    have h2' : l.val < c.val := h2
     omega
   · rw [add_zero]
 

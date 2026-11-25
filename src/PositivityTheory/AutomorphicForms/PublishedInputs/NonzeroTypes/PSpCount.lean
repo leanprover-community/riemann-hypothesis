@@ -344,11 +344,3 @@ theorem cell_char (c : Fin n → kˣ →* ℂˣ)
 end Local
 
 end UpperTheory.TNZ.Grp.P_spCount
-
-namespace UpperTheory.TNZ.Grp
-
-open P_spCount
-
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-
-end UpperTheory.TNZ.Grp

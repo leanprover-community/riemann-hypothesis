@@ -1194,7 +1194,7 @@ theorem mu_side {V : Type} [AddCommGroup V] [Module Ω V] (L : Lat ξ V) {r r' :
     rw [Matrix.mul_apply] at this
     rw [show T₀ k m = Tm m k from rfl, ← this]
     exact Finset.sum_congr rfl fun a _ => mul_comm _ _
-  refine ⟨(Pm⁻¹ * Tm).det, Tm.map i, _root_.GlobalTheory.CompanionTheory.Relay.det_lattice_frame_gen X Ω ξ V L r s b _ q hs hf hbs, ?_, le_antisymm (Submodule.span_le.2 ?_)
+  refine ⟨(Pm⁻¹ * Tm).det, Tm.map i, _root_.LevelTowerAlt.determinant_lattice_generator X Ω ξ V L r s b _ q hs hf hbs, ?_, le_antisymm (Submodule.span_le.2 ?_)
     (Submodule.span_le.2 ?_)⟩
   · rw [← Matrix.det_mul, hPT]
     exact (RingHom.map_det i _).symm

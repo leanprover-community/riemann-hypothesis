@@ -82,7 +82,6 @@ end Banach
 section Operator
 
 open scoped Matrix.Norms.Operator in
-set_option backward.isDefEq.respectTransparency false in
 theorem hasDerivAt_mexp_comm_add_bracket (A V X : Matrix (Fin n) (Fin n) ℂ) (h : Commute A V) :
     HasDerivAt (fun s : ℝ => NormedSpace.exp (A + s • (V + (X * A - A * X))))
       (NormedSpace.exp A * V + (X * NormedSpace.exp A - NormedSpace.exp A * X)) 0 := by

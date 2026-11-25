@@ -1187,7 +1187,6 @@ def cU (z : ℂˣ) : ℂˣ := Units.map (starRingEnd ℂ).toMonoidHom z
 theorem cU_coe (z : ℂˣ) : ((cU z : ℂˣ) : ℂ) = conj (z : ℂ) := rfl
 
 theorem hN_conj {m : ℕ} (p : ℕ) (α : Fin m → ℂ) : hN p (fun i => conj (α i)) = conj (hN p α) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp [hN, map_sum, map_prod, map_pow]
 
 theorem hZ_conj {m : ℕ} (z : ℤ) (α : Fin m → ℂ) : hZ z (fun i => conj (α i)) = conj (hZ z α) := by

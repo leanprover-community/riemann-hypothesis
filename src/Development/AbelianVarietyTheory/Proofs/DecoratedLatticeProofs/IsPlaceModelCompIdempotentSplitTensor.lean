@@ -74,7 +74,7 @@ theorem tens_modul (ψ : AddChar (AF D.host.F) ℂ) {a b : AE D} (hab : a * b = 
   funext t
   have hba : b * a = 0 := by rw [mul_comm, hab]
   have e1 : symplO S T t y = symplO S T (t - b • t) y + symplO S T (b • t) y := by
-    rw [← GlobalTheory.LocMod.TensorModel.symplO_add_left', sub_add_cancel]
+    rw [← GlobalTheory.LatVac.symplO_add_left, sub_add_cancel]
   rw [tens_apply, tens_apply, e1, GlobalTheory.LocMod.TensorModel.symplO_half_zero hba (_root_.GlobalTheory.SplitLinear.isHalf_smul' hb t) hy, add_zero, mul_assoc]
 
 theorem tens_vac {a b : AE D} (hab : a * b = 0) (hb : b * b = b) (Λ : AddSubgroup (WO S T))

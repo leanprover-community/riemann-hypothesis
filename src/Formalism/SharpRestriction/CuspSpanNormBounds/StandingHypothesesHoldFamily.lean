@@ -32,8 +32,6 @@ namespace Formalism.MainNotions.FrobeniusProjectedBounds
 open Formalism.BasicNotions Formalism.MainNotions.S NumberField
 open scoped InnerProductSpace
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section Letters
 
 variable (D : D7)

@@ -331,10 +331,6 @@ namespace Formalism.TruncatedSeriesCounting.TruncatedSeriesCountingBounds
 
 end Formalism.TruncatedSeriesCounting.TruncatedSeriesCountingBounds
 
-namespace Formalism.TruncatedSeriesCounting.R9
-
-end Formalism.TruncatedSeriesCounting.R9
-
 namespace Formalism.TruncatedSeriesCounting.X
 
 theorem pX_conditions : QaNum ∧ TruncSig ∧ TruncRem1 ∧ ArcExp ∧ SatA ∧ UnitCoefficientPowerMod :=

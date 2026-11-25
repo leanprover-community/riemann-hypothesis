@@ -1700,14 +1700,6 @@ end GlobalTheory.OddBlock.WindowValuationBound
 end
 
 section
-open Formalism.L2.FormalSeriesBounds
-
-theorem _root_.GlobalTheory.OddBlock.windowBound : ThmP := by
-  exact @GlobalTheory.OddBlock.WindowValuationBound.main
-
-end
-
-section
 
 open Formalism.L2.FormalSeriesBounds Formalism.IncomingBounds Formalism.UnitaryBoundIntegral
 
@@ -1805,16 +1797,9 @@ theorem biWindow_of (hP : Formalism.L2.FormalSeriesBounds.ThmP) (hV : BiValue) :
   gcongr
 
 theorem biContent_and_biWindow : BiContent ∧ BiWindow :=
-  ⟨biContent, biWindow_of GlobalTheory.OddBlock.windowBound _root_.GlobalTheory.blockValue_rows⟩
+  ⟨biContent, biWindow_of GlobalTheory.OddBlock.WindowValuationBound.main _root_.GlobalTheory.blockValue_rows⟩
 
 end GlobalTheory.OddBlock.BlockContent
-
-end
-
-section
-open Formalism.L2.FormalSeriesBounds
-
-alias _root_.GlobalTheory.OddBlock.content_and_window := _root_.GlobalTheory.OddBlock.BlockContent.biContent_and_biWindow
 
 end
 end -- clump:auto

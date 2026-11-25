@@ -113,13 +113,9 @@ theorem weighted_L2_add (B : Base) (wt : B.Ω → ℝ) (hw : ∀ ω, 0 ≤ wt ω
 
 theorem weighted_L2_sum (B : Base) (wt : B.Ω → ℝ) (hw : ∀ ω, 0 ≤ wt ω) {I : Type} (s : Finset I) (f : I → B.Ω → ℂ)
     (hf : ∀ i ∈ s, WeightedL2 B wt (f i)) : WeightedL2 B wt (fun ω => ∑ i ∈ s, f i ω) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simpa using weighted_L2_zero B wt
-  | insert a s ha ih =>
-    simp_rw [Finset.sum_insert ha]
-    exact weighted_L2_add B wt hw _ _ (hf a (Finset.mem_insert_self a s))
-      (ih fun i hi => hf i (Finset.mem_insert_of_mem hi))
+  simpa only [← Finset.sum_apply] using
+    Finset.sum_induction f (WeightedL2 B wt) (fun _ _ => weighted_L2_add B wt hw _ _)
+      (weighted_L2_zero B wt) hf
 
 theorem coeff_id (s : Finset ℝ) (d k j : ℕ) (hs : s.card = d + 1) (hk : k ≤ d) :
     ∑ x ∈ s, (Lagrange.basis s id x).coeff j * x ^ k = if j = k then 1 else 0 := by

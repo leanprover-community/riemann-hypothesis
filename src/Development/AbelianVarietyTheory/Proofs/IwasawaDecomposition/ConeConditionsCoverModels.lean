@@ -25,7 +25,3 @@ theorem isEtaleCompletion_comp_bij {B A R : Type} [CommRing B] [IsLocalRing B] [
     exact RingHom.Finite.comp h3 (RingHom.Finite.of_surjective e he.2)
 
 end GlobalTheory.TorRef
-
-namespace GlobalTheory.TorRef
-
-end GlobalTheory.TorRef

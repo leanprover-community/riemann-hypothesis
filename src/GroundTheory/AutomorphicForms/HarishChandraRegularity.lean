@@ -1170,17 +1170,6 @@ theorem analyticAt_of_aeval_laplacian_eq_zero {ι : Type*} [Fintype ι]
 
 end IsExpLieAlgebra
 
-section Groups
-
-open Matrix
-open scoped Matrix.Norms.L2Operator
-
-namespace IsExpLieAlgebra
-
-end IsExpLieAlgebra
-
-end Groups
-
 end GroundTheory.Automorphic
 end -- clump:auto
 end -- clump:auto

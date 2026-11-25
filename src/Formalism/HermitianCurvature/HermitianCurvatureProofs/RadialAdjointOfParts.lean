@@ -47,11 +47,3 @@ theorem betaBig_congr (D : RealPlaceData k r Wp Wq)
     simp only [h0, Complex.ofReal_zero, zero_mul]
 
 end Formalism.FourierDecayAlt.P.JFxG
-
-namespace Formalism.FourierDecayAlt.P
-
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
-
-open scoped Matrix.Norms.Elementwise
-
-end Formalism.FourierDecayAlt.P

@@ -599,7 +599,6 @@ theorem isIrreducible_fibre_fst : ∀ (R : Type) [CommRing R] (G : Over (Sp R)) 
   intro R _ G _ hG x
   let j := G.left.fromSpecResidueField x
   let p₁ : pullback G.hom G.hom ⟶ G.left := pullback.fst G.hom G.hom
-  have hp : (fst G G).left = p₁ := rfl
   have hirr0 := GlobalTheory.SemiAbFibre.irreducibleSpace_fibre _ G hG _ (j ≫ G.hom)
   haveI hirr : IrreducibleSpace (pullback G.hom (j ≫ G.hom) : Scheme.{0}) := hirr0
   let e : pullback G.hom (j ≫ G.hom) ≅ p₁.fiber x :=

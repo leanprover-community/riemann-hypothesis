@@ -50,7 +50,6 @@ open NumberField
 
 namespace GlobalTheory.CompanionTheory.Ar.Giv
 
-
 open NumberField.InfinitePlace NumberField.Units NumberField.Units.dirichletUnitTheorem in
 theorem const_of_orthogonal_log_units : ∀ (F : Type) [Field F] [NumberField F] (m : (F →+* ℂ) → ℝ),
     (∀ sg, m (ComplexEmbedding.conjugate sg) = m sg) →
@@ -134,10 +133,6 @@ open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.Cha
 
 namespace GlobalTheory.CompanionTheory.Ar.Giv
 
-theorem mixedDisc_eq_zero_of_eq_zero {D : ℕ} (A : Fin D → Matrix (Fin D) (Fin D) ℂ) (j : Fin D)
-    (hA : A j = 0) : mixedDisc A = 0 := by
-  apply RootFieldNumerics.mixedDisc_eq_zero <;> assumption
-
 theorem cxHessian_zero {D : ℕ} (z : Fin D → ℂ) : cxHessian (fun _ => (0 : ℝ)) z = 0 := by
   have h : fderiv ℝ (fderiv ℝ (fun _ : Fin D → ℂ => (0 : ℝ))) z = 0 := by
     have h1 : fderiv ℝ (fun _ : Fin D → ℂ => (0 : ℝ)) = fun _ => 0 := by
@@ -157,7 +152,7 @@ theorem sheetDensity_update_zero {K : Type} [Fintype K] {ι : K → Type} [∀ k
   split_ifs with hγ
   · have hm : mixedDisc (fun k => cxHessian
         (fun y' => Function.update φ j 0 k (hγ.choose y')) y) = 0 := by
-      refine mixedDisc_eq_zero_of_eq_zero _ j ?_
+      refine RootFieldNumerics.mixedDisc_eq_zero _ j ?_
       simpa using cxHessian_zero y
     simp [maDensity, hm]
   · rfl
@@ -592,7 +587,6 @@ theorem isSectionOn_one_of_degree_zero {P : Ideal (MRing ι)} {d : ℕ} {A : Her
       simpa using this
     simp [hm0]
   · exact (Ideal.ne_top_iff_one P).1 hP.2.1.1.ne_top
-
 
 open Classical in
 theorem logNorm_one_eq_indicator {Ω F : Type} [Field Ω] [Field F] [Algebra F Ω] {y : (Σ k, ι k) → Ω}

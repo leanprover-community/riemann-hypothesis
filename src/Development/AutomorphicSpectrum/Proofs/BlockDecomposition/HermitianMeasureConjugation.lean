@@ -98,9 +98,6 @@ open GlobalTheory.CompanionTheory.IwaAd GlobalTheory.CompanionTheory.HermVol
 
 variable {D : D7} {n : ℕ}
 
-theorem cA_incA (D : D7) (x : D.host.E) : cA D (incA D x) = incA D (D.sp.cm.sig x) := by
-  simp [cA, sigR, incA, inclR]
-
 theorem hermPart_anti {c : AE D} (hc : cA D c = -c) {s : Mx D n n} (hs : s ∈ hermA D n) :
     hermPart D n (c • s) = 0 := by
   have h : adj s = s := hs
@@ -112,8 +109,6 @@ theorem hermPart_split {d e : AE D} (he : cA D e = -e) (hde : d * e = 1) (x : Mx
   rw [hermPart, hermPart, adj_smul, he, neg_smul, ← sub_eq_add_neg, ← smul_sub, smul_smul, smul_smul, h, smul_add,
     smul_sub]
   exact (add_add_sub_cancel _ _ _).trans (half_smul_add x)
-
-
 
 def mulCE (d e : AE D) (hde : d * e = 1) : Mx D n n ≃ₜ+ Mx D n n where
   toFun x := d • x
@@ -129,7 +124,6 @@ def mulCE (d e : AE D) (hde : d * e = 1) : Mx D n n ≃ₜ+ Mx D n n where
   continuous_invFun := continuous_const_smul e
 
 def hermPartHom (D : D7) (n : ℕ) : Mx D n n →+ Mx D n n := AddMonoidHom.mk' (hermPart D n) hermPart_add
-
 
 theorem val_det_ad_inv (a : GL (Fin n) (AE D)) :
     ((Matrix.GeneralLinearGroup.det ((ad a)⁻¹ : GL (Fin n) (AE D)) : (AE D)ˣ) : AE D) = cA D (Matrix.GeneralLinearGroup.det a : (AE D)ˣ) := by
@@ -149,8 +143,8 @@ theorem exists_anti_units (D : D7) : ∃ d e : AE D, d * e = 1 ∧ cA D d = -d �
   obtain ⟨δ, hδ, hσ⟩ := exists_anti _ (isCMExt_host D)
   refine ⟨incA D δ, incA D δ⁻¹, ?_, ?_, ?_⟩
   · rw [← map_mul, mul_inv_cancel₀ hδ, map_one]
-  · rw [cA_incA, hσ, map_neg]
-  · rw [cA_incA, map_inv₀, hσ, inv_neg, map_neg]
+  · rw [GlobalTheory.TowerForm.cA_incA_sig, hσ, map_neg]
+  · rw [GlobalTheory.TowerForm.cA_incA_sig, map_inv₀, hσ, inv_neg, map_neg]
 
 theorem lr_herm (a : GL (Fin n) (AE D)) : ∀ s ∈ hermA D n, GlobalTheory.ModuLR.lrCE a (ad a)⁻¹ s ∈ hermA D n :=
   fun s hs => (cg a ⟨s, hs⟩).2
@@ -163,8 +157,6 @@ theorem lr_smul (a : GL (Fin n) (AE D)) (d e : AE D) (hde : d * e = 1) (x : Mx D
     GlobalTheory.ModuLR.lrCE a (ad a)⁻¹ (mulCE d e hde x) = mulCE d e hde (GlobalTheory.ModuLR.lrCE a (ad a)⁻¹ x) := by
   change a.1 * (d • x) * ((ad a)⁻¹ : GL (Fin n) (AE D)).1 = d • (a.1 * x * ((ad a)⁻¹ : GL (Fin n) (AE D)).1)
   rw [Matrix.mul_smul, Matrix.smul_mul]
-
-
 
 theorem integral_cg : ∀ (D : D7) (n : ℕ) (lam : Measure (hermA D n)), lam.IsAddHaarMeasure → ∀ (a : GL (Fin n) (AE D)) (f : hermA D n → ℂ), ∫ c, f (GlobalTheory.CompanionTheory.IwaAd.cg a c) ∂lam = npow (absA D (Matrix.GeneralLinearGroup.det a)) (-(n : ℂ)) * ∫ c, f c ∂lam := by
   intro D n lam hlam a f

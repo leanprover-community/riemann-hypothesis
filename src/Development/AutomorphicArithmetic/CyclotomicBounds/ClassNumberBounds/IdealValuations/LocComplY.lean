@@ -39,7 +39,7 @@ section -- clump:auto
 
 theorem UpperTheory.Reformulated.B.Qj1.mem_of_adjoin_top.{u_2} :
     ∀ {l : ℕ}
-    [inst : Fact (Nat.Prime l)] {K : Type u_2} [inst_1 : Field K] [inst_2 : CharZero K] {S : Set K},
+    [Fact (Nat.Prime l)] {K : Type u_2} [Field K] [CharZero K] {S : Set K},
     Algebra.adjoin ℚ S = ⊤ →
       ∀ (j : K →+* PadicAlgCl l) (F : IntermediateField ℚ_[l] (PadicAlgCl l)),
         (∀ s ∈ S, (j : K → PadicAlgCl l) s ∈ F) → ∀ (x : K), (j : K → PadicAlgCl l) x ∈ F := by

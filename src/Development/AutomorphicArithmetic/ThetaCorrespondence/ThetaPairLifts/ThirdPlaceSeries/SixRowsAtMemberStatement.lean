@@ -386,8 +386,6 @@ namespace GlobalTheory
 
 open Matrix MvPolynomial Formalism.L2.GlobalTheoryTheory.Br
 
-
-
 theorem coMTS_of_gaInv : ∀ (D : D7) (u : D.what₂.Word) (Ch : ℕ → Type) (chOf : ∀ i, (D.mem u).C.cls i → Ch i) (Tf : FormsTiedSym D u Ch chOf) (B : D.what₂.places.Pl → (D.fm u).clsP → Matrix (Fin (D.R.N D.R.m - 1)) (Fin (D.R.N D.R.m - 1)) D.host.E) (w : D.what₂.places.Pl) (c : (D.fm u).clsP) (B' : GL (Fin (D.R.N D.R.m)) D.host.E), IsUnit (B w c).det → (B' : Matrix (Fin (D.R.N D.R.m)) (Fin (D.R.N D.R.m)) D.host.E) = ((((Tf.til.ga c).1)⁻¹ : GL (Fin (D.R.N D.R.m)) D.host.E) : Matrix (Fin (D.R.N D.R.m)) (Fin (D.R.N D.R.m)) D.host.E) * bZg u Tf.til.z0 (B w c) → ∀ (f : (D.mem u).C.Y D.R.m → ℂ) (P : MvPolynomial (D.what₂.Tau × Fin (D.R.N D.R.m) × Fin (D.R.N D.R.m)) ℂ), (∀ z, f z = fnOf _ (shiftOf (lamT u D.R.m)) (atInf (embT D) ((B'⁻¹ : GL (Fin (D.R.N D.R.m)) D.host.E) : Matrix (Fin (D.R.N D.R.m)) (Fin (D.R.N D.R.m)) D.host.E)) P ((Tf.val D.R.m le_rfl (Or.inr rfl)).eY z)) → Formalism.L2.GlobalTheoryTheory.Br.coMTS Tf B w c f = ((((Tf.cls D.R.m le_rfl (Or.inr rfl)).lev.chi (Tf.tilAd.ka c))⁻¹ : ℂˣ) : ℂ) • P := by
   intro D u Ch chOf Tf B w c B' hBdet hB' f P hf
   have hg : ∃ g : GL (Fin (D.R.N D.R.m)) D.host.E, g = (Tf.til.ga c).1 := ⟨_, rfl⟩
@@ -511,19 +509,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 
 namespace GlobalTheory.PtCo
 
-theorem intSpan_smul' (D : D7) {n : ℕ} (w : D.what₂.places.Pl) (lam : D.what₂.Tau → DomWeight n) (r : D.what₂.LL)
-    (hr : r ∈ intW D.what₂.places w) (p : MvPolynomial (D.what₂.Tau × Fin n × Fin n) ℂ)
-    (hp : p ∈ Formalism.MainNotions.product_first_zeroth_parts.IntSpan D w lam) : D.what₂.embLL r • p ∈ Formalism.MainNotions.product_first_zeroth_parts.IntSpan D w lam := by
-  unfold Formalism.MainNotions.product_first_zeroth_parts.IntSpan at *
-  induction hp using AddSubgroup.closure_induction with
-  | mem q hq =>
-    obtain ⟨r', f, hr', hf, rfl⟩ := hq
-    apply AddSubgroup.subset_closure
-    exact ⟨r * r', f, mul_mem hr hr', hf, by rw [map_mul, mul_smul]⟩
-  | zero => rw [smul_zero]; exact zero_mem _
-  | add p q _ _ hp hq => rw [smul_add]; exact add_mem hp hq
-  | neg p _ hp => rw [smul_neg]; exact neg_mem hp
-
 theorem ptCo_one (D : D7) (u : D.what₂.Word) (Ch : ℕ → Type) (chOf : ∀ i, (D.mem u).C.cls i → Ch i) (Tf : FormsTiedSym D u Ch chOf)
     (B : D.what₂.places.Pl → (D.fm u).clsP → GL (Fin (D.R.N D.R.m - 1)) D.host.E)
     (hB : ∀ w c, IsLocBasis (D.what₂.places.resChar w) (Tf.clsP.lat c : Set (Fin (D.R.N D.R.m - 1) → D.host.E)) (B w c))
@@ -547,7 +532,7 @@ theorem ptCo_mem_intSpan : ∀ (D : D7) (u : D.what₂.Word) (Ch : ℕ → Type)
   | smul r y _ hy =>
     have e : r • y = (r : D.what₂.LL) • y := rfl
     rw [e, LinearMap.map_smulₛₗ, map_smul, Pi.smul_apply]
-    exact intSpan_smul' D w _ (r : D.what₂.LL) r.2 _ hy
+    exact GlobalTheory.PerQ.Co.intSpan_smul D w _ (r : D.what₂.LL) r.2 _ hy
 
 end GlobalTheory.PtCo
 
@@ -629,8 +614,6 @@ section Dual
 
 open Matrix Formalism.L2.GlobalTheoryTheory.Br Formalism.UG
 
-
-
 theorem mem_dual_tilde_iff {D : D7} {u : D.what₂.Word} {Ch : ℕ → Type} {chOf : ∀ i, (D.mem u).C.cls i → Ch i}
     (Tf : FormsTiedSym D u Ch chOf) (c : (D.fm u).clsP) (a : Fin (D.R.N D.R.m - 1) → D.host.E) (t : D.host.E) :
     iXc D a + (t / ((D.mem u).A.T : D.host.E)) • Tf.til.z0 ∈
@@ -666,8 +649,6 @@ theorem mem_dual_tilde_iff {D : D7} {u : D.what₂.Word} {Ch : ℕ → Type} {ch
     rw [_root_.Formalism.L2.GlobalTheoryTheory.Br.hform_add_left, er, ex, hform_smul_leftB, p1, p2]
     refine add_mem (hSD.1 ha x hx) (mul_mem ?_ ht)
     exact ⟨⟨_, r.2.map (sigD D : D.host.E →+* D.host.E).toIntAlgHom⟩, rfl⟩
-
-
 
 theorem exists_isLocBasis_dual (D : D7) (u : D.what₂.Word) (Ch : ℕ → Type) (chOf : ∀ i, (D.mem u).C.cls i → Ch i)
     (Tf : FormsTiedSym D u Ch chOf) (w : D.what₂.places.Pl) (c : (D.fm u).clsP) (B : GL (Fin (D.R.N D.R.m - 1)) D.host.E)
@@ -751,8 +732,6 @@ theorem local_of_mem_delAtr {E K : Type} [Field E] [NumberField E] [Field K] [Nu
   rw [nb_mem_transLat] at hF
   exact ⟨_, vl_map_mem_intSpan Pl pw hval s w lam lam' hn (hF (pw w) _ hbas), vl_coord emb s J lam B F⟩
 
-
-
 theorem mem_SP_of_coord_integral (D : D7) (u : D.what₂.Word) (Ch : ℕ → Type) (chOf : ∀ i, (D.mem u).C.cls i → Ch i)
     (Tf : FormsTiedSym D u Ch chOf) (B : D.what₂.places.Pl → (D.fm u).clsP → GL (Fin (D.R.N D.R.m - 1)) D.host.E)
     (hB : ∀ w c, IsLocBasis (D.what₂.places.resChar w) (Tf.clsP.lat c : Set (Fin (D.R.N D.R.m - 1) → D.host.E)) (B w c))
@@ -818,8 +797,6 @@ theorem root_mem_intW (D : D7) (w : D.what₂.places.Pl) (r : D.what₂.LL) (n :
   rw [h1] at this
   exact lt_irrefl _ this
 
-
-
 theorem exists_integralPendingObject_symmetricFormsLevel : ∀ (D : D7) (u : D.what₂.Word) (Ch : ℕ → Type) (chOf : ∀ i, (D.mem u).C.cls i → Ch i) (Tf : FormsTiedSym D u Ch chOf), Formalism.L2.Rows.LowerMapTieS Tf → Formalism.L2.Ker.BeOnTie D u → (∃ n : ℕ, 0 < n ∧ ∀ x : (Tf.cls D.R.m le_rfl (Or.inr rfl)).lev.U, (((Tf.cls D.R.m le_rfl (Or.inr rfl)).lev.chi x : ℂˣ) : ℂ) ^ n = 1 ∧ ∃ r : D.what₂.LL, D.what₂.embLL r = (((Tf.cls D.R.m le_rfl (Or.inr rfl)).lev.chi x : ℂˣ) : ℂ)) → ∃ P : Formalism.MainNotions.product_first_zeroth_parts.Pend D u, Formalism.MainNotions.product_first_zeroth_parts.ArchimedeanSignatureMatching P := by
   intro D u Ch chOf Tf hMap hBe hχ
   choose B hB using GlobalTheory.ClsPLocBasis.exists_isLocBasis_clsP D u Ch chOf Tf
@@ -848,13 +825,13 @@ theorem exists_integralPendingObject_symmetricFormsLevel : ∀ (D : D7) (u : D.w
     | mem y hy =>
       obtain ⟨P, hP, hPv⟩ := ((Tf.val D.R.m le_rfl (Or.inr rfl)).lat y).1 hy w ((D.fm u).til c) B' hB'
       rw [GlobalTheory.coMTS_of_gaInv D u Ch chOf Tf Bm w c B' (hBu w c) hB'eq _ P hPv, hχr]
-      exact _root_.GlobalTheory.PtCo.intSpan_smul' D w _ _ hri P hP
+      exact _root_.GlobalTheory.PerQ.Co.intSpan_smul D w _ _ hri P hP
     | zero => rw [map_zero, Pi.zero_apply, map_zero]; exact zero_mem _
     | add y z _ _ hy hz => rw [map_add (f := _), Pi.add_apply, map_add (f := _)]; exact add_mem hy hz
     | smul a y _ hy =>
       have e : a • y = (a : D.what₂.LL) • y := rfl
       rw [e, LinearMap.map_smulₛₗ, Pi.smul_apply, map_smul]
-      exact _root_.GlobalTheory.PtCo.intSpan_smul' D w _ (a : D.what₂.LL) a.2 _ hy
+      exact _root_.GlobalTheory.PerQ.Co.intSpan_smul D w _ (a : D.what₂.LL) a.2 _ hy
   · intro w z hz
     constructor
     · rintro ⟨y, hy, rfl⟩ c
@@ -950,8 +927,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
 attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
-
-
 theorem GlobalTheory.PerDecAtRef.perDec0At_std : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)), GlobalTheory.PerQ.RowInt I l Z → ∀ (u : B.Word) (Ch : ℕ → Type) (chOf : ∀ i, ((I.rec7 l Z).mem u).C.cls i → Ch i) (F : FormsTiedSym (I.rec7 l Z) u Ch chOf), I.StdF l Z u F → Formalism.MainNotions.RT.PeriodPointConditions.PerDec0At F := by
   intro B X I hI l Z hZ u Ch chOf F hF
   intro x hx G hG c
@@ -969,7 +944,7 @@ theorem GlobalTheory.PerDecAtRef.perDec0At_std : ∀ {B : Base} {X : PreX B.toPr
   case ha =>
     clear hpr hZ hI hx hG hrd hF
     have hL : (I.perIn u I.mu0).S'.Lsh c.fst ((I.perIn u I.mu0).S'.rep c) = (((I.stX I.mu0).rep c).1.1.deco).1.N :=
-      GlobalTheory.PeriodOnStep.Lsh_eq_N _
+      GlobalTheory.Mem.Col2.Lsh_empty _
     rw [hL]
     exact hy0
   case hb =>
@@ -988,7 +963,7 @@ theorem GlobalTheory.PerDecAtRef.perDec0At_std : ∀ {B : Base} {X : PreX B.toPr
       erw [hw _ c' s ⟨s.1, s.2⟩ rfl]
       by_cases h : c' = c
       · rw [ite_eq_left h, ite_eq_left (show @Eq (I.perIn u I.mu0).S'.Cl c' c from h)]
-        erw [hw v c' s ⟨s.1, s.2⟩ rfl]
+        rw [hw v c' s ⟨s.1, s.2⟩ rfl]
       · rw [ite_eq_right h, ite_eq_right (show ¬ @Eq (I.perIn u I.mu0).S'.Cl c' c from h)]
         rfl
     unfold Formalism.MainNotions.RT.PeriodPointConditions.pcL Formalism.MainNotions.RT.PeriodPointConditions.resC
@@ -1125,7 +1100,7 @@ theorem perDecTwT_of_std : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok 
     all_goals first | exact e2 | rfl | (exfalso; contradiction)
   obtain ⟨y, hy, hyv⟩ := hR.tw u a F hF c
   have hyQ : y ∈ nabAt B.fields.emb (I.perIn u a).sgT ((I.perIn u a).S'.Lsh c.1 ((I.perIn u a).S'.rep c)) := by
-    have := GlobalTheory.PeriodOnStep.Lsh_eq_N ((I.stX a).rep c).1.1.deco
+    have := GlobalTheory.Mem.Col2.Lsh_empty ((I.stX a).rep c).1.1.deco
     show y ∈ nabAt _ _ (((I.stX a).rep c).1.1.deco.1.Lsh)
     rw [this]; exact hy
   obtain ⟨b, hb⟩ := @_root_.GlobalTheory.PairAtClass.pair_integral _ _ _ _ _ _ _ _ _ _ B.fields.emb B.embLL _ _ (I.perIn u a) (l.ch u a) (l.per u a) (B.hcW u)
@@ -1162,40 +1137,6 @@ section Copied
 
 open Formalism.BasicNotions Formalism.BasicNotions.DV Formalism.MainNotions Formalism.MainNotions.G Formalism.MainNotions.WeilJacquetShalikaLaw Formalism.L2.Forms Matrix NumberField
 open scoped BigOperators
-
-theorem exists_orthonormal_frame_twisted (D : D7) : ∃ o : FrP D, o.IsON := by
-  classical
-  let _ := D.host.cmStar
-  have hY : ∀ τ, ∃ Y : Matrix (Fin (D.R.N D.R.m - 1)) (Fin (D.R.N D.R.m - 1)) ℂ,
-      IsUnit Y.det ∧ Yᴴ * (gramP D).map (embT D τ) * Y = 1 := by
-    intro τ
-    have hs := D.sp.X'_sig (embT D τ)
-    rw [D.X'_posDef (embT D τ)] at hs
-    dsimp only at hs
-    obtain ⟨e, P, hP⟩ := hs
-    have hJ : Formalism.UG.Jpq D.sp.X'.rank 0 = 1 := by
-      ext i j
-      rcases i with i | i
-      · rcases j with j | j
-        · simp [Formalism.UG.Jpq, Matrix.one_apply]
-        · exact j.elim0
-      · exact i.elim0
-    have hcT : Formalism.UG.cT (starRingEnd ℂ) P.1 = P.1ᴴ := by
-      ext i j; simp [Formalism.UG.cT, Matrix.conjTranspose_apply]
-    rw [hcT, hJ] at hP
-    let f : Fin D.sp.X'.rank ≃ Fin (D.R.N D.R.m - 1) := finCongr (rankP D)
-    let g : Fin (D.R.N D.R.m - 1) ≃ Fin D.sp.X'.rank ⊕ Fin 0 := f.symm.trans e
-    have hG : ((gramP D).map (embT D τ)).submatrix g.symm g.symm = (D.sp.X'.gram.map (embT D τ)).reindex e e := by
-      ext i j
-      simp [g, f, gramP, Matrix.reindex_apply, Matrix.submatrix_apply]
-    refine ⟨P.1.submatrix g g, ?_, ?_⟩
-    · rw [Matrix.det_submatrix_equiv_self]; exact Matrix.isUnits_det_units P
-    · have h1 : (gramP D).map (embT D τ) = (((gramP D).map (embT D τ)).submatrix g.symm g.symm).submatrix g g := by
-        ext i j; simp
-      rw [Matrix.conjTranspose_submatrix, h1, Matrix.submatrix_mul_equiv, Matrix.submatrix_mul_equiv, hG, hP]
-      exact Matrix.submatrix_one_equiv g
-  choose Y hYu hY using hY
-  exact ⟨⟨Y, hYu⟩, fun τ => Or.inl (hY τ)⟩
 
 theorem nfAll_zero_tw {D : D7} (n : ℕ) (lam : D.what₂.Tau → DomWeight n) : nfAll lam 0 0 = 0 := by
   simp [nfAll, Formalism.REAL.fockF]
@@ -1241,7 +1182,7 @@ theorem petersson_eq_sum_restrict_twist (t : SymmetricTwistedColumnsAtPrimes tp 
     (a b : (D.PTw u μ).Wrow) (ha : a ∈ (Tw.fm u μ).ptC) (hb : b ∈ (Tw.fm u μ).ptC) :
     (Tw.fm u μ).ipP a b = ∑ c, (Tw.fm u μ).ipP (resCTw t u μ hμ c a) (resCTw t u μ hμ c b) := by
   classical
-  obtain ⟨o, ho⟩ := exists_orthonormal_frame_twisted D
+  obtain ⟨o, ho⟩ := GlobalTheory.PerRed.exists_orthonormal_frame₂ D
   choose P hP hPe using eW_rep_o_tw t u μ hμ o a ha
   choose Q hQ hQe using eW_rep_o_tw t u μ hμ o b hb
   rw [(t.pt.val u μ hμ).ipP o ho a b P Q hP hQ hPe hQe]
@@ -1373,8 +1314,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.Bl GlobalTheory.Fc GlobalTheory.Fc.Cv NumberField
 namespace GlobalTheory.Fc
@@ -1402,8 +1341,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.SixRowsAtMemberStatement", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ThetaChr\npublic import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.AllRows\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ColumnChoiceWithTies\npublic import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.LevelPrimeColumnValuationsAtBundlePoints\npublic import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.ReferenceChainEvaluationAtBundlePoints\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.SixRowsAtMember\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
-
-
 
 end -- clump:auto
 end -- clump:auto

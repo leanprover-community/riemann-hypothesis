@@ -28,37 +28,3 @@ theorem summable_absNorm_rpow {σ : ℝ} (hσ : 1 < σ) :
 end Sum
 
 end Formalism.MainNotions.DIV.Proofs.QuadraticNormBounds
-
-namespace Formalism.MainNotions.DIV.Proofs.QuadraticNormBounds
-section Euler
-variable {ι : Type} (q : ι → ℕ) (ε : ι → ℕ → ℂ) (n : ℕ)
-
-variable {q ε}
-
-variable (hsum : ∀ σ : ℝ, 1 < σ → Summable (fun i => (q i : ℝ) ^ (-σ)))
-include hsum
-
-end Euler
-end Formalism.MainNotions.DIV.Proofs.QuadraticNormBounds
-
-namespace Formalism.MainNotions.DIV.Proofs.QuadraticNormBounds
-open Formalism.MainNotions.SchurIrreducible MeasureTheory
-
-section Tail
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-
-
-
-end Tail
-
-section Main
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E]
-  [Algebra F E] {A B : Formalism.BasicNotions.HSpace E} (O : RFObj F E A B)
-
-end Main
-end Formalism.MainNotions.DIV.Proofs.QuadraticNormBounds
-
-namespace Formalism.MainNotions.DIV.Proofs
-open Formalism.BasicNotions Formalism.MainNotions.DIV.Proofs.QuadraticNormBounds
-
-end Formalism.MainNotions.DIV.Proofs

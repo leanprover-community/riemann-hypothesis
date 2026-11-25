@@ -366,7 +366,11 @@ theorem symPolAt_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ}
         ssz_wh O X.p (X.seg C0 CE1 CE2 j) (segATop X.TT X.aT j) (segAPlus X.TT X.aT j) mm (β j) ω' ωL h1 h2 h3 (s j) (hs j)))
   have h1 := hwh (mem_support_iff.1 (Finset.mem_coe.1 hμ))
   rw [weight_wLet] at h1
-  rw [h1, Finset.sum_congr rfl fun j _ => TD_wLet C0 CE1 CE2 X j x (β j) (hβ j) (hO X hD1 hH hc j (β j) (hβ j)),
+  rw [h1, Finset.sum_congr rfl fun j _ =>
+    let hk := hβ j
+    TD_wLet_of_bounds C0 CE1 CE2 X j x (β j) hk.1
+      (fun i h => (hk.2.2.1 i h).2.1) (fun i h => (hk.2.2.1 i h).2.2.1)
+      (fun i h => (hk.2.1 i h).1) (hO X hD1 hH hc j (β j) hk),
     ← natPartSum X.TT St.seg2 (fun s => if s = x.1.val then hhDegs X.TT X.aT X.bT x else 0), Finset.sum_ite_eq',
     ite_eq_left x.1.2]
 

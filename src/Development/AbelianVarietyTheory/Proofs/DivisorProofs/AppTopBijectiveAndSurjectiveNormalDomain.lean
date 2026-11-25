@@ -15,7 +15,7 @@ theorem Modif.gp_appTop_injective {R : Type} [CommRing R] [IsDomain R] (M : Modi
     Function.Injective M.gp.appTop.hom := by
   haveI := M.integral
   haveI := M.dominant
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro s hs
   rw [← AlgebraicGeometry.basicOpen_eq_bot_iff, eq_bot_iff]
   intro x hx

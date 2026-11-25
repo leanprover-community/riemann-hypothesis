@@ -10,7 +10,7 @@ public import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qi6.det_ne_zero :
-    ∀ {F : Type} [inst : NormedField F] [IsUltrametricDist F] {m : ℕ}
+    ∀ {F : Type} [NormedField F] [IsUltrametricDist F] {m : ℕ}
     (t : F),
     ‖t‖ = (1 : ℝ) →
       ∀ (E : Matrix (Fin m) (Fin m) F),

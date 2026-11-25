@@ -176,15 +176,15 @@ theorem pairs_glue : ∀ (R R₀ : Type) [CommRing R] [CommRing R₀] (I : Ideal
     intro T₁ T₂ a
     change spMap (mp S'.F (fh a) : S'.F.obj (op T₂.1.1) →+* S'.F.obj (op T₁.1.1)) ≫
       spMap (lr T₂) ≫ P.y (op T₂.1.2) = _
-    rw [← Category.assoc, ← spMap_comp₂]
+    rw [← Category.assoc, ← GlobalTheory.Cris.spMap_comp]
     have e : (mp S'.F (fh a) : S'.F.obj (op T₂.1.1) →+* S'.F.obj (op T₁.1.1)).comp (lr T₂) =
         (lr T₁).comp (mp S.F (homOfLE (Pair.le_snd (leOfHom a))).op : S.F.obj (op T₂.1.2) →+* S.F.obj (op T₁.1.2)) :=
       RingHom.ext fun b ↦ hN a.op b
-    rw [e, spMap_comp₂, Category.assoc, P.nat]
+    rw [e, GlobalTheory.Cris.spMap_comp, Category.assoc, P.nat]
   refine ⟨𝒰.glueMorphismsOfLocallyDirected g hg, 𝒰.hom_ext _ _ fun T ↦ ?_, ?_⟩
   · rw [𝒰.map_glueMorphismsOfLocallyDirected_assoc g hg T]
     change (spMap (lr T) ≫ P.y (op T.1.2)) ≫ s = P'.y (op T.1.1) ≫ t
-    rw [Category.assoc, P.base, P'.base, ← spMap_comp₂]
+    rw [Category.assoc, P.base, P'.base, ← GlobalTheory.Cris.spMap_comp]
     exact congrArg spMap (RingHom.ext fun r ↦ (l (op T)).commutes r)
   · let 𝒱 : Z₀.OpenCover := Scheme.Cover.mkOfCovers (Pair f₀) (fun T ↦ Sp (GlobalTheory.CechDR.Sec t₀ T.1.1.1))
       (fun T ↦ affPt t₀ T.1.1)
@@ -199,10 +199,10 @@ theorem pairs_glue : ∀ (R R₀ : Type) [CommRing R] [CommRing R₀] (I : Ideal
     change spMap (S'.p (op T.1.1)) ≫ 𝒰.f T ≫ _ = _
     rw [𝒰.map_glueMorphismsOfLocallyDirected g hg T]
     change spMap (S'.p (op T.1.1)) ≫ spMap (lr T) ≫ P.y (op T.1.2) = _
-    rw [← Category.assoc, ← spMap_comp₂]
+    rw [← Category.assoc, ← GlobalTheory.Cris.spMap_comp]
     have e : (S'.p (op T.1.1)).comp (lr T) = (GlobalTheory.CechDR.secPull s₀ t₀ T).comp (S.p (op T.1.2)) :=
       RingHom.ext fun b ↦ hL (op T) b
-    rw [e, spMap_comp₂, Category.assoc, show spMap (S.p (op T.1.2)) ≫ P.y (op T.1.2) = affPt s₀ T.1.2 ≫ i from P.red _,
+    rw [e, GlobalTheory.Cris.spMap_comp, Category.assoc, show spMap (S.p (op T.1.2)) ≫ P.y (op T.1.2) = affPt s₀ T.1.2 ≫ i from P.red _,
       ← Category.assoc, GlobalTheory.CechDR.secPull_affPt (φ := f₀) s₀ t₀ T, Category.assoc]
 
 end GlobalTheory.Obs
@@ -240,10 +240,10 @@ theorem exists_isOb1 : ∀ (R R₀ : Type) [CommRing R] [CommRing R₀] (I : Ide
       (L.surj _) (L.ker _) _).1 _ (hdiff T T' a)).exists
   choose κ hκ using hκ
   have hσ : ∀ T, ∃ σ : R₁ ⊗[R₀] F'.obj T →+ L'.B T, α.IsSig (L'.p T) σ := fun T ↦
-    GlobalTheory.T.exists_augmentation_tensor_sigma_map R R₀ I hI π hπ hk R₁ α (L'.B T) (F'.obj T) (L'.p T) (L'.semi T) (L'.surj T) (L'.ker T)
+    GlobalTheory.Obs.exists_isSig R R₀ I hI π hπ hk R₁ α (L'.B T) (F'.obj T) (L'.p T) (L'.semi T) (L'.surj T) (L'.ker T)
   choose σ hσ using hσ
   have hz : ∀ (T T' : C') (a : T ⟶ T'), ∃ y : R₁ ⊗[R₀] F'.obj T', α.KerQ y ∧ σ T' y = κ T T' a (w.1 _) :=
-    fun T T' a ↦ (GlobalTheory.T.augmentation_sigma_map_basic_properties R R₀ I hI π hπ hk R₁ α (L'.B T') (F'.obj T') (L'.p T') (L'.semi T')
+    fun T T' a ↦ (GlobalTheory.Obs.sig_basic R R₀ I hI π hπ hk R₁ α (L'.B T') (F'.obj T') (L'.p T') (L'.semi T')
       (L'.surj T') (L'.ker T') (σ T') (hσ T')).2.2.2 _ ((hκ T T' a).mem _)
   choose z hzq hzs using hz
 
@@ -259,7 +259,7 @@ theorem exists_isOb1 : ∀ (R R₀ : Type) [CommRing R] [CommRing R₀] (I : Ide
     have e0 : ((L'.ρ b).comp (l T')).comp (L.ρ (n.G.map a)) = (L'.ρ b).comp ((l T').comp (L.ρ (n.G.map a))) :=
       AlgHom.ext fun _ ↦ rfl
     rw [e0] at t2
-    have t3 := ((GlobalTheory.T.isDifferenceDerivationOfLifts_add_swap_unique R R₀ I hI π hπ hk (L.B (n.G.obj T)) (F.obj (n.G.obj T)) (L.p _) (L.semi _)
+    have t3 := ((GlobalTheory.Obs.isTheta_add R R₀ I hI π hπ hk (L.B (n.G.obj T)) (F.obj (n.G.obj T)) (L.p _) (L.semi _)
       (L.surj _) (L.ker _) (L'.B T'') _ _ _ _ _ t1).2.1 t2)
     have e1 : (L'.ρ b).comp ((L'.ρ a).comp (l T)) = (L'.ρ (a ≫ b)).comp (l T) :=
       AlgHom.ext fun y ↦ (hL' a b _).symm
@@ -268,17 +268,17 @@ theorem exists_isOb1 : ∀ (R R₀ : Type) [CommRing R] [CommRing R₀] (I : Ide
         show l T'' (L.ρ (n.G.map b) (L.ρ (n.G.map a) y)) = l T'' (L.ρ (n.G.map (a ≫ b)) y)
         rw [Functor.map_comp, hL]
     rw [e1, e2] at t3
-    have e3 := (GlobalTheory.T.isDifferenceDerivationOfLifts_add_swap_unique R R₀ I hI π hπ hk (L.B (n.G.obj T)) (F.obj (n.G.obj T)) (L.p _) (L.semi _)
+    have e3 := (GlobalTheory.Obs.isTheta_add R R₀ I hI π hπ hk (L.B (n.G.obj T)) (F.obj (n.G.obj T)) (L.p _) (L.semi _)
       (L.surj _) (L.ker _) (L'.B T'') _ _ ((l T'').comp (L.ρ (n.G.map (a ≫ b)))) _ _ (hκ T T'' (a ≫ b))).2.2.1 t3
     exact congrArg (fun f ↦ f x) e3
   let zc : Z1 (ext R₁ F') := ⟨fun T T' a ↦ z T T' a, fun T T' T'' a b ↦ by
-    have sn := GlobalTheory.T.augmentation_sigma_map_natural R R₀ I hI π hπ hk R₁ α (L'.B T') (F'.obj T') (L'.p T') (L'.semi T') (L'.surj T')
+    have sn := GlobalTheory.Obs.sig_natural R R₀ I hI π hπ hk R₁ α (L'.B T') (F'.obj T') (L'.p T') (L'.semi T') (L'.surj T')
       (L'.ker T') (L'.B T'') (F'.obj T'') (L'.p T'') (L'.semi T'') (L'.surj T'') (L'.ker T'') (L'.ρ b) (mp F' b)
       (fun y ↦ L'.nat b y) (σ T') (σ T'') (hσ T') (hσ T'')
     change z T T'' (a ≫ b) = extHom R₁ (mp F' b) (z T T' a) + z T' T'' b
     rw [← sub_eq_zero]
     haveI := L'.smooth T''
-    refine GlobalTheory.T.augmentation_sigma_map_injective_of_flat R R₀ I hI π hπ hk R₁ α (L'.B T'') (F'.obj T'') (L'.p T'') (L'.semi T'') (L'.surj T'')
+    refine GlobalTheory.Obs.sig_inj_of_flat R R₀ I hI π hπ hk R₁ α (L'.B T'') (F'.obj T'') (L'.p T'') (L'.semi T'') (L'.surj T'')
       (L'.ker T'') (σ T'') (hσ T'') _ ?_ ?_
     · have h1 := hzq T T'' (a ≫ b)
       have h2 := sn.2 _ (hzq T T' a)
@@ -319,8 +319,6 @@ open CategoryTheory AlgebraicGeometry KaehlerDifferential MonoidalCategory Carte
 open scoped TensorProduct
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.CatCoh GlobalTheory.Cris GlobalTheory.CechDR GlobalTheory.LiftSys GlobalTheory.Obs
 
-theorem _root_.GlobalTheory.T.exists_squareZeroAugmentedAlgebra : ∀ (R R₀ : Type) [CommRing R] [CommRing R₀] (I : Ideal R) (hI : I ^ 2 = 0) (π : R →+* R₀) (hπ : Function.Surjective π) (hk : RingHom.ker π = I), ∃ (R₁ : Type) (_ : CommRing R₁) (_ : Algebra R₀ R₁), Nonempty (Aug I π R₁) := by
-  first | exact @GlobalTheory.Obs.exists_aug
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSquareZeroAugmentedAlgebraStatement =====
@@ -347,7 +345,7 @@ theorem exists_natLift_of_defect : ∀ (R R₀ : Type) [CommRing R] [CommRing R�
   choose ξ hξ using fun T ↦ (hext T).exists
   have hψ : ∀ T : C', ∃ ψ : L.B (n.G.obj T) →ₐ[R] L'.B T,
       IsTheta I (L.p (n.G.obj T)) (l T) ψ (-ξ T) := fun T ↦
-    (GlobalTheory.T.algHom_lifts_sqZero_classified_by_differentials R R₀ (L.B (n.G.obj T)) (Sec s₀ (n.G.obj T).unop.1) (L'.B T) I hI π hπ (L.p _) (L.semi _)
+    (GlobalTheory.LiftSys.theta_classify R R₀ (L.B (n.G.obj T)) (Sec s₀ (n.G.obj T).unop.1) (L'.B T) I hI π hπ (L.p _) (L.semi _)
       (L.surj _) (L.ker _) (l T)).2 (-ξ T)
       (fun b w ↦ by rw [AddMonoidHom.neg_apply, AddMonoidHom.neg_apply, (hξ T).1, mul_neg])
       (fun w ↦ by rw [AddMonoidHom.neg_apply]; exact neg_mem ((hξ T).2.1 w))
@@ -511,7 +509,7 @@ namespace GlobalTheory.Obs
 theorem obstructionPullback_eq_zero_of_naturalLift : ∀ (R R₀ : Type) [CommRing R] [CommRing R₀] (I : Ideal R) (hI : I ^ 2 = 0) (π : R →+* R₀) (hπ : Function.Surjective π) (hk : RingHom.ker π = I) (R₁ : Type) [CommRing R₁] [Algebra R₀ R₁] (α : Aug I π R₁) (C : Type) [Category.{0} C] (F : C ⥤ CommAlgCat.{0} R₀) (C' : Type) [Category.{0} C'] (F' : C' ⥤ CommAlgCat.{0} R₀) (L : Pre I π F) (L' : Pre I π F') (n : CoefMap (RingHom.id R₀) F F') (l : ∀ T : C', L.B (n.G.obj T) →ₐ[R] L'.B T) (C'' : Type) [Category.{0} C''] (F'' : C'' ⥤ CommAlgCat.{0} R₀) (L'' : Pre I π F'') (m : CoefMap (RingHom.id R₀) F' F'') (u : ∀ T : C'', L'.B (m.G.obj T) →ₐ[R] L''.B T) (v : ∀ T : C'', L.B (n.G.obj (m.G.obj T)) →ₐ[R] L''.B T), L.IsLift L' n l → L'.IsLift L'' m u → L'.IsNat L'' m u → (∀ T b, L''.p T (v T b) = m.α T (n.α _ (L.p _ b))) → (∀ (T T' : C'') (a : T ⟶ T') b, L''.ρ a (v T b) = v T' (L.ρ (n.G.map (m.G.map a)) b)) → ∀ (w : Glob1 F) (c : GlobalTheory.CatCoh.H1 (ext R₁ F')), L.IsOb1 L' n l α w c → (extMap R₁ m).pull1 c = 0 := by
   intro R R₀ _ _ I hI π hπ hk R₁ _ _ α C _ F C' _ F' L L' n l C'' _ F'' L'' m u v hl hu hun hvp hvn w c hc
   obtain ⟨κ, σ', z, hκ, hσ', rfl, hz⟩ := hc
-  choose σ'' hσ'' using fun T : C'' ↦ GlobalTheory.T.exists_augmentation_tensor_sigma_map R R₀ I hI π hπ hk R₁ α (L''.B T) (F''.obj T) (L''.p T)
+  choose σ'' hσ'' using fun T : C'' ↦ GlobalTheory.Obs.exists_isSig R R₀ I hI π hπ hk R₁ α (L''.B T) (F''.obj T) (L''.p T)
     (L''.semi T) (L''.surj T) (L''.ker T)
 
   have hdiff : ∀ (T : C'') (b : L.B (n.G.obj (m.G.obj T))),
@@ -534,7 +532,7 @@ theorem obstructionPullback_eq_zero_of_naturalLift : ∀ (R R₀ : Type) [CommRi
       (L.semi _) (L.surj _) (L.ker _) (L''.B T') (L''.B T') _ _ _ (hth T')).2 (L.ρ (n.G.map (m.G.map a)))
       (mp F (n.G.map (m.G.map a))) (fun x ↦ L.nat _ x)
     rw [AlgHom.comp_assoc] at h2
-    have h3 := (GlobalTheory.T.isDifferenceDerivationOfLifts_add_swap_unique R R₀ I hI π hπ hk _ _ (L.p (n.G.obj (m.G.obj T))) (L.semi _) (L.surj _) (L.ker _)
+    have h3 := (GlobalTheory.Obs.isTheta_add R R₀ I hI π hπ hk _ _ (L.p (n.G.obj (m.G.obj T))) (L.semi _) (L.surj _) (L.ker _)
       (L''.B T') _ _ _ _ _ h1).2.1 h2
     have h4 := (GlobalTheory.T.isDifferenceDerivationOfLifts_comp R R₀ I hI π hπ hk (L.B (n.G.obj (m.G.obj T))) (F.obj (n.G.obj (m.G.obj T))) (L.p _)
       (L.semi _) (L.surj _) (L.ker _) (L.B (n.G.obj (m.G.obj T))) (F.obj (n.G.obj (m.G.obj T))) (L.p _)
@@ -543,26 +541,26 @@ theorem obstructionPullback_eq_zero_of_naturalLift : ∀ (R R₀ : Type) [CommRi
         (u T').comp ((L'.ρ (m.G.map a)).comp (l (m.G.obj T))) := AlgHom.ext fun b ↦ hun a _
     have e2 : (L''.ρ a).comp (v T) = (v T').comp (L.ρ (n.G.map (m.G.map a))) := AlgHom.ext fun b ↦ hvn T T' a b
     rw [e1, e2] at h4
-    have h5 := (GlobalTheory.T.isDifferenceDerivationOfLifts_add_swap_unique R R₀ I hI π hπ hk _ _ (L.p (n.G.obj (m.G.obj T))) (L.semi _) (L.surj _) (L.ker _)
+    have h5 := (GlobalTheory.Obs.isTheta_add R R₀ I hI π hπ hk _ _ (L.p (n.G.obj (m.G.obj T))) (L.semi _) (L.surj _) (L.ker _)
       (L''.B T') _ _ ((v T').comp (L.ρ (n.G.map (m.G.map a)))) _ _ h4).2.2 |>.1 <| h3
     have h6 := DFunLike.congr_fun h5 (w.1 (n.G.obj (m.G.obj T)))
     rw [w.2 (n.G.map (m.G.map a))]
     exact h6
-  choose g hgK hg using fun T : C'' ↦ (GlobalTheory.T.augmentation_sigma_map_basic_properties R R₀ I hI π hπ hk R₁ α (L''.B T) (F''.obj T) (L''.p T)
+  choose g hgK hg using fun T : C'' ↦ (GlobalTheory.Obs.sig_basic R R₀ I hI π hπ hk R₁ α (L''.B T) (F''.obj T) (L''.p T)
     (L''.semi T) (L''.surj T) (L''.ker T) (σ'' T) (hσ'' T)).2.2.2 (-(th T (w.1 (n.G.obj (m.G.obj T)))))
     (neg_mem ((hth T).mem _))
   rw [CoefMap.pullCohomologyOne_class, H1.mk_eq_zero]
   refine ⟨g, ?_⟩
   funext T T' a
-  have sg := GlobalTheory.T.augmentation_sigma_map_natural R R₀ I hI π hπ hk R₁ α (L''.B T) (F''.obj T) (L''.p T) (L''.semi T) (L''.surj T)
+  have sg := GlobalTheory.Obs.sig_natural R R₀ I hI π hπ hk R₁ α (L''.B T) (F''.obj T) (L''.p T) (L''.semi T) (L''.surj T)
     (L''.ker T) (L''.B T') (F''.obj T') (L''.p T') (L''.semi T') (L''.surj T') (L''.ker T') (L''.ρ a) (mp F'' a)
     (fun b ↦ L''.nat a b) (σ'' T) (σ'' T') (hσ'' T) (hσ'' T')
-  have su := GlobalTheory.T.augmentation_sigma_map_natural R R₀ I hI π hπ hk R₁ α (L'.B (m.G.obj T')) (F'.obj (m.G.obj T')) (L'.p _) (L'.semi _)
+  have su := GlobalTheory.Obs.sig_natural R R₀ I hI π hπ hk R₁ α (L'.B (m.G.obj T')) (F'.obj (m.G.obj T')) (L'.p _) (L'.semi _)
     (L'.surj _) (L'.ker _) (L''.B T') (F''.obj T') (L''.p T') (L''.semi T') (L''.surj T') (L''.ker T') (u T')
     (coefHom m T') (fun b ↦ hu T' b) (σ' _) (σ'' T') (hσ' _) (hσ'' T')
   haveI : Algebra.Smooth R (L''.B T') := L''.smooth T'
   change g T' - extHom R₁ (mp F'' a) (g T) = extHom R₁ (coefHom m T') (z.1 _ _ (m.G.map a))
-  refine sub_eq_zero.1 (GlobalTheory.T.augmentation_sigma_map_injective_of_flat R R₀ I hI π hπ hk R₁ α (L''.B T') (F''.obj T') (L''.p T') (L''.semi T')
+  refine sub_eq_zero.1 (GlobalTheory.Obs.sig_inj_of_flat R R₀ I hI π hπ hk R₁ α (L''.B T') (F''.obj T') (L''.p T') (L''.semi T')
     (L''.surj T') (L''.ker T') (σ'' T') (hσ'' T') _ ?_ ?_)
   · have k1 := hgK T'
     have k2 := sg.2 _ (hgK T)
@@ -652,7 +650,7 @@ theorem retractionLiftObstruction_zero_of_liftedSection_alt : ∀ (R R₀ : Type
         (Quiver.Hom.unop_inj (Subsingleton.elim _ _))).trans (mp_comp S.F _ _ b)))
     w ((extMap R₁ (pairRes f₀ t₀)).pull1 c) hob
   rw [ext_tri_res_pull1] at hvan
-  have inj := (GlobalTheory.T.cechPairRestrict_baseChange_bijective R₀ R₁ Z₀ X₀ s₀ j₀).2 X₀ f₀
+  have inj := (GlobalTheory.Obs.PairExt.pairRes_ext_bijective R₀ R₁ Z₀ X₀ s₀ j₀).2 X₀ f₀
   unfold IsExtendedPullbackDegOne
   rw [map_zero]
   exact inj (hvan.trans (map_zero _).symm)
@@ -724,7 +722,6 @@ end GlobalTheory.Obs.MulLift
 
 namespace GlobalTheory.Obs
 
-
 open MulLift in
 theorem mul_lifts : FormSt → AxesVanishingExtendedDegOne → ∀ (R R₀ : Type) [CommRing R] [CommRing R₀] (I : Ideal R) (hI : I ^ 2 = 0)
     (π : R →+* R₀) (hπ : Function.Surjective π) (hk : RingHom.ker π = I) (A₀ : Over (Sp R₀)) [GrpObj A₀] (g : ℕ),
@@ -736,10 +733,10 @@ theorem mul_lifts : FormSt → AxesVanishingExtendedDegOne → ∀ (R R₀ : Typ
   intro hF hAx R R₀ _ _ I hI π hπ hk A₀ _ g hab hg X i h hX e he hie l hl₁ hl₂
   have hl : IsPullback l (A₀ ⊗ A₀).hom (X ⊗ X).hom (spMap π) := isPullback_tensor h h hl₁ hl₂
   have hsm : Smooth (X ⊗ X).hom := smooth_tensor hX hX
-  obtain ⟨S, ⟨P⟩⟩ := GlobalTheory.T.exists_squareZeroSmoothLiftSystem_presents R R₀ I hI π hπ hk A₀.left A₀.hom X.left X.hom i h hX
+  obtain ⟨S, ⟨P⟩⟩ := GlobalTheory.LiftSys.exists_sys_presents R R₀ I hI π hπ hk A₀.left A₀.hom X.left X.hom i h hX
   obtain ⟨S', ⟨P'⟩⟩ :=
-    GlobalTheory.T.exists_squareZeroSmoothLiftSystem_presents R R₀ I hI π hπ hk (A₀ ⊗ A₀).left (A₀ ⊗ A₀).hom (X ⊗ X).left (X ⊗ X).hom l hl hsm
-  obtain ⟨R₁, _, _, ⟨α⟩⟩ := GlobalTheory.T.exists_squareZeroAugmentedAlgebra R R₀ I hI π hπ hk
+    GlobalTheory.LiftSys.exists_sys_presents R R₀ I hI π hπ hk (A₀ ⊗ A₀).left (A₀ ⊗ A₀).hom (X ⊗ X).left (X ⊗ X).hom l hl hsm
+  obtain ⟨R₁, _, _, ⟨α⟩⟩ := GlobalTheory.Obs.exists_aug R R₀ I hI π hπ hk
   have hh : (μ[A₀]).left ≫ A₀.hom = (A₀ ⊗ A₀).hom ≫ spMap (RingHom.id R₀) := overW μ[A₀]
   have hlift : ∀ T : (Pair (μ[A₀]).left)ᵒᵖ,
       ∃ ρ : (ofSys S).B ((pairPull hh).G.obj T) →ₐ[R] (pairPre S' (μ[A₀]).left).B T,
@@ -759,7 +756,7 @@ theorem mul_lifts : FormSt → AxesVanishingExtendedDegOne → ∀ (R R₀ : Typ
     intro w
     obtain ⟨c, hc⟩ := GlobalTheory.T.exists_degreeOneObstructionClass R R₀ I hI π hπ hk R₁ α _ _ _ _ (ofSys S) (pairPre S' (μ[A₀]).left) (pairPull hh)
       l₀ (ofSys_isFun S) ((ofSys_isFun S').restrict _) hL w
-    obtain ⟨⟨-, hsurj⟩, -⟩ := (GlobalTheory.T.cechPairRestrict_baseChange_bijective R₀ R₁ _ _ (A₀ ⊗ A₀).hom (μ[A₀]).left).1
+    obtain ⟨⟨-, hsurj⟩, -⟩ := (GlobalTheory.Obs.PairExt.pairRes_ext_bijective R₀ R₁ _ _ (A₀ ⊗ A₀).hom (μ[A₀]).left).1
     obtain ⟨c', rfl⟩ := hsurj c
     have ax₁ : IsExtendedPullbackDegOne R₁ (overW (lift (𝟙 A₀) 1)) c' 0 :=
       _root_.GlobalTheory.Obs.retractionLiftObstruction_zero_of_liftedSection_alt R R₀ I hI π hπ hk R₁ α _ _ _ _ A₀.hom (A₀ ⊗ A₀).hom X.hom (X ⊗ X).hom i l h hl S S' P P'

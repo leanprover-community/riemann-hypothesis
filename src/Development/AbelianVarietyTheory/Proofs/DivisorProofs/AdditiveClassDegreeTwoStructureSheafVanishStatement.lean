@@ -212,7 +212,7 @@ theorem pullHO1_pull_one {A B : Over (Sp R)} [GrpObj A] (f : B ⟶ A) (g : A ⟶
   rw [pullHO1_congr (show (g ≫ f).left = (toUnit A ≫ η[A]).left by rw [e, Hom.one_def]) _ h', ← pullHO1_comp]
   have : pullHO1 (overW η[A]) a = 0 := by
     haveI : IsAffine (𝟙_ (Over (Sp R))).left := by change IsAffine (Sp R); infer_instance
-    exact (GlobalTheory.T.abelian_square_affine_h1_vanish R).2 _ _ _
+    exact (GlobalTheory.Obs.sq_abelian_and_affine_H1 R).2 _ _ _
   rw [this, map_zero]
 
 variable (A : Over (Sp R)) [GrpObj A]
@@ -305,7 +305,6 @@ theorem pullback_wedge_cup_square (h : φ ≫ s = s' ≫ spMap (RingHom.id R))
 
 end GlobalTheory.Obs.PrimitivePullback
 
-
 open GlobalTheory.Obs.PrimitivePullback in
 theorem GlobalTheory.Obs.primitiveStructureSheafDegTwoVanish_of_cup_iso
     (H : ∀ (R : Type) [CommRing R] (A : Over (Sp R)) [GrpObj A] (g : ℕ), IsAbelianScheme A →
@@ -316,7 +315,7 @@ theorem GlobalTheory.Obs.primitiveStructureSheafDegTwoVanish_of_cup_iso
         ∀ a b, e (exteriorPower.ιMulti R 2 ![a, b]) = GlobalTheory.CatCoh.cup (OAff A.hom) a b) : PrimitiveStructureSheafDegTwoVanish := by
   intro R _ A _ g hA hg c c₁ c₂ hm h1 h2
   have hax : AxesVanishingStructureSheafDegOne := GlobalTheory.T.axesO1_of_projective_rank_cup H
-  obtain ⟨hAA, hgg⟩ := (GlobalTheory.T.abelian_square_affine_h1_vanish R).1 A g hA hg
+  obtain ⟨hAA, hgg⟩ := (GlobalTheory.Obs.sq_abelian_and_affine_H1 R).1 A g hA hg
   obtain ⟨⟨_, hproj, _⟩, e, he⟩ := H R A g hA hg
   obtain ⟨_, e', he'⟩ := H R (A ⊗ A) (g + g) hAA hgg
   obtain ⟨t, rfl⟩ := e.surjective c

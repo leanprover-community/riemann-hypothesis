@@ -181,9 +181,6 @@ theorem charpoly_restrict_map_eq_prod {O V : Type} [CommRing O] [IsDomain O] [Ad
 
 end GlobalTheory.HeightCounting.FormsStep
 
-namespace GlobalTheory.HeightCounting.FormsStep
-
-end GlobalTheory.HeightCounting.FormsStep
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LatticeBasisFreeModulePlace =====
@@ -518,8 +515,6 @@ section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX
   GlobalTheory.HeightCounting GlobalTheory.HeightCounting.FormsStep NumberField IsDedekindDomain Polynomial
 open scoped TensorProduct
-namespace GlobalTheory.HeightCounting.FormsStep
-end GlobalTheory.HeightCounting.FormsStep
 namespace GlobalTheory.HeightCounting.FormsStep
 theorem hkB_charpoly_splits_alt : ∀ (D : D7) (cf : CharFrame D) (jE : D.host.E →+* Qb) (A : _root_.GlobalTheory.HeightCounting.CharFrameHostEmbedding D cf jE) (S : RatDat D.ntw)
     (In : RatIn D S) (b0 b1 : Big D) (Sx : Finset (PlE D.host)) (T : TwR D.LL0 D.nd) (Sp : RingSpec D cf b0 b1 Sx T),

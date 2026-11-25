@@ -102,7 +102,6 @@ theorem wittHyperbolic_symplecticPairing_core_dual_eq_zero {T T₀ : HSp D} {ρ 
 theorem mixT_incAdj {T T₀ : HSp D} {ρ : ℕ} (d : HypDec T T₀ ρ) {S : HSp D} (ψ : AddChar (AF D.host.F) ℂ)
     (μ : Measure (Mx D ρ S.rank)) (𝓕 : Set (Mx D ρ S.rank)) (g : WO S T → ℂ) (y y' : Mx D S.rank ρ) :
     (_root_.I195MixedCoordinates.target d) S ψ μ 𝓕 (heisO ψ S T (d.incAdj S y') g) y = (_root_.I195MixedCoordinates.target d) S ψ μ 𝓕 g (y + y') := by
-  set_option backward.isDefEq.respectTransparency false in
     funext w₀
     unfold _root_.I195MixedCoordinates.target
     refine congrArg (fun F : Mx D ρ S.rank → ℂ => ∫ ξ in 𝓕, F ξ ∂μ) (funext fun ξ => ?_)
@@ -119,7 +118,6 @@ theorem mixT_incAdj {T T₀ : HSp D} {ρ : ℕ} (d : HypDec T T₀ ρ) {S : HSp 
 theorem source {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) {S T : HSp D} {f f' : WO S T → ℂ}
     (hf : IsThetaFunO ψ S T f) (hf' : IsThetaFunO ψ S T f') {S₀ : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ)
     (v : VolM D T.rank ρ) (h : ∀ x, (_root_.I195MixedCoordinates.source d) T ψ v.μ v.𝓕 f x = (_root_.I195MixedCoordinates.source d) T ψ v.μ v.𝓕 f' x) : f = f' := by
-  set_option backward.isDefEq.respectTransparency false in
     have L := GlobalTheory.HeisMixSource.heis_mixS D ψ hψ S S₀ T ρ d v
     funext z
     have hz : z = d.extX T (z ⬝ d.jX) + d.ext0 T (z ⬝ d.j0) + d.extY T (z ⬝ d.jY) :=
@@ -149,7 +147,6 @@ theorem source {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) {S T
 theorem target {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) {S T : HSp D} {f f' : WO S T → ℂ}
     (hf : IsThetaFunO ψ S T f) (hf' : IsThetaFunO ψ S T f') {T₀ : HSp D} {ρ : ℕ} (d : HypDec T T₀ ρ)
     (v : VolM D ρ S.rank) (h : ∀ y, (_root_.I195MixedCoordinates.target d) S ψ v.μ v.𝓕 f y = (_root_.I195MixedCoordinates.target d) S ψ v.μ v.𝓕 f' y) : f = f' := by
-  set_option backward.isDefEq.respectTransparency false in
     have L := GlobalTheory.HeisTarget.main D ψ hψ S T T₀ ρ d v.μ v.𝓕 v.covol
     funext z
     obtain ⟨y, hy⟩ := incAdj_surj d S (d.pY ⬝ z)

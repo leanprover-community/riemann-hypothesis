@@ -447,7 +447,7 @@ private theorem pack {D : Dat ℚ E} {ω χ : HChar ℚ} {φ : GL (Fin 2) (A E) 
     (∀ t, Integrable fun y : ℝ => Wo D φ (em E (aE (iy y) * rot t)) * ((χ.1 (iy y) : ℂˣ) : ℂ) * (y : ℂ) ^ k * ((|y| : ℝ) : ℂ) ^ (s - 2)) ∧
     Continuous fun t => ∫ y : ℝ, Wo D φ (em E (aE (iy y) * rot t)) * ((χ.1 (iy y) : ℂˣ) : ℂ) * (y : ℂ) ^ k * ((|y| : ℝ) : ℂ) ^ (s - 2) :=
   UpperTheory.integrable_and_continuous_mellinIntegral_of_rapidDecay (fun y t => Wo D φ (em E (aE (iy y) * rot t))) (fun y => ((χ.1 (iy y) : ℂˣ) : ℂ)) k s
-    (contOn_Wo D h.cont h.bdd) ((Units.continuous_val.comp χ.2.1).comp_continuousOn contOn_iy) (fun y => hχ _)
+    (contOn_Wo D h.cont h.bdd) ((Units.continuous_val.comp χ.2.1).comp_continuousOn contOn_iy) (fun _ => hχ _)
     (dec_of h) hs
 
 private theorem zero_of {D : Dat ℚ E} {ω χ : HChar ℚ} {φ : GL (Fin 2) (A E) → ℂ} (h : admitted D ω φ)

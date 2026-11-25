@@ -407,10 +407,6 @@ theorem val_eq_stalk {k K : Type} [CommRing k] [Field K] {Y : Scheme.{0}} {p : Y
   rw [H0.val_apply, H0.germ_apply]
   exact (stalkClosedPointTo_ger x _ _ _ (memInf hy hj)).symm
 
-theorem cls_nsmul {Y : Scheme.{0}} {Λ : Type} [AddCommGroup Λ] {B : Λ → LB Y} (C : Common B) (n : ℕ) (a : Λ) :
-    cls (B (n • a)) (C.isLB (n • a)) = n • cls (B a) (C.isLB a) :=
-  map_nsmul (AddMonoidHom.mk' (fun a => cls (B a) (C.isLB a)) (cls_common_add C)) n a
-
 end Geometry
 
 theorem exists_fg_complexPoint (K Ω : Type) [Field K] [Field Ω] [Algebra K Ω] [CharZero K] [Countable K]
@@ -448,7 +444,6 @@ theorem gapGe_sub_kap {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Re
   dsimp only at h₃
   push_cast at h₁ h₂ h₅ ⊢
   linarith
-
 
 end GlobalTheory.SepCusp
 end -- clump:auto
@@ -596,10 +591,10 @@ theorem cuspRatioField_eq_top_of_toroidalCompactification (hP : _root_.GlobalThe
   have C := (common₀ TF.X Z).pull M.σ
   have e₁ := cls_common_add C (m' • std - mu) mu
   rw [sub_add_cancel] at e₁
-  replace e₁ := (cls_nsmul C m' std).symm.trans e₁
+  replace e₁ := (GlobalTheory.HSApp.AmpleTwist.cls_nsmul_of_common C m' std).symm.trans e₁
   have e₂ := cls_common_add C (m • std) (la - FlagTan.kap Dw - m • std)
   rw [add_sub_cancel] at e₂
-  replace e₂ := e₂.trans (congrArg (· + _) (cls_nsmul C m std))
+  replace e₂ := e₂.trans (congrArg (· + _) (GlobalTheory.HSApp.AmpleTwist.cls_nsmul_of_common C m std))
   have hk : ∀ n, ⊤ ≤ (spMap (ι n) ≫ z) ⁻¹ᵁ (tens M.K.bundle ((L₀ TF.X Z (la - FlagTan.kap Dw)).pull M.σ)).U j :=
     fun n => (le_iff_ptOf_mem _ _).2 (by rw [ptOf_spMap_comp]; exact hj)
   have main := fun (a : Fin 2 → ℂ) (ha : ∀ n, a n ≠ 0) =>

@@ -283,7 +283,6 @@ theorem coord_frame {O K R' R : Type} [CommRing O] [Field K] [Algebra O K] [Comm
     { toFun := fun v i => j (v i)
       map_zero' := by funext a; simp
       map_add' := fun x y => by funext a; simp }
-  have hjv : ∀ v, jv v = fun i => j (v i) := fun _ => rfl
   let φ : La →+ (Fin n → R) := ψ.comp (jv.comp ι.toAddMonoidHom)
   have hφ : ∀ a, φ a = ψ (fun i => j (ι a i)) := fun _ => rfl
   have hMu : σ (j (M : K)⁻¹) * (M : R) = 1 := by

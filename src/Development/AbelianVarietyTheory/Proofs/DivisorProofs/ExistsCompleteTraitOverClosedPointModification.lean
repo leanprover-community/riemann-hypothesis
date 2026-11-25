@@ -63,7 +63,7 @@ theorem exists_trait_over_closedPoint : ∀ (R : Type) [CommRing R] [IsDomain R]
       rw [hpt, hq]
       exact (Scheme.Hom.comp_apply M.gp M.π pt).symm.trans (by rw [M.gp_π])
     have h2 := congrArg PrimeSpectrum.asIdeal h1
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro a ha
     have h3 : a ∈ Ideal.comap θ.hom q.asIdeal := by
       rw [Ideal.mem_comap, ha]; exact Ideal.zero_mem _

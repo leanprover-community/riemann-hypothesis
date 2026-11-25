@@ -68,9 +68,7 @@ theorem qroot_prim (hs : W.s = 1) (hp : (PD.p : LL) ≠ 0) {c : ZMod n} {ζ : LL
 
 theorem letE_smul_of_mem_Nl {T : LocLat G Qp LL O} {c : ZMod n} {y : W.DD T}
     (hy : y ∈ W.Nl T c) : (letE c : LetA O n) • y = y := by
-  obtain ⟨z, -, rfl⟩ := hy
-  simp only [LinearMap.smul_apply, LinearMap.id_apply]
-  rw [smul_smul, _root_.Formalism.MainNotions.LiftingTheory.letter_idempotent_sq]
+  exact Formalism.MainNotions.LiftingTheory.frame_letE_fix W T c hy
 
 theorem mem_Nl_of {T : LocLat G Qp LL O} {c : ZMod n} {y : W.DD T} (hy : y ∈ W.N T)
     (hc : (letE c : LetA O n) • y = y) : y ∈ W.Nl T c :=

@@ -27,12 +27,7 @@ theorem diff_int {m : ℕ} {lam mu : Fin m → ℝ} (h : Formalism.QuantumDeterm
   exact ⟨k' - k, by push_cast; linarith⟩
 
 theorem floor_eq {w : ℝ} {z : ℤ} (hw : w = z) (h0 : 0 ≤ w) : ((⌊w⌋₊ : ℕ) : ℝ) = w := by
-  have hz : (0 : ℤ) ≤ z := by rw [hw] at h0; exact_mod_cast h0
-  have e : w = ((z.toNat : ℕ) : ℝ) := by
-    rw [hw]
-    have := Int.toNat_of_nonneg hz
-    exact_mod_cast this.symm
-  rw [e, Nat.floor_natCast]
+  rw [natCast_floor_eq_intCast_floor h0, hw, Int.floor_intCast]
 
 theorem one_le_of_int_lt {x y : ℝ} {zx zy : ℤ} (hx : x = zx) (hy : y = zy) (h : x < y) : 1 ≤ y - x := by
   rw [hx, hy] at h ⊢

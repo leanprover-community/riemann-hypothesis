@@ -118,9 +118,9 @@ theorem unitRatio_prod (S : ℕ → Prop) {I : Type} (s : Finset I) (x y : I →
     exact unitRatio_mul (h a (Finset.mem_insert_self a s)) (ih fun i hi => h i (Finset.mem_insert_of_mem hi))
 
 theorem unitRatio_laws : ∀ S : ℕ → Prop, (∀ y : ℂ, y ≠ 0 → UnitRatio S y y) ∧ (∀ x y x' y' : ℂ, UnitRatio S x y → UnitRatio S x' y' → UnitRatio S (x * x') (y * y') ∧ UnitRatio S (x / x') (y / y') ∧ x ≠ 0) ∧ (∀ (x y : ℂ) (n : ℕ), y ≠ 0 → 0 < n → x ^ n = y ^ n → UnitRatio S x y) ∧ ∀ (I : Type) (s : Finset I) (x y : I → ℂ), (∀ i ∈ s, UnitRatio S (x i) (y i)) → UnitRatio S (∏ i ∈ s, x i) (∏ i ∈ s, y i) :=
-  fun S => ⟨fun y hy => unitRatio_refl S hy,
-    fun x y x' y' h h' => ⟨unitRatio_mul h h', unitRatio_div h h', unitRatio_ne_zero h⟩,
-    fun x y n hy hn h => unitRatio_of_pow_eq S hy hn h,
-    fun I s x y h => unitRatio_prod S s x y h⟩
+  fun S => ⟨fun _ hy => unitRatio_refl S hy,
+    fun _ _ _ _ h h' => ⟨unitRatio_mul h h', unitRatio_div h h', unitRatio_ne_zero h⟩,
+    fun _ _ _ hy hn h => unitRatio_of_pow_eq S hy hn h,
+    fun _ s x y h => unitRatio_prod S s x y h⟩
 
 end GlobalTheory.Fam

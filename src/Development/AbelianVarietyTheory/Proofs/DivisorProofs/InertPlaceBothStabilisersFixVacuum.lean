@@ -506,7 +506,6 @@ theorem transport_back : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [N
           GlobalTheory.InertSph.latAt X v := by
   intro F E _ _ _ _ _ σ n X v O _ c ι P Q JL hAe he hc hPQ hQP heP heQ hJ hlat M G ZL hM hMG hZL hN
   have heι : ∀ x, ι 1 * ι x = ι x := fun x => by rw [← map_mul, one_mul]
-  have hιe : ∀ x, ι x * ι 1 = ι x := fun x => by rw [← map_mul, mul_one]
   have hee : ι 1 * ι 1 = ι 1 := heι 1
   have hce : cA σ (ι 1) = ι 1 := by rw [hc, map_one]
   have hmapE : ∀ {m k : Type} (Y : Matrix m k O), ι 1 • Y.map ι = Y.map ι := by

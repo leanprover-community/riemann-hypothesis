@@ -30,7 +30,6 @@ theorem finite_flat_surjective_mulN : ∀ (R : Type) [CommRing R] (A : Over (Sp 
     IsAbelianScheme A → ∀ n : ℕ, 0 < n →
       IsFinite (mulN A n).left ∧ Flat (mulN A n).left ∧ Surjective (mulN A n).left := by
   intro R _ A _ hA n hn
-  have hc := hA.comm
   obtain ⟨h1, h2⟩ := GlobalTheory.AbTorsionAnyBase.isFinite_and_flat_mulA (Sp R) A hA n hn
   have e : mulN A n = ReciprocityTheory.ChartRestriction.G.Out.mulA A n := mulN_eq_pow A n
   rw [e]

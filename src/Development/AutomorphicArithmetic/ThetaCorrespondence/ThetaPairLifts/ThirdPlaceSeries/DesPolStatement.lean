@@ -187,11 +187,6 @@ theorem factors_le {D : D7} (L : SizeData₂ D) (hS : SizesAt L) (T : ℕ) (hT :
 
 end GlobalTheory.BigTop.Fun.PolBound
 
-namespace GlobalTheory.BigTop.Fun
-
-open Formalism.BasicNotions Formalism.MainNotions NumberField GlobalTheory.BigTop.Fun.PolBound
-
-end GlobalTheory.BigTop.Fun
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolynomialDescentEstimate =====
@@ -205,10 +200,6 @@ section -- clump:auto
 
 section
 open Formalism.BasicNotions Formalism.MainNotions NumberField Formalism.L2.Indef Formalism.L2.Indef.Tree GlobalTheory.BigTop GlobalTheory.BigTop.Fun
-namespace GlobalTheory.BigTop.Fun.PolBound
-end GlobalTheory.BigTop.Fun.PolBound
-namespace GlobalTheory.BigTop.Fun.PolBound
-end GlobalTheory.BigTop.Fun.PolBound
 namespace GlobalTheory.BigTop.Fun
 open Formalism.BasicNotions Formalism.MainNotions NumberField GlobalTheory.BigTop.Fun.PolBound
 theorem desPol_alt : _root_.GlobalTheory.BigTop.Fun.DescentPolynomialCondition := by

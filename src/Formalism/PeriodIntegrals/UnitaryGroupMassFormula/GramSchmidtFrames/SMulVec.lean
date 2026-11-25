@@ -71,19 +71,10 @@ lemma s_ct {m : ℕ} {A : E → Matrix (Fin m) (Fin m) ℂ} (hA : Sm A s) : Sm (
   simp only [Matrix.conjTranspose_apply]
   exact s_star (sm_iff.1 hA j i)
 
-private lemma sm_finset_prod {ι : Type*} (u : Finset ι) {f : ι → E → ℂ} (h : ∀ i ∈ u, Sm (f i) s) :
-    Sm (fun x => ∏ i ∈ u, f i x) s := by
-  classical
-  induction u using Finset.induction_on with
-  | empty => simpa using contDiffOn_const
-  | insert a u ha ih =>
-    simp only [Finset.prod_insert ha]
-    exact (h a (Finset.mem_insert_self a u)).mul (ih fun i hi => h i (Finset.mem_insert_of_mem hi))
-
 lemma s_det {p : ℕ} {M : E → Matrix (Fin p) (Fin p) ℂ} (h : ∀ i j, Sm (fun x => M x i j) s) :
     Sm (fun x => (M x).det) s := by
   simp only [Matrix.det_apply']
-  exact ContDiffOn.sum fun σ _ => contDiffOn_const.mul (sm_finset_prod _ fun i _ => h (σ i) i)
+  exact ContDiffOn.sum fun σ _ => contDiffOn_const.mul (contDiffOn_prod fun i _ => h (σ i) i)
 
 lemma s_adj {p : ℕ} {M : E → Matrix (Fin p) (Fin p) ℂ} (h : ∀ i j, Sm (fun x => M x i j) s) (a b : Fin p) :
     Sm (fun x => (M x).adjugate a b) s := by

@@ -190,7 +190,7 @@ theorem isCuspOf_of_series (L : LabelDatum g) (h5 : 5 ≤ g) (hA : AllLab L) {d 
   have : f = P := by
     by_contra hne
     obtain ⟨h1, h2⟩ := Bridge.tr_eSerC_eq L hP.2.1.2.1 (Bridge.hasLabel_of_isCuspOf L hP)
-    rw [← Bridge.trace_alg] at h1
+    rw [← GlobalTheory.GLq.TrIdem.trace_asAlgebraHom] at h1
     have h0 : Representation.asAlgebraHom τ.ρ ((sysOf L h5 hA).e d P) = 0 := by
       rw [← one_mul (Representation.asAlgebraHom τ.ρ _), ← he, ← map_mul, (sysOf L h5 hA).orth _ _ _ hne, map_zero]
     exact h2 (h1.symm.trans ((congrArg _ h0).trans (map_zero _)))

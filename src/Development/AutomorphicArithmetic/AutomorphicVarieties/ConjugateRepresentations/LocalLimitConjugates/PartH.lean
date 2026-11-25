@@ -672,7 +672,6 @@ open Filter Topology
 
 namespace UpperTheory.V.Cj.H
 
-
 theorem absSolve : AbsSolve := by
   intro I J L c cn hcn hlim
   classical
@@ -889,11 +888,6 @@ private theorem ev_cmp {E : Type} [Field E] [NumberField E] [_root_.NumberField.
   | tmul φ v => simp [mul_comm]
   | add x y hx hy => simp only [map_add (f := _), Pi.add_apply, Submodule.coe_add, hx, hy]
 
-private theorem cont_inf (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (a : ℕ) :
-    Continuous (infGL E a) := by
-  have hs : Continuous (sInf E : Cinf E → Ad E) := (GlobalTheory.CuspRep.continuous_infEq E).prodMk continuous_const
-  exact Continuous.units_map _ (continuous_const.add (continuous_id.matrix_map hs))
-
 theorem UpperTheory.V.Cj.H.corrLim :
     UpperTheory.V.Cj.H.CorrLim := by
   intro E _ _ _ a ho U Ξ q ω w hw hl s K hK hKc
@@ -909,7 +903,7 @@ theorem UpperTheory.V.Cj.H.corrLim :
   let b := Module.finBasis ℝ (HV E a)
   obtain ⟨c, hc, hb⟩ := basis_bd b q
   have hD : IsCompact ((fun g => infGL E a g * finGL E a x) '' C) :=
-    hC.image ((cont_inf E a).mul continuous_const)
+    hC.image ((GlobalTheory.CompanionTheory.LieSkew.continuous_infGL_map E a).mul continuous_const)
   rw [Metric.tendstoUniformlyOn_iff]
   intro ε hε
   have hA : 0 ≤ c * B * B ^ q := by positivity
@@ -1523,7 +1517,6 @@ open UpperTheory.V.Cj UpperTheory.V.Cj.H
 private theorem kugaSm_map {E : Type} [Field E] {a n : ℕ} (e : Fin n → Herm E a) {A A' : Type} [Ring A] [Module ℝ A]
     [Ring A'] [Module ℝ A'] (f : A →+* A') (L : Lie E a →ₗ[ℝ] A) (L' : Lie E a →ₗ[ℝ] A') (h : ∀ X, L' X = f (L X)) :
     cas L' e = f (cas L e) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp only [cas, map_sum, map_sub, map_mul, h]
 
 private theorem kugaSm_A {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a n : ℕ} (e : Fin n → Herm E a)

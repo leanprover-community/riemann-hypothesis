@@ -64,9 +64,6 @@ open scoped ComplexOrder ENNReal NNReal ContDiff
 
 noncomputable section
 
-set_option synthInstance.maxHeartbeats 200000
-set_option maxHeartbeats 800000
-
 namespace GlobalTheory.UnitTransl
 
 variable {D : D7} {ρ : ℕ}

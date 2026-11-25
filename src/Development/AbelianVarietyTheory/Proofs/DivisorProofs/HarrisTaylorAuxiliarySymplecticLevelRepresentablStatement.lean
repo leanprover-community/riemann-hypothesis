@@ -656,14 +656,7 @@ variable {p : ℕ} [Fact p.Prime] {D : Datum p} {R : Type} [CommRing R] {S : Sch
 
 theorem eSec_diag {A : Over S} [GrpObj A] :
     eSec A ≫ (lift (1 : A ⟶ A) (𝟙 A)).left = eSec A ≫ (lift (𝟙 A) (𝟙 A)).left := by
-  simp only [eSec, ← Over.comp_left]
-  congr 1
-  apply CartesianMonoidalCategory.hom_ext
-  · simp only [Category.assoc, lift_fst, Category.comp_id]
-    rw [MonObj.comp_one]
-    show toUnit _ ≫ η = η
-    rw [toUnit_unique (toUnit _) (𝟙 _), Category.id_comp]
-  · simp
+  exact (GlobalTheory.ActFin.DiagPow.eSec_diag A).symm
 
 theorem exists_cub {b : Base D R} {s : S ⟶ Sp R} (o : Pre b s) :
     ∃ PP : RigLB o.A, PP.L = o.P.pull (lift (𝟙 o.A) (𝟙 o.A)).left ∧ Nonempty (CubicalStr o.A PP) := by

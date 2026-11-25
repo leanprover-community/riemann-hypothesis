@@ -95,9 +95,7 @@ theorem idemSum_mul_offP {S T : HSp D} {LS : Set (Fin S.rank → D.host.E)} {LT 
 
 theorem latO_le_true {S T : HSp D} (LS : Set (Fin S.rank → D.host.E)) (LT : Set (Fin T.rank → D.host.E))
     (P : HeightOneSpectrum (𝓞 D.host.F) → Prop) : latO S T LS LT P ≤ latO S T LS LT fun _ => True := by
-  apply AddSubgroup.closure_mono
-  rintro w ⟨α, hα, -, rest⟩
-  exact ⟨α, hα, fun v h => absurd trivial h, rest⟩
+  exact GlobalTheory.PlaceModel.latO_le_top P
 
 end GlobalTheory.SmallKerInv
 

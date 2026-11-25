@@ -111,13 +111,6 @@ theorem distribHaarChar_Ev (u : (Fv F v ⊗[F] E)ˣ) :
 
 end GlobalTheory.LocTateInt
 
-namespace GlobalTheory.LocTateInt
-
-open scoped Pointwise
-
-attribute [local instance] finite_FE isTopologicalRing_Ev t2Space_Fv_tensor locallyCompactSpace_Ev secondCountable_Ev isOpenUnits_Ev
-
-end GlobalTheory.LocTateInt
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

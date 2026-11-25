@@ -18,8 +18,6 @@ open scoped ContDiff
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.P.BetaSesquilinearity PI.UnitaryCorollaryDerivatives.CRH Formalism.FourierDecayAlt.P.AdmissibleLieWords
 
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
 theorem jdh_pd_star {N κ : ℕ} {P : Matrix (Fin N) (Fin N) ℂ → ℂ} (h : U.IsPolyDeg κ P) :
     U.IsPolyDeg κ (fun g => star (P g)) := by
   apply _root_.GlobalTheory.HatNF.polyOK_star <;> assumption

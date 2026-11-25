@@ -50,15 +50,8 @@ theorem blk_lt_length : ∀ (l : List ℕ) (j : ℕ), j < l.sum → blk l j < l.
       omega
 
 theorem sum_sub {k n : ℕ} (e : Fin k → Fin n) (he : Function.Injective e) (f : Fin n → K)
-    (hf : ∀ b, b ∉ Set.range e → f b = 0) : ∑ b, f b = ∑ i, f (e i) := by
-  classical
-  rw [← Finset.sum_image (s := Finset.univ) (g := e) (f := f) (fun x _ y _ h => he h)]
-  symm
-  apply Finset.sum_subset (Finset.subset_univ _)
-  intro b _ hb
-  apply hf
-  rintro ⟨i, rfl⟩
-  exact hb (Finset.mem_image_of_mem e (Finset.mem_univ i))
+    (hf : ∀ b, b ∉ Set.range e → f b = 0) : ∑ b, f b = ∑ i, f (e i) :=
+  (Fintype.sum_of_injective e he (fun i => f (e i)) f hf fun _ => rfl).symm
 
 theorem det_sub_mem {k n : ℕ} {Z : Matrix (Fin n) (Fin n) K} (hZ : IsInt R Z)
     (r c : Fin k → Fin n) : (Z.submatrix r c).det ∈ R := by

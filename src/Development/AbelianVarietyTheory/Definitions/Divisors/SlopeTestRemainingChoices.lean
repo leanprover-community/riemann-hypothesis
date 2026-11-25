@@ -33,8 +33,6 @@ structure SlopeTestRemainingChoices where
 
   dense : Y.Comp → Set Y.Pt → Prop
 
-def testI : ℝ := ∑ τ, degFl D.what₂.Tau Y.N (pLow Y.j τ 1 * curveCl D.what₂.Tau Y.N Y.j)
-
 variable {Y} (A : SlopeTestRemainingChoices Y) (Φ : ℝ → Fn Y) (hh : Fn Y)
 
 

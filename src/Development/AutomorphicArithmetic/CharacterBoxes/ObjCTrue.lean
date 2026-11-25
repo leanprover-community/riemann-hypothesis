@@ -45,7 +45,6 @@ open GlobalTheory.Mem.An
 
 namespace UpperTheory.T3
 
-
 open Filter in
 private theorem ev_log_le {a k : ℝ} (ha : 0 < a) (hk : 0 < k) (A D : ℝ) (hD : 0 < D) :
     ∀ᶠ x : ℝ in atTop, A + D * Real.log x ≤ k * x ^ a := by
@@ -72,7 +71,6 @@ private theorem ev_log_le {a k : ℝ} (ha : 0 < a) (hk : 0 < k) (A D : ℝ) (hD 
     have t2 := mul_le_mul_of_nonneg_right hx2 hk.le
     nlinarith [le_abs_self A]
   linarith
-
 
 theorem levelPrimeN :
     ShortNorm → ∀ eps : ℝ, 0 < eps → eps < 1 / 52 → ∀ cs CY : ℝ, 0 < cs → 0 < CY → ∃ x₀ : ℝ, ∀ x ≥ x₀, ∀ N d g₁ g₂ m : ℕ,
@@ -800,12 +798,6 @@ private theorem gk_nonneg {C : FC} (h : Std C) : C.GK.Nonneg := by
   refine ⟨hm' _ ?_, hl' _ ?_, hl' _ ?_, hl' _ ?_, hl' _ ?_, hl' _ ?_, hl' _ ?_, hl' _ ?_, hl' _ ?_, hl' _ ?_, hl' _ ?_,
     by rw [f2]; norm_num, by rw [f3]; norm_num, by rw [f1]; norm_num, hl' _ ?_⟩ <;> simp [FC.cMid, FC.cLast]
 
-private theorem large_sup {C : FC} {K K' : TransportedAlt} {CH : ℝ} (h : C.Large (K.sup K') CH) : C.Large K CH ∧ C.Large K' CH :=
-  ⟨⟨fun c hc => (le_max_left _ _).trans (h.1 c hc), trivial, fun c hc => (le_max_left _ _).trans (h.2.2.1 c hc),
-    fun c hc => (le_max_left _ _).trans (h.2.2.2 c hc)⟩,
-   ⟨fun c hc => (le_max_right _ _).trans (h.1 c hc), trivial, fun c hc => (le_max_right _ _).trans (h.2.2.1 c hc),
-    fun c hc => (le_max_right _ _).trans (h.2.2.2 c hc)⟩⟩
-
 private theorem scale_ext {s s' : Scale} (h1 : s.x = s'.x) (h2 : s.eps = s'.eps) (h3 : s.J = s'.J) : s = s' := by
   cases s; cases s'; simp_all
 
@@ -817,7 +809,7 @@ theorem UpperTheory.Top.hostWW :
   obtain ⟨K0, hO⟩ := hO eps C8 C5 c6 Cb he (hle.trans (min_le_left _ _)) he52 h8
   obtain ⟨K1, hW⟩ := hW eps he (hle.trans (min_le_right _ _))
   refine ⟨CT2, C8, C5, c6, Cb, K0.sup K1, h8, h5, h6, hb, fun C hStd hCT2 hCp hL => ?_⟩
-  obtain ⟨hL0, hL1⟩ := large_sup hL
+  obtain ⟨hL0, hL1⟩ := GlobalTheory.EX.fc_large_of_sup hL
   obtain ⟨c1, hO⟩ := hO C hStd hCp hL0
   obtain ⟨c1', hN⟩ := szRow_numAt eps he he52 C hStd
   refine ⟨max c1 c1', fun cD hcD => ?_⟩
@@ -884,7 +876,6 @@ noncomputable section
 namespace GlobalTheory.EX
 
 open Formalism.BasicNotions Formalism.BasicNotions.LevelStarExponents Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.GlobalTheoryTheory NumberField
-
 
 open Classical in
 def BadOfBase (B : Arith.Base) (h : ℕ → B.H) (Cb : ℝ) : Prop :=
@@ -1000,7 +991,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.Inhab Formalism.L2.Host GlobalTheory.EX GlobalTheory.EX.OB GlobalTheory.Mem GlobalTheory.Mem.Top GlobalTheory.Fc NumberField IsDedekindDomain
 
 namespace UpperTheory.Top
-
 
 theorem kitS : ∀ (Q : Par → PtProp) (la : ℝ) (G : FReq), DC.HostWW la G.req → ObjCP Q →
     KitCPW la (fun κ => ((withDuty (Q κ)).and DC.WallPt).and G.pt) := by

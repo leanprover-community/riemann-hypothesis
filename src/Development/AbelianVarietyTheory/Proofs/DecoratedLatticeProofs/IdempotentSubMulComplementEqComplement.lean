@@ -323,10 +323,4 @@ end Main
 
 end GlobalTheory.LocMod.StepVec
 
-namespace GlobalTheory.LocMod
-
-open StepVec
-
-end GlobalTheory.LocMod
-
 end

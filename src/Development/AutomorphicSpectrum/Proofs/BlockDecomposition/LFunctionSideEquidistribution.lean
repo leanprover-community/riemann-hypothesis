@@ -702,20 +702,6 @@ namespace GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.UnitScale
 
 open GlobalTheory.CompanionTheory.SW.WBox (cK eW)
 
-section Coord
-
-variable {F E : Type} [Field F] [Field E] [Algebra F E] {R : Type} [CommRing R] [Algebra F R] {d : ℕ}
-  (b : Module.Basis (Fin d) F E)
-
-theorem cK_tmul_mul' (r : R) (y : R ⊗[F] E) (k : Fin d) :
-    cK R b ((r ⊗ₜ[F] (1 : E)) * y) k = r * cK R b y k := by
-  have e : (r ⊗ₜ[F] (1 : E)) * y = r • y := by
-    rw [Algebra.smul_def]
-    rfl
-  simp [cK, e]
-
-end Coord
-
 theorem pi_map_mul {R ι : Type} [Fintype ι] [CommRing R] [MeasurableSpace R] (lam : Measure R) [SigmaFinite lam]
     (f : R → R) (hf : Measurable f) (c : ℝ≥0) (h : lam.map f = c • lam) :
     (Measure.pi fun _ : ι => lam).map (fun t i => f (t i)) =
@@ -731,13 +717,6 @@ theorem sigR_sigR {F E : Type} [Field F] [Field E] [Algebra F E] (R : Type) [Com
   induction z with
   | add x y hx hy => simp [hx, hy]
   | tmul r e => simp [sigR, hσ]
-
-theorem conj_conj {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
-    (hcm : IsCMExt F E σ) (x : E) : σ (σ x) = x := by
-  obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
-  apply τ.injective
-  rw [hcm.2.2.2, hcm.2.2.2]
-  simp
 
 def mulT {S : Type} [CommRing S] [TopologicalSpace S] [IsTopologicalRing S] (u : Sˣ) :
     (Fin 1 → Fin 1 → S) ≃ₜ+ (Fin 1 → Fin 1 → S) where
@@ -792,7 +771,7 @@ theorem map_coordW_unit : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [
   have hK : IsHomeomorph (cK (F := F) (E := E) R b) := hK' 2 b
   haveI hν : (coordW R b lam 1 1).IsAddHaarMeasure :=
     (_root_.GlobalTheory.CompanionTheory.SW.coord_measures_haar F E σ hcm R 2 b lam hlam).2.1 1 1
-  have hinv := sigR_sigR R σ (conj_conj σ hcm)
+  have hinv := sigR_sigR R σ (GlobalTheory.CompanionTheory.SW.HypSplit.sigma_invol σ hcm)
   set π : Measure (Fin 1 × Fin 1 × Fin 2 → R) := Measure.pi fun _ => lam with hπ
   have hmp := GlobalTheory.CompanionTheory.SW.WBox.map_coordW R hK lam 1 1
   have hf : Measurable (fun t : R => (n : R) * t) := (continuous_const.mul continuous_id).measurable
@@ -818,7 +797,7 @@ theorem map_coordW_unit : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [
     funext p
     have h1 := congrFun ((eW R hK 1 1).apply_symm_apply t) p
     rw [GlobalTheory.CompanionTheory.SW.WBox.eW_apply] at h1
-    rw [GlobalTheory.CompanionTheory.SW.WBox.eW_apply, cK_tmul_mul', h1]
+    rw [GlobalTheory.CompanionTheory.SW.WBox.eW_apply, GlobalTheory.CompanionTheory.SW.LS.cK_tmul_mul, h1]
   have hN : (coordW R b lam 1 1).map
       (fun (X : Fin 1 → Fin 1 → R ⊗[F] E) a i => ((n : R) ⊗ₜ[F] (1 : E)) * X a i) =
       (c * c) • coordW R b lam 1 1 := by
@@ -896,16 +875,6 @@ namespace GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.FixedUnit
 
 open GlobalTheory.CompanionTheory.SW.WBox (cK eW)
 
-section Coord
-
-variable {F E : Type} [Field F] [Field E] [Algebra F E] {R : Type} [CommRing R] [Algebra F R] {d : ℕ}
-  (b : Module.Basis (Fin d) F E)
-
-theorem cK_incl (e : E) (k : Fin d) : cK R b (inclR R e) k = algebraMap F R (b.repr e k) := by
-  simp [cK, inclR, Algebra.TensorProduct.basis_repr_tmul, Algebra.algebraMap_eq_smul_one]
-
-end Coord
-
 section Comp
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E]
@@ -966,7 +935,7 @@ theorem coordinate_equiv_rational_scalar {F E : Type} [Field F] [Field E] [Algeb
       fun a i => (c ⊗ₜ[F] (1 : E)) * ratTup R X a i := by
   rw [MeasurableEquiv.symm_apply_eq]
   funext p
-  rw [GlobalTheory.CompanionTheory.SW.WBox.eW_apply, _root_.GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.UnitScale.cK_tmul_mul', ratTup, cK_incl]
+  rw [GlobalTheory.CompanionTheory.SW.WBox.eW_apply, _root_.GlobalTheory.CompanionTheory.SW.LS.cK_tmul_mul, ratTup, GlobalTheory.CompanionTheory.SW.LS.cK_incl]
 
 theorem place1 {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
     (hcm : IsCMExt F E σ) (R : Type) [CommRing R] [Algebra F R] [TopologicalSpace R]
@@ -1191,10 +1160,10 @@ theorem equi_unit : PositivityTheory.Rg.Mass.Equi → ∀ (F E : Type) [Field F]
     · intro h p
       have h1 := h p.1 p.2.1 p.2.2
       change cK (Fv F v) b (ratTup (Fv F v) X p.1 p.2.1) p.2.2 ∈ _ at h1
-      rwa [ratTup, cK_incl] at h1
+      rwa [ratTup, GlobalTheory.CompanionTheory.SW.LS.cK_incl] at h1
     · intro h a i k
       change cK (Fv F v) b (ratTup (Fv F v) X a i) k ∈ _
-      rw [ratTup, cK_incl]
+      rw [ratTup, GlobalTheory.CompanionTheory.SW.LS.cK_incl]
       exact h (a, i, k)
   have hind : ∀ ε X, ({t : Fin 1 × Fin 1 × Fin 2 → F | ∀ v, v ∉ S' → ∀ i, algebraMap F (Fv F v) (t i) ∈ v.adicCompletionIntegers F}).indicator
       (T ε) (x X) = U ε X := fun ε X => by
@@ -1403,40 +1372,6 @@ namespace GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.Vanish
 
 open GlobalTheory.CompanionTheory.SW.WBox (cK)
 
-section Coord
-
-variable {F E : Type} [Field F] [Field E] [Algebra F E] {R : Type} [CommRing R] [Algebra F R] {d : ℕ}
-  (b : Module.Basis (Fin d) F E)
-
-theorem cK_tmul_mul (r : R) (y : R ⊗[F] E) (k : Fin d) :
-    cK R b ((r ⊗ₜ[F] (1 : E)) * y) k = r * cK R b y k :=
-  _root_.GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.Box.cK_tmul_mul
-    b r y k
-
-theorem cK_nat_mul (N : ℕ) (y : R ⊗[F] E) (k : Fin d) :
-    cK R b ((N : R ⊗[F] E) * y) k = (N : R) * cK R b y k :=
-  _root_.GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.Box.cK_nat_mul
-    b N y k
-
-end Coord
-
-section Scale
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E]
-
-theorem scale_lat [NumberField E] (σ : E →ₐ[F] E) (hcm : IsCMExt F E σ) {d : ℕ} (b : Module.Basis (Fin d) F E)
-    (v : HeightOneSpectrum (𝓞 F)) (K : Set (Fin 1 → Fin 1 → Fv F v ⊗[F] E)) (hK : IsCompact K) :
-    ∃ N : ℕ, 0 < N ∧ ∀ Y ∈ K, (fun a i => (N : Fv F v ⊗[F] E) * Y a i) ∈ latV b v := by
-  apply _root_.GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.Box.scale_lat <;> assumption
-
-theorem nat_mul_latV {d : ℕ} (b : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F)) (N : ℕ)
-    {Y : Fin 1 → Fin 1 → Fv F v ⊗[F] E} (hY : Y ∈ latV b v) :
-    (fun a i => (N : Fv F v ⊗[F] E) * Y a i) ∈ latV b v :=
-  _root_.GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.Box.nat_mul_latV
-    b v N hY
-
-end Scale
-
 theorem exists_compact {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     (σ : E →ₐ[F] E) (hcm : IsCMExt F E σ) (J : Matrix (Fin 1) (Fin 1) E) {d : ℕ} (b : Module.Basis (Fin d) F E)
     (S : Finset (HeightOneSpectrum (𝓞 F))) (φ : (Fin 1 → Fin 1 → Ainf F ⊗[F] E) → ℝ)
@@ -1448,7 +1383,7 @@ theorem exists_compact {F E : Type} [Field F] [NumberField F] [Field E] [NumberF
   obtain ⟨u1, u2⟩ := _root_.GlobalTheory.CompanionTheory.SW.Cpt.compact_tuples F E σ hcm d b 1 1
   have hSc : ∀ v, ∃ N : ℕ, 0 < N ∧ (v ∈ S → ∀ Y ∈ A v, (fun a i => (N : Fv F v ⊗[F] E) * Y a i) ∈ latV b v) := fun v => by
     by_cases hv : v ∈ S
-    · obtain ⟨N, h0, h1⟩ := scale_lat σ hcm b v (A v) (hAS v hv).1
+    · obtain ⟨N, h0, h1⟩ := GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.Box.scale_lat σ hcm b v (A v) (hAS v hv).1
       exact ⟨N, h0, fun _ => h1⟩
     · exact ⟨1, one_pos, fun h => absurd h hv⟩
   choose n hn0 hn using hSc
@@ -1457,7 +1392,7 @@ theorem exists_compact {F E : Type} [Field F] [NumberField F] [Field E] [NumberF
   have hsc : ∀ v, ∀ Y ∈ A v, (fun a i => (N1 : Fv F v ⊗[F] E) * Y a i) ∈ latV b v := fun v Y hY => by
     by_cases hv : v ∈ S
     · obtain ⟨c, hc⟩ := Finset.dvd_prod_of_mem n hv
-      have h1 := nat_mul_latV b v c (hn v hv Y hY)
+      have h1 := GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.Box.nat_mul_latV b v c (hn v hv Y hY)
       have e : (fun a i => (N1 : Fv F v ⊗[F] E) * Y a i) = fun a i => (c : Fv F v ⊗[F] E) * ((n v : Fv F v ⊗[F] E) * Y a i) := by
         funext a i
         rw [hN1, hc]
@@ -1466,7 +1401,7 @@ theorem exists_compact {F E : Type} [Field F] [NumberField F] [Field E] [NumberF
       rw [e]
       exact h1
     · rw [hAoff v hv] at hY
-      exact nat_mul_latV b v N1 hY
+      exact GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.Box.nat_mul_latV b v N1 hY
   obtain ⟨r1, hr1⟩ := (IsCompact.image hφs t9).bddAbove
   refine ⟨_, u1 N1 r1 hN1p, fun Y hY hs => ⟨fun v => hsc v _ (hY v), hr1 ⟨_, hs, rfl⟩⟩⟩
 

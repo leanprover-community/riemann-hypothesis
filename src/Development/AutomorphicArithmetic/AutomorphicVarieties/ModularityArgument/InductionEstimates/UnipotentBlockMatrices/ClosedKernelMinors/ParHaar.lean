@@ -60,16 +60,14 @@ open PositivityTheory.Rg.Tf.Core PositivityTheory.Rg.Tf.Adel PositivityTheory.Rg
 open scoped ENNReal NumberField.AdeleRing InnerProductSpace ComplexConjugate
 open UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial
 
-private theorem unip_blocks {a b : ℕ} {R : Type} [CommRing R] (X : UPos (a + b) a → R) :
+theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.unip_blocks {a b : ℕ} {R : Type} [CommRing R] (X : UPos (a + b) a → R) :
     (unipMatrix X).submatrix finSumFinEquiv finSumFinEquiv =
-      Matrix.fromBlocks 1 ((unipMatrix X).submatrix finSumFinEquiv finSumFinEquiv).toBlocks₁₂ 0 (1 : Matrix (Fin b) (Fin b) R) := by
-  ext i j
-  rcases i with i | i <;> rcases j with j | j <;>
-    simp [unipMatrix, blockEntry_apply, Matrix.one_apply, Matrix.toBlocks₁₂, Fin.ext_iff] <;> omega
+      Matrix.fromBlocks 1 ((unipMatrix X).submatrix finSumFinEquiv finSumFinEquiv).toBlocks₁₂ 0 (1 : Matrix (Fin b) (Fin b) R) :=
+  _root_.unip_blocks X
 
 private theorem low_zero {a b : ℕ} {R : Type} [CommRing R] (X : UPos (a + b) a → R) (c : GL (Fin a) R) (d : GL (Fin b) R) :
     ((unipGL X * blk c d).val.submatrix finSumFinEquiv finSumFinEquiv).toBlocks₂₁ = 0 := by
-  rw [Units.val_mul, ← Matrix.submatrix_mul_equiv _ _ _ finSumFinEquiv, coe_unipGL, unip_blocks]
+  rw [Units.val_mul, ← Matrix.submatrix_mul_equiv _ _ _ finSumFinEquiv, coe_unipGL, _root_.unip_blocks]
   simp [blk, Matrix.fromBlocks_multiply]
 
 private theorem dec {a b : ℕ} {R : Type} [CommRing R] (g : GL (Fin (a + b)) R)
@@ -146,7 +144,7 @@ private theorem low_coord {K : Type} [Field K] [NumberField K] :
     (continuous_retractOne.comp hac).prodMk ((continuous_retractOne.comp hdc).prodMk (htc.prodMk hXc)),
     fun g h h' => ⟨hlow _ h, hlow _ h'⟩, key⟩
 
-private theorem par_homeo {K : Type} [Field K] [NumberField K] :
+theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.par_homeo {K : Type} [Field K] [NumberField K] :
     ∃ (S : Subgroup (G1 K (2 + 2))) (φ : (G1 K 2 × G1 K 2 × ℝ × (UPos (2 + 2) 2 → 𝔸[K])) ≃ₜ S),
       IsClosed (S : Set (G1 K (2 + 2))) ∧ (∀ g, g ∈ S ↔ ∃ X m₁ m₂ t, g = nn X * lv m₁ m₂ t) ∧
       ∀ m₁ m₂ t X, (φ (m₁, m₂, t, X) : G1 K (2 + 2)) = nn X * lv m₁ m₂ t := by

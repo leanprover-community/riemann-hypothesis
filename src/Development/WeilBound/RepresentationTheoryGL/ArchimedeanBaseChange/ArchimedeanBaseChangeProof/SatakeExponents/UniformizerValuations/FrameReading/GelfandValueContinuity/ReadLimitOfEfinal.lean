@@ -280,9 +280,6 @@ namespace PositivityTheory.Rg.BcB.F.Rd.B
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
-theorem finH_mul {a b : ℕ} (g h : Hf E a b) : finH (g * h) = finH g * finH h := by
-  simp only [finH, Prod.fst_mul, Prod.snd_mul, map_mul, Prod.mk_mul_mk]
-
 section Level
 
 variable (B : Block E) (K₁ : Subgroup (GL (Fin B.a) (Af E))) (K₂ : Subgroup (GL (Fin B.b) (Af E)))
@@ -504,7 +501,6 @@ theorem ok_of_inr {t : PT B} {y : Γ} (hok : ∀ x, (g x).Ok) (hy : g y = Sum.in
   rw [hy] at this
   exact this
 
-
 theorem realise_commuting_family (hE2 : E2) (hTM : TensMul) (hBO : BlockOperatorsProductAdjoint) (hBW : BlockWordOperators) (hBS : BlockLinearCombinations) (hAW : AdjWords)
     [Countable Γ] (a₀ : Γ) (tX : PT B) (χ : ChAlg g X →⋆ₐ[ℂ] ℂ)
     (hok : ∀ x, (g x).Ok) (htX : tX.Ok) (hXe : X = tX.op) (ha₀ : g a₀ = Sum.inr t₀)
@@ -619,8 +615,6 @@ namespace PositivityTheory.Rg.BcB.F.Rd.B
 
 open PositivityTheory.Rg.BcB.F PositivityTheory.Rg.BcB.F.Rd
 
-
-
 theorem hecke_setup (hFH : FinHecke) (hBO : BlockOperatorsProductAdjoint) (hFin : FinSt) {E : Type} [Field E] [NumberField E] [IsCMField E]
     (B : Block E) (K₁ : Subgroup (GL (Fin B.a) (Af E))) (K₂ : Subgroup (GL (Fin B.b) (Af E)))
     (o₁ : IsOpen (K₁ : Set (GL (Fin B.a) (Af E)))) (c₁ : IsCompact (K₁ : Set (GL (Fin B.a) (Af E))))
@@ -690,7 +684,6 @@ theorem val_tendsto (hVC : ValCont) {E : Type} [Field E] [NumberField E] [IsCMFi
   refine Tendsto.mul (tendsto_finsetProd _ fun v _ => ?_) (tendsto_finsetProd _ fun v _ => ?_)
   · exact hVC B.a B.μa (B.Ma v) (t.ka v) (t.va v) t.T (fun k => χak k v) (χa v) (ht.ka v) (hA v)
   · exact hVC B.b B.μb (B.Mb v) (t.kb v) (t.vb v) t.T (fun k => χbk k v) (χb v) (ht.kb v) (hB v)
-
 
 theorem blockOut_lim (hFH : FinHecke) (hVC : ValCont) (hIC : InfConv) (hIL : InfLim) (hRE : ReproEx) (hBO : BlockOperatorsProductAdjoint)
     (hFin : FinSt) {E : Type} [Field E] [NumberField E] [IsCMField E] (B : Block E)
@@ -806,8 +799,6 @@ attribute [local instance] PositivityTheory.Rg.BcB.F.borelG PositivityTheory.Rg.
 namespace PositivityTheory.Rg.BcB.F.Rd.B
 
 open PositivityTheory.Rg.BcB.F PositivityTheory.Rg.BcB.F.Rd
-
-
 
 theorem packK (hBO : BlockOperatorsProductAdjoint) {E : Type} [Field E] [NumberField E] [IsCMField E] (B : Block E)
     (W₁ : Submodule ℂ (Kinf E B.a → ℂ)) (W₂ : Submodule ℂ (Kinf E B.b → ℂ))
@@ -972,7 +963,6 @@ attribute [local instance] PositivityTheory.Rg.BcB.F.borelG PositivityTheory.Rg.
 namespace PositivityTheory.Rg.BcB.F.Rd.B
 
 open PositivityTheory.Rg.BcB.F PositivityTheory.Rg.BcB.F.Rd
-
 
 theorem perK (hAV : ActVal) (hBO : BlockOperatorsProductAdjoint) (hCM : ConvMulSt) (hFin : FinSt) (hReal : RealiseSt)
     {E : Type} [Field E] [NumberField E] [IsCMField E] (B : Block E)
@@ -1145,7 +1135,6 @@ theorem kTypes_insert {E : Type} [Field E] [NumberField E] [IsCMField E] {Ω : �
   rcases hW with rfl | hW
   · infer_instance
   · exact (h M).2 W hW
-
 
 theorem readLimit_main (hPack : Pack) (hEF : EFinal) (hAV : ActVal) (hFH : FinHecke) (hVC : ValCont) (hIC : InfConv)
     (hIL : InfLim) (hRE : ReproEx) (hBO : BlockOperatorsProductAdjoint) (hCM : ConvMulSt) (hFin : FinSt) (hReal : RealiseSt) : ReadLimit := by

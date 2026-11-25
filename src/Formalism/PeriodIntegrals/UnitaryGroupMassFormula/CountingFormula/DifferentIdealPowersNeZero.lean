@@ -82,9 +82,6 @@ theorem sStable_ddS (D : Formalism.BasicNotions.D7) : SStable (ddS D) := by
   rw [← hc, ← Ideal.map_map]
   exact Ideal.mem_map_of_mem _ hy
 
-theorem ddS_ne_zero' (D : Formalism.BasicNotions.D7) : ddS D ≠ 0 :=
-  PI.ScalarPairDr.W.ddS_ne_zero D
-
 theorem stable_differentIdealPowers (D : Formalism.BasicNotions.D7) (i : Fin (D.R.rS + 1)) : SStable (differentIdealPowers D i) := by
   induction i using Fin.lastCases with
   | last => unfold differentIdealPowers; rw [Fin.snoc_last]; exact sStable_one
@@ -93,6 +90,6 @@ theorem stable_differentIdealPowers (D : Formalism.BasicNotions.D7) (i : Fin (D.
 theorem differentIdealPowers_ne_zero (D : Formalism.BasicNotions.D7) (i : Fin (D.R.rS + 1)) : differentIdealPowers D i ≠ 0 := by
   induction i using Fin.lastCases with
   | last => unfold differentIdealPowers; rw [Fin.snoc_last]; exact one_ne_zero
-  | cast a => unfold differentIdealPowers; rw [Fin.snoc_castSucc]; exact zpow_ne_zero _ (ddS_ne_zero' D)
+  | cast a => unfold differentIdealPowers; rw [Fin.snoc_castSucc]; exact zpow_ne_zero _ (PI.ScalarPairDr.W.ddS_ne_zero D)
 
 end PI.UnitaryGroupMassFormula.CntFormula.R6

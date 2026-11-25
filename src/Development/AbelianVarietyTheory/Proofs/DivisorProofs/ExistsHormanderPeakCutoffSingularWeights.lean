@@ -570,7 +570,6 @@ theorem frobenius_lower_comparison : ∀ (r : ℕ) (g n b B W H : Matrix (Fin r)
     (norm_sub_le _ _).trans (by gcongr; exact norm_add_le _ _)
   have hHn := norm_nonneg H
   have hYn := norm_nonneg Y
-  have hun := norm_nonneg u
   have hY12 : ‖Y‖ ≤ 1.2 * ‖H‖ := by linarith [mul_le_mul_of_nonneg_left hunorm hHn, mul_le_mul_of_nonneg_right hunorm hYn]
   have hWY : ‖W‖ ≤ (1.01 : ℝ) * ‖Y‖ := by
     have e : W = Y + (n - 1) * Y := by rw [hWnY, Matrix.sub_mul, Matrix.one_mul]; abel
@@ -843,7 +842,6 @@ theorem levi_cutLog_lower : ∀ (χ : ℝ → ℝ) (A : ℝ), ContDiff ℝ ∞ �
   let L : Fin n → V n →L[ℂ] ℂ := fun j => ((ρ : ℂ)⁻¹) • EuclideanSpace.proj j
   have hLapp : ∀ j y, L j y = (ρ : ℂ)⁻¹ * y j := fun j y => by simp [L]
   set v : V n → ℝ := fun y => ∑ j, Complex.normSq (L j y) with hvdef
-  have hρC : (ρ : ℂ) ≠ 0 := by exact_mod_cast hρ.ne'
   have hv : ∀ y : V n, ‖y‖ ^ 2 / ρ ^ 2 = v y := by
     intro y
     simp only [hvdef, hLapp, EuclideanSpace.norm_sq_eq, Complex.normSq_eq_norm_sq, Finset.sum_div]
@@ -1148,7 +1146,6 @@ theorem coeff_kap {r : ℕ} (X : Data E r) (τ : X.Ψ) (a b : Fin r) (hab : b < 
   have hk : ((kapW X τ b : ℝ) - kapW X τ a) = 2 * (b : ℝ) - 2 * (a : ℝ) := by
     simp [kapW]
   rw [hk]
-  have hb0 : (0 : ℝ) ≤ (b : ℝ) := by positivity
   have hba : (b : ℝ) < a := by exact_mod_cast hab'
   have har : (a : ℝ) < r := by exact_mod_cast ha
   unfold sgn
@@ -1455,7 +1452,6 @@ theorem levi_lower (X : Data E r) {x : Frame X.Ψ r} (hx : IsOrth X x) (hp0 : 0 
     have hψ : leviM X ψ x z ξ = (leviV (nd X) (fun w => ((η w : ℝ) : ℂ)) z ξ).re := by
       rw [leviM, leviV_congr hev]
     have h3 := hη z ξ
-    have hS : 0 ≤ ∑ j, ‖ξ j‖ ^ 2 := by positivity
     have hS' : 0 ≤ ∑ j, ‖ξ' j‖ ^ 2 := by positivity
     rw [smoothLevi, e, e, e, hψ]
     linarith [mul_le_mul_of_nonneg_right hm hS', mul_le_mul_of_nonneg_left hle (add_nonneg hK hM)]

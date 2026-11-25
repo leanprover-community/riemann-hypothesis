@@ -246,9 +246,6 @@ theorem flagMap_relPoly (τ : GlobalTheory.AllWt.Psi H) (k : ℕ) :
 
 end GlobalTheory.Schubert.RelKill
 
-namespace GlobalTheory.Schubert
-
-end GlobalTheory.Schubert
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -265,10 +262,6 @@ open Classical
 namespace GlobalTheory.GrassTop.RelVanish
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
-
-theorem rho_eq_flagMap (H : Host E) (Dw : Datum H) : rho H Dw = GlobalTheory.Schubert.flagMap Dw := by
-  unfold rho GlobalTheory.Schubert.flagMap
-  congr 1
 
 noncomputable def numLin (H : Host E) (Dw : Datum H) : MvPolynomial ((E →+* ℂ) × ℕ) ℝ →ₗ[ℝ] ℝ :=
   GlobalTheory.Schubert.flagLin (GlobalTheory.AllWt.Psi H) (Dw.p + Dw.q) ∘ₗ (GlobalTheory.Schubert.flagMap Dw).toLinearMap ∘ₗ
@@ -322,7 +315,7 @@ theorem intGr_eq_zero_of_mem_relIdeal : ∀ {E : Type} [Field E] [NumberField E]
     (Q : MvPolynomial ((E →+* ℂ) × ℕ) ℝ), Q ∈ relIdeal H Dw → intGr H Dw Q = 0 := by
   intro E _ _ _ H Dw Q hQ
   have h := RelVanish.numLin_mul_eq_zero H Dw Q hQ 1
-  rw [mul_one, RelVanish.numLin_apply, ← RelVanish.rho_eq_flagMap] at h
+  rw [mul_one, RelVanish.numLin_apply, ← GlobalTheory.GrassTop.rho_eq_flagMap] at h
   rw [intGr, h, zero_div]
 
 end GlobalTheory.GrassTop
@@ -656,7 +649,6 @@ namespace GlobalTheory.GrassTop
 
 theorem ren_rel {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} (τ : GlobalTheory.AllWt.Psi H) (k : ℕ) :
     ren τ (rel k) = GlobalTheory.PointChern.relPoly τ k := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp [ren, rel, GlobalTheory.PointChern.relPoly, map_sum, renVar]
 
 theorem admissibleChernForm_kills_grassmannianRelationCopies : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H)

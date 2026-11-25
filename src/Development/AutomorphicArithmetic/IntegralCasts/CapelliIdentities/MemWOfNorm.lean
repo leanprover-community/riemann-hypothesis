@@ -21,7 +21,7 @@ public import Mathlib.RingTheory.DiscreteValuationRing.Basic
     fun (p : ℕ) [Fact (Nat.Prime p)] ↦ FractionRing (UpperTheory.Reformulated.B.Qi32.WW p)
 
 theorem UpperTheory.Reformulated.B.Qi32.mem_W_of_norm :
-    ∀ {p : ℕ} [inst : Fact (Nat.Prime p)] (i0 : UpperTheory.Reformulated.B.Qi32.K0 p →+* ℂ_[p]),
+    ∀ {p : ℕ} [Fact (Nat.Prime p)] (i0 : UpperTheory.Reformulated.B.Qi32.K0 p →+* ℂ_[p]),
       (∀ (x : UpperTheory.Reformulated.B.Qi32.WW p),
           ‖(i0 : UpperTheory.Reformulated.B.Qi32.K0 p → ℂ_[p])
                 ((Algebra.algebraMap (UpperTheory.Reformulated.B.Qi32.WW p) (UpperTheory.Reformulated.B.Qi32.K0 p) :

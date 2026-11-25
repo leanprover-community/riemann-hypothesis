@@ -560,12 +560,6 @@ namespace HBx
 
 variable {k r : ℕ}
 
-end HBx
-
-namespace HBx
-
-variable {k r : ℕ}
-
 lemma uMap_cont (z : Fin (2 * r + k + 1) → ℂ) : Continuous fun s : B.Mat k r => C2.uMap k r z s := by
   unfold C2.uMap herm
   refine continuous_pi fun a => continuous_pi fun b => ?_
@@ -1035,9 +1029,6 @@ end
 
 end Formalism.FourierDecayAlt.P.SmoothExtensionClosedSet
 
-namespace Formalism.FourierDecayAlt.P
-
-end Formalism.FourierDecayAlt.P
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Formalism.HermitianCurvature.HermitianCurvatureProofs.AutomorphicInSphericalLevel =====

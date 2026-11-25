@@ -13,6 +13,8 @@ another label the workflows know.
 QUEUED = "batch queue"
 # A queued pull request that goes into a batch before the others.
 PRIORITY = "priority"
+# Paused by a maintainer; must not be added to a batch while this label is present.
+DEFERRED = "deferred"
 # On the pull request of a batch assembled by hand that is being built, and on each open pull
 # request whose head commit is in that batch.
 BUILDING = "building"

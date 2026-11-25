@@ -74,8 +74,6 @@ import Mathlib.Order.CompletePartialOrder
 section -- clump:auto
 @[expose] public section
 
-set_option backward.isDefEq.respectTransparency false
-
 noncomputable section
 
 open CategoryTheory Limits AlgebraicGeometry TensorProduct
@@ -104,7 +102,6 @@ section -- clump:auto
 
 set_option backward.isDefEq.respectTransparency false
 
-
 noncomputable section
 
 open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC TensorProduct
@@ -112,23 +109,6 @@ open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC TensorProduct
 namespace CrystallineSemistableComparison.AdicCoh
 
 variable {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ_[l] (PadicAlgCl l)}
-
-theorem gen_tmul_smul2 {N : Type*} [AddCommGroup N] [Module ℤ_[l] N] (c : ℚ_[l]) (a : ℤ_[l]) (y : N) :
-    c ⊗ₜ[ℤ_[l]] (a • y) = (c * algebraMap ℤ_[l] ℚ_[l] a) • ((1 : ℚ_[l]) ⊗ₜ[ℤ_[l]] y) := by
-  rw [tmul_smul, ← algebraMap_smul ℚ_[l] a, smul_tmul', smul_tmul', smul_eq_mul, smul_eq_mul, mul_one, mul_comm]
-
-theorem gen_smul_zero {N : Type*} [AddCommGroup N] [Module ℤ_[l] N] (c : ℤ_[l]) : c • (0 : N) = 0 := smul_zero c
-
-theorem gen_baseChange {N N' : Type*} [AddCommGroup N] [Module ℤ_[l] N] [AddCommGroup N'] [Module ℤ_[l] N']
-    (f : N →ₗ[ℤ_[l]] N') (y : N) : f.baseChange ℚ_[l] ((1 : ℚ_[l]) ⊗ₜ[ℤ_[l]] y) = (1 : ℚ_[l]) ⊗ₜ[ℤ_[l]] f y :=
-  LinearMap.baseChange_tmul _ _ _
-
-theorem gen_sum_smul {N N' : Type*} [AddCommGroup N] [Module ℤ_[l] N] [AddCommGroup N'] [Module ℤ_[l] N'] {r : ℕ}
-    (a : Fin r → ℤ_[l]) (e : Fin r → N) (f : N →ₗ[ℤ_[l]] N') (t : Fin r) (g : N') (h1 : f (e t) = g)
-    (h2 : ∀ s, s ≠ t → f (e s) = 0) : f (∑ s, a s • e s) = a t • g := by
-
-  rw [map_sum, Finset.sum_eq_single t (fun s _ hs => by rw [map_smul, h2 s hs, smul_zero])
-  (fun h => absurd (Finset.mem_univ t) h), map_smul, h1]
 
 end CrystallineSemistableComparison.AdicCoh
 end -- clump:auto
@@ -143,7 +123,6 @@ section -- clump:auto
 
 set_option backward.isDefEq.respectTransparency false
 
-
 noncomputable section
 
 open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC TensorProduct
@@ -156,8 +135,6 @@ section
 variable (hI : ZIn) (M : Model l K) {r : ℕ} {Y : Fin r → Scheme.{0}}
   (j : ∀ s, Y s ⟶ GlobalTheory.Et.geom (PadicAlgCl l) M.q) (hj : IsSum j) (i j' : ℕ)
   (gen : ∀ s, Hl l (sch.obj (Y s)) ((i + j' : ℕ) : ℤ) 0) (hgen : ∀ s x, ∃ c : ℤ_[l], x = c • gen s)
-
-theorem gsmul_zero {N : Type*} [AddCommGroup N] [Module ℤ_[l] N] (a : ℤ_[l]) : a • (0 : N) = 0 := smul_zero a
 
 end
 
@@ -173,7 +150,6 @@ section -- clump:auto
 @[expose] public section
 
 set_option backward.isDefEq.respectTransparency false
-
 
 noncomputable section
 
@@ -204,42 +180,6 @@ theorem res_comp {R : Type} [CommRing R] {F : Shv R} {W V U : Scheme.{0}} (k : W
   rw [op_comp, Functor.map_comp]
   rfl
 
-theorem loc_bind' {U : Scheme.{0}} {P P' : ∀ V : Scheme.{0}, (V ⟶ U) → Prop} (h : Loc U P)
-    (h' : ∀ (V : Scheme.{0}) (g : V ⟶ U), P V g → Loc V fun W k => P' W (k ≫ g)) : Loc U P' := by
-  obtain ⟨S, hS, hP⟩ := h
-  choose T hT hT' using fun (V : Scheme.{0}) (g : V ⟶ U) (hg : S.arrows g) => h' V g (hP V g hg)
-  refine ⟨Sieve.bind S.arrows (fun V g hg => T V g hg),
-    Scheme.etaleTopology.bind_covering hS (fun V g hg => hT V g hg), ?_⟩
-  rintro W f ⟨V, k, g, hg, hk, rfl⟩
-  exact hT' V g hg W k hk
-
-theorem tw_loc (hG : E.InGen) (Q : ℕ) [NeZero Q] (i : ℤ) (U : Scheme.{0}) (y : Sec (tw Q i) U) :
-    Loc U fun V g => Sec.res g y = 0 ∨ ∃ (ζ : Prim Q Γ(V, ⊤)) (c : ℕ), Sec.res g y = c • twGen i ζ := by
-  have hsurj : Presheaf.imageSieve (toSheafify Scheme.etaleTopology (Scheme.Γ ⋙ GlobalTheory.EtC.twF Q i)) y ∈ Scheme.etaleTopology U :=
-    Presheaf.imageSieve_mem Scheme.etaleTopology _ (U := op U) y
-  refine loc_bind' ⟨_, hsurj, fun V g hg => hg⟩ ?_
-  rintro V g ⟨t, ht⟩
-  by_cases hP : Nonempty (Prim Q Γ(V, ⊤))
-  · obtain ⟨ζ₀⟩ := hP
-    obtain ⟨S, hS, hS'⟩ := (hG Q i).1 V ζ₀ (Sec.res g y)
-    refine ⟨S, hS, fun W k hk => Or.inr ?_⟩
-    obtain ⟨c, hc⟩ := hS' W k hk
-    exact ⟨ζ₀.map k.appTop.hom, c, (res_comp k g y).trans hc⟩
-  · have : IsEmpty (Prim Q Γ(V, ⊤)) := not_nonempty_iff.mp hP
-    have ht0 : t = 0 := by
-      obtain ⟨f, rfl⟩ := Submodule.Quotient.mk_surjective (twRel Q i Γ(V, ⊤))
-        (show (Prim Q Γ(V, ⊤) →₀ ULift.{1} (ZMod Q)) ⧸ twRel Q i Γ(V, ⊤) from t)
-      have hf : f = 0 := Finsupp.ext fun a => (IsEmpty.false a).elim
-      rw [hf]
-      exact Submodule.Quotient.mk_zero _
-    have hy : Sec.res g y = 0 := by
-      refine ht.symm.trans ?_
-      rw [ht0]
-      exact map_zero _
-    refine ⟨⊤, Scheme.etaleTopology.top_mem V, fun W k _ => Or.inl ?_⟩
-    rw [res_comp, hy]
-    exact map_zero _
-
 end CrystallineSemistableComparison.TwSec
 end -- clump:auto
 end -- clump:auto
@@ -261,90 +201,6 @@ namespace CrystallineSemistableComparison.KummerTwistLemmas
 
 open GlobalTheory.EtC
 
-theorem comap_surj_of_lift {A S : Type} [CommRing A] [CommRing S] [Algebra A S]
-    (h : ∀ (K : Type) [Field K] [IsAlgClosed K] (ψ : A →+* K), ∃ χ : S →+* K, χ.comp (algebraMap A S) = ψ) :
-    Function.Surjective (PrimeSpectrum.comap (algebraMap A S)) := by
-  intro p
-  let K := AlgebraicClosure p.asIdeal.ResidueField
-  let ψ : A →+* K := (algebraMap p.asIdeal.ResidueField K).comp (algebraMap A p.asIdeal.ResidueField)
-  obtain ⟨χ, hχ⟩ := h K ψ
-  refine ⟨⟨RingHom.ker χ, RingHom.ker_isPrime χ⟩, PrimeSpectrum.ext (Ideal.ext fun a => ?_)⟩
-  change χ (algebraMap A S a) = 0 ↔ a ∈ p.asIdeal
-  rw [← RingHom.comp_apply, hχ]
-  simp only [ψ, RingHom.comp_apply, map_eq_zero_iff _ (algebraMap p.asIdeal.ResidueField K).injective]
-  rw [← RingHom.mem_ker, Ideal.ker_algebraMap_residueField]
-
-theorem etaleCover (U : Scheme.{0}) (S : Type) [CommRing S] [Algebra Γ(U, ⊤) S] [Algebra.Etale Γ(U, ⊤) S]
-    (hS : Function.Surjective (PrimeSpectrum.comap (algebraMap Γ(U, ⊤) S))) :
-    ∃ (W : Scheme.{0}) (π : W ⟶ U) (φ : S →+* Γ(W, ⊤)),
-      Sieve.ofArrows (fun _ : Unit => W) (fun _ => π) ∈ Scheme.etaleTopology U ∧
-      ∀ a, φ (algebraMap Γ(U, ⊤) S a) = π.appTop.hom a := by
-  let φ0 : Γ(U, ⊤) ⟶ CommRingCat.of S := CommRingCat.ofHom (algebraMap Γ(U, ⊤) S)
-  have : Etale (Spec.map φ0) := HasRingHomProperty.Spec_iff.mpr (RingHom.etale_algebraMap.mpr inferInstance)
-  have : Surjective (Spec.map φ0) := ⟨hS⟩
-  have : Surjective (pullback.fst U.toSpecΓ (Spec.map φ0)) :=
-    MorphismProperty.pullback_fst (P := @Surjective) _ _ inferInstance
-  refine ⟨pullback U.toSpecΓ (Spec.map φ0), pullback.fst _ _,
-    ((Scheme.ΓSpecIso (CommRingCat.of S)).inv ≫ (pullback.snd U.toSpecΓ (Spec.map φ0)).appTop).hom, ?_, ?_⟩
-  · let 𝒰 : U.Cover (Scheme.precoverage @Etale) := Scheme.Cover.mkOfCovers Unit
-      (fun _ => pullback U.toSpecΓ (Spec.map φ0)) (fun _ => pullback.fst _ _)
-      (fun x => ⟨(), (pullback.fst U.toSpecΓ (Spec.map φ0)).surjective x⟩) (fun _ => inferInstance)
-    exact 𝒰.mem_grothendieckTopology
-  · intro a
-    have h := congrArg Scheme.Hom.appTop (pullback.condition (f := U.toSpecΓ) (g := Spec.map φ0))
-    rw [Scheme.Hom.comp_appTop, Scheme.Hom.comp_appTop, Scheme.toSpecΓ_appTop] at h
-    have key : φ0 ≫ (Scheme.ΓSpecIso (CommRingCat.of S)).inv ≫ (pullback.snd U.toSpecΓ (Spec.map φ0)).appTop =
-        (pullback.fst U.toSpecΓ (Spec.map φ0)).appTop := by
-      rw [← cancel_epi (Scheme.ΓSpecIso Γ(U, ⊤)).hom, h, ← Category.assoc, ← Scheme.ΓSpecIso_naturality]
-      simp only [Category.assoc, Iso.hom_inv_id_assoc]
-    exact congrArg (fun k => k.hom a) key
-
-theorem loc_of_etale (U : Scheme.{0}) (S : Type) [CommRing S] [Algebra Γ(U, ⊤) S] [Algebra.Etale Γ(U, ⊤) S]
-    (hS : Function.Surjective (PrimeSpectrum.comap (algebraMap Γ(U, ⊤) S)))
-    (P : ∀ V : Scheme.{0}, (V ⟶ U) → Prop)
-    (hP : ∀ (V : Scheme.{0}) (g : V ⟶ U) (χ : S →+* Γ(V, ⊤)), (∀ a, χ (algebraMap Γ(U, ⊤) S a) = g.appTop.hom a) → P V g) :
-    Loc U P := by
-  obtain ⟨W, π, φ, hmem, hφ⟩ := etaleCover U S hS
-  refine ⟨_, hmem, fun V g hg => ?_⟩
-  obtain ⟨_, h, _, ⟨i⟩, rfl⟩ := hg
-  refine hP V (h ≫ π) (h.appTop.hom.comp φ) fun a => ?_
-  rw [RingHom.comp_apply, hφ, Scheme.Hom.comp_appTop]
-  rfl
-
-theorem kumLoc (U : Scheme.{0}) (m : ℕ) (u : (Γ(U, ⊤))ˣ) (hm : IsUnit (m : Γ(U, ⊤))) :
-    Loc U fun V g => ∃ v : Γ(V, ⊤), v ^ m = g.appTop.hom u.1 := by
-  rcases Nat.eq_zero_or_pos m with rfl | hm0
-  · refine ⟨⊤, (Scheme.etaleTopology).top_mem U, fun V g _ => ⟨1, ?_⟩⟩
-    have h01 : (0 : Γ(U, ⊤)) = 1 := by simpa using isUnit_zero_iff.mp (by simpa using hm)
-    have h01' : (0 : Γ(V, ⊤)) = 1 := by simpa using congrArg g.appTop.hom h01
-    have := subsingleton_of_zero_eq_one h01'
-    exact Subsingleton.elim _ _
-  · let c : Γ(U, ⊤) := (hm.unit⁻¹ : (Γ(U, ⊤))ˣ)
-    have hc : c * (m : Γ(U, ⊤)) = 1 := hm.val_inv_mul
-    let Pp : StandardEtalePair Γ(U, ⊤) :=
-      { f := X ^ m - C u.1
-        monic_f := monic_X_pow_sub_C _ hm0.ne'
-        g := X
-        cond := ⟨C c * X, 0, m, by
-          rw [derivative_sub, derivative_X_pow, derivative_C, sub_zero]
-          have hX : (X : (Γ(U, ⊤))[X]) ^ (m - 1) * X = X ^ m := by rw [← pow_succ, Nat.sub_add_cancel hm0]
-          have hC : C (m : Γ(U, ⊤)) * C c = 1 := by rw [← C_mul, mul_comm, hc, C_1]
-          linear_combination (X ^ (m - 1) * X) * hC + hX⟩ }
-    refine loc_of_etale U Pp.Ring (comap_surj_of_lift fun K _ _ ψ => ?_) _ fun V g χ hχ => ?_
-    · obtain ⟨x, hx⟩ := IsAlgClosed.exists_pow_nat_eq (ψ u.1) hm0
-      let _ := ψ.toAlgebra
-      have hx0 : x ≠ 0 := by
-        rintro rfl
-        rw [zero_pow hm0.ne'] at hx
-        exact (u.isUnit.map ψ).ne_zero hx.symm
-      have hmap : Pp.HasMap x := ⟨by simp [Pp, hx, RingHom.algebraMap_toAlgebra], by simpa [Pp] using hx0⟩
-      exact ⟨(Pp.lift x hmap).toRingHom, (Pp.lift x hmap).comp_algebraMap⟩
-    · refine ⟨χ Pp.X, ?_⟩
-      have h0 := (StandardEtalePair.hasMap_X (P := Pp)).1
-      have h1 : Pp.X ^ m = algebraMap Γ(U, ⊤) Pp.Ring u.1 := by
-        simpa [Pp, sub_eq_zero] using h0
-      rw [← map_pow, h1, hχ]
-
 end CrystallineSemistableComparison.KummerTwistLemmas
 end -- clump:auto
 end -- clump:auto
@@ -365,41 +221,6 @@ open CategoryTheory Limits AlgebraicGeometry Opposite Polynomial
 namespace CrystallineSemistableComparison.KummerTwistLemmas
 
 open GlobalTheory.EtC
-
-theorem cyc_pow (p b : ℕ) (hp : p.Prime) (hb : 0 < b) :
-    ∀ a : ℕ, expand ℤ (p ^ a) (cyclotomic (p ^ b) ℤ) = cyclotomic (p ^ (a + b)) ℤ
-  | 0 => by simp
-  | a + 1 => by
-    rw [pow_succ', expand_mul, cyc_pow p b hp hb a,
-      cyclotomic_expand_eq_cyclotomic hp (dvd_pow_self p (by omega : a + b ≠ 0))]
-    congr 1
-    rw [← pow_succ]
-    congr 1
-    omega
-
-theorem rootLoc (p a b : ℕ) [Fact p.Prime] (hb : 0 < b) (U : Scheme.{0}) (ξ : Prim (p ^ b) Γ(U, ⊤)) :
-    Loc U fun V g => ∃ ζ : Prim (p ^ (a + b)) Γ(V, ⊤), ζ.1 ^ (p ^ a) = g.appTop.hom ξ.1 := by
-  have hp : p.Prime := Fact.out
-  have hpU : IsUnit (p : Γ(U, ⊤)) := by
-    have h := ξ.2.1
-    rw [Nat.cast_pow] at h
-    exact (isUnit_pow_iff hb.ne').1 h
-  have hξ1 : ξ.1 ^ (p ^ b) = 1 := by
-    obtain ⟨h, hh⟩ := cyclotomic.dvd_X_pow_sub_one (p ^ b) ℤ
-    have := congrArg (aeval ξ.1) hh
-    rw [map_mul, ξ.2.2, zero_mul, map_sub, map_pow, aeval_X, map_one, sub_eq_zero] at this
-    exact this
-  have hξu : IsUnit ξ.1 := by
-    refine isUnit_iff_exists_inv.2 ⟨ξ.1 ^ (p ^ b - 1), ?_⟩
-    rw [← pow_succ', Nat.sub_add_cancel (Nat.one_le_iff_ne_zero.2 (pow_ne_zero _ hp.ne_zero)), hξ1]
-  obtain ⟨S, hS, hP⟩ := kumLoc U (p ^ a) hξu.unit (by rw [Nat.cast_pow]; exact hpU.pow _)
-  refine ⟨S, hS, fun V g hg => ?_⟩
-  obtain ⟨v, hv⟩ := hP V g hg
-  rw [IsUnit.unit_spec] at hv
-  have hpV : IsUnit (p : Γ(V, ⊤)) := by simpa using hpU.map g.appTop.hom
-  refine ⟨⟨v, by rw [Nat.cast_pow]; exact hpV.pow _, ?_⟩, hv⟩
-  rw [← cyc_pow p b hp hb a, expand_aeval, hv]
-  exact (Prim.map g.appTop.hom ξ).2.2
 
 end CrystallineSemistableComparison.KummerTwistLemmas
 end -- clump:auto
@@ -424,11 +245,6 @@ open GlobalTheory.EtC
 
 variable {R : Type} [CommRing R]
 
-theorem loc_mono {U : Scheme.{0}} {P P' : ∀ V : Scheme.{0}, (V ⟶ U) → Prop} (h : Loc U P)
-    (hP : ∀ V g, P V g → P' V g) : Loc U P' := by
-  obtain ⟨S, hS, hSP⟩ := h
-  exact ⟨S, hS, fun V g hg => hP V g (hSP V g hg)⟩
-
 theorem loc_bind {U : Scheme.{0}} {P P' : ∀ V : Scheme.{0}, (V ⟶ U) → Prop} (h : Loc U P)
     (h' : ∀ (V : Scheme.{0}) (g : V ⟶ U), P V g → Loc V fun W k => P' W (k ≫ g)) : Loc U P' := by
   obtain ⟨S, hS, hSP⟩ := h
@@ -437,59 +253,17 @@ theorem loc_bind {U : Scheme.{0}} {P P' : ∀ V : Scheme.{0}, (V ⟶ U) → Prop
   rintro W _ ⟨V, k, g, hg, hk, rfl⟩
   exact (h' V g (hSP V g hg)).choose_spec.2 W k hk
 
-theorem loc_true (U : Scheme.{0}) : Loc U fun _ _ => True :=
-  ⟨⊤, Scheme.etaleTopology.top_mem U, fun _ _ _ => trivial⟩
-
-theorem isSheaf_types (G : Shv R) : Presieve.IsSheaf Scheme.etaleTopology (G.obj ⋙ forget _) :=
-  (isSheaf_iff_isSheaf_of_type _ _).1 ((Presheaf.isSheaf_iff_isSheaf_forget _ _ (forget _)).1 G.property)
-
 theorem sec_eq_of_loc {F : Shv R} {U : Scheme.{0}} (x y : Sec F U)
     (h : Loc U fun V g => Sec.res g x = Sec.res g y) : x = y := by
   obtain ⟨S, hS, hSP⟩ := h
-  exact ((isSheaf_types F) S hS).isSeparatedFor.ext fun _ g hg => hSP _ g hg
+  exact ((CrystallineSemistableComparison.WeightedPowerFormIntegrability.isSheaf_types F) S hS).isSeparatedFor.ext fun _ g hg => hSP _ g hg
 
 theorem sec_subsingleton_of_isEmpty (F : Shv R) (U : Scheme.{0}) [IsEmpty U] : Subsingleton (Sec F U) :=
-  ⟨fun a b => ((isSheaf_types F).isSheafFor (⊥ : Presieve U)
+  ⟨fun a b => ((CrystallineSemistableComparison.WeightedPowerFormIntegrability.isSheaf_types F).isSheafFor (⊥ : Presieve U)
     (by rw [Sieve.generate_bot]; exact Scheme.bot_mem_grothendieckTopology U)).isSeparatedFor.ext (fun _ _ h => h.elim)⟩
-
-theorem epi_of_loc {F G : Shv R} (φ : F ⟶ G)
-    (h : ∀ (U : Scheme.{0}) (y : Sec G U), Loc U fun V g => ∃ x : Sec F V, Sec.map φ x = Sec.res g y) : Epi φ := by
-  have : Sheaf.IsLocallySurjective φ := by
-    constructor
-    intro U y
-    obtain ⟨S, hS, hSP⟩ := h U y
-    refine Scheme.etaleTopology.superset_covering (fun V g hg => ?_) hS
-    obtain ⟨x, hx⟩ := hSP V g hg
-    exact ⟨x, hx⟩
-  infer_instance
 
 theorem sec_map_comp {X Y Z : Shv R} (f : X ⟶ Y) (g : Y ⟶ Z) {U : Scheme.{0}} (x : Sec X U) :
     Sec.map (f ≫ g) x = Sec.map g (Sec.map f x) := rfl
-
-theorem sec_map_injective_of_mono {X Y : Shv R} (f : X ⟶ Y) [Mono f] (U : Scheme.{0}) :
-    Function.Injective (Sec.map f (U := U)) := by
-  have h1 : Mono f.hom := (sheafToPresheaf _ _).map_mono f
-  have h2 : Mono (f.hom.app (op U)) := (NatTrans.mono_iff_mono_app f.hom).1 h1 (op U)
-  exact (ModuleCat.mono_iff_injective _).1 h2
-
-theorem epi_lift_of_loc {X Y Z : Shv R} (f : X ⟶ Y) (g : Y ⟶ Z) (w : f ≫ g = 0)
-    (h : ∀ (U : Scheme.{0}) (y : Sec Y U), Sec.map g y = 0 →
-      Loc U fun V k => ∃ x : Sec X V, Sec.map f x = Sec.res k y) :
-    Epi (kernel.lift g f w) := by
-  apply epi_of_loc
-  intro U y
-  have hy : Sec.map g (Sec.map (kernel.ι g) y) = 0 := by
-    rw [← sec_map_comp, kernel.condition]; rfl
-  refine loc_mono (h U _ hy) fun V k ⟨x, hx⟩ => ⟨x, ?_⟩
-  apply sec_map_injective_of_mono (kernel.ι g)
-  rw [← sec_map_comp, kernel.lift_ι, hx, GlobalTheory.EtC.CupSpec.map_res]
-
-theorem ker_comp_zero {X Y Z : Shv R} (f : X ⟶ Y) (g : X ⟶ Z)
-    (h : ∀ (U : Scheme.{0}) (y : Sec X U), Sec.map f y = 0 → Sec.map g y = 0) : kernel.ι f ≫ g = 0 := by
-  apply Sheaf.hom_ext
-  ext U y
-  refine (h U.unop (Sec.map (kernel.ι f) y) ?_).trans rfl
-  rw [← sec_map_comp, kernel.condition]; rfl
 
 end CrystallineSemistableComparison.SheafSectionLemmas
 end -- clump:auto
@@ -514,40 +288,6 @@ open GlobalTheory.EtC
 
 namespace KummerTwistLemmas
 
-theorem twLift {Q : ℕ} [NeZero Q] (i : ℤ) (G : Shv (ZMod Q)) (e : ∀ (U : Scheme.{0}), Prim Q Γ(U, ⊤) → Sec G U)
-    (he : ∀ {V U : Scheme.{0}} (g : V ⟶ U) ζ, Sec.res g (e U ζ) = e V (ζ.map g.appTop.hom))
-    (hr : ∀ (U : Scheme.{0}) (ζ ξ : Prim Q Γ(U, ⊤)) (a : (ZMod Q)ˣ), ξ.1 = ζ.1 ^ (a : ZMod Q).val →
-      e U ξ = (ULift.up ((a ^ i : (ZMod Q)ˣ) : ZMod Q) : ULift.{1} (ZMod Q)) • e U ζ) :
-    ∃ f : tw Q i ⟶ G, ∀ (U : Scheme.{0}) (ζ : Prim Q Γ(U, ⊤)), Sec.map f (twGen i ζ) = e U ζ := by
-  let L : ∀ (U : Scheme.{0}), (Prim Q Γ(U, ⊤) →₀ ULift.{1} (ZMod Q)) →ₗ[ULift.{1} (ZMod Q)] Sec G U :=
-    fun U => Finsupp.linearCombination (ULift.{1} (ZMod Q)) (e U)
-  have hL : ∀ (U : Scheme.{0}), twRel Q i Γ(U, ⊤) ≤ LinearMap.ker (L U) := by
-    intro U
-    refine Submodule.span_le.2 ?_
-    rintro x ⟨ζ, ξ, a, h, rfl⟩
-    simp only [SetLike.mem_coe, LinearMap.mem_ker, map_sub, L, Finsupp.linearCombination_single, one_smul]
-    rw [hr U ζ ξ a h, sub_self]
-  let η : (Scheme.Γ ⋙ GlobalTheory.EtC.twF Q i) ⟶ G.obj :=
-    { app := fun U => ModuleCat.ofHom ((twRel Q i Γ(U.unop, ⊤)).liftQ (L U.unop) (hL U.unop))
-      naturality := fun U V g => by
-        refine ModuleCat.hom_ext (Submodule.linearMap_qext _ (Finsupp.lhom_ext fun ζ c => ?_))
-        change (twRel Q i Γ(V.unop, ⊤)).liftQ (L V.unop) (hL V.unop)
-            (Submodule.Quotient.mk (Finsupp.mapDomain (Prim.map (Scheme.Γ.map g).hom) (Finsupp.single ζ c))) =
-          (G.obj.map g).hom ((twRel Q i Γ(U.unop, ⊤)).liftQ (L U.unop) (hL U.unop) (Submodule.Quotient.mk (Finsupp.single ζ c)))
-        rw [Submodule.liftQ_apply, Submodule.liftQ_apply, Finsupp.mapDomain_single]
-        simp only [L, Finsupp.linearCombination_single, map_smul]
-        congr 1
-        exact (he g.unop ζ).symm }
-  refine ⟨((sheafificationAdjunction Scheme.etaleTopology.{0} (ModuleCat.{1} (ULift.{1} (ZMod Q)))).homEquiv _ _).symm η,
-    fun U ζ => ?_⟩
-  have h := ((sheafificationAdjunction Scheme.etaleTopology.{0} (ModuleCat.{1} (ULift.{1} (ZMod Q)))).homEquiv _ G).apply_symm_apply η
-  have h2 := ConcreteCategory.congr_hom (congrArg (fun φ => NatTrans.app φ (op U)) h)
-    (Submodule.Quotient.mk (Finsupp.single ζ 1) : (Prim Q Γ(U, ⊤) →₀ ULift.{1} (ZMod Q)) ⧸ twRel Q i Γ(U, ⊤))
-  refine h2.trans ?_
-  change (twRel Q i Γ(U, ⊤)).liftQ (L U) (hL U) (Submodule.Quotient.mk (Finsupp.single ζ 1)) = e U ζ
-  rw [Submodule.liftQ_apply]
-  simp [L]
-
 end KummerTwistLemmas
 
 end CrystallineSemistableComparison
@@ -570,12 +310,6 @@ open CategoryTheory Limits AlgebraicGeometry Opposite
 namespace CrystallineSemistableComparison.TwSeq
 
 open GlobalTheory.EtC
-
-theorem pow_self {Q : ℕ} {A : Type} [CommRing A] (ζ : Prim Q A) : ζ.1 ^ Q = 1 := by
-  obtain ⟨c, hc⟩ := Polynomial.cyclotomic.dvd_X_pow_sub_one Q ℤ
-  have := congrArg (Polynomial.aeval ζ.1) hc
-  rw [map_mul, ζ.2.2, zero_mul, map_sub, map_pow, Polynomial.aeval_X, map_one, sub_eq_zero] at this
-  exact this
 
 theorem twGen_res {q : ℕ} (i : ℤ) {V U : Scheme.{0}} (g : V ⟶ U) (ζ : Prim q Γ(U, ⊤)) :
     Sec.res g (twGen i ζ) = twGen i (ζ.map g.appTop.hom) := by
@@ -607,40 +341,6 @@ open CategoryTheory Limits AlgebraicGeometry Opposite
 namespace CrystallineSemistableComparison.TwSeq
 
 open GlobalTheory.EtC
-
-theorem sec_nsmul {R : Type} [CommRing R] {X Y : Shv R} (f : X ⟶ Y) (k : ℕ) {U : Scheme.{0}} (x : Sec X U) :
-    Sec.map (k • f) x = k • Sec.map f x := map_nsmul (CupSpec.mapHom X Y x) k f
-
-theorem sec_map_nsmul {R : Type} [CommRing R] {X Y : Shv R} (f : X ⟶ Y) (k : ℕ) {U : Scheme.{0}} (x : Sec X U) :
-    Sec.map f (k • x) = k • Sec.map f x := map_nsmul (f.hom.app (op U)).hom k x
-
-theorem res_nsmul {R : Type} [CommRing R] {X : Shv R} {V U : Scheme.{0}} (g : V ⟶ U) (k : ℕ) (x : Sec X U) :
-    Sec.res g (k • x) = k • Sec.res g x := map_nsmul (X.obj.map g.op).hom k x
-
-theorem res_zero {R : Type} [CommRing R] {X : Shv R} {V U : Scheme.{0}} (g : V ⟶ U) : Sec.res g (0 : Sec X U) = 0 :=
-  map_zero (X.obj.map g.op).hom
-
-theorem sec_map_zero' {R : Type} [CommRing R] {X Y : Shv R} (f : X ⟶ Y) {U : Scheme.{0}} : Sec.map f (0 : Sec X U) = 0 :=
-  map_zero (f.hom.app (op U)).hom
-
-theorem sec_char {q : ℕ} {F : Shv (ZMod q)} {U : Scheme.{0}} (x : Sec F U) : q • x = 0 := by
-  rw [← Nat.cast_smul_eq_nsmul (ULift.{1} (ZMod q))]
-  have : ((q : ℕ) : ULift.{1} (ZMod q)) = 0 := by
-    apply ULift.ext
-    rw [ULift.down_natCast, ZMod.natCast_self]
-    rfl
-  rw [this, zero_smul]
-
-theorem morph_zero_of_sec {R : Type} [CommRing R] {X Y : Shv R} (f : X ⟶ Y)
-    (h : ∀ (U : Scheme.{0}) (x : Sec X U), Sec.map f x = 0) : f = 0 := by
-  apply Sheaf.hom_ext
-  ext U x
-  exact h U.unop x
-
-theorem loc_of_img {R : Type} [CommRing R] {X Y : Shv R} (f : X ⟶ Y) {U V : Scheme.{0}} (g : V ⟶ U) (y : Sec Y U)
-    (x : Sec X V) (hx : Sec.map f x = Sec.res g y) :
-    Loc V fun W k => ∃ x' : Sec X W, Sec.map f x' = Sec.res (k ≫ g) y :=
-  SheafSectionLemmas.loc_mono (SheafSectionLemmas.loc_true V) fun W k _ => ⟨Sec.res k x, by rw [← CupSpec.map_res, hx, TwSec.res_comp]⟩
 
 end CrystallineSemistableComparison.TwSeq
 end -- clump:auto
@@ -792,7 +492,6 @@ theorem conc_eq_one (hF : FormalIn) (q : ℕ) [NeZero q] (X : Scheme.{0}) (ζ : 
     rw [h1, cast_zero', eq_zero_of_cast _ _ _ h2.symm]
 
 end RootOfUnityLemmas
-
 
 open RootOfUnityLemmas in
 theorem root : RootsOfUnityFormal := by

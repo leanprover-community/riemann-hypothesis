@@ -20,7 +20,6 @@ open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G ReciprocityTheory.Char
 open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Rec
 open AlgebraicGeometry CategoryTheory
 open scoped Matrix
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.CompanionTheory.Ar.Rec.FinRd.Roots.LieBasis
 
@@ -31,7 +30,7 @@ theorem triIn_of_frBor : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
   obtain ⟨hx, hcomb, -⟩ := hb
   obtain ⟨cf, h1, h2, h3⟩ := hcomb τ i
   refine ⟨cf, h1, h2, ?_⟩
-  obtain ⟨hw, hval⟩ := GlobalTheory.T.abelian_map_lie_model_field_point E H Dw l Xo c O β Y X tX f m F g EC MC y hy (Dw.mult τ) (y.u τ)
+  obtain ⟨hw, hval⟩ := GlobalTheory.CompanionTheory.Ar.Rec.FinRd.Roots.LieBasis.comb_val E H Dw l Xo c O β Y X tX f m F g EC MC y hy (Dw.mult τ) (y.u τ)
     (fun j => y.tan τ j) u hu cf (y'.u τ i) h3
   have hF : Small.ptF y' = Small.ptF y := by
     apply Limits.pullback.hom_ext
@@ -67,7 +66,6 @@ open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Rec
 open AlgebraicGeometry CategoryTheory
 open scoped Matrix
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 end -- clump:auto
 end -- clump:auto

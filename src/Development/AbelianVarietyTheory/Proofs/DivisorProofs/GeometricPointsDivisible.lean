@@ -24,7 +24,7 @@ theorem pt_divisible : ∀ (K : Type) [Field K] (A : AbVar K) (n : ℕ), n ≠ 0
   intro K _ A n hn x
   have hz : ((n : ℤ)) ≠ 0 := by exact_mod_cast hn
   have hiso := (GlobalTheory.T.abelianVariety_intCast_smul_isogeny_degree K A (n : ℤ) hz).1
-  have hs : Function.Surjective (ptMap ((n : ℤ) • 𝟙 A)) := (GlobalTheory.T.abVar_surjective_iff_ptMap_surjective K A A _).1 hiso.2
+  have hs : Function.Surjective (ptMap ((n : ℤ) • 𝟙 A)) := (GlobalTheory.AV.AbVar.surjective_iff_ptMap_surjective K A A _).1 hiso.2
   obtain ⟨y, hy⟩ := hs x
   refine ⟨y, ?_⟩
   rw [← hy, ptMap_apply, natCast_zsmul, nsmul_hom, id_hom, pt_comp_id_pow]

@@ -22,17 +22,12 @@ section
 
 variable {n : ℕ} {K V : Type*} [Field K] [AddCommGroup V] [Module K V]
 
-private theorem pow_apply_mem_weightSp_add_smul_rootW {E : GLOps n K V} (hs : OperatorsShiftWeightsByRoots E) (a b : Fin n) (k : ℕ)
-    (ν : Fin n → ℤ) (x : V) (hx : x ∈ weightSp E ν) :
-    ((E a b) ^ k) x ∈ weightSp E (ν + (k : ℤ) • rootW a b) := by
-  apply _root_.Formalism.MainNotions.G.GLWeightTheory.operator_pow_shifts_weight <;> assumption
-
 theorem projector_factor_preserves_weight {E : GLOps n K V} (hs : OperatorsShiftWeightsByRoots E) (mu ν : Fin n → ℤ) (a b : Fin n) (T : ℕ) (x : V)
     (hx : x ∈ weightSp E ν) : ppFac E mu a b T x ∈ weightSp E ν := by
   have key : ∀ k : ℕ, (divPowE E b a k * divPowE E a b k) x ∈ weightSp E ν := by
     intro k
-    have h1 := pow_apply_mem_weightSp_add_smul_rootW hs a b k ν x hx
-    have h2 := pow_apply_mem_weightSp_add_smul_rootW hs b a k _ _ h1
+    have h1 := operator_pow_shifts_weight hs a b ν k x hx
+    have h2 := operator_pow_shifts_weight hs b a _ k _ h1
     have e : ν + (k : ℤ) • rootW a b + (k : ℤ) • rootW b a = ν := by
       funext c
       simp only [rootW, Pi.add_apply, Pi.smul_apply, Pi.sub_apply, smul_eq_mul]

@@ -290,7 +290,7 @@ theorem encard_between (h1 : Module.finrank K W = 1) {B : Submodule (𝓞 K) W}
   set D : Submodule (𝓞 K) W := B.comap (LinearMap.lsmul (𝓞 K) W T) with hD
   have hTK : algebraMap (𝓞 K) K T ≠ 0 := by simpa using hT
   have hinj : Function.Injective (LinearMap.lsmul (𝓞 K) W T) := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro x hx
     have : algebraMap (𝓞 K) K T • x = 0 := by rw [algebraMap_smul]; exact hx
     exact (smul_eq_zero.1 this).resolve_left hTK
@@ -531,7 +531,7 @@ theorem sub_count {K V : Type} [Field K] [NumberField K] [AddCommGroup V] [Modul
   have ha0 : a ≠ 0 := nonZeroDivisors.ne_zero ha
   let ψ : V →ₗ[𝓞 K] K := a • e'
   have hψ : Function.Injective ψ := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+    rw [injective_iff_map_eq_zero]
     intro x hx
     have : a • e x = 0 := hx
     rw [smul_eq_zero] at this
@@ -1109,7 +1109,7 @@ theorem orbMass_stabilizer_le (K V : Type) [Field K] [NumberField K] [StarRing K
     obtain ⟨k1, k2, k3, -⟩ := _root_.GlobalTheory.Mass.PrimDisc.main K V h hK hs hp L U 1 h1 h3
     refine ⟨⟨k1, h4⟩, (memB _).2 ⟨k2, ?_, ?_⟩⟩
     · exact Nat.one_le_iff_ne_zero.2
-        (_root_.GlobalTheory.Mass.DiscOrder.main K (perp h U) _ hK hs2 (pd_nondeg _ hp2) _ k2).1
+        (_root_.GlobalTheory.Mass.DiscOrder.main K (perp h U) _ hK hs2 (GlobalTheory.Mass.PrimDisc.nondeg _ hp2) _ k2).1
     · rw [h2, h4] at k3
       exact k3
   have fY : ∀ p ∈ A ×ˢ B, Finite (MulAction.stabilizer (MulAction.stabilizer (isom h) U) p) := by
@@ -1155,7 +1155,7 @@ theorem main : MaxMass → ∀ (K V : Type) [Field K] [NumberField K] [StarRing 
   intro hM K V _ _ _ _ _ _ _ _ h hK hs hp hLand j hj hjs V₁ _ _ _ _ _ h₁ I₁ hs₁ hI₁ V₂ _ _ _ _ _ h₂ I₂ hs₂ hI₂
     de t T hde ht hT hN 𝒢 hst h𝒢
   obtain ⟨S, hdim, hcov, hsum⟩ := _root_.GlobalTheory.Mass.TotalMass.main hM K V h hK hs hp hLand j hj V₁ h₁ I₁ hs₁ hI₁ de hde
-  have hnd := pd_nondeg h hp
+  have hnd := GlobalTheory.Mass.PrimDisc.nondeg h hp
   set l : ℝ := Real.logb 2 (fDeg K) with hl
   have m1 := mass_nonneg h₁ I₁
   have m2 := mass_nonneg h₂ I₂

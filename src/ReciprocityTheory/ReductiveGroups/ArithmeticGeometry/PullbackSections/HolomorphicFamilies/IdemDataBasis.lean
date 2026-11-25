@@ -118,8 +118,7 @@ theorem idem_data_basis {k V : Type} [Field k] [CommRing V] [Algebra V k] (ψ : 
       rw [map_mul, map_intCast, hz i, ← mul_assoc, ← Int.cast_mul, hε, Int.cast_natCast]
     rw [map_mul, hv i, e1, map_mul, map_natCast, ← mul_assoc, hw, one_mul]
   refine ⟨bZ, fun i => w * v i, ?_, ?_⟩
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [← map_one ψ, ← sum_dual_mul bQ, map_sum]
+  · rw [← map_one ψ, ← sum_dual_mul bQ, map_sum]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [hc i, map_mul, hbQ_apply]
   · intro a

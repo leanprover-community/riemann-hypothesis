@@ -101,14 +101,7 @@ lemma colOK_of_path [NeZero r] (LL : LiftLetters (Fin N)) (B : Fin N → ℕ) (h
     omega
 
 lemma plane_card : (univ.filter fun a : Fin (r + K) => a.val < r).card = r := by
-  classical
-  rw [show (univ.filter fun a : Fin (r + K) => a.val < r) = (univ : Finset (Fin r)).image (Fin.castAdd K) from ?_,
-    Finset.card_image_of_injective _ (Fin.castAdd_injective r K), Finset.card_fin]
-  ext a
-  simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_image]
-  constructor
-  · intro h; exact ⟨⟨a.val, h⟩, Fin.ext rfl⟩
-  · rintro ⟨b, rfl⟩; exact b.isLt
+  rw [Fin.card_filter_val_lt, min_eq_right (Nat.le_add_right r K)]
 
 lemma costly_iff (mu : Fin (N + 1) → Fin (r + K) → ℤ) (c : ℤ) (j : ℕ) (h : j < N) :
     IsCostly mu c ⟨j, h⟩ ↔

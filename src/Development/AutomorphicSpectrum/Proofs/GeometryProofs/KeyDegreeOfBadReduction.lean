@@ -368,7 +368,6 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.Sl.KeyDegArch
 
-
 open scoped CategoryTheory.Obj in
 theorem isAb_of_isGrpPullback {S S' : Scheme.{0}} {f : S' ⟶ S} {A : Over S} {A' : Over S'} [GrpObj A] [GrpObj A']
     {φ : A'.left ⟶ A.left} (h : IsGrpPullback A' A f φ) (hA : IsAbelianScheme A) : IsAbelianScheme A' := by
@@ -756,13 +755,6 @@ section Sec
 
 variable {X : Scheme.{0}}
 
-theorem mem_basicOpen_map {U V : X.Opens} (h : V ≤ U) (f : Γ(X, U)) (y : X) :
-    y ∈ X.basicOpen ((X.presheaf.map (homOfLE h).op).hom f) ↔ y ∈ V ∧ y ∈ X.basicOpen f := by
-  have e : X.basicOpen ((X.presheaf.map (homOfLE h).op).hom f) = V ⊓ X.basicOpen f :=
-    Scheme.basicOpen_res X f (homOfLE h).op
-  rw [e]
-  rfl
-
 theorem sameSec_ofPow {L : LB X} (s : Out.H0 L 1) : KeyDeg.SameSec s (GlobalTheory.GeneratorFrame.ofPow s) := fun _ => rfl
 
 theorem nonzeroLocus_ofPow {L : LB X} (s : Out.H0 L 1) {y : X} (hy : y ∈ Out.nonzeroLocus s) :
@@ -770,7 +762,7 @@ theorem nonzeroLocus_ofPow {L : LB X} (s : Out.H0 L 1) {y : X} (hy : y ∈ Out.n
   obtain ⟨k, hk⟩ := TopologicalSpace.Opens.mem_iSup.1 hy
   obtain ⟨i, rfl⟩ : ∃ i, k = fun _ => i := ⟨k 0, funext fun a => by rw [Subsingleton.elim a 0]⟩
   have hU : y ∈ L.U i := GlobalTheory.GeneratorFrame.wchart_le' L (fun _ => i) (X.basicOpen_le _ hk)
-  exact TopologicalSpace.Opens.mem_iSup.2 ⟨i, (mem_basicOpen_map _ _ y).2 ⟨hU, hk⟩⟩
+  exact TopologicalSpace.Opens.mem_iSup.2 ⟨i, (GlobalTheory.CompanionTheory.Ar.Sl.KeyDeg.FibDiv.mem_basicOpen_map _ _ y).2 ⟨hU, hk⟩⟩
 
 end Sec
 
@@ -784,7 +776,7 @@ theorem mem_basicOpen_appLE {X Y : Scheme.{0}} (φ : Y ⟶ X) {U : X.Opens} {V :
     {z : Y} (hz : z ∈ V) (hy : φ z ∈ X.basicOpen f) : z ∈ Y.basicOpen ((φ.appLE U V h).hom f) := by
   have e : (φ.appLE U V h).hom f = (Y.presheaf.map (homOfLE h).op).hom ((φ.app U).hom f) := rfl
   rw [e]
-  refine (mem_basicOpen_map h _ z).2 ⟨hz, ?_⟩
+  refine (GlobalTheory.CompanionTheory.Ar.Sl.KeyDeg.FibDiv.mem_basicOpen_map h _ z).2 ⟨hz, ?_⟩
   rw [← Scheme.preimage_basicOpen]
   exact hy
 
@@ -831,7 +823,7 @@ theorem exists_keyIn : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H
     refine ⟨z, hz, TopologicalSpace.Opens.mem_iSup.2 ⟨i, ?_⟩⟩
     change z ∈ D.tK.G.left.basicOpen ((D.m.φ.appLE _ _ hle).hom _) at h1
     rw [e, Scheme.basicOpen_mul] at h1
-    exact ((mem_basicOpen_map _ _ z).1 h1.2).2
+    exact ((GlobalTheory.CompanionTheory.Ar.Sl.KeyDeg.FibDiv.mem_basicOpen_map _ _ z).1 h1.2).2
   obtain ⟨-, ws, gs', -⟩ := D.tK.sym
   refine ⟨KeyBadModel.keyInOf D.tK xth D.g hg v' hv' ⟨inferInstance, sm, hp, gc⟩ hd
     (fun _ => ⟨⊤, trivial, gen_of_iso ((isGen_iff ws).1 gs') _⟩) ha hk hne, GlobalTheory.GeneratorFrame.ofPow s, rfl,
@@ -1028,7 +1020,6 @@ open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Sl
 
 namespace GlobalTheory.CompanionTheory.Ar.Sl.KeyDegFree
 
-
 open scoped ComplexOrder in
 theorem gramDet_eq_norm {L : Type} [Field L] [NumberField L] (B : HermitianBundle.{0} L) (σ : L →+* ℂ)
     {n : ℕ} {e : Fin n → B.carrier} (hli : LinearIndependent (𝓞 L) e) :
@@ -1109,7 +1100,6 @@ private theorem gramMat_eq_pi_smul_transpose {L : Type} [Field L] [NumberField L
     Finset.sum_mul]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => by ring))
-
 
 open Matrix in
 theorem gramDet_norm {L : Type} [Field L] [NumberField L] (B : HermitianBundle.{0} L) (σ : L →+* ℂ) {g : ℕ}
@@ -1285,7 +1275,6 @@ theorem is_L2_of_gram_det_pos {E : Type} [Field E] [NumberField E] [IsCMField E]
   rw [← pow_mul, show 2 * 4 = 8 from rfl, hc8, hI4]
 
 end KeyDeg
-
 
 open scoped ComplexOrder in
 theorem keyDeg_of_keyBad : KeyBadSt → KeyDegSt := by

@@ -38,14 +38,14 @@ private theorem tf_trace_data_of_closed_stability (dual : Bool) [CompleteSpace H
       tfRdiag ε g v ∈ (Submodule.span ℂ {v : tfL2n ε | ∃ f ∈ tensSub (genSub E V),
         v = tfPh dual ε σ (y : H) (fun c => ((P f c : D) : H))}).topologicalClosure)
     (hmem : ∀ {f : Fin n → D}, f ∈ tensSub (genSub E V) → ∀ c : Fin n,
-      MemLp (fun g : Formalism.REAL.UJ ε => coefMap dual σ (Pi.single c (tfSgn ε c • (y : H)))
+      MemLp (fun g : Formalism.REAL.UJ ε => ReciprocityTheory.ChartRestriction.DS.occCoef dual σ (Pi.single c (tfSgn ε c • (y : H)))
         (fun j => ((f j : D) : H)) (Formalism.MainNotions.S.umat g)) 2 (Formalism.REAL.muG ε))
     (hT2 : ∀ {ζ ζ' : Fin n → H}, (∀ c, ζ c ∈ closGen E V) → (∀ c, ζ' c ∈ closGen E V) →
       (∀ c, MemLp (fun g : Formalism.REAL.UJ ε =>
-        coefMap dual σ (Pi.single c (tfSgn ε c • (y : H))) ζ (Formalism.MainNotions.S.umat g))
+        ReciprocityTheory.ChartRestriction.DS.occCoef dual σ (Pi.single c (tfSgn ε c • (y : H))) ζ (Formalism.MainNotions.S.umat g))
         2 (Formalism.REAL.muG ε)) →
       (∀ c, MemLp (fun g : Formalism.REAL.UJ ε =>
-        coefMap dual σ (Pi.single c (tfSgn ε c • (y : H))) ζ' (Formalism.MainNotions.S.umat g))
+        ReciprocityTheory.ChartRestriction.DS.occCoef dual σ (Pi.single c (tfSgn ε c • (y : H))) ζ' (Formalism.MainNotions.S.umat g))
         2 (Formalism.REAL.muG ε)) →
       inner ℂ (tfPh dual ε σ y ζ) (tfJ ε (tfPh dual ε σ y ζ')) =
         tfFormBH ε ζ ζ' * inner ℂ (y : H) (y : H) / (d : ℂ)) :
@@ -107,9 +107,9 @@ private theorem tf_trace_data_of_closed_stability (dual : Bool) [CompleteSpace H
     exact (Submodule.mem_orthogonal_singleton_iff_inner_right.1 h2)
 
   have hcoefS : ∀ (c : Fin n) (ζ : Fin n → H) (g : Matrix (Fin n) (Fin n) ℂ),
-      coefMap dual σ (Pi.single c (tfSgn ε c • (y : H))) ζ g = tfSgn ε c * inner ℂ (y : H) (tensGrp dual σ g ζ c) := by
+      ReciprocityTheory.ChartRestriction.DS.occCoef dual σ (Pi.single c (tfSgn ε c • (y : H))) ζ g = tfSgn ε c * inner ℂ (y : H) (tensGrp dual σ g ζ c) := by
     intro c ζ g
-    unfold coefMap
+    unfold ReciprocityTheory.ChartRestriction.DS.occCoef
     rw [sum_eq_single c (fun b _ hb => by simp [hb]) (by simp), Pi.single_eq_same, inner_smul_left]
     congr 1
     exact tf_star_sgn ε c
@@ -120,7 +120,7 @@ private theorem tf_trace_data_of_closed_stability (dual : Bool) [CompleteSpace H
 
   have htr : ∀ f ∈ tensSub (genSub E V), ∀ g : Formalism.REAL.UJ ε,
       (∀ c, tensGrp dual σ (Formalism.MainNotions.S.umat g) (fun i => ((P f i : D) : H)) c ∈ closGen E V) ∧
-      ∀ c, MemLp (fun x : Formalism.REAL.UJ ε => coefMap dual σ (Pi.single c (tfSgn ε c • (y : H)))
+      ∀ c, MemLp (fun x : Formalism.REAL.UJ ε => ReciprocityTheory.ChartRestriction.DS.occCoef dual σ (Pi.single c (tfSgn ε c • (y : H)))
         (tensGrp dual σ (Formalism.MainNotions.S.umat g) (fun i => ((P f i : D) : H))) (Formalism.MainNotions.S.umat x)) 2 (Formalism.REAL.muG ε) := by
     intro f hf g
     refine ⟨fun c => ?_, fun c => ?_⟩
@@ -128,12 +128,12 @@ private theorem tf_trace_data_of_closed_stability (dual : Bool) [CompleteSpace H
       exact Submodule.sum_mem _ fun d _ => Submodule.smul_mem _ _
         (hst0 _ (umat_mem_UJset ε g) _ (hcoeC _ (hPm f hf) d))
     · have h1 := (hmem (hPm f hf) c).comp_measurePreserving (measurePreserving_mul_right ε g)
-      have e : (fun x : Formalism.REAL.UJ ε => coefMap dual σ (Pi.single c (tfSgn ε c • (y : H)))
+      have e : (fun x : Formalism.REAL.UJ ε => ReciprocityTheory.ChartRestriction.DS.occCoef dual σ (Pi.single c (tfSgn ε c • (y : H)))
           (tensGrp dual σ (Formalism.MainNotions.S.umat g) (fun i => ((P f i : D) : H))) (Formalism.MainNotions.S.umat x)) =
-          (fun x : Formalism.REAL.UJ ε => coefMap dual σ (Pi.single c (tfSgn ε c • (y : H)))
+          (fun x : Formalism.REAL.UJ ε => ReciprocityTheory.ChartRestriction.DS.occCoef dual σ (Pi.single c (tfSgn ε c • (y : H)))
             (fun i => ((P f i : D) : H)) (Formalism.MainNotions.S.umat x)) ∘ (fun x => x * g) := by
         funext x
-        simp only [Function.comp_apply, coefMap]
+        simp only [Function.comp_apply, ReciprocityTheory.ChartRestriction.DS.occCoef]
         rw [show Formalism.MainNotions.S.umat (x * g) = Formalism.MainNotions.S.umat x * Formalism.MainNotions.S.umat g from rfl,
           tf_tensGrp_mul dual hσ (umat_mem_UJset ε x) (umat_mem_UJset ε g)]
       rw [e]

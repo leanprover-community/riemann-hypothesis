@@ -156,8 +156,7 @@ def MGenM (m : ℤ) (th : ℤ → ℝ) (D : Fin (Mj F j) → ℕ) : Set (MvPolyn
       P = rename (plVar (K := K)) A * rename (tanVar (r := r)) G}
 
 theorem md_geR_mono {v v' : WithTop ℤ} (h : v ≤ v') {t : ℝ} (hv : geR v t) : geR v' t := by
-  intros
-  apply _root_.Formalism.MainNotions.SelectionLemmas.Pf.geR_mono <;> assumption
+  apply Formalism.MainNotions.SelectionLemmas.Pf.geR_mono <;> assumption
 
 theorem md_comp_gen (m : ℤ) (th : ℤ → ℝ) (D : Fin (Mj F j) → ℕ) {ζ : MvPolynomial (Fin (Mj F j) × Fin (r + K)) O}
     (hζ : ζ ∈ Submodule.span O (GenM (O := O) (K := K) F j m th)) :

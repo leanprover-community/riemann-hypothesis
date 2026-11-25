@@ -44,9 +44,6 @@ theorem psJet_X {κ : Type} [Fintype κ] [DecidableEq κ] (s : κ) :
     psJet m (MvPowerSeries.X s : MvPowerSeries κ S) = Ideal.Quotient.mk _ (MvPolynomial.X s) := by
   apply GlobalTheory.FrameBiextId.psJet_X
 
-theorem psJet_zero {κ : Type} [Fintype κ] [DecidableEq κ] : psJet m (0 : MvPowerSeries κ S) = 0 := by
-  apply GlobalTheory.FrameBiextId.psJet_zero
-
 theorem jQ_comp (b : Fin n → Q S d n') (a : Fin k → Q S d n) : (jQ m b).comp (jQ m a) = jQ m fun j => sq b (a j) := by
   apply GlobalTheory.FrameBiextId.jQ_comp
 
@@ -115,10 +112,8 @@ section Dict
 variable {G : FGLaw S d} {A : Germ.OAct (𝓞 E) G} {κ : Type} [Fintype κ] {tg : κ → (Sp (DualNumber S) ⟶ t.G.left)}
   {uvec : κ → Fin d → S} {x} (hc : IsChartG t x0 d G.F A.act tg uvec x)
 
-
 variable (G) in
 abbrev FQ : Q S d 2 := ⟨G.F, G.const⟩
-
 
 variable (A) in
 abbrev AQ (a : 𝓞 E) : Q S d 1 := ⟨A.act a, A.const a⟩
@@ -227,7 +222,6 @@ theorem ac_one (u : Q S d n) : ac (AQ A 1) u = u := by
   apply GlobalTheory.FrameBiextId.ac_one
 
 end Law
-
 
 theorem fbId : FBIdSt := by
   exact GlobalTheory.FrameBiextId.fbId

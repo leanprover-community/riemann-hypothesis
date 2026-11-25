@@ -268,7 +268,7 @@ theorem exists_max_det {n : ℕ} (E : Submodule (𝓞 L) (Fin n → 𝓞 L)) (hD
     j.injective.comp (IsFractionRing.injective (𝓞 L) L)
   obtain ⟨V, -, hV, hVO, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Fl.ValRing.exists_dvr_of_padic_embedding L p j
   have hle1 : ∀ r : 𝓞 L, ‖(j.comp (algebraMap (𝓞 L) L)) r‖ ≤ 1 := fun r => (hV _).2 (hVO r)
-  obtain ⟨a, haI, ha0, hamax, hlog⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Fl.exists_logIdeal_attained L p _ (detIdeal E) hj'inj hD
+  obtain ⟨a, haI, ha0, hamax, hlog⟩ := _root_.PositivityTheory.Xgf.padic_logIdeal_max_element L p _ (detIdeal E) hj'inj hD
   have hapos : 0 < ‖(j.comp (algebraMap (𝓞 L) L)) a‖ :=
     norm_pos_iff.2 (fun h => ha0 (hj'inj (by rw [h, map_zero])))
   obtain ⟨v, hvE, hv⟩ : ∃ v : Fin n → Fin n → 𝓞 L, (∀ i, v i ∈ E) ∧
@@ -302,12 +302,12 @@ theorem exists_max_det {n : ℕ} (E : Submodule (𝓞 L) (Fin n → 𝓞 L)) (hD
     rintro rfl
     rw [Ideal.mul_bot] at hJ
     exact hspan0 hJ
-  obtain ⟨hmul, hsing, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Fl.logIdeal_mul_span_map L p _ hj'inj
+  obtain ⟨hmul, hsing, -⟩ := _root_.PositivityTheory.Xgf.log_ideal_mul_span_map L p _ hj'inj
   have hJlog : logIdeal (j.comp (algebraMap (𝓞 L) L)) J = 0 := by
     have := hmul _ J hD hJ0
     rw [← hJ, hsing, hdeq, hlog] at this
     linarith
-  obtain ⟨u, huJ, hu0, -, hulog⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Fl.exists_logIdeal_attained L p _ J hj'inj hJ0
+  obtain ⟨u, huJ, hu0, -, hulog⟩ := _root_.PositivityTheory.Xgf.padic_logIdeal_max_element L p _ J hj'inj hJ0
   have hu1 : ‖(j.comp (algebraMap (𝓞 L) L)) u‖ = 1 := by
     have hpos : 0 < ‖(j.comp (algebraMap (𝓞 L) L)) u‖ :=
       norm_pos_iff.2 (fun h => hu0 (hj'inj (by rw [h, map_zero])))
@@ -494,7 +494,7 @@ theorem exists_local_frame {M : Type} [AddCommGroup M] [Module (𝓞 L) M] [Modu
   have hji : Function.Injective (j.comp (algebraMap (𝓞 L) L)) :=
     j.injective.comp (IsFractionRing.injective (𝓞 L) L)
   have hc' : logIdeal (j.comp (algebraMap (𝓞 L) L)) (Ideal.span {c ^ n}) = Real.log ‖j ((c : L))‖ * n := by
-    rw [(_root_.GlobalTheory.CompanionTheory.Ar.Fl.logIdeal_mul_span_map L p _ hji).2.1]
+    rw [(_root_.PositivityTheory.Xgf.log_ideal_mul_span_map L p _ hji).2.1]
     simp [map_pow, norm_pow, Real.log_pow, mul_comm]
   have hnorm : ‖j (T.det : L)‖ * ‖j ((Matrix.of v).det : L)‖ = ‖j (c : L)‖ ^ n := by
     have := congrArg (fun a : 𝓞 L => ‖j (a : L)‖) hdetT
@@ -627,7 +627,7 @@ theorem exists_logNorms {L : Type} [Field L] [NumberField L] (B : HermitianBundl
     rfl
   have hdeg := HermitianBundle.degree_eq_of_linearIndependent B F hsli (by rw [Fintype.card_fin, hn])
   refine ⟨N, ?_, ?_, fun σ => rfl, fun p j => ?_⟩
-  · refine ((_root_.GlobalTheory.CompanionTheory.Ar.Fl.finite_logIdeal_ne_zero L _ hcn).union (_root_.GlobalTheory.CompanionTheory.Ar.Fl.finite_logIdeal_ne_zero L _ hD)).subset ?_
+  · refine ((_root_.PositivityTheory.Xgf.logIdeal_support_finite L _ hcn).union (_root_.PositivityTheory.Xgf.logIdeal_support_finite L _ hD)).subset ?_
     rintro p ⟨j, hj⟩
     by_contra hc'
     simp only [Set.mem_union, Set.mem_setOf_eq, not_or, not_exists, not_not] at hc'
@@ -659,9 +659,9 @@ theorem deg_eq_sub {k L L' : Type} [Field k] [NumberField k] [Field L] [NumberFi
     (hfin : ∀ (p : Nat.Primes) (j : L' →+* ℂ_[p]),
       N.fin p (j.comp β) = Real.log ‖j a‖ + N₁.fin p (j.comp e) - N₂.fin p (j.comp e)) :
     N.deg = N₁.deg - N₂.deg := by
-  obtain ⟨hd, _⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Fl.logNorms_ext_deg_isAdelic k L' β N
-  obtain ⟨hd₁, ha₁⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Fl.logNorms_ext_deg_isAdelic L L' e N₁
-  obtain ⟨hd₂, ha₂⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Fl.logNorms_ext_deg_isAdelic L L' e N₂
+  obtain ⟨hd, _⟩ := _root_.PositivityTheory.Xgf.logNorms_ext_degree_adelic k L' β N
+  obtain ⟨hd₁, ha₁⟩ := _root_.PositivityTheory.Xgf.logNorms_ext_degree_adelic L L' e N₁
+  obtain ⟨hd₂, ha₂⟩ := _root_.PositivityTheory.Xgf.logNorms_ext_degree_adelic L L' e N₂
   obtain ⟨_, hpf⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Fl.product_formula_embeddings L' a ha
   have f0 := finite_finSum (_root_.GlobalTheory.CompanionTheory.Ar.Fl.LogNorms.isAdelic_ofElt L' a ha)
   have f1 := finite_finSum (ha₁.2 h₁)
@@ -1180,8 +1180,6 @@ theorem flat_saturation_of_degree (hG : _root_.GlobalTheory.CompanionTheory.Ar.T
   exact mul_le_mul_of_nonneg_left hb (by positivity)
 
 end GlobalTheory.CompanionTheory.Ar.Cusp.U4
-
-
 
 theorem _root_.GlobalTheory.CompanionTheory.Relay.phiDeg_fibLat_le_of_isOFamily_of_isAdapted : _root_.GlobalTheory.CompanionTheory.Ar.Top.Given → Fl.FlatDegree → ∃ C : ℝ, 0 ≤ C ∧ ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] [IsAbelianGalois ℚ E] (H : Host E) (D : Datum H) (Xo : ∀ l : Tor.Level H, Moduli D l) (l : Tor.Level H) (c : Coeff l) (Y : Model (Xo l) c (algebraMap (𝓞 c.F) c.F)) (II : IntersectionSystem) (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (Ω : Type) [Field Ω] [Algebra ℚ Ω] (W : CMType H → Type) [∀ τ, AddCommGroup (W τ)] [∀ τ, Module Ω (W τ)] (Dc : ComponentData II (CMType H) K J Ω W) (Hd : HodgeData Dc) (S₀ : Finset ℕ) (Or : CptOrigin Y S₀ Dc Hd) (B₁ B : ℕ) (L : Type) [Field L] [NumberField L] (z : Sp (𝓞 L) ⟶ Or.𝔐.X) (P : AbPart Or.𝔐.t (spMap (algebraMap (𝓞 L) L) ≫ z)) (V : Type) [AddCommGroup V] [Module L V] [Module (𝓞 L) V] [IsScalarTower (𝓞 L) L V] (MV : LieModel P.tK.G (𝟙 (Sp L)) V) (A : LinPt E L (CMType H) V) (r k : ℕ) (v : Fin r → V) (q : CMType H → Fin k → A.Λ), admitted Xo l c Y Or B₁ → 4 * Dc.f * Dc.N ^ 2 ≤ B → Or.𝔐.IsLinPtOf z P MV A → Module.finrank (𝓞 L) A.Bq.carrier ≤ Fintype.card (CMType H) * (D.p + D.q) → r + k = Dc.j' → IsOFamily A.ρ A.I v → (∀ τ, A.IsAdapted (Or.sm τ) v (q τ) ∧ ∀ i, (q τ i : V) ∈ A.eig (Or.sm τ)) → A.phiDeg Or.sm (fun τ => Or.𝔐.FibLat (Or.𝔐.VS (S₀ ∪ Dc.SB B) (Or.sm τ)) z P MV) v q ≤ C * Dc.f * Dc.j' * abelian₂ B (hostRd E) (hostLval H) :=
   LevelTowerAlt.height_comparison_global_model GlobalTheory.CompanionTheory.Ar.Cusp.U4.flat_saturation_of_degree

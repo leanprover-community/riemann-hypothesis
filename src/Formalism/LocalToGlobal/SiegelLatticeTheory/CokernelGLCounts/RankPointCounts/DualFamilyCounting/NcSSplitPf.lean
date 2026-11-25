@@ -432,12 +432,6 @@ section CM
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-theorem sigma_sq_of_cm (σ : E →ₐ[F] E) (h : IsCMExt F E σ) (x : E) : σ (σ x) = x := by
-  obtain ⟨-, -, -, hτ⟩ := h
-  let τ : E →+* ℂ := Classical.arbitrary _
-  apply τ.injective
-  rw [hτ, hτ, star_star]
-
 theorem exists_moved_of_cm (σ : E →ₐ[F] E) (h : IsCMExt F E σ) : ∃ y, σ y ≠ y := by
   apply _root_.PI.VolStabS.IdxHW.sigma_ne_id <;> assumption
 
@@ -660,7 +654,7 @@ end LtSplSPf
 
 theorem splitStr : SplitStr := by
   intro F E _ _ _ _ _ σ v hCM hnf
-  exact LtSplSPf.main_gen (Fv F v) σ (LtSplSPf.sigma_sq_of_cm σ hCM)
+  exact LtSplSPf.main_gen (Fv F v) σ (PI.VolStabS.sigma_invol_cm σ hCM)
     (LtSplSPf.exists_moved_of_cm σ hCM) hCM.2.2.1 hnf
 
 end Formalism.L2.SG.Pf.NcS.LT

@@ -35,15 +35,9 @@ section Alg
 
 variable {F E : Type} [Field F] [Field E] [Algebra F E]
 
-
 variable (F) in
 def cd (δ : E) {R : Type} [CommRing R] [Algebra F R] (a c : R) : R ⊗[F] E :=
   a ⊗ₜ[F] (1 : E) + c ⊗ₜ[F] δ
-
-theorem tmul_algebraMap {R : Type} [CommRing R] [Algebra F R] (r : R) (t : F) :
-    r ⊗ₜ[F] (algebraMap F E t) = (r * algebraMap F R t) ⊗ₜ[F] (1 : E) := by
-  rw [Algebra.algebraMap_eq_smul_one, TensorProduct.tmul_smul, TensorProduct.smul_tmul',
-    Algebra.smul_def, mul_comm]
 
 theorem exists_basis [CharZero F] (σ : E →ₐ[F] E) (hfr : Module.finrank F E = 2) {δ : E} (h0 : δ ≠ 0)
     (hσ : σ δ = -δ) : ∃ b2 : Module.Basis (Fin 2) F E, b2 0 = 1 ∧ b2 1 = δ := by
@@ -91,7 +85,7 @@ theorem cd_mul {D : F} (hD : δ * δ = algebraMap F E D) (a c a' c' : R) :
     cd F δ a c * cd F δ a' c' =
       cd F δ (a * a' + algebraMap F R D * (c * c')) (a * c' + c * a') := by
   simp only [cd, add_mul, mul_add, Algebra.TensorProduct.tmul_mul_tmul, mul_one, one_mul, hD,
-    tmul_algebraMap, TensorProduct.add_tmul]
+    GlobalTheory.CompanionTheory.SW.PiLocalization₂.tmul_algebraMap, TensorProduct.add_tmul]
   rw [show c * c' * algebraMap F R D = algebraMap F R D * (c * c') by ring]
   abel
 
@@ -115,7 +109,6 @@ end Alg
 section Model
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-
 
 open GlobalTheory.CompanionTheory.SW.GoodInt GlobalTheory.CompanionTheory.SW.GoodMass in
 theorem model (σ : E →ₐ[F] E) (hcm : IsCMExt F E σ) (J : Matrix (Fin 1) (Fin 1) E) (hJ : IsHermND σ J)
@@ -358,7 +351,7 @@ theorem gram_rank_one_norm_form (σ : E →ₐ[F] E) (hσ : σ δ = -δ) (hD : �
     ring
   rw [e, hX, norm_cd σ hσ hD, hj]
   change ((1 : R) ⊗ₜ[F] (algebraMap F E j₀)) * _ = _
-  rw [tmul_algebraMap, Algebra.TensorProduct.tmul_mul_tmul, one_mul, one_mul]
+  rw [GlobalTheory.CompanionTheory.SW.PiLocalization₂.tmul_algebraMap, Algebra.TensorProduct.tmul_mul_tmul, one_mul, one_mul]
 
 end Gram
 
@@ -517,7 +510,6 @@ section Split
 
 variable {F E : Type} [Field F] [Field E] [Algebra F E] {R : Type} [Field R] [Algebra F R]
   {b2 : Module.Basis (Fin 2) F E} {δ : E} {D : F} {t : R}
-
 
 variable (F) in
 def wv (δ : E) (t p q : R) : R ⊗[F] E := cd F δ ((p + q) / 2) ((p - q) / (2 * t))
@@ -763,7 +755,6 @@ theorem mass_split (h0 : b2 0 = 1) (h1 : b2 1 = δ) (hσ : σ δ = -δ) (hD : δ
 end Loc3
 
 section Main
-
 
 open PositivityTheory.SiegelWeilFormula.Gen in
 theorem locR : Scal → MassOne → LocR := by

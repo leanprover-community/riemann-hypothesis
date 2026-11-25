@@ -213,6 +213,24 @@ theorem compl3_abs_le (D : D7) (L : SizeData₂ D) (Z : DivX D) (Csz M : ℝ) (h
         simp only [Finset.sum_const, Finset.card_univ, D.what₂.card_Tau, SizeData₂.lifts, Nat.card_Icc,
           Nat.add_sub_cancel, nsmul_eq_mul]
 
+private lemma sc_b'_le (L : Scale) : L.b' ≤ L.x * L.b := by
+  have hx0 : 0 < L.x := by linarith [L.one_lt_alt]
+  have hb0 : 0 < L.b := Real.exp_pos _
+  unfold Scale.b' Scale.a
+  exact div_le_self (by positivity) (Real.one_le_exp (Real.rpow_pos_of_pos hx0 _).le)
+
+private lemma sc_w''_le (D : D7) (L : Scale) (hn0 : (0 : ℝ) < D.R.n) : L.w'' D.R.n ≤ L.b := by
+  have hx0 : 0 < L.x := by linarith [L.one_lt_alt]
+  have hb0 : 0 < L.b := Real.exp_pos _
+  have hn1 : (1 : ℝ) ≤ D.R.n := by
+    have : 0 < D.R.n := by exact_mod_cast hn0
+    exact_mod_cast this
+  unfold Scale.w''
+  rw [div_le_iff₀ (by positivity)]
+  calc L.b' ≤ L.x * L.b := sc_b'_le L
+    _ ≤ L.x * L.b * D.R.n := le_mul_of_one_le_right (by positivity) hn1
+    _ = L.b * (L.x * D.R.n) := by ring
+
 theorem sc_add_wj_le (D : D7) (L : SizeData₂ D) (S : SizesAt L) (i : ℕ) (hi : i < D.R.m) (τ : D.what₂.Tau) :
     L.Sc + wj D (i + 1) τ ≤ 6 * L.sc.x ^ 6 * L.sc.b := by
   obtain ⟨hN, hMm, hK, hKR, hT, hCond, hQD, hTT, hLa, hRho, hBot, hDe2, hLw, hEta, hNodes, hLstar, hDel, hW, hBm,
@@ -227,20 +245,9 @@ theorem sc_add_wj_le (D : D7) (L : SizeData₂ D) (S : SizesAt L) (i : ℕ) (hi 
     have := D.R.m_add_three_le_k
     exact_mod_cast (by omega : 1 ≤ D.R.k)
   have hn0 : (0 : ℝ) < D.R.n := lt_of_lt_of_le (Real.rpow_pos_of_pos hx0 _) hN.1
-  have hn1 : (1 : ℝ) ≤ D.R.n := by
-    have : 0 < D.R.n := by exact_mod_cast hn0
-    exact_mod_cast this
-  have hX'1 : 1 ≤ L.sc.X' := Real.one_le_exp (Real.rpow_pos_of_pos hx0 _).le
-  have hb' : L.sc.b' ≤ L.sc.x * L.sc.b := by
-    unfold Scale.b' Scale.a
-    exact div_le_self (by positivity) hX'1
+  have hb' : L.sc.b' ≤ L.sc.x * L.sc.b := sc_b'_le L.sc
   have hb'0 : 0 ≤ L.sc.b' := by unfold Scale.b' Scale.a Scale.X'; positivity
-  have hw'' : L.sc.w'' D.R.n ≤ L.sc.b := by
-    unfold Scale.w''
-    rw [div_le_iff₀ (by positivity)]
-    calc L.sc.b' ≤ L.sc.x * L.sc.b := hb'
-      _ ≤ L.sc.x * L.sc.b * D.R.n := le_mul_of_one_le_right (by positivity) hn1
-      _ = L.sc.b * (L.sc.x * D.R.n) := by ring
+  have hw'' : L.sc.w'' D.R.n ≤ L.sc.b := sc_w''_le D L.sc hn0
   have hkSc : (D.R.k : ℝ) * L.Sc ≤ L.sc.w'' D.R.n := hDel.2.2.2.1
   have hSc0 : 0 ≤ L.Sc := L.Sc_pos.le
   have hSc : L.Sc ≤ L.sc.b := by
@@ -323,24 +330,8 @@ theorem sc_add_wj_le (D : D7) (L : SizeData₂ D) (S : SizesAt L) (i : ℕ) (hi 
 
 theorem kSc_le_b (D : D7) (L : SizeData₂ D) (S : SizesAt L) : (D.R.k : ℝ) * L.Sc ≤ L.sc.b := by
   obtain ⟨hN, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, hDel, _⟩ := S
-  have hx1 : 1 < L.sc.x := L.sc.one_lt_alt
-  have hx0 : 0 < L.sc.x := by linarith
-  have hn0 : (0 : ℝ) < D.R.n := lt_of_lt_of_le (Real.rpow_pos_of_pos hx0 _) hN.1
-  have hn1 : (1 : ℝ) ≤ D.R.n := by
-    have : 0 < D.R.n := by exact_mod_cast hn0
-    exact_mod_cast this
-  have hX'1 : 1 ≤ L.sc.X' := Real.one_le_exp (Real.rpow_pos_of_pos hx0 _).le
-  have hbpos : 0 < L.sc.b := Real.exp_pos _
-  have hb' : L.sc.b' ≤ L.sc.x * L.sc.b := by
-    unfold Scale.b' Scale.a
-    exact div_le_self (by positivity) hX'1
-  have hw'' : L.sc.w'' D.R.n ≤ L.sc.b := by
-    unfold Scale.w''
-    rw [div_le_iff₀ (by positivity)]
-    calc L.sc.b' ≤ L.sc.x * L.sc.b := hb'
-      _ ≤ L.sc.x * L.sc.b * D.R.n := le_mul_of_one_le_right (by positivity) hn1
-      _ = L.sc.b * (L.sc.x * D.R.n) := by ring
-  exact le_trans hDel.2.2.2.1 hw''
+  have hx0 : 0 < L.sc.x := by linarith [L.sc.one_lt_alt]
+  exact le_trans hDel.2.2.2.1 (sc_w''_le D L.sc (lt_of_lt_of_le (Real.rpow_pos_of_pos hx0 _) hN.1))
 
 theorem abs_logOm_le (D : D7) (L : SizeData₂ D) (S : SizesAt L) (P : ParameterChoice' D L) :
     |L.logOm| ≤ 6 + 2 * L.sc.L := by

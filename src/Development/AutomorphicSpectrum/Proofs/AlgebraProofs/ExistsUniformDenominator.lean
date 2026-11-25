@@ -83,7 +83,6 @@ theorem exists_uniform_denominator (R : Subalgebra o Ω) (r : ℕ) (L : AddSubgr
   refine ⟨n, ?_⟩
   have h5 : f j ^ n • (g ^ m * ψ (∑ q, a q • b j q))
       = ∑ q, f j ^ n • (g ^ m * (a q * ψ (b j q))) := by
-    set_option synthInstance.maxHeartbeats 100000 in
       simp only [map_sum, map_smul, smul_eq_mul, Finset.mul_sum]
   rw [h5]
   exact R'.sum_mem fun q _ => hn q

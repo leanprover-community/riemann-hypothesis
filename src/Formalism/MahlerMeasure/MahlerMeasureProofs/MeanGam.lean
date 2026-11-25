@@ -605,10 +605,6 @@ lemma lead_bound (p : ℕ) [hp : Fact p.Prime] {n : ℕ} (β : Fin n → ℝ) (d
 
 end Formalism.GM.MeanGammaLemmas
 
-namespace Formalism.GM
-open Polynomial Finset Formalism.GM.M Formalism.GM.MeanGammaLemmas
-
-end Formalism.GM
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Formalism.MahlerMeasure.MahlerMeasureProofs.MeanGam =====

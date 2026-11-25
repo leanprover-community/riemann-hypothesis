@@ -566,14 +566,10 @@ theorem clear_denoms (G : GenFibre inlV (graphIdeal P g))
     rw [map_mul, ← e, hq]
     ring
 
-theorem graphMap_rename (u : MRing ι) :
-    graphMap P g (rename inlV u) = C (Ideal.Quotient.mk P u) := by
-  apply _root_.GlobalTheory.CompanionTheory.Ar.Giv.graphMap_rename_inlV <;> assumption
-
 theorem rel_graph (k : K₂) (j j' : ι₂ k) :
     rename inlV (g ⟨k, j⟩) * X ⟨Sum.inr k, j'⟩ - rename inlV (g ⟨k, j'⟩) * X ⟨Sum.inr k, j⟩ ∈
       graphIdeal P g := by
-  rw [graphIdeal, RingHom.mem_ker, map_sub, map_mul, map_mul, graphMap_rename, graphMap_rename]
+  rw [graphIdeal, RingHom.mem_ker, map_sub, map_mul, map_mul, GlobalTheory.CompanionTheory.Ar.Giv.graphMap_rename_inlV, GlobalTheory.CompanionTheory.Ar.Giv.graphMap_rename_inlV]
   have e : ∀ l : ι₂ k, graphMap P g (X ⟨Sum.inr k, l⟩) =
       C (Ideal.Quotient.mk P (g ⟨k, l⟩)) * X k := by
     intro l

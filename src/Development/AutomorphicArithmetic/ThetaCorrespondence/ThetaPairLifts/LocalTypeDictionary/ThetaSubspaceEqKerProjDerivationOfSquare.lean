@@ -190,9 +190,6 @@ theorem isPair_small {F E : Type} [Field F] [NumberField F] [Field E] [NumberFie
 
 end GlobalTheory.SquareAgree.KerPCpt
 
-namespace GlobalTheory.SquareAgree.KerPCpt
-
-end GlobalTheory.SquareAgree.KerPCpt
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -307,12 +304,6 @@ end Abstract
 
 end GlobalTheory.KExpLine
 
-namespace GlobalTheory.KExpLine
-
-open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
-open scoped Classical
-
-end GlobalTheory.KExpLine
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -592,8 +583,6 @@ section
 open NumberField IsDedekindDomain
 noncomputable section
 namespace GlobalTheory.KExpLine
-end GlobalTheory.KExpLine
-namespace GlobalTheory.KExpLine
 open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open scoped Classical
 theorem sub_mem_span_kInfty_exp_derivatives : _root_.GlobalTheory.FunPr.ThetaLocalInputs → ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E]
@@ -686,8 +675,6 @@ open GlobalTheory.Grid GlobalTheory.Doubling GlobalTheory.ChainFr GlobalTheory.I
 open scoped TensorProduct GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 open GlobalTheory.SquareComm GlobalTheory.SquareAgree
 noncomputable section
-namespace GlobalTheory.SquareAgree.KerPCpt
-end GlobalTheory.SquareAgree.KerPCpt
 namespace GlobalTheory.SquareAgree.KerPCpt
 theorem compact_action_mem_ker_polarizationProjection : _root_.GlobalTheory.FunPr.ThetaLocalInputs → ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (W W₁ X : HSp D) (A : Fr W) (A₁ : Fr W₁)
     (B : Fr X) (α β : (AE D)ˣ →* Circle) (ν : Measure (GA D W)) (𝓕 : Set (GA D W)) (ν₁ : Measure (GA D W₁))
@@ -1090,9 +1077,6 @@ theorem incM_map_piInf {F E : Type} [Field F] [NumberField F] [Field E] [NumberF
   ext i j
   simp [incM, piInf, compInf, inclR, infEmb_tmul]
 
-theorem Jm_transpose (p q : ℕ) : (Jm p q)ᵀ = Jm p q := by
-  simp [Jm, Formalism.UG.Jpq, Matrix.fromBlocks_transpose]
-
 theorem vac_mem_line {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
     (B : Base F E) (n d : ℕ) (X : Spc F E n) (W : Spc F E d) (M : Model σ X W) (χX χW : Chr F E) (om : Rep σ X W)
     (r s r' s' : ℕ) (h : GlobalTheory.ThK.IsPair B M χX χW om r s r' s') :
@@ -1117,7 +1101,7 @@ theorem vac_mem_line {F E : Type} [Field F] [NumberField F] [Field E] [NumberFie
       A w * (e • (Jm r s * c * Jm r' s')) * (C w)ᵀ = e • (X.θ w * (A w * c * (C w)ᵀ) * (W.θ w)ᵀ) := by
     intro w c e
     have h2 : (C w)ᵀ * (W.θ w)ᵀ = Jm r' s' * (C w)ᵀ := by
-      rw [← Matrix.transpose_mul, hCθ w, Matrix.transpose_mul, Jm_transpose]
+      rw [← Matrix.transpose_mul, hCθ w, Matrix.transpose_mul, GlobalTheory.RealLift.PolRangePf.Jm_transpose']
     calc A w * (e • (Jm r s * c * Jm r' s')) * (C w)ᵀ = e • ((A w * Jm r s) * c * (Jm r' s' * (C w)ᵀ)) := by
           simp only [Matrix.mul_smul, Matrix.smul_mul, Matrix.mul_assoc]
       _ = _ := by rw [← hAθ w, ← h2]; simp only [Matrix.mul_assoc]
@@ -1545,12 +1529,6 @@ theorem polData_kfin : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Num
 
 end GlobalTheory.KExpLineW
 
-namespace GlobalTheory.KExpLineW
-
-open MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
-
-end GlobalTheory.KExpLineW
-
 end
 end -- clump:auto
 end -- clump:auto
@@ -1564,12 +1542,6 @@ section -- clump:auto
 section
 open NumberField IsDedekindDomain
 noncomputable section
-namespace GlobalTheory.KExpLineW
-end GlobalTheory.KExpLineW
-namespace GlobalTheory.KExpLineW
-end GlobalTheory.KExpLineW
-namespace GlobalTheory.KExpLineW
-end GlobalTheory.KExpLineW
 namespace GlobalTheory.KExpLineW
 open MeasureTheory Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK
 theorem KExpLine_stabilizes_line : _root_.GlobalTheory.FunPr.ThetaLocalInputs → ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)

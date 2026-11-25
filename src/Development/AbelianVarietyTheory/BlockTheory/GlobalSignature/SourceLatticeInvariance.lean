@@ -20,19 +20,11 @@ variable {E : Type} [Field E] [NumberField E]
 theorem intAt_zero (P : HeightOneSpectrum (𝓞 E)) : IntAt P (0 : E) :=
   ⟨0, 1, one_notMem P, by simp⟩
 
-theorem intAt_add {P : HeightOneSpectrum (𝓞 E)} {a b : E} (ha : IntAt P a) (hb : IntAt P b) : IntAt P (a + b) := by
-  obtain ⟨r, s, hs, h⟩ := ha
-  obtain ⟨r', s', hs', h'⟩ := hb
-  refine ⟨s' * r + s * r', s * s', fun hm => (P.isPrime.mem_or_mem hm).elim hs hs', ?_⟩
-  rw [map_add (f := _), map_mul, map_mul, map_mul, ← h, ← h']
-  ring
+theorem intAt_add {P : HeightOneSpectrum (𝓞 E)} {a b : E} (ha : IntAt P a) (hb : IntAt P b) : IntAt P (a + b) :=
+  IntAt.add ha hb
 
-theorem intAt_mul {P : HeightOneSpectrum (𝓞 E)} {a b : E} (ha : IntAt P a) (hb : IntAt P b) : IntAt P (a * b) := by
-  obtain ⟨r, s, hs, h⟩ := ha
-  obtain ⟨r', s', hs', h'⟩ := hb
-  refine ⟨r * r', s * s', fun hm => (P.isPrime.mem_or_mem hm).elim hs hs', ?_⟩
-  rw [map_mul, map_mul, ← h, ← h']
-  ring
+theorem intAt_mul {P : HeightOneSpectrum (𝓞 E)} {a b : E} (ha : IntAt P a) (hb : IntAt P b) : IntAt P (a * b) :=
+  IntAt.mul ha hb
 
 theorem intAt_neg {P : HeightOneSpectrum (𝓞 E)} {a : E} (ha : IntAt P a) : IntAt P (-a) := by
   obtain ⟨r, s, hs, h⟩ := ha

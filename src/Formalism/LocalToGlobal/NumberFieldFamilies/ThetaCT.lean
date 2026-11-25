@@ -29,14 +29,6 @@ variable (F : Type) [Field F] [NumberField F]
 
 theorem countable_F : Countable F := (Module.finBasis ℚ F).equivFun.injective.countable
 
-theorem countable_primes : Countable (HeightOneSpectrum (𝓞 F)) := by
-  have := countable_F F
-  have : Countable (𝓞 F) := Subtype.countable
-  have h : Function.Surjective fun s : Finset (𝓞 F) => Ideal.span (s : Set (𝓞 F)) := fun I =>
-    (IsNoetherian.noetherian I)
-  have := h.countable
-  exact Function.Injective.countable (f := HeightOneSpectrum.asIdeal) fun _ _ e => HeightOneSpectrum.ext e
-
 theorem sc_Fv (v : HeightOneSpectrum (𝓞 F)) : SecondCountableTopology (v.adicCompletion F) := by
   have := countable_F F
   have : TopologicalSpace.SeparableSpace (v.adicCompletion F) :=

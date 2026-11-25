@@ -399,11 +399,6 @@ theorem tTool2Z_of [NeZero n] [IsDomain O] [IsLocalRing O] [IsAdicComplete (IsLo
 
 end Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
 
-namespace Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
-
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
-
-end Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

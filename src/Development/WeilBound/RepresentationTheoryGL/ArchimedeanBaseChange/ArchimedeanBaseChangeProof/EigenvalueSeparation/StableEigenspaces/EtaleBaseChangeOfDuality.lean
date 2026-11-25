@@ -208,10 +208,8 @@ open PositivityTheory.Rg.Rs.JExpNegGlue in
 theorem locNonPosGlue_holds : LocNonPosGlue := by
   intro hSize E _ _ _ N φ hA hLoc r hr0 hrN c hc
   have : LocallyCompactSpace (GA E N) := by
-    set_option synthInstance.maxHeartbeats 400000 in
       exact inferInstance
   have : T2Space (GA E N) := by
-    set_option synthInstance.maxHeartbeats 400000 in
       exact inferInstance
   obtain ⟨haR, -, -, hct⟩ := dict_holds E N
   have hctn := (hct φ hA r hr0 hrN).2
@@ -228,10 +226,8 @@ theorem locNonPosGlue_holds : LocNonPosGlue := by
     have hdec_ctn : Dec μ (An.rho E N r + ε) a (An.ctn r φ.1) := by
       have hctc : Continuous (An.ctn r φ.1) := by
         have : SecondCountableTopology (GA E N) := by
-          set_option synthInstance.maxHeartbeats 400000 in
             exact inferInstance
         have : FirstCountableTopology (GA E N) := by
-          set_option synthInstance.maxHeartbeats 400000 in
             exact inferInstance
         obtain ⟨C, hC, hDC⟩ := GroundTheory.Automorphic.AutomorphicForm.exists_isCompact_superset_unipFundamentalDomain (K := E) (n := N) (r := r)
         have : IsFiniteMeasure ((GroundTheory.Automorphic.AutomorphicForm.unipMeasure E N r).restrict (GroundTheory.Automorphic.AutomorphicForm.unipFundamentalDomain E N r)) :=
@@ -980,7 +976,6 @@ theorem lintegral_translate [MeasurableSpace (GA E N)] [BorelSpace (GA E N)] (μ
   ring
 
 theorem centReGlue_holds : CentReGlue := by
-  set_option synthInstance.maxHeartbeats 200000 in
   intro hS hM E _ _ _ N φ z hφ hne hL hz
   letI : MeasurableSpace (GA E N) := borel _
   haveI : BorelSpace (GA E N) := ⟨rfl⟩

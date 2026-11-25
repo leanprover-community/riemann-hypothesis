@@ -187,8 +187,6 @@ theorem frMapO_add' {S T : HSp D} (βS : GL (Fin S.rank) (EAf D)) (βT : GL (Fin
 
 alias frMapO_smul := _root_.GlobalTheory.RedHalfDrop.frMapO_smul_eq
 
-alias frMapAdj_smul := _root_.GlobalTheory.RedHalfDrop.frMapAdj_smul_eq
-
 theorem isIntM_smul {b a : ℕ} {e : AE D} (he : e * e = e) {N : Matrix (Fin b) (Fin a) (EAf D)} (hN : IsIntM N) :
     IsIntM (toEAf D e • N) := fun i j => by
   rw [Matrix.smul_apply, smul_eq_mul]
@@ -213,7 +211,7 @@ theorem isInt_iff {S T : HSp D} {F : Frame S T} (hF : F.Good) {Pg Qa Qb : Finset
   constructor
   · rintro ⟨h1, h2⟩
     refine ⟨?_, ?_, _root_.GlobalTheory.IntHalfLat.mem_lat_of_frMapO_int hF hR (isHalf_smul hb x) ?_⟩
-    · rw [frMapAdj_smul]; exact isIntM_smul_cA ha' h1
+    · rw [GlobalTheory.RedHalfDrop.frMapAdj_smul_eq]; exact isIntM_smul_cA ha' h1
     · rw [frMapO_smul]; exact isIntM_smul ha' h2
     · rw [frMapO_smul]; exact isIntM_smul hb h2
   · rintro ⟨k1, k2, k3⟩

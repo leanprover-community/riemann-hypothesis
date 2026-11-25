@@ -471,7 +471,6 @@ theorem local_integral : ∀ (K : Type) [Field K] [NumberField K] (v : HeightOne
     rw [h] at this
     exact_mod_cast this
   have hodd := FiniteField.odd_card_of_char_ne_two hchar
-  have hdk : residue O d ≠ 0 := (hdu.map (residue O)).ne_zero
   have hαk : residue O α ≠ 0 := (hαu.map (residue O)).ne_zero
   obtain ⟨s, t, hst⟩ := FiniteField.exists_root_sum_quadratic
     (f := (X ^ 2 : (ResidueField O)[X])) (g := C (-residue O d) * X ^ 2 + C (-residue O α))

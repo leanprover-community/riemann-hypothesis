@@ -36,13 +36,9 @@ theorem hens_of_surj {A B : Type} [CommRing A] [CommRing B] [HenselianLocalRing 
 theorem sepClosed_of_surj {A B : Type} [CommRing A] [CommRing B] [IsLocalRing A] [IsLocalRing B]
     (φ : A →+* B) [IsLocalHom φ] (hφ : Function.Surjective φ) [IsSepClosed (ResidueField A)] :
     IsSepClosed (ResidueField B) := by
-  have hs : Function.Surjective (ResidueField.map φ) := by
-    intro y
-    obtain ⟨b, rfl⟩ := residue_surjective y
-    obtain ⟨a, rfl⟩ := hφ b
-    exact ⟨residue A a, ResidueField.map_residue φ a⟩
-  let e : ResidueField A ≃+* ResidueField B :=
-    RingEquiv.ofBijective (ResidueField.map φ) ⟨(ResidueField.map φ).injective, hs⟩
+  let e : ResidueField A ≃+* ResidueField B := RingEquiv.ofBijective (ResidueField.map φ)
+    ⟨(ResidueField.map φ).injective,
+      Function.Surjective.of_comp (g := residue A) ((residue_surjective (R := B)).comp hφ)⟩
   refine ⟨fun p hp => ?_⟩
   have h1 : (p.map (e.symm : ResidueField B →+* ResidueField A)).Separable := hp.map
   have h2 := (IsSepClosed.splits_of_separable _ h1).map (e : ResidueField A →+* ResidueField B)
@@ -80,11 +76,7 @@ theorem LeafClosedSHPos_of : LateralTheory.E.LeafVanBPf.LeafClosedSHPos := by
   let ψ : A →+* B := (ι'.appTop).hom.comp (Scheme.ΓSpecIso (CommRingCat.of A)).inv.hom
   have hψ : Function.Surjective ψ := hsurj.comp
     (ConcreteCategory.bijective_of_isIso (Scheme.ΓSpecIso (CommRingCat.of A)).inv).2
-  have : Nontrivial B := by
-    by_contra hB
-    rw [not_nontrivial_iff_subsingleton] at hB
-    let p := W'.isoSpec.hom.base w
-    exact p.isPrime.ne_top (Subsingleton.elim _ _)
+  have : Nontrivial B := (W'.isoSpec.hom.base w).nontrivial
   obtain ⟨hH, hS⟩ := hA
   have := IsLocalHom.of_surjective ψ hψ
   have hHB : HenselianLocalRing B := hens_of_surj ψ hψ

@@ -83,28 +83,20 @@ theorem act_act (A B : Matrix ι ι E) (v : ι → V) : act A (act B v) = act (B
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun c _ => Finset.sum_congr rfl fun a _ => by rw [mul_comm]
 
-theorem h_sum_left {κ : Type} (s : Finset κ) (f : κ → V) (y : V) : H.h (∑ c ∈ s, f c) y = ∑ c ∈ s, H.h (f c) y := by
-  induction s using Finset.induction_on with
-  | empty => simp only [Finset.sum_empty]; exact H.h_zero_left y
-  | insert c s hc ih => rw [Finset.sum_insert hc, Finset.sum_insert hc, H.h_add_left, ih]
-
 theorem h_right (x y : V) : H.h x y = M.L.cj (H.h y x) := by
   rw [H.h_herm x y, M.L.cj_cj]
 
 theorem h_sum_right {κ : Type} (s : Finset κ) (f : κ → V) (x : V) : H.h x (∑ c ∈ s, f c) = ∑ c ∈ s, H.h x (f c) := by
 
-  rw [h_right, h_sum_left, map_sum]
+  rw [h_right, Formalism.L2.SG.CntLocal.h_sum_left, map_sum]
   exact Finset.sum_congr rfl fun c _ => (h_right H x (f c)).symm
-
-theorem h_smul_right (a : E) (x y : V) : H.h x (a • y) = M.L.cj a * H.h x y := by
-  rw [h_right, H.h_smul_left, map_mul, ← h_right]
 
 theorem gram_act (A : Matrix ι ι E) (v : ι → V) (a b : ι) :
     H.h (act A v b) (act A v a) =
       ((A.map M.L.cj).transpose * Matrix.of (fun c d => H.h (v d) (v c)) * A) a b := by
   simp only [act, Matrix.mul_apply, Matrix.transpose_apply, Matrix.map_apply, Matrix.of_apply]
-  rw [h_sum_left]
-  simp only [H.h_smul_left, h_sum_right, h_smul_right, Finset.mul_sum, Finset.sum_mul]
+  rw [Formalism.L2.SG.CntLocal.h_sum_left]
+  simp only [H.h_smul_left, h_sum_right, Formalism.L2.SG.CntLocal.h_smul_right', Finset.mul_sum, Finset.sum_mul]
   exact Finset.sum_congr rfl fun c _ => Finset.sum_congr rfl fun d _ => by ring
 
 end Act

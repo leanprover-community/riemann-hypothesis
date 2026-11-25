@@ -391,13 +391,6 @@ section ThInv
 variable {D : Formalism.BasicNotions.D7} (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep)
   (δ : ∀ p : PlF D, (D.s.atP p).Fp)
 
-theorem permSign_mul_self₂ (p : PlF D) : sgnP (D := D) p * sgnP p = 1 := by
-  unfold sgnP
-  rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
-  congr 1
-  funext b
-  rw [← mul_pow, neg_one_mul, neg_neg, one_pow]
-
 theorem sgnP_int (p : PlF D) (i j : Fin (D.R.rS + 1)) : sgnP (D := D) p i j ∈ (M p).R := by
   unfold sgnP
   rw [Matrix.diagonal_apply]
@@ -454,7 +447,7 @@ theorem thL_inv (T T' : ℕ) (p : PlF D) (w : Point D.host.E (D.R.rS + 1)) (Y Y'
     (Formalism.L2.SG.Pf.LocOrbSumPf.last_of_up ρ⁻¹ hρi.1 hρi.2.1)]
   have e2 : (Y' + C) * sgnP p = 1 * (Y' + C) * sgnP p := by rw [Matrix.one_mul]
   rw [e2, clsOf_mul (M p) (Y' + C) 1 1 (sgnP p) (sgnP p) (one_int M p) (one_int M p) (sgnP_int M p)
-    (sgnP_int M p) (Matrix.mul_one 1) (Matrix.mul_one 1) (permSign_mul_self₂ p) (permSign_mul_self₂ p)
+    (sgnP_int M p) (Matrix.mul_one 1) (Matrix.mul_one 1) (Formalism.L2.SG.Pf.LocUnramB.permSign_mul_self₂ p) (Formalism.L2.SG.Pf.LocUnramB.permSign_mul_self₂ p)
     (Formalism.L2.SG.Pf.LocOrbSumPf.last_of_low 1 (fun a => Matrix.one_apply_eq a)
       (fun a b h => Matrix.one_apply_ne (ne_of_lt h))) (sgnP_last p)]
 
@@ -1141,8 +1134,6 @@ theorem leadMinor_r (Z : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) D.host.E) 
     leadMinorE Z D.R.rS = (Z.submatrix Fin.castSucc Fin.castSucc).det := by
   unfold leadMinorE; rw [dite_eq_left (Nat.le_succ _)]; rfl
 
-
-
 theorem detG (hA : ∀ p, Agree δ M p) (u u' : D.what₂.Word) (p : PlF D) (g : Loc.SplitG (M p).L)
     (hsM : (M p).split = some g) {F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)}
     {F' : LFlag (D.sp.Y 0) D.R.rS (((D.mem u').A.T : ℕ) : D.host.E)} (w : Point D.host.E (D.R.rS + 1))
@@ -1352,9 +1343,6 @@ end Assembly
 
 end Formalism.L2.SG.Pf.ThSomePf
 
-namespace Formalism.L2.SG.Pf
-
-end Formalism.L2.SG.Pf
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

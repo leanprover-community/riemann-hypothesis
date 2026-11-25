@@ -157,7 +157,6 @@ theorem isMonomialSplitting_comap_of_smooth (h : Y ⟶ X) [AlgebraicGeometry.Smo
     {E : List X.IdealSheafData} {I M N : X.IdealSheafData} (hs : IsMonomialSplitting E I M N) :
     IsMonomialSplitting (E.map (fun D : X.IdealSheafData => D.comap h)) (I.comap h) (M.comap h)
       (N.comap h) := by
-  have : AlgebraicGeometry.Flat h := inferInstance
   exact isMonomialSplitting_comap_of_flat h hs
 
 end FunctorialResolution.EmbeddedResolution

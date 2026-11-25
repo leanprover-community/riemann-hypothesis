@@ -30,9 +30,7 @@ theorem delF_mul {g h : W.Gam} (hg : g ∈ W.DelF) (hh : h ∈ W.DelF) : g * h �
   apply _root_.Formalism.MainNotions.N.FrobeniusPowerSeries.TypesA.delF_mul <;> assumption
 
 theorem delF_inv {g : W.Gam} (hg : g ∈ W.DelF) : g⁻¹ ∈ W.DelF := by
-  rw [W.DelF_def] at hg ⊢
-  obtain ⟨k, hk, hgk⟩ := hg
-  exact ⟨k, hk, by rw [inv_pow, hgk, inv_one]⟩
+  exact Formalism.MainNotions.N.FrobeniusPowerSeries.TypesA.delF_inv W hg
 
 alias γA_letE := _root_.Formalism.MainNotions.N.FrobeniusPowerSeries.GS.γA_letE
 

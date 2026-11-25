@@ -115,8 +115,7 @@ theorem isIdemSum_props : ∀ {D : D7} (e : AE D) (P : Finset (Formalism.L2.DIV.
     rw [he, map_sum]
     exact sum_mem fun w hw => (idemOf_toEAf (hes w hw)).mem
   refine ⟨?_, hint, ?_⟩
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [he, map_sum]
+  · rw [he, map_sum]
     exact Finset.sum_eq_zero fun w hw =>
       GlobalTheory.ExportSeries.SpecGood.infPart_eq_zero_of_isIdemAt D w (es w) (hes w hw)
   · refine one_sub_mem_idS_prod P d hint fun w hw => ?_

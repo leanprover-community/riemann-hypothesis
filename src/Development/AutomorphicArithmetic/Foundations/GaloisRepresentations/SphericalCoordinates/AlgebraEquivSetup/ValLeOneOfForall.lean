@@ -200,10 +200,6 @@ private theorem norm_of_mem_intKQ {p : ℕ} [Fact p.Prime] (K : IntermediateFiel
       exact b.2
   exact (_root_.GlobalTheory.mem_padicAlgCl_valuationSubring_iff_norm_le_one _).1 (hle hz)
 
-private theorem norm_galois {p : ℕ} [Fact p.Prime] (σ : PadicAlgCl p ≃ₐ[ℚ_[p]] PadicAlgCl p) (z : PadicAlgCl p) :
-    ‖σ z‖ = ‖z‖ := by
-  rw [← PadicAlgCl.spectralNorm_eq, ← PadicAlgCl.spectralNorm_eq, spectralNorm, spectralNorm, minpoly.algEquiv_eq]
-
 private theorem norm_of_Kint {p : ℕ} [Fact p.Prime] (t : ℚ_[p]ˣ)
     (h : (GeneralLinearGroup.scalar (Fin 1)) (Units.map (algebraMap ℚ_[p] (Qr p 1)).toMonoidHom t) ∈
       GlobalTheory.LKLoc.Kint p (Q0 p) 1 1) : ‖(t : ℚ_[p])‖ ≤ 1 := by
@@ -266,7 +262,7 @@ private theorem over_norm (S : Setup A n p) (y : Gam0 E n)
     (hτ : LiesOver S.P.Kq S.P.u τ) (j l : Fin n) : ‖τ (y.1.1.val j l)‖ ≤ 1 := by
   obtain ⟨i, σ, rfl⟩ := S.P.emb_all τ hτ
   show ‖σ (S.P.emb i (y.1.1.val j l))‖ ≤ 1
-  rw [norm_galois]
+  rw [GaloisNormAlt.Bridge.RingBasics.norm_gal]
   exact entry_norm S y hy i j l
 
 private theorem rat_norm {E : Type} [Field E] {p : ℕ} [Fact p.Prime] (τ : E →+* PadicAlgCl p) [Algebra ℚ E] (c : ℚ) :

@@ -54,17 +54,3 @@ theorem rep_injective {Λ : AddSubgroup (WO S T)} {c : AE D} {N : ℕ} :
 variable (ψ : AddChar (AF D.host.F) ℂ)
 
 end GlobalTheory.DivPtFourier
-
-namespace GlobalTheory.DivPtFourier
-
-open scoped Classical
-
-variable {D : D7} {S T : HSp D} (ψ : AddChar (AF D.host.F) ℂ)
-
-end GlobalTheory.DivPtFourier
-
-namespace GlobalTheory.DivPtFourier
-
-open scoped Classical
-
-end GlobalTheory.DivPtFourier

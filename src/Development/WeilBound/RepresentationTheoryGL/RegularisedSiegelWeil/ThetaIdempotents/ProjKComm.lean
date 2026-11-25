@@ -327,9 +327,6 @@ theorem hasSum_recon (hψ : IsStdChar D ψ (-1)) (v : GlobalTheory.Unf.VolM D T.
     ψ (symplO S T (e.extX T (rat η + x)) (e.extY T y)) * e.mixS T ψ v.μ v.𝓕 f (rat η + x) 0) _
   simpa only [heisO, map_zero, symplOH_zero_left, AddChar.map_zero_eq_one, one_mul, zero_add] using h5
 
-theorem symplO_add_right (x y y' : WO S T) : symplO S T x (y + y') = symplO S T x y + symplO S T x y' := by
-  simp only [← Check.symplOH_add_self, GlobalTheory.OrientedHeis.symplOH_add_right]; ring
-
 theorem iso_pair (ξ ξ' : Mx D t S.rank) (w : WO S T') : symplOH S T (d.jX ⬝ ξ) (d.jX ⬝ ξ' + d.j0 ⬝ w) = 0 := by
   rw [GlobalTheory.OrientedHeis.symplOH_add_right]
   exact (congrArg₂ (· + ·) (d.symplOH_incX_incX S ξ ξ') (d.wittDecomp_sympl_inclIsotropic_inclAnisotropic S ξ w)).trans (add_zero 0)
@@ -353,7 +350,6 @@ theorem tsum_reindex (G : Matrix (Fin T.rank) (Fin ρ) D.host.E → ℂ) :
     have := congrArg (· * η) d.sum_eq_one_rat
     simpa only [Matrix.add_mul, HypDec.q0, HypDec.qY, Matrix.mul_assoc d.e, Matrix.mul_assoc d.i₀, Matrix.mul_assoc d.e',
       Matrix.mul_assoc T'.gram⁻¹, hY, h0, Matrix.mul_zero, add_zero, Matrix.one_mul] using this
-
 
 set_option maxHeartbeats 1000000 in
 theorem inner_mean (hψ : IsStdChar D ψ (-1)) (v : GlobalTheory.Unf.VolM D T.rank ρ) {f : WO S T → ℂ} (hf : IsThetaFunO ψ S T f)
@@ -379,7 +375,7 @@ theorem inner_mean (hψ : IsStdChar D ψ (-1)) (v : GlobalTheory.Unf.VolM D T.ra
         Matrix.mul_add, add_assoc]
     rw [← e1, ← h]
     refine tsum_congr fun η => ?_
-    rw [← mul_assoc, ← AddChar.map_add_eq_mul, ← symplO_add_right, ← map_add (f := _), add_comm (rat d.i₀ ⬝ b),
+    rw [← mul_assoc, ← AddChar.map_add_eq_mul, ← GlobalTheory.PlaceModel.symplO_add_right, ← map_add (f := _), add_comm (rat d.i₀ ⬝ b),
       map_add (e.extX T), ← Check.symplOH_add_self, ← Check.symplOH_add_self, GlobalTheory.OrientedHeis.symplOH_add_left, h0,
       add_zero]
     rfl

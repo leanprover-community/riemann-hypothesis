@@ -79,8 +79,6 @@ theorem exists_iso_of_ker_eq {X X' W : Scheme.{u}} (f : X ⟶ W) (g : X' ⟶ W)
   obtain ⟨φ, hφf⟩ : ∃ φ : X' ⟶ X, φ ≫ f = g :=
     ⟨AlgebraicGeometry.IsClosedImmersion.lift f g hgf,
       AlgebraicGeometry.IsClosedImmersion.lift_fac f g hgf⟩
-  have : CategoryTheory.Mono f := inferInstance
-  have : CategoryTheory.Mono g := inferInstance
   have h1 : ψ ≫ φ = 𝟙 X := by
     apply (CategoryTheory.cancel_mono f).1
     rw [Category.assoc, hφf, hψg, Category.id_comp]
@@ -1034,8 +1032,6 @@ private theorem centersLieOver_embeddedResolutionRuleOfPrincipalization
     ((AlgebraicGeometry.isAffineOpen_top D.ambient).basicOpen r).preimage D.emb
   have hsmV : AlgebraicGeometry.Smooth ((D.emb ⁻¹ᵁ D.ambient.basicOpen r).ι ≫ pY) :=
     smooth_ι_comp_of_le_smoothLocus pY _ hVle
-  have hqcV : AlgebraicGeometry.QuasiCompact ((D.emb ⁻¹ᵁ D.ambient.basicOpen r).ι ≫ pY) :=
-    inferInstance
   have hlen0 : (embeddedResolutionRuleOfPrincipalization (canonicalPrincipalization hres hrad) hw k
       (D.emb ⁻¹ᵁ D.ambient.basicOpen r).toScheme
       ((D.emb ⁻¹ᵁ D.ambient.basicOpen r).ι ≫ pY) (restrictEmbeddingDatumBasicOpen D hsnc r)).length = 0 := by

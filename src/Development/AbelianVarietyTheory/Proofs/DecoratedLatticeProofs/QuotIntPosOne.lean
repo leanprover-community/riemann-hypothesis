@@ -128,7 +128,7 @@ theorem quotInt_posOne : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalS
       hB.1 Ψ u hu, smul_eq_mul]
     have key : (ψ (-simpleSum u) : ℂ) * (ψ (simpleSum u) : ℂ) = 1 := by
       rw [← Circle.coe_mul, ← AddChar.map_add_eq_mul, neg_add_cancel, AddChar.map_zero_eq_one, Circle.coe_one]
-    have hp := GlobalTheory.RootEx.OpELevi.nabs_pos (Matrix.GeneralLinearGroup.det x)
+    have hp := GlobalTheory.SplitWeil.nabs_pos' (Matrix.GeneralLinearGroup.det x)
     have rp : ((nabs k (Matrix.GeneralLinearGroup.det x) ^ (((c : ℝ) + 1) / 2 - ((1 : ℕ) : ℝ)) : ℝ) : ℂ) *
         ((nabs k (Matrix.GeneralLinearGroup.det x) ^ (((c : ℝ) + 1) / 2 - ((1 : ℕ) : ℝ)) : ℝ) : ℂ) =
         ((nabs k (Matrix.GeneralLinearGroup.det x) ^ ((c : ℝ) + 1 - 2 * ((1 : ℕ) : ℝ)) : ℝ) : ℂ) := by

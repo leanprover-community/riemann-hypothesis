@@ -37,9 +37,3 @@ theorem compInf_smul_away (w : InfinitePlace F) (a : AF F) (z : AF F ⊗[F] E) :
 variable {σ : E →ₐ[F] E} {N : ℕ} {Q : Matrix (Fin N) (Fin N) E}
 
 end GlobalTheory.AwayFix.Chart
-
-namespace GlobalTheory.AwayFix
-
-open GlobalTheory.AwayFix.Chart
-
-end GlobalTheory.AwayFix

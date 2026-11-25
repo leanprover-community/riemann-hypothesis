@@ -59,8 +59,6 @@ namespace GlobalTheory.RootEx.OpELevi
 section cov
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-alias nabs_pos := _root_.GlobalTheory.SplitWeil.nabs_pos'
-
 lemma nabs_pow (x : kˣ) (m : ℕ) : nabs k (x ^ m) = nabs k x ^ m := by
   simp [nabs]
 
@@ -332,7 +330,7 @@ theorem GlobalTheory.RootEx.opE_om_embX : ∀ (k : Type) [Field k] [ValuativeRel
       smul_eq_mul, map_one, nabs_one, Real.one_rpow, Complex.ofReal_one]
     erw [GlobalTheory.RootEx.OpELevi.integral_left p ψ ν (g⁻¹).val
       (Matrix.GeneralLinearGroup.det g)⁻¹ (by rw [← map_inv]; rfl) Φ]
-    have hp := GlobalTheory.RootEx.OpELevi.nabs_pos (Matrix.GeneralLinearGroup.det g)
+    have hp := GlobalTheory.SplitWeil.nabs_pos' (Matrix.GeneralLinearGroup.det g)
     set t := nabs k (Matrix.GeneralLinearGroup.det g) with ht
     have key : t ^ (-(Fintype.card (n' ⊕ Fin (c + 1)) : ℝ) / 2) *
         (t⁻¹ ^ Fintype.card {i : Fin (c + 1) // p < i.val + 1})⁻¹ =
@@ -356,7 +354,7 @@ theorem GlobalTheory.RootEx.opE_om_embX : ∀ (k : Type) [Field k] [ValuativeRel
       smul_eq_mul, map_one, nabs_one, Real.one_rpow, Complex.ofReal_one]
     erw [GlobalTheory.RootEx.OpELevi.integral_right p ψ ν g.val
       (Matrix.GeneralLinearGroup.det g) rfl Φ]
-    have hp := GlobalTheory.RootEx.OpELevi.nabs_pos (Matrix.GeneralLinearGroup.det g)
+    have hp := GlobalTheory.SplitWeil.nabs_pos' (Matrix.GeneralLinearGroup.det g)
     set t := nabs k (Matrix.GeneralLinearGroup.det g) with ht
     have key : t ^ ((Fintype.card (n ⊕ Fin c) : ℝ) / 2) *
         (t ^ Fintype.card {l : Fin c // l.val + 1 < p})⁻¹ =

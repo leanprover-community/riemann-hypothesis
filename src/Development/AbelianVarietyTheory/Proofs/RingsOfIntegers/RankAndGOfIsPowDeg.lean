@@ -112,7 +112,7 @@ private theorem exists_limit_fan_smooth_relDim_mul {S : Scheme.{0}} (A : Over S)
     exact h2
 
 theorem rank_and_g_of_isPowDeg : ∀ (R : Type) [CommRing R] [IsDomain R] (j : ℕ) (D D' : DegPre R)
-    (pD : IsPowDeg D' D j), D'.rank = j * D.rank ∧ D'.P.g = j * D.P.g := by
+    (_ : IsPowDeg D' D j), D'.rank = j * D.rank ∧ D'.P.g = j * D.P.g := by
   intro R _ _ j D D' pD
   rcases pD with ⟨pw, w, wg, wr, xe, cpr, wpsi⟩
   refine ⟨?_, ?_⟩

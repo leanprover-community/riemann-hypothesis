@@ -26,9 +26,9 @@ private theorem tower {F : Type} [Field F] [NumberField F] {V : Type} [AddCommGr
   rfl
 
 theorem UpperTheory.Reformulated.B.ExistsEquivOfFinrank.exists_equiv_of_finrank :
-    ∀ {F : Type} [inst : Field F] [NumberField F]
-    {V V' : Type} [inst_2 : AddCommGroup V] [inst_3 : _root_.Module ℚ V] [FiniteDimensional ℚ V]
-    [inst_5 : AddCommGroup V'] [inst_6 : _root_.Module ℚ V'] [FiniteDimensional ℚ V']
+    ∀ {F : Type} [Field F] [NumberField F]
+    {V V' : Type} [AddCommGroup V] [_root_.Module ℚ V] [FiniteDimensional ℚ V]
+    [AddCommGroup V'] [_root_.Module ℚ V'] [FiniteDimensional ℚ V']
     (φ : NumberField.RingOfIntegers F →+* Module.End ℚ V) (φ' : NumberField.RingOfIntegers F →+* Module.End ℚ V'),
     Module.finrank ℚ V = Module.finrank ℚ V' →
       ∃ (e : V ≃ₗ[ℚ] V'),

@@ -178,7 +178,7 @@ section Pass
 
 theorem pass_id {E : Type} [Field E] [NumberField E] {n : ℕ} :
     ScalarsPass (RingHom.id E) (fun N : Submodule (𝓞 E) (Fin n → E) => N.toAddSubgroup) :=
-  fun _ _ c hc y hy => hc y hy
+  fun _ _ _ hc y hy => hc y hy
 
 theorem pass_latLoc {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {n : ℕ}
     (v : IsDedekindDomain.HeightOneSpectrum (𝓞 F)) :

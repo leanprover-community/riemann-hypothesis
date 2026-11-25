@@ -6,7 +6,7 @@ public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qk8.exists_place :
-    ∀ {F : Type} [inst : Field F] [NumberField F] (p : ℕ),
+    ∀ {F : Type} [Field F] [NumberField F] (p : ℕ),
     Nat.Prime p →
       ∃ (w : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F)),
         (↑p : NumberField.RingOfIntegers F) ∈ w.asIdeal := by

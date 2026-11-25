@@ -50,7 +50,7 @@ theorem _root_.GlobalTheory.BSP.bijective_of_bijective_baseChange_quotient :
         Submodule.Quotient.mk_eq_zero] at h0
       rw [LinearMap.range_eq_map, ← Submodule.map_smul'', ← hπw _ (hwπ p)]
       exact Submodule.mem_map_of_mem h0
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
+  rw [injective_iff_map_eq_zero]
   intro p hp
   have : π p ∈ LinearMap.range π := ⟨p, rfl⟩
   rw [hbot, Submodule.mem_bot, hπw p hp] at this

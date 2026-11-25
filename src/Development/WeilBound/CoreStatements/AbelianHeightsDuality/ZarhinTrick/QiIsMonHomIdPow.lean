@@ -150,19 +150,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 
 namespace GlobalTheory.CompanionTheory.AbFibre
 
-theorem isPullback_baseChange {S T : Scheme.{0}} (s : T ⟶ S) {X Y : Over S} (f : X ⟶ Y) :
-    IsPullback ((Over.pullback s).map f).left (pullback.fst X.hom s) (pullback.fst Y.hom s) f.left := by
-  have h1 : ((Over.pullback s).map f).left ≫ pullback.snd Y.hom s = pullback.snd X.hom s := by
-    simp only [Over.pullback_map_left]
-    exact pullback.lift_snd _ _ _
-  have h2 : ((Over.pullback s).map f).left ≫ pullback.fst Y.hom s = pullback.fst X.hom s ≫ f.left := by
-    simp only [Over.pullback_map_left]
-    exact pullback.lift_fst _ _ _
-  have hX : f.left ≫ Y.hom = X.hom := Over.w f
-  refine IsPullback.of_right ?_ h2 (IsPullback.of_hasPullback Y.hom s).flip
-  rw [h1, hX]
-  exact (IsPullback.of_hasPullback X.hom s).flip
-
 theorem exists_geometric_point {S : Scheme.{0}} (Y : Over S) (y : Y.left) :
     ∃ (Ω : Type) (_ : Field Ω) (_ : IsAlgClosed Ω) (s : Spec (.of Ω) ⟶ S) (w : ↥(pullback Y.hom s)),
       pullback.fst Y.hom s w = y := by
@@ -189,7 +176,7 @@ theorem finiteOfFibres : PositivityTheory.Tls2.Zar3.Ch1.FiniteOfFibres := by
       (w : ↥(pullback B.hom s)), pullback.fst B.hom s w = l.left x →
       ∃ v, ((Over.pullback s).map l).left v = w ∧ pullback.fst A.hom s v = x := by
     intro T s x w hxw
-    have h := isPullback_baseChange s l
+    have h := GlobalTheory.isPullback_overPullback_map_left s l
     obtain ⟨z, hz1, hz2⟩ :=
       Scheme.Pullback.exists_preimage_pullback (f := pullback.fst B.hom s) (g := l.left) w x hxw
     refine ⟨h.isoPullback.inv z, ?_, ?_⟩
@@ -211,7 +198,7 @@ theorem finiteOfFibres : PositivityTheory.Tls2.Zar3.Ch1.FiniteOfFibres := by
     have hS : Surjective ((Over.pullback s).map l).left := (hfib Ω s).2
     obtain ⟨v, hv⟩ := hS.surj w
     refine ⟨pullback.fst A.hom s v, ?_⟩
-    have hsq := (isPullback_baseChange s l).w
+    have hsq := (GlobalTheory.isPullback_overPullback_map_left s l).w
     rw [← Scheme.Hom.comp_apply, ← hsq, Scheme.Hom.comp_apply, hv, hw]
   haveI : LocallyQuasiFinite l.left := LocallyQuasiFinite.of_finite_preimage_singleton l.left hfin
   exact ⟨IsFinite.of_isProper_of_locallyQuasiFinite l.left, hsurj⟩

@@ -695,7 +695,7 @@ theorem weilEq_one_complex (A A' B : PAT H (Sp ℂ)) {r : ℂ} (hr : r ^ 2 = -(H
       Category.assoc, Category.assoc]
     exact congrArg _ (hf.comm _).symm) z
   have hA'' : ∀ τ : 𝓞 E →+* ℂ, τ (H.bar H.rt) ≠ r → LieMult A'.t.act (𝟙 (Sp ℂ)) τ 0 := fun τ h =>
-    hA' τ fun h' => h (by rw [EigDec.bar_rt, map_neg, h', neg_neg])
+    hA' τ fun h' => h (by rw [GlobalTheory.HostModel.bar_rt, map_neg, h', neg_neg])
   have e' : ∀ z, ρB (H.bar H.rt) (F' z) = r • F' z := fun z =>
     LinearMap.congr_fun (hu0 (ρB (H.bar H.rt) ∘ₗ F') (r • F') fun z => by
       rw [LinearMap.comp_apply, LinearMap.smul_apply, ← map_smul, hρB, hF', hF', ex_smul A' hA'' u' hA1' hA2',

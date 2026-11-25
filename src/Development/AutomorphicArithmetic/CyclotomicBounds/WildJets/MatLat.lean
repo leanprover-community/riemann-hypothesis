@@ -198,30 +198,6 @@ section SlopeTestRemainingChoices
 
 variable {E K : Type} [Field E] [NumberField E] [Field K] [NumberField K] {ι : Type} [Fintype ι] {n : ℕ}
 
-private theorem lcb_mem_colLat_one (x : Fin n → K) :
-    x ∈ colLat (1 : GL (Fin n) K) ↔ ∀ a, x a ∈ (1 : Submodule (𝓞 K) K) := by
-  constructor
-  · intro hx
-    induction hx using Submodule.span_induction with
-    | mem z hz =>
-      obtain ⟨j, rfl⟩ := hz
-      intro a
-      simp only [Units.val_one, Matrix.one_apply]
-      split_ifs
-      · exact Submodule.mem_one.2 ⟨1, map_one _⟩
-      · exact zero_mem _
-    | zero => intro a; exact zero_mem _
-    | add y z _ _ hy hz => intro a; exact add_mem (hy a) (hz a)
-    | smul c y _ hy => intro a; exact Submodule.smul_mem _ c (hy a)
-  · intro hx
-    choose r hr using fun a => Submodule.mem_one.1 (hx a)
-    have : x = ∑ j, r j • fun a => ((1 : GL (Fin n) K) : Matrix (Fin n) (Fin n) K) a j := by
-      funext a
-      simp only [Finset.sum_apply, Pi.smul_apply, Units.val_one, Matrix.one_apply, Algebra.smul_def, mul_ite, mul_zero,
-        mul_one, Finset.sum_ite_eq, Finset.mem_univ, ite_true, hr]
-    rw [this]
-    exact Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)
-
 private theorem lcb_emb_int (φ : E →+* K) {x : E} (hx : x ∈ (1 : Submodule (𝓞 E) E)) :
     φ x ∈ (1 : Submodule (𝓞 K) K) := by
   obtain ⟨y, rfl⟩ := Submodule.mem_one.1 hx
@@ -241,7 +217,7 @@ private theorem lcb_basisAt (emb : ι → E →+* K) (τ : ι) (Λ : Submodule (
     (h2 : ∀ j, s • (Pi.single j 1 : Fin n → E) ∈ Λ) (w : HeightOneSpectrum (𝓞 K)) (hs : (s : 𝓞 K) ∉ w.asIdeal) :
     IsBasisAt w (dualFr (tauLat emb τ Λ)) 1 := by
   apply le_antisymm
-  · refine GlobalTheory.TransLoc.localization_le_of_smul_mem w hs fun φ hφ => (lcb_mem_colLat_one _).2 fun j => ?_
+  · refine GlobalTheory.TransLoc.localization_le_of_smul_mem w hs fun φ hφ => (Formalism.L2.DIV.lc_mem_colLat_one _).2 fun j => ?_
     have := hφ _ (Submodule.subset_span ⟨_, h2 j, rfl⟩)
     convert this using 1
     have e : (fun a => emb τ ((s • (Pi.single j 1 : Fin n → E)) a)) = s • (Pi.single j 1 : Fin n → K) := by
@@ -257,13 +233,13 @@ private theorem lcb_basisAt (emb : ι → E →+* K) (τ : ι) (Λ : Submodule (
       induction hx using Submodule.span_induction with
       | mem z hz =>
         obtain ⟨y, hy, rfl⟩ := hz
-        refine (lcb_mem_colLat_one _).2 fun a => ?_
+        refine (Formalism.L2.DIV.lc_mem_colLat_one _).2 fun a => ?_
         have := lcb_emb_int (emb τ) (h1 y hy a)
         simpa using this
       | zero => simp
       | add y z _ _ hy hz => rw [smul_add]; exact Submodule.add_mem _ hy hz
       | smul c y _ hy => rw [smul_comm]; exact Submodule.smul_mem _ c hy
-    have := lcb_dot ((lcb_mem_colLat_one _).1 hφ) ((lcb_mem_colLat_one _).1 hx')
+    have := lcb_dot ((Formalism.L2.DIV.lc_mem_colLat_one _).1 hφ) ((Formalism.L2.DIV.lc_mem_colLat_one _).1 hx')
     rw [dotProduct_smul] at this
     rw [smul_dotProduct, Nat.cast_smul_eq_nsmul]
     exact this
@@ -283,7 +259,7 @@ private theorem lcb_isLattice (Λ : Submodule (𝓞 E) (Fin n → E)) (s : ℕ) 
     refine Submodule.fg_of_fg_map_injective f hf ?_
     refine Submodule.FG.of_le (M := Fin n → E) (T := colLat (1 : GL (Fin n) E)) (Submodule.fg_span (Set.finite_range _)) ?_
     rintro _ ⟨x, hx, rfl⟩
-    exact (lcb_mem_colLat_one _).2 (h1 x hx)
+    exact (Formalism.L2.DIV.lc_mem_colLat_one _).2 (h1 x hx)
   refine { toIsLattice := hlat, span_eq_top := ?_ }
   apply top_unique
   intro x _

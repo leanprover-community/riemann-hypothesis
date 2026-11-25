@@ -143,7 +143,6 @@ end GlobalTheory.CompanionTheory.ConeInt
 
 namespace GlobalTheory.CompanionTheory.ConeInt
 
-
 open GlobalTheory.SiegelSet in
 theorem lintegral_cone_lt_top : ∀ (F : Type) [Field F] [NumberField F] (n r : ℕ) (c : ℝ), 0 < c → ∃ m₀ : ℕ, ∀ m : ℕ, m₀ ≤ m →
     ∫⁻ t in cone r c, ENNReal.ofReal (∏ i, (t i)⁻¹ ^ m) * ENNReal.ofReal ((modulus F n t * ∏ i, t i)⁻¹) < ⊤ := by
@@ -207,9 +206,6 @@ open Matrix
 open scoped Pointwise
 open GlobalTheory.SiegelSet GlobalTheory.CompanionTheory.RegInt
 
-theorem _root_.GlobalTheory.T.cone_integral_finite_large_exponent : ∀ (F : Type) [Field F] [NumberField F] (n r : ℕ) (c : ℝ), 0 < c → ∃ m₀ : ℕ, ∀ m : ℕ, m₀ ≤ m →
-    ∫⁻ t in cone r c, ENNReal.ofReal (∏ i, (t i)⁻¹ ^ m) * ENNReal.ofReal ((modulus F n t * ∏ i, t i)⁻¹) < ⊤ := by
-  first | exact @GlobalTheory.CompanionTheory.ConeInt.lintegral_cone_lt_top
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeIntegralFiniteLargeExponentStatement =====
@@ -347,11 +343,6 @@ open Matrix
 open scoped Pointwise
 open GlobalTheory.SiegelSet GlobalTheory.CompanionTheory.RegInt
 
-theorem _root_.GlobalTheory.T.mem_parabolic_of_flag_preserving : ∀ (D : D7) (V : HSp D) (r : ℕ) (X Y : Matrix (Fin V.rank) (Fin r) D.host.E)
-    (hW : IsWittFrame D.sp.cm.sig V.gram X Y) (j : Fin r) (δ : GF V),
-    (∀ l : Fin r, l ≤ j → ∃ b : Fin r → D.host.E, δ.1.1 *ᵥ (fun a => X a l) = X *ᵥ b ∧ ∀ m : Fin r, j < m → b m = 0) →
-    δ ∈ (frameFlag (isIsoFrame_firstCols hW j)).parRat D.sp.cm := by
-  first | exact @GlobalTheory.CompanionTheory.RegInt.mem_parRat_frameFlag_firstCols | exact GlobalTheory.CompanionTheory.RegInt.mem_parRat_frameFlag_firstCols | (intros; apply GlobalTheory.CompanionTheory.RegInt.mem_parRat_frameFlag_firstCols <;> assumption)
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MemParabolicOfFlagPreservingStatement =====
@@ -667,10 +658,6 @@ open Matrix
 open scoped Pointwise
 open GlobalTheory.SiegelSet GlobalTheory.CompanionTheory.RegInt
 
-theorem _root_.GlobalTheory.T.regular_semisimple_conjugate_unipotent_translate : ∀ (D : D7) (V : HSp D) (r : ℕ) (C : Matrix (Fin V.rank) (Fin r) D.host.E) (hC : IsIsoFrame V C)
-    (δ : GF V), IsRegSS δ.1.1 → δ ∈ (frameFlag hC).parRat D.sp.cm → ∀ ν ∈ (frameFlag hC).unipRat D.sp.cm,
-      ∃ g : GF V, g * δ * g⁻¹ = δ * ν := by
-  first | exact @GlobalTheory.CompanionTheory.ParabConj.conj_translate
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RegularSemisimpleConjugateUnipotentTranslateStatement =====
@@ -695,9 +682,6 @@ open GlobalTheory.CompanionTheory.RegInt
 namespace MainStatements.WeightKernel.RegInt
 
 variable {D : D7} {V : HSp D} {r : ℕ}
-
-theorem cone_lower {c : ℝ} (hc : 0 < c) : ∃ c₀ : ℝ, 0 < c₀ ∧ ∀ t ∈ GlobalTheory.SiegelSet.cone r c, ∀ i, c₀ ≤ t i :=
-  by apply _root_.GlobalTheory.CompanionTheory.TorusCount.exists_cone_lower; assumption
 
 theorem le_pow_of_root {t : Fin r → ℝ} (ht : ∀ i, 0 < t i) {ρ : ℝ} (hρ : 1 ≤ ρ) (h : ∀ j, root t j ≤ ρ) (i : Fin r) :
     t i ≤ ρ ^ r := by
@@ -874,8 +858,6 @@ theorem regSS_of_conj {γ δ : GF V} (h : IsConj γ δ) (hγ : IsRegSS γ.1.1) :
 theorem conj_id {G : Type} [Group G] (a ω d n : G) :
     (a * ω)⁻¹ * (d * n) * (a * ω) = ω⁻¹ * (a⁻¹ * d * a) * (a⁻¹ * n * a) * ω := by group
 
-
-
 open GlobalTheory.SiegelSet in
 theorem class_bound {X Y : Matrix (Fin V.rank) (Fin r) D.host.E} (hW : IsWittFrame D.sp.cm.sig V.gram X Y)
     {K : Subgroup (GA D V)} {Ω : Set (GA D V)} {c : ℝ} (hK : IsCompact (K : Set (GA D V))) (hΩ : IsCompact Ω)
@@ -898,7 +880,7 @@ theorem class_bound {X Y : Matrix (Fin V.rank) (Fin r) D.host.E} (hW : IsWittFra
   choose A hA using hdec
   obtain ⟨t1, ht1⟩ := GlobalTheory.CompanionTheory.FlagKey.flag_key _ _ D.sp.cm.sig (isCMExt_host D) V.rank V.gram (GlobalTheory.Doubling.isHermND_gram V) r X Y hW
     Ω hΩ hΩP K hK c hc (tsupport f) hS
-  obtain ⟨c₀, hc₀, hlow⟩ := cone_lower (r := r) hc
+  obtain ⟨c₀, hc₀, hlow⟩ := GlobalTheory.CompanionTheory.TorusCount.exists_cone_lower (r := r) hc
   obtain ⟨M, hM⟩ := hfc.bounded_above_of_compact_support hfs
   have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM 1)
   set R₀ : ℝ := max 1 (max t1 (t1 / c₀)) with hR₀
@@ -989,11 +971,11 @@ theorem class_bound {X Y : Matrix (Fin V.rank) (Fin r) D.host.E} (hW : IsWittFra
       exact lt_of_le_of_lt (by gcongr) hρR
     have hstab : ∀ δ, h δ ≠ 0 → δ ∈ (frameFlag (isIsoFrame_firstCols hW j)).parRat D.sp.cm := by
       intro δ hδ
-      exact GlobalTheory.T.mem_parabolic_of_flag_preserving D V r X Y hW j δ
+      exact GlobalTheory.CompanionTheory.RegInt.mem_parRat_frameFlag_firstCols D V r X Y hW j δ
         (ht1 p hp t ht a ha k hk δ (subset_tsupport f hδ) j hc1 hc2)
     have hmul : ∀ δ ∈ Cl, h δ ≠ 0 → ∀ ν ∈ (frameFlag (isIsoFrame_firstCols hW j)).unipRat D.sp.cm, δ * ν ∈ Cl := by
       intro δ hδ hne ν hν
-      obtain ⟨g, hg⟩ := GlobalTheory.T.regular_semisimple_conjugate_unipotent_translate D V _ _ (isIsoFrame_firstCols hW j) δ (regSS_of_conj hδ hreg) (hstab δ hne) ν hν
+      obtain ⟨g, hg⟩ := GlobalTheory.CompanionTheory.ParabConj.conj_translate D V _ _ (isIsoFrame_firstCols hW j) δ (regSS_of_conj hδ hreg) (hstab δ hne) ν hν
       exact IsConj.trans hδ (isConj_iff.2 ⟨g, hg⟩)
     have hT' : T ≤ ρ ^ (r * r) := prod_max_le tpos hρ1 hall
     set β : ℝ := B₂ * T ^ A₂ * ρ⁻¹ ^ m' with hβ
@@ -1058,7 +1040,7 @@ theorem regClassInt : PositivityTheory.ThKR.SiegelCore → MainStatements.Regula
     continuous_classKernel hfc hfs (rat_mem γ)
   refine GlobalTheory.CompanionTheory.AutCover.integrable_descend_of_cover D V μ _ hcl.measurableSet hcov _ (fun δ hδ x => GlobalTheory.IndefiniteRowSideFullHecke.NonFieldTypeVanishingAlt.classKernel_mul _ _ hδ x)
     hcont.measurable ?_
-  obtain ⟨m₀, hm₀⟩ := GlobalTheory.T.cone_integral_finite_large_exponent D.host.F V.rank r c hc
+  obtain ⟨m₀, hm₀⟩ := GlobalTheory.CompanionTheory.ConeInt.lintegral_cone_lt_top D.host.F V.rank r c hc
   obtain ⟨B, hB0, hB⟩ := class_bound hWF hK hΩ hΩP hc hconj hf hcusp hreg m₀
   refine ⟨hcont.aestronglyMeasurable, ?_⟩
   have hm := hm₀ m₀ le_rfl

@@ -507,7 +507,8 @@ theorem std_iso {X : Stages} {px : PreX X.B.toPre} {I : Col2.ColIn X.B px} {hX :
     rw [Formalism.L2.Col.decoPt_mk]
     unfold LiftBrg.ptL
     refine congrArg (Formalism.L2.Col.decoOf ∅ _) (hx'.trans ?_)
-    exact cast_one (LiftBrg.rkEq X i).symm (Formalism.UG.bc (swapAE X.toD7) (h : GL (Fin (Vc X.toD7 i).rank) _))
+    simp only [matIn, mul_one, inv_one, one_mul]
+    rfl
   refine ⟨e, he.2.2.1, fun γ γE g h1 h2 x => ?_, fun t ok φ h => ?_⟩
   · have h5 := he.2.2.2 γ γE g h1 h2 x
     have h3 : (fun τ => Formalism.UG.bc (X.B.embLL.comp (X.B.fields.emb τ)) g) = fun τ => Formalism.UG.bc (tauE X.toD7 τ) g :=

@@ -30,14 +30,8 @@ theorem embedded_group_measure_preserving : EmbGMuP := by
   intro k p ρ y q
   simp only [U.muP, U.embG, Ux5.block3_mul_blocks, Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add, Matrix.mul_one, Matrix.one_mul]
 
-private theorem wMat_mul_self_eq_one (d : ℕ) : G.wMat d * G.wMat d = 1 := by
-  ext i j
-  simp only [G.wMat, Matrix.mul_apply, Matrix.of_apply, Matrix.one_apply, ite_mul, one_mul, zero_mul,
-    Finset.sum_ite_eq', Finset.mem_univ, ite_true, Fin.rev_rev]
-  split_ifs <;> simp_all
-
 private theorem wMat_mul_wMat_mul' (d : ℕ) {m : Type*} (X : Matrix (Fin d) m ℂ) : G.wMat d * (G.wMat d * X) = X := by
-  rw [← Matrix.mul_assoc, wMat_mul_self_eq_one, Matrix.one_mul]
+  rw [← Matrix.mul_assoc, Formalism.FourierDecayAlt.P.Ux5.wMat_mul_self, Matrix.one_mul]
 
 theorem embedding_map_lower_unipotent : MMapLZU := by
   intro k p ρ l Z u γ hl
@@ -63,9 +57,6 @@ private theorem wP_inv_mul_wP_eq_one {p : ℕ} (σ : Equiv.Perm (Fin p)) : U.wP 
   simp only [U.wP, Matrix.mul_apply, Matrix.of_apply, Matrix.one_apply, ite_mul, one_mul, zero_mul,
     Finset.sum_ite_eq, Finset.mem_univ, ite_true, h]
 
-private theorem isUnit_det_wP {p : ℕ} (σ : Equiv.Perm (Fin p)) : IsUnit (U.wP σ).det :=
-  Matrix.isUnit_det_of_left_inverse (wP_inv_mul_wP_eq_one σ)
-
 theorem lh_lower {p : ℕ} (σ : Equiv.Perm (Fin p)) (v : U.LW σ → ℂ) : G.IsLowerUni (lhOf σ v) := by
   have hinv : (U.wP σ)⁻¹ = U.wP σ⁻¹ := Matrix.inv_eq_left_inv (wP_inv_mul_wP_eq_one σ)
   have hentry : ∀ a b, lhOf σ v a b = U.lowW σ v (σ a) (σ b) := by
@@ -85,7 +76,7 @@ theorem head_hermitian_eq : HeadHEq := by
   intro p σ d v u
   refine ⟨?_, lh_lower σ v⟩
   simp only [U.headH, lhOf, U.hMat, Matrix.mul_assoc]
-  rw [← Matrix.mul_assoc (U.wP σ)⁻¹ (U.wP σ), Matrix.nonsing_inv_mul _ (isUnit_det_wP σ), Matrix.one_mul]
+  rw [← Matrix.mul_assoc (U.wP σ)⁻¹ (U.wP σ), Matrix.nonsing_inv_mul _ (Formalism.FourierDecayAlt.P.Dx2.SL.isUnit_wP σ), Matrix.one_mul]
 
 private theorem blk2_fin_zero_eq {p : ℕ} (A : Matrix (Fin p) (Fin p) ℂ) (B' : Matrix (Fin p) (Fin 0) ℂ)
     (C : Matrix (Fin 0) (Fin p) ℂ) (D : Matrix (Fin 0) (Fin 0) ℂ) : U.blk2 A B' C D = A := by
@@ -111,7 +102,7 @@ theorem lh_unit {p : ℕ} (σ : Equiv.Perm (Fin p)) (v : U.LW σ → ℂ) : IsUn
       have h2 : ¬ j < i := not_lt.mpr h1.le
       simp [U.lowW, ne_of_lt h1, h2]
   simp only [lhOf, Matrix.det_mul, hL, mul_one]
-  exact (isUnit_det_wP σ).mul (Matrix.isUnit_nonsing_inv_det _ (isUnit_det_wP σ))
+  exact (Formalism.FourierDecayAlt.P.Dx2.SL.isUnit_wP σ).mul (Matrix.isUnit_nonsing_inv_det _ (Formalism.FourierDecayAlt.P.Dx2.SL.isUnit_wP σ))
 
 theorem gamma_xi_split : GaXiSplit := by
   intro k p ρ σ d ξ Z h ν h' ν' g hh hν hh'

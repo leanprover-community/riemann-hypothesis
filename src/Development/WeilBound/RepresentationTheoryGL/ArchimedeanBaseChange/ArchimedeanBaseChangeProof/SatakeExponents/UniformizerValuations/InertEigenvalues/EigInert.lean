@@ -736,14 +736,8 @@ theorem v_zpow {ϖ : L} {σ : L →+* L} {q : ℕ} (hU : IsUnramInv ϖ σ q) (k 
     ((Multiplicative.ofAdd (-k) : Multiplicative ℤ) : WithZero (Multiplicative ℤ))
   rw [← WithZero.coe_zpow, ← ofAdd_zsmul, smul_eq_mul, mul_neg, mul_one]
 
-theorem unif_ne_zero {ϖ : L} {σ : L →+* L} {q : ℕ} (hU : IsUnramInv ϖ σ q) : ϖ ≠ 0 := by
-  intro h0
-  have hv := hU.2.2.2.1
-  rw [h0, map_zero] at hv
-  exact WithZero.zero_ne_coe hv
-
 theorem ordL_zpow {ϖ : L} {σ : L →+* L} {q : ℕ} (hU : IsUnramInv ϖ σ q) (k : ℤ) : ordL (ϖ ^ k) = k := by
-  have h1 := GlobalTheory.BorelUMod.v_eq_exp (zpow_ne_zero k (unif_ne_zero hU))
+  have h1 := GlobalTheory.BorelUMod.v_eq_exp (zpow_ne_zero k (GlobalTheory.WeylCell.WeylUnipotentShell.ShellGroup.ne_zero_of_unramInv hU))
   rw [v_zpow hU] at h1
   have h2 := WithZero.exp_injective h1
   omega
@@ -944,7 +938,7 @@ theorem conj_entry_alt {ϖ : L} {σ : L →+* L} {q : ℕ} (hU : IsUnramInv ϖ �
     (i j : Fin n) :
     ((((t⁻¹ * u * t : GU σ n) : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) - 1) i j =
       ϖ ^ (-e i) * ((((u : GL (Fin n) L) : Matrix (Fin n) (Fin n) L)) - 1) i j * ϖ ^ e j := by
-  have hϖ := unif_ne_zero hU
+  have hϖ := GlobalTheory.WeylCell.WeylUnipotentShell.ShellGroup.ne_zero_of_unramInv hU
   have htinv : (((t⁻¹ : GU σ n) : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) =
       Matrix.diagonal (fun i => ϖ ^ (-e i)) := by
     rw [Subgroup.coe_inv]

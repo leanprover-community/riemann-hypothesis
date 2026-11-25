@@ -40,7 +40,7 @@ theorem limAtOf_holds : LimAtOf := by
     (fun v => ⟨(F₀.A i).kerb [] v, fun χ => by simp [RunFrame.β, RunFrame.ptL, Arch.pt, Arch.valW, zVal]⟩)
   rw [Nat.sub_add_cancel F.m_pos] at hsop hsval
   have h0 : χ ⟨(F.g (.inl ()) i).op, StarAlgebra.subset_adjoin ℂ _ (Or.inl ⟨.inl (), rfl⟩)⟩ = 1 := hχ.2.1 (.inl ())
-  have hM := (hR E).choose_spec.choose_spec.choose_spec.choose_spec.choose_spec.choose_spec.2.2
+  have hM := (rl_spec hR E).2.2
   refine hM (F.B i) _ _ o₁ c₁ o₂ c₂ F.Γ (fun x => F.g x i) (.inl ()) (F.t₀ i) (F₀.A i).bump cK
     (fun v s m => (.inr (.inl (i, v, s, m, false)), .inr (.inl (i, v, s, m, true)))) (X F i) ((F.β i).sq (F.m - 1))
     (2 * F.m) χ ?_ (fun x => h.ok x i) hsO hsop.symm (fun χa χb => hsval χa χb) rfl (F₀.A i).isBump ?_

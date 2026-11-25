@@ -70,17 +70,6 @@ theorem hpk_es (a : Fin r) : Hpk k r *ᵥ bvec (esI k r a) = bvec (eI k r a) :=
 
 theorem hpk_herm : (Hpk k r)ᴴ = Hpk k r := (hermitian_pos_facts_hold k r).1
 
-theorem hpk_inv : (Hpk k r)⁻¹ = Hpk k r := Matrix.inv_eq_right_inv WeylGroupFacts.hpk_sq
-
-theorem single_bvec {p q c : Fin (2 * r + k + 1)} (h : q ≠ c) :
-    (Matrix.single p q (1 : ℂ)) *ᵥ bvec c = 0 := by
-  funext x
-  simp [bvec, h]
-
-theorem posL_ne_e (i : Fin (r + 1)) (a : Fin (mdim k r i)) (b : Fin r) (hb : b.val < i.val) :
-    posL k r i a ≠ eI k r b ∧ posL k r i a ≠ esI k r b :=
-  _root_.Formalism.FourierDecayAlt.P.Qx8.posL_ne_e i a b hb
-
 theorem hpart_skew {n : ℕ} (H Z : Matrix (Fin n) (Fin n) ℂ) (hsq : H * H = 1) (hh : Hᴴ = H) :
     (hpart1 H Z)ᴴ * H + H * hpart1 H Z = 0 ∧ (hpart2 H Z)ᴴ * H + H * hpart2 H Z = 0 := by
   apply Formalism.FourierDecayAlt.P.Qx8.hpart_skew <;> assumption
@@ -163,11 +152,6 @@ theorem sf_sum {ι : Type*} (s : Finset ι) {Φ : ι → Fn k r E} (h : ∀ j �
   | insert a s ha ih =>
     have := sf_add (h a (Finset.mem_insert_self a s)) (ih fun j hj => h j (Finset.mem_insert_of_mem hj))
     simpa [Finset.sum_insert ha] using this
-
-theorem sf_lin (L : Mx k r →ₗ[ℝ] ℂ) {a : Mx k r → ℂ} (h : ∀ g ∈ Glev k r i, a g = L g) :
-    SmoothFam k r i U₀ (fun _ g => a g) :=
-  fun _ _ _ => ⟨Set.univ, fun x => (LinearMap.toContinuousLinearMap L) x.2, isOpen_univ, trivial,
-    ((LinearMap.toContinuousLinearMap L).contDiff.comp contDiff_snd).contDiffOn, fun x _ hx => h x.2 hx⟩
 
 def Pres (i : Fin (r + 1)) (U₀ : Set (XX k r)) (T : (Mx k r → E) → Mx k r → E) : Prop :=
   ∀ Φ : Fn k r E, SmoothFam k r i U₀ Φ → SmoothFam k r i U₀ (fun c => T (Φ c))

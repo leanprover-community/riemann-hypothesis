@@ -97,7 +97,6 @@ theorem St_indep (v : InfinitePlace E) (ka : Kers Ma) (kb : Kers Mb) (ψ : Matri
   · intro j _
     simp only [cA_update_right, Rv_update]
 
-set_option synthInstance.maxHeartbeats 200000 in
 theorem continuous_St (v : InfinitePlace E) {ka : Kers Ma} {kb : Kers Mb} {ψ : Matrix κ κ (Hf E a b → ℂ)}
     {f : Io Ma Mb κ → H E a b → ℂ} (hf : ∀ i, Continuous (f i))
     (hka : ∀ w, Continuous (fun t : G a => ka w t.val) ∧ HasCompactSupport (fun t : G a => ka w t.val))
@@ -458,7 +457,6 @@ theorem integral_splitB (hF : CompatFub) (D : Dom E a b) (hC : Compat D μa μb 
     (Q : H E a b → ℂ) (hQ : Continuous Q) (hQs : HasCompactSupport Q) :
     Integrable (fun q : G b × RB E a b v => Q (ιB v q.1 * σB v q.2)) (μb.prod (restB μa μb ν v)) ∧
       ∫ g, Q g ∂D.μ = ∫ t, ∫ r, Q (ιB v t * σB v r) ∂restB μa μb ν v ∂μb := by
-  set_option synthInstance.maxHeartbeats 400000 in
     haveI : SigmaFinite μa := inferInstance
     haveI : SigmaFinite μb := inferInstance
     haveI : SigmaFinite ν := inferInstance
@@ -594,7 +592,6 @@ theorem cB_props (v : InfinitePlace E) {ka : Kers Ma} {kb : Kers Mb} {ψ : Matri
     (hkb : ∀ w, Continuous (fun t : G b => kb w t.val) ∧ HasCompactSupport (fun t : G b => kb w t.val))
     (hψ : IsFinM ψ) (i j : Io Ma Mb κ) :
     Continuous (cB v ka kb ψ i j) ∧ HasCompactSupport (cB v ka kb ψ i j) := by
-  set_option synthInstance.maxHeartbeats 400000 in
     refine ⟨?_, ?_⟩
     · refine ((continuous_finsetProd _ fun w _ => ?_).mul (continuous_finsetProd _ fun w _ => ?_)).mul
         ((hψ i.2 j.2).1.comp (continuous_snd.comp continuous_snd))
@@ -626,7 +623,6 @@ theorem continuous_RvB_comp (v : InfinitePlace E) {ka : Kers Ma} {kb : Kers Mb} 
     (hψ : IsFinM ψ) (i : Io Ma Mb κ) {X : Type} [TopologicalSpace X] [FirstCountableTopology X]
     [LocallyCompactSpace X] {φ : X → H E a b} (hφ : Continuous φ) :
     Continuous fun z : X => RvB v μa μb ν ka kb ψ f i (φ z) := by
-  set_option synthInstance.maxHeartbeats 400000 in
     haveI : SigmaFinite μa := inferInstance
     haveI : SigmaFinite μb := inferInstance
     haveI : SigmaFinite ν := inferInstance
@@ -797,7 +793,6 @@ theorem StB_indep (v : InfinitePlace E) (ka : Kers Ma) (kb : Kers Mb) (ψ : Matr
   · intro j _
     simp only [cB_update_right, RvB_update]
 
-set_option synthInstance.maxHeartbeats 200000 in
 theorem continuous_StB (v : InfinitePlace E) {ka : Kers Ma} {kb : Kers Mb} {ψ : Matrix κ κ (Hf E a b → ℂ)}
     {f : Io Ma Mb κ → H E a b → ℂ} (hf : ∀ i, Continuous (f i))
     (hka : ∀ w, Continuous (fun t : G a => ka w t.val) ∧ HasCompactSupport (fun t : G a => ka w t.val))

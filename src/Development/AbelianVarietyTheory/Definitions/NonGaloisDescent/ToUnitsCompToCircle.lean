@@ -90,7 +90,6 @@ structure IsLocUnit (PP : Pl D.host.E) (u : (kP PP)ˣ) (x : (AE D)ˣ) : Prop whe
   res : ∃ hx : toEAf D (x : AE D) ∈ Formalism.L2.Herm.intAf D.host.F D.host.E, resS D.host.F PP ⟨_, hx⟩ = u
 
 
-set_option maxHeartbeats 800000 in
 theorem exists_isLocUnit {PP : Pl D.host.E} (h : Formalism.L2.NTheta.IsIdemAt (idemAt PP) PP) (u : (kP PP)ˣ) :
     ∃ x : (AE D)ˣ, IsLocUnit PP u x := by
   obtain ⟨a, ha⟩ := Ideal.Quotient.mk_surjective (u : kP PP)
@@ -156,7 +155,6 @@ theorem IsLocUnit.eq_one {M : Type} [CommGroup M] {χ : (AE D)ˣ →* M} {Q P : 
     (hx : IsLocUnit PP u x) : χ x = 1 := by
   refine hχ x hx.inf hx.int hx.int' ?_
   have h0 : idemAt PP * (idem Q + cA D (idem Q)) = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
       rw [mul_add, idem, map_sum, Finset.mul_sum, Finset.mul_sum,
       Finset.sum_eq_zero fun j hj => hP.mul_eq_zero hPP (hQ hj) fun e => hn (e ▸ hj),
       Finset.sum_eq_zero fun j hj => hP.mul_conj hPP (hQ hj), add_zero]

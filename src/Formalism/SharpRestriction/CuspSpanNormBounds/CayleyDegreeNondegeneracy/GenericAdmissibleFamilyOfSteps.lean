@@ -26,8 +26,6 @@ namespace Formalism.MainNotions.BridgeLemma₂
 open NumberField Module Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.Cnt Formalism.MainNotions.BridgeLemma Formalism.HermitianLatticeCounting
 open scoped ENNReal
 
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 section SW
 
 variable (D : D7) (large₂ : SizeData₂ D) (u u' : D.what₂.Word)
@@ -69,8 +67,6 @@ namespace Formalism.MainNotions.BridgeLemma₂
 
 open NumberField Module Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.Cnt Formalism.MainNotions.BridgeLemma Formalism.HermitianLatticeCounting
 open scoped ENNReal
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 section Eqv
 

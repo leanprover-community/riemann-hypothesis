@@ -312,9 +312,6 @@ end Final
 
 end GlobalTheory.CompanionTheory.PairMult.CenScal
 
-namespace GlobalTheory.CompanionTheory.PairMult
-
-end GlobalTheory.CompanionTheory.PairMult
 end
 end -- clump:auto
 end -- clump:auto

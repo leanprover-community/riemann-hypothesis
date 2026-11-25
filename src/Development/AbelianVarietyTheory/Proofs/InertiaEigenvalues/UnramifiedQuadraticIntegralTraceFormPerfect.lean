@@ -287,7 +287,7 @@ theorem small_of_trace_small (y : E) (h : ∀ e : E, ‖e‖ ≤ 1 → ‖Algebr
   linarith
 
 theorem traceForm_perfect : ∀ (F E : Type) [NontriviallyNormedField F] [NontriviallyNormedField E] [NormedAlgebra F E] [StarRing E] [Unram F E], (∀ y : E, algebraMap F E (Algebra.trace F E y) = y + star y) ∧ (∃ e : E, ‖e‖ ≤ 1 ∧ e + star e = 1) ∧ ∀ y : E, (∀ e : E, ‖e‖ ≤ 1 → ‖Algebra.trace F E (e * y)‖ < 1) → ‖y‖ < 1 :=
-  fun F E _ _ _ _ _ => ⟨trace_eq, exists_half F, small_of_trace_small⟩
+  fun F _ _ _ _ _ _ => ⟨trace_eq, exists_half F, small_of_trace_small⟩
 
 end Main
 

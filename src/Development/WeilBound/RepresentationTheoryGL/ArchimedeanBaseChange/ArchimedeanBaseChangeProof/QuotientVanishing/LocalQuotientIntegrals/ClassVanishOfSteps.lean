@@ -92,10 +92,6 @@ theorem lognInf_eq (v : InfinitePlace E) (x : GA E n) {r : ℕ} (M : Matrix (Fin
     lognInf v (frame x M) = ploc (M.map v.embedding) (GeneralLinearGroup.map (cV v) x) := by
   rw [lognInf, frame_map, ploc]
 
-theorem exists_left (v : InfinitePlace E) (W : Submodule E (Fin n → E)) :
-    ∃ L : Matrix (Fin (Module.finrank E W)) (Fin n) ℂ, L * (basisMat W).map v.embedding = 1 := by
-  apply _root_.GlobalTheory.CompanionTheory.LocFlagPf.exists_left
-
 theorem gram_re_pos {r : ℕ} (B : Matrix (Fin n) (Fin r) ℂ) (L : Matrix (Fin r) (Fin n) ℂ) (hL : L * B = 1) :
     0 < (Bᴴ * B).det.re := by
   have hps : (Bᴴ * B).PosSemidef := posSemidef_conjTranspose_mul_self B
@@ -112,7 +108,7 @@ theorem gram_re_pos {r : ℕ} (B : Matrix (Fin n) (Fin r) ℂ) (L : Matrix (Fin 
 theorem ploc_re_pos (v : InfinitePlace E) (W : Submodule E (Fin n → E)) (g : GL (Fin n) ℂ) :
     0 < ((((g⁻¹ : GL (Fin n) ℂ).val * (basisMat W).map v.embedding)ᴴ *
       ((g⁻¹ : GL (Fin n) ℂ).val * (basisMat W).map v.embedding)).det).re := by
-  obtain ⟨L, hL⟩ := exists_left v W
+  obtain ⟨L, hL⟩ := GlobalTheory.CompanionTheory.LocFlagPf.exists_left v W
   refine gram_re_pos _ (L * g.val) ?_
   rw [Matrix.mul_assoc, ← Matrix.mul_assoc g.val, ← Units.val_mul, mul_inv_cancel, Units.val_one, Matrix.one_mul, hL]
 

@@ -37,7 +37,9 @@ theorem tdeg_eq (b : SegBlock (segS X.TT j) X.m) (hk : Kept X.p X.m (X.seg C0 CE
   have h1 := hwh (by rw [coeff_monomial, ite_eq_left rfl]; exact one_ne_zero)
   rw [weight_wLet] at h1
   unfold tdeg
-  rw [h1, TD_wLet C0 CE1 CE2 X j x b hk ho]
+  rw [h1, TD_wLet_of_bounds C0 CE1 CE2 X j x b hk.1
+      (fun i h => (hk.2.2.1 i h).2.1) (fun i h => (hk.2.2.1 i h).2.2.1)
+      (fun i h => (hk.2.1 i h).1) ho]
 
 theorem segPos_inj : Function.Injective (segPos X.TT j) := by
   intro i i' h

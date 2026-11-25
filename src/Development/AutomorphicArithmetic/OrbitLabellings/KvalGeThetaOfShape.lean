@@ -395,8 +395,7 @@ theorem UpperTheory.beS_constantCoeff_eq_zero_and_wtGe :
     · simpa using Real.rpow_nonneg h0.le _
   unfold beS
   constructor
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+  · rw [map_sum]
     refine Finset.sum_eq_zero fun r hr => asmOne_smul_const _ ?_
     have hbe0 : MvPowerSeries.constantCoeff (be r) = 0 := by
       by_contra h

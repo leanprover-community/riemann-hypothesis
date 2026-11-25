@@ -534,11 +534,6 @@ def Dpar (j : ℕ) (τ : D.what₂.Tau) : SPar :=
     (block (-P.e τ i) P.t).image fun x => (x, true))).image
       fun x => (x.1 + (if Odd j then P.eta τ else 0), x.2)
 
-def Xpar (j : ℕ) (τ : D.what₂.Tau) : SPar :=
-  (Finset.univ.image fun i : Fin D.R.k => (P.u τ i, true)) ∪
-  ((Finset.univ.filter fun i : Fin D.R.m => i.1 < j).biUnion fun i =>
-    (block (-P.e τ i) (P.t + 1)).image fun x => (x, true))
-
 end TPar
 
 end TH

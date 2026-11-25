@@ -173,12 +173,6 @@ theorem lintegral_of_integral {l : Type} [Fintype l] (f g : GlobalTheory.RealWei
 
 end GlobalTheory.ArchCont
 
-namespace GlobalTheory.ArchCont
-
-open scoped SchwartzMap RealInnerProductSpace
-
-end GlobalTheory.ArchCont
-
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

@@ -43,11 +43,8 @@ theorem mem_latZ (Z : Matrix (Fin n) (Fin n) K) (x : Fin n → R) :
   exact Iff.rfl
 
 theorem det_lift_eq_one (M : Matrix (Fin n) (Fin n) R) (h : (M.map R.subtype).det = 1) :
-    M.det = 1 := by
-  have h2 : R.subtype M.det = R.subtype 1 := by
-    rw [RingHom.map_det, map_one]
-    exact h
-  exact Subtype.ext h2
+    M.det = 1 :=
+  Subtype.ext ((RingHom.map_det R.subtype M).trans h)
 
 theorem lowUni_mulVec_eLast {M : Matrix (Fin n) (Fin n) K} (h : IsLowUni M) :
     M *ᵥ coeLin R (eLast R) = coeLin R (eLast R) := by

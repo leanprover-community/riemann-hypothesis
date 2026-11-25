@@ -79,7 +79,6 @@ theorem thetaKO_smul (g : GA D M) (h : GA D X) (c : ℂ) (Φ : WO M X → ℂ) :
 
 theorem thetaKO_sum {ι : Type} (s : Finset ι) (g : GA D M) (h : GA D X) (Φ : ι → WO M X → ℂ) :
     thetaKO ω g h (∑ i ∈ s, Φ i) = ∑ i ∈ s, thetaKO ω g h (Φ i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
     simp [thetaKO, map_sum, Finset.sum_apply]
 
 theorem thetaKO_right (g k : GA D M) (h : GA D X) (Φ : WO M X → ℂ) :

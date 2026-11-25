@@ -171,11 +171,6 @@ end Darboux
 
 end GlobalTheory.DefThetaNZ
 
-namespace GlobalTheory.DefThetaNZ
-
-open scoped Matrix
-
-end GlobalTheory.DefThetaNZ
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -198,13 +193,10 @@ open scoped Kronecker ComplexOrder
 
 variable {n d : ℕ}
 
-theorem map_star_mul {a b c : Type} [Fintype b] (A : Matrix a b ℂ) (B : Matrix b c ℂ) : (A * B).map star = A.map star * B.map star := by
-  ext i j; simp [Matrix.mul_apply]
-
 theorem cartan_comm {M θ : Matrix (Fin n) (Fin n) ℂ} (h : IsCartan M θ) : M * θ.map star = θᵀ * M := by
   obtain ⟨h1, h2, -⟩ := h
   have h1' : θ.map star * θ.map star = 1 := by
-    rw [← map_star_mul, h1]
+    rw [← GlobalTheory.RealLift.KLineProof.map_star_mul, h1]
     exact Matrix.map_one star (star_zero _) (star_one _)
   calc M * θ.map star = θᵀ * M * θ.map star * θ.map star := by rw [h2]
     _ = θᵀ * M := by rw [Matrix.mul_assoc (θᵀ * M), h1', Matrix.mul_one]
@@ -279,7 +271,7 @@ theorem tensor_cartan_invariant_pos : ∀ (n d : ℕ) (JX θX : Matrix (Fin n) (
   · rw [quadruple_sum_eq_trace_transpose_mul, quadruple_sum_eq_trace_transpose_mul]
     have e1 : (Complex.I • (θX * x * θWᵀ))ᵀ * (JX * (Complex.I • (θX * y * θWᵀ)).map star * JWᵀ) =
         θW * (xᵀ * (θXᵀ * JX * θX.map star) * y.map star * (θW.map star)ᵀ * JWᵀ) := by
-      rw [map_star_smulI, transpose_smul, map_star_mul, map_star_mul, transpose_mul, transpose_mul, transpose_transpose,
+      rw [map_star_smulI, transpose_smul, GlobalTheory.RealLift.KLineProof.map_star_mul, GlobalTheory.RealLift.KLineProof.map_star_mul, transpose_mul, transpose_mul, transpose_transpose,
         transpose_map]
       simp only [Matrix.smul_mul, Matrix.mul_smul, smul_smul, Matrix.mul_assoc, Complex.I_mul_I, neg_neg, one_smul, neg_mul]
     have e2 : xᵀ * (θXᵀ * JX * θX.map star) * y.map star * (θW.map star)ᵀ * JWᵀ * θW =
@@ -292,7 +284,7 @@ theorem tensor_cartan_invariant_pos : ∀ (n d : ℕ) (JX θX : Matrix (Fin n) (
         -(xᵀ * ((θXᵀ * JX) * x.map star * (θWᵀ * (Complex.I • JW))ᵀ)) := by
       have h3 : xᵀ * (JX * (Complex.I • (θX * x * θWᵀ)).map star * JWᵀ) =
           (-Complex.I) • (xᵀ * (JX * θX.map star) * x.map star * (JW * θW.map star)ᵀ) := by
-        rw [map_star_smulI, map_star_mul, map_star_mul, transpose_map, transpose_mul]
+        rw [map_star_smulI, GlobalTheory.RealLift.KLineProof.map_star_mul, GlobalTheory.RealLift.KLineProof.map_star_mul, transpose_map, transpose_mul]
         simp only [Matrix.smul_mul, Matrix.mul_smul, Matrix.mul_assoc]
       rw [h3, cX, cW]
       simp only [Matrix.mul_smul, transpose_smul, neg_smul, Matrix.mul_assoc]
@@ -1305,7 +1297,6 @@ end GlobalTheory.GaussTransport
 
 namespace GlobalTheory.GaussTransport
 
-
 open LineDeriv in
 theorem transport : ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
     (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -1540,7 +1531,6 @@ theorem mem_pol_of_actsD (M : Model σ X W) (ψ : AddChar (AF F) ℂ) (τ : ∀ 
     (h : ActsD (evI F) (M.heisLine ψ u) f f₁) : f₁ ∈ M.Pol ψ τ :=
   Submodule.mem_sInf.2 fun N hN => hN.2 u hu f (Submodule.mem_sInf.1 hf N hN) f₁ h
 
-
 open scoped Classical in
 theorem pol_stable (M : Model σ X W) (ψ : AddChar (AF F) ℂ) (hψ : IsStd ψ) (τ : ∀ w : InfinitePlace F, EmbOver E w)
     (v a : Fin n × Fin d → mixedEmbedding.mixedSpace F) {f f₁ : SInf F (Fin n × Fin d)} (hf : f ∈ M.Pol ψ τ)
@@ -1552,7 +1542,6 @@ theorem pol_stable (M : Model σ X W) (ψ : AddChar (AF F) ℂ) (hψ : IsStd ψ)
     refine SchwartzMap.ext fun y => ?_
     rw [hD f (D f) (hDa f) y, h₁ y]
   exact e ▸ mem_pol_of_actsD M ψ τ hu hf (hDa f)
-
 
 open scoped Classical in
 theorem pol_dense : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E) (n d : ℕ)
@@ -1597,8 +1586,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S Matrix Formalism.L2.Theta
 
 namespace GlobalTheory.SquareAgree
-
-
 
 theorem kapX_surjective : ∀ (D : D7) (X : HSp D) {d : ℕ} (e : Fin X.rank ≃ Fin d) {J : Matrix (Fin d) (Fin d) D.host.E}
     (hJ : J = D.host.xi0 • Matrix.reindex e e X.gramᵀ), Function.Surjective (GlobalTheory.SquareAgree.kapX X e hJ) := by

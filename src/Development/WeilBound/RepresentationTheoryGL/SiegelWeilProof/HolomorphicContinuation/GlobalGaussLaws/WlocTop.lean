@@ -705,14 +705,6 @@ namespace PositivityTheory.Rg.Sw.Glob
 open PositivityTheory.Rg.Sw.Glob.VacS PositivityTheory.Rg.Sw.Glob.VacB PositivityTheory.Rg.Sw.Glob.VacC PositivityTheory.Rg.Sw.Glob.VacE PositivityTheory.Rg.Sw.Glob.VacF
   PositivityTheory.Rg.Sw.Glob.VacG PositivityTheory.Rg.Sw.Glob.VacH PositivityTheory.Rg.Sw.Glob.VacI PositivityTheory.Rg.Sw.Glob.VacJ PositivityTheory.Rg.Sw.Glob.VacK
 
-private theorem cnt_true_add_cnt_false {m : ℕ} (ε : Fin m → Bool) : cnt ε true + cnt ε false = m := by
-  unfold cnt
-  rw [Finset.card_filter, Finset.card_filter, ← Finset.sum_add_distrib]
-  have h : ∀ a : Fin m, ((if ε a = true then 1 else 0) + (if ε a = false then 1 else 0) : ℕ) = 1 := by
-    intro a
-    cases ε a <;> simp
-  simp only [h, Finset.sum_const, Finset.card_univ, Fintype.card_fin, smul_eq_mul, mul_one]
-
 theorem vacK_of : GZSch → LawN → LawNbar → LocMul → LNe → VacK := by
   intro hGZ hN hNb hLM hLNe
   unfold PositivityTheory.Rg.Sw.Glob.VacK
@@ -760,7 +752,7 @@ theorem vacK_of : GZSch → LawN → LawNbar → LocMul → LNe → VacK := by
     rw [Matrix.det_mul, Matrix.det_conjTranspose, Matrix.det_one] at h
     exact eq_inv_of_mul_eq_one_left h
   have hm : (V.rank : ℤ) = ((cnt (epsT (tLoc l τ) ε) true + cnt (epsT (tLoc l τ) ε) false : ℕ) : ℤ) := by
-    rw [cnt_true_add_cnt_false]
+    rw [PositivityTheory.Rg.Sw.Glob.LocLawH.cnt_add]
   have hX : (∏ j, Complex.exp (Complex.I * (φ j : ℂ))) ≠ 0 :=
     Finset.prod_ne_zero_iff.mpr fun j _ => Complex.exp_ne_zero _
   have hXinv : ∏ j, Complex.exp (-(Complex.I * (φ j : ℂ))) = (∏ j, Complex.exp (Complex.I * (φ j : ℂ)))⁻¹ := by

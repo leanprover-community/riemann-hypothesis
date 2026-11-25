@@ -41,25 +41,6 @@ theorem liftVec_out (v : Fin (2 * r' + k + 1) → ℂ) (p : Fin (2 * (i + r') + 
   simp only [liftVec]
   rw [dite_eq_right hp]
 
-theorem ιLev_lev (g : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) (p q : Fin (2 * r' + k + 1)) :
-    ιLev k i r' g (levPos k i r' p) (levPos k i r' q) = g p q := by
-  have hp := p.isLt
-  have hq := q.isLt
-  have h1 : i ≤ (levPos k i r' p).val ∧ (levPos k i r' p).val < 2 * r' + k + 1 + i := by rw [lev_val]; omega
-  have h2 : i ≤ (levPos k i r' q).val ∧ (levPos k i r' q).val < 2 * r' + k + 1 + i := by rw [lev_val]; omega
-  simp only [ιLev]
-  rw [dite_eq_left h1, dite_eq_left h2]
-  congr 1 <;> apply Fin.ext
-  · show p.val + i - i = p.val
-    omega
-  · show q.val + i - i = q.val
-    omega
-
-theorem ιLev_out (g : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) (p q : Fin (2 * (i + r') + k + 1))
-    (hp : ¬ (i ≤ p.val ∧ p.val < 2 * r' + k + 1 + i)) : ιLev k i r' g p q = if p = q then 1 else 0 := by
-  simp only [ιLev]
-  rw [dite_eq_right hp]
-
 theorem sum_lev {M : Type*} [AddCommMonoid M] (f : Fin (2 * (i + r') + k + 1) → M)
     (h : ∀ p : Fin (2 * (i + r') + k + 1), ¬ (i ≤ p.val ∧ p.val < 2 * r' + k + 1 + i) → f p = 0) :
     ∑ p, f p = ∑ j : Fin (2 * r' + k + 1), f (levPos k i r' j) := by

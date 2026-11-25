@@ -853,9 +853,6 @@ namespace GlobalTheory.CompanionTheory.PairMult.TopK
 
 variable {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
 
-theorem sgL_sq (l : Lt n) (B : Finset (Lt n)) : sgL l B * sgL l B = 1 := by
-  unfold sgL; rw [← pow_add, ← two_mul, pow_mul]; simp
-
 theorem adC_diag_ne {p q : Fin n} (h : p ≠ q) (i : Pos n) : adC p q i i = 0 := by
   have h1 : ¬(q = i.1.1 ∧ i.1 = (p, i.1.2)) := fun e => h (by
     have := congrArg Prod.fst e.2
@@ -974,9 +971,6 @@ namespace GlobalTheory.CompanionTheory.SemiClass
 
 variable {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
 
-theorem annL_app (l : Lt n) (x : Cq n V) (B : Finset (Lt n)) :
-    annL l x B = if l ∈ B then 0 else sgL l B • x (insert l B) := rfl
-
 theorem sgL_erase (l : Lt n) (B : Finset (Lt n)) : sgL l (B.erase l) = sgL l B := by
   unfold sgL
   congr 2
@@ -997,7 +991,7 @@ theorem creL_annL (l : Lt n) (x : Cq n V) (B : Finset (Lt n)) :
     creL l (annL l x) B = if l ∈ B then x B else 0 := by
   rw [GlobalTheory.CompanionTheory.LvChain.creL_apply]
   split_ifs with hB
-  · rw [annL_app, ite_eq_right (by simp), Finset.insert_erase hB, sgL_erase, smul_smul, sgL_sq, one_smul]
+  · rw [GlobalTheory.CompanionTheory.LvChain.annL_apply, ite_eq_right (by simp), Finset.insert_erase hB, sgL_erase, smul_smul, sgL_sq, one_smul]
   · rfl
 
 theorem mem_omU {lev : Fin n → ℕ} {l : Lt n} : l ∈ omU lev ↔ l.1 = false ∧ lev l.2.1.1 < lev l.2.1.2 := by
@@ -1027,7 +1021,7 @@ theorem liftL_top (lev : Fin n → ℕ) (T : Module.End ℂ V) (x : V) :
 theorem annL_top_of_notMem {lev : Fin n → ℕ} {l : Lt n} (x : V) (h : l ∉ omU lev) :
     annL l (Pi.single (omU lev) x : Cq n V) = 0 := by
   ext B
-  rw [annL_app, top_app]
+  rw [GlobalTheory.CompanionTheory.LvChain.annL_apply, top_app]
   split_ifs with h1 h2
   · rfl
   · exact absurd (by rw [← h2]; exact Finset.mem_insert_self l B) h
@@ -1046,7 +1040,7 @@ theorem creL_annL_top_ne {lev : Fin n → ℕ} {l m : Lt n} (x : V) (hm : m ∈ 
   ext B
   rw [GlobalTheory.CompanionTheory.LvChain.creL_apply]
   split_ifs with hB
-  · rw [annL_app]
+  · rw [GlobalTheory.CompanionTheory.LvChain.annL_apply]
     split_ifs with hl
     · simp
     · rw [top_app, ite_eq_right]

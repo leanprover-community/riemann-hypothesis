@@ -349,10 +349,6 @@ end Formalism.MainNotions.G.Joints.Lit
 
 namespace Formalism.MainNotions.G.Joints.Lit
 
-end Formalism.MainNotions.G.Joints.Lit
-
-namespace Formalism.MainNotions.G.Joints.Lit
-
 theorem mertens_bound (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.CornerGLContinuity.MertensBound D := by
   intro y hy
   have hly : 0 ≤ Real.log y := Real.log_nonneg hy

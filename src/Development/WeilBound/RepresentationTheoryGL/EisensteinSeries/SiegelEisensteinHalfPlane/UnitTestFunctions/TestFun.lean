@@ -540,7 +540,6 @@ lemma hasCompactSupport_smallF : HasCompactSupport smallF := by
 
 end GlobalTheory.CompanionTheory.TestBump
 
-
 open GlobalTheory.CompanionTheory.TestBump in
 theorem GlobalTheory.CompanionTheory.TestBump.cplxBump : CplxBump := by
   classical
@@ -765,7 +764,6 @@ open PositivityTheory.RgEis PositivityTheory.RgEis.TF
 namespace GlobalTheory.CompanionTheory.EisTestFun
 
 variable {k : Type} [Field k] [NumberField k]
-
 
 theorem line_lc_cs {g : (Unit → FiniteAdeleRing (𝓞 k) k) → ℂ}
     (hg : g ∈ GJMatrix.finiteSchwartzBruhatPi k) :
@@ -1038,12 +1036,6 @@ namespace GlobalTheory.CompanionTheory.RgEisSupp
 
 open PositivityTheory.RgEis PositivityTheory.RgEis.TF
 
-theorem col_apply {k : Type} [Field k] [NumberField k] {ι : Type} [Fintype ι] [DecidableEq ι]
-    (i₀ : ι) (κ : GL ι 𝔸[k]) (r : ι) :
-    TF.col i₀ κ r = ((κ⁻¹ : GL ι 𝔸[k]) : Matrix ι ι 𝔸[k]) r i₀ := by
-  rw [TF.col, Matrix.mulVec_single_one]
-  rfl
-
 theorem mem_stab_of_inv_col {R : Type} [CommRing R] {ι : Type} [Fintype ι] [DecidableEq ι]
     (g : GL ι R) (i₀ : ι) (h : ∀ j, j ≠ i₀ → ((g⁻¹ : GL ι R) : Matrix ι ι R) j i₀ = 0) :
     g ∈ stab R ({i₀} : Set ι) := by
@@ -1149,7 +1141,7 @@ theorem supp : ColLaw → InMTop → Supp := by
       exact norm_eq_zero.1 h1
     have hst : κ.1 ∈ stab 𝔸[k] ({i₀} : Set ι) := by
       refine mem_stab_of_inv_col κ.1 i₀ fun j hj => ?_
-      rw [← col_apply]
+      rw [← GlobalTheory.CompanionTheory.EisCol.col_apply]
       exact Prod.ext (hinf j hj) (hfin j hj)
     exact hκO ⟨κ, hst, 1, mem_interior_iff_mem_nhds.2 hU, (mul_one κ).symm⟩
   obtain ⟨n, hn⟩ := hex
@@ -1176,16 +1168,6 @@ open WithZero Multiplicative
 namespace GlobalTheory.CompanionTheory.EisTF
 
 variable {k : Type} [Field k] [NumberField k]
-
-theorem natCast_finiteAdele_apply (v : HeightOneSpectrum (𝓞 k)) (M : ℕ) :
-    ((M : FiniteAdeleRing (𝓞 k) k) v) = (M : v.adicCompletion k) := by
-  induction M with
-  | zero => simp only [Nat.cast_zero]; rfl
-  | succ m ih =>
-    simp only [Nat.cast_succ]
-    change ((m : FiniteAdeleRing (𝓞 k) k) v) + (1 : FiniteAdeleRing (𝓞 k) k) v = _
-    rw [ih]
-    rfl
 
 theorem valued_natCast_le_one (v : HeightOneSpectrum (𝓞 k)) (M : ℕ) :
     Valued.v (M : v.adicCompletion k) ≤ 1 := by
@@ -1250,7 +1232,7 @@ theorem condM : CondM := by
         have huv : ((u : FiniteAdeleRing (𝓞 k) k) v) - 1 =
             ((∏ w ∈ S, Ideal.absNorm w.asIdeal ^ n w : ℕ) : v.adicCompletion k) * y v := by
           have := congrArg (fun x : FiniteAdeleRing (𝓞 k) k => x v) huy
-          rw [← natCast_finiteAdele_apply]
+          rw [← GlobalTheory.CompanionTheory.RgEis.InMTopPf.natCast_apply']
           exact this
         rw [coe_finiteComponent, huv, map_mul]
         calc _ ≤ Valued.v ((∏ w ∈ S, Ideal.absNorm w.asIdeal ^ n w : ℕ) : v.adicCompletion k) * 1 :=
@@ -1278,7 +1260,6 @@ open NumberField NumberField.mixedEmbedding NumberField.InfinitePlace GroundTheo
 namespace GlobalTheory.CompanionTheory.RgEisSign
 
 variable {k : Type} [Field k] [NumberField k]
-
 
 open scoped Classical in
 def even_im_hermitian_sub (ω : HeckeCharacter k) (w : {w : InfinitePlace k // w.IsReal}) : ℕ :=

@@ -266,34 +266,6 @@ def topDens (y : CxPts p σ) : ℝ :=
     Real.exp (-φ.φ (pick φ.isLB y) y))
 
 
-variable {f} in
-theorem topDens_eq (hf : f ∈ fibSec p σ (tens K.bundle B)) (hy : y ∈ c.e.source) {a : K.bundle.ι}
-    {b : B.ι} (ha : y ∈ ptsIn p σ (K.bundle.U a)) (hb : y ∈ ptsIn p σ (B.U b)) :
-    c.topDens K φ f y = 2 ^ D * (‖c.topCoeff K f a b y‖ ^ 2 * Real.exp (-φ.φ b y)) := by
-  have ha' := mem_pick K.isLB y
-  have hb' := mem_pick φ.isLB y
-  have e : y ∈ ptsIn p σ ((tens K.bundle B).U (a, b)) := mem_ptsIn_inf.2 ⟨ha, hb⟩
-  have e' : y ∈ ptsIn p σ ((tens K.bundle B).U (pick K.isLB y, pick φ.isLB y)) :=
-    mem_ptsIn_inf.2 ⟨ha', hb'⟩
-  rw [topDens, ← normSq_mul_exp (gv_ne_zero hb hb'), φ.trans b _ y hb hb', sub_add_cancel, topCoeff,
-    topCoeff, hf.1 _ _ y e e', gv_tens e e', gv_canon,
-    ← rv_mul _ (K.isFrame a) _ (c.source_subset hy) ha ha']
-  congr 4
-  ring
-
-theorem topDens_trans (hy : y ∈ c.e.source) (hy' : y ∈ c'.e.source) :
-    c.topDens K φ f y = ‖transDet c.e c'.e y‖ ^ 2 * c'.topDens K φ f y := by
-  rw [topDens, topDens, topCoeff, topCoeff, ← rv_mul _ c'.isFrame _ (c.source_subset hy)
-    (c'.source_subset hy') (mem_pick K.isLB y), rv_chart c c' hy hy', mul_assoc (transDet _ _ _),
-    norm_mul]
-  ring
-
-theorem chartMeas_topDens {A : Set (CxPts p σ)} (hA : MeasurableSet A) (h : A ⊆ c.e.source)
-    (h' : A ⊆ c'.e.source) : chartMeas c.e (fun y => ENNReal.ofReal (c.topDens K φ f y)) A =
-      chartMeas c'.e (fun y => ENNReal.ofReal (c'.topDens K φ f y)) A :=
-  chartMeas_eq _ _ (c.holo_trans c') hA h h' fun y hy => by
-    rw [c.topDens_trans K φ f c' (h hy) (h' hy), ENNReal.ofReal_mul (sq_nonneg _)]
-
 end AlgChart
 
 namespace AnRead
@@ -304,21 +276,6 @@ def topMeasure : Measure (CxPts p σ) :=
   glueMeas (fun i => (R.chart i).e) fun i y => ENNReal.ofReal ((R.chart i).topDens K φ f y)
 
 variable [SecondCountableTopology (CxPts p σ)]
-
-theorem topMeasure_apply (c : AlgChart p σ D) {A : Set (CxPts p σ)} (hA : MeasurableSet A)
-    (h : A ⊆ c.e.source) : R.topMeasure K φ f A =
-      ∫⁻ v in c.e '' A, ENNReal.ofReal (c.topDens K φ f (c.e.symm v)) := by
-  have key : (R.topMeasure K φ f).restrict A =
-      (chartMeas c.e fun y => ENNReal.ofReal (c.topDens K φ f y)).restrict A :=
-    ext_of_cover _ (fun i => (R.chart i).e.open_source) R.cover fun i T hT hi => by
-      rw [Measure.restrict_apply hT, Measure.restrict_apply hT, topMeasure,
-        glueMeas_apply _ _ (fun i j => (R.chart i).holo_trans (R.chart j)) (fun i j y hi hj => by
-          rw [(R.chart i).topDens_trans K φ f _ hi hj, ENNReal.ofReal_mul (sq_nonneg _)])
-        i (hT.inter hA) (inter_subset_left.trans hi)]
-      exact AlgChart.chartMeas_topDens K φ f _ c (hT.inter hA) (inter_subset_left.trans hi)
-        (inter_subset_right.trans h)
-  rw [← chartMeas_apply_of_subset c.e (fun y => ENNReal.ofReal (c.topDens K φ f y)) hA h,
-    ← Measure.restrict_apply_self, key, Measure.restrict_apply_self]
 
 
 

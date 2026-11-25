@@ -18,12 +18,6 @@ variable {A K : Type} [CommRing A] [Field K] [Algebra A K]
   {V : Type} [AddCommGroup V] [Module K V] [Module A V] [IsScalarTower A K V]
   {E : Type} [Field E] [NumberField E]
 
-omit [NumberField E] in
-theorem apply_of_mem_eigSp (ρ : 𝓞 E →+* Module.End K V) (σ : E →+* K) {x : V}
-    (hx : x ∈ eigSp ρ σ) (a : 𝓞 E) : ρ a x = σ (a : E) • x := by
-  have := (Submodule.mem_iInf _).1 hx a
-  simpa [sub_eq_zero] using this
-
 theorem sum_smul_eigProj (ρ : 𝓞 E →+* Module.End K V) (σ : E →+* K) {N : ℕ} (t : Fin N → V)
     (y : Fin N → K) :
     ∑ i, y i • eigProj ρ σ (t i) =
