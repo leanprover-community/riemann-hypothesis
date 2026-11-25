@@ -11,10 +11,10 @@ it is not read. For example:
     - [ ] depends on: #123, #124
     > blocked by https://github.com/owner/name/pull/125
 
-These are the lines that `prdag`, the tool a maintainer uses to keep chains of dependent pull
-requests up to date, reads as dependencies, so that both agree on what a description declares.
-Text that GitHub does not show as text is not read: HTML comments, fenced code blocks, and code
-spans such as `#123` in backticks. Pull requests of other repositories are left out.
+These are the forms that descriptions of dependent pull requests commonly use, beyond the
+`depends on` line that AGENTS.md asks for. Text that GitHub does not show as text is not read:
+HTML comments, fenced code blocks, and code spans such as `#123` in backticks. Pull requests of
+other repositories are left out.
 """
 from __future__ import annotations
 
