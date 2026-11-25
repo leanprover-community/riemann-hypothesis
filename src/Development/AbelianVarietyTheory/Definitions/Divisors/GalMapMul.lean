@@ -105,6 +105,11 @@ instance : IsGrothendieckAbelian.{1} (Shv R) := by
   have : EssentiallySmall.{1} Scheme.{0} := inferInstance
   exact Sheaf.isGrothendieckAbelian_of_essentiallySmall _ (ModuleCat.{1} (ULift.{1} R))
 
+/-- Gives `HasZeroObject (Shv R)` a single named proof, so that downstream definitions refer
+to this constant instead of each hoisting their own copy of `Abelian.hasZeroObject`. -/
+instance instHasZeroObjectShv : HasZeroObject (Shv R) :=
+  Abelian.hasZeroObject
+
 abbrev PSh : Type 1 := Scheme.{0}ᵒᵖ ⥤ Type
 
 abbrev Spc : Type 1 := SimplicialObject PSh
