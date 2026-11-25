@@ -123,7 +123,6 @@ theorem apply_self_eq_two_mul {β : LinearMap.BilinForm ℤ X} (h : β ∈ level
   rw [HostModel.cmHost_bar_halfIntegerGenerator, sub_smul, one_smul, map_sub] at e
   linarith
 
-
 end Forms
 
 section Part
@@ -167,12 +166,6 @@ theorem IsMonomial.nonneg (h : IsMonomial Dg t β) (i : Fin m) (y : Dg.X) : 0 �
   obtain ⟨u, n, hn, -⟩ := h y
   rw [hn]; positivity
 
-theorem IsMonomial.coord (h : IsMonomial Dg t β) {y : Dg.X} {r : R} (hr : PsiCoord Dg y r) :
-    ∃ (u : Rˣ) (n : Fin m → ℕ), (∀ i, β i y y = 2 * n i) ∧ r = u * ∏ i, t i ^ n i := by
-  obtain ⟨u, n, hn, hc⟩ := h y
-  obtain ⟨v, hv⟩ := PsiCoordLocal.exists_unit_of_coord hc hr
-  exact ⟨v * u, n, hn, by rw [hv, Units.val_mul, mul_assoc]⟩
-
 theorem IsMonomial.exists_pos {I : Ideal R} (hI : I ≠ ⊤) {Dd : DegData R I}
     {β : Fin m → LinearMap.BilinForm ℤ Dd.toPre.X} (h : IsMonomial Dd.toPre t β) {y : Dd.toPre.X} (hy : y ≠ 0) :
     ∃ i, 0 < β i y y := by
@@ -185,34 +178,6 @@ theorem IsMonomial.exists_pos {I : Ideal R} (hI : I ≠ ⊤) {Dd : DegData R I}
     omega
   simp only [h0, pow_zero, Finset.prod_const_one, mul_one] at hm
   exact hI (Ideal.eq_top_of_isUnit_mem _ hm u.isUnit)
-
-theorem IsMonomial.tau (h : IsMonomial Dg t β) (hs : ∀ i y z, β i y z = β i z y) (ht : ∀ i, t i ≠ 0) {a b : Dg.X}
-    {r r' r'' : R} (ha : PsiCoord Dg a r) (hb : PsiCoord Dg b r') (hab : PsiCoord Dg (a + b) r'') :
-    ∃ u : Rˣ, algebraMap R (FractionRing R) r'' / (algebraMap R _ r * algebraMap R _ r') =
-      algebraMap R _ u * ∏ i, algebraMap R (FractionRing R) (t i) ^ β i a b := by
-  obtain ⟨u, n, hn, rfl⟩ := h.coord ha
-  obtain ⟨u', n', hn', rfl⟩ := h.coord hb
-  obtain ⟨u'', n'', hn'', rfl⟩ := h.coord hab
-  have ne : ∀ {x : R}, x ≠ 0 → algebraMap R (FractionRing R) x ≠ 0 := fun hx =>
-    (map_ne_zero_iff _ (IsFractionRing.injective R _)).2 hx
-  have e : ∀ i, (n'' i : ℤ) = β i a b + n i + n' i := fun i => by
-    have := hn'' i
-    simp only [map_add (f := _), LinearMap.add_apply, hs i b a, hn i, hn' i] at this
-    omega
-  refine ⟨u'' * u⁻¹ * u'⁻¹, ?_⟩
-  have hu := ne u.ne_zero
-  have hu' := ne u'.ne_zero
-  have hp : ∀ k : Fin m → ℕ, ∏ i, algebraMap R (FractionRing R) (t i) ^ k i ≠ 0 := fun k =>
-    Finset.prod_ne_zero_iff.2 fun i _ => pow_ne_zero _ (ne (ht i))
-  have e' : ∏ i, algebraMap R (FractionRing R) (t i) ^ n'' i = (∏ i, algebraMap R (FractionRing R) (t i) ^ β i a b) *
-      (∏ i, algebraMap R (FractionRing R) (t i) ^ n i) * ∏ i, algebraMap R (FractionRing R) (t i) ^ n' i := by
-    rw [← Finset.prod_mul_distrib, ← Finset.prod_mul_distrib]
-    refine Finset.prod_congr rfl fun i _ => ?_
-    rw [← zpow_natCast, e, zpow_add₀ (ne (ht i)), zpow_add₀ (ne (ht i)), zpow_natCast, zpow_natCast]
-  simp only [map_mul, map_prod, map_pow, Units.val_mul, map_units_inv, e']
-  have := hp n
-  have := hp n'
-  field_simp
 
 theorem psiUnitOn_of_coord {y : Dg.X} {r : R} (hr : PsiCoord Dg y r) {U : Set (Sp R)}
     (hU : ∀ p ∈ U, r ∉ p.asIdeal) : PsiUnitOn Dg y U := by

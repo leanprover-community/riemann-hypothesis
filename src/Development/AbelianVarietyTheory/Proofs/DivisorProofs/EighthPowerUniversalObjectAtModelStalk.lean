@@ -83,42 +83,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-namespace GlobalTheory.SemiPow
-
-theorem nonempty_torusExtension {K : Type} [Field K] {G' G : Over (Spec (CommRingCat.of K))} [GrpObj G'] [GrpObj G]
-    {j : ℕ} (p : IsPowGrp G' G j) (E : TorusExtension G) : Nonempty (TorusExtension G') := by
-  letI := E.addCommGroup
-  haveI := E.free
-  haveI := E.finite
-  letI := E.grpB
-  obtain ⟨pT, -⟩ := GlobalTheory.exists_isPowGrp_splitTorus (Spec (CommRingCat.of K)) E.X (Fin j → E.X) j (AddEquiv.refl _)
-  obtain ⟨q', hq, hq1, hq2, hq3, hq4, -⟩ :=
-    GlobalTheory.PowMap.main _ G' G (powObj E.B j) E.B j p (powIsPowGrp E.B j) E.q
-  obtain ⟨i', hi, hi1, -⟩ := GlobalTheory.PowMap.main _ _ _ G' G j pT p E.i
-  exact ⟨{ X := Fin j → E.X
-           B := powObj E.B j
-           isAbelian := (GlobalTheory.PowGrp.powers _ _ _ j (powIsPowGrp E.B j)).2.2.2.1 E.isAbelian
-           q := q'
-           q_hom := hq1 E.q_hom
-           q_flat := hq2 E.q_flat
-           q_surjective := hq3 E.q_surjective
-           q_quasiCompact := hq4 E.q_quasiCompact
-           i := i'
-           i_hom := hi1 E.i_hom
-           isKernel := GlobalTheory.PowKernel.main _ _ _ _ _ _ _ j pT p (powIsPowGrp E.B j) E.i E.q i' q' hi hq
-             E.isKernel }⟩
-
-theorem isSemiAbelian_of_isPowGrp : ∀ (S : Scheme.{0}) (G G' : Over S) [GrpObj G] [GrpObj G'] (j : ℕ) (_ : IsPowGrp G' G j), IsSemiAbelian G → IsSemiAbelian G' := by
-  intro S G G' _ _ j p hG
-  obtain ⟨h1, h2, -, -, h5⟩ := GlobalTheory.PowGrp.powers S G' G j p
-  have hq := GlobalTheory.PowGrp.quasiCompact_geomConnected_pow S G' G j p
-  refine ⟨h5 hG, h1 hG.smooth, h2 hG.separated, hq.1 hG.quasiCompact, hq.2 hG.smooth hG.geomConnected,
-    fun Ω _ _ f => ?_⟩
-  obtain ⟨p', -⟩ := GlobalTheory.isPowGrp_baseChange S _ f G' G j p
-  obtain ⟨E⟩ := hG.fibres Ω f
-  exact nonempty_torusExtension p' E
-
-end GlobalTheory.SemiPow
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.UniformizationProofs.IsSemiAbelianOfIsPowGrp =====
@@ -138,66 +102,6 @@ open Classical
 
 noncomputable section
 
-namespace GlobalTheory.PowExtend
-
-theorem isMonHom_of_components {𝒞 : Type*} [Category 𝒞] [CartesianMonoidalCategory 𝒞] {ι : Type}
-    {A B C : 𝒞} [MonObj A] [MonObj B] [MonObj C] (p : ι → (B ⟶ C)) (hp : ∀ a, IsMonHom (p a))
-    (hl : IsLimit (Fan.mk B p)) (e : A ⟶ B) (he : ∀ a, IsMonHom (e ≫ p a)) : IsMonHom e := by
-  refine ⟨?_, ?_⟩
-  · refine Fan.IsLimit.hom_ext hl _ _ fun a => ?_
-    have := hp a
-    have := he a
-    change (_ ≫ e) ≫ p a = _ ≫ p a
-    rw [Category.assoc, IsMonHom.one_hom, IsMonHom.one_hom]
-  · refine Fan.IsLimit.hom_ext hl _ _ fun a => ?_
-    have := hp a
-    have := he a
-    change (_ ≫ e) ≫ p a = (_ ≫ _) ≫ p a
-    rw [Category.assoc, IsMonHom.mul_hom, Category.assoc, IsMonHom.mul_hom, ← Category.assoc,
-      tensorHom_comp_tensorHom]
-
-theorem exists_iso_of_universal {𝒞 : Type*} [Category 𝒞] {ι : Type} {A B C : 𝒞} (p : ι → (B ⟶ C))
-    (hl : IsLimit (Fan.mk B p)) (q : ι → (A ⟶ C))
-    (hq : ∀ (T : 𝒞) (y : ι → (T ⟶ C)), ∃! x : T ⟶ A, ∀ a, x ≫ q a = y a) :
-    ∃ e : A ≅ B, ∀ a, e.hom ≫ p a = q a := by
-  have hA : IsLimit (Fan.mk A q) :=
-    mkFanLimit _ (fun s => (hq s.pt s.proj).exists.choose)
-      (fun s a => (hq s.pt s.proj).exists.choose_spec a)
-      (fun s m hm => (hq s.pt s.proj).unique hm (hq s.pt s.proj).exists.choose_spec)
-  exact ⟨hA.conePointUniqueUpToIso hl, fun a => hA.conePointUniqueUpToIso_hom_comp hl ⟨a⟩⟩
-
-theorem universal_of_iso {𝒞 : Type*} [Category 𝒞] {ι : Type} {A B C : 𝒞} (p : ι → (B ⟶ C))
-    (hl : IsLimit (Fan.mk B p)) (E : A ≅ B) (T : 𝒞) (y : ι → (T ⟶ C)) :
-    ∃! x : T ⟶ A, ∀ a, x ≫ (E.hom ≫ p a) = y a := by
-  refine ⟨hl.lift (Fan.mk T y) ≫ E.inv, fun a => ?_, fun x hx => ?_⟩
-  · rw [Category.assoc, E.inv_hom_id_assoc]
-    exact hl.fac (Fan.mk T y) ⟨a⟩
-  · rw [Iso.eq_comp_inv]
-    refine Fan.IsLimit.hom_ext hl _ _ fun a => ?_
-    exact ((Category.assoc _ _ _).trans (hx a)).trans (hl.fac (Fan.mk T y) ⟨a⟩).symm
-
-theorem exists_pow_projections : ∀ (R : Type) [CommRing R] [IsDomain R] [IsNoetherianRing R] [IsIntegrallyClosed R] (G C : Over (Sp R)) [GrpObj G] [IsCommMonObj G] [GrpObj C] [IsCommMonObj C], IsSemiAbelian G → IsAbelianScheme C → ∀ pr' : Fin 8 → ((Over.pullback (jK R)).obj G ⟶ (Over.pullback (jK R)).obj C), (∀ a, IsMonHom (pr' a)) → (∀ (T' : Over (Sp (FractionRing R))) (y : Fin 8 → (T' ⟶ (Over.pullback (jK R)).obj C)), ∃! x : T' ⟶ (Over.pullback (jK R)).obj G, ∀ a, x ≫ pr' a = y a) → ∃ prO : Fin 8 → (G ⟶ C), (∀ a, IsMonHom (prO a)) ∧ (∀ a, (Over.pullback (jK R)).map (prO a) = pr' a) ∧ ∀ (T' : Over (Sp R)) (y : Fin 8 → (T' ⟶ C)), ∃! x : T' ⟶ G, ∀ a, x ≫ prO a = y a := by
-  intro R _ _ _ _ G C _ _ _ _ hG hC pr' hm hu
-  have hH : IsSemiAbelian (powObj C 8) :=
-    GlobalTheory.SemiPow.isSemiAbelian_of_isPowGrp _ C (powObj C 8) 8 (powIsPowGrp C 8)
-      (GlobalTheory.isSemiAbelian_of_isAbelianScheme C hC)
-  let prK : Fin 8 → ((Over.pullback (jK R)).obj (powObj C 8) ⟶ (Over.pullback (jK R)).obj C) :=
-    fun i => (Over.pullback (jK R)).map (powPr C i)
-  have hlim : IsLimit (Fan.mk ((Over.pullback (jK R)).obj (powObj C 8)) prK) :=
-    isLimitFanMkObjOfIsLimit (Over.pullback (jK R)) (fun _ : Fin 8 => C) (powPr C) (powIsLimit C 8)
-  have hprKm : ∀ i, IsMonHom (prK i) := fun i =>
-    inferInstanceAs (IsMonHom ((Over.pullback (jK R)).map (powPr C i)))
-  obtain ⟨e, he⟩ := exists_iso_of_universal prK hlim pr' hu
-  have hem : IsMonHom e.hom := isMonHom_of_components prK hprKm hlim e.hom fun a => by
-    rw [he a]; exact hm a
-  obtain ⟨E, ⟨hE, hEe⟩, -⟩ := @GlobalTheory.SemiAbExtDomain.existsUnique_iso_extension_generic R _ _ _ _
-    (FractionRing R) _ _ _ G (powObj C 8) _ _ hG hH e hem
-  refine ⟨fun a => E.hom ≫ powPr C a, fun a => inferInstance, fun a => ?_,
-    universal_of_iso (powPr C) (powIsLimit C 8) E⟩
-  rw [Functor.map_comp, ← he a]
-  exact congrArg (· ≫ prK a) hEe
-
-end GlobalTheory.PowExtend
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -215,7 +119,6 @@ open scoped CategoryTheory.Obj
 open GlobalTheory.Poinc GlobalTheory.Poinc.Eq8 Formalism.L2.Pj
 attribute [local instance] Over.cartesianMonoidalCategory
 open Classical
-
 
 theorem _root_.GlobalTheory.T.exists_eighth_power_projections_extend_from_generic : ∀ (R : Type) [CommRing R] [IsDomain R] [IsNoetherianRing R] [IsIntegrallyClosed R] (G C : Over (Sp R)) [GrpObj G] [IsCommMonObj G] [GrpObj C] [IsCommMonObj C], IsSemiAbelian G → IsAbelianScheme C → ∀ pr' : Fin 8 → ((Over.pullback (jK R)).obj G ⟶ (Over.pullback (jK R)).obj C), (∀ a, IsMonHom (pr' a)) → (∀ (T' : Over (Sp (FractionRing R))) (y : Fin 8 → (T' ⟶ (Over.pullback (jK R)).obj C)), ∃! x : T' ⟶ (Over.pullback (jK R)).obj G, ∀ a, x ≫ pr' a = y a) → ∃ prO : Fin 8 → (G ⟶ C), (∀ a, IsMonHom (prO a)) ∧ (∀ a, (Over.pullback (jK R)).map (prO a) = pr' a) ∧ ∀ (T' : Over (Sp R)) (y : Fin 8 → (T' ⟶ C)), ∃! x : T' ⟶ G, ∀ a, x ≫ prO a = y a := by
   first | exact @GlobalTheory.PowExtend.exists_pow_projections
@@ -241,88 +144,8 @@ noncomputable section
 
 namespace GlobalTheory.Poinc.Eq8.StalkPow
 
-theorem exists_isSquare {S S' : Scheme.{0}} {G : Over S} {G' : Over S'} {f : S' ⟶ S} (h : G'.left ⟶ G.left)
-    (w : h ≫ G.hom = G'.hom ≫ f) : ∃ h₂ : (G' ⊗ G').left ⟶ (G ⊗ G).left, IsSquare h h₂ := by
-  have e₁ : ((fst G' G').left ≫ h) ≫ G.hom = ((snd G' G').left ≫ h) ≫ G.hom := by
-    rw [Category.assoc, w, ← Category.assoc, Over.w, Category.assoc, w, ← Category.assoc, Over.w]
-  exact ⟨pullback.lift _ _ e₁, pullback.lift_fst _ _ _, pullback.lift_snd _ _ _⟩
-
-theorem stalk_isDomain_isNoetherian_isIntegrallyClosed : ∀ (o' Ω : Type) [CommRing o'] [Field Ω] [Algebra o' Ω] [ArithBase o' Ω] (M : RatModel o' Ω), ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsNormalScheme M.Z → ∀ (V : M.Z.Opens) (z : V.toScheme), IsDomain (V.toScheme.presheaf.stalk z) ∧ IsNoetherianRing (V.toScheme.presheaf.stalk z) ∧ IsIntegrallyClosed (V.toScheme.presheaf.stalk z) := by
-  intro o' Ω _ _ _ hA M hN V z
-  haveI : IsDedekindDomain o' := hA.ded
-  let e : M.Z.presheaf.stalk (V.ι z) ≅ V.toScheme.presheaf.stalk z := asIso (V.ι.stalkMap z)
-  let e' : (V.toScheme.presheaf.stalk z) ≃+* M.O (V.ι z) := e.commRingCatIsoToRingEquiv.symm.trans (M.stalkEquiv (V.ι z))
-  haveI := RatModel.isNoetherianRing_O M (V.ι z)
-  haveI := RatModel.isIntegrallyClosed_O hN (V.ι z)
-  exact ⟨MulEquiv.isDomain _ e'.toMulEquiv, isNoetherianRing_of_ringEquiv _ e'.symm, IsIntegrallyClosed.of_equiv e'.symm⟩
-
-theorem exists_generic_stalk : ∀ (o' Ω : Type) [CommRing o'] [Field Ω] [Algebra o' Ω] (M : RatModel o' Ω) (V : M.Z.Opens) (z : V.toScheme) [IsDomain (V.toScheme.presheaf.stalk z)], ∃ emb : Ω →+* FractionRing (V.toScheme.presheaf.stalk z), jK (V.toScheme.presheaf.stalk z) ≫ V.toScheme.fromSpecStalk z ≫ V.ι = spMap emb ≫ M.pt := by
-  intro o' Ω _ _ _ M V z _
-  let e : M.Z.presheaf.stalk (V.ι z) ≅ V.toScheme.presheaf.stalk z := asIso (V.ι.stalkMap z)
-  let e' : (V.toScheme.presheaf.stalk z) ≃+* M.O (V.ι z) := e.commRingCatIsoToRingEquiv.symm.trans (M.stalkEquiv (V.ι z))
-  have hg : Function.Injective ((algebraMap (V.toScheme.presheaf.stalk z) (FractionRing (V.toScheme.presheaf.stalk z))).comp
-      e'.symm.toRingHom) := (IsFractionRing.injective _ _).comp e'.symm.injective
-  let emb : Ω →+* FractionRing (V.toScheme.presheaf.stalk z) := IsFractionRing.lift (A := M.O (V.ι z)) hg
-  have hemb : ∀ r : M.O (V.ι z), emb (algebraMap (M.O (V.ι z)) Ω r) = algebraMap _ _ (e'.symm r) := fun r =>
-    IsFractionRing.lift_algebraMap (A := M.O (V.ι z)) hg r
-  refine ⟨emb, ?_⟩
-  have key : (algebraMap (V.toScheme.presheaf.stalk z) (FractionRing (V.toScheme.presheaf.stalk z))).comp
-      (V.ι.stalkMap z).hom = emb.comp ((M.O (V.ι z)).val.toRingHom.comp (M.stalkEquiv (V.ι z)).toRingHom) := by
-    ext a
-    simp only [RingHom.comp_apply]
-    have h1 := hemb (M.stalkEquiv (V.ι z) a)
-    have h2 : e'.symm (M.stalkEquiv (V.ι z) a) = (V.ι.stalkMap z).hom a := by
-      simp [e', e]
-      rfl
-    rw [← h2, ← h1]
-    rfl
-  rw [← Scheme.SpecMap_stalkMap_fromSpecStalk, GlobalTheory.ValCmp.pt_eq_comp M (V.ι z)]
-  have L : jK (V.toScheme.presheaf.stalk z) ≫ Spec.map (V.ι.stalkMap z) = Spec.map (CommRingCat.ofHom
-      ((algebraMap (V.toScheme.presheaf.stalk z) (FractionRing (V.toScheme.presheaf.stalk z))).comp (V.ι.stalkMap z).hom)) := by
-    rw [← Spec.map_comp]; rfl
-  have Rr : spMap emb ≫ spMap (M.O (V.ι z)).val.toRingHom ≫ spMap (M.stalkEquiv (V.ι z)).toRingHom =
-      Spec.map (CommRingCat.ofHom (emb.comp ((M.O (V.ι z)).val.toRingHom.comp (M.stalkEquiv (V.ι z)).toRingHom))) := by
-    simp only [spMap, ← Spec.map_comp]; rfl
-  rw [← Category.assoc, L, key, ← Rr]
-  simp only [Category.assoc]
-
-theorem exists_genfib_of_zhOut : ∀ {o' Ω : Type} [CommRing o'] [Field Ω] [Algebra o' Ω] {S : ThetaSys o' Ω} {ρ : S.Real} {M : RatModel o' Ω} {U₀ : M.Z.Opens} {EE : M.Lat S.J} (FinalForm : ZHOut ρ M U₀ EE) {T : Scheme.{0}} (B : Over T) [GrpObj B] (j : T ⟶ M.Z) (φB : B.left ⟶ FinalForm.G.left), IsGrpPullback B FinalForm.G j φB → ∀ x : T ⟶ U₀.toScheme, x ≫ U₀.ι = j → ∃ ψ : B.left ⟶ pullback ρ.P.A.hom FinalForm.u₀, ψ ≫ FinalForm.φ = φB ∧ ψ ≫ pullback.snd ρ.P.A.hom FinalForm.u₀ = B.hom ≫ x ∧ IsGrpPullback B ρ.P.A (x ≫ FinalForm.u₀) (ψ ≫ pullback.fst ρ.P.A.hom FinalForm.u₀) := by
-  intro o' Ω _ _ _ S ρ M U₀ EE FinalForm T B _ j φB hB x hx
-  have w : φB ≫ FinalForm.G.hom = (B.hom ≫ x) ≫ U₀.ι := by rw [hB.1.w, Category.assoc, hx]
-  refine ⟨FinalForm.cart.1.lift φB (B.hom ≫ x) w, FinalForm.cart.1.lift_fst _ _ _, FinalForm.cart.1.lift_snd _ _ _, ?_⟩
-  have n : IsGrpPullback B FinalForm.G (x ≫ U₀.ι) (FinalForm.cart.1.lift φB (B.hom ≫ x) w ≫ FinalForm.φ) :=
-    hB.congr hx.symm (FinalForm.cart.1.lift_fst _ _ _).symm
-  have c := IsGrpPullback.cancel FinalForm.cart n (FinalForm.cart.1.lift_snd _ _ _)
-  exact c.comp (isGrpPullback_pullback ρ.P.A FinalForm.u₀)
-
 theorem lbIso_of_generic_fibre : ∀ (R : Type) [CommRing R] [IsDomain R] [IsNoetherianRing R] [IsIntegrallyClosed R] [IsLocalRing R] (G : Over (Sp R)) [GrpObj G], IsSemiAbelian G → ∀ N N' : LB G.left, N.IsLB → N'.IsLB → LBIso (N.pull (pullback.fst G.hom (jK R))) (N'.pull (pullback.fst G.hom (jK R))) → LBIso N N' :=
   fun _ _ _ _ _ _ G _ hG _ _ hN hN' h => GlobalTheory.GenericDec.lbIso_of_generic G hG hN hN' h
-
-theorem exists_siegPB_compare : ∀ {h M₁ : ℕ} {B B₁ B₂ : Type} [CommRing B] [CommRing B₁] [CommRing B₂] {ζ : B} {ζ₁ : B₁} {ζ₂ : B₂} {S S₁ S₂ S₃ : Scheme.{0}} {s : S ⟶ Sp B} {s₁ : S₁ ⟶ Sp B₁} {s₂ : S₂ ⟶ Sp B₂} (o : SiegPre h M₁ ζ s) (o₁ : SiegPre h M₁ ζ₁ s₁) (o₂ : SiegPre h M₁ ζ₂ s₂) (f₁ : S₁ ⟶ S) (f₂ : S₂ ⟶ S) (j : S₃ ⟶ S₁) (t : S₃ ⟶ S₂), j ≫ f₁ = t ≫ f₂ → SiegPB o₁ o f₁ → SiegPB o₂ o f₂ → ∃ (χ : ((Over.pullback j).obj o₁.A).left ⟶ o₂.A.left) (χ₂ : ((Over.pullback j).obj o₁.A ⊗ (Over.pullback j).obj o₁.A).left ⟶ (o₂.A ⊗ o₂.A).left) (χ₂' : ((Over.pullback j).obj o₁.A ⊗ (Over.pullback j).obj o₁.A).left ⟶ (o₁.A ⊗ o₁.A).left), IsGrpPullback ((Over.pullback j).obj o₁.A) o₂.A t χ ∧ IsSquare χ χ₂ ∧ IsSquare (pullback.fst o₁.A.hom j) χ₂' ∧ LBIso (o₁.P.pull χ₂') (o₂.P.pull χ₂) := by
-  intro h M₁ B B₁ B₂ _ _ _ ζ ζ₁ ζ₂ S S₁ S₂ S₃ s s₁ s₂ o o₁ o₂ f₁ f₂ j t hjt h₁ h₂
-  obtain ⟨φ₁, φ₂₁, hpb₁, hsq₁, hP₁, -⟩ := h₁
-  obtain ⟨φ₂, φ₂₂, hpb₂, hsq₂, hP₂, -⟩ := h₂
-  have n : IsGrpPullback ((Over.pullback j).obj o₁.A) o.A (t ≫ f₂) (pullback.fst o₁.A.hom j ≫ φ₁) :=
-    ((isGrpPullback_pullback o₁.A j).comp hpb₁).congr hjt rfl
-  have w : (pullback.fst o₁.A.hom j ≫ φ₁) ≫ o.A.hom = (((Over.pullback j).obj o₁.A).hom ≫ t) ≫ f₂ := by
-    rw [n.1.w, Category.assoc]
-  have hχ1 : hpb₂.1.lift _ _ w ≫ φ₂ = pullback.fst o₁.A.hom j ≫ φ₁ := hpb₂.1.lift_fst _ _ _
-  have hχ2 : hpb₂.1.lift _ _ w ≫ o₂.A.hom = ((Over.pullback j).obj o₁.A).hom ≫ t := hpb₂.1.lift_snd _ _ _
-  have hχ : IsGrpPullback ((Over.pullback j).obj o₁.A) o₂.A t (hpb₂.1.lift _ _ w) :=
-    IsGrpPullback.cancel hpb₂ (n.congr rfl hχ1.symm) hχ2
-  obtain ⟨χ₂, hsq⟩ := exists_isSquare (G' := (Over.pullback j).obj o₁.A) (G := o₂.A) (f := t) (hpb₂.1.lift _ _ w) hχ2
-  obtain ⟨χ₂', hsq'⟩ := exists_isSquare (G' := (Over.pullback j).obj o₁.A) (G := o₁.A) (f := j) (pullback.fst o₁.A.hom j)
-    pullback.condition
-  refine ⟨_, χ₂, χ₂', hχ, hsq, hsq', ?_⟩
-  have e : χ₂' ≫ φ₂₁ = χ₂ ≫ φ₂₂ := by
-    apply _root_.GlobalTheory.GrpSpread.sq_ext
-    · rw [Category.assoc, hsq₁.1, ← Category.assoc, hsq'.1, Category.assoc, Category.assoc, hsq₂.1, ← Category.assoc χ₂,
-        hsq.1, Category.assoc, hχ1]
-    · rw [Category.assoc, hsq₁.2, ← Category.assoc, hsq'.2, Category.assoc, Category.assoc, hsq₂.2, ← Category.assoc χ₂,
-        hsq.2, Category.assoc, hχ1]
-  have B1 := _root_.GlobalTheory.Ex.GenericFibre.lbIso_pull hP₁ χ₂' rfl
-  have B2 := _root_.GlobalTheory.Ex.GenericFibre.lbIso_pull hP₂ χ₂ e
-  exact LBIso.trans (pull_isLB o₁.isLB _) (pull_isLB o.isLB _) (pull_isLB o₂.isLB _) B1 B2.symm
 
 theorem eighth_power_at_stalk : ∀ (g n : ℕ) (o : Type) [CommRing o] (ζ : o) (F : SFam g n ζ) (W : Matrix (Fin 8) (Fin 8) ℤ), ∀ (o' Ω : Type) [CommRing o'] [Field Ω] [Algebra o' Ω] [ArithBase o' Ω] (S : ThetaSys o' Ω) (ρ : S.Real) (u : Sp S.R ⟶ F.X) c pr, SharpBy F W ρ.P u c pr → ∀ (M : RatModel o' Ω) (U₀ : M.Z.Opens) (EE : M.Lat S.J) (FinalForm : ZHOut ρ M U₀ EE), S.Over₀ M U₀ → ∀ (V : M.Z.Opens) (v : V.toScheme ⟶ F.X), (∀ x : Sp Ω ⟶ V.toScheme, x ≫ V.ι = M.pt → x ≫ v = spMap S.R.val.toRingHom ≫ u) → ∀ z : V.toScheme, ∃ (cO : SiegPre g n ζ ((V.toScheme.fromSpecStalk z ≫ v) ≫ F.s)) (prO : Fin 8 → ((Over.pullback (V.toScheme.fromSpecStalk z ≫ V.ι)).obj FinalForm.G ⟶ cO.A)), SiegPB cO F.univ (V.toScheme.fromSpecStalk z ≫ v) ∧ (∀ a, IsMonHom (prO a)) ∧ (∀ (T' : Over (Spec (V.toScheme.presheaf.stalk z))) (y : Fin 8 → (T' ⟶ cO.A)), ∃! x : T' ⟶ (Over.pullback (V.toScheme.fromSpecStalk z ≫ V.ι)).obj FinalForm.G, ∀ a, x ≫ prO a = y a) ∧ LBIso (FinalForm.L.L.pull (pullback.fst FinalForm.G.hom (V.toScheme.fromSpecStalk z ≫ V.ι))) (LB.LinComb cO.P (K := Fin 8 × Fin 8) (fun ab => (lift (prO ab.1) (prO ab.2)).left) (fun ab => W ab.1 ab.2)) ∧ ∀ (a b : Fin 8) (f : FinalForm.G ⟶ FinalForm.G), MatOn FinalForm pr a b f → MatEnd prO a b ((Over.pullback (V.toScheme.fromSpecStalk z ≫ V.ι)).map f) := by
   intro g n o _ ζ F W o' Ω _ _ _ _ S ρ u c pr hS M U₀ EE FinalForm hO V v hv z

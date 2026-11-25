@@ -84,14 +84,4 @@ theorem isProper_fan_pt {T : Scheme.{0}} : ∀ (n : ℕ) (f : Fin n → Over T),
         (prodIsProd (f 0) c₁.pt)
       exact isProper_hom_of_iso (hc.conePointUniqueUpToIso hl) (isProper_prod_hom _ _ (hf 0) h1)
 
-theorem isProper_eighth_fibre_power : ∀ {T : Scheme.{0}} {B C : Over T} (pr : Fin 8 → (B ⟶ C)),
-    (∀ (T' : Over T) (y : Fin 8 → (T' ⟶ C)), ∃! x : T' ⟶ B, ∀ a, x ≫ pr a = y a) →
-    IsProper C.hom → IsProper B.hom := by
-  intro T B C pr hu hC
-  have hl : IsLimit (Fan.mk B pr) :=
-    Fan.IsLimit.mk _ (fun s => (hu s.pt s.proj).choose)
-      (fun s a => (hu s.pt s.proj).choose_spec.1 a)
-      (fun s m hm => (hu s.pt s.proj).choose_spec.2 m hm)
-  exact isProper_fan_pt 8 (fun _ => C) (fun _ => hC) _ hl
-
 end GlobalTheory.FibrePowerProper

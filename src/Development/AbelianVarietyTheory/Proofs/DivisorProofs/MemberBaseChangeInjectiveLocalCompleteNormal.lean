@@ -198,7 +198,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT ReciprocityTheory.ChartRestriction.G.DVR
 open GlobalTheory.ArcPull
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.TorsionLabelsPullbackUniformisationCommonFieldStatement =====
@@ -293,25 +292,6 @@ namespace GlobalTheory.Poinc.Sep.MemBC
 
 open GlobalTheory.ArcPull
 
-theorem pt_comp {g n : ℕ} {F : SFam g n (zetaAway n)} {W : Matrix (Fin 8) (Fin 8) ℤ} {Z : Scheme.{0}} {i : F.X ⟶ Z}
-    (X₁ : Setup F W i) (z₁ : X₁.M.Z) {V V' : Type} [CommRing V] [IsDomain V] [CommRing V'] [IsDomain V']
-    (ev : X₁.M.Z.presheaf.stalk z₁ →+* V) (j : V →+* V') (hj : Function.Injective j) :
-    jK V' ≫ spMap (j.comp ev) ≫ X₁.M.Z.fromSpecStalk z₁ =
-      spMap (fracMap hj) ≫ (jK V ≫ spMap ev ≫ X₁.M.Z.fromSpecStalk z₁) := by
-  have sq := fracMap_sq hj
-  rw [Category.id_comp] at sq
-  rw [spMap_comp, Category.assoc, ← Category.assoc (jK V'), sq]
-  simp only [genMap, Category.assoc]
-
-theorem regAt_comp {g n : ℕ} {F : SFam g n (zetaAway n)} {W : Matrix (Fin 8) (Fin 8) ℤ} {Z : Scheme.{0}} {i : F.X ⟶ Z}
-    (X₁ : Setup F W i) (z₁ : X₁.M.Z) {V V' : Type} [CommRing V] [IsDomain V] [CommRing V'] [IsDomain V']
-    (ev : X₁.M.Z.presheaf.stalk z₁ →+* V) (j : V →+* V') (hj : Function.Injective j) (h : RegAt X₁ z₁ ev) :
-    RegAt X₁ z₁ (j.comp ev) := by
-  intro a ha
-  rw [pt_comp X₁ z₁ ev j hj]
-  convert h a ha using 2
-  exact GlobalTheory.FlagBundle.spMap_comp_apply_field (fracMap hj) _ _ _
-
 theorem val_spMap_comp_field' {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] (M : RatModel o Ω) {k K : Type} [Field k]
     [Field K] (σ : k →+* K) (p : Sp k ⟶ M.Z) (y : Ω) : M.val (spMap σ ≫ p) y = σ (M.val p y) := by
   by_cases hy : y ∈ M.O (p (IsLocalRing.closedPoint k))
@@ -321,14 +301,6 @@ theorem val_spMap_comp_field' {o Ω : Type} [CommRing o] [Field Ω] [Algebra o �
   · rw [RatModel.val_of_notMem (y := p) (IsLocalRing.closedPoint k) hy, map_zero,
       RatModel.val_of_notMem (y := spMap σ ≫ p) (IsLocalRing.closedPoint K)
         (fun h' => hy (by convert h' using 2; exact (GlobalTheory.FlagBundle.spMap_comp_apply_field σ p _ _).symm))]
-
-theorem yK_comp {g n : ℕ} {F : SFam g n (zetaAway n)} {W : Matrix (Fin 8) (Fin 8) ℤ} {Z : Scheme.{0}} {i : F.X ⟶ Z}
-    (X₁ : Setup F W i) (z₁ : X₁.M.Z) {V V' : Type} [CommRing V] [IsDomain V] [CommRing V'] [IsDomain V']
-    (ev : X₁.M.Z.presheaf.stalk z₁ →+* V) (j : V →+* V') (hj : Function.Injective j) (yK : X₁.S.R →+* FractionRing V)
-    (h : ∀ a : X₁.S.R, yK a = X₁.M.val (jK V ≫ spMap ev ≫ X₁.M.Z.fromSpecStalk z₁) a) (a : X₁.S.R) :
-    (fracMap hj).comp yK a = X₁.M.val (jK V' ≫ spMap (j.comp ev) ≫ X₁.M.Z.fromSpecStalk z₁) a := by
-  rw [pt_comp X₁ z₁ ev j hj]
-  exact (congrArg (fracMap hj) (h a)).trans (val_spMap_comp_field' X₁.M (fracMap hj) _ _).symm
 
 end GlobalTheory.Poinc.Sep.MemBC
 

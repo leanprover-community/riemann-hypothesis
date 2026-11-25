@@ -45,6 +45,3 @@ open GlobalTheory.Toroidal GlobalTheory.LocM GlobalTheory.PolFan GlobalTheory.ZM
 open scoped CategoryTheory.Obj
 open GlobalTheory.Poinc Formalism.L2.Pj
 open Classical
-
-theorem _root_.GlobalTheory.T.traitExistsAfterFiniteExtension_of_completeDVR : TraitExtSt := by
-  first | exact @GlobalTheory.Poinc.traitExtSt

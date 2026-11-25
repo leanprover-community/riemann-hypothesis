@@ -162,30 +162,4 @@ theorem exists_cdvr (M : RatModel o' Ω) (U₀ : M.Z.Opens) (hU : (U₀ : Set M.
     simp only [a, Scheme.Hom.comp_apply, ht]
     exact this
 
-theorem exists_trait_cen : ∀ (g n : ℕ) (o : Type) [CommRing o] (ζ : o) (F : SFam g n ζ) (o' Ω : Type) [CommRing o']
-    [Field Ω] [Algebra o' Ω] [ArithBase o' Ω] (M : RatModel o' Ω) (U₀ : M.Z.Opens), (U₀ : Set M.Z).Nonempty →
-    ∀ (X : Scheme.{0}) (u₀ : U₀.toScheme ⟶ X) (u : X ⟶ F.X) (x : M.Z), IsClosed ({x} : Set M.Z) →
-      ∃ (T : Trait F) (ξ : Sp T.V ⟶ M.Z), ThroughU M U₀ u₀ u T ξ ∧ ξ (IsLocalRing.closedPoint T.V) = x := by
-  intro g n o _ ζ F o' Ω _ _ _ _ M U₀ hU X u₀ u x _
-  obtain ⟨W, _, _, _, _, hc, a, ha, hg⟩ := exists_cdvr M U₀ hU x
-  have hr : Set.range (jK W ≫ a) ⊆ Set.range U₀.ι := by
-    rw [Scheme.Opens.range_ι]
-    rintro _ ⟨t, rfl⟩
-    exact hg t
-  let ξ₀' : Sp (FractionRing W) ⟶ U₀.toScheme := IsOpenImmersion.lift U₀.ι (jK W ≫ a) hr
-  have hξ₀' : ξ₀' ≫ U₀.ι = jK W ≫ a := IsOpenImmersion.lift_fac _ _ _
-  have hB : GlobalTheory.Mum.Base W := ⟨⟨inferInstance, inferInstance, inferInstance, hc⟩, inferInstance⟩
-  obtain ⟨T, f, fK, -, hloc, -, hcomp, hy⟩ := GlobalTheory.T.traitExistsAfterFiniteExtension_of_completeDVR g n o ζ F W hB inferInstance (ξ₀' ≫ u₀ ≫ u)
-  refine ⟨T, spMap f ≫ a, ⟨spMap fK ≫ ξ₀', ?_, ?_⟩, ?_⟩
-  · rw [Category.assoc, hξ₀', ← Category.assoc, ← Category.assoc]
-    congr 1
-    rw [← Spec.map_comp, ← Spec.map_comp]
-    congr 1
-    ext r
-    exact hcomp r
-  · rw [hy, Category.assoc]
-  · have h : (spMap f) (closedPoint T.V) = closedPoint W := IsLocalRing.comap_closedPoint f
-    show a ((spMap f) (closedPoint T.V)) = x
-    rw [h, ha]
-
 end GlobalTheory.Poinc.TraitCen

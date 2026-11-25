@@ -72,9 +72,4 @@ theorem isSemiAbelian_of_isGrpPullback {T : Scheme.{0}} {f : T ⟶ S} {G' : Over
 
 end Specialise
 
-theorem eq_of_associated_pow {V : Type} [CommRing V] [IsDomain V] {ϖ : V} (hϖ : Irreducible ϖ) {a b : ℕ}
-    (h : Associated (ϖ ^ a) (ϖ ^ b)) : a = b :=
-  le_antisymm ((pow_dvd_pow_iff hϖ.ne_zero hϖ.not_isUnit).1 h.dvd) ((pow_dvd_pow_iff hϖ.ne_zero hϖ.not_isUnit).1 h.symm.dvd)
-
-
 end GlobalTheory.SiegLoc.TraitOrd

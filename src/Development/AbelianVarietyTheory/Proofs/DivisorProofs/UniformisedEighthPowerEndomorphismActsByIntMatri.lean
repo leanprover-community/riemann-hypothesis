@@ -83,9 +83,4 @@ def pullH {S S' : Scheme.{0}} (f : S' ⟶ S) (T G : Over S) [GrpObj G] :
   map_one' := by simp
   map_mul' a b := Functor.map_mul _ a b
 
-theorem map_ofFn_prod {M N : Type} [Group M] [Group N] (f : M →* N) (x : Fin 8 → M) (k : Fin 8 → ℤ) :
-    f (List.ofFn fun v => x v ^ k v).prod = (List.ofFn fun v => f (x v) ^ k v).prod := by
-  rw [map_list_prod, List.map_ofFn]
-  simp [Function.comp_def, map_zpow]
-
 end GlobalTheory.Poinc.Sep.EndCompat

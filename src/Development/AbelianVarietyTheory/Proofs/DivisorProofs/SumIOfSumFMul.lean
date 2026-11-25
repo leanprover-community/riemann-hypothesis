@@ -103,36 +103,3 @@ theorem sumI_of_sumF_mul {V : Type} [CommRing V] [IsDomain V] [IsLocalRing V] [I
   simpa using Submodule.smul_mem_smul hu (Submodule.mem_top : (1 : V) ∈ (⊤ : Submodule V V))
 
 end GlobalTheory.Poinc.TwistSum₂
-
-namespace GlobalTheory.Poinc.TwistSum₂
-
-open GlobalTheory.Poinc.Sep
-
-variable {g n : ℕ} {F : SFam g n (zetaAway n)} {W : Matrix (Fin 8) (Fin 8) ℤ} {Z : Scheme.{0}} {i : F.X ⟶ Z}
-
-theorem val_stalkHom (X₁ : Setup F W i) (z₁ : X₁.M.Z) {V : Type} [CommRing V] [IsDomain V] [IsLocalRing V]
-    (ev : X₁.M.Z.presheaf.stalk z₁ →+* V) [IsLocalHom ev] (a : X₁.M.Z.presheaf.stalk z₁) :
-    X₁.M.val (jK V ≫ spMap ev ≫ X₁.M.Z.fromSpecStalk z₁) (X₁.M.stalkHom z₁ a) =
-      algebraMap V (FractionRing V) (ev a) := by
-  have hc : (spMap ev ≫ X₁.M.Z.fromSpecStalk z₁) (closedPoint V) = z₁ := by
-    refine (Scheme.Hom.comp_apply _ _ _).trans
-      (Eq.trans (congrArg (X₁.M.Z.fromSpecStalk z₁) ?_) (Scheme.fromSpecStalk_closedPoint (x := z₁)))
-    exact comap_closedPoint ev
-  have h : (spMap ev ≫ X₁.M.Z.fromSpecStalk z₁) (closedPoint V) ⤳ z₁ := specializes_of_eq hc
-  have e := RatModel.val_spMap_comp (algebraMap V (FractionRing V)) (spMap ev ≫ X₁.M.Z.fromSpecStalk z₁) h
-    (X₁.M.stalkEquiv z₁ a)
-  rw [RatModel.coe_stalkEquiv] at e
-  refine e.trans (congrArg _ ?_)
-  have hψ : Spec.map (X₁.M.Z.presheaf.stalkSpecializes h ≫ Scheme.stalkClosedPointTo (spMap ev ≫ X₁.M.Z.fromSpecStalk z₁)) ≫
-      X₁.M.Z.fromSpecStalk z₁ = spMap ev ≫ X₁.M.Z.fromSpecStalk z₁ := by
-    rw [Spec.map_comp, Category.assoc, Scheme.SpecMap_stalkSpecializes_fromSpecStalk,
-      Scheme.Spec_stalkClosedPointTo_fromSpecStalk]
-  have heq : spMap ev = Spec.map (X₁.M.Z.presheaf.stalkSpecializes h ≫
-      Scheme.stalkClosedPointTo (spMap ev ≫ X₁.M.Z.fromSpecStalk z₁)) := by
-    rw [← cancel_mono (X₁.M.Z.fromSpecStalk z₁), hψ]
-  have hφψ := Spec.map_injective heq
-  simp only [RatModel.valLoc, RingHom.comp_apply, RingEquiv.toRingHom_eq_coe, RingEquiv.coe_toRingHom,
-    RingEquiv.symm_apply_apply]
-  exact (congrArg (fun φ => φ.hom a) hφψ).symm
-
-end GlobalTheory.Poinc.TwistSum₂

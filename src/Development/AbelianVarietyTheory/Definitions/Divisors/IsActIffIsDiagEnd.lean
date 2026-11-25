@@ -150,29 +150,6 @@ def IsGeo (X₁ : Setup F W i) (z₁ : X₁.M.Z) (act : Matrix (Fin 8) (Fin 8) �
   X₁.M.Div X₁.S.th x₀ z₁ ∧ Set.range lab = X₁.S.HH X₁.M z₁ ∧
     ∀ y, ∃ 𝔪 : UMem X₁ z₁ act (Φ.V y) (Φ.ev y) (Φ.X y) (Φ.t y) (Φ.δ y), 𝔪.Terms x₀ lab (Φ.term y)
 
-section
-variable {X₁ : Setup F W i} {z₁ : X₁.M.Z} {act : Matrix (Fin 8) (Fin 8) ℤ → (X₁.ρ.P.A ⟶ X₁.ρ.P.A)}
-  {V : Type} [CommRing V] [IsDomain V] [IsLocalRing V] {ev : X₁.M.Z.presheaf.stalk z₁ →+* V}
-  {X : Type} [AddCommGroup X] {m : ℕ} {t : Fin m → V} {δ : Fin m → LinearMap.BilinForm ℤ X} (𝔪 : UMem X₁ z₁ act V ev X t δ)
-
-
-include 𝔪 in
-theorem UMem.mono_ne_zero (mu : Fin 8 → X) : mono W t δ mu ≠ 0 :=
-  let ⟨_, h⟩ := 𝔪.psi mu
-  right_ne_zero_of_mul (PsiCoordLocal.ne_zero_of_coord h)
-
-
-include 𝔪 in
-theorem UMem.mono_mem {mu : Fin 8 → X} (h : mu ≠ 0) : mono W t δ mu ∈ maximalIdeal V := by
-  haveI := 𝔪.cn.2.2.2
-  obtain ⟨u, hu⟩ := 𝔪.psi mu
-  obtain ⟨r, hr, -, hm, -⟩ := (PsiCoordLocal.main V 𝔪.D 𝔪.cn.2.1 (𝔪.e₈ mu)).1
-  obtain ⟨v, hv⟩ := PsiCoordLocal.exists_unit_of_coord hr hu
-  have : (u : V) * mono W t δ mu ∈ maximalIdeal V := hv ▸ Ideal.mul_mem_left _ _ (hm (𝔪.e₈.map_ne_zero_iff.2 h))
-  exact (Ideal.unit_mul_mem_iff_mem _ u.isUnit).1 this
-
-end
-
 end Sep
 
 end GlobalTheory.Poinc

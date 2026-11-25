@@ -93,16 +93,6 @@ theorem exists_psiCoord_iff [IsLocalRing R] (D : DegPre R) (χ : D.X) :
     obtain ⟨r, rfl⟩ := PsiCoordLocal.toOpen_top_bijective.2 s
     exact ⟨r, j, hj, h, e⟩
 
-theorem exists_psiCoord_of_isPsiCoord [IsLocalRing R] {D : DegPre R} {χ : D.X} (hI : D.PsiIn χ ⊤)
-    {x : (FractionRing R)ˣ} (hx : IsPsiCoord D χ x) :
-    ∃ r, PsiCoord D χ r ∧ x.val = algebraMap R (FractionRing R) r := by
-  obtain ⟨r, hr⟩ := (exists_psiCoord_iff D χ).2 hI
-  obtain ⟨y, hy, e⟩ := (psiCoord_iff D χ r).1 hr
-  obtain ⟨u, hu⟩ := hx.unique hy
-  have : x.val = algebraMap R (FractionRing R) (u * r) := by
-    rw [hu, map_mul, ← e]; rfl
-  exact ⟨u * r, (psiCoord_iff D χ _).2 ⟨x, hx, this⟩, this⟩
-
 theorem psiIn_top {I : Ideal R} (D : DegData R I) (χ : D.toPre.X) : D.toPre.PsiIn χ ⊤ := by
   by_cases h : χ = 0
   · subst h; exact (PsiZero.main R D.toPre).1 D.tau_bimult
@@ -117,7 +107,6 @@ end DVR
 section At
 
 variable [IsLocalRing R] {C : Type} [NormedField C]
-
 
 variable {φ : FractionRing R →+* C}
 
