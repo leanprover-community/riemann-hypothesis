@@ -88,23 +88,6 @@ theorem hermC_expand (τ : E →+* ℂ) (P : Matrix (Fin r) (Fin r) E) (u w : Fi
   rw [hermC_smul_right, col_map_eq, col_map_eq, hermC_emb]
   ring
 
-theorem hermC_stab {γ : Matrix (Fin r) (Fin r) E}
-    (hγ : ∀ x y, herm X.Gm (γ *ᵥ x) (γ *ᵥ y) = herm X.Gm x y) (τ : E →+* ℂ) (u w : Fin r → ℂ) :
-    hermC τ X.Gm ((γ.map τ) *ᵥ u) ((γ.map τ) *ᵥ w) = hermC τ X.Gm u w := by
-  have h1 : ((1 : Matrix (Fin r) (Fin r) E).map τ) = 1 := Matrix.map_one τ τ.map_zero τ.map_one
-  conv_rhs => rw [← one_mulVec u, ← one_mulVec w, ← h1]
-  rw [hermC_expand, hermC_expand]
-  simp only [hγ, one_mulVec]
-
-theorem gram_stab {γ : Matrix (Fin r) (Fin r) E}
-    (hγ : ∀ x y, herm X.Gm (γ *ᵥ x) (γ *ᵥ y) = herm X.Gm x y) (τ : E →+* ℂ)
-    (Y : Matrix (Fin r) (Fin r) ℂ) : gram τ X.Gm (γ.map τ * Y) = gram τ X.Gm Y := by
-  ext a b
-  simp only [gram, of_apply]
-  have hc : ∀ c, col (γ.map τ * Y) c = (γ.map τ) *ᵥ col Y c := by
-    intro c; funext i; simp [col, Matrix.mul_apply, mulVec, dotProduct]
-  rw [hc, hc, hermC_stab X hγ]
-
 open NumberField Module in
 open Matrix in
 open scoped ComplexConjugate in
@@ -236,29 +219,7 @@ theorem _root_.GlobalTheory.FlagMahler.Kset_compact (R : ℝ) :
     refine (pi_norm_le_iff_of_nonneg (abs_nonneg R)).mpr fun c => ?_
     exact ((hw τ).2 a c).trans (le_abs_self R)
 
-theorem det_ne_of_gram {τ : E →+* ℂ} {Y : Matrix (Fin r) (Fin r) ℂ} {p0 : ℕ}
-    (hg : gram τ X.Gm Y = diagonal fun a : Fin r => ((sgn p0 (a : ℕ) : ℝ) : ℂ)) : Y.det ≠ 0 := by
-  intro h0
-  obtain ⟨v, hv, hv0⟩ := Matrix.exists_mulVec_eq_zero_iff.mpr h0
-  have h1 : gram τ X.Gm Y *ᵥ star v = 0 := by
-    funext a
-    have e : ∑ b, hermC τ X.Gm (col Y a) (col Y b) * star (v b) = hermC τ X.Gm (col Y a) (Y *ᵥ v) := by
-      rw [Data.mulVec_eq_sum_col, hermC_sum_right]
-      refine Finset.sum_congr rfl fun b _ => ?_
-      rw [hermC_smul_right, Complex.star_def, mul_comm]
-    simp only [mulVec, dotProduct, gram, of_apply, Pi.zero_apply, Pi.star_apply]
-    rw [e, hv0, hermC_zero_right]
-  rw [hg] at h1
-  apply hv
-  funext b
-  have h2 := congrFun h1 b
-  rw [mulVec_diagonal] at h2
-  have hs : ((sgn p0 (b : ℕ) : ℝ) : ℂ) ≠ 0 := by unfold sgn; split_ifs <;> norm_num
-  have h3 : star (v b) = 0 := (mul_eq_zero.mp h2).resolve_left hs
-  simpa using h3
-
 end
-
 
 open NumberField Module in
 open Matrix in
@@ -480,7 +441,6 @@ private theorem norm_entry_le_of_gram_eq_diagonal_sgn (τ : X.Ψ) (W : Matrix (F
   rw [hWeq, mul_diagonal, Matrix.mul_apply, norm_mul, hsn, mul_one]
   refine (norm_sum_le _ _).trans (le_of_eq (Finset.sum_congr rfl fun k _ => ?_))
   rw [norm_mul, transpose_apply, conjTranspose_apply, norm_star]
-
 
 open NumberField Module in
 open Matrix in

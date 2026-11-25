@@ -234,7 +234,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open scoped ComplexConjugate TensorProduct
 open Matrix
 
-
 theorem _root_.GlobalTheory.T.coset_equation_mul_right_congruent_one_mod_depthIdeal_alt : All fun {D} _ _ _ {G} W _ => ∀ i, i < D.R.m → ∀ x₀, IsOntoMod G i x₀ → ∀ e : AE D, IsIdemSum e G.pl.W0 →
     ∀ g : GA D (G.V (.core i)), ∀ u ∈ GlobalTheory.ChiGrid.hatMx (G.modul • GlobalTheory.ChiGrid.homLat (G.latS (.core i)) (G.latT (.core i))), ∀ u' ∈ GlobalTheory.ChiGrid.hatMx (G.modul • GlobalTheory.ChiGrid.homLat (G.latS (.core i)) (G.latT (.core i))),
     e • ((x₀.map (incA D) : WO (G.pS (.core i)) (G.pT (.core i))) - u) =
@@ -259,10 +258,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.ChainOnto.FrameAct
 
-theorem finE_inv_val' {D : D7} (V : HSp D) (g : GA D V) :
-    ((Lev.finE V g)⁻¹).1 = (Formalism.L2.Theta.mt V g⁻¹).map (toEAf D) := by
-  rw [← map_inv]; rfl
-
 theorem conj_inv_val' {D : D7} {n : ℕ} (β y : GL (Fin n) (Lev.EAf D)) :
     ((β⁻¹ * y * β)⁻¹ : GL (Fin n) (Lev.EAf D)).1 = (β⁻¹).1 * (y⁻¹).1 * β.1 := by
   rw [_root_.mul_inv_rev, _root_.mul_inv_rev, inv_inv, Units.val_mul, Units.val_mul, Matrix.mul_assoc]
@@ -286,9 +281,6 @@ open scoped ComplexConjugate TensorProduct
 open Matrix
 
 noncomputable section
-
-
-
 
 namespace GlobalTheory.UnitRead
 
@@ -538,7 +530,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open scoped ComplexConjugate TensorProduct
 open Matrix
 
-
 theorem _root_.GlobalTheory.T.gridCoreNode_unitReading_integral_congruent : All fun {D} _ _ _ {G} W _ => ∀ i, i < D.R.m → ∀ e : AE D, IsIdemSum e G.pl.W0 →
     ∀ g : GA D (G.V (.core i)), ∀ a₁ ∈ GlobalTheory.ChiGrid.hatMx (G.modul • GlobalTheory.ChiGrid.homLat (G.Λ (.core i)) (G.Λ (.core i))), ∀ a₂ ∈ GlobalTheory.ChiGrid.hatMx (G.modul • GlobalTheory.ChiGrid.homLat (G.Λ (.core i)) (G.Λ (.core i))),
     e • ((1 : WO (G.V (.core i)) (G.V (.core i))) - a₁) = actO (G.V (.core i)) (G.V (.core i)) 1 g (e • (1 - a₂)) →
@@ -624,9 +615,6 @@ theorem hat_le_std {D : D7} (S T : HSp D) {A : Submodule (𝓞 D.host.E) (Fin S.
   rintro _ ⟨α, hα, x, hx, rfl⟩
   exact ⟨α, hα, x, Submodule.smul_le_right hx, rfl⟩
 
-
-
-
 theorem act_le_std (D : D7) (S T : HSp D) (g : GA D T) : ∃ N : ℕ, 0 < N ∧
     ∀ u ∈ GlobalTheory.AdForm.stdHom S T, N • actO S T 1 g u ∈ GlobalTheory.AdForm.stdHom S T := by
   obtain ⟨M, hM, hden⟩ := GlobalTheory.PlaceDatum.exists_den_latO (S := S) (T := T)
@@ -689,9 +677,6 @@ theorem nsmul_smul_comm' {m n : ℕ} (k : ℕ) (c : AE D) (v : Mx D m n) : k •
   ext a b
   simp only [Matrix.smul_apply, smul_eq_mul, nsmul_eq_mul]
   ring
-
-
-
 
 theorem ann_sum_gen (ψ : AddChar (AF D.host.F) ℂ) (hψ : IsStdChar D ψ (-1)) (S T : HSp D)
     (Q : Finset (Formalism.L2.DIV.Pl D.host.E)) (e : AE D) (he : IsIdemSum e Q) (g : GA D T) (Mh : AddSubgroup (WO S T))
@@ -849,8 +834,6 @@ theorem ann_depLat : All fun {D} _ _ _ {G} W _ => ∀ i, i < D.R.m → ∀ e : A
   rw [smul_smul, hee, symplO_smul_half _ _ e u y hy] at h1
   exact h1
 
-
-
 theorem cosDual : All fun {D} _ _ _ {G} W _ => ∀ i, i < D.R.m → ∀ x₀, IsOntoMod G i x₀ → ∀ e : AE D, IsIdemSum e G.pl.W0 →
     ∀ g : GA D (G.V (.core i)),
     (∀ y : WO (G.pS (.core i)) (G.pT (.core i)), IsHalf (cA D e) y →
@@ -934,7 +917,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open scoped ComplexConjugate TensorProduct
 open Matrix
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.CosetCharConditionIntegralUnitCongruentDepthStatement =====
@@ -956,7 +938,6 @@ noncomputable section
 
 namespace GlobalTheory.CongAssemble
 
-
 variable {D : D7}
 
 theorem isIntM_of_smul_maps {n : ℕ} {β : GL (Fin n) (Lev.EAf D)} {Λ : Submodule (𝓞 D.host.E) (Fin n → D.host.E)}
@@ -970,9 +951,6 @@ theorem isIntM_of_smul_maps {n : ℕ} {β : GL (Fin n) (Lev.EAf D)} {Λ : Submod
     rw [Matrix.mulVec_smul, Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, Matrix.mul_assoc]
   rw [e1, Matrix.mulVec_single_one] at h1
   simpa [Matrix.smul_apply] using h1
-
-
-
 
 theorem cong_assemble : ∀ (D : D7) (V : HSp D) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)), IsSelfDualC V Λ →
     ∀ (Z : Finset (Pl D.host.E)) (e : AE D), IsIdemSum e Z → ∀ 𝔪 : Ideal (𝓞 D.host.E),
@@ -1068,7 +1046,6 @@ open GlobalTheory.SepRows GlobalTheory.CoreOnto
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open scoped ComplexConjugate TensorProduct
 open Matrix
-
 
 end -- clump:auto
 end -- clump:auto

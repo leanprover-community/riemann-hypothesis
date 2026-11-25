@@ -96,13 +96,7 @@ theorem evalTerm_finite [Finite σ] (F : MvPowerSeries σ A) (x : σ → R)
 def evalNil [Finite σ] (F : MvPowerSeries σ A) (x : σ → R) (hx : ∀ i, IsNilpotent (x i)) : R :=
   ∑ d ∈ (evalTerm_finite F x hx).toFinset, evalTerm F x d
 
-theorem evalNil_eq_finsum [Finite σ] (F : MvPowerSeries σ A) (x : σ → R)
-    (hx : ∀ i, IsNilpotent (x i)) : evalNil F x hx = ∑ᶠ d, evalTerm F x d :=
-  (finsum_eq_sum _ (evalTerm_finite F x hx)).symm
-
 end Eval
-
-
 
 variable {R₀ : Type u} [CommRing R₀]
 
@@ -258,7 +252,6 @@ theorem _root_.GlobalTheory.ChartCompare.isNilpotent_nEval (f : MvPowerSeries σ
     Ideal.span_le.mpr (by rintro _ ⟨i, rfl⟩; exact mem_nilradical.mpr (ha i))
   exact mem_nilradical.mp (hle h)
 
-
 open IsLocalRing TensorProduct in
 variable {R₀ : Type} [CommRing R₀] in
 open MvPowerSeries in
@@ -276,7 +269,6 @@ theorem _root_.GlobalTheory.ChartCompare.nEval_subst (b : σ → MvPowerSeries �
   simp_rw [_root_.GlobalTheory.ChartCompare.subst_C_eq _ a ha] at h
   rw [_root_.GlobalTheory.ChartCompare.subst_C_eq f _ hab] at h
   simpa using (congrArg (coeff 0) h).symm
-
 
 open IsLocalRing TensorProduct in
 variable {R₀ : Type} [CommRing R₀] in
@@ -327,7 +319,6 @@ private theorem multiset_map_prod_sub_mem_mul_of_two_le_card (a b : σ → S) (I
   rw [e]
   exact add_mem (Ideal.mul_mem_mul (ha i) (multiset_map_prod_sub_mem_of_sub_mem a b J hJ _))
     (Ideal.mul_mem_mul hB (hJ i))
-
 
 open IsLocalRing TensorProduct in
 variable {R₀ : Type} [CommRing R₀] in
@@ -407,16 +398,11 @@ variable {B : BX R₀} {k : LAlg R₀} {p g : ℕ} {O : ResAlg k}
 
 variable {C : Type v} [Field C] [Algebra (O.alg : Type) C] [IsFractionRing (O.alg : Type) C]
 
-
 namespace OfFin
 
 variable (F : FIN B O.alg p)
 
-
-
-
 end OfFin
-
 
 end Torsion
 
@@ -426,7 +412,6 @@ universe v
 
 variable {B : BX R₀} {g : ℕ} {p : ℕ} [Fact p.Prime] {k : LAlg R₀} {O : ResAlg k} {W : NilAlg k}
   {C : Type v} [Field C] [Algebra (O.alg : Type) C] [IsFractionRing (O.alg : Type) C]
-
 
 end Bundle
 

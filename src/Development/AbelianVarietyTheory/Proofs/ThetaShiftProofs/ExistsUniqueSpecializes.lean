@@ -170,48 +170,6 @@ theorem HasCoords.ext_of_isLocalRing [IsLocalRing A] (ht : EmbedsBy f t) {x x' :
 
 variable {K : Type} [Field K] {j : A →+* K}
 
-theorem isDominant_spMap (hj : Function.Injective j) : IsDominant (spMap j) :=
-  ⟨(PrimeSpectrum.denseRange_comap_iff_ker_le_nilRadical j).2 (by
-    rw [(RingHom.injective_iff_ker_eq_bot j).1 hj]; exact bot_le)⟩
-
-theorem ext_of_spMap_comp [IsSeparated f] (hj : Function.Injective j) {ξ ξ' : Sp A ⟶ X} (hf : ξ ≫ f = ξ' ≫ f)
-    (h : spMap j ≫ ξ = spMap j ≫ ξ') : ξ = ξ' := by
-  have := isDominant_spMap hj
-  have : IsDomain A := hj.isDomain j
-  exact ext_of_isDominant_of_isSeparated f hf (spMap j) h
-
-theorem exists_lift_of_valR_mem (hj : Function.Injective j) {D : X.Opens} (hD : IsAffineOpen D) (x : Sp K ⟶ X)
-    (hx : ⊤ ≤ x ⁻¹ᵁ D) (h : ∀ g, valR x D g ∈ j.range) :
-    ∃ ξ : Sp A ⟶ X, ⊤ ≤ ξ ⁻¹ᵁ D ∧ spMap j ≫ ξ = x := by
-  choose φ hφ using h
-  simp only [valR_eq x D hx] at hφ
-  let ψ : Γ(X, D) →+* A := ⟨⟨⟨φ, hj (by simp [hφ])⟩, fun a b => hj (by simp [hφ])⟩, hj (by simp [hφ]),
-    fun a b => hj (by simp [hφ])⟩
-  refine ⟨_, le_preimage_specMap_fromSpec hD (CommRingCat.ofHom ψ), ?_⟩
-  rw [← specMap_valMap_fromSpec hD x hx, ← Category.assoc, ← Spec.map_comp]
-  congr 2
-  exact CommRingCat.hom_ext (RingHom.ext hφ)
-
-theorem exists_lift [Y.IsSeparated] (ht : EmbedsBy f t) (hj : Function.Injective j) {b : Sp A ⟶ Y} {x : Sp K ⟶ X}
-    (hb : x ≫ f = spMap j ≫ b) {c : ι → A} (h : HasCoords x t fun l => j (c l)) {m : ι} (hm : IsUnit (c m)) :
-    ∃ ξ : Sp A ⟶ X, ⊤ ≤ ξ ⁻¹ᵁ nonzeroLocus (t m) ∧ ξ ≫ f = b ∧ spMap j ≫ ξ = x := by
-  obtain ⟨hD, ρ, hρ, hsurj⟩ := ht.2 m
-  have hx := h.le_nonzeroLocus (hm.map j)
-  obtain ⟨ξ, hξ, e⟩ := exists_lift_of_valR_mem hj hD x hx fun g => by
-    obtain ⟨q, rfl⟩ := hsurj g
-    rw [valR_eval₂Hom f x hx]
-    induction q using MvPolynomial.induction_on with
-    | C a =>
-      rw [MvPolynomial.eval₂Hom_C, ← valR_eq, hb, valR_spMap_comp j b ⊤ (le_preimage_top _)]
-      exact ⟨_, rfl⟩
-    | add p q hp hq => rw [map_add]; exact add_mem hp hq
-    | mul_X p l hp =>
-      rw [map_mul, MvPolynomial.eval₂Hom_X']
-      refine mul_mem hp ⟨c l * hm.unit⁻¹.val, (hm.map j).mul_right_cancel ?_⟩
-      rw [h.valR_ratio hx (hρ l), ← map_mul, mul_assoc, IsUnit.val_inv_mul, mul_one]
-  refine ⟨ξ, hξ, ext_of_spMap_comp (f := terminal.from Y) hj (terminal.hom_ext _ _) ?_, e⟩
-  rw [← Category.assoc, e, hb]
-
 end Embedded
 
 section Rings

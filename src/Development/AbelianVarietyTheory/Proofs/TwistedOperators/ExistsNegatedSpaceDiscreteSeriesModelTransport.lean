@@ -133,9 +133,6 @@ theorem memLp_flip {F : Formalism.REAL.UJ ε → ℂ} (hF : MemLp F 2 (Formalism
   rw [Measure.isMulLeftInvariant_eq_smul ((Formalism.REAL.muG (fun a => !ε a)).map (flipU ε)) (Formalism.REAL.muG ε)]
   exact hF.smul_measure ENNReal.coe_ne_top
 
-theorem flipU_apply (g : Formalism.REAL.UJ (fun a => !ε a)) :
-    ((flipU ε g : Formalism.REAL.UJ ε) : (Matrix (Fin n) (Fin n) ℂ)ˣ) = (g : (Matrix (Fin n) (Fin n) ℂ)ˣ) := rfl
-
 theorem coefOn_flip {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) (v w : H) :
     Formalism.MainNotions.S.coefOn (ε := fun a => !ε a) σ v w = Formalism.MainNotions.S.coefOn (ε := ε) σ v w ∘ flipU ε := by
@@ -444,7 +441,6 @@ theorem modelTr_negM : ModelTr (RingHom.id ℂ) true θ (negM M) M (smTEquiv M �
       rw [LinearEquiv.symm_apply_apply, MulEquiv.symm_apply_apply]⟩
 
 end GlobalTheory.NegModel
-
 
 open GlobalTheory.NegModel in
 theorem GlobalTheory.negModel_tr : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S),

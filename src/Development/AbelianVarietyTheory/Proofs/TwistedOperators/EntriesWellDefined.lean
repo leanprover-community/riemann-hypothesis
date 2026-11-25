@@ -95,43 +95,6 @@ open MeasureTheory ValuativeRel Matrix Topology GlobalTheory.SplitWeil GlobalThe
 namespace GlobalTheory.GenericLevel
 
 section
-variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-
-theorem exists_residueChar {ψ : AddChar k Circle} (hψ : HasConductor ψ 1) {ϖ : kˣ} (hϖ : IsUnif ϖ) :
-    ∃ φ : AddChar 𝓀[k] Circle, ∀ x : 𝒪[k],
-      φ (IsLocalRing.residue 𝒪[k] x) = ψ (((ϖ⁻¹ : kˣ) : k) * (x : k)) := by
-  have hsurj : Function.Surjective (IsLocalRing.residue 𝒪[k]) := IsLocalRing.residue_surjective
-  have h1 : ∀ y : k, valuation k y ≤ 1 → ψ y = 1 := by
-    intro y hy
-    exact (hψ 1).2 (by simp) y (by simpa using hy)
-  have key : ∀ x y : 𝒪[k], IsLocalRing.residue 𝒪[k] x = IsLocalRing.residue 𝒪[k] y →
-      ψ (((ϖ⁻¹ : kˣ) : k) * (x : k)) = ψ (((ϖ⁻¹ : kˣ) : k) * (y : k)) := by
-    intro x y hxy
-    have h2 := (hϖ _).1 ((residue_eq_iff_lt x y).1 hxy)
-    have h0 : valuation k (ϖ : k) ≠ 0 := by simp
-    have h3 : valuation k (((ϖ⁻¹ : kˣ) : k) * ((x : k) - (y : k))) ≤ 1 := by
-      rw [map_mul, Units.val_inv_eq_inv_val, map_inv₀]
-      exact (inv_mul_le_one₀ (zero_lt_iff.2 h0)).2 h2
-    have h4 : ((ϖ⁻¹ : kˣ) : k) * (x : k)
-        = ((ϖ⁻¹ : kˣ) : k) * (y : k) + ((ϖ⁻¹ : kˣ) : k) * ((x : k) - (y : k)) := by ring
-    rw [h4, AddChar.map_add_eq_mul, h1 _ h3, mul_one]
-  let f : 𝓀[k] → Circle := fun t => ψ (((ϖ⁻¹ : kˣ) : k) * ((Function.surjInv hsurj t : 𝒪[k]) : k))
-  have hf : ∀ x : 𝒪[k], f (IsLocalRing.residue 𝒪[k] x) = ψ (((ϖ⁻¹ : kˣ) : k) * (x : k)) :=
-    fun x => key _ _ (Function.surjInv_eq hsurj _)
-  refine ⟨⟨f, ?_, ?_⟩, hf⟩
-  · have := hf 0
-    simpa using this
-  · intro s t
-    obtain ⟨x, rfl⟩ := hsurj s
-    obtain ⟨y, rfl⟩ := hsurj t
-    rw [← map_add (f := _), hf, hf, hf, ← AddChar.map_add_eq_mul]
-    congr 1
-    push_cast
-    ring
-
-end
-
-section
 variable {F a : Type} [Field F] [Fintype a] [DecidableEq a]
 
 def upperUnip (F : Type) {a : Type} [Field F] [Fintype a] [DecidableEq a] (pos : a → ℕ) :
@@ -152,53 +115,13 @@ theorem superSum_mul {pos : a → ℕ} {M M' : Matrix a a F} (h : IsUpperUnip po
   · exact Radical.Uni.mul_apply_succ (b := pos) h h' hs
   · simp
 
-omit [DecidableEq a] in
-theorem superSum_map {R : Type} [CommRing R] (f : R →+* F) (pos : a → ℕ) (M : Matrix a a R) :
-    superSum pos (M.map f) = f (∑ r, ∑ s, if pos s = pos r + 1 then M r s else 0) := by
-  unfold superSum
-
-  simp only [map_sum, Matrix.map_apply]
-  refine Finset.sum_congr rfl fun r _ => Finset.sum_congr rfl fun s _ => ?_
-  split_ifs <;> simp
-
 noncomputable def genChar (φ : AddChar F Circle) (pos : a → ℕ) : upperUnip F pos →* ℂˣ :=
   Circle.toUnits.comp (MonoidHom.mk' (fun g => φ (superSum pos ((g : GL a F) : Matrix a a F)))
     (fun g h => by
       rw [← AddChar.map_add_eq_mul, ← superSum_mul g.2 h.2]
       rfl))
 
-theorem genChar_apply (φ : AddChar F Circle) (pos : a → ℕ) (g : upperUnip F pos) :
-    ((genChar φ pos g : ℂˣ) : ℂ) = φ (superSum pos ((g : GL a F) : Matrix a a F)) := rfl
-
 end
-
-theorem exists_isGenericLevel :
-    ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-      (ψ : AddChar k Circle), HasConductor ψ 1 → ∀ ϖ : kˣ, IsUnif ϖ → ∀ κ l : ℕ,
-      ∃ P : TypeDatum k (Fin κ ⊕ Fin l), IsGenericLevel ψ ϖ P := by
-  intro k _ _ _ _ ψ hψ ϖ hϖ κ l
-  obtain ⟨φ, hφ⟩ := exists_residueChar hψ hϖ
-  refine ⟨TypeDatum.ofResidue (upperUnip 𝓀[k] (framePos κ l)) (genChar φ (framePos κ l)), ?_, ?_⟩
-  · intro g
-    constructor
-    · rintro ⟨u, hu, rfl⟩
-      exact ⟨_, ⟨u, rfl, rfl⟩, hu⟩
-    · rintro ⟨gb, ⟨u, rfl, rfl⟩, hu⟩
-      exact ⟨u, hu, rfl⟩
-  · rintro ⟨g, u, hu, rfl⟩
-    have h := TypeDatum.ofResidue_lam (upperUnip 𝓀[k] (framePos κ l)) (genChar φ (framePos κ l)) u hu
-    rw [h, genChar_apply]
-    have e1 := superSum_map (IsLocalRing.residue 𝒪[k]) (framePos κ l) (u : Matrix _ _ 𝒪[k])
-    have e2 := superSum_map (algebraMap 𝒪[k] k) (framePos κ l) (u : Matrix _ _ 𝒪[k])
-    have e3 := hφ (∑ r, ∑ s, if framePos κ l s = framePos κ l r + 1
-      then (u : Matrix _ _ 𝒪[k]) r s else 0)
-    rw [← e1] at e3
-    have e4 : φ (superSum (framePos κ l) ((u : Matrix _ _ 𝒪[k]).map (IsLocalRing.residue 𝒪[k])))
-        = ψ (((ϖ⁻¹ : kˣ) : k) *
-          superSum (framePos κ l) ((u : Matrix _ _ 𝒪[k]).map (algebraMap 𝒪[k] k))) := by
-      rw [e3, e2]
-      rfl
-    exact congrArg (fun z : Circle => (z : ℂ)) e4
 
 end GlobalTheory.GenericLevel
 end -- clump:auto
@@ -212,8 +135,6 @@ section -- clump:auto
 
 open MeasureTheory ValuativeRel Matrix Topology GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum
 
-theorem _root_.GlobalTheory.T.exists_genericLevelOfFrame : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ψ : AddChar k Circle), HasConductor ψ 1 → ∀ ϖ : kˣ, IsUnif ϖ → ∀ κ l : ℕ, ∃ P : TypeDatum k (Fin κ ⊕ Fin l), IsGenericLevel ψ ϖ P := by
-  first | exact @GlobalTheory.GenericLevel.exists_isGenericLevel
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsGenericLevelOfFrameStatement =====
@@ -434,7 +355,6 @@ private lemma measure_eq_index_subgroupOf_mul_measure {G : Type} [Group G] [Topo
   rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, Subgroup.index,
     Nat.card_eq_fintype_card]
 
-
 open MeasureTheory ValuativeRel Matrix Topology in
 open scoped Pointwise in
 theorem _root_.GlobalTheory.VolPow.vol_div_eq_zpow : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [MeasurableSpace G] [BorelSpace G] (μ : Measure G) [μ.IsHaarMeasure] (q : ℕ), q.Prime → (∀ u : G, ∀ U ∈ 𝓝 (1 : G), ∃ m : ℕ, u ^ (q ^ m) ∈ U) → ∀ H₁ H₂ : Subgroup G, _root_.GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum.IsCO H₁ → _root_.GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum.IsCO H₂ → ∃ z : ℤ, (μ H₁).toReal / (μ H₂).toReal = (q : ℝ) ^ z := by
@@ -542,7 +462,6 @@ private lemma integral_indicator_embed_mul_unipotent_lemma (ν : Measure k) [ν.
       _root_.GlobalTheory.RootEx.Radical.conj_mem x u.2, ?_⟩
     convert hu using 1
     simp [E]
-
 
 open MeasureTheory ValuativeRel Matrix Topology in
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
@@ -765,7 +684,6 @@ open MeasureTheory ValuativeRel Matrix Topology GlobalTheory.SplitWeil GlobalThe
 
 namespace GlobalTheory.CosetQuotInt
 
-
 open MeasureTheory ValuativeRel Matrix Topology in
 theorem _root_.GlobalTheory.CosetQuotInt.isQuotInt_cosetFn (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
     [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (ν : Measure k)
@@ -908,7 +826,6 @@ open MeasureTheory ValuativeRel Matrix Topology GlobalTheory.SplitWeil GlobalThe
 noncomputable section
 namespace GlobalTheory.CosetVolProd
 
-
 open MeasureTheory ValuativeRel Matrix Topology in
 theorem _root_.GlobalTheory.CosetVolProd.volR_Cgrp : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (ν : Measure k) [ν.IsAddHaarMeasure] (n : Type) [Fintype n] [DecidableEq n] (c : ℕ) (J : Subgroup (GL (n ⊕ Fin c) k)) (h : GL (n ⊕ Fin c) k), IsOpen (_root_.GlobalTheory.StepData.prX (_root_.GlobalTheory.StepData.Cgrp J h) : Set (GL n k)) → ∀ m : Measure (GL n k), _root_.GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum.volR ν m (_root_.GlobalTheory.StepData.Cgrp J h) = _root_.GlobalTheory.RootEx.volN ν n c 1 ((_root_.GlobalTheory.StepData.Cgrp J h).subgroupOf (_root_.GlobalTheory.RootEx.N k n c 1)) * m (_root_.GlobalTheory.StepData.prX (_root_.GlobalTheory.StepData.Cgrp J h)) := by
   intro k _ _ _ _ _ _ ν _ n _ _ c J h hopen m
@@ -962,72 +879,6 @@ section -- clump:auto
 
 open MeasureTheory ValuativeRel Matrix Topology GlobalTheory.SplitWeil GlobalTheory.RootEx GlobalTheory.StepData GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum
 
-theorem _root_.GlobalTheory.T.symmetricPositionLevel_shape_on_parabolic :
-    ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-      (ψ : AddChar k Circle) (ϖ : kˣ) (ρ κ l : ℕ)
-      (P : _root_.GlobalTheory.StepData.TypeDatum k (Fin κ ⊕ Fin l)),
-      _root_.GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum.IsSymLevel ψ ϖ ρ P →
-        (∀ u ∈ N k (Fin κ) l 1, ∀ γ : GL (Fin κ) k, u * embX l γ ∈ P.J →
-          ∃ gb, Reduces γ gb ∧ IsUpperUnip Fin.val gb.val) ∧
-        (∀ (γ : GL (Fin κ) k) (gb : GL (Fin κ) 𝓀[k]), Reduces γ gb →
-          IsUpperUnip Fin.val gb.val → ∃ hm : embX l γ ∈ P.J,
-          (P.lam ⟨_, hm⟩ : ℂ) = ψ ((ϖ⁻¹ : kˣ) * superSum Fin.val γ.val)) ∧
-        ∀ u ∈ N k (Fin κ) l 1, ∀ hm : u ∈ P.J,
-          (P.lam ⟨u, hm⟩ : ℂ) = ψ ((ϖ⁻¹ : kˣ) * simpleSum u) := by
-  intro k _ _ _ _ ψ ϖ ρ κ l P hP
-  have block_mul_embX {F : Type} [Field F] {p : ℕ} {u : GL (Fin κ ⊕ Fin l) F}
-      (hu : u ∈ N F (Fin κ) l p) (γ : GL (Fin κ) F) :
-      (u * embX l γ).val.toBlocks₁₁ = γ.val := by
-    rw [Units.val_mul, GlobalTheory.RootEx.Radical.embX_val, ← Matrix.fromBlocks_toBlocks u.val,
-      Matrix.fromBlocks_multiply, Matrix.toBlocks_fromBlocks₁₁,
-      GlobalTheory.RootEx.Radical.toBlocks₁₁_of_mem hu]
-    simp
-  have simpleSum_embX (γ : GL (Fin κ) k) : simpleSum (embX l γ) = 0 := by
-    apply GlobalTheory.RootEx.Radical.simpleSum_eq_zero
-    intro i j
-    rw [GlobalTheory.RootEx.Radical.embX_val, Matrix.fromBlocks_apply₂₂]
-  refine ⟨?_, ?_, ?_⟩
-  · intro u hu γ hm
-    obtain ⟨u', hu', γ', hγ', g₀, hg₀, hr₀⟩ := (hP.1 _).1 hm
-    have map_corner {F : Type} [Field F] (f : 𝒪[k] →+* F)
-        (x : GL (Fin κ ⊕ Fin l) F) (y : GL (Fin κ) F)
-        (hx : Matrix.GeneralLinearGroup.map f g₀ = x) (hy : x.val.toBlocks₁₁ = y.val) :
-        (g₀.val.toBlocks₁₁).map f = y.val := by
-      rw [← hy, ← hx]
-      rfl
-    have hBk := map_corner (algebraMap 𝒪[k] k) _ γ hg₀ (block_mul_embX hu γ)
-    have hBr := map_corner (IsLocalRing.residue 𝒪[k]) _ γ' hr₀ (block_mul_embX hu' γ')
-    have hdet : IsUnit (g₀.val.toBlocks₁₁).det := by
-      rw [← IsLocalRing.residue_ne_zero_iff_isUnit, RingHom.map_det]
-      change ((g₀.val.toBlocks₁₁).map (IsLocalRing.residue 𝒪[k])).det ≠ 0
-      rw [hBr]
-      exact (Matrix.isUnits_det_units γ').ne_zero
-    refine ⟨γ', ⟨((Matrix.isUnit_iff_isUnit_det _).mpr hdet).unit, ?_, ?_⟩, hγ'⟩
-    · exact Units.ext (by rw [← hBk]; rfl)
-    · exact Units.ext (by rw [← hBr]; rfl)
-  · intro γ gb hred hgb
-    obtain ⟨γ₀, h₁, h₂⟩ := hred
-    let g₀ : GL (Fin κ ⊕ Fin l) 𝒪[k] :=
-      ⟨Matrix.fromBlocks γ₀.val 0 0 1, Matrix.fromBlocks (γ₀⁻¹).val 0 0 1,
-        by rw [Matrix.fromBlocks_multiply]; simp, by rw [Matrix.fromBlocks_multiply]; simp⟩
-    have hemb {F : Type} [Field F] (f : 𝒪[k] →+* F) :
-        Matrix.GeneralLinearGroup.map f g₀ = embX l (Matrix.GeneralLinearGroup.map f γ₀) := by
-      refine Units.ext ?_
-      rw [GlobalTheory.RootEx.Radical.embX_val]
-      change (Matrix.fromBlocks γ₀.val 0 0 1).map f = _
-      rw [Matrix.fromBlocks_map]
-      simp
-    have hm : embX l γ ∈ P.J :=
-      (hP.1 _).2 ⟨1, one_mem _, gb, hgb, g₀, by rw [hemb, h₁], by rw [hemb, h₂, one_mul]⟩
-    refine ⟨hm, ?_⟩
-    have hblk : (embX l γ).val.toBlocks₁₁ = γ.val := by
-      rw [GlobalTheory.RootEx.Radical.embX_val, Matrix.toBlocks_fromBlocks₁₁]
-    rw [hP.2 ⟨_, hm⟩]
-    simp only [simpleSum_embX, hblk, mul_zero, AddChar.map_zero_eq_one, Circle.coe_one, one_mul]
-  · intro u hu hm
-    rw [hP.2 ⟨u, hm⟩]
-    simp only [GlobalTheory.RootEx.Radical.toBlocks₁₁_of_mem hu, GlobalTheory.GenericShape.superSum_one,
-      mul_zero, AddChar.map_zero_eq_one, Circle.coe_one, mul_one]
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.SymmetricPositionLevelShapeOnParabolicStatement =====
@@ -1157,38 +1008,6 @@ theorem stepWellDefined (hψ : HasConductor ψ 1) : StepWellDefined ψ ν := by
     exact exists_congr fun h => and_congr_right fun _ => flat_ne_zero_congr hc H e rfl
   · rw [mem_idxAt hc H, Ne, xi_eq_zero_iff ψ ν μ Φ hJ.1 hJ.2]
 
-theorem nabs_det_of_mem {J : Subgroup (GL (n ⊕ Fin c) k)} (hJ : IsCO J) {h u : GL (n ⊕ Fin c) k} (hu : u ∈ N k n c 1)
-    {g : GL n k} (hm : h⁻¹ * (u * embX c g) * h ∈ J) : nabs k (Matrix.GeneralLinearGroup.det g) = 1 :=
-  nabs_eq_one_of_valuation_eq_one (((_root_.GlobalTheory.PrCompactOpen.isCO_prX_Cgrp k n c J hJ h).2 g ⟨u, hu, mem_Cgrp.2
-    ⟨mul_mem (Subgroup.mem_sup_right hu) (Subgroup.mem_sup_left ⟨g, rfl⟩), hm⟩⟩).1)
-
-theorem target_law (hc : 1 ≤ c) (hJ : IsCO P.J) (H : HasTypes μ P' P Φ) (h' : GL (n' ⊕ Fin (c + 1)) k)
-    (h : GL (n ⊕ Fin c) k) {u : GL (n ⊕ Fin c) k} (hu : u ∈ N k n c 1) (g : GL n k)
-    (hm : h⁻¹ * (u * embX c g) * h ∈ P.J) :
-    om μ 1 g (flat ψ ν μ Φ h' h) =
-      ((ψ (simpleSum u) : ℂ) * (((P.lam ⟨_, hm⟩)⁻¹ : ℂˣ) : ℂ)) • flat ψ ν μ Φ h' h := by
-  have := flat_target (ψ := ψ) (ν := ν) hc H hu g (⟨_, hm⟩ : P.J)⁻¹ h' h
-  rw [show u * embX c g * h * (((⟨_, hm⟩ : P.J)⁻¹ : P.J) : GL (n ⊕ Fin c) k) = h by simp [mul_assoc],
-    nabs_det_of_mem hJ hu hm, map_inv, inv_inv, AddChar.map_neg_eq_inv] at this
-  conv_rhs => rw [this, smul_smul]
-  have := Circle.coe_ne_zero (ψ (simpleSum u))
-  symm
-  convert one_smul ℂ _
-  simp; field_simp
-
-theorem source_law (hc : 1 ≤ c) (hJ : IsCO P'.J) (H : HasTypes μ P' P Φ) (h' : GL (n' ⊕ Fin (c + 1)) k)
-    (h : GL (n ⊕ Fin c) k) {u : GL (n' ⊕ Fin (c + 1)) k} (hu : u ∈ N k n' (c + 1) 1) (g : GL n' k)
-    (hm : h'⁻¹ * (u * embX (c + 1) g) * h' ∈ P'.J) :
-    om μ g 1 (flat ψ ν μ Φ h' h) = ((ψ (simpleSum u) : ℂ)⁻¹ * (P'.lam ⟨_, hm⟩ : ℂ)) • flat ψ ν μ Φ h' h := by
-  have := flat_source (ψ := ψ) (ν := ν) hc H hu g (⟨_, hm⟩ : P'.J)⁻¹ h' h
-  rw [show u * embX (c + 1) g * h' * (((⟨_, hm⟩ : P'.J)⁻¹ : P'.J) : GL (n' ⊕ Fin (c + 1)) k) = h' by simp [mul_assoc],
-    nabs_det_of_mem hJ hu hm, map_inv] at this
-  conv_rhs => rw [this, smul_smul]
-  have := Circle.coe_ne_zero (ψ (simpleSum u))
-  symm
-  convert one_smul ℂ _
-  simp; field_simp
-
 end Step
 
 section Laws
@@ -1286,48 +1105,6 @@ theorem cosetMeasure : CosetMeasure ν := by
     exact ⟨fun hz => (QuotInt.quotInt_unique_exists k n c 1 le_rfl hc ν m μG f).1 _ _ hz key, fun e => e ▸ key⟩
 
 end Volumes
-
-section First
-variable [MeasurableSpace k] [BorelSpace k] {ψ : AddChar k Circle} {ν : Measure k} [ν.IsAddHaarMeasure]
-
-theorem firstVertex {s : ℕ} {X : ℕ → Type} [∀ j, Fintype (X j)] [∀ j, DecidableEq (X j)] {Z : Type} [Fintype Z]
-    [DecidableEq Z] {C : Chain k s X Z} (hT : C.Regular) (hL : C.Laws) {K₀ : Set (GL (X 0) k)}
-    {lam : GL (X 0) k → ℂ} (H : ∀ c (H : 0 + c = s + 1), (prX (Cgrp (C.lev 0 c H).J 1) : Set (GL (X 0) k)) = K₀ ∧
-      (∀ γ ∈ K₀, ∃ hm : embX c γ ∈ (C.lev 0 c H).J, ((C.lev 0 c H).lam ⟨_, hm⟩ : ℂ) = lam γ) ∧
-      ∀ u ∈ N k (X 0) c 1, ∀ hm : u ∈ (C.lev 0 c H).J, ((C.lev 0 c H).lam ⟨u, hm⟩ : ℂ) = ψ (simpleSum u)) :
-    FirstVertex ψ ν C K₀ lam := by
-  refine ⟨fun c hc => ?_, fun c hc h γ hγ => ?_⟩
-  · obtain ⟨h1, h2, h3⟩ := H c hc
-    refine ⟨h1, h2, ?_⟩
-    choose hm hlam using h2
-    have hK : ∀ γ : prX (Cgrp (C.lev 0 c hc).J 1), (γ : GL (X 0) k) ∈ K₀ := fun γ => h1 ▸ γ.2
-    let ι : prX (Cgrp (C.lev 0 c hc).J 1) →* (C.lev 0 c hc).J :=
-      ((embX c).comp (Subgroup.subtype _)).codRestrict _ fun γ => hm γ (hK γ)
-    refine ⟨((C.lev 0 c hc).lam.comp ι)⁻¹, fun γ u hu hu' => ?_, fun γ => ?_⟩
-    · have hu'' : u ∈ (C.lev 0 c hc).J := by simpa using mul_mem hu' (inv_mem (hm γ (hK γ)))
-      rw [← h3 u hu hu'', show (⟨_, hu'⟩ : (C.lev 0 c hc).J) = ⟨u, hu''⟩ * ι γ from Subtype.ext (by simp; rfl),
-        map_mul]
-      simp
-      field_simp
-    · rw [← hlam γ (hK γ)]
-      exact Units.inv_mul _
-  · obtain ⟨hm, e⟩ := (H (c + 1 + 1) (by omega)).2.1 γ hγ
-    rw [source_law (by omega) (isCO_lev hT _ _ _) (hL.1 0 (c + 1) hc) 1 h (one_mem _) γ (by simpa using hm),
-      Radical.simpleSum_eq_zero (by simp [Matrix.one_apply]), ← e]
-    simp
-
-theorem firstVertexChains (hψ : HasConductor ψ 1) : FirstVertexChains ψ ν := by
-  intro s t _ _
-  refine ⟨fun κ ϖ hϖ => ⟨GlobalTheory.T.exists_genericLevelOfFrame k ψ hψ ϖ hϖ _ _, fun ρ _ => _root_.GlobalTheory.SymLevelExists.exists_isSymLevel k ψ hψ ϖ hϖ ρ _ _, fun P hP μ hμ => ?_⟩,
-    fun κ _ _ δ hδ η hη => ?_⟩
-  · refine firstVertex (Chain.ofType_regular _ _ _ _ _) (Chain.ofType_laws _ _ _ _ _)
-      (_root_.GlobalTheory.FirstVertexFrame.firstVertex_typeChain k ψ ϖ s t κ P ?_ μ hμ)
-    rcases hP with hP | ⟨ρ, -, hP⟩
-    exacts [GlobalTheory.GenericShape.generic_shape k ψ ϖ _ _ P hP, GlobalTheory.T.symmetricPositionLevel_shape_on_parabolic k ψ ϖ ρ _ _ P hP]
-  · exact firstVertex (Chain.ofTwist_regular _ _ _ _ _) (Chain.ofTwist_laws _ _ _ hη _ _)
-      (_root_.GlobalTheory.TwistVertex.firstVertex_twist k ψ hψ s t κ δ hδ η)
-
-end First
 
 end GlobalTheory.UnfoldedEntries
 end -- clump:auto

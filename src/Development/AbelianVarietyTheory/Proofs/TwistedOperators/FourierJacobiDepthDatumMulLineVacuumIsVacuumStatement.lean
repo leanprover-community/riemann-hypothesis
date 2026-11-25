@@ -80,7 +80,6 @@ open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK Mo
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
 
-
 open GlobalTheory.FinPl.LatMem in
 theorem GlobalTheory.FinPl.projB_mem_of_orthAt : ∀ {D : D7} {S A B : HSp D} (o : OrthDec S A B) {L : Lat S} {LA : Lat A} {LB : Lat B}, (∀ z : Fin B.rank → D.host.E, (∀ v : GlobalTheory.FinPl.Pl D, (fun i => pairA D.host.F 0 (GlobalTheory.FinPl.LatMem.indP D.host.F (· = v)) ⊗ₜ[D.host.F] z i) ∈ latV B LB (· = v)) → z ∈ LB) → (∀ v, OrthAt o L LA LB v) → ∀ t ∈ L, o.qB *ᵥ t ∈ LB := by
   intro D S A B o L LA LB hLG hO t ht
@@ -115,7 +114,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK MonoAt OrthAt PrimAt ColsAt)
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
-
 
 theorem _root_.GlobalTheory.T.orthogonalSummandProjection_mem_lattice_of_splits : ∀ {D : D7} {S A B : HSp D} (o : OrthDec S A B) {L : Lat S} {LA : Lat A} {LB : Lat B}, (∀ z : Fin B.rank → D.host.E, (∀ v : GlobalTheory.FinPl.Pl D, (fun i => pairA D.host.F 0 (GlobalTheory.FinPl.LatMem.indP D.host.F (· = v)) ⊗ₜ[D.host.F] z i) ∈ latV B LB (· = v)) → z ∈ LB) → (∀ v, OrthAt o L LA LB v) → ∀ t ∈ L, o.qB *ᵥ t ∈ LB := by
   first | exact @GlobalTheory.FinPl.projB_mem_of_orthAt
@@ -203,7 +201,6 @@ open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK Mo
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
 
-
 theorem _root_.GlobalTheory.T.wittCoreEmbedding_mulVec_mem_lattice_of_splits : ∀ {D : D7} {S S₀ : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ) {L : Lat S} {L₀ : Lat S₀}, (∀ z : Fin S.rank → D.host.E, (∀ v : GlobalTheory.FinPl.Pl D, (fun i => pairA D.host.F 0 (GlobalTheory.FinPl.LatMem.indP D.host.F (· = v)) ⊗ₜ[D.host.F] z i) ∈ latV S L (· = v)) → z ∈ L) → (∀ v, MonoAt d L L₀ v) → ∀ y ∈ L₀, d.i₀ *ᵥ y ∈ L := by
   first | exact @GlobalTheory.WittCoreLat.i₀_mulVec_mem
 end -- clump:auto
@@ -225,7 +222,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK MonoAt OrthAt PrimAt ColsAt)
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
-
 
 theorem _root_.GlobalTheory.T.q0_mulVec_mem_of_splits : ∀ {D : D7} {S S₀ : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ) {L : Lat S} {L₀ : Lat S₀}, (∀ z : Fin S₀.rank → D.host.E, (∀ v : GlobalTheory.FinPl.Pl D, (fun i => pairA D.host.F 0 (GlobalTheory.FinPl.LatMem.indP D.host.F (· = v)) ⊗ₜ[D.host.F] z i) ∈ latV S₀ L₀ (· = v)) → z ∈ L₀) → (∀ v, MonoAt d L L₀ v) → ∀ t ∈ L, d.q0 *ᵥ t ∈ L₀ := by
   first | exact @GlobalTheory.FinPl.CoreProj.wittCoreProjection_mem_lattice_of_splits
@@ -317,8 +313,6 @@ open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK Mo
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
 
-theorem _root_.GlobalTheory.T.fourierJacobi_depth_lattice_line_components_mem : OnStd fun {D} _ _ {sc} {G} W F => ∀ σ (h : 2 * (σ + 1) + 2 ≤ D.R.m) (h' : 2 * σ + 2 ≤ D.R.m), ∀ u ∈ (pcFB W F σ h h').Γ₀, ((F.oB σ h').resT _ u).2 ∈ lineLat F (σ + 1) := by
-  first | exact @GlobalTheory.LineFB.line_mem
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.FourierJacobiDepthLatticeLineComponentsMemStatement =====
@@ -343,9 +337,6 @@ namespace GlobalTheory.CoreComp
 variable {D : D7}
 
 def finV {n : ℕ} (z : Fin n → D.host.E) : Fin n → AE D := fun i => pairA D.host.F 0 1 ⊗ₜ[D.host.F] z i
-
-theorem rat_entry {m n : ℕ} (A : Matrix (Fin m) (Fin n) D.host.E) (i : Fin m) (j : Fin n) :
-    (rat A : Mx D m n) i j = (1 : AF D.host.F) ⊗ₜ[D.host.F] A i j := rfl
 
 theorem rat_mulVec_finV {m n : ℕ} (A : Matrix (Fin m) (Fin n) D.host.E) (z : Fin n → D.host.E) :
     (rat A : Mx D m n) *ᵥ finV z = finV (A *ᵥ z) := by
@@ -549,8 +540,6 @@ open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK Mo
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
 
-theorem _root_.GlobalTheory.T.jacobi_step_core_component_mem_core_depth_lattice : OnStd fun {D} _ _ {sc} {G} W F => ∀ σ (h : 2 * (σ + 1) + 2 ≤ D.R.m) (h' : 2 * σ + 2 ≤ D.R.m), ∀ u ∈ (pcFB W F σ h h').Γ₀, ((F.oB σ h').resT _ u).1 ∈ latCore G (2 * σ + 2) := by
-  first | exact @GlobalTheory.CoreComp.core_mem_latCore
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.JacobiStepCoreComponentMemCoreDepthLatticeStatement =====
@@ -585,10 +574,6 @@ theorem vacG_boxT {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {T A B S : HSp D} (d
 end GlobalTheory.BoxFB
 
 namespace GlobalTheory.BoxFB
-
-theorem core_mem : OnStd fun {D} _ _ {sc} {G} W F => ∀ σ (h : 2 * (σ + 1) + 2 ≤ D.R.m) (h' : 2 * σ + 2 ≤ D.R.m), ∀ u ∈ (pcFB W F σ h h').Γ₀, ((F.oB σ h').resT _ u).1 ∈ latCore G (2 * σ + 2) := GlobalTheory.T.jacobi_step_core_component_mem_core_depth_lattice
-
-theorem line_mem : OnStd fun {D} _ _ {sc} {G} W F => ∀ σ (h : 2 * (σ + 1) + 2 ≤ D.R.m) (h' : 2 * σ + 2 ≤ D.R.m), ∀ u ∈ (pcFB W F σ h h').Γ₀, ((F.oB σ h').resT _ u).2 ∈ lineLat F (σ + 1) := GlobalTheory.T.fourierJacobi_depth_lattice_line_components_mem
 
 theorem vacG_boxT_fb : OnStd fun {D} _ _ {sc} {G} W F => ∀ σ (h : 2 * (σ + 1) + 2 ≤ D.R.m) (h' : 2 * σ + 2 ≤ D.R.m), ∀ Ξ₁ Φ₀, VacG W.ψ _ _ (latCore G (2 * σ + 2)) Ξ₁ → VacG W.ψ _ _ (lineLat F (σ + 1)) Φ₀ → VacG W.ψ _ _ (pcFB W F σ h h').Γ₀ ((F.oB σ h').boxT _ Ξ₁ Φ₀) := by
   intro D hD T L μ0 hL sc G W M hM F hF σ h h' Ξ₁ Φ₀ hΞ hΦ

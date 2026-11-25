@@ -101,7 +101,6 @@ theorem exists_analytic_leftInverse {Θ : E → W} (hΘ : Differentiable ℂ Θ)
       (hc.to_localInverse hd hn).analyticAt (P'.analyticAt _)
   · exact (hc.hasStrictFDerivAt' hd hn).eventually_left_inverse
 
-
 omit [FiniteDimensional ℂ W] [NormedAddCommGroup W] [NormedSpace ℂ W] in
 theorem eq_zero_of_mul_eq_zero {u v : E → ℂ} (hu : Continuous u) (hv : Differentiable ℂ v)
     (hu0 : u ≠ 0) (h : ∀ e, u e ≠ 0 → v e = 0) : v = 0 := by
@@ -157,7 +156,6 @@ theorem growth (hK : IsCompact K) (hθ : Continuous θ) (hf : Continuous f) (hN 
   calc ‖e'.1‖ ^ d * ‖f e'.2‖ * ε ^ d ≤ ‖e'.1‖ ^ d * max B 0 * ‖θ e'.2‖ ^ d := by gcongr
     _ = _ := by ring
 
-
 omit [FiniteDimensional ℂ V] [FiniteDimensional ℂ W] [NormedSpace ℂ V] in
 theorem exists_transl (hN : ∀ z, θ z ≠ 0)
     (hL : ∀ l ∈ Λ, ∃ κ : V → ℂ, Continuous κ ∧ ∀ z, κ z ≠ 0 ∧ θ (z + l) = κ z • θ z ∧
@@ -187,7 +185,6 @@ theorem exists_transl (hN : ∀ z, θ z ≠ 0)
   · obtain ⟨h0, -, h2⟩ := hκ x.2
     simp only
     rw [h2, mul_pow, inv_pow, mul_assoc, inv_mul_cancel_left₀ (pow_ne_zero _ h0)]
-
 
 omit [FiniteDimensional ℂ W] in
 theorem eventually_mem_image (hK : IsCompact K) (hθ : Continuous θ) (hN : ∀ z, θ z ≠ 0)
@@ -349,10 +346,6 @@ section Growth
 
 variable {E : Type*} {n : ℕ}
 
-theorem growth_mv (q : MvPolynomial (Fin n) ℂ) :
-    ∃ (C : ℝ) (m : ℕ), 0 ≤ C ∧ ∀ x : Fin n → ℂ, ‖MvPolynomial.eval x q‖ ≤ C * (1 + ‖x‖) ^ m := by
-  apply GlobalTheory.SimpleRoots.exists_norm_eval_le
-
 theorem growth_finite {ι : Type*} [Fintype ι] (x : E → ℝ) (hx : ∀ e, 1 ≤ x e) (u : ι → E → ℂ)
     (hu : ∀ c, ∃ (C : ℝ) (m : ℕ), 0 ≤ C ∧ ∀ e, ‖u c e‖ ≤ C * x e ^ m) :
     ∃ (C : ℝ) (m : ℕ), 0 ≤ C ∧ ∀ e c, ‖u c e‖ ≤ C * x e ^ m := by
@@ -394,7 +387,6 @@ theorem differentiable_of_mem_adjoin {u : ι → E → ℂ} (hu : ∀ c, Differe
   | algebraMap r => exact differentiable_const r
   | add x y _ _ hx hy => exact hx.add hy
   | mul x y _ _ hx hy => exact hx.mul hy
-
 
 omit [NormedAddCommGroup E] [NormedSpace ℂ E] [FiniteDimensional ℂ E] [Fintype ι] in
 theorem exists_eval_eq {u : ι → E → ℂ}

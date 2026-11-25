@@ -62,7 +62,6 @@ namespace GlobalTheory.DriftUnitary
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
-
 open NumberField MeasureTheory Topology in
 open scoped ComplexOrder ENNReal Matrix in
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
@@ -74,16 +73,6 @@ theorem _root_.GlobalTheory.DriftUnitary.continuous_orbit {r : ℕ} (X : _root_.
   refine continuous_pi fun τ => ?_
   exact (Units.continuous_val.comp ((continuous_apply τ).comp continuous_subtype_val)).matrix_mul
     continuous_const
-
-open NumberField MeasureTheory Topology in
-open scoped ComplexOrder ENNReal Matrix in
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] in
-private theorem single_one_mulVec_eq_pi_single (r : ℕ) (j k : Fin r) (w : Fin r → ℂ) :
-    (Matrix.single j k (1 : ℂ)).mulVec w = Pi.single j (w k) := by
-  ext i
-  by_cases hi : i = j
-  · subst hi; simp [Matrix.mulVec, dotProduct, Matrix.single_apply]
-  · simp [Matrix.mulVec, dotProduct, hi, Ne.symm hi]
 
 open NumberField MeasureTheory Topology in
 open scoped ComplexOrder ENNReal Matrix in

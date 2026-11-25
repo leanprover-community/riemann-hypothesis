@@ -69,8 +69,6 @@ def idem (v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := 
 theorem af_ext' {a b : AF F} (h1 : fstA F a = fstA F b) (h2 : ∀ u : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F), evFin F u a = evFin F u b) : a = b :=
   Prod.ext h1 (af_ext fun u => h2 u)
 
-theorem fst_idem (v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)) : fstA F (idem F v) = 0 := rfl
-
 theorem evFin_idem (v u : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)) : evFin F u (idem F v) = if u = v then 1 else 0 := by
   split_ifs with h
   · subst h; exact evalV_singleFin_self u 1

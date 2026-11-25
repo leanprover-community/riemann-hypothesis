@@ -88,29 +88,6 @@ theorem card_eq_ncard_primesOver (E : Type) [Field E] [NumberField E] {g : ℕ} 
     simpa using (Ideal.mem_of_liesOver P (Ideal.span {(g : ℤ)}) (g : ℤ)).1
       (Ideal.mem_span_singleton_self _)
 
-theorem residue_and_unramified : ∀ (E : Type) [Field E] [NumberField E] (g : ℕ), g.Prime →
-    GlobalTheory.IndefiniteRowSideFullHecke.FlagUnipotentStabilizers.SplitsCompletely E g →
-    ∀ w : HeightOneSpectrum (𝓞 E), (g : 𝓞 E) ∈ w.asIdeal →
-      Nonempty ((𝓞 E ⧸ w.asIdeal) ≃+* ZMod g) ∧ (g : 𝓞 E) ∉ w.asIdeal ^ 2 := by
-  intro E _ _ g hg h w hw
-  haveI := w.isPrime
-  haveI := Fact.mk hg
-  have h' := (card_eq_ncard_primesOver E hg).symm.trans h
-  obtain ⟨h1, h2⟩ := GlobalTheory.LocSplit.split_prime hg h' w.asIdeal hw
-  refine ⟨?_, h1⟩
-  haveI : Nontrivial (𝓞 E ⧸ w.asIdeal) := Ideal.Quotient.nontrivial_iff.2 w.isPrime.ne_top
-  haveI : CharP (𝓞 E ⧸ w.asIdeal) g := by
-    rw [CharP.charP_iff_prime_eq_zero hg, ← map_natCast (Ideal.Quotient.mk w.asIdeal),
-      Ideal.Quotient.eq_zero_iff_mem]
-    exact hw
-  refine ⟨(RingEquiv.ofBijective (ZMod.castHom (dvd_refl g) (𝓞 E ⧸ w.asIdeal))
-    ⟨ZMod.castHom_injective _, fun y => ?_⟩).symm⟩
-  obtain ⟨x, rfl⟩ := Ideal.Quotient.mk_surjective y
-  obtain ⟨m, hm⟩ := h2 x
-  refine ⟨(m : ZMod g), ?_⟩
-  rw [map_intCast, ← map_intCast (Ideal.Quotient.mk w.asIdeal), eq_comm, Ideal.Quotient.eq]
-  exact hm
-
 end GlobalTheory.SplitResidue
 end -- clump:auto
 end -- clump:auto

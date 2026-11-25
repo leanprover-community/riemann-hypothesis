@@ -296,8 +296,6 @@ open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK Mo
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
 
-
-
 noncomputable section
 
 namespace GlobalTheory.LineAdjZero
@@ -545,9 +543,6 @@ theorem scalar_mem_idS {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} (G : Gr
   intro w hw
   exact v_triple_le h (e1 w hw) (hy w hw) (hz' w)
 
-theorem toEAf_pair {D : D7} (α : Formalism.L2.Herm.Af D.host.F) (x : D.host.E) :
-    toEAf D (pairA D.host.F 0 α ⊗ₜ[D.host.F] x) = x ⊗ₜ[D.host.F] α := rfl
-
 theorem map_toEAf_smul {D : D7} {m n : ℕ} (e : AE D) (X : Mx D m n) :
     (e • X).map (toEAf D) = toEAf D e • X.map (toEAf D) := by
   ext i j
@@ -599,7 +594,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK MonoAt OrthAt PrimAt ColsAt)
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
-
 
 theorem _root_.GlobalTheory.T.star_smul_mem_span_modulusDivConjugate_lattice : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} (G : GridData L sc) {n : ℕ} (Λ₀ : Submodule (𝓞 D.host.E) (Fin n → D.host.E)), ∀ a ∈ D.host.AA, ∀ s ∈ idLat (G.pl.stA sc ^ (0 + 1) * (G.pl.stAbar sc ^ (0 + 1))⁻¹) Λ₀, star a • s ∈ Submodule.span (𝓞 D.host.E) {y | ∃ a' ∈ D.host.AA, ∃ s' ∈ idLat (shiftId G) Λ₀, y = a' • s'} := by
   first | exact @GlobalTheory.AdjSrcZero.star_smul_mem_span
@@ -691,8 +685,6 @@ open GlobalTheory.AscFin
 
 namespace GlobalTheory.LineDepthZero
 
-
-
 theorem smul_mem_hatMx_of_mem_latO {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} (G : GridData L sc) {S B : HSp D}
     (LS : Lat S) (Λ₀ : Lat B) (hS : IsSelfDualC S LS)
     (hv : ∀ w ∈ G.pl.W0, ∀ b ∈ D.host.AA * shiftId G,
@@ -749,7 +741,6 @@ theorem smul_mem_hatMx_of_mem_latO {D : D7} {T : Type} {L : LevCh D T} {sc : Con
 
 end GlobalTheory.LineDepthZero
 
-
 open GlobalTheory.LineDepthZero in
 theorem GlobalTheory.AscFin.BoxBF.lineAdj_zero_dep : OnStd fun {D} _ _ {sc} {G} W F => ∀ (h : 2 * 0 + 2 ≤ D.R.m), ∀ u ∈ (pcBF W F 0 h).Γ₀, ∀ e : AE D, IsIdemSum e G.pl.W0 → e • (incA D D.host.xi0⁻¹ • GlobalTheory.IndefiniteRowSideFullHecke.SkewGramHalfModule.starAdj _ _ (((F.oB 0 h).resS (G.V (.core (2 * 0 + 1))) u).2)) ∈ hatMx (G.modul • homLat (G.Λ (.core (2 * 0 + 1))) (Submodule.span (𝓞 D.host.E) {F.ζ 0})) := by
   intro D hD T L μ0 hL sc G W Mv hM F hF h u hu e he
@@ -794,7 +785,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK MonoAt OrthAt PrimAt ColsAt)
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
-
 
 namespace GlobalTheory.LineZero
 
@@ -867,7 +857,6 @@ theorem mul_mem_smul_homLat {k m n : ℕ} (A : Matrix (Fin k) (Fin m) D.host.E) 
     exact add_mem hy hy'
 
 end GlobalTheory.LineZero
-
 
 open GlobalTheory.LineZero in
 theorem GlobalTheory.LineZero.adj_mem_lineLat : OnStd fun {D} _ _ {sc} {G} W F => ∀ (h : 2 * 0 + 2 ≤ D.R.m), ∀ u ∈ (pcBF W F 0 h).Γ₀, incA D D.host.xi0⁻¹ • GlobalTheory.IndefiniteRowSideFullHecke.SkewGramHalfModule.starAdj _ _ (((F.oB 0 h).resS (G.V (.core (2 * 0 + 1))) u).2) ∈ lineLat F 0 := by

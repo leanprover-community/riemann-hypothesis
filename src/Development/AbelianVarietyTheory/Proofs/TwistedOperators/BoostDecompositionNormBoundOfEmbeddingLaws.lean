@@ -343,12 +343,6 @@ open GlobalTheory.SepReal
 
 namespace GlobalTheory.SepReal.BoostHilbertSchmidtTrace
 
-theorem boostMat : ∀ (m : ℕ) (ε : Fin m → Bool) (a b : Fin m → ℂ), (∀ i, ε i = false → a i = 0) → (∀ i, ε i = true → b i = 0) → ∑ i, ‖a i‖ ^ 2 = 1 + ∑ i, ‖b i‖ ^ 2 → ∃ A ∈ UJset ε, (∀ i, ∑ j, A i j * a j = (Real.sqrt (∑ j, ‖a j‖ ^ 2) : ℂ) * (a i + b i)) ∧ hsn A ^ 2 ≤ (m : ℝ) + 2 * ∑ i, ‖a i + b i‖ ^ 2 := _root_.GlobalTheory.Boost.boost_exists
-
-end GlobalTheory.SepReal.BoostHilbertSchmidtTrace
-
-namespace GlobalTheory.SepReal.BoostHilbertSchmidtTrace
-
 theorem hsn_sq {m : ℕ} (M : Matrix (Fin m) (Fin m) ℂ) : hsn M ^ 2 = ∑ a, ∑ b, ‖M a b‖ ^ 2 :=
   Real.sq_sqrt (Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => sq_nonneg _)
 
@@ -456,7 +450,6 @@ theorem col_inv_norm {n : ℕ} (e : Option (Fin n) ≃ Fin (n + 1)) (ε : Fin (n
 end GlobalTheory.SepReal.BoostHilbertSchmidtTrace
 
 namespace GlobalTheory.SepReal
-
 
 open BoostHilbertSchmidtTrace in
 theorem boost_of_embLaws : EmbLaws → Boost := by

@@ -70,10 +70,6 @@ open scoped BigOperators Real
 
 namespace GlobalTheory.FiniteCoverGrowth
 
-theorem exists_norm_eval_le {d : ℕ} (c : MvPolynomial (Fin d) ℂ) :
-    ∃ (K : ℝ) (M : ℕ), 0 ≤ K ∧ ∀ x : Fin d → ℂ, ‖MvPolynomial.eval x c‖ ≤ K * (1 + ‖x‖) ^ M := by
-  apply GlobalTheory.SimpleRoots.exists_norm_eval_le
-
 theorem exists_norm_root_le {d : ℕ} (p : Polynomial (MvPolynomial (Fin d) ℂ)) (hp : p.Monic) :
     ∃ (K : ℝ) (M : ℕ), 0 ≤ K ∧ ∀ (x : Fin d → ℂ) (y : ℂ),
       (p.map (MvPolynomial.eval x)).eval y = 0 → ‖y‖ ≤ K * (1 + ‖x‖) ^ M := by

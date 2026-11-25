@@ -92,14 +92,10 @@ theorem mt_reGrp (S : HSp D) (b : Module.Basis (Fin S.rank) D.host.E S.V) (h : G
       ((frPinv S b).map (incA D)) :=
   GlobalTheory.VolTransport.conjA_mat (isoPair_re S b) h
 
-theorem finHom_eq (V : HSp D) (g : GA D V) :
-    ((finHom V g : GL _ _) : Matrix (Fin V.rank) (Fin V.rank) _) = finMat D.sp.cm.sig V.gram g := rfl
-
 theorem reW_continuous (S T : HSp D) (b : Module.Basis (Fin S.rank) D.host.E S.V) : Continuous (reW S T b) := by
   haveI : IsTopologicalRing (AE D) := IsModuleTopology.isTopologicalRing (AF D.host.F) (AE D)
   unfold reW
   exact continuous_id.matrix_mul continuous_const
-
 
 theorem mul_mul_cancel {m n : ℕ} (x : Matrix (Fin m) (Fin n) (AE D)) (A B : Matrix (Fin n) (Fin n) (AE D))
     (h : A * B = 1) : x * A * B = x := by
@@ -268,7 +264,6 @@ theorem reGrp_mem_GinfC (h : GA D (reS S b)) : reGrp S b h ∈ GinfC S ↔ h ∈
 
 theorem reGrp_mem_GQ (h : GA D (reS S b)) (hh : h ∈ GQ (reS S b)) : reGrp S b h ∈ GQ S :=
   GlobalTheory.VolTransport.conjA_rat (isoPair_re S b) h hh
-
 
 theorem map_mul_eq_zero_iff {R : Type*} [Ring R] {m n : ℕ} (φ : AE D →+* R) (x : Matrix (Fin m) (Fin n) (AE D))
     (P Pi : Matrix (Fin n) (Fin n) D.host.E) (h : Pi * P = 1) :

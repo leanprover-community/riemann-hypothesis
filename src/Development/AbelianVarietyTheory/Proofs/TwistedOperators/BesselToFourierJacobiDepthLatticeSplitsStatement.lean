@@ -230,8 +230,6 @@ theorem colsOf_gram {n c k : ℕ} (G : Matrix (Fin n) (Fin n) D.host.E) (a : Mat
   simp only [colsOf, Matrix.mul_apply, conjTranspose_apply, star_mul', Finset.mul_sum, Finset.sum_mul]
   exact Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun i _ => by ring
 
-
-
 end GlobalTheory.XCharBF.DiagCoord
 end -- clump:auto
 end -- clump:auto
@@ -662,59 +660,6 @@ theorem hatMx_coord_mem : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} 
 
 end GlobalTheory.XCharBF.HatCoord
 
-namespace GlobalTheory.XCharBF.DiagCoord
-
-variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {F : _root_.GlobalTheory.Asc.Frames G}
-
-theorem diag_mem_complId (hF : Std F) (ρ : ℕ) (h : 2 * ρ + 2 ≤ D.R.m)
-    (u : WO (negSp (G.V (.grid (2 * ρ + 1 + 1) 0))) (G.V (.grid (2 * ρ + 1) 0)))
-    (hu : u ∈ latO (negSp (G.V (.grid (2 * ρ + 1 + 1) 0))) (G.V (.grid (2 * ρ + 1) 0))
-      (G.Λ (.grid (2 * ρ + 1 + 1) 0) : Set _) (G.Λ (.grid (2 * ρ + 1) 0) : Set _) fun _ => True)
-    (p : Fin ρ) :
-    ((F.dJ ρ h).pY ⬝ u ⬝ (F.dB ρ h).jY) p p ∈ complId (D.host.AA * G.pl.stAbar sc) := by
-  let f : Matrix (Fin (G.V (.grid (2 * ρ + 1) 0)).rank) (Fin (G.V (.grid (2 * ρ + 2) 0)).rank) D.host.E →ₗ[𝓞 D.host.E]
-      D.host.E :=
-    { toFun := fun x => ((F.dJ ρ h).qY * x * (F.dB ρ h).e') p p
-      map_add' := fun x y => by
-        simp only [Matrix.mul_add, Matrix.add_mul, Matrix.add_apply]
-      map_smul' := fun c x => by
-        simp only [Matrix.mul_smul, Matrix.smul_mul, Matrix.smul_apply, RingHom.id_apply] }
-  let M := ((D.host.AA * G.pl.stAbar sc : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E) :
-    Submodule (𝓞 D.host.E) D.host.E).comap f
-  have hS : IsSelfDualC _ (G.Λ (.grid (2 * ρ + 1 + 1) 0)) :=
-    (G.sp.V_is (2 * ρ + 1 + 1) 0 (by omega) h (by omega)).sd
-  have hu' : u ∈ hatMx M := GlobalTheory.SecondBaseChar.latO_le hS (fun a ha x hx => by
-    change ((F.dJ ρ h).qY * (a • x) * (F.dB ρ h).e') p p ∈ (_ : FractionalIdeal _ _)
-    rw [Matrix.mul_smul, Matrix.smul_mul, Matrix.smul_apply, smul_eq_mul]
-    exact FractionalIdeal.mul_mem_mul ha (HatCoord.coord_mem_stAbar hF ρ h hx p)) hu
-  unfold hatMx at hu'
-  clear hu
-  induction hu' using AddSubgroup.closure_induction with
-  | mem w hw =>
-    obtain ⟨α, hα, y, hy, rfl⟩ := hw
-    have ht : ((F.dJ ρ h).qY * y * (F.dB ρ h).e') p p ∈ (D.host.AA * G.pl.stAbar sc) := hy
-    rw [HatCoord.gen_eq]
-    unfold HypDec.pY HypDec.jY
-    rw [Matrix.mul_smul, Matrix.smul_mul, Matrix.smul_apply, smul_eq_mul]
-    unfold rat
-    rw [← Matrix.map_mul, ← Matrix.map_mul, Matrix.map_apply]
-    unfold incA
-    rw [show inclR (AF D.host.F) (((F.dJ ρ h).qY * y * (F.dB ρ h).e') p p) =
-        (1 : AF D.host.F) ⊗ₜ[D.host.F] (((F.dJ ρ h).qY * y * (F.dB ρ h).e') p p) from rfl,
-      Algebra.TensorProduct.tmul_mul_tmul, one_mul, mul_one]
-    exact tmul_mem_complId hα ht
-  | zero =>
-    rw [Matrix.mul_zero, Matrix.zero_mul, Matrix.zero_apply]
-    exact zero_mem _
-  | add w z _ _ hw hz =>
-    rw [Matrix.mul_add, Matrix.add_mul, Matrix.add_apply]
-    exact add_mem hw hz
-  | neg w _ hw =>
-    rw [Matrix.mul_neg, Matrix.neg_mul, Matrix.neg_apply]
-    exact neg_mem hw
-
-end GlobalTheory.XCharBF.DiagCoord
-
 end
 end -- clump:auto
 end -- clump:auto
@@ -808,8 +753,6 @@ open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK Mo
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
 
-
-
 namespace GlobalTheory.TgtCoreSplit
 
 variable {D : D7}
@@ -898,7 +841,6 @@ theorem mul_mem_hatMx {m n : ℕ} (N : Submodule (𝓞 D.host.E) (Matrix (Fin m)
   | neg x _ hx => rw [Matrix.mul_neg]; exact neg_mem hx
 
 end GlobalTheory.TgtCoreSplit
-
 
 open GlobalTheory.TgtCoreSplit in
 theorem GlobalTheory.AscFin.latRow_bessel_core_split : OnStd fun {D} _ _ {sc} {G} W F => ∀ ρ (h : 2 * ρ + 2 ≤ D.R.m), ∀ w : WO (F.V₀ ρ) (G.V (.grid (2 * ρ + 1) 0)), (F.dB ρ h).ext0 (G.V (.grid (2 * ρ + 1) 0)) w ∈ latRow G (2 * ρ + 1) → (F.dB ρ h).ext0 (G.V (.grid (2 * ρ + 1) 0)) ((F.dJ ρ h).inc0 (F.V₀ ρ) ((F.dJ ρ h).p0 ⬝ w)) ∈ latRow G (2 * ρ + 1) := by
@@ -1103,7 +1045,6 @@ theorem adj_Y {S S₀ : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ) :
   simp only [Matrix.neg_mul, Matrix.mul_neg, Matrix.mul_assoc]
 
 end GlobalTheory.AscFin.SrcSplit
-
 
 open GlobalTheory.AscFin.SrcSplit in
 theorem GlobalTheory.AscFin.srcSplit_pcBF : OnStd fun {D} _ _ {sc} {G} W F => ∀ ρ (h : 2 * ρ + 2 ≤ D.R.m), ∀ u ∈ latRow G (2 * ρ + 1), (F.dB ρ h).extX (G.V (.grid (2 * ρ + 1) 0)) (u ⬝ (F.dB ρ h).jX) ∈ latRow G (2 * ρ + 1) ∧ (F.dB ρ h).extY (G.V (.grid (2 * ρ + 1) 0)) (u ⬝ (F.dB ρ h).jY) ∈ latRow G (2 * ρ + 1) ∧ (F.dB ρ h).ext0 (G.V (.grid (2 * ρ + 1) 0)) (u ⬝ (F.dB ρ h).j0) ∈ latRow G (2 * ρ + 1) := by
@@ -1310,7 +1251,6 @@ end GlobalTheory.AscFin.BigProj
 
 namespace GlobalTheory.AscFin
 
-
 open GlobalTheory.AscFin.BigProj in
 theorem pcBF_big_core : OnStd fun {D} _ _ {sc} {G} W F =>
     ∀ ρ (h : 2 * ρ + 2 ≤ D.R.m), ∀ w : WO (F.V₀ ρ) (G.V (.grid (2 * ρ + 1) 0)),
@@ -1417,7 +1357,6 @@ theorem hO_extX_eq {D : D7} {S S₀ : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ) (
   simp [pairS, hO]
 
 end GlobalTheory.AscFin.BesIso
-
 
 open GlobalTheory.AscFin.BesIso in
 theorem GlobalTheory.AscFin.BesIso.splits_iso : OnStd fun {D} _ _ {sc} {G} W F => ∀ ρ (h : 2 * ρ + 2 ≤ D.R.m), ∀ u ∈ latRow G (2 * ρ + 1), MxAt (fun _ => True) (u ⬝ (F.dB ρ h).jY) ∧ ∀ a, (F.dB ρ h).extX (G.V (.grid (2 * ρ + 1) 0)) a ∈ latRow G (2 * ρ + 1) → W.ψ (symplO (G.V (.grid (2 * ρ + 2) 0)) (G.V (.grid (2 * ρ + 1) 0)) ((F.dB ρ h).extX (G.V (.grid (2 * ρ + 1) 0)) a) ((F.dB ρ h).extY (G.V (.grid (2 * ρ + 1) 0)) (u ⬝ (F.dB ρ h).jY))) = 1 := by

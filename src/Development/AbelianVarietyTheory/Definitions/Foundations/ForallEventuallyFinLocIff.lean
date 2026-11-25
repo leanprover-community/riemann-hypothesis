@@ -105,35 +105,6 @@ def embPl : ∀ v, GPl σ J v →* GAd σ J
   | .inl w => embArch σ J w
   | .inr v => emb σ J v
 
-theorem continuous_embPl : ∀ v, Continuous (embPl σ J v)
-  | .inl w => continuous_embArch σ J w
-  | .inr v => continuous_emb σ J v
-
-@[simp] theorem projPl_embPl_self : ∀ v x, projPl σ J v (embPl σ J v x) = x
-  | .inl w, x => projArch_embArch_self σ J w x
-  | .inr v, x => proj_emb_self σ J v x
-
-theorem projPl_embPl_ne : ∀ {u v}, u ≠ v → ∀ x, projPl σ J u (embPl σ J v x) = 1
-  | .inl _, .inl _, h, x => projArch_embArch_ne σ J (fun e => h (congrArg _ e)) x
-  | .inl u, .inr v, _, x => projArch_emb σ J u v x
-  | .inr u, .inl v, _, x => proj_embArch σ J u v x
-  | .inr _, .inr _, h, x => proj_emb_ne σ J (fun e => h (congrArg _ e)) x
-
-theorem forall_eventually_proj_iff (L : Submodule (𝓞 E) (Fin n → E)) [Submodule.IsFullLattice E L]
-    (a : ∀ v, GLoc σ J v → Prop) : (∀ g : GFin σ J, ∀ᶠ v in cofinite, a v (projFinLoc σ J v g)) ↔
-      ∀ᶠ v in cofinite, ∀ k ∈ stabLoc σ J L v, a v k := by
-  refine ⟨fun h => ?_, fun h g => (h.and (eventually_projFinLoc_mem_stabLoc σ J L g)).mono fun v hv => hv.1 _ hv.2⟩
-  have : ∀ v, ∃ k ∈ stabLoc σ J L v, a v k → ∀ k' ∈ stabLoc σ J L v, a v k' := fun v => by
-    by_cases e : ∀ k' ∈ stabLoc σ J L v, a v k'
-    · exact ⟨1, one_mem _, fun _ => e⟩
-    · push Not at e
-      exact e.imp fun k hk => ⟨hk.1, fun h => absurd h hk.2⟩
-  choose k hk hk' using this
-  have hex : ∃! g : GFin σ J, ∀ v, projFinLoc σ J v g = k v :=
-    existsUnique_projFinLoc_eq σ J L k (Filter.Eventually.of_forall fun v => hk v)
-  obtain ⟨g, hg, -⟩ := hex
-  exact (h g).mono fun v hv => hk' v (hg v ▸ hv)
-
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
 
 def HasCompPl (v : Formalism.MainNotions.SchurIrreducible.Pl F) {X : Type} [NormedAddCommGroup X] [InnerProductSpace ℂ X]
@@ -146,48 +117,6 @@ abbrev IsFactorisation (δ : ∀ v, GPl σ J v →* (Hs v →L[ℂ] Hs v)) (ξ :
 
 variable {σ J} {δ : ∀ v, GPl σ J v →* (Hs v →L[ℂ] Hs v)} {ξ : ∀ v, Hs v} {π : GAd σ J →* (H →L[ℂ] H)}
   {B : (∀ v, Hs v) → H}
-
-theorem IsFactorisation.eventually_fixed (h : IsFactorisation σ J δ ξ π B) (L : Submodule (𝓞 E) (Fin n → E))
-    [Submodule.IsFullLattice E L] : ∀ᶠ v in cofinite, ∀ k ∈ stabLoc σ J L v, δ (.inr v) k (ξ (.inr v)) = ξ (.inr v) :=
-  (forall_eventually_proj_iff σ J L fun v k => δ (.inr v) k (ξ (.inr v)) = ξ (.inr v)).1 fun g =>
-    (Sum.inr_injective.tendsto_cofinite.eventually (h.fixed (ofFin σ J g))).mono fun v hv =>
-      (congrArg (δ (.inr v) · _) (proj_ofFin σ J v g)).symm.trans hv
-
-theorem IsFactorisation.apply_embPl [DecidableEq (Formalism.MainNotions.SchurIrreducible.Pl F)] (h : IsFactorisation σ J δ ξ π B) {y : ∀ v, Hs v}
-    (hy : Restr ξ y) (v : Formalism.MainNotions.SchurIrreducible.Pl F) (g : GPl σ J v) :
-    π (embPl σ J v g) (B y) = B (Function.update y v (δ v g (y v))) := by
-  rw [h.apply_pure _ _ hy]
-  congr 1
-  funext u
-  by_cases e : u = v
-  · subst e; simp
-  · simp [projPl_embPl_ne σ J e, e]
-
-theorem IsFactorisation.hasCompPl (h : IsFactorisation σ J δ ξ π B) (v : Formalism.MainNotions.SchurIrreducible.Pl F) :
-    HasCompPl σ J v (δ v) π := by
-  classical
-  refine eq_top_iff.2 (h.dense.ge.trans
-    (Submodule.topologicalClosure_minimal _ (Submodule.span_le.2 ?_) isSubrep_isoPart.1))
-  rintro _ ⟨y, hy, rfl⟩
-  have hr := SmallThetaModules.restr_update hy v
-  have h0 : B (Function.update y v 0) = 0 := h.ext fun z hz => by simp [h.inner_update hy hz]
-  let T : Hs v →ₗ[ℂ] H :=
-    { toFun := fun x => B (Function.update y v x)
-      map_add' := fun a b => by simpa using h.pure_update hy v 1 a b
-      map_smul' := fun c a => by simpa [h0] using h.pure_update hy v c a 0 }
-  have hT : ∀ x, ‖T x‖ ≤ √‖∏ᶠ (u) (_ : u ≠ v), ⟪y u, y u⟫_ℂ‖ * ‖x‖ := fun x => by
-    have e := h.inner_update hy (hr x) v x
-    rw [Function.update_self, finprod_congr fun u => finprod_congr fun hu : u ≠ v => by
-      rw [Function.update_of_ne hu]] at e
-    have e' := congrArg norm e
-    rw [norm_mul, inner_self_eq_norm_sq_to_K, inner_self_eq_norm_sq_to_K] at e'
-    refine le_of_sq_le_sq (le_of_eq ?_) (by positivity)
-    rw [mul_pow, Real.sq_sqrt (norm_nonneg _), mul_comm]
-    simpa [T] using e'
-  have := apply_mem_isoPart (π := δ v) (ρ := π.comp (embPl σ J v)) (U := ⊤) (T := T.mkContinuous _ hT)
-    (mem_homIn_top.2 fun g x => by
-      simpa [T] using (h.apply_embPl (hr x) v g).symm) (y v)
-  simpa [T] using this
 
 end Places
 
@@ -277,22 +206,18 @@ def HasDSComp (M : DSModel V S) (π : GA D V →* (H →L[ℂ] H)) : Prop := ∀
 def IsDSTensor (M : DSModel V S) (δ : GinfC V →* (X →L[ℂ] X)) : Prop :=
   ∃ B, IsRestrTensor (fun τ => infArch V (placeOf D τ)) (dsRep M) 0 δ B
 
-
 open Classical in
 def homDS (M : DSModel V S) (ρ : GA D V →* (H →L[ℂ] H)) (U : Submodule ℂ H) :
     Submodule ℂ (ContinuousMultilinearMap ℂ M.H H) := homPi (fun τ => embW V (placeOf D τ)) (dsRep M) ρ U
-
 
 open Classical in
 def homFinDS (σ : Representation ℂ (GfC V) W) (M : DSModel V S) (ρ : GA D V →* (H →L[ℂ] H)) (U : Submodule ℂ H) :
     Submodule ℂ (W →ₗ[ℂ] ContinuousMultilinearMap ℂ M.H H) :=
   homTensorPi (GfC V).subtype (fun τ => embW V (placeOf D τ)) σ (dsRep M) ρ U
 
-
 open Classical in
 def IsCopyFinDS (σ : Representation ℂ (GfC V) W) (M : DSModel V S) (ρ : GA D V →* (H →L[ℂ] H)) (U : Submodule ℂ H) :
     Prop := IsTensorCopyPi (GfC V).subtype (fun τ => embW V (placeOf D τ)) σ (dsRep M) ρ U
-
 
 open Classical in
 theorem mem_homDS {θ : InfF D} (hθ : IsInfFam θ) {M : DSModel V S} {ρ : GA D V →* (H →L[ℂ] H)} {U : Submodule ℂ H}

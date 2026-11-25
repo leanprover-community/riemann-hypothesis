@@ -88,15 +88,6 @@ theorem level_notMem {P : PlE D.host} (h : ∃ i', P ∉ D.ntw.S0 i') :
   · exact hi (D.ntw.placesOver_subset_exceptional i' 0 h)
   · exact hi (D.ntw.placesOver_subset_exceptional i' 1 h)
 
-theorem exists_family (t : ∀ i : Fin D.R.m, ℕ → PlE D.host → Module.End D.what₂.LL (Fin (R.nW i) → D.what₂.LL)) :
-    ∃ hL : ∀ j, ℕ → PlE D.host → Module.End D.what₂.LL (WL j),
-      ∀ (i : Fin D.R.m) k P, (e i).conj (hL ((i : ℕ) + 1) k P) = t i k P := by
-  refine ⟨fun j => match j with
-    | 0 => fun _ _ => 0
-    | n + 1 => fun k P => if h : n < D.R.m then (e ⟨n, h⟩).symm.conj (t ⟨n, h⟩ k P) else 0, fun i k P => ?_⟩
-  simp only [dif_pos i.2]
-  exact (e i).conj.apply_symm_apply (t i k P)
-
 end Local
 
 section Comparison₂
