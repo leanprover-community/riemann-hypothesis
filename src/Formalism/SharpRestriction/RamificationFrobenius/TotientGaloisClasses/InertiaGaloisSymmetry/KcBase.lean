@@ -193,7 +193,7 @@ theorem eta : (∀ 𝔭 : Ideal (𝓞 H.F), 𝔭.IsPrime → 𝔭 ≠ ⊥ →
   have hetaiff : ∀ (P : Ideal (𝓞 H.E)) [P.IsPrime], P ≠ ⊥ →
       (H.etaF (P.comap (algebraMap (𝓞 H.F) (𝓞 H.E))) = 1 ↔ H.conj • P ≠ P) := by
     intro P _ hP0
-    have hk := Eta.ncard_eq_two_iff H.E hunr P hP0
+    have hk := Eta.ncard_eq_two_iff H.E P
     rw [hsm] at hk
     unfold HostRaw.etaF
     change (if (primesOver (P.under (𝓞 H.F)) (𝓞 H.E)).ncard = 2 then (1 : ℤ) else -1) = 1 ↔ _

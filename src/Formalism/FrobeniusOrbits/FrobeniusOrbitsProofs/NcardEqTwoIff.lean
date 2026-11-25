@@ -83,10 +83,7 @@ theorem split_or_inert
   · right; exact ⟨rfl, by omega⟩
   · left; rfl
 
-theorem ncard_eq_two_iff
-    (hunr : ∀ P : Ideal (𝓞 K), P.IsPrime → P ≠ ⊥ →
-      ¬ ∀ x : 𝓞 K, IsCMField.complexConj K • x - x ∈ P)
-    (P : Ideal (𝓞 K)) [P.IsPrime] (hP0 : P ≠ ⊥) :
+theorem ncard_eq_two_iff (P : Ideal (𝓞 K)) [P.IsPrime] :
     (primesOver (P.under (𝓞 K⁺)) (𝓞 K)).ncard = 2 ↔ IsCMField.complexConj K • P ≠ P := by
   classical
   have h1 := Ideal.ncard_primesOver_mul_ramificationIdxIn_mul_inertiaDegIn (P.under (𝓞 K⁺)) (𝓞 K) (K ≃ₐ[K⁺] K)
@@ -177,7 +174,7 @@ theorem hostEta : HostEta := by
     exact Eta.split_or_inert (hostE ζ a b) hunr 𝔭 h0
   · intro p _ hp2 hpq hpd P _ _ σ hσ
     have hF := hostFrob_of hostGalois hostGalSpec e q d hqd L ζ a b hL p hp2 hpq hpd P
-    have key := Eta.ncard_eq_two_iff (hostE ζ a b) hunr P (hbot p P)
+    have key := Eta.ncard_eq_two_iff (hostE ζ a b) P
     have hM : ∀ (τ : hostE ζ a b ≃ₐ[ℚ] hostE ζ a b) (k : ℕ),
         galE e ζ a b (τ ^ k) = galE e ζ a b τ ^ k :=
       fun τ k => map_pow (MonoidHom.mk' (galE e ζ a b) hmul) τ k
@@ -244,7 +241,7 @@ theorem hostEta : HostEta := by
       rw [← hσc]
       exact hσ.mem_stabilizer
   · intro p _ hp P _ _
-    have key := Eta.ncard_eq_two_iff (hostE ζ a b) hunr P (hbot p P)
+    have key := Eta.ncard_eq_two_iff (hostE ζ a b) P
     have hnot := hostDecompConj e q d hH L ζ a b hL (cQ hqd hL) hc p hp P
     have h2 := key.mpr (fun h => hnot ((hstab P).mpr h))
     unfold etaF

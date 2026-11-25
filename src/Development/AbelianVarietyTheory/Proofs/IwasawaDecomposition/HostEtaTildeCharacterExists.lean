@@ -504,7 +504,7 @@ theorem frob_eq
   · have hst : IsCMField.complexConj K • P = P := hg.mem_stabilizer
     have h1 : (Ideal.primesOver (P.under (𝓞 K⁺)) (𝓞 K)).ncard = 1 := by
       rcases Eta.split_or_inert K hunr (P.under (𝓞 K⁺)) h𝔭 with h | ⟨h, -⟩
-      · exact absurd hst ((Eta.ncard_eq_two_iff K hunr P hP0).mp h)
+      · exact absurd hst ((Eta.ncard_eq_two_iff K P).mp h)
       · exact h
     rw [ite_eq_left h1]
     exact hg' x
