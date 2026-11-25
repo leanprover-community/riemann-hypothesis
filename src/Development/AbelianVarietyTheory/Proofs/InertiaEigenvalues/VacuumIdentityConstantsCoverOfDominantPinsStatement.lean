@@ -349,7 +349,7 @@ open Formalism.L2.Pj GlobalTheory.Dict GlobalTheory.Dict.Lift
 open scoped ComplexConjugate Classical
 attribute [local instance] Over.cartesianMonoidalCategory
 
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Geo.Tor.Level H}
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H} {l : Geo.Tor.Level H}
   {Xo : Moduli Dw l} {c : Coeff l}
 
 theorem anFib_of_eq_marked (σ : c.F →+* ℂ) :
