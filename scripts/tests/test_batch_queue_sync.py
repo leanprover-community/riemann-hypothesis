@@ -1413,6 +1413,17 @@ class Members(unittest.TestCase):
         self.assertEqual([note.split(" -->")[0] for note in notes],
                          [f"<!-- batch-queue-frozen 1018 {sha('head12')}", f"<!-- batch-queue-frozen 1018 {sha('head12-later')}"])
 
+    def test_a_member_loses_changed_after_frozen_once_the_batch_merges_in_its_new_head(self):
+        gh = self.built()
+        sync(gh)
+        gh.push(12, "head12-later")
+        sync(gh)
+        self.assertEqual(gh.pulls[12]["labels"], IN | {WAITING, CHANGED})
+        by_hand(gh, 11, 12, 14, name="kim-with-12-later")
+        log = sync(gh)
+        self.assertEqual(gh.pulls[12]["labels"], IN)
+        self.assertIn(f"#12 is at `{short('head12-later')}`, the commit that was taken: `{CHANGED}` removed", log)
+
     def test_members_labelled_before_the_labels_were_split_are_relabelled(self):
         gh = self.built()
         sync(gh)

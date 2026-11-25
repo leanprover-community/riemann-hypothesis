@@ -171,8 +171,10 @@ A frozen pull request whose head has moved on from the commit that was taken, by
 or by the queue, is labelled `changed after frozen` as soon as the push comes in: what was pushed
 since is not part of what is built. In a stack, its own batch is the lowest that holds it, even
 when a batch on top of it has merged in the new head. The label comes off when the head is the
-commit that was taken again, for instance after another `batch` comment or once its own batch
-merges in the new head, and when the pull request is no longer frozen.
+commit that was taken again, and when the pull request is no longer frozen. On a queued pull
+request, another `batch` comment does that: the queue takes the new head. On a pull request in a
+batch, a `batch` comment changes nothing; the label comes off once its own batch merges in the
+new head, or when the pull request is pushed back to the commit its batch took.
 
 "Labels at a glance" lists the labels that keep a pull request out of the inbox (see
 `.github/workflows/inbox.yml`). The label names are in `scripts/batch-labels.py`, and the `if:`
