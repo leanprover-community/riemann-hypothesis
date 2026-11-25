@@ -314,7 +314,7 @@ jobs:
           # The record first and the label second, so that a run which sees the label also sees
           # the record. The sync job trusts the record only at the start of a comment written by
           # this workflow.
-          say "$(printf '<!-- batch-queue-approved %s -->\nApproved for batching at `%s`, %s. This pull request is now `frozen`: a batch can take only this commit, so don'"'"'t push to it until it has landed or left the queue. Instead of adding commits, please make a PR which depends on this one and annotate it accordingly.' "$commit" "$commit" "$why")"
+          say "$(printf '<!-- batch-queue-approved %s -->\nApproved for batching at `%s`, %s. This pull request is now `frozen`: a batch can take only this commit, so please don'"'"'t push any more commits to it. Instead of adding commits, please make a PR which depends on this one and annotate it accordingly.' "$commit" "$commit" "$why")"
           echo "Recorded $commit as the queued commit."
           # All the labels in one request, so the sync job never sees the pull request queued
           # without its `priority`.
