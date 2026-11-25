@@ -16,9 +16,12 @@ CHECK = "<!-- batch-queue-description-check -->"
 LEFT_OUT_HEADING = re.compile(r"\b(?:left out|not included)\b", re.IGNORECASE)
 # The line git writes in the message of a commit that reverts another one, naming that commit.
 REVERTS = re.compile(r"^This reverts commit ([0-9a-f]{7,40})\b", re.MULTILINE)
-# A left-out heading for conflicts. `conflict-labels.py` finds those itself, from git, and tells
-# the pull request with `batch-conflict`, so they are not told again from the description.
-CONFLICT_HEADING = re.compile(r"\bconflicts?\s+with\b", re.IGNORECASE)
+# A left-out heading for conflicts with the batch, such as "Left out because they conflict with a
+# PR earlier in this batch:". `conflict-labels.py` finds those itself, from git, and tells the pull
+# request with `batch-conflict`, so they are not told again from the description. A heading about
+# conflicts with main, such as "Left out because they conflict with main in a way that is not
+# mechanical:", is not one: `main-conflict` says nothing, so those are told from the description.
+CONFLICT_HEADING = re.compile(r"\bconflicts?\s+with\s+(?!main\b)[^:]*\bbatch\b", re.IGNORECASE)
 
 
 def list_entries(body, repo):

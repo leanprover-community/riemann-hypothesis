@@ -2033,6 +2033,53 @@ class ConflictWorkflow(unittest.TestCase):
         self.assertIn(f"#1018 is the outermost batch of its stack: now `{LATEST}`", log)
         self.assertEqual(gh.dispatched, ["main", "main"])
 
+    def test_a_batch_stacked_on_the_outermost_starts_it_once_it_is_labelled_latest(self):
+        gh = Fake()
+        queue(gh, 11, 13)
+        by_hand(gh, 11)
+        sync(gh)
+        gh.writes = []
+        by_hand(gh, 1018, 13, number=1050, ref="batch/b5-on-1018", name="b5")
+        sync(gh)
+        self.assertEqual(gh.dispatched, ["main", "main"])
+        writes = [(method, path) for method, path, _ in gh.writes]
+        dispatch = writes.index(("POST", f"actions/workflows/{batch.CONFLICT_WORKFLOW}/dispatches"))
+        self.assertLess(writes.index(("POST", "issues/1050/labels")), dispatch)
+        self.assertLess(writes.index(("DELETE", "issues/1018/labels/latest%20batch")), dispatch)
+        self.assertEqual(gh.pulls[1050]["labels"], {"large", BUILDING, LATEST})
+
+    def test_only_headings_about_conflicts_with_the_batch_are_left_to_it(self):
+        # The headings of batch 14 (#2164).
+        headings = {
+            "Included:": False,
+            "Included, but borderline; these can be dropped if the maintainers prefer:": False,
+            "Left out at the request of the author or a maintainer:": False,
+            "Left out because they conflict with a PR earlier in this batch:": True,
+            "Left out because main cannot simply be merged in:": False,
+            "Left out because they conflict with main in a way that is not mechanical, so the author needs to "
+            "merge main:": False,
+            "Left out under the maintainers' guidance in `AGENTS.md`:": False,
+            "Left out because they are labelled `deferred`:": False,
+            "Left out for other reasons:": False,
+            # Other wordings of the same two kinds.
+            "Left out because they conflict with the batch:": True,
+            "Left out (conflicts with an earlier PR of the batch):": True,
+            "Left out: conflicts with main:": False,
+        }
+        for heading, about_the_batch in headings.items():
+            with self.subTest(heading=heading):
+                self.assertEqual(bool(batch.CONFLICT_HEADING.search(heading)), about_the_batch)
+
+    def test_a_conflict_with_main_is_told_from_the_description(self):
+        gh = Fake()
+        gh.add_pull(11, "head11")
+        gh.add_pull(21, "head21")
+        by_hand(gh, 11)
+        gh.pulls[1018]["body"] = ("Left out because they conflict with main in a way that is not mechanical, so the "
+                                  "author needs to merge main:\n\n- #21 a (@x): `A.lean`.\n")
+        sync(gh)
+        self.assertEqual(len([b for b in gh.said(21) if b.startswith("<!-- batch-queue-left-out")]), 1)
+
     def test_conflict_entries_are_left_to_it_only_for_pull_requests_it_looks_at(self):
         gh = Fake()
         gh.add_pull(11, "head11")
