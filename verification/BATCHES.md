@@ -20,7 +20,7 @@ The sections below give the details.
 | `changed after frozen` | a frozen pull request whose head has moved on from the commit taken | it is pushed to after a batch or the queue took a commit of it | its head is that commit again, or it is no longer frozen |
 | `batch queue` | a pull request wanted in a batch | a maintainer or reviewer comments `batch` or `p` | `-batch`; it joins a batch assembled by hand (in exchange for `batch-building`); its queued commit lands; it is closed |
 | `priority` | a queued pull request that goes first | `p` | by hand |
-| `awaiting-author` | a pull request handed back to its author | `aa`; it is pushed to while in a batch; the description leaves it out; a batch lands an older commit of it; `batch-conflict` is first put on it | `ready`, by the author or a maintainer |
+| `awaiting-author` | a pull request handed back to its author | `aa`; it is pushed to while in a batch; the description leaves it out; a batch lands an older commit of it; `batch-conflict` is first put on it | `ready`, by the author or a maintainer; the batch takes the new head of a pull request it was put on for a push, or it is pushed back |
 | `main-conflict` | a pull request that conflicts with `main` | GitHub says so, unless it declares `depends on:` an open batch | the conflict is gone, or it declares that dependency |
 | `batch-conflict` | a pull request that conflicts with a batch being built, the outermost of its stack | git cannot merge it with the batch's head | the conflict is gone; the batch lands or is closed; it joins the batch |
 
@@ -101,7 +101,9 @@ the workflow does").
    edit. A pull request newly listed as left out is sent a comment as above. One whose entry
    changed, under the same heading or another, has this batch's comment brought up to date,
    which notifies nobody, so fixing a typo in a heading tells no one again. One whose entry is
-   removed is told so. A new comment, and `awaiting-author` again, comes only when another batch
+   removed is told so. When three or more pull requests leave the left-out lists at once and are
+   still listed elsewhere in the description, as when a heading is reworded so that it no longer
+   says "left out", none of them is told: the workflow only notes it in its log. A new comment, and `awaiting-author` again, comes only when another batch
    leaves a pull request out under a different kind of heading.
 
 ## What the workflow does
@@ -146,7 +148,10 @@ says changes.
 A pull request that is pushed to after the batch took its commit stays in the batch at the old
 commit. As soon as the push comes in, it is told that the batch lands only that commit, and is
 labelled `awaiting-author`: a push to a `frozen` pull request runs only this, not a whole sync.
-If its new head is merged into the branch, the batch holds that one instead.
+If its new head is merged into the branch, the batch holds that one instead, and
+`awaiting-author` comes off again, as it does when the pull request is pushed back to the commit
+the batch took. Only a label the workflow put on for the push comes off: one a person put on
+stays.
 
 When the batch is merged, what it contained loses `batch-building` and `frozen`. A pull request
 whose head has moved on since the batch took it stays open, and is told what landed and what did
@@ -221,6 +226,18 @@ heading about conflicts.
 Or wait until the batch has landed, then merge `main` into your branch, resolve the conflicts
 there and comment `ready`.
 
+### If the batch you build on is rebuilt
+
+A pull request that merged a batch's branch carries the batch's commits. If the batch is then
+rebuilt without one of its pull requests, your branch still carries that one's commits: when
+your pull request lands, they land too, and GitHub marks the pull request that was taken out
+merged. Every sweep of the workflow looks for this in the pull requests that depend on an open
+batch, or share commits with a batch's branch. Your pull request is then labelled
+`awaiting-author` and told, once for each head of the batch, which pull requests it carries. Make a
+new branch from the batch's current branch, copy only your own commits onto it with
+`git cherry-pick`, push that to your pull request and comment `ready`. From then on, merge the
+batch's branch into yours; never rebase onto it.
+
 A line counts as a dependency when it starts with `depends on`, `depend on` or `depends upon`,
 optionally after `- [ ]` or `- [x]`, and names the batch's pull request as `#123` or by its
 address.
@@ -244,6 +261,10 @@ holds the lower batch's pull requests too, and it lands right after it.
   stacked on each other in a circle are taken to be stacked on none. The workflow warns in its
   log when a batch's branch shares no commit beyond `main` with the batch it says it is stacked
   on.
+- **Batches at the same commit** hold the same pull requests. Whatever they say about each
+  other, each is taken to be stacked on the one with the next lower number: the lowest holds
+  their members, and the highest is `latest batch`. What they say about other batches still
+  counts. The workflow warns in its log on every run that sees them.
 - **Each pull request belongs to the lowest batch that holds it.** A pull request whose head
   commit is in several batches of a stack is a member of the lowest one only: it is listed in
   that batch's record, and its comments (that it is frozen, that it was pushed to, that it left
