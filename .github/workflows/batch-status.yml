@@ -12,7 +12,8 @@ name: batch status
 # hand. Each run reads the open pull requests, the batches' descriptions and the batch queue sync's
 # notes on them through GraphQL, in a few requests, and the label colours in one REST request. It
 # writes the issue at most once: when what it says has changed, or when its "last checked" time
-# is more than six hours old.
+# is more than six hours old. The issue's footer shows this workflow's status badge, so a failing
+# run shows at once.
 #
 # It runs every fifteen minutes, at minutes no other workflow's schedule uses, when started by
 # hand, and when the batch queue workflow starts it: its `status` job does after its sync or

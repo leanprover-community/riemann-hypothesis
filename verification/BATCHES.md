@@ -344,6 +344,7 @@ it up to date. It looks every 15 minutes and whenever the batch queue workflow h
 something, and rewrites the description when what it says changes. The footer says when that last
 happened, and when a run last found it up to date: that "last checked" time is brought up to date
 at least every six hours, so one older than that means the workflow's runs are failing. The
+footer also shows the workflow's status badge, which shows a failing run at once. The
 workflow opens the issue the first time, and a maintainer pins it by hand. It is found by
 `<!-- batch-status -->` anywhere in its description, in an issue the workflow opened, so a line
 added above it does no harm.

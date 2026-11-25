@@ -12,7 +12,8 @@ it, titled "Batch status", when there is none. A maintainer pins it by hand. Its
 rewritten when what it says changes, and the footer's "last changed" says when that last happened.
 Its "last checked" says when a run last found it up to date; when that is more than
 `CHECKED_EVERY` ago, a run that finds nothing changed writes the description all the same, with
-only that time new, so that an issue whose runs fail shows it. A closed status issue is still kept
+only that time new, so that an issue whose runs fail shows it. The footer also holds the
+workflow's status badge, which shows a failing run at once, with no write. A closed status issue is still kept
 up to date. It is not reopened, and no second one is opened.
 
 What it says:
@@ -503,12 +504,15 @@ class Writer:
 
     def footer(self, stamp):
         guide = f"https://github.com/{self.repo}/blob/main/verification/BATCHES.md#the-status-issue"
+        runs = f"https://github.com/{self.repo}/actions/workflows/batch-status.yml"
         return ["---", "",
                 "<sub>This issue shows the batches being built, the batch queue and what each batch leaves out. "
                 f"The `{WORKFLOW}` workflow (`.github/workflows/batch-status.yml`) keeps it up to date: it looks "
                 "every 15 minutes and after the batch queue has changed something, and rewrites this when "
                 "something in it changes, or every six hours to say it still looks. "
-                f"{STAMP.format(*stamp)} A \"last checked\" more than six hours ago means its runs are failing. "
+                f"{STAMP.format(*stamp)} A \"last checked\" more than six hours ago means its runs are failing, "
+                f"and this badge shows at once whether the latest one passed: [![{WORKFLOW} workflow]({runs}/badge.svg)]"
+                f"({runs}). "
                 "Agents and scripts: read the `batch-status` JSON block at the top of this description's source, "
                 f"not the tables. See [`verification/BATCHES.md`]({guide}).</sub>", ""]
 

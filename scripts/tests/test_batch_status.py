@@ -386,6 +386,9 @@ class Body(unittest.TestCase):
         self.assertIn("Last changed 2026-11-24 10:03 UTC; last checked 2026-11-24 10:03 UTC.", body)
         self.assertIn("verification/BATCHES.md#the-status-issue", body)
         self.assertNotIn("Shortened", body)
+        # The workflow's status badge, which shows at once when its runs fail.
+        self.assertIn("[![batch status workflow](https://github.com/o/r/actions/workflows/batch-status.yml/badge.svg)]"
+                      "(https://github.com/o/r/actions/workflows/batch-status.yml)", body)
         self.assertNotIn("switched off", body)
 
     def test_with_the_conflict_labels_off_it_says_so(self):
