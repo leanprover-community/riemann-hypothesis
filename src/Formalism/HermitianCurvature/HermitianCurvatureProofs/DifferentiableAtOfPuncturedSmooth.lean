@@ -56,7 +56,7 @@ theorem normPow_deriv_apply {τ : ℂ} (hτ : τ ≠ 0) (n : ℕ) (v : ℂ) :
   rw [← (hasFDerivAt_norm1 hτ).fderiv]
   simp only [ContinuousLinearMap.smul_apply, smul_eq_mul, nsmul_eq_mul, fderiv_norm_apply hτ]
 
-theorem gauge_scalar {τ : ℂ} (n : ℕ) :
+theorem gauge_scalar {τ : ℂ} (hτ : τ ≠ 0) (n : ℕ) :
     τ * (1 / 2) * ((((n : ℝ) * ‖τ‖ ^ (n - 1) * (‖τ‖⁻¹ * τ.re) : ℝ) : ℂ) -
         Complex.I * (((n : ℝ) * ‖τ‖ ^ (n - 1) * (‖τ‖⁻¹ * τ.im) : ℝ) : ℂ)) =
       ((‖τ‖ ^ n : ℝ) : ℂ) * ((n : ℂ) / 2) := by
@@ -90,11 +90,11 @@ theorem dz_gauge {τ : ℂ} (hτ : τ ≠ 0) (n : ℕ) {f : ℂ → E} (hf : Dif
   rw [hfun, hP.fderiv]
   simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply, ContinuousLinearMap.smulRight_apply,
     ContinuousLinearMap.comp_apply, Complex.ofRealCLM_apply, normPow_deriv_apply hτ]
-  have key := gauge_scalar n
+  have key := gauge_scalar hτ n
   simp only [Complex.one_re, Complex.one_im, Complex.I_re, Complex.I_im, mul_one, mul_zero, add_zero, zero_add] at *
   linear_combination (norm := module) key • f τ
 
-theorem gauge_scalar_bar {τ : ℂ} (n : ℕ) :
+theorem gauge_scalar_bar {τ : ℂ} (hτ : τ ≠ 0) (n : ℕ) :
     conj τ * (1 / 2) * ((((n : ℝ) * ‖τ‖ ^ (n - 1) * (‖τ‖⁻¹ * τ.re) : ℝ) : ℂ) +
         Complex.I * (((n : ℝ) * ‖τ‖ ^ (n - 1) * (‖τ‖⁻¹ * τ.im) : ℝ) : ℂ)) =
       ((‖τ‖ ^ n : ℝ) : ℂ) * ((n : ℂ) / 2) := by
@@ -128,7 +128,7 @@ theorem dzb_gauge {τ : ℂ} (hτ : τ ≠ 0) (n : ℕ) {f : ℂ → E} (hf : Di
   rw [hfun, hP.fderiv]
   simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply, ContinuousLinearMap.smulRight_apply,
     ContinuousLinearMap.comp_apply, Complex.ofRealCLM_apply, normPow_deriv_apply hτ]
-  have key := gauge_scalar_bar n
+  have key := gauge_scalar_bar hτ n
   simp only [Complex.one_re, Complex.one_im, Complex.I_re, Complex.I_im, mul_one, mul_zero, add_zero, zero_add] at *
   linear_combination (norm := module) key • f τ
 

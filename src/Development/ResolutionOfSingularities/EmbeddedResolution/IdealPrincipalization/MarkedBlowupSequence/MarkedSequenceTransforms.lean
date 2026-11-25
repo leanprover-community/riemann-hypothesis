@@ -98,7 +98,7 @@ theorem projectionToSpec_succ (s : MarkedSequenceOfBlowups p I m E) (i : ℕ) :
     exact s.toSequenceOfBlowups.transitionMap_comp_projectionToBase (Nat.le_succ i)
   rw [MarkedSequenceOfBlowups.projectionToSpec_eq, MarkedSequenceOfBlowups.projectionToSpec_eq, ← h, Category.assoc]
 
-theorem isNoetherian_schemeAt {T : MarkedIdealWithBoundary.{u}}
+theorem isNoetherian_schemeAt (_hcart : EffectiveCartierSupportContainsNoComponent.{u}) {T : MarkedIdealWithBoundary.{u}}
     (hT : T.IsAdmissible) (s : T.SequenceOfBlowups) (i : ℕ) (hi : i ≤ s.toSequenceOfBlowups.length) :
     AlgebraicGeometry.IsNoetherian (s.toSequenceOfBlowups.schemeAt i) := by
   induction i with
@@ -132,7 +132,7 @@ private theorem smooth_and_inStrictNormalCrossingPosition_projectionToSpec (hcar
       obtain ⟨hsm, hsnc⟩ := ih (le_of_lt hn')
       have : AlgebraicGeometry.Smooth (s.projectionToSpec n) := hsm
       have : AlgebraicGeometry.IsNoetherian (s.toSequenceOfBlowups.schemeAt (n + 1)) :=
-        MarkedSequenceOfBlowups.isNoetherian_schemeAt hT s (n + 1) hn
+        MarkedSequenceOfBlowups.isNoetherian_schemeAt hcart hT s (n + 1) hn
       have : TopologicalSpace.NoetherianSpace ↥(s.toSequenceOfBlowups.schemeAt (n + 1)) := inferInstance
       have hπ := s.toSequenceOfBlowups.isBlowupAlongIdealSheaf_blowupMorphism n hn'
       have hZE : HasStrictNormalCrossingsWith (s.projectionToSpec n) (s.toSequenceOfBlowups.center n) (s.boundary n) := by
@@ -192,7 +192,7 @@ theorem IsAdmissible.transformAt (hcart : EffectiveCartierSupportContainsNoCompo
   obtain ⟨hsm, hsnc⟩ := smooth_and_inStrictNormalCrossingPosition_projectionToSpec hcart hT s i hi
   have : AlgebraicGeometry.Smooth (s.projectionToSpec i) := hsm
   have : AlgebraicGeometry.IsNoetherian (s.toSequenceOfBlowups.schemeAt i) :=
-    MarkedSequenceOfBlowups.isNoetherian_schemeAt hT s i hi
+    MarkedSequenceOfBlowups.isNoetherian_schemeAt hcart hT s i hi
   have : TopologicalSpace.NoetherianSpace ↥(s.toSequenceOfBlowups.schemeAt i) := inferInstance
   refine
     { charZero := hT.charZero

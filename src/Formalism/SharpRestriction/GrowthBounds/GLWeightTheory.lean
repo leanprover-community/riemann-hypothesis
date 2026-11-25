@@ -823,7 +823,7 @@ theorem integral_enveloping_preserves_lattice {O : Type} [CommRing O] [IsDomain 
   | one => intro z hz; simpa using hz
   | mul x y _ _ hx hy => intro z hz; rw [Module.End.mul_apply]; exact hx _ (hy z hz)
 
-theorem generated_lattice_corollary_of_thm (D : Formalism.BasicNotions.D7) (h12 : NablaDeltaComparisonField) (hB : GeneratedMultipleOfHWV) : GeneratedLatticeCorollary := by
+theorem generated_lattice_corollary_of_thm (D : Formalism.BasicNotions.D7) (h12 : NablaDeltaComparisonField D) (hB : GeneratedMultipleOfHWV) : GeneratedLatticeCorollary := by
   intro p n' O _ _ _ S hG n _ V _ _ _ _ _ E hE M hM lam hlam π hπ h hhM hhHW hh0 c y hy hyp
   have hIrr := generated_restriction_irreducible hE lam hlam h hhHW hh0
   have hT := (h12 p n' O S hG n lam (generatedSubrep E h) (restrictOperators E (generatedSubrep E h) (generated_subrep_stable E h))
@@ -1178,7 +1178,7 @@ namespace Formalism.MainNotions.G.GLWeightTheory
 
 open Formalism.MainNotions.G Formalism.MainNotions.CovariantDegrees
 
-theorem isotypic_lattice_corollary (D : Formalism.BasicNotions.D7) (h2 : adm2) (h12 : NablaDeltaComparisonField) : TranslateCorollaryField :=
+theorem isotypic_lattice_corollary (D : Formalism.BasicNotions.D7) (h2 : adm2) (h12 : NablaDeltaComparisonField D) : TranslateCorollaryField :=
   isotypic_lattice_of_five_parts D (isotypic_projector_fixed_mem D h2) hwv_generated_multiple_of_hwv dual_lattice_values_mem_scaled lattice_inter_subspace_basis (generated_lattice_corollary_of_thm D h12 hwv_generated_multiple_of_hwv)
 
 end Formalism.MainNotions.G.GLWeightTheory
@@ -1287,7 +1287,7 @@ theorem invariant_projection_sup_norm_denominator (D : Formalism.BasicNotions.D7
 
 theorem invariantProjectionDenominator (D : Formalism.BasicNotions.D7) : InvariantProjectionDenominator := denominator_lemma_without_projector D (weight_condition_from_integral_form D)
 
-theorem nabla_delta_comparison_field (D : Formalism.BasicNotions.D7) : NablaDeltaComparisonField := integral_form_of_linf_lemma D (weight_condition_from_integral_form D) (invariant_projection_sup_norm_denominator D)
+theorem nabla_delta_comparison_field (D : Formalism.BasicNotions.D7) : NablaDeltaComparisonField D := integral_form_of_linf_lemma D (weight_condition_from_integral_form D) (invariant_projection_sup_norm_denominator D)
 
 theorem isotypic_projector_theorem_field (D : Formalism.BasicNotions.D7) : IsotypicProjectorTheoremField := isotypicProjectorTheoremField_of_linfty_bound D (weight_condition_from_integral_form D) (invariant_projection_sup_norm_denominator D)
 
@@ -1315,7 +1315,7 @@ theorem product_formula_of_extremal_projector (D : Formalism.BasicNotions.D7) (h
   exact invariant_projection_extremal_formula D (weight_condition_from_integral_form D) h5 E hE Inv hInv π hπ ord hord T hT
 
 theorem counting_statement_of_block_form (D : Formalism.BasicNotions.D7) (h : InvariantProductFormula) : Conclusion1 D := show ProjectionTheorems D ∧ ValuationLemmaField D ∧ ConclusionE ∧ UnitProductLemmas D ∧ DerivativeLemmaField D from
-    ⟨show InvariantProjectionField ∧ NablaDeltaComparisonField ∧ IsotypicProjectorTheoremField ∧ TranslateCorollaryField ∧ FilteredProjectorCorollaryField from
+    ⟨show InvariantProjectionField ∧ NablaDeltaComparisonField D ∧ IsotypicProjectorTheoremField ∧ TranslateCorollaryField ∧ FilteredProjectorCorollaryField from
       ⟨invariant_projection_of_product_formula D h, nabla_delta_comparison_field D, isotypic_projector_theorem_field D, translate_corollary_field D, filtered_projector_corollary_field D⟩,
      valuation_field D, support_coprimality_lemma_holds D, section_five_lemmas_hold D, lattice_index_lemma_holds D⟩
 

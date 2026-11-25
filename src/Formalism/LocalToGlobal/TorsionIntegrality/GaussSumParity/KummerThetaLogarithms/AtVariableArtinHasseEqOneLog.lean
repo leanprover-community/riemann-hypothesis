@@ -101,7 +101,7 @@ theorem OneLetterHalf_of : MeanSimeqL → OneLetterHalf := by
   have h2 : subst (fun _ : ZMod 2 => (lgF K0 l : MvPowerSeries Unit K0))
       (beTil (d := 2) l σ be0 (fun _ : Unit => (1 : K0)) (fun _ => 1)) =
       subst (fun _ : Fin 2 => (PowerSeries.X : PowerSeries K0)) be0 := by
-    rw [subst_tilde K0 l 2 σ hl be0 Unit _ _ Unit _ (fun _ => cc_lgF)]
+    rw [subst_tilde K0 l 2 σ hl be0 Unit _ _ Unit _ (fun _ => cc_lgF hl)]
     rw [Finset.univ_unique, Finset.sum_singleton, linEL_two, linOL_two]
     have h3 := addC_log exponential_specification hl hX hX be0
     rw [hlog] at h3

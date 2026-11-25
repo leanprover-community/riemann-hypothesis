@@ -786,7 +786,7 @@ theorem col_sum_div (p m N : ℕ) [Fact p.Prime] (hm : 1 ≤ m) (hN : 0 < N) (hp
   constructor <;> intro h <;> linear_combination h
 
 theorem entry_sum (p m N k : ℕ) [Fact p.Prime] (K : Type) [Field K] [CharZero K] (hm : 1 ≤ m) (hN : 0 < N)
-    (hpN : ¬ p ∣ N) (ψ : DirichletCharacter K (p ^ m)) (hψ : ψ.IsPrimitive) (ζ : K)
+    (hpN : ¬ p ∣ N) (_hk : 3 ≤ k) (ψ : DirichletCharacter K (p ^ m)) (hψ : ψ.IsPrimitive) (ζ : K)
     (hζ : IsPrimitiveRoot ζ (N * p ^ m)) (a₀ b₀ t : ℤ) (ht : (p : ℤ) ^ m * t ≡ 1 [ZMOD N]) (i j : ℕ) :
     ∑ u ∈ primeTo p m, ∑ a : ZMod (p ^ m), ∑ v ∈ primeTo p m, ∑ b : ZMod (p ^ m), ψ (u * b - a * v) *
       (coefPos (k - 1) (N * p ^ m) ζ (N * u.val + (p : ℤ) ^ m * (a₀ * t)) (N * a.val) i *
@@ -900,7 +900,7 @@ theorem coef_eq (p m N k : ℕ) [Fact p.Prime] (hm : 1 ≤ m) (hN : 0 < N) (hpN 
   have hNK : (N : K) ≠ 0 := by exact_mod_cast hN.ne'
   rw [pieceTRaw_eq p m N k hm hpN hk ψ hψ ζ]
   rw [sum_congr rfl fun i hi => by
-    rw [_root_.GlobalTheory.KummerEisensteinGalois.UnitPieceMu.entry_sum p m N k K hm hN hpN ψ hψ ζ hζ a₀ b₀ t ht,
+    rw [_root_.GlobalTheory.KummerEisensteinGalois.UnitPieceMu.entry_sum p m N k K hm hN hpN hk ψ hψ ζ hζ a₀ b₀ t ht,
       Nat.add_sub_cancel' (Nat.lt_succ_iff.mp (mem_range.mp hi))]]
   split_ifs with h
   · obtain ⟨k', rfl⟩ : ∃ k', k = k' + 2 := ⟨k - 2, by omega⟩
@@ -1011,7 +1011,7 @@ variable {l : ℕ} [Fact l.Prime] {Ω : Type} [Field Ω] [Algebra ℚ Ω]
 theorem rho_on_dec [IsAlgClosure ℚ Ω] {ι : Qbar l ≃+* ℂ} {e : ℕ} {S : Finset Pl} {A : ValuationSubring Ω} {W : R2 Ω l}
     {g : Newform (2 * e + 1)} (hnf : Nf e S A W) (hsrc : SrcUr ι e A W g) {ε : Ω →+* ℂ} {X : Tower Ω ε}
     {pr : X.Fn l → Fin 2 → Qbar l} {N : ℕ} [NeZero N] {x : ZMod N} {c d : ℕ} {gm : (ZMod l)ˣ → SL(2, ℤ)} {ψ : ZMod l → Qbar l}
-    {cf : Coef l} (hadm : AdmissibleNewformZetaData ι e g A W X pr N c d gm ψ cf) :
+    {cf : Coef l} (hadm : AdmissibleNewformZetaData ι e g A W X pr N x c d gm ψ cf) :
     (∀ s ∈ Dec (F := ℚ) A, rhoK W e ψ s 1 0 = 0 ∧ rhoK W e ψ s 1 1 = (nuD W e ψ s : Qbar l)) ∧
     (∀ s ∈ Ine (F := ℚ) A, nuD W e ψ s = 1) := by
   obtain ⟨-, -, -, -, -, -, -, -, -, -, -, χ', hχ'k, hχ'I, hχ'ψ⟩ := hadm
@@ -1114,7 +1114,7 @@ theorem law_of_inputs
     (∀ a b : ℕ, a % N = b % N → χ a = χ b) →
   ∀ (lam : (ℕ → Qbar l) →ₗ[Qbar l] Qbar l), GlobalTheory.KummerEisensteinGalois.IsLamFR2 X A N (2 * e - 1) χ j pr cf lam →
   ∀ (c₀ : ℕ), ∃ (c' : ℕ) (κ₀ : Qbar l) (per : ℕ → Qbar l), κ₀ ≠ 0 ∧ (∀ n, ‖per n‖ = 1 ∧ Cg n (per (n + 1)) (per n)) ∧ ∀ (x : ZMod N),
-  GlobalTheory.K4.AdmissibleNewformZetaData ι e gN A W X pr N c d gm ψ cf →
+  GlobalTheory.K4.AdmissibleNewformZetaData ι e gN A W X pr N x c d gm ψ cf →
   ∀ (Y : ∀ r : ℕ, (Ω ≃ₐ[ℚ] Ω) → (ZMod (l ^ r))ˣ → Fin 2 → Qbar l),
   IsZetaSystemFixedExponent X l pr W e ψ N x c d (2 * e + 1) gm cf c₀ Y →
   ∀ m : ℕ, 1 ≤ m → ∀ (y : (ZMod (l ^ m))ˣ) (β : ℕ) (t : ℤ),

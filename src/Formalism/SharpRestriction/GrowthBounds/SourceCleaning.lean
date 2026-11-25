@@ -341,7 +341,7 @@ def BlochKatoExtensionCriterion (D : Formalism.BasicNotions.D7) : Prop := Formal
 
 def InvariantProjectionLemma (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.InvariantProjectionField
 
-def NablaDeltaComparison (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.NablaDeltaComparisonField
+def NablaDeltaComparison (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.NablaDeltaComparisonField D
 
 def IsotypicProjectorTheorem (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.IsotypicProjectorTheoremField
 

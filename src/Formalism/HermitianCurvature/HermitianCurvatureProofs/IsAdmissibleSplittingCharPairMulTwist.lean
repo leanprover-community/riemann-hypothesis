@@ -4350,7 +4350,7 @@ theorem sum_Icc_split2 (f : ℕ → ℝ) (k l : ℕ) (hl1 : 1 ≤ l) (hlk : l �
 
 theorem logDeriv_bound (k l : ℕ) (hl1 : 1 ≤ l) (hlk : l ≤ k) (a b : ℕ → ℝ) (α β T : ℝ) (hαβ : α < β)
     (hab : ∀ j ∈ Icc 1 (k - 1), a j ≤ b j ∧ b j ≤ a (j + 1))
-    (hal : a l ≤ α ∨ β ≤ a l)
+    (haL : ∀ i, 1 ≤ i → i < l → a i ≤ α) (haR : ∀ i, l < i → i ≤ k → β ≤ a i) (hal : a l ≤ α ∨ β ≤ a l)
     (hbL : ∀ j, 1 ≤ j → j < l → b j ≤ α) (hbR : ∀ j, l ≤ j → j ≤ k - 1 → β ≤ b j)
     (hT1 : α + (β - α) / 3 ≤ T) (hT2 : T ≤ β - (β - α) / 3) :
     |∑ i ∈ Icc 1 k, 1 / (T - a i) - ∑ j ∈ Icc 1 (k - 1), 1 / (T - b j)| ≤ 6 / (β - α) := by
@@ -4598,7 +4598,7 @@ theorem Side.dist_b (h : Side k l a b α β) (hl1 : 1 ≤ l) (hlk : l ≤ k) (h�
 theorem Side.logDeriv (h : Side k l a b α β) (hl1 : 1 ≤ l) (hlk : l ≤ k) (hαβ : α < β) (T : ℝ)
     (hT1 : α + (β - α) / 3 ≤ T) (hT2 : T ≤ β - (β - α) / 3) :
     |∑ i ∈ Icc 1 k, 1 / (T - a i) - ∑ j ∈ Icc 1 (k - 1), 1 / (T - b j)| ≤ 6 / (β - α) :=
-  logDeriv_bound k l hl1 hlk a b α β T hαβ h.inter h.al h.bL h.bR hT1 hT2
+  logDeriv_bound k l hl1 hlk a b α β T hαβ h.inter h.aL h.aR h.al h.bL h.bR hT1 hT2
 
 theorem Side.deriv_bounds (h : Side k l a b α β) (hl1 : 1 ≤ l) (hlk : l ≤ k) (hαβ : α < β) (T : ℝ)
     (hT1 : α + (β - α) / 3 ≤ T) (hT2 : T ≤ β - (β - α) / 3) :
@@ -8778,7 +8778,7 @@ theorem letterR (hS : Hyp L S) (y : ℂ) {n : ℕ} {x : A} (hx : x ∈ NormalFor
     L.Dbi * L.R0 y * x ∈ NormalFormTwo L S (n + 1) (n + 1) := by
   rw [mul_assoc]; exact normal_form_two_D_bar_inv hS (normal_form_two_raising hS y hx)
 
-theorem one_mem_normal_form_two : (1 : A) ∈ NormalFormTwo L S 0 0 := by
+theorem one_mem_normal_form_two (hS : Hyp L S) : (1 : A) ∈ NormalFormTwo L S 0 0 := by
   have : tm L 1 0 0 [] = 1 := by simp [tm]
   rw [← this]; exact mem2 S.one_mem rfl rfl (by simp)
 
@@ -9103,7 +9103,7 @@ theorem SSs_comm_SC (i : ℕ) {x : A P (DQ P)} (hx : x ∈ SC P) :
     refine ⟨star w, ?_⟩
     ext a b
     rw [Matrix.star_apply]
-    simp only [Matrix.scalar_apply, Matrix.diagonal_apply]
+    simp only [RingHom.coe_coe, Matrix.scalar_apply, Matrix.diagonal_apply]
     by_cases h : a = b
     · subst h; simp
     · simp [h, Ne.symm h])
@@ -9542,7 +9542,7 @@ theorem Xw_rep (l : ℕ) (j : M.Ty P → SmQ P.r P.TT) : ∀ w : List ℝ, ∃ �
     (∀ e, 𝒳 e ∈ NormalFormTwo L (SB L) w.length w.length) ∧
     ∀ q i, Xw P l L (ju P j) w q i = evQ P (actA P (𝒳 (ixOf P w.length i).1) j (ixOf P w.length i).2) q := fun w =>
   match w with
-  | [] => ⟨fun _ => 1, fun _ => one_mem_normal_form_two, fun q i => by
+  | [] => ⟨fun _ => 1, fun _ => one_mem_normal_form_two (hyp_model hL hLaw), fun q i => by
       show (j i : Qp P.r P.TT → ℂ) q = evQ P (actA P 1 j i) q
       rw [_root_.Formalism.FourierDecayAlt.P.MAx2.R2.act_one]; rfl⟩
   | Y :: w => by
@@ -10070,7 +10070,7 @@ noncomputable section
 
 variable {P : M.Par}
 
-theorem Dabs_sq (q : Qp P.r P.TT) : Dabs q ^ 2 = Gq P q * Wq P q := by
+theorem Dabs_sq (hTT : 0 ≤ P.TT) (q : Qp P.r P.TT) : Dabs q ^ 2 = Gq P q * Wq P q := by
   have h : P.TT < Complex.normSq q.1.2 := q.2.2
   have hne : Complex.normSq q.1.2 - P.TT ≠ 0 := by linarith
   unfold Dabs Gq Wq
@@ -10094,7 +10094,7 @@ theorem comp_le (hTT : 0 ≤ P.TT) (ε σ : ℝ) (n : ℕ) (hε : 0 < ε) (hσ :
     LE.th ε σ (Gq P q) * (Wq P q ^ n * c) * ‖z‖ ^ 2 ≤ |c| * (ε⁻¹) ^ n * (‖z‖ * Dabs q ^ n) ^ 2 := by
   have hG := Gq_pos P q
   have hth0 : 0 ≤ LE.th ε σ (Gq P q) := by unfold LE.th; positivity
-  have hW : Wq P q ^ n * Gq P q ^ n = Dabs q ^ (2 * n) := by rw [pow_mul, Dabs_sq, mul_pow, mul_comm]
+  have hW : Wq P q ^ n * Gq P q ^ n = Dabs q ^ (2 * n) := by rw [pow_mul, Dabs_sq hTT, mul_pow, mul_comm]
   have hth := th_le ε σ (Gq P q) n hε hG hσ
   have hWn : 0 ≤ Wq P q ^ n := pow_nonneg (MAx3.Wq_pos P hTT q).le n
   have hc : 0 ≤ |c| := abs_nonneg c
@@ -11806,7 +11806,7 @@ theorem chi_bound (j : M.Ty P → SmQ P.r P.TT) (c : LE.Cut) (ε : ℝ) (hε : 0
                 ≤ |Cχ p| * (Cp p * S1 p) := mul_le_mul h3 h2 (by positivity) (abs_nonneg _)
               _ = _ := by ring
     have hW : Wq P q ^ N = (I4.Dabs q ^ N) ^ 2 / Gq P q ^ N := by
-      rw [← pow_mul, mul_comm N 2, pow_mul, I4.Dabs_sq, mul_pow]
+      rw [← pow_mul, mul_comm N 2, pow_mul, I4.Dabs_sq hTTp.le, mul_pow]
       field_simp
     have hGN : 1 / Gq P q ^ N ≤ (2 / ε) ^ N := by
       rw [one_div, ← inv_pow]
@@ -12146,7 +12146,7 @@ theorem gRw_nil (e : Ix (Fin ([] : List ℝ).length)) : F.gRw P (DQ P) L l [] e 
   exact absurd (funext fun k => Fin.elim0 k) hb
 
 theorem gRw_NF : ∀ w : List ℝ, M.CutWord P l (wordP w) → ∀ e, F.gRw P (DQ P) L l w e ∈ NormalFormTwo L (SB L) w.length w.length
-  | [], _, e => by rw [gRw_nil hL hLaw hS hFr e]; exact one_mem_normal_form_two
+  | [], _, e => by rw [gRw_nil hL hLaw hS hFr e]; exact one_mem_normal_form_two (hyp_model hL hLaw)
   | Y :: w, hcw, E => by
     have hcw' := F.cut_tail Y w hcw
     have IH := gRw_NF w hcw'
@@ -15684,12 +15684,12 @@ theorem ipA_zero_right (f : M.Ty P → SmQ P.r P.TT) : ipA P f 0 = 0 := by
 
 variable {L : LevelData (A P (DQ P)) P.r} {j : M.Ty P → SmQ P.r P.TT}
 
-def QA (j : M.Ty P → SmQ P.r P.TT) (a w : A P (DQ P)) : Prop :=
+def QA (L : LevelData (A P (DQ P)) P.r) (j : M.Ty P → SmQ P.r P.TT) (a w : A P (DQ P)) : Prop :=
   (∀ π, Integrable (fun q => evQ P (actA P a j π) q * conj (evQ P (actA P w j π) q)) (mu0 P.r P.TT)) ∧
   (∀ π, Integrable (fun q => evQ P (actA P (star w * a) j π) q * conj (evQ P (j π) q)) (mu0 P.r P.TT)) ∧
   ipA P (actA P a j) (actA P w j) = ipA P (actA P (star w * a) j) j
 
-theorem QA_zero (a : A P (DQ P)) : QA j a 0 := by
+theorem QA_zero (a : A P (DQ P)) : QA L j a 0 := by
   refine ⟨fun π => ?_, fun π => ?_, ?_⟩
   · rw [F.actA_zero]; exact (integrable_zero _ _ _).congr (Filter.Eventually.of_forall fun q => by
       show (0 : ℂ) = _ * conj (0 : ℂ); simp)
@@ -15697,7 +15697,7 @@ theorem QA_zero (a : A P (DQ P)) : QA j a 0 := by
       show (0 : ℂ) = (0 : ℂ) * _; simp)
   · rw [F.actA_zero, star_zero, zero_mul, F.actA_zero, ipA_zero_right, ipA_zero_left]
 
-theorem QA_add {a w1 w2 : A P (DQ P)} (h1 : QA j a w1) (h2 : QA j a w2) : QA j a (w1 + w2) := by
+theorem QA_add {a w1 w2 : A P (DQ P)} (h1 : QA L j a w1) (h2 : QA L j a w2) : QA L j a (w1 + w2) := by
   obtain ⟨i1, k1, e1⟩ := h1; obtain ⟨i2, k2, e2⟩ := h2
   refine ⟨fun π => ?_, fun π => ?_, ?_⟩
   · rw [F.actA_add]; exact ((i1 π).add (i2 π)).congr (Filter.Eventually.of_forall fun q => by
@@ -15708,7 +15708,7 @@ theorem QA_add {a w1 w2 : A P (DQ P)} (h1 : QA j a w1) (h2 : QA j a w2) : QA j a
       rw [add_mul]; rfl)
   · rw [F.actA_add, ipA_add_right i1 i2, e1, e2, star_add, add_mul, F.actA_add, ipA_add_left k1 k2]
 
-theorem QA_smul {a w : A P (DQ P)} (c : ℂ) (h : QA j a w) : QA j a (c • w) := by
+theorem QA_smul {a w : A P (DQ P)} (c : ℂ) (h : QA L j a w) : QA L j a (c • w) := by
   obtain ⟨i1, k1, e1⟩ := h
   refine ⟨fun π => ?_, fun π => ?_, ?_⟩
   · rw [F.actA_smul_mat]; exact ((i1 π).const_mul (conj c)).congr (Filter.Eventually.of_forall fun q => by
@@ -15770,7 +15770,7 @@ include hTTp hL hLaw
 theorem QA_gen {m : ℕ} (hD : JDecay P L j m) (hA : JAdj P L j m) {a : A P (DQ P)} {N : ℕ} (hm : N + N ≤ m)
     (hsa : ∀ φ, admitted φ → Ph P φ * L.Di ^ N * a ∈ Z P L N) {β : A P (DQ P)} (hβ : β ∈ SB L) {φ : ℝ → ℝ} (hφ : admitted φ)
     {W : List (A P (DQ P))} (hW : ∀ x ∈ W, x ∈ hatSet P L) (hWl : W.length ≤ N) :
-    QA j a (β * (L.Dbi ^ N * Ph P φ) * W.prod) := by
+    QA L j a (β * (L.Dbi ^ N * Ph P φ) * W.prod) := by
   obtain ⟨-, -, -, h4, -, -⟩ := star_more hL hLaw
   obtain ⟨-, hDi, -, hDbi, -⟩ := fnP_D hL
   obtain ⟨Cβ, hβC⟩ := SAB_closure hTTp hL hLaw hβ
@@ -15792,7 +15792,7 @@ theorem QA_gen {m : ℕ} (hD : JDecay P L j m) (hA : JAdj P L j m) {a : A P (DQ 
 
 theorem QA_NF {m : ℕ} (hD : JDecay P L j m) (hA : JAdj P L j m) {a : A P (DQ P)} {N : ℕ} (hm : N + N ≤ m)
     (hsa : ∀ φ, admitted φ → Ph P φ * L.Di ^ N * a ∈ Z P L N) {χ : ℝ → ℝ} (hχ : admitted χ) {y : A P (DQ P)}
-    (hy : y ∈ NFD L N) : QA j a (y * Ph P χ) := by
+    (hy : y ∈ NFD L N) : QA L j a (y * Ph P χ) := by
   obtain ⟨-, -, -, hDbi, -⟩ := fnP_D hL
   induction hy using Submodule.span_induction with
   | mem x hx =>
@@ -15801,7 +15801,7 @@ theorem QA_NF {m : ℕ} (hD : JDecay P L j m) (hA : JAdj P L j m) {a : A P (DQ P
       word_memZ hTTp hL hLaw H (fun h hh => Or.inl (Or.inl (hH h hh))) (Ph_memZ hχ)
     rw [zero_add, hl] at hz
     rw [mul_assoc]
-    suffices key : ∀ z ∈ Z P L N, QA j a (b * L.Dbi ^ N * z) from key _ hz
+    suffices key : ∀ z ∈ Z P L N, QA L j a (b * L.Dbi ^ N * z) from key _ hz
     intro z hz
     induction hz using Submodule.span_induction with
     | mem z hz =>
@@ -15951,7 +15951,7 @@ theorem theorem_P_adjoint : Formalism.FourierDecayAlt.MA.ThmPAdj := by
   have hR1 : ∑ e, ipA P (actA P (∑ e', dRing P l L' Y e e' * gRing P l L' Y e') (chiJ P j c ε))
       (actA P (gRing P l L' Y e) (chiJ P j c ε)) = ipA P (actA P (Ph P (MAx3.PG.chi c ε) * (∑ e, ∑ e', star (gRing P l L' Y e) *
         dRing P l L' Y e e' * gRing P l L' Y e') * Ph P (MAx3.PG.chi c ε)) j) j := by
-    have hq : ∀ e, QA j ((L'.ζ * L'.ζb * L'.GGi) ^ (List.ofFn Y).length * kap P (DQ P) (cs0 e) * gRing P l L' Y e * Ph P (MAx3.PG.chi c ε))
+    have hq : ∀ e, QA L' j ((L'.ζ * L'.ζb * L'.GGi) ^ (List.ofFn Y).length * kap P (DQ P) (cs0 e) * gRing P l L' Y e * Ph P (MAx3.PG.chi c ε))
         (gRing P l L' Y e * Ph P (MAx3.PG.chi c ε)) := fun e =>
       QA_NF hTTp hML hLaw hD hA hm (hsa_U hTTp hML hLaw (cs0 e) hχ (hg e)) hχ (hg e)
     have step : ∀ e, ipA P (actA P (∑ e', dRing P l L' Y e e' * gRing P l L' Y e') (chiJ P j c ε))
@@ -16365,7 +16365,7 @@ theorem isFnP_star {s : A P (DQ P)} (hs : IsFnP s) : IsFnP (star s) := by
 theorem QA_term {m : ℕ} (hD : JDecay P L j m) (hA : JAdj P L j m) {a : A P (DQ P)} {β : A P (DQ P)}
     (hβ : β ∈ Formalism.FourierDecayAlt.P.MAx3.I4.SB L) {s : A P (DQ P)} {g : Qp P.r P.TT → ℂ} (hs : CF s g)
     {W : List (A P (DQ P))} (hW : ∀ x ∈ W, x ∈ hatSet P L) {k : ℕ} (hkm : k + W.length ≤ m)
-    (hsa : star s * a ∈ Z P L k) : QA j a (β * s * W.prod) := by
+    (hsa : star s * a ∈ Z P L k) : QA L j a (β * s * W.prod) := by
   obtain ⟨Cβ, hβC⟩ := SAB_closure hTTp hL hLaw hβ
   obtain ⟨int1, -, eq1⟩ := multAdj hTTp hL hLaw hD hβC hs hW (by omega) (k := k) (by omega) hsa
   have hsβ : star β ∈ Formalism.FourierDecayAlt.P.MAx3.I4.SB L := star_SB hL hLaw hβ
@@ -16485,12 +16485,12 @@ theorem QA_LX {m0 : ℕ} (hD : JDecay P L j m0) (hA : JAdj P L j m0) {N n k m : 
     (hγ : L.Di ^ k * L.Db ^ n * L.Dbi ^ N ∈ Formalism.FourierDecayAlt.P.MAx3.I4.SB L) {ψ : ℝ → ℝ} (hψ : admitted ψ) {x : A P (DQ P)}
     (hx : x ∈ NFD L N) {X : A P (DQ P)} (hX : X ∈ minusHats L) {β : A P (DQ P)} (hβ : β ∈ Formalism.FourierDecayAlt.P.MAx3.I4.SB L)
     {H : List (A P (DQ P))} (hH : ∀ h ∈ H, h ∈ plusHats L) (hl : H.length = N + 1) :
-    QA j (Ph P ψ * x) (X * (β * (L.D ^ n * L.Dbi ^ k) * G.Gs P (-1) ^ m) * H.prod) := by
+    QA L j (Ph P ψ * x) (X * (β * (L.D ^ n * L.Dbi ^ k) * G.Gs P (-1) ^ m) * H.prod) := by
   have hz := hatv_past_G hTTp hL hLaw hX hβ n k m
   have hs : CF (L.D ^ n * L.Dbi ^ k * G.Gs P (-1) ^ m) _ :=
     CF_mul (CF_mul (CF_pow' (cf_D hTTp.le hL) n) (CF_pow' (cf_Dbi hTTp.le hL) k)) (CF_pow' (cf_Gs (-1)) m)
   have hsa := left_cond hTTp hL hLaw (m := m) hγ hψ hx
-  suffices key : ∀ z ∈ MSG L n k m, QA j (Ph P ψ * x) (z * H.prod) from key _ hz
+  suffices key : ∀ z ∈ MSG L n k m, QA L j (Ph P ψ * x) (z * H.prod) from key _ hz
   intro z hz
   induction hz using Submodule.span_induction with
   | mem z hz =>
@@ -16558,7 +16558,7 @@ theorem rearr1 (N : ℕ) (κ : M.Ty P → ℂ) {β : A P (DQ P)} (hβ : β ∈ F
 theorem quadratic_form_lowering {m0 : ℕ} (hD : JDecay P L j m0) (hA : JAdj P L j m0) {N : ℕ} (hm0 : N + (N + 2) ≤ m0) {ψ : ℝ → ℝ}
     (hψ : admitted ψ) {x : A P (DQ P)} (hx : x ∈ NFD L N) (Y : ℝ) (κ : M.Ty P → ℂ) {y : A P (DQ P)}
     (hy : y ∈ NFD L (N + 1)) :
-    QA j (Ph P ψ * x) (star (L.Di * L.Ahat (Y : ℂ)) * ((L.ζ * L.ζb * L.GGi) ^ (N + 1) * kap P (DQ P) κ * y)) := by
+    QA L j (Ph P ψ * x) (star (L.Di * L.Ahat (Y : ℂ)) * ((L.ζ * L.ζb * L.GGi) ^ (N + 1) * kap P (DQ P) κ * y)) := by
   obtain ⟨hD', hDi, hDb, hDbi, hG, hW⟩ := fnPs hTTp hL hLaw
   obtain ⟨hγ, -⟩ := D_power_identity_four hTTp hL hLaw N
   have hγ' : L.Di ^ 1 * L.Db ^ (N + 1) * L.Dbi ^ N ∈ Formalism.FourierDecayAlt.P.MAx3.I4.SB L := by
@@ -16581,7 +16581,7 @@ theorem quadratic_form_lowering {m0 : ℕ} (hD : JDecay P L j m0) (hA : JAdj P L
 theorem quadratic_form_raising {m0 : ℕ} (hD : JDecay P L j m0) (hA : JAdj P L j m0) {N : ℕ} (hm0 : N + (N + 2) ≤ m0) {ψ : ℝ → ℝ}
     (hψ : admitted ψ) {x : A P (DQ P)} (hx : x ∈ NFD L N) (Y : ℝ) (κ : M.Ty P → ℂ) {y : A P (DQ P)}
     (hy : y ∈ NFD L (N + 1)) :
-    QA j (Ph P ψ * x) (star (L.Dbi * L.R0 (Y : ℂ)) * ((L.ζ * L.ζb * L.GGi) ^ (N + 1) * kap P (DQ P) κ * y)) := by
+    QA L j (Ph P ψ * x) (star (L.Dbi * L.R0 (Y : ℂ)) * ((L.ζ * L.ζb * L.GGi) ^ (N + 1) * kap P (DQ P) κ * y)) := by
   obtain ⟨hD', hDi, hDb, hDbi, hG, hW⟩ := fnPs hTTp hL hLaw
   obtain ⟨-, hγ⟩ := D_power_identity_four hTTp hL hLaw N
   have hγ' : L.Di ^ 0 * L.Db ^ N * L.Dbi ^ N ∈ Formalism.FourierDecayAlt.P.MAx3.I4.SB L := by
@@ -16636,7 +16636,7 @@ theorem star_BA_span {E : A P (DQ P)} (hE : E ∈ Formalism.FourierDecayAlt.P.MA
 theorem quadratic_form_lowering_base {m0 : ℕ} (hD : JDecay P L j m0) (hA : JAdj P L j m0) {N : ℕ} (hm0 : N + (N + 2) ≤ m0) {ψ : ℝ → ℝ}
     (hψ : admitted ψ) {x : A P (DQ P)} (hx : x ∈ NFD L N) (Y : ℝ) (κ : M.Ty P → ℂ) {E : A P (DQ P)}
     (hE : E ∈ Formalism.FourierDecayAlt.P.MAx3.I4.BA L) {y : A P (DQ P)} (hy : y ∈ NFD L (N + 1)) :
-    QA j (Ph P ψ * x) (star (E * (L.Di * L.Ahat (Y : ℂ))) * ((L.ζ * L.ζb * L.GGi) ^ (N + 1) * kap P (DQ P) κ * y)) := by
+    QA L j (Ph P ψ * x) (star (E * (L.Di * L.Ahat (Y : ℂ))) * ((L.ζ * L.ζb * L.GGi) ^ (N + 1) * kap P (DQ P) κ * y)) := by
   obtain ⟨hD', hDi, hDb, hDbi, hG, hW⟩ := fnPs hTTp hL hLaw
   obtain ⟨hγ, -⟩ := D_power_identity_four hTTp hL hLaw N
   have hγ' : L.Di ^ 1 * L.Db ^ (N + 1) * L.Dbi ^ N ∈ Formalism.FourierDecayAlt.P.MAx3.I4.SB L := by
@@ -16692,7 +16692,7 @@ include hTTp hL hLaw
 theorem QA_R {m0 : ℕ} (hD : JDecay P L j m0) (hA : JAdj P L j m0) {N : ℕ} (hm0 : (N + 1) + (N + 1) ≤ m0)
     {a : A P (DQ P)} (ha : G.Gs P (-1) ^ (N + 1) * L.Db ^ (N + 1) * a ∈ Z P L (N + 1)) (κ : M.Ty P → ℂ)
     {y : A P (DQ P)} (hy : y ∈ NFD L (N + 1)) :
-    QA j a ((L.ζ * L.ζb * L.GGi) ^ (N + 1) * kap P (DQ P) κ * y) := by
+    QA L j a ((L.ζ * L.ζb * L.GGi) ^ (N + 1) * kap P (DQ P) κ * y) := by
   obtain ⟨-, -, -, -, h5, -⟩ := star_more hL hLaw
   have hs : CF (L.D ^ (N + 1) * G.Gs P (-1) ^ (N + 1)) _ :=
     CF_mul (CF_pow' (cf_D hTTp.le hL) (N + 1)) (CF_pow' (cf_Gs (-1)) (N + 1))
@@ -16963,7 +16963,7 @@ open ComplexConjugate
 noncomputable section
 
 theorem QA_finsum {P : M.Par} {L : LevelData (A P (DQ P)) P.r} {j : M.Ty P → SmQ P.r P.TT} {ι : Type}
-    (s : Finset ι) {a : A P (DQ P)} (f : ι → A P (DQ P)) (h : ∀ i ∈ s, QA j a (f i)) : QA j a (∑ i ∈ s, f i) := by
+    (s : Finset ι) {a : A P (DQ P)} (f : ι → A P (DQ P)) (h : ∀ i ∈ s, QA L j a (f i)) : QA L j a (∑ i ∈ s, f i) := by
   classical
   induction s using Finset.induction_on with
   | empty => rw [Finset.sum_empty]; exact QA_zero a
@@ -17000,7 +17000,7 @@ theorem gb_apply (b : Bool) (e e' : Ix (Fin w.length)) : gb P l L w Y b e e' =
   I4.letter_entry hL hLaw (Y : ℂ) (Y : ℂ) ((frW P l L w).ee (Y : ℂ)) b e e'
 
 theorem QA_left {m0 : ℕ} (hD : JDecay P L j m0) (hA : JAdj P L j m0) (hm0 : w.length + (w.length + 2) ≤ m0)
-    {ψ : ℝ → ℝ} (hψ : admitted ψ) (e : Ix (Fin w.length)) : QA j (vv P l L w ψ e) (zv P l L w Y e) := by
+    {ψ : ℝ → ℝ} (hψ : admitted ψ) (e : Ix (Fin w.length)) : QA L j (vv P l L w ψ e) (zv P l L w Y e) := by
   have hx := xv_NFD hTTp hL hLaw hS hFr hcw e
   unfold zv
   refine QA_add (QA_finsum _ _ fun e' _ => ?_) (QA_finsum _ _ fun e' _ => ?_)
@@ -17023,7 +17023,7 @@ theorem QA_left {m0 : ℕ} (hD : JDecay P L j m0) (hA : JAdj P L j m0) (hm0 : w.
 
 theorem QA_right {m0 : ℕ} (hD : JDecay P L j m0) (hA : JAdj P L j m0) (hm0 : (w.length + 1) + (w.length + 1) ≤ m0)
     {ψ : ℝ → ℝ} (hψ : admitted ψ) (b : Bool) (e : Ix (Fin w.length)) :
-    QA j (yv' P l L w Y ψ b e) (uv P l L w Y b e) := by
+    QA L j (yv' P l L w Y ψ b e) (uv P l L w Y b e) := by
   refine QA_R hTTp hL hLaw hD hA hm0 ?_ _ (yv_NFD hTTp hL hLaw hS hFr hcw b e)
   unfold yv'
   rw [Finset.mul_sum]

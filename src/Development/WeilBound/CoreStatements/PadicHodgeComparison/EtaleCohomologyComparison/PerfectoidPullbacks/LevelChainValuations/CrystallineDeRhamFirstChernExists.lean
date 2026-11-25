@@ -258,7 +258,7 @@ open CrystallineSemistableComparison.Pb.Kap
 
 namespace GlobalTheory.CompanionTheory.KapUnit
 
-theorem rho_one_eval : ∀ {Λ A B K : Type} [CommRing Λ] [CommRing A] [CommRing B] [Field K] (C : Chain.{1} Λ A B K) (_ : C.Good) (P : Cup C), P.Good → ∀ h : Module.Dual K (C.V 0) →+ B, C.Rho P.oneS h → ∀ φ : Module.Dual K (C.V 0), h φ = C.o (φ P.oneV) := by
+theorem rho_one_eval : ∀ {Λ A B K : Type} [CommRing Λ] [CommRing A] [CommRing B] [Field K] (C : Chain.{1} Λ A B K) (hC : C.Good) (P : Cup C), P.Good → ∀ h : Module.Dual K (C.V 0) →+ B, C.Rho P.oneS h → ∀ φ : Module.Dual K (C.V 0), h φ = C.o (φ P.oneV) := by
   intro Λ A B K _ _ _ _ C hC P hP h hR φ
   obtain ⟨hsem, e, z, hz, hb⟩ := hR
   have hw : C.b 0 z = ((C.ℓ : B) ^ e) • C.μ 0 P.oneV := by
@@ -648,7 +648,7 @@ theorem semilinear_eq_sum_coord {K B : Type*} {V : Type*} [Field K] [CommRing B]
 
 theorem rho_cup :
     ∀ {Λ A B K : Type} [CommRing Λ] [CommRing A] [CommRing B] [Field K] (C : Chain.{1} Λ A B K)
-      (_ : C.Good) (P : Cup C), P.Good → ∀ {i j : ℕ} (x : ∀ n, C.S n i) (y : ∀ n, C.S n j)
+      (hC : C.Good) (P : Cup C), P.Good → ∀ {i j : ℕ} (x : ∀ n, C.S n i) (y : ∀ n, C.S n j)
       (f : Module.Dual K (C.V i) →+ B) (g : Module.Dual K (C.V j) →+ B)
       (h : Module.Dual K (C.V (i + j)) →+ B), C.Rho x f → C.Rho y g →
       C.Rho (fun n => P.cS n i j (x n) (y n)) h →
@@ -1269,7 +1269,7 @@ theorem fil_lev_pf [FiniteDimensional ℚ_[l] K] (hM : M.Sm) (U : Cov M.q) (hU :
   let bs := Module.finBasis K (HdR M.q j)
   have h6 : (l : L.B) ^ e • ∑ t, f (bs.coord t) • muB L.γB M.q 1 s {⊤} j (bs t) = bMap M s hL (_root_.CrystallineSemistableComparison.Pb.Kap.qb_le_pf hL M s) j z := hb bs
   rw [LinearMap.map_smulₛₗ, ← h6, map_pow, map_natCast, map_smul, map_smul] at h5
-  have hu := _root_.CrystallineSemistableComparison.Pb.Kap.unit_B_pf
+  have hu := _root_.CrystallineSemistableComparison.Pb.Kap.unit_B_pf hL
   rw [(hu.pow e').smul_eq_zero, (hu.pow e).smul_eq_zero] at h5
   have h7 := (basisB L.γB s m (pdP_B_bot hL) hs M.q U hU {⊤} sSup_singleton j bs).2 N hN _ h5 r φ hφ
   have h8 : f φ = ∑ t, f (bs.coord t) * algebraMap K L.B (φ (bs t)) := by

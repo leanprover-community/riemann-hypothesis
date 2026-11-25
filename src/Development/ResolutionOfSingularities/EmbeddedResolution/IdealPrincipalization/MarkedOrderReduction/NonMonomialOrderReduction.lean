@@ -81,7 +81,7 @@ private theorem locallyOfFiniteType_of_smooth {X Y : Scheme.{u}} (f : X ⟶ Y)
   have := h
   infer_instance
 
-theorem isAdmissible_tripleAtLength {T : MarkedIdealWithBoundary.{u}} (hT : T.IsAdmissible)
+theorem isAdmissible_tripleAtLength (_hG : PrincipalizationGeometryHypotheses.{u}) {T : MarkedIdealWithBoundary.{u}} (hT : T.IsAdmissible)
     (s : MarkedBlowupSequenceData T.structMap T.ideal T.mult T.boundary) :
     (tripleAtLength T s (s.ideal s.length) T.mult).IsAdmissible := by
   have hlen : s.length ≤ s.toMarkedSequenceOfBlowups.length :=
@@ -99,7 +99,7 @@ theorem isAdmissible_tripleAtLength {T : MarkedIdealWithBoundary.{u}} (hT : T.Is
       s.length hlen
     rwa [MarkedBlowupSequenceData.toMarkedSequence_projectionToSpec, MarkedBlowupSequenceData.toMarkedSequence_boundary] at h
   have hno : AlgebraicGeometry.IsNoetherian (s.obj s.length) := by
-    have h := MarkedSequenceOfBlowups.isNoetherian_schemeAt hT s.toMarkedSequenceOfBlowups
+    have h := MarkedSequenceOfBlowups.isNoetherian_schemeAt effectiveCartierSupportContainsNoComponent hT s.toMarkedSequenceOfBlowups
       s.length hlen
     rwa [MarkedBlowupSequenceData.toMarkedSequence_schemeAt] at h
   exact ⟨hT.charZero, locallyOfFiniteType_of_smooth _ hsm, hnz, hT.one_le_mult,
@@ -120,13 +120,13 @@ theorem isMonomialSplitting_lastNonMonomialPart (hG : PrincipalizationGeometryHy
     IsMonomialSplitting (s.boundary s.length) (s.ideal s.length)
       (monomialPart (s.boundary s.length) (s.ideal s.length)) (lastNonMonomialPart T s) := by
   have h := hG.isMonomialSplitting_monomialPart_nonMonomialPart (tripleAtLength T s (s.ideal s.length) T.mult)
-    (isAdmissible_tripleAtLength hT s)
+    (isAdmissible_tripleAtLength hG hT s)
   exact h
 
 theorem exists_orderAt_lastNonMonomialPart_le (hG : PrincipalizationGeometryHypotheses.{u}) {T : MarkedIdealWithBoundary.{u}}
     (hT : T.IsAdmissible) (s : MarkedBlowupSequenceData T.structMap T.ideal T.mult T.boundary) :
     ∃ B : ℕ, ∀ x : ↥(s.obj s.length), orderAt (lastNonMonomialPart T s) x ≤ (B : ℕ∞) := by
-  have hv := isAdmissible_tripleAtLength hT s
+  have hv := isAdmissible_tripleAtLength hG hT s
   have hnz : NonzeroOnComponents (s.ideal s.length) := hv.nonzeroOnComponents
   have hsplit := isMonomialSplitting_lastNonMonomialPart hG hT s
   have hnz' : NonzeroOnComponents (lastNonMonomialPart T s) :=
@@ -150,7 +150,7 @@ abbrev nonMonomialTriple (T : MarkedIdealWithBoundary.{u})
 theorem isAdmissible_nonMonomialTriple (hG : PrincipalizationGeometryHypotheses.{u}) {T : MarkedIdealWithBoundary.{u}} (hT : T.IsAdmissible)
     (s : MarkedBlowupSequenceData T.structMap T.ideal T.mult T.boundary) (hcont : NonMonomialOrderReductionContinues T s) :
     (nonMonomialTriple T s).IsAdmissible := by
-  have hbase : (tripleAtLength T s (s.ideal s.length) T.mult).IsAdmissible := isAdmissible_tripleAtLength hT s
+  have hbase : (tripleAtLength T s (s.ideal s.length) T.mult).IsAdmissible := isAdmissible_tripleAtLength hG hT s
   have hsplit : IsMonomialSplitting (s.boundary s.length) (s.ideal s.length)
       (monomialPart (s.boundary s.length) (s.ideal s.length)) (lastNonMonomialPart T s) :=
     isMonomialSplitting_lastNonMonomialPart hG hT s
@@ -175,7 +175,7 @@ theorem isMarked_seqAtEnd_lastNonMonomialPart (hG : PrincipalizationGeometryHypo
             (tripleAtLength_dim_le hG hT s _ _))).toBlowupSequenceData.IsMarked
       (s.proj s.length ≫ T.structMap) (s.ideal s.length) T.mult (s.boundary s.length) := by
   have hμ : T.mult ≤ maxOrderNonMonomial T s := ((nonMonomialOrderReductionContinues_iff T s).1 hcont).1
-  have hadmLast : (tripleAtLength T s (s.ideal s.length) T.mult).IsAdmissible := isAdmissible_tripleAtLength hT s
+  have hadmLast : (tripleAtLength T s (s.ideal s.length) T.mult).IsAdmissible := isAdmissible_tripleAtLength hG hT s
   have hadmNonMonomial : (nonMonomialTriple T s).IsAdmissible := isAdmissible_nonMonomialTriple hG hT s hcont
   have hsplit : IsMonomialSplitting (s.boundary s.length) (s.ideal s.length)
       (monomialPart (s.boundary s.length) (s.ideal s.length)) (lastNonMonomialPart T s) :=
@@ -347,7 +347,7 @@ private theorem nonMonomialPart_continuationByNonMonomialPart_length (hG : Princ
           (continuationByNonMonomialPart hG hspec hT hdim s hcont).length)
       = (A (nonMonomialTriple T s)).ideal (A (nonMonomialTriple T s)).length := by
   have hmu : T.mult ≤ maxOrderNonMonomial T s := ((nonMonomialOrderReductionContinues_iff T s).1 hcont).1
-  have hadmLast : (tripleAtLength T s (s.ideal s.length) T.mult).IsAdmissible := isAdmissible_tripleAtLength hT s
+  have hadmLast : (tripleAtLength T s (s.ideal s.length) T.mult).IsAdmissible := isAdmissible_tripleAtLength hG hT s
   have hadmNonMonomial : (nonMonomialTriple T s).IsAdmissible := isAdmissible_nonMonomialTriple hG hT s hcont
   have hsplit : IsMonomialSplitting (s.boundary s.length) (s.ideal s.length)
       (monomialPart (s.boundary s.length) (s.ideal s.length)) (lastNonMonomialPart T s) :=
@@ -360,7 +360,7 @@ private theorem nonMonomialPart_continuationByNonMonomialPart_length (hG : Princ
   have hordA := hspec.order_le (nonMonomialTriple T s) hadmNonMonomial hdim' hob
   have hsp := (isMonomialSplitting_controlledTransform_monomialFactor hG hadmLast hsplit hmu (A (nonMonomialTriple T s)) hordA
       (A (nonMonomialTriple T s)).length le_rfl).1
-  have hvalid := isAdmissible_tripleAtLength hadmLast (continuationByNonMonomialPart hG hspec hT hdim s hcont)
+  have hvalid := isAdmissible_tripleAtLength hG hadmLast (continuationByNonMonomialPart hG hspec hT hdim s hcont)
   exact hG.nonMonomialPart_eq_of_isMonomialSplitting _ hvalid _ _
     (isMonomialSplitting_of_boundary_eq_of_ideal_eq (continuationByNonMonomialPart_boundary_length hG hspec hT hdim s hcont)
       (continuationByNonMonomialPart_ideal_length hG hspec hT hdim s hcont) hsp)
@@ -498,7 +498,7 @@ private theorem hasCenter_continuationByNonMonomialPart (hG : PrincipalizationGe
     (MarkedIdealWithBoundary.isOrderBoundedByMult_iff (nonMonomialTriple T s)).2 fun x =>
       orderAt_lastNonMonomialPart_le_maxOrderNonMonomial hG hT s x
   have hmu : T.mult ≤ maxOrderNonMonomial T s := ((nonMonomialOrderReductionContinues_iff T s).1 hcont).1
-  have hadmLast : (tripleAtLength T s (s.ideal s.length) T.mult).IsAdmissible := isAdmissible_tripleAtLength hT s
+  have hadmLast : (tripleAtLength T s (s.ideal s.length) T.mult).IsAdmissible := isAdmissible_tripleAtLength hG hT s
   have hsplit := isMonomialSplitting_lastNonMonomialPart hG hT s
   have hord := hspec.order_le (nonMonomialTriple T s) hadmNonMonomial hdim' hob
   have hcertA := hspec.cert (nonMonomialTriple T s) hadmNonMonomial hdim' hob

@@ -76,7 +76,7 @@ theorem qb_le_pf {L : Lev R m} (hL : L.Good) (M : Model l K) (s : ℕ) :
   intro T hT
   obtain ⟨⟨h1, h2⟩, V, hV, hU⟩ := hT
   have hu : IsUnit ((l : ℕ) : T.B) := by
-    have := (unit_B_pf (R := R)).map T.i
+    have := (unit_B_pf (R := R) hL).map T.i
     simpa using this
   obtain ⟨u, hu'⟩ := hu
   refine ⟨⟨h1, fun r (x : T.B) hx => ?_⟩, ⊤, Set.mem_singleton _, ?_⟩
@@ -270,7 +270,7 @@ theorem level_system_good [FiniteDimensional ℚ_[l] K] (hM : M.Sm) (U : Cov M.q
     (hr : ∀ n j x, trM (QA L M s) none (l : L.A) n j (rH (n + 1) j x) = rH n j ((M.HS false j).r n x)) :
     (chainOf hL M s (qb_le_pf hL M s) rH).Good := by
   refine
-    { unit := unit_B_pf (l := l)
+    { unit := unit_B_pf (l := l) hL
       fin := fun j => (m_fin M hM j).1
       basis := fun j _ bs w => cg_basis_pf hL M hM s U hU j bs w
       r_tr := hr
@@ -290,7 +290,7 @@ theorem level_system_good [FiniteDimensional ℚ_[l] K] (hM : M.Sm) (U : Cov M.q
     rw [LinearMap.map_smulₛₗ] at h1
     have hu : IsUnit ((L.ι ((l : L.A) ^ e)) : L.B) := by
       rw [map_pow, map_natCast]
-      exact (unit_B_pf).pow e
+      exact (unit_B_pf hL).pow e
     exact hu.smul_left_cancel.1 (by rw [smul_zero]; exact h1)
 
 end

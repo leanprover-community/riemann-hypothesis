@@ -147,12 +147,12 @@ theorem sixteen_le_rdE_of_parA {large₂ : SizeData₂ D} {CA : ℝ} (h : ParA l
     exact_mod_cast le_trans (by norm_num : (1 : ℕ) ≤ 2) D.R.two_le_m
   nlinarith
 
-theorem tie_eqs {K : KAdm} {H : KHyp} {Ch Ah Cq Aq C2 A2 CR : ℝ} (ht : TieC K H Ch Ah Aq C2 A2 CR) :
+theorem tie_eqs {K : KAdm} {H : KHyp} {Ch Ah Cq Aq C2 A2 CR : ℝ} (ht : TieC K H Ch Ah Cq Aq C2 A2 CR) :
     H.Cc = C2 ∧ H.Ac = A2 ∧ H.CRc = CR :=
   ⟨ht.2.2.1, ht.2.2.2.1, ht.2.2.2.2.1.trans ht.2.2.2.2.2.1.symm⟩
 
 theorem g0fm3_le_of_dom {large₂ : SizeData₂ D} {K : KAdm} {H : KHyp} {Ch Ah Cq Aq C2 A2 CR : ℝ} {j nW : ℕ}
-    (hPg : PageAt large₂ C2 A2) (ht : TieC K H Ch Ah Aq C2 A2 CR) (hd : DomAt D large₂ j nW H.C1) :
+    (hPg : PageAt large₂ C2 A2) (ht : TieC K H Ch Ah Cq Aq C2 A2 CR) (hd : DomAt D large₂ j nW H.C1) :
     (g0 D : ℝ) * D.R.f * (D.R.m : ℝ) ^ 3 ≤ WeightFamilies.PPv D large₂ C2 A2 ^ 2 := by
   have hC : 1000 ≤ C2 := ht.1 ▸ hd.1
   have hA : 12 ≤ A2 := ht.2.2.2.2.2.2.2.1

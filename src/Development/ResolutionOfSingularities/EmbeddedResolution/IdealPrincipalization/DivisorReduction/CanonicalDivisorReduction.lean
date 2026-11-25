@@ -701,7 +701,7 @@ private theorem projectionToBase_mem_orderAtLeastLocus {T : MarkedIdealWithBound
       refine ih (Nat.le_of_succ_le hi) _ ?_
       exact blowupMorphism_mem_orderAtLeastLocus s hV.one_le_mult
         (fun j hj => MarkedSequenceOfBlowups.smooth_projectionToSpec effectiveCartierSupportContainsNoComponent hV s j hj)
-        (fun j hj => MarkedSequenceOfBlowups.isNoetherian_schemeAt hV s j hj)
+        (fun j hj => MarkedSequenceOfBlowups.isNoetherian_schemeAt effectiveCartierSupportContainsNoComponent hV s j hj)
         i (Nat.lt_of_succ_le hi) z hz
 
 theorem center_disjoint_range_of_preimage_orderAtLeastLocus_eq_empty

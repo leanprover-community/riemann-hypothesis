@@ -61,21 +61,21 @@ def SRel0 : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ι : Qbar l ≃+* ℂ) (e : ℕ)
     (gN : Newform (2 * e + 1)) (A : ValuationSubring Ω) (W : R2 Ω l) (ε : Ω →+* ℂ) (X : Tower Ω ε)
     (pr : X.Fn l → Fin 2 → Qbar l) (N : ℕ) [NeZero N] (x : ZMod N) (c d : ℕ) (gm : (ZMod l)ˣ → SL(2, ℤ)) (ψ : ZMod l → Qbar l) (cf : Coef l),
-    AdmissibleNewformZetaData ι e gN A W X pr N c d gm ψ cf → 1 ≤ e → ∀ (c₀ : ℕ) Y, IsZetaSystemFixedExponent X l pr W e ψ N x c d (2 * e + 1) gm cf c₀ Y → ∀ r n : ℕ,
+    AdmissibleNewformZetaData ι e gN A W X pr N x c d gm ψ cf → 1 ≤ e → ∀ (c₀ : ℕ) Y, IsZetaSystemFixedExponent X l pr W e ψ N x c d (2 * e + 1) gm cf c₀ Y → ∀ r n : ℕ,
     Rel X l pr W e ψ N cf c₀ n (fun s => (cycMod (F := ℚ) (Ω := Ω) l r s)⁻¹) (Y r) fun s y => ∑ r₀, Y0 X l n r N x c d (2 * e - 1) (gm r₀) s y
 
 def SRelT : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ι : Qbar l ≃+* ℂ) (e : ℕ)
     (gN : Newform (2 * e + 1)) (A : ValuationSubring Ω) (W : R2 Ω l) (ε : Ω →+* ℂ) (X : Tower Ω ε)
     (pr : X.Fn l → Fin 2 → Qbar l) (N : ℕ) [NeZero N] (x : ZMod N) (c d : ℕ) (gm : (ZMod l)ˣ → SL(2, ℤ)) (ψ : ZMod l → Qbar l) (cf : Coef l),
-    AdmissibleNewformZetaData ι e gN A W X pr N c d gm ψ cf → 1 ≤ e → ∀ (p : ℕ) [NeZero p], Nat.Coprime p l → ∀ (c₀ : ℕ) Y, IsZTc X l pr W e ψ N p x c d (2 * e + 1) gm cf c₀ Y → ∀ r n : ℕ,
+    AdmissibleNewformZetaData ι e gN A W X pr N x c d gm ψ cf → 1 ≤ e → ∀ (p : ℕ) [NeZero p], Nat.Coprime p l → ∀ (c₀ : ℕ) Y, IsZTc X l pr W e ψ N p x c d (2 * e + 1) gm cf c₀ Y → ∀ r n : ℕ,
     Rel X l pr W e ψ N cf c₀ n (kT l r p) (Y r) fun s y => ∑ r₀, YT X l n r N p x c d (2 * e - 1) (gm r₀) s y
 
 def SN2rho : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ι : Qbar l ≃+* ℂ) (e : ℕ)
     (gN : Newform (2 * e + 1)) (A : ValuationSubring Ω) (W : R2 Ω l) (ε : Ω →+* ℂ) (X : Tower Ω ε)
     (pr : X.Fn l → Fin 2 → Qbar l) (N : ℕ) [NeZero N] (x : ZMod N) (c d : ℕ) (gm : (ZMod l)ˣ → SL(2, ℤ)) (ψ : ZMod l → Qbar l) (cf : Coef l),
-    AdmissibleNewformZetaData ι e gN A W X pr N c d gm ψ cf → 1 ≤ e → (∀ s i k, mat W s i k ∈ cf.O) → ∃ m : ℕ, ∀ (p : ℕ) [NeZero p], p.Prime → Nat.Coprime p (l * N) → ∀ a δ : Qbar l, a ∈ cf.O → δ ∈ cf.O →
+    AdmissibleNewformZetaData ι e gN A W X pr N x c d gm ψ cf → 1 ≤ e → (∀ s i k, mat W s i k ∈ cf.O) → ∃ m : ℕ, ∀ (p : ℕ) [NeZero p], p.Prime → Nat.Coprime p (l * N) → ∀ a δ : Qbar l, a ∈ cf.O → δ ∈ cf.O →
     (∀ b ∈ X.B N l (2 * e - 1), pr (X.heckeT N l p b) = a • pr b ∧ pr (X.diam N l p b) = δ • pr b) →
     ∀ (c₀ c₁ r n : ℕ) (Y : (Ω ≃ₐ[ℚ] Ω) → (ZMod (l ^ r))ˣ → Fin 2 → Qbar l) (Y' : (Ω ≃ₐ[ℚ] Ω) → (ZMod p)ˣ × (ZMod (l ^ r))ˣ → Fin 2 → Qbar l) z z',
       Rel X l pr W e ψ N cf c₀ n (fun s => (cycMod (F := ℚ) (Ω := Ω) l r s)⁻¹) Y z → Rel X l pr W e ψ N cf (c₀ + c₁) n (kT l r p) Y' z' →
@@ -92,7 +92,7 @@ def SInteg : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ι : Qbar l ≃+* ℂ) (e : ℕ)
     (gN : Newform (2 * e + 1)) (A : ValuationSubring Ω) (W : R2 Ω l) (ε : Ω →+* ℂ) (X : Tower Ω ε)
     (pr : X.Fn l → Fin 2 → Qbar l) (N : ℕ) [NeZero N] (x : ZMod N) (c d : ℕ) (gm : (ZMod l)ˣ → SL(2, ℤ)) (ψ : ZMod l → Qbar l) (cf : Coef l),
-    AdmissibleNewformZetaData ι e gN A W X pr N c d gm ψ cf → 1 ≤ e → (∀ s i k, mat W s i k ∈ cf.O) → (∀ s : G ℚ Ω, ‖thK l e ψ s‖ = 1) ∧ ψ 1 = 1 ∧ (∀ u v : (ZMod l)ˣ, ψ ((u * v : (ZMod l)ˣ) : ZMod l) = ψ u * ψ v) ∧
+    AdmissibleNewformZetaData ι e gN A W X pr N x c d gm ψ cf → 1 ≤ e → (∀ s i k, mat W s i k ∈ cf.O) → (∀ s : G ℚ Ω, ‖thK l e ψ s‖ = 1) ∧ ψ 1 = 1 ∧ (∀ u v : (ZMod l)ˣ, ψ ((u * v : (ZMod l)ˣ) : ZMod l) = ψ u * ψ v) ∧
     (∀ u : (ZMod l)ˣ, ψ u ∈ cf.O) ∧ (∀ s i k, rhoK W e ψ s i k ∈ cf.O) ∧ (∀ s t, rhoK W e ψ (s * t) = rhoK W e ψ s * rhoK W e ψ t) ∧
     ∀ (c₀ : ℕ) Y, IsZetaSystemFixedExponent X l pr W e ψ N x c d (2 * e + 1) gm cf c₀ Y → ∀ r s y i, ‖Y r s y i‖ ≤ 1
 
@@ -100,7 +100,7 @@ def SSpec : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ι : Qbar l ≃+* ℂ) (e : ℕ)
     (gN : Newform (2 * e + 1)) (A : ValuationSubring Ω) (W : R2 Ω l) (ε : Ω →+* ℂ) (X : Tower Ω ε)
     (pr : X.Fn l → Fin 2 → Qbar l) (N : ℕ) [NeZero N] (x : ZMod N) (c d : ℕ) (gm : (ZMod l)ˣ → SL(2, ℤ)) (ψ : ZMod l → Qbar l) (cf : Coef l),
-    AdmissibleNewformZetaData ι e gN A W X pr N c d gm ψ cf → 1 ≤ e → (∀ s i k, mat W s i k ∈ cf.O) → ∀ (p r : ℕ), p.Prime → l ∣ p - 1 → ∀ (a δ k : Qbar l), ‖a‖ ≤ 1 → ‖δ‖ ≤ 1 → ‖k‖ ≤ 1 →
+    AdmissibleNewformZetaData ι e gN A W X pr N x c d gm ψ cf → 1 ≤ e → (∀ s i k, mat W s i k ∈ cf.O) → ∀ (p r : ℕ), p.Prime → l ∣ p - 1 → ∀ (a δ k : Qbar l), ‖a‖ ≤ 1 → ‖δ‖ ≤ 1 → ‖k‖ ≤ 1 →
     ∀ (Y V : (Ω ≃ₐ[ℚ] Ω) → (ZMod (l ^ r))ˣ → Fin 2 → Qbar l) (b : (ZMod (l ^ r))ˣ → Fin 2 → Qbar l), (∀ s y i, ‖Y s y i‖ ≤ 1) → (∀ y i, b y i ∈ cf.O) →
       (∀ s y, Cv r ((p : Qbar l) • V s y) (k • ((p : Qbar l) • Y s y - a • Y s (y * inv1 (l ^ r) p) +
           ((p : Qbar l) ^ (2 * e - 1) * δ) • Y s (y * inv1 (l ^ r) p ^ 2)) +
@@ -119,14 +119,14 @@ def SDiamChar : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ι : Qbar l ≃+* ℂ) (e : ℕ)
     (gN : Newform (2 * e + 1)) (A : ValuationSubring Ω) (W : R2 Ω l) (ε : Ω →+* ℂ) (X : Tower Ω ε)
     (pr : X.Fn l → Fin 2 → Qbar l) (N : ℕ) [NeZero N] (x : ZMod N) (c d : ℕ) (gm : (ZMod l)ˣ → SL(2, ℤ)) (ψ : ZMod l → Qbar l) (cf : Coef l),
-    AdmissibleNewformZetaData ι e gN A W X pr N c d gm ψ cf → 1 ≤ e → Nat.Coprime l N → (∃ b ∈ X.B N l (2 * e - 1), pr b ≠ 0) → ∃ δ : (ZMod N)ˣ →* (Qbar l)ˣ, ∀ (q : ℕ) (u : (ZMod N)ˣ), q.Prime → ¬ q ∣ l * N →
+    AdmissibleNewformZetaData ι e gN A W X pr N x c d gm ψ cf → 1 ≤ e → Nat.Coprime l N → (∃ b ∈ X.B N l (2 * e - 1), pr b ≠ 0) → ∃ δ : (ZMod N)ˣ →* (Qbar l)ˣ, ∀ (q : ℕ) (u : (ZMod N)ˣ), q.Prime → ¬ q ∣ l * N →
     (u : ZMod N) = q → ∀ b ∈ X.B N l (2 * e - 1), pr (X.diam N l q b) = (δ u : Qbar l) • pr b
 
 def SEuler : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ι : Qbar l ≃+* ℂ) (e : ℕ)
     (gN : Newform (2 * e + 1)) (A : ValuationSubring Ω) (W : R2 Ω l) (ε : Ω →+* ℂ) (X : Tower Ω ε)
     (pr : X.Fn l → Fin 2 → Qbar l) (N : ℕ) [NeZero N] (x : ZMod N) (c d : ℕ) (gm : (ZMod l)ˣ → SL(2, ℤ)) (ψ : ZMod l → Qbar l) (cf : Coef l),
-    AdmissibleNewformZetaData ι e gN A W X pr N c d gm ψ cf → 1 ≤ e → Nat.Coprime l N → ∀ S : Finset Pl, Nf e S A W → (∀ s i k, mat W s i k ∈ cf.O) → ∃ S' : Finset Pl, S ⊆ S' ∧ ∀ w : Pl, w ∉ S' →
+    AdmissibleNewformZetaData ι e gN A W X pr N x c d gm ψ cf → 1 ≤ e → Nat.Coprime l N → ∀ S : Finset Pl, Nf e S A W → (∀ s i k, mat W s i k ∈ cf.O) → ∃ S' : Finset Pl, S ⊆ S' ∧ ∀ w : Pl, w ∉ S' →
     (normV w).Prime ∧ Nat.Coprime (normV w) (l * N * c * d) ∧ ∃ a δ : Qbar l, a ∈ cf.O ∧ δ ∈ cf.O ∧
       (∀ b ∈ X.B N l (2 * e - 1), pr (X.heckeT N l (normV w) b) = a • pr b ∧ pr (X.diam N l (normV w) b) = δ • pr b) ∧
       ∀ (B : ValuationSubring Ω) (σ : G ℚ Ω), IsPlaceOver B w → IsFrob B (normV w) σ →
@@ -136,7 +136,7 @@ def SEulCg : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ι : Qbar l ≃+* ℂ) (e : ℕ)
     (gN : Newform (2 * e + 1)) (A : ValuationSubring Ω) (W : R2 Ω l) (ε : Ω →+* ℂ) (X : Tower Ω ε)
     (pr : X.Fn l → Fin 2 → Qbar l) (N : ℕ) [NeZero N] (x : ZMod N) (c d : ℕ) (gm : (ZMod l)ˣ → SL(2, ℤ)) (ψ : ZMod l → Qbar l) (cf : Coef l),
-    AdmissibleNewformZetaData ι e gN A W X pr N c d gm ψ cf → 1 ≤ e → ∀ (p n : ℕ), p.Prime → 1 ≤ n → l ^ n ∣ p - 1 → ∀ a δ : Qbar l, a ∈ cf.O → δ ∈ cf.O → eul l e p a δ ∈ cf.O ∧
+    AdmissibleNewformZetaData ι e gN A W X pr N x c d gm ψ cf → 1 ≤ e → ∀ (p n : ℕ), p.Prime → 1 ≤ n → l ^ n ∣ p - 1 → ∀ a δ : Qbar l, a ∈ cf.O → δ ∈ cf.O → eul l e p a δ ∈ cf.O ∧
     ∀ σ : G ℚ Ω, ψ 1 = 1 → eps l σ = (p : Qbar l) → (rhoK W e ψ σ).trace = a → (rhoK W e ψ σ).det = (p : Qbar l) ^ (2 * e) * δ →
       Cg n (eul l e p a δ) (1 * (mat W σ - 1).det)
 

@@ -274,7 +274,7 @@ theorem isLocallyNoetherian_schemeAt (S : MarkedIdealWithBoundary.{u}) (hV : S.I
     ∀ i ≤ s.length, AlgebraicGeometry.IsLocallyNoetherian (s.obj i) := by
   intro i hi
   have hnoeth : AlgebraicGeometry.IsNoetherian (s.toMarkedSequenceOfBlowups.schemeAt i) :=
-    MarkedSequenceOfBlowups.isNoetherian_schemeAt hV s.toMarkedSequenceOfBlowups i
+    MarkedSequenceOfBlowups.isNoetherian_schemeAt effectiveCartierSupportContainsNoComponent hV s.toMarkedSequenceOfBlowups i
       (s.le_toSequenceOfBlowups_length hi)
   show AlgebraicGeometry.IsLocallyNoetherian (s.toMarkedSequenceOfBlowups.schemeAt i)
   infer_instance

@@ -84,7 +84,7 @@ theorem integral_invariants_gives_counts (D : Formalism.BasicNotions.D7)  (h : F
 theorem invariant_projection_gives_orbit_count (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.InvariantProjectionField) :
     Formalism.MainNotions.tableLineDegreeFive.adm7 D := h
 
-theorem invariant_denominator_gives_orbit_count (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.NablaDeltaComparisonField) :
+theorem invariant_denominator_gives_orbit_count (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.NablaDeltaComparisonField D) :
     Formalism.MainNotions.tableLineDegreeFive.adm8 D := h
 
 theorem integral_invariants_give_orbit_count (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.IsotypicProjectorTheoremField) :
@@ -132,7 +132,7 @@ theorem corollary_base_gives_orbit_count (D : Formalism.BasicNotions.D7)  (h : F
 theorem corollary_zero_gives_orbit_count (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.CanonicalTranslateJetIdentity) :
     Formalism.MainNotions.tableLineDegreeFive.adm20 D := h
 
-theorem invariant_denominator_gives_exponent_data (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.NablaDeltaComparisonField) :
+theorem invariant_denominator_gives_exponent_data (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.NablaDeltaComparisonField D) :
     Formalism.MainNotions.flipOneThree.GenericProjectionCriterion D := h
 
 theorem integral_invariants_give_exponent_data (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.IsotypicProjectorTheoremField ∧ Formalism.MainNotions.CovariantDegrees.FilteredProjectorCorollaryField) :
@@ -180,7 +180,7 @@ theorem corollary_zero_gives_counting_input (D : Formalism.BasicNotions.D7)  (h 
 theorem invariant_projection_gives_localiser (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.InvariantProjectionField) :
     Formalism.MainNotions.SourceCleaning.InvariantProjectionLemma D := h
 
-theorem invariant_denominator_gives_localiser (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.NablaDeltaComparisonField) :
+theorem invariant_denominator_gives_localiser (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.NablaDeltaComparisonField D) :
     Formalism.MainNotions.SourceCleaning.NablaDeltaComparison D := h
 
 theorem integral_invariants_give_localiser (D : Formalism.BasicNotions.D7)  (h : Formalism.MainNotions.CovariantDegrees.IsotypicProjectorTheoremField) :
@@ -292,8 +292,8 @@ theorem mq_top_of_irr {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationR
   rintro x ⟨u, hu, rfl⟩
   exact hU u hu v (Submodule.subset_span hv)
 
-theorem weight_condition_of_integral_form (D : Formalism.BasicNotions.D7) (X : Formalism.MainNotions.flipOneThree.Inst) (h : Formalism.MainNotions.CovariantDegrees.NablaDeltaComparisonField) :
-    Formalism.MainNotions.flipOneThree.adm2 X := by
+theorem weight_condition_of_integral_form (D : Formalism.BasicNotions.D7) (X : Formalism.MainNotions.flipOneThree.Inst) (h : Formalism.MainNotions.CovariantDegrees.NablaDeltaComparisonField D) :
+    Formalism.MainNotions.flipOneThree.adm2 D X := by
   intro n V _ _ _ _ E lam v hn _ hirr hl
   obtain ⟨hA, hB⟩ := h X.p X.L.n' X.O X.setting X.instance_ring_standard (n + 1) lam V E v hirr
   refine ⟨fun x hx => ?_, fun M hM hv hwt => ?_⟩
@@ -653,7 +653,7 @@ theorem extended_hypothesis_of_window {C0 CYb Cde Ck CD Cb Cc : ℝ} {X : Formal
     linarith
 
 theorem residue_bound_of_extension (D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ) (X : Formalism.MainNotions.flipOneThree.Inst)
-    (h : Formalism.MainNotions.ColumnSystems.RootMultiplicityTwo D C0 CYb Cde Ck CD Cb CE1 CE2 Cc) : Formalism.MainNotions.flipOneThree.adm11 C0 CYb Cde Ck CD Cb CE1 CE2 Cc X := by
+    (h : Formalism.MainNotions.ColumnSystems.RootMultiplicityTwo D C0 CYb Cde Ck CD Cb CE1 CE2 Cc) : Formalism.MainNotions.flipOneThree.adm11 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X := by
   intro hHI aT' hw m hm0 hm rz ry hd
   haveI : NeZero (X.LA aT').m := ⟨X.hm⟩
   letI := X.ringW
@@ -669,7 +669,7 @@ theorem residue_bound_of_extension (D : Formalism.BasicNotions.D7) (C0 CYb Cde C
   exact h (X.LA aT') X.W X.Qq X.O X.Kf X.ι X.σ X.jO X.w X.std (extended_hypothesis_of_window hHI hw) hHI.2.1 X.j m hm0 hm rz ry hd
 
 theorem fourth_extension_gives_ratio_bound (D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ) (X : Formalism.MainNotions.flipOneThree.Inst)
-    (h : Formalism.MainNotions.ColumnSystems.ExtendedDigitRankBound C0 CYb Cde Ck CD Cb CE1 CE2 Cc) : Formalism.MainNotions.flipOneThree.adm10 C0 CYb Cde Ck CD Cb CE1 CE2 Cc X := by
+    (h : Formalism.MainNotions.ColumnSystems.ExtendedDigitRankBound C0 CYb Cde Ck CD Cb CE1 CE2 Cc) : Formalism.MainNotions.flipOneThree.adm10 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X := by
   intro hHI aT' hw j rz ry hd
   haveI : NeZero (X.LA aT').m := ⟨X.hm⟩
   letI := X.ringW
@@ -749,7 +749,7 @@ theorem depth_bound_of_extension (D : Formalism.BasicNotions.D7) (C₀ CH CA CE1
   exact h'
 
 theorem bad_share_bound_of_extension (D : Formalism.BasicNotions.D7) (C₀ CH CA CE1 CE2 Cc : ℝ)
-    (h : ∀ X : Formalism.MainNotions.flipOneThree.Inst, Conclusion1 C₀ CH CH CH CH CH CE1 CE2 Cc CA X) : PathPairCorrespondence D C₀ CH CA CE1 CE2 Cc := h
+    (h : ∀ X : Formalism.MainNotions.flipOneThree.Inst, Conclusion1 D C₀ CH CH CH CH CH CE1 CE2 Cc CA X) : PathPairCorrespondence D C₀ CH CA CE1 CE2 Cc := h
 
 end P13B
 
@@ -809,7 +809,7 @@ theorem kappa_share_bound_of_extension (D : Formalism.BasicNotions.D7) (C₀ CH 
 theorem extension_gives_ratio_bound (D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Cm Ckap Cc Cs : ℝ) (X : Formalism.MainNotions.flipOneThree.Inst)
     (hCk : 0 ≤ Ckap) (hCm : 0 ≤ Cm) (h : Formalism.MainNotions.ColumnSystems.ExtendedModelRank D C0 CYb Cde Ck CD Cb CE1 CE2 Ckap Cc)
     (h2 : Formalism.MainNotions.ColumnSystems.ExtendedKappaBound D C0 CYb Cde Ck CD Cb CE1 CE2 Cm Ckap Cc Cs) :
-    Formalism.MainNotions.flipOneThree.adm9 C0 CYb Cde Ck CD Cb CE1 CE2 Ckap Cc (Cs + Ckap) X :=
+    Formalism.MainNotions.flipOneThree.adm9 D C0 CYb Cde Ck CD Cb CE1 CE2 Ckap Cc (Cs + Ckap) X :=
   fun hH aT' hw m h0 =>
     ⟨h (X.LA aT') X.W X.Qq X.O X.Kf X.ι X.σ X.jO X.w X.std (extended_hypothesis_of_window hH hw) hH.2.1 m h0, fun hm => by
       have hD : Formalism.MainNotions.ColumnSystems.D1num (X.LA aT') :=

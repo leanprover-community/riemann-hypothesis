@@ -100,7 +100,7 @@ def InvariantProjectionField : Prop :=
           ∀ T : ℕ, Module.finrank (KK O) V ≤ T → Inv = pp E 0 ord T * π) ∧
         ∀ x ∈ M, ((p : O) ^ (N0 n * deF p n (ellOf E (MQ M)))) • Inv x ∈ M
 
-def NablaDeltaComparisonField : Prop :=
+def NablaDeltaComparisonField (_D : Formalism.BasicNotions.D7) : Prop :=
   ∀ (p n' : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (_S : UniformizedDVR p O),
     AdmissibleDVR p n' O →
     ∀ (n : ℕ) [NeZero n] (lam : Fin n → ℤ) (V : Type) [AddCommGroup V] [Module (KK O) V] [Module O V]
@@ -158,7 +158,7 @@ def FilteredProjectorCorollaryField : Prop :=
               InBB (O := O) p (((p : KK O) ^ (∑ i, N0 n * Nat.log p (2 * degIn d (Ss i) + n - 1))) •
                 (∑ t ∈ T, (List.ofFn fun i => ee i (t i)).prod) F)))
 
-def ProjectionTheorems (D : Formalism.BasicNotions.D7) : Prop := InvariantProjectionField ∧ NablaDeltaComparisonField ∧ IsotypicProjectorTheoremField ∧ TranslateCorollaryField ∧ FilteredProjectorCorollaryField
+def ProjectionTheorems (D : Formalism.BasicNotions.D7) : Prop := InvariantProjectionField ∧ NablaDeltaComparisonField D ∧ IsotypicProjectorTheoremField ∧ TranslateCorollaryField ∧ FilteredProjectorCorollaryField
 
 def ValuationsAdditive (_D : Formalism.BasicNotions.D7) : Prop :=
   ∀ (R : Type) [Field R] (ι : Type) [Fintype ι] (LL : Letters ι) (n : ℕ) [NeZero n] (S : Set ι),

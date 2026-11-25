@@ -131,7 +131,7 @@ theorem family_dual_holds : FamDual := by
 
   have cf0 : ∀ i, vF 𝔭 (a i) = 0 → f (Sum.inl i) ∈ SP K 𝔭 := by
     intro i hi
-    have hu' := UnitPairSolutions.unit_part h𝔭 hu (ha0 i)
+    have hu' := UnitPairSolutions.unit_part hK hF h𝔭 hu (ha0 i)
     rw [hi, pow_zero, mul_one] at hu'
     have e : f (Sum.inl i) = (f (Sum.inl i) * algebraMap F K (a i : F)) *
         (algebraMap F K (a i : F))⁻¹ := by field_simp [hA0 i]
@@ -139,7 +139,7 @@ theorem family_dual_holds : FamDual := by
   have cf1 : ∀ i, vF 𝔭 (a i) ≠ 0 →
       f (Sum.inl i) * algebraMap F K (π : F) ^ vF 𝔭 (a i) ∈ SP K 𝔭 := by
     intro i hi
-    have hu' := UnitPairSolutions.unit_part h𝔭 hu (ha0 i)
+    have hu' := UnitPairSolutions.unit_part hK hF h𝔭 hu (ha0 i)
     have e : f (Sum.inl i) * algebraMap F K (π : F) ^ vF 𝔭 (a i) =
         (f (Sum.inl i) * algebraMap F K (a i : F)) *
           ((algebraMap F K (a i : F))⁻¹ * algebraMap F K (π : F) ^ vF 𝔭 (a i)) := by
@@ -147,8 +147,8 @@ theorem family_dual_holds : FamDual := by
     rw [e]; exact (SP K 𝔭).mul_mem (hα i) hu'
   have cf2 : ∀ i, vF 𝔭 (a i) ≠ 0 → f (Sum.inr (τ i)) - f (Sum.inl i) ∈ SP K 𝔭 := by
     intro i hi
-    obtain ⟨hC0, huc⟩ := UnitPairSolutions.unit_part_c h𝔭 hu (ha0 i) hi (hcong i hi)
-    have hua := UnitPairSolutions.unit_part h𝔭 hu (ha0 i)
+    obtain ⟨hC0, huc⟩ := UnitPairSolutions.unit_part_c hK hF h𝔭 hu (ha0 i) hi (hcong i hi)
+    have hua := UnitPairSolutions.unit_part hK hF h𝔭 hu (ha0 i)
     have hr := mem_SP_of_inP hu (hcong i hi)
     have hq0 : algebraMap F K (π : F) ^ vF 𝔭 (a i) ≠ 0 := pow_ne_zero _ hϖ0
     have e : f (Sum.inr (τ i)) - f (Sum.inl i) =
@@ -1400,7 +1400,7 @@ theorem last_unit_holds : LastUnit := by
     · have := mem_SP_of_inP (K := K) hU0 (inP_vF (K := K) h𝔭 (ha0 i))
       rw [hv] at this
       simpa using this
-    · have := unit_part h𝔭 hU0 (ha0 i)
+    · have := unit_part hCM hFix h𝔭 hU0 (ha0 i)
       rw [hv] at this
       simpa using this
   have hunitC : ∀ k : Fin (finrank K (orthK h U)), (k : ℕ) + 1 < finrank K (orthK h U) →
@@ -1413,8 +1413,8 @@ theorem last_unit_holds : LastUnit := by
   have hpairNU : ∀ i, vF 𝔭 (a i) ≠ 0 →
       NU 𝔭 (algebraMap F K (a i : F) * algebraMap F K (c (τ i))) := by
     intro i hv
-    obtain ⟨-, hCu⟩ := unit_part_c h𝔭 hU0 (ha0 i) hv (hpair i hv)
-    have hAu := unit_part h𝔭 hU0 (ha0 i)
+    obtain ⟨-, hCu⟩ := unit_part_c hCM hFix h𝔭 hU0 (ha0 i) hv (hpair i hv)
+    have hAu := unit_part hCM hFix h𝔭 hU0 (ha0 i)
     have hAd := mem_SP_of_inP (K := K) hU0 (inP_vF (K := K) h𝔭 (ha0 i))
     have hs := mem_SP_of_inP (K := K) hU0 (hpair i hv)
     rw [map_add (f := _)] at hs

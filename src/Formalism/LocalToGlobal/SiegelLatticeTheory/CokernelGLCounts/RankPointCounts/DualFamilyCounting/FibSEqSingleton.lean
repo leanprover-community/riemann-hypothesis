@@ -43,9 +43,9 @@ theorem fibS_eq_singleton (hF : IsFixF K F) {h : V →ₗ⋆[K] V →ₗ[K] K} {
   have hMU : ∀ x ∈ M, x ∈ U := fun x hx => hM.2 ▸ Submodule.subset_span hx
   have hTW : ∀ x ∈ T, x ∈ orthK h U := fun x hx => hT.2 ▸ Submodule.subset_span hx
   have hcapU : locF 𝔭 (M ⊔ T) ⊓ U.restrictScalars (𝓞 K) = locF 𝔭 M :=
-    locF_sup_inf hUc hMU hTW
+    locF_sup_inf hUc hMU hTW h𝔭.isPrime
   have hcapW : locF 𝔭 (M ⊔ T) ⊓ (orthK h U).restrictScalars (𝓞 K) = locF 𝔭 T := by
-    rw [sup_comm]; exact locF_sup_inf hUc.symm hTW hMU
+    rw [sup_comm]; exact locF_sup_inf hUc.symm hTW hMU h𝔭.isPrime
   ext Λ
   simp only [fibS, Set.mem_setOf_eq, Set.mem_singleton_iff]
   constructor

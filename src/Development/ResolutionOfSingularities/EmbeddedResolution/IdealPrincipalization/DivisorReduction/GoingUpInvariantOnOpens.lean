@@ -447,7 +447,7 @@ theorem boundary_comap_iteratedPreimage_succ (U₀ : (s.toSequenceOfBlowups.sche
         [Blowup.exceptionalIdeal (restrictedBlowupMorphism T j hj I₀ E₀ s U₀ t)
             ((s.toSequenceOfBlowups.center t).comap (iteratedPreimage T j hj I₀ E₀ s U₀ t).ι)] := by
   have : AlgebraicGeometry.IsNoetherian (s.toSequenceOfBlowups.schemeAt (t + 1)) :=
-    MarkedSequenceOfBlowups.isNoetherian_schemeAt hV s (t + 1) ht
+    MarkedSequenceOfBlowups.isNoetherian_schemeAt effectiveCartierSupportContainsNoComponent hV s (t + 1) ht
   have : AlgebraicGeometry.IsLocallyNoetherian (s.toSequenceOfBlowups.schemeAt (t + 1)) := inferInstance
   have hex : (Blowup.exceptionalIdeal (s.toSequenceOfBlowups.transitionMapSucc t) (s.toSequenceOfBlowups.center t)).comap
         (iteratedPreimage T j hj I₀ E₀ s U₀ (t + 1)).ι =

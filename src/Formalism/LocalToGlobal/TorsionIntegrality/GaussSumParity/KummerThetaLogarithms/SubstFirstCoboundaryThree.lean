@@ -112,14 +112,14 @@ theorem ps_comp {τ : Type} {a : MvPowerSeries τ K} (ha : constantCoeff a = 0) 
   have h1 : HasSubst (fun _ : Unit => a) := hasSubst_finite_of_constantCoeff_eq_zero fun _ => ha
   exact (subst_subst1 h1 (PowerSeries.HasSubst.of_constantCoeff_zero he) f).symm
 
-theorem cc_lgF {l : ℕ} : PowerSeries.constantCoeff (lgF K l) = 0 := by
+theorem cc_lgF {l : ℕ} (_hl : 2 ≤ l) : PowerSeries.constantCoeff (lgF K l) = 0 := by
   first
   | simp [lgF]
 
 theorem exp_log (hE : ExpSpec) {l : ℕ} (hl : 2 ≤ l) {τ : Type} {a : MvPowerSeries τ K}
     (ha : constantCoeff a = 0) :
     PowerSeries.subst (PowerSeries.subst a (lgF K l)) (expF K l) = a := by
-  rw [ps_comp ha (cc_lgF) (expF K l), (hE K l hl).2.2.1]
+  rw [ps_comp ha (cc_lgF hl) (expF K l), (hE K l hl).2.2.1]
   first
   | exact PowerSeries.subst_X (PowerSeries.HasSubst.of_constantCoeff_zero ha)
 
@@ -127,8 +127,8 @@ theorem addC_log (hE : ExpSpec) {l : ℕ} (hl : 2 ≤ l) {τ : Type} {a b : MvPo
     (ha : constantCoeff a = 0) (hb : constantCoeff b = 0) (be0 : MvPowerSeries (Fin 2) K) :
     subst ![PowerSeries.subst a (lgF K l), PowerSeries.subst b (lgF K l)] (addC l be0) =
       subst ![a, b] be0 := by
-  have hA : constantCoeff (PowerSeries.subst a (lgF K l)) = 0 := cc_ps ha (cc_lgF)
-  have hB : constantCoeff (PowerSeries.subst b (lgF K l)) = 0 := cc_ps hb (cc_lgF)
+  have hA : constantCoeff (PowerSeries.subst a (lgF K l)) = 0 := cc_ps ha (cc_lgF hl)
+  have hB : constantCoeff (PowerSeries.subst b (lgF K l)) = 0 := cc_ps hb (cc_lgF hl)
   have hE0 := (hE K l hl).1
   have h2 := hs2 hA hB
   unfold addC
@@ -198,7 +198,7 @@ def mulF (K : Type) [Field K] (l : ℕ) (c : K) : PowerSeries K :=
 theorem cc_C_mul_lgF {l : ℕ} (hl : 2 ≤ l) (c : K) :
     PowerSeries.constantCoeff (PowerSeries.C c * lgF K l) = 0 := by
   first
-  | rw [map_mul, cc_lgF, mul_zero]
+  | rw [map_mul, cc_lgF hl, mul_zero]
 
 theorem isMul_mulF (hE : ExpSpec) {l : ℕ} (hl : 2 ≤ l) (c : K) : IsMul l c (mulF K l c) := by
   refine ⟨cc_ps (τ := Unit) (cc_C_mul_lgF hl c) (hE K l hl).1, ?_⟩

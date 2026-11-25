@@ -302,7 +302,7 @@ theorem lgF_deriv_int (l : ℕ) (hl : 2 ≤ l) (n : ℕ) :
 theorem hur_expF (l : ℕ) (hl : 2 ≤ l) :
     Hur (ball K) ((expF K l : PowerSeries K) : MvPowerSeries Unit K) := by
   rw [Formalism.L2.Th1.D.FormalExponential.expF_eq l hl]
-  refine hur_substInv (ball K) (Formalism.L2.Th1.D.Pair.cc_lgF) _ ?_ (lgF_deriv_int l hl)
+  refine hur_substInv (ball K) (Formalism.L2.Th1.D.Pair.cc_lgF hl) _ ?_ (lgF_deriv_int l hl)
   rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply, PowerSeries.coeff_derivative, zero_add,
     Formalism.InvariantFactorPaths.G7.FormalGroupLaws.coeff_one_lgF l hl]
   simp

@@ -61,10 +61,10 @@ theorem content_bound_clause (D : D7) (Lv : LevelData D) : adm17 D Lv :=
 theorem levels_pro_g_on_columns (D : D7) (Lv : LevelData D) : Conclusion4p D Lv :=
   Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.levels_pro_g D Lv
 
-theorem column_stabilisers_trivial (D : D7) (Lv : LevelData D) : SmallOrderPrimeLogSumBound D :=
+theorem column_stabilisers_trivial (D : D7) (Lv : LevelData D) : SmallOrderPrimeLogSumBound D Lv :=
   levelDimension_of_admissible D Lv (content_bound_clause D Lv) (levels_pro_g_on_columns D Lv)
 
-theorem rankFormula_of_classNumber (D : D7) (Lv : LevelData D) (hn : ClassNumberFormula₂ D Lv) : Conclusion4f D :=
+theorem rankFormula_of_classNumber (D : D7) (Lv : LevelData D) (hn : ClassNumberFormula₂ D Lv) : Conclusion4f D Lv :=
   level_rank_of_trivial_stabilisers D Lv (column_stabilisers_trivial D Lv) hn
 
 section Fam
@@ -72,11 +72,11 @@ section Fam
 variable {eps : ℝ} (Fm : FamP eps)
 
 theorem familyRankFormula_of_classNumber (hn : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), ClassNumberFormula₂ (Fm.D x i) (Fm.ex x hx i).lev) :
-    ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), Conclusion4f (Fm.D x i).lev :=
+    ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), Conclusion4f (Fm.D x i) (Fm.ex x hx i).lev :=
   fun x hx i => rankFormula_of_classNumber _ _ (hn x hx i)
 
 theorem chosenProviso_4f (C0 : ℝ) (hC0 : Real.exp 1 ≤ C0)
-    (h4f : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), Conclusion4f (Fm.D x i).lev)
+    (h4f : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), Conclusion4f (Fm.D x i) (Fm.ex x hx i).lev)
     (hR : RankTiesF Fm) : ChosenProviso Fm C0 := by
   obtain ⟨x2, hR⟩ := rankHypF_of Fm hR
   refine ⟨max (Fm.x1 + 1) x2, fun x hx i => ?_⟩

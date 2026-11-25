@@ -278,7 +278,7 @@ theorem subst_inPar {l : ℕ} (hl : 2 ≤ l) (b : MvPowerSeries (Fin 2) K) {κ :
     (hx : constantCoeff x = 0) (hy : constantCoeff y = 0) :
     subst ![x, y] (inPar l b) = subst ![PowerSeries.subst x (lgF K l), PowerSeries.subst y (lgF K l)] b := by
   unfold inPar
-  rw [subst2_comp (hs2 hx hy) (constantCoeff_inVar_eq_zero _ (cc_lgF)) (constantCoeff_inVar_eq_zero _ (cc_lgF)), subst_single_var (hs2 hx hy),
+  rw [subst2_comp (hs2 hx hy) (constantCoeff_inVar_eq_zero _ (cc_lgF hl)) (constantCoeff_inVar_eq_zero _ (cc_lgF hl)), subst_single_var (hs2 hx hy),
     subst_single_var (hs2 hx hy)]
   rfl
 
@@ -290,19 +290,19 @@ theorem X_dvd_at1_of_constantCoeff_eq_zero {κ : Type} (k : κ) {f : PowerSeries
   exact dvd_mul_right _ _
 
 theorem divAB_inPar {l : ℕ} (hl : 2 ≤ l) {b : MvPowerSeries (Fin 2) K} (hb : DivAB b) : DivAB (inPar l b) := by
-  have hs := hs2 (constantCoeff_inVar_eq_zero (0 : Fin 2) (cc_lgF (K := K))) (constantCoeff_inVar_eq_zero (1 : Fin 2) (cc_lgF (K := K)))
+  have hs := hs2 (constantCoeff_inVar_eq_zero (0 : Fin 2) (cc_lgF (K := K) hl)) (constantCoeff_inVar_eq_zero (1 : Fin 2) (cc_lgF (K := K) hl))
   intro n hn
   rcases hn with hn | hn
   · obtain ⟨g, hg⟩ := (X_dvd_iff (s := (0 : Fin 2)) (φ := b)).2 fun m hm => hb m (Or.inl hm)
     refine (X_dvd_iff (s := (0 : Fin 2))).1 ?_ n hn
     unfold inPar
     rw [hg, subst_mul hs, subst_X hs]
-    exact Dvd.dvd.mul_right (X_dvd_at1_of_constantCoeff_eq_zero 0 (cc_lgF)) _
+    exact Dvd.dvd.mul_right (X_dvd_at1_of_constantCoeff_eq_zero 0 (cc_lgF hl)) _
   · obtain ⟨g, hg⟩ := (X_dvd_iff (s := (1 : Fin 2)) (φ := b)).2 fun m hm => hb m (Or.inr hm)
     refine (X_dvd_iff (s := (1 : Fin 2))).1 ?_ n hn
     unfold inPar
     rw [hg, subst_mul hs, subst_X hs]
-    exact Dvd.dvd.mul_right (X_dvd_at1_of_constantCoeff_eq_zero 1 (cc_lgF)) _
+    exact Dvd.dvd.mul_right (X_dvd_at1_of_constantCoeff_eq_zero 1 (cc_lgF hl)) _
 
 end Par
 
@@ -314,7 +314,7 @@ theorem simeq_zero {K κ : Type} [NormedField K] [CharZero K] {f g h : MvPowerSe
 theorem biadditive_substLogarithmsIntoParameters_of_logExponent {σ : ℂ_[l] →+* ℂ_[l]} {b : MvPowerSeries (Fin 2) (MaximalUnramifiedExtension l)} (hb : IsBe0 σ (map (MaximalUnramifiedExtension l).subtype b))
     {F : MvPowerSeries (Fin 2) (MaximalUnramifiedExtension l)} (hF : IsLawOfLog l F) : F1 F (inPar l b) := by
   have hl : 2 ≤ l := (Fact.out : l.Prime).two_le
-  have hL : ∀ i : Fin 3, constantCoeff (at1 i (lgF (MaximalUnramifiedExtension l) l)) = 0 := fun i => constantCoeff_inVar_eq_zero _ (cc_lgF)
+  have hL : ∀ i : Fin 3, constantCoeff (at1 i (lgF (MaximalUnramifiedExtension l) l)) = 0 := fun i => constantCoeff_inVar_eq_zero _ (cc_lgF hl)
   have hL2 : ∀ i j : Fin 3, constantCoeff (at1 i (lgF (MaximalUnramifiedExtension l) l) + at1 j (lgF (MaximalUnramifiedExtension l) l)) = 0 := fun i j => by
     rw [map_add (f := _), hL, hL, add_zero]
   have hin : constantCoeff (in3 F) = 0 := by
@@ -365,7 +365,7 @@ theorem adjoint_substLogarithmsIntoParameters_of_logExponent {σ : ℂ_[l] →+*
     (hτ : ∀ x, (MaximalUnramifiedExtension l).subtype (τ x) = σ ((MaximalUnramifiedExtension l).subtype x))
     {b : MvPowerSeries (Fin 2) (MaximalUnramifiedExtension l)} (hb : IsBe0 σ (map (MaximalUnramifiedExtension l).subtype b)) : F2 l τ (inPar l b) := by
   have hl : 2 ≤ l := (Fact.out : l.Prime).two_le
-  have hL : ∀ i : Fin 2, constantCoeff (at1 i (lgF (MaximalUnramifiedExtension l) l)) = 0 := fun i => constantCoeff_inVar_eq_zero _ (cc_lgF)
+  have hL : ∀ i : Fin 2, constantCoeff (at1 i (lgF (MaximalUnramifiedExtension l) l)) = 0 := fun i => constantCoeff_inVar_eq_zero _ (cc_lgF hl)
   have hLc : ∀ (c : MaximalUnramifiedExtension l) (i : Fin 2), constantCoeff (C c * at1 i (lgF (MaximalUnramifiedExtension l) l)) = 0 := fun c i => by
     rw [map_mul, hL, mul_zero]
   intro α hα hfix e e' he he'
@@ -491,7 +491,7 @@ theorem exists_coords_and_series (h5 : 5 ≤ l) {σ : ℂ_[l] →+* ℂ_[l]} (h�
     rw [subst_sum hRs, map_sum]
     refine Finset.sum_congr rfl fun r _ => ?_
     rw [subst2_comp hRs (constantCoeff_X _) (constantCoeff_X _), subst_X hRs, subst_X hRs, subst_inPar hl b (hR0 _) (hR0 _),
-      map_pair b (cc_ps (hR0 _) (cc_lgF)) (cc_ps (hR0 _) (cc_lgF)), ← map_lg, ← map_lg, hR]
+      map_pair b (cc_ps (hR0 _) (cc_lgF hl)) (cc_ps (hR0 _) (cc_lgF hl)), ← map_lg, ← map_lg, hR]
     rfl
   · rw [constantCoeff_map, hRT0, map_zero]
   · rw [constantCoeff_map, (hXi _).1, map_zero]

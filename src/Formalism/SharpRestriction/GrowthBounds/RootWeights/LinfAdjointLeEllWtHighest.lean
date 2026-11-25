@@ -44,7 +44,7 @@ def LatticeNablaDeltaBound : Prop :=
       [IsScalarTower O (KK O) V] (E : GLOps n (KK O) V) (v : V), IsIrrHW E lam v →
       (∀ x ∈ Nabla (O := O) E lam v, ((p : O) ^ (N0 n * deF p n (ellWt lam))) • x ∈ Delta (O := O) E v)
 
-theorem highest_weight_lattice_of_first_part (D : Formalism.BasicNotions.D7) (h : LatticeNablaDeltaBound) : NablaDeltaComparisonField := by
+theorem highest_weight_lattice_of_first_part (D : Formalism.BasicNotions.D7) (h : LatticeNablaDeltaBound) : NablaDeltaComparisonField D := by
   intro p n' O _ _ _ S hR n _ lam V _ _ _ _ E v hI
   refine ⟨h p n' O S hR n lam V E v hI, ?_⟩
   intro M hM _ hl
@@ -787,7 +787,7 @@ theorem restA_of_linf_integrality (D : Formalism.BasicNotions.D7) (h2 : adm2) (h
   have := h3 x hx
   simpa using this
 
-theorem integral_form_of_linf_lemma (D : Formalism.BasicNotions.D7) (h2 : adm2) (h : InvariantDenominatorLinftyBound) : NablaDeltaComparisonField :=
+theorem integral_form_of_linf_lemma (D : Formalism.BasicNotions.D7) (h2 : adm2) (h : InvariantDenominatorLinftyBound) : NablaDeltaComparisonField D :=
   highest_weight_lattice_of_first_part D (restA_of_linf_integrality D h2 h highest_vector_integrality)
 
 end Formalism.MainNotions.G.GLWeightTheory

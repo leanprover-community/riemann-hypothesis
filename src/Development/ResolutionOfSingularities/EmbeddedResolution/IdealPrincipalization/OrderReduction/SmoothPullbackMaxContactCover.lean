@@ -524,7 +524,7 @@ theorem orderAt_ideal_le_mult_along_sequence (T : MarkedIdealWithBoundary.{u}) (
       have hlt : k < s.toSequenceOfBlowups.length := hk
       have hprev := ih (le_of_lt hlt)
       have hnoeth : AlgebraicGeometry.IsNoetherian (s.toSequenceOfBlowups.schemeAt (k + 1)) :=
-        MarkedSequenceOfBlowups.isNoetherian_schemeAt hT s (k + 1) hk
+        MarkedSequenceOfBlowups.isNoetherian_schemeAt effectiveCartierSupportContainsNoComponent hT s (k + 1) hk
       have : AlgebraicGeometry.IsLocallyNoetherian (s.toSequenceOfBlowups.schemeAt (k + 1)) := inferInstance
       have hsmooth : AlgebraicGeometry.Smooth (s.projectionToSpec k) :=
         MarkedSequenceOfBlowups.smooth_projectionToSpec effectiveCartierSupportContainsNoComponent hT s k (le_of_lt hlt)

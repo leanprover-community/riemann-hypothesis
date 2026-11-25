@@ -327,7 +327,7 @@ theorem exists_canonical (h τ W : Matrix (Fin g) (Fin g) ℂ) (hu : IsUnit h.de
     obtain ⟨p, hp, h1⟩ := key a b
     have h1 := h1 fun k => h⁻¹ *ᵥ ζ k
     have he := Finset.sum_congr (s₁ := Finset.univ) rfl fun (k : Fin n) _ =>
-      heis_exponent _ _ hW hY (fun i => (N * a k i : ℚ)) (fun i => (N * b k i : ℚ)) (ζ k)
+      heis_exponent _ _ hτ.1 hW hY (fun i => (N * a k i : ℚ)) (fun i => (N * b k i : ℚ)) (ζ k)
     rw [Finset.sum_add_distrib, Finset.sum_add_distrib, Finset.sum_neg_distrib, ← Finset.mul_sum,
       ← Finset.mul_sum, ← Finset.mul_sum, ← Finset.mul_sum] at he
     have he' := congrArg cexp he

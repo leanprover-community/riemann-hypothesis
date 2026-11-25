@@ -411,7 +411,7 @@ theorem isLocallyNoetherian_tunedMarkedBlowupSeq_schemeAt (S : MarkedIdealWithBo
     AlgebraicGeometry.IsLocallyNoetherian ((BlowupSequenceData.ofSequenceOfBlowups u.toSequenceOfBlowups).obj i) := by
   have hi' : i ≤ u.toSequenceOfBlowups.length := hi
   have hN : AlgebraicGeometry.IsNoetherian (u.toSequenceOfBlowups.schemeAt i) :=
-    MarkedSequenceOfBlowups.isNoetherian_schemeAt hVc u i hi'
+    MarkedSequenceOfBlowups.isNoetherian_schemeAt effectiveCartierSupportContainsNoComponent hVc u i hi'
   exact inferInstanceAs (AlgebraicGeometry.IsLocallyNoetherian (u.toSequenceOfBlowups.schemeAt i))
 
 abbrev continuationMarkedData (S : MarkedIdealWithBoundary.{u})

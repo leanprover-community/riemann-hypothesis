@@ -413,7 +413,7 @@ theorem isogeny_sum_tensorLat (T : PT E) (w₀ : 𝓞 E) (hw : (w₀ : E) + cc (
   let e : (Fin n → Vsp T.dim) ↪ EuclideanSpace ℂ (Fin n × Idx T.dim) :=
     ⟨flat, (flat (n := n) (ι := Idx T.dim)).injective⟩
   have he : ∀ y, e y = flat y := fun _ => rfl
-  have key := isogeny_sum_mem_and_norm U hU Y Y'.2 (h2' Y' hY' hka').2
+  have key := isogeny_sum_mem_and_norm U hU Y Y' (h2 Y hY hka).2 (h2' Y' hY' hka').2
     (fun x _ _ => by
       obtain ⟨γ, rfl⟩ := (flat (n := n) (ι := Idx T.dim)).surjective x
       rw [hka, hka'])

@@ -1048,7 +1048,7 @@ private theorem isNoetherian_schemeAt_of_isAdmissible (T : MarkedIdealWithBounda
     (u : MarkedBlowupSequenceData T.structMap T.ideal T.mult T.boundary) (i : ℕ) (hi : i ≤ u.length) :
     AlgebraicGeometry.IsNoetherian (u.obj i) := by
   have hlen : i ≤ u.toMarkedSequenceOfBlowups.length := hi.trans_eq (MarkedBlowupSequenceData.toMarkedSequence_length u).symm
-  have h := MarkedSequenceOfBlowups.isNoetherian_schemeAt hT u.toMarkedSequenceOfBlowups i hlen
+  have h := MarkedSequenceOfBlowups.isNoetherian_schemeAt effectiveCartierSupportContainsNoComponent hT u.toMarkedSequenceOfBlowups i hlen
   rwa [MarkedBlowupSequenceData.toMarkedSequence_schemeAt] at h
 
 private theorem nonempty_sequenceOfBlowupsPullback_of_length_eq_zero {X Y : Scheme.{u}} (g : Y ⟶ X)

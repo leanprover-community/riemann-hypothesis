@@ -301,7 +301,7 @@ theorem cls_eq {p : ∀ v, G →* L v} {K : ∀ v, Subgroup (L v)} {J H : Subgro
   rw [QuotientGroup.eq, Subgroup.mem_subgroupOf, hJ _ (g⁻¹ * h).2]
   simp only [Subgroup.coe_mul, Subgroup.coe_inv, map_mul, map_inv]
 
-theorem out_mul {J H : Subgroup G} (g : H) :
+theorem out_mul {J H : Subgroup G} (hJH : J ≤ H) (g : H) :
     ∃ k ∈ J, (((g : H ⧸ J.subgroupOf H).out : H) : G) = g * k := by
   obtain ⟨k, hk⟩ := QuotientGroup.mk_out_eq_mul (J.subgroupOf H) g
   exact ⟨((k : H) : G), Subgroup.mem_subgroupOf.1 k.2, by rw [hk]; rfl⟩
@@ -309,13 +309,13 @@ theorem out_mul {J H : Subgroup G} (g : H) :
 theorem inv_out {E : Type} {J H : Subgroup G} (hJH : J ≤ H) (f : G → E)
     (hf : ∀ g ∈ H, ∀ k ∈ J, f (g * k) = f g) (g : H) :
     f (((g : H ⧸ J.subgroupOf H).out : H) : G) = f g := by
-  obtain ⟨k, hk, h⟩ := out_mul g
+  obtain ⟨k, hk, h⟩ := out_mul hJH g
   rw [h, hf _ g.2 _ hk]
 
 theorem mem_offSet_mk {p : ∀ v, G →* L v} {K : ∀ v, Subgroup (L v)} {J H : Subgroup G}
     (hJH : J ≤ H) (hJ : ∀ g ∈ H, g ∈ J ↔ ∀ v, p v g ∈ K v) (T : Finset ι) (g : H) :
     (g : H ⧸ J.subgroupOf H) ∈ offSet p K J H T ↔ ∀ v ∉ T, p v g ∈ K v := by
-  obtain ⟨k, hk, h⟩ := out_mul g
+  obtain ⟨k, hk, h⟩ := out_mul hJH g
   have hk' := (hJ k (hJH hk)).1 hk
   simp only [offSet, Set.mem_setOf_eq, h, map_mul]
   exact forall₂_congr fun v _ => Subgroup.mul_mem_cancel_right _ (hk' v)
@@ -394,7 +394,7 @@ theorem mem_range_stepMap (T : Finset ι) (v : ι) (y : H ⧸ J.subgroupOf H)
   refine ⟨(⟨_, hh⟩, (p v g : L v ⧸ K v)), ?_⟩
   rw [← QuotientGroup.out_eq' y]
   refine (cls_eq hJ _ _).2 fun u => ?_
-  obtain ⟨k, hk, hk'⟩ := out_mul h
+  obtain ⟨k, hk, hk'⟩ := out_mul hJH h
   rcases eq_or_ne u v with rfl | huv
   · simp only [map_mul, p_shift_self hpe, hpe, one_mul]
     exact QuotientGroup.eq.1 (QuotientGroup.out_eq' (p u g : L u ⧸ K u))

@@ -429,7 +429,7 @@ theorem kap_mul_cast (A : Matrix (Fin k) (Fin k) ℂ) (u : ℂ) (g : Matrix (Fin
     (j : Fin (k + 1)) : (kap A u * g) i.castSucc j = ∑ l, A i l * g l.castSucc j := by
   simp [kap, Matrix.mul_apply, Fin.sum_univ_castSucc]
 
-theorem kap_mem_iff (A : Matrix (Fin k) (Fin k) ℂ) {u : ℂ} (hu : ‖u‖ = 1) :
+theorem kap_mem_iff (hη : η = 1 ∨ η = -1) (A : Matrix (Fin k) (Fin k) ℂ) {u : ℂ} (hu : ‖u‖ = 1) :
     kap A u ∈ UH (Hd k η) ↔ A ∈ UH (1 : Matrix (Fin k) (Fin k) ℂ) := by
   have hu' : conj u * u = 1 := by rw [Complex.conj_mul', hu]; simp
   have e : (kap A u)ᴴ * Hd k η * kap A u = blk (Aᴴ * 1 * A) 0 0 (η : ℂ) := by
@@ -562,7 +562,7 @@ theorem decomp (hη : η = 1 ∨ η = -1) {g : Matrix (Fin (k + 1)) (Fin (k + 1)
     · simpa [kap] using hc i (Finset.mem_univ i)
     · rw [hl]; simp [kap, (Fin.castSucc_ne_last _).symm]
     · rw [hl]; simp [kap]
-  refine ⟨(kap_mem_iff _ hp).1 (e ▸ hm), hp, hb, ?_⟩
+  refine ⟨(kap_mem_iff hη _ hp).1 (e ▸ hm), hp, hb, ?_⟩
   rw [← e, Matrix.mul_assoc, neg_mul_sec hη hb1, Matrix.mul_one]
 
 theorem comp (hη : η = 1 ∨ η = -1) {A : Matrix (Fin k) (Fin k) ℂ} (hA : A ∈ UH (1 : Matrix (Fin k) (Fin k) ℂ))
@@ -576,7 +576,7 @@ theorem comp (hη : η = 1 ∨ η = -1) {A : Matrix (Fin k) (Fin k) ℂ} (hA : A
   have h3 : bet (sec η β) = β := by funext j; simp [bet, h1, h2]
   have h4 : top η (sec η β) = 1 := by
     ext i j; simp [top, h3, sec_mul_neg hη h, Matrix.one_apply]
-  refine ⟨CCRuleCW.UH_mul _ _ _ ((kap_mem_iff A hu).2 hA) (sec_mem hη h), ?_, ?_, ?_⟩
+  refine ⟨CCRuleCW.UH_mul _ _ _ ((kap_mem_iff hη A hu).2 hA) (sec_mem hη h), ?_, ?_, ?_⟩
   · rw [top_kap A hu, h4, Matrix.mul_one]
   · rw [ph_kap A hu, h1, mul_one]
   · rw [row_kap, nsq_mul hu, h2]
@@ -635,7 +635,7 @@ theorem meas_lmul {m : ℕ} (a : Matrix (Fin m) (Fin m) ℂ) : Measurable (PI.lm
 theorem kap_tube (hη : η = 1 ∨ η = -1) {A : Matrix (Fin k) (Fin k) ℂ} (hA : A ∈ UH (1 : Matrix (Fin k) (Fin k) ℂ))
     {u : ℂ} (hu : ‖u‖ = 1) (t : ℝ) (g : PI.MtM (k + 1)) : PI.lmulQ (kap A u) g ∈ tubeO k η t ↔ g ∈ tubeO k η t := by
   have hG := GlobalTheory.GramExp.isMatGroup_UH _ (Hd_sq k hη)
-  have hk := (kap_mem_iff A hu).2 hA
+  have hk := (kap_mem_iff hη A hu).2 hA
   show kap A u * Matrix.of g ∈ UH (Hd k η) ∧ nsq (row (kap A u * Matrix.of g)) < t ↔
     Matrix.of g ∈ UH (Hd k η) ∧ nsq (row (Matrix.of g)) < t
   rw [row_kap, nsq_mul hu]
@@ -669,7 +669,7 @@ theorem prod_top (hη : η = 1 ∨ η = -1) {μ : Measure (PI.MtM (k + 1))} (hμ
       exact (decomp hη hg.2.2.1 (hg.2.2.2.trans_le ht)).1
     · ext C hC
       rw [Measure.map_apply (meas_lmul s) hC, hap _ (meas_lmul s hC), hap _ hC]
-      conv_rhs => rw [← hμ.2.2.2 _ ((kap_mem_iff s (u := 1) norm_one).2 hs)]
+      conv_rhs => rw [← hμ.2.2.2 _ ((kap_mem_iff hη s (u := 1) norm_one).2 hs)]
       rw [Measure.map_apply (meas_lmul _) ((meas_top hC).inter hSm)]
       congr 1
       ext g
@@ -697,7 +697,7 @@ theorem phase_law (hη : η = 1 ∨ η = -1) {μ : Measure (PI.MtM (k + 1))} (h�
     have hm : Measurable fun z : ℂ => u * z := by fun_prop
     have h1 : (1 : Matrix (Fin k) (Fin k) ℂ) ∈ UH (1 : Matrix (Fin k) (Fin k) ℂ) := by simp [UH]
     rw [Measure.map_apply hm hC, hap _ (hm hC), hap _ hC]
-    conv_rhs => rw [← hμ.2.2.2 _ ((kap_mem_iff 1 hu).2 h1)]
+    conv_rhs => rw [← hμ.2.2.2 _ ((kap_mem_iff hη 1 hu).2 h1)]
     rw [Measure.map_apply (meas_lmul _) ((meas_ph hC).inter (meas_tube hη t))]
     congr 1
     ext g

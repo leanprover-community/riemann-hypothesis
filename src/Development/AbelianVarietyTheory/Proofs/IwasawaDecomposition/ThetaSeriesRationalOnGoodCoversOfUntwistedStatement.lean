@@ -873,7 +873,7 @@ theorem exists_global_approx : ∀ (L : Type) [Field L] [NumberField L] (R : Fin
 open Formalism.L2.Host in
 theorem mem_of_infPart {k : Type} [Field k] (σ : k →+* ℂ) (δ : Formalism.L2.Host.HChar D.host.E) (δc : (AE D)ˣ →* Circle)
     (hc : ChrEq δc δ) (n : ℕ) (hn : 0 < n) (hord : δ.OrderDvd n) (htame : ∀ v, δ.TameAt v) (hval : δ.ValuesIn 0 σ)
-    (x : (AE D)ˣ) : ((δc x : Circle) : ℂ) ∈ σ.fieldRange := by
+    (x : (AE D)ˣ) (hx : infPart D (x : AE D) = 1) : ((δc x : Circle) : ℂ) ∈ σ.fieldRange := by
   classical
   obtain ⟨ι, h1, h2, h3⟩ := GlobalTheory.HostAdeleIso.exists_finiteAdele_equiv D
   have h4 := GlobalTheory.PlaceIdem.exists_isPlIdem D ι h1 h2 h3
@@ -976,7 +976,7 @@ theorem mem_fieldRange : ∀ (D : D7) (V : HSp D) (pd : ℕ) (k : Type) [Field k
     intro x
     obtain ⟨-, a, b, -, -, hab, ha, hb⟩ := GlobalTheory.IdeleParts.congr_open_and_parts D
     rw [hab x, map_mul, eq_one_of_finPart δc n hn (pow_eq_one δ δc hc n hord) _ (ha x).2, one_mul]
-    exact mem_of_infPart σ δ δc hc n hn hord htame hval _.1
+    exact mem_of_infPart σ δ δc hc n hn hord htame hval _ (hb x).1
   rcases hdd with ⟨hex, hv⟩ | ⟨hex, hv⟩
   · obtain ⟨x, hx⟩ := hex g
     rw [hv g x hx]

@@ -178,7 +178,7 @@ theorem mconv_twist {a b : ℕ} {w : Pl E} (c : GLw a w × GLw b w → ℂ) (hc 
   rw [e]
   ring
 
-theorem toSub_val {n : ℕ} {w : Pl E} (x : UL n w) : toSub (UL n w) x.1 = x := by
+theorem toSub_val {n : ℕ} {w : Pl E} (hU : UL n w = ⊤) (x : UL n w) : toSub (UL n w) x.1 = x := by
   unfold toSub
   rw [dite_eq_left x.2]
 
@@ -197,7 +197,7 @@ theorem val_toSub {n : ℕ} {w : Pl E} (hU : UL n w = ⊤) (y : GLw n w) : (toSu
 def ulEquiv {n : ℕ} {w : Pl E} (hU : UL n w = ⊤) : UL n w ≃* GLw n w where
   toFun x := x.1
   invFun y := toSub (UL n w) y
-  left_inv x := toSub_val x
+  left_inv x := toSub_val hU x
   right_inv y := val_toSub hU y
   map_mul' _ _ := rfl
 
@@ -224,10 +224,10 @@ theorem lconv_eq_gconv {n : ℕ} {w : Pl E} (hU : UL n w = ⊤) (f g : UL n w �
   congr 1
   funext z
   show _ = f (toSub _ z.1) * g (toSub _ (z.1⁻¹ * y))
-  rw [toSub_val, toSub_mul hU]
+  rw [toSub_val hU, toSub_mul hU]
   congr 2
   congr 1
-  exact (toSub_val z⁻¹).symm
+  exact (toSub_val hU z⁻¹).symm
 
 theorem hint_left {H : Type} [Group H] (K : Subgroup H) (k : H) (u : H → ℂ) :
     hint K (fun z => u (k * z)) = hint K u := by

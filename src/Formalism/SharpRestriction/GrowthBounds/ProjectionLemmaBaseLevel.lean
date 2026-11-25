@@ -130,7 +130,7 @@ def CBoundI (Cc : ℝ) {n' : ℕ} (p m : ℕ) (TT : Finset (Fin n')) (a : ℕ) (
   (c : ℝ) ≤ Cc * (cStar + TT.card * ((m : ℝ) + 1) * Real.logb p a + TT.card * ccl + n' * ccl)
 
 def PathPairCorrespondence (D : Formalism.BasicNotions.D7) (C₀ CH CA CE1 CE2 Cc : ℝ) : Prop :=
-  ∀ X : Inst, Conclusion1 C₀ CH CH CH CH CH CE1 CE2 Cc CA X
+  ∀ X : Inst, Conclusion1 D C₀ CH CH CH CH CH CE1 CE2 Cc CA X
 
 def admB2 (C₀ CH CA CE1 CE2 Cm Ckap Ct Cc : ℝ) : Prop :=
   ∀ (p : ℕ) (W Qq O Kf : Type) [CommRing W] [IsDomain W] [IsDiscreteValuationRing W] [Field Qq] [Algebra W Qq]
@@ -183,13 +183,13 @@ def ColumnFamilyLowerSet (C₀ CH CE1 CE2 Ct Cc : ℝ) : Prop :=
       ((∑ jj, blockOrd p (segI C₀ CE1 CE2 p n' m TT G' N₁ Y a b' c bT jj) (bs jj) : ℕ) : ℝ) ≤
         t0I C₀ Ct p m TT G' N₁ a b' c aT bT
 
-def GenericProjectionCriterion (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.NablaDeltaComparisonField
+def GenericProjectionCriterion (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.NablaDeltaComparisonField D
 
 def ColumnFamilyClosure (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.IsotypicProjectorTheoremField ∧ Formalism.MainNotions.CovariantDegrees.FilteredProjectorCorollaryField
 
 def TensorColumnFamily (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.adm5
 
-def BranchingColumnFamily (D : Formalism.BasicNotions.D7) : Prop := ArchimedeanSignatureMatching ∧ adm5 ∧ adm6 ∧ adm7
+def BranchingColumnFamily (D : Formalism.BasicNotions.D7) : Prop := ArchimedeanSignatureMatching D ∧ adm5 ∧ adm6 ∧ adm7 D
 
 def GlobalSectionsSchur (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.AutomorphicSideConclusion ∧ Formalism.MainNotions.CovariantDegrees.HyperplaneRank D ∧ Formalism.MainNotions.CovariantDegrees.DefiniteRankOne D
 

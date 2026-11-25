@@ -52,7 +52,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 def fixFn (n a : ℕ) (w : Pl E) (μ : (w.adicCompletion E)ˣ →* ℂˣ) (m : ℕ) (KB : Subgroup (UL n w)) : LF a (n - a) w :=
   if ha : a ≤ n then (if IsSplitAt w then ctMu (Nat.add_sub_cancel' ha) w μ (U.lone KB)
-    else fun y => ((KB.relIndex (KL n w) : ℕ) : ℂ) * MB.pairIndicatorMatch a (n - a) w m y) else 0
+    else fun y => ((KB.relIndex (KL n w) : ℕ) : ℂ) * MB.pairIndicatorMatch n a (n - a) w m y) else 0
 
 def BadEx2 : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], GlobalTheory.BCT.Unr E → ∀ (n a : ℕ), a ≤ n → ∀ (w : Pl E)
   (μ : (w.adicCompletion E)ˣ →* ℂˣ), IsOpen (μ.ker : Set (w.adicCompletion E)ˣ) → ∀ m : ℕ, 1 ≤ m → ∀ KB : Subgroup (UL n w), IsCong m KB →

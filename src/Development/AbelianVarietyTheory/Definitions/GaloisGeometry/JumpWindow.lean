@@ -47,7 +47,7 @@ namespace GlobalTheory.BlockWindow
 
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.WeaklyAdmissibleFiltrations NumberField IsDedekindDomain
 
-def JointTB (D : D7) (HW : HWOf D.loc) (i : D.nd.Loc)
+def JointTB (D : D7) (HW : HWOf D.loc) (_F : FonOf D.loc D.locA HW) (i : D.nd.Loc)
     (r : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV) (D.nd.O i))) (π : D.nd.X i) (M0 h0 cB : ℕ) : Prop :=
   D.nd.l i ≠ 2 ∧ ∀ (w : HeightOneSpectrum (𝓞 D.host.E)) (hw : w ∈ placesOver D.host.E (D.nd.l i)),
     Br.inert D.nbr i w hw = IK (D.nbr i w hw).Kw ∧ (D.nbr i w hw).Kw.1 ≤ Ks (D.nbr i w hw).Kw 1 ∧
@@ -71,7 +71,7 @@ def JumpWindow (D : D7) (i : D.nd.Loc) (r : D.nd.X i → (GE D.nd →* GL (Fin D
 
 theorem JointTB.mono {D : D7} {HW : HWOf D.loc} {F : FonOf D.loc D.locA HW} {i : D.nd.Loc}
     {r : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV) (D.nd.O i))} {π : D.nd.X i} {M0 h0 cB cB' : ℕ} (hle : cB ≤ cB')
-    (h : JointTB D HW i r π M0 h0 cB) : JointTB D HW i r π M0 h0 cB' := by
+    (h : JointTB D HW F i r π M0 h0 cB) : JointTB D HW F i r π M0 h0 cB' := by
   refine ⟨h.1, fun w hw => ?_⟩
   obtain ⟨h1, h2, h3⟩ := h.2 w hw
   refine ⟨h1, h2, fun CL hL hs Y hc hY => ?_⟩

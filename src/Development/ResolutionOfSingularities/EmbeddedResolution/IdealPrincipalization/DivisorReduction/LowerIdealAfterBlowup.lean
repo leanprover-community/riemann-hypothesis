@@ -204,9 +204,9 @@ theorem succ {hres : FunctorialResolution.Blowup.StrictTransformIsBlowupOfClosed
   have hNt1 : AlgebraicGeometry.IsNoetherian ((ambientBlowupSeq hres hno T j hj I₀ E₀ s hpr).obj (t + 1)) :=
     isNoetherian_ambientBlowupSeq_schemeAt hres hno T j hj I₀ E₀ s hpr (t + 1) (by omega)
   have hNs1 : AlgebraicGeometry.IsNoetherian (s.toSequenceOfBlowups.schemeAt (t + 1)) :=
-    MarkedSequenceOfBlowups.isNoetherian_schemeAt hV s (t + 1) (by omega)
+    MarkedSequenceOfBlowups.isNoetherian_schemeAt effectiveCartierSupportContainsNoComponent hV s (t + 1) (by omega)
   have hNs : AlgebraicGeometry.IsNoetherian (s.toSequenceOfBlowups.schemeAt t) :=
-    MarkedSequenceOfBlowups.isNoetherian_schemeAt hV s t (by omega)
+    MarkedSequenceOfBlowups.isNoetherian_schemeAt effectiveCartierSupportContainsNoComponent hV s t (by omega)
   have hci : AlgebraicGeometry.IsClosedImmersion
       (restrictedEmbedding T j hj I₀ E₀ s hres hno hpr U₀ t) :=
     isClosedImmersion_restrictedEmbedding T j hj I₀ E₀ s hres hno hpr U₀ hU t

@@ -1247,7 +1247,7 @@ theorem isLocallyNoetherian_schemeAt : ∀ (T : MarkedIdealWithBoundary.{u}), T.
     i ≤ s.length → AlgebraicGeometry.IsLocallyNoetherian (s.schemeAt i) := by
   intro T hT s i hi
   have : AlgebraicGeometry.IsNoetherian (s.schemeAt i) :=
-    MarkedSequenceOfBlowups.isNoetherian_schemeAt hT s i hi
+    MarkedSequenceOfBlowups.isNoetherian_schemeAt effectiveCartierSupportContainsNoComponent hT s i hi
   infer_instance
 
 theorem isBalanced_comap_of_smooth : ∀ (T : MarkedIdealWithBoundary.{u}), T.IsAdmissible → ∀ (Y : Scheme.{u})

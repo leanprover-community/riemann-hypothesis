@@ -147,7 +147,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Rc8.norm_le_one_of_mem :
-    ∀ {l : ℕ} [Fact (Nat.Prime l)] (c : UpperTheory.V.HV.Coef l)
+    ∀ {l : ℕ} [inst : Fact (Nat.Prime l)] (c : UpperTheory.V.HV.Coef l)
     {x : Formalism.ConjugateSelfDual.Qbar l},
     x ∈ c.O →
       ‖x‖ ≤
@@ -430,7 +430,7 @@ namespace GlobalTheory.KA
 theorem spec_approx_cocycle (l : ℕ) [Fact l.Prime] {Γ X : Type} [Group Γ] [CommGroup X] [Fintype X] (r : ℕ)
     (ρ : Γ → Matrix (Fin 2) (Fin 2) (Qbar l)) (κ : Γ →* X) (Y : Γ → X → Fin 2 → Qbar l) (η : X → Qbar l)
     (τ : Γ → Qbar l) (hY : ShCoc ρ κ Y) (hρ : ∀ s i j, ‖ρ s i j‖ ≤ 1) (hYi : ∀ s x i, ‖Y s x i‖ ≤ 1)
-    (happ : ∀ s x, ‖η (x * (κ s)⁻¹) - η x * τ s‖ ≤ ‖((l : ℕ) : Qbar l) ^ r‖) :
+    (hη : ∀ x, ‖η x‖ ≤ 1) (happ : ∀ s x, ‖η (x * (κ s)⁻¹) - η x * τ s‖ ≤ ‖((l : ℕ) : Qbar l) ^ r‖) :
     ∀ s t i, ‖spec η Y (s * t) i - (spec η Y s + τ s • (ρ s *ᵥ spec η Y t)) i‖ ≤ ‖((l : ℕ) : Qbar l) ^ r‖ := by
   intro s t i
   have hre : (∑ x, η x • Y t (x * κ s)) = ∑ x, η (x * (κ s)⁻¹) • Y t x := by
@@ -1484,7 +1484,7 @@ theorem glob_of_shapiro_system_noLayer (l : ℕ) [Fact l.Prime] (Ω : Type) [Fie
   have happ : ∀ r s t i, ‖a r (s * t) i - (a r s + mat W s *ᵥ a r t) i‖ ≤ ‖((l : ℕ) : Qbar l) ^ r‖ := by
     intro r s t i
     have h := spec_approx_cocycle l r ρ (cycMod ℚ Ω l r)⁻¹ (Y r) (η r) (fun s => (θ s : Qbar l)) (hY r)
-      (fun s i j => norm_le_one_of_mem c (hρO s i j)) (hηn r)
+      (fun s i j => norm_le_one_of_mem c (hρO s i j)) (hYn r) (hηn r)
       (fun s x => by simpa only [MonoidHom.inv_apply, inv_inv] using hcong r s x) s t i
     rwa [hWθ s, Matrix.smul_mulVec]
   have hcoc : ∀ s t, y (s * t) = y s + mat W s *ᵥ y t :=

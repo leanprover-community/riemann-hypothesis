@@ -1033,21 +1033,21 @@ structure Loc8All : Prop where
 
   tCartanOnto : flipOneThree.CartanOnto
 
-  tKP1 : ∀ D : D7, flipOneThree.ArchimedeanSignatureMatching
+  tKP1 : ∀ D : D7, flipOneThree.ArchimedeanSignatureMatching D
 
   tKP2 : ∀ D : D7, flipOneThree.adm5
 
   tKP3 : ∀ D : D7, flipOneThree.adm6
 
-  tRES : ∀ D : D7, flipOneThree.adm7
+  tRES : ∀ D : D7, flipOneThree.adm7 D
 
   thresholdClauseOne : ∀ D : D7, flipOneThree.TransportedAlt fun C0 CYb Cde Ck CD Cb CE1 CE2 Cc =>
-    ∀ X : flipOneThree.Inst, flipOneThree.adm1 C0 CYb Cde Ck CD Cb CE1 CE2 Cc X
+    ∀ X : flipOneThree.Inst, flipOneThree.adm1 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X
 
   thresholdClauseThree : ∀ D : D7, flipOneThree.TransportedAlt fun C0 CYb Cde Ck CD Cb CE1 CE2 Cc =>
-    ∀ X : flipOneThree.Inst, flipOneThree.adm3 C0 CYb Cde Ck CD Cb CE1 CE2 Cc X
+    ∀ X : flipOneThree.Inst, flipOneThree.adm3 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X
 
-  instanceClauseEight : ∀ (D : D7) (X : flipOneThree.Inst), flipOneThree.adm8 X
+  instanceClauseEight : ∀ (D : D7) (X : flipOneThree.Inst), flipOneThree.adm8 D X
 
 theorem thresholds_and {P Q : ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → Prop} (hP : flipOneThree.TransportedAlt P) (hQ : flipOneThree.TransportedAlt Q) :
     flipOneThree.TransportedAlt fun C0 CYb Cde Ck CD Cb CE1 CE2 Cc =>
@@ -1105,7 +1105,7 @@ theorem first_theorem_admitted_closed (h70 : ExtremalProjectorTools) (h : Loc8Al
   obtain ⟨Ckap, Ct, Cs, k1, k2, k3, hExt, h2Ext, _, _, _, hAlt2, hAlt3, h4Ext, hR2, _⟩ := h15 CH CH CH CH CH ha ha ha ha ha
   obtain ⟨hS1, ha1, ha3⟩ := hT CH CH CH CH CH hb hb hb hb hb
   obtain ⟨CA, hCA, hSt⟩ := hS1 Ckap (Cs + Ckap)
-  have hconds1 : ∀ X : flipOneThree.Inst, flipOneThree.Conclusion1 C₀ CH CH CH CH CH CE1 CE2 Cc CA X := fun X =>
+  have hconds1 : ∀ X : flipOneThree.Inst, flipOneThree.Conclusion1 D C₀ CH CH CH CH CH CE1 CE2 Cc CA X := fun X =>
     hSt X ⟨ha1 X, Joints.weight_condition_of_integral_form D X hT12, ha3 X, h.tKP1 D, h.tKP2 D, h.tKP3 D, h.tRES D, h.instanceClauseEight D X,
       Joints.extension_gives_ratio_bound D C₀ CH CH CH CH CH CE1 CE2 Cm Ckap Cc Cs X k1.le hCm hAlt2 h2Ext,
       Joints.fourth_extension_gives_ratio_bound D C₀ CH CH CH CH CH CE1 CE2 Cc X h4Ext,
@@ -1161,7 +1161,7 @@ structure Loc8 : Prop where
 
   tKP3 : ∀ D : D7, flipOneThree.adm6
 
-  tRES : ∀ D : D7, flipOneThree.adm7
+  tRES : ∀ D : D7, flipOneThree.adm7 D
 
 theorem loc8All_of (h6 : Loc6) (h : Loc8) : Loc8All := by
   exact {

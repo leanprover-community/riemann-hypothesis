@@ -1468,7 +1468,7 @@ theorem UpperTheory.Kd.K4.mlTOf :
     SymEx → SApi → SInvApi → SBStab → SSlD → SCohApi → SCycZ → STopT → KatoTwistedClassNormCompatibleCyclotomic → KatoTwistedClassCompatibleModPowers → ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε) (N : ℕ) [NeZero N] (e : ℕ),
       Nat.Coprime l N → l ≠ 2 → 1 ≤ e → ∃ c₁ : ℕ, ∀ c₀ : ℕ, c₁ ≤ c₀ → ∀ (ι : Qbar l ≃+* ℂ) (gN : Newform (2 * e + 1)) (A : ValuationSubring Ω) (W : R2 Ω l)
       (pr : X.Fn l → Fin 2 → Qbar l) (x : ZMod N) (c d : ℕ) (gm : (ZMod l)ˣ → SL(2, ℤ)) (ψ : ZMod l → Qbar l) (cf : Coef l),
-      AdmissibleNewformZetaData ι e gN A W X pr N c d gm ψ cf → ∀ (p : ℕ) [NeZero p], p.Prime → Nat.Coprime p (l * N * c * d) →
+      AdmissibleNewformZetaData ι e gN A W X pr N x c d gm ψ cf → ∀ (p : ℕ) [NeZero p], p.Prime → Nat.Coprime p (l * N * c * d) →
       ∃ Y : ∀ r : ℕ, (Ω ≃ₐ[ℚ] Ω) → (ZMod p)ˣ × (ZMod (l ^ r))ˣ → Fin 2 → Qbar l,
         IsZTc X l pr W e ψ N p x c d (2 * e + 1) gm cf c₀ Y ∧ (∀ r s s' y, Y r (s * s') y = Y r s y + rhoK W e ψ s *ᵥ Y r s' (y * cycT l r p s)) ∧
         (∀ r, Y r = GlobalTheory.KA.push (Prod.map id (redL l r)) (Y (r + 1))) ∧ (∀ r y i, Continuous fun s => Y r s y i) ∧ (∀ r s u i, Y r s u i ∈ cf.O) := by

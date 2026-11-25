@@ -122,7 +122,7 @@ theorem succ {hres : FunctorialResolution.Blowup.StrictTransformIsBlowupOfClosed
       ((ambientBlowupSeq hres hno T j hj I₀ E₀ s hpr).obj (t + 1)) := inferInstance
   have hNs1 : AlgebraicGeometry.IsNoetherian
       ((MarkedBlowupSequenceData.ofMarkedSequence s).toBlowupSequenceData.obj (t + 1)) :=
-    MarkedSequenceOfBlowups.isNoetherian_schemeAt hV s (t + 1) (by omega)
+    MarkedSequenceOfBlowups.isNoetherian_schemeAt effectiveCartierSupportContainsNoComponent hV s (t + 1) (by omega)
   have hLNs1 : AlgebraicGeometry.IsLocallyNoetherian
       ((MarkedBlowupSequenceData.ofMarkedSequence s).toBlowupSequenceData.obj (t + 1)) := inferInstance
   have hsm : AlgebraicGeometry.Smooth (ambientBlowupSeqStructureMorphism hres hno T j hj I₀ E₀ s hpr t) :=

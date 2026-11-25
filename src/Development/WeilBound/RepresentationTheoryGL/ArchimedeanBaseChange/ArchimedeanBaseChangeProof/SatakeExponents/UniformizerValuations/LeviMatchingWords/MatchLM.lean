@@ -83,7 +83,7 @@ structure MOk (d : LocData E n) : Prop where
     ∀ (a : ℕ) (ha : a ≤ n), d.fix a w = ctMu (Nat.add_sub_cancel' ha) w (d.μ w) (U.lone (d.KB w))
   badI : ∀ w ∈ d.Bad, ¬ IsSplitAt w → ∃ k, 1 ≤ k ∧ IsLevel (MonoidHom.id _) (KL n w) (d.KB w) ∧
     (∀ γ : UL n w, γ ∈ d.KB w ↔ γ.1 ∈ MB.congK n w k) ∧
-    ∀ a ≤ n, d.fix a w = fun y => (((d.KB w).relIndex (KL n w) : ℕ) : ℂ) * MB.pairIndicatorMatch a (n - a) w k y
+    ∀ a ≤ n, d.fix a w = fun y => (((d.KB w).relIndex (KL n w) : ℕ) : ℂ) * MB.pairIndicatorMatch n a (n - a) w k y
 
 def MatchLMB2 : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∀ (n : ℕ) (d : LocData E n), d.Ok → MOk d →
   ∀ (a : ℕ) (ha : a ≤ n) (m : ℕ), ∀ w ∈ d.B,

@@ -208,7 +208,7 @@ theorem lowest_degree_le_iff_types (D : Formalism.BasicNotions.D7) (h2 : Formali
 
 open Classical in
 theorem combined_weight_of_nested_sets (D : Formalism.BasicNotions.D7) (X : Formalism.MainNotions.flipOneThree.Inst) (h2 : Formalism.MainNotions.CovariantDegrees.adm2)
-    (h15 : Formalism.MainNotions.CovariantDegrees.SaturatedLowerSetSpan) : Formalism.MainNotions.flipOneThree.adm8 X := by
+    (h15 : Formalism.MainNotions.CovariantDegrees.SaturatedLowerSetSpan) : Formalism.MainNotions.flipOneThree.adm8 D X := by
   intro N LL q J M hJ
   have hp := X.std.1.prime
   have hKz : CharZero (KK X.O) := dvr_fraction_field_charZero X.setting hp

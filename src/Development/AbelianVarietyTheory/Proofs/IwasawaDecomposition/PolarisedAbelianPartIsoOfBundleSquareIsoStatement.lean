@@ -317,7 +317,7 @@ theorem good_sq_iff (z : Z) (J' : (Z ⟶ X) → L.ι) :
     exact GlobalTheory.Algebraise.mem_wc.2 (by simpa using h ψ)
 
 theorem eq_const_of_fin_one {α β : Type} (J : α → (Fin 1 → β)) : J = fun ψ _ => J ψ 0 :=
-  funext fun ψ => funext fun _ => congrArg (J ψ) (Subsingleton.elim _ _)
+  funext fun ψ => funext fun κ => congrArg (J ψ) (Subsingleton.elim _ _)
 
 theorem sval_flat {a n m : ℤ} {g : Y ⟶ X} {t : LB.Sec (LB.LinComb L (K := Fin 1) (fun _ => g) (fun _ => m))}
     {s : LB.Sec (LB.LinComb (LB.LinComb L (K := Fin 1) (fun _ => 𝟙 X) (fun _ => a)) (K := Fin 1) (fun _ => g)
@@ -1232,7 +1232,7 @@ theorem gm_sqGen {L : LB X} {φ : K → (Y ⟶ X)} {ε : K → ℤ} (t : LB.Gen 
     gm r z _ ((sqGen L φ ε t).s j) = gm r z _ (t.s (fun k => j k 0)) ^ 2 := by
   exact (map_pow _ _ _).trans (congrArg (· ^ 2) (gm_res r z _ h _))
 
-theorem sqGen_isGen {L : LB X} {φ : K → (Y ⟶ X)} {ε : K → ℤ} {t : LB.Gen (LB.LinComb L φ ε)}
+theorem sqGen_isGen {L : LB X} (hL : L.IsLB) {φ : K → (Y ⟶ X)} {ε : K → ℤ} {t : LB.Gen (LB.LinComb L φ ε)}
     (ht : t.IsGen) : (sqGen L φ ε t).IsGen := by
   intro (i : K → Fin 1 → L.ι) (j : K → Fin 1 → L.ι)
   apply unit_ext
@@ -1293,8 +1293,8 @@ theorem sq_iso_respects_symmetry_pointwise : GlobalFnsSt → ∀ (R : Type) [Com
     have : η[G] ≫ ι[G] = η[G] := by simp
     exact congrArg (fun q => q.left) this
   have key := pmaps_of_section pg hL hL' (φ' := ![(ι[G]).left, 𝟙 G.left]) (φ := ![(ι[G]).left, 𝟙 G.left])
-    (ε := ![1, -1]) (sqGen _ _ _ U'.symG) (sqGen_isGen U'.symG_gen) (sqGen _ _ _ U.symG)
-    (sqGen_isGen U.symG_gen) (fun _ => Category.comp_id _) G.hom (eSec G) (Over.w η[G]) s₁
+    (ε := ![1, -1]) (sqGen _ _ _ U'.symG) (sqGen_isGen U'.LG.isLB U'.symG_gen) (sqGen _ _ _ U.symG)
+    (sqGen_isGen U.LG.isLB U.symG_gen) (fun _ => Category.comp_id _) G.hom (eSec G) (Over.w η[G]) s₁
     fun y J J' hJ hJ' => by
       have a := val_corr (good_of_sq hJ) U.symG_rig (𝟙 _)
       rw [val_pull (good_of_sq hJ), val_one, Category.id_comp] at a

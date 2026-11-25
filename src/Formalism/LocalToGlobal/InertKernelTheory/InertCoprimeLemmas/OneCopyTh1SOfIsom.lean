@@ -465,7 +465,7 @@ theorem ePartS (h5 : 5 ≤ p) (g2 g3 ε s2 a : ℂ_[p]) (hε0 : ε ≠ 0) (ha0 :
     rw [hsg]; simp [Formalism.L2.Th1.B.sgStar, Formalism.L2.Th1.B.sigma]
   set E := Formalism.MainNotions.TaylorLogMetric.ePhi1 lam Λ C wq with hE
   set l := Formalism.InvariantFactorPaths.G7.lgF ℂ_[p] p with hl
-  have hl0 : constantCoeff l = 0 := Formalism.L2.Th1.D.Pair.cc_lgF
+  have hl0 : constantCoeff l = 0 := Formalism.L2.Th1.D.Pair.cc_lgF hp2
   set q : PowerSeries ℂ_[p] := PowerSeries.C a⁻¹ * l with hq
   have hq0 : constantCoeff q = 0 := by rw [hq, map_mul, hl0, mul_zero]
   have hqS : HasSubst q := HasSubst.of_constantCoeff_zero' hq0
