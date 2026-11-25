@@ -47,10 +47,17 @@ COMMENTS = """query($owner: String!, $name: String!, $number: Int!, $after: Stri
 def load(filename):
     """Load another file of this directory as a module, such as `batch-labels.py`. Its name is
     `rh_` and the file's name without `.py`, with `_` for `-`: `rh_batch_labels`. Each call loads
-    a fresh copy."""
+    a fresh copy, and registers it in `sys.modules` under that name.
+
+    The module must be in `sys.modules` while it runs: up to Python 3.14, a dataclass in a file
+    with `from __future__ import annotations` looks its module up there, and fails at import
+    with `AttributeError: 'NoneType' object has no attribute '__dict__'` if it is missing.
+    `tests/test_scripts_start.py` checks that every script that loads files this way starts."""
     path = Path(__file__).with_name(filename)
-    spec = importlib.util.spec_from_file_location("rh_" + path.stem.replace("-", "_"), path)
+    name = "rh_" + path.stem.replace("-", "_")
+    spec = importlib.util.spec_from_file_location(name, path)
     module = importlib.util.module_from_spec(spec)
+    sys.modules[name] = module
     spec.loader.exec_module(module)
     return module
 
