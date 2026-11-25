@@ -43,7 +43,7 @@ baseline. `python3 -I scripts/tests/test_ci_cache_baseline.py` tests the selecti
 
 `.github/workflows/build.yml` builds every pull request to `main`, and every push to `main`, on a
 GitHub-hosted runner, with the exact record if there is one and the baseline otherwise. It fails
-if `lake build` fails, if the build log contains "declaration uses 'sorry'", or if
+if `lake build` fails, if the build log has Lean's warning that a declaration uses `sorry`, or if
 `scripts/PrintAxioms.lean` reports any axiom other than `propext`, `Classical.choice` and
 `Quot.sound` for the five theorems. It only reads the cache and publishes nothing.
 

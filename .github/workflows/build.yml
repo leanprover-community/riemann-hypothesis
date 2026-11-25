@@ -88,8 +88,9 @@ jobs:
           set -o pipefail
           lake build 2>&1 | tee build.log
           # Lake replays the saved messages of the modules it did not compile, so this covers
-          # restored modules too.
-          if grep -n "declaration uses 'sorry'" build.log; then
+          # restored modules too. Lean v4.35.0 prints the word in backticks, as in
+          # "declaration uses `sorry`"; up to v4.27.0 it was in quotes. The dots take either.
+          if grep -n 'declaration uses .sorry.' build.log; then
             echo "::error::The build reports declarations that use sorry."
             exit 1
           fi
