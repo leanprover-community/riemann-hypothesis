@@ -91,7 +91,9 @@ description doesn't mention, and pull requests reverted in the branch.
    edit. A pull request newly listed as left out is sent a comment as above. One whose entry
    changed, under the same heading or another, has this batch's comment brought up to date,
    which notifies nobody, so fixing a typo in a heading tells no one again. One whose entry is
-   removed is told so. A new comment, and `awaiting-author` again, comes only when another batch
+   removed is told so. When three or more pull requests leave the left-out lists at once and are
+   still listed elsewhere in the description, as when a heading is reworded so that it no longer
+   says "left out", none of them is told: the workflow only notes it in its log. A new comment, and `awaiting-author` again, comes only when another batch
    leaves a pull request out under a different kind of heading.
 
 ## What the workflow does

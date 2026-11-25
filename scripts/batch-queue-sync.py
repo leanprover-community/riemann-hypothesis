@@ -102,7 +102,9 @@ stays on them. The quote puts the pull requests it names in code spans, so that 
 mention each of them. A pull request this batch told before, whatever its entry and heading say
 now, or another batch told it is left out under the same heading, is not told again: that comment
 is brought up to date instead, which notifies nobody.
-One whose entry is removed from the description is told that too. A pull request that a batch
+One whose entry is removed from the description is told that too, unless three or more leave the
+left-out lists at once while the description still lists them: a heading was most likely
+reworded, and the run only logs it. A pull request that a batch
 being built contains, this one or another, is never told it is left out: the lower batch of a
 stack usually lists as left out what the batch on top of it takes.
 
@@ -240,6 +242,10 @@ LEFT_OUT = re.compile(r"<!-- batch-queue-left-out (\{.*?\}) -->")
 NO_LONGER_LEFT_OUT = "<!-- batch-queue-no-longer-left-out {number} -->"
 # A heading in a batch's description under which the pull requests listed are left out.
 LEFT_OUT_HEADING = re.compile(r"\b(?:left out|not included)\b", re.IGNORECASE)
+# When this many pull requests leave the left-out lists of a batch's description at once and the
+# description still lists them, a heading was most likely reworded: they are not told that they
+# are no longer left out (see `tell_left_out`).
+REWORDED = 3
 # In a batch pull request's text: the part this script writes, and its note to itself.
 BODY = "<!-- batch-queue -->"
 STATE = re.compile(r"<!-- batch-queue-state (\{.*\}) -->")
@@ -1273,18 +1279,28 @@ def left_out(body, repo):
     URL. Those under a heading that says "left out" or "not included" are the ones left out,
     up to the next heading or paragraph. A pull request listed twice keeps its first entry.
     """
+    found = {}
+    for heading, number, text in entries(body, repo):
+        if heading and LEFT_OUT_HEADING.search(heading):
+            found.setdefault(number, (heading, text))
+    return found
+
+
+def entries(body, repo):
+    """The list entries of a batch's description that start with a link to a pull request, as
+    (heading or None, number, entry) in order: what `left_out` reads, under any heading or none."""
     link = re.compile(rf"[-*]\s+(?:https://github\.com/{re.escape(repo)}/pull/|#)(\d+)\b", re.IGNORECASE)
-    found, heading = {}, None
+    found, heading = [], None
     for line in body.splitlines():
         text = line.strip()
         if not text or line[0].isspace():
             continue
         if line.startswith(("- ", "* ")):
             match = link.match(line)
-            if heading and match:
-                found.setdefault(int(match.group(1)), (heading, text[1:].strip()))
+            if match:
+                found.append((heading, int(match.group(1)), text[1:].strip()))
             continue
-        heading = text if text.endswith(":") and LEFT_OUT_HEADING.search(text) else None
+        heading = text if text.endswith(":") else None
     return found
 
 
@@ -1330,7 +1346,9 @@ def tell_left_out(gh, batch, pulls, held, log):
     there. Only a different batch leaving it out for a different kind of reason tells it again.
     The quote names pull requests and issues of this repository in code spans (see `unlinked`).
     One whose entry has gone from the description since it was told is told that, if this
-    batch's comment told it. What a batch being built contains, this one or another, as `held`
+    batch's comment told it, unless `REWORDED` or more leave the left-out lists at once while the
+    description still lists them: a heading was most likely reworded, and they are only logged
+    and taken off the note. What a batch being built contains, this one or another, as `held`
     says, is never told it is left out: the lower batch of a stack usually lists as left out what
     the batch on top of it takes. The note's `left` remembers, for each pull request, a digest of
     the entry it was last told about for this batch, and is brought up to date as each is told.
@@ -1340,9 +1358,18 @@ def tell_left_out(gh, batch, pulls, held, log):
     note, number, since = batch["note"], batch["number"], 0
     found, left = note["members"], note["left"]
     listed = left_out(pulls[number]["body"], gh.repo)
+    # No longer left out, but still in the description, as when a heading no longer says so.
+    anywhere = {other for _, other, _ in entries(pulls[number]["body"], gh.repo)}
+    moved = sorted((key for key in left if int(key) not in listed and int(key) in anywhere and int(key) in pulls
+                    and key not in found and not held.get(key) and not pulls[int(key)]["batch"]), key=int)
+    if len(moved) >= REWORDED:
+        log.append(f"the description of the batch #{number} no longer lists " + ", ".join(f"#{key}" for key in moved)
+                   + " as left out, but still lists them: was a heading reworded? They were not told")
+    else:
+        moved = []
     for key in sorted(set(left) | {str(other) for other in listed}, key=int):
         pr = pulls.get(int(key))
-        if pr is None or key in found or held.get(key) or pr["batch"]:
+        if pr is None or key in found or held.get(key) or pr["batch"] or key in moved:
             left.pop(key, None)
             continue
         entry = listed.get(int(key))
