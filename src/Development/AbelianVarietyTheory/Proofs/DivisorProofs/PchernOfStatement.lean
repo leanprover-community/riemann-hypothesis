@@ -377,7 +377,7 @@ theorem exists_affine_le_of_cover {X : Scheme.{0}} {N : Type} (𝒰 : N → X.Op
 theorem exists_charts_subordinate : ∀ {I : Type} [Fintype I] {g : ℕ} {Λ : Type} [AddCommGroup Λ] {F : Fam I g Λ} {B : Type} [CommRing B] {X : Scheme.{0}} {s : X ⟶ Sp B} {σ : B →+* Hol F.V} (u : Unif F s σ), X.IsSeparated → ∀ {N : Type} (𝒰 : N → X.Opens), ⨆ i, 𝒰 i = ⊤ → ∃ (K : Charts F) (r : Real K s σ) (j : K.K → N), K.Rich ∧ (∀ l k', ∃ k, K.le l k' k ∧ K.le (-l) k k') ∧ r.IsFor u ∧ ∀ k, ⊤ ≤ r.x k ⁻¹ᵁ 𝒰 (j k) := by
   intro I _ g Λ _ F B _ X s σ u hX N 𝒰 h𝒰
   let Q : Opens (Tot I g) → Prop := fun W ↦ ∃ i U, IsAffineOpen U ∧ U ≤ 𝒰 i ∧ ∀ p ∈ W, ⊤ ≤ u.E p ⁻¹ᵁ U
-  obtain ⟨r, hr, hx⟩ := GlobalTheory.T.exists_analyticChartsRealization_of_affine u hX (Charts.std F Q) fun k ↦ by
+  obtain ⟨r, hr, hx⟩ := GlobalTheory.AnPer.exists_real_isFor u hX (Charts.std F Q) fun k ↦ by
     obtain ⟨i, U, h1, -, h3⟩ := k.2.2
     exact ⟨U, h1, h3⟩
   refine ⟨Charts.std F Q, r, fun k ↦ k.2.2.choose, ⟨fun p hp ↦ ?_, fun l k₁ k₂ p h₁ h₂ ↦ ?_⟩, fun l k' ↦ ?_, hr,
@@ -871,7 +871,7 @@ theorem pchern_of (hsep : ∀ {R : Type} [CommRing R] (A : Over (Sp R)) [GrpObj 
   linear_combination hs'
 
 theorem pchern : GlobalTheory.AnPer.PChern (-1) :=
-  pchern_of @_root_.GlobalTheory.T.abelianScheme_isSeparated_of_affine_base @_root_.GlobalTheory.T.exists_translationClosed_charts_subordinate_to_cover @_root_.GlobalTheory.T.isCrystallineChern_on_analytic_thickenings @_root_.GlobalTheory.T.exists_frame_factorOfAutomorphy_log @_root_.GlobalTheory.T.exists_units_comparing_lifted_transitions_factor @_root_.GlobalTheory.T.log_cocycle_cohomologous_alt @_root_.GlobalTheory.T.cup_period_classes_sum_const @_root_.GlobalTheory.T.const_biadditive_coboundary_symmetric @GlobalTheory.pi_mul_hermitian_alternation @_root_.GlobalTheory.T.degZeroCocycle_exists_coboundary_of_rich_based @_root_.GlobalTheory.T.exists_holomorphic_param_of_degZero_compatible
+  pchern_of @_root_.GlobalTheory.abelianScheme_left_isSeparated_of_affine @_root_.GlobalTheory.T.exists_translationClosed_charts_subordinate_to_cover @_root_.GlobalTheory.T.isCrystallineChern_on_analytic_thickenings @_root_.GlobalTheory.T.exists_frame_factorOfAutomorphy_log @_root_.GlobalTheory.T.exists_units_comparing_lifted_transitions_factor @_root_.GlobalTheory.T.log_cocycle_cohomologous_alt @_root_.GlobalTheory.T.cup_period_classes_sum_const @_root_.GlobalTheory.T.const_biadditive_coboundary_symmetric @GlobalTheory.pi_mul_hermitian_alternation @_root_.GlobalTheory.T.degZeroCocycle_exists_coboundary_of_rich_based @_root_.GlobalTheory.T.exists_holomorphic_param_of_degZero_compatible
 
 end GlobalTheory.AnPer.ChernClause
 end -- clump:auto

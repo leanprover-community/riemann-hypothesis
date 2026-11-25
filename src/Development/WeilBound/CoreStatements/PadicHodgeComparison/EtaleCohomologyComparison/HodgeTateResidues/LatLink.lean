@@ -142,15 +142,12 @@ theorem factorial_mul_dpow_xi (n : ℕ) :
 theorem pk_toB_algebraMap (k : ℕ) (w : AInf ℂ_[l] l) :
     pk l k (toBDeRhamPlus (normInteger ℂ_[l]) l (algebraMap (AInf ℂ_[l] l) 𝔸 w)) = fk l k w := rfl
 
-
 theorem pk_toB_mem (k M : ℕ) {s : 𝔸} (hs : s ∈ ACris.ACrisZero ℂ_[l] l) :
     pk l k (toBDeRhamPlus (normInteger ℂ_[l]) l s) ∈ sub (fk l k) (xi0 l) l M :=
   map_adjoin_mem (W := AInf ℂ_[l] l) (A := 𝔸) (B := BdRp l) (C := Bk l k)
     (toBDeRhamPlus (normInteger ℂ_[l]) l) (pk l k) (fk l k) (pk_toB_algebraMap l k) (xi0 l)
     (Fact.out : l.Prime).ne_zero M (fun n => ACris.dpow n (xi0 l))
     (factorial_mul_dpow_xi l) (mem_adjoin_dpow l hs)
-
-
 
 theorem cris_in (l : ℕ) [Fact l.Prime] (M k : ℕ) (c : Acris l) :
     Lat.pk l k (ACris.iota ℂ_[l] l c) ∈ Lat.sub (Lat.fk l k) (xi0 l) l M := by
@@ -291,15 +288,6 @@ namespace GlobalTheory.CompanionTheory.LatIdeal
 section
 variable {W B : Type} [CommRing W] [CommRing B] [Algebra ℚ B] (f : W →+* B) (ξ : W) (l M : ℕ)
 
-theorem dpE_succ_mem_IB (i : ℕ) : Lat.dpE f ξ l M (i + 1) ∈ Lat.IB f ξ := by
-  have h1 : Lat.η f ξ l M ∈ Lat.IB f ξ := by
-    unfold Lat.η Lat.IB
-    rw [Algebra.smul_def]
-    exact Ideal.mul_mem_left _ _ (Ideal.mem_span_singleton_self _)
-  unfold Lat.dpE
-  rw [Algebra.smul_def, pow_succ]
-  exact Ideal.mul_mem_left _ _ (Ideal.mul_mem_left _ _ h1)
-
 theorem dpE_zero : Lat.dpE f ξ l M 0 = 1 := by
   unfold Lat.dpE
   rw [pow_zero, Nat.factorial_zero, Nat.cast_one, inv_one, one_smul]
@@ -414,7 +402,7 @@ theorem mem_I_iff (m : ℕ) (H : Lat.Hyp f ξ l m) (x : Lat.A f ξ l M) :
     have hS : c.sum (fun i w => f w * Lat.dpE f ξ l M (i + 1)) ∈ Lat.IB f ξ :=
       by
         unfold Finsupp.sum
-        exact Ideal.sum_mem _ (fun i _ => Ideal.mul_mem_left _ _ (dpE_succ_mem_IB f ξ l M i))
+        exact Ideal.sum_mem _ (fun i _ => Ideal.mul_mem_left _ _ (GlobalTheory.CompanionTheory.LatPrime.dpE_succ_mem_IB f ξ l M i))
     have hw : f w₀ ∈ Lat.IB f ξ := by
       have h2 := sub_mem hx hS
       rwa [hc, add_sub_cancel_right] at h2
@@ -435,7 +423,7 @@ theorem mem_I_iff (m : ℕ) (H : Lat.Hyp f ξ l m) (x : Lat.A f ξ l M) :
     ring
   · rintro ⟨n, c, hc⟩
     rw [hc]
-    exact Ideal.sum_mem _ (fun i _ => Ideal.mul_mem_left _ _ (dpE_succ_mem_IB f ξ l M _))
+    exact Ideal.sum_mem _ (fun i _ => Ideal.mul_mem_left _ _ (GlobalTheory.CompanionTheory.LatPrime.dpE_succ_mem_IB f ξ l M _))
 
 end
 
@@ -805,7 +793,6 @@ theorem pInv_eq_tBdR {K : IntermediateField ℚ_[l] (PadicAlgCl l)} (t : (per l 
   exact (RingEquiv.symm_apply_eq _).2 rfl
 
 end GlobalTheory.CompanionTheory.LatPdpB
-
 
 open GlobalTheory.CompanionTheory.LatPdpB in
 theorem GlobalTheory.CompanionTheory.LatPdpB.dividedPowerFiltration_lev_eq_span_pow : ∀ {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ_[l] (PadicAlgCl l)} {M : ℕ} (h : LevHyp l K M) (k : ℕ), ∀ (r : ℕ) (t : (per l K).P), (t : (per l K).B) = (per l K).tB → pdP (lev h k).γB r = Ideal.span {(lev h k).toB t ^ r} := by

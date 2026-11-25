@@ -422,7 +422,6 @@ theorem exists_hom (F : Type) [Field F] [NumberField F] (A K : Type) [CommRing A
   rw [← map_mul]
   exact congrArg φ (Subtype.ext hab)
 
-
 open GlobalTheory.TrueGeo.HorizPt in
 theorem main : RegLocSt := by
   intro F _ _ Y V U₀ W hW v g hf x hx hxv
@@ -1131,12 +1130,10 @@ namespace GlobalTheory.EtLog
 
 variable {X : Scheme.{0}} [IsIntegral X] {U : X.Opens} (hU : IsAffineOpen U)
 
-
 include hU in
 theorem unitAt_fnOf_iff_not_mem {y : X} (hy : y ∈ U) (s : Γ(X, U)) :
     UnitAt y (fnOf U (gen_mem hy) s) ↔ s ∉ (hU.primeIdealOf ⟨y, hy⟩).asIdeal := by
   rw [unitAt_fnOf_iff hy, GlobalTheory.DetHT.RegLoc.mem_basicOpen_iff hU hy]
-
 
 include hU in
 theorem regAt_iff_frac {y : X} (hy : y ∈ U) (g : X.functionField) :
@@ -1151,7 +1148,6 @@ theorem regAt_iff_frac {y : X} (hy : y ∈ U) (g : X.functionField) :
       rw [← e, mul_inv_cancel_right₀ hu.ne_zero]
     rw [eg]
     exact (regAt_fnOf hy _ a).mul hu.inv.regAt
-
 
 include hU in
 theorem unitAt_iff_frac {y : X} (hy : y ∈ U) (g : X.functionField) :
@@ -1171,7 +1167,6 @@ theorem unitAt_iff_frac {y : X} (hy : y ∈ U) (g : X.functionField) :
     rw [eg]
     exact hua.mul hu.inv
 
-
 include hU in
 theorem primeIdealOf_le_of_specializes {y z : X} (hy : y ∈ U) (hz : z ∈ U) (hzy : z ⤳ y) :
     (hU.primeIdealOf ⟨z, hz⟩).asIdeal ≤ (hU.primeIdealOf ⟨y, hy⟩).asIdeal := by
@@ -1179,7 +1174,6 @@ theorem primeIdealOf_le_of_specializes {y z : X} (hy : y ∈ U) (hz : z ∈ U) (
   by_contra hs'
   rw [← GlobalTheory.DetHT.RegLoc.mem_basicOpen_iff hU hy] at hs'
   exact (GlobalTheory.DetHT.RegLoc.mem_basicOpen_iff hU hz s).1 (hzy.mem_open (X.basicOpen s).isOpen hs') hs
-
 
 include hU in
 theorem exists_specializes_of_le {y : X} (hy : y ∈ U) (Q : Ideal Γ(X, U)) (hQ : Q.IsPrime)
@@ -1271,7 +1265,6 @@ section -- clump:auto
 @[expose] public section
 
 namespace GlobalTheory.DI
-
 
 set_option autoImplicit false in
 theorem _root_.GlobalTheory.DI.logLift_of_unit_mem_map : ∀ {K Kt : Type} [Field K] [CommRing Kt] (p : ℕ) [Fact p.Prime] [CharP K p]
@@ -1386,7 +1379,6 @@ section -- clump:auto
 open CategoryTheory AlgebraicGeometry TopologicalSpace GlobalTheory GlobalTheory.DI GlobalTheory.LogDR GlobalTheory.LogPair GlobalTheory.Cartier ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 namespace GlobalTheory.LogPair
-
 
 set_option autoImplicit false in
 open CategoryTheory AlgebraicGeometry TopologicalSpace in
@@ -1651,7 +1643,6 @@ open CategoryTheory AlgebraicGeometry TopologicalSpace GlobalTheory GlobalTheory
 
 namespace GlobalTheory.DI
 
-
 open CategoryTheory AlgebraicGeometry TopologicalSpace in
 theorem _root_.GlobalTheory.DI.mem_locRing_iff_exists_stalkIm : ∀ {X Y : Scheme.{0}} [IsIntegral X] (π : X ⟶ Y) (y : X) (h : π (genericPoint X) ⤳ π y), Function.Surjective (π.stalkMap y).hom → ∀ c : X.functionField, c ∈ _root_.GlobalTheory.LogDR.locRing y ↔ ∃ z ∈ _root_.GlobalTheory.DI.stalkIm h, (π.stalkMap (genericPoint X)).hom z = c := by
   intro X Y _ π y h hsurj c
@@ -1719,14 +1710,6 @@ open CategoryTheory AlgebraicGeometry TopologicalSpace GlobalTheory GlobalTheory
 
 namespace GlobalTheory.DI
 
-theorem lifted_stalkMap_germ_appLE {Y Z : Scheme.{0}} (f : Z ⟶ Y) (W : Y.Opens) (W' : Z.Opens)
-    (h : W' ≤ f ⁻¹ᵁ W) (z : Z) (hz : z ∈ W') (s : Γ(Y, W)) :
-    (f.stalkMap z).hom ((Y.presheaf.germ W (f z) (h hz)).hom s) =
-      (Z.presheaf.germ W' z hz).hom ((f.appLE W W' h).hom s) := by
-  have h1 := Scheme.Hom.germ_stalkMap_apply f W z (h hz) s
-  have h2 := TopCat.Presheaf.germ_res_apply Z.presheaf (homOfLE h) z hz ((f.app W).hom s)
-  exact h1.trans h2.symm
-
 theorem isLifted_of_sncCharts : ∀ (p : ℕ) [Fact p.Prime] (Y X : Scheme.{0}) [IsIntegral X] (g : Y ⟶ Sp (ZMod (p ^ 2))) (f : X ⟶ Sp (ZMod p)) (π : X ⟶ Y), IsPullback π f g (spMap (ZMod.castHom (dvd_pow_self p two_ne_zero) (ZMod p))) → ∀ {n s : ℕ} (L : Fin s → LB Y) (σ : ∀ i, (L i).Sec), (∀ i, (L i).IsLB) → ∀ {ι : Type} [Nonempty ι] (C : ι → SncChart g n L σ) (Z : Set X) (U : ι → X.Opens) (hU : ∀ i, U i ≤ π ⁻¹ᵁ (C i).U) (hgen : ∀ i, genericPoint X ∈ U i) (x : ι → Fin n → X.functionFieldˣ) (J : ι → Finset (Fin n)), (∀ i l, (x i l : X.functionField) = fnOf (U i) (hgen i) ((π.appLE (C i).U (U i) (hU i)).hom ((C i).t l))) → (∀ i l, l ∈ J i → ∃ c, (C i).e c = some l) → (∀ i, IsLogChart Z (U i) (x i) (J i)) → IsLifted p Z U x := by
   intro p _ Y X _ q f π hpb n s L σ hL ι _ C Z U hU hgen x J hx hJ hchart
   obtain ⟨i₁⟩ := ‹Nonempty ι›
@@ -1746,7 +1729,7 @@ theorem isLifted_of_sncCharts : ∀ (p : ℕ) [Fact p.Prime] (Y X : Scheme.{0}) 
       (x i l : X.functionField) := by
     intro i l
     rw [hx i l]
-    exact lifted_stalkMap_germ_appLE π (C i).U (U i) (hU i) (genericPoint X) (hgen i) ((C i).t l)
+    exact GlobalTheory.ZM.stalkMap_germ_appLE π (C i).U (U i) (hU i) (genericPoint X) (hgen i) ((C i).t l)
   refine ⟨Y.presheaf.stalk (π (genericPoint X)), inferInstance, πK, F, hflat, ?_, ?_, ?_⟩
   · intro i z
     obtain ⟨w, hw⟩ := hF1 i z

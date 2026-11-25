@@ -613,7 +613,6 @@ theorem map_eq_zero_iff_repr {F E R R' ι : Type} [Field F] [Field E] [Algebra F
 
 variable {F : Type} [Field F] [NumberField F]
 
-
 open Classical in
 def idemF (P : HeightOneSpectrum (𝓞 F) → Prop) : Af F :=
   ⟨fun v => if P v then 1 else 0, Filter.Eventually.of_forall fun v => by
@@ -880,7 +879,7 @@ theorem split_off (D : D7) (V : HSp D) (A B : Finset (Pl D)) (hAB : Disjoint B A
     (hz : z ∈ grpOff V (fun p => p ∉ A ∧ p ∉ B)) :
     ∃ a ∈ GinfC V, ∃ x ∈ grpAt V (· ∈ A), ∃ y ∈ grpAt V (· ∈ B), z = a * y * x := by
   obtain ⟨-, -, -, ⟨e, he⟩, -⟩ := GlobalTheory.AdelicSplit.adelic_split D V
-  obtain ⟨-, -, hf1, hf2, -, ⟨e', he'⟩, hO, hI, -⟩ := GlobalTheory.T.unitaryFiniteAdelicGroup_split_finitePlaceSet D V B
+  obtain ⟨-, -, hf1, hf2, -, ⟨e', he'⟩, hO, hI, -⟩ := GlobalTheory.FinPl.SetCut.grp_split D V B
   have h1 := he (e.symm z)
   rw [e.apply_symm_apply] at h1
   have h2 := he' (e'.symm (e.symm z).2)
@@ -909,13 +908,11 @@ theorem split_off (D : D7) (V : HSp D) (A B : Finset (Pl D)) (hAB : Disjoint B A
 
 theorem comm_at (D : D7) (V : HSp D) (A B : Finset (Pl D)) (hAB : Disjoint B A) {x y : GA D V} (hx : x ∈ grpAt V (· ∈ A))
     (hy : y ∈ grpAt V (· ∈ B)) : y * x = x * y := by
-  obtain ⟨-, -, -, -, hcm, -, hO, hI, -⟩ := GlobalTheory.T.unitaryFiniteAdelicGroup_split_finitePlaceSet D V B
+  obtain ⟨-, -, -, -, hcm, -, hO, hI, -⟩ := GlobalTheory.FinPl.SetCut.grp_split D V B
   refine hcm y hy x ?_
   have hx' : x ∈ GfC V ⊓ grpOff V (· ∈ B) :=
-    ⟨(GlobalTheory.T.unitaryFiniteAdelicGroup_split_finitePlaceSet D V A).2.2.1 hx, hO _ _ (fun p hp h => Finset.disjoint_left.1 hAB h hp) hx⟩
+    ⟨(GlobalTheory.FinPl.SetCut.grp_split D V A).2.2.1 hx, hO _ _ (fun p hp h => Finset.disjoint_left.1 hAB h hp) hx⟩
   rwa [hI] at hx'
-
-
 
 theorem locFin : ∀ (D : D7) (c : Comm D) (v : VCom c) (t : Tup c) (w : VTup t), c.Is → v.Is → t.Is → VForm v w → OffLaw v w → GSupp (t := t) v → QFin v w → t.LocFin := by
   classical
@@ -928,8 +925,8 @@ theorem locFin : ∀ (D : D7) (c : Comm D) (v : VCom c) (t : Tup c) (w : VTup t)
     (v.b (j + 1)) hF.disjG (hv.sd (j + 1) hj1) (hv.b (j + 1)) hJG hJGc hJGo hKQ hKQc hKQo
   have hone : InK (c.V (j + 1)) (v.N (j + 1)) (offP v w) 1 := ⟨one_mem _, fun y _ => by simp [Formalism.L2.Theta.mt]⟩
 
-  have VGQ := GlobalTheory.T.unitaryFiniteAdelicGroup_split_finitePlaceSet D (c.V (j + 1)) w.Q
-  have VGG := GlobalTheory.T.unitaryFiniteAdelicGroup_split_finitePlaceSet D (c.V (j + 1)) v.gP
+  have VGQ := GlobalTheory.FinPl.SetCut.grp_split D (c.V (j + 1)) w.Q
+  have VGG := GlobalTheory.FinPl.SetCut.grp_split D (c.V (j + 1)) v.gP
   have hQG : ∀ p, p ∈ w.Q → ¬ p ∈ v.gP := fun p hp hg => Finset.disjoint_left.1 hF.disjG hp hg
   have hGQ : ∀ p, p ∈ v.gP → ¬ p ∈ w.Q := fun p hg hp => hQG p hp hg
   have hQoff : ∀ p, p ∈ w.Q → ¬ offP v w p := fun p hp h' => h'.2 hp
@@ -1028,7 +1025,7 @@ theorem locFin : ∀ (D : D7) (c : Comm D) (v : VCom c) (t : Tup c) (w : VTup t)
     obtain ⟨ε, hε, rfl⟩ := Finset.mem_image.1 (Finsupp.mapDomain_support hg)
     obtain ⟨-, -, hrf, -⟩ := GlobalTheory.AdelicSplit.adelic_split D (c.V (j + 1))
     have gO0 : ∀ (P P' : Pl D → Prop), (∀ p, P p → ¬ P' p) → grpAt (c.V j) P ≤ grpOff (c.V j) P' :=
-      (GlobalTheory.T.unitaryFiniteAdelicGroup_split_finitePlaceSet D (c.V j) w.Q).2.2.2.2.2.2.1
+      (GlobalTheory.FinPl.SetCut.grp_split D (c.V j) w.Q).2.2.2.2.2.2.1
     have hεG : ε ∈ grpOff _ (· ∈ v.gP) := gO0 _ _ hQG (heQ ε hε)
     have hεO : ε ∈ grpOff _ (offP v w) := gO0 _ _ hQoff (heQ ε hε)
     have omm : ∀ (a a' : GA D (c.V j)) (b b' : GA D (c.V (j + 1))) f, t.om j (a, b) (t.om j (a', b') f) = t.om j (a * a', b * b') f :=
@@ -1130,8 +1127,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Un
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.seeSawLastTwoSteps_doubleLiftPeriod_value : ∀ (D : D7) (c : Comm D) (v : VCom c) (𝒯 : Type) (t : 𝒯 → Tup c) (w : ∀ s, VTup (t s)), c.Is → c.VolLast → v.Is → (∀ s, (t s).Is) → (∀ s, PlaceLaws v (w s)) → LastLaw D → SeeLast D → FlatLaw D → BiAct D → ValLastX t := by
-  first | exact @GlobalTheory.SeeSawLastValue.valLast
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SeeSawLastTwoStepsDoubleLiftPeriodValueStatement =====
@@ -1155,7 +1150,7 @@ theorem placeLaws_finiteIntegrals : ∀ (D : D7) (c : Comm D) (v : VCom c) (𝒯
   refine ⟨fun s => ?_, ?_, ?_⟩
   · exact GlobalTheory.T.locally_finite_of_tuple_conditions D c v (t s) (w s) hc hv (ht s) (hp s).form (hp s).off (hp s).gs (hp s).qfin
   · exact GlobalTheory.T.seeSaw_finiteIntegrals_doubleStep_value D c v 𝒯 t w hc hv ht hp (GlobalTheory.T.doubleStep_eq_two_thetaColumnLifts D) (GlobalTheory.T.flatThetaMaps_converge_thetaFunctions D) (GlobalTheory.T.seeSawWeilBiAction_commutes D)
-  · exact GlobalTheory.T.seeSawLastTwoSteps_doubleLiftPeriod_value D c v 𝒯 t w hc hvl hv ht hp (GlobalTheory.Unf.LastSteps.lastLaw D) (GlobalTheory.T.lastSeeSaw_thetaIdentity D)
+  · exact GlobalTheory.SeeSawLastValue.valLast D c v 𝒯 t w hc hvl hv ht hp (GlobalTheory.Unf.LastSteps.lastLaw D) (GlobalTheory.T.lastSeeSaw_thetaIdentity D)
       (GlobalTheory.T.flatThetaMaps_converge_thetaFunctions D) (GlobalTheory.T.seeSawWeilBiAction_commutes D)
 
 end GlobalTheory.SeeSaw

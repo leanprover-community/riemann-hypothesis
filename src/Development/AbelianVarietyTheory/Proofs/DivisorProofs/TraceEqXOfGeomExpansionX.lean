@@ -414,7 +414,6 @@ theorem conv_mul_left {G : Type} [Group G] [MeasurableSpace G] [MeasurableMul G]
 
 end GlobalTheory.TrMult.OneLevel
 
-
 open GlobalTheory.TrMult.OneLevel in
 theorem GlobalTheory.TrMult.oneLevel : ∀ (D : D7) (V : HSp D) (T : TypeDataG V) (U : AuxiliaryPlaceHermitianSpace V), ∃ K : Subgroup (GfC V), IsOpen (K : Set (GfC V)) ∧ IsCompact (K : Set (GfC V)) ∧ ∀ (μf : ∀ v, Measure (GLoc D.sp.cm.sig V.gram v)), (∀ v, (μf v).IsHaarMeasure) → ∀ ff, IsTestFin T U μf ff → SphRest T U ff → IsFinFamily D.sp.cm.sig V.gram (frameLat V) ff ∧ ∀ k ∈ K, ∀ g, finFn V ff (k * g) = finFn V ff g := by
   intro D V T U
@@ -852,8 +851,6 @@ theorem map_isHaar_rightInv {F E : Type} [Field F] [Field E] [Algebra F E] {σ :
   rw [hc]
   exact map_mul_left_eq_self _ g
 
-
-
 open GlobalTheory.Orb in
 theorem phi_map : ∀ (D : D7) (V V' : HSp D) (r : ℕ) (P : PPol D.sp.cm.sig r) (v : HeightOneSpectrum (𝓞 D.host.F)) (j : GLoc D.sp.cm.sig V.gram v ≃ₜ* GLoc D.sp.cm.sig V'.gram v), IsLatticeConj (frameLat V) (frameLat V') j → ∀ (μ : Measure (GLoc D.sp.cm.sig V.gram v)) (dt : Measure (Tor P (Fv D.host.F v))) (f : GLoc D.sp.cm.sig V.gram v → ℂ), μ.IsHaarMeasure → dt.IsHaarMeasure → PhiOK (J := V.gram) μ dt f → PhiOK (J := V'.gram) (μ.map j) dt (f ∘ j.symm) → Phi (J := V'.gram) (μ.map j) dt (f ∘ j.symm) = Phi (J := V.gram) μ dt f := by
   intro D V V' r P v j hj μ dt f hμ hdt hok hok'
@@ -1091,7 +1088,6 @@ def equivCompSymm' {G H : Type} [Group G] [Group H] [TopologicalSpace G] [Topolo
 end GlobalTheory.TrMultEnd
 
 namespace GlobalTheory.TrMultEnd
-
 
 end GlobalTheory.TrMultEnd
 end -- clump:auto
@@ -1613,8 +1609,6 @@ def TraceEqX : Prop :=
           ∃ c : ℂ, HasTrace (RopG V μ (tensor D.sp.cm.sig V.gram fa ff)) c ∧
             HasTrace (RopG V' μ' (tensor D.sp.cm.sig V'.gram fa' (transfer j ff))) c
 
-
-
 theorem realStableX : RealStableX := by
   intro D V lam S M μa fa hodd hlam hM hμa hfa hO P ρ dt hdt
   have hf := hfa ρ
@@ -1732,8 +1726,6 @@ def TRCusp' : Prop :=
       σ.IsIrreducible → IsAdmissible σ → HasTypeVec T σ →
       mCuspDS μ σ M = mCuspDS μ' (σ.comp Φ.symm.toMulEquiv.toMonoidHom) M'
 
-
-
 theorem trCusp'_of_steps (hL : LocalPC) (hF : SpecFin) (hT : GlobalTheory.TrMult.SpecTraceX) (hS : Separation)
     (hE : TraceEqX) : TRCusp' := by
   intro D V lam S M T hodd hgap hlam hnf V' hr S' M' hlam' j hj Φ hΦ μ _ _ μ' _ _ W _ _ σ hirr hadm htv
@@ -1794,7 +1786,7 @@ theorem trCusp'_of_steps (hL : LocalPC) (hF : SpecFin) (hT : GlobalTheory.TrMult
         mCuspDS μ ρ M ≠ 0 → ¬ GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets.IsIntegralOp ν ρ (finFn V ff) 0 → ∃ i, Nonempty (ρ.Equiv (τ i)) := by
     intro ff hffin hKinv X _ _ ρ hi ha hm hz
     haveI := hν.1
-    obtain ⟨x, hx0, hx⟩ := (GlobalTheory.T.admissibleRep_hasTrace_finiteAdelicPureTensorFunction D V ν ff hffin X ρ ha).2 K hKo hKc hKinv hz
+    obtain ⟨x, hx0, hx⟩ := (GlobalTheory.FinTrace.hasTrace_finFn D V ν ff hffin X ρ ha).2 K hKo hKc hKinv hz
     obtain ⟨i, ⟨e⟩⟩ := hcov₁ X ρ hi ha hm ⟨x, hx0, hx⟩
     obtain ⟨k, ⟨e'⟩⟩ := hA i
     exact ⟨k, ⟨e.trans e'⟩⟩
@@ -1811,7 +1803,7 @@ theorem trCusp'_of_steps (hL : LocalPC) (hF : SpecFin) (hT : GlobalTheory.TrMult
       obtain ⟨g₀, rfl⟩ := Φ.surjective g
       change finFn V' (transfer j ff) (Φ k₀ * Φ g₀) = _
       rw [← map_mul, hfinFn, hfinFn, hKinv k₀ hk₀]
-    obtain ⟨x, hx0, hx⟩ := (GlobalTheory.T.admissibleRep_hasTrace_finiteAdelicPureTensorFunction D V' (ν.map Φ) (transfer j ff) hffin X ρ ha).2 K' hK'o hK'c hKinv' hz
+    obtain ⟨x, hx0, hx⟩ := (GlobalTheory.FinTrace.hasTrace_finFn D V' (ν.map Φ) (transfer j ff) hffin X ρ ha).2 K' hK'o hK'c hKinv' hz
     obtain ⟨i, ⟨e⟩⟩ := hcov₂ X ρ hi ha hm ⟨x, hx0, hx⟩
     obtain ⟨k, ⟨e'⟩⟩ := hB i
     exact ⟨k, ⟨e.trans ((equivCompSymm' (σ₂ i) Φ).trans (equivComp e' Φ.symm.toMulEquiv.toMonoidHom))⟩⟩
@@ -1902,8 +1894,6 @@ theorem params_match' : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : T
     rw [enum_fst ((R.MW i (sg0 D A)).enum ρ) (fun a : Fin (Wc D i).rank => Formalism.L2.NTheta.lamAt (D.hc ρ) a)
       (lamAt_anti_fin _ hW.le) (parAt_fst R i ρ hW) a]
     exact (keyR ρ (a : ℕ)).symm
-
-
 
 theorem multEq_of_trCusp' : GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Published.HarishChandraFinite → GlobalTheory.Published.DixmierMalliavinFactorisation → GlobalTheory.Published.GreenCuspidal → TRCusp' → ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), Given R F → GlobalTheory.CuspMult.MultEq R := by
   intro hRD hHC hDM hGC hTR D G _ _ Pl0 T A Ks _ _ _ R F hG

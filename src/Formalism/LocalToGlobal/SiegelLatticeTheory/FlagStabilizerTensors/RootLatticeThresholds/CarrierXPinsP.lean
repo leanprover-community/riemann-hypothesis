@@ -542,14 +542,11 @@ variable {n r : ℕ} (ε : Fin n → Bool)
 theorem hJ_smul_r (x : Fin n → ℂ) (c : ℂ) (y : Fin n → ℂ) : hJ ε x (c • y) = c * hJ ε x y := by
   simp [hJ, Matrix.mulVec_smul, dotProduct_smul]
 
-theorem hJ_zero_r (x : Fin n → ℂ) : hJ ε x 0 = 0 := by
-  simp [hJ]
-
 theorem hJ_sum_r {ι : Type*} (s : Finset ι) (x : Fin n → ℂ) (f : ι → Fin n → ℂ) :
     hJ ε x (∑ i ∈ s, f i) = ∑ i ∈ s, hJ ε x (f i) := by
   classical
   induction s using Finset.induction_on with
-  | empty => simp [hJ_zero_r]
+  | empty => simp [PI.SchurPlaces.LeviLA.hJ_zero_right]
   | insert i s hi ih => rw [Finset.sum_insert hi, Finset.sum_insert hi, _root_.Formalism.L2.SG.RealObj.InfCut.ProductExactness.hJ_add_r, ih]
 
 theorem hJ_unit (M : Matrix (Fin n) (Fin n) ℂ) (hM : Mᴴ * Formalism.REAL.Jm ε * M = Formalism.REAL.Jm ε) (x y : Fin n → ℂ) :
@@ -567,7 +564,7 @@ theorem recon (e u : Fin r → Fin n → ℂ) (κ : Fin r → ℂ) (hκ : ∀ d,
     · rw [hue, if_pos rfl, div_self (hκ b), one_smul]
     · intro c _ hcb; rw [hue, if_neg hcb, zero_div, zero_smul]
     · intro h; exact absurd hb h
-  | zero => simp [hJ_zero_r]
+  | zero => simp [PI.SchurPlaces.LeviLA.hJ_zero_right]
   | add x y _ _ hx hy =>
     conv_lhs => rw [hx, hy]
     simp only [_root_.Formalism.L2.SG.RealObj.InfCut.ProductExactness.hJ_add_r, add_div, add_smul, Finset.sum_add_distrib]
@@ -585,7 +582,7 @@ theorem orth_span (e : Fin r → Fin n → ℂ) (x : Fin n → ℂ) (s : Set (Fi
     (w : Fin n → ℂ) (hw : w ∈ Submodule.span ℂ (e '' s)) : hJ ε x w = 0 := by
   induction hw using Submodule.span_induction with
   | mem y hy => obtain ⟨b, hb, rfl⟩ := hy; exact hx b hb
-  | zero => exact hJ_zero_r ε x
+  | zero => exact PI.SchurPlaces.LeviLA.hJ_zero_right ε x
   | add y y' _ _ hy hy' => rw [_root_.Formalism.L2.SG.RealObj.InfCut.ProductExactness.hJ_add_r, hy, hy', add_zero]
   | smul t y _ hy => rw [hJ_smul_r, hy, mul_zero]
 
@@ -847,7 +844,6 @@ def XLeavesP : Prop :=
       XLeafAt T.X Ch u u' e hPl (host_v D) CA (deOf D τ u) (deOf D τ u') (lOf D (deOf D τ u) (deOf D τ u')) i0 i0' 1
         (T.Y.FN u) (T.Y.FN u') νq (massDataY T.X T.hb T.Y u u' X0 T.ψ sd C Th vR Q i0 i0' νq).IntN a b ξ ξ' cc
 
-
 variable [Fact Formalism.L2.SG.Pf.CarrierT.CoefCapAll] in
 theorem carrierXSideP_of_leaves (Cb : ℝ) (hLift : LiftAt3 Cb) (hX : XLeavesP) : CarrierSideBoundPositive Cb := by
   intro C₆ Cc hC6
@@ -988,7 +984,6 @@ def XPinsP : Prop :=
       (∀ j, CoefPin hB u u' (e (plE D j)) (a j) (b j) (ξ j) (ξ' j) 1) ∧
       (∀ j, sclOf hB u u' (e (plE D j)) ≠ 0) ∧ (∀ j, cOf hB u (e (plE D j)) ≠ 0)
 
-
 def KFinNZ : Prop :=
   ∀ (D : D7) (X : Formalism.L2.SG.HidaSetting.HidaSetting D) (θ : ℝ) (C : Choice X θ) (hB : WuBessel C) (u : D.what₂.Word) (τ : D.what₂.Tau),
     Formalism.L2.SG.ConcreteSettingExists.GapHyp D →
@@ -1011,9 +1006,6 @@ theorem inner_normalize_left {V : Type*} [NormedAddCommGroup V] [InnerProductSpa
   push_cast
   exact inv_mul_cancel₀ h
 
-
-
-
 def KFinDense : Prop :=
   ∀ (k r : ℕ) (ε : Fin (2 * r + k + 1) → Bool) (lam : Fin (2 * r + k + 1) → ℝ) (H : Type) [NormedAddCommGroup H]
     [InnerProductSpace ℂ H] [CompleteSpace H] (σ : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ → (H →L[ℂ] H)),
@@ -1022,7 +1014,6 @@ def KFinDense : Prop :=
     ∀ Ws : List (List (Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)), (∀ w ∈ Ws, ∀ X ∈ w, InLieHpk k r X) →
     ∀ δ : ℝ, 0 < δ → ∃ a : H, PI.UpqRep.IsKFinHpk (k := k) (r := r) σ a ∧
       (Ws.map fun w => ‖dsigW σ w (v - a)‖).sum < δ
-
 
 variable [Fact Formalism.L2.SG.SplitPrimeNormLemmas.CoefWeightedLoc] in
 theorem kFinNZ_of (hD : KFinDense) : KFinNZ := by
@@ -1084,8 +1075,6 @@ theorem kFinNZ_of (hD : KFinDense) : KFinNZ := by
     rw [hδ, ← mul_div_assoc, div_lt_iff₀ (by positivity)]
     nlinarith [abs_nonneg Cw]
   linarith
-
-
 
 end Formalism.L2.SG.Pf.CarrierXAll
 end -- clump:auto

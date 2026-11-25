@@ -404,7 +404,6 @@ section Cl
 
 variable {X Y Z : Scheme.{0}} {L M : LB X}
 
-
 open Classical in
 def cl (s : L.Sec) (r : Z ⟶ X) (z : Z) : Associates (Z.presheaf.stalk z) :=
   if h : ∃ a, r z ∈ L.U a then Associates.mk (gs r z (L.U h.choose) (s.f h.choose)) else 0
@@ -985,12 +984,6 @@ theorem germ_res_hom {X : Scheme.{0}} {U V : X.Opens} (h : V ≤ U) {x : X} (hx 
       (X.presheaf.germ U x (h hx)).hom s :=
   TopCat.Presheaf.germ_res_apply _ (homOfLE h) x hx s
 
-theorem res_res_hom {X : Scheme.{0}} {U V W : X.Opens} (h₁ : V ≤ U) (h₂ : W ≤ V) (s : Γ(X, U)) :
-    (X.presheaf.map (homOfLE h₂).op).hom ((X.presheaf.map (homOfLE h₁).op).hom s) =
-      (X.presheaf.map (homOfLE (h₂.trans h₁)).op).hom s := by
-  rw [← CommRingCat.comp_apply, ← Functor.map_comp]
-  rfl
-
 theorem exists_res_eq {X : Scheme.{0}} {U : X.Opens} {x : X} (hx : x ∈ U) (s t : Γ(X, U))
     (h : (X.presheaf.germ U x hx).hom s = (X.presheaf.germ U x hx).hom t) :
     ∃ W : X.Opens, ∃ hW : W ≤ U, x ∈ W ∧
@@ -1004,7 +997,6 @@ theorem exists_res_eq {X : Scheme.{0}} {U : X.Opens} {x : X} (hx : x ∈ U) (s t
   exact e
 
 end GlobalTheory.Mum.SquareSpread
-
 
 open GlobalTheory.Mum.SquareSpread in
 theorem GlobalTheory.Mum.unit_mul_sq_spread : ∀ (X : Scheme.{0}) (L2 : LB X) (h : L2.Sec) (x : X) (j₀ : L2.ι) (hx : x ∈ L2.U j₀) (u : (X.presheaf.stalk x)ˣ) (a : X.presheaf.stalk x), a ≠ 0 → (X.presheaf.germ (L2.U j₀) x hx).hom (h.f j₀) = u * a ^ 2 → ∃ V : X.Opens, x ∈ V ∧ ∃ a : Γ(X, V), a ≠ 0 ∧ ∀ j, ∃ u : Γ(X, V ⊓ L2.U j)ˣ, (X.presheaf.map (homOfLE inf_le_right).op).hom (h.f j) = (u : Γ(X, V ⊓ L2.U j)) * (X.presheaf.map (homOfLE inf_le_left).op).hom a ^ 2 := by
@@ -1030,12 +1022,12 @@ theorem GlobalTheory.Mum.unit_mul_sq_spread : ∀ (X : Scheme.{0}) (L2 : LB X) (
   have lV3 : W₄ ⊓ W₅ ≤ W₃ := inf_le_left.trans hW₄
   have hxV : x ∈ W₄ ⊓ W₅ := ⟨hx₄, hx₅⟩
   have e₄' : (X.presheaf.map (homOfLE lV3).op).hom U' * (X.presheaf.map (homOfLE lV3).op).hom v' = 1 := by
-    rw [← map_mul, ← map_one (X.presheaf.map (homOfLE lV3).op).hom, ← res_res_hom hW₄ (inf_le_left : W₄ ⊓ W₅ ≤ W₄),
-      ← res_res_hom hW₄ (inf_le_left : W₄ ⊓ W₅ ≤ W₄) 1, e₄]
+    rw [← map_mul, ← map_one (X.presheaf.map (homOfLE lV3).op).hom, ← ReciprocityTheory.ChartRestriction.G.Out.WeightPf.rres hW₄ (inf_le_left : W₄ ⊓ W₅ ≤ W₄),
+      ← ReciprocityTheory.ChartRestriction.G.Out.WeightPf.rres hW₄ (inf_le_left : W₄ ⊓ W₅ ≤ W₄) 1, e₄]
   have e₅' : (X.presheaf.map (homOfLE lV3).op).hom H = (X.presheaf.map (homOfLE lV3).op).hom U' *
       ((X.presheaf.map (homOfLE lV3).op).hom A) ^ 2 := by
-    rw [← map_pow, ← map_mul, ← res_res_hom hW₅ (inf_le_right : W₄ ⊓ W₅ ≤ W₅),
-      ← res_res_hom hW₅ (inf_le_right : W₄ ⊓ W₅ ≤ W₅) (U' * A ^ 2), e₅]
+    rw [← map_pow, ← map_mul, ← ReciprocityTheory.ChartRestriction.G.Out.WeightPf.rres hW₅ (inf_le_right : W₄ ⊓ W₅ ≤ W₅),
+      ← ReciprocityTheory.ChartRestriction.G.Out.WeightPf.rres hW₅ (inf_le_right : W₄ ⊓ W₅ ≤ W₅) (U' * A ^ 2), e₅]
   let uV : Γ(X, W₄ ⊓ W₅)ˣ := ⟨_, _, e₄', by rw [mul_comm]; exact e₄'⟩
   refine ⟨W₄ ⊓ W₅, hxV, (X.presheaf.map (homOfLE lV3).op).hom A, ?_, ?_⟩
   · intro h0
@@ -1045,14 +1037,14 @@ theorem GlobalTheory.Mum.unit_mul_sq_spread : ∀ (X : Scheme.{0}) (L2 : LB X) (
     have k : W₄ ⊓ W₅ ⊓ L2.U j ≤ L2.U j ⊓ L2.U j₀ := le_inf inf_le_right (inf_le_left.trans (lV3.trans l30))
     refine ⟨res k (L2.g j j₀) * Units.map (X.presheaf.map (homOfLE (inf_le_left : W₄ ⊓ W₅ ⊓ L2.U j ≤ W₄ ⊓ W₅)).op).hom uV, ?_⟩
     have c := congrArg (X.presheaf.map (homOfLE k).op).hom (h.compat j j₀)
-    rw [map_mul, res_res_hom, res_res_hom] at c
+    rw [map_mul, ReciprocityTheory.ChartRestriction.G.Out.WeightPf.rres, ReciprocityTheory.ChartRestriction.G.Out.WeightPf.rres] at c
     have e6 := congrArg (X.presheaf.map (homOfLE (inf_le_left : W₄ ⊓ W₅ ⊓ L2.U j ≤ W₄ ⊓ W₅)).op).hom e₅'
-    rw [map_mul, map_pow, hH, res_res_hom, res_res_hom, res_res_hom] at e6
+    rw [map_mul, map_pow, hH, ReciprocityTheory.ChartRestriction.G.Out.WeightPf.rres, ReciprocityTheory.ChartRestriction.G.Out.WeightPf.rres, ReciprocityTheory.ChartRestriction.G.Out.WeightPf.rres] at e6
     rw [Units.val_mul, Units.coe_map, res, Units.coe_map]
-    simp only [MonoidHom.coe_coe, hA, res_res_hom] at e6 ⊢
+    simp only [MonoidHom.coe_coe, hA, ReciprocityTheory.ChartRestriction.G.Out.WeightPf.rres] at e6 ⊢
     rw [c, e6, _root_.mul_assoc]
     congr 2
-    exact (res_res_hom lV3 _ U').symm
+    exact (ReciprocityTheory.ChartRestriction.G.Out.WeightPf.rres lV3 _ U').symm
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalSquareFactorizationSections =====
@@ -1276,7 +1268,6 @@ theorem pow_ne_zero' {X : Scheme.{0}} [IsIntegral X] {V : X.Opens} {a : Γ(X, V)
   · exact (ha ((subsingleton_of_not_nonempty hn).elim _ _)).elim
 
 end GlobalTheory.SqGlue
-
 
 open GlobalTheory.SqGlue in
 theorem GlobalTheory.SqGlue.main : ∀ (R' : Type) [CommRing R'] [IsDomain R'] [IsLocalRing R'], AdmBase R' (maximalIdeal R') → ∀ (G₁ : Over (Sp R')) [GrpObj G₁] [IsCommMonObj G₁], IsSemiAbelian G₁ → ∀ (L2 : LB G₁.left), L2.IsLB → ∀ (h : L2.Sec) (Lθ : LB (pullback G₁.hom (jK R'))) (θ : Lθ.Sec), (∀ j i, ∃ w : Γ(pullback G₁.hom (jK R'), pullback.fst G₁.hom (jK R') ⁻¹ᵁ L2.U j ⊓ Lθ.U i)ˣ, ((pullback G₁.hom (jK R')).presheaf.map (homOfLE inf_le_right).op).hom (θ.f i) ^ 2 = (w : Γ(pullback G₁.hom (jK R'), pullback.fst G₁.hom (jK R') ⁻¹ᵁ L2.U j ⊓ Lθ.U i)) * ((pullback G₁.hom (jK R')).presheaf.map (homOfLE inf_le_left).op).hom (((pullback.fst G₁.hom (jK R')).app (L2.U j)).hom (h.f j))) → ∀ (Ix : Type) (V : Ix → G₁.left.Opens) (a : ∀ k, Γ(G₁.left, V k)), (∀ k, a k ≠ 0) → (∀ k j, ∃ u : Γ(G₁.left, V k ⊓ L2.U j)ˣ, (G₁.left.presheaf.map (homOfLE inf_le_right).op).hom (h.f j) = (u : Γ(G₁.left, V k ⊓ L2.U j)) * (G₁.left.presheaf.map (homOfLE inf_le_left).op).hom (a k) ^ 2) → (∀ k l, ∃ c : Γ(G₁.left, V k ⊓ V l)ˣ, (G₁.left.presheaf.map (homOfLE inf_le_left).op).hom (a k) ^ 2 = (c : Γ(G₁.left, V k ⊓ V l)) * (G₁.left.presheaf.map (homOfLE inf_le_right).op).hom (a l) ^ 2) ∧ (∀ k i, ∃ w : Γ(pullback G₁.hom (jK R'), pullback.fst G₁.hom (jK R') ⁻¹ᵁ V k ⊓ Lθ.U i)ˣ, ((pullback G₁.hom (jK R')).presheaf.map (homOfLE inf_le_right).op).hom (θ.f i) ^ 2 = (w : Γ(pullback G₁.hom (jK R'), pullback.fst G₁.hom (jK R') ⁻¹ᵁ V k ⊓ Lθ.U i)) * ((pullback G₁.hom (jK R')).presheaf.map (homOfLE inf_le_left).op).hom (((pullback.fst G₁.hom (jK R')).app (V k)).hom (a k)) ^ 2) := by

@@ -64,12 +64,6 @@ section -- clump:auto
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P GlobalTheory.CompanionTheory.Ar.Cmp GlobalTheory.CompanionTheory.Ar.PB Filter Topology
 open ReciprocityTheory.ChartRestriction.G.AI.I1 (IsBlockMap pullDeg)
 
-namespace GlobalTheory.CompanionTheory.Ar.Cmp
-
-theorem exists_smooth_hermLine_posPot_of_isEmbedded : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (P J : Ideal (MRing ι)) (e : ℕ) (R : AnLogRes P J e), IsEmbedded R.A P R.U R.lift → ∃ Amp : HermLine ι, IsSmoothHerm Amp ∧ IsPotential R.A (potOf R Amp) ∧ IsPosPot R.A (potOf R Amp) :=
-  @PositivityTheory.UnitarySelfGeneration.g_pos
-
-end GlobalTheory.CompanionTheory.Ar.Cmp
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.MetricProofs.EmbeddedResolutionAmpleMetric =====
@@ -118,7 +112,7 @@ theorem exists_good_model : ReciprocityTheory.ChartRestriction.G.Geo.ResK.ResKSt
       exact isAlgebraic_algebraMap (⟨t, ht⟩ : blockFnField y)
   obtain ⟨R, hR⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Cmp.SncRes.isEmbedded_of_isSncModel (K ⊕ Unit) (joinIdx ι fun _ : Unit => Fin M) Ω (joinVec y y₂) e J
     harith hJh hJ hsnc
-  obtain ⟨Amp, h₁, h₂, h₃⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Cmp.exists_smooth_hermLine_posPot_of_isEmbedded (K ⊕ Unit) (joinIdx ι fun _ : Unit => Fin M)
+  obtain ⟨Amp, h₁, h₂, h₃⟩ := _root_.PositivityTheory.UnitarySelfGeneration.g_pos (K ⊕ Unit) (joinIdx ι fun _ : Unit => Fin M)
     (mCoordIdeal (joinVec y y₂)) J e R hR
   exact ⟨K ⊕ Unit, inferInstance, joinIdx ι fun _ : Unit => Fin M, inferInstance, Sum.inl,
     joinInl ι fun _ : Unit => Fin M, joinVec y y₂, J, R, Amp, hb₁, hcomp, hfield, harith, hR, h₁, h₂, h₃, hz⟩

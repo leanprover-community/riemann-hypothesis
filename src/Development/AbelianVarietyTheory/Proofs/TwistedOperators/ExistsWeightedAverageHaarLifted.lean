@@ -248,7 +248,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RowEx MeasureTheory
 
-
 noncomputable section
 
 namespace GlobalTheory.BottomFinComb
@@ -294,55 +293,11 @@ theorem rightBlock_shift {k d : ℕ} (a : ℕ) {Y Y' Z : Matrix (Fin k) (Fin d) 
   · exact h _ _
   · rw [mul_zero, add_zero]
 
-
-
-theorem stdSnd_shift {ν : (AE D)ˣ →* Circle} {e : AE D} {S : Finset (Pl D.host.E)} (he : IsIdemSum e S)
-    {I : Ideal (𝓞 D.host.E)} {n₀ n c : ℕ} (hn₀ : ((n₀ : ℕ) : 𝓞 D.host.E) ∈ I)
-    (hl : ∀ x, Formalism.L2.Pj.FinUnit x → (∃ y ∈ intAE D, finPart D (x : AE D) - 1 = n • y) → ν x = 1)
-    (hc : ∀ P ∈ S, ((c : ℕ) : 𝓞 D.host.E) ∈ P.asIdeal) (a : ℕ) (A' WW : HSp D) (βA' : GL (Fin A'.rank) (EAf D))
-    (βW : GL (Fin WW.rank) (EAf D)) {t t' : WO A' WW} (hh : IsHalf (cA D e) t' ↔ IsHalf (cA D e) t)
-    {Z : Matrix (Fin A'.rank) (Fin WW.rank) (EAf D)} (hZ : IsIntM Z)
-    (h : ∀ i j, dualCoord A' WW βA' βW t' i j =
-      dualCoord A' WW βA' βW t i j + ((n₀ * (n * c) : ℕ) : EAf D) * Z i j) :
-    stdSnd ν e I a A' WW βA' βW t' = stdSnd ν e I a A' WW βA' βW t := by
-  have hW1 : ∀ i j, ((n * c : ℕ) : EAf D) * Z i j ∈ OO := fun i j => mul_mem (natCast_mem _ _) (hZ i j)
-  have hW2 : ∀ i j, (n₀ : EAf D) * (((n * c : ℕ) : EAf D) * Z i j) ∈ OO := fun i j =>
-    mul_mem (natCast_mem _ _) (hW1 i j)
-  have ha : ∀ i j, dualCoord A' WW βA' βW t' i j =
-      dualCoord A' WW βA' βW t i j + (n₀ : EAf D) * (((n * c : ℕ) : EAf D) * Z i j) := fun i j => by
-    rw [h, Nat.cast_mul n₀, mul_assoc]
-  have hb : ∀ i j, dualCoord A' WW βA' βW t i j =
-      dualCoord A' WW βA' βW t' i j + (n₀ : EAf D) * (-(((n * c : ℕ) : EAf D) * Z i j)) := fun i j => by
-    rw [ha, mul_neg, add_neg_cancel_right]
-  have hint : IsIntM (dualCoord A' WW βA' βW t') ↔ IsIntM (dualCoord A' WW βA' βW t) :=
-    forall_congr' fun i => forall_congr' fun j => by
-      rw [ha]
-      exact add_mem_cancel_right (hW2 i j)
-  have hid : (∀ i j, j.1 < a → InId I (dualCoord A' WW βA' βW t' i j)) ↔
-      ∀ i j, j.1 < a → InId I (dualCoord A' WW βA' βW t i j) :=
-    ⟨fun H i j hi => inId_shift hn₀ (neg_mem (hW1 i j)) (hb i j) (H i j hi),
-      fun H i j hi => inId_shift hn₀ (hW1 i j) (ha i j) (H i j hi)⟩
-  unfold stdSnd
-  by_cases hcnd : IsHalf (cA D e) t ∧ IsIntM (dualCoord A' WW βA' βW t) ∧
-      ∀ i j, j.1 < a → InId I (dualCoord A' WW βA' βW t i j)
-  · rw [if_pos hcnd, if_pos ⟨hh.2 hcnd.1, hint.2 hcnd.2.1, hid.2 hcnd.2.2⟩]
-    refine (unitChar_congr he hl hc (isIntM_rightBlock a hcnd.2.1)
-      (Z := rightBlock a fun i j => (n₀ : EAf D) * Z i j)
-      (isIntM_rightBlock a fun i j => mul_mem (natCast_mem _ _) (hZ i j))
-      (rightBlock_shift a (c := ((n * c : ℕ) : EAf D)) fun i j => ?_)).symm
-    rw [h, Nat.cast_mul n₀]
-    ring
-  · rw [if_neg hcnd, if_neg fun h' => hcnd ⟨hh.1 h'.1, hint.1 h'.2.1, hid.1 h'.2.2⟩]
-
-
-
 end GlobalTheory.BottomFinComb
 
 namespace GlobalTheory.BottomFinComb
 
 open StandardFirstTheta.GlobalTheory.CompanionTheory.StdFstTheta GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle
-
-
 
 theorem finVec_isFinComb : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {i j : Fin D.R.m}
     {A A' WW : HSp D} {X : Tri T A A' WW}, IsBottomTri W i j X → ∀ t : T,
@@ -461,7 +416,6 @@ open GlobalTheory.RowEx MeasureTheory
 
 open scoped Topology
 
-
 noncomputable section
 
 namespace GlobalTheory.VacTranslateLeft
@@ -558,10 +512,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RowEx MeasureTheory
 
-theorem _root_.GlobalTheory.T.exists_open_subgroup_fixes_vacuum_definiteBottom : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {i j : Fin D.R.m}
-    {A A' WW : HSp D} {X : Tri T A A' WW}, IsBottomTri W i j X → ∀ t : T,
-    ∃ U : Subgroup (GA D A'), IsOpen (U : Set (GA D A')) ∧ ∀ κ ∈ U, κ ∈ GfC A' → X.ω' t (κ, 1) X.vac' = X.vac' := by
-  first | exact @GlobalTheory.VacFixSource.exists_open_fix_vac_source
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsOpenSubgroupFixesVacuumDefiniteBottomStatement =====
@@ -588,7 +538,7 @@ variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {
 theorem fixTranslate (hX : IsBottomTri W i j X) (t : T) (u : WO A' WW) (hu : u.map (infPart D) = 0) :
     ∃ U : Subgroup (GA D A'), IsOpen (U : Set (GA D A')) ∧ ∀ κ ∈ U, κ ∈ GfC A' →
       X.ω' t (κ, 1) (heisO W.ψ A' WW u X.vac') = heisO W.ψ A' WW u X.vac' := by
-  obtain ⟨U₁, hU₁, h₁⟩ := GlobalTheory.T.exists_open_subgroup_fixes_vacuum_definiteBottom hX t
+  obtain ⟨U₁, hU₁, h₁⟩ := GlobalTheory.VacFixSource.exists_open_fix_vac_source hX t
   obtain ⟨U₂, hU₂, h₂⟩ := GlobalTheory.T.exists_open_fixing_vacuum_translate_source D W.ψ W.θ A' WW X.rA'.s X.rW.s X.rA'.Λ X.rW.Λ hX.is.rigA'.1 hX.is.rigW.1 X.vac'
     hX.is.isVac' u hu
   have hW : IsWeilDatumO W.ψ A' WW _ _ (X.ω' t) := hX.is.weil' t

@@ -95,10 +95,6 @@ open scoped CategoryTheory.Obj RatFunc
 
 namespace GlobalTheory.Nef.TanLoc
 
-theorem ev_congr {R : Type} [CommRing R] {X : Scheme.{0}} {b b' : Sp R ⟶ X} (e : b = b') {U : X.Opens}
-    (h : ⊤ ≤ b ⁻¹ᵁ U) (h' : ⊤ ≤ b' ⁻¹ᵁ U) (f : Γ(X, U)) : evAt b h f = evAt b' h' f := by
-  subst e; rfl
-
 theorem coeff_one_mul {E : Type} [CommRing E] (P Q : PowerSeries E) :
     PowerSeries.coeff 1 (P * Q) = PowerSeries.constantCoeff (R := E) P * PowerSeries.coeff 1 Q +
       PowerSeries.constantCoeff (R := E) Q * PowerSeries.coeff 1 P := by
@@ -141,7 +137,7 @@ theorem rhs_mul (ξ : Sp (PowerSeries E) ⟶ G.left)
   have hε : ∀ f : Γ(G.left, U₂), evAt b hb₂ ((unitSec G).appLE U₂ V₂ he₂ f) =
       PowerSeries.constantCoeff (R := E) (evAt ξ hU₂ f) := by
     intro f
-    rw [← ev_comp E S G.left b (unitSec G) V₂ U₂ hb₂ hc he₂ f, ← ev_congr hz hc' hc,
+    rw [← ev_comp E S G.left b (unitSec G) V₂ U₂ hb₂ hc he₂ f, ← GlobalTheory.Nef.evAt_congr' hz hc' hc,
       ev_map (PowerSeries E) E G.left (PowerSeries.constantCoeff (R := E)) ξ U₂ hU₂ hc' f]
   rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun i _ => ?_
@@ -152,7 +148,6 @@ theorem rhs_mul (ξ : Sp (PowerSeries E) ⟶ G.left)
 end GlobalTheory.Nef.TanLoc
 
 namespace GlobalTheory.Nef
-
 
 open TanLoc in
 theorem hasTan_of_affine_chart : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] (E : Type) [Field E] (c : E) (b : Sp E ⟶ S) (ξ : Sp (PowerSeries E) ⟶ G.left), IsPath G c b ξ → ∀ (n : ℕ) (V : S.Opens) (τ : Fin n → Γ(Lie G, V)) (w : Fin n → E) (U : G.left.Opens), IsAffineOpen U → ∀ (hU : ⊤ ≤ ξ ⁻¹ᵁ U) (V' : S.Opens) (hV : V' ≤ V) (he : V' ≤ unitSec G ⁻¹ᵁ U) (hb : ⊤ ≤ b ⁻¹ᵁ V'), (∀ f : Γ(G.left, U), PowerSeries.coeff 1 (evAt ξ hU f) = ∑ i, w i * evAt b hb (dualApp (τ i) hV (dUnit G he f))) → HasTan G b ξ τ w := by
@@ -1462,7 +1457,6 @@ theorem natDegree_eq_zero_of_sq_dvd {F : Type} [Field F] [CharZero F] (f g : F[X
 
 end RatDilation
 
-
 open RatDilation in
 theorem rat_dilation_eq_one (F : Type) [Field F] [CharZero F] (φ : PowerSeries F) (hr : IsRat φ)
     (h0 : PowerSeries.constantCoeff φ = 1) (h2 : PowerSeries.rescale 2 φ = φ ^ 2) : φ = 1 := by
@@ -1554,7 +1548,6 @@ theorem sqr_chi {S : Scheme.{0}} (X : Type) [AddCommGroup X] (a : X) :
 
 end SplitTorusRigid
 
-
 open SplitTorusRigid in
 theorem splitTorus_ratRigid : ∀ (Ω : Type) [Field Ω] [CharZero Ω] (X : Type) [AddCommGroup X],
     RatRigid (splitTorus (Sp Ω) X) (𝟙 (Sp Ω)) := by
@@ -1609,20 +1602,6 @@ noncomputable section
 
 namespace GlobalTheory.Nef.TorExt
 
-theorem algebraMap_comp_C (Ω : Type) [Field Ω] :
-    (algebraMap (RatFunc Ω) (LaurentSeries Ω)).comp RatFunc.C =
-      (algebraMap (PowerSeries Ω) (LaurentSeries Ω)).comp PowerSeries.C := by
-  refine RingHom.ext fun c => ?_
-  simp only [RingHom.comp_apply]
-  rw [← RatFunc.algebraMap_C]
-  have := RatFunc.coe_coe (Polynomial.C c)
-  simp only [Polynomial.coe_C] at this
-  exact this.symm
-
-theorem unitSec_comp {S : Scheme.{0}} {G H : Over S} [GrpObj G] [GrpObj H] (f : G ⟶ H) [IsMonHom f] :
-    unitSec G ≫ f.left = unitSec H := by
-  rw [unitSec, unitSec, sec, sec, ← Over.comp_left, IsMonHom.one_hom]
-
 theorem isLocalHom_field {K L : Type} [Field K] [Field L] (φ : K →+* L) : IsLocalHom φ :=
   ⟨fun x hx => by
     by_cases h : x = 0
@@ -1656,7 +1635,6 @@ end GlobalTheory.Nef.TorExt
 
 namespace GlobalTheory.Nef
 
-
 open TorExt in
 theorem ratRigid_of_torusExtension : ∀ (Ω : Type) [Field Ω] [CharZero Ω] (G : Over (Sp Ω)) [GrpObj G],
     Nonempty (TorusExtension G) → RatRigid G (𝟙 (Sp Ω)) := by
@@ -1675,7 +1653,7 @@ theorem ratRigid_of_torusExtension : ∀ (Ω : Type) [Field Ω] [CharZero Ω] (G
   set ι₀ := algebraMap (PowerSeries Ω) (LaurentSeries Ω)
   have ha : Function.Injective a := a.injective
   have hC : spMap a ≫ spMap RatFunc.C = spMap ι₀ ≫ spMap (PowerSeries.C (R := Ω)) := by
-    rw [← Geo.Tor.spMap_comp, ← Geo.Tor.spMap_comp, algebraMap_comp_C]
+    rw [← Geo.Tor.spMap_comp, ← Geo.Tor.spMap_comp, GlobalTheory.Nef.ratFunc_C_laurent]
   have hq : ξ ≫ E.q.left = spMap (PowerSeries.C (R := Ω)) ≫ unitSec E.B := by
     have := _root_.GlobalTheory.Nef.ratRigid_of_isProper_of_charZero Ω E.B inferInstance (ξ ≫ E.q.left) ((bc2 _ G E.B E.q Ω 2 (𝟙 _) ξ).1 hξ)
       ⟨β ≫ E.q.left, by rw [← Category.assoc, hβ, Category.assoc]⟩

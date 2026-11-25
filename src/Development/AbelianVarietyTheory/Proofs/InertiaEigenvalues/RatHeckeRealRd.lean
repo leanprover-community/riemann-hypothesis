@@ -59,10 +59,6 @@ open Formalism.IndefR.Links
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.IndefR.Lev Formalism.L2.DIV Formalism.IndefR.Mult
 
-
-
-theorem _root_.GlobalTheory.T.complex_principal_level_eq_realisation_principal_level : ∀ {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 I0 T : Type} {A3 : FamIn3 D.what₂.LL Γ Pl0 I0 (List ℕ) T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (Rl : RealDat3 D A3 Ks) {cG : G0 Rl.Pg D.R.r ≃* G0g D.nd} {ρ : Setup D.ntw}, RealPin Rl cG ρ → ∀ (i : D.ntw.Tw) (j : Fin D.R.m) (b : Bool), ρ.levK i j b = levG (Wc D j) (Rl.βW j) (Rl.datWp j Rl.triv) := by
-  first | exact @GlobalTheory.SeriesTie.levK_eq_levG_triv
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ComplexPrincipalLevelEqRealisationPrincipalLevelStatement =====
@@ -77,10 +73,6 @@ open Formalism.IndefR.Links
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.IndefR.Lev Formalism.L2.DIV Formalism.IndefR.Mult
 
-
-
-theorem _root_.GlobalTheory.T.heckeCharacter_value_at_splitPlace_determinant : ∀ {D : D7} (c : (AE D)ˣ →* Circle) (χ : Formalism.L2.Host.HChar D.host.E) (Q : Finset (Pl D.host.E)) (V : HSp D) (P : Pl D.host.E) (k : ℕ) (α : GA D V) (z : (AE D)ˣ), ChrEq c χ → GlobalTheory.ExportSeries.UnramOutside c Q → GlobalTheory.ExportSeries.SplitSet Q → Bridge.SplitOff P (Q : Set (Pl D.host.E)) → IsHeckeAt V P k α → IsDetAt (idemAt P) V α z → ((c z : Circle) : ℂ) = ((χ.val P : ℂˣ) : ℂ) ^ k := by
-  first | exact @GlobalTheory.HeckeDetValue.chr_detAt
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HeckeCharacterValueAtSplitPlaceDeterminantStatement =====
@@ -95,10 +87,6 @@ open Formalism.IndefR.Links
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.IndefR.Lev Formalism.L2.DIV Formalism.IndefR.Mult
 
-
-
-theorem _root_.GlobalTheory.T.split_off_outside_S0 : ∀ {D : D7} {N : NData D.R D.host D.what₂} {X : NTw D.R D.host D.what₂ D.LL0 N} {ρ : Setup X}, ρ.Good → ∀ (i : X.Tw) (Q : Finset (Pl D.host.E)), (∀ P' ∈ Q, P' ∈ X.S0 i) → ∀ (P : Pl D.host.E), IsSplitPl D.host P → P ∉ X.S0 i → Bridge.SplitOff P (Q : Set (Pl D.host.E)) := by
-  first | exact @GlobalTheory.SplitOffS0.main
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SplitOffOutsideS0Statement =====
@@ -113,10 +101,6 @@ open Formalism.IndefR.Links
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.IndefR.Lev Formalism.L2.DIV Formalism.IndefR.Mult
 
-
-
-theorem _root_.GlobalTheory.T.twisting_char_values_mem_coeff_field_range : ∀ {D : D7} {N : NData D.R D.host D.what₂} {X : NTw D.R D.host D.what₂ D.LL0 N} {ρ : Setup X}, ρ.Good → ∀ (i : X.Tw) (j : Fin D.R.m) (b : Bool) (z : (AE D)ˣ), ∃ a : FractionRing (X.O i), ρ.e i b a = (((ρ.B i j b).de.chi z : Circle) : ℂ) := by
-  first | exact @GlobalTheory.DeltaRange.delta_value_mem_range
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TwistingCharValuesMemCoeffFieldRangeStatement =====
@@ -131,9 +115,6 @@ open Formalism.IndefR.Links
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.IndefR.Lev Formalism.L2.DIV Formalism.IndefR.Mult
 open scoped TensorProduct
-
-
-
 
 namespace GlobalTheory.SeriesTie.HkRat
 
@@ -189,26 +170,26 @@ theorem ratHecke_realRd : ∀ (D : D7) (Γ : Type) [Group Γ] [Fintype Γ] (Pl0 
   obtain ⟨hk1, hkr, hPs, hPS0⟩ := hk
   have hso := hsplit P hPs hPS0
   have hPg : Bridge.SplitOff P (((ρ.B i j b).G.Pg : Finset _) : Set (Pl D.host.E)) :=
-    GlobalTheory.T.split_off_outside_S0 hρ i _ (fun P' hP' => by
+    GlobalTheory.SplitOffS0.main hρ i _ (fun P' hP' => by
       obtain ⟨k', hk'⟩ := hρ.Pg i j b P' hP'
       exact D.ntw.placesOver_subset_exceptional i k' hk') P hPs hPS0
   have hdQ : Bridge.SplitOff P (((ρ.B i j b).de.Q : Finset _) : Set (Pl D.host.E)) :=
-    GlobalTheory.T.split_off_outside_S0 hρ i _ (fun P' hP' => by
+    GlobalTheory.SplitOffS0.main hρ i _ (fun P' hP' => by
       rw [hρ.delta i j b] at hP'
       exact D.ntw.primes_subset_exceptional i (mem_half.1 hP').1) P hPs hPS0
   by_cases hd : ∃ α R z, ρ.IsHeckeDatum i j b k P α R z
   swap
   · exact ⟨0, fun α R z d => absurd ⟨α, R, z, d⟩ hd⟩
   obtain ⟨α₀, R₀, z₀, d₀⟩ := hd
-  obtain ⟨a, ha⟩ := GlobalTheory.T.twisting_char_values_mem_coeff_field_range hρ i j b z₀
+  obtain ⟨a, ha⟩ := GlobalTheory.DeltaRange.delta_value_mem_range hρ i j b z₀
   have hde : ∀ α R z, ρ.IsHeckeDatum i j b k P α R z → (((ρ.B i j b).de.chi z : Circle) : ℂ) = ρ.e i b a :=
     fun α R z d => by
-      rw [ha, GlobalTheory.T.heckeCharacter_value_at_splitPlace_determinant _ _ _ _ P k α z (hp.delta i j b) (hρ.base i j b).de.unram (hρ.base i j b).de.split hdQ d.elt d.det,
-        GlobalTheory.T.heckeCharacter_value_at_splitPlace_determinant _ _ _ _ P k α₀ z₀ (hp.delta i j b) (hρ.base i j b).de.unram (hρ.base i j b).de.split hdQ d₀.elt d₀.det]
+      rw [ha, GlobalTheory.HeckeDetValue.chr_detAt _ _ _ _ P k α z (hp.delta i j b) (hρ.base i j b).de.unram (hρ.base i j b).de.split hdQ d.elt d.det,
+        GlobalTheory.HeckeDetValue.chr_detAt _ _ _ _ P k α₀ z₀ (hp.delta i j b) (hρ.base i j b).de.unram (hρ.base i j b).de.split hdQ d₀.elt d₀.det]
   have hchr' : ChrEq (ρ.B i j b).mu0 (Rl.C.mu0 j) := by rw [hp.mu0 i j b]; exact hchr
   have hmu0 : ∀ α R z, ρ.IsHeckeDatum i j b k P α R z →
       (((ρ.B i j b).mu0 z : Circle) : ℂ) = (((Rl.C.mu0 j).val P : ℂˣ) : ℂ) ^ k :=
-    fun α R z d => GlobalTheory.T.heckeCharacter_value_at_splitPlace_determinant _ _ _ _ P k α z hchr' (hρ.base i j b).unram
+    fun α R z d => GlobalTheory.HeckeDetValue.chr_detAt _ _ _ _ P k α z hchr' (hρ.base i j b).unram
       ((hρ.base i j b).places.split.elim fun _ h => h.2.2.mono h.1) hPg d.elt d.det
   refine ⟨a⁻¹ • (YS.eF i _ b (Nat.le_add_left _ _) j.2).symm
     (NX.hkFR S i ((j : ℕ) + 1) b (hL _) hs k P (YS.eF i _ b (Nat.le_add_left _ _) j.2 f)), ?_⟩
@@ -218,7 +199,7 @@ theorem ratHecke_realRd : ∀ (D : D7) (Γ : Type) [Group Γ] [Fintype Γ] (Pl0 
   rw [heckeAt_realRd YS v₀ hρ i j b hν]
   intro α R z d
   have hdc := d.reps
-  rw [GlobalTheory.T.complex_principal_level_eq_realisation_principal_level Rl hp i j b] at hdc
+  rw [GlobalTheory.SeriesTie.levK_eq_levG_triv Rl hp i j b] at hdc
   have key := evK_hkFR YS v₀ hρ i j b (hL _) hs k P R _
     (evW_reads YS v₀ hL hR j k P hPs hso hkr α R d.elt hdc) (YS.eF i _ b (Nat.le_add_left _ _) j.2 f)
   funext x

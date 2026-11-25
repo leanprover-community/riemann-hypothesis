@@ -866,50 +866,11 @@ theorem isom_flat (A : ℝ) (a b : ℕ) :
       ((s.flatV a b : (DVar X.Tau a b → ℂ) ≃ₗ[ℂ] Formalism.L2.Ker.Cd.TaylorLogMetric.VC D a b) : (DVar X.Tau a b → ℂ) →ₗ[ℂ] Formalism.L2.Ker.Cd.TaylorLogMetric.VC D a b) :=
   fun x y => (form_flat s A a b x y).symm
 
-theorem matH_hSc (sc : ℝ) (a b : ℕ) (x y : DVar X.Tau a b → ℂ) :
-    matH (hSc X.Tau a b sc) x y = (sc : ℂ) * ∑ k, x k * conj (y k) := by
-  show (∑ i, ∑ j, x i * hSc X.Tau a b sc i j * conj (y j)) = _
-  rw [Finset.mul_sum]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rw [Finset.sum_eq_single i]
-  · unfold hSc
-    rw [Matrix.diagonal_apply_eq]
-    ring
-  · intro j _ hj
-    unfold hSc
-    rw [Matrix.diagonal_apply_ne _ (Ne.symm hj)]
-    simp
-  · intro hi
-    exact absurd (Finset.mem_univ i) hi
-
-theorem herm_hSc (sc : ℝ) (a b : ℕ) : IsHerm (matH (hSc X.Tau a b sc)) := by
-  intro x y
-
-  rw [matH_hSc, matH_hSc, map_mul, Complex.conj_ofReal, map_sum]
-  congr 1
-  refine Finset.sum_congr rfl fun k _ => ?_
-  rw [map_mul, Complex.conj_conj, mul_comm]
-
-theorem posDef_hSc {sc : ℝ} (hsc : 0 < sc) (a b : ℕ) : IsPosDef (matH (hSc X.Tau a b sc)) := by
-  intro x hx
-  rw [matH_hSc]
-  have h1 : (∑ k, x k * conj (x k)) = ((∑ k, Complex.normSq (x k) : ℝ) : ℂ) := by
-    push_cast
-    exact Finset.sum_congr rfl fun k _ => Complex.mul_conj (x k)
-  rw [h1, ← Complex.ofReal_mul, Complex.ofReal_re]
-  apply mul_pos hsc
-  obtain ⟨k, hk⟩ : ∃ k, x k ≠ 0 := by
-    by_contra hcon
-    push Not at hcon
-    exact hx (funext hcon)
-  exact Finset.sum_pos' (fun i _ => Complex.normSq_nonneg _) ⟨k, Finset.mem_univ k, Complex.normSq_pos.2 hk⟩
-
 end Form
 
 section Lat
 
 variable {D : Car} {X : Fields} (s : Seam D X) {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base D cc δ)
-
 
 include B in
 theorem sc_pos : 0 < (TaylorLogMetric.area (Formalism.L2.Ker.Cd.TaylorLogMetric.lamOf D cc δ))⁻¹ := by
@@ -961,17 +922,6 @@ theorem theta_laF {b₀ : ℤ} (hb : Odd b₀) {x : DVar X.Tau a b → ℂ} (hx 
     rw [← Int.cast_smul_eq_zsmul ℂ]
   rw [h2]
   exact AddSubgroup.zsmul_mem _ hx k
-
-theorem odd_of_cmOK {a₀ : ℕ} {b₀ c₀ : ℤ} {d : ℕ} (h : CmOK a₀ b₀ c₀ d) : Odd b₀ := by
-  obtain ⟨h1, -, h3, -⟩ := h
-  by_contra hcon
-  rw [Int.not_odd_iff_even] at hcon
-  obtain ⟨k, rfl⟩ := hcon
-  have h4 : (d : ℤ) % 8 = 7 := by exact_mod_cast h3
-  have h5 : 4 * ((a₀ : ℤ) * c₀) = 4 * (k * k) + d := by rw [← mul_assoc, h1]; ring
-  generalize (a₀ : ℤ) * c₀ = u at h5
-  generalize k * k = v at h5
-  omega
 
 theorem al_eq_La (hcc : Formalism.L2.Ker.Cd.TaylorLogMetric.IsCurveIdeal D cc) (hδ : Formalism.L2.Ker.Cd.TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ) (hA : Formalism.L2.Ker.Cd.TaylorLogMetric.admitted D a b L L') :
     ∀ x ∈ Formalism.L2.Ker.Cd.TaylorLogMetric.La D B.tor L L', Formalism.L2.Ker.Cd.TaylorLogMetric.al D B.tor x =

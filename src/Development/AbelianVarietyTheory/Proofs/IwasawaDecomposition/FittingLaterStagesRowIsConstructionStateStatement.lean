@@ -55,8 +55,6 @@ open scoped TensorProduct InnerProductSpace ComplexOrder
 attribute [local instance] Formalism.BasicNotions.Host.cmStar Formalism.IndefR.principalLevelFrame.instCMHostI
 open GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.Mem.R3.Tr
 
-theorem _root_.GlobalTheory.T.exists_movedRowLiftData_to_fittingStages : ∀ (B : Base) (f : Fr B.toPre) (T : TwDat B) (w : ColW B f T) (Z₀ : w.Lt) (hX : B.fields.Ok) (Wt : Set B.places.Pl) (z₀ : Dat (w.st Z₀) w.I hX T Wt), ∀ (q : RowPk w z₀) (o : q.Over), Holds z₀.R z₀.F → z₀.R.toRealDat.ExAt → GlobalTheory.RealGeo.InGeo z₀.geo → GrpTrue Z₀.N f → o.Fits → ∃ m : Moved o, m.Copy ∧ m.Coh := by
-  first | exact @GlobalTheory.Mem.R3.Rw.Mv.exists_moved
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsMovedRowLiftDataToFittingStagesStatement =====
@@ -78,7 +76,7 @@ namespace GlobalTheory.Mem.R3.Rw
 
 theorem st_of_fits : GlobalTheory.Published.WeilRepresentationUnitaryPair → GlobalTheory.Published.DiscreteSeriesExists → GlobalTheory.Published.HarishChandraFinite → GlobalTheory.Published.CuspRapidDecay → ∀ (K : Ctx) (B : Base) (f : Fr B.toPre) (T : TwDat B) (w : ColW B f T) (P : Pre2 K w), ∀ o : P.q.Over, o.Fits → o.G = P.Z₀.G → o.V.div.etaF = 6 * K.s.x ^ (-K.C.P.CF) → BkLaw (w.D o.Z) → ∃ x : St P, x.o = o := by
   intro hW hD hH hC K B f T w P o hfit hG heta hbk
-  obtain ⟨m, hcopy, hcoh⟩ := GlobalTheory.T.exists_movedRowLiftData_to_fittingStages B f T w P.Z₀ P.hX P.Wt P.z P.q o P.intersectionNumber_baseChange P.exAt P.inGeo P.grp hfit
+  obtain ⟨m, hcopy, hcoh⟩ := GlobalTheory.Mem.R3.Rw.Mv.exists_moved B f T w P.Z₀ P.hX P.Wt P.z P.q o P.intersectionNumber_baseChange P.exAt P.inGeo P.grp hfit
   obtain ⟨s, r, hpin⟩ := GlobalTheory.T.exists_reading_of_rowLiftFamily_movedData B f T w P.Z₀ P.hX P.Wt P.z P.q o
     (GlobalTheory.LinksInputs.inputs_of_hypotheses hW hD hH hC (w.D o.Z)) hfit m
   exact ⟨⟨o, hfit, hG, heta, hbk, m, hcopy, hcoh, s, r, hpin⟩, rfl⟩

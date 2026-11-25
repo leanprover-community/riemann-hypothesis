@@ -128,7 +128,6 @@ theorem idemF_mul (v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))) : idemF
   show (if w = v then (1 : w.adicCompletion (maximalRealSubfield L)) else 0) * (if w = v then 1 else 0) = (if w = v then 1 else 0)
   split_ifs <;> simp
 
-
 variable (L) in
 def eA (v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))) : AL L := (1 : L) ⊗ₜ[maximalRealSubfield L] idemF v
 
@@ -221,7 +220,7 @@ end Adelic2
 theorem main : ∀ (D : D7) (n : ℕ) (hr : D.R.r ≤ n) (Pg Q : Finset (Pl D.host.E)) (ψ : ∀ PP : Pl D.host.E, AddChar (kP PP) ℂ)
     (chi xi : ∀ PP : Pl D.host.E, (kP PP)ˣ →* ℂˣ), NG.IsProdLevel (stdJ (datV D n hr Pg Q (P0 Pg D.R.r ψ) chi xi)) := by
   intro D n hr Pg Q ψ chi xi κ hκ v
-  obtain ⟨hUA, hSt, hred, -⟩ := GlobalTheory.T.stdMaximalCompact_reduction_properties D n
+  obtain ⟨hUA, hSt, hred, -⟩ := GlobalTheory.MtRed.km_reduction D n
   set κ1 := cutGA (eA_mul v) (conj_eA v) κ with hκ1
   set κ2 := cutGA (one_sub_eA_mul v) (conj_one_sub_eA v) κ with hκ2
   have hκ' := Subgroup.mem_comap.1 hκ

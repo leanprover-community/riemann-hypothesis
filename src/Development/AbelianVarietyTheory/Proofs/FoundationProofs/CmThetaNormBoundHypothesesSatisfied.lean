@@ -204,14 +204,11 @@ theorem const_l : PowerSeries.constantCoeff g.l = 0 := by
   rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply]
   simp [GL3Theta.G1.l, flog]
 
-theorem ex_l (h : g.Ok) : PowerSeries.subst g.l g.ex = PowerSeries.X := by
-  apply _root_.GlobalTheory.CMEndo.ex_l <;> assumption
-
 theorem pt_lg (h : g.Ok) {a : MvPowerSeries σ ℂ_[p]} (ha : MvPowerSeries.constantCoeff a = 0) :
     g.pt (g.lg a) = a := by
   have ha' := PowerSeries.HasSubst.of_constantCoeff_zero ha
   rw [GL3Theta.G1.pt, GL3Theta.G1.lg, ← PowerSeries.subst_comp_subst_apply
-    (PowerSeries.HasSubst.of_constantCoeff_zero' (const_l g)) ha', ex_l g h, PowerSeries.subst_X ha']
+    (PowerSeries.HasSubst.of_constantCoeff_zero' (const_l g)) ha', GlobalTheory.CMEndo.ex_l g h, PowerSeries.subst_X ha']
 
 theorem be_zero (h : g.Ok) (i : σ) : g.be (GL3Theta.Xv i) 0 = 0 := by
   have h1 : g.lg (0 : MvPowerSeries σ ℂ_[p]) = 0 := _root_.GlobalTheory.CMEndo.subst_zero (_root_.Formalism.MainNotions.Ext.CutA.l0 g)

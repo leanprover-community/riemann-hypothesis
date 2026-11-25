@@ -464,11 +464,6 @@ theorem det_change {V₁ V₂ : Type} [AddCommGroup V₁] [Module ℂ V₁] [Add
   rw [e]
   simp [Matrix.det_mul, Matrix.det_conjTranspose, hU, hU']
 
-theorem prod_le_pow' {n : ℕ} (f : Fin n → ℝ) (R : ℝ) (h0 : ∀ i, 0 ≤ f i) (h : ∀ i, f i ≤ R) :
-    ∏ i, f i ≤ R ^ n := by
-  calc _ ≤ ∏ _a : Fin n, R := Finset.prod_le_prod₀ (fun i _ => h0 i) fun i _ => h i
-    _ = _ := by simp
-
 def formE {n : ℕ} (H : Matrix (Fin n) (Fin n) ℂ) :
     EuclideanSpace ℂ (Fin n) →ₗ[ℂ] EuclideanSpace ℂ (Fin n) →ₗ⋆[ℂ] ℂ :=
   (innerₛₗ ℂ).flip ∘ₗ Matrix.toEuclideanLin H
@@ -490,12 +485,6 @@ theorem formE_le {n : ℕ} (H : Matrix (Fin n) (Fin n) ℂ) (hH : Hᴴ * H = 1) 
   show ‖⟪w, Matrix.toEuclideanLin H v⟫_ℂ‖ ≤ _
   rw [mul_comm, ← h1]
   exact norm_inner_le_norm _ _
-
-theorem herm_mulVec {n : ℕ} {H g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ UH H) (v w : Fin n → ℂ) :
-    herm H (g *ᵥ v) (g *ᵥ w) = herm H v w := by
-  have h : gᴴ * H * g = H := hg
-  unfold herm
-  rw [Matrix.star_mulVec, ← Matrix.dotProduct_mulVec, Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, h]
 
 theorem gramProj_le {n r : ℕ} (P : Submodule ℂ (EuclideanSpace ℂ (Fin n))) (v : Fin r → Fin n → ℂ)
     (U : Matrix (Fin r) (Fin r) ℂ) (hU : U.det = 1) (R : ℝ) (hR : ∀ a, eucl (∑ b, U b a • v b) ≤ R) :
@@ -546,15 +535,15 @@ theorem dr_y_le : ∀ (k r : ℕ) (z z' : (Fin (2 * r + k + 1) → ℂ)) (γ : M
       simp only at ha hb
       simp only [Matrix.transpose_apply, Matrix.submatrix_apply, Zhat, fvec, Matrix.of_apply, formE_apply]
       rw [dite_eq_left (by simpa using ha), dite_eq_left (by simpa using hb),
-        ← herm_mulVec (hG.2.2 _ hgx).2, Matrix.mulVec_mulVec, Matrix.mul_inv_rev,
+        ← GlobalTheory.Amp.NfComp.herm_iso (hG.2.2 _ hgx).2, Matrix.mulVec_mulVec, Matrix.mul_inv_rev,
         Matrix.nonsing_inv_mul_cancel_right _ _ (hG.2.2 _ hg).1]
       rfl
     unfold Dr
     rw [e]
     refine h.trans (mul_le_mul ?_ ?_ (Finset.prod_nonneg fun _ _ => norm_nonneg _) ?_)
-    · refine prod_le_pow' _ _ (fun _ => norm_nonneg _) fun a => le_trans (le_of_eq ?_) (h2 a)
+    · refine GlobalTheory.Amp.RadBound.prod_le_pow' _ _ (fun _ => norm_nonneg _) fun a => le_trans (le_of_eq ?_) (h2 a)
       rw [eucl_eq, WithLp.toLp_sum]; rfl
-    · refine prod_le_pow' _ _ (fun _ => norm_nonneg _) fun a => le_trans (le_of_eq ?_) (h1 a)
+    · refine GlobalTheory.Amp.RadBound.prod_le_pow' _ _ (fun _ => norm_nonneg _) fun a => le_trans (le_of_eq ?_) (h1 a)
       rw [eucl_eq, WithLp.toLp_sum]; rfl
     · exact pow_nonneg (zero_le_one.trans ((LInv.lengths_basic k r z' hz').2.2 _).1) _
   · unfold Yv
@@ -582,18 +571,6 @@ namespace GlobalTheory.Amp.LemA
 
 section General
 variable {m : ℕ} {H : Matrix (Fin m) (Fin m) ℂ}
-
-theorem herm_add_l (u v w : Fin m → ℂ) : herm H (u + v) w = herm H u w + herm H v w := by
-  simp [herm, Matrix.mulVec_add, dotProduct_add]
-
-theorem herm_add_r (u v w : Fin m → ℂ) : herm H u (v + w) = herm H u v + herm H u w := by
-  simp [herm, add_dotProduct]
-
-theorem herm_smul_l (c : ℂ) (v w : Fin m → ℂ) : herm H (c • v) w = c * herm H v w := by
-  simp [herm, Matrix.mulVec_smul, dotProduct_smul]
-
-theorem herm_smul_r (c : ℂ) (v w : Fin m → ℂ) : herm H v (c • w) = star c * herm H v w := by
-  simp [herm, smul_dotProduct]
 
 theorem herm_sum_l {ι : Type*} (s : Finset ι) (v : ι → Fin m → ℂ) (w : Fin m → ℂ) :
     herm H (∑ i ∈ s, v i) w = ∑ i ∈ s, herm H (v i) w := by
@@ -632,7 +609,7 @@ theorem herm_cs (hH : Hᴴ = H) (u v : Fin m → ℂ) (A B : ℝ) (hA : 0 ≤ A)
     (h : ∀ t : ℂ, 0 ≤ (herm H (u + t • v) (u + t • v)).re) : ‖herm H u v‖ ≤ A * B := by
   refine cs_real A B _ hA hB fun s => ?_
   have h1 := h (s * herm H u v)
-  rw [herm_add_l, herm_add_r, herm_add_r, herm_smul_l, herm_smul_l, herm_smul_r, herm_smul_r, hu, hv,
+  rw [Formalism.FourierDecayAlt.P.B2x4.herm_add_left, Formalism.FourierDecayAlt.P.B2x4.herm_add_right, Formalism.FourierDecayAlt.P.B2x4.herm_add_right, Formalism.FourierDecayAlt.P.B2x4.herm_smul_left, Formalism.FourierDecayAlt.P.B2x4.herm_smul_left, Formalism.FourierDecayAlt.P.B2x4.herm_smul_right, Formalism.FourierDecayAlt.P.B2x4.herm_smul_right, hu, hv,
     ← herm_conj hH u v] at h1
   generalize herm H u v = c at *
   have e : ‖c‖ ^ 2 = c.re ^ 2 + c.im ^ 2 := by rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]; ring
@@ -655,27 +632,8 @@ theorem hpk_herm : (Hpk k r)ᴴ = Hpk k r := (Formalism.QuantumDeterminants.hpkF
 theorem hpk_unit : IsUnit (Hpk k r).det :=
   Matrix.isUnit_det_of_left_inverse (Formalism.QuantumDeterminants.hpkFacts k r).2.1
 
-theorem hpk_mulVec_e (v : Fin (2 * r + k + 1) → ℂ) (a : Fin r) : (Hpk k r *ᵥ v) (eI k r a) = v (esI k r a) := by
-  have ha := a.isLt
-  simp only [Matrix.mulVec, dotProduct]
-  rw [Finset.sum_eq_single (esI k r a)]
-  · have : Hpk k r (eI k r a) (esI k r a) = 1 := by
-      unfold Hpk; rw [if_pos]; simp only [eI, esI]; omega
-    rw [this, one_mul]
-  · intro j _ hj
-    have hj' : j.val ≠ 2 * r + k - a.val := fun h => hj (Fin.ext h)
-    have : Hpk k r (eI k r a) j = 0 := by
-      unfold Hpk
-      rw [if_neg, if_neg, if_neg] <;> simp only [eI] <;> omega
-    rw [this, zero_mul]
-  · simp
-
-theorem herm_e (v : Fin (2 * r + k + 1) → ℂ) (a : Fin r) : herm (Hpk k r) v (bvec (eI k r a)) = v (esI k r a) := by
-  rw [← hpk_mulVec_e v a]
-  simp [herm, bvec]
-
 theorem herm_e_e (a b : Fin r) : herm (Hpk k r) (bvec (eI k r b)) (bvec (eI k r a)) = 0 := by
-  rw [herm_e]
+  rw [GlobalTheory.Amp.NfMid.herm_e]
   have : esI k r a ≠ eI k r b := by
     intro h; have := congrArg Fin.val h; simp only [eI, esI] at this; omega
   simp [bvec, this]
@@ -686,7 +644,7 @@ theorem herm_low (v ξ : Fin (2 * r + k + 1) → ℂ) (hv : ∀ a, v (esI k r a)
   refine Finset.sum_eq_zero fun i _ => ?_
   by_cases hi : i.val < r
   · have : i = eI k r ⟨i.val, hi⟩ := rfl
-    rw [this, hpk_mulVec_e, hv, mul_zero]
+    rw [this, GlobalTheory.Amp.NCoord.H_e, hv, mul_zero]
   · simp [hξ i (by omega)]
 
 theorem semidef (z y : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) (hT : 0 < Tz k r z)
@@ -694,7 +652,7 @@ theorem semidef (z y : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) (hT : 0 < 
   have hy1 : ∀ a, y (esI k r a) = 0 := fun a => by
     have := hy a.castSucc
     simp only [fvec, Fin.val_castSucc, a.isLt, dif_pos, Fin.eta] at this
-    rwa [herm_e] at this
+    rwa [GlobalTheory.Amp.NfMid.herm_e] at this
   have hy2 : herm (Hpk k r) y z = 0 := by
     have := hy (Fin.last r)
     simpa [fvec] using this
@@ -713,12 +671,12 @@ theorem semidef (z y : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) (hT : 0 < 
     · have e : i = esI k r ⟨2 * r + k - i.val, by omega⟩ := Fin.ext (by simp only [esI]; omega)
       rw [Pi.add_apply, hξ1 i (by omega), e, hy1, add_zero]
   have h6 : herm (Hpk k r) (y + ξ) (y + ξ) = herm (Hpk k r) y y := by
-    rw [herm_add_l, herm_add_r, herm_add_r, h1, h2, h3]; ring
+    rw [Formalism.FourierDecayAlt.P.B2x4.herm_add_left, Formalism.FourierDecayAlt.P.B2x4.herm_add_right, Formalism.FourierDecayAlt.P.B2x4.herm_add_right, h1, h2, h3]; ring
   by_contra hneg
   push Not at hneg
   have hT' : (herm (Hpk k r) z z).re < 0 := by unfold Tz at hT; linarith
   have := Formalism.QuantumDeterminants.revCS k r z (y + ξ) hz hm hT' (by rwa [h6])
-  rw [herm_add_l, hy2, h5, add_zero, map_zero] at this
+  rw [Formalism.FourierDecayAlt.P.B2x4.herm_add_left, hy2, h5, add_zero, map_zero] at this
   have h7 : 0 < Tz k r (y + ξ) := by unfold Tz; rw [h6]; linarith
   nlinarith [mul_pos hT h7]
 
@@ -733,17 +691,10 @@ theorem Dr_eq (z z' : Fin (2 * r + k + 1) → ℂ) (γ : Mat k r) : Dr k r z z' 
   have hb : b.val < r := b.isLt
   simp [Zhat, fvec, Zm, ha, hb]
 
-theorem inv_cancel {g : Mat k r} (hg : g ∈ GG k r) (v : Fin (2 * r + k + 1) → ℂ) : g *ᵥ (g⁻¹ *ᵥ v) = v := by
-  rw [Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ ((uHGroup _ _ hpk_unit).2.2 g hg).1, Matrix.one_mulVec]
-
-theorem herm_inv {g : Mat k r} (hg : g ∈ GG k r) (v w : Fin (2 * r + k + 1) → ℂ) :
-    herm (Hpk k r) v (g⁻¹ *ᵥ w) = herm (Hpk k r) (g *ᵥ v) w := by
-  rw [← herm_isom hg, inv_cancel hg]
-
 theorem Zm_inv {γ : Mat k r} (hγ : γ ∈ GG k r) : Zm k r γ⁻¹ = (Zm k r γ)ᴴ := by
   ext a b
   simp only [Zm, conjTranspose_apply]
-  rw [← herm_inv hγ, herm_conj hpk_herm]
+  rw [← GlobalTheory.Amp.NormGram.herm_inv hγ, herm_conj hpk_herm]
 
 theorem decomp {z z' : Fin (2 * r + k + 1) → ℂ} {γ x : Mat k r} (p : Ppos k r z z' γ x) :
     Hpk k r *ᵥ p.1.ofLp = p.1.ofLp ∧ ∃ w ∈ Hcom k r z z' γ, ∃ c : Fin r → ℂ,
@@ -756,9 +707,6 @@ theorem decomp {z z' : Fin (2 * r + k + 1) → ℂ} {γ x : Mat k r} (p : Ppos k
     obtain ⟨w, hw, ξ, hξ, e⟩ := Submodule.mem_sup.1 this
     obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun ℂ).1 hξ
     exact ⟨w, hw, c, e.symm⟩
-
-theorem fvec_cast (z : Fin (2 * r + k + 1) → ℂ) (a : Fin r) : fvec k r z a.castSucc = bvec (eI k r a) := by
-  simp [fvec]
 
 theorem alg (Z : Matrix (Fin r) (Fin r) ℂ) (hZ : IsUnit Z.det) (c d : Fin r → ℂ) :
     ∑ a, ∑ b, (Z *ᵥ c) a * (d ᵥ* Z) b * Z⁻¹ᵀ a b = d ⬝ᵥ (Z *ᵥ c) := by
@@ -789,52 +737,52 @@ theorem form_bound {z z' : Fin (2 * r + k + 1) → ℂ} {γ x : Mat k r} (hz : i
   have ep' : (γ * x) *ᵥ p.1.ofLp = y₁ + ξ₁ := by
     rw [← Matrix.mulVec_mulVec, ep, Matrix.mulVec_add, Matrix.mulVec_sum]
     simp only [Matrix.mulVec_smul, hy₁, hξ₁]
-  have a1 : ∀ a, herm (Hpk k r) y₁ (fvec k r z a) = 0 := fun a => by rw [hy₁, ← herm_inv hγ]; exact (hw a).2
+  have a1 : ∀ a, herm (Hpk k r) y₁ (fvec k r z a) = 0 := fun a => by rw [hy₁, ← GlobalTheory.Amp.NormGram.herm_inv hγ]; exact (hw a).2
   have a2 : ∀ a, herm (Hpk k r) y₁ (γ *ᵥ fvec k r z' a) = 0 := fun a => by rw [hy₁, herm_isom hγ]; exact (hw a).1
   have b1 : ∀ a, herm (Hpk k r) y₂ (fvec k r z a) = 0 := fun a => (hy₂ a).1
   have b2 : ∀ a, herm (Hpk k r) y₂ (γ *ᵥ fvec k r z' a) = 0 := fun a => by have := (hy₂ a).2; rwa [hγγ] at this
-  have a1' : ∀ a, herm (Hpk k r) y₁ (bvec (eI k r a)) = 0 := fun a => by rw [← fvec_cast z]; exact a1 _
-  have a2' : ∀ a, herm (Hpk k r) y₁ (γ *ᵥ bvec (eI k r a)) = 0 := fun a => by rw [← fvec_cast z']; exact a2 _
-  have b1' : ∀ a, herm (Hpk k r) y₂ (bvec (eI k r a)) = 0 := fun a => by rw [← fvec_cast z]; exact b1 _
-  have b2' : ∀ a, herm (Hpk k r) y₂ (γ *ᵥ bvec (eI k r a)) = 0 := fun a => by rw [← fvec_cast z']; exact b2 _
-  have c11 : herm (Hpk k r) y₁ ξ₁ = 0 := by simp [hξ₁, herm_sum_r, herm_smul_r, a2']
-  have c12 : herm (Hpk k r) y₁ ξ₂ = 0 := by simp [hξ₂, herm_sum_r, herm_smul_r, a1']
-  have c21 : herm (Hpk k r) y₂ ξ₁ = 0 := by simp [hξ₁, herm_sum_r, herm_smul_r, b2']
-  have c22 : herm (Hpk k r) y₂ ξ₂ = 0 := by simp [hξ₂, herm_sum_r, herm_smul_r, b1']
+  have a1' : ∀ a, herm (Hpk k r) y₁ (bvec (eI k r a)) = 0 := fun a => by rw [← GlobalTheory.Amp.NormGram.fvec_cast z]; exact a1 _
+  have a2' : ∀ a, herm (Hpk k r) y₁ (γ *ᵥ bvec (eI k r a)) = 0 := fun a => by rw [← GlobalTheory.Amp.NormGram.fvec_cast z']; exact a2 _
+  have b1' : ∀ a, herm (Hpk k r) y₂ (bvec (eI k r a)) = 0 := fun a => by rw [← GlobalTheory.Amp.NormGram.fvec_cast z]; exact b1 _
+  have b2' : ∀ a, herm (Hpk k r) y₂ (γ *ᵥ bvec (eI k r a)) = 0 := fun a => by rw [← GlobalTheory.Amp.NormGram.fvec_cast z']; exact b2 _
+  have c11 : herm (Hpk k r) y₁ ξ₁ = 0 := by simp [hξ₁, herm_sum_r, Formalism.FourierDecayAlt.P.B2x4.herm_smul_right, a2']
+  have c12 : herm (Hpk k r) y₁ ξ₂ = 0 := by simp [hξ₂, herm_sum_r, Formalism.FourierDecayAlt.P.B2x4.herm_smul_right, a1']
+  have c21 : herm (Hpk k r) y₂ ξ₁ = 0 := by simp [hξ₁, herm_sum_r, Formalism.FourierDecayAlt.P.B2x4.herm_smul_right, b2']
+  have c22 : herm (Hpk k r) y₂ ξ₂ = 0 := by simp [hξ₂, herm_sum_r, Formalism.FourierDecayAlt.P.B2x4.herm_smul_right, b1']
   have d11 : herm (Hpk k r) ξ₁ y₁ = 0 := by rw [← herm_conj hpk_herm, c11, star_zero]
   have d21 : herm (Hpk k r) ξ₁ y₂ = 0 := by rw [← herm_conj hpk_herm, c21, star_zero]
   have d22 : herm (Hpk k r) ξ₂ y₂ = 0 := by rw [← herm_conj hpk_herm, c22, star_zero]
   have e1 : herm (Hpk k r) ξ₁ ξ₁ = 0 := by
-    simp [hξ₁, herm_sum_r, herm_smul_r, herm_sum_l, herm_smul_l, herm_isom hγ, herm_e_e]
+    simp [hξ₁, herm_sum_r, Formalism.FourierDecayAlt.P.B2x4.herm_smul_right, herm_sum_l, Formalism.FourierDecayAlt.P.B2x4.herm_smul_left, herm_isom hγ, herm_e_e]
   have e2 : herm (Hpk k r) ξ₂ ξ₂ = 0 := by
-    simp [hξ₂, herm_sum_r, herm_smul_r, herm_sum_l, herm_smul_l, herm_e_e]
+    simp [hξ₂, herm_sum_r, Formalism.FourierDecayAlt.P.B2x4.herm_smul_right, herm_sum_l, Formalism.FourierDecayAlt.P.B2x4.herm_smul_left, herm_e_e]
   have n1 : herm (Hpk k r) y₁ y₁ = ((‖p.1‖ ^ 2 : ℝ) : ℂ) := by
-    rw [← herm_self_norm hp, ← herm_isom hγx p.1.ofLp, ep', herm_add_l, herm_add_r, herm_add_r, c11, d11, e1]; ring
+    rw [← herm_self_norm hp, ← herm_isom hγx p.1.ofLp, ep', Formalism.FourierDecayAlt.P.B2x4.herm_add_left, Formalism.FourierDecayAlt.P.B2x4.herm_add_right, Formalism.FourierDecayAlt.P.B2x4.herm_add_right, c11, d11, e1]; ring
   have n2 : herm (Hpk k r) y₂ y₂ = ((‖q.1‖ ^ 2 : ℝ) : ℂ) := by
-    rw [← herm_self_norm hq, ← herm_isom hγx q.1.ofLp, eq, herm_add_l, herm_add_r, herm_add_r, c22, d22, e2]; ring
+    rw [← herm_self_norm hq, ← herm_isom hγx q.1.ofLp, eq, Formalism.FourierDecayAlt.P.B2x4.herm_add_left, Formalism.FourierDecayAlt.P.B2x4.herm_add_right, Formalism.FourierDecayAlt.P.B2x4.herm_add_right, c22, d22, e2]; ring
   have cs : ‖herm (Hpk k r) y₁ y₂‖ ≤ ‖p.1‖ * ‖q.1‖ :=
     herm_cs hpk_herm _ _ _ _ (norm_nonneg _) (norm_nonneg _) n1 n2 fun t =>
-      semidef z _ hz hT fun a => by rw [herm_add_l, herm_smul_l, a1, b1]; ring
+      semidef z _ hz hT fun a => by rw [Formalism.FourierDecayAlt.P.B2x4.herm_add_left, Formalism.FourierDecayAlt.P.B2x4.herm_smul_left, a1, b1]; ring
   have m1 : ⟪q.1, p.1⟫_ℂ = herm (Hpk k r) y₁ y₂ + herm (Hpk k r) ξ₁ ξ₂ := by
-    rw [inner_eq_herm _ _ hp, ← herm_isom hγx p.1.ofLp, ep', eq, herm_add_l, herm_add_r, herm_add_r, c12, d21]; ring
+    rw [inner_eq_herm _ _ hp, ← herm_isom hγx p.1.ofLp, ep', eq, Formalism.FourierDecayAlt.P.B2x4.herm_add_left, Formalism.FourierDecayAlt.P.B2x4.herm_add_right, Formalism.FourierDecayAlt.P.B2x4.herm_add_right, c12, d21]; ring
   have u1 : ∀ a, ⟪(WithLp.toLp 2 (x⁻¹ *ᵥ (γ⁻¹ *ᵥ bvec (eI k r a))) : EuclideanSpace ℂ _), p.1⟫_ℂ =
       (Zm k r γ *ᵥ c) a := fun a => by
-    rw [inner_eq_herm _ _ hp, WithLp.ofLp_toLp, herm_inv hx, herm_inv hγ, Matrix.mulVec_mulVec, ep', herm_add_l, a1',
+    rw [inner_eq_herm _ _ hp, WithLp.ofLp_toLp, GlobalTheory.Amp.NormGram.herm_inv hx, GlobalTheory.Amp.NormGram.herm_inv hγ, Matrix.mulVec_mulVec, ep', Formalism.FourierDecayAlt.P.B2x4.herm_add_left, a1',
       zero_add, hξ₁, herm_sum_l]
-    simp only [herm_smul_l]
+    simp only [Formalism.FourierDecayAlt.P.B2x4.herm_smul_left]
     simp only [Zm, Matrix.mulVec, dotProduct, mul_comm]
   have u2 : ∀ b, starRingEnd ℂ
       ⟪(WithLp.toLp 2 ((γ * x)⁻¹ *ᵥ (γ⁻¹⁻¹ *ᵥ bvec (eI k r b))) : EuclideanSpace ℂ _), q.1⟫_ℂ =
       (star d ᵥ* Zm k r γ) b := fun b => by
-    rw [inner_eq_herm _ _ hq, WithLp.ofLp_toLp, herm_inv hγx, eq, show γ⁻¹⁻¹ *ᵥ bvec (eI k r b) = γ *ᵥ bvec (eI k r b) by rw [hγγ],
-      herm_add_l, b2', zero_add, starRingEnd_apply, herm_conj hpk_herm, hξ₂, herm_sum_r]
-    simp only [herm_smul_r]
+    rw [inner_eq_herm _ _ hq, WithLp.ofLp_toLp, GlobalTheory.Amp.NormGram.herm_inv hγx, eq, show γ⁻¹⁻¹ *ᵥ bvec (eI k r b) = γ *ᵥ bvec (eI k r b) by rw [hγγ],
+      Formalism.FourierDecayAlt.P.B2x4.herm_add_left, b2', zero_add, starRingEnd_apply, herm_conj hpk_herm, hξ₂, herm_sum_r]
+    simp only [Formalism.FourierDecayAlt.P.B2x4.herm_smul_right]
     rfl
   have u3 : star d ⬝ᵥ (Zm k r γ *ᵥ c) = herm (Hpk k r) ξ₁ ξ₂ := by
     rw [hξ₂, herm_sum_r]
     refine Finset.sum_congr rfl fun a _ => ?_
-    rw [herm_smul_r, hξ₁, herm_sum_l]
-    simp only [herm_smul_l]
+    rw [Formalism.FourierDecayAlt.P.B2x4.herm_smul_right, hξ₁, herm_sum_l]
+    simp only [Formalism.FourierDecayAlt.P.B2x4.herm_smul_left]
     simp only [Zm, Matrix.mulVec, dotProduct, mul_comm, Pi.star_apply]
   simp only [u1, u2]
   rw [alg _ hZ, u3, show herm (Hpk k r) ξ₁ ξ₂ = ⟪q.1, p.1⟫_ℂ - herm (Hpk k r) y₁ y₂ by rw [m1]; ring]
@@ -911,8 +859,8 @@ def lmulEquiv {γ : Mat k r} (hγ : γ ∈ GG k r) : Mt k r ≃ᵐ Mt k r where
   invFun := lmulM γ⁻¹
   left_inv := lmul_inv_lmul hγ
   right_inv x := Matrix.mul_nonsing_inv_cancel_left γ (Matrix.of x) (isUnit_det_of_mem_GG hγ)
-  measurable_toFun := (_root_.GlobalTheory.Amp.StabMeas.cont_lmul γ).measurable
-  measurable_invFun := (_root_.GlobalTheory.Amp.StabMeas.cont_lmul γ⁻¹).measurable
+  measurable_toFun := (_root_.Formalism.FourierDecayAlt.P.B2x1.lmulM_cont γ).measurable
+  measurable_invFun := (_root_.Formalism.FourierDecayAlt.P.B2x1.lmulM_cont γ⁻¹).measurable
 
 theorem quot_map {γ : Mat k r} (hγ : γ ∈ GG k r) {μG μR ν : Measure (Mt k r)} (hG : IsHaarOn (GG k r) μG)
     (h : IsQuotMeas μG μR ν) : IsQuotMeas μG (μR.map (conjM γ)) (ν.map (lmulEquiv hγ)) := by
@@ -1024,7 +972,7 @@ theorem abs_core : ∀ (k r : ℕ) {Wp : Type} [NormedAddCommGroup Wp] [InnerPro
     have : (0 : ℝ) < ((k - 2 - r : ℕ) : ℝ) := by exact_mod_cast hkk
     unfold Kc
     positivity
-  have me : Measurable (lmulM γ : Mt k r → Mt k r) := (_root_.GlobalTheory.Amp.StabMeas.cont_lmul γ).measurable
+  have me : Measurable (lmulM γ : Mt k r → Mt k r) := (_root_.Formalism.FourierDecayAlt.P.B2x1.lmulM_cont γ).measurable
   have main := _root_.GlobalTheory.Amp.OpNorm.integrable_and_norm_ampJ_le k r νR Φ Φ' γ c (κ / s * Kc k r De * c * 24 * (r : ℝ) ^ (2 * r) * H₁ ^ (24 * r ^ 3) *
     De ^ (2 * r) * (2 ^ r / Dr k r z z' γ) ^ (k - 2 - r)) hγ n0 cΦ cΦ' hc (by positivity) ?_
   · refine ⟨main.1, main.2.trans ?_⟩

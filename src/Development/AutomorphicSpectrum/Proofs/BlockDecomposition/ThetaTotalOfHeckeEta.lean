@@ -580,16 +580,6 @@ section Gauss
 
 variable {D : D7} {p : ℕ}
 
-theorem gram_at_place_rank_one (τ : D.what₂.Tau) : gramAt D (V1 D) τ = 1 := by
-  have h : (V1 D).gram = 1 := by
-    refine Matrix.ext fun i j => ?_
-    refine (Examples₂.stdSpace_gram_apply (E := D.host.E) Examples₂.star_isIntegral 1 (fun _ => false) 1 0 i j).trans ?_
-    show (if i = j then (Examples₂.sgn false : D.host.E) else 0) = if i = j then 1 else 0
-    rfl
-  show (HSpace.gram (V1 D)).map (tauE D τ) = 1
-  rw [h]
-  exact Matrix.map_one _ (map_zero _) (map_one _)
-
 open scoped ComplexOrder in
 theorem cartan_one (k : ℕ) : IsCartanInv (1 : Matrix (Fin k) (Fin k) ℂ) 1 :=
   ⟨mul_one _, by simp, by simpa using Matrix.PosDef.one⟩
@@ -608,7 +598,7 @@ theorem gauss_eq (l : D.what₂.Tau → ℝ) (z : D.what₂.Tau → Fin (V1 D).r
   congr 1
   refine Finset.sum_congr rfl fun τ _ => ?_
   congr 1
-  rw [gram_at_place_rank_one, mul_one, Matrix.mul_one, Matrix.trace]
+  rw [GlobalTheory.CompanionTheory.ThTot.OneRow.gram_at_place_rank_one, mul_one, Matrix.mul_one, Matrix.trace]
   refine Finset.sum_congr rfl fun j _ => ?_
   simp only [Matrix.diag_apply, Matrix.mul_apply, Matrix.conjTranspose_apply, Matrix.of_apply]
   refine Finset.sum_congr rfl fun i _ => ?_
@@ -667,7 +657,7 @@ theorem fockTotal_of_eucTotal : EucTotal → FockTotal := by
   let lam : Measure (D.what₂.Tau → Fin (V1 D).rank → Fin p → ℂ) := Measure.addHaar
   let ν : Measure (Fin (V1 D).rank → Fin p → GlobalTheory.RegSch.IkSchwartz.AEf D) := Measure.addHaar
   obtain ⟨f, hf⟩ := GlobalTheory.GaussSchwartz.exists_schwartz_gauss D p (V1 D) l hl (fun _ => 1) (fun τ => by
-    rw [gram_at_place_rank_one]
+    rw [GlobalTheory.CompanionTheory.ThTot.OneRow.gram_at_place_rank_one]
     exact cartan_one _)
   obtain ⟨L, hL0, hL⟩ : ∃ L : ℝ, 0 < L ∧ ∀ τ, L ≤ |l τ| := by
     rcases isEmpty_or_nonempty D.what₂.Tau with h | h
@@ -916,17 +906,12 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.CompanionTheory.ThTot.Orb
 variable {D : D7}
 
-theorem gram_at_place_rank_one (τ : D.what₂.Tau) : gramAt D (V1 D) τ = 1 := by
-  unfold gramAt
-  rw [GlobalTheory.CompanionTheory.ThTot.OneRow.gram_rank_one_one]
-  exact Matrix.map_one _ (map_zero _) (map_one _)
-
 theorem gaussian_rank_one_formula {n : ℕ} (l : D.what₂.Tau → ℝ) (z : D.what₂.Tau → Matrix (Fin (V1 D).rank) (Fin n) ℂ) :
     gauss (V1 D) l (fun _ => 1) z = ((Real.exp (-(2 * Real.pi) * nrm l z) : ℝ) : ℂ) := by
   unfold gauss nrm
   have h : ∀ τ, Matrix.trace ((z τ)ᴴ * (gramAt D (V1 D) τ * 1) * z τ) = ((fro (z τ) : ℝ) : ℂ) := by
     intro τ
-    rw [gram_at_place_rank_one, mul_one, Matrix.mul_one, trace_conjTranspose_mul_self]
+    rw [GlobalTheory.CompanionTheory.ThTot.OneRow.gram_at_place_rank_one, mul_one, Matrix.mul_one, trace_conjTranspose_mul_self]
   simp only [h]
   push_cast
   rfl

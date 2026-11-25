@@ -85,12 +85,6 @@ section -- clump:auto
 open ReciprocityTheory.PGsh.L2 ReciprocityTheory.PGsh.Up GlobalTheory.CompanionTheory.Ar.GR
 open scoped Matrix
 
-namespace GlobalTheory.CompanionTheory.Ar.GR
-
-theorem lens_exist : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (R : Type) [CommRing R] [Algebra R C], v.Integers R → v (p : C) < 1 → ∀ (N : Type) [AddCommGroup N] [Fintype N] [DecidableEq N], (∀ x : N, p • x = 0) → ∀ AA : HopfOrder (C := C) R N, ∃ cA cN cO : NNReal, cA ≠ 0 ∧ cN ≠ 0 ∧ cO ≠ 0 ∧ HasLen v R (AFQuot p AA.carrier) cA ∧ HasColen R v AA.carrier cN ∧ HasLen v R (OmAA AA.carrier) cO :=
-  @PositivityTheory.HtPt.Rc.lens
-
-end GlobalTheory.CompanionTheory.Ar.GR
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.AugmentationLengthsExist =====
@@ -103,12 +97,6 @@ section -- clump:auto
 open ReciprocityTheory.PGsh.L2 ReciprocityTheory.PGsh.Up GlobalTheory.CompanionTheory.Ar.GR
 open scoped Matrix
 
-namespace GlobalTheory.CompanionTheory.Ar.GR
-
-theorem afQuot_equiv_coords : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (R : Type) [CommRing R] [Algebra R C], v.Integers R → v (p : C) < 1 → ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (AA : HopfOrder (C := C) R (ι → ZMod p)), Nonempty (AFQuot p AA.carrier ≃ₗ[R] ((ι → R) ⧸ afLat p AA.carrier)) :=
-  PositivityTheory.HtPt.Rh.afquot
-
-end GlobalTheory.CompanionTheory.Ar.GR
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.AugmentationQuotientEquivLattice =====
@@ -121,12 +109,6 @@ section -- clump:auto
 open ReciprocityTheory.PGsh.L2 ReciprocityTheory.PGsh.Up GlobalTheory.CompanionTheory.Ar.GR
 open scoped Matrix
 
-namespace GlobalTheory.CompanionTheory.Ar.GR
-
-theorem submodule_eq_of_hasLen_eq : ∀ (C : Type) [Field C] (v : Valuation C NNReal) (R : Type) [CommRing R] [Algebra R C], v.Integers R → ∀ (ι : Type) [Fintype ι] (L L' : Submodule R (ι → R)), L ≤ L' → ∀ x y : NNReal, x ≠ 0 → HasLen v R ((ι → R) ⧸ L) x → HasLen v R ((ι → R) ⧸ L') y → x ≤ y ∧ (x = y → L = L') :=
-  @PositivityTheory.HtPt.Rh.len_eq
-
-end GlobalTheory.CompanionTheory.Ar.GR
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LatticeLengthMonoStrict =====
@@ -247,14 +229,14 @@ theorem polarisedAF : PolarisedAFStatement := by
     exact h
 
   have hkill : ∀ x : Nb p g, p • x = 0 := by intro x; ext i; simp
-  obtain ⟨cA, cN, cO, -, -, -, hA, hN, hO⟩ := _root_.GlobalTheory.CompanionTheory.Ar.GR.lens_exist p C v R hv hp1 (Nb p g) hkill H.AA
+  obtain ⟨cA, cN, cO, -, -, -, hA, hN, hO⟩ := _root_.PositivityTheory.HtPt.Rc.lens p C v R hv hp1 (Nb p g) hkill H.AA
   have hcO : cO = v (algebraMap R C (p : R)) ^ g := hasLen_unique hv hO (PolAF.hasLen_omAA_htd H)
   have hdeg := u4 p C v R hv hp1 (Nb p g) hkill H.AA cN cO hN hO
   obtain ⟨hcnt, hgen⟩ := _root_.GlobalTheory.CompanionTheory.Relay.augmentation_length_colength_bound p C v R hv hp1 (Nb p g) hkill H.AA cA cN hA hN
-  obtain ⟨eq⟩ := _root_.GlobalTheory.CompanionTheory.Ar.GR.afQuot_equiv_coords p C v R hv hp1 (Ix g) H.AA
+  obtain ⟨eq⟩ := _root_.PositivityTheory.HtPt.Rh.afquot p C v R hv hp1 (Ix g) H.AA
   have hAF : HasLen v R ((Ix g → R) ⧸ AF) cA := hasLen_of_equiv eq.symm hA
   obtain ⟨hle, hLeq⟩ :=
-    _root_.GlobalTheory.CompanionTheory.Ar.GR.submodule_eq_of_hasLen_eq C v R hv (Ix g) L AF hLle _ _ (pow_ne_zero _ hvcp) hLlen hAF
+    _root_.PositivityTheory.HtPt.Rh.len_eq C v R hv (Ix g) L AF hLle _ _ (pow_ne_zero _ hvcp) hLlen hAF
   have hn : Fintype.card (Nb p g) * (p - 1) ≠ 0 :=
     Nat.mul_ne_zero Fintype.card_ne_zero (by omega)
   have hOeq : cO ^ Fintype.card (Nb p g) =

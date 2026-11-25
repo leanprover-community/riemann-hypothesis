@@ -341,21 +341,6 @@ theorem mulVec_of_cols {R : Type} [CommRing R] {n a b : Type} [Fintype n] [Finty
 
 variable {D : D7}
 
-theorem eq_zero_of_places {e : AE D} {P : Finset (Pl D.host.E)} (he : IsIdemSum e P) {a : AE D}
-    (ha : (e + cA D e) * a = a) (h1 : ∀ w ∈ P, piAt w a = 0) (h2 : ∀ w ∈ P, piAt w (cA D a) = 0) : a = 0 := by
-  obtain ⟨e0, -, e2⟩ := GlobalTheory.FunObj.Comparison₂.cpt_idemSum he
-  replace e2 : ∀ w ∉ P, piAt w e = 0 := e2
-  have key : ∀ x : AE D, (∀ w ∈ P, piAt w x = 0) → e * x = 0 := fun x hx =>
-    ae_ext (by rw [map_mul, e0, zero_mul, map_zero]) fun w => by
-      change piAt w (e * x) = piAt w 0
-      rw [map_mul, map_zero]
-      by_cases h : w ∈ P
-      · rw [hx w h, mul_zero]
-      · rw [e2 w h, zero_mul]
-  have h3 := congrArg (cA D) (key _ h2)
-  rw [map_mul, SeeSaw.cA_cA, map_zero] at h3
-  rw [← ha, add_mul, key a h1, h3, add_zero]
-
 theorem adj_blk (S : HSp D) (g : GA D S) {p q : ℕ} (J : Mx D S.rank p) (J' : Mx D S.rank q) :
     adj (blk (HMul.hMul (adj J) (gA S)) (mt S g - 1) J') = blk (HMul.hMul (adj J') (gA S)) (mt S g⁻¹ - 1) J := by
   have h : HMul.hMul (adj (mt S g)) (gA S) = HMul.hMul (gA S) (mt S g⁻¹) := by
@@ -372,7 +357,7 @@ theorem blk_eq_zero {e : AE D} {P : Finset (Pl D.host.E)} (he : IsIdemSum e P) {
     (h1 : ∀ w ∈ P, piAt w (blk (HMul.hMul (adj J) (gA S)) (mt S g - 1) J' i j) = 0)
     (h2 : ∀ w ∈ P, piAt w (blk (HMul.hMul (adj J') (gA S)) (mt S g⁻¹ - 1) J j i) = 0) :
     blk (HMul.hMul (adj J) (gA S)) (mt S g - 1) J' i j = 0 := by
-  refine eq_zero_of_places he ?_ h1 fun w hw => ?_
+  refine GlobalTheory.PrLevel.ae_zero he ?_ h1 fun w hw => ?_
   · have h : (e + cA D e) • (mt S g - 1) = mt S g - 1 := Matrix.ext fun i j => hg i j
     have h' : (e + cA D e) • blk (HMul.hMul (adj J) (gA S)) (mt S g - 1) J' =
         blk (HMul.hMul (adj J) (gA S)) (mt S g - 1) J' := by
@@ -698,7 +683,6 @@ theorem diagGL_sign_mem_KO {n : Type} [Fintype n] [DecidableEq n] (p : n → Pro
     split_ifs <;> simp
   · rw [diagonal_apply_ne _ hij, diagonal_apply_ne _ hij, map_zero]
 
-
 omit [ValuativeRel k] in
 theorem diag_normalises {n : Type} [Fintype n] [DecidableEq n] {c : ℕ} {y : GL (n ⊕ Fin c) k} {f : n ⊕ Fin c → k}
     (hy : y.val = diagonal f) (x : GL (n ⊕ Fin c) k) : x ∈ symN k n c ↔ y⁻¹ * x * y ∈ symN k n c := by
@@ -730,8 +714,6 @@ theorem conjLevel_eq (G : GridData L sc) (t : T) (w : Pl D.host.E) {j : ℕ} (h1
       (MulAut.conj (toFrame (G := locGrid G t w) one_le_sLen hj (g (D.R.m, j)))).toMonoidHom := by
   refine map_conj_map (toFrame (G := locGrid G t w) one_le_sLen hj) (fun x => (frameGL_mem_KO _ x).trans ?_) _
   exact (givenLevel_eq G t w h1 hj.le) ▸ Iff.rfl
-
-
 
 theorem idxRatio_row {μ₀ : T} (hL : L.Is μ₀) (S : GridChoice W U) {t : T} (ht : t ∈ U) {j : ℕ} (hi : j ∈ idx D)
     (hj : j ≤ D.R.m) (hj' : j < D.R.m)
@@ -778,8 +760,6 @@ theorem idxRatio_row {μ₀ : T} (hL : L.Is μ₀) (S : GridChoice W U) {t : T} 
     rw [invVol_eq_idxRatio, conjLevel_eq G t w.1 hm.1 hj']
 
 end Main
-
-
 
 theorem cell_volume_mul_coef : Big fun {D} _ _ _ _ _ _ _ _ _ _ _ ch => ∀ (s : ℤˣ), ∀ j ∈ idx D,
     ∀ la : Measure ((GlobalTheory.CellMass.rowN ch.G j).subgroupOf (GfC (ch.G.V (.grid D.R.m j)))), la.IsHaarMeasure →
@@ -898,8 +878,6 @@ end Local
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {U : Set T}
 
-
-
 theorem vol_mul_colCoef : Big fun {D} _ _ _ _ _ _ _ _ _ _ _ ch => ∀ (s : ℤˣ), ∀ j ∈ idx D,
     ∀ la : Measure ((rowN ch.G j).subgroupOf (GfC (ch.G.V (.grid D.R.m j)))), la.IsHaarMeasure →
     ∃ V₀ : ℝ, 0 < V₀ ∧ ∀ t β b, IsRep t ch.S.B s β b → ∀ hb : b j ∈ GfC _,
@@ -928,7 +906,6 @@ open scoped NNReal
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
 
 open GlobalTheory.CellMass
-
 
 theorem _root_.GlobalTheory.T.exists_haar_volume_of_conjugate_lattice : Big fun {D} _ _ _ _ _ _ _ _ _ _ _ ch => ∀ (s : ℤˣ), ∀ j ∈ idx D,
     ∀ la : Measure ((rowN ch.G j).subgroupOf (GfC (ch.G.V (.grid D.R.m j)))), la.IsHaarMeasure →
@@ -1423,7 +1400,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 open GlobalTheory.CellMass
 
-
 theorem _root_.GlobalTheory.T.rowPeriodSubgroup_finitePoints_semidirect : ∀ {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 T : Type} {A : FamIn D.what₂.LL Γ Pl0 T D.R.m}
     {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat D A Ks} (ch : Choice R), ∀ j ∈ idx D,
     IsClosed (((rowGrp ch.G j).subgroupOf (GfC _) : Subgroup (GfC (ch.G.V (.grid D.R.m j)))) : Set (GfC (ch.G.V (.grid D.R.m j)))) ∧
@@ -1492,7 +1468,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 open GlobalTheory.CellMass
 
-
 theorem _root_.GlobalTheory.T.finitePoints_rowPeriod_conjLevel_fubini : Big fun {D} _ _ _ _ _ _ _ _ _ _ _ ch => ∀ j ∈ idx D,
     ∀ ρ : Measure ((rowGrp ch.G j).subgroupOf (GfC (ch.G.V (.grid D.R.m j)))), ρ.IsHaarMeasure →
     ∃ (κ : ℝ) (la : Measure ((rowN ch.G j).subgroupOf (GfC (ch.G.V (.grid D.R.m j))))) (ν : Measure (GfC (ch.G.V (.top j)))),
@@ -1519,8 +1494,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 noncomputable section
 
 namespace GlobalTheory.CellMass
-
-
 
 theorem cell_mass : Big fun {D} _ _ _ _ _ _ _ _ _ _ _ ch => ∀ (s : ℤˣ)
     (ρ : ∀ j, Measure ((rowGrp ch.G j).subgroupOf (GfC _))) (μ : ∀ j, Measure (GfC (ch.G.V (.grid D.R.m j)))),
@@ -1582,7 +1555,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Ro
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open scoped NNReal
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
-
 
 theorem _root_.GlobalTheory.T.unfolding_cell_mass_eq_const_mul_local_coefficients : Big fun {D} _ _ _ _ _ _ _ _ _ _ _ ch => ∀ (s : ℤˣ)
     (ρ : ∀ j, Measure ((rowGrp ch.G j).subgroupOf (GfC _))) (μ : ∀ j, Measure (GfC (ch.G.V (.grid D.R.m j)))),

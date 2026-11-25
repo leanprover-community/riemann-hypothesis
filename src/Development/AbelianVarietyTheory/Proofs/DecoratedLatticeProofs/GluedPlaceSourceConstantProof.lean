@@ -88,8 +88,6 @@ theorem fn_surjective (P : Pair k n') : Function.Surjective P.fn := by
   refine ⟨s • x, ?_⟩
   rw [map_smul, Algebra.smul_def, ResidueField.algebraMap_eq, hs, mul_assoc, inv_mul_cancel₀ hx, mul_one]
 
-
-
 theorem valuation_det_mul_unif (q : Unif k) (P : Pair k n') (g : GL n' k) (hg : g • P.ker = P.lat) :
     valuation k (((Matrix.GeneralLinearGroup.det g : kˣ) : k) * (q.unit : k)) = 1 := by
   classical
@@ -265,7 +263,6 @@ theorem exists_theta_exact {D : D7} (hLin : LinExact D) (k : Type) [Field k] [Va
 
 end GlobalTheory.FinPl.SrcExact
 
-
 open GlobalTheory.FinPl GlobalTheory.FinPl.SrcGl GlobalTheory.FinPl.SrcExact in
 theorem GlobalTheory.FinPl.sourceExact : ∀ D : D7, GlobalTheory.FinPl.SourceExact D := by
   intro D k _ _ _ _ p n n' _ _ _ _ q χ₀ hχ
@@ -281,8 +278,8 @@ theorem GlobalTheory.FinPl.sourceExact : ∀ D : D7, GlobalTheory.FinPl.SourceEx
     exists_theta_exact (_root_.GlobalTheory.LinExactAt.linExact D) k p n n' q ψ S A L T o hA vA χS χT om hW α α₀ β hsum
   have hdet : ∀ L' : Submodule 𝒪[k] (n' → k), L'.IsFullLattice k → ∀ g ∈ latStab L',
       ((lS (Matrix.GeneralLinearGroup.det g) : ℂˣ) : ℂ) = 1 := fun L' hL' g hg => by
-    rw [GlobalTheory.T.unramifiedCharacter_det_latticeStabilizer_eq_one k n' L' hL' g hg lS (hlS hT), Units.val_one]
-  have hsb := GlobalTheory.T.schwartzBruhat_tensor_indicator_character_facts k n n'
+    rw [GlobalTheory.LatPair.Det.isUnram_det_latStab k n' L' hL' g hg lS (hlS hT), Units.val_one]
+  have hsb := GlobalTheory.FinPl.sb_facts k n n'
 
   have hinv : ∀ (θ : CA A →ₗ[ℂ] (Matrix n (n' ⊕ Fin 1) k → ℂ) →ₗ[ℂ] (GA D T → WO L T → ℂ)),
       (∀ (g : GL n' k) (v : CA A) (Φ : Matrix n (n' ⊕ Fin 1) k → ℂ), Φ ∈ SB (Matrix n (n' ⊕ Fin 1) k) →

@@ -133,8 +133,6 @@ theorem idem_mul_iff {L : Type} [Field L] [NumberField L] [IsCMField L] (v : Hei
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
-
 theorem suppF_iff {D : D7} (hF : D.host.F = maximalRealSubfield D.host.E) {V : Formalism.BasicNotions.TH.HSp D} {n : ℕ}
     (PV : Formalism.IndefR.principalLevelFrame.RowPsi V n) (hV : GlobalTheory.NJoin.StdFrame hF PV) {Pp : HeightOneSpectrum (𝓞 D.host.E)}
     {e f : Formalism.L2.Theta.AE D} (hP : Formalism.IndefR.Mult.IsPrimeIdem Pp e f)
@@ -252,8 +250,6 @@ theorem sum_read_abs {G H W W' : Type} [Group G] [Group H] [AddCommGroup W] [Mod
   refine Finset.sum_congr rfl fun γ _ => ?_
   rw [← map_mul, hr, one_mul, mul_assoc]
 
-
-
 theorem eigen_of_fin {D : D7} {cf : CharFrame D} {nch : NChoice D} {tp : TupTied D cf nch} (X : GlobalTheory.NJoin.RealAt D cf nch tp)
     (j : Fin D.R.m) (t : X.T) (h : DIV.Pl D.host.E → (List ℤ →₀ ℂ) → Module.End ℂ (X.R.HV j t).H)
     (hh : GlobalTheory.Hk3.IsOpsV X.R j t h) (Pp : DIV.Pl D.host.E) (hG : GlobalTheory.Hk3.Good X.R t Pp) (d : List ℤ)
@@ -276,8 +272,6 @@ theorem eigen_of_fin {D : D7} {cf : CharFrame D} {nch : NChoice D} {tp : TupTied
       (Formalism.L2.Theta.finHom (Formalism.IndefR.Links.Vc D j)).rangeRestrict _ _ hext _ (fun γ hγ => rep_mem _ Pp d hγ) c g hg (hc g hg))
   exact X.hinj j t (congrArg (X.R.cV j).ext key)
 
-
-
 theorem transport_succ {D : D7} {cf : CharFrame D} {nch : NChoice D} {tp : TupTied D cf nch} (X : GlobalTheory.NJoin.RealAt D cf nch tp)
     {M : MtFam D} {rep : D.what₂.FT → NG.FinTyp D.host.E D.R.r} (A : GlobalTheory.NJoin.Agree X M rep) {μ : D.what₂.Tup}
     (hμ : Formalism.IndefR.RecTie.Used0 D μ) (j : Fin D.R.m) (k : ℕ) (hk : j.1 + 1 = k) (k1 : 1 ≤ k) (k2 : k ≤ D.R.m)
@@ -297,7 +291,7 @@ theorem transport_succ {D : D7} {cf : CharFrame D} {nch : NChoice D} {tp : TupTi
   have hp := rep_pull A.hF (A.PV j) (A.stdV j) hd hv
   obtain ⟨a, R₀, ha, hR₀, hs⟩ := hp
   have hq := GlobalTheory.InertDCOp.dcOp_eq_heckeFunI D.host.E D.R.nV v Pp Dv
-    (GlobalTheory.T.inertDatum_local_mem_unitaryGroup_antidiagonal _ _ v Pp Dv) (GlobalTheory.T.inertDatum_local_stdLatticeStabilizer_mem_maxCompact _ _ v Pp Dv) (GlobalTheory.T.exists_trivOutside_inertDatum_local_eq _ _ v Pp Dv) (GlobalTheory.T.inertDatum_local_injective_on_trivOutside _ _ v Pp Dv) a ha
+    (GlobalTheory.T.inertDatum_local_mem_unitaryGroup_antidiagonal _ _ v Pp Dv) (GlobalTheory.InertKU.loc_mem_KU _ _ v Pp Dv) (GlobalTheory.T.exists_trivOutside_inertDatum_local_eq _ _ v Pp Dv) (GlobalTheory.T.inertDatum_local_injective_on_trivOutside _ _ v Pp Dv) a ha
   obtain ⟨R₁, h0, hR₁, hh0, hsum⟩ := hq
   refine ⟨h0, hh0, fun f' y' c hy hfix hc => ?_⟩
   refine eigen_of_fin X j _ h hh Pp hG d y' c fun g hg => ?_

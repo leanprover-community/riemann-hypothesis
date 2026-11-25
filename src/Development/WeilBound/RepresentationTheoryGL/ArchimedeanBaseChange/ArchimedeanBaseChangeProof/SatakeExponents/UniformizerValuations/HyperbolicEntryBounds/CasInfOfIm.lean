@@ -70,8 +70,6 @@ open PositivityTheory.RgTw (Mat G)
 open PositivityTheory.Rg.BcB.SpectralAccumulation (Hf)
 open scoped Classical
 
-
-
 namespace PositivityTheory.Rg.BcB.F.F0
 
 open PositivityTheory.Rg.BcB.F
@@ -95,100 +93,6 @@ theorem cosh_im_zero (c : ℂ) (hc : c.im = 0) (t : ℝ) : (Complex.cosh (t * c 
       apply Complex.ext <;> simp [h]
     rw [e, ← Complex.ofReal_cosh, Complex.ofReal_im]
 
-theorem bump_one' (ι : Type) [Fintype ι] (c : ι → ℂ) (hc : ∀ i, (c i).im = 0) :
-    ∃ (g : ℝ → ℝ) (T : ℝ), 0 ≤ T ∧ IsBump g T ∧ ∏ i, coshT g (c i) = 1 := by
-  have hev : ∀ᶠ t : ℝ in nhds 0, ∀ i, ‖Complex.cosh (t * c i ^ (1 / 2 : ℂ)) - 1‖ < 1 / 2 := by
-    rw [Filter.eventually_all]
-    intro i
-    have hcont : Continuous fun t : ℝ => Complex.cosh (t * c i ^ (1 / 2 : ℂ)) := by fun_prop
-    have h0 : Complex.cosh (((0 : ℝ) : ℂ) * c i ^ (1 / 2 : ℂ)) = 1 := by simp
-    have ht := hcont.tendsto 0
-    rw [h0] at ht
-    exact (ht.eventually (Metric.ball_mem_nhds 1 (by norm_num : (0 : ℝ) < 1 / 2))).mono fun t h => by
-      simpa [dist_eq_norm] using h
-  obtain ⟨δ, hδ, hδt⟩ := Metric.eventually_nhds_iff.1 hev
-  let f : ContDiffBump (0 : ℝ) := ⟨δ / 4, δ / 2, by positivity, by linarith⟩
-  let g0 : ℝ → ℝ := f.normed volume
-  have hnn : ∀ t, 0 ≤ g0 t := fun t => f.nonneg_normed t
-  have hsupp : ∀ t, g0 t ≠ 0 → |t| < δ / 2 := by
-    intro t ht
-    have : t ∈ Function.support g0 := ht
-    rw [show Function.support g0 = Metric.ball 0 (δ / 2) from f.support_normed_eq] at this
-    simpa [Real.dist_eq] using this
-  have hcr : ∀ i, Continuous fun t : ℝ => (Complex.cosh (t * c i ^ (1 / 2 : ℂ))).re := by
-    intro i; fun_prop
-  let r : ι → ℝ := fun i => ∫ t, g0 t * (Complex.cosh (t * c i ^ (1 / 2 : ℂ))).re
-  have hA : ∀ i, coshT g0 (c i) = (r i : ℂ) := by
-    intro i
-    simp only [coshT, r]
-    rw [← integral_complex_ofReal]
-    congr 1
-    ext t
-    have e : Complex.cosh (t * c i ^ (1 / 2 : ℂ)) = ((Complex.cosh (t * c i ^ (1 / 2 : ℂ))).re : ℂ) :=
-      Complex.ext (by simp) (by rw [Complex.ofReal_im]; exact cosh_im_zero (c i) (hc i) t)
-    conv_lhs => rw [e]
-    push_cast
-    ring
-  have hr : ∀ i, 0 < r i := by
-    intro i
-    have hint : Integrable (fun t => g0 t * (Complex.cosh (t * c i ^ (1 / 2 : ℂ))).re) volume :=
-      (f.continuous_normed.mul (hcr i)).integrable_of_hasCompactSupport f.hasCompactSupport_normed.mul_right
-    have hle : (fun t => g0 t * (1 / 2 : ℝ)) ≤ fun t => g0 t * (Complex.cosh (t * c i ^ (1 / 2 : ℂ))).re := by
-      intro t
-      by_cases h0 : g0 t = 0
-      · simp [h0]
-      · have ht := hsupp t h0
-        have hn := hδt (show dist t 0 < δ by rw [Real.dist_eq, sub_zero]; linarith) i
-        have hre : 1 / 2 ≤ (Complex.cosh (t * c i ^ (1 / 2 : ℂ))).re := by
-          have h2 : |(Complex.cosh (t * c i ^ (1 / 2 : ℂ)) - 1).re| ≤ 1 / 2 := by
-            have := Complex.abs_re_le_norm (Complex.cosh (t * c i ^ (1 / 2 : ℂ)) - 1)
-            linarith
-          rw [Complex.sub_re, Complex.one_re] at h2
-          have := (abs_le.1 h2).1
-          linarith
-        exact mul_le_mul_of_nonneg_left hre (hnn t)
-    have := integral_mono (f.integrable_normed.mul_const _) hint hle
-    rw [integral_mul_const, f.integral_normed] at this
-    simp only [r]
-    linarith
-  set P : ℝ := ∏ i, r i with hP
-  have hP0 : 0 < P := Finset.prod_pos fun i _ => hr i
-  rcases isEmpty_or_nonempty ι with hι | hι
-  · refine ⟨g0, δ / 2, by positivity, ⟨f.contDiff_normed, fun t => f.normed_neg t, fun t ht => ?_⟩, by simp⟩
-    by_contra h
-    have := hsupp t h
-    linarith
-  · set m : ℕ := Fintype.card ι with hm
-    have hm0 : (m : ℝ) ≠ 0 := by
-      have : 0 < m := Fintype.card_pos
-      exact_mod_cast this.ne'
-    set l : ℝ := P ^ (-(1 : ℝ) / m) with hl
-    refine ⟨fun t => l * g0 t, δ / 2, by positivity,
-      ⟨contDiff_const.mul f.contDiff_normed, fun t => by simp [g0, f.normed_neg], fun t ht => ?_⟩, ?_⟩
-    · have : g0 t = 0 := by
-        by_contra h
-        have := hsupp t h
-        linarith
-      simp [this]
-    · have hs : ∀ i, coshT (fun t => l * g0 t) (c i) = (l : ℂ) * (r i : ℂ) := by
-        intro i
-        rw [← hA i]
-        simp only [coshT]
-        rw [← integral_const_mul]
-        congr 1
-        ext t
-        push_cast
-        ring
-      simp only [hs]
-      rw [Finset.prod_mul_distrib, Finset.prod_const, Finset.card_univ, ← hm]
-      have hl' : l ^ m * P = 1 := by
-        rw [hl, ← Real.rpow_natCast, ← Real.rpow_mul hP0.le, div_mul_cancel₀ _ hm0, Real.rpow_neg_one,
-          inv_mul_cancel₀ hP0.ne']
-      have : ((l ^ m * P : ℝ) : ℂ) = 1 := by rw [hl']; simp
-      rw [← this, hP]
-      push_cast
-      ring
-
 end PositivityTheory.Rg.BcB.F.F0
 
 end
@@ -210,8 +114,6 @@ open PositivityTheory.RgTw (Mat G)
 open PositivityTheory.Rg.BcB.SpectralAccumulation (Hf)
 open scoped Classical
 
-
-
 namespace PositivityTheory.Rg.BcB.F.F0
 
 open PositivityTheory.Rg.BcB.F
@@ -225,23 +127,6 @@ theorem im_pow_entry {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (hA : ∀ i j, (
     apply Complex.ext <;> simp [hA i j]
   rw [hAe, ← RingHom.mapMatrix_apply, ← map_pow, RingHom.mapMatrix_apply]
   simp
-
-theorem cas_infOf_im' {n : ℕ} (lam : Fin n → ℤ) : (cas (infOf lam)).im = 0 := by
-  have hχ : ∀ s a, (infOf lam s a).im = 0 := by
-    intro s a
-    cases s <;> simp [infOf]
-  have hg : ∀ s, (GlobalTheory.Dec.gelfVal (infOf lam s) 2).im = 0 := by
-    intro s
-    unfold GlobalTheory.Dec.gelfVal
-    rw [Complex.im_sum]
-    refine Finset.sum_eq_zero fun a _ => ?_
-    rw [Complex.im_sum]
-    refine Finset.sum_eq_zero fun b _ => ?_
-    apply im_pow_entry
-    intro i j
-    simp only [Formalism.REAL.Amat, Matrix.of_apply]
-    split_ifs <;> simp [hχ]
-  simp [cas, hg]
 
 end PositivityTheory.Rg.BcB.F.F0
 
@@ -263,8 +148,6 @@ open PositivityTheory.Rg.BcB.E PositivityTheory.RgBcC PositivityTheory.Rg.BcB.CG
 open PositivityTheory.RgTw (Mat G)
 open PositivityTheory.Rg.BcB.SpectralAccumulation (Hf)
 open scoped Classical
-
-
 
 namespace PositivityTheory.Rg.BcB.F.F0
 
@@ -309,52 +192,6 @@ theorem isCompact_entries {n : ℕ} (r : ℝ) :
     exact ⟨fun a b => mem_closedBall_zero_iff.1 (h1 a trivial b trivial),
       fun a b => mem_closedBall_zero_iff.1 (h2 a trivial b trivial)⟩
 
-section SlopeTestRemainingChoices
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
-theorem multiplier_function_continuous_compact {n : ℕ} [MeasurableSpace (G n)] (μ : Measure (G n)) (M : KMod n) (Tθ : M.V →L[ℂ] M.V)
-    (k : Mat n → (M.V →L[ℂ] M.V)) (val : Inf n → ℂ) (T : ℝ) (h : IsMult μ M k val T) :
-    Continuous (phiOf M Tθ k) ∧ HasCompactSupport (phiOf M Tθ k) := by
-  obtain ⟨m, c, w, g, ks, hks, hk, -⟩ := h
-  let L : (M.V →L[ℂ] M.V) →ₗ[ℂ] ℂ :=
-    { toFun := fun A => LinearMap.trace ℂ M.V ((A * Tθ : M.V →L[ℂ] M.V) : M.V →ₗ[ℂ] M.V)
-      map_add' := fun A B => by simp [add_mul]
-      map_smul' := fun z A => by simp }
-  have hL : Continuous L := L.continuous_of_finiteDimensional
-  have hphi : phiOf M Tθ k = fun y : G n => L (k (y : Mat n)) := rfl
-  have hmem : ∀ y : G n, (y : Mat n) ∈ GLs n := fun y => (Matrix.isUnits_det_units y).ne_zero
-  have hkc : ContinuousOn k (GLs n) :=
-    (continuousOn_finsetSum _ fun i _ => ((hks i).2.1.continuousOn).const_smul (c i)).congr
-      (fun y hy => by simpa using hk y hy)
-  refine ⟨?_, ?_⟩
-  · rw [hphi]
-    exact hL.comp (hkc.comp_continuous Units.continuous_val hmem)
-  · choose R hR using fun i => (hks i).2.2.1
-    set Rt : ℝ := ∑ i, |R i|
-    have hRi : ∀ i, R i ≤ Rt := fun i =>
-      (le_abs_self _).trans (Finset.single_le_sum (fun j _ => abs_nonneg (R j)) (Finset.mem_univ i))
-    refine HasCompactSupport.intro (isCompact_entries (n := n) (Real.exp Rt)) fun y hy => ?_
-    have hlt : Rt < lg (y : Mat n) := by
-      by_contra hle
-      push Not at hle
-      apply hy
-      refine ⟨fun a b => (entry_le_of_lg hle a b).1, fun a b => ?_⟩
-      rw [Matrix.coe_units_inv]
-      exact (entry_le_of_lg hle a b).2
-    have hk0 : k (y : Mat n) = 0 := by
-      rw [hk _ (hmem y)]
-      exact Finset.sum_eq_zero fun i _ => by rw [hR i _ (hmem y) ((hRi i).trans_lt hlt), smul_zero]
-    rw [hphi]
-    simp [hk0]
-
-end SlopeTestRemainingChoices
-
-theorem phiOf_cs' {n : ℕ} [MeasurableSpace (G n)] (μ : Measure (G n)) (M : KMod n) (Tθ : M.V →L[ℂ] M.V)
-    (k : Mat n → (M.V →L[ℂ] M.V)) (val : Inf n → ℂ) (T : ℝ) (h : IsMult μ M k val T) :
-    Continuous (phiOf M Tθ k) ∧ HasCompactSupport (phiOf M Tθ k) :=
-  multiplier_function_continuous_compact μ M Tθ k val T h
-
 end PositivityTheory.Rg.BcB.F.F0
 
 end
@@ -375,8 +212,6 @@ open PositivityTheory.Rg.BcB.E PositivityTheory.RgBcC PositivityTheory.Rg.BcB.CG
 open PositivityTheory.RgTw (Mat G)
 open PositivityTheory.Rg.BcB.SpectralAccumulation (Hf)
 open scoped Classical
-
-
 
 namespace PositivityTheory.Rg.BcB.F.F0
 

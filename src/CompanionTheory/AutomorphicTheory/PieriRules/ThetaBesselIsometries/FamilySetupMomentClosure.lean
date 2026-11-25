@@ -94,7 +94,7 @@ theorem product_moment : HypsG → ∀ (k r : ℕ) (Wp : Type) [NormedAddCommGro
       simpa only [one_mul, hw1', one_pow, ENNReal.ofReal_one] using this)
     hA (one_le_pow₀ hb)
     (fun q hq => by
-      have := GlobalTheory.T.family_setup_cayley_recursion hH k r Wp lam u b bv ga h q0 z π μW μN μG νq R l dg Q E hS hQ hE q ν
+      have := Gp91.GlobalTheory.Moment.moment_first_length hH k r Wp lam u b bv ga h q0 z π μW μN μG νq R l dg Q E hS hQ hE q ν
         (by omega) 0 (hq2 q hq) w hLev
       simpa only [hw1, one_pow, mul_one] using this)
     (fun a q hq => by

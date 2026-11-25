@@ -562,7 +562,6 @@ open GroundTheory.Global GroundTheory.Global.SemiLocal UpperTheory.V.Published U
 open scoped Classical
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-
 theorem UpperTheory.Gal.InertialTypesAlt.cuspIne :
     TameRead → TypeChar → NameOf → BaseQ → CuspIne := by
   intro hT hC hN hB
@@ -807,25 +806,13 @@ private theorem brG_one' {F : Type} [Field F] (a b : ℕ) :
   unfold brG
   rw [h, toG_one']
 
-private theorem inPar_one' {F : Type} [Field F] (a n : ℕ) : InPar a (1 : GL (Fin n) F) := by
-  intro i j hj hi
-  rw [Units.val_one, Matrix.one_apply_ne]
-  intro h
-  rw [h] at hi
-  omega
-
-private theorem gal_id' {F : Type} [Field F] (n : ℕ) (y : GL (Fin n) F) :
-    gal (RingHom.id F) n y = y := by
-  ext i j
-  rfl
-
 theorem UpperTheory.Gal.InertialTypesAlt.hcOne :
     HcOne := by
   intro F _ _ a b n hn α β hα hβ
   subst hn
   unfold hc hcTw
-  simp only [gal_id', mul_one, inv_mul_cancel, inPar_one', ite_true, tlG_one', brG_one']
-  haveI : Nonempty { p : GL (Fin (a + b)) F // InPar a p } := ⟨⟨1, inPar_one' a _⟩⟩
+  simp only [GlobalTheory.Shin.HCChar.gal_id_apply, mul_one, inv_mul_cancel, GlobalTheory.Shin.FlagDesc.inPar_one, ite_true, tlG_one', brG_one']
+  haveI : Nonempty { p : GL (Fin (a + b)) F // InPar a p } := ⟨⟨1, GlobalTheory.Shin.FlagDesc.inPar_one a _⟩⟩
   haveI : Fintype (GL (Fin (a + b)) F) := Fintype.ofFinite _
   rw [finsum_eq_sum_of_fintype, Finset.sum_const, nsmul_eq_mul]
   exact mul_ne_zero (inv_ne_zero (Nat.cast_ne_zero.mpr Nat.card_pos.ne'))

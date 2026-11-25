@@ -136,14 +136,6 @@ theorem pl_res {V X : Scheme.{0}} (x : V ⟶ X) {A A' : X.Opens} {B : V.Opens}
   rw [← Scheme.Hom.map_appLE x e (homOfLE h).op]
   rfl
 
-theorem res_res {V : Scheme.{0}} {A B C : V.Opens} (h : B ≤ A) (h' : C ≤ B) (t : Γ(V, A)ˣ) :
-    res h' (res h t) = res (h'.trans h) t := by
-  refine Units.ext ?_
-  change (V.presheaf.map (homOfLE h').op).hom ((V.presheaf.map (homOfLE h).op).hom t.val) =
-    (V.presheaf.map (homOfLE (h'.trans h)).op).hom t.val
-  rw [← CommRingCat.comp_apply, ← Functor.map_comp]
-  rfl
-
 theorem res_map_appTop {V' V : Scheme.{0}} (g : V' ⟶ V) {B' : V'.Opens} (t : Γ(V, ⊤)ˣ) :
     res (le_top : B' ≤ ⊤) (Units.map g.appTop.hom.toMonoidHom t) = pl g (A := ⊤) (fun _ _ => trivial) t := by
   refine Units.ext ?_
@@ -212,7 +204,7 @@ def uc {a b : V ⟶ Yc L} (h : a ≫ fc L = b ≫ fc L) : Γ(V, ⊤)ˣ := (exist
 theorem uc_spec {a b : V ⟶ Yc L} (h : a ≫ fc L = b ≫ fc L) (i j : L.ι) {B : V.Opens} (hB : B ≤ W2 a b (i, j)) :
     res (le_top : B ≤ ⊤) (uc h) = pl (a ≫ fc L) (hB.trans (doubleOverlap_le_preimage_inter h i j)) (L.g i j) := by
   have e := (exists_u h).choose_spec (i, j)
-  rw [← res_res (le_top : W2 a b (i, j) ≤ ⊤) hB]
+  rw [← ReciprocityTheory.ChartRestriction.G.DVR.res_res' (le_top : W2 a b (i, j) ≤ ⊤) hB]
   change res hB (res le_top (uc h)) = _
   rw [show res (le_top : W2 a b (i, j) ≤ ⊤) (uc h) = _ from e, res_pl]
 
@@ -589,7 +581,6 @@ theorem ks_mono (𝒱 : Set X.Opens) {s S : ℕ} (h : s ≤ S) : KS q s 𝒱 ≤
 omit [CharZero K] in
 theorem ks_pd (𝒱 : Set X.Opens) (s : ℕ) (c : (KS q s 𝒱).FullSubcategory) : ((KS q s 𝒱).ι.obj c).pdPow s = ⊥ :=
   c.property.1.1
-
 
 def clsK (D : E.LineData X) (s : ℕ) (Λ : CLiftK (KS q s (𝒱D D)).ι D) :
     CH.H ((KS q s (𝒱D D)).ι ⋙ O (smFun X q)) 2 :=

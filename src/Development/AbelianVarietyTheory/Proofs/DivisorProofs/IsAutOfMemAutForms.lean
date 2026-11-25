@@ -64,8 +64,6 @@ open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [local instance 100] LieRing.ofAssociativeRing
 
-theorem _root_.GlobalTheory.T.enveloping_action_commutes_translation : ∀ (D : D7) (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)), IsInfFam θ → ∀ (V : HSp D) (R : RealPoints θ V) (u : GlobalTheory.AutFinLit.Env V), (∀ a ∈ GinfC V, ∀ (f : SmF θ V) (hfa : (fun x => f.1 (x * a)) ∈ SmF θ V), (envRepAll R u ⟨_, hfa⟩).1 = fun x => (envRepAll R u f).1 (x * a)) → ∀ x : GlobalTheory.AutFinLit.LieC V, envRepAll R (UniversalEnvelopingAlgebra.ι ℂ x) * envRepAll R u = envRepAll R u * envRepAll R (UniversalEnvelopingAlgebra.ι ℂ x) := by
-  first | exact @GlobalTheory.EnvCommLie.envRepAll_comm_lie
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.EnvelopingActionCommutesTranslationStatement =====
@@ -80,8 +78,6 @@ open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [local instance 100] LieRing.ofAssociativeRing
 
-theorem _root_.GlobalTheory.T.polyFun_mem_smooth_vectors : ∀ (D : D7) (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)) (V : HSp D), RealPoints θ V → ∀ P : PolyE V, polyFun θ V P ∈ SmF θ V := by
-  first | exact @GlobalTheory.CentralOps.polyFun_mem_smF
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolyFunMemSmoothVectorsStatement =====
@@ -102,12 +98,7 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [local instance 100] LieRing.ofAssociativeRing
 
 theorem polyFun_mem (D : D7) (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)) (V : HSp D)
-    (R : RealPoints θ V) (P : PolyE V) : polyFun θ V P ∈ SmF θ V := GlobalTheory.T.polyFun_mem_smooth_vectors D θ V R P
-
-theorem lieDer_polyFun (D : D7) (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)) (V : HSp D)
-    (R : RealPoints θ V) (τ : D.what₂.Tau) (X : LieAt V τ) (P : PolyE V) :
-    lieDer V (expInf θ V) (atPlace V τ X) (polyFun θ V P) = polyFun θ V (matDer τ X.1 P) := _root_.GlobalTheory.PolyRightDeriv.lieDer_polyFun D θ V R τ X P
-
+    (R : RealPoints θ V) (P : PolyE V) : polyFun θ V P ∈ SmF θ V := GlobalTheory.CentralOps.polyFun_mem_smF D θ V R P
 
 open Classical in
 theorem aeval_matDer_single {T : Type} {n : ℕ} (τ τ' : T) (a b c d : Fin n) :
@@ -165,7 +156,7 @@ theorem envRepAll_polyFun (R : RealPoints θ V) (u : GlobalTheory.AutFinLit.Env 
         rw [envRepAll_ι_of, polyRep_ι_of, placeRep_tmul,
           show c ⊗ₜ[ℝ] X = c • ((1 : ℂ) ⊗ₜ[ℝ] X) by rw [TensorProduct.smul_tmul', smul_eq_mul, mul_one], map_smul,
           map_smul, envRep_ι, LinearMap.smul_apply, LinearMap.smul_apply, Submodule.coe_smul, opInf_coe,
-          polyFun_smul, lieDer_polyFun D θ V R]
+          polyFun_smul, GlobalTheory.PolyRightDeriv.lieDer_polyFun D θ V R]
         rfl
   exact GlobalTheory.EnvCentre.mem_of_ι_mem (AlgHom.id ℂ _) S hι u P
 
@@ -173,8 +164,6 @@ theorem realEntries_one (R : RealPoints θ V) :
     realEntries θ V 1 = fun p => if p.2.1 = p.2.2 then (1 : ℂ) else 0 := by
   funext p
   simp only [realEntries, R.2.2.2.2.1 1 (one_mem _) p.1, Matrix.one_apply]
-
-
 
 open Classical in
 theorem envRepAll_injective (D : D7) (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)) (_hθ : IsInfFam θ)
@@ -380,7 +369,7 @@ theorem exists_center (hθ : IsInfFam θ) (R : RealPoints θ V) {z : List (ℝ �
   obtain ⟨u, hu⟩ := exists_env hθ R z hz.1
   refine ⟨u, mem_center_of_comm u fun x => GlobalTheory.CentralOps.envRepAll_injective _ _ hθ V R ?_, hu⟩
   rw [map_mul, map_mul]
-  refine GlobalTheory.T.enveloping_action_commutes_translation _ _ hθ V R u (fun a ha f hfa => ?_) x
+  refine GlobalTheory.EnvCommLie.envRepAll_comm_lie _ _ hθ V R u (fun a ha f hfa => ?_) x
   rw [← hu, ← hu]
   funext g
   exact hz.2 f.1 (isSm_of_smF hθ R f) a ha g

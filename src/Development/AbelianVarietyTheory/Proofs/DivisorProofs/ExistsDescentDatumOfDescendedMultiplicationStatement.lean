@@ -82,8 +82,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
-theorem _root_.GlobalTheory.T.isMonHom_of_sumMap_comp_fixing_nearOpen : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], AdmBase R (maximalIdeal R) → ∀ (S : Scheme.{0}) (π : S ⟶ Sp R), IsProper π → Surjective π → IsIntegral S → ∀ (G' : Over S) [GrpObj G'] [IsCommMonObj G'], IsSemiAbelian G' → ∀ N : Near π G', ∀ (p p' : pullback π π ⟶ S) (hp : p ≫ π = pullback.fst π π ≫ π) (hp' : p' ≫ π = pullback.fst π π ≫ π), ∀ φ : (Over.pullback p).obj G' ⟶ (Over.pullback p').obj G', Desc.sum N p hp ≫ φ = Desc.sum N p' hp' → Desc.emb N p hp ≫ φ = Desc.emb N p' hp' → IsMonHom φ := by
-  first | exact @GlobalTheory.Mum.DescHom.isMonHom_of_sum_of_emb
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsMonHomOfSumMapCompFixingNearOpenStatement =====
@@ -525,7 +523,6 @@ theorem agree_Wk (N : Near π G) (V : (N.U ⊗ N.U).left.Opens) (m : V.toScheme 
 
 end GlobalTheory.Mum.DescKP
 
-
 open GlobalTheory.Mum.DescKP in
 theorem GlobalTheory.Mum.DescKP.sum_eq_of_sum_eq : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], AdmBase R (maximalIdeal R) → ∀ (S : Scheme.{0}) (π : S ⟶ Sp R), IsProper π → Surjective π → IsIntegral S → ∀ (G' : Over S) [GrpObj G'] [IsCommMonObj G'], IsSemiAbelian G' → ∀ N : Near π G', N.Law → ∀ (p p' : pullback π π ⟶ S) (hp : p ≫ π = pullback.fst π π ≫ π) (hp' : p' ≫ π = pullback.fst π π ≫ π), ∀ (Z : Scheme.{0}) (g g' : Z ⟶ (Desc.UT N ⊗ Desc.UT N).left), g ≫ (Desc.sum N p hp).left = g' ≫ (Desc.sum N p hp).left → g ≫ (Desc.sum N p' hp').left = g' ≫ (Desc.sum N p' hp').left := by
   intro R _ _ _ _ S π _ _ _ G _ _ hG N hLaw p p' hp hp' Z g g' hgg
@@ -669,20 +666,6 @@ theorem eq_of_smooth_comp {W X T Y : Scheme.{0}} (p : X ⟶ T) [Smooth p] (hp : 
 
 variable {R : Type} [CommRing R] [IsLocalRing R] {S : Scheme.{0}} {π : S ⟶ Sp R} {G : Over S}
 
-theorem isOpenImmersion_emb (N : Near π G) (p : pullback π π ⟶ S) (hp : p ≫ π = pullback.fst π π ≫ π) :
-    IsOpenImmersion (Desc.emb N p hp).left := by
-  have h₁ : IsPullback (Desc.toS N p hp) (pullback.snd N.U.hom (pullback.fst π π ≫ π)) (pullback.snd N.U.hom π) p := by
-    refine IsPullback.of_right (h₁₂ := pullback.fst N.U.hom π) (h₂₂ := π) (v₁₃ := N.U.hom) ?_ (pullback.lift_snd _ _ _)
-      (IsPullback.of_hasPullback _ _)
-    rw [hp, Desc.toS, pullback.lift_fst]
-    exact IsPullback.of_hasPullback _ _
-  have h₂ : IsPullback (Desc.toS N p hp) (Desc.embL N p hp) N.u (pullback.fst G.hom p) := by
-    refine IsPullback.of_bot (v₂₁ := pullback.snd G.hom p) (v₂₂ := G.hom) (h₃₁ := p) ?_ (pullback.lift_fst _ _ _).symm
-      (IsPullback.of_hasPullback _ _)
-    rw [N.u_over, Desc.embL, pullback.lift_snd]
-    exact h₁
-  exact MorphismProperty.of_isPullback (P := @IsOpenImmersion) h₂ N.isOpen
-
 theorem surjective_of_closedFibre [GrpObj G] [Surjective π] (N : Near π G) (V : (N.U ⊗ N.U).left.Opens)
     (hV : ∀ z : (N.U ⊗ N.U).left, (N.U ⊗ N.U).hom z = closedPoint R → z ∈ V) :
     Surjective (V.ι ≫ (N.U ⊗ N.U).hom) := by
@@ -816,7 +799,7 @@ theorem emb_comp_of_sum_comp : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocal
   have := hG.separated
   have := hG.geomConnected
   have := N.smooth
-  have he := isOpenImmersion_emb N p hp
+  have he := GlobalTheory.Mum.DescHom.isOpenImmersion_emb N p hp
   have s₁ : Smooth ((Over.pullback p).obj G).hom := inferInstanceAs (Smooth (pullback.snd G.hom p))
   have c₁ : GeometricallyConnected ((Over.pullback p).obj G).hom :=
     inferInstanceAs (GeometricallyConnected (pullback.snd G.hom p))
@@ -881,8 +864,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
-theorem _root_.GlobalTheory.T.flat_openPart_groupScheme_productMap : ∀ (T : Scheme.{0}) (H V : Over T) [GrpObj H] (e : V ⟶ H), IsOpenImmersion e.left → Flat H.hom → Flat ((fst V V ≫ e) * (snd V V ≫ e)).left := by
-  first | exact @GlobalTheory.Mum.FlatMul.main
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlatOpenPartGroupSchemeProductMapStatement =====
@@ -955,8 +936,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
-theorem _root_.GlobalTheory.T.surjective_openPart_productMap_irreducible_fibres : ∀ (T : Scheme.{0}) (H V : Over T) [GrpObj H] (e : V ⟶ H), IsOpenImmersion e.left → Surjective V.hom → (∀ (K : Type) [Field K] (t : Spec (CommRingCat.of K) ⟶ T), IrreducibleSpace (pullback H.hom t : Scheme.{0})) → Surjective ((fst V V ≫ e) * (snd V V ≫ e)).left := by
-  first | exact @GlobalTheory.Mum.surjective_mul_of_open_of_irreducible_fibres
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.SurjectiveOpenPartProductMapIrreducibleFibresStatement =====
@@ -1008,7 +987,7 @@ theorem sum_flat_surjective_quasiCompact : ∀ (R : Type) [CommRing R] [IsDomain
   have ho : IsOpenImmersion (emb N p hp).left := isOpenImmersion_embL N p hp
   have hfl : Flat ((Over.pullback p).obj G').hom := by
     change Flat (pullback.snd G'.hom p); infer_instance
-  refine ⟨GlobalTheory.T.flat_openPart_groupScheme_productMap _ _ _ _ ho hfl, GlobalTheory.T.surjective_openPart_productMap_irreducible_fibres _ _ _ _ ho (GlobalTheory.T.nearOpenPullbackToSelfProduct_surjective R S π hπ G' N) (irreducibleSpace_fibre_pullback S G' hG p), ?_⟩
+  refine ⟨GlobalTheory.Mum.FlatMul.main _ _ _ _ ho hfl, GlobalTheory.Mum.surjective_mul_of_open_of_irreducible_fibres _ _ _ _ ho (GlobalTheory.T.nearOpenPullbackToSelfProduct_surjective R S π hπ G' N) (irreducibleSpace_fibre_pullback S G' hG p), ?_⟩
   have : QuasiCompact (UT N ⊗ UT N).hom := by
     change QuasiCompact (pullback.fst (UT N).hom (UT N).hom ≫ (UT N).hom)
     have h1 : QuasiCompact (UT N).hom := by
@@ -1114,7 +1093,7 @@ theorem exists_datum : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R],
     apply Over.OverMorphism.ext
     exact hf
   have he := GlobalTheory.T.nearOpenEmbedding_comp_of_sumMap_comp R hA S π hP hS hI G' hG N hL _ _ h1 h2 (Over.homMk f wf) hs
-  have hm := GlobalTheory.T.isMonHom_of_sumMap_comp_fixing_nearOpen R hA S π hP hS hI G' hG N _ _ h1 h2 (Over.homMk f wf) hs he
+  have hm := GlobalTheory.Mum.DescHom.isMonHom_of_sum_of_emb R hA S π hP hS hI G' hG N _ _ h1 h2 (Over.homMk f wf) hs he
   refine ⟨⟨Over.homMk f wf, Over.homMk g wg, ?_, ?_⟩, hm, ?_⟩
   · apply Over.OverMorphism.ext
     exact hfg

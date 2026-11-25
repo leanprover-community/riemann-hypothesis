@@ -475,7 +475,7 @@ theorem local_coords : ∀ (p : ℕ) [Fact p.Prime] (Ωl : Type) [Field Ωl] [Al
     IsIntegral.mul (IsIntegral.add (emb_int _ ι _) hc1) hxi, ?_⟩, ?_⟩
   · linear_combination x⁻¹ * k1 - x⁻¹ * d1 - (ι α + A₁ * z) * hinv
   · have hζ1 : T.ζ 1 - 1 ≠ 0 := sub_ne_zero.2 ((T.prim 1).ne_one (by simpa using hp.out.one_lt))
-    have hpd := GlobalTheory.T.isInt_prime_div_rootOfUnity_sub_one_pow p Ω T 1 1 le_rfl (Nat.totient_pos.2 (pow_pos hp.out.pos _))
+    have hpd := GlobalTheory.K5.PDiv.pdiv p Ω T 1 1 le_rfl (Nat.totient_pos.2 (pow_pos hp.out.pos _))
     rw [pow_one, div_eq_mul_inv] at hpd
     have hinv2 : (T.ζ 1 - 1) * (T.ζ 1 - 1)⁻¹ = 1 := mul_inv_cancel₀ hζ1
     have hpi : IsInt (p := p) (p : Ω) := by simpa using Basic.isInt_intCast (p := p) (Ω := Ω) (p : ℤ)

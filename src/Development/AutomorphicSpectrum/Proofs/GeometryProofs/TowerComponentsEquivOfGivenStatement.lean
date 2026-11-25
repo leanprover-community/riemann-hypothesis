@@ -94,7 +94,7 @@ theorem exists_component_equiv_of_tower : ∀ (E : Type) [Field E] [NumberField 
     have e₃ : Or.𝔐.f (GlobalTheory.CompanionTheory.Ar.genPt Or.𝔐.ξ) = GlobalTheory.CompanionTheory.Ar.genPt Or.𝔐.ξ₀ := RegAtDom.map_genPt Or.𝔐.fn_over
     let η : Sp (T.M 0 a).Ω ⟶ pullback Y.s (spMap (algebraMap (𝓞 c.F) c.F)) :=
       pullback.lift (Or.𝔐.ξ ≫ Or.𝔐.f) (spMap Or.𝔐.cst) (by
-        rw [Category.assoc, Or.𝔐.cst_over, KapEquiv.spMap_comp_eq])
+        rw [Category.assoc, Or.𝔐.cst_over, GlobalTheory.CompanionTheory.Ar.FlagPull.spMap_comp])
     have hη : pullback.fst Y.s (spMap (algebraMap (𝓞 c.F) c.F)) (GlobalTheory.CompanionTheory.Ar.genPt η) =
         GlobalTheory.CompanionTheory.Ar.genPt Or.𝔐.ξ₀ := by
       rw [← e₃]

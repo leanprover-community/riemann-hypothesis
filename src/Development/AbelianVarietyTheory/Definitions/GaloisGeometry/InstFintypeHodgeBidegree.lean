@@ -139,7 +139,6 @@ def Hyp.mk (n : ℕ) : ZTot F n →ₗ[R] Hyp F n := Submodule.mkQ _
 
 theorem Hyp.mk_surjective (n : ℕ) : Function.Surjective (Hyp.mk F n) := Submodule.mkQ_surjective _
 
-
 variable {F} in
 theorem Hyp.mk_eq_zero {n : ℕ} {c : ZTot F n} : Hyp.mk F n c = 0 ↔ c.1 ∈ BTot F n :=
   Submodule.Quotient.mk_eq_zero _
@@ -177,7 +176,6 @@ def HypF.mk (p n : ℕ) : ZF F p n →ₗ[R] HypF F p n := Submodule.mkQ _
 theorem HypF.mk_surjective (p n : ℕ) : Function.Surjective (HypF.mk F p n) :=
   Submodule.mkQ_surjective _
 
-
 variable {F} in
 theorem HypF.mk_eq_zero {p n : ℕ} {c : ZF F p n} : HypF.mk F p n c = 0 ↔ c.1 ∈ BF F p n :=
   Submodule.Quotient.mk_eq_zero _
@@ -186,7 +184,6 @@ def HypF.toHyp (p n : ℕ) : HypF F p n →ₗ[R] Hyp F n :=
   Submodule.mapQ _ _ (Submodule.inclusion inf_le_right) fun _ hc ↦ BF_le_BTot F p n hc
 
 def Hyp.fil (p n : ℕ) : Submodule R (Hyp F n) := LinearMap.range (HypF.toHyp F p n)
-
 
 variable {F} in
 theorem Hyp.mem_fil {p n : ℕ} {x : Hyp F n} :
@@ -377,7 +374,6 @@ variable {R B : Type} [CommRing R] [CommRing B] [Algebra R B]
 def coneTerm (q : ℕ) : Om R B q →ₗ[R] Term F 0 q :=
   LinearMap.pi fun s ↦ (SemiHom.of_algHom (e (s.obj (Fin.last 0)))).mOm q
 
-
 include he in
 theorem dH_coneTerm {q : ℕ} (ω : Om R B q) : dH F 0 q (coneTerm e q ω) = 0 := by
   funext s
@@ -436,7 +432,6 @@ theorem backOm_coneTerm {q : ℕ} (ω : Om R B q) :
     (fun b ↦ (AlgEquiv.ofBijective _ hb).symm_apply_apply b) ω).trans
     (SemiHom.mOm_id _ (fun _ ↦ rfl) ω)
 
-
 include hb in
 theorem coneCl_eq_zero_iff {n : ℕ} (ω : LinearMap.ker (dOm R B (n + 1))) :
     coneCl e he (n + 1) ω = 0 ↔ ∃ η, dOm R B n η = ω.1 := by
@@ -449,7 +444,6 @@ theorem coneCl_eq_zero_iff {n : ℕ} (ω : LinearMap.ker (dOm R B (n + 1))) :
     rw [← backOm_coneTerm e hb ω.1, ← h2]
     exact (SemiHom.mOm_dOm _ _).symm
   · rw [show ω = ⟨dOm R B n η, dOm_dOm η⟩ from Subtype.ext hη.symm, coneCl_dOm]
-
 
 include hb in
 theorem coneF_bijective (h : Limits.IsInitial T₀) (n : ℕ) : Function.Bijective (coneF e he n) := by
@@ -477,7 +471,6 @@ theorem coneF_bijective (h : Limits.IsInitial T₀) (n : ℕ) : Function.Bijecti
       exact SemiHom.mOm_mOm _ (SemiHom.of_algHom (e T)) (semiHom_mp F (h.to T))
         (fun b ↦ (he (h.to T) _).symm.trans
           (congrArg (mp F (h.to T)) ((AlgEquiv.ofBijective _ hb).apply_symm_apply b))) _
-
 
 include hb in
 theorem coneCl_zero_bijective (h : Limits.IsInitial T₀) : Function.Bijective (coneCl e he 0) :=
@@ -527,9 +520,6 @@ def resHom (σ : k →+* k') {B B' : CommAlgCat.{0} k'} (f : B ⟶ B') : resAlg 
   letI : Algebra k B' := Algebra.compHom B' σ
   CommAlgCat.ofHom { (f.hom : B →+* B') with commutes' := fun r ↦ f.hom.commutes (σ r) }
 
-theorem spMap_comp' {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
-    spMap (g.comp f) = spMap g ≫ spMap f := Spec.map_comp _ _
-
 theorem spMap_id' (A : Type) [CommRing A] : spMap (RingHom.id A) = 𝟙 _ := Spec.map_id _
 
 theorem eq_of_spMap_eq {A B : Type} [CommRing A] [CommRing B] {f g : A →+* B} (h : spMap f = spMap g) :
@@ -554,7 +544,7 @@ instance : Category.{0} (AffPt s) where
   comp {T T' T''} φ ψ := ⟨φ.1 ≫ ψ.1, by
     have e : ((φ.1 ≫ ψ.1).hom : T.B →+* T''.B) =
         (ψ.1.hom : T'.B →+* T''.B).comp (φ.1.hom : T.B →+* T'.B) := rfl
-    rw [e, spMap_comp', Category.assoc, φ.2, ψ.2]⟩
+    rw [e, GlobalTheory.Cris.spMap_comp, Category.assoc, φ.2, ψ.2]⟩
   id_comp _ := Subtype.ext (Category.id_comp _)
   comp_id _ := Subtype.ext (Category.comp_id _)
   assoc _ _ _ := Subtype.ext (Category.assoc _ _ _)
@@ -620,7 +610,7 @@ def toPt (T : AffPt (algStr k B)) : B →ₐ[k] T.B :=
   { (Spec.preimage T.x).hom with
     commutes' := fun r ↦ by
       have e : spMap (((Spec.preimage T.x).hom).comp (algebraMap k B)) = spMap (algebraMap k T.B) := by
-        rw [spMap_comp', ← T.w]
+        rw [GlobalTheory.Cris.spMap_comp, ← T.w]
         exact congrArg (· ≫ algStr k B) (Spec.map_preimage T.x)
       exact congrArg (fun g : k →+* T.B ↦ g r) (eq_of_spMap_eq e) }
 
@@ -629,7 +619,7 @@ theorem spMap_toPt (T : AffPt (algStr k B)) : spMap (toPt T : B →+* T.B) = T.x
 theorem toPt_comp ⦃T T' : AffPt (algStr k B)⦄ (φ : T ⟶ T') (b : B) :
     mp (OPt (algStr k B)) φ (toPt T b) = toPt T' b := by
   have e : spMap (((φ.1.hom : T.B →+* T'.B)).comp (toPt T : B →+* T.B)) = spMap (toPt T' : B →+* T'.B) := by
-    rw [spMap_comp', spMap_toPt, spMap_toPt]; exact φ.2
+    rw [GlobalTheory.Cris.spMap_comp, spMap_toPt, spMap_toPt]; exact φ.2
   exact congrArg (fun g : B →+* T'.B ↦ g b) (eq_of_spMap_eq e)
 
 def idPt_isInitial : Limits.IsInitial (idPt k B) :=
@@ -663,7 +653,6 @@ def HdR.affZeroEquiv : LinearMap.ker (dOm k B 0) ≃ₗ[k] HdR (algStr k B) 0 :=
   LinearEquiv.ofBijective (HdR.ofForm 0) (coneCl_zero_bijective (R := k) (B := B) (C := AffPt (algStr k B)) (F := OPt (algStr k B))
     (fun T ↦ toPt T) (fun _ _ φ b ↦ toPt_comp φ b) (T₀ := idPt k B) toPt_idPt_bijective idPt_isInitial)
 
-
 variable (k) in
 theorem dOm_zero_self (x : Om k k 0) : dOm k k 0 x = 0 := by
   refine Subtype.ext ?_
@@ -673,19 +662,16 @@ theorem dOm_zero_self (x : Om k k 0) : dOm k k 0 x = 0 := by
     exact (D k k).map_algebraMap _
   rw [this, map_zero]; rfl
 
-
 variable (k) in
 def HdR.pointEquiv : k ≃ₗ[k] HdR (algStr k k) 0 :=
   (fn0 k).symm ≪≫ₗ (LinearEquiv.ofTop _ (eq_top_iff.2 fun x _ ↦ LinearMap.mem_ker.2 (dOm_zero_self k x))).symm ≪≫ₗ
     HdR.affZeroEquiv
-
 
 open Polynomial in
 variable (k) in
 def tdtForm : LinearMap.ker (dOm k k[X] 1) :=
   ⟨⟨ι1 ((Polynomial.X : k[X]) • D k k[X] Polynomial.X), ι_mem _⟩, by
     rw [LinearMap.mem_ker, ← dOne_eq_dOm, dOne_line]⟩
-
 
 open Polynomial in
 theorem HdR.ofForm_tdt_ne_zero [Nontrivial k] (h2 : (2 : k) = 0) : HdR.ofForm 1 (tdtForm k) ≠ 0 := by
@@ -751,7 +737,6 @@ theorem mOm_wedgeOm {R' B' : Type} [CommRing R'] [CommRing B'] [Algebra R' B'] {
     {α : B →+* B'} (e : SemiHom σ α) {q q' Q : ℕ} (h : q + q' = Q) (x : Om R B q) (y : Om R B q') :
     e.mOm Q (wedgeOm R B h x y) = wedgeOm R' B' h (e.mOm q x) (e.mOm q' y) :=
   Subtype.ext (map_mul e.mDR x.1 y.1)
-
 
 variable (R B) in
 def oneOm : Om R B 0 := ⟨1, by
@@ -875,7 +860,6 @@ theorem ev_self {M : C ⥤ ModuleCat.{0} R} {m : ℕ} (s : ComposableArrows C m)
   rw [hid, M.map_id]
   rfl
 
-
 variable (F) in
 def oneTerm : Term F 0 0 := fun s ↦ oneOm R (F.obj (s.obj (Fin.last 0)))
 
@@ -944,7 +928,6 @@ theorem dTot_sg {a q n : ℕ} (h : a + q = n) (c : Term F a q) :
       · rfl
       · rw [totV_succ, Tot.sg_of_ne _ _ _ (fun e ↦ hQ (congrArg (· + 1) e)), map_zero, smul_zero]
 
-
 variable (F) in
 def Tot.cup {m n N : ℕ} (h : m + n = N) : Tot F m →ₗ[R] Tot F n →ₗ[R] Tot F N :=
   ∑ b : Bidegree m, ∑ b' : Bidegree n, (-1 : ℤ) ^ (b.1.2 * b'.1.1) •
@@ -1003,7 +986,6 @@ theorem dTot_cup {m n N : ℕ} (h : m + n = N) (x : Tot F m) (y : Tot F n) :
   · ring
   · ring
 
-
 variable (F) in
 def Tot.one : Tot F 0 := Tot.sg F rfl (oneTerm F)
 
@@ -1056,7 +1038,6 @@ theorem Tot.cup_mem_BTot_right {m n N : ℕ} (h : m + n = N) {x : Tot F m} {y : 
     rw [map_zsmul, dTot_cup, show dTot F m x = 0 from hx, map_zero, LinearMap.zero_apply, zero_add,
       smul_smul, ← mul_pow, neg_one_mul, neg_neg, one_pow, one_smul]
 
-
 variable (F) in
 def ZTot.cup {m n N : ℕ} (h : m + n = N) : ZTot F m →ₗ[R] ZTot F n →ₗ[R] ZTot F N :=
   LinearMap.mk₂ R (fun x y ↦ ⟨Tot.cup F h x.1 y.1, Tot.cup_mem_ZTot h x.2 y.2⟩)
@@ -1065,13 +1046,11 @@ def ZTot.cup {m n N : ℕ} (h : m + n = N) : ZTot F m →ₗ[R] ZTot F n →ₗ[
     (fun _ _ _ ↦ Subtype.ext (LinearMap.map_add _ _ _))
     (fun _ _ _ ↦ Subtype.ext (LinearMap.map_smul _ _ _))
 
-
 variable (F) in
 def Hyp.cup {m n N : ℕ} (h : m + n = N) : Hyp F m →ₗ[R] Hyp F n →ₗ[R] Hyp F N :=
   LinearMap.liftQ₂ _ _ ((ZTot.cup F h).compr₂ (Hyp.mk F N))
     (fun x hx ↦ LinearMap.ext fun y ↦ Hyp.mk_eq_zero.2 (Tot.cup_mem_BTot_left h hx y.2))
     (fun y hy ↦ LinearMap.ext fun x ↦ Hyp.mk_eq_zero.2 (Tot.cup_mem_BTot_right h x.2 hy))
-
 
 variable (F) in
 def Hyp.one : Hyp F 0 := Hyp.mk F 0 ⟨Tot.one F, Tot.one_mem⟩

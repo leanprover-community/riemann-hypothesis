@@ -902,14 +902,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory
 
-theorem spec_localArtinian_point_eq (P : CommRingCat.{0}) [IsLocalRing P] [IsArtinianRing P]
-    (x y : Spec P) : x = y := by
-  apply PrimeSpectrum.ext
-  haveI := x.isPrime
-  haveI := y.isPrime
-  rw [IsLocalRing.eq_maximalIdeal (IsArtinianRing.isMaximal_of_isPrime x.asIdeal),
-    IsLocalRing.eq_maximalIdeal (IsArtinianRing.isMaximal_of_isPrime y.asIdeal)]
-
 theorem spec_map_injective_of_surjective {R S : CommRingCat.{0}} (f : R ⟶ S) (hf : Function.Surjective f) :
     Function.Injective (Spec.map f) := fun x y h =>
   PrimeSpectrum.comap_injective_of_surjective f.hom hf h
@@ -920,9 +912,9 @@ theorem spec_pullback_localArtinian_glue_existsUnique : ∀ (P B₁ B₂ B₀ : 
   have hnt₂ : Nontrivial B₂ := RingHom.domain_nontrivial g₂.hom
   obtain ⟨y₀⟩ : Nonempty (Spec B₀) := inferInstanceAs (Nonempty (PrimeSpectrum B₀))
   have hone₁ : ∀ y y' : Spec B₁, y = y' := fun y y' =>
-    spec_map_injective_of_surjective f₁ hs₁ (spec_localArtinian_point_eq P _ _)
+    spec_map_injective_of_surjective f₁ hs₁ (GlobalTheory.ArtinPatch.spec_eq_of_artinian P _ _)
   have hone₂ : ∀ y y' : Spec B₂, y = y' := fun y y' =>
-    spec_map_injective_of_surjective f₂ hs₂ (spec_localArtinian_point_eq P _ _)
+    spec_map_injective_of_surjective f₂ hs₂ (GlobalTheory.ArtinPatch.spec_eq_of_artinian P _ _)
   obtain ⟨V, hV, hzV, -⟩ := exists_isAffineOpen_mem_and_subset (U := ⊤)
     (x := a (Spec.map g₁ y₀)) trivial
   have hza : Set.range a ⊆ Set.range hV.fromSpec := by
@@ -949,7 +941,7 @@ theorem spec_pullback_localArtinian_glue_existsUnique : ∀ (P B₁ B₂ B₀ : 
     intro w hw₁ hw₂
     have hr : Set.range w ⊆ Set.range hV.fromSpec := by
       rintro _ ⟨x, rfl⟩
-      rw [spec_localArtinian_point_eq P x (Spec.map f₁ (Spec.map g₁ y₀)), ← Scheme.Hom.comp_apply, hw₁]
+      rw [GlobalTheory.ArtinPatch.spec_eq_of_artinian P x (Spec.map f₁ (Spec.map g₁ y₀)), ← Scheme.Hom.comp_apply, hw₁]
       exact hza ⟨_, rfl⟩
     rw [← IsOpenImmersion.lift_fac hV.fromSpec w hr, ← Spec.map_preimage (IsOpenImmersion.lift hV.fromSpec w hr)]
     congr 2
@@ -1051,7 +1043,6 @@ theorem isPullback_of_bij {P A B D : CommRingCat.{0}} (f₁ : P ⟶ A) (f₂ : P
     have : E.inv (φ x) = x := (RingEquiv.ofBijective φ hφ).symm_apply_apply x
     change (φ x : A × B).2 = f₂ (E.inv (φ x))
     rw [this]; rfl
-
 
 open IsLocalRing in
 theorem ring_lemma : ∀ (C : Type) [CommRing C] [IsLocalRing C] [IsArtinianRing C] (e : C), e ∈ IsLocalRing.maximalIdeal C → (∀ a ∈ IsLocalRing.maximalIdeal C, a * e = 0) → e ≠ 0 → ∃ (P : CommRingCat.{0}) (i : CommRingCat.of C ⟶ P) (p σ : P ⟶ CommRingCat.of C) (q : P ⟶ CommRingCat.of (DualNumber (IsLocalRing.ResidueField C))), i ≫ p = 𝟙 _ ∧ i ≫ σ = 𝟙 _ ∧ IsPullback p σ (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span {e}))) (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span {e}))) ∧ IsPullback p q (CommRingCat.ofHom (IsLocalRing.residue C)) (CommRingCat.ofHom (TrivSqZeroExt.fstHom (IsLocalRing.ResidueField C) (IsLocalRing.ResidueField C) (IsLocalRing.ResidueField C)).toRingHom) ∧ IsLocalRing P ∧ IsArtinianRing P ∧ Function.Surjective p ∧ Function.Surjective q := by

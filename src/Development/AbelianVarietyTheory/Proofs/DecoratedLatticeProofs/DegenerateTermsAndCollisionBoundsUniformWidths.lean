@@ -396,7 +396,6 @@ end GlobalTheory.Core.Deg
 
 namespace GlobalTheory.Core.Deg
 
-
 open Formalism.HermitianLatticeCounting.LatticeSumBounds in
 theorem corankSums_expLoss : ∀ C : ℝ, 1 ≤ C → ∃ K₀ : ℝ, ∀ (k m f : ℕ) (b g v NT Gam : ℝ) (Xi : ℕ → ℝ),
     Formalism.HermitianLatticeCounting.LatticeSumBounds.Params C K₀ k m f b g v NT 1 → Formalism.HermitianLatticeCounting.LatticeSumBounds.XiHyp C k m f b v NT Xi → 0 ≤ Gam →
@@ -935,8 +934,6 @@ open scoped Classical ENNReal
 open Matrix MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LocWSOf Formalism.L2.SG.LoopTerm
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.covolume_unipotentIntegral_normalisedHaar : Formalism.L2.SG.Pf.LoopBCovN.CovNFormula := by
-  first | exact @GlobalTheory.CovNFormulaPf.main
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.CovolumeUnipotentIntegralNormalisedHaarStatement =====
@@ -967,7 +964,7 @@ theorem GlobalTheory.Core.Deg.exists_termLoop_of_standingHypotheses : ∀ (D : D
   have hSS : ∀ τ, GoodS D (lamD D τ) (Formalism.L2.SG.LocWSOf.locS hB u u τ) := fun τ =>
     Formalism.L2.SG.LocWSOf.goodS_of hB u u τ (Formalism.L2.SG.Pf.goodSRest_all hG hT.dsig_tie hB u u τ)
   have hwin : normWin D large₂ 1 1 := Formalism.L2.SG.Pf.LoopBTheta.normWin_one large₂ zero_le_one
-  have hCF : Formalism.L2.SG.Pf.LoopBCovN.CovNFormula := GlobalTheory.T.covolume_unipotentIntegral_normalisedHaar
+  have hCF : Formalism.L2.SG.Pf.LoopBCovN.CovNFormula := Formalism.MainStatements.RowRest.covariance_formula
   have hup : Formalism.L2.SG.Pf.LoopBCovN.eN D * Real.log (2 * D.host.v) ≤
       1 * (D.R.m : ℝ) ^ 2 * Real.log large₂.sc.b := by
     have h2v : 2 * D.host.v = D.host.rdE := by unfold Formalism.BasicNotions.Host.v; ring
@@ -1416,7 +1413,7 @@ theorem smallOn_univ_unconditional : SmallOn Set.univ := by
   intro Cg cb Cu cT CT δ hcb _ hδ
   obtain ⟨t1, h1⟩ := elementary_size_bounds_of_size_hypotheses (8 / Real.log (1 + δ))
   obtain ⟨t2, h2⟩ := _root_.GlobalTheory.CritLevelSize.tcritLow_sizes cb Cu hcb
-  obtain ⟨t3, h3⟩ := GlobalTheory.T.normalizedFormalDegree_eq_vandermonde_of_sizes
+  obtain ⟨t3, h3⟩ := GlobalTheory.Core.Deg.CritVand.vv_eq_vand_of_sizes
   refine ⟨max (max t1 t2) t3, fun C0 _ C' Cl hC' hCl D large₂ hT hR => ?_⟩
   have hC1 : t1 ≤ C' := (le_max_left _ _).trans ((le_max_left _ _).trans hC')
   have hCl1 : t1 ≤ Cl := (le_max_left _ _).trans ((le_max_left _ _).trans hCl)

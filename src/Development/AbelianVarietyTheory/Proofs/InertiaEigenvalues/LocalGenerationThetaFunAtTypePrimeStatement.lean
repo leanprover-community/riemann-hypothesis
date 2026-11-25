@@ -160,18 +160,13 @@ theorem opP_comm {om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)}
   refine Finset.sum_congr rfl fun y hy => ?_
   rw [GlobalTheory.SplitScalar.heisL_apply, GlobalTheory.SplitScalar.heisL_apply, (hB _ (hpres _ _ hf)).2 y (hc y hy), hBh f hf]
 
-theorem fin_of_half {e : AE D} (he : infPart D e = 0) {y : WO S T} (hy : IsHalf e y) : y.map (infPart D) = 0 :=
-  Matrix.ext fun a b => by
-    rw [Matrix.map_apply, ← hy a b, RingHom.map_mul, he, zero_mul]
-    rfl
-
 theorem opP_theta {om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)}
     (hpres : ∀ p f, IsThetaFunO ψ S T f → IsThetaFunO ψ S T (om p f)) (hψ : IsStdChar D ψ (-1)) {e : AE D}
     (he : infPart D e = 0) {c : WO S T →₀ ℂ} (hc : ∀ y ∈ c.support, IsHalf e y) (h : GA D T) {f : WO S T → ℂ}
     (hf : IsThetaFunO ψ S T f) : IsThetaFunO ψ S T (opP ψ S T om c h f) := by
   rw [opP_apply, comb, Finsupp.sum]
   exact theta_sum _ _ f hf fun y hy =>
-    theta_smul _ (GlobalTheory.FinTranslate.isTheta_heisO_fin hψ.1 (fin_of_half he (hc y hy)) (hpres _ _ hf))
+    theta_smul _ (GlobalTheory.FinTranslate.isTheta_heisO_fin hψ.1 (GlobalTheory.PlaceDatum.infPart_of_half he (hc y hy)) (hpres _ _ hf))
 
 end Op
 
@@ -180,8 +175,6 @@ end GlobalTheory.DownLift.GenSplit
 namespace GlobalTheory.DownLift.GenSplit
 
 open GlobalTheory.IdemSupport GlobalTheory.DownLift.GenFinite.Inert
-
-
 
 theorem placeOp_keep : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks), R.thP_ωP → ∀ (i : Fin D.R.m) (t : T) (Sb : Finset (FinPl D)) (v : FinPl D), v ∈ Sb → ∀ (h : GA D (Wc D i)), (∀ a b, idem D (.inl v) * (Formalism.L2.Theta.mt (Wc D i) h - 1) a b = (Formalism.L2.Theta.mt (Wc D i) h - 1) a b) → ∀ (c : WO (Vc D i) (Wc D i) →₀ ℂ), (∀ y ∈ c.support, IsHalf (idem D (.inl v)) y) → ∀ (f : WO (Vc D i) (Wc D i) → ℂ), TypeIn R i t Sb f → CleanIn R i t Sb f → LikeOff R i t Sb f → TypeIn R i t (dropPl Sb v) (comb R.ψ (Vc D i) (Wc D i) c (R.ωP i t (1, h) f)) ∧ CleanIn R i t (dropPl Sb v) (comb R.ψ (Vc D i) (Wc D i) c (R.ωP i t (1, h) f)) ∧ LikeOff R i t Sb (comb R.ψ (Vc D i) (Wc D i) c (R.ωP i t (1, h) f)) := by
   intro D G _ _ Pl0 T A Ks _ _ _ R hω i t Sb v hv h hh c hc f hT hCl hL
@@ -332,7 +325,6 @@ end GlobalTheory.DownLift.GenSplit.DualSep
 
 namespace GlobalTheory.DownLift.GenSplit
 
-
 open DualSep in
 theorem exists_sep_char : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (S T : HSp D) (ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)) (ΛT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)) (βS : GL (Fin S.rank) (Formalism.IndefR.Lev.EAf D)) (βT : GL (Fin T.rank) (Formalism.IndefR.Lev.EAf D)), IsSelfDualC S ΛS → IsSelfDualC T ΛT → Formalism.L2.DIV.IsFrame βS ΛS → Formalism.L2.DIV.IsFrame βT ΛT → ∀ (v : FinPl D) (φ : SplitProj D v) (e : Formalism.L2.Theta.AE D), IsIdemOf φ e → ∀ (ϖ : OI v), Irreducible ϖ → ∀ (N : ℕ) (x : WO S T), IsHalf (cA D e) x → ¬ InPow ϖ N (adjCo φ S T (frCo φ βS) (frCo φ βT) x) → ∃ y, IsHalf e y ∧ (∀ z ∈ halfPow φ S T (frCo φ βS) (frCo φ βT) e ϖ N, ψ (symplO S T z y) = 1) ∧ ψ (symplO S T x y) ≠ 1 := by
   intro D ψ hψ S T ΛS ΛT βS βT hS hT hfS hfT v φ e he ϖ hϖ N x hx hxN
@@ -445,8 +437,6 @@ open GlobalTheory.DownLift.GenFinite
 open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (FinPl idem SplitProj IsIdemOf IsProjAt adjCo grpCo frCo)
 open GlobalTheory.DownLift.GenSplit
 
-theorem _root_.GlobalTheory.T.exists_supportedAtSplitPlace_unitary_matrix_eq : ∀ (D : D7) (V : HSp D) (v : FinPl D) (φ : SplitProj D v) (e : Formalism.L2.Theta.AE D), IsIdemOf φ e → ∀ (B g : GL (Fin V.rank) (Fv D.host.F v)), ∃ h : GA D V, Formalism.L2.Theta.SuppAt e V h ∧ grpCo φ V B h = g := by
-  first | exact @GlobalTheory.DownLift.GenSplit.exists_suppAt_grpCo_eq
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsSupportedAtSplitPlaceUnitaryMatrixEqStatement =====
@@ -907,8 +897,6 @@ open GlobalTheory.DownLift.GenFinite
 open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (FinPl idem SplitProj IsIdemOf IsProjAt adjCo grpCo frCo)
 open GlobalTheory.DownLift.GenSplit
 
-theorem _root_.GlobalTheory.T.splitPlaceUnitary_integralMatrix_keeps_lattice : ∀ (D : D7) (V : HSp D) (β : GL (Fin V.rank) (Formalism.IndefR.Lev.EAf D)) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)) (N : ℕ), IsBaseFrame V β Λ N → ∀ (PP : Pl D.host.E) (v : FinPl D) (φ : SplitProj D v) (e : Formalism.L2.Theta.AE D), IsProjAt φ PP → IsIdemOf φ e → ∀ (red : OI v →+* kP PP), (∀ (a : Formalism.IndefR.Lev.EAf D) (ha : a ∈ Formalism.L2.Herm.intAf D.host.F D.host.E), ∃ h : GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting.rdE φ a ∈ v.adicCompletionIntegers D.host.F, red ⟨GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting.rdE φ a, h⟩ = resS D.host.F PP ⟨a, ha⟩) → ∀ (h : GL (Fin V.rank) (OI v)) (κ : GA D V), Formalism.L2.Theta.SuppAt e V κ → grpCo φ V (frCo φ β) κ = Matrix.GeneralLinearGroup.map (algebraMap (OI v) (Fv D.host.F v)) h → κ ∈ GfC V ∧ finE V κ ∈ Formalism.L2.DIV.St β ∧ redFn β PP (finE V κ) = Matrix.GeneralLinearGroup.map red h ∧ ∀ PP', PP' ≠ PP → ¬ Formalism.IndefR.Lev.IsConjPl PP PP' → redFn β PP' (finE V κ) = 1 := by
-  first | exact @GlobalTheory.DownLift.SplitIntLift.lift_of_integral
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SplitPlaceUnitaryIntegralMatrixKeepsLatticeStatement =====
@@ -1059,8 +1047,6 @@ open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (FinPl idem SplitProj IsIdemOf IsProjAt adjCo grpCo frCo)
 open GlobalTheory.DownLift.GenSplit
-
-
 
 noncomputable section
 
@@ -1448,9 +1434,9 @@ theorem actAt (R : RealDat D A Ks) (hL : R.toLevCh.Is A.μ0) (hω : R.thP_ωP) (
       ∃ h : GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting.rdE φ a ∈ v.adicCompletionIntegers D.host.F,
         red ⟨GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting.rdE φ a, h⟩ = resS D.host.F PP ⟨a, ha⟩) : ActAt R i t PP φ e red := by
   intro h
-  obtain ⟨κ, hs, hκ⟩ := GlobalTheory.T.exists_supportedAtSplitPlace_unitary_matrix_eq D (Vc D i) v φ e he (frCo φ (R.βV i))
+  obtain ⟨κ, hs, hκ⟩ := GlobalTheory.DownLift.GenSplit.exists_suppAt_grpCo_eq D (Vc D i) v φ e he (frCo φ (R.βV i))
     (Matrix.GeneralLinearGroup.map (algebraMap (OI v) (Fv D.host.F v)) h)
-  obtain ⟨h1, h2, h3, h4⟩ := GlobalTheory.T.splitPlaceUnitary_integralMatrix_keeps_lattice D (Vc D i) (R.βV i) (R.ΛV i) _ (hL.βV i).choose_spec PP v φ e hφ he red hred h κ hs hκ
+  obtain ⟨h1, h2, h3, h4⟩ := GlobalTheory.DownLift.SplitIntLift.lift_of_integral D (Vc D i) (R.βV i) (R.ΛV i) _ (hL.βV i).choose_spec PP v φ e hφ he red hred h κ hs hκ
   refine ⟨κ, hs, h1, h2, hκ, h3, fun PP' a b => h4 PP' b (not_conj hL t hP a), fun ℓ hℓ f hf => ?_⟩
   have hvac := (hv i t).1
   have hne : R.vacP i ≠ 0 := by
@@ -1664,7 +1650,6 @@ theorem mem_halfPow {N : ℕ} {z : WO (Vc D i) (Wc D i)} :
 
 end Coord
 
-
 open Classical in
 theorem piece (R : RealDat D A Ks) (hL : R.toLevCh.Is A.μ0) (hω : R.thP_ωP) (hv : R.thP_vP) (i : Fin D.R.m) (t : T)
     {PP : Pl D.host.E} (hP : PP ∈ R.Pg) {v : FinPl D} {φ : SplitProj D v} {e : Formalism.L2.Theta.AE D} (hφ : IsProjAt φ PP)
@@ -1691,7 +1676,7 @@ theorem piece (R : RealDat D A Ks) (hL : R.toLevCh.Is A.μ0) (hω : R.thP_ωP) (
       IsThetaFunO R.ψ (Vc D i) (Wc D i) (heisO R.ψ (Vc D i) (Wc D i) x q) := fun hx hq =>
     GlobalTheory.FinTranslate.isTheta_heisO_fin hψ.1 (half_fin he' hx) hq
   obtain ⟨σ, hσ⟩ := exists_section R hL i he
-  obtain ⟨h, hh, hg⟩ := GlobalTheory.T.exists_supportedAtSplitPlace_unitary_matrix_eq D (Wc D i) v φ e he (frCo φ (R.βW i)) (reGL (rank_weight_component_eq i) g)
+  obtain ⟨h, hh, hg⟩ := GlobalTheory.DownLift.GenSplit.exists_suppAt_grpCo_eq D (Wc D i) v φ e he (frCo φ (R.βW i)) (reGL (rank_weight_component_eq i) g)
   have hh' : Formalism.L2.Theta.SuppAt e (Wc D i) h⁻¹ := fun a b => by
     have := congrFun (congrFun (off_smul_mt_inv hh) a) b
     simp only [Matrix.smul_apply, smul_eq_mul] at this

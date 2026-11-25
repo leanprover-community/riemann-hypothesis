@@ -271,7 +271,7 @@ theorem coset_orbital_form : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u'
   refine ⟨hpt, c0 • ((A.toContinuousLinearEquiv : X.Vpi u →L[ℂ] X.Vpi u).comp
     (O.comp (B.symm.toContinuousLinearEquiv : X.Vpi u' →L[ℂ] X.Vpi u'))), norm_hsEmb_unitary c0 hc0n A B O, ?_⟩
   rintro t n m xn xm ⟨hn, hm, hlin⟩ hxn hxm
-  obtain ⟨hrel, -, hptt, -⟩ := GlobalTheory.T.flagTerm_invariants_const_on_rationalDoubleCoset D X Y u u' hSt t₀ t n m hrel₀ hG₀ ⟨hn, hm, hlin⟩
+  obtain ⟨hrel, -, hptt, -⟩ := GlobalTheory.HL.CosetConst.coset_const D X Y u u' hSt t₀ t n m hrel₀ hG₀ ⟨hn, hm, hlin⟩
   have hL := GlobalTheory.RatIsomPoint.ratLink_points D X
   have hxnN : xn.1 ∈ X.NinfU u := ((hL.2.2 u xn n hxn).1).1 hn
   have hxmN : xm.1 ∈ X.NinfU u' := ((hL.2.2 u' xm m hxm).1).1 hm

@@ -1317,10 +1317,6 @@ theorem exists_adj_qdet {ε : Fin n → Bool} {E : Fin n → Fin n → Module.En
   rw [hl]
   exact exists_adj_sum hU l
 
-theorem adjSign_mul_self (ε : Fin n → Bool) (a b : Fin n) : adjSign ε a b * adjSign ε a b = 1 := by
-  unfold adjSign
-  split_ifs <;> simp
-
 theorem commute_adj {ε : Fin n → Bool} {E : Fin n → Fin n → Module.End ℂ M} (hU : IsInfUnitary ε E)
     {A B : Module.End ℂ M} (hA : ∀ a b, Commute A (E a b)) (hB : ∀ x y : M, inner ℂ (A x) y = inner ℂ x (B y))
     (c d : Fin n) : Commute B (E c d) := by
@@ -1330,7 +1326,7 @@ theorem commute_adj {ε : Fin n → Bool} {E : Fin n → Fin n → Module.End �
     have h2 : inner ℂ (E d c x) (B y) = adjSign ε d c * inner ℂ x (E c d (B y)) := hU d c _ _
     have h3 : E d c (A x) = A (E d c x) := LinearMap.congr_fun (hA d c).symm.eq x
     rw [h3, hB, h2] at h1
-    have hs : adjSign ε d c ≠ 0 := left_ne_zero_of_mul_eq_one (adjSign_mul_self ε d c)
+    have hs : adjSign ε d c ≠ 0 := left_ne_zero_of_mul_eq_one (ReciprocityTheory.ChartRestriction.DS.schA_adjSign_sq ε d c)
     rw [← hB]
     exact (mul_left_cancel₀ hs h1).symm
   refine LinearMap.ext fun y => ?_

@@ -479,10 +479,10 @@ theorem upParQ_of_transfer : GlobalTheory.Published.CuspRapidDecay → GlobalThe
   obtain ⟨hr', _, hfl'⟩ := hs'
   have hlat' : ∀ (f : GA D s'.V → ℂ) (B : GlobalTheory.LFun.Fam D.host.E),
       GlobalTheory.LFun.IsParamFun D.sp.cm.sig s'.V.gram s'.Λ (c.S : Set (HeightOneSpectrum (𝓞 D.host.F))) f B ↔
-        GlobalTheory.LFun.IsParamFunV s'.V c.S f B := (GlobalTheory.T.thetaChainStage_lattice_stabilizer_params_off_set D c hw.com (k + 1) hk _ hfl').2
+        GlobalTheory.LFun.IsParamFunV s'.V c.S f B := (GlobalTheory.ChainOnto.stabLoc_isParamFun_frameLat D c hw.com (k + 1) hk _ hfl').2
   have hlat : ∀ (f : GA D s.V → ℂ) (B : GlobalTheory.LFun.Fam D.host.E),
       GlobalTheory.LFun.IsParamFun D.sp.cm.sig s.V.gram s.Λ (c.S : Set (HeightOneSpectrum (𝓞 D.host.F))) f B ↔
-        GlobalTheory.LFun.IsParamFunV s.V c.S f B := (GlobalTheory.T.thetaChainStage_lattice_stabilizer_params_off_set D c hw.com k hk.le _ hfl).2
+        GlobalTheory.LFun.IsParamFunV s.V c.S f B := (GlobalTheory.ChainOnto.stabLoc_isParamFun_frameLat D c hw.com k hk.le _ hfl).2
   set y := PiLocalization₂.val u v with hy
   have hy0 : y ≠ 0 := by
     intro h; apply hne; funext x; simp [Step.up, h]
@@ -502,7 +502,7 @@ theorem upParQ_of_transfer : GlobalTheory.Published.CuspRapidDecay → GlobalThe
   rw [hlat', hconj]
   intro w0 hw0 w' h
   have hw0' : w0 ∉ c.S := by simpa using hw0
-  exact GlobalTheory.T.thetaIntegral_conjCuspForm_parameterTransfer hRD D (GlobalTheory.T.sphericalParameterTransfer_all_finitePlaces hHowe D) c.ψ c.θ s.V s'.V _ _ p.ω hw.com.inf hp.weil D.R.t hrank s.ν s.fd
+  exact GlobalTheory.ChainOnto.thetaIntegral_param hRD D (GlobalTheory.T.sphericalParameterTransfer_all_finitePlaces hHowe D) c.ψ c.θ s.V s'.V _ _ p.ω hw.com.inf hp.weil D.R.t hrank s.ν s.fd
     hfl.haar hfl.fund w0 (fun w'' hw'' => GlobalTheory.T.thetaChain_step_chars_unramified_off_S D c hw.com k hk w0 hw0' w'' hw'') w' h (p.pt φ)
     ((hfock.1 φ).2.2 w0 hw0') y (B w') hYA.1 hYA.2 (hyB w0 hw0 w' h) hne'
 
@@ -554,7 +554,7 @@ theorem upAdjQ_of_cuspRapidDecay : GlobalTheory.Published.CuspRapidDecay → ∀
   obtain ⟨hr, -, hfl⟩ := hs
   obtain ⟨hr', -, hfl'⟩ := hs'
   have hc : c.Is := hw.com
-  have hF := GlobalTheory.T.thetaKernel_iterated_integrals_swap D c.ψ c.θ s.V s'.V (c.chS (k + 1)) (c.chT (k + 1)) p.ω hc.inf hp.weil (p.pt φ) (hp.theta φ)
+  have hF := GlobalTheory.ChainOnto.ThetaSwap.integral_swap D c.ψ c.θ s.V s'.V (c.chS (k + 1)) (c.chT (k + 1)) p.ω hc.inf hp.weil (p.pt φ) (hp.theta φ)
     s.ν s.fd s'.ν s'.fd hfl.haar hfl.fund hfl'.haar hfl'.fund (PiLocalization₂.val u v) (PiLocalization₂.val y w')
     (rapidDec_val hP hc u v) (rapidDec_val hP hc y w')
   simp only [PiLocalization₂.pet, Lift.pet, Step.up]
@@ -786,8 +786,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.VolumeFlatSection (Blocks parahoric
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.LiftRows (Given)
 
-theorem _root_.GlobalTheory.T.realMeasureUniformInTuple_of_thetaLiftScalar : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), Given R F → (∀ h : RangeX R, RChain R h) → RangeX R → RMeas R := by
-  first | exact @GlobalTheory.RealMeasOne.one_real_measure
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.RealMeasureUniformInTupleOfThetaLiftScalarStatement =====
@@ -806,8 +804,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.VolumeFlatSection (Blocks parahoric
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.LiftRows (Given)
 
-theorem _root_.GlobalTheory.T.realQuotientVolumeGrowth_of_scalarHypotheses : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), Given R F → (∀ h : RangeX R, RChain R h) → RangeX R → RVol R := by
-  first | exact @GlobalTheory.ChainTw.VolScale.rVol_of_given
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.RealQuotientVolumeGrowthOfScalarHypothesesStatement =====
@@ -1181,8 +1177,6 @@ theorem levChi_one (V : HSp D) (β : GL (Fin V.rank) (Lev.EAf D)) (L : LevDat D.
   have : levFn β L 1 = 1 := (levChar D.sp.cm V.gram β L).map_one
   rw [this, Units.val_one]
 
-
-
 open Classical in
 theorem vecLawQ (D : D7) (c : Com D) (w : Twist D) (hw : w.Is c) (k : ℕ) (hk : k < D.R.m) (s s' : PiLocalization₂ D)
     (hs : IsStage c w k s) (hs' : IsStage c w (k + 1) s') (p : Step c s s') (hp : IsStep w (k + 1) p) :
@@ -1272,11 +1266,10 @@ noncomputable section
 
 namespace GlobalTheory.RealZetaTw
 
-
 open GlobalTheory.IndefiniteRowSideFullHecke.ThetaSourceAction in
 theorem realZetaTw : GlobalTheory.Published.HarishChandraModules → ∀ D : D7, GlobalTheory.IndefiniteRowSideFullHecke.ThetaSourceAction.ArchOnRecord D → RealZetaQ D := by
   intro hHC D hA hgap c w₁ hw k hk s s' hs hs' p hp m X hmX
-  obtain ⟨hWexp, hvac⟩ := GlobalTheory.T.twisted_chain_step_weil_exponents_fock_vacuum D hgap c w₁ hw k hk s s' hs hs' p hp hk
+  obtain ⟨hWexp, hvac⟩ := GlobalTheory.ChainTw.StepExpTw.twStepExpVac D hgap c w₁ hw k hk s s' hs hs' p hp hk
   have hc : c.Is := hw.com
   obtain ⟨hr, -, hsI⟩ := hs
   obtain ⟨hr', -, hsI'⟩ := hs'
@@ -1314,8 +1307,8 @@ theorem realZetaTw : GlobalTheory.Published.HarishChandraModules → ∀ D : D7,
   refine ⟨glue Φ, fun τ => ⟨w τ, hwsm τ⟩, ?_⟩
   intro mR hmR
   set z : GinfC s.V → ℂ := zReal p m X (glue Φ) (fun τ => ⟨w τ, hwsm τ⟩) with hzdef
-  have hfac := GlobalTheory.T.thetaInner_fockProduct_eq_prod_realPlaces D s.V s'.V s.par s'.par s.M s'.M c.θ c.ψ χS χT p.ω hc.inf hW m X hmX p.f hvac
-  obtain ⟨cst, hcst, hhaar⟩ := GlobalTheory.T.integral_realUnitary_haar_eq_prod_Upq_haar D s.V s.par s.M c.θ hc.inf mR (fun τ => Formalism.REAL.muG (s.M.ε τ)) hmR
+  have hfac := GlobalTheory.FockProdCoef.ipTh_ptOf_glue D s.V s'.V s.par s'.par s.M s'.M c.θ c.ψ χS χT p.ω hc.inf hW m X hmX p.f hvac
+  obtain ⟨cst, hcst, hhaar⟩ := GlobalTheory.HaarReal.integral_prod_eq D s.V s.par s.M c.θ hc.inf mR (fun τ => Formalism.REAL.muG (s.M.ε τ)) hmR
     (fun τ => inferInstance)
   have hZ := fun τ => hZL τ (Φ τ) (hΦ τ) ⟨w τ, hwk τ⟩ (hwhi τ) (Formalism.REAL.muG (s.M.ε τ)) inferInstance
   set i0 := ipTh m X p.f p.f with hi0
@@ -1539,10 +1532,10 @@ theorem upSpanQ_of : GlobalTheory.Published.DiscreteSeriesCover → GlobalTheory
     GlobalTheory.Published.CasselmanWallach → ∀ D : D7, LevelLawQ D → UpSpanQ D := by
   intro h1 h2 h3 h4 D hLL hgap c w hw k hk s s' hs hs' p hp u φ v _hv
   have hc := hw.com
-  obtain ⟨hwe, hvac⟩ := GlobalTheory.T.twisted_chain_step_weil_exponents_fock_vacuum D hgap c w hw k hk s s' hs hs' p hp hk
+  obtain ⟨hwe, hvac⟩ := GlobalTheory.ChainTw.StepExpTw.twStepExpVac D hgap c w hw k hk s s' hs hs' p hp hk
   obtain ⟨hr, hL0, hfl⟩ := hs
   obtain ⟨hr', hL1, hfl'⟩ := hs'
-  have hpar := GlobalTheory.T.chainPar_of_nodeGap' D hgap ⟨k, hk⟩
+  have hpar := GlobalTheory.Corev.ChainParOfGap.chainPar_of_nodeGap D hgap ⟨k, hk⟩
   obtain ⟨T, hTK, hKT, hL⟩ := GlobalTheory.T.thetaLift_upward_multiplicity_cuspidal_realType h1 h2 h3 h4 D ⟨k, hk⟩ s.V s'.V s.par s'.par s.M s'.M c.θ c.ψ p.ω p.f
     hfl.par hfl'.par hc.inf hpar hwe hvac s.ν s.fd hfl.haar hfl.fund
   obtain ⟨F', hF', hint⟩ := hL _ (multT_le_noLevel c.θ s.M _ _ u.2)
@@ -1779,7 +1772,7 @@ theorem scalars_of_given_all : GlobalTheory.Published.HarishChandraFinite → Gl
   have chain : ∀ h : RangeX R, RChain R h := GlobalTheory.T.realTupleTwistedChain_of_scalarHypotheses R F g
   have zeta : RealZetaQ D := GlobalTheory.T.twistedChain_realZeta_nonvanishing hHCM D (_root_.GlobalTheory.TwArch.archOnRecord_closed hDSC hHCM D)
   have unif : RUnif R hX := GlobalTheory.T.twistedChain_step_constants_tuple_indep R F g hNG zeta restore hX (chain hX)
-    (GlobalTheory.T.realMeasureUniformInTuple_of_thetaLiftScalar R F g chain hX) (GlobalTheory.T.realQuotientVolumeGrowth_of_scalarHypotheses R F g chain hX) (GlobalTheory.T.realDatumNormShrink_of_scalarHypotheses R F g)
+    (GlobalTheory.RealMeasOne.one_real_measure R F g chain hX) (GlobalTheory.ChainTw.VolScale.rVol_of_given R F g chain hX) (GlobalTheory.T.realDatumNormShrink_of_scalarHypotheses R F g)
   exact GlobalTheory.T.chainStep_scalars_of_realisation R F g hNG soft (GlobalTheory.T.lowerBlockParameter_of_one_nonzeroValue D soft) (GlobalTheory.T.chain_first_stage_L_values_positive hCRD D) lfull lam hX
     (chain hX) (GlobalTheory.T.realLastStageNormalized_of_scalarHypotheses R F g hX) unif (GlobalTheory.T.rows_of_part_have_part_params_first_chain_member hCRD R F g chain hX) (GlobalTheory.T.schurProduct_typings_agree_thetaChain R F g)
 

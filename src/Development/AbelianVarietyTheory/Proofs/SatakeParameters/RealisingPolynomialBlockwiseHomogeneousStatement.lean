@@ -55,8 +55,6 @@ section -- clump:auto
 open Formalism.BasicNotions NumberField IsDedekindDomain Formalism.MainNotions.G Formalism.MainNotions.FormalGroupSystem Formalism.L2.G.Pend Formalism.MainNotions Formalism.L2.Ker Formalism.L2.PairingIndexBounds.F Formalism.L2.KerInert Formalism.UG Formalism.L2.G.Cmp Formalism.L2.Forms Formalism.L2.KerInert.SecondKernelProjection Formalism.L2.KerInert.QuadraticBaseChangeGL3 Formalism.L2.KerInert.SecondKernelDifference Formalism.L2.KerInert.SecondKernelHermitian GlobalTheory.TwV.DelA
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.evalStdFrames_eq_detPower_mul_blockValue : ∀ {p : ℕ} [Fact p.Prime] (X : Sys p) (D : D7) (pos : (Σ v : X.Pl, Fin (X.G.P.n' v)) ≃ D.what₂.Tau) (i : ℕ) {n : ℕ} (h : (X.Pj i).m + 1 = n) (R : XR (X.Pj i) ℂ) (f : Fr1 D n), ev1 X D pos i h R f = (∏ τ, (zT X D pos f.1 τ).det ^ eT X D pos i τ) * valZ X D pos i h R f.1 := by
-  first | exact @GlobalTheory.TwV.DelA.ev1_eq_prod_det_pow_mul_valZ
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.SatakeParameters.EvalStdFramesEqDetPowerMulBlockValueStatement =====
@@ -207,8 +205,8 @@ theorem realises_blockHom : ∀ {p : ℕ} [Fact p.Prime] (X : Sys p) (D : D7) (p
       · simp only [hτ, ite_false]; exact hfu τ⟩
     have hf' : ∀ τ, f'.1 τ = if τ = τ₀ then (if IsOddPos (pos.symm τ₀).2 then (2:ℂ)⁻¹ else 2) • f.1 τ else f.1 τ := by
       intro τ; rw [← ht]
-    have e1 := GlobalTheory.T.evalStdFrames_eq_detPower_mul_blockValue X D pos i h R2 f
-    have e2 := GlobalTheory.T.evalStdFrames_eq_detPower_mul_blockValue X D pos i h R f'
+    have e1 := GlobalTheory.TwV.DelA.ev1_eq_prod_det_pow_mul_valZ X D pos i h R2 f
+    have e2 := GlobalTheory.TwV.DelA.ev1_eq_prod_det_pow_mul_valZ X D pos i h R f'
     have e3 := hR f'
     have e4 := hR f
     have hv : valZ X D pos i h R f'.1 = valZ X D pos i h R2 f.1 := by

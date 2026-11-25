@@ -61,8 +61,6 @@ open NumberField IsDedekindDomain Matrix Polynomial GlobalTheory.BCT GlobalTheor
 open scoped Classical
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-theorem _root_.GlobalTheory.T.unitary_iwahori_orbital_support : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∀ (w : Pl E), ¬ IsSplitAt w → ∀ (n : ℕ) (b : GLw n w), IsWitt n w b → ∀ (ϖ : (w.adicCompletion E)ˣ), IsUnifAt ϖ → ∀ (l : Fin (n / 2) → ℤ), Cone l → ∀ (γ : UL n w) (u : Fin n → (w.adicCompletion E)ˣ), (∀ i, ordL (u i : w.adicCompletion E) = wexp n l i) → γ.1 = b * GlobalTheory.SmGL.diagT (w.adicCompletion E) (Fin n) u * b⁻¹ → ∀ x ∈ iwU n w b, ∀ z ∈ iwU n w b, fU n w b ϖ l (x * γ * z) = 1 := by
-  first | exact @GlobalTheory.CompanionTheory.DiagCoset.fU_diag
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryIwahoriOrbitalSupportStatement =====
@@ -88,12 +86,6 @@ section Ord
 
 variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))]
 
-theorem ordL_eq_neg_log' (x : L) : ordL x = -WithZero.log (Valued.v x) := by
-  unfold ordL
-  split_ifs with h
-  · simp [h]
-  · rw [WithZero.toAdd_unzero_eq_log]
-
 theorem ordL_inv'' {x : L} (hx : x ≠ 0) : ordL x⁻¹ = -ordL x := by
   have h := _root_.GlobalTheory.BorelUMod.v_eq_exp (inv_ne_zero hx)
   rw [map_inv₀, _root_.GlobalTheory.BorelUMod.v_eq_exp hx, ← WithZero.exp_neg, WithZero.exp_inj] at h
@@ -118,7 +110,7 @@ def cjU (w : Pl E) : (w.adicCompletion E)ˣ →* (w.adicCompletion E)ˣ := Units
   rfl
 
 theorem ordL_cj (hU : Unr E) (w : Pl E) (x : w.adicCompletion E) : ordL (cj w x) = ordL x := by
-  rw [ordL_eq_neg_log', ordL_eq_neg_log', (_root_.GlobalTheory.ConjAtPlace.main E hU w).2.2.1 x]
+  rw [GlobalTheory.LGrp.ordL_eq, GlobalTheory.LGrp.ordL_eq, (_root_.GlobalTheory.ConjAtPlace.main E hU w).2.2.1 x]
 
 theorem thL_diagT (w : Pl E) (hw : ¬ IsSplitAt w) (a : ℕ) (d : Fin a → (w.adicCompletion E)ˣ) :
     thL a w (GlobalTheory.SmGL.diagT (w.adicCompletion E) (Fin a) d) =
@@ -191,7 +183,7 @@ theorem nv_rev {a : ℕ} (y : Fin a → ℤ) (i : Fin a) : nv y i.rev = -nv y i 
 
 theorem diagT_mem_iwGL' (w : Pl E) (n : ℕ) (s : Fin n → (w.adicCompletion E)ˣ)
     (hs : ∀ i, Valued.v (s i : w.adicCompletion E) = 1) : GlobalTheory.SmGL.diagT (w.adicCompletion E) (Fin n) s ∈ iwGL n w := by
-  rw [(GlobalTheory.T.iwahori_and_maximal_compact_criteria E w n _).1]
+  rw [(GlobalTheory.CompanionTheory.IwEntries.iwGL_KGL_entries E w n _).1]
   have hinv : ((GlobalTheory.SmGL.diagT (w.adicCompletion E) (Fin n) s)⁻¹ : GLw n w) =
       GlobalTheory.SmGL.diagT (w.adicCompletion E) (Fin n) s⁻¹ := (map_inv _ _).symm
   refine ⟨fun i j => ?_, fun i j => ?_, fun i j hij => ?_⟩
@@ -315,10 +307,10 @@ theorem exu_pf (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (n : ℕ) (b : GLw 
   obtain ⟨u, hQu, hu⟩ := hv
   have hu0 : ∀ i, u i ≠ 0 := fun i => (hu i).1
   have huv : ∀ i, ordL (u i) = wexp n l i := fun i => (hu i).2
-  obtain ⟨hwa, hwr⟩ := GlobalTheory.T.weight_exponent_strictly_antitone n l hl
+  obtain ⟨hwa, hwr⟩ := GlobalTheory.CompanionTheory.Wexp.wexp_strictAnti_rev n l hl
   have hpair := root_pair hU w hw (wexp n l) hwa.injective hwr Q hQ u hQu hu0 huv
   set U : Fin n → (w.adicCompletion E)ˣ := fun i => Units.mk0 (u i) (hu0 i) with hUdef
-  obtain ⟨hw1, -, -, hw4⟩ := GlobalTheory.T.unitary_iwahori_facts E hU w hw n b hb
+  obtain ⟨hw1, -, -, hw4⟩ := GlobalTheory.CompanionTheory.UnitaryWitt.unitary_hyperbolic_basis E hU w hw n b hb
   have hD : GlobalTheory.SmGL.diagT (w.adicCompletion E) (Fin n) U ∈ UJ (cj w) (antiJ (w.adicCompletion E) n) := by
     rw [hw4]
     intro i
@@ -326,7 +318,7 @@ theorem exu_pf (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (n : ℕ) (b : GLw 
     rw [hpair i, mul_inv_cancel₀ ((_root_.map_ne_zero _).2 (hu0 i))]
   have hγ := (hw1 _).2 hD
   refine ⟨⟨_, hγ⟩, ?_, ?_⟩
-  · have h1 := GlobalTheory.T.unitary_iwahori_orbital_support E hU w hw n b hb ϖ hϖ l hl ⟨_, hγ⟩ U (fun i => by simpa [hUdef] using huv i) rfl
+  · have h1 := GlobalTheory.CompanionTheory.DiagCoset.fU_diag E hU w hw n b hb ϖ hϖ l hl ⟨_, hγ⟩ U (fun i => by simpa [hUdef] using huv i) rfl
       1 (one_mem _) 1 (one_mem _)
     rw [one_mul, mul_one] at h1
     rw [h1]

@@ -576,10 +576,6 @@ theorem homSub_stable {f g : Matrix (Fin n) (Fin n) ℂ} {P Q : Submodule ℂ (F
   · rw [twoSided_mulVec]
     exact hQ _ (hX.2 _)
 
-theorem detOn_pos {f g : Matrix (Fin n) (Fin n) ℂ} (hgf : g * f = 1) (V : Submodule ℂ (Fin n → ℂ))
-    (hV : ∀ y ∈ V, f *ᵥ y ∈ V) : 0 < detOn f V := by
-  apply GlobalTheory.CompanionTheory.RgStart.detOn_pos_of_left_inv <;> assumption
-
 def killing (N : Submodule ℂ (Matrix (Fin n) (Fin n) ℂ)) (V : Submodule ℂ (Fin n → ℂ)) :
     Submodule ℂ (Matrix (Fin n) (Fin n) ℂ) := N ⊓ homSub V ⊤
 
@@ -752,8 +748,8 @@ theorem flag_finrank_det : ∀ (n : ℕ) (f g : Matrix (Fin n) (Fin n) ℂ) (r :
     have hnorm := congrArg (fun z : ℂ => ‖z‖) hm
     simp only [norm_mul] at hnorm
     rw [hA, hB] at hnorm
-    have hx := detOn_pos hgf (F k) (hfF k)
-    have hy := detOn_pos hgf (F (k + 1)) (hfF (k + 1))
+    have hx := GlobalTheory.CompanionTheory.RgStart.detOn_pos_of_left_inv hgf (F k) (hfF k)
+    have hy := GlobalTheory.CompanionTheory.RgStart.detOn_pos_of_left_inv hgf (F (k + 1)) (hfF (k + 1))
     have hle1 : Module.finrank ℂ (F k) ≤ Module.finrank ℂ (F (k + 1)) :=
       Submodule.finrank_mono (hmono k)
     have hle2 : Module.finrank ℂ (F (k + 1)) ≤ n := by
@@ -1188,7 +1184,6 @@ variable {n : ℕ} {ε : Fin n → Bool}
 def basisMat (V : Submodule ℂ (Fin n → ℂ)) : Matrix (Fin n) (Fin (Module.finrank ℂ V)) ℂ :=
   Matrix.of fun j i => (Module.finBasis ℂ V i : Fin n → ℂ) j
 
-
 variable (ε) in
 def pairMap (V : Submodule ℂ (Fin n → ℂ)) : (Fin n → ℂ) →ₗ[ℂ] (Fin (Module.finrank ℂ V) → ℂ) :=
   ((basisMat V)ᴴ * Formalism.REAL.Jm ε).mulVecLin
@@ -1526,7 +1521,6 @@ theorem inG_conj (m : UJ ε) {X : Matrix (Fin n) (Fin n) ℂ} (h : inG ε X) : i
     _ = 0 := by
         rw [e2]; simp only [Matrix.mul_assoc]; exact neg_add_cancel _
 
-
 variable (ε) in
 def perpJ (V : Submodule ℂ (Fin n → ℂ)) : Submodule ℂ (Fin n → ℂ) where
   carrier := {y | ∀ x ∈ V, star x ⬝ᵥ (Jm ε *ᵥ y) = 0}
@@ -1538,7 +1532,6 @@ def perpJ (V : Submodule ℂ (Fin n → ℂ)) : Submodule ℂ (Fin n → ℂ) wh
 
 theorem mem_perpJ {V : Submodule ℂ (Fin n → ℂ)} {y : Fin n → ℂ} :
     y ∈ perpJ ε V ↔ ∀ x ∈ V, star x ⬝ᵥ (Jm ε *ᵥ y) = 0 := Iff.rfl
-
 
 variable (ε) in
 def lieSub : Submodule ℝ (Matrix (Fin n) (Fin n) ℂ) where
@@ -1566,7 +1559,6 @@ variable {a : ℕ}
 
 def natFlag (W : Fin (a + 1) → Submodule ℂ (Fin n → ℂ)) (s : ℕ) : Submodule ℂ (Fin n → ℂ) :=
   W ⟨min s a, by omega⟩
-
 
 variable (ε) in
 def dblFlag (W : Fin (a + 1) → Submodule ℂ (Fin n → ℂ)) (s : ℕ) : Submodule ℂ (Fin n → ℂ) :=

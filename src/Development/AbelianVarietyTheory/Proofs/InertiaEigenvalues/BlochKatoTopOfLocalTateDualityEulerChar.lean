@@ -127,16 +127,13 @@ variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field 
     {LL : Type} [Field LL] [Algebra Qp LL]
     {V : Type} [AddCommGroup V] [Module LL V] [Module Qp V] [IsScalarTower Qp LL V]
 
-theorem fil_anti {a b : ℤ} (h : a ≤ b) : PD.Fil b ≤ PD.Fil a :=
-  antitone_int_of_succ_le PD.Fil_anti h
-
 theorem filV_anti {a b : ℤ} (h : a ≤ b) :
     FilV PD (LL := LL) (V := V) b ≤ FilV PD (LL := LL) (V := V) a := by
   rintro x ⟨y, rfl⟩
   induction y using TensorProduct.induction_on with
   | zero => simp
   | tmul v c =>
-    refine ⟨v ⊗ₜ ⟨(c : BdR), fil_anti PD h c.2⟩, ?_⟩
+    refine ⟨v ⊗ₜ ⟨(c : BdR), GlobalTheory.NL.JumpsSES.fil_anti PD h c.2⟩, ?_⟩
     simp
   | add y z hy hz => rw [map_add (f := _)]; exact Submodule.add_mem _ hy hz
 

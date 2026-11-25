@@ -599,21 +599,6 @@ section -- clump:auto
 
 noncomputable section
 
-namespace GlobalTheory.LevelGroupTest
-
-open AlgebraicGeometry CategoryTheory Limits NumberField MonoidalCategory CartesianMonoidalCategory
-open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj
-
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H}
-
-theorem natCast_mem_half (l : Level H) : (l.M : 𝓞 E) ∈ l.Mb := by
-  have h : Ideal.span {(l.M : 𝓞 E)} ≤ l.Mb := by
-    rw [← l.prod]; exact Ideal.mul_le_left
-  exact h (Ideal.subset_span rfl)
-
-attribute [local instance] Over.cartesianMonoidalCategory CategoryTheory.Hom.group
-
-end GlobalTheory.LevelGroupTest
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -666,7 +651,7 @@ theorem reflects_half_of_move {ρ : Xo.X ⟶ Xo.X} {ν : SABMap Xo.univ.t Xo.uni
   obtain ⟨b', hb'⟩ := (J.ker l.M hM0 a').1 (e5.trans e6)
   refine Submodule.add_mem _ hb ?_
   rw [hb', ← Nat.cast_smul_eq_nsmul (𝓞 E)]
-  exact Submodule.smul_mem_smul (GlobalTheory.LevelGroupTest.natCast_mem_half l) trivial
+  exact Submodule.smul_mem_smul (GlobalTheory.LevelPoints.natCast_mem l) trivial
 
 theorem levR_unique (hpq : 1 ≤ Dw.p + Dw.q) (hA : l.A.Coprime l.M) (gM : Dw.La →ₗ[𝓞 E] Dw.La)
     {S : Type} [CommRing S] [Algebra c.F S] [Nontrivial S] {y y' y'' : FrPt Xo c S}

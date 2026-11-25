@@ -901,10 +901,6 @@ theorem asm_iota_OF (r : 𝓞 F) :
   first
     | rfl
 
-theorem asm_iota_OF_mem (r : 𝓞 F) : iA F E (algebraMap (𝓞 F) E r) ∈ Formalism.L2.Herm.intAf F E := by
-  rw [asm_iota_OF]
-  exact _root_.Formalism.L2.Col.iA_mem _
-
 theorem asm_smul_apply {n : ℕ} (c : 𝓞 E) (y : Sp E n) (i : Fin n) : (c • y) i = algebraMap (𝓞 E) E c * y i := by
   show c • y i = _
   exact Algebra.smul_def c (y i)
@@ -1243,7 +1239,7 @@ private theorem pt_loc_lemma_4 {F E : Type} [Field F] [NumberField F] [Field E] 
       rfl
     rw [es, Matrix.mulVec_smul, Pi.smul_apply, smul_eq_mul, map_prod, map_prod,
       ← Finset.mul_prod_erase Finset.univ _ (Finset.mem_univ i), mul_right_comm]
-    exact mul_mem (hru i) (prod_mem fun j _ => asm_iota_OF_mem (r j))
+    exact mul_mem (hru i) (prod_mem fun j _ => Formalism.L2.GenusGluing.Gen.iA_algebraMap_mem (r j))
   · intro hy
     obtain ⟨s, hs, hsy⟩ : ∃ s ∈ complF E v, s • y ∈ Formalism.UG.CS.globLat x (stdLat E n) := hy
     rw [glob_lemma_2] at hsy

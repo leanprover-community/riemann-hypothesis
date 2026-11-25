@@ -688,7 +688,6 @@ def LabQ (a : ℕ) (x : GA g a) (f : (ZMod g)[X]) : Prop :=
   (f.Monic ∧ f.natDegree = a ∧ f.coeff 0 ≠ 0) ∧
     ∀ h : a = r, e f * cast (congrArg (GA g) h) x = cast (congrArg (GA g) h) x
 
-
 open Classical in
 def labF (a : ℕ) (x : GA g a) : (ZMod g)[X] :=
   if h : ∃ f, LabQ g r e a x f then h.choose else (X - C 1) ^ a
@@ -857,7 +856,6 @@ theorem isOfFinOrder_of_isOpen {M : Type} [Group M] (φ : Ine (F := E) A →* M)
   refine isOfFinOrder_iff_pow_eq_one.2 ⟨φ.ker.index, Nat.pos_of_ne_zero Subgroup.FiniteIndex.index_ne_zero, ?_⟩
   rw [← map_pow]
   exact φ.ker.pow_index_mem σ
-
 
 open Classical in
 theorem charpoly_eq_of_gen {n : ℕ} (ρ : Ine (F := E) A →* GL (Fin n) ℂ)
@@ -1170,17 +1168,11 @@ theorem typeV_le_ker {D : D7} {M : MtFam D} (i : D.nd.Loc) (HT : HeckeTied D M) 
   rw [hcP y' hy', hcz]
   rfl
 
-theorem typeV_le_typeSum (D : D7) (i : D.nd.Loc) (P : D.naut.AV i) :
-    D.naut.typeV i P ≤ typeSum D i (D.naut.ptV i P) :=
-  le_biSup (fun P => D.naut.typeV i P) (show P ∈ {P | D.naut.ptV i P = D.naut.ptV i P} from rfl)
-
 end GlobalTheory.PendOf.SecProof
 
 namespace GlobalTheory.PendOf.SecProof
 
 open GlobalTheory.EtaJoin.TypeTieProof Formalism.L2.NG Formalism.AUTREP ReciprocityTheory.Aut
-
-
 
 theorem main : ∀ (D : D7) (M : MtFam D) (i : D.nd.Loc), HeckeTied D M → HeckeRational D M → AVTied D M →
     GlobalTheory.EtaJoin.SplitUnif D → GlobalTheory.EtaJoin.HeckeScalar M i → Nonempty (Sec D i) := by
@@ -1238,8 +1230,8 @@ theorem main : ∀ (D : D7) (M : MtFam D) (i : D.nd.Loc), HeckeTied D M → Heck
     rw [eq_top_iff, ← D.naut.typeV_top i]
     refine iSup_le fun P => ?_
     rcases h : D.naut.ptV i P with _ | x
-    · exact le_sup_of_le_right (h ▸ typeV_le_typeSum D i P)
-    · exact le_sup_of_le_left (le_iSup_of_le x (h ▸ typeV_le_typeSum D i P))
+    · exact le_sup_of_le_right (h ▸ GlobalTheory.PendOf.PrTypeProof.typeV_le_typeSum D i P)
+    · exact le_sup_of_le_left (le_iSup_of_le x (h ▸ GlobalTheory.PendOf.PrTypeProof.typeV_le_typeSum D i P))
 
   have hπr : ∀ u, πh u ∈ LinearMap.range p := by
     intro u
@@ -1733,8 +1725,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 section
 section
 section
@@ -1781,8 +1771,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 section
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT NumberField IsDedekindDomain Polynomial GlobalTheory.HeightCounting GlobalTheory.RowTie GlobalTheory.SplitRead GlobalTheory.NPin GlobalTheory.PendOf
@@ -1806,8 +1794,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ImportsTerSide", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.CenLocOfCenReal\npublic import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.DepthZeroSupport\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ThetaLocalInputs\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CharacterChoiceData\npublic import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.StepJumpDirect\npublic import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.CoeffRingsHaveRootsOfUnity\npublic import Formalism.LocalToGlobal.NormalizedHeckeFactors.GlobalDatumRegularityOfTypesCompatibility\npublic import Formalism.SharpRestriction.LevelLetterCocycles.FourthHypothesisOfLifting\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsPendingObjectsDepthZeroAdmissibleEigenSpan\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GroupAlgebraCentreKeepsTypeSpacesAtLocalisationsStatement\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TameGenAtTransport\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.NonGaloisDepthZeroEntrywise\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.NonGaloisDepthZeroTame\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
-
-
 
 section
 section

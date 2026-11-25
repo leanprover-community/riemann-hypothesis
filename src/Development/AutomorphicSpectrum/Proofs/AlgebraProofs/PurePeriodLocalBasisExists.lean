@@ -1191,7 +1191,7 @@ theorem gram_signature_orthogonal_split : ∀ (E : Type) [Field E] [NumberField 
       DPer.herm_EF hty _ n hn0 x (DPer.coef_sum D x hx n hn) horth⟩
     · rw [injective_iff_map_eq_zero]
       exact fun y h => hc0 y (DPer.coef_zero_of_per hty _ n hn0 y h)
-    · exact fun m m' => (_root_.GlobalTheory.CompanionTheory.Ar.Fl.Sesq.form_of_datum E H D).2.2.2.2.2.1 (x m) (x m')
+    · exact fun m m' => (_root_.PositivityTheory.Xgf.sesq_sesquilinear_skew_hermitian E H D).2.2.2.2.2.1 (x m) (x m')
   refine ⟨_, hP, fun a => ?_, fun b => ?_⟩
   · intro k hk
     exact DPer.per_inl hty _ n _ a (hcx _) k (by simpa [sgnRt] using hk)
@@ -1227,12 +1227,6 @@ section -- clump:auto
 open NumberField Matrix GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl
 open scoped ComplexOrder
 
-namespace GlobalTheory.CompanionTheory.Ar.Fl.Sylvester
-
-theorem neg_posDef_of_compl_posDef : ∀ (p q : ℕ) (A : Matrix (Fin p) (Fin p) ℂ) (B : Matrix (Fin q) (Fin q) ℂ) (C : Matrix (Fin q) (Fin p ⊕ Fin q) ℂ), A.PosDef → B.IsHermitian → (-(C * Matrix.fromBlocks A 0 0 B * Cᴴ)).PosDef → (-B).PosDef :=
-  @PositivityTheory.Xgf.negDef_block_of_posDef
-
-end GlobalTheory.CompanionTheory.Ar.Fl.Sylvester
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.NegDefBlockOfPosDef =====
@@ -1294,10 +1288,6 @@ theorem star_hermForm {g : ℕ} {M : Matrix (Fin g) (Fin g) ℂ} (hM : M.IsHermi
   refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun k _ => ?_
   rw [star_mul', star_mul', star_star, hM.apply]
   ring
-
-theorem posDef_of_hermForm {g : ℕ} {M : Matrix (Fin g) (Fin g) ℂ} (hM : M.IsHermitian)
-    (hpos : ∀ z : Fin g → ℂ, z ≠ 0 → 0 < (hermForm M z z).re) : M.PosDef := by
-  apply GlobalTheory.UnimodVol.posDef_of_hermForm <;> assumption
 
 theorem fromCols_block {I : Type} [Fintype I] {p q : ℕ} (A : Matrix I (Fin p) ℂ) (B : Matrix I (Fin q) ℂ)
     (G₁ : Matrix (Fin p) (Fin p) ℂ) (G₂ : Matrix (Fin q) (Fin q) ℂ) :
@@ -1372,7 +1362,7 @@ private theorem posDef_reindex_of_hermForm_re_pos {E : Type} [Field E] [NumberFi
     (hpos : ∀ z : Fin g → ℂ, z ≠ 0 → 0 < (hermForm Hm z z).re) :
     (Matrix.of fun a b => Hm (e a) (e b)).PosDef := by
   classical
-  apply GlobalTheory.CompanionTheory.Ar.Fl.SignTau.posDef_of_hermForm
+  apply GlobalTheory.UnimodVol.posDef_of_hermForm
   · ext a b
     simp only [Matrix.conjTranspose_apply, Matrix.of_apply]
     exact hH.apply _ _
@@ -1456,12 +1446,6 @@ section -- clump:auto
 open NumberField Matrix GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl
 open scoped ComplexOrder
 
-namespace GlobalTheory.CompanionTheory.Ar.Fl
-
-theorem norm_det_eq_of_entries_close : ∀ (A : Type) [NormedField A] [IsUltrametricDist A] (I : Type) [Fintype I] [DecidableEq I] (M M' : Matrix I I A) (r : ℝ), 0 < r → (∀ a b, ‖M a b‖ ≤ r) → (∀ a b, ‖M' a b - M a b‖ < r) → ‖M.det‖ = r ^ Fintype.card I → ‖M'.det‖ = r ^ Fintype.card I :=
-  @PositivityTheory.Xgf.ultrametric_det_norm_stable
-
-end GlobalTheory.CompanionTheory.Ar.Fl
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.UltrametricDetNormStable =====
@@ -1495,7 +1479,7 @@ theorem exists_bound (D : Datum H) (ℓ : Nat.Primes) (j : E →+* ℂ_[ℓ]) :
       ∀ x y, ‖j (sesq D x y)‖ ≤ r := by
   have hinj : Function.Injective (j.comp (algebraMap (𝓞 E) E)) :=
     j.injective.comp (RingOfIntegers.coe_injective)
-  obtain ⟨a, ha, ha0, -, hlog⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Fl.exists_logIdeal_attained E ℓ (j.comp (algebraMap (𝓞 E) E)) (differentIdeal ℤ (𝓞 E)) hinj
+  obtain ⟨a, ha, ha0, -, hlog⟩ := _root_.PositivityTheory.Xgf.padic_logIdeal_max_element E ℓ (j.comp (algebraMap (𝓞 E) E)) (differentIdeal ℤ (𝓞 E)) hinj
     differentIdeal_ne_bot
   have hn : 0 < ‖j (a : E)‖ := by
     rw [norm_pos_iff]
@@ -1504,7 +1488,7 @@ theorem exists_bound (D : Datum H) (ℓ : Nat.Primes) (j : E →+* ℂ_[ℓ]) :
   refine ⟨‖j (a : E)‖⁻¹, inv_pos.2 hn, ?_, fun x y => ?_⟩
   · rw [Real.log_inv]
     exact congrArg Neg.neg hlog.symm
-  · obtain ⟨b, hb⟩ := (_root_.GlobalTheory.CompanionTheory.Ar.Fl.Sesq.form_of_datum E H D).2.2.2.2.2.2 a ha x y
+  · obtain ⟨b, hb⟩ := (_root_.PositivityTheory.Xgf.sesq_sesquilinear_skew_hermitian E H D).2.2.2.2.2.2 a ha x y
     have h1 : ‖j (a : E)‖ * ‖j (sesq D x y)‖ = ‖j (b : E)‖ := by rw [← norm_mul, ← map_mul, hb]
     have h2 := norm_int_le ℓ j b
     rw [← h1] at h2
@@ -1513,12 +1497,12 @@ theorem exists_bound (D : Datum H) (ℓ : Nat.Primes) (j : E →+* ℂ_[ℓ]) :
 
 theorem sesq_sum_left (D : Datum H) {J : Type} (s : Finset J) (f : J → D.La) (y : D.La) :
     sesq D (∑ m ∈ s, f m) y = ∑ m ∈ s, sesq D (f m) y := by
-  let φ : D.La →+ E := AddMonoidHom.mk' (fun x => sesq D x y) (fun a b => (_root_.GlobalTheory.CompanionTheory.Ar.Fl.Sesq.form_of_datum E H D).2.1 a b y)
+  let φ : D.La →+ E := AddMonoidHom.mk' (fun x => sesq D x y) (fun a b => (_root_.PositivityTheory.Xgf.sesq_sesquilinear_skew_hermitian E H D).2.1 a b y)
   exact map_sum φ f s
 
 theorem sesq_sum_right (D : Datum H) {J : Type} (s : Finset J) (f : J → D.La) (y : D.La) :
     sesq D y (∑ m ∈ s, f m) = ∑ m ∈ s, sesq D y (f m) := by
-  let φ : D.La →+ E := AddMonoidHom.mk' (fun x => sesq D y x) (fun a b => (_root_.GlobalTheory.CompanionTheory.Ar.Fl.Sesq.form_of_datum E H D).2.2.1 y a b)
+  let φ : D.La →+ E := AddMonoidHom.mk' (fun x => sesq D y x) (fun a b => (_root_.PositivityTheory.Xgf.sesq_sesquilinear_skew_hermitian E H D).2.2.1 y a b)
   exact map_sum φ f s
 
 theorem sesq_comb (D : Datum H) {J : Type} [Fintype J] (x : J → D.La) (u v : J → 𝓞 E) :
@@ -1526,9 +1510,9 @@ theorem sesq_comb (D : Datum H) {J : Type} [Fintype J] (x : J → D.La) (u v : J
       ∑ n, (∑ m, (u m : E) * sesq D (x m) (x n)) * IsCMField.complexConj E (v n : E) := by
   rw [sesq_sum_right]
   refine Finset.sum_congr rfl fun n _ => ?_
-  rw [(_root_.GlobalTheory.CompanionTheory.Ar.Fl.Sesq.form_of_datum E H D).2.2.2.2.1, sesq_sum_left, mul_comm]
+  rw [(_root_.PositivityTheory.Xgf.sesq_sesquilinear_skew_hermitian E H D).2.2.2.2.1, sesq_sum_left, mul_comm]
   congr 1
-  exact Finset.sum_congr rfl fun m _ => (_root_.GlobalTheory.CompanionTheory.Ar.Fl.Sesq.form_of_datum E H D).2.2.2.1 _ _ _
+  exact Finset.sum_congr rfl fun m _ => (_root_.PositivityTheory.Xgf.sesq_sesquilinear_skew_hermitian E H D).2.2.2.1 _ _ _
 
 theorem gram_comb_map (D : Datum H) (τ : E →+* ℂ) {I J : Type} [Fintype J] (x : J → D.La)
     (X : Matrix I J (𝓞 E)) :
@@ -1544,7 +1528,7 @@ theorem gram_comb_map (D : Datum H) (τ : E →+* ℂ) {I J : Type} [Fintype J] 
 theorem norm_diff_lt (D : Datum H) (ℓ : Nat.Primes) (j : E →+* ℂ_[ℓ]) {r : ℝ} (hr : 0 < r)
     (hb : ∀ x y, ‖j (sesq D x y)‖ ≤ r) (u u' v v' : D.La) :
     ‖j (sesq D (u + ((ℓ : ℕ) : 𝓞 E) • v) (u' + ((ℓ : ℕ) : 𝓞 E) • v')) - j (sesq D u u')‖ < r := by
-  obtain ⟨-, hl, hr', hsl, hsr, -, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Fl.Sesq.form_of_datum E H D
+  obtain ⟨-, hl, hr', hsl, hsr, -, -⟩ := _root_.PositivityTheory.Xgf.sesq_sesquilinear_skew_hermitian E H D
   have hcast : ((((ℓ : ℕ) : 𝓞 E)) : E) = ((ℓ : ℕ) : E) := map_natCast (algebraMap (𝓞 E) E) _
   have e : j (sesq D (u + ((ℓ : ℕ) : 𝓞 E) • v) (u' + ((ℓ : ℕ) : 𝓞 E) • v')) - j (sesq D u u') =
       ((ℓ : ℕ) : ℂ_[ℓ]) * (j (sesq D v u') + j (sesq D u v') + ((ℓ : ℕ) : ℂ_[ℓ]) * j (sesq D v v')) := by
@@ -1610,7 +1594,7 @@ theorem norm_det_close (D : Datum H) (p : ℕ) (ℓ : Nat.Primes) (x x' w : Fin 
       rw [e, Fintype.card_fin, ← Real.exp_log hd0, hxn j, ← Real.exp_log (pow_pos hr p), Real.log_pow, hlog]
       congr 1
       ring
-    have h := _root_.GlobalTheory.CompanionTheory.Ar.Fl.norm_det_eq_of_entries_close ℂ_[ℓ] (Fin p) ((gramE D x).map j) ((gramE D x').map j) r hr
+    have h := _root_.PositivityTheory.Xgf.ultrametric_det_norm_stable ℂ_[ℓ] (Fin p) ((gramE D x).map j) ((gramE D x').map j) r hr
       (fun a b => hb _ _) (fun a b => by
         simp only [Matrix.map_apply, gramE, Matrix.of_apply, hx']
         exact norm_diff_lt D ℓ j hr hb _ _ _ _) hdet
@@ -1638,11 +1622,11 @@ theorem neg_compl (D : Datum H) {g : ℕ} {ty : Fin g → (E →+* ℂ)} {P₀ :
     ext (a | a) (b | b)
     · simp [gramE]
     · simp [gramE, horth]
-    · have h := (_root_.GlobalTheory.CompanionTheory.Ar.Fl.Sesq.form_of_datum E H D).2.2.2.2.2.1 (x (.inl b)) (x (.inr a))
+    · have h := (_root_.PositivityTheory.Xgf.sesq_sesquilinear_skew_hermitian E H D).2.2.2.2.2.1 (x (.inl b)) (x (.inr a))
       simp [gramE, h, horth]
     · simp [gramE]
   rw [hblk] at hC
-  refine _root_.GlobalTheory.CompanionTheory.Ar.Fl.Sylvester.neg_posDef_of_compl_posDef p q _ _ C hpos ?_ hC
+  refine _root_.PositivityTheory.Xgf.negDef_block_of_posDef p q _ _ C hpos ?_ hC
   ext i k
   have h := congrFun (congrFun hH (.inr i)) (.inr k)
   simpa [gramE] using h

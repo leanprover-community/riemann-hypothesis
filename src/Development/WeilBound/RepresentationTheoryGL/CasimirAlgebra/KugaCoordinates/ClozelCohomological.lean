@@ -455,7 +455,6 @@ end GlobalTheory.CochainInv
 
 namespace GlobalTheory.CochainInv
 
-
 open GlobalTheory.GKCoh in
 theorem lie_apply_eq_sum : ∀ (E : Type) [Field E] [NumberField E] (a : ℕ) (M : Type) [AddCommGroup M] [Module ℂ M] [Module ℝ M] [IsScalarTower ℝ ℂ M] (κ : Kinf E a → Module.End ℂ M) (L : Lie E a →ₗ[ℝ] Module.End ℂ M) (S : Set (Module.Dual ℂ M)) (c : ℝ → Kinf E a) (Z : Matrix (Fin a) (Fin a) (Cinf E)), star Z = -Z → c 0 = 1 → HasDerivAt (fun t => toL (c t).1) (toL Z) 0 → (∀ m, (∀ l ∈ S, l m = 0) → m = 0) → (∀ l ∈ S, ∀ m, HasDerivAt (fun t => l (κ (c t) m)) (l (L (toL Z) m)) 0) → ∀ (q : ℕ) (ω : Herm E a [⋀^Fin q]→ₗ[ℝ] M), IsCochain κ ω → ∀ Y W : Fin q → Herm E a, (∀ i, (W i).1 = Z * (Y i).1 - (Y i).1 * Z) → L (toL Z) (ω Y) = ∑ i, ω (Function.update Y i (W i)) := by
   intro E _ _ a M _ _ _ _ κ L S c Z hZ hc0 hc hS hκ q ω hω Y W hW
@@ -679,14 +678,6 @@ theorem kgT_star (X : Lie E a) : star (kgT X) = kgT X := by
   simp_rw [star_sum, ← J.coord_conjugate]
   exact Fintype.sum_equiv (Function.Involutive.toPerm _ fun τ => star_star τ) _ _ fun τ => rfl
 
-omit [NumberField E] [_root_.NumberField.IsTotallyComplex E] in
-theorem kg_coord_atEmb_of_ne {τ τ' : E →+* ℂ} (h : InfinitePlace.mk τ' ≠ InfinitePlace.mk τ) (z : ℂ) :
-    coord τ' (atEmb τ z) = 0 := by
-  classical
-  rw [J.coord_eq]
-  unfold atEmb
-  split_ifs <;> simp only [Pi.single_eq_of_ne h, map_zero]
-
 theorem kg_sum_coord_atEmb (τ : E →+* ℂ) (z : ℂ) :
     ∑ τ' : E →+* ℂ, coord τ' (atEmb τ z) = z + starRingEnd ℂ z := by
   have hne : ComplexEmbedding.conjugate τ ≠ τ := by
@@ -697,7 +688,7 @@ theorem kg_sum_coord_atEmb (τ : E →+* ℂ) (z : ℂ) :
   rw [Fintype.sum_eq_add τ (ComplexEmbedding.conjugate τ) hne.symm, J.coord_conjugate, _root_.GlobalTheory.CuspRep.coord_atEmb]
   · rfl
   · rintro τ' ⟨h1, h2⟩
-    refine kg_coord_atEmb_of_ne (fun h => ?_) z
+    refine PositivityTheory.Rg.Cz.J.coord_atEmb_ne (fun h => ?_) z
     rcases InfinitePlace.mk_eq_iff.1 h with h | h
     · exact h1 h
     · exact h2 (by rw [← h]; exact (star_star τ').symm)
@@ -973,7 +964,6 @@ def kgL : Matrix (Fin a) (Fin a) (Cinf E) →ₗ[ℝ] Lie E a where
   toFun := toL
   map_add' _ _ := rfl
   map_smul' _ _ := rfl
-
 
 omit [NumberField E] in
 def kgD (Z : Matrix (Fin a) (Fin a) (Cinf E)) (hZ : star Z = -Z) : Herm E a →ₗ[ℝ] Herm E a where

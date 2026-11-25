@@ -235,10 +235,6 @@ theorem val_inv {a : Ω} {r : F} (h : ValAt ξ z a r) (hr : r ≠ 0) : ValAt ξ 
     rw [← f2]
     exact eq_inv_of_mul_eq_one_left (by rw [← map_mul]; simp)
 
-theorem val_det (h : genPt ξ ⤳ centre z) {n : ℕ} {P : Matrix (Fin n) (Fin n) Ω} {A : Matrix (Fin n) (Fin n) F}
-    (hP : ∀ i j, ValAt ξ z (P i j) (A i j)) : ValAt ξ z P.det A.det := by
-  apply GlobalTheory.CompanionTheory.Ar.Flat.PointCompare.val_det <;> assumption
-
 end Val
 
 theorem spMap_inj {R R' : Type} [CommRing R] [CommRing R'] {f g : R →+* R'} (h : spMap f = spMap g) : f = g := by
@@ -308,7 +304,7 @@ theorem expand (Z : CptOver Y U) {F : Type} [Field F] {y : Sp F ⟶ Xo.XF c}
     exact hw'
   refine ⟨Matrix.of A, hcomb, GlobalTheory.CompanionTheory.Ar.Flat.PointCompare.frame_det hf₀ hf hcomb, ?_⟩
   rw [hdet]
-  exact val_det h hA
+  exact GlobalTheory.CompanionTheory.Ar.Flat.PointCompare.val_det h hA
 
 def IsRat (Z : CptOver Y U) (τ : E →+* ℂ) (a : ⋀[Z.Ω]^D.p Z.V)
     (b : ⋀[Z.Ω]^D.q Z.V) {F : Type} [Field F] (y : Sp F ⟶ Xo.XF c) (v : Vecs y D.p) (w : Vecs y D.q) (r : F) : Prop :=
@@ -321,7 +317,6 @@ def IsGen (Z : CptOver Y U) (τ : E →+* ℂ) (a : ⋀[Z.Ω]^D.p Z.V)
   ∃ (v₀ : Vecs y D.p) (w₀ : Vecs y D.q) (r₀ : F) (A : Matrix (Fin D.p) (Fin D.p) F)
     (B : Matrix (Fin D.q) (Fin D.q) F), IsRat Z τ a b y v₀ w₀ r₀ ∧ (∀ i, IsComb (A i) v₀ (v i)) ∧
     (∀ j, IsComb (B j) w₀ (w j)) ∧ A.det ≠ 0 ∧ r * A.det = r₀ * B.det
-
 
 open Classical in
 def repFn (Z : CptOver Y U) (τ : E →+* ℂ) (a : ⋀[Z.Ω]^D.p Z.V) (b : ⋀[Z.Ω]^D.q Z.V) : FrameFn Xo c :=

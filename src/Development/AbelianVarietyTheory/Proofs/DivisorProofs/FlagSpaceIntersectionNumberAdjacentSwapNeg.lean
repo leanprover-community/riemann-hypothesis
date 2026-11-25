@@ -440,7 +440,6 @@ end GlobalTheory.FlagPush.LowMul
 
 namespace GlobalTheory.FlagPush
 
-
 open LowMul in
 theorem almostLow_mul_entries : ∀ (ι : Type) (m : ι → ℕ) (τ : ι) (a b : Fin (m τ)), (b : ℕ) = a + 1 → ∀ (K : Type) [Field K] (S T C : Mat m K), Par m ⊤ S → Par m ⊤ T → AlmostLow τ a b C → AlmostLow τ a b (S * C * T) ∧ (∀ x : Root m, x ≠ ⟨τ, a⟩ → x ≠ ⟨τ, b⟩ → (S * C * T) x.1 x.2 x.2 = S x.1 x.2 x.2 * C x.1 x.2 x.2 * T x.1 x.2 x.2) ∧ (S * C * T) τ a b = S τ a a * C τ a b * T τ b b ∧ minor τ a b (S * C * T) = S τ a a * S τ b b * minor τ a b C * (T τ a a * T τ b b) := by
   intro ι m τ a b hab K _ S T C hS hT hC
@@ -1052,7 +1051,6 @@ theorem val_spMap_pt {F : Type} [Field F] (Y : Var F) {K : Type} [Field K] (σ :
   rw [RatModel.valLoc_eq_val] at h
   exact h.trans (congrArg σ (RatModel.val_pt x))
 
-
 open GlobalTheory.FlagBundle.ClosedPt in
 theorem meet : ∀ (F : Type) [Field F] (X Y : Var F) (ι : Type) [Fintype ι] (m : ι → ℕ) (E : Fr (ratOf X) m 0) (E' : Fr (ratOf Y) m m) (φ : X.Fn →ₐ[F] Y.Fn) (f : Y.X ⟶ X.X), Refines E E' φ f → ∀ B ∈ E'.S (genericPoint Y.X), ∀ A ∈ E.S (f (genericPoint Y.X)), ∀ (τ : ι) (a b : Fin (m τ)), a < b → ∀ (K : Type) [Field K] (V : ValuationSubring K) (c : Y.Fn →+* V) (t : V), IsLocalRing.residue V t = 0 → ∀ v₂ : Sp V ⟶ Y.X, v₂ ≫ f = spMap c ≫ (ratOf Y).pt ≫ f → Bears E' φ A (shear τ a b (t : K) * (B * (A.map φ)⁻¹).map ((algebraMap V K).comp c)) (spMap (algebraMap V K) ≫ v₂) → spMap (IsLocalRing.residue V) ≫ spMap c ≫ (ratOf Y).pt = spMap (IsLocalRing.residue V) ≫ v₂ := by
   intro F _ X Y ι _ m E E' φ f hf B hB A hA τ a b hab K _ V c t ht v₂ e hbear
@@ -1152,11 +1150,6 @@ open Classical
 
 namespace GlobalTheory.FlagPush.Gen
 
-theorem spMap_comp {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (g : A →+* B) (h : B →+* C) :
-    spMap h ≫ spMap g = spMap (h.comp g) := by
-  rw [← Spec.map_comp]
-  rfl
-
 theorem exists_genPair : ∀ (F : Type) [Field F] (X Y : Var F) (ι : Type) [Fintype ι] (m : ι → ℕ) (E : Fr (ratOf X) m 0) (E' : Fr (ratOf Y) m m) (φ : X.Fn →ₐ[F] Y.Fn) (f : Y.X ⟶ X.X), Refines E E' φ f → ∀ B ∈ E'.S (genericPoint Y.X), ∀ (τ : ι) (a b : Fin (m τ)), a < b → ∃ ψ₂ : Y.Fn →+* RatFunc Y.Fn, GenPair Y (algebraMap Y.Fn (RatFunc Y.Fn)) ψ₂ ∧ (∀ u : X.Fn, algebraMap Y.Fn (RatFunc Y.Fn) (φ u) = ψ₂ (φ u)) ∧ Par m ⊤ (shear τ a b (RatFunc.X : RatFunc Y.Fn) * (B.map (algebraMap Y.Fn (RatFunc Y.Fn)) * (B.map ψ₂)⁻¹)) := by
   intro F _ X Y ι _ m E E' φ f hf B hB τ a b hab
   obtain ⟨V, c, t, hc, ht, hr⟩ := _root_.GlobalTheory.FlagPush.exists_valuationSubring_ratFunc_residue_X_eq_zero Y.Fn
@@ -1166,7 +1159,7 @@ theorem exists_genPair : ∀ (F : Type) [Field F] (X Y : Var F) (ι : Type) [Fin
   have hpa (w) : pt w = genericPoint Y.X := hpt ▸ (ratOf Y).pt_apply w
   have hps : pt ≫ Y.str = spMap (algebraMap F Y.Fn) := hpt ▸ (ratOf Y).pt_s
   have hq : spMap (algebraMap V (RatFunc Y.Fn)) ≫ spMap c ≫ pt = spMap (algebraMap Y.Fn (RatFunc Y.Fn)) ≫ pt := by
-    rw [← Category.assoc, spMap_comp, hc]
+    rw [← Category.assoc, GlobalTheory.FrameTangent.spMap_comp', hc]
   have hh : Par 0 ⊤ (shear τ a b (RatFunc.X : RatFunc Y.Fn) *
       (B * (A.map φ)⁻¹).map (algebraMap Y.Fn (RatFunc Y.Fn))) := by
     refine Par.mul (ClosedPt.par_zero_top fun σ => ?_) (hM.map _ fun _ _ => trivial)
@@ -1195,7 +1188,7 @@ theorem exists_genPair : ∀ (F : Type) [Field F] (X Y : Var F) (ι : Type) [Fin
     have := ClosedPt.gen_specializes v₂ (IsLocalRing.closedPoint (RatFunc Y.Fn))
     rwa [hv₂, h2] at this
   have hstr : q₂ ≫ Y.str = spMap ((algebraMap Y.Fn (RatFunc Y.Fn)).comp (algebraMap F Y.Fn)) := by
-    rw [← hs, ← Category.assoc, hq₂, Category.assoc, hs, Category.assoc, ← spMap_comp, hps]
+    rw [← hs, ← Category.assoc, hq₂, Category.assoc, hs, Category.assoc, ← GlobalTheory.FrameTangent.spMap_comp', hps]
   obtain ⟨ψ, hψ⟩ := exists_algHom_of_specializes_genericPoint F Y (RatFunc Y.Fn) q₂ hsp hstr
   subst hpt
   have hcv := _root_.GlobalTheory.FlagPush.flag_conv F X Y ι m E E' φ f hf B hB A hA _ (algebraMap Y.Fn (RatFunc Y.Fn)) ψ.toRingHom
@@ -1390,7 +1383,6 @@ private theorem exists_fin_sum_single_eq_of_degree_eq {κ : Type} :
     rw [Fin.sum_univ_succ]
     simp only [Fin.cons_zero, Fin.cons_succ]
     rw [hs, add_comm, hsplit]
-
 
 open CategoryTheory AlgebraicGeometry TopologicalSpace MvPolynomial in
 open Classical in

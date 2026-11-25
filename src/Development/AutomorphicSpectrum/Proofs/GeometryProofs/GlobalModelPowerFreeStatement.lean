@@ -305,7 +305,7 @@ theorem global_fibPF : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H
     exact (natCast_residueField_iff f z' p).2 ((natCast_residueField_iff _ z' p).1 hz)
   have h₁ := GlobalTheory.T.model_fibres_power_free E H D l (Xo l) c (c.V W) (c.V W).subtype (Y p W hp hW ⟨l, c, hg p hp⟩)
     (GlobalTheory.LocM.BaseMdl.dense_j hinj _) (hY p W hp hW _).1 (hY p W hp hW _).2 p hp (f z') hz'
-  exact (GlobalTheory.T.fibre_power_free_pullback E H _ _ _ t _ m₁ z').1 ((GlobalTheory.T.fibre_power_free_pullback E H _ _ _ t f m₂ z').2 h₁)
+  exact (PositivityTheory.HtPt.Cf.fibpf_pull E H _ _ _ t _ m₁ z').1 ((PositivityTheory.HtPt.Cf.fibpf_pull E H _ _ _ t f m₂ z').2 h₁)
 
 end GlobalTheory.CompanionTheory.Ar.GlobalFib
 end -- clump:auto

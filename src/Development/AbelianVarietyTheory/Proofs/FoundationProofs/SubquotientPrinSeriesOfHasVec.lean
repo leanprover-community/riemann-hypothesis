@@ -105,14 +105,6 @@ namespace GlobalTheory.PsType
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-theorem triv_zero' (χ : kˣ →* ℂˣ) : Triv χ (0 : k) := by
-  intro u _ h
-  rw [map_zero] at h
-  have h0 : valuation k ((u : k) - 1) = 0 := le_antisymm h zero_le'
-  rw [(valuation k).zero_iff, sub_eq_zero] at h0
-  have : u = 1 := Units.ext h0
-  rw [this, map_one]
-
 section Blocks
 
 variable {r t : ℕ}
@@ -204,7 +196,7 @@ theorem emb₂_mem_grp_iff (ψ : Fin (r + t) → kˣ →* ℂˣ) (a : GL (Fin r)
         exact Fin.lt_def.2 (Fin.lt_def.1 hpq)
       have := ha' x y hxy
       rwa [castAdd_eq_stdSum x, castAdd_eq_stdSum y] at this
-    · rw [fromBlocks_apply₁₂, Matrix.zero_apply]; exact triv_zero' _
+    · rw [fromBlocks_apply₁₂, Matrix.zero_apply]; exact GlobalTheory.PsType.MinorMul.triv_zero _
     · exfalso
       have := Fin.lt_def.1 hpq
       rw [stdSum_inr, stdSum_inl] at this
@@ -861,7 +853,6 @@ theorem val_det_eq_one {n r : ℕ} {M M' : Matrix (Fin n) (Fin n) k}
 end GlobalTheory.PsType.ClearBlock
 
 namespace GlobalTheory.PsType
-
 
 open ClearBlock in
 theorem clear_upper_right : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (n : ℕ)

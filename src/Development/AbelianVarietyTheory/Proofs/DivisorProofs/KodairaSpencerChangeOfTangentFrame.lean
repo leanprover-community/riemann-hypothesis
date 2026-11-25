@@ -78,15 +78,6 @@ open GlobalTheory.OrbitSep
 attribute [local instance] Over.cartesianMonoidalCategory
 open MonoidalCategory CartesianMonoidalCategory MonObj
 
-
-theorem _root_.GlobalTheory.T.snd_sectionValue_translate_prod_first_order_linear : ∀ {X0 : Scheme.{0}} {S : Type} [CommRing S] (x0 : Sp S ⟶ X0) (G : Over X0) [GrpObj G]
-    (g₀ : Sp S ⟶ G.left) (g' : overAt x0 (DualNumber S) ⟶ G),
-    g'.left = spMap (algebraMap S (DualNumber S)) ≫ g₀ →
-    ∀ {m : ℕ} (y : Fin m → (overAt x0 (DualNumber S) ⟶ G)) (r : Fin m → S), (∀ c, smT x0 0 (y c) = 1) →
-    ∀ (O : G.left.Opens) (f : Γ(G.left, O)), ⊤ ≤ g₀ ⁻¹ᵁ O →
-    (valR (g' * (List.ofFn fun c => smT x0 (r c) (y c)).prod).left O f).snd =
-      ∑ c, r c * (valR (g' * y c).left O f).snd := by
-  first | exact @GlobalTheory.KSLin.snd_valR_translate_prod
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.SndSectionValueTranslateProdFirstOrderLinearStatement =====
@@ -202,7 +193,6 @@ open GlobalTheory.OrbitSep
 attribute [local instance] Over.cartesianMonoidalCategory
 open MonoidalCategory CartesianMonoidalCategory MonObj
 
-
 theorem _root_.GlobalTheory.T.translate_tangent_combination_eq_prod : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {X : Scheme.{0}}
     (t : SAB H X) (U : X.affineOpens) {m : ℕ} (v' : Fin m → (Sp (DualNumber Γ(X, U.1)) ⟶ t.G.left))
     (cf : Fin m → Γ(X, U.1)) (va : Sp (DualNumber Γ(X, U.1)) ⟶ t.G.left) {S : Type} [CommRing S]
@@ -281,7 +271,7 @@ theorem isKS_frame_change : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
       (valR (w a) O' f').snd = ∑ c, φ (B a c) * (valR (w' c) O' f').snd := by
     intro a O' f' hO'
     obtain ⟨h0, hw'⟩ := GlobalTheory.T.translate_tangent_combination_eq_prod t U v' (B a) (v a) φ g₀ hg g' yc hv' (hB a) rfl hyc
-    rw [hw' (w a) (hw a), GlobalTheory.T.snd_sectionValue_translate_prod_first_order_linear (g₀ ≫ t.G.hom) t.G g₀ g' rfl yc (fun c => φ (B a c)) h0 O' f' hO']
+    rw [hw' (w a) (hw a), GlobalTheory.KSLin.snd_valR_translate_prod (g₀ ≫ t.G.hom) t.G g₀ g' rfl yc (fun c => φ (B a c)) h0 O' f' hO']
     refine Finset.sum_congr rfl fun c _ => ?_
     rw [← hwc c, hgc' c]
   simp_rw [key _ O f hgO]

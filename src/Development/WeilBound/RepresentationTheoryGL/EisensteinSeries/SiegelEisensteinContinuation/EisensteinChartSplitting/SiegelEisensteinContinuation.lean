@@ -309,7 +309,6 @@ open Filter NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicN
 open GlobalTheory.Core.Rk.SWLaw (dblDec zeroSp)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ContinuesWithModerateGrowthShiftTranslatePowStatement =====
@@ -422,7 +421,6 @@ open GlobalTheory.Mem.Th (CptF)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Core.Rk.IP
 
-
 theorem _root_.GlobalTheory.T.siegelEisensteinSum_moderateGrowth_convergent : ∀ (D : D7) (V : HSp D) (a : GL (Fin V.rank) (AE D)), IsMaj V a → HasIwasawa D.sp.cm.sig (dblSp V).gram (Khat V a) → ∀ (μ : (AE D)ˣ →* Circle) (s₁ : ℂ) (φ : GA D (dblSp V) → ℂ), φ ∈ degPS V a μ s₁ → (V.rank : ℝ) / 2 < s₁.re → GlobalTheory.Grow.ModGrowth (dblSp V) (GlobalTheory.Eis.eis V φ) := by
   first | exact @GlobalTheory.EisConvGrowth.eis_modGrowth
 end -- clump:auto
@@ -466,7 +464,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (ip delta swSec sZero
 open GlobalTheory.Mem.Th (CptF)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Core.Rk.IP
-
 
 theorem _root_.GlobalTheory.T.sphericalSiegelEisenstein_moderate_growth_convergent : ∀ (D : D7) (V : HSp D), 0 < V.rank → ∀ a : GL (Fin V.rank) (AE D), IsMaj V a → HasIwasawa D.sp.cm.sig (dblSp V).gram (Khat V a) → ∀ σ : ℝ, (V.rank : ℝ) / 2 < σ → GlobalTheory.Grow.ModGrowth (dblSp V) (GlobalTheory.Eis.eis V (GlobalTheory.Eis.sph V a (σ : ℂ))) := by
   first | exact @GlobalTheory.Core.Rk.SphGrowth.spherical_eisenstein_modGrowth
@@ -542,26 +539,11 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace ResidueKilled.Tr
 
-theorem ext_mul' {G : Type} [Group G] (K P : Subgroup G) (f : G → ℝ) (hadd : ∀ p ∈ P, ∀ q ∈ P, f (p * q) = f p + f q)
-    (h0 : ∀ r ∈ P, r ∈ K → f r = 0) {p k : G} (hp : p ∈ P) (hk : k ∈ K) : ext K P f (p * k) = f p := by
-  have h : ∃ k' : K, p * k * (k' : G)⁻¹ ∈ P := ⟨⟨k, hk⟩, by simpa using hp⟩
-  unfold ext
-  rw [dite_eq_left h]
-  have hs := h.choose_spec
-  have hr : k * (h.choose : G)⁻¹ ∈ K := K.mul_mem hk (K.inv_mem h.choose.2)
-  have e : p * k * (h.choose : G)⁻¹ = p * (k * (h.choose : G)⁻¹) := by group
-  rw [e] at hs ⊢
-  have hrP : k * (h.choose : G)⁻¹ ∈ P := by
-    have := P.mul_mem (P.inv_mem hp) hs
-    simpa using this
-  rw [hadd p hp _ hrP, h0 _ hrP hr, add_zero]
-
 theorem absA_pos (D : D7) (x : (AE D)ˣ) : 0 < absA D x := by
   refine pos_iff_ne_zero.2 fun h0 => ?_
   have h1 := map_mul (absA D) x x⁻¹
   rw [mul_inv_cancel, map_one, h0, zero_mul] at h1
   exact one_ne_zero h1
-
 
 theorem tTop : TTop := by
   intro hG hT hB hE hP hS hC hSc hDv D V hV a ha hI μ b hμ hb s₁ φ hφ
@@ -595,7 +577,7 @@ theorem tTop : TTop := by
   have hηQ : ∀ y ∈ A.uQ (-1) (Set.univ : Set (Fin V.rank)), ∀ k ∈ A.uK (-1) (Fin V.rank),
       η (y * k) = A.lg (bdet (Sum.inl '' (Set.univ : Set (Fin V.rank))) y.1) := by
     intro y hy k hk
-    refine ext_mul' _ _ (fun q : A.U (-1) (Fin V.rank) => A.lg (bdet (Sum.inl '' (Set.univ : Set (Fin V.rank))) q.1)) ?_ ?_ hy hk
+    refine GlobalTheory.CompanionTheory.SiegelFrame.ext_mul _ _ (fun q : A.U (-1) (Fin V.rank) => A.lg (bdet (Sum.inl '' (Set.univ : Set (Fin V.rank))) q.1)) ?_ ?_ hy hk
     · intro q₁ h₁ q₂ h₂
       show A.lg (bdet _ (q₁.1 * q₂.1)) = _
       rw [hmul q₁.1 h₁ q₂.1 h₂, hgood.lgmul]

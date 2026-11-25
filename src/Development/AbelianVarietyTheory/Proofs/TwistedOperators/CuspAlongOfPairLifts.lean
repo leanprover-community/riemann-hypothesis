@@ -94,8 +94,6 @@ open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.PairLift
 
-theorem _root_.GlobalTheory.T.contragredientThetaParams_addBlockArrow : ∀ D : D7, GlobalTheory.IndefiniteRowSideFullHecke.CuspAlongSmoothLifts.Sizes D → ∀ (i j : ℕ) (τ : D.what₂.Tau), i < D.R.m → j ≤ D.R.m → PairPar (GlobalTheory.SignedHC.flip (parV D (i + 1) j τ)) (parV D i j τ) (att (cen D τ (D.R.m - i)) (rkV D (i + 1) j)) (att (cen D τ (D.R.m - i)) (rkV D i j)) := by
-  first | exact @GlobalTheory.GridParD.pairPar_X
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContragredientThetaParamsAddBlockArrowStatement =====
@@ -111,8 +109,6 @@ open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.PairLift
 
-theorem _root_.GlobalTheory.T.contragredientThetaParams_removeBlockArrow : ∀ D : D7, GlobalTheory.IndefiniteRowSideFullHecke.CuspAlongSmoothLifts.Sizes D → ∀ (i j : ℕ) (τ : D.what₂.Tau), i ≤ D.R.m → ∀ hj : j < D.R.m, PairPar (parV D i j τ) (parV D i (j + 1) τ) (att (-(D.hc τ).e ⟨j, hj⟩) (rkV D i j)) (att (-(D.hc τ).e ⟨j, hj⟩) (rkV D i (j + 1))) := by
-  first | exact @GlobalTheory.RemoveBlock.removeBlock_pairPar
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContragredientThetaParamsRemoveBlockArrowStatement =====
@@ -128,8 +124,6 @@ open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.PairLift
 
-theorem _root_.GlobalTheory.T.exists_negatedSpace_discreteSeriesModelTransport : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S), ∃ (M₁ : DSModel (sgn true V) fun τ => GlobalTheory.SignedHC.flip (S τ)) (κ : SmT M₁ ≃+ SmT M), ModelTr (RingHom.id ℂ) true θ M₁ M κ := by
-  first | exact @GlobalTheory.negModel_tr
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsNegatedSpaceDiscreteSeriesModelTransportStatement =====
@@ -145,8 +139,6 @@ open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.PairLift
 
-theorem _root_.GlobalTheory.T.fockVector_frameChange_same_cartan : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D), IsStdChar D ψ (-1) → IsInfFam θ → ∀ (V W : HSp D) (A A' : Fr V) (B B' : Fr W), (∀ τ, A'.cart τ = A.cart τ) → (∀ τ, B'.cart τ = B.cart τ) → ∃ j : PolF D W.rank V.rank ≃ₗ[ℂ] PolF D W.rank V.rank, ∀ f, IsThetaFunO ψ V W f → ∀ P, ptF ψ θ A' B' f (j P) = ptF ψ θ A B f P := by
-  first | exact @GlobalTheory.FrameChange.ptF_frame_change
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockVectorFrameChangeSameCartanStatement =====
@@ -238,7 +230,7 @@ theorem LiftsM.transport (hθ : IsInfFam θ) (hσ : IdOrConj σ) (hA : ModelTr �
     (H : ∀ ν₁ 𝓕₁, ν₁.IsHaarMeasure → IsFundamentalDomain (GQ (sgn εA A)) 𝓕₁ ν₁ → LiftsM θ MA₁ MB₁ ν₁ 𝓕₁ K₁ It₁) :
     LiftsM θ MA MB ν 𝓕 K It := by
   intro F hF
-  obtain ⟨ν₁, a, b, c⟩ := (GlobalTheory.T.signedUnitaryGroup_compat D θ hθ εA A).meas ν 𝓕 hν h𝓕
+  obtain ⟨ν₁, a, b, c⟩ := (GlobalTheory.SgnIdent.sgnLaw_holds D θ hθ εA A).meas ν 𝓕 hν h𝓕
   obtain ⟨F₁, hF₁, e₁⟩ := hA.mult F hF
   obtain ⟨F₂, hF₂, e₂⟩ := H ν₁ _ a b F₁ hF₁
   obtain ⟨F', hF', e'⟩ := hB.mult' F₂ hF₂
@@ -262,8 +254,8 @@ theorem IsIntwF.transport (hθ : IsInfFam θ) (hσ : IdOrConj σ) (hA : ModelTr 
     (hpt : ∀ p, pt₁ (j p) = fun y => ρ (pt p (α y)))
     {It₁ : PolF D (sgn εA A).rank (sgn εB B).rank →ₗ[ℂ] SmT MA₁ →ₗ[ℂ] SmT MB₁}
     (hI : ∀ p v, κB (It₁ (j p) v) = It p (κA v)) : IsItW θ MB₁ MA₁ ω₁ pt₁ It₁ := by
-  have lA := GlobalTheory.T.signedUnitaryGroup_compat D θ hθ εA A
-  have lB := GlobalTheory.T.signedUnitaryGroup_compat D θ hθ εB B
+  have lA := GlobalTheory.SgnIdent.sgnLaw_holds D θ hθ εA A
+  have lB := GlobalTheory.SgnIdent.sgnLaw_holds D θ hθ εB B
   have inj : ∀ {f f' : Z → ℂ}, ((fun y => ρ (f (α y))) = fun y => ρ (f' (α y))) → f = f' := fun {f f'} h => by
     funext z
     obtain ⟨y, rfl⟩ := hα z
@@ -396,7 +388,7 @@ theorem lifts_toSource {X : ProvA} (hP : PairLifts D X) (hθ : IsInfFam θ) {σ 
   have cS : ∀ τ, (Fr.ofModel MS).cart τ = (frSgn ε (Fr.ofModel S.M)).cart τ := fun τ =>
     (hS.cart τ).trans (cart_frSgn ε (Fr.ofModel S.M) τ).symm
   have cT : ∀ τ, (Fr.ofModel MT).cart τ = (Fr.ofModel T.M).cart τ := hT.cart
-  obtain ⟨j, hj⟩ := GlobalTheory.T.fockVector_frameChange_same_cartan D ψ θ hW.std hθ (sgn ε S.V) T.V _ _ _ _ cS cT
+  obtain ⟨j, hj⟩ := GlobalTheory.FrameChange.ptF_frame_change D ψ θ hW.std hθ (sgn ε S.V) T.V _ _ _ _ cS cT
   exact lifts_of_tr hP hθ hσ hT hS hR (ω₁ := ω.toSgn ε) ⟨χS, χT, hW, he⟩ (pt := fun f p => fock ψ θ ε S T f p)
     (vac := IsFinVec ψ θ ε S T) (Or.inl rfl) (α := fun y => y) Function.surjective_id (fun _ _ _ => rfl) j.toEquiv
     (fun f hf => ⟨isVacF_congr cS cT (isVacF_of_finVec hf), fun p => (hj f hf.1 p).trans (fock_eq f p)⟩)
@@ -487,15 +479,15 @@ theorem cuspAlong_of_pairLifts {X : ProvA} (h3 : Formalism.MainNotions.SchurIrre
   have hθ := hR.inf
   have rp := fun {S S' aS aT} => rulePar_of_pairPar (S := S) (S' := S') (aS := aS) (aT := aT) h3 h4 h5
   refine ⟨fun t i j hi hj f hf => ?_, fun t i j hi hj f hf => ?_⟩
-  · obtain ⟨M₁, κ, h⟩ := GlobalTheory.T.exists_negatedSpace_discreteSeriesModelTransport D _ hθ _ _ (G.V (i + 1) j).M
+  · obtain ⟨M₁, κ, h⟩ := GlobalTheory.negModel_tr D _ hθ _ _ (G.V (i + 1) j).M
     have a := hG.arrows.X i j hi hj
     exact lifts_toSource hP hθ (Or.inl rfl) h (ModelTr.refl _)
-      (fun τ => rp (by rw [par_vert hG hi hj, par_vert hG hi.le hj]; exact GlobalTheory.T.contragredientThetaParams_addBlockArrow D hS i j τ hi hj)) a.weil
+      (fun τ => rp (by rw [par_vert hG hi hj, par_vert hG hi.le hj]; exact GlobalTheory.GridParD.pairPar_X D hS i j τ hi hj)) a.weil
       (fun τ => ⟨hasInfExp_att (exp_chi hG hi τ) (exp_eta hR τ) _, hasInfExp_att (exp_chi hG hi τ) (exp_eta hR τ) _⟩)
       a.vac (isIntwF_of_isItW a.intw) (map_add _) (map_smul _) hf (haar_vert hR hG t hi.le hj)
   · have a := hG.arrows.th t i j hi hj
     exact lifts_toSource hP hθ (Or.inl rfl) (ModelTr.refl _) (ModelTr.refl _)
-      (fun τ => rp (by rw [par_vert hG hi hj.le, par_vert hG hi hj]; exact GlobalTheory.T.contragredientThetaParams_removeBlockArrow D hS i j τ hi hj)) a.weil
+      (fun τ => rp (by rw [par_vert hG hi hj.le, par_vert hG hi hj]; exact GlobalTheory.RemoveBlock.removeBlock_pairPar D hS i j τ hi hj)) a.weil
       (fun τ => ⟨hasInfExp_att (exp_mu hR t hj τ) (exp_eta hR τ) _, hasInfExp_att (exp_mu hR t hj τ) (exp_eta hR τ) _⟩)
       a.vac (isIntwF_of_isItW a.intw) (map_add _) (map_smul _) hf (haar_vert hR hG t hi hj)
 

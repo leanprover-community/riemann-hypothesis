@@ -96,15 +96,6 @@ section -- clump:auto
 
 noncomputable section
 
-namespace PositivityTheory.Xgp.plurisubharmonic_charts
-
-open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GlobalTheory.CompanionTheory.Ar.PB.StepW GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
-open scoped ComplexOrder Classical
-
-theorem isPshOn_stepPot : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (M : FlagModel y Ψ N j) (n : ℕ) (BM : BaseMetric M n) (p : Ψ × Fin N) (Kk : Type) [Fintype Kk] (ιk : Kk → Type) [∀ k, Fintype (ιk k)] (κ : Kk → K) (v : (Σ k, ιk k) → (Σ k, ι k)) (e : ℕ) (R : AnLogRes (mCoordIdeal (y ∘ v)) ⊤ e) (pr : R.X → BM.Rb.X) (hp : HoloMap R.A BM.Rb.A pr), HasStepCharts M BM p κ v R pr → IsPshOn R.A (bdry (fun x y => BM.s (pr x) (pr y)))ᶜ (potOf R (fsHerm ιk fun k => M.dy p (κ k)) + LocPot.ofFun (stepPh M BM p v R pr)) :=
-  @GlobalTheory.CompanionTheory.Ar.PB.StepW.PshW.isPshOn_stepPot
-
-end PositivityTheory.Xgp.plurisubharmonic_charts
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -123,12 +114,6 @@ open GlobalTheory.CompanionTheory.Ar.Cmp.SncRes GlobalTheory.CompanionTheory.Ar.
 
 noncomputable section
 
-namespace PositivityTheory.Xgp.c_smooth
-
-theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (M : FlagModel y Ψ N j) (n d : ℕ) (Rb : AnLogRes (mCoordIdeal M.x) ⊤ n), d = n + Fintype.card Ψ * (j.choose 2 + (N - j).choose 2) → ∀ (keep : Ψ × Fin N → Prop) (Kk : Type) [Fintype Kk] (ιk : Kk → Type) [∀ k, Fintype (ιk k)] (κ : Kk → K) (v : (Σ k, ιk k) → (Σ k, ι k)), IsBlockMap κ v → (∀ k, k ∈ Set.range κ ↔ ((∀ p, M.blk p ≠ some k) ∨ ∃ p, keep p ∧ M.blk p = some k)) → ∃ (e : ℕ) (R : AnLogRes (mCoordIdeal (y ∘ v)) ⊤ e), ((∀ p, keep p) → e = d) ∧ ∃ pr : R.X → Rb.X, HoloMap R.A Rb.A pr ∧ (∀ x, ∃ z ∈ mcPts (mCoordIdeal y), z ∘ v = R.lift x x ∧ SameOrbit (basePart M.blk z) (Rb.lift (pr x) (pr x))) ∧ ∀ x, ∃ (ψ : OpenPartialHomeomorph R.X (Fin e → ℂ)) (kb : Fin Rb.A.n) (σ : Fin n ↪ Fin e), IsCompatChart R.A ψ ∧ x ∈ ψ.source ∧ (∀ x' ∈ ψ.source, pr x' ∈ (Rb.A.chart kb).source ∧ ∀ i, Rb.A.chart kb (pr x') i = ψ x' (σ i)) :=
-  @GlobalTheory.CompanionTheory.Ar.PB.PFl.main
-
-end PositivityTheory.Xgp.c_smooth
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -199,7 +184,7 @@ theorem step_member [Fintype Ψ] [DecidableEq Ψ]
     split_ifs
     · rw [stepGap, hh, sub_self]; rfl
     · rfl
-  have hps := PositivityTheory.Xgp.plurisubharmonic_charts.isPshOn_stepPot K ι Φ y Ψ N j M n BM p K ι id id e R pr hp
+  have hps := GlobalTheory.CompanionTheory.Ar.PB.StepW.PshW.isPshOn_stepPot K ι Φ y Ψ N j M n BM p K ι id id e R pr hp
     (_root_.GlobalTheory.CompanionTheory.Ar.PB.StepW.ChartEx.hasStepCharts K ι Φ y Ψ N j M n BM p K ι id id e R pr hyp)
   rw [h0] at hps
   have hps' : IsPsh R.A (potOf R (fsHerm ι (M.dy p)) + LocPot.ofFun (0 : R.X → ℝ)) := isPsh_of_univ hU hps
@@ -352,7 +337,7 @@ end
 
 theorem PositivityTheory.Xgp.t_c_fl_an : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (M : FlagModel y Ψ N j) (n d : ℕ) (BM : BaseMetric M n), IsArithVar (mCoordIdeal y) (d + 2) → d + 1 = n + Fintype.card Ψ * (j.choose 2 + (N - j).choose 2) → bdry BM.s = ∅ → (∀ p, BM.hom p = fsHerm ι (M.dy p)) → ∃ FA : FlagAn BM d, ∀ p t, FA.Re.line (some p) t = fsHerm ι (M.dy p) := by
   intro K _ ι _ Φ _ y Ψ _ _ N j M n d BM harith hd hbd hh
-  obtain ⟨e, R, he, pr, hp, hpts, hch⟩ := PositivityTheory.Xgp.c_smooth.main K ι Φ y Ψ N j M n (d + 1) BM.Rb hd (fun _ => True) K ι id id
+  obtain ⟨e, R, he, pr, hp, hpts, hch⟩ := GlobalTheory.CompanionTheory.Ar.PB.PFl.main K ι Φ y Ψ N j M n (d + 1) BM.Rb hd (fun _ => True) K ι id id
     isBlockMap_id (fun k => ⟨fun _ => by
       by_cases h : ∀ p', M.blk p' ≠ some k
       · exact Or.inl h

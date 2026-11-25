@@ -154,7 +154,6 @@ open GlobalTheory.ConstRatio (NegIdx Factor)
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
 theorem _root_.GlobalTheory.T.integrableOn_thetaKernel_definiteSeesawStage : ∀ {D : D7} {T : Type} {Lc : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} (G : GridData Lc sc) (W : G.Weil) (i j : Fin D.R.m) (p : ℕ)
     (A A' WW : HSp D) (X : Tri T A A' WW), GlobalTheory.SqTower.IsStageC W i j p 0 X →
     ∀ (t : T) (P' : PolF D WW.rank A'.rank) (h : GA D WW), MeasureTheory.IntegrableOn (X.ker' W.ψ W.θ t P' h) X.fd' X.m' := by
@@ -182,22 +181,6 @@ open MeasureTheory
 open scoped TensorProduct
 
 noncomputable section
-
-namespace GlobalTheory.StageSmallNz
-
-theorem nontrivial_left {Pr Pf Pi : Type} [AddCommGroup Pr] [Module ℂ Pr] [AddCommGroup Pf] [Module ℂ Pf]
-    [AddCommGroup Pi] [Module ℂ Pi] [Nontrivial Pi] (e : Pr ⊗[ℂ] Pf ≃ₗ[ℂ] Pi) : Nontrivial Pr := by
-  by_contra hP0
-  rw [not_nontrivial_iff_subsingleton] at hP0
-  have hz : ∀ z : Pr ⊗[ℂ] Pf, z = 0 := fun z => by
-    induction z using TensorProduct.induction_on with
-    | zero => rfl
-    | tmul x y => rw [Subsingleton.elim x 0, TensorProduct.zero_tmul]
-    | add x y hx hy => rw [hx, hy, add_zero]
-  obtain ⟨u, v, huv⟩ := exists_pair_ne Pi
-  exact huv (by rw [← e.apply_symm_apply u, ← e.apply_symm_apply v, hz (e.symm u), hz (e.symm v)])
-
-end GlobalTheory.StageSmallNz
 
 end
 end -- clump:auto
@@ -432,7 +415,7 @@ theorem smallStage_thetaIntegral_of_ne_zero : _root_.GlobalTheory.FunPr.ThetaLoc
     obtain ⟨Pf, rr, rr', e, -, -, hr, hr'⟩ := hfac _ _ _ _ _ _ _ hm
     have hy := h3 W i j p 0 A A' WW X hX FA FA' FW t hf hf' Pm rf rl pm pm' hm Pr Pf q q' rr rr' e hq hq' hr hr'
     haveI : Nontrivial Pm := hm.irred.1
-    refine ⟨Pm, rf, rl, pm, pm', hm, nontrivial_left e, fun P' hP' => ?_⟩
+    refine ⟨Pm, rf, rl, pm, pm', hm, GlobalTheory.StageSmallBig.nontrivial_left e, fun P' hP' => ?_⟩
     rw [hr' _ hf']
     exact e.map_ne_zero_iff.2 (_root_.GlobalTheory.PolKer.tmul_ne_zero_of_ne hP' hy)
   by_cases hT : Nonempty T

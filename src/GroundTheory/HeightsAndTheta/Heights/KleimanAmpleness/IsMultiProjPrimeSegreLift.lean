@@ -39,9 +39,6 @@ def SegreLiftPrime.Statement : Prop :=
     [∀ k, Fintype (ι k)] (W : Ideal (MRing ι F)), IsMultiProjPrime W →
       IsMultiProjPrime (segreLift ι F W)
 
-theorem SegreLiftPrime.hyps : IsMultiProjPrime (⊥ : Ideal (MRing (fun _ : Unit => Fin 2) ℚ)) :=
-  NumbersDVR.isMultiProjPrime_bot
-
 end GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization
 end -- clump:auto
 end -- clump:auto
@@ -108,7 +105,6 @@ noncomputable section
 section
 
 variable {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} {F : Type} [Field F]
-
 
 omit [Fintype K] in
 theorem segre_weight_mapDomain (e : (Σ k, ι k) →₀ ℕ) :

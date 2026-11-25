@@ -193,25 +193,22 @@ abbrev epsBase (T : Type) [CommRing T] : Sp (DualNumber T) ⟶ Sp T := spMap (al
 
 abbrev epsZero (T : Type) [CommRing T] : Sp T ⟶ Sp (DualNumber T) := spMap (TrivSqZeroExt.fstHom T T T).toRingHom
 
-theorem spMap_spMap {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
-    spMap g ≫ spMap f = spMap (g.comp f) := (Spec.map_comp (CommRingCat.ofHom f) (CommRingCat.ofHom g)).symm
-
 theorem epsZero_base : epsZero T ≫ epsBase T = 𝟙 _ := by
-  rw [spMap_spMap]
+  rw [GlobalTheory.spMap_comp_ring]
   exact (congrArg spMap (RingHom.ext fun _ => rfl)).trans (Spec.map_id _)
 
 theorem eps_base (a : T) : spMap (epsMul a) ≫ epsBase T = epsBase T := by
-  rw [spMap_spMap]
+  rw [GlobalTheory.spMap_comp_ring]
   refine congrArg spMap (RingHom.ext fun r => ?_)
   ext <;> simp [epsMul, TrivSqZeroExt.algebraMap_eq_inl]
 
 theorem epsZero_eps (a : T) : epsZero T ≫ spMap (epsMul a) = epsZero T := by
-  rw [spMap_spMap]
+  rw [GlobalTheory.spMap_comp_ring]
   refine congrArg spMap (RingHom.ext fun r => ?_)
   simp [epsMul]
 
 theorem eps_comm (a b : T) : spMap (epsMul a) ≫ spMap (epsMul b) = spMap (epsMul b) ≫ spMap (epsMul a) := by
-  rw [spMap_spMap, spMap_spMap]
+  rw [GlobalTheory.spMap_comp_ring, GlobalTheory.spMap_comp_ring]
   refine congrArg spMap (RingHom.ext fun r => ?_)
   ext <;> simp [epsMul, mul_left_comm]
 
@@ -391,32 +388,11 @@ variable {S : Scheme.{0}} {s : S ⟶ Sp (KA l)}
 namespace IndexZero
 open GlobalTheory.HeckeKerModel
 
-theorem exists_pt (X : Scheme.{0}) (g : X) :
-    ∃ (k : Type) (_ : Field k) (_ : IsAlgClosed k) (x : Sp k ⟶ X), Set.range x = {g} := by
-  refine ⟨AlgebraicClosure (X.residueField g), inferInstance, inferInstance,
-    Spec.map (CommRingCat.ofHom (algebraMap (X.residueField g) (AlgebraicClosure (X.residueField g))))
-      ≫ X.fromSpecResidueField g, ?_⟩
-  apply Set.eq_singleton_iff_unique_mem.2
-  refine ⟨⟨IsLocalRing.closedPoint _, ?_⟩, ?_⟩
-  · exact (Scheme.Hom.comp_apply _ _ _).trans (Scheme.fromSpecResidueField_apply _ _)
-  · rintro _ ⟨y, rfl⟩
-    rw [Scheme.Hom.comp_apply]
-    exact Scheme.fromSpecResidueField_apply _ _
-
-theorem lift_closed {T N B : Scheme.{0}} [IsReduced T] (x : T ⟶ B) (ν : N ⟶ B)
-    [IsClosedImmersion ν] (h : Set.range x ⊆ Set.range ν) : ∃ l : T ⟶ N, l ≫ ν = x := by
-  have hs : Surjective (pullback.snd ν x) := ⟨by
-    rw [← Set.range_eq_univ, Scheme.Pullback.range_snd]
-    exact Set.eq_univ_of_forall fun t => h ⟨t, rfl⟩⟩
-  have : IsIso (pullback.snd ν x) := isIso_of_isClosedImmersion_of_surjective _
-  exact ⟨inv (pullback.snd ν x) ≫ pullback.fst ν x, by
-    rw [Category.assoc, pullback.condition, IsIso.inv_hom_id_assoc]⟩
-
 theorem set_ext {G : Over S} {K K' : Set G.left}
     (h : ∀ (k : Type) [Field k] [IsAlgClosed k] (x : Sp k ⟶ S) (z : Over.mk x ⟶ G),
       Set.range z.left ⊆ K ↔ Set.range z.left ⊆ K') : K = K' := by
   ext g
-  obtain ⟨k, _, _, z, hz⟩ := exists_pt G.left g
+  obtain ⟨k, _, _, z, hz⟩ := GlobalTheory.HkFam.exists_geomPt_range_eq G.left g
   have := h k (z ≫ G.hom) (Over.homMk z rfl)
   change Set.range z ⊆ K ↔ Set.range z ⊆ K' at this
   simpa [hz] using this
@@ -424,30 +400,6 @@ theorem set_ext {G : Over S} {K K' : Set G.left}
 theorem kerSet_unique {G G' : Over S} [GrpObj G'] {ψ : G ⟶ G'} {K K' : Set G.left} (h : KerSet ψ K)
     (h' : KerSet ψ K') : K = K' :=
   set_ext fun k _ _ x z => (h k x z).symm.trans (h' k x z)
-
-theorem kerSet_preimage {G G' : Over S} [GrpObj G'] [IsSeparated G'.hom] (ψ : G ⟶ G') :
-    KerSet ψ (ψ.left ⁻¹' Set.range (η[G'] : 𝟙_ (Over S) ⟶ G').left) := by
-  intro k _ _ x z
-  have hw : (η[G'] : 𝟙_ (Over S) ⟶ G').left ≫ G'.hom = 𝟙 _ := Over.w _
-  have : IsClosedImmersion (η[G'] : 𝟙_ (Over S) ⟶ G').left := by
-    have : IsClosedImmersion ((η[G'] : 𝟙_ (Over S) ⟶ G').left ≫ G'.hom) := by rw [hw]; infer_instance
-    exact IsClosedImmersion.of_comp _ G'.hom
-  have h1 : (1 : Over.mk x ⟶ G').left = x ≫ (η[G'] : 𝟙_ (Over S) ⟶ G').left := rfl
-  constructor
-  · rintro h _ ⟨w, rfl⟩
-    refine ⟨x w, ?_⟩
-    have := congrArg (fun f : Over.mk x ⟶ G' => f.left w) h
-    simp only [h1, Over.comp_left, Scheme.Hom.comp_apply] at this
-    exact this.symm
-  · intro h
-    obtain ⟨t, ht⟩ := lift_closed (T := Sp k) (z.left ≫ ψ.left) (η[G'] : 𝟙_ (Over S) ⟶ G').left (by
-      rintro _ ⟨w, rfl⟩
-      exact h ⟨w, rfl⟩)
-    have ht' : t = x := by
-      have := Over.w (z ≫ ψ)
-      rw [Over.comp_left, ← ht, Category.assoc, hw] at this
-      exact (Category.comp_id _).symm.trans this
-    exact Over.OverMorphism.ext (by rw [h1, Over.comp_left, ← ht, ht'])
 
 theorem etSet_of_kerSet {G G' : Over S} [GrpObj G'] [IsSeparated G'.hom] {ψ : G ⟶ G'} [IsFinite ψ.left] [Etale ψ.left]
     {K : Set G.left} (h : KerSet ψ K) : EtSet G K := by
@@ -462,7 +414,7 @@ theorem etSet_of_kerSet {G G' : Over S} [GrpObj G'] [IsSeparated G'.hom] {ψ : G
   · exact inferInstanceAs (IsFinite (pullback.snd ψ.left (η[G'] : 𝟙_ (Over S) ⟶ G').left))
   · exact inferInstanceAs (Etale (pullback.snd ψ.left (η[G'] : 𝟙_ (Over S) ⟶ G').left))
   · exact inferInstanceAs (IsClosedImmersion (pullback.fst ψ.left (η[G'] : 𝟙_ (Over S) ⟶ G').left))
-  · rw [kerSet_unique h (kerSet_preimage ψ)]
+  · rw [kerSet_unique h (GlobalTheory.HeckeDual.kerSet_unit ψ)]
     exact Scheme.Pullback.range_fst _ _
 
 theorem isHecke_iff (o o' : Ob D l s) (P : Ideal (𝓞 E)) (p i : ℕ) (ψ : o.t.G ⟶ o'.t.G) :
@@ -479,7 +431,7 @@ def torsSet (o : Ob D l s) (p : ℕ) : Set o.t.G.left :=
 theorem range_subset_torsSet (o : Ob D l s) (p : ℕ) (k : Type) [Field k] [IsAlgClosed k] (x : Sp k ⟶ S)
     (z : Over.mk x ⟶ o.t.G) : Set.range z.left ⊆ torsSet o p ↔ z ≫ o.t.act.act (p : 𝓞 E) = 1 := by
   have := o.proper
-  exact (kerSet_preimage _ k x z).symm
+  exact (GlobalTheory.HeckeDual.kerSet_unit _ k x z).symm
 
 theorem heckeKer_tors (o : Ob D l s) (P : Ideal (𝓞 E)) {p : ℕ} (hp : 0 < p) (k : Type) [Field k] [IsAlgClosed k]
     (x : Sp k ⟶ S) : o.t.HeckeKer (Over.mk x) D P p 0 (torsSub o.t (Over.mk x) p) :=
@@ -548,7 +500,7 @@ theorem isHecke_mul [IsLocallyNoetherian S] (o : Ob D l s) (P : Ideal (𝓞 E)) 
       simpa using ((baseKA l).unit p hp).map (Scheme.ΓSpecIso (CommRingCat.of (KA l))).inv.hom
     simpa using h0.map s.appTop.hom
   have := o.proper
-  refine ⟨⟨⟨o.t.act.hom _, e ▸ h1, e ▸ h3 hu, e ▸ h2, fun a => ?_, ?_⟩, fun p' hp' a => ?_⟩, _, kerSet_preimage _,
+  refine ⟨⟨⟨o.t.act.hom _, e ▸ h1, e ▸ h3 hu, e ▸ h2, fun a => ?_, ?_⟩, fun p' hp' a => ?_⟩, _, GlobalTheory.HeckeDual.kerSet_unit _,
     heckeSet_torsSet o P hp⟩
   · rw [← o.t.act.mul, ← o.t.act.mul, _root_.mul_comm]
   · have hN := o.t.PP.isLB
@@ -704,7 +656,7 @@ theorem exists_etale_cover_lists_kerScheme : ∀ (E : Type) [Field E] [NumberFie
       have hw : (τ a).left ≫ o'.t.G.hom = 𝟙 _ := Over.w _
       have : IsClosedImmersion ((τ a).left ≫ o'.t.G.hom) := by rw [hw]; infer_instance
       exact IsClosedImmersion.of_comp _ o'.t.G.hom
-    obtain ⟨c, hc⟩ := GlobalTheory.HkFam.IndexZero.lift_closed (T := Sp Ω) u₁ (τ a).left (by
+    obtain ⟨c, hc⟩ := GlobalTheory.AbelianSubgroupFinite.exists_lift_of_range_subset (T := Sp Ω) u₁ (τ a).left (by
       rintro _ ⟨q', rfl⟩
       rw [Subsingleton.elim q' q]
       exact ⟨g, hg⟩)
@@ -1156,7 +1108,6 @@ theorem isLieImg_comb {Ω : Type} [Field Ω] {x x' : Sp Ω ⟶ Xo.X} {ψ : Gx x 
   have := congrArg (·.left) key
   simp only [Over.comp_left, tanMap_left] at this
   exact this
-
 
 open GlobalTheory.IndefiniteRowSideFullHecke.HeckePrimeDetection (TotalAt FunAt) in
 theorem hkVal_frBor : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (P : Ideal (𝓞 E)) (p i : ℕ) (a : (E →+* ℂ) × ℕ → ℕ) (n : ℕ), admitted l P p → GlobalTheory.IndefiniteRowSideFullHecke.HeckePrimeDetection.TotalAt Xo c P p i → GlobalTheory.IndefiniteRowSideFullHecke.HeckePrimeDetection.FunAt Xo c P p i → ∀ f ∈ sec Xo c a n, ∀ (Ω : Type) [Field Ω] [IsAlgClosed Ω] [Algebra c.F Ω] (t : Ix Dw → Ωˣ) (y y' : FrPt Xo c Ω), FrBor t y y' → hkVal (K := c.F) (fun S _ _ => FrPt Xo c S) (fun φ y z => FrMap φ y z) (fun Ω _ _ _ y => hkKer (Xo := Xo) P p i Ω y) (fun Ω _ _ _ y C z => hkRelFr P p i (hkTr Xo c p) Ω y C z) f y' = wchar (ex Dw a n) t * hkVal (K := c.F) (fun S _ _ => FrPt Xo c S) (fun φ y z => FrMap φ y z) (fun Ω _ _ _ y => hkKer (Xo := Xo) P p i Ω y) (fun Ω _ _ _ y C z => hkRelFr P p i (hkTr Xo c p) Ω y C z) f y := by
@@ -1835,7 +1786,6 @@ theorem rdU_mem_SS (hσ : Formalism.L2.PjFree.GoodEmb c σ) (hU : Formalism.L2.P
     (norm_nonneg _)).trans_eq (by ring)
 
 end Cusp
-
 
 open Formalism.BasicNotions Formalism.L2.Pj in
 theorem cuspTransform : GlobalTheory.IndefiniteRowSideFullHecke.SplitOffDetection.CuspTransform := by

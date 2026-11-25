@@ -105,14 +105,14 @@ theorem gram_det_ne_zero_local_basis_cofinite : ∀ (E : Type) [Field E] [Number
       intro x
       obtain ⟨S, hS⟩ := (Submodule.mem_span_range_iff_exists_fun (𝓞 E)).1 (hsp x)
       have h1 : sesq D z (n • x) = (n : E) * sesq D z x := by
-        rw [← Nat.cast_smul_eq_nsmul (𝓞 E), (_root_.GlobalTheory.CompanionTheory.Ar.Fl.Sesq.form_of_datum E H D).2.2.2.2.1]; simp
+        rw [← Nat.cast_smul_eq_nsmul (𝓞 E), (_root_.PositivityTheory.Xgf.sesq_sesquilinear_skew_hermitian E H D).2.2.2.2.1]; simp
       have h2 : sesq D z (n • x) = 0 := by
         rw [← hS, sesq_sum_smul_right]
         exact Finset.sum_eq_zero fun j _ => by rw [hzj j, mul_zero]
       have h3 : sesq D z x = 0 := by
         rw [h2] at h1
         exact (mul_eq_zero.1 h1.symm).resolve_left (by exact_mod_cast hn.ne')
-      rw [(_root_.GlobalTheory.CompanionTheory.Ar.Fl.Sesq.form_of_datum E H D).2.2.2.2.2.1 z x, h3, map_zero, neg_zero]
+      rw [(_root_.PositivityTheory.Xgf.sesq_sesquilinear_skew_hermitian E H D).2.2.2.2.2.1 z x, h3, map_zero, neg_zero]
     have hzz : z = 0 := (_root_.GlobalTheory.CompanionTheory.Ar.Fl.unimodularity_sesq E H D).1 z hz0
     have hu0 := (Fintype.linearIndependent_iff.1 he) u (by rw [← hz]; exact hzz)
     apply hv0
@@ -195,7 +195,7 @@ theorem local_basis_gram_det_log (D : Datum H) (p q : ℕ) (x : Fin p ⊕ Fin q 
   set emb : 𝓞 E →+* ℂ_[ℓ] := j.comp (algebraMap (𝓞 E) E) with hemb_def
   have hemb : Function.Injective emb := j.injective.comp (FaithfulSMul.algebraMap_injective (𝓞 E) E)
   have hne : differentIdeal ℤ (𝓞 E) ≠ ⊥ := differentIdeal_ne_bot
-  obtain ⟨a, ha, ha0, -, hL⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Fl.exists_logIdeal_attained E ℓ emb _ hemb hne
+  obtain ⟨a, ha, ha0, -, hL⟩ := _root_.PositivityTheory.Xgf.padic_logIdeal_max_element E ℓ emb _ hemb hne
   have hemba : emb a = j (a : E) := rfl
   have hja : 0 < ‖j (a : E)‖ := by
     rw [← hemba]

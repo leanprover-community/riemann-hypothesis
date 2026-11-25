@@ -94,26 +94,6 @@ namespace GlobalTheory.Ord2.XiCoc
 
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {l : ℕ} [Fact l.Prime]
 
-theorem norm_le_one (c : Coef l) {x : Qbar l} (hx : x ∈ c.O) : ‖x‖ ≤ 1 := by
-  haveI := c.fin
-  have : Algebra.IsIntegral ℤ_[l] c.O := Algebra.IsIntegral.of_finite ℤ_[l] c.O
-  exact _root_.GlobalTheory.PadicIntegralNorm.norm_le_one_of_isIntegral_padicInt x ((Algebra.IsIntegral.isIntegral (R := ℤ_[l]) (⟨x, hx⟩ : c.O)).map c.O.val)
-
-theorem eps_mem (c : Coef l) (s : G ℚ Ω) : eps l s ∈ c.O := by
-  have h : eps l s = algebraMap ℤ_[l] (Qbar l) ((cycZ ℚ Ω l s : ℤ_[l]ˣ) : ℤ_[l]) := by
-    rw [IsScalarTower.algebraMap_apply ℤ_[l] ℚ_[l] (Qbar l)]; rfl
-  rw [h]; exact c.O.algebraMap_mem _
-
-theorem eps_cont : Continuous fun s : G ℚ Ω => eps l s :=
-  (continuous_algebraMap ℚ_[l] (Qbar l)).comp
-    (continuous_subtype_val.comp ((Units.continuous_val (M := ℤ_[l])).comp (continuous_cycZ ℚ Ω l)))
-
-theorem eps_mul (r s : G ℚ Ω) : eps l (r * s) = eps l r * eps l s := by
-  simp [eps, map_mul]
-
-theorem mat_mul (W : R2 Ω l) (r s : G ℚ Ω) : mat W (r * s) = mat W r * mat W s := by
-  simp [mat, map_mul]
-
 theorem dt_val (W : R2 Ω l) (s : G ℚ Ω) : ((dt W s : (Qbar l)ˣ) : Qbar l) = (mat W s).det := by
   simp [dt, mat]
 
@@ -126,12 +106,6 @@ theorem det_sq (W : R2 Ω l) (h2 : dt W ^ 2 = 1) (s : G ℚ Ω) : (mat W s).det 
   have h := congrArg (fun f => f s) h2
   simp only [MonoidHom.pow_apply, MonoidHom.one_apply] at h
   rw [← dt_val, ← Units.val_mul, ← sq, h, Units.val_one]
-
-theorem matD (W : R2 Ω l) (h2 : dt W ^ 2 = 1) (s : G ℚ Ω) :
-    mat (dual1 W) s = (eps l s * (mat W s).det) • mat W s := by
-  have := dt_inv W h2 s
-  simp [dual1, tw, mat, eps, Matrix.GeneralLinearGroup.scalar, this, ← dt_val]
-  exact (Matrix.smul_eq_diagonal_mul _ _).symm
 
 theorem sm_add {x y : Qbar l} {B : ℝ} (hx : ‖x‖ ≤ B) (hy : ‖y‖ ≤ B) : ‖x + y‖ ≤ B :=
   (IsUltrametricDist.norm_add_le_max _ _).trans (max_le hx hy)
@@ -201,16 +175,15 @@ theorem ident (Ar As : Matrix (Fin 2) (Fin 2) (Qbar l)) (er es Pp pr ps prs ut u
 
 end GlobalTheory.Ord2.XiCoc
 
-
 open GlobalTheory.Ord2.XiCoc in
 theorem GlobalTheory.Ord2.cup_product_two_cocycle : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (c : Coef l) (n : ℕ) (S : Finset Pl) (W : R2 Ω l) (y z d : G ℚ Ω → Fin 2 → Qbar l) (u : G ℚ Ω → Qbar l) (P : Qbar l) (ψ : G ℚ Ω →* Multiplicative (ZMod (l ^ n))), Continuous W → (∀ s i j, mat W s i j ∈ c.O) → dt W ^ 2 = 1 → (toGS Ω (S : Set Pl)).ker ≤ N0g W ⊓ ψ.ker → IsLocallyConstant ψ → P ∈ c.O → y ∈ Z1 (Loc.colRep W) → z ∈ Z1 (Loc.colRep (dual1 W)) → (∀ s i, y s i ∈ c.O) → (∀ s i, z s i ∈ c.O) → (∀ a ∈ (toGS Ω (S : Set Pl)).ker, y a = 0 ∧ z a = 0 ∧ Cv n (d a) 0) → Continuous u → (∀ s, u s ∈ c.O) → (∀ s, ∀ a ∈ (toGS Ω (S : Set Pl)).ker, Cg n (u (s * a)) (u s)) → (∀ s t, Cg n (cup W y z s t) (eps l s * u t - u (s * t) + u s)) → Continuous d → (∀ s i, d s i ∈ c.O) → (∀ s t, Cv n (d (s * t)) (d s + mat W s *ᵥ d t + ((((ψ s).toAdd.val : ℕ) : Qbar l) * P) • (mat W s *ᵥ y t))) → Coc2 c n S (fun s t => cup W d z s t - (((ψ s).toAdd.val : ℕ) : Qbar l) * P * eps l s * u t) := by
   intro l _ Ω _ _ _ c n S W y z d u P ψ hW hWO hdt hker hψ hP hy hz hyO hzO hyz0 hu huO huS hcup hd hdO hdrec
   set B : ℝ := ‖((l : ℕ) : Qbar l) ^ n‖
-  have nO : ∀ x ∈ c.O, ‖x‖ ≤ 1 := fun x hx => norm_le_one c hx
+  have nO : ∀ x ∈ c.O, ‖x‖ ≤ 1 := fun x hx => GlobalTheory.Ord2.CupCob.norm_le_one_of_mem c hx
   have detO : ∀ s, (mat W s).det ∈ c.O := fun s => by
     rw [Matrix.det_fin_two]; exact sub_mem (mul_mem (hWO _ _ _) (hWO _ _ _)) (mul_mem (hWO _ _ _) (hWO _ _ _))
   have DO : ∀ s i j, mat (dual1 W) s i j ∈ c.O := fun s i j => by
-    rw [matD W hdt, Matrix.smul_apply, smul_eq_mul]; exact mul_mem (mul_mem (eps_mem c s) (detO s)) (hWO _ _ _)
+    rw [GlobalTheory.Ord2.CupCob.mat_dual1 W hdt, Matrix.smul_apply, smul_eq_mul]; exact mul_mem (mul_mem (GlobalTheory.Ord2.CupCob.eps_mem c s) (detO s)) (hWO _ _ _)
   have psiO : ∀ s, ((((ψ s).toAdd.val : ℕ) : Qbar l)) ∈ c.O := fun s => natCast_mem c.O _
   have zrec : ∀ s t, z (s * t) = z s + mat (dual1 W) s *ᵥ z t := fun s t => by
     have := hz.2 s t
@@ -227,12 +200,12 @@ theorem GlobalTheory.Ord2.cup_product_two_cocycle : ∀ (l : ℕ) [Fact l.Prime]
       (hψ.comp (fun x => ((x.toAdd.val : ℕ) : Qbar l))).continuous
     have hdi : ∀ i, Continuous fun s => d s i := fun i => (continuous_apply i).comp hd
     have hzi : ∀ i, Continuous fun s => z s i := fun i => (continuous_apply i).comp hz.1
-    have he : Continuous fun s : G ℚ Ω => eps l s := eps_cont
+    have he : Continuous fun s : G ℚ Ω => eps l s := GlobalTheory.Ord2.CupCob.eps_cont
     have hf : ∀ {f : G ℚ Ω → Qbar l}, Continuous f → Continuous fun p : G ℚ Ω × G ℚ Ω => f p.1 :=
       fun h => h.comp continuous_fst
     have hg : ∀ {f : G ℚ Ω → Qbar l}, Continuous f → Continuous fun p : G ℚ Ω × G ℚ Ω => f p.2 :=
       fun h => h.comp continuous_snd
-    simp only [cup, om, matD W hdt, Matrix.mulVec, dotProduct, Fin.sum_univ_two, Matrix.smul_apply, smul_eq_mul]
+    simp only [cup, om, GlobalTheory.Ord2.CupCob.mat_dual1 W hdt, Matrix.mulVec, dotProduct, Fin.sum_univ_two, Matrix.smul_apply, smul_eq_mul]
     have hD : ∀ i j, Continuous fun p : G ℚ Ω × G ℚ Ω => eps l p.1 * (mat W p.1).det * mat W p.1 i j :=
       fun i j => ((hf he).mul (hf hdet)).mul (hf (hAij i j))
     exact (((hf (hdi 0)).mul (((hD 1 0).mul (hg (hzi 0))).add ((hD 1 1).mul (hg (hzi 1))))).sub
@@ -240,7 +213,7 @@ theorem GlobalTheory.Ord2.cup_product_two_cocycle : ∀ (l : ℕ) [Fact l.Prime]
       ((((hf hψc).mul continuous_const).mul (hf he)).mul (hg hu))
   ·
     intro s t
-    refine sub_mem ?_ (mul_mem (mul_mem (mul_mem (psiO s) hP) (eps_mem c s)) (huO t))
+    refine sub_mem ?_ (mul_mem (mul_mem (mul_mem (psiO s) hP) (GlobalTheory.Ord2.CupCob.eps_mem c s)) (huO t))
     unfold cup om
     exact sub_mem (mul_mem (hdO s 0) (mulVec_mem c (DO s) (hzO t) 1)) (mul_mem (hdO s 1) (mulVec_mem c (DO s) (hzO t) 0))
   ·
@@ -248,21 +221,21 @@ theorem GlobalTheory.Ord2.cup_product_two_cocycle : ∀ (l : ℕ) [Fact l.Prime]
     show ‖_ - _‖ ≤ B
     have key := ident (mat W r) (mat W s) (eps l r) (eps l s) P (((ψ r).toAdd.val : ℕ) : Qbar l)
       (((ψ s).toAdd.val : ℕ) : Qbar l) (((ψ (r * s)).toAdd.val : ℕ) : Qbar l) (u t) (u s) (u (s * t)) (cup W y z s t)
-      (d r) (d s) (d (r * s)) (y s) (z s) (z t) (det_sq W hdt r) (by rw [cup, matD W hdt])
-    simp only [cup, zrec, matD W hdt, mat_mul, eps_mul, Matrix.det_mul] at key ⊢
+      (d r) (d s) (d (r * s)) (y s) (z s) (z t) (det_sq W hdt r) (by rw [cup, GlobalTheory.Ord2.CupCob.mat_dual1 W hdt])
+    simp only [cup, zrec, GlobalTheory.Ord2.CupCob.mat_dual1 W hdt, GlobalTheory.Ord2.mat_mul', GlobalTheory.Ord2.OpenInv.eps_mul, Matrix.det_mul] at key ⊢
     rw [key]
     have hV : ∀ s' i j, ((eps l s' * (mat W s').det) • mat W s') i j ∈ c.O := fun s' i j => by
-      rw [← matD W hdt]; exact DO s' i j
+      rw [← GlobalTheory.Ord2.CupCob.mat_dual1 W hdt]; exact DO s' i j
     have hVrs : ∀ i, ‖(((eps l r * eps l s * ((mat W r).det * (mat W s).det)) • (mat W r * mat W s)) *ᵥ z t) i‖ ≤ 1 := by
       intro i
       refine nO _ (mulVec_mem c (fun i j => ?_) (hzO t) i)
       have := hV (r * s) i j
-      rwa [mat_mul, eps_mul, Matrix.det_mul] at this
+      rwa [GlobalTheory.Ord2.mat_mul', GlobalTheory.Ord2.OpenInv.eps_mul, Matrix.det_mul] at this
     have hEu := hcup s t
-    simp only [Cg, cup, matD W hdt] at hEu
+    simp only [Cg, cup, GlobalTheory.Ord2.CupCob.mat_dual1 W hdt] at hEu
     refine sm_sub (sm_add (by rw [norm_neg]; exact om_sm (fun i => hdrec r s i) hVrs)
-      (sm_mul (nO _ (mul_mem (mul_mem hP (mul_mem (eps_mem c r) (eps_mem c s))) (huO t))) (psi_sm n ψ r s)))
-      (sm_mul (nO _ (mul_mem (mul_mem hP (psiO r)) (eps_mem c r))) hEu)
+      (sm_mul (nO _ (mul_mem (mul_mem hP (mul_mem (GlobalTheory.Ord2.CupCob.eps_mem c r) (GlobalTheory.Ord2.CupCob.eps_mem c s))) (huO t))) (psi_sm n ψ r s)))
+      (sm_mul (nO _ (mul_mem (mul_mem hP (psiO r)) (GlobalTheory.Ord2.CupCob.eps_mem c r))) hEu)
   ·
     intro s t a ha b hb
     have ha' := hker ha
@@ -270,12 +243,12 @@ theorem GlobalTheory.Ord2.cup_product_two_cocycle : ∀ (l : ℕ) [Fact l.Prime]
     obtain ⟨⟨hca, hWa⟩, hψa⟩ := ha'
     have hAa : mat W a = 1 := by simp [mat, hWa]
     have hea : eps l a = 1 := by simp [eps, hca]
-    have hAsa : mat W (s * a) = mat W s := by rw [mat_mul, hAa, mul_one]
-    have hesa : eps l (s * a) = eps l s := by rw [eps_mul, hea, mul_one]
+    have hAsa : mat W (s * a) = mat W s := by rw [GlobalTheory.Ord2.mat_mul', hAa, mul_one]
+    have hesa : eps l (s * a) = eps l s := by rw [GlobalTheory.Ord2.OpenInv.eps_mul, hea, mul_one]
     have hψsa : ψ (s * a) = ψ s := by rw [map_mul, hψa, mul_one]
     have hztb : z (t * b) = z t := by rw [zrec, (hyz0 b hb).2.1]; simp
     show ‖_ - _‖ ≤ B
-    simp only [cup, matD W hdt, hAsa, hesa, hψsa, hztb]
+    simp only [cup, GlobalTheory.Ord2.CupCob.mat_dual1 W hdt, hAsa, hesa, hψsa, hztb]
     have hE : ∀ i, ‖(d (s * a) - d s) i‖ ≤ B := by
       intro i
       have h1 := hdrec s a i
@@ -288,7 +261,7 @@ theorem GlobalTheory.Ord2.cup_product_two_cocycle : ∀ (l : ℕ) [Fact l.Prime]
     have hVs : ∀ i, ‖(((eps l s * (mat W s).det) • mat W s) *ᵥ z t) i‖ ≤ 1 := by
       intro i
       refine nO _ (mulVec_mem c (fun i j => ?_) (hzO t) i)
-      rw [← matD W hdt]; exact DO s i j
+      rw [← GlobalTheory.Ord2.CupCob.mat_dual1 W hdt]; exact DO s i j
     have e : om (d (s * a)) (((eps l s * (mat W s).det) • mat W s) *ᵥ z t) -
           (((ψ s).toAdd.val : ℕ) : Qbar l) * P * eps l s * u (t * b) -
         (om (d s) (((eps l s * (mat W s).det) • mat W s) *ᵥ z t) -
@@ -297,7 +270,7 @@ theorem GlobalTheory.Ord2.cup_product_two_cocycle : ∀ (l : ℕ) [Fact l.Prime]
           ((((ψ s).toAdd.val : ℕ) : Qbar l) * P * eps l s) * (u (t * b) - u t) := by
       simp only [om, Pi.sub_apply]; ring
     rw [e]
-    exact sm_sub (om_sm hE hVs) (sm_mul (nO _ (mul_mem (mul_mem (psiO s) hP) (eps_mem c s))) (huS t b hb))
+    exact sm_sub (om_sm hE hVs) (sm_mul (nO _ (mul_mem (mul_mem (psiO s) hP) (GlobalTheory.Ord2.CupCob.eps_mem c s))) (huS t b hb))
 
 end
 end -- clump:auto
@@ -853,17 +826,13 @@ theorem mul_mem_ballSub {r : ℝ} {hr : 0 ≤ r} {k x : PadicAlgCl l} (hk : ‖k
   rw [mem_ballSub, norm_mul]
   exact (mul_le_of_le_one_left (norm_nonneg _) hk).trans hx
 
-theorem norm_le_one_of_mem (c : Coef l) {x : Qbar l} (hx : x ∈ c.O) : ‖x‖ ≤ 1 :=
-  _root_.GlobalTheory.IntegralNormLeOne.norm_le_one_of_isIntegral x ((Algebra.IsIntegral.isIntegral (R := ℤ_[l]) (⟨x, hx⟩ : c.O)).map c.O.val)
-
 end GlobalTheory.BrTame
-
 
 open GlobalTheory.BrTame in
 theorem GlobalTheory.br_tame : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (c : Coef l) (n : ℕ) (w : Pl) (B : ValuationSubring Ω) (ψ : G ℚ Ω →* Multiplicative (ZMod (l ^ n))) (h : G ℚ Ω → Qbar l) (σ : G ℚ Ω), 1 ≤ n → IsPlaceOver B w → l ^ n ∣ normV w - 1 → (∃ τ ∈ Ine (F := ℚ) B, (ψ τ).toAdd = 1) → (∀ s, h s ∈ c.O) → (∀ s ∈ Dec (F := ℚ) B, ∀ t ∈ Dec (F := ℚ) B, Cg n (h (s * t)) (h s + h t)) → (∀ s ∈ Ine (F := ℚ) B, Cg n (h s) 0) → Cob2 c n (Dec (F := ℚ) B) (fun s t => (((ψ s).toAdd.val : ℕ) : Qbar l) * h t) → σ ∈ Dec (F := ℚ) B → Cg n (h σ) 0 := by
   intro l _ Ω _ _ _ c n w B ψ h σ hn hB hdiv ⟨τ, hτ, hψτ⟩ hO _ hIne ⟨u, hucont, huO, hu⟩ hσ
   set S := ballSub (l := l) ‖((l : ℕ) : Qbar l) ^ n‖ (norm_nonneg _) with hS
-  have hu1 : ∀ s, ‖u s‖ ≤ 1 := fun s => norm_le_one_of_mem c (huO s)
+  have hu1 : ∀ s, ‖u s‖ ≤ 1 := fun s => GlobalTheory.Ord2.CupCob.norm_le_one_of_mem c (huO s)
   have heps : ∀ s ∈ Dec (F := ℚ) B, eps l s - 1 ∈ S := fun s hs => _root_.GlobalTheory.Ord2.EpsDec.eps_dec_cong l Ω n w B hB hdiv hn s hs
   have hnat : ∀ k : ℕ, ‖((k : ℕ) : Qbar l)‖ ≤ 1 := fun k => IsUltrametricDist.norm_natCast_le_one _ k
   have hmul : ∀ k x : Qbar l, ‖k‖ ≤ 1 → x ∈ S → k * x ∈ S := fun k x hk hx => mul_mem_ballSub hk hx
@@ -1171,7 +1140,6 @@ theorem mul_adj_mulVec (A : Matrix (Fin 2) (Fin 2) (Qbar l)) (z : Fin 2 → Qbar
   rw [h, Matrix.mulVec_mulVec, Matrix.mul_adjugate, Matrix.smul_mulVec, Matrix.one_mulVec, add_comm]
 
 end GlobalTheory.Ord2.LocW
-
 
 open GlobalTheory.Ord2.CupCob GlobalTheory.Ord2.LocW in
 theorem GlobalTheory.Ord2.LocW.local_height_at_frobenius : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (c : Coef l) (n : ℕ) (W : R2 Ω l) (y z d : G ℚ Ω → Fin 2 → Qbar l) (u : G ℚ Ω → Qbar l) (P : Qbar l) (ψ : G ℚ Ω →* Multiplicative (ZMod (l ^ n))) (w : Pl) (B : ValuationSubring Ω) (τ : G ℚ Ω), 1 ≤ n → Continuous W → (∀ s i j, mat W s i j ∈ c.O) → dt W ^ 2 = 1 → IsPlaceOver B w → l ^ n ∣ normV w - 1 → IsFrob B (normV w) τ → τ ∈ Dec (F := ℚ) B → dt W τ = 1 → Ine (F := ℚ) B ≤ W.ker → IsLocallyConstant ψ → (∃ t ∈ Ine (F := ℚ) B, (ψ t).toAdd = 1) → P ∈ c.O → y ∈ Z1 (Loc.colRep W) → z ∈ Z1 (Loc.colRep (dual1 W)) → (∀ s i, y s i ∈ c.O) → (∀ s i, z s i ∈ c.O) → (∀ a ∈ Ine (F := ℚ) B, y a = 0 ∧ z a = 0) → Continuous u → (∀ s, u s ∈ c.O) → (∀ s, ∀ a ∈ Ine (F := ℚ) B, Cg n (u (s * a)) (u s)) → (∀ s t, Cg n (cup W y z s t) (eps l s * u t - u (s * t) + u s)) → Continuous d → (∀ s i, d s i ∈ c.O) → (∀ s t, Cv n (d (s * t)) (d s + mat W s *ᵥ d t + ((((ψ s).toAdd.val : ℕ) : Qbar l) * P) • (mat W s *ᵥ y t))) → Cob2 c n (Dec (F := ℚ) B) (fun s t => cup W d z s t - (((ψ s).toAdd.val : ℕ) : Qbar l) * P * eps l s * u t) → Cg n (P * ht W y z u τ) 0 := by

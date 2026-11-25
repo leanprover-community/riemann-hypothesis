@@ -844,7 +844,6 @@ theorem hl_sub (hA9 : A9) (l : ℕ) [Fact l.Prime] (E : Spc) (m j : ℤ) (hm : m
   funext k
   exact ((hA9 (ZMod (l ^ k)) (tw (l ^ k) j)).1 E m hm).elim _ _
 
-
 theorem limRatAssemble : LimRatAssemble := by
   intro hA9 l _ X Y S pX pY n i M r c hnM hB e Φ hΦ hbij
   let T := fun a : ℤ => HQ l (sch.obj X) a i ⊗[ℚ_[l]] HQ l (sch.obj Y) (n - a) 0
@@ -1086,22 +1085,16 @@ open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC
 
 namespace LateralTheory.KummerTheory.LimLHPf
 
-theorem cast_add' {q : ℕ} {E : Spc} {n i n' i' : ℤ} (hn : n = n') (hi : i = i') (x y : Ht q E n i) :
-    (x + y).cast hn hi = x.cast hn hi + y.cast hn hi := by subst hn; subst hi; rfl
-
-theorem cast_nsmul' {q : ℕ} {E : Spc} {n i n' i' : ℤ} (hn : n = n') (hi : i = i') (m : ℕ) (x : Ht q E n i) :
-    (m • x).cast hn hi = m • x.cast hn hi := by subst hn; subst hi; rfl
-
 theorem red_cast (Q q : ℕ) {E : Spc} {n i n' i' : ℤ} (hn : n = n') (hi : i = i') (x : Ht Q E n i) :
     red Q q E n' i' (x.cast hn hi) = (red Q q E n i x).cast hn hi := by subst hn; subst hi; rfl
 
 theorem ext_add (q : ℕ) {X Y S : Scheme.{0}} (pX : X ⟶ S) (pY : Y ⟶ S) (a n i : ℤ) (x : Ht q (sch.obj X) a i)
     (y y' : Ht q (sch.obj Y) (n - a) 0) : ext q pX pY a n i x (y + y') = ext q pX pY a n i x y + ext q pX pY a n i x y' := by
-  unfold LateralTheory.KummerTheory.ext; rw [map_add (f := _), map_add (f := _), cast_add']
+  unfold LateralTheory.KummerTheory.ext; rw [map_add (f := _), map_add (f := _), GlobalTheory.EtC.GmPhi.cast_add]
 
 theorem ext_nsmul (q : ℕ) {X Y S : Scheme.{0}} (pX : X ⟶ S) (pY : Y ⟶ S) (a n i : ℤ) (x : Ht q (sch.obj X) a i)
     (m : ℕ) (y : Ht q (sch.obj Y) (n - a) 0) : ext q pX pY a n i x (m • y) = m • ext q pX pY a n i x y := by
-  unfold LateralTheory.KummerTheory.ext; rw [map_nsmul, map_nsmul, cast_nsmul']
+  unfold LateralTheory.KummerTheory.ext; rw [map_nsmul, map_nsmul, GlobalTheory.EtC.GmAicDeg1.cast_nsmul]
 
 theorem red_ext (hA : A11) (Q q : ℕ) [NeZero Q] (hq : q ∣ Q) {X Y S : Scheme.{0}} (pX : X ⟶ S) (pY : Y ⟶ S) (a n i : ℤ)
     (x : Ht Q (sch.obj X) a i) (y : Ht Q (sch.obj Y) (n - a) 0) :
@@ -1372,12 +1365,6 @@ theorem twGen_zero_eq {q : ℕ} {V : Scheme.{0}} (ζ ξ : Prim q Γ(V, ⊤)) (a 
   simp
   rfl
 
-theorem prim_pow {q : ℕ} {A : Type} [CommRing A] (ζ : Prim q A) : ζ.1 ^ q = 1 := by
-  obtain ⟨c, hc⟩ := cyclotomic.dvd_X_pow_sub_one q ℤ
-  have h := congrArg (aeval ζ.1) hc
-  rw [map_mul, ζ.2.2, zero_mul] at h
-  simpa [sub_eq_zero] using h
-
 theorem prim_isPrimitiveRoot {q : ℕ} {K : Type} [Field K] (μ : Prim q K) : IsPrimitiveRoot μ.1 q := by
   obtain ⟨z, hz1, hz2⟩ := μ
   have : NeZero (q : K) := ⟨hz1.ne_zero⟩
@@ -1398,9 +1385,9 @@ theorem local_pow {q : ℕ} [NeZero q] {U : Scheme.{0}} (ζ ξ : Prim q Γ(U, �
     simp [ZMod.val_natCast, Nat.mod_eq_of_lt hi]
   obtain ⟨k, hk⟩ := binomExpansion ((X : Polynomial Γ(U, ⊤)) ^ q - 1) ξ.1
     (ζ.1 ^ ((ZMod.unitOfCoprime i hcop : (ZMod q)ˣ) : ZMod q).val - ξ.1)
-  have hξq := prim_pow ξ
+  have hξq := GlobalTheory.EtC.Prim.pow_eq_one_kd ξ
   have hζq : (ζ.1 ^ ((ZMod.unitOfCoprime i hcop : (ZMod q)ˣ) : ZMod q).val) ^ q = 1 := by
-    rw [← pow_mul, mul_comm, pow_mul, prim_pow ζ, one_pow]
+    rw [← pow_mul, mul_comm, pow_mul, GlobalTheory.EtC.Prim.pow_eq_one_kd ζ, one_pow]
   refine ⟨(q : Γ(U, ⊤)) * ξ.1 ^ (q - 1) + k * (ζ.1 ^ ((ZMod.unitOfCoprime i hcop : (ZMod q)ˣ) : ZMod q).val - ξ.1),
     ZMod.unitOfCoprime i hcop, ?_, ?_⟩
   · rw [← Scheme.evaluation_ne_zero_iff_mem_basicOpen (X := U) (U := ⊤) x (show x ∈ (⊤ : U.Opens) from trivial)]
@@ -1478,12 +1465,6 @@ open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComp
 
 namespace LateralTheory.KummerTheory.DegreeZeroClassRestriction
 
-theorem res_neg_zero (R : Type) [CommRing R] (F : Shv R) (s : ℤ) (hs : s < 0) : IsZero ((res R F).X s) := by
-  apply HomologicalComplex.isZero_extend_X
-  intro i hi
-  have h' : ((i : ℕ) : ℤ) = s := hi
-  omega
-
 def asHom {X U : Scheme.{0}} (x : Sx (sch.obj X) 0 U) : U ⟶ X := by
   unfold sch at x; exact x
 
@@ -1511,7 +1492,7 @@ theorem cochain_eq (R : Type) [CommRing R] (F : Shv R) (X : Scheme.{0})
     exact congrArg _ h
   | succ k =>
     have hs : s < 0 := by omega
-    rw [LateralTheory.KummerTheory.AW.ev_eq, LateralTheory.KummerTheory.AW.ev_eq, (res_neg_zero R F s hs).eq_of_tgt
+    rw [LateralTheory.KummerTheory.AW.ev_eq, LateralTheory.KummerTheory.AW.ev_eq, (GlobalTheory.EtC.HCElements.res_X_isZero R F s hs).eq_of_tgt
       ((chainsXIso R (sch.obj X) (k + 1)).inv ≫ α.v _ _ hp) ((chainsXIso R (sch.obj X) (k + 1)).inv ≫ β.v _ _ hp)]
 
 end LateralTheory.KummerTheory.DegreeZeroClassRestriction

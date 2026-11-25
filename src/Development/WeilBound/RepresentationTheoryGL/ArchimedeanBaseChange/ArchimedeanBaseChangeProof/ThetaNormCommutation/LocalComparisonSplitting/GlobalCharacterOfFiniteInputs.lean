@@ -365,7 +365,6 @@ theorem exists_conj_eq_sign (n : ℕ) : ∃ s : E, s ≠ 0 ∧ conjE E s = (-1 :
     rw [h, map_sub, hcc]
     ring
 
-
 omit [NumberField E] [IsCMField E] in
 theorem scalar_val {n : ℕ} (t : Eˣ) :
     (GeneralLinearGroup.scalar (Fin n) t).val = (t : E) • (1 : Matrix (Fin n) (Fin n) E) := by
@@ -374,7 +373,6 @@ theorem scalar_val {n : ℕ} (t : Eˣ) :
   · subst h
     simp [GeneralLinearGroup.scalar]
   · simp [GeneralLinearGroup.scalar, h]
-
 
 omit [NumberField E] [IsCMField E] in
 theorem scalar_commute {n : ℕ} (t : Eˣ) (g : GL (Fin n) E) :
@@ -1083,30 +1081,10 @@ open scoped Classical
 
 namespace GlobalTheory.CompanionTheory.TwistCent
 
-theorem map_thetaR {R S : Type} [CommRing R] [CommRing S] (f : R →+* S) (c : R →+* R) (c' : S →+* S)
-    (h : ∀ x, f (c x) = c' (f x)) (n : ℕ) (g : GL (Fin n) R) :
-    GeneralLinearGroup.map f (thetaR c n g) = thetaR c' n (GeneralLinearGroup.map f g) := by
-  apply Units.ext
-  ext i j
-  rw [GeneralLinearGroup.map_apply, thetaR_val, thetaR_val, ← map_inv]
-  simp only [Matrix.transpose_apply, Matrix.map_apply, GeneralLinearGroup.map_apply, h]
-
-theorem map_phiU {R S : Type} [CommRing R] [CommRing S] (f : R →+* S) (n : ℕ) :
-    GeneralLinearGroup.map f (PhiU n R) = PhiU n S := by
-  apply Units.ext
-  ext i j
-  simp only [GeneralLinearGroup.map_apply, phiU_val, GlobalTheory.Tw.Phi, Matrix.of_apply]
-  split_ifs <;> simp
-
-theorem map_thetaGL {R S : Type} [CommRing R] [CommRing S] (f : R →+* S) (c : R →+* R) (c' : S →+* S)
-    (h : ∀ x, f (c x) = c' (f x)) (n : ℕ) (g : GL (Fin n) R) :
-    GeneralLinearGroup.map f (thetaGL n c g) = thetaGL n c' (GeneralLinearGroup.map f g) := by
-  rw [thetaGL_eq, thetaGL_eq, map_mul, map_mul, map_inv, map_phiU, map_thetaR f c c' h]
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
 theorem thF_ratF (g : GL (Fin n) E) : thF E n (ratF E n g) = ratF E n (thE E n g) :=
-  (map_thetaGL (algebraMap E (Af E)) _ _
+  (GlobalTheory.CompanionTheory.AdelEqProof.map_thetaGL (algebraMap E (Af E)) _ _
     (fun x => (conjFin_algebraMap (IsCMField.complexConj E).toRingEquiv x).symm) n g).symm
 
 theorem nontrivial_finiteAdeles : Nontrivial (Af E) := by
@@ -1122,17 +1100,6 @@ theorem ratF_injective : Function.Injective (ratF E n) := by
   ext i j
   have := congrArg (fun x : GL (Fin n) (Af E) => x.val i j) e
   exact (algebraMap E (Af E)).injective this
-
-theorem pFin_ratGL (g : GL (Fin n) E) : GeneralLinearGroup.map (pFin E) (ratGL E n g) = ratF E n g := by
-  apply Units.ext
-  ext i j
-  rfl
-
-theorem cV_ratGL (v : InfinitePlace E) (g : GL (Fin n) E) :
-    GeneralLinearGroup.map (cV v) (ratGL E n g) = GeneralLinearGroup.map v.embedding g := by
-  apply Units.ext
-  ext i j
-  exact pInf_algebraMap (g.val i j) v
 
 theorem mem_twCent_iff {u : GL (Fin n) E} (hu : IsTransl u) (g d : GL (Fin n) E) :
     g ∈ PositivityTheory.Rg.Tf.Loc.twCent (thetaE E n) d ↔ g * (d * u⁻¹) = d * u⁻¹ * thE E n g := by
@@ -1166,7 +1133,7 @@ theorem map_mem_twCent (v : InfinitePlace E) {g d : GL (Fin n) E}
       PositivityTheory.Rg.Tf.Loc.twCent (thetaR (starRingEnd ℂ) n) (GeneralLinearGroup.map v.embedding d) := by
   have h' : g⁻¹ * d * thetaE E n g = d := h
   rw [PositivityTheory.Rg.Tf.Loc.mem_twCent]
-  rw [← map_thetaR v.embedding (conjE E) (starRingEnd ℂ)
+  rw [← GlobalTheory.CompanionTheory.AdelEqProof.map_thetaR v.embedding (conjE E) (starRingEnd ℂ)
     (fun x => IsCMField.complexEmbedding_complexConj E v.embedding x) n g, ← map_inv, ← map_mul, ← map_mul]
   exact congrArg _ h'
 
@@ -1177,16 +1144,16 @@ theorem centEq : CentEq := by
     have hc' := Prod.ext_iff.1 hc
     refine ⟨(ratGL E a g₁, ratGL E b g₂), ?_, ?_⟩
     · exact ⟨⟨g₁, (mem_twCent_iff_ratF h₁ g₁ d₁).2 hc'.1, rfl⟩, ⟨g₂, (mem_twCent_iff_ratF h₂ g₂ d₂).2 hc'.2, rfl⟩⟩
-    · exact Prod.ext (pFin_ratGL g₁) (pFin_ratGL g₂)
+    · exact Prod.ext (GlobalTheory.CompanionTheory.AdelEqProof.map_pFin_ratGL g₁) (GlobalTheory.CompanionTheory.AdelEqProof.map_pFin_ratGL g₂)
   · rintro ⟨⟨γ₁, γ₂⟩, ⟨⟨g₁, hg₁, rfl⟩, ⟨g₂, hg₂, rfl⟩⟩, rfl⟩
     have e : (comps (ratGL E a g₁, ratGL E b g₂)).2 = (ratF E a g₁, ratF E b g₂) :=
-      Prod.ext (pFin_ratGL g₁) (pFin_ratGL g₂)
+      Prod.ext (GlobalTheory.CompanionTheory.AdelEqProof.map_pFin_ratGL g₁) (GlobalTheory.CompanionTheory.AdelEqProof.map_pFin_ratGL g₂)
     rw [e]
     exact ⟨⟨(g₁, g₂), rfl⟩, Prod.ext ((mem_twCent_iff_ratF h₁ g₁ d₁).1 hg₁) ((mem_twCent_iff_ratF h₂ g₂ d₂).1 hg₂)⟩
   · rintro ⟨γ₁, γ₂⟩ ⟨⟨g₁, hg₁, rfl⟩, ⟨g₂, hg₂, rfl⟩⟩
     refine ⟨fun h => ?_, fun v => ?_⟩
     · have e : (comps (ratGL E a g₁, ratGL E b g₂)).2 = (ratF E a g₁, ratF E b g₂) :=
-        Prod.ext (pFin_ratGL g₁) (pFin_ratGL g₂)
+        Prod.ext (GlobalTheory.CompanionTheory.AdelEqProof.map_pFin_ratGL g₁) (GlobalTheory.CompanionTheory.AdelEqProof.map_pFin_ratGL g₂)
       rw [e] at h
       have e₁ : g₁ = 1 := ratF_injective ((congrArg Prod.fst h).trans (map_one _).symm)
       have e₂ : g₂ = 1 := ratF_injective ((congrArg Prod.snd h).trans (map_one _).symm)
@@ -1194,10 +1161,10 @@ theorem centEq : CentEq := by
       exact Prod.ext (map_one _) (map_one _)
     · constructor
       · show GeneralLinearGroup.map (cV v) (ratGL E a g₁) ∈ _
-        rw [cV_ratGL]
+        rw [GlobalTheory.CompanionTheory.AdelEqProof.map_cV_ratGL]
         exact map_mem_twCent v hg₁
       · show GeneralLinearGroup.map (cV v) (ratGL E b g₂) ∈ _
-        rw [cV_ratGL]
+        rw [GlobalTheory.CompanionTheory.AdelEqProof.map_cV_ratGL]
         exact map_mem_twCent v hg₂
 
 end GlobalTheory.CompanionTheory.TwistCent
@@ -1416,7 +1383,6 @@ theorem lefOne_eval (hD : EllDiag) (hW : WeylAt) [MeasurableSpace (GL (Fin n) �
   exact this
 
 end GlobalTheory.CompanionTheory.LefPair
-
 
 open GlobalTheory.CompanionTheory.LefPair in
 theorem GlobalTheory.CompanionTheory.LefPair.lefPairOf : LefPairOf := by

@@ -129,25 +129,6 @@ namespace GlobalTheory.FrameDual
 
 open GlobalTheory.HL.Eichler
 
-section
-variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
-variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E]
-variable (L : LocE F E) {n : ℕ} (Hm : Matrix (Fin n) (Fin n) E)
-
-theorem hf_sum_l {ι : Type} (s : Finset ι) (a : ι → Fin n → E) (y : Fin n → E) :
-    hf L Hm (∑ i ∈ s, a i) y = ∑ i ∈ s, hf L Hm (a i) y := by
-  induction s using Finset.induction_on with
-  | empty => simp [hf]
-  | insert i s hi ih => rw [Finset.sum_insert hi, Finset.sum_insert hi, hf_add_l, ih]
-
-theorem hf_sum_r {ι : Type} (s : Finset ι) (a : ι → Fin n → E) (y : Fin n → E) :
-    hf L Hm y (∑ i ∈ s, a i) = ∑ i ∈ s, hf L Hm y (a i) := by
-  induction s using Finset.induction_on with
-  | empty => simp [hf]
-  | insert i s hi ih => rw [Finset.sum_insert hi, Finset.sum_insert hi, hf_add_r, ih]
-
-end
-
 theorem exists_unip_change_dual : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] (L : LocE F E), ∀ (r k : ℕ) (S : Frames L r k) (g : Fin (r + 1) → S.V) (t : E) (gs gs2 : Fin r → S.V), (∀ a b, hf L S.Hm (g a) (g b) = if a = Fin.last r ∧ b = Fin.last r then t else 0) → (∀ a j, hf L S.Hm (g a) (gs j) = if a = j.castSucc then 1 else 0) → (∀ a j, hf L S.Hm (g a) (gs2 j) = if a = j.castSucc then 1 else 0) → (∀ i j, hf L S.Hm (gs i) (gs j) = 0) → (∀ i j, hf L S.Hm (gs2 i) (gs2 j) = 0) → ∃ m ∈ S.Nof g, (∀ a, m (g a) = g a) ∧ (∀ j, m (gs j) = gs2 j) ∧ ∀ A : Submodule L.O S.V, (∀ x ∈ S.spanTo g r, x ∈ A) → (∀ x ∈ A, x ∈ perp L S.Hm (S.spanTo g r)) → m • (A ⊓ (perp L S.Hm (Submodule.span E (Set.range gs))).restrictScalars L.O) = A ⊓ (perp L S.Hm (Submodule.span E (Set.range gs2))).restrictScalars L.O := by
   intro F _ _ _ _ _ E _ _ _ L r k S g t gs gs2 hg hd hd2 hi hi2
   have hcj := hf_cj L S.herm.1
@@ -165,14 +146,14 @@ theorem exists_unip_change_dual : ∀ {F : Type} [Field F] [ValuativeRel F] [Top
   have hGw : ∀ i j, hf L S.Hm (G i) (w j) = 0 := fun i j => by rw [hG i]; exact hgw _ _
   have hwG : ∀ i j, hf L S.Hm (w i) (G j) = 0 := fun i j => by rw [hG j]; exact hwg _ _
   have hGu : ∀ i j, hf L S.Hm (G i) (u j) = 0 := fun i j => by
-    simp only [hu, hf_add_r, hf_sum_r, hf_smul_r, hGw, hGG, mul_zero, Finset.sum_const_zero, add_zero]
+    simp only [hu, hf_add_r, GlobalTheory.HL.DualInter.sum_r, hf_smul_r, hGw, hGG, mul_zero, Finset.sum_const_zero, add_zero]
   have huG : ∀ j i, hf L S.Hm (u j) (G i) = 0 := fun j i => by
-    simp only [hu, hf_add_l, hf_sum_l, hf_smul_l, hwG, hGG, mul_zero, Finset.sum_const_zero, add_zero]
+    simp only [hu, hf_add_l, GlobalTheory.HL.DualInter.sum_l, hf_smul_l, hwG, hGG, mul_zero, Finset.sum_const_zero, add_zero]
   have huw : ∀ j i, hf L S.Hm (u j) (w i) = hf L S.Hm (w j) (w i) := fun j i => by
-    simp only [hu, hf_add_l, hf_sum_l, hf_smul_l, hGw, mul_zero, Finset.sum_const_zero, add_zero]
+    simp only [hu, hf_add_l, GlobalTheory.HL.DualInter.sum_l, hf_smul_l, hGw, mul_zero, Finset.sum_const_zero, add_zero]
   have huu : ∀ j l, hf L S.Hm (u j) (u l) = hf L S.Hm (w j) (w l) := fun j l => by
     conv_lhs => rw [hu l]
-    simp only [hf_add_r, hf_sum_r, hf_smul_r, huG, huw, mul_zero, Finset.sum_const_zero, add_zero]
+    simp only [hf_add_r, GlobalTheory.HL.DualInter.sum_r, hf_smul_r, huG, huw, mul_zero, Finset.sum_const_zero, add_zero]
   have hgsG : ∀ j l, hf L S.Hm (gs j) (G l) = if l = j then 1 else 0 := fun j l => by
     rw [← hcj, hG, hd]
     by_cases h : l = j
@@ -192,14 +173,14 @@ theorem exists_unip_change_dual : ∀ {F : Type} [Field F] [ValuativeRel F] [Top
     ⟨_, fun _ => rfl⟩
   have hff_l : ∀ v y, hf L S.Hm (ff v) y = hf L S.Hm v y + ∑ j, hf L S.Hm v (G j) * hf L S.Hm (u j) y -
       ∑ i, hf L S.Hm v (w i) * hf L S.Hm (G i) y := fun v y => by
-    rw [hff]; simp only [hf_add_l, hf_sub_l, hf_sum_l, hf_smul_l]
+    rw [hff]; simp only [hf_add_l, hf_sub_l, GlobalTheory.HL.DualInter.sum_l, hf_smul_l]
   have hff_r : ∀ y v, hf L S.Hm y (ff v) = hf L S.Hm y v + ∑ j, hf L S.Hm (G j) v * hf L S.Hm y (u j) -
       ∑ i, hf L S.Hm (w i) v * hf L S.Hm y (G i) := fun y v => by
-    rw [hff]; simp only [hf_add_r, hf_sub_r, hf_sum_r, hf_smul_r, hcj]
+    rw [hff]; simp only [hf_add_r, hf_sub_r, GlobalTheory.HL.DualInter.sum_r, hf_smul_r, hcj]
   have hfi_l : ∀ v y, hf L S.Hm (fi v) y = hf L S.Hm v y - ∑ j, hf L S.Hm v (G j) * hf L S.Hm (u j) y +
       ∑ i, (hf L S.Hm v (w i) - ∑ j, hf L S.Hm v (G j) * hf L S.Hm (w j) (w i)) * hf L S.Hm (G i) y :=
     fun v y => by
-    rw [hfi]; simp only [hf_add_l, hf_sub_l, hf_sum_l, hf_smul_l]
+    rw [hfi]; simp only [hf_add_l, hf_sub_l, GlobalTheory.HL.DualInter.sum_l, hf_smul_l]
   have h1 : ∀ v, ff (fi v) = v := fun v => by
     have eG : ∀ l, hf L S.Hm (fi v) (G l) = hf L S.Hm v (G l) := fun l => by
       simp only [hfi_l, huG, hGG, mul_zero, Finset.sum_const_zero, sub_zero, add_zero]
@@ -224,9 +205,9 @@ theorem exists_unip_change_dual : ∀ {F : Type} [Field F] [ValuativeRel F] [Top
     simp only [hff_r, huu, huG, hGu, hGG, mul_zero, Finset.sum_const_zero, sub_zero, add_zero]
 
     have hvu : ∀ j, hf L S.Hm v (u j) = hf L S.Hm v (w j) + ∑ i, hf L S.Hm (w i) (gs j) * hf L S.Hm v (G i) := by
-      intro j; rw [hu, hf_add_r, hf_sum_r]; simp only [hf_smul_r, hcj]
+      intro j; rw [hu, hf_add_r, GlobalTheory.HL.DualInter.sum_r]; simp only [hf_smul_r, hcj]
     have huv : ∀ j, hf L S.Hm (u j) v' = hf L S.Hm (w j) v' + ∑ i, hf L S.Hm (gs j) (w i) * hf L S.Hm (G i) v' := by
-      intro j; rw [hu, hf_add_l, hf_sum_l]; simp only [hf_smul_l]
+      intro j; rw [hu, hf_add_l, GlobalTheory.HL.DualInter.sum_l]; simp only [hf_smul_l]
     simp only [hvu, huv]
     have e1 : ∑ j, hf L S.Hm (G j) v' * (hf L S.Hm v (w j) + ∑ i, hf L S.Hm (w i) (gs j) * hf L S.Hm v (G i)) =
         ∑ j, hf L S.Hm v (w j) * hf L S.Hm (G j) v' +
@@ -530,7 +511,6 @@ variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchim
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E]
 variable {L : LocE F E} {r k : ℕ} (S : Frames L r k)
 
-
 open GlobalTheory.FrameAct in
 theorem inner_transport (g : Fin (r + 1) → S.V) (gs : Fin r → S.V) (t : E)
     (hg : ∀ a b, hf L S.Hm (g a) (g b) = if a = Fin.last r ∧ b = Fin.last r then t else 0)
@@ -629,7 +609,6 @@ theorem psiOf_fix (g : Fin (r + 1) → S.V) (gs : Fin r → S.V)
 
 end GlobalTheory.HL.FixFrames
 
-
 open GlobalTheory.HL.FixFrames GlobalTheory.FrameAct in
 theorem GlobalTheory.HL.FixFrames.unitary_complement_acts : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [CharZero F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] (L : LocE F E), ∀ (r k : ℕ) (S : Frames L r k), ∀ h ∈ S.H0, (∀ s ∈ S.St, h * s * h⁻¹ ∈ S.St) ∧ ∀ (d : S.Datum) (Λ : Submodule L.O S.V), S.IsTerm d Λ → S.IsTerm (h • d) (h • Λ) ∧ S.om (h • d) (h • Λ) = S.om d Λ ∧ S.mu (h • Λ) = S.mu Λ := by
   intro F _ _ _ _ _ E _ _ _ L r k S h hh
@@ -695,10 +674,6 @@ section -- clump:auto
 open ValuativeRel Formalism.MainNotions.S.Loc GlobalTheory.HL NumberField IsDedekindDomain
 open scoped Pointwise ENNReal Classical
 
-theorem _root_.GlobalTheory.T.hermitianLattice_mass_eq_finprod_local : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {sig : E →ₐ[F] E} (A : Places F E sig), ∀ (r k : ℕ) (G : GFrames A r k), 4 * r + 7 ≤ k → ∀ Λ : G.Lt, Submodule.IsFullLattice E Λ → {p | (G.S p).St ⊓ MulAction.stabilizer (G.S p).GLV (A.lat p Λ) ≠ (G.S p).K0}.Finite ∧ G.mu Λ = ∏ᶠ p, (G.S p).mu (A.lat p Λ) := by
-  intro F E _ _ _ _ _ sig A r k G hk Λ hΛ
-  exact GlobalTheory.HL.MassProduct.mass_eq_finprod A r k G hk Λ
-    (by first | exact hΛ)
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianLatticeMassEqFinprodLocalStatement =====
@@ -941,7 +916,6 @@ theorem full_lattice_of_term {F E : Type} [Field F] [NumberField F] [Field E] [N
   rw [hψ] at hz
   exact (map_eq_zero_iff _ (A.loc p).ιE.injective).mp hz
 
-
 theorem product_structure : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {sig : E →ₐ[F] E} (A : Places F E sig), ∀ (r k : ℕ) (G : GFrames A r k), 4 * r + 7 ≤ k → ∀ d : G.Dat, (∃ Λ₀, G.IsTerm d Λ₀) → ∀ P : ∀ p, Submodule (A.L p).O (G.S p).V → Prop, (∀ p, ∀ h ∈ (G.S p).St, ∀ Λ, (G.S p).IsTerm (d p) Λ → P p Λ → P p (h • Λ)) → {p | ∃ Λ, (G.S p).IsTerm (d p) Λ ∧ ¬ P p Λ}.Finite → G.amp d (fun Λ => ∀ p, P p (A.lat p Λ)) = ∏ᶠ p, (G.S p).amp (d p) (P p) ∧ G.mass d (fun Λ => ∀ p, P p (A.lat p Λ)) = ∏ᶠ p, (G.S p).mass (d p) (P p) ∧ {p | (G.S p).amp (d p) (P p) ≠ 1 ∨ (G.S p).mass (d p) (P p) ≠ 1}.Finite ∧ {o : Quot G.LRel | G.IsTerm d o.out}.Finite := by
   intro F E _ _ _ _ _ sig A r k G hk d hex P hPinv hPfin
   obtain ⟨Λ₀, hΛ₀⟩ := id hex
@@ -967,7 +941,7 @@ theorem product_structure : ∀ {F E : Type} [Field F] [NumberField F] [Field E]
       (fun Λ h1 => ⟨(KF p hp Λ Λ h1 h1).2.2.2, (KF p hp Λ Λ h1 h1).2.1, (KF p hp Λ Λ h1 h1).2.2.1⟩)
   have hmuG : ∀ Γ, G.IsTerm d Γ → G.mu Γ = ∏ p ∈ s, (G.S p).mu (A.lat p Γ) := by
     intro Γ hΓ
-    rw [(GlobalTheory.T.hermitianLattice_mass_eq_finprod_local A r k G hk Γ (by first | exact full_lattice_of_term G hΓ)).2]
+    rw [(GlobalTheory.HL.MassProduct.mass_eq_finprod A r k G hk Γ (by first | exact full_lattice_of_term G hΓ)).2]
     apply finprod_eq_prod_of_mulSupport_subset
     intro p hp
     by_contra hps

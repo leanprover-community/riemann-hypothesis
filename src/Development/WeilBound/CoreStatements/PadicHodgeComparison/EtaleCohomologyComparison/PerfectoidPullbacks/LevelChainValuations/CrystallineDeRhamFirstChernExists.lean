@@ -102,8 +102,6 @@ open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris Divided
 
 namespace CrystallineSemistableComparison.Pb.Kap
 
-
-
 variable {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ_[l] (PadicAlgCl l)} {R : Per l K} {S : LevSys R} {G : Model l K → Prop}
   {D : Dat R} {c1K : ∀ {M : Model l K}, D.Ch M → HdR M.q 2 → Prop}
 
@@ -400,8 +398,6 @@ set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
-
-
 open CategoryTheory AlgebraicGeometry Limits GlobalTheory.LogCris DividedPowers
 
 namespace CrystallineSemistableComparison.Pb.Kap
@@ -490,8 +486,6 @@ set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
-
-
 open CategoryTheory AlgebraicGeometry Limits GlobalTheory.LogCris DividedPowers
 
 namespace CrystallineSemistableComparison.Pb.Kap
@@ -502,7 +496,6 @@ section
 variable {m : ℕ} {L : Lev (per l K) m} (hL : L.Good) (g : K.fixingSubgroup) (M : Model l K)
 
 namespace GaloisEquivariantMaps
-
 
 open LevelPullbackIdentities in
 def etaGal (s : ℕ) (hQ : ∀ T, QB L M s T → QA L M s (((nmB M hL).mor 0).obj T)) :
@@ -575,8 +568,6 @@ section -- clump:auto
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
-
-
 
 open CategoryTheory AlgebraicGeometry Limits GlobalTheory.LogCris DividedPowers
 
@@ -741,8 +732,6 @@ section -- clump:auto
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
-
-
 
 open CategoryTheory AlgebraicGeometry Limits GlobalTheory.LogCris DividedPowers
 
@@ -930,8 +919,6 @@ set_option linter.unusedVariables false
 
 noncomputable section
 
-
-
 open CategoryTheory AlgebraicGeometry Limits GlobalTheory.LogCris DividedPowers
 
 namespace CrystallineSemistableComparison.Pb.Kap
@@ -984,8 +971,6 @@ section -- clump:auto
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
-
-
 
 open GroundTheory.PAdicHodge
 
@@ -1042,8 +1027,6 @@ section -- clump:auto
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
-
-
 
 open CategoryTheory AlgebraicGeometry Limits GlobalTheory.LogCris DividedPowers
 
@@ -1103,8 +1086,6 @@ set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
-
-
 open CategoryTheory AlgebraicGeometry Limits GlobalTheory.LogCris DividedPowers
 
 namespace CrystallineSemistableComparison.Pb.Kap
@@ -1130,8 +1111,6 @@ set_option backward.isDefEq.respectTransparency false
 set_option linter.unusedVariables false
 
 noncomputable section
-
-
 
 open CategoryTheory AlgebraicGeometry Limits GlobalTheory.LogCris DividedPowers
 
@@ -1178,8 +1157,6 @@ set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
-
-
 open CategoryTheory AlgebraicGeometry Limits GlobalTheory.LogCris DividedPowers
 
 namespace CrystallineSemistableComparison.Pb.Kap
@@ -1219,8 +1196,6 @@ set_option linter.unusedVariables false
 
 noncomputable section
 
-
-
 open CategoryTheory AlgebraicGeometry Limits GlobalTheory.LogCris DividedPowers
 
 namespace CrystallineSemistableComparison.Pb.Kap
@@ -1237,7 +1212,6 @@ theorem pdP_B_bot (hL : L.Good) : pdP L.γB m = ⊥ := by
     exact ⟨1, by simp⟩
   · exact absurd (facts l K).t_mem ht
 
-
 omit d hc in
 theorem quoM_bMap (hQ : ∀ T, QB L M s T → QA L M s (((nmB M hL).mor 0).obj T)) (r : ℤ) (j : ℕ) (z : HO (QA L M s) j)
     (hz : quoM (QA L M s) r j z = 0) : quoM (QB L M s) r j (bMap M s hL hQ j z) = 0 := by
@@ -1247,7 +1221,6 @@ theorem quoM_bMap (hQ : ∀ T, QB L M s T → QA L M s (((nmB M hL).mor 0).obj T
     obtain ⟨z, rfl⟩ := Submodule.Quotient.mk_surjective _ z
     rfl
   rw [e, hz, map_zero]
-
 
 theorem fil_lev_pf [FiniteDimensional ℚ_[l] K] (hM : M.Sm) (U : Cov M.q) (hU : ∀ α, U.d α + m ≤ s) (hs : m ≤ s) {j : ℕ}
     (x : ∀ n, M.Hc false n j) (hx : (chainOf hL M s (_root_.CrystallineSemistableComparison.Pb.Kap.qb_le_pf hL M s) (rHof d hc M s)).Comp x)
@@ -1297,8 +1270,6 @@ section -- clump:auto
 set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
-
-
 
 open CategoryTheory AlgebraicGeometry Limits GlobalTheory.LogCris DividedPowers
 
@@ -1419,8 +1390,6 @@ set_option linter.unusedVariables false
 
 noncomputable section
 
-
-
 open CategoryTheory AlgebraicGeometry Limits GlobalTheory.LogCris DividedPowers
 
 namespace CrystallineSemistableComparison.Pb.Kap
@@ -1485,8 +1454,6 @@ set_option backward.isDefEq.respectTransparency false
 set_option linter.unusedVariables false
 
 noncomputable section
-
-
 
 open CategoryTheory AlgebraicGeometry Limits GlobalTheory.LogCris DividedPowers
 
@@ -1610,8 +1577,6 @@ noncomputable section
 open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers
 
 namespace CrystallineSemistableComparison.Pb
-
-
 
 open Kap
 

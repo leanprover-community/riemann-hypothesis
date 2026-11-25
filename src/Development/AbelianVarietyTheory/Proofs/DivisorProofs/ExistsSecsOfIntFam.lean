@@ -130,8 +130,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
-theorem _root_.GlobalTheory.T.coverTrait_expansion_scale_both_scalars : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R] (D : DegData R (maximalIdeal R)) (C : LabCover D) (W : Type) [CommRing W] [IsDomain W] [IsLocalRing W] (T : Trait C W) (k : ℕ) (s : SecK C.P.L.L C.α k) (F : IntFam (maximalIdeal R) D.toPre k) (a b c : W), T.Exp a b s F → T.Exp (c * a) (c * b) s F := by
-  first | exact @GlobalTheory.Mum.Trait.exp_mul_left
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoverTraitExpansionScaleBothScalarsStatement =====
@@ -1155,8 +1153,8 @@ theorem ratio_odd_mul : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R]
   obtain ⟨v, hv⟩ := hS W T a b ha h
   obtain ⟨u, hu⟩ := hrt W T
   have htW : T.φ t ≠ 0 := fun h0 => ht (T.inj (h0.trans (map_zero _).symm))
-  have h1 := GlobalTheory.T.coverTrait_expansion_scale_both_scalars R D C W T (m ^ 2) S G a (b * v) (T.φ t) hv
-  have h2 := GlobalTheory.T.coverTrait_expansion_scale_both_scalars R D C W T (m ^ 2) S G (T.φ t) (T.φ r * u) a hu
+  have h1 := GlobalTheory.Mum.Trait.exp_mul_left R D C W T (m ^ 2) S G a (b * v) (T.φ t) hv
+  have h2 := GlobalTheory.Mum.Trait.exp_mul_left R D C W T (m ^ 2) S G (T.φ t) (T.φ r * u) a hu
   rw [mul_comm a (T.φ t)] at h2
   have he := GlobalTheory.T.expansion_secondScalar_determined_of_nonzero R hR D C W T (m ^ 2) hk S G hGz (T.φ t * a) _ _ (mul_ne_zero htW ha) h1 h2
   refine ⟨a, b, u * v⁻¹, ha, hb, h, ?_⟩

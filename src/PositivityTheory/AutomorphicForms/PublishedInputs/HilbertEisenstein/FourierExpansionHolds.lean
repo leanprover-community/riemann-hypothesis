@@ -1138,9 +1138,6 @@ theorem pInf_yAd (y : (UpperTheory.V.TR.Rinf F)ˣ) (yf : (Af F)ˣ) :
     UpperTheory.V.TR.pInf F (yAd y yf) = (y : UpperTheory.V.TR.Rinf F) := by
   rw [yAd_eq]; simp [pInf_sInf, pInf_sFin]
 
-theorem pFin_yAd (y : (UpperTheory.V.TR.Rinf F)ˣ) (yf : (Af F)ˣ) : pFin F (yAd y yf) = (yf : Af F) := by
-  rw [yAd_eq]; simp [pFin_sInf, pFin_sFin]
-
 theorem pInf_xAd (x : UpperTheory.V.TR.Rinf F) : UpperTheory.V.TR.pInf F (xAd x) = x :=
   (UpperTheory.V.TR.infEq F).symm_apply_apply x
 
@@ -1163,7 +1160,7 @@ theorem gPt_val (x : UpperTheory.V.TR.Rinf F) (y : (UpperTheory.V.TR.Rinf F)ˣ) 
         ((Matrix.GeneralLinearGroup.map (pFin F) (gPt x y yf) : GL (Fin 2) (Af F)) :
           Matrix (Fin 2) (Fin 2) (Af F)) i j := rfl
     rw [e1, hF]
-    fin_cases i <;> fin_cases j <;> simp [aff, pFin_yAd, pFin_xAd]
+    fin_cases i <;> fin_cases j <;> simp [aff, UpperTheory.HilbertEisensteinWeightOne.FourierExpansionEisenstein.L4.pFin_yAd, pFin_xAd]
 
 theorem row_eq (x : UpperTheory.V.TR.Rinf F) (y : (UpperTheory.V.TR.Rinf F)ˣ) (yf : (Af F)ˣ) (τ : IdeleGroup F) (ξ : Fin 2 → F) :
     rowA ξ ᵥ* ((Matrix.GeneralLinearGroup.scalar (Fin 2) τ * gPt x y yf : GA F 2) : Matrix (Fin 2) (Fin 2) (Ad F)) =
@@ -1394,7 +1391,6 @@ theorem summable_kern {ω : HChar F} {c : HeightOneSpectrum (𝓞 F) → ℕ} (h
         gcongr
         exact kernF_le c _ _
     _ = _ := by ring
-
 
 open Classical in
 def rowEquiv : Fˣ ⊕ (Fˣ × F) ≃ {ξ : Fin 2 → F // ξ ≠ 0} where

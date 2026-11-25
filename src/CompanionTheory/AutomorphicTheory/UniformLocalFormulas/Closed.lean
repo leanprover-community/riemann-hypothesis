@@ -435,7 +435,6 @@ namespace Formalism.MainStatements.RankOne
 
 variable {k r : ℕ}
 
-
 theorem gap_arith (hk : 1 ≤ k) {C : ℝ} (hC : 100 ≤ C) :
     ThreeDimData.GapOK k r (C * ((2 * r + 2 : ℕ) : ℝ) ^ ((9 : ℝ) / 2) *
       (((3 * (r + 1) : ℕ) : ℝ) * ((2 * r + k + 1 : ℕ) : ℝ) ^ 2 + ((2 * r + k + 1 : ℕ) : ℝ) ^ 3)) ∧
@@ -1043,31 +1042,12 @@ theorem cMr_smap (γ : X.B.I.Ginf) (τ : D.what₂.Tau) (s z : Formalism.REAL.UJ
   simp only [Matrix.mul_assoc]
   rw [← Matrix.mul_assoc (C.Q τ) (C.Qi τ), (C.isT τ).2.1, Matrix.one_mul, ← Matrix.mul_assoc (uMat (γ (vOf X τ))) (uMat (γ (vOf X τ)))⁻¹, uMat_mul_inv, Matrix.one_mul]
 
-theorem map_smap (τ : D.what₂.Tau) (g : Formalism.REAL.UJ (X.B.I.ε (vOf X τ))) :
-    (Formalism.REAL.muG (X.B.I.ε (vOf X τ))).map (Smap C τ g) = muGB X (C.Q τ) (C.Qi τ) τ := by
-  have : (Formalism.REAL.muG (X.B.I.ε (vOf X τ))).IsMulRightInvariant := ⟨fun g => Formalism.REAL.indefinite_unitary_unimodular _ _ g⟩
-  set y' : Formalism.REAL.UJ (X.B.I.ε (vOf X τ)) := ujOf' _ (y_facts C τ).1 with hy'
-  have e : Smap C τ g = (fun γ => Matrix.of.symm (trG (C.Q τ) (C.Qi τ) γ)) ∘ (fun x => x * y') ∘ fun x => g⁻¹ * x := by
-    funext z
-    show Matrix.of.symm (C.Qi τ * umat (g⁻¹ * z) * C.Q τ * (C.y τ)⁻¹) =
-      Matrix.of.symm (C.Qi τ * (umat (g⁻¹ * z) * (C.Q τ * (C.y τ)⁻¹ * C.Qi τ)) * C.Q τ)
-    congr 1
-    simp only [Matrix.mul_assoc]
-    rw [(C.isT τ).1, Matrix.mul_one]
-  have hm : Measurable fun γ : Formalism.REAL.UJ (X.B.I.ε (vOf X τ)) => Matrix.of.symm (trG (C.Q τ) (C.Qi τ) γ) := by
-    refine Continuous.measurable ?_
-    unfold trG
-    exact (continuous_const.matrix_mul (Units.continuous_val.comp continuous_subtype_val)).matrix_mul continuous_const
-  rw [e, ← Measure.map_map hm ((measurable_mul_const _).comp (measurable_const_mul _)),
-    ← Measure.map_map (measurable_mul_const _) (measurable_const_mul _), map_mul_left_eq_self, map_mul_right_eq_self]
-  rfl
-
 theorem quot_push (γ : X.B.I.Ginf) (τ : D.what₂.Tau) {μR ν : Measure (Formalism.REAL.UJ (X.B.I.ε (vOf X τ)))}
     (h : IsQuotLoc μR ν) :
     IsQuotMeas (muGB X (C.Q τ) (C.Qi τ) τ) (μR.map (cMr C γ τ)) (ν.map (Smap C τ (γ (vOf X τ)))) := by
   intro f hf
   have he := smap_measEmb C τ (γ (vOf X τ))
-  rw [← map_smap C τ (γ (vOf X τ)), he.lintegral_map, he.lintegral_map]
+  rw [← Formalism.MainStatements.RowRest.muG_smap C τ (γ (vOf X τ)), he.lintegral_map, he.lintegral_map]
   refine (h _ (hf.comp he.measurable)).trans (lintegral_congr fun x => ?_)
   rw [(cMr_measEmb C γ τ).lintegral_map]
   refine lintegral_congr fun s => ?_

@@ -105,9 +105,6 @@ theorem iso_of_integral {S : Sch l →L[ℂ] Sch l} (h : ∀ f : Sch l, ∫ x, �
     rw [schwartzToL2_apply, schwartzToL2_apply, norm_toLp' (by simp) (by simp), norm_toLp' (by simp) (by simp)]
     simp only [ENNReal.toReal_ofNat, h]
 
-theorem temperate_quad (S : Eu l →L[ℝ] Eu l) : Function.HasTemperateGrowth fun x : Eu l => ⟪x, S x⟫ :=
-  (innerSL ℝ).bilinear_hasTemperateGrowth Function.HasTemperateGrowth.id' S.hasTemperateGrowth
-
 def ph (S : Eu l →L[ℝ] Eu l) : Sch l →L[ℂ] Sch l :=
   smulLeftCLM ℂ fun x : Eu l => exp (((-π * ⟪x, S x⟫ : ℝ) : ℂ) * I)
 
@@ -130,7 +127,6 @@ theorem iso_ph (S : Eu l →L[ℝ] Eu l) : Iso (ph S) := iso_of_integral fun f =
 
 theorem intw_ph {S : Eu l →L[ℝ] Eu l} (hS : ∀ x y, ⟪x, S y⟫ = ⟪y, S x⟫) (p q : Eu l) : Intw (ph S) p q p (q + S p) :=
   CompanionTheory.ThKR.LL.intw_ph hS p q
-
 
 open Classical in
 def dil (B : Eu l →L[ℝ] Eu l) : Sch l →L[ℂ] Sch l :=
@@ -236,21 +232,6 @@ namespace PositivityTheory.ThKR.LL
 
 variable {l : Type} [Fintype l]
 
-theorem exists_decay {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] (g : SchwartzMap (EuclideanSpace ℝ l) F) (k : ℕ) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ x, (1 + ‖x‖) ^ k * ‖g x‖ ≤ C := by
-  have h := fun x => one_add_le_sup_seminorm_apply (𝕜 := ℝ) (m := (k, 0)) (k := k) (n := 0) le_rfl le_rfl g x
-  simp only [norm_iteratedFDeriv_zero] at h
-  exact ⟨_, le_trans (by positivity) (h 0), h⟩
-
-theorem csmul (r : ℝ) (x : L2 l) : (r : ℂ) • x = r • x := by
-  rw [coe_smul]
-  rfl
-
-theorem hasDerivAt_schwartz_to_L2 {F : ℝ → Sch l} {G : Sch l} {t₀ : ℝ} (hp : ∀ x, HasDerivAt (fun t => F t x) (G x) t₀) {C : ℝ}
-    (hb : ∀ᶠ t in 𝓝 t₀, ∀ x, (1 + ‖x‖) ^ (Module.finrank ℝ (EuclideanSpace ℝ l) + 1) * ‖F t x - F t₀ x‖ ≤ C * |t - t₀|) :
-    HasDerivAt (fun t => schwartzToL2 l (F t)) (schwartzToL2 l G) t₀ := by
-  apply CompanionTheory.ThKR.LL.hasDerivAt_schwartz_to_L2 <;> assumption
-
 def LD (U : ℝ → Sch l →L[ℂ] Sch l) (Q : Sch l → Sch l) (t₀ : ℝ) : Prop :=
   ∀ f, HasDerivAt (fun t => schwartzToL2 l (U t f)) (schwartzToL2 l (Q f)) t₀
 
@@ -274,7 +255,7 @@ theorem weyl_step {V : Sch l →L[ℂ] Sch l} {w v : l ⊕ l → ℝ} (h : ∀ f
   rw [ContinuousLinearMap.mul_apply, h, dRho_eq_sum v]
 
   simp only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply, map_sum, map_smul]
-  simp only [csmul]
+  simp only [CompanionTheory.ThKR.LL.csmul]
 
 theorem LD.differentiableAt {V : ℝ → Sch l →L[ℂ] Sch l} {Q : Sch l → Sch l} {t₀ : ℝ} (hV : LD V Q t₀)
     (v : ℝ → (l ⊕ l → ℝ) → (l ⊕ l → ℝ)) (hv : ∀ w a, DifferentiableAt ℝ (fun t => v t w a) t₀)
@@ -316,7 +297,7 @@ theorem LD.hasDerivAt {V : ℝ → Sch l →L[ℂ] Sch l} {Q : Sch l →L[ℂ] S
         simp only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply, map_sum, map_smul, hv0, h0,
         ContinuousLinearMap.sub_apply, ContinuousLinearMap.mul_apply, map_sub, neg_smul, ← sub_eq_add_neg,
         Finset.sum_sub_distrib]
-        simp only [csmul]
+        simp only [CompanionTheory.ThKR.LL.csmul]
       · filter_upwards [h] with t ht
         exact weyl_step (ht w) A f
     · intro A B hA hB f
@@ -354,14 +335,6 @@ def mq (S : Eu l →L[ℝ] Eu l) : Sch l →L[ℂ] Sch l :=
 
 theorem mq_apply (S : Eu l →L[ℝ] Eu l) (f : Sch l) (x : Eu l) : mq S f x = ((-π * ⟪x, S x⟫ : ℝ) : ℂ) * I * f x :=
   CompanionTheory.ThKR.LL.mq_apply S f x
-
-theorem norm_exp_sub_le (a b : ℝ) : ‖exp ((a : ℂ) * I) - exp ((b : ℂ) * I)‖ ≤ |a - b| :=
-  CompanionTheory.ThKR.LL.norm_exp_sub_le a b
-
-theorem exists_lip {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] {S : ℝ → F} {S' : F} {t₀ : ℝ}
-    (h : HasDerivAt S S' t₀) : ∃ K : ℝ, 0 ≤ K ∧ ∀ᶠ t in 𝓝 t₀, ‖S t - S t₀‖ ≤ K * |t - t₀| := by
-  obtain ⟨K, hK, h⟩ := h.isBigO_sub.exists_nonneg
-  exact ⟨K, hK, h.bound⟩
 
 theorem ld_ph {S : ℝ → Eu l →L[ℝ] Eu l} {S' : Eu l →L[ℝ] Eu l} {t₀ : ℝ} (h : HasDerivAt S S' t₀) :
     LD (fun t => ph (S t)) (fun f => mq S' (ph (S t₀) f)) t₀ :=
@@ -444,16 +417,6 @@ theorem block_inr_inl_one : bl Sum.inr Sum.inl (1 : Matrix (l ⊕ l) (l ⊕ l) �
   ext x a
   simp [bl_apply]
 
-theorem hasDerivAt_lin_exp {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] (L : Matrix (l ⊕ l) (l ⊕ l) ℝ →ₗ[ℝ] F)
-    (X : Matrix (l ⊕ l) (l ⊕ l) ℝ) (t : ℝ) :
-    HasDerivAt (fun t : ℝ => L (NormedSpace.exp (t • X))) (L (NormedSpace.exp (t • X) * X)) t := by
-  letI := Matrix.linftyOpNormedRing (n := l ⊕ l) (α := ℝ)
-  letI := Matrix.linftyOpNormedAlgebra (n := l ⊕ l) (R := ℝ) (α := ℝ)
-  exact (LinearMap.toContinuousLinearMap L).hasFDerivAt.comp_hasDerivAt t (hasDerivAt_exp_smul_const (𝕂 := ℝ) X t)
-
-theorem exp_mul_exp_neg (X : Matrix (l ⊕ l) (l ⊕ l) ℝ) : NormedSpace.exp X * NormedSpace.exp (-X) = 1 := by
-  rw [← Matrix.exp_add_of_commute _ _ (Commute.refl X).neg_right, add_neg_cancel, NormedSpace.exp_zero]
-
 theorem sympl_exp {X : Matrix (l ⊕ l) (l ⊕ l) ℝ} (hX : X ∈ LieAlgebra.Symplectic.sp l ℝ) (w w' : l ⊕ l → ℝ) :
     sympl (NormedSpace.exp X *ᵥ w) (NormedSpace.exp X *ᵥ w') = sympl w w' := by
   have h : Xᵀ * Matrix.J l ℝ = Matrix.J l ℝ * -X :=
@@ -464,7 +427,7 @@ theorem sympl_exp {X : Matrix (l ⊕ l) (l ⊕ l) ℝ} (hX : X ∈ LieAlgebra.Sy
   have h1 : Xᵀ = Matrix.J l ℝ * -X * (Matrix.J l ℝ)⁻¹ := by
     rw [← h, Matrix.mul_assoc, Matrix.mul_nonsing_inv _ hd, Matrix.mul_one]
   have h2 : (NormedSpace.exp X)ᵀ * (Matrix.J l ℝ * NormedSpace.exp X) = Matrix.J l ℝ := by
-    have := exp_mul_exp_neg (-X)
+    have := CompanionTheory.ThKR.LL.exp_mul_exp_neg (-X)
     rw [neg_neg] at this
     rw [← Matrix.exp_transpose, h1, Matrix.exp_conj _ _ hu, Matrix.mul_assoc, ← Matrix.mul_assoc _ (Matrix.J l ℝ),
       Matrix.nonsing_inv_mul _ hd, Matrix.one_mul, Matrix.mul_assoc, this, Matrix.mul_one]
@@ -505,7 +468,7 @@ theorem localLift_holds : LocalLift := by
       infer_instance
   let g : ℝ → Matrix (l ⊕ l) (l ⊕ l) ℝ := fun t => NormedSpace.exp (t • X)
   have g0 : g 0 = 1 := by simp [g]
-  have hd := fun i j t => hasDerivAt_lin_exp (bl i j) X t
+  have hd := fun i j t => CompanionTheory.ThKR.LL.hasDerivAt_lin_exp (bl i j) X t
   let A : ℝ → Eu l →L[ℝ] Eu l := fun t => bl Sum.inl Sum.inl (g t)
   let c : ℝ → ℝ := fun t => (√|(A t).det|)⁻¹
   let V : ℝ → Sch l →L[ℂ] Sch l := fun t =>
@@ -525,7 +488,7 @@ theorem localLift_holds : LocalLift := by
     have h1 : DifferentiableAt ℝ (fun t => (A t).det) t := by
       simp only [A, det_bl]
       exact differentiableAt_det fun i j =>
-        (hasDerivAt_lin_exp (Matrix.entryLinearMap ℝ ℝ (Sum.inl i) (Sum.inl j)) X t).differentiableAt
+        (CompanionTheory.ThKR.LL.hasDerivAt_lin_exp (Matrix.entryLinearMap ℝ ℝ (Sum.inl i) (Sum.inl j)) X t).differentiableAt
     exact ((h1.abs (hne t ht)).sqrt (abs_pos.2 (hne t ht)).ne').inv (Real.sqrt_pos.2 (abs_pos.2 (hne t ht))).ne'
   have c0 : c 0 = 1 := by simp [c, A0, ContinuousLinearMap.det]
   have V0 : V 0 = 1 := by simp only [V, A0, g0, c0, block_inl_inr_one, block_inr_inl_one, Ring.inverse_one, big_one]
@@ -534,13 +497,13 @@ theorem localLift_holds : LocalLift := by
     ⟨iso_big ht.ringInverse _ _ (hc t ht), fun w => intw_of_sympl (sympl_exp (SMulMemClass.smul_mem t hX)) ht _ w⟩
   let v : ℝ → (l ⊕ l → ℝ) → (l ⊕ l → ℝ) := fun t w => NormedSpace.exp (t • -X) *ᵥ w
   have hv : ∀ t w a, HasDerivAt (fun t => v t w a) (((NormedSpace.exp (t • -X) * -X) *ᵥ w) a) t := fun t w a =>
-    hasDerivAt_lin_exp ((LinearMap.proj a).comp ((Matrix.mulVecBilin ℝ ℝ).flip w)) (-X) t
+    CompanionTheory.ThKR.LL.hasDerivAt_lin_exp ((LinearMap.proj a).comp ((Matrix.mulVecBilin ℝ ℝ).flip w)) (-X) t
   have hw : ∀ t, IsUnit (A t) → ∀ w f, dRho w (V t f) = V t (dRho (v t w) f) := fun t ht w f => by
     have hs : Function.Surjective (V t).toLinearMap := fun f => ⟨Ring.inverse (V t) f, by
       show (V t * Ring.inverse (V t)) f = f
       rw [Ring.mul_inverse_cancel _ (hU t ht), ContinuousLinearMap.one_apply]⟩
     have := Impl.dRho (s := Matrix.mulVecLin (g t)) (hI t ht) hs (v t w) f
-    simp only [v, g, Matrix.mulVecLin_apply, mulVec_mulVec, smul_neg, exp_mul_exp_neg, one_mulVec] at this
+    simp only [v, g, Matrix.mulVecLin_apply, mulVec_mulVec, smul_neg, CompanionTheory.ThKR.LL.exp_mul_exp_neg, one_mulVec] at this
     simp only [v, smul_neg]
     exact this.symm
   have hL := fun t (ht : IsUnit (A t)) (Ai' : Eu l →L[ℝ] Eu l) (h : HasDerivAt (fun t => Ring.inverse (A t)) Ai' t) =>

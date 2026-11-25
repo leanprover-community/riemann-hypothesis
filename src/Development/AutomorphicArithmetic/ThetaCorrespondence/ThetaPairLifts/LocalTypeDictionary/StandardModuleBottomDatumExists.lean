@@ -211,7 +211,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (InId IsUnitDet un
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.StdRead
 
-
 theorem _root_.GlobalTheory.T.adelicVacuum_standardLattices_readsTheta : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D) {a d : ℕ} (hS : S.rank = a) (hT : T.rank = d) (δ : ℂ),
   D.host.ccK = ⊤ → Setup ψ θ S T ⊤ δ 1 → ∀ v : WO S T → ℂ, IsVacO ψ θ S T (fun _ => 1) (fun _ => 1) (stdL D S.rank : Set (Fin S.rank → D.host.E)) (stdL D T.rank : Set (Fin T.rank → D.host.E)) v →
   ∃ G ∈ Th D (tor0 D ⊤ δ) (stdL D a) (stdL D d), G ≠ 0 ∧ Reads ψ θ hS hT ⊤ δ 1 G v := by
@@ -285,7 +284,6 @@ private theorem half_add {e : AE D} {u : WO S T} (hue : IsHalf e u) (t : WO S T)
   rw [GlobalTheory.PlaceModel.isHalf_iff, GlobalTheory.PlaceModel.isHalf_iff]
   exact add_mem_cancel_right ((GlobalTheory.PlaceModel.isHalf_iff S T).1 hue)
 
-
 private theorem sb_cosInd (hc : D.host.ccK = ⊤) (hS : S.gram = 1) {e : AE D} {𝔪 : Ideal (𝓞 D.host.E)} (h : GoodMod e 𝔪) :
     IsSBHalf e (latO S T (stdL D S.rank : Set (Fin S.rank → D.host.E))
       (stdL D T.rank : Set (Fin T.rank → D.host.E)) fun _ => True) (cosInd e 𝔪 rfl rfl 0) := by
@@ -334,8 +332,6 @@ private theorem sb_cosInd (hc : D.host.ccK = ⊤) (hS : S.gram = 1) {e : AE D} {
       obtain ⟨SS, c, he, -⟩ := h
       rw [← ht1 i j, RingHom.map_mul, (GlobalTheory.IdemSumIdeal.isIdemSum_props e SS c he).1, zero_mul]
     exact mem_of_inId hc hS mem_stdL FractionalIdeal.coeIdeal_le_one h0 ht2
-
-
 
 private theorem fix_deep (hc : D.host.ccK = ⊤) (hs : Setup ψ θ S T ⊤ δ 1) {v : WO S T → ℂ}
     (hv : IsLatVac (heisO ψ S T) (latO S T (stdL D S.rank : Set (Fin S.rank → D.host.E))
@@ -531,14 +527,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (InId IsUnitDet un
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.StdRead
 
-
-theorem _root_.GlobalTheory.T.idealIndicator_reads_norm_pow_mul_intertwinedVacuum : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D) {a d : ℕ} (hS : S.rank = a) (hT : T.rank = d) (δ : ℂ),
-  D.host.ccK = ⊤ → Setup ψ θ S T ⊤ δ 1 → ∀ v : WO S T → ℂ, IsVacO ψ θ S T (fun _ => 1) (fun _ => 1) (stdL D S.rank : Set (Fin S.rank → D.host.E)) (stdL D T.rank : Set (Fin T.rank → D.host.E)) v →
-  ∀ G ∈ Th D (tor0 D ⊤ δ) (stdL D a) (stdL D d), Reads ψ θ hS hT ⊤ δ 1 G v → ∀ (e : AE D) (𝔪 : Ideal (𝓞 D.host.E)), GoodMod e 𝔪 →
-  ∀ Tm : (WO S T → ℂ) →ₗ[ℂ] (WO S T → ℂ),
-    IsPlaceModel ψ (symplO S T) (heisO ψ S T) e (latO S T (stdL D S.rank : Set (Fin S.rank → D.host.E)) (stdL D T.rank : Set (Fin T.rank → D.host.E)) fun _ => True) 1 v Tm →
-  Reads ψ θ hS hT ⊤ δ 1 (cosV δ 𝔪 0 G) (Tm (cosInd e 𝔪 hS hT 0)) := by
-  first | exact @GlobalTheory.IopRead.indicator_reads
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.IdealIndicatorReadsNormPowMulIntertwinedVacuumStatement =====
@@ -561,11 +549,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (InId IsUnitDet un
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.StdRead
 
-
-theorem _root_.GlobalTheory.T.integral_action_unit_character_eigen : ∀ {D : D7}, GlobalTheory.NormSum.Inp D → ∀ {δ t0 : ℂ} {Q : ℕ} (P : Pair D ⊤ δ t0 Q) (e : AE D) (𝔪 : Ideal (𝓞 D.host.E)), GoodMod e 𝔪 →
-  ∀ ν : (AE D)ˣ →* Circle, HasFinPart ν⁻¹ P.W.chV' P.W.ep' → KillsCong ν 𝔪 →
-  ∀ k : Formalism.MainNotions.StandardLatticesGL3.GA D P.a, k ∈ intG D P.a → P.W.Om k 1 P.e0 = unitChar ν e (matE k) • P.e0 := by
-  first | exact @GlobalTheory.StdRead.CharVal.om_vac_eq
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralActionUnitCharacterEigenStatement =====
@@ -668,7 +651,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (InId IsUnitDet un
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.StdRead
 
-
 theorem _root_.GlobalTheory.T.isIntegralMatrix_frame_completedStandardLattice : ∀ {D : D7} {n : ℕ} (β : GL (Fin n) (EAf D)), Formalism.L2.DIV.IsFrame β (stdL D n) → IsIntM β.val ∧ IsIntM (β⁻¹).val := by
   first | exact @GlobalTheory.StdRead.isIntM_of_isFrame_stdL
 end -- clump:auto
@@ -718,10 +700,6 @@ namespace GlobalTheory.VacUnit
 
 open Formalism.MainNotions.TaylorLogMetric (hYY LocBasis YYl)
 open Formalism.MainNotions.StandardLatticesGL3 (OnB LaB pullB KLat)
-
-theorem mem_Qbar_of_pow {x : ℂ} {n : ℕ} (hn : 0 < n) (h : x ^ n ∈ Qbar) : x ∈ Qbar := by
-  rw [mem_algebraicClosure_iff] at h ⊢
-  exact h.of_pow hn
 
 theorem norm_det_le {p : ℕ} [Fact p.Prime] {r : ℕ} (M : Matrix (Fin r) (Fin r) ℂ_[p]) (h : ∀ i j, ‖M i j‖ ≤ 1) :
     ‖M.det‖ ≤ 1 := by
@@ -823,12 +801,12 @@ theorem at_place (hI : GlobalTheory.NormSum.Inp D) {δ t0 : ℂ} (hC : Crv D ⊤
   have key : κ * ε = ε' * c * μ := by
     apply mul_right_cancel₀ hz'
     linear_combination -e2
-  have hζQ : ζ ∈ Qbar := mem_Qbar_of_pow hm (hζ ▸ one_mem _)
-  have hμQ : μ ∈ Qbar := mem_Qbar_of_pow (n := 8) (by norm_num) (hμ ▸ one_mem _)
+  have hζQ : ζ ∈ Qbar := GlobalTheory.Vacuum.mem_Qbar_of_pow hm (hζ ▸ one_mem _)
+  have hμQ : μ ∈ Qbar := GlobalTheory.Vacuum.mem_Qbar_of_pow (n := 8) (by norm_num) (hμ ▸ one_mem _)
   set u := phiK D (Matrix.of fun i j => hYY D (b' j) (b i)).det with hu
   have hun : ‖lam u‖ = 1 := norm_det_eq_one (lam.comp (phiK D)) hb hl hl'
   change c ^ 2 = ζ * (u : ℂ) at hc
-  have hcQ : c ∈ Qbar := mem_Qbar_of_pow (n := 2) (by norm_num) (hc ▸ mul_mem hζQ u.2)
+  have hcQ : c ∈ Qbar := GlobalTheory.Vacuum.mem_Qbar_of_pow (n := 2) (by norm_num) (hc ▸ mul_mem hζQ u.2)
   rw [lamC, dite_eq_left hε] at hεn
   rw [lamC, dite_eq_left hε'] at hεn'
   have hε0 : ε ≠ 0 := left_ne_zero_of_mul hz
@@ -884,7 +862,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (InId IsUnitDet un
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.StdRead
 
-
 theorem _root_.GlobalTheory.T.odd_eisenstein_ratio_algebraic_unit : ∀ {D : D7}, GlobalTheory.NormSum.Inp D → ∀ {δ t0 : ℂ}, Crv D ⊤ δ → Formalism.MainNotions.GL3Theta.IsTwoTorsionPointUnkilled D (lamOf D ⊤ δ) t0 → ∀ {N N' : ℕ} {e₁ e₂ : VC D N N' → ℂ},
   oddE0 D ⊤ δ t0 N N' e₁ → oddE0 D ⊤ δ t0 N N' e₂ → e₁ ≠ 0 → ∀ κ : ℂ, e₂ = κ • e₁ →
   κ ∈ Qbar ∧ ∀ (p : ℕ) [Fact p.Prime] (lam : Qbar →+* ℂ_[p]), ‖lamC lam κ‖ = 1 := by
@@ -916,13 +893,6 @@ noncomputable section
 namespace GlobalTheory.StdRead
 
 variable {D : D7}
-
-theorem det_mem_intAf {n : ℕ} {N : Matrix (Fin n) (Fin n) (EAf D)} (h : IsIntM N) :
-    N.det ∈ Formalism.L2.Herm.intAf D.host.F D.host.E := by
-  rw [Matrix.det_apply]
-  refine sum_mem fun σ _ => ?_
-  rw [Units.smul_def]
-  exact zsmul_mem (prod_mem fun i _ => h _ _) _
 
 def finHom (D : D7) : AE D →* Formalism.MainNotions.StandardLatticesGL3.AE D :=
   ((GlobalTheory.BotFormula.toAfE D).symm.toRingHom.comp (finPart D)).toMonoidHom
@@ -1010,8 +980,8 @@ theorem unitChar_pow_eq_one : ∀ {D : D7} (e : AE D) (𝔪 : Ideal (𝓞 D.host
   obtain ⟨SS, c, he, -, -, -⟩ := h𝔪
   have hE := StandardFirstTheta.GlobalTheory.CompanionTheory.StdFstTheta.toEAf_mem he
   have hee : toEAf D e * toEAf D e = toEAf D e := by rw [← map_mul, GlobalTheory.PlaceDatum.idemSum_mul_self he]
-  have hd := det_mem_intAf hβ
-  have hd' := det_mem_intAf hβ'
+  have hd := GlobalTheory.StdRead.CharMul.det_int hβ
+  have hd' := GlobalTheory.StdRead.CharMul.det_int hβ'
   have hdd : β.val.det * (β⁻¹).val.det = 1 := by rw [← Matrix.det_mul, Units.mul_inv, Matrix.det_one]
   have huv : (1 - toEAf D e + toEAf D e * β.val.det) * (1 - toEAf D e + toEAf D e * (β⁻¹).val.det) = 1 := by
     linear_combination (1 - β.val.det - (β⁻¹).val.det + β.val.det * (β⁻¹).val.det) * hee + toEAf D e * hdd
@@ -1077,7 +1047,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (InId IsUnitDet un
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.StdRead
 
-
 theorem _root_.GlobalTheory.T.unitDetCharacter_integralFrame_pow_eq_one : ∀ {D : D7} (e : AE D) (𝔪 : Ideal (𝓞 D.host.E)), GoodMod e 𝔪 → ∀ ν : (AE D)ˣ →* Circle, KillsCong ν 𝔪 →
   ∀ {n : ℕ} (β : GL (Fin n) (EAf D)), IsIntM β.val → IsIntM (β⁻¹).val → ∃ m : ℕ, 0 < m ∧ unitChar ν e β.val ^ m = 1 := by
   first | exact @GlobalTheory.StdRead.unitChar_pow_eq_one
@@ -1110,8 +1079,6 @@ namespace GlobalTheory.StdRead.Move
 open Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.StandardLatticesGL3 GlobalTheory.NormSum GlobalTheory.FunObj GlobalTheory.FunObj.SqNum
 
 variable {D : D7}
-
-
 
 theorem eig_of_prop {δ t0 : ℂ} {Q : ℕ} (P : Pair D ⊤ δ t0 Q) (hT : P.e0 ∈ TT D (tor0 D ⊤ δ) P.a P.d)
     {g' : Formalism.MainNotions.StandardLatticesGL3.GA D P.d}
@@ -1233,7 +1200,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (InId IsUnitDet un
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.StdRead
-
 
 theorem _root_.GlobalTheory.T.weilAction_integralPoint_cosetVector_eq : ∀ {D : D7}, GlobalTheory.NormSum.Inp D → ∀ {δ t0 : ℂ} {Q : ℕ} (P : Pair D ⊤ δ t0 Q) {𝔪 : Ideal (𝓞 D.host.E)}, 𝔪 ≠ ⊥ →
   ∀ (o : ℕ) (k : Formalism.MainNotions.StandardLatticesGL3.GA D P.a), k ∈ intG D P.a → ∀ c : ℂ, P.W.Om k 1 P.e0 = c • P.e0 →
@@ -1363,19 +1329,18 @@ theorem reads_std (hI : GlobalTheory.NormSum.Inp D) {δ t0 : ℂ} {Q : ℕ} (P :
   obtain ⟨m, hm0, hpow⟩ := GlobalTheory.T.unitDetCharacter_integralFrame_pow_eq_one e 𝔪 hm ν hk β b1 b2
   choose! z hz using fun (k : Formalism.MainNotions.StandardLatticesGL3.GA D P.a) (hk : k ∈ intG D P.a) => exists_approx hm.ne_bot 0 P.d hk
   have hz' : ∀ r ∈ R, IsIntE (z r) ∧ Approx 𝔪 0 r (z r) := fun r hr => hz r (hR1 r hr)
-  have h0 := GlobalTheory.T.idealIndicator_reads_norm_pow_mul_intertwinedVacuum ψ θ S T hS hT δ hcc hs v hv _ hc hr e 𝔪 hm Tm hTm
+  have h0 := GlobalTheory.IopRead.indicator_reads ψ θ S T hS hT δ hcc hs v hv _ hc hr e 𝔪 hm Tm hTm
   have h1 := GlobalTheory.T.cosetIndicator_reads_as_translate_curveTheta ψ θ S T hS hT δ hcc hs v hv _ hc hr e 𝔪 hm Tm hTm h0
   refine ⟨_, (isPh_of_pow hm0 hpow).conj, ?_⟩
 
   rw [hf, GlobalTheory.T.standardPairFirst_conj_eq_sum_cosetIndicators S T hS hT P.a_le e 𝔪 hm ν hk β b1 b2 R hR1 hR2 z hz', map_smul, map_sum, mul_comm c, mul_smul, hF,
   Finset.smul_sum]
   refine Reads.smul (reads_sum R _ _ fun r hr => ?_) _
-  rw [GlobalTheory.T.weilAction_integralPoint_cosetVector_eq hI P hm.ne_bot 0 r (hR1 r hr) _ (GlobalTheory.T.integral_action_unit_character_eigen hI P e 𝔪 hm ν hν hk r (hR1 r hr)) (z r) (hz' r hr).1 (hz' r hr).2,
+  rw [GlobalTheory.T.weilAction_integralPoint_cosetVector_eq hI P hm.ne_bot 0 r (hR1 r hr) _ (GlobalTheory.StdRead.CharVal.om_vac_eq hI P e 𝔪 hm ν hν hk r (hR1 r hr)) (z r) (hz' r hr).1 (hz' r hr).2,
     map_smul, smul_comm c, ← cosV_smul]
   exact (h1 (z r) (hz' r hr).1).smul _
 
 variable {T : Type} {L : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts}
-
 
 open GlobalTheory.FunObj.SqNum GlobalTheory.FunObj.StdDatum GlobalTheory.Mem.Col2.SplitChar in
 theorem killsCong {μ₀ : T} (hL : L.Is μ₀) (G : GlobalTheory.ChiGrid.GridData L sc) (t : T) (i j : Fin D.R.m) :
@@ -1387,7 +1352,7 @@ theorem killsCong {μ₀ : T} (hL : L.Is μ₀) (G : GlobalTheory.ChiGrid.GridDa
   have e : nuH G t i j = nuH G μ₀ i j * L.xiH t := by
     show L.C.mu0 j * L.xiH t / G.ch.chiH (D.R.m - i) = L.C.mu0 j * L.xiH μ₀ / G.ch.chiH (D.R.m - i) * L.xiH t
     rw [hL.xi_base, mul_one, mul_div_right_comm]
-  have h3 := GlobalTheory.T.heckeCharacter_finiteIdele_value_eq _ _ (chrEq_nu G t i j hL) x u hxu
+  have h3 := GlobalTheory.FinIdlRead.chr_finIdl _ _ (chrEq_nu G t i j hL) x u hxu
   have e1 : (nuH G μ₀ i j * L.xiH t).1 (finIdl D u) = (nuH G μ₀ i j).1 (finIdl D u) * (L.xiH t).1 (finIdl D u) := rfl
   have e2 : (nuH G μ₀ i j).1 (finIdl D u) = 1 := inv_eq_one.1 h1
   rw [e, e1, e2, h2, mul_one] at h3
@@ -1527,7 +1492,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (InId IsUnitDet un
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.StdRead
-
 
 theorem _root_.GlobalTheory.T.schrodingerModel_complexConjugate_negForm : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (A WW : HSp D) (e : AE D) (ΛA : Set (Fin A.rank → D.host.E))
   (ΛW : Set (Fin WW.rank → D.host.E)) (vac Φ f : WO A WW → ℂ),
@@ -1688,7 +1652,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (InId IsUnitDet un
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.StdRead
 
-
 theorem _root_.GlobalTheory.T.squareNuConductorExponents_pos_prod_eq_modulus : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} (G : GlobalTheory.ChiGrid.GridData L sc) {μ₀ : T}, L.Is μ₀ →
   ∀ (t : T) (i j : Fin D.R.m) (c : Formalism.L2.DIV.Pl D.host.E → ℕ),
   (∀ w ∈ GlobalTheory.FunObj.locPl G t, GlobalTheory.CMVal.ExpAt (GlobalTheory.FunObj.SqNum.nuH G t i j) w (c w)) →
@@ -1789,7 +1752,7 @@ theorem standard_module_bottom_datum : _root_.GlobalTheory.FunPr.ThetaLocalInput
   have hm : GoodMod (X.e s) (GlobalTheory.SqTop.modT G s) := ⟨_, _, hIs.idem s, c0, cI.symm,
     GlobalTheory.FunObj.StdDatum.TwBig.modT_isCoprime_bb hL G s (_root_.GlobalTheory.FunObj.StdDatum.HalfDiff.condE_isCoprime_bb G.pl q1 q2)⟩
   have hν : GlobalTheory.NormExact.HasFinPart (G.nu s i (j + 1))⁻¹ P.W.chV' P.W.ep' := fun x y hxy => by
-    rw [hB.chars.2 y, MonoidHom.inv_apply, Circle.coe_inv, GlobalTheory.T.heckeCharacter_finiteIdele_value_eq _ _ (chrEq_nu G s i j hL) x y hxy]
+    rw [hB.chars.2 y, MonoidHom.inv_apply, Circle.coe_inv, GlobalTheory.FinIdlRead.chr_finIdl _ _ (chrEq_nu G s i j hL) x y hxy]
     exact (Units.val_inv_eq_inv_val _).symm
   obtain ⟨Tm, hTm, hf⟩ := GlobalTheory.T.schrodingerModel_complexConjugate_negForm W.ψ hW A WW _ _ _ _ _ _ (hIs.fst s)
   have eν : Lc.mu s (j + 1) * Lc.eta ^ (rankV D i j % 2) / (G.ch.chi (D.R.m - i) * Lc.eta ^ (rankV D i j % 2)) =

@@ -58,7 +58,7 @@ theorem linearIndependent_of_isParamFunV : ∀ (D : D7) (V : HSp D) (Sb : Finset
     LinearIndependent ℂ f := by
   intro D V Sb ι f B h0 hP hB
   have hJ := GlobalTheory.LFun.sphOff_KsphC V Sb
-  choose a ha using fun i => GlobalTheory.T.sphericalOperator_eigenvalues_determined_by_params D V (KsphC V ∅) (fun _ => 1) Sb hJ (B i)
+  choose a ha using fun i => GlobalTheory.ParamEigen.eig_of_param D V (KsphC V ∅) (fun _ => 1) Sb hJ (B i)
   have hfix : ∀ i, ∀ v ∉ Sb, ∀ k ∈ GlobalTheory.AdelicU.stabLoc D.sp.cm.sig V.gram (GlobalTheory.AdelicU.frameLat V) v, ∀ g,
       f i (g * GlobalTheory.AdelicU.emb D.sp.cm.sig V.gram v k) = f i g := by
     intro i v hv k hk g

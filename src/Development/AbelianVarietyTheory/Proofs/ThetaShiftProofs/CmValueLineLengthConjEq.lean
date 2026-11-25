@@ -81,10 +81,6 @@ open GlobalTheory.ArchMetricCompare
 
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem fderiv_star_star_zero {g : ℕ} (F : (Fin g → ℂ) → ℂ) (w : Fin g → ℂ) :
-    fderiv ℂ (star ∘ F ∘ star) 0 (star w) = star (fderiv ℂ F 0 w) := by
-  apply _root_.GlobalTheory.CompanionTheory.Ar.Flat.ConjExp.fderiv_conj_zero
-
 variable {A A' : Over (Sp ℂ)} [GrpObj A] [GrpObj A'] {ψ : A'.left ⟶ A.left} (h : IsGrpPullback A' A cj ψ)
 variable {X : Scheme.{0}} {L : LB X} {φ : A.left ⟶ X} {g : ℕ} (u : HolUnif A (L.pull φ) g)
 
@@ -105,7 +101,7 @@ theorem cj_isDiff' {t : epsR ℂ ⟶ A} {t' : epsR ℂ ⟶ A'}
   have e1 : (fun z => valAt' ((cjUnif h u).ex z).left U f) =
       star ∘ (fun z => valAt' (u.ex z).left (inv ψ ⁻¹ᵁ U) (((inv ψ).app U).hom f)) ∘ star :=
     funext fun z => cj_val h _ U f
-  rw [e1, fderiv_star_star_zero]
+  rw [e1, GlobalTheory.CompanionTheory.Ar.Flat.ConjExp.fderiv_conj_zero]
   have k : ∀ (y : Sp (DualNumber ℂ) ⟶ A'.left) (hy : ⊤ ≤ y ⁻¹ᵁ U),
       y = spMap (dualMap (starRingEnd ℂ)) ≫ (show Sp (DualNumber ℂ) ⟶ _ from t.left) ≫ inv ψ →
       TangentOrigin.evalPt y U hy f = dualMap (starRingEnd ℂ)

@@ -86,14 +86,9 @@ theorem idempotent_mem_invariants_letter (a : ZMod n) : (letE a : LetA O n) ∈ 
     Pi.single_apply]
   split_ifs <;> simp
 
-theorem level_idempotent_one (a : ZMod n) (ζ : LL) : W.lev a ζ (letE a : LetA O n) = 1 := by
-  have h : W.lev a ζ (1 - letE a) = 0 := W.lev_letter a ζ _ (by simp [letE])
-  rw [map_sub, map_one, sub_eq_zero] at h
-  exact h.symm
-
 theorem level_idempotent_mul (a : ZMod n) (ζ : LL) (g : LetA O n) :
     W.lev a ζ ((letE a : LetA O n) * g) = W.lev a ζ g := by
-  rw [map_mul, level_idempotent_one, one_mul]
+  rw [map_mul, Formalism.MainNotions.UnusedSlot80.LevR.lev_letE, one_mul]
 
 theorem qP_eq_qp : qP W = Formalism.MainNotions.LiftingTheory.qp W := rfl
 
@@ -116,7 +111,7 @@ theorem const_eq_zero_of_qP_dvd (hR : Formalism.MainNotions.UnusedSlot80.ToolsR.
     (r : O) (h : LetA O n) (e : r • (letE a : LetA O n) = qP W * h) : r = 0 := by
   obtain ⟨S, -, hS⟩ := level_qParameter_eq_X_mul_unit hR hA a ζ hζ
   have hL := congrArg (fun x => coeff 0 (W.lev a ζ x)) e
-  simp only [map_smul, level_idempotent_one, map_mul, hS] at hL
+  simp only [map_smul, Formalism.MainNotions.UnusedSlot80.LevR.lev_letE, map_mul, hS] at hL
   rw [mul_assoc, coeff_zero_X_mul, coeff_smul, coeff_zero_eq_constantCoeff, map_one,
     Algebra.smul_def, mul_one] at hL
   exact hinj (by rw [hL, map_zero])
@@ -192,7 +187,7 @@ theorem q_pow_dvd_of_level_vanishing (hR : Formalism.MainNotions.UnusedSlot80.To
     obtain ⟨S, hSu, hS⟩ := level_qParameter_eq_X_mul_unit hR hA a ζ hζ
     obtain ⟨r, h1, h1m, e1⟩ := weierstrass_division_qP hR hpu a g hg
     have hL0 := congrArg (fun x => coeff 0 (W.lev a ζ x)) e1
-    simp only [map_add (f := _), map_smul, map_mul, level_idempotent_one, one_mul, hS] at hL0
+    simp only [map_add (f := _), map_smul, map_mul, Formalism.MainNotions.UnusedSlot80.LevR.lev_letE, one_mul, hS] at hL0
     rw [hv 0 (Nat.succ_pos _), mul_assoc, coeff_zero_X_mul, zero_add, coeff_smul,
       coeff_zero_eq_constantCoeff, map_one, Algebra.smul_def, mul_one] at hL0
     have hr : r = 0 := hinj (by rw [← hL0, map_zero])

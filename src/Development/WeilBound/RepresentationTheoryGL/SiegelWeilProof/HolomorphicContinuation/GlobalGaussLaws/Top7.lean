@@ -370,7 +370,6 @@ namespace PositivityTheory.Rg.Sw.Glob
 
 open DerOneBH
 
-
 theorem derivOne_of (hW : GlobalTheory.Published.WeilThetaConvergence) (hC : DerOneH.CurveSt) : DerivOne := by
   intro D n V ψ χ θ μ ω H l s ν τ ε fr ι hx X hX Θ Θ' hΘ'
   obtain ⟨h0, -, hΦ⟩ := hC D n V θ τ s ε fr X hx.hθ hx.hs hx.hfr hX
@@ -395,7 +394,7 @@ theorem derivOne_of (hW : GlobalTheory.Published.WeilThetaConvergence) (hC : Der
     fun Φ k => by
       rw [lint_r V ν _ (leftInv_absTheta V Φ.1) k, ← lint_q V ν _ (leftInv_absTheta V Φ.1), absThetaInt_eq]
   have hintT : ∀ Φ : schwartzA θ V.rank n, Integrable (descend (GQ V) (tK V Φ.1)) (autMeasure V ν) := fun Φ => by
-    rw [← hT]; exact GlobalTheory.T.integrable_standardPair_theta_weilRange hW D n V hx.hn hx.hr.2.2 θ hx.hθ ω ν hx.hν Φ 1
+    rw [← hT]; exact GlobalTheory.StdThetaInt.integrable_theta hW D n V hx.hn hx.hr.2.2 θ hx.hθ ω ν hx.hν Φ 1
   have hhinv0 : (DerOneH.hhT θ V τ fr X 0)⁻¹ = 1 := by rw [h0, inv_one]
   have hmeasA : ∀ (Φ : schwartzA θ V.rank n) (t : ℝ), Measurable fun x : GA D V =>
       ∑' ξ, ‖FF V Φ.1 (DerOneH.hhT θ V τ fr X) x t ξ‖ₑ :=

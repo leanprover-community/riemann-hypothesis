@@ -76,12 +76,6 @@ namespace GlobalTheory.CompanionTheory.PairMult.TopCycQ
 
 variable {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
 
-theorem annq_app (l : Lt n) (x : Cq n V) (B : Finset (Lt n)) :
-    annq l x B = if l ∈ B then 0 else sgL l B • x (insert l B) := rfl
-
-theorem creq_app (l : Lt n) (x : Cq n V) (B : Finset (Lt n)) :
-    creq l x B = if l ∈ B then sgL l B • x (B.erase l) else 0 := rfl
-
 theorem mem_omQ (lev : Fin n → ℕ) (l : Lt n) :
     l ∈ omQ lev ↔ l.1 = true ∧ lev l.2.1.1 < lev l.2.1.2 := by
   simp [omQ]
@@ -122,12 +116,12 @@ theorem topCyc : TopCyc := by
     refine Finset.sum_eq_zero fun t _ => Finset.sum_eq_zero fun i _ => Finset.sum_eq_zero fun j _ =>
       Finset.sum_eq_zero fun k _ => ?_
     split_ifs with ht
-    · rw [Module.End.mul_apply, Module.End.mul_apply, creq_app]
+    · rw [Module.End.mul_apply, Module.End.mul_apply, GlobalTheory.CompanionTheory.PairMult.COU.cre_apply]
       split_ifs with hk
-      · rw [annq_app]
+      · rw [GlobalTheory.CompanionTheory.PairMult.COU.ann_apply]
         split_ifs with h1
         · exact smul_zero _
-        · rw [annq_app]
+        · rw [GlobalTheory.CompanionTheory.PairMult.COU.ann_apply]
           split_ifs with h2
           · simp
           · rw [topq, Pi.single_eq_of_ne (insert_ne_omQ lev s t i j k ht A), smul_zero, smul_zero, smul_zero]
@@ -135,7 +129,7 @@ theorem topCyc : TopCyc := by
     · rfl
   · intro l _
     show Tl E1 E2 l (annq l (topq lev v) A) = 0
-    rw [annq_app]
+    rw [GlobalTheory.CompanionTheory.PairMult.COU.ann_apply]
     split_ifs with hl
     · exact map_zero _
     · by_cases e : insert l A = omQ lev
@@ -763,7 +757,6 @@ theorem cstL_supp {S : Lt n → Prop} (hS : IsClosedL S) {i j k : Lt n} (hi : S 
     hk (hS j i k hj hi h.1 (hw.trans (Bool.xor_comm _ _)) h.2)
   simp [cp, a1, a2]
 
-
 open Classical in
 theorem sum_sub (S : Lt n → Prop) {M : Type*} [AddCommMonoid M] (f : Lt n → M) :
     ∑ k : {l // S l}, f k.1 = ∑ k, if S k then f k else 0 := by
@@ -786,17 +779,14 @@ section Ring
 
 variable {R : Type} [Ring R] [Algebra ℂ R]
 
-
 open Classical in
 def partA (S : Lt n → Prop) (X an : Lt n → R) : R := ∑ l, if S l then X l * an l else 0
-
 
 open Classical in
 def partB (S : Lt n → Prop) (an cr : Lt n → R) : R :=
   ∑ l : Lt n, ∑ m : Lt n, ∑ k : Lt n,
     if S l ∧ S m ∧ l.2.1.2 = m.2.1.1 ∧ k.1 = xor l.1 m.1 ∧ k.2.1.1 = l.2.1.1 ∧ k.2.1.2 = m.2.1.2 then
       cr k * an m * an l else 0
-
 
 open Classical in
 theorem partB_eq {S : Lt n → Prop} (hS : IsClosedL S) (an cr : Lt n → R) (haa : ∀ i j, an i * an j + an j * an i = 0) :
@@ -840,7 +830,6 @@ theorem partB_eq {S : Lt n → Prop} (hS : IsClosedL S) (an cr : Lt n → R) (ha
   · intro i j hij
     refine Finset.sum_eq_zero fun k _ => ?_
     rw [if_neg fun h => hij ⟨h.1, h.2.1⟩]
-
 
 open Classical in
 theorem part_sq {S : Lt n → Prop} (hS : IsClosedL S) (X an cr : Lt n → R)
@@ -985,12 +974,6 @@ section Alg
 
 variable {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
 
-theorem annL_apply (l : Lt n) (x : Cq n V) (A : Finset (Lt n)) :
-    annL l x A = if l ∈ A then 0 else sgL l A • x (insert l A) := rfl
-
-theorem creL_apply (l : Lt n) (x : Cq n V) (A : Finset (Lt n)) :
-    creL l x A = if l ∈ A then sgL l A • x (A.erase l) else 0 := rfl
-
 theorem liftL_apply (T : V →ₗ[ℂ] V) (x : Cq n V) (A : Finset (Lt n)) : liftL n T x A = T (x A) := rfl
 
 theorem FtL_apply (E1 E2 : Fin n → Fin n → Module.End ℂ V) (c : Fin n) (x : Cq n V) (A : Finset (Lt n)) :
@@ -1010,23 +993,11 @@ theorem bdL_apply (S : Lt n → Prop) (E1 E2 : Fin n → Fin n → Module.End �
   · refine Finset.sum_congr rfl fun l _ => Finset.sum_congr rfl fun m _ => Finset.sum_congr rfl fun k _ => ?_
     split_ifs <;> rfl
 
-theorem annL_ne {l : Lt n} {x : Cq n V} {A : Finset (Lt n)} (h : annL l x A ≠ 0) : l ∉ A ∧ x (insert l A) ≠ 0 := by
-  rw [annL_apply] at h
-  by_cases hi : l ∈ A
-  · simp [hi] at h
-  · exact ⟨hi, fun h0 => h (by simp [h0])⟩
-
-theorem creL_ne {l : Lt n} {x : Cq n V} {A : Finset (Lt n)} (h : creL l x A ≠ 0) : l ∈ A ∧ x (A.erase l) ≠ 0 := by
-  rw [creL_apply] at h
-  by_cases hi : l ∈ A
-  · exact ⟨hi, fun h0 => h (by simp [h0])⟩
-  · simp [hi] at h
-
 theorem triL_ne {l m k : Lt n} {x : Cq n V} {A : Finset (Lt n)} (h : creL k (annL m (annL l x)) A ≠ 0) :
     k ∈ A ∧ m ∉ A.erase k ∧ l ∉ insert m (A.erase k) ∧ x (insert l (insert m (A.erase k))) ≠ 0 :=
-  let h1 := creL_ne h
-  let h2 := annL_ne h1.2
-  let h3 := annL_ne h2.2
+  let h1 := GlobalTheory.CompanionTheory.LvChain.creL_ne h
+  let h2 := GlobalTheory.CompanionTheory.LvChain.annL_ne h1.2
+  let h3 := GlobalTheory.CompanionTheory.LvChain.annL_ne h2.2
   ⟨h1.1, h2.1, h3.1, h3.2⟩
 
 theorem bdL_sub_ne {S S' : Lt n → Prop} (h0 : ∀ l, S' l → S l) (E1 E2 : Fin n → Fin n → Module.End ℂ V)
@@ -1086,7 +1057,7 @@ theorem degL_bdL (S : Lt n → Prop) (E1 E2 : Fin n → Fin n → Module.End ℂ
     (hx : DegL (j + 1) x) : DegL j (bdL S E1 E2 x) := by
   intro A hA
   rcases bdL_ne S E1 E2 x A hA with ⟨l, -, h1⟩ | ⟨l, m, k, -, h1⟩
-  · obtain ⟨h2, h3⟩ := annL_ne h1
+  · obtain ⟨h2, h3⟩ := GlobalTheory.CompanionTheory.LvChain.annL_ne h1
     have := hx _ h3
     rw [card_insert_of_notMem h2] at this
     omega
@@ -1100,7 +1071,7 @@ theorem partL_bdK (E1 E2 : Fin n → Fin n → Module.End ℂ V) {B : Finset (Lt
     PartL B (bdL isK E1 E2 x) := by
   intro A hA
   rcases bdL_ne isK E1 E2 x A hA with ⟨l, hl, h1⟩ | ⟨l, m, k, ht, h1⟩
-  · obtain ⟨-, h3⟩ := annL_ne h1
+  · obtain ⟨-, h3⟩ := GlobalTheory.CompanionTheory.LvChain.annL_ne h1
     have e : pPart (insert l A) = B := hx _ h3
     rw [pPart_insert, if_neg (by simp [show l.1 = false from hl])] at e
     exact e
@@ -1118,7 +1089,7 @@ theorem suppL_bdL {S : Lt n → Prop}
     (E1 E2 : Fin n → Fin n → Module.End ℂ V) {x : Cq n V} (hx : SuppL S x) : SuppL S (bdL S E1 E2 x) := by
   intro A hA e he
   rcases bdL_ne S E1 E2 x A hA with ⟨l, -, h1⟩ | ⟨l, m, k, ht, h1⟩
-  · exact hx _ (annL_ne h1).2 e (mem_insert_of_mem he)
+  · exact hx _ (GlobalTheory.CompanionTheory.LvChain.annL_ne h1).2 e (mem_insert_of_mem he)
   · have h5 := (triL_ne h1).2.2.2
     by_cases hk : e = k
     · subst hk
@@ -1134,7 +1105,7 @@ theorem pot_lt (lev : Fin n → ℕ) (E1 E2 : Fin n → Fin n → Module.End ℂ
   have hpos : ∀ l : Lt n, (l.2.1.1 : ℕ) < l.2.1.2 ∧ (l.2.1.2 : ℕ) < n := fun l => ⟨l.2.2, l.2.1.2.2⟩
   rcases bdL_sub_ne (S := inRR lev) (S' := isK) (fun _ h => Or.inl h) E1 E2 x A hne with
     ⟨l, -, h2, h3⟩ | ⟨l, m, k, ht, h2, h3⟩
-  · obtain ⟨h4, h5⟩ := annL_ne h3
+  · obtain ⟨h4, h5⟩ := GlobalTheory.CompanionTheory.LvChain.annL_ne h3
     have e1 : pPart (insert l A) = B := hx _ h5
     have hl : l.1 = true := by simpa [isK] using h2
     rw [pPart_insert, if_pos hl] at e1
@@ -1192,7 +1163,7 @@ theorem wtL_insert {l : Lt n} {A : Finset (Lt n)} (h : l ∉ A) (c : Fin n) :
 theorem FtL_ann (E1 E2 : Fin n → Fin n → Module.End ℂ V) (c : Fin n) (l : Lt n) (x : Cq n V) :
     FtL E1 E2 c (annL l x) = annL l (FtL E1 E2 c x) - (alL l c : ℂ) • annL l x := by
   funext A
-  simp only [FtL_apply, annL_apply, Pi.sub_apply, Pi.smul_apply]
+  simp only [FtL_apply, GlobalTheory.CompanionTheory.LvChain.annL_apply, Pi.sub_apply, Pi.smul_apply]
   by_cases h : l ∈ A
   · simp [h]
   · rw [if_neg h, if_neg h, wtL_insert h, map_smul]
@@ -1202,7 +1173,7 @@ theorem FtL_ann (E1 E2 : Fin n → Fin n → Module.End ℂ V) (c : Fin n) (l : 
 theorem FtL_cre (E1 E2 : Fin n → Fin n → Module.End ℂ V) (c : Fin n) (l : Lt n) (x : Cq n V) :
     FtL E1 E2 c (creL l x) = creL l (FtL E1 E2 c x) + (alL l c : ℂ) • creL l x := by
   funext A
-  simp only [FtL_apply, creL_apply, Pi.add_apply, Pi.smul_apply]
+  simp only [FtL_apply, GlobalTheory.CompanionTheory.LvChain.creL_apply, Pi.add_apply, Pi.smul_apply]
   by_cases h : l ∈ A
   · have e : wtL A c = wtL (A.erase l) c + alL l c := by
       conv_lhs => rw [← insert_erase h]

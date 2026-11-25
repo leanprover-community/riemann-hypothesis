@@ -179,7 +179,6 @@ private theorem alg_eq (a : k) :
     algebraMap k (DualNumber k) a = TrivSqZeroExt.inl a + TrivSqZeroExt.inr 0 := by
   ext <;> simp [TrivSqZeroExt.algebraMap_eq_inl]
 
-
 private theorem core (hk : (p : k) = 0) (hT : (p : DualNumber k) = 0)
     (h : IsGrpPullback A₀ A' (epsRed k) i) (hBC : (constMor A₀).IsBC)
     (e₀ g₀ : A₀ ⟶ A₀) (e' g' : A' ⟶ A') [IsMonHom e₀] [IsMonHom g₀] [IsMonHom e'] [IsMonHom g']
@@ -905,8 +904,6 @@ private lemma divA {w B : Ideal C} (hw : w.IsMaximal) (hw0 : w ≠ ⊥) {a : C}
   have h2 : w ^ m ∣ Ideal.span {x} := (hc.pow_left).dvd_of_dvd_mul_left h1
   rwa [Ideal.dvd_iff_le, Ideal.span_singleton_le_iff_mem] at h2
 
-
-
 private lemma exPar (p : ℕ) (hp0 : (p : C) ≠ 0) {w : Ideal C} (hw : w.IsMaximal)
     (hpw : (p : C) ∈ w) (f : ℕ) (hf : 0 < f) : Nonempty (Par p w f) := by
   have hw0 : w ≠ ⊥ := by
@@ -1321,8 +1318,6 @@ private theorem mem_of_subtype_baseChange_eq_one_tmul {K L : Type} {V : Type*} [
   rw [LinearMap.rTensor_tmul, TensorProduct.lid_tmul, hg1, one_smul, Submodule.mkQ_apply,
     Submodule.Quotient.mk_eq_zero] at h2
   exact h2
-
-
 
 private theorem no_down (p : ℕ) [Fact p.Prime] (hK : (p : K) = 0) (hL : (p : L) = 0)
     (h : IsGrpPullback A' A (spMap (algebraMap K L)) φ) (d : ℕ) (hA : IsAbelianScheme A)

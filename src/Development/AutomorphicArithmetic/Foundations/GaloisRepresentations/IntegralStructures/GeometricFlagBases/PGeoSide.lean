@@ -146,7 +146,6 @@ theorem exists_card : ∃ a : ℕ, a ≠ 0 ∧ Nat.card (ResidueField ↥(OL K))
 
 variable {K} {a : ℕ} [NeZero a]
 
-
 omit [NeZero a] in
 theorem res_pow (h : Nat.card (ResidueField ↥(OL K)) = l ^ a) (x : ResidueField ↥(OL K)) : x ^ l ^ a = x := by
   have := OL_resFinite K
@@ -235,7 +234,6 @@ theorem Kunr_eq (h : Nat.card (ResidueField ↥(OL K)) = l ^ a) : Kunr l a = K0 
   · exact key c hc h1
   · exact inv_mem_iff.1 (key _ (inv_mem hc) (by rw [norm_inv]; exact inv_le_one_of_one_le₀ h1))
 
-
 variable (l a) in
 theorem free_Wq : Module.Free ℤ_[l] (Wq l a) := by
   have := GlobalTheory.TameFrob.finite_Wq l a
@@ -245,14 +243,12 @@ theorem free_Wq : Module.Free ℤ_[l] (Wq l a) := by
     exact Subtype.val_injective ((algebraMap ℚ_[l] (Om l)).injective this)
   infer_instance
 
-
 variable (l a) in
 theorem finrank_Wq : Module.finrank ℤ_[l] (Wq l a) = a := by
   have := free_Wq l a
   have h := (splitEquiv (AlgHom.id ℤ_[l] (Wq l a))).toLinearEquiv.finrank_eq
   rw [Module.finrank_baseChange] at h
   simpa using h
-
 
 attribute [local instance] GlobalTheory.TameFrob.algK GlobalTheory.TameFrob.isFractionRing in
 variable (l a) in
@@ -594,8 +590,6 @@ set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
-
-
 open CategoryTheory AlgebraicGeometry Limits GlobalTheory.LogCris DividedPowers
 
 namespace CrystallineSemistableComparison.Pb.Kap
@@ -735,7 +729,6 @@ private theorem prI_map (i : I) (a : (∀ i, V i) →ₗ[F] (∀ i, V i)) (b : V
   | zero => simp
   | tmul v y => simp [prI, h]
   | add x y hx hy => simp only [map_add (f := _), hx, hy]
-
 
 open Classical in
 private def inI (B : Type) [AddCommGroup B] [Module F B] (i : I) : V i ⊗[F] B →ₗ[F] (∀ i, V i) ⊗[F] B :=
@@ -1628,7 +1621,6 @@ open Module TensorProduct
 
 section Alg
 
-
 private theorem deg_bound {F L : Type*} [Field F] [Field L] [Algebra F L] {A : ℤ → Type*} [∀ n, AddCommGroup (A n)]
     [∀ n, Module F (A n)] (hneg : ∀ n : ℤ, n < 0 → Subsingleton (A n)) (y : L ⊗[F] DirectSum ℤ A) :
     ∃ N : ℕ, ∀ N' : ℕ, N ≤ N' →
@@ -1742,7 +1734,6 @@ end Alg
 
 section Alg2
 
-
 private theorem e_facts {F : Type*} [Field F] {A : ℤ → Type*} [∀ n, AddCommGroup (A n)] [∀ n, Module F (A n)] (N : ℕ)
     (d : Fin N → ℕ) (β : ∀ i : Fin N, Module.Basis (Fin (d i)) F (A ((i : ℕ) : ℤ)))
     (e : (∀ i : Fin N, Fin (d i) → F) →ₗ[F] DirectSum ℤ A)
@@ -1804,7 +1795,6 @@ private theorem comp_facts {F L : Type*} [Field F] [Field L] [Algebra F L] {V D 
 end Alg2
 
 section Core
-
 
 private theorem core {F L : Type*} [Field F] [Field L] [Algebra F L] [CharZero L] {A : ℤ → Type*} [∀ n, AddCommGroup (A n)]
     [∀ n, Module F (A n)] (hneg : ∀ n : ℤ, n < 0 → Subsingleton (A n)) {W : Type*} [AddCommGroup W] [Module F W]

@@ -52,8 +52,6 @@ theorem nset_congr (ε : Fin n → Bool) {V : Type} [AddCommGroup V] [Module ℂ
     obtain ⟨k, hk⟩ := h1 i
     rw [hk]; exact hu k
 
-
-
 theorem along (hT : Transport) (hSC : StepChar) (hTD : TensDecomp) (hFF : FamFilt) (hSF : StepFam)
     (ε : Fin n → Bool) (A : Matrix (Fin n) (Fin n) ℂ) (μ : MeasureTheory.Measure (ReciprocityTheory.ChartRestriction.DS.S7.UJ ε))
     (hA : IsGrad ε A) (hμ : IsParHaar ε A μ) (B : GradBasis A) :
@@ -1397,12 +1395,6 @@ theorem deg_swap (χ : Fin n → ℂ) (L : Fin n → Fin 3) {r s : Fin n} (h : �
     deg χ (L ∘ Equiv.swap r s) = deg χ L := by
   simp only [deg, sum_filter_swap χ L h]
 
-theorem isLabel_swap {j : ℕ} {L : Fin n → Fin 3} (h : IsLabel j L) (r s : Fin n) :
-    IsLabel j (L ∘ Equiv.swap r s) := by
-  intro a
-  rw [← h a]
-  exact Finset.card_equiv (Equiv.swap r s) (by simp)
-
 theorem moved_labels (χ₀ : Fin n → ℂ) (j : ℕ) : ∀ (ss : List (Fin n)) (χ : Fin n → ℂ) (Λ : Set (Fin n → Fin 3)),
     GoodPath χ ss → (∀ r s, r ≠ s → χ r = χ s → χ r = χ₀ r ∧ χ s = χ₀ s) →
     (∀ L ∈ Λ, IsLabel j L ∧ (deg χ₀ L).re < 0) →
@@ -1417,7 +1409,7 @@ theorem moved_labels (χ₀ : Fin n → ℂ) (j : ℕ) : ∀ (ss : List (Fin n))
     refine ih (χ + Pi.single t 1) (move χ Λ t) hg.2 (tie_step hT hg.1) ?_ L hL
     rintro _ ⟨L₀, hL₀, r, hr, rfl⟩
     obtain ⟨hl, hd⟩ := hΛ L₀ hL₀
-    refine ⟨isLabel_swap hl r t, ?_⟩
+    refine ⟨GlobalTheory.CompanionTheory.RgTransport.isLabel_swap hl r t, ?_⟩
     by_cases hrt : r = t
     · subst hrt
       simpa using hd

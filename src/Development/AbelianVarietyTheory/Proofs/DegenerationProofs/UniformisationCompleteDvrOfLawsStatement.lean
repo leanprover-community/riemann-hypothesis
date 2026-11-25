@@ -48,6 +48,3 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.LN
-
-theorem _root_.GlobalTheory.T.uniformisation_complete_dvr_of_laws : Laws → Laws2 → Laws3 → Laws4 → Laws5 → USt := by
-  first | exact @GlobalTheory.LN.uniformisation_dvr

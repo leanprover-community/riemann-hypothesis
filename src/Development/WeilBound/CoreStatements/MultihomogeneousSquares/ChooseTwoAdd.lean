@@ -679,8 +679,6 @@ theorem exists_flat_regAt {X Z : Scheme.{0}} {Ω Ω' : Type} [Field Ω] [Field �
     rw [RingEquiv.symm_apply_apply]
     exact h1
 
-
-
 theorem hodgeCpt_pull_smooth : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) (S : Finset ℕ) (Ω Ω' : Type) [Field Ω] [Field Ω'] (i : Ω →+* Ω') (K K' : Type) [Fintype K] [Fintype K'] (J : K → Type) (J' : K' → Type) [∀ k, Fintype (J k)] [∀ k, Fintype (J' k)] (y : (Σ k, J k) → Ω) (y' : (Σ k, J' k) → Ω') (A : HodgeCpt Y S y) (Z : Scheme.{0}) (ξ' : Spec (CommRingCat.of Ω') ⟶ Z) (h : Z ⟶ A.X), (∀ q : Z, genPt ξ' ⤳ q) → CoordTie ℤ ξ' (seg y') → ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsNormalScheme Z → GlobalTheory.CompanionTheory.Ar.Dominates ξ' A.ξ h i → Smooth h → ∃ (A' : HodgeCpt Y S y') (e : A'.X ≅ Z) (j : A.Li →+ A'.Li), A'.ξ ≫ e.hom = ξ' ∧ HodgeOver A' A (e.hom ≫ h) i j ∧ A'.R = A.R ∧ Submodule.span Ω' (Set.range j) = ⊤ ∧ ∀ s, A'.V s = (A.V s).pull A'.ξ (e.hom ≫ h) j := by
   intro E _ _ _ H D l Xo c Y S Ω Ω' _ _ i K K' _ _ J J' _ _ y y' A Z ξ' h hall htie hnorm hdom hsmh
   haveI : CharZero Ω := charZero_of_injective_ringHom A.cst.injective
@@ -753,9 +751,9 @@ theorem hodgeCpt_pull_smooth : ∀ (E : Type) [Field E] [NumberField E] [IsCMFie
       rw [← Category.assoc, hdom, Category.assoc, hx, Category.assoc])
     have hc1 : IsIntegrallyClosed (A.X.presheaf.stalk (h p'.1)) := hic ⟨h p'.1, hsp p'⟩
     have hn1 : IsNoetherianRing (A.X.presheaf.stalk (h p'.1)) := noeth_stalk hgen ⟨h p'.1, hsp p'⟩ (hnoeth _)
-    have h1 := GlobalTheory.T.full_torsion_integrally_closed E H D l (KA l) (baseKA l) A.X Ω A.ξ s0 o A.t m0 A.Li A.M (p ^ A.R p) ⟨h p'.1, hsp p'⟩ hgen hN
+    have h1 := GlobalTheory.CompanionTheory.Ar.OmLink.htOm_eq_htLat E H D l (KA l) (baseKA l) A.X Ω A.ξ s0 o A.t m0 A.Li A.M (p ^ A.R p) ⟨h p'.1, hsp p'⟩ hgen hN
       (A.tors p hp) hc1 hn1
-    have h1' := GlobalTheory.T.full_torsion_integrally_closed E H D l (KA l) (baseKA l) Z Ω' ξ' s0' o' t' m0' Li' M' (p ^ A.R p) p' hgen' hN
+    have h1' := GlobalTheory.CompanionTheory.Ar.OmLink.htOm_eq_htLat E H D l (KA l) (baseKA l) Z Ω' ξ' s0' o' t' m0' Li' M' (p ^ A.R p) p' hgen' hN
       (htors p hp) (hic' _) (noeth_stalk hgen' _ (hnoeth' _))
     have h2 := _root_.GlobalTheory.CompanionTheory.Ar.HTPull.main A.X Z Ω Ω' A.ξ ξ' h i A.t.G t'.G mh.φ A.Li Li' A.M M' j hgen hgen' hdom mh.cart hsm hj jd hjd
       (p ^ A.R p) hN p' (hsp p') hc1 hn1 (h1.2.1 hpos) h1.1
@@ -801,7 +799,7 @@ theorem hodgeCpt_pull_smooth : ∀ (E : Type) [Field E] [NumberField E] [IsCMFie
     have hNc : GlobalTheory.CompanionTheory.Ar.Flat.NormalCpt A.ξ := GlobalTheory.CompanionTheory.Ar.XR.normalCpt_of_isCptGen hgen A.normal
     obtain ⟨s0, o, ⟨m0⟩⟩ := _root_.GlobalTheory.CompanionTheory.Ar.ObjAt.exists_obj_at E H D l Xo c _ _ Y A.X A.f A.t A.m Ω A.ξ x hx
     have hζ : ∃ ζ : Ω, IsPrimitiveRoot ζ (p ^ A.R p) :=
-      (GlobalTheory.T.full_torsion_integrally_closed E H D l (KA l) (baseKA l) A.X Ω A.ξ s0 o A.t m0 A.Li A.M (p ^ A.R p)
+      (GlobalTheory.CompanionTheory.Ar.OmLink.htOm_eq_htLat E H D l (KA l) (baseKA l) A.X Ω A.ξ s0 o A.t m0 A.Li A.M (p ^ A.R p)
         ⟨genPt A.ξ, specializes_rfl⟩ hgen hN (A.tors p hp) (hic _) (noeth_stalk hgen _ (hnoeth _))).2.1 hpos
     obtain ⟨e, he⟩ := exists_genWeil GlobalTheory.firstFiveLaws.1.weil Y A.ξ A.f x A.t A.m hx (p ^ A.R p) hN
       (A.tors p hp) hζ
@@ -964,16 +962,6 @@ private lemma detT {R : Type} [CommRing R] {r : ℕ} (M : Matrix (Fin r) (Fin r)
 
 end YgbHelp
 
-theorem UpperTheory.Reformulated.B.Ygb2.main :
-    ∀ {R : Type} [inst : CommRing R] {r n : ℕ} (B : Matrix (Fin r) (Fin n) R) (C : Matrix (Fin n) (Fin r) R),
-      (B * C).det = ∑ f : Fin r → Fin n, (∏ i : Fin r, B i (f i)) * (C.submatrix f id).det := by
-  intro R inst r n B C
-  rw [YgbHelp.detT]
-  simp_rw [YgbHelp.detT, Matrix.mul_apply, Fintype.prod_sum, Finset.mul_sum, Matrix.submatrix_apply, id]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun f _ => Finset.sum_congr rfl fun σ _ => ?_
-  rw [Finset.prod_mul_distrib]
-  ring
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.DetT =====
@@ -1068,7 +1056,7 @@ theorem exists_inChart_minors (hg : IsCptGen ξ) {κ : Type} (x : κ → Ω) (L 
     rwa [Matrix.det_mul, Matrix.det_transpose, Matrix.det_smul, Fintype.card_fin] at this
   have hdreg : ∀ J : Fin r → Fin n, (C.submatrix J id).det ∈ regAt ξ p := fun J =>
     det_mem_subring _ fun i a => hCr _ _
-  have hsum := _root_.UpperTheory.Reformulated.B.Ygb2.main B C
+  have hsum := _root_.UpperTheory.Reformulated.B.DetMulExpand.det_mul_expand B C
   rw [hBC, Matrix.det_one] at hsum
   obtain ⟨J, -, hu⟩ := exists_unitAt_of_sum hg p Finset.univ
     (fun f : Fin r → Fin n => (∏ i, B i (f i)) * (C.submatrix f id).det)
@@ -1171,7 +1159,6 @@ theorem exists_blkF_of_not_full (K₀ : Type) (t : StepIx Ψ p q) (ht : (t.2 : �
     congr 2
     exact congrArg (fun z => (⟨.inr τ, z⟩ : StepIx Ψ p q)) (Fin.ext (by simp))
 
-
 variable (Ψ p q) in
 def baseFun (K₀ : Type) : K₀ ⊕ FullStep Ψ p q → NonPluckerBlocks (blkF (Ψ := Ψ) (p := p) (q := q) K₀)
   | .inl k => ⟨.inl k, fun r => by
@@ -1194,7 +1181,6 @@ theorem baseFun_bijective (K₀ : Type) : Function.Bijective (baseFun Ψ p q K�
       · exact ⟨.inr ⟨t, ht⟩, rfl⟩
       · obtain ⟨r, hr⟩ := exists_blkF_of_not_full K₀ t ht
         exact absurd hr (hk r)
-
 
 variable (Ψ p q) in
 def baseEquiv (K₀ : Type) : K₀ ⊕ FullStep Ψ p q ≃ NonPluckerBlocks (blkF (Ψ := Ψ) (p := p) (q := q) K₀) :=
@@ -1546,19 +1532,6 @@ open AlgebraicGeometry CategoryTheory NumberField Matrix
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor
 open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.PB GlobalTheory.CompanionTheory.Ar.PB.FMX GlobalTheory.CompanionTheory.Ar.FlagBun
 
-theorem _root_.GlobalTheory.T.yv_eq_sum_minors_gMat :
-    ∀ (Ψ : Type) [Fintype Ψ] (p q : ℕ) (Ω : Type) [Field Ω] (n : Ψ ⊕ Ψ → ℕ)
-      (A : ∀ s, Matrix (Fin (n s)) (Fin (rk Ψ p q s)) Ω) (K₀ : Type) [Fintype K₀]
-      (J₀ : K₀ → Type) [∀ k, Fintype (J₀ k)] (x₀ : (Σ k, J₀ k) → Ω),
-    ∀ r k, blkF (Ψ := Ψ) (p := p) (q := q) K₀ r = some k → ∀ i : idx J₀ n k,
-      yv A x₀ ⟨k, i⟩ = ∑ I, algebraMap Ω (GenField Ω (rk Ψ p q)) (coefF A ⟨k, i⟩ I) *
-        minorIJ (gMat p q Ω r.1) I (stepCols (p + q) p r.2) := by
-  intro Ψ _ p q Ω _ n A K₀ _ J₀ _ x₀ r k hk i
-  unfold blkF at hk
-  split_ifs at hk
-  obtain rfl := Option.some.inj hk
-  exact BlockEmbeddings.det_fMat_eq A r.1 (stepOf Ψ p q r)
-    (BlockEmbeddings.stepOf_fst r) _ (BlockEmbeddings.mem_stepCols_iff r) i
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.MetricProofs.YvEqSumMinorsGMatStatement =====
@@ -1593,7 +1566,7 @@ theorem GlobalTheory.CompanionTheory.Ar.PB.FMX.flagModelExists : GlobalTheory.Co
   have hP := GlobalTheory.T.blkF_properStep_injective_blockDiag (CMType H) D.p D.q Ω K₀
   have hmod : ModelOK (aOf 𝔐 bW bO φ) x₀ m :=
     ⟨hP.1, hP.2.1, _root_.GlobalTheory.CompanionTheory.Ar.PB.FMX.BasePt.xb_block_ne _ _ _ Ω _ _ K₀ J₀ x₀ hx₀ hB,
-      _root_.GlobalTheory.CompanionTheory.Ar.PB.FMX.YBase.basePart_yv _ _ _ Ω _ _ K₀ J₀ x₀, hP.2.2, _root_.GlobalTheory.CompanionTheory.Ar.PB.FMX.GenMat.gMat_isGenericFlag _ _ _ Ω, GlobalTheory.T.yv_eq_sum_minors_gMat _ _ _ Ω _ _ K₀ J₀ x₀,
+      _root_.GlobalTheory.CompanionTheory.Ar.PB.FMX.YBase.basePart_yv _ _ _ Ω _ _ K₀ J₀ x₀, hP.2.2, _root_.GlobalTheory.CompanionTheory.Ar.PB.FMX.GenMat.gMat_isGenericFlag _ _ _ Ω, GlobalTheory.CompanionTheory.Ar.PB.FMX.BlockEmbeddings.yv_step _ _ _ Ω _ _ K₀ J₀ x₀,
       _root_.GlobalTheory.CompanionTheory.Ar.PB.FMX.Frm.frames_main E H D l Xo c Y S Ω K₀ J₀ x₀ 𝔐 bW bO n m φ hF ht⟩
   have hT := _root_.GlobalTheory.CompanionTheory.Ar.PB.FMX.FrameAt.isFrameAt_of_goodAt E H D l Xo c Y S Ω K₀ J₀ x₀ 𝔐 bW bO n m φ hF ht hmod
   obtain ⟨Z, ξ', f, htie, hall, hdom, hsm⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.FMX.exists_flagTotal E H D l Xo c Y S Ω K₀ J₀ x₀ 𝔐 bW bO n m φ hF

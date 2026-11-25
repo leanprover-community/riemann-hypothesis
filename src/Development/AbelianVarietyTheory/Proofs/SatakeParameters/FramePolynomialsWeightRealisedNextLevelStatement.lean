@@ -431,7 +431,7 @@ theorem realises_of_wtPol : ∀ {p : ℕ} [Fact p.Prime] (X : Sys p) (D : D7) (p
       ∏ τ, (f.1 τ).det ^ (-(wT X D pos j τ)) := by
     rw [← Finset.prod_mul_distrib, ← Finset.prod_mul_distrib]
     refine Finset.prod_congr rfl fun τ _ => ?_
-    rw [(GlobalTheory.T.realPlaceBlockWeightLastEntry_consecutive_levels X D pos j τ).2]
+    rw [(GlobalTheory.TwV.DelA.eT_last_pair X D pos j τ).2]
     by_cases ho : IsOddPos (pos.symm τ).2
     · simp only [if_pos ho]
       rw [det_zT_of_odd X D pos f.1 τ ho, mul_zpow, inv_zpow']

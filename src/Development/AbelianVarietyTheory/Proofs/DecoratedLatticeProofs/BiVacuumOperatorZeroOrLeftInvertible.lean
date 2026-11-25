@@ -194,7 +194,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.See
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
 theorem _root_.GlobalTheory.T.homLatticeCompletion_splitPlaces_acts_by_signs : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ι : Type) (p : ι → SplitPt D k) (I : List ι) (P : Pl D → Prop), Places p I P → ∀ (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (S T : HSp D) (LS : Lat S) (LT : Lat T), IsSelfDualC S LS → IsSelfDualC T LT → ∀ x ∈ latO S T (LS : Set (Fin S.rank → D.host.E)) (LT : Set (Fin T.rank → D.host.E)) P, ∃ ε : ℂ, ε * ε = 1 ∧ ∀ f, Vac ψ S T LS LT P f → heisO ψ S T x f = ε • f := by
   first | exact @GlobalTheory.FinPl.VacSign.latO_acts_by_signs
 end -- clump:auto
@@ -211,9 +210,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.See
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
-theorem _root_.GlobalTheory.T.eq_zero_or_exists_inverse_combination_of_separating : ∀ (X : Type) [AddCommGroup X] (Γ G : AddSubgroup X) (V : Type) [AddCommGroup V] [Module ℂ V] (T : X → V →ₗ[ℂ] V) (W : Set V) (β : X → X → ℂ) (a : X → ℂ) (χ : X → X → ℂ), Γ ≤ G → (∀ v, T 0 v = v) → (∀ x y v, T x (T y v) = β x y • T (x + y) v) → (∀ x y, β x y ≠ 0) → (∀ γ ∈ Γ, a γ ≠ 0 ∧ ∀ v ∈ W, T γ v = a γ • v) → (∀ γ ∈ Γ, ∀ x v, T γ (T x v) = χ x γ • T x (T γ v)) → (∀ x, ∀ γ ∈ Γ, ∀ γ' ∈ Γ, χ (x + γ') γ = χ x γ) → (∀ x ∈ G, ∀ y ∈ G, x - y ∉ Γ → ∃ γ ∈ Γ, χ x γ ≠ χ y γ) → ∀ (J : Finset X) (c : X → ℂ), (∀ x ∈ J, x ∈ G) → (∀ v ∈ W, ∑ x ∈ J, c x • T x v = 0) ∨ ∃ κ : X →₀ ℂ, (∀ y ∈ κ.support, y ∈ G) ∧ ∀ v ∈ W, ∑ y ∈ κ.support, κ y • T y (∑ x ∈ J, c x • T x v) = v := by
-  first | exact @GlobalTheory.isolate_abstract
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsolateAbstractStatement =====
@@ -249,13 +245,6 @@ def twoT (x : WO A S × WO S A') : (WO A S → WO S A' → ℂ) →ₗ[ℂ] (WO 
 
 theorem twoT_apply (x : WO A S × WO S A') (C : WO A S → WO S A' → ℂ) (u : WO A S) (v : WO S A') :
     twoT ψ A S A' x C u v = ψ (symplOH A S u x.1) * (ψ (symplOH S A' v x.2) * C (u + x.1) (v + x.2)) := rfl
-
-theorem symplOH_two (T T' : HSp D) (x y : WO T T') : symplOH T T' x y + symplOH T T' x y = symplO T T' x y := by
-  unfold symplOH
-  rw [← add_mul, ← RingHom.map_add (f := _), add_halves, RingHom.map_one, one_mul]
-
-theorem symplO_skew' (T T' : HSp D) (x y : WO T T') : symplO T T' y x = -symplO T T' x y := by
-  rw [← symplOH_two, ← symplOH_two, symplOH_skew, neg_add]
 
 theorem psi_ne_zero (z : AF D.host.F) : ψ z ≠ 0 := by
   intro h
@@ -386,15 +375,11 @@ theorem comp_part (P : Pl D → Prop) (op : BiOp A S A') (hop : OpAt P op) (e : 
     refine Finset.sum_congr rfl fun i _ => ?_
     exact (GlobalTheory.ProdLocInv.biComb_comp ψ A S A' e (op.u i) (c i) e' (op.u' i) (c' i) (hcf i) (hcf' i) C).symm
 
-theorem symplO_zero_left (T T' : HSp D) (w : WO T T') : symplO T T' 0 w = 0 := by
-  rw [symplO_skew', show symplO T T' w 0 = 0 from (symplHom T T' w).map_zero, neg_zero]
-
 theorem psi_eq_one_of_neg {z : AF D.host.F} (h : ψ (-z) = 1) : ψ z = 1 := by
   rw [AddChar.map_neg_eq_inv, inv_eq_one] at h
   exact h
 
 end GlobalTheory.ZeroOrInv
-
 
 open GlobalTheory.ZeroOrInv GlobalTheory.LatVac in
 theorem GlobalTheory.FinPl.biInv_main : ∀ D : D7, GlobalTheory.FinPl.BiInv D := by
@@ -442,25 +427,25 @@ theorem GlobalTheory.FinPl.biInv_main : ∀ D : D7, GlobalTheory.FinPl.BiInv D :
       push_neg at h
       obtain ⟨l, hl, hne⟩ := h
       refine ⟨(l, 0), AddSubgroup.mem_prod.2 ⟨hl, zero_mem _⟩, fun heq => hne ?_⟩
-      simp only [chi, symplO_zero_left, AddChar.map_zero_eq_one, mul_one] at heq
+      simp only [chi, GlobalTheory.SplitScalar.symplO_zero_left, AddChar.map_zero_eq_one, mul_one] at heq
       have hx1 : x.1 = (x - y).1 + y.1 := by rw [Prod.fst_sub, sub_add_cancel]
       rw [hx1, symplO_add_right, AddChar.map_add_eq_mul] at heq
       have h1 : ψ (symplO A S l (x - y).1) = 1 :=
         mul_right_cancel₀ (psi_ne_zero ψ _) (heq.trans (one_mul _).symm)
-      rw [symplO_skew'] at h1
+      rw [GlobalTheory.WeilVacMove.symplO_skew] at h1
       exact psi_eq_one_of_neg ψ h1
     · rw [GlobalTheory.SelfDualAt.latO_ann_at D ψ hψ S A' LS LA' hS hA' P (x - y).2 hd.2] at h
       push_neg at h
       obtain ⟨l, hl, hne⟩ := h
       refine ⟨(0, l), AddSubgroup.mem_prod.2 ⟨zero_mem _, hl⟩, fun heq => hne ?_⟩
-      simp only [chi, symplO_zero_left, AddChar.map_zero_eq_one, one_mul] at heq
+      simp only [chi, GlobalTheory.SplitScalar.symplO_zero_left, AddChar.map_zero_eq_one, one_mul] at heq
       have hx2 : x.2 = (x - y).2 + y.2 := by rw [Prod.snd_sub, sub_add_cancel]
       rw [hx2, symplO_add_right, AddChar.map_add_eq_mul] at heq
       have h1 : ψ (symplO S A' l (x - y).2) = 1 :=
         mul_right_cancel₀ (psi_ne_zero ψ _) (heq.trans (one_mul _).symm)
-      rw [symplO_skew'] at h1
+      rw [GlobalTheory.WeilVacMove.symplO_skew] at h1
       exact psi_eq_one_of_neg ψ h1
-  rcases GlobalTheory.T.eq_zero_or_exists_inverse_combination_of_separating (WO A S × WO S A') Γ (goodG A S A' P) (WO A S → WO S A' → ℂ) (twoT ψ A S A')
+  rcases GlobalTheory.isolate_abstract (WO A S × WO S A') Γ (goodG A S A' P) (WO A S → WO S A' → ℂ) (twoT ψ A S A')
       {C | BiVacAt ψ LA LS LA' P C} (bet ψ A S A') aF (chi ψ A S A') hΓG (twoT_zero ψ A S A') (twoT_mul ψ A S A')
       (bet_ne_zero ψ A S A') (fun γ hγ => haF γ hγ) (fun γ _ x v => twoT_comm ψ A S A' x γ v) hχ hsep
       (kOp A S A' op).support (kOp A S A' op) (kOp_good A S A' P op hop) with h | ⟨κ, hκ, hinv⟩

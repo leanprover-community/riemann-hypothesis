@@ -94,8 +94,6 @@ open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep 
 open scoped Classical TensorProduct
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-theorem _root_.GlobalTheory.T.kappaConstant_mul_of_coprime_ellipticPolynomials : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∀ (a b : ℕ) (P₁ P₂ : E[X]), P₁ ∈ Ell E a → P₂ ∈ Ell E b → IsCoprime P₁ P₂ → kap (P₁ * P₂) = kap P₁ * kap P₂ ∧ (∃ δ : GL (Fin a) E, (δ * thE E a δ).val.charpoly = P₁) ∧ P₁ * P₂ ∈ Ell E (a + b) := by
-  first | exact @GlobalTheory.BCT.KapMul.kap_mul
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.KappaConstantMulOfCoprimeEllipticPolynomialsStatement =====
@@ -109,8 +107,6 @@ open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep 
 open scoped Classical TensorProduct
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-theorem _root_.GlobalTheory.T.orbitalIntegral_unitIndicator_eventually_oneClass : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∀ n : ℕ, 1 ≤ n → ∀ (S : Set (Pl E)), IsSection S → ∀ P ∈ Ell E n, ∀ᶠ w in cofinite, ∀ γ : UL n w, γ.1.val.charpoly = atPl w P → (twOrb (MonoidHom.id _) (KL n w) γ ((KL n w : Set (UL n w)).indicator 1) = if ∃ g : UL n w, g⁻¹ * γ * g ∈ KL n w then 1 else 0) ∧ kapSign n w (atPl w P) γ.1 = 1 ∧ ∀ Q₁ : (w.adicCompletion E)[X], Q₁ ∣ atPl w P → (∃ g : UL n w, g⁻¹ * γ * g ∈ KL n w) → kapSign n w Q₁ γ.1 = 1 := by
-  first | exact @GlobalTheory.BCT.OrbUnit.orbUnit_ae
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.OrbitalIntegralUnitIndicatorEventuallyOneClassStatement =====
@@ -569,8 +565,6 @@ open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep 
 open scoped Classical TensorProduct
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-theorem _root_.GlobalTheory.T.local_points_integral_almost_all : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∀ (n : ℕ) (γ : UE E n), (∀ w : Pl E, (locPt w γ).1 = GeneralLinearGroup.map (algebraMap E (w.adicCompletion E)) γ.1) ∧ (∀ᶠ w in (cofinite : Filter (Pl E)), locPt w γ ∈ KL n w) ∧ (γ.1.val.charpoly.Separable → γ.1.val.charpoly ∈ Ell E n) :=
-  @_root_.GlobalTheory.LocRatPt.main
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.WeilBound.CoreStatements.AutomorphicKernels.IsobaricBaseChange.IntegralCoefficientBaseChange.UnitaryBaseChangeCharacters.UnitaryBaseChangeLinks.LocalPointsIntegralAlmostAllStatement =====
@@ -1149,13 +1143,13 @@ theorem charpoly_cls {w : Pl E} (y : UL n w) : (cls y).rep.1.val.charpoly = y.1.
 
 theorem charpoly_locPt (hU : Unr E) (w : Pl E) (γ : UE E n) :
     (locPt w γ).1.val.charpoly = atPl w γ.1.val.charpoly := by
-  rw [(GlobalTheory.T.local_points_integral_almost_all E hU n γ).1 w]
+  rw [(GlobalTheory.LocRatPt.main E hU n γ).1 w]
   exact Matrix.charpoly_map _ _
 
 theorem locPt_conj (hU : Unr E) (w : Pl E) (γ g : UE E n) :
     locPt w (g⁻¹ * γ * g) = (locPt w g)⁻¹ * locPt w γ * locPt w g := by
   apply Subtype.ext
-  simp only [Subgroup.coe_mul, Subgroup.coe_inv, (GlobalTheory.T.local_points_integral_almost_all E hU n _).1 w, map_mul, map_inv]
+  simp only [Subgroup.coe_mul, Subgroup.coe_inv, (GlobalTheory.LocRatPt.main E hU n _).1 w, map_mul, map_inv]
 
 theorem atPl_separable {P : E[X]} (hP : P ∈ Ell E n) (w : Pl E) : (atPl w P).Separable := hP.2.2.1.map
 
@@ -1178,7 +1172,7 @@ theorem ae_good (hU : Unr E) (hn : 1 ≤ n) {S : Set (Pl E)} (hS : IsSection S) 
     ∀ᶠ w in (cofinite : Filter (Pl E)), (∃! c : LocCl n P w, Good w c) ∧ ∀ c : LocCl n P w,
       (twOrb (MonoidHom.id _) (KL n w) c.1.rep (f w) = if Good w c then 1 else 0) ∧
       (Good w c → ∀ Q : E[X], Q ∣ P → kapSign n w (atPl w Q) c.1.rep.1 = 1) := by
-  filter_upwards [hf, GlobalTheory.T.orbitalIntegral_unitIndicator_eventually_oneClass E hU n hn S hS P hP, (GlobalTheory.T.elliptic_charpoly_local_realisation E hU n P hP).1, GlobalTheory.T.integral_conjugacy_almost_all E hU n P hP]
+  filter_upwards [hf, GlobalTheory.BCT.OrbUnit.orbUnit_ae E hU n hn S hS P hP, (GlobalTheory.T.elliptic_charpoly_local_realisation E hU n P hP).1, GlobalTheory.T.integral_conjugacy_almost_all E hU n P hP]
     with w h1 h2 h3 h4
   refine ⟨?_, fun c => ⟨?_, fun hc Q hQ => (h2 _ c.2).2.2 _ (Polynomial.map_dvd _ hQ) hc⟩⟩
   · obtain ⟨y, hy, hyP⟩ := h3
@@ -1233,7 +1227,7 @@ theorem orb_support (hU : Unr E) (hn : 1 ≤ n) {S : Set (Pl E)} (hS : IsSection
     ∀ w ∈ S, ∃ y : UL n w, f w y ≠ 0 ∧ y.1.val.charpoly = atPl w γ.1.val.charpoly := by
   intro w hw
   have h1 : ∀ᶠ w in cofinite, twOrb (MonoidHom.id _) (KL n w) (locPt w γ) (f w) = 1 := by
-    filter_upwards [hf, GlobalTheory.T.orbitalIntegral_unitIndicator_eventually_oneClass E hU n hn S hS _ hP, (GlobalTheory.T.local_points_integral_almost_all E hU n γ).2.1] with w h1 h2 h3
+    filter_upwards [hf, GlobalTheory.BCT.OrbUnit.orbUnit_ae E hU n hn S hS _ hP, (GlobalTheory.LocRatPt.main E hU n γ).2.1] with w h1 h2 h3
     rw [h1, (h2 _ (charpoly_locPt hU w γ)).1, if_pos ⟨1, by simpa using h3⟩]
   obtain ⟨g, hg⟩ := exists_ne_zero_of_twOrb _ _ _ (ne_zero_of_finprod h1 h w hw)
   exact ⟨_, hg, (charpoly_conj _ _).trans (charpoly_locPt hU w γ)⟩
@@ -1295,7 +1289,6 @@ theorem sign_mul (hU : Unr E) (hn : 1 ≤ n) {P Q₁ Q₂ : E[X]} (hP : P ∈ El
 def locCl (hU : Unr E) {P : E[X]} (r : {c : TwCl (MonoidHom.id (UE E n)) // c.rep.1.val.charpoly = P}) (w : Pl E) :
     LocCl n P w :=
   ⟨cls (locPt w r.1.rep), (charpoly_cls _).trans ((charpoly_locPt hU w _).trans (by rw [r.2]))⟩
-
 
 theorem signs (hU : Unr E) (hn : 1 ≤ n) {S : Set (Pl E)} (hS : IsSection S) {P : E[X]} (hP : P ∈ Ell E n)
     (hgs : ∀ᶠ w in (cofinite : Filter (Pl E)), ∀ c : LocCl n P w, Good w c → ∀ Q : E[X], Q ∣ P →
@@ -1390,7 +1383,6 @@ theorem signs (hU : Unr E) (hn : 1 ≤ n) {S : Set (Pl E)} (hS : IsSection S) {P
   · rw [if_pos h, if_pos (key.1 h)]
   · rw [if_neg h, if_neg (fun h' => h (key.2 h'))]
 
-
 theorem fixedP (hU : Unr E) (hn : 1 ≤ n) {S : Set (Pl E)} (hS : IsSection S) {P : E[X]} (hP : P ∈ Ell E n)
     {K' : ∀ w : Pl E, Subgroup (UL n w)} (hK' : IsLevelFam (fun w : Pl E => MonoidHom.id (UL n w)) (KL n) K')
     {f : ∀ w : Pl E, UL n w → ℂ} (hf : IsTest (KL n) K' f) :
@@ -1429,7 +1421,7 @@ theorem fixedP (hU : Unr E) (hn : 1 ≤ n) {S : Set (Pl E)} (hS : IsSection S) {
     exact ⟨⟨cls y, (charpoly_cls y).trans hy⟩⟩
   case h3 =>
     intro r
-    filter_upwards [(GlobalTheory.T.local_points_integral_almost_all E hU n r.1.rep).2.1] with w hw
+    filter_upwards [(GlobalTheory.LocRatPt.main E hU n r.1.rep).2.1] with w hw
     obtain ⟨g, hg⟩ := rep_cls (locPt w r.1.rep)
     refine ⟨g⁻¹, ?_⟩
     show g⁻¹⁻¹ * (cls (locPt w r.1.rep)).rep * g⁻¹ ∈ KL n w
@@ -1507,7 +1499,7 @@ theorem geomURat_eq_geomU : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
           chW lam c.rep.1.val.charpoly * orb c.rep else 0 := by
       intro c
       by_cases h : c.rep.1.val.charpoly.Separable
-      · have he := (GlobalTheory.T.local_points_integral_almost_all E hU n c.rep).2.2 h
+      · have he := (GlobalTheory.LocRatPt.main E hU n c.rep).2.2 h
         rw [if_pos h, if_pos he, GlobalTheory.T.unitary_mass_formula E hU n hn c.rep he]
       · rw [if_neg h, if_neg fun h' => h h'.2.2.1]
     have hsupp : ∀ c : TwCl (MonoidHom.id (UE E n)), (if c.rep.1.val.charpoly ∈ Ell E n then
@@ -1554,7 +1546,7 @@ theorem geomURat_eq_geomU : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
     have han : a ≤ n := Nat.lt_succ_iff.1 (Finset.mem_range.1 ha)
     constructor
     · rintro ⟨h1, h2, hc⟩
-      have := (GlobalTheory.T.kappaConstant_mul_of_coprime_ellipticPolynomials E hU a (n - a) p.1 p.2 h1 h2 hc).2.2
+      have := (GlobalTheory.BCT.KapMul.kap_mul E hU a (n - a) p.1 p.2 h1 h2 hc).2.2
       rw [Nat.add_sub_cancel' han] at this
       exact ⟨⟨h1.1, h2.1, this⟩, h1.2.1⟩
     · rintro ⟨⟨m1, m2, he⟩, hd⟩

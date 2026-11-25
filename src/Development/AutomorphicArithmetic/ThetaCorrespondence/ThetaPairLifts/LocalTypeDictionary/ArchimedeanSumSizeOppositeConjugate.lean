@@ -251,17 +251,6 @@ end GlobalTheory.GridWtBound
 
 namespace GlobalTheory.GridWtBound
 
-theorem extend_bounds {n : ℕ} (d : ℕ) (f : Fin n → ℚ) (h : ℝ) (hh : 0 ≤ h)
-    (hf : ∀ i, 0 ≤ ((f i : ℚ) : ℝ) ∧ ((f i : ℚ) : ℝ) ≤ h) (j : ℕ) :
-    0 ≤ ((GridData.extend d f j : ℤ) : ℝ) ∧ ((GridData.extend d f j : ℤ) : ℝ) ≤ h :=
-  GlobalTheory.KerConjMean.TopSizes.extend_bounds d f h hh hf j
-
-variable {D : D7}
-
-end GlobalTheory.GridWtBound
-
-namespace GlobalTheory.GridWtBound
-
 theorem one_le_b {D : D7} (large₂ : SizeData₂ D) (hs : GlobalTheory.IndefiniteRowSideFullHecke.LevelPlusSubgroup.SizeRows large₂) : (1 : ℝ) ≤ large₂.sc.b := by
   obtain ⟨-, -, -, -, -, -, -, -, -, -, -, hgap, -, -⟩ := hs
   have hSc := large₂.Sc_pos
@@ -407,7 +396,7 @@ theorem abs_entry_le {D : D7} (large₂ : SizeData₂ D) (hs : GlobalTheory.Inde
   have hScb : large₂.Sc ≤ large₂.sc.b := by nlinarith
 
   have hv : ∀ j, 0 ≤ ((GridData.extend 2 (D.hc τ).v j : ℤ) : ℝ) ∧ ((GridData.extend 2 (D.hc τ).v j : ℤ) : ℝ) ≤ large₂.Sc :=
-    GlobalTheory.GridWtBound.extend_bounds 2 _ _ hSc.le fun l => large₂.cloud_v τ l
+    GlobalTheory.KerConjMean.TopSizes.extend_bounds 2 _ _ hSc.le fun l => large₂.cloud_v τ l
   have hbl : ∀ l : Fin D.R.m, 0 ≤ (((D.hc τ).b l : ℚ) : ℝ) ∧ (((D.hc τ).b l : ℚ) : ℝ) ≤ 4 * large₂.sc.b := fun l => by
     obtain ⟨h1, h2⟩ := hbe τ l
     have h3 := (D.hc τ).gap_be l
@@ -421,8 +410,8 @@ theorem abs_entry_le {D : D7} (large₂ : SizeData₂ D) (hs : GlobalTheory.Inde
     have ht : (0 : ℚ) ≤ D.R.t := Nat.cast_nonneg _
     have h4 : 0 ≤ (D.hc τ).e l := by linarith
     exact ⟨by exact_mod_cast h4, h2⟩
-  have hb := GlobalTheory.GridWtBound.extend_bounds 1 _ _ (by linarith) hbl
-  have he := GlobalTheory.GridWtBound.extend_bounds 1 _ _ (by linarith) hel
+  have hb := GlobalTheory.KerConjMean.TopSizes.extend_bounds 1 _ _ (by linarith) hbl
+  have he := GlobalTheory.KerConjMean.TopSizes.extend_bounds 1 _ _ (by linarith) hel
   have htb : (D.R.t : ℝ) ≤ 8 * large₂.sc.b := by
     obtain ⟨h1, h2⟩ := hbe τ ⟨0, by have := D.R.two_le_m; omega⟩
     have h3 := (D.hc τ).gap_be ⟨0, by have := D.R.two_le_m; omega⟩
@@ -485,22 +474,6 @@ theorem abs_entry_le {D : D7} (large₂ : SizeData₂ D) (hs : GlobalTheory.Inde
   calc |(y : ℝ) + (((if Odd (i + D.R.m) then -(1 / 2) else 0 : ℚ)) : ℝ)|
       ≤ |(y : ℝ)| + |(((if Odd (i + D.R.m) then -(1 / 2) else 0 : ℚ)) : ℝ)| := abs_add_le _ _
     _ ≤ 14 * large₂.sc.b := by linarith
-
-theorem pow_le_exp_posLog (x : ℝ) (g : ℕ) : x ^ g ≤ Real.exp (g * Real.posLog x) :=
-  GlobalTheory.KerConjMean.pow_le_exp_posLog x g
-
-theorem max_pow_le_exp_posLog (A : ℝ) (hA : 0 < A) (d : ℕ) :
-    max 1 A⁻¹ ^ d ≤ Real.exp (d * Real.posLog A⁻¹) :=
-  GlobalTheory.KerConjMean.max_pow_le_exp_posLog A hA d
-
-theorem size_bound (K f N b rd Kx W1 W2 a bb c : ℝ) (g : ℕ) (hK0 : 0 ≤ K) (hc0 : 0 ≤ c) (hcf : c ≤ f) (hb3 : 3 ≤ b) (hN1 : 1 ≤ N) (hNb : N ≤ b)
-    (hf1 : 1 ≤ f) (hfb : f ≤ b) (hrd0 : 0 ≤ rd) (hrd : rd ≤ b) (ha0 : 0 ≤ a) (haN : a ≤ N) (hbb0 : 0 ≤ bb)
-    (hbN : bb ≤ N) (hW1 : W1 ≤ f * N * (8 * b)) (hW2 : W2 ≤ f * N * (8 * b)) (hW10 : 0 ≤ W1) (hW20 : 0 ≤ W2)
-    (hg : (g : ℝ) = f * a * bb) (hKx : 0 < Kx)
-    (hlogKx : Real.log Kx ≤ K * (W1 + W2 + c * (a + bb) ^ 2 + 1) * Real.log (2 + W1 + W2 + a + bb + c)) :
-    Real.log (3 * (2 * (g : ℝ) * rd + 1) ^ g * Kx) ≤ (6 + 126 * K) * f * N * b * Real.log b ∧
-      (g : ℝ) ≤ f * N * b :=
-  GlobalTheory.KerConjMean.size_bound K f N b rd Kx W1 W2 a bb c g hK0 hc0 hcf hb3 hN1 hNb hf1 hfb hrd0 hrd ha0 haN hbb0 hbN hW1 hW2 hW10 hW20 hg hKx hlogKx
 
 theorem rowSizes : BigC fun {D} _ _ _ _ _ _ _ _ _ _ _ _ ch _ b =>
     ∀ i τ a, ((wt ch.G (.grid i D.R.m) τ).natW a : ℝ) ≤ 29 * b := by

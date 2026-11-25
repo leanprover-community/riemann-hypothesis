@@ -345,12 +345,6 @@ open GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundl
 open Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open GlobalTheory.CompanionTheory.Ar.Num.FamEx GlobalTheory.CompanionTheory.Ar.BT
 
-namespace GlobalTheory.CompanionTheory.Ar.Num.FamEx
-
-theorem chartForm_regular_of_mem_lat : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (O₀ : Type) [CommRing O₀] (β : O₀ →+* c.F) (Y : Model Xo c β) (S : Finset ℕ) (Ω : Type) [Field Ω] (K : Type) [Fintype K] [DecidableEq K] (J : K → Type) [∀ k, Fintype (J k)] (y : (Σ k, J k) → Ω) (𝔐 : HodgeCpt Y S y) (d : ℕ), IsArithVar (mCoordIdeal y) (d + 1) → 0 < D.p + D.q → ∀ (p : ℕ) [Fact p.Prime], p ∈ S → ∀ (A : Type) [CommRing A] [Algebra A Ω] [IsIntegralClosure A ℤ Ω] (m : Ideal A) [m.IsPrime], (p : A) ∈ m → ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Algebra A O] [IsLocalization.AtPrime O m] [Algebra O Ω] [IsScalarTower A O Ω], ∀ (G : GenTors 𝔐 p) (c' : ∀ k, J k), mseg y c' ≠ 0 → ∀ (P : ChartPack G O c') (u : Module.Dual Ω 𝔐.Li), u ∈ P.Dh.om → ∀ v : 𝔐.Li, (∀ q : Cpt 𝔐.ξ, InChart 𝔐.ξ (mseg y) c' q → (∀ o : O, algebraMap O Ω o ∈ regAt 𝔐.ξ q) → v ∈ 𝔐.M.lat q) → u v ∈ CR O y c' := by
-  exact @PositivityTheory.Xgn.sequence_family_pairing
-
-end GlobalTheory.CompanionTheory.Ar.Num.FamEx
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.ArithVarietyPrimeHodgeFinal =====
@@ -1042,7 +1036,7 @@ theorem seqfam_holds : GlobalTheory.CompanionTheory.Ar.HT.FarguesHodgeTate → �
     have h1 : wΩ • a ∈ coordLat O y (𝔐.dR t') (b t') c' := ((hlat t').2.2.2.2 c' hc).2.2.2.2.2.1 ha
     have e1 : ∑ k, (wΩ • a) k • b t' k = wΩ • ∑ k, a k • b t' k := by
       simp only [Pi.smul_apply, Finset.smul_sum, smul_assoc]
-    have h2 := _root_.GlobalTheory.CompanionTheory.Ar.Num.FamEx.chartForm_regular_of_mem_lat E H D l Xo c O₀ β Y S Ω K J y 𝔐 d hvar hpq p hpS A m hpm O G c' hc Pc u hu
+    have h2 := _root_.PositivityTheory.Xgn.sequence_family_pairing E H D l Xo c O₀ β Y S Ω K J y 𝔐 d hvar hpq p hpS A m hpm O G c' hc Pc u hu
       (∑ k, (wΩ • a) k • b t' k) (fun q hq ho => by
         simp only [coordLat, AddSubgroup.mem_iInf] at h1
         have h4 : Fintype.linearCombination Ω (b t') (wΩ • a) ∈ 𝔐.dR t' q := h1 q hq ho

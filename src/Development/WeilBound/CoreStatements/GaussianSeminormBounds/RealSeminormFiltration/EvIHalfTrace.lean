@@ -157,7 +157,6 @@ theorem hasDerivAt_hl (a : V) (L : V →L[ℝ] ℝ) (f : 𝓢(V, ℂ)) (x : V) :
   apply GlobalTheory.ThK.Dbl.Dense.hasDerivAt_hl
 end Line
 
-
 open Complex in
 alias temperate_exp := _root_.GlobalTheory.CompanionTheory.OM.SchDiff.temperate_exp
 
@@ -286,7 +285,6 @@ theorem linForm_apply (B y : κ → mixedEmbedding.mixedSpace F) :
   set_option synthInstance.maxHeartbeats 100000 in
     simp [linForm, map_sum]
 
-
 open scoped Classical in
 theorem phase_line (ψ : AddChar (AF F) ℂ) (hψ : IsStd ψ) (a b x : κ → AF F) (hb : At (evI F) b) (t : ℝ) :
     ψ (x ⬝ᵥ (realAd F t • b) + ⅟(2 : AF F) * ((realAd F t • a) ⬝ᵥ (realAd F t • b))) =
@@ -312,14 +310,8 @@ theorem phase_line (ψ : AddChar (AF F) ℂ) (hψ : IsStd ψ) (a b x : κ → AF
   rw [ev, map_add (f := _), map_smul, map_smul, linForm_apply]
   simp [smul_eq_mul]
 
-theorem evI_half_trace (S : mixedEmbedding.mixedSpace F) :
-    Algebra.trace ℝ (mixedEmbedding.mixedSpace F) (evI F ⅟(2 : AF F) * S) =
-      Algebra.trace ℝ (mixedEmbedding.mixedSpace F) S / 2 :=
-  _root_.GlobalTheory.ThK.Dbl.Dense.evI_half_trace S
-
 theorem snd_eq_zero {z : κ → AF F} (hz : At (evI F) z) (i : κ) : (z i).2 = 0 :=
   _root_.GlobalTheory.ThK.Dbl.Dense.snd_eq_zero hz i
-
 
 open scoped Classical in
 theorem schr_pure {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ) {a b : κ → AF F} (ha : At (evI F) a) (hb : At (evI F) b)
@@ -339,7 +331,7 @@ theorem schr_pure {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ) {a b : κ → AF F}
   show ψ (x ⬝ᵥ (realAd F t • b) + ⅟(2 : AF F) * ((realAd F t • a) ⬝ᵥ (realAd F t • b))) *
       (f (fun i => evI F ((x + realAd F t • a) i)) * g (fun i => ((x + realAd F t • a) i).2)) =
     hl (fun i => evI F (a i)) (linForm fun i => evI F (b i)) t f (fun i => evI F (x i)) * g fun i => (x i).2
-  rw [phase_line ψ hψ _ _ x hb t, e, e2, evI_half_trace]
+  rw [phase_line ψ hψ _ _ x hb t, e, e2, GlobalTheory.ThK.Dbl.Dense.evI_half_trace]
   simp only [hl, linForm_apply, mul_assoc]
 
 end PositivityTheory.RL.Der

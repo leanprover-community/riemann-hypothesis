@@ -158,23 +158,9 @@ theorem backQ_map (k₀ : K) (M : Matrix (Ix (Fin r)) (ι k₀) ℤ) (g : MvPoly
     backQ k₀ M (map (Int.castRingHom ℚ) g) = map (Int.castRingHom ℚ) (back k₀ M g) := by
   rw [back, backQ, map_bind₁]
 
-theorem fst_eq_of_mem_support {f : MRing ι} {k₀ : K} {n : ℕ} (hf : IsMultiHomog f (blockDeg k₀ n))
-    {c : (Σ k, ι k) →₀ ℕ} (hc : AddMonoidAlgebra.coeff f c ≠ 0) {p : Σ k, ι k} (hp : p ∈ c.support) : p.1 = k₀ := by
-  by_contra hne
-  have h := hf c (mem_support_iff.mpr hc) p.1
-  rw [blockDeg, if_neg hne, Finset.sum_eq_zero_iff] at h
-  exact (Finsupp.mem_support_iff.mp hp) (h p.2 (Finset.mem_univ _))
-
-theorem isHomogeneous_of_blockDeg {f : MRing ι} {k₀ : K} {n : ℕ} (hf : IsMultiHomog f (blockDeg k₀ n)) :
-    f.IsHomogeneous n := by
-  intro c hc
-  have h := hf c (mem_support_iff.mpr hc)
-  rw [Finsupp.weight_apply, Finsupp.sum_fintype _ _ (by simp), Fintype.sum_sigma]
-  simp only [Pi.one_apply, smul_eq_mul, mul_one, h, blockDeg, Finset.sum_ite_eq', Finset.mem_univ, if_true]
-
 theorem isHomogeneous_fwd (k₀ : K) (N : Matrix (ι k₀) (Ix (Fin r)) ℤ) {f : MRing ι} {n : ℕ}
     (hf : IsMultiHomog f (blockDeg k₀ n)) : (fwd k₀ N f).IsHomogeneous n := by
-  have := (isHomogeneous_of_blockDeg hf).aeval (blockSubst k₀ N) (isHomogeneous_blockSubst k₀ N)
+  have := (GroundTheory.Heights₂.Heights.HilbertSamuel.BlockSectionsRank.isHomogeneous_of_blockDeg hf).aeval (blockSubst k₀ N) (isHomogeneous_blockSubst k₀ N)
   rw [one_mul, aeval_eq_bind₁] at this
   exact this
 
@@ -256,7 +242,7 @@ theorem back_fwd_sub_mem (h : IsBlockImage y k₀ M N x) {f : MRing ι} {n : ℕ
   rw [hom_bind₁, hom_bind₁, coe_eval₂Hom, coe_eval₂Hom]
   refine eval₂_congr _ _ _ fun {p} {c} hp hc => ?_
   obtain ⟨k, i⟩ := p
-  have hk : k = k₀ := fst_eq_of_mem_support hf hc hp
+  have hk : k = k₀ := GroundTheory.Heights₂.Heights.HilbertSamuel.BlockSectionsRank.fst_eq_of_mem_support hf hc hp
   subst hk
   have e3 : back k M (∑ j, C (N i j) * X j) = ∑ j, C (N i j) * blockForms k M j := by
     rw [back, map_sum]
@@ -349,12 +335,6 @@ end Values
 section Points
 
 variable {K : Type} [Fintype K] [DecidableEq K] {ι : K → Type} [∀ k, Fintype (ι k)]
-
-theorem conjPt_mem_mcPts {P : Ideal (MRing ι)} {z : (Σ k, ι k) → ℂ} (hz : z ∈ mcPts P) : conjPt z ∈ mcPts P := by
-  refine ⟨fun k => ?_, fun f hf => ?_⟩
-  · obtain ⟨i, hi⟩ := hz.1 k
-    exact ⟨i, by simpa [conjPt] using hi⟩
-  · rw [ResSym.eval_conjPt_map_int, hz.2 f hf, map_zero]
 
 theorem blockMapC_conjPt (k₀ : K) {J : Type} [Fintype J] (M : Matrix J (ι k₀) ℤ) (z : (Σ k, ι k) → ℂ) :
     blockMapC k₀ M (conjPt z) = conjPt (blockMapC k₀ M z) := by
@@ -504,7 +484,7 @@ theorem blockGram_eq (d₀ : HSMBlockDatum D K ι Ω) (M : Matrix (Ix (Fin r)) (
     refine integral_congr_ae (Filter.Eventually.of_forall fun a => ?_)
     simp only
     rw [← blockMapC_conjPt]
-    exact (hpt _ (conjPt_mem_mcPts (hmem a)) k l).symm
+    exact (hpt _ (GroundTheory.Heights₂.Heights.HilbertSamuel.SupBoundCount.conjPt_mem_mcPts (hmem a)) k l).symm
   simp only [blockGram, resGram]
   rw [h1, h2]
 
@@ -777,7 +757,6 @@ theorem exists_ratio_lb (hBP : ProjFrameBasePtFree.Statement) (hfr : IsProjFrame
     exact hmin hz'
 
 end PullFSExtension
-
 
 open PullFSExtension in
 theorem PullFSExtension.proof (hBP : ProjFrameBasePtFree.Statement) : PullFSExtension.Statement := by
@@ -1641,7 +1620,6 @@ theorem linearIndependent_mono (D N : ℕ) :
     exact hkl (adtEnum_injective D N (by simpa using hE))
 
 end VeroneseMonoBasis
-
 
 open VeroneseMonoBasis in
 theorem VeroneseMonoBasis.proof : VeroneseMonoBasis.Statement := by

@@ -457,18 +457,6 @@ private theorem tr_map {K K' : Type} [Field K] [Field K'] (f : K →+* K') {Δ �
   · rw [e, Matrix.trace_fin_two_of, ← lmap_star', ← map_add (f := _), ht]
     ext <;> simp [lmap]
 
-private theorem conj_tr {K : Type} [Field K] {Δ τ : K} {γ : DX Δ} (h : HasTr γ τ) (y : DX Δ) :
-    HasTr (y⁻¹ * γ * y) τ := by
-  have e : mt (y⁻¹ * γ * y) = mt y⁻¹ * mt γ * mt y := rfl
-  have e1 : mt y⁻¹ * mt y = 1 := by
-    rw [show mt y⁻¹ * mt y = mt (y⁻¹ * y) from rfl, inv_mul_cancel]; rfl
-  have e2 : mt y * mt y⁻¹ = 1 := by
-    rw [show mt y * mt y⁻¹ = mt (y * y⁻¹) from rfl, mul_inv_cancel]; rfl
-  refine ⟨?_, ?_⟩
-  · rw [e, Matrix.det_mul, Matrix.det_mul, h.1, mul_one, ← Matrix.det_mul, e1, Matrix.det_one]
-  · rw [e, Matrix.trace_mul_comm, ← mul_assoc, e2, one_mul]
-    exact h.2
-
 private theorem supp_el {K : Type} [Field K] [CharZero K] (O : Type) [CommRing O] [Algebra O K] {Δ : K} (hΔ : Δ ≠ 0)
     {χ : Kˣ →* ℂˣ} {S : SigData Δ} (h : SigOk O χ S) {t : Kˣ} (ht : t ∈ S.P) {τ : K} (hτ : τ ^ 2 - 4 ≠ 0)
     (hI : Ind S.H τ t) {γ : DX Δ} (hγ : HasTr γ τ) : ∃ g : DX Δ, HasTr g τ ∧ S.fS t g ≠ 0 := by
@@ -492,7 +480,7 @@ private theorem supp_el {K : Type} [Field K] [CharZero K] (O : Type) [CommRing O
   unfold orb wcount
   apply finsum_eq_zero_of_forall_eq_zero
   intro o
-  exact mul_eq_zero_of_right _ (hne _ (conj_tr hγ (Quotient.out (Quotient.out o))))
+  exact mul_eq_zero_of_right _ (hne _ (UpperTheory.V.Z.Sym.Glob.hasTr_conj hγ (Quotient.out (Quotient.out o))))
 
 private theorem common_den (O : Type) {K : Type} [Field K] [CommRing O] [IsDomain O] [Algebra O K] [IsFractionRing O K]
     {Δ : K} {T : Set (Lsq K Δ)} (hT : T.Finite) : ∃ N : O, N ≠ 0 ∧ ∀ e ∈ T, IsIntegral O (N • e) := by
@@ -1556,7 +1544,6 @@ private theorem sum_GI (hD : D.Ok) (t : Dat.Par F) (ht : D.Cone t) (ch : F → �
   rw [finsum_congr kS, finsum_congr kK, ← const_sum, ← finsum_add_distrib (sup _) (sup' _)]
   exact finsum_congr (fun τ => by ring)
 
-
 private theorem term_eq (hD : D.Ok) {V : Type} [AddCommGroup V] [Module ℂ V] {ch : F → ℂ} {B : Base (U3 Δ) (GA Δ) V} {s : B.Tw}
     (hB : D.IsBG ch B s) {t : Dat.Par F} (ht : D.Cone t) {τ c : F} {d m : EL Δ τ} {δ i P} (hτ : D.Good t τ) (hd : IsDat c d m)
     (h : Models c d m δ i P) :
@@ -1613,7 +1600,6 @@ private theorem cls_eq {K : Type} [Field K] {τ : K} {x y : (Kˣ ⧸ (powMonoidH
     exact ⟨r, by rw [powMonoidHom_apply, pow_two, ← hr, div_eq_inv_mul]⟩
   · rw [← QuotientGroup.out_eq' x2, ← QuotientGroup.out_eq' y2, QuotientGroup.eq, ← div_eq_inv_mul]
     exact h2
-
 
 theorem sideG : SideG := by
   intro F _ _ Δ D hD

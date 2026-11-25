@@ -771,9 +771,6 @@ theorem sesq_eq_herm {E : Type} [Field E] [NumberField E] [IsCMField E] {N : ℕ
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun k _ => ?_
   ring
 
-theorem sgI_sq (j j' : ℕ) : sgI j j' * sgI j j' = 1 := by
-  simp [sgI, Matrix.fromBlocks_multiply, Matrix.fromBlocks_one]
-
 theorem stdModel_of (h : StdZ) : StdModel := by
   intro E _ _ _ Ψ _ _ j j' n g Λ _ _ H F ξ c₀ hc₀ hξ
   obtain ⟨C⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Cusp.Dict.LatEmbEx.exists_latEmb E Ψ j j' n g Λ H F
@@ -818,7 +815,7 @@ theorem stdModel_of (h : StdZ) : StdModel := by
       field_simp
     exact_mod_cast this
   have hl : ∀ τ, C.cinv (A τ) τ * A τ = 1 := fun τ => by
-    rw [LatEmb.cinv, Matrix.mul_assoc, Matrix.mul_assoc, ← Matrix.mul_assoc (A τ)ᴴ, hA, sgI_sq]
+    rw [LatEmb.cinv, Matrix.mul_assoc, Matrix.mul_assoc, ← Matrix.mul_assoc (A τ)ᴴ, hA, GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Change.sgI_mul_self]
   have hrr : ∀ τ, A τ * C.cinv (A τ) τ = 1 := fun τ =>
     (Matrix.mul_eq_one_comm_of_equiv finSumFinEquiv).1 (hl τ)
   have hform : ∀ x y, ((F.form x y : ℤ) : ℚ) = EFf (-ξ) (r • g₀ᵀ) (e x) (e y) := fun x y => by
@@ -890,14 +887,14 @@ namespace Moeb
 
 variable {Ψ : Type} [Fintype Ψ] {j j' n : ℕ}
 
-theorem sgI_sq : sgI j j' * sgI j j' = 1 := by
+theorem GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Change.sgI_mul_self : sgI j j' * sgI j j' = 1 := by
   simp [sgI, fromBlocks_multiply]
 
 def sinv (u : Matrix (Sg j j') (Sg j j') ℂ) : Matrix (Sg j j') (Sg j j') ℂ := sgI j j' * uᴴ * sgI j j'
 
 theorem sinv_mul {u : Matrix (Sg j j') (Sg j j') ℂ} (h : IsSgU u) : sinv u * u = 1 := by
   unfold IsSgU at h
-  rw [sinv, Matrix.mul_assoc, Matrix.mul_assoc, ← Matrix.mul_assoc uᴴ, h, sgI_sq]
+  rw [sinv, Matrix.mul_assoc, Matrix.mul_assoc, ← Matrix.mul_assoc uᴴ, h, GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Change.sgI_mul_self]
 
 theorem mul_sinv {u : Matrix (Sg j j') (Sg j j') ℂ} (h : IsSgU u) : u * sinv u = 1 :=
   mul_eq_one_comm.1 (sinv_mul h)

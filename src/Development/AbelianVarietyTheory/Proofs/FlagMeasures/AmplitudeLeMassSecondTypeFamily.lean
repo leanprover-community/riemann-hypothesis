@@ -228,7 +228,6 @@ private lemma apply_mem_moved_smul_iff_of_mem_St {h : S.GLV}
     _root_.GlobalTheory.HL.eich L S.Hm a b c v ∈ Λ
   rw [eich_apply_apply_of_mem_St S hh, _root_.GlobalTheory.FrameAct.mem_smul_iff]
 
-
 open ValuativeRel MeasureTheory in
 open scoped Pointwise ENNReal Classical in
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] in
@@ -671,7 +670,6 @@ private theorem relIndex_symm_of_blockFrameMatrix_lemma_2 {F : Type} [Field F] [
     simpa using _root_.GlobalTheory.UnramVal.vE_zpow_mul_unit L hϖ 0 1
   rw [hv, zpow_zero, one_mul] at h3
   exact ⟨by exact_mod_cast h3.symm, h2⟩
-
 
 open ValuativeRel MeasureTheory in
 open scoped Pointwise ENNReal Classical in
@@ -1436,7 +1434,6 @@ private theorem exists_MvTo_isTerm_of_Mv_of_InFF [IsNonarchimedeanLocalField F] 
     exact ⟨hw, hmov⟩
   · unfold _root_.GlobalTheory.HL.Frames.IsTerm
     exact ⟨⟨_, _⟩, hW⟩
-
 
 open ValuativeRel MeasureTheory in
 open scoped Pointwise ENNReal Classical in

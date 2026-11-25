@@ -81,7 +81,7 @@ theorem hw_sup_le (p q : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (act : 
     exact N'.neg_mem (N'.sub_mem (hN' _ (_root_.GlobalTheory.FockAlg.MinFirst.isKC_diag c) n' hn') (N'.smul_mem _ hn'))
   have h2 : ∀ c d, posC c d → act (Eab c d) n ∈ N ⊓ N' := by
     intro c d hcd
-    refine Submodule.mem_inf.2 ⟨hN _ (_root_.GlobalTheory.CommonQuot.isKC_pos' hcd) n hn, ?_⟩
+    refine Submodule.mem_inf.2 ⟨hN _ (_root_.GlobalTheory.FockAlg.MinFirst.isKC_pos hcd) n hn, ?_⟩
     have e : act (Eab c d) n = -(act (Eab c d) n') := by
       have := hpos c d hcd
       rw [map_add (f := _)] at this

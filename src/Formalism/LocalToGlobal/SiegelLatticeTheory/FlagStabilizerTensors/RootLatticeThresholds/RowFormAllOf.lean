@@ -94,10 +94,6 @@ section Gen
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ}
 
-theorem gmap_inv_of {a : S.V ≃ₗ[E] S.V} {L L' : Submodule (𝓞 E) S.V} (h : Formalism.HermitianLatticesTheory.gmap a L' = L) :
-    Formalism.HermitianLatticesTheory.gmap a⁻¹ L = L' := by
-  rw [← h, ← _root_.PI.DCRelEquiv.UnitaryGroupMassFormula.gmap_mul', inv_mul_cancel, _root_.PI.DCRelEquiv.UnitaryGroupMassFormula.gmap_one']
-
 theorem xflag_mapLF {T : E} (γ : S.V ≃ₗ[E] S.V) (hγ : γ ∈ Formalism.HermitianLatticesTheory.isom S.hT) (F : LFlag S r T) (j : ℕ) :
     Xflag (mapLF γ F) j = (Xflag F j).map (γ : S.V →ₗ[E] S.V) := by
   simp only [Xflag, mapLF, dif_pos hγ, Formalism.MainNotions.S.FlagG.Xa, mapFlag, Submodule.map_span, Set.image_image]
@@ -113,7 +109,7 @@ theorem isPair_quot {T T' : E} (Λ Λ' : Submodule (𝓞 E) S.V) (g : ℕ) (F : 
     (hι : IotaCompat Λ F (mapLF γ₁ F') (mapLF γ₂ F') (γ₂ * γ₁⁻¹) g) :
     IsPair Λ F (mapLF γ₁ F') (mapLF γ₂ F') (γ₂ * γ₁⁻¹) g := by
   refine ⟨⟨(Formalism.HermitianLatticesTheory.isom S.hT).mul_mem h₂ ((Formalism.HermitianLatticesTheory.isom S.hT).inv_mem h₁), ?_⟩, fun j => ?_, ?_, hι⟩
-  · rw [_root_.PI.DCRelEquiv.UnitaryGroupMassFormula.gmap_mul', gmap_inv_of hl₁, hl₂]
+  · rw [_root_.PI.DCRelEquiv.UnitaryGroupMassFormula.gmap_mul', Formalism.L2.SG.Pf.gmap_inv hl₁, hl₂]
   · rw [xflag_mapLF γ₁ h₁, xflag_mapLF γ₂ h₂, ← Submodule.map_comp]
     congr 1
     ext x
@@ -576,19 +572,6 @@ theorem ff_det {x : Fin r → S.V} (hx : LinearIndependent E x) (hxe : ∀ b, x 
           rw [h, zero_smul]
   exact funext (Fintype.linearIndependent_iff.1 hx w hsum)
 
-theorem ff_gmap_latSpan (ν : S.V ≃ₗ[E] S.V) (aa : Fin r → FractionalIdeal (nonZeroDivisors (𝓞 E)) E)
-    (v : Fin r → S.V) : Formalism.HermitianLatticesTheory.gmap ν (latSpan aa v) = latSpan aa (fun a => ν (v a)) := by
-  unfold Formalism.HermitianLatticesTheory.gmap Formalism.L2.SG.Saturated.latSpan
-  rw [Submodule.map_span]
-  congr 1
-  ext y
-  simp only [Set.mem_image, Set.mem_setOf_eq]
-  constructor
-  · rintro ⟨z, ⟨a, c, hc, rfl⟩, rfl⟩
-    exact ⟨a, c, hc, by simp⟩
-  · rintro ⟨a, c, hc, rfl⟩
-    exact ⟨c • v a, ⟨a, c, hc, rfl⟩, by simp⟩
-
 theorem ff_gmap_inf (ν : S.V ≃ₗ[E] S.V) (A : Submodule (𝓞 E) S.V) (U : Submodule E S.V) :
     Formalism.HermitianLatticesTheory.gmap ν (A ⊓ toO S U) = Formalism.HermitianLatticesTheory.gmap ν A ⊓ toO S (U.map (ν : S.V →ₗ[E] S.V)) := by
   unfold Formalism.HermitianLatticesTheory.gmap
@@ -753,14 +736,14 @@ theorem frameCorrection_holds : FrameFixNeed X Y u u' := by
   have hMeXS : XLam s.lam' (lf D (X.Fu u')) = latSpan (aaS D) e := hRL'.2.2
   have hy' : XLam s.lam y.1 = latSpan (aaS D) y.1.fl.e := y.2.2.2.2
   have e1 : Formalism.HermitianLatticesTheory.gmap δ (latSpan (aaS D) x) = Formalism.HermitianLatticesTheory.gmap δ (latSpan (aaS D) e) := by
-    rw [ff_gmap_latSpan, show (fun b => δ (x b)) = y.1.fl.e from funext hxδ, ← hy', ← hMeXS]
+    rw [Formalism.L2.SG.Pf.Act.latSpan_gmap, show (fun b => δ (x b)) = y.1.fl.e from funext hxδ, ← hy', ← hMeXS]
     unfold XLam
     rw [ff_gmap_inf, hδΛ, hX2]
   have e2 : latSpan (aaS D) x = latSpan (aaS D) e :=
     Submodule.map_injective_of_injective (f := ((δ : (VS D).V →ₗ[D.host.E] (VS D).V).restrictScalars
       (𝓞 D.host.E))) δ.injective e1
   have hμMe : Formalism.HermitianLatticesTheory.gmap μ (latSpan (aaS D) e) = latSpan (aaS D) e := by
-    rw [ff_gmap_latSpan, show (fun b => μ (e b)) = x from funext hμe, e2]
+    rw [Formalism.L2.SG.Pf.Act.latSpan_gmap, show (fun b => μ (e b)) = x from funext hμe, e2]
   have h1 : ∀ v ∈ latSpan (aaS D) e, μ v ∈ latSpan (aaS D) e := fun v hv => liftT_maps hμMe hv
   have h2 : ∀ v ∈ latSpan (aaS D) e, μ.symm v ∈ latSpan (aaS D) e := by
     intro v hv
@@ -959,7 +942,6 @@ open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Loca
   Formalism.L2.SG.MassDataConc Formalism.L2.SG.MassDataForm Formalism.L2.SG.Pf.RowForm MeasureTheory
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 set_option linter.deprecated false in
 theorem rowRegroupC_of {D : D7} (X : HidaSetting D) (Y : Formalism.L2.SG.Full.Full X) (u u' : D.what₂.Word)

@@ -1059,7 +1059,6 @@ noncomputable section
 
 namespace GlobalTheory.CharDepth
 
-
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ in
 theorem isCanonGauge_mapFB_tower {R : Type} [CommRing R] {d : ℕ} {O : Type} [CommRing O] [StarRing O] {k : Type}
     [CommRing k] [Algebra ℚ k] [Algebra R k] (B : FB R d O) {h : PS k 2 d} {R' : Type} [CommRing R'] [Algebra R' k]
@@ -1451,8 +1450,6 @@ open ReciprocityTheory.ChartRestriction.G.Pdiv.ChartF ReciprocityTheory.ChartRes
 open GlobalTheory.CharDepth TensorProduct
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.nonempty_closedValuedExtensionOfCDVR : ∀ (T : CDVR) (p : ℕ) [Fact p.Prime], ¬ IsUnit (p : T.V) → Nonempty (ValExt T p) := by
-  first | exact @GlobalTheory.CharDepth.nonempty_valExt
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.JetHarmonics.NonemptyClosedValuedExtensionOfCDVRStatement =====
@@ -1723,8 +1720,8 @@ theorem nuLocC_le_over_two : ∀ (p : ℕ) [Fact p.Prime], AvFSt p → HTFSt p �
   letI := H.starRing
   intro T io y Ch hy h2 hsp f vd hvd htp e k n a he hdom hn Ap hAp haA
   classical
-  obtain ⟨X⟩ := GlobalTheory.T.nonempty_closedValuedExtensionOfCDVR T p h2
-  obtain ⟨τT, -, hty, -⟩ := GlobalTheory.T.exists_cmType_embeddings_into_valuation_ring E H l c T io p X
+  obtain ⟨X⟩ := GlobalTheory.CharDepth.nonempty_valExt T p h2
+  obtain ⟨τT, -, hty, -⟩ := GlobalTheory.CharDepth.exists_types_valuationRing E H l c T io p X
   obtain ⟨hw0, happ⟩ := UpperTheory.cmDatum_splitPlaces_conj_stable p Fact.out E H hsp X.C X.v X.O X.ints X.nonunit.out
   obtain ⟨xs, hxs, hprod⟩ := _root_.GlobalTheory.CharDepth.colength_bound_at_two p hAv E H Dw l Xo c T io y Ch X hy f vd htp
   obtain ⟨N, u, hu, hspan⟩ := _root_.GlobalTheory.CharDepth.hodgeTate_inclusion_intChart p hHT E H Dw l Xo c T io y Ch X hy

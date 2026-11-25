@@ -99,8 +99,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 
-theorem _root_.GlobalTheory.T.downwardLift_level_acts_by_inverse_character : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.LiftRows.Given R F → R.FullP → ∀ (i : Fin D.R.m) (t : T) (y : (R.HV i t).H) (f : WO (Vc D i) (Wc D i) → ℂ), IsThetaFunO R.ψ (Vc D i) (Wc D i) f → ∀ κ ∈ levG (Vc D i) (R.βV i) (R.datVt i t), ∀ (l : (R.cV i).W →ₗ[ℂ] ℂ) (g : GA D (Wc D i)), downInt R i t y (R.ωP i t (κ, 1) f) l g = (levChi (Vc D i) (R.βV i) (R.datVt i t) κ)⁻¹ * downInt R i t y f l g := by
-  first | exact @GlobalTheory.DownLift.TypeLaw.downInt_level
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DownwardLiftLevelActsByInverseCharacterStatement =====
@@ -118,8 +116,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 open GlobalTheory.DownLift.GenFinite
 
-theorem _root_.GlobalTheory.T.level_averages_theta_pair_zero_without_character : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.LiftRows.Given R F → R.FullP → ∀ (i : Fin D.R.m) (t : T) (y : (R.HV i t).H), NoChi R i t y → ∀ (PP : R.Pg) (a : Fin D.R.r → kP PP.1), a ≠ 0 → ∀ (tr : Bool) (ε : ℤ), (ε = 1 ∨ ε = -1) → ∀ κ : G → GA D (Vc D i), GlobalTheory.DownLift.GenFinite.IsLifts R i t κ → ∀ f : WO (Vc D i) (Wc D i) → ℂ, IsThetaFunO R.ψ (Vc D i) (Wc D i) f → ∀ (l : (R.cV i).W →ₗ[ℂ] ℂ) (g : GA D (Wc D i)), downInt R i t y (GlobalTheory.DownLift.GenFinite.avgW R i t PP a tr ε κ f) l g = 0 := by
-  first | exact @GlobalTheory.DownLift.GenFinite.avgLaw
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LevelAveragesThetaPairZeroWithoutCharacterStatement =====
@@ -854,7 +850,7 @@ theorem genFin : GlobalTheory.Hk3.HoweUnram → ∀ (D : D7) (G : Type) [Group G
     exact ⟨hθ _ _ hf'.1, fun l g => by rw [downInt_transl]; exact hvan f' hf' l (g * g')⟩
   have hAvg : ∀ φ ∈ AvgIm R i t, Pr φ := by
     rintro φ ⟨PP, a, ha, tr, ε, hε, κ, hκ, f', hf', rfl⟩
-    refine ⟨?_, fun l g => GlobalTheory.T.level_averages_theta_pair_zero_without_character D G Pl0 T A Ks R F hG hP i t y hNC PP a ha tr ε hε κ hκ f' hf' l g⟩
+    refine ⟨?_, fun l g => GlobalTheory.DownLift.GenFinite.avgLaw D G Pl0 T A Ks R F hG hP i t y hNC PP a ha tr ε hε κ hκ f' hf' l g⟩
     unfold avgW
     exact theta_sum _ _ f' hf' fun k _ => theta_smul _ (hθ _ _ hf')
   have hType : ∀ φ, TypeVec R i t φ → Pr φ := by
@@ -871,7 +867,7 @@ theorem genFin : GlobalTheory.Hk3.HoweUnram → ∀ (D : D7) (G : Type) [Group G
       rw [neg_smul, sub_eq_add_neg]
     rw [e, downInt_add R i t y _ _ l g (hint _ l g (hθ _ _ hf'))
       (hint _ l g (theta_smul _ hf')), downInt_smul,
-      GlobalTheory.T.downwardLift_level_acts_by_inverse_character D G Pl0 T A Ks R F hG hP i t y f' hf' κ hκ l g]
+      GlobalTheory.DownLift.TypeLaw.downInt_level D G Pl0 T A Ks R F hG hP i t y f' hf' κ hκ l g]
     ring
   refine (hspan _ ?_ f (GlobalTheory.T.thetaFunction_mem_span_levelType_differences D G Pl0 T A Ks R F hG hP i t f hf)).2 l g
   rintro x (hx | hx)

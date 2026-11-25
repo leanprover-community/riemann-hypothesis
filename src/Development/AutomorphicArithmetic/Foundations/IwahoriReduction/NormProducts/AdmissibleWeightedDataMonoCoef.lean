@@ -216,7 +216,6 @@ theorem val_level_zero (z : ZMod (l ^ 0)) : z.val = 0 := by
 
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω]
 
-
 variable (Ω l) in
 def cycRes : G ℚ Ω →* ZMod l :=
   (ZMod.castHom (dvd_pow_self l one_ne_zero) (ZMod l)).toMonoidHom.comp ((Units.coeHom (ZMod (l ^ 1))).comp (cycMod ℚ Ω l 1))
@@ -315,7 +314,6 @@ end Chi
 end GlobalTheory.K4.TwistClauses
 
 namespace GlobalTheory.K4
-
 
 open TwistClauses in
 theorem twist_clauses : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ι : Qbar l ≃+* ℂ) (e : ℕ)
@@ -1088,20 +1086,6 @@ private theorem UpperTheory.Kd.K4.isCompact_integralCoefficients {l : ℕ} [Fact
   have hfg : (Subalgebra.toSubmodule c.O).FG := Module.Finite.iff_fg.1 c.fin
   exact Submodule.isCompact_of_fg hfg
 
-private theorem UpperTheory.Kd.K4.norm_le_one_of_mem_coefficient_ring {l : ℕ} [Fact l.Prime] (c : Coef l) {a : Qbar l} (ha : a ∈ c.O) : ‖a‖ ≤ 1 := by
-  by_contra h
-  push Not at h
-  obtain ⟨M, hM⟩ := (UpperTheory.Kd.K4.isCompact_integralCoefficients c).isBounded.exists_norm_le
-  obtain ⟨n, hn⟩ := pow_unbounded_of_one_lt M h
-  have := hM _ (c.O.pow_mem ha n)
-  rw [norm_pow] at this
-  linarith
-
-private theorem UpperTheory.Kd.K4.norm_nat_cast_prime_lt_one_padic_closure (l : ℕ) [Fact l.Prime] : ‖((l : ℕ) : Qbar l)‖ < 1 := by
-  have h : ((l : ℕ) : Qbar l) = algebraMap ℚ_[l] (PadicAlgCl l) (l : ℚ_[l]) := by simp
-  rw [h, PadicAlgCl.norm_extends]
-  exact Padic.norm_p_lt_one
-
 private theorem UpperTheory.Kd.K4.topCocycle_finsetSum (hA : SApi) (hI : SInvApi) {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω]
     {ε : Ω →+* ℂ} (X : Tower Ω ε) (l : ℕ) [Fact l.Prime] (N w n M : ℕ) {ι : Type} (S : Finset ι)
     (z : ι → (Ω ≃ₐ[ℚ] Ω) → X.Fn l) (h : ∀ i ∈ S, TopCoc X l N w n M (z i)) :
@@ -1155,7 +1139,6 @@ private theorem UpperTheory.Kd.K4.unitsReduction_surjective (l r : ℕ) [Fact l.
 
 private def UpperTheory.Kd.K4.unitsLevelToPrimePowReduction (l n r N : ℕ) : (ZMod (topM l n r N))ˣ →* (ZMod (l ^ r))ˣ :=
   Units.map (ZMod.castHom (Dvd.dvd.mul_right (pow_dvd_pow l (Nat.le_add_right r n)) N) (ZMod (l ^ r))).toMonoidHom
-
 
 theorem UpperTheory.Kd.K4.mlOf2 :
     SymEx → SApi → SInvApi → SBStab → SSlD → SCohApi → SCycZ → STop0 → KatoClassNormCompatibleCyclotomic → KatoClassCompatibleModPowers → ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε) (N : ℕ) [NeZero N] (e : ℕ),
@@ -1222,7 +1205,7 @@ theorem UpperTheory.Kd.K4.mlOf2 :
     intro n d hd i
     have e1 : algebraMap ℚ_[l] (Qbar l) (((l : ℤ_[l]) ^ n : ℤ_[l]) : ℚ_[l]) = ((l : ℕ) : Qbar l) ^ n := by simp
     rw [hsm, e1, Pi.smul_apply, smul_eq_mul, norm_mul]
-    exact mul_le_of_le_one_right (norm_nonneg _) (norm_le_one_of_mem_coefficient_ring cf (hint d hd i))
+    exact mul_le_of_le_one_right (norm_nonneg _) (GlobalTheory.KZGlobAsm.norm_le_one_of_mem cf (hint d hd i))
   have hfix : ∀ (M : ℕ) [NeZero M] (s : Ω ≃ₐ[ℚ] Ω) (y : (ZMod M)ˣ),
       (repM M y : Ω ≃ₐ[ℚ] Ω)⁻¹ * s * repM M (y * (cycM M s)⁻¹) ∈ fixMu Ω M := by
     intro M _ s y
@@ -1273,7 +1256,7 @@ theorem UpperTheory.Kd.K4.mlOf2 :
     intro s
     rw [ContinuousAt, Metric.tendsto_nhds]
     intro ε' hε
-    obtain ⟨n, hn⟩ := exists_pow_lt_of_lt_one hε (norm_nat_cast_prime_lt_one_padic_closure l)
+    obtain ⟨n, hn⟩ := exists_pow_lt_of_lt_one hε (GlobalTheory.norm_natCast_prime_qbar l)
     rw [← norm_pow] at hn
     filter_upwards [hcont r n s y] with t ht
     obtain ⟨dd, hdd, hde⟩ := ht

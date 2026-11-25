@@ -432,8 +432,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.IndefR.Links (PolF)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.vacuumVector_drop_auxiliary_places : ∀ (D : D7) (S T : HSp D) (B : Base S T) (Q Q' : Finset (Pl D.host.E)) [DecidablePred (· ∈ Q')] (φ : ∀ PP : Pl D.host.E, Matrix (Fin T.rank) (Fin S.rank) (kP PP) → ℂ), B.Good → B.admitted Q → Q' ⊆ Q → B.vecAt Q (fun PP y => if PP.1 ∈ Q' then φ PP.1 y else 1) = B.vecAt Q' fun PP => φ PP.1 := by
-  first | exact @GlobalTheory.ExportSeries.vecAt_drop
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.VacuumVectorDropAuxiliaryPlacesStatement =====
@@ -446,7 +444,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Datum IsDedekindDomain NumberField Matrix GlobalTheory.ExportSeries
 open Formalism.L2.NTheta (IsIdemAt IsHeckeElt)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 noncomputable section
 
@@ -690,7 +687,7 @@ theorem xi_rel (B : Base S T) (hB : B.Good) (hbT : Lev.IsBaseFrame T B.F.βT B.F
   set f1 := B.vecAt Q fun PP y => if PP.1 = P then 1 else φ PP.1 y with hf1
   have hf1' : f1 = B.vecFam Q' (Base.univFam u' β) (a' - dQ') := by
     rw [hf1, Base.vecFam]
-    have := GlobalTheory.T.vacuumVector_drop_auxiliary_places D S T B Q Q' (fun v y => if hv : v ∈ Q' then ((Base.univFam u' β v ((a' - dQ') ⟨v, hv⟩) y : ℚ) : ℂ)
+    have := GlobalTheory.ExportSeries.vecAt_drop D S T B Q Q' (fun v y => if hv : v ∈ Q' then ((Base.univFam u' β v ((a' - dQ') ⟨v, hv⟩) y : ℚ) : ℂ)
       else 0) hB hQ hQ'
     convert this using 2
     · funext PP y
@@ -728,7 +725,7 @@ theorem xi_rel (B : Base S T) (hB : B.Good) (hbT : Lev.IsBaseFrame T B.F.βT B.F
 
   have hsupp := (hα k hk).2.1 γ hγ
   obtain ⟨-, k₁, hk₁, k₂, hk₂, hγe⟩ := (hα k hk).2.2.1 γ hγ
-  have hH := (GlobalTheory.T.modulus_unramifiedChar_det_heckeDoubleCoset_split D T P (idemAt P) he ϖ hϖ1 hϖ2 x hx k (α k) (hα k hk).1 k₁ hk₁ k₂ hk₂
+  have hH := (GlobalTheory.SplitDetValue.det_modulus_chi D T P (idemAt P) he ϖ hϖ1 hϖ2 x hx k (α k) (hα k hk).1 k₁ hk₁ k₂ hk₂
     (GlobalTheory.VecInv.detAt (idemAt P) he.1.1 T γ) (by rw [← hγe]; exact GlobalTheory.VecInv.isDetAt_detAt _ he.1.1 T γ)).2
     (Multiplicative (↥Q' → C)) (u'.delQ Q') (fun y h1 h2 h3 => by
       ext v
@@ -760,8 +757,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Datum IsDedekindDomain NumberField Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.ExportSeries GlobalTheory.SeriesTie
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.universalChar_spread_commutes_with_restriction : ∀ (D : D7) (N : NData D.R D.host D.what₂) (X : NTw D.R D.host D.what₂ D.LL0 N) (Y : NExp D.R D.host D.what₂ D.LL0 N X), GlobalTheory.UnivChar.IsUnivChar Y → ∀ (i : X.Tw) (M : ℕ) (ch : Set (Pl D.host.E)), IsChoice ch → ∀ (Q Q' : Finset (Pl D.host.E)) (hQQ : Q' ⊆ Q), admissibleConjugatePairPlaces X i Q M = Q → admissibleConjugatePairPlaces X i Q' M = Q' → ∀ (hsub : ∀ w ∈ half ch (admissibleConjugatePairPlaces X i Q' M), w ∈ half ch (admissibleConjugatePairPlaces X i Q M)) (c : ↥(half ch (admissibleConjugatePairPlaces X i Q M)) → ZMod (X.l i ^ M)) (v : Pl D.host.E) (hv : v ∈ Q'), spread Y i Q M ch c ⟨v, hQQ hv⟩ = spread Y i Q' M ch (fun w => c ⟨w.1, hsub w.1 w.2⟩) ⟨v, hv⟩ := by
-  first | exact @GlobalTheory.SpreadRestrict.spread_restrict
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UniversalCharSpreadCommutesWithRestrictionStatement =====
@@ -775,7 +770,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open Formalism.L2.NTheta (IsIdemAt IsHeckeElt)
 open Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.SeriesTie
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 noncomputable section
 
@@ -897,8 +891,6 @@ open Classical
 open Formalism.IndefR.Links (PolF)
 variable {D : D7} {N : NData D.R D.host D.what₂} {X : NTw D.R D.host D.what₂ D.LL0 N}
 
-
-
 theorem thURel_of_tie {ρ : Setup X} (hρ : ρ.Good) {Y : NExp D.R D.host D.what₂ D.LL0 N X} (rd : Rds Y ρ) (T : Comparison₂ hρ rd)
     (hU : GlobalTheory.UnivChar.IsUnivChar Y) (hH : ∀ i j b, HeckeRead (rd i j b))
     (hR : ∀ i, X.NonzeroIndexPlace i → ∀ j b, RatUniv (rd i j b)) :
@@ -1005,7 +997,7 @@ theorem thURel_of_tie {ρ : Setup X} (hρ : ρ.Good) {Y : NExp D.R D.host D.what
     have hk : Formalism.MainNotions.IntegralHeckeForms.HkIdx i n P :=
       ⟨(Finset.mem_Icc.1 hn).1, (Finset.mem_Icc.1 hn).2, hsplitP, fun h => Finset.disjoint_left.1 hS0 hP h⟩
     obtain ⟨hdc, h1⟩ := isDC_of_rep hρ J b hk he (hα n hn').1.2.1 (hα n hn').2.1 (hα n hn').2.2
-    have hmu := (GlobalTheory.T.modulus_unramifiedChar_det_heckeDoubleCoset_split D (Links.Wc D J) P (idemAt P) he ϖ hϖ1 hϖ2 x hx n (α n) (hα n hn').1 1 h1 1 h1
+    have hmu := (GlobalTheory.SplitDetValue.det_modulus_chi D (Links.Wc D J) P (idemAt P) he ϖ hϖ1 hϖ2 x hx n (α n) (hα n hn').1 1 h1 1 h1
       (GlobalTheory.VecInv.detAt (idemAt P) hee (Links.Wc D J) (α n)) (by
         rw [one_mul, mul_one]; exact GlobalTheory.VecInv.isDetAt_detAt _ hee _ _)).2 Circle ((ρ.B i J b).mu)
       (fun y h1 h2 h3 => mu_unram (ρ.B i J b) (hρ.base i J b) hadm hPH y h1 h2 h3)
@@ -1087,7 +1079,7 @@ theorem thURel_of_tie {ρ : Setup X} (hρ : ρ.Good) {Y : NExp D.R D.host D.what
     rw [hχ, ← hc']
     congr 4
     funext v
-    exact GlobalTheory.T.universalChar_spread_commutes_with_restriction D N X Y hU i M (ρ.ch i) (hρ.ch i) Q ((Q.erase P).erase Pb) hQ'Q hA hA' hsubH c v.1 v.2
+    exact GlobalTheory.SpreadRestrict.spread_restrict D N X Y hU i M (ρ.ch i) (hρ.ch i) Q ((Q.erase P).erase Pb) hQ'Q hA hA' hsubH c v.1 v.2
   have hIcc : Finset.Icc 1 (Links.Wc D J).rank = Finset.Icc 1 D.R.r := by rw [FWT.rank_Wc]
   have hX2 : ∀ c' : ↥H' → ZMod (X.l i ^ M), ∑ c ∈ Finset.univ.filter (fun c : ↥H → ZMod (X.l i ^ M) =>
       ∀ v : ↥H', c ⟨v.1, hsubH v.1 v.2⟩ = c' v), Ξ c g =

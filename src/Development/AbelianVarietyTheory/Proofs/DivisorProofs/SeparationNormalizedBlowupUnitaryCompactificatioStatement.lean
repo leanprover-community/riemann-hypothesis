@@ -360,11 +360,8 @@ open scoped CategoryTheory.Obj BigOperators
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.LocM GlobalTheory.Toroidal GlobalTheory.Ex
 attribute [local instance] Over.cartesianMonoidalCategory
 
-
 noncomputable section
 namespace GlobalTheory.CoordReduce
-
-
 
 open ReciprocityTheory.ChartRestriction.G.Out in
 theorem isCoordPt_map (h₂ : Laws2) {B : Scheme.{0}} (P : PolAV B) {R K : Type} [CommRing R] [CommRing K]
@@ -1026,8 +1023,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory GlobalTheory.USep
 
-theorem _root_.GlobalTheory.T.periodsInCoordinates_fromBase_pullDeg : ∀ (V V₁ : Type) [CommRing V] [IsDomain V] [CommRing V₁] [IsDomain V₁] (ρ : V →+* V₁), Function.Injective ρ → ∀ (Q : DegPre V) (D : DegPre V₁) (p : IsPullDeg ρ Q D) (τ₀ : GlobalTheory.UChart.Gens Q) (N : ℕ) (s : Fin N → V) (ε : Fin N → LinearMap.BilinForm ℤ Q.X) (ε₁ : Fin N → LinearMap.BilinForm ℤ D.X), (∀ k a b, ε₁ k a b = ε k (p.xe a) (p.xe b)) → GlobalTheory.UChart.TauIn Q τ₀ s ε → ∀ (W₀ : Type) [CommRing W₀] (ib : W₀ →+* V), GlobalTheory.UChart.FromBase Q τ₀ ib → ∃ τ₁ : GlobalTheory.UChart.Gens D, GlobalTheory.UChart.TauIn D τ₁ (fun k => ρ (s k)) ε₁ ∧ GlobalTheory.UChart.FromBase D τ₁ (ρ.comp ib) := by
-  first | exact @GlobalTheory.USep.tauIn_fromBase_pull
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.PeriodsInCoordinatesFromBasePullDegStatement =====
@@ -1105,7 +1100,6 @@ open GlobalTheory.UPoinc
 open GlobalTheory
 open Classical
 
-
 open GlobalTheory.USep in
 theorem GlobalTheory.USep.sepB_of_normBl : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H), 1 ≤ Dw.p + Dw.q → ∀ φ : InvFun (𝓞 E), IsPolFan H.bar (min Dw.p Dw.q) φ → NoSelfInt H.bar (min Dw.p Dw.q) φ → ∀ (l : Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (C : UCompact Xo c) (d : ℕ) (J : C.Z.IdealSheafData), 1 ≤ d → (∀ x ∈ J.support, x ∉ Set.range C.i) → UValOn Xo c C.i φ J d → ∀ (S : Scheme.{0}) (π : S ⟶ pullback C.z (spMap C.b)) (j : Xo.XF c ⟶ S), GlobalTheory.Poinc.IsNormBl π (J.comap (pullback.fst C.z (spMap C.b))) → IsProper π → j ≫ π = C.iF → IsOpenImmersion j → π ⁻¹' Set.range C.iF = Set.range j → GlobalTheory.UChart.SepB Xo c φ j := by
   intro E _ _ _ H Dw hpq φ hpol hnsi l Xo c C d J hd hJ hval S π j hbl hprop hjπ hj hpre
@@ -1155,7 +1149,7 @@ theorem GlobalTheory.USep.sepB_of_normBl : ∀ (E : Type) [Field E] [NumberField
       fun β => β.compl₁₂ p.xe.toAddMonoidHom.toIntLinearMap p.xe.toAddMonoidHom.toIntLinearMap
     let ε₁ : Fin Cm.m ⊕ Fin N → LinearMap.BilinForm ℤ D.X :=
       fun x => P ((l.M' : ℤ) • (ε x : LinearMap.BilinForm ℤ Cm.P.D.toPre.X))
-    obtain ⟨τ₁, hT1, hF1⟩ := GlobalTheory.T.periodsInCoordinates_fromBase_pullDeg V (Φ.V y) ρ hρinj Cm.P.D.toPre D p τ₀ (Cm.m + N)
+    obtain ⟨τ₁, hT1, hF1⟩ := GlobalTheory.USep.tauIn_fromBase_pull V (Φ.V y) ρ hρinj Cm.P.D.toPre D p τ₀ (Cm.m + N)
       (fun k => s (finSumFinEquiv.symm k))
       (fun k => (l.M' : ℤ) • (ε (finSumFinEquiv.symm k) : LinearMap.BilinForm ℤ Cm.P.D.toPre.X))
       (fun k => ε₁ (finSumFinEquiv.symm k)) (fun k a b => rfl) hτ W₀ ιb hFB

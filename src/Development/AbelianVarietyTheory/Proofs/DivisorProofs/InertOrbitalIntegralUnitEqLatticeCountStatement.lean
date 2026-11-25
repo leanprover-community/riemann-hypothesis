@@ -86,8 +86,6 @@ open scoped Classical TensorProduct
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open GlobalTheory.UnitLemma GlobalTheory.InertUnitOrb
 
-theorem _root_.GlobalTheory.T.isIntegral_matrix_iff_bounded_powers : ∀ (K : UQ) {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))] (e : K.E ≃+* L), (∀ x, x ∈ (algebraMap K.O K.E).range ↔ Valued.v (e x) ≤ 1) → ∀ (n : ℕ) (M : Matrix (Fin n) (Fin n) K.E), IsIntegral K.O M ↔ ∃ m : ℤ, ∀ k : ℕ, ∀ i j, Valued.v (e ((M ^ k) i j)) ≤ WithZero.exp m := by
-  first | exact @GlobalTheory.IntMatBound.isIntegral_iff_bounded
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsIntegralMatrixIffBoundedPowersStatement =====
@@ -148,12 +146,12 @@ theorem cptPart_iff_intUnits_of_model : ∀ (E : Type) [Field E] [NumberField E]
     have hI1 : IsIntegral K.O ((τ s : B.Aˣ) : B.A) ↔ ∃ m : ℤ, ∀ k : ℕ, ∀ i j,
         Valued.v (((((s : UL n w) : GLw n w) ^ k : GLw n w) : Matrix (Fin n) (Fin n) (w.adicCompletion E)) i j) ≤
           WithZero.exp m := by
-      rw [isIntegral_iff_of_mulVec B ψ _ _ (hτ s), GlobalTheory.T.isIntegral_matrix_iff_bounded_powers K e hint n]
+      rw [isIntegral_iff_of_mulVec B ψ _ _ (hτ s), GlobalTheory.IntMatBound.isIntegral_iff_bounded K e hint n]
       simp only [hmat]
     have hI2 : IsIntegral K.O ((((τ s : B.Aˣ))⁻¹ : B.Aˣ) : B.A) ↔ ∃ m : ℤ, ∀ k : ℕ, ∀ i j,
         Valued.v (((((s : UL n w) : GLw n w)⁻¹ ^ k : GLw n w) : Matrix (Fin n) (Fin n) (w.adicCompletion E)) i j) ≤
           WithZero.exp m := by
-      rw [hinv, isIntegral_iff_of_mulVec B ψ _ _ (hτ s⁻¹), GlobalTheory.T.isIntegral_matrix_iff_bounded_powers K e hint n]
+      rw [hinv, isIntegral_iff_of_mulVec B ψ _ _ (hτ s⁻¹), GlobalTheory.IntMatBound.isIntegral_iff_bounded K e hint n]
       simp only [hmat, Subgroup.coe_inv]
     rw [_root_.GlobalTheory.PowersCompact.isCompact_closure_zpowers_iff w n (UL n w) hcl (s : UL n w)]
     show _ ↔ IsIntegral K.O _ ∧ IsIntegral K.O _
@@ -570,10 +568,6 @@ namespace GlobalTheory.InvolutionTraceUnit
 
 open Polynomial IsLocalRing
 
-theorem ff_norm {k : Type} [Field k] [Finite k] (σ : k →+* k) (hσ : ∀ x, σ (σ x) = x)
-    (hne : ∃ x, σ x ≠ x) (u : k) (hu : σ u = u) : ∃ w, w * σ w = u := by
-  apply GlobalTheory.NormGauss.exists_norm_eq <;> assumption
-
 section Local
 
 variable {O : Type} [CommRing O] [IsDomain O] [IsLocalRing O]
@@ -651,7 +645,7 @@ theorem norm_unit [IsAdicComplete (maximalIdeal O) O] [Finite (ResidueField O)] 
     (hs : ∀ x, s (s x) = x) (θ : O) (hθ : θ - s θ ∉ maximalIdeal O) (u : O) (hu : IsUnit u)
     (hsu : s u = u) : ∃ w, w * s w = u := by
   haveI : IsLocalHom s := ⟨fun a ha => hs a ▸ ha.map s⟩
-  obtain ⟨w', hw'⟩ := ff_norm (ResidueField.map s)
+  obtain ⟨w', hw'⟩ := GlobalTheory.NormGauss.exists_norm_eq (ResidueField.map s)
     (by
       intro x
       obtain ⟨x, rfl⟩ := residue_surjective x

@@ -562,19 +562,6 @@ open Matrix
 
 noncomputable section
 
-namespace CompanionTheory.D.Inhab.TypeHW
-
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Qr Formalism.FourierDecayAlt.P
-
-variable {k r : ℕ} {W : Type} [NormedAddCommGroup W] [InnerProductSpace ℂ W] [FiniteDimensional ℂ W]
-
-theorem prod_Icc (n : ℕ) (f : ℕ → ℂ) : ∏ i ∈ Finset.Icc 1 n, f i = ∏ j : Fin n, f ((j : ℕ) + 1) := by
-  rw [Fin.prod_univ_eq_prod_range (fun j => f (j + 1)) n]
-  induction n with
-  | zero => simp
-  | succ n ih => rw [Finset.prod_Icc_succ_top (by omega), ih, Finset.prod_range_succ]
-
-end CompanionTheory.D.Inhab.TypeHW
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -672,7 +659,7 @@ theorem isType_of_hc {u : ℕ → ℝ} {u₀ : Fin k → ℝ} (hz : Formalism.Qu
   have e := hx (w - ((k : ℂ) - 1) / 2)
   rw [sub_add_cancel] at e
   rw [(P.frame_general_linear W k r k z π Bs ⟨hrep, hcont⟩ hBs).2, P.QrCap.capChange hz hT ⟨hrep, hcont⟩ hBs hB, hEB, e,
-    CompanionTheory.D.Inhab.TypeHW.prod_Icc]
+    Formalism.FourierDecayAlt.P.Topx1.typ_prod_Icc]
   congr 1
   refine Finset.prod_congr rfl fun j _ => ?_
   rw [hu]
@@ -755,7 +742,6 @@ def WLoc1 (D : D7) (Ch Cg Ca C : ℝ) (N : LocBessel D.R.k D.R.rS → Prop) : Pr
       Gpt (Tz D.R.k D.R.rS L.z) (Tz D.R.k D.R.rS L.z') γ ≠ 0 →
       WIneq L f μsec γ (‖Dpt γ l‖ ^ (2 * a)) (b ^ (C * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 5) *
         max 1 (1 / Gpt (Tz D.R.k D.R.rS L.z) (Tz D.R.k D.R.rS L.z') γ) ^ (40 * (D.R.rS + 1) ^ 2))
-
 
 theorem wLoc1N_of (hW : ∀ Cb, WEnd.WBp Cb) {Cgc : ℝ} (hCC : CoefCC1 Cgc) (Ch Ca : ℝ) :
     ∃ C Cg₀ : ℝ, 0 ≤ C ∧ ∀ Cg, Cg₀ ≤ Cg → ∀ D : D7,
@@ -997,8 +983,6 @@ theorem weight_le {ι : Type} [Fintype ι] [Nonempty ι] (s x : ι → ℝ) (N :
   · exact ⟨l, 0, Nat.zero_le _, by simpa using key 1 le_rfl h⟩
   · refine ⟨l, _, le_rfl, (key _ h le_rfl).trans (le_of_eq ?_)⟩
     rw [mul_pow (2 * σ), ← pow_mul]
-
-
 
 theorem weighted_uniform_rotated_of_expansion_alt_alt (hW : ∀ Cb, WEnd.WBp Cb) {Cgc Cgf : ℝ} (hCC : CoefCC1 Cgc)
     (hOB : ∀ D : D7, Formalism.MainNotions.FrameBoundFromBesselTorus.OneBesselTor D Cgf) : Formalism.MainNotions.RotatedPoints.WeightedBoundRotatedUniform := by

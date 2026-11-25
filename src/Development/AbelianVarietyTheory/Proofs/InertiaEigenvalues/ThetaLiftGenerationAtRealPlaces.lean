@@ -90,8 +90,6 @@ open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 
-theorem _root_.GlobalTheory.T.downward_theta_integral_sobolev_continuous : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.LiftRows.Given R F → R.FullP → ∀ (i : Fin D.R.m) (t : T) (y : (R.HV i t).H) (μ : Measure (WO (Vc D i) (Wc D i))) (𝓕 : Set (WO (Vc D i) (Wc D i))), IsCovolOne (ratL (Wc D i) (Vc D i)) μ 𝓕 → ∀ f, IsThetaFunO R.ψ (Vc D i) (Wc D i) f → ∀ (l : (R.cV i).W →ₗ[ℂ] ℂ) (g : GA D (Wc D i)) (ε : ℝ), 0 < ε → ∃ (d : ℕ) (δ : ENNReal), 0 < δ ∧ ∀ P, GlobalTheory.Size.sobO R.ψ R.θ μ 𝓕 d (f - R.ptP i t P) < δ → ‖downInt R i t y f l g - downInt R i t y (R.ptP i t P) l g‖ < ε := by
-  first | exact @GlobalTheory.DownLift.Sobolev₂.downInt_sobolev_cont
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DownwardThetaIntegralSobolevContinuousStatement =====
@@ -403,7 +401,6 @@ theorem sobO_heisO_eq {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} 
 
 end GlobalTheory.HeisTranslateBound
 
-
 open GlobalTheory.Size GlobalTheory.HeisTranslateBound GlobalTheory.OrientedHeis in
 theorem GlobalTheory.HeisTranslateBound.sobO_finsupp_sum_le : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D), IsStdChar D ψ (-1) → IsInfFam θ → ∀ (μ : Measure (WO S T)) (𝓕 : Set (WO S T)), IsCovolOne (ratL T S) μ 𝓕 → ∀ c : WO S T →₀ ℂ, (∀ u ∈ c.support, u.map (infPart D) = 0) → ∀ h : WO S T → ℂ, IsThetaFunO ψ S T h → ∀ d : ℕ, GlobalTheory.Size.sobO ψ θ μ 𝓕 d (c.sum fun u z => z • heisO ψ S T u h) ≤ (∑ u ∈ c.support, ‖c u‖ₑ) * GlobalTheory.Size.sobO ψ θ μ 𝓕 d h := by
   intro D ψ θ S T hψ hθ μ 𝓕 hμ c hc h hh d
@@ -556,8 +553,6 @@ open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift
 
-theorem _root_.GlobalTheory.T.theta_lift_vanishes_single_coefficient_of_kernel_kills : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.LiftRows.Given R F → R.FullP → ∀ (i : Fin D.R.m) (t : T) (y : (R.HV i t).H), R.thF i t y = 0 → ∀ (x : LowT (R.MW i (sg0 D A))) (w : (R.cV i).W) (l : (R.cV i).W →ₗ[ℂ] ℂ) (g : GA D (Wc D i)), downInt R i t y (R.ptP i t (R.ioP i x w)) l g = 0 := by
-  first | exact @GlobalTheory.GenRealSchur.lift_vanish_single
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ThetaLiftVanishesSingleCoefficientOfKernelKillsStatement =====
@@ -580,10 +575,10 @@ theorem genInf : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A
   intro D G _ _ Pl0 T A Ks _ _ _ R F hG hP i t y hy f hf l g
   obtain ⟨μ, 𝓕, hμ⟩ := GlobalTheory.Size.exists_isCovolOne (D := D) (V := Vc D i) (W := Wc D i)
   have h0 : ∀ P, downInt R i t y (R.ptP i t P) l g = 0 := fun P =>
-    GlobalTheory.T.realFockThetaLift_vanishing_of_generating_vectors D G Pl0 T A Ks R F hG hP i t y (GlobalTheory.T.theta_lift_vanishes_single_coefficient_of_kernel_kills D G Pl0 T A Ks R F hG hP i t y hy) P l g
+    GlobalTheory.T.realFockThetaLift_vanishing_of_generating_vectors D G Pl0 T A Ks R F hG hP i t y (GlobalTheory.GenRealSchur.lift_vanish_single D G Pl0 T A Ks R F hG hP i t y hy) P l g
   by_contra hne
   have hpos : 0 < ‖downInt R i t y f l g‖ := norm_pos_iff.2 hne
-  obtain ⟨d, δ, hδ, hc⟩ := GlobalTheory.T.downward_theta_integral_sobolev_continuous D G Pl0 T A Ks R F hG hP i t y μ 𝓕 hμ f hf.1 l g _ hpos
+  obtain ⟨d, δ, hδ, hc⟩ := GlobalTheory.DownLift.Sobolev₂.downInt_sobolev_cont D G Pl0 T A Ks R F hG hP i t y μ 𝓕 hμ f hf.1 l g _ hpos
   obtain ⟨P, hPd⟩ := GlobalTheory.T.thetaFunction_fixedFinitePart_sobolevLimit_fockVectors D G Pl0 T A Ks R F hG hP i t μ 𝓕 hμ f hf d δ hδ
   have := hc P hPd
   rw [h0 P, sub_zero] at this

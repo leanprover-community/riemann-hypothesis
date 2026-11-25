@@ -623,7 +623,7 @@ theorem mirror_residue_second_move : JDRvStepB := by
     intro c' s
     rw [← Matrix.mulVec_mulVec]
     exact top_wlist_wb c' _ _ (Formalism.FourierDecayAlt.P.NFRadRedLocSec.inWb_uwb (Formalism.FourierDecayAlt.P5.Rad.glev_last_uwb hg)
-      (bvec_wI_inWb s))
+      (Formalism.FourierDecayAlt.P.Qx8.inWb_bvec_wI s))
   have hFN : ∀ (m : ℕ) (hm : m ≤ r), ∀ c' ∈ OmX r, FNv k r z z' Y J ⟨m, by omega⟩ c' g =
       wt c' • ∑ s, ∑ t, κ s t • qminorOp (EH k r) (rowsNv k r ⟨m, by omega⟩ s) (rowsNv k r ⟨m, by omega⟩ t)
         (Q.uC k r (Fin.last r) Y - 1) J (wCell k r (Fin.last r) c' * g) := by

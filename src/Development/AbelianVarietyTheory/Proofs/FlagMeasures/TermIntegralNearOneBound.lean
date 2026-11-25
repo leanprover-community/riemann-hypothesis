@@ -105,7 +105,7 @@ section
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E]
 
-alias hf_cj := _root_.GlobalTheory.HL.GaussSummand.cj_hf
+alias hf_cj := _root_.GlobalTheory.HL.DivisibleGauss.form_cj
 
 variable [IsNonarchimedeanLocalField F]
 

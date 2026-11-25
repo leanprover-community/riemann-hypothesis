@@ -41,9 +41,6 @@ end Blocks
 
 end Formalism.FourierDecayAlt.P.S3x1
 
-
-
-
 namespace Formalism.FourierDecayAlt.P.S3x1
 
 open Matrix Finset
@@ -51,16 +48,6 @@ open Formalism.DoubleCosetMeasures (IsUpUni upUniG isUpUni_mul isUpUni_inv isUpU
 open Formalism.FourierDecayAlt.S3
 
 section Count
-
-theorem card_lt_pairs (n : ℕ) : Nat.card {p : Fin n × Fin n // p.1 < p.2} = n * (n - 1) / 2 := by
-  rw [Nat.card_eq_fintype_card, Fintype.card_subtype, Finset.card_filter, Fintype.sum_prod_type_right]
-  have h : ∀ j : Fin n, ∑ i : Fin n, (if i < j then 1 else 0) = (j : ℕ) := by
-    intro j
-    rw [← Finset.card_filter]
-    have e : Finset.filter (fun i : Fin n => i < j) Finset.univ = Finset.Iio j := by ext i; simp
-    rw [e, Fin.card_Iio]
-  simp_rw [h]
-  rw [Fin.sum_univ_eq_sum_range (fun i => i) n, Finset.sum_range_id]
 
 variable {A : Type} [CommRing A]
 
@@ -88,7 +75,7 @@ def uniEquiv (n : ℕ) : {u : Matrix (Fin n) (Fin n) A // IsUpUni u} ≃ ({p : F
 
 theorem card_uni (K : Type) [Field K] [Fintype K] (n : ℕ) :
     Nat.card {u : Matrix (Fin n) (Fin n) K // IsUpUni u} = Fintype.card K ^ (n * (n - 1) / 2) := by
-  rw [Nat.card_congr (uniEquiv n), Nat.card_fun, card_lt_pairs, Nat.card_eq_fintype_card]
+  rw [Nat.card_congr (uniEquiv n), Nat.card_fun, Formalism.LogVandermondeBounds.StandardLattice.card_lt_pairs, Nat.card_eq_fintype_card]
 
 noncomputable def upUniGEquiv (n : ℕ) : upUniG A n ≃ {u : Matrix (Fin n) (Fin n) A // IsUpUni u} where
   toFun g := ⟨g.1.1, g.2⟩
@@ -144,10 +131,6 @@ theorem prod_gl (q k : ℕ) : ∏ i : Fin k, (q ^ k - q ^ (i : ℕ)) =
 end Count2
 
 end Formalism.FourierDecayAlt.P.S3x1
-
-
-
-
 
 open Formalism.FourierDecayAlt.P.S3x1 in
 theorem Formalism.FourierDecayAlt.P.gamma_factor_product : Formalism.FourierDecayAlt.S3.GammaProduct := by

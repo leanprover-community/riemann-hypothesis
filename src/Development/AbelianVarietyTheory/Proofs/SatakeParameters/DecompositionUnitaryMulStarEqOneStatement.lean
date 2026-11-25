@@ -59,7 +59,7 @@ theorem Dec.eM_mul_star : AllSites (fun {D L hT Gi Gl Kc Dx cX ex u μ w hg Lv I
   intro D L hT Gi Gl Kc Dx cX ex u μ w hg Lv I H X _ std t J S d j La
   unfold Dec.eM
   split_ifs with h
-  · have hu := GlobalTheory.T.rationalIsometry_orthonormal_matrix_unitary J.A J.dtU J.a J.pins J.tie j h.1 (d.gam j h.1 La) (d.mem j h.1 La)
+  · have hu := GlobalTheory.TwV.ratIsometry_unitary J.A J.dtU J.a J.pins J.tie j h.1 (d.gam j h.1 La) (d.mem j h.1 La)
     have hc : (Fin.cast h.2 : Fin (((sysS H X std).Pj j).m + 1) → Fin (D.R.N j)) = ⇑(finCongr h.2) := rfl
     rw [hc, Matrix.star_eq_conjTranspose, Matrix.conjTranspose_submatrix, Matrix.submatrix_mul_equiv,
       ← Matrix.star_eq_conjTranspose]

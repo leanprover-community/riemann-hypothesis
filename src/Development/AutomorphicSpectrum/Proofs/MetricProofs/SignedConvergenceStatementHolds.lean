@@ -187,14 +187,6 @@ theorem tendsto_epsT_zero (C : ℝ) :
   simp only [Function.comp_apply, epsT]
   ring
 
-theorem isPsh_of_isPosPot {e : ℕ} {X : Type} [TopologicalSpace X] (A : FinHolAtlas e X)
-    (Θ : LocPot X) (h : IsPosPot A Θ) : IsPsh A Θ := by
-  intro x j y hy w
-  by_cases hw : w = 0
-  · subst hw
-    simp [levi]
-  · exact (h x j y hy w hw).le
-
 theorem eventually_isPsh_add_pot {e : ℕ} {X : Type} [TopologicalSpace X] (A : FinHolAtlas e X)
     (Θ L : LocPot X) (s : X → X → ℂ) (th : LocPot X) (ph : X → ℝ) (phT : ℝ → X → ℝ)
     (C t₀ : ℝ) (hΘ : IsPotential A Θ) (hΘp : IsPosPot A Θ) (hth : IsPotential A th)
@@ -209,7 +201,7 @@ theorem eventually_isPsh_add_pot {e : ℕ} {X : Type} [TopologicalSpace X] (A : 
   filter_upwards [hε, hsmall] with t hεt ht
   obtain ⟨h1, -, -, -, h5, -⟩ := hF t ht.1 ht.2.le
   refine ⟨h1, ?_⟩
-  have h := GlobalTheory.CompanionTheory.Ar.Giv.isPsh_rsmul_mono A Θ th (phT t) hΘ (isPsh_of_isPosPot A Θ hΘp) hth h1 hεt.le h5
+  have h := GlobalTheory.CompanionTheory.Ar.Giv.isPsh_rsmul_mono A Θ th (phT t) hΘ (ReciprocityTheory.AnForm.P.TailBoundAlt.isPsh_of_isPosPot A Θ hΘp) hth h1 hεt.le h5
   have e1 : Θ.rsmul 1 = Θ := by
     cases Θ
     simp [LocPot.rsmul]

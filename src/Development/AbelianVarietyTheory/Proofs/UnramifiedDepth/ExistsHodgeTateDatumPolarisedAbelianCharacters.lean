@@ -429,7 +429,7 @@ theorem exists_htd_characters_base : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Fi
   · obtain ⟨P', φ, hφ, hL, hg', hact⟩ := GlobalTheory.T.exists_polarisedAbelianScheme_baseChange_ringAction T O io P
     obtain ⟨o', ho'⟩ := hact OE o
     obtain ⟨X', hX', hR⟩ := GlobalTheory.T.nilpotentChart_baseChange_formalGroup T O io P.A P'.A φ hφ g F.F X hX
-    obtain ⟨F', hF'⟩ := (GlobalTheory.T.formalGroupLaw_jacobian_extension_changeCoeff T O io).1 g F
+    obtain ⟨F', hF'⟩ := (GlobalTheory.ChF.changeCoeff_law_lin_extSer T O io).1 g F
     have hX'' : NilChart P'.A F'.F X' := by rw [hF']; exact hX'
     have h := GlobalTheory.T.exists_hodgeTateDatum_formalGroupCharacters p C v O hv T P io P' φ hφ hL hg' (by omega) g (hg'.trans hg) OE o' F' X'
       hX'' (fun a j => MvPowerSeries.map io (α a j))

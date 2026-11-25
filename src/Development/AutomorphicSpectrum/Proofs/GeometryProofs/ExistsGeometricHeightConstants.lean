@@ -146,11 +146,6 @@ namespace LevelTowerAlt.Lin
 variable {E L Ψ : Type} [Field E] [NumberField E] [Field L] [NumberField L] {V : Type} [AddCommGroup V] [Module L V]
   [Module (𝓞 L) V] [IsScalarTower (𝓞 L) L V]
 
-theorem mem_eigSp {R W O : Type} [CommRing R] [AddCommGroup W] [Module R W] [CommRing O]
-    (ρ : O →+* Module.End R W) (σ : O →+* R) (x : W) : x ∈ eigSp ρ σ ↔ ∀ a, ρ a x = σ a • x := by
-  simp only [eigSp, Submodule.mem_iInf, LinearMap.mem_ker, LinearMap.sub_apply, LinearMap.smul_apply,
-    LinearMap.id_apply, sub_eq_zero]
-
 def intVal (σ : 𝓞 E →+* L) (a : 𝓞 E) : 𝓞 L :=
   ⟨σ a, (NumberField.RingOfIntegers.isIntegral a).map σ.toIntAlgHom⟩
 
@@ -195,7 +190,7 @@ theorem Pre.eig {s : Ψ ⊕ Ψ} {x : V₀} (hx : P.j x ∈ eigSp P.ρ (P.σ s)) 
   have h1 : P.ρ₀ a x = intVal (P.σ s) a • x := by
     apply P.j_inj
     rw [P.j_ρ, map_smul, intVal_smul]
-    exact (mem_eigSp _ _ _).1 hx a
+    exact (GlobalTheory.CompanionTheory.Ar.EigExt.mem_eigSp_iff' _ _ _).1 hx a
   rw [← P.f_ρ, h1, map_smul]
 
 theorem Pre.orth {s s' : Ψ ⊕ Ψ} (h : s ≠ s') (ι : L →+* ℂ) {x y : V₀} (hx : P.j x ∈ eigSp P.ρ (P.σ s))
@@ -418,7 +413,7 @@ theorem adj_model (t' : SAB H (Sp (𝓞 L))) (tB : SAB H (Sp L)) (m' : SABMap tB
     rw [Category.comp_id, ← Sl.BaseExt.spMap_comp]
     obtain ⟨t'', ⟨m⟩⟩ := Sl.BaseExt.exists_pull (spMap eC) tB
     obtain ⟨n, -⟩ := sabComp pullCubComp E H _ _ _ t' tB t'' _ _ m' m
-    have := (_root_.GlobalTheory.CompanionTheory.Ar.isPrincipal_iff_of_sabMap_field E H L ℂ eC tB t'' m).2 hpr
+    have := (_root_.CoverDenseAlt.isPrincipal_iff_of_base_change E H L ℂ eC tB t'' m).2 hpr
     exact ⟨t'', n, this.1, this.2.1⟩
   have h1 := hB eC (ρ' a x) y _ _ (hl _) (hl _)
   have h2 := hB eC x (ρ' (H.bar a) y) _ _ (hl _) (hl _)
@@ -570,7 +565,7 @@ theorem integral_point_extends_compact : Top.Given → ∀ (E : Type) [Field E] 
   obtain ⟨L₁, _, _, e₁, ⟨P₁⟩⟩ := _root_.GlobalTheory.CompanionTheory.Ar.abPart_exists E H 𝔐.X 𝔐.t L₀ (spMap (algebraMap (𝓞 L₀) L₀) ≫ z₀)
   obtain ⟨σ₁⟩ : Nonempty (L₁ →+* ℂ) := inferInstance
   obtain ⟨P₁c, _, mBc, _, _⟩ := _root_.GlobalTheory.CompanionTheory.Ar.AbPartFieldChange.exists_baseChange E H 𝔐.X 𝔐.t L₁ ℂ _ P₁ σ₁
-  have hpr : IsPrincipal P₁.tB := (_root_.GlobalTheory.CompanionTheory.Ar.isPrincipal_iff_of_sabMap_field E H L₁ ℂ σ₁ P₁.tB P₁c.tB mBc).1 (hQ _ P₁c).1
+  have hpr : IsPrincipal P₁.tB := (_root_.CoverDenseAlt.isPrincipal_iff_of_base_change E H L₁ ℂ σ₁ P₁.tB P₁c.tB mBc).1 (hQ _ P₁c).1
   obtain ⟨L, _, _, e₂, t', tK, ⟨m₁⟩, ⟨mP⟩⟩ := _root_.GlobalTheory.CompanionTheory.Ar.SabModel.exists_sab_model hG.1.2.1 hG.1.1 E H L₁ P₁.tB hpr
     (_root_.GlobalTheory.CompanionTheory.Ar.AbPartConst.lieMult_constant_along_cmType E H D l Xo c Y S Ω K J y 𝔐 L₁ _ P₁)
   let z : Sp (𝓞 L) ⟶ 𝔐.X := spMap (RingOfIntegers.mapRingHom (e₂.comp e₁)) ≫ z₀
@@ -589,7 +584,7 @@ theorem integral_point_extends_compact : Top.Given → ∀ (E : Type) [Field E] 
       Nonempty (SABMap P.tB t' (spMap (algebraMap (𝓞 L) L))) := by
     rw [hz]
     obtain ⟨P₂, -, mB2, -, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.AbPartFieldChange.exists_baseChange E H 𝔐.X 𝔐.t L₁ L _ P₁ e₂
-    refine ⟨P₂, (_root_.GlobalTheory.CompanionTheory.Ar.isPrincipal_iff_of_sabMap_field E H L₁ L e₂ P₁.tB P₂.tB mB2).2 hpr, ?_⟩
+    refine ⟨P₂, (_root_.CoverDenseAlt.isPrincipal_iff_of_base_change E H L₁ L e₂ P₁.tB P₂.tB mB2).2 hpr, ?_⟩
     obtain ⟨n⟩ : Nonempty (SABMap P₂.tB P₁.tB (𝟙 _ ≫ spMap e₂)) := by
       rw [Category.id_comp]
       exact ⟨mB2⟩
@@ -772,7 +767,7 @@ theorem htU_of_given : Top.Given → Fl.FlatDegree → ∃ Ch : ℝ, ∀ (E : Ty
   refine ⟨u / 2, half_pos hu, fun t' ht' ht'u P hP hyP => ?_⟩
   obtain ⟨hge, -, hreg⟩ := hsub ⟨ht', by linarith⟩
   obtain ⟨hsm, hdeg, hlog⟩ := hreg B p q
-  obtain ⟨L₀, _, _, w, -, hw, hII'⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Ht.height_eq_intersection_number K J II hII.1 P hP
+  obtain ⟨L₀, _, _, w, -, hw, hII'⟩ := _root_.CoverDenseAlt.intersection_number_eq_line_height K J II hII.1 P hP
   have hdeg0 : (0 : ℝ) < degC P := Nat.cast_pos.2 (degC_pos_of_isArithVar_one hP)
   have hMU : htMUc Hd S' B p q t' P = Ht.lineHt (MUc Hd S' B p q t') L₀ w / q := by
     unfold htMUc
@@ -907,12 +902,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi
 open GroundTheory.Heights₂.Heights.LowerBoundFree GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp MeasureTheory
 
-namespace GlobalTheory.CompanionTheory.Ar.Cusp
-
-theorem ptsIntegral_eq_sum_fundamental : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] [IsAbelianGalois ℚ E] (H : Host E) (D : Datum H) (Xo : ∀ l : Tor.Level H, Moduli D l) (l : Tor.Level H) (c : Coeff l) (Y : Model (Xo l) c (algebraMap (𝓞 c.F) c.F)) (II : IntersectionSystem) (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (Ω : Type) [Field Ω] [Algebra ℚ Ω] (W : CMType H → Type) [∀ τ, AddCommGroup (W τ)] [∀ τ, Module Ω (W τ)] (Dc : ComponentData II (CMType H) K J Ω W) (Hd : HodgeData Dc) (S₀ : Finset ℕ) (Or : CptOrigin Y S₀ Dc Hd) (Q : Pieces Or), ∃ κ : ℝ, 0 < κ ∧ ∀ (G : ((Σ k, J k) → ℂ) → ℝ) (Gk : Fin Q.np → (Fin Dc.n → ℂ) → ℝ), (∀ w ∈ Dc.Xo, ∀ w' ∈ torusSat {w}, G w' = G w) → (∀ m, ∀ t ∈ Q.V m, G (Q.γ m t) = Gk (Q.pc m) t) → (∀ k, IntegrableOn (fun t => Gk k t * ballDens (Q.F k).q t) (Q.FF k)) → ptsIntegral (e := Dc.n) (mCoordIdeal Dc.y) (fun _ => phMu Hd) G = κ * ∑ k, (Q.d k : ℝ) * ∫ t in Q.FF k, Gk k t * ballDens (Q.F k).q t :=
-  SheetDecomposition.sheet_pieces_component
-
-end GlobalTheory.CompanionTheory.Ar.Cusp
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.CuspVolumeRight =====
@@ -958,14 +947,13 @@ theorem bracket_le (f j' B : ℕ) (rd L : ℝ) (hrd : 2 ≤ rd) (hf : 1 ≤ f) (
 
 end TopMean
 
-
 open TopMean in
 theorem top_mean_cusp_weight : Top.Given → ∃ Cu : ℝ, ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] [IsAbelianGalois ℚ E] (H : Host E) (D : Datum H) (Xo : ∀ l : Tor.Level H, Moduli D l) (l : Tor.Level H) (c : Coeff l) (Y : Model (Xo l) c (algebraMap (𝓞 c.F) c.F)) (II : IntersectionSystem) (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (Ω : Type) [Field Ω] [Algebra ℚ Ω] (W : CMType H → Type) [∀ τ, AddCommGroup (W τ)] [∀ τ, Module Ω (W τ)] (Dc : ComponentData II (CMType H) K J Ω W) (Hd : HodgeData Dc) (S₀ : Finset ℕ) (Or : CptOrigin Y S₀ Dc Hd) (B₁ : ℕ) (U : ((Σ k, J k) → ℂ) → ℝ), IsFullIntersectionSystem II → admitted Xo l c Y Or B₁ → Or.𝔐.IsCuspWeight Or.sm U → MeanU Hd U Cu (hostRd E) (hostLval H) := by
   intro hG
   refine ⟨4, ?_⟩
   intro E _ _ _ _ H D Xo l c Y II K _ J _ Ω _ _ W _ _ Dc Hd S₀ Or B₁ U _ _ hU
   obtain ⟨Q⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Cusp.pieces_nonempty hG E H D Xo l c Y II K J Ω W Dc Hd S₀ Or
-  obtain ⟨κ, hκ, htr⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Cusp.ptsIntegral_eq_sum_fundamental E H D Xo l c Y II K J Ω W Dc Hd S₀ Or Q
+  obtain ⟨κ, hκ, htr⟩ := _root_.SheetDecomposition.sheet_pieces_component E H D Xo l c Y II K J Ω W Dc Hd S₀ Or Q
   have hw := _root_.GlobalTheory.CompanionTheory.Ar.Cusp.WeightSheet.cuspWeight_torus_and_sheets E H D Xo l c Y II K J Ω W Dc Hd S₀ Or Q U hU
   obtain ⟨hrd, ⟨τ₀⟩, -⟩ := GlobalTheory.CompanionTheory.Ar.Top.HostNumbers.host_numbers E H
   intro hj' hN B hB

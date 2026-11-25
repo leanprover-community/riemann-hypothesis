@@ -58,17 +58,11 @@ namespace GlobalTheory.Amp.StabMeas
 
 variable {k r : ℕ}
 
-theorem cont_conj (a : Mat k r) : Continuous (conjM a : Mt k r → Mt k r) :=
-  (continuous_const.matrix_mul (continuous_id (X := Mat k r))).matrix_mul continuous_const
-
-theorem cont_lmul (a : Mat k r) : Continuous (lmulM a : Mt k r → Mt k r) :=
-  continuous_const.matrix_mul (continuous_id (X := Mat k r))
-
 theorem meas_conj (a : Mat k r) : Measurable (conjM a : Mt k r → Mt k r) :=
-  (cont_conj a).measurable
+  (Formalism.FourierDecayAlt.P.B2x1.conjM_cont a).measurable
 
 theorem meas_lmul (a : Mat k r) : Measurable (lmulM a : Mt k r → Mt k r) :=
-  (cont_lmul a).measurable
+  (Formalism.FourierDecayAlt.P.B2x1.lmulM_cont a).measurable
 
 theorem conj_conj (a b : Mat k r) : (conjM a : Mt k r → Mt k r) ∘ conjM b = conjM (a * b) := by
   funext x

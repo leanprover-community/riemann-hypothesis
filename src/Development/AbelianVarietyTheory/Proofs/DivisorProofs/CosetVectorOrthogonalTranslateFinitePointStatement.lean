@@ -315,7 +315,6 @@ open GlobalTheory.NormRatio
 open scoped nonZeroDivisors
 open GlobalTheory.CosetOrth
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.AddCharTraceUnitBlockTrivialOfMovesStatement =====
@@ -461,7 +460,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.NormRatio
 open scoped nonZeroDivisors
 open GlobalTheory.CosetOrth
-
 
 theorem _root_.GlobalTheory.T.conjugatePlace_valuation_count_under : ∀ (D : D7), ∀ w : HeightOneSpectrum (𝓞 D.host.E), ∃ w' : HeightOneSpectrum (𝓞 D.host.E), w'.asIdeal = D.host.conj • w.asIdeal ∧
     (∀ x : Formalism.MainNotions.StandardLatticesGL3.AE D, Valued.v (GlobalTheory.BotFormula.toFinE D (Formalism.MainNotions.StandardLatticesGL3.sgA D x) w') = Valued.v (GlobalTheory.BotFormula.toFinE D x w)) ∧
@@ -632,7 +630,6 @@ open GlobalTheory.NormRatio
 open scoped nonZeroDivisors
 open GlobalTheory.CosetOrth
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.DenseRationalHomPointsIdealCompletionStatement =====
@@ -791,7 +788,6 @@ open GlobalTheory.NormRatio
 open scoped nonZeroDivisors
 open GlobalTheory.CosetOrth
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPowIntegralCompletedHomLatticeStatement =====
@@ -913,7 +909,6 @@ open GlobalTheory.NormRatio
 open scoped nonZeroDivisors
 open GlobalTheory.CosetOrth
 
-
 theorem _root_.GlobalTheory.T.integral_of_completedLattice_selfDual_rankOne : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (r : D.host.E) (LB : Lat T) (n : ℕ), IsStdChar D ψ (-1) →
   S.gram = 1 → T.gram = 1 → IsSelfDualC S (stdLat S) → IsSelfDualC T LB → r ≠ 0 →
   (∀ u ∈ (latO S T (stdLat S) LB fun _ => True), HatPt ((n : D.host.E) * r) 1 u) →
@@ -999,7 +994,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.NormRatio
 open scoped nonZeroDivisors
 open GlobalTheory.CosetOrth
-
 
 theorem _root_.GlobalTheory.T.mem_idealIntegralFiniteAdeles_of_memCompletion : ∀ {D : D7} (𝔪 : Ideal (𝓞 D.host.E)), 𝔪 ≠ ⊥ → ∀ x : Formalism.MainNotions.StandardLatticesGL3.AE D,
   InHat (𝔪 : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E) (GlobalTheory.BotFormula.toFinE D x) → x ∈ hatId D 𝔪 := by
@@ -1217,7 +1211,6 @@ open GlobalTheory.NormRatio
 open scoped nonZeroDivisors
 open GlobalTheory.CosetOrth
 
-
 theorem _root_.GlobalTheory.T.unitaryFinitePoint_congr_one_of_inv_conj_congr : ∀ {D : D7}, (∀ w : HeightOneSpectrum (𝓞 D.host.E), ∃ w' : HeightOneSpectrum (𝓞 D.host.E), w'.asIdeal = D.host.conj • w.asIdeal ∧
     (∀ x : Formalism.MainNotions.StandardLatticesGL3.AE D, Valued.v (GlobalTheory.BotFormula.toFinE D (Formalism.MainNotions.StandardLatticesGL3.sgA D x) w') = Valued.v (GlobalTheory.BotFormula.toFinE D x w)) ∧
     (∀ 𝔞 : Ideal (𝓞 D.host.E), 𝔞 ≠ ⊥ → FractionalIdeal.count D.host.E w' ((D.host.conj • 𝔞 : Ideal (𝓞 D.host.E)) : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E) =
@@ -1351,7 +1344,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.NormRatio
 open scoped nonZeroDivisors
 open GlobalTheory.CosetOrth
-
 
 theorem _root_.GlobalTheory.T.valued_finiteUnitary_le_one_off_openSubset : ∀ {D : D7} (V : HSp D) (g : GA D V) (y : Formalism.MainNotions.StandardLatticesGL3.GA D V.rank) (Sf : Finset (FinPl D)), V.gram = 1 →
   GlobalTheory.BotFormula.IsFinPt V g y → g ∈ openOff V (stdLat V) Sf →
@@ -1488,7 +1480,6 @@ open GlobalTheory.NormRatio
 open scoped nonZeroDivisors
 open GlobalTheory.CosetOrth
 
-
 theorem _root_.GlobalTheory.T.valued_one_sub_le_of_moves_idealCompletion : ∀ {E : Type} [Field E] [NumberField E] (I : FractionalIdeal (𝓞 E)⁰ E) (w : HeightOneSpectrum (𝓞 E)) (c : ℤ) (n : E)
   {a : ℕ} (H : Matrix (Fin a) (Fin a) (FiniteAdeleRing (𝓞 E) E)), w.valuation E n = 1 → FractionalIdeal.count E w I = -c → 1 ≤ c →
   (∀ (s : FiniteAdeleRing (𝓞 E) E) (i j : Fin a), InHat I s → (∀ k, InHat I (s * H i k)) →
@@ -1569,7 +1560,7 @@ theorem exists_read_of_wd (h : Setup ψ θ S T ⊤ δ r) {G : VC D a d → ℂ} 
     field_simp
   have h1 := hφ.smul (c * wdPh D (tor0 D ⊤ δ) x)⁻¹
   rw [e] at h1
-  have h2 := GlobalTheory.T.heisenbergFinitePoint_reads_classicalTranslation ψ θ S T hS hT ⊤ δ r h _ _ h1 (-z)
+  have h2 := GlobalTheory.NormExact.heisO_finPt_reads ψ θ S T hS hT ⊤ δ r h _ _ h1 (-z)
   have e2 : pt D (tor0 D ⊤ δ) δ (-z) = -x := by
     funext τ i j
     simp [hx, pt, Formalism.MainNotions.TaylorLogMetric.embV, tor0]
@@ -1588,7 +1579,7 @@ theorem heis_two_finPt (h : Setup ψ θ S T ⊤ δ r) {L L'} {G : VC D a d → �
   set x := pt D (tor0 D ⊤ δ) δ z with hx
   have hxm : x ∈ La D (tor0 D ⊤ δ) L L' :=
     AddSubgroup.subset_closure ⟨δ, AddSubgroup.subset_closure ⟨1, trivial, by simp⟩, z, hz, rfl⟩
-  have h1 := (GlobalTheory.T.heisenbergFinitePoint_reads_classicalTranslation ψ θ S T hS hT ⊤ δ r h _ _ hf z).smul (al D (tor0 D ⊤ δ) x)
+  have h1 := (GlobalTheory.NormExact.heisO_finPt_reads ψ θ S T hS hT ⊤ δ r h _ _ hf z).smul (al D (tor0 D ⊤ δ) x)
   have e : al D (tor0 D ⊤ δ) x • U D (tor0 D ⊤ δ) x G = G := funext fun y => hG.2 x hxm y
   rw [e] at h1
   have h2 := h1.unique hf
@@ -1823,7 +1814,6 @@ open GlobalTheory.StdLoc (glVol blockIdx)
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.NormRatio
-
 
 theorem _root_.GlobalTheory.T.cosetVector_orthogonal_translate_finite_point : ∀ {D : D7} {δ t0 : ℂ} {Q : ℕ} (P : Pair D ⊤ δ t0 Q) (X : Data P) (r : D.host.E), IsExact P X r →
   ∀ (𝔪 : Ideal (𝓞 D.host.E)) (Sf : Finset (FinPl D)) (o : ℕ), GoodMod D 𝔪 Sf →

@@ -93,7 +93,6 @@ section
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
 
-
 omit [NumberField K] [StarRing K] in
 theorem primInv_span_gmap (γ : V ≃ₗ[K] V) (M : Submodule (𝓞 K) V) :
     Submodule.span K ((Formalism.HermitianLatticesTheory.gmap γ M : Submodule (𝓞 K) V) : Set V) =
@@ -101,7 +100,6 @@ theorem primInv_span_gmap (γ : V ≃ₗ[K] V) (M : Submodule (𝓞 K) V) :
   unfold Formalism.HermitianLatticesTheory.gmap
   rw [Submodule.map_coe, ← Submodule.span_image]
   try rfl
-
 
 omit [NumberField K] [StarRing K] in
 theorem primInv_gmap_injective (γ : V ≃ₗ[K] V) :
@@ -190,8 +188,6 @@ open NumberField Module Matrix Formalism.BasicNotions Formalism.MainNotions.S Fo
 open scoped ENNReal Classical
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.encard_sublattices_bounded_det_le_sum : ∀ (D : D7) (L : LatW D), IsPosDef (D.sp.X 0).hT → finrank D.host.E (D.sp.X 0).V = D.R.k → L.FG → Formalism.HermitianLatticesTheory.IsIntegralLat (D.sp.X 0).hT L → ∀ (n : ℕ) (De : ℝ), 1 ≤ De → (Set.encard {P : LatW D | P ≤ L ∧ rkW D P = n ∧ detW D P ≤ De} : ℝ≥0∞) ≤ ∑ de ∈ Finset.Icc 1 ⌊De⌋₊, (cntPrim (D.sp.X 0).hT L n de : ℝ≥0∞) * ENNReal.ofReal ((De / (de : ℝ)) ^ ((D.R.k : ℝ) + lg2f D.R.f + 1)) := by
-  first | exact @GlobalTheory.LoopC.SubCount.main
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.EncardSublatticesBoundedDetLeSumStatement =====
@@ -309,8 +305,6 @@ open NumberField Module Matrix Formalism.BasicNotions Formalism.MainNotions.S Fo
 open scoped ENNReal Classical
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.isPair_move_by_integralUnipotent : ∀ (D : D7) (T T' : D.host.E) (Λ : LatV D) (g : ℕ) (F : Fg D T) (F' F'' A B : Fg D T') (β n' n'' : (hS D).V ≃ₗ[D.host.E] (hS D).V), IsPair Λ F F' F'' β g → n' ∈ NLam Λ F → n'' ∈ NLam Λ F → FrameEqv D n' F' A → FrameEqv D n'' F'' B → IsAutLam (hS D) Λ (n'' * β * n'⁻¹) ∧ (Xsp A).map ((n'' * β * n'⁻¹ : (hS D).V ≃ₗ[D.host.E] (hS D).V) : (hS D).V →ₗ[D.host.E] (hS D).V) = Xsp B ∧ (n'' * β * n'⁻¹) A.fl.z - B.fl.z ∈ Xsp B ∧ IotaCompat Λ F A B (n'' * β * n'⁻¹) g := by
-  first | exact @GlobalTheory.LoopC.PairMove.pair_move
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsPairMoveByIntegralUnipotentStatement =====
@@ -471,9 +465,6 @@ namespace GlobalTheory.LoopC.LatChain
 section
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E}
 
-theorem mem_orth {U : Submodule E S.V} {v : S.V} : v ∈ orth S U ↔ ∀ x ∈ U, S.hT x v = 0 := by
-  simp [orth, Submodule.mem_iInf]
-
 theorem exists_mul_mem {Λ : Submodule (𝓞 E) S.V} (hΛ : Submodule.IsFullLattice E Λ) (v : S.V) :
     ∃ d : 𝓞 E, d ≠ 0 ∧ d • v ∈ Λ := by
   have hv : v ∈ Submodule.span E (Λ : Set S.V) := by
@@ -505,7 +496,7 @@ theorem mem_L0sub {F : LFlag S r T} {x : S.V} (hx : x ∈ Lrep Λ F) (hz : S.hT 
 theorem thp_le_la (g : ℕ) {F : LFlag S r T} {F' : LFlag S r T'} (hΛ : Submodule.IsFullLattice E Λ)
     (hF : IsLift Λ F) (hF' : IsLift Λ F') : Thp Λ F F' ≤ La Λ g F F' := by
   intro x hx
-  have hperp : ∀ y ∈ UUE Λ F F', S.hT y x = 0 := mem_orth.1 hx.2
+  have hperp : ∀ y ∈ UUE Λ F F', S.hT y x = 0 := GlobalTheory.LoopC.RowSplit.mem_orth.1 hx.2
   have hX : Xsp F ≤ UUE Λ F F' :=
     le_spanE hΛ (le_sup_of_le_left (le_sup_of_le_left le_sup_left))
   have hX' : Xsp F' ≤ UUE Λ F F' := le_spanE hΛ (le_sup_of_le_left le_sup_right)
@@ -516,8 +507,8 @@ theorem thp_le_la (g : ℕ) {F : LFlag S r T} {F' : LFlag S r T'} (hΛ : Submodu
   have hz' : F'.fl.z ∈ UUE Λ F F' := by
     rw [← hF'.2]
     exact Submodule.subset_span (Submodule.mem_sup_right (Submodule.mem_span_singleton_self _))
-  have h1 : x ∈ Lrep Λ F := ⟨hx.1, mem_orth.2 fun y hy => hperp y (hX hy)⟩
-  have h2 : x ∈ Lrep Λ F' := ⟨hx.1, mem_orth.2 fun y hy => hperp y (hX' hy)⟩
+  have h1 : x ∈ Lrep Λ F := ⟨hx.1, GlobalTheory.LoopC.RowSplit.mem_orth.2 fun y hy => hperp y (hX hy)⟩
+  have h2 : x ∈ Lrep Λ F' := ⟨hx.1, GlobalTheory.LoopC.RowSplit.mem_orth.2 fun y hy => hperp y (hX' hy)⟩
   refine Submodule.subset_span ⟨hx.2, mem_L0sub h1 (hperp _ hz), mem_L0sub h2 (hperp _ hz'),
     x, h1, ?_, x, h2, ?_, ?_⟩ <;> rw [sub_self] <;> exact Submodule.zero_mem _
 
@@ -1094,9 +1085,6 @@ namespace GlobalTheory.LoopC.PairLat
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ} {T T' T₂ : E}
   {Λ : Submodule (𝓞 E) S.V} {g : ℕ}
 
-theorem mem_orth {U : Submodule E S.V} {x : S.V} : x ∈ orth S U ↔ ∀ u ∈ U, S.hT u x = 0 := by
-  simp [orth, Submodule.mem_iInf, LinearMap.mem_ker]
-
 theorem hT_z_X (F : LFlag S r T) {x : S.V} (hx : x ∈ Xsp F) : S.hT F.fl.z x = 0 := by
   induction hx using Submodule.span_induction with
   | mem x hx =>
@@ -1169,11 +1157,11 @@ theorem map_Lrep {F' F'' : LFlag S r T'} {β : S.V ≃ₗ[E] S.V} (hβ : IsAutLa
     β l ∈ Lrep Λ F'' := by
   obtain ⟨h1, h2⟩ := Submodule.mem_inf.1 hl
   refine Submodule.mem_inf.2 ⟨(FrEqv.aut_mem_iff hβ l).2 h1, ?_⟩
-  refine mem_orth.2 fun u hu => ?_
+  refine GlobalTheory.LoopC.RowSplit.mem_orth.2 fun u hu => ?_
   rw [← hX] at hu
   obtain ⟨v, hv, rfl⟩ := hu
   have := hβ.1 v l
-  exact this.trans (mem_orth.1 h2 v hv)
+  exact this.trans (GlobalTheory.LoopC.RowSplit.mem_orth.1 h2 v hv)
 
 theorem Mlat_le_La_sup (E : Type) [Field E] [NumberField E] [StarRing E] (S : HSpace E) (r : ℕ) (T T' : E)
     (Λ : Submodule (𝓞 E) S.V) (g : ℕ) (F : LFlag S r T) (F' F'' : LFlag S r T') (β : S.V ≃ₗ[E] S.V)
@@ -1251,8 +1239,6 @@ open NumberField Module Matrix Formalism.BasicNotions Formalism.MainNotions.S Fo
 open scoped ENNReal Classical
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.rowLattices_mean_eq_genus_mean : ∀ (D : D7) (u : D.what₂.Word), (Tu D u).Prime → 3 ≤ Tu D u → SplitsCompletely (E := D.host.E) (Tu D u) → ∀ F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E), F0.e = D.sp.hypE → F0.z = D.zmOf u → ∀ what₂ : Finset (LatV D), IsRowReps D F0 what₂ → ∀ Λ₀ : LatV D, IsRowLat D F0 Λ₀ → ∀ reps : Finset (LatW D), Formalism.ThetaLiftIndependence.IsClassReps (D.sp.X 0).hT (L0X D Λ₀ (lf D F0)) reps → ∀ N : LatW D → ℕ∞, (∀ γ ∈ Formalism.HermitianLatticesTheory.isom (D.sp.X 0).hT, ∀ L, N (Formalism.HermitianLatticesTheory.gmap γ L) = N L) → (∑ Λ ∈ what₂, ENNReal.ofReal (wRow D F0 Λ) * (N (L0X D Λ (lf D F0)) : ℝ≥0∞)) * ENNReal.ofReal (Formalism.HermitianLatticesTheory.mass (D.sp.X 0).hT (L0X D Λ₀ (lf D F0))) = (∑ Λ ∈ what₂, ENNReal.ofReal (wRow D F0 Λ)) * ∑ L' ∈ reps, ENNReal.ofReal ((Nat.card (Formalism.ThetaLiftIndependence.autL (D.sp.X 0).hT L') : ℝ))⁻¹ * (N L' : ℝ≥0∞) := by
-  first | exact @GlobalTheory.MeanGenus.mean_rows_eq_mean_genus
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.RowLatticesMeanEqGenusMeanStatement =====
@@ -1266,8 +1252,6 @@ open NumberField Module Matrix Formalism.BasicNotions Formalism.MainNotions.S Fo
 open scoped ENNReal Classical
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.trace_form_pos_on_orth_liftedFlag : ∀ (D : D7) (T' : ℕ) (F' : Fg D ((T' : ℕ) : D.host.E)), 0 < T' → ∀ x ∈ orth (hS D) (Xplus F'), x ∉ Xsp F' → 0 < Algebra.trace ℚ D.host.E ((hS D).hT x x) := by
-  first | exact @GlobalTheory.LoopC.PerpPos.trace_pos_perp
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.TraceFormPosOnOrthLiftedFlagStatement =====
@@ -1508,11 +1492,11 @@ theorem pEqv_iff (D : D7) {T : D.host.E} {T' : ℕ} (hT' : 0 < T') (hg : 3 ≤ g
   · rintro ⟨⟨n', h', a⟩, ⟨n'', h'', b⟩⟩
     refine ⟨n', h', n'', h'', a, b, ?_⟩
     obtain ⟨t1, t2, hpr, -⟩ := hq
-    obtain ⟨c1, c2, c3, c4⟩ := GlobalTheory.T.isPair_move_by_integralUnipotent D _ _ Λ (gS D) F p.1 p.2.1 q.1 q.2.1 p.2.2 n' n'' hp.2.2.1 h' h'' a b
+    obtain ⟨c1, c2, c3, c4⟩ := GlobalTheory.LoopC.PairMove.pair_move D _ _ Λ (gS D) F p.1 p.2.1 q.1 q.2.1 p.2.2 n' n'' hp.2.2.1 h' h'' a b
     have hX := hpr.2.1 D.R.rS
     rw [GlobalTheory.LoopC.PairMove.xflag_top, GlobalTheory.LoopC.PairMove.xflag_top] at hX
     exact GlobalTheory.T.pair_isometry_unique_on_orth_mod_isotropic _ _ _ _ _ Λ (gS D) F q.1 q.2.1 q.2.2 _ hF.1 hF.2.1 hg (Nat.cast_ne_zero.2 hT'.ne')
-      (GlobalTheory.T.trace_form_pos_on_orth_liftedFlag D T' q.1 hT')
+      (GlobalTheory.LoopC.PerpPos.trace_pos_perp D T' q.1 hT')
       (GlobalTheory.T.xLam_le_smul_sup_xLam_admissible_flag _ _ _ _ _ Λ (gS D) F q.1 hF.2.2.2 t1.2.1 t1.1.2.1)
       (GlobalTheory.T.xLam_le_smul_sup_xLam_admissible_flag _ _ _ _ _ Λ (gS D) F q.2.1 hF.2.2.2 t2.2.1 t2.1.2.1)
       hpr.1 hX (by rw [hpr.2.2.1, sub_self]; exact Submodule.zero_mem _) hpr.2.2.2 c1 c2 c3 c4
@@ -1727,8 +1711,8 @@ theorem main : ∀ Cg cb Cu cT CT C0 A Ad C₁ : ℝ, 0 ≤ C₁ → ∃ C₀ : 
       (pair_sub D _ Λ hR.2.1 hW hpos hlat.fg hint Z' Z'' s (by omega) De) (ENNReal.ofReal K)
       (ENNReal.ofReal_pos.2 k0).ne' (fun P hP => s23 Λ hR Z' r1 P hP.1 hP.2.1 hP.2.2 (q1.trans e1))
       (fun P hP => s23 Λ hR Z'' r2 P hP.1 hP.2.1 hP.2.2 (q2.trans e1))).trans (mul_le_mul' ?_ le_rfl)
-    exact GlobalTheory.T.encard_sublattices_bounded_det_le_sum D _ hpos (GlobalTheory.Mass.RowPerp.main D u F0 he hz).1.2 hlat.fg hint _ De d1
-  · have a1 := GlobalTheory.T.rowLattices_mean_eq_genus_mean D u p1 p3 p5 F0 he hz what₂ hrows Λ₀ (hrows.1 Λ₀ hΛ₀) reps hreps
+    exact GlobalTheory.LoopC.SubCount.main D _ hpos (GlobalTheory.Mass.RowPerp.main D u F0 he hz).1.2 hlat.fg hint _ De d1
+  · have a1 := GlobalTheory.MeanGenus.mean_rows_eq_mean_genus D u p1 p3 p5 F0 he hz what₂ hrows Λ₀ (hrows.1 Λ₀ hΛ₀) reps hreps
       (fun L => cntPrim (D.sp.X 0).hT L (D.R.k - s) d) (fun γ hγ L => GlobalTheory.T.cntPrim_latticeImage_isometry _ _ _ γ hγ L _ _)
     have a2 := H1 hyp F0 he hz Λ₀ (hrows.1 Λ₀ hΛ₀) reps hreps s s2 sk d (Finset.mem_Icc.1 hd).1 HH (hHb.trans q1)
     rw [ENNReal.ofReal_mul hmass.le] at a2

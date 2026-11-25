@@ -271,7 +271,6 @@ section Fin
 
 variable {R : Type*} [Semiring R]
 
-
 variable (R) in
 def appendEquiv (m n : ℕ) : ((Fin m → R) × (Fin n → R)) ≃ₗ[R] (Fin (m + n) → R) where
   toFun x := Fin.append x.1 x.2
@@ -333,7 +332,6 @@ section Groups
 variable {p : ℕ} [Fact p.Prime] {O : Type} [CommRing O] {G G₁ G₂ : PDivGroup p O}
   (i₁ : G₁ ⟶ G) (i₂ : G₂ ⟶ G) (q₁ : G ⟶ G₁) (q₂ : G ⟶ G₂)
 
-
 include i₁ i₂ in
 theorem exists_tateSplit (h₁ : i₁ ≫ q₁ = 𝟙 _) (h₂ : i₂ ≫ q₂ = 𝟙 _) (h₁₂ : i₁ ≫ q₂ = 0)
     (h₂₁ : i₂ ≫ q₁ = 0) (h : q₁ ≫ i₁ + q₂ ≫ i₂ = 𝟙 _) :
@@ -349,7 +347,6 @@ theorem exists_tateSplit (h₁ : i₁ ≫ q₁ = 𝟙 _) (h₂ : i₂ ≫ q₂ =
       have := LinearMap.congr_fun (congrArg (tateMap G G O) h) x
       rwa [map_add, LinearMap.add_apply, tateMap_comp, tateMap_comp, tateMap_id] at this),
     fun _ => rfl, fun _ _ => rfl⟩
-
 
 include i₁ i₂ in
 theorem exists_lieSplit (h₁ : i₁ ≫ q₁ = 𝟙 _) (h₂ : i₂ ≫ q₂ = 𝟙 _) (h₁₂ : i₁ ≫ q₂ = 0)
@@ -372,7 +369,6 @@ theorem exists_lieSplit (h₁ : i₁ ≫ q₁ = 𝟙 _) (h₂ : i₂ ≫ q₂ = 
       have := LinearMap.congr_fun (congrArg (lieMap G G) h) x
       rw [map_add (f := _), lieMap_comp, lieMap_comp, lieMap_id] at this; exact this),
     fun _ => rfl⟩
-
 
 include i₁ i₂ in
 theorem exists_omegaDualSplit (h₁ : i₁ ≫ q₁ = 𝟙 _) (h₂ : i₂ ≫ q₂ = 𝟙 _) (h₁₂ : i₁ ≫ q₂ = 0)
@@ -424,7 +420,6 @@ theorem exists_filSplit (hb : ∀ x y, D.bb (Fin.append x y) = Fin.append (D₁.
      map_smul' := fun _ _ => rfl
      left_inv := fun z => Subtype.ext Fin.append_castAdd_natAdd
      right_inv := fun w => by ext i <;> simp }, fun _ _ => rfl⟩
-
 
 variable (D₁ D₂) in
 def quotProj : (Fin (h₁ + h₂) → O) →ₗ[O] ((Fin h₁ → O) ⧸ D₁.Fil) × ((Fin h₂ → O) ⧸ D₂.Fil) :=
@@ -499,11 +494,6 @@ end GlobalTheory.SumDatum
 
 namespace GlobalTheory.SumDatum
 
-theorem integrallyClosed_of_integers {C : Type} [Field C] {v : Valuation C NNReal} {O : Type}
-    [CommRing O] [Algebra O C] (hv : v.Integers O) : IsIntegrallyClosedIn O C :=
-  isIntegrallyClosedIn_iff.2 ⟨hv.hom_inj, fun h => hv.exists_of_le_one
-    (hv.isIntegral_iff_v_le_one.1 h)⟩
-
 theorem hasDatum_of_isSum : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C]
     [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C]
     [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O →
@@ -511,7 +501,7 @@ theorem hasDatum_of_isSum : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [I
       IsSum G G₁ G₂ → HasDatum hε G₁ → HasDatum hε G₂ → HasDatum hε G := by
   intro p _ C _ _ _ v O _ _ _ _ _ hv ε hε G G₁ G₂ ⟨i₁, i₂, q₁, q₂, h₁, h₂, h₁₂, h₂₁, h⟩
     ⟨D₁, e₁, fil₁, lie₁, hal₁, hb₁⟩ ⟨D₂, e₂, fil₂, lie₂, hal₂, hb₂⟩
-  haveI := integrallyClosed_of_integers hv
+  haveI := GlobalTheory.PointGroup.isIntegrallyClosedIn_of_integers hv
   obtain ⟨D, hal, hbb⟩ := _root_.GlobalTheory.BlockSum.exists_sum_datum p C v O hv ε hε _ _ D₁ D₂
   obtain ⟨T, hT, hTs⟩ := exists_tateSplit i₁ i₂ q₁ q₂ h₁ h₂ h₁₂ h₂₁ h
   obtain ⟨L, hL⟩ := exists_lieSplit i₁ i₂ q₁ q₂ h₁ h₂ h₁₂ h₂₁ h
@@ -574,11 +564,6 @@ noncomputable section
 open CategoryTheory GlobalTheory GlobalTheory.PDiv GlobalTheory.PDivGroup Coalgebra Bialgebra WithConv
 
 namespace GlobalTheory.ConstHT
-
-theorem isIntegrallyClosedIn_of_integers {C : Type} [Field C] {v : Valuation C NNReal} {O : Type}
-    [CommRing O] [Algebra O C] (hv : v.Integers O) : IsIntegrallyClosedIn O C :=
-  isIntegrallyClosedIn_iff.2 ⟨hv.hom_inj, fun h => hv.exists_of_le_one
-    (hv.isIntegral_iff_v_le_one.1 h)⟩
 
 theorem exists_eq_apply_of_algHom {O : Type} [CommRing O] [IsDomain O] {N : ℕ}
     (f : (Fin N → O) →ₐ[O] O) : ∃ k, ∀ v, f v = v k := by
@@ -802,7 +787,7 @@ open GlobalTheory.PDivLat
 
 theorem omega_const : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O] [IsLocalRing O], v.Integers O → ∀ G : PDivGroup p O, IsConst G → Subsingleton G.omega ∧ ∀ (h : ℕ) (b : Module.Basis (Fin h) ℤ_[p] G.Tate), Function.Bijective (Fintype.linearCombination O fun i => hodgeTate G (b i)) := by
   intro p _ C _ _ _ v O _ _ _ _ _ _ hv G hG
-  haveI := isIntegrallyClosedIn_of_integers hv
+  haveI := GlobalTheory.PointGroup.isIntegrallyClosedIn_of_integers hv
   refine ⟨⟨fun x y => Subtype.ext (funext fun n => ?_)⟩, fun h b => ?_⟩
   · obtain ⟨e⟩ := hG n
     rw [cot_eq_zero_of_equiv e (x.1 n), cot_eq_zero_of_equiv e (y.1 n)]
@@ -899,7 +884,6 @@ theorem etale_Fil {ε : PreTilt O p} (hε : IsPrimitiveSystem ε) (h : ℕ) : (e
   eq_top_iff.2 fun y _ => etale_bb hε h y
 
 end GlobalTheory.ConstDatum
-
 
 open GlobalTheory.ConstDatum in
 theorem GlobalTheory.PDivLat.hasDatum_of_isConst : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [Algebra O C] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] [IsDomain O], v.Integers O → ∀ (ε : PreTilt O p) (hε : IsPrimitiveSystem ε), ∀ G : PDivGroup p O, IsConst G → HasDatum hε G := by

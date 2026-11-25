@@ -280,17 +280,6 @@ theorem exists_derivation_cotangent (R B : Type) [CommRing R] [CommRing B] [IsLo
     rw [hD, (residue_eq_zero_iff _).2 t.2, map_zero, sub_zero, Ideal.toCotangent_to_quotient_square]
     rfl
 
-theorem formallySmooth_of_charZero (F K : Type) [Field F] [CharZero F] [Field K] [Algebra F K] :
-    Algebra.FormallySmooth F K := by
-  obtain ⟨s, hs⟩ := exists_isTranscendenceBasis F K
-  haveI := hs.isAlgebraic_field
-  haveI : CharZero K := charZero_of_injective_algebraMap (algebraMap F K).injective
-  haveI : CharZero (IntermediateField.adjoin F (Set.range ((↑) : s → K))) :=
-    charZero_of_injective_algebraMap (algebraMap F _).injective
-  haveI : Algebra.IsSeparable (IntermediateField.adjoin F (Set.range ((↑) : s → K))) K :=
-    Algebra.IsAlgebraic.isSeparable_of_perfectField
-  exact Algebra.FormallySmooth.of_algebraicIndependent_of_isSeparable hs.1
-
 theorem formallySmooth_residueField (R B : Type) [CommRing R] [IsDomain R] [Algebra ℚ R]
     [CommRing B] [IsLocalRing B] [Algebra R B]
     (hu : ∀ r : R, r ≠ 0 → IsUnit (algebraMap R B r)) :
@@ -306,7 +295,7 @@ theorem formallySmooth_residueField (R B : Type) [CommRing R] [IsDomain R] [Alge
       ← IsScalarTower.algebraMap_apply]
   haveI : CharZero R := charZero_of_injective_algebraMap (algebraMap ℚ R).injective
   haveI : CharZero K := IsFractionRing.charZero_of_isFractionRing R
-  haveI : Algebra.FormallySmooth K (ResidueField B) := formallySmooth_of_charZero K _
+  haveI : Algebra.FormallySmooth K (ResidueField B) := GlobalTheory.GenDer.formallySmooth_of_charZero K _
   haveI : Algebra.FormallyEtale R K := .of_isLocalization (nonZeroDivisors R)
   exact .comp R K (ResidueField B)
 
@@ -1150,7 +1139,6 @@ open GlobalTheory.LogKS (IsField)
 open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.LogKSChart GlobalTheory.Heat
 attribute [local instance] Over.cartesianMonoidalCategory
-
 
 noncomputable section
 

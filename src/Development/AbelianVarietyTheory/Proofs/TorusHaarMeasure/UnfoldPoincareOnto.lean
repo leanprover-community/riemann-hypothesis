@@ -122,7 +122,6 @@ theorem integral_eq_integral_tsum_of_lintegral {α ι : Type*} [MeasurableSpace 
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
-
 omit [NumberField E] [IsCMField E] in
 theorem continuous_lact {r : ℕ} {Ψ : Finset (E →+* ℂ)} (δ : GL (Fin r) E) :
     Continuous (fun y : Frame Ψ r => lact δ y) := by
@@ -714,7 +713,6 @@ noncomputable section
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
-
 open Classical in
 def pairDens {r : ℕ} (X : Data E r) (P f0 : Frame X.Ψ r → ℂ) (W : Frame X.Ψ r → ℝ≥0∞) :
     Frame X.Ψ r → ℂ :=
@@ -870,10 +868,6 @@ theorem dom_of_lact {r : ℕ} (X : Data E r) {γ : GL (Fin r) E} (hγ : γ ∈ X
     unfold dmin at this ⊢
     rwa [OntoS.gram_lact X hγ] at this
 
-theorem isOrth_lact {r : ℕ} (X : Data E r) {γ : GL (Fin r) E} (hγ : γ ∈ X.Γ) {x : Frame X.Ψ r}
-    (hx : IsOrth X x) : IsOrth X (lact γ x) := fun τ => by
-  rw [OntoS.gram_lact X hγ, hx τ]
-
 theorem phla_lact {r : ℕ} (X : Data E r) (la : Wt X.Ψ r) {γ : GL (Fin r) E} (hγ : γ ∈ X.Γ)
     (x : Frame X.Ψ r) : phla X la (lact γ x) = phla X la x := by
   unfold phla Data.nfac dmin
@@ -909,7 +903,7 @@ theorem poinStatement_of :
       ENNReal.ofReal C * S * ENNReal.ofReal (Real.sqrt (κ (lact γ.1 x))) := by
     intro γ
     rw [← ofReal_norm, norm_mul, norm_inv, norm_chi X la γ.2, inv_one, one_mul]
-    refine (hC _ (isOrth_lact X γ.2 hxo)).trans ?_
+    refine (hC _ (GlobalTheory.FrameSumBound.isOrth_lact X γ.2 hxo)).trans ?_
     rw [ENNReal.ofReal_mul' (Real.sqrt_nonneg _), mul_right_comm]
     gcongr
     refine iSup_le fun z => iSup_le fun hz => iSup_le fun hd => ?_
@@ -1045,7 +1039,6 @@ private theorem lact_one_apply (X : _root_.ReciprocityTheory.ChartRestriction.G.
   show (((1 : GL (Fin r) E) : Matrix (Fin r) (Fin r) E).map (τ : E →+* ℂ)) * _root_.ReciprocityTheory.ChartRestriction.G.FD.mat x τ =
       _root_.ReciprocityTheory.ChartRestriction.G.FD.mat x τ
   rw [Units.val_one, Matrix.map_one _ (map_zero _) (map_one _), Matrix.one_mul]
-
 
 open NumberField MeasureTheory Topology in
 open scoped ContDiff ENNReal Matrix in

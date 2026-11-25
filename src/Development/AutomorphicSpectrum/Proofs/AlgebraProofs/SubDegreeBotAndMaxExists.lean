@@ -59,12 +59,6 @@ section -- clump:auto
 
 open GlobalTheory.CompanionTheory.Ar.Crv
 
-namespace GlobalTheory.CompanionTheory.Ar.Crv
-
-theorem deg_le_deg_of_le : ∀ (K : Type) [Field K] (C : ACurve K) (V : Type) [AddCommGroup V] [Module K V] [FiniteDimensional K V] (L L' : C.I → AddSubgroup V), IsBun C L → IsBun C L' → (∀ i, L i ≤ L' i) → deg C L ≤ deg C L' :=
-  @PositivityTheory.HtPt.Ch.deg_mono
-
-end GlobalTheory.CompanionTheory.Ar.Crv
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DegreeMonoLatticeLe =====
@@ -76,12 +70,6 @@ section -- clump:auto
 
 open GlobalTheory.CompanionTheory.Ar.Crv
 
-namespace GlobalTheory.CompanionTheory.Ar.Crv
-
-theorem subDeg_le_zero_of_trivial : ∀ (K : Type) [Field K] (C : ACurve K) (V : Type) [AddCommGroup V] [Module K V] [FiniteDimensional K V] (n : ℕ) (b : Module.Basis (Fin n) K V) (L : C.I → AddSubgroup V) (W : Submodule K V), (∀ i, IsLatOf C i b (L i)) → subDeg C L W ≤ 0 :=
-  @PositivityTheory.HtPt.Ch.subdeg_trivial
-
-end GlobalTheory.CompanionTheory.Ar.Crv
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SubDegreeNonposTrivialLattice =====
@@ -242,10 +230,10 @@ theorem subDeg_bdd [FiniteDimensional K V] (L : C.I → AddSubgroup V) (h : IsBu
     simpa using this
   refine ⟨(Module.finrank K V : ℤ) * S, fun W => ?_⟩
   have hW := (_root_.GlobalTheory.CompanionTheory.Ar.Crv.SubQuot.isBun_sub_quot K C V _ W h0).1
-  have e1 := _root_.GlobalTheory.CompanionTheory.Ar.Crv.deg_le_deg_of_le K C W (sub C L W) (scale C (sub C (fun i => latOf C i b) W) c)
+  have e1 := _root_.PositivityTheory.HtPt.Ch.deg_mono K C W (sub C L W) (scale C (sub C (fun i => latOf C i b) W) c)
     (_root_.GlobalTheory.CompanionTheory.Ar.Crv.SubQuot.isBun_sub_quot K C V _ W h).1 (isBun_scale C c hc hW) (fun i x hx => hc3 i x hx)
   have e2 := deg_scale C c hc hW
-  have e3 := _root_.GlobalTheory.CompanionTheory.Ar.Crv.subDeg_le_zero_of_trivial K C V _ b (fun i => latOf C i b) W (fun i => isLatOf_latOf C i b)
+  have e3 := _root_.PositivityTheory.HtPt.Ch.subdeg_trivial K C V _ b (fun i => latOf C i b) W (fun i => isLatOf_latOf C i b)
   have e4 : (Module.finrank K W : ℤ) * S ≤ (Module.finrank K V : ℤ) * S :=
     mul_le_mul_of_nonneg_right (by exact_mod_cast W.finrank_le) hS0
   unfold subDeg at e3 ⊢

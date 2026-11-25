@@ -61,9 +61,6 @@ open GlobalTheory.Core.Rk.SW (sch)
 open GlobalTheory.Mem.AutSpace (SmFun)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
-theorem _root_.GlobalTheory.T.ikedaPartialFourierIntegral_mem_adelicSchwartz : ∀ (D : D7), ∀ θ : InfFam D, IsInfFam θ → ∀ (T T' : HSp D) (t n : ℕ) (d : HypDec T T' t) (μ : Measure (Mx D t n)) (𝓕 : Set (Mx D t n)), IsCovolOne (ratMx D t n) μ 𝓕 → ∀ Φ ∈ schwartzA θ T.rank n, ikS d μ Φ ∈ schwartzA θ T'.rank n := by
-  first | exact @GlobalTheory.RegSch.IkSchwartz.ikS_mem_schwartzA
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IkedaPartialFourierIntegralMemAdelicSchwartzStatement =====
@@ -90,7 +87,7 @@ namespace PositivityTheory.Rg.Rsw.L.LIkSch
 theorem isCompact_K {D : D7} {T T₀ : HSp D} {r : ℕ} (d : HypDec T T₀ r) {l : Lvl T} (hl : l.Good) :
     IsCompact (l.K : Set (GA D T)) := by
   exact (GlobalTheory.T.goodMajorantLevel_conj_unitaryAdelicMaximalCompact D T T₀ r d l.c hl.2.2
-    (GlobalTheory.T.adelic_iwasawa_decomposition_wittIsotropicStabilizer D T T₀ r d l.c (fun v hv => GlobalTheory.Core.Rk.IP.Model.isSplit_two v hv) hl.2.2) l hl).2.1
+    (GlobalTheory.Core.Rk.IwAd.hasIw_Kmax D T T₀ r d l.c (fun v hv => GlobalTheory.Core.Rk.IP.Model.isSplit_two v hv) hl.2.2) l hl).2.1
 
 end PositivityTheory.Rg.Rsw.L.LIkSch
 
@@ -102,7 +99,7 @@ theorem ikSch : IkSch := by
   have h1 := GlobalTheory.T.compactAverageSchwartzProjection_mem_adelicSchwartz D θ hθ B n I.l.K hK I.νK I.probK Φ hΦ
   refine ⟨h1, ?_⟩
   obtain ⟨𝓕, h𝓕⟩ := I.cov₁
-  exact GlobalTheory.T.ikedaPartialFourierIntegral_mem_adelicSchwartz D θ hθ B W t n d I.μ₁ 𝓕 h𝓕 _ h1
+  exact GlobalTheory.RegSch.IkSchwartz.ikS_mem_schwartzA D θ hθ B W t n d I.μ₁ 𝓕 h𝓕 _ h1
 
 end PositivityTheory.Rg.Rsw.L
 end -- clump:auto

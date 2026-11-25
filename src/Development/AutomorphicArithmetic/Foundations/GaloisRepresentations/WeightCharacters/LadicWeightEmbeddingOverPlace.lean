@@ -725,7 +725,6 @@ open GlobalTheory.GalCut GlobalTheory.UnitaryBC GlobalTheory.Cong GlobalTheory.D
 open UpperTheory.Gal.Gen (IsLevel fixedBy)
 open UpperTheory.Gal.Wt
 
-
 theorem UpperTheory.Gal.Wt.famOf_of : ExpBasic → PevExp → SqExp → TopUp → WExp → FamOfA → FamOf := by
   intro hB hP hS hT hW hA E _ _ _ a τ C hC n hn W Q _ f hf P
   obtain ⟨hLe, hGe, hmono, -, hconst, -⟩ := hB
@@ -844,7 +843,7 @@ theorem psum_succ {a : ℕ} (κ : DomWeight a) (i : Fin a) : psum κ (i + 1) = p
 
 theorem famWt_of : FamOff → FamSum → FamWt := by
   intro hOff hSum E _ _ _ a τ W K ν d B hB U hU hBU hne
-  obtain ⟨mu, hmu⟩ := GlobalTheory.T.exists_algebraicWeight_definiteUnitaryAutRep E a U hU
+  obtain ⟨mu, hmu⟩ := GlobalTheory.Cong.exists_weight_of_isAutRepU E a U hU
   refine ⟨mu, ⟨hU, hmu, ?_⟩, fun τ' h => hasWeightAt_unique ⟨U, hU⟩ τ' (hmu τ') (hOff E a τ W K ν d B hB U hU hBU hne τ' h),
     fun i => ?_⟩
   · obtain ⟨y₁, y₂, v, hv⟩ := hne

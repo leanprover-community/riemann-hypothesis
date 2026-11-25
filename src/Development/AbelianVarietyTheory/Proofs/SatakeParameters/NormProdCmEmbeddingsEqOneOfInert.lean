@@ -292,15 +292,6 @@ theorem conj_sigmaOf (g : D.R.GG) (x : D.host.E) :
   change (D.host.sigmaOf (D.R.cc) * D.host.sigmaOf g) x = (D.host.sigmaOf g * D.host.sigmaOf (D.R.cc)) x
   rw [← sigmaOf_mul', ← sigmaOf_mul', mul_comm]
 
-theorem conj_conj' (x : D.host.E) : D.host.conj (D.host.conj x) = x := by
-  rw [conj_eq']
-  change (D.host.sigmaOf (D.R.cc) * D.host.sigmaOf (D.R.cc)) x = x
-  rw [← sigmaOf_mul']
-  have : D.R.cc * D.R.cc = 1 := by
-    exact Prod.ext (by change c0 * c0 = 1; decide) (mul_one _)
-  rw [this, show D.host.sigmaOf 1 = 1 from map_one (D.host.gal).symm]
-  rfl
-
 def nPsi (D : D7) (z : D.host.E) : D.host.E := ∏ τ : D.what₂.Tau, D.host.sigmaOf (D.eTau τ : D.R.GG) z
 
 theorem nPsi_inv {ρ : D.R.GG} (hρ : ρ ∈ D.R.Psi) (z : D.host.E) :
@@ -344,7 +335,7 @@ theorem normUnitK_of_frobOut {p : ℕ} [Fact p.Prime] (lam : TaylorLogMetric.Qba
     have : g = D.R.cc * ((D.R.cc)⁻¹ * g) := by rw [mul_inv_cancel_left]
     rw [this, sigmaOf_mul', AlgEquiv.mul_apply, nPsi_inv hρ, ← conj_eq']
   have hgcy : D.host.sigmaOf g (D.host.conj y) = y := by
-    rw [← conj_sigmaOf, hgy, conj_conj']
+    rw [← conj_sigmaOf, hgy, Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.CU.conj_conj]
 
   set c : D.host.E ≃+* D.host.E := (D.host.sigmaOf g : D.host.E ≃+* D.host.E) with hc
   have hcx : ∀ x, c x = D.host.sigmaOf g x := fun x => rfl
@@ -404,8 +395,6 @@ section frob
 open scoped Pointwise
 
 variable {D : D7}
-
-
 
 theorem frobOut_of_inertK {p : ℕ} [hp : Fact p.Prime] (hp2 : p ≠ 2) (hI : Formalism.MainNotions.GL3Theta.InertK D p) : FrobOut D p := by
   classical
@@ -570,7 +559,6 @@ theorem normUnitK_of_inertK {p : ℕ} [Fact p.Prime] (lam : TaylorLogMetric.Qbar
 end frob
 
 end GlobalTheory.NormUnitInert
-
 
 open Formalism.BasicNotions NumberField IsDedekindDomain Formalism.MainNotions Formalism.MainNotions.G Formalism.MainNotions.FormalGroupSystem Formalism.L2.G.Pend Formalism.L2.Ker Formalism.L2.PairingIndexBounds.F GlobalTheory.TwU TensorProduct in
 theorem GlobalTheory.normUnit_of_inert : ∀ (D : D7) (p : ℕ) [Fact p.Prime] (lam : TaylorLogMetric.Qbar →+* ℂ_[p]), p ≠ 2 → GL3Theta.InertK D p →

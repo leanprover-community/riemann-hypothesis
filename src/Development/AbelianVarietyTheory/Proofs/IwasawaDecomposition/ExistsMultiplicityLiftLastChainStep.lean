@@ -294,7 +294,6 @@ theorem rowLie_X (τ : ι) (k l : Fin m) (v : ι × Fin m × Fin n) :
     rw [pderiv_X_of_ne (by simp [hb.symm]), mul_zero]
   · simp
 
-
 open Classical in
 theorem rowLie_diag_comm (t t' : ι) (i k l : Fin m) :
     rowLie n t i i * rowLie n t' k l - rowLie n t' k l * rowLie n t i i =
@@ -430,8 +429,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open scoped ComplexOrder
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.definiteThetaIntegral_integrable_continuous : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (V W : HSp D) (χS χT : (AE D)ˣ →* Circle) (ω : GA D V × GA D W →* Module.End ℂ (WO V W → ℂ)) (ν : Measure (GA D W)) (𝓕 : Set (GA D W)) (s : WO V W → ℂ) (F : GA D W → ℂ), IsWeilDatumO ψ V W χS χT ω → (∀ τ, (gramAt D W τ).PosDef) → ν.IsHaarMeasure → IsFundamentalDomain (GQ W) 𝓕 ν → IsThetaFunO ψ V W s → Continuous F → (∀ γ ∈ GQ W, ∀ h, F (γ * h) = F h) → (∀ g, IntegrableOn (fun h => thetaKO ω g h s * F h) 𝓕 ν) ∧ Continuous (Lift.liftInt ν 𝓕 (thetaKO ω) s F) := by
-  first | exact @GlobalTheory.DefLiftCont.theta_integral_integrable_continuous
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DefiniteThetaIntegralIntegrableContinuousStatement =====
@@ -540,8 +537,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open scoped ComplexOrder
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.definiteUnitary_realPoints_act_fock_substitution : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (V W : HSp D) (χS χT : (AE D)ˣ →* Circle) (ω : GA D V × GA D W →* Module.End ℂ (WO V W → ℂ)) (θ : InfFam D) (S S' : D.what₂.Tau → SPar) (M : DSModel V S) (M' : DSModel W S') (f : WO V W → ℂ), IsWeilDatumO ψ V W χS χT ω → IsInfFam θ → V.SigOK → W.SigOK → AllPlus M → AllPlus M' → IsThetaFunO ψ V W f → (∀ τ, IsFockVacAt (heisO ψ V W) θ τ (cplxO (cart M τ) (cart M' τ)) f) → ∀ τ, (∀ g : Matrix.unitaryGroup (Fin V.rank) ℂ, ∃ c : ℂ, c ≠ 0 ∧ ∀ P, ω (atTau θ V τ (unfr M τ g), 1) (ptOf ψ θ M M' f P) = c • ptOf ψ θ M M' f (colSub W.rank τ g P)) ∧ ∀ u : Matrix.unitaryGroup (Fin W.rank) ℂ, ∃ c : ℂ, c ≠ 0 ∧ ∀ P, ω (1, atTau θ W τ (unfr M' τ u)) (ptOf ψ θ M M' f P) = c • ptOf ψ θ M M' f (rowSub V.rank τ u P) := by
-  first | exact @GlobalTheory.DefLift.FockAct.fock_act
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DefiniteUnitaryRealPointsActFockSubstitutionStatement =====
@@ -847,7 +842,6 @@ theorem fockInner_colSub [Fintype ι] (τ : ι) (g : Matrix.unitaryGroup (Fin n)
 
 end Compl
 
-
 open Compl in
 theorem exists_colStable_disjoint (ι : Type) [Fintype ι] (m n : ℕ) (X : Type) [AddCommGroup X] [Module ℂ X]
     [FiniteDimensional ℂ X] (U W : Submodule ℂ (X →ₗ[ℂ] Pol ι m n))
@@ -1027,7 +1021,6 @@ end GlobalTheory.DefLift.ColComb
 
 namespace GlobalTheory.DefLift
 
-
 open ColComb in
 theorem colLie_eq_sum_colSub : ∀ (ι : Type) [Fintype ι] (m n d : ℕ) (τ : ι) (k l : Fin n),
     ∃ (s : Finset (Matrix.unitaryGroup (Fin n) ℂ)) (c : Matrix.unitaryGroup (Fin n) ℂ → ℂ),
@@ -1175,7 +1168,6 @@ theorem exists_bound {σ X : Type} [AddCommGroup X] [Module ℂ X] [FiniteDimens
   exact Finset.le_sup (f := fun i => (Φ (b i)).totalDegree) (Finset.mem_univ i)
 
 end ColHigh
-
 
 open ColHigh in
 theorem exists_colHighest (ι : Type) [Fintype ι] (m n : ℕ) (X : Type) [AddCommGroup X] [Module ℂ X]
@@ -1375,8 +1367,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open scoped ComplexOrder
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.finiteDimensional_smooth_irreducible_of_allPlus : ∀ (D : D7) (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S), AllPlus M → ∀ τ, FiniteDimensional ℂ (M.H τ) ∧ M.sm τ = ⊤ ∧ ∀ U : Submodule ℂ (M.H τ), (∀ u : Matrix.unitaryGroup (Fin V.rank) ℂ, ∀ x ∈ U, M.σ τ u x ∈ U) → U = ⊥ ∨ U = ⊤ := by
-  first | exact @GlobalTheory.DefLift.AllPlus.finite_smooth_irreducible
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteSmoothIrreducibleStatement =====
@@ -1390,8 +1380,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open scoped ComplexOrder
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.mem_multT_of_equivariant' : ∀ (D : D7) (θ : InfFam D) (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S) (π : D.what₂.Tau → Matrix.unitaryGroup (Fin V.rank) ℂ → Module.End ℂ (SmT M)) (J : Set (GA D V)) (χ : GA D V → ℂ) (L : SmT M →ₗ[ℂ] (GA D V → ℂ)), IsInfFam θ → V.SigOK → AllPlus M → (∀ τ, FiniteDimensional ℂ (M.H τ) ∧ M.sm τ = ⊤) → FiniteDimensional ℂ (SmT M) → Function.Injective (inclT M) → IsTensAct M π → (∀ x, IsAutFun V (L x)) → (∀ x, ∀ k ∈ J, ∀ g, L x (g * k) = χ k * L x g) → (∀ τ u x, L (π τ u x) = rTr V (atTau θ V τ (unfr M τ u)) (L x)) → L ∈ MultT θ M J χ := by
-  first | exact @GlobalTheory.DefLiftMult.mem_multT_of_equivariant
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemMultTOfEquivariantStatement =====
@@ -1405,8 +1393,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open scoped ComplexOrder
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.multiplicitySpace_definite_continuous_invariant_equivariant : ∀ (D : D7) (θ : InfFam D) (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S) (π : D.what₂.Tau → Matrix.unitaryGroup (Fin V.rank) ℂ → Module.End ℂ (SmT M)) (J : Set (GA D V)) (χ : GA D V → ℂ), AllPlus M → (∀ τ, M.sm τ = ⊤) → Function.Injective (inclT M) → IsTensAct M π → ∀ L ∈ MultT θ M J χ, ∀ x, Continuous (L x) ∧ (∀ γ ∈ GQ V, ∀ h, L x (γ * h) = L x h) ∧ ∀ τ u, L (π τ u x) = rTr V (atTau θ V τ (unfr M τ u)) (L x) := by
-  first | exact @GlobalTheory.multT_cont_left_equiv
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MultiplicitySpaceDefiniteContinuousInvariantEquiStatement =====
@@ -1420,8 +1406,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open scoped ComplexOrder
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.tensorProduct_definiteUnitary_localModels_irreducible : ∀ (D : D7) (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S), (∀ τ, FiniteDimensional ℂ (M.H τ) ∧ M.sm τ = ⊤ ∧ ∀ U : Submodule ℂ (M.H τ), (∀ u : Matrix.unitaryGroup (Fin V.rank) ℂ, ∀ x ∈ U, M.σ τ u x ∈ U) → U = ⊥ ∨ U = ⊤) → AllPlus M → FiniteDimensional ℂ (SmT M) ∧ Function.Injective (inclT M) ∧ ∃ π, IsTensAct M π ∧ IrrFam π := by
-  first | exact @GlobalTheory.DefLift.tensor_irreducible
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TensorProductDefiniteUnitaryLocalModelsIrreducibStatement =====
@@ -1647,8 +1631,6 @@ theorem exists_trilinear {G H S P Ds : Type} [MeasurableSpace H] [AddCommGroup S
 
 variable {D : D7}
 
-
-
 theorem ioExists_definite {V W : HSp D} {S S' : D.what₂.Tau → SPar} (M : DSModel V S) (M' : DSModel W S')
     {θ : InfFam D} {ψ : AddChar (AF D.host.F) ℂ} {χS χT : (AE D)ˣ →* Circle}
     {ω : GA D V × GA D W →* Module.End ℂ (WO V W → ℂ)} {f : WO V W → ℂ}
@@ -1664,15 +1646,15 @@ theorem ioExists_definite {V W : HSp D} {S S' : D.what₂.Tau → SPar} (M : DSM
   have hf : IsThetaFunO ψ V W f := by
     have := hpt 1
     rwa [ptOf, GlobalTheory.FiniteFock.pureTensorO_one] at this
-  have m1 := GlobalTheory.T.finiteDimensional_smooth_irreducible_of_allPlus D V S M hM
-  have m2 := GlobalTheory.T.finiteDimensional_smooth_irreducible_of_allPlus D W S' M' hM'
-  obtain ⟨fd, inj, π, hπ, irr⟩ := GlobalTheory.T.tensorProduct_definiteUnitary_localModels_irreducible D V S M m1 hM
-  obtain ⟨fd', inj', π', hπ', irr'⟩ := GlobalTheory.T.tensorProduct_definiteUnitary_localModels_irreducible D W S' M' m2 hM'
-  have hfock := GlobalTheory.T.definiteUnitary_realPoints_act_fock_substitution D ψ V W χS χT ω θ S S' M M' f hω hθ hV hW hM hM' hf hvac
+  have m1 := GlobalTheory.DefLift.AllPlus.finite_smooth_irreducible D V S M hM
+  have m2 := GlobalTheory.DefLift.AllPlus.finite_smooth_irreducible D W S' M' hM'
+  obtain ⟨fd, inj, π, hπ, irr⟩ := GlobalTheory.DefLift.tensor_irreducible D V S M m1 hM
+  obtain ⟨fd', inj', π', hπ', irr'⟩ := GlobalTheory.DefLift.tensor_irreducible D W S' M' m2 hM'
+  have hfock := GlobalTheory.DefLift.FockAct.fock_act D ψ V W χS χT ω θ S S' M M' f hω hθ hV hW hM hM' hf hvac
   choose cV hcV0 hcV using fun τ => (hfock τ).1
   choose cW hcW0 hcW using fun τ => (hfock τ).2
-  have hF := fun F : C => GlobalTheory.T.multiplicitySpace_definite_continuous_invariant_equivariant D θ W S' M' π' J' χ' hM' (fun τ => (m2 τ).2.1) inj' hπ' F (hC F.2)
-  have hL := fun (F : C) φ v => GlobalTheory.T.definiteThetaIntegral_integrable_continuous D ψ V W χS χT ω ν 𝓕 _ _ hω hM'.posDef hν h𝓕 (hpt φ) (hF F v).1 (hF F v).2.1
+  have hF := fun F : C => GlobalTheory.multT_cont_left_equiv D θ W S' M' π' J' χ' hM' (fun τ => (m2 τ).2.1) inj' hπ' F (hC F.2)
+  have hL := fun (F : C) φ v => GlobalTheory.DefLiftCont.theta_integral_integrable_continuous D ψ V W χS χT ω ν 𝓕 _ _ hω hM'.posDef hν h𝓕 (hpt φ) (hF F v).1 (hF F v).2.1
   let pt : PolF D W.rank V.rank →ₗ[ℂ] (WO V W → ℂ) := pureTensorO ψ θ V W (cart M) (cart M') (onb M) (onb M') f
   have hpe : ∀ P, ptOf ψ θ M M' f P = pt P := fun _ => rfl
   obtain ⟨B, hB⟩ := exists_trilinear ν 𝓕 (fun g h => LinearMap.proj 0 ∘ₗ ω (g, h)) pt C fun F φ v => (hL F φ v).1
@@ -1726,7 +1708,7 @@ theorem ioExists_definite {V W : HSp D} {S S' : D.what₂.Tau → SPar} (M : DSM
           (hJ k hk).2 P
       have e2 : B (χ k • P) x F g = χ k * B P x F g := by rw [map_smul]; rfl
       rw [LinearMap.flip_apply, hLB, ← e2, hB, hB, hshift, hpe, hpe, e, pt.map_smul]
-    refine GlobalTheory.T.mem_multT_of_equivariant' D θ V S M π J χ _ hθ hV hM (fun τ => ⟨(m1 τ).1, (m1 τ).2.1⟩) fd inj hπ (fun x => ⟨?_, ?_, ?_⟩) hlev
+    refine GlobalTheory.DefLiftMult.mem_multT_of_equivariant D θ V S M π J χ _ hθ hV hM (fun τ => ⟨(m1 τ).1, (m1 τ).2.1⟩) fd inj hπ (fun x => ⟨?_, ?_, ?_⟩) hlev
       fun τ g => ?_
     · revert x
       refine hind _ (fun P x γ hγ g => ?_) (fun γ _ g => by simp) fun x y a b γ hγ g => by

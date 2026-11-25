@@ -156,14 +156,6 @@ variable {P : Type} [Fintype P] [DecidableEq P] {n g : ℕ}
 private theorem smulR (c : ℝ) {m : ℕ} (z : Fin m → ℂ) : c • z = (c : ℂ) • z := by
   ext i; simp
 
-private theorem hf_add_l (H : Matrix (Fin g) (Fin g) ℂ) (a b c : Fin g → ℂ) :
-    hermForm H (a + b) c = hermForm H a c + hermForm H b c := by
-  simp [hermForm, add_dotProduct]
-
-private theorem hf_add_r (H : Matrix (Fin g) (Fin g) ℂ) (a b c : Fin g → ℂ) :
-    hermForm H a (b + c) = hermForm H a b + hermForm H a c := by
-  simp [hermForm, star_add, Matrix.mulVec_add, dotProduct_add]
-
 private theorem star_smulC {m : ℕ} (t : ℂ) (b : Fin m → ℂ) : star (t • b) = (starRingEnd ℂ) t • star b := by
   ext i; simp
 
@@ -186,10 +178,10 @@ private theorem hv_smul_r (M : Matrix (Fin n) (Fin n) ℂ) (t : ℂ) (a b : Fin 
 private noncomputable def hBil {X : Type} [AddCommGroup X] [Module ℝ X] (R : X ≃ₗ[ℝ] (Fin g → ℂ))
     (Hm : Matrix (Fin g) (Fin g) ℂ) : X →ₗ[ℝ] X →ₗ[ℝ] ℝ :=
   LinearMap.mk₂ ℝ (fun x y => (hermForm Hm (R x) (R y)).im)
-    (fun a b c => by simp only [map_add (f := _), hf_add_l, Complex.add_im])
+    (fun a b c => by simp only [map_add (f := _), GlobalTheory.PeriodCoord.herm_add_left, Complex.add_im])
     (fun c a b => by
       simp only [map_smul, smulR, _root_.GlobalTheory.AppellHumbertTrivial.hermForm_smul_left, Complex.im_ofReal_mul, smul_eq_mul])
-    (fun a b c => by simp only [map_add (f := _), hf_add_r, Complex.add_im])
+    (fun a b c => by simp only [map_add (f := _), GlobalTheory.PeriodCoord.herm_add_right, Complex.add_im])
     (fun c a b => by
       simp only [map_smul, smulR, _root_.GlobalTheory.EigenNorm.hermForm_smul_right, Complex.conj_ofReal, Complex.im_ofReal_mul, smul_eq_mul])
 

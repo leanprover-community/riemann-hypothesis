@@ -1210,10 +1210,6 @@ def frameV {m : ℕ} {𝒱 : Set X.Opens} {d : ℕ} (E : Frame (sP (stF q ρ m �
   nat := E.nat
   bij := E.bij
 
-theorem nil_m (k : Type) [Field k] [CharP k l] [PerfectRing k l] (m : ℕ) : IsNilpotent ((l : ℕ) : Wc.Wm l k m) := ⟨m, by
-  rw [← map_natCast (Ideal.Quotient.mk (Ideal.span {(l : WittVector l k) ^ m})), ← map_pow, Ideal.Quotient.eq_zero_iff_mem]
-  exact Ideal.mem_span_singleton_self _⟩
-
 theorem o_bij {n : ℕ} (hn : n ≠ 0) (𝒱 : Set X.Opens) (T : (stF q ρ (n + 1) 𝒱).FullSubcategory) :
     Function.Bijective (((mqS q ρ hn 𝒱).o (IdF.span _ ((l : WittVector l k) ^ n)) fun _ => le_rfl).τ T) := by
   constructor
@@ -1230,13 +1226,11 @@ theorem iso_bij {m : ℕ} {T T' : Thick (Wc.L l (B.schFn q) ρ m)} (e : T ≅ T'
   · exact RingHom.congr_fun (congrArg (fun f => f.φ) e.hom_inv_id) x
   · exact RingHom.congr_fun (congrArg (fun f => f.φ) e.inv_hom_id) x
 
-
-
 theorem local_bij (q : X ⟶ Spec (CommRingCat.of O)) (ρ : O →+* k) {n : ℕ} (hn : n ≠ 0) {W : X.Opens} {d : ℕ}
     (cW : Coord q W d) (j : ℕ) :
     Function.Bijective (((mqS q ρ hn {W}).o (IdF.span _ ((l : WittVector l k) ^ n)) (fun _ => le_rfl)).pull j) := by
   have hl0 : l ≠ 0 := (Fact.out : l.Prime).ne_zero
-  obtain ⟨c', hF', -⟩ := GlobalTheory.CompanionTheory.FlatChartP.exists_flat_chart (Wc.pd l k (n + 1)) l hl0 (nil_m k (n + 1)) q
+  obtain ⟨c', hF', -⟩ := GlobalTheory.CompanionTheory.FlatChartP.exists_flat_chart (Wc.pd l k (n + 1)) l hl0 (GlobalTheory.CompanionTheory.FlatRes.nil_l k (n + 1)) q
     ((Wc.res l k (n + 1)).comp ρ) cW
   obtain ⟨c, e, hec, hfl⟩ := _root_.GlobalTheory.CompanionTheory.ChartRed.chart_q q ρ hn c'
   have hF : FlatT c.D := hfl (_root_.GlobalTheory.CompanionTheory.FlatThick.flatT_qT l k O (B.schFn q) ρ n hn c'.D hF')
@@ -1298,8 +1292,6 @@ open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris CrystallineSemistable
 noncomputable section
 
 namespace GlobalTheory.CompanionTheory.FlatCoverGlue
-
-
 
 theorem glue {l : ℕ} [Fact l.Prime] {k : Type} [Field k] [CharP k l] [PerfectRing k l] {O : Type} [CommRing O]
     {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of O)) (ρ : O →+* k) (U : Cov q) (n : ℕ) (c : WittVector l k)
@@ -1394,8 +1386,6 @@ theorem span_eq (m : ℕ) (𝒱 : Set X.Opens) (c : WittVector l k) (T : (stF q 
   rw [bot_sup_eq]
   rfl
 
-
-
 def scQ (m : ℕ) (𝒱 : Set X.Opens) (c : WittVector l k) :
     CH.Mor (sq (IdF.top (sV q ρ m 𝒱).A) (IdF.span (sV q ρ m 𝒱).A c))
       (sq (IdF.top (sP (stF q ρ m 𝒱)).A) (stdI (stF q ρ m 𝒱) none (mkW l k m c))) (mkW l k m) where
@@ -1469,8 +1459,6 @@ theorem top_res (m : ℕ) (c : WittVector l k) (j : ℕ) : Function.Bijective ((
 
 end Main
 
-
-
 theorem main : ∀ {l : ℕ} [Fact l.Prime] {k : Type} [Field k] [CharP k l] [PerfectRing k l] {O : Type} [CommRing O] {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of O)) (ρ : O →+* k) (m : ℕ) (𝒱 : Set X.Opens) (c : WittVector l k), sSup 𝒱 = ⊤ → ∀ j, Function.Bijective ((resVq q ρ m 𝒱 c).pull j) := by
   intro l _ k _ _ _ O _ X q ρ m 𝒱 c hU j
   have hle := st_le_top q ρ m 𝒱
@@ -1520,7 +1508,6 @@ def resG (q : X ⟶ Spec (CommRingCat.of O)) (ρ : O →+* k) (m : ℕ)
   G := ObjectProperty.ιOfLE h
   τ _ := LinearMap.id
   nat _ _ := rfl
-
 
 theorem resG_bij (q : X ⟶ Spec (CommRingCat.of O)) (ρ : O →+* k) (m : ℕ) (𝒱 : Set X.Opens) (hU : sSup 𝒱 = ⊤)
     (P : ObjectProperty (Thick (Wc.L l (B.schFn q) ρ m))) (hP : P = stF q ρ m {⊤}) (h : stF q ρ m 𝒱 ≤ P) (j : ℕ) :
@@ -1626,8 +1613,6 @@ section Q
 variable {l : ℕ} [Fact l.Prime] {k : Type} [Field k] [CharP k l] [PerfectRing k l] {O : Type} [CommRing O]
   {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of O)) (ρ : O →+* k)
 
-
-
 theorem bij_cov (U : Cov q) {n : ℕ} (hn : n ≠ 0) (j : ℕ) :
     Function.Bijective (((mq (F := B.schFn q) (ρ := ρ) hn).o (IdF.span _ ((l : WittVector l k) ^ n))
       (fun _ => le_rfl)).pull j) := by
@@ -1645,8 +1630,6 @@ theorem bij_cov (U : Cov q) {n : ℕ} (hn : n ≠ 0) (j : ℕ) :
     (fun _ h => h.1) (hGq q ρ hn _) j z0 zq g
 
 end Q
-
-
 
 theorem bij : ∀ {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ_[l] (PadicAlgCl l)} (r : Res l K) (M : Model l K), M.Sm →
     ∀ (n : ℕ) (hn : n ≠ 0) (j : ℕ), Function.Bijective (((mq (F := B.schFn M.p) (ρ := r.ρ) hn).o
@@ -1761,7 +1744,6 @@ theorem Kt_zero_sub (j : ℕ) : Subsingleton ((Kt l F ρ 0).H j) := by
 section Pos
 
 variable {n : ℕ} (hn : n ≠ 0)
-
 
 variable (F ρ) in
 def psiP : Cx.Hom (Kt l F ρ n) (quo l (Kt l F ρ (n + 1)) n) (RingHom.id _) :=

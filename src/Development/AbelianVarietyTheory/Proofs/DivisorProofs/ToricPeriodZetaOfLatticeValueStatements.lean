@@ -422,7 +422,6 @@ theorem norm_sigma_ratio {E : Type} [Field E] [NumberField E] [IsCMField E] (σ 
 
 end GlobalTheory.CMVal.NormConj
 
-
 open GlobalTheory.CMVal.NormConj in
 theorem GlobalTheory.CMVal.norm_conj_finPart : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {I : Type} [Fintype I]
     (φ : I → E →+* ℂ) (hφ : IsCMType φ) (s : ℕ) (κ : I → ℕ) (c : Ideal (OF E)) (hc : c ≠ ⊥) (χ : HChar E)
@@ -1081,7 +1080,6 @@ theorem locK_eq_of_levelLe {ξ : HChar E} {w : HeightOneSpectrum (𝓞 E)} {m : 
   have h2 : ξ.locK w (a * b⁻¹) = 1 := h1
   rwa [map_mul, map_inv, mul_inv_eq_one] at h2
 
-
 open Classical in
 def twInv (ξ : HChar E) (w : HeightOneSpectrum (𝓞 E)) (y : E) : ℂ :=
   if h : y = 0 then 0 else (((ξ.locK w (Units.mk0 y h))⁻¹ : ℂˣ) : ℂ)
@@ -1458,16 +1456,6 @@ theorem finEps_eq_of_local {K : Type} [Field K] (σ : K →+* ℂ) (P : K → Pr
     finprod_eq_prod_of_mulSupport_subset _ hS3] at *
   rw [Finset.prod_congr rfl fun w _ => he w, Finset.prod_mul_distrib, Finset.prod_mul_distrib, hc, mul_one, map_prod]
 
-theorem exists_finsupp_expAt (χ : HChar E) : ∃ a : HeightOneSpectrum (𝓞 E) →₀ ℕ, ∀ w, ExpAt χ w (a w) := by
-  classical
-  have h := GlobalTheory.Mem.UnrAe.exists_levelLe χ
-  have hE : ∀ w, ExpAt χ w (Nat.find (h w)) := fun w m =>
-    ⟨fun hm => Nat.find_min' (h w) hm, fun hm x hx hx' => Nat.find_spec (h w) x hx (hx'.trans (by
-      rw [WithZero.exp_le_exp]; omega))⟩
-  have hsub : Function.support (fun w => Nat.find (h w)) ⊆ {v | ¬ χ.UnrAt v} := fun w hw hu =>
-    hw ((hE w).unique ((expAt_zero_iff χ w).2 hu))
-  exact ⟨Finsupp.ofSupportFinite _ ((GlobalTheory.Mem.UnrAe.finite_ramified χ).subset hsub), fun w => hE w⟩
-
 theorem expAt_mul_of_unrAt {χ ξ : HChar E} {w : HeightOneSpectrum (𝓞 E)} (h : ξ.UnrAt w) {n : ℕ} (hn : ExpAt χ w n) :
     ExpAt (χ * ξ) w n := fun m => by
   rw [← hn m]
@@ -1563,8 +1551,8 @@ theorem refl_square (hFE : GlobalTheory.Published.HeckeTateFunctionalEquation) {
     rw [e, Formalism.L2.Host.HChar.inf_mul, GlobalTheory.TypeValues.inf_eq_one ξ hN hf k, mul_one]
     exact hv.1.2.2.1 k
   have ht : TrivOnF (nuH G t i j) := by rw [e]; exact hv.1.2.1.mul (hL.xi_triv t)
-  obtain ⟨a, ha⟩ := exists_finsupp_expAt (nuH G t i j)
-  obtain ⟨a₀, ha₀⟩ := exists_finsupp_expAt ν₀
+  obtain ⟨a, ha⟩ := GlobalTheory.Published.HeckeFEModel.exists_exponents (nuH G t i j)
+  obtain ⟨a₀, ha₀⟩ := GlobalTheory.Published.HeckeFEModel.exists_exponents ν₀
   have hbig : ∀ τ, (e0 D i j : ℤ) < ((kap D sc.cGap i j 0 τ : ℕ) : ℤ) := fun τ => by
     have a0 := (GlobalTheory.FunObj.SqNum.Model.kap_add D sc.cGap i j τ (Nat.zero_le (halfRank D i j))).1
     have a1 := GlobalTheory.FunObj.SqNum.Model.kap_add D sc.cGap i j τ (le_refl (halfRank D i j))
@@ -1758,13 +1746,6 @@ theorem norm_le_one_of_isIntegral_int {q : ℕ} [Fact q.Prime] {x : ℂ_[q]} (hx
   have h3 : ‖x‖₊ ≤ 1 := h2
   exact_mod_cast h3
 
-theorem norm_natCast_eq_one {q : ℕ} [Fact q.Prime] {n : ℕ} (hn : n.Coprime q) : ‖(n : ℂ_[q])‖ = 1 := by
-  have e : ((n : ℕ) : ℂ_[q]) = algebraMap ℚ_[q] ℂ_[q] ((n : ℕ) : ℚ_[q]) := (map_natCast _ n).symm
-  rw [e]
-  have h : ‖algebraMap ℚ_[q] ℂ_[q] ((n : ℕ) : ℚ_[q])‖ = ‖((n : ℕ) : ℚ_[q])‖ := PadicComplex.norm_extends' (p := q) _
-  rw [h]
-  exact Padic.norm_natCast_eq_one_iff.mpr hn.symm
-
 local notation "K" => algebraicClosure ℚ ℂ
 
 theorem valGe_sum_pow_twelve : ∀ (l : ℕ), l.Prime → ∀ (r : ℝ) (J : Type) [Fintype J] (u x : J → ℂ), (∀ j, IntAt l (u j)) →
@@ -1796,7 +1777,7 @@ theorem valGe_sum_pow_twelve : ∀ (l : ℕ), l.Prime → ∀ (r : ℝ) (J : Typ
       convert map_isIntegral_int lam h2
       exact Subsingleton.elim _ _
     have h1 := norm_le_one_of_isIntegral_int hI
-    rw [he, map_mul, map_natCast, norm_mul, norm_natCast_eq_one hn, one_mul] at h1
+    rw [he, map_mul, map_natCast, norm_mul, GlobalTheory.HeckeVal.norm_natCast_eq_one hn, one_mul] at h1
     exact h1
 
   have hl0 : (0 : ℝ) < l := by exact_mod_cast hl.pos

@@ -305,12 +305,8 @@ theorem inRow_rowForm {n : ℕ} (g : Fin 2) (E : Fin n → I g → K) (E' : Fin 
     (fun w => by simp [map_sum]) _ (fun w => by simp [rowForm, map_sum]) h m hm x hx
   rcases c with c | c <;> rfl
 
-theorem embV_injective {n0 n : ℕ} (hn : n0 ≤ n) : Function.Injective (embV hn) :=
-  Sum.map_injective.2 ⟨(Fin.castLE_injective hn).prodMap (Fin.castLE_injective hn),
-    (Fin.castLE_injective hn).prodMap (Fin.castLE_injective hn)⟩
-
 theorem restr_eq_killCompl {n0 n : ℕ} (hn : n0 ≤ n) (G : MvPowerSeries (PVar n) K) :
-    restr hn G = killCompl ⟨embV hn, embV_injective hn⟩ G := by
+    restr hn G = killCompl ⟨embV hn, GlobalTheory.DiagBlock.embV_inj hn⟩ G := by
   ext m
   rw [coeff_killCompl, Finsupp.embDomain_eq_mapDomain]; rfl
 
@@ -348,7 +344,7 @@ theorem restr_rows {n0 n : ℕ} (hn : n0 ≤ n) (g : Fin 2) (E : Fin n → I g �
         exact hc ⟨u2, hu.2⟩
       · simp [embV] at hu
     · congr 1
-      exact (killCompl_X (e := ⟨embV hn, embV_injective hn⟩) (Sum.inl (ρ, c))).symm
+      exact (killCompl_X (e := ⟨embV hn, GlobalTheory.DiagBlock.embV_inj hn⟩) (Sum.inl (ρ, c))).symm
   · symm
     refine Fintype.sum_of_injective (Fin.castLE hn) (Fin.castLE_injective hn) _ _ (fun c hc => ?_) (fun c => ?_)
     · rw [killCompl_X_eq_zero, smul_zero]
@@ -357,7 +353,7 @@ theorem restr_rows {n0 n : ℕ} (hn : n0 ≤ n) (g : Fin 2) (E : Fin n → I g �
       · simp only [Function.Embedding.coeFn_mk, embV, Sum.map_inr, Prod.map, Sum.inr.injEq, Prod.mk.injEq] at hu
         exact hc ⟨u2, hu.2⟩
     · congr 1
-      exact (killCompl_X (e := ⟨embV hn, embV_injective hn⟩) (Sum.inr (ρ, c))).symm
+      exact (killCompl_X (e := ⟨embV hn, GlobalTheory.DiagBlock.embV_inj hn⟩) (Sum.inr (ρ, c))).symm
 
 def letterDet (K : Type) [Field K] {n : ℕ} (g : Fin 2) (p : Fin n → I g) : MvPolynomial (Fin n × WV I) K :=
   Matrix.det (Matrix.of fun ρ c : Fin n => MvPolynomial.X (ρ, (⟨g, p c⟩ : WV I)))
@@ -661,7 +657,6 @@ theorem rows_main (V : VF C) (i n0 : ℕ) :
   rfl
 
 end GlobalTheory.MainToRows
-
 
 open GlobalTheory.MainToRows in
 theorem GlobalTheory.mainTerm_to_rowHypothesis :

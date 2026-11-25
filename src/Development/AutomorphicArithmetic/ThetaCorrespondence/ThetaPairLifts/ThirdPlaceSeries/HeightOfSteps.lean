@@ -104,7 +104,6 @@ def IsPowMul_vp (p : ℕ) (v : Valuation C ℝ≥0) {O : Type} [CommRing O] [Alg
     (La La' : Submodule O U) : Prop :=
   ∃ u : C, (v u : ℝ) = (v (p : C) : ℝ) ^ t ∧ La' = scaleLat u La
 
-
 set_option autoImplicit false in
 open scoped NNReal NumberField Classical in
 variable {C : Type} [Field C] in
@@ -394,17 +393,11 @@ theorem exists_hom {V K : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRi
   refine ⟨F, hF, ?_⟩
   rw [← h₁, Category.assoc, ← a, hFf, ← Category.assoc, ← Over.comp_left, e.hom_inv_id_assoc, h₂]
 
-theorem dual_w {R R' : Type} [CommRing R] [CommRing R'] (f : R →+* R') :
-    spMap (dualMap f) ≫ spMap (algebraMap R (DualNumber R)) = spMap (algebraMap R' (DualNumber R')) ≫ spMap f := by
-  rw [spMap_spMap, spMap_spMap]
-  congr 1
-  ext s <;> simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl]
-
 theorem exists_pull {V O : Type} [CommRing V] [CommRing O] {G : Over (Sp V)} [GrpObj G] {G' : Over (Sp O)} [GrpObj G']
     {f : V →+* O} {π : G'.left ⟶ G.left} (h : IsGrpPullback G' G (spMap f) π) {u : epsOver V V ⟶ G} (hu : IsTan u) :
     ∃ x : LieG G', x.1.left ≫ π = spMap (dualMap f) ≫ u.left := by
   have w : (spMap (dualMap f) ≫ u.left) ≫ G.hom = spMap (algebraMap O (DualNumber O)) ≫ spMap f := by
-    rw [Category.assoc, Over.w u, ← dual_w]
+    rw [Category.assoc, Over.w u, ← GlobalTheory.ArcQ.FrUniq.dual_alg]
     rfl
   refine ⟨⟨Over.homMk (h.1.lift _ _ w) (h.1.lift_snd _ _ w), ?_⟩, h.1.lift_fst _ _ w⟩
   refine Over.OverMorphism.ext (h.1.hom_ext ?_ ((Over.w _).trans (Over.w _).symm))
@@ -482,11 +475,11 @@ theorem exists_lieTie_of_frMap : ∀ (E : Type) [Field E] [NumberField E] [IsCMF
       inferInstance
     rw [← cancel_mono (spMap (algebraMap T.V T.Fr)), Category.assoc, Category.assoc, ← m₂.cart.1.w,
       ← Category.assoc e.hom.left, ← h₃, Category.assoc, Over.w F, ← Category.assoc, h6, Category.assoc,
-      Over.w (ub τ j), ← dual_w]
+      Over.w (ub τ j), ← GlobalTheory.ArcQ.FrUniq.dual_alg]
     rfl
   have w : (spMap (dualMap k.toRingHom) ≫ u' ≫ e.hom.left) ≫ t'.G.hom =
       spMap (algebraMap C (DualNumber C)) ≫ spMap k.toRingHom := by
-    rw [Category.assoc, hu, dual_w]
+    rw [Category.assoc, hu, GlobalTheory.ArcQ.FrUniq.dual_alg]
   refine ⟨⟨x, (existsUnique_left (P := P) hp₀ inferInstance 1).unique h7 Corr.one⟩, xG,
     Over.homMk (hφ.1.lift _ _ w) (hφ.1.lift_snd _ _ w), hc, ?_, hπ.1.hom_ext ?_ ?_⟩
   · change hφ.1.lift _ _ w ≫ _ = _
@@ -501,7 +494,7 @@ theorem exists_lieTie_of_frMap : ∀ (E : Type) [Field E] [NumberField E] [IsCMF
     · simpa [dualMap, Algebra.algebraMap_eq_smul_one] using (hk s.snd).symm
   · change (hφ.1.lift _ _ w ≫ _) ≫ _ = _
     rw [Category.assoc, P.gen_pull.1.w, hφ.1.lift_snd_assoc, Category.assoc, Over.w xG.1]
-    exact (dual_w _).symm
+    exact (GlobalTheory.ArcQ.FrUniq.dual_alg _).symm
 
 end GlobalTheory.CompHt.TieFrame
 end -- clump:auto
@@ -746,7 +739,6 @@ section Different
 variable {C : Type} [Field C] [IsAlgClosed C] [CharZero C] {v : Valuation C ℝ≥0} {O : Type} [CommRing O] [Algebra O C]
   {E : Type} [Field E] [NumberField E]
 
-
 omit [IsAlgClosed C] [CharZero C] in
 theorem exists_delta [IsGalois ℚ E] (hv : v.Integers O) {p : ℕ} (hp : p.Prime) (hO : ¬ IsUnit (p : O)) (τ : E →+* C) :
     ∃ δ ∈ (differentIdeal ℤ (𝓞 E)).map (embO hv τ),
@@ -872,7 +864,6 @@ theorem pairV_inclT {w : P.V} (hw : w ∈ P.latT) (s : O ⊗[ℤ_[p]] P.T) :
     rw [P.inclT_tmul, this, map_smul, ← hb]
     exact ⟨c * b, map_mul _ _ _⟩
 
-
 omit [IsAlgClosed C] [CharZero C] in
 theorem actV_mem (a : Λ) (x : P.V) (hx : x ∈ P.latT) : P.actV a x ∈ P.latT := by
   obtain ⟨s, rfl⟩ := hx
@@ -986,7 +977,6 @@ section Frame
 variable {p : ℕ} [Fact p.Prime] {C : Type} [Field C] [IsAlgClosed C] [CharZero C] {v : Valuation C ℝ≥0}
   {O : Type} [CommRing O] [Algebra O C] [Algebra ℤ_[p] O] [Algebra ℤ_[p] C] [IsScalarTower ℤ_[p] O C]
   [Algebra c.F C] [StarRing (𝓞 E)] [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O]
-
 
 omit [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] in
 theorem smul_mem_latT (P : Point p v O (𝓞 E)) (τ : E →+* ℂ) {δ : O}
@@ -1161,8 +1151,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.HeightOfSteps", "h": "module\n\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ErrorBudgetCondition\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.HodgeBundleWeights.VolumeEstimateHypotheses\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.HodgeBundleWeights.CoverHeightComparison\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.HodgeBundleWeights.HeightAddLogNonneg\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
-
-
 
 section
 section

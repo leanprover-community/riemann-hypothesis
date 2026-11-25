@@ -140,8 +140,6 @@ open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Asc
 
-theorem _root_.GlobalTheory.T.unitaryAdelicHeight_wittEmbedding_le_const_mul : ∀ (D : D7) (S S₀ : HSp D) (ρ : ℕ) (d : HypDec S S₀ ρ), ∃ C : ℝ, ∀ g : GA D S₀, height S (d.emb0 g) ≤ C * height S₀ g := by
-  first | exact @GlobalTheory.EmbHeight.unitaryAdelicHeight_wittEmbedding_le
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.UnitaryAdelicHeightWittEmbeddingLeConstMulStatement =====
@@ -280,7 +278,6 @@ open scoped TensorProduct NNReal
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
-
 
 open Classical in
 def nInf (w : InfinitePlace D.host.F) (z : AE D) : ℝ≥0 :=
@@ -459,7 +456,7 @@ open GlobalTheory.Asc
 theorem quotHeight_le_pow (D : D7) (S S₀ : HSp D) (ρ : ℕ) (d : HypDec S S₀ ρ) : ∃ (C : ℝ) (a : ℕ), ∀ n ∈ flagN d,
     ∀ h : GA D S₀, quotHeight S₀ h ≤ C * quotHeight S (n * d.emb0 h) ^ a := by
   obtain ⟨C₁, b, hM⟩ := GlobalTheory.T.unitaryQuotientHeight_le_of_no_short_vector D S₀
-  obtain ⟨c, C, hc, hP⟩ := exists_le_vsize d (GlobalTheory.T.le_adelicVectorSizeProduct_mul_unitaryQuotientHeight_pow D S)
+  obtain ⟨c, C, hc, hP⟩ := exists_le_vsize d (GlobalTheory.SeenSize.le_vsize_mul_quotHeight D S)
   have hK : 0 < max C c := lt_max_of_lt_right hc
   refine ⟨C₁ * (max C c / c) ^ b, (ρ + 1) * b, fun n hn h => ?_⟩
   have hH : 1 ≤ quotHeight S (n * d.emb0 h) ^ (ρ + 1) := one_le_pow₀ (one_le_quotHeight S _)
@@ -574,7 +571,7 @@ end GlobalTheory.HtWitt
 namespace GlobalTheory.HtWitt
 
 theorem quotHeight_witt : ∀ (D : D7) (S S₀ : HSp D) (ρ : ℕ) (d : HypDec S S₀ ρ), ∃ (C : ℝ) (a : ℕ), ∀ n ∈ flagN d, ∀ h, quotHeight S₀ h ≤ C * quotHeight S (n * d.emb0 h) ^ a ∧ quotHeight S (n * d.emb0 h) ≤ C * quotHeight S₀ h ^ a :=
-  main GlobalTheory.T.unitaryAdelicHeight_wittEmbedding_le_const_mul GlobalTheory.T.exists_rational_translate_flagUnipotent_height_le GlobalTheory.T.unitaryQuotientHeight_wittLevi_le_pow_of_boundedUnipotent
+  main GlobalTheory.EmbHeight.unitaryAdelicHeight_wittEmbedding_le GlobalTheory.T.exists_rational_translate_flagUnipotent_height_le GlobalTheory.T.unitaryQuotientHeight_wittLevi_le_pow_of_boundedUnipotent
 
 end GlobalTheory.HtWitt
 end -- clump:auto

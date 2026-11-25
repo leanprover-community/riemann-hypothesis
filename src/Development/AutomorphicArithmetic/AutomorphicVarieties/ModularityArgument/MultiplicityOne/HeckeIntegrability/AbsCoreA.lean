@@ -649,7 +649,6 @@ private theorem iter_list [Fintype ι] (μ : Measure X) [SigmaFinite μ] [IsFini
 
 end Iter
 
-
 open PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.CG in
 private def split0 (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) :
     (InfinitePlace E → G n) × GL (Fin n) (Af E) ≃ₜ* PositivityTheory.Rg.BcB.E.H E n 0 where
@@ -1361,7 +1360,7 @@ theorem piTermA_of (h1 : GlobalTwistedTraceBound) (hθ : ThetaFixOf) (h2 : WtEx)
       HasInfCharGL π.V (ComplexEmbedding.conjugate w.embedding) (Multiset.map (infOf (l w).w false) Finset.univ.val) := fun w => ⟨by
     rw [map_infOf_true]
     exact hl w, by
-    rw [map_infOf_false, ← GlobalTheory.T.infChar_conjEmbedding_neg_of_invariant_pairing E n π π hd w.embedding _ _ (hl w) (hlam _)]
+    rw [map_infOf_false, ← GlobalTheory.CapPair.infChar_conj_of_paired E n π π hd w.embedding _ _ (hl w) (hlam _)]
     exact hlam _⟩
   have level : ∀ N : ∀ w : Pl E, Subgroup (GLw n w), Good Z N → (∃ ψ ∈ π.V, ψ ≠ 0 ∧ ∀ k ∈ Lev S N, finRep E n k ψ = ψ) →
       (∃ φ : ∀ w : Pl E, LF n 0 w, (∀ w ∈ Z, ∀ N' ≤ N w, ∀ b, IsHecke N' (two φ φ w b)) ∧

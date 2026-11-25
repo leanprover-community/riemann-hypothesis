@@ -263,7 +263,6 @@ open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S GlobalTheor
 
 namespace GlobalTheory.LeviIso
 
-
 open scoped MatrixOrder ComplexOrder in
 theorem exists_hermitian_sqrt_mul_mul_eq {n : ℕ} (J C : Matrix (Fin n) (Fin n) ℂ)
     (hJ : J * J = 1) (hJh : Jᴴ = J) (hC : C.det ≠ 0)
@@ -934,14 +933,10 @@ namespace GlobalTheory.LeviIso.RadLoc
 section
 open scoped Matrix.Norms.Frobenius
 
-theorem hs_eq_norm_sq {j : ℕ} (M : Matrix (Fin j) (Fin j) ℂ) : hs M = ‖M‖ ^ 2 := by
-  rw [Matrix.frobenius_norm_def, ← Real.sqrt_eq_rpow, Real.sq_sqrt (by positivity)]
-  simp [hs]
-
 theorem hs_inv_compare {j : ℕ} (x : Matrix (Fin j) (Fin j) ℂ) (hx : x.det ≠ 0) {a : ℝ} (ha : 0 < a)
     (ha1 : a < 1) (h : hs (x⁻¹ - 1) ≤ (1 - a) ^ 2) :
     a ^ 2 * hs (x - 1) ≤ hs (x⁻¹ - 1) ∧ a ^ 2 * hs (x⁻¹ - 1) ≤ hs (x - 1) := by
-  simp only [hs_eq_norm_sq] at *
+  simp only [Formalism.REAL.frobenius_eq_norm_sq] at *
   have e : (x⁻¹ - 1) + (x - 1) = -((x⁻¹ - 1) * (x - 1)) := by
     rw [sub_mul, mul_sub, Matrix.nonsing_inv_mul _ (Ne.isUnit hx)]
     simp
@@ -966,13 +961,10 @@ theorem hs_inv_compare {j : ℕ} (x : Matrix (Fin j) (Fin j) ℂ) (hx : x.det �
 
 end
 
-theorem continuous_hs {j : ℕ} : Continuous (hs : Matrix (Fin j) (Fin j) ℂ → ℝ) := by
-  unfold hs; fun_prop
-
 def unitBallAt (j : ℕ) (s : ℝ) : Set (Fin j → Fin j → ℂ) := {x | hs (Matrix.of x - 1) ≤ s ^ 2}
 
 theorem measurableSet_unitBallAt (j : ℕ) (s : ℝ) : MeasurableSet (unitBallAt j s) := by
-  refine (isClosed_le (continuous_hs.comp ?_) continuous_const).measurableSet
+  refine (isClosed_le (Formalism.REAL.continuous_hs_real_place_taylor.comp ?_) continuous_const).measurableSet
   exact (continuous_id (X := Matrix (Fin j) (Fin j) ℂ)).sub continuous_const
 
 theorem volume_unitBallAt (j : ℕ) {s : ℝ} (hs0 : 0 < s) :
@@ -1028,7 +1020,7 @@ theorem eventually_good (j : ℕ) {a : ℝ} (ha : 0 < a) (ha1 : a < 1) :
   have h1 : ContinuousAt (fun x : Matrix (Fin j) (Fin j) ℂ => (‖x.det‖ ^ 2)⁻¹ ^ j) 1 :=
     (((hdet.norm.pow 2).continuousAt).inv₀ (by simp)).pow j
   have h2 : ContinuousAt (fun x : Matrix (Fin j) (Fin j) ℂ => hs (x⁻¹ - 1)) 1 := by
-    refine continuous_hs.continuousAt.comp (ContinuousAt.sub (continuousAt_matrix_inv _ ?_) continuousAt_const)
+    refine Formalism.REAL.continuous_hs_real_place_taylor.continuousAt.comp (ContinuousAt.sub (continuousAt_matrix_inv _ ?_) continuousAt_const)
     rw [Ring.inverse_eq_inv']
     exact continuousAt_inv₀ (by simp)
   have h3 := h1.eventually (lt_mem_nhds (a := a) (by simpa using ha1))
@@ -1222,13 +1214,13 @@ open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S GlobalTheor
 
 namespace GlobalTheory.LeviIso.MapRadial
 
-alias continuous_hs := _root_.GlobalTheory.LeviIso.RadLoc.continuous_hs
+alias Formalism.REAL.continuous_hs_real_place_taylor := _root_.Formalism.REAL.continuous_hs_real_place_taylor
 
 theorem measurable_hs_uMat {n : ℕ} (ε : Fin n → Bool) :
     Measurable fun g : Formalism.REAL.UJ ε => Formalism.REAL.hs (uMat g - 1) := by
   have : Continuous fun g : Formalism.REAL.UJ ε => uMat g :=
     Units.continuous_val.comp continuous_subtype_val
-  exact (continuous_hs.comp (this.sub continuous_const)).measurable
+  exact (Formalism.REAL.continuous_hs_real_place_taylor.comp (this.sub continuous_const)).measurable
 
 theorem measurable_hs_loc (j : ℕ) : Measurable fun x : Fin j → Fin j → ℂ =>
     Formalism.REAL.hs (Matrix.of x - 1) + Formalism.REAL.hs ((Matrix.of x)⁻¹ - 1) := by
@@ -1236,7 +1228,7 @@ theorem measurable_hs_loc (j : ℕ) : Measurable fun x : Fin j → Fin j → ℂ
   have h1 : Measurable fun x : Fin j → Fin j → ℂ => (Matrix.of x).det := h0.matrix_det.measurable
   have h2 : ∀ r s, Measurable fun x : Fin j → Fin j → ℂ => (Matrix.of x).adjugate r s :=
     fun r s => (h0.matrix_adjugate.matrix_elem r s).measurable
-  refine (continuous_hs.comp (h0.sub continuous_const)).measurable.add ?_
+  refine (Formalism.REAL.continuous_hs_real_place_taylor.comp (h0.sub continuous_const)).measurable.add ?_
   unfold Formalism.REAL.hs
   refine Finset.measurable_sum _ fun r _ => Finset.measurable_sum _ fun s _ => ?_
   simp only [Matrix.inv_def, Ring.inverse_eq_inv', Matrix.sub_apply, Matrix.smul_apply, smul_eq_mul]

@@ -299,16 +299,6 @@ theorem continuous_phe (B : RowsAut) (d : InfinitePlace B.I.F → ℝ) (hd : IsD
   unfold GlobalTheory.Count.phe
   exact (hph.comp continuous_fst).mul (hlc.continuous.comp continuous_snd)
 
-theorem one_le_of_isIsot (I : AutInst) (W : Submodule I.E (Fin I.n → I.E)) (hW : I.IsIsot W) : 1 ≤ I.n := by
-  obtain ⟨hne, -⟩ := hW
-  by_contra hlt
-  apply hne
-  rw [Submodule.eq_bot_iff]
-  intro x _
-  funext i
-  exact absurd i.isLt (by omega)
-
-
 open Classical in
 noncomputable def incl (I : AutInst) (v : InfinitePlace I.F) : UJ (I.ε v) →* I.GA :=
   (MonoidHom.inl I.Ginf I.Gf).comp (MonoidHom.mulSingle (fun v => UJ (I.ε v)) v)
@@ -361,7 +351,7 @@ theorem cusp_of_fibre_vanish : ∀ (B : RowsAut) (d : InfinitePlace B.I.F → �
   have part1 : ∀ f : B.I.GA → ℂ, IsContRep B (T y) f → ∀ W, B.I.IsIsot W →
       ∀ ν : Measure B.I.GA, B.I.IsNQuotMeas W ν → ∀ x, ∫ m, f (m * x) ∂ν = 0 := by
     intro f hf W hW ν hν x
-    have hn : 1 ≤ B.I.n := one_le_of_isIsot B.I W hW
+    have hn : 1 ≤ B.I.n := GlobalTheory.Dec.one_le_rank_of_isIsot B.I W hW
     obtain ⟨-, ⟨Φ, hΦ, hbd⟩, hrep⟩ := _root_.GlobalTheory.Reproducing.reproducing_formula B d h hd hn hloc hbig hfd T hT y f hf
     obtain ⟨c, hc, hcle⟩ := _root_.GlobalTheory.Dec.exists_pos_le_tau1_mul_of_mem_NA_of_isIsot B.I W x hW
     obtain ⟨hνfin, -, hνc, hνinv⟩ := hν

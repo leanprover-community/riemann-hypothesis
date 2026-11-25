@@ -235,9 +235,6 @@ section Frame
 variable {F E : Type} [Field F] [Field E] [Algebra F E] (R : Type) [CommRing R] [Algebra F R]
   (σ : E →ₐ[F] E) {n : ℕ} (J : Matrix (Fin n) (Fin n) E)
 
-theorem sigR_inclR (e : E) : sigR R σ (inclR R e) = inclR R (σ e) := by
-  simp [sigR, inclR]
-
 theorem sigR_invol (hσ : ∀ e, σ (σ e) = e) (a : R ⊗[F] E) : sigR R σ (sigR R σ a) = a := by
   induction a using TensorProduct.induction_on with
   | zero => simp
@@ -245,12 +242,12 @@ theorem sigR_invol (hσ : ∀ e, σ (σ e) = e) (a : R ⊗[F] E) : sigR R σ (si
   | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
 
 theorem JR_herm (hJ : IsHermND σ J) (i j : Fin n) : sigR R σ (JR R J j i) = JR R J i j := by
-  simp only [JR, Matrix.map_apply, sigR_inclR, hJ.1 i j]
+  simp only [JR, Matrix.map_apply, GlobalTheory.UnitriangularCoeff.sigR_inclR, hJ.1 i j]
 
 theorem h_rat (x y : Fin n → E) :
     Formalism.UG.hform (sigR R σ) (JR R J) (ratV (F := F) R x) (ratV (F := F) R y) = inclR R (hE σ J x y) := by
 
-  simp [Formalism.UG.hform, hE, ratV, JR, map_sum, map_mul, sigR_inclR]
+  simp [Formalism.UG.hform, hE, ratV, JR, map_sum, map_mul, GlobalTheory.UnitriangularCoeff.sigR_inclR]
 
 variable {r : ℕ}
 
@@ -357,7 +354,7 @@ theorem cc_cond (hσ : ∀ e, σ (σ e) = e) (hJ : IsHermND σ J) (hP : P.IsStd 
   | last =>
     simp only [wv, cc, Fin.lastCases_last]
     rw [hf_smul_l, hf_smul_r, h_rat, hP.2.2.2.2.2.1]
-    simp only [sigR_inclR, AlgHom.commutes]
+    simp only [GlobalTheory.UnitriangularCoeff.sigR_inclR, AlgHom.commutes]
     have hT := hP.2.2.2.2.2.2
     have h0 : (2 * T)⁻¹ + (2 * T)⁻¹ + T⁻¹ * (T⁻¹ * -T) = 0 := by
       field_simp
@@ -375,7 +372,7 @@ theorem unitriangularEichlerSecondVector_initialVectors (hσ : ∀ e, σ (σ e) 
   induction b using Fin.lastCases with
   | last =>
     simp only [wv, Fin.lastCases_last]
-    rw [hf_smul_l, h_rat, hermitianFormE_frameZ_initialVectors hσ hJ hP, sigR_inclR, AlgHom.commutes]
+    rw [hf_smul_l, h_rat, hermitianFormE_frameZ_initialVectors hσ hJ hP, GlobalTheory.UnitriangularCoeff.sigR_inclR, AlgHom.commutes]
     by_cases hc : c = Fin.last r
     · rw [if_pos hc, if_pos hc, ← map_mul, ← map_mul, mul_neg, inv_mul_cancel₀ hP.2.2.2.2.2.2]
       simp
@@ -1117,7 +1114,6 @@ theorem colOp_pow {R : Type*} [CommRing R] {a n : ℕ} (w : Matrix (Fin a) (Fin 
     simp only [ih, Finset.smul_sum, Matrix.mul_apply, Finset.sum_smul, smul_smul]
     rw [Finset.sum_comm]
     exact Finset.sum_congr rfl fun c _ => Finset.sum_congr rfl fun d _ => by rw [mul_comm]
-
 
 open GlobalTheory.GaugeEx in
 theorem unitri_haar : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (n : ℕ) (J : Matrix (Fin n) (Fin n) E), IsHermND σ J → ∀ (v : HeightOneSpectrum (𝓞 F)), ∀ (a : ℕ) (u : Matrix (Fin a) (Fin a) (Fv F v ⊗[F] E)), (∀ i, u i i = 1) → (∀ i j, j < i → u i j = 0) → (∀ μ : Measure (Fin a → Fin n → Fv F v ⊗[F] E), μ.IsAddHaarMeasure → μ.map (fun X b => ∑ c, u c b • X c) = μ) ∧ ∀ ν : Measure (HermR (Fv F v) σ a), ν.IsAddHaarMeasure → ∀ φ : HermR (Fv F v) σ a → HermR (Fv F v) σ a, (∀ S, (φ S : Matrix (Fin a) (Fin a) (Fv F v ⊗[F] E)) = (u.map (sigR (Fv F v) σ)).transpose * (S : Matrix (Fin a) (Fin a) (Fv F v ⊗[F] E)) * u) → ν.map φ = ν := by

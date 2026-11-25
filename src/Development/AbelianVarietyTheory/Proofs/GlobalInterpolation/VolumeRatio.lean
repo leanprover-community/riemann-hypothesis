@@ -133,7 +133,7 @@ namespace GlobalTheory.Proof.cm_localDensities_productFormula
 
 theorem densityProduct : GlobalTheory.IndefiniteRowSideFullHecke.LocalDualIndex.DensityProduct :=
   fun F E _ _ _ _ _ _ σ h₁ h₂ h₃ =>
-    ⟨GlobalTheory.T.existsUnique_isStandardAdeleChar_unramifiedCM_base F E σ h₁ h₂ h₃, _root_.GlobalTheory.StdDual.dualV_eq_inv_different_cm F E σ h₁ h₂ h₃, _root_.GlobalTheory.LocalDifferentProduct.prod_normDifferentV F E σ h₁ h₂ h₃,
+    ⟨GlobalTheory.StdCharUnique.existsUnique_isStdChar_cm F E σ h₁ h₂ h₃, _root_.GlobalTheory.StdDual.dualV_eq_inv_different_cm F E σ h₁ h₂ h₃, _root_.GlobalTheory.LocalDifferentProduct.prod_normDifferentV F E σ h₁ h₂ h₃,
       _root_.GlobalTheory.AdelicCharDilate.exists_eq_std_dilate F E σ h₁ h₂ h₃, _root_.GlobalTheory.EtaEulerProduct.hasProd_eulerInv_inv F E σ h₁ h₂ h₃, _root_.GlobalTheory.LocalDensityProduct.density_product F E σ h₁ h₂ h₃⟩
 
 end GlobalTheory.Proof.cm_localDensities_productFormula
@@ -592,7 +592,6 @@ theorem hasComplement_iff (W : HSpace E) (x : W.V) (M' P' Q' : ℕ) :
     exact ⟨L, W', ι, (selfDual_iff W L).1 hL, hx, (ofKind_iff _ _ _ _).1 hk, hi, hr, hm, hs⟩
   · rintro ⟨L, W', ι, hL, hx, hk, hi, hr, hm, hs⟩
     exact ⟨L, (selfDual_iff W L).2 hL, hx, hs, W', ι, (ofKind_iff _ _ _ _).2 hk, hi, hr, hm⟩
-
 
 omit [NumberField E] [StarRing E] in
 theorem forall_step_iff (P Q : ℕ) (C : E → ℕ → ℕ → Prop) :
@@ -1327,16 +1326,6 @@ open scoped ENNReal TensorProduct
 
 namespace GlobalTheory.SelfDualProduct
 
-theorem exists_test (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V] :
-    ∃ Φ : SchwartzMap V ℂ, HasCompactSupport Φ ∧ Φ 0 = 1 := by
-  let b : ContDiffBump (0 : V) := ⟨1, 2, one_pos, one_lt_two⟩
-  have h1 : HasCompactSupport (fun x => ((b x : ℝ) : ℂ)) :=
-    b.hasCompactSupport.comp_left (g := fun r : ℝ => (r : ℂ)) (by simp)
-  refine ⟨h1.toSchwartzMap (Complex.ofRealCLM.contDiff.comp b.contDiff), h1, ?_⟩
-  change ((b 0 : ℝ) : ℂ) = 1
-  rw [b.one_of_mem_closedBall (Metric.mem_closedBall_self zero_le_one)]
-  simp
-
 theorem integral_prod_exp {T V : Type} [Fintype T] [MeasurableSpace V] (ε : ℝ) (β : V → V → ℝ)
     (μ₀ : Measure V) [SigmaFinite μ₀] (f : V → ℂ) (y : T → V) :
     ∫ x : T → V, (∏ ρ, f (x ρ)) *
@@ -1368,7 +1357,7 @@ theorem map_eq_pi : ∀ (T V W : Type) [Fintype T] [NormedAddCommGroup V] [Norme
       (c : ℂ) * ∏ ρ, ActionCoordinates.fourierT ε β μ₀ f (e y ρ) := fun f y => by
     rw [← integral_prod_exp, ← hint]
     simp only [hχ]
-  obtain ⟨φ, hφs, hφ0⟩ := exists_test V
+  obtain ⟨φ, hφs, hφ0⟩ := GlobalTheory.RealPlaceCompare.exists_test V
   obtain ⟨-, hI, hinv⟩ := hsd φ
   have hc1 : Continuous fun x : T → V => ∏ ρ, φ (x ρ) :=
     by fun_prop
@@ -1760,7 +1749,6 @@ theorem tsum_coords (D : D7) (W : HSpace D.host.E) (s : Bool) (β : D.host.F)
       cases s <;> simp at h
   rw [← eq.tsum_eq]; rfl
 
-
 set_option maxHeartbeats 1000000 in
 theorem ratio_of_setting (hL5 : PlaceSplittingTypes.SelfDualLatticeDensity) (hR3 : ActionCoordinates.RealPlaceMeasures)
     (hEu : LocalAdditiveCharacterDual.EulerProductOfDensities)
@@ -1818,7 +1806,7 @@ theorem ratio_of_setting (hL5 : PlaceSplittingTypes.SelfDualLatticeDensity) (hR3
   let Φf : (Fin 1 → Fin W.rank → Af D.host.F ⊗[D.host.F] D.host.E) → ℂ :=
     {X | X 0 ∈ latHat D.host.F D.host.E (GlobalTheory.AdelicU.frameLat W : Set (Fin W.rank → D.host.E))}.indicator 1
   have hpure : IsPureFin b Φf Φv :=
-    ⟨GlobalTheory.T.isSchwartzBruhat_indicator_localLatticeCompletion _ _ _ _ hlat, (_root_.GlobalTheory.AdelicU.Cofinite.eventually_latLoc_eq_latV _ _ _ _ b _ hlat).mono fun v hv => by simp only [Φv, hv],
+    ⟨GlobalTheory.LatticeIndicator.isSB_indicator_latLoc _ _ _ _ hlat, (_root_.GlobalTheory.AdelicU.Cofinite.eventually_latLoc_eq_latV _ _ _ _ b _ hlat).mono fun v hv => by simp only [Φv, hv],
       _root_.GlobalTheory.AdelicU.indicator_latHat_eq_finprod _ _ _ _ hlat⟩
   have hsw := hSW _ _ _ hσ _ _ hJ hr β hβ0 _ b (LatticeTensorUnfolding.latTensor (L0c D W) Φi) Φi Φf Φv hΦi hpure
     (fun v Y => by by_cases h : Y 0 ∈ GlobalTheory.AdelicU.latLoc D.host.F (GlobalTheory.AdelicU.frameLat W) v <;> simp [Φv, h])

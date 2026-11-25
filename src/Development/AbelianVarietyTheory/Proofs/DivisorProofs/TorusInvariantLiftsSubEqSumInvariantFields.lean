@@ -60,11 +60,6 @@ open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.LogKSChart GlobalTheory.Heat
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.exists_invariant_field_coefficients_of_linear_vectorField : ∀ (R : Type) [CommRing R] (G : Over (Sp R)) [GrpObj G] [IsCommMonObj G], Smooth G.hom →
-    ∀ (n : ℕ) (v : Module.Basis (Fin n) R (TanM (𝟙 (Sp R)) G)) (dd : Fin n → Fld G.left), (∀ a, IsInv G (v a) (dd a)) →
-    ∀ (W : G.left.Opens) (δ : Fld G.left), IsField W δ → (∀ O, O ≤ W → ∀ r, δ O (constFn G.hom O r) = 0) →
-    ∃ c : Fin n → Γ(G.left, W), ∀ O, O ≤ W → ∀ f, δ O f = ∑ a, rsT (c a) O * dd a O f := by
-  first | exact @GlobalTheory.VertCoeffRing.exists_coeff
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsInvariantFieldCoefficientsOfLinearVectorFiStatement =====
@@ -84,12 +79,6 @@ open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.LogKSChart GlobalTheory.Heat
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.raynaudTorusWeight_zero_invariantField_coeffs : ∀ (R : Type) [CommRing R] [IsDomain R] (Q : DegPre R) (O : Type) [CommRing O] [StarRing O] [Module O Q.X] (oa : Q.OAct O) (Y : Ray oa) (n : ℕ) (v : Module.Basis (Fin n) R (TanM (𝟙 (Sp R)) Y.H)) (dd : Fin n → Fld Y.H.left), (∀ a, IsInv Y.H (v a) (dd a)) →
-    ∀ (V : Q.P.A.left.Opens) (δ : Fld Y.H.left), IsField (Y.q.left ⁻¹ᵁ V) δ → (∀ O, O ≤ Y.q.left ⁻¹ᵁ V → ∀ r, δ O (constFn Y.H.hom O r) = 0) →
-    (∀ (α : Q.X) (V' : Q.P.A.left.Opens), V' ≤ V → ∀ f, IsWt Y α (Y.q.left ⁻¹ᵁ V') f → IsWt Y α (Y.q.left ⁻¹ᵁ V') (δ _ f)) →
-    ∀ c : Fin n → Γ(Y.H.left, Y.q.left ⁻¹ᵁ V), (∀ O, O ≤ Y.q.left ⁻¹ᵁ V → ∀ f, δ O f = ∑ a, rsT (c a) O * dd a O f) →
-    ∀ a, IsWt Y 0 _ (c a) := by
-  first | exact @GlobalTheory.Heat.CoeffWt.isWt_coeff
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.RaynaudTorusWeightZeroInvariantFieldCoeffsStatement =====
@@ -132,8 +121,8 @@ theorem lifts_sub_eq_sum_invFields : ∀ (R : Type) [CommRing R] [IsDomain R] (Q
     · simp only [δ, hd.1.2.2 W W' h hW, hd'.1.2.2 W W' h hW, map_sub]
   have hC : ∀ O, O ≤ Y.q.left ⁻¹ᵁ V → ∀ r, δ O (constFn Y.H.hom O r) = 0 := fun O hO r => by
     simp only [δ, hd.2 O hO r, hd'.2 O hO r, sub_self]
-  obtain ⟨c, hc⟩ := GlobalTheory.T.exists_invariant_field_coefficients_of_linear_vectorField R Y.H hsm n v dd hdd _ δ hF hC
-  refine ⟨c, GlobalTheory.T.raynaudTorusWeight_zero_invariantField_coeffs R Q O oa Y n v dd hdd V δ hF hC
+  obtain ⟨c, hc⟩ := GlobalTheory.VertCoeffRing.exists_coeff R Y.H hsm n v dd hdd _ δ hF hC
+  refine ⟨c, GlobalTheory.Heat.CoeffWt.isWt_coeff R Q O oa Y n v dd hdd V δ hF hC
     (fun α V' hV' f hf => isWt_sub Y α _ _ _ (hw α V' hV' f hf) (hw' α V' hV' f hf)) c hc, fun O' hO' f => hc O' hO' f⟩
 
 end GlobalTheory.VertCoeff

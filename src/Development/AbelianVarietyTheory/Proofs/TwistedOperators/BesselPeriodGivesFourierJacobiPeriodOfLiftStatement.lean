@@ -364,8 +364,6 @@ noncomputable section
 
 namespace GlobalTheory.KerContFB
 
-
-
 theorem kerFB_continuous : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (σ : ℕ) (J : JacL D (σ + 1)) (B : BesL D σ) (s : StFB ψ J B) (vL : VolM D B.L.rank J.W₀.rank) (χ χz : (AE D)ˣ →* Circle) (omz : Om J.W₀ B.L), IsWeilDatumO ψ J.W₀ B.L χ χz omz → ∀ (Φ₀ : WO J.W₀ B.L → ℂ) (Φ : WO J.W B.V → ℂ), IsThetaFunO ψ J.W₀ B.L Φ₀ → IsThetaFunO ψ J.W B.V Φ → Continuous fun q : GA D B.V × GA D J.W₀ × GA D B.A => contractT B.o J.W₀ vL.μ vL.𝓕 (s.om₀ (q.2.1, B.o.emb (q.2.2, 1)) (flFB s (s.om (1, q.1) Φ))) (omz (q.2.1, 1) Φ₀) 0 := by
   intro D ψ σ J B s vL χ χz omz homz Φ₀ Φ hΦ₀ hΦ
   obtain ⟨x, hx, hxe⟩ := GlobalTheory.JacMean.xLast_lin B.d B.o B.line
@@ -373,13 +371,13 @@ theorem kerFB_continuous : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (σ : �
     have h1 : ‖ψ t‖ = 1 := s.weil₀.std.1.2.1 t
     rw [Complex.star_def, Complex.mul_conj, Complex.normSq_eq_norm_sq, h1]; simp
   have hpsi : psiBes ψ B.d 1 (vecB B.o B.ζ) 1 = 1 :=
-    (GlobalTheory.T.flag_unipotent_bessel_character_laws D ψ s.weil.std.1 B.V B.V₀ B.A B.L σ B.d B.o B.ζ 1).2.1 _ 1 (one_mem _)
+    (GlobalTheory.MixPer.charLaws D ψ s.weil.std.1 B.V B.V₀ B.A B.L σ B.d B.o B.ζ 1).2.1 _ 1 (one_mem _)
   have hfl : ∀ Ψ, flFB s Ψ = flatAt ψ J.d B.d s.vS.μ s.vS.𝓕 s.vT.μ s.vT.𝓕 s.vU.ν (rat x) 0 Ψ := fun Ψ => by
     simp only [flFB, flatS, hxe]
   have heq : ∀ h h₀ h₁, s.om₀ (h₀, B.o.emb (h₁, 1)) (flFB s (s.om (1, h) Φ)) =
       flatAt ψ J.d B.d s.vS.μ s.vS.𝓕 s.vT.μ s.vT.𝓕 s.vU.ν (rat x) 0 (s.om (J.d.emb0 h₀, embA B.d B.o h₁ * h) Φ) := by
     intro h h₀ h₁
-    have e := GlobalTheory.T.jacobiToBesselFlatMap_equivariant D ψ σ J B s (s.om (1, h) Φ) (s.weil.om_pres _ Φ hΦ) h₀ 1 (one_mem _) h₁
+    have e := GlobalTheory.AscFlatEquiFB.flFB_equivariant D ψ σ J B s (s.om (1, h) Φ) (s.weil.om_pres _ Φ hΦ) h₀ 1 (one_mem _) h₁
     rw [hpsi, star_one, one_smul, one_mul] at e
     rw [← e, hfl]
     congr 1
@@ -394,7 +392,7 @@ theorem kerFB_continuous : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (σ : �
       (flFB s (s.om (1, q.1) Φ))) (omz (q.2.1, 1) Φ₀) 0 = ∫ w in vL.𝓕, K w q ∂vL.μ := fun q => by
     simp only [contractT, thPair, OrthDec.resT_symm_apply, Matrix.mul_zero, zero_add, hK]
   have hc : Continuous (Function.uncurry K) := by
-    have h1 := GlobalTheory.T.continuous_flatMap_weilRepresentation_joint D ψ J.W J.W₀ B.V B.V₀ (σ + 1) σ J.d B.d s.vS s.vT s.χV s.χW s.om s.weil s.vU x hx Φ hΦ
+    have h1 := GlobalTheory.FlatCont.flatAt_om_continuous D ψ J.W J.W₀ B.V B.V₀ (σ + 1) σ J.d B.d s.vS s.vT s.χV s.χW s.om s.weil s.vU x hx Φ hΦ
     have hJ := GlobalTheory.T.weilDatum_theta_jointlyContinuous D ψ _ _ χ χz omz homz Φ₀ hΦ₀
     have hK' : Function.uncurry K = fun p : Mx D B.L.rank J.W₀.rank × (GA D B.V × GA D J.W₀ × GA D B.A) =>
         flatAt ψ J.d B.d s.vS.μ s.vS.𝓕 s.vT.μ s.vT.𝓕 s.vU.ν (rat x) 0
@@ -895,8 +893,6 @@ open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Asc
 
-theorem _root_.GlobalTheory.T.jacobiActionUnipotent_laws : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (σ : ℕ) (J : JacL D (σ + 1)) (B : BesL D σ) (y : WO J.W₀ B.L → ℂ), GlobalTheory.Unf.FB.Quasi ψ J.W₀ B.L y → Continuous (fun n => star (jacS ψ J.d B.L (zEll B.L (σ + 1) B.ζ) n y 0) * star (psiFlag ψ J.d n)) ∧ (∃ M : ℝ, (∀ w, ‖y w‖ ≤ M) ∧ ∀ n, ‖(fun n => star (jacS ψ J.d B.L (zEll B.L (σ + 1) B.ζ) n y 0) * star (psiFlag ψ J.d n)) n‖ ≤ M) ∧ (∀ γ ∈ flagN J.d, γ ∈ GQ J.W → ∀ n ∈ flagN J.d, (fun n => star (jacS ψ J.d B.L (zEll B.L (σ + 1) B.ζ) n y 0) * star (psiFlag ψ J.d n)) (γ * n) = (fun n => star (jacS ψ J.d B.L (zEll B.L (σ + 1) B.ζ) n y 0) * star (psiFlag ψ J.d n)) n) ∧ (∀ c, ∀ n ∈ flagN J.d, (fun n => star (jacS ψ J.d B.L (zEll B.L (σ + 1) B.ζ) n y 0) * star (psiFlag ψ J.d n)) (J.d.nC c * n) = star (ψ (J.d.qS B.L c (zEll B.L (σ + 1) B.ζ))) * (fun n => star (jacS ψ J.d B.L (zEll B.L (σ + 1) B.ζ) n y 0) * star (psiFlag ψ J.d n)) n) ∧ (∀ n ∈ flagN J.d, ∀ u ∈ UX D (σ + 1), (fun n => star (jacS ψ J.d B.L (zEll B.L (σ + 1) B.ζ) n y 0) * star (psiFlag ψ J.d n)) (n * J.d.levi u) = (fun n => star (jacS ψ J.d B.L (zEll B.L (σ + 1) B.ζ) n y 0) * star (psiFlag ψ J.d n)) n * star (psiUni ψ u)) ∧ ∀ b, ∀ u ∈ UX D (σ + 1), (fun n => star (jacS ψ J.d B.L (zEll B.L (σ + 1) B.ζ) n y 0) * star (psiFlag ψ J.d n)) (J.d.nB b * J.d.levi u) = star (psiUni ψ u) * star (y (zEll B.L (σ + 1) B.ζ ⬝ b)) := by
-  first | exact @GlobalTheory.Unf.FB.ThLawsL.th_laws
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.JacobiActionUnipotentLawsStatement =====
@@ -915,11 +911,10 @@ open GlobalTheory.Unf.FB
 
 noncomputable section
 
-
 open GlobalTheory.ThLaws in
 theorem GlobalTheory.th_isTh_lev : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (σ : ℕ) (J : JacL D (σ + 1)) (B : BesL D σ) (y : WO J.W₀ B.L → ℂ), GlobalTheory.Unf.FB.Quasi ψ J.W₀ B.L y → ∀ x₀ : Matrix (Fin B.V.rank) (Fin (σ + 1)) D.host.E, (rat x₀ : Mx D B.V.rank (σ + 1)) = xLast B.d (vecB B.o B.ζ) → IsTh ψ J.d B.V x₀ (fun n => star (jacS ψ J.d B.L (zEll B.L (σ + 1) B.ζ) n y 0) * star (psiFlag ψ J.d n)) := by
   intro D ψ hψ σ J B y hy x₀ hx₀
-  obtain ⟨hcont, -, hleft, hcen, -, -⟩ := GlobalTheory.T.jacobiActionUnipotent_laws D ψ hψ σ J B y hy
+  obtain ⟨hcont, -, hleft, hcen, -, -⟩ := GlobalTheory.Unf.FB.ThLawsL.th_laws D ψ hψ σ J B y hy
   beta_reduce at hcen hleft
   obtain ⟨x₁, hx₁, -, -, hlast, hq⟩ := GlobalTheory.T.besselBasePoint_isUnfoldingBasePoint_spec D σ B
   have e : x₁ = x₀ := rat_injective (hx₁.trans hx₀.symm)
@@ -1084,8 +1079,6 @@ end GlobalTheory.Asc.HeisL
 namespace GlobalTheory.Asc
 
 open GlobalTheory.Asc.HeisL GlobalTheory.Unf.FB
-
-
 
 theorem heis_baseL : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (σ : ℕ) (S : HSp D) (B : BesL D σ) (vB : VolM D (σ + 1) S.rank) (vT : VolM D σ S.rank) (vL : VolM D B.L.rank S.rank) (f : WO S B.V → ℂ) (y : WO S B.L → ℂ), GlobalTheory.Unf.FB.Quasi ψ S B.V f → GlobalTheory.Unf.FB.Quasi ψ S B.L y → (∫ b in vB.𝓕, f (xLast B.d (vecB B.o B.ζ) ⬝ b) * star (y (zEll B.L (σ + 1) B.ζ ⬝ b)) ∂vB.μ = contractT B.o S vL.μ vL.𝓕 (B.d.mixT S ψ vT.μ vT.𝓕 f 0) y 0) ∧ ∫⁻ v in vL.𝓕, ‖B.d.mixT S ψ vT.μ vT.𝓕 f 0 ((B.o.resT S).symm (0, v))‖ₑ ∂vL.μ ≤ ∫⁻ b in vB.𝓕, ‖f (xLast B.d (vecB B.o B.ζ) ⬝ b)‖ₑ ∂vB.μ := by
   intro D ψ hψ σ S B vB vT vL f y hf hy
@@ -1524,7 +1517,7 @@ theorem gen_is (s : StFB ψ J B) (vb : VolM D (σ + 1) J.W₀.rank) {x₀ : Matr
     exact (hφ.continuous.comp continuous_fst).mul
       ((((hψ.1.comp ((GlobalTheory.Unf.FB.ThLaws.continuous_cenS _ _ _).comp hn)).mul hj).star).mul
         ((GlobalTheory.Unf.FB.ThLaws.continuous_psiFlag hψ.1 _).comp hn).star)
-  · obtain ⟨C, A, hC⟩ := GlobalTheory.T.weilRepresentation_thetaFunction_sup_le_quotientHeight D ψ _ _ χ χz omz hz Φ₀ h₀
+  · obtain ⟨C, A, hC⟩ := GlobalTheory.SupThetaGrowth.om_sup_quotHeight D ψ _ _ χ χz omz hz Φ₀ h₀
     refine ⟨fun y => ‖φ y‖ * (C * quotHeight J.W₀ y ^ A),
       (hφ.continuous.norm.mul (continuous_const.mul ((continuous_quotHeight _).pow A))).measurable, fun y n _ => ?_,
       fun k => ?_⟩
@@ -1587,7 +1580,7 @@ theorem unf_bes (s : StFB ψ J B) (vL : VolM D B.L.rank J.W₀.rank) (omz : Om J
     (Φ₀ : WO J.W₀ B.L → ℂ) (G : GA D B.V → ℂ) {Φ : WO J.W B.V → ℂ} (hΦ : IsThetaFunO ψ J.W B.V Φ) (h : GA D B.V)
     (h₁ : GA D B.A) (n : flagN B.d) : unf s vL omz φ Φ₀ G Φ (n.1 * embA B.d B.o h₁ * h) =
       besFun ψ 1 B.d B.o B.ζ (handP s vL omz φ Φ₀ (flFB s (s.om (1, h) Φ))) (rTrans h G) h₁ n := by
-  have c := GlobalTheory.T.jacobiToBesselFlatMap_equivariant D ψ σ J B s _ (s.weil.om_pres (1, h) _ hΦ) 1 n.1 n.2 h₁
+  have c := GlobalTheory.AscFlatEquiFB.flFB_equivariant D ψ σ J B s _ (s.weil.om_pres (1, h) _ hΦ) 1 n.1 n.2 h₁
   rw [← om_mul_apply, map_one, one_mul] at c
   unfold unf besFun rTrans
   rw [c, handP_smul_om]
@@ -1595,12 +1588,10 @@ theorem unf_bes (s : StFB ψ J B) (vL : VolM D B.L.rank J.W₀.rank) (omz : Om J
 
 theorem jacobiToBesselFlatMap_core_translate (s : StFB ψ J B) {Φ : WO J.W B.V → ℂ} (hΦ : IsThetaFunO ψ J.W B.V Φ) (h₀ : GA D J.W₀) (h : GA D B.V) :
     flFB s (s.om (J.d.emb0 h₀, h) Φ) = s.om₀ (h₀, B.o.emb (1, 1)) (flFB s (s.om (1, h) Φ)) := by
-  have c := GlobalTheory.T.jacobiToBesselFlatMap_equivariant D ψ σ J B s _ (s.weil.om_pres (1, h) _ hΦ) h₀ 1 (one_mem _) 1
+  have c := GlobalTheory.AscFlatEquiFB.flFB_equivariant D ψ σ J B s _ (s.weil.om_pres (1, h) _ hΦ) h₀ 1 (one_mem _) 1
   rw [← om_mul_apply, map_one, mul_one, mul_one, one_mul,
-    (GlobalTheory.T.flag_unipotent_bessel_character_laws D ψ s.weil.std.1 B.V B.V₀ B.A B.L σ B.d B.o B.ζ 1).2.1 _ 1 (one_mem _), star_one, one_smul] at c
+    (GlobalTheory.MixPer.charLaws D ψ s.weil.std.1 B.V B.V₀ B.A B.L σ B.d B.o B.ζ 1).2.1 _ 1 (one_mem _), star_one, one_smul] at c
   exact c
-
-
 
 theorem unf_measurable (s : StFB ψ J B) (vL : VolM D B.L.rank J.W₀.rank)
     {x₀ : Matrix (Fin B.V.rank) (Fin (σ + 1)) D.host.E} (hx : (rat x₀ : Mx D B.V.rank (σ + 1)) = xLast B.d (vecB B.o B.ζ))
@@ -1609,11 +1600,11 @@ theorem unf_measurable (s : StFB ψ J B) (vL : VolM D B.L.rank J.W₀.rank)
     (hφ : Continuous φ) {Φ₀ : WO J.W₀ B.L → ℂ} (h₀ : IsThetaFunO ψ J.W₀ B.L Φ₀) {G : GA D B.V → ℂ} (hG : Continuous G)
     {Φ : WO J.W B.V → ℂ} (hΦ : IsThetaFunO ψ J.W B.V Φ) : Measurable (unf s vL omz φ Φ₀ G Φ) := by
   obtain ⟨b1, b2, -⟩ := GlobalTheory.Mem.AdelicGroupTop.adelic_unitary_topology D J.W₀
-  obtain ⟨vU⟩ := (GlobalTheory.T.unfoldingLevelsAndSteps_haarMeasures_exist D).2.2.2 B.L.rank
+  obtain ⟨vU⟩ := (GlobalTheory.Unf.VolExist.measures_exist D).2.2.2 B.L.rank
   obtain ⟨sL, -⟩ := GlobalTheory.Unf.sFinite_vol D B.L.rank J.W₀.rank vL vU
   haveI := J.v0.haar
   haveI : BorelSpace (Mx D B.L.rank J.W₀.rank) := ⟨rfl⟩
-  have hfl := GlobalTheory.T.continuous_flatMap_weilRepresentation_joint D ψ J.W J.W₀ B.V B.V₀ (σ + 1) σ J.d B.d s.vS s.vT s.χV s.χW s.om s.weil s.vU x₀ hli Φ hΦ
+  have hfl := GlobalTheory.FlatCont.flatAt_om_continuous D ψ J.W J.W₀ B.V B.V₀ (σ + 1) σ J.d B.d s.vS s.vT s.χV s.χW s.om s.weil s.vU x₀ hli Φ hΦ
   rw [hx] at hfl
   let f : (GA D B.V × GA D J.W₀) × Mx D B.L.rank J.W₀.rank →
       (GA D J.W × GA D B.V) × Mx D J.W₀.rank σ × WO J.W₀ B.V₀ :=
@@ -1648,13 +1639,11 @@ theorem unf_measurable (s : StFB ψ J B) (vL : VolM D B.L.rank J.W₀.rank)
   rw [e]
   exact hG.measurable.mul m3.measurable
 
-
-
 theorem vanFB : ∀ D : D7, VanFB D := by
   intro D ψ σ J B s 𝒮 Γ₀ K hL vL χ χz omz hz φ G Φ₀ hφ hG h₀ hGK hvan Φ hΦ𝒮
   have hΦ := hL.theta Φ hΦ𝒮
   obtain ⟨x₀, hx, hb, hR, hy⟩ := GlobalTheory.T.fourierJacobiStep_basePoint_jacobiFunction_unfolded D ψ σ J B s
-  obtain ⟨vb⟩ := (GlobalTheory.T.unfoldingLevelsAndSteps_haarMeasures_exist D).2.2.1 (σ + 1) J.W₀.rank
+  obtain ⟨vb⟩ := (GlobalTheory.Unf.VolExist.measures_exist D).2.2.1 (σ + 1) J.W₀.rank
   have ha : (gen s vb x₀ omz φ Φ₀).Is := gen_is s vb hb (fun y h => (hy y h).1) hz hφ h₀
   have hker : (gen s vb x₀ omz φ Φ₀).ker G Φ = unf s vL omz φ Φ₀ G Φ := by
     funext h
@@ -1667,20 +1656,20 @@ theorem vanFB : ∀ D : D7, VanFB D := by
     exact congrArg (φ y * ·) ((hy _ (quasi_om hz h₀ y)).2 vb vL _ (s.weil.om_pres _ _ hΦ))
   obtain ⟨b1, b2, b3, b4, -⟩ := GlobalTheory.Mem.AdelicGroupTop.adelic_unitary_topology D B.V
   obtain ⟨b1', b2', b3', b4', -⟩ := GlobalTheory.Mem.AdelicGroupTop.adelic_unitary_topology D J.W₀
-  obtain ⟨-, -, hfd⟩ := GlobalTheory.T.rational_unitary_subgroup_countable_discrete_fundDomain D B.V (GQ B.V ⊓ besGrp B.d B.o) inf_le_left
+  obtain ⟨-, -, hfd⟩ := GlobalTheory.RationalSubgroupFund.countable_discrete_exists_fundamentalDomain D B.V (GQ B.V ⊓ besGrp B.d B.o) inf_le_left
   obtain ⟨𝓑, h𝓑⟩ := hfd s.vW.μ s.vW.haar
   have h𝓑' : IsFundamentalDomain (GQ B.V ⊓ Rgrp B.V (rat x₀ : Mx D B.V.rank (σ + 1)) : Subgroup (GA D B.V)) 𝓑 s.vW.μ := by
     rw [hR]; exact h𝓑
   have hU := B.vN.unit
   have hHR : (semiMeas (flagN B.d) (embA B.d B.o) B.vA.μ B.vN.ν).IsHaarMeasure :=
     (GlobalTheory.MixPer.jacGrp_besGrp_haar D B.V B.V₀ B.A B.L σ B.d B.o B.vN.ν B.vN.𝓝 hU).2.2 B.vA.μ B.vA.haar
-  obtain ⟨𝓡, h𝓡, hint⟩ := GlobalTheory.T.semidirect_haar_measure_fundamental_domain D B.V B.A (flagN B.d) (embA B.d B.o) (BesSemi.continuous_embA B.d B.o)
+  obtain ⟨𝓡, h𝓡, hint⟩ := GlobalTheory.Unf.semiFd_iterated D B.V B.A (flagN B.d) (embA B.d B.o) (BesSemi.continuous_embA B.d B.o)
     (GlobalTheory.Mem.TrueRecord.isClosed_NFlag B.V (isIsoSub_e B.d))
     (fun n hn h => by rw [embA_apply]; exact GlobalTheory.MixPer.Decomp.conj_mem B.d hn _)
     (fun n hn n' hn' h h' e => BesSemi.unique B.d B.o hn hn' e) (fun n hn h => BesSemi.rat_iff B.d B.o hn h)
     B.vA B.vN.ν B.vN.𝓝 hU.1 hU.2.1 hHR
   obtain ⟨hsplit, hinv, -⟩ := ((GlobalTheory.T.unitaryAdelic_inf_fin_split_periods_unimodular D B.V).2.2.2.2.2 B.V₀ σ B.d).2 B.A B.L B.o
-  obtain ⟨-, hone, -, -, hdec, -⟩ := GlobalTheory.T.flag_unipotent_bessel_character_laws D ψ s.weil.std.1 B.V B.V₀ B.A B.L σ B.d B.o B.ζ 1
+  obtain ⟨-, hone, -, -, hdec, -⟩ := GlobalTheory.MixPer.charLaws D ψ s.weil.std.1 B.V B.V₀ B.A B.L σ B.d B.o B.ζ 1
   obtain ⟨habs, hcont⟩ := GlobalTheory.T.besselPeriod_handedFunction_converges_continuous D ψ σ J B s vL χ χz omz hz φ G Φ₀ Φ hφ hG h₀ hΦ
   have hmeas := unf_measurable s vL hx hb.1 hz hφ.continuous h₀ hG.continuous hΦ
   have hm : ∀ h : GA D B.V, Measurable fun g : GA D B.V => unf s vL omz φ Φ₀ G Φ (g * h) :=
@@ -1729,8 +1718,8 @@ theorem vanFB : ∀ D : D7, VanFB D := by
     have t := hL.supp Φ hΦ𝒮 h hne
     rwa [← hx, hR] at t
   · intro C hC hCi
-    have t1 := (GlobalTheory.T.adelicStripSet_measurable_read_on_realPart D B.V (σ + 1) x₀ hb C hC hCi).1
-    have t2 := GlobalTheory.T.integral_strip_eq_zero_of_real_modulation_vanishing D ψ J.W J.W₀ B.V (σ + 1) (GA D J.W₀) _ ha G hG Φ hΦ (fun c hc => ?_) 𝓑 h𝓑' C hC hCi
+    have t1 := (GlobalTheory.StripBorel.strip_measurable D B.V (σ + 1) x₀ hb C hC hCi).1
+    have t2 := GlobalTheory.StripVanish.integral_strip_eq_zero D ψ J.W J.W₀ B.V (σ + 1) (GA D J.W₀) _ ha G hG Φ hΦ (fun c hc => ?_) 𝓑 h𝓑' C hC hCi
     · rw [hker] at t2
       rw [← hR]
       exact ⟨t1, t2⟩

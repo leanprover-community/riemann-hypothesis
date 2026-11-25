@@ -573,7 +573,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.FinrankAdjoinVarsFieldStatement =====
@@ -968,7 +967,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Da
   {Ω Ω' : Type} [Field Ω] [Field Ω'] {K K' : Type} [Fintype K] [Fintype K'] {J : K → Type} {J' : K' → Type}
   [∀ k, Fintype (J k)] [∀ k, Fintype (J' k)] {y : (Σ k, J k) → Ω} {y' : (Σ k, J' k) → Ω'}
 
-
 omit [∀ k, Fintype (J k)] [∀ k, Fintype (J' k)] in
 theorem emb_eq (A : HodgeCpt Y S y) (B : HodgeCpt Y S y') (h : B.X ⟶ A.X) (i : Ω →+* Ω')
     (hdom : GlobalTheory.CompanionTheory.Ar.Dominates B.ξ A.ξ h i) (hf : B.f = h ≫ A.f) :
@@ -984,8 +982,6 @@ theorem emb_eq (A : HodgeCpt Y S y) (B : HodgeCpt Y S y') (h : B.X ⟶ A.X) (i :
   refine RingHom.ext fun a => ?_
   exact RingHom.congr_fun e2
     ⟨labelEmb c s a, (Algebra.IsIntegral.isIntegral (R := ℤ) a).map (labelEmb c s).toIntAlgHom⟩
-
-
 
 theorem exists_pull (A : HodgeCpt Y S y) (B : HodgeCpt Y S y') (h : B.X ⟶ A.X) (i : Ω →+* Ω') (x : Sp Ω ⟶ Xo.XF c)
     (hx : A.ξ ≫ A.f = x ≫ Y.j) (hS : ∀ p : ℕ, p.Prime → (p : ℤ) ∣ NumberField.discr E → p ∈ S)
@@ -1039,9 +1035,9 @@ theorem exists_pull (A : HodgeCpt Y S y) (B : HodgeCpt Y S y') (h : B.X ⟶ A.X)
       rw [hf, ← Category.assoc, hdom, Category.assoc, hx, Category.assoc])
     have hc1 : IsIntegrallyClosed (A.X.presheaf.stalk (h p'.1)) := hic ⟨h p'.1, hsp p'⟩
     have hn1 : IsNoetherianRing (A.X.presheaf.stalk (h p'.1)) := noeth_stalk hgen ⟨h p'.1, hsp p'⟩ (hnoeth _)
-    have h1 := GlobalTheory.T.full_torsion_integrally_closed E H D l (KA l) (baseKA l) A.X Ω A.ξ s0 o A.t m0 A.Li A.M (p ^ A.R p) ⟨h p'.1, hsp p'⟩ hgen hN
+    have h1 := GlobalTheory.CompanionTheory.Ar.OmLink.htOm_eq_htLat E H D l (KA l) (baseKA l) A.X Ω A.ξ s0 o A.t m0 A.Li A.M (p ^ A.R p) ⟨h p'.1, hsp p'⟩ hgen hN
       (A.tors p hp) hc1 hn1
-    have h1' := GlobalTheory.T.full_torsion_integrally_closed E H D l (KA l) (baseKA l) B.X Ω' B.ξ s0' o' B.t m0' B.Li B.M (p ^ A.R p) p' hgen' hN
+    have h1' := GlobalTheory.CompanionTheory.Ar.OmLink.htOm_eq_htLat E H D l (KA l) (baseKA l) B.X Ω' B.ξ s0' o' B.t m0' B.Li B.M (p ^ A.R p) p' hgen' hN
       (htors p hp) (hic' _) (noeth_stalk hgen' _ (hnoeth' _))
     have h2 := _root_.GlobalTheory.CompanionTheory.Ar.HTPull.main A.X B.X Ω Ω' A.ξ B.ξ h i A.t.G B.t.G mh.φ A.Li B.Li A.M B.M j hgen hgen' hdom mh.cart hsm hj jd hjd
       (p ^ A.R p) hN p' (hsp p') hc1 hn1 (h1.2.1 hpos) h1.1
@@ -1143,7 +1139,7 @@ theorem exists_root (A : HodgeCpt Y S y) (x : Sp Ω ⟶ Xo.XF c) (hx : A.ξ ≫ 
     (p : ℕ) (hp : p ∈ S) : ∃ ζ : Ω, IsPrimitiveRoot ζ (p ^ A.R p) := by
   obtain ⟨s0, o, ⟨m0⟩⟩ := _root_.GlobalTheory.CompanionTheory.Ar.ObjAt.exists_obj_at E H D l Xo c _ _ Y A.X A.f A.t A.m Ω A.ξ x hx
   let q : Cpt A.ξ := ⟨_, specializes_rfl⟩
-  exact (GlobalTheory.T.full_torsion_integrally_closed E H D l (KA l) (baseKA l) A.X Ω A.ξ s0 o A.t m0 A.Li A.M (p ^ A.R p) q A.tie.gen
+  exact (GlobalTheory.CompanionTheory.Ar.OmLink.htOm_eq_htLat E H D l (KA l) (baseKA l) A.X Ω A.ξ s0 o A.t m0 A.Li A.M (p ^ A.R p) q A.tie.gen
     (pow_pos (A.S_prime p hp).pos _) (A.tors p hp) (A.normal q.1).2
     (HcptPull.noeth_stalk A.tie.gen q ((_root_.GlobalTheory.CompanionTheory.Ar.CoordNoeth.noetherian_of_coordTie A.X Ω A.ξ ℤ _ _ A.tie).1 q))).2.1 hpos
 
@@ -1549,7 +1545,6 @@ theorem nefThreshold_of_gap_one {Ψ : Type} [Fintype Ψ] {N j : ℕ} (mu : Top.W
 
 end GlobalTheory.CompanionTheory.Ar.Cusp.RootNef
 
-
 theorem _root_.GlobalTheory.CompanionTheory.Relay.nefOnFibres_block_xdeg_sums_of_rootLines : Top.Given → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (Xo : ∀ l : Tor.Level H, Moduli D l) (l : Tor.Level H) (c : Coeff l) (Y : Model (Xo l) c (algebraMap (𝓞 c.F) c.F)) (S : Finset ℕ) [Fintype (CMType H)] (M : Top.RootModel (CMType H) (D.p + D.q)) (𝔐 : HodgeCpt Y S M.y) (Fl : 𝔐.Flag) (e : CMType H × Fin (D.p + D.q) → M.Ω), Top.IsGlobal Xo l c Y → 1 ≤ D.p → 1 ≤ D.q → (∀ p ∈ S, HT.HTFree 𝔐 p) → (∀ p : ℕ, p.Prime → p ∉ S → ¬ (p : ℤ) ∣ discr E ∧ 4 * Fintype.card (CMType H) + 2 ≤ p ∧ 2 < p) → Fl.RootLines M.xdeg e → NefOnFibres (mCoordIdeal M.y) (∑ τ, ∑ i ∈ Finset.univ.filter (fun i : Fin (D.p + D.q) => D.p ≤ (i : ℕ)), M.xdeg (τ, i)) ∧ NefOnFibres (mCoordIdeal M.y) (-∑ τ, ∑ i ∈ Finset.univ.filter (fun i : Fin (D.p + D.q) => (i : ℕ) < D.p), M.xdeg (τ, i)) := by
   intro hG E _ _ _ H D Xo l c Y S _ M 𝔐 Fl e hY hp hq hS hS' hR
   obtain ⟨Yl, hg, hYl, -, -, hdom⟩ := hY
@@ -1608,7 +1603,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 open GroundTheory.Heights₂.Heights.LowerBoundFree GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp
 open ReciprocityTheory.AnForm (levi)
 
-
 theorem _root_.GlobalTheory.CompanionTheory.Relay.hodge_comp_cover_cm_signs : Top.Given → Out.WeilSt → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (Xo : ∀ l : Tor.Level H, Moduli D l) (l : Tor.Level H) (c : Coeff l) (Y : Model (Xo l) c (algebraMap (𝓞 c.F) c.F)) (S : Finset ℕ) (Ω : Type) [Field Ω] [CharZero Ω] (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (y : (Σ k, J k) → Ω) (𝔐 : HodgeCpt Y S y) (dg : ℕ) (sm : CMType H → CMType H ⊕ CMType H) (m : ℕ) (s : CMType H → Fin m → 𝔐.Li) (a : K → ℤ) (e₀ : Ω), Top.IsGlobal Xo l c Y → 1 ≤ D.p → 1 ≤ D.q → 𝔐.IsCover dg → (∀ p ∈ S, HT.HTFree 𝔐 p) → (∀ p : ℕ, p.Prime → p ∉ S → ¬ (p : ℤ) ∣ discr E ∧ 4 * Fintype.card (CMType H) + 2 ≤ p ∧ 2 < p) → (sm = Sum.inl ∨ sm = Sum.inr) → (∀ τ, LinearIndependent Ω (s τ) ∧ Submodule.span Ω (Set.range (s τ)) = 𝔐.Vgen (sm τ)) → (Lat.tens (fun τ => detLat (𝔐.V (sm τ)) (s τ)) (fun _ => -1)).IsDegOn Set.univ y a e₀ → NefOnFibres (mCoordIdeal y) a := by
   intro hG hW E _ _ _ H D Xo l c Y S Ω _ _ K _ J _ y 𝔐 dg sm m s a e₀ hY hp hq hcov hS hS' hsm hs hdeg
   have hI : PB.Inputs := hG.2.2.2.2.2.2.2.2.2.1
@@ -1641,7 +1635,7 @@ theorem _root_.GlobalTheory.CompanionTheory.Relay.hodge_comp_cover_cm_signs : To
   have hA : ∃ A e₁, (Lat.tens (fun τ => detLat (𝔐'.V (sm τ)) (Fl.b (sm τ))) fun _ => -1).IsDegOn Set.univ M.y A e₁ ∧
       NefOnFibres (mCoordIdeal M.y) A := by
     have hdet : ∀ σ, detLat (𝔐'.V σ) (Fl.b σ) = Lat.tens (fun k => (𝔐'.V σ).gr (Fl.b σ) k) fun _ => 1 := fun σ =>
-      GlobalTheory.CompanionTheory.Relay.det_lattice_flag_tensor _ _ _ _ _ _ _ (hb₀ σ) (Fl.sub σ)
+      LevelTowerAlt.determinant_lattice_graded_tensor _ _ _ _ _ _ _ (hb₀ σ) (Fl.sub σ)
     simp only [hdet]
     rcases hsm with rfl | rfl
     · have h1 : ∀ τ (k : Fin D.p), HodgeCpt.rootIdx D (τ, Fin.castAdd D.q k) = ⟨.inl τ, k⟩ := fun τ k => by
@@ -1706,12 +1700,11 @@ theorem span_eq_of_card_nef {Ω V : Type} [Field Ω] [AddCommGroup V] [Module Ω
 
 end GlobalTheory.CompanionTheory.Ar.Cusp
 
-
 theorem _root_.GlobalTheory.CompanionTheory.Relay.intersection_degree_upper : Top.Given → Out.WeilSt → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] [IsAbelianGalois ℚ E] (H : Host E) (D : Datum H) (Xo : ∀ l : Tor.Level H, Moduli D l) (l : Tor.Level H) (c : Coeff l) (Y : Model (Xo l) c (algebraMap (𝓞 c.F) c.F)) (II : IntersectionSystem) (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (Ω : Type) [Field Ω] [Algebra ℚ Ω] (W : CMType H → Type) [∀ τ, AddCommGroup (W τ)] [∀ τ, Module Ω (W τ)] (Dc : ComponentData II (CMType H) K J Ω W) (Hd : HodgeData Dc) (S₀ : Finset ℕ) (Or : CptOrigin Y S₀ Dc Hd) (B₁ B : ℕ), admitted Xo l c Y Or B₁ → 4 * Dc.f + 2 ≤ B → NefOnFibres (mCoordIdeal Dc.y) (muTwDeg Hd B) := by
   intro hG hW E _ _ _ _ H D Xo l c Y II K _ J _ Ω _ _ W _ _ Dc Hd S₀ Or B₁ B hA hB
   haveI : CharZero Ω := algebraRat.charZero Ω
   obtain ⟨hY, hgood, hS₀, -, hB₁, hS, -⟩ := hA
-  obtain ⟨v1, v2, v3, v4⟩ := _root_.GlobalTheory.CompanionTheory.Relay.compact_datum_intersection E H D Xo l c Y II K J Ω W Dc Hd S₀ Or B
+  obtain ⟨v1, v2, v3, v4⟩ := _root_.LevelTowerAlt.component_data_height_identity E H D Xo l c Y II K J Ω W Dc Hd S₀ Or B
   let g : Cpt Or.𝔐.ξ := ⟨genPt Or.𝔐.ξ, specializes_rfl⟩
   obtain ⟨ch, hch⟩ := Or.𝔐.tie.cover g
   obtain ⟨m, f, cc, -, -, hsum, hl⟩ := Hd.locally ch hch.1

@@ -150,19 +150,9 @@ private lemma sepU {U : Scheme.{0}} (S : Sieve U) (hS : S ∈ Scheme.etaleTopolo
     have := congrArg Units.val (h V g hg)
     simpa using this)
 
-private lemma res_unitSec {V U : Scheme.{0}} (g : V ⟶ U) (u : (Γ(U, ⊤))ˣ) :
-    Sec.res g (unitSec u) = unitSec (Units.map g.appTop.hom.toMonoidHom u) := by
-  have h := (toSheafify Scheme.etaleTopology (Scheme.Γ ⋙ unitsF)).naturality g.op
-  exact (congrArg (fun m => m.hom (ULift.up (Additive.ofMul u) : ULift (Additive (Γ(U, ⊤))ˣ))) h).symm
-
-private lemma unitSec_mul {U : Scheme.{0}} (u v : (Γ(U, ⊤))ˣ) :
-    unitSec (u * v) = unitSec u + unitSec v :=
-  map_add ((toSheafify Scheme.etaleTopology (Scheme.Γ ⋙ unitsF)).app (op U)).hom
-    (ULift.up (Additive.ofMul u) : ULift (Additive (Γ(U, ⊤))ˣ)) (ULift.up (Additive.ofMul v))
-
 private lemma unitSec_inj {U : Scheme.{0}} (u v : (Γ(U, ⊤))ˣ) (h : unitSec u = unitSec v) : u = v := by
   have h0 : unitSec (u * v⁻¹) = 0 := by
-    have h1 := unitSec_mul (u * v⁻¹) v
+    have h1 := GlobalTheory.EtC.PicSpec.unitSec_mul (u * v⁻¹) v
     rw [inv_mul_cancel_right, h] at h1
     exact (right_eq_add.mp h1)
   obtain ⟨S, hS, hl⟩ := (_root_.GlobalTheory.EtC.toSheafify_loc_bij_lift ℤ (Scheme.Γ ⋙ unitsF)).2.1 U

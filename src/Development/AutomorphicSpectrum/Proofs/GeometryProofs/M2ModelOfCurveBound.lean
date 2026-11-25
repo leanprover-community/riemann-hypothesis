@@ -115,7 +115,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 
 namespace PositivityTheory.HtPt.Cc
 
-
 open GroundTheory.FunctionField in
 def ffCurve (k K : Type) [Field k] [Field K] [Algebra k K] [IsFunctionField k K] : ACurve K where
   I := Place k K
@@ -523,12 +522,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Crv GlobalTheory.CompanionTheory.Ar.Conj
 
-namespace GlobalTheory.CompanionTheory.Ar.EigVal
-
-theorem values_eigen_sheaves : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) (k K : Type) [Field k] [Field K] [Algebra k K] (z : Spec (CommRingCat.of K) ⟶ X) (G : Over X) [GrpObj G] [IsCommMonObj G] (V : Type) [AddCommGroup V] [Module Ω V] (M : LieModel G ξ V) (Vz : Type) [AddCommGroup Vz] [Module K Vz] (Mz : LieModel G z Vz) (h₀ : genPt ξ ⤳ centre z) (O S : Type) [CommRing O] [Fintype S] (act : O → (G ⟶ G)) (r : O →+* Module.End Ω V) (rz : O →+* Module.End K Vz) (σ : S → (O →+* Ω)) (χ : S → (O →+* k)), IsCptGen ξ → Smooth G.hom → (∀ a, IsMonHom (act a)) → M.IsActOf act r → Mz.IsActOf act rz → IsSplit χ → (∀ s a, ValAt ξ z (σ s a) (algebraMap k K (χ s a))) → M.lat ⟨centre z, h₀⟩ = ⨆ s, M.eigLat r (σ s) ⟨centre z, h₀⟩ → ∀ s, Submodule.span K {v | ∃ e ∈ M.eigLat r (σ s) ⟨centre z, h₀⟩, M.ValAt z e (Mz.pt v)} = eigSp rz ((algebraMap k K).comp (χ s)) :=
-  @PositivityTheory.HtPt.Ci.eig_val
-
-end GlobalTheory.CompanionTheory.Ar.EigVal
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.CurveLieEigenDecomposition =====
@@ -1785,7 +1778,6 @@ theorem charZero_of_isArithVar {B : Type} [Fintype B] {ι : B → Type} [∀ k, 
   rw [show (mCoordIdeal y).comap (MvPolynomial.C : ℤ →+* MRing ι) = ⊥ from hh] at h1
   simpa using h1
 
-
 open Module in
 theorem flag_at (E : Type) [Field E] [NumberField E] [CharZero Ω] (hg : IsCptGen ξ)
     {K k : Type} [Field K] [Field k] [Algebra k K] (C : ACurve K) (z : Spec (CommRingCat.of K) ⟶ X) (Y : CurveIn C z)
@@ -1828,13 +1820,12 @@ theorem flag_at (E : Type) [Field E] [NumberField E] [CharZero Ω] (hg : IsCptGe
     hg hsm hz hS hb hfl hL' hcompl hlat
   refine ⟨W, hW0, ?_, hdeg⟩
   rw [hWn]
-  exact _root_.GlobalTheory.CompanionTheory.Ar.EigVal.values_eigen_sheaves X Ω ξ k K z G V M Vz Mz h₀ (𝓞 E) I act.act r rz σ χ hg hsm act.hom hr hrz hχ hval
+  exact _root_.PositivityTheory.HtPt.Ci.eig_val X Ω ξ k K z G V M Vz Mz h₀ (𝓞 E) I act.act r rz σ χ hg hsm act.hom hr hrz hχ hval
     (hsum _ hz) s₀
 
 end GlobalTheory.CompanionTheory.Ar.Conj.ModelNefness
 
 namespace GlobalTheory.CompanionTheory.Ar.Conj
-
 
 open ModelNefness GlobalTheory.CompanionTheory.Ar.Top in
 theorem m2Model_of_m2Curve : CurveSemiAbelianConjecture → RootLineDeRhamModel := by

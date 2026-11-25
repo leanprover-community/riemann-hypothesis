@@ -141,7 +141,6 @@ theorem memLp_mul_right (B : RowsAut) (f : B.I.GA → ℂ) (hf : ∀ γ ∈ B.I.
   have h := rightReg_ae B f hf (hm.toLp f) hm.coeFn_toLp g
   exact (Lp.memLp (B.R g (hm.toLp f))).ae_eq h
 
-
 open Classical in
 theorem mult_props {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar}
     (θ : D.what₂.Tau → (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ))
@@ -178,7 +177,6 @@ private lemma star_zero_L2 (B : RowsAut) : (star (0 : B.I.L2 B.μf B.fund)) = 0 
 end GlobalTheory.RowEvalHH
 
 namespace GlobalTheory.RowEvalHH
-
 
 open Classical in
 theorem star_dite_mul_right (B : RowsAut) (f f' : B.I.GA → ℂ) (G : B.I.GA)
@@ -408,7 +406,6 @@ theorem mult_lev {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} {M : DSModel 
     ring
 
 end GlobalTheory.RowEvalHH.LevelFix
-
 
 open GlobalTheory.RowEvalHH GlobalTheory.RowEvalHH.LevelFix in
 theorem GlobalTheory.RowEvalHH.Re_evF : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A) (X : Formalism.L2.SG.HidaSetting.HidaSetting D) (h : X.B.I = Formalism.L2.SG.InstExistsPf.instOf D), R.toLevCh.Is A.μ0 → R.IsGrp F → R.IsModels → HostHyp D → (∀ x : X.B.I.E, HEq (X.ιE x) x) → ∀ (t : GA D (Yc D 0)) (c : ∀ τ, (MP R).H τ ≃ₗᵢ⋆[ℂ] X.B.H (X.pl.symm τ)), t ∈ GfC (Yc D 0) → LevelMatchA R F X h t → ∀ S ∈ EP R F, ∀ y : ∀ τ, ↥(GlobalTheory.RowEvalHH.Wsub R X c τ), X.B.Re (GlobalTheory.RowEvalHH.evF R X h t c S y) = GlobalTheory.RowEvalHH.evF R X h t c S y := by
@@ -949,7 +946,7 @@ theorem GlobalTheory.RowEvalHH.conj_eval_mem_HH : ∀ {D : D7} {G : Type} [Group
     funext τ
     apply Subtype.ext
     exact (c τ).symm_apply_apply (v₀ τ)
-  obtain ⟨c', -, hnorm⟩ := GlobalTheory.T.translatedRowEvaluation_squareIntegrable_norm R F X h hLev hGrp hMod t ht
+  obtain ⟨c', -, hnorm⟩ := GlobalTheory.EvalNormTransfer.evalTranslate_norm R F X h hLev hGrp hMod t ht
   have hunit : ∀ τ, ‖((v₀ τ : (MP R).H τ))‖ = 1 := by
     intro τ
     rw [← (c τ).norm_map, hv τ]

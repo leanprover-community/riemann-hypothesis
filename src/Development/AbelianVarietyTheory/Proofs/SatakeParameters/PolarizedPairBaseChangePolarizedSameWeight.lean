@@ -244,7 +244,7 @@ theorem main : AutomorphicFormsFiniteGL → JacquetShalikaRigidity → GelfandKa
     · rw [hL.inf τ]
       exact (GlobalTheory.CuspRep.CG.isRegAlg_iff _).1 hreg _
     refine UpperTheory.polOfSat_of_thetaSat UpperTheory.theta_satake_parameters_inverse hJ hG M a ha P (compNorm M χ') ?_
-    have hsd := GlobalTheory.T.polarizedPair_satakeParameter_conjugatePlace hF E a π χ hpol
+    have hsd := GlobalTheory.PolarizedSat.hasSat_conjPlace hF E a π χ hpol
     have hun := GlobalTheory.CuspRep.UnrSat.eventually_hasSatGL_locRep hF E a π
     filter_upwards [hev, (tendsto_under (K := E) (L := M)).eventually (hsd.and hun)] with w ⟨hu, hval⟩ ⟨hs, B, hB⟩
     have e1 := cPl_under (E := E) w

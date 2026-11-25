@@ -147,13 +147,6 @@ open GlobalTheory
 open Classical
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.exists_linear_uniformisation_base_change_complete_dvr : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (V : Type) [CommRing V] [IsDomain V]
-    [IsLocalRing V], CDvr V → ∀ (t : SAB H (Sp V)) (P : PELUnif (maximalIdeal V) t) (W : Type) [CommRing W] [IsDomain W]
-    [IsLocalRing W], GlobalTheory.Mum.Base W → IsDiscreteValuationRing W → ∀ f : V →+* W, Function.Injective f → IsLocalHom f →
-    ∀ tW : SAB H (Sp W), Nonempty (SABMap tW t (spMap f)) →
-      ∃ (PW : PELUnif (maximalIdeal W) tW) (e : PW.D.toPre.X ≃ₗ[𝓞 E] P.D.toPre.X),
-        ∀ y r, PsiCoord P.D.toPre (e y) r → ∃ u : Wˣ, PsiCoord PW.D.toPre y (u * f r) := by
-  first | exact @GlobalTheory.UnifDvrBaseChange.exists_pelUnif
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLinearUniformisationBaseChangeCompleteDvrStatement =====
@@ -268,13 +261,12 @@ theorem sq_associated {V W : Type} [CommRing V] [CommRing W] [IsDomain W] (f : V
 
 end GlobalTheory.UPoinc.TraitUniq
 
-
 open GlobalTheory.UPoinc.TraitUniq in
 theorem GlobalTheory.UPoinc.uTraitUniqSt_holds : UTraitUniqSt := by
   intro E _ _ _ H Dw l Xo c T T' W _ _ _ f f' fK fK' hB hW hf hf' hfl hfl' hK hK' hy w m m' hw hm hm'
   obtain ⟨tW, ⟨φ⟩, ⟨φ'⟩⟩ := GlobalTheory.T.exists_common_semiAbelian_pullback_two_unitary_traits E H Dw l Xo c T T' W f f' fK fK' hB hW hf hf' hfl hfl' hK hK' hy
-  obtain ⟨PW, e1, he1⟩ := GlobalTheory.T.exists_linear_uniformisation_base_change_complete_dvr E H T.V T.cdvr T.t T.P W hB hW f hf hfl tW ⟨φ⟩
-  obtain ⟨PW', e1', he1'⟩ := GlobalTheory.T.exists_linear_uniformisation_base_change_complete_dvr E H T'.V T'.cdvr T'.t T'.P W hB hW f' hf' hfl' tW ⟨φ'⟩
+  obtain ⟨PW, e1, he1⟩ := GlobalTheory.UnifDvrBaseChange.exists_pelUnif E H T.V T.cdvr T.t T.P W hB hW f hf hfl tW ⟨φ⟩
+  obtain ⟨PW', e1', he1'⟩ := GlobalTheory.UnifDvrBaseChange.exists_pelUnif E H T'.V T'.cdvr T'.t T'.P W hB hW f' hf' hfl' tW ⟨φ'⟩
   obtain ⟨e2, he2⟩ := GlobalTheory.T.linear_uniformisations_character_iso_associated_coords E H W hB tW PW PW'
   let e : T.P.D.toPre.X ≃ₗ[𝓞 E] T'.P.D.toPre.X := e1.symm.trans (e2.trans e1')
 

@@ -159,7 +159,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 open GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.GalOfCusp TensorProduct Module
 open UpperTheory.Gal.crystallineComparison
 
-
 theorem UpperTheory.Gal.crystallineComparison.detCoLift_of :
     CoFacts → WdLift → CoLift := by
   intro hco hwd l _ P ι K LL a ρ S _ _ π h1 h2
@@ -373,7 +372,6 @@ private theorem fa (a : ℕ) (ρ : Representation ↥LL.1 ↥(GK K) (Fin a → �
   rw [GlobalTheory.Pst.LetterDim.finrank_wdSpace l P ι K LL _ ρ hr]
   simp
 
-
 private theorem ringS' (hRing : RingS) (LL : FinExt l) :
     ∃ (S : Type) (_ : CommRing S) (_ : Algebra ℂ S) (π : ↥LL.1 ⊗[ℚ_[l]] Bst P →+* S), Nontrivial S ∧
       (∀ x : ↥LL.1, π (x ⊗ₜ[ℚ_[l]] (1 : Bst P)) = algebraMap ℂ S (ι (x : Om l))) ∧
@@ -388,7 +386,6 @@ private theorem ringS' (hRing : RingS) (LL : FinExt l) :
     rw [← IsScalarTower.algebraMap_apply, ← IsScalarTower.algebraMap_apply]
   exact hRing ℚ_[l] ↥LL.1 ↥(MaximalUnramifiedExtension l) (Bst P) ℂ
     (ι.toRingHom.comp (algebraMap ↥LL.1 (Om l))) (urC ι) hz
-
 
 private theorem core (hCo : CoFacts) (hCore : DetCore) (a : ℕ)
     (ρ : Representation ↥LL.1 ↥(GK K) (Fin a → ↥LL.1)) (ρ' : Representation ↥LL.1 ↥(GK K) (Fin 1 → ↥LL.1))
@@ -435,7 +432,6 @@ private theorem core (hCo : CoFacts) (hCore : DetCore) (a : ℕ)
     rw [e]
     simp [Matrix.mulVec, dotProduct]
 end
-
 
 theorem UpperTheory.Gal.crystallineComparison.detOne_of :
     CoFacts → RingS → DetCore → DetMem → WeilCo → SpanS → CoLift → DetE := by
@@ -564,7 +560,7 @@ theorem UpperTheory.Gal.crystallineComparison.detSpan_of :
       π (co (x : (Fin a → ↥LL.1) ⊗[ℚ_[l]] Bst P) i)) := by
     intro i
     obtain ⟨k, b, x, hx, hsum⟩ := _root_.GlobalTheory.Pst.Dst_spans_tensor_Bst l P AI T K (Fin a → ↥LL.1) (GlobalTheory.PstCoeff.resQ ρ)
-      (GlobalTheory.GalCut.IwaTwist.isSst_resQ P ρ hρ) (Pi.single i 1)
+      (GlobalTheory.GalCut.IwaAll.isSst_resQ P ρ hρ) (Pi.single i 1)
     have hxD : ∀ j, x j ∈ Dpst P ρ := fun j => (mem_Dpst P ρ).mpr ⟨K, fun g _ => by
       have h := (mem_Dst P _).mp (hx j) g
       rwa [GlobalTheory.PstCoeff.stRep_resQ] at h⟩
@@ -725,7 +721,6 @@ private theorem roots_prod {W : Type} [AddCommGroup W] [Module ℂ W] [Module.Fi
   classical
   let b := Module.finBasis ℂ W
   rw [← LinearMap.charpoly_toMatrix M b, ← LinearMap.det_toMatrix b M, Matrix.det_eq_prod_roots_charpoly]
-
 
 theorem detWD_of (hW : WdModel) (hC : CommonModel) (hE : DetE) : DetWD := by
   intro l _ P AI hT ι E Ω _ _ _ _ _ A w h O _ _ _ Bw hj a r c hdet hr hc g hg

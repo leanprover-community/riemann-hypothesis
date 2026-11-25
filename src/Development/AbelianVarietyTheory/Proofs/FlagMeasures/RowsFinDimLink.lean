@@ -40,10 +40,3 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
-
-namespace GlobalTheory
-
-theorem rowsFinDim_link : Formalism.L2.SG.RowsDef.RowsFinDim :=
-  CompanionTheory.D.gk.RF.automorphic_forms_finite_dimensional
-
-end GlobalTheory

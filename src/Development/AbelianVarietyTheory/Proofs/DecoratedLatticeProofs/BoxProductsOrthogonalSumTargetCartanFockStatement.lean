@@ -72,7 +72,6 @@ noncomputable section
 
 namespace GlobalTheory.Core.Rk.SumBox
 
-
 open Matrix ComplexOrder in
 theorem isCartanInv_blockSum {k k₁ k₂ : ℕ} (G : Matrix (Fin k) (Fin k) ℂ) (GW : Matrix (Fin k₁) (Fin k₁) ℂ)
     (GH : Matrix (Fin k₂) (Fin k₂) ℂ) (iW : Matrix (Fin k) (Fin k₁) ℂ) (iH : Matrix (Fin k) (Fin k₂) ℂ)
@@ -154,7 +153,6 @@ theorem isCartanInv_blockSum {k k₁ k₂ : ℕ} (G : Matrix (Fin k) (Fin k) ℂ
     · exact add_pos_of_pos_of_nonneg (hPW.dotProduct_mulVec_pos hw)
         (hPH.posSemidef.dotProduct_mulVec_nonneg _)
 
-
 open Matrix in
 theorem isCartanInv_sumMat : ∀ (D : D7) (B W H : HSp D) (o : OrthDec B W H) (sW : RealMat W) (sH : RealMat H), (∀ τ, IsCartanInv (gramAt D W τ) (sW τ)) → (∀ τ, IsCartanInv (gramAt D H τ) (sH τ)) → ∀ τ, IsCartanInv (gramAt D B τ) (sumMat o sW sH τ) := by
   intro D B W H o sW sH hW hH τ
@@ -228,8 +226,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Core.Rk.Exh GlobalTheory.RegSW
 open GlobalTheory.Core.Rk.SumBox
 
-theorem _root_.GlobalTheory.T.isPolynomialFockThetaVector_orthogonalBoxProduct : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (A B W H : HSp D) (o : OrthDec B W H) (sA : RealMat A) (sW : RealMat W) (sH : RealMat H), IsStdChar D ψ (-1) → IsInfFam θ → ∀ Φ Φ', IsFockVec ψ θ A W sA sW Φ → IsFockVec ψ θ A H sA sH Φ' → IsFockVec ψ θ A B sA (sumMat o sW sH) (o.boxT A Φ Φ') := by
-  first | exact @GlobalTheory.Core.Rk.FockBoxT.isFockVec_boxT
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsPolynomialFockThetaVectorOrthogonalBoxProductStatement =====
@@ -250,8 +246,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Core.Rk.Exh GlobalTheory.RegSW
 open GlobalTheory.Core.Rk.SumBox
 
-theorem _root_.GlobalTheory.T.orthDecSumLattice_selfDual : ∀ (D : D7) (B W H : HSp D) (o : OrthDec B W H) (LW : Lat W) (LH : Lat H), IsSelfDualC W LW → IsSelfDualC H LH → IsSelfDualC B (sumLatO o LW LH) := by
-  first | exact @GlobalTheory.Core.Rk.SumBox.selfDual_sumLatO
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.OrthDecSumLatticeSelfDualStatement =====
@@ -390,8 +384,8 @@ theorem frameLat_selfDual {D : D7} (V : HSp D) : IsSelfDualC V (frameLat V) := b
 theorem box_sum_target : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (A B W H : HSp D) (o : OrthDec B W H) (sA : RealMat A) (sW : RealMat W) (sH : RealMat H), IsStdChar D ψ (-1) → IsInfFam θ → (∀ τ, IsCartanInv (gramAt D W τ) (sW τ)) → (∀ τ, IsCartanInv (gramAt D H τ) (sH τ)) → ∃ (sB : RealMat B) (LB : Lat B), (∀ τ, IsCartanInv (gramAt D B τ) (sB τ)) ∧ IsSelfDualC B LB ∧ (∀ Φ Φ', IsFockVec ψ θ A W sA sW Φ → IsFockVec ψ θ A H sA sH Φ' → IsFockVec ψ θ A B sA sB (o.boxT A Φ Φ')) ∧ ∀ (LA : Lat A) (Sf : Finset (FinPl D)) Φ Φ', IsSphOff ψ A W LA (frameLat W) Sf Φ → IsSphOff ψ A H LA (frameLat H) Sf Φ' → IsSphOff ψ A B LA LB Sf (o.boxT A Φ Φ') := by
   intro D ψ θ A B W H o sA sW sH hψ hθ hW hH
   refine ⟨sumMat o sW sH, sumLatO o (frameLat W) (frameLat H), GlobalTheory.T.isCartanInvolution_orthDecBlockSumRealMat D B W H o sW sH hW hH,
-    GlobalTheory.T.orthDecSumLattice_selfDual D B W H o _ _ (frameLat_selfDual W) (frameLat_selfDual H),
-    fun Φ Φ' h₁ h₂ => GlobalTheory.T.isPolynomialFockThetaVector_orthogonalBoxProduct D ψ θ A B W H o sA sW sH hψ hθ Φ Φ' h₁ h₂,
+    GlobalTheory.Core.Rk.SumBox.selfDual_sumLatO D B W H o _ _ (frameLat_selfDual W) (frameLat_selfDual H),
+    fun Φ Φ' h₁ h₂ => GlobalTheory.Core.Rk.FockBoxT.isFockVec_boxT D ψ θ A B W H o sA sW sH hψ hθ Φ Φ' h₁ h₂,
     fun LA Sf Φ Φ' h₁ h₂ => GlobalTheory.T.spherical_outside_box_product_orthDecSumLattice D ψ A B W H o LA _ _ Sf Φ Φ' h₁ h₂⟩
 
 end GlobalTheory.Core.Rk.SumBox

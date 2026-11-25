@@ -65,15 +65,6 @@ section -- clump:auto
 
 open MvPolynomial GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights
 
-namespace GlobalTheory.CompanionTheory.Ar.PB
-
-theorem toWt_eq_C_mul_antisymDelta :
-    ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) (Q : MvPolynomial (Ψ × Fin N) ℝ) (v : ℝ),
-      (∀ c : Ψ × Fin N → ℝ, eval c Q = v * ∏ τ : Ψ, ∏ i : Fin N, ∏ l ∈ Finset.Ioi i, ∑ m ∈ Finset.Ico i l, c (τ, m)) →
-      toWt Q = C v * antisymDelta Ψ N ∧ 0 < eval (rhoWt Ψ N) (antisymDelta Ψ N) :=
-  @PositivityTheory.Xgp.t_poly_delta
-
-end GlobalTheory.CompanionTheory.Ar.PB
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.MetricProofs.WeightMapAntisymmetricDeltaIdentity =====
@@ -129,7 +120,7 @@ theorem degFl_eq (hIn : Inputs) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] [Nonem
     ∃ (d : ℕ) (S₀ : AnSys (d + 1) (Ψ × Fin N)), d + 1 = antisymDegree Ψ N ∧
       IsUniformised S₀.A S₀.open' N S₀.potH ∧ degFlPoly Ψ N = toWt S₀.degPoly := by
   obtain ⟨d, S₀, Re, hd, hdeg, href, -, ⟨F⟩⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.flagVarieties_flagSys hIn Ψ N hN
-  have hP := (_root_.GlobalTheory.CompanionTheory.Ar.PB.flag_isArithVar_and_image Ψ N hN).1
+  have hP := (_root_.PositivityTheory.Xgp.t_fl_arith Ψ N hN).1
   have hR := _root_.GlobalTheory.CompanionTheory.Ar.PB.re_pot hIn.2.1.1 _ _ _ _ S₀ _ Re
   have hw : ∀ w : Fin (d + 1) → Ψ × Fin N,
       ptsIntegral (PFl Ψ N) (pot fun r => yLineFl Ψ N (w r)) (fun _ => 1) = S₀.degNum w := by
@@ -154,7 +145,7 @@ theorem proportional : Proportional := by
   obtain ⟨d, S₀, hd, hU₀, hfl⟩ := degFl_eq hIn Ψ N hN
   obtain ⟨c, hc, hc'⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.anSys_proportional hIn Ψ N N (d + 1) S₀ le_rfl hd hU₀
   have hΔ : 0 < eval (rhoWt Ψ N) (antisymDelta Ψ N) :=
-    (_root_.GlobalTheory.CompanionTheory.Ar.PB.toWt_eq_C_mul_antisymDelta Ψ N (∏ τ : Ψ, ∏ i : Fin N, ∏ l ∈ Finset.Ioi i, ∑ m ∈ Finset.Ico i l, X (τ, m)) 1
+    (_root_.PositivityTheory.Xgp.t_poly_delta Ψ N (∏ τ : Ψ, ∏ i : Fin N, ∏ l ∈ Finset.Ioi i, ∑ m ∈ Finset.Ico i l, X (τ, m)) 1
       (fun c => by simp [map_prod, map_sum])).2
   have hfl' : degFlPoly Ψ N = C c * antisymDelta Ψ N := hfl.trans hc'
   refine ⟨⟨c, hc, hfl'⟩, fun D S hD hU => ?_⟩

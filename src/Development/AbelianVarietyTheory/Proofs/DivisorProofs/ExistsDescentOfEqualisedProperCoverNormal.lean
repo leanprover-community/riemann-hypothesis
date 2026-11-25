@@ -300,8 +300,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
-theorem _root_.GlobalTheory.T.mem_range_app_of_flat_baseChange_equalised : ∀ (R : Type) [CommRing R] (S Y Z : Scheme.{0}) (π : S ⟶ Sp R) (y : Y ⟶ Sp R) (p : Z ⟶ Y) (q : Z ⟶ S), IsProper π → Flat y → IsPullback p q y π → ∀ r : pullback p p ⟶ pullback π π, r ≫ pullback.fst π π = pullback.fst p p ≫ q → r ≫ pullback.snd π π = pullback.snd p p ≫ q → IsPullback r (pullback.fst p p ≫ p) (pullback.fst π π ≫ π) y → (∀ x : Γ(S, ⊤), (pullback.fst π π).appTop.hom x = (pullback.snd π π).appTop.hom x → x ∈ Set.range π.appTop.hom) → ∀ V : Y.Opens, IsAffineOpen V → ∀ f : Γ(Z, p ⁻¹ᵁ V), (∀ h : pullback.snd p p ⁻¹ᵁ (p ⁻¹ᵁ V) = pullback.fst p p ⁻¹ᵁ (p ⁻¹ᵁ V), ((pullback.fst p p).app _).hom f = ((pullback.snd p p).appLE _ _ h.ge).hom f) → f ∈ Set.range (p.app V).hom := by
-  first | exact @GlobalTheory.Mum.AffDesc.mem_range_app_of_flat
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemRangeAppOfFlatBaseChangeEqualisedStatement =====
@@ -479,7 +477,7 @@ theorem descend_of_equalised_fibreSquare : ∀ (R : Type) [CommRing R] [IsDomain
   have h2 : r ≫ pullback.snd π π = pullback.snd p p ≫ q := pullback.lift_snd _ _ _
   have hP := isPullback_fibreSquare_baseChange R S Y Z π y p q H r h1 h2
   exact GlobalTheory.T.app_injective_descent_of_affineOpens Y Z p fun V hV => ⟨GlobalTheory.T.app_injective_affineOpen_flat_baseChange_proper R S Y Z π y p q hπ hy H hinj V hV,
-    GlobalTheory.T.mem_range_app_of_flat_baseChange_equalised R S Y Z π y p q hπ hy H r h1 h2 hP heq V hV⟩
+    GlobalTheory.Mum.AffDesc.mem_range_app_of_flat R S Y Z π y p q hπ hy H r h1 h2 hP heq V hV⟩
 
 end GlobalTheory
 end -- clump:auto

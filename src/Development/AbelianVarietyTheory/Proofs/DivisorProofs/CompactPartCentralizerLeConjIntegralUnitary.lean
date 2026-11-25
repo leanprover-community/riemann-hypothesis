@@ -61,12 +61,6 @@ open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep 
 open scoped Classical TensorProduct
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-
-theorem _root_.GlobalTheory.T.conj_zpowers_entries_valued_bounded_of_compact_closure : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (w : Pl E) (t g : UL n w),
-    IsCompact (closure (Subgroup.zpowers t : Set (UL n w))) →
-    ∃ B : WithZero (Multiplicative ℤ), ∀ (k : ℤ) (i j : Fin n),
-      Valued.v ((((g⁻¹ * t ^ k * g : UL n w) : GLw n w) : Matrix (Fin n) (Fin n) (w.adicCompletion E)) i j) ≤ B := by
-  first | exact @GlobalTheory.BCT.powers_entries_bdd
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConjZpowersEntriesValuedBoundedOfCompactClosureStatement =====
@@ -232,7 +226,6 @@ open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep 
 open scoped Classical TensorProduct
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-
 theorem _root_.GlobalTheory.T.mem_integral_of_commute_separable_reduction : ∀ (E : Type) [Field E] [NumberField E] (w : Pl E) (n : ℕ) (P₀ : (w.adicCompletionIntegers E)[X]),
     IsCoprime P₀ (derivative P₀) →
     ∀ (A s : Matrix (Fin n) (Fin n) (w.adicCompletion E)), (∀ i j, A i j ∈ w.adicCompletionIntegers E) →
@@ -297,7 +290,7 @@ theorem cptPart_le_conj_KL : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
   rw [Subgroup.closure_le]
   rintro t ⟨ht, hcpt⟩
   have htγ : t * γ = γ * t := by simpa [twCent] using ht
-  obtain ⟨B, hB⟩ := GlobalTheory.T.conj_zpowers_entries_valued_bounded_of_compact_closure E n w t g hcpt
+  obtain ⟨B, hB⟩ := GlobalTheory.BCT.powers_entries_bdd E n w t g hcpt
   set x : UL n w := g⁻¹ * t * g with hx
   have hxA : x * (g⁻¹ * γ * g) = (g⁻¹ * γ * g) * x := by
     simp only [hx, mul_assoc, mul_inv_cancel_left]

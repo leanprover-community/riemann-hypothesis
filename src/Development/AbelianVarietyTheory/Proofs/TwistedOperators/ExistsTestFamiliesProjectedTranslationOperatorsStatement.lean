@@ -76,8 +76,6 @@ open GlobalTheory.TrMult
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open scoped Classical
 
-theorem _root_.GlobalTheory.T.convolution_finiteAdelicPureTensor_eq_localConvolutions : ∀ (D : D7) (V : HSp D) (μf : ∀ v, Measure (GLoc D.sp.cm.sig V.gram v)), (∀ v, (μf v).IsHaarMeasure) → (∀ᶠ v in cofinite, μf v (Kv V v) = 1) → ∀ ν, IsFinMeas V μf ν → ∀ a b, IsFinFamily D.sp.cm.sig V.gram (frameLat V) a → IsFinFamily D.sp.cm.sig V.gram (frameLat V) b → IsFinFamily D.sp.cm.sig V.gram (frameLat V) (fun v => conv (μf v) (a v) (b v)) ∧ finFn V (fun v => conv (μf v) (a v) (b v)) = conv ν (finFn V a) (finFn V b) ∧ finFn V a ∈ GlobalTheory.SplitWeil.SB (GfC V) := by
-  first | exact @GlobalTheory.TrConv.conv_finFn
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ConvolutionFiniteAdelicPureTensorEqLocalConvolutStatement =====
@@ -679,8 +677,6 @@ theorem isSmooth_comp_locFin {D : D7} {V : HSp D} {W : Type} [AddCommGroup W] [M
     GlobalTheory.PRep.IsSmooth (σ.comp (locFin V v)) := fun x =>
   (hσ x).preimage ((continuous_emb D.sp.cm.sig V.gram v).subtype_mk _)
 
-
-
 theorem exists_idemFam : ∀ (D : D7) (V : HSp D) (T : TypeDataG V) (U : AuxiliaryPlaceHermitianSpace V), U.u ∉ T.S → ∀ (μf : ∀ v, Measure (GLoc D.sp.cm.sig V.gram v)), (∀ v, (μf v).IsHaarMeasure) → (∀ᶠ v in cofinite, μf v (Kv V v) = 1) → ∀ ν, IsFinMeas V μf ν → ∃ e, IsFinFamily D.sp.cm.sig V.gram (frameLat V) e ∧ (∀ v : T.S, e v = T.idem μf v) ∧ (∀ v, conv (μf v) (e v) (e v) = e v) ∧ (∀ k ∈ U.frame.iwahori, ∀ g, e U.u (k * g) = e U.u g) ∧ SphRest T U e ∧ ∀ (W : Type) [AddCommGroup W] [Module ℂ W] (σ : Representation ℂ (GfC V) W), GlobalTheory.PRep.IsSmooth σ → HasTypeVec T σ → ∀ P, GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets.IsIntegralOp ν σ (finFn V e) P → P ≠ 0 := by
   intro D V T U hu μf hH h1 ν hν
   refine ⟨fam T U μf T.S, GlobalTheory.T.isRestrictedFiniteTensorFamily_typeIdempotents D V T U μf hH h1 hu T.S, fun v => fam_of_mem T U μf T.S v.2 v.2, ?_, ?_, ?_, ?_⟩
@@ -838,8 +834,6 @@ open GlobalTheory.TrMult
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open scoped Classical
 
-theorem _root_.GlobalTheory.T.heckeOperator_convolution_and_leftTranslate : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [T2Space G] [MeasurableSpace G] [BorelSpace G] (μ : Measure G) [μ.IsHaarMeasure] (W : Type) [AddCommGroup W] [Module ℂ W] (σ : Representation ℂ G W), GlobalTheory.PRep.IsSmooth σ → ∀ f ∈ GlobalTheory.SplitWeil.SB G, ∀ f' ∈ GlobalTheory.SplitWeil.SB G, ∀ A B, GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets.IsIntegralOp μ σ f A → GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets.IsIntegralOp μ σ f' B → GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets.IsIntegralOp μ σ (conv μ f f') (A ∘ₗ B) ∧ ∀ g : G, GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets.IsIntegralOp μ σ (fun x => f' (g⁻¹ * x)) (σ g ∘ₗ B) := by
-  first | exact @GlobalTheory.OpConv.isIntegralOp_conv_and_translate
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.HeckeOperatorConvolutionAndLeftTranslateStatement =====
@@ -880,7 +874,6 @@ theorem conv_mul_left {f f' : G → ℂ} {k : G} (hf : ∀ y, f (k * y) = f y) (
   rw [← this]
   simp only [hf]
 
-
 omit [MeasurableMul G] [μ.IsMulLeftInvariant] in
 theorem conv_mul_right {f f' : G → ℂ} {k : G} (hf' : ∀ y, f' (y * k) = f' y) (x : G) :
     GlobalTheory.AutomorphicL2Unitary.conv μ f f' (x * k) = GlobalTheory.AutomorphicL2Unitary.conv μ f f' x := by
@@ -891,7 +884,7 @@ end Local
 theorem test_families : ∀ (D : D7) (V : HSp D) (T : TypeDataG V) (U : AuxiliaryPlaceHermitianSpace V), U.u ∉ T.S → ∀ (μf : ∀ v, Measure (GLoc D.sp.cm.sig V.gram v)), (∀ v, (μf v).IsHaarMeasure) → (∀ᶠ v in cofinite, μf v (Kv V v) = 1) → ∀ ν, IsFinMeas V μf ν → ∃ e, IsFinFamily D.sp.cm.sig V.gram (frameLat V) e ∧ (∀ (W : Type) [AddCommGroup W] [Module ℂ W] (σ : Representation ℂ (GfC V) W), GlobalTheory.PRep.IsSmooth σ → ∀ P, GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets.IsIntegralOp ν σ (finFn V e) P → P ∘ₗ P = P ∧ (HasTypeVec T σ → P ≠ 0)) ∧ ∀ g : GfC V, ∃ ff, IsFinFamily D.sp.cm.sig V.gram (frameLat V) ff ∧ (∀ k ∈ U.frame.iwahori, ∀ x, ff U.u (k * x) = ff U.u x) ∧ (∀ t ∈ strictTorus V.rank U.ϖ, IsTestFin T U μf (Function.update ff U.u (U.frame.cosetFn t)) ∧ SphRest T U (Function.update ff U.u (U.frame.cosetFn t))) ∧ ∀ (W : Type) [AddCommGroup W] [Module ℂ W] (σ : Representation ℂ (GfC V) W), GlobalTheory.PRep.IsSmooth σ → ∀ P, GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets.IsIntegralOp ν σ (finFn V e) P → GlobalTheory.IndefiniteRowSideFullHecke.IwahoriDoubleCosets.IsIntegralOp ν σ (finFn V ff) (P ∘ₗ σ g ∘ₗ P) := by
   intro D V T U hu μf hμf h1 ν hν
   obtain ⟨e, heF, heS, hee, heI, heSph, heNZ⟩ := GlobalTheory.T.exists_typeIwahoriMaximalCompact_idempotentFamily D V T U hu μf hμf h1 ν hν
-  obtain ⟨-, hconv, hSB⟩ := GlobalTheory.T.convolution_finiteAdelicPureTensor_eq_localConvolutions D V μf hμf h1 ν hν e e heF heF
+  obtain ⟨-, hconv, hSB⟩ := GlobalTheory.TrConv.conv_finFn D V μf hμf h1 ν hν e e heF heF
   have hfe : GlobalTheory.AutomorphicL2Unitary.conv ν (finFn V e) (finFn V e) = finFn V e := by
     rw [← hconv]
     congr 1
@@ -900,7 +893,7 @@ theorem test_families : ∀ (D : D7) (V : HSp D) (T : TypeDataG V) (U : Auxiliar
   refine ⟨e, heF, ?_, ?_⟩
   · intro W _ _ σ hσ P hP
     haveI := hν.1
-    have h := (GlobalTheory.T.heckeOperator_convolution_and_leftTranslate (GfC V) ν W σ hσ (finFn V e) hSB (finFn V e) hSB P P hP hP).1
+    have h := (GlobalTheory.OpConv.isIntegralOp_conv_and_translate (GfC V) ν W σ hσ (finFn V e) hSB (finFn V e) hSB P P hP hP).1
     rw [hfe] at h
     exact ⟨h.unique hP, fun ht => heNZ W σ hσ ht P hP⟩
   · intro g
@@ -916,8 +909,8 @@ theorem test_families : ∀ (D : D7) (V : HSp D) (T : TypeDataG V) (U : Auxiliar
     have hbfin : finFn V b = fun x => finFn V e (g⁻¹ * x) := by
       funext x
       simp [finFn, hb, hc, map_mul, map_inv]
-    obtain ⟨hffF, hffeq, -⟩ := GlobalTheory.T.convolution_finiteAdelicPureTensor_eq_localConvolutions D V μf hμf h1 ν hν e b heF hbF
-    obtain ⟨-, -, hbSB⟩ := GlobalTheory.T.convolution_finiteAdelicPureTensor_eq_localConvolutions D V μf hμf h1 ν hν b b hbF hbF
+    obtain ⟨hffF, hffeq, -⟩ := GlobalTheory.TrConv.conv_finFn D V μf hμf h1 ν hν e b heF hbF
+    obtain ⟨-, -, hbSB⟩ := GlobalTheory.TrConv.conv_finFn D V μf hμf h1 ν hν b b hbF hbF
     have hcb : ∀ v, GlobalTheory.AutomorphicL2Unitary.conv (μf v) (b v) (e v) = b v := fun v => by
       haveI := hμf v
       funext y
@@ -952,9 +945,9 @@ theorem test_families : ∀ (D : D7) (V : HSp D) (T : TypeDataG V) (U : Auxiliar
           simp only [hb]
           simpa [mul_assoc] using heSph v hv hvu 1 (one_mem _) k' hk' (c v * y)
     · intro W _ _ σ hσ P hP
-      have h2 := (GlobalTheory.T.heckeOperator_convolution_and_leftTranslate (GfC V) ν W σ hσ (finFn V e) hSB (finFn V e) hSB P P hP hP).2 g
+      have h2 := (GlobalTheory.OpConv.isIntegralOp_conv_and_translate (GfC V) ν W σ hσ (finFn V e) hSB (finFn V e) hSB P P hP hP).2 g
       rw [← hbfin] at h2
-      have h3 := (GlobalTheory.T.heckeOperator_convolution_and_leftTranslate (GfC V) ν W σ hσ (finFn V e) hSB (finFn V b) hbSB P _ hP h2).1
+      have h3 := (GlobalTheory.OpConv.isIntegralOp_conv_and_translate (GfC V) ν W σ hσ (finFn V e) hSB (finFn V b) hbSB P _ hP h2).1
       rwa [← hffeq] at h3
 end GlobalTheory.TestFamTr -- clump:auto
 end -- clump:auto

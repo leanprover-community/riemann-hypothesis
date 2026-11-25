@@ -310,11 +310,6 @@ theorem isKum_pow {q : ℕ} {t : ∀ U : Scheme.{0}, (Γ(U, ⊤))ˣ → Sec ((re
     obtain ⟨z, hz⟩ : IsUnit (ζ.1 ^ k * v) := isUnit_of_mul_isUnit_right (hw' ▸ w.isUnit)
     rw [ht.2 U ζ z w (by rw [hw', hz]), ih z hz, succ_nsmul, add_assoc]
 
-theorem res_smap {R : Type} [CommRing R] {F G : Shv R} (φ : F ⟶ G) {V U : Scheme.{0}} (g : V ⟶ U) (x : Sec F U) :
-    Sec.res g (Sec.map φ x) = Sec.map φ (Sec.res g x) := by
-  have h := φ.hom.naturality g.op
-  exact (congrArg (fun m => m.hom x) h).symm
-
 theorem kumPow : LcCover → RepRoot → KapSpec → PrimAlg → KumPow := by
   intro hL _ hK _ hKum q _ U ζ f r v hr
   have ht : IsKum q (kumT q) := hKum q
@@ -338,7 +333,7 @@ theorem kumPow : LcCover → RepRoot → KapSpec → PrimAlg → KumPow := by
   have e2 : Sec.res (j a) (kumT q U v) = kumT q (W a) (Units.map (j a).appTop.hom.toMonoidHom v) :=
     ht.1 _ _ (j a) _ hq
   have e3 : Sec.res (j a) (Sec.map (resι _ (tw q 1)) (kap 1 ζ f)) = a.val • resGen 1 (primRes (j a) ζ) := by
-    rw [res_smap, hsm]
+    rw [GlobalTheory.CompanionTheory.EtNatProof.res_map, hsm]
     exact map_nsmul _ _ _
   have e0 : Sec.res (j a) (kumT q U v + Sec.map (resι _ (tw q 1)) (kap 1 ζ f)) =
       Sec.res (j a) (kumT q U v) + Sec.res (j a) (Sec.map (resι _ (tw q 1)) (kap 1 ζ f)) := map_add _ _ _
@@ -574,12 +569,6 @@ open CategoryTheory Limits AlgebraicGeometry Opposite GroundTheory.PAdicHodge Cr
 
 namespace GlobalTheory.CompanionTheory.LineBase
 
-theorem u_eq {X : Scheme.{0}} (D : LineData X) {V : Scheme.{0}} {a a' b b' : V ⟶ D.Y}
-    (ha : a = a') (hb : b = b') (h : a ≫ D.f = b ≫ D.f) (h' : a' ≫ D.f = b' ≫ D.f) :
-    D.u a b h = D.u a' b' h' := by
-  subst ha hb
-  rfl
-
 noncomputable def pull {X' X : Scheme.{0}} (g : X' ⟶ X) (D : LineData X) : LineData X' where
   Y := pullback D.f g
   f := pullback.snd D.f g
@@ -591,7 +580,7 @@ noncomputable def pull {X' X : Scheme.{0}} (g : X' ⟶ X) (D : LineData X) : Lin
     rw [Category.assoc, Category.assoc, pullback.condition, ← Category.assoc, ← Category.assoc, h])
   nat := fun {V' V} k a b h => by
     rw [← D.nat k (a ≫ pullback.fst D.f g) (b ≫ pullback.fst D.f g)]
-    exact u_eq D (Category.assoc _ _ _) (Category.assoc _ _ _) _ _
+    exact GlobalTheory.CompanionTheory.FKum.u_congr D (Category.assoc _ _ _) (Category.assoc _ _ _) _ _
   coc := fun {V} a b c h h' => D.coc _ _ _ _ _
 
 theorem lineBC : CrystallineSemistableComparison.E.LineBC := by
@@ -688,11 +677,6 @@ theorem up_smul_eq {q : ℕ} {M : Type*} [AddCommGroup M] [Module (ULift.{1} (ZM
     ext; rw [ULift.down_natCast, h]
   rw [e, Nat.cast_smul_eq_nsmul]
 
-theorem res_map {R : Type} [CommRing R] {F G : Shv R} (φ : F ⟶ G) {V U : Scheme.{0}} (g : V ⟶ U) (x : Sec F U) :
-    Sec.res g (Sec.map φ x) = Sec.map φ (Sec.res g x) := by
-  have h := congrArg (fun ψ => ψ.hom x) (φ.hom.naturality g.op)
-  exact h.symm
-
 theorem map_nsmul_twGen {q : ℕ} (i : ℤ) {U : Scheme.{0}} (ζ : Prim q Γ(U, ⊤)) (c : ℕ) :
     Sec.map (resι _ (tw q i)) (c • twGen i ζ) = c • resGen i ζ :=
   map_nsmul _ _ _
@@ -713,7 +697,7 @@ theorem kapRed : CrystallineSemistableComparison.E.LcCover → CrystallineSemist
     rw [(hKap q i U ξ (f.map (ZMod.castHom h (ZMod q)))).1 (W a) (j a) (ZMod.castHom h (ZMod q) a)
       (fun v => by simp [hj a v])]
     exact up_smul_eq _ a.val (by rw [ZMod.castHom_apply, ZMod.natCast_val]) _
-  rw [(redMap Q q i).nat (j a) 0, res_map, res_map, hL, hR, map_nsmul_twGen, map_nsmul_twGen, map_nsmul,
+  rw [(redMap Q q i).nat (j a) 0, GlobalTheory.CompanionTheory.EtNatProof.res_map, GlobalTheory.CompanionTheory.EtNatProof.res_map, hL, hR, map_nsmul_twGen, map_nsmul_twGen, map_nsmul,
     hRed Q q h i (W a) (primRes (j a) ζ) (primRes (j a) ξ) hξ']
 
 end GlobalTheory.CompanionTheory.CstE.KapRedP
@@ -829,7 +813,6 @@ theorem st_pullC (n : ResMor T T' m) {j : ℕ} (z : Cn F j) :
 
 end GlobalTheory.CompanionTheory.EdgeMapPull
 
-
 open GlobalTheory.CompanionTheory.EdgeMapPull in
 theorem GlobalTheory.CompanionTheory.EdgeMapPull.edgeMap : CrystallineSemistableComparison.E.EdgeMap := by
   intro R R' _ _ σ C C' _ _ F F' T T' m n j x h hE
@@ -851,15 +834,6 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.EdgeRed
 
-theorem res_res {R : Type} [CommRing R] {F : Shv R} {W V U : Scheme.{0}} (h : W ⟶ V) (g : V ⟶ U) (x : Sec F U) :
-    Sec.res h (Sec.res g x) = Sec.res (h ≫ g) x := by
-  simp [Sec.res]
-
-theorem res_map {R : Type} [CommRing R] {F G : Shv R} (φ : F ⟶ G) {V U : Scheme.{0}} (g : V ⟶ U) (x : Sec F U) :
-    Sec.res g (Sec.map φ x) = Sec.map φ (Sec.res g x) := by
-  have h := φ.hom.naturality g.op
-  exact (congrArg (fun t => t.hom x) h).symm
-
 variable {C C' : Type 1} [Category.{0} C] [Category.{0} C']
 
 def redResMor (hS : KapSpec) (hK : KapRed) (hR : InRed) {Q q : ℕ} [NeZero Q] [NeZero q] (h : q ∣ Q)
@@ -877,17 +851,17 @@ def redResMor (hS : KapSpec) (hK : KapRed) (hR : InRed) {Q q : ℕ} [NeZero Q] [
   nat s {c c'} φ x := by
     change Sec.res (g c') ((redMap Q q i).app _ (s : ℤ) (Sec.res (P.S.map (m.G.map φ)).unop x)) =
       Sec.res (P'.S.map φ).unop (Sec.res (g c) ((redMap Q q i).app _ (s : ℤ) x))
-    rw [← (redMap Q q i).nat, res_res, res_res, hg]
+    rw [← (redMap Q q i).nat, GlobalTheory.CompanionTheory.EdgeProduct.res_res, GlobalTheory.CompanionTheory.EdgeProduct.res_res, hg]
   ι c x := by
     change Sec.res (g c) ((redMap Q q i).app _ 0 (Sec.map (resι _ (tw Q i)) (kap i (P.ζ (m.G.obj c)) x))) =
       Sec.map (resι _ (tw q i)) (kap i (P'.ζ c) (m.τ c x))
-    rw [(redMap Q q i).nat, res_map, (hS Q i _ (P.ζ (m.G.obj c)) x).2.2 _ (g c),
+    rw [(redMap Q q i).nat, GlobalTheory.CompanionTheory.EtNatProof.res_map, (hS Q i _ (P.ζ (m.G.obj c)) x).2.2 _ (g c),
       hK hR Q q h i _ (primRes (g c) (P.ζ (m.G.obj c))) (P'.ζ c) (hζ c), hτ]
     rfl
   dv s c x := by
     change Sec.res (g c) ((redMap Q q i).app _ ((s + 1 : ℕ) : ℤ) (Sec.map ((GlobalTheory.EtC.res _ (tw Q i)).d (s : ℤ) ((s + 1 : ℕ) : ℤ)) x)) =
       Sec.map ((GlobalTheory.EtC.res _ (tw q i)).d (s : ℤ) ((s + 1 : ℕ) : ℤ)) (Sec.res (g c) ((redMap Q q i).app _ (s : ℤ) x))
-    rw [← (redMap Q q i).comm, res_map]
+    rw [← (redMap Q q i).comm, GlobalTheory.CompanionTheory.EtNatProof.res_map]
 
 theorem etRed : CrystallineSemistableComparison.E.EtSpec → CrystallineSemistableComparison.E.EdgeMap → CrystallineSemistableComparison.E.RepBasic → CrystallineSemistableComparison.E.RepOp → CrystallineSemistableComparison.E.KapSpec →
     CrystallineSemistableComparison.E.KapRed → CrystallineSemistableComparison.E.EtRed := by
@@ -903,7 +877,7 @@ theorem etRed : CrystallineSemistableComparison.E.EtSpec → CrystallineSemistab
   funext t
   change Sec.res (Y'.y _) ((redMap Q q i).app X (j : ℤ) a) =
     Sec.res (g _) ((redMap Q q i).app _ (j : ℤ) (Sec.res (Y.y _) a))
-  rw [← (redMap Q q i).nat, res_res, hy]
+  rw [← (redMap Q q i).nat, GlobalTheory.CompanionTheory.EdgeProduct.res_res, hy]
 
 end GlobalTheory.CompanionTheory.EdgeRed
 end -- clump:auto
@@ -1159,11 +1133,6 @@ open CategoryTheory AlgebraicGeometry Opposite CrystallineSemistableComparison C
 
 namespace GlobalTheory.CompanionTheory.ResSplitProof
 
-theorem map_res {R : Type} [CommRing R] {F G : Shv R} (φ : F ⟶ G) {V U : Scheme.{0}} (g : V ⟶ U)
-    (x : Sec F U) : Sec.map φ (Sec.res g x) = Sec.res g (Sec.map φ x) := by
-  have h := φ.hom.naturality g.op
-  exact congrArg (fun k => ModuleCat.Hom.hom k x) h
-
 theorem resSplit : CrystallineSemistableComparison.E.ResLoc → CrystallineSemistableComparison.E.LocSplit → CrystallineSemistableComparison.E.LcCover → CrystallineSemistableComparison.E.ResSplit := by
   intro hRL hLS hLC R _ F U hU s x
   constructor
@@ -1177,7 +1146,7 @@ theorem resSplit : CrystallineSemistableComparison.E.ResLoc → CrystallineSemis
     obtain ⟨w, -, huniq⟩ := hglue R _ (fun a => Sec.res (j a) x)
     refine ⟨z, ?_⟩
     have h1 := huniq (Sec.map ((GlobalTheory.EtC.res R F).d (↑s) (↑(s + 1))) z)
-      (fun a => by rw [← map_res, hz a, hy a])
+      (fun a => by rw [← GlobalTheory.EtC.exactIff_map_res, hz a, hy a])
     have h2 := huniq x (fun a => rfl)
     exact h1.trans h2.symm
   · rintro ⟨y, rfl⟩
@@ -1223,22 +1192,17 @@ open CategoryTheory AlgebraicGeometry Opposite CrystallineSemistableComparison C
 
 namespace GlobalTheory.CompanionTheory.EdgeRes
 
-theorem sec_map_res {R : Type} [CommRing R] {F G : Shv R} (φ : F ⟶ G) {V U : Scheme.{0}} (g : V ⟶ U) (y : Sec F U) :
-    Sec.map φ (Sec.res g y) = Sec.res g (Sec.map φ y) := by
-  have h := φ.hom.naturality g.op
-  exact congrArg (fun f => f.hom y) h
-
 theorem resGood : CrystallineSemistableComparison.E.KapSpec → CrystallineSemistableComparison.E.KapBij → CrystallineSemistableComparison.E.ResZero → CrystallineSemistableComparison.E.ResSplit → CrystallineSemistableComparison.E.ResGood := by
   intro hS hB hZ hX hgen q _ C _ P i
   refine ⟨?_, ?_, ?_, ?_, ?_⟩
   · intro c c' φ x
     have h1 := (hS q i (P.U c) (P.ζ c) x).2.2 (P.U c') (P.S.map φ).unop
     rw [P.ζ_nat φ] at h1
-    have h2 := sec_map_res (resι _ (tw q i)) (P.S.map φ).unop (kap i (P.ζ c) x)
+    have h2 := GlobalTheory.EtC.exactIff_map_res (resι _ (tw q i)) (P.S.map φ).unop (kap i (P.ζ c) x)
     rw [h1] at h2
     exact h2
   · intro s c c' φ x
-    exact sec_map_res ((GlobalTheory.EtC.res _ (tw q i)).d (s : ℤ) ((s + 1 : ℕ) : ℤ)) (P.S.map φ).unop x
+    exact GlobalTheory.EtC.exactIff_map_res ((GlobalTheory.EtC.res _ (tw q i)).d (s : ℤ) ((s + 1 : ℕ) : ℤ)) (P.S.map φ).unop x
   · intro c a b h
     exact (hB hgen q i (P.U c) (P.ζ c)).1 ((hZ _ (tw q i) (P.U c)).1 h)
   · intro c y
@@ -1269,18 +1233,13 @@ open CategoryTheory AlgebraicGeometry Opposite CrystallineSemistableComparison C
 
 namespace GlobalTheory.CompanionTheory.KapMulE
 
-theorem sec_res_map {R : Type} [CommRing R] {F G : Shv R} (φ : F ⟶ G) {V U : Scheme.{0}} (g : V ⟶ U)
-    (x : Sec F U) : Sec.res g (Sec.map φ x) = Sec.map φ (Sec.res g x) := by
-  change ((φ.hom.app (op U) ≫ G.obj.map g.op).hom x) = ((F.obj.map g.op ≫ φ.hom.app (op V)).hom x)
-  rw [φ.hom.naturality]
-
 theorem res_kap (hKS : KapSpec) {q : ℕ} (i : ℤ) {U : Scheme.{0}} (ζ : Prim q Γ(U, ⊤))
     (f : LocallyConstant U (ZMod q)) {V : Scheme.{0}} (k : V ⟶ U) (a : ZMod q) (h : ∀ v : V, f (k v) = a) :
     Sec.res k (Sec.map (resι _ (tw q i)) (kap i ζ f)) =
       (ULift.up a : ULift.{1} (ZMod q)) • resGen i (primRes k ζ) := by
   obtain ⟨h1, -, -⟩ := hKS q i U ζ f
   unfold CrystallineSemistableComparison.E.IsLC at h1
-  rw [sec_res_map, h1 V k a h]
+  rw [GlobalTheory.CompanionTheory.EtNatProof.res_map, h1 V k a h]
   simp only [GlobalTheory.EtC.Sec.map, GlobalTheory.EtC.resGen, map_smul]
 
 theorem kapMul_of : LcCover → RepRoot → KapSpec → KapMul := by

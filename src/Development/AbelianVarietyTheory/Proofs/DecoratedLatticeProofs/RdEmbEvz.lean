@@ -67,9 +67,6 @@ open NumberField IsDedekindDomain Matrix MeasureTheory GlobalTheory.Mem GlobalTh
 open scoped TensorProduct Classical
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
-
-
 namespace GlobalTheory.AdForm.EvzDecomp
 
 theorem bc_mem_UJ' {A B : Type} [CommRing A] [CommRing B] {n : Type} [Fintype n] [DecidableEq n] (φ : A →+* B) (s : A →+* A)
@@ -155,11 +152,6 @@ theorem ratPt {D : D7} (θ : InfFam D) (hθ : IsInfFam θ) (V : HSp D) {n : ℕ}
   · intro τ
     exact GlobalTheory.AdForm.RdLaw.rat_infM θ hθ V γ₀⁻¹ γ⁻¹ hmt' τ
 
-theorem infM_fin'' {D : D7} (θ : InfFam D) (V : HSp D) {n : ℕ} (hn : V.rank = n) (k : GA D V) (hk : k ∈ GfC V)
-    (τ : D.what₂.Tau) : infM θ V hn k τ = 1 := by
-  subst hn
-  exact GlobalTheory.AdForm.RdLaw.infM_fin θ V k hk τ
-
 theorem ext_finM_emb : ∀ {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)) (u : B.Word) (emb : GA (I.rec7 l Z) (I.rec7 l Z).sp.X' →* GA (I.rec7 l Z) ((I.rec7 l Z).sp.X B.R.m)), IsEmbTop (D := (I.rec7 l Z)) (TC.z0 X u) emb → ∀ (h : GA (I.rec7 l Z) (I.rec7 l Z).sp.X') (y : GL (Fin ((I.rec7 l Z).R.N (I.rec7 l Z).R.m - 1)) ((I.rec7 l Z).host.E ⊗[(I.rec7 l Z).host.F] FiniteAdeleRing (𝓞 (I.rec7 l Z).host.F) (I.rec7 l Z).host.F)), GlobalTheory.Core.Rk.Top.HasMat h y → IsExt (I.rec7 l Z) (TC.z0 X u) (Formalism.UG.inclE (F := (I.rec7 l Z).host.F) (FiniteAdeleRing (𝓞 (I.rec7 l Z).host.F) (I.rec7 l Z).host.F)) y.1 (finM _ (rankN (I.rec7 l Z) B.R.m le_rfl) (emb h)) := by
   intro B X I hOk hPins l Z u emb hEmb h y hM
   obtain ⟨e1, e2⟩ := hEmb h
@@ -233,7 +225,6 @@ theorem top_lev_chi : ∀ {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} (I : TC
 
 end GlobalTheory.AdForm.EvzDecomp
 
-
 open GlobalTheory.AdForm.EvzDecomp in
 theorem GlobalTheory.AdForm.TwDat.Is.evz_decomp : ∀ {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)), ∀ (u : B.Word) (a : I.ι) (Ch₀ : ℕ → Type) (A : TwDat I l Z u a Ch₀), A.Is → ∀ θ, IsInfFam θ → ∀ emb : GA (I.rec7 l Z) (I.rec7 l Z).sp.X' →* GA (I.rec7 l Z) ((I.rec7 l Z).sp.X B.R.m), IsEmbTop (D := (I.rec7 l Z)) (TC.z0 X u) emb → ∀ (bad : Set (HeightOneSpectrum (𝓞 (I.rec7 l Z).host.F))) (K : ClassesAtPrimes (D := (I.rec7 l Z)) (u := u) (I.fm l u a) bad), I.ReadsP a K.lev.Lb K.lev.U K.lev.chi (fun c => (K.y c).1) K.lat (fun c s => (K.stabI c s).1) → ∀ c h, GlobalTheory.Core.Rk.Top.HasMat h (K.y c).1 → ∃ γ ∈ GQ ((I.rec7 l Z).sp.X B.R.m), ∃ k ∈ GinfC ((I.rec7 l Z).sp.X B.R.m), ∃ κ : A.U B.R.m (A.chOf B.R.m ((I.perIn u a).tilC c)), emb h = γ * (A.h B.R.m _ ⟨(I.perIn u a).tilC c, rfl⟩ * k) * κ.1 ∧ ∀ φ ∈ (I.fm l u a).Fi B.R.m, ∀ y : (I.chain l u a).Y B.R.m, ∃ y' : (I.chain l u a).Y B.R.m, IsTr (G := fun _ => 1) (infM θ _ (rankN (I.rec7 l Z) B.R.m le_rfl) k) ⟨y.1, y.2⟩ ⟨y'.1, y'.2⟩ ∧ (A.chi B.R.m _ κ : ℂ) * φ ((I.perIn u a).tilC c) y' = (I.per l u a).evz φ c y := by
   intro B X I hOk hPins l Z u a Ch₀ A hA θ hθ emb hEmb bad K hRP c h hM
@@ -283,7 +274,7 @@ theorem GlobalTheory.AdForm.TwDat.Is.evz_decomp : ∀ {B : GlobalTheory.Mem.Base
   have hInf : ∀ τ, infM θ _ (rankN (I.rec7 l Z) B.R.m le_rfl) (emb h) τ = 1 := fun τ =>
     isBlock_one (Formalism.L2.Col.N_m_succ B.R)
       (GlobalTheory.EmbTopBlock.isBlock_infM_emb I hOk hPins l Z u θ hθ emb (Formalism.L2.Col.N_m_succ B.R) hEmb h τ)
-      (infM_fin'' θ _ (rankP (I.rec7 l Z)) h hM.1 τ)
+      (GlobalTheory.AdForm.ChartVal.infM_fin' θ _ (rankP (I.rec7 l Z)) h hM.1 τ)
   refine ⟨γ, hγQ, k, hkC, κ, ?_, ?_⟩
   · show emb h = γ * (h₀ * (Zr * κA⁻¹)) * κA
     rw [hZr]; group
@@ -295,8 +286,8 @@ theorem GlobalTheory.AdForm.TwDat.Is.evz_decomp : ∀ {B : GlobalTheory.Mem.Base
       have hk' : infM θ _ (rankN (I.rec7 l Z) B.R.m le_rfl) k τ = ((((I.stp u a B.R.m).gam (I.perIn u a).b0
           ((I.stp u a B.R.m).mv (I.perIn u a).b0 ((I.perIn u a).tilPt c)))⁻¹ : GL (Fin (B.R.N B.R.m)) B.fields.E) :
             Matrix (Fin (B.R.N B.R.m)) (Fin (B.R.N B.R.m)) B.fields.E).map (Formalism.L2.Col.embAt B.embLL B.fields.emb τ) := by
-        rw [ek, infM_mul', infM_mul', infM_mul', infM_fin'' θ _ _ h₀⁻¹ (inv_mem hh₀f), hInf,
-          infM_fin'' θ _ _ κA⁻¹ (inv_mem hκAf), one_mul, mul_one, mul_one, hγi τ,
+        rw [ek, infM_mul', infM_mul', infM_mul', GlobalTheory.AdForm.ChartVal.infM_fin' θ _ _ h₀⁻¹ (inv_mem hh₀f), hInf,
+          GlobalTheory.AdForm.ChartVal.infM_fin' θ _ _ κA⁻¹ (inv_mem hκAf), one_mul, mul_one, mul_one, hγi τ,
           GlobalTheory.Mem.Col2.LowerTie.embT_eq I l Z]
         rfl
       rw [hk']

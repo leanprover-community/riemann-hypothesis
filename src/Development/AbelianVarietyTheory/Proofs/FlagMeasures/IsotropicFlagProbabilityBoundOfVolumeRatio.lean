@@ -162,16 +162,11 @@ theorem sum_Ioc_half (m n : ℕ) (h : m ≤ n) :
     push_cast
     ring
 
-theorem vInv_pos (E : Type) [Field E] [NumberField E] : 0 < Formalism.HermitianLatticesTheory.vInv E := by
-  unfold Formalism.HermitianLatticesTheory.vInv
-  have : (0 : ℝ) < |(discr E : ℝ)| := abs_pos.mpr (by exact_mod_cast discr_ne_zero E)
-  positivity
-
 theorem prod_rankFac (E : Type) [Field E] [NumberField E] [StarRing E] (m n : ℕ) (h : m ≤ n) :
     ∏ M ∈ Finset.Ioc m n, rankFac E M =
       (2 * Formalism.HermitianLatticesTheory.vInv E) ^ ((Formalism.HermitianLatticesTheory.fDeg E : ℝ) * (((n : ℝ) ^ 2 - (m : ℝ) ^ 2) / 2)) *
         ∏ M ∈ Finset.Ioc m n, Formalism.HermitianLatticesTheory.lValEta E M := by
-  have hv := vInv_pos E
+  have hv := GlobalTheory.FlagMeas.vInv_pos_of_numberField E
   unfold rankFac
   rw [Finset.prod_mul_distrib, ← Real.rpow_sum_of_pos (by positivity), ← Finset.mul_sum,
     sum_Ioc_half m n h]
@@ -221,7 +216,7 @@ theorem prod_five_factors : ∀ (E : Type) [Field E] [NumberField E] [StarRing E
   intro E _ _ _ _ p q a j hq hpq
   have hp : ∑ i, j i ≤ p := by omega
   have hn : 2 * ∑ i, j i ≤ p + q := by omega
-  have hv := vInv_pos E
+  have hv := GlobalTheory.FlagMeas.vInv_pos_of_numberField E
   have h2 : (0 : ℝ) < 2 := by norm_num
   have hD := dimN_eq (p + q) a j hn
   have hmid : (∏ i, (2 : ℝ) ^ (Formalism.HermitianLatticesTheory.fDeg E * j i ^ 2) * (dedekindZeta_residue E *
@@ -327,7 +322,6 @@ open MeasureTheory NumberField Matrix Finset Formalism.MainNotions.S GlobalTheor
 noncomputable section
 
 namespace GlobalTheory.FlagMeas.Bound
-
 
 open scoped ComplexOrder in
 theorem zetaE_nonneg (E : Type) [Field E] [NumberField E] (l : ℕ) : 0 ≤ zetaE E l := by

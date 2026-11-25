@@ -359,16 +359,9 @@ theorem dim_le_of_stdSmooth1 (R S : Type) [CommRing R] [CommRing S] [Algebra R S
   rw [MvPolynomial.ringKrullDim_of_isNoetherianRing] at h1
   simpa using h1
 
-theorem dim_affineOpen {X : Scheme.{0}} {V : X.Opens} (hV : IsAffineOpen V) :
-    topologicalKrullDim (V : Set X) = ringKrullDim Γ(X, V) := by
-  have h1 : topologicalKrullDim (V : Set X) = topologicalKrullDim (Spec Γ(X, V)) :=
-    (Scheme.homeoOfIso hV.isoSpec).isHomeomorph.topologicalKrullDim_eq
-  rw [h1]
-  exact PrimeSpectrum.topologicalKrullDim_eq_ringKrullDim _
-
 theorem dim_affineOpen_Spec_le (A : CommRingCat.{0}) {U : (Spec A).Opens} (hU : IsAffineOpen U) :
     ringKrullDim Γ(Spec A, U) ≤ ringKrullDim A := by
-  rw [← dim_affineOpen hU, ← PrimeSpectrum.topologicalKrullDim_eq_ringKrullDim (R := A)]
+  rw [← GlobalTheory.Published.dim_affineOpen hU, ← PrimeSpectrum.topologicalKrullDim_eq_ringKrullDim (R := A)]
   exact topologicalKrullDim_subspace_le _ _
 
 theorem LeafDimBound_of : LateralTheory.E.LeafDescendVCut.LeafDimBound := by
@@ -381,7 +374,7 @@ theorem LeafDimBound_of : LateralTheory.E.LeafDescendVCut.LeafDimBound := by
   let _ : Algebra Γ(Sp R, U) Γ(D0, V) := (q.appLE U V e).hom.toAlgebra
   have : Algebra.IsStandardSmoothOfRelativeDimension 1 Γ(Sp R, U) Γ(D0, V) := hs
   refine ⟨(V : Set D0), V.isOpen, hx, ?_⟩
-  rw [dim_affineOpen hV]
+  rw [GlobalTheory.Published.dim_affineOpen hV]
   calc ringKrullDim Γ(D0, V) ≤ ringKrullDim Γ(Sp R, U) + 1 := dim_le_of_stdSmooth1 _ _
     _ ≤ ringKrullDim R + 1 := by
       gcongr
@@ -1252,7 +1245,6 @@ section -- clump:auto
 
 namespace LateralTheory.E.LeafSpreadLQFMap_vtuPfG
 
-
 open LateralTheory.E.SpreadingOutLocallyQuasiFinite in
 theorem LeafSpreadLQFMap_of (hD : LeafQFAtDescend) (hO : LeafOpenSpread) :
     LateralTheory.E.SpreadingOutQuasiFiniteness.LeafSpreadLQFMap :=
@@ -1708,17 +1700,6 @@ open CategoryTheory Limits AlgebraicGeometry Opposite LateralTheory.E.E4 Lateral
 
 namespace LateralTheory.E.SpreadingOutQuasiFinitenessBaseChange
 
-theorem toR_incl {k Ω : Type} [Field k] [Field Ω] [Algebra k Ω] {R R' : Subalgebra k Ω} (hR : R ≤ R') :
-    toR R' ≫ incl hR = toR R := by
-  rw [← Spec.map_comp]; rfl
-
-theorem sq {k Ω : Type} [Field k] [Field Ω] [Algebra k Ω] {R R' : Subalgebra k Ω} (hR : R ≤ R')
-    {C D : Scheme.{0}} {c : C ⟶ Sp Ω} {q : D ⟶ Sp R} {v : C ⟶ D} (hv : IsPullback v c q (toR R)) :
-    IsPullback (pullback.lift v (c ≫ toR R') (by rw [Category.assoc, toR_incl]; exact hv.w)) c
-      (pullback.snd q (incl hR)) (toR R') := by
-  refine IsPullback.of_right ?_ (pullback.lift_snd _ _ _) (IsPullback.of_hasPullback q (incl hR))
-  rw [pullback.lift_fst, _root_.LateralTheory.E.LeafPropsDescendPf.BaseChange.toR_incl]; exact hv
-
 theorem spread_chain_base_change_to_larger_subalgebra : LateralTheory.E.SpreadingOutQuasiFiniteness.LeafBaseChangePreR := by
   intro k _ Ω _ _ R R' hR C0 C1 C2 c0 γ1 γ2 D0 D1 D2 q d1 d2 v0 v1 v2 hpre
   obtain ⟨-, -, -, p0, p1, p2, m1, m2⟩ := hpre
@@ -1729,9 +1710,9 @@ theorem spread_chain_base_change_to_larger_subalgebra : LateralTheory.E.Spreadin
   have t1 : e1 ≫ pullback.snd q (incl hR) = pullback.snd _ _ := pullback.lift_snd _ _ _
   have t2 : e2 ≫ pullback.snd (d1 ≫ q) (incl hR) = pullback.snd _ _ := pullback.lift_snd _ _ _
   have t12 : e2 ≫ e1 ≫ pullback.snd q (incl hR) = pullback.snd _ _ := by rw [t1, t2]
-  have P0 := sq hR p0
-  have P1 := sq hR p1
-  have P2 := sq hR p2
+  have P0 := LateralTheory.E.LeafTripleFPPf.pb_lift hR p0
+  have P1 := LateralTheory.E.LeafTripleFPPf.pb_lift hR p1
+  have P2 := LateralTheory.E.LeafTripleFPPf.pb_lift hR p2
   refine ⟨_, _, _, pullback.snd q (incl hR), e1, e2, _, pullback.lift v1 ((γ1 ≫ c0) ≫ toR R') (by rw [Category.assoc, _root_.LateralTheory.E.LeafPropsDescendPf.BaseChange.toR_incl]; exact p1.w), pullback.lift v2 ((γ2 ≫ γ1 ≫ c0) ≫ toR R') (by rw [Category.assoc, _root_.LateralTheory.E.LeafPropsDescendPf.BaseChange.toR_incl]; exact p2.w), pullback.fst _ _, pullback.fst _ _, pullback.fst _ _,
     ⟨P0, ?_, ?_, ?_, ?_⟩, IsPullback.of_hasPullback _ _, ?_, ?_, pullback.lift_fst _ _ _,
     pullback.lift_fst _ _ _, pullback.lift_fst _ _ _⟩

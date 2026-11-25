@@ -533,7 +533,6 @@ open GlobalTheory.ChainFr GlobalTheory.SepRows GlobalTheory.SepPer Matrix
 open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
 theorem _root_.GlobalTheory.T.coefficientPoincareSeries_move_real_point : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S) (K : Subgroup (GL (Fin V.rank) (Lev.EAf D))) (v₀ : ∀ τ, M.H τ) (g₀ : GA D V), g₀ ∈ GinfC V → ∀ c g : GA D V, poin θ M K v₀ (g₀⁻¹ * c) v₀ (g * g₀) = poin θ M K (fun τ => M.rep τ (cmp θ τ g₀) (v₀ τ)) c (fun τ => M.rep τ (cmp θ τ g₀) (v₀ τ)) g := by
   first | exact @GlobalTheory.PoinConj.poin_conj
 end -- clump:auto
@@ -549,8 +548,6 @@ open NumberField IsDedekindDomain MeasureTheory Formalism.BasicNotions Formalism
 open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.multiplicitySpace_eq_zero_of_apply_nonzero_tensor_zero : ∀ {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} (θ : InfFam D) (M : DSModel V S), ∀ J χ (μ : Measure (GA D V)) (𝓕 : Set (GA D V)), IsInfFam θ → μ.IsHaarMeasure → IsFundamentalDomain (GQ V) 𝓕 μ → SchurMult θ M J χ μ 𝓕 → ∀ u ∈ MultT θ M J χ, ∀ x : ⨂[ℂ] τ, M.sm τ, x ≠ 0 → u x = 0 → u = 0 := by
-  first | exact @GlobalTheory.multT_eq_zero_of_apply_eq_zero
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.MultiplicitySpaceEqZeroOfApplyNonzeroTensorZeroStatement =====
@@ -585,9 +582,9 @@ theorem exists_bound_half_lt : GlobalTheory.Published.CuspRapidDecay → ∀ (D 
   intro hP D θ hθ V S M J vol t ht ht0 w hw
   have hw' : PiTensorProduct.tprod ℂ w ≠ 0 :=
     tprod_ne_zero' fun τ h => hw τ (by simp [h])
-  have hS := GlobalTheory.T.schurMult_multiplicitySpaces_of_rapidDecay hP D θ hθ V S M J 1 vol.μ vol.𝓕 vol.haar vol.fund
+  have hS := GlobalTheory.SchurConst.schurMult_all hP D θ hθ V S M J 1 vol.μ vol.𝓕 vol.haar vol.fund
   set φ := t (PiTensorProduct.tprod ℂ w) with hφ
-  have hφ0 : φ ≠ 0 := fun h => ht0 (GlobalTheory.T.multiplicitySpace_eq_zero_of_apply_nonzero_tensor_zero θ M J 1 vol.μ vol.𝓕 hθ vol.haar vol.fund hS t ht _ hw' h)
+  have hφ0 : φ ≠ 0 := fun h => ht0 (GlobalTheory.multT_eq_zero_of_apply_eq_zero θ M J 1 vol.μ vol.𝓕 hθ vol.haar vol.fund hS t ht _ hw' h)
   obtain ⟨x₀, hx₀⟩ : ∃ x₀, φ x₀ ≠ 0 := by
     by_contra h
     push_neg at h
@@ -620,7 +617,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.LevelPlusSubgroup (coefPlus Cols Si
 open GlobalTheory.ChainFr GlobalTheory.SepRows GlobalTheory.SepPer Matrix
 open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 theorem _root_.GlobalTheory.T.exists_bound_multiplicity_value_exceeds_half : GlobalTheory.Published.CuspRapidDecay → ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S) (J : Set (GA D V)), GlobalTheory.Unf.Vol V → ∀ t ∈ MultT θ M J 1, t ≠ 0 → ∀ w : M.Vec, (∀ τ, (w τ : M.H τ) ≠ 0) → ∃ b : ℝ, ∃ x : GA D V, (∀ h, ‖t (PiTensorProduct.tprod ℂ w) h‖ ≤ b) ∧ b / 2 < ‖t (PiTensorProduct.tprod ℂ w) x‖ := by
   first | exact @GlobalTheory.SupVal.exists_bound_half_lt
@@ -761,7 +757,6 @@ open GlobalTheory.ChainFr GlobalTheory.SepRows GlobalTheory.SepPer Matrix
 open scoped TensorProduct InnerProductSpace nonZeroDivisors Pointwise
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
 theorem _root_.GlobalTheory.T.card_negativeSigns_diagonalFrame_eq_signature : ∀ {D : D7} (V : HSp D), V.SigOK → ∀ (A : Fr V) (τ : D.what₂.Tau), (Finset.univ.filter fun a => A.ε τ a = false).card = (V.sig (tauE D τ)).2 := by
   first | exact @GlobalTheory.FrameSylvester.neg_card_eq_sig
 end -- clump:auto
@@ -844,8 +839,6 @@ theorem frameMat_lat (d : HermitianOrthogonalExtensionData A B c ε) (Λ : Submo
     (𝔟 : Fin c → FractionalIdeal (𝓞 D.host.E)⁰ D.host.E) : ∀ y ∈ Λ, frameMat B A d.ι *ᵥ y ∈ d.lat Λ 𝔟 :=
   fun y hy => ⟨y, hy, 0, fun p => (𝔟 p).zero_mem, by simp⟩
 
-
-
 theorem finE_mem_congLev : ∀ {D : D7} {A B : HSp D} {c : ℕ} {ε : D.host.E} (d : HermitianOrthogonalExtensionData A B c ε)
     (Λ : Submodule (𝓞 D.host.E) (Fin A.rank → D.host.E)) (𝔟 : Fin c → FractionalIdeal (𝓞 D.host.E)⁰ D.host.E)
     (𝔪 : Ideal (𝓞 D.host.E)) (h : GA D A), Lev.finE B (stabilizerEmbedding d h) ∈ congLev D.sp.cm B.gram (d.lat Λ 𝔟) 𝔪 →
@@ -909,7 +902,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.LevelPlusSubgroup (coefPlus Cols Si
 open GlobalTheory.ChainFr GlobalTheory.SepRows GlobalTheory.SepPer Matrix
 open scoped TensorProduct InnerProductSpace nonZeroDivisors Pointwise
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 theorem _root_.GlobalTheory.T.congruence_level_of_embedding : ∀ {D : D7} {A B : HSp D} {c : ℕ} {ε : D.host.E} (d : HermitianOrthogonalExtensionData A B c ε) (Λ : Submodule (𝓞 D.host.E) (Fin A.rank → D.host.E)) (𝔟 : Fin c → FractionalIdeal (𝓞 D.host.E)⁰ D.host.E) (𝔪 : Ideal (𝓞 D.host.E)) (h : GA D A), Lev.finE B (stabilizerEmbedding d h) ∈ congLev D.sp.cm B.gram (d.lat Λ 𝔟) 𝔪 → Lev.finE A h ∈ congLev D.sp.cm A.gram Λ 𝔪 := by
   first | exact @GlobalTheory.LevRestrict.finE_mem_congLev
@@ -1020,7 +1012,6 @@ open GlobalTheory.ChainFr GlobalTheory.SepRows GlobalTheory.SepPer Matrix
 open scoped TensorProduct InnerProductSpace nonZeroDivisors Pointwise
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
 theorem _root_.GlobalTheory.T.modulus_inf_conj_le_span_typePrimes_product : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} (G : GridData L sc), G.modul ⊓ D.host.conj • G.modul ≤ Ideal.span {((D.host.g 0 * D.host.g 1 : ℕ) : 𝓞 D.host.E)} := by
   first | exact @GlobalTheory.ModulConj.modul_inf_conj_le
 end -- clump:auto
@@ -1112,10 +1103,6 @@ section Forms
 
 variable {A : Type} [CommRing A] {n : ℕ}
 
-theorem hform_dot (τ : A →+* A) (J : Matrix (Fin n) (Fin n) A) (x y : Fin n → A) :
-    Formalism.UG.hform τ J x y = (fun i => τ (x i)) ⬝ᵥ (J *ᵥ y) := by
-  simp only [Formalism.UG.hform, dotProduct, Matrix.mulVec, Finset.mul_sum, mul_assoc]
-
 theorem hform_sub_left (τ : A →+* A) (J : Matrix (Fin n) (Fin n) A) (x y z : Fin n → A) :
     Formalism.UG.hform τ J (x - y) z = Formalism.UG.hform τ J x z - Formalism.UG.hform τ J y z := by
   simp only [Formalism.UG.hform, Pi.sub_apply, map_sub, sub_mul, Finset.sum_sub_distrib]
@@ -1126,12 +1113,12 @@ theorem hform_sub_right (τ : A →+* A) (J : Matrix (Fin n) (Fin n) A) (x y z :
 
 theorem hform_unitary (τ : A →+* A) (J B : Matrix (Fin n) (Fin n) A) (h : Formalism.UG.cT τ B * J * B = J)
     (x y : Fin n → A) : Formalism.UG.hform τ J (B *ᵥ x) (B *ᵥ y) = Formalism.UG.hform τ J x y := by
-  rw [GlobalTheory.DualCompletion.hform_mulVec_left, Matrix.mulVec_mulVec, h, hform_dot]
+  rw [GlobalTheory.DualCompletion.hform_mulVec_left, Matrix.mulVec_mulVec, h, GlobalTheory.CoverRadiiEq.hform_eq_dot]
   rfl
 
 theorem hform_mulVec_right (τ : A →+* A) (J B : Matrix (Fin n) (Fin n) A) (a c : Fin n → A) :
     Formalism.UG.hform τ J a (B *ᵥ c) = ∑ k, Formalism.UG.hform τ J a (fun i => B i k) * c k := by
-  simp only [hform_dot, Matrix.dotProduct_mulVec]
+  simp only [GlobalTheory.CoverRadiiEq.hform_eq_dot, Matrix.dotProduct_mulVec]
   rfl
 
 end Forms
@@ -1171,8 +1158,6 @@ theorem inId_hform {V : HSp D} {Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D
   have hk := GlobalTheory.FrameIdeal.col_mem_hatL hfr k
   rw [Matrix.mulVec_single_one] at hk
   exact GlobalTheory.GramFrame.pair_hatL V.gram Λ (GlobalTheory.FrameIdeal.selfDual_pair hsd) _ _ ha hk
-
-
 
 theorem congLev_conj : ∀ {D : D7} (V : HSp D) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)), IsSelfDualC V Λ → ∀ (𝔪 : Ideal (𝓞 D.host.E)) (g : GL (Fin V.rank) (Lev.EAf D)), g ∈ congLev D.sp.cm V.gram Λ 𝔪 → g ∈ congLev D.sp.cm V.gram Λ (𝔪 ⊓ D.host.conj • 𝔪) := by
   intro D V Λ hsd 𝔪 g hg
@@ -1225,7 +1210,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.LevelPlusSubgroup (coefPlus Cols Si
 open GlobalTheory.ChainFr GlobalTheory.SepRows GlobalTheory.SepPer Matrix
 open scoped TensorProduct InnerProductSpace nonZeroDivisors Pointwise
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 theorem _root_.GlobalTheory.T.unitaryLatticeCongruence_mem_conjugateIdeal_inf : ∀ {D : D7} (V : HSp D) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E)), IsSelfDualC V Λ → ∀ (𝔪 : Ideal (𝓞 D.host.E)) (g : GL (Fin V.rank) (Lev.EAf D)), g ∈ congLev D.sp.cm V.gram Λ 𝔪 → g ∈ congLev D.sp.cm V.gram Λ (𝔪 ⊓ D.host.conj • 𝔪) := by
   first | exact @GlobalTheory.CongSelfDual.congLev_conj
@@ -1426,8 +1410,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 noncomputable section
 
 namespace UpperTheory.Lit.Cusp
-
-
 
 open GlobalTheory.SepPer.PerNe in
 theorem exists_cusp_form_theta_period_ne_zero : GlobalTheory.Published.HarishChandraModules → GlobalTheory.Published.CasselmanWallach →

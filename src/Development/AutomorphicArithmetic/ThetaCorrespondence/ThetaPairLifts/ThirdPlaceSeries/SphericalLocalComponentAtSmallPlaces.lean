@@ -110,8 +110,6 @@ import Mathlib.Tactic.ReduceModChar
 section -- clump:auto
 @[expose] public section
 
-
-
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.TypeRec.factG
@@ -401,8 +399,6 @@ end GlobalTheory.SplitFrameKO
 
 namespace GlobalTheory.SplitFrameKO
 
-
-
 theorem main : ∀ (D : D7) (V : HSp D) (n : ℕ) (hF : D.host.F = maximalRealSubfield D.host.E) (P : principalLevelFrame.RowPsi V n) (β : GL (Fin V.rank) (EAf D)), GlobalTheory.Mem.R3.StdFrame hF P → ∀ (s : SplitPlace D.host.E), ∃ h : GL (Fin n) (s.v.adicCompletion (maximalRealSubfield D.host.E)), ∀ κ : Formalism.AUTREP.GAf D.host.E n, TrivOutside {s.v} κ → h⁻¹ * s.loc n κ * h ∈ GlobalTheory.SplitWeil.KO (s.v.adicCompletion (maximalRealSubfield D.host.E)) (Fin n) → ∀ a b : Fin V.rank, Valued.v (GlobalTheory.StdFrames.cpt s.w ((β⁻¹ * finE V (P.ψ κ) * β).val a b)) ≤ 1 := by
   intro D V n hF P β hS s
   obtain ⟨⟨βs, βs', h1, h2, hfr⟩, -⟩ := hS
@@ -493,9 +489,6 @@ open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-
-theorem _root_.GlobalTheory.T.frameComponent_eq_one_off_splitPlace_of_trivOutside : ∀ (D : D7) (V : HSp D) (n : ℕ) (hF : D.host.F = maximalRealSubfield D.host.E) (P : principalLevelFrame.RowPsi V n) (β : GL (Fin V.rank) (EAf D)), GlobalTheory.Mem.R3.StdFrame hF P → ∀ (s : SplitPlace D.host.E) (κ : Formalism.AUTREP.GAf D.host.E n), TrivOutside {s.v} κ → ∀ (Q : Formalism.L2.DIV.Pl D.host.E), Q.asIdeal.comap (algebraMap (𝓞 (maximalRealSubfield D.host.E)) (𝓞 D.host.E)) ≠ s.v.asIdeal → ∀ (a b : Fin V.rank), GlobalTheory.StdFrames.cpt Q ((β⁻¹ * finE V (P.ψ κ) * β).val a b) = GlobalTheory.StdFrames.cpt Q ((1 : Matrix (Fin V.rank) (Fin V.rank) (EAf D)) a b) := by
-  first | exact @GlobalTheory.FrameOffPlace.cpt_conj_finE_eq_one
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FrameComponentEqOneOffSplitPlaceOfTrivOutsideStatement =====
@@ -510,9 +503,6 @@ open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-
-theorem _root_.GlobalTheory.T.placeOver_splitPlace_eq_chosen_or_conjugate : ∀ (D : D7), D.host.F = maximalRealSubfield D.host.E → ∀ (s : SplitPlace D.host.E) (Q : Formalism.L2.DIV.Pl D.host.E), Q.asIdeal.comap (algebraMap (𝓞 (maximalRealSubfield D.host.E)) (𝓞 D.host.E)) = s.v.asIdeal → Q = s.w ∨ Q = GlobalTheory.IdemSupport.cP s.w := by
-  first | exact @GlobalTheory.PlaceOverSplit.eq_or_eq_cP
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PlaceOverSplitPlaceEqChosenOrConjugateStatement =====
@@ -525,7 +515,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.TypeRec.factG
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 
 section SphOffSec
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.MainNotions.S MeasureTheory IsDedekindDomain NumberField Formalism.L2.Theta Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Lev Formalism.IndefR.RecTie Formalism.L2.Rows GlobalTheory.Mem GlobalTheory.Mem.R3 ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2
@@ -615,7 +604,7 @@ theorem levS_of_kO_conj : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 I0 
     intro P hP' hPv
     obtain ⟨k, hk⟩ := hPgOver P hP'
     apply hoff k
-    rcases GlobalTheory.T.placeOver_splitPlace_eq_chosen_or_conjugate D Y.hF s P hPv with rfl | rfl
+    rcases GlobalTheory.PlaceOverSplit.eq_or_eq_cP D Y.hF s P hPv with rfl | rfl
     · exact hk
     · simpa [placesOver, GlobalTheory.IdemSupport.mem_cP, map_natCast] using hk
 
@@ -626,12 +615,12 @@ theorem levS_of_kO_conj : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 I0 
         Valued.v (GlobalTheory.StdFrames.cpt Q (((R.βY 0)⁻¹ * finE (Yc D 0) (Y.PY.ψ κ') * R.βY 0).val a c)) ≤ 1 := by
     intro κ' hκ' hk1 hk2 Q a c
     by_cases hQ : Q.asIdeal.comap (algebraMap (𝓞 (maximalRealSubfield D.host.E)) (𝓞 D.host.E)) = s.v.asIdeal
-    · rcases GlobalTheory.T.placeOver_splitPlace_eq_chosen_or_conjugate D Y.hF s Q hQ with rfl | rfl
+    · rcases GlobalTheory.PlaceOverSplit.eq_or_eq_cP D Y.hF s Q hQ with rfl | rfl
       · exact hh κ' hκ' hk1 a c
       · refine _root_.GlobalTheory.ConjInt.frame_mat_le_one D (Yc D 0) (R.βY 0) _ _ hβ (Y.PY.ψ κ') s.w (fun a' c' => ?_) a c
         have := hh κ'⁻¹ (GlobalTheory.RowLevelSplit.trivOutside_inv hκ') hk2 a' c'
         rwa [map_inv, map_inv] at this
-    · rw [GlobalTheory.T.frameComponent_eq_one_off_splitPlace_of_trivOutside D (Yc D 0) D.R.r Y.hF Y.PY (R.βY 0) Y.stdPsi.1 s κ' hκ' Q hQ a c, Matrix.one_apply]
+    · rw [GlobalTheory.FrameOffPlace.cpt_conj_finE_eq_one D (Yc D 0) D.R.r Y.hF Y.PY (R.βY 0) Y.stdPsi.1 s κ' hκ' Q hQ a c, Matrix.one_apply]
       split_ifs
       · rw [map_one, map_one]
       · rw [map_zero, map_zero]; exact zero_le'
@@ -667,7 +656,7 @@ theorem levS_of_kO_conj : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 I0 
       have e3 : ((z.val a c - (1 : Matrix (Fin (Yc D 0).rank) (Fin (Yc D 0).rank) (Formalism.L2.Herm.intAf D.host.F D.host.E)) a c : Formalism.L2.Herm.intAf D.host.F D.host.E) : EAf D) =
           (β⁻¹ * x * β).val a c - (1 : Matrix (Fin (Yc D 0).rank) (Fin (Yc D 0).rank) (EAf D)) a c := by
         rw [← hzv a c, Matrix.one_apply, Matrix.one_apply]; split_ifs <;> rfl
-      rw [e3, map_sub, GlobalTheory.T.frameComponent_eq_one_off_splitPlace_of_trivOutside D (Yc D 0) D.R.r Y.hF Y.PY β Y.stdPsi.1 s κ hκ PP (hOff PP hPP) a c, sub_self, map_zero]
+      rw [e3, map_sub, GlobalTheory.FrameOffPlace.cpt_conj_finE_eq_one D (Yc D 0) D.R.r Y.hF Y.PY β Y.stdPsi.1 s κ hκ PP (hOff PP hPP) a c, sub_self, map_zero]
       exact zero_lt_one
     rw [map_sub, sub_eq_zero] at h0
     rw [h0, Matrix.one_apply, Matrix.one_apply]; split_ifs <;> simp
@@ -756,8 +745,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 section
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
@@ -811,8 +798,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.SphericalLocalComponentAtSmallPlaces", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.CenLocOfCenReal\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.PublishedInputsThirdLayer\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.ParLaws\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsUnitarisableOfIsLocS\npublic import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsSplitPlaceGood\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.LocRecUnrFrobEigLe\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.SphericalLocalComponentAwayFromLevel\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RowsRestWordColumnUnitBaseTupleAlt\nimport Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.StrictHenselianAcyclic\n\n"}
 section -- clump:auto
 @[expose] public section
-
-
 
 section
 section

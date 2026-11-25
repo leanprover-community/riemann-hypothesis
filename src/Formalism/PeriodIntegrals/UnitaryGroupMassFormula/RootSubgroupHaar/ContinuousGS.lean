@@ -60,17 +60,13 @@ open Formalism.QuantumDeterminants Formalism.MainNotions.S PI.AmpRootCommon PI.A
 
 variable {k r : ℕ}
 
-theorem nset_mul' {a b : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (ha : a ∈ Nset k r)
-    (hb : b ∈ Nset k r) : a * b ∈ Nset k r := by
-  apply PI.AmpOrbQuot.nset_mul <;> assumption
-
 theorem rstab_mul' {g a b : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hg : g ∈ UH (Hpk k r))
     (ha : a ∈ RStab k r g) (hb : b ∈ RStab k r g) : a * b ∈ RStab k r g := by
-  refine ⟨nset_mul' ha.1 hb.1, ?_⟩
+  refine ⟨PI.AmpOrbQuot.nset_mul ha.1 hb.1, ?_⟩
   have e : g⁻¹ * (a * b) * g = (g⁻¹ * a * g) * (g⁻¹ * b * g) := by
     simp only [Matrix.mul_assoc]
     rw [← Matrix.mul_assoc g g⁻¹, uh_mul_inv hg, Matrix.one_mul]
-  rw [e]; exact nset_mul' ha.2 hb.2
+  rw [e]; exact PI.AmpOrbQuot.nset_mul ha.2 hb.2
 
 theorem Fm_row {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (M : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ)
     (c : Fin r) (j : Fin (r + 1)) : (Fm k r z * M) (eI k r c) j = M (Fin.castSucc c) j := by
@@ -92,7 +88,7 @@ theorem flagMat_mul {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z)
     {a x : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (ha : a ∈ Nset k r) (hx : x ∈ Nset k r) :
     flagMat k r z (a * x) = flagMat k r z a * flagMat k r z x := by
   have hF : Fm k r z * flagMat k r z (a * x) = Fm k r z * (flagMat k r z a * flagMat k r z x) := by
-    rw [← mul_Fm hz (nset_mul' ha hx), Matrix.mul_assoc, mul_Fm hz hx, ← Matrix.mul_assoc a, mul_Fm hz ha,
+    rw [← mul_Fm hz (PI.AmpOrbQuot.nset_mul ha hx), Matrix.mul_assoc, mul_Fm hz hx, ← Matrix.mul_assoc a, mul_Fm hz ha,
       Matrix.mul_assoc]
   ext i j
   by_cases hi : i.val < r

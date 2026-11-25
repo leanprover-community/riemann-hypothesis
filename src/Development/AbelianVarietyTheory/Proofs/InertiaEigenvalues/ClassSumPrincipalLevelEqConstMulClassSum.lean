@@ -55,16 +55,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Form
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
-
-theorem _root_.GlobalTheory.T.exists_const_twistedSum_fockVectors_principalDatum : ∀ {D : D7} {S T : HSp D} (B : Base S T), B.Good → S.SigOK → ∀ (ψ : Twist D Circle), ψ.Good → B.admitted ψ.Q →
-    ∀ (ω : PairRep S T), B.IsWeil ψ.chi ω → ∀ (F : Finset (Bridge.Gf S)) (hF : ∀ u ∈ F, u ∈ B.levJ ψ),
-    (∀ κ ∈ B.levJ ψ, ∃! u, u ∈ F ∧ u⁻¹ * κ ∈ (GlobalTheory.FlatVecSum.princ B).levJ ψ) →
-    ∃ κ : ℂ, ∀ P : Links.PolF D T.rank S.rank,
-      ∑ u ∈ F.attach, ((B.levLam ψ ⟨u.1, hF u.1 u.2⟩ : ℂˣ) : ℂ) •
-        ω ((((GlobalTheory.ClassRegroup.finEquiv S).symm u.1 : GfC S) : GA D S), 1) (B.F.fock ((GlobalTheory.FlatVecSum.princ B).vecFlat ψ) P) =
-      κ • B.F.fock (B.vecFlat ψ) P := by
-  first | exact @GlobalTheory.LevTransl.sum_om_fock_princ
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsConstTwistedSumFockVectorsPrincipalDatumStatement =====
@@ -79,7 +69,6 @@ noncomputable section
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Datum IsDedekindDomain NumberField GlobalTheory.ExportSeries
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 namespace GlobalTheory.ClassSumPrinc
 
@@ -143,7 +132,7 @@ theorem classSum_princ_eq : ∀ (D : D7) (S T : HSp D) (B : Base S T), B.Good �
   intro D S T B hB hS ψ hψ hQ ω hω m h₀ hC₀ I _ h hC
   obtain ⟨hle, -⟩ := GlobalTheory.T.principalLevel_le_level_characters_agree B hB ψ hQ
   obtain ⟨Fs, hF, hFu⟩ := GlobalTheory.T.finite_coset_representatives_level B hB ψ hQ
-  obtain ⟨κ, hκ⟩ := GlobalTheory.T.exists_const_twistedSum_fockVectors_principalDatum B hB hS ψ hψ hQ ω hω Fs hF hFu
+  obtain ⟨κ, hκ⟩ := GlobalTheory.LevTransl.sum_om_fock_princ B hB hS ψ hψ hQ ω hω Fs hF hFu
   refine ⟨κ, fun F hFm => ?_⟩
   have hinv := GlobalTheory.T.classSumTerms_invariant_principalLevel B hB hS ψ hψ hQ ω hω F hFm
   have hlaw := ((B.mem_formsC).1 hFm).2

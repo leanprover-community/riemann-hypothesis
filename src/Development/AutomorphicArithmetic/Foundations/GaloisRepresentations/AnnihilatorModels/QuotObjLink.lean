@@ -241,7 +241,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ConjDualPartsKilledOfPerfectPairingStatement =====
@@ -600,7 +599,6 @@ def kerAct {s : S ⟶ Sp R} {o o' : Obj b N s} (ψ : o.A ⟶ o'.A) [IsMonHom ψ]
       haveI := o.act.hom a
       exact MonObj.mul_comp _ _ _)
 
-
 open GlobalTheory.CechPic in
 theorem val_act {s : S ⟶ Sp R} (o : Obj b N s) (a : D.O) {T : Over S} (x y : T ⟶ o.A) :
     BirigidPow.val o.isLB (x ≫ o.act.act a) y = BirigidPow.val o.isLB x (y ≫ o.act.act (D.star a).unop) := by
@@ -610,7 +608,6 @@ theorem val_act {s : S ⟶ Sp R} (o : Obj b N s) (a : D.O) {T : Over S} (x y : T
   rw [← pull_comp, ← pull_comp, ← Over.comp_left, ← Over.comp_left, comp_lift, comp_lift, lift_fst_assoc, lift_snd,
     lift_fst, lift_snd_assoc] at e'
   exact e'
-
 
 open GlobalTheory.TranslChar GlobalTheory.CechPic in
 theorem exists_pairing {s : S ⟶ Sp R} {c : ℕ} {o o' : Obj b N s} {ψ : o.A ⟶ o'.A} [IsMonHom ψ]

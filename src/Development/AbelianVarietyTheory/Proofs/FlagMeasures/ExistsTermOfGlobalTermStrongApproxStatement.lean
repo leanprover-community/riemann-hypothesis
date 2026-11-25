@@ -102,8 +102,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 open scoped Pointwise ENNReal Classical
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.integralRowFrame_map_isometry : ∀ (D : D7) (γ : (VS D).V ≃ₗ[D.host.E] (VS D).V), γ ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT → ∀ (Λ₁ Λ₂ : Submodule (𝓞 D.host.E) (VS D).V), Formalism.HermitianLatticesTheory.gmap γ Λ₁ = Λ₂ → ∀ (T : D.host.E) (F : LFlag (D.sp.Y 0) D.R.rS T), FrameOK D Λ₁ F → FrameOK D Λ₂ (mapLF γ F) := by
-  first | exact @GlobalTheory.FrameIsom.frameOK_mapLF
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.IntegralRowFrameMapIsometryStatement =====
@@ -982,7 +980,7 @@ theorem exists_admissible_integralFrame_of_localTerms_alt : ∀ (D : D7) (X : Hi
   have hrow : IsRowLat D (X.Fu u) t₀.lam := (Y.rowsOK u).1 _ t₀.mem
   have hpd' := Formalism.L2.SG.TermDef.pd_self (X.Fu u') t₀.lam' hrow'
   have hpd := Formalism.L2.SG.TermDef.pd_self (X.Fu u) t₀.lam hrow
-  refine ⟨lift_transport D _ hγ _ _ hlam _ hpd'.1, ?_, GlobalTheory.T.integralRowFrame_map_isometry D _ hγ _ _ hlam _ _ hpd'.2.2⟩
+  refine ⟨lift_transport D _ hγ _ _ hlam _ hpd'.1, ?_, GlobalTheory.FrameIsom.frameOK_mapLF D _ hγ _ _ hlam _ _ hpd'.2.2⟩
   have hloc := GlobalTheory.T.movedReferenceFrame_congruent_unitriangular D X Y u u' hst hk w F00 F'0 FP hZ hG hAt G c t₀ ρ U U' hMv n m hn hm hlam hterm
   obtain ⟨ξ, h1, h2, h3⟩ := _root_.GlobalTheory.FrameGlue.glue (VS D) D.R.rS t₀.lam (gS D) (Nat.mul_pos (D.host.g_prime 0).pos (D.host.g_prime 1).pos)
     (frame (lf D (X.Fu u))) (frame (mapLF (n⁻¹ * t₀.lin * m) (lf D (X.Fu u'))))
@@ -1191,7 +1189,6 @@ private theorem full_lattice_of_term {A : Places F E sig} {r k : ℕ} (G : GFram
   have hz := LinearMap.mem_ker.mp (hker (Submodule.mem_top (x := A.bc p z)))
   rw [hψ] at hz
   exact (map_eq_zero_iff _ (A.loc p).ιE.injective).mp hz
-
 
 theorem good_places (A : Places F E sig) (r k : ℕ) (G : GFrames A r k) (hk : 4 * r + 7 ≤ k)
     (d : G.Dat) (Λ : G.Lt) (hT : G.IsTerm d Λ) :
@@ -1499,7 +1496,7 @@ namespace GlobalTheory.HL.TermSurj
 theorem exists_term_of_global : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word), Formalism.MainNotions.S.Cnt.Stand D u u' → 4 * D.R.rS + 7 ≤ D.R.k → ∀ (w : Point D.host.E (D.R.rS + 1)) (F00 : LFlag (D.sp.Y 0) D.R.rS (((D.mem u).A.T : ℕ) : D.host.E)) (F'0 : LFlag (D.sp.Y 0) D.R.rS (((D.mem u').A.T : ℕ) : D.host.E)) (FP : ∀ p : PlF D, LocNG.FPair (locH (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D) p) D.R.rS), ZhatOM (ZhatL F00 F'0) = ptMat w → Gval F00 F'0 ≠ 0 → (∀ p, AtBase (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D) p F00 F'0 (Tu D u) (Tu D u') (FP p) ∧ (FP p).RelG (LocNG.theta (Y.M p))) → ∀ (G : GFrames (placesOf (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D)) D.R.rS D.R.k) (c : GCoord (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D) F00 F'0 FP G), ∀ (t₀ : TauC Y u u') (ρ : ((VS D).V ≃ₗ[D.host.E] (VS D).V)) (U U' : Formalism.L2.SG.PairVal.MatR D), MovesTo F00 F'0 (lf D (X.Fu u)) t₀.frame ρ U U' → ∀ Γ, G.IsTerm (G.datOf (c.lat ρ t₀.lam)) Γ → ∃ (t : TauC Y u u') (n m : ((VS D).V ≃ₗ[D.host.E] (VS D).V)), (Y.tO u u').rowOf t = (Y.tO u u').rowOf t₀ ∧ (n ∈ NRat (lf D (X.Fu u)) ∧ m ∈ NRat (lf D (X.Fu u')) ∧ t.lin = n⁻¹ * t₀.lin * m) ∧ Γ = c.lat (ρ * n) t.lam := by
   intro D X Y u u' hSt hk w F00 F'0 FP hZ hG hAt G c t₀ ρ U U' hMv Γ hΓ
   obtain ⟨hNiff, hN'iff, hlat, hsurj, -, -⟩ :=
-    GlobalTheory.T.rational_unipotent_groups_lattices_global_coordinates D X Y u u' hSt hk w F00 F'0 FP hZ hG hAt G c t₀ ρ U U' hMv
+    GlobalTheory.HL.GrpCoord.grp_coords D X Y u u' hSt hk w F00 F'0 FP hZ hG hAt G c t₀ ρ U U' hMv
   have hT0 := (GlobalTheory.T.movedTermLattice_isGlobalTerm_phase D X Y u u' hSt hk w F00 F'0 FP hZ hG hAt G c t₀ ρ U U' hMv).1
   have ht0 : Formalism.HermitianLatticesTheory.gmap t₀.lin t₀.lam' = t₀.lam := t₀.rep.2.2.2.1
   have e3 : c.lat ρ t₀.lam = c.lat (ρ * t₀.lin) t₀.lam' := by rw [← ht0, _root_.GlobalTheory.HL.GCoord.lat_gmap]

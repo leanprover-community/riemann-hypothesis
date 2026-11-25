@@ -116,36 +116,7 @@ theorem finite_mid [IsNoetherianRing R] {M₁ M₂ M₃ : Type 1} [AddCommGroup 
     Module.Finite.equiv g.quotKerEquivRange.symm
   exact Module.Finite.of_submodule_quotient (LinearMap.ker g)
 
-theorem H_subsingleton (F : C ⥤ ModuleCat.{0} R) (h : ∀ T, Subsingleton (F.obj T)) (n : ℕ) :
-    Subsingleton (CH.H F n) := by
-  have hX : Subsingleton ((CH.cx F).X n) := ⟨fun a b => funext fun s => (h _).elim _ _⟩
-  refine ⟨fun x y => ?_⟩
-  obtain ⟨a, ha, rfl⟩ := (CrystallineSemistableComparison.P.cls_surj (CH.cx F) n).1 x
-  obtain ⟨b, hb, rfl⟩ := (CrystallineSemistableComparison.P.cls_surj (CH.cx F) n).1 y
-  have e : a = b := hX.elim _ _
-  subst e
-  rfl
-
-theorem sqM_rep (a b : IdF A) (T : C) (x : sqM a b T) :
-    ∃ (y : A.obj T) (hy : y ∈ a.S T), x = sqMk a b y hy := by
-  obtain ⟨x, hx⟩ := x
-  obtain ⟨y, hy, rfl⟩ := (Ideal.mem_map_iff_of_surjective _ Ideal.Quotient.mk_surjective).1 hx
-  exact ⟨y, hy, rfl⟩
-
-theorem sq_self_subsingleton (a : IdF A) (T : C) : Subsingleton ((sq a a).obj T) := by
-  refine ⟨fun x y => ?_⟩
-  obtain ⟨x', hx, rfl⟩ := sqM_rep a a T x
-  obtain ⟨y', hy, rfl⟩ := sqM_rep a a T y
-  refine Subtype.ext ?_
-  change Ideal.Quotient.mk _ x' = Ideal.Quotient.mk _ y'
-  rw [Ideal.Quotient.eq_zero_iff_mem.2 hx, Ideal.Quotient.eq_zero_iff_mem.2 hy]
-
 variable {a b c : IdF A}
-
-theorem sq_les (hba : ∀ T, b.S T ≤ a.S T) (hcb : ∀ T, c.S T ≤ b.S T) (n : ℕ) :
-    Function.Exact ((sqLe (a := b) (b := c) (a' := a) (b' := c) hba fun _ => le_rfl).pull n)
-      ((sqLe (a := a) (b := c) (a' := a) (b' := b) (fun _ => le_rfl) hcb).pull n) := by
-  apply GlobalTheory.CompanionTheory.KFin.sq_les
 
 theorem finite_dev [IsNoetherianRing R] (a : ℕ → IdF A) (hanti : ∀ k l, k ≤ l → ∀ T, (a l).S T ≤ (a k).S T) (s n : ℕ)
     (hgr : ∀ r, r < s → Module.Finite R (CH.H (sq (a r) (a (r + 1))) n)) :
@@ -155,13 +126,13 @@ theorem finite_dev [IsNoetherianRing R] (a : ℕ → IdF A) (hanti : ∀ k l, k 
   | zero =>
     intro r h
     obtain rfl : r = s := by omega
-    have := H_subsingleton _ (sq_self_subsingleton (a r)) n
+    have := GlobalTheory.CompanionTheory.KFin.H_subsingleton _ (GlobalTheory.CompanionTheory.KFin.sq_self_subsingleton (a r)) n
     exact Module.Finite.of_finite
   | succ d ih =>
     intro r h
     have := ih (r + 1) (by omega)
     have := hgr r (by omega)
-    exact finite_mid _ _ (sq_les (hanti r (r + 1) (by omega)) (hanti (r + 1) s (by omega)) n)
+    exact finite_mid _ _ (GlobalTheory.CompanionTheory.KFin.sq_les (hanti r (r + 1) (by omega)) (hanti (r + 1) s (by omega)) n)
 
 theorem finite_H_sq : ∀ {R : Type} [CommRing R] [IsNoetherianRing R] {C : Type 1} [Category.{0} C] {A : C ⥤ CommAlgCat.{0} R} (Fil : ℤ → IdF A),
     (∀ r r' : ℤ, r ≤ r' → ∀ T, (Fil r').S T ≤ (Fil r).S T) → ∀ s : ℕ,
@@ -876,7 +847,6 @@ theorem free_at (hp : p ≠ 0) (hn : IsNilpotent (p : R)) {V W : X.Opens} (h : W
   exact free_of_frame _ GlobalTheory.CompanionTheory.LocGrStep.loc_gr (fun T => sq_inY hI _ T.property) u _ E σ θ hGr hbot hco hσ hpt Qp r
     (fun r' _ => (hQp r').1)
 
-
 include hI in
 theorem off_at (hp : p ≠ 0) (hn : IsNilpotent (p : R)) {W : X.Opens} {d : ℕ} (c : Coord q W d) (r j : ℕ) (hj : j ≠ r) :
     Subsingleton (HU (GF (nlFun γ p X q κ) r) (SQ q κ γ p W) j) := by
@@ -1008,9 +978,6 @@ namespace CrystallineSemistableComparison.Pb
 
 alias vb_fin := _root_.GlobalTheory.CompanionTheory.VBGlue.finite_H_cx
 
-theorem serre_fg : ∀ (R : Type) [CommRing R] [IsNoetherianRing R], ∃ 𝒮 : Serre.{1} R,
-    ∀ (M : Type 1) [AddCommGroup M] [Module R M], 𝒮.P M ↔ Module.Finite R M := @_root_.GlobalTheory.CompanionTheory.SerreFin.exists_serre_finite
-
 end CrystallineSemistableComparison.Pb
 end -- clump:auto
 end -- clump:auto
@@ -1059,9 +1026,8 @@ theorem serre_red [IsNoetherianRing R] (F : Thick (nlFun γ p X q κ) ⥤ Module
     {ι : Type} (U : ι → X.Opens) (j : ℕ)
     (h : ∀ a b, a + b = j → Module.Finite R ((CrystallineSemistableComparison.Pb.cechH F (fun α => St Q {U α}) b).cx.H a)) :
     Module.Finite R (HU F (St Q (Set.range U)) j) := by
-  obtain ⟨𝒮, h𝒮⟩ := serre_fg R
+  obtain ⟨𝒮, h𝒮⟩ := GlobalTheory.CompanionTheory.SerreFin.exists_serre_finite R
   exact (h𝒮 _).1 (GlobalTheory.CompanionTheory.GlobSt.glob_st.2.1 F Q U 𝒮 j fun a b hab => (h𝒮 _).2 (h a b hab))
-
 
 include hI in
 theorem fin_gen [IsNoetherianRing R] (hp : p ≠ 0) (hn : IsNilpotent (p : R)) [IsProper q] (U : Cov q) (r j : ℕ) :

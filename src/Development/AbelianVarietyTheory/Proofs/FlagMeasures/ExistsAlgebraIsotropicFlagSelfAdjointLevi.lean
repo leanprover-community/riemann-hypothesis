@@ -136,12 +136,6 @@ theorem exists_proj (W : Submodule ℂ (Fin n → ℂ)) :
     have : T (WithLp.toLp 2 y) = WithLp.toLp 2 y := Submodule.starProjection_eq_self_iff.2 hy
     rw [this]
 
-theorem exists_orthonormal (G : Submodule ℝ (Matrix (Fin n) (Fin n) ℂ)) (d : ℕ)
-    (hd : Module.finrank ℝ G = d) :
-    ∃ E : Fin d → Matrix (Fin n) (Fin n) ℂ,
-      (∀ i k, ((E i * (E k)ᴴ).trace).re = if i = k then 1 else 0) ∧ Submodule.span ℝ (Set.range E) = G := by
-  apply GlobalTheory.FlagMeas.CompactAlg.exists_orthonormal <;> assumption
-
 theorem finrank_real_form (ε : Fin n → Bool) (C : Submodule ℂ (Matrix (Fin n) (Fin n) ℂ))
     (hC : ∀ X ∈ C, Formalism.REAL.Jm ε * Xᴴ * Formalism.REAL.Jm ε ∈ C) (G : Submodule ℝ (Matrix (Fin n) (Fin n) ℂ))
     (hG : ∀ X, X ∈ G ↔ X ∈ C ∧ Formalism.REAL.inG ε X) : Module.finrank ℝ G = Module.finrank ℂ C := by
@@ -410,7 +404,7 @@ theorem exists_levi_algebra : ∀ (n : ℕ) (ε : Fin n → Bool) (a : ℕ) (j :
       rw [Matrix.trace_sub, trace_of_proj _ _ (h1 _) (h2 _), trace_of_proj _ _ (h1 _) (h2 _), hrk]
       push_cast
       ring) G (fun X => by rw [← hcomm]; rfl)
-  obtain ⟨E, hE, hspan⟩ := exists_orthonormal G _ hd
+  obtain ⟨E, hE, hspan⟩ := GlobalTheory.FlagMeas.CompactAlg.exists_orthonormal G _ hd
   refine ⟨(commutant P).restrictScalars ℝ, E, fun X hX Y hY k => ?_, hE, fun X => ?_, ?_⟩
   · rw [mul_assoc, hY k, ← mul_assoc, hX k, mul_assoc]
   · rw [hspan]

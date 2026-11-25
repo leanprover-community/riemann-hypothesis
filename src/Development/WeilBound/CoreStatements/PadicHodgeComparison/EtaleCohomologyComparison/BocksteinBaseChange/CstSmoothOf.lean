@@ -121,7 +121,6 @@ section -- clump:auto
 
 set_option backward.isDefEq.respectTransparency false
 
-
 noncomputable section
 
 open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC TensorProduct
@@ -160,7 +159,6 @@ section -- clump:auto
 
 set_option backward.isDefEq.respectTransparency false
 
-
 noncomputable section
 
 open CategoryTheory Limits AlgebraicGeometry GlobalTheory.EtC TensorProduct
@@ -190,7 +188,6 @@ section -- clump:auto
 @[expose] public section
 
 set_option backward.isDefEq.respectTransparency false
-
 
 noncomputable section
 
@@ -457,16 +454,13 @@ theorem loc_bind {U : Scheme.{0}} {P P' : ∀ V : Scheme.{0}, (V ⟶ U) → Prop
 theorem loc_true (U : Scheme.{0}) : Loc U fun _ _ => True :=
   ⟨⊤, Scheme.etaleTopology.top_mem U, fun _ _ _ => trivial⟩
 
-theorem isSheaf_types (G : Shv R) : Presieve.IsSheaf Scheme.etaleTopology (G.obj ⋙ forget _) :=
-  (isSheaf_iff_isSheaf_of_type _ _).1 ((Presheaf.isSheaf_iff_isSheaf_forget _ _ (forget _)).1 G.property)
-
 theorem sec_eq_of_loc {F : Shv R} {U : Scheme.{0}} (x y : Sec F U)
     (h : Loc U fun V g => Sec.res g x = Sec.res g y) : x = y := by
   obtain ⟨S, hS, hSP⟩ := h
-  exact ((isSheaf_types F) S hS).isSeparatedFor.ext fun _ g hg => hSP _ g hg
+  exact ((CrystallineSemistableComparison.WeightedPowerFormIntegrability.isSheaf_types F) S hS).isSeparatedFor.ext fun _ g hg => hSP _ g hg
 
 theorem sec_subsingleton_of_isEmpty (F : Shv R) (U : Scheme.{0}) [IsEmpty U] : Subsingleton (Sec F U) :=
-  ⟨fun a b => ((isSheaf_types F).isSheafFor (⊥ : Presieve U)
+  ⟨fun a b => ((CrystallineSemistableComparison.WeightedPowerFormIntegrability.isSheaf_types F).isSheafFor (⊥ : Presieve U)
     (by rw [Sieve.generate_bot]; exact Scheme.bot_mem_grothendieckTopology U)).isSeparatedFor.ext (fun _ _ h => h.elim)⟩
 
 theorem epi_of_loc {F G : Shv R} (φ : F ⟶ G)
@@ -817,7 +811,6 @@ theorem conc_eq_one (hF : FormalIn) (q : ℕ) [NeZero q] (X : Scheme.{0}) (ζ : 
     rw [h1, cast_zero', eq_zero_of_cast _ _ _ h2.symm]
 
 end RootOfUnityLemmas
-
 
 open RootOfUnityLemmas in
 theorem root : RootsOfUnityFormal := by

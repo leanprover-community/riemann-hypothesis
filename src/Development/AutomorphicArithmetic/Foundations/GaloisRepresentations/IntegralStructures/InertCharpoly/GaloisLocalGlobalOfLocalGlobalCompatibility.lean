@@ -116,14 +116,12 @@ namespace GlobalTheory.GalCut
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] [IsCMField E] {l : ℕ} [Fact l.Prime] {a : ℕ}
 
-
 omit [IsAlgClosure E Ω] [IsCMField E] in
 theorem norm_natCast_om_lt_one : ‖((l : ℕ) : Om l)‖ < 1 := by
   have h := PadicAlgCl.norm_extends l ((l : ℕ) : ℚ_[l])
   rw [map_natCast] at h
   rw [h]
   exact Padic.norm_p_lt_one
-
 
 omit [NumberField E] [IsAlgClosure E Ω] [IsCMField E] in
 theorem valuation_natCast_lt_one_of_induces {A : ValuationSubring Ω} {O : Type} [CommRing O] [Algebra ℤ_[l] O]
@@ -145,7 +143,6 @@ theorem valuation_natCast_lt_one_of_induces {A : ValuationSubring Ω} {O : Type}
     linarith
   refine lt_of_le_of_ne ((A.valuation_le_one_iff _).2 hmem) fun h1 => hinv ?_
   rw [← A.valuation_le_one_iff, map_inv₀, h1, inv_one]
-
 
 omit [IsAlgClosure E Ω] [IsCMField E] in
 theorem mem_of_induces {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} (hA : IsPlaceOver A w) {O : Type} [CommRing O]
@@ -198,7 +195,6 @@ open NumberField IsDedekindDomain ValuativeRel Polynomial Formalism.ConjugateSel
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 
 end -- clump:auto
 end -- clump:auto
@@ -260,7 +256,6 @@ open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.Loc
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsTameOfMemWeilDeligneListSumStatement =====
@@ -314,7 +309,6 @@ open NumberField IsDedekindDomain ValuativeRel Polynomial Formalism.ConjugateSel
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 
 end -- clump:auto
 end -- clump:auto
@@ -390,7 +384,6 @@ open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.Loc
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.SatakeParameters.SupercuspidalSupportOfLengthOneLanglandsDatumStatement =====
@@ -404,7 +397,6 @@ open NumberField IsDedekindDomain ValuativeRel Polynomial Formalism.ConjugateSel
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.LocGL GlobalTheory.WeilDeligne GlobalTheory.LocLanglands
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
-
 
 end -- clump:auto
 end -- clump:auto
@@ -580,7 +572,6 @@ theorem lift_mem_twisted_kernel {W V : Type} [AddCommGroup W] [Module ℂ W] [Ad
 end Local
 
 end L5
-
 
 open L5 in
 theorem st5 : St5 := by
@@ -866,11 +857,6 @@ namespace PositivityTheory.Rg.DzCount
 
 namespace CentralCharacterTransfer
 
-theorem equiv_apply {G V W : Type} [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
-    {ρ : Representation ℂ G V} {σ : Representation ℂ G W} (φ : ρ.Equiv σ) (g : G) (v : V) :
-    φ (ρ g v) = σ g (φ v) :=
-  Representation.IntertwiningMap.isIntertwining ρ σ φ.toIntertwiningMap g v
-
 theorem mem_fixed_iff {G V : Type} [Group G] [AddCommGroup V] [Module ℂ V] {ρ : Representation ℂ G V}
     {H : Subgroup G} {v : V} : v ∈ fixed ρ H ↔ ∀ h ∈ H, ρ h v = v := by
   change (∀ h : H, ρ h v = ((1 : H →* ℂˣ) h : ℂ) • v) ↔ _
@@ -889,20 +875,20 @@ theorem map_fixed {G V W : Type} [Group G] [AddCommGroup V] [Module ℂ V] [AddC
   constructor
   · rintro ⟨v, hv, rfl⟩ h hh
     change σ h (φ v) = φ v
-    rw [← equiv_apply, hv h hh]
+    rw [← PositivityTheory.RgGu.NR.HermB.eqv, hv h hh]
   · intro hw
     have e2 : φ (φ.toLinearEquiv.symm w) = w := φ.toLinearEquiv.apply_symm_apply w
     refine ⟨φ.toLinearEquiv.symm w, fun h hh => ?_, e2⟩
     apply φ.toLinearEquiv.injective
     change φ _ = φ _
-    rw [equiv_apply, e2, hw h hh]
+    rw [PositivityTheory.RgGu.NR.HermB.eqv, e2, hw h hh]
 
 theorem hasCentralChar_of_equiv {k V W : Type} [Field k] [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
     {n : ℕ} {π : Representation ℂ (GL (Fin n) k) V} {σ : Representation ℂ (GL (Fin n) k) W} (φ : π.Equiv σ)
     {ω : kˣ →* ℂˣ} (h : HasCentralChar π ω) : HasCentralChar σ ω := by
   intro z w
   have e2 : φ (φ.toLinearEquiv.symm w) = w := φ.toLinearEquiv.apply_symm_apply w
-  rw [← e2, ← equiv_apply, h z]
+  rw [← e2, ← PositivityTheory.RgGu.NR.HermB.eqv, h z]
   exact φ.toLinearEquiv.map_smul _ _
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
@@ -929,7 +915,7 @@ theorem transfer {W W' V V' : Type} [AddCommGroup W] [Module ℂ W] [AddCommGrou
   obtain ⟨g', rfl⟩ := GlobalTheory.LocGL.redK_surjective g
   apply hj'.1
   rw [key, hj.2, hj'.2, key]
-  exact equiv_apply φ _ _
+  exact PositivityTheory.RgGu.NR.HermB.eqv φ _ _
 
 end CentralCharacterTransfer
 
@@ -970,7 +956,7 @@ theorem st8a : St4 → St5 → St6 → St7 → St8a := by
     have hj₀ : IsTypeMap (τ P).ρ π₀.ρ j₀ := by
       refine ⟨ψ.toLinearEquiv.injective.comp (hj P hP).1, fun g v => ?_⟩
       change ψ (j P hP _) = π₀.ρ g (ψ (j P hP v))
-      rw [(hj P hP).2, equiv_apply]
+      rw [(hj P hP).2, PositivityTheory.RgGu.NR.HermB.eqv]
     have hcc := GlobalTheory.LocGL.hasCentralChar_of_equiv ψ (hω P hP)
     refine ⟨rfl, ⟨hn, h5 k (τ P).V n (τ P).ρ (hτ P hP).2 π₀ j₀ hj₀⟩, ?_, ω P hP, hcc, hc P hP⟩
     change fixed π₀.ρ (KOne k (Fin n)) ≠ ⊥

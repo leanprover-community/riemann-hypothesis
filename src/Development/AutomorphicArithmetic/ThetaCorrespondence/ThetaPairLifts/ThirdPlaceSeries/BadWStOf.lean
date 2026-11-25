@@ -560,7 +560,6 @@ theorem mul_pb_mem_cusp (M : TwoLevels E r U C) (ka mu : Wt M.Ψ r) (u0 : C → 
 
 end GlobalTheory.CuspEmb
 
-
 open GlobalTheory.CuspEmb in
 theorem GlobalTheory.CuspEmb.cusp_embReg : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (U C : Type) [Group U] [Finite U]
     [Finite C] [MulAction U C] (M : TwoLevels E r U C), ∀ (ka : Wt M.Ψ r) (ρ : Representation ℂ U (M.cusp ka)),
@@ -735,7 +734,6 @@ section Point
 
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Formalism.MainNotions.G.Inst D L} {Gl : Formalism.MainNotions.G.LatInst D} {Kc : Formalism.MainNotions.G.Consts}
   {Y : DivX D} {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc Y cX} {Csz : ℝ}
-
 
 end Point
 
@@ -1297,8 +1295,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
-
 section
 open NumberField IsDedekindDomain
 open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Formalism.L2.DIV Formalism.L2.Indef Formalism.L2.Indef.Tree Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Cx Formalism.IndefR.FWT
@@ -1320,7 +1316,7 @@ theorem badW_of_del_bound_of_T_bound (p : PtAt ex Csz) (i : Fin D.R.m) (T : ℕ)
     (hsT : 2 * D.R.r + 50 * D.R.r ^ 2 * (D.R.f * (D.R.r * D.R.r / 4)) + 2 ≤ T) : BadW p i del := by
   classical
   obtain ⟨C, hCf, hact, M, ka, ρ, σ, f, hpull, hequiv, hli, hspan, hlev, hcard, hcase⟩ := hmod
-  obtain ⟨lam, ψ, hW, hlam, hhalf⟩ := _root_.GlobalTheory.T.exists_whittaker_lam_psi_half_unip D L hT Gi Gl Kc Y cX ex Csz p hRows
+  obtain ⟨lam, ψ, hW, hlam, hhalf⟩ := _root_.GlobalTheory.ShareOn.isWhit_and_eq_embLL_inv_and_halfUnip D L hT Gi Gl Kc Y cX ex Csz p hRows
   obtain ⟨-, hHex⟩ := _root_.GlobalTheory.BadCount.Inh.exists_whit_half D ψ hW.1
   choose Hh hHh using hHex
   let e : p.P.Gp ≃* G0g D.nd := p.R.eG.trans p.cG

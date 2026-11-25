@@ -240,16 +240,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.LastVertexInv
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
 
-theorem _root_.GlobalTheory.T.multilinear_sum_eq_of_function_product_sums_eq : ∀ {ι κ Δ : Type} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ] {X : ι → Type} {Y : κ → Type}
-    {V : ∀ i, Submodule ℂ (X i → ℂ)} {V' : ∀ j, Submodule ℂ (Y j → ℂ)}
-    (M : MultilinearMap (RingHom.id ℂ) (fun i => V i)
-      (MultilinearMap (RingHom.id ℂ) (fun j => V' j) ℂ)) (τ : Δ →₀ ℂ)
-    (f f' : Δ → ∀ i, V i) (g g' : Δ → ∀ j, V' j),
-    (∀ (x : ∀ i, X i) (y : ∀ j, Y j),
-      (τ.sum fun d a => a * (∏ i, (f d i : X i → ℂ) (x i)) * ∏ j, (g d j : Y j → ℂ) (y j)) =
-        τ.sum fun d a => a * (∏ i, (f' d i : X i → ℂ) (x i)) * ∏ j, (g' d j : Y j → ℂ) (y j)) →
-    (τ.sum fun d a => a * M (f d) (g d)) = τ.sum fun d a => a * M (f' d) (g' d) :=
-  @GlobalTheory.funProd_multilinear_sum_eq
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.MultilinearSumEqOfFunctionProductSumsEqStatement =====
@@ -729,13 +719,6 @@ theorem splitScal_eq (S : GridChoice W U) {μ₀ : T} (hL : L.Is μ₀) {t : T} 
   · rw [if_pos (hpar.mpr h0), h0]
     simp [GlobalTheory.LFun.locChar, div_eq_mul_inv]
 
-theorem one_lat (V : HSp D) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E))
-    (y : Fin V.rank → TensorProduct D.host.F (Af D.host.F) D.host.E) :
-    y ∈ latHat D.host.F D.host.E (Λ : Set (Fin V.rank → D.host.E)) ↔
-      ((Formalism.L2.Theta.mt V 1).map (finPart D)).mulVec y ∈ latHat D.host.F D.host.E (Λ : Set (Fin V.rank → D.host.E)) := by
-  have h1 : Formalism.L2.Theta.mt V 1 = 1 := by simp [Formalism.L2.Theta.mt]
-  rw [h1, Matrix.map_one _ (map_zero _) (map_one _), Matrix.one_mulVec]
-
 theorem toPair_zero (G : GridData L sc) (x : GA D (G.V (.grid 0 D.R.m))) :
     G.toPair (.chi 0 D.R.m : Pair T) x 1 = (1, x) := by
   simp [GridData.toPair]
@@ -770,7 +753,7 @@ theorem vac_scalar (S : GridChoice W U) {μ₀ : T} (hL : L.Is μ₀) {t : T} {k
   have hq := toPair_zero G x.1
   have key := GlobalTheory.RowVacScalar.vacScalar_eq_prod S hL t 0 hm (G.toPair (.chi 0 D.R.m) x.1 1)
     (by rw [hq]; exact one_mem _) (by rw [hq]; exact x.2)
-    (by rw [hq]; exact fun y => one_lat _ _ y) (by rw [hq]; exact fun y => moved_latT S hL hk y) c hc
+    (by rw [hq]; exact fun y => GlobalTheory.LastVertexLoc.one_lat _ _ y) (by rw [hq]; exact fun y => moved_latT S hL hk y) c hc
   rw [key]
   refine Finset.prod_congr rfl fun w _ => ?_
   rw [hq]
@@ -1464,7 +1447,7 @@ theorem pair_points_first_vertex_law : _root_.GlobalTheory.FunPr.ThetaLocalInput
     rw [hscale d hd]
     ring
   rw [step1]
-  refine GlobalTheory.T.multilinear_sum_eq_of_function_product_sums_eq M τ _ _ _ _ fun xs ys => ?_
+  refine GlobalTheory.funProd_multilinear_sum_eq M τ _ _ _ _ fun xs ys => ?_
   have hk' := key xs ys
   simp only [Finsupp.sum] at hk' ⊢
   refine (?_ : _ = χk * _).trans (hk'.trans (Finset.sum_congr rfl fun d hd => ?_))

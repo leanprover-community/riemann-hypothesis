@@ -225,7 +225,6 @@ theorem coeff_taylor_eq_pderivIter {σ : Type} [Fintype σ] [DecidableEq σ] {f 
 
 end GlobalTheory.FockTaylor
 
-
 open GlobalTheory.FockTaylor in
 theorem GlobalTheory.FockTaylor.hasSum_derivAt0 : ∀ (ι : Type) [Fintype ι] (a b : ℕ) (G : VCx ι a b → ℂ), Differentiable ℂ G → ∀ z₀ : VCx ι a b, HasSum (fun m : DVar ι a b →₀ ℕ => (m.prod fun k n => z₀ k.1 k.2.1 k.2.2 ^ n / (n.factorial : ℂ)) * derivAt0 G m) (G z₀) := by
   intro ι _ a b G hG z₀
@@ -541,16 +540,6 @@ theorem omF_eq {S T : HSp D} (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.C
   rw [GlobalTheory.VacUnique.omO_apply]
   exact Finset.sum_congr rfl fun τ _ => formAt_eq_omAt S T τ _ _
 
-theorem cplxO_smulC' {m n : ℕ} (s : Matrix (Fin n) (Fin n) ℂ) (t : Matrix (Fin m) (Fin m) ℂ) (c : ℂ)
-    (x : Matrix (Fin m) (Fin n) ℂ) : cplxO s t (c • x) = c • cplxO s t x := by
-  simp only [cplxO, Matrix.mul_smul, Matrix.smul_mul]
-  exact smul_comm _ _ _
-
-theorem cplxO_sum' {m n p q : ℕ} (s : Matrix (Fin n) (Fin n) ℂ) (t : Matrix (Fin m) (Fin m) ℂ)
-    (x : Fin p → Fin q → Matrix (Fin m) (Fin n) ℂ) :
-    cplxO s t (∑ i, ∑ j, x i j) = ∑ i, ∑ j, cplxO s t (x i j) := by
-  simp only [cplxO, Matrix.mul_sum, Matrix.sum_mul, Finset.smul_sum]
-
 theorem fmR_I {S T : HSp D} (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T) (z : VCx D.what₂.Tau S.rank T.rank) :
     fmR A B (I • z) = GlobalTheory.VacUnique.jO S T A.cart B.cart (fmR A B z) := by
   funext τ
@@ -558,9 +547,9 @@ theorem fmR_I {S T : HSp D} (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.Ch
   have hs := (GlobalTheory.ArchRec.LieAtPlace.cart_isCartanInv A τ).1
   have ht := (GlobalTheory.ArchRec.LieAtPlace.cart_isCartanInv B τ).1
   unfold fockMat
-  rw [cplxO_sum']
+  rw [GlobalTheory.FockEntire.cplxO_sum]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-  rw [GlobalTheory.VacUnique.cplxO_add, cplxO_smulC', cplxO_smulC', GlobalTheory.RealSymplForm.cplxO_cplxO hs ht]
+  rw [GlobalTheory.VacUnique.cplxO_add, GlobalTheory.FockEntire.cplxO_smulC, GlobalTheory.FockEntire.cplxO_smulC, GlobalTheory.RealSymplForm.cplxO_cplxO hs ht]
   have e1 : ((I • z) τ i j).re = -(z τ i j).im := by simp
   have e2 : ((I • z) τ i j).im = (z τ i j).re := by simp
   rw [e1, e2]
@@ -1065,8 +1054,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.FockTransl
 open Formalism.L2.Ker (VCx DVar derivAt0)
 
-theorem _root_.GlobalTheory.T.fockRealPoint_transport_continuous_integral : ∀ (D : D7) (θ : InfFam D) (σ : (D.what₂.Tau → ℂ) →+ AE D), GlobalTheory.FockCompare.Chart θ σ → ∀ (S T : HSp D) (A : GlobalTheory.ChainFr.Fr S) (B : GlobalTheory.ChainFr.Fr T), Continuous (fockPt σ A B) ∧ (∀ w : WO S T, w.map (finPart D) = 0 → ∃ z, fockPt σ A B z = w) ∧ ∀ g : VCx D.what₂.Tau S.rank T.rank → ℂ, Integrable g → ∃ (m : Measure (WO S T)) (α : WO S T → ℂ), SFinite m ∧ Integrable α m ∧ ∀ H : WO S T → ℂ, ∫ w, α w * H w ∂m = ∫ z, g z * H (fockPt σ A B z) := by
-  first | exact @GlobalTheory.FockTransport.fockPt_transport
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockRealPointTransportContinuousIntegralStatement =====
@@ -1289,7 +1276,7 @@ theorem tame_kills_real_translates : ∀ (D : D7) (ψ : AddChar (AF D.host.F) �
     ∀ w : WO S T, w.map (finPart D) = 0 → ℓ (heisO ψ S T w f) = 0 := by
   intro D ψ θ hψ hθ S T A B ℓ hℓ f hf hP w hw
   obtain ⟨σ, hσ⟩ := GlobalTheory.RealLineAt.exists_inverse_chart hθ
-  obtain ⟨hcont, hsurj, htr⟩ := GlobalTheory.T.fockRealPoint_transport_continuous_integral D θ σ hσ S T A B
+  obtain ⟨hcont, hsurj, htr⟩ := GlobalTheory.FockTransport.fockPt_transport D θ σ hσ S T A B
   obtain ⟨z₀, rfl⟩ := hsurj w hw
   have hth := hf.1
   set F : VCx D.what₂.Tau S.rank T.rank → ℂ := fun z => ℓ (heisO ψ S T (fockPt σ A B z) f) with hFdef

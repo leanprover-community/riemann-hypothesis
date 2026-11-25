@@ -874,13 +874,6 @@ theorem congruence_on_idempotent (hJ : IdxDJacE) {e : Af X.B.I.F} (hE : EgProp X
   rw [e2]
   exact smul_int_mem (mul_mem (integral_circleChar X hE.1) hy) hcδ
 
-theorem hA_crd (x y : (VS D).V) :
-    hA X.B.I (incl X.B.I (X.crd x)) (incl X.B.I (X.crd y)) =
-      Formalism.UG.inclE (F := X.B.I.F) (Af X.B.I.F) (X.ιE.symm ((VS D).hT x y)) := by
-  rw [hA_incl, tr_hT, RingEquiv.symm_apply_apply]
-  congr 1
-  simp only [Formalism.UG.hform, dotProduct, Matrix.mulVec, Finset.mul_sum, Pi.star_apply, starRingEnd_apply, mul_assoc]
-
 variable (X)
 
 def zv (u : D.what₂.Word) : VA X.B.I := X.B.I.fmat (X.xu u)⁻¹ *ᵥ incl X.B.I (X.zR u)
@@ -895,27 +888,27 @@ theorem fv_fix (u : D.what₂.Word) (a : Fin D.R.rS) :
 
 theorem rel_ee (a b : Fin D.R.rS) : hA X.B.I (incl X.B.I (X.eR a)) (incl X.B.I (X.eR b)) = 0 := by
   show hA X.B.I (incl X.B.I (X.crd (X.eX a))) (incl X.B.I (X.crd (X.eX b))) = 0
-  rw [hA_crd, X.ee, map_zero, map_zero]
+  rw [Formalism.L2.SG.PoincareInHH.Cut.hA_crd, X.ee, map_zero, map_zero]
 
 theorem rel_ff (a b : Fin D.R.rS) : hA X.B.I (incl X.B.I (X.fR a)) (incl X.B.I (X.fR b)) = 0 := by
   show hA X.B.I (incl X.B.I (X.crd (X.fY a))) (incl X.B.I (X.crd (X.fY b))) = 0
-  rw [hA_crd, X.ff, map_zero, map_zero]
+  rw [Formalism.L2.SG.PoincareInHH.Cut.hA_crd, X.ff, map_zero, map_zero]
 
 theorem rel_ef (a b : Fin D.R.rS) :
     hA X.B.I (incl X.B.I (X.eR a)) (incl X.B.I (X.fR b)) = if a = b then 1 else 0 := by
   show hA X.B.I (incl X.B.I (X.crd (X.eX a))) (incl X.B.I (X.crd (X.fY b))) = _
-  rw [hA_crd, X.ef]
+  rw [Formalism.L2.SG.PoincareInHH.Cut.hA_crd, X.ef]
   split_ifs <;> simp
 
 theorem rel_ez (u : D.what₂.Word) (a : Fin D.R.rS) : hA X.B.I (incl X.B.I (X.eR a)) (zv X u) = 0 := by
   rw [← ev_fix X u a, zv, hA_unit X (X.xu u)⁻¹]
   show hA X.B.I (incl X.B.I (X.crd (X.eX a))) (incl X.B.I (X.crd (X.zu u))) = 0
-  rw [hA_crd, (X.zu_orth u a).1, map_zero, map_zero]
+  rw [Formalism.L2.SG.PoincareInHH.Cut.hA_crd, (X.zu_orth u a).1, map_zero, map_zero]
 
 theorem rel_fz (u : D.what₂.Word) (a : Fin D.R.rS) : hA X.B.I (incl X.B.I (X.fR a)) (zv X u) = 0 := by
   rw [← fv_fix X u a, zv, hA_unit X (X.xu u)⁻¹]
   show hA X.B.I (incl X.B.I (X.crd (X.fY a))) (incl X.B.I (X.crd (X.zu u))) = 0
-  rw [hA_crd, (X.zu_orth u a).2, map_zero, map_zero]
+  rw [Formalism.L2.SG.PoincareInHH.Cut.hA_crd, (X.zu_orth u a).2, map_zero, map_zero]
 
 end PI.UnitaryDimensionFormula.FrameX
 
@@ -1028,7 +1021,6 @@ theorem Z_hA_mL' {d w : VA X.B.I} (hd : d ∈ mL X.B.I X.B.g) (hw : w ∈ X.B.I.
     ZMod' X.B.I X.B.g (hA X.B.I w d) := by
   rw [hA_symm]
   exact Z_sig X.B.I X.B.g (Z_hA_mL X hd hw)
-
 
 omit hJ hE in
 theorem Z_pair {x x' y y' : VA X.B.I} (hx : x - x' ∈ mL X.B.I X.B.g) (hy : y - y' ∈ mL X.B.I X.B.g)
@@ -1424,10 +1416,6 @@ theorem incl_injective (I : Formalism.MainNotions.S.AutInst) : Function.Injectiv
   funext i
   exact hi (congrFun h i)
 
-theorem star_host (x : X.B.I.E) : star (X.ιE x) = X.ιE (star x) := by
-  rw [X.ιE_conj]
-  exact Formalism.BasicNotions.Examples₂.star_eq_conj _ _
-
 theorem gOf_isom (M : GL (Fin X.B.I.n) X.B.I.E) (hM : M ∈ Formalism.UG.UJ (starRingEnd X.B.I.E) X.B.I.J) :
     gOf X M ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT := by
   have hg : ∀ i, gOf X M (X.bas i) = ∑ k, hmat X (M : Matrix _ _ _) k i • X.bas k :=
@@ -1438,7 +1426,7 @@ theorem gOf_isom (M : GL (Fin X.B.I.n) X.B.I.E) (hM : M ∈ Formalism.UG.UJ (sta
     rw [hg, hg, ← X.J_eq, ← congrFun (congrFun hU i) j]
 
     simp only [map_sum, LinearMap.map_smulₛₗ₂, LinearMap.sum_apply, LinearMap.map_smul, smul_eq_mul, ← X.J_eq,
-    hmat, Matrix.map_apply, RingEquiv.toRingHom_eq_coe, RingHom.coe_coe, starRingEnd_apply, star_host,
+    hmat, Matrix.map_apply, RingEquiv.toRingHom_eq_coe, RingHom.coe_coe, starRingEnd_apply, PI.UnitaryDimensionFormula.tr_star,
     Formalism.UG.cT, Matrix.mul_apply, Matrix.transpose_apply, map_mul, Finset.sum_mul]
     refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => ?_
     ring

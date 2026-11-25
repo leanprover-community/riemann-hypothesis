@@ -49,15 +49,6 @@ theorem tailW (c : Fin r → ℂ) (hc : ∀ a, c a ≠ 0) (b : Fin r) : ∀ n : 
     · intro v hv
       rw [← Matrix.mulVec_mulVec, Formalism.FourierDecayAlt.P.CutMP.unipotent_fixes_anisotropic_vector l _ v hv, hTv v hv]
 
-theorem bvec_wI_inWb (v : Fin (k + 1)) : inWb k r (bvec (wI k r v)) := by
-  intro i hi
-  simp only [bvec, Pi.single_apply]
-  rw [if_neg]
-  intro h
-  have := congrArg Fin.val h
-  simp [wI] at this
-  omega
-
 section rules
 
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E]
@@ -153,7 +144,7 @@ theorem leftRuleB (z : Fin (2 * r + k + 1) → ℂ) (D : Set (Mx k r)) (f : Mx k
     simp only [ybv, hpos, fvec, dif_pos hb1]
     rw [Formalism.FourierDecayAlt.P.SignAntidiagonal.herm_bvec_eI, ← Matrix.mulVec_mulVec]
     have hgw : inWb k r (g *ᵥ bvec (wI k r v)) :=
-      Formalism.FourierDecayAlt.P.NFRadRedLocSec.inWb_uwb (Formalism.FourierDecayAlt.P5.Rad.glev_last_uwb hg) (bvec_wI_inWb v)
+      Formalism.FourierDecayAlt.P.NFRadRedLocSec.inWb_uwb (Formalism.FourierDecayAlt.P5.Rad.glev_last_uwb hg) (Formalism.FourierDecayAlt.P.Qx8.inWb_bvec_wI v)
     rw [hTv _ hgw]
     exact hgw _ (Or.inr (by simp [esI]; omega))
   rw [hy, mul_zero, zero_smul]
@@ -236,7 +227,6 @@ theorem stepB_ring {A : Type} [Ring A] [Algebra ℂ A] {n : ℕ} (E : Fin n → 
       rw [Fin.val_zero, add_zero, ← pow_add, ← two_mul, pow_mul]
       norm_num
     rw [h11, Int.cast_one, one_mul]
-
 
   rw [Formalism.FourierDecayAlt.P.expansion_first_column A n (t + 1) E a b u, map_sum, Fin.sum_univ_succ, Fin.sum_univ_succ]
   have hrest : ∀ m : Fin t, Λ ((((-1 : ℤ) ^ ((m.succ.succ : Fin (t + 2)) : ℕ) : ℤ) : A) *

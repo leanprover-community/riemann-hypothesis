@@ -182,11 +182,6 @@ theorem red_snd (e : ℕ) (x : Over.mk (Spec.map φ) ⟶ G) :
   Over.w (red hI e x)
 
 omit [GrpObj G] in
-theorem thickMap_fst (e : ℕ) :
-    thickMap R I e G ≫ pullback.fst G.hom (thick R I (e + 1)) = pullback.fst G.hom (thick R I e) :=
-  (pullback.lift_fst _ _ _).trans (Category.comp_id _)
-
-omit [GrpObj G] in
 theorem thickMap_snd (e : ℕ) :
     thickMap R I e G ≫ pullback.snd G.hom (thick R I (e + 1)) =
       pullback.snd G.hom (thick R I e) ≫ thickTrans R I e :=
@@ -196,7 +191,7 @@ theorem red_succ (e : ℕ) (x : Over.mk (Spec.map φ) ⟶ G) :
     adicLevelMap (maximalIdeal B) (Nat.le_succ (e + 1)) ≫ (red hI (e + 1) x).left =
       (red hI e x).left ≫ thickMap R I e G := by
   apply pullback.hom_ext
-  · rw [Category.assoc, red_fst, Category.assoc, thickMap_fst, red_fst]
+  · rw [Category.assoc, red_fst, Category.assoc, GlobalTheory.FormalTower.thickMap_fst, red_fst]
     exact adicLevelMap_ι_assoc (maximalIdeal B) (Nat.le_succ (e + 1)) x.left
   · rw [Category.assoc, red_snd, Category.assoc, thickMap_snd, ← Category.assoc, red_snd, adicLevelMap_lev]
 
@@ -211,7 +206,7 @@ theorem fam_adic (hb : ∀ e, thickMap R I e G ≫ (b (e + 1)).left = (b e).left
     (x : Over.mk (Spec.map φ) ⟶ G) : IsAdicFamily (maximalIdeal B) (fam hI b x) := fun e => by
   simp only [fam, Over.comp_left, Category.assoc]
   rw [← Category.assoc (adicLevelMap _ _), red_succ, Category.assoc, ← Category.assoc (thickMap R I e G),
-    hb, Category.assoc, thickMap_fst]
+    hb, Category.assoc, GlobalTheory.FormalTower.thickMap_fst]
 
 variable (b) in
 theorem fam_over (x : Over.mk (Spec.map φ) ⟶ G) (e : ℕ) :
@@ -256,7 +251,6 @@ theorem lim_mul (hmon : ∀ e, IsMonHom (b e))
 end Main
 
 end GlobalTheory.ThickEndo
-
 
 open GlobalTheory.ThickEndo in
 theorem GlobalTheory.exists_mul_map_points_of_thickEndo : ∀ (R : Type) [CommRing R] (I : Ideal R) (G : Over (Sp R)) [GrpObj G] (b : ∀ e : ℕ, thickObj R I e G ⟶ thickObj R I e G), (∀ e, IsMonHom (b e)) → (∀ e, thickMap R I e G ≫ (b (e + 1)).left = (b e).left ≫ thickMap R I e G) → ∀ (B : Type) [CommRing B] [IsLocalRing B] [IsAdicComplete (maximalIdeal B) B] (s : Sp B ⟶ Sp R), s (closedPoint B) ∈ Set.range (thick R I 0) → ∃ Φ : (Over.mk s ⟶ G) → (Over.mk s ⟶ G), (∀ x y, Φ (x * y) = Φ x * Φ y) ∧ ∀ (x : Over.mk s ⟶ G) (e : ℕ), ∃ r : Sp (B ⧸ maximalIdeal B ^ (e + 1)) ⟶ (thickObj R I e G).left, r ≫ pullback.fst G.hom (thick R I e) = thick B (maximalIdeal B) e ≫ x.left ∧ r ≫ (b e).left ≫ pullback.fst G.hom (thick R I e) = thick B (maximalIdeal B) e ≫ (Φ x).left := by
@@ -809,7 +803,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
-
 theorem _root_.GlobalTheory.T.exists_integral_sections_uniformisedGroup_power : ∀ (R : Type) [CommRing R] [IsDomain R] (I : Ideal R) (D : DegData R I) (A : PolAV (Sp (FractionRing R))) (G : Over (Sp R)) [GrpObj G] [IsCommMonObj G] (U : Unif I D A G) {k m : ℕ}, 1 ≤ k → ∀ (b : Fin (m + 1) → H0 A.L k), ∃ (σ : Fin (m + 1) → H0 U.LG.L k) (c : Fin (m + 1) → (FractionRing R)ˣ), ∀ (y : ↥(pullback G.hom (jK R))) (j : Fin 1 → U.LG.L.ι) (jA : Fin 1 → A.L.ι), pullback.fst G.hom (jK R) y ∈ U.LG.L.U (j 0) → U.gen.hom.left y ∈ A.L.U (jA 0) → ∃ u : ((pullback G.hom (jK R)).presheaf.stalk y)ˣ, ∀ i, secGerm (pullback.fst G.hom (jK R)) y (σ i) j = u.val * gs (pullback.snd G.hom (jK R)) y ⊤ ((Scheme.ΓSpecIso (CommRingCat.of (FractionRing R))).inv.hom (c i : FractionRing R)) * secGerm (show pullback G.hom (jK R) ⟶ A.A.left from U.gen.hom.left) y (b i) jA := by
   first | exact @GlobalTheory.Mum.sections_move_integral
 end -- clump:auto
@@ -852,7 +845,6 @@ theorem nonzeroLocus_pullPow (L : LB X) (N : ℕ) (t : (lbPow L N).Sec) :
 end GlobalTheory.Mum.FieldVA
 
 namespace GlobalTheory.Mum
-
 
 open GlobalTheory.Mum.FieldVA in
 theorem veryAmpleAlong_field (hA : AmpleSt) (K : Type) [Field K] (P : PolAV (Sp K)) :
@@ -922,7 +914,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
-
 
 theorem _root_.GlobalTheory.T.exists_veryAmple_fourthPower_polarisedAbelian_field : AmpleSt → ∀ (K : Type) [Field K] (P : PolAV (Sp K)), ∃ (m : ℕ) (b : Fin (m + 1) → H0 P.L 4), VeryAmpleAlong P.A.hom (𝟙 P.A.left) P.L b := by
   first | exact @GlobalTheory.Mum.veryAmpleAlong_field
@@ -1064,7 +1055,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
-
 
 end -- clump:auto
 end -- clump:auto

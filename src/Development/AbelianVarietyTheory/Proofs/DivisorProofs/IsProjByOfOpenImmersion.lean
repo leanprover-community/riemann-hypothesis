@@ -144,8 +144,6 @@ section Global
 
 variable {D' r : ℕ}
 
-
-
 end Global
 
 end GlobalTheory.TorsionForm
@@ -367,7 +365,6 @@ theorem eq_of_rec {M : Type*} [AddCommGroup M] (f : ℤ → M) (a l : M) (h0 : f
     rw [eq_sub_of_add_eq (eq_sub_of_add_eq h.symm)]
     module
 
-
 open GlobalTheory.CechPic in
 theorem pull_zpow : ∀ (K : Type) [Field K] (A : Over (Sp K)) [GrpObj A], IsAbelianScheme A → ∀ (L : LB A.left) (hL : L.IsLB) (T : Over (Sp K)) (z : T ⟶ A) (n : ℤ), GlobalTheory.CechPic.pull (z ^ n).left (GlobalTheory.CechPic.cls L hL) = tri n • GlobalTheory.CechPic.pull z.left (GlobalTheory.CechPic.cls L hL) + tri (-n) • GlobalTheory.CechPic.pull (z⁻¹).left (GlobalTheory.CechPic.cls L hL) := by
   intro K _ A _ hA L hL T z n
@@ -520,14 +517,6 @@ theorem tr_map (φ : A →+* B) (h : FinFree φ) (r : ℕ)
   · change Algebra.trace A B (algebraMap A B a) = _
     rw [Algebra.trace_algebraMap, hr hA, nsmul_eq_mul]
 
-theorem exists_finFree_away_of_finitePresentation {φ : A →+* B} (hf : φ.Finite) (hfl : φ.Flat)
-    (hfp : φ.FinitePresentation) (p : PrimeSpectrum A) :
-    ∃ r ∉ p.asIdeal, ∀ {A' B' : Type} [CommRing A'] [CommRing B'] {α : A →+* A'} {β : B →+* B'}
-      {φ' : A' →+* B'},
-      IsPushout (CommRingCat.ofHom φ) (CommRingCat.ofHom α) (CommRingCat.ofHom β)
-        (CommRingCat.ofHom φ') → IsUnit (α r) → FinFree φ' := by
-  apply GlobalTheory.FiniteAmpleFP.exists_finFree_away_fp <;> assumption
-
 end Algebra
 
 section Geometry
@@ -547,7 +536,6 @@ theorem resG_tr [IsFinite f] {V W : Y.Opens} (hV : IsAffineOpen V) (hW : IsAffin
 
 variable [IsFinite f] [Flat f] [LocallyOfFinitePresentation f]
 
-
 theorem exists_finFree_app_of_finitePresentation {y : Y} {U : Y.Opens} (hy : y ∈ U) :
     ∃ V : Y.Opens, IsAffineOpen V ∧ y ∈ V ∧ V ≤ U ∧ FinFree (f.app V).hom := by
   obtain ⟨V, hV, hyV, hle⟩ := exists_isAffineOpen_mem_and_subset hy
@@ -557,7 +545,7 @@ theorem exists_finFree_app_of_finitePresentation {y : Y} {U : Y.Opens} (hy : y �
   have hfp : (f.app V).hom.FinitePresentation := by
     rw [Scheme.Hom.app_eq_appLE]
     exact f.finitePresentation_appLE hV (hV.preimage f) _
-  obtain ⟨r, hr, H⟩ := exists_finFree_away_of_finitePresentation
+  obtain ⟨r, hr, H⟩ := GlobalTheory.FiniteAmpleFP.exists_finFree_away_fp
     (f.finite_app V hV) hfl hfp (hV.primeIdealOf ⟨y, hyV⟩)
   refine ⟨Y.basicOpen r, hV.basicOpen r, ?_, (Y.basicOpen_le r).trans hle,
     H (isPushout_app f hV (hV.basicOpen r) (Y.basicOpen_le r)) (Y.toRingedSpace.isUnit_res_basicOpen r)⟩
@@ -708,7 +696,6 @@ theorem resG_cst_comp {V : Y.Opens} {V' : X.Opens} (e : f ⁻¹ᵁ V ≤ V') (r 
 
 variable [IsFinite f] [Flat f] [LocallyOfFinitePresentation f] {L : LB Y}
 
-
 variable (L) in
 def trR (V : Y.Opens) (V' : X.Opens) (e : f ⁻¹ᵁ V ≤ V') :
     SecOnR (f ≫ q) (L.pull f) V' →ₗ[R] SecOnR q L V where
@@ -718,7 +705,6 @@ def trR (V : Y.Opens) (V' : X.Opens) (e : f ⁻¹ᵁ V ≤ V') :
     rw [SecOnR.smul_def, LinearEquiv.map_smul, (SecOn.restrict (L.pull f) e).map_smulₛₗ]
     erw [resG_cst_comp f q e r, trSec_smul]
     rfl
-
 
 variable (L) in
 def trCube {κ : Type} (D : κ → Y.Opens) :
@@ -734,7 +720,6 @@ def trCube {κ : Type} (D : κ → Y.Opens) :
       congr 1
       exact (SecOn.restrict_restrict (M := L.pull f) _ _ (x : SecOn (L.pull f) (⨅ i ∈ s, f ⁻¹ᵁ D i))).trans
         (SecOn.restrict_restrict _ _ _).symm
-
 
 variable (L) in
 def pullCube {κ : Type} (D : κ → Y.Opens) :
@@ -763,7 +748,6 @@ section Cech
 
 variable {X Y : Scheme.{0}} (f : X ⟶ Y) {R : Type} [CommRing R] (q : Y ⟶ Spec (CommRingCat.of R))
   [IsFinite f] [Flat f] [LocallyOfFinitePresentation f]
-
 
 omit [IsFinite f] [Flat f] [LocallyOfFinitePresentation f] in
 def funCube (a : Γ(Y, ⊤)) (L : LB Y) {κ : Type} (D : κ → Y.Opens) : secCube q L D ⟶ secCube q L D :=
@@ -840,14 +824,12 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.AmpleGen
 
-
 open GlobalTheory.CechPic in
 theorem cls_tw_one {X : Scheme.{0}} {M H : LB X} (hM : M.IsLB) (hH : H.IsLB) :
     cls (GlobalTheory.AbLaw.tw M H 1) (GlobalTheory.AbLaw.isLB_tw hM hH 1) = cls M hM + cls H hH := by
   refine (cls_div (A := M) (B := GlobalTheory.AbLaw.pw H (-1)) hM (GlobalTheory.AbLaw.isLB_pw hH _) (GlobalTheory.AbLaw.isLB_tw hM hH 1)).trans ?_
   rw [GlobalTheory.AmpleStabFinite.cls_pw hH]
   simp
-
 
 open GlobalTheory.CechPic in
 theorem cls_mix_pull {K : Type} [Field K] (A : Over (Sp K)) [GrpObj A] {L : LB A.left} (hL : L.IsLB)
@@ -1048,7 +1030,6 @@ section Group
 variable (G : Over X₀) [GrpObj G] [IsCommMonObj G]
 
 variable (x : Sp S ⟶ X₀) {d : ℕ}
-
 
 variable {G x}
 
@@ -1742,7 +1723,6 @@ open ReciprocityTheory.ChartRestriction.G.Out
 attribute [local instance] Over.cartesianMonoidalCategory
 
 open GlobalTheory.AbLaw.SecBC
-
 
 open GlobalTheory.AbLaw in
 theorem GlobalTheory.AbLaw.SecBC.exists_h1Zero_of_abVar

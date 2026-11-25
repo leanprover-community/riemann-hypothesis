@@ -96,8 +96,6 @@ open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep 
 open scoped Classical TensorProduct
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-theorem _root_.GlobalTheory.T.automorphic_map_phi_injective : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∀ n : ℕ, 1 ≤ n → ∀ (S : Set (Pl E)), IsSection S → ∀ (lam : InfinitePlace E → DomWeight n) (K' : ∀ w : Pl E, Subgroup (UL n w)), IsLevelFam (fun w : Pl E => MonoidHom.id (UL n w)) (KL n) K' → Function.Injective (Phi S lam K') := by
-  exact @GlobalTheory.BCT.TrKer.Phi_injective
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.AutomorphicMapPhiInjectiveStatement =====
@@ -140,7 +138,6 @@ private lemma finite_right_of_finite_tensor_of_nontrivial {V W : Type} [AddCommG
     Module.Finite.equiv (TensorProduct.comm ℂ V W)
   exact finite_left_of_finite_tensor_of_nontrivial (W := V)
 
-
 open scoped TensorProduct in
 theorem _root_.GlobalTheory.trace_tensorProduct_map_complex {U U' : Type} [AddCommGroup U] [Module ℂ U]
     [AddCommGroup U'] [Module ℂ U'] (T : U →ₗ[ℂ] U) (T' : U' →ₗ[ℂ] U') :
@@ -176,8 +173,6 @@ open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep 
 open scoped Classical TensorProduct
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-theorem _root_.GlobalTheory.T.exists_definiteUnitaryRationalPoint_finite_and_infinite_parts : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (γ : UE E n), ∃ r ∈ ratU E n, splitFin E n r = finPt γ ∧ ∀ v : InfinitePlace E, cEmb v.embedding r = GeneralLinearGroup.map v.embedding γ.1 := by
-  exact @GlobalTheory.BCT.RatPt.ratPt
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDefiniteUnitaryRationalPointFiniteAndInfinStatement =====
@@ -191,8 +186,6 @@ open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep 
 open scoped Classical TensorProduct
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-theorem _root_.GlobalTheory.T.span_infinitePlacesWeightRepresentation_eq_top : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (lam : InfinitePlace E → DomWeight n), Submodule.span ℂ (Set.range fun x : infU E n => wInf lam (x : UA E n)) = ⊤ := by
-  first | exact @GlobalTheory.BCT.TrKer.span_wInf_infU_eq_top
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.SpanInfinitePlacesWeightRepresentationEqTopStatement =====
@@ -232,7 +225,7 @@ theorem comp_mem_infHom (lam : InfinitePlace E → DomWeight n) {T : Wsp lam →
 theorem exists_op (lam : InfinitePlace E → DomWeight n) (A : Module.End ℂ (Wsp lam)) :
     ∃ P : Module.End ℂ (UA E n → ℂ), ∀ T ∈ infHom lam, ∀ w, T (A w) = P (T w) := by
   have hA : A ∈ Submodule.span ℂ (Set.range fun x : infU E n => wInf lam (x : UA E n)) := by
-    rw [GlobalTheory.T.span_infinitePlacesWeightRepresentation_eq_top E n lam]; exact Submodule.mem_top
+    rw [GlobalTheory.BCT.TrKer.span_wInf_infU_eq_top E n lam]; exact Submodule.mem_top
   induction hA using Submodule.span_induction with
   | mem A h =>
     obtain ⟨x, rfl⟩ := h
@@ -284,7 +277,7 @@ theorem mem_span_values (lam : InfinitePlace E → DomWeight n) (π : Submodule 
     | zero => simp
     | add a c _ _ ha hc => rw [map_add]; exact add_mem ha hc
     | smul c a _ ha => rw [map_smul]; exact Submodule.smul_mem _ c ha
-  obtain ⟨T, hT0, hTπ, hT⟩ := GlobalTheory.T.exists_ne_zero_weightTensor_intertwining_autRep E n lam π hπ hW
+  obtain ⟨T, hT0, hTπ, hT⟩ := GlobalTheory.BCT.TrKer.exists_ne_zero_wsp_intertwining E n lam π hπ hW
   obtain ⟨w, hw⟩ := DFunLike.ne_iff.1 hT0
   rcases hπ.irred Sv hle hst with h | h
   · have hm : T w ∈ Sv := Submodule.subset_span ⟨T, hT, hTπ, w, rfl⟩
@@ -347,7 +340,7 @@ theorem mem_range_of_mem (S : Set (Pl E)) (K' : ∀ w : Pl E, Subgroup (UL n w))
     refine ⟨fun γ x => ?_, fun k hk x => ?_⟩
     · refine LinearMap.ext fun w => ?_
       rw [LinearMap.dualMap_apply, hFa, hFa]
-      obtain ⟨r, hr, hrf, hrc⟩ := GlobalTheory.T.exists_definiteUnitaryRationalPoint_finite_and_infinite_parts E n γ
+      obtain ⟨r, hr, hrf, hrc⟩ := GlobalTheory.BCT.RatPt.ratPt E n γ
       set i := splitInf E n r
       have hri : r = (finPt γ).1 * i.1 := by rw [← hrf]; exact eq_splitFin_mul_splitInf r
       have hc : ∀ v : InfinitePlace E, cEmb v.embedding (i.1⁻¹) = GeneralLinearGroup.map v.embedding (γ⁻¹).1 := by
@@ -650,8 +643,6 @@ open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep 
 open scoped Classical TensorProduct Topology
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-theorem _root_.GlobalTheory.T.continuous_matrixCoeff_infinitePlacesWeightRep : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (lam : InfinitePlace E → DomWeight n) (u : Wsp lam) (ℓ : Module.Dual ℂ (Wsp lam)), Continuous fun g : UA E n => ℓ (wInf lam g u) := by
-  first | exact @GlobalTheory.BCT.TrKer.continuous_coef_wInf
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousMatrixCoeffInfinitePlacesWeightRepStatement =====
@@ -1146,7 +1137,7 @@ noncomputable section
 
 namespace GlobalTheory.BCT.TrKer.RangeLe
 
-theorem contW : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (lam : InfinitePlace E → DomWeight n) (u : Wsp lam) (ℓ : Module.Dual ℂ (Wsp lam)), Continuous fun g : UA E n => ℓ (wInf lam g u) := GlobalTheory.T.continuous_matrixCoeff_infinitePlacesWeightRep
+theorem contW : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (lam : InfinitePlace E → DomWeight n) (u : Wsp lam) (ℓ : Module.Dual ℂ (Wsp lam)), Continuous fun g : UA E n => ℓ (wInf lam g u) := GlobalTheory.BCT.TrKer.continuous_coef_wInf
 
 theorem ratSplit : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ), ∀ γ ∈ ratU E n, ∃ γ₀ : UE E n, splitFin E n γ = finPt γ₀ ∧ ∀ v : InfinitePlace E, cEmb v.embedding γ = GeneralLinearGroup.map v.embedding γ₀.1 := GlobalTheory.T.definiteUnitaryRationalPoint_split_finite_infinite
 
@@ -1281,7 +1272,6 @@ end GlobalTheory.BCT.TrKer.RangeLe
 
 namespace GlobalTheory.BCT.TrKer
 
-
 open GlobalTheory.BCT.TrKer.RangeLe in
 theorem range_Phi_le_forms : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∀ n : ℕ, 1 ≤ n → ∀ (S : Set (Pl E)), IsSection S → ∀ (lam : InfinitePlace E → DomWeight n) (K' : ∀ w : Pl E, Subgroup (UL n w)), IsLevelFam (fun w : Pl E => MonoidHom.id (UL n w)) (KL n) K' → LinearMap.range (Phi S lam K') ≤ forms S lam K' := by
   intro E _ _ _ hU n _ S _ lam K' hK
@@ -1333,7 +1323,7 @@ theorem trace_map_id {M W : Type} [AddCommGroup M] [Module ℂ M] [AddCommGroup 
 
 theorem trOn_forms_eq_finrank_mul : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∀ n : ℕ, 1 ≤ n → ∀ (S : Set (Pl E)), IsSection S → ∀ (lam : InfinitePlace E → DomWeight n) (K' : ∀ w : Pl E, Subgroup (UL n w)), IsLevelFam (fun w : Pl E => MonoidHom.id (UL n w)) (KL n) K' → ∀ f : ∀ w : Pl E, UL n w → ℂ, IsTest (KL n) K' f → trOn (forms S lam K') (hop S K' f) = (Module.finrank ℂ (GlobalTheory.BCT.TrKer.Wsp lam) : ℂ) * trOn (GlobalTheory.BCT.TrKer.vecM S lam K') (GlobalTheory.BCT.TrKer.hopM S lam K' f) := by
   intro E _ _ _ hE n hn S hS lam K' hK f hf
-  have hinj := GlobalTheory.T.automorphic_map_phi_injective E hE n hn S hS lam K' hK
+  have hinj := GlobalTheory.BCT.TrKer.Phi_injective E hE n hn S hS lam K' hK
   have hrange : LinearMap.range (Phi S lam K') = forms S lam K' :=
     le_antisymm (GlobalTheory.T.vectorFormTensor_range_le_unitaryAutFormsWeightLevel E hE n hn S hS lam K' hK) (GlobalTheory.T.unitaryAutForms_weight_level_le_tensor_range E hE n hn S hS lam K' hK)
   have hM := GlobalTheory.T.unitaryHeckeOperatorVector_mem_levelFunctions E n S lam K' hK f hf

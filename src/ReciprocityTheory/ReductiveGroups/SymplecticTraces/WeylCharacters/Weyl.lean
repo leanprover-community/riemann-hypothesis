@@ -322,9 +322,6 @@ theorem sp_sub_pow {ε : Fin n → Bool} (c : Bool) {M : Matrix (Fin n) (Fin n) 
   | zero => rw [pow_zero, pow_zero, sp_sub_one]
   | succ k ih => rw [pow_succ', pow_succ', sp_sub_mul c hM, ih]
 
-theorem sp_Jm_true (k : ℕ) : Jm (fun _ : Fin k => true) = 1 := by
-  simp [Jm]
-
 theorem sp_sub_Kset {ε : Fin n → Bool} (c : Bool) {g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ Kset ε) :
     sp_sub ε c g ∈ Kset (fun _ : Fin (cnt ε c) => true) := by
   simp only [Kset, Set.mem_setOf_eq] at hg ⊢
@@ -332,7 +329,7 @@ theorem sp_sub_Kset {ε : Fin n → Bool} (c : Bool) {g : Matrix (Fin n) (Fin n)
   have hzs : ∀ a b, ε a ≠ ε b → (star g) a b = 0 := by
     intro a b h
     rw [Matrix.star_apply, apply_eq_zero_of_commute_Jm_of_eps_ne hc b a (Ne.symm h), star_zero]
-  refine ⟨?_, by rw [sp_Jm_true, Matrix.mul_one, Matrix.one_mul]⟩
+  refine ⟨?_, by rw [ReciprocityTheory.ChartRestriction.DS.HW.Jm_allPos, Matrix.mul_one, Matrix.one_mul]⟩
   rw [Matrix.mem_unitaryGroup_iff']
   have hst : star (sp_sub ε c g) = sp_sub ε c (star g) := by
     ext i j
@@ -380,9 +377,9 @@ theorem sp_sub_inK {ε : Fin n → Bool} (c : Bool) {X : Matrix (Fin n) (Fin n) 
     inK (fun _ : Fin (cnt ε c) => true) (sp_sub ε c X) := by
   unfold inK at hX ⊢
   obtain ⟨hG, hc⟩ := hX
-  refine ⟨?_, by rw [sp_Jm_true, Matrix.mul_one, Matrix.one_mul]⟩
+  refine ⟨?_, by rw [ReciprocityTheory.ChartRestriction.DS.HW.Jm_allPos, Matrix.mul_one, Matrix.one_mul]⟩
   unfold inG at hG ⊢
-  rw [sp_Jm_true, Matrix.mul_one, Matrix.one_mul]
+  rw [ReciprocityTheory.ChartRestriction.DS.HW.Jm_allPos, Matrix.mul_one, Matrix.one_mul]
   ext i j
   have e := congrFun (congrFun hG (blk ε c i)) (blk ε c j)
   simp only [Jm, Matrix.mul_diagonal, Matrix.diagonal_mul, Matrix.add_apply, Matrix.zero_apply,

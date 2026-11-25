@@ -779,8 +779,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
-theorem _root_.GlobalTheory.T.finite_flat_local_baseChange_of_proper_properties : ∀ (R R' : Type) [CommRing R] [IsLocalRing R] [IsNoetherianRing R] [CommRing R'] (ρ : R →+* R'), Function.Injective ρ → ρ.Finite → ρ.Flat → ∀ (Z Y Z' Y' : Scheme.{0}) (p : Z ⟶ Y) (p' : Z' ⟶ Y') (y : Y ⟶ Sp R) (y' : Y' ⟶ Sp R') (k : Y' ⟶ Y) (k' : Z' ⟶ Z), IsPullback k y' y (spMap ρ) → IsPullback k' p' p k → IsProper p → IsFinite k ∧ QuasiCompact p' ∧ QuasiSeparated p' ∧ Function.Surjective k'.base ∧ IsClosedMap (p' ≫ k).base ∧ IsClosedMap p.base ∧ (∀ V : Y.Opens, IsAffineOpen V → IsCompact (p ⁻¹ᵁ V : Set Z) ∧ IsQuasiSeparated (p ⁻¹ᵁ V : Set Z)) ∧ ∃ (d : ℕ) (b : Fin d → R'), ∀ r' : R', ∃! c : Fin d → R, r' = ∑ l, ρ (c l) * b l := by
-  first | exact @GlobalTheory.finiteFlat_proper_baseChange_facts
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteFlatLocalBaseChangeOfProperPropertiesStatement =====
@@ -804,7 +802,7 @@ theorem exists_gen_near_of_finFlat : ∀ (R : Type) [CommRing R] [IsDomain R] [I
   intro R _ _ _ hR R' _ _ _ ρ hfin hflat Z Y Z' Y' p p' y y' k k' hk hk' hp hY hbij L hL hloc x
   haveI : IsNoetherianRing R := hR.1
   obtain ⟨hkf, hqc, hqs, hsurj, hcl, hclp, hO, d, b, hb⟩ :=
-    GlobalTheory.T.finite_flat_local_baseChange_of_proper_properties R R' ρ hfin.2.1 hfin.2.2 hflat Z Y Z' Y' p p' y y' k k' hk hk' hp
+    GlobalTheory.finiteFlat_proper_baseChange_facts R R' ρ hfin.2.1 hfin.2.2 hflat Z Y Z' Y' p p' y y' k k' hk hk' hp
   obtain ⟨V, hV, y₀, hy₀, hxy, hE⟩ := GlobalTheory.T.exists_specialization_closed_in_affine_neighbourhood Y x
   obtain ⟨hclV, -⟩ := hE V le_rfl hV hy₀
   have hL' : (L.pull k').IsLB := LB.isLB_pull hL _
@@ -1010,7 +1008,7 @@ theorem gen_of_ten {T S : Scheme.{0}} (π : S ⟶ T) (G : Over T) [GrpObj G] (G'
     (h : ∀ f ∈ ten G, ∀ z, f.left (ζ z) ∈ farSet β θ) : ∃ t : LB.Gen (P.L.L.pull k), t.IsGen := by
   have hw : ζ ≫ (G ⊗ G ⊗ G ⊗ G).hom = (Over.mk (k ≫ G'.hom)).hom ≫ π := by
     rw [← Over.w (fst G _), ← Category.assoc, hζ, Category.assoc, hpb.1.w]; exact (Category.assoc _ _ _).symm
-  obtain ⟨hl, hm⟩ := GlobalTheory.T.grpPullback_points_lift_and_compat_mul_inv T S π G G' β hpb (Over.mk (k ≫ G'.hom)) (G ⊗ G ⊗ G ⊗ G) ζ hw
+  obtain ⟨hl, hm⟩ := GlobalTheory.Mum.grpPullback_points_lift_mul_inv T S π G G' β hpb (Over.mk (k ≫ G'.hom)) (G ⊗ G ⊗ G ⊗ G) ζ hw
   obtain ⟨a, ha⟩ := hl (snd _ _ ≫ fst _ _)
   obtain ⟨b, hb⟩ := hl (snd _ _ ≫ snd _ _ ≫ fst _ _)
   obtain ⟨c, hc⟩ := hl (snd _ _ ≫ snd _ _ ≫ snd _ _)
@@ -1046,7 +1044,7 @@ theorem exists_gen_near_closed_point : ∀ (R : Type) [CommRing R] [IsDomain R] 
   have := M.proper
   have hβ : IsProper β := MorphismProperty.of_isPullback hpb.1.flip M.proper
   have hgi : GeometricallyIrreducible G.hom :=
-    ⟨geometrically_iff_of_isClosedUnderIsomorphisms.mpr fun Ω _ s => GlobalTheory.T.irreducibleSpace_fibre_semiAbelian_fieldPoint _ G hG Ω s⟩
+    ⟨geometrically_iff_of_isClosedUnderIsomorphisms.mpr fun Ω _ s => GlobalTheory.SemiAbFibre.irreducibleSpace_fibre _ G hG Ω s⟩
   have s₂ : Smooth (G ⊗ G).hom := inferInstanceAs (Smooth (pullback.fst G.hom G.hom ≫ G.hom))
   have i₂ : GeometricallyIrreducible (G ⊗ G).hom := GeometricallyIrreducible.comp (pullback.fst G.hom G.hom) G.hom
   have s₃ : Smooth (G ⊗ G ⊗ G).hom := inferInstanceAs (Smooth (pullback.fst G.hom (G ⊗ G).hom ≫ G.hom))

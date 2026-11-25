@@ -304,16 +304,8 @@ theorem cdet_dia (c : HeckeCharacter ℚ) (γ : GL (Fin 2) ℚ) : cdet c (dia2 �
     exact (RingHom.map_det (algebraMap ℚ 𝔸[ℚ]) (γ : Matrix (Fin 2) (Fin 2) ℚ)).symm
   simp [cdet, this]
 
-theorem det_diagonal_two (z : Jd) : GeneralLinearGroup.det (dg2 z z : G2) = z * z := by
-  ext1
-  simp [dg2, Matrix.det_fin_two]
-
 theorem cdet_scal (c : HeckeCharacter ℚ) (z : Jd) : cdet c (dg2 z z) = (c.toIdele z : ℂ) * c.toIdele z := by
-  simp [cdet, det_diagonal_two, map_mul]
-
-theorem central_diagonal_commute (z : Jd) (g : G2) : dg2 z z * g = g * dg2 z z := by
-  ext i j
-  fin_cases i <;> fin_cases j <;> simp [dg2, Matrix.mul_apply, Fin.sum_univ_two, mul_comm]
+  simp [cdet, GlobalTheory.CompanionTheory.RS.det_diagonal_two, map_mul]
 
 def Fn (φ : G2 → ℂ) (c : HeckeCharacter ℚ) (u u' g : G2) : ℂ := φ (g * u) * conj (φ (g * u')) * cdet c g
 
@@ -348,9 +340,6 @@ section Pair
 
 variable {φ : G2 → ℂ} {ω c : HeckeCharacter ℚ}
 
-theorem circle_mul_conj (w : Circle) : (w : ℂ) * conj (w : ℂ) = 1 := by
-  rw [Complex.mul_conj, Complex.normSq_eq_norm_sq, Circle.norm_coe]; simp
-
 theorem toIdele_sq (hc2 : c * c = 1) (z : Jd) : (c.toIdele z : ℂ) * c.toIdele z = 1 := by
   have h := congrArg (fun d : HeckeCharacter ℚ => d.toIdele z) hc2
   have h2 : c.toIdele z * c.toIdele z = 1 := h
@@ -362,7 +351,7 @@ theorem Fn_left (hl : LInv φ) (u u' : G2) : LInv (Fn φ c u u') := fun γ g => 
 theorem Fn_scal (hcen : ∀ (z : Jd) g, φ (dg2 z z * g) = (ω.toIdele z : ℂ) * φ g) (u u' : G2) (z : Jd) (g : G2) :
     Fn φ c u u' (dg2 z z * g) = (c.toIdele z : ℂ) * c.toIdele z * Fn φ c u u' g := by
   simp only [Fn, cdet_mul, cdet_scal, mul_assoc (dg2 z z), hcen, map_mul]
-  have := circle_mul_conj (ω.toIdele z)
+  have := GlobalTheory.CompanionTheory.RSEigen.mul_conj_circle (ω.toIdele z)
   linear_combination (φ (g * u) * conj (φ (g * u')) * ((c.toIdele z : ℂ) * c.toIdele z) * cdet c g) * this
 
 theorem Fn_cinv (hcen : ∀ (z : Jd) g, φ (dg2 z z * g) = (ω.toIdele z : ℂ) * φ g) (hc2 : c * c = 1) (u u' : G2) :
@@ -383,7 +372,7 @@ theorem Pr_scal (hcen : ∀ (z : Jd) g, φ (dg2 z z * g) = (ω.toIdele z : ℂ) 
   rw [← integral_const_mul]
   refine integral_congr_ae (Eventually.of_forall fun g => ?_)
   simp only [Fn]
-  have e : g * (dg2 z z * u') = dg2 z z * (g * u') := by rw [← mul_assoc, ← central_diagonal_commute, mul_assoc]
+  have e : g * (dg2 z z * u') = dg2 z z * (g * u') := by rw [← mul_assoc, ← GlobalTheory.CompanionTheory.RS.central_diagonal_commute, mul_assoc]
   rw [e, hcen, map_mul]
   ring
 
@@ -429,12 +418,6 @@ end Pair
 
 section Local
 
-open GroundTheory.Automorphic.Reduction in
-theorem isLoc2_mul {v : Pl} {x y : GL (Fin 2) (Qv v)} {h h' : G2} (hx : IsLoc2 v x h) (hy : IsLoc2 v y h') :
-    IsLoc2 v (x * y) (h * h') :=
-  ⟨by rw [finAt_mul, hx.1, hy.1], fun v' hv' => by rw [finAt_mul, hx.2.1 v' hv', hy.2.1 v' hv', one_mul],
-    fun w => by rw [infAt_mul, hx.2.2 w, hy.2.2 w, one_mul]⟩
-
 theorem isLoc2_unique {v : Pl} {x : GL (Fin 2) (Qv v)} {h h' : G2}
     (hext : ∀ g g' : G2, (∀ v, finAt v g = finAt v g') → (∀ w, infAt w g = infAt w g') → g = g')
     (hx : IsLoc2 v x h) (hy : IsLoc2 v x h') : h = h' := by
@@ -452,7 +435,6 @@ theorem isLoc2_comm {v : Pl} {x : GL (Fin 2) (Qv v)} {k h : G2}
   by_cases e : v' = v
   · subst e; rw [hv, mul_one, one_mul]
   · rw [hx.2.1 v' e, one_mul, mul_one]
-
 
 open GroundTheory.Automorphic.Reduction in
 theorem det_eq_of_comps {h h' : G2}
@@ -516,7 +498,6 @@ theorem ord_det_of_mem {x : GL (Fin 2) F} (hx : x ∈ integralGL F 2) :
 
 end Key
 
-
 open GroundTheory.Automorphic.Reduction in
 theorem eig_relation {φ : G2 → ℂ} {ω c : HeckeCharacter ℚ} {μ : Measure G2} {𝓕 : Set G2} {C : ℝ}
     (hc : Continuous φ) (hb : ∀ g, ‖φ g‖ ≤ C) (hl : LInv φ)
@@ -534,7 +515,7 @@ theorem eig_relation {φ : G2 → ℂ} {ω c : HeckeCharacter ℚ} {μ : Measure
     lam = ((localChar c v ϖ⁻¹ : ℂˣ) : ℂ) * ((localChar ω v ϖ : ℂˣ) : ℂ) * conj lam := by
   choose L hL using hloc
   have hLm : ∀ x y, L (x * y) = L x * L y := fun x y =>
-    isLoc2_unique hext (hL _) (isLoc2_mul (hL x) (hL y))
+    isLoc2_unique hext (hL _) (GlobalTheory.CompanionTheory.RSEigen.loc_mul (hL x) (hL y))
   have hL1 : L 1 = 1 := isLoc2_unique hext (hL 1) ⟨finAt_one v, fun v' _ => finAt_one v', fun w => infAt_one w⟩
   let Lh : GL (Fin 2) (Qv v) →* G2 := { toFun := L, map_one' := hL1, map_mul' := hLm }
   have hLh : ∀ x, Lh x = L x := fun _ => rfl

@@ -184,20 +184,7 @@ open GlobalTheory.CuspRep GlobalTheory.UnitaryBC
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
-theorem map_thetaR {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) (σ : A →+* A) (τ : B →+* B)
-    (h : ∀ x, f (σ x) = τ (f x)) (g : GL (Fin n) A) :
-    GeneralLinearGroup.map f (thetaR σ n g) = thetaR τ n (GeneralLinearGroup.map f g) := by
-  refine Units.ext ?_
-  ext i j
-  rw [thetaR_val, ← map_inv]
-  change f (σ (((g⁻¹ : GL (Fin n) A) : Matrix (Fin n) (Fin n) A) j i)) =
-    τ (f (((g⁻¹ : GL (Fin n) A) : Matrix (Fin n) (Fin n) A) j i))
-  exact h _
-
 theorem thetaR_one' {A : Type} [CommRing A] (σ : A →+* A) : thetaR σ n 1 = 1 := map_one _
-
-theorem cV_conjAd (v : InfinitePlace E) (x : Ad E) : cV v (conjAd E x) = starRingEnd ℂ (cV v x) :=
-  congrFun ((infEq E).symm_apply_apply _) v
 
 theorem continuous_cV (v : InfinitePlace E) : Continuous (cV (E := E) v) := by
   have h : Continuous fun x : InfiniteAdeleRing E => (infEq E).symm x :=
@@ -211,7 +198,6 @@ theorem ga_ext' {g h : GA E n} (h1 : ∀ w, GeneralLinearGroup.map (cV w) g = Ge
   refine ga_ext ?_ h2
   ext i j w
   exact congrArg (fun x : GL (Fin n) ℂ => x i j) (h1 w)
-
 
 open Classical in
 def sV (v : InfinitePlace E) : ℂ →ₙ+* Ad E where
@@ -242,84 +228,49 @@ theorem continuous_mapGL {R S : Type} [CommRing R] [CommRing S] [TopologicalSpac
     (f : R →+* S) (hf : Continuous f) : Continuous (GeneralLinearGroup.map (n := Fin n) f) :=
   Continuous.units_map _ (Continuous.matrix_map continuous_id hf)
 
-open Classical in
-theorem cV_embInf (v w : InfinitePlace E) (y : GL (Fin n) ℂ) :
-    GeneralLinearGroup.map (cV w) (embInf n v y) = if w = v then y else 1 := by
-  ext i j
-  change (GeneralLinearGroup.map (pInf E) (embInf n v y)) i j w = _
-  unfold embInf
-  rw [MonoidHom.comp_apply, pInf_infGL]
-  change (MonoidHom.mulSingle (fun _ : InfinitePlace E => GL (Fin n) ℂ) v y w).val i j = _
-  by_cases h : w = v
-  · subst h
-    simp
-  · simp [h]
-
-theorem pFin_embInf (v : InfinitePlace E) (y : GL (Fin n) ℂ) :
-    GeneralLinearGroup.map (pFin E) (embInf n v y) = 1 := by
-  unfold embInf
-  exact pFin_infGL _
-
 theorem embInf_eq_cornerGL (v : InfinitePlace E) (y : GL (Fin n) ℂ) : embInf n v y = cornerGL n (sV v) y := by
   classical
   refine ga_ext' (fun w => ?_) ?_
-  · rw [cV_embInf]
+  · rw [PositivityTheory.Rg.BcB.CV.LocalPlacePositivity.cV_embInf]
     by_cases h : w = v
     · subst h
       rw [if_pos rfl, map_cornerGL_of_hom (sV w) (cV w) (RingHom.id ℂ) (fun x => by rw [cV_sV, Pi.single_eq_same]; rfl) y]
       ext i j
       rfl
     · rw [if_neg h, map_cornerGL_of_zero (sV v) (cV w) (fun x => by rw [cV_sV, Pi.single_eq_of_ne h]) y]
-  · rw [pFin_embInf, map_cornerGL_of_zero (sV v) (pFin E) (fun x => rfl) y]
+  · rw [GlobalTheory.CompanionTheory.SplitTwo.map_pFin_embInf, map_cornerGL_of_zero (sV v) (pFin E) (fun x => rfl) y]
 
 theorem continuous_embInf (v : InfinitePlace E) : Continuous (embInf (E := E) n v) := by
   have h : (embInf (E := E) n v : GL (Fin n) ℂ → GA E n) = cornerGL n (sV v) := funext (embInf_eq_cornerGL v)
   rw [h]
   exact continuous_cornerGL _ (continuous_sV v)
 
-theorem cV_embInf_self (v : InfinitePlace E) (y : GL (Fin n) ℂ) :
-    GeneralLinearGroup.map (cV v) (embInf n v y) = y := by
-  classical
-  rw [cV_embInf, if_pos rfl]
-
 theorem embInf_comm (v : InfinitePlace E) (y : GL (Fin n) ℂ) (k : GA E n)
     (hk : k ∈ (GeneralLinearGroup.map (n := Fin n) (cV (E := E) v)).ker) : embInf n v y * k = k * embInf n v y := by
   classical
   have hk' : GeneralLinearGroup.map (cV v) k = 1 := hk
   refine ga_ext' (fun w => ?_) ?_
-  · rw [map_mul, map_mul, cV_embInf]
+  · rw [map_mul, map_mul, PositivityTheory.Rg.BcB.CV.LocalPlacePositivity.cV_embInf]
     by_cases h : w = v
     · subst h
       rw [hk']; simp
     · rw [if_neg h]; simp
-  · rw [map_mul, map_mul, pFin_embInf]; simp
+  · rw [map_mul, map_mul, GlobalTheory.CompanionTheory.SplitTwo.map_pFin_embInf]; simp
 
 theorem cV_thetaA (v : InfinitePlace E) (g : GA E n) :
     GeneralLinearGroup.map (cV v) (thetaA E n g) = thetaR (starRingEnd ℂ) n (GeneralLinearGroup.map (cV v) g) :=
-  map_thetaR _ _ _ (cV_conjAd v) g
+  GlobalTheory.CompanionTheory.SplitTwo.map_thetaR _ _ _ (GlobalTheory.CompanionTheory.SplitTwo.cV_conjAd v) g
 
 theorem thetaA_embInf (v : InfinitePlace E) (y : GL (Fin n) ℂ) :
     thetaA E n (embInf n v y) = embInf n v (thetaR (starRingEnd ℂ) n y) := by
   classical
   refine ga_ext' (fun w => ?_) ?_
-  · rw [cV_thetaA, cV_embInf, cV_embInf]
+  · rw [cV_thetaA, PositivityTheory.Rg.BcB.CV.LocalPlacePositivity.cV_embInf, PositivityTheory.Rg.BcB.CV.LocalPlacePositivity.cV_embInf]
     by_cases h : w = v
     · rw [if_pos h, if_pos h]
     · rw [if_neg h, if_neg h, thetaR_one']
-  · rw [pFin_embInf, map_thetaR (pFin E) (conjAd E) (conjFin (IsCMField.complexConj E).toRingEquiv) (fun _ => rfl),
-      pFin_embInf, thetaR_one']
-
-theorem cV_ratGL (v : InfinitePlace E) (d : GL (Fin n) E) :
-    GeneralLinearGroup.map (cV v) (ratGL E n d) = PositivityTheory.Rg.BcB.D4.locGL v d := by
-  ext i j
-  exact pInf_algebraMap (d i j) v
-
-theorem locallyCompact_GL {R : Type} [CommRing R] [TopologicalSpace R] [IsTopologicalRing R] [T2Space R]
-    [LocallyCompactSpace R] : LocallyCompactSpace (GL (Fin n) R) := by
-  haveI : LocallyCompactSpace (Matrix (Fin n) (Fin n) R) :=
-    inferInstanceAs (LocallyCompactSpace (Fin n → Fin n → R))
-  haveI : T2Space (Matrix (Fin n) (Fin n) R) := inferInstanceAs (T2Space (Fin n → Fin n → R))
-  exact Units.isClosedEmbedding_embedProduct.locallyCompactSpace
+  · rw [GlobalTheory.CompanionTheory.SplitTwo.map_pFin_embInf, GlobalTheory.CompanionTheory.SplitTwo.map_thetaR (pFin E) (conjAd E) (conjFin (IsCMField.complexConj E).toRingEquiv) (fun _ => rfl),
+      GlobalTheory.CompanionTheory.SplitTwo.map_pFin_embInf, thetaR_one']
 
 theorem secondCountable_GL {R : Type} [CommRing R] [TopologicalSpace R] [SecondCountableTopology R] :
     SecondCountableTopology (GL (Fin n) R) := by
@@ -334,9 +285,9 @@ theorem splitAt : PositivityTheory.Rg.BcB.D4.SplitAt := by
   haveI : LocallyCompactSpace (Ad E) := GlobalTheory.AdelicUnitaryTop.locallyCompact_adele E
   haveI : SecondCountableTopology (Ad E) := GlobalTheory.AdelicUnitaryTop.secondCountable_adele E
   haveI : T2Space (Ad E) := GlobalTheory.AdelicUnitaryTop.t2Space_adeleRing_numberField E
-  haveI : LocallyCompactSpace (GA E n) := locallyCompact_GL
+  haveI : LocallyCompactSpace (GA E n) := GlobalTheory.CompanionTheory.SplitTwo.gl_lc
   haveI : SecondCountableTopology (GA E n) := secondCountable_GL
-  haveI : LocallyCompactSpace (GL (Fin n) ℂ) := locallyCompact_GL
+  haveI : LocallyCompactSpace (GL (Fin n) ℂ) := GlobalTheory.CompanionTheory.SplitTwo.gl_lc
   haveI : SecondCountableTopology (GL (Fin n) ℂ) := secondCountable_GL
   letI mH : MeasurableSpace (GL (Fin n) ℂ) := borel _
   haveI bH : BorelSpace (GL (Fin n) ℂ) := ⟨rfl⟩
@@ -344,7 +295,7 @@ theorem splitAt : PositivityTheory.Rg.BcB.D4.SplitAt := by
   let s : GL (Fin n) ℂ →* GA E n := embInf n v
   have hp : Continuous p := continuous_mapGL _ (continuous_cV v)
   have hs : Continuous s := continuous_embInf v
-  have hps : ∀ y, p (s y) = y := cV_embInf_self v
+  have hps : ∀ y, p (s y) = y := GlobalTheory.CompanionTheory.LocFlagPf.map_cV_embInf v
   have hc : ∀ y, ∀ k ∈ p.ker, s y * k = k * s y := embInf_comm v
   have hcl : IsClosed (p.ker : Set (GA E n)) := by
     have : (p.ker : Set (GA E n)) = p ⁻¹' {1} := rfl
@@ -367,7 +318,7 @@ theorem splitAt : PositivityTheory.Rg.BcB.D4.SplitAt := by
   · intro d
     have h := map_twCent_prod (splitE p s hps hc) (thetaA E n) (thetaR (starRingEnd ℂ) n)
       (endK p (thetaA E n) (thetaR (starRingEnd ℂ) n) hθ) (splitE_theta p s hps hc _ _ hθ hθ') (ratGL E n d)
-    have h4 : (splitE p s hps hc (ratGL E n d)).1 = PositivityTheory.Rg.BcB.D4.locGL v d := cV_ratGL v d
+    have h4 : (splitE p s hps hc (ratGL E n d)).1 = PositivityTheory.Rg.BcB.D4.locGL v d := GlobalTheory.CompanionTheory.SplitTwo.map_cV_ratGL v d
     rw [h4] at h
     exact h
 
@@ -601,10 +552,6 @@ section Fubini
 variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
   [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G]
 
-theorem enorm_ofReal_toReal_le (r : ℝ≥0∞) : ‖((r.toReal : ℝ) : ℂ)‖ₑ ≤ r := by
-  rw [← ofReal_norm_eq_enorm, Complex.norm_real, Real.norm_of_nonneg ENNReal.toReal_nonneg]
-  exact ENNReal.ofReal_toReal_le
-
 theorem integral_stage {T : Subgroup G} (μ : Measure G) [μ.IsMulLeftInvariant] [SFinite μ]
     (ν : Measure T) [SFinite ν] {F : G → ℂ} (hF : Measurable F) {σ : G → ℝ≥0∞} (hσ : Measurable σ)
     (hae : ∀ᵐ x ∂μ, ∫⁻ t, σ (((t⁻¹ : T) : G) * x) ∂ν < ∞)
@@ -631,7 +578,7 @@ theorem integral_stage {T : Subgroup G} (μ : Measure G) [μ.IsMulLeftInvariant]
     rw [← lintegral_const_mul _ hm]
     refine lintegral_mono fun t => ?_
     simp only [A, enorm_mul]
-    exact mul_le_mul_right (enorm_ofReal_toReal_le _) _
+    exact mul_le_mul_right (PositivityTheory.Rg.BcB.CV.QuotientIntegral.enorm_ofReal_toReal_le' _) _
   have hBi : Integrable (A ∘ ψ) (ν.prod μ) :=
     (hψ.integrable_comp hAm.aestronglyMeasurable).2 hAi
   have e1 : ∫ x, F x * (((∫⁻ t, σ (((t⁻¹ : T) : G) * x) ∂ν).toReal : ℝ) : ℂ) ∂μ =
@@ -1352,12 +1299,6 @@ theorem logSize_nonneg' (g : GA E n) : 0 ≤ logSize g := by
     add_nonneg (Finset.sum_nonneg fun _ _ => Real.posLog_nonneg) (finsum_nonneg fun _ => Real.posLog_nonneg)
   exact add_nonneg (h _) (h _)
 
-theorem deg_bot' (x : GA E n) : deg x (⊥ : Submodule E (Fin n → E)) = 0 := by
-  have h : ∀ (k : ℕ) (M : Matrix (Fin n) (Fin k) E), k = 0 → degM x M = 0 := by
-    rintro _ M rfl
-    exact degM_zero x M
-  exact h _ _ (by simp)
-
 theorem prof_concave (n : ℕ) {τ : ℝ} (hτ : 0 ≤ τ) {a w w' s : ℕ} (h : w + w' = s + a) (h1 : a ≤ w) (h2 : a ≤ w') :
     prof n τ a + prof n τ s ≤ prof n τ w + prof n τ w' := by
   obtain ⟨p, rfl⟩ := Nat.exists_eq_add_of_le h1
@@ -1390,7 +1331,7 @@ theorem posY_of (h1 : DegSubmod) (h2 : DegPairing) : PosY := by
   have hτ1 : C₀ * (1 + logSize (twConj (thetaA E n) x (ratGL E n d))) ≤ τ :=
     le_trans (mul_le_mul_of_nonneg_right (le_max_left _ _) (by linarith)) hτ
   refine ⟨?_, fun e e' => ?_⟩
-  · simp [h0, prof, deg_bot']
+  · simp [h0, prof, GlobalTheory.CompanionTheory.EllIso.deg_bot]
   · have hS : Stb d (Wof e ⊔ Wof e') := stb_sup (hiso e).1 (hiso e').1
     have hr := radical_eq hiso hu hmeet hmono e e'
     have hJS : Wof (sJoin e e') ≤ Wof e ⊔ Wof e' := hr ▸ inf_le_left

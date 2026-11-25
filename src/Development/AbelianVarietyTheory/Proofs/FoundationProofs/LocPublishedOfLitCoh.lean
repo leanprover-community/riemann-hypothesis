@@ -202,7 +202,6 @@ private theorem fd_adjoin_range (l : ℕ) [Fact l.Prime] {ι : Type} [Finite ι]
   exact IntermediateField.finiteDimensional_adjoin fun z _ =>
       (Algebra.IsAlgebraic.isAlgebraic z).isIntegral
 
-
 open TensorProduct in
 private theorem desc {l : ℕ} [Fact l.Prime] {H : Type} [Group H] [TopologicalSpace H] (φ : H →* GQ l)
     (κ : H →* (PadicAlgCl l)ˣ) (E₀ : IntermediateField ℚ_[l] (PadicAlgCl l)) [FiniteDimensional ℚ_[l] E₀]
@@ -279,7 +278,6 @@ private theorem coef_finext {l : ℕ} [Fact l.Prime] (c : Coef l) :
   exact hle hmem
 
 end GlobalTheory.NegVan
-
 
 open GlobalTheory.NegVan in
 theorem GlobalTheory.NegVan.crys_cocycle_coboundary_of_neg_weight :
@@ -1461,7 +1459,6 @@ end GlobalTheory.Ord2.PairSpan
 
 namespace GlobalTheory.Ord2
 
-
 open PairSpan in
 theorem exists_om_ne_swap_on_N0g : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (e : ℕ)
     (S : Finset Pl) (A : ValuationSubring Ω) (W : R2 Ω l), Nf e S A W → ∀ y ∈ Z1 (Loc.colRep W),
@@ -1586,22 +1583,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-theorem UpperTheory.Reformulated.B.Rb6.norm_le_one_of_mem :
-    ∀ {l : ℕ} [inst : Fact (Nat.Prime l)] (c : UpperTheory.V.HV.Coef l)
-    {x : Formalism.ConjugateSelfDual.Qbar l},
-    x ∈ c.O →
-      ‖x‖ ≤
-        (1 :
-          ℝ) := by
-  intro l _ c x hx
-  have h1 : IsIntegral ℤ_[l] (⟨x, hx⟩ : c.O) := Algebra.IsIntegral.isIntegral _
-  have h2 : IsIntegral ℤ_[l] x := h1.map c.O.val
-  have h3 : IsIntegral ℚ_[l] x := h2.tower_top
-  rw [← PadicAlgCl.spectralNorm_eq, spectralNorm, spectralValue_le_one_iff (minpoly.monic h3),
-    minpoly.isIntegrallyClosed_eq_field_fractions' ℚ_[l] h2]
-  intro n
-  rw [Polynomial.coeff_map]
-  exact PadicInt.norm_le_one _
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsFurtherRest =====

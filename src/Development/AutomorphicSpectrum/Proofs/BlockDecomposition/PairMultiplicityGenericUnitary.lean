@@ -205,17 +205,6 @@ theorem key_lt (p : Pos n) : CompanionTheory.D.LK.key p < n * n := by
   have h2 := p.1.2.2
   nlinarith
 
-theorem keyR_inj {i j : Ix n} (h : keyR i = keyR j) : i = j := by
-  obtain ⟨b, p⟩ := i
-  obtain ⟨b', q⟩ := j
-  have hp := key_lt p
-  have hq := key_lt q
-  cases b <;> cases b' <;> simp only [keyR, if_true, Bool.false_eq_true, if_false] at h
-  · rw [CompanionTheory.D.LK.Car.key_inj (by omega : CompanionTheory.D.LK.key p = CompanionTheory.D.LK.key q)]
-  · omega
-  · omega
-  · rw [CompanionTheory.D.LK.Car.key_inj (by omega : CompanionTheory.D.LK.key p = CompanionTheory.D.LK.key q)]
-
 def tw (i j : Ix n) : ℂ := if keyR j < keyR i then -1 else 1
 
 theorem tw_self (i : Ix n) : tw i i = 1 := by simp [tw]
@@ -224,7 +213,7 @@ theorem tw_mul_self (i j : Ix n) : tw i j * tw i j = 1 := by
   unfold tw; split_ifs <;> simp
 
 theorem tw_swap {i j : Ix n} (h : i ≠ j) : tw j i = -tw i j := by
-  have hk : keyR i ≠ keyR j := fun e => h (keyR_inj e)
+  have hk : keyR i ≠ keyR j := fun e => h (GlobalTheory.CompanionTheory.RealMult.BdSqProof.keyR_inj e)
   unfold tw
   rcases lt_or_gt_of_ne hk with h1 | h1
   · simp [h1, h1.not_gt]
@@ -298,10 +287,6 @@ theorem tw_swap {i j : Lt n} (h : i ≠ j) : tw j i = -tw i j := by
   · simp [h1, h1.not_gt]
   · simp [h1, h1.not_gt]
 
-theorem sg_mul_self (i : Lt n) (A : Finset (Lt n)) : sgL i A * sgL i A = 1 := by
-  unfold sgL
-  rw [← mul_pow]; simp
-
 theorem sg_insert (i : Lt n) {j : Lt n} {A : Finset (Lt n)} (h : j ∉ A) :
     sgL i (insert j A) = tw i j * sgL i A := by
   unfold sgL tw
@@ -318,73 +303,8 @@ theorem sg_erase (i : Lt n) {j : Lt n} {A : Finset (Lt n)} (h : j ∈ A) :
 
 variable {V : Type} [AddCommGroup V] [Module ℂ V]
 
-theorem annq_apply (i : Lt n) (x : Cq n V) (A : Finset (Lt n)) :
-    annq i x A = if i ∈ A then 0 else sgL i A • x (insert i A) := rfl
-
-theorem creq_apply (i : Lt n) (x : Cq n V) (A : Finset (Lt n)) :
-    creq i x A = if i ∈ A then sgL i A • x (A.erase i) else 0 := rfl
-
 theorem liftq_apply (T : Module.End ℂ V) (x : Cq n V) (A : Finset (Lt n)) :
     liftq n T x A = T (x A) := rfl
-
-theorem annq_annq (i j : Lt n) : (annq i * annq j + annq j * annq i : Module.End ℂ (Cq n V)) = 0 := by
-  refine LinearMap.ext fun x => funext fun A => ?_
-  simp only [LinearMap.add_apply, Module.End.mul_apply, Pi.add_apply, LinearMap.zero_apply, Pi.zero_apply,
-    annq_apply]
-  by_cases hij : i = j
-  · subst hij
-    simp
-  have hji : j ≠ i := fun e => hij e.symm
-  by_cases hi : i ∈ A
-  · simp [hi]
-  by_cases hj : j ∈ A
-  · simp [hj]
-  simp only [hi, hj, Finset.mem_insert, hij, hji, or_self, if_false]
-  rw [sg_insert j hi, sg_insert i hj, tw_swap hij, Finset.insert_comm j i, smul_smul, smul_smul, ← add_smul]
-  have : sgL i A * (-tw i j * sgL j A) + sgL j A * (tw i j * sgL i A) = 0 := by ring
-  rw [this, zero_smul]
-
-theorem creq_creq (i j : Lt n) : (creq i * creq j + creq j * creq i : Module.End ℂ (Cq n V)) = 0 := by
-  refine LinearMap.ext fun x => funext fun A => ?_
-  simp only [LinearMap.add_apply, Module.End.mul_apply, Pi.add_apply, LinearMap.zero_apply, Pi.zero_apply,
-    creq_apply]
-  by_cases hij : i = j
-  · subst hij
-    simp
-  have hji : j ≠ i := fun e => hij e.symm
-  by_cases hi : i ∈ A
-  swap
-  · simp [hi]
-  by_cases hj : j ∈ A
-  swap
-  · simp [hj]
-  simp only [hi, hj, Finset.mem_erase, ne_eq, hij, hji, not_false_eq_true, and_self, if_true]
-  rw [sg_erase j hi, sg_erase i hj, tw_swap hij, Finset.erase_right_comm (a := j) (b := i), smul_smul, smul_smul,
-    ← add_smul]
-  have : sgL i A * (-tw i j * sgL j A) + sgL j A * (tw i j * sgL i A) = 0 := by ring
-  rw [this, zero_smul]
-
-theorem annq_creq (i j : Lt n) :
-    (annq i * creq j + creq j * annq i : Module.End ℂ (Cq n V)) = if i = j then 1 else 0 := by
-  refine LinearMap.ext fun x => funext fun A => ?_
-  simp only [LinearMap.add_apply, Module.End.mul_apply, Pi.add_apply, annq_apply, creq_apply]
-  by_cases hij : i = j
-  · subst hij
-    by_cases hi : i ∈ A
-    · simp [hi, sg_erase i hi, tw_self, smul_smul, sg_mul_self, Finset.insert_erase hi]
-    · simp [hi, sg_insert i hi, tw_self, smul_smul, sg_mul_self, Finset.erase_insert hi]
-  have hji : j ≠ i := fun e => hij e.symm
-  rw [if_neg hij, LinearMap.zero_apply, Pi.zero_apply]
-  by_cases hi : i ∈ A
-  · simp [hi, hij]
-  by_cases hj : j ∈ A
-  swap
-  · simp [hj, hji]
-  simp only [hi, hj, Finset.mem_insert, Finset.mem_erase, or_true, and_false, if_true, if_false]
-  rw [sg_insert j hi, sg_erase i hj, tw_swap hij, Finset.erase_insert_of_ne hij, smul_smul, smul_smul,
-    ← add_smul]
-  have : sgL i A * (-tw i j * sgL j A) + sgL j A * (tw i j * sgL i A) = 0 := by ring
-  rw [this, zero_smul]
 
 theorem liftq_sum_smul {κ : Type*} [Fintype κ] (d : κ → ℂ) (T : κ → Module.End ℂ V) :
     (liftq n (∑ k, d k • T k) : Module.End ℂ (Cq n V)) = ∑ k, d k • (liftq n (T k) : Module.End ℂ (Cq n V)) := by
@@ -398,14 +318,14 @@ theorem br_lift_annq (T : Module.End ℂ V) (i : Lt n) :
     br (liftq n T : Module.End ℂ (Cq n V)) (annq i) = 0 := by
   refine LinearMap.ext fun x => funext fun A => ?_
   simp only [br, LinearMap.sub_apply, Module.End.mul_apply, Pi.sub_apply, LinearMap.zero_apply, Pi.zero_apply,
-    annq_apply, liftq_apply]
+    GlobalTheory.CompanionTheory.PairMult.COU.ann_apply, liftq_apply]
   by_cases hi : i ∈ A <;> simp [hi]
 
 theorem br_lift_creq (T : Module.End ℂ V) (i : Lt n) :
     br (liftq n T : Module.End ℂ (Cq n V)) (creq i) = 0 := by
   refine LinearMap.ext fun x => funext fun A => ?_
   simp only [br, LinearMap.sub_apply, Module.End.mul_apply, Pi.sub_apply, LinearMap.zero_apply, Pi.zero_apply,
-    creq_apply, liftq_apply]
+    GlobalTheory.CompanionTheory.PairMult.COU.cre_apply, liftq_apply]
   by_cases hi : i ∈ A <;> simp [hi]
 
 theorem br_lift_lift (T S : Module.End ℂ V) :
@@ -464,14 +384,14 @@ section Ops
 
 variable (E1 E2 : Fin n → Fin n → Module.End ℂ V)
 
-alias cc := _root_.GlobalTheory.CompanionTheory.PairMult.LeviQ.creq_creq
+alias cc := _root_.GlobalTheory.CompanionTheory.PairMult.COU.cre_cre
 theorem lFq_eq (s : Bool) (p q : Fin n) :
     lFq E1 E2 s p q = liftq n (Ts E1 E2 s p q) + Dm annq creq (Mt s p q) := by
   rw [lFq, adLq_eq]
 
 theorem br_L_ann (s : Bool) (p q : Fin n) (m : Lt n) :
     br (lFq E1 E2 s p q) (annq m) = -∑ i, Mt s p q i m • annq i := by
-  rw [lFq_eq, br_add_left, br_lift_annq, zero_add, dm_a _root_.GlobalTheory.CompanionTheory.PairMult.LeviQ.annq_annq _root_.GlobalTheory.CompanionTheory.PairMult.LeviQ.annq_creq]
+  rw [lFq_eq, br_add_left, br_lift_annq, zero_add, dm_a _root_.GlobalTheory.CompanionTheory.PairMult.COU.ann_ann _root_.GlobalTheory.CompanionTheory.PairMult.COU.ann_cre]
 
 theorem br_dm_lift (A : Lt n → Lt n → ℂ) (T : Module.End ℂ V) :
     br (Dm annq creq A) (liftq n T : Module.End ℂ (Cq n V)) = 0 := by
@@ -507,7 +427,7 @@ theorem bracket_levi_cubicBoundaryPart (s : Bool) (p q : Fin n) :
       smul_zero, Finset.sum_const_zero]
   rw [h0, zero_add]
   unfold cubicBoundaryPart
-  have hW := fun l1 l2 l3 => bracket_wedge_formula (R := Module.End ℂ (Cq n V)) (ι := Lt n) (a := annq) (c := creq) _root_.GlobalTheory.CompanionTheory.PairMult.LeviQ.annq_annq cc _root_.GlobalTheory.CompanionTheory.PairMult.LeviQ.annq_creq (Mt s p q) l1 l2 l3
+  have hW := fun l1 l2 l3 => bracket_wedge_formula (R := Module.End ℂ (Cq n V)) (ι := Lt n) (a := annq) (c := creq) _root_.GlobalTheory.CompanionTheory.PairMult.COU.ann_ann cc _root_.GlobalTheory.CompanionTheory.PairMult.COU.ann_cre (Mt s p q) l1 l2 l3
   simp only [br_sum_right, br_smul_right, hW]
   exact GlobalTheory.CompanionTheory.RealMult.TorC.reindex (R := Module.End ℂ (Cq n V)) (fun i j k => creq k * annq j * annq i) Sq (Mt s p q)
 
@@ -693,7 +613,7 @@ theorem dm_comm_apply {lev : Fin n → ℕ} (hm : Monotone lev) {x : Cq n V} (hx
     br (Dm annq creq (Mt s p q)) (Dm annq creq (Mt t r v) : Module.End ℂ (Cq n V)) x =
       (if q = r then Dm annq creq (Mt (s == t) p v) x else 0) -
         (if v = p then (Dm annq creq (Mt (s == t) r q) : Module.End ℂ (Cq n V)) x else 0) := by
-  rw [br_dm_gen (R := Module.End ℂ (Cq n V)) _root_.GlobalTheory.CompanionTheory.PairMult.LeviQ.annq_annq cc _root_.GlobalTheory.CompanionTheory.PairMult.LeviQ.annq_creq]
+  rw [br_dm_gen (R := Module.End ℂ (Cq n V)) _root_.GlobalTheory.CompanionTheory.PairMult.COU.ann_ann cc _root_.GlobalTheory.CompanionTheory.PairMult.COU.ann_cre]
   have t1 : ∀ i l : Lt n,
       ((∑ m, Mt t r v i m * Mt s p q m l) - ∑ m, Mt s p q i m * Mt t r v m l) • creq l (annq i x) =
       ((if q = r then Mt (s == t) p v i l else 0) - (if v = p then Mt (s == t) r q i l else 0)) • creq l (annq i x) := by
@@ -1339,7 +1259,6 @@ theorem freeQ (n : ℕ) : ∃ (W : Type) (_ : AddCommGroup W) (_ : Module ℂ W)
       (Submodule.smul_mem _ _ (hF.d_mem _ k z hz))
   · intro i z hz
     simp [d', hF.d_zero _ z hz]
-
 
 open scoped TensorProduct in
 theorem coverQ (lev : Fin n → ℕ) {V : Type} [AddCommGroup V] [Module ℂ V] (E1 E2 : Fin n → Fin n → Module.End ℂ V)

@@ -712,7 +712,6 @@ private theorem card_true_ge_lemma_2 {k : ℕ} (u : Fin k → Fin n → ℂ)
   rw [LinearMap.map_smulₛₗ, LinearMap.smul_apply, card_true_ge_lemma ε u huo c l, smul_eq_mul,
     starRingEnd_apply]
 
-
 open Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.Cut in
 theorem card_true_ge {k : ℕ} (u : Fin k → Fin n → ℂ) (huo : ∀ i j, BJ ε (u i) (u j) = if i = j then 1 else 0) :
     k ≤ (univ.filter fun i => ε i = true).card := by
@@ -1182,14 +1181,9 @@ abbrev BrI : Type := InfinitePlace X.B.I.F × Fin X.B.I.n × Fin (D.R.rS + 1 + D
 theorem reimV_apply {V : Type} {n m : ℕ} (M : V → Matrix (Fin n) (Fin m) ℂ) (p : V × Fin n × Fin m × Bool) :
     reimV M p = if p.2.2.2 then (M p.1 p.2.1 p.2.2.1).re else (M p.1 p.2.1 p.2.2.1).im := rfl
 
-theorem reimV_addB {V : Type} {n m : ℕ} (A B : V → Matrix (Fin n) (Fin m) ℂ) :
-    reimV (A + B) = reimV A + reimV B := by
-  ext p
-  by_cases h : p.2.2.2 <;> simp [reimV, h]
-
 def bAdd : EuclideanSpace ℝ (KapI X) →+ EuclideanSpace ℝ (BrI X) :=
   AddMonoidHom.mk' (fun x => reimV (fun v => betaV X v ((tupCoord X).symm x))) fun x y => by
-    rw [← reimV_addB]
+    rw [← PI.AprimeInfW.reimV_add]
     congr 1
     funext v
     rw [tupCoord_symm_add, betaV_add]
@@ -1245,7 +1239,6 @@ def fK : EuclideanSpace ℝ (KapI X) →ₗ[ℝ] EuclideanSpace ℝ (KapI X) :=
 
 theorem fK_apply (x : EuclideanSpace ℝ (KapI X)) (k : KapI X) : fK X x k = bL X x ((eI X).symm k) := by
   simp [fK, U, Equiv.piCongrLeft'_apply]
-
 
 open Classical in
 def Bq : Matrix (KapI X) (KapI X) ℝ := fun k l => bL X (EuclideanSpace.single l 1) ((eI X).symm k)
@@ -1465,20 +1458,11 @@ open MeasureTheory Topology Filter Formalism.BasicNotions Formalism.L2.SG.HidaSe
   Formalism.L2.SG.TypedSets Formalism.L2.SG.Pf.NcReal
 open scoped TensorProduct
 
-theorem act_continuous {D : D7} (X : HidaSetting D) (y : TupI X) :
-    Continuous (fun g : HA (Ainf X.B.I.F) X.B.I.cm.sig X.B.I.J => g • y) := by
-  have : FiniteDimensional X.B.I.F X.B.I.E := fd_of X
-  refine continuous_pi fun a => ?_
-  change Continuous fun h : HA (Ainf X.B.I.F) X.B.I.cm.sig X.B.I.J =>
-    ((HA.mat (Ainf X.B.I.F) X.B.I.cm.sig X.B.I.J h : GL (Fin X.B.I.n) (Ainf X.B.I.F ⊗[X.B.I.F] X.B.I.E)) :
-      Matrix (Fin X.B.I.n) (Fin X.B.I.n) (Ainf X.B.I.F ⊗[X.B.I.F] X.B.I.E)).mulVec (y a)
-  exact (MassDataMassesW.SplitW.continuous_matHA X.B.I.cm.sig X.B.I.J (Ainf X.B.I.F)).matrix_mulVec continuous_const
-
 theorem actMeas_holds : ActMeas := by
   intro D X Z
   have : FiniteDimensional X.B.I.F X.B.I.E := fd_of X
   have : BorelSpace (HA (Ainf X.B.I.F) X.B.I.cm.sig X.B.I.J) := ⟨rfl⟩
-  exact (act_continuous X Z).measurable
+  exact (PI.AprimeInfW.continuous_smul_left X Z).measurable
 
 theorem polar_local_of_fibres (hK : KPos) (hG : GramMeas) (h1 : FibOrbAt) (h2 : PushCont) (h4 : JacOneC) : PolarLoc :=
   polar_local_of_action hK hG actMeas_holds h1 h2 h4

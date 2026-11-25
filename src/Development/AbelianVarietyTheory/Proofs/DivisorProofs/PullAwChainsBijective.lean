@@ -688,9 +688,6 @@ noncomputable section
 
 namespace GlobalTheory.EZ
 
-theorem fc_eq_δ (n : ℕ) (i : Fin (n + 2)) : fc (n + 1) n i = SimplexCategory.δ i := by
-  apply GlobalTheory.EZ.fc_succ_eq_delta
-
 theorem idc_self (n : ℕ) : idc n n = 𝟙 _ := by
   ext j
   simp [idc, clampHom, SimplexCategory.mkHom]
@@ -713,7 +710,7 @@ theorem dbl_d_f (Y : SimplicialObject (SimplicialObject C)) (a b : ℕ) :
   dsimp only [dbl, alternatingFaceMapComplex]
   rw [AlternatingFaceMapComplex.obj_d_eq, hsum_f]
   refine Finset.sum_congr rfl (fun i _ => ?_)
-  rw [HomologicalComplex.zsmul_f_apply, fc_eq_δ]
+  rw [HomologicalComplex.zsmul_f_apply, GlobalTheory.EZ.fc_succ_eq_delta]
   rfl
 
 theorem dbl_X_d (Y : SimplicialObject (SimplicialObject C)) (a b : ℕ) :
@@ -725,7 +722,7 @@ theorem dbl_X_d (Y : SimplicialObject (SimplicialObject C)) (a b : ℕ) :
   change (AlternatingFaceMapComplex.obj (Y.obj (op (SimplexCategory.mk a)))).d (b + 1) b = _
   rw [AlternatingFaceMapComplex.obj_d_eq]
   refine Finset.sum_congr rfl (fun i _ => ?_)
-  rw [fc_eq_δ]
+  rw [GlobalTheory.EZ.fc_succ_eq_delta]
   rfl
 
 variable [HasFiniteCoproducts C]
@@ -1389,7 +1386,6 @@ lemma ev_awO (X : SimplicialObject Spc) (n a : ℕ) (ha : a ≤ n) :
 
 end Sheaves
 
-
 set_option backward.isDefEq.respectTransparency false in
 theorem homotopyEquiv_chains_totChains : ∀ (R : Type) [CommRing R] (X : SimplicialObject GlobalTheory.EtC.Spc), (∃ e : HomotopyEquiv (diagCx ((freeBi R).obj X)) (tot ((freeBi R).obj X)), ∀ n : ℕ, e.hom.f n = awF _ n) → ∃ e : HomotopyEquiv ((GlobalTheory.EtC.chains R).obj (GlobalTheory.EtC.bidiag.obj X)) (totChains R X), ∀ n : ℕ, e.hom.f (-(n : ℤ)) = awZ R X n := by
   intro R _ X ⟨e, he⟩
@@ -1446,46 +1442,6 @@ theorem alt_double_sum {M : Type*} [AddCommGroup M] (n : ℕ)
       ((-1 : ℤ) ^ i * (-1) ^ j) • F (fc (n + 1) n j ≫ fc (n + 2) (n + 1) i) = 0 := by
   apply GlobalTheory.EZ.TotSq.alt_double_sum
 
-theorem dH_comp_dH (a b x y c d : ℕ) : dH a b x y ≫ dH x y c d = 0 := by
-  unfold dH
-  by_cases h1 : a = x + 1 ∧ b = y
-  · by_cases h2 : x = c + 1 ∧ y = d
-    · obtain ⟨rfl, rfl⟩ := h1
-      obtain ⟨rfl, rfl⟩ := h2
-      rw [if_pos ⟨rfl, rfl⟩, if_pos ⟨rfl, rfl⟩, Preadditive.sum_comp]
-      simp only [Preadditive.comp_sum, Preadditive.zsmul_comp, Preadditive.comp_zsmul, _root_.GlobalTheory.EZ.Cone.bop_comp, smul_smul]
-      have := alt_double_sum c (fun α => bop α (idc b b ≫ idc b b))
-      simpa only [mul_comm] using this
-    · rw [if_neg h2, comp_zero]
-  · rw [if_neg h1, zero_comp]
-
-theorem dV_comp_dV (a b x y c d : ℕ) : dV a b x y ≫ dV x y c d = 0 := by
-  unfold dV
-  by_cases h1 : a = x ∧ b = y + 1
-  · by_cases h2 : x = c ∧ y = d + 1
-    · obtain ⟨rfl, rfl⟩ := h1
-      obtain ⟨rfl, rfl⟩ := h2
-      rw [if_pos ⟨rfl, rfl⟩, if_pos ⟨rfl, rfl⟩, Preadditive.sum_comp]
-      simp only [Preadditive.comp_sum, Preadditive.zsmul_comp, Preadditive.comp_zsmul, _root_.GlobalTheory.EZ.Cone.bop_comp, smul_smul]
-      have := alt_double_sum d (fun β => bop (idc a a ≫ idc a a) β)
-      simpa only [mul_comm] using this
-    · rw [if_neg h2, comp_zero]
-  · rw [if_neg h1, zero_comp]
-
-theorem dH_comp_dV (c d : ℕ) :
-    dH (c + 1) (d + 1) c (d + 1) ≫ dV c (d + 1) c d = dV (c + 1) (d + 1) (c + 1) d ≫ dH (c + 1) d c d := by
-  unfold dH dV
-  rw [if_pos ⟨rfl, rfl⟩, if_pos ⟨rfl, rfl⟩, if_pos ⟨rfl, rfl⟩, if_pos ⟨rfl, rfl⟩,
-    Preadditive.sum_comp, Preadditive.sum_comp]
-  simp only [Preadditive.comp_sum, Preadditive.zsmul_comp, Preadditive.comp_zsmul, _root_.GlobalTheory.EZ.Cone.bop_comp, smul_smul,
-    TotSq.idc_self, Category.id_comp, Category.comp_id]
-  rw [Finset.sum_comm]
-  exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by rw [mul_comm]
-
-theorem dT_comp_dT (a b c d k : ℕ) (hk : c + d = k) :
-    ∑ x ∈ Finset.HasAntidiagonal.antidiagonal (k + 1), dT a b x.1 x.2 ≫ dT x.1 x.2 c d = 0 := by
-  apply GlobalTheory.EZ.TotSq.dT_comp_dT <;> assumption
-
 noncomputable def shufRec (cone : ∀ a b n : ℕ, (bo a b ⟶ bo n n) →+ (bo a b ⟶ bo (n + 1) (n + 1))) (n : ℕ) :
     ∀ a b : ℕ, bo a b ⟶ bo n n :=
   Nat.rec (motive := fun n => ∀ a b : ℕ, bo a b ⟶ bo n n) (fun a b => idO a b 0 0)
@@ -1537,7 +1493,7 @@ theorem exists_shuffle : ∃ G : ∀ a b n : ℕ, bo a b ⟶ bo n n, G 0 0 0 = �
         dD (n + 1) n = 0 := by
       rw [Preadditive.sum_comp, Finset.sum_congr rfl step, Finset.sum_comm]
       refine Finset.sum_eq_zero fun y hy => ?_
-      rw [← Preadditive.sum_comp, dT_comp_dT a b y.1 y.2 n (Finset.HasAntidiagonal.mem_antidiagonal.mp hy), zero_comp]
+      rw [← Preadditive.sum_comp, GlobalTheory.EZ.TotSq.dT_comp_dT a b y.1 y.2 n (Finset.HasAntidiagonal.mem_antidiagonal.mp hy), zero_comp]
     rw [hz, map_zero, sub_zero]
 
 end GlobalTheory.EZ.Shuf

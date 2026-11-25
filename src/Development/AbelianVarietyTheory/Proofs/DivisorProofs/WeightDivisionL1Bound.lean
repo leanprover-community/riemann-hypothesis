@@ -59,7 +59,7 @@ theorem Wts.divided_weight_small_block_le_neg_three_mul {ι : Type} [Fintype ι]
     intro hk
     have h1 := hH.kc_pos
     have h2 := hH.kc_lt
-    have hg := ((GlobalTheory.T.dividedWeight_gaps_block_and_bar ι N W hH hD τ ⟨W.p - 1, by omega⟩ ⟨W.p + 0, hk⟩ (by simp; omega)).2.1 (by simp)).2
+    have hg := ((GlobalTheory.MeanTop.divided_gaps ι N W hH hD τ ⟨W.p - 1, by omega⟩ ⟨W.p + 0, hk⟩ (by simp; omega)).2.1 (by simp)).2
     have he := (_root_.GlobalTheory.MeanTop.divided_entries ι N W hH hD τ ⟨W.p - 1, by omega⟩).2.1 (by simp; omega)
     have h3 := hH.h2.2
     have hN : (0 : ℤ) ≤ 24 * (N : ℤ) * W.T := by positivity
@@ -71,7 +71,7 @@ theorem Wts.divided_weight_small_block_le_neg_three_mul {ι : Type} [Fintype ι]
   | succ k ih =>
     intro hk
     have h1 := ih (by omega)
-    have hg := (GlobalTheory.T.dividedWeight_gaps_block_and_bar ι N W hH hD τ ⟨W.p + k, by omega⟩ ⟨W.p + (k + 1), hk⟩ (by simp; omega)).1 (by simp)
+    have hg := (GlobalTheory.MeanTop.divided_gaps ι N W hH hD τ ⟨W.p + k, by omega⟩ ⟨W.p + (k + 1), hk⟩ (by simp; omega)).1 (by simp)
     have hN : (0 : ℤ) ≤ (W.T : ℤ) + W.Dd + 2 + 2 * N := by positivity
     linarith
 

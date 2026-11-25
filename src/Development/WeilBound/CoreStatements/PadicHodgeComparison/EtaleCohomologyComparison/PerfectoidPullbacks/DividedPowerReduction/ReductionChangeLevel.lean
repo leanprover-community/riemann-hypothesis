@@ -109,10 +109,6 @@ theorem ts_le : ∀ {O A : Type} [CommRing O] [CommRing A] [Algebra O A] {I : Id
   intro O A _ _ _ I γ X q l s s' h 𝒱 T hT
   exact ⟨⟨le_bot_iff.1 ((T.pdPow_anti h).trans hT.1.1.le), hT.1.2⟩, hT.2⟩
 
-theorem incl_redM : ∀ {b : Base} {L : b.Fun} {Q Q' : ObjectProperty (Thick L)} (h : Q' ≤ Q) (r : Option ℤ) (c : b.R) (j : ℕ) (z : HO Q j),
-    ((incl h).sq (a := IdF.top _) (a' := IdF.top _) (fun _ _ _ => trivial) (incl_std h r c)).pull j (redM Q r c j z) =
-      redM Q' r c j ((incl h).o.pull j z) := @GlobalTheory.CompanionTheory.RedPull.incl_redM
-
 theorem nm_muB : ∀ {K B₁ B₂ : Type} [CommRing K] [CommRing B₁] [CommRing B₂] [Algebra K B₁] [Algebra K B₂] {I₁ : Ideal B₁} {I₂ : Ideal B₂}
     {γ₁ : DividedPowers I₁} {γ₂ : DividedPowers I₂} {X₁ X₂ : Scheme.{0}} {q₁ : X₁ ⟶ Spec (CommRingCat.of K)}
     {q₂ : X₂ ⟶ Spec (CommRingCat.of K)} {σ : B₁ →+* B₂} (nm : NMor γ₁ q₁ (κA K I₁) γ₂ q₂ (κA K I₂) σ) (hu : nm.u ≫ q₁ = q₂) (l s : ℕ),

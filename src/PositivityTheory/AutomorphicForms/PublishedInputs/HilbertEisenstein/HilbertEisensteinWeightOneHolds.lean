@@ -202,7 +202,6 @@ def archE (ε : InfinitePlace F → Bool) (x y : UpperTheory.V.TR.Rinf F) : ℂ 
   ∏ v, (((x v : ℂ) + (sgn (ε v) : ℂ) * Complex.I * (y v : ℂ)) *
     Complex.exp (-(Real.pi : ℂ) * ((x v : ℂ) ^ 2 + (y v : ℂ) ^ 2)))
 
-
 open Classical in
 def PhiE (c : HeightOneSpectrum (𝓞 F) → ℕ) (ε : InfinitePlace F → Bool) (ξ : Fin 2 → Ad F) : ℂ :=
   archE ε (UpperTheory.V.TR.pInf F (ξ 0)) (UpperTheory.V.TR.pInf F (ξ 1)) *
@@ -307,11 +306,6 @@ theorem phi_rot (c : HeightOneSpectrum (𝓞 F) → ℕ) (k : UpperTheory.V.TR.K
   unfold Phi PhiE
   rw [ef 0, ef 1, e0, e1, arch_rot k, mul_assoc]
 
-theorem absD_mul (g h : GA F 2) : absD (g * h) = absD g * absD h := by
-  unfold absD
-  rw [map_mul, map_mul]
-  rfl
-
 theorem absD_nonneg (g : GA F 2) : 0 ≤ absD g := by
   unfold absD
   exact ((IdeleGroup.ideleModule F) (Matrix.GeneralLinearGroup.det g)).2.le
@@ -340,7 +334,7 @@ theorem eis_mul_right (ω : HChar F) (Ψ : (Fin 2 → Ad F) → ℂ) (g K : GA F
   refine integral_congr_ae (ae_of_all _ fun u => ?_)
   try dsimp only
   unfold eisInt thetaS
-  rw [absD_mul, Real.mul_rpow (absD_nonneg g) (absD_nonneg K)]
+  rw [UpperTheory.HilbertEisensteinWeightOne.EisensteinSmoothness.absD_mul, Real.mul_rpow (absD_nonneg g) (absD_nonneg K)]
   simp only [← mul_assoc (Matrix.GeneralLinearGroup.scalar (Fin 2) _) g K, Units.val_mul, ← Matrix.vecMul_vecMul]
   push_cast
   ring
@@ -505,18 +499,6 @@ private theorem exists_level (c : HeightOneSpectrum (𝓞 F) → ℕ) (hc : {w |
       exact (HeightOneSpectrum.valuedAdicCompletion_eq_valuation' w _).trans_lt ((w.valuation_lt_one_iff_mem x).2 h1)
     exact h2
 
-theorem finite_support {ω : HChar F} {c : HeightOneSpectrum (𝓞 F) → ℕ} (hH : Hyp ω c) :
-    {w | c w ≠ 0}.Finite := by
-  obtain ⟨m, hm, hω⟩ := isOfFinOrder_iff_pow_eq_one.1 hH.fin
-  have ho := GlobalTheory.HeckeGal.isOpen_ker_of_pow ω.1 ω.2.1 hm fun x => by
-    have := congrArg (fun ξ : HChar F => ξ.1 x) hω
-    simpa using this
-  obtain ⟨S, M, hS, key⟩ := GlobalTheory.OpenIdeleCongr.localIdele_mem_of_isOpen ω.1.ker ho
-  refine hS.subset fun w hw => ?_
-  by_contra hwS
-  exact hw (Nat.le_zero.1 ((hH.cond w).2 fun x hu _ => MonoidHom.mem_ker.1 (key w x hu fun h => absurd h hwS)))
-
-
 variable (F) in
 def Kc (c : HeightOneSpectrum (𝓞 F) → ℕ) : Subgroup (GL (Fin 2) (Af F)) :=
   ⨅ w, (K1 w (c w)).comap (GeneralLinearGroup.map (pLoc F w))
@@ -542,7 +524,7 @@ def stab (φ : UpperTheory.V.TR.Sm F 2) : Subgroup (GL (Fin 2) (Af F)) where
 
 theorem isOpen_stab {ω : HChar F} {c : HeightOneSpectrum (𝓞 F) → ℕ} (hH : Hyp ω c) (φ : UpperTheory.V.TR.Sm F 2)
     (h : ∀ k ∈ Kc F c, UpperTheory.V.TR.finRep F 2 k φ = φ) : IsOpen {k | UpperTheory.V.TR.finRep F 2 k φ = φ} :=
-  Subgroup.isOpen_mono (H₂ := stab φ) (fun k hk => h k hk) (isOpen_Kc (finite_support hH))
+  Subgroup.isOpen_mono (H₂ := stab φ) (fun k hk => h k hk) (isOpen_Kc (UpperTheory.HilbertEisensteinWeightOne.EisensteinSmoothness.finite_support_of_hyp hH))
 
 theorem isOpen_stab_of_glob {ω : HChar F} {c : HeightOneSpectrum (𝓞 F) → ℕ} (hH : Hyp ω c)
     (φ : UpperTheory.V.TR.Sm F 2)
@@ -1369,10 +1351,6 @@ theorem thetaS_mul (c : HeightOneSpectrum (𝓞 F) → ℕ) {w : HeightOneSpectr
   refine tsum_congr fun ξ => ?_
   rw [Units.val_mul, ← Matrix.vecMul_vecMul, Phi_vecMul c hk]
 
-theorem absD_mul (g h : GA F 2) : absD (g * h) = absD g * absD h := by
-  unfold absD
-  rw [map_mul, map_mul, Positive.val_mul]
-
 theorem absD_K {w : HeightOneSpectrum (𝓞 F)} {n : ℕ} {k : GL (Fin 2) (w.adicCompletion F)} (hk : k ∈ K1 w n) :
     absD (finGL F 2 (locGL F 2 w k)) = 1 := by
   unfold absD
@@ -1412,7 +1390,7 @@ theorem level_holds : SPois → SInt → SSmooth → SLevel := by
   have e : eisInt ω (Phi c) (g * finGL F 2 (locGL F 2 w k)) = eisInt ω (Phi c) g := by
     funext t u
     unfold eisInt
-    rw [← mul_assoc, thetaS_mul c hk, absD_mul, absD_K hk, mul_one]
+    rw [← mul_assoc, thetaS_mul c hk, UpperTheory.HilbertEisensteinWeightOne.EisensteinSmoothness.absD_mul, absD_K hk, mul_one]
   unfold Eis
   rw [e]
 
@@ -1651,7 +1629,6 @@ end -- clump:auto
 -- clump-header: {"m": "PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.HilbertEisensteinWeightOneHolds", "h": "module\n\npublic import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.Hilbert\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.CenterFinitenessHolds\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.CentralCharacterHolds\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.ContDiffOnOfContDiffAtOne\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.EisensteinLowWeight\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.FourierExpansionHolds\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.ImportsAlt\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.InvMulVecScalarMul\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.KFinitenessHolds\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.LeftInvarianceHolds\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.OpenKernelHolds\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.PoissonSummationHolds\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.SGrowth\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.SLevel\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.ScalarActionHolds\npublic import PositivityTheory.AutomorphicForms.PublishedInputs.HilbertEisenstein.WeightHolds\n\n"}
 section -- clump:auto
 @[expose] public section
-
 
 open UpperTheory.HilbertEisensteinWeightOne in
 theorem UpperTheory.V.Published.hilbert_eisenstein_weight_one_holds : UpperTheory.V.Published.HilbertEisOne :=

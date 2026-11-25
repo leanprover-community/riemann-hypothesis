@@ -66,7 +66,3 @@ open GlobalTheory.PosOne (toOne Covers TriPos SymDbl OneDbl comb)
 open GlobalTheory.IndefiniteRowSideFullHecke.FourierJacobiAverage (app HasTensorVal fl opEFJ IsQuotIntFJ RFJ)
 open GlobalTheory.IndefiniteRowSideFullHecke.FramePositiveSum (IsCO)
 open scoped TensorProduct
-
-theorem _root_.GlobalTheory.T.addChar_conductor_integers_continuous_ne_one : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ψ : AddChar k Circle),
-    HasConductor ψ 1 → Continuous ψ ∧ ψ ≠ 1 := by
-  first | exact @GlobalTheory.hasConductor_one_continuous_ne_one

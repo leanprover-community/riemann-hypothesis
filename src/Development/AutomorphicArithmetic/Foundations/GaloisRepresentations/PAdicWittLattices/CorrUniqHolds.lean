@@ -1041,10 +1041,6 @@ theorem eqv_fst_of_comp (h1 : Eqv R (sch.map (pullback.fst (pullback.snd p d) g)
 
 end Eqv
 
-theorem spec_comp {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
-    Spec.map (CommRingCat.ofHom (g.comp f)) = Spec.map (CommRingCat.ofHom g) ≫ Spec.map (CommRingCat.ofHom f) := by
-  rw [← Spec.map_comp]; rfl
-
 end GlobalTheory.GenusTwoPureComparison.Cmp
 
 namespace GlobalTheory.GenusTwoPureComparison.Cmp
@@ -1072,7 +1068,7 @@ theorem eqv_fieldChange (hE2 : E2) (hE3 : E3) (q : ℕ) [NeZero q] (k K : Type) 
   haveI : IsIso (CommRingCat.ofHom ((IsLocalRing.residue T).comp α)) :=
     (RingEquiv.ofBijective _ hb).toCommRingCatIso.isIso_hom
   let r := Spec.map (CommRingCat.ofHom (IsLocalRing.residue T))
-  have hra : r ≫ a = Spec.map (CommRingCat.ofHom ((IsLocalRing.residue T).comp α)) := (spec_comp _ _).symm
+  have hra : r ≫ a = Spec.map (CommRingCat.ofHom ((IsLocalRing.residue T).comp α)) := (LateralTheory.CohomologicalPurity.Cl.spec_comp_ofHom _ _).symm
   have hsp : Eqv (ZMod q) (sch.map (pullback.fst (pullback.snd p a) r)) (tw q i) :=
     eqv_spInc hE2 hT q hqT (pullback.snd p a) i
   have hXT : Eqv (ZMod q) (sch.map (pullback.fst p a)) (tw q i) := by
@@ -1091,7 +1087,7 @@ theorem eqv_fieldChange (hE2 : E2) (hE3 : E3) (q : ℕ) [NeZero q] (k K : Type) 
   have hgen : Eqv (ZMod q) (sch.map (pullback.fst (pullback.snd p a)
       (Spec.map (CommRingCat.ofHom (algebraMap T (FractionRing T)))))) (tw q i) :=
     eqv_genInc hE3 hT q hqT (pullback.snd p a) i
-  rw [hφ, spec_comp, spec_comp]
+  rw [hφ, LateralTheory.CohomologicalPurity.Cl.spec_comp_ofHom, LateralTheory.CohomologicalPurity.Cl.spec_comp_ofHom]
   refine eqv_fst_comp _ p _ _ (eqv_iso _ _) (eqv_fst_comp _ p a _ hgen hXT)
 
 end GlobalTheory.GenusTwoPureComparison.Cmp

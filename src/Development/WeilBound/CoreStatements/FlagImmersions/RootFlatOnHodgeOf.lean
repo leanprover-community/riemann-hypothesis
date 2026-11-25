@@ -429,7 +429,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-
 open GlobalTheory.CompanionTheory.Ar.Flat.DegZ in
 theorem germ_degZero_prime : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) [StarRing (𝓞 E)], (∀ a : 𝓞 E, star a = H.bar a) → ∀ (X : Scheme.{0}) (t : SAB H X) (Ω : Type) [Field Ω] [CharZero Ω] (ξ : Sp Ω ⟶ X) (d r : ℕ) (M : LieModel t.G ξ (Fin d → Ω)) (S : GermSys t ξ M) (ρ : 𝓞 E →+* Module.End Ω (Fin d → Ω)) (𝓗 : HodgeLat M.lat ρ H.bar r) (O : Type) [CommRing O] [Algebra O Ω] (O' : Type) [CommRing O'] (s : X ⟶ Sp O') [IsSeparated s] [LocallyOfFiniteType s] (p : ℕ) (σ : E →+* Ω), p.Prime → Function.Injective (algebraMap O Ω) → (∀ (q : Cpt ξ) (o : O), algebraMap O Ω o ∈ regAt ξ q) → IsCptGen ξ → PowFns t → S.Gives 𝓗 → (∀ q : Cpt ξ, (p : X.residueField q.1) = 0 → FibPF t q.1) → Nat.card (E →+* Ω) = Module.finrank ℚ E → (∀ (s' : E →+* Ω) (a : 𝓞 E), s' (a : E) ∈ (algebraMap O Ω).range) → 𝓗.DegZero σ (p : Ω) := by
   intro E _ _ _ H _ hstar X t Ω _ _ ξ d r M S ρ 𝓗 O _ _ O' _ s _ _ p σ hp hinj hreg hξ hpow hgive hfib hcard hrange
@@ -852,16 +851,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem mem_abLocus_of_map {X Y : Scheme.{0}} {G : Over X} {G' : Over Y} {f : X ⟶ Y} {φ : G.left ⟶ G'.left}
-    (h : IsPullback φ G.hom G'.hom f) {x : X} (hx : f x ∈ abLocus G') : x ∈ abLocus G := by
-  intro K _ _ t hxt
-  obtain ⟨u, rfl⟩ := hxt
-  have hp : IsProper (pullback.snd G'.hom (t ≫ f)) := hx K (t ≫ f) ⟨u, by simp⟩
-  have sq : IsPullback (pullback.fst G.hom t ≫ φ) (pullback.snd G.hom t) G'.hom (t ≫ f) :=
-    (IsPullback.of_hasPullback G.hom t).paste_horiz h
-  rw [← sq.isoPullback_hom_snd]
-  infer_instance
-
 theorem genPt_max {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X} (h : IsCptGen ξ) (z : X)
     (hz : z ⤳ genPt ξ) : z = genPt ξ := by
   have hF : IsField (X.presheaf.stalk (genPt ξ)) :=
@@ -899,7 +888,6 @@ theorem cst_mem (𝔐 : HodgeCpt Y S y) (q : Cpt 𝔐.ξ) (o : 𝓞 c.F) : 𝔐.
   letI algΩ : Algebra (𝓞 c.F) Ω := (𝔐.cst.comp (algebraMap (𝓞 c.F) c.F)).toAlgebra
   exact GlobalTheory.T.base_constants_regular 𝔐.X Ω 𝔐.ξ (𝓞 c.F) (𝔐.f ≫ Y.s) 𝔐.cst_over q o
 
-
 open CptHodge in
 theorem exists_hodgeLat (𝔐 : HodgeCpt Y S y)
     (hFibY : ∀ (p : ℕ), p.Prime → ∀ z : Y.X, (p : Y.X.residueField z) = 0 → FibPF Y.t z) (p : ℕ) (hp : p.Prime) :
@@ -915,7 +903,7 @@ theorem exists_hodgeLat (𝔐 : HodgeCpt Y S y)
   haveI hprop : IsProper s₀ := LocModel.isProper_of_coordTie 𝔐.all 𝔐.tie s₀
   haveI hLN : IsLocallyNoetherian 𝔐.X := LocallyOfFiniteType.isLocallyNoetherian s₀
   have hFib : ∀ (p : ℕ), p.Prime → ∀ z : 𝔐.X, (p : 𝔐.X.residueField z) = 0 → FibPF 𝔐.t z := fun p hp z hz =>
-    (GlobalTheory.T.fibre_power_free_pullback E H _ _ _ 𝔐.t 𝔐.f 𝔐.m z).2 (hFibY p hp _ (by
+    (PositivityTheory.HtPt.Cf.fibpf_pull E H _ _ _ 𝔐.t 𝔐.f 𝔐.m z).2 (hFibY p hp _ (by
       rwa [← map_natCast (𝔐.f.residueFieldMap z).hom p, map_eq_zero] at hz))
   haveI : ∀ x : 𝔐.X, _root_.IsReduced (𝔐.X.presheaf.stalk x) := fun x => by
     have := (𝔐.normal x).1
@@ -928,7 +916,7 @@ theorem exists_hodgeLat (𝔐 : HodgeCpt Y S y)
       (congrArg 𝔐.ξ₀ (Subsingleton.elim (α := PrimeSpectrum 𝔐.Ω₀) _ _)))
   have hPow : PowFns 𝔐.t := GlobalTheory.T.powFns_of_abelian_generic E H 𝔐.X 𝔐.t hred hLN (fun z hz => by
     rw [← hz _ (𝔐.all z)]
-    refine mem_abLocus_of_map 𝔐.m.cart.1 ?_
+    refine GlobalTheory.CompanionTheory.Ar.HodgeBasic.mem_abLocus_of_map 𝔐.m.cart.1 ?_
     rw [hf0]
     exact generic_mem_abLocus (O := 𝓞 c.F) Y _ (genPt_max 𝔐.gen₀))
   obtain ⟨hcard, hfac⟩ := emb_factor (E := E) c 𝔐.cst

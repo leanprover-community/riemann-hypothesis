@@ -55,7 +55,4 @@ theorem pi_const_smul' {ι : Type} [Fintype ι] {α : Type} [MeasurableSpace α]
   simp only [Measure.coe_nnreal_smul_apply, Finset.prod_mul_distrib, Finset.prod_const, Finset.card_univ,
     ENNReal.coe_pow]
 
-theorem main : Formalism.L2.SG.Pf.LoopBCovN.CovNFormula :=
-  Formalism.MainStatements.RowRest.covariance_formula
-
 end GlobalTheory.CovNFormulaPf

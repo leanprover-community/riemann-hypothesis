@@ -177,8 +177,6 @@ open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.DownLift GlobalTheory.Hk3 Formalism.IndefR
 
-
-
 namespace GlobalTheory.DownLift.Sat
 
 theorem exists_adjoint_comp {X E : Type} [NormedAddCommGroup X] [InnerProductSpace ℂ X] [FiniteDimensional ℂ X]
@@ -287,7 +285,7 @@ theorem good_adjoint (R : RealDat D A Ks) (F : Face D A) (hC : Core R F) (i : Fi
   have hc : GlobalTheory.IndefiniteRowSideFullHecke.TranslateRepresentations.Commutes π (R.gW i (sg0 D A)) (R.thG i t) := fun g y =>
     (GlobalTheory.LiftEquivariance.exists_adelic_lift (hπ.2 g y)).elim fun κ hκ =>
       GlobalTheory.ThetaProjEquiv.thG_intertwines_core R F hC i t g κ hκ.1 y _ hκ.2
-  have ha := GlobalTheory.LiftEquivariance.commutes_adjoint π _ hπ.1 (GlobalTheory.T.norm_liftForms_finiteGroup_action R hC.models.HW hC.models.gW hC.models.νW i _) _ hc
+  have ha := GlobalTheory.LiftEquivariance.commutes_adjoint π _ hπ.1 (GlobalTheory.gW_norm_eq R hC.models.HW hC.models.gW hC.models.νW i _) _ hc
   have hx' : (∑ g, RealDat.eC (A := A) (sg0 D A) g • R.gW i (sg0 D A) g) x = x := hx
   have h1 := sum_fix _ _ _ ha (RealDat.eC (A := A) (sg0 D A)) x hx'
   exact goodVt_of R i t _ fun l => gaL_fix (V := Vc D i) (β := R.βV i) (L := R.datVt i t) (R.cV i) (hC.models.cV i) R.eG (R.HV i t) π hπ.2 _ _ h1 l
@@ -669,8 +667,6 @@ open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RawLift
 
-theorem _root_.GlobalTheory.T.siegelWeilLagrangianTerms_abs_tsum_le_heightPoly : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (V W : HSp D) (χV χW : (AE D)ˣ →* Circle) (om : GA D V × GA D W →* Module.End ℂ (WO V W → ℂ)) (νV : Measure (GA D V)) (𝓗 : Set (GA D V)) (νW : Measure (GA D W)) (𝓖 : Set (GA D W)) (μ : Measure (WO V W)) (𝓕 : Set (WO V W)) (fr : Lag W → Matrix (Fin W.rank) (Fin W.rank) D.host.E × Matrix (Fin W.rank) (Fin W.rank) D.host.E), SWSetup ψ V W χV χW om νV 𝓗 νW 𝓖 μ 𝓕 fr → ∀ (θ : InfFam D), IsInfFam θ → ∀ (f₁ f₂ : WO V W → ℂ), IsThetaFunO ψ V W f₁ → IsThetaFunO ψ V W f₂ → ∃ (M : ℕ) (C : ℝ), ∀ g₁ g₂ : GA D W, ∑' Y : Lag W, ‖lagTerm μ 𝓕 (fr Y) (om (1, g₁) f₁) (om (1, g₂) f₂)‖ₑ ≤ ENNReal.ofReal (C * ((GlobalTheory.IndefiniteRowSideFullHecke.LieAlgebraExponentialFamilies.height θ W g₁ : ℝ) * (GlobalTheory.IndefiniteRowSideFullHecke.LieAlgebraExponentialFamilies.height θ W g₂ : ℝ)) ^ M) := by
-  first | exact @GlobalTheory.SWAbsGrowth.tsum_lagTerm_le
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SiegelWeilLagrangianTermsAbsTsumLeHeightPolyStatement =====
@@ -892,7 +888,7 @@ theorem eisAbs_of_bounds (hP : GlobalTheory.Published.CuspRapidDecay) (hV : Glob
   rw [ENNReal.tsum_mul_right, ENNReal.tsum_mul_right]
 
 theorem eisAbs : GlobalTheory.Published.CuspRapidDecay → ∀ D : D7, EisAbs D :=
-  fun hP => eisAbs_of_bounds hP GlobalTheory.Mem.VolFin.finVol GlobalTheory.T.siegelWeilLagrangianTerms_abs_tsum_le_heightPoly GlobalTheory.T.siegelWeil_tsum_enorm_rational_invariant
+  fun hP => eisAbs_of_bounds hP GlobalTheory.Mem.VolFin.finVol GlobalTheory.SWAbsGrowth.tsum_lagTerm_le GlobalTheory.T.siegelWeil_tsum_enorm_rational_invariant
 
 end GlobalTheory.EisAbsPf
 
@@ -912,8 +908,6 @@ open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism
 open GlobalTheory.RawLift
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.doubled_lagrangian_term_frame_independent : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (V W : HSp D) (μ : Measure (WO V W)) (𝓕 : Set (WO V W)), IsCovolOne (ratL W V) μ 𝓕 → IsStdChar D ψ (-1) → ∀ f₁ f₂, IsThetaFunO ψ V W f₁ → IsThetaFunO ψ V W f₂ → ∀ (Y : Lag W) C C', IsLagFrame W Y C → IsLagFrame W Y C' → lagTerm μ 𝓕 C f₁ f₂ = lagTerm μ 𝓕 C' f₁ f₂ := by
-  first | exact @GlobalTheory.RawLift.lagTerm_frame_indep
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DoubledLagrangianTermFrameIndependentStatement =====
@@ -929,8 +923,6 @@ open Formalism.IndefR.Lev Formalism.IndefR.Mult Formalism.IndefR.Datum Formalism
 open GlobalTheory.RawLift
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.rational_source_acts_on_orientedTheta_by_substitution : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (χS χT : (AE D)ˣ →* Circle) (ω : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)), IsWeilDatumO ψ S T χS χT ω → ∀ f, IsThetaFunO ψ S T f → ∀ γ ∈ GQ S, ∀ x, ω (γ, 1) f x = f (actO S T γ⁻¹ 1 x) := by
-  first | exact @GlobalTheory.RatSubst.om_rat_left_apply
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RationalSourceActsOnOrientedThetaBySubstitutionStatement =====
@@ -1006,11 +998,11 @@ theorem terms : ∀ (D : D7) ψ (V W : HSp D) χV χW om νV 𝓗 νW 𝓖 μ �
   obtain ⟨e, he⟩ := GlobalTheory.T.siegelEisenstein_doubledTheta_terms_eq_lagrangianIntegrals D ψ V W χV χW om νV 𝓗 νW 𝓖 μ 𝓕 fr hs f₁ f₂ h₁ h₂ ν 𝓖' hν
   refine ⟨e, fun q => ?_⟩
   obtain ⟨C, hC, hq⟩ := he q
-  rw [← GlobalTheory.T.doubled_lagrangian_term_frame_independent D ψ V W μ 𝓕 hs.covol hs.weil.std f₁ f₂ h₁ h₂ (e q) C (fr (e q)) hC (hs.frame _), ← hq]
+  rw [← GlobalTheory.RawLift.lagTerm_frame_indep D ψ V W μ 𝓕 hs.covol hs.weil.std f₁ f₂ h₁ h₂ (e q) C (fr (e q)) hC (hs.frame _), ← hq]
   simp only [GlobalTheory.Eis.term, mul_one, GlobalTheory.SiegelFormula.swSection, GlobalTheory.SiegelFormula.valZero]
   congr 1
   funext y
-  exact GlobalTheory.T.rational_source_acts_on_orientedTheta_by_substitution D ψ _ V 1 χ omh hω _ hF _ (q.out : GQ (GlobalTheory.Doubling.dblSp W)).2 _
+  exact GlobalTheory.RatSubst.om_rat_left_apply D ψ _ V 1 χ omh hω _ hF _ (q.out : GQ (GlobalTheory.Doubling.dblSp W)).2 _
 
 theorem swPair (hW : GlobalTheory.Published.WeilSiegelFormulaUnitary) (D : D7) : SWPair D := by
   intro ψ V W χV χW om νV 𝓗 νW 𝓖 μ 𝓕 fr hs f₁ f₂ h₁ h₂
@@ -1190,9 +1182,6 @@ noncomputable section
 
 namespace GlobalTheory.CoordUnfold
 
-
-
-
 theorem integral_fundamentalDomain_eq_iterated_split : ∀ (D : D7) (r m s t : ℕ) (J : Matrix (Fin r) (Fin s) D.host.E) (K : Matrix (Fin r) (Fin t) D.host.E) (L : Matrix (Fin s) (Fin r) D.host.E) (M : Matrix (Fin t) (Fin r) D.host.E), L * J = 1 → L * K = 0 → M * J = 0 → M * K = 1 → J * L + K * M = 1 → ∀ (μ : Measure (Mx D r m)) (𝓕 : Set (Mx D r m)), IsCovolOne (GlobalTheory.MixModel.ratMx D r m) μ 𝓕 → ∀ (ν : Measure (Mx D s m)) (𝓨 : Set (Mx D s m)), IsCovolOne (GlobalTheory.MixModel.ratMx D s m) ν 𝓨 → ∀ (η : Measure (Mx D t m)) (𝓥 : Set (Mx D t m)), IsCovolOne (GlobalTheory.MixModel.ratMx D t m) η 𝓥 → ∃ κ : ℝ, ∀ T : Mx D r m → ℂ, Continuous T → (∀ γ ∈ GlobalTheory.MixModel.ratMx D r m, ∀ u, T (γ + u) = T u) → ∫ u in 𝓕, T u ∂μ = κ * ∫ v in 𝓥, (∫ y in 𝓨, T (HMul.hMul (J.map (incA D)) y + HMul.hMul (K.map (incA D)) v) ∂ν) ∂η := by
   intro D r m s t J K L M hLJ hLK hMJ hMK hJLKM μ 𝓕 hμ ν 𝓨 hν η 𝓥 hη
   obtain ⟨i1, i2, i3, i4, i5, -⟩ := GlobalTheory.MixModel.lattice_Mx D s m
@@ -1323,7 +1312,6 @@ open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RawLift
 
-
 theorem _root_.GlobalTheory.T.integral_fundamentalDomain_eq_iterated_rationalSplitting : ∀ (D : D7) (r m s t : ℕ) (J : Matrix (Fin r) (Fin s) D.host.E) (K : Matrix (Fin r) (Fin t) D.host.E) (L : Matrix (Fin s) (Fin r) D.host.E) (M : Matrix (Fin t) (Fin r) D.host.E), L * J = 1 → L * K = 0 → M * J = 0 → M * K = 1 → J * L + K * M = 1 → ∀ (μ : Measure (Mx D r m)) (𝓕 : Set (Mx D r m)), IsCovolOne (GlobalTheory.MixModel.ratMx D r m) μ 𝓕 → ∀ (ν : Measure (Mx D s m)) (𝓨 : Set (Mx D s m)), IsCovolOne (GlobalTheory.MixModel.ratMx D s m) ν 𝓨 → ∀ (η : Measure (Mx D t m)) (𝓥 : Set (Mx D t m)), IsCovolOne (GlobalTheory.MixModel.ratMx D t m) η 𝓥 → ∃ κ : ℝ, ∀ T : Mx D r m → ℂ, Continuous T → (∀ γ ∈ GlobalTheory.MixModel.ratMx D r m, ∀ u, T (γ + u) = T u) → ∫ u in 𝓕, T u ∂μ = κ * ∫ v in 𝓥, (∫ y in 𝓨, T (HMul.hMul (J.map (incA D)) y + HMul.hMul (K.map (incA D)) v) ∂ν) ∂η := by
   first | exact @GlobalTheory.CoordUnfold.integral_fundamentalDomain_eq_iterated_split
 end -- clump:auto
@@ -1344,8 +1332,6 @@ open GlobalTheory.RawLift
 
 noncomputable section
 namespace GlobalTheory.LagMeans
-
-
 
 theorem lagTerm_eq_of_means : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (V W : HSp D) (μ : Measure (WO V W)) (𝓕 : Set (WO V W)), IsCovolOne (ratL W V) μ 𝓕 → ∀ (Y : Lag W) (C : Matrix (Fin W.rank) (Fin W.rank) D.host.E × Matrix (Fin W.rank) (Fin W.rank) D.host.E), IsLagFrame W Y C → ∀ (s : ℕ) (I : Matrix (Fin W.rank) (Fin s) D.host.E), IsIsoFrame W I → Submodule.span D.host.E (Set.range I.transpose) = Y.1.comap (LinearMap.inl D.host.E _ _) → ∀ (ν : Measure (Mx D s V.rank)) (𝓨 : Set (Mx D s V.rank)), IsCovolOne (GlobalTheory.MixModel.ratMx D s V.rank) ν 𝓨 → ∀ f₁ f₁' f₂ : WO V W → ℂ, IsThetaFunO ψ V W f₁ → IsThetaFunO ψ V W f₁' → IsThetaFunO ψ V W f₂ → (∀ x : WO V W, HMul.hMul ((Formalism.UG.cT (D.sp.cm.sig : D.host.E →+* D.host.E) I * W.gram).map (incA D)) x = (0 : Mx D s V.rank) → ∫ y in 𝓨, f₁ (HMul.hMul (I.map (incA D)) y + x) ∂ν = ∫ y in 𝓨, f₁' (HMul.hMul (I.map (incA D)) y + x) ∂ν) → lagTerm μ 𝓕 C f₁ f₂ = lagTerm μ 𝓕 C f₁' f₂ := by
   intro D ψ hψ V W μ 𝓕 hμ Y C hC s I hI hspan ν 𝓨 hν f₁ f₁' f₂ h₁ h₁' h₂ hmean

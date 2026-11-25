@@ -445,10 +445,6 @@ theorem sigmaOf_one : H.sigmaOf 1 = 1 := by
   unfold Host.sigmaOf
   exact map_one _
 
-theorem galE_sigmaOf (g : R.GG) : H.galE (H.sigmaOf g) = g := by
-  unfold Host.sigmaOf
-  exact MulEquiv.apply_symm_apply _ _
-
 theorem sigmaOf_sqrt_neg (g : R.GG) (h : g.1.2 = -1) : H.sigmaOf g H.sqrtMinusD = -H.sqrtMinusD := by
   have := H.galE_bE (H.sigmaOf g)
   rw [galE_sigmaOf, h] at this
@@ -734,13 +730,6 @@ open Formalism.MainNotions.G (HH)
 
 namespace GlobalTheory.IntegralAtPlace
 
-theorem norm_le_one_of_isIntegral {p : ℕ} [Fact p.Prime] {x : ℂ_[p]}
-    (hx : IsIntegral ℤ x) : ‖x‖ ≤ 1 := by
-  have h : x ∈ (NormedField.valuation (K := ℂ_[p])).integer :=
-    (Valuation.integer.integers (NormedField.valuation (K := ℂ_[p]))).mem_of_integral hx.tower_top
-  rw [Valuation.mem_integer_iff, NormedField.valuation_apply] at h
-  exact_mod_cast h
-
 theorem norm_le_one : ∀ (D : D7) (p : ℕ) [Fact p.Prime], p = D.host.d → ∀ (φ : D.host.E →+* ℂ_[p]) (a : D.host.E), a ∈ D.host.AA0 → ‖φ a‖ ≤ 1 := by
   intro D p hpF hpd φ a ha
   obtain ⟨-, -, hqd, -, hd2⟩ := hypOdd_of_hostHyp D.host.hyp
@@ -751,7 +740,7 @@ theorem norm_le_one : ∀ (D : D7) (p : ℕ) [Fact p.Prime], p = D.host.d → �
       have := congrArg φ hx
       rw [Polynomial.hom_eval₂, map_zero] at this
       rwa [RingHom.ext_int (φ.comp (algebraMap ℤ D.host.E)) (algebraMap ℤ ℂ_[p])] at this
-    exact norm_le_one_of_isIntegral h
+    exact GlobalTheory.NormSum.KernelAt.norm_le_one_of_isIntegral h
   let Q : Ideal (𝓞 D.host.E) :=
     { carrier := {y | ‖φ (y : D.host.E)‖ < 1}
       add_mem' := fun {x y} hx hy => by

@@ -151,8 +151,6 @@ open AlgebraicGeometry CategoryTheory CategoryTheory.Limits MonoidalCategory Car
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.XR
 open scoped CategoryTheory.Obj
 
-theorem _root_.GlobalTheory.CompanionTheory.Relay.exists_finite_normal_model_of_residue_finite : ∀ (X : Scheme.{0}) (s : X ⟶ Sp ℤ), IsProjOver s → ∀ (Ω : Type) [Field Ω] [CharZero Ω] (ξ : Sp Ω ⟶ X), (Scheme.descResidueField (Scheme.stalkClosedPointTo ξ)).hom.Finite → ∃ (n : ℕ) (x : Fin n → Ω) (M : PModel ℤ x) (π : M.X ⟶ X), Flat.NormalCpt M.ξ ∧ IsFinite π ∧ M.ξ ≫ π = ξ := by
-  first | exact @PositivityTheory.HtPt.Mf.xr_norm
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsFiniteNormalModelOfResidueFinite =====
@@ -688,12 +686,6 @@ open AlgebraicGeometry CategoryTheory CategoryTheory.Limits MonoidalCategory Car
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.XR
 open scoped CategoryTheory.Obj
 
-namespace GlobalTheory.CompanionTheory.Ar.XR
-
-theorem fullLevel_props : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H), ∀ (X : Scheme.{0}) (t : SAB H X) (Ω : Type) [Field Ω] (ξ : Sp Ω ⟶ X) (N : ℕ), 0 < N → ∀ (z : Ωˣ) (ev : D.La → (Over.mk ξ ⟶ t.G)), IsFullLevelAt D t ξ N z ev → IsPrimitiveRoot z N ∧ (∀ a b, ev (a + b) = ev a * ev b) ∧ (∀ (r : 𝓞 E) a, ev (r • a) = ev a ≫ t.act.act r) ∧ (∀ a, ev a = 1 ↔ ∃ b, a = N • b) ∧ (∀ g : Over.mk ξ ⟶ t.G, g ^ N = 1 ↔ ∃ a, ev a = g) ∧ FullTorsion t.G ξ N ∧ ∀ (k : Type) [Field k] [IsAlgClosed k] (i : Ω →+* k) (a b : D.La) (g g' : Over.mk (spMap i ≫ ξ) ⟶ t.G), g.left = spMap i ≫ (ev a).left → g'.left = spMap i ≫ (ev b).left → Out.WeilIs t.G t.PP.L N g g' (unitOn (Units.map i.toMonoidHom z ^ D.EF a b)) :=
-  PositivityTheory.HtPt.Mg.level_props
-
-end GlobalTheory.CompanionTheory.Ar.XR
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -767,7 +759,7 @@ theorem exists_full_level_over : ∀ (E : Type) [Field E] [NumberField E] [IsCMF
   obtain ⟨ev', hev', -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.XR.isFullLevelAt_move E H D Y.X X Y.t t f m Ω Ω (RingHom.id Ω) (spMap i ≫ y ≫ Y.j) ξ hid N z ev hlev
   have hz : Units.map (RingHom.id Ω).toMonoidHom z = z := by ext; rfl
   rw [hz] at hev'
-  obtain ⟨hprim, -, -, -, -, hfull, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.XR.fullLevel_props E H D X t Ω ξ N hN z ev' hev'
+  obtain ⟨hprim, -, -, -, -, hfull, -⟩ := _root_.PositivityTheory.HtPt.Mg.level_props E H D X t Ω ξ N hN z ev' hev'
   refine ⟨t, m, ev', hev', hfull, fun q => ?_⟩
   have hpow : (z : Ω) ^ N = 1 := by
     have := congrArg Units.val hprim.pow_eq_one
@@ -850,7 +842,7 @@ theorem levelCover : LevelCoverSt := by
     | exact RingHom.finite_algebraMap.mpr hfd
   have hfin := finite_descResidueField_spMap_comp (algebraMap K Ω) hi (y0 ≫ Y.j) hsurj
   obtain ⟨n, x, M, π, hMn, hπ, hMπ⟩ :=
-    _root_.GlobalTheory.CompanionTheory.Relay.exists_finite_normal_model_of_residue_finite Y.X _ hproj Ω (spMap (algebraMap K Ω) ≫ (y0 ≫ Y.j)) hfin
+    _root_.PositivityTheory.HtPt.Mf.xr_norm Y.X _ hproj Ω (spMap (algebraMap K Ω) ≫ (y0 ≫ Y.j)) hfin
   have hMg : IsCptGen M.ξ := by
     obtain ⟨hg, -, -, -⟩ := M.tie
     exact hg

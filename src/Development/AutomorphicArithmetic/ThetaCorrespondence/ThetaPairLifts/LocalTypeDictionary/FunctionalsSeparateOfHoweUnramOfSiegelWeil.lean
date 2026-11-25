@@ -236,14 +236,6 @@ end General
 
 variable {D : D7} {T : Type}
 
-theorem g_mem {P : Formalism.L2.Host.PiBar D.host} {k : Fin 2} {PP : Pl D.host.E} (h : P.Div k PP) :
-    ((D.host.g k : ℕ) : 𝓞 D.host.E) ∈ PP.asIdeal := by
-  have h1 := P.pb_over k
-  have h2 : PP.under (𝓞 D.host.K) = P.pb k := h
-  rw [← h2] at h1
-  have h3 : algebraMap (𝓞 D.host.K) (𝓞 D.host.E) ((D.host.g k : ℕ) : 𝓞 D.host.K) ∈ PP.asIdeal := h1
-  rwa [map_natCast] at h3
-
 theorem levRow_sub {L : LevCh D T} {μ0 : T} (hL : L.Is μ0) :
     (levRow L : Set (GA D (Yc D 0))) ⊆ levS _ (L.βY 0) (L.dat0 L.triv) := by
   rintro k ⟨hk1, hk2⟩
@@ -251,7 +243,7 @@ theorem levRow_sub {L : LevCh D T} {μ0 : T} (hL : L.Is μ0) :
   refine ⟨hk1, Kg_le_lev (T := L.Pg) (D := L.dat0 L.triv) subset_rfl (Finset.empty_subset _)
     (congLev_le_Kg _ _ hfr (fun PP hP => ?_) hk2)⟩
   obtain ⟨l, hl⟩ := (hL.Pg PP).1 hP
-  have hg := g_mem hl
+  have hg := GlobalTheory.StepLaw.typePrime_mem_of_div hl
   rw [Ideal.span_singleton_le_iff_mem, Nat.cast_mul]
   fin_cases l
   · exact Ideal.mul_mem_right _ _ hg
@@ -358,7 +350,6 @@ namespace WeakSepPf
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} (W : G.Weil)
 
-
 variable (G) in
 theorem nonempty_coreVol : Nonempty (CoreVol G) := ⟨fun i => (GlobalTheory.Unf.Inhab.nonempty_vol (G.V (.core i))).some⟩
 
@@ -462,18 +453,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
-namespace GlobalTheory.RowConvAll
-
-theorem multT_le_empty {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} (θ : InfFam D) (M : DSModel V S) (J : Set (GA D V))
-    (χ : GA D V → ℂ) : MultT θ M J χ ≤ MultT θ M ∅ 1 := by
-  intro x hx
-  rw [mem_multT] at hx ⊢
-  refine Submodule.span_mono ?_ hx
-  intro T hT
-  exact ⟨hT.aut, hT.cusp, fun v k hk => absurd hk (Set.notMem_empty k), hT.equiv, hT.cont⟩
-
-end GlobalTheory.RowConvAll
-
 end
 end -- clump:auto
 end -- clump:auto
@@ -495,7 +474,7 @@ namespace GlobalTheory.RowConvAll
 theorem separating_family_converges : _root_.GlobalTheory.FunPr.ThetaLocalInputs → RowTower → RowConv := by
   intro hP hT D hq hS T L μ0 hL sc hc G W M hM M₀ hM₀ t ht w ρ ξ Ψ hΨ Φ
   obtain ⟨S, MB, -, -, vec, hv⟩ := hT D hq hS T L μ0 hL sc hc G W M hM M₀ hM₀ D.R.m le_rfl
-  obtain ⟨F', hF', hF⟩ := hv t (multT_le_empty _ _ _ _ ht) Φ
+  obtain ⟨F', hF', hF⟩ := hv t (GlobalTheory.SepRows.factor_multT_le_empty _ _ _ _ ht) Φ
   obtain ⟨hconv, hpart⟩ := hF ρ w
   have hrow : (fun i : Fin D.R.m => W.datum ρ Φ (Fin.castLE (le_refl D.R.m) i)) = W.datum ρ Φ := by
     funext i; simp
@@ -625,15 +604,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
-namespace GlobalTheory.SepRows.RowRapidPf
-
-theorem multT_le_empty {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} (θ : InfFam D) (M : DSModel V S) (J : Set (GA D V)) (χ : GA D V → ℂ) :
-    MultT θ M J χ ≤ MultT θ M ∅ 1 :=
-  Submodule.map_mono (Submodule.span_mono fun _ h =>
-    ⟨h.aut, h.cusp, fun _ _ hk => absurd hk (Set.notMem_empty _), h.equiv, h.cont⟩)
-
-end GlobalTheory.SepRows.RowRapidPf
-
 end
 end -- clump:auto
 end -- clump:auto
@@ -654,7 +624,7 @@ noncomputable section
 namespace GlobalTheory.SepRows.RowRapidPf
 theorem separating_family_rapid_decay : _root_.GlobalTheory.FunPr.ThetaLocalInputs → RowTower → RowRapid := by
   intro hP hT D hq hs T L μ0 hL sc hc G W M hM M₀ hM₀ t ht w
-  have ht' : t ∈ MultT W.θ M₀ ∅ 1 := multT_le_empty W.θ M₀ _ _ ht
+  have ht' : t ∈ MultT W.θ M₀ ∅ 1 := GlobalTheory.SepRows.factor_multT_le_empty W.θ M₀ _ _ ht
   have key : ∀ ρ Φ n (h : n ≤ D.R.m),
       PathConv W M (rowPath T 0 n) (rowFam 0 n fun i => W.datum ρ Φ (Fin.castLE h i)) (t w) ∧
         RapidDec (G.V (.grid n 0)) (part W M ρ Φ (t w) n h) := by
@@ -700,37 +670,19 @@ namespace GlobalTheory.RowArrow
 
 variable {D : D7}
 
-theorem unit_of_gram {n : ℕ} {G b : Matrix (Fin n) (Fin n) ℂ} {ε : Fin n → Bool} (h : bᴴ * G * b = Formalism.REAL.Jm ε) :
-    IsUnit b.det := by
-  have hJ : IsUnit (Formalism.REAL.Jm ε).det := by
-    unfold Formalism.REAL.Jm
-    rw [det_diagonal, isUnit_iff_ne_zero]
-    exact Finset.prod_ne_zero_iff.2 fun a _ => by split_ifs <;> norm_num
-  rw [← h, det_mul] at hJ
-  exact isUnit_of_mul_isUnit_right hJ
-
-theorem inv_gram {n : ℕ} {G b : Matrix (Fin n) (Fin n) ℂ} {ε : Fin n → Bool} (h : bᴴ * G * b = Formalism.REAL.Jm ε) :
-    (b⁻¹)ᴴ * Formalism.REAL.Jm ε * b⁻¹ = G := by
-  have hb := unit_of_gram h
-  have h1 : (bᴴ)⁻¹ * bᴴ = 1 := nonsing_inv_mul _ (by rw [det_conjTranspose]; exact hb.star)
-  have h2 : b * b⁻¹ = 1 := mul_nonsing_inv _ hb
-  rw [← h, conjTranspose_nonsing_inv]
-  calc (bᴴ)⁻¹ * (bᴴ * G * b) * b⁻¹ = ((bᴴ)⁻¹ * bᴴ) * G * (b * b⁻¹) := by simp only [Matrix.mul_assoc]
-    _ = G := by rw [h1, h2, Matrix.one_mul, Matrix.mul_one]
-
 theorem exists_frame (V : HSp D) (c b : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ)
     (h : ∀ τ, ∃ ε : Fin V.rank → Bool, (b τ)ᴴ * gramAt D V τ * b τ = Formalism.REAL.Jm ε ∧ c τ * b τ = b τ * Formalism.REAL.Jm ε) :
     ∃ A : Fr V, A.cart = c ∧ A.onb = b := by
   choose ε hε using h
-  refine ⟨⟨ε, fun τ => (b τ)⁻¹, fun τ => isUnit_nonsing_inv_iff.2 ((isUnit_iff_isUnit_det _).2 (unit_of_gram (hε τ).1)),
-    fun τ => inv_gram (hε τ).1⟩, ?_, ?_⟩
+  refine ⟨⟨ε, fun τ => (b τ)⁻¹, fun τ => isUnit_nonsing_inv_iff.2 ((isUnit_iff_isUnit_det _).2 (GlobalTheory.ConjFock.unit_of_gram (hε τ).1)),
+    fun τ => GlobalTheory.ConjFock.inv_gram (hε τ).1⟩, ?_, ?_⟩
   · funext τ
     simp only [Fr.cart]
-    rw [nonsing_inv_nonsing_inv _ (unit_of_gram (hε τ).1), ← (hε τ).2, Matrix.mul_assoc,
-      mul_nonsing_inv _ (unit_of_gram (hε τ).1), Matrix.mul_one]
+    rw [nonsing_inv_nonsing_inv _ (GlobalTheory.ConjFock.unit_of_gram (hε τ).1), ← (hε τ).2, Matrix.mul_assoc,
+      mul_nonsing_inv _ (GlobalTheory.ConjFock.unit_of_gram (hε τ).1), Matrix.mul_one]
   · funext τ
     simp only [Fr.onb]
-    rw [nonsing_inv_nonsing_inv _ (unit_of_gram (hε τ).1)]
+    rw [nonsing_inv_nonsing_inv _ (GlobalTheory.ConjFock.unit_of_gram (hε τ).1)]
 
 theorem lifts_neg {X : ProvA} (h3 : Formalism.MainNotions.SchurIrreducible.ArchimedeanRallisUpDownLine X) (h4 : Formalism.MainNotions.SchurIrreducible.ArchimedeanRallisFourth X) (h5 : Formalism.MainNotions.SchurIrreducible.ArchimedeanRallisFifth X)
     (hP : PairLifts D X) (hE : PairEx) {θ : InfFam D} (hθ : IsInfFam θ) {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1))
@@ -784,7 +736,6 @@ theorem exp_att {χ η : (AE D)ˣ →* Circle} {τ : D.what₂.Tau} {c : ℚ} (h
   · exact h
 
 end GlobalTheory.RowArrow
-
 
 end
 end -- clump:auto
@@ -1014,8 +965,6 @@ open GlobalTheory.DefiniteMult GlobalTheory.DefLift
 
 variable {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} {M : DSModel V S} {θ : InfFam D} {c : CoefA V}
   {pr : c.W →ₗ[ℂ] SmT M →ₗ[ℂ] ℂ}
-
-
 
 theorem exists_form_triv (hθ : IsInfFam θ) (hp : AllPlus M) (hc : c.Is) (hpr : IsDualPair θ M c pr)
     (K : Subgroup (GA D V)) (J : Subgroup (Bridge.Gf V))

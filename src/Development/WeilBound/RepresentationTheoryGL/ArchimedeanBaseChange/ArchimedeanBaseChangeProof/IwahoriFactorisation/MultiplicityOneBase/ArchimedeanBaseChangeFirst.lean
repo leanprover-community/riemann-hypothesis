@@ -261,11 +261,6 @@ theorem model_aeval {B : InvAlg K} {n : ℕ} {γ : Matrix (Fin n) (Fin n) K.E} {
     rw [aeval_monomial, aeval_monomial, mul_assoc, ← Algebra.smul_def, map_smul, model_pow h,
       ← Algebra.smul_def, Matrix.smul_mulVec]
 
-theorem aeval_g_P (B : InvAlg K) : aeval B.g B.P = 0 := by
-  have h : Algebra.lmul K.E B.A (aeval B.g B.P) = 0 := by
-    rw [← aeval_algHom_apply]; exact LinearMap.aeval_self_charpoly _
-  simpa using LinearMap.congr_fun h 1
-
 theorem aeval_prod (B₁ B₂ : InvAlg K) (p : K.E[X]) :
     aeval (B₁.prod B₂).g p = ((aeval B₁.g p, aeval B₂.g p) : B₁.A × B₂.A) := by
   change aeval ((B₁.g, B₂.g) : B₁.A × B₂.A) p = _
@@ -278,11 +273,11 @@ theorem ker_model (B₁ B₂ : InvAlg K) (hs : (B₁.P * B₂.P).Separable) {n :
     (h : IsModel (B₁.prod B₂) γ x ψ) (y : Fin n → K.E) :
     aeval γ B₁.P *ᵥ y = 0 ↔ ∃ a : B₁.A, y = ψ ((a, 0) : B₁.A × B₂.A) := by
   obtain ⟨z, rfl⟩ := ψ.surjective y
-  rw [← model_aeval h, LinearEquiv.map_eq_zero_iff, aeval_prod, aeval_g_P]
+  rw [← model_aeval h, LinearEquiv.map_eq_zero_iff, aeval_prod, GlobalTheory.UnitLemma.CayleyCase.aeval_P]
   obtain ⟨a, c, hac⟩ := Polynomial.Separable.isCoprime hs
   have hu : IsUnit (aeval B₂.g B₁.P) := by
     have := congrArg (aeval B₂.g) hac
-    rw [map_add (f := _), map_mul, map_mul, aeval_g_P B₂, mul_zero, add_zero, map_one] at this
+    rw [map_add (f := _), map_mul, map_mul, GlobalTheory.UnitLemma.CayleyCase.aeval_P B₂, mul_zero, add_zero, map_one] at this
     exact isUnit_iff_exists_inv'.2 ⟨_, this⟩
   constructor
   · intro hz
@@ -1350,8 +1345,6 @@ open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep 
 open scoped Classical TensorProduct
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-theorem _root_.GlobalTheory.T.gramMatrix_traceForm_basis_change : ∀ (K : GlobalTheory.UnitLemma.UQ) (B : GlobalTheory.UnitLemma.InvAlg K) (L : Type) [Field L] (e : K.E ≃+* L) (c : L →+* L), (∀ x, e (K.c x) = c (e x)) → ∀ (a : ℕ) (β : B.A) (b : Module.Basis (Fin a) K.E B.A), (∀ P : GL (Fin a) L, ∃ b' : Module.Basis (Fin a) K.E B.A, (Matrix.of fun i j => e (B.herm β (b' i) (b' j))) = P.valᵀ * (Matrix.of fun i j => e (B.herm β (b i) (b j))) * P.val.map c) ∧ ∀ b' : Module.Basis (Fin a) K.E B.A, ∃ P : GL (Fin a) L, (Matrix.of fun i j => e (B.herm β (b' i) (b' j))) = P.valᵀ * (Matrix.of fun i j => e (B.herm β (b i) (b j))) * P.val.map c := by
-  first | exact @GlobalTheory.GramChange.gram_basis_change
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.GramMatrixTraceFormBasisChangeStatement =====
@@ -1365,8 +1358,6 @@ open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep 
 open scoped Classical TensorProduct
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-theorem _root_.GlobalTheory.T.hermitian_form_det_unit_and_twist : ∀ (K : GlobalTheory.UnitLemma.UQ) (B : GlobalTheory.UnitLemma.InvAlg K) (L : Type) [Field L] (e : K.E ≃+* L) (c : L →+* L), (∀ x, e (K.c x) = c (e x)) → (∀ x, c (c x) = x) → ∀ (a : ℕ) (Q : L[X]), B.P = Q.map e.symm.toRingHom → Q.Separable → Q.natDegree = a → ∀ β : B.Aˣ, B.σ (β : B.A) = β * ((-1) ^ (a - 1) * B.g) → ∀ b : Module.Basis (Fin a) K.E B.A, IsUnit (Matrix.of fun i j => e (B.herm β (b i) (b j))).det ∧ ∀ δ : GL (Fin a) L, ((δ.val * GlobalTheory.Tw.Phi a L)⁻¹)ᵀ = (Matrix.of fun i j => e (B.herm β (b i) (b j))) → (δ * thetaGL a c δ).val.charpoly = Q := by
-  first | exact @GlobalTheory.GramTwistNorm.gram_twisted_norm_charpoly
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianFormDetUnitAndTwistStatement =====
@@ -1495,8 +1486,8 @@ theorem twCl_equiv_cl : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], 
       exact ⟨u * v, by rw [hv, hu, Units.val_mul, map_mul]; ring⟩
 
   obtain ⟨F0i, F0u⟩ := gram_delta (w.adicCompletion E) a
-  have hF1 := GlobalTheory.T.hermitian_form_det_unit_and_twist K B (w.adicCompletion E) e (cj w) he hcc a Q hP hQs hQd
-  have hF4 := GlobalTheory.T.gramMatrix_traceForm_basis_change K B (w.adicCompletion E) e (cj w) he a
+  have hF1 := GlobalTheory.GramTwistNorm.gram_twisted_norm_charpoly K B (w.adicCompletion E) e (cj w) he hcc a Q hP hQs hQd
+  have hF4 := GlobalTheory.GramChange.gram_basis_change K B (w.adicCompletion E) e (cj w) he a
   have hF6 := twConj_gram (w.adicCompletion E) (cj w) a
   have hcl : ∀ k : B.Cl, B.σ (((Quot.out k).1 : B.Aˣ) : B.A) = (Quot.out k).1 := fun k => (Quot.out k).2
   have hG : ∀ k : B.Cl, IsUnit (Matrix.of fun i j => e (B.herm (((β₀ * (Quot.out k).1 : B.Aˣ)) : B.A) (b0 i) (b0 j))).det :=

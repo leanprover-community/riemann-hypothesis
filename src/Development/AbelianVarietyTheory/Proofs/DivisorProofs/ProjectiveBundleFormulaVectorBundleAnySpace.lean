@@ -285,21 +285,6 @@ namespace GlobalTheory.BiprodPush
 
 variable {R : Type} [CommRing R]
 
-theorem cpush_comp (K : Cx R) {I J M : Cx R} (f : I ⟶ J) (g : J ⟶ M) (n : ℤ) (x : CohomologyClass K I n) :
-    cpush K (f ≫ g) n x = cpush K g n (cpush K f n x) := by
-  obtain ⟨x, rfl⟩ := x.mk_surjective
-  simp only [cpush, cpost_mk]
-  congr 1
-
-theorem cpush_add (K : Cx R) {I J : Cx R} (f g : I ⟶ J) (n : ℤ) (x : CohomologyClass K I n) :
-    cpush K (f + g) n x = cpush K f n x + cpush K g n x := by
-  obtain ⟨x, rfl⟩ := x.mk_surjective
-  simp only [cpush, cpost_mk]
-  rw [← CohomologyClass.mk_add]
-  congr 1
-  ext1
-  simp [zcomp, Cochain.ofHom_add, Cochain.comp_add]
-
 theorem cpush_zero (K : Cx R) {I J : Cx R} (n : ℤ) (x : CohomologyClass K I n) :
     cpush K (0 : I ⟶ J) n x = 0 := by
   obtain ⟨x, rfl⟩ := x.mk_surjective
@@ -320,7 +305,7 @@ theorem cpush_id (K : Cx R) {I : Cx R} (n : ℤ) (x : CohomologyClass K I n) :
 def cpushHom (K : Cx R) (I J : Cx R) (n : ℤ) (x : CohomologyClass K I n) : (I ⟶ J) →+ CohomologyClass K J n where
   toFun f := cpush K f n x
   map_zero' := cpush_zero K n x
-  map_add' f g := cpush_add K f g n x
+  map_add' f g := GlobalTheory.EtC.PostFun.cpush_add K f g n x
 
 theorem cpush_sum (K : Cx R) {I J : Cx R} {ι : Type} (s : Finset ι) (f : ι → (I ⟶ J)) (n : ℤ) (x : CohomologyClass K I n) :
     cpush K (∑ j ∈ s, f j) n x = ∑ j ∈ s, cpush K (f j) n x :=
@@ -367,20 +352,20 @@ theorem biproduct_push : ∀ (R : Type) [CommRing R] {ι : Type} [Fintype ι] (L
     · intro a
       funext k
 
-      simp only [map_sum, ← cpush_comp]
+      simp only [map_sum, ← GlobalTheory.EtC.InjResCmp.cpush_comp]
       rw [Finset.sum_eq_single k]
       · rw [biproduct.ι_π_self, cpush_id]
       · intro j _ hj
         rw [biproduct.ι_π_ne _ hj, cpush_zero]
       · intro h; exact absurd (Finset.mem_univ k) h
     · intro b
-      simp only [← cpush_comp]
+      simp only [← GlobalTheory.EtC.InjResCmp.cpush_comp]
       rw [← cpush_sum, biproduct.total, cpush_id]
     · intro a
       change cpush K (biproduct.desc g) n (∑ j, cpush K (biproduct.ι L j) n (a j)) = _
 
       rw [map_sum]
-      simp only [← cpush_comp, biproduct.ι_desc]
+      simp only [← GlobalTheory.EtC.InjResCmp.cpush_comp, biproduct.ι_desc]
 
 end GlobalTheory.BiprodPush
 
@@ -469,22 +454,6 @@ namespace GlobalTheory.EtC.SchLocExact
 
 variable {R : Type} [CommRing R]
 
-theorem map_res {F G : Shv R} (ψ : F ⟶ G) {V U : Scheme.{0}} (g : V ⟶ U) (x : Sec F U) :
-    Sec.map ψ (Sec.res g x) = Sec.res g (Sec.map ψ x) := by
-  simp only [Sec.map, Sec.res]
-  exact congrArg (fun f => f.hom x) (ψ.hom.naturality g.op)
-
-theorem map_comp {F G H : Shv R} (φ : F ⟶ G) (ψ : G ⟶ H) {U : Scheme.{0}} (x : Sec F U) :
-    Sec.map (φ ≫ ψ) x = Sec.map ψ (Sec.map φ x) := by
-  simp [Sec.map]
-
-theorem res_res {F : Shv R} {W V U : Scheme.{0}} (g : W ⟶ V) (f : V ⟶ U) (x : Sec F U) :
-    Sec.res g (Sec.res f x) = Sec.res (g ≫ f) x := by
-  simp [Sec.res]
-
-theorem res_id {F : Shv R} {U : Scheme.{0}} (x : Sec F U) : Sec.res (𝟙 U) x = x := by
-  simp [Sec.res]
-
 theorem subsingleton_of_homotopyEquiv {K L M : Cx R} (e : HomotopyEquiv K L) (n : ℤ)
     (h : Subsingleton (CohomologyClass L M n)) : Subsingleton (CohomologyClass K M n) := by
   suffices H : ∀ x : CohomologyClass K M n, x = 0 from ⟨fun x y => (H x).trans (H y).symm⟩
@@ -502,15 +471,7 @@ theorem subsingleton_of_homotopyEquiv {K L M : Cx R} (e : HomotopyEquiv K L) (n 
     simp [zcomp, Cochain.comp_v _ _ (zero_add n) p p q (add_zero p) hpq, smul_smul]
   rw [← key, h0, map_zero]
 
-theorem lift_of_subsingleton {A : Shv R} {M : Cx R} {m' m : ℤ} (hm : m' + 1 = m)
-    (hA : Subsingleton (CohomologyClass (sgl A) M m)) (f : A ⟶ M.X m) (hf : f ≫ M.d m (m + 1) = 0) :
-    ∃ g : A ⟶ M.X m', g ≫ M.d m' m = f := by
-  have h0 : CohomologyClass.mk (Cocycle.fromSingleMk f (zero_add m) (m + 1) rfl hf) = 0 := Subsingleton.elim _ _
-  rw [CohomologyClass.mk_eq_zero_iff, Cocycle.fromSingleMk_mem_coboundaries_iff _ _ _ _ _ m' hm] at h0
-  exact h0
-
 end GlobalTheory.EtC.SchLocExact
-
 
 open GlobalTheory.EtC.SchLocExact in
 theorem GlobalTheory.EtC.sch_loc_exact : ∀ (R : Type) [CommRing R] (M : Cx R) (U : Scheme.{0}),
@@ -521,19 +482,19 @@ theorem GlobalTheory.EtC.sch_loc_exact : ∀ (R : Type) [CommRing R] (M : Cx R) 
   have hs : Subsingleton (CohomologyClass (sgl ((free R).obj (yoneda.obj U))) M n) :=
     subsingleton_of_homotopyEquiv (e (yoneda.obj U)) n (hU n)
   obtain ⟨hex, -, -, -⟩ := GlobalTheory.EtC.free_hom_sections R (yoneda.obj U) (M.X n)
-  obtain ⟨φ, hφ⟩ := hex (fun V x => Sec.res x b) (fun V W g x => res_res g x b)
+  obtain ⟨φ, hφ⟩ := hex (fun V x => Sec.res x b) (fun V W g x => GlobalTheory.EtC.freeYoneda_res_res g x b)
   have hφd : φ ≫ M.d n (n + 1) = 0 := by
     apply (GlobalTheory.EtC.free_hom_sections R (yoneda.obj U) (M.X (n + 1))).2.1
     intro W x
-    rw [map_comp, hφ, map_res, hb]
+    rw [GlobalTheory.EtC.ConeSec.smap_comp, hφ, GlobalTheory.EtC.freeYoneda_secMap_res, hb]
     simp [Sec.map, Sec.res]
-  obtain ⟨ψ, hψ⟩ := lift_of_subsingleton (m' := n - 1) (by omega) hs φ hφd
+  obtain ⟨ψ, hψ⟩ := GlobalTheory.NullHtpyStair.lift_of_subsingleton (m' := n - 1) (by omega) hs φ hφd
   let a0 : Sec (M.X (n - 1)) U := Sec.map ψ (freeGen R (yoneda.obj U) U (𝟙 U))
   have ha0 : Sec.map (M.d (n - 1) n) a0 = b := by
     simp only [a0]
-    rw [← map_comp, hψ, hφ, res_id]
+    rw [← GlobalTheory.EtC.ConeSec.smap_comp, hψ, hφ, GlobalTheory.EtC.freeYoneda_res_id]
   refine ⟨⊤, GrothendieckTopology.top_mem _ _, fun V g _ => ⟨Sec.res g a0, ?_⟩⟩
-  rw [map_res, ha0]
+  rw [GlobalTheory.EtC.freeYoneda_secMap_res, ha0]
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -1106,9 +1067,6 @@ theorem evT_of_eq {X : SimplicialObject Spc} {K : Cx R} {n : ℤ} (γ : Cochain 
   obtain rfl : t = -((a + b : ℕ) : ℤ) := by simp only [ComplexShape.π_def] at ht; push_cast; omega
   rfl
 
-theorem map_comp_apply' {F G H : Shv R} (f : F ⟶ G) (g : G ⟶ H) {U : Scheme.{0}} (y : Sec F U) :
-    Sec.map (f ≫ g) y = Sec.map g (Sec.map f y) := rfl
-
 theorem mapHom_apply' (F G : Shv R) {U : Scheme.{0}} (y : Sec F U) (φ : F ⟶ G) : mapHom F G y φ = Sec.map φ y := rfl
 
 section Cross
@@ -1149,7 +1107,7 @@ theorem isAW_pull_crossT : ∀ {R : Type} [CommRing R] {E : Spc} {N : ℕ} (V : 
 
   rw [map_sum]
   refine Finset.sum_congr rfl fun a _ => ?_
-  rw [mapHom_apply', map_comp_apply', freeGen_map, evT_of_eq, evT_crossT, ev_pull, ev_pull, baseS_aw V M (a : ℕ) (by omega), vertS_aw V ℓ M (a : ℕ) (by omega)]
+  rw [mapHom_apply', GlobalTheory.EtC.ConeSec.smap_comp, freeGen_map, evT_of_eq, evT_crossT, ev_pull, ev_pull, baseS_aw V M (a : ℕ) (by omega), vertS_aw V ℓ M (a : ℕ) (by omega)]
 
 end GlobalTheory.PBFc.AWCross
 
@@ -1276,16 +1234,6 @@ open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC
 
 namespace GlobalTheory.EtC
 
-theorem pull_htCast (q : ℕ) {E E' : Spc} (f : E ⟶ E') {n i n' i' : ℤ} (hn : n = n') (hi : i = i') (x : Ht q E' n i) :
-    pull _ f _ _ (Ht.cast hn hi x) = Ht.cast hn hi (pull _ f _ _ x : Ht q E n i) := by
-  subst hn; subst hi; rfl
-
-theorem pull_cpow (q : ℕ) [NeZero q] (hA : DivisorNaturality) {E E' : Spc} (f : E ⟶ E') (hE' : Inv q E') (x : Ht q E' 2 1) (k : ℕ) :
-    pull _ f _ _ (cpow q x k) = cpow q (pull _ f _ _ x : Ht q E 2 1) k := by
-  induction k with
-  | zero => rw [cpow_zero, cpow_zero, pull_htCast, (hA q).2.1 f hE']
-  | succ k ih => rw [cpow_succ, cpow_succ, pull_htCast, (hA q).1, ih]
-
 theorem inv_pullback_pgl (q : ℕ) {E : Spc} {N : ℕ} (V : E ⟶ ofCat (glCat N)) (hE : Inv q E) :
     Inv q (pullback V (PGL.pr N)) := fun U ⟨x⟩ => hE U ⟨Sx.map (pullback.fst V (PGL.pr N)) x⟩
 
@@ -1370,7 +1318,7 @@ theorem pull_colIso_pbfMap (q : ℕ) [NeZero q] (P : PSh) {N : ℕ} (V₀ : disc
 
   rw [map_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
-  rw [pull_htCast, (a6nat_holds q).1, ← pull_comp, colIso_hom_fst, pull_cpow q a6nat_holds _ (inv_pullback_pgl q V₀ hP),
+  rw [GlobalTheory.EtC.PbfNatl.pull_htCast', (a6nat_holds q).1, ← pull_comp, colIso_hom_fst, GlobalTheory.EtC.PbfNatl.pull_cpow' q a6nat_holds _ (inv_pullback_pgl q V₀ hP),
     (a6nat_holds q).2.2.1 _ _ (inv_pullback_pgl q V₀ hP), colIso_line]
 
 theorem ev_prE_pos (E : Spc) (a : ℕ) {I : Cx R} {d : ℤ} (c : Cochain (sgl (((chains R).obj E).X (-(a : ℤ)))) I d)
@@ -1408,14 +1356,6 @@ noncomputable section
 
 namespace GlobalTheory.AWFront
 
-theorem sub_full {E : Spc} {N : ℕ} {U : Scheme.{0}} (x : Sx E N U) (h : 0 + N ≤ N) : x.sub 0 N h = x := by
-  have e : SimplexCategory.subinterval (n := N) 0 N h = 𝟙 _ := by
-    ext i
-    simp [SimplexCategory.subinterval]
-  unfold Sx.sub
-  rw [e, op_id, CategoryTheory.Functor.map_id]
-  rfl
-
 theorem ev_of_front {R : Type} [CommRing R] {I J K : Cx R} (μ : Pair I J K) {S : Spc} {n m k : ℤ} (hk : n + m = k)
     (α : Cochain ((chains R).obj S) I n) (β : Cochain ((chains R).obj S) J m) (γ : Cochain ((chains R).obj S) K k)
     (hγ : μ.IsAW hk α β γ)
@@ -1436,7 +1376,7 @@ theorem ev_of_front {R : Type} [CommRing R] {I J K : Cx R} (μ : Pair I J K) {S 
     rintro p rfl H h1 h2
     have e1 : (m * ((0 : ℕ) : ℤ)).negOnePow = 1 := by simp
     rw [e1, one_smul]
-    have e2 : x.sub 0 (N - 0) h2 = x := sub_full x h2
+    have e2 : x.sub 0 (N - 0) h2 = x := GlobalTheory.EtC.DiscCup.sub_zero_full x h2
     rw [e2]
     exact key _ (by simp) H rfl
   rw [hγ N w h U x, Fin.sum_univ_succ, Finset.sum_eq_zero (fun i _ => ?_), add_zero]
@@ -1858,11 +1798,11 @@ def ellB : twX E V ⟶ (Functor.const SimplexCategoryᵒᵖ).obj (lineSp q) wher
   app p := colLine q hE p
   naturality _ _ _ := rfl
 
-theorem pull_cpow [NeZero q] {E₁ E₂ : Spc} (f : E₁ ⟶ E₂) (h : Inv q E₂) (x : Ht q E₂ 2 1) (k : ℕ) :
+theorem GlobalTheory.EtC.PbfNatl.pull_cpow' [NeZero q] {E₁ E₂ : Spc} (f : E₁ ⟶ E₂) (h : Inv q E₂) (x : Ht q E₂ 2 1) (k : ℕ) :
     pull _ f _ _ (cpow q x k) = cpow q (pull _ f _ _ x) k := by
   induction k with
-  | zero => rw [cpow_zero, cpow_zero, _root_.GlobalTheory.EtC.pull_htCast, (a6nat_holds q).2.1 f h]
-  | succ k ih => rw [cpow_succ, cpow_succ, _root_.GlobalTheory.EtC.pull_htCast, (a6nat_holds q).1, ih]
+  | zero => rw [cpow_zero, cpow_zero, _root_.GlobalTheory.EtC.PbfNatl.pull_htCast', (a6nat_holds q).2.1 f h]
+  | succ k ih => rw [cpow_succ, cpow_succ, _root_.GlobalTheory.EtC.PbfNatl.pull_htCast', (a6nat_holds q).1, ih]
 
 theorem mk_zcomp_ofHom {R : Type} [CommRing R] {E₁ E₂ : Spc} (f : E₁ ⟶ E₂) {F : Shv R} {n : ℤ}
     (z : Cocycle ((chains R).obj E₂) (res R F) n) :
@@ -1880,9 +1820,9 @@ theorem pbf_of_disc : ∀ (q : ℕ) [NeZero q] (N : ℕ),
   have hP : Inv q (pullback V (PGL.pr N)) := inv_of_map (pullback.fst V (PGL.pr N)) hE
   choose z hz using fun j : Fin N => CohomologyClass.mk_surjective (cpow q (c1 q (lineSp.line q)) (j : ℕ))
   refine GlobalTheory.PBFc.pbf_of_model q V (ellB q V hE) hE z (fun j => ?_) (fun a j => ?_) hD
-  · rw [mk_zcomp_ofHom, hz, pull_cpow q _ hB, (a6nat_holds q).2.2.1 _ _ hB, pull_cpow q _ hP,
+  · rw [mk_zcomp_ofHom, hz, GlobalTheory.EtC.PbfNatl.pull_cpow' q _ hB, (a6nat_holds q).2.2.1 _ _ hB, GlobalTheory.EtC.PbfNatl.pull_cpow' q _ hP,
       (a6nat_holds q).2.2.1 _ _ hP, twIso_line, diag_line]
-  · rw [mk_zcomp_ofHom, hz, pull_cpow q _ hB, (a6nat_holds q).2.2.1 _ _ hB]
+  · rw [mk_zcomp_ofHom, hz, GlobalTheory.EtC.PbfNatl.pull_cpow' q _ hB, (a6nat_holds q).2.2.1 _ _ hB]
     exact congrArg (fun L => cpow q (c1 q L) (j : ℕ)) (colLine_line q hE _)
 
 end GlobalTheory.PBFg

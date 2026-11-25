@@ -175,7 +175,6 @@ noncomputable section
 
 attribute [local instance] Over.cartesianMonoidalCategory
 
-
 open GlobalTheory.TorusRM.LamAdd GlobalTheory.ProdUnifSq in
 theorem GlobalTheory.TorusRM.lbIso_lam_of_same_form : ∀ (g : ℕ) (A : Over (Sp ℂ)) [GrpObj A], IsAbelianScheme A → IsProjOver A.hom →
     ∀ (M M' : LB A.left) (u : HolUnif A M g) (u' : HolUnif A M' g) (Hm : Matrix (Fin g) (Fin g) ℂ)
@@ -295,7 +294,7 @@ theorem GlobalTheory.biIso_of_weil : ∀ (A : Over (Sp ℂ)) [GrpObj A] [IsCommM
     have mem : ∀ x : La, Q x ∈ ud.Λ := fun x => (ud.ker _).1 (by rw [hude, hue]; exact (hker _).2 ⟨x, rfl⟩)
     refine _root_.GlobalTheory.real_eq_of_exp_neg_two_pi_I_div_eq _ _ fun k hk => ?_
     have h1 := hW k a b (Units.mk0 _ (Complex.exp_ne_zero _)) hk rfl
-    have h2 := _root_.GlobalTheory.AHWeilFactor.weilIs_exp_riemannForm A hA _ (pull_isLB hLM _) g ud _ χd hFd k (Q a) (Q b)
+    have h2 := _root_.GlobalTheory.AHWeilAny.weilIs_exp_riemannForm_of_isFactorAH A hA _ (pull_isLB hLM _) g ud _ χd hFd k (Q a) (Q b)
       (Units.mk0 _ (Complex.exp_ne_zero _)) hk (mem a) (mem b) rfl
     rw [hude, hue] at h2
     have hiso : LBIso (P.pull (lift (𝟙 A) (𝟙 A)).left)
@@ -380,7 +379,6 @@ theorem exists_of_polAV (P P' : Out.PolAV (Sp ℂ)) (n n' : ℕ) (v : HolUnif P.
   obtain ⟨f, ⟨hf, hfe⟩, -⟩ := existsUnique_isMonHom_of_map_lattice hL hL2 AbLaw.CubeAssembly.cube_gen
     thetaUnifAV_all P P' P.L P'.L v v' F hF
   exact ⟨f, hf, hfe⟩
-
 
 open GlobalTheory.HolUnifEnd GlobalTheory.HolUnifHom in
 theorem exists_isMonHom_of_map_lattice (A A' : Over (Sp ℂ)) [GrpObj A] [GrpObj A'] (g g' : ℕ)
@@ -679,7 +677,7 @@ theorem Model.fineAt_univ : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : Type
         (∀ e', UnifAt (o.fam h' hL') σ ρ N D' t Q (𝟙 _) e' → ∃ e, UnifAt (M.univ.fam h hL) σ ρ N D' t Q y e) ∧
         (∀ e, UnifAt (M.univ.fam h hL) σ ρ N D' t Q y e → ∃ e', UnifAt (o.fam h' hL') σ ρ N D' t Q (𝟙 _) e') := by
     intro o y m hy h' hL' D' t Q
-    have key := GlobalTheory.T.uniformisationAt_correspond_of_cartesian D.O D.inv D.g ρ R R σ σ D.La (M.univ.fam h hL) (o.fam h' hL') N y m.φ m.cart m.act
+    have key := GlobalTheory.unifAt_correspond_of_cartesian D.O D.inv D.g ρ R R σ σ D.La (M.univ.fam h hL) (o.fam h' hL') N y m.φ m.cart m.act
       ((_root_.GlobalTheory.UPel.HT.objMap_comp_diag_lbIso p D R b N M.X (Sp ℂ) (Sp ℂ) M.s (spMap σ) (spMap σ) M.univ o o y (𝟙 _)).2 m) m.eta D' t Q (𝟙 _)
       (Category.id_comp _) (by erw [Category.id_comp]; exact hy)
     erw [Category.id_comp] at key

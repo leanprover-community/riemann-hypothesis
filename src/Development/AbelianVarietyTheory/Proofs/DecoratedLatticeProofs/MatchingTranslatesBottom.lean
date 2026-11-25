@@ -304,7 +304,6 @@ end GlobalTheory.ScalW.EfNear
 
 namespace GlobalTheory.ScalW
 
-
 open GlobalTheory.ScalW.EfNear in
 theorem ef_near_ref : ∀ (D : D7) (X : HidaSetting D), ∃ M : ℕ, Nat.Coprime M X.B.g ∧ ∀ y ∈ X.B.I.Lf, ∀ a, (M : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • (hA X.B.I (GlobalTheory.ScalW.fV X a) y • GlobalTheory.ScalW.eV X a - hA X.B.I (X.f0 a) y • X.e0 a) ∈ mL X.B.I X.B.g ∧ (M : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • (hA X.B.I (GlobalTheory.ScalW.eV X a) y • GlobalTheory.ScalW.fV X a - hA X.B.I (X.e0 a) y • X.f0 a) ∈ mL X.B.I X.B.g := by
   intro D X
@@ -424,8 +423,6 @@ open NumberField IsDedekindDomain Matrix Formalism.BasicNotions Formalism.MainNo
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.exists_coprime_multiplier_one_sub_norm_congr_zero : ∀ (D : D7) (X : HidaSetting D) (u : D.what₂.Word), ∃ M : ℕ, Nat.Coprime M X.B.g ∧ ZMod' X.B.I X.B.g ((M : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) * (1 - (((D.mem u).A.T : ℕ) : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F))) := by
-  first | exact @GlobalTheory.TorusCong.one_sub_T_zmod
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsCoprimeMultiplierOneSubNormCongrZeroStatement =====
@@ -539,7 +536,7 @@ theorem coord_zmod (I : AutInst) (g : ℕ) {β : GL (Fin I.n) (I.E ⊗[I.F] Af I
     (hv : v ∈ mL I g) (i : Fin I.n) :
     ZMod' I g ((((β⁻¹ : GL (Fin I.n) (I.E ⊗[I.F] Af I.F)) : Matrix (Fin I.n) (Fin I.n) (I.E ⊗[I.F] Af I.F)) *ᵥ v) i) := by
   obtain ⟨z, hz, rfl⟩ := GlobalTheory.RowIndex.mem_mL.1 hv
-  have hz' : z ∈ Formalism.L2.Herm.hatL (F := I.F) I.L := by rw [_root_.GlobalTheory.FlagChi.hatL_eq_Lf]; exact hz
+  have hz' : z ∈ Formalism.L2.Herm.hatL (F := I.F) I.L := by rw [_root_.GlobalTheory.LiftFrameMod.hatL_eq_Lf]; exact hz
   refine ⟨_, (hβ z).1 hz' i, ?_⟩
   rw [Matrix.mulVec_smul]
   rfl
@@ -625,8 +622,6 @@ open NumberField IsDedekindDomain Matrix Formalism.BasicNotions Formalism.MainNo
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.nat_coprime_of_congr_mul_one_sub_mod_level : ∀ (I : AutInst) (g T M : ℕ), 1 ≤ g → Nat.Coprime M g → ZMod' I g ((M : I.E ⊗[I.F] Af I.F) * (1 - (T : I.E ⊗[I.F] Af I.F))) → Nat.Coprime T g := by
-  first | exact @GlobalTheory.TorusCop.natCoprime_of_zmod_mul_one_sub
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.NatCoprimeOfCongrMulOneSubModLevelStatement =====
@@ -753,7 +748,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.ScalW
 
-
 open Formalism.L2.SG.Pf.unitaryCongruence in
 theorem prj_selfAdjoint : ∀ (D : D7) (X : HidaSetting D) (u : D.what₂.Word) (x y : VA X.B.I),
     hA X.B.I (GlobalTheory.ScalW.prj X u x) y = hA X.B.I x (GlobalTheory.ScalW.prj X u y) := by
@@ -812,10 +806,6 @@ namespace GlobalTheory.RefProjFlag
 open Formalism.L2.SG.PoincareInHH.Cut.GU
 
 variable {D : D7} (X : HidaSetting D)
-
-theorem hA_zero_right' (u : VA X.B.I) : hA X.B.I u 0 = 0 := by
-  have h := Formalism.L2.SG.Pf.unitaryCongruence.hA_smul_right X.B.I u 0 0
-  rwa [zero_smul, zero_mul] at h
 
 theorem intsmul_Lf' {t : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F} (ht : t ∈ IntAf X.B.I.F X.B.I.E) {y : VA X.B.I}
     (hy : y ∈ X.B.I.Lf) : t • y ∈ X.B.I.Lf :=
@@ -911,7 +901,7 @@ theorem prj0_flagVec_mem_mL_or_sub_mem_mL : ∀ (D : D7) (X : HidaSetting D), (�
     · exact absurd ⟨by omega, by omega⟩ h
     · exact orthProjReferenceFrame_flagZ_sub_mem_levelMultiple X
     · exact orthProjReferenceFrame_flagF_sub_mem_levelMultiple X _
-    · simp only [GlobalTheory.ScalW.prj0, hA_zero_right', zero_smul, Finset.sum_const_zero, add_zero, sub_zero]
+    · simp only [GlobalTheory.ScalW.prj0, Formalism.L2.SG.PoincareInHH.Cut.GU.hA_zero_r, zero_smul, Finset.sum_const_zero, add_zero, sub_zero]
       exact zero_mem _
 
 end GlobalTheory.RefProjFlag
@@ -1064,12 +1054,11 @@ noncomputable section
 
 namespace GlobalTheory.ScalW
 
-
 theorem scalar_diag_mod_g : ∀ (D : D7) (X : HidaSetting D) (u : D.what₂.Word) (β : GL (Fin X.B.I.n) (X.B.I.E ⊗[X.B.I.F] Formalism.MainNotions.S.Af X.B.I.F)), IsLiftFrame X.B.I X.B.g (flagVec X.e0 X.f0 X.z0 X.bw X.bwd) β → ∀ c : Formalism.L2.Herm.intAf X.B.I.F X.B.I.E, c * sigInt X.B.I c = 1 → (∀ N : ℕ, Nat.Coprime N X.B.g → ZMod' X.B.I N (1 - c.1)) → ∃ h ∈ Hfin X u, (∀ h' ∈ Hfin X u, h * h' = h' * h) ∧ ∃ x : GL (Fin X.B.I.n) (Formalism.L2.Herm.intAf X.B.I.F X.B.I.E), frGL β x = (((X.xu u)⁻¹ * h * X.xu u : X.B.I.Gf) : GL (Fin X.B.I.n) (X.B.I.E ⊗[X.B.I.F] Formalism.MainNotions.S.Af X.B.I.F)) ∧ ∀ i j, ZMod' X.B.I X.B.g (((x : Matrix (Fin X.B.I.n) (Fin X.B.I.n) (Formalism.L2.Herm.intAf X.B.I.F X.B.I.E)) - midDiag X.B.I.n D.R.rS D.R.k 1 c) i j).1 := by
   intro D X u β hβ c hc hN
   have hg1 : 1 ≤ X.B.g := Formalism.L2.SG.PoincareInHH.Cut.one_le_g X
-  obtain ⟨M6, hM6, hz6⟩ := GlobalTheory.T.exists_coprime_multiplier_one_sub_norm_congr_zero D X u
-  have hTg : Nat.Coprime (D.mem u).A.T X.B.g := GlobalTheory.T.nat_coprime_of_congr_mul_one_sub_mod_level X.B.I X.B.g _ M6 hg1 hM6 hz6
+  obtain ⟨M6, hM6, hz6⟩ := GlobalTheory.TorusCong.one_sub_T_zmod D X u
+  have hTg : Nat.Coprime (D.mem u).A.T X.B.g := GlobalTheory.TorusCop.natCoprime_of_zmod_mul_one_sub X.B.I X.B.g _ M6 hg1 hM6 hz6
   have hT0 : (D.mem u).A.T ≠ 0 := (D.mem u).A.T_prime.ne_zero
   obtain ⟨Mb, hMb, hb7⟩ := GlobalTheory.T.exists_coprime_multiplier_hyperbolic_terms_near_reference D X
   obtain ⟨Mc, hMc, hc7⟩ := GlobalTheory.T.exists_coprime_multiplier_negativeVector_term_near D X u
@@ -1700,7 +1689,6 @@ theorem inst_normaliser (D : D7) (hρ : 1 ≤ D.R.rS) (I : AutInst) (hI : I = in
     (fun Q hQ Q' hQ' h => hnc Q hQ Q' hQ' (conj_of_idem (instOf D) (adPlaces D) h))
     (fun Q h => exists_res_ne (instOf D) Q (_root_.GlobalTheory.ConjMovesResidue.exists_sub_star_notMem D Q (conj_of_idem (instOf D) (adPlaces D) h))) ψ0 hψ a ha1 _
     (fun x => star (chi2f (instOf D) psiEf (D.host.g 0 * D.host.g 1) e0 f0 z0 bw bwd x)) hK y hy⟩
-
 
 open Formalism.L2.SG.PoincareInHH.PoincareSetting in
 theorem setting_normaliser {D : D7} (X : HidaSetting D) (h : X.B.I = instOf D) (hρ : 1 ≤ D.R.rS) (u : D.what₂.Word) (y : X.B.I.Gf)

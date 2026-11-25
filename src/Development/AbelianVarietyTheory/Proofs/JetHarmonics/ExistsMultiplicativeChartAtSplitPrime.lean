@@ -923,7 +923,6 @@ namespace GlobalTheory.MomOne.MulDegree
 section Lattice
 open Module
 
-
 set_option backward.isDefEq.respectTransparency false in
 theorem relIndex_eq_abs_det {ι : Type} [Fintype ι] [DecidableEq ι] (b₁ b₂ : Basis ι ℝ ℂ) {L₁ L₂ : AddSubgroup ℂ}
     (h₁ : (Submodule.span ℤ (Set.range b₁)).toAddSubgroup = L₁)
@@ -1493,22 +1492,12 @@ theorem van_mul {f g : ℂ_[q]⟦X⟧} {a b : ℕ} (hf : Bd 1 f) (hg : Bd 1 g) (
   · rw [mul_comm]
     exact norm_mul_lt_left (hb _ (by omega)) (hf _)
 
-theorem bd_pow {g : ℂ_[q]⟦X⟧} (hg : Bd 1 g) (d : ℕ) : Bd 1 (g ^ d) := by
-  induction d with
-  | zero =>
-    intro n
-    rw [pow_zero, coeff_one]
-    split_ifs <;> simp
-  | succ d ih =>
-    have := ((sup_norm_laws q).1 _ _ _ _ ih hg).2
-    rwa [one_mul, ← pow_succ] at this
-
 theorem van_pow {g : ℂ_[q]⟦X⟧} {r : ℕ} (hg : Bd 1 g) (hr : Van r g) (d : ℕ) : Van (d * r) (g ^ d) := by
   induction d with
   | zero => intro n hn; omega
   | succ d ih =>
     rw [add_mul, one_mul, pow_succ]
-    exact van_mul (bd_pow hg d) hg ih hr
+    exact van_mul (GlobalTheory.MomOne.MulSeries.bd_one_pow hg d) hg ih hr
 
 theorem van_subst {f g : ℂ_[q]⟦X⟧} {m r : ℕ} (hf : Bd 1 f) (hg : Bd 1 g) (h0 : constantCoeff g = 0)
     (hm : Van m f) (hr : Van r g) : Van (m * r) (f.subst g) := by
@@ -1517,7 +1506,7 @@ theorem van_subst {f g : ℂ_[q]⟦X⟧} {m r : ℕ} (hf : Bd 1 f) (hg : Bd 1 g)
   refine finsum_induction (fun x => ‖x‖ < 1) (by simp) (fun _ _ => norm_add_lt) fun d => ?_
   rw [smul_eq_mul]
   by_cases h : d < m
-  · exact norm_mul_lt_left (hm _ h) (bd_pow hg d n)
+  · exact norm_mul_lt_left (hm _ h) (GlobalTheory.MomOne.MulSeries.bd_one_pow hg d n)
   · rw [mul_comm]
     exact norm_mul_lt_left (van_pow hg hr d n (hn.trans_le (Nat.mul_le_mul_right r (by omega)))) (hf d)
 

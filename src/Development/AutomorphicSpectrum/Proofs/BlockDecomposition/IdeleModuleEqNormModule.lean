@@ -257,18 +257,13 @@ theorem sig_sig {σ : E →ₐ[F] E} (hσ : ∀ x, σ (σ x) = x) (z : AF F ⊗[
 theorem continuous_sig {σ : E →ₐ[F] E} (hcm : IsCMExt F E σ) : Continuous (sigR (AF F) σ) :=
   (_root_.GlobalTheory.CompanionTheory.SW.TopK.topTens_props F E σ hcm (AF F)).2.2.2.2.1
 
-theorem sigma_sigma {σ : E →ₐ[F] E} (hcm : IsCMExt F E σ) (x : E) : σ (σ x) = x := by
-  obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
-  apply τ.injective
-  rw [hcm.2.2.2, hcm.2.2.2, star_star]
-
 def conjE {σ : E →ₐ[F] E} (hcm : IsCMExt F E σ) : 𝔸[E] ≃ₜ+ 𝔸[E] where
   toFun := conjA σ
   invFun := conjA σ
   left_inv y := by
-    simp [conjA_apply, sig_sig (sigma_sigma hcm)]
+    simp [conjA_apply, sig_sig (GlobalTheory.CompanionTheory.SW.OneHerm.sigma_sigma hcm)]
   right_inv y := by
-    simp [conjA_apply, sig_sig (sigma_sigma hcm)]
+    simp [conjA_apply, sig_sig (GlobalTheory.CompanionTheory.SW.OneHerm.sigma_sigma hcm)]
   map_add' := map_add _
   continuous_toFun := GroundTheory.BlockD.ThmBHecke.continuous_adeleEquiv.comp
     ((continuous_sig hcm).comp GroundTheory.BlockD.ThmBHecke.continuous_adeleEquiv_symm)

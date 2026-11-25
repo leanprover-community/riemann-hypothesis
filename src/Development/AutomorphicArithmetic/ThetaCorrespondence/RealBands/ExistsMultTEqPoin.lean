@@ -461,22 +461,6 @@ noncomputable section
 
 namespace GlobalTheory.OnePDecay
 
-section Frob
-
-attribute [local instance] Matrix.frobeniusNormedAddCommGroup Matrix.frobeniusNormedRing
-
-theorem hsn_eq_norm {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) : hsn A = ‖A‖ := by
-  rw [hsn, Matrix.frobenius_norm_def, Real.sqrt_eq_rpow]
-  congr 1
-  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-  exact (Real.rpow_natCast _ 2).symm
-
-theorem hsn_mul_le {n : ℕ} (A B : Matrix (Fin n) (Fin n) ℂ) : hsn (A * B) ≤ hsn A * hsn B := by
-  rw [hsn_eq_norm, hsn_eq_norm, hsn_eq_norm]
-  exact Matrix.frobenius_norm_mul A B
-
-end Frob
-
 theorem hsn_nonneg' {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) : 0 ≤ hsn A := Real.sqrt_nonneg _
 
 theorem continuous_hsn_exp {n : ℕ} (X : Matrix (Fin n) (Fin n) ℂ) :
@@ -517,7 +501,7 @@ theorem decay_oneP : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V : HSp 
         show infMat _ _ (θ τ') x = infMat _ _ (θ τ') _ * infMat _ _ (θ τ') _
         rw [← GlobalTheory.PointAtPlaceHom.infMat_mul, ← hx]
       rw [e2]
-      exact (hsn_mul_le _ _).trans (mul_le_mul_of_nonneg_left
+      exact (GlobalTheory.PoinCount.hsn_mul_le _ _).trans (mul_le_mul_of_nonneg_left
         (hbound τ' (-t) (by rw [abs_neg]; exact ht.le)) (hsn_nonneg' _))
     nlinarith [hsn_nonneg' (cmp θ τ' (x * oneP θ V τ X t))]
   refine ⟨m ^ (N * Fintype.card D.what₂.Tau), by positivity, fun x t ht => ?_⟩
@@ -840,7 +824,7 @@ theorem poin_smooth_growth_deriv : GlobalTheory.Published.HarishChandraModules �
     refine GlobalTheory.Mem.DerClosed.mem_smFun_of_closed D θ hθ V
       {φ | ∃ b : ∀ τ, M.H τ, (∀ τ, b τ ∈ GlobalTheory.IndefiniteRowSideFullHecke.KTypeExtension.kFin M τ) ∧ φ = poin θ M K v c b} ?_ ?_ _ ⟨_, fun τ => (a τ).2, rfl⟩
     · rintro φ ⟨b, hb, rfl⟩
-      exact (((GlobalTheory.T.coefficientPoincareSeries_isAutomorphic D θ hθ V S M Λ 𝔪 hΛ h𝔪 v hv c).1 fun τ => ⟨b τ, hb τ⟩).1).cont
+      exact (((GlobalTheory.PoinAut.poin_aut D θ hθ V S M Λ 𝔪 hΛ h𝔪 v hv c).1 fun τ => ⟨b τ, hb τ⟩).1).cont
     · rintro φ ⟨b, hb, rfl⟩ τ X hX
       refine ⟨_, ⟨Function.update b τ (dRep (M.rep τ) X (b τ)), fun τ' => ?_, rfl⟩, der b hb τ X hX⟩
       by_cases h : τ' = τ
@@ -985,11 +969,10 @@ theorem poin_isCuspFun : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V : 
 
 open GlobalTheory.IndefiniteRowSideFullHecke.KTypeExtension
 
-
 open Classical in
 theorem exists_multT_eq_poin : GlobalTheory.Published.HarishChandraModules → GlobalTheory.Published.CasselmanWallach → GlobalTheory.Published.CuspRapidDecay → ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S) (Λ : Lat V) (𝔪 : Ideal (𝓞 D.host.E)), IsSelfDualC V Λ → 𝔪 ≠ ⊥ → ∀ (v : ∀ τ, M.H τ), KDecay M v → ∀ c : GA D V, Nonempty D.what₂.Tau → ∃ y ∈ MultT θ M (Lev.levA V (congLev D.sp.cm V.gram Λ 𝔪) : Set _) 1, ∀ a : M.Vec, (∀ τ, (a τ : M.H τ) ∈ GlobalTheory.IndefiniteRowSideFullHecke.KTypeExtension.kFin M τ) → y (PiTensorProduct.tprod ℂ a) = poin θ M (congLev D.sp.cm V.gram Λ 𝔪) v c fun τ => a τ := by
   intro hHC hCW hRD D θ hθ V S M Λ 𝔪 hΛ h𝔪 v hv c hτ
-  obtain ⟨haut, ⟨T₀, hT₀⟩, hKeq⟩ := GlobalTheory.T.coefficientPoincareSeries_isAutomorphic D θ hθ V S M Λ 𝔪 hΛ h𝔪 v hv c
+  obtain ⟨haut, ⟨T₀, hT₀⟩, hKeq⟩ := GlobalTheory.PoinAut.poin_aut D θ hθ V S M Λ 𝔪 hΛ h𝔪 v hv c
   have hder := GlobalTheory.T.poincareSeries_smooth_moderateGrowth_deriv hHC D θ hθ V S M Λ 𝔪 hΛ h𝔪 v hv c
   have hcusp := poin_isCuspFun D θ hθ V S M Λ 𝔪 hΛ h𝔪 v hv c hτ
   obtain ⟨vol⟩ := (GlobalTheory.Unf.VolExist.measures_exist D).1 V

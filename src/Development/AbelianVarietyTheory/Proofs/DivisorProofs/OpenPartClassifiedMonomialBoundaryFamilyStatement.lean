@@ -63,10 +63,6 @@ noncomputable section
 
 namespace GlobalTheory.UCanon.OpenPart
 
-theorem spMap_comp' {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
-    spMap g ≫ spMap f = spMap (g.comp f) := by
-  simp only [spMap, CommRingCat.ofHom_comp, Spec.map_comp]
-
 theorem pow_eq_one_of_left_eq {S T : Scheme.{0}} {G : Over S} [GrpObj G] {a b : T ⟶ S} (h : a = b)
     (u : Over.mk a ⟶ G) (v : Over.mk b ⟶ G) (huv : u.left = v.left) {n : ℕ} (hu : u ^ n = 1) : v ^ n = 1 := by
   subst h
@@ -176,7 +172,7 @@ theorem openCls : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Ho
   have hs' : s' = spMap gA ≫ spMap (b'.comp incl) := by
     show (C.y ≫ pullback.fst _ _) ≫ Xo.s = _
     rw [Category.assoc, pullback.condition, ← Category.assoc, C.y_over, ← eR]
-    simp only [spMap_comp']
+    simp only [GlobalTheory.spMap_comp_ring]
   obtain ⟨o, ho, ⟨mo⟩⟩ := GlobalTheory.T.exists_unitaryModuliObject_spread_normal_domain Dw l c _ b' tO hprop hamp hkt htors (FractionRing R) gA s' oK hs' k₃
   obtain ⟨fX, ⟨hfs, ⟨mf⟩⟩, -⟩ := Xo.rep (Sp (Localization.Away (∏ i, C.s i))) (spMap (b'.comp incl)) inferInstance o
   have hfs' : fX ≫ Xo.s = spMap b' ≫ spMap incl := hfs.trans (_root_.GlobalTheory.spMap_comp_ring _ _).symm

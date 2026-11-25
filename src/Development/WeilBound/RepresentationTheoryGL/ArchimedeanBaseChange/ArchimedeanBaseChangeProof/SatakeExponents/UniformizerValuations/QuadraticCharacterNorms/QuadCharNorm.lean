@@ -136,7 +136,6 @@ theorem continuous_single (v : InfinitePlace E) : Continuous (single v) :=
     show Continuous (fun z : ℂ => (Pi.mulSingle v z : InfinitePlace E → ℂ))
     exact continuous_mulSingle (A := fun _ : InfinitePlace E => ℂ) v)
 
-
 variable (E) in
 abbrev below (v : InfinitePlace E) : InfinitePlace (maximalRealSubfield E) := v.comap (algebraMap (maximalRealSubfield E) E)
 
@@ -451,7 +450,7 @@ theorem eta_eq_infSign (hU : Unr E) (b : Neutral.B1.Ideles (maximalRealSubfield 
     have e : f⁻¹ = GlobalTheory.Mem.Chr.finPartI (maximalRealSubfield E) b⁻¹ := (map_inv _ b).symm
     rw [e]
     exact congrArg (fun z : AdeleRing (𝓞 (maximalRealSubfield E)) (maximalRealSubfield E) => z.2 v) b.mul_inv
-  have h2 := GlobalTheory.T.quadraticHeckeCharCM_eq_ideleInfiniteSign_finiteTrivial E _ h1
+  have h2 := GlobalTheory.EtaInfSign.quadChar_eq_infSign E _ h1
   have h3 := GlobalTheory.T.quadratic_character_trivial_unit_ideles E hU b hb
   have e1 : (GlobalTheory.GalOfCusp.quadChar E).1 b = (GlobalTheory.GalOfCusp.quadChar E).1 (b * f⁻¹) * (GlobalTheory.GalOfCusp.quadChar E).1 f := by
     rw [← map_mul, inv_mul_cancel_right]
@@ -462,7 +461,6 @@ theorem eta_eq_infSign (hU : Unr E) (b : Neutral.B1.Ideles (maximalRealSubfield 
   rw [e1, e2, h2, h3, infSign_ideleMap_finPartI, mul_one]
 
 end GlobalTheory.ConsEta
-
 
 open GlobalTheory.ConsEta in
 theorem GlobalTheory.ConsEta.exists_open_subgroup_eta_consistent : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E →
@@ -505,7 +503,7 @@ theorem GlobalTheory.ConsEta.exists_open_subgroup_eta_consistent : ∀ (E : Type
     have e : φ ((c k : Eˣ) : E) = starRingEnd ℂ (φ k) := GlobalTheory.IndefiniteRowSideFullHecke.UnitaryHeckeCharacterIdele.embedding_conj (maximalRealSubfield E) E φ k
     rw [ht, Units.val_div_eq_div_val, map_div₀, e, norm_div, Complex.norm_conj, div_self (norm_ne_zero_iff.2 h0)]
   have htor := GlobalTheory.T.exists_pow_eq_one_of_principal_unitIdele_norm_one E t htu hnorm
-  have hcqu := GlobalTheory.T.conjQuot_eq_one_of_mem_nsUnits_of_isSplitAt E w0 hw0 u hu
+  have hcqu := GlobalTheory.ConsEta.conjQuot_nsUnits_eq_one E w0 hw0 u hu
   have hmem : Units.map (algebraMap E (w0.adicCompletion E)).toMonoidHom t ∈ V := by
     have e1 : Units.map (algebraMap E (w0.adicCompletion E)).toMonoidHom t =
         Units.map (GlobalTheory.IdeleNormChar.finEval w0) (Neutral.B1.diagUnits E t) := Units.ext rfl
@@ -594,7 +592,7 @@ theorem eta_eq_infSign (hU : Unr E) (b : Neutral.B1.Ideles (maximalRealSubfield 
     have e : f⁻¹ = GlobalTheory.Mem.Chr.finPartI (maximalRealSubfield E) b⁻¹ := (map_inv _ b).symm
     rw [e]
     exact congrArg (fun z : AdeleRing (𝓞 (maximalRealSubfield E)) (maximalRealSubfield E) => z.2 v) b.mul_inv
-  have h2 := GlobalTheory.T.quadraticHeckeCharCM_eq_ideleInfiniteSign_finiteTrivial E _ h1
+  have h2 := GlobalTheory.EtaInfSign.quadChar_eq_infSign E _ h1
   have h3 := cm_quadratic_character_unramified E hU b hb
   have e1 : (GlobalTheory.GalOfCusp.quadChar E).1 b = (GlobalTheory.GalOfCusp.quadChar E).1 (b * f⁻¹) * (GlobalTheory.GalOfCusp.quadChar E).1 f := by
     rw [← map_mul, inv_mul_cancel_right]

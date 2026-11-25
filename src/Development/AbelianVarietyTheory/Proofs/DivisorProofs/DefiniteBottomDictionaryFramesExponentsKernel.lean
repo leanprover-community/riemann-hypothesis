@@ -203,8 +203,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Form
 open GlobalTheory.ChiGrid GlobalTheory.SqTop
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.large_place_not_dvd_different : ∀ {D : D7} (large₂ : SizeData₂ D), Rec large₂ → ∀ v : HeightOneSpectrum (𝓞 D.host.F), v ∈ S1 D → ¬ v.asIdeal ∣ differentIdeal ℤ (𝓞 D.host.F) := by
-  first | exact @GlobalTheory.DiffSOne.not_dvd_differentIdeal
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.LargePlaceNotDvdDifferentStatement =====
@@ -352,7 +350,6 @@ theorem not_overP_g {D : D7} {T : Type} {Lc : LevCh D T} {sc : Consts} (G : Grid
   · exact Or.inr (Or.inl hk)
 
 end GlobalTheory.RamTwist
-
 
 open GlobalTheory.RamTwist in
 theorem GlobalTheory.SqTop.not_unramAt_twist : ∀ {D : D7} {T : Type} {Lc : LevCh D T} {sc : Consts} (G : GridData Lc sc) (μ₀ : T), Lc.Is μ₀ → ∀ (t : T) (v : HeightOneSpectrum (𝓞 D.host.F)) (e : AF D.host.F), IsPlaceIdem D v e → v ∉ G.pl.S0 → ∀ PP ∈ Lc.Q t, (_root_.IsDedekindDomain.HeightOneSpectrum.under (𝓞 D.host.F) PP) = v → ∀ i j : Fin D.R.m, ¬ GlobalTheory.WeilParts.UnramAt e (Lc.mu t (j + 1) / G.ch.chi (D.R.m - i)) := by
@@ -530,7 +527,7 @@ theorem bottom_ram : GBig fun {D} {T} {Lc} {sc} G _ _ _ _ => ∀ (W : G.Weil) (i
         · exact GlobalTheory.T.large_place_ratio_ramified G μ₀ hμ t v e he h1 i j
       · rcases G.pl.mem_S0_of_sum_eq.1 hS with h0 | h1
         · subst h0; exact GlobalTheory.T.auxiliary_place_not_dvd_different_base_field G
-        · exact GlobalTheory.T.large_place_not_dvd_different large₂ hr v h1
+        · exact GlobalTheory.DiffSOne.not_dvd_differentIdeal large₂ hr v h1
     · refine ⟨GlobalTheory.T.twist_place_under_not_nonSplit G μ₀ hμ t v e he PP hPP hPv, ?_, hPv ▸ GlobalTheory.T.twist_place_under_not_dvd_differentIdeal Lc μ₀ hμ t PP hPP⟩
       by_cases h0 : v ∈ G.pl.S0
       · rcases G.pl.mem_S0_of_sum_eq.1 h0 with h0 | h1
@@ -540,7 +537,7 @@ theorem bottom_ram : GBig fun {D} {T} {Lc} {sc} G _ _ _ _ => ∀ (W : G.Weil) (i
   · left
     push_neg at hS
     obtain ⟨h1, h2⟩ := GlobalTheory.T.grid_characters_unramified G μ₀ hμ t v e he hS.1 i
-    exact ⟨unramAt_mul (GlobalTheory.T.level_character_unramified_mu G μ₀ hμ t v e he hS.1 hS.2 j) (unramAt_pow h2 _), unramAt_mul h1 (unramAt_pow h2 _)⟩
+    exact ⟨unramAt_mul (GlobalTheory.BotTripleUnr.unramAt_mu G μ₀ hμ t v e he hS.1 hS.2 j) (unramAt_pow h2 _), unramAt_mul h1 (unramAt_pow h2 _)⟩
 
 end GlobalTheory.BotRam
 

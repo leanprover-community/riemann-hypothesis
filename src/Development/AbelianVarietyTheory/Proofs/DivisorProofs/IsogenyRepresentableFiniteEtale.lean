@@ -519,7 +519,7 @@ theorem UpperTheory.exists_lift_of_closed_subgroup_locus :
     (snd _ _ ≫ subJ hP inc U) ⟨_, rfl⟩ ⟨_, rfl⟩
   obtain ⟨e, he'⟩ := fac_one hP inc U hc (𝟙_ (Over Y.left))
   obtain ⟨v, hv⟩ := fac_inv hP inc U hc (subH U) (subJ hP inc U) ⟨𝟙 _, Category.id_comp _⟩
-  obtain ⟨gH, hj⟩ := GlobalTheory.T.exists_grpObj_isMonHom_of_mono_factor Y.left A₀ (subH U) (subJ hP inc U) hmj
+  obtain ⟨gH, hj⟩ := GlobalTheory.overScheme_grpObj_of_mono_factor Y.left A₀ (subH U) (subJ hP inc U) hmj
     ⟨m, by rw [hm', Hom.mul_def, lift_fst_comp_snd_comp]⟩
     ⟨e, by rw [he', Hom.one_def, toUnit_unique (toUnit _) (𝟙 _), Category.id_comp]⟩
     ⟨v, by rw [hv, Hom.inv_def]⟩
@@ -1564,7 +1564,7 @@ theorem UpperTheory.Cb.exists_finite_etale_trivializing_torsion_abelianScheme :
   have hinv : ∃ v, v ≫ torsion.ι A k = torsion.ι A k ≫ ι := by
     refine (GlobalTheory.LatticeTorsion.existsUnique_torsion A k _ ?_).exists
     rw [← Hom.inv_def, inv_pow, GlobalTheory.LatticeTorsion.torsionι_pow_eq_one, inv_one]
-  obtain ⟨inst, hmon⟩ := GlobalTheory.T.exists_grpObj_isMonHom_of_mono_factor S A (torsion A k) (torsion.ι A k) hmono hmul hone hinv
+  obtain ⟨inst, hmon⟩ := GlobalTheory.overScheme_grpObj_of_mono_factor S A (torsion A k) (torsion.ι A k) hmono hmul hone hinv
   haveI := hfin
   haveI := het
   exact UpperTheory.SubRep.core A (torsion A k) (torsion.ι A k) hmono hmon k hu

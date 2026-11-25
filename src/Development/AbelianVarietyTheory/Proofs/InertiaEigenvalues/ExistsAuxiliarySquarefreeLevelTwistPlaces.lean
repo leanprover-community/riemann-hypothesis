@@ -280,7 +280,6 @@ open ReciprocityTheory.ChartRestriction.G.FD GlobalTheory.Member GlobalTheory.Co
 open scoped TensorProduct Matrix
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
 theorem _root_.GlobalTheory.T.onePlaceTwist_trivial_on_congruent_units : ∀ (D : D7) {A : Type} [CommGroup A] (PP : Pl D.host.E) (χ : (AE D)ˣ →* A) (κ : GlobalTheory.ExportSeries.ResChars D A), (⟨{PP}, χ, κ⟩ : GlobalTheory.ExportSeries.Twist D A).Good → ∀ N : ℕ, ((N : ℕ) : 𝓞 D.host.E) ∈ PP.asIdeal → ∀ x : (AE D)ˣ, FinUnit x → (∃ y ∈ intAE D, finPart D (x : AE D) - 1 = N • y) → χ x = 1 := by
   first | exact @GlobalTheory.OnePlaceCong.chi_eq_one_of_cong
 end -- clump:auto
@@ -298,9 +297,6 @@ open scoped TensorProduct Matrix
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.UnivCover
 
-
-theorem _root_.GlobalTheory.T.openKernel_ideleCharacter_trivial_finitePart_one : ∀ (D : D7) {A : Type} [Group A] (χ : (AE D)ˣ →* A), IsOpen (χ.ker : Set (AE D)ˣ) → ∀ x : (AE D)ˣ, finPart D (x : AE D) = 1 → χ x = 1 := by
-  first | exact @GlobalTheory.UnivCover.OpenKerChar.map_eq_one_of_finPart_eq_one
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.OpenKernelIdeleCharacterTrivialFinitePartOneStatement =====
@@ -320,7 +316,7 @@ namespace GlobalTheory.FibreIdem
 
 variable {D : D7} {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E} {Dw : Datum H}
 
-theorem chi_eq_one_of_finPart : ∀ (D : D7) {A : Type} [Group A] (χ : (AE D)ˣ →* A), IsOpen (χ.ker : Set (AE D)ˣ) → ∀ x : (AE D)ˣ, finPart D (x : AE D) = 1 → χ x = 1 := GlobalTheory.T.openKernel_ideleCharacter_trivial_finitePart_one
+theorem chi_eq_one_of_finPart : ∀ (D : D7) {A : Type} [Group A] (χ : (AE D)ˣ →* A), IsOpen (χ.ker : Set (AE D)ˣ) → ∀ x : (AE D)ˣ, finPart D (x : AE D) = 1 → χ x = 1 := GlobalTheory.UnivCover.OpenKerChar.map_eq_one_of_finPart_eq_one
 
 theorem chi_eq_one_of_cong : ∀ (D : D7) {A : Type} [CommGroup A] (PP : Pl D.host.E) (χ : (AE D)ˣ →* A) (κ : GlobalTheory.ExportSeries.ResChars D A), (⟨{PP}, χ, κ⟩ : GlobalTheory.ExportSeries.Twist D A).Good → ∀ N : ℕ, ((N : ℕ) : 𝓞 D.host.E) ∈ PP.asIdeal → ∀ x : (AE D)ˣ, FinUnit x → (∃ y ∈ intAE D, finPart D (x : AE D) - 1 = N • y) → χ x = 1 := GlobalTheory.T.onePlaceTwist_trivial_on_congruent_units
 
@@ -380,8 +376,6 @@ open scoped TensorProduct
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
-
 noncomputable section
 
 namespace GlobalTheory.SeriesTie.UnivRat
@@ -428,7 +422,6 @@ theorem exists_field_adjoin_roots (k : Subfield ℂ) {Z : Set ℂ} (hZ : Z.Finit
     exacts [h6, h4 (h3 z h)]
 
 variable {D : D7}
-
 
 open scoped Pointwise in
 theorem absNorm_ccK_not_mem {P : Pl D.host.E} (h : FractionalIdeal.count D.host.E P D.host.AA = 0)
@@ -544,7 +537,6 @@ section Datum
 
 variable {S T : HSp D}
 
-
 open Classical in
 theorem isIdemSum_halfIdem {Pg Q : Finset (Pl D.host.E)} (h : PlacesOK Pg Q) :
     IsIdemSum (halfIdem Pg Q) (Pg.image Formalism.L2.DIV.conjPl ∪ Q) := by
@@ -572,7 +564,6 @@ theorem frMapO_add_nsmul (F : Frame S T) (k : ℕ) (x u : WO S T) :
     frMapO S T F.βS F.βT (x + k • u) = frMapO S T F.βS F.βT x + k • frMapO S T F.βS F.βT u := by
   ext a c
   rw [GlobalTheory.PlaceDatum.frMapO_add, Matrix.add_apply, Matrix.smul_apply, nsmul_eq_mul]
-
 
 open Classical in
 theorem isLevDatum_vecAt {B : Base S T} (hB : B.Good) {Q : Finset (Pl D.host.E)} (hQ : B.admitted Q)
@@ -696,7 +687,6 @@ theorem isRat_sum {ι : Type} [Fintype ι] {φ : ι → GA D (Wc D j) → ℂ} (
     (fun _ _ => GlobalTheory.CoverRead.Test.add_mem_ratForms C _ _) (GlobalTheory.CoverRead.Test.zero_mem_ratForms C _ _) fun a _ => h1 a, ?_⟩
   rw [castDict_sum]
   exact Finset.sum_congr rfl fun a _ => h2 a
-
 
 open Classical in
 theorem isRat_fibre (hRF : GlobalTheory.NT.RayField) (hT : LawsJ T) (hU : C.IsUnif)
@@ -865,7 +855,6 @@ variable {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 I0 T0 : Type} {A3 : FamIn3 D.w
   (v₀ : ∀ (j : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (Rl.MW j σ).Vec) {ρ : Setup D.ntw} (hρ : ρ.Good)
   (i : D.ntw.Tw) (j : Fin D.R.m) (b : Bool)
 
-
 omit [Algebra T.Q.c.F D.what₂.LL] in
 theorem type_mem_range (hU : ρ.LevelOf D.nexp) (g : (ρ.B i j b).G.P.H) :
     (((ρ.B i j b).G.P.chi g : ℂˣ) : ℂ) ∈ (ρ.e i b).fieldRange := by
@@ -876,7 +865,6 @@ theorem type_mem_range (hU : ρ.LevelOf D.nexp) (g : (ρ.B i j b).G.P.H) :
     Subtype.ext (MulEquiv.apply_symm_apply _ _)
   rw [← h3]
   exact ⟨_, h2.symm⟩
-
 
 include YS hρ in
 theorem exists_cover (hRF : GlobalTheory.NT.RayField) (hT : LawsJ T) (halg : AlgTie T) (hgal : IsGalois ℚ D.LL0)

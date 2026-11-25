@@ -1670,7 +1670,7 @@ theorem kernelOf : ∀ (S : Scheme.{0}) [IsLocallyNoetherian S] (P : Over S) [Gr
   have := hP.smooth
   have := hP.separated
   have := hP.quasiCompact
-  have := _root_.GlobalTheory.CompanionTheory.Ar.BT.flat_mul_semiAbelian S P hP N hN
+  have := _root_.PositivityTheory.HtPt.Twhopf.mul_flat S P hP N hN
   have := _root_.GlobalTheory.CompanionTheory.Ar.BT.locallyQuasiFinite_pow_semiAbelian S P hP N hN
   have hp : IsPullback (pullback.fst ((𝟙 P) ^ N) η[P]) (toUnit (pullback ((𝟙 P) ^ N) η[P])) ((𝟙 P) ^ N) η[P] := by
     have h := IsPullback.of_hasPullback ((𝟙 P) ^ N) η[P]

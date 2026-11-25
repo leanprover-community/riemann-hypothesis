@@ -306,17 +306,6 @@ theorem continuous_phe (B : RowsAut) (d : InfinitePlace B.I.F → ℝ) (hd : IsD
   unfold phe
   exact (hph.comp continuous_fst).mul (he.comp continuous_snd)
 
-theorem one_le_of_isIsot (I : AutInst) (W : Submodule I.E (Fin I.n → I.E)) (hW : I.IsIsot W) : 1 ≤ I.n := by
-  rcases Nat.eq_zero_or_pos I.n with h0 | hpos
-  · exfalso
-    apply hW.1
-    rw [Submodule.eq_bot_iff]
-    intro x _
-    funext i
-    exact absurd i.isLt (by omega)
-  · exact hpos
-
-
 open Classical in
 noncomputable def incl (I : AutInst) (v : InfinitePlace I.F) : UJ (I.ε v) →* I.GA :=
   (MonoidHom.inl I.Ginf I.Gf).comp (MonoidHom.mulSingle (fun v => UJ (I.ε v)) v)
@@ -348,7 +337,7 @@ theorem cusp_of_fixed : ∀ (B : RowsAut) (d : InfinitePlace B.I.F → ℝ) (h :
   have main : ∀ W, B.I.IsIsot W → ∀ ν : Measure B.I.GA, B.I.IsNQuotMeas W ν →
       ∀ x, ∫ m, f (m * x) ∂ν = 0 := by
     intro W hW ν hνW x
-    have hn : 1 ≤ B.I.n := one_le_of_isIsot B.I W hW
+    have hn : 1 ≤ B.I.n := GlobalTheory.Dec.one_le_rank_of_isIsot B.I W hW
     obtain ⟨⟨Φ, hΦi, hΦb⟩, hrepf⟩ := _root_.GlobalTheory.ReproducingFixed.reproducing_fixed B d h hd hn hloc hbig T hT y f C hfix hrep hgr
     obtain ⟨hfin, -, hconc, hinvN⟩ := hνW
     haveI := hfin

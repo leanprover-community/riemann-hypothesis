@@ -929,10 +929,6 @@ theorem re_LSeries_le : ∃ C : ℝ, 0 < C ∧ ∀ (𝓕 : LFam) (χ : AddChar �
   rw [sub_re, hsum] at hre
   linarith
 
-theorem one_le_ell (𝓕 : LFam) (t : ℝ) : 1 ≤ 𝓕.ell t := by
-  have := 𝓕.two_lt_ell t
-  linarith
-
 theorem ell_zero_le (𝓕 : LFam) (t : ℝ) : 𝓕.ell 0 ≤ 𝓕.ell t := by
   unfold LFam.ell
   have hB : (0 : ℝ) < 𝓕.B := by linarith [𝓕.B_ge]
@@ -977,7 +973,7 @@ theorem inv_le_ell : ∃ K : ℝ, 0 < K ∧ ∀ (𝓕 : LFam) (χ : AddChar 𝓕
   set ρ : ℂ := ((1 - δ : ℝ) : ℂ) + γ * I with hρ
   have hℓ0 := ell_zero_le 𝓕 γ
   have hℓ2 := ell_two_le 𝓕 γ
-  have hℓ1 := one_le_ell 𝓕 γ
+  have hℓ1 := GlobalTheory.Hk.PsiExc.one_le_ell 𝓕 γ
   have hCℓ0 : C * 𝓕.ell 0 ≤ C * 𝓕.ell γ := mul_le_mul_of_nonneg_left hℓ0 hC.le
   have hCℓ2 : C * 𝓕.ell (2 * γ) ≤ 2 * (C * 𝓕.ell γ) := by nlinarith
   obtain ⟨v, hv⟩ : ∃ v : ℝ, v = 1 / ε := ⟨_, rfl⟩
@@ -1041,7 +1037,7 @@ theorem inv_le_ell : ∃ K : ℝ, 0 < K ∧ ∀ (𝓕 : LFam) (χ : AddChar 𝓕
         have hb := hR 𝓕 χ (60 * ε) 0 (1 / (60 * ε)) ha0 ha2 (by positivity) (fun _ => hP)
           {ρ, ρ'} hnear
         rw [hsum, e0, h1] at hb
-        have hC0 : 0 ≤ C * 𝓕.ell 0 := mul_nonneg hC.le (by linarith [one_le_ell 𝓕 0])
+        have hC0 : 0 ≤ C * 𝓕.ell 0 := mul_nonneg hC.le (by linarith [GlobalTheory.Hk.PsiExc.one_le_ell 𝓕 0])
         linarith
       · have h0 := ((_root_.GlobalTheory.Hk.LFamPos.positivity 𝓕 χ χ (1 + 60 * ε) 0 (by linarith)).2.2 hχ2 hχ2).1
         have hb1 := hR 𝓕 1 (60 * ε) 0 (1 / (60 * ε)) ha0 ha2 (by positivity) (fun _ => hP)

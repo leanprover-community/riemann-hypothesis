@@ -613,12 +613,6 @@ theorem adjoin_top (L : ℕ) : Algebra.adjoin (O0 p) {xn p L, yn p L} = ⊤ := b
   have hy : yn p L ∈ Algebra.adjoin (O0 p) {xn p L, yn p L} := Algebra.subset_adjoin (by simp)
   exact Subalgebra.mul_mem _ (Subalgebra.pow_mem _ hx _) (Subalgebra.pow_mem _ hy _)
 
-theorem emb_int (L : ℕ) (ι : On p L →ₐ[O0 p] Ω) (z : On p L) : IsInt (p := p) (ι z) := by
-  obtain ⟨b, -⟩ := GlobalTheory.K5.OnFree.on_free p L
-  haveI : Module.Finite (O0 p) (On p L) := Module.Finite.of_basis b
-  haveI : Algebra.IsIntegral (O0 p) (On p L) := Algebra.IsIntegral.of_finite _ _
-  exact IsIntegral.map ι (Algebra.IsIntegral.isIntegral z)
-
 theorem emb_fix (T : Tower p Ω) {L : ℕ} {ι : On p L →ₐ[O0 p] Ω} (hι : IsEmb T L ι) {g : Gal p Ω}
     (hg : g ∈ Gn T L) (z : On p L) : g (ι z) = ι z := by
   have h := AlgHom.ext_of_adjoin_eq_top (adjoin_top p L) (φ₁ := (g : Ω →ₐ[O0 p] Ω).comp ι) (φ₂ := ι) (by
@@ -629,28 +623,17 @@ theorem emb_fix (T : Tower p Ω) {L : ℕ} {ι : On p L →ₐ[O0 p] Ω} (hι : 
     · simp [hι.2, ((Basic.mem_gn T L g).1 hg).2])
   exact congrArg (fun φ : On p L →ₐ[O0 p] Ω => φ z) h
 
-theorem pint (k : ℕ) : IsInt (p := p) ((p : Ω) ^ k) := by
-  have := Basic.isInt_intCast (p := p) (Ω := Ω) ((p : ℤ) ^ k)
-  push_cast at this
-  exact this
-
 theorem reb_mem {T : Tower p Ω} {L : ℕ} {ψ : O0 p →+* Ω} (hψ : IsReb T L ψ) (y : O0 p) :
     ψ y ∈ Algebra.adjoin (O0 p) {T.qq L} := by
   have h := ψ.mem_range_self y
   rw [hψ.rng] at h
   exact h
 
-theorem reb_int {T : Tower p Ω} {L : ℕ} {ψ : O0 p →+* Ω} (hψ : IsReb T L ψ) (y : O0 p) :
-    IsInt (p := p) (ψ y) := by
-  have h : Algebra.adjoin (O0 p) {T.qq L} ≤ integralClosure (O0 p) Ω :=
-    Algebra.adjoin_le (by rw [Set.singleton_subset_iff, SetLike.mem_coe, mem_integralClosure_iff]; exact _root_.GlobalTheory.K5.Decomp.isInt_qq T L)
-  exact h (reb_mem hψ y)
-
 theorem ev_int {T : Tower p Ω} {L : ℕ} {ψ : O0 p →+* Ω} (hψ : IsReb T L ψ) {c : ℤ → Ω} {x x' : Ω}
     (h : Ev ψ c x x') : IsInt (p := p) x ∧ IsInt (p := p) x' := by
   obtain ⟨d, e, a, he, -, rfl, rfl⟩ := h
-  exact ⟨(integralClosure (O0 p) Ω).sum_mem fun t _ => (he t).1.mul (reb_int hψ _),
-    (integralClosure (O0 p) Ω).sum_mem fun t _ => (he t).1.mul (reb_int hψ _)⟩
+  exact ⟨(integralClosure (O0 p) Ω).sum_mem fun t _ => (he t).1.mul (GlobalTheory.GeoFix.isInt_psi hψ _),
+    (integralClosure (O0 p) Ω).sum_mem fun t _ => (he t).1.mul (GlobalTheory.GeoFix.isInt_psi hψ _)⟩
 
 theorem ev_fix {T : Tower p Ω} {L : ℕ} {ψ : O0 p →+* Ω} (hψ : IsReb T L ψ) {c : ℤ → Ω} {x x' : Ω}
     (h : Ev ψ c x x') {g : Gal p Ω} (hg : g ∈ Ggeo p Ω ⊓ Gn T L) : g x = x ∧ g x' = x' := by
@@ -729,7 +712,7 @@ theorem edge_dlog : ∀ (p : ℕ) [Fact p.Prime], p ≠ 2 → ∃ c : ℕ, ∀ (
   have hadd : ∀ g ∈ Gn T L, ∀ h ∈ Gn T L, x (g * h) = x g + x h ∧ y (g * h) = y g + y h :=
     fun g hg h hh => ⟨kum_add T hnL hr0 hx hg hh, kum_add T hnL hs0 hy hg hh⟩
   obtain ⟨o₁, ho₁i, ho₁f, hE⟩ := hed Ω hΩ T L n hnL x y lz lq η (ι (α * β' - β * α')) hadd hlz hlq
-    (emb_int L ι _) (fun g hg => emb_fix T hι hg _) hcup hloc hcob
+    (GlobalTheory.Glue.SiegLoc.emb_int L ι _) (fun g hg => emb_fix T hι hg _) hcup hloc hcob
   have hlqΔ : IsKum T n (Ggeo p Ω ⊓ Gn T L) (T.qq (L + n)) lq := fun g hg => hlq g (Subgroup.mem_inf.1 hg).2
   obtain ⟨-, h71k⟩ := h71 Ω hΩ T L n hnL lq hlqΔ
   refine ⟨(p : Ω) ^ (c₃ + c₄) * o₁, (_root_.GlobalTheory.K5.Orth.isInt_natPow_p _).mul ho₁i, fun g hg => by rw [map_mul, map_pow, map_natCast, ho₁f g hg], ?_⟩
@@ -779,7 +762,7 @@ theorem edge_dlog : ∀ (p : ℕ) [Fact p.Prime], p ≠ 2 → ∃ c : ℕ, ∀ (
   have hXi : IsInt (p := p) X := by
     have ha' := (ev_int hψ hea).2
     have hb' := (ev_int hψ heb).2
-    have hfi : IsInt (p := p) (ι (α * β' - β * α')) := emb_int L ι _
+    have hfi : IsInt (p := p) (ι (α * β' - β * α')) := GlobalTheory.Glue.SiegLoc.emb_int L ι _
     have hσi : IsInt (p := p) (σ⁻¹ o₁) := Basic.isInt_gal _ ho₁i
     have hlzi : IsInt (p := p) (((lz σ).val : Ω)) := by
       have := Basic.isInt_intCast (p := p) (Ω := Ω) ((lz σ).val : ℤ)
@@ -840,9 +823,6 @@ theorem zp_intCast (m : ℤ) : zp Ωl (m : ℤ_[p]) = (m : Ωl) := by
 
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ}
 
-theorem const_mem (X : GlobalTheory.KZ.Tower Ω ε) (L : ℕ) (c : Ω) : algebraMap Ω X.K c ∈ KT X L :=
-  (X.sl _).commutes c
-
 theorem exp_const (X : GlobalTheory.KZ.Tower Ω ε) (c : Ω) (r : ℚ) :
     (X.exp (algebraMap Ω X.K c)).coeff r = if r = 0 then c else 0 := by
   rw [AlgHom.commutes, HahnSeries.algebraMap_apply', PowerSeries.algebraMap_apply, Algebra.algebraMap_self,
@@ -853,7 +833,7 @@ variable {X : GlobalTheory.KZ.Tower Ω ε} {A : ValuationSubring Ω} {T : Global
   {ψ : O0 p →+* Ωl} {io : KT X (p ^ n) →+* Ωl}
 
 theorem io_const_of_mem (h : IsClo p Ωl) (hc : IsCusp ε A T j) (hψ : IsReb T n ψ) (hio : IsIo X A T j n ψ io)
-    (c : Ω) (hA : c ∈ A) : io ⟨algebraMap Ω X.K c, const_mem X _ c⟩ = j c := by
+    (c : Ω) (hA : c ∈ A) : io ⟨algebraMap Ω X.K c, GlobalTheory.IoEx.alg_mem_KT X _ c⟩ = j c := by
   classical
   obtain ⟨x', hx⟩ := hio.ev ⟨algebraMap Ω X.K c, _root_.GlobalTheory.IoEx.alg_mem_KT X _ c⟩ {c} (fun r => by
     simp only [exp_const]
@@ -875,7 +855,7 @@ theorem io_const_of_mem (h : IsClo p Ωl) (hc : IsCusp ε A T j) (hψ : IsReb T 
   rwa [map_one, map_one, mul_one] at this
 
 theorem io_const (h : IsClo p Ωl) (hc : IsCusp ε A T j) (hψ : IsReb T n ψ) (hio : IsIo X A T j n ψ io)
-    (c : Ω) : io ⟨algebraMap Ω X.K c, const_mem X _ c⟩ = j c := by
+    (c : Ω) : io ⟨algebraMap Ω X.K c, GlobalTheory.IoEx.alg_mem_KT X _ c⟩ = j c := by
   rcases A.mem_or_inv_mem c with hA | hA
   · exact io_const_of_mem h hc hψ hio c hA
   · have h1 := io_const_of_mem h hc hψ hio c⁻¹ hA
@@ -1117,7 +1097,7 @@ theorem _root_.GlobalTheory.T.siegel_logCoords_alt : ∀ {Ω : Type} [Field Ω] 
       IsIntegral.mul (IsIntegral.add (GlobalTheory.Glue.SiegLoc.emb_int _ ι _) hc1) hxi, ?_⟩, ?_⟩
     · linear_combination x⁻¹ * k1 - x⁻¹ * d1 - (ι α + A₁ * z) * hinv
     · have hζ1 : T.ζ 1 - 1 ≠ 0 := sub_ne_zero.2 ((T.prim 1).ne_one (by simpa using hp.out.one_lt))
-      have hpd := GlobalTheory.T.isInt_prime_div_rootOfUnity_sub_one_pow p Ω T 1 1 le_rfl (Nat.totient_pos.2 (pow_pos hp.out.pos _))
+      have hpd := GlobalTheory.K5.PDiv.pdiv p Ω T 1 1 le_rfl (Nat.totient_pos.2 (pow_pos hp.out.pos _))
       rw [pow_one, div_eq_mul_inv] at hpd
       have hinv2 : (T.ζ 1 - 1) * (T.ζ 1 - 1)⁻¹ = 1 := mul_inv_cancel₀ hζ1
       have hpi : IsInt (p := p) (p : Ω) := by simpa using Basic.isInt_intCast (p := p) (Ω := Ω) (p : ℤ)
@@ -1408,7 +1388,6 @@ theorem coef_bridge {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω
 
 end Loc
 
-
 open GlobalTheory.DlEx in
 theorem dl_pres {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (X : GlobalTheory.KZ.Tower Ω ε)
     (hj : ∃ φ : ℂ → ℂ, DifferentiableOn ℂ φ Hs ∧ X.an X.jK = (φ : Mero)) (l : ℕ) [Fact l.Prime] (A : ValuationSubring Ω)
@@ -1447,7 +1426,6 @@ theorem dl_pres {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (�
   rw [e, HahnSeries.coeff_mul, Finset.mul_sum]
   refine Finset.sum_congr rfl (fun ij _ => ?_)
   rw [HahnSeries.coeff_sub, hz ij.2]; ring
-
 
 open GlobalTheory.K4 GlobalTheory.KEdge GlobalTheory.NeedB in
 theorem galois_side {p : ℕ} [hp : Fact p.Prime] {Ωl : Type} [Field Ωl] [Algebra (O0 p) Ωl] (T : GlobalTheory.K5.Tower p Ωl) (L n : ℕ)
@@ -1572,7 +1550,6 @@ theorem coefQ_supp {Ω : Type} [Field Ω] (p L : ℕ) (hp : 0 < p) (f : ℕ → 
 
 end GlobalTheory.PairTop
 
-
 open GlobalTheory.PairTop in
 theorem GlobalTheory.pair_edge_dlog : ∀ (p : ℕ) [Fact p.Prime], p ≠ 2 → ∃ cc : ℕ, ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (X : GlobalTheory.KZ.Tower Ω ε), (∃ φ : ℂ → ℂ, DifferentiableOn ℂ φ Hs ∧ X.an X.jK = (φ : Mero)) →
   ∀ (A : ValuationSubring Ω), ((p : ℕ) : Ω) ∈ A.nonunits →
@@ -1629,10 +1606,10 @@ theorem GlobalTheory.pair_edge_dlog : ∀ (p : ℕ) [Fact p.Prime], p ≠ 2 → 
     have hadd : ∀ g ∈ Gn T L, ∀ h ∈ Gn T L, x (g * h) = x g + x h ∧ y (g * h) = y g + y h :=
       fun g hg h hh => ⟨GlobalTheory.EdgeLoc.kum_add T hnL hr0 hx hg hh, GlobalTheory.EdgeLoc.kum_add T hnL hs0 hy hg hh⟩
     obtain ⟨o₁, ho₁i, ho₁f, hE⟩ := hed Ω hΩ T L n hnL x y lz lq η (ι (α * β' - β * α')) hadd hlz hlq
-      (GlobalTheory.EdgeLoc.emb_int L ι _) (fun g hg => GlobalTheory.EdgeLoc.emb_fix T hι hg _) hcup hloc hcob
+      (GlobalTheory.Glue.SiegLoc.emb_int L ι _) (fun g hg => GlobalTheory.EdgeLoc.emb_fix T hι hg _) hcup hloc hcob
     have hlqΔ : IsKum T n (Ggeo p Ω ⊓ Gn T L) (T.qq (L + n)) lq := fun g hg => hlq g (Subgroup.mem_inf.1 hg).2
     obtain ⟨-, h71k⟩ := h71 Ω hΩ T L n hnL lq hlqΔ
-    refine ⟨(p : Ω) ^ (c₃ + c₄) * o₁, (GlobalTheory.EdgeLoc.pint _).mul ho₁i,
+    refine ⟨(p : Ω) ^ (c₃ + c₄) * o₁, (GlobalTheory.K5.Orth.isInt_natPow_p _).mul ho₁i,
       fun g hg => by rw [map_mul, map_pow, map_natCast, ho₁f g hg], ?_⟩
     intro σ hσ θ κ a a' b b' ca cb hθ hκ0 hκ hrel hea heb ha0 hai hb0 hbi
     have hpn0 : 0 < p ^ n := Nat.pos_of_ne_zero hpn
@@ -1684,15 +1661,15 @@ theorem GlobalTheory.pair_edge_dlog : ∀ (p : ℕ) [Fact p.Prime], p ≠ 2 → 
     have hXi : IsInt (p := p) X := by
       have ha' := (GlobalTheory.EdgeLoc.ev_int hψ hea).2
       have hb' := (GlobalTheory.EdgeLoc.ev_int hψ heb).2
-      have hfi : IsInt (p := p) (ι (α * β' - β * α')) := GlobalTheory.EdgeLoc.emb_int L ι _
+      have hfi : IsInt (p := p) (ι (α * β' - β * α')) := GlobalTheory.Glue.SiegLoc.emb_int L ι _
       have hσi : IsInt (p := p) (σ⁻¹ o₁) := Basic.isInt_gal _ ho₁i
       have hlzi : IsInt (p := p) (((lz σ).val : Ω)) := by
         have := Basic.isInt_intCast (p := p) (Ω := Ω) ((lz σ).val : ℤ)
         exact_mod_cast this
       rw [hXd, div_eq_mul_inv, div_eq_mul_inv]
-      have hCorrection := ((GlobalTheory.EdgeLoc.pint c₂).mul hfi).mul hlzi
-      exact ((GlobalTheory.EdgeLoc.pint c₃).mul ((hσi.sub ho₁i).sub hCorrection)).sub
-        ((GlobalTheory.EdgeLoc.pint _).mul ((ha'.mul hai).sub (hb'.mul hbi)))
+      have hCorrection := ((GlobalTheory.K5.Orth.isInt_natPow_p c₂).mul hfi).mul hlzi
+      exact ((GlobalTheory.K5.Orth.isInt_natPow_p c₃).mul ((hσi.sub ho₁i).sub hCorrection)).sub
+        ((GlobalTheory.K5.Orth.isInt_natPow_p _).mul ((ha'.mul hai).sub (hb'.mul hbi)))
     have hXf : ∀ g ∈ Ggeo p Ω ⊓ Gn T L, g X = X := fun g hg => by
       have hg2 := (Subgroup.mem_inf.1 hg).2
       rw [hXd]
@@ -1702,13 +1679,13 @@ theorem GlobalTheory.pair_edge_dlog : ∀ (p : ℕ) [Fact p.Prime], p ≠ 2 → 
         (GlobalTheory.EdgeLoc.ev_fix hψ heb hg).2]
     have hXcob : Cob1 n (Ggeo p Ω ⊓ Gn T L) (fun g => X * ((lq g).val : Ω)) := by
       refine ⟨(p : Ω) ^ c₂ * (xa - xb) - (p : Ω) ^ c₃ * we,
-        ((GlobalTheory.EdgeLoc.pint _).mul (hxai.sub hxbi)).sub ((GlobalTheory.EdgeLoc.pint _).mul hwei), fun g hg => ?_⟩
+        ((GlobalTheory.K5.Orth.isInt_natPow_p _).mul (hxai.sub hxbi)).sub ((GlobalTheory.K5.Orth.isInt_natPow_p _).mul hwei), fun g hg => ?_⟩
       obtain ⟨z1, hz1, e1⟩ := hwe g hg
       obtain ⟨z2, hz2, e2⟩ := hxa g hg
       obtain ⟨z3, hz3, e3⟩ := hxb g hg
       obtain ⟨z4, hz4, e4⟩ := hK g hg
       refine ⟨(p : Ω) ^ (c₂ + c₃) * z4 + (p : Ω) ^ c₂ * (z2 - z3) - (p : Ω) ^ c₃ * z1,
-        (((GlobalTheory.EdgeLoc.pint _).mul hz4).add ((GlobalTheory.EdgeLoc.pint _).mul (hz2.sub hz3))).sub ((GlobalTheory.EdgeLoc.pint _).mul hz1), ?_⟩
+        (((GlobalTheory.K5.Orth.isInt_natPow_p _).mul hz4).add ((GlobalTheory.K5.Orth.isInt_natPow_p _).mul (hz2.sub hz3))).sub ((GlobalTheory.K5.Orth.isInt_natPow_p _).mul hz1), ?_⟩
       rw [hXd]
       simp only [map_sub, map_mul, map_pow, map_natCast] at e1 e2 e3 e4 ⊢
       linear_combination -(p : Ω) ^ c₃ * e1 + (p : Ω) ^ c₂ * e2 - (p : Ω) ^ c₂ * e3 + (p : Ω) ^ (c₂ + c₃) * e4
@@ -1804,7 +1781,7 @@ theorem GlobalTheory.pair_edge_dlog : ∀ (p : ℕ) [Fact p.Prime], p ≠ 2 → 
   obtain ⟨izb, -, ⟨Cb, hCb⟩, -⟩ := R.2 _ _ _ hEvb
   have hval := value_cong hl hco (by simpa only [map_mul, map_natCast] using Basic.cong_gal g0⁻¹ hco)
     (cong_le hnL hαa) (cong_le hnL hβa) (cong_le hnL hαb) (cong_le hnL hβb)
-    (GlobalTheory.EdgeLoc.emb_int L ι _) (GlobalTheory.EdgeLoc.emb_int L ι _) iza izb
+    (GlobalTheory.Glue.SiegLoc.emb_int L ι _) (GlobalTheory.Glue.SiegLoc.emb_int L ι _) iza izb
   have hq' : g0⁻¹ (T.qq L) = T.qq L := ((Basic.mem_gn T L _).1 ((Gn T L).inv_mem hg0)).2
   have hG := (R.2 _ _ _ hEo).2.2.2.2.2 g0⁻¹ hq'
   obtain ⟨CG, hCG⟩ := (R.2 _ _ _ hG).2.2.1

@@ -297,27 +297,10 @@ theorem map_inv_eq_one (x : GAf L n) (w : HeightOneSpectrum (𝓞 (maximalRealSu
   have := map_inv_mul_map x w
   rwa [h, mul_one] at this
 
-theorem adele_eq_zero (z : AL L) (hz : ∀ w, compAt L w z = 0) : z = 0 := by
-  have hcard : Module.finrank (maximalRealSubfield L) L = 2 :=
-    Algebra.IsQuadraticExtension.finrank_eq_two _ _
-  let b : Module.Basis (Fin 2) (maximalRealSubfield L) L := Module.finBasisOfFinrankEq _ _ hcard
-  obtain ⟨A, B, hAB⟩ := GlobalTheory.tensor_exists_decomp b z
-  have hw : ∀ w, A w = 0 ∧ B w = 0 := by
-    intro w
-    have h := hz w
-    rw [hAB] at h
-    apply GlobalTheory.tensor_decomp_eq_zero b
-    simp [ReciprocityTheory.Aut.compAt, Algebra.TensorProduct.map_tmul] at h
-    exact h
-  have hA : A = 0 := DFunLike.ext _ _ fun w => (hw w).1
-  have hB : B = 0 := DFunLike.ext _ _ fun w => (hw w).2
-  rw [hAB, hA, hB]
-  simp
-
 theorem eq_one_of_trivOutside_empty (y : GAf L n) (hy : TrivOutside (∅ : Set _) y) : y = 1 := by
   refine Subtype.ext (Units.ext (Matrix.ext fun i j => ?_))
   rw [← sub_eq_zero]
-  apply adele_eq_zero
+  apply GlobalTheory.InertUmax.eq_zero_of_compAt
   intro w
   have h1 := congrFun (congrFun (hy w (Set.notMem_empty w)) i) j
   simp only [Matrix.map_apply] at h1

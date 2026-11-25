@@ -272,17 +272,13 @@ theorem hf_smul {F E : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [Co
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   ring
 
-theorem nonempty_places (F : Type) [Field F] [NumberField F] : Nonempty (HeightOneSpectrum (𝓞 F)) := by
-  obtain ⟨M, hM⟩ := Ideal.exists_maximal (𝓞 F)
-  exact ⟨⟨M, hM.isPrime, Ring.ne_bot_of_isMaximal_of_not_isField hM (RingOfIntegers.not_isField F)⟩⟩
-
 theorem main : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {sig : E →ₐ[F] E}
     (A : Places F E sig), ∀ (r k : ℕ) (G : GFrames A r k), ∀ t : Matrix (Fin (r + 1)) (Fin (r + 1)) E,
     (∀ i j, ¬ (i < j ∧ ∀ l : Fin (r + 2), ((i : Fin (r + 1)) : ℕ) < l → (l : ℕ) ≤ ((j : Fin (r + 1)) : ℕ) →
       G.D l = 0) → t i j = if i = j then 1 else 0) →
     ∃ g ∈ G.St, ∀ j, g (G.f j) = ∑ i, t i j • G.f i := by
   intro F E _ _ _ _ _ sig A r k G t ht
-  obtain ⟨p⟩ := nonempty_places F
+  obtain ⟨p⟩ := GlobalTheory.HL.StrongApprox.exists_place F
   haveI : Nontrivial (A.loc p).Ep :=
     Module.nontrivial_of_finrank_pos (R := (A.loc p).Fp) (by rw [(A.loc p).rank]; norm_num)
   have hinj : Function.Injective (A.loc p).ιE := (A.loc p).ιE.injective

@@ -698,13 +698,10 @@ theorem isB_of (A : Sy.{w} R ι) (p q : ℕ) (y : (dcx A).X p q) (h : ∀ i, y i
     choose u hu using h
     exact ⟨u, funext hu⟩
 
-theorem ent_nonempty {n : ℕ} (i : Fin (n + 1) → ι) : (ent i).Nonempty :=
-  ⟨i 0, Finset.mem_image_of_mem _ (Finset.mem_univ _)⟩
-
 theorem hcol (A : Sy.{w} R ι) (a : ℕ) (hO : A.One a) (p q : ℕ) (hq : q ≠ a) (y : (dcx A).X p q)
     (hy : (dcx A).dv p q y = 0) : IsB (dcx A) p q y := by
   refine isB_of A p q y fun i => ?_
-  have hs := hO (ent i) (ent_nonempty i) q hq
+  have hs := hO (ent i) (GlobalTheory.CompanionTheory.CechOne.ent_nonempty i) q hq
   have hi : (A.K (ent i)).d q (y i) = 0 := congrFun hy i
   have h0 : (Submodule.Quotient.mk ⟨y i, hi⟩ : (A.K (ent i)).H q) = 0 := Subsingleton.elim _ _
   have h2 : (⟨y i, hi⟩ : (A.K (ent i)).Z q) ∈ ((A.K (ent i)).B q).submoduleOf ((A.K (ent i)).Z q) :=
@@ -1085,7 +1082,6 @@ theorem quotMap_algebraMap {O : Type} [CommRing O] (ϖ : O) (n : ℕ) :
   rw [quotMap_mk, aeval_C, algebraMap_eq]
 
 end GlobalTheory.SmChart
-
 
 open GlobalTheory.SmChart in
 theorem GlobalTheory.SSG.chartAt_of_smooth : ∀ (O : Type) [CommRing O] (ϖ : O) (X : Scheme.{0})
@@ -1500,7 +1496,6 @@ end CrystallineSemistableComparison.Onto.EquivalenceOnIso
 
 namespace CrystallineSemistableComparison.Onto
 
-
 open EquivalenceOnIso in
 theorem onIso_pf : OnIso := by
   intro K _ W Z q i _ U U' h hU a n
@@ -1715,7 +1710,6 @@ def liftS {Q : ObjectProperty C} (hQ : Cosieve Q) {n : ℕ} (s : ComposableArrow
     ComposableArrows Q.FullSubcategory n :=
   Q.lift s fun k => hQ (s.map (homOfLE (Fin.zero_le _))) hs
 
-
 open Classical in
 def extZ {Q : ObjectProperty C} (hQ : Cosieve Q) {n : ℕ} (b : CH.Cn (Q.ι ⋙ F) n) : CH.Cn F n :=
   fun s => if hs : Q (s.obj 0) then b (liftS hQ s hs) else 0
@@ -1731,7 +1725,6 @@ theorem d_extZ {Q : ObjectProperty C} (hQ : Cosieve Q) {n : ℕ} (b : CH.Cn (Q.�
   rfl
 
 end RelativeFormLift
-
 
 open RelativeFormLift in
 theorem relLiftOf_pf : RelLiftOf := by

@@ -483,8 +483,6 @@ def isoI (hG : type_of% (@CrystallineSemistableComparison.Om.Glob.glob_iso _)) (
     (a j : ℕ) : HT.Hdg q a (a + j) ≃ₗ[K] HodgeC q a j :=
   ((Classical.choose (hG K) q U a j).trans (bridgeI hB hS q U a j)).trans (lerayI hA q U a j)
 
-
-
 theorem isoI_nat (hG : type_of% (@CrystallineSemistableComparison.Om.Glob.glob_iso _)) (hB : type_of% (@CrystallineSemistableComparison.Om.Cech.formToCO_bijective _))
     (hS : type_of% (@CrystallineSemistableComparison.Om.Cech.formToCO_smul _)) (hA : type_of% (@CrystallineSemistableComparison.Om.Cech.cechOmAdd_smul _))
     (hP : type_of% (@CrystallineSemistableComparison.Om.Cech.cechOm_pull _)) (hC : type_of% (@CrystallineSemistableComparison.Om.Cech.formCoch_pull _))
@@ -681,7 +679,7 @@ open GlobalTheory.CatH (face toLast)
 
 namespace DlogClassConstruction
 
-alias mem1 := _root_.CrystallineSemistableComparison.Pb.LX.mem_pdP_one
+alias mem1 := _root_.CrystallineSemistableComparison.Pb.mem_pdP_one
 
 theorem mul2 {B : Type} [CommRing B] {J : Ideal B} (δ : DividedPowers J) {x y : B} (hx : x ∈ J) (hy : y ∈ J) : x * y ∈ pdP δ 2 :=
   dividedPowerFiltration_mul δ 1 1 (mem1 δ hx) (mem1 δ hy)

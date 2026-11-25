@@ -106,8 +106,6 @@ open GlobalTheory
 attribute [local instance] Over.cartesianMonoidalCategory
 open Classical
 
-theorem _root_.GlobalTheory.T.balanced_posDef_finite_projective_lattice : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (T : UTrait Xo c), T.be ∈ balForms H.bar T.P.D.toPre.X ∧ (∀ y, y ≠ 0 → 0 < T.be y y) ∧ Module.Finite (𝓞 E) T.P.D.toPre.X ∧ Module.Projective (𝓞 E) T.P.D.toPre.X ∧ ∃ n : ℕ, Nonempty (T.P.D.toPre.X ≃ₗ[ℤ] (Fin n → ℤ)) := by
-  first | exact @GlobalTheory.UPoinc.UTrait.balanced_posDef_lattice
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.BalancedPosDefFiniteProjectiveLatticeStatement =====
@@ -177,8 +175,6 @@ open GlobalTheory
 attribute [local instance] Over.cartesianMonoidalCategory
 open Classical
 
-theorem _root_.GlobalTheory.T.closedPoint_completion_positive_residueChar : ∀ (o' Ω : Type) [CommRing o'] [Field Ω] [Algebra o' Ω] [ArithBase o' Ω] (M : RatModel o' Ω) (x : M.Z), IsClosed ({x} : Set M.Z) → Algebra.EssFiniteType ℤ (M.Z.presheaf.stalk x) ∧ ∀ (R : Type) [CommRing R] [IsLocalRing R] (j : M.Z.presheaf.stalk x →+* R), IsCpl j → IsLocalHom j ∧ ∃ p : ℕ, p.Prime ∧ (p : R) ∈ maximalIdeal R := by
-  first | exact @GlobalTheory.UPoinc.ClosedPt.closedPoint_cpl_residueChar
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ClosedPointCompletionPositiveResidueCharStatement =====
@@ -197,8 +193,6 @@ open GlobalTheory
 attribute [local instance] Over.cartesianMonoidalCategory
 open Classical
 
-theorem _root_.GlobalTheory.T.endomorphism_characterAction_conjugate : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], GlobalTheory.Mum.Base R → ∀ (t : SAB H (Sp R)) (P : PELUnif (maximalIdeal R) t) (a : 𝓞 E), EndChar P.U (t.act.act a) (DistribSMul.toAddMonoidHom P.D.toPre.X (H.bar a)) := by
-  first | exact @GlobalTheory.UPoinc.endChar_act
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.EndomorphismCharacterActionConjugateStatement =====
@@ -217,8 +211,6 @@ open GlobalTheory
 attribute [local instance] Over.cartesianMonoidalCategory
 open Classical
 
-theorem _root_.GlobalTheory.T.exists_linear_uniformisation_pulled_back_trait : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (T : UTrait Xo c) (W : Type) [CommRing W] [IsDomain W] [IsLocalRing W], GlobalTheory.Mum.Base W → IsDiscreteValuationRing W → ∀ h : T.V →+* W, Function.Injective h → IsLocalHom h → ∃ (tW : SAB H (Sp W)) (_ : SABMap tW T.t (spMap h)) (PW : PELUnif (maximalIdeal W) tW) (e : PW.D.toPre.X ≃ₗ[𝓞 E] T.P.D.toPre.X), ∀ y, 0 ≤ T.be (e y) (e y) ∧ ∃ r, PsiCoord PW.D.toPre y r ∧ Associated (r ^ 2) (h T.ϖ ^ (T.be (e y) (e y)).toNat) := by
-  first | exact @GlobalTheory.UPoinc.TraitPull.exists_pull_unif
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLinearUniformisationPulledBackTraitStatement =====
@@ -315,7 +307,7 @@ namespace GlobalTheory.UPoinc.TraitAtClosed
 
 theorem exists_trait_lattice_map : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (C : UCompact Xo c) (X₁ : USetup C) (M : RatModel X₁.o₁ X₁.Ω₁) (U₀ : M.Z.Opens) (EE : M.Lat X₁.S.J) (out : ZHOut X₁.ρ M U₀ EE), X₁.S.admitted M U₀ → ∀ f : 𝓞 E → (out.G ⟶ out.G), (∀ a, IsMonHom (f a)) → (∀ (T : UTrait Xo c) (ξ : Sp T.V ⟶ M.Z), (∃ ξ₀ : Sp (FractionRing T.V) ⟶ U₀.toScheme, ξ₀ ≫ U₀.ι = jK T.V ≫ ξ ∧ X₁.Lies (ξ₀ ≫ out.u₀) T.y) → ∃ β : T.t.G.left ⟶ out.G.left, IsGrpPullback T.t.G out.G ξ β ∧ LBIso T.t.PP.L (out.L.L.pull β) ∧ ∀ a, (T.t.act.act a).left ≫ β = β ≫ (f a).left) → ∀ x : M.Z, IsClosed ({x} : Set M.Z) → ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R] (j : M.Z.presheaf.stalk x →+* R), GlobalTheory.Mum.Base R → IsCpl j → ∀ (G : Over (Sp R)) [GrpObj G] [IsCommMonObj G] (gm : G.left ⟶ out.G.left), IsGrpPullback G out.G (spMap j ≫ M.Z.fromSpecStalk x) gm → ∀ (D : DegData R (maximalIdeal R)) (A : PolAV (Sp (FractionRing R))) (U : Unif (maximalIdeal R) D A G), LBIso U.LG.L (out.L.L.pull gm) → (∀ y, PsiUnitOn D.toPre y ((spMap j ≫ M.Z.fromSpecStalk x) ⁻¹' abLocus out.G)) → ∀ m : 𝓞 E → (D.toPre.X →+ D.toPre.X), (∀ a, ∃ fR : G ⟶ G, IsMonHom fR ∧ fR.left ≫ gm = gm ≫ (f a).left ∧ EndChar U fR (m a)) → ∀ (T : UTrait Xo c) (ξ : Sp T.V ⟶ M.Z), (∃ ξ₀ : Sp (FractionRing T.V) ⟶ U₀.toScheme, ξ₀ ≫ U₀.ι = jK T.V ≫ ξ ∧ X₁.Lies (ξ₀ ≫ out.u₀) T.y) → ξ (IsLocalRing.closedPoint T.V) ⤳ x → ∃ (V' : Type) (_ : CommRing V') (_ : IsDomain V') (_ : IsDiscreteValuationRing V') (h : T.V →+* V') (g' : R →+* V') (ρT : D.toPre.X →+ T.P.D.toPre.X), Function.Injective h ∧ Irreducible (h T.ϖ) ∧ spMap g' ≫ (spMap j ≫ M.Z.fromSpecStalk x) = spMap h ≫ ξ ∧ Function.Surjective ρT ∧ (∀ y r, PsiCoord D.toPre y r → 0 ≤ T.be (ρT y) (ρT y) ∧ Associated (g' r ^ 2) (h T.ϖ ^ (T.be (ρT y) (ρT y)).toNat)) ∧ ∀ a y, ρT (m a y) = H.bar a • ρT y := by
   intro E _ _ _ H Dw l Xo c C X₁ M U₀ EE out hAdm f hf hT x hx R _ _ _ j hR hj G _ _ gm hgm D A U hLB hPsi m hm T ξ hξ hsp
-  obtain ⟨hft, hcpl⟩ := GlobalTheory.T.closedPoint_completion_positive_residueChar X₁.o₁ X₁.Ω₁ M x hx
+  obtain ⟨hft, hcpl⟩ := GlobalTheory.UPoinc.ClosedPt.closedPoint_cpl_residueChar X₁.o₁ X₁.Ω₁ M x hx
   obtain ⟨-, p, hp, hpR⟩ := hcpl R j hj
   haveI := hft
   haveI : IsDiscreteValuationRing T.V := T.cdvr.1
@@ -333,7 +325,7 @@ theorem exists_trait_lattice_map : ∀ (E : Type) [Field E] [NumberField E] [IsC
     rw [← hf₀, ← Category.assoc, e, Category.assoc]
   haveI hch : CharZero V' := charZero_of_injective_ringHom hinj
   have hV' : GlobalTheory.Mum.Base V' := ⟨GlobalTheory.ArcPointDescent.admissibleBase_maximalIdeal_completeDVR ⟨inferInstance, hcomp, hch⟩, hch⟩
-  obtain ⟨tW, mW, PW, e, he⟩ := GlobalTheory.T.exists_linear_uniformisation_pulled_back_trait E H Dw l Xo c T V' hV' inferInstance h hinj hloc
+  obtain ⟨tW, mW, PW, e, he⟩ := GlobalTheory.UPoinc.TraitPull.exists_pull_unif E H Dw l Xo c T V' hV' inferInstance h hinj hloc
   obtain ⟨βT, hβT, hLT, hactT⟩ := hT T ξ hξ
   have hβ' : IsGrpPullback tW.G out.G (spMap g' ≫ (spMap j ≫ M.Z.fromSpecStalk x)) (mW.φ ≫ βT) := by
     rw [eq1]; exact mW.cart.comp hβT
@@ -372,7 +364,7 @@ theorem exists_trait_lattice_map : ∀ (E : Type) [Field E] [NumberField E] [IsC
           _ = mW.φ ≫ βT ≫ (f a).left := by rw [hactT a]
           _ = (β ≫ fR.left) ≫ gm := by rw [Category.assoc, hfRgm, reassoc_of% hβgm]
       · rw [Category.assoc, hβG, Category.assoc, Over.w fR, hβG, ← Category.assoc, Over.w (tW.act.act a)]
-    have key := hρe fR (tW.act.act a) hfRmon (tW.act.hom a) hcompat (m a) _ hfRchar (GlobalTheory.T.endomorphism_characterAction_conjugate E H V' hV' tW PW a) y
+    have key := hρe fR (tW.act.act a) hfRmon (tW.act.hom a) hcompat (m a) _ hfRchar (GlobalTheory.UPoinc.endChar_act E H V' hV' tW PW a) y
     show e (ρ (m a y)) = H.bar a • e (ρ y)
     rw [key]
     exact e.map_smul _ _
@@ -640,7 +632,7 @@ theorem GlobalTheory.UPoinc.act_extends_ratModel : ∀ (E : Type) [Field E] [Num
   let w : pullback out.u₀ (spMap (toRat X₁.S.R)) ⟶ Xo.XF c := s ≫ X₁.u
   have hβ₀ : IsGrpPullback G₀ Xo.univ.t.G (w ≫ pullback.fst _ _) (pullback.fst G₁.hom s ≫ β) :=
     (h₀.comp hβ).congr (Category.assoc _ _ _).symm rfl
-  obtain ⟨f₀, hf₀, hT⟩ := GlobalTheory.T.exists_action_pullback_universalUnitary E H Dw l Xo c _ w G₀ _ hβ₀
+  obtain ⟨f₀, hf₀, hT⟩ := GlobalTheory.PullAction.exists_action_pull E H Dw l Xo c _ w G₀ _ hβ₀
   have hα₀ := h₀.comp hα
   have wψ : (pullback.fst G₁.hom s ≫ α) ≫ X₁.ρ.P.A.hom = (G₀.hom ≫ pullback.fst out.u₀ (spMap (toRat X₁.S.R))) ≫ out.u₀ := by
     rw [hα₀.1.w, Category.assoc, pullback.condition]
@@ -1012,7 +1004,7 @@ theorem exists_lattice_data : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
     exact (mem_maximalIdeal r |>.1 (hrm hy)) ((isUnit_map_iff g₀ r).1 hu)
   let e₀ : D.toPre.X ≃+ T₀.P.D.toPre.X := AddEquiv.ofBijective ρ₀ ⟨hinj, hsurj₀⟩
   have he₀ : ∀ y, e₀ y = ρ₀ y := fun _ => rfl
-  obtain ⟨hbal, hposdef, hfin, hproj, n, ⟨eb⟩⟩ := GlobalTheory.T.balanced_posDef_finite_projective_lattice E H Dw l Xo c T₀
+  obtain ⟨hbal, hposdef, hfin, hproj, n, ⟨eb⟩⟩ := GlobalTheory.UPoinc.UTrait.balanced_posDef_lattice E H Dw l Xo c T₀
   let ℓ : ZMod X₁.S.N → ℤ := Function.surjInv ZMod.intCast_surjective
   have hℓ : ∀ z, ((ℓ z : ℤ) : ZMod X₁.S.N) = z := Function.surjInv_eq _
   let α₀ : (Fin n → ZMod X₁.S.N) → D.toPre.X := fun cl => e₀.symm (eb.symm (fun i => ℓ (cl i)))

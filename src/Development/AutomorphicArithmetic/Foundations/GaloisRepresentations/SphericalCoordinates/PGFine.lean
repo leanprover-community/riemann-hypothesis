@@ -93,7 +93,7 @@ theorem gFine_of : GFine := by
   have hid : spMap (RingHom.id ℂ) = 𝟙 (Sp ℂ) := by
     simp [spMap, Sp]
   have key := fun (D' : PLat D.O D.inv) (t : D.La → D'.La) P (y : Sp ℂ ⟶ X.X) (hy : y ≫ X.s = spMap (RingHom.id ℂ)) =>
-    GlobalTheory.T.uniformisationAt_correspond_of_cartesian D.O D.inv D.g ρ ℂ ℂ (RingHom.id ℂ) (RingHom.id ℂ) D.La (M.univ.fam h hL) (gfam X.univ hX hL') N f φA
+    GlobalTheory.unifAt_correspond_of_cartesian D.O D.inv D.g ρ ℂ ℂ (RingHom.id ℂ) (RingHom.id ℂ) D.La (M.univ.fam h hL) (gfam X.univ hX hL') N f φA
       hcart hact hB heta D' t P y hy (by
         show (y ≫ f) ≫ M.s = _
         rw [Category.assoc, hf, hy])

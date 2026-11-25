@@ -318,7 +318,7 @@ theorem UpperTheory.Gal.Int.Core.csdLift_holds :
   refine ⟨hreg', ⟨fun v => by rw [locInf_pow, quadChar_locInf], ?_⟩, trivial⟩
   rw [GlobalTheory.CsdLift.compNorm_quadChar_pow]
   refine UpperTheory.polOfSat_of_thetaSat UpperTheory.theta_satake_parameters_inverse hJ hG M a ha P 1 ?_
-  have hsd := GlobalTheory.T.polarizedPair_satakeParameter_conjugatePlace hF E a π _ hpol
+  have hsd := GlobalTheory.PolarizedSat.hasSat_conjPlace hF E a π _ hpol
   have hun := GlobalTheory.CuspRep.UnrSat.eventually_hasSatGL_locRep hF E a π
   filter_upwards [(GlobalTheory.LiftPolar.tendsto_under (K := E) (L := M)).eventually (hsd.and hun)] with w ⟨hs, B, hB⟩
   rw [GlobalTheory.CsdLift.compNorm_quadChar_pow] at hs
@@ -389,7 +389,6 @@ open GlobalTheory.GalCut GlobalTheory.UnitaryBC GlobalTheory.Cong GlobalTheory.C
 open UpperTheory.V.Af (FrobEig algSat RepIso)
 open UpperTheory.V.Af.Bc (res)
 open UpperTheory.Gal.Int.Core
-
 
 theorem UpperTheory.Gal.Int.Core.downDR_holds :
     SphDown .dR := by
@@ -733,7 +732,6 @@ open GlobalTheory.GalCut GlobalTheory.UnitaryBC GlobalTheory.Cong GlobalTheory.C
 open UpperTheory.V UpperTheory.V.Af UpperTheory.V.Af.Bc
 open UpperTheory.Gal.Int.Core
 open scoped Pointwise
-
 
 open GlobalTheory.RealGal.AttConj in
 theorem UpperTheory.Gal.Int.Core.oneConj_holds :
@@ -1094,7 +1092,6 @@ private theorem uniq (hI : IsoOne) (F Ω : Type) [Field F] [NumberField F] [Fiel
   obtain rfl := hu _ _ _ hB hB'
   exact ⟨_, hr, hr'⟩
 
-
 open GlobalTheory.RealGal.TrInv in
 private theorem trace_conj (hI : IsoOne) (hC : OneConj) (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (K : Type) [Field K] [NumberField K] [Algebra F K] [Algebra K Ω] [IsScalarTower F K Ω] [IsAlgClosure K Ω] (h2 : Module.finrank F K = 2) (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (a : ℕ) (sat : HeightOneSpectrum (𝓞 F) → Multiset ℂˣ → Prop) (hu : ∀ v B B', sat v B → sat v B' → B = B') (r : G K Ω →* GL (Fin a) (Qbar l)) (hr : Continuous r) (hss : IsSSRep r) (hatt : AttOne sat ι K r) (g : G F Ω) (s s' : G K Ω) (hs : res F Ω K s' = g * res F Ω K s * g⁻¹) : ((r s' : GL (Fin a) (Qbar l)) : Matrix (Fin a) (Fin a) (Qbar l)).trace = ((r s : GL (Fin a) (Qbar l)) : Matrix (Fin a) (Fin a) (Qbar l)).trace := by
   haveI : Algebra.IsQuadraticExtension F K := ⟨h2⟩
@@ -1110,7 +1107,6 @@ private theorem trace_conj (hI : IsoOne) (hC : OneConj) (F Ω : Type) [Field F] 
   simp only [Units.val_mul]
   rw [Matrix.trace_mul_cycle]
   simp
-
 
 open GlobalTheory.RealGalCompat in
 private theorem trace_eq (hI : IsoOne) (hT : OneTower) (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (Q Q' : QCM F Ω) (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (a : ℕ) (sat : HeightOneSpectrum (𝓞 F) → Multiset ℂˣ → Prop) (hu : ∀ v B B', sat v B → sat v B' → B = B') (r : G ↥Q.K Ω →* GL (Fin a) (Qbar l)) (r' : G ↥Q'.K Ω →* GL (Fin a) (Qbar l)) (hr : Continuous r) (hr' : Continuous r') (hs : IsSSRep r) (hs' : IsSSRep r') (ha : AttOne sat ι ↥Q.K r) (ha' : AttOne sat ι ↥Q'.K r') (s : G ↥Q.K Ω) (s' : G ↥Q'.K Ω) (hss : res F Ω ↥Q.K s = res F Ω ↥Q'.K s') : ((r s : GL (Fin a) (Qbar l)) : Matrix (Fin a) (Fin a) (Qbar l)).trace = ((r' s' : GL (Fin a) (Qbar l)) : Matrix (Fin a) (Fin a) (Qbar l)).trace := by

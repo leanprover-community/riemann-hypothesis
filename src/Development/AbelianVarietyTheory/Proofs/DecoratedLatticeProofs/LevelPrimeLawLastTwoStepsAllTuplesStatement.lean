@@ -432,7 +432,6 @@ theorem vac_of_list {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1))
     have M := (GlobalTheory.DisjComb.main D ψ hψ S T (· = x) (· ∈ l) (fun y hy hy' => hx (hy ▸ hy'))).2.2.2.2 LS LT f hLS hLT
     exact M.2 ⟨hv x List.mem_cons_self, ih hl (· ∈ l) (fun _ => Iff.rfl) fun y hy => hv y (List.mem_cons_of_mem _ hy)⟩
 
-
 open GlobalTheory.SeeSawFold in
 theorem biComb_eq_foldr_vac {ψ : AddChar (AF D.host.F) ℂ} {A S A' : HSp D} {LA : Lat A} {LS : Lat S} {LA' : Lat A'}
     {P : Pl D → Prop} (c : WO A S →₀ ℂ) (c' : WO S A' →₀ ℂ) (l : List ((WO A S →₀ ℂ) × (WO S A' →₀ ℂ)))
@@ -555,8 +554,6 @@ end Lists
 end GlobalTheory.LastTAllPf
 
 namespace GlobalTheory.LastTAllPf
-
-
 
 theorem main : ∀ D : D7, GlobalTheory.FinPl.LastTAll D := by
   intro D k _ _ _ _ ι p I P hP q ψ hψ χ hχ hchar n n' n'' _ _ _ _ _ _ V₀ A L S X T L'' o o'' ζ ζ₀ hζ hζ₀ τ lam hlam
@@ -740,11 +737,6 @@ theorem exists_unit_idem {e : AE D} (he : e * e = e) (u : (AE D)ˣ) : ∃ x : (A
     linear_combination (2 - (u : AE D) - ((u⁻¹ : (AE D)ˣ) : AE D)) * he + e * e * hu
   exact ⟨⟨_, _, hk, by rw [mul_comm]; exact hk⟩, rfl⟩
 
-theorem isDetAt_one (e : AE D) (V : HSp D) : IsDetAt e V 1 1 := by
-  change (1 : AE D) = e * (Formalism.L2.Theta.mt V 1).det + (1 - e)
-  rw [Formalism.IndefR.flipTwoThree.mt_one', Matrix.det_one]
-  ring
-
 theorem exists_detUnit {e : AE D} (he : IsSplitIdem D e) (u : (AE D)ˣ) :
     ∃ X : (AE D)ˣ, (X : AE D) * cA D (X : AE D) = 1 ∧ Formalism.IndefR.InjectiveDecompositionAction.SuppAtU D e X ∧
       e * (X : AE D) + (1 - e) = e * u + (1 - e) := by
@@ -763,7 +755,7 @@ theorem chiT_agree {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D} {χS χT χS' 
   have h0 : (x' : AE D) = e * (Formalism.L2.Theta.mt S g).det + (1 - e) := hx'
   have hxx : x' = x := Units.ext (by rw [h0, hdet, hX3, hx])
   subst hxx
-  have := splitFac_eq H H' he hg (GlobalTheory.WeilDetermined.suppAt_one e T) hx' (isDetAt_one e T)
+  have := splitFac_eq H H' he hg (GlobalTheory.WeilDetermined.suppAt_one e T) hx' (GlobalTheory.LeviSplitChar.isDetAt_one e T)
   simpa only [splitFacO, map_one, mul_one, _root_.inv_inj] using this
 
 theorem chiS_agree {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D} {χS χT χS' χT' : (AE D)ˣ →* Circle}
@@ -775,7 +767,7 @@ theorem chiS_agree {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D} {χS χT χS' 
   have h0 : (y' : AE D) = e * (Formalism.L2.Theta.mt T h).det + (1 - e) := hy'
   have hyy : y' = y := Units.ext (by rw [h0, hdet, hX3, hy])
   subst hyy
-  have := splitFac_eq H H' he (GlobalTheory.WeilDetermined.suppAt_one e S) hh (isDetAt_one e S) hy'
+  have := splitFac_eq H H' he (GlobalTheory.WeilDetermined.suppAt_one e S) hh (GlobalTheory.LeviSplitChar.isDetAt_one e S) hy'
   simpa only [splitFacO, map_one, inv_one, one_mul] using this
 
 theorem eq_of_comp {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
@@ -1054,7 +1046,7 @@ theorem smallOne : ∀ D : D7, SmallOne D := by
   obtain ⟨χr, hχr⟩ : ∃ χr, χr = resChar χ hχ q := ⟨_, rfl⟩
   rw [← hχr] at hΞ' hsrc ⊢
   have hob := GlobalTheory.T.splitPlace_baseVacuum_datum_exists_unique D k p n (n' ⊕ Fin 1) ψ hW₁.std V₀ S α₀ β L₁ L₂ hΞ.1 hΞ.2.1 f₁ hΞ.2.2.1
-  have hsb := GlobalTheory.T.schwartzBruhat_tensor_indicator_character_facts k n n'
+  have hsb := GlobalTheory.FinPl.sb_facts k n n'
 
   obtain ⟨Ξ'', hΞ'', -⟩ := hob.1 (tensCol (phiOne P (s • Q)) (charInd χr (s • Q)))
     (hsb.1 _ _ (GlobalTheory.IndefiniteRowSideFullHecke.IndicatorFunctionIdentity.phiOne_mem _ _) (hsb.2.2 _ _))
@@ -1063,7 +1055,7 @@ theorem smallOne : ∀ D : D7, SmallOne D := by
   rw [map_one, Module.End.one_apply] at hram1
 
   have hmove : liftA o om₁ vA (FFStar q χr φ P) Ξ'' = liftA o om₁ vA (sOp α P q χr s (φ P)) Ξ' := by
-    obtain ⟨lS, hlS, hθ⟩ := GlobalTheory.T.exists_bilinear_equivariant_orthogonalSummandLift D k p n n' ψ V₀ A L S o ζ hζ hA vA χV χW om₁ hW₁ α α₀ β hsum
+    obtain ⟨lS, hlS, hθ⟩ := GlobalTheory.FinPl.SrcTheta.exists_theta D k p n n' ψ V₀ A L S o ζ hζ hA vA χV χW om₁ hW₁ α α₀ β hsum
     obtain ⟨θ, hθv, hθe⟩ := hθ L₁ L₂ f₁ hΞ.1 hΞ.2.1 hΞ.2.2.1
     obtain ⟨g, hg⟩ := MulAction.exists_smul_eq (GL n' k) P (s • P)
     have hgs : g ∈ latStab P.lat := by
@@ -1077,7 +1069,7 @@ theorem smallOne : ∀ D : D7, SmallOne D := by
       congr 1
       funext x₀
       rw [← SrcGl.phiOne_smul_left, hg, phiOne_dia]
-    rw [b2, hθv _ _ _ hΞ', hθv _ _ _ hΞ'', GlobalTheory.T.unramifiedCharacter_det_latticeStabilizer_eq_one k n' P.lat inferInstance g hgs lS (hlS hW), Units.val_one,
+    rw [b2, hθv _ _ _ hΞ', hθv _ _ _ hΞ'', GlobalTheory.LatPair.Det.isUnram_det_latStab k n' P.lat inferInstance g hgs lS (hlS hW), Units.val_one,
       inv_one, one_smul, SrcGl.caRep_apply] at h1
     rw [hram.2, dia_apply, ← hg, hram1.1 g P]
     exact h1.symm
@@ -1094,12 +1086,12 @@ theorem smallOne : ∀ D : D7, SmallOne D := by
     have hk1 : InK S L₂' (· = p.v) (β.gl (gs Q')) := (hK _).2 (hΛQ ▸ hstab Q' hQ')
     have hk2 : InK T L₃ (· = p.v) 1 := ⟨one_mem _, fun y _ => by simp [Formalism.L2.Theta.mt]⟩
     exact _root_.GlobalTheory.StabSetFix.stab_fix_vac D ψ S T χS χT omT hWT L₂' L₃ hsd₂ hsd₃ (· = p.v)
-      (fun v hv => by subst hv; exact ⟨GlobalTheory.T.isTameFinitePlaceHermitian_all D _, hχS, hχT⟩) Φ₂ hvac _ _ hk1 hk2
+      (fun v hv => by subst hv; exact ⟨GlobalTheory.FinPl.TamePlaces.tame D _, hχS, hχT⟩) Φ₂ hvac _ _ hk1 hk2
   have hOver : ∀ Q' ∈ withLat Q.lat, Over ψ α₀ β L₁ L₂ f₁ (tensCol (phiOne P Q') (charInd χr Q'))
       (om₁ (1, β.gl (gs Q')) Ξ'') := by
     intro Q' hQ'
     have h0 := hlin n (n' ⊕ Fin 1) α₀ β L₁ L₂ f₁ _ Ξ'' hΞ'' 1 (gs Q')
-    rw [GlobalTheory.T.unramifiedCharacter_det_latticeStabilizer_eq_one k n Q.lat inferInstance (gs Q') (hstab Q' hQ') lT (hlT hV)] at h0
+    rw [GlobalTheory.LatPair.Det.isUnram_det_latStab k n Q.lat inferInstance (gs Q') (hstab Q' hQ') lT (hlT hV)] at h0
     convert (preTransparency := .reducible) h0 using 1
     · funext x
       simp only [map_one, Units.val_one, one_mul, Matrix.mul_one]
@@ -1250,8 +1242,6 @@ theorem combAt_fin {D : D7} {P : Pl D → Prop} {S T : HSp D} {c : WO S T →₀
   ext i j
   have := (Ideal.mem_inf.1 (h u hu i j)).1
   simpa using this
-
-
 
 theorem main : ∀ (D : D7) (c : Comm D) (v : VCom c) (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (ι : Type) (o : TDat c k ι), c.Is → v.Is → ShapeOff v o → ∀ j (h : j + 2 * 0 + 2 = D.R.m), ∃ (ε : ι → 𝓀[k]ˣ) (op : BiOp (c.X j) (c.X (j + 1)) (c.X (j + 1 + 1))) (r : ι → ℝ) (e : ι → ℤ), (∀ i, 0 < r i) ∧ OpAt (· ∈ v.tP) op ∧ ∀ t : Tup c, t.Is → WeilOK (t := t) v → t.UnrOn (· ∈ v.tP) → t.UnrK (· ∈ v.tP) → ∀ Ψ₁ Ψ₂, Vac c.ψ _ _ (v.N j) (v.N (j + 1)) (· ∈ v.tP) Ψ₁ → Vac c.ψ _ _ (v.N (j + 1)) v.NT (· ∈ v.tP) Ψ₂ → BiVacAt c.ψ (c.x j).L (c.x (j + 1)).L (c.x (j + 1 + 1)).L (· ∈ v.tP) (op.app c.ψ (c.lst j h (v.τ j h) (t.sBF j 0 h) Ψ₁ Ψ₂)) ∧ ∀ d d', CombAt (· ∉ v.tP) d → CombAt (· ∉ v.tP) d' → ∀ φ ∈ o.Ram j, ∀ f, IsContAut c.T f → ∫ h' in c.volT.𝓕, f h' * c.bl j (t.kom j) (t.kom (j + 1)) φ (biComb c.ψ _ _ _ d d' (c.lst j h (v.τ j h) (t.sBF j 0 h) Ψ₁ Ψ₂)) ((c.oT (j + 1 + 1) h).emb (h', 1)) ∂c.volT.μ = o.mono r e (t.sBF j 0 h).χW * ∫ h' in c.volT.𝓕, f h' * c.bl j (t.kom j) (t.kom (j + 1)) (o.S (fun _ => ε) j φ) (biComb c.ψ _ _ _ d d' (biComb c.ψ _ _ _ (v.dT j) (v.dT (j + 1)) (op.app c.ψ (c.lst j h (v.τ j h) (t.sBF j 0 h) Ψ₁ Ψ₂)))) ((c.oT (j + 1 + 1) h).emb (h', 1)) ∂c.volT.μ := by
   intro D c v k _ _ _ _ ι o hc hv hS j h

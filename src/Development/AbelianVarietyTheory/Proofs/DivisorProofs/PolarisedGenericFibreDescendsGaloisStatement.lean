@@ -575,8 +575,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum GlobalTheory.Mum.GenDesc
 
-theorem _root_.GlobalTheory.T.principalPolarisation_of_groupScheme_iso : ∀ (S : Scheme.{0}) (P : PolAV S) (B : Over S) [GrpObj B] (e : B ≅ P.A), IsMonHom e.hom → ∀ L : LB B.left, L.IsLB → LBIso L (P.L.pull e.hom.left) → IsProper B.hom ∧ SmoothOfRelativeDimension P.g B.hom ∧ Sym B L ∧ RelAmple B L ∧ KTriv B L := by
-  first | exact @GlobalTheory.polarisation_of_iso
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.PrincipalPolarisationOfGroupSchemeIsoStatement =====
@@ -647,7 +645,7 @@ theorem polarisedGeneric : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing
   have hL' : L'.IsLB := pull_isLB U'.LG.isLB _
   have hiso : LBIso L' (A'.L.pull U'.gen.hom.left) := LBIso.symm U'.ext
   have := U'.gen_hom
-  obtain ⟨hP', hdim', hsym', hamp', hkt'⟩ := GlobalTheory.T.principalPolarisation_of_groupScheme_iso _ A' _ U'.gen U'.gen_hom L' hL' hiso
+  obtain ⟨hP', hdim', hsym', hamp', hkt'⟩ := GlobalTheory.polarisation_of_iso _ A' _ U'.gen U'.gen_hom L' hL' hiso
   have hsemi : IsSemiAbelian ((Over.pullback (jK R)).obj G) := Geo.Tor.IsSemiAbelian.pullback (jK R) G hG
   obtain ⟨hab, hdim⟩ := GlobalTheory.T.abelian_of_fieldExtension_pullback_proper _ _ (fracMap ρ hρ) ((Over.pullback (jK R)).obj G) _ _ A'.g hsemi hκ hP' hdim'
   obtain ⟨L, hL, hLL⟩ := GlobalTheory.T.exists_lineBundle_galoisDescent_abelianVariety_finite (FractionRing R) (FractionRing R') (fracMap ρ hρ)

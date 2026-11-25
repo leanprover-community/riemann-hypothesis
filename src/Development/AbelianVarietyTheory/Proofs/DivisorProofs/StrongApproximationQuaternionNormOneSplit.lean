@@ -435,12 +435,6 @@ namespace GlobalTheory.QSA.FujisakiQ
 
 variable {F : Type} [Field F] [NumberField F] {a b : F}
 
-theorem rat_mul (x y : ℍ[F, a, b]) : rat (x * y) = rat x * rat y := by
-  ext <;> simp [rat]
-
-theorem rat_star (x : ℍ[F, a, b]) : rat (star x) = star (rat x) := by
-  ext <;> simp [rat]
-
 theorem rat_one : rat (1 : ℍ[F, a, b]) = 1 := by
   ext <;> simp [rat]
 
@@ -476,7 +470,6 @@ theorem exists_rat_mem (B : Set (Fin 4 → AF F))
 end GlobalTheory.QSA.FujisakiQ
 
 namespace GlobalTheory.QSA.FujisakiQ
-
 
 open GroundTheory.Global.IdeleGroup in
 theorem fujisaki_mod_centre : ∀ (F : Type) [Field F] [NumberField F] (a b : F), a ≠ 0 → b ≠ 0 → (∀ x : ℍ[F, a, b], nrm x = 0 → x = 0) → ∃ C : Set (DA F a b), IsCompact C ∧ ∀ y : DA F a b, IsUnit (nrm y) → ∃ (δ : ℍ[F, a, b]) (l : AF F) (c c' : DA F a b), nrm δ ≠ 0 ∧ IsUnit l ∧ c ∈ C ∧ c' ∈ C ∧ c * c' = 1 ∧ c' * c = 1 ∧ y = l • (rat δ * c) := by
@@ -533,7 +526,7 @@ theorem fujisaki_mod_centre : ∀ (F : Type) [Field F] [NumberField F] (a b : F)
   obtain ⟨δ', hδ', hc2⟩ := exists_rat_mem B hB hdiv (star z) uz ((nrm_star z).trans hnz.symm).symm hmod
   obtain ⟨γ, hγdef⟩ : ∃ γ : ℍ[F, a, b], γ = star δ' * δ := ⟨_, rfl⟩
   have hγ : rat γ = star (star z * rat δ') * (zi * rat δ) := by
-    rw [hγdef, rat_mul, rat_star, star_mul, star_star]
+    rw [hγdef, GlobalTheory.QSA.Grp.rat_mul, GlobalTheory.QSA.Grp.rat_star, star_mul, star_star]
     simp only [mul_assoc]
     rw [← mul_assoc z zi, hzi.1, one_mul]
   have hγZ : γ ∈ Z := by
@@ -548,12 +541,12 @@ theorem fujisaki_mod_centre : ∀ (F : Type) [Field F] [NumberField F] (a b : F)
       _ = ((nrm γ)⁻¹ • star γ * γ) * ((nrm δ)⁻¹ • star δ) := by rw [hγdef]; simp only [mul_assoc]
       _ = (nrm δ)⁻¹ • star δ := by rw [hγi.2, one_mul]
   have hc : rat ((nrm γ)⁻¹ • star γ) * star (star z * rat δ') = rat ((nrm δ)⁻¹ • star δ) * z := by
-    rw [star_mul, star_star, ← rat_star, ← mul_assoc, ← rat_mul, e1]
+    rw [star_mul, star_star, ← GlobalTheory.QSA.Grp.rat_star, ← mul_assoc, ← GlobalTheory.QSA.Grp.rat_mul, e1]
   refine ⟨δ, (l : AF F), rat ((nrm γ)⁻¹ • star γ) * star (star z * rat δ'), zi * rat δ, hδ, l.isUnit,
     hC ▸ Or.inr (Set.mem_biUnion hγZ ⟨_, ⟨_, hB' ▸ hc2, rfl⟩, rfl⟩), hC ▸ Or.inl (hB' ▸ hc'), ?_, ?_, ?_⟩
-  · rw [mul_assoc, ← hγ, ← rat_mul, hγi.2, rat_one]
-  · rw [hc, ← mul_assoc, mul_assoc zi, ← rat_mul, hd.1, rat_one, mul_one, hzi.2]
-  · rw [hc, ← mul_assoc, ← rat_mul, hd.1, rat_one, one_mul, hz, smul_smul, Units.mul_inv, one_smul]
+  · rw [mul_assoc, ← hγ, ← GlobalTheory.QSA.Grp.rat_mul, hγi.2, rat_one]
+  · rw [hc, ← mul_assoc, mul_assoc zi, ← GlobalTheory.QSA.Grp.rat_mul, hd.1, rat_one, mul_one, hzi.2]
+  · rw [hc, ← mul_assoc, ← GlobalTheory.QSA.Grp.rat_mul, hd.1, rat_one, one_mul, hz, smul_smul, Units.mul_inv, one_smul]
 
 end GlobalTheory.QSA.FujisakiQ
 end -- clump:auto
@@ -594,7 +587,6 @@ theorem continuous_cf (v : HeightOneSpectrum (𝓞 F)) : Continuous (cf (F := F)
 
 theorem ext_c {a b : AF F} (h1 : ∀ w, ci w a = ci w b) (h2 : ∀ v, cf v a = cf v b) : a = b :=
   Prod.ext (funext h1) (RestrictedProduct.ext _ _ h2)
-
 
 open Classical in
 def sglI (w : InfinitePlace F) (c : w.Completion) : AF F :=
@@ -1499,7 +1491,6 @@ theorem Ψ_sub_one (m : Matrix (Fin 2) (Fin 2) (AF F)) : Ψ φ (m - 1) = Ψ φ m
 
 end GlobalTheory.QSA.Split
 
-
 open GlobalTheory.QSA.Split in
 theorem GlobalTheory.QSA.strongApprox_split : ∀ (F : Type) [Field F] [NumberField F] (a b : F), a ≠ 0 → b ≠ 0 → (∃ x : ℍ[F, a, b], x ≠ 0 ∧ nrm x = 0) → ∀ (S₁ : Finset (InfinitePlace F)) (S₂ : Finset (HeightOneSpectrum (𝓞 F))) (ε : AF F), IsPlacesIdem S₁ S₂ ε → (S₁.Nonempty ∨ S₂.Nonempty) → ∀ g : DA F a b, nrm g = 1 → g ∈ closure (H0 (a := a) (b := b) ε) := by
   intro F _ _ a b ha hb hiso S₁ S₂ ε hε hS g hg
@@ -1530,10 +1521,6 @@ open scoped Quaternion Topology TensorProduct
 
 namespace GlobalTheory.QSA
 
-theorem isPlacesIdem_mul_self {F : Type} [Field F] [NumberField F] {S₁ : Finset (InfinitePlace F)}
-    {S₂ : Finset (HeightOneSpectrum (𝓞 F))} {ε : AF F} (hε : IsPlacesIdem S₁ S₂ ε) : ε * ε = ε := by
-  apply GlobalTheory.StrongApproximationSL2.idem_of_isPlacesIdem <;> assumption
-
 theorem strongApprox_nrm_one : ∀ (F : Type) [Field F] [NumberField F] (a b : F), a ≠ 0 → b ≠ 0 → ∀ (S₁ : Finset (InfinitePlace F)) (S₂ : Finset (HeightOneSpectrum (𝓞 F))) (ε : AF F), IsPlacesIdem S₁ S₂ ε → (S₁.Nonempty ∨ S₂.Nonempty) → (∃ p q : AF F, ε * (algebraMap F (AF F) b - (p ^ 2 - algebraMap F (AF F) a * q ^ 2)) = 0) → ∀ g : DA F a b, nrm g = 1 → g ∈ closure (H0 (a := a) (b := b) ε) := by
   intro F _ _ a b ha hb S₁ S₂ ε hε hS hpq g hg
   by_cases hiso : ∃ x : ℍ[F, a, b], x ≠ 0 ∧ nrm x = 0
@@ -1546,7 +1533,7 @@ theorem strongApprox_nrm_one : ∀ (F : Type) [Field F] [NumberField F] (a b : F
       have : IsUnit (algebraMap F (AF F) 2) := (IsUnit.mk0 (2 : F) two_ne_zero).map _
       rwa [map_ofNat] at this
     exact _root_.GlobalTheory.quat_norm_one_re_at_idem (AF F) (algebraMap F (AF F) a) (algebraMap F (AF F) b) ε p q
-      (isPlacesIdem_mul_self hε) ((IsUnit.mk0 a ha).map _) ((IsUnit.mk0 b hb).map _) h2 hpq t
+      (GlobalTheory.QSAStep.idem_of_isPlacesIdem hε) ((IsUnit.mk0 a ha).map _) ((IsUnit.mk0 b hb).map _) h2 hpq t
 
 end GlobalTheory.QSA
 end -- clump:auto

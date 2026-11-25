@@ -274,7 +274,6 @@ theorem isAdmissibleBoxForCharacter_of_subset {s : kˣ} {g : (n → k) → ℂ}
     (h : box n s ⊆ {t : n → k | ∀ η ∈ tsupport g, χ (η ⬝ᵥ t) = 1}) : admitted χ s g :=
   fun η hη t ht => h ht η (subset_tsupport _ hη)
 
-
 theorem ratio_indep (hχ : HasConductor χ c) (μ : Measure (n → k)) [μ.IsAddHaarMeasure]
     (B : SB (n → k) →ₗ[ℂ] SB (n → k) →ₗ[ℂ] ℂ)
     (h2 : ∀ (a a' b b' : SB (n → k)) (t : n → k), (∀ y, a'.1 y = a.1 (y - t)) →
@@ -309,7 +308,6 @@ omit [MeasurableSpace k] [BorelSpace k] in
 theorem exists_adm (hχ : HasConductor χ c) (g : SB (n → k)) : ∃ s : kˣ, admitted χ s g.1 := by
   obtain ⟨s, hs⟩ := exists_box_subset (addChar_dotProduct_trivial_on_tsupport_nhds hχ g.2)
   exact ⟨s, isAdmissibleBoxForCharacter_of_subset hs⟩
-
 
 open scoped Classical in
 open Classical in
@@ -615,9 +613,6 @@ namespace GlobalTheory.FinPl.LineAct.ConjModul
 
 variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-theorem e_mul_sec (p : SplitPt D k) (a : k) : p.e * p.sec a = p.sec a := by
-  rw [← p.sec_pr, p.pr_sec]
-
 theorem pr_trace (p : SplitPt D k) {m : ℕ} (M : Mx D m m) : p.pr M.trace = (M.map p.pr).trace := by
   set_option synthInstance.maxHeartbeats 100000 in
     simp only [Matrix.trace, Matrix.diag, map_sum, Matrix.map_apply]
@@ -625,7 +620,6 @@ theorem pr_trace (p : SplitPt D k) {m : ℕ} (M : Mx D m m) : p.pr M.trace = (M.
 theorem map_rat (p : SplitPt D k) {m n : ℕ} (M : Matrix (Fin m) (Fin n) D.host.E) :
     (rat M).map p.pr = M.map (iota p) := by
   ext i j; rfl
-
 
 open GlobalTheory.FinPl.LineAct in
 set_option maxHeartbeats 1600000 in
@@ -637,7 +631,7 @@ theorem conj_half_modul : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [To
     congr 1
     refine Finset.sum_congr rfl fun l _ => ?_
     simp only [wCol, Matrix.of_apply]
-    rw [mul_left_comm, ← map_mul, e_mul_sec]
+    rw [mul_left_comm, ← map_mul, GlobalTheory.FinPl.LatIndHalf.e_mul_sec]
   · have hy : (o.resT W₀) ((o.resT W₀).symm (0, -wCol p ζ β t)) = (0, -wCol p ζ β t) := AddEquiv.apply_symm_apply _ _
     rw [OrthDec.symplO_resT, hy]
     have h0 : symplO W₀ A ((o.resT W₀) x).1 0 = 0 := by
@@ -653,7 +647,7 @@ theorem conj_half_modul : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [To
     have hZ : p.e • adj (-wCol p ζ β t) = adj (-wCol p ζ β t) := by
       rw [hadj]
       ext i j
-      simp only [Matrix.smul_apply, smul_eq_mul, Matrix.of_apply, mul_neg, e_mul_sec]
+      simp only [Matrix.smul_apply, smul_eq_mul, Matrix.of_apply, mul_neg, GlobalTheory.FinPl.LatIndHalf.e_mul_sec]
     have heT : p.e * T = T := by
       conv_rhs => rw [hT, ← hZ]
       rw [Matrix.smul_mul, Matrix.mul_smul, Matrix.trace_smul, smul_eq_mul]
@@ -777,7 +771,6 @@ theorem tau_gram (h : IsLineVec L' ζ') :
   apply mul_left_cancel₀ hz'
   rw [hn]; ring
 
-
 end GlobalTheory.Unf.Model
 
 end
@@ -804,9 +797,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SkewGramHalfModule (ofAdj)
 
 variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-theorem e_mul_sec (p : SplitPt D k) (x : k) : p.e * p.sec x = p.sec x := by
-  rw [← p.sec_pr, p.pr_sec]
-
 theorem map_pr_rat (p : SplitPt D k) {m n : ℕ} (M : Matrix (Fin m) (Fin n) D.host.E) :
     (rat M : Mx D m n).map p.pr = M.map (iota p) := by
   ext i j; rfl
@@ -829,8 +819,6 @@ namespace GlobalTheory.FinPl.LineAct
 open GlobalTheory.IndefiniteRowSideFullHecke.SkewGramHalfModule (ofAdj)
 open GlobalTheory.FinPl.LineAct.ColTrans
 
-
-
 theorem kappa_wCol_translate : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (p : SplitPt D k) (n n' : Type) [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] (ρ : ℕ) (B : BesLev D ρ) (L' W₀ : HSp D) (ζ' : Fin L'.rank → D.host.E) (l : Link B L' ζ'), IsLineVec L' ζ' → ∀ (α : Frame p B.A n') (α₀ : Frame p B.V₀ (n' ⊕ Fin 1)) (β : Frame p W₀ n), IsSumFrame B.o B.ζ α α₀ → ∀ t : n → k, IsHalf p.e ((B.o.resS W₀).symm (0, l.κ W₀ (GlobalTheory.FinPl.LineAct.wCol p ζ' β t))) ∧ ∀ i j, rd α₀ β ((B.o.resS W₀).symm (0, l.κ W₀ (GlobalTheory.FinPl.LineAct.wCol p ζ' β t))) i j = Sum.elim (fun _ => 0) (fun _ => -t i) j := by
   intro D k _ _ _ _ p n n' _ _ _ _ ρ B L' W₀ ζ' l hL α α₀ β hsum t
   set ι := iota p with hι
@@ -844,7 +832,7 @@ theorem kappa_wCol_translate : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k
   rw [hu]
   constructor
   · have hA : p.e • adj (wCol p ζ' β t) = adj (wCol p ζ' β t) := by
-      rw [hadj]; ext i j; simp [e_mul_sec]
+      rw [hadj]; ext i j; simp [GlobalTheory.FinPl.LatIndHalf.e_mul_sec]
     intro i j
     have : p.e • ((incA D (-D.host.xi0⁻¹) • giA W₀) ⬝ adj (wCol p ζ' β t) ⬝ (adj (rat l.τ) ⬝ gA B.L ⬝ B.o.pB)) =
         (incA D (-D.host.xi0⁻¹) • giA W₀) ⬝ adj (wCol p ζ' β t) ⬝ (adj (rat l.τ) ⬝ gA B.L ⬝ B.o.pB) := by
@@ -978,14 +966,14 @@ theorem trace_half {n : ℕ} {f : AE D} {M : Mx D n n} (h : IsHalf f M) : f * M.
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-theorem e_mul_sec (p : GlobalTheory.FinPl.SplitPt D k) (a : k) : p.e * p.sec a = p.sec a := by
+theorem GlobalTheory.FinPl.LatIndHalf.e_mul_sec (p : GlobalTheory.FinPl.SplitPt D k) (a : k) : p.e * p.sec a = p.sec a := by
   rw [← p.sec_pr, p.pr_sec]
 
 theorem wRow_half {n : Type} [Fintype n] [DecidableEq n] (p : GlobalTheory.FinPl.SplitPt D k) {W₀ L' : HSp D}
     (ζ' : Fin L'.rank → D.host.E) (β : GlobalTheory.FinPl.Frame p W₀ n) (t : n → k) :
     IsHalf p.e (GlobalTheory.FinPl.LineAct.wRow p ζ' β t) := by
   intro i j
-  exact e_mul_sec p _
+  exact GlobalTheory.FinPl.LatIndHalf.e_mul_sec p _
 
 theorem trace_vecMulVec_mul {R : Type} [CommRing R] {a b c : Type} [Fintype a] [Fintype b] [Fintype c]
     (u : a → R) (v : b → R) (X : Matrix b c R) (J : Matrix c a R) :
@@ -1036,8 +1024,6 @@ end GlobalTheory.KappaRowChar
 namespace GlobalTheory.KappaRowChar
 
 open GlobalTheory.FinPl.LineAct (iota)
-
-
 
 theorem kappa_wRow_char : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (p : SplitPt D k) (ψ : AddChar (AF D.host.F) ℂ) (χ : AddChar k Circle), p.IsChar ψ χ → ∀ (n n' : Type) [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] (ρ : ℕ) (B : BesLev D ρ) (L' W₀ : HSp D) (ζ' : Fin L'.rank → D.host.E) (l : Link B L' ζ') (α : Frame p B.A n') (α₀ : Frame p B.V₀ (n' ⊕ Fin 1)) (β : Frame p W₀ n), IsSumFrame B.o B.ζ α α₀ → ∀ t : n → k, IsHalf (cA D p.e) ((B.o.resS W₀).symm (0, l.κ W₀ (GlobalTheory.FinPl.LineAct.wRow p ζ' β t))) ∧ ∀ x : WO B.V₀ W₀, IsHalf p.e x → ψ (symplO B.V₀ W₀ x ((B.o.resS W₀).symm (0, l.κ W₀ (GlobalTheory.FinPl.LineAct.wRow p ζ' β t)))) = (χ (-(t ⬝ᵥ fun i => rd α₀ β x i (Sum.inr 0))) : ℂ) := by
   intro D k _ _ _ _ p ψ χ hχ n n' _ _ _ _ ρ B L' W₀ ζ' l α α₀ β hsum t
@@ -1190,8 +1176,6 @@ open GlobalTheory.FinPl
 open scoped TensorProduct Pointwise
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.splitPlace_stdChar_continuous_nontrivial : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (p : SplitPt D k) (ψ : AddChar (AF D.host.F) ℂ) (χ : AddChar k Circle), p.IsChar ψ χ → IsStdChar D ψ (-1) → Continuous χ ∧ χ ≠ 1 := by
-  first | exact @GlobalTheory.FinPl.SplitChar.cont_ne_one
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SplitPlaceStdCharContinuousNontrivialStatement =====
@@ -1327,7 +1311,7 @@ theorem line_act : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [Topologic
   intro D k _ _ _ _ p ψ χ hχ
   refine ⟨-1, Or.inr rfl, ?_⟩
   intro n n' n'' _ _ _ _ _ _ σ B B' W₀ l α α₀ β γ γ₀ hα hγ hstd t
-  have hχc := (GlobalTheory.T.splitPlace_stdChar_continuous_nontrivial D k p ψ χ hχ hstd).1
+  have hχc := (GlobalTheory.FinPl.SplitChar.cont_ne_one D k p ψ χ hχ hstd).1
   have hχl := GlobalTheory.RootEx.OpenKernel.isLocallyConstant_coe_addChar χ hχc
   have hlc : IsLocallyConstant fun y : n → k => (χ (-1 * (t ⬝ᵥ y)) : ℂ) :=
     hχl.comp_continuous (continuous_const.mul (continuous_const.dotProduct continuous_id))

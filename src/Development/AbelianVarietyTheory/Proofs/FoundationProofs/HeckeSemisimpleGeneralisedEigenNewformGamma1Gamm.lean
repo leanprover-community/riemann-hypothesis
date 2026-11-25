@@ -98,15 +98,8 @@ open scoped Manifold
 
 namespace GlobalTheory.HeckeFamilyMatrices.SsD
 
-theorem toGL_mat (σ : SL(2, ℤ)) : toGL (mat σ) = (σ : GL (Fin 2) ℝ) := by
-  have h : (mat σ).det ≠ 0 := by simp [mat]
-  unfold toGL
-  rw [dite_eq_right h]
-  ext i j
-  simp [Matrix.GeneralLinearGroup.mkOfDetNeZero, mat]
-
 theorem DdF_eq (k : ℤ) (σ : SL(2, ℤ)) (F : ℍ → ℂ) : DdF k σ F = F ∣[k] σ := by
-  simp [DdF, hkF, toGL_mat, ModularForm.SL_slash]
+  simp [DdF, hkF, GlobalTheory.SlashUpperTriangularMatrices.toGL_SL, ModularForm.SL_slash]
 
 theorem exists_pow_mem {G : Type*} [Group G] (H : Subgroup G) [H.FiniteIndex] (a : G) :
     ∃ m, 0 < m ∧ a ^ m ∈ H := by
@@ -165,7 +158,6 @@ theorem slashEnd_pow (k : ℤ) (σ : SL(2, ℤ)) (j : ℕ) (F : ℍ → ℂ) :
 end GlobalTheory.HeckeFamilyMatrices.SsD
 
 namespace GlobalTheory.HeckeFamilyMatrices
-
 
 open GlobalTheory.HeckeFamilyMatrices.SsD in
 theorem diamond_genEigen_eigen : ∀ (N l k : ℕ), 5 ≤ N → l.Prime → ¬ l ∣ N → 3 ≤ k → ∀ (d : ZMod N) (σ : SL(2, ℤ)), IsDiam N l d σ →
@@ -980,7 +972,6 @@ theorem pres (N l : ℕ) (k : ℤ) (hN : 0 < N) (hl : l.Prime) :
     · rw [bD]; exact _root_.GlobalTheory.Hk.dia_cuspForm N l k _ σ hN hσ' f
 
 end GlobalTheory.HeckeFamilyMatrices.Semi
-
 
 open GlobalTheory.HeckeFamilyMatrices.Semi in
 theorem GlobalTheory.HeckeFamilyMatrices.hecke_semisimple_at_newform : ∀ (k : ℕ) (g : UpperTheory.V.Af.Newform k) (N l : ℕ) (hN : g.M ∣ N), 5 ≤ N → l.Prime → ¬ l ∣ N → Odd k → 3 ≤ k →

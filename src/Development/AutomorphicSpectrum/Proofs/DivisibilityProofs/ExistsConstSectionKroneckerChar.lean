@@ -225,8 +225,6 @@ namespace GlobalTheory.CompanionTheory.Ar.Br
 
 open GlobalTheory.CompanionTheory.Ar.Flat.RuleGlue GlobalTheory.CompanionTheory.Ar.Br.CvRule
 
-
-
 theorem exists_flat_sec : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (O : Type) [CommRing O] (β : O →+* c.F) (Y : Model Xo c β) (Z : Formalism.L2.Pj.Comp Xo c) (Z' : CptOver Y (Z : Set (Xo.XF c))) (τ : GlobalTheory.AllWt.Psi H) (φ : FrameFn Xo c), FlatOnModel Z' τ.1 φ → ∃ s s' : Formalism.L2.Pj.Rul Xo c, s ∈ GlobalTheory.AllWt.secZ Xo c (GlobalTheory.AllWt.exOf D (GlobalTheory.FlatLine.flatWt D τ) 0) ∧ s' ∈ GlobalTheory.AllWt.secZ Xo c (-GlobalTheory.AllWt.exOf D (GlobalTheory.FlatLine.flatWt D τ) 0) ∧ GlobalTheory.FlatLine.idem Z * s = s ∧ GlobalTheory.FlatLine.idem Z * s' = s' ∧ s * s' = GlobalTheory.FlatLine.idem Z ∧ Reads (Z : Set (Xo.XF c)) τ.1 s φ := by
   intro E _ _ _ H D l Xo c O _ β Y Z Z' τ φ hf
   have hτ := τ.2
@@ -687,10 +685,6 @@ theorem eps_hom (V : Type) [CommRing V] : spMap (algebraMap V (DualNumber V)) �
     spMap ((algebraMap V (DualNumber V)).comp (algebraMap V V)) := by
   rw [Category.comp_id, Algebra.algebraMap_self, RingHom.comp_id]
 
-theorem pt_hom (V : Type) [CommRing V] : spMap (algebraMap V V) = 𝟙 (Sp V) := by
-  rw [Algebra.algebraMap_self]
-  exact (congrArg Spec.map CommRingCat.ofHom_id).trans (Spec.map_id _)
-
 def toAt (V : Type) [CommRing V] : epsOver V V ⟶ epsAt (𝟙 (Sp V)) :=
   Over.homMk (𝟙 _) ((Category.id_comp _).trans (eps_hom V))
 
@@ -701,7 +695,7 @@ theorem ofAt_toAt (V : Type) [CommRing V] : ofAt V ≫ toAt V = 𝟙 _ :=
   Over.OverMorphism.ext (Category.comp_id _)
 
 theorem id_comp_pt_hom (V : Type) [CommRing V] : 𝟙 (Sp V) ≫ spMap (algebraMap V V) = 𝟙 (Sp V) :=
-  (Category.id_comp _).trans (pt_hom V)
+  (Category.id_comp _).trans (Formalism.MainNotions.ModuliIntegralCharts.H1.JetTr.spMap_alg_self V)
 
 def ptAt (V : Type) [CommRing V] : Over.mk (𝟙 (Sp V)) ⟶ ptOver V V :=
   Over.homMk (U := Over.mk (𝟙 (Sp V))) (V := Over.mk (spMap (algebraMap V V))) (𝟙 (Sp V))
@@ -1116,7 +1110,6 @@ theorem prod_split {p q r : ℕ} (hr : r = p + q) (f : Fin r → ℝ) :
 end GlobalTheory.CompanionTheory.Ar.Br.FlatNorm
 
 namespace GlobalTheory.CompanionTheory.Ar.Br
-
 
 open GlobalTheory.CompanionTheory.Ar.Br.FlatNorm ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj in
 theorem homN_eq_exp_hodge : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (r : ℕ) (σ : c.F →+* ℂ) (U : Formalism.L2.Pj.Unf Xo c σ r) (x : ℝ) (Z : Formalism.L2.Pj.Comp Xo c) (τ : GlobalTheory.AllWt.Psi H) (s : Formalism.L2.Pj.Rul Xo c) (φ : FrameFn Xo c) (t : ℝ), Formalism.L2.Pj.GoodEmb c σ → Formalism.L2.Pj.IsUnf U → (∀ k (τ' : E →+* ℂ), ‖τ' (U.X k).ξ0‖ = x) → s ∈ GlobalTheory.AllWt.secZ Xo c (GlobalTheory.AllWt.exOf D (GlobalTheory.FlatLine.flatWt D τ) 0) → IsLineFn (Z : Set (Xo.XF c)) τ.1 φ → Reads (Z : Set (Xo.XF c)) τ.1 s φ → HasInfNorm (Z : Set (Xo.XF c)) τ.1 φ σ t → ∀ z ∈ GlobalTheory.AllWt.framesOn U Z, (∀ hz : z.2 ∈ (U.X z.1).dom, GlobalTheory.FlatLine.Tested (U.un z.1 ⟨z.2, hz⟩)) → GlobalTheory.AllWt.homN U x (GlobalTheory.AllWt.wtOf D (GlobalTheory.FlatLine.flatWt D τ) 0) s z = Real.exp t := by

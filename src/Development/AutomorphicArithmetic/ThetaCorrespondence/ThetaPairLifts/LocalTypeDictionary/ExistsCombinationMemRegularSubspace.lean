@@ -139,7 +139,6 @@ theorem mem_GfC_of_mem_range {D : D7} (V : HSp D) (v : HeightOneSpectrum (𝓞 D
   obtain ⟨x, rfl⟩ := hg
   exact GlobalTheory.AdelicU.mem_finPts.2 (GlobalTheory.AdelicU.projInf_emb _ _ v x)
 
-
 open GlobalTheory.SplitGLLift in
 theorem homAt : ∀ {D : D7} (W₁ : HSp D) {a : ℕ} (Γ : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Geo D.sp.cm.sig a W₁.rank)
     (hJ : Γ.V'.J = (-1 : D.host.E) • W₁.gram), IsCMExt D.host.F D.host.E D.sp.cm.sig →
@@ -847,14 +846,6 @@ namespace GlobalTheory.SkewSplitDual
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-theorem hE_transpose (σ : E →ₐ[F] E) {n : ℕ} (J : Matrix (Fin n) (Fin n) E) (x y : Fin n → E) :
-    hE σ Jᵀ x y = form σ J y x := by
-  simp only [hE, Formalism.UG.hform, form, dotProduct, Matrix.mulVec, Matrix.transpose_apply, Finset.mul_sum]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun i _ => ?_
-  simp only [AlgHom.coe_toRingHom]
-  ring
-
 theorem form_add_right (σ : E →ₐ[F] E) {n : ℕ} (J : Matrix (Fin n) (Fin n) E) (y x x' : Fin n → E) :
     form σ J y (x + x') = form σ J y x + form σ J y x' := by
   have : (fun i => σ ((x + x') i)) = (fun i => σ (x i)) + fun i => σ (x' i) := funext fun i => by simp
@@ -865,9 +856,6 @@ theorem form_smul_right (σ : E →ₐ[F] E) {n : ℕ} (J : Matrix (Fin n) (Fin 
   have : (fun i => σ ((c • x) i)) = σ c • fun i => σ (x i) := funext fun i => by simp
   simp only [form, this, Matrix.mulVec_smul, dotProduct_smul, smul_eq_mul]
 
-theorem isIntegral_iff_mem_range (e : E) : IsIntegral ℤ e ↔ e ∈ (algebraMap (𝓞 E) E).range :=
-  ⟨fun h => ⟨⟨e, h⟩, rfl⟩, fun ⟨r, hr⟩ => hr ▸ r.isIntegral_coe⟩
-
 theorem coe_algebraMap_int (d : 𝓞 F) : ((algebraMap (𝓞 F) (𝓞 E) d : 𝓞 E) : E) = algebraMap F E (d : F) := rfl
 
 theorem eq_dualGlob {σ : E →ₐ[F] E} {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {L : Submodule (𝓞 E) (Fin n → E)}
@@ -876,7 +864,7 @@ theorem eq_dualGlob {σ : E →ₐ[F] E} {n : ℕ} {J : Matrix (Fin n) (Fin n) E
     L = SelfDual.dualGlob σ Jᵀ ((differentIdeal ℤ (𝓞 F)).map (algebraMap (𝓞 F) (𝓞 E)) • L) := by
   ext y
   rw [SelfDual.mem_dualGlob]
-  simp only [hE_transpose]
+  simp only [GlobalTheory.HermSelfDualLoc.hE_transpose]
   constructor
   · intro hy x hx
     refine Submodule.smul_induction_on hx (fun i hi x hx => ?_) (fun a b ha hb => ?_)
@@ -887,7 +875,7 @@ theorem eq_dualGlob {σ : E →ₐ[F] E} {n : ℕ} {J : Matrix (Fin n) (Fin n) E
       refine Submodule.span_induction
         (p := fun (i : 𝓞 E) _ => σ (i : E) * form σ J y x ∈ (algebraMap (𝓞 E) E).range) ?_ ?_ ?_ ?_ hi'
       · rintro _ ⟨d, hd, rfl⟩
-        rw [coe_algebraMap_int, AlgHom.commutes, ← isIntegral_iff_mem_range]
+        rw [coe_algebraMap_int, AlgHom.commutes, ← GlobalTheory.HermSelfDualLoc.isIntegral_iff_mem_range]
         exact key d hd
       · simp
       · intro a b _ _ ha hb
@@ -897,7 +885,7 @@ theorem eq_dualGlob {σ : E →ₐ[F] E} {n : ℕ} {J : Matrix (Fin n) (Fin n) E
         have e2 : σ ((c • a : 𝓞 E) : E) * form σ J y x = σ (c : E) * (σ (a : E) * form σ J y x) := by
           rw [← mul_assoc, ← map_mul]; rfl
         rw [e2]
-        exact mul_mem ((isIntegral_iff_mem_range _).1
+        exact mul_mem ((GlobalTheory.HermSelfDualLoc.isIntegral_iff_mem_range _).1
           ((isIntegral_algHom_iff ((σ : E →+* E).toIntAlgHom) σ.injective).2 c.isIntegral_coe)) ha
     · rw [form_add_right]; exact add_mem ha hb
   · intro hy
@@ -909,7 +897,7 @@ theorem eq_dualGlob {σ : E →ₐ[F] E} {n : ℕ} {J : Matrix (Fin n) (Fin n) E
     have h2 := hy _ hmem
     have e1 : (algebraMap (𝓞 F) (𝓞 E) d) • x = ((algebraMap (𝓞 F) (𝓞 E) d : 𝓞 E) : E) • x := by ext j; rfl
     rw [e1, form_smul_right, coe_algebraMap_int, AlgHom.commutes] at h2
-    exact (isIntegral_iff_mem_range _).2 h2
+    exact (GlobalTheory.HermSelfDualLoc.isIntegral_iff_mem_range _).2 h2
 
 theorem mem_splitLat_comp_iff_skew {σ : E →ₐ[F] E} (hcm : IsCMExt F E σ) {n : ℕ} {J : Matrix (Fin n) (Fin n) E}
     (hskew : ∀ i j, σ (J j i) = -J i j) {L L₁ : Submodule (𝓞 E) (Fin n → E)} {v : HeightOneSpectrum (𝓞 F)}
@@ -1118,12 +1106,6 @@ open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.Genus
 open scoped Matrix
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-theorem _root_.GlobalTheory.T.exists_tensorLattice_point_of_integral_splitPlace_coordinate : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E} {n d : ℕ},
-    IsCMExt F E σ → ∀ (X : Spc F E n) (W : Spc F E d) (v : Pl (F := F)) (t : E →ₐ[F] Fv F v) (b : GL (Fin n) (Fv F v))
-    (c : GL (Fin d) (Fv F v)), IsSplitBasis t X.L b → IsSplitBasis t W.L c →
-    ∀ A : Matrix (Fin n) (Fin d) (Fv F v), (∀ i j, A i j ∈ v.adicCompletionIntegers F) →
-      ∃ γ ∈ latAtV X W v, γ.map (piW (t.comp σ)) = 0 ∧ (b⁻¹).1 * γ.map (piW t) * (c⁻¹).1ᵀ = A := by
-  first | exact @GlobalTheory.LatFill.exists_latAtV_coord
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsTensorLatticePointOfIntegralSplitPlaceCoorStatement =====
@@ -1480,7 +1462,7 @@ theorem linearFunctional_sphericalVector : _root_.GlobalTheory.FunPr.ThetaLocalI
   set S : Set (Matrix (Fin n) (Fin d) (Fv F v)) := {Y | ∀ i j, Y i j ∈ v.adicCompletionIntegers F} with hS
   have htr : ∀ A ∈ S, ∀ Y, f (Y + A) = f Y := by
     intro A hA Y
-    obtain ⟨γ, hγ, h0, hco⟩ := GlobalTheory.T.exists_tensorLattice_point_of_integral_splitPlace_coordinate hcm X W v t b c hb hc A hA
+    obtain ⟨γ, hγ, h0, hco⟩ := GlobalTheory.LatFill.exists_latAtV_coord hcm X W v t b c hb hc A hA
     have := hι.trans γ (hat γ hγ) h0 _ hSB _ hSB (hfix' γ hγ (Or.inl h0)) Y
     rw [hco] at this
     exact this.symm
@@ -1495,7 +1477,7 @@ theorem linearFunctional_sphericalVector : _root_.GlobalTheory.FunPr.ThetaLocalI
     have hmem : x ∈ latAtV X W v := by
       refine (GlobalTheory.LatSelfDualAll.latAtV_selfDual F E σ B n d X W r s r' s' hPair.base hPair.herm hPair.skew v x hx).2
         fun γ hγ => ?_
-      obtain ⟨γ₁, hγ₁, γ₂, hγ₂, rfl, h₁, h₂⟩ := GlobalTheory.T.tensorLatticeAtFinitePlace_eq_sum_splitPlace_parts hcm X W v t γ hγ
+      obtain ⟨γ₁, hγ₁, γ₂, hγ₂, rfl, h₁, h₂⟩ := GlobalTheory.LatSplit.latAtV_decomp hcm X W v t γ hγ
       rw [symp_add_right, symp_eq_zero_of_comp hcm t hx hx0 h₁, zero_add]
       exact hψ γ₂ hγ₂ h₂
     exact _root_.GlobalTheory.LatInt.latAtV_comp_integral X W v t b c hb hc x hmem

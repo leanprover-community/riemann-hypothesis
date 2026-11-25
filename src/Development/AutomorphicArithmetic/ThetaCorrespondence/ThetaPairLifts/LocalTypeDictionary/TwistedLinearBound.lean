@@ -51,7 +51,7 @@ namespace GlobalTheory.RowEx
 theorem twisted_linear_bound (hP : _root_.GlobalTheory.FunPr.ThetaLocalInputs) (hL : GlobalTheory.IndefiniteRowSideFullHecke.CuspAlongSmoothLifts.LiftsCuspidal) : LinB := by
   refine ⟨0, fun ε CF _ => ⟨0, fun D large₂ _ _ Γ _ _ Pl0 T A Ks _ _ _ R F hS ch hsc hch a u => ?_⟩⟩
   obtain ⟨h1, h2⟩ := _root_.GlobalTheory.T.twisted_base_change_lift_exists hP hL large₂ hS ch hch CF hsc a u
-  exact ⟨h1, GlobalTheory.T.besselPeriodCorank_converges_column ch.W ch.M hch.vol ch.ξ _ (col_mem ch a) _ h2⟩
+  exact ⟨h1, GlobalTheory.RowBplus.bplusConv_col ch.W ch.M hch.vol ch.ξ _ (col_mem ch a) _ h2⟩
 end GlobalTheory.RowEx
 end
 end

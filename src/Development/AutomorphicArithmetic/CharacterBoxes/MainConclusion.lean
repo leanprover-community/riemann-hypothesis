@@ -139,7 +139,6 @@ private theorem isIso_restrict_omegaPull {k : Type} [CommRing k] {Z : Scheme.{0}
     exact hU
   exact omegaPull_ι_app_bijective s V (V.ι ''ᵁ U) hle hW hW' a
 
-
 theorem UpperTheory.hodgeCohomology_open_restriction_equiv :
     ∀ (Z : Scheme.{0}) (s : Z ⟶ Sp ℂ) (V : Z.Opens) (a b : ℕ), ∃ e : cohOn (Omega s a) V b ≃ hodgeH (V.ι ≫ s) a b, ∀ x : hodgeH s a b, e (cohOn.res ℤ (Omega s a) (le_top : V ≤ ⊤) b x) = hodgePull (f := V.ι) (s' := V.ι ≫ s) rfl a b x := by
   intro Z s V a b

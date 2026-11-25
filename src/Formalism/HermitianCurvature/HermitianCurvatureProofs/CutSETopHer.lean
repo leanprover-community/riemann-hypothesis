@@ -722,13 +722,6 @@ theorem waveOut_pairAt_self (μ : Measure (Mt k r)) {W : Module.End ℂ (RadSp k
   rw [h1, hsInner_smul_left', hsInner_smul_right', ← mul_assoc, Complex.mul_conj, Complex.normSq_eq_norm_sq, hm]
   simp
 
-theorem waveOut_glue (l : Fin r) (c : Fin r → ℂ) (t : ℂ) (c' : Cf r l.succ) :
-    glue l.succ (Function.update c l t) c' l = t := by
-  unfold glue
-  rw [dite_eq_right (by simp)]
-  first
-  | exact Function.update_self l t c
-
 theorem waveOut_dens (μ : Measure (Mt k r)) (l : Fin r) (s : ℂ) {W : Module.End ℂ (RadSp k r z z' π π')}
     (hW : multiplicationOperator W (fun c' _ => fsv s (c' l))) (u v : Ix S → RadSp k r z z' π π') (c : Fin r → ℂ) (t : ℂ) :
     Dens μ l (fun b => W (u b)) v c t = fsv s t * Dens μ l u v c t := by
@@ -740,7 +733,7 @@ theorem waveOut_dens (μ : Measure (Mt k r)) (l : Fin r) (s : ℂ) {W : Module.E
     have hp : ∀ a, pairAt μ (W (u a)) (v a) (glue l.succ (Function.update c l t) c') =
         fsv s t * pairAt μ (u a) (v a) (glue l.succ (Function.update c l t) c') := by
       intro a
-      rw [waveOut_pairAt_left (m := fun c' => fsv s (c' l)) μ hW, waveOut_glue]
+      rw [waveOut_pairAt_left (m := fun c' => fsv s (c' l)) μ hW, Formalism.FourierDecayAlt.P5.glue_succ_update]
     simp only [hp, ← Finset.mul_sum]
     ring
   simp only [Dens, form]
@@ -1123,7 +1116,6 @@ theorem resG_smul {k r : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace �
     (J : Mx k r → E) (c : Fin r → ℂ) (g : Mx k r) : resG k r i (κ • J) c g = κ • resG k r i J c g := by
   unfold resG
   rw [Pi.smul_apply, smul_comm]
-
 
 theorem lev_ind_her {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
     [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] (P : M.Par)

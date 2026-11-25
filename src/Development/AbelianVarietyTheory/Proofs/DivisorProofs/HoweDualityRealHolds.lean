@@ -338,26 +338,11 @@ namespace GlobalTheory.HoweD.CCRSig
 
 variable {V : Type} [AddCommGroup V] [Module ℂ V] {W : Type} [DecidableEq W] {P Q R S : W → ℕ}
 
-theorem lineSign_cases {P Q R S : ℕ} (a : Ix P Q) (b : Ix R S) : (lineSign a b : ℂ) = 1 ∨ (lineSign a b : ℂ) = -1 := by
-  rcases a with a | a <;> rcases b with b | b <;> simp [lineSign]
-
-theorem lineSign_mul_self {P Q R S : ℕ} (a : Ix P Q) (b : Ix R S) : lineSign a b * lineSign a b = 1 := by
-  rcases a with a | a <;> rcases b with b | b <;> simp [lineSign]
-
 theorem comm_expand (A A' B B' : Module.End ℂ V) (c u v : ℂ) :
     -(c • (A + u • A')) * (c • (B - v • B')) - (c • (B - v • B')) * -(c • (A + u • A')) =
       -((c * c) • ((A * B - B * A) - v • (A * B' - B' * A) + u • (A' * B - B * A') - (u * v) • (A' * B' - B' * A'))) := by
   simp only [neg_mul, mul_neg, smul_mul_assoc, mul_smul_comm, mul_add, add_mul, mul_sub, sub_mul]
   module
-
-theorem inv_sq : (2 * ((Real.sqrt (2 * Real.pi) : ℝ) : ℂ))⁻¹ * (2 * ((Real.sqrt (2 * Real.pi) : ℝ) : ℂ))⁻¹ =
-    (8 * (Real.pi : ℂ))⁻¹ := by
-  have h : ((Real.sqrt (2 * Real.pi) : ℝ) : ℂ) * ((Real.sqrt (2 * Real.pi) : ℝ) : ℂ) = 2 * (Real.pi : ℂ) := by
-    rw [← Complex.ofReal_mul, Real.mul_self_sqrt (by positivity)]
-    push_cast; ring
-  rw [← mul_inv]
-  congr 1
-  linear_combination 4 * h
 
 def ccrM (H : (∀ w : W, Matrix (Ix (P w) (Q w)) (Ix (R w) (S w)) ℂ) → Module.End ℂ V)
     (j : Σ w : W, Ix (P w) (Q w) × Ix (R w) (S w)) : Module.End ℂ V :=
@@ -395,14 +380,14 @@ theorem ccrD_ccrM_comm [Fintype W] (H : (∀ w : W, Matrix (Ix (P w) (Q w)) (Ix 
     ccrD H j * ccrM H k - ccrM H k * ccrD H j = if j = k then 1 else 0 := by
   unfold ccrD ccrM
   rw [comm_expand, hc, hc, hc, hc, sum_unitAtS, sum_unitAtS, sum_unitAtS, sum_unitAtS,
-    inv_sq]
+    GlobalTheory.CCRFock.CommDM.inv_sq]
   have hpi : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
   by_cases h : j = k
   · subst h
     simp only [if_true, smul_smul, ← sub_smul, ← add_smul, ← neg_smul]
     conv_rhs => rw [← one_smul ℂ (1 : Module.End ℂ V)]
     congr 1
-    rcases lineSign_cases j.2.1 j.2.2 with h | h
+    rcases GlobalTheory.CCRFock.CommDM.lineSign_cases j.2.1 j.2.2 with h | h
     · rw [h]; simp; field_simp; linear_combination (-8 : ℂ) * Complex.I_sq
     · rw [h]; simp; field_simp; linear_combination (-8 : ℂ) * Complex.I_sq
   · simp [h]
@@ -436,7 +421,7 @@ theorem heis_expanccrD [Fintype W] (H : (∀ w : W, Matrix (Ix (P w) (Q w)) (Ix 
   have hs : ((Real.sqrt (2 * Real.pi) : ℝ) : ℂ) ≠ 0 := by
     have : 0 < Real.sqrt (2 * Real.pi) := Real.sqrt_pos.mpr (by positivity)
     exact_mod_cast this.ne'
-  have he := lineSign_mul_self j.2.1 j.2.2
+  have he := GlobalTheory.CCRFock.lineSign_mul_self j.2.1 j.2.2
   unfold ccrM ccrD GlobalTheory.CCRFock.coefM GlobalTheory.CCRFock.coefD
   generalize ((Real.sqrt (2 * Real.pi) : ℝ) : ℂ) = s at hs ⊢
   generalize lineSign j.2.1 j.2.2 = e at he ⊢
@@ -454,7 +439,6 @@ theorem heis_expanccrD [Fintype W] (H : (∀ w : W, Matrix (Ix (P w) (Q w)) (Ix 
 end GlobalTheory.HoweD.CCRSig
 
 namespace GlobalTheory.HoweD
-
 
 open GlobalTheory.HoweD.CCRSig in
 theorem ccr_fock_ops_sig : ∀ {V : Type} [AddCommGroup V] [Module ℂ V] {W : Type} [Fintype W] [DecidableEq W] {P Q R S : W → ℕ} (H : (∀ w : W, Matrix (Ix (P w) (Q w)) (Ix (R w) (S w)) ℂ) → Module.End ℂ V), (∀ c c', H (c + c') = H c + H c') → (∀ (r : ℝ) c, H ((r : ℂ) • c) = (r : ℂ) • H c) → (∀ c c', H c * H c' - H c' * H c = ((4 * Real.pi : ℂ) * Complex.I * ((∑ w, ∑ a, ∑ b, lineSign a b * c w a b * star (c' w a b)).im : ℂ)) • 1) → ∃ m D : (Σ w : W, Ix (P w) (Q w) × Ix (R w) (S w)) → Module.End ℂ V, (∀ i j, m i * m j = m j * m i) ∧ (∀ i j, D i * m j - m j * D i = if i = j then 1 else 0) ∧ (∀ (j : Σ w : W, Ix (P w) (Q w) × Ix (R w) (S w)) (f₀ : V), H (Pi.single j.1 (Matrix.single j.2.1 j.2.2 1)) f₀ + (lineSign j.2.1 j.2.2 * Complex.I) • H (Pi.single j.1 (Matrix.single j.2.1 j.2.2 Complex.I)) f₀ = 0 → D j f₀ = 0) ∧ ∀ c, H c = ∑ j : (Σ w : W, Ix (P w) (Q w) × Ix (R w) (S w)), ((((Real.sqrt (2 * Real.pi) : ℝ) : ℂ) * GlobalTheory.CCRFock.coefM (c j.1 j.2.1 j.2.2) (lineSign j.2.1 j.2.2)) • m j + (((Real.sqrt (2 * Real.pi) : ℝ) : ℂ) * GlobalTheory.CCRFock.coefD (c j.1 j.2.1 j.2.2) (lineSign j.2.1 j.2.2)) • D j) := by

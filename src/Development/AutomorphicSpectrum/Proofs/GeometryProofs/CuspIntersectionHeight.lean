@@ -242,9 +242,6 @@ variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
   {E : Ψ → Type} [∀ τ, AddCommGroup (E τ)] [∀ τ, Module Ω (E τ)]
   {D : ComponentData II Ψ K ι Ω E} {O Lt : Type} [CommRing O] [AddCommGroup Lt] [Module O Lt]
 
-
-
-
 end Main
 
 section Points
@@ -911,7 +908,7 @@ theorem g_height : Top.Given → ∀ (E : Type) [Field E] [NumberField E] [IsCMF
     datum hG E H D Xo l c Y II K J Ω W Dc Hd S₀ Or L (spMap (algebraMap (𝓞 L) L) ≫ z) w hw
 
   have hS₀ : ∀ p ∈ S₀, p ≠ 0 := fun p hp => (Or.𝔐.S_prime p hp).ne_zero
-  have hvs := _root_.GlobalTheory.CompanionTheory.Relay.compact_datum_intersection E H D Xo l c Y II K J Ω W Dc Hd S₀ Or B
+  have hvs := _root_.LevelTowerAlt.component_data_height_identity E H D Xo l c Y II K J Ω W Dc Hd S₀ Or B
   have hS' : ∀ p ∈ S₀ ∪ Dc.SB B, p ≠ 0 := fun p hp => (hvs.1 p hp).ne_zero
   have hV : ∀ t', Or.𝔐.V t' ⟨centre (spMap (algebraMap (𝓞 L) L) ≫ z), Or.𝔐.all _⟩ =
       Or.𝔐.dR t' ⟨centre (spMap (algebraMap (𝓞 L) L) ≫ z), Or.𝔐.all _⟩ := fun t' =>

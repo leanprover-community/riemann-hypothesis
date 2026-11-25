@@ -97,22 +97,6 @@ theorem twist_absPow_absPow {E : Type} [Field E] [NumberField E] [_root_.NumberF
   rw [← absPow_mul_absPow]
   exact (CG.twist_mul (CG.mk P) _ _).symm
 
-theorem infOfWeight_nodup {n : ℕ} (lam : DomWeight n) : (infOfWeight lam).Nodup := by
-  unfold infOfWeight
-  refine Multiset.Nodup.map (fun j k h => ?_) Finset.univ.nodup
-  have h1 : (((lam.w j - (j : ℕ) : ℤ)) : ℂ) = ((lam.w k - (k : ℕ) : ℤ) : ℂ) := by
-    push_cast
-    linear_combination h
-  have h2 : lam.w j - (j : ℕ) = lam.w k - (k : ℕ) := Int.cast_injective h1
-  rcases lt_trichotomy j k with hjk | rfl | hjk
-  · have := lam.anti hjk.le
-    have : (j : ℕ) < k := hjk
-    omega
-  · rfl
-  · have := lam.anti hjk.le
-    have : (k : ℕ) < j := hjk
-    omega
-
 theorem mem_infOfWeight {n : ℕ} {lam : DomWeight n} {z : ℂ} (hz : z ∈ infOfWeight lam) :
     ∃ k : ℤ, z = k + ((n : ℂ) - 1) / 2 := by
   unfold infOfWeight at hz
@@ -145,7 +129,7 @@ theorem regTw {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} (D : 
     rw [hsum]
     exact Finset.single_le_sum (f := fun j : Fin d => m0.map (· + (spehExp d j : ℂ))) (fun _ _ => Multiset.zero_le _)
       (Finset.mem_univ k)
-  have hnd : (m0.map (· + (spehExp d k : ℂ))).Nodup := Multiset.nodup_of_le (hk.trans hle) (infOfWeight_nodup lam)
+  have hnd : (m0.map (· + (spehExp d k : ℂ))).Nodup := Multiset.nodup_of_le (hk.trans hle) (GlobalTheory.DefiniteBC.nodup_infOfWeight lam)
   refine ⟨(Multiset.Nodup.of_map _ hnd).map (add_left_injective _), fun z hz => ?_⟩
   obtain ⟨y, hy, rfl⟩ := Multiset.mem_map.1 hz
   obtain ⟨j, hj⟩ := mem_infOfWeight (Multiset.mem_of_le (hk.trans hle) (Multiset.mem_map_of_mem _ hy))

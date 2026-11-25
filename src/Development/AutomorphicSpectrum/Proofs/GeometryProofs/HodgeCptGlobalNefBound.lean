@@ -107,12 +107,6 @@ section -- clump:auto
 
 open GlobalTheory.CompanionTheory.Ar.Crv
 
-namespace GlobalTheory.CompanionTheory.Ar.Crv.EigDual
-
-theorem eig_dual_deg : ∀ (K : Type) [Field K] (C : ACurve K) (d : ℕ) (L : C.I → AddSubgroup (Fin d → K)) (O k S : Type) [CommRing O] [Field k] [Algebra k K] [Fintype S] [DecidableEq S] (χ : S → (O →+* k)), IsSplit χ → (∀ i (c : k), C.v i (algebraMap k K c) ≤ 1) → ∀ ρ : O →+* Matrix (Fin d) (Fin d) K, IsBun C L → (∀ a, IsHom C L L (Matrix.toLin' (ρ a))) → ∀ s, subDeg C (dotDual C L) (eig (fun a => Matrix.toLin' (ρ a).transpose) (fun a => algebraMap k K (χ s a))) = - subDeg C L (eig (fun a => Matrix.toLin' (ρ a)) (fun a => algebraMap k K (χ s a))) :=
-  PositivityTheory.HtPt.Ci.eig_dual
-
-end GlobalTheory.CompanionTheory.Ar.Crv.EigDual
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DualEigenSubDegreeTranspose =====
@@ -124,12 +118,6 @@ section -- clump:auto
 
 open GlobalTheory.CompanionTheory.Ar.Crv
 
-namespace GlobalTheory.CompanionTheory.Ar.Crv
-
-theorem eig_frobenius_twist : ∀ (K : Type) [Field K] (p : ℕ) [Fact p.Prime] [CharP K p] (d : ℕ) (O : Type) (ρ : O → Matrix (Fin d) (Fin d) K) (χ : O → K), eig (fun a => Matrix.toLin' ((ρ a).map (· ^ p))) (fun a => χ a ^ p) = frobSub p (eig (fun a => Matrix.toLin' (ρ a)) χ) :=
-  PositivityTheory.HtPt.Ci.eig_frob
-
-end GlobalTheory.CompanionTheory.Ar.Crv
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.EigenspaceFrobeniusTwist =====
@@ -212,12 +200,6 @@ section -- clump:auto
 
 open GlobalTheory.CompanionTheory.Ar.Crv
 
-namespace GlobalTheory.CompanionTheory.Ar.Crv
-
-theorem eigen_ses_subDeg : ∀ (K : Type) [Field K] (C : ACurve K) (V : Type) [AddCommGroup V] [Module K V] [FiniteDimensional K V] (V' : Type) [AddCommGroup V'] [Module K V'] [FiniteDimensional K V'] (V'' : Type) [AddCommGroup V''] [Module K V''] [FiniteDimensional K V''] (L : C.I → AddSubgroup V) (L' : C.I → AddSubgroup V') (L'' : C.I → AddSubgroup V'') (f : V →ₗ[K] V') (g : V' →ₗ[K] V'') (O k S : Type) [CommRing O] [Field k] [Algebra k K] [Fintype S] [DecidableEq S] (χ : S → (O →+* k)), IsSplit χ → (∀ i (c : k), C.v i (algebraMap k K c) ≤ 1) → ∀ (ρ : O → V →ₗ[K] V) (ρ' : O →+* Module.End K V') (ρ'' : O → V'' →ₗ[K] V''), IsBun C L' → (∀ a, IsHom C L' L' (ρ' a)) → ShortExact C L L' L'' f g → (∀ a x, f (ρ a x) = ρ' a (f x)) → (∀ a y, g (ρ' a y) = ρ'' a (g y)) → ∀ s, subDeg C L' (eig (fun a => ρ' a) (fun a => algebraMap k K (χ s a))) = subDeg C L (eig (fun a => ρ a) (fun a => algebraMap k K (χ s a))) + subDeg C L'' (eig (fun a => ρ'' a) (fun a => algebraMap k K (χ s a))) :=
-  @PositivityTheory.HtPt.Ch.split_ses
-
-end GlobalTheory.CompanionTheory.Ar.Crv
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ShortExactEigenSubDegree =====
@@ -283,14 +265,14 @@ theorem hodge_eq (hχ : IsSplit χ) (hk : ∀ i (c : k), C.v i (algebraMap k K c
       subDeg C D.lie (eig (fun a => Matrix.toLin' (D.ρ a)) (fun a => algebraMap k K (χ s a))) -
       subDeg C D.lie (eig (fun a => Matrix.toLin' (D.ρ a)) (fun a => algebraMap k K (χ t a))) := by
   classical
-  have h1 := _root_.GlobalTheory.CompanionTheory.Ar.Crv.eigen_ses_subDeg K C _ _ _ (dotDual C D.lie) D.H D.lie (LinearMap.inr K _ _)
+  have h1 := _root_.PositivityTheory.HtPt.Ch.split_ses K C _ _ _ (dotDual C D.lie) D.H D.lie (LinearMap.inr K _ _)
     (LinearMap.fst K _ _) O k S χ hχ hk (fun a => Matrix.toLin' (D.ρ (star a)).transpose) D.ρH
     (fun a => Matrix.toLin' (D.ρ a)) D.H_bun D.ρH_hom D.hodge
     (fun a x => by simpa using (D.ρH_inr a x).symm) (fun a y => by simpa using D.ρH_fst a y) s
   have h2 := eig_star (K := K) (fun a => Matrix.toLin' (D.ρ a).transpose)
     (fun a => algebraMap k K (χ s a)) (fun a => algebraMap k K (χ t a))
     (fun a => by rw [hst])
-  have h3 := _root_.GlobalTheory.CompanionTheory.Ar.Crv.EigDual.eig_dual_deg K C d D.lie O k S χ hχ hk D.ρ D.lie_bun (lie_hom C D) t
+  have h3 := _root_.PositivityTheory.HtPt.Ci.eig_dual K C d D.lie O k S χ hχ hk D.ρ D.lie_bun (lie_hom C D) t
   rw [h1, h2, h3]
   ring
 
@@ -301,20 +283,20 @@ theorem conj_eq [Fact p.Prime] [CharP K p] (hχ : IsSplit χ)
       p * (subDeg C D.lie (eig (fun a => Matrix.toLin' (D.ρ a)) (fun a => algebraMap k K (χ s a))) -
       subDeg C D.lie (eig (fun a => Matrix.toLin' (D.ρ a)) (fun a => algebraMap k K (χ t a)))) := by
   classical
-  have h1 := _root_.GlobalTheory.CompanionTheory.Ar.Crv.eigen_ses_subDeg K C _ _ _ (frobLat C p D.lie) D.H (frobLat C p (dotDual C D.lie))
+  have h1 := _root_.PositivityTheory.HtPt.Ch.split_ses K C _ _ _ (frobLat C p D.lie) D.H (frobLat C p (dotDual C D.lie))
     D.α D.β O k S χ hχ hk (fun a => Matrix.toLin' ((D.ρ a).map (· ^ p))) D.ρH
     (fun a => Matrix.toLin' ((D.ρ (star a)).transpose.map (· ^ p))) D.H_bun D.ρH_hom D.conj
     (fun a x => by simpa using D.α_act a x) (fun a y => by simpa using D.β_act a y) u
   have hc : (fun a => algebraMap k K (χ u a)) = fun a => algebraMap k K (χ s a) ^ p := by
     funext a
     rw [hu, map_pow]
-  have h2 := _root_.GlobalTheory.CompanionTheory.Ar.Crv.eig_frobenius_twist K p d O (fun a => D.ρ a) (fun a => algebraMap k K (χ s a))
-  have h3 := _root_.GlobalTheory.CompanionTheory.Ar.Crv.eig_frobenius_twist K p d O (fun a => (D.ρ (star a)).transpose)
+  have h2 := _root_.PositivityTheory.HtPt.Ci.eig_frob K p d O (fun a => D.ρ a) (fun a => algebraMap k K (χ s a))
+  have h3 := _root_.PositivityTheory.HtPt.Ci.eig_frob K p d O (fun a => (D.ρ (star a)).transpose)
     (fun a => algebraMap k K (χ s a))
   have h4 := eig_star (K := K) (fun a => Matrix.toLin' (D.ρ a).transpose)
     (fun a => algebraMap k K (χ s a)) (fun a => algebraMap k K (χ t a))
     (fun a => by rw [hst])
-  have h5 := _root_.GlobalTheory.CompanionTheory.Ar.Crv.EigDual.eig_dual_deg K C d D.lie O k S χ hχ hk D.ρ D.lie_bun (lie_hom C D) t
+  have h5 := _root_.PositivityTheory.HtPt.Ci.eig_dual K C d D.lie O k S χ hχ hk D.ρ D.lie_bun (lie_hom C D) t
   rw [h1, hc, h2, h3, SubFrob.subDeg_frob K C p d _ _ D.lie_bun,
     SubFrob.subDeg_frob K C p d _ _ (dual_bun C D), h4, h5]
   ring
@@ -356,12 +338,6 @@ section -- clump:auto
 
 open GlobalTheory.CompanionTheory.Ar.Crv
 
-namespace GlobalTheory.CompanionTheory.Ar.Crv
-
-theorem degree_eq_sum_eigen : ∀ (K : Type) [Field K] (C : ACurve K) (V : Type) [AddCommGroup V] [Module K V] [FiniteDimensional K V] (L : C.I → AddSubgroup V) (O k S : Type) [CommRing O] [Field k] [Algebra k K] [Fintype S] [DecidableEq S] (χ : S → (O →+* k)), IsSplit χ → (∀ i (c : k), C.v i (algebraMap k K c) ≤ 1) → ∀ ρ : O →+* Module.End K V, IsBun C L → (∀ a, IsHom C L L (ρ a)) → deg C L = ∑ s, subDeg C L (eig (fun a => ρ a) (fun a => algebraMap k K (χ s a))) :=
-  @PositivityTheory.HtPt.Ch.split_deg
-
-end GlobalTheory.CompanionTheory.Ar.Crv
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DegreeSumEigenSubDegrees =====
@@ -373,12 +349,6 @@ section -- clump:auto
 
 open GlobalTheory.CompanionTheory.Ar.Crv
 
-namespace GlobalTheory.CompanionTheory.Ar.Crv
-
-theorem subDeg_dotDual_orth : ∀ (K : Type) [Field K] (C : ACurve K) (d : ℕ) (L : C.I → AddSubgroup (Fin d → K)) (W X : Submodule K (Fin d → K)), IsBun C L → (∀ u, u ∈ W ↔ ∀ φ ∈ X, u ⬝ᵥ φ = 0) → subDeg C (dotDual C L) X = deg C (dotDual C L) + subDeg C L W :=
-  PositivityTheory.HtPt.Ch.subdeg_orth
-
-end GlobalTheory.CompanionTheory.Ar.Crv
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DotDualSubDegreeAnnihilator =====
@@ -390,12 +360,6 @@ section -- clump:auto
 
 open GlobalTheory.CompanionTheory.Ar.Crv
 
-namespace GlobalTheory.CompanionTheory.Ar.Crv.SubDegSes
-
-theorem subDeg_ses : ∀ (K : Type) [Field K] (C : ACurve K) (V : Type) [AddCommGroup V] [Module K V] [FiniteDimensional K V] (V' : Type) [AddCommGroup V'] [Module K V'] [FiniteDimensional K V'] (V'' : Type) [AddCommGroup V''] [Module K V''] [FiniteDimensional K V''] (L : C.I → AddSubgroup V) (L' : C.I → AddSubgroup V') (L'' : C.I → AddSubgroup V'') (f : V →ₗ[K] V') (g : V' →ₗ[K] V'') (X : Submodule K V'), IsBun C L' → ShortExact C L L' L'' f g → subDeg C L' X ≤ subDeg C L (X.comap f) + subDeg C L'' (X.map g) :=
-  @PositivityTheory.HtPt.Ch.subdeg_ses
-
-end GlobalTheory.CompanionTheory.Ar.Crv.SubDegSes
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ShortExactSubDegreeBound =====
@@ -407,12 +371,6 @@ section -- clump:auto
 
 open GlobalTheory.CompanionTheory.Ar.Crv
 
-namespace GlobalTheory.CompanionTheory.Ar.Crv
-
-theorem subDeg_le_map_of_injective : ∀ (K : Type) [Field K] (C : ACurve K) (V : Type) [AddCommGroup V] [Module K V] [FiniteDimensional K V] (V' : Type) [AddCommGroup V'] [Module K V'] [FiniteDimensional K V'] (L : C.I → AddSubgroup V) (L' : C.I → AddSubgroup V') (f : V →ₗ[K] V') (W : Submodule K V), IsBun C L → IsBun C L' → Function.Injective f → IsHom C L L' f → subDeg C L W ≤ subDeg C L' (W.map f) :=
-  PositivityTheory.HtPt.Ch.deg_inj
-
-end GlobalTheory.CompanionTheory.Ar.Crv
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SubDegreeMonoInjectiveHom =====
@@ -444,14 +402,14 @@ theorem frob_estimate : ∀ (K : Type) [Field K] (C : ACurve K) (p : ℕ) [Fact 
     have : (2 : ℤ) < (p : ℤ) := by exact_mod_cast hp
     linarith
   have hf := GlobalTheory.CompanionTheory.Ar.Crv.SubFrob.subDeg_frob K C p d D.lie W₀ D.lie_bun
-  have h1 := _root_.GlobalTheory.CompanionTheory.Ar.Crv.subDeg_le_map_of_injective K C (Fin d → K) ((Fin d → K) × (Fin d → K))
+  have h1 := _root_.PositivityTheory.HtPt.Ch.deg_inj K C (Fin d → K) ((Fin d → K) × (Fin d → K))
     (frobLat C p D.lie) D.H D.α (frobSub p W₀)
     (GlobalTheory.CompanionTheory.Ar.Crv.DegFrob.deg_frobLat K C p d D.lie D.lie_bun).1 D.H_bun D.conj.1
     (fun i x hx => (D.conj.2.2.2.1 i x).1 hx)
-  have h2 := _root_.GlobalTheory.CompanionTheory.Ar.Crv.SubDegSes.subDeg_ses K C (Fin d → K) ((Fin d → K) × (Fin d → K)) (Fin d → K)
+  have h2 := _root_.PositivityTheory.HtPt.Ch.subdeg_ses K C (Fin d → K) ((Fin d → K) × (Fin d → K)) (Fin d → K)
     (dotDual C D.lie) D.H D.lie (LinearMap.inr K (Fin d → K) (Fin d → K))
     (LinearMap.fst K (Fin d → K) (Fin d → K)) (Submodule.map D.α (frobSub p W₀)) D.H_bun D.hodge
-  have h3 := _root_.GlobalTheory.CompanionTheory.Ar.Crv.subDeg_dotDual_orth K C d D.lie
+  have h3 := _root_.PositivityTheory.HtPt.Ch.subdeg_orth K C d D.lie
     (dotOrth (Submodule.comap (LinearMap.inr K (Fin d → K) (Fin d → K))
       (Submodule.map D.α (frobSub p W₀))))
     (Submodule.comap (LinearMap.inr K (Fin d → K) (Fin d → K))
@@ -600,7 +558,7 @@ theorem lmuNum_nonneg_of_conjData : ∀ (K : Type) [Field K] (C : ACurve K) (p :
   obtain ⟨he0, hC2⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Crv.FrobEst.frob_estimate K C p O d D hp
   have hsplit : deg C D.lie = ∑ s, subDeg C D.lie
       (eig (fun a => Matrix.toLin' (D.ρ a)) (fun a => algebraMap k K (χ s a))) :=
-    _root_.GlobalTheory.CompanionTheory.Ar.Crv.degree_eq_sum_eigen K C (Fin d → K) D.lie O k S χ hs hc (endAct D.ρ) D.lie_bun (isHom_lie D)
+    _root_.PositivityTheory.HtPt.Ch.split_deg K C (Fin d → K) D.lie O k S χ hs hc (endAct D.ρ) D.lie_bun (isHom_lie D)
   have hdual : deg C (dotDual C D.lie) = - deg C D.lie :=
     (GlobalTheory.CompanionTheory.Ar.Crv.DegDual.deg_dual K C (Fin d → K) (Fin d → K) D.lie (dotProductBilin K K)
       D.lie_bun (dot_bijective K d)).2.1
@@ -640,8 +598,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.CompanionTheory.Relay.curve_family_formal_germ : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) [StarRing (𝓞 E)], (∀ a : 𝓞 E, star a = H.bar a) → ∀ (X0 : Scheme.{0}) (t : SAB H X0), PowFns t → ∀ (K : Type) [Field K] (p : ℕ) [Fact p.Prime] [CharP K p] (C : ACurve K) (z : Sp K ⟶ X0) (Y : CurveIn C z), (∀ i, FibPF t (GlobalTheory.CompanionTheory.Ar.centre (Y.x i))) → ∃ (d : ℕ) (F : Family C p d (𝓞 E)) (g : GermAt t z d), g.B = F.B ∧ ∀ i, ∃ gi : GermAt t (Y.x i) d, ∀ l, IsCombAtG t z g.tg (fun j => lin (F.φ i) 1 j l) (spMap (GlobalTheory.CompanionTheory.Ar.dualMap (C.v i).valuationSubring.subtype) ≫ gi.tg l) := by
-  first | exact @PositivityTheory.HtPt.Cf.family_ex
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.CurveFamilyFormalGerm =====
@@ -656,8 +612,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.curve_family_formal_germ : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) [StarRing (𝓞 E)], (∀ a : 𝓞 E, star a = H.bar a) → ∀ (X0 : Scheme.{0}) (t : SAB H X0), PowFns t → ∀ (K : Type) [Field K] (p : ℕ) [Fact p.Prime] [CharP K p] (C : ACurve K) (z : Sp K ⟶ X0) (Y : CurveIn C z), (∀ i, FibPF t (GlobalTheory.CompanionTheory.Ar.centre (Y.x i))) → ∃ (d : ℕ) (F : Family C p d (𝓞 E)) (g : GermAt t z d), g.B = F.B ∧ ∀ i, ∃ gi : GermAt t (Y.x i) d, ∀ l, IsCombAtG t z g.tg (fun j => lin (F.φ i) 1 j l) (spMap (GlobalTheory.CompanionTheory.Ar.dualMap (C.v i).valuationSubring.subtype) ≫ gi.tg l) := by
-  first | exact @GlobalTheory.CompanionTheory.Relay.curve_family_formal_germ
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.CurveFamilyFormalGermStatement =====
@@ -760,9 +714,9 @@ theorem isCombAtG_iff_lie {S : Type} [CommRing S] {x : Sp S ⟶ X0} {V : Type} [
 
 theorem lieLat_conjData : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) [StarRing (𝓞 E)], (∀ a : 𝓞 E, star a = H.bar a) → ∀ (X0 : Scheme.{0}) (t : SAB H X0), PowFns t → ∀ (K : Type) [Field K] (p : ℕ) [Fact p.Prime] [CharP K p] (C : ACurve K) (z : Sp K ⟶ X0) (Y : CurveIn C z), Nonempty C.I → (∀ i, FibPF t (GlobalTheory.CompanionTheory.Ar.centre (Y.x i))) → ∀ (V : Type) [AddCommGroup V] [Module K V] (M : GlobalTheory.CompanionTheory.Ar.LieModel t.G z V) (r : 𝓞 E →+* Module.End K V), M.IsActOf t.act.act r → ∃ (d : ℕ) (D : ConjData C p (𝓞 E) d) (e : V ≃ₗ[K] (Fin d → K)), (∀ i v, v ∈ Y.lieLat M i ↔ e v ∈ D.lie i) ∧ ∀ a v, e (r a v) = (D.ρ a).mulVec (e v) := by
   intro E _ _ _ H _ hbar X0 t hPow K _ p _ _ C z Y hne hFib V _ _ M r hr
-  obtain ⟨d, F, g, hgB, hfam⟩ := GlobalTheory.T.curve_family_formal_germ E H hbar X0 t hPow K p C z Y hFib
+  obtain ⟨d, F, g, hgB, hfam⟩ := PositivityTheory.HtPt.Cf.family_ex E H hbar X0 t hPow K p C z Y hFib
   obtain ⟨D, hDρ, hDlie⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Conj.Fam.family_conj K C p d (𝓞 E) F hne
-  obtain ⟨e, hecomb, heact⟩ := GlobalTheory.T.formal_germ_lie_basis E H hbar X0 t K z d g V M
+  obtain ⟨e, hecomb, heact⟩ := PositivityTheory.HtPt.Cd.germ_lie E H hbar X0 t K z d g V M
   refine ⟨d, D, e, fun i v => ?_, fun a v => by rw [heact r hr a v, hDρ a, hgB]⟩
   obtain ⟨gi, hgi⟩ := hfam i
   obtain ⟨hΦΨ, hΨΦ, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Conj.Iso.rho_pairing K d (𝓞 E) F.B (F.BK i) (F.φ i) (F.ψ i) (F.lam i) (F.iso i)
@@ -1132,7 +1086,7 @@ theorem drTie_of_hodgeCpt : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
     tie := 𝔐.tie
     t := 𝔐.t
     pow := hpow
-    fib := fun q hq => (GlobalTheory.T.fibre_power_free_pullback E H Y.X Y.t 𝔐.X 𝔐.t 𝔐.f 𝔐.m q.1).2 (hfib _ ?_)
+    fib := fun q hq => (PositivityTheory.HtPt.Cf.fibpf_pull E H Y.X Y.t 𝔐.X 𝔐.t 𝔐.f 𝔐.m q.1).2 (hfib _ ?_)
     V := 𝔐.Li
     L := 𝔐.M
     r := 𝔐.ρ

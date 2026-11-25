@@ -514,11 +514,6 @@ theorem aflipG_conj {n : ℕ} (x : GL (Fin n) F) : ∃ p : GL (Fin n) F, aflipG 
   rw [eq_mul_inv_iff_mul_eq]
   exact Units.ext (by simp only [Units.val_mul, aflipG_coe, IsUnit.unit_spec, h])
 
-theorem toG_coe' {n : ℕ} (x : GL (Fin n) F) : toG (x : Matrix (Fin n) (Fin n) F) = x := by
-  unfold toG
-  rw [dite_eq_left x.isUnit]
-  exact Units.ext (IsUnit.unit_spec _)
-
 theorem cl_conj {n : ℕ} {α : GL (Fin n) F → ℂ} (hα : IsCl α) (p x : GL (Fin n) F) :
     α (p * x * p⁻¹) = α x := by
   have := hα x p⁻¹
@@ -529,8 +524,8 @@ theorem class_aflip {n : ℕ} {α : GL (Fin n) F → ℂ} (hα : IsCl α) (M : M
   by_cases h : IsUnit M
   · obtain ⟨x, rfl⟩ := h
     obtain ⟨p, hp⟩ := aflipG_conj x
-    have h1 : toG (aflip (x : Matrix (Fin n) (Fin n) F)) = aflipG x := toG_coe' (aflipG x)
-    rw [h1, toG_coe', hp, cl_conj hα]
+    have h1 : toG (aflip (x : Matrix (Fin n) (Fin n) F)) = aflipG x := GlobalTheory.Shin.HcUnit.toG_val (aflipG x)
+    rw [h1, GlobalTheory.Shin.HcUnit.toG_val, hp, cl_conj hα]
   · have h' : ¬ IsUnit (aflip M) := by
       rintro ⟨x, hx⟩
       exact h ⟨aflipG x, by rw [aflipG_coe, hx, aflip_aflip]⟩
@@ -628,7 +623,6 @@ private lemma hc_swap_eq_hc_aflipG {F : Type} [Field F] (a b : ℕ) (α : GL (Fi
     rw [inv_inv, GlobalTheory.HCCommF.aflipG_mul, GlobalTheory.HCCommF.aflipG_mul, GlobalTheory.HCCommF.aflipG_inv, mul_assoc]
   rw [h]
   rfl
-
 
 theorem _root_.GlobalTheory.T.harishChandraInductionGL_comm : ∀ (F : Type) [Field F] [Finite F], ∀ (a b n : ℕ) (α : GL (Fin a) F → ℂ) (β : GL (Fin b) F → ℂ), IsCl α → IsCl β → n = a + b → hc a b α β n = hc b a β α n := by
   intro F _ _ a b n α β hα hβ hn
@@ -748,7 +742,6 @@ theorem J_perm (θ : AlgebraicClosure F →* ℂ) (L L' : List (ℕ × ℕ)) (n 
     exact (ih₁ n hn).trans (ih₂ n (hn.trans (deg_perm' h₁)))
 
 end GlobalTheory.Shin.ListProd
-
 
 open GlobalTheory.Shin.ListProd in
 theorem GlobalTheory.Shin.J_list_props : ∀ (F : Type) [Field F] [Finite F] (θ : AlgebraicClosure F →* ℂ),

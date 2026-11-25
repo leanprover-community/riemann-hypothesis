@@ -135,7 +135,6 @@ open GlobalTheory.AutFunCompare (colSpan exists_colSpan mem_extSub_colSpan)
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {v : HeightOneSpectrum (𝓞 F)}
 
-
 omit [NumberField E] in
 theorem splitVec_map_inclR_mulVec (τ : E →ₐ[F] Fv F v) {n r : ℕ} (C : Matrix (Fin n) (Fin r) E)
     (a : Fin r → Fv F v ⊗[F] E) :
@@ -250,7 +249,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ConstantTermVanishing
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
 theorem _root_.GlobalTheory.T.isotropicStabilizer_splitPlace_inConjParabolics : ∀ (D : D7) (V : HSp D) (v : HeightOneSpectrum (𝓞 D.host.F)) (s : SplitAt D.sp.cm.sig V.gram (frameLat V) v)
     (W : Submodule D.host.E V.V), GlobalTheory.IndefiniteRowSideFullHecke.AdelicUnitaryGroups.IsIsotropic V W →
     InConjParabolic ((GlobalTheory.IndefiniteRowSideFullHecke.AdelicUnitaryGroups.parab D.sp.cm V (Fv D.host.F v) W).map
@@ -278,10 +276,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ConstantTermVanishing
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
-theorem _root_.GlobalTheory.T.totallyIsotropic_dim_bounds_oddRank : ∀ (D : D7) (V : HSp D), Odd V.rank → ∀ W : Submodule D.host.E V.V, GlobalTheory.IndefiniteRowSideFullHecke.AdelicUnitaryGroups.IsIsotropic V W →
-    0 < Module.finrank D.host.E W ∧ 2 * Module.finrank D.host.E W + 1 ≤ V.rank := by
-  first | exact @GlobalTheory.IsoDim.isotropic_dim_bounds
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -339,7 +333,7 @@ theorem parabolicAtSplitPlaces : ParabolicAtSplitPlaces := by
   let i : Fin (𝔉.k + 1) := ⟨1, Nat.succ_lt_succ hP⟩
   have hi : i ≠ 0 := Fin.ne_of_val_ne one_ne_zero
   have hW := 𝔉.isIsotropic hi
-  obtain ⟨h0, h2⟩ := GlobalTheory.T.totallyIsotropic_dim_bounds_oddRank D V hodd _ hW
+  obtain ⟨h0, h2⟩ := GlobalTheory.IsoDim.isotropic_dim_bounds D V hodd _ hW
   refine ⟨_, h0, h2, fun v => ?_⟩
   have hle : parAt 𝔉 (T.frame v) ≤ (GlobalTheory.IndefiniteRowSideFullHecke.AdelicUnitaryGroups.parab D.sp.cm V (Fv D.host.F v.1) (𝔉.X i)).map
       ((T.frame v).equiv : GLoc D.sp.cm.sig V.gram v.1 →* GL (Fin V.rank) (Fv D.host.F v.1)) :=

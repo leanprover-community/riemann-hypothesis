@@ -70,8 +70,6 @@ open NumberField Module Matrix Formalism.BasicNotions Formalism.MainNotions.S Fo
 open scoped ENNReal Classical
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.linear_forms_bounded_representatives : ∀ (D : D7) (u u' : D.what₂.Word) (F0 : Fb D u) (Λ : LatV D), Stand D u u' → IsBase D u F0 → IsRowLat D F0 Λ → ∀ M0 : LatW D, IsPrimitiveSub M0 (L0X D Λ (lf D F0)) → ∃ reps : Finset (M0 →ₗ[𝓞 D.host.E] 𝓞 D.host.E), (reps.card : ℝ) ≤ NT D u ^ 2 ∧ ∀ ψ : M0 →ₗ[𝓞 D.host.E] 𝓞 D.host.E, ∃ ψ₀ ∈ reps, ∃ v ∈ L0X D Λ (lf D F0), ∀ x : M0, ((ψ x - ψ₀ x : 𝓞 D.host.E) : D.host.E) = (D.sp.X 0).hT v x := by
-  first | exact @GlobalTheory.LoopC.FunIdx.funIdx
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.LinearFormsBoundedRepresentativesStatement =====
@@ -329,7 +327,7 @@ theorem fun_reps {u u' : D.what₂.Word} {F0 : Fb D u} {Λ : LatV D} (hSt : Stan
     Module.IsTorsionFree.trans_faithfulSMul (𝓞 D.host.E) D.host.E _
   obtain ⟨S₁, hc₁, hS₁⟩ := restrict_reps (RingOfIntegers.not_isField D.host.E) (P.comap M.subtype)
     (Nat.finite_of_card_ne_zero (by unfold idxW at h1; omega))
-  obtain ⟨S₂, hc₂, hS₂⟩ := GlobalTheory.T.linear_forms_bounded_representatives D u u' F0 Λ hSt hB hR M (sat_primitive hPL)
+  obtain ⟨S₂, hc₂, hS₂⟩ := GlobalTheory.LoopC.FunIdx.funIdx D u u' F0 Λ hSt hB hR M (sat_primitive hPL)
   let e := Submodule.comapSubtypeEquivOfLe hPM
   refine ⟨(S₂ ×ˢ S₁).image (fun q => q.2 ∘ₗ e.symm.toLinearMap + q.1 ∘ₗ Submodule.inclusion hPM), ?_, fun ψ => ?_⟩
   · have h2 : (S₁.card : ℝ) ≤ Q := le_trans (by exact_mod_cast hc₁) hQ
@@ -350,7 +348,6 @@ theorem fun_reps {u u' : D.what₂.Word} {F0 : Fb D u} {Λ : LatV D} (hSt : Stan
     congr 1
     simp only [LinearMap.sub_apply, LinearMap.add_apply, LinearMap.comp_apply, LinearEquiv.coe_coe]
     ring
-
 
 variable (D) in
 abbrev coefI (a : Fin D.R.rS) : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E :=

@@ -142,8 +142,6 @@ theorem om_pow_eq {D : D7} {S V : HSp D} (om : GA D S × GA D V →* Module.End 
   | succ m ih =>
     rw [pow_succ, map_mul, Module.End.mul_apply, hc, map_smul, ih, smul_smul, pow_succ, mul_comm]
 
-
-
 theorem pair_fix_vacO : ∀ {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {S T : HSp D}
     {sS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.rank) ℂ} {sT : D.what₂.Tau → Matrix (Fin T.rank) (Fin T.rank) ℂ}
     {ΛS : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)} {ΛT : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E)} {v : WO S T → ℂ}
@@ -293,8 +291,6 @@ theorem fin_smul {D : D7} {m n : ℕ} (a : AE D) {x : Mx D m n} (hx : x.map (inf
 theorem fin_add {D : D7} {m n : ℕ} {x y : Mx D m n} (hx : x.map (infPart D) = 0) (hy : y.map (infPart D) = 0) :
     (x + y).map (infPart D) = 0 := by
   rw [Matrix.map_add _ (map_add (infPart D)), hx, hy, add_zero]
-
-
 
 theorem exists_alg_form : ∀ {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {S T : HSp D}
     {sS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.rank) ℂ} {sT : D.what₂.Tau → Matrix (Fin T.rank) (Fin T.rank) ℂ}
@@ -808,11 +804,6 @@ def pFin (V : HSp D) : GA D V →* GA D V := cutA V (fj D 1) fj_one_idem (cA_fj 
 theorem pFin_mul_pInf (g : GA D V) : pFin V g * pInf V g = g :=
   cutA_mul V (fj D 1) fj_one_idem (cA_fj D 1) idem_inf conj_inf g
 
-theorem map_one_add_smul {R S : Type} [CommRing R] [CommRing S] {n : ℕ} (f : R →+* S) (c : R)
-    (M : Matrix (Fin n) (Fin n) R) : (1 + c • M).map f = 1 + f c • M.map f := by
-  ext i j
-  simp [Matrix.one_apply, apply_ite f]
-
 variable {P : Matrix (Fin V.rank) (Fin V.rank) D.host.E} (hP : P * P = P)
   (hJ : Formalism.UG.cT (D.sp.cm.sig : D.host.E →+* D.host.E) P * V.gram = V.gram * P)
 include hP hJ
@@ -841,9 +832,6 @@ open GlobalTheory.IdemModTwo GlobalTheory.Member GlobalTheory.UnRep GlobalTheory
 open scoped TensorProduct
 
 variable {D : D7} {V : HSp D} (H : Subgroup (GA D V))
-
-
-
 
 theorem mem_refl {N : ℕ} (hN : 0 < N) (hroot : ∀ g ∈ GfC V, ∀ m : ℕ, 0 < m → g ^ m ∈ H → g ∈ H)
     (hcong : ∀ k ∈ GfC V, FinCong V N k → k ∈ H)
@@ -881,7 +869,7 @@ theorem mem_refl {N : ℕ} (hN : 0 < N) (hroot : ∀ g ∈ GfC V, ∀ m : ℕ, 0
   have hG : rfA hP hJ _ hn ∈ GfC V := by
     refine MonoidHom.mem_ker.2 (Units.ext ?_)
     change (Formalism.L2.Theta.mt V (rfA hP hJ _ hn)).map (infPart D) = 1
-    rw [mt_rfA, map_one_add_smul, map_sub, hinf, map_one, sub_self, zero_smul, add_zero]
+    rw [mt_rfA, GlobalTheory.HolDict.TransvGroup.map_one_add, map_sub, hinf, map_one, sub_self, zero_smul, add_zero]
   have hfin : finPart D (1 + fj D (1 - e) * (incA D u - 1)) = 1 + a ⊗ₜ[D.host.F] (b : D.host.E) := by
     rw [← hab, map_add (finPart D), map_one (finPart D), map_mul (finPart D), fin_fj, map_sub (finPart D), map_one (finPart D)]
     congr 1
@@ -910,7 +898,7 @@ theorem mem_refl {N : ℕ} (hN : 0 < N) (hroot : ∀ g ∈ GfC V, ∀ m : ℕ, 0
     (Nat.mul_pos hN hd)
   refine hroot _ hG m hm (hcong _ (pow_mem hG m) (hfc N r hr _ ?_))
   change (Formalism.L2.Theta.mt V (rfA hP hJ _ hn ^ m)).map (finPart D) = _
-  rw [mt_pow_rfA hP hJ, map_one_add_smul, map_sub (finPart D), map_pow (finPart D), hfin, map_one (finPart D), hpow, Matrix.map_map]
+  rw [mt_pow_rfA hP hJ, GlobalTheory.HolDict.TransvGroup.map_one_add, map_sub (finPart D), map_pow (finPart D), hfin, map_one (finPart D), hpow, Matrix.map_map]
   rfl
 
 end Reflection
@@ -1119,8 +1107,6 @@ theorem pairE_mul_eq_one' (z : (AE D)ˣ) :
   refine Formalism.L2.Fam.ThC.ae_ext ?_ ?_
   · rw [map_mul, infPart_pairE, infPart_pairE, ← map_mul, Units.inv_mul]
   · rw [map_mul, finPart_pairE, finPart_pairE, mul_one, map_one]
-
-
 
 theorem exists_decomp (x : (AE D)ˣ) (hx : infPart D (x : AE D) = 1) :
     ∃ h : ℕ, 0 < h ∧ ∃ (k : D.host.Eˣ) (y u : (AE D)ˣ), finPart D (y : AE D) = 1 ∧ Formalism.L2.Pj.FinUnit u ∧
@@ -1596,7 +1582,6 @@ theorem split_alg {e : Formalism.L2.Theta.AE D} (he : IsSplitIdem D e) {g : GA D
 theorem mem_algGroup {p : GA D S × GA D T} :
     p ∈ algGroup hv hS hT hcS hcT hW ↔ p.1 ∈ GfC S ∧ p.2 ∈ GfC T ∧ IsAlgComb ψ S T v (om p v) := Iff.rfl
 
-
 theorem source_mem {x : GA D S} (hx : x ∈ GfC S) : (x, (1 : GA D T)) ∈ algGroup hv hS hT hcS hcT hW := by
   obtain ⟨N, hN, hlev⟩ := GlobalTheory.T.congruent_pairs_fix_vacuum_weilDatum hv hS hT hcS hcT hW
   refine GlobalTheory.T.finiteUnitaryPoints_mem_of_level_and_split_place S ((algGroup hv hS hT hcS hcT hW).comap (MonoidHom.inl _ _)) N hN (fun g hg m hm hp => ?_)
@@ -1609,7 +1594,6 @@ theorem source_mem {x : GA D S} (hx : x ∈ GfC S) : (x, (1 : GA D T)) ∈ algGr
   · rw [Subgroup.mem_comap, MonoidHom.inl_apply, mem_algGroup]
     exact ⟨_root_.GlobalTheory.SplitPlace.mem_GfC he hg, one_mem _,
       split_alg hv hS hT hcS hcT hW he hg (GlobalTheory.WeilDetermined.suppAt_one e T)⟩
-
 
 theorem target_mem {h : GA D T} (hh : h ∈ GfC T) : ((1 : GA D S), h) ∈ algGroup hv hS hT hcS hcT hW := by
   obtain ⟨N, hN, hlev⟩ := GlobalTheory.T.congruent_pairs_fix_vacuum_weilDatum hv hS hT hcS hcT hW

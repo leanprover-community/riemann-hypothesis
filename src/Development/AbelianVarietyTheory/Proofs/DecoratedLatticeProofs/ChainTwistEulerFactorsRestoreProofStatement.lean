@@ -63,8 +63,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.RestrictedTensorSplitting (SplitPro
 open GlobalTheory.IndefiniteRowSideFullHecke.VolumeFlatSection (Blocks parahoric datum)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-theorem _root_.GlobalTheory.T.twistEulerFactors_restore_normalizingFactor : ∀ (D : D7) (c : Com D) (w : Twist D), w.Is c → ∀ a : ℕ, GlobalTheory.LFun.dSfun D.host.E w.S₀ a (a + D.R.t) ((D.R.t : ℂ) / 2) ≠ 0 ∧ GlobalTheory.LFun.dSfun D.host.E (c.S : Set (HeightOneSpectrum (𝓞 D.host.F))) a (a + D.R.t) ((D.R.t : ℂ) / 2) = GlobalTheory.LFun.dSfun D.host.E w.S₀ a (a + D.R.t) ((D.R.t : ℂ) / 2) * ((∏ PP ∈ w.Q, zinv PP D.R.t (a + D.R.t) : ℝ) : ℂ) := by
-  first | exact @GlobalTheory.ChainTw.dSfun_twist_restore
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.TwistEulerFactorsRestoreNormalizingFactorStatement =====
@@ -85,7 +83,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.Local
 noncomputable section
 
 namespace GlobalTheory.ChainTw.EulerAtTwist
-
 
 open GlobalTheory.LFun in
 theorem eulerProd_eq_mul_prod {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
@@ -113,7 +110,6 @@ theorem eulerProd_eq_mul_prod {F E : Type} [Field F] [NumberField F] [Field E] [
       · exact Or.inl hv
   rw [e] at h4
   exact h1.unique h4
-
 
 open GlobalTheory.LFun in
 theorem Lv_pair {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (c : Fam E)
@@ -191,7 +187,6 @@ theorem quotL_entire_ne_zero_off (c : Com D) (hc : c.Is) (S' : Finset (HeightOne
   · have := (hpos n h1 h2).2
     rw [h0, Complex.zero_re] at this
     exact lt_irrefl _ this
-
 
 open GlobalTheory.LFun in
 theorem eval_relation (c : Com D) (w : Twist D) (hw : w.Is c) {i j : ℕ} (hi : i ∈ Finset.Icc 1 D.R.m)
@@ -278,7 +273,6 @@ theorem eval_relation (c : Com D) (w : Twist D) (hw : w.Is c) {i j : ℕ} (hi : 
 end GlobalTheory.ChainTw.EulerAtTwist
 
 namespace GlobalTheory.ChainTw.EulerAtTwist
-
 
 open GlobalTheory.LFun in
 theorem restore_hval : ∀ (D : D7) (c : Com D) (w : Twist D), w.Is c → ∀ k < D.R.m,
@@ -373,7 +367,7 @@ theorem restore_holds : ∀ D : D7, Restore D := by
   have h3 : D.R.rankY k + D.R.t = D.R.r + (k + 1) * D.R.t := by
     simp only [Formalism.BasicNotions.Ranks.rankY]; ring
   obtain ⟨hL, hL₀⟩ := GlobalTheory.T.twistEulerFactors_restore_quotientLValues D c w hw k hk
-  obtain ⟨hd0, hd⟩ := GlobalTheory.T.twistEulerFactors_restore_normalizingFactor D c w hw (D.R.rankY k)
+  obtain ⟨hd0, hd⟩ := GlobalTheory.ChainTw.dSfun_twist_restore D c w hw (D.R.rankY k)
   refine ⟨hL, hL₀, ?_, ?_⟩
   · unfold dS; rw [h1, h2]; exact hd0
   · unfold dS; rw [h1, h2, hd, h3]

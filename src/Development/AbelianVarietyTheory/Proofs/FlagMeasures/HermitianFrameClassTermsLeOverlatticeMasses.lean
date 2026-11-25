@@ -71,17 +71,6 @@ variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E]
 variable {L : LocE F E} {r k : ℕ} (S : Frames L r k)
 
-theorem spanTo_top (g : Fin (r + 1) → S.V) :
-    S.spanTo g (r + 1) = Submodule.span E (Set.range g) := by
-  unfold Frames.spanTo
-  congr 1
-  ext x
-  constructor
-  · rintro ⟨i, -, rfl⟩
-    exact ⟨i, rfl⟩
-  · rintro ⟨i, rfl⟩
-    exact ⟨i, i.2, rfl⟩
-
 theorem left_mem (g g' : Fin (r + 1) → S.V) (b : Fin (r + 1)) : g b ∈ S.Mof g g' :=
   Submodule.subset_span (Or.inl ⟨b, rfl⟩)
 
@@ -151,7 +140,7 @@ theorem trace_iff (Λ : Submodule L.O S.V) (f f' g g' : Fin (r + 1) → S.V)
   · rintro ⟨h1, h2⟩
     have h3 : x ∈ S.sat Λ := ⟨h1, hME h2⟩
     rw [hs] at h3
-    rw [spanTo_top] at h2
+    rw [GlobalTheory.HL.TermBasic.spanTo_top] at h2
     exact mem_span_of_mem_Mof S _ _ hd g g' hg hg' hi x h3 h2
   · intro hx
     have : Submodule.span L.O (Set.range fun b => g b) ≤
@@ -161,7 +150,7 @@ theorem trace_iff (Λ : Submodule L.O S.V) (f f' g g' : Fin (r + 1) → S.V)
       have h1 : g b ∈ S.sat Λ := hs ▸ left_mem S g g' b
       refine ⟨h1.1, ?_⟩
       change g b ∈ S.spanTo f (r + 1)
-      rw [spanTo_top]
+      rw [GlobalTheory.HL.TermBasic.spanTo_top]
       exact hg b
     exact this hx
 

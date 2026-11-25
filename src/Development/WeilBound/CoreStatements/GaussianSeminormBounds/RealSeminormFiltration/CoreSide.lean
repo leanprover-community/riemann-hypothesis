@@ -991,22 +991,6 @@ theorem sd_fvTw_apply (τ : ℂ) (W : Mat r s) (u : FV p q r s) :
     sd_fvTw p q r s τ W u = fvAct2 p q r s W u + (τ * W.trace) • u :=
   twAct_apply p q r s τ W u
 
-private theorem isHomogeneous_X_mul_pderiv {σ : Type} (i j : σ) {n : ℕ} {φ : MvPolynomial σ ℂ}
-    (h : φ.IsHomogeneous n) : (X i * pderiv j φ).IsHomogeneous n := by
-  have e : X i * pderiv j φ = pderiv j (X i * φ) - pderiv j (X i) * φ := by
-    rw [Derivation.leibniz, smul_eq_mul, smul_eq_mul]
-    ring
-  rw [e, ← mem_homogeneousSubmodule]
-  refine Submodule.sub_mem _ ?_ ?_
-  · rw [mem_homogeneousSubmodule]
-    simpa using ((isHomogeneous_X (R := ℂ) i).mul h).pderiv (i := j)
-  · rw [mem_homogeneousSubmodule]
-    by_cases hij : j = i
-    · subst hij
-      simpa using h
-    · rw [pderiv_X_of_ne (Ne.symm hij), zero_mul]
-      exact isHomogeneous_zero _ _ _
-
 private theorem omE_mem_homogeneousSubmodule_of_sameBlock {d : ℕ} (i : Ix p q) {a b : Ix r s} (hab : sameBlock a b)
     {x : Pol p q r s} (hx : x ∈ homogeneousSubmodule (Ix p q × Ix r s) ℂ d) :
     omE (i, a) (i, b) x ∈ homogeneousSubmodule (Ix p q × Ix r s) ℂ d := by
@@ -1018,7 +1002,7 @@ private theorem omE_mem_homogeneousSubmodule_of_sameBlock {d : ℕ} (i : Ix p q)
   · simp only [raiB, lowB, ← hl]
     split_ifs with h
     · rw [LinearMap.mulLeft_apply, mem_homogeneousSubmodule]
-      exact isHomogeneous_X_mul_pderiv _ _ hx
+      exact FockRL.X_mul_pderiv_homog _ _ hx
     · rw [LinearMap.neg_apply, LinearMap.mulLeft_apply]
       refine Submodule.neg_mem _ ?_
       rw [mem_homogeneousSubmodule]

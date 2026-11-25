@@ -436,7 +436,6 @@ theorem abs_form_le (him : ∀ x y, ((f x y : ℤ) : ℝ) = (inner ℂ (p y) (p 
   rw [him, mul_comm]
   exact (Complex.abs_im_le_norm _).trans (norm_inner_le_norm _ _)
 
-
 include p in
 theorem finite_short [Module.Free ℤ L] [Module.Finite ℤ L]
     (him : ∀ x y, ((f x y : ℤ) : ℝ) = (inner ℂ (p y) (p x)).im) (hu : Function.Surjective f) (T : ℝ) :
@@ -1342,7 +1341,6 @@ theorem setLIntegral_eq_mul_of_count [MeasurableSpace G] [MeasurableMul G] (μ :
 end Orbit
 
 section Ball
-
 
 open scoped ComplexOrder in
 theorem isPreconnected_ballDom {Ψ : Type} [Fintype Ψ] {j j' n : ℕ} (q : Ψ × Fin j × Fin j' ≃ Fin n) :

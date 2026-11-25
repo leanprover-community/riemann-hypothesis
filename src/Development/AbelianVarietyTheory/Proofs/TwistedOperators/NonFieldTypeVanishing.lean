@@ -622,8 +622,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Cusp GlobalTheory.SplitWeil
 open GlobalTheory.IndefiniteRowSideFullHecke.RadicalNoFixedVectors (radical)
 
-theorem _root_.GlobalTheory.T.type_function_constant_term_vanish_split_place : GlobalTheory.IndefiniteRowSideFullHecke.StandardMaximalParabolic.TypeConstTermVanish → ∀ (D : D7) (V : HSp D) (v : HeightOneSpectrum (𝓞 D.host.F)) (s : SplitAt D.sp.cm.sig V.gram (frameLat V) v) (a : ℕ), 0 < a → a < V.rank → ∀ (W : Type) [AddCommGroup W] [Module ℂ W] [FiniteDimensional ℂ W] (τ : Representation ℂ (GL (Fin V.rank) (ResF v)) W), τ.IsIrreducible → GlobalTheory.IndefiniteRowSideFullHecke.RadicalNoFixedVectors.NoFixed τ (radical (ResF v) V.rank a) → ∀ (μ : Measure (GLoc D.sp.cm.sig V.gram v)) [μ.IsHaarMeasure], ∀ φ ∈ CcLoc D.sp.cm.sig V.gram v, ∀ f : GLoc D.sp.cm.sig V.gram v → ℂ, (f = conv μ (s.idem μ τ) φ ∨ f = conv μ φ (s.idem μ τ)) → ∀ g : GL (Fin V.rank) (Fv D.host.F v), ∃ H : Subgroup (GLoc D.sp.cm.sig V.gram v), IsClosed (H : Set (GLoc D.sp.cm.sig V.gram v)) ∧ (∀ x, x ∈ H ↔ g⁻¹ * s.equiv x * g ∈ radical (Fv D.host.F v) V.rank a) ∧ ∃ ν : Measure H, ν.IsHaarMeasure ∧ ∀ x y, ∫ u : H, f (x * u * y) ∂ν = 0 := by
-  first | exact @GlobalTheory.TypeConstLoc.unipIntegral_vanish_splitAt
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.TypeFunctionConstantTermVanishSplitPlaceStatement =====
@@ -1387,8 +1385,6 @@ theorem conj_map_facts {F E K : Type} [Field F] [Field E] [Field K] [Algebra F E
   · simp only [Matrix.mul_assoc, hX]
     simp only [← Matrix.mul_assoc, ← hm, hgε]
 
-
-
 theorem weighted_orbital_vanish : GlobalTheory.IndefiniteRowSideFullHecke.StandardMaximalParabolic.TypeConstTermVanish → ∀ (D : D7) (V : HSp D) (T : TypeDataG V) (U : AuxiliaryPlaceHermitianSpace V) (μf : ∀ v, Measure (GLoc D.sp.cm.sig V.gram v)) (ff : ∀ v, GLoc D.sp.cm.sig V.gram v → ℂ), IsTestFin T U μf ff → ∀ v : T.S, (μf v).IsHaarMeasure → ∀ (γ : GF V) (ε : Matrix (Fin V.rank) (Fin V.rank) D.host.E), IsRegSS γ.1.1 → ε * ε = ε → γ.1.1 * ε = ε * γ.1.1 → 0 < ε.rank → ε.rank < V.rank → GlobalTheory.IndefiniteRowSideFullHecke.RadicalNoFixedVectors.NoFixed (T.τ v) (GlobalTheory.IndefiniteRowSideFullHecke.RadicalNoFixedVectors.radical (ResF v.1) V.rank ε.rank) → ∀ b : GLoc D.sp.cm.sig V.gram v → ℂ, Continuous b → LeftInv (cent (proj D.sp.cm.sig V.gram v (rat V γ))) b → (∀ g, ε.map (T.frame v).emb * ((splitHom D.sp.cm.sig V.gram (T.frame v).emb g).1 - 1) * (1 - ε.map (T.frame v).emb) = (splitHom D.sp.cm.sig V.gram (T.frame v).emb g).1 - 1 → ∀ x, b (g * x) = b x) → ∀ (dt : Measure (cent (proj D.sp.cm.sig V.gram v (rat V γ)))) [dt.IsHaarMeasure], HasQuotInt (cent (proj D.sp.cm.sig V.gram v (rat V γ))) dt (μf v) (fun x => b x * ff v (x⁻¹ * proj D.sp.cm.sig V.gram v (rat V γ) * x)) 0 := by
   intro hT D V T U μf ff hf v hμ γ ε hγ hεε hγε ha0 har hnf b hb hbL hbN dt _
   letI := GlobalTheory.LocalData.complRel v.1
@@ -1419,7 +1415,7 @@ theorem weighted_orbital_vanish : GlobalTheory.IndefiniteRowSideFullHecke.Standa
   obtain ⟨h, hh, hffv⟩ := hf.2.1 v
   have hφ : conv (μf v) (T.idem μf v) h ∈ CcLoc D.sp.cm.sig V.gram v :=
     conv_mem_SB ((T.frame v).idem_mem _ _) hh
-  obtain ⟨H, hHc, hHmem, ν, hν, hν0⟩ := GlobalTheory.T.type_function_constant_term_vanish_split_place hT D V v.1 (T.frame v) ε.rank ha0 har (T.W v) (T.τ v)
+  obtain ⟨H, hHc, hHmem, ν, hν, hν0⟩ := GlobalTheory.TypeConstLoc.unipIntegral_vanish_splitAt hT D V v.1 (T.frame v) ε.rank ha0 har (T.W v) (T.τ v)
     (T.irred v) hnf (μf v) _ hφ (ff v) (Or.inr hffv) g₀
   rw [he] at hHmem
   obtain ⟨N, hNmem⟩ : ∃ N : Subgroup (GL (Fin V.rank) (Fv D.host.F v.1)), ∀ x, x ∈ N ↔ e.symm x ∈ H :=
@@ -1564,12 +1560,10 @@ theorem covol_lt_top {γ : GRat D.sp.cm.sig V.gram} (hγ : IsNonFieldAniso D.sp.
   obtain ⟨hreg, k, K, iF, iA, he, -, hK⟩ := hγ
   exact GlobalTheory.T.anisotropic_torus_fundamentalDomain_finite_measure _root_.GlobalTheory.RegSSObj.regularSemisimple D V γ hreg k K he hK dt 𝓣 h𝓣
 
-
 instance discreteTopology_subgroupOf_cent (γ : GA D V) : DiscreteTopology ((GQ V).subgroupOf (cent γ)) :=
   DiscreteTopology.of_continuous_injective (f := fun t : (GQ V).subgroupOf (cent γ) => (⟨t.1.1, t.2⟩ : GQ V))
     ((continuous_subtype_val.comp continuous_subtype_val).subtype_mk _)
     (fun s t h => Subtype.ext (Subtype.ext (by have h' := congrArg Subtype.val h; exact h')))
-
 
 theorem zeroClause {T : TypeDataG V} (hH : HypH (k := fun v : T.S => ResF v.1) T.τ)
     {μa : ∀ w, Measure (GArch D.sp.cm.sig V.gram w)} {μf : ∀ v, Measure (GLoc D.sp.cm.sig V.gram v)}
@@ -1605,7 +1599,6 @@ theorem zeroClause {T : TypeDataG V} (hH : HypH (k := fun v : T.S => ResF v.1) T
   have hfp : ∏ᶠ v, ob v = 0 := finprod_eq_zero ob v.1 hob0 (Filter.eventually_cofinite.1 hone)
   have h := hcls 𝓕 h𝓕
   rwa [hfp, mul_zero, mul_zero] at h
-
 
 end GlobalTheory.NonFieldType
 end -- clump:auto

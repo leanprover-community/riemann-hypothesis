@@ -105,23 +105,11 @@ open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.Loc
 
 namespace PositivityTheory.PfEss.H2
 
-private theorem nontrivial_irrRep_V {G : Type} [Group G] [TopologicalSpace G] (σ : IrrRep G) :
-    Nontrivial σ.V := by
-  by_contra h
-  rw [not_nontrivial_iff_subsingleton] at h
-  haveI : IsSimpleOrder (Subrepresentation σ.ρ) := σ.irr
-  apply (bot_ne_top : (⊥ : Subrepresentation σ.ρ) ≠ ⊤)
-  apply Subrepresentation.ext
-  ext v
-  rw [Subsingleton.elim v 0]
-  exact ⟨fun _ => (⊤ : Subrepresentation σ.ρ).toSubmodule.zero_mem,
-    fun _ => (⊥ : Subrepresentation σ.ρ).toSubmodule.zero_mem⟩
-
 private theorem exists_smooth_central_character_of_admissible {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
     [IsNonarchimedeanLocalField k] (n : ℕ) (σ : IrrRep (GL (Fin n) k)) (hadm : IsAdmissible σ.ρ) :
     ∃ ω : kˣ →* ℂˣ, IsSmoothChar ω ∧ HasCentralChar σ.ρ ω := by
   classical
-  haveI hnt : Nontrivial σ.V := nontrivial_irrRep_V σ
+  haveI hnt : Nontrivial σ.V := GlobalTheory.CompanionTheory.BZCuspPair.nontrivial_of_irr σ
   haveI : IsSimpleOrder (Subrepresentation σ.ρ) := σ.irr
   obtain ⟨v0, hv0⟩ := exists_ne (0 : σ.V)
   have hinv : ∀ (g : GL (Fin n) k) (v : σ.V), σ.ρ g⁻¹ (σ.ρ g v) = v := by
@@ -252,7 +240,7 @@ theorem exists_unitary_central_twist (hA : GlobalTheory.Published.IrreducibleAdm
   have hsc' : ∀ v, (y.nu (s' : ℂ)).rep (Matrix.GeneralLinearGroup.scalar (Fin (y.nu (s' : ℂ)).fst) t) v = c • v :=
     hsc
   have hcc := GlobalTheory.LocGL.UnitaryOrder.hasCentralChar_nu y hω (s' : ℂ)
-  haveI : Nontrivial (y.nu (s' : ℂ)).snd.rep.V := nontrivial_irrRep_V _
+  haveI : Nontrivial (y.nu (s' : ℂ)).snd.rep.V := GlobalTheory.CompanionTheory.BZCuspPair.nontrivial_of_irr _
   obtain ⟨v0, hv0⟩ := exists_ne (0 : (y.nu (s' : ℂ)).snd.rep.V)
   by_cases hn : y.fst = 0
   · have hn' : (y.nu (s' : ℂ)).fst = 0 := hn

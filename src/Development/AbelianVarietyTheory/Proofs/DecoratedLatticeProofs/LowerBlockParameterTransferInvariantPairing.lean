@@ -833,7 +833,6 @@ theorem exists_rowKer (s : Finset n) (U : Submodule 𝓀[k] (n → 𝓀[k]))
 
 end GlobalTheory.ParHecke.CosetSubL
 
-
 open GlobalTheory.ParHecke.CosetSubL in
 theorem GlobalTheory.ParHecke.CosetSubL.sum_intInd_cosets_up : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (D D' : Type) [Fintype D] [DecidableEq D] [Fintype D'] [DecidableEq D'] (ϖ : kˣ), valuation k (ϖ : k) = uniformizer k → ∀ (s : Finset D') RK, IsRepsK (torusElt k D' ϖ (indic s)) RK → ∀ y : Matrix D' D k, ((¬ ∀ i j, y i j ∈ 𝒪[k]) → ∑ g ∈ RK, intInd ((g⁻¹).1 * y) = 0) ∧ ∀ y₀ : Matrix D' D 𝒪[k], y = y₀.map (algebraMap 𝒪[k] k) → ∑ g ∈ RK, intInd ((g⁻¹).1 * y) = (Nat.card {U : Submodule 𝓀[k] (D' → 𝓀[k]) // LinearMap.range (y₀.map (IsLocalRing.residue 𝒪[k])).mulVecLin ≤ U ∧ Module.finrank 𝓀[k] U + s.card = Fintype.card D'} : ℂ) := by
   intro k _ _ _ _ D D' _ _ _ _ ϖ hϖ s RK hR y
@@ -955,7 +954,6 @@ open GlobalTheory.DatumEigen
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 variable {A D D' : Type} [Fintype A] [DecidableEq A] [Fintype D] [DecidableEq D] [Fintype D'] [DecidableEq D']
-
 
 omit [Fintype D] [DecidableEq D] in
 theorem inSupp_mul_left {x : Matrix (A ⊕ D') (A ⊕ D) k} (hx : InSupp x) {j : GL (A ⊕ D') k}
@@ -1301,17 +1299,6 @@ open MeasureTheory ValuativeRel Matrix GlobalTheory.PRep GlobalTheory.SplitWeil 
 noncomputable section
 namespace GlobalTheory.TorusRightScalar
 
-theorem det_mtor' {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-    {A D : Type} [Fintype A] [DecidableEq A] [Fintype D] [DecidableEq D] (ϖ : kˣ) (e : D → ℤ) :
-    GeneralLinearGroup.det (mtor ϖ e : GL (A ⊕ D) k) = ϖ ^ ∑ i, e i := by
-  ext
-  rw [GeneralLinearGroup.val_det_apply, mtor, val_torusElt, det_diagonal, Units.val_zpow_eq_zpow_val,
-    Fintype.prod_sum_type]
-  simp only [Sum.elim_inl, Sum.elim_inr, Pi.zero_apply, zpow_zero, Finset.prod_const_one, one_mul]
-  induction (Finset.univ : Finset D) using Finset.induction_on with
-  | empty => simp
-  | insert i t hi ih => rw [Finset.prod_insert hi, Finset.sum_insert hi, zpow_add₀ (Units.ne_zero ϖ), ih]
-
 theorem sum_neg_indic {D : Type} [Fintype D] [DecidableEq D] (s : Finset D) :
     ∑ i, (-indic s) i = -(s.card : ℤ) := by
   simp [indic, Finset.sum_neg_distrib, Finset.sum_ite_mem]
@@ -1327,7 +1314,7 @@ theorem torusRight : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace
     exact this
   have hdet : GeneralLinearGroup.det (j * mtor ϖ (-indic s)) =
       GeneralLinearGroup.det j * ϖ ^ (-(s.card : ℤ)) := by
-    rw [map_mul, det_mtor', sum_neg_indic]
+    rw [map_mul, GlobalTheory.ChainStepCoef.det_mtor, sum_neg_indic]
   have hq0 : (0 : ℝ) < resCard k := by
     have q1 : 1 < Nat.card 𝓀[k] := Finite.one_lt_card
     unfold resCard; exact_mod_cast (lt_trans one_pos q1)
@@ -1697,7 +1684,6 @@ theorem inSupp_diag_mul {y : Matrix (A ⊕ D') (A ⊕ D) k} (hy : InSupp y) {t :
     toBlocks_fromBlocks₁₁ _ _ _ _⟩
   rw [fromBlocks_apply₂₁]
   exact val_lt_mul ht (fun a b => h3 a b) i j
-
 
 open Classical in
 theorem coset_term : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (A D D' : Type) [Fintype A] [DecidableEq A] [Fintype D] [DecidableEq D] [Fintype D'] [DecidableEq D'] (ϖ : kˣ), valuation k (ϖ : k) = uniformizer k → ∀ (ξ : kˣ →* ℂˣ), IsTame ξ → ∀ (s : Finset D') (j : GL (A ⊕ D') k), j ∈ parahoric k A D' → ∀ d : kˣ, (d : k) = j.1.toBlocks₂₂.det → ∀ x : Matrix (A ⊕ D') (A ⊕ D) k, (InSupp (((j * mtor ϖ (indic s))⁻¹).1 * x) → ((ξ d * (ξ (GeneralLinearGroup.det j))⁻¹ : ℂˣ) : ℂ) * datum ξ (((j * mtor ϖ (indic s))⁻¹).1 * x) = datum ξ x) ∧ (¬ InSupp (((j * mtor ϖ (indic s))⁻¹).1 * x) → datum ξ (((j * mtor ϖ (indic s))⁻¹).1 * x) = 0) := by

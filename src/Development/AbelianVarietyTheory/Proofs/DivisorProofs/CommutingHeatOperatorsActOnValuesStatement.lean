@@ -96,8 +96,6 @@ open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.RigChart GlobalTheory.Heat
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.heatOperatorOnRing_conj_pow_fractionField : ∀ (Ω : Type) [CommRing Ω] [IsDomain Ω] (n : ℕ) (d : Derivation ℤ (FractionRing Ω) (FractionRing Ω)) (δ : Fin n → Derivation ℤ (FractionRing Ω) (FractionRing Ω)) (Θ : Matrix (Fin n) (Fin n) (FractionRing Ω)), Θᵀ = Θ → (2 : FractionRing Ω) ≠ 0 → ∀ (u : Fin n → FractionRing Ω) (p p' c : FractionRing Ω), c ≠ 0 → ∃ (d' : Derivation ℤ (FractionRing Ω) (FractionRing Ω)) (u'' : Fin n → FractionRing Ω) (q q' : FractionRing Ω), (∀ y, (∀ a, δ a y = 0) → d' y = d y) ∧ ∀ (k : ℕ) (f : FractionRing Ω), ringOp ⇑d (fun a => ⇑(δ a)) Θ u p p' k (c ^ k * f) = c ^ k * ringOp ⇑d' (fun a => ⇑(δ a)) Θ u'' q q' k f := by
-  first | exact @GlobalTheory.Heat.ringOp_conj_pow
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeatOperatorOnRingConjPowFractionFieldStatement =====
@@ -631,7 +629,7 @@ theorem core {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R] [IsNoetherianR
   refine ⟨ρU * uU⁻¹, fun k hk σ ω hσ => ?_⟩
   obtain ⟨r₀, σ₀, f₀, F, hr₀, hσ₀, hE₀, hF₀⟩ := exists_integral U k hk σ
   have hsh₀ := shiftEq_of_fam D.toPre k F f₀ r₀ hF₀
-  choose f₁ hf₁ using fun α => GlobalTheory.T.torusInvariant_heatOperator_acts_on_fourierTerms R D O oD Y n vH dd hinv Dr h hbasic k α (f₀ α)
+  choose f₁ hf₁ using fun α => GlobalTheory.Heat.heat_acts_on_terms R D O oD Y n vH dd hinv Dr h hbasic k α (f₀ α)
   have hsh₁ : ∀ mu α, ShiftEq D.toPre k mu α (f₁ α) (f₁ (α + k • mu)) 0 (f₀ (α + k • mu)) :=
     fun mu α => hdef k mu α (f₀ α) (f₁ α) (f₀ (α + k • mu)) (f₁ (α + k • mu)) hk (hsh₀ mu α) (hf₁ α)
       (hf₁ (α + k • mu))
@@ -914,7 +912,7 @@ theorem heat_acts_on_values : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
     show (h.Θ.map _)ᵀ = h.Θ.map _
     rw [← Matrix.transpose_map, h.symm]
   have hce : iK ((e⁻¹ : Ωˣ) : Ω) ≠ 0 := fun h0 => (e⁻¹).ne_zero (hiKinj (h0.trans (map_zero iK).symm))
-  obtain ⟨d', u'', q, q', hd'c, hconj⟩ := GlobalTheory.T.heatOperatorOnRing_conj_pow_fractionField Ω n dL δL ((iK.comp φ).mapMatrix h.Θ) hsymm h2K
+  obtain ⟨d', u'', q, q', hd'c, hconj⟩ := GlobalTheory.Heat.ringOp_conj_pow Ω n dL δL ((iK.comp φ).mapMatrix h.Θ) hsymm h2K
     (fun a => iK (φ (h.u a))) (iK p0) (iK p0') _ hce
   refine ⟨d', u'', q, q', fun r => ?_, ?_⟩
   · rw [hd'c _ (fun a => by rw [hδL, hδφ, map_zero]), hdL, hDφ]

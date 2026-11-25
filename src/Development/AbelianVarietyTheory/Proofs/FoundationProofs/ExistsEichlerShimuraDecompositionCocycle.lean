@@ -693,65 +693,8 @@ open scoped MatrixGroups
 
 namespace GlobalTheory.HeckeFamilyMatrices.CocBound
 
-theorem polySlash_apply (w : ℕ) (g : Matrix (Fin 2) (Fin 2) ℤ) (p : ℂ[X]) :
-    slP w g p = ∑ i ∈ Finset.range (w + 1), p.coeff i •
-      ((C ((g 0 0 : ℤ) : ℂ) * X + C ((g 0 1 : ℤ) : ℂ)) ^ i *
-        (C ((g 1 0 : ℤ) : ℂ) * X + C ((g 1 1 : ℤ) : ℂ)) ^ (w - i)) := by
-  simp only [slP, LinearMap.sum_apply, LinearMap.comp_apply, lcoeff_apply,
-    LinearMap.toSpanSingleton_apply]
-
-theorem polySlash_eq_aeval (w : ℕ) (g : Matrix (Fin 2) (Fin 2) ℤ) (p : ℂ[X]) :
-    slP w g p = MvPolynomial.aeval
-      ![C ((g 0 0 : ℤ) : ℂ) * X + C ((g 0 1 : ℤ) : ℂ), C ((g 1 0 : ℤ) : ℂ) * X + C ((g 1 1 : ℤ) : ℂ)]
-      (p.homogenize w) := by
-
-  rw [polySlash_apply, PerCoc.homogenize_eq_sum, map_sum]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rw [map_smul, map_mul, map_pow, map_pow, MvPolynomial.aeval_X, MvPolynomial.aeval_X]
-  rfl
-
-theorem homogenize_slP (w : ℕ) (g : Matrix (Fin 2) (Fin 2) ℤ) (p : ℂ[X]) :
-    (slP w g p).homogenize w = ∑ i ∈ Finset.range (w + 1), MvPolynomial.C (p.coeff i) *
-      ((MvPolynomial.C ((g 0 0 : ℤ) : ℂ) * MvPolynomial.X 0 + MvPolynomial.C ((g 0 1 : ℤ) : ℂ) * MvPolynomial.X 1) ^ i *
-        (MvPolynomial.C ((g 1 0 : ℤ) : ℂ) * MvPolynomial.X 0 +
-          MvPolynomial.C ((g 1 1 : ℤ) : ℂ) * MvPolynomial.X 1) ^ (w - i)) := by
-  apply homogenize_eq_of_isHomogeneous
-  · refine MvPolynomial.IsHomogeneous.sum _ _ _ fun i hi => ?_
-    have hi' : i ≤ w := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
-    have h := (((PerCoc.isHomogeneous_lin ((g 0 0 : ℤ) : ℂ) ((g 0 1 : ℤ) : ℂ)).pow i).mul
-      ((PerCoc.isHomogeneous_lin ((g 1 0 : ℤ) : ℂ) ((g 1 1 : ℤ) : ℂ)).pow (w - i))).C_mul (p.coeff i)
-    rwa [one_mul, one_mul, Nat.add_sub_of_le hi'] at h
-
-  · rw [polySlash_apply, map_sum]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    simp only [map_mul, map_pow, map_add (f := _), MvPolynomial.aeval_C, MvPolynomial.aeval_X, Matrix.cons_val_zero,
-      Matrix.cons_val_one, mul_one, ← C_eq_algebraMap, smul_eq_C_mul]
-
-theorem polySlash_polySlash (w : ℕ) (g h : Matrix (Fin 2) (Fin 2) ℤ) (p : ℂ[X]) :
-    slP w h (slP w g p) = slP w (g * h) p := by
-
-  rw [polySlash_eq_aeval w h, homogenize_slP, polySlash_apply, map_sum]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  simp only [map_mul, map_pow, map_add (f := _), MvPolynomial.aeval_C, MvPolynomial.aeval_X, Matrix.cons_val_zero,
-      Matrix.cons_val_one, ← C_eq_algebraMap, smul_eq_C_mul, Matrix.mul_apply, Fin.sum_univ_two, Int.cast_add,
-      Int.cast_mul]
-  congr 3 <;> ring
-
-theorem polySlash_mem_degreeLT (w : ℕ) (g : Matrix (Fin 2) (Fin 2) ℤ) (p : ℂ[X]) :
-    slP w g p ∈ degreeLT ℂ (w + 1) := by
-  rw [polySlash_apply]
-  refine Submodule.sum_mem _ fun i hi => Submodule.smul_mem _ _ ?_
-  have hi' : i ≤ w := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
-  rw [mem_degreeLT]
-  refine lt_of_le_of_lt degree_le_natDegree ?_
-  have h1 : ∀ a b : ℂ, (C a * X + C b).natDegree ≤ 1 := fun a b => natDegree_linear_le
-  have h2 := natDegree_mul_le_of_le (natDegree_pow_le_of_le i (h1 ((g 0 0 : ℤ) : ℂ) ((g 0 1 : ℤ) : ℂ)))
-    (natDegree_pow_le_of_le (w - i) (h1 ((g 1 0 : ℤ) : ℂ) ((g 1 1 : ℤ) : ℂ)))
-  rw [mul_one, mul_one, Nat.add_sub_of_le hi'] at h2
-  exact_mod_cast Nat.lt_succ_of_le h2
-
 theorem polySlash_one (w : ℕ) (p : ℂ[X]) (hp : p ∈ degreeLT ℂ (w + 1)) : slP w 1 p = p := by
-  rw [polySlash_apply]
+  rw [GlobalTheory.EichlerChange.polySlash_apply]
   have h : p.natDegree < w + 1 := by
     by_cases h0 : p = 0
     · simp [h0]
@@ -764,7 +707,7 @@ theorem polySlash_action (w : ℕ) :
     (∀ (g : Matrix (Fin 2) (Fin 2) ℤ) (p : ℂ[X]), slP w g p ∈ degreeLT ℂ (w + 1)) ∧
       (∀ p ∈ degreeLT ℂ (w + 1), slP w 1 p = p) ∧
       ∀ (g h : Matrix (Fin 2) (Fin 2) ℤ) (p : ℂ[X]), slP w (g * h) p = slP w h (slP w g p) :=
-  ⟨polySlash_mem_degreeLT w, polySlash_one w, fun g h p => (polySlash_polySlash w g h p).symm⟩
+  ⟨GlobalTheory.HeckeFamilyMatrices.PerCoc.polySlash_mem_degreeLT w, polySlash_one w, fun g h p => (GlobalTheory.HeckeFamilyMatrices.PerCoc.polySlash_polySlash w g h p).symm⟩
 
 theorem dvd_trace_sub_two (N : ℕ) (x g : SL(2, ℤ)) (h : x * g * x⁻¹ ∈ CongruenceSubgroup.Gamma1 N) :
     (N : ℤ) ∣ (mat g).trace - 2 := by
@@ -849,7 +792,6 @@ theorem closure_S_ST : Subgroup.closure ({S, S * T} : Set SL(2, ℤ)) = ⊤ := b
 end GlobalTheory.HeckeFamilyMatrices.CocBound
 
 namespace GlobalTheory.HeckeFamilyMatrices
-
 
 open CocBound ModularGroup in
 theorem finrank_eichlerShimuraCocycles_le_Gamma1 (N : ℕ) (Γ : Subgroup SL(2, ℤ)) (w : ℕ) (hN : 5 ≤ N)

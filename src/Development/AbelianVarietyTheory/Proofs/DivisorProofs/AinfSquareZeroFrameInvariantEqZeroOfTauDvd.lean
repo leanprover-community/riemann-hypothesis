@@ -55,11 +55,6 @@ namespace GlobalTheory.TauUniq
 variable {p : ℕ} [Fact p.Prime] {O : Type} [CommRing O] [Fact ¬IsUnit (p : O)]
   [IsAdicComplete (Ideal.span {(p : O)}) O] {ε : PreTilt O p} (F : BFrame ε)
 
-theorem p_cancel {b c : F.B} (h : (p : F.B) * b = p * c) : b = c := by
-  have h1 := congrArg (algebraMap F.B F.Q) h
-  simp only [map_mul, map_natCast] at h1
-  exact F.frame.inj (F.frame.unit_p.mul_left_cancel h1)
-
 theorem frob_teich (x : PreTilt O p) :
     WittVector.frobenius (WittVector.teichmuller p x) = WittVector.teichmuller p x ^ p := by
   rw [WittVector.frobenius_eq_map_frobenius, WittVector.map_teichmuller, frobenius_def, map_pow]
@@ -135,7 +130,7 @@ theorem vec_eq {ι : Type} [Fintype ι] (M : Matrix ι ι F.B) (g : ι → F.B) 
     (hz : ∀ i, g i = F.τ * F.a (z i))
     (hg : ∀ i, M.mulVec (fun j => F.σ (g j)) i = (p : F.B) * g i) (i : ι) :
     F.τ * F.a (z i) = F.τ * M.mulVec (fun j => F.σ (F.a (z j))) i := by
-  apply p_cancel F
+  apply GlobalTheory.WindowIso.p_cancel F
   have e := hg i
   simp only [Matrix.mulVec, dotProduct, hz, map_mul, sigma_tau F] at e
   rw [← e]

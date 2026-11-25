@@ -756,10 +756,6 @@ theorem evalAt_comp_appLE {A : Type} [CommRing A] {Y Z : Scheme.{0}} (x : Spec (
   rw [← Scheme.Hom.appLE_comp_appLE x f U (f ⁻¹ᵁ U) ⊤ le_rfl h]
   rfl
 
-theorem mem_pdP_one {B : Type} [CommRing B] {J : Ideal B} (δ : DividedPowers J) {x : B} (hx : x ∈ J) : x ∈ pdP δ 1 := by
-  have h := dpow_mem_pdP δ 1 hx
-  rwa [δ.dpow_one hx] at h
-
 theorem mem_thFil_one {K : Type} [CommRing K] {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of K)}
     {T : Thick (smFun X q)} {x : T.B} (hx : x ∈ T.J) :
     (show (thA (smFun X q)).obj T from x) ∈ (thFil (smFun X q) 1).S T :=
@@ -1093,14 +1089,6 @@ theorem jacobian_infinityDerivation (t : Fin (n + 1) → Rˣ) (D : Fin (n + 1) �
 
 section torus
 
-theorem tpow_add' {d : ℕ} (t : Fin d → Rˣ) (m m' : Fin d → ℤ) : tpow t (m + m') = tpow t m * tpow t m' := by
-  simp [tpow, zpow_add, Finset.prod_mul_distrib]
-
-theorem tpow_single {d : ℕ} (t : Fin d → Rˣ) (k : Fin d) (z : ℤ) : tpow t (Pi.single k z) = ((t k ^ z : Rˣ) : R) := by
-  unfold tpow
-  rw [Fintype.prod_eq_single k (fun j hj => by simp [Pi.single_apply, hj])]
-  simp
-
 theorem tpow_mem {d : ℕ} (t : Fin d → Rˣ) (S : Finset (Fin (d + 1))) {m : Fin d → ℤ} (hm : m ∈ expS S) :
     tpow t m ∈ torusS K t S :=
   Algebra.subset_adjoin ⟨m, hm, rfl⟩
@@ -1112,7 +1100,7 @@ theorem torusS_le_span {d : ℕ} (t : Fin d → Rˣ) (S : Finset (Fin (d + 1))) 
       one_mem' := ⟨0, ⟨fun k _ => le_refl 0, fun _ => by simp⟩, by simp [tpow]⟩
       mul_mem' := by
         rintro _ _ ⟨m, hm, rfl⟩ ⟨m', hm', rfl⟩
-        refine ⟨m + m', ⟨fun k hk => ?_, fun h0 => ?_⟩, tpow_add' t m m'⟩
+        refine ⟨m + m', ⟨fun k hk => ?_, fun h0 => ?_⟩, CrystallineSemistableComparison.Pb.ra_tpow_add t m m'⟩
         · have := hm.1 k hk; have := hm'.1 k hk; simp only [Pi.add_apply]; omega
         · have := hm.2 h0; have := hm'.2 h0; simp only [Pi.add_apply, Finset.sum_add_distrib]; omega }
   intro x hx
@@ -1172,7 +1160,7 @@ theorem infinityCoord_mem_torus (t : Fin (n + 1) → Rˣ) (j : Fin (n + 1)) :
 theorem infinityCoord_inv_mem (t : Fin (n + 1) → Rˣ) (j : Fin n) :
     (((u0 t j.succ)⁻¹ : Rˣ) : R) ∈ torusS K t (Finset.univ.erase 0) := by
   have h : (((u0 t j.succ)⁻¹ : Rˣ) : R) = tpow t (Pi.single 0 1 + Pi.single j.succ (-1)) := by
-    rw [tpow_add', tpow_single, tpow_single, ← Units.val_mul]
+    rw [CrystallineSemistableComparison.Pb.ra_tpow_add, CrystallineSemistableComparison.Pb.ra_tpow_single, CrystallineSemistableComparison.Pb.ra_tpow_single, ← Units.val_mul]
     congr 1
     simp [u0, mul_comm]
   rw [h]
@@ -1270,7 +1258,7 @@ theorem infinityCoord_localization (t : Fin (n + 1) → Rˣ) (ht : AlgebraicInde
           (((∏ i, u0 t i ^ (Fin.cons (Int.toNat (-∑ k, m k)) fun j => Int.toNat (m j.succ) : Fin (n + 1) → ℕ) i : Rˣ))
             : R) := by
         simp
-      rw [e1, e2, infinityCoord_prod_pow, infinityCoord_prod_pow, ← tpow_add']
+      rw [e1, e2, infinityCoord_prod_pow, infinityCoord_prod_pow, ← CrystallineSemistableComparison.Pb.ra_tpow_add]
       congr 1
       have h1 : ∑ j : Fin n, ((Int.toNat (m j.succ) : ℕ) : ℤ) - ∑ j : Fin n, ((Int.toNat (-m j.succ) : ℕ) : ℤ) =
           ∑ j : Fin n, m j.succ := by
@@ -1316,7 +1304,7 @@ theorem infinityCoord_span_residue (t : Fin (n + 1) → Rˣ) :
       Submodule.span K (tpow t '' {m | ∑ k, m k < -((n : ℤ) + 1)}) := by
   intro a ha
   have hc : (((t 0)⁻¹ : Rˣ) : R) ^ (n + 2) = tpow t (Pi.single 0 (-((n : ℤ) + 2))) := by
-    rw [tpow_single, ← Units.val_pow_eq_pow_val]
+    rw [CrystallineSemistableComparison.Pb.ra_tpow_single, ← Units.val_pow_eq_pow_val]
     congr 1
   have key : Submodule.span K (tpow t '' expS (Finset.univ.erase (0 : Fin (n + 2)))) ≤
       (Submodule.span K (tpow t '' {m | ∑ k, m k < -((n : ℤ) + 1)})).comap
@@ -1328,7 +1316,7 @@ theorem infinityCoord_span_residue (t : Fin (n + 1) → Rˣ) :
     · simp only [Set.mem_ofPred_eq, Pi.add_apply, Finset.sum_add_distrib]
       simp
       linarith
-    · rw [tpow_add', ← hc, LinearMap.mulLeft_apply, mul_comm]
+    · rw [CrystallineSemistableComparison.Pb.ra_tpow_add, ← hc, LinearMap.mulLeft_apply, mul_comm]
   exact key (torusS_le_span t _ ha)
 
 theorem infinityCoord_span_residue_ne (t : Fin (n + 1) → Rˣ) :

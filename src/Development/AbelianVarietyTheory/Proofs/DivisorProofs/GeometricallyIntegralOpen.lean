@@ -192,8 +192,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
-theorem _root_.GlobalTheory.T.exists_section_translates_cover_semiAbelian : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], AdmBase R (maximalIdeal R) → ∀ (G : Over (Sp R)) [GrpObj G] [IsCommMonObj G], IsSemiAbelian G → ∀ (O : G.left.Opens), (∀ g : G.left, G.hom g = closedPoint R → g ∈ O) → ∀ x : G.left, ∃ a : 𝟙_ (Over (Sp R)) ⟶ G, (𝟙 G * (toUnit G ≫ a)).left x ∈ O := by
-  first | exact @GlobalTheory.Mum.Cover.exists_section_translate_mem
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSectionTranslatesCoverSemiAbelianStatement =====
@@ -579,7 +577,7 @@ theorem lb_extends_of_extLam : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocal
   have := hG.geomConnected
   have := geometricallyIntegral_of_smooth G.hom
   refine Spread.exists_extension_of_cover R G.left G.hom (eSec G) (Over.w η[G]) L hL fun x ↦ ?_
-  obtain ⟨a, ha⟩ := GlobalTheory.T.exists_section_translates_cover_semiAbelian R hR G hG O hO x
+  obtain ⟨a, ha⟩ := GlobalTheory.Mum.Cover.exists_section_translate_mem R hR G hG O hO x
   refine ⟨(𝟙 G * (toUnit G ≫ a)).left ⁻¹ᵁ O, ha, hO _ ?_, GlobalTheory.T.exists_bundle_extension_translate_open R G L PP hL hPP O N hN hiso a⟩
   have h₁ : eSec G ≫ (𝟙 G * (toUnit G ≫ a)).left ≫ G.hom = 𝟙 _ := by
     rw [Over.w]; exact Over.w η[G]

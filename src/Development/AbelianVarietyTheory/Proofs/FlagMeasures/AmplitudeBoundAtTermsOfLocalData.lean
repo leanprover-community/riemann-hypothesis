@@ -248,7 +248,6 @@ theorem regroup {A B D G Pi H T G' Y U : ℝ} (hA : 0 ≤ A * D) (hB : 0 ≤ B) 
 
 end GlobalTheory.AmpArith
 
-
 open GlobalTheory.AmpArith in
 theorem GlobalTheory.amplitude_arithmetic : ∀ CH : ℝ, 0 ≤ CH → ∃ C₀ : ℝ, ∀ C : ℝ, C₀ ≤ C → ∀ (k r m f j : ℕ) (b v Del S Cs P : ℝ), m = 2 * r + 2 → 1 ≤ j → j ≤ r → r + 2 ≤ k → 1 ≤ f → 2 ≤ b → 1 ≤ v → 2 * v ≤ b → 0 < P → Del = P ^ 2 → 1 ≤ S → (v ^ (k * (r - j) * f) * (8 * v) ^ (2 * (r + 1) ^ 2 * f)) * (8 * v) ^ (2 * (r + 1) ^ 2 * f) * ((2 * v) ^ (-((r : ℝ) * k)) * 1 * 2 ^ (r * (k + 1) + r * (r - 1))) ^ f * ((16 * Real.pi * Real.exp 1 / k) ^ (j * (k - 1 - j) * f) * (P ^ (k - 1 - j))⁻¹ * (8 * r * b ^ (CH * m)) ^ (80 * r ^ 4 * f) * S ^ (-(Cs * k))) ≤ (C / k) ^ ((j : ℝ) * ((k : ℝ) - 1 - j) * f) * Del ^ (-(((k : ℝ) - 1 - j) / 2)) * (b ^ (C * (m : ℝ) ^ 2 * f)) ^ (C * (r : ℝ) ^ 4) * S ^ (-(Cs * k)) := by
   intro CH hCH
@@ -531,26 +530,13 @@ end Conj
 section Gen
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : Formalism.BasicNotions.HSpace E} {r : ℕ} {T : E}
 
-theorem frF_xa (F : FlagG S r T) (hT : T ≠ 0) (a : ℕ) : (frF F hT).Xa a = F.Xa a := by
-  unfold FlagD.Xa FlagG.Xa
-  congr 1
-  exact Set.image_congr fun b _ => fv_cast F b
-
-theorem flagToFrameOfNonzeroLevel_isotropic_eq (F : FlagG S r T) (hT : T ≠ 0) : (frF F hT).X = F.X := by
-  rw [FlagD.X, frF_xa]
-  unfold FlagG.Xa FlagG.X
-  congr 1
-  ext x
-  simp only [Set.mem_image, Set.mem_setOf_eq, Set.mem_range]
-  exact ⟨fun ⟨i, _, h⟩ => ⟨i, h⟩, fun ⟨i, h⟩ => ⟨i, i.2, h⟩⟩
-
 theorem inN_frF_iff (F : FlagG S r T) (hT : T ≠ 0) (n : S.V ≃ₗ[E] S.V) :
     (frF F hT).InN (n : S.V →ₗ[E] S.V) ↔ n ∈ Formalism.HermitianLatticesTheory.isom S.hT ∧ (∀ j, ∀ x ∈ F.Xa (j + 1), n x - x ∈ F.Xa j) ∧
       (∀ x ∈ orth S F.X, n x - x ∈ F.X) := by
   have he : ∀ a : Fin r, (frF F hT).e a.castSucc = F.e a := fv_cast F
   have hB : ∀ x y, (spH S).B x y = S.hT y x := fun _ _ => rfl
   unfold FlagD.InN
-  simp only [LinearEquiv.coe_coe, frF_xa, flagToFrameOfNonzeroLevel_isotropic_eq, he, hB]
+  simp only [LinearEquiv.coe_coe, GlobalTheory.TypeAsm.FibProof.frF_Xa, GlobalTheory.TypeAsm.FibProof.frF_X, he, hB]
   constructor
   · rintro ⟨h1, -, h3, h4⟩
     refine ⟨fun x y => h1 y x, fun j x hx => ?_, fun x hx => h4 x fun a => ?_⟩
@@ -1124,7 +1110,6 @@ open MeasureTheory Matrix NumberField Formalism.BasicNotions Formalism.MainNotio
 namespace GlobalTheory.TypeAsm.CompatibleChartOperations
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
 open GlobalTheory.Amp in
 theorem prod_degBd_le_explicit (C' : ℝ) (ι : Type) [Fintype ι] (k r j q : ℕ) (H₁ : ℝ) (Dm : ι → Fin (r + 1) → ℝ)
     (De D sg : ι → ℝ) (hj : 1 ≤ j) (hjr : j ≤ r) (hk5 : 5 * r ≤ k) (hk : 40 * r ^ 4 ≤ k)
@@ -1194,31 +1179,6 @@ theorem prod_degBd_le_explicit (C' : ℝ) (ι : Type) [Fintype ι] (k r j q : �
         simp only [Finset.prod_mul_distrib, Finset.prod_const, Finset.card_univ, ← pow_mul, Finset.prod_inv_distrib,
           Finset.prod_pow]
 
-theorem frameExp_int (r l : ℕ) (hl : l ≤ r + 1) :
-    ((frameExp r l : ℕ) : ℤ) = ∑ a ∈ Finset.range l, ((r : ℤ) - a) := by
-  induction l with
-  | zero => simp [frameExp]
-  | succ l ih =>
-    have h1 : frameExp r (l + 1) = frameExp r l + (r + 1 - (l + 1)) := by
-      unfold frameExp
-      rw [Finset.sum_Icc_succ_top (by omega)]
-    have h2 : ((r + 1 - (l + 1) : ℕ) : ℤ) = (r : ℤ) - l := by omega
-    rw [h1, Nat.cast_add, ih (by omega), Finset.sum_range_succ, h2]
-
-theorem nloc_norm (D : D7) (r l : ℕ) (x : D.host.E) :
-    ((Nloc (ddS D) r l x : ℚ) : ℝ) =
-      |((Algebra.norm ℚ x : ℚ) : ℝ)| * (Ideal.absNorm (dI D) : ℝ) ^ (-(2 * (frameExp r l : ℤ))) := by
-  unfold Nloc
-  rw [map_mul, FractionalIdeal.absNorm_span_singleton (𝓞 D.host.E), map_zpow₀,
-    show ddS D = ((dI D : Ideal (𝓞 D.host.E)) : FractionalIdeal (nonZeroDivisors (𝓞 D.host.E)) D.host.E) from rfl,
-    FractionalIdeal.coeIdeal_absNorm]
-  push_cast
-  rfl
-
-theorem norm_of_star (D : D7) (x : D.host.E) : Algebra.norm ℚ (star x) = Algebra.norm ℚ x := by
-  have := Algebra.norm_eq_of_algEquiv ((starRingAut : D.host.E ≃+* D.host.E).toRatAlgEquiv) x
-  simpa using this
-
 theorem one_le_nloc {D : D7} {large₂ : SizeData₂ D} {X : HidaSetting D} {Y : Full X} {u : D.what₂.Word} (hS : Std D large₂)
     {t : GTu Y u} (ht : t ∈ relSet Y u) (l : ℕ) (hl : l ≤ D.R.rS)
     (h0 : Dl (lf D (X.Fu u)).fl (frq X t.rep).fl l ≠ 0) :
@@ -1241,9 +1201,9 @@ theorem one_le_nloc {D : D7} {large₂ : SizeData₂ D} {X : HidaSetting D} {Y :
   have hdne : dI D ≠ ⊥ := hd ▸ N.𝔡_ne
   have key : N.nD l = ((Nloc (ddS D) D.R.rS l (Dl (lf D (X.Fu u)).fl (frq X t.rep).fl l) : ℚ) : ℝ) := by
     unfold GlobalTheory.DegCnt.NF.nD
-    rw [dite_eq_left hl', hDl l hl', nloc_norm, hnf, norm_of_star, hd, frameExp_int _ _ hl']
+    rw [dite_eq_left hl', hDl l hl', GlobalTheory.TypeAsm.HasLabelling.nloc_eq, hnf, GlobalTheory.TypeAsm.HasLabelling.norm_star, hd, GlobalTheory.TypeAsm.HasLabelling.frameExp_cast _ _ hl']
   have hne : N.nD l ≠ 0 := by
-    rw [key, nloc_norm]
+    rw [key, GlobalTheory.TypeAsm.HasLabelling.nloc_eq]
     have hA : (Ideal.absNorm (dI D) : ℝ) ≠ 0 := by
       exact_mod_cast (Ideal.absNorm_eq_zero_iff.not.2 hdne)
     refine mul_ne_zero ?_ (zpow_ne_zero _ hA)

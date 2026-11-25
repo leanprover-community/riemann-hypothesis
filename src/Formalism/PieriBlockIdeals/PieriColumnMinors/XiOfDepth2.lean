@@ -462,14 +462,8 @@ theorem lrc_applyWord_mem (R : Type) [CommRing R] (r n : ℕ) (ν : Fin n → �
     rw [applyWord_cons]
     exact rowDivStable R r n ν _ _ _ _ ih
 
-theorem lrc_fock_add_right {σ : Type} (f g g' : MvPolynomial σ ℚ) : fockQ f (g + g') = fockQ f g + fockQ f g' := by
-  rw [(fockQPos σ f (g + g')).1, (fockQBilin σ g g' f 1).1, (fockQPos σ g f).1, (fockQPos σ g' f).1]
-
-theorem lrc_fock_smul_right {σ : Type} (c : ℚ) (f g : MvPolynomial σ ℚ) : fockQ f (c • g) = c * fockQ f g := by
-  rw [(fockQPos σ f (c • g)).1, (fockQBilin σ g 0 f c).2, (fockQPos σ g f).1]
-
 theorem lrc_fock_zero_right {σ : Type} (f : MvPolynomial σ ℚ) : fockQ f 0 = 0 := by
-  have := lrc_fock_smul_right (0 : ℚ) f 0
+  have := Formalism.CohomologicalDescent.LR.fock_smul_right (0 : ℚ) f 0
   simpa using this
 
 theorem fock_word (r : ℕ) (ν : Fin r → ℕ) (hν : Antitone ν) (F : MvPolynomial (Fin r × Fin r) ℚ)
@@ -498,13 +492,13 @@ theorem fock_int (r : ℕ) (ν : Fin r → ℕ) (hν : Antitone ν) (x : MvPolyn
     obtain ⟨z, hz⟩ := ih
     obtain ⟨z', hz'⟩ := ih'
     refine ⟨z + z', ?_⟩
-    rw [map_add (f := _), lrc_fock_add_right, hz, hz']
+    rw [map_add (f := _), Formalism.CohomologicalDescent.LR.fock_add_right, hz, hz']
     push_cast
     ring
   | smul c y _ ih =>
     obtain ⟨z, hz⟩ := ih
     refine ⟨c * z, ?_⟩
-    rw [map_smul, ← Int.cast_smul_eq_zsmul ℚ, lrc_fock_smul_right, hz]
+    rw [map_smul, ← Int.cast_smul_eq_zsmul ℚ, Formalism.CohomologicalDescent.LR.fock_smul_right, hz]
     push_cast
     ring
 

@@ -131,8 +131,6 @@ theorem thLaValAt_evR {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Ho
   rw [e1, e2]
   exact hv
 
-
-
 theorem norm_evR_le (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Geo.Tor.Level H)
     (Xo : Moduli Dw l) (c : Coeff l) (σ : c.F →+* ℂ) (r : ℕ) (U : Formalism.L2.PjFree.Unf Xo c σ r)
     (hσ : Formalism.L2.PjFree.GoodEmb c σ) (hU : Formalism.L2.PjFree.IsUnf U) (hr1 : 1 ≤ r) (t : ℝ) (ht : 0 < t)
@@ -170,8 +168,8 @@ theorem norm_evR_le (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host
     Dc.sympl x.2 hL Dw.p n Dc.hr Dc.eL hr hn (he ▸ Dc.dir_eq) nab hnab θ v κ hrd hvac hprod (W.mark k) hmk hA
     Λ.La hΛ N hΛl Y hY a P hP.1 w 1 _ hv0
   have hhom : (MvPolynomial.rename Dc.eL (MvPolynomial.map σ P)).IsHomogeneous (Formalism.L2.Pj.DF Dw a) :=
-    (((GlobalTheory.T.exists_integralHarmonic_ne_zero_and_isHomogeneous E H Dw l c a n).2 P hP.1).map σ).rename_isHomogeneous
-  have hcore := fun y => GlobalTheory.T.jet_translate_projected_vacuum_le E r (U.X k) W.g Dw.p Dc.hr Dc.bas Dc.idx n Dc.sympl hn H.w0 hw _ hL Λ.La hΛ1
+    (((GlobalTheory.exists_harmA_ne_zero_and_isHomogeneous E H Dw l c a n).2 P hP.1).map σ).rename_isHomogeneous
+  have hcore := fun y => GlobalTheory.Dict.VacJet.jet_projA_le E r (U.X k) W.g Dw.p Dc.hr Dc.bas Dc.idx n Dc.sympl hn H.w0 hw _ hL Λ.La hΛ1
     v hvac x.1 x.2 hxo t ht (hct k) θ κ hth hmean hprod lam hlam (fun u hu hu0 => hlam2.trans (hlen u hu hu0)) y _ _
     hhom
   obtain ⟨R, -, -, hR, hR0, -⟩ := VacMean.vac_proj_mean E r (U.X k) W.g Dw.p Dc.hr Dc.bas Dc.idx n Dc.sympl hn
@@ -183,7 +181,7 @@ theorem norm_evR_le (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host
     obtain ⟨⟨v', hv'⟩, -, h, -⟩ := TensVac.vacua E r (U.X k) W.g Dc.bas Dc.idx n Dc.sympl hn _
       H.w0.isIntegral_coe hw _ hL 1 Λ.La hΛ1
     rw [h v hvac.1 v' hv']
-    exact isSB_smul _ hv'.1
+    exact GlobalTheory.Dict.ShortVal.isSB_smul _ hv'.1
   rw [sum_coeff_rename] at hcore
   have hc2 := fun y => (le_div_iff₀ hJ).2 (hcore y)
   have hB0 := (norm_nonneg _).trans (hc2 0)
@@ -403,8 +401,6 @@ theorem norm_phiHat_indPhi {E : Type} [Field E] [NumberField E] [IsCMField E] {H
   unfold phiHat indPhi
   rw [finsum_eq_single _ x0 (fun x hx => by simp [hx])]
   rw [if_pos rfl, one_mul, map_zpow₀, norm_zpow, zetaM, map_pow, norm_pow, h1, one_pow, one_zpow]
-
-
 
 theorem homN_raw_le : ∃ C : ℝ, 0 ≤ C ∧ ∀ (D : D7) (T : CoreJ D) (j : ℕ) (Y : Deep T.toCore j) (e : ℕ) (o Lb : ℝ) (a : (D.host.E →+* ℂ) × ℕ → ℕ) (n : ℕ), GlobalTheory.CovGmin.Hyp D T j Y e o Lb a n → ∀ [StarRing (𝓞 D.host.E)] (nab : NabV Y.d.Xo₂ Y.d.c₂), IsNab Y.d.Xo₂ Y.d.c₂ nab → ∀ (ρ : ℝ) (x0 : Fin n → LevQc (T.Q.Dw j) Y.d.l₂) (La : GenLat D.host.E n) (N : ℕ) (P : MvPolynomial (LtN (T.Q.Dw j) n) Y.d.c₂.F), La.Unimod → La.TrivAt Y.d.l₂.M → La.LevOK N Y.d.l₂.M → P ∈ harmL Y.d.c₂ La a → GlobalTheory.IndefiniteRowSideFullHecke.ThetaWeightData.polyNorm Y.d.c₂ P ≤ ρ → ∀ y : Y.V (wtZ a n), (∀ (p : TRing Y.d.c₂.F) (y' : FrPt Y.d.Xo₂ Y.d.c₂ p.R), thLaValAt Y.d.Xo₂ Y.d.c₂ nab (phiHat Y.d.c₂ (indPhi Y.d.c₂ x0)) La N P y' ((y : Rul Y.d.Xo₂ Y.d.c₂) p y')) → ∀ (σ : Y.d.c₂.F →+* ℂ) (z : Σ k, ReciprocityTheory.ChartRestriction.G.FD.Frame ((Y.U (Formalism.L2.Pj.goodOf Y.d.c₂ σ)).X k).Ψ D.R.r), z.2 ∈ ((Y.U (Formalism.L2.Pj.goodOf Y.d.c₂ σ)).X z.1).dom → AllWt.homN (Y.U (Formalism.L2.Pj.goodOf Y.d.c₂ σ)) (xiR D) (wtZ a n) (y : Rul Y.d.Xo₂ Y.d.c₂) z ≤ Real.sqrt (((La.Ln.toAddSubgroup.addSubgroupOf La.La.toAddSubgroup).index : ℝ) ^ ((T.Q.Dw j).p + (T.Q.Dw j).q)) * ρ * Real.exp (C * ((D.R.f : ℝ) * D.R.r * Lb) ^ 2 * sizeK (T.Q.Dw j) a n) := by
   refine ⟨9000, by norm_num, ?_⟩

@@ -335,7 +335,6 @@ theorem exists_mult_eq (hY : ∀ y : Y, UniqueFactorizationMonoid (Y.presheaf.st
 
 end GlobalTheory.Desc.ExtDiv
 
-
 open GlobalTheory.Desc.ExtDiv CartierDiv in
 theorem GlobalTheory.Desc.exists_cartierDiv_closure : ∀ (Y V X : Scheme.{0}) [IsIntegral Y] [IsIntegral X] [IsLocallyNoetherian Y], (∀ y : Y, UniqueFactorizationMonoid (Y.presheaf.stalk y)) → ∀ (i : V ⟶ Y) [IsOpenImmersion i] (φ : V ⟶ X) (θ : X.functionField →+* Y.functionField), Flat φ → PFF i φ θ → ∀ D : CartierDiv X, ∃ D₁ : CartierDiv Y, PPull i φ θ D D₁ ∧ ∀ y : Y, y ∉ Set.range i → ringKrullDim (Y.presheaf.stalk y) = 1 → D₁.IsEqn y 1 := by
   intro Y V X _ _ _ hY i _ φ θ _ hθ D
@@ -413,11 +412,6 @@ theorem flat_preimage_of_stalk {R Rc : Type} [CommRing R] [CommRing Rc] [IsLocal
   rw [← Spec.map_preimage ξ] at h3
   exact HasRingHomProperty.Spec_iff.mp h3
 
-theorem injective_of_flat {R Rc : Type} [CommRing R] [IsDomain R] [CommRing Rc] [Nontrivial Rc] (ρ : R →+* Rc)
-    (h : ρ.Flat) : Function.Injective ρ := by
-  algebraize [ρ]
-  exact FaithfulSMul.algebraMap_injective R Rc
-
 theorem isPullback_away {R Rc : Type} [CommRing R] [CommRing Rc] (ρ : R →+* Rc) (f : R) :
     IsPullback (spMap (Localization.awayMap ρ f)) (spMap (algebraMap Rc (Localization.Away (ρ f)))) (awayMap f)
       (spMap ρ) := by
@@ -469,7 +463,6 @@ end GlobalTheory.Desc.ChartPart
 
 namespace GlobalTheory.Desc
 
-
 open GlobalTheory.Desc.ChartPart in
 theorem chart_part : ∀ (R : Type) [CommRing R] [IsDomain R] [IsNoetherianRing R] (f : R), f ≠ 0 → ∀ (A : Over (Sp (Localization.Away f))) [GrpObj A], IsAbelianScheme A → ∀ [IsIntegral A.left] (x : Sp R) (C : Chart (awayMap f) A x) [IsIntegral C.G.left], ∃ (ρ : R →+* C.R) (V : C.G.left.Opens) (φ : V.toScheme ⟶ A.left) (θ : A.left.functionField →+* C.G.left.functionField), C.ξ = spMap ρ ∧ ρ.Flat ∧ (∀ z : C.G.left, z ∈ V ↔ ρ f ∉ (C.G.hom z).asIdeal) ∧ IsPullback φ (V.ι ≫ C.G.hom) (A.hom ≫ awayMap f) (spMap ρ) ∧ (∀ (T : Scheme.{0}) (t : T ⟶ pullback C.G.hom (jK C.R)) (t' : T ⟶ V.toScheme), t ≫ pullback.fst _ _ = t' ≫ V.ι → t ≫ C.α = t' ≫ φ) ∧ PFF V.ι φ θ := by
   intro R _ _ _ f hf0 A _ hAb _ x C _
@@ -477,7 +470,7 @@ theorem chart_part : ∀ (R : Type) [CommRing R] [IsDomain R] [IsNoetherianRing 
   have hξ : C.ξ = spMap ρ := by
     rw [hρdef]; exact (Spec.map_preimage C.ξ).symm
   have hflat : ρ.Flat := flat_preimage_of_stalk C.ξ C.etc.1
-  have hρf : ρ f ≠ 0 := fun h => hf0 (injective_of_flat ρ hflat (h.trans (map_zero ρ).symm))
+  have hρf : ρ f ≠ 0 := fun h => hf0 (GlobalTheory.Desc.ChartSpan.injective_of_flat ρ hflat (h.trans (map_zero ρ).symm))
   obtain ⟨_, hnorm⟩ := GlobalTheory.isDomain_and_isIntegrallyClosed_of_isRegularLocalRing C.R
 
   let Rf := Localization.Away (ρ f)

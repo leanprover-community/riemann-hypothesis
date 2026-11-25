@@ -77,14 +77,10 @@ noncomputable section
 
 namespace GlobalTheory.KZ.ES.JStab
 
-theorem eps_eOm_of_alg {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ)
-    (x : ℚ) : ε (eOm ε x) = Complex.exp (2 * Real.pi * Complex.I * (x : ℂ)) := by
-  apply GlobalTheory.Glue.KTExp.map_eOm
-
 theorem eOm_ne_zero' {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (x : ℚ) :
     eOm ε x ≠ 0 := by
   intro h0
-  have := eps_eOm_of_alg ε x
+  have := GlobalTheory.Glue.KTExp.map_eOm ε x
   rw [h0, map_zero] at this
   exact Complex.exp_ne_zero _ this.symm
 
@@ -385,7 +381,6 @@ private lemma natCast_dvd_of_eq_sign_mul {x y : ℤ} {m : ℕ} {c : ℚ} (hc : c
   · refine ⟨-y, ?_⟩
     have h' : (x : ℚ) = ((m : ℤ) : ℚ) * ((-y : ℤ) : ℚ) := by push_cast; linarith
     exact_mod_cast h'
-
 
 open scoped MatrixGroups TensorProduct in
 open Matrix in

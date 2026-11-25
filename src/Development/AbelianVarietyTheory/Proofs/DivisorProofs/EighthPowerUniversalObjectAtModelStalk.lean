@@ -216,7 +216,6 @@ open GlobalTheory.Poinc GlobalTheory.Poinc.Eq8 Formalism.L2.Pj
 attribute [local instance] Over.cartesianMonoidalCategory
 open Classical
 
-
 theorem _root_.GlobalTheory.T.exists_eighth_power_projections_extend_from_generic : ∀ (R : Type) [CommRing R] [IsDomain R] [IsNoetherianRing R] [IsIntegrallyClosed R] (G C : Over (Sp R)) [GrpObj G] [IsCommMonObj G] [GrpObj C] [IsCommMonObj C], IsSemiAbelian G → IsAbelianScheme C → ∀ pr' : Fin 8 → ((Over.pullback (jK R)).obj G ⟶ (Over.pullback (jK R)).obj C), (∀ a, IsMonHom (pr' a)) → (∀ (T' : Over (Sp (FractionRing R))) (y : Fin 8 → (T' ⟶ (Over.pullback (jK R)).obj C)), ∃! x : T' ⟶ (Over.pullback (jK R)).obj G, ∀ a, x ≫ pr' a = y a) → ∃ prO : Fin 8 → (G ⟶ C), (∀ a, IsMonHom (prO a)) ∧ (∀ a, (Over.pullback (jK R)).map (prO a) = pr' a) ∧ ∀ (T' : Over (Sp R)) (y : Fin 8 → (T' ⟶ C)), ∃! x : T' ⟶ G, ∀ a, x ≫ prO a = y a := by
   first | exact @GlobalTheory.PowExtend.exists_pow_projections
 end -- clump:auto
@@ -363,7 +362,7 @@ theorem eighth_power_at_stalk : ∀ (g n : ℕ) (o : Type) [CommRing o] (ζ : o)
     ((V.toScheme.fromSpecStalk z ≫ v) ≫ F.s) (V.toScheme.fromSpecStalk z ≫ v) rfl
     (by rw [hid, Category.comp_id])).1 F.univ
   obtain ⟨χ, χ₂, χ₂', hχ, hsq, hsq', hP⟩ := exists_siegPB_compare F.univ cO c _ u (jK (V.toScheme.presheaf.stalk z)) _ hjv hcO hpb
-  obtain ⟨pr', hpr'χ, hmon', huniv'⟩ := GlobalTheory.T.eighthPowerProjections_groupPullback pr hψpb hχ hmon huniv
+  obtain ⟨pr', hpr'χ, hmon', huniv'⟩ := GlobalTheory.GrpPullPow.pr_pull pr hψpb hχ hmon huniv
   have t2 := GlobalTheory.T.exists_eighth_power_projections_extend_from_generic (V.toScheme.presheaf.stalk z)
   have t3 := t2 ((Over.pullback (V.toScheme.fromSpecStalk z ≫ V.ι)).obj FinalForm.G)
   have t4 := t3 cO.A
@@ -423,7 +422,7 @@ theorem eighth_power_at_stalk : ∀ (g n : ℕ) (o : Type) [CommRing o] (ζ : o)
     have hgen : ((Over.pullback (jK (V.toScheme.presheaf.stalk z))).map ((Over.pullback (V.toScheme.fromSpecStalk z ≫ V.ι)).map f)).left ≫
         (ψ ≫ pullback.fst ρ.P.A.hom FinalForm.u₀) = (ψ ≫ pullback.fst ρ.P.A.hom FinalForm.u₀) ≫ f₁.left := by
       rw [← Category.assoc, key, Category.assoc, hmapf₁, Category.assoc]
-    have hME := GlobalTheory.T.elementaryMatrixEndomorphism_groupPullback_transport pr pr' a b f₁ _ hψpb hχ hpr'χ hgen hf₁
+    have hME := GlobalTheory.MatEndPull.matEnd_pull pr pr' a b f₁ _ hψpb hχ hpr'χ hgen hf₁
     have hsemiC := GlobalTheory.isSemiAbelian_of_isAbelianScheme cO.A cO.ab
     have hone : (Over.pullback (jK (V.toScheme.presheaf.stalk z))).map (1 : ((Over.pullback (V.toScheme.fromSpecStalk z ≫ V.ι)).obj FinalForm.G) ⟶ cO.A) = 1 := by
       apply GlobalTheory.MatEndPull.ext_of_pb (isGrpPullback_pullback cO.A (jK (V.toScheme.presheaf.stalk z)))

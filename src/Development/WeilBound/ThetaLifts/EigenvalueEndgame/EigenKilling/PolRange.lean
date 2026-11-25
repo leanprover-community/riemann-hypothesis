@@ -58,17 +58,14 @@ section Tensor
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι] {V : ι → Type} [∀ i, AddCommGroup (V i)] [∀ i, Module ℂ (V i)]
 
-theorem atPl_eq' (w : ι) (L : Module.End ℂ (V w)) :
-    atPl w L = PiTensorProduct.mapMultilinear ℂ V V (Function.update (fun i => (LinearMap.id : V i →ₗ[ℂ] V i)) w L) := rfl
-
 theorem atPl_add' (w : ι) (L L' : Module.End ℂ (V w)) : atPl w (L + L') = atPl w L + atPl w L' := by
-  simp only [atPl_eq', MultilinearMap.map_update_add]
+  simp only [GlobalTheory.RealLift.PolRangePf.atPl_eq', MultilinearMap.map_update_add]
 
 theorem atPl_smul' (w : ι) (c : ℂ) (L : Module.End ℂ (V w)) : atPl w (c • L) = c • atPl w L := by
-  simp only [atPl_eq', MultilinearMap.map_update_smul, RingHom.id_apply]
+  simp only [GlobalTheory.RealLift.PolRangePf.atPl_eq', MultilinearMap.map_update_smul, RingHom.id_apply]
 
 theorem atPl_zero' (w : ι) : atPl w (0 : Module.End ℂ (V w)) = 0 := by
-  simp only [atPl_eq', MultilinearMap.map_update_zero]
+  simp only [GlobalTheory.RealLift.PolRangePf.atPl_eq', MultilinearMap.map_update_zero]
 
 end Tensor
 
@@ -89,28 +86,6 @@ theorem exists_mat_at {F E : Type} [Field F] [NumberField F] [Field E] [NumberFi
     exact (ha i j).1 x hx
   · ext i j
     simp [(ha i j).2 w]
-
-theorem tens_top_heis {ι : Type} [Fintype ι] [DecidableEq ι] {P Q R S : ℕ}
-    (N : Submodule ℂ (⨂[ℂ] _ : ι, Formalism.BasicNotions.TH.Pol P Q R S))
-    (h1 : PiTensorProduct.tprod ℂ (fun _ => (1 : Formalism.BasicNotions.TH.Pol P Q R S)) ∈ N)
-    (hN : ∀ w c, ∀ T ∈ N, atPl w (heisOp (P := P) (Q := Q) (R := R) (S := S) c) T ∈ N) : N = ⊤ := by
-  refine _root_.GlobalTheory.RealLift.tensor_submodule_eq_top N h1 fun w l T hT => ?_
-  let K : Submodule ℂ (Module.End ℂ (Formalism.BasicNotions.TH.Pol P Q R S)) :=
-    { carrier := {L | ∀ T ∈ N, atPl w L T ∈ N}
-      add_mem' := fun {a b} ha hb T hT => by
-        rw [atPl_add', LinearMap.add_apply]; exact N.add_mem (ha T hT) (hb T hT)
-      zero_mem' := fun T _ => by rw [atPl_zero']; exact N.zero_mem
-      smul_mem' := fun c a ha T hT => by rw [atPl_smul', LinearMap.smul_apply]; exact N.smul_mem c (ha T hT) }
-  have hK : Submodule.span ℂ (Set.range (heisOp (P := P) (Q := Q) (R := R) (S := S))) ≤ K :=
-    Submodule.span_le.2 (by rintro _ ⟨c, rfl⟩; exact hN w c)
-  exact hK (_root_.GlobalTheory.MulVarSpan.mulX_mem_span l) T hT
-
-theorem sumPl_twist_one {ι : Type} [Fintype ι] [DecidableEq ι] {P Q R S : ℕ} (c : ι → Matrix (Ix P Q) (Ix R S) ℂ) :
-    sumPl (fun w => heisOp (Complex.I • (Jm P Q * c w * Jm R S))) (PiTensorProduct.tprod ℂ (fun _ => (1 : Formalism.BasicNotions.TH.Pol P Q R S)))
-      = Complex.I • sumPl (fun w => heisOp (c w)) (PiTensorProduct.tprod ℂ (fun _ => (1 : Formalism.BasicNotions.TH.Pol P Q R S))) := by
-  simp only [sumPl, LinearMap.sum_apply, Finset.smul_sum, _root_.GlobalTheory.RealLift.atPl_tprod, _root_.GlobalTheory.RealLift.heisOp_twist_one]
-  refine Finset.sum_congr rfl fun w _ => ?_
-  exact (PiTensorProduct.tprod ℂ).map_update_smul _ w Complex.I _
 
 theorem polRange_of (hL : ActsLaws) (_hD : DerEx) (hV : VacLine) : PolRange := by
   apply GlobalTheory.RealLift.PolRangePf.polRange_of <;> assumption

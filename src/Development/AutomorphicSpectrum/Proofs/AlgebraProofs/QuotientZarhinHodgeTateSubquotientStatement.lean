@@ -893,8 +893,8 @@ theorem sub_abelianScheme : QuotientByFiniteFlatStatement → ZarhinStatement �
     (q ≫ i) hjm
   obtain ⟨hK, hid⟩ := GlobalTheory.T.torsion_points_homomorphism_compatible p C v R hint hp A P.A T N pt hpt T' _ pt' hpt' (q ≫ i) hjm K
     hj jN hjN
-  obtain ⟨⟨AA, hAA⟩, -⟩ := GlobalTheory.T.torsion_points_hopf_order p C v R hint hp A T N pt hpt
-  obtain ⟨⟨AP, hAP⟩, -⟩ := GlobalTheory.T.torsion_points_hopf_order p C v R hint hp P.A T' _ pt' hpt'
+  obtain ⟨⟨AA, hAA⟩, -⟩ := PositivityTheory.HtPt.Rf.tors_hopf p C v R hint hp A T N pt hpt
+  obtain ⟨⟨AP, hAP⟩, -⟩ := PositivityTheory.HtPt.Rf.tors_hopf p C v R hint hp P.A T' _ pt' hpt'
   have hinv := _root_.GlobalTheory.CompanionTheory.Relay.hopf_order_pullback_along_hom p C v R hint hp N AA _ AP jN
     (by rw [hAA, hAP]; exact hpull) (by rw [hAA, hAP]; exact hid)
   rw [hAA, hAP, hK] at hinv
@@ -1001,9 +1001,9 @@ theorem subquotientStatement_of_quotient_zarhin_hodgeTate
   have hi : Function.Injective i := Function.LeftInverse.injective (g := π) hiπ
   haveI : Finite N := Finite.of_injective i hi
   letI : Fintype N := Fintype.ofFinite N
-  obtain ⟨⟨AA, hAA⟩, -⟩ := GlobalTheory.T.torsion_points_hopf_order p C v R hv hp A T N' pt hpt
+  obtain ⟨⟨AA, hAA⟩, -⟩ := PositivityTheory.HtPt.Rf.tors_hopf p C v R hv hp A T N' pt hpt
   have hgen := GlobalTheory.T.abelian_scheme_torsion_augmentation hQ hZ hH p C v R hv hp hc A L hA hL hamp T N' pt hpt (K.map i)
-  have hret := _root_.GlobalTheory.CompanionTheory.Ar.GR.ret_hopf_factor p C v R hv hp N' AA N i π hiπ (by rw [hAA]; exact hst)
+  have hret := _root_.PositivityTheory.HtPt.Re.ret_hopf p C v R hv hp N' AA N i π hiπ (by rw [hAA]; exact hst)
   rw [← hAA]
   exact hret.2.2 K (by rw [hAA]; exact hgen)
 

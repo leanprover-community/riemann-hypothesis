@@ -161,7 +161,6 @@ namespace GlobalTheory.CompHt.Test
 open MvPolynomial NumberField IsDedekindDomain Module Filter GlobalTheory.ChowHt GlobalTheory.AllWt GlobalTheory.CompHt
 open scoped ENNReal
 
-
 set_option autoImplicit false in
 open MvPolynomial NumberField IsDedekindDomain Module Filter in
 open scoped ENNReal in
@@ -230,7 +229,6 @@ theorem isRatSec_pow {Z : Scheme.{0}} [IsIntegral Z] {L : LB Z} {r : L.ι → Z.
   rw [e, Units.val_pow_eq_pow_val, Units.val_pow_eq_pow_val, Units.val_pow_eq_pow_val, map_pow,
     ← mul_pow, hr _ _ (l h)]
   exact congrArg (fun a => (a * _) ^ τ) (fnOf_resG l h _).symm
-
 
 end GlobalTheory.TrueGeo.SmallSec
 end -- clump:auto
@@ -319,7 +317,6 @@ theorem eq_zero_of_genVal' {E : Type} [Field E] [NumberField E] [IsCMField E] {H
   by_cases hZ : Z' = Z
   · rw [hZ, h0]
   · exact evC_eq_zero (GlobalTheory.Reg.genFrEx_and_genFromTest _ _ _ _ _ _).1 hZ hf.2
-
 
 end PositivityTheory.Xj7N.Inj
 
@@ -422,15 +419,6 @@ open MvPolynomial Filter Topology NumberField
 
 namespace ChowFormHeightComparison₂.GenericDenseBound
 
-theorem ratPrimeDense : GroundTheory.Heights₂.Heights.HilbertSamuel.RatPrimeDense.Statement :=
-  GroundTheory.Heights₂.Heights.HilbertSamuel.RatPrimeDense.proof
-    (GroundTheory.Heights₂.Heights.HilbertSamuel.FiniteSeparatingModel.proof
-      GroundTheory.Heights₂.Heights.HilbertSamuel.NoetherProjection.proof
-      GroundTheory.Heights₂.Heights.HilbertSamuel.RootsLiftToZeros.proof)
-    GroundTheory.Heights₂.Heights.HilbertSamuel.RootsNear.proof
-    GroundTheory.Heights₂.Heights.HilbertSamuel.RootsBounded.proof
-    GroundTheory.Heights₂.Heights.HilbertSamuel.PolyNonvanishDense.proof
-
 theorem generic_dense {n : ℕ} (P : Ideal (MvPolynomial (Fin n) ℚ)) (hP : P.IsPrime) {z₀ : Fin n → ℂ}
     (hz₀ : ∀ g ∈ P, aeval z₀ g = 0) :
     ∃ z : ℕ → Fin n → ℂ, (∀ m g, aeval (z m) g = 0 ↔ g ∈ P) ∧ Tendsto z atTop (𝓝 z₀) := by
@@ -446,7 +434,7 @@ theorem generic_dense {n : ℕ} (P : Ideal (MvPolynomial (Fin n) ℚ)) (hP : P.I
     isOpen_ne_fun ((_root_.GroundTheory.Heights₂.Heights.HilbertSamuel.RootsBounded.continuous_aeval f.1).comp continuous_subtype_val) continuous_const
   have hD : ∀ f, Dense (O f) := fun f => by
     rw [Subtype.dense_iff]
-    refine (ratPrimeDense (Fin n) P f.1 hP f.2).trans (closure_mono ?_)
+    refine (GroundTheory.Heights₂.Heights.HilbertSamuel.RatPrimeDense.full (Fin n) P f.1 hP f.2).trans (closure_mono ?_)
     rintro z ⟨h1, h2⟩
     exact ⟨⟨z, h1⟩, h2, rfl⟩
   obtain ⟨u, hu, hl⟩ := mem_closure_iff_seq_limit.1 (dense_iInter_of_isOpen hO hD ⟨z₀, hz₀⟩)
@@ -787,25 +775,6 @@ end GlobalTheory.CompanionTheory.Ar.Rec
 
 namespace GlobalTheory.CompanionTheory.Ar.Rec
 
-theorem cls_nsmul_common {Y : Scheme.{0}} {Λ : Type} [AddCommGroup Λ] {B : Λ → LB Y} (C : Common B) (n : ℕ)
-    (a : Λ) : cls (B (n • a)) (C.isLB (n • a)) = n • cls (B a) (C.isLB a) := by
-  induction n with
-  | zero =>
-    have h := GlobalTheory.HSApp.cls_common_add C 0 0
-    simp only [add_zero] at h
-    simp only [zero_nsmul]
-    exact left_eq_add.1 h
-  | succ n ih => rw [succ_nsmul, GlobalTheory.HSApp.cls_common_add C, ih, succ_nsmul]
-
-theorem val_ne_zero {F : Type} [Field F] {X : Scheme.{0}} (p : X ⟶ Sp F) {B : LB X} (θ : B.Sec) (z : Sp ℂ ⟶ X)
-    (k : B.ι) (hk : ⊤ ≤ z ⁻¹ᵁ B.U k) (hz : ∀ s, z s ∈ nonzeroLocus θ) :
-    H0.val z k le_top hk (H0.ofSec p ⊤ θ) ≠ 0 := by
-  refine (H0.val_ofSec z k le_top hk θ).trans_ne ?_
-  have h : ⊤ ≤ z ⁻¹ᵁ X.basicOpen (θ.f k) := fun s hs =>
-    (X.mem_basicOpen _ _ (hk hs)).2 ((isUnit_ger_iff θ (hk hs)).2 (hz s))
-  rw [← TangentOrigin.evalPt_res z (X.basicOpen_le _) hk h]
-  exact ((X.toRingedSpace.isUnit_res_basicOpen (θ.f k)).map _).ne_zero
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
   {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {σ : c.F →+* ℂ}
 
@@ -825,7 +794,7 @@ theorem evR_ruleTop_ne_zero (T : TorFlag Xo c) (e : Ix Dw → ℤ) (θ : (T.X.F.
   obtain ⟨t, ht⟩ := hQ.exists_frBor hl
   rw [GlobalTheory.CompanionTheory.Ar.OntoDef.evR_ruleTop _ hO hQ ht]
   let z : Sp (CAt σ) ⟶ T.X.YY := T.X.ptY y
-  have h₁ := val_ne_zero (flagStr T.X) θ z k hz hy
+  have h₁ := GlobalTheory.OrbitSep.val_ofSec_ne_zero (flagStr T.X) θ z k hz hy
   exact mul_ne_zero (M₀ := ℂ) (Units.ne_zero (M₀ := ℂ) (∏ ix, t ix ^ e ix : (CAt σ)ˣ)) h₁
 
 end GlobalTheory.CompanionTheory.Ar.Rec
@@ -850,7 +819,7 @@ theorem exists_nonvanishing_of_toroidal : GlobalTheory.Published.ToroidalForFanK
   have C := commonLL TF.X
   let Lc : (Ix Dw → ℤ) → Pic TF.X.YY := fun e => cls (TF.X.F.LL e) (TF.X.F.isLB_LL e)
   have hadd : ∀ a b, Lc (a + b) = Lc a + Lc b := fun a b => GlobalTheory.HSApp.cls_common_add C a b
-  have hnsm : ∀ (n : ℕ) a, Lc (n • a) = n • Lc a := fun n a => cls_nsmul_common C n a
+  have hnsm : ∀ (n : ℕ) a, Lc (n • a) = n • Lc a := fun n a => GlobalTheory.OrbitSep.cls_nsmul C n a
   have hneg : ∀ a, Lc (-a) = - Lc a := fun a => by
     have h0 : Lc 0 = 0 := by
       have := hadd 0 0
@@ -944,8 +913,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.TopCovolSlim2Use", "h": "module\n\npublic import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.GrothendieckDeformation\npublic import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.ToroidalCompactificationBis\npublic import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.InterNumDetNonposSplitTorus\npublic import Development.AutomorphicSpectrum.PublishedTheorems.Algebra₂.FarguesExact\npublic import Development.AutomorphicSpectrum.PublishedTheorems.Algebra₂.ZarhinStatement\npublic import Development.AutomorphicSpectrum.PublishedTheorems.Geometry₂.NefRR\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.HodgeBundleWeights.ToKnownTheoremsOf\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.LiftLambdaBound\npublic import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ArBirational\npublic import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.PointSeparationPair\npublic import Development.AutomorphicSpectrum.PublishedTheorems.Geometry₂.ConclusionOfSmooth\npublic import Development.AutomorphicSpectrum.PublishedTheorems.Geometry₂.NotSubsetOfDenseCompl\npublic import Development.AutomorphicSpectrum.PublishedTheorems.Metrics₂.PoincareLelongInv\npublic import Development.WeilBound.CoreStatements.AutomorphicKernels.MoriwakiBigness.HilbertSamuelApplications.SmallGeneratedCountUpperOfUse\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ChowFormIntExistsAndChowFormExists\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GreenCuspidalCharsByRegularCharsProof\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SumRangeEqRoots\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.HodgeBundleWeights.ChowFormHeightComparison\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.HodgeBundleWeights.SmallSectionsInjective\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.TopCovolG\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsNonvanishingOfToroidal\npublic import Development.WeilBound.CoreStatements.AbelianHeightsDuality.PublishedTheoremStatements.BridgesMore\npublic import Development.WeilBound.CoreStatements.AutomorphicKernels.MoriwakiBigness.HilbertSamuelApplications.AhSlimU\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.HypothesesX\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.SemiposAtOfPositive\n\n"}
 section -- clump:auto
 @[expose] public section
-
-
 
 section
 section

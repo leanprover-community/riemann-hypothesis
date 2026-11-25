@@ -64,8 +64,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
-theorem _root_.GlobalTheory.T.isStronglyTrivial_cubicalThetaFinsupp_tensor : ∀ (R : Type) [CommRing R] [IsDomain R] (D D' : DegPre R) {r : ℕ} (W : Matrix (Fin r) (Fin r) ℤ) (T : Tens D D' W), D.TauBimult → ∀ a b c : GlobalTheory.TensBal.Vec r, GlobalTheory.TensBal.Triv T (GlobalTheory.TensBal.theta a b c) := by
-  first | exact @GlobalTheory.TensBal.triv_theta
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsStronglyTrivialCubicalThetaFinsuppTensorStatement =====
@@ -407,13 +405,6 @@ end Calc
 
 variable {R : Type} [CommRing R] [IsDomain R] {D D' : DegPre R} {r : ℕ} {W : Matrix (Fin r) (Fin r) ℤ}
 
-theorem vecLat_add (T : Tens D D' W) (u v : Vec r) (y y' : D'.X) :
-    vecLat T (u + v) y y' = vecLat T u y y' + vecLat T v y y' := by
-  simp only [vecLat, Pi.add_apply, add_smul, Finset.sum_add_distrib]; abel
-
-theorem vecLat_zero (T : Tens D D' W) (y y' : D'.X) : vecLat T 0 y y' = 0 := by
-  simp [vecLat]
-
 theorem vecLat_rosVec (T : Tens D D' W) (A A' : Matrix (Fin r) (Fin r) ℤ) (y y' : D'.X) (a : Fin 6) (i : Fin r) :
     vecLat T (rosVec A A' a i) y y' = T.xe (rosLat T A A' y y' a) i := by
   fin_cases a <;>
@@ -485,8 +476,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
-theorem _root_.GlobalTheory.T.transported_generator_unique_globalFunctions_base : ∀ {X X' Y S₀ : Scheme.{0}} {M : LB X} {M' : LB X'}, M.IsLB → M'.IsLB → ∀ {K₀ : Type} [Fintype K₀] {ψ : K₀ → (X' ⟶ X)} {δ : K₀ → ℤ} (w : LB.Iso M' (LB.LinComb M ψ δ)), w.IsGen → ∀ {K K₁ : Type} [Fintype K] [Fintype K₁] {φ' : K → (Y ⟶ X')} {ε : K → ℤ} {φ : K₁ → (Y ⟶ X)} {ε₁ : K₁ → ℤ}, FormEq (fun p : K × K₀ => φ' p.1 ≫ ψ p.2) (fun p => ε p.1 * δ p.2) φ ε₁ → ∀ {t' : LB.Gen (LB.LinComb M' φ' ε)}, t'.IsGen → ∀ {t : LB.Gen (LB.LinComb M φ ε₁)}, t.IsGen → ∀ (p : Y ⟶ S₀) (e : S₀ ⟶ Y), e ≫ p = 𝟙 _ → Function.Surjective p.appTop.hom → (∀ (y : S₀) (J : (S₀ ⟶ X) → M.ι) (J' : (S₀ ⟶ X') → M'.ι), Good M y J → Good M' y J' → (∏ a, GlobalTheory.TensBal.isoV w y J J' (e ≫ φ' a) ^ ε a) * val t' e y J' = val t e y J) → ∀ (Z : Scheme.{0}) (r : Z ⟶ Y) (z : Z) (J : (Z ⟶ X) → M.ι) (J' : (Z ⟶ X') → M'.ι), Good M z J → Good M' z J' → (∏ a, GlobalTheory.TensBal.isoV w z J J' (r ≫ φ' a) ^ ε a) * val t' r z J' = val t r z J := by
-  first | exact @GlobalTheory.TensBalUniq.iso_unique
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.TransportedGeneratorUniqueGlobalFunctionsBaseStatement =====
@@ -506,13 +495,6 @@ noncomputable section
 namespace GlobalTheory.TensRos
 open GlobalTheory.TensBal GlobalTheory.TensAct
 variable {R : Type} [CommRing R] [IsDomain R] {D D' : DegPre R} {r : ℕ} {W : Matrix (Fin r) (Fin r) ℤ}
-
-theorem vecHom_add (T : Tens D D' W) (u v : Vec r) : vecHom T (u + v) = vecHom T u * vecHom T v := by
-  simp only [vecHom, Pi.add_apply, zpow_add, Finset.prod_mul_distrib]
-  exact mul_mul_mul_comm _ _ _ _
-
-theorem vecHom_zero (T : Tens D D' W) : vecHom T 0 = 1 := by
-  simp [vecHom]
 
 theorem prod_single {G : Type} [CommGroup G] (f : Fin r → G) (i : Fin r) :
     ∏ k, f k ^ (Pi.single i (1 : ℤ) : Fin r → ℤ) k = f i := by
@@ -627,7 +609,7 @@ theorem ros_sig : ∀ (R : Type) [CommRing R] [IsDomain R] (D D' : DegPre R) {r 
     surj_comp (surj_snd hG D'.P.isAb _) (hG _ _ D'.P.isAb).2
   have he : zero2 D'.P.A ≫ (snd D'.P.A D'.P.A).left ≫ D'.P.A.hom = 𝟙 _ := by
     rw [Over.w]; exact Over.w (lift η[D'.P.A] η[D'.P.A])
-  refine GlobalTheory.T.transported_generator_unique_globalFunctions_base D.P.isLB D'.P.isLB T.w T.w_gen (formEq_sig T A A') hu' hΞ _ (zero2 D'.P.A) he sj
+  refine GlobalTheory.TensBalUniq.iso_unique D.P.isLB D'.P.isLB T.w T.w_gen (formEq_sig T A A') hu' hΞ _ (zero2 D'.P.A) he sj
     (fun s I I' hI hI' => ?_) _ (D'.pt2 y y') z J J' hJ hJ'
   have o : (η[D'.P.A] : 𝟙_ (Over (Spec (CommRingCat.of R))) ⟶ D'.P.A) = 1 := by simp [Hom.one_def]
   have p := prod_ros (matAct T A) (matAct T A') η[D'.P.A] η[D'.P.A] (fun q => isoV T.w s I I' q)
@@ -681,7 +663,7 @@ theorem triv_span {R : Type} [CommRing R] [IsDomain R] {D D' : DegPre R} {r : �
     (T : Tens D D' W) (hB : D.TauBimult) {c : Vec r →₀ ℤ}
     (hc : c ∈ Submodule.span ℤ (Set.range fun p : Vec r × Vec r × Vec r => theta p.1 p.2.1 p.2.2)) : Triv T c := by
   induction hc using Submodule.span_induction with
-  | mem x hx => obtain ⟨p, rfl⟩ := hx; exact GlobalTheory.T.isStronglyTrivial_cubicalThetaFinsupp_tensor R D D' W T hB _ _ _
+  | mem x hx => obtain ⟨p, rfl⟩ := hx; exact GlobalTheory.TensBal.triv_theta R D D' W T hB _ _ _
   | zero => exact GlobalTheory.T.isStronglyTrivialFormalSumTensor_zero R D D' W T
   | add x y _ _ hx hy => exact GlobalTheory.T.isStronglyTrivialFormalSumTensor_add R D D' W T _ _ hx hy
   | smul n x _ hx =>

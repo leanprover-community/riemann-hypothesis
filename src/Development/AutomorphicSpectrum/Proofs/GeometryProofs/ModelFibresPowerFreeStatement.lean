@@ -335,12 +335,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-namespace GlobalTheory.CompanionTheory.Ar.GeomBC
-
-theorem geomPF_baseChange : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (X0 : Scheme.{0}) (t : SAB H X0), (∀ (k k₂ : Type) [Field k] [Field k₂] (f : k →+* k₂) (x : Sp k ⟶ X0), GeomPF t x → GeomPF t (spMap f ≫ x)) ∧ ∀ (X₂ : Scheme.{0}) (t₂ : SAB H X₂) (f : X₂ ⟶ X0) (_ : SABMap t₂ t f) (k : Type) [Field k] (x : Sp k ⟶ X₂), GeomPF t₂ x ↔ GeomPF t (x ≫ f) :=
-  PositivityTheory.HtPt.Cf.geompf_bc
-
-end GlobalTheory.CompanionTheory.Ar.GeomBC
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.GeometricPowerFreeFunctorial =====
@@ -355,8 +349,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.geometric_power_free_functorial : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (X0 : Scheme.{0}) (t : SAB H X0), (∀ (k k₂ : Type) [Field k] [Field k₂] (f : k →+* k₂) (x : Sp k ⟶ X0), GeomPF t x → GeomPF t (spMap f ≫ x)) ∧ ∀ (X₂ : Scheme.{0}) (t₂ : SAB H X₂) (f : X₂ ⟶ X0) (_ : SABMap t₂ t f) (k : Type) [Field k] (x : Sp k ⟶ X₂), GeomPF t₂ x ↔ GeomPF t (x ≫ f) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.GeomBC.geomPF_baseChange
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.GeometricPowerFreeFunctorialStatement =====
@@ -574,7 +566,6 @@ theorem charZero_stalk (Y : Model Xo c β) (z : Y.X) (w : Xo.XF c) (h : Y.j w �
 
 end Model
 
-
 open IsLocalRing in
 theorem exists_complete_dvr (A : Type) [CommRing A] [IsDomain A] [IsNoetherianRing A] [IsLocalRing A] (hA : ¬ IsField A)
     (k : Type) [Field k] [Algebra (ResidueField A) k] [FiniteDimensional (ResidueField A) k] :
@@ -615,7 +606,6 @@ theorem exists_complete_dvr (A : Type) [CommRing A] [IsDomain A] [IsNoetherianRi
     exact σ.commutes x
   rw [RingHom.comp_assoc, e₁, ← RingHom.comp_assoc, hs, ResidueField.map_comp]
 
-
 open IsLocalRing in
 theorem key_sq (X : Scheme.{0}) (z : X) (k R : Type) [Field k] [Algebra (X.residueField z) k] [CommRing R]
     [IsLocalRing R] (g : X.presheaf.stalk z →+* R) [IsLocalHom g] (s : k →+* ResidueField R)
@@ -642,7 +632,6 @@ theorem pt_comp {X Y Z : Scheme.{0}} (f : X ⟶ Y) (g : Y ⟶ Z) {x : X} {y : Y}
     (h₂ : g y = w) : (f ≫ g) x = w := by
   subst h₁ h₂
   exact Scheme.Hom.comp_apply f g x
-
 
 open IsLocalRing in
 theorem model_fibPF : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (O : Type) [CommRing O] [IsNoetherianRing O] (β : O →+* c.F) (Y : Model Xo c β), Dense (Set.range Y.j) → Y.SplitFibres → Y.N3 → ∀ (p : ℕ), p.Prime → ∀ z : Y.X, (p : Y.X.residueField z) = 0 → FibPF Y.t z := by
@@ -703,7 +692,7 @@ theorem model_fibPF : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H 
     exact isGt_of_iso (pullCompIso (spMap (residue R)) ξ Y.t.G) h₀
   obtain ⟨P, -, -⟩ := h3 R inferInstance inferInstance hc ξ t m' habs hsplit
   have g₁ := GlobalTheory.T.pel_uniformised_geometric_free E H R t P
-  obtain ⟨hb₁, hb₂⟩ := GlobalTheory.T.geometric_power_free_functorial E H Y.X Y.t
+  obtain ⟨hb₁, hb₂⟩ := PositivityTheory.HtPt.Cf.geompf_bc E H Y.X Y.t
   have g₂ := (hb₂ (Sp R) t ξ m' (ResidueField R) (spMap (residue R))).mp g₁
   have g₃ := hb₁ _ (AlgebraicClosure (ResidueField R)) (algebraMap _ _) _ g₂
   refine ⟨AlgebraicClosure (ResidueField R), inferInstance, inferInstance, _, ?_, g₃⟩

@@ -106,7 +106,6 @@ variable {X} {Y : Scheme.{0}} (f : Y ⟶ X)
 set_option backward.isDefEq.respectTransparency.types false in
 def bc : X.Etale ⥤ Y.Etale := MorphismProperty.Over.pullback @Etale ⊤ f
 
-
 set_option backward.isDefEq.respectTransparency.types false in
 instance : PreservesFiniteLimits (bc f) :=
   inferInstanceAs (PreservesFiniteLimits (MorphismProperty.Over.pullback @Etale ⊤ f))
@@ -154,14 +153,12 @@ def push : ShvS R Y ⥤ ShvS R X := (bc f).sheafPushforwardContinuous _ _ _
 variable (R) in
 def pull : ShvS R X ⥤ ShvS R Y := (bc f).sheafPullback _ _ _
 
-
 def adj : pull R f ⊣ push R f := (bc f).sheafAdjunctionContinuous _ _ _
 
 instance : (push R f).Additive where
   map_add := rfl
 
 instance : (pull R f).Additive := (adj f).left_adjoint_additive
-
 
 def resInj (F : ShvS R Y) : CochainComplex (ShvS R Y) ℤ := (injectiveResolution F).cochainComplex
 
@@ -202,18 +199,15 @@ open GlobalTheory.EtC.Rel
 section Sites
 variable {Z Y U Z' Y' U' : Scheme.{0}}
 
-
 set_option backward.isDefEq.respectTransparency.types false in
 def bcSq {a : Z ⟶ Z'} {i' : Z' ⟶ Y'} {i : Z ⟶ Y} {b : Y ⟶ Y'} (h : a ≫ i' = i ≫ b) :
     Rel.bc i' ⋙ Rel.bc a ≅ Rel.bc b ⋙ Rel.bc i :=
   (MorphismProperty.Over.pullbackComp a i').symm ≪≫ MorphismProperty.Over.pullbackCongr h ≪≫
     MorphismProperty.Over.pullbackComp i b
 
-
 set_option backward.isDefEq.respectTransparency.types false in
 def bcComp {f : U ⟶ Z} {g : Z ⟶ Y} {k : U ⟶ Y} (h : f ≫ g = k) : Rel.bc g ⋙ Rel.bc f ≅ Rel.bc k :=
   (MorphismProperty.Over.pullbackComp f g).symm ≪≫ MorphismProperty.Over.pullbackCongr h
-
 
 set_option backward.isDefEq.respectTransparency.types false in
 def bcFst (f : U ⟶ Y) : Rel.bc f ⋙ (Scheme.Etale.forget U ⋙ Over.forget U) ⟶ Scheme.Etale.forget Y ⋙ Over.forget Y where
@@ -598,10 +592,6 @@ theorem laurentMap_injective {A B : Type} [CommRing A] [CommRing B] (f : A →+*
   apply hf
   rw [← laurentMap_coeff_apply, ← laurentMap_coeff_apply, h]
 
-theorem spMap_comp' {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
-    spMap g ≫ spMap f = spMap (g.comp f) := by
-  rw [← Functor.map_comp, ← Spec.map_comp]; rfl
-
 variable (A S : Type) [CommRing A] [CommRing S] [Algebra A S]
 
 def diag : Finset S ⥤ CommRingCat.{0} where
@@ -719,7 +709,7 @@ theorem kill_colim : ∀ (q : ℕ) (A S : Type) [CommRing A] [CommRing S] [Algeb
   have e1 : spMap ((cocone A S).ι.app ∅).hom ≫
       spMap (laurentMap (algebraMap A (Algebra.adjoin A ((∅ : Finset S) : Set S)))) =
       spMap (laurentMap (algebraMap A S)) :=
-    (spMap_comp' _ (laurentMap (Algebra.adjoin A ((∅ : Finset S) : Set S)).val.toRingHom)).trans
+    (GlobalTheory.EtC.ExcisionNat.spMap_comp _ (laurentMap (Algebra.adjoin A ((∅ : Finset S) : Set S)).val.toRingHom)).trans
       (congrArg spMap (val_laurent A S ∅))
   have hy0 : pull _ (spMap ((cocone A S).ι.app ∅).hom) _ _
       (pull _ (spMap (laurentMap (algebraMap A (Algebra.adjoin A ((∅ : Finset S) : Set S))))) _ _ x) = 0 :=
@@ -728,7 +718,7 @@ theorem kill_colim : ∀ (q : ℕ) (A S : Type) [CommRing A] [CommRing S] [Algeb
   have e2 : spMap ((diag A S).map f).hom ≫
       spMap (laurentMap (algebraMap A (Algebra.adjoin A ((∅ : Finset S) : Set S)))) =
       spMap (laurentMap (algebraMap A (Algebra.adjoin A (k : Set S)))) :=
-    (spMap_comp' _ (laurentMap (Subalgebra.inclusion (Algebra.adjoin_mono (R := A)
+    (GlobalTheory.EtC.ExcisionNat.spMap_comp _ (laurentMap (Subalgebra.inclusion (Algebra.adjoin_mono (R := A)
       (Finset.coe_subset.2 f.le))).toRingHom)).trans
       (congrArg spMap (incl_laurent A S (Finset.coe_subset.2 f.le)))
   exact ⟨k, (congrArg (fun g => pull _ g (tw q i) n x) e2).symm.trans ((pull_comp _ _ _ _ _ x).trans hk)⟩

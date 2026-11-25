@@ -355,7 +355,6 @@ theorem phiDS_one {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel
   rw [inner_self_eq_norm_sq_to_K, hunit]
   simp
 
-
 theorem inner_apply_homDS {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} {M : DSModel V S} {H : Type}
     [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] {π : GA D V →* (H →L[ℂ] H)}
     (hπ : IsUnitaryRep π) {K : Subgroup (GfC V)} {Φ : ContinuousMultilinearMap ℂ M.H H} (hΦ : Φ ∈ homDS M π ⊤)
@@ -371,7 +370,6 @@ theorem inner_apply_homDS {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} {M :
   rw [inner_eq_bePi (fun τ => isIrrUnitary_dsRep M τ) hπ hΦ hΦ]
   rfl
 
-
 theorem eq_zero_of_apply_unitVec {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} {M : DSModel V S} {H : Type}
     [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] {π : GA D V →* (H →L[ℂ] H)}
     (hπ : IsUnitaryRep π) {Φ : ContinuousMultilinearMap ℂ M.H H} (hΦ : Φ ∈ homDS M π ⊤)
@@ -382,8 +380,6 @@ theorem eq_zero_of_apply_unitVec {D : D7} {V : HSp D} {S : D.what₂.Tau → SPa
   simp only [bePi] at hpos
   rw [h0, inner_zero_left] at hpos
   simp at hpos
-
-
 
 theorem finiteDimensional_of_bump {G E : Type} [Group G] [TopologicalSpace G] [MeasurableSpace G]
     [OpensMeasurableSpace G] [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E]
@@ -440,7 +436,6 @@ theorem finiteDimensional_of_bump {G E : Type} [Group G] [TopologicalSpace G] [M
       have : ‖x‖ * (‖J‖ * ‖x‖) = ‖x‖ ^ 2 * ‖J‖ := by ring
       linarith
   exact finiteDimensional_of_compact_bdd _ hcpt X (norm_pos_iff.2 hJ0) hbound
-
 
 theorem admissible_representation_factorisation : AdmSt := by
   intro D V S M μ _ H _ _ _ π hπ hcpt hU
@@ -910,7 +905,7 @@ theorem copyFinDS (h1 : IrredSt) (h2 : CompSt) (h4 : AdmSt) : GlobalTheory.Publi
   have hirr := GlobalTheory.FinPartIrrAdm.irreducible hπ hcomp hU hadm
   haveI : ν.IsHaarMeasure := hν.1
   have hfam : IsFinFamily D.sp.cm.sig V.gram (frameLat V) ff := hTD.2.2.2.2.2.2.isFinFamily
-  obtain ⟨⟨c', hc'⟩, -⟩ := GlobalTheory.T.admissibleRep_hasTrace_finiteAdelicPureTensorFunction D V ν ff hfam _ (finPartDSSm M hU) hadm
+  obtain ⟨⟨c', hc'⟩, -⟩ := GlobalTheory.FinTrace.hasTrace_finFn D V ν ff hfam _ (finPartDSSm M hU) hadm
   have hπc' := GlobalTheory.PsCo.Plug.copyTraceT D V lam S M T U μa μf μ fa ff hTD ν hν H π hπ _ (finPartDSSm M hU) hirr hadm hcopy c' hc'
   have hcc : c' = c := hπc'.2.symm.trans hc.2
   subst hcc

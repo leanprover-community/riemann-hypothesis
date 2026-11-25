@@ -84,8 +84,6 @@ section -- clump:auto
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.ArithmeticCylinders GlobalTheory.BadCount Module
 
-theorem _root_.GlobalTheory.T.embedsInRegularRepresentationCopies_of_free_permuted_summands : ∀ (K Γ V X : Type) [Field K] [Group Γ] [Finite Γ] [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Fintype X] [DecidableEq X] (ρ : Representation K Γ V) (H : Subgroup Γ) [MulAction H X], (∀ (h : H) (x : X), h • x = x → h = 1) → ∀ (A : X → Submodule K V), DirectSum.IsInternal A → (∀ (h : H) (x : X), ∀ v ∈ A x, ρ h v ∈ A (h • x)) → ∃ n : ℕ, EmbReg ρ H n ∧ n * Nat.card H = finrank K V := by
-  first | exact @GlobalTheory.BadCount.embReg_of_free_permuted_summands
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.EmbedsInRegularRepresentationCopiesOfFreePermuteStatement =====
@@ -600,7 +598,6 @@ namespace GlobalTheory.CompFin
 section
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 
-
 omit [NumberField E] [IsCMField E] in
 theorem castFrame_castFrame {Ψ Ψ' : Finset (E →+* ℂ)} (h : Ψ = Ψ') (x : Frame Ψ' r) :
     castFrame h (castFrame h.symm x) = x := rfl
@@ -641,7 +638,6 @@ theorem toComp_inj (v w : C → M.dom → ℂ) (h : ∀ c, toComp M c v = toComp
 end
 
 end GlobalTheory.CompFin
-
 
 open GlobalTheory.CompFin in
 theorem GlobalTheory.cusp_finite_of_comp : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (U C : Type) [Group U] [Finite C] [MulAction U C] (M : TwoLevels E r U C) (ka : Wt M.Ψ r), (∀ c : C, FiniteDimensional ℂ (Submodule.span ℂ ((fun f : Frame (M.comp c).Ψ r → ℂ => fun x : (M.comp c).dom => f x) '' (M.comp c).SS (castWt (M.comp_Ψ c) ka)))) → Module.Finite ℂ (M.cusp ka) := by
@@ -793,7 +789,6 @@ theorem pullRep_onComp (M : TwoLevels E r U C) (la : Wt M.Ψ r) (ρ : Representa
     exact (onComp M (g⁻¹ • c)).smul_mem t (ihx hx')
 
 end GlobalTheory.ShareOn.Decomp
-
 
 open GlobalTheory.ShareOn.Decomp in
 theorem GlobalTheory.ShareOn.cusp_decomp : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (U C : Type) [Group U] [Finite C]
@@ -962,7 +957,7 @@ theorem share_definite : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
     free_of_definite E (_root_.GlobalTheory.BalancedPointPf.balancedPoint E) (_root_.GlobalTheory.SmallElement.smallElement E) r H C (sub M H) hdef hH
   obtain ⟨A, hA, hAρ⟩ := _root_.GlobalTheory.ShareOn.cusp_decomp E r U C M ka ρ hρ
   have hAρH : ∀ (h : H) (x : C), ∀ v ∈ A x, ρ h v ∈ A (h • x) := fun h x v hv => hAρ h x v hv
-  exact ⟨GlobalTheory.T.embedsInRegularRepresentationCopies_of_free_permuted_summands ℂ U (M.cusp ka) C ρ H hfree A hA hAρH,
+  exact ⟨GlobalTheory.BadCount.embReg_of_free_permuted_summands ℂ U (M.cusp ka) C ρ H hfree A hA hAρH,
     fun lam => _root_.GlobalTheory.BadCount.card_mul_finrank_eig_of_free ℂ U (M.cusp ka) C ρ H hfree A hA hAρH H le_rfl lam⟩
 
 end GlobalTheory.ShareOn.Definite

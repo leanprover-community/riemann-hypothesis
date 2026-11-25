@@ -1352,7 +1352,7 @@ theorem mu_side {V : Type} [AddCommGroup V] [Module Ω V] (L : Lat ξ V) {r r' :
     rw [Matrix.mul_apply] at this
     rw [show T₀ k m = Tm m k from rfl, ← this]
     exact Finset.sum_congr rfl fun a _ => mul_comm _ _
-  refine ⟨(Pm⁻¹ * Tm).det, Tm.map i, _root_.GlobalTheory.CompanionTheory.Relay.det_lattice_frame_gen X Ω ξ V L r s b _ q hs hf hbs, ?_, le_antisymm (Submodule.span_le.2 ?_)
+  refine ⟨(Pm⁻¹ * Tm).det, Tm.map i, _root_.LevelTowerAlt.determinant_lattice_generator X Ω ξ V L r s b _ q hs hf hbs, ?_, le_antisymm (Submodule.span_le.2 ?_)
     (Submodule.span_le.2 ?_)⟩
   · rw [← Matrix.det_mul, hPT]
     exact (RingHom.map_det i _).symm
@@ -1455,7 +1455,7 @@ theorem mu_flag_side (hC : ChartVal) {x : CMType H × Fin (D.p + D.q) → K' →
     simp [(hg τ m ()).1]
   have v2 : ∀ τ, O.valuation (i (t τ)) = ∏ m, O.valuation (i (g τ m ())) := fun τ => by
     have h := ht τ
-    rw [_root_.GlobalTheory.CompanionTheory.Relay.det_lattice_flag_tensor _ _ _ _ _ _ _ (hb _) (Fl.sub _)] at h
+    rw [_root_.LevelTowerAlt.determinant_lattice_graded_tensor _ _ _ _ _ _ _ (hb _) (Fl.sub _)] at h
     rw [mu_gen_val hD h (mu_tens_gen _ fun m => hg τ m ())]
     simp only [zpow_one, map_prod]
     rfl

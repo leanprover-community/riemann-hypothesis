@@ -217,16 +217,6 @@ noncomputable section
 
 namespace GlobalTheory.ArcQ.IntChg
 
-section Sec
-
-variable {X Y : Scheme.{0}}
-
-theorem res_res {U V : X.Opens} (h : V ≤ U) (r : Γ(X, ⊤)) :
-    (X.presheaf.map (homOfLE h).op).hom (resG X (le_top : U ≤ ⊤) r) = resG X le_top r := by
-  rw [← CommRingCat.comp_apply, ← Functor.map_comp]; rfl
-
-end Sec
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
   {Xo : Moduli Dw l} {c : Coeff l}
 
@@ -380,8 +370,6 @@ namespace GlobalTheory.ArcQ
 
 open AlgebraicGeometry CategoryTheory CategoryTheory.Limits NumberField IsDedekindDomain
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.L2.Pj.QAt GlobalTheory.ArcQ GlobalTheory.Frames
-
-
 
 theorem recordAt_of_isArcFr : Out.Laws → Out.Laws2 → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l), GlobalTheory.Reg.EvLaws Xo c → ∀ (K₁ : Type) [Field K₁] [NumberField K₁] [Algebra c.F K₁] (d : ArcDatum Xo c K₁) (w : HeightOneSpectrum (𝓞 K₁)) (Z : FinSite K₁ w) (Dv : DvrFrame d w Z) (O : Type) [CommRing O] (β : O →+* c.F) (Y : Model Xo c β) (b : O →+* Dv.Tv.V) (aw : ArcIn Dw l β Dv.Tv.V b) (χ : Sp (PowerSeries Dv.Tv.V) ⟶ Y.X) (W : Wit Y aw χ) (ρ : (E →+* ℂ) → (𝓞 E →+* Dv.Tv.V)) (e : ∀ τ : E →+* ℂ, Fin (Dw.mult τ) → Out.GtPt aw.D₀ (epsR Dv.Tv.V)) (th : aw.D₀.P.L.Sec) (y₀ : FrPt Xo c (ArcSR Dw Dv.Tv.V Dv.ϖ)) (la : HeightOneSpectrum (𝓞 c.F)) (eL : ℕ), SiteAlg Z Dv.Tv Dv.ιT → OverLa la Dv.Tv.V (Dv.io.comp (algebraMap c.F K₁)) eL → (∀ τ x, algebraMap Dv.Tv.V Dv.Tv.Fr (ρ τ x) = Dv.io (algebraMap c.F K₁ (embK c τ x))) → (∀ (x : c.F) (v : Dv.Tv.V) (n : ℕ), (Dv.io.comp (algebraMap c.F K₁)) x * algebraMap Dv.Tv.V Dv.Tv.Fr Dv.ϖ ^ n = algebraMap Dv.Tv.V Dv.Tv.Fr v → algebraMap c.F (ArcSR Dw Dv.Tv.V Dv.ϖ) x * arcιR Dw Dv.Tv.V Dv.ϖ (PowerSeries.C (R := Dv.Tv.V) Dv.ϖ) ^ n = arcιR Dw Dv.Tv.V Dv.ϖ (PowerSeries.C (R := Dv.Tv.V) v)) → PushInvertible Y.t.G Y.t.PP.L → ArcBasis W ρ e → ThNZ th → Mono Y.j → IsArcFr W e th (arcιR Dw Dv.Tv.V Dv.ϖ) y₀ → FrChg (letMR Dw Dv.Tv.V Dv.ϖ) 1 y₀ Dv.yR → ∀ a n, RecordAt Dv (intAt Xo c a n la) := by
   intro hL hL2 E _ _ _ H Dw l Xo c hev K₁ _ _ _ d w Z Dv O _ β Y b aw χ W ρ e th y₀ la eL hS hO hρ hpin hP hB hth hmono hy hchg

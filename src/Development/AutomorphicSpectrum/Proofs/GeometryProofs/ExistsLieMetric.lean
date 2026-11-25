@@ -94,16 +94,6 @@ namespace CoverDenseAlt.Met
 
 open GlobalTheory.CompanionTheory.Ar.RootHt
 
-theorem lat_val (X : Scheme.{0}) (G : Over X) [GrpObj G] [IsCommMonObj G] (Ω : Type) [Field Ω]
-    (ξ : Spec (CommRingCat.of Ω) ⟶ X) (E : Type) [AddCommGroup E] [Module Ω E] (M : LieModel G ξ E) (R : Type)
-    [CommRing R] [IsLocalRing R] (z : Spec (CommRingCat.of R) ⟶ X) (h : genPt ξ ⤳ centre z) (ER : Type)
-    [AddCommGroup ER] [Module R ER] (MR : LieModel G z ER) :
-    IsCptGen ξ → Smooth G.hom → ∃ ev : M.lat ⟨centre z, h⟩ →+ ER,
-      (∀ (e : E) (w : ER), M.ValAt z e (MR.pt w) ↔ ∃ he : e ∈ M.lat ⟨centre z, h⟩, ev ⟨e, he⟩ = w) ∧
-      (∀ (a : regAt ξ ⟨centre z, h⟩) (r : R) e, ValAt ξ z (a : Ω) r → ev (a • e) = r • ev e) ∧
-      Submodule.span R (Set.range ev) = ⊤ := by
-  apply GlobalTheory.CompanionTheory.Ar.lieLat_val
-
 variable {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Sp Ω ⟶ X} {G : Over X} [GrpObj G]
   {Li : Type} [AddCommGroup Li] [Module Ω Li] {r : ℕ}
 
@@ -182,7 +172,6 @@ theorem co_iff (M : LieModel G ξ Li) (B : Fin r → Li) (z : Sp ℂ ⟶ X) {V :
     exact (β.repr_sum_self c).symm
   · rintro rfl
     exact ⟨V, inferInstance, inferInstance, Mz, β, fun i => (hβ i _).2 rfl, by rw [β.sum_repr]⟩
-
 
 open Classical in
 def co (M : LieModel G ξ Li) (B : Fin r → Li) (z : Sp ℂ ⟶ X) (v : epsAt z ⟶ G) : Fin r → ℂ :=
@@ -542,7 +531,6 @@ theorem exists_poly {κ : Type} {x : κ → Ω} {c : κ} {g : Ω} (hg : g ∈ ch
   have h : g ∈ Algebra.adjoin ℤ (Set.range fun j => x j / x c) := hg
   rw [Algebra.adjoin_range_eq_range_aeval] at h
   exact h
-
 
 open Classical in
 def vl (ξ : Sp Ω ⟶ X) (y : (Σ k, J k) → Ω) (a : Ω) (w : (Σ k, J k) → ℂ) : ℂ :=

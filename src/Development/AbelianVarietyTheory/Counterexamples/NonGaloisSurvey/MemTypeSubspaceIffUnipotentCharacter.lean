@@ -68,10 +68,6 @@ theorem act_mem (i : X.Tw) (j : ℕ) (b : Bool) (W : Submodule (FractionRing (X.
   | add f g hf hg => rw [map_add (f := _)]; exact W.add_mem hf hg
   | smul r f hf => rw [map_smul]; exact W.smul_mem r hf
 
-theorem eG_on_irred (i : X.Tw) (j : ℕ) (b : Bool) (W : Submodule (FractionRing (X.O i)) (Y.Fm i j b))
-    (hW : GIrred Y i j b W) : (∀ x ∈ W, eG Y i j b x = x) ∨ (∀ x ∈ W, eG Y i j b x = 0) := by
-  apply Formalism.MainNotions.IntegralHeckeForms.eG_irred <;> assumption
-
 theorem act_comm (i : X.Tw) (j : ℕ) (b : Bool) (T : Module.End (FractionRing (X.O i)) (Y.Fm i j b))
     (hT : ∀ g x, Y.actG i j b g (T x) = T (Y.actG i j b g x))
     (z : MonoidAlgebra (FractionRing (X.O i)) (G0g N)) (x : Y.Fm i j b) :
@@ -130,7 +126,7 @@ theorem admissibleGoodIdempotent_iff_reduced : GroupAlgebraIntegrality Y ↔ ∀
     ∀ j ∈ Finset.Icc 1 D.R.m, ∀ g k P, HkIdx i k P →
         (Y.actG i j b g).toLinearMap ∘ₗ Y.hkF i j b k P = Y.hkF i j b k P ∘ₗ (Y.actG i j b g).toLinearMap :=
   ⟨fun h i hi b => ⟨(h i hi b).1, fun j hj => ((h i hi b).2 j hj).1⟩,
-    fun h i hi b => ⟨(h i hi b).1, fun j hj => ⟨(h i hi b).2 j hj, fun _ W _ hW => eG_on_irred Y i j b W hW⟩⟩⟩
+    fun h i hi b => ⟨(h i hi b).1, fun j hj => ⟨(h i hi b).2 j hj, fun _ W _ hW => Formalism.MainNotions.IntegralHeckeForms.eG_irred Y i j b W hW⟩⟩⟩
 
 end GlobalTheory.TwistInputsTest
 

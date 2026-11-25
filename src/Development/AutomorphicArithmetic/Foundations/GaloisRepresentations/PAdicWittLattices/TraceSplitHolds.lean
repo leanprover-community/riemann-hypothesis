@@ -1178,7 +1178,6 @@ private theorem compPart {B k K Y T W₀ : Scheme.{0}} (p : Y ⟶ B) (g₁ : k �
     simp only [Category.assoc, ht', hσ₁]
   exact (bcCongr g₂ (bcComp g₁ σ t hσ ht hu) _ h').trans (bcComp g₂ _ _ hσ₁ ht' h')
 
-
 theorem UpperTheory.Gal.G3.jLowCov :
     GalClosD → BcSplits → BcGal → GenIso → ModBc → LowCov := by
   intro hGC hSp hGal hGI hM E _ _ l _ H θ w C D K τK hτ

@@ -219,8 +219,6 @@ theorem fg_of_int {E V : Type} [Field E] [NumberField E] [StarRing E] [AddCommGr
   choose o ho using h1
   exact ⟨o, funext fun l => ho l⟩
 
-
-
 theorem stabY_finite : ∀ (D : D7) (Z : LocDat D) (FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R.rS) (u u' : D.what₂.Word) (F G : LFlag (D.sp.Y 0) D.R.rS (((D.mem u).A.T : ℕ) : D.host.E)) (F' G' : LFlag (D.sp.Y 0) D.R.rS (((D.mem u').A.T : ℕ) : D.host.E)) (P : Finset (PlF D)) (d0 : Dat Z FP), 4 * D.R.rS + 7 ≤ D.R.k → BaseOK (Tu D u) (Tu D u') F F' P d0 → StdOff Z P F G F' G' → TotPos (Gval F F') → ∀ (Λ : LV D) (y : Dat Z FP), Λ ∈ Formalism.L2.SG.Pf.Cnt.GlueSet (VS D).hT (Formalism.L2.SG.Pf.Cnt.UPair D G.fl G') (Formalism.L2.SG.Pf.Cnt.MMof D G.fl G') → Λ ∈ globSet G G' y → (stabY F F' y).Finite := by
   intro D Z FP u u' F G F' G' P d0 _hk hB _hS hTP Λ y _hGl hΛ
   have hBased : Based Z FP (Tu D u) (Tu D u') F F' := hB.1
@@ -435,8 +433,6 @@ open NumberField MeasureTheory Formalism.BasicNotions Formalism.MainNotions.S Fo
 open scoped Classical ENNReal
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.glued_unimodular_lattice_iff_local_completions : ∀ (D : D7) (Z : LocDat D) (FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R.rS) (u u' : D.what₂.Word) (G : LFlag (D.sp.Y 0) D.R.rS (((D.mem u).A.T : ℕ) : D.host.E)) (G' : LFlag (D.sp.Y 0) D.R.rS (((D.mem u').A.T : ℕ) : D.host.E)), LinearIndependent D.host.E (Sum.elim (frame G) (frame G')) → ∀ Λ : LV D, Λ ∈ Formalism.L2.SG.Pf.Cnt.GlueSet (VS D).hT (Formalism.L2.SG.Pf.Cnt.UPair D G.fl G') (Formalism.L2.SG.Pf.Cnt.MMof D G.fl G') ↔ Submodule.IsLattice D.host.E Λ ∧ ∀ p, (locH Z p).IsSelfDual (lattice₂ D Z.M p Λ) ∧ (∀ i, (locH Z p).MMfam (tm FP G G' p (lattice₂ D Z.M p Λ)) i ∈ lattice₂ D Z.M p Λ) ∧ ¬ LocNG.BBne (H := locH Z p) (tm FP G G' p (lattice₂ D Z.M p Λ)) := by
-  first | exact @GlobalTheory.GenMass.GlueLoc.glue_iff_local
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.GluedUnimodularLatticeIffLocalCompletionsStatement =====
@@ -632,8 +628,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNo
 open scoped Classical
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.rational_unitriangular_frame_change_local_scalings : ∀ (D : D7) (Z : LocDat D), ∀ (f g : Fin (D.R.rS + 1) → (VS D).V) (A : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) D.host.E), Uni A → Chg f A g → ∃ Ap : ∀ p : PlF D, Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) (D.s.atP p).Ep, (∀ p, Uni (Ap p) ∧ Chg (scaled Z p f) (Ap p) (scaled Z p g)) ∧ {p : PlF D | ¬ ∀ a b, Ap p a b ∈ (Z.M p).L.O}.Finite := by
-  first | exact @GlobalTheory.LocOver.tri_scaled
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.RationalUnitriangularFrameChangeLocalScalingsStatement =====
@@ -665,7 +659,6 @@ private theorem infinite_finPlaces (K : Type) [Field K] [NumberField K] :
   have e : Ideal.span {((p : ℕ) : ℤ)} = Ideal.span {((q : ℕ) : ℤ)} := by rw [← hf p, ← hf q, hpq]
   have := Int.associated_iff_natAbs.1 (Ideal.span_singleton_eq_span_singleton.1 e)
   exact Subtype.ext (by simpa using this)
-
 
 private theorem isFullLattice_of_local_span {D : D7} (Z : LocDat D) (p : PlF D) (Λ : LV D)
     (hΛ : Submodule.IsLattice D.host.E Λ)
@@ -713,8 +706,8 @@ theorem orbit (Z : LocDat D) (FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R.rS)
     (∃ n ∈ (FP p).B.N, scaled Z p (frame G') = fun b => n ((FP p).B.f b)) := by
   obtain ⟨A, hA, hAc⟩ := hG
   obtain ⟨A', hA', hAc'⟩ := hG'
-  obtain ⟨Ap, hAp, -⟩ := GlobalTheory.T.rational_unitriangular_frame_change_local_scalings D Z _ _ A hA hAc
-  obtain ⟨Ap', hAp', -⟩ := GlobalTheory.T.rational_unitriangular_frame_change_local_scalings D Z _ _ A' hA' hAc'
+  obtain ⟨Ap, hAp, -⟩ := GlobalTheory.LocOver.tri_scaled D Z _ _ A hA hAc
+  obtain ⟨Ap', hAp', -⟩ := GlobalTheory.LocOver.tri_scaled D Z _ _ A' hA' hAc'
   have hN := (hR p).2.2.2.2.2.2
   have hfA : (FP p).A.f = scaled Z p (frame F) := (hB p).1
   have hfB : (FP p).B.f = scaled Z p (frame F') := (hB p).2.1
@@ -730,7 +723,6 @@ theorem mem_iff_of_img {α : Type*} {S S' : Set α} {f : α → α} (hf : Functi
 
 end GlobalTheory.GlueDat
 
-
 open GlobalTheory.GlueDat in
 theorem GlobalTheory.GlueDat.glued_data : ∀ (D : D7) (Z : LocDat D) (FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R.rS) (u u' : D.what₂.Word) (F G : LFlag (D.sp.Y 0) D.R.rS (((D.mem u).A.T : ℕ) : D.host.E)) (F' G' : LFlag (D.sp.Y 0) D.R.rS (((D.mem u').A.T : ℕ) : D.host.E)) (P : Finset (PlF D)) (d0 : Dat Z FP), 4 * D.R.rS + 7 ≤ D.R.k → BaseOK (Tu D u) (Tu D u') F F' P d0 → StdOff Z P F G F' G' → ∀ Λ : LV D, (Λ ∈ Formalism.L2.SG.Pf.Cnt.GlueSet (VS D).hT (Formalism.L2.SG.Pf.Cnt.UPair D G.fl G') (Formalism.L2.SG.Pf.Cnt.MMof D G.fl G') ↔ ∃ y : Dat Z FP, Λ ∈ globSet G G' y) ∧ (∀ y y' : Dat Z FP, Λ ∈ globSet G G' y → Λ ∈ globSet G G' y' → y = y') ∧ (∀ y : Dat Z FP, Λ ∈ globSet G G' y → (∀ p, p ∉ P → LocNG.Datum.Rel (d0 p) (y p)) ∧ {p | y p ≠ d0 p}.Finite) ∧ ∀ (y y' : Dat Z FP), ∀ h ∈ H0 F F', RMoves h y y' → (Λ ∈ globSet G G' y ↔ Formalism.HermitianLatticesTheory.gmap h Λ ∈ globSet G G' y') := by
   intro D Z FP u u' F G F' G' P d0 hk hB hS Λ
@@ -741,7 +733,7 @@ theorem GlobalTheory.GlueDat.glued_data : ∀ (D : D7) (Z : LocDat D) (FP : ∀ 
     _root_.GlobalTheory.HL.GenericTerm.generic_terms (Z.M p) (hOK p) (locH Z p) D.R.rS D.R.k (FP p) (GlobalTheory.GenMass.Fibre.finrank_eq p) (hR p)
       (scaled Z p (frame G)) (scaled Z p (frame G')) (hO p).1 (hO p).2 L
   refine ⟨?_, ?_, ?_, ?_⟩
-  · rw [GlobalTheory.T.glued_unimodular_lattice_iff_local_completions D Z FP u u' G G' (GlobalTheory.T.linearIndependent_changedRationalFrames_of_unitriangular D Z FP _ _ F G F' G' hB.1 hR hS.1 hS.2.1) Λ]
+  · rw [GlobalTheory.GenMass.GlueLoc.glue_iff_local D Z FP u u' G G' (GlobalTheory.T.linearIndependent_changedRationalFrames_of_unitriangular D Z FP _ _ F G F' G' hB.1 hR hS.1 hS.2.1) Λ]
     constructor
     · rintro ⟨hL, hp⟩
       have : ∀ p, ∃ d, lattice₂ D Z.M p Λ ∈ locSet G G' p d := fun p =>

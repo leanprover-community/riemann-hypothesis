@@ -75,34 +75,6 @@ open scoped TensorProduct
 
 noncomputable section
 
-namespace GlobalTheory.BotFac
-
-open GlobalTheory.SquareComm in
-theorem finRel_le_ker {D : D7} {M X : HSp D} {ω : GlobalTheory.Grid.WRep M X} {S : Submodule ℂ (WO M X → ℂ)} {Pi : Type} [AddCommGroup Pi]
-    [Module ℂ Pi] (p : (WO M X → ℂ) →ₗ[ℂ] Pi) (h : ∀ g ∈ GfC M, ∀ Φ ∈ S, p (ω (g, 1) Φ) = p Φ) : finRel ω S ≤ LinearMap.ker p := by
-  refine Submodule.span_le.2 ?_
-  rintro _ ⟨u, hu, Ψ, hΨ, rfl⟩
-  simp [map_sub, h u hu Ψ hΨ]
-
-theorem thetaKO_smul {D : D7} {S T : HSp D} (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)) (g : GA D S) (h : GA D T)
-    (c : ℂ) (f : WO S T → ℂ) : thetaKO om g h (c • f) = c * thetaKO om g h f := by
-  simp [thetaKO, map_smul]
-
-theorem thetaKO_sub {D : D7} {S T : HSp D} (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)) (g : GA D S) (h : GA D T)
-    (f f' : WO S T → ℂ) : thetaKO om g h (f - f') = thetaKO om g h f - thetaKO om g h f' := by
-  simp [thetaKO, map_sub]
-
-theorem thetaKO_add {D : D7} {S T : HSp D} (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)) (g : GA D S) (h : GA D T)
-    (f f' : WO S T → ℂ) : thetaKO om g h (f + f') = thetaKO om g h f + thetaKO om g h f' := by
-  simp [thetaKO, map_add (f := _)]
-
-theorem thetaKO_zero {D : D7} {S T : HSp D} (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)) (g : GA D S) (h : GA D T) :
-    thetaKO om g h 0 = 0 := by
-  simp [thetaKO]
-
-
-end GlobalTheory.BotFac
-
 end
 end -- clump:auto
 end -- clump:auto
@@ -132,7 +104,7 @@ theorem bottom_triple_integral_factorization_real : _root_.GlobalTheory.FunPr.Th
   have hH := hP.howeDualityReal
   have hLM := _root_.GlobalTheory.SquareLM.twisted_square_local_matching hH hP hK hM
   have hTA := _root_.GlobalTheory.T.twisted_square_theta_integrals_eq hP hK hM
-  obtain ⟨CF1, H1⟩ := GlobalTheory.T.definiteBottom_dictionary_frames_exponents_kernel
+  obtain ⟨CF1, H1⟩ := GlobalTheory.BotDict.bottom_dictionary
   obtain ⟨CF2, H2⟩ := _root_.GlobalTheory.T.theta_bottom_finite_place_matching hH hP hK hM
   refine ⟨max CF1 CF2, fun ε CF hCF => ?_⟩
   obtain ⟨C1, x1, G1⟩ := H1 ε CF (le_trans (le_max_left _ _) hCF)
@@ -160,7 +132,7 @@ theorem bottom_triple_integral_factorization_real : _root_.GlobalTheory.FunPr.Th
     obtain ⟨c, hc0, hc⟩ := hTA D W.ψ W.θ W.θ_is A A' WW FA FA' FW _ _ hTr X.m X.fd X.m' X.fd' hX.is.meas hX.is.meas'
       (X.ω t) (X.ω' t) Pm rf rl p p' hm
     have hrel := _root_.GlobalTheory.ThetaFinRelDef.theta_integral_finite_relation_eq_zero hP D W.ψ W.θ W.ψ_std W.θ_is A' WW FA' FW _ _ (X.ω' t) (hX.is.weil' t) hdef X.m' X.fd' hX.is.meas'
-    have kerp' := finRel_le_ker p' hm.mapB.invf
+    have kerp' := GlobalTheory.BottomFactor.finRel_le_ker p' hm.mapB.invf
     have memF : ∀ P', fockF W.ψ W.θ false FA' FW (X.f' t) P' ∈ algF W.ψ W.θ false FA' FW :=
       fun P' => Submodule.subset_span ⟨_, P', hf', rfl⟩
     have same : ∀ Ψ ∈ algF W.ψ W.θ false FA' FW, (∀ h, IntegrableOn (fun g => thetaKO (X.ω' t) g h Ψ) X.fd' X.m') →
@@ -170,7 +142,7 @@ theorem bottom_triple_integral_factorization_real : _root_.GlobalTheory.FunPr.Th
       obtain ⟨N, K, hmod⟩ := hmod
       funext h
       have h0 := congrFun (hrel _ hd) h
-      simp only [thetaInt, thetaKO_sub] at h0 ⊢
+      simp only [thetaInt, GlobalTheory.BottomFactor.thetaKO_sub] at h0 ⊢
       rw [integral_sub (hΨ h) (hmod h).1] at h0
       exact sub_eq_zero.1 h0
     have kill : ∀ Ψ ∈ algF W.ψ W.θ false FA' FW, (∀ h, IntegrableOn (fun g => thetaKO (X.ω' t) g h Ψ) X.fd' X.m') →
@@ -182,7 +154,7 @@ theorem bottom_triple_integral_factorization_real : _root_.GlobalTheory.FunPr.Th
         rw [LinearMap.mem_ker, map_sub, hp, zero_sub, neg_eq_zero] at this
         exact this
       have h1 := hI 0 (zero_mem _) (by rw [map_zero, hp0])
-      have h2 : thetaInt (X.ω t) X.m X.fd 0 = 0 := by funext h; simp [thetaInt, thetaKO_zero]
+      have h2 : thetaInt (X.ω t) X.m X.fd 0 = 0 := by funext h; simp [thetaInt, GlobalTheory.BottomFactor.thetaKO_zero]
       rw [h2] at h1
       rw [same Ψ hΨ hi Φ₀ hd hmod]
       exact ((smul_eq_zero.1 h1.symm).resolve_left hc0)
@@ -207,7 +179,7 @@ theorem bottom_triple_integral_factorization_real : _root_.GlobalTheory.FunPr.Th
       set Ψ := κ • fockF W.ψ W.θ false FA' FW (X.f' t) P' with hΨdef
       have hΨ : Ψ ∈ algF W.ψ W.θ false FA' FW := Submodule.smul_mem _ _ (memF P')
       have hΨi : ∀ h, IntegrableOn (fun g => thetaKO (X.ω' t) g h Ψ) X.fd' X.m' := fun h => by
-        simp only [hΨdef, thetaKO_smul]; exact (iI' t P' h).const_mul κ
+        simp only [hΨdef, GlobalTheory.BottomFactor.thetaKO_smul]; exact (iI' t P' h).const_mul κ
       obtain ⟨Φ₀, -, hd, hmod, hI⟩ := hc Ψ hΨ
       have hpp : p (fockF W.ψ W.θ true FA FW (X.f t) P) = p' Φ₀ := by
         have h1 : p' Φ₀ = p' Ψ := by
@@ -220,19 +192,19 @@ theorem bottom_triple_integral_factorization_real : _root_.GlobalTheory.FunPr.Th
       rw [h2, ← eI', mul_smul]
       congr 1
       funext h
-      simp [hΨdef, thetaInt, thetaKO_smul, integral_const_mul]
+      simp [hΨdef, thetaInt, GlobalTheory.BottomFactor.thetaKO_smul, integral_const_mul]
   choose hker hirr hlam using key
   let Il : T → PolF D WW.rank A'.rank →ₗ[ℂ] (GA D WW → ℂ) := fun t =>
     { toFun := fun P' => X.I' W.ψ W.θ t P'
       map_add' := fun P Q => by
         show X.I' W.ψ W.θ t (P + Q) = X.I' W.ψ W.θ t P + X.I' W.ψ W.θ t Q
         rw [← eI', ← eI', ← eI', map_add (f := _)]; funext h
-        simp only [thetaInt, thetaKO_add, Pi.add_apply]
+        simp only [thetaInt, GlobalTheory.BottomFactor.thetaKO_add, Pi.add_apply]
         exact integral_add (iI' t P h) (iI' t Q h)
       map_smul' := fun c P => by
         show X.I' W.ψ W.θ t (c • P) = c • X.I' W.ψ W.θ t P
         rw [← eI', ← eI', map_smul]; funext h
-        simp [thetaInt, thetaKO_smul, integral_const_mul] }
+        simp [thetaInt, GlobalTheory.BottomFactor.thetaKO_smul, integral_const_mul] }
   have hK : ∀ t, LinearMap.ker q' ≤ LinearMap.ker (Il t) := fun t P' h0 => hker t P' h0
   let J : T → (Pr →ₗ[ℂ] (GA D WW → ℂ)) := fun t =>
     ((LinearMap.ker q').liftQ (Il t) (hK t)) ∘ₗ (q'.quotKerEquivOfSurjective hq').symm.toLinearMap

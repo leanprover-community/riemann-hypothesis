@@ -116,12 +116,6 @@ theorem trL_mul_comm {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V]
   simp only [trL_apply, ContinuousLinearMap.toLinearMap_mul]
   exact LinearMap.trace_mul_comm ℂ _ _
 
-theorem sigma_mem {σ : (Fin n × Fin n → ℝ) → Mat n} (hσ2 : ∀ v ∈ cone n, σ v * (σ v)ᴴ = hOf v) {v} (hv : v ∈ cone n) :
-    σ v ∈ GLs n := by
-  have h1 : (hOf v).det ≠ 0 := (show (hOf v).PosDef from hv).det_pos.ne'
-  rw [← hσ2 v hv, Matrix.det_mul] at h1
-  exact left_ne_zero_of_mul h1
-
 theorem end1 : End1 := by
   intro n lam E Fr ε ι S Γ T hCx _ _ μ _ σ c hσ hσ2 hform k hk hkeq hkΓ d R hR
   set Fm : Mat n → ℂ := fun y => trL E.V (k (y⁻¹ * d.val * yᴴ⁻¹) * T) with hFm
@@ -155,7 +149,7 @@ theorem end1 : End1 := by
   have hcone : ∀ v ∈ cone n, trL E.V (Γ * S 1 * Kc σ c Fr k Γ T d.val (v, v)) =
       ((c : ℂ) * ((hOf v).det ^ n)⁻¹) * Fm (σ v) := by
     intro v hv
-    have hx := sigma_mem hσ2 hv
+    have hx := PositivityTheory.RgBcC.LfSt.GelfandReading.cone_mem_GLs hσ2 hv
     simp only [Kc, Kf, hCx.S1, mul_one, mul_smul_comm, map_smul, smul_eq_mul, hFm]
     congr 1
     have hw := tw_mem hx hdG

@@ -791,16 +791,11 @@ section Rows
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E]
 
-theorem mem_latV_iff_rows {d M n : ℕ} (b : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F))
-    (X : Fin n → Fin M → Fv F v ⊗[F] E) :
-    X ∈ latV b v ↔ ∀ a, (fun _ : Fin 1 => X a) ∈ latV b v :=
-  ⟨fun h a _ i k => h a i k, fun h a i k => h a 0 i k⟩
-
 theorem actW_mem_iff (σ : E →ₐ[F] E) {d M n : ℕ} (J : Matrix (Fin M) (Fin M) E)
     (b : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F)) (g : HA (Fv F v) σ J)
     (hg : latStab σ J b v g) (X : Fin n → Fin M → Fv F v ⊗[F] E) :
     actW (Fv F v) σ J g X ∈ latV b v ↔ X ∈ latV b v := by
-  rw [mem_latV_iff_rows, mem_latV_iff_rows b v X]
+  rw [GlobalTheory.CompanionTheory.WeilSiegel.HypMass.StageVal.mem_latV_iff_col, GlobalTheory.CompanionTheory.WeilSiegel.HypMass.StageVal.mem_latV_iff_col b v X]
   exact forall_congr' fun a => hg fun _ => X a
 
 theorem consA_mem_iff {d M n : ℕ} {b : Module.Basis (Fin d) F E} {v : HeightOneSpectrum (𝓞 F)}

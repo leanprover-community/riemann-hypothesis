@@ -405,7 +405,6 @@ variable (hI : ArchInteg) (hR : ArchRecip) {k : Type} [CommRing k] {Y : Scheme.{
   [IsLocallyNoetherian Y] {q : Y ⟶ Sp k} (hq : IsAmb q) {e : ℕ} (hd : topologicalKrullDim Y = (e + 1 + 1 : ℕ))
   {T : ∀ d : ℕ, (Fin d → HermLB q) → Y → ℝ} (hT : IsMix q (e + 1) T) (L : Fin e → HermLB q)
 
-
 include hI hR hq hd hT in
 theorem add_first (N M A : HermLB q) {r : M.B.ι → Y.functionFieldˣ} (hr : IsRatSec M.B r)
     {u : A.B.ι → Y.functionFieldˣ} (hu : IsRatSec A.B u) {t : (M.tens A).B.ι → Y.functionFieldˣ}
@@ -417,7 +416,6 @@ theorem add_first (N M A : HermLB q) {r : M.B.ι → Y.functionFieldˣ} (hr : Is
   rw [_root_.GlobalTheory.MixHt.recVal_indep_sec hI hR k Y q hq e hd T hT (M.tens A) (Fin.cons N L) t ht _ hp]
   exact _root_.GlobalTheory.MixHt.recVal_tens hI k Y q hq (e + 1) hd (T (e + 1) (Fin.cons N L)) (Fin.cons N L) M A r hr u hu _ hp
     fun _ _ _ _ => rfl
-
 
 include hI hR hq hd hT in
 theorem swap_of_sec (M N : HermLB q) (t : N.B.Sec) (ht : genericPoint Y ∈ nonzeroLocus t)
@@ -1057,7 +1055,6 @@ end GlobalTheory.CurveIndep
 
 namespace GlobalTheory.CurveIndep
 
-
 open Classical in
 theorem mixArch_zero {k : Type} [CommRing k] {Y : Scheme.{0}} [IsIntegral Y] {q : Y ⟶ Sp k}
     (L : Fin 0 → HermLB q) (N : HermLB q) {r : N.B.ι → Y.functionFieldˣ} (hr : IsRatSec N.B r) :
@@ -1067,14 +1064,6 @@ theorem mixArch_zero {k : Type} [CommRing k] {Y : Scheme.{0}} [IsIntegral Y] {q 
     rw [e]
   have e (S : Finset (Fin 0)) : S.card = 0 := by simp [Subsingleton.elim S ∅]
   simp [mixArch, FibreProj.pol, h, e]
-
-theorem archInt_eq_zero {k : Type} [CommRing k] {Z : Scheme.{0}} [IsIntegral Z] {q : Z ⟶ Sp k}
-    (hq : ∀ σ : k →+* ℂ, IsEmpty (CxPts q σ)) (L M : HermLB q) (e : ℕ)
-    {r : M.B.ι → Z.functionFieldˣ} (hr : IsRatSec M.B r) : L.archInt M e hr = 0 := by
-  unfold HermLB.archInt
-  refine finsum_eq_zero_of_forall_eq_zero fun σ => ?_
-  haveI := hq σ
-  simp [Weight.chernInt, MeasureTheory.integral_of_isEmpty]
 
 theorem main : ∀ (k : Type) [CommRing k] (Y : Scheme.{0}) [IsIntegral Y] [IsLocallyNoetherian Y] (q : Y ⟶ Sp k), IsAmb q → topologicalKrullDim Y = (0 + 1 : ℕ) → ∀ (N : HermLB q) (L : Fin 0 → HermLB q) (r : N.B.ι → Y.functionFieldˣ) (hr : IsRatSec N.B r) (r' : N.B.ι → Y.functionFieldˣ) (hr' : IsRatSec N.B r'), recVal (fun z => Real.log (Nat.card (Y.residueField z))) L N hr = recVal (fun z => Real.log (Nat.card (Y.residueField z))) L N hr' := by
   intro k _ Y _ _ q hA hd N L r hr r' hr'
@@ -1098,7 +1087,7 @@ theorem main : ∀ (k : Type) [CommRing k] (Y : Scheme.{0}) [IsIntegral Y] [IsLo
   rcases _root_.GlobalTheory.MixHt.amb_vertical_or_arithVar k Y q hA (0 + 1) hd with ⟨l, hl, ⟨alg⟩, hemp⟩ | ⟨e, he, hq⟩
   · have h0 : ∑ᶠ z, (Scheme.ord (f : Y.functionField) z : ℝ) * c z = 0 :=
       @_root_.GlobalTheory.PrincDegZero.finsum_ord_mul_log_card_eq_zero k _ Y _ _ q hA hd l hl alg (f : Y.functionField) f.ne_zero
-    rw [h0, archInt_eq_zero hemp, archInt_eq_zero hemp]
+    rw [h0, GlobalTheory.MixHt.archInt_eq_zero_of_isEmpty hemp, GlobalTheory.MixHt.archInt_eq_zero_of_isEmpty hemp]
     ring
   · obtain rfl : e = 0 := by omega
     have := hq.finite_emb

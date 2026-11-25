@@ -89,7 +89,6 @@ namespace GlobalTheory.ConjEquidistrib
 open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric
 open scoped nonZeroDivisors Pointwise
 
-
 open GlobalTheory.IndefiniteRowSideFullHecke.EquidistributedConjugates in
 theorem fixesK_conjEmb_iff (D : D7) (M : IntermediateField ℚ ℂ) (ρ : M →ₐ[ℚ] ℂ)
     (hm : ∀ a : D.host.K, D.host.φ₀ (a : D.host.E) ∈ M) :
@@ -506,28 +505,7 @@ open scoped nonZeroDivisors
 
 alias lemA := _root_.GlobalTheory.IdealLattice.main
 
-theorem lemB : EquidistributedConjugates.ConjugatesEquidistributed → PeriodLatticeAgreement.LatticePeriodEta →
-    ∀ (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (M : IntermediateField ℚ ℂ) [FiniteDimensional ℚ M]
-      (t : (M →ₐ[ℚ] ℂ) → ℂ), SignedLogMeans.HidaSetting D cc δ M t → ∀ ρ : M →ₐ[ℚ] ℂ,
-      discr (lamConj M ρ (lamOf D cc δ)) = 1 ∧ ∃ c : Ideal (𝓞 D.host.K), c ≠ ⊥ ∧ ∃ x : ℂ, x ≠ 0 ∧
-        lamConj M ρ (lamOf D cc δ) = lamOf D c x := GlobalTheory.ConjLattice.conj_lattice_holds
-
-theorem lemC : EquidistributedConjugates.ConjugatesEquidistributed → PeriodLatticeAgreement.LatticePeriodEta → ThetaConstantWeber.ThetaWeberStatement →
-    ∀ (D : D7), Formalism.MainNotions.GL3Theta.admJ D → ∀ (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (M : IntermediateField ℚ ℂ)
-      [FiniteDimensional ℚ M] (t : (M →ₐ[ℚ] ℂ) → ℂ), SignedLogMeans.HidaSetting D cc δ M t →
-      ∃ X : M, X ≠ 0 ∧ IsIntegral ℤ (X : ℂ) ∧ ∀ (ρ : M →ₐ[ℚ] ℂ) (ω₁ τ : ℂ), ω₁ ≠ 0 → 0 < τ.im →
-        JacobiThetaHalfCharacteristic.IsPeriodLattice (lamConj M ρ (lamOf D cc δ)) ω₁ τ → ∀ a b : Fin 2, JacobiThetaHalfCharacteristic.IsEvenChar a b →
-        JacobiThetaHalfCharacteristic.thetaChar a b (t ρ / ω₁) τ = 0 →
-        ‖ρ X‖ = (‖JacobiThetaHalfCharacteristic.thetaChar a b 0 τ‖ / ‖ModularForm.eta τ‖) ^ 12 := _root_.GlobalTheory.IntegralX.exists_integral_theta_ratio
-
 alias lemD := _root_.GlobalTheory.Glob.EvenThetaBound.evenThetaConst_bounded
-
-theorem containsData {D : D7} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} {M : IntermediateField ℚ ℂ}
-    (h : DataIn D (tor0 D cc δ) M) : EquidistributedConjugates.ContainsData D M (lamOf D cc δ) := by
-  refine ⟨fun x => ?_, h.2.1, h.2.2⟩
-  have := h.1 (D.eTau.symm 1) (x : D.host.E)
-  rwa [show (tor0 D cc δ).emb (D.eTau.symm 1) (x : D.host.E) = embT D (D.eTau.symm 1) (x : D.host.E) from rfl,
-    Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.FL.embT_K D _ _ x.2] at this
 
 theorem isPeriodLattice_iff {Λ : AddSubgroup ℂ} {ω₁ τ : ℂ} :
     JacobiThetaHalfCharacteristic.IsPeriodLattice Λ ω₁ τ ↔ Λ = PeriodLatticeAgreement.latt ω₁ τ := by
@@ -600,7 +578,7 @@ theorem mean_log_area (hC : ClassMeanPeriods.ClassMean) (hG : EquidistributedCon
       Real.log Real.pi + ClassMeanPeriods.classMeanValue D := by
   obtain ⟨hcc, hδ, hData, -⟩ := hS
   obtain ⟨r, hr⟩ := EquidistributedConjugates.exists_representatives D
-  rw [(hG D cc δ hcc hδ M (containsData hData)).2.2 r hr]
+  rw [(hG D cc δ hcc hδ M (GlobalTheory.ConjLattice.containsData hData)).2.2 r hr]
   have hCM := ClassMeanPeriods.classMean_iff.1 hC D r hr
   unfold ClassMeanPeriods.meanLogPeriod at hCM
   have hh : (0 : ℝ) < (classNumber D.host.K : ℝ) := by exact_mod_cast classNumber_pos D.host.K
@@ -751,9 +729,9 @@ theorem core (hN : JacobiThetaHalfCharacteristic.NormTheta0) (hC : ClassMeanPeri
     SignedLogMeans.meanLog M (lamOf D cc δ) t ≤ SignedLogMeans.bound D ∧
       SignedLogMeans.meanPosLog M (lamOf D cc δ) t ≤
         SignedLogMeans.meanLog M (lamOf D cc δ) t + ((1 / 4) * Real.log D.host.d + max 0 (2 * Real.log C₀)) := by
-  obtain ⟨X, hX0, hXi, hXρ⟩ := lemC hG hP hW D hJ cc δ M t hS
+  obtain ⟨X, hX0, hXi, hXρ⟩ := GlobalTheory.IntegralX.exists_integral_theta_ratio hG hP hW D hJ cc δ M t hS
   exact mean_bounds_of_conjugate_data hN hP hC₀ hth D M (lamOf D cc δ) t hS.2.2.2
-    (mean_log_area hC hG hP D cc δ M t hS) (lemB hG hP D cc δ M t hS)
+    (mean_log_area hC hG hP D cc δ M t hS) (GlobalTheory.ConjLattice.conj_lattice_holds hG hP D cc δ M t hS)
     (fun ρ => ‖ρ X‖) (sum_log_nonneg M X hX0 hXi) hXρ
 
 theorem log_sqrt_le_log_v (D : D7) : Real.log (Real.sqrt D.host.d) ≤ Real.log D.host.v := by

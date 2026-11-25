@@ -591,9 +591,6 @@ section Affine
 
 variable {L : Type} [Field L] [NumberField L]
 
-theorem aff_alg_inj : Function.Injective (algebraMap (𝓞 L) L) :=
-  FaithfulSMul.algebraMap_injective (𝓞 L) L
-
 theorem aff_toK_val (N : ℕ) (g : Gm L N) (a b : Fin N) :
     (toK L N g : Matrix (Fin N) (Fin N) L) a b =
       algebraMap (𝓞 L) L ((g : Matrix (Fin N) (Fin N) (𝓞 L)) a b) :=
@@ -601,7 +598,7 @@ theorem aff_toK_val (N : ℕ) (g : Gm L N) (a b : Fin N) :
 
 theorem aff_toK_inj (N : ℕ) : Function.Injective (toK L N) := by
   intro a b hab
-  refine Matrix.GeneralLinearGroup.ext fun x y => aff_alg_inj ?_
+  refine Matrix.GeneralLinearGroup.ext fun x y => PositivityTheory.KB.AffineStabilizerVanishing.algebraMap_inj ?_
   rw [← aff_toK_val, ← aff_toK_val, hab]
 
 theorem aff_toK_stab (n N : ℕ) (h : n ≤ N) (c : Gm L n) :
@@ -693,7 +690,7 @@ theorem aff_gamma (π : 𝓞 L) (hπ : Prime π) (n r : ℕ) (hn : 1 ≤ n) (c :
   rw [← ho, ← hp] at hu
   rw [← hp]
   set alg := algebraMap (𝓞 L) L with halg
-  have hπL : alg π ≠ 0 := (map_ne_zero_iff _ aff_alg_inj).mpr hπ.ne_zero
+  have hπL : alg π ≠ 0 := (map_ne_zero_iff _ PositivityTheory.KB.AffineStabilizerVanishing.algebraMap_inj).mpr hπ.ne_zero
   set cL : Matrix (Fin (n + r)) (Fin (n + r)) L := (toK L (n + r) c : Matrix (Fin (n + r)) (Fin (n + r)) L) with hcL
   set ciL : Matrix (Fin (n + r)) (Fin (n + r)) L := (toK L (n + r) c⁻¹ : Matrix (Fin (n + r)) (Fin (n + r)) L) with hciL
   set e : Fin (n + r) → L := Pi.single p 1 with he
@@ -783,7 +780,7 @@ theorem aff_gamma (π : 𝓞 L) (hπ : Prime π) (n r : ℕ) (hn : 1 ≤ n) (c :
         have : (b : ℕ) ≠ 0 := fun h => hb (Fin.ext (by rw [h, ho]))
         simp [this]
       · simp
-    rw [aff_alg_inj h7]
+    rw [PositivityTheory.KB.AffineStabilizerVanishing.algebraMap_inj h7]
     exact (Matrix.isUnits_det_units c)
   refine ⟨GeneralLinearGroup.mk'' γM hγdet, rfl, ?_⟩
   refine Matrix.GeneralLinearGroup.ext fun a b => ?_
@@ -862,7 +859,7 @@ theorem pStabVan : PStabVan := by
     obtain ⟨b, rfl⟩ := finSumFinEquiv.surjective b
     rcases a with a | a <;> rcases b with b | b
     · simp only [Matrix.reindex_apply, Matrix.submatrix_apply, finSumFinEquiv_apply_left, finSumFinEquiv_symm_apply_castAdd]
-      apply aff_alg_inj
+      apply PositivityTheory.KB.AffineStabilizerVanishing.algebraMap_inj
       rw [← aff_toK_val, hM, aff_blk_top]
       rfl
     · simp only [Matrix.reindex_apply, Matrix.submatrix_apply, finSumFinEquiv_apply_left, finSumFinEquiv_apply_right,
@@ -871,7 +868,7 @@ theorem pStabVan : PStabVan := by
     · simp only [Matrix.reindex_apply, Matrix.submatrix_apply, finSumFinEquiv_apply_left, finSumFinEquiv_apply_right,
         finSumFinEquiv_symm_apply_castAdd, finSumFinEquiv_symm_apply_natAdd]
       show (f x : Matrix (Fin (n + r)) (Fin (n + r)) (𝓞 L)) (Fin.natAdd n a) (Fin.castAdd r b) = 0
-      apply aff_alg_inj
+      apply PositivityTheory.KB.AffineStabilizerVanishing.algebraMap_inj
       rw [map_zero, ← aff_toK_val, hM, aff_blk_low, Matrix.one_apply, if_neg]
       intro hh
       have := congrArg Fin.val hh
@@ -881,7 +878,7 @@ theorem pStabVan : PStabVan := by
         finSumFinEquiv_symm_apply_natAdd]
       show (f x : Matrix (Fin (n + r)) (Fin (n + r)) (𝓞 L)) (Fin.natAdd n a) (Fin.natAdd n b) =
         (1 : Matrix (Fin r) (Fin r) (𝓞 L)) a b
-      apply aff_alg_inj
+      apply PositivityTheory.KB.AffineStabilizerVanishing.algebraMap_inj
       rw [← aff_toK_val, hM, aff_blk_low, Matrix.one_apply, Matrix.one_apply]
       by_cases hab : a = b
       · subst hab; simp

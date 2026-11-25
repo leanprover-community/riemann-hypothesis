@@ -223,7 +223,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.CentralizerOrbitSumConjugate =====
@@ -299,9 +298,6 @@ variable {p : ℕ} [Fact p.Prime]
 theorem sh_mul' (G : HTGroup p) (a b : G.C) : sh G (a * b) = sh G b * sh G a := by
   simp only [sh, map_mul, MulOpposite.unop_mul]
 
-theorem sh_unit_mul_inv (G : HTGroup p) (y : G.Cˣ) : sh G (y : G.C) * sh G ((y⁻¹ : G.Cˣ) : G.C) = 1 := by
-  rw [← sh_mul', Units.inv_mul]; simp [sh]
-
 theorem conj_of_rel (p : ℕ) [Fact p.Prime] (G : HTGroup p) (P P' : Pair G) (B y y' : G.Cˣ) (s s' : ℚ)
     (hs : 0 < s) (hs' : 0 < s')
     (hP : (P.β : G.C) = algebraMap ℚ G.C s * (y * B * sh G y))
@@ -316,7 +312,7 @@ theorem conj_of_rel (p : ℕ) [Fact p.Prime] (G : HTGroup p) (P P' : Pair G) (B 
       rw [← hP', hβ, hP, mul_smul, mul_smul_comm, smul_mul_assoc]
     have E2 := congrArg (fun X => (a : G.C) * X * sh G a) E
     have ha1 : (a : G.C) * y' = 1 := Units.inv_mul y'
-    have ha2 : sh G (y' : G.C) * sh G a = 1 := sh_unit_mul_inv G y'
+    have ha2 : sh G (y' : G.C) * sh G a = 1 := GlobalTheory.CxRegPair.sh_mul_sh_inv G y'
     have L : (a : G.C) * (s' • ((y' : G.C) * B * sh G y')) * sh G a = s' • (B : G.C) := by
       rw [mul_smul_comm, smul_mul_assoc]
       congr 1
@@ -546,7 +542,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinsumRegroupFibreBijStatement", "h": "module\n\npublic import Mathlib.Algebra.BigOperators.Finprod\npublic import Mathlib.Basic.Complex.Basic\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinsumRegroupFibreBij\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
 section -- clump:auto
 @[expose] public section
-
 
 end -- clump:auto
 end -- clump:auto
@@ -831,11 +826,8 @@ end Generic
 
 variable {p : ℕ} [Fact p.Prime] {G : HTGroup p}
 
-theorem sh_mul (a b : G.C) : sh G (a * b) = sh G b * sh G a := by
-  simp only [sh, map_mul, MulOpposite.unop_mul]
-
 theorem sh_units (y : G.Cˣ) : sh G (y : G.C) * sh G ((y⁻¹ : G.Cˣ) : G.C) = 1 := by
-  rw [← sh_mul, Units.inv_mul]; simp [sh]
+  rw [← GlobalTheory.LKMid.PairConj.sh_mul, Units.inv_mul]; simp [sh]
 
 theorem key (y v : G.Cˣ) (β : G.C) (s : ℚ) :
     ((y * v * y⁻¹ : G.Cˣ) : G.C) * (algebraMap ℚ G.C s * (y * β * sh G y)) * sh G ((y * v * y⁻¹ : G.Cˣ) : G.C) =
@@ -843,7 +835,7 @@ theorem key (y v : G.Cˣ) (β : G.C) (s : ℚ) :
   calc ((y * v * y⁻¹ : G.Cˣ) : G.C) * (algebraMap ℚ G.C s * (y * β * sh G y)) * sh G ((y * v * y⁻¹ : G.Cˣ) : G.C)
       = s • ((y : G.C) * v * (((y⁻¹ : G.Cˣ) : G.C) * y) * β * (sh G y * sh G ((y⁻¹ : G.Cˣ) : G.C)) *
           sh G v * sh G y) := by
-        simp only [Units.val_mul, sh_mul, ← Algebra.smul_def, mul_smul_comm, smul_mul_assoc, mul_assoc]
+        simp only [Units.val_mul, GlobalTheory.LKMid.PairConj.sh_mul, ← Algebra.smul_def, mul_smul_comm, smul_mul_assoc, mul_assoc]
     _ = _ := by
         rw [Units.inv_mul, sh_units, mul_one, mul_one, Algebra.smul_def]; simp only [mul_assoc]
 
@@ -948,7 +940,6 @@ theorem triv_rel (P Q : Pair G) (y : G.Cˣ) (s : ℚ) (hs : s ≠ 0)
 end GlobalTheory.LKMid.RelMove
 
 namespace GlobalTheory.LKMid.Pair
-
 
 open GlobalTheory.LKMid.RelMove in
 theorem term_eq_of_rel : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (P Q : Pair G) (Kf : Subgroup G.GAf)
@@ -1272,7 +1263,6 @@ theorem cls_part
   simp only [hpt]
   rw [_root_.GlobalTheory.CxUnfoldGen.cls_eq_of_uniq p G v _ Kf f hf K' f' hf' β x t hx hu y₀]
   rfl
-
 
 include hf hf' in
 theorem cxSumAtM_unfold

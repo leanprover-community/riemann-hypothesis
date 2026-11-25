@@ -101,8 +101,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.S Formalism.MainNotions.ArithmeticCylinders Formalism.L2.Theta Formalism.IndefR.Mult Formalism.IndefR.Links Formalism.IndefR.AutomorphicEvaluation Formalism.IndefR.principalLevelFrame Formalism.L2.DIV Formalism.L2.SG.RowDict Formalism.L2.SG.RowsJoinPinned Formalism.L2.SG.RowLevelMatch Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting MeasureTheory NumberField ReciprocityTheory.Aut Formalism.AUTREP GlobalTheory.Mem.SRe GlobalTheory.LabPin
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LabPin.instCM
 
-theorem _root_.GlobalTheory.T.cmField_splitPlace_eq_of_place_eq : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (s s' : ReciprocityTheory.Aut.SplitPlace L), s.w = s'.w → s = s' := by
-  first | exact @GlobalTheory.SplitUniq.splitPlace_eq_of_w_eq
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.CmFieldSplitPlaceEqOfPlaceEqStatement =====
@@ -117,8 +115,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LabPi
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LabPin.instCM
 
-theorem _root_.GlobalTheory.T.cmFieldFiniteAdeleTensorEquiv_mem_integralAdeles : ∀ (D : D7) (hF : D.host.F = maximalRealSubfield D.host.E) (a : ReciprocityTheory.Aut.AL D.host.E), a ∈ ReciprocityTheory.Aut.ALint D.host.E → GlobalTheory.FixedConj.adeleEquiv D hF a ∈ Formalism.L2.Herm.intAf (↥D.host.F) D.host.E := by
-  first | exact @GlobalTheory.FixedConj.adeleEquiv_mem_intAf
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.CmFieldFiniteAdeleTensorEquivMemIntegralAdelesStatement =====
@@ -269,7 +265,7 @@ theorem exists_plFrame_of_isFrame : ∀ (I : Formalism.MainNotions.S.AutInst) (�
   have hL : ∀ y, y ∈ I.Lf ↔
       ∀ i, ((β₀⁻¹ : GL (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)).1 *ᵥ y) i ∈ Formalism.MainNotions.S.IntAf I.F I.E := by
     intro y
-    rw [← _root_.GlobalTheory.FlagChi.hatL_eq_Lf I]
+    rw [← _root_.GlobalTheory.LiftFrameMod.hatL_eq_Lf I]
     exact hF y
 
   have : Finite (Formalism.L2.DIV.kP w) := Nat.finite_of_card_ne_zero (by rw [hcard]; exact hp.ne_zero)
@@ -336,8 +332,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LabPi
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LabPin.instCM
 
-theorem _root_.GlobalTheory.T.exists_rectangular_conj_instanceMatrix_standardPsi : ∀ (D : D7) (hF : D.host.F = maximalRealSubfield D.host.E) (PY : RowPsi (Yc D 0) D.R.r) (t : Formalism.L2.Theta.GA D (D.sp.Y 0)), StdPsi hF PY → ∃ (U : Matrix (Fin (Formalism.L2.SG.InstExistsPf.instOf D).n) (Fin D.R.r) (Formalism.IndefR.Lev.EAf D)) (U' : Matrix (Fin D.R.r) (Fin (Formalism.L2.SG.InstExistsPf.instOf D).n) (Formalism.IndefR.Lev.EAf D)), U * U' = 1 ∧ U' * U = 1 ∧ ∀ y : Formalism.AUTREP.GAf D.host.E D.R.r, (Formalism.L2.SG.InstExistsPf.instOf D).fmat ((Formalism.IndefR.RationalEmbedding.iota D (MulAut.conj t (PY.ψ y))).2) = U * ((y : GL (Fin D.R.r) (ReciprocityTheory.Aut.AL D.host.E)) : Matrix (Fin D.R.r) (Fin D.R.r) (ReciprocityTheory.Aut.AL D.host.E)).map (GlobalTheory.FixedConj.adeleEquiv D hF) * U' := by
-  first | exact @GlobalTheory.FixedConjMat.fmat_iota_conj_stdPsi
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsRectangularConjInstanceMatrixStandardPsiStatement =====
@@ -352,8 +346,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LabPi
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LabPin.instCM
 
-theorem _root_.GlobalTheory.T.mem_maximalCompact_of_trivial_off_splitPair : ∀ (I : Formalism.MainNotions.S.AutInst) (β₀ : GL (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)), Formalism.L2.DIV.IsFrame β₀ I.L → ∀ (ε : I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F), ε * ε = ε → ε * Formalism.L2.SG.HidaSetting.sigA I ε = 0 → ε ∈ Formalism.MainNotions.S.IntAf I.F I.E → ∀ (k : I.Gf), (∀ i j, (1 - ε - Formalism.L2.SG.HidaSetting.sigA I ε) * (I.fmat k - 1) i j = 0) → (∀ i j, ε * ((β₀⁻¹ * (k : GL (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)) * β₀ : GL (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)) : Matrix (Fin I.n) (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)) i j ∈ Formalism.MainNotions.S.IntAf I.F I.E) → (∀ i j, ε * ((β₀⁻¹ * ((k⁻¹ : I.Gf) : GL (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)) * β₀ : GL (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)) : Matrix (Fin I.n) (Fin I.n) (I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F)) i j ∈ Formalism.MainNotions.S.IntAf I.F I.E) → k ∈ I.Kset := by
-  first | exact @GlobalTheory.SplitPairK.mem_kset_of_split
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.MemMaximalCompactOfTrivialOffSplitPairStatement =====
@@ -528,8 +520,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LabPi
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LabPin.instCM
 
-theorem _root_.GlobalTheory.T.residue_cmFieldFiniteAdeleTensorEquiv_eq_natCast : ∀ (D : D7) (hF : D.host.F = maximalRealSubfield D.host.E) (s : ReciprocityTheory.Aut.SplitPlace D.host.E) (a : ReciprocityTheory.Aut.AL D.host.E) (ha : GlobalTheory.FixedConj.adeleEquiv D hF a ∈ Formalism.L2.Herm.intAf (↥D.host.F) D.host.E) (m : ℕ), a ∈ ReciprocityTheory.Aut.ALint D.host.E → Valued.v (s.proj a - (m : s.v.adicCompletion (maximalRealSubfield D.host.E))) < 1 → Formalism.L2.DIV.resS (↥D.host.F) s.w ⟨_, ha⟩ = (m : Formalism.L2.DIV.kP s.w) := by
-  first | exact @GlobalTheory.SplitRes.resS_adeleEquiv_eq_natCast
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.ResidueCmFieldFiniteAdeleTensorEquivEqNatCastStatement =====
@@ -756,8 +746,6 @@ theorem res_one_apply {R k : Type} [CommRing R] [CommRing k] (S : Subring R) (re
     have : (⟨(1 : Matrix (Fin m) (Fin m) R) a b, hd⟩ : S) = 0 := Subtype.ext (by show (1 : Matrix (Fin m) (Fin m) R) a b = (0 : R); exact Matrix.one_apply_ne hab')
     rw [this, map_zero, Matrix.one_apply_ne hij, ZMod.val_zero, Nat.cast_zero]
 
-
-
 theorem core0 (D : D7) (t : Formalism.L2.Theta.GA D (D.sp.Y 0)) (PY : RowPsi (Yc D 0) D.R.r)
     (hF : D.host.F = maximalRealSubfield D.host.E) (hStd : StdPsi hF PY)
     (hn : (Formalism.L2.SG.InstExistsPf.instOf D).n = D.R.r)
@@ -775,7 +763,7 @@ theorem core0 (D : D7) (t : Formalism.L2.Theta.GA D (D.sp.Y 0)) (PY : RowPsi (Yc
   letI : Submodule.IsLattice (Formalism.L2.SG.InstExistsPf.instOf D).E (Formalism.L2.SG.InstExistsPf.instOf D).L :=
     Submodule.IsLattice.of_fg _ (Formalism.L2.SG.InstExistsPf.instOf D).L_fg
   obtain ⟨β₀, hβ₀⟩ := Formalism.L2.DIV.frame_exists_alt (Formalism.L2.SG.InstExistsPf.instOf D).F (Formalism.L2.SG.InstExistsPf.instOf D).E (Formalism.L2.SG.InstExistsPf.instOf D).n (Formalism.L2.SG.InstExistsPf.instOf D).L ⟨(Formalism.L2.SG.InstExistsPf.instOf D).L_span⟩
-  obtain ⟨U, U', hUU, hUU', hFM⟩ := GlobalTheory.T.exists_rectangular_conj_instanceMatrix_standardPsi D hF PY t hStd
+  obtain ⟨U, U', hUU, hUU', hFM⟩ := GlobalTheory.FixedConjMat.fmat_iota_conj_stdPsi D hF PY t hStd
   have hsp := fun kv : Σ k : Fin 2, D.nd.PlG k => GlobalTheory.SplitPlaceOfFixed.exists_splitPlace_plGw D kv
   choose sp hsp using hsp
   have hid := fun kv : Σ k : Fin 2, D.nd.PlG k => _root_.GlobalTheory.SplitIdem.exists_idem D.host.E (sp kv)
@@ -823,7 +811,7 @@ theorem core0 (D : D7) (t : Formalism.L2.Theta.GA D (D.sp.Y 0)) (PY : RowPsi (Yc
   refine ⟨c, fun k v => fr ⟨k, v⟩, ?_⟩
   intro kv s hs x γ hlift
   obtain rfl : s = sp kv := huniq _ _ (hs.trans (hsp kv).symm)
-  have hεint : ε kv ∈ Formalism.L2.Herm.intAf (↥D.host.F) D.host.E := GlobalTheory.T.cmFieldFiniteAdeleTensorEquiv_mem_integralAdeles D hF _ (hε₀ kv).2.2.1
+  have hεint : ε kv ∈ Formalism.L2.Herm.intAf (↥D.host.F) D.host.E := GlobalTheory.FixedConj.adeleEquiv_mem_intAf D hF _ (hε₀ kv).2.2.1
   have hgw : ((D.host.g kv.1 : ℕ) : 𝓞 D.host.E) ∈ (sp kv).w.asIdeal := by
     rw [hsp kv]; exact D.naut.plGw_over kv.1 kv.2
   have hxU : x ∈ Umax D.host.E D.R.r :=
@@ -907,20 +895,20 @@ theorem core0 (D : D7) (t : Formalism.L2.Theta.GA D (D.sp.Y 0)) (PY : RowPsi (Yc
     exact (h2 _).symm
   have hcc : ∀ i : Fin D.R.r, Fin.cast hn (Fin.cast hn.symm i) = i := fun i => Fin.ext rfl
   have hK : (Formalism.IndefR.RationalEmbedding.iota D (MulAut.conj t (PY.ψ (c * x * c⁻¹)))).2 ∈ (Formalism.L2.SG.InstExistsPf.instOf D).Kset := by
-    refine GlobalTheory.T.mem_maximalCompact_of_trivial_off_splitPair (Formalism.L2.SG.InstExistsPf.instOf D) β₀ hβ₀ (ε kv) (hεidem kv) (hεσ kv) hεint _ (fun i j => ?_) (fun i j => ?_) (fun i j => ?_)
+    refine GlobalTheory.SplitPairK.mem_kset_of_split (Formalism.L2.SG.InstExistsPf.instOf D) β₀ hβ₀ (ε kv) (hεidem kv) (hεσ kv) hεint _ (fun i j => ?_) (fun i j => ?_) (fun i j => ?_)
     · have h1 := congrFun (congrFun hfK i) j
       simp only [Matrix.smul_apply, smul_eq_mul, Matrix.zero_apply] at h1
       rw [hf, hMK] at h1
       exact h1
     · have h2 : ε kv * θ (((x : GL (Fin D.R.r) (AL D.host.E)) : Matrix (Fin D.R.r) (Fin D.R.r) (AL D.host.E))
           (Fin.cast hn i) (Fin.cast hn j)) ∈ Formalism.L2.Herm.intAf (↥D.host.F) D.host.E :=
-        mul_mem hεint (GlobalTheory.T.cmFieldFiniteAdeleTensorEquiv_mem_integralAdeles D hF _ (hxU _ _))
+        mul_mem hεint (GlobalTheory.FixedConj.adeleEquiv_mem_intAf D hF _ (hxU _ _))
       rw [← hpart x i j] at h2
       exact h2
     · rw [hKinv]
       have h2 : ε kv * θ ((((x⁻¹ : GAf D.host.E D.R.r) : GL (Fin D.R.r) (AL D.host.E)) : Matrix (Fin D.R.r) (Fin D.R.r) (AL D.host.E))
           (Fin.cast hn i) (Fin.cast hn j)) ∈ Formalism.L2.Herm.intAf (↥D.host.F) D.host.E :=
-        mul_mem hεint (GlobalTheory.T.cmFieldFiniteAdeleTensorEquiv_mem_integralAdeles D hF _ (inv_mem hxU _ _))
+        mul_mem hεint (GlobalTheory.FixedConj.adeleEquiv_mem_intAf D hF _ (inv_mem hxU _ _))
       rw [← hpart x⁻¹ i j] at h2
       exact h2
   refine ⟨hK, ?_, ?_⟩
@@ -928,16 +916,16 @@ theorem core0 (D : D7) (t : Formalism.L2.Theta.GA D (D.sp.Y 0)) (PY : RowPsi (Yc
     intro i j hij
     rw [← hsp kv]
     have hres1 : Formalism.L2.DIV.resS (↥D.host.F) (sp kv).w ⟨ε kv, hεint⟩ = 1 := by
-      have h1 := GlobalTheory.T.residue_cmFieldFiniteAdeleTensorEquiv_eq_natCast D hF (sp kv) (ε₀ kv) hεint 1 (hε₀ kv).2.2.1
+      have h1 := GlobalTheory.SplitRes.resS_adeleEquiv_eq_natCast D hF (sp kv) (ε₀ kv) hεint 1 (hε₀ kv).2.2.1
         (by rw [(hε₀ kv).2.2.2.1, Nat.cast_one, sub_self, map_zero]; exact zero_lt_one)
       rw [Nat.cast_one] at h1
       exact h1
     have hxθ : θ (((x : GL (Fin D.R.r) (AL D.host.E)) : Matrix (Fin D.R.r) (Fin D.R.r) (AL D.host.E)) i j) ∈
-        Formalism.L2.Herm.intAf (↥D.host.F) D.host.E := GlobalTheory.T.cmFieldFiniteAdeleTensorEquiv_mem_integralAdeles D hF _ (hxU i j)
+        Formalism.L2.Herm.intAf (↥D.host.F) D.host.E := GlobalTheory.FixedConj.adeleEquiv_mem_intAf D hF _ (hxU i j)
     have h3 := hpart x (Fin.cast hn.symm i) (Fin.cast hn.symm j)
     rw [hcc, hcc] at h3
     exact (res_eq_of_part _ _ (ε kv) hεint hres1 _ _ hij hxθ h3).trans
-      (GlobalTheory.T.residue_cmFieldFiniteAdeleTensorEquiv_eq_natCast D hF (sp kv) _ hxθ ((γ : Matrix (Fin D.R.r) (Fin D.R.r) (ZMod (D.host.g kv.1))) i j).val
+      (GlobalTheory.SplitRes.resS_adeleEquiv_eq_natCast D hF (sp kv) _ hxθ ((γ : Matrix (Fin D.R.r) (Fin D.R.r) (ZMod (D.host.g kv.1))) i j).val
         (hxU i j) (hlift.2 i j))
   · intro kv' hne
     apply (hfr kv') _ hK
@@ -945,12 +933,12 @@ theorem core0 (D : D7) (t : Formalism.L2.Theta.GA D (D.sp.Y 0)) (PY : RowPsi (Yc
     rw [← hsp kv']
     have hemem : ε₀ kv + conjAL D.host.E (ε₀ kv) ∈ ALint D.host.E :=
       add_mem (hε₀ kv).2.2.1 (conjAL_mem_ALint D.host.E (hε₀ kv).2.2.1)
-    have he : θ (ε₀ kv + conjAL D.host.E (ε₀ kv)) ∈ Formalism.L2.Herm.intAf (↥D.host.F) D.host.E := GlobalTheory.T.cmFieldFiniteAdeleTensorEquiv_mem_integralAdeles D hF _ hemem
+    have he : θ (ε₀ kv + conjAL D.host.E (ε₀ kv)) ∈ Formalism.L2.Herm.intAf (↥D.host.F) D.host.E := GlobalTheory.FixedConj.adeleEquiv_mem_intAf D hF _ hemem
     have hcomp : compAt D.host.E (sp kv').v (ε₀ kv + conjAL D.host.E (ε₀ kv)) = 0 := by
       have := (hε₀ kv).2.2.2.2.2 (sp kv').v (hdist kv' kv hne)
       rw [map_add (f := _), this.1, this.2, add_zero]
     have hres0 : Formalism.L2.DIV.resS (↥D.host.F) (sp kv').w ⟨_, he⟩ = 0 := by
-      have h1 := GlobalTheory.T.residue_cmFieldFiniteAdeleTensorEquiv_eq_natCast D hF (sp kv') (ε₀ kv + conjAL D.host.E (ε₀ kv)) he 0 hemem
+      have h1 := GlobalTheory.SplitRes.resS_adeleEquiv_eq_natCast D hF (sp kv') (ε₀ kv + conjAL D.host.E (ε₀ kv)) he 0 hemem
         (by rw [_root_.GlobalTheory.SplitProj.proj_eq_zero_of_compAt_eq_zero D.host.E (sp kv') _ hcomp, Nat.cast_zero, sub_zero, map_zero]; exact zero_lt_one)
       rw [Nat.cast_zero] at h1
       exact h1
@@ -1030,8 +1018,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.S Formalism.MainNotions.ArithmeticCylinders Formalism.L2.Theta Formalism.IndefR.Mult Formalism.IndefR.Links Formalism.IndefR.AutomorphicEvaluation Formalism.IndefR.principalLevelFrame Formalism.L2.DIV Formalism.L2.SG.RowDict Formalism.L2.SG.RowsJoinPinned Formalism.L2.SG.RowLevelMatch Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting MeasureTheory NumberField ReciprocityTheory.Aut Formalism.AUTREP GlobalTheory.Mem.SRe GlobalTheory.LabPin
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LabPin.instCM
 
-theorem _root_.GlobalTheory.T.exists_splitPlace_eq_fixedTypePrimePlace : ∀ (D : D7) (kv : Σ k : Fin 2, D.nd.PlG k), ∃ s : ReciprocityTheory.Aut.SplitPlace D.host.E, s.w = D.naut.plGw kv.1 kv.2 := by
-  first | exact @GlobalTheory.SplitPlaceOfFixed.exists_splitPlace_plGw
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsSplitPlaceEqFixedTypePrimePlaceStatement =====
@@ -1459,11 +1445,11 @@ namespace GlobalTheory.LabPin
 
 theorem frameRed_exists : ∀ (D : D7) (X : HidaSetting D) (h : X.B.I = Formalism.L2.SG.InstExistsPf.instOf D) (t : Formalism.L2.Theta.GA D (D.sp.Y 0)) (PY : RowPsi (Yc D 0) D.R.r) (hF : D.host.F = maximalRealSubfield D.host.E), StdPsi hF PY → (∀ x : X.B.I.E, HEq (X.ιE x) x) → ∃ c red, FrameRed X h t PY c red := by
   intro D X h t PY hF hstd hι
-  obtain ⟨c, fr, hB⟩ := GlobalTheory.T.exists_fixed_place_conjugator_lifts_act_by_reductions D X h t PY hF hstd hι (GlobalTheory.T.cmField_splitPlace_eq_of_place_eq D.host.E)
+  obtain ⟨c, fr, hB⟩ := GlobalTheory.T.exists_fixed_place_conjugator_lifts_act_by_reductions D X h t PY hF hstd hι (GlobalTheory.SplitUniq.splitPlace_eq_of_w_eq D.host.E)
   obtain ⟨ρ, hρ⟩ := GlobalTheory.RowLev.exists_red_actsBy X.B.I D.R.r D.host.g D.nd.PlG
     (fun k v => Formalism.L2.SG.Pf.RowDictPf.wB X (D.naut.plGw k v)) fr X.n_eq (GlobalTheory.T.fixedTypePrimePlaces_choice_one_per_conjugate_pair D X)
   have hg : X.B.g = D.host.g 0 * D.host.g 1 := X.g_eq
-  refine ⟨c, ρ.toFun, ⟨?_, ?_, ?_, ?_⟩, fun kv => GlobalTheory.T.exists_splitPlace_eq_fixedTypePrimePlace D kv, ?_⟩
+  refine ⟨c, ρ.toFun, ⟨?_, ?_, ?_, ?_⟩, fun kv => GlobalTheory.SplitPlaceOfFixed.exists_splitPlace_plGw D kv, ?_⟩
   · intro k hk kv
     exact (Formalism.L2.SG.Pf.RowDictPf.redMat_iff X _ _ k _).2
       (GlobalTheory.T.reducedMatrix_of_actsAs_degree_one_prime_frame X.B.I D.R.r (D.host.g kv.1) _ (fr kv.1 kv.2) k hk _ (hρ k hk kv.1 kv.2))

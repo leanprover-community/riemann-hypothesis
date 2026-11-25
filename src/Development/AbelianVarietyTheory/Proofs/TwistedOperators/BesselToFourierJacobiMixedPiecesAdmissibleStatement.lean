@@ -162,7 +162,7 @@ theorem core_fin_vac : OnStd fun {D} _ _ {sc} {G} W F => ∀ ρ (h : 2 * ρ + 2 
     intro u hu
     refine mem_lattice_of_extend_inclusion (F.dB ρ h) (F.dJ ρ h) hV hsd0 hW₀ (fun v => (hmono v).1) (fun v => (hmono v).2) ?_
     exact GlobalTheory.RowLoc.mem_latO_negSp.1 (AddSubgroup.mem_comap.1 hu).1
-  exact ⟨fun u hu => GlobalTheory.FinPl.LatMem.latO_mxAt (hle hu), GlobalTheory.T.exists_ne_zero_latticeVacuum_selfDual D W.ψ W.ψ_std _ _ _ _ hsd0 hW₀ _ hle⟩
+  exact ⟨fun u hu => GlobalTheory.FinPl.LatMem.latO_mxAt (hle hu), GlobalTheory.AscFin.VacSub.exists_vacG_ne_zero D W.ψ W.ψ_std _ _ _ _ hsd0 hW₀ _ hle⟩
 
 end GlobalTheory.AscFin.CorePiece
 
@@ -227,7 +227,6 @@ theorem finLat_comap_mul {k n k' m' : ℕ} {A : AddSubgroup (Mx D k' m')} (hA : 
     rw [hf]; exact _root_.GlobalTheory.AscFinWit.mxAt_mul' (_root_.GlobalTheory.AscFinWit.mxAt_mul _ hfin) _
 
 end GlobalTheory.BesselPieceB
-
 
 open GlobalTheory.BesselPieceB in
 theorem GlobalTheory.BesselPieceB.finLat_pcBF_B : OnStd fun {D} _ _ {sc} {G} W F => ∀ ρ (h : 2 * ρ + 2 ≤ D.R.m),
@@ -305,8 +304,6 @@ theorem smul_mem_latA_idLat (I : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E) {a
   | zero => rw [smul_zero]; exact zero_mem _
   | add z z' _ _ hz hz' => rw [smul_add]; exact add_mem hz hz'
   | neg z _ hz => rw [smul_neg]; exact neg_mem hz
-
-
 
 theorem mulVec_latA_idLat (hM : ∀ v, P v → ∀ y ∈ latV T Λ (· = v), M *ᵥ y ∈ latV T Λ (· = v))
     (hΛ : Submodule.IsLattice D.host.E Λ) (I : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E) {z : Fin T.rank → AE D}
@@ -497,9 +494,6 @@ open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK Mo
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
 
-
-
-
 namespace GlobalTheory.BigRow
 
 variable {D : D7}
@@ -548,7 +542,6 @@ theorem exists_nsmul_mem {K : Type} [Field K] [NumberField K] (I : FractionalIde
   refine ⟨z * b, 𝔪.mul_mem_right _ hz, ?_⟩
   rw [← map_natCast (algebraMap (𝓞 K) K), ← hzd, map_mul, map_mul, hb, Algebra.smul_def]
   ring
-
 
 theorem nsmul_tmul (N : ℕ) (α : AF D.host.F) (x : D.host.E) :
     (N • (α ⊗ₜ[D.host.F] x) : AE D) = α ⊗ₜ[D.host.F] ((N : D.host.E) * x) := by
@@ -658,8 +651,6 @@ open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK Mo
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
 
-theorem _root_.GlobalTheory.T.nsmul_projection_xColumns_mem_selfDual_lattice : OnStd fun {D} _ _ {sc} {G} _ F => ∀ ρ (h : 2 * ρ + 2 ≤ D.R.m), ∃ N : ℕ, 0 < N ∧ ∀ u ∈ latBig G (2 * ρ + 1), N • (u ⬝ (F.dB ρ h).jX ⬝ (F.dB ρ h).pX) ∈ latBig G (2 * ρ + 1) := by
-  first | exact @GlobalTheory.ProjXCols.nsmul_projX_mem_latBig
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.NsmulProjectionXColumnsMemSelfDualLatticeStatement =====
@@ -827,9 +818,6 @@ theorem continuous_extY : Continuous fun x : Mx D W.rank ρ => dV.extY W x := by
 theorem continuous_symplO : Continuous fun p : WO V W × WO V W => symplO V W p.1 p.2 :=
   Formalism.IndefR.Eqv.continuous_trace.comp (continuous_const.mul Formalism.IndefR.Eqv.continuous_hO)
 
-
-
-
 theorem ann_open (hψ : Continuous ψ) (hψ1 : ∀ x, ‖ψ x‖ = 1) (C : Set (Mx D W.rank ρ)) (hC : IsCompact C)
     (hΓC : ∀ a, dV.extX W a ∈ Γ → a ∈ C) :
     ∃ U : Set (Mx D W.rank ρ), IsOpen U ∧ (0 : Mx D W.rank ρ) ∈ U ∧ ∀ a' ∈ U, MxAt (fun _ => True) a' → a' ∈ ann dV ψ Γ := by
@@ -862,7 +850,6 @@ theorem ann_open (hψ : Continuous ψ) (hψ1 : ∀ x, ‖ψ x‖ = 1) (C : Set (
   have := huv hn
   simp only [Set.mem_setOf_eq, hpow] at this
   exact this
-
 
 set_option synthInstance.maxHeartbeats 400000 in
 theorem ann_isCompact (K : Set (Mx D W.rank ρ)) (hK : IsCompact K) (hSK : ∀ a' ∈ ann dV ψ Γ, a' ∈ K)
@@ -897,9 +884,6 @@ end GlobalTheory.AnnPiece
 
 namespace GlobalTheory.AnnPiece
 
-
-
-
 theorem pcBF_A₂_compact_open : OnStd fun {D} _ _ {sc} {G} W F => ∀ ρ (h : 2 * ρ + 2 ≤ D.R.m),
     IsCompact ((pcBF W F ρ h).A₂ : Set (Mx D (G.V (.grid (2 * ρ + 1) 0)).rank ρ)) ∧
     ∃ U : Set (Mx D (G.V (.grid (2 * ρ + 1) 0)).rank ρ), IsOpen U ∧ (0 : Mx D (G.V (.grid (2 * ρ + 1) 0)).rank ρ) ∈ U ∧
@@ -909,7 +893,7 @@ theorem pcBF_A₂_compact_open : OnStd fun {D} _ _ {sc} {G} W F => ∀ ρ (h : 2
   obtain ⟨hR, -, hB, -⟩ := (GlobalTheory.T.grid_lattices_compact_selfDual_splitting D hq T L μ0 hL sc G W M hM F hF).1 (2 * ρ + 1) hi
   obtain ⟨Na, hNa, hNa'⟩ : ∃ N : ℕ, 0 < N ∧ ∀ u ∈ latBig G (2 * ρ + 1), N • u ∈ latRow G (2 * ρ + 1) := GlobalTheory.T.exists_nsmul_selfDual_hom_lattice_mem_depth_lattice D hq T L μ0 hL sc G W M hM F hF (2 * ρ + 1) hi
   obtain ⟨Nb, hNb, hNb'⟩ : ∃ N : ℕ, 0 < N ∧ ∀ u ∈ latBig G (2 * ρ + 1),
-      N • (u ⬝ (F.dB ρ h).jX ⬝ (F.dB ρ h).pX) ∈ latBig G (2 * ρ + 1) := GlobalTheory.T.nsmul_projection_xColumns_mem_selfDual_lattice D hq T L μ0 hL sc G W M hM F hF ρ h
+      N • (u ⬝ (F.dB ρ h).jX ⬝ (F.dB ρ h).pX) ∈ latBig G (2 * ρ + 1) := GlobalTheory.ProjXCols.nsmul_projX_mem_latBig D hq T L μ0 hL sc G W M hM F hF ρ h
   have hC : ∀ u' : WO (G.V (.grid (2 * ρ + 1 + 1) 0)) (G.V (.grid (2 * ρ + 1) 0)), MxAt (fun _ => True) u' →
       (∀ u ∈ latBig G (2 * ρ + 1), W.ψ (symplO _ _ u u') = 1) → u' ∈ latBig G (2 * ρ + 1) := GlobalTheory.T.selfDual_modulus_shift_hom_lattice_own_annihilator D hq T L μ0 hL sc G W M hM F hF (2 * ρ + 1) hi
   rw [A₂_eq]
@@ -1076,8 +1060,6 @@ open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK Mo
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
 
-theorem _root_.GlobalTheory.T.selfDualModulusShift_half_mem_completedModulusHom : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {μ₀ : T}, L.Is μ₀ → OffQ D → ∀ (G : GridData L sc) (i : ℕ), i < D.R.m → ∀ e : AE D, IsIdemSum e G.pl.W0 → ∀ u ∈ latBig G i, e • u ∈ hatMx (G.modul • homLat (G.Λ (.grid (i + 1) 0)) (G.Λ (.grid i 0))) := by
-  first | exact @GlobalTheory.HalfOut.smul_mem_hatMx_of_mem_latBig
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.SelfDualModulusShiftHalfMemCompletedModulusHomStatement =====
@@ -1100,25 +1082,6 @@ noncomputable section
 namespace GlobalTheory.AscFin.BidualLattice
 
 variable {D : D7}
-
-
-
-theorem latO_negSp (S T : HSp D) (LS : Set (Fin S.rank → D.host.E)) (LT : Set (Fin T.rank → D.host.E))
-    (P : HeightOneSpectrum (𝓞 D.host.F) → Prop) : latO (negSp S) T LS LT P = latO S T LS LT P := by
-  unfold latO
-  apply le_antisymm
-  · rw [AddSubgroup.closure_le]
-    rintro w ⟨α, hα, hP, a, ha, s, hs, t, ht, rfl⟩
-    rw [← neg_neg (Matrix.of _)]
-    refine neg_mem (AddSubgroup.subset_closure ⟨α, hα, hP, a, ha, s, hs, t, ht, ?_⟩)
-    funext i j
-    simp [negSp_gram, Finset.sum_neg_distrib, TensorProduct.tmul_neg]
-  · rw [AddSubgroup.closure_le]
-    rintro w ⟨α, hα, hP, a, ha, s, hs, t, ht, rfl⟩
-    rw [← neg_neg (Matrix.of _)]
-    refine neg_mem (AddSubgroup.subset_closure ⟨α, hα, hP, a, ha, s, hs, t, ht, ?_⟩)
-    funext i j
-    simp [negSp_gram, Finset.sum_neg_distrib, TensorProduct.tmul_neg]
 
 theorem extY_jY_mem {S S₀ T : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ) {LS : Lat S} {L₀ : Lat S₀} {LT : Lat T}
     (hS : IsSelfDualC S LS) (hT : IsSelfDualC T LT) (hm : ∀ v, MonoAt d LS L₀ v) {u : WO S T}
@@ -1183,7 +1146,7 @@ theorem bidual_main (hin : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts}
   have hrowO : ∀ u ∈ latRow G (2 * ρ + 1), u ∈ latO (G.V (.grid (2 * ρ + 2) 0)) (G.V (.grid (2 * ρ + 1) 0))
       (G.Λ (.grid (2 * ρ + 2) 0) : Set _) (G.Λ (.grid (2 * ρ + 1) 0) : Set _) (fun _ => True) := fun u hu => by
     have h0 := hu.1
-    rwa [BidualLattice.latO_negSp] at h0
+    rwa [GlobalTheory.CoreRowLat.latO_negSp] at h0
   have hA2 : ∀ a', MxAt (fun _ => True) a' → (∀ b, (F.dB ρ h).extX _ b ∈ latRow G (2 * ρ + 1) →
       W.ψ (symplO _ _ ((F.dB ρ h).extX _ b) ((F.dB ρ h).extY _ a')) = 1) →
       W.ψ (symplO _ _ ((F.dB ρ h).extX _ a) ((F.dB ρ h).extY _ a')) = 1 :=
@@ -1195,7 +1158,7 @@ theorem bidual_main (hin : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts}
     have hb' := hrowO _ hb
     exact (GlobalTheory.SelfDualAt.latO_ann_at D W.ψ hψ _ _ _ _ hSV hSW _ _ (GlobalTheory.FinPl.LatMem.latO_mxAt hb')).1 hb' _ ha'
   refine ⟨?_, fun e he => ?_⟩
-  · exact (BidualLattice.latO_negSp (G.V (.grid (2 * ρ + 2) 0)) _ _ _ _).ge hO
+  · exact (GlobalTheory.CoreRowLat.latO_negSp (G.V (.grid (2 * ρ + 2) 0)) _ _ _ _).ge hO
   · have hee : e * e = e := GlobalTheory.PlaceDatum.idemSum_mul_self he
     have hsx : ∀ x : Mx D (G.V (.grid (2 * ρ + 1) 0)).rank ρ, (F.dB ρ h).extX _ (e • x) = e • (F.dB ρ h).extX _ x :=
       fun x => by simp only [HypDec.extX_apply, Matrix.smul_mul]
@@ -1214,7 +1177,7 @@ theorem bidual_main (hin : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts}
     rwa [hsx, smul_smul, hee] at h2
 
 theorem bidual_pcBF : OnStd fun {D} _ _ {sc} {G} W F => ∀ ρ (h : 2 * ρ + 2 ≤ D.R.m), ∀ a, MxAt (fun _ => True) a → (∀ a' ∈ (pcBF W F ρ h).A₂, W.ψ (symplO _ _ ((F.dB ρ h).extX _ a) ((F.dB ρ h).extY _ a')) = 1) → a ∈ (pcBF W F ρ h).A₁ :=
-  bidual_main GlobalTheory.T.depthLatticeGridRow_smul_mem_selfDualModulusShift GlobalTheory.T.selfDualModulusShift_half_mem_completedModulusHom
+  bidual_main GlobalTheory.T.depthLatticeGridRow_smul_mem_selfDualModulusShift GlobalTheory.HalfOut.smul_mem_hatMx_of_mem_latBig
 
 end GlobalTheory.AscFin.BidualLattice
 

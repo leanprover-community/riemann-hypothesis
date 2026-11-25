@@ -919,9 +919,6 @@ theorem psi_cell {z z' : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hz' : i
   rw [e, conj z hz n hn _ h2, psi_exact hz hz' c hg hp ⟨nm _ (nm _ hn' _ hρ.1) _ (ni _ hn'), h2⟩,
     conj z' hz' n' hn' _ hρ.1]
 
-theorem cont_conj (a : Mat k r) : Continuous (conjM a : Mt k r → Mt k r) :=
-  (continuous_const.matrix_mul (continuous_id (X := Mat k r))).matrix_mul continuous_const
-
 noncomputable def lmulE {a : Mat k r} (ha : IsUnit a.det) : Mt k r ≃ᵐ Mt k r where
   toFun := lmulM a
   invFun := lmulM a⁻¹
@@ -935,7 +932,7 @@ theorem quot_translate {μG μR ν : Measure (Mt k r)} {a : Mat k r} (ha : IsUni
     IsQuotMeas μG (μR.map (conjM a)) (ν.map (lmulM a)) := by
   intro f hf
   have mL := (_root_.GlobalTheory.UnipUnimod.cont_lmul a).measurable
-  have mC := (cont_conj a).measurable
+  have mC := (Formalism.FourierDecayAlt.P.B2x1.conjM_cont a).measurable
   have e1 : ∫⁻ x, f x ∂μG = ∫⁻ x, f (lmulM a x) ∂μG := by
     conv_lhs => rw [← hG]
     rw [lintegral_map hf mL]
@@ -1276,7 +1273,6 @@ end GlobalTheory.QuotTransport
 
 namespace GlobalTheory
 
-
 open GlobalTheory.QuotTransport in
 theorem quotMeas_besselModel_of_quotLoc : ∀ (D : D7) (X : HidaSetting D) (θ : ℝ) (C : Choice X θ) (τ : D.what₂.Tau) (γ : Formalism.REAL.UJ (X.B.I.ε (vOf X τ))) (μ ν : Measure (Formalism.REAL.UJ (X.B.I.ε (vOf X τ)))), SFinite μ → Formalism.L2.SG.RealObj.IsQuotLoc μ ν → IsQuotMeas (muGB X (C.Q τ) (C.Qi τ) τ) (μ.map (fun y => Matrix.of.symm (Formalism.L2.SG.RealObj.trG (C.Q τ) (C.Qi τ) (γ⁻¹ * y * γ)))) (ν.map (fun z => Matrix.of.symm (C.Qi τ * uMat (γ⁻¹ * z) * C.Q τ * (C.y τ)⁻¹))) := by
   intro D X θ C τ γ μ ν hμ hq f hf
@@ -1377,8 +1373,6 @@ open scoped Classical ENNReal
 open Matrix MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.L2.SG.TermTieOf Formalism.L2.SG.LocWSOf Formalism.L2.SG.LoopTerm
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.real_point_term_and_lift_same_real_double_coset : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (hF : FinX Y) (hI : SIso D.s (sOf hF)) (θ : ℝ) (C : Choice X θ) (u u' : D.what₂.Word) (t : D.s.Term u u') (s : TT Y u u'), s.toTerm = tc hI t → ∀ τ, ∃ a ∈ Formalism.QuantumDeterminants.Sset D.R.k D.R.rS (zB X (C.Qi τ) u τ), ∃ a' ∈ Formalism.QuantumDeterminants.Sset D.R.k D.R.rS (zB X (C.Qi τ) u' τ), Formalism.L2.SG.RealObj.trG (C.Q τ) (C.Qi τ) (s.pt.1 (vOf X τ)) = a * gamR hI C t τ * a'⁻¹ := by
-  first | exact @GlobalTheory.TermCoset.dcoset
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.RealPointTermAndLiftSameRealDoubleCosetStatement =====
@@ -1406,7 +1400,7 @@ theorem hsNormSq_amp_loc : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (hF : F
     refine ⟨p, _, hp, ?_⟩
     rw [ENNReal.ofReal_one, one_smul]
     exact GlobalTheory.T.quotientMeasure_besselModel_of_local_quotient D X 1 C τ (s.pt.1 (vOf X τ)) μ ν hμ hq
-  obtain ⟨a, ha, a', ha', hga⟩ := GlobalTheory.T.real_point_term_and_lift_same_real_double_coset D X Y hF hI 1 C u u' t s hs τ
+  obtain ⟨a, ha, a', ha', hga⟩ := GlobalTheory.TermCoset.dcoset D X Y hF hI 1 C u u' t s hs τ
   have hR4 : RMeas D (locW C u u' τ) (gamR hI C t τ) 1 (nu1 hI C t τ) := by
     have h := GlobalTheory.RMeasAll.rMeasEx_all D X Y hF hI C u u' hW t hG hr τ
     unfold nu1

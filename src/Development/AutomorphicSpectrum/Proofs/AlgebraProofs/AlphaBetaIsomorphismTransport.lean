@@ -61,12 +61,6 @@ section -- clump:auto
 
 open MvPowerSeries ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ GlobalTheory.CompanionTheory.Ar.Crv GlobalTheory.CompanionTheory.Ar.Conj
 
-namespace GlobalTheory.CompanionTheory.Ar.Conj
-
-theorem lin_comp_chain : ∀ (R : Type) [CommRing R] (d : ℕ) (φ ψ : Pt R 1 d), (∀ i, constantCoeff (φ i) = 0) → (∀ i, constantCoeff (ψ i) = 0) → lin (comp1 φ ψ) 1 = lin φ 1 * lin ψ 1 ∧ lin (pt R (n := 1) d 0) 1 = 1 ∧ ∀ p : ℕ, 1 ≤ p → lin (comp1 φ (ptPow R d p 0)) p = lin φ 1 ∧ lin (comp1 φ (comp1 ψ (ptPow R d p 0))) p = lin φ 1 * lin ψ 1 :=
-  @PositivityTheory.HtPt.Ca.lin_comp
-
-end GlobalTheory.CompanionTheory.Ar.Conj
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FormalLinearTermComposition =====
@@ -78,12 +72,6 @@ section -- clump:auto
 
 open MvPowerSeries ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ GlobalTheory.CompanionTheory.Ar.Crv GlobalTheory.CompanionTheory.Ar.Conj
 
-namespace GlobalTheory.CompanionTheory.Ar.Conj
-
-theorem iso_pow_one_law : ∀ (R : Type) [CommRing R] (d : ℕ) (O : Type) [CommRing O] [StarRing O] (B : FB R d O) (B₂ : FB R d O) (φ ψ : Pt R 1 d) (lam : PS R 2 d) (n : ℕ), IsIso B B₂ φ ψ lam → pow1 B₂ n * ev (n := 2) ![comp1 (B₂.A.act (n : O)) (pt R d 0), pt R d 1] lam = lam ^ n * ev (n := 2) ![comp1 φ (pt R d 0), comp1 φ (pt R d 1)] (pow1 B n) :=
-  @PositivityTheory.HtPt.Cc.iso_first_power
-
-end GlobalTheory.CompanionTheory.Ar.Conj
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.IsoPowOneLawFormula =====
@@ -260,8 +248,8 @@ theorem hw_rel (h : IsIso B B₂ φ ψ lam) : lin φ 1 * hw B₂ p = hw B p * (l
   have hp1 : 1 ≤ p := Nat.one_le_iff_ne_zero.2 hp
   have e := h.act (p : O)
   rw [eV₂, eV, composition_assoc_no_constant V _ φ (cc_ptPow hp 0) h.c₁, frobenius_point_commutes_composition p h.c₁] at e
-  have l1 := ((_root_.GlobalTheory.CompanionTheory.Ar.Conj.lin_comp_chain R d φ V₂ h.c₁ cV₂).2.2 p hp1).2
-  have l2 := ((_root_.GlobalTheory.CompanionTheory.Ar.Conj.lin_comp_chain R d V (frobPt p φ) cV (cc_frobPt p h.c₁)).2.2 p hp1).2
+  have l1 := ((_root_.PositivityTheory.HtPt.Ca.lin_comp R d φ V₂ h.c₁ cV₂).2.2 p hp1).2
+  have l2 := ((_root_.PositivityTheory.HtPt.Ca.lin_comp R d V (frobPt p φ) cV (cc_frobPt p h.c₁)).2.2 p hp1).2
   rw [← lV₂, ← lV, ← lin_frobPt, ← l1, ← l2, e]
 
 theorem am_rel (h : IsIso B B₂ φ ψ lam) :
@@ -275,7 +263,7 @@ theorem am_rel (h : IsIso B B₂ φ ψ lam) :
   have cPw : ∀ i, constantCoeff (ptPow R d p (0 : Fin 1) i) = 0 := cc_ptPow hp 0
   have cI : ∀ i, constantCoeff ((pt R d 0 : Pt R 1 d) i) = 0 := GlobalTheory.GaugeAdjoint.const_pt 0
   have cF : ∀ i, constantCoeff (frobPt p φ i) = 0 := cc_frobPt p h.c₁
-  have key := _root_.GlobalTheory.CompanionTheory.Ar.Conj.iso_pow_one_law R d O B B₂ φ ψ lam p h
+  have key := _root_.PositivityTheory.HtPt.Cc.iso_first_power R d O B B₂ φ ψ lam p h
   have r1 : pow1 B₂ p = E (ptPow R d p (0 : Fin 1)) (pt R d 0) g₂ := by rw [e₂, E_eq_ptPow']
   have r2 : ev (n := 2) ![comp1 (B₂.A.act (p : O)) (pt R d 0), pt R d 1] lam =
       E (ptPow R d p (0 : Fin 1)) (pt R d 0) (E V₂ (pt R d 0) lam) := by

@@ -68,10 +68,6 @@ namespace Data
 
 variable {r : ℕ} (X : Data E r)
 
-lemma positive_part_add (x : Frame X.Ψ r) (τ : X.Ψ) (u v : Fin r → ℂ) :
-    X.ppos x τ (u + v) = X.ppos x τ u + X.ppos x τ v := by
-  simp only [ppos, hC_add_left, add_mul, Finset.sum_add_distrib, add_smul]
-
 private lemma hermC_Gm_eq_conj_swap (τ : X.Ψ) (u w : Fin r → ℂ) :
     hermC τ.1 X.Gm u w = conj (hermC τ.1 X.Gm w u) := by
   have hG : ∀ a b, τ.1 (X.Gm a b) = conj (τ.1 (X.Gm b a)) := fun a b => by
@@ -133,7 +129,7 @@ def Jp (x : Frame X.Ψ r) (τ : X.Ψ) (v : Fin r → ℂ) : Fin r → ℂ := (2 
 lemma Jp_add (x : Frame X.Ψ r) (τ : X.Ψ) (u v : Fin r → ℂ) :
     X.Jp x τ (u + v) = X.Jp x τ u + X.Jp x τ v := by
   funext i
-  simp only [Jp, positive_part_add, Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul]
+  simp only [Jp, ReciprocityTheory.ChartRestriction.G.FD.Data.ppos_add, Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul]
   ring
 
 lemma Jp_smul (x : Frame X.Ψ r) (τ : X.Ψ) (c : ℂ) (v : Fin r → ℂ) :

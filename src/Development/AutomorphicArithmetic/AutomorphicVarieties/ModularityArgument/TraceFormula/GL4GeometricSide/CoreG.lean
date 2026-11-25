@@ -249,39 +249,13 @@ theorem sgnB_sign {B : Finset (Fin n × Fin n)} (hB : ∀ p ∈ B, p.1 < p.2) (a
   · have hn : (a, b) ∉ B := fun hm => absurd (hB _ hm) (not_lt_of_gt h)
     by_cases hm : (b, a) ∈ B <;> simp [h, h.not_gt, hn, hm] <;> norm_num
 
-theorem card_fst (B : Finset (Fin n × Fin n)) (a : Fin n) :
-    (B.filter fun p => p.1 = a).card = (univ.filter fun b => (a, b) ∈ B).card := by
-  refine Finset.card_bij (fun p _ => p.2) ?_ ?_ ?_
-  · intro p hp
-    obtain ⟨h1, h2⟩ := Finset.mem_filter.1 hp
-    refine Finset.mem_filter.2 ⟨Finset.mem_univ _, ?_⟩
-    rw [← h2]
-    exact h1
-  · intro p hp q hq h
-    exact Prod.ext (((Finset.mem_filter.1 hp).2).trans ((Finset.mem_filter.1 hq).2).symm) h
-  · intro b hb
-    exact ⟨(a, b), Finset.mem_filter.2 ⟨(Finset.mem_filter.1 hb).2, rfl⟩, rfl⟩
-
-theorem card_snd (B : Finset (Fin n × Fin n)) (a : Fin n) :
-    (B.filter fun p => p.2 = a).card = (univ.filter fun b => (b, a) ∈ B).card := by
-  refine Finset.card_bij (fun p _ => p.1) ?_ ?_ ?_
-  · intro p hp
-    obtain ⟨h1, h2⟩ := Finset.mem_filter.1 hp
-    refine Finset.mem_filter.2 ⟨Finset.mem_univ _, ?_⟩
-    rw [← h2]
-    exact h1
-  · intro p hp q hq h
-    exact Prod.ext h (((Finset.mem_filter.1 hp).2).trans ((Finset.mem_filter.1 hq).2).symm)
-  · intro b hb
-    exact ⟨(b, a), Finset.mem_filter.2 ⟨(Finset.mem_filter.1 hb).2, rfl⟩, rfl⟩
-
 theorem sum_sgnB (B : Finset (Fin n × Fin n)) (a : Fin n) :
     ∑ b, sgnB B a b = 2 * (rhoV n a - wtB B a) := by
   unfold sgnB
   rw [Finset.sum_sub_distrib, sum_sgn, ← Finset.mul_sum, Finset.sum_sub_distrib, Finset.sum_boole,
     Finset.sum_boole]
   unfold wtB
-  rw [card_fst, card_snd]
+  rw [GlobalTheory.CompanionTheory.MultOne.ShortSecondWeights.card_fst, GlobalTheory.CompanionTheory.MultOne.ShortSecondWeights.card_snd]
   ring
 
 theorem nsq_rho_sub_le {B : Finset (Fin n × Fin n)} (hB : ∀ p ∈ B, p.1 < p.2) :

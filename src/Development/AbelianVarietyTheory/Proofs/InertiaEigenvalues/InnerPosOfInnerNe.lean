@@ -134,8 +134,6 @@ noncomputable section
 
 namespace GlobalTheory.AdjUnfold
 
-
-
 theorem integral_val_thF_eq : GlobalTheory.Published.CuspRapidDecay → ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), Laws R F → R.FullP → ∀ (i : Fin D.R.m) (t : T) (v : ∀ ρ, lowT (R.MW i (sg0 D A)) ρ) (n : ℕ) (b : OrthonormalBasis (Fin n) ℂ (R.cV i).W) (y : (R.HW i (sg0 D A)).H) (u : (R.HV i t).H), ∫ g in R.fdW i, star (val R i v y g) * R.thF i t u (fun ρ => v ρ) g ∂(R.νW i) = ∫ h in R.fdV i t, ⟪upVec R i t v b y h, R.extV i t u h⟫_ℂ ∂(R.νV i t) := by
   intro hP D G _ _ Pl0 T A Ks _ _ _ R F hL _ i t v n b y u
   have hm := hL.models
@@ -348,8 +346,6 @@ end GlobalTheory.AdelicL2Norm
 noncomputable section
 
 namespace GlobalTheory.AdelicL2Norm
-
-
 
 theorem norm_eq_integral : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), Laws R F → ∀ (i : Fin D.R.m) (t : T), ∃ c : ℝ, 0 < c ∧ ∀ u u' : (R.HV i t).H, ⟪u, u'⟫_ℂ = (c : ℂ) * ∫ h in R.fdV i t, ⟪R.extV i t u h, R.extV i t u' h⟫_ℂ ∂(R.νV i t) ∧ ∀ a a' : (R.cV i).W, IntegrableOn (fun h => star ⟪a, R.extV i t u h⟫_ℂ * ⟪a', R.extV i t u' h⟫_ℂ) (R.fdV i t) (R.νV i t) := by
   intro D G _ _ Pl0 T A Ks _ _ _ R F hL i t
@@ -655,8 +651,6 @@ theorem upVec_eq (hP : GlobalTheory.Published.CuspRapidDecay) (R : RealDat D A K
   · simp only [map_add (f := _), ← hin, inner_add_left]
   · simp only [map_smul, ← hin, inner_smul_left, Complex.star_def]
 
-
-
 theorem coVec_level (R : RealDat D A Ks) (F : Face D A) (hL : Laws R F) (i : Fin D.R.m) (t : T)
     (v : ∀ ρ, lowT (R.MW i (sg0 D A)) ρ) {n : ℕ} (b : OrthonormalBasis (Fin n) ℂ (R.cV i).W)
     (y : (R.HW i (sg0 D A)).H) (hT : DatumType R i t) (z : Formalism.IndefR.Bridge.Gf (Vc D i))
@@ -696,8 +690,6 @@ theorem coVec_rat (hP : GlobalTheory.Published.CuspRapidDecay) (R : RealDat D A 
 
 theorem coefExt_apply {V : HSp D} (c : CoefA V) (f : Formalism.IndefR.Bridge.Gf V → c.W) (h : GA D V) :
     c.ext f h = c.ρ h⁻¹ (f (Formalism.IndefR.FWT.fin V h)) := rfl
-
-
 
 theorem upVec_mem_range : GlobalTheory.Published.CuspRapidDecay → ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), Laws R F → R.FullP → ∀ (i : Fin D.R.m) (t : T) (v : ∀ ρ, lowT (R.MW i (sg0 D A)) ρ) (n : ℕ) (b : OrthonormalBasis (Fin n) ℂ (R.cV i).W) (y : (R.HW i (sg0 D A)).H), ∃ u : (R.HV i t).H, R.extV i t u = upVec R i t v b y := by
   intro hP D G _ _ Pl0 T A Ks _ _ _ R F hL _ i t v n b y
@@ -761,8 +753,6 @@ open GlobalTheory.RawLift
 open GlobalTheory.AdjUp
 
 namespace GlobalTheory.AdjUp
-
-
 
 theorem adjFormula_holds : GlobalTheory.Published.CuspRapidDecay → ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), Laws R F → R.FullP → ∀ i t, AdjFormula R i t := by
   intro hP D G _ _ Pl0 T A Ks _ _ _ R F hL hF i t th hth v hv n b
@@ -830,11 +820,6 @@ theorem exists_lift {H X : Type} [AddCommGroup H] [Module ℂ H] [AddCommGroup X
   refine ⟨(LinearEquiv.ofInjective e he).symm.toLinearMap ∘ₗ (L ∘ₗ e).codRestrict _ hL, fun x => ?_⟩
   exact congrArg Subtype.val ((LinearEquiv.ofInjective e he).apply_symm_apply ⟨L (e x), hL x⟩)
 
-theorem dualLab_dualLab (d : List ℤ) : dualLab (dualLab d) = d := by
-  simp [dualLab, List.map_reverse, List.map_map]
-
-
-
 theorem partsSpan : GlobalTheory.Published.CuspRapidDecay → ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type)
     (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
     (R : RealDat D A Ks) (F : Face D A), Laws R F → R.FullP → ∀ i S, PartsSpan R i S := by
@@ -872,7 +857,7 @@ theorem partsSpan : GlobalTheory.Published.CuspRapidDecay → ∀ (D : D7) (G : 
     congr 1
     exact GlobalTheory.HeckeAdjoint.ipM_heckeOn_dualLab D (Wc D i) _ R.θ (R.MW i (sg0 D A)) (levW R i) _ S (R.νW i) (R.fdW i)
       hL.models.inf (hL.models.νW i).1.1 (hL.models.νW i).2 hS x.1.1 (dualLab x.1.2.1) B' x.1.2.2 hB'
-      (by rw [dualLab_dualLab]; exact x.2) _ (hmem a) _ (hmem b) (keep x' _ (hmem a)) (keep x _ (hmem b))
+      (by rw [GlobalTheory.SphLabelOps.dualLab_dualLab]; exact x.2) _ (hmem a) _ (hmem b) (keep x' _ (hmem a)) (keep x _ (hmem b))
   obtain ⟨h1, h2, -⟩ := GlobalTheory.normalFamily_orthogonal_decomposition op hcomm hadj
   classical
   unfold PartsSpan
@@ -916,8 +901,6 @@ open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RawLift
 
-theorem _root_.GlobalTheory.T.fockVacuum_pairing_polynomial_translates_scalar : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D) (χS χT : (AE D)ˣ →* Circle) (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)), IsWeilDatumO ψ S T χS χT om → IsInfFam θ → ∀ (sS BS : D.what₂.Tau → Matrix (Fin S.rank) (Fin S.rank) ℂ) (sT BT : D.what₂.Tau → Matrix (Fin T.rank) (Fin T.rank) ℂ) (pS pT : D.what₂.Tau → ℕ), (∀ τ, IsCartanInv (gramAt D S τ) (sS τ)) → (∀ τ, IsCartanInv (gramAt D T τ) (sT τ)) → (∀ τ, IsONBasis (gramAt D S τ) (sS τ) (BS τ) (pS τ)) → (∀ τ, IsONBasis (gramAt D T τ) (sT τ) (BT τ) (pT τ)) → ∀ (μ : Measure (WO S T)) (𝓕 : Set (WO S T)), IsCovolOne (ratL T S) μ 𝓕 → ∀ u ∈ GinfC T, ∀ P P' : MvPolynomial (FVar D T.rank S.rank) ℂ, ∃ c : ℂ, ∀ f g : WO S T → ℂ, IsThetaFunO ψ S T f → IsThetaFunO ψ S T g → (∀ τ, IsFockVacAt (heisO ψ S T) θ τ (cplxO (sS τ) (sT τ)) f) → (∀ τ, IsFockVacAt (heisO ψ S T) θ τ (cplxO (sS τ) (sT τ)) g) → thetaIP μ 𝓕 (om (1, u) (pureTensorO ψ θ S T sS sT BS BT f P)) (pureTensorO ψ θ S T sS sT BS BT g P') = c * thetaIP μ 𝓕 f g := by
-  first | exact @GlobalTheory.VacPairSchur.pair_eq
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FockVacuumPairingPolynomialTranslatesScalarStatement =====
@@ -975,7 +958,7 @@ theorem factInf : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (
     congr 1
     unfold RealDat.ptP
     exact GlobalTheory.OrientedHeis.om_fin_pureTensorO _ _ _ _ _ _ hW R.θ hθ 1 (Subgroup.one_mem _) γ hγ _ _ _ _ _ P hth
-  obtain ⟨c, hc⟩ := GlobalTheory.T.fockVacuum_pairing_polynomial_translates_scalar D R.ψ R.θ (Vc D i) (Wc D i) _ _ (R.ωP i t) hW hθ (fun _ => 1) (R.BV i)
+  obtain ⟨c, hc⟩ := GlobalTheory.VacPairSchur.pair_eq D R.ψ R.θ (Vc D i) (Wc D i) _ _ (R.ωP i t) hW hθ (fun _ => 1) (R.BV i)
     (cart (R.MW i (sg0 D A))) (onb (R.MW i (sg0 D A))) (fun _ => (Vc D i).rank)
     (fun τ => ((Wc D i).sig (tauE D τ)).1) (fun τ => isCartanInv_one_of_onb (hL.models.BV i τ))
     (GlobalTheory.AdTh.VecFock.isCartanInv_cart _) (hL.models.BV i)
@@ -1285,8 +1268,6 @@ open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RawLift
 
-theorem _root_.GlobalTheory.T.level_subgroup_restricted_product_of_laws : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), Laws R F → R.FullP → ∀ i, LevProd R i := by
-  first | exact @GlobalTheory.LevelProduct.levProd_of_laws
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LevelSubgroupRestrictedProductOfLawsStatement =====
@@ -1303,8 +1284,6 @@ open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RawLift
 
-theorem _root_.GlobalTheory.T.local_hecke_sum_preserves_principal_level_forms : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat D A Ks} {i : Fin D.R.m}, LevProd R i → ∀ (v : HeightOneSpectrum (𝓞 D.host.F)) (f : AE D), IsFinIdem D v f → ∀ (α : GA D (Wc D i)), SuppF (Wc D i) f α → ∀ (C : Finset (GA D (Wc D i))), (∀ γ ∈ C, SuppF (Wc D i) f γ) → IsCosetRep (Wc D i) {k | k ∈ levW R i ∧ SuppF (Wc D i) f k} α C → ∀ T ∈ R.Wall i (sg0 D A), heckeOn (R.MW i (sg0 D A)) C T ∈ R.Wall i (sg0 D A) := by
-  first | exact @GlobalTheory.LocalHeckeLevel.heckeOn_mem_wall
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocalHeckeSumPreservesPrincipalLevelFormsStatement =====
@@ -1337,7 +1316,7 @@ theorem heckeOn_mem_wall (hLP : LevProd R i) (v : HeightOneSpectrum (𝓞 D.host
     (α : GA D (Wc D i)) (hα : SuppF (Wc D i) f α) (C : Finset (GA D (Wc D i))) (hC : ∀ γ ∈ C, SuppF (Wc D i) f γ)
     (hR : IsCosetRep (Wc D i) {k | k ∈ levW R i ∧ SuppF (Wc D i) f k} α C) (T : MMap (R.MW i (sg0 D A)))
     (hT : T ∈ R.Wall i (sg0 D A)) : heckeOn (R.MW i (sg0 D A)) C T ∈ R.Wall i (sg0 D A) :=
-  GlobalTheory.T.local_hecke_sum_preserves_principal_level_forms hLP v f hf α hα C hC hR T hT
+  GlobalTheory.LocalHeckeLevel.heckeOn_mem_wall hLP v f hf α hα C hC hR T hT
 
 theorem exists_doubleCoset_sum (hLP : LevProd R i) (γ : GA D (Wc D i)) (hγ : γ ∈ GfC (Wc D i)) :
     ∃ C : Finset (GA D (Wc D i)), C.Nonempty ∧ (∀ δ ∈ C, ∃ k ∈ levW R i, δ = k * γ) ∧
@@ -1434,7 +1413,6 @@ theorem exists_ip {F : Face D A} (hL : Laws R F) (hLP : LevProd R i) {γ : GA D 
       nsmul_eq_mul] at h2
     simp only [heckeOn_single_apply]
     rw [div_mul_eq_mul_div, eq_div_iff hn, mul_comm, h2]
-
 
 theorem transLaws_of {F : Face D A} (hL : Laws R F) (hLP : LevProd R i) : TransLaws R i := by
   classical
@@ -1607,7 +1585,7 @@ theorem transLaws : GlobalTheory.Published.CuspRapidDecay → ∀ (D : D7) (G : 
     (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL]
     (R : RealDat D A Ks) (F : Face D A), Laws R F → R.FullP → ∀ i, TransLaws R i := by
   intro _ D G _ _ Pl0 T A Ks _ _ _ R F hL hFull i
-  exact transLaws_of hL (GlobalTheory.T.level_subgroup_restricted_product_of_laws D G Pl0 T A Ks R F hL hFull i)
+  exact transLaws_of hL (GlobalTheory.LevelProduct.levProd_of_laws D G Pl0 T A Ks R F hL hFull i)
 
 end GlobalTheory.RawLiftTrans
 end -- clump:auto
@@ -1652,8 +1630,6 @@ open GlobalTheory.RawLift
 
 namespace GlobalTheory
 
-
-
 theorem rawLift_onto_of_upInj : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), Laws R F → R.FullP → RatSpan R → (∀ i, UpInj R i A.μ0) → ThOnto R := by
   intro D G _ _ Pl0 T A Ks _ _ _ R F hL hF hS hU i
   obtain ⟨th, hth⟩ := hL.exists_isRaw i A.μ0
@@ -1685,13 +1661,6 @@ open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RawLift
 
-theorem _root_.GlobalTheory.T.fockCoefficient_extremal_eq_discreteSeries : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), Laws R F → R.FullP → ∀ (i : Fin D.R.m) (t : T) μ 𝓕, IsCovolOne (ratL (Wc D i) (Vc D i)) μ 𝓕 → ∀ v : (∀ ρ, lowT (R.MW i (sg0 D A)) ρ), Formalism.IndefR.FWT.IsExtVec (R.MW i (sg0 D A)) (fun ρ => ((v ρ : (R.MW i (sg0 D A)).sm ρ))) → ∀ w, ∀ u ∈ GinfC (Wc D i),
-    thetaIP μ 𝓕 (jointVec R i t v w) (R.ωP i t (1, u) (jointVec R i t v w)) =
-      thetaIP μ 𝓕 (jointVec R i t v w) (jointVec R i t v w) *
-        ∏ ρ, ⟪((v ρ : (R.MW i (sg0 D A)).sm ρ) : (R.MW i (sg0 D A)).H ρ),
-          (R.MW i (sg0 D A)).rep ρ (infMat D.sp.cm.sig (Wc D i).gram (R.θ ρ) u)
-            ((v ρ : (R.MW i (sg0 D A)).sm ρ) : (R.MW i (sg0 D A)).H ρ)⟫_ℂ := by
-  first | exact @GlobalTheory.RawLift.FockCoef.coef_extremal
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FockCoefficientExtremalEqDiscreteSeriesStatement =====
@@ -1708,13 +1677,6 @@ open scoped TensorProduct InnerProductSpace
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.RawLift
 
-theorem _root_.GlobalTheory.T.realLowestKType_of_extremalVectorCase : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), Laws R F → R.FullP → ∀ (i : Fin D.R.m) (t : T), (∀ μ 𝓕, IsCovolOne (ratL (Wc D i) (Vc D i)) μ 𝓕 → ∀ v : (∀ ρ, lowT (R.MW i (sg0 D A)) ρ), Formalism.IndefR.FWT.IsExtVec (R.MW i (sg0 D A)) (fun ρ => ((v ρ : (R.MW i (sg0 D A)).sm ρ))) → ∀ w, ∀ u ∈ GinfC (Wc D i),
-    thetaIP μ 𝓕 (jointVec R i t v w) (R.ωP i t (1, u) (jointVec R i t v w)) =
-      thetaIP μ 𝓕 (jointVec R i t v w) (jointVec R i t v w) *
-        ∏ ρ, ⟪((v ρ : (R.MW i (sg0 D A)).sm ρ) : (R.MW i (sg0 D A)).H ρ),
-          (R.MW i (sg0 D A)).rep ρ (infMat D.sp.cm.sig (Wc D i).gram (R.θ ρ) u)
-            ((v ρ : (R.MW i (sg0 D A)).sm ρ) : (R.MW i (sg0 D A)).H ρ)⟫_ℂ) → RealLow R i t := by
-  first | exact @GlobalTheory.RawLift.RealLowRed.realLow_of_ext
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RealLowestKTypeOfExtremalVectorCaseStatement =====
@@ -1737,7 +1699,7 @@ namespace GlobalTheory.RawLift.RealLowPf
 
 theorem realLow : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), Laws R F → R.FullP → ∀ i t, RealLow R i t := by
   intro D G _ _ Pl0 T A Ks _ _ _ R F hL hP i t
-  exact GlobalTheory.T.realLowestKType_of_extremalVectorCase D G Pl0 T A Ks R F hL hP i t (GlobalTheory.T.fockCoefficient_extremal_eq_discreteSeries D G Pl0 T A Ks R F hL hP i t)
+  exact GlobalTheory.RawLift.RealLowRed.realLow_of_ext D G Pl0 T A Ks R F hL hP i t (GlobalTheory.RawLift.FockCoef.coef_extremal D G Pl0 T A Ks R F hL hP i t)
 
 end GlobalTheory.RawLift.RealLowPf
 

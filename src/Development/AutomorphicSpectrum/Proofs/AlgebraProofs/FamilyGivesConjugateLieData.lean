@@ -89,12 +89,6 @@ section -- clump:auto
 
 open MvPowerSeries ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ GlobalTheory.CompanionTheory.Ar.Crv GlobalTheory.CompanionTheory.Ar.Conj
 
-namespace GlobalTheory.CompanionTheory.Ar.Conj
-
-theorem pow_interchange : ∀ (R : Type) [CommRing R] (d : ℕ) (O : Type) [CommRing O] [StarRing O] (B : FB R d O) (m n : ℕ), pow2 B n ^ m * ev (n := 2) ![pt R d 0, comp1 (B.A.act (n : O)) (pt R d 1)] (pow1 B m) = pow1 B m ^ n * ev (n := 2) ![comp1 (B.A.act (m : O)) (pt R d 0), pt R d 1] (pow2 B n) :=
-  PositivityTheory.HtPt.Cc.pow_inter
-
-end GlobalTheory.CompanionTheory.Ar.Conj
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PowOnePowTwoCommutation =====
@@ -106,12 +100,6 @@ section -- clump:auto
 
 open MvPowerSeries ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ GlobalTheory.CompanionTheory.Ar.Crv GlobalTheory.CompanionTheory.Ar.Conj
 
-namespace GlobalTheory.CompanionTheory.Ar.Conj
-
-theorem pow_sy_exchange : ∀ (R : Type) [CommRing R] (d : ℕ) (O : Type) [CommRing O] [StarRing O] (B : FB R d O) (n : ℕ), pow2 B n * B.sy ^ n = ev (n := 2) ![pt R d 0, comp1 (B.A.act (n : O)) (pt R d 1)] B.sy * ev (n := 2) ![pt R d 1, pt R d 0] (pow1 B n) :=
-  @PositivityTheory.HtPt.Cc.pow_sy
-
-end GlobalTheory.CompanionTheory.Ar.Conj
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PowTwoSymplecticRelation =====
@@ -143,9 +131,6 @@ theorem cz_single {n : ℕ} {a : Pt R n d} (ha : ∀ i, constantCoeff (a i) = 0)
   intro j i
   fin_cases j
   exact ha i
-
-theorem pt_noConst {n : ℕ} (j : Fin n) (i : Fin d) : constantCoeff (pt R d j i) = 0 := by
-  simp [pt]
 
 theorem composition_no_constant_term {V : Pt R 1 d} (hV : ∀ i, constantCoeff (V i) = 0) {n : ℕ} {a : Pt R n d}
     (ha : ∀ i, constantCoeff (a i) = 0) (i : Fin d) : constantCoeff (comp1 V a i) = 0 :=
@@ -237,28 +222,28 @@ theorem calc_cmp {f : PS R 2 d} (hf : AxOne f) {φ ψ : Pt R 1 d} (hφ : ∀ i, 
 
 theorem calc_right {f : PS R 2 d} (hf : AxOne f) {p : ℕ} (hp0 : p ≠ 0) (hp : p ≠ 1) :
     AxOne (ev (n := 2) ![P₀, ptPow R d p 1] f) ∧ bil (ev (n := 2) ![P₀, ptPow R d p 1] f) 1 1 = 0 := by
-  have t := calc_cmp hf (φ := pt R d 0) (ψ := ptPow R d p 0) (pt_noConst 0) (GlobalTheory.CompanionTheory.Ar.Conj.IsoAlpha.cc_ptPow hp0 0)
-  rw [PositivityTheory.HtPt.Ca.comp1_identity_left, composition_frobenius_point (pt_noConst 1), pt_pow_eq, lin_tau hp, Matrix.mul_zero] at t
+  have t := calc_cmp hf (φ := pt R d 0) (ψ := ptPow R d p 0) (Formalism.MainNotions.ModuliIntegralCharts.H1.FBMap.cz_pt 0) (GlobalTheory.CompanionTheory.Ar.Conj.IsoAlpha.cc_ptPow hp0 0)
+  rw [PositivityTheory.HtPt.Ca.comp1_identity_left, composition_frobenius_point (Formalism.MainNotions.ModuliIntegralCharts.H1.FBMap.cz_pt 1), pt_pow_eq, lin_tau hp, Matrix.mul_zero] at t
   exact t
 
 theorem calc_left {f : PS R 2 d} (hf : AxOne f) {p : ℕ} (hp0 : p ≠ 0) (hp : p ≠ 1) :
     AxOne (ev (n := 2) ![ptPow R d p 0, P₁] f) ∧ bil (ev (n := 2) ![ptPow R d p 0, P₁] f) 1 1 = 0 := by
-  have t := calc_cmp hf (φ := ptPow R d p 0) (ψ := pt R d 0) (GlobalTheory.CompanionTheory.Ar.Conj.IsoAlpha.cc_ptPow hp0 0) (pt_noConst 0)
-  rw [PositivityTheory.HtPt.Ca.comp1_identity_left, composition_frobenius_point (pt_noConst 0), pt_pow_eq, lin_tau hp, Matrix.transpose_zero,
+  have t := calc_cmp hf (φ := ptPow R d p 0) (ψ := pt R d 0) (GlobalTheory.CompanionTheory.Ar.Conj.IsoAlpha.cc_ptPow hp0 0) (Formalism.MainNotions.ModuliIntegralCharts.H1.FBMap.cz_pt 0)
+  rw [PositivityTheory.HtPt.Ca.comp1_identity_left, composition_frobenius_point (Formalism.MainNotions.ModuliIntegralCharts.H1.FBMap.cz_pt 0), pt_pow_eq, lin_tau hp, Matrix.transpose_zero,
     Matrix.zero_mul, Matrix.zero_mul] at t
   exact t
 
 theorem calc_map_right {f : PS R 2 d} (hf : AxOne f) {V : Pt R 1 d} (hV : ∀ i, constantCoeff (V i) = 0) :
     AxOne (ev (n := 2) ![P₀, comp1 V P₁] f) ∧
       bil (ev (n := 2) ![P₀, comp1 V P₁] f) 1 1 = bil f 1 1 * lin V 1 := by
-  have t := calc_cmp hf (φ := pt R d 0) (ψ := V) (pt_noConst 0) hV
+  have t := calc_cmp hf (φ := pt R d 0) (ψ := V) (Formalism.MainNotions.ModuliIntegralCharts.H1.FBMap.cz_pt 0) hV
   rw [PositivityTheory.HtPt.Ca.comp1_identity_left, lin_pt_eq_one, Matrix.transpose_one, Matrix.one_mul] at t
   exact t
 
 theorem calc_map_left {f : PS R 2 d} (hf : AxOne f) {V : Pt R 1 d} (hV : ∀ i, constantCoeff (V i) = 0) :
     AxOne (ev (n := 2) ![comp1 V P₀, P₁] f) ∧
       bil (ev (n := 2) ![comp1 V P₀, P₁] f) 1 1 = (lin V 1).transpose * bil f 1 1 := by
-  have t := calc_cmp hf (φ := V) (ψ := pt R d 0) hV (pt_noConst 0)
+  have t := calc_cmp hf (φ := V) (ψ := pt R d 0) hV (Formalism.MainNotions.ModuliIntegralCharts.H1.FBMap.cz_pt 0)
   rw [PositivityTheory.HtPt.Ca.comp1_identity_left, lin_pt_eq_one, Matrix.mul_one] at t
   exact t
 
@@ -273,7 +258,7 @@ theorem axOne_map {S : Type} [CommRing S] (φ : R →+* S) {f : PS R 2 d} (hf : 
       exact map_subst ha.hasSubst f
     rw [← e, h, map_one]
   have c0 : ∀ i, constantCoeff ((0 : Pt R 1 d) i) = 0 := fun i => by simp
-  have c1 : ∀ i, constantCoeff (pt R (n := 1) d 0 i) = 0 := pt_noConst 0
+  have c1 : ∀ i, constantCoeff (pt R (n := 1) d 0 i) = 0 := Formalism.MainNotions.ModuliIntegralCharts.H1.FBMap.cz_pt 0
   constructor
   · have := key _ (cz_pair c0 c1) hf.1
     convert this using 2
@@ -290,16 +275,16 @@ theorem axOne_map {S : Type} [CommRing S] (φ : R →+* S) {f : PS R 2 d} (hf : 
 
 theorem calc_mul {f g : PS R 2 d} (hf : AxOne f) (hg : AxOne g) :
     AxOne (f * g) ∧ bil (f * g) 1 1 = bil f 1 1 + bil g 1 1 :=
-  have t := _root_.GlobalTheory.CompanionTheory.Ar.Conj.BilCalc.bil_calc R d f g (pt R d 0) (pt R d 0) hf hg (pt_noConst 0) (pt_noConst 0)
+  have t := _root_.GlobalTheory.CompanionTheory.Ar.Conj.BilCalc.bil_calc R d f g (pt R d 0) (pt R d 0) hf hg (Formalism.MainNotions.ModuliIntegralCharts.H1.FBMap.cz_pt 0) (Formalism.MainNotions.ModuliIntegralCharts.H1.FBMap.cz_pt 0)
   ⟨t.1, t.2.1 1⟩
 
 theorem calc_swap {f : PS R 2 d} (hf : AxOne f) :
     bil (ev (n := 2) ![P₁, P₀] f) 1 1 = (bil f 1 1).transpose :=
-  (_root_.GlobalTheory.CompanionTheory.Ar.Conj.BilCalc.bil_calc R d f f (pt R d 0) (pt R d 0) hf hf (pt_noConst 0) (pt_noConst 0)).2.2.2.2.2.1 1 1
+  (_root_.GlobalTheory.CompanionTheory.Ar.Conj.BilCalc.bil_calc R d f f (pt R d 0) (pt R d 0) hf hf (Formalism.MainNotions.ModuliIntegralCharts.H1.FBMap.cz_pt 0) (Formalism.MainNotions.ModuliIntegralCharts.H1.FBMap.cz_pt 0)).2.2.2.2.2.1 1 1
 
 theorem calc_pow {f : PS R 2 d} (hf : AxOne f) {p : ℕ} (hp : 1 ≤ p) :
     bil (ev (n := 2) ![ptPow R d p 0, ptPow R d p 1] f) p p = bil f 1 1 :=
-  (_root_.GlobalTheory.CompanionTheory.Ar.Conj.BilCalc.bil_calc R d f f (pt R d 0) (pt R d 0) hf hf (pt_noConst 0) (pt_noConst 0)).2.2.2.2.2.2 p p hp hp
+  (_root_.GlobalTheory.CompanionTheory.Ar.Conj.BilCalc.bil_calc R d f f (pt R d 0) (pt R d 0) hf hf (Formalism.MainNotions.ModuliIntegralCharts.H1.FBMap.cz_pt 0) (Formalism.MainNotions.ModuliIntegralCharts.H1.FBMap.cz_pt 0)).2.2.2.2.2.2 p p hp hp
 
 theorem bil_map_eq_zero {S : Type} [CommRing S] (φ : R →+* S) {f : PS R 2 d} (h : bil f 1 1 = 0) :
     bil (MvPowerSeries.map φ f) 1 1 = 0 := by
@@ -316,8 +301,8 @@ theorem am_mul_hw {p : ℕ} [Fact p.Prime] [CharP R p] (B : FB R d O) :
   have hp1 : p ≠ 1 := (Fact.out : p.Prime).ne_one
   obtain ⟨V, hV, hact, hlin⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Conj.mulp_factors_frobenius R p d O B
   obtain ⟨g, hg, ha, hgb⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Conj.pow_one_series_in_p R p d O B
-  have c0 : ∀ i, constantCoeff (P₀ i) = 0 := pt_noConst 0
-  have c1 : ∀ i, constantCoeff (P₁ i) = 0 := pt_noConst 1
+  have c0 : ∀ i, constantCoeff (P₀ i) = 0 := Formalism.MainNotions.ModuliIntegralCharts.H1.FBMap.cz_pt 0
+  have c1 : ∀ i, constantCoeff (P₁ i) = 0 := Formalism.MainNotions.ModuliIntegralCharts.H1.FBMap.cz_pt 1
   have u0 : ∀ i, constantCoeff (ptPow R (n := 2) d p 0 i) = 0 := GlobalTheory.CompanionTheory.Ar.Conj.IsoAlpha.cc_ptPow hp0 0
   have u1 : ∀ i, constantCoeff (ptPow R (n := 2) d p 1 i) = 0 := GlobalTheory.CompanionTheory.Ar.Conj.IsoAlpha.cc_ptPow hp0 1
   have v0 := composition_no_constant_term hV c0
@@ -356,7 +341,7 @@ theorem am_mul_hw {p : ℕ} [Fact p.Prime] [CharP R p] (B : FB R d O) :
     rw [hg', (calc_mul (calc_mul axs2 axg1).1 axt).2, (calc_mul axs2 axg1).2, bs2, bg1, bt, add_zero]
   have cQ := cz_pair c0 u1
   have hb : pow2 B p = ev (n := 2) ![P₀, ptPow R d p 1] g' := by
-    have e1 := _root_.GlobalTheory.CompanionTheory.Ar.Conj.pow_sy_exchange R d O B p
+    have e1 := _root_.PositivityTheory.HtPt.Cc.pow_sy R d O B p
     have f1 : ev (n := 2) ![P₀, comp1 (B.A.act (p : O)) P₁] B.sy =
         ev (n := 2) ![P₀, ptPow R d p 1] s2 := by
       rw [hA1, hs2, ev_pair_ev c0 u1 c0 v1, ev_first c0 u1, ev_comp1_pair hV cQ c1, ev_second c0 u1]
@@ -393,7 +378,7 @@ theorem am_mul_hw {p : ℕ} [Fact p.Prime] [CharP R p] (B : FB R d O) :
       ev (n := 2) ![ptPow R d p 0, ptPow R d p 1]
         (MvPowerSeries.map (frobenius R p) (pow1 B p) * g3) := by
     rw [ev_mul cP, ev_mul cP, ← hfs, ← hfs, ← h1, ← h2]
-    exact _root_.GlobalTheory.CompanionTheory.Ar.Conj.pow_interchange R d O B p p
+    exact _root_.PositivityTheory.HtPt.Cc.pow_inter R d O B p p
 
   have axb : AxOne (pow2 B p) := hb ▸ (calc_right axg' hp0 hp1).1
   have bb : bil (pow2 B p) 1 1 = 0 := hb ▸ (calc_right axg' hp0 hp1).2
@@ -923,8 +908,8 @@ theorem locSplit {p : ℕ} [Fact p.Prime] [CharP K p] (F : Family C p d O) (i : 
     LocSplit C i (alpha (F.BK i) p) (beta (F.BK i) p) := by
   haveI : CharP (C.v i).valuationSubring p :=
     (RingHom.charP_iff (C.v i).valuationSubring.subtype Subtype.val_injective p).2 inferInstance
-  have mK := _root_.GlobalTheory.CompanionTheory.Ar.Conj.map_mats_baseChange _ _ (C.v i).valuationSubring.subtype d O (F.Bi i) (F.BK i) (F.mapK i)
-  have mk := _root_.GlobalTheory.CompanionTheory.Ar.Conj.map_mats_baseChange _ _ (IsLocalRing.residue _) d O (F.Bi i) (F.Bk i) (F.mapk i)
+  have mK := _root_.PositivityTheory.HtPt.Cc.map_mats _ _ (C.v i).valuationSubring.subtype d O (F.Bi i) (F.BK i) (F.mapK i)
+  have mk := _root_.PositivityTheory.HtPt.Cc.map_mats _ _ (IsLocalRing.residue _) d O (F.Bi i) (F.Bk i) (F.mapk i)
   have iz : am (F.Bi i) p * hw (F.Bi i) p -
       (hw (F.Bi i) p).transpose * bil (F.Bi i).sy 1 1 * hw (F.Bi i) p -
       (hw (F.Bi i) p).transpose * (am (F.Bi i) p).transpose = 0 := by
@@ -967,7 +952,7 @@ theorem locSplit {p : ℕ} [Fact p.Prime] [CharP K p] (F : Family C p d O) (i : 
 theorem rhoH_mem_stdH (i : C.I) (B₀ : FB (C.v i).valuationSubring d O) (B : FB K d O)
     (h : IsMapOf (C.v i).valuationSubring.subtype B₀ B) (a : O) {w : (Fin d → K) × (Fin d → K)}
     (hw : w ∈ stdH C d i) : rhoH B a w ∈ stdH C d i := by
-  obtain ⟨hm, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Conj.map_mats_baseChange _ _ (C.v i).valuationSubring.subtype d O B₀ B h
+  obtain ⟨hm, -⟩ := _root_.PositivityTheory.HtPt.Cc.map_mats _ _ (C.v i).valuationSubring.subtype d O B₀ B h
   have hr : ∀ b, IntM C i (rho B b) := fun b => by rw [(hm b).1]; exact intM_map C i _
   have ha : IntM C i (bil (B.ad a) 1 1) := by rw [(hm a).2]; exact intM_map C i _
   rw [mem_stdH] at hw ⊢

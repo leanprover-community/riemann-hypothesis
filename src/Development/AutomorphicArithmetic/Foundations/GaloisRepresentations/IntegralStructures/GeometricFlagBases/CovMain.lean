@@ -127,16 +127,12 @@ private theorem actOn_comm_mulF (x : 𝓞 D.F) (y : AfP p ⊗[ℚ] G.C) :
       Algebra.TensorProduct.lift_tmul _ _ _ a c
     rw [ht, mul_assoc, hb, ← mul_assoc, ← mul_assoc, Algebra.commutes]
 
-private theorem actG_mulF (g : G.GAf) (x : 𝓞 D.F) (v : AfP p ⊗[ℚ] VQ D) :
-    L.actG g (mulF D x v) = mulF D x (L.actG g v) :=
-  congrArg (fun f : Module.End (AfP p) (AfP p ⊗[ℚ] VQ D) => f v) (actOn_comm_mulF L x _)
-
 private theorem actG_idHat {g : G.GAf} (hg : Integ L g) (𝔟 : Ideal (𝓞 D.F)) {z : AfP p ⊗[ℚ] VQ D}
     (hz : z ∈ idHat D 𝔟) : L.actG g z ∈ idHat D 𝔟 := by
   induction hz using AddSubgroup.closure_induction with
   | mem z hz =>
     obtain ⟨x, hx, v, hv, rfl⟩ := hz
-    rw [actG_mulF]
+    rw [UpperTheory.TorsionCardinalitySetup.actG_mulF]
     exact AddSubgroup.subset_closure ⟨x, hx, _, hg v hv, rfl⟩
   | zero => simp
   | add a b _ _ ha hb => rw [map_add]; exact add_mem ha hb
@@ -380,7 +376,6 @@ namespace UpperTheory.Gal.Int.Geo.CRT
 
 variable {p : ℕ} [Fact p.Prime] {D : Datum p} {G : HTGroup p}
 
-
 private theorem mulF_tmul (c : 𝓞 D.F) (a : AfP p) (t : ℚ) (x : D.La) :
     mulF D c (a ⊗ₜ (t ⊗ₜ x)) = a ⊗ₜ (t ⊗ₜ (algebraMap (𝓞 D.F) D.O c • x)) := by
   simp [mulF, actQ]
@@ -414,16 +409,6 @@ private theorem mulF_nat (n : ℕ) (v : AfP p ⊗[ℚ] VQ D) : mulF D (n : 𝓞 
     · intro x y hx hy; simp only [map_add (f := _), hx, hy]; simp
     · intro a t x; simp [mulF_tmul]
   | succ n ih => rw [Nat.cast_succ, mulF_add, mulF_one, ih, succ_nsmul]
-
-private theorem mulF_mem (c : 𝓞 D.F) {v : AfP p ⊗[ℚ] VQ D} (hv : v ∈ LaHat D) : mulF D c v ∈ LaHat D := by
-  induction hv using AddSubgroup.closure_induction with
-  | mem z hz =>
-    obtain ⟨a, x, ha, rfl⟩ := hz
-    rw [mulF_tmul]
-    exact AddSubgroup.subset_closure ⟨a, _, ha, rfl⟩
-  | zero => rw [map_zero]; exact zero_mem _
-  | add x y _ _ hx hy => rw [map_add (f := _)]; exact add_mem hx hy
-  | neg x _ hx => rw [map_neg]; exact neg_mem hx
 
 private theorem mem_idHat {𝔟 : Ideal (𝓞 D.F)} {x : 𝓞 D.F} (hx : x ∈ 𝔟) {v : AfP p ⊗[ℚ] VQ D} (hv : v ∈ LaHat D) :
     mulF D x v ∈ idHat D 𝔟 := AddSubgroup.subset_closure ⟨x, hx, v, hv, rfl⟩
@@ -463,7 +448,6 @@ private theorem actOn_comm (L : Link D G) (y : AfP p ⊗[ℚ] G.C) (b : D.O) :
       exact this
     rw [e, smul_mul_assoc, mul_smul_comm, h2]
 
-
 private theorem wSub_inAf {𝔞 : Ideal (𝓞 D.F)} {y : D.La} (hy : y ∈ wSub D 𝔞 1) : inAf D y ∈ idHat D 𝔞 := by
   have key : ∀ b : D.O, inAf D (b • y) ∈ idHat D 𝔞 := by
     induction hy using Submodule.span_induction with
@@ -496,7 +480,7 @@ private theorem div_of_idHat {𝔟 : Ideal (𝓞 D.F)} {c : 𝓞 D.F} {N : ℕ} 
   | mem u hu =>
     obtain ⟨x, hx, w, hw, rfl⟩ := hu
     obtain ⟨z, hz⟩ := h x hx
-    exact ⟨mulF D z w, mulF_mem z hw, by rw [← mulF_mul, hz, mulF_mul, mulF_nat]⟩
+    exact ⟨mulF D z w, UpperTheory.TorsionCardinalitySetup.mulF_mem z hw, by rw [← mulF_mul, hz, mulF_mul, mulF_nat]⟩
   | zero => exact ⟨0, zero_mem _, by simp⟩
   | add x y _ _ hx hy =>
     obtain ⟨w, hw, ew⟩ := hx
@@ -566,7 +550,7 @@ private theorem gen_part (hLG : LatGen) (L : Link D G) (𝔞 : Ideal (𝓞 D.F))
     have step1 : ∀ v ∈ LaHat D, ∃ w ∈ LaHat D, mulF D a (L.actG g v - v) = N • w := fun v hv => by
       obtain ⟨x, w', hw', rfl⟩ := _root_.GlobalTheory.LKGeo.exists_inAf_add_nsmul_of_mem_laHat p D N hN hNp v hv
       obtain ⟨v₁, hv₁, e₁⟩ := h x
-      refine ⟨v₁ + mulF D a (L.actG g w' - w'), add_mem hv₁ (mulF_mem a (sub_mem (hg _ hw') hw')), ?_⟩
+      refine ⟨v₁ + mulF D a (L.actG g w' - w'), add_mem hv₁ (UpperTheory.TorsionCardinalitySetup.mulF_mem a (sub_mem (hg _ hw') hw')), ?_⟩
       have e₂ : mulF D a (L.actG g (inAf D x) - inAf D x) = N • v₁ := by
         rw [map_sub, ← TorsionCardinalitySetup.actG_mulF, mulF_inAf, e₁]; abel
       have e₃ : L.actG g (inAf D x + N • w') - (inAf D x + N • w') =
@@ -578,7 +562,7 @@ private theorem gen_part (hLG : LatGen) (L : Link D G) (𝔞 : Ideal (𝓞 D.F))
     obtain ⟨w₁, hw₁, e₁⟩ := step1 v hv
     obtain ⟨y, w, hw, e₂⟩ := _root_.GlobalTheory.LKGeo.exists_inAf_add_nsmul_of_mem_laHat p D N hN hNp _ hu
     have hdvd : ∃ u : D.La, algebraMap (𝓞 D.F) D.O a • y = N • u := by
-      refine _root_.GlobalTheory.LKGeo.LatDvd.exists_eq_nsmul_of_inAf p D N hN hNp (_root_.GlobalTheory.LKGeo.IntDvd.int_dvd_of_eq_mul_isIntAf p N hN hNp) _ ⟨w₁ - mulF D a w, sub_mem hw₁ (mulF_mem a hw), ?_⟩
+      refine _root_.GlobalTheory.LKGeo.LatDvd.exists_eq_nsmul_of_inAf p D N hN hNp (_root_.GlobalTheory.LKGeo.IntDvd.int_dvd_of_eq_mul_isIntAf p N hN hNp) _ ⟨w₁ - mulF D a w, sub_mem hw₁ (UpperTheory.TorsionCardinalitySetup.mulF_mem a hw), ?_⟩
       rw [e₂, map_add (f := _), mulF_inAf, map_nsmul] at e₁
       rw [smul_sub, ← e₁]; abel
     have hy : y ∈ wSub D 𝔞 1 := ((hLG p D a N 𝔞 hN hgen).1 y).1 hdvd
@@ -1180,8 +1164,6 @@ open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalC
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.UPel.HT GlobalTheory.UPel.HT.Gen GlobalTheory.UPel.HT.EtLev GlobalTheory.LKTrip GlobalTheory.LKGeo
 open UpperTheory.Gal.Int.Geo
 
-
-
 theorem UpperTheory.quotient_invariant_of_trace_unit_crt :
     NumEx → QComp → QIso → ClsEx → TrEta → TrUnit → CongCRT → BaseInv := by
   intro hNumEx hQComp hQIso hClsEx hTrEta hTrUnit hCRT p _ D G L E _ _ gb w q _ r 𝔴 𝔫 S k T K₀ hLev N' N t c a hN't hNum C' C u hu W
@@ -1238,7 +1220,6 @@ section -- clump:auto
 open UpperTheory.Gal.Int.Geo
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField IsDedekindDomain
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.UPel.HT GlobalTheory.UPel.HT.Gen GlobalTheory.UPel.HT.EtLev GlobalTheory.LKTrip GlobalTheory.LKGeo
-
 
 theorem UpperTheory.quotient_separated_of_trace_unit_crt :
     GPull → QComp → QIso → QUniq → TrEta → TrEtaPt → TrUnit → CongCRT → BaseSep := by
@@ -1456,7 +1437,6 @@ section -- clump:auto
 
 open AlgebraicGeometry CategoryTheory Limits
 open UpperTheory.Gal.Int.Geo
-
 
 theorem UpperTheory.tower_finiteEtale_of_trivial_powerCartesian :
     PiZero → PowCart → PiFet := by

@@ -210,8 +210,6 @@ theorem setIntegral_eq_mul {V : HSp D} (ν₁ ν₂ : Measure (GA D V)) (fd₁ f
   · rw [hfd₁.setIntegral_eq hfd₂' hf', hc, hsm, Measure.restrict_smul, integral_smul_measure]
     simp [Complex.real_smul]
 
-
-
 theorem const_of_sameRig : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} (W : G.Weil) (i j : Fin D.R.m)
     (A A' WW : HSp D) (X Y : Tri T A A' WW), IsBottomTri W i j X → IsBottomTri W i j Y →
     X.rA = Y.rA → X.rA' = Y.rA' → X.rW = Y.rW → ∀ c : T → ℂ, Y.IsConst W.ψ W.θ c → X.IsConst W.ψ W.θ c := by
@@ -411,7 +409,6 @@ def latM (G : Gm D n) (LS : Set (Fin n → D.host.E)) (LT : Set (Fin m → D.hos
     ∃ a : D.host.E, a ∈ D.host.AA ∧ ∃ s ∈ LS, ∃ t ∈ LT,
       w = Matrix.of fun i j => (pairA D.host.F 0 α) ⊗ₜ[D.host.F] (a * t i * ∑ k, star (s k) * G k j)}
 
-
 open scoped ContDiff in
 def ThetaM (ψ : AddChar (AF D.host.F) ℂ) (G : Gm D n) (H : Gm D m) (f : Mx D m n → ℂ) : Prop :=
   (∀ (γ : Matrix (Fin m) (Fin n) D.host.E) (w : Mx D m n), f (γ.map (incA D) + w) =
@@ -520,7 +517,6 @@ def dualM {n m : ℕ} (G : Gm D n) (H : Gm D m) (βS : GL (Fin n) (Lev.EAf D)) (
       (H.map (incA D))).map (toEAf D)))
     βT.val
 
-
 open Classical in
 def fstM {n m : ℕ} (ν : (AE D)ˣ →* Circle) (e : AE D) (I : Ideal (𝓞 D.host.E)) (βA : GL (Fin n) (Lev.EAf D))
     (βW : GL (Fin m) (Lev.EAf D)) (x : Mx D m n) : ℂ :=
@@ -528,14 +524,12 @@ def fstM {n m : ℕ} (ν : (AE D)ˣ →* Circle) (e : AE D) (I : Ideal (𝓞 D.h
     unitChar ν e (topL n (frM βA βW x))
   else 0
 
-
 open Classical in
 def sndM {n m : ℕ} (ν : (AE D)ˣ →* Circle) (e : AE D) (I : Ideal (𝓞 D.host.E)) (a : ℕ) (G : Gm D n) (H : Gm D m)
     (βA : GL (Fin n) (Lev.EAf D)) (βW : GL (Fin m) (Lev.EAf D)) (y : Mx D m n) : ℂ :=
   if IsHalf (cA D e) y ∧ IsIntM (dualM G H βA βW y) ∧ ∀ i j, j.1 < a → InId I (dualM G H βA βW y i j) then
     unitChar ν e (rightBlock a (dualM G H βA βW y))
   else 0
-
 
 set_option genInjectivity false in
 set_option genSizeOfSpec false in
@@ -696,9 +690,6 @@ namespace GlobalTheory.BotFrames
 
 open Formalism.L2.JoinChr
 
-
-
-
 theorem chr_mem_of_idemSum {K : Type} [Field K] {σ : K →+* ℂ} {D : D7} {c : (AE D)ˣ →* Circle}
     {χ : Formalism.L2.Host.HChar D.host.E} (hc : ChrEq c χ) (hχ : LocIn σ χ) {e : AE D}
     {S : Finset (Formalism.L2.DIV.Pl D.host.E)} (he : IsIdemSum e S) (x : (AE D)ˣ) (d : AE D)
@@ -750,8 +741,6 @@ theorem chr_mem_of_idemSum {K : Type} [Field K] {σ : K →+* ℂ} {D : D7} {c :
   refine Subfield.prod_mem _ fun P _ => ?_
   rw [← SetLike.mem_coe, RingHom.coe_fieldRange]
   exact hχ P _
-
-
 
 theorem factor_mem_field : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} (W : G.Weil) (S : GridChoice W Set.univ)
     (μ₀ : T), L.Is μ₀ → NumbersIn D.what₂.embLL S μ₀ → ∀ (i j : Fin D.R.m) (A A' WW : HSp D) (Y : Tri T A A' WW),
@@ -904,8 +893,6 @@ namespace GlobalTheory.BotTranslate
 
 open GlobalTheory.Grid (neg sgn ofSgn)
 
-
-
 theorem translate : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} (W : G.Weil) (i j : Fin D.R.m)
     (A A' WW : HSp D) (X Y : Tri T A A' WW), IsBottomTri W i j X → IsBottomTri W i j Y → ∀ (g : T → GA D A) (g' : T → GA D A') (h : T → GA D WW) (κ κ' : T → ℂ), (∀ t, κ t ≠ 0) → (∀ t, κ' t ≠ 0) →
     (∀ t, Formalism.L2.Theta.SuppAt (Y.e t) A (g t) ∧ Formalism.IndefR.Lev.finE A (g t) ∈ Formalism.L2.DIV.St Y.rA.β) →
@@ -1051,14 +1038,6 @@ open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTh
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
-theorem _root_.GlobalTheory.T.exists_theta_lift_idempotent_form : ∀ {D : D7} (V : HSp D), V.gram = 1 → ∀ (e : AE D), e * e = e → e * cA D e = 0 →
-    ∀ (P Q : Matrix (Fin V.rank) (Fin V.rank) (AE D)), e • (P * Q) = e • (1 : Matrix (Fin V.rank) (Fin V.rank) (AE D)) →
-      e • (Q * P) = e • (1 : Matrix (Fin V.rank) (Fin V.rank) (AE D)) →
-    ∃ g : GA D V,
-      Formalism.L2.Theta.mt V g = (1 - e - cA D e) • (1 : Matrix (Fin V.rank) (Fin V.rank) (AE D)) + e • P + cA D e • (Q.map (cA D)).transpose ∧
-      Formalism.L2.Theta.mt V g⁻¹ = (1 - e - cA D e) • (1 : Matrix (Fin V.rank) (Fin V.rank) (AE D)) + e • Q + cA D e • (P.map (cA D)).transpose := by
-  first | exact @GlobalTheory.UnitaryMove.exists_blockUnit
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsThetaLiftIdempotentFormStatement =====
@@ -1072,9 +1051,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions Form
 open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTheory.RowTest
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-
-
 
 namespace GlobalTheory.StabMove
 
@@ -1185,7 +1161,6 @@ open GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.FunObj.SqNum GlobalTh
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle (Tri)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
 theorem _root_.GlobalTheory.T.unitaryFinitePart_idempotentBlend_mem_latticeStabilizer : ∀ {D : D7} (V : HSp D) (g : GA D V) (β₀ β₁ : GL (Fin V.rank) (Lev.EAf D)),
     (∀ i j, β₀.val i j ∈ Formalism.L2.Herm.intAf D.host.F D.host.E ∧ (β₀⁻¹).val i j ∈ Formalism.L2.Herm.intAf D.host.F D.host.E) →
     (∀ i j, β₁.val i j ∈ Formalism.L2.Herm.intAf D.host.F D.host.E ∧ (β₁⁻¹).val i j ∈ Formalism.L2.Herm.intAf D.host.F D.host.E) →
@@ -1252,13 +1227,6 @@ theorem frame_int {V : HSp D} {r : GlobalTheory.IndefiniteRowSideFullHecke.UnitC
     rw [← e]
     exact h i
 
-theorem exists_unitary : ∀ {D : D7} (V : HSp D), V.gram = 1 → ∀ (e : AE D), e * e = e → e * cA D e = 0 →
-    ∀ (P Q : Matrix (Fin V.rank) (Fin V.rank) (AE D)), e • (P * Q) = e • (1 : Matrix (Fin V.rank) (Fin V.rank) (AE D)) →
-      e • (Q * P) = e • (1 : Matrix (Fin V.rank) (Fin V.rank) (AE D)) →
-    ∃ g : GA D V,
-      Formalism.L2.Theta.mt V g = (1 - e - cA D e) • (1 : Matrix (Fin V.rank) (Fin V.rank) (AE D)) + e • P + cA D e • (Q.map (cA D)).transpose ∧
-      Formalism.L2.Theta.mt V g⁻¹ = (1 - e - cA D e) • (1 : Matrix (Fin V.rank) (Fin V.rank) (AE D)) + e • Q + cA D e • (P.map (cA D)).transpose := GlobalTheory.T.exists_theta_lift_idempotent_form
-
 theorem mem_St : ∀ {D : D7} (V : HSp D) (g : GA D V) (β₀ β₁ : GL (Fin V.rank) (Lev.EAf D)),
     (∀ i j, β₀.val i j ∈ Formalism.L2.Herm.intAf D.host.F D.host.E ∧ (β₀⁻¹).val i j ∈ Formalism.L2.Herm.intAf D.host.F D.host.E) →
     (∀ i j, β₁.val i j ∈ Formalism.L2.Herm.intAf D.host.F D.host.E ∧ (β₁⁻¹).val i j ∈ Formalism.L2.Herm.intAf D.host.F D.host.E) →
@@ -1300,8 +1268,6 @@ theorem toEAf_prod {n : ℕ} (A B : Matrix (Fin n) (Fin n) (AE D)) (a b : GL (Fi
     toEAf D ((A * B) i j) = toEAf D ((1 : Matrix (Fin n) (Fin n) (AE D)) i j) := by
   rw [← Matrix.map_apply (f := toEAf D), Matrix.map_mul, hA, hB, ← Units.val_mul, hab, Units.val_one,
     ← Matrix.map_apply (f := toEAf D), Matrix.map_one _ (map_zero _) (map_one _)]
-
-
 
 theorem exists_move : ∀ {D : D7} (V : HSp D), V.gram = 1 → ∀ (e : AE D), GlobalTheory.PlaceModelSum.IsOrthSum e → e * cA D e = 0 →
     ∀ (β₀ β₁ : GL (Fin V.rank) (Lev.EAf D)),

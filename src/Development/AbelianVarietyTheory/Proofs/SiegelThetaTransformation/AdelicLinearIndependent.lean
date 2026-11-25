@@ -71,8 +71,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.discreteTopology_rationalPoints_hermitianSpace : ∀ (D : D7) (V : HSp D), DiscreteTopology (GQ V) := by
-  first | exact @GlobalTheory.RationalDiscrete.discreteTopology_GQ
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.DiscreteTopologyRationalPointsHermitianSpaceStatement =====
@@ -86,8 +84,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.exists_compact_lattice_stabilizer_bounded_real : ∀ (D : D7) (V : HSp D) (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)), IsInfFam θ → ∀ R : ℝ, ∃ K : Set (GA D V), IsCompact K ∧ ∀ h : GA D V, (∀ y, y ∈ Formalism.MainNotions.StandardLattice.latHat D.host.F D.host.E (L0c D V) ↔ (finMat D.sp.cm.sig V.gram h).mulVec y ∈ Formalism.MainNotions.StandardLattice.latHat D.host.F D.host.E (L0c D V)) → (∀ ρ i j, ‖infMat D.sp.cm.sig V.gram (θ ρ) h i j‖ ≤ R) → h ∈ K := by
-  first | exact @GlobalTheory.StabCompact.exists_compact_stab
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsCompactLatticeStabilizerBoundedRealStatement =====
@@ -101,8 +97,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.isOpen_stabilizer_completedLattice_adelicUnitary : ∀ (D : D7) (V : HSp D), IsOpen {h : GA D V | ∀ y, y ∈ Formalism.MainNotions.StandardLattice.latHat D.host.F D.host.E (L0c D V) ↔ (finMat D.sp.cm.sig V.gram h).mulVec y ∈ Formalism.MainNotions.StandardLattice.latHat D.host.F D.host.E (L0c D V)} := by
-  first | exact @GlobalTheory.StabOpen.isOpen_stab_latHat
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.IsOpenStabilizerCompletedLatticeAdelicUnitaryStatement =====
@@ -170,7 +164,7 @@ theorem exists_volMeas (V : HSp D) (hs : V.SigOK) :
     rw [hψm]
     simp only [← Matrix.mul_assoc, hl, Matrix.one_mul]
     rw [Matrix.mul_assoc, hl, Matrix.mul_one]
-  obtain ⟨μ, hμ, hμs⟩ := exists_haar_image (stab V) (GlobalTheory.T.isOpen_stabilizer_completedLattice_adelicUnitary D V)
+  obtain ⟨μ, hμ, hμs⟩ := exists_haar_image (stab V) (GlobalTheory.StabOpen.isOpen_stab_latHat D V)
     (Measure.pi fun ρ => D.cd.cd (V.sig (tauE D ρ)).1 (V.sig (tauE D ρ)).2) (MonoidHom.pi ψ)
     (continuous_pi hψ) (fun t => by
       obtain ⟨g, hg, hgu⟩ := (GlobalTheory.SmoothForms.RealPts.glue θ hθ V).2 (fun ρ => L ρ * UpqT.mat (t ρ) * A ρ)
@@ -186,7 +180,7 @@ theorem exists_volMeas (V : HSp D) (hs : V.SigOK) :
       have hf : Continuous f := continuous_finsetSum _ fun ρ _ => continuous_finsetSum _ fun i _ =>
         continuous_finsetSum _ fun j _ => (((continuous_const.matrix_mul
           (continuous_mat.comp (continuous_apply ρ))).matrix_mul continuous_const).matrix_elem i j).norm
-      obtain ⟨K, hK, hKm⟩ := GlobalTheory.T.exists_compact_lattice_stabilizer_bounded_real D V θ hθ (f t + 1)
+      obtain ⟨K, hK, hKm⟩ := GlobalTheory.StabCompact.exists_compact_stab D V θ hθ (f t + 1)
       refine ⟨{s | f s < f t + 1}, (isOpen_lt hf continuous_const).mem_nhds (lt_add_one (f t)), K, hK, fun h hh => ?_⟩
       refine hKm h hh.1 fun ρ i j => le_trans ?_ (le_of_lt hh.2)
       rw [hback]
@@ -218,7 +212,7 @@ theorem exists_volPair (V : HSp D) (hs : V.SigOK) :
   obtain ⟨i1, i2, i3⟩ := GlobalTheory.AdelicUnitaryTop.lcsc_adelicUnitary D.host.F D.host.E D.sp.cm.sig V.rank V.gram
   have := Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.Unfold.topGroupHA D.sp.cm.sig V.gram
   have := Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.Unfold.borelHA D.sp.cm.sig V.gram
-  have := GlobalTheory.T.discreteTopology_rationalPoints_hermitianSpace D V
+  have := GlobalTheory.RationalDiscrete.discreteTopology_GQ D V
   obtain ⟨F, -, -, hF⟩ := GlobalTheory.exists_isFundamentalDomain_subgroup (GQ V)
   exact ⟨(μ, F), hμ, hF μ⟩
 
@@ -240,7 +234,6 @@ theorem sum_toLp_ae {α : Type} [MeasurableSpace α] (μ : Measure α) {m : ℕ}
 
 -- Use the same module instance as the cuspidal L² constructions.
 attribute [local instance 2000] Submodule.module
-
 
 theorem phiJ_linearIndependent {D : D7} (T : CoreJ D) (h : LawsJ T) (j : ℕ) (hj : InR D j) (σ : T.Q.c.F →+* ℂ)
     (hσ : GoodEmb T.Q.c σ) (a : (D.host.E →+* ℂ) × ℕ → ℕ) (n : ℕ) (m : ℕ) (b : Fin m → T.cuspA j a n)
@@ -285,8 +278,6 @@ theorem phiJ_linearIndependent {D : D7} (T : CoreJ D) (h : LawsJ T) (j : ℕ) (h
       classical
       exact dite_eq_right hx
     rw [this, mul_zero]
-
-
 
 theorem adelic_linearIndependent : ∀ (D : D7) (T : CoreJ D) (h : LawsJ T) (j : ℕ) (hj : InR D j) (σ : T.Q.c.F →+* ℂ) (hσ : GoodEmb T.Q.c σ) (a : (D.host.E →+* ℂ) × ℕ → ℕ) (n : ℕ) (hD : Dom a n), (∀ (m : ℕ) (b : Fin m → T.cuspA j a n), LinearIndependent T.Q.c.F b → LinearIndependent ℂ fun i => T.phiJ j σ a (b i : T.R j)) ∧ JInj (T.V j σ) σ (rdC (T.U j) σ a n) (T.dict j σ) (T.mu j σ) (h.cuspidalL2Subspace j hj σ hσ a n hD) := by
   intro D T h j hj σ hσ a n hD

@@ -534,20 +534,13 @@ theorem phi_iter_teich (n : ℕ) (x : OCb l) : (φRW LL)^[n] (fW LL (WittVector.
   | zero => simp
   | succ n ih => rw [Function.iterate_succ_apply', ih, phi_teich, ← pow_mul, ← pow_succ]
 
-theorem eroot_pow (j : ℕ) : AI.εroot j ^ l ^ j = AI.ε := by
-  induction j with
-  | zero => simp [LocAinf.εroot]
-  | succ j ih =>
-    rw [pow_succ', pow_mul, LocAinf.εroot, Function.iterate_succ_apply', frobeniusEquiv_symm_pow_p]
-    exact ih
-
 theorem piR_succ : piR AI LL s + 1 = fW LL (WittVector.teichmuller l (AI.εroot s)) := by
   have h : piR AI LL s = fW LL (piW AI s) := rfl
   rw [h, ← map_one (fW LL), ← map_add (f := _), piW, sub_add_cancel]
 
 theorem phi_iter_eroot (j : ℕ) : (φRW LL)^[j] (fW LL (WittVector.teichmuller l (AI.εroot j))) =
     (piR AI LL s + 1) ^ l ^ s := by
-  rw [phi_iter_teich, piR_succ, eroot_pow, ← eroot_pow (AI := AI) s, map_pow, map_pow]
+  rw [phi_iter_teich, piR_succ, GlobalTheory.FlatInvariants.root_pow, ← GlobalTheory.FlatInvariants.root_pow (AI := AI) s, map_pow, map_pow]
 
 theorem crd_fixed (hG : Good K s LL) (y : RW LL) (hy : FixH AI K y) (i) : ∀ g ∈ Hinf K,
     autCb l (AI.actT g) ((crd (basisO LL) i y).coeff 0) = (crd (basisO LL) i y).coeff 0 := by
@@ -628,7 +621,6 @@ theorem mem_perf {R E : Type} [CommRing R] [CommRing E] {j : E →+* R} {φ : R 
     {hφ : ∀ e, ∃ e', φ (j e) = j e'} {p : ℕ} {x : R} (n k : ℕ) (e : E) (h : φ^[n] x = j e ^ k) :
     x ∈ perf j φ hφ p := ⟨n, e ^ k, 0, by rw [h, map_pow, mul_zero, add_zero]⟩
 
-
 theorem approx (hG : Good K s LL) (I : IoS AI R) (hW : IoW I) (y : RW LL) (hy : FixH AI K y) (m : ℕ) :
     ∃ (n : ℕ) (y0 : RW LL) (e : R.EE) (r : RW LL),
       (φRW LL)^[n] y0 = I.ioE e + (l : RW LL) * r ∧ NearPi AI LL s m (y - y0) := by
@@ -648,7 +640,6 @@ theorem approx (hG : Good K s LL) (I : IoS AI R) (hW : IoW I) (y : RW LL) (hy : 
 theorem mem_fixSub_iff (x : RW LL) :
     x ∈ fixSub AI LL {g | g ∈ GK K ∧ P.χQ g = 1} ↔ FixH AI K x :=
   mem_fixSub.trans ⟨fun h g h1 h2 => h g ⟨h1, h2⟩, fun h g hg => h g hg.1 hg.2⟩
-
 
 theorem vec (hG : Good K s LL) (I : IoS AI R) (hW : IoW I) (d : ℕ) (Pm : Matrix (Fin d) (Fin d) R.EE)
     (z : Fin d → RW LL) (hz : ∀ i, FixH AI K (z i))

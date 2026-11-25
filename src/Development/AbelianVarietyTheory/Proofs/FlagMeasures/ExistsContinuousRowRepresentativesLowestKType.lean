@@ -251,22 +251,9 @@ theorem hasDerivAt_integral [T2Space G] [MeasurableSpace G] [OpensMeasurableSpac
 
 end General
 
-theorem expU_zero {n : ℕ} {ε : Fin n → Bool} : expU (0 : gLie ε) = 1 := by
-  have h := uMat_expU (0 : gLie ε)
-  rw [ZeroMemClass.coe_zero, NormedSpace.exp_zero] at h
-  exact Subtype.ext (Units.ext h)
-
-theorem expU_add {n : ℕ} {ε : Fin n → Bool} (X : gLie ε) (a b : ℝ) :
-    expU ((a + b) • X) = expU (a • X) * expU (b • X) := by
-  apply Subtype.ext
-  apply Units.ext
-  show uMat (expU ((a + b) • X)) = uMat (expU (a • X)) * uMat (expU (b • X))
-  rw [uMat_expU, uMat_expU, uMat_expU, Submodule.coe_smul, Submodule.coe_smul, Submodule.coe_smul, _root_.add_smul]
-  exact Matrix.exp_add_of_commute _ _ (((Commute.refl _).smul_left a).smul_right b)
-
 theorem expU_inv {n : ℕ} {ε : Fin n → Bool} (X : gLie ε) (t : ℝ) : (expU (t • X))⁻¹ = expU (t • (-X)) := by
-  have h := expU_add X t (-t)
-  rw [_root_.add_neg_cancel, _root_.zero_smul, expU_zero] at h
+  have h := GlobalTheory.SobolevBound.expU_add X t (-t)
+  rw [_root_.add_neg_cancel, _root_.zero_smul, GlobalTheory.SobolevBound.expU_zero] at h
   rw [_root_.smul_neg, ← _root_.neg_smul]
   exact inv_eq_of_mul_eq_one_right h.symm
 
@@ -280,9 +267,6 @@ theorem hasDerivAt_exp_mul {n : ℕ} (Y M : Matrix (Fin n) (Fin n) ℂ) (i j : F
     let L : Matrix (Fin n) (Fin n) ℂ →L[ℝ] ℂ := LinearMap.toContinuousLinearMap
       { toFun := fun A => A i j, map_add' := fun _ _ => rfl, map_smul' := fun _ _ => rfl }
     exact L.hasFDerivAt.comp_hasDerivAt (0 : ℝ) h1
-
-theorem continuous_expU {n : ℕ} {ε : Fin n → Bool} (X : gLie ε) : Continuous fun t : ℝ => expU (t • X) := by
-  apply GlobalTheory.SobolevBound.continuous_expU
 
 private lemma uMat_expU_inv_mul {n : ℕ} {ε : Fin n → Bool} (X : gLie ε) (t : ℝ) (g : UJ ε) :
     uMat ((expU (t • X))⁻¹ * g) =
@@ -344,14 +328,14 @@ theorem convolution_hasDerivAt : ∀ (B : RowsAut) (A : (InfinitePlace B.I.F →
         Function.notMem_support.1 fun h' => h (support_fderiv_subset ℝ h')
       rw [h0, ContinuousLinearMap.zero_apply, zero_mul]
     · rw [h, mul_zero]
-  have hcc : Continuous c := (continuous_pi fun v => continuous_expU (E v)).prodMk continuous_const
+  have hcc : Continuous c := (continuous_pi fun v => GlobalTheory.SobolevBound.continuous_expU (E v)).prodMk continuous_const
   have hc0 : c 0 = 1 := by
     refine Prod.ext (funext fun v => ?_) rfl
     show expU ((0 : ℝ) • E v) = 1
     rw [_root_.zero_smul]
-    exact expU_zero
+    exact GlobalTheory.SobolevBound.expU_zero
   have hcadd : ∀ a b : ℝ, c (a + b) = c a * c b := fun a b =>
-    Prod.ext (funext fun v => expU_add (E v) a b) (mul_one 1).symm
+    Prod.ext (funext fun v => GlobalTheory.SobolevBound.expU_add (E v) a b) (mul_one 1).symm
   have hd : ∀ y : B.I.GA, HasDerivAt (fun t => ψ ((c t)⁻¹ * y)) (ψ' y) 0 := by
     intro y
     let P : ℝ → (InfinitePlace B.I.F → Fin B.I.n → Fin B.I.n → ℂ) := fun t v i j =>

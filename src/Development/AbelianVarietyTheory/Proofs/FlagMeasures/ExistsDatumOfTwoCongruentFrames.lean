@@ -317,16 +317,10 @@ theorem h_sum_right {ι : Type} (s : Finset ι) (g : ι → V) (x : V) :
   rw [H.h_herm (∑ i ∈ s, g i) x, h_sum_left, map_sum]
   exact Finset.sum_congr rfl fun i _ => (H.h_herm (g i) x).symm
 
-theorem h_smul_right (a : E) (x y : V) : H.h x (a • y) = M.L.cj a * H.h x y := by
-  rw [H.h_herm (a • y) x, H.h_smul_left, map_mul, ← H.h_herm]
-
 theorem h_sub_left (x x' y : V) : H.h (x - x') y = H.h x y - H.h x' y := by
   have := H.h_add_left (x - x') x' y
   rw [sub_add_cancel] at this
   rw [this]; ring
-
-theorem h_add_right (x y y' : V) : H.h x (y + y') = H.h x y + H.h x y' := by
-  rw [H.h_herm (y + y') x, H.h_add_left, map_add (f := _), ← H.h_herm, ← H.h_herm]
 
 theorem mem_perp_X {r : ℕ} (f : Fin (r + 1) → V) (v : V) :
     v ∈ H.perp (H.X f) ↔ ∀ a : Fin r, H.h v (f a.castSucc) = 0 := by
@@ -336,7 +330,7 @@ theorem mem_perp_X {r : ℕ} (f : Fin (r + 1) → V) (v : V) :
   · intro hv x hx
     obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun E).1 hx
     rw [h_sum_right]
-    exact Finset.sum_eq_zero fun a _ => by rw [h_smul_right, hv a, mul_zero]
+    exact Finset.sum_eq_zero fun a _ => by rw [GlobalTheory.LocOver.UnipOnto.h_smul_right, hv a, mul_zero]
 
 theorem mkW_eq {r : ℕ} (f : Fin (r + 1) → V) (x x' : ↥(H.perp (H.X f))) :
     H.mkW f x = H.mkW f x' ↔ (x : V) - x' ∈ H.X f := by
@@ -447,8 +441,8 @@ theorem exists_inner : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpa
           simp [ha]
         have hu_eq : u = u' + ∑ j, a j • yv j := by rw [hu']; abel
         have h1 : H.h x₁ u = H.h x₁ u' := by
-          rw [hu_eq, h_add_right, h_sum_right]
-          simp [h_smul_right, hx₁y]
+          rw [hu_eq, GlobalTheory.LocOver.UnipOnto.h_add_right, h_sum_right]
+          simp [GlobalTheory.LocOver.UnipOnto.h_smul_right, hx₁y]
         have h2 : H.h x₁ u' = H.h x u' := by
           rw [hx₁, h_sub_left, hXperp _ (hsX c) _ hu'p, sub_zero]
         rw [h1, h2]
@@ -530,12 +524,6 @@ theorem h_sum_left {ι : Type} (s : Finset ι) (v : ι → V) (y : V) :
   let φ : V →+ E := AddMonoidHom.mk' (fun x => H.h x y) (fun x x' => H.h_add_left x x' y)
   exact map_sum φ v s
 
-theorem h_add_right (x y y' : V) : H.h x (y + y') = H.h x y + H.h x y' := by
-  rw [H.h_herm (y + y') x, H.h_add_left, map_add (f := _), ← H.h_herm y x, ← H.h_herm y' x]
-
-theorem h_smul_right (a : E) (x y : V) : H.h x (a • y) = M.L.cj a * H.h x y := by
-  rw [H.h_herm (a • y) x, H.h_smul_left, map_mul, ← H.h_herm y x]
-
 theorem h_sum_right {ι : Type} (s : Finset ι) (x : V) (v : ι → V) :
     H.h x (∑ i ∈ s, v i) = ∑ i ∈ s, H.h x (v i) := by
 
@@ -593,7 +581,7 @@ theorem isotropic_dual : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalS
     exact Λ.smul_mem ⟨m a k, hmO a k⟩ (he k)
   · simp only [H.h_add_left, h_sum_left, H.h_smul_left, hEf, mul_zero, Finset.sum_const_zero,
       add_zero, hyf]
-  · simp only [H.h_add_left, h_add_right, h_sum_left, h_sum_right, H.h_smul_left, h_smul_right,
+  · simp only [H.h_add_left, GlobalTheory.LocOver.UnipOnto.h_add_right, h_sum_left, h_sum_right, H.h_smul_left, GlobalTheory.LocOver.UnipOnto.h_smul_right,
       hyE, hEy, hEf, mul_zero, mul_ite, mul_one, Finset.sum_const_zero, add_zero,
       Finset.sum_ite_eq', Finset.mem_univ, if_true]
     linear_combination hm a b
@@ -668,9 +656,6 @@ lemma prF_inW (v : V) : InW Fr (Fr.prF v) := by
 lemma prF_e (b : Fin r) : Fr.prF (Fr.f b.castSucc) = 0 := by
   rw [prF_eq]; simp [Fr.h_es, e_e]
 
-lemma prF_es (b : Fin r) : Fr.prF (Fr.es b) = 0 := by
-  rw [prF_eq]; simp [Fr.h_ss, es_e]
-
 lemma prF_of_inW {w : V} (hw : InW Fr w) : Fr.prF w = w := by
   rw [prF_eq]; simp [fun a => (hw a).1, fun a => (hw a).2]
 
@@ -720,7 +705,7 @@ lemma Nl_e (b : Fin r) : Nl Fr y (Fr.f b.castSucc) = 0 := by
   rw [Nl_apply, prF_e]; simp [e_e, HermSp.h_zero_left]
 
 lemma Nl_es (b : Fin r) : Nl Fr y (Fr.es b) = y b - Fr.es b := by
-  rw [Nl_apply, prF_es]; simp [es_e, HermSp.h_zero_left]
+  rw [Nl_apply, GlobalTheory.HL.CoordInnerSnd.prF_es]; simp [es_e, HermSp.h_zero_left]
 
 lemma Nl_perp {v : V} (hv : ∀ b : Fin r, H.h v (Fr.f b.castSucc) = 0) :
     Nl Fr y v = -∑ j, H.h (Fr.prF v) (y j) • Fr.f j.castSucc := by

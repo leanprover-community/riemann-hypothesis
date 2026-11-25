@@ -427,7 +427,7 @@ theorem PositivityTheory.Xgn.t_fam_pull : ∀ (O : Type) [CommRing O] [IsDomain 
       PositivityTheory.Xgn.A_fam_pull.latFamily_join x z _ a5 _ (fun _ => rfl),
       PositivityTheory.Xgn.A_fam_pull.latFamily_join x z _ a6 _ (fun _ => rfl),
       PositivityTheory.Xgn.A_fam_pull.latFamily_join x z _ a7 _ (fun _ => rfl)⟩
-  · exact (_root_.GlobalTheory.CompanionTheory.Ar.Num.lattice_base_change_larger_ring (D (restrictChart c)) _ p _ _ (hcd _) (hD.base _ (hc c h).1) Ω _
+  · exact (_root_.PositivityTheory.Xgn.character_data_base_change (D (restrictChart c)) _ p _ _ (hcd _) (hD.base _ (hc c h).1) Ω _
       (fun a ha => (hc c h).2 ha)).2
   · exact PositivityTheory.Xgn.test_facts_base_change (D (restrictChart c)) _ _ (hc c h).2 p _ _ φ (hD.test _ (hc c h).1)
   · exact ((PositivityTheory.Xgn.good_lattice_base_change (D (restrictChart c)) _ p _ _ (hcd _) (hD.base _ (hc c h).1)
@@ -1440,7 +1440,6 @@ theorem isIntegrallyClosedIn (R R' : Subalgebra O Ω) {u : Ω} (hu0 : u ≠ 0) (
   exact ⟨⟨v, ha⟩, rfl⟩
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
-
 
 omit [∀ k, Fintype (ι k)] in
 theorem fam (x : (Σ k, ι k) → Ω) : IsLatFamily O x fun c => intGrp (chartRing O (mseg x) c) := by

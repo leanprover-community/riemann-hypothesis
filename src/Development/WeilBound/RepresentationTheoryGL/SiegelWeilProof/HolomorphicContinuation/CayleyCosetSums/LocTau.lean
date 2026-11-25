@@ -1067,22 +1067,13 @@ theorem eventually_unit (y : M2 n) (hy : InG y) :
   rw [nbar_block, ← hev]
   exact isUnit_iff_ne_zero.2 (fun h => ht ⟨h, ht0⟩)
 
-private theorem inG_nU_herm' (s : Fin n → Fin n → ℝ) : InG (nU (herm s)) := by
-  have hh : (herm s)ᴴ = herm s := by
-    ext i j
-    simp only [herm, Matrix.conjTranspose_apply, Complex.star_def, map_add (f := _), map_div₀, map_mul,
-      Complex.conj_ofReal, Complex.conj_I, map_ofNat]
-    push_cast
-    ring
-  simp [InG, nU, JJ, Matrix.fromBlocks_conjTranspose, Matrix.fromBlocks_multiply, hh]
-
 theorem vanish_all (hmn : m < n) (e : ℤ) (y b : M2 n) (hy : InG y) (hb : InG b)
     (ψ : (Fin n → Fin n → ℝ) → ℂ) (hψ : IsSingTest ψ) :
     ∫ s, fz m e 0 (y * nU (herm s) * b) * ψ s = 0 := by
   let G : ℝ → (Fin n → Fin n → ℝ) → ℂ := fun t s => fz m e 0 (y * nbar t * nU (herm s) * b) * ψ s
   let X : ℝ × (Fin n → Fin n → ℝ) → M2 n := fun p => y * nbar p.1 * nU (herm p.2) * b
   have hIn : ∀ p, InG (X p) := fun p =>
-    _root_.PositivityTheory.Rg.Sw.LVs.HolB.inG_mul (_root_.PositivityTheory.Rg.Sw.LVs.HolB.inG_mul (_root_.PositivityTheory.Rg.Sw.LVs.HolB.inG_mul hy (inG_nbar p.1)) (inG_nU_herm' p.2)) hb
+    _root_.PositivityTheory.Rg.Sw.LVs.HolB.inG_mul (_root_.PositivityTheory.Rg.Sw.LVs.HolB.inG_mul (_root_.PositivityTheory.Rg.Sw.LVs.HolB.inG_mul hy (inG_nbar p.1)) (PositivityTheory.Rg.Sw.LVs.inG_nU_herm p.2)) hb
   have h1 : Continuous fun p : ℝ × (Fin n → Fin n → ℝ) => nbar (n := n) p.1 := by
     unfold nbar
     exact Continuous.matrix_fromBlocks continuous_const continuous_const

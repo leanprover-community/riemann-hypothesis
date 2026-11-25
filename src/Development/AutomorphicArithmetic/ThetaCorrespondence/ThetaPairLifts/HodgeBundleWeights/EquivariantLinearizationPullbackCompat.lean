@@ -254,7 +254,6 @@ section -- clump:auto
 
 namespace GlobalTheory
 
-
 open Submodule in
 theorem pow_maps_torsion_into_smul_top (R : Type) [CommRing R] [IsDedekindDomain R] (M : Type)
     [AddCommGroup M] [Module R M] (I J : Ideal R) (f : M →ₗ[R] M) (m : ℕ) :
@@ -601,7 +600,7 @@ theorem fib_gen (I : Ideal (𝓞 E)) (g : ℕ) (hNP : NeatPrime I g (Dw.p + Dw.q
     apply hinj h1 tor_one
     rw [h2, hE1, Submodule.Quotient.mk_eq_zero]
     exact hj Y hYt
-  exact GlobalTheory.T.exists_small_torsion_set_for_endomorphism E K ((Over.pullback t).obj G') actT α (Nat.card Γ) j g (Dw.p + Dw.q) I
+  exact GlobalTheory.NeatUnip.finite_order_unipotent_eq_id E K ((Over.pullback t).obj G') actT α (Nat.card Γ) j g (Dw.p + Dw.q) I
     (IsSemiAbelian.pullback t G' hS) hmon hact hn hiter hNP.1 hNP.2.1 hNP.2.2.1 hNP.2.2.2 hcount hunip
 
 end Gen

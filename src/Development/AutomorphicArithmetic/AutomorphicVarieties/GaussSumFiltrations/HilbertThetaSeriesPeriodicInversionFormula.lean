@@ -79,14 +79,6 @@ namespace GlobalTheory.HilbertThetaSeries.LatBasis
 section Emb
 variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F]
 
-theorem rhom_eq (v : InfinitePlace F) (x : F) : rhom x v = reAt v x := by
-  show InfinitePlace.embedding_of_isReal (IsTotallyReal.isReal v) x = (v.embedding x).re
-  rw [← InfinitePlace.embedding_of_isReal_apply (IsTotallyReal.isReal v) x, Complex.ofReal_re]
-
-theorem coe_reAt (v : InfinitePlace F) (x : F) : ((reAt v x : ℝ) : ℂ) = v.embedding x := by
-  rw [← rhom_eq]
-  exact InfinitePlace.embedding_of_isReal_apply (IsTotallyReal.isReal v) x
-
 theorem emb_bij : Function.Bijective (fun v : InfinitePlace F => RingHom.equivRatAlgHom F ℂ v.embedding) := by
   refine (RingHom.equivRatAlgHom F ℂ).bijective.comp
     ⟨fun v w h => InfinitePlace.embedding_injective F h, fun φ => ?_⟩
@@ -96,22 +88,6 @@ theorem emb_bij : Function.Bijective (fun v : InfinitePlace F => RingHom.equivRa
   · exact h
   · rw [h] at hr ⊢
     exact ComplexEmbedding.isReal_iff.1 (ComplexEmbedding.isReal_conjugate_iff.1 hr)
-
-theorem sum_reAt (x : F) : ∑ v, reAt v x = ((Algebra.trace ℚ F x : ℚ) : ℝ) := by
-  apply Complex.ofReal_injective
-  rw [Complex.ofReal_sum]
-  simp_rw [coe_reAt]
-  rw [show (((Algebra.trace ℚ F x : ℚ) : ℝ) : ℂ) = algebraMap ℚ ℂ (Algebra.trace ℚ F x) by simp,
-    trace_eq_sum_embeddings]
-  exact Fintype.sum_bijective _ emb_bij _ _ (fun v => rfl)
-
-theorem prod_reAt (x : F) : ∏ v, reAt v x = ((Algebra.norm ℚ x : ℚ) : ℝ) := by
-  apply Complex.ofReal_injective
-  rw [Complex.ofReal_prod]
-  simp_rw [coe_reAt]
-  rw [show (((Algebra.norm ℚ x : ℚ) : ℝ) : ℂ) = algebraMap ℚ ℂ (Algebra.norm ℚ x) by simp,
-    Algebra.norm_eq_prod_embeddings]
-  exact Fintype.prod_bijective _ emb_bij _ _ (fun v => rfl)
 
 theorem card_places : Fintype.card (InfinitePlace F) = Module.finrank ℚ F := by
   rw [← AlgHom.card ℚ F ℂ]
@@ -164,7 +140,7 @@ variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F] {κ : Type} [Fin
 
 noncomputable def em (v : InfinitePlace F) : F →+* ℝ := InfinitePlace.embedding_of_isReal (IsTotallyReal.isReal v)
 
-theorem reAt_eq (v : InfinitePlace F) (x : F) : reAt v x = em v x := (rhom_eq v x).symm
+theorem reAt_eq (v : InfinitePlace F) (x : F) : reAt v x = em v x := (GlobalTheory.HilbertThetaSeries.RatSlash.rhom_apply v x).symm
 
 noncomputable def eM (R : Matrix κ κ ℝ) : (κ → F) →+ (InfinitePlace F × κ → ℝ) where
   toFun x p := ∑ j, R p.2 j * em p.1 (x j)
@@ -213,7 +189,7 @@ theorem det_aM_one (ω : Module.Basis (InfinitePlace F) ℚ F) : (aM ω 1).det ^
     simp only [Algebra.embeddingsMatrixReindex, Algebra.embeddingsMatrix, Matrix.reindex_apply,
       Matrix.submatrix_apply, Matrix.of_apply, Equiv.refl_symm, Equiv.coe_refl, id,
       Equiv.symm_symm, Matrix.map_apply, Matrix.transpose_apply, aM, one_mul]
-    rw [← reAt_eq, coe_reAt]
+    rw [← reAt_eq, GlobalTheory.HilbertThetaSeries.RatSlash.ofReal_reAt]
     rfl
   have hdet : (((aM ω 1)ᵀ).map (fun r : ℝ => (r : ℂ))).det = (((aM ω 1).det : ℝ) : ℂ) := by
     have h3 := RingHom.map_det Complex.ofRealHom (aM ω 1)ᵀ
@@ -232,7 +208,7 @@ theorem det_aM (ω : Module.Basis (InfinitePlace F) ℚ F) (a : F) :
     simp [aM, Matrix.diagonal_mul, map_mul]
   rw [h, Matrix.det_mul, Matrix.det_diagonal]
   congr 1
-  rw [← prod_reAt]
+  rw [← GlobalTheory.HilbertThetaSeries.RatSlash.prod_reAt]
   exact Finset.prod_congr rfl (fun v _ => (reAt_eq v a).symm)
 
 noncomputable def bM (ω : Module.Basis (InfinitePlace F) ℚ F) (a : F) (R : Matrix κ κ ℝ) :
@@ -264,7 +240,7 @@ theorem bM_transpose (G : Matrix κ κ ℤ) (R : Matrix κ κ ℝ) (hR : Rᵀ * 
     simp only [BF, dotProduct, Matrix.mulVec, Pi.single_apply, Matrix.map_apply, Pi.smul_apply, smul_eq_mul,
       mul_ite, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
     exact Finset.sum_congr rfl fun i _ => by ring
-  rw [hB, ← sum_reAt]
+  rw [hB, ← GlobalTheory.HilbertThetaSeries.RatSlash.sum_reAt]
 
   simp only [reAt_eq, map_sum, map_mul, map_intCast, Matrix.mulVec, dotProduct, Matrix.transpose_apply,
   bM, aM, eM, Matrix.kroneckerMap_apply, Matrix.of_apply, AddMonoidHom.coe_mk, ZeroHom.coe_mk,
@@ -491,7 +467,6 @@ theorem lattice_matrix : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal
     rw [pow_mul, pow_mul, sq_abs]
 
 end GlobalTheory.HilbertThetaSeries.LatBasis
-
 
 end -- clump:auto
 end -- clump:auto
@@ -760,7 +735,6 @@ theorem wcos : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (κ : 
 
 end GlobalTheory.WCos
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.GaussSumFiltrations.HilbertThetaSeriesCosetInversionFormula =====
@@ -866,7 +840,6 @@ theorem thetaSeries_periodic_slash_frickeMatrix : ∀ (F : Type) [Field F] [Numb
   ring
 
 end GlobalTheory.HilbertThetaSeries
-
 
 end -- clump:auto
 end -- clump:auto

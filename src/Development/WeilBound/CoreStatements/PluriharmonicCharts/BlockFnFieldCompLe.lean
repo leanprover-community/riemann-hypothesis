@@ -487,22 +487,6 @@ theorem valAt_sum_mul (hz : z ∈ mcPts (mCoordIdeal x)) {α : Type} (S : Finset
 
 end Values
 
-theorem stepCols_ne {N j : ℕ} (i : Fin N) (hj : j ≤ N) : stepCols N j i ≠ ∅ := by
-  intro e
-  have hi := i.2
-  by_cases c : (i : ℕ) + 1 ≤ j
-  · have hlt : N - j < N := by omega
-    have hm : (⟨N - j, hlt⟩ : Fin N) ∈ stepCols N j i := by
-      simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, if_pos c]
-      omega
-    rw [e] at hm
-    simp at hm
-  · have hm : (⟨0, by omega⟩ : Fin N) ∈ stepCols N j i := by
-      simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, if_neg c]
-      omega
-    rw [e] at hm
-    simp at hm
-
 theorem read_minor {κ : Type} [Fintype κ] {N : ℕ} (P : Finset (Fin N) → Prop)
     (A : Finset (Fin N) → κ → ℂ) (B : κ → Finset (Fin N) → ℂ)
     (hAB : ∀ I I', P I → P I' → ∑ m, A I m * B m I' = if I = I' then 1 else 0)
@@ -562,7 +546,7 @@ theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι 
   have hE := fun m m' =>
     _root_.GlobalTheory.CompanionTheory.Ar.PB.CovGraph.coE_regAt_valAt K ι Φ y Ψ N j M K' ι' Φ' y' M' Cv zb F' F hzb hF' hF hG' hG p ⟨k, m⟩ ⟨k', m'⟩
   have hmin := _root_.GlobalTheory.CompanionTheory.Ar.PB.MinorCalc.minors_main ℂ N j p.2 M.j_le
-  have hne : stepCols N j p.2 ≠ ∅ := stepCols_ne p.2 M.j_le
+  have hne : stepCols N j p.2 ≠ ∅ := GlobalTheory.CompanionTheory.Ar.PB.UnitComb.stepCols_ne_empty p.2 M.j_le
   obtain ⟨cc, hcc, horbE⟩ := horb
   have hval : ∀ s, valAt M.x s (basePart M.blk z₀) = valAt M.x s (zb ∘ Cv.v) := fun s => by
     rw [horbE]

@@ -939,7 +939,7 @@ theorem GlobalTheory.TwFam.trel_cocycle : ∀ (R : Type) [CommRing R] [IsDomain 
   intro R _ _ _ hR D a a' h h' hE n j ν mu β₀ β₁ β₂ s₀ s₁ s₂ h₁ h₂ hν hνμ
   have hL := D.toPre.P.isLB
   obtain ⟨u₀, hu₀⟩ := GlobalTheory.T.twistedFunctionalEquation_bundle_trivial_abelianPart R hR D a a' h h' hE n j ν β₀ β₁ h₁
-  obtain ⟨⟨u₁, hu₁⟩, -, -⟩ := GlobalTheory.T.twistedFactor_exists_unique_const_mul_integralGenerator R hR D a h hE.1 hE.2.2.2.1 n j ν β₀ β₁ u₀ hu₀
+  obtain ⟨⟨u₁, hu₁⟩, -, -⟩ := GlobalTheory.TwFac.fac_exists_unique_const R hR D a h hE.1 hE.2.2.2.1 n j ν β₀ β₁ u₀ hu₀
   intro u hu Z x z J hJ
   have hc : (DegPre.trF D.toPre (FractionRing R) mu).left ≫ (DegPre.trF D.toPre (FractionRing R) ν).left =
       (DegPre.trF D.toPre (FractionRing R) (ν + mu)).left := by

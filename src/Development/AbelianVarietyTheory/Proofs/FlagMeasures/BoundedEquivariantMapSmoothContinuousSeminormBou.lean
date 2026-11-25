@@ -429,11 +429,6 @@ theorem inv_of_mem {a : Mat k r} (ha : a ∈ GG k r) : a * a⁻¹ = 1 ∧ a⁻¹
     rw [← h1] at h2
     simp at h2
 
-theorem continuous_lmul (a : Mat k r) : Continuous (lmulM a : Mt k r → Mt k r) := by
-  refine continuous_pi fun i => continuous_pi fun j => ?_
-  simp only [lmulM, Matrix.mul_apply, Matrix.of_apply]
-  fun_prop
-
 theorem measurableEmbedding_lmul {a b : Mat k r} (hab : a * b = 1) (hba : b * a = 1) :
     MeasurableEmbedding (lmulM a : Mt k r → Mt k r) := by
   let e : Mt k r ≃ₜ Mt k r :=
@@ -447,8 +442,8 @@ theorem measurableEmbedding_lmul {a b : Mat k r} (hab : a * b = 1) (hba : b * a 
         show a * (b * Matrix.of x) = x
         rw [← Matrix.mul_assoc, hab, Matrix.one_mul]
         rfl
-      continuous_toFun := continuous_lmul a
-      continuous_invFun := continuous_lmul b }
+      continuous_toFun := Formalism.FourierDecayAlt.P.B2x1.lmulM_cont a
+      continuous_invFun := Formalism.FourierDecayAlt.P.B2x1.lmulM_cont b }
   exact e.measurableEmbedding
 
 theorem lintegral_translate_le {μ : Measure (Mt k r)} (hμ : IsHaarOn (GG k r) μ) {a : Mat k r}
@@ -537,9 +532,6 @@ noncomputable section
 
 namespace GlobalTheory.HaarTransport
 
-theorem isMatGroup_UH_of_sq {N : ℕ} (H : Matrix (Fin N) (Fin N) ℂ) (hH : H * H = 1) : PI.IsMatGroup (UH H) := by
-  apply GlobalTheory.OmegaFrobenius.isMatGroup_UH <;> assumption
-
 theorem haar_transport : ∀ (k r : ℕ) (μG : Measure (Mt k r)) (ε : Fin (2 * r + k + 1) → Bool) (P : Mat k r),
     IsHaarOn (GG k r) μG → IsUnit P.det → Pᴴ * Formalism.REAL.Jm ε * P = Hpk k r →
     ∃ c : ℝ≥0∞, c ≠ ⊤ ∧ ∀ φ : Mt k r → ℝ≥0∞, Measurable φ →
@@ -548,7 +540,7 @@ theorem haar_transport : ∀ (k r : ℕ) (μG : Measure (Mt k r)) (ε : Fin (2 *
   have hce := Formalism.FourierDecayAlt.P.HaarUniquenessConjugation.phi_closedEmbedding (ε := ε) (P := P) Formalism.REAL.uJEmb hP
   have hm := hce.continuous.measurable
   have hme := hce.measurableEmbedding
-  have hG : PI.IsMatGroup (GG k r) := isMatGroup_UH_of_sq _ (hpkFacts k r).2.1
+  have hG : PI.IsMatGroup (GG k r) := GlobalTheory.OmegaFrobenius.isMatGroup_UH _ (hpkFacts k r).2.1
   have hmem : ∀ y, Matrix.of (Formalism.FourierDecayAlt.P.HaarUniquenessConjugation.phi ε P y) ∈ GG k r := fun y =>
     (Formalism.FourierDecayAlt.P.HaarUniquenessConjugation.phi_range_iff Formalism.REAL.uJEmb uHConj hP hH _).1 ⟨y, rfl⟩
   have hν : PI.IsHaarOnM (GG k r) ((Formalism.REAL.muG ε).map (Formalism.FourierDecayAlt.P.HaarUniquenessConjugation.phi ε P)) := by
@@ -1114,7 +1106,6 @@ theorem map_restrict_le (μ : Measure (Mt k r)) (hU : IsUnimod (GG k r) μ) {x :
     _ = μ.restrict K' := by rw [← Measure.restrict_map hf hK', hU.1 _ hx]
 
 end GlobalTheory.SgInf.Mollify
-
 
 open GlobalTheory.SgInf.Mollify in
 theorem GlobalTheory.SgInf.tendsto_average_L2 : ∀ (k r : ℕ) (μ : Measure (Mt k r)), IsHaarOn (GG k r) μ → ∀ {Wp : Type}

@@ -78,7 +78,6 @@ section Gen
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-
 end Gen
 
 section Unit
@@ -111,22 +110,6 @@ open IsDedekindDomain IsDedekindDomain.HeightOneSpectrum NumberField Topology
 
 variable {F : Type} [Field F] [NumberField F]
 
-theorem finite_residue (v : HeightOneSpectrum (𝓞 F)) :
-    Finite (IsLocalRing.ResidueField (Valued.integer (v.adicCompletion F))) := by
-  apply PI.WAU.finite_residue
-
-theorem compactSpace_integer (v : HeightOneSpectrum (𝓞 F)) :
-    CompactSpace (Valued.integer (v.adicCompletion F)) := by
-  rw [Valued.integer.compactSpace_iff_completeSpace_and_isDiscreteValuationRing_and_finite_residueField]
-  refine ⟨?_, ?_, finite_residue v⟩
-  · exact (Valued.isClosed_integer (R := v.adicCompletion F)).completeSpace_coe
-  · exact inferInstanceAs (IsDiscreteValuationRing (v.adicCompletionIntegers F))
-
-theorem isCompact_Ov (v : HeightOneSpectrum (𝓞 F)) :
-    IsCompact (v.adicCompletionIntegers F : Set (v.adicCompletion F)) := by
-  have := compactSpace_integer v
-  exact isCompact_iff_compactSpace.mpr this
-
 def Ohat (F : Type) [Field F] [NumberField F] : Set (FiniteAdeleRing (𝓞 F) F) :=
   {a | ∀ v, a v ∈ v.adicCompletionIntegers F}
 
@@ -137,7 +120,7 @@ theorem isOpen_Ohat : IsOpen (Ohat F) :=
 
 instance compactSpace_Ov' (v : HeightOneSpectrum (𝓞 F)) :
     CompactSpace ((v.adicCompletionIntegers F : Set (v.adicCompletion F))) :=
-  isCompact_iff_compactSpace.mp (isCompact_Ov v)
+  isCompact_iff_compactSpace.mp (PI.WAU.isCompact_Ov v)
 
 theorem isCompact_Ohat : IsCompact (Ohat F) := by
   have hc : Continuous (RestrictedProduct.structureMap (fun v : HeightOneSpectrum (𝓞 F) => v.adicCompletion F)
@@ -352,7 +335,6 @@ theorem isCompact_IntAf : IsCompact ((IntAf I.F I.E : Subring (AEf I)) : Set (AE
   refine ⟨fun j => AfT.crd I b j x, fun j _ => Wau.Cpt.mem_Bx I (by omega) ?_, (AfT.sum_crd I b x).symm⟩
   rw [nsmul_eq_mul]
   exact AfT.crd_mem I b hDb (AfT.IntAf_le_sumsInt I hx) j
-
 
 end Top
 

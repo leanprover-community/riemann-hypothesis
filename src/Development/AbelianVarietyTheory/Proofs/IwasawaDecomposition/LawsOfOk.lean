@@ -111,8 +111,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
 attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.trueColumn_chains_satisfy_conditions : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → ∀ u a, (I.chIn u a).Ok ∧ Nonempty (Idx I.sel (I.tup a) (I.idx a) 0) ∧ ∀ i c, Submodule.IsLattice B.fields.E ((I.stp u a i).rep c).1.1.deco.1.L := by
-  first | exact @GlobalTheory.Mem.Col2.TC.ok_chains
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnChainsSatisfyConditionsStatement =====
@@ -125,8 +123,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
 attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.trueColumns_periodMapDatum_ok_and_over_levelPrime : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → ∀ u a, (I.perIn u a).Ok ∧ (I.perIn u a).Over (I.atIn u a) := by
-  first | exact @GlobalTheory.Mem.Col2.PerLaw.perIn_laws
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnsPeriodMapDatumOkAndOverLevelPrimeStatement =====
@@ -141,13 +137,11 @@ attribute [local instance] GlobalTheory.Mem.Col2.starE Formalism.BasicNotions.Ho
 
 namespace GlobalTheory.Mem.Col2.TC
 
-
-
 theorem laws_of_ok : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → I.Laws := by
   intro B X I h
-  have hch := GlobalTheory.T.trueColumn_chains_satisfy_conditions I h
+  have hch := GlobalTheory.Mem.Col2.TC.ok_chains I h
   have hlev := GlobalTheory.T.levelPrimeData_ok_of_trueColumnChoices I h
-  have hper := GlobalTheory.T.trueColumns_periodMapDatum_ok_and_over_levelPrime I h
+  have hper := GlobalTheory.Mem.Col2.PerLaw.perIn_laws I h
   have hall := fun u a => laws_all (I.chIn u a) (I.atIn u a) B.fields.emb B.embLL (B.hcW u) (base_fOk B) (hch u a).1 (hlev u a)
     (I.perIn u a) (hper u a).1 B.places
   exact
@@ -160,7 +154,7 @@ theorem laws_of_ok : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → I.
       fmL := fun u a => (hall u a).2
       xi0 := h.trueColumnChoices_heckeChar_reference_eq_one
       idx0 := fun a => (hch B.u₀ a).2.1
-      bij0 := fun u a b => (GlobalTheory.T.cl0_bijective_and_deco_eq I h u a b).1
+      bij0 := fun u a b => (GlobalTheory.Mem.Col2.ClsZero.stepZero_classes_bijective_same_deco I h u a b).1
       lat := fun u a => (hch u a).2.2 }
 
 end GlobalTheory.Mem.Col2.TC

@@ -69,8 +69,6 @@ open scoped TensorProduct InnerProductSpace
 open GlobalTheory.LiftRows
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.fockNorm_minorProductDeltaAtEmbedding_pos : ∀ (D : D7) (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), ∃ a : ℝ, 0 < a ∧ Formalism.E.fock (GlobalTheory.IndefiniteRowSideFullHecke.TwistedLevelValues.deltaAtEmb D i σ) (GlobalTheory.IndefiniteRowSideFullHecke.TwistedLevelValues.deltaAtEmb D i σ) = (a : ℂ) := by
-  first | exact @GlobalTheory.FockDelta.fock_deltaAtEmb_pos
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.FockNormMinorProductDeltaAtEmbeddingPosStatement =====
@@ -176,7 +174,6 @@ theorem conj_l2_inner {X : Type} [MeasurableSpace X] (μ : Measure X) (𝓖 : Se
 variable {G : Type} [Group G] [Fintype G] {Pl0 T : Type} {A : FamIn D.what₂.LL G Pl0 T D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks)
 
-
 open Datum in
 theorem l2_upwardLift {F : Face D A} (hI : InnerProductFormulaC R F) (hFo : FockCoefficientC R F)
     {i t σ s P cμ cη m ω BW f₀ f c io} (hd : IsLiftDataC R F i t σ s P cμ cη m ω BW f₀ f c io)
@@ -264,7 +261,6 @@ theorem l2_upwardLift {F : Face D A} (hI : InnerProductFormulaC R F) (hFo : Fock
     rw [h2] at h1
     simp only [inner_conj_symm]
     exact h1
-
 
 open Datum in
 theorem form_of_data {F : Face D A} (hS : SourceLevelLawC R F) (hI : InnerProductFormulaC R F) (hFo : FockCoefficientC R F)
@@ -394,7 +390,6 @@ theorem vol_mul_nrm {i : Fin D.R.m} (hp : (Vc D i).IsPosDef) {t P m} {ν : Measu
     mul_right_comm, hn]
   field_simp
 
-
 open Datum in
 theorem scalar_of_data {F : Face D A} (hS : SourceLevelLawC R F) (hI : InnerProductFormulaC R F) (hFo : FockCoefficientC R F)
     (hZ : FiniteZetaL R F) (hL : LevelIndexNormC R F) (hδ : RealLowestKTypeCoeffSquareIntegrable R) (hp : ∀ i, (Vc D i).IsPosDef) :
@@ -416,7 +411,7 @@ theorem scalar_of_data {F : Face D A} (hS : SourceLevelLawC R F) (hI : InnerProd
         ∀ x ∈ typePart R i σ t P ev, th (LinearMap.adjoint th x) =
           ((a i σ * Module.finrank ℂ c.W * Nat.card P.H * z : ℝ) : ℂ) • x := by
   choose δ hδ0 hδ using hδ
-  choose dl hdl0 hdl using GlobalTheory.T.fockNorm_minorProductDeltaAtEmbedding_pos D
+  choose dl hdl0 hdl using GlobalTheory.FockDelta.fock_deltaAtEmb_pos D
   have hN : ∀ i σ, 0 < ∏ ρ, ((dimK _ _ (kapAt (Wc D i) σ ρ) : ℚ) : ℝ) := fun i σ =>
     Finset.prod_pos fun ρ _ => by exact_mod_cast one_pos.trans_le (one_le_dimK i σ ρ)
   have hM : ∀ i, 0 < GlobalTheory.Mass.unitaryMass D.sp.cm.sig (Vc D i).gram (GlobalTheory.Mass.Levels.latStab (Vc D i)) := fun i =>

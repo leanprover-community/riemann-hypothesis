@@ -512,8 +512,6 @@ noncomputable section
 
 namespace GlobalTheory.StdUnn
 
-
-
 theorem exists_realPar_of_isCharAF : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsCharAF D.host.F ψ →
     ∀ θ : InfFam D, IsInfFam θ → ∃ l : D.what₂.Tau → ℝ, HasRealPar ψ θ l := by
   intro D ψ hψ θ hθ
@@ -572,8 +570,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.hermitian_character_continuous_unit : ∀ (D : D7) (n : ℕ) (ψ : AddChar (AF D.host.F) ℂ), IsCharAF D.host.F ψ → ∀ β : PositivityTheory.GramSchwartzFunctions.HermE D n, Continuous (fun b : PositivityTheory.GramSchwartzFunctions.BC.hermA D n => ψ (-GlobalTheory.StdUnn.halfTr (Matrix.trace (HMul.hMul (β.1.map (incA D)) b.1 : Mx D n n)))) ∧ ∀ b : PositivityTheory.GramSchwartzFunctions.BC.hermA D n, ‖ψ (-GlobalTheory.StdUnn.halfTr (Matrix.trace (HMul.hMul (β.1.map (incA D)) b.1 : Mx D n n)))‖ = 1 := by
-  first | exact @GlobalTheory.CompanionTheory.CoefWeight.continuous_norm_coefChar
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -732,7 +728,6 @@ theorem nb_neg {nb : hermA D n → G D n} (h : PositivityTheory.PfSWUS.IsNMap nb
   have h' : nb (-b) * nb b = 1 := by rw [← nb_add h, neg_add_cancel, nb_zero h]
   exact (eq_inv_of_mul_eq_one_left h').symm
 
-
 theorem nb_continuous {nb : hermA D n → G D n} (h : PositivityTheory.PfSWUS.IsNMap nb) : Continuous nb := by
   obtain ⟨i1, -⟩ := lattice_Mx D n n
   haveI : IsTopologicalAddGroup (Mx D n n) := i1
@@ -793,7 +788,7 @@ namespace PositivityTheory.Rg.Sw.Glob
 
 theorem nbFacts : NbFacts := GlobalTheory.T.unipotent_map_continuous_additive
 
-theorem charFacts : CharFacts := GlobalTheory.T.hermitian_character_continuous_unit
+theorem charFacts : CharFacts := GlobalTheory.CompanionTheory.CoefWeight.continuous_norm_coefChar
 
 theorem gLamBd : GLamBd := gLamBd_of nbFacts charFacts hermCocompact
 

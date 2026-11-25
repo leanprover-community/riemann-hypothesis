@@ -1693,12 +1693,6 @@ theorem rowF_smul (s : Fin 2 → F) (a : F) (x : GF F) (i : Fin 2) :
     simp [map_mul]
   rw [h, Matrix.smul_vecMul, Pi.smul_apply, smul_eq_mul]
 
-theorem det_jF (γ : GL (Fin 2) F) :
-    Matrix.GeneralLinearGroup.det (jF F γ) = ratU F (Matrix.GeneralLinearGroup.det γ) := by
-  apply Units.ext
-  change (γ.val.map (algebraMap F (Af F))).det = algebraMap F (Af F) γ.val.det
-  exact (RingHom.map_det (algebraMap F (Af F)) γ.val).symm
-
 variable [IsTotallyReal F]
 
 theorem nF_pos (hR : ARow) {s : Fin 2 → F} (hs : s ≠ 0) (x : GF F) : 0 < nF s x := by
@@ -1727,7 +1721,7 @@ theorem UpperTheory.Esk.dHt : UpperTheory.Esk.ARow → UpperTheory.Esk.DHt := by
       absF (Matrix.GeneralLinearGroup.det x) / nF (s ᵥ* γ.val) x ^ 2
     have hP := prod_rat (Matrix.GeneralLinearGroup.det γ)
     rw [Matrix.GeneralLinearGroup.val_det_apply] at hP
-    rw [map_mul, det_jF, (Hm.absf F).2.1, nF_eq s, rowF_jF, ← nF_eq]
+    rw [map_mul, UpperTheory.Esk.CentralScalingLemmas.det_jF, (Hm.absf F).2.1, nF_eq s, rowF_jF, ← nF_eq]
     calc absF (ratU F (Matrix.GeneralLinearGroup.det γ)) * absF (Matrix.GeneralLinearGroup.det x) / nF (s ᵥ* γ.val) x ^ 2 *
           ∏ v, |sg v γ.val.det|
         = ((∏ v, |sg v γ.val.det|) * absF (ratU F (Matrix.GeneralLinearGroup.det γ))) *

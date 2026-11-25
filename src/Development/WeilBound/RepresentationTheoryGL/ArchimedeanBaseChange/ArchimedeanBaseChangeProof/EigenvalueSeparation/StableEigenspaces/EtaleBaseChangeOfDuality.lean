@@ -154,7 +154,6 @@ theorem re_lt_of_dec {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGr
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {N : ℕ}
 
-
 omit [IsCMField E] in
 theorem mult_of_lat {S : Set (GA E N)} {n : ℕ}
     (h : ∀ x, {γ : An.lat E N | (γ : GA E N) * x ∈ S}.encard ≤ n) : Mult S n := by
@@ -246,7 +245,6 @@ end GlobalTheory.CompanionTheory.LocExponent
 
 namespace GlobalTheory.CompanionTheory.LocExponent
 
-
 open PositivityTheory.Rg.Rs.JExpNegGlue in
 theorem locNonPosGlue_holds : LocNonPosGlue := by
   intro hSize E _ _ _ N φ hA hLoc r hr0 hrN c hc
@@ -325,36 +323,6 @@ open MeasureTheory
 
 namespace GlobalTheory.CompanionTheory.InterpLoc
 
-theorem exists_finset_separating {Y : Type} (Ψ : Submodule ℂ (Y → ℂ)) [FiniteDimensional ℂ Ψ] :
-    ∃ t : Finset Y, ∀ ψ ∈ Ψ, (∀ y ∈ t, ψ y = 0) → ψ = 0 := by
-  classical
-  let K : Finset Y → Submodule ℂ (Y → ℂ) := fun t =>
-    { carrier := {ψ | ψ ∈ Ψ ∧ ∀ y ∈ t, ψ y = 0}
-      add_mem' := fun {a b} ha hb =>
-        ⟨Ψ.add_mem ha.1 hb.1, fun y hy => by simp [ha.2 y hy, hb.2 y hy]⟩
-      zero_mem' := ⟨Ψ.zero_mem, fun _ _ => rfl⟩
-      smul_mem' := fun c a ha =>
-        ⟨Ψ.smul_mem c ha.1, fun y hy => by simp [ha.2 y hy]⟩ }
-  have hKle : ∀ t, K t ≤ Ψ := fun t _ h => h.1
-  haveI : ∀ t, FiniteDimensional ℂ (K t) := fun t => Submodule.finiteDimensional_of_le (hKle t)
-  let f : Finset Y → ℕ := fun t => Module.finrank ℂ (K t)
-  refine ⟨Function.argmin f, fun ψ hψ h0 => ?_⟩
-  by_contra hne
-  obtain ⟨y, hy⟩ : ∃ y, ψ y ≠ 0 := by
-    by_contra hall
-    push_neg at hall
-    exact hne (funext hall)
-  set t := Function.argmin f with ht
-  have hlt : K (insert y t) < K t := by
-    refine lt_of_le_of_ne (fun a ha => ⟨ha.1, fun z hz => ha.2 z (Finset.mem_insert_of_mem hz)⟩) ?_
-    intro heq
-    have hmem : ψ ∈ K t := ⟨hψ, h0⟩
-    rw [← heq] at hmem
-    exact hy (hmem.2 y (Finset.mem_insert_self y t))
-  have h1 : f (insert y t) < f t := Submodule.finrank_lt_finrank_of_lt hlt
-  have h2 : f t ≤ f (insert y t) := Function.argmin_le f _
-  omega
-
 theorem bound_of_injective {Y : Type} [MeasurableSpace Y] (μ : Measure Y)
     (Ψ : Submodule ℂ (Y → ℂ)) [FiniteDimensional ℂ Ψ]
     (hm : ∀ ψ ∈ Ψ, MemLp ψ 2 μ) (hinj : ∀ ψ ∈ Ψ, ψ =ᵐ[μ] 0 → ψ = 0) (y₀ : Y) :
@@ -409,7 +377,7 @@ theorem interpolation_local_L2_bound : PositivityTheory.Rg.BcB.E.E3.Interpolatio
     | zero => exact continuous_const
     | add a b _ _ ha hb => exact ha.add hb
     | smul c a _ ha => exact ha.const_smul c
-  obtain ⟨t, ht⟩ := exists_finset_separating Ψ
+  obtain ⟨t, ht⟩ := GlobalTheory.AvgCoeff.exists_finset_sep Ψ
   choose N hNc hNn using fun y : Y => exists_compact_mem_nhds y
   have hΩ : IsCompact (⋃ y ∈ t, N y) := t.isCompact_biUnion fun y _ => hNc y
   set Ω : Set Y := ⋃ y ∈ t, N y with hΩdef
@@ -661,7 +629,6 @@ theorem mem_bdSub {r : ℕ} (hr : 0 < r) (hrN : r < N) {ρ : ℝ} {φ : Sm E N} 
     exact (klSub r 1 p).smul_mem a hk'
 
 end GlobalTheory.CompanionTheory.HullExp
-
 
 open GlobalTheory.CompanionTheory.HullExp in
 theorem GlobalTheory.CompanionTheory.HullExp.hullNonPos : PositivityTheory.Rg.BcB.E.E3.HullNonPos := by

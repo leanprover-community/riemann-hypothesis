@@ -113,14 +113,6 @@ open AlgebraicGeometry CategoryTheory NumberField Matrix ReciprocityTheory.Chart
 open ReciprocityTheory.ChartRestriction.G.Semi
 open scoped ComplexOrder
 
-namespace GlobalTheory.CompanionTheory.Ar.PB.BMx
-
-theorem blockG_isBlockDiag_posDef :
-    ∀ (p q : ℕ) (Γ : Matrix (Fin (p + q)) (Fin (p + q)) ℂ), Γ.PosDef →
-      IsBlockDiag p (blockG Γ) ∧ (blockG Γ).PosDef :=
-  PositivityTheory.Xgp.t_c_bm_exists_blockpos
-
-end GlobalTheory.CompanionTheory.Ar.PB.BMx
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockGBlockDiagPosDef =====
@@ -618,12 +610,6 @@ open AlgebraicGeometry CategoryTheory NumberField Matrix ReciprocityTheory.Chart
 open ReciprocityTheory.ChartRestriction.G.Semi
 open scoped ComplexOrder
 
-namespace GlobalTheory.CompanionTheory.Ar.PB.BMx.Frames
-
-theorem exists_finite_good_frames : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j n : ℕ) (M : FlagModel y Ψ N j) (Rb : AnLogRes (mCoordIdeal M.x) ⊤ n), ∃ (q : ℕ) (O : Fin q → Set Rb.X) (F : Fin q → FrameData ι Ψ N M.Ω M.blk), (∀ l, IsOpen (O l)) ∧ (∀ x, ∃ l, x ∈ O l) ∧ (∀ l, M.IsFrame (F l)) ∧ ∀ l, ∀ x ∈ closure (O l), M.GoodAt (F l) (mCoordIdeal (Rb.lift x x)) := by
-  exact @PositivityTheory.Xgp.t_c_bm_exists_frames
-
-end GlobalTheory.CompanionTheory.Ar.PB.BMx.Frames
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsFiniteFrameCover =====
@@ -735,7 +721,6 @@ open AlgebraicGeometry CategoryTheory NumberField Matrix ReciprocityTheory.Chart
 open ReciprocityTheory.ChartRestriction.G.Semi
 open scoped ComplexOrder
 
-
 theorem _root_.GlobalTheory.CompanionTheory.Relay.exists_local_holo_isPeriodGram_blockG_baseGram : Given → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (Xo : ∀ l : Level H, Moduli D l) (l : Level H) (c : Coeff l) (Y : Model (Xo l) c (algebraMap (𝓞 c.F) c.F)) (S : Finset ℕ) (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (M : FlagModel y (CMType H) (D.p + D.q) D.p) (𝔐 : HodgeCpt Y S M.x) (tie : FlagTie M 𝔐), 1 ≤ D.p → 1 ≤ D.q → ∀ (n : ℕ) (Rb : AnLogRes (mCoordIdeal M.x) ⊤ n) (s : Rb.X → Rb.X → ℂ), (∀ (x : Rb.X) (z : Spec (CommRingCat.of ℂ) ⟶ 𝔐.X), CoordsAt 𝔐.ξ M.x z (Rb.lift x x) → (x ∉ bdry s ↔ 𝔐.Interior z)) → IsClosed (bdry s) → ∀ (F : FrameData ι (CMType H) (D.p + D.q) M.Ω M.blk), M.IsFrame F → ∀ (τ : CMType H) (x : Rb.X), x ∉ bdry s → M.GoodAt F (mCoordIdeal (Rb.lift x x)) → ∃ (V : Set Rb.X) (P : Rb.X → Matrix (Fin (D.p + D.q)) (Fin (D.p + D.q)) ℂ), IsOpen V ∧ x ∈ V ∧ (∀ a b, Rb.A.HoloOn V fun x' => P x' a b) ∧ ∀ x' ∈ V, IsPeriodGram D.p (P x') (blockG (baseGram tie F τ Rb x')) := by
   first | exact @PositivityTheory.Xgp.t_c_bm_exists_period
 end -- clump:auto
@@ -751,9 +736,6 @@ open AlgebraicGeometry CategoryTheory NumberField Matrix ReciprocityTheory.Chart
 open ReciprocityTheory.ChartRestriction.G.Semi
 open scoped ComplexOrder
 
-
-theorem _root_.GlobalTheory.CompanionTheory.Relay.flagModel_frame_height_comparison : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (Xo : ∀ l : Level H, Moduli D l) (l : Level H) (c : Coeff l) (Y : Model (Xo l) c (algebraMap (𝓞 c.F) c.F)) (S : Finset ℕ) (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (M : FlagModel y (CMType H) (D.p + D.q) D.p) (𝔐 : HodgeCpt Y S M.x) (tie : FlagTie M 𝔐), ∀ (F : FrameData ι (CMType H) (D.p + D.q) M.Ω M.blk), M.IsFrame F → ∀ (τ : CMType H) (w : (Σ k, baseIdx ι M.blk k) → ℂ) (z : Spec (CommRingCat.of ℂ) ⟶ 𝔐.X), CoordsAt 𝔐.ξ M.x z w → 𝔐.Interior z → M.GoodAt F (mCoordIdeal w) → 𝔐.M.GramAt 𝔐.t.PP.L z (gb tie F τ) (HodgeMetric.gramFn 𝔐 (gb tie F τ) w) ∧ (HodgeMetric.gramFn 𝔐 (gb tie F τ) w).PosDef ∧ ∀ a b, tie.omFrame F τ a (dualFam tie F τ b) = if a = b then 1 else 0 := by
-  first | exact @PositivityTheory.Xgp.t_c_bm_exists_gram
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelFrameHeightComparison =====
@@ -892,7 +874,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory NumberField Matrix ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top GlobalTheory.CompanionTheory.Ar.PB GlobalTheory.CompanionTheory.Ar.PB.BMx ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P
 open ReciprocityTheory.ChartRestriction.G.Semi
 open scoped ComplexOrder
-
 
 theorem _root_.GlobalTheory.CompanionTheory.Relay.flagModel_height_lower_estimate : Given → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (Xo : ∀ l : Level H, Moduli D l) (l : Level H) (c : Coeff l) (Y : Model (Xo l) c (algebraMap (𝓞 c.F) c.F)) (S : Finset ℕ) (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (M : FlagModel y (CMType H) (D.p + D.q) D.p) (𝔐 : HodgeCpt Y S M.x) (tie : FlagTie M 𝔐), 1 ≤ D.p → 1 ≤ D.q → ∀ (d : ℕ), 𝔐.IsCover d → ∀ (Rb : AnLogRes (mCoordIdeal M.x) ⊤ (Fintype.card (CMType H) * D.p * D.q)) (s : Rb.X → Rb.X → ℂ), (∀ (x : Rb.X) (z : Spec (CommRingCat.of ℂ) ⟶ 𝔐.X), CoordsAt 𝔐.ξ M.x z (Rb.lift x x) → (x ∉ bdry s ↔ 𝔐.Interior z)) → IsClosed (bdry s) → ∀ (q : ℕ) (O : Fin q → Set Rb.X) (F : Fin q → FrameData ι (CMType H) (D.p + D.q) M.Ω M.blk), (∀ l, IsOpen (O l)) → (∀ x, ∃ l, x ∈ O l) → (∀ l, M.IsFrame (F l)) → (∀ l, ∀ x ∈ O l, M.GoodAt (F l) (mCoordIdeal (Rb.lift x x))) → ∃ l, ∃ x ∈ O l \ bdry s, ∃ (V : Set Rb.X) (Pi : CMType H → Rb.X → Matrix (Fin (D.p + D.q)) (Fin (D.p + D.q)) ℂ), x ∈ V ∧ IsPeriodOn Rb.A D.p V Pi (fun τ x' => blockG (baseGram tie (F l) τ Rb x')) ∧ ∀ k, x ∈ (Rb.A.chart k).source → ∀ v : Fin (Fintype.card (CMType H) * D.p * D.q) → ℂ, (∀ τ (a b : Fin (D.p + D.q)), D.p + D.q - D.p ≤ (a : ℕ) → (b : ℕ) < D.p + D.q - D.p → ((Pi τ x)⁻¹ * Matrix.of fun a b => fderiv ℂ (fun w => Pi τ ((Rb.A.chart k).symm w) a b) (Rb.A.chart k x) v) a b = 0) → v = 0 := by
   first | exact @PositivityTheory.Xgp.t_c_bm_exists_immersion
@@ -1596,7 +1577,6 @@ open AlgebraicGeometry CategoryTheory NumberField Matrix ReciprocityTheory.Chart
 open ReciprocityTheory.ChartRestriction.G.Semi
 open scoped ComplexOrder
 
-
 theorem _root_.GlobalTheory.CompanionTheory.Relay.flagModel_resolution_integrability : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (Xo : ∀ l : Level H, Moduli D l) (l : Level H) (c : Coeff l) (Y : Model (Xo l) c (algebraMap (𝓞 c.F) c.F)) (S : Finset ℕ) (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (M : FlagModel y (CMType H) (D.p + D.q) D.p) (𝔐 : HodgeCpt Y S M.x) (tie : FlagTie M 𝔐), ∀ (n : ℕ) (Rb : AnLogRes (mCoordIdeal M.x) ⊤ n) (s : Rb.X → Rb.X → ℂ), (∀ (x : Rb.X) (z : Spec (CommRingCat.of ℂ) ⟶ 𝔐.X), CoordsAt 𝔐.ξ M.x z (Rb.lift x x) → (x ∉ bdry s ↔ 𝔐.Interior z)) → ∀ (q : ℕ) (O : Fin q → Set Rb.X) (F : Fin q → FrameData ι (CMType H) (D.p + D.q) M.Ω M.blk), (∀ x, ∃ l, x ∈ O l) → (∀ l, M.IsFrame (F l)) → (∀ l, ∀ x ∈ O l, M.GoodAt (F l) (mCoordIdeal (Rb.lift x x))) → ∃ hom : CMType H × Fin (D.p + D.q) → HermLine ι, (∀ p, (hom p).a = M.dy p) ∧ (∀ l, ∀ x ∈ O l \ bdry s, ∀ p, M.IsInducedAt (F l) (Rb.lift x x) p (blockG (baseGram tie (F l) p.1 Rb x)) (hom p)) ∧ ∀ p, ∀ z ∈ mcPts (mCoordIdeal y), ∀ x, x ∉ bdry s → SameOrbit (basePart M.blk z) (Rb.lift x x) → (hom p).h (fun q => starRingEnd ℂ (z q)) = (hom p).h z := by
   first | exact @PositivityTheory.Xgp.t_c_bm_exists_hom
 end -- clump:auto
@@ -1715,7 +1695,7 @@ theorem baseMetricExists_of_given : Given → PB.BaseMetricExists := by
     rw [hbdry x, hint z _ hz, not_not]
   have hZ : IsClosed (bdry s) := _root_.GlobalTheory.CompanionTheory.Ar.PB.CWeight.isClosed_bdry_of_isSection n Rb.X Rb.A L s sec
   obtain ⟨q, O, F, hO, hOc, hF, hgood⟩ :=
-    _root_.GlobalTheory.CompanionTheory.Ar.PB.BMx.Frames.exists_finite_good_frames K ι Φ y (CMType H) (D.p + D.q) D.p n M Rb
+    _root_.PositivityTheory.Xgp.t_c_bm_exists_frames K ι Φ y (CMType H) (D.p + D.q) D.p n M Rb
   have hgood' : ∀ l, ∀ x ∈ O l, M.GoodAt (F l) (mCoordIdeal (Rb.lift x x)) :=
     fun l x hx => hgood l x (subset_closure hx)
   have hr : ∀ x, x ∉ bdry s → Real.exp 1 ≤ rW L s x := fun x _ => by
@@ -1736,7 +1716,7 @@ theorem baseMetricExists_of_given : Given → PB.BaseMetricExists := by
   have hcoords : ∀ x : Rb.X, ∃ z : Spec (CommRingCat.of ℂ) ⟶ 𝔐.X, CoordsAt 𝔐.ξ M.x z (Rb.lift x x) := exists_coordsAt_lift E H D Xo l c Y S K ι Φ y M 𝔐 n Rb
   have hgr := fun (i : Fin q) (τ : CMType H) (x : Rb.X) (hx : x ∈ O i \ bdry s) (z : Spec (CommRingCat.of ℂ) ⟶ 𝔐.X)
       (hz : CoordsAt 𝔐.ξ M.x z (Rb.lift x x)) =>
-    _root_.GlobalTheory.CompanionTheory.Relay.flagModel_frame_height_comparison E H D Xo l c Y S K ι Φ y M 𝔐 tie (F i) (hF i) τ (Rb.lift x x) z hz ((hInt x z hz).1 hx.2) (hgood' i x hx.1)
+    _root_.PositivityTheory.Xgp.t_c_bm_exists_gram E H D Xo l c Y S K ι Φ y M 𝔐 tie (F i) (hF i) τ (Rb.lift x x) z hz ((hInt x z hz).1 hx.2) (hgood' i x hx.1)
   obtain ⟨hom, hdeg, hind, hconjH⟩ := _root_.GlobalTheory.CompanionTheory.Relay.flagModel_resolution_integrability E H D Xo l c Y S K ι Φ y M 𝔐 tie n Rb s hInt q O F hOc hF hgood'
   have hper : ∀ i, ∀ x ∈ O i \ bdry s, ∃ V Pi, x ∈ V ∧
       IsPeriodOn Rb.A D.p V Pi (fun τ x' => blockG (baseGram tie (F i) τ Rb x')) := by
@@ -1759,7 +1739,7 @@ theorem baseMetricExists_of_given : Given → PB.BaseMetricExists := by
             hom := hom, hom_deg := hdeg, induced := hind }, ?_, ?_⟩
   · intro i τ x hx
     obtain ⟨z, hz⟩ := hcoords x
-    exact _root_.GlobalTheory.CompanionTheory.Ar.PB.BMx.blockG_isBlockDiag_posDef D.p D.q _ (hgr i τ x hx z hz).2.1
+    exact _root_.PositivityTheory.Xgp.t_c_bm_exists_blockpos D.p D.q _ (hgr i τ x hx z hz).2.1
   · refine ⟨hInt, fun i τ x hx z hz => ?_, fun i τ x hx z hz => ?_⟩
     · exact gramAt_wFrame tie (F i) τ (hgr i τ x hx z hz).1
     · exact dualGramAt_omFrame tie (F i) τ (hgr i τ x hx z hz).1 (hgr i τ x hx z hz).2.1 (hgr i τ x hx z hz).2.2

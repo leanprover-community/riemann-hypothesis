@@ -251,14 +251,6 @@ open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComp
 namespace UpperTheory.Kun
 variable {R : Type} [CommRing R]
 
-private theorem sub_self_all {E : Spc} {N : ℕ} {U : Scheme.{0}} (x : Sx E N U) (h : 0 + N ≤ N) : x.sub 0 N h = x := by
-  have e : SimplexCategory.subinterval 0 N h = 𝟙 _ := by
-    ext i
-    simp [SimplexCategory.subinterval]
-  unfold Sx.sub
-  rw [e]
-  simp
-
 private theorem aw_conc {Q P I : Cx R} (μ : Pair Q P I) {X : Spc} {m n : ℤ} (h : m + 1 = n)
     (A : Cochain ((chains R).obj X) Q m) (B : Cochain ((chains R).obj X) P 1)
     (γ : Cochain ((chains R).obj X) I n) (hγ : μ.IsAW h A B γ)
@@ -276,7 +268,7 @@ private theorem aw_conc {Q P I : Cx R} (μ : Pair Q P I) {X : Spc} {m n : ℤ} (
       obtain rfl : u = 1 := by simpa using hu.symm
       obtain rfl : t = w + -1 := by omega
       simp only [if_true]
-      rw [sub_self_all]
+      rw [GlobalTheory.EtC.CupGen.sub_zero_full]
     · rw [hB]
       simp
   rw [hγ N w hw U x, Fin.sum_univ_castSucc, Finset.sum_eq_zero, zero_add]
@@ -1248,10 +1240,6 @@ section -- clump:auto
 
 open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC UpperTheory.Pbf UpperTheory.Kun
 
-private theorem map_add' {R : Type} [CommRing R] {F G : Shv R} (φ : F ⟶ G) {U : Scheme.{0}} (x y : Sec F U) :
-    Sec.map φ (x + y) = Sec.map φ x + Sec.map φ y :=
-  map_add _ _ _
-
 private theorem mul_mid {R : Type} [CommRing R] {I Q P : Cx R} (μ : Pair Q P I) (U : Scheme.{0}) (k m m' w : ℤ) (e : m = m')
     (h : m + 1 = w) (h' : m' + 1 = w) (A : Sec (Q.X k) U) (B : Sec (P.X 1) U) :
     μ.mul U m 1 w h (Sec.map (Q.d k m) A) B = μ.mul U m' 1 w h' (Sec.map (Q.d k m') A) B := by
@@ -1279,7 +1267,7 @@ theorem UpperTheory.psi_comm_differential_of_cocycle :
       Sec.res (prod.snd : W ⨯ T ⟶ T) (c₁ (Sec.map ((LL I Q).d s (s + 1)) a)) +
         (s + 1).negOnePow • μ.mul (W ⨯ T) (s + 1 + -1) 1 (s + 1) (by omega)
           (Sec.res (prod.snd : W ⨯ T ⟶ T) (c₂ (Sec.map ((LL I Q).d s (s + 1)) a))) (Sec.res (prod.fst : W ⨯ T ⟶ W) z)
-    rw [map_add', _root_.GlobalTheory.EtC.SchCls.map_units_smul, hL, c₁_d, c₂_d, res_map, Int.negOnePow_succ]
+    rw [GlobalTheory.EtC.PicSpec.sec_map_add, _root_.GlobalTheory.EtC.SchCls.map_units_smul, hL, c₁_d, c₂_d, res_map, Int.negOnePow_succ]
     congr 1
     have hn : Sec.res (prod.snd : W ⨯ T ⟶ T) (- Sec.map (Q.d (s + -1) (s + 1 + -1)) (c₂ a)) =
         - Sec.map (Q.d (s + -1) (s + 1 + -1)) (Sec.res (prod.snd : W ⨯ T ⟶ T) (c₂ a)) := by

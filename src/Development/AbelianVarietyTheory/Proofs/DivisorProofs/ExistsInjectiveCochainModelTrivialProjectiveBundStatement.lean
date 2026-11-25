@@ -711,10 +711,6 @@ theorem map_face {E E' : Spc} (f : E ⟶ E') {p : ℕ} {U : Scheme.{0}} (x : Sx 
 theorem map_map {E E' E'' : Spc} (f : E ⟶ E') (f' : E' ⟶ E'') {p : ℕ} {U : Scheme.{0}} (x : Sx E p U) :
     Sx.map f' (Sx.map f x) = Sx.map (f ≫ f') x := rfl
 
-theorem res_res {F : Shv R} {W V U : Scheme.{0}} (g : W ⟶ V) (f : V ⟶ U) (a : Sec F U) :
-    Sec.res g (Sec.res f a) = Sec.res (g ≫ f) a := by
-  simp [Sec.res]
-
 theorem ev_smul {E : Spc} {I : Cx R} {n : ℤ} (r : ULift.{1} R) (α : Cochain ((chains R).obj E) I n) (p : ℕ) (s : ℤ)
     (h : -(p : ℤ) + n = s) (U : Scheme.{0}) (x : Sx E p U) : ev (R := R) (r • α) p s h U x = r • ev (R := R) α p s h U x := by
   rw [ev_def, ev_def, Cochain.smul_v, Linear.comp_smul]
@@ -757,7 +753,7 @@ theorem pval_res {U : Scheme.{0}} {m w : ℤ} (hw : m + n = w) (a : Sec (I₁.X 
     {V' V : Scheme.{0}} (g : V' ⟶ V) (y : Sx (sch.obj U ⨯ fibQ q N) p V) :
     Sec.res g (pval μ z hw a p s hs V y) = pval μ z hw a p s hs V' (y.res g) := by
   unfold pval
-  rw [μ.nat, res_res, ev_res, map_sres, fstH_res]
+  rw [μ.nat, GlobalTheory.EtC.ClsSpec.res_comp, ev_res, map_sres, fstH_res]
 
 def cval {U : Scheme.{0}} {m w : ℤ} (hw : m + n = w) (a : Sec (I₁.X m) U) :
     Cochain ((chains R).obj (sch.obj U ⨯ fibQ q N)) K w :=
@@ -787,7 +783,7 @@ theorem cval_nat {U U' : Scheme.{0}} {m w : ℤ} (hw : m + n = w) (g : U' ⟶ U)
   refine ev_ext _ _ fun p s hs V y => ?_
   rw [ev_pull, cval_ev, cval_ev]
   unfold pval
-  rw [fstH_map, snd_map, res_res]
+  rw [fstH_map, snd_map, GlobalTheory.EtC.ClsSpec.res_comp]
 
 def pmor {m w : ℤ} (hw : m + n = w) : (I₁.X m).obj ⟶ cotPre R q N K w where
   app U := ModuleCat.ofHom
@@ -1050,16 +1046,12 @@ theorem sx_prod_ext {A B : Spc} {p : ℕ} {V : Scheme.{0}} {y y' : Sx (A ⨯ B) 
     (h1 : y.map prod.fst = y'.map prod.fst) (h2 : y.map prod.snd = y'.map prod.snd) : y = y' := by
   rw [← sxPair_eta y, ← sxPair_eta y', h1, h2]
 
-theorem sxMap_res {E E' : Spc} (f : E ⟶ E') {p : ℕ} {V U : Scheme.{0}} (g : V ⟶ U) (x : Sx E p U) :
-    (x.res g).map f = (x.map f).res g :=
-  ConcreteCategory.congr_hom ((f.app (op (SimplexCategory.mk p))).naturality g.op) x
-
 theorem sxMap_comp {E E' E'' : Spc} (f : E ⟶ E') (f' : E' ⟶ E'') {p : ℕ} {U : Scheme.{0}} (x : Sx E p U) :
     x.map (f ≫ f') = (x.map f).map f' := rfl
 
 theorem sxPair_res {A B : Spc} {p : ℕ} {V U : Scheme.{0}} (g : V ⟶ U) (a : Sx A p U) (b : Sx B p U) :
     (sxPair a b).res g = sxPair (a.res g) (b.res g) :=
-  sx_prod_ext (by rw [sxMap_res, sxPair_fst, sxPair_fst]) (by rw [sxMap_res, sxPair_snd, sxPair_snd])
+  sx_prod_ext (by rw [GlobalTheory.EtC.ClsSpec.map_res, sxPair_fst, sxPair_fst]) (by rw [GlobalTheory.EtC.ClsSpec.map_res, sxPair_snd, sxPair_snd])
 
 theorem sxPair_map {A B A' B' : Spc} (f : A ⟶ A') (f' : B ⟶ B') {p : ℕ} {V : Scheme.{0}} (a : Sx A p V) (b : Sx B p V) :
     (sxPair a b).map (prod.map f f') = sxPair (a.map f) (b.map f') :=
@@ -1233,7 +1225,7 @@ theorem buildC_exists (U : Scheme.{0}) (b : Sec B U) :
   have ha (p : ℕ) (s : ℤ) (h : -(p : ℤ) + n = s) (V W : Scheme.{0})
       (g : V ⟶ W) (y : Sx E p W) : Sec.res g (a p s h W y) = a p s h V (y.res g) := by
     dsimp only [a]
-    erw [hχ, secRes_res, sxMap_res, sxMap_res]
+    erw [hχ, secRes_res, GlobalTheory.EtC.ClsSpec.map_res, GlobalTheory.EtC.ClsSpec.map_res]
     rfl
   have components (i j : ℤ) (hij : i + n = j) :
       ∃ φ : ((chains R).obj E).X i ⟶ I.X j, ∀ (p : ℕ) (hp : i = -(p : ℤ)) W y,

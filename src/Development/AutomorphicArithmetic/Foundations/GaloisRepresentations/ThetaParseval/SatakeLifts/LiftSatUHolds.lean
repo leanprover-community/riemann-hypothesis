@@ -744,18 +744,10 @@ private theorem map_cont {k k' : Type} [Field k] [TopologicalSpace k] [IsTopolog
     Continuous.matrix_map continuous_id hc
   exact Continuous.units_map (RingHom.mapMatrix (m := Fin n) c : Matrix (Fin n) (Fin n) k →+* Matrix (Fin n) (Fin n) k').toMonoidHom h
 
-private theorem irr_comp {H H' X : Type} [Group H] [Group H'] [AddCommGroup X] [Module ℂ X]
-    (ρ : Representation ℂ H X) (φ : H' →* H) (hφ : Function.Surjective φ) (h : ρ.IsIrreducible) :
-    Representation.IsIrreducible (ρ.comp φ) := by
-  obtain ⟨h0, h1⟩ := (GlobalTheory.CuspRep.isIrreducible_iff _).1 h
-  refine (GlobalTheory.CuspRep.isIrreducible_iff _).2 ⟨h0, fun W hW => h1 W fun g v hv => ?_⟩
-  obtain ⟨g', rfl⟩ := hφ g
-  exact hW g' v hv
-
 theorem UpperTheory.Gal.TP.Loc.pullGood :
     UpperTheory.Gal.TP.Loc.PullGood := by
   intro k k' _ _ _ _ _ _ c hc hs n V _ _ ρ
-  refine ⟨fun h => isSmooth_comp h _ (map_cont c hc n), fun h => irr_comp ρ _ (map_surj c hs n) h, ?_⟩
+  refine ⟨fun h => isSmooth_comp h _ (map_cont c hc n), fun h => GlobalTheory.LocCompSplit.isIrreducible_comp_of_surjective ρ _ (map_surj c hs n) h, ?_⟩
   rintro ⟨B, h1, h2, h3⟩
   exact ⟨B, h1, h2, fun g v w => h3 _ v w⟩
 end -- clump:auto
@@ -865,19 +857,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain ValuativeRel GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil GlobalTheory.ThetaGL UpperTheory.Gal.TP.Loc
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-private theorem tprod_ne_zero' {ι : Type} [Fintype ι] {X : ι → Type} [∀ i, AddCommGroup (X i)] [∀ i, Module ℂ (X i)]
-    (x : ∀ i, X i) (hx : ∀ i, x i ≠ 0) : PiTensorProduct.tprod ℂ x ≠ 0 := by
-  have hl : ∀ i, ∃ l : Module.Dual ℂ (X i), l (x i) ≠ 0 := fun i => by
-    by_contra hc
-    push_neg at hc
-    exact hx i ((Module.forall_dual_apply_eq_zero_iff ℂ (x i)).1 hc)
-  choose l hl using hl
-  intro h
-  have h1 := congrArg (PiTensorProduct.lift ((MultilinearMap.mkPiAlgebra ℂ ι ℂ).compLinearMap l)) h
-  rw [PiTensorProduct.lift.tprod, map_zero] at h1
-  simp only [MultilinearMap.compLinearMap_apply, MultilinearMap.mkPiAlgebra_apply] at h1
-  exact (Finset.prod_ne_zero_iff.2 fun i _ => hl i) h1
-
 private theorem hasSat_pair {K : Type} [Field K] [NumberField K] (w : HeightOneSpectrum (𝓞 K)) {d : Fin 2 → ℕ}
     {X : Fin 2 → Type} [∀ a, AddCommGroup (X a)] [∀ a, Module ℂ (X a)]
     (π : ∀ a, Representation ℂ (GL (Fin (d a)) (w.adicCompletion K)) (X a))
@@ -902,7 +881,7 @@ private theorem hasSat_pair {K : Type} [Field K] [NumberField K] (w : HeightOneS
     refine (Submodule.ne_bot_iff _).2 ⟨f, ?_, ?_⟩
     · rw [hKO]; exact hf
     · rintro rfl
-      exact tprod_ne_zero' x (fun a => (hx a).1) h1.symm
+      exact GlobalTheory.EmptyFirstBlock.tprod_ne_zero x (fun a => (hx a).1) h1.symm
   · intro f hf h0
     obtain ⟨T, hT, hv⟩ := GlobalTheory.SatInd.exists_sat_multiProd (Fin.sum_univ_two d) hs hi hf h0
     have hTS : ∀ a, T a = S a := fun a => (hT a).unique (hS a)

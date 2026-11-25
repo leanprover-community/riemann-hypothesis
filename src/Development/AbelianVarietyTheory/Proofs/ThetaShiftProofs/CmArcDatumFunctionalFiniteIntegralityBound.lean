@@ -372,11 +372,9 @@ theorem comb_iff_symm (z : Fin g → R) (w : epsR R ⟶ G) :
   have e : B = fun i => (Lie.basis a hB i).hom := funext fun i => (Lie.hom_basis hB i).symm
   rw [Module.Basis.equivFun_symm_apply, ← Lie.isLieComb_iff, ← e]
 
-
 include a in
 theorem exists_comb (z : Fin g → R) : ∃ w, IsTangent w ∧ IsLieComb z B w :=
   ⟨_, Lie.isTangent _, (comb_iff_symm a hB z _).2 rfl⟩
-
 
 include a in
 theorem comb_coord {m : ℕ} {U : Fin m → Fin g → R} {u : Fin m → (epsR R ⟶ G)} (hU : ∀ k, IsLieComb (U k) B (u k))
@@ -424,12 +422,6 @@ end Coord
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 
-theorem dual_over {S T : Type} [CommRing S] [CommRing T] (φ : S →+* T) :
-    spMap (dualMap φ) ≫ spMap (algebraMap S (DualNumber S)) = spMap (algebraMap T (DualNumber T)) ≫ spMap φ := by
-  rw [← spMap_comp, ← spMap_comp]
-  congr 1
-  exact RingHom.ext fun a => by ext <;> simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl]
-
 section Descent
 
 variable {R S : Type} [CommRing R] [CommRing S] {io : R →+* S} {t : SAB H (Sp R)} {t' : SAB H (Sp S)}
@@ -438,7 +430,7 @@ variable {R S : Type} [CommRing R] [CommRing S] {io : R →+* S} {t : SAB H (Sp 
 theorem exists_bc (v : epsR R ⟶ t.G) : ∃ q : epsR S ⟶ t'.G, q.left ≫ m.φ = spMap (dualMap io) ≫ v.left := by
   have hv : v.left ≫ t.G.hom = spMap (algebraMap R (DualNumber R)) := Over.w v
   have cond : (spMap (dualMap io) ≫ v.left) ≫ t.G.hom = spMap (algebraMap S (DualNumber S)) ≫ spMap io := by
-    rw [Category.assoc, hv, dual_over]
+    rw [Category.assoc, hv, GlobalTheory.ArcQ.FrLin.dual_alg]
   exact ⟨Over.homMk (m.cart.1.lift _ _ cond) (m.cart.1.lift_snd _ _ _), m.cart.1.lift_fst _ _ _⟩
 
 theorem tangent_of_bc [IsDomain R] (hio : Function.Injective io) {v : epsR R ⟶ t.G} {q : epsR S ⟶ t'.G}
@@ -513,17 +505,11 @@ variable {S : Type} [CommRing S] {x : Sp S ⟶ Xo.X} {t' : SAB H (Sp S)} (m : SA
 
 alias tan_iff := _root_.GlobalTheory.ArcQ.NormalForm.ExFr.tan_iff
 
-theorem eig_iff (w : epsR S ⟶ t'.G) (a : 𝓞 E) (s : S) :
-    (w.left ≫ m.φ) ≫ (Xo.univ.t.act.act a).left = spMap (epsMul s) ≫ w.left ≫ m.φ ↔
-      (w ≫ t'.act.act a).left = spMap (epsScaleR s) ≫ w.left := by
-  apply GlobalTheory.ArcQ.ExFr.eig_iff
-
 alias comb_iff := _root_.GlobalTheory.ArcQ.NormalForm.ExFr.comb_iff
 
 end Push
 
 end GlobalTheory.ArcQ.DatumBasis
-
 
 open GlobalTheory.ArcQ.DatumBasis in
 theorem GlobalTheory.ArcQ.arcDatum_arcLieBasis : Out.Laws → Out.Laws2 → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (K₁ : Type) [Field K₁] [Algebra c.F K₁] (d : ArcDatum Xo c K₁), (∀ τ k, GtTanR (d.e τ k)) → ArcLieBasis d.W d.e := by
@@ -552,7 +538,7 @@ theorem GlobalTheory.ArcQ.arcDatum_arcLieBasis : Out.Laws → Out.Laws2 → ∀ 
   have eig : ∀ (τ : E →+* ℂ) (w : epsR (ArcS Dw K₁) ⟶ G.G), IsEigAt c τ (w.left ≫ m1.φ) ↔
       ∀ x : 𝓞 E, (w ≫ G.act.act x).left = spMap (epsScaleR (arcι Dw K₁
         (PowerSeries.C (R := K₁) (algebraMap c.F K₁ (embK c τ x))))) ≫ w.left :=
-    fun τ w => forall_congr' fun x => by rw [← arcS_pin]; exact eig_iff m1 w x _
+    fun τ w => forall_congr' fun x => by rw [← arcS_pin]; exact GlobalTheory.ArcQ.ExFr.eig_iff m1 w x _
   refine ⟨v, hv, fun τ => ?_⟩
   have hu : y.u τ = fun k => (q τ k).left ≫ m1.φ := funext fun k => (hq1 τ k).symm
   obtain ⟨a₁, a₂⟩ := eigBasis_descent m2 hB hM (hU τ) (hq2 τ) (fun x => algebraMap c.F K₁ (embK c τ x))
@@ -603,25 +589,6 @@ theorem gtTanR_iff (ν : GtPt D (epsR R)) : GtTanR ν ↔ origin R ≫ ν.b = 1 
     exact ⟨g₀, ⟨b.trans h₁, fun χ => corr_of_val D.P.isLB fun y J hJ =>
       (v χ y J hJ).trans ((h₂ χ y J hJ).trans (val_one _).symm)⟩, h⟩
 
-theorem gtTanR_of_isZero {ν : GtPt D (epsR R)} (h : ν.IsZero) : GtTanR ν := by
-  have hb : ν.b = 1 := h.1
-  exact (gtTanR_iff ν).2 ⟨by rw [hb, MonObj.comp_one], fun χ y J hJ => (val_corr hJ (h.2 χ) _).trans (val_one _)⟩
-
-theorem gtTanR_of_scale {a : R} {ν ν' : GtPt D (epsR R)} (h : GtPt.IsPull (spMap (epsScaleR a)) ν ν')
-    (ht : GtTanR ν) : GtTanR ν' :=
-  _root_.GlobalTheory.FinLocalTan.gtTanR_of_scale h ht
-
-theorem gtTanR_of_isAdd {ν ν' ν'' : GtPt D (epsR R)} (h : ν.IsAdd ν' ν'') (ht : GtTanR ν) (ht' : GtTanR ν') :
-    GtTanR ν'' :=
-  _root_.GlobalTheory.FinLocalTan.gtTanR_of_isAdd h ht ht'
-
-theorem gtTanR_of_gtComb {m : ℕ} {cf : Fin m → R} {e : Fin m → GtPt D (epsR R)} {ν : GtPt D (epsR R)}
-    (h : GtComb cf e ν) (he : ∀ i, GtTanR (e i)) : GtTanR ν := by
-  obtain ⟨u, p, hu, h₀, ha, rfl⟩ := h
-  have : ∀ i, GtTanR (p i) := fun i => Fin.induction (gtTanR_of_isZero h₀)
-    (fun j ih => gtTanR_of_isAdd (ha j) ih (gtTanR_of_scale (hu j) (he j))) i
-  exact this _
-
 end
 
 end Tangent
@@ -666,7 +633,7 @@ theorem discr_mul_xi_integral : Known → ∀ (E : Type) [Field E] [NumberField 
   obtain ⟨b₁, d₁⟩ := hw3 Tv.Fr M.aK.D₀ _ M.pw φw ν ν₁ hνb hνd h₁
   obtain ⟨b₂, d₂⟩ := hK3 Tv.Fr M.aK.D₀ _ M.pK φ₀ (d.e τ k) e₂ hb hd h₂
   obtain ⟨ν', hν'⟩ := GlobalTheory.ConstLie.exists_gtComb ![((NumberField.discr E : ℤ) : Tv.Fr)] ![e₂]
-  have t₃ : GtTanR ν' := gtTanR_of_gtComb hν' fun i => by fin_cases i; exact t₂
+  have t₃ : GtTanR ν' := GlobalTheory.FinLocalTan.gtTanR_of_gtComb hν' fun i => by fin_cases i; exact t₂
   obtain ⟨b₃, d₃⟩ := hF2 φ₂ _ e₂ ν' t₂ b₂ d₂ hν'
   have key : ∀ x, algebraMap Tv.V Tv.Fr (φw (M.pw.xe x)) = (((NumberField.discr E : ℤ) : Tv.Fr) • φ₂) x := fun x => by
     show algebraMap Tv.V Tv.Fr (ρ (φ (M.pK.xe (M.pw.xe.symm (M.pw.xe x))))) =
@@ -1047,7 +1014,6 @@ open scoped LaurentSeries
 
 namespace GlobalTheory.ArcCM.FinLoc
 
-
 open GlobalTheory.IntModelExists GlobalTheory.Frames in
 theorem exists_intModel_heq : Out.Laws → Out.Laws2 → Out.UnifBaseChangeSt → Out.Laws5 → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (K₁ : Type) [Field K₁] [NumberField K₁] [Algebra c.F K₁] (d : ArcDatum Xo c K₁) (Tv : CDVR) (io : K₁ →+* Tv.Fr) (Wl : ValuationSubring ℂ) (Yw : Model Xo c (c.V Wl).subtype) (b : c.V Wl →+* Tv.V) (aw : ArcIn Dw l (c.V Wl).subtype Tv.V b) (aK : ArcIn Dw l (RingHom.id c.F) Tv.Fr (io.comp (algebraMap c.F K₁))) (pw : Out.IsPullDeg (algebraMap Tv.V Tv.Fr) aw.D₀ aK.D₀) (pK : Out.IsPullDeg io d.a.D₀ aK.D₀), Yw.N4 → ArcLieBasis d.W d.e → InBC (algebraMap Tv.V Tv.Fr) aw (aK.restrict (c.V Wl).subtype) pw → InBC io d.a aK pK → ∃ M : IntModel d Tv io Wl, M.b = b ∧ HEq M.aw aw ∧ M.aK = aK ∧ HEq M.pw pw ∧ HEq M.pK pK ∧ M.γ ≠ 0 ∧ (∀ τ, (M.g τ).det ≠ 0) ∧ ∀ (χ : Sp (PowerSeries Tv.V) ⟶ Yw.X) (W : Wit Yw M.aw χ), ArcBasis W M.ρ M.ew := by
   intro hL hL₂ hU hL₅ E _ _ _ H Dw l Xo c K₁ _ _ _ d Tv io Wl Yw b aw aK pw pK hN hd hw hK
@@ -1180,7 +1146,6 @@ end Val
 end GlobalTheory.ArcCM.FinLoc
 
 namespace GlobalTheory.ArcCM
-
 
 open FinLoc in
 theorem finLocalAt_of_cmIn : Known → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (K₁ : Type) [Field K₁] [NumberField K₁] [Algebra c.F K₁] (d : ArcDatum Xo c K₁) (n' : ℕ) (La c₁ : ℝ) (s : CMIn d.a d.e d.th d.jj n' La c₁), ModelsAt Xo c → Std d → ∀ (la : HeightOneSpectrum (𝓞 c.F)) (w : HeightOneSpectrum (𝓞 K₁)), LiesOver w la → ∀ (a' : (E →+* ℂ) × ℕ → ℕ) (n : ℕ), GlobalTheory.ArcQ.FinLocalAt d w n (-FractionalIdeal.count K₁ w s.Tl.I) (fun τ k => -FractionalIdeal.count K₁ w (s.line τ k).I) (w.asIdeal.ramificationIdx (𝓞 c.F) * mOf E n' la) (intAt Xo c a' n la) := by

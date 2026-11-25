@@ -73,8 +73,8 @@ theorem oddDeg_of_realises : ∀ {p : ℕ} [Fact p.Prime] (X : Sys p) (D : D7) (
       MvPolynomial.support_map_of_injective Gc ι.injective]
   rw [hs] at hm
   have hh := GlobalTheory.T.realising_polynomial_blockwise_homogeneous X D pos j (rkS X D hN) (wT X D pos j) ν Q Gc hQ hR m hm (pos b)
-  obtain ⟨he, -⟩ := GlobalTheory.T.realPlaceBlockWeightLastEntry_consecutive_levels X D pos j (pos b)
-  obtain ⟨-, hsz, -, -, -⟩ := GlobalTheory.T.modelPartition_size_extension_firstLast_rows X D pos j hN ν hν
+  obtain ⟨he, -⟩ := GlobalTheory.TwV.DelA.eT_last_pair X D pos j (pos b)
+  obtain ⟨-, hsz, -, -, -⟩ := GlobalTheory.TwV.DelA.size_first_last_rows X D pos j hN ν hν
   have hodd : IsOddPos (pos.symm (pos b)).2 := by rw [Equiv.symm_apply_apply]; exact hb
   rw [if_pos hodd] at he hh
   rw [he, ← hsz] at hh

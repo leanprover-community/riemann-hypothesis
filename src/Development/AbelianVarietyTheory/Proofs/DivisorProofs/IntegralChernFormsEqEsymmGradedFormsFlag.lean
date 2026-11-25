@@ -384,7 +384,6 @@ private theorem isForm_and_integral_finset_sum {ι : Type} (s : Finset ι)
     refine ⟨isForm_add' A hA hs.1, ?_⟩
     rw [integral_add_of_isForm A hA hs.1, hs.2]
 
-
 set_option autoImplicit false in
 theorem _root_.GlobalTheory.CxForm.IntegralSum.integral_sum : ∀ {M : Type} [TopologicalSpace M] [CompactSpace M]
     [T2Space M] [SecondCountableTopology M] [MeasurableSpace M] [BorelSpace M] {n : ℕ}
@@ -568,7 +567,7 @@ theorem integral_dbar_fn_mul_eq_zero : ∀ {M : Type} [TopologicalSpace M] [Comp
   have hP : A.IsForm (A.fn χ * γ) :=
     ((_root_.GlobalTheory.CxForm.HolAtlas.isForm_algebra M n A).2 0 _ _ (A.isForm_fn hχ) hγ).2.1
   have hω : A.IsForm (A.dbar (A.fn χ * γ)) :=
-    (GlobalTheory.T.holAtlas_isForm_del_dbar_smooth M n A _ hP).2
+    (GlobalTheory.CxForm.isForm_del_dbar M n A _ hP).2
 
   have hnear : ∀ (j : A.ι) (w : V n), w ∈ (A.e j).target → (A.e j).symm w ∉ K →
       A.loc (A.fn χ * γ) j =ᶠ[𝓝 w] fun _ => 0 := by
@@ -1277,7 +1276,7 @@ theorem stokes : ∀ (M : Type) [TopologicalSpace M] [T2Space M] [SecondCountabl
   have hf : ∀ j, A.IsForm (A.fn (χ j) * η) := fun j =>
     FormMul.isForm_mul A _ _ (A.isForm_fn (hs j)) hη
   have hdiff : ∀ j, A.IsForm (A.del (A.fn (χ j) * η)) ∧ A.IsForm (A.dbar (A.fn (χ j) * η)) :=
-    fun j => GlobalTheory.T.holAtlas_isForm_del_dbar_smooth M n A _ (hf j)
+    fun j => GlobalTheory.CxForm.isForm_del_dbar M n A _ (hf j)
   have hdec := eq_sum_fn_mul A χ hone η
   constructor
   · rw [hdec, _root_.GlobalTheory.CxForm.HolAtlas.del_finset_sum A _ hf,

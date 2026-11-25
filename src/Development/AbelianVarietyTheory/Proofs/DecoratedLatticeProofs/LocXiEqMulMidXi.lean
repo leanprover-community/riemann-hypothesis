@@ -76,8 +76,6 @@ open NumberField IsDedekindDomain Matrix ValuativeRel GlobalTheory.MixModel Glob
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.splitPoint_heckeComponent_tame_and_residual : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (q : GlobalTheory.FinPl.SplitPt D k) (PP : Formalism.L2.DIV.Pl D.host.E), Formalism.L2.NTheta.IsIdemAt q.e PP → (∀ x, (ofSplit q).pr x ∈ 𝒪[k] ↔ Formalism.L2.Col.IntAt PP x) → DenseRange (ofSplit q).pr → ∀ (χ : (AE D)ˣ →* Circle) (H : Formalism.L2.Host.HChar D.host.E) (c : (Formalism.L2.DIV.kP PP)ˣ →* ℂˣ) (μ : kˣ →* ℂˣ), ChrEq χ H → IsRes H PP c → (ofSplit q).IsComp χ μ → IsTame μ ∧ ∀ (a : D.host.E) (u : kˣ) (r : (Formalism.L2.DIV.kP PP)ˣ), Formalism.L2.Col.IntAt PP a → (r : Formalism.L2.DIV.kP PP) = Formalism.L2.Col.redP PP a → (u : k) = (ofSplit q).pr a → μ u = c r := by
-  first | exact @GlobalTheory.LocMod.SplitHecke.tame_and_res
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SplitPointHeckeComponentTameAndResidualStatement =====
@@ -174,7 +172,6 @@ theorem crd_inl {s κ : ℕ} (S : SymData k s κ) {n n' : Type} [Fintype n] [Dec
   rintro ⟨a, b, rfl, rfl⟩
   simp
 
-
 omit [BorelSpace k] in
 theorem entry_mul_KOne {s κ : ℕ} (S : SymData k s κ) (t : Type) [Fintype t] [DecidableEq t] (ν : Measure k) (j c : ℕ) (H : j + 1 + c = s)
     {a : GL (XIx (Fin κ) t (j + 1)) k} (ha : a ∈ KOne k _) {b : GL (XIx (Fin κ) t j) k} (hb : b ∈ KOne k _)
@@ -251,8 +248,8 @@ theorem chi_tie (q : GlobalTheory.FinPl.SplitPt D k) {PP : Formalism.L2.DIV.Pl D
     (ha : IntAt PP a) (hr : (r : Formalism.L2.DIV.kP PP) = redP PP a) (hu : (u : k) = (ofSplit q).pr a) : m u = c r := by
   obtain ⟨ma, hma⟩ := Witness.exists_isComp (ofSplit q) (μ j)
   obtain ⟨mb, hmb⟩ := Witness.exists_isComp (ofSplit q) η
-  have e1 := (GlobalTheory.T.splitPoint_heckeComponent_tame_and_residual D k q PP hid hi hd _ _ _ _ h1 h2 hma).2 a u r ha hr hu
-  have e2 := (GlobalTheory.T.splitPoint_heckeComponent_tame_and_residual D k q PP hid hi hd _ _ _ _ h3 h4 hmb).2 a u r ha hr hu
+  have e1 := (GlobalTheory.LocMod.SplitHecke.tame_and_res D k q PP hid hi hd _ _ _ _ h1 h2 hma).2 a u r ha hr hu
+  have e2 := (GlobalTheory.LocMod.SplitHecke.tame_and_res D k q PP hid hi hd _ _ _ _ h3 h4 hmb).2 a u r ha hr hu
   have f0 := hm u (SymChainAt.idl q u) rfl
   have f1 := hma u (SymChainAt.idl q u) rfl
   have f2 := hmb u (SymChainAt.idl q u) rfl
@@ -267,7 +264,6 @@ end Comparison₂
 section Mat
 variable {E k : Type} [Field E] [NumberField E] [StarRing E] [Field k] [ValuativeRel k] [TopologicalSpace k]
   [IsNonarchimedeanLocalField k]
-
 
 omit [NumberField E] [StarRing E] in
 theorem exists_KOne (ι : E →+* k) {Y : Type} [Fintype Y] [DecidableEq Y] {a n : ℕ} (h : n = a) (F : Frame k n Y) (e : Y ≃ Fin n)
@@ -328,7 +324,6 @@ end Tuple
 
 section World
 variable {B : GlobalTheory.Mem.Base} {X : PreX B.toPre} {I : TC B X} {u : B.Word}
-
 
 theorem frame_cong (hI : I.Ok) {b : I.ι} {j : ℕ} (p : Formalism.L2.Col.ChPt (Pr := B.primes X) (R := B.R) I.sel (I.tup b) u j)
     (hp : TC.PtOf (TC.kStd X u (B.R.N j)) (extTo I.SQ p)) (P : BadPr I b) (hP : P.1 ∈ (B.primes X).vGs) (r s : Fin (B.R.N j)) :

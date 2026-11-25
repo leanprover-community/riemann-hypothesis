@@ -431,7 +431,6 @@ theorem prodAt_base (S : Finset ι) :
   · intro j S hj ih
     rw [prodAt_insert hc s _ hj, Module.End.mul_apply, ih, hs]
 
-
 omit hs in
 def res (a : ∀ i, G i → Module.End ℂ W) (i : ι) (w₀ : W) (g : G i) : Module.End ℂ (cyc a i w₀) :=
   (a i g).restrict (fun _ hx => apply_mem_cyc hx (gen_mem_alg i g))
@@ -683,7 +682,6 @@ def single (σ : (D.what₂.Tau → ℂ) →+ AE D) (τ : D.what₂.Tau) : ℂ �
 
 theorem single_apply (σ : (D.what₂.Tau → ℂ) →+ AE D) (τ : D.what₂.Tau) (c : ℂ) :
     single σ τ c = σ (Pi.single τ c) := rfl
-
 
 theorem chart_mul_incA {θ : InfFam D} {σ : (D.what₂.Tau → ℂ) →+ AE D} (hσ : GlobalTheory.FockCompare.Chart θ σ)
     (z : D.what₂.Tau → ℂ) (y : D.host.E) :
@@ -1132,7 +1130,6 @@ theorem inner_left (W : G.Weil) (M : Vol G) (hM : M.IsRow) {φ : Fn G (.top 0)} 
 
 end GlobalTheory.BplusShift
 
-
 open GlobalTheory.BplusShift in
 theorem GlobalTheory.BplusShift.bplus_rTr : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} (W : G.Weil) (M : Vol G), M.IsRow →
     ∀ φ ∈ contLeft (G.V (.top 0)), ∀ F ∈ contLeft (G.V (.grid D.R.m 0)), ∀ a : GA D (G.V (.top 0)),
@@ -1192,11 +1189,6 @@ open GlobalTheory.SepRows
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Core.Mi.SepPer (contLeft)
 
-theorem _root_.GlobalTheory.T.embRel_atRealPlace_of_unitaryEmbedding : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (A B : HSp D) (ι : A.V →ₗ[D.host.E] B.V) (τ : D.what₂.Tau)
-    (h : Matrix (Fin A.rank) (Fin A.rank) ℂ) (g : Matrix (Fin B.rank) (Fin B.rank) ℂ), h ∈ Formalism.QuantumDeterminants.UH (gramAt D A τ) →
-    g ∈ Formalism.QuantumDeterminants.UH (gramAt D B τ) → GlobalTheory.RealBessel.IsEmb (gramAt D B τ) ((frameMat B A ι).map (tauE D τ)) g h →
-    EmbRel B A ι (atTau θ B τ g) (atTau θ A τ h) := by
-  first | exact @GlobalTheory.EmbAtPlace.embRel_atTau
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.EmbRelAtRealPlaceOfUnitaryEmbeddingStatement =====
@@ -1335,7 +1327,6 @@ theorem Bplus_smul_right {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : 
     simp only [besInt, Pi.smul_apply, smul_eq_mul]; ring
   simp only [Bplus, e, integral_const_mul]
 
-
 end GlobalTheory.SepRows.SepProof
 
 end
@@ -1463,7 +1454,7 @@ theorem theta_lifts_separate_of_separating_data : _root_.GlobalTheory.FunPr.Thet
     have hp := pairVec_comp_rho (coefPlus G W.θ) (e (PiTensorProduct.tprod ℂ (Function.update x τ w))) Ψ
       (atTau_mem_GinfC' W.θ _ τ h)
     have hemb : atTau W.θ (G.V (.grid D.R.m 0)) τ g = embTop G (atTau W.θ (G.V (.top 0)) τ h) :=
-      (embRel_iff _ _ _).1 (GlobalTheory.T.embRel_atRealPlace_of_unitaryEmbedding D W.θ hθ _ _ _ τ h g hh hg hEm)
+      (embRel_iff _ _ _).1 (GlobalTheory.EmbAtPlace.embRel_atTau D W.θ hθ _ _ _ τ h g hh hg hEm)
     show Bplus W M (pairVec (coefPlus G W.θ) (e (PiTensorProduct.tprod ℂ (Function.update x τ (π τ h w)))) Ψ)
       (F' (PiTensorProduct.tprod ℂ (Function.update v τ y₁))) =
       Bplus W M (pairVec (coefPlus G W.θ) (e (PiTensorProduct.tprod ℂ (Function.update x τ w))) Ψ)

@@ -328,7 +328,6 @@ noncomputable section
 
 namespace GlobalTheory.LogKSDiv
 
-
 attribute [local instance] Over.cartesianMonoidalCategory Over.braidedCategory in
 open MonObj in
 theorem isCombAtG_extend {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E}
@@ -402,7 +401,6 @@ open GlobalTheory.CompHt (hodgeWt)
 open GlobalTheory.LevDesc (TypeFrame grpHR grpGHR levDet secRing move)
 open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelAut)
 open GlobalTheory.OrbitSep
-
 
 theorem _root_.GlobalTheory.T.tangentBasis_affineOpen_restrict_basicOpen : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (X : Scheme.{0}) (t : SAB H X) (U W : X.affineOpens) (hW : W.1 ≤ U.1) (f : Γ(X, U.1)), W.1 = X.basicOpen f → ∀ (n : ℕ) (v : Fin n → (Sp (DualNumber Γ(X, U.1)) ⟶ t.G.left)), (∀ i, IsTanAtG t (GlobalTheory.LogKS.chart U) (v i)) → (∀ w, IsTanAtG t (GlobalTheory.LogKS.chart U) w → ∃! cf : Fin n → Γ(X, U.1), IsCombAtG t (GlobalTheory.LogKS.chart U) v cf w) → ∀ w, IsTanAtG t (GlobalTheory.LogKS.chart W) w → ∃! cf : Fin n → Γ(X, W.1), IsCombAtG t (GlobalTheory.LogKS.chart W) (fun i => spMap (dualMap (X.presheaf.map (homOfLE hW).op).hom) ≫ v i) cf w := by
   intro E _ _ _ H X t U W hW f _ n v hv hb
@@ -536,10 +534,6 @@ open GlobalTheory.OrbitSep
 
 namespace GlobalTheory.LogKSDiv.GenChange
 
-theorem chart_res {X : Scheme.{0}} (U W : X.affineOpens) (h : W.1 ≤ U.1) :
-    spMap (X.presheaf.map (homOfLE h).op).hom ≫ GlobalTheory.LogKS.chart U = GlobalTheory.LogKS.chart W := by
-  simpa [spMap, GlobalTheory.LogKS.chart] using U.2.map_fromSpec W.2 (homOfLE h).op
-
 theorem common_basic {X : Scheme.{0}} (U U' : X.affineOpens) (x : X) (hx : x ∈ U.1) (hx' : x ∈ U'.1) :
     ∃ (W : X.affineOpens) (hW : W.1 ≤ U.1) (hW' : W.1 ≤ U'.1) (f : Γ(X, U.1)) (f' : Γ(X, U'.1)),
       W.1 = X.basicOpen f ∧ W.1 = X.basicOpen f' ∧ x ∈ W.1 := by
@@ -663,7 +657,7 @@ theorem genKS_change : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H
   have hfacU' : ρ' = ρW.comp (TF.Y.X.presheaf.map (homOfLE hWU').op).hom :=
     rho_fac U' W hWU' ρ' ρW (hρ'.trans hρW.symm)
   obtain ⟨hinj, hfr⟩ := _root_.GlobalTheory.GenFrac.injective_and_frac TF.Y.X (barComp TF.Y Z) W (hWU.trans hU) ρW hρW
-  have hcr := chart_res U W hWU
+  have hcr := GlobalTheory.LogKSLoc.spMap_res_chart U W hWU
   have hcr' := _root_.GlobalTheory.LogKSLoc.spMap_res_chart U' W hWU'
   obtain ⟨hfu, hfloc⟩ := basic_loc U W hWU f hWf
   obtain ⟨hfu', hfloc'⟩ := basic_loc U' W hWU' f' hWf'

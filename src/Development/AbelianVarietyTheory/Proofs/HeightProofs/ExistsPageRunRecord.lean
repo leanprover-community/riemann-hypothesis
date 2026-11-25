@@ -77,26 +77,6 @@ namespace GlobalTheory.RunNuTest
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.DIV Formalism.MainNotions.DIV.Cons NumberField IsDedekindDomain
 
-theorem floor_le (T d : ℕ) (c x : ℤ) (hc : 0 ≤ c) (hx : x ≤ c + 2) :
-    (T : ℤ) * ((Int.fdiv x ((T + d + 2 : ℕ) : ℤ)).toNat : ℤ) ≤ c := by
-  have hp : (0 : ℤ) < ((T + d + 2 : ℕ) : ℤ) := by positivity
-  rw [Int.fdiv_eq_ediv_of_nonneg _ hp.le]
-  have h1 := Int.ediv_mul_le x hp.ne'
-  set k := x / ((T + d + 2 : ℕ) : ℤ)
-  rcases le_or_gt k 0 with hk | hk
-  · rw [Int.toNat_of_nonpos hk]; simpa using hc
-  · rw [Int.toNat_of_nonneg hk.le]
-    push_cast at h1
-    have hd : (0 : ℤ) ≤ d := by positivity
-    nlinarith
-
-theorem gap_nonneg {p : ℕ} {l : Fin p → ℕ} (h : Antitone l) (i : Fin p) : 0 ≤ WeightAlgebra.gapZ l i := by
-  unfold WeightAlgebra.gapZ
-  split_ifs with hi
-  · have : l ⟨i.1 + 1, hi⟩ ≤ l i := h (by simp [Fin.le_def])
-    omega
-  · positivity
-
 theorem of_gaps {p : ℕ} (u a b : Fin p → ℕ) (T : ℤ) (h : ∀ i, WeightAlgebra.gapZ u i = WeightAlgebra.gapZ a i - T * WeightAlgebra.gapZ b i) :
     ∀ i, (u i : ℤ) = a i - T * b i := by
   have key : ∀ n (i : Fin p), p - i.1 = n + 1 → (u i : ℤ) = a i - T * b i := by
@@ -130,14 +110,14 @@ theorem isF (ka : WeightFamilies.Wt D j) (T nW nP : ℕ) (hW : Even nW) (hP : Ev
       rw [gapZ_ofGaps]
       apply Int.toNat_of_nonneg
       unfold lGapP; rw [if_pos hi]
-      exact sub_nonneg.2 (floor_le T _ _ _ (gap_nonneg (ka.aPlus_antitone τ) i) le_rfl)
+      exact sub_nonneg.2 (GlobalTheory.RunDepth.mul_toNat_fdiv_le T _ _ _ (GlobalTheory.RunDepth.gapZ_nonneg_of_antitone (ka.aPlus_antitone τ) i) le_rfl)
     · show ((((ka.aP τ i : ℤ) - _ * ((ofGaps _ i : ℕ) : ℤ)).toNat : ℕ) : ℤ) = _
       rw [ofGaps_last _ i hi]
       have e : WeightAlgebra.gapZ (ka.aP τ) i = ka.aP τ i := by simp [WeightAlgebra.gapZ, hi]
       rw [e]
       apply Int.toNat_of_nonneg
       unfold lGapP; rw [if_neg hi]
-      refine sub_nonneg.2 (floor_le T _ _ _ (by positivity) ?_)
+      refine sub_nonneg.2 (GlobalTheory.RunDepth.mul_toNat_fdiv_le T _ _ _ (by positivity) ?_)
       have : (0 : ℤ) ≤ ((WeightFamilies.dimY D j : ℤ) + 2) * nW := by positivity
       have : (0 : ℤ) ≤ D.R.r := by positivity
       linarith
@@ -149,14 +129,14 @@ theorem isF (ka : WeightFamilies.Wt D j) (T nW nP : ℕ) (hW : Even nW) (hP : Ev
       rw [gapZ_ofGaps]
       apply Int.toNat_of_nonneg
       unfold lGapM; rw [if_pos hi]
-      exact sub_nonneg.2 (floor_le T _ _ _ (gap_nonneg (ka.aM_anti τ) i) le_rfl)
+      exact sub_nonneg.2 (GlobalTheory.RunDepth.mul_toNat_fdiv_le T _ _ _ (GlobalTheory.RunDepth.gapZ_nonneg_of_antitone (ka.aM_anti τ) i) le_rfl)
     · show ((((ka.aM τ i : ℤ) - _ * ((ofGaps _ i : ℕ) : ℤ)).toNat : ℕ) : ℤ) = _
       rw [ofGaps_last _ i hi]
       have e : WeightAlgebra.gapZ (ka.aM τ) i = ka.aM τ i := by simp [WeightAlgebra.gapZ, hi]
       rw [e]
       apply Int.toNat_of_nonneg
       unfold lGapM; rw [if_neg hi]
-      exact sub_nonneg.2 (floor_le T _ _ _ (by positivity) (by linarith))
+      exact sub_nonneg.2 (GlobalTheory.RunDepth.mul_toNat_fdiv_le T _ _ _ (by positivity) (by linarith))
 
 theorem fdiv_toNat (x : ℤ) (n : ℕ) (hx : 0 ≤ x) : (((Int.fdiv x n).toNat : ℕ) : ℤ) = Int.fdiv x n := by
   apply Int.toNat_of_nonneg
@@ -170,7 +150,7 @@ theorem isL (ka : WeightFamilies.Wt D j) (T nW : ℕ) (hW : Even nW)
   · show WeightAlgebra.gapZ (ofGaps _) i = _
     rw [gapZ_ofGaps]; unfold lGapP
     split_ifs with hi
-    · exact fdiv_toNat _ _ (by have := gap_nonneg (ka.aPlus_antitone τ) i; omega)
+    · exact fdiv_toNat _ _ (by have := GlobalTheory.RunDepth.gapZ_nonneg_of_antitone (ka.aPlus_antitone τ) i; omega)
     · refine fdiv_toNat _ _ ?_
       have := h τ i hi
       zify at this
@@ -178,7 +158,7 @@ theorem isL (ka : WeightFamilies.Wt D j) (T nW : ℕ) (hW : Even nW)
   · show WeightAlgebra.gapZ (ofGaps _) i = _
     rw [gapZ_ofGaps]; unfold lGapM
     split_ifs with hi
-    · exact fdiv_toNat _ _ (by have := gap_nonneg (ka.aM_anti τ) i; omega)
+    · exact fdiv_toNat _ _ (by have := GlobalTheory.RunDepth.gapZ_nonneg_of_antitone (ka.aM_anti τ) i; omega)
     · exact fdiv_toNat _ _ (by positivity)
 
 theorem choose_two_add (p q : ℕ) : p * q + p * (p - 1) / 2 + q * (q - 1) / 2 = (p + q).choose 2 := by

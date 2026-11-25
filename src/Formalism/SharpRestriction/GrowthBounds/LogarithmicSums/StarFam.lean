@@ -60,30 +60,6 @@ open NumberField Formalism.FrobeniusOrbits Formalism.BasicNotions Formalism.Main
 
 namespace Formalism.MainNotions.AuxBlock8.Pf.St
 
-theorem ev_log (c α : ℝ) (hα : 0 < α) : ∀ᶠ x : ℝ in atTop, c * Real.log x ≤ x ^ α := by
-  have hε : (0 : ℝ) < 1 / (|c| + 1) := by positivity
-  have h := (isLittleO_log_rpow_atTop hα).def hε
-  filter_upwards [h, eventually_gt_atTop 0] with x hx hx0
-  have hxa : 0 < x ^ α := Real.rpow_pos_of_pos hx0 α
-  rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_of_pos hxa] at hx
-  have hc : |c| * (1 / (|c| + 1)) ≤ 1 := by
-    rw [mul_one_div, div_le_one (by positivity)]
-    linarith
-  calc c * Real.log x ≤ |c| * |Real.log x| := by rw [← abs_mul]; exact le_abs_self _
-    _ ≤ |c| * (1 / (|c| + 1) * x ^ α) := by gcongr
-    _ = (|c| * (1 / (|c| + 1))) * x ^ α := by ring
-    _ ≤ 1 * x ^ α := by gcongr
-    _ = x ^ α := one_mul _
-
-theorem ev_pow (c α β : ℝ) (h : α < β) : ∀ᶠ x : ℝ in atTop, c * x ^ α ≤ x ^ β := by
-  have ht := tendsto_rpow_atTop (sub_pos.2 h)
-  filter_upwards [ht.eventually_ge_atTop c, eventually_gt_atTop 0] with x hx hx0
-  have hsplit : x ^ β = x ^ α * x ^ (β - α) := by
-    rw [← Real.rpow_add hx0]
-    ring_nf
-  rw [hsplit, mul_comm c]
-  exact mul_le_mul_of_nonneg_left hx (Real.rpow_pos_of_pos hx0 α).le
-
 def rE (eps : ℝ) : ℕ := ⌈8 * (2 + 8 * eps + 2) / eps⌉₊ + 1
 
 theorem rG_rE (s : Scale) : rG s = rE s.eps := rfl
@@ -99,10 +75,6 @@ theorem cGE_nonneg (eps : ℝ) (he : 0 < eps) : 0 ≤ cGE eps := by
   have h3 : (0 : ℝ) ≤ 6 * (rE eps : ℝ) + 1 := by positivity
   have h4 := mul_nonneg h1 h2
   exact mul_nonneg (mul_nonneg (by linarith) h3) (by norm_num)
-
-theorem inv_delta1 (s : Scale) : 1 / s.delta1 = s.x ^ (s.eps / 8) := by
-  unfold Scale.delta1
-  rw [Real.rpow_neg (le_of_lt (zero_lt_one.trans s.one_lt_alt)), one_div, inv_inv]
 
 theorem one_le_xpow (s : Scale) (y : ℝ) (hy : 0 ≤ y) : 1 ≤ s.x ^ y :=
   Real.one_le_rpow s.one_lt_alt.le hy
@@ -185,26 +157,6 @@ theorem first_count_le_log (s : Scale) (hx : Real.exp 1 ≤ s.x) : (N1 s : ℝ) 
   have hceil := (Nat.ceil_lt_add_one hnn).le
   unfold cNE
   nlinarith
-
-theorem k_le_x_pow_six {D : D7} (L : SizeData₂ D) (hS : Formalism.MainNotions.SizesAt L) : (D.R.k : ℝ) ≤ L.sc.x ^ (6 : ℝ) := by
-  have hk := hS.2.2.1.2
-  have he := L.sc.eps_lt
-  have he0 := L.sc.eps_pos
-  refine hk.trans (Real.rpow_le_rpow_of_exponent_le L.sc.one_lt_alt.le ?_)
-  unfold Formalism.MainNotions.szTh
-  linarith
-
-theorem one_le_k (D : D7) : (1 : ℝ) ≤ (D.R.k : ℝ) := by
-  have h := D.R.m_add_three_le_k
-  exact_mod_cast (by omega : 1 ≤ D.R.k)
-
-theorem xpow_le_exp (x N y : ℝ) (hx : 0 < x) (h : N * Real.log x ≤ y) : x ^ N ≤ Real.exp y := by
-  rw [Real.rpow_def_of_pos hx]
-  exact Real.exp_le_exp.2 (by rw [mul_comm]; exact h)
-
-theorem second_level_lt_good_of_log {D : D7} (L : SizeData₂ D) (hS : Formalism.MainNotions.SizesAt L) (hx : Real.exp 1 ≤ L.sc.x)
-    (h : 514 * Real.log L.sc.x ≤ L.sc.x ^ (L.sc.eps / 8)) : L2 D L.sc < goodU L.sc.delta1 := by
-  apply Formalism.MainNotions.AuxBlock8.Pf.second_level_lt_good_of_log <;> assumption
 
 def CStar (eps : ℝ) (K : Consts) (C31 : ℝ) : ℝ :=
   3 + K.tII * (rE eps : ℝ) + (2 * (3 : ℝ) + 4 * K.tII + 160 * C31 + 7) + K.Pr1 * C31 + K.kappaThresholdOne * |cNE eps|
@@ -348,10 +300,6 @@ def cNE (eps : ℝ) : ℝ := 18 * cGE eps + 2 * (2 + 8 * eps + 3) + 2
 
 theorem cGE_nonneg (eps : ℝ) (he : 0 < eps) : 0 ≤ cGE eps := by unfold cGE; positivity
 
-theorem inv_delta1 (s : Scale) : 1 / s.delta1 = s.x ^ (s.eps / 8) := by
-  unfold Scale.delta1
-  rw [Real.rpow_neg (sc_x_pos s).le, one_div, inv_inv]
-
 theorem one_le_xpow (s : Scale) (y : ℝ) (hy : 0 ≤ y) : 1 ≤ s.x ^ y := Real.one_le_rpow s.one_lt_alt.le hy
 
 theorem Gp_le (s : Scale) (hx : Real.exp 1 ≤ s.x) :
@@ -488,7 +436,6 @@ structure Facts (D : D7) (L : SizeData₂ D) (K : Consts) (C31 bo : ℝ) : Prop 
       2 * (C31 * Real.log L.sc.x / L.sc.delta1) * cG L +
       40 * C31 * Real.log L.sc.x * (K.DI * (L.sc.x ^ (Scale.A / 2)) ^ 2 *
         ((N1 L.sc : ℝ) ^ 5 + (D.R.k : ℝ) ^ 3) * Real.logb p L.sc.a) + 3 ≤ bo
-
 
 theorem facts_ev (eps : ℝ) (K : Consts) (hK : K.Nonneg) (C31 : ℝ) (hC31 : 0 < C31) :
     ∀ᶠ x : ℝ in atTop, ∀ (D : D7) (L : SizeData₂ D), L.sc.x = x → L.sc.eps = eps → Formalism.MainNotions.SizesAt L →

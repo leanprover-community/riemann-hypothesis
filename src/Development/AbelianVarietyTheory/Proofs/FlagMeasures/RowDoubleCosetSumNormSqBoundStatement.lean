@@ -163,12 +163,6 @@ theorem lat_mul (ρ a : (VS D).V ≃ₗ[D.host.E] (VS D).V) (Λ : Submodule (�
   rw [← Submodule.map_comp]
   congr 1
 
-theorem lat_inj (ρ : (VS D).V ≃ₗ[D.host.E] (VS D).V) {Λ₁ Λ₂ : Submodule (𝓞 D.host.E) (VS D).V}
-    (h : c.lat ρ Λ₁ = c.lat ρ Λ₂) : Λ₁ = Λ₂ :=
-  Submodule.map_injective_of_injective
-    (f := (((ρ.trans c.e : (VS D).V ≃ₗ[D.host.E] G.V) : (VS D).V →ₗ[D.host.E] G.V).restrictScalars (𝓞 D.host.E)))
-    (fun x y hxy => (ρ.trans c.e).injective hxy) h
-
 end Coord
 
 theorem gmap_mul {D : D7} (a b : (VS D).V ≃ₗ[D.host.E] (VS D).V) (Λ : Submodule (𝓞 D.host.E) (VS D).V) :
@@ -232,7 +226,7 @@ theorem term_eq_iff_lRel : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' :
     have hsN' : s ∈ G.N' := rat_mono _ (fun p => inf_le_right) hs
     have hΛ : Formalism.HermitianLatticesTheory.gmap (σ * n) t.lam = Formalism.HermitianLatticesTheory.gmap n' t.lam := by
       rw [← hsσ, lat_map_grp, e₃, ← e₁, lat_mul, lat_mul] at hmap
-      exact lat_inj c ρ hmap
+      exact GlobalTheory.RoEq.lat_inj c ρ hmap
     set a := n'⁻¹ * σ * n with ha_def
     set b := m⁻¹ * t₀.lin⁻¹ * σ⁻¹ * t₀.lin * m' with hb_def
     have haN : a ∈ NRat (lf D (X.Fu u)) := by
@@ -386,7 +380,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 open scoped Pointwise ENNReal Classical
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
 theorem _root_.GlobalTheory.T.gramInvariant_isometry_unitriangular_moves : ∀ {D : D7} {T T' : D.host.E} (F0 : LFlag (D.sp.Y 0) D.R.rS T) (F0' : LFlag (D.sp.Y 0) D.R.rS T') (F : LFlag (D.sp.Y 0) D.R.rS T) (F' : LFlag (D.sp.Y 0) D.R.rS T') (ρ : (VS D).V ≃ₗ[D.host.E] (VS D).V) (U U' : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) D.host.E), MovesTo F0 F0' F F' ρ U U' → Gval F F' = Gval F0 F0' := by
   first | exact @GlobalTheory.HL.gval_movesTo
 end -- clump:auto
@@ -406,22 +399,6 @@ noncomputable section
 
 namespace GlobalTheory.LocOver
 
-theorem isUpperUnitriangularFinMatrix_mul_of_both {K : Type} [CommRing K] {n : ℕ} (A B : Matrix (Fin n) (Fin n) K) (hA : Uni A) (hB : Uni B) :
-    Uni (A * B) := by
-  refine ⟨fun a b hab => ?_, fun a => ?_⟩
-  · rw [Matrix.mul_apply]
-    refine Finset.sum_eq_zero fun c _ => ?_
-    rcases lt_or_ge c a with h | h
-    · rw [hA.1 a c h, zero_mul]
-    · rw [hB.1 c b (lt_of_lt_of_le hab h), mul_zero]
-  · rw [Matrix.mul_apply, Finset.sum_eq_single a]
-    · rw [hA.2 a, hB.2 a, mul_one]
-    · intro c _ hc
-      rcases lt_or_gt_of_ne hc with h | h
-      · rw [hA.1 a c h, zero_mul]
-      · rw [hB.1 c a h, mul_zero]
-    · intro h; exact absurd (Finset.mem_univ a) h
-
 theorem triMove_main : ∀ {D : D7} (Z : LocDat D) (p : PlF D) {T T' : D.host.E} (F0 : LFlag (D.sp.Y 0) D.R.rS T) (F0' : LFlag (D.sp.Y 0) D.R.rS T') (F : LFlag (D.sp.Y 0) D.R.rS T) (F' : LFlag (D.sp.Y 0) D.R.rS T') (ρ : (VS D).V ≃ₗ[D.host.E] (VS D).V) (U U' : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) D.host.E) (g : Vp D p ≃ₗ[(D.s.atP p).Ep] Vp D p) (f' : Fin (D.R.rS + 1) → Vp D p), MovesTo F0 F0' F F' ρ U U' → Ext p ρ g → Tri (D.s.atP p).Ep (scaled Z p (frame F')) f' → Tri (D.s.atP p).Ep (scaled Z p (frame F0)) (fun a => g (scaled Z p (frame F) a)) ∧ Tri (D.s.atP p).Ep (scaled Z p (frame F0')) (fun b => g (f' b)) := by
   intro D Z p T T' F0 F0' F F' ρ U U' g f' hM hE hf'
   obtain ⟨_, hU, hU', hρ, hρ'⟩ := hM
@@ -437,7 +414,7 @@ theorem triMove_main : ∀ {D : D7} (Z : LocDat D) (p : PlF D) {T T' : D.host.E}
   · show g (scaled Z p (frame F) b) = _
     rw [hs]; exact (hA1 p).2 b
   · obtain ⟨A, hA, hc⟩ := hf'
-    refine ⟨A2 p * A, isUpperUnitriangularFinMatrix_mul_of_both _ _ (hA2 p).1 hA, fun b => ?_⟩
+    refine ⟨A2 p * A, GlobalTheory.HL.MovedTermLoc.uni_mul _ _ (hA2 p).1 hA, fun b => ?_⟩
     show g (f' b) = _
 
     rw [hc b, map_sum]
@@ -466,7 +443,6 @@ section -- clump:auto
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.HL GlobalTheory.LocOver
 open scoped Pointwise ENNReal Classical
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 theorem _root_.GlobalTheory.T.localFrames_movedTerm_unitriangular_change : ∀ {D : D7} (Z : LocDat D) (p : PlF D) {T T' : D.host.E} (F0 : LFlag (D.sp.Y 0) D.R.rS T) (F0' : LFlag (D.sp.Y 0) D.R.rS T') (F : LFlag (D.sp.Y 0) D.R.rS T) (F' : LFlag (D.sp.Y 0) D.R.rS T') (ρ : (VS D).V ≃ₗ[D.host.E] (VS D).V) (U U' : Matrix (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)) D.host.E) (g : Vp D p ≃ₗ[(D.s.atP p).Ep] Vp D p) (f' : Fin (D.R.rS + 1) → Vp D p), MovesTo F0 F0' F F' ρ U U' → Ext p ρ g → Tri (D.s.atP p).Ep (scaled Z p (frame F')) f' → Tri (D.s.atP p).Ep (scaled Z p (frame F0)) (fun a => g (scaled Z p (frame F) a)) ∧ Tri (D.s.atP p).Ep (scaled Z p (frame F0')) (fun b => g (f' b)) := by
   first | exact @GlobalTheory.LocOver.triMove_main
@@ -552,7 +528,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Fo
 open scoped Pointwise ENNReal Classical
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.LocalTermDefectNeIffMoveLinearEquivStatement =====
@@ -580,7 +555,6 @@ section -- clump:auto
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.HL GlobalTheory.LocOver
 open scoped Pointwise ENNReal Classical
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 theorem _root_.GlobalTheory.T.localTerm_move_unitary_isTerm : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E] {M : Formalism.MainNotions.S.Loc.Model F E} {V : Type} [AddCommGroup V] [Module E V] (H : Formalism.MainNotions.S.Loc.HermSp M V) {r : ℕ} (g : V ≃ₗ[E] V) (hg : LocNG.IsUnitary H g) (t : Formalism.MainNotions.S.Loc.Term V M r), H.IsTerm t → H.IsTerm (move g t) := by
   first | exact @GlobalTheory.LocOver.isTerm_move_unitary
@@ -619,7 +593,6 @@ section -- clump:auto
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc Formalism.L2.SG.NGData Formalism.L2.SG.TermLoc GlobalTheory.HL GlobalTheory.LocOver
 open scoped Pointwise ENNReal Classical
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 end -- clump:auto
 end -- clump:auto
@@ -726,42 +699,6 @@ open scoped Pointwise ENNReal Classical
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
-
-namespace GlobalTheory.HL.RowCoset
-
-variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {sig : E →ₐ[F] E}
-
-theorem isLattice_of_lrel {A : Places F E sig} {r k : ℕ} (G : GFrames A r k) {Γ Γ' : G.Lt}
-    (hΓ : Submodule.IsLattice E Γ) (h : G.LRel Γ Γ') : Submodule.IsLattice E Γ' := by
-  obtain ⟨g, -, rfl⟩ := h
-  refine ⟨hΓ.fg.map _, ?_⟩
-  rw [Submodule.map_coe]
-  have hf : (((g : G.V →ₗ[E] G.V).restrictScalars (𝓞 E)) : G.V → G.V) = ((g : G.V →ₗ[E] G.V) : G.V → G.V) := rfl
-  rw [hf]
-  intro s hs hi
-  have hsub : (g : G.V →ₗ[E] G.V) ⁻¹' s ⊆ (Γ : Set G.V) := by
-    intro x hx
-    obtain ⟨y, hy, he⟩ := hs hx
-    exact g.injective he ▸ hy
-  have heq : (g : G.V →ₗ[E] G.V) '' ((g : G.V →ₗ[E] G.V) ⁻¹' s) = s := Set.image_preimage_eq s g.surjective
-  rw [← heq] at hi ⊢
-  have hi' : LinearIndepOn (𝓞 E) id ((g : G.V →ₗ[E] G.V) ⁻¹' s) := by
-    apply (linearIndepOn_id_imageₛ_iff (f := (g : G.V →ₗ[E] G.V).restrictScalars (𝓞 E)) g.injective.injOn).1
-    exact hi
-  exact (linearIndepOn_id_imageₛ_iff (f := (g : G.V →ₗ[E] G.V)) g.injective.injOn).2 (hΓ.linearIndepOn _ hsub hi')
-
-theorem term_of_lrel {A : Places F E sig} {r k : ℕ} (G : GFrames A r k) (hk : 4 * r + 7 ≤ k) {d : G.Dat}
-    (hex : ∃ Λ₀, G.IsTerm d Λ₀) {Γ Γ' : G.Lt} (hΓ : G.IsTerm d Γ) (h : G.LRel Γ Γ') : G.IsTerm d Γ' := by
-  have hl := isLattice_of_lrel G hΓ.1 h
-  have e := ((_root_.GlobalTheory.HL.GlobalOrbits.global_terms_orbits A r k G hk d hex).2.1 Γ Γ' hΓ hl).1 h
-  refine ⟨hl, fun p => ?_⟩
-  obtain ⟨s, hs, hsp⟩ := e p
-  rw [hsp]
-  have := (A.loc p).lf
-  have := (A.loc p).char0
-  exact (GlobalTheory.FrameAct.stabiliser_acts_on_terms (A.L p) r k (G.S p) (d p) _ (hΓ.2 p) s hs).1
-
-end GlobalTheory.HL.RowCoset
 
 namespace GlobalTheory.HL.RowCoset
 

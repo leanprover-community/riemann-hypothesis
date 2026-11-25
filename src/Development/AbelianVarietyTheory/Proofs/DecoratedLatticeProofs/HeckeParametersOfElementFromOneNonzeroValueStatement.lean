@@ -93,12 +93,12 @@ theorem valPart_mem : GlobalTheory.Published.CuspRapidDecay → ∀ D : D7, MetE
         PiTensorProduct.lift.symm (u : SmT s.M →ₗ[ℂ] (GA D s.V → ℂ)) ∈
           partFull c.θ s.M (levS s.V s.β s.L) (Lev.levChi s.V s.β s.L) c.S e := by
   intro hCRD D hMet hLev c hc j hj s hs u w B hw hB
-  obtain ⟨-, hsphc, hsplit, -, hunif⟩ := GlobalTheory.T.thetaChainStage_level_spherical_off_set D c hc j hj s hs
-  obtain ⟨-, hopc, hconjH⟩ := GlobalTheory.T.thetaChainStage_conjugate_values_hecke_operators hCRD D c hc j hj s hs
-  have hlat := (GlobalTheory.T.thetaChainStage_lattice_stabilizer_params_off_set D c hc j hj s hs).2
+  obtain ⟨-, hsphc, hsplit, -, hunif⟩ := GlobalTheory.ChainOntoSph.level_spherical_off_S D c hc j hj s hs
+  obtain ⟨-, hopc, hconjH⟩ := GlobalTheory.ConjVal.conj_values_hecke hCRD D c hc j hj s hs
+  have hlat := (GlobalTheory.ChainOnto.stabLoc_isParamFun_frameLat D c hc j hj s hs).2
   obtain ⟨-, -, -, -, hmul, -⟩ := hLev c hc j hj s hs
   have hBV : GlobalTheory.LFun.IsParamFunV s.V c.S (fun g => conj (PiLocalization₂.val u w g)) B := (hlat _ B).1 hB
-  obtain ⟨a, ha⟩ := GlobalTheory.T.sphericalOperator_eigenvalues_determined_by_params D s.V (levS s.V s.β s.L) (fun k => conj (Lev.levChi s.V s.β s.L k)) c.S hsphc B
+  obtain ⟨a, ha⟩ := GlobalTheory.ParamEigen.eig_of_param D s.V (levS s.V s.β s.L) (fun k => conj (Lev.levChi s.V s.β s.L k)) c.S hsphc B
   have heig : ∀ P d R, Hecke₂ s.V (levS s.V s.β s.L) (Lev.levChi s.V s.β s.L) c.S P d R →
       heckeLin s.V R (PiLocalization₂.val u w) = conj (a P d) • PiLocalization₂.val u w := by
     intro P d R hR
@@ -185,7 +185,7 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 theorem GlobalTheory.ChainOnto.parOfVal_of_parts : GlobalTheory.Published.CuspRapidDecay → ∀ D : D7, MetEx D → LevFacts D → ParOfVal D := by
   intro hP D hM hL c hc j hj s hs x w B hv hf
   obtain ⟨e, he⟩ := GlobalTheory.T.stageCuspFormValue_mem_fullSphericalHecke_eigenpart hP D hM hL c hc j hj s hs x w B hv hf
-  exact (GlobalTheory.T.thetaChain_eigenPart_has_heckeParameters hP D c hc j hj s hs x e he).2 w B hv hf
+  exact (GlobalTheory.ChainOnto.partPar hP D c hc j hj s hs x e he).2 w B hv hf
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HeckeParametersOfElementFromOneNonzeroValue =====

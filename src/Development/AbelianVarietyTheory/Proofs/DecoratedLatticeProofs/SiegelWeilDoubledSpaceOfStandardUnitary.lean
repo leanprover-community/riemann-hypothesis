@@ -85,9 +85,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (RealMat IsFock
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (swSec sZero)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
-theorem _root_.GlobalTheory.T.compactCommuting_cartanInvolution_moved_standard : ∀ (D : D7) (A : HSp D) (μ : D.host.E), IsSkew μ → ∀ κ : GA D (dblSp A) ≃* G D A.rank, IsChart A μ κ → ∀ (a : GL (Fin A.rank) (AE D)) (p : siegel A), IsConj A a κ p → ∀ θ : InfFam D, IsInfFam θ → ∀ sS : RealMat (dblSp A), (∀ τ, IsCartanInv (gramAt D (dblSp A) τ) (sS τ)) → (∀ k ∈ Khat A a, ∀ τ, compAt θ τ (mt (dblSp A) k) * sS τ = sS τ * compAt θ τ (mt (dblSp A) k)) → ∃ s' : RealMat (dblSp A), IsStdInv A μ s' ∧ ∀ τ, s' τ * compAt θ τ (mt (dblSp A) (p : GA D (dblSp A))⁻¹) = compAt θ τ (mt (dblSp A) (p : GA D (dblSp A))⁻¹) * sS τ := by
-  first | exact @GlobalTheory.StdUnn.CartanMove.cartan_move_std
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.CompactCommutingCartanInvolutionMovedStandardStatement =====
@@ -105,9 +102,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (RealMat IsFock
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (swSec sZero)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
-theorem _root_.GlobalTheory.T.holomorphicContinuationValue_nnrealPow_factor : ∀ (h h' : ℂ → ℂ) (s₀ c : ℂ) (r : ℝ≥0) (σ : ℝ), 0 < r → HolValueAt h s₀ c → (∀ s : ℂ, σ < s.re → h' s = npow r (s₀ - s) * h s) → HolValueAt h' s₀ c := by
-  first | exact @GlobalTheory.StdUnn.holValueAt_npow_sub_mul
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HolomorphicContinuationValueNnrealPowFactorStatement =====
@@ -125,9 +119,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (RealMat IsFock
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (swSec sZero)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
-theorem _root_.GlobalTheory.T.standardUnitaryHeight_isSiegelHeightFunction : ∀ (D : D7) (A : HSp D) (μ : D.host.E), IsSkew μ → ∀ κ : GA D (dblSp A) ≃* G D A.rank, IsChart A μ κ → ∀ (a : GL (Fin A.rank) (AE D)) (p : siegel A), IsConj A a κ p → IsHeight (hgtStd A a κ p) := by
-  first | exact @GlobalTheory.StdUnn.isHeight_hgtStd
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.StandardUnitaryHeightIsSiegelHeightFunctionStatement =====
@@ -152,11 +143,11 @@ theorem sw_doubled_of_std : GlobalTheory.Published.SiegelWeilUnitarySchrodinger 
   obtain ⟨m0, hm0, hp0⟩ := GlobalTheory.T.exists_siegel_parabolic_conj_doubled_compact D
   obtain ⟨κ, hκ⟩ := GlobalTheory.T.exists_standardUnitaryChart_doubledSpace D A m0 hm0
   obtain ⟨p, hp⟩ := hp0 A a hMaj κ hκ
-  obtain ⟨lam, hlam, hψ', l, hl, hlabs⟩ := GlobalTheory.T.shiftedAdditiveCharacter_archimedeanParameters D ψ hWe.std θ hθ m0 hm0
-  obtain ⟨omS, hT⟩ := GlobalTheory.T.exists_weilDatum_transport_schwartzBruhat_standard D ψ A B χB omh hWe mW 𝓨 hcov θ hθ κ
-  obtain ⟨s', hs'std, hs'⟩ := GlobalTheory.T.compactCommuting_cartanInvolution_moved_standard D A m0 hm0 κ hκ a p hp θ hθ sS hsS hK
+  obtain ⟨lam, hlam, hψ', l, hl, hlabs⟩ := GlobalTheory.StdUnn.shift_char_realPar D ψ hWe.std θ hθ m0 hm0
+  obtain ⟨omS, hT⟩ := GlobalTheory.StdUnn.exists_transport_std D ψ A B χB omh hWe mW 𝓨 hcov θ hθ κ
+  obtain ⟨s', hs'std, hs'⟩ := GlobalTheory.StdUnn.CartanMove.cartan_move_std D A m0 hm0 κ hκ a p hp θ hθ sS hsS hK
   have hf' : IsFockVec ψ θ (dblSp A) B s' sB (omh ((p : GA D (dblSp A))⁻¹, 1) f) :=
-    GlobalTheory.T.isPolynomialFockThetaVector_weilOperator_cartan D ψ (dblSp A) B 1 χB omh hWe θ hθ sS s' sB _ hs' f hf
+    GlobalTheory.FockMove.isFockVec_om D ψ (dblSp A) B 1 χB omh hWe θ hθ sS s' sB _ hs' f hf
   have hschw := GlobalTheory.T.schrodingerTheta_eq_schwartzBruhat D
   let Φ : schwartzA θ B.rank A.rank :=
     ⟨sch ψ A B mW 𝓨 (omh ((p : GA D (dblSp A))⁻¹, 1) f),
@@ -165,10 +156,10 @@ theorem sw_doubled_of_std : GlobalTheory.Published.SiegelWeilUnitarySchrodinger 
     GlobalTheory.T.schroedingerFunction_fockVector_polynomial_gaussian D ψ hWe.std θ hθ A B mW 𝓨 hcov m0 hm0 s' sB hs'std hsB l hlabs _ hf'
   have hχ := GlobalTheory.T.isHeckeChar_restrictionEta_inv D χB B.rank hWe.hecT hWe.resT
   have hWS : IsWeilSch (shift ψ lam) χB⁻¹ θ B mW omS :=
-    ⟨GlobalTheory.T.transportedSchrodinger_standardLeviAction D ψ A B χB omh hWe mW 𝓨 hcov θ hθ m0 hm0 κ hκ omS hT lam hlam,
-     GlobalTheory.T.transportedSchrodinger_siegelUnipotentAction D ψ A B χB omh hWe mW 𝓨 hcov θ hθ m0 hm0 κ hκ omS hT lam hlam,
-     GlobalTheory.T.weyl_formula_standardUnitaryGroup_weilDatum D ψ A B χB omh hWe mW 𝓨 hcov θ hθ m0 hm0 κ hκ omS hT lam hlam⟩
-  have hH := GlobalTheory.T.standardUnitaryHeight_isSiegelHeightFunction D A m0 hm0 κ hκ a p hp
+    ⟨GlobalTheory.StdUnn.transport_levi D ψ A B χB omh hWe mW 𝓨 hcov θ hθ m0 hm0 κ hκ omS hT lam hlam,
+     GlobalTheory.StdUnn.Unip.transport_unip D ψ A B χB omh hWe mW 𝓨 hcov θ hθ m0 hm0 κ hκ omS hT lam hlam,
+     GlobalTheory.StdUnn.WeylStd.main D ψ A B χB omh hWe mW 𝓨 hcov θ hθ m0 hm0 κ hκ omS hT lam hlam⟩
+  have hH := GlobalTheory.StdUnn.isHeight_hgtStd D A m0 hm0 κ hκ a p hp
   obtain ⟨hInt, hEis, hHol⟩ := hP D A.rank B hAB hB2 hW (shift ψ lam) hψ' χB⁻¹ hχ.1 hχ.2 θ hθ mW 𝓨 hcov omS hWS
     (hgtStd A a κ p) hH l hl sB hsB ν hν Φ hΦ
   obtain ⟨h0, hflat, hact⟩ := GlobalTheory.T.doubledFlatSection_eq_translate_standardSection D ψ A B χB omh hWe mW 𝓨 hcov θ hθ m0 hm0 κ hκ omS hT lam hlam a p f hf.1 Φ rfl
@@ -186,7 +177,7 @@ theorem sw_doubled_of_std : GlobalTheory.Published.SiegelWeilUnitarySchrodinger 
   refine ⟨fun g => ?_, ⟨fun z hz => ⟨(Heisenberg₂ z hz).1, fun g => ((Heisenberg₂ z hz).2 g).1 ((hEis z hz).2 _)⟩, fun g => ?_⟩⟩
   · rw [← hth g]; exact hInt _
   · have hr : 0 < absA D (aP A p) := hom_pos _ _
-    have := GlobalTheory.T.holomorphicContinuationValue_nnrealPow_factor (fun z => GlobalTheory.Eis.cosetSum (P D A.rank) (GF D A.rank) (sect omS (hgtStd A a κ p) Φ z) (κ (g * p)))
+    have := GlobalTheory.StdUnn.holValueAt_npow_sub_mul (fun z => GlobalTheory.Eis.cosetSum (P D A.rank) (GF D A.rank) (sect omS (hgtStd A a κ p) Φ z) (κ (g * p)))
       (GlobalTheory.Eis.eisSer A (flat A a (swSec A B omh mW 𝓨 f) (sZero A B)) g) (s0 B A.rank) _ (absA D (aP A p))
       ((A.rank : ℝ) / 2) hr (hHol (κ (g * p))) (fun z hz => by
         rw [h0]; exact ((Heisenberg₂ z hz).2 g).2)

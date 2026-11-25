@@ -141,11 +141,11 @@ end GlobalTheory.FinPl.SrcGl
 open GlobalTheory.FinPl GlobalTheory.FinPl.SrcGl in
 theorem GlobalTheory.FinPl.sourceGlued : ∀ D : D7, GlobalTheory.FinPl.SourceGlued D := by
   intro D k _ _ _ _ p n n' _ _ _ _ q χ₀ hχ χ hχχ ψ S A L T o ζ hL hA vA χS χT om hW _ hT α α₀ β hsum P P₁ Λ _
-  obtain ⟨lS, hlS, hθ⟩ := GlobalTheory.T.exists_bilinear_equivariant_orthogonalSummandLift D k p n n' ψ S A L T o ζ hL hA vA χS χT om hW α α₀ β hsum
+  obtain ⟨lS, hlS, hθ⟩ := GlobalTheory.FinPl.SrcTheta.exists_theta D k p n n' ψ S A L T o ζ hL hA vA χS χT om hW α α₀ β hsum
   have hdet : ∀ L' : Submodule 𝒪[k] (n' → k), L'.IsFullLattice k → ∀ g ∈ latStab L',
       ((lS (Matrix.GeneralLinearGroup.det g) : ℂˣ) : ℂ) = 1 := fun L' hL' g hg => by
-    rw [GlobalTheory.T.unramifiedCharacter_det_latticeStabilizer_eq_one k n' L' hL' g hg lS (hlS hT), Units.val_one]
-  have hsb := GlobalTheory.T.schwartzBruhat_tensor_indicator_character_facts k n n'
+    rw [GlobalTheory.LatPair.Det.isUnram_det_latStab k n' L' hL' g hg lS (hlS hT), Units.val_one]
+  have hsb := GlobalTheory.FinPl.sb_facts k n n'
 
   have hinv : ∀ (θ : CA A →ₗ[ℂ] (Matrix n (n' ⊕ Fin 1) k → ℂ) →ₗ[ℂ] (GA D T → WO L T → ℂ)),
       (∀ (g : GL n' k) (v : CA A) (Φ : Matrix n (n' ⊕ Fin 1) k → ℂ), Φ ∈ SB (Matrix n (n' ⊕ Fin 1) k) →

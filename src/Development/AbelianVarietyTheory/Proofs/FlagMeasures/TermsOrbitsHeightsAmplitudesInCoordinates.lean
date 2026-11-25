@@ -71,12 +71,6 @@ variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
 variable {M : Model F E} {V : Type} [AddCommGroup V] [Module E V] {H : HermSp M V} {r : ℕ}
 
-theorem hR_add (x y z : V) : H.h x (y + z) = H.h x y + H.h x z := by
-  rw [H.h_herm (y + z) x, H.h_add_left, map_add (f := _), ← H.h_herm, ← H.h_herm]
-
-theorem hR_smul (c : E) (x y : V) : H.h x (c • y) = M.L.cj c * H.h x y := by
-  rw [H.h_herm (c • y) x, H.h_smul_left, map_mul, ← H.h_herm]
-
 theorem h_symm_zero {x y : V} (h : H.h y x = 0) : H.h x y = 0 := by
   rw [H.h_herm y x, h, map_zero]
 
@@ -88,8 +82,8 @@ theorem perp_of {k : V} (h : ∀ a : Fin r, H.h k (A.e a) = 0) : k ∈ H.perp (H
   induction hx using Submodule.span_induction with
   | mem x hx => obtain ⟨a, rfl⟩ := hx; exact h a
   | zero => exact h_symm_zero (H.h_zero_left k)
-  | add x y _ _ hx hy => rw [hR_add, hx, hy, add_zero]
-  | smul c x _ hx => rw [hR_smul, hx, mul_zero]
+  | add x y _ _ hx hy => rw [GlobalTheory.LocOver.UnipOnto.h_add_right, hx, hy, add_zero]
+  | smul c x _ hx => rw [GlobalTheory.LocOver.UnipOnto.h_smul_right, hx, mul_zero]
 
 theorem h_X_e {ξ : V} (hξ : ξ ∈ H.X A.f) (b : Fin r) : H.h ξ (A.e b) = 0 := by
   unfold HermSp.X at hξ
@@ -186,7 +180,7 @@ theorem swap_unit (x y : V) : H.h (swapMap A B x) (swapMap A B y) = H.h x y := b
     set η := B.prF (swapMap A B y) - A.prF y
     rw [show B.prF (swapMap A B x) = A.prF x + ξ by simp [ξ],
       show B.prF (swapMap A B y) = A.prF y + η by simp [η],
-      H.h_add_left, hR_add, hR_add, hX_perp A hx (GlobalTheory.HL.CoordInnerSnd.prF_perp A y), hX_perp A hx (X_le_perp A hy),
+      H.h_add_left, GlobalTheory.LocOver.UnipOnto.h_add_right, GlobalTheory.LocOver.UnipOnto.h_add_right, hX_perp A hx (GlobalTheory.HL.CoordInnerSnd.prF_perp A y), hX_perp A hx (X_le_perp A hy),
       h_symm_zero (hX_perp A hy (GlobalTheory.HL.CoordInnerSnd.prF_perp A x))]
     ring
   rw [ng_expand (Fr := B) (swapMap A B x) (swapMap A B y), ng_prF_prF (Fr := B) (swapMap A B x) (swapMap A B y),

@@ -741,12 +741,6 @@ namespace GlobalTheory.UPel.HT.EtLev.HeckeLev
 
 variable {S : Scheme.{0}}
 
-theorem pow_comp_hom {A B T : Over S} [GrpObj A] [GrpObj B] (φ : A ⟶ B) [IsMonHom φ] (x : T ⟶ A) (n : ℕ) :
-    (x ^ n) ≫ φ = (x ≫ φ) ^ n := by
-  induction n with
-  | zero => rw [pow_zero, pow_zero, one_comp]
-  | succ n ih => rw [pow_succ, pow_succ, mul_comp, ih]
-
 theorem isMonHom_idPow (A : Over S) [GrpObj A] [IsCommMonObj A] (n : ℕ) :
     IsMonHom ((𝟙 A) ^ n : A ⟶ A) := by
   induction n with
@@ -825,12 +819,12 @@ theorem UpperTheory.Gal.FiniteEtaleModels.levTr_holds :
     exact Over.epi_of_epi_left ψ
   have hφψ : φ ≫ ψ = 𝟙 o'.A ^ k := by
     apply (cancel_epi ψ).1
-    rw [← Category.assoc, hψφ, pow_comp_hom, MonObj.comp_pow, Category.id_comp, Category.comp_id]
+    rw [← Category.assoc, hψφ, GlobalTheory.SS.FrobTorsion.pow_comp', MonObj.comp_pow, Category.id_comp, Category.comp_id]
   have hφact : ∀ a : D.O, φ ≫ o.act.act a = o'.act.act a ≫ φ := by
     intro a
     haveI := o.act.hom a
     apply (cancel_epi ψ).1
-    rw [← Category.assoc, hψφ, ← Category.assoc, ← hact a, Category.assoc, hψφ, pow_comp_hom,
+    rw [← Category.assoc, hψφ, ← Category.assoc, ← hact a, Category.assoc, hψφ, GlobalTheory.SS.FrobTorsion.pow_comp',
       MonObj.comp_pow, Category.id_comp, Category.comp_id]
   refine ⟨?_, ?_, ?_, ?_⟩
   · intro x y
@@ -873,7 +867,7 @@ theorem UpperTheory.Gal.FiniteEtaleModels.levTr_holds :
         UpperTheory.Gal.FiniteEtaleModels.pow_one_of_killed_tr o'.act hnI g (fun c hc => hg c (by rw [pow_one]; exact hc))
       refine ⟨m • y0, ?_⟩
       show toUnit (Over.mk x) ≫ lv (m • y0) ≫ ψ = g
-      rw [map_nsmul_pow lv hadd hlv0 m y0, pow_comp_hom, MonObj.comp_pow, ← hgk, ← pow_mul,
+      rw [map_nsmul_pow lv hadd hlv0 m y0, GlobalTheory.SS.FrobTorsion.pow_comp', MonObj.comp_pow, ← hgk, ← pow_mul,
         hmod g _ _ hgn, hm, ← hmod g _ 1 hgn, pow_one]
 end -- clump:auto
 end -- clump:auto

@@ -72,8 +72,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.exists_homeomorph_wittFlagCoordinates : ∀ (D : D7) (S S₀ : HSp D) (ρ : ℕ) (d : HypDec S S₀ ρ), ∃ e : UX D ρ × (Mx D ρ S₀.rank × skewA D ρ) ≃ₜ flagN d, ∀ p, (e p : GA D S) = d.levi p.1.1 * (d.nB p.2.1 * d.nC p.2.2) := by
-  first | exact @GlobalTheory.MixPer.flagCoord_homeo
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsHomeomorphWittFlagCoordinatesStatement =====
@@ -113,7 +111,7 @@ theorem flagCoord_measEquiv : ∀ (D : D7) (V V₀ : HSp D) (ρ : ℕ) (d : HypD
     ∃ e : skewA D ρ × (Mx D ρ V₀.rank × UX D ρ) ≃ᵐ flagN d,
       ∀ p, (e p : GA D V) = d.nC p.1 * (d.nB p.2.1 * d.levi p.2.2.1) := by
   intro D V V₀ ρ d
-  obtain ⟨Φ, hΦ⟩ := GlobalTheory.T.exists_homeomorph_wittFlagCoordinates D V V₀ ρ d
+  obtain ⟨Φ, hΦ⟩ := GlobalTheory.MixPer.flagCoord_homeo D V V₀ ρ d
   haveI : SecondCountableTopology (Mx D ρ V₀.rank) := (lattice_Mx D ρ V₀.rank).2.2.1
   haveI : SecondCountableTopology (Mx D ρ ρ) := (lattice_Mx D ρ ρ).2.2.1
   haveI : SecondCountableTopology (UX D ρ) := (GlobalTheory.UnitU.topology D ρ).2.1
@@ -268,8 +266,6 @@ noncomputable section
 
 namespace GlobalTheory.RatCoord
 
-
-
 theorem coords_rat {D : D7} {V V₀ : HSp D} {ρ : ℕ} (d : HypDec V V₀ ρ) (c' : skewA D ρ) (b' : Mx D ρ V₀.rank)
     (u : GL (Fin ρ) (AE D)) (hQ : d.nC c' * (d.nB b' * d.levi u) ∈ GQ V) :
     c'.1 ∈ ratMx D ρ ρ ∧ b' ∈ ratMx D ρ V₀.rank ∧ u.1 ∈ ratMx D ρ ρ ∧ (u⁻¹).1 ∈ ratMx D ρ ρ := by
@@ -372,7 +368,6 @@ open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Unf
 
-
 theorem _root_.GlobalTheory.T.exists_rational_wittFlagCoordinates_of_mem_unipotent : ∀ (D : D7) (V V₀ : HSp D) (ρ : ℕ) (d : HypDec V V₀ ρ) (γ : GA D V), γ ∈ GQ V → γ ∈ flagN d → ∃ (c : skewA D ρ) (b : Mx D ρ V₀.rank) (u : UX D ρ), γ = d.nC c * (d.nB b * d.levi u.1) ∧ c.1 ∈ ratMx D ρ ρ ∧ b ∈ ratMx D ρ V₀.rank ∧ u ∈ UXQ D ρ := by
   first | exact @GlobalTheory.RatCoord.rat_coords_of_mem_flagN
 end -- clump:auto
@@ -389,8 +384,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Unf
-
-
 
 namespace GlobalTheory.LeftUniQmp
 
@@ -432,7 +425,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Unf
-
 
 theorem _root_.GlobalTheory.T.quasiMeasurePreserving_adelicUnitriangular_left_mul : ∀ (D : D7) (ρ n : ℕ) (μ : Measure (Mx D ρ n)), μ.IsAddHaarMeasure → ∀ u : UX D ρ, Measure.QuasiMeasurePreserving (fun b : Mx D ρ n => u.1.1 ⬝ b) μ μ := by
   first | exact @GlobalTheory.LeftUniQmp.qmp_left_uni
@@ -485,8 +477,6 @@ noncomputable def skewConjEquiv {D : D7} {ρ : ℕ} (g : GL (Fin ρ) (AE D)) : s
     rw [this, skewConj_matOne]
   map_add' := skewConj_addArg _
 
-
-
 theorem quasiMeasurePreserving_skewConj : ∀ (D : D7) (ρ : ℕ) (lC : Measure (skewA D ρ)), lC.IsAddHaarMeasure →
     ∀ u : UX D ρ, Measure.QuasiMeasurePreserving (skewConj u.1.1) lC lC := by
   intro D ρ lC hC u
@@ -520,7 +510,6 @@ open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Unf
 
-
 theorem _root_.GlobalTheory.T.quasiMeasurePreserving_skewHermitianCongruence_unitriangular : ∀ (D : D7) (ρ : ℕ) (lC : Measure (skewA D ρ)), lC.IsAddHaarMeasure → ∀ u : UX D ρ, Measure.QuasiMeasurePreserving (skewConj u.1.1) lC lC := by
   first | exact @GlobalTheory.Unf.SkewConjQmp.quasiMeasurePreserving_skewConj
 end -- clump:auto
@@ -540,9 +529,6 @@ open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Unf
 
-
-
-
 namespace GlobalTheory.ThreeLayers
 
 section Abstract
@@ -553,14 +539,12 @@ variable {A B U X G : Type} [AddCommGroup A] [MeasurableSpace A] [MeasurableAdd�
   [Group U] [MeasurableSpace U] [MeasurableSpace X] [Group G] [MulAction G X]
   {mA : Measure A} {mB : Measure B} {ν : Measure U} [SFinite mA] [SFinite mB] [SFinite ν]
 
-
 omit [AddCommGroup A] [MeasurableAdd₂ A] [AddGroup B] [Group U] in
 theorem null_last {N : Set U} (hN : ν N = 0) : (mA.prod (mB.prod ν)) {p | p.2.2 ∈ N} = 0 := by
   have h : {p : A × (B × U) | p.2.2 ∈ N} = Set.univ ×ˢ (Set.univ ×ˢ N) := by
     ext p; simp
   rw [h, Measure.prod_prod, Measure.prod_prod, hN]
   simp
-
 
 omit [AddCommGroup A] [MeasurableAdd₂ A] [AddGroup B] [Group U] in
 theorem null_mid {β : B → B} (hβ : Measure.QuasiMeasurePreserving β mB mB) {N : Set B} (hN : mB N = 0) :
@@ -569,7 +553,6 @@ theorem null_mid {β : B → B} (hβ : Measure.QuasiMeasurePreserving β mB mB) 
     ext p; simp
   rw [h, Measure.prod_prod, Measure.prod_prod, MeasureTheory.QuasiMeasurePreserving.preimage_null hβ hN]
   simp
-
 
 omit [AddGroup B] [Group U] in
 theorem null_first [mA.IsAddLeftInvariant] {α : A → A} (hα : Measure.QuasiMeasurePreserving α mA mA) {φ : B → A}
@@ -790,7 +773,6 @@ open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Unf
 
-
 theorem _root_.GlobalTheory.T.isFundamentalDomain_flagUnipotent_coords : ∀ (D : D7) (V V₀ : HSp D) (ρ : ℕ) (d : HypDec V V₀ ρ) (vb : VolM D ρ V₀.rank) (vU : VolU D ρ) (e : skewA D ρ × (Mx D ρ V₀.rank × UX D ρ) ≃ᵐ flagN d), (∀ p, (e p : GA D V) = d.nC p.1 * (d.nB p.2.1 * d.levi p.2.2.1)) → ∀ (lC : Measure (skewA D ρ)) (𝓒 : Set (skewA D ρ)) (𝓤 : Set (UX D ρ)), lC.IsAddHaarMeasure → SFinite lC → IsAddFundamentalDomain ((ratMx D ρ ρ).addSubgroupOf (skewA D ρ)) 𝓒 lC → IsFundamentalDomain (UXQ D ρ) 𝓤 vU.ν → IsFundamentalDomain (NFlagQ V d.e) (e '' (𝓒 ×ˢ (vb.𝓕 ×ˢ 𝓤))) ((lC.prod (vb.μ.prod vU.ν)).map e) := by
   first | exact @GlobalTheory.ThreeLayers.fundDomain_coords
 end -- clump:auto
@@ -808,9 +790,6 @@ open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Unf
 
-
-theorem _root_.GlobalTheory.T.isMulRightInvariant_map_wittFlagCoordinates_haar : ∀ (D : D7) (V V₀ : HSp D) (ρ : ℕ) (d : HypDec V V₀ ρ) (vb : VolM D ρ V₀.rank) (vU : VolU D ρ) (e : skewA D ρ × (Mx D ρ V₀.rank × UX D ρ) ≃ᵐ flagN d), (∀ p, (e p : GA D V) = d.nC p.1 * (d.nB p.2.1 * d.levi p.2.2.1)) → ∀ (lC : Measure (skewA D ρ)), lC.IsAddHaarMeasure → SFinite lC → ((lC.prod (vb.μ.prod vU.ν)).map e).IsMulRightInvariant := by
-  first | exact @GlobalTheory.Unf.HaarCoord.isMulRightInvariant_map_coord
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsMulRightInvariantMapWittFlagCoordinatesHaarStatement =====
@@ -827,9 +806,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Unf
-
-
-
 
 namespace GlobalTheory.HaarCoordsUnit
 
@@ -877,7 +853,7 @@ theorem volN_eq_map_coords : ∀ (D : D7) (V V₀ : HSp D) (ρ : ℕ) (d : HypDe
   haveI : SigmaFinite vb.μ := inferInstance
   haveI : SigmaFinite vU.ν := inferInstance
   haveI hm : SigmaFinite ((lC.prod (vb.μ.prod vU.ν)).map e) := e.sigmaFinite_map
-  have hR := GlobalTheory.T.isMulRightInvariant_map_wittFlagCoordinates_haar D V V₀ ρ d vb vU e he lC hC hCs
+  have hR := GlobalTheory.Unf.HaarCoord.isMulRightInvariant_map_coord D V V₀ ρ d vb vU e he lC hC hCs
   have hF := GlobalTheory.T.isFundamentalDomain_flagUnipotent_coords D V V₀ ρ d vb vU e he lC 𝓒 𝓤 hC hCs hCF hU𝓤
   have h1 : (lC.prod (vb.μ.prod vU.ν)).map e (e '' (𝓒 ×ˢ (vb.𝓕 ×ˢ 𝓤))) = 1 := by
     rw [MeasurableEquiv.map_apply, e.preimage_image, Measure.prod_prod, Measure.prod_prod, hC1, hb1, hU1, one_mul, one_mul]
@@ -918,8 +894,6 @@ open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Unf
 
-theorem _root_.GlobalTheory.T.sFinite_covolume_one_matrix_unitriangular_measures : ∀ (D : D7) (ρ m : ℕ) (vb : VolM D ρ m) (vU : VolU D ρ), SFinite vb.μ ∧ SFinite vU.ν := by
-  first | exact @GlobalTheory.Unf.sFinite_vol
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SFiniteCovolumeOneMatrixUnitriangularMeasuresStatement =====
@@ -935,109 +909,6 @@ open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Unf
 
-theorem _root_.GlobalTheory.T.wittFlagUnipotentFixer_fundamentalDomain_layers : ∀ (D : D7) (V V₀ : HSp D) (ρ : ℕ) (d : HypDec V V₀ ρ) (e : skewA D ρ × (Mx D ρ V₀.rank × UX D ρ) ≃ᵐ flagN d), (∀ p, (e p : GA D V) = d.nC p.1 * (d.nB p.2.1 * d.levi p.2.2.1)) → ∀ (lC : Measure (skewA D ρ)) (𝓒 : Set (skewA D ρ)), lC.IsAddHaarMeasure → SFinite lC → IsAddFundamentalDomain ((ratMx D ρ ρ).addSubgroupOf (skewA D ρ)) 𝓒 lC → ∀ (vb : VolM D ρ V₀.rank) (ν : Measure (UX D ρ)), SFinite vb.μ → SFinite ν → IsFundamentalDomain ((GQ V ⊓ radX d).subgroupOf (flagN d)) (e '' (𝓒 ×ˢ (vb.𝓕 ×ˢ Set.univ))) ((lC.prod (vb.μ.prod ν)).map e) := by
-  intro D V V₀ ρ d e he lC 𝓒 _ _ hC vb ν _ _
-  have : IsTopologicalAddGroup (Mx D ρ ρ) := (lattice_Mx D ρ ρ).1
-  have : SecondCountableTopology (Mx D ρ ρ) := (lattice_Mx D ρ ρ).2.2.1
-  have : BorelSpace (Mx D ρ ρ) := ⟨rfl⟩
-  have : IsTopologicalAddGroup (Mx D ρ V₀.rank) := (lattice_Mx D ρ V₀.rank).1
-  have : SecondCountableTopology (Mx D ρ V₀.rank) := (lattice_Mx D ρ V₀.rank).2.2.1
-  have : BorelSpace (Mx D ρ V₀.rank) := ⟨rfl⟩
-  have : DiscreteTopology (ratMx D ρ V₀.rank) := (lattice_Mx D ρ V₀.rank).2.2.2.2.1
-  have : Countable (ratMx D ρ V₀.rank) := TopologicalSpace.separableSpace_iff_countable.1 inferInstance
-  have : BorelSpace (skewA D ρ) := Subtype.borelSpace _
-  have : SecondCountableTopology (skewA D ρ) := TopologicalSpace.Subtype.secondCountableTopology _
-  have : IsTopologicalAddGroup (skewA D ρ) := inferInstance
-  have : MeasurableAdd₂ (skewA D ρ) := ⟨continuous_add.measurable⟩
-  have rat_coords {b : Mx D ρ V₀.rank} {c : skewA D ρ}
-      (h : d.nB b * d.nC c ∈ GQ V) : b ∈ ratMx D ρ V₀.rank ∧ c.1 ∈ ratMx D ρ ρ := by
-    have hm := (mem_GQ_iff V _).1 h
-    have hb : b ∈ ratMx D ρ V₀.rank := by
-      have e1 : d.pX ⬝ (mt V (d.nB b * d.nC c) ⬝ d.j0) = b := by
-        rw [mt_mul, Matrix.mul_assoc, d.nC_j0, d.nB_j0, Matrix.mul_add, d.pX_j0, ← Matrix.mul_assoc, d.pX_jX,
-          Matrix.one_mul, zero_add]
-      rw [← e1]
-      exact ratMx_mul (rat_mem _) (ratMx_mul hm (rat_mem _))
-    refine ⟨hb, ?_⟩
-    have hc : d.nC c ∈ GQ V := by
-      have := mul_mem (inv_mem (d.nB_mem_GQ hb)) h
-      rwa [inv_mul_cancel_left] at this
-    have hm2 := (mem_GQ_iff V _).1 hc
-    have e2 : d.pX ⬝ (mt V (d.nC c) ⬝ d.jY) = c.1 := by
-      rw [d.nC_jY, Matrix.mul_add, d.pX_jY, ← Matrix.mul_assoc, d.pX_jX, Matrix.one_mul, zero_add]
-    rw [← e2]
-    exact ratMx_mul (rat_mem _) (ratMx_mul hm2 (rat_mem _))
-  have act_coords (c' c : skewA D ρ) (b' b : Mx D ρ V₀.rank) (u : GL (Fin ρ) (AE D)) :
-      d.nC c' * d.nB b' * (d.nC c * (d.nB b * d.levi u)) =
-        d.nC (c' + c + cComm V₀ b' b) * (d.nB (b' + b) * d.levi u) := by
-    have h1 : d.nB b' * d.nC c = d.nC c * d.nB b' := (d.nC_mul_nB b' c).symm
-    have h2 : d.nB (b' + b) * d.nC (cComm V₀ b' b) = d.nC (cComm V₀ b' b) * d.nB (b' + b) :=
-      (d.nC_mul_nB _ _).symm
-    calc d.nC c' * d.nB b' * (d.nC c * (d.nB b * d.levi u))
-        = d.nC c' * (d.nB b' * d.nC c) * d.nB b * d.levi u := by simp only [mul_assoc]
-      _ = d.nC c' * d.nC c * (d.nB b' * d.nB b) * d.levi u := by rw [h1]; simp only [mul_assoc]
-      _ = d.nC c' * d.nC c * d.nC (cComm V₀ b' b) * d.nB (b' + b) * d.levi u := by
-          rw [d.nB_mul_nB, h2]; simp only [mul_assoc]
-      _ = d.nC (c' + c + cComm V₀ b' b) * (d.nB (b' + b) * d.levi u) := by
-          rw [d.nC_add, d.nC_add]; simp only [mul_assoc]
-  have mem_radX_iff (n : GA D V) : n ∈ radX d ↔ ∃ b c, n = d.nB b * d.nC c := by
-    constructor
-    · intro hn
-      obtain ⟨hf, hx⟩ := Subgroup.mem_inf.1 hn
-      obtain ⟨⟨c, b, u⟩, hu⟩ := e.surjective ⟨n, hf⟩
-      have hn' : n = d.nC c * (d.nB b * d.levi u.1) :=
-        (congrArg Subtype.val hu).symm.trans (he (c, b, u))
-      change mt V n ⬝ d.jX = d.jX at hx
-      have hX : mt V n ⬝ d.jX = d.jX ⬝ u.1.1 := by
-        rw [hn', mt_mul, mt_mul, Matrix.mul_assoc, Matrix.mul_assoc, d.levi_jX,
-          ← Matrix.mul_assoc (mt V (d.nB b)), d.nB_jX,
-          ← Matrix.mul_assoc (mt V (d.nC c)), d.nC_jX]
-      have hmat : d.pX ⬝ (d.jX ⬝ u.1.1) = d.pX ⬝ d.jX :=
-        congrArg (fun X => d.pX ⬝ X) (hX.symm.trans hx)
-      rw [← Matrix.mul_assoc, d.pX_jX, Matrix.one_mul] at hmat
-      have hu' : u.1 = 1 := Units.ext hmat
-      exact ⟨b, c, by rw [hn', hu', map_one, mul_one, d.nC_mul_nB]⟩
-    · rintro ⟨b, c, rfl⟩
-      refine Subgroup.mem_inf.2 ⟨mul_mem (d.nB_mem_NFlag b) (d.nC_mem_NFlag c), ?_⟩
-      change mt V (d.nB b * d.nC c) ⬝ d.jX = d.jX
-      rw [mt_mul, Matrix.mul_assoc, d.nC_jX, d.nB_jX]
-  have hκ : ∀ b' : Mx D ρ V₀.rank, Measurable (cComm V₀ b') := by
-    intro b'
-    have : ContinuousSub (Mx D ρ ρ) := IsTopologicalAddGroup.to_continuousSub
-    have hp : Continuous (plus V₀ : Mx D ρ V₀.rank → _) := continuous_const.matrix_mul continuous_adj
-    have h1 : Continuous fun b : Mx D ρ V₀.rank => half D • (b ⬝ plus V₀ b' - b' ⬝ plus V₀ b) :=
-      ((continuous_id.matrix_mul continuous_const).sub (continuous_const.matrix_mul hp)).const_smul (half D)
-    exact (h1.subtype_mk _).measurable
-  have key : ∀ (c' : skewA D ρ) (b' : Mx D ρ V₀.rank) (p : skewA D ρ × (Mx D ρ V₀.rank × UX D ρ)),
-      d.nC c' * d.nB b' * (e p : GA D V) = (e (c' + p.1 + cComm V₀ b' p.2.1, b' + p.2.1, p.2.2) : GA D V) := by
-    intro c' b' p
-    rw [he p, he (c' + p.1 + cComm V₀ b' p.2.1, b' + p.2.1, p.2.2)]
-    exact act_coords c' p.1 b' p.2.1 p.2.2.1
-  have hsm : ∀ (g : ↥((GQ V ⊓ radX d).subgroupOf (flagN d))) (x : flagN d),
-      ((g • x : flagN d) : GA D V) = ((g : flagN d) : GA D V) * (x : GA D V) := fun _ _ => rfl
-  refine GlobalTheory.Layers.isFundamentalDomain_layers (mA := lC) (mB := vb.μ) (ν := ν) ((ratMx D ρ ρ).addSubgroupOf (skewA D ρ)) (ratMx D ρ V₀.rank) (cComm V₀) hκ e
-    ?_ ?_ ?_ hC vb.covol.2.1
-  · intro g g' x h
-    rw [Subgroup.smul_def, Subgroup.smul_def] at h
-    exact Subtype.ext (mul_right_cancel h)
-  · rintro ⟨⟨γ, hγN⟩, hγ⟩
-    rw [Subgroup.mem_subgroupOf] at hγ
-    obtain ⟨b, c, hbc⟩ := (mem_radX_iff γ).1 (Subgroup.mem_inf.1 hγ).2
-    subst hbc
-    have hr := rat_coords (Subgroup.mem_inf.1 hγ).1
-    refine ⟨⟨c, AddSubgroup.mem_addSubgroupOf.2 hr.2⟩, ⟨b, hr.1⟩, fun p => Subtype.ext ?_⟩
-    rw [Subgroup.smul_def]
-    have h := key c b p
-    rw [d.nC_mul_nB] at h
-    exact h
-  · rintro ⟨c', hc'⟩ ⟨b', hb'⟩
-    have hrad : d.nC c' * d.nB b' ∈ radX d := (mem_radX_iff _).2 ⟨b', c', d.nC_mul_nB b' c'⟩
-    have hQ : d.nC c' * d.nB b' ∈ GQ V :=
-      mul_mem (d.nC_mem_GQ (AddSubgroup.mem_addSubgroupOf.1 hc')) (d.nB_mem_GQ hb')
-    have hN : d.nC c' * d.nB b' ∈ flagN d := (Subgroup.mem_inf.1 hrad).1
-    let g : ((GQ V ⊓ radX d).subgroupOf (flagN d)) :=
-      ⟨⟨d.nC c' * d.nB b', hN⟩, Subgroup.mem_subgroupOf.2 (Subgroup.mem_inf.2 ⟨hQ, hrad⟩)⟩
-    refine ⟨g, fun p => Subtype.ext ((hsm g (e p)).trans (key c' b' p))⟩
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.WittFlagUnipotentFixerFundamentalDomainLayersStatement =====
@@ -1057,16 +928,14 @@ noncomputable section
 
 namespace GlobalTheory.Unf
 
-
-
 theorem layers_integral : ∀ (D : D7) (V V₀ : HSp D) (ρ : ℕ) (d : HypDec V V₀ ρ) (vN : VolN d) (vb : VolM D ρ V₀.rank) (vU : VolU D ρ), ∃ 𝓐 : Set (flagN d), IsFundamentalDomain ((GQ V ⊓ radX d).subgroupOf (flagN d)) 𝓐 vN.ν ∧ ∀ f : GA D V → ENNReal, Measurable f → (∀ c, ∀ n ∈ flagN d, f (d.nC c * n) = f n) → ∫⁻ n in 𝓐, f n.1 ∂vN.ν = ∫⁻ u, ∫⁻ b in vb.𝓕, f (d.nB b * d.levi u.1) ∂vb.μ ∂vU.ν := by
   intro D V V₀ ρ d vN vb vU
   obtain ⟨e, he⟩ := GlobalTheory.T.exists_flagUnipotent_coordinate_measurableEquiv D V V₀ ρ d
   obtain ⟨lC, 𝓒, hH, hS, hF, h1⟩ := GlobalTheory.T.exists_haar_covolume_one_skewHermitian_adelic D ρ
-  obtain ⟨sb, su⟩ := GlobalTheory.T.sFinite_covolume_one_matrix_unitriangular_measures D ρ V₀.rank vb vU
+  obtain ⟨sb, su⟩ := GlobalTheory.Unf.sFinite_vol D ρ V₀.rank vb vU
   have hν := GlobalTheory.T.flagUnipotentHaar_eq_map_coordinates D V V₀ ρ d vN vb vU e he lC 𝓒 hH hS hF h1
   refine ⟨e '' (𝓒 ×ˢ (vb.𝓕 ×ˢ Set.univ)), ?_, ?_⟩
-  · rw [hν]; exact GlobalTheory.T.wittFlagUnipotentFixer_fundamentalDomain_layers D V V₀ ρ d e he lC 𝓒 hH hS hF vb vU.ν sb su
+  · rw [hν]; exact GlobalTheory.Layers.fundDomain_layers D V V₀ ρ d e he lC 𝓒 hH hS hF vb vU.ν sb su
   · intro f hf hinv
     have hg : Measurable fun p => f (e p : GA D V) := hf.comp (measurable_subtype_coe.comp e.measurable)
     let g : Mx D ρ V₀.rank × UX D ρ → ENNReal := fun q => f (e (0, q) : GA D V)

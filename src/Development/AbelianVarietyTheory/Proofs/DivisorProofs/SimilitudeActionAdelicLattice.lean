@@ -158,7 +158,6 @@ theorem repr_isIntAf {p : ℕ} [Fact p.Prime] (D : Datum p) {κ : Type} (b : Mod
 
 end GlobalTheory.LKGeo.ModZero
 
-
 open GlobalTheory.LKGeo.ModZero in
 theorem GlobalTheory.LKGeo.eq_zero_of_forall_nsmul_laHat : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (z : AfP p ⊗[ℚ] VQ D),
     (∀ n : ℕ, 0 < n → n.Coprime p → ∃ w ∈ LaHat D, z = n • w) → z = 0 := by
@@ -579,16 +578,6 @@ noncomputable section
 
 namespace GlobalTheory.LKGeo.CommBC
 
-theorem actOn_tmul_tmul {C V : Type} [Ring C] [Algebra ℚ C] [AddCommGroup V] [Module ℚ V]
-    (rep : C →ₐ[ℚ] Module.End ℚ V) (R : Type) [CommRing R] [Algebra ℚ R] (a b : R) (c : C) (v : V) :
-    actOn rep R (a ⊗ₜ c) (b ⊗ₜ v) = (a * b) ⊗ₜ rep c v := by
-  have : actOn rep R (a ⊗ₜ c) = Algebra.ofId R _ a * Module.End.baseChangeHom ℚ R V (rep c) :=
-    Algebra.TensorProduct.lift_tmul _ _ _ a c
-  rw [this, Module.End.mul_apply]
-  simp only [Algebra.ofId_apply, Module.algebraMap_end_apply]
-  change a • (LinearMap.baseChange R (rep c)) (b ⊗ₜ v) = _
-  rw [LinearMap.baseChange_tmul, TensorProduct.smul_tmul', smul_eq_mul]
-
 theorem exists_actOn_eq {C V : Type} [Ring C] [Algebra ℚ C] [AddCommGroup V] [Module ℚ V] [Module.Finite ℚ V]
     (rep : C →ₐ[ℚ] Module.End ℚ V) {ι' : Type} (S : ι' → Module.End ℚ V)
     (hrange : ∀ B : Module.End ℚ V, (∀ b, B * S b = S b * B) → ∃ x, rep x = B)
@@ -632,7 +621,7 @@ theorem exists_actOn_eq {C V : Type} [Ring C] [Algebra ℚ C] [AddCommGroup V] [
     ext j
 
     rw [map_sum, LinearMap.sum_apply, map_sum, Finsupp.finsetSum_apply]
-    simp_rw [actOn_tmul_tmul, _root_.mul_one, hx, he, Module.Basis.repr_self, Finsupp.single_apply, ite_smul, one_smul,
+    simp_rw [GlobalTheory.LKGeo.actOn_tmul_tmul', _root_.mul_one, hx, he, Module.Basis.repr_self, Finsupp.single_apply, ite_smul, one_smul,
       zero_smul]
     rw [Finset.sum_ite_eq', ← hAk]
     split_ifs with hj
@@ -766,7 +755,6 @@ theorem natGenerator_ne (p : ℕ) (v : AwayP p) : (primesEquiv v.1 : ℕ) ≠ p 
   ext x
   rw [Ideal.mem_map_of_equiv]
   simp [eq_intCast]
-
 
 open Rat.HeightOneSpectrum in
 theorem exists_integer_lim (p : ℕ) [hp : Fact p.Prime] (a : ℕ → ℤ)

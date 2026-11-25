@@ -55,8 +55,6 @@ open IsDedekindDomain NumberField Matrix
 open scoped TensorProduct nonZeroDivisors Pointwise
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.exists_weilRepresentation_vacuum_cosetVectors_grid : GlobalTheory.Published.WeilRepresentationUnitaryPair → ∀ (D : D7) (T : Type) (L : LevCh D T) (μ0 : T), L.Is μ0 → ∀ (sc : Consts) (G : GridData L sc) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∃ W : G.Weil, W.ψ = ψ := by
-  first | exact @GlobalTheory.GridWeil.exists_weil
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsWeilRepresentationVacuumCosetVectorsGridStatement =====
@@ -71,8 +69,6 @@ open IsDedekindDomain NumberField Matrix
 open scoped TensorProduct nonZeroDivisors Pointwise
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.gridFirstColumnSpace_rank_signature_selfDual : ∀ (D : D7) (T : Type) (L : LevCh D T) (μ0 : T), L.Is μ0 → ∀ j, j ≤ D.R.m → (columnBlock L j).IsV (rankV D 0 j) ((D.R.m - j) / 2) := by
-  first | exact @GlobalTheory.ChiGrid.colY_isV
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.GridFirstColumnSpaceRankSignatureSelfDualStatement =====
@@ -102,7 +98,7 @@ theorem exists_weil_over_of_clauses (hW : GlobalTheory.Published.WeilRepresentat
     [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (hlev : R.toLevCh.Is A.μ0) (hch : R.IsChain) (hmod : R.IsModels)
     (sc : Consts) (G : GridData R.toLevCh sc) : ∃ W : G.Weil, W.Over R := by
   have hψ := (hch.ωX A.μ0).std
-  obtain ⟨W, hWψ⟩ := GlobalTheory.T.exists_weilRepresentation_vacuum_cosetVectors_grid hW D T R.toLevCh A.μ0 hlev sc G R.ψ hψ
+  obtain ⟨W, hWψ⟩ := GlobalTheory.GridWeil.exists_weil hW D T R.toLevCh A.μ0 hlev sc G R.ψ hψ
   obtain ⟨e, he, -⟩ := W.cosVec_is
   have lt : ∀ j, j < D.R.m → G.V (.grid 0 j) = Yc D j := fun j h => congrArg LSp.sp (colY_lt R.toLevCh h)
   have top : G.V (.grid 0 D.R.m) = D.sp.X' := congrArg LSp.sp (colY_m R.toLevCh)
@@ -150,7 +146,7 @@ theorem exists_weil_over_of_clauses (hW : GlobalTheory.Published.WeilRepresentat
   obtain ⟨W', a1, a2, a3, a4, a5⟩ := exists_weil G (fun i hi => by
     have : (G.node (.grid i 0)).IsV (rankV D i 0) ((D.R.m - 0) / 2) := by
       cases i with
-      | zero => exact GlobalTheory.T.gridFirstColumnSpace_rank_signature_selfDual D T R.toLevCh A.μ0 hlev 0 hi
+      | zero => exact GlobalTheory.ChiGrid.colY_isV D T R.toLevCh A.μ0 hlev 0 hi
       | succ i => exact G.sp.V_is (i + 1) 0 (by omega) hi (Nat.zero_le _)
     exact ⟨this.sigOK, this.sd⟩) he hψ hmod.inf s B hs om hom
   exact ⟨W', a1, a2, fun j hj => a3 ▸ (sY _ j hj rfl).1, a3 ▸ (sX _ rfl).1, fun j hj => a4 ▸ (sY _ j hj rfl).2,

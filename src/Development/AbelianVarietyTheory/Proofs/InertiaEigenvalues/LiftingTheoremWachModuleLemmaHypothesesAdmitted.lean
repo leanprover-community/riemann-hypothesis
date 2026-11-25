@@ -205,7 +205,7 @@ theorem all_admitted : ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW
   have h17 : LiftingTheory.adm17 D HW F := Formalism.MainNotions.UnusedSlot35.extension_clause D HW F ⟨p1, p8, hU⟩
   have h18 : LiftingTheory.adm18 D HW F := Formalism.MainNotions.UnusedSlot35.extension_invariant_clause D HW F ⟨p1, p8, p9, a, hU⟩
   have h19 : LiftingTheory.adm19 D HW F := _root_.GlobalTheory.dss_semisimple_of_used D HW F Cm (_root_.GlobalTheory.NL.wach_used_clauses D HW F Cm)
-  have h20 : LiftingTheory.adm20 D HW F := GlobalTheory.T.restriction_corestriction_H1f D HW F
+  have h20 : LiftingTheory.adm20 D HW F := GlobalTheory.res_cor_H1f D HW F
   have h21 : LiftingTheory.adm21 D HW F := class_map_naturality_of_herr D HW F (GlobalTheory.HerrFull.herr_part_a_every_record D HW F)
   have h22 : LiftingTheory.adm22 D HW F := fun l _ K LL =>
     (GlobalTheory.Per.FontaineBound.fontaineLe_of_tied l (D.loc l) (D.locA l) (D.locT l) K LL).1

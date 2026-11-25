@@ -185,13 +185,6 @@ theorem exists_step {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {V V₀ W W₀ : H
   exact ⟨{ χV := χV, χW := χW, om := om, om₀ := om₀, weil := h, weil₀ := h₀, vW := vW, vS := vS, vT := vT, vU := vU },
     rfl, rfl, rfl, rfl⟩
 
-private theorem rapidDec_star' {D : D7} {V : HSp D} {f : GA D V → ℂ} (hf : RapidDec V f) : RapidDec V (star f) := by
-  refine ⟨fun γ hγ g => ?_, continuous_star.comp hf.2.1, fun N => ?_⟩
-  · show star (f (γ * g)) = star (f g)
-    rw [hf.1 γ hγ g]
-  · obtain ⟨C, hC⟩ := hf.2.2 N
-    exact ⟨C, fun g => by simpa only [Pi.star_apply, norm_star] using hC g⟩
-
 private theorem isHeckeChar_of_isHeckeChar_mul {D : D7} {χ χ' : (AE D)ˣ →* Circle} (h : IsHeckeChar D χ)
     (h' : IsHeckeChar D (χ * χ')) : IsHeckeChar D χ' := by
   have e : (χ' : (AE D)ˣ → Circle) = fun x => (χ x)⁻¹ * (χ * χ') x := by
@@ -203,8 +196,6 @@ private theorem isHeckeChar_of_isHeckeChar_mul {D : D7} {χ χ' : (AE D)ˣ →* 
   · have hx := h'.2 x
     rw [MonoidHom.mul_apply, h.2 x, one_mul] at hx
     exact hx
-
-
 
 theorem rungJ : FockTot → PartFixed → RungJ := by
   intro hFock hFix D hD T L μ0 hL sc G W M hM v F ΓL _hEnds hGood Ψ hΨ u hu k h h' hB
@@ -234,8 +225,8 @@ theorem rungJ : FockTot → PartFixed → RungJ := by
   obtain ⟨f, hf, hΨi⟩ := hΨ.2 (2 * k + 2) hi
   obtain ⟨Φ₀, hΦ₀, hΦ₀ne⟩ := hGood.lineNe (k + 1) h
   have hVf := (c5 f).1 hf
-  have hRφ : RapidDec _ (star (Ψ (2 * k + 2 + 1))) := rapidDec_star' (hΨ.1 _ (by omega))
-  have hRG : RapidDec _ (star (part W M ρ Φ u (2 * k + 2) h')) := rapidDec_star' (hu ρ Φ _ _)
+  have hRφ : RapidDec _ (star (Ψ (2 * k + 2 + 1))) := GlobalTheory.AscRungB.rapidDec_star (hΨ.1 _ (by omega))
+  have hRG : RapidDec _ (star (part W M ρ Φ u (2 * k + 2) h')) := GlobalTheory.AscRungB.rapidDec_star (hu ρ Φ _ _)
   have hK : ∀ x ∈ lev G (.grid (2 * k + 2) 0), ∀ g,
       star (part W M ρ Φ u (2 * k + 2) h') (g * x) = star (part W M ρ Φ u (2 * k + 2) h') g :=
     fun x hx g => congrArg star (hFix D hD T L μ0 hL sc G W M hM ρ Φ u (2 * k + 1) h' x hx g)
@@ -525,10 +516,6 @@ open GlobalTheory.RowChain
 
 variable {D : D7}
 
-theorem ratV_smul' {n : ℕ} (a : D.host.E) (v : Fin n → D.host.E) : ratV (a • v) = incA D a • ratV v := by
-  funext i
-  simp [ratV]
-
 section Diag
 
 variable {σ : ℕ} (l : Fin σ → D.host.E)
@@ -569,7 +556,7 @@ theorem coefX_J (hl : ∀ a, l a ≠ 0) (hJ : d.jX = J ⬝ diagonal fun a => inc
     (hz : d.i₀ *ᵥ z = t • w) (e2 : mt S n *ᵥ ratV w = ratV w + J *ᵥ b) :
     coefX d z n = incA D t • ((diagonal fun a => incA D (l a)⁻¹) *ᵥ b) := by
   have hzs : d.j0 *ᵥ ratV z = incA D t • ratV w := by
-    rw [HypDec.j0, ← ratV_mulVec, hz, ratV_smul']
+    rw [HypDec.j0, ← ratV_mulVec, hz, GlobalTheory.CharXFB.ratV_smul']
   rw [coefX, ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, hzs, Matrix.mulVec_smul, e2, smul_add, ← hzs,
     Matrix.mulVec_add, Matrix.mulVec_mulVec, d.pX_j0, Matrix.zero_mulVec, zero_add, Matrix.mulVec_smul,
     Matrix.mulVec_mulVec, pX_J d J l hl hJ]
@@ -1048,16 +1035,6 @@ theorem per_zero (J : JacL D 0) {L' : HSp D} (ζ' : Fin L'.rank → D.host.E) (o
   rw [setIntegral_const]
   simp [Measure.real, hν]
 
-theorem integrable_norm_mul_pow {V : HSp D} (v : GlobalTheory.Unf.Vol V) {φ : GA D V → ℂ} (hφ : RapidDec V φ) (k : ℕ) :
-    Integrable (fun g => ‖φ g‖ * quotHeight V g ^ k) (v.μ.restrict v.𝓕) := by
-  have hm : AEStronglyMeasurable (fun g => ((quotHeight V g ^ k : ℝ) : ℂ)) (v.μ.restrict v.𝓕) :=
-    (Complex.continuous_ofReal.comp ((GlobalTheory.Grow.continuous_quotHeight V).pow k)).aestronglyMeasurable
-  have hI := hφ.integrableOn_mul_of_le v.haar v.fund hm (C := 1) (A := k) (fun g => by
-    rw [one_mul, Complex.norm_real, norm_pow, Real.norm_of_nonneg (GlobalTheory.Grow.quotHeight_pos _ g).le])
-  refine hI.norm.congr (ae_of_all _ fun g => ?_)
-  simp only [Pi.mul_apply, norm_mul, Complex.norm_real, norm_pow, Real.norm_of_nonneg (GlobalTheory.Grow.quotHeight_pos _ g).le]
-  ring
-
 theorem tame_double {S X T L : HSp D} (o : OrthDec X T L) {χS χX : (AE D)ˣ →* Circle} {omX : Om S X}
     (hX : IsWeilDatumO ψ S X χS χX omX) (vS : GlobalTheory.Unf.Vol S) (vT : GlobalTheory.Unf.Vol T) {φ : GA D S → ℂ} {u : GA D T → ℂ}
     (hφ : RapidDec S φ) (hu : RapidDec T u) :
@@ -1085,8 +1062,8 @@ theorem tame_double {S X T L : HSp D} (o : OrthDec X T L) {χS χX : (AE D)ˣ �
       ‖φ y.1 * u y.2‖ * (quotHeight S y.1 * quotHeight X (o.emb (y.2, 1))) ^ k)
       ((vS.μ.restrict vS.𝓕).prod (vT.μ.restrict vT.𝓕)) := by
     intro k
-    have h1 := integrable_norm_mul_pow vS hφ k
-    have h2 := integrable_norm_mul_pow vT hu (a * k)
+    have h1 := GlobalTheory.Asc.VanJac.integrable_rapid vS hφ k
+    have h2 := GlobalTheory.Asc.VanJac.integrable_rapid vT hu (a * k)
     have hp := (MeasureTheory.Integrable.mul_prod h1 h2).const_mul (C ^ k)
     refine hp.mono' ?_ (ae_of_all _ fun y => ?_)
     · exact ((((hφ.2.1.comp continuous_fst).mul (hu.2.1.comp continuous_snd)).norm).mul

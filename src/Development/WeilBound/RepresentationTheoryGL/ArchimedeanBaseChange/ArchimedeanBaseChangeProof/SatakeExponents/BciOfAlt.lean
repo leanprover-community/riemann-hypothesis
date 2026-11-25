@@ -141,17 +141,6 @@ namespace GlobalTheory.CompanionTheory.TreeNode
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
-theorem mulChi_absC_mulChi (n : ℕ) (z z' : ℂ) (φ : Sm E n) :
-    mulChi n (Model.absC E z) (mulChi n (Model.absC E z') φ) = mulChi n (Model.absC E (z' + z)) φ := by
-  refine Subtype.ext (funext fun g => ?_)
-  rw [mulChi_apply, mulChi_apply, mulChi_apply, ExponentTwist.chiDet_absC_val, ExponentTwist.chiDet_absC_val,
-    ExponentTwist.chiDet_absC_val, mul_assoc, ← Complex.exp_add]
-  congr 2
-  ring
-
-theorem tw_tw {n : ℕ} (V : Submodule ℂ (Sm E n)) (a b : ℂ) : tw (tw V a) b = tw V (a + b) :=
-  _root_.PositivityTheory.Rg.BcB.SpectralAccumulation.Cz.TwistConcentration.tw_tw V a b
-
 theorem map_mem_finVec {n : ℕ} {V : Submodule ℂ (Sm E n)} (f : Sm E n →ₗ[ℂ] Sm E n)
     (heq : ∀ o, ∀ φ ∈ V, f (act o φ) = act o (f φ)) {φ : Sm E n} (hφ : φ ∈ V)
     (hfin : φ ∈ finVec (cptRep E n)) : f φ ∈ finVec (cptRep E n) := by
@@ -166,9 +155,9 @@ theorem nodeEmb : PositivityTheory.Rg.BcB.SpectralAccumulation.Lim5.NodeEmb := b
   rintro E _ _ _ r s V V₁ V₂ z₁ z₂ hV ⟨f, hf, hinj, heq⟩
   refine ⟨f, fun φ hφ => Submodule.subset_span ⟨?_, ?_⟩, hinj, heq⟩
   · have e₁ : tw (tw V₁ (z₁ - (s : ℂ) / 2)) ((s : ℂ) / 2) = tw V₁ z₁ := by
-      rw [tw_tw, sub_add_cancel]
+      rw [PositivityTheory.Rg.BcB.SpectralAccumulation.Cz.TwistConcentration.tw_tw, sub_add_cancel]
     have e₂ : tw (tw V₂ (z₂ + (r : ℂ) / 2)) (-(r : ℂ) / 2) = tw V₂ z₂ := by
-      rw [tw_tw, neg_div, add_neg_cancel_right]
+      rw [PositivityTheory.Rg.BcB.SpectralAccumulation.Cz.TwistConcentration.tw_tw, neg_div, add_neg_cancel_right]
     change MemInd2 (tw (tw V₁ (z₁ - (s : ℂ) / 2)) ((s : ℂ) / 2)) (tw (tw V₂ (z₂ + (r : ℂ) / 2)) (-(r : ℂ) / 2)) (f φ)
     rw [e₁, e₂]
     exact hf φ hφ
@@ -195,15 +184,6 @@ namespace PositivityTheory.Rg.BcB.SpectralAccumulation.Lim5
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
-theorem sum_map_add_const (m : Multiset ℂ) (w : ℂ) :
-    (m.map (· + w)).sum = m.sum + (Multiset.card m : ℂ) * w := by
-  induction m using Multiset.induction_on with
-  | empty => simp
-  | cons a m ih =>
-    simp only [Multiset.map_cons, Multiset.sum_cons, Multiset.card_cons, ih]
-    push_cast
-    ring
-
 theorem norm_sum_le_of_le {M m : Multiset ℂ} {R : ℝ} (hle : M ≤ m) (hR : ∀ x ∈ m, ‖x‖ ≤ R) :
     ‖M.sum‖ ≤ Multiset.card M * R := by
   calc ‖M.sum‖ ≤ (M.map (fun x => ‖x‖)).sum := norm_multiset_sum_le M
@@ -222,7 +202,7 @@ theorem side_bound {n : ℕ} (hn : 0 < n) (m m₁ : (E →+* ℂ) → Multiset �
     have h := norm_sum_le_of_le (hle τ) (hR τ)
     rwa [Multiset.card_map, hcard τ] at h
   have h2 : ∑ τ, ((m₁ τ).map (· + w)).sum = ∑ τ, (m₁ τ).sum + ((Fintype.card (E →+* ℂ) * n : ℕ) : ℂ) * w := by
-    simp only [sum_map_add_const, hcard, Finset.sum_add_distrib, Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+    simp only [GlobalTheory.CompanionTheory.EGlue.LeafB.sum_map_add_const, hcard, Finset.sum_add_distrib, Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
     push_cast
     ring
   have h3 : ‖∑ τ, ((m₁ τ).map (· + w)).sum‖ ≤ Fintype.card (E →+* ℂ) * (n * R) := by
@@ -459,7 +439,6 @@ theorem caseB (hTB : TwBound) (hNE : NodeEmb) (hG : Graft) (hTS : TwShift) (hTr 
   intro r hr hrN c hc
   exact (hcon ⟨r, hr, hrN, c, hc⟩).elim
 
-
 variable (E) in
 def Q (N : ℕ) : Prop :=
   ∀ W : Submodule ℂ (Kinf E N → ℂ), FiniteDimensional ℂ W →
@@ -591,20 +570,6 @@ theorem hasInfCharGL_mono {N : ℕ} {V W : Submodule ℂ (Sm E N)} {τ : E →+*
     (h : HasInfCharGL V τ m) (hle : W ≤ V) : HasInfCharGL W τ m :=
   ⟨h.1, fun u φ hφ => h.2 u φ (hle hφ)⟩
 
-theorem hasInfCharGL_tw {N : ℕ} {V : Submodule ℂ (Sm E N)} {τ : E →+* ℂ} {m : Multiset ℂ}
-    (h : HasInfCharGL V τ m) (z : ℂ) : HasInfCharGL (tw V z) τ (m.map (· + z)) := by
-  have hW := GlobalTheory.NormIndCap.hasInfCharGL_map_mulChi h (GlobalTheory.CuspRep.Model.absC E z)
-  rw [GlobalTheory.CuspRep.Model.expo_absC] at hW
-  exact hW
-
-theorem prod_cancel (m₁ m₂ : Multiset ℂ) (u : ℂ) (r s : ℕ) :
-    ((m₁.map (· + (s : ℂ) / 2)).map (u - (s : ℂ) / 2 + ·)).prod *
-        ((m₂.map (· + -(r : ℂ) / 2)).map (u + (r : ℂ) / 2 + ·)).prod = ((m₁ + m₂).map (u + ·)).prod := by
-  rw [Multiset.map_add (f := _), Multiset.prod_add, Multiset.map_map, Multiset.map_map]
-  congr 2
-  · exact Multiset.map_congr rfl fun x _ => by simp only [Function.comp_apply]; ring
-  · exact Multiset.map_congr rfl fun x _ => by simp only [Function.comp_apply]; ring
-
 theorem hasInfCharGL_node {r s : ℕ} {U₁ : Submodule ℂ (Sm E r)} {U₂ : Submodule ℂ (Sm E s)} {τ : E →+* ℂ}
     {m₁ m₂ : Multiset ℂ} (h₁ : HasInfCharGL U₁ τ m₁) (h₂ : HasInfCharGL U₂ τ m₂) :
     HasInfCharGL (Submodule.span ℂ {φ | MemInd2 (tw U₁ ((s : ℂ) / 2)) (tw U₂ (-(r : ℂ) / 2)) φ}) τ (m₁ + m₂) := by
@@ -614,23 +579,11 @@ theorem hasInfCharGL_node {r s : ℕ} {U₁ : Submodule ℂ (Sm E r)} {U₂ : Su
     have hc : cap τ u F = (((m₁.map (· + (s : ℂ) / 2)).map (u - (s : ℂ) / 2 + ·)).prod *
         ((m₂.map (· + -(r : ℂ) / 2)).map (u + (r : ℂ) / 2 + ·)).prod) • F :=
       PositivityTheory.Rg.Rs.PInfInd2A.casimir_on_parabolic_induction (n := ![r, s]) (tw U₁ ((s : ℂ) / 2)) (tw U₂ (-(r : ℂ) / 2)) τ _ _
-        (hasInfCharGL_tw h₁ _) (hasInfCharGL_tw h₂ _) u F hF
-    rw [hc, prod_cancel]
+        (PositivityTheory.Rg.BcB.SpectralAccumulation.Trees.hasInfCharGL_tw h₁ _) (PositivityTheory.Rg.BcB.SpectralAccumulation.Trees.hasInfCharGL_tw h₂ _) u F hF
+    rw [hc, PositivityTheory.Rg.BcB.SpectralAccumulation.Trees.prod_cancel]
   | zero => simp
   | add x y _ _ hx hy => rw [map_add (f := _), hx, hy, smul_add]
   | smul a x _ hx => rw [map_smul, hx, smul_comm]
-
-theorem hasInfCharGL_space {N : ℕ} (t : Tr E N) (τ : E →+* ℂ) (m : Multiset ℂ) (h : t.InfOf τ m) :
-    HasInfCharGL t.space τ m := by
-  induction t generalizing m with
-  | leaf V z =>
-    obtain ⟨m₀, h₀, rfl⟩ := h
-    exact hasInfCharGL_tw h₀ z
-  | @node r s t₁ t₂ ih₁ ih₂ =>
-    obtain ⟨m₁, m₂, h₁, h₂, rfl⟩ := h
-    refine hasInfCharGL_mono (hasInfCharGL_node (ih₁ m₁ h₁) (ih₂ m₂ h₂)) ?_
-    rw [Tr.space]
-    exact Submodule.span_mono fun φ hφ => hφ.1
 
 theorem hasInfCharGL_top_zero (τ : E →+* ℂ) : HasInfCharGL (⊤ : Submodule ℂ (Sm E 0)) τ 0 := by
   refine ⟨rfl, fun u φ _ => ?_⟩
@@ -736,7 +689,7 @@ theorem untwOfReal_holds : UntwOfReal := by
   intro E _ _ _ N t n ht hne hn hrs
   choose mf hmf using exists_infOf t ht
   have heq : ∀ τ, n τ = mf τ := fun τ =>
-    GlobalTheory.BcSpehProof.hasInfCharGL_unique hne (hn τ) (hasInfCharGL_space t τ (mf τ) (hmf τ))
+    GlobalTheory.BcSpehProof.hasInfCharGL_unique hne (hn τ) (PositivityTheory.Rg.BcB.SpectralAccumulation.Trees.hasInfCharGL_space t τ (mf τ) (hmf τ))
   exact untw_of_infOf t ht mf hmf fun τ x hx => (hrs τ).1 x (heq τ ▸ hx)
 
 end PositivityTheory.Rg.BcB.SpectralAccumulation.Untw
@@ -1276,9 +1229,6 @@ theorem allLeaves_addTw {N : ℕ} (t : Tr E N) (α : ℕ → ℂ) (P : ∀ M : �
   | leaf V z => exact Iff.rfl
   | node t₁ t₂ ih₁ ih₂ => exact and_congr (ih₁ _) (ih₂ _)
 
-theorem strip_twists_length {N : ℕ} (t : Tr E N) : t.strip.twists.length = t.twists.length :=
-  _root_.PositivityTheory.Rg.BcB.SpectralAccumulation.Lim5.length_twists_strip t
-
 theorem addTw_congr {N : ℕ} (t : Tr E N) {α α' : ℕ → ℂ} (h : ∀ i < t.twists.length, α i = α' i) :
     t.addTw α = t.addTw α' := by
   induction t generalizing α α' with
@@ -1304,12 +1254,12 @@ theorem eq_addTw {N : ℕ} (t : Tr E N) : t = t.strip.addTw fun i => t.twists.ge
     have e₁ : t₁.strip.addTw (fun i => (t₁.twists ++ t₂.twists).getD i 0) =
         t₁.strip.addTw fun i => t₁.twists.getD i 0 := by
       refine addTw_congr _ fun i hi => ?_
-      rw [strip_twists_length] at hi
+      rw [PositivityTheory.Rg.BcB.SpectralAccumulation.Lim5.length_twists_strip] at hi
       exact List.getD_append _ _ _ _ hi
     have e₂ : t₂.strip.addTw (fun i => (t₁.twists ++ t₂.twists).getD (i + t₁.strip.twists.length) 0) =
         t₂.strip.addTw fun i => t₂.twists.getD i 0 := by
       refine addTw_congr _ fun i _ => ?_
-      rw [strip_twists_length, List.getD_append_right _ _ _ _ (by omega), Nat.add_sub_cancel]
+      rw [PositivityTheory.Rg.BcB.SpectralAccumulation.Lim5.length_twists_strip, List.getD_append_right _ _ _ _ (by omega), Nat.add_sub_cancel]
     rw [e₁, e₂, ← ih₁, ← ih₂]
 
 def mulOp {N : ℕ} (f : GA E N → ℂ) (hf : f ∈ Sm E N) : Sm E N →ₗ[ℂ] Sm E N where
@@ -1369,9 +1319,6 @@ theorem lev_mul_cf_int {r s : ℕ} (k : Kinf E (r + s)) (g : GL (Fin (r + s)) (A
   rw [h1, ← mul_assoc, ← mul_assoc, hv, mul_assoc (unip v), ← map_mul]
   rfl
 
-theorem act_fin_apply' {N : ℕ} (g : GL (Fin N) (Af E)) (φ : Sm E N) (x : GA E N) :
-    (act (.fin g) φ).1 x = φ.1 (x * finGL E N g) := rfl
-
 theorem mult_operator_shifts_twist {N : ℕ} (b : Tr E N) : ∀ (α β : ℕ → ℂ), (b.AllLeaves fun _ V => _root_.GlobalTheory.CuspRep.IsStable V) →
     ∀ φ ∈ (b.addTw α).space, mulOp (mult b fun i => β i - α i) (mult_mem_Sm b _) φ ∈ (b.addTw β).space := by
   induction b with
@@ -1413,7 +1360,7 @@ theorem mult_operator_shifts_twist {N : ℕ} (b : Tr E N) : ∀ (α β : ℕ →
         exact ⟨_, ih₁ α β hb₁ ρ hρ, rfl⟩
       refine ⟨act (.fin h) (mulOp (mult t₁ fun i => β i - α i) (mult_mem_Sm t₁ _) (act (.fin h⁻¹) ψ)),
         ParabolicProjection.isStable_tw hU₁' z _ _ h2, funext fun m => ?_⟩
-      simp only [act_fin_apply', mulOp_val]
+      simp only [PositivityTheory.Rg.BcB.SpectralAccumulation.Cz.BlockSlices.act_fin_apply, mulOp_val]
       rw [mul_assoc m, ← map_mul, mul_inv_cancel, map_one, mul_one]
     have hB : ∀ (z : ℂ) (h : GL (Fin s) (Af E)), ∀ ψ ∈ tw (t₂.addTw α').space z, ∃ χ ∈ tw (t₂.addTw β').space z,
         χ.1 = fun m => mult t₂ (fun i => β' i - α' i) (m * finGL E s h) * ψ.1 m := by
@@ -1428,7 +1375,7 @@ theorem mult_operator_shifts_twist {N : ℕ} (b : Tr E N) : ∀ (α β : ℕ →
         exact ⟨_, ih₂ α' β' hb₂ ρ hρ, rfl⟩
       refine ⟨act (.fin h) (mulOp (mult t₂ fun i => β' i - α' i) (mult_mem_Sm t₂ _) (act (.fin h⁻¹) ψ)),
         ParabolicProjection.isStable_tw hU₂' z _ _ h2, funext fun m => ?_⟩
-      simp only [act_fin_apply', mulOp_val]
+      simp only [PositivityTheory.Rg.BcB.SpectralAccumulation.Cz.BlockSlices.act_fin_apply, mulOp_val]
       rw [mul_assoc m, ← map_mul, mul_inv_cancel, map_one, mul_one]
     set Φ := mult (Tr.node t₁ t₂) fun i => β i - α i with hΦ
     have hΦS : Φ ∈ Sm E (r + s) := mult_mem_Sm _ _

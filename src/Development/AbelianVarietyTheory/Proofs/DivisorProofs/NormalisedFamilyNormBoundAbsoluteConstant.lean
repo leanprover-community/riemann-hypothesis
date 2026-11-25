@@ -954,16 +954,6 @@ noncomputable section
 
 namespace GlobalTheory.WeberCubicAlgebra
 
-lemma half_root (L : PeriodPair) {t : ℂ} (h2 : 2 * t ∈ L.lattice) (ht : t ∉ L.lattice) :
-    4 * L.weierstrassP t ^ 3 - L.g₂ * L.weierstrassP t - L.g₃ = 0 := by
-  have e1 := L.derivWeierstrassP_add_coe (-t) ⟨2 * t, h2⟩
-  rw [L.derivWeierstrassP_neg] at e1
-  have e2 : -t + 2 * t = t := by ring
-  simp only [e2] at e1
-  have e3 : L.derivWeierstrassP t = 0 := by linear_combination e1 / 2
-  rw [← L.derivWeierstrassP_sq t ht, e3]
-  simp
-
 lemma roots_alg {e1 e2 e3 g h P A B D : ℂ} (h12 : e1 ≠ e2) (h13 : e1 ≠ e3) (h23 : e2 ≠ e3)
     (r1 : 4 * e1 ^ 3 - g * e1 - h = 0) (r2 : 4 * e2 ^ 3 - g * e2 - h = 0)
     (r3 : 4 * e3 ^ 3 - g * e3 - h = 0)
@@ -1018,7 +1008,6 @@ end GlobalTheory.WeberCubicAlgebra
 
 namespace GlobalTheory.WeberCubicAlgebra
 
-
 open GlobalTheory.IndefiniteRowSideFullHecke.ThetaConstantWeber in
 theorem weberCubic_of_halfPeriodDiff : ∀ τ : UpperHalfPlane, GlobalTheory.IndefiniteRowSideFullHecke.ThetaConstantWeber.HalfPeriodDiff τ →
     GlobalTheory.IndefiniteRowSideFullHecke.ThetaConstantWeber.JacobiProduct τ → GlobalTheory.IndefiniteRowSideFullHecke.ThetaConstantWeber.ThetaWeber τ → GlobalTheory.IndefiniteRowSideFullHecke.ThetaConstantWeber.WeberCubic τ := by
@@ -1038,13 +1027,13 @@ theorem weberCubic_of_halfPeriodDiff : ∀ τ : UpperHalfPlane, GlobalTheory.Ind
   have mem : ∀ p q : ℤ, ((p : ℂ) * (τ : ℂ) + q) ∈ (GlobalTheory.periodPairOfTau τ).lattice := fun p q => by
     rw [GlobalTheory.mem_lattice_periodPairOfTau]
     exact ⟨p, q, by ring⟩
-  have r1 := half_root (GlobalTheory.periodPairOfTau τ) (t := 1 / 2) (by simpa using mem 0 1) n1
-  have r2 := half_root (GlobalTheory.periodPairOfTau τ) (t := (τ : ℂ) / 2) (by
+  have r1 := GlobalTheory.IntegralX.half_root (GlobalTheory.periodPairOfTau τ) (t := 1 / 2) (by simpa using mem 0 1) n1
+  have r2 := GlobalTheory.IntegralX.half_root (GlobalTheory.periodPairOfTau τ) (t := (τ : ℂ) / 2) (by
     have := mem 1 0
     convert this using 1
     push_cast
     ring) n2
-  have r3 := half_root (GlobalTheory.periodPairOfTau τ) (t := (1 + (τ : ℂ)) / 2) (by
+  have r3 := GlobalTheory.IntegralX.half_root (GlobalTheory.periodPairOfTau τ) (t := (1 + (τ : ℂ)) / 2) (by
     have := mem 1 1
     convert this using 1
     push_cast

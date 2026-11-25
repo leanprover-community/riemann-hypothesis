@@ -265,14 +265,6 @@ open GlobalTheory.ConstRatio (NegIdx Factor)
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
-theorem _root_.GlobalTheory.T.definiteBottom_framesChange_stageZero : ∀ {D : D7} {T : Type} {Lc : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} {G : GridData Lc sc} (μ₀ : T), Lc.Is μ₀ → ∀ (W : G.Weil) (S : GridChoice W Set.univ), NumbersIn D.what₂.embLL S μ₀ →
-  ∀ (i j : Fin D.R.m) {A A' WW : HSp D} (X Y : Tri T A A' WW), IsBottomTri W i j X → GlobalTheory.SqTower.IsStageC W i j 0 0 Y →
-  Y.rA.Λ = X.rA.Λ → Y.rA'.Λ = X.rA'.Λ → Y.rW.Λ = X.rW.Λ →
-  ∃ (Z : Tri T A A' WW) (v : T → ℂ), GlobalTheory.SqTower.IsStageC W i j 0 0 Z ∧
-    Z.rA.Λ = X.rA.Λ ∧ Z.rA'.Λ = X.rA'.Λ ∧ Z.rW.Λ = X.rW.Λ ∧ Z.rA.β = X.rA.β ∧ Z.rA'.β = X.rA'.β ∧ Z.rW.β = X.rW.β ∧
-    (∀ t, v t ≠ 0 ∧ ∃ ζ : D.what₂.LL, GlobalTheory.Square.IsAwayUnit (Qn G t) ζ ∧ v t = D.what₂.embLL ζ * v μ₀) ∧ ∀ c : T → ℂ, Y.IsConst W.ψ W.θ c → Z.IsConst W.ψ W.θ (fun t => v t * c t) := by
-  first | exact @GlobalTheory.BottomFrames.frames_change
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.DefiniteBottomFramesChangeStageZeroStatement =====
@@ -369,7 +361,6 @@ open GlobalTheory.ConstRatio (NegIdx Factor)
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.BotMove
-
 
 theorem _root_.GlobalTheory.T.movedSeesawTriple_primeThetaIntegral_eq_scaled : ∀ {D : D7} {T : Type} {A A' WW : HSp D} (Y : Tri T A A' WW) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D)
     (α β : T → ((AE D)ˣ →* Circle)) (νH : T → HChar D.host.E) (S : T → Finset (Formalism.L2.DIV.Pl D.host.E)),
@@ -486,7 +477,6 @@ open GlobalTheory.ConstRatio (NegIdx Factor)
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.BotMove
-
 
 theorem _root_.GlobalTheory.T.movedSeesawTriple_thetaIntegral_eq_scaled : ∀ {D : D7} {T : Type} {A A' WW : HSp D} (Y : Tri T A A' WW) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D)
     (α β : T → ((AE D)ˣ →* Circle)) (νH : T → HChar D.host.E) (S : T → Finset (Formalism.L2.DIV.Pl D.host.E)),
@@ -612,7 +602,6 @@ open GlobalTheory.ConstRatio (NegIdx Factor)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.BotMove
 
-
 theorem _root_.GlobalTheory.T.moved_vacua_scalar_multiples_reference_tuple : ∀ {D : D7} {T : Type} {Lc : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} {G : GridData Lc sc} (μ₀ : T), Lc.Is μ₀ →
     ∀ (W : G.Weil) (S : GridChoice W Set.univ), NumbersIn D.what₂.embLL S μ₀ →
     ∀ (i j : Fin D.R.m) {A A' WW : HSp D} (Y : Tri T A A' WW), GlobalTheory.SqTower.IsStageC W i j 0 0 Y →
@@ -680,7 +669,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.BotMove
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle GlobalTheory.Grid Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR.Mult MeasureTheory
 
-
 theorem _root_.GlobalTheory.T.haar_fundamentalDomain_rightTranslate_unitary : ∀ {D : D7} {V : HSp D} (m : MeasureTheory.Measure (GA D V)) (fd : Set (GA D V)) (g : GA D V), m.IsHaarMeasure → MeasureTheory.IsFundamentalDomain (GQ V) fd m → (m.map (fun x => x * g⁻¹)).IsHaarMeasure ∧ MeasureTheory.IsFundamentalDomain (GQ V) ((fun x => x * g) ⁻¹' fd) (m.map (fun x => x * g⁻¹)) := by
   first | exact @GlobalTheory.RightTranslateFundDomain.haar_and_fundDomain
 end -- clump:auto
@@ -706,13 +694,6 @@ open GlobalTheory.BotMove
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle GlobalTheory.Grid Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR.Mult MeasureTheory
 
 namespace GlobalTheory.BotMove.Fst
-
-private theorem selfDual_neg {D : D7} {A : HSp D} {Λ : Submodule (𝓞 D.host.E) (Fin A.rank → D.host.E)} (hA : IsSelfDualC A Λ) :
-    IsSelfDualC (GlobalTheory.Grid.neg A) Λ := by
-  refine ⟨hA.1, fun y => (hA.2 y).trans (forall₂_congr fun x _ => ⟨fun ⟨c, hc⟩ => ⟨-c, ?_⟩, fun ⟨c, hc⟩ => ⟨-c, ?_⟩⟩)⟩
-  · simp [GlobalTheory.Grid.neg_gram, hc]
-  · simp [GlobalTheory.Grid.neg_gram] at hc ⊢
-    exact neg_eq_iff_eq_neg.2 hc
 
 private theorem placeModel_smul {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {S T : HSp D} {e : AE D} {Λ : AddSubgroup (WO S T)}
     {f₀ : WO S T → ℂ} {Tm : (WO S T → ℂ) →ₗ[ℂ] (WO S T → ℂ)}
@@ -798,8 +779,8 @@ theorem _root_.GlobalTheory.T.movedFiniteDatum_negHom_eq_standardPair_first : �
   intro D T A A' WW Y ψ θ α β νH S hY ΛA ΛA' ΛW hA _ hW g _ g' _ h _ mA _ mW t₀ r r' hr hv _ t
   have ho := GlobalTheory.PlaceModelSum.isOrthSum_of_isIdemSum (hY.idem t)
   have mA' : GlobalTheory.FinPl.Moves (neg A) ((ofSgn true A).symm g) Y.rA.Λ ΛA (fun _ => True) := mA
-  have h1 := GlobalTheory.BotMove.Fst.thetaAt_move (S := neg A) (hY.weil t) (GlobalTheory.BotMove.Fst.selfDual_neg hY.rigA.1)
-    (GlobalTheory.BotMove.Fst.selfDual_neg hA) hY.rigW.1 hW mA' mW ho.idem ho.infPart_eq hY.isVac.2.theta (hY.fst t)
+  have h1 := GlobalTheory.BotMove.Fst.thetaAt_move (S := neg A) (hY.weil t) (GlobalTheory.BottomFrames.selfDual_neg hY.rigA.1)
+    (GlobalTheory.BottomFrames.selfDual_neg hA) hY.rigW.1 hW mA' mW ho.idem ho.infPart_eq hY.isVac.2.theta (hY.fst t)
   have e1 : ∀ F, (Y.ω t).toSgn true ((ofSgn true A).symm g, h) F = Y.ω t (g, h) F := fun F => rfl
   rw [e1, e1, hv t] at h1
   have h2 := GlobalTheory.BotMove.Fst.thetaAt_smul (hr t).1 h1
@@ -1068,7 +1049,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.BotMove
 open GlobalTheory.IndefiniteRowSideFullHecke.UnitCharTriangle GlobalTheory.Grid Formalism.L2.DIV Formalism.L2.Indef Formalism.IndefR.Mult MeasureTheory
 
-
 theorem _root_.GlobalTheory.T.translated_finite_datum_eq_standardPairSecondMember : ∀ {D : D7} {T : Type} {A A' WW : HSp D} (Y : Tri T A A' WW) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D)
     (α β : T → ((AE D)ˣ →* Circle)) (νH : T → HChar D.host.E) (S : T → Finset (Formalism.L2.DIV.Pl D.host.E)),
     Y.Is ψ θ α β νH S →
@@ -1155,7 +1135,6 @@ open GlobalTheory.ConstRatio (NegIdx Factor)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.BotMove
 
-
 theorem _root_.GlobalTheory.T.thetaSeesawTriple_moved_to_selfDual_isValid : ∀ {D : D7} {T : Type} {A A' WW : HSp D} (Y : Tri T A A' WW) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D)
     (α β : T → ((AE D)ˣ →* Circle)) (νH : T → HChar D.host.E) (S : T → Finset (Formalism.L2.DIV.Pl D.host.E)),
     Y.Is ψ θ α β νH S →
@@ -1241,7 +1220,6 @@ open GlobalTheory.ConstRatio (NegIdx Factor)
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
 theorem _root_.GlobalTheory.T.definiteBottom_lattice_change_constants_awayUnit : ∀ {D : D7} {T : Type} {Lc : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} {G : GridData Lc sc} (μ₀ : T), Lc.Is μ₀ → ∀ (W : G.Weil) (S : GridChoice W Set.univ), NumbersIn D.what₂.embLL S μ₀ →
   ∀ (i j : Fin D.R.m) {A A' WW : HSp D} (X Y : Tri T A A' WW), IsBottomTri W i j X → GlobalTheory.SqTower.IsStageC W i j 0 0 Y →
   ∃ (Z : Tri T A A' WW) (v : T → ℂ), GlobalTheory.SqTower.IsStageC W i j 0 0 Z ∧
@@ -1268,12 +1246,6 @@ open GlobalTheory.ConstRatio (NegIdx Factor)
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
-theorem _root_.GlobalTheory.T.definiteBottom_tower_constants_differ_by_factor : ∀ {D : D7} {T : Type} {Lc : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} {G : GridData Lc sc} (W : G.Weil) (i j : Fin D.R.m) {A A' WW : HSp D} (X Y : Tri T A A' WW),
-  IsBottomTri W i j X → GlobalTheory.SqTower.IsStageC W i j 0 0 Y →
-  Y.rA.Λ = X.rA.Λ → Y.rA'.Λ = X.rA'.Λ → Y.rW.Λ = X.rW.Λ → Y.rA.β = X.rA.β → Y.rA'.β = X.rA'.β → Y.rW.β = X.rW.β →
-  ∀ c : T → ℂ, Y.IsConst W.ψ W.θ c → ∃ κ : ℂ, κ ≠ 0 ∧ X.IsConst W.ψ W.θ (fun t => κ * c t) := by
-  first | exact @GlobalTheory.SqTower.bottom_const_normal
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.DefiniteBottomTowerConstantsDifferByFactorStatement =====
@@ -1306,8 +1278,8 @@ theorem theta_tower_bottom_constant_ratio : _root_.GlobalTheory.FunPr.ThetaLocal
   intro W S _ hN i j A A' WW X B B' WW₁ Y c hX hY hc
   obtain ⟨Y₁, hY₁, hc₁⟩ := GlobalTheory.T.definiteBottom_stage_transport_same_constants W i j X Y hX hY
   obtain ⟨Z₁, v₁, hZ₁, e1, e2, e3, hv₁, hc₂⟩ := GlobalTheory.T.definiteBottom_lattice_change_constants_awayUnit μ₀ hμ W S hN i j X Y₁ hX hY₁
-  obtain ⟨Z₂, v₂, hZ₂, f1, f2, f3, f4, f5, f6, hv₂, hc₃⟩ := GlobalTheory.T.definiteBottom_framesChange_stageZero μ₀ hμ W S hN i j X Z₁ hX hZ₁ e1 e2 e3
-  obtain ⟨κ, hκ, hX'⟩ := GlobalTheory.T.definiteBottom_tower_constants_differ_by_factor W i j X Z₂ hX hZ₂ f1 f2 f3 f4 f5 f6 _ (hc₃ _ (hc₂ _ (hc₁ c hc)))
+  obtain ⟨Z₂, v₂, hZ₂, f1, f2, f3, f4, f5, f6, hv₂, hc₃⟩ := GlobalTheory.BottomFrames.frames_change μ₀ hμ W S hN i j X Z₁ hX hZ₁ e1 e2 e3
+  obtain ⟨κ, hκ, hX'⟩ := GlobalTheory.SqTower.bottom_const_normal W i j X Z₂ hX hZ₂ f1 f2 f3 f4 f5 f6 _ (hc₃ _ (hc₂ _ (hc₁ c hc)))
   refine ⟨fun t => κ * (v₂ t * v₁ t), ?_, fun t => ?_⟩
   · convert hX' using 2 with t
     ring
@@ -1343,27 +1315,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 noncomputable section
 
-namespace GlobalTheory.SqStep
-
-theorem gbig_three {Q₁ Q₂ Q₃ Q : GP} (h₁ : GBig Q₁) (h₂ : GBig Q₂) (h₃ : GBig Q₃)
-    (H : ∀ {D : D7} {T : Type} {Lc : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} (G : GridData Lc sc) (μ₀ : T) (C x b : ℝ),
-      Q₁ G μ₀ C x b → Q₂ G μ₀ C x b → Q₃ G μ₀ C x b → Q G μ₀ C x b) : GBig Q := by
-  obtain ⟨F₁, h₁⟩ := h₁
-  obtain ⟨F₂, h₂⟩ := h₂
-  obtain ⟨F₃, h₃⟩ := h₃
-  refine ⟨max F₁ (max F₂ F₃), fun ε CF hCF => ?_⟩
-  obtain ⟨C₁, x₁, k₁⟩ := h₁ ε CF (le_trans (le_max_left _ _) hCF)
-  obtain ⟨C₂, x₂, k₂⟩ := h₂ ε CF (le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) hCF)
-  obtain ⟨C₃, x₃, k₃⟩ := h₃ ε CF (le_trans (le_trans (le_max_right _ _) (le_max_right _ _)) hCF)
-  refine ⟨max C₁ (max C₂ C₃), max x₁ (max x₂ x₃), fun C hC D large₂ he hx hR T Lc μ₀ hL G => H G μ₀ C _ _ ?_ ?_ ?_⟩
-  · exact k₁ C (le_trans (le_max_left _ _) hC) D large₂ he (le_trans (le_max_left _ _) hx) hR T Lc μ₀ hL G
-  · exact k₂ C (le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) hC) D large₂ he
-      (le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) hx) hR T Lc μ₀ hL G
-  · exact k₃ C (le_trans (le_trans (le_max_right _ _) (le_max_right _ _)) hC) D large₂ he
-      (le_trans (le_trans (le_max_right _ _) (le_max_right _ _)) hx) hR T Lc μ₀ hL G
-
-end GlobalTheory.SqStep
-
 end
 end -- clump:auto
 end -- clump:auto
@@ -1394,7 +1345,7 @@ theorem theta_tower_norm_step_small_rank : _root_.GlobalTheory.FunPr.ThetaLocalI
         GlobalTheory.SqTower.IsStageC W i j p q Y ∧ Y.IsConst W.ψ W.θ c ∧
         (∀ t, y t ≠ 0 ∧ lam t * Lf t ((e + 1 : ℕ) : ℂ) = y t * c t) ∧ ∀ t, GlobalTheory.Square.StepRatio D.what₂.embLL (Qn G t) G.pl.S0 (condExp G.pl) (fun v => Ideal.absNorm v.asIdeal) (y t) (y μ₀) := by
   intro hP hK hM
-  refine gbig_three (_root_.GlobalTheory.T.seesaw_first_reduction_level hP hK hM) GlobalTheory.T.thetaStepFactor_ratio_unit_gaussSumQuotient GlobalTheory.T.partialHeckeLFunction_square_eq_primitive ?_
+  refine GlobalTheory.SqStepBig.gbig_of_three (_root_.GlobalTheory.T.seesaw_first_reduction_level hP hK hM) GlobalTheory.T.thetaStepFactor_ratio_unit_gaussSumQuotient GlobalTheory.SqStep.charL_chs_eq ?_
   intro D T Lc sc G μ₀ C x b hk ha hl W S hψ hN i j p q A A' WW X lam e Lf hX hF he hLf
   obtain ⟨B, B', WW₁, Y, c, hY, hc, hc0, H⟩ := hk W S hψ hN i j p q A A' WW X lam e hX hF he
   have he1 : 1 ≤ e := by

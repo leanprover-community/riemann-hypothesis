@@ -1588,11 +1588,6 @@ open NumberField IsDedekindDomain GlobalTheory.WeilM GlobalTheory.AdelicU Global
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {v : Pl F}
 
-theorem continuous_chrW' {χ : Chr F E} (hχ : Continuous χ) (τ : E →ₐ[F] Fv F v) :
-    Continuous fun x => (chrW χ τ x : ℂ) :=
-  (continuous_locChar hχ (splitPrime τ)).comp
-    (Continuous.units_map _ (SplitChart.continuous_complMap (splitPrime_under τ)))
-
 theorem exists_unit_chrW_ne {χ : Chr F E} (τ : E →ₐ[F] Fv F v) (h : ¬ UnrAt χ (splitPrime τ)) :
     ∃ x : (Fv F v)ˣ, (x : Fv F v) ∈ v.adicCompletionIntegers F ∧
       ((x⁻¹ : (Fv F v)ˣ) : Fv F v) ∈ v.adicCompletionIntegers F ∧ chrW χ τ x ≠ 1 := by
@@ -1622,7 +1617,7 @@ theorem facNe : GlobalTheory.ThK.FacNe := by
   · have hv' : v.1 ∈ X.T := by simpa using hv
     have hc : Continuous X.ν := h.chars.heckeα.1.div' h.chars.heckeβ.1
     refine mul_ne_zero (Units.ne_zero _) (eps_ne_zero (GaussNe.gauss_ne_zero _ _ _ (h.base.psiP _ v.2)
-      (continuous_chrW' hc _) (exists_unit_chrW_ne _ (h.chars.ram _ ?_))) z)
+      (PositivityTheory.ThK.SplitAsm.continuous_chrW hc _) (exists_unit_chrW_ne _ (h.chars.ram _ ?_))) z)
     rwa [splitPrime_under]
   · refine (converges_charFam _ X.ν ?_).ne_zero
     rw [Complex.natCast_re]

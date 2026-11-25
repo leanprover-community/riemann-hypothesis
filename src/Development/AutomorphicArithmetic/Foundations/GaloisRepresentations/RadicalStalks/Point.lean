@@ -1710,7 +1710,6 @@ open GlobalTheory.CechPic GlobalTheory.AbLaw
 
 variable {S : Scheme.{0}} {A T Y : Over S} [GrpObj A] {P : LB (A ⊗ A).left}
 
-
 end Dual
 
 section Down

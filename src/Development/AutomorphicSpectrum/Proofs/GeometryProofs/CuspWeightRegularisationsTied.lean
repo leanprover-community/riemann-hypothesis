@@ -771,14 +771,6 @@ open ReciprocityTheory.AnForm.A (IsPsh coordDiv)
 open ReciprocityTheory.AnForm.M (FinHolAtlas IsCompatChart)
 open GroundTheory.Heights₂.Heights.Regular
 
-theorem continuousAt_of_holoOn {n : ℕ} {X : Type} [TopologicalSpace X] {A : FinHolAtlas n X} {U : Set X}
-    {g : X → ℂ} (hg : A.HoloOn U g) {x : X} (hx : x ∈ U) : ContinuousAt g x := by
-  obtain ⟨i, hi⟩ := A.cover x
-  have h1 := (hg i (A.chart i x) ⟨(A.chart i).map_source hi, by simp [(A.chart i).left_inv hi, hx]⟩).continuousAt
-  refine (h1.comp ((A.chart i).continuousAt hi)).congr ?_
-  filter_upwards [(A.chart i).open_source.mem_nhds hi] with y hy
-  simp [(A.chart i).left_inv hy]
-
 theorem limsup_invol {X : Type} [TopologicalSpace X] {σ : X → X} (hσ : Continuous σ) (hi : ∀ x, σ (σ x) = x)
     {Y : Set X} (hY : ∀ x ∈ Y, σ x ∈ Y) {g : X → ℝ} (hg : ∀ x ∈ Y, g (σ x) = g x) (x : X) :
     limsup g (𝓝[Y] (σ x)) = limsup g (𝓝[Y] x) := by
@@ -857,7 +849,6 @@ theorem exists_factor {ψ : OpenPartialHomeomorph M.Xc (Fin D.n → ℂ)} (hψ :
 alias isOpen_nz := _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.G1.isOpen_blocksNonzero
 
 variable {ref : HermLine J} {w : ((Σ k, J k) → ℂ) → ℝ} (P : PotentialCharts M.atlas)
-
 
 include P in
 theorem relative_weight_bounded (hr : IsSmoothHerm ref) (hL : LogHom D ref.a w) (hB : ChartBdd D w) :
@@ -952,7 +943,6 @@ theorem chart_local (hth : ThRef M ref P.th) (hL : LogHom D ref.a w) (hP : Chart
   simp only [e5]
   linarith
 
-
 open Classical in
 noncomputable def ph (ref : HermLine J) (w : ((Σ k, J k) → ℂ) → ℝ) (x : M.Xc) : ℝ :=
   if x ∈ Yo M then ph0 M ref w x else limsup (ph0 M ref w) (𝓝[Yo M] x)
@@ -980,7 +970,7 @@ theorem continuous_cj : Continuous (cj M) := by
   refine continuous_iff_continuousAt.2 fun x => ?_
   obtain ⟨U, hU, hx, s, hs, hh⟩ := M.sections x
   have h1 : ContinuousAt (fun y => conjVec (s y)) x := continuousAt_pi.2 fun p =>
-    Complex.continuous_conj.continuousAt.comp (continuousAt_of_holoOn (hh p) hx)
+    Complex.continuous_conj.continuousAt.comp (GroundTheory.Heights₂.Heights.LowerBoundFree.holoOn_continuousAt (hh p) hx)
   have h2 : ContinuousWithinAt (fun y => M.proj (conjVec (s y))) U x :=
     (M.cont _ (SncPiece.conj_mem (hs x hx).1)).comp (f := fun y => conjVec (s y)) h1.continuousWithinAt
       fun y hy => SncPiece.conj_mem (hs y hy).1
@@ -1388,7 +1378,7 @@ theorem LevelTowerAlt.tied_setting_symmetric_charts : ∀ (K : Type) [Fintype K]
   have h3 : ∀ r ∈ D.SB B, D.vertFactor r (conjVec z) = D.vertFactor r z := by
     intro r hr
     have hrS : r ∈ D.S := (Finset.mem_filter.1 hr).1
-    obtain ⟨A, -, -, hAc, hAv⟩ := (_root_.GlobalTheory.CompanionTheory.Relay.vertical_factor_smooth_hermitian_metric K J II Ψ Ω W D r hrS).1
+    obtain ⟨A, -, -, hAc, hAv⟩ := (_root_.LevelTowerAlt.vertical_factor_smooth_line K J II Ψ Ω W D r hrS).1
     rw [← hAv _ hz, ← hAv _ hcz]
     exact hAc z
   have h4 : D.A'.h (conjVec z) = D.A'.h z := D.A'_conj z
@@ -1421,8 +1411,6 @@ theorem GlobalTheory.CompanionTheory.Ar.Cusp.breg_margin_tendsto (C : ℝ) :
     tendsto_const_nhds.div_atTop (Real.tendsto_log_atTop.comp tendsto_inv_nhdsGT_zero)
   have h2 := h0.max (h1.add (h0.const_mul C))
   simpa using h2
-
-
 
 theorem _root_.GlobalTheory.CompanionTheory.Relay.exists_regularization_setting : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (II : IntersectionSystem) (Ψ : Type) [Fintype Ψ] (Ω : Type) [Field Ω] [Algebra ℚ Ω] (W : Ψ → Type) [∀ τ, AddCommGroup (W τ)] [∀ τ, Module Ω (W τ)] (D : ComponentData II Ψ K J Ω W) (Hd : HodgeData D) (M : XModel D) (w : ((Σ k, J k) → ℂ) → ℝ), LogHom D Hd.aMu w → ChartPsh D w → ChartCont D w → ChartBdd D w → ConjOff D w → ∃ S' : BoundedRegularisationSetting M D.Xo Hd.aMu w, S'.IsTied ∧ ConjU S' := by
   intro K _ J _ II Ψ _ Ω _ _ W _ _ D Hd M w hL hP hC hB hO

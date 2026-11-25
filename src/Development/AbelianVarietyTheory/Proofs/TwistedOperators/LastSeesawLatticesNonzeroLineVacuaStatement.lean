@@ -87,7 +87,6 @@ end GlobalTheory.FinPl.VLast.KernPf
 
 namespace GlobalTheory.FinPl.VLast.KernPf
 
-
 end GlobalTheory.FinPl.VLast.KernPf
 end -- clump:auto
 end -- clump:auto
@@ -382,7 +381,6 @@ namespace GlobalTheory.LastSeeSaw
 
 variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ}
 
-
 open GlobalTheory.FinPl.VLast.KernPf (wittCoreRestrictionHom wittCoreRestrictionHom_apply wittDecomposition_rankZero_ext_restriction) in
 theorem lastLat_rankZero (hψ : IsStdChar D ψ (-1)) (J : JacL D 0) {X T L'' : HSp D} (o : OrthDec X T L'')
     (Γ : AddSubgroup (WO J.W T)) (ΓL : AddSubgroup (WO J.W₀ (negSp L''))) (ΓX : AddSubgroup (WO J.W₀ X))
@@ -470,7 +468,7 @@ theorem lastLat_std : OnStd fun {D} _ _ _ {G} W F => (∀ ρ, 2 * ρ + 2 ≤ D.R
   · rcases ρ with _ | σ
     · exact hline0
     · obtain ⟨-, -, h3⟩ := GlobalTheory.T.grid_lattices_compact_selfDual_splitting D q T L μ0 hL sc G W M hM F hF
-      exact GlobalTheory.T.exists_ne_zero_latticeVacuum_selfDual D W.ψ hψ _ _ _ _ (G.sp.P_is (2 * (σ + 1) + 1) (by omega)).sd (h3 (σ + 1)) _ le_rfl
+      exact GlobalTheory.AscFin.VacSub.exists_vacG_ne_zero D W.ψ hψ _ _ _ _ (G.sp.P_is (2 * (σ + 1) + 1) (by omega)).sd (h3 (σ + 1)) _ le_rfl
   · have hm : 0 < D.R.m := by omega
     have hdep := dep_vac W 0 hm
     refine lastLat_rankZero hψ (F.jac v 0 h) F.oz _ _ _ (latCore_zero_split D q T L μ0 hL sc G W M hM F hF h) ?_ hline0

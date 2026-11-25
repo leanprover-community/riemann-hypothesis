@@ -63,17 +63,6 @@ namespace GlobalTheory.FinPl.LastDiag
 
 variable {D : D7}
 
-theorem smul_mem_latA {S : HSp D} {L : Lat S} {P : Pl D → Prop} {a : D.host.E} (ha : a ∈ D.host.AA)
-    {y : Fin S.rank → AE D} (hy : y ∈ latV S L P) :
-    (fun i => ((1 : AF D.host.F) ⊗ₜ[D.host.F] a) * y i) ∈ latA S L P := by
-  apply _root_.GlobalTheory.FinPl.VacFlat.smul_mem_latA <;> assumption
-
-end GlobalTheory.FinPl.LastDiag
-
-namespace GlobalTheory.FinPl.LastDiag
-
-variable {D : D7}
-
 theorem mxAt_mul_left {P : Pl D → Prop} {a b c : ℕ} (y : Mx D a b) {x : Mx D b c} (hx : MxAt P x) :
     MxAt P (y ⬝ x) := by
   intro i j
@@ -116,7 +105,7 @@ theorem jX_pX_mem_latA {T T₀ : HSp D} {ρ : ℕ} (d : HypDec T T₀ ρ) {L : L
         rw [Algebra.TensorProduct.tmul_mul_tmul, one_mul, one_mul]
       rw [h1]; ring
     rw [heq]
-    exact smul_mem_latA ha (jX_pX_mem_latV d hm hu')
+    exact GlobalTheory.FinPl.VacFlat.smul_mem_latA ha (jX_pX_mem_latV d hm hu')
   | zero => rw [Matrix.mulVec_zero, Matrix.mulVec_zero]; exact zero_mem _
   | add z z' _ _ hz hz' => rw [Matrix.mulVec_add, Matrix.mulVec_add]; exact add_mem hz hz'
   | neg z _ hz => rw [Matrix.mulVec_neg, Matrix.mulVec_neg]; exact neg_mem hz
@@ -294,8 +283,6 @@ theorem chi_add (ψ : AddChar (AF D.host.F) ℂ) {T T₀ : HSp D} {ρ : ℕ} (d 
 end GlobalTheory.FinPl.LastDiag
 
 namespace GlobalTheory.FinPl.LastDiag
-
-
 
 theorem last_diag_int : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (ρ : ℕ) (B : BesLev D ρ) (J : JacLev D ρ) (s : StepBF ψ B J) (LV : Lat B.V) (LV₀ : Lat B.V₀) (LW : Lat J.W) (LW₀ : Lat J.W₀) (v : Pl D), GoodBF ψ B J LV LV₀ LW LW₀ v → UnrAt s v → ∀ 𝔉, IsFlatBF s (· = v) 𝔉 → ∀ f, Vac ψ B.V J.W LV LW (· = v) f → ∀ t : GL (Fin ρ) (AE D), (∀ i j, i ≠ j → t.1 i j = 0) → J.d.levi t ∈ grpAt J.W (· = v) → 𝔉 (s.om (1, J.d.levi t) f) ≠ 0 → ∀ i : Fin ρ, i.1 + 1 = ρ → t.1 i i - 1 ∈ intAt D (· = v) := by
   intro D ψ ρ B J s LV LV₀ LW LW₀ v hG hU 𝔉 h𝔉 f hf t ht htG hne i hi

@@ -84,7 +84,7 @@ theorem fock_stable : ∀ (D : D7) (n : ℕ) (V : HSp D) (ψ : AddChar (AF D.hos
     rw [show κ (κ.symm k) = k from κ.apply_symm_apply k]
     exact hk
   have hfock' : IsFockVec ψ₀ θ (dblSp A) V s' s (omh (κ.symm k, 1) f) :=
-    GlobalTheory.T.isPolynomialFockThetaVector_weilOperator_cartan D ψ₀ (dblSp A) V 1 χ⁻¹ omh hdat θ hθ s' s' s (κ.symm k)
+    GlobalTheory.FockMove.isFockVec_om D ψ₀ (dblSp A) V 1 χ⁻¹ omh hdat θ hθ s' s' s (κ.symm k)
       (fun τ => (hcomm (κ.symm k) hkk τ).symm) f hfock
   have hmem := GlobalTheory.T.schroedingerFunction_fockVector_polynomial_gaussian D ψ₀ hstd θ hθ A V μ 𝓕 hμ μ' hsk s' s hstd' hs l habs _ hfock'
   have := htr (κ.symm k) f hf Φ hfΦ.symm

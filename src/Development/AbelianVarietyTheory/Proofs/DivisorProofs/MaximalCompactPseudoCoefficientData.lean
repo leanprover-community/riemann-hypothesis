@@ -1087,7 +1087,6 @@ theorem continuous_trace_rep (hD : IsUnitaryRep D) :
   simp only [LinearMap.trace_eq_sum_inner _ (stdOrthonormalBasis ℂ V)]
   exact continuous_finsetSum _ fun i _ => continuous_const.inner (hD.continuous_apply _)
 
-
 omit [TopologicalSpace H] in
 theorem trace_rep_conj (x s : H) :
     LinearMap.trace ℂ V (D (x⁻¹ * s * x) : V →ₗ[ℂ] V) = LinearMap.trace ℂ V (D s : V →ₗ[ℂ] V) := by
@@ -1357,7 +1356,7 @@ theorem StrIdx_proof2 : StrIdx := by
     rintro k _ ⟨y, hy, rfl⟩
     exact ⟨sigD hD (hφK k) y, hLK _ (hφK k) y hy, rfl⟩
   have hAc : ∀ v, Continuous fun k : KG ε => σ (toMK k) v := fun v =>
-    (hσ.2.2 v).comp_continuous hφc fun g => kset_mem_UJset (hφK g)
+    (hσ.2.2 v).comp_continuous hφc fun g => ReciprocityTheory.ChartRestriction.DS.closure_inUJ_of_mem_Kset (hφK g)
   have hcont : Continuous fun k : KG ε => ev (toMK k) P * physDet ε (toMK k) := by
     have := hent (P * Q)
     simpa only [map_mul, hQ] using this
@@ -1415,7 +1414,6 @@ open GlobalTheory.PsCo.Pc1 (Mat)
 namespace GlobalTheory.PsCo.PcEF
 
 open GlobalTheory.PsCo.PcEG
-
 
 theorem supertrace_carriedBy_diracKernel : StrKer := by
   intro n ε H _ _ σ D E hσ hD Y _ hY hG hK

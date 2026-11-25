@@ -586,7 +586,6 @@ open scoped TensorProduct Classical
 
 namespace GlobalTheory.LKCx.FiniteClassIntegralRoots
 
-
 open Polynomial in
 theorem exists_emb_isRoot' {F C E : Type} [Field F] [NumberField F] [Ring C] [Algebra F C]
     [Algebra ℚ C] [IsScalarTower ℚ F C] [FiniteDimensional F C] [Field E] [Algebra ℚ E] [IsAlgClosed E]
@@ -770,7 +769,6 @@ theorem integral_of_term_ne_zero' : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p)
       (fun w μ hμ => hk4 w μ (by rw [hw2]; exact hμ))
       (fun w μ hμ => hk3 w μ (by rw [hw1, ← inv_inv P.γ]; exact hμ)) hA'⟩
 
-
 open GlobalTheory.LKMid.Northcott in
 theorem finite_pol_marked' : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p), G.a = 1 → ∀ N : ℕ, 0 < N →
     {P0 : Polynomial G.F | ∃ P : Pair G, (∃ μ, P.Mark μ) ∧ P.pol = P0 ∧
@@ -782,7 +780,7 @@ theorem finite_pol_marked' : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p), G.a =
   have hnorm : ∀ (v : InfinitePlace G.F) (w : ℂ) (x : Fin G.n → ℂ), x ≠ 0 → G.psi v P.γ *ᵥ x = w • x →
       ‖w‖ ^ 2 = ((P.c : ℚ) : ℝ) := by
     intro v w x hx hwx
-    obtain ⟨-, -, hlaw⟩ := GlobalTheory.T.similitudePair_hermitianForm_invertible_similitude p G P v
+    obtain ⟨-, -, hlaw⟩ := GlobalTheory.LKMid.pair_form_laws p G P v
     obtain ⟨Z, hZ⟩ := _root_.GlobalTheory.LKMid.Pair.gram_psi_inv_congr p G P v
     have hsig := G.sig v
     have hn := G.n_pos

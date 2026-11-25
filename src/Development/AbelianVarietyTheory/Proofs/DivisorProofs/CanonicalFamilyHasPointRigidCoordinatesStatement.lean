@@ -153,7 +153,7 @@ theorem exists_objMap_fixing_descended_points : ∀ {E : Type} [Field E] [Number
         (ReciprocityTheory.ChartRestriction.G.Geo.Tor.chartPullSame M₀ _ (fun _ => π) _ st fun _ => hst₁.symm) hL
     exact LBIso.trans o.t.PP.isLB (pull_isLB hM₀ π) (pull_isLB o.t.PP.isLB st) hL (LBIso.symm h1)
 
-  obtain ⟨m, hm⟩ := GlobalTheory.T.exists_sabMap_of_grpPullback_respecting_action_bundle o.t o.t (spMap (σ : K →+* K)) st o.proper hcart hact hLB
+  obtain ⟨m, hm⟩ := GlobalTheory.UCanon.TriplePull.exists_sabMap_of_isProper o.t o.t (spMap (σ : K →+* K)) st o.proper hcart hact hLB
   have hφ : m.cm.F = st := hm
 
   have hun : η[o.t.G].left ≫ π = spMap k₀.subtype ≫ η[B₀].left := ReciprocityTheory.ChartRestriction.G.Out.PullGtPf.IsGrpPullback.one_left hpb
@@ -467,7 +467,6 @@ def GenericInPsiLocus (φ : R →+* R') (D : DegPre R) : Prop :=
 
 end Pull
 
-
 open scoped CategoryTheory.Obj in
 def UnifBaseChange : Prop :=
   ∀ (R R' : Type) [CommRing R] [IsDomain R] [CommRing R'] [IsDomain R']
@@ -528,7 +527,6 @@ omit [IsDomain R] [IsDomain R'] in
 theorem isGrpPullback_of_bc (bc : G' ≅ (Over.pullback (specOf φ)).obj G) (hbc : IsMonHom bc.hom) :
     IsGrpPullback G' G (specOf φ) (bc.hom.left ≫ pullback.fst G.hom (specOf φ)) :=
   ((isGrpPullback_of_iso bc).comp (isGrpPullback_pullback G (specOf φ))).congr (Category.id_comp _) rfl
-
 
 variable [IsCommMonObj G] [IsCommMonObj G']
 
@@ -659,7 +657,7 @@ theorem GlobalTheory.UCanon.base_value_mem_of_descended_point : ∀ {E : Type} [
   let f : L.W →+* K := ev.comp iw
   have hF : ∀ x : c.F, (f.comp L.b) x ∈ k₀ := GlobalTheory.UCanon.BaseDescent.ratHom_mem_of_isAlgClosed K k₀ hk₀ c.F c.fin (f.comp L.b)
   haveI : CharZero K := (RingHom.charZero_iff (f.comp L.b).injective).mp inferInstance
-  obtain ⟨o', ⟨m₁⟩⟩ := (GlobalTheory.T.shimuraObject_pullback_comp_cancel (D := D') (l := GlobalTheory.LowDat.lowLevel l)).1 (lowMap c L.b) L.o (spMap f)
+  obtain ⟨o', ⟨m₁⟩⟩ := (GlobalTheory.UCanon.obj_pull_comp_cancel (D := D') (l := GlobalTheory.LowDat.lowLevel l)).1 (lowMap c L.b) L.o (spMap f)
     (lowMap c (f.comp L.b)) (by simp only [lowMap, spMap, ← Spec.map_comp]; rfl)
   obtain ⟨B₀, _, _, M₀, π, hab, hM, hpb, hL, hpts⟩ := GlobalTheory.UCanon.BaseDescent.pulledObj_descends L Q oQ iw s ε e hDiv K ev k₀ hk₀ o' m₁ hB
   choose x hx1 hx2 hx3 using hpts
@@ -669,7 +667,7 @@ theorem GlobalTheory.UCanon.base_value_mem_of_descended_point : ∀ {E : Type} [
   have hcomp : ∀ g' : Sp K ⟶ Sp L.W, g' = spMap (σ : K →+* K) ≫ spMap f →
       ∃ k : ObjMap o' L.o g', k.toSABMap.φ = n.toSABMap.φ ≫ m₁.toSABMap.φ := by
     rintro g' rfl
-    exact ((GlobalTheory.T.shimuraObject_pullback_comp_cancel (D := D') (l := GlobalTheory.LowDat.lowLevel l)).2 _ _ _ L.o o' o' (spMap f) (spMap (σ : K →+* K)) m₁).1 n
+    exact ((GlobalTheory.UCanon.obj_pull_comp_cancel (D := D') (l := GlobalTheory.LowDat.lowLevel l)).2 _ _ _ L.o o' o' (spMap f) (spMap (σ : K →+* K)) m₁).1 n
   obtain ⟨m₂, hm₂⟩ := hcomp (spMap ((σ : K →+* K).comp f)) (by simp only [spMap, ← Spec.map_comp]; rfl)
   have key := L.fineRed K f ((σ : K →+* K).comp f)
     (by ext y; simp only [RingHom.comp_apply]; exact (hσ _ (hF y)).symm) o' m₁ m₂ x hx2

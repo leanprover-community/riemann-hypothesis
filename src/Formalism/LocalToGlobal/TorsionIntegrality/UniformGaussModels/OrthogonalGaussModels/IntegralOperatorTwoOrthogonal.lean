@@ -435,21 +435,13 @@ lemma nsub_le {a b : K} {r : ℝ} (ha : ‖a‖ ≤ r) (hb : ‖b‖ ≤ r) : �
 lemma ndom {a b : K} (h : ‖b‖ < ‖a‖) : ‖a + b‖ = ‖a‖ := by
   rw [IsUltrametricDist.norm_add_eq_max_of_norm_ne_norm h.ne', max_eq_left h.le]
 
-lemma nmul1 {a b : K} (ha : ‖a‖ ≤ 1) (hb : ‖b‖ ≤ 1) : ‖a * b‖ ≤ 1 := by
-  rw [norm_mul]
-  exact mul_le_one₀ ha (norm_nonneg _) hb
-
-lemma npow1 {a : K} (ha : ‖a‖ ≤ 1) (n : ℕ) : ‖a ^ n‖ ≤ 1 := by
-  rw [norm_pow]
-  exact pow_le_one₀ (norm_nonneg _) ha
-
 lemma n2le : ‖(2 : K)‖ ≤ 1 := by
   rw [show (2 : K) = 1 + 1 by norm_num]
   exact nadd_le norm_one.le norm_one.le
 
 lemma n4le : ‖(4 : K)‖ ≤ 1 := by
   rw [show (4 : K) = 2 * 2 by norm_num]
-  exact nmul1 n2le n2le
+  exact Formalism.L2.Th1.B.Crv.norm_mul_le_one' n2le n2le
 
 lemma n4 (h2 : ‖(2 : K)‖ = 2⁻¹) : ‖(4 : K)‖ = 4⁻¹ := by
   rw [show (4 : K) = 2 * 2 by norm_num, norm_mul, h2]
@@ -467,10 +459,10 @@ lemma b_int (W : WeierstrassCurve K) (h1 : ‖W.a₁‖ ≤ 1) (h2 : ‖W.a₂�
     (h4 : ‖W.a₄‖ ≤ 1) (h6 : ‖W.a₆‖ ≤ 1) :
     ‖W.b₂‖ ≤ 1 ∧ ‖W.b₄‖ ≤ 1 ∧ ‖W.b₆‖ ≤ 1 ∧ ‖W.b₈‖ ≤ 1 := by
   simp only [WeierstrassCurve.b₂, WeierstrassCurve.b₄, WeierstrassCurve.b₆, WeierstrassCurve.b₈]
-  refine ⟨nadd_le (npow1 h1 2) (nmul1 n4le h2), nadd_le (nmul1 n2le h4) (nmul1 h1 h3),
-    nadd_le (npow1 h3 2) (nmul1 n4le h6), ?_⟩
-  exact nsub_le (nadd_le (nsub_le (nadd_le (nmul1 (npow1 h1 2) h6) (nmul1 (nmul1 n4le h2) h6))
-    (nmul1 (nmul1 h1 h3) h4)) (nmul1 h2 (npow1 h3 2))) (npow1 h4 2)
+  refine ⟨nadd_le (Formalism.L2.Th1.E.unitAtAlt.i_pow h1 2) (Formalism.L2.Th1.B.Crv.norm_mul_le_one' n4le h2), nadd_le (Formalism.L2.Th1.B.Crv.norm_mul_le_one' n2le h4) (Formalism.L2.Th1.B.Crv.norm_mul_le_one' h1 h3),
+    nadd_le (Formalism.L2.Th1.E.unitAtAlt.i_pow h3 2) (Formalism.L2.Th1.B.Crv.norm_mul_le_one' n4le h6), ?_⟩
+  exact nsub_le (nadd_le (nsub_le (nadd_le (Formalism.L2.Th1.B.Crv.norm_mul_le_one' (Formalism.L2.Th1.E.unitAtAlt.i_pow h1 2) h6) (Formalism.L2.Th1.B.Crv.norm_mul_le_one' (Formalism.L2.Th1.B.Crv.norm_mul_le_one' n4le h2) h6))
+    (Formalism.L2.Th1.B.Crv.norm_mul_le_one' (Formalism.L2.Th1.B.Crv.norm_mul_le_one' h1 h3) h4)) (Formalism.L2.Th1.B.Crv.norm_mul_le_one' h2 (Formalism.L2.Th1.E.unitAtAlt.i_pow h3 2))) (Formalism.L2.Th1.E.unitAtAlt.i_pow h4 2)
 
 lemma t4 (h2 : ‖(2 : K)‖ = 2⁻¹) (x : K) : ‖4 * x ^ 3‖ = ‖x‖ ^ 3 / 4 := by
   rw [norm_mul, norm_pow, n4 h2]

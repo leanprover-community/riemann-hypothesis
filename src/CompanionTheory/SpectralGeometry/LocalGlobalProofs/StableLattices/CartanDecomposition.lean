@@ -267,9 +267,6 @@ theorem Hq_outer (k r : ℕ) (i j : Fin (2 * r + k + 1)) (hi : outer k r i) (hij
   simp only [hHq, hout, Fin.ext_iff]
   split_ifs <;> (try simp) <;> omega
 
-theorem Hq_sq (k r : ℕ) : Hq k r * Hq k r = 1 := by
-  apply GlobalTheory.CompanionTheory.BesselLevi.Hq_sq
-
 def tor (k r : ℕ) (u : ℝ) : Fin (2 * r + k + 1) → ℝ := fun i =>
   if i.val = r then u else if i.val = r + k then u⁻¹ else 1
 
@@ -331,14 +328,6 @@ theorem dg_mem (k r : ℕ) (hk : 1 ≤ k) (u : ℝ) (hu : u ≠ 0) : dg (tor k r
       simp
     · simp [hHq, h1, h3]
 
-theorem UH_mul {m : ℕ} {H g h : Matrix (Fin m) (Fin m) ℂ} (hg : g ∈ UH H) (hh : h ∈ UH H) : g * h ∈ UH H := by
-  have hUH : ∀ {m : ℕ} (H g : Matrix (Fin m) (Fin m) ℂ), g ∈ UH H ↔ gᴴ * H * g = H := fun _ _ => Iff.rfl
-  rw [hUH] at hg hh ⊢
-  calc (g * h)ᴴ * H * (g * h) = hᴴ * (gᴴ * H * g) * h := by
-        rw [Matrix.conjTranspose_mul]
-        simp only [Matrix.mul_assoc]
-    _ = H := by rw [hg, hh]
-
 theorem bvec_dot {m : ℕ} (i j : Fin m) : star (bvec i) ⬝ᵥ bvec j = if i = j then (1 : ℂ) else 0 := by
   have hbv : ∀ {m : ℕ} (i : Fin m), bvec i = Pi.single i (1 : ℂ) := fun _ => rfl
   by_cases h : i = j
@@ -352,7 +341,7 @@ theorem cartanQ : CartanQ := by
   have hUH : ∀ {m : ℕ} (H g : Matrix (Fin m) (Fin m) ℂ), g ∈ UH H ↔ gᴴ * H * g = H := fun _ _ => Iff.rfl
   obtain ⟨hμU, hμfix⟩ := hμ
   have hH : (Hq k r)ᴴ = Hq k r := Hq_herm k r
-  have hHH : Hq k r * Hq k r = 1 := Hq_sq k r
+  have hHH : Hq k r * Hq k r = 1 := GlobalTheory.CompanionTheory.BesselLevi.Hq_sq k r
   have hμU' : μᴴ * Hq k r * μ = Hq k r := (hUH _ _).mp hμU
   have hνμ : (Hq k r * μᴴ * Hq k r) * μ = 1 := by
     calc (Hq k r * μᴴ * Hq k r) * μ = Hq k r * (μᴴ * Hq k r * μ) := by simp only [Matrix.mul_assoc]
@@ -460,7 +449,7 @@ theorem cartanQ : CartanQ := by
       unfold tor
       rw [if_neg hj1, if_neg hj2]
     rw [this, Complex.ofReal_one, one_smul]
-  refine ⟨μ * K' * dg (tor k r u⁻¹), ⟨UH_mul (UH_mul hμU hK'U) hg1U, fun a => ?_⟩, tor k r u, K'ᴴ, ?_, ?_, ?_,
+  refine ⟨μ * K' * dg (tor k r u⁻¹), ⟨GlobalTheory.CompanionTheory.BesselLevi.mul_mem (GlobalTheory.CompanionTheory.BesselLevi.mul_mem hμU hK'U) hg1U, fun a => ?_⟩, tor k r u, K'ᴴ, ?_, ?_, ?_,
     ?_, ?_, ?_⟩
   · have ha := a.isLt
     have he : ((Formalism.QuantumDeterminants.eI k r a : Fin (2 * r + k + 1)) : ℕ) = a := rfl

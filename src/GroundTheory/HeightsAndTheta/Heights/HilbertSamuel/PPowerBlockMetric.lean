@@ -39,42 +39,12 @@ theorem homog_sub {f g : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a) (hg :
   rw [sub_eq_add_neg]
   exact homog_add hf (GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBounded.homog_neg hg)
 
-theorem homog_C (r : ℤ) : IsMultiHomog (C r : MRing ι) 0 := by
-  classical
-  intro m hm k
-  rw [mem_support_iff, coeff_C] at hm
-  split_ifs at hm with h
-  · subst h
-    simp
-  · exact absurd rfl hm
-
 theorem homog_mul {f g : MRing ι} {a b : K → ℕ} (hf : IsMultiHomog f a) (hg : IsMultiHomog g b) :
     IsMultiHomog (f * g) (a + b) := by
   classical
   intro m hm k
   obtain ⟨m1, hm1, m2, hm2, rfl⟩ := Finset.mem_add.mp (MvPolynomial.support_mul f g hm)
   simp only [Finsupp.add_apply, Finset.sum_add_distrib, Pi.add_apply, hf m1 hm1 k, hg m2 hm2 k]
-
-theorem homog_X [DecidableEq K] (p : Σ k, ι k) : IsMultiHomog (X p : MRing ι) (Pi.single p.1 1) := by
-  classical
-  obtain ⟨k, i⟩ := p
-  intro m hm k'
-  rw [MvPolynomial.support_X, Finset.mem_singleton] at hm
-  subst hm
-  by_cases h : k' = k
-  · subst h
-    rw [Pi.single_eq_same, Finset.sum_eq_single i]
-    · simp
-    · intro b _ hb
-      rw [Finsupp.single_apply, if_neg]
-      intro e
-      exact hb (eq_of_heq (Sigma.mk.inj_iff.mp e).2).symm
-    · simp
-  · rw [Pi.single_eq_of_ne h]
-    refine Finset.sum_eq_zero fun j _ => ?_
-    rw [Finsupp.single_apply, if_neg]
-    intro e
-    exact h (congrArg Sigma.fst e).symm
 
 def chartMon (c : ∀ k, ι k) (d : K → ℕ) : MRing ι := ∏ k, (X ⟨k, c k⟩ : MRing ι) ^ d k
 
@@ -87,7 +57,7 @@ theorem homog_chartMon (c : ∀ k, ι k) (d : K → ℕ) : IsMultiHomog (chartMo
     | empty => simpa using (GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBounded.homog_one (ι := ι))
     | insert k s hk ih =>
       rw [Finset.prod_insert hk, Finset.sum_insert hk]
-      exact homog_mul (GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBounded.homog_pow (homog_X ⟨k, c k⟩) _) ih
+      exact homog_mul (GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBounded.homog_pow (GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBounded.homog_X ⟨k, c k⟩) _) ih
   have e : (∑ k, d k • (Pi.single k 1 : K → ℕ)) = d := by
     ext k
     simp [Finset.sum_apply, Pi.single_apply]
@@ -425,7 +395,6 @@ theorem conj_graphLine {S : ((Σ k, ι k) → ℂ) → ℝ}
   rw [h1, h2]
 
 end PowerBlockMetric
-
 
 open PowerBlockMetric in
 theorem PowerBlockMetric.proof (hExt : SectionNormSqExtension.Statement) : PowerBlockMetric.Statement := by

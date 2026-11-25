@@ -232,18 +232,6 @@ theorem stable_of_one {V : Type*} [AddCommGroup V] [Module ℂ V] (Λ : AddSubgr
   rw [Int.cast_smul_eq_zsmul]
   exact Λ.zsmul_mem hx k
 
-theorem odd_of_cmOK {a : ℕ} {b c : ℤ} {d : ℕ} (h : CmOK a b c d) : Odd b := by
-  by_contra hb
-  obtain ⟨k, rfl⟩ := Int.not_odd_iff_even.1 hb
-  have h1 := h.1
-  have h8 := h.2.2.1
-  have h2 : (d : ℤ) = 4 * ((a : ℤ) * c - k * k) := by
-    have : (k + k) ^ 2 = 4 * (k * k) := by ring
-    rw [this] at h1
-    linarith
-  generalize (a : ℤ) * c - k * k = t at h2
-  omega
-
 end GlobalTheory.ThLoc.KapNonSplit
 end -- clump:auto
 end -- clump:auto
@@ -269,7 +257,7 @@ namespace GlobalTheory.ThLoc.LocMM
 
 alias stable_of_one := _root_.GlobalTheory.ThLoc.KapNonSplit.stable_of_one
 
-alias odd_of_cmOK := _root_.GlobalTheory.ThLoc.KapNonSplit.odd_of_cmOK
+alias odd_of_cmOK := _root_.Formalism.L2.AlgTh.ImageLatticeRepresentatives.odd_b
 
 theorem hermitianSelfDual_of_fourfoldBlock {n : Type} [Fintype n] (h : Matrix n n ℂ) (Λ : AddSubgroup (n → ℂ))
     (hsd : IsSelfDual (matH (blk4 h)) (pow4 Λ)) : IsSelfDual (matH h) Λ := by
@@ -803,7 +791,6 @@ def tPullEquiv (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (γ : Matrix.unitaryGroup
       rw [tPull_comp, Matrix.mem_unitaryGroup_iff.mp γ.2, Matrix.mem_unitaryGroup_iff.mp γ'.2, tPull_one])
 
 end GlobalTheory.ThLoc.AllPlaces
-
 
 open GlobalTheory.ThLoc.AllPlaces in
 attribute [local instance] Formalism.BasicNotions.Host.cmStar in

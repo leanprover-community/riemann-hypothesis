@@ -214,8 +214,6 @@ open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep 
 open scoped Classical TensorProduct
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-theorem _root_.GlobalTheory.T.heckeChar_finprod_locK_mul_inf_eq_one : ∀ (E : Type) [Field E] [NumberField E] (χ : HChar E) (k : Eˣ), (Function.mulSupport fun w : Pl E => χ.locK w k).Finite ∧ (∏ᶠ w : Pl E, χ.locK w k) * χ.inf k = 1 := by
-  first | exact @GlobalTheory.HCharUnit.finprod_locK_mul_inf
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.HeckeCharFinprodLocKMulInfEqOneStatement =====
@@ -355,8 +353,6 @@ open NumberField IsDedekindDomain Matrix Polynomial Filter GlobalTheory.CuspRep 
 open scoped Classical TensorProduct
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-theorem _root_.GlobalTheory.T.unitaryHeckeCharCM_infinityComponent_globalUnit : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (μ : HChar E) (e : InfinitePlace E → ℤ), IsMu μ e → ∀ k : Eˣ, ((μ.inf k : ℂˣ) : ℂ) = ∏ v : InfinitePlace E, (v.embedding (k : E) / (‖v.embedding (k : E)‖ : ℂ)) ^ e v := by
-  first | exact @GlobalTheory.BCT.inf_mu_unit
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitaryHeckeCharCMInfinityComponentGlobalUnitStatement =====
@@ -946,7 +942,7 @@ theorem resultant_factors_prod_eq_one {E : Type} [Field E] [NumberField E] [IsCM
     linear_combination (-(-1 : E) ^ (a * b) * R) * hH - R ^ 2 * hsq
 
   let f : Pl E → ℂ := fun w => ((μ.locK w k : ℂˣ) : ℂ) * absHalf w (algebraMap E (w.adicCompletion E) R)
-  obtain ⟨hfin1, hprod1⟩ := GlobalTheory.T.heckeChar_finprod_locK_mul_inf_eq_one E μ k
+  obtain ⟨hfin1, hprod1⟩ := GlobalTheory.HCharUnit.finprod_locK_mul_inf E μ k
   obtain ⟨hfin2, hprod2⟩ := GlobalTheory.T.prodFormula_sqrt_normalizedAbsValues_CMField E R hR0
   have hfin1' : (Function.mulSupport fun w : Pl E => ((μ.locK w k : ℂˣ) : ℂ)).Finite := by
     refine hfin1.subset fun w hw => ?_
@@ -1034,7 +1030,7 @@ theorem resultant_factors_prod_eq_one {E : Type} [Field E] [NumberField E] [IsCM
       simp only [hn₁, hn₂, hdl]
       rw [if_neg hsp]
       simp only [f]
-      rw [GlobalTheory.T.unitaryHeckeCharCM_locK_nonsplit_eq_neg_one_pow E μ e hμ w hsp k]
+      rw [GlobalTheory.BCT.inertChar_muLocK E μ e hμ w hsp k]
       rfl
   have hS' : ∀ x : Pl E, ∃! s, s ∈ S ∧ s.under (𝓞 (maximalRealSubfield E)) = x.under (𝓞 (maximalRealSubfield E)) := hS
   have hfib := GlobalTheory.T.finprod_eq_finprod_mem_fibres_of_section' (fun x : Pl E => x.under (𝓞 (maximalRealSubfield E))) S f hS' hfin
@@ -1043,7 +1039,7 @@ theorem resultant_factors_prod_eq_one {E : Type} [Field E] [NumberField E] [IsCM
   have hinf : ∀ v : InfinitePlace E, resultant (P₁.map v.embedding) (P₂.map v.embedding) = v.embedding R :=
     fun v => GlobalTheory.ProdForm.resMap _ _ _ _ _
   simp only [hinf]
-  have hi := GlobalTheory.T.unitaryHeckeCharCM_infinityComponent_globalUnit E μ e hμ k
+  have hi := GlobalTheory.BCT.inf_mu_unit E μ e hμ k
   simp only [k, Units.val_mk0] at hi
   rw [Finset.prod_mul_distrib, ← hi]
   have hsplitf : ∏ᶠ x, f x = (∏ᶠ w, ((μ.locK w k : ℂˣ) : ℂ)) * ∏ᶠ w, absHalf w (algebraMap E (w.adicCompletion E) R) :=
@@ -1076,9 +1072,9 @@ theorem delta_eventually_one {E : Type} [Field E] [NumberField E] [IsCMField E] 
   let k : Eˣ := Units.mk0 R hR0
   let u : Eˣ := Units.mk0 _ hu0
   have e1 : ∀ᶠ w in (cofinite : Filter (Pl E)), μ.locK w k = 1 :=
-    Filter.eventually_cofinite.2 (GlobalTheory.T.heckeChar_finprod_locK_mul_inf_eq_one E μ k).1
+    Filter.eventually_cofinite.2 (GlobalTheory.HCharUnit.finprod_locK_mul_inf E μ k).1
   have e2 : ∀ᶠ w in (cofinite : Filter (Pl E)), μ.locK w u = 1 :=
-    Filter.eventually_cofinite.2 (GlobalTheory.T.heckeChar_finprod_locK_mul_inf_eq_one E μ u).1
+    Filter.eventually_cofinite.2 (GlobalTheory.HCharUnit.finprod_locK_mul_inf E μ u).1
   have e3 : ∀ᶠ w in (cofinite : Filter (Pl E)), absHalf w (algebraMap E (w.adicCompletion E) R) = 1 :=
     Filter.eventually_cofinite.2 (GlobalTheory.T.prodFormula_sqrt_normalizedAbsValues_CMField E R hR0).1
   have e4 : ∀ᶠ w in (cofinite : Filter (Pl E)), absHalf w (algebraMap E (w.adicCompletion E) (R ^ 2 / d)) = 1 :=
@@ -1115,7 +1111,7 @@ theorem delta_eventually_one {E : Type} [Field E] [NumberField E] [IsCMField E] 
     rw [hres]
     simp only [hn₁, hn₂, hdl]
     rw [if_neg hsp, h3, mul_one]
-    have := GlobalTheory.T.unitaryHeckeCharCM_locK_nonsplit_eq_neg_one_pow E μ e hμ w hsp k
+    have := GlobalTheory.BCT.inertChar_muLocK E μ e hμ w hsp k
     rw [h1] at this
     simpa [k] using this.symm
 

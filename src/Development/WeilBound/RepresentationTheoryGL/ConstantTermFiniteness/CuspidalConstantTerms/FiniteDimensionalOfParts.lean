@@ -237,7 +237,6 @@ end Gen
 
 end GlobalTheory.CompanionTheory.LeviGen
 
-
 noncomputable section
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
@@ -271,9 +270,6 @@ theorem adMat_one {a : ℕ} : adMat F (1 : Matrix (Fin a) (Fin a) E) = 1 := Matr
 theorem mat_mul_inv (g : GAd σ J) : (matHom _ σ J g).1 * (matHom _ σ J g⁻¹).1 = 1 := by
   rw [← Units.val_mul, ← map_mul, mul_inv_cancel, map_one, Units.val_one]
 
-theorem mat_inv_mul (g : GAd σ J) : (matHom _ σ J g⁻¹).1 * (matHom _ σ J g).1 = 1 := by
-  rw [← Units.val_mul, ← map_mul, inv_mul_cancel, map_one, Units.val_one]
-
 theorem mat_unitary (g : GAd σ J) :
     cT (sigR (AF F) σ) (matHom _ σ J g).1 * adMat F J * (matHom _ σ J g).1 = adMat F J := g.2
 
@@ -285,9 +281,9 @@ theorem exists_onPart (g : GAd σ J) {Q : Matrix (Fin n) (Fin n) (AF F ⊗[F] E)
     (hc : (matHom _ σ J g).1 * Q = Q * (matHom _ σ J g).1) :
     ∃ m : GAd σ J, (matHom _ σ J m).1 = onPart Q (matHom _ σ J g).1 ∧
       (matHom _ σ J m⁻¹).1 = onPart Q (matHom _ σ J g⁻¹).1 :=
-  ⟨mkPt _ _ (onPart_inv hQ hc (mat_mul_inv g) (mat_inv_mul g))
-    (onPart_inv hQ (comm_inv hc (mat_mul_inv g) (mat_inv_mul g)) (mat_inv_mul g) (mat_mul_inv g))
-    (onPart_unitary hQ hQJ hc (mat_unitary g) (mat_mul_inv g) (mat_inv_mul g)), rfl, rfl⟩
+  ⟨mkPt _ _ (onPart_inv hQ hc (mat_mul_inv g) (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UCore.LeviU.mat_inv_mul g))
+    (onPart_inv hQ (comm_inv hc (mat_mul_inv g) (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UCore.LeviU.mat_inv_mul g)) (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UCore.LeviU.mat_inv_mul g) (mat_mul_inv g))
+    (onPart_unitary hQ hQJ hc (mat_unitary g) (mat_mul_inv g) (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UCore.LeviU.mat_inv_mul g)), rfl, rfl⟩
 
 variable (h : IsCMExt F E σ) (hJ : IsHermND σ J) (hW : IsWittFrame σ J X Y)
 include h hJ hW
@@ -303,7 +299,6 @@ theorem adFrame : cT (sigR (AF F) σ) (adMat F X) * adMat F J * adMat F X = 0 �
 end Adelic
 
 end GlobalTheory.CompanionTheory.LeviGen
-
 
 noncomputable section
 
@@ -333,10 +328,10 @@ theorem isComm_of_mem_levi {T : Finset (Fin r)} {g : GAd σ J} (hg : g ∈ levi 
       (adMat F Y).submatrix id (Fin.castLE j.2) = 1 := by rw [cT_sub_mul, fxy, Matrix.submatrix_one _ inj]
   refine ⟨?_, ?_⟩
   · rw [prX_ind_le]
-    exact comm_of_frame h1 (mat_unitary g) (mat_mul_inv g) (mat_inv_mul g) eB eC
+    exact comm_of_frame h1 (mat_unitary g) (mat_mul_inv g) (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UCore.LeviU.mat_inv_mul g) eB eC
   · change _ * prX _ _ (adMat F Y) (adMat F X) _ = prX _ _ (adMat F Y) (adMat F X) _ * _
     rw [prX_ind_le]
-    exact comm_of_frame h2 (mat_unitary g) (mat_mul_inv g) (mat_inv_mul g) eC eB
+    exact comm_of_frame h2 (mat_unitary g) (mat_mul_inv g) (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UCore.LeviU.mat_inv_mul g) eC eB
 
 theorem mem_levi_of_isComm {T : Finset (Fin r)} {m : GAd σ J}
     (hm : ∀ j ∈ T, IsComm (sigR (AF F) σ) (adMat F J) (adMat F X) (adMat F Y) (matHom _ σ J m).1 (ind {i | i ≤ j}))
@@ -384,7 +379,6 @@ theorem isComm_block {T : Finset (Fin r)} {g : GAd σ J} (hg : g ∈ levi σ J X
 end Levi
 
 end GlobalTheory.CompanionTheory.LeviGen
-
 
 noncomputable section
 
@@ -467,7 +461,6 @@ theorem exists_uPart {T : Finset (Fin r)} {g : GAd σ J} (hg : g ∈ levi σ J X
 end Parts
 
 end GlobalTheory.CompanionTheory.LeviGen
-
 
 noncomputable section
 
@@ -595,8 +588,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Published GlobalTheory.Published.AutFin GlobalTheory.StdPar GlobalTheory.ThK.SmoothLev GlobalTheory.CompanionTheory.Hypotheses₂.ConstFin GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart
 open GlobalTheory.UAut GlobalTheory.AdelicU GlobalTheory.SiegelSet
 
-theorem _root_.GlobalTheory.T.levi_parts_commute : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (n : ℕ) (J : Matrix (Fin n) (Fin n) E), IsHermND σ J → ∀ (r : ℕ) (X Y : Matrix (Fin n) (Fin r) E), GlobalTheory.SiegelSet.IsWittFrame σ J X Y → ∀ T : Finset (Fin r), Pairwise fun i j : Option {k // k ∈ T} => ∀ x y : GAd σ J, x ∈ part σ J X Y T i → y ∈ part σ J X Y T j → Commute x y := by
-  first | exact @GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.Comm.part_commute
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GlobalProofs.LeviEqISupPartsStatement =====
@@ -772,7 +763,6 @@ theorem exists_KG_of_stab {n : ℕ} {e : Fin n → Bool} {f k : Matrix (Fin n) (
 
 variable {D : D7} {θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)} {V : HSp D}
   {ε : D.what₂.Tau → Fin V.rank → Bool} {fr : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ}
-
 
 open GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.KInf in
 theorem kInf_spec (hθ : IsInfFam θ) (hfr : IsFrameFam V ε fr) (κ : ∀ τ, Formalism.REAL.KG (ε τ)) :
@@ -1027,13 +1017,8 @@ theorem exists_decomp : ∀ (D : D7) (θ : D.what₂.Tau → (Ainf D.host.F ⊗[
   simp only [mul_assoc]
   rw [← mul_assoc (kInf θ V ε fr κ) c u, hcomm.eq, mul_assoc]
 
-theorem finiteDimensional_coeffSpan {K W : Type} [Group K] [AddCommGroup W] [Module ℂ W] [FiniteDimensional ℂ W]
-    (ρ : Representation ℂ K W) : FiniteDimensional ℂ (GlobalTheory.Published.AutFin.coeffSpan ρ) :=
-  _root_.UpperTheory.Reformulated.B.EvaluationMap.main ρ
-
 variable {D : D7} {θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)} {V : HSp D}
   {ε : D.what₂.Tau → Fin V.rank → Bool} {fr : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ}
-
 
 open Classical in
 theorem eq_zero_of_kInf {W : D.what₂.Tau → Type} [∀ τ, AddCommGroup (W τ)] [∀ τ, Module ℂ (W τ)]
@@ -1067,7 +1052,7 @@ theorem exists_finset_sep_levi : ∀ (D : D7) (θ : D.what₂.Tau → (Ainf D.ho
   intro D θ hθ V U hU ε fr hfr W _ _ _ ρ hρ c m X Y hW T hT
   classical
   obtain ⟨C, hC⟩ := exists_decomp D θ hθ V U hU ε fr hfr m X Y hW T
-  haveI := fun τ => finiteDimensional_coeffSpan (ρ τ)
+  haveI := fun τ => GlobalTheory.CompanionTheory.CTFin.UniSol.finiteDimensional_coeffSpan (ρ τ)
   choose S hS using fun τ => exists_finset_sep (GlobalTheory.Published.AutFin.coeffSpan (ρ τ))
   refine ⟨(C ×ˢ Fintype.piFinset S).image fun p => p.1 * kInf θ V ε fr p.2, fun φ hφ h0 => ?_⟩
   funext g
@@ -1160,7 +1145,7 @@ theorem finite_cuspOn : ∀ (D : D7) (θ : D.what₂.Tau → (Ainf D.host.F ⊗[
   have hh := GlobalTheory.Mem.Vol.cmData_isCMExt_and_gram_isHermND D.host.F D.host.E D.sp.cm
   obtain ⟨B, hB⟩ := GlobalTheory.T.archimedean_frame_K_type_decomposition D θ hθ V U hU ε fr hfr W ρ hρ c m X Y hW T hT
   refine finiteDimensional_of_parts (part D.sp.cm.sig V.gram X Y T)
-    (GlobalTheory.T.levi_parts_commute D.host.F D.host.E D.sp.cm.sig hh.1 V.rank V.gram (hh.2 V) m X Y hW T) (levi D.sp.cm.sig V.gram X Y T)
+    (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.Comm.part_commute D.host.F D.host.E D.sp.cm.sig hh.1 V.rank V.gram (hh.2 V) m X Y hW T) (levi D.sp.cm.sig V.gram X Y T)
     (GlobalTheory.T.levi_eq_iSup_parts D.host.F D.host.E D.sp.cm.sig hh.1 V.rank V.gram (hh.2 V) m X Y hW T) (cuspOn θ V X Y T U ε fr ρ c) B
     (fun φ hφ h => hB φ (mem_formsOn_of_mem_span hθ (Submodule.span_mono (show cuspOn θ V X Y T U ε fr ρ c ⊆ formsOn θ V X Y T U ε fr ρ c from fun _ hf => hf.1) hφ)) h) ?_
   rintro (_ | k) b

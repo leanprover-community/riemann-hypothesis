@@ -1137,7 +1137,6 @@ open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.
 
 theorem ampKF0_iff_gapIn : AmpKF0 ↔ GlobalTheory.GapIn.AmpKF0 := Iff.rfl
 
-
 open Formalism.MainNotions.S.Pv.AmpDDPf in
 theorem ampKF0_holds : AmpKF0 := by
   intro k r L h μG w0 l l' hOPKF γ μR νR ν hCD b hb hab' hpm v v' hv hv' ξ ξ'
@@ -1708,14 +1707,12 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions Form
 
 variable {D : D7}
 
-
 variable [Fact Formalism.FourierDecayAlt.ThreeDimData.DecLow] [Fact Formalism.L2.SG.SplitPrimeNormLemmas.CoefWeightedLoc] in
 theorem wuBessel_ofW {X : HidaSetting D} {θ : ℝ} (hG : Formalism.L2.SG.ConcreteSettingExists.GapHyp D)
     (hBW : Formalism.L2.SG.LocWSOf.BesselOfW) (C : Choice X θ) : WuBessel C :=
   Formalism.L2.SG.Pf.wuBesselOfLoc_all C hG hBW
     (Formalism.L2.SG.Pf.LocF.locFactor_holds hG C) (fun τ => Formalism.L2.SG.Pf.dsTr C τ) (fun τ => Formalism.L2.SG.Pf.haarTr C τ)
     (fun u τ => Formalism.L2.SG.Pf.colsTypeTr C u τ)
-
 
 variable [Fact Formalism.L2.SG.SplitPrimeNormLemmas.CoefWeightedLoc] [Fact Formalism.FourierDecayAlt.ThreeDimData.DecLow] in
 def loopLocDatOfW (hG : Formalism.L2.SG.ConcreteSettingExists.GapHyp D) (hT : Formalism.BasicNotions.dsigTie D)
@@ -1744,7 +1741,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {𝒞 : FamClass} (sel : SSel 𝒞)
 
-
 variable [Fact Formalism.L2.SG.SplitPrimeNormLemmas.CoefWeightedLoc] [Fact Formalism.FourierDecayAlt.ThreeDimData.DecLow] in
 def BGW (hBW : Formalism.L2.SG.LocWSOf.BesselOfW) (C1f : List ℝ → ℝ) (hC1 : ∀ l, 0 ≤ C1f l) :
     ∀ {eps : ℝ} (Fm : FamP eps) (hc : CG 𝒞 Fm) x (_ : (Fm.raise (yR (selG sel) yFG Fm hc)).x1 < x) (i : Fm.Ix x)
@@ -1753,7 +1749,6 @@ def BGW (hBW : Formalism.L2.SG.LocWSOf.BesselOfW) (C1f : List ℝ → ℝ) (hC1 
     (gap_of hc (hyR (selG sel) yFG hx) i) (Fm.ties x i).dsig_tie hBW
     (CX ((selG sel Fm hc).2 x (raise_lt hx) (h0R (selG sel) yFG hx) i).X u)
     (Formalism.L2.SG.Pf.LoopBTheta.normWin_one (Fm.L x i) (hC1 _)) u u'
-
 
 variable [Fact Formalism.FourierDecayAlt.ThreeDimData.DecLow] [Fact Formalism.L2.SG.SplitPrimeNormLemmas.CoefWeightedLoc] in
 def MGW (hFX : Formalism.L2.SG.PoincareAmplitudeLowerBounds.FinXC) (hWu : Formalism.L2.SG.Pf.WuDecayOfGap) (hBW : Formalism.L2.SG.LocWSOf.BesselOfW)
@@ -1806,7 +1801,7 @@ theorem loop_rows_closed_gap : GlobalTheory.GapIn.Hyp → Formalism.L2.SG.LocWSO
   have hFX : Formalism.L2.SG.PoincareAmplitudeLowerBounds.FinXC := Formalism.L2.SG.Pf.finXC_of hWu hRF
   have hRM : RMeasExAll := GlobalTheory.RMeasAll.rMeasEx_all
   have hJF : JFactNAll := GlobalTheory.T.localBesselJFactor_all_words_of_gap
-  have hCF : Formalism.L2.SG.Pf.LoopBCovN.CovNFormula := GlobalTheory.CovNFormulaPf.main
+  have hCF : Formalism.L2.SG.Pf.LoopBCovN.CovNFormula := Formalism.MainStatements.RowRest.covariance_formula
   choose C₀F thrF hR using _root_.GlobalTheory.LoopRowBoundsGap.rows_along_family Formalism.HermitianLattices.Ext.L3.siegelMassRatio hH hBp
   choose cVF hcV using GlobalTheory.T.stabiliserCovolume_relevantTerm_le_heightPow
   have hForm : Closed 𝒞 fun Fm _ => OwnEv Fm fun C' Cl x i =>
@@ -1890,8 +1885,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.LoopRowsOfRowsFinDim", "h": "module\n\npublic import Formalism.SharpRestriction.GlobalSchurBounds.MassRatioUnfoldedOfTheoremTwo\npublic import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.ThmSOwn\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.TSelF\npublic import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.UniqGapOfUniq\npublic import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.LocWSOf\npublic import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BesselMultiplicityOneLargeGapAndWhittakerBessel\npublic import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HypOfUniqGap\npublic import Development.AbelianVarietyTheory.Statements.DiscreteSeriesShifts.ThmBpDS\npublic import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LoopRowsOfLargeGapDiscreteSeries\npublic import Development.AbelianVarietyTheory.Proofs.FlagMeasures.WuDecayOfGap\npublic import Development.AbelianVarietyTheory.Proofs.JetHarmonics.DiscreteSeriesCoefPointwiseBoundUnconditional\npublic import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.RanksAndFrameOfTiedClass\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
-
-
 
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.L2.SG.ThmSOwn

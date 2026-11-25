@@ -238,7 +238,6 @@ open IsDedekindDomain NumberField MeasureTheory Matrix GlobalTheory.ChiGrid Glob
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.RowUnf GlobalTheory.RowChain GlobalTheory.SeeSaw GlobalTheory.RowVal GlobalTheory.RowReal
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.MemBesselGroupOfLocalMatrixGridNodeStatement =====
@@ -365,7 +364,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open IsDedekindDomain NumberField MeasureTheory Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.StdFrames GlobalTheory.RowClaim
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.RowUnf GlobalTheory.RowChain GlobalTheory.SeeSaw GlobalTheory.RowVal GlobalTheory.RowReal
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 theorem _root_.GlobalTheory.T.mem_subgroup_of_localComponents_splitPlaces : ∀ {D : D7} (V : HSp D) (P : Finset (Pl D.host.E)) (e : AE D), IsIdemSum e P → ∀ (H : Subgroup (GA D V)) (r : GA D V), SuppAt e V r → (∀ w ∈ P, ∀ ew : AE D, Formalism.L2.NTheta.IsIdemAt ew w → ∃ h ∈ H, SuppAt ew V h ∧ GlobalTheory.StdFrames.loc w (Lev.finE V h) = GlobalTheory.StdFrames.loc w (Lev.finE V r)) → r ∈ H := by
   first | exact @GlobalTheory.RowAssemble.mem_of_loc
@@ -494,8 +492,6 @@ theorem map_cut {R S : Type} [CommRing R] [CommRing S] (f : R →+* S) {n : ℕ}
   ext i j
   simp only [Matrix.map_apply, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, map_add (f := _), map_mul, map_sub, map_one, h1, hb]
   ring
-
-
 
 theorem exists_prod_pieces : ∀ {D : D7} (V : HSp D) (P : Finset (Pl D.host.E)) (es : Pl D.host.E → AE D), (∀ w ∈ P, Formalism.L2.NTheta.IsIdemAt (es w) w) → (∑ w ∈ P, es w) * cA D (∑ w ∈ P, es w) = 0 → ∀ r : GA D V, SuppAt (∑ w ∈ P, es w) V r → ∃ h : P → GA D V, (∀ w, SuppAt (es w.1) V (h w)) ∧ (∀ w, (mt V (h w)).map (GlobalTheory.RowRep.piAt w.1) = (mt V r).map (GlobalTheory.RowRep.piAt w.1)) ∧ r = (Finset.univ.toList.map h).prod := by
   intro D V P es hes h0 r hr
@@ -838,7 +834,6 @@ theorem sgn_diag {k : Type} [Field k] {Γ : GlobalTheory.SplitFlip.Grid k} (hs :
 
 end GlobalTheory.RowLift
 
-
 open GlobalTheory.RowLift GlobalTheory.RowRep in
 theorem GlobalTheory.RowLift.lift_rowR : Big fun {D} _ _ _ _ _ _ _ _ _ _ _ ch => ∀ (s : ℤˣ) t, ∀ j ∈ idx D, ∀ (hj : j ≤ D.R.m) (hj' : j < D.R.m)
     (δ : GA D (ch.G.V (.grid D.R.m j))), IsTilt ch.G j δ →
@@ -1013,9 +1008,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Ro
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 noncomputable section
 
-theorem _root_.GlobalTheory.T.isRowFlagTilt_unique : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} (G : GridData L sc) {j : ℕ} (hj : j < D.R.m)
-    (δ δ' : GA D (G.V (.grid D.R.m j))), IsTilt G j δ → IsTilt G j δ' → δ = δ' := by
-  first | exact @GlobalTheory.TiltUnique.tilt_unique
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -1032,10 +1024,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Ro
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 noncomputable section
 
-theorem _root_.GlobalTheory.T.mem_finitePoints_of_hasLocalLatticeMatrices : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} (t : T) (B : Frames G) {j : ℕ}
-    (hj : j ≤ D.R.m) (x : GA D (G.V (.grid D.R.m j)))
-    (g : ∀ w : locPl G t, GL (Fin ((locGrid G t w.1).rank (D.R.m, j))) (Kw w.1)), HasLoc t B hj x g → x ∈ GfC _ := by
-  first | exact @GlobalTheory.RowCover.mem_GfC_of_hasLoc
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -1052,10 +1040,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Ro
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 noncomputable section
 
-theorem _root_.GlobalTheory.T.rowTest_mem_latticeStabilizer_of_localMatrices : Big fun {D} _ _ _ _ _ _ _ _ _ _ _ ch => ∀ t, ∀ j, 1 ≤ j → ∀ (hj : j ≤ D.R.m) (x : GA D (ch.G.V (.grid D.R.m j)))
-    (g : ∀ w : locPl ch.G t, GL (Fin ((locGrid ch.G t w.1).rank (D.R.m, j))) (Kw w.1)),
-    HasLoc t ch.S.B hj x g → (∀ w, g w ∈ givenLevel ch.G t w.1 (D.R.m, j)) → x ∈ latGrp ch.G j := by
-  first | exact @GlobalTheory.LatOfHasLoc.mem_latGrp_of_hasLoc
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -1079,10 +1063,8 @@ theorem eltAt {k : Type} [Field k] {Gr : GlobalTheory.SplitFlip.Grid k} {hs : 1 
   rw [Reps.elt, onColumn_apply]
   simp only [dif_pos hi]
 
-
-
 theorem cover_at : Big fun ch => ∀ s, CoverAt ch s := by
-  refine big_mono (fun {D} _ _ _ _ _ _ _ _ _ _ _ ch h => ?_) (Big.and GlobalTheory.T.rowTest_mem_latticeStabilizer_of_localMatrices GlobalTheory.T.exists_periodGroup_point_lifting_rowGroup_localElements)
+  refine big_mono (fun {D} _ _ _ _ _ _ _ _ _ _ _ ch h => ?_) (Big.and GlobalTheory.LatOfHasLoc.mem_latGrp_of_hasLoc GlobalTheory.T.exists_periodGroup_point_lifting_rowGroup_localElements)
   obtain ⟨h5, h7⟩ := h
   classical
   intro s t b hb p hp
@@ -1125,8 +1107,8 @@ theorem cover_at : Big fun ch => ∀ s, CoverAt ch s := by
   rw [hfun] at hz
   set z := (y * r')⁻¹ * x (i + 1) hj hjm with hzdef
   have hzl : z ∈ latGrp ch.G (i + 1) := h5 t (i + 1) (by omega) hjm _ _ hz fun w => inv_mem (hκ w)
-  have htilt : δ (i + 1) hj hjm = δ' := GlobalTheory.T.isRowFlagTilt_unique ch.G hj' _ _ (hδ _ _ _) hδ'
-  have hyf : y ∈ GfC _ := GlobalTheory.T.mem_finitePoints_of_hasLocalLatticeMatrices t ch.S.B hjm _ _ hy
+  have htilt : δ (i + 1) hj hjm = δ' := GlobalTheory.TiltUnique.tilt_unique ch.G hj' _ _ (hδ _ _ _) hδ'
+  have hyf : y ∈ GfC _ := GlobalTheory.RowCover.mem_GfC_of_hasLoc t ch.S.B hjm _ _ hy
   set Y := δ (i + 1) hj hjm * y * (δ (i + 1) hj hjm)⁻¹ with hY
   have hYf : Y ∈ GfC _ := by
     rw [GfC, MonoidHom.mem_ker] at hyf ⊢

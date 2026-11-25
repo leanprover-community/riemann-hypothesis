@@ -156,8 +156,6 @@ open scoped TensorProduct
 
 noncomputable section
 
-
-
 namespace GlobalTheory.HalfAnnStd
 
 variable {D : D7}
@@ -230,9 +228,6 @@ theorem gen_mem {α : Af D.host.F} (hα : α ∈ intAf D.host.F) {x : D.host.E} 
     ((pairA D.host.F 0 α) ⊗ₜ[D.host.F] x : AE D) ∈ finInt D :=
   AddSubgroup.subset_closure ⟨α, hα, x, hx, rfl⟩
 
-theorem star_int {x : D.host.E} (hx : IsIntegral ℤ x) : IsIntegral ℤ (star x) :=
-  hx.map (starRingEnd D.host.E).toIntAlgHom
-
 theorem incA_eq (e : D.host.E) : incA D e = ((1 : AF D.host.F) ⊗ₜ[D.host.F] e : AE D) := rfl
 
 theorem cA_tmul (a : AF D.host.F) (e : D.host.E) : cA D (a ⊗ₜ[D.host.F] e) = a ⊗ₜ[D.host.F] star e := rfl
@@ -290,7 +285,7 @@ theorem cA_mem {z : AE D} (hz : z ∈ finInt D) : cA D z ∈ finInt D := by
   | mem y hy =>
     obtain ⟨α, hα, x, hx, rfl⟩ := hy
     rw [cA_tmul]
-    exact gen_mem hα (star_int hx)
+    exact gen_mem hα (GlobalTheory.IdemPrime.isIntegral_star hx)
   | zero => rw [map_zero]; exact zero_mem _
   | add x y _ _ hx hy => rw [map_add]; exact add_mem hx hy
   | neg x _ hx => rw [map_neg]; exact neg_mem hx
@@ -356,7 +351,7 @@ theorem exists_den_entries (S T : HSp D) : ∃ d : ℕ, 0 < d ∧ ∀ v ∈ stdH
         rw [hy, Algebra.smul_def] at h2
         exact h2
       have hsum : IsIntegral ℤ (∑ k, star (s k) * ((e : D.host.E) * S.gram k c)) :=
-        IsIntegral.sum _ fun k _ => IsIntegral.mul (star_int (hs k)) (hG (k, c))
+        IsIntegral.sum _ fun k _ => IsIntegral.mul (GlobalTheory.IdemPrime.isIntegral_star (hs k)) (hG (k, c))
       have e1 : ((d * e : ℕ) : D.host.E) * (a * t r * ∑ k, star (s k) * S.gram k c) =
           ((d : D.host.E) * ((a0 : D.host.E))⁻¹) * ((a0 : D.host.E) * a) * t r *
             ∑ k, star (s k) * ((e : D.host.E) * S.gram k c) := by
@@ -408,8 +403,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum MeasureTheory Matrix ValuativeRel GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Unf GlobalTheory.SplitWeil GlobalTheory.SeeSaw GlobalTheory.AdForm GlobalTheory.LocMod
 
 noncomputable section
-
-
 
 namespace GlobalTheory.AnnConjHalf
 

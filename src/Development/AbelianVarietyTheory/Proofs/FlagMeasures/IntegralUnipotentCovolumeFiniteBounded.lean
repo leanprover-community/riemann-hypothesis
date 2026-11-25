@@ -534,11 +534,6 @@ open MeasureTheory Matrix NumberField Formalism.BasicNotions Formalism.MainNotio
   Formalism.L2.SG.LocWSOf Formalism.MainNotions.S.Cnt Formalism.L2.SG.KappaOffDiagonal Formalism.MainNotions.LatticeGluingRadicals GlobalTheory.TypeAsm
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.real_points_base_lattice_stabilizer_fixed_frame_unipotent : ∀ (D : D7) (large₂ : SizeData₂ D) (X : HidaSetting D) (Y : Full X) (u : D.what₂.Word) (C : Choice X 1), Std D large₂ →
-    ∀ N : GlobalTheory.DegCnt.NF (HV D) D.R.rS, N.F = F0 X u → N.F' = F0 X u →
-      GlobalTheory.DegVol.realPts (fun τ => phiV C τ) (N.Gam (VS D).L0 : Set ((VS D).V ≃ₗ[D.host.E] (VS D).V)) =
-        trI C '' Formalism.L2.SG.PoincareInHH.PoincareSetting.NOinf X u := by
-  first | exact @GlobalTheory.TypeAsm.realPts_Gam_eq_trI_image_NOinf
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.RealPointsBaseLatticeStabilizerFixedFrameUnipoteStatement =====
@@ -841,7 +836,7 @@ theorem covNC_holds : CovNC := by
   obtain ⟨Ω, hΩ, hlo, hhi⟩ := _root_.GlobalTheory.DegVol.RefCov.covol_ref D.host.E (VS D).V (HV D) hCM D.R.rS N D.R.k D.what₂.Tau (embS D)
     (fun _ => 0) (fun τ => phiV C τ) (fun τ => zB X (C.Qi τ) u τ) (fun τ => zB X (C.Qi τ) u τ) (fun _ => 1)
     hPl hfin hFr hN𝔡 hv1' _ hU hzL
-  rw [hRef, GlobalTheory.T.real_points_base_lattice_stabilizer_fixed_frame_unipotent D large₂ X Y u C hS N hF hF'] at hΩ
+  rw [hRef, GlobalTheory.TypeAsm.realPts_Gam_eq_trI_image_NOinf D large₂ X Y u C hS N hF hF'] at hΩ
   have hsw := (_root_.GlobalTheory.DegVol.Swap.range_eq_and_injective_parabolic_unipotent_product D.R.k D.R.rS N.j (fun _ => 0) monotone_const (by intro a b _; simp [hj])).2.2.2 hj
   rw [hsw, hj, hv, hcard, Nat.sub_zero] at hlo hhi
   obtain ⟨hc, h1, hmul, hinv, hNs⟩ := GlobalTheory.T.realIntegralUnipotent_besselModels_countable_subgroup D X Y u C

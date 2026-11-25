@@ -77,14 +77,8 @@ noncomputable section
 
 namespace GlobalTheory.Mem.Col2.DgenNe
 
-theorem emb_injective {R : Ranks} (H : Host R) : Function.Injective H.emb := by
-  intro g g' h
-  have h1 : H.sigmaOf g = H.sigmaOf g' :=
-    AlgEquiv.ext fun x => H.φ₀.injective (RingHom.congr_fun h x)
-  exact (H.gal).symm.injective h1
-
 theorem embT_injective {R : Ranks} (H : Host R) : Function.Injective (embT H) := fun τ τ' h =>
-  Subtype.ext (emb_injective H h)
+  Subtype.ext (GlobalTheory.InverseHalfDifferent.emb_injective H h)
 
 theorem bb_ne_bot {R : Ranks} (H : Host R) : H.𝔟 ≠ ⊥ := by
   intro h

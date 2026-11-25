@@ -133,7 +133,6 @@ private theorem block_val_mul_sqrt_normV_zpow_neg_eq_mul_inv {E : Type} [Field E
   rw [hcast, hpow, zpow_neg, zpow_natCast, Complex.ofReal_pow, mul_assoc,
     mul_inv_cancel₀ (pow_ne_zero _ (by exact_mod_cast hs)), mul_one]
 
-
 open NumberField IsDedekindDomain Polynomial in
 theorem _root_.GlobalTheory.BlockVal.block_val_ae : ∀ {E : Type} [Field E] [NumberField E] {K : Type} [Field K] (ε : K →+* ℂ)
     (μ η : _root_.Formalism.L2.Host.HChar E),
@@ -275,7 +274,6 @@ theorem finiteDimensional_muK_one (l : ℕ) [Fact l.Prime] : FiniteDimensional �
   show FiniteDimensional ℚ_[l] (IntermediateField.adjoin ℚ_[l] {x : PadicAlgCl l | x ^ (l ^ 1) = 1})
   exact IntermediateField.finiteDimensional_adjoin fun x _ => Algebra.IsIntegral.isIntegral x
 
-
 open Classical in
 def bridgeLow (D : D7) (l : ℕ) [Fact l.Prime] (w : HeightOneSpectrum (𝓞 D.host.E)) : Loc.FinExt l :=
   if hw : w ∈ placesOver D.host.E l then
@@ -373,11 +371,6 @@ namespace GlobalTheory.AlgClosedIsoOverNumberField
 
 open Cardinal
 
-theorem exists_ringEquiv_commutes (R K L : Type) [Field R] [Field K] [Field L] [IsAlgClosed K]
-    [IsAlgClosed L] [Algebra R K] [Algebra R L] (hR : #R ≤ ℵ₀) (hK : ℵ₀ < #K) (hKL : #K = #L) :
-    ∃ e : K ≃+* L, ∀ x : R, e (algebraMap R K x) = algebraMap R L x := by
-  apply GlobalTheory.PadicComplexIso.exists_ringEquiv_over <;> assumption
-
 theorem exists_ringEquiv_comp_eq :
     ∀ (K Ω₁ Ω₂ : Type) [Field K] [NumberField K] [Field Ω₁] [Field Ω₂] [IsAlgClosed Ω₁]
       [IsAlgClosed Ω₂] [CharZero Ω₁] [CharZero Ω₂] (a : K →+* Ω₁) (b : K →+* Ω₂),
@@ -390,7 +383,7 @@ theorem exists_ringEquiv_comp_eq :
   have hK : #K ≤ ℵ₀ := by
     have := Algebra.IsAlgebraic.cardinalMk_le_max ℚ K
     rwa [Cardinal.mkRat, max_self] at this
-  obtain ⟨e, he⟩ := exists_ringEquiv_commutes K Ω₁ Ω₂ hK hbig hcard
+  obtain ⟨e, he⟩ := GlobalTheory.PadicComplexIso.exists_ringEquiv_over K Ω₁ Ω₂ hK hbig hcard
   exact ⟨e, he⟩
 
 end GlobalTheory.AlgClosedIsoOverNumberField

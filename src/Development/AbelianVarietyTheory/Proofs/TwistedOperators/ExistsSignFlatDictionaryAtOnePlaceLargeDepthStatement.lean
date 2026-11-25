@@ -356,7 +356,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
 open GlobalTheory.FlatPlace GlobalTheory.LocMod GlobalTheory.SplitWeil
 
-
 theorem _root_.GlobalTheory.T.besselFrameOfGridLattice_largeDepth : Big fun ch => BesP ch := by
   first | exact @GlobalTheory.FlatPlace.Big₂
 end -- clump:auto
@@ -395,25 +394,6 @@ theorem map_eq_one_of_off {w : Pl D.host.E} {p : Place D (Kw w)} (hp : IsPlc w p
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (p : Place D k)
   {Y : Type} [Fintype Y] [DecidableEq Y]
-
-theorem isLoc_mul' {S : HSp D} {F : Frame k S.rank Y} {a b : GA D S} {x y : GL Y k} (ha : p.IsLoc F a x)
-    (hb : p.IsLoc F b y) : p.IsLoc F (a * b) (x * y) := by
-  refine ⟨_root_.GlobalTheory.SplitPlace.suppAt_mul ha.1 hb.1, ?_⟩
-  rw [_root_.GlobalTheory.BesselCompare.mt_mul, Matrix.map_mul, ha.2, hb.2, Units.val_mul]
-  simp only [Matrix.mul_assoc]
-  rw [← Matrix.mul_assoc F.γ, F.γβ, Matrix.one_mul]
-
-theorem isLoc_inv' {S : HSp D} {F : Frame k S.rank Y} {a : GA D S} {x : GL Y k} (ha : p.IsLoc F a x) :
-    p.IsLoc F a⁻¹ x⁻¹ := by
-  refine ⟨_root_.GlobalTheory.SplitPlace.suppAt_inv ha.1, ?_⟩
-  have h1 : (Formalism.L2.Theta.mt S a⁻¹).map p.π * (F.β * x.val * F.γ) = 1 := by
-    rw [← ha.2, ← Matrix.map_mul, _root_.GlobalTheory.MixModel.mt_inv_mul, Matrix.map_one _ (map_zero _) (map_one _)]
-  have h2 : (F.β * x.val * F.γ) * (F.β * (x⁻¹).val * F.γ) = 1 := by
-    simp only [Matrix.mul_assoc]
-    rw [← Matrix.mul_assoc F.γ, F.γβ, Matrix.one_mul, ← Matrix.mul_assoc x.val, Units.mul_inv, Matrix.one_mul, F.βγ]
-  calc (Formalism.L2.Theta.mt S a⁻¹).map p.π = (Formalism.L2.Theta.mt S a⁻¹).map p.π * ((F.β * x.val * F.γ) * (F.β * (x⁻¹).val * F.γ)) := by
-        rw [h2, Matrix.mul_one]
-    _ = F.β * (x⁻¹).val * F.γ := by rw [← Matrix.mul_assoc, h1, Matrix.one_mul]
 
 omit p in
 theorem frOf_conj {n N : ℕ} (h : N = n) (β : GL (Fin n) (Lev.EAf D)) (w : Pl D.host.E) (x : GL (Fin n) (Lev.EAf D)) :
@@ -454,7 +434,6 @@ theorem elt_zero {T : Type} {L : LevCh D T} {sc : Consts} (G : GridData L sc) (t
     (repsAt G t w).elt β (D.R.m, 0) = stair (locGrid G t w) (unifAt w) (cosExp G w) 0 :=
   (onColumn_apply (G := locGrid G t w) _ 0).trans rfl
 
-
 open Classical in
 theorem localization₂ : Big fun ch => LocP ch := by
   refine ⟨0, fun ε CF _ => ⟨0, fun D large₂ _ _ Γ _ _ Pl0 T A Ks _ _ _ R F s ch hch _ => ?_⟩⟩
@@ -463,7 +442,7 @@ theorem localization₂ : Big fun ch => LocP ch := by
   have L1 : p.IsLoc (frRow ch.S.B t w j hj) (r j) _ := isLoc_of_inBasis hp _ _ _ _ (hr j hj).1 (hr j hj).2
   have L0 : p.IsLoc (frRow ch.S.B t w j hj) (r₀ j) _ := isLoc_of_inBasis hp _ _ _ _ (hr₀ j hj).1 (hr₀ j hj).2
   refine ⟨?_, fun he => ?_, fun ho => ?_⟩
-  · convert isLoc_mul' p (isLoc_inv' p L0) L1 using 1
+  · convert GlobalTheory.LocGrp.isLoc_mul p (GlobalTheory.LocGrp.isLoc_inv p L0) L1 using 1
     beta_reduce
     rw [Pi.mul_apply]
     by_cases h0 : j = 0
@@ -507,7 +486,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
 open GlobalTheory.FlatPlace GlobalTheory.LocMod GlobalTheory.SplitWeil
 
-
 theorem _root_.GlobalTheory.T.dictionaryPoints_localMatrices_largeDepth : Big fun ch => LocP ch := by
   first | exact @GlobalTheory.FlatPlaceLoc.localization₂
 end -- clump:auto
@@ -526,9 +504,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
 open GlobalTheory.FlatPlace GlobalTheory.LocMod GlobalTheory.SplitWeil
 
-
-theorem _root_.GlobalTheory.T.exists_completionPlaceData : ∀ (D : D7) (w : Pl D.host.E) (e : AE D), IsIdemSum e {w} → ∃ p : Place D (Kw w), IsPlc w p ∧ p.e = e := by
-  first | exact @GlobalTheory.PlcAtW.exists_plc
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsCompletionPlaceDataStatement =====
@@ -783,7 +758,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
 open GlobalTheory.FlatPlace GlobalTheory.LocMod GlobalTheory.SplitWeil
 
-
 theorem _root_.GlobalTheory.T.flatDictionary_doubleStep_at_place : Big fun ch => ChrP ch → ArrP ch → LocP ch → BesP ch → JacP ch → DblP ch := by
   first | exact @GlobalTheory.FlatPlace.dblP_big
 end -- clump:auto
@@ -883,7 +857,6 @@ section Grid0
 
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts}
 
-
 variable (G : GridData L sc) in
 def grid0 (w : Pl D.host.E) : Grid (Kw w) where
   m := D.R.m
@@ -894,13 +867,11 @@ def grid0 (w : Pl D.host.E) : Grid (Kw w) where
   chi i := (G.ch.chiH i).loc w
   eta := L.C.eta.loc w
 
-
 open Classical in
 def eps0 (G : GridData L sc) (w : Pl D.host.E) : (grid0 G w).VertexGroup :=
   onColumn (G := grid0 G w) fun j => if j ∈ idx D then GlobalTheory.SplitFlip.diagGL fun a =>
     if Odd j ∧ topRank (grid0 G w) j + (D.R.m - 1 - j) / 2 ≤ a.1 then Units.map (Int.castRingHom (Kw w)).toMonoidHom (-1) else 1
     else 1
-
 
 variable (G : GridData L sc) in
 def stair0 (w : Pl D.host.E) : (grid0 G w).VertexGroup :=
@@ -928,7 +899,6 @@ theorem elt_stair (G : GridData L sc) (t : T) (w : Pl D.host.E)
     rfl
 
 end Grid0
-
 
 open Classical in
 theorem scal : Big fun ch => ScalP ch := by
@@ -1012,7 +982,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
 open GlobalTheory.FlatPlace GlobalTheory.LocMod GlobalTheory.SplitWeil
 
-
 theorem _root_.GlobalTheory.T.flatDictionaryScalar_largeDepth : Big fun ch => ScalP ch := by
   first | exact @GlobalTheory.FlatScal.scal
 end -- clump:auto
@@ -1039,7 +1008,6 @@ variable {D : D7}
 
 theorem isIdemSum_of_isPlc {w : Pl D.host.E} {p : Place D (Kw w)} (hp : IsPlc w p) : IsIdemSum p.e {w} :=
   ⟨⟨fun _ => p.e, fun PP h => by rw [Finset.mem_singleton] at h; subst h; exact hp.1, by simp⟩, p.split.2.1⟩
-
 
 open Classical in
 theorem cpt_up {w : Pl D.host.E} {p : Place D (Kw w)} (hp : IsPlc w p) {S T : HSp D} {Y Y' : Type} [Fintype Y] [DecidableEq Y]
@@ -1137,7 +1105,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
 open GlobalTheory.FlatPlace GlobalTheory.LocMod GlobalTheory.SplitWeil
 
-
 theorem _root_.GlobalTheory.T.frameLattice_points_eq_integralMatrices_largeDepth : Big fun ch => LatP ch := by
   first | exact @GlobalTheory.FlatPlace.big_latP
 end -- clump:auto
@@ -1190,7 +1157,6 @@ theorem place_proj_neg_xi_pow {D : D7} {k : Type} [Field k] [ValuativeRel k] [To
 theorem neg_mul_neg_one_eq_of_eq {K : Type} [Field K] (y a S : K) (h : S = a) : -(y * a) * -1 = S * y := by rw [h]; ring
 
 end NormalJac
-
 
 open NormalJac in
 
@@ -1318,7 +1284,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Ro
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
 open GlobalTheory.FlatPlace GlobalTheory.LocMod GlobalTheory.SplitWeil
-
 
 theorem _root_.GlobalTheory.T.jacobiFrameOfGridLattice_largeDepth : Big fun ch => JacP ch := by
   first | exact @GlobalTheory.FlatPlace.big_jacP
@@ -1452,7 +1417,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
 open GlobalTheory.FlatPlace GlobalTheory.LocMod GlobalTheory.SplitWeil
 
-
 theorem _root_.GlobalTheory.T.combination_produces_datum_all_localModels : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (p : Place D k) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (S T : HSp D) (Y Y' : Type) [Fintype Y] [DecidableEq Y] [Fintype Y'] [DecidableEq Y'] (FS : Frame k S.rank Y') (FT : Frame k T.rank Y) (c : WO S T →₀ ℂ), (∀ u ∈ c.support, IsHalf (p.e + cA D p.e) u) → ∀ T₀, p.IsModel ψ FS FT T₀ → ∀ O Ξ : SB (Matrix Y Y' k), IsOne O → T₀ O ≠ 0 → T₀ Ξ = comb ψ S T c (T₀ O) → p.IsCombAt ψ FS FT c Ξ.1 := by
   first | exact @GlobalTheory.FlatPlace.isCombAt_of_one
 end -- clump:auto
@@ -1515,7 +1479,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Ro
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
 open GlobalTheory.FlatPlace GlobalTheory.LocMod GlobalTheory.SplitWeil
-
 
 theorem _root_.GlobalTheory.T.latticeVacuumCombination_localModel : Big fun ch => LatP ch → CombP ch := by
   first | exact @GlobalTheory.FlatPlace.eventually_combination_of_lattice
@@ -1642,7 +1605,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
 open GlobalTheory.FlatPlace GlobalTheory.LocMod GlobalTheory.SplitWeil
 
-
 theorem _root_.GlobalTheory.T.localCharacterComponents_largeDepth : Big fun ch => ChrP ch := by
   first | exact @GlobalTheory.FlatPlace.chrP_big
 end -- clump:auto
@@ -1655,7 +1617,6 @@ section -- clump:auto
 @[expose] public section
 
 namespace GlobalTheory
-
 
 open Finset in
 theorem prod_eq_sum_of_factorwise_expansion : ∀ (K : Type) [Fintype K] (X : K → Type) (I : Type) (S : Finset I) (x : I → ℂ) (a : ∀ n, I → X n → ℂ) (b : K → I → ℂ) (A : ∀ n, X n → ℂ) (B : K → ℂ), (∀ n (y : I → ℂ), (∀ q, ∑ i ∈ S, y i * a n i q = 0) → ∑ i ∈ S, y i * b n i = 0) → (∀ n (y : I → ℂ), (∀ q, A n q = ∑ i ∈ S, y i * a n i q) → B n = ∑ i ∈ S, y i * b n i) → (∀ q : ∀ n, X n, ∏ n, A n (q n) = ∑ i ∈ S, x i * ∏ n, a n i (q n)) → (∀ n, Nonempty (X n)) → ∏ n, B n = ∑ i ∈ S, x i * ∏ n, b n i := by
@@ -1859,7 +1820,7 @@ theorem placeAt_of (hc : ChrP ch) (ha : ArrP ch) (hl : LocP ch) (hd : DblP ch) (
   obtain ⟨κ, z, h1, h2, h3⟩ := hs
   refine ⟨κ, z, h1, h2, fun t w hw β => ⟨_, h3 t w hw β, ?_⟩⟩
   intro e he M hM r r₀ h hr hr₀ hh φ hφ v f hv hf I S x d c hdc hx u
-  obtain ⟨p, hp, rfl⟩ := GlobalTheory.T.exists_completionPlaceData D w e he
+  obtain ⟨p, hp, rfl⟩ := GlobalTheory.PlcAtW.exists_plc D w e he
   have hm := D.R.two_le_m
   have hev : Even D.R.m := D.R.m_even
   have hP : IsPts ch t w β p.e r r₀ h := ⟨hr, hr₀, hh⟩

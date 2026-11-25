@@ -108,24 +108,10 @@ private theorem hpk_apply_lemma (k r : ℕ) (i l : Fin (2 * r + k + 1)) :
   simp only [Formalism.QuantumDeterminants.Hpk]
   split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> first | rfl | omega
 
-private theorem hpk_mul_self_lemma_2 (k r : ℕ) : Formalism.QuantumDeterminants.Hpk k r * Formalism.QuantumDeterminants.Hpk k r = 1 := by
-  ext i j
-  have hi := i.2
-  have hj := j.2
-  rw [Matrix.mul_apply]
-  simp only [hpk_apply_lemma]
-  rw [Finset.sum_eq_single ⟨if (i : ℕ) < r ∨ r + k < i then 2 * r + k - i else i, by split_ifs <;> omega⟩]
-  · simp only [Matrix.one_apply, Fin.ext_iff]
-    split_ifs <;> first | rfl | omega | norm_num
-  · intro l _ hl
-    rw [if_neg (fun h => hl (Fin.ext h)), zero_mul]
-  · intro h
-    exact absurd (Finset.mem_univ _) h
-
 private theorem isUnit_det_lemma_3 {k r : ℕ} {g : Formalism.FourierDecayAlt.ThreeDimData.Mx k r} (hg : g ∈ BranchingSupport.GG k r) : IsUnit g.det := by
   have hH : (Formalism.QuantumDeterminants.Hpk k r).det ≠ 0 := by
     intro h0
-    have h1 := congrArg Matrix.det (hpk_mul_self_lemma_2 k r)
+    have h1 := congrArg Matrix.det (GlobalTheory.CompanionTheory.ZuckCasSplit.hpk_sq k r)
     rw [Matrix.det_mul, h0, zero_mul, Matrix.det_one] at h1
     exact zero_ne_one h1
   have hg' : g.conjTranspose * Formalism.QuantumDeterminants.Hpk k r * g = Formalism.QuantumDeterminants.Hpk k r := hg
@@ -716,13 +702,6 @@ theorem dR_wedge (k r m : ℕ) (X : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k
   simp only [Complex.ofReal_zero, zero_smul, NormedSpace.exp_zero, submatrix_apply] at h
   exact h.deriv
 
-theorem reH_add_imH (k r : ℕ) (Y : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) : reH k r Y + Complex.I • imH k r Y = Y := by
-  have : Complex.I * (1 / (2 * Complex.I)) = 1 / 2 := by field_simp
-  rw [reH, imH, smul_smul, this, ← smul_add]
-  ext i j
-  simp only [Matrix.smul_apply, Matrix.add_apply, Matrix.sub_apply, smul_eq_mul]
-  ring
-
 theorem dC_wedge_single : ∀ (k r m : ℕ) (a b : Fin (2 * r + k + 1)) (J J' : Sub (2 * r + k + 1) m), (wedge k r m).dC (Matrix.single a b 1) J J' = if b ∈ J'.1 ∧ a ∉ J'.1.erase b ∧ J.1 = insert a (J'.1.erase b) then (-1) ^ ((J'.1.erase b).filter fun c => c < a).card * (-1) ^ ((J'.1.erase b).filter fun c => c < b).card else 0 := by
   intro k r m a b J J'
   have h := sum_adj _ _ (J.1.orderEmbOfFin J.2).strictMono (J'.1.orderEmbOfFin J'.2).strictMono a b
@@ -732,7 +711,7 @@ theorem dC_wedge_single : ∀ (k r m : ℕ) (a b : Fin (2 * r + k + 1)) (J J' : 
   refine sum_congr rfl fun j _ => ?_
   rw [mul_sum, ← sum_add_distrib]
   refine sum_congr rfl fun i _ => ?_
-  conv_rhs => rw [← reH_add_imH k r (Matrix.single a b 1)]
+  conv_rhs => rw [← GlobalTheory.CompanionTheory.ZuckStdD.reH_add_imH k r (Matrix.single a b 1)]
   simp only [Matrix.smul_apply, Matrix.add_apply, smul_eq_mul]
   ring
 
@@ -1500,7 +1479,6 @@ theorem dsigW_zero' (R : Rep k r) (W : List (Matrix (Fin (2 * r + k + 1)) (Fin (
     show PI.UpqRep.dsig (k := k) (r := r) R.σ X (PI.UpqRep.dsigW (k := k) (r := r) R.σ W 0) = 0
     rw [ih]
     simp [PI.UpqRep.dsig]
-
 
 open Classical in
 def extZ {R R' : Rep k r} (f : R.smSub →ₗ[ℂ] R'.smSub) (y : R.H) : R'.H :=

@@ -559,9 +559,9 @@ theorem omP_ext' {Y : Model Xo c (algebraMap (𝓞 c.F) c.F)} {S : Finset ℕ} {
       have hc1 : IsIntegrallyClosed (A.X.presheaf.stalk (g p'.1)) := (A.normal _).2
       have hn1 : IsNoetherianRing (A.X.presheaf.stalk (g p'.1)) :=
         HcptPull.noeth_stalk A.tie.gen ⟨g p'.1, hsp⟩ (hnoeth _)
-      have h1 := GlobalTheory.T.full_torsion_integrally_closed E H D l (KA l) (baseKA l) A.X Ω A.ξ s0 o A.t m0 A.Li A.M (p ^ A.R p) ⟨g p'.1, hsp⟩
+      have h1 := GlobalTheory.CompanionTheory.Ar.OmLink.htOm_eq_htLat E H D l (KA l) (baseKA l) A.X Ω A.ξ s0 o A.t m0 A.Li A.M (p ^ A.R p) ⟨g p'.1, hsp⟩
         A.tie.gen hN (A.tors p hp) hc1 hn1
-      have h1' := GlobalTheory.T.full_torsion_integrally_closed E H D l (KA l) (baseKA l) A'.X Ω' A'.ξ s0' o' A'.t m0' A'.Li A'.M (p ^ A.R p) p'
+      have h1' := GlobalTheory.CompanionTheory.Ar.OmLink.htOm_eq_htLat E H D l (KA l) (baseKA l) A'.X Ω' A'.ξ s0' o' A'.t m0' A'.Li A'.M (p ^ A.R p) p'
         A'.tie.gen hN htors' (A'.normal _).2 (HcptPull.noeth_stalk A'.tie.gen _ (hnoeth' _))
       have h2 := _root_.GlobalTheory.CompanionTheory.Ar.HTPull.main A.X A'.X Ω Ω' A.ξ A'.ξ g i A.t.G A'.t.G m.φ A.Li A'.Li A.M A'.M j₁ A.tie.gen
         A'.tie.gen hd m.cart A.t.semi.smooth hpt jd hadj (p ^ A.R p) hN p' hsp hc1 hn1 (h1.2.1 hpq) h1.1
@@ -588,14 +588,6 @@ end Om
 end GlobalTheory.CompanionTheory.Ar.OrLinked
 
 namespace GlobalTheory.CompanionTheory.Ar.OrLinked
-
-theorem spMap_spMap' {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
-    spMap g ≫ spMap f = spMap (g.comp f) := by
-  simp [spMap, ← Spec.map_comp, ← CommRingCat.ofHom_comp]
-
-theorem spMap_inj' {A B : Type} [CommRing A] [CommRing B] {f g : A →+* B} (h : spMap f = spMap g) : f = g := by
-  have := Spec.map_injective h
-  exact congrArg CommRingCat.Hom.hom this
 
 theorem mono_int' {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {l : Level H} (c : Coeff l) :
     Mono (spMap (algebraMap (𝓞 c.F) c.F)) := by
@@ -632,8 +624,6 @@ theorem map_eq_of_generic {Z W : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (
 end GlobalTheory.CompanionTheory.Ar.OrLinked
 
 namespace GlobalTheory.CompanionTheory.Ar.OrLinked
-
-
 
 theorem common : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) (S₀ S : Finset ℕ) (M₀ M₁ Rf : RootModel (CMType H) (D.p + D.q)) (Sys : PB.AnSys (dimFl (CMType H) (D.p + D.q)) (Option (RootIx D))) (Fx : FixedData Y Sys) (o₀ : RootOrigin Y S₀ M₀ Fx) (o₁ : RootOrigin Y S M₁ Fx) (oR : RootOrigin Y ∅ Rf Fx), S₀ ⊆ S → (∀ p : ℕ, p.Prime → (p : ℤ) ∣ NumberField.discr E → p ∈ S₀) → o₀.𝔐.OmVB → o₁.𝔐.OmVB → (∀ p ∈ S₀, o₀.𝔐.R p = o₁.𝔐.R p) → oR.Fl.deg = 1 → ∃ (Ω : Type) (_ : Field Ω) (_ : CharZero Ω) (K : Type) (_ : Fintype K) (J : K → Type) (_ : ∀ k, Fintype (J k)) (y : (Σ k, J k) → Ω) (κ₀ : M₀.K → K) (v₀ : (Σ k, M₀.ι k) → Σ k, J k) (κ₁ : M₁.K → K) (v₁ : (Σ k, M₁.ι k) → Σ k, J k) (κR : Rf.K → K) (vR : (Σ k, Rf.ι k) → Σ k, J k) (i₀ : M₀.Ω →+* Ω) (i₁ : M₁.Ω →+* Ω) (iR : Rf.Ω →+* Ω) (𝔐 : HodgeCpt Y S y) (Fl : 𝔐.Flag), IsBlockMap κ₀ v₀ ∧ IsBlockMap κ₁ v₁ ∧ IsBlockMap κR vR ∧ (∀ p, y (v₀ p) = i₀ (M₀.y p)) ∧ (∀ p, y (v₁ p) = i₁ (M₁.y p)) ∧ (∀ p, y (vR p) = iR (Rf.y p)) ∧ i₀.comp o₀.g = iR.comp oR.g ∧ i₁.comp o₁.g = iR.comp oR.g ∧ IntermediateField.relfinrank (blockFnField (y ∘ v₀)) (blockFnField y) ≠ 0 ∧ IntermediateField.relfinrank (blockFnField (y ∘ v₀)) (blockFnField y) * M₀.δ = IntermediateField.relfinrank (blockFnField (y ∘ v₁)) (blockFnField y) * M₁.δ ∧ (∃ (h : S₀ ⊆ S) (hvb : ∀ s, (𝔐.VAt S₀ s).IsVB (labelRk D s) (𝔐.Vgen s)) (hsub : ∀ s, (𝔐.VAt S₀ s).IsFlagVBOn Set.univ (Fl.b s)), (Fl.shrink S₀ h hvb hsub).RootLines (fun r => pullDeg κ₀ (M₀.xdeg r)) (fun r => i₀ (o₀.e r))) ∧ Fl.RootLines (fun r => pullDeg κ₁ (M₁.xdeg r)) (fun r => i₁ (o₁.e r)) ∧ ∀ p ∈ S, HT.HTFree 𝔐 p := by
   intro E _ _ _ H D l Xo c Y S₀ S M₀ M₁ Rf Sys Fx o₀ o₁ oR hS hdisc hv₀ hv₁ hRR hdeg
@@ -689,7 +679,7 @@ theorem common : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Hos
     have g0 : ξ ≫ h₀ = spMap i₀ ≫ o₀.𝔐.ξ := hd₀
     have g1 : ξ ≫ h₁ = spMap i₁ ≫ o₁.𝔐.ξ := hd₁
     rw [← Category.assoc, ← Category.assoc, g0, g1, Category.assoc, Category.assoc, o₀.g_over, o₁.g_over,
-      ← Category.assoc, ← Category.assoc, spMap_spMap', spMap_spMap', e01]
+      ← Category.assoc, ← Category.assoc, GlobalTheory.spMap_comp_ring, GlobalTheory.spMap_comp_ring, e01]
   let e : 𝔐.X ≅ A.X := a₁ ≪≫ a₀.symm
   have he : 𝔐.ξ ≫ e.hom = A.ξ := by
     simp only [e, Iso.trans_hom, Iso.symm_hom]
@@ -699,7 +689,7 @@ theorem common : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Hos
     rw [p2, q2, ← hZ]
     simp
   have hc : A.cst = 𝔐.cst := by
-    refine ringHom_ext_int c (spMap_inj' ?_)
+    refine ringHom_ext_int c (GlobalTheory.SS.WeakNeronEx.sp_inj ?_)
     rw [← A.cst_over, ← 𝔐.cst_over, ← hf, ← he]
     simp only [Category.assoc]
   obtain ⟨φ, φt, φV, φr, φp⟩ := same_base_cmp A 𝔐 e he hf hc
@@ -710,7 +700,7 @@ theorem common : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Hos
     refine Over.OverMorphism.ext (𝔐.m.cart.1.hom_ext ?_ ((Over.w _).trans (Over.w _).symm))
     show (𝔐.M.pt (Fl.b s k)).left ≫ 𝔐.m.φ = (𝔐.M.pt (φ (Fl₀.b s k))).left ≫ 𝔐.m.φ
     rw [φt, hb₀, hb₁, p3, q3, ← Category.assoc, ← Category.assoc, q7, p7, Category.assoc, Category.assoc,
-      o₀.g_flag, o₁.g_flag, ← Category.assoc, ← Category.assoc, spMap_spMap', spMap_spMap',
+      o₀.g_flag, o₁.g_flag, ← Category.assoc, ← Category.assoc, GlobalTheory.spMap_comp_ring, GlobalTheory.spMap_comp_ring,
       ← FlagPull.dualMap_comp, ← FlagPull.dualMap_comp, e01]
   have hbf : ∀ s, Fl.b s = fun k => φ (Fl₀.b s k) := fun s => funext (hbφ s)
   have hm := φp S₀ hRS

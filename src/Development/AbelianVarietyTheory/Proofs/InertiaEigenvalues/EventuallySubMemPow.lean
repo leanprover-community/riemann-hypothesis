@@ -68,10 +68,6 @@ open Filter Topology
 
 variable {l : ℕ} [hl : Fact l.Prime]
 
-private theorem sigO_coe_pt (g : Per.Gq l) (y : Per.OC l) :
-    ((Per.σO g y : Per.OC l) : ℂ_[l]) = Per.σC g (y : ℂ_[l]) := by
-  apply GlobalTheory.RingIface.sigO_coe
-
 private theorem tower_pt (x : Per.Ainf l) : algebraMap (Per.Acris0 l) (Per.Acris l)
     (algebraMap (Per.Ainf l) (Per.Acris0 l) x) = ainfToAcris l x := by
   change _ = algebraMap (Per.Ainf l) (Per.Acris l) x
@@ -107,7 +103,7 @@ theorem eventually_sub_mem_one (hξ : RingHom.ker (Per.θ l) = Ideal.span {ξ}) 
   filter_upwards [eventually_norm_σC_sub_lt ((Per.θ l y : Per.OC l) : ℂ_[l]) hl0] with g hg
   have h1 : Per.θ l (Per.σA g y - y) = Per.σO g (Per.θ l y) - Per.θ l y := by rw [map_sub, GlobalTheory.RingBasics.θ_σA]
   obtain ⟨c, hc⟩ := exists_eq_l_mul (Per.σO g (Per.θ l y) - Per.θ l y)
-    (by rw [AddSubgroupClass.coe_sub, sigO_coe_pt]; exact hg.le)
+    (by rw [AddSubgroupClass.coe_sub, GlobalTheory.RingIface.sigO_coe]; exact hg.le)
   obtain ⟨c', rfl⟩ := GlobalTheory.MemLoc.ThetaD.θ_surj l c
   have hk : Per.σA g y - y - (l : Per.Ainf l) * c' ∈ RingHom.ker (Per.θ l) := by
     rw [RingHom.mem_ker, map_sub, h1, hc, map_mul, map_natCast, sub_self]
@@ -194,7 +190,6 @@ theorem eventually_dvd_dpow {x : Per.Ainf l} (hx : Per.θ l x = 0) (k N : ℕ) :
     mul_one, add_sub_cancel_right]
   refine Finset.dvd_sum fun m hm => Dvd.dvd.mul_left (Dvd.dvd.mul_right (Dvd.dvd.mul_left
     (pow_dvd_pow _ (Nat.le_mul_of_pos_right N (by have := Finset.mem_range.1 hm; omega))) _) _) _
-
 
 variable (l) in
 def fixNear : Subring (Per.Acris l) where

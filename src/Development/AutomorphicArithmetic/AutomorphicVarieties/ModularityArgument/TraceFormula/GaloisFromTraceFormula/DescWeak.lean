@@ -160,7 +160,6 @@ open NumberField IsDedekindDomain MeasureTheory Polynomial Formalism.L2.Host
 open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.DiscSpec GlobalTheory.CompanionTheory.CTFin
 open PositivityTheory.Rg.Rs PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.F UpperTheory.V.Z.Tf.GOne
 
-
 open PositivityTheory.Rg.Rs.PExpFin in
 private theorem cusp_or_exp {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {N : ℕ}
     (V : Submodule ℂ (Sm E N)) (hV : IsDiscrete V) :
@@ -644,9 +643,9 @@ theorem _root_.UpperTheory.ConvolutionTheory.G2.uSide : USide := by
   intro E _ _ _ hU n hn S hS lam K' hK'
   have L3 := GlobalTheory.T.inf_fixedVectors_adelicLevel_ne_bot_of_localLevel
   have L4 := GlobalTheory.T.localComponent_levelFixedVectors_ne_bot
-  have L5 := GlobalTheory.T.heckeOperator_testFamily_preserves_level_forms
+  have L5 := GlobalTheory.BCT.hop_mem_inf_fixed
   obtain ⟨hfd, ι, hι, π, hπ, hind, hsup, hcomp⟩ := GlobalTheory.T.unitaryAutForms_weight_level_finite_sum_fixed_vectors E hU n hn S hS lam K' hK'
-  have hloc := fun i w => GlobalTheory.T.exists_unique_admissible_localComponent_definiteUnitary E hU n hn (π i) (hπ i).1 w
+  have hloc := fun i w => GlobalTheory.BCT.LocCompU.exists_unique_locComp E hU n hn (π i) (hπ i).1 w
   choose σ hσc hσf using fun i w => (hloc i w).1
   refine ⟨ι, hι, π, σ, fun i => ⟨(hπ i).1, (hπ i).2.1, hasLevel_of_fixed hS (hπ i).2.2, fun w hw =>
     ⟨hσc i w, L4 E hU n hn S hS lam K' hK' (π i) (hπ i).1 (hπ i).2.1 (hπ i).2.2 w hw (σ i w) (hσc i w), hσf i w⟩⟩,
@@ -654,7 +653,7 @@ theorem _root_.UpperTheory.ConvolutionTheory.G2.uSide : USide := by
   · intro π₀ h0 hw0 hl0
     obtain ⟨i, hi⟩ := hcomp π₀ h0 hw0 (L3 E n S hS K' hK' π₀ h0 hl0)
     refine ⟨i, fun w _ => ?_⟩
-    obtain ⟨⟨σ₀, h₀, -⟩, -⟩ := GlobalTheory.T.exists_unique_admissible_localComponent_definiteUnitary E hU n hn π₀ h0 w
+    obtain ⟨⟨σ₀, h₀, -⟩, -⟩ := GlobalTheory.BCT.LocCompU.exists_unique_locComp E hU n hn π₀ h0 w
     obtain ⟨e⟩ := (hloc i w).2 σ₀ (σ i w) (hi w σ₀ h₀) (hσc i w)
     exact isCompU_of_equiv h₀ e
   · intro f hf hsep

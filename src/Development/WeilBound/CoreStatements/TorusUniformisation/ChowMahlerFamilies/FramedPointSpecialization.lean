@@ -61,10 +61,6 @@ open AlgebraicGeometry CategoryTheory Limits NumberField ReciprocityTheory.Chart
 
 namespace PositivityTheory.Xgn.FramedPointSpecialization
 
-theorem exists_embedding (K k : Type) [Field K] [Field k] [Countable K] [Countable k] (β : K →+* k) (s : K →+* ℂ) :
-    ∃ j : k →+* ℂ, j.comp β = s := by
-  apply PositivityTheory.Xgp.c_bm_exists_period.exists_embedding
-
 theorem exists_countable_field {X : Scheme.{0}} {K F : Type} [CommRing K] [Countable K] [Field F] (s : X ⟶ Sp K)
     [LocallyOfFiniteType s] (y : Sp F ⟶ X) :
     ∃ (k : Type) (_ : Field k) (_ : Countable k) (f : k →+* F) (y₀ : Sp k ⟶ X), y = spMap f ≫ y₀ := by
@@ -184,7 +180,7 @@ theorem PositivityTheory.Xgn.framed_point_specialization : ∀ (E : Type) [Field
   have hf : f.comp b₀.hom = β := by
     rw [Category.assoc, hb, ← Spec.map_comp] at hβ
     exact congrArg CommRingCat.Hom.hom (Spec.map_injective hβ)
-  obtain ⟨j, hj⟩ := exists_embedding c.F k b₀.hom (algebraMap c.F ℂ)
+  obtain ⟨j, hj⟩ := PositivityTheory.Xgp.c_bm_exists_period.exists_embedding c.F k b₀.hom (algebraMap c.F ℂ)
   have hU₀ : Set.range y₀ ⊆ U := by
     rintro _ ⟨p, rfl⟩
     refine hU ⟨IsLocalRing.closedPoint F, ?_⟩

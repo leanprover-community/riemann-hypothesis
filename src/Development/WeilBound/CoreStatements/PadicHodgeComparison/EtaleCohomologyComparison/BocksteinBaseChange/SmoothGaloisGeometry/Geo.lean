@@ -101,7 +101,6 @@ open CategoryTheory Limits AlgebraicGeometry TopologicalSpace
 
 namespace CrystallineSemistableComparison
 
-
 theorem smooth_snd_of_isStrictlySemistable {O K : Type} [CommRing O] [CommRing K] [Algebra O K] (ϖ : O)
     [IsLocalization.Away ϖ K] {X : Scheme.{0}} (p : X ⟶ Spec (CommRingCat.of O))
     (hss : GlobalTheory.Et.IsStrictlySemistable ϖ p)
@@ -251,7 +250,6 @@ section -- clump:auto
 @[expose] public section
 
 namespace GlobalTheory.CompanionTheory.SemistableLocal
-
 
 open MvPolynomial in
 theorem irreducible_prod_X_sub_C (O : Type) [CommRing O] [IsDomain O]
@@ -988,15 +986,10 @@ namespace CrystallineSemistableComparison
 
 namespace GeoD
 
-
-attribute [local instance] MvPolynomial.gradedAlgebra in
-theorem isProper_pspace (R : Type) [CommRing R] (N : ℕ) : IsProper (PSpace.str R N) := by
-  apply _root_.UpperTheory.Gal.Seam.Spec.isProper_pstr
-
 theorem compactSpace_of_isProjOver {R : Type} [CommRing R] {X : Scheme.{0}} {f : X ⟶ Sp R}
     (h : IsProjOver f) : CompactSpace X := by
   obtain ⟨N, i, hi, rfl⟩ := h
-  have := isProper_pspace R N
+  have := UpperTheory.Gal.Seam.Spec.isProper_pstr R N
   exact QuasiCompact.compactSpace_of_compactSpace (i ≫ PSpace.str R N)
 
 end GeoD

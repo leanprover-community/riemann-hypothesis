@@ -60,12 +60,6 @@ section -- clump:auto
 
 open GlobalTheory.CompanionTheory.Ar.BT TensorProduct
 
-namespace GlobalTheory.CompanionTheory.Ar.BT
-
-theorem indOrder_id_eq_of_isHopfOrder : ∀ (R : Type) [CommRing R] (T : Type) [CommGroup T] (A : Subalgebra R (T → R)), IsHopfOrder A → indOrder (MonoidHom.id T) A = A :=
-  PositivityTheory.HtPt.Mh.ind_id
-
-end GlobalTheory.CompanionTheory.Ar.BT
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HopfOrderInductionId =====
@@ -155,7 +149,7 @@ theorem isIso_of_finite : ∀ (R : Type) [CommRing R] [IsDomain R] [IsIntegrally
     let f' : H → R := fun h => f h
     have hf' : f' ∈ A' := (hA' f').2 ⟨s, fun t h => (hf t).symm⟩
     have hind : f' ∈ indOrder (MonoidHom.id H) A' := by
-      rw [_root_.GlobalTheory.CompanionTheory.Ar.BT.indOrder_id_eq_of_isHopfOrder R H A' hopf]
+      rw [_root_.PositivityTheory.HtPt.Mh.ind_id R H A' hopf]
       exact hf'
     have hmem : f ∈ Γ.btOrder ⊤ := by
       apply Algebra.subset_adjoin

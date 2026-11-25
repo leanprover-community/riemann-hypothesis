@@ -1103,17 +1103,6 @@ namespace GlobalTheory.CompanionTheory.RealMult.DiracProof
 variable {n : ℕ} {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V]
   {σ : Matrix.unitaryGroup (Fin n) ℂ →* (V →ₗ[ℂ] V)} {Kf : Fin n → Fin n → Module.End ℂ V}
 
-theorem expU_add' (X : Matrix (Fin n) (Fin n) ℂ) (hX : Xᴴ = -X) (s t : ℝ) :
-    expU X hX (s + t) = expU X hX s * expU X hX t := by
-  apply Subtype.ext
-  show NormedSpace.exp (((s + t : ℝ) : ℂ) • X) = NormedSpace.exp ((s : ℂ) • X) * NormedSpace.exp ((t : ℂ) • X)
-  rw [Complex.ofReal_add, add_smul, Matrix.exp_add_of_commute]
-  exact ((Commute.refl X).smul_left _).smul_right _
-
-theorem expU_two_pi (a : Fin n) (hX : (Matrix.single a a Complex.I)ᴴ = -(Matrix.single a a Complex.I)) :
-    expU (Matrix.single a a Complex.I) hX (2 * Real.pi) = 1 :=
-  _root_.GlobalTheory.CompanionTheory.RealCountG.WtInt.expU_two_pi a hX
-
 theorem weight_int (h : IsDerivK σ Kf) (a : Fin n) (r : ℝ) {v : V} (hv : v ≠ 0)
     (hr : Kf a a v = (r : ℂ) • v) : ∃ m : ℤ, r = m := by
   have hX : (Matrix.single a a Complex.I)ᴴ = -(Matrix.single a a Complex.I) := by
@@ -1139,7 +1128,7 @@ theorem weight_int (h : IsDerivK σ Kf) (a : Fin n) (r : ℝ) {v : V} (hv : v �
     have e : (fun t => L (φ (t - s))) = φ := by
       funext t
       have : expU X hX t = expU X hX s * expU X hX (t - s) := by
-        rw [← expU_add']
+        rw [← GlobalTheory.CompanionTheory.RealCountG.WtInt.expU_add]
         congr 1
         ring
       simp only [hL, hφ, this, map_mul, Module.End.mul_apply]
@@ -1170,7 +1159,7 @@ theorem weight_int (h : IsDerivK σ Kf) (a : Fin n) (r : ℝ) {v : V} (hv : v �
     simp [hφ, this]
   have h2π : φ (2 * Real.pi) = v := by
     show σ (expU X hX (2 * Real.pi)) v = v
-    rw [show expU X hX (2 * Real.pi) = 1 from expU_two_pi a hX, map_one, Module.End.one_apply]
+    rw [show expU X hX (2 * Real.pi) = 1 from GlobalTheory.CompanionTheory.RealCountG.WtInt.expU_two_pi a hX, map_one, Module.End.one_apply]
   have hE : Complex.exp (((2 * Real.pi : ℝ) : ℂ) * (-(Complex.I * r))) • v = v := by
     have b : ψ 0 = v := by simp [hψ, h0]
     have a' : ψ (2 * Real.pi) = Complex.exp (((2 * Real.pi : ℝ) : ℂ) * (-(Complex.I * r))) • v := by

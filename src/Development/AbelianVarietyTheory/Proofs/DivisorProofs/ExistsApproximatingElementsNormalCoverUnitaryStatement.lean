@@ -189,8 +189,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory GlobalTheory.USep
 
-theorem _root_.GlobalTheory.T.eq_of_specializes_same_fibre_isIntegralHom : ∀ {X Y : Scheme.{0}} (f : X ⟶ Y) [IsIntegralHom f] {x x' : X}, x ⤳ x' → f x = f x' → x = x' := by
-  first | exact @GlobalTheory.eq_of_specializes_of_isIntegralHom
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqOfSpecializesSameFibreIsIntegralHomStatement =====
@@ -674,7 +672,7 @@ theorem exists_cover : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H
     refine ⟨fun p => ?_, ?_⟩
     · have e1 : ∀ t, ν₁ (ξ₁ t) = ψU (ν (a t)) := fun t => by
         rw [← Scheme.Hom.comp_apply, hξν]; rfl
-      apply GlobalTheory.T.eq_of_specializes_same_fibre_isIntegralHom ν₁
+      apply GlobalTheory.eq_of_specializes_of_isIntegralHom ν₁
       · exact (IsLocalRing.specializes_closedPoint _).map ξ₁.continuous
       · have e2 := e1 (closedPoint R)
         have e3 : a ((spMap ev') p) = a (closedPoint R) := hcl p

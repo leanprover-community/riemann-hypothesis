@@ -165,7 +165,7 @@ theorem logDiff_descends : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, F
     intro p
     by_cases hp : p ∈ D.SB B
     · obtain ⟨A, h1, h2, -, h3⟩ :=
-        (_root_.GlobalTheory.CompanionTheory.Relay.vertical_factor_smooth_hermitian_metric K J II Ψ Ω W D p (Finset.mem_of_mem_filter p hp)).1
+        (_root_.LevelTowerAlt.vertical_factor_smooth_line K J II Ψ Ω W D p (Finset.mem_of_mem_filter p hp)).1
       exact ⟨A, fun _ => ⟨h1, h2, h3⟩⟩
     · exact ⟨S.ref, fun h => absurd h hp⟩
   choose A hA using hA
@@ -641,7 +641,7 @@ theorem tendsto_arLimFun (hLoc : ReciprocityTheory.ChartRestriction.G.AI.I2.Metr
     have hint : ∀ᶠ t in 𝓝[>] (0 : ℝ), ∀ i ∈ Finset.range (D.n + 1),
         MIntegrable M.atlas (positionPot S.R.th Pn (S.regWeight t) i) (GT t) :=
       (Filter.eventually_all_finset _).2 fun i _ => (hconv i).2.1
-    filter_upwards [GlobalTheory.T.regularized_hodge_metric_smooth K J II Ψ Ω W D Hd M S B hS, hbd, hint] with t hsp hb hi
+    filter_upwards [GlobalTheory.CompanionTheory.Ar.Cusp.muReg_smooth_log K J II Ψ Ω W D Hd M S B hS, hbd, hint] with t hsp hb hi
     obtain ⟨hsm, hdeg, hlog⟩ := hsp
     have hT := _root_.GlobalTheory.CompanionTheory.Ar.Tele.telescope hLoc K J II (mCoordIdeal D.y) D.n Nb (muReg Hd S B t) hII D.arith hNb hsm
       (hdeg.trans hNa.symm)

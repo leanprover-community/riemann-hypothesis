@@ -312,8 +312,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR Formalism.IndefR.Datum
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.exists_finiteDim_stable_space_maxCompactAverages : ∀ {D : D7} (θ : InfFam D), IsInfFam θ → ∀ (N : GlobalTheory.Grid.Node D) (τ : D.what₂.Tau) (e : Formalism.REAL.KG (N.M.ε τ) → ℂ), GlobalTheory.TypeSum.KFinFun (N.M.ε τ) e → ∀ s : Set D.what₂.Tau, τ ∉ s → ∀ W' : Submodule ℂ (GA D N.V → ℂ), FiniteDimensional ℂ W' → (∀ f ∈ W', Continuous f) → GlobalTheory.KFinCuspApprox.KStab θ N s W' → ∃ W : Submodule ℂ (GA D N.V → ℂ), FiniteDimensional ℂ W ∧ (∀ f ∈ W, Continuous f) ∧ GlobalTheory.KFinCuspApprox.KStab θ N (insert τ s) W ∧ ∀ f ∈ W', GlobalTheory.KFinCuspApprox.avgN θ N τ e f ∈ W := by
-  first | exact @GlobalTheory.KFinAvgSpan.exists_stab_insert
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsFiniteDimStableSpaceMaxCompactAveragesStatement =====
@@ -622,7 +620,7 @@ theorem exists_kFinite_approx_of_cusp_form : _root_.GlobalTheory.FunPr.ThetaLoca
       obtain ⟨C, hC0, hC⟩ := GlobalTheory.T.avgOverMaximalCompact_weighted_supNorm_bound R.θ hθ (G.V i j) τ e he a
       obtain ⟨ψ', hψ', W', hW'f, hψW', hW'c, hW's, hb⟩ := ih hnd.2 φ hφ (δ / (2 * (C + 1))) (by positivity)
       obtain ⟨W, hWf, hWc, hWs, hWm⟩ :=
-        GlobalTheory.T.exists_finiteDim_stable_space_maxCompactAverages R.θ hθ (G.V i j) τ e hK {τ | τ ∈ l} hnd.1 W' hW'f hW'c hW's
+        GlobalTheory.KFinAvgSpan.exists_stab_insert R.θ hθ (G.V i j) τ e hK {τ | τ ∈ l} hnd.1 W' hW'f hW'c hW's
       refine ⟨_, hA τ e he hK ψ' hψ', W, hWf, hWm ψ' hψW', hWc, by simpa [Set.insert_def] using hWs, fun g => ?_⟩
       have h1 := happ g
       have h2 := hC (φ - ψ') _ hb g
@@ -827,7 +825,6 @@ theorem isGKSub_sInf (s : Set (Submodule ℂ (GA D V → ℂ))) (h : ∀ A ∈ s
   · intro τ X hX f hf
     exact Submodule.mem_sInf.2 fun A hA => (h A hA).lie τ X hX f (Submodule.mem_sInf.1 hf A hA)
 
-
 open scoped Matrix in
 variable {M} in
 theorem InK.inv {τ : D.what₂.Tau} {g : Matrix (Fin V.rank) (Fin V.rank) ℂ} (h : InK M τ g) : InK M τ g⁻¹ := by
@@ -961,7 +958,6 @@ theorem atTau_inv (hθ : IsInfFam θ) {τ : D.what₂.Tau} {k : Matrix (Fin V.ra
   obtain ⟨-, hk', hat⟩ := natCast_inv_and_sub_one_inv_bounds_of_eleven_le hθ hk
   exact ((GlobalTheory.PointAtPlaceHom.atTau_laws D θ hθ V τ).1 k⁻¹ hk').unique
     (GlobalTheory.PointAtPlaceHom.atTau_spec hθ V τ hk') hat
-
 
 variable (θ V) in
 def cuspSub : Submodule ℂ (GA D V → ℂ) where

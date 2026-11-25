@@ -296,8 +296,8 @@ theorem conjStable_first_member (hCRD : GlobalTheory.Published.CuspRapidDecay) {
   obtain ⟨v, hv⟩ := hex
   set f : GA D s'.V → ℂ := fun g => conj (PiLocalization₂.val u' v g) with hfdef
   have hPF : ParFun c s' (PiLocalization₂.val u' v) B := hB'.2 v hv
-  have h3 : GlobalTheory.LFun.IsParamFunV s'.V c.S f B := ((GlobalTheory.T.thetaChainStage_lattice_stabilizer_params_off_set D c hc 0 hj s' hflat).2 f B).1 hPF
-  obtain ⟨h4a, _, _⟩ := GlobalTheory.T.thetaChainStage_conjugate_values_hecke_operators hCRD D c hc 0 hj s' hflat
+  have h3 : GlobalTheory.LFun.IsParamFunV s'.V c.S f B := ((GlobalTheory.ChainOnto.stabLoc_isParamFun_frameLat D c hc 0 hj s' hflat).2 f B).1 hPF
+  obtain ⟨h4a, _, _⟩ := GlobalTheory.ConjVal.conj_values_hecke hCRD D c hc 0 hj s' hflat
   obtain ⟨hcont, ⟨C, hC⟩, hinv, _⟩ := h4a u' v
   have hfmem : f ∈ GlobalTheory.FinZeta.bddAut s'.V := by
     refine ⟨(Complex.continuous_conj).comp hcont, fun γ hγ g => ?_, C, fun g => ?_⟩

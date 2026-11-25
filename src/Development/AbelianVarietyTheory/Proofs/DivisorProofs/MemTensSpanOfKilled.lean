@@ -345,28 +345,16 @@ section General
 
 variable {V V' : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup V'] [Module ℂ V']
 
-theorem mem_hwSub' (act : Mat p q →ₗ[ℂ] Module.End ℂ V) (μ : Ix p q → ℚ) (v : V) :
-    v ∈ hwSub act μ ↔ (∀ a, act (Eab a a) v - ((μ a : ℚ) : ℂ) • v = 0) ∧
-      ∀ a b, posC a b → act (Eab a b) v = 0 := by
-  simp only [hwSub, wtSub, Submodule.mem_inf, Submodule.mem_iInf, LinearMap.mem_ker,
-    LinearMap.sub_apply, LinearMap.smul_apply, LinearMap.id_apply]
-
 theorem isKC_diag' (a : Ix p q) : IsKC (Eab a a) := by
   intro c d h
   rw [Eab, Matrix.single_apply, ite_eq_right]
   rintro ⟨rfl, rfl⟩
   cases a <;> simp [sameBlock] at h
 
-theorem isKC_pos' {a b : Ix p q} (hab : posC a b) : IsKC (Eab a b) := by
-  intro c d h
-  rw [Eab, Matrix.single_apply, ite_eq_right]
-  rintro ⟨rfl, rfl⟩
-  cases a <;> cases b <;> simp_all [sameBlock, posC]
-
 theorem map_hw {a : Mat p q →ₗ[ℂ] Module.End ℂ V} {b : Mat p q →ₗ[ℂ] Module.End ℂ V'}
     (g : V →ₗ[ℂ] V') (hg : ∀ Z v, g (a Z v) = b Z (g v)) {μ : Ix p q → ℚ} {v : V}
     (hv : v ∈ hwSub a μ) : g v ∈ hwSub b μ := by
-  rw [mem_hwSub'] at hv ⊢
+  rw [GlobalTheory.FockAlg.MinFirst.mem_hwSub] at hv ⊢
   refine ⟨fun c => ?_, fun c d h => ?_⟩
   · rw [← hg, ← map_smul, ← map_sub, hv.1 c, map_zero]
   · rw [← hg, hv.2 c d h, map_zero]
@@ -458,14 +446,14 @@ theorem joint_lift {ι : Type} [Fintype ι] [DecidableEq ι] (a : ι → Mat p q
         rwa [hNC, Submodule.mem_bot] at this
       refine ⟨c, ((mem c).1 (hCW hcC)).1, hTc, fun w' hw' => ?_⟩
       rcases Finset.mem_insert.1 hw' with rfl | hw'
-      · rw [GlobalTheory.CommonQuot.mem_hwSub']
+      · rw [GlobalTheory.FockAlg.MinFirst.mem_hwSub]
         refine ⟨fun d => hz _ (C.sub_mem (sC _ (GlobalTheory.CommonQuot.isKC_diag' d) c hcC) (C.smul_mem _ hcC)) ?_,
-          fun d e hde => hz _ (sC _ (GlobalTheory.CommonQuot.isKC_pos' hde) c hcC) ?_⟩
+          fun d e hde => hz _ (sC _ (GlobalTheory.FockAlg.MinFirst.isKC_pos hde) c hcC) ?_⟩
         · have := N.sub_mem (h1 w' d) (N.sub_mem (sN w' _ (GlobalTheory.CommonQuot.isKC_diag' d) _ hTc)
             (N.smul_mem ((μ w' d : ℚ) : ℂ) hTc))
           rw [map_sub, smul_sub] at this
           convert this using 1; abel
-        · have := N.sub_mem (h2 w' d e hde) (sN w' _ (GlobalTheory.CommonQuot.isKC_pos' hde) _ hTc)
+        · have := N.sub_mem (h2 w' d e hde) (sN w' _ (GlobalTheory.FockAlg.MinFirst.isKC_pos hde) _ hTc)
           rw [map_sub] at this
           convert this using 1; abel
       · exact ((mem c).1 (hCW hcC)).2 w' hw'
@@ -628,7 +616,7 @@ theorem le_deg_of_hw {μ : Ix R S → ℚ} {f : Formalism.BasicNotions.TH.Pol P 
     ⌊degW (cPair P Q) μ⌋₊ ≤ f.totalDegree := by
   classical
   obtain ⟨α, hα⟩ := (MvPolynomial.ne_zero_iff).1 hf.1
-  have hmem := (GlobalTheory.CommonQuot.mem_hwSub' _ _ _).1 hf.2
+  have hmem := (GlobalTheory.FockAlg.MinFirst.mem_hwSub _ _ _).1 hf.2
   have e2 : ∀ c : Ix R S, (∑ a, lineSign a c * (((α (a, c) : ℕ) : ℂ) + 1 / 2)) = (μ c : ℂ) := by
     intro c
     have h := hmem.1 c
@@ -738,7 +726,7 @@ theorem mem_degLE_of_hw (μ : ι → Ix R S → ℚ) (T : ⨂[ℂ] _ : ι, Forma
       ∃ c d, posC c d ∧ L = fockAct2 P Q R S (Eab c d)})
     (fun w => restrictTotalDegree (Ln P Q R S) ℂ ⌊degW (cPair P Q) (μ w)⌋₊) (fun w v hv => by
       rw [mem_restrictTotalDegree]
-      refine deg_le_of_harm ?_ ((GlobalTheory.CommonQuot.mem_hwSub' _ _ _).2 ⟨fun c => ?_, fun c d hcd => ?_⟩)
+      refine deg_le_of_harm ?_ ((GlobalTheory.FockAlg.MinFirst.mem_hwSub _ _ _).2 ⟨fun c => ?_, fun c d hcd => ?_⟩)
       · have := hv _ (Or.inl rfl)
         rw [LinearMap.sub_apply, Module.End.one_apply, sub_eq_zero] at this
         rw [← hs, ← this]; exact hπ v
@@ -748,8 +736,8 @@ theorem mem_degLE_of_hw (μ : ι → Ix R S → ℚ) (T : ⨂[ℂ] _ : ι, Forma
       · exact atPl_tensSpan_zero w (fun v hv => by
           rw [LinearMap.sub_apply, Module.End.one_apply, hπ' v hv, sub_self]) hT
       · rw [TensProj.atPl_sub_smul_one]
-        exact ((GlobalTheory.CommonQuot.mem_hwSub' _ _ _).1 (hw w)).1 c
-      · exact ((GlobalTheory.CommonQuot.mem_hwSub' _ _ _).1 (hw w)).2 c d hcd)
+        exact ((GlobalTheory.FockAlg.MinFirst.mem_hwSub _ _ _).1 (hw w)).1 c
+      · exact ((GlobalTheory.FockAlg.MinFirst.mem_hwSub _ _ _).1 (hw w)).2 c d hcd)
   refine (Submodule.span_le.2 ?_ : tensSpan _ ≤ degLE ι P Q R S _) h
   rintro _ ⟨f, hf, rfl⟩
   exact tprod_mem_degLE f (Finset.sum_le_sum fun w _ => (mem_restrictTotalDegree _ _ _).1 (hf w))
@@ -782,10 +770,10 @@ theorem map_mem_degLE (q : (⨂[ℂ] _ : ι, Formalism.BasicNotions.TH.Pol P Q R
       (fun w w' h Y Y' v => atPl_comm h _ _ v) W (LinearMap.ker q) sW h2 μ T1 hT1
       (fun w c => by
         rw [LinearMap.mem_ker, map_sub, map_smul, ← hA w _ (GlobalTheory.CommonQuot.isKC_diag' c) _ hT T1 e, ← e, ← map_smul,
-          ← map_sub, ← map_smul, ← map_sub, ((GlobalTheory.CommonQuot.mem_hwSub' _ _ _).1 (hj w)).1 c, map_zero, map_zero])
+          ← map_sub, ← map_smul, ← map_sub, ((GlobalTheory.FockAlg.MinFirst.mem_hwSub _ _ _).1 (hj w)).1 c, map_zero, map_zero])
       (fun w c d hcd => by
-        rw [LinearMap.mem_ker, ← hA w _ (GlobalTheory.CommonQuot.isKC_pos' hcd) _ hT T1 e,
-          ((GlobalTheory.CommonQuot.mem_hwSub' _ _ _).1 (hj w)).2 c d hcd, map_zero, map_zero])
+        rw [LinearMap.mem_ker, ← hA w _ (GlobalTheory.FockAlg.MinFirst.isKC_pos hcd) _ hT T1 e,
+          ((GlobalTheory.FockAlg.MinFirst.mem_hwSub _ _ _).1 (hj w)).2 c d hcd, map_zero, map_zero])
     refine ⟨T2, degLE_mono ((Finset.sum_le_sum fun w _ => le_deg_of_hw (hμ w)).trans hf)
       (mem_degLE_of_hw μ T2 (hW hT2) hhw), ?_⟩
     rw [LinearMap.mem_ker, map_sub, sub_eq_zero] at hd

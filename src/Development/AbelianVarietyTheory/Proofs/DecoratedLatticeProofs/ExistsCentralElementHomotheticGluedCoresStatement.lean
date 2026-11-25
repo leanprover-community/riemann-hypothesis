@@ -856,7 +856,6 @@ theorem glued_zero {n : Type} [Fintype n] [DecidableEq n] {q : GlobalTheory.LatP
 
 end GlobalTheory.Core.Mi.LatMatch.StabPair
 
-
 open GlobalTheory.Core.Mi.LatMatch.StabPair in
 theorem GlobalTheory.Core.Mi.LatMatch.moves_emb_iff_smul_eq : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (p : SplitPt D k) (S A L : HSp D) (o : OrthDec S A L) (ζ : Fin L.rank → D.host.E) (n : Type) [Fintype n] [DecidableEq n] (β : GlobalTheory.FinPl.Frame p A n) (β₀ : GlobalTheory.FinPl.Frame p S (n ⊕ Fin 1)) (M : Lat S) (q : GlobalTheory.LatPair.Unif k) (m : k) (P : GlobalTheory.LatPair.Pair k n), IsSumFrame o ζ β β₀ → IsSelfDualC S M → m ≠ 0 → GluedW β₀ M q m P → ∀ g : GL n k, Moves S (o.emb (β.gl g, 1)) M M (· = p.v) ↔ g • P = P := by
   intro D k _ _ _ _ p S A L o ζ n _ _ β β₀ M q m P hs hM hm hG g
@@ -934,8 +933,6 @@ open GlobalTheory.SeeSaw (idV dI FI)
 open ValuativeRel
 open GlobalTheory.Core.Mi.LatMatch
 
-theorem _root_.GlobalTheory.T.selfDualCore_component_gluedAlongPair : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (p : SplitPt D k) (S A L : HSp D) (o : OrthDec S A L) (ζ : Fin L.rank → D.host.E) (n : Type) [Fintype n] [DecidableEq n] (β : GlobalTheory.FinPl.Frame p A n) (β₀ : GlobalTheory.FinPl.Frame p S (n ⊕ Fin 1)) (M : Lat S) (μ : D.host.E) (T : ℕ) (q : GlobalTheory.LatPair.Unif k), IsSumFrame o ζ β β₀ → IsSelfDualC S M → μ ≠ 0 → LineAt (vecB o ζ) μ M p.v → star ζ ⬝ᵥ L.gram *ᵥ ζ = -(μ * star μ * (T : D.host.E)) → valuation k (p.pr (incA D (T : D.host.E))) = valuation k ((q.1 : 𝒪[k]) : k) → ∃ P : GlobalTheory.LatPair.Pair k n, GluedW β₀ M q (p.pr (incA D μ)) P := by
-  first | exact @GlobalTheory.Core.Mi.LatMatch.exists_gluedW
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SelfDualCoreComponentGluedAlongPairStatement =====
@@ -1060,7 +1057,7 @@ theorem exists_central_sMoves : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel 
     intro b hb
     rw [← hline b hb, hmv' (b • ratV (vecB o ζ)) (fun i => Ideal.mul_mem_right _ _ hb), Matrix.mulVec_smul,
       GlobalTheory.FinPl.Comm.emb_vecB]
-  obtain ⟨P', hP'⟩ := GlobalTheory.T.selfDualCore_component_gluedAlongPair D k p S A L o ζ n β β₀ M'' μ T q hsum hsd'' hμ hline'' hnorm hval
+  obtain ⟨P', hP'⟩ := GlobalTheory.Core.Mi.LatMatch.exists_gluedW D k p S A L o ζ n β β₀ M'' μ T q hsum hsd'' hμ hline'' hnorm hval
   have hm : p.pr (incA D μ) ≠ 0 := by
     intro h0
     have h1 : p.pr (incA D μ * incA D μ⁻¹) = 1 := by rw [← map_mul, mul_inv_cancel₀ hμ, map_one, map_one]

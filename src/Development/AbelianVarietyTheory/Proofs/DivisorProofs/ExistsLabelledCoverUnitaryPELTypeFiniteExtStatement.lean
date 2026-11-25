@@ -311,14 +311,6 @@ namespace GlobalTheory.Mum.LabBC
 
 open GlobalTheory GlobalTheory.ArcPull GlobalTheory.TorusExt
 
-theorem qkExt_id' {R : Type} [CommRing R] [IsDomain R] {D : DegPre R} {C : Type} [Field C]
-    [Algebra (FractionRing R) C] {k : ℕ} (p : QkPt D C k) : QkExt (RingHom.id C) p p := by
-  have e : spMap (RingHom.id C) = 𝟙 _ := Spec.map_id _
-  refine ⟨rfl, by rw [e, Category.id_comp], fun χ => ?_⟩
-  rw [e]
-  exact corr_of_val D.P.isLB fun y J hJ =>
-    ((val_pull hJ _ _ _).trans (congrArg (fun r => val (p.g.s χ) r y J) (Category.id_comp _))).symm
-
 theorem isAlgebraic_kb {R R₁ : Type} [CommRing R] [IsDomain R] [CommRing R₁] [IsDomain R₁] (ρ : R →+* R₁)
     (hρ : ρ.Finite) [Algebra (FractionRing R) (Kb R₁)]
     (hc : ∀ r, algebraMap (FractionRing R) (Kb R₁) (algebraMap R _ r) =
@@ -401,7 +393,7 @@ theorem galEqN_of_rel {R R₁ : Type} [CommRing R] [IsDomain R] [IsLocalRing R] 
     rw [(qkExt_iff hB₁ s₁ hfσ₁ _ _).1 hPP',
       (qkExt_iff hB₁ s₁ hfσ₁ _ _).1 (GlobalTheory.QkRationalExt.qkExt_pullQk hD hG hB hB₁ hF hF s₁ hfσ hfσ₁ q)]
   have hid : ∀ z : QkPt D.toPre (Kb R₁) (n ^ j), qkExt hB (RingHom.id _) hfid z = z := fun z =>
-    ((qkExt_iff hB _ hfid z z).1 (qkExt_id' z)).symm
+    ((qkExt_iff hB _ hfid z z).1 (GlobalTheory.LabExt.qkExt_refl z)).symm
 
   have hpq : ∀ z : QkPt D.toPre (Kb R₁) (n ^ j), QkExt e (qkExt hB e' hfe' z) z := fun z => by
     rw [qkExt_iff hB e hfe, GlobalTheory.QkRationalExt.qkExt_qkExt hB e' hfe' e hfe (RingHom.id _) hfid hee', hid]
@@ -954,8 +946,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 open Classical
 
-theorem _root_.GlobalTheory.T.exists_uniformised_cover_pullback_semiAbelian_model : ∀ (R₁ : Type) [CommRing R₁] [IsDomain R₁] [IsLocalRing R₁] (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] [GlobalTheory.ZH.ArithBase o Ω] (S : GlobalTheory.ZH.ThetaSys o Ω) (ρS : S.Real) (M : GlobalTheory.ZH.RatModel o Ω) (U₀ : M.Z.Opens) (EE : M.Lat S.J), S.Over₀ M U₀ → GlobalTheory.ZH.ZHOut ρS M U₀ EE → ∀ (b : o →+* R₁) (e : Ω →+* FractionRing R₁), (∀ x : o, e (algebraMap o Ω x) = algebraMap R₁ (FractionRing R₁) (b x)) → ∀ (A₁ : PolAV (Sp (FractionRing R₁))) (φ : A₁.A.left ⟶ ρS.P.A.left), IsGrpPullback A₁.A ρS.P.A (spMap (e.comp S.R.val.toRingHom)) φ → LBIso A₁.L (ρS.P.L.pull φ) → ∃ C : UCover R₁, C.A = A₁ := by
-  first | exact @GlobalTheory.Mum.exists_uCover_of_zhOut
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUniformisedCoverPullbackSemiAbelianModelStatement =====
@@ -990,7 +980,7 @@ theorem exists_uCover : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R]
   have hB : S.Big := hbig o Ω S (hSg.trans hg) hSN hSr
   obtain ⟨J₀, _, t₀, ht₀, hfin'⟩ := GlobalTheory.T.exists_tuple_thetaConstant_ratios_generate_field o Ω S
   obtain ⟨M, U₀, EE, hO, -, -, ⟨Z⟩⟩ := GlobalTheory.zhSt_holds o Ω S ρS hB J₀ t₀ ht₀ hfin'
-  obtain ⟨C, hC⟩ := GlobalTheory.T.exists_uniformised_cover_pullback_semiAbelian_model R₁ o Ω S ρS M U₀ EE hO Z b e hb A₁ φ hcart hlb
+  obtain ⟨C, hC⟩ := GlobalTheory.Mum.exists_uCover_of_zhOut R₁ o Ω S ρS M U₀ EE hO Z b e hb A₁ φ hcart hlb
   subst hC
   exact ⟨R₁, _, _, _, ρ, C, a, hfin, hfib⟩
 
@@ -1158,7 +1148,6 @@ theorem qPt_add {k : ℕ} {p p' : QkPt D C k} {q q' : N.QT k} (h : ν.QPt p q) (
     have := (H.2.2.1 p.g p'.g _ _ _ _ h.2 h'.2 hc).1 ((isAdd_iff_eq _ _ _).2 rfl)
     rw [this] at hc
     exact hc
-
 
 include he hb he' hb' in
 theorem exists_tower {f : ∀ k, QkPt D C k → (TFK (R := W) C ⟶ A.A)} {f' : ∀ k, QkPt D' C k → (TFK (R := W) C ⟶ A.A)}
@@ -1627,7 +1616,7 @@ namespace GlobalTheory.Mum.Recognition
 theorem pullDeg_induces : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], Base R → ∀ (D : DegData R (maximalIdeal R)) (A : PolAV (Sp (FractionRing R))) (lab : Labels D.toPre A), ∀ n : ℕ, n.Prime → Odd n → IsUnit (n : R) → OneTrait D.toPre A lab → GalEqN n lab → ∀ (W : Type) [CommRing W] [IsDomain W] [IsLocalRing W], GlobalTheory.LN.CDvr W → ∀ (φ : R →+* W), Function.Injective φ → IsLocalHom φ → ∀ (G' : Over (Sp W)) [GrpObj G'] [IsCommMonObj G'] (D' : DegData W (maximalIdeal W)) (A' : PolAV (Sp (FractionRing W))) (U' : Unif (maximalIdeal W) D' A' G') (a : A'.A.left ⟶ A.A.left), IsSemiAbelian G' → IsFib φ A A' a → ∃ hD : IsPullDeg φ D.toPre D'.toPre, ∀ j : ℕ, Induces lab φ U' hD a (n ^ j) := by
   intro R _ _ _ hR D A lab n hn ho hu hOT hGal W _ _ _ hW φ hφ hloc G' _ _ D' A' U' a hG hF
   obtain ⟨hD, C, i1, i2, i3, i4, em, hc, hP⟩ := GlobalTheory.T.galois_equivariant_torsion_values_ultrametric R hR D A lab n hn ho hu hOT hGal
-    (GlobalTheory.T.isThetaPoint_of_algebraic_series_one_trait R hR D A lab n hn ho hu hOT) W hW φ hφ hloc G' D' A' U' a hG hF
+    (GlobalTheory.Mum.OneTraitTheta.isThetaPt_of_series R hR D A lab n hn ho hu hOT) W hW φ hφ hloc G' D' A' U' a hG hF
   exact ⟨hD, fun j => GlobalTheory.T.labels_induced_all_embeddings_of_galois R hR D A lab n hn ho hu hGal W hW φ hφ hloc G' D' A' U' a hG hF hD j
     ⟨C, i1, i2, i3, i4, em, hc, hP j⟩⟩
 
@@ -1685,7 +1674,6 @@ theorem mono_α {R : Type} [CommRing R] [IsDomain R] {M : Modif R} {X : Over M.S
   rw [Category.assoc, Category.assoc, ← h.1.w, ← Category.assoc, huv, Category.assoc]
 
 end GlobalTheory.Mum.UCoverLab
-
 
 open GlobalTheory.Mum.UCoverLab GlobalTheory.Mum.CoverFin in
 theorem GlobalTheory.Mum.UCover.labCover : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], Base R → ∀ (D : DegData R (maximalIdeal R)) (C : UCover R) (lab : Labels D.toPre C.A), ∀ n : ℕ, n.Prime → Odd n → IsUnit (n : R) → OneTrait D.toPre C.A lab → GalEqN n lab → Nonempty (LabCover D) := by

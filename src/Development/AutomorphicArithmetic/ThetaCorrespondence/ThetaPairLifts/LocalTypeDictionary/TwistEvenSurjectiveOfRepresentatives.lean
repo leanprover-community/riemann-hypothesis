@@ -169,7 +169,7 @@ theorem GlobalTheory.EvenOnto.parBound_of_rapidDecay : GlobalTheory.Published.Cu
   have hlev' : ∀ k ∈ (s.J : Set (GA D s.V)), ∀ g, f (g * k) = (1 : GA D s.V → ℂ) k * f g := by
     intro k hk g
     simp only [hfdef, hlev k hk g, Pi.one_apply, one_mul]
-  obtain ⟨a, ha⟩ := GlobalTheory.T.sphericalOperator_eigenvalues_determined_by_params D s.V (s.J : Set (GA D s.V)) 1 c.S hsph B
+  obtain ⟨a, ha⟩ := GlobalTheory.ParamEigen.eig_of_param D s.V (s.J : Set (GA D s.V)) 1 c.S hsph B
   obtain ⟨B', hB', hbd⟩ := GlobalTheory.T.exists_satake_parameters_bounded_eigenfunction D s.V _ _ c.S hsph f hfmem hf0 hlev' a (fun P d R hR => ha f h3 P d R hR)
   intro w hw
   rw [GlobalTheory.LFun.IsParamVecOff.unique h3 hB' hw]
@@ -356,7 +356,6 @@ theorem eulerProd_add_segFam {K : Type} [Field K] [NumberField K] {ι : Type} (T
   simp only [GlobalTheory.LFun.locL_segFam']
 
 end GlobalTheory.EvenOnto.ChainVal
-
 
 open GlobalTheory.EvenOnto.ChainVal in
 theorem GlobalTheory.EvenOnto.chainL_and_inj : ∀ D : D7, ChainL D ∧ ∀ (c : Com D) (k : ℕ) (B B' : GlobalTheory.LFun.Fam D.host.E)
@@ -760,7 +759,7 @@ theorem upPar_of_transfer : GlobalTheory.Published.CuspRapidDecay → GlobalTheo
   rw [hconj]
   intro w0 hw0 w h
   have hw0' : w0 ∉ c.S := by simpa using hw0
-  exact GlobalTheory.T.thetaIntegral_conjCuspForm_parameterTransfer hRD D (GlobalTheory.T.sphericalParameterTransfer_all_finitePlaces hHowe D) c.ψ c.θ s.V s'.V _ _ p.ω hc.inf hp.pre.weil c.t hrank s.ν s.fd
+  exact GlobalTheory.ChainOnto.thetaIntegral_param hRD D (GlobalTheory.T.sphericalParameterTransfer_all_finitePlaces hHowe D) c.ψ c.θ s.V s'.V _ _ p.ω hc.inf hp.pre.weil c.t hrank s.ν s.fd
     hs.haar hs.fund w0 (hunr w0 hw0') w h (p.pt φ)
     ((GlobalTheory.T.evenThetaChainStep_fockVectors_spherical_latticeVacua D c hc k hk s s' hs hs' p hp φ).2.2.2 w0 hw0') y (B w) hYA.1 hYA.2 (hyB w0 hw0 w h) hne'
 
@@ -872,7 +871,6 @@ open GlobalTheory.Chain.RealIt (glue)
 
 namespace GlobalTheory.EvenOntoRealZeta
 
-
 open GlobalTheory.IndefiniteRowSideFullHecke.ThetaSourceAction in
 theorem realZeta : GlobalTheory.Published.DiscreteSeriesCover → GlobalTheory.Published.HarishChandraModules → ∀ D : D7, RealZeta D := by
   intro hDS hHC D c hc k hk s s' hs hs' p hp m X hmX
@@ -890,8 +888,8 @@ theorem realZeta : GlobalTheory.Published.DiscreteSeriesCover → GlobalTheory.P
   choose w hwsm hwk hwhi using fun τ => GlobalTheory.T.exists_smooth_kFinite_unit_highestWeight_vector hHC D s.V s.par s.M τ
   refine ⟨glue Φ, fun τ => ⟨w τ, hwsm τ⟩, fun τ => hwk τ, ?_⟩
   intro mR hmR z
-  have hfac := GlobalTheory.T.thetaInner_fockProduct_eq_prod_realPlaces D s.V s'.V s.par s'.par s.M s'.M c.θ c.ψ (c.χ k) (c.χ k) p.ω hc.inf hW m X hmX p.f hvac
-  obtain ⟨cst, hcst, hhaar⟩ := GlobalTheory.T.integral_realUnitary_haar_eq_prod_Upq_haar D s.V s.par s.M c.θ hc.inf mR (fun τ => Formalism.REAL.muG (s.M.ε τ)) hmR
+  have hfac := GlobalTheory.FockProdCoef.ipTh_ptOf_glue D s.V s'.V s.par s'.par s.M s'.M c.θ c.ψ (c.χ k) (c.χ k) p.ω hc.inf hW m X hmX p.f hvac
+  obtain ⟨cst, hcst, hhaar⟩ := GlobalTheory.HaarReal.integral_prod_eq D s.V s.par s.M c.θ hc.inf mR (fun τ => Formalism.REAL.muG (s.M.ε τ)) hmR
     (fun τ => inferInstance)
   have hZ := fun τ => hZL τ (Φ τ) (hΦ τ) ⟨w τ, hwk τ⟩ (hwhi τ) (Formalism.REAL.muG (s.M.ε τ)) inferInstance
   set i0 := ipTh m X p.f p.f with hi0
@@ -1006,7 +1004,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 namespace GlobalTheory.EvenOnto.MeasPet
 
 variable {D : D7}
-
 
 open GlobalTheory.ChainOnto.HaarInf in
 theorem meas_petco : ∀ D : D7, ForStage D fun c _ s => (MeasurableSet (intOff c s) ∧ MeasurableSet s.big ∧ s.big ⊆ intOff c s ∧ ∃ mR : Measure (GinfC s.V), mR.IsHaarMeasure ∧ ∀ (f : GinfC s.V → ℂ) (F : GA D s.V → ℂ), Integrable f mR → (∀ (b : GinfC s.V), ∀ κ ∈ s.J, F ((b : GA D s.V) * κ) = f b) → IntegrableOn F s.big s.ν ∧ ∫ g in s.big, F g ∂s.ν = ∫ b, f b ∂mR) ∧ ∀ ipD ip, IsMet c s ipD ip → ∀ (u : s.CC c) (v : s.M.Vec) (b : GinfC s.V), ∀ κ ∈ s.J, s.pet (rTr s.V ((b : GA D s.V) * κ) (PiLocalization₂.val u (PiTensorProduct.tprod ℂ v))) (PiLocalization₂.val u (PiTensorProduct.tprod ℂ v)) = ip u u * ∏ τ, ⟪(v τ : s.M.H τ), s.M.rep τ (infMat D.sp.cm.sig s.V.gram (c.θ τ) (b : GA D s.V)) (v τ : s.M.H τ)⟫_ℂ := by
@@ -1147,7 +1144,7 @@ theorem hgtS_mul_lev {c : Com D} {s : PiLocalization₂ D} (hs : IsSelfDualC s.V
     (a : GL (Fin s.V.rank) (AE D)) (b : GinfC s.V) (κ : GA D s.V) (hκ : κ ∈ s.J) :
     hgtS c s a ((b : GA D s.V) * κ) =
       ∏ w, GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift.hgtW s.V a w (GlobalTheory.AdelicU.projArch D.sp.cm.sig s.V.gram w (b : GA D s.V)) := by
-  obtain ⟨h1, h2, h3⟩ := GlobalTheory.T.doublingHeight_eq_one_lattice_stabilizer_components D s.V s.Λ hs
+  obtain ⟨h1, h2, h3⟩ := GlobalTheory.ChainOnto.hgt_one_components D s.V s.Λ hs
   have hκf : κ ∈ GfC s.V := hfin hκ
   unfold hgtS
   have hA : ∀ w, GlobalTheory.AdelicU.projArch D.sp.cm.sig s.V.gram w ((b : GA D s.V) * κ) =
@@ -1256,8 +1253,8 @@ namespace GlobalTheory.EvenOnto.LiftUp
 
 theorem liftUp_stage_span : GlobalTheory.Published.DiscreteSeriesCover → GlobalTheory.Published.HarishChandraModules → GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Published.CasselmanWallach → ∀ (D : D7) (c : Com D) (k : ℕ) (s s' : PiLocalization₂ D) ω f, c.Is → k < c.m → s.Is c k → s'.Is c (k + 1) → PreStep c k s s' ω f → ∃ T : PolF D s'.V.rank s.V.rank → SmT s.M → SmT s'.M, (∀ P v, T P v ∈ s'.KF) ∧ s'.KF ≤ Submodule.span ℂ {w | ∃ P v, w = T P v} ∧ GlobalTheory.PairLift.LiftsM c.θ s.M s'.M s.ν s.fd (fun P h g => conj (thetaKO ω g h (GlobalTheory.Chain.ptOf c.ψ c.θ s.M s'.M f P))) T := by
   intro hDS hHC hCD hCW D c k s s' ω f hc hk hs _hs' hp
-  obtain ⟨X, hX, _h1, _h2, h3, h4, h5⟩ := GlobalTheory.T.exists_real_discreteSeries_data_theta_properties hDS hHC
-  have hIn : Inputs D X := GlobalTheory.T.thetaPairAnalyticHypotheses_of_discreteSeries hDS hHC hCD hCW D X hX
+  obtain ⟨X, hX, _h1, _h2, h3, h4, h5⟩ := GlobalTheory.RealPlaceTheta.exists_record_theta_all hDS hHC
+  have hIn : Inputs D X := GlobalTheory.PairLift.inputs_of_chosenSeries hDS hHC hCD hCW D X hX
   have hPL : PairLifts D X :=
     GlobalTheory.T.pairThetaLift_factors_through_intertwiner D X hIn (GlobalTheory.T.thetaLifts_cuspidal_of_lower_tower_lifts_vanish D X hIn (GlobalTheory.T.lowerTowerLiftsVanish_of_vanish_on_fock D X hIn (GlobalTheory.T.lowerTowerLifts_vanish_on_fock D X hIn)))
   have hW := hp.weil
@@ -1394,7 +1391,7 @@ theorem upAdj : GlobalTheory.Published.CuspRapidDecay → ∀ D : D7, UpAdj D :=
     ((GlobalTheory.T.multiplicity_values_continuous_bounded_hecke_conj hP D c hc k hk.le s hs).1 u v).2.2.2.2
   have hry : GlobalTheory.Grow.RapidDec s'.V (PiLocalization₂.val y w) :=
     ((GlobalTheory.T.multiplicity_values_continuous_bounded_hecke_conj hP D c hc (k + 1) (Nat.succ_le_of_lt hk) s' hs').1 y w).2.2.2.2
-  have hF := GlobalTheory.T.thetaKernel_iterated_integrals_swap D c.ψ c.θ s.V s'.V (c.χ k) (c.χ k) p.ω hc.inf hp.pre.weil (p.pt φ)
+  have hF := GlobalTheory.ChainOnto.ThetaSwap.integral_swap D c.ψ c.θ s.V s'.V (c.χ k) (c.χ k) p.ω hc.inf hp.pre.weil (p.pt φ)
     (GlobalTheory.T.evenThetaChainStep_fockVectors_spherical_latticeVacua D c hc k hk s s' hs hs' p hp φ).1
     s.ν s.fd s'.ν s'.fd hs.haar hs.fund hs'.haar hs'.fund (PiLocalization₂.val u v) (PiLocalization₂.val y w) hru hry
   simp only [PiLocalization₂.pet, Lift.pet, Step.up]
@@ -1555,7 +1552,7 @@ theorem upNe_of_heckeForm : ∀ D : D7, GlobalTheory.Core.Rk.IP.HeckeForm D → 
     (hp.pre.weil.om_cont _ hΦ 0).comp (continuous_id.prodMk continuous_const)
   have hrc : ∀ g, GlobalTheory.Core.Rk.IP.rcoef s.ν (fun x => conj (F x)) (fun x => conj (F x)) g = conj (s.pet (rTr s.V g F) F) := by
     intro g
-    have := GlobalTheory.T.integral_quotient_eq_setIntegral_fundamentalDomain D s.V s.ν s.fd hs.haar hs.fund (fun x => conj (F (x * g)) * conj (conj (F x)))
+    have := GlobalTheory.ChainOnto.integral_autMeasure_eq_setIntegral D s.V s.ν s.fd hs.haar hs.fund (fun x => conj (F (x * g)) * conj (conj (F x)))
       (fun γ hγ x => by simp only [mul_assoc, hFl γ hγ]) (by fun_prop)
     simp only [GlobalTheory.Core.Rk.IP.rcoef, PiLocalization₂.pet, Lift.pet, rTr]
     rw [← integral_conj]
@@ -1563,7 +1560,7 @@ theorem upNe_of_heckeForm : ∀ D : D7, GlobalTheory.Core.Rk.IP.HeckeForm D → 
     exact this
   have hup : ∀ h, GlobalTheory.Core.Rk.IP.up p.ω s.ν (p.pt φ) (fun x => conj (F x)) h = conj (p.up φ F h) := by
     intro h
-    have := GlobalTheory.T.integral_quotient_eq_setIntegral_fundamentalDomain D s.V s.ν s.fd hs.haar hs.fund (fun g => thetaKO p.ω g h (p.pt φ) * conj (F g))
+    have := GlobalTheory.ChainOnto.integral_autMeasure_eq_setIntegral D s.V s.ν s.fd hs.haar hs.fund (fun g => thetaKO p.ω g h (p.pt φ) * conj (F g))
       (fun γ hγ x => by simp only [hθl h γ hγ, hFl γ hγ]) (by have := hθc h; fun_prop)
     simp only [GlobalTheory.Core.Rk.IP.up, Step.up]
     rw [← integral_conj]

@@ -406,8 +406,6 @@ open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.exists_coefficientSpace_dual_discreteSeriesModel_posDef : ∀ (D : D7) (θ : InfFam D) (V : HSp D) (S : D.what₂.Tau → SPar) (M : DSModel V S), IsInfFam θ → AllPlus M → ∃ (c : CoefA V) (pr : c.W →ₗ[ℂ] SmT M →ₗ[ℂ] ℂ), c.Is ∧ IsDualPair θ M c pr ∧ Function.Surjective pr := by
-  first | exact @GlobalTheory.DualCoef.exists_dual_coef
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsCoefficientSpaceDualDiscreteSeriesModelPosStatement =====
@@ -423,11 +421,6 @@ open scoped Classical
 namespace GlobalTheory.GLq.SqSeries
 
 variable {g : ℕ} [Fact g.Prime]
-
-theorem isClass_of_isChar {G : Type} [Group G] {χ : G → ℂ} (h : IsChar χ) : IsClass χ := by
-  obtain ⟨V, hV⟩ := h
-  intro x y
-  rw [← hV, ← hV, FDRep.char_conj]
 
 theorem wh_one_zero (ψ : AddChar (ZMod g) ℂ) : wh ψ (fun _ : Gn g 0 => (1 : ℂ)) = 1 := by
   haveI : Subsingleton (Gn g 0) := ⟨fun a b => Units.ext (Subsingleton.elim _ _)⟩
@@ -458,8 +451,8 @@ theorem wh_hcL (ψ : AddChar (ZMod g) ℂ) (hψ : ψ ≠ 1) (L : List (Pc g))
     have hch : ∀ q : Pc g, IsCusp q.2 → IsChar q.2 := fun q hq => by
       obtain ⟨V, -, hV⟩ := hq.2.1
       exact ⟨V, hV⟩
-    have c1 := isClass_of_isChar (hch p hp.1)
-    have c2 := isClass_of_isChar (_root_.GlobalTheory.gl_list_product_perm_char g L L _ rfl fun q hq => hch q (hL q hq).1).1
+    have c1 := GlobalTheory.CharDec.isClass_of_isChar (hch p hp.1)
+    have c2 := GlobalTheory.CharDec.isClass_of_isChar (_root_.GlobalTheory.gl_list_product_perm_char g L L _ rfl fun q hq => hch q (hL q hq).1).1
     rw [hcL_cons, hc, _root_.GlobalTheory.GLq.WhMul.wh_hcT g ψ hψ p.1 (degL L) _ (by simp [degL]) _
       (fun y a b => by simp only [c1 a b]) (fun x a b => by simp only [c2 a b])]
     simp only [wh_const_mul, ih hL, mul_one]
@@ -717,7 +710,6 @@ theorem monicOf_injective {g N : ℕ} [Fact g.Prime] :
     Polynomial.coeff_C_mul_X_pow, Nat.ne_of_lt i.isLt, if_false, zero_add] at key
   rwa [Finset.sum_eq_single i (fun j _ hj => if_neg (fun e => hj (Fin.ext e.symm))) (by simp), if_pos rfl,
     Finset.sum_eq_single i (fun j _ hj => if_neg (fun e => hj (Fin.ext e.symm))) (by simp), if_pos rfl] at key
-
 
 open Classical in
 theorem sum_good {g N m : ℕ} [Fact g.Prime] {ι : Type} [Fintype ι] [Fintype (ι → Fin N → ZMod g)]
@@ -1421,8 +1413,6 @@ open GlobalTheory.DefFree GlobalTheory.DefLift Polynomial
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.unitaryGroup_adelicClasses_via_finiteAdelicPart : ∀ (D : D7) (V : HSp D), (∀ x : UA D.sp.cm V.gram, ∃ h ∈ GfC V, finU V h = x) ∧ (∀ γ ∈ GQ V, finU V γ ∈ UQ D.sp.cm V.gram) ∧ (∀ x ∈ UQ D.sp.cm V.gram, ∃ γ ∈ GQ V, finU V γ = x) ∧ (∀ γ ∈ GQ V, finU V γ = 1 → γ = 1) ∧ ∀ (K : Subgroup (GL (Fin V.rank) (EAf D))) (h h' : GA D V), clsA V K h = clsA V K h' ↔ ∃ γ ∈ GQ V, ∃ κ ∈ levA V K, ∃ k ∈ GinfC V, h' = γ * h * κ * k := by
-  first | exact @GlobalTheory.DefFree.AdelCls.adelic_classes
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.UnitaryGroupAdelicClassesViaFiniteAdelicPartStatement =====
@@ -1444,7 +1434,6 @@ open scoped TensorProduct
 namespace GlobalTheory.DefFree
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 open GlobalTheory.BadShare in
 theorem central_tens2 {G G' : Type} [Group G] [Fintype G] [Group G'] [Fintype G'] {a : G → ℂ} {b : G' → ℂ}
@@ -1541,8 +1530,8 @@ theorem principal_count {θ : InfFam D} {V : HSp D} {S : D.what₂.Tau → SPar}
         LinearMap.trace ℂ H A = 0 := by
   have hfin := GlobalTheory.DefLift.AllPlus.finite_smooth_irreducible D V S M hM
   haveI : ∀ τ, FiniteDimensional ℂ (M.H τ) := fun τ => (hfin τ).1
-  obtain ⟨c, pr, hc, hpr, hsurj⟩ := GlobalTheory.T.exists_coefficientSpace_dual_discreteSeriesModel_posDef D θ V S M hθ hM
-  obtain ⟨a1, -, -, -, a5⟩ := GlobalTheory.T.unitaryGroup_adelicClasses_via_finiteAdelicPart D V
+  obtain ⟨c, pr, hc, hpr, hsurj⟩ := GlobalTheory.DualCoef.exists_dual_coef D θ V S M hθ hM
+  obtain ⟨a1, -, -, -, a5⟩ := GlobalTheory.DefFree.AdelCls.adelic_classes D V
   obtain ⟨h1, h2, h3⟩ := GlobalTheory.T.finrank_eq_card_mul_and_trace_eq_zero_of_free_values_alt (GA D V) _ (MMap M) (MultilinearMap (RingHom.id ℂ) (fun τ : D.what₂.Tau => M.sm τ) ℂ) (clsA V (lev D.sp.cm V.gram β (flag1L L))) (evAt M)
     (Mult θ M (levS V β (flag1L L)) (levChi V β (flag1L L)))
     (fun c => by
@@ -1765,7 +1754,6 @@ theorem definiteFree : DefiniteFree := by
   intro D L hP G _ _ Pl0 T A Ks _ _ _ R F h i hi
   have hbig := fun k => (GlobalTheory.T.typePrime_large_and_one_mod_sixteen_q_d D L hP k).1
   exact ⟨(principal_last h hbig hi).1, free_last h hbig hi⟩
-
 
 open Classical GlobalTheory.BadShare in
 theorem definiteGoodShare (hG : GlobalTheory.Published.GreenCuspidal) : DefiniteGoodShare := by

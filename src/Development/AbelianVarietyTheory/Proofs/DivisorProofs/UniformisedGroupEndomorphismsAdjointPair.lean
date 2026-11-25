@@ -129,7 +129,6 @@ theorem pt_eq_of_cls {S : Scheme.{0}} {A : Over S} [GrpObj A] [IsCommMonObj A] {
 
 end GlobalTheory.Mum.RosUniq
 
-
 open GlobalTheory.CechPic GlobalTheory.EndRosati GlobalTheory.Mum.RosUniq in
 theorem GlobalTheory.Mum.rosatiAdj_unique : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], Base R → ∀ (D : DegData R (maximalIdeal R)) (f g g' : D.toPre.P.A ⟶ D.toPre.P.A), IsMonHom f → IsMonHom g → IsMonHom g' → RosatiAdj D.toPre.P.A D.toPre.P.L f g → RosatiAdj D.toPre.P.A D.toPre.P.L f g' → g = g' := by
   intro R _ _ _ _ D f g g' hf hg hg' Hg Hg'
@@ -481,8 +480,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
-theorem _root_.GlobalTheory.T.semiAbelian_endomorphism_unique_over_degenerationData : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], AdmBase R (maximalIdeal R) → ∀ (D : DegData R (maximalIdeal R)) (A : PolAV (Sp (FractionRing R))) (G : Over (Sp R)) [GrpObj G] [IsCommMonObj G], IsSemiAbelian G → ∀ U : Unif (maximalIdeal R) D A G, ∀ (a : D.toPre.P.A ⟶ D.toPre.P.A) (h' : D.toPre.X →+ D.toPre.X), (∀ b b', FormalEnd U.toUnifPre a h' b → FormalEnd U.toUnifPre a h' b' → b = b') ∧ ∀ b b' : G ⟶ G, (∀ e, (Over.pullback (thick R (maximalIdeal R) e)).map b = (Over.pullback (thick R (maximalIdeal R) e)).map b') → b = b' := by
-  first | exact @GlobalTheory.MumUniq.main
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.SemiAbelianEndomorphismUniqueOverDegenerationDatStatement =====
@@ -504,7 +501,7 @@ theorem linEnd_adjoint_lbIso : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocal
   intro R _ _ _ hR D A G _ _ hG U a a' h h' hE g g' hg hg'
   obtain ⟨g₁, hg₁, hiso⟩ := GlobalTheory.T.exists_adjoint_endomorphism_uniformised_group R hR D A G hG U g hg.1
   have h₁ : LinEnd U.toUnifPre a' h g₁ := GlobalTheory.T.adjoint_uniformisationEndomorphism_lies_over_adjoint R hR D A G hG U a a' h h' hE g g₁ hg hg₁ hiso
-  have hu := GlobalTheory.T.semiAbelian_endomorphism_unique_over_degenerationData R hR.1 D A G hG U a' h
+  have hu := GlobalTheory.MumUniq.main R hR.1 D A G hG U a' h
   have heq : g₁ = g' := hu.2 g₁ g' fun e => congrFun (hu.1 _ _ h₁.2 hg'.2) e
   subst heq
   exact hiso

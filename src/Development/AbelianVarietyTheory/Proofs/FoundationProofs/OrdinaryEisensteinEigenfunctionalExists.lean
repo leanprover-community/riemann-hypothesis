@@ -369,9 +369,6 @@ def toG0 (L : ℕ) (M : M2) (h1 : M.det = 1) (h2 : (L : ℤ) ∣ M 1 0) : Gamma0
 theorem coe_to_gamma0 (L : ℕ) (M : M2) (h1 : M.det = 1) (h2 : (L : ℤ) ∣ M 1 0) :
     (((toG0 L M h1 h2 : Gamma0 L) : SL(2, ℤ)) : M2) = M := rfl
 
-theorem gamma0_lowerLeft_dvd_level {L : ℕ} (γ : Gamma0 L) : (L : ℤ) ∣ ((γ : SL(2, ℤ)) : M2) 1 0 :=
-  (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).1 (Gamma0_mem.1 γ.2)
-
 section
 variable {N l : ℕ} {a b c d : ℤ}
 
@@ -379,7 +376,7 @@ theorem lrep_alConj (h : (N : ℤ) * a * d - l * b * c = 1) (hN : 0 < N) (hl : 0
     (hΔ : ∀ δ ∈ Δ, ((N * l : ℕ) : ℤ) ∣ δ 1 0) (hφ : ∀ δ ∈ Δ, alConj N l a b c d δ ∈ Δ)
     (hψ : ∀ δ ∈ Δ, alConjInv N l a b c d δ ∈ Δ) {ι : Type} (β : ι → M2) (hβ : LRep (N * l) Δ β) :
     LRep (N * l) Δ (fun i => alConj N l a b c d (β i)) := by
-  have hG : ∀ γ : Gamma0 (N * l), ((N * l : ℕ) : ℤ) ∣ ((γ : SL(2, ℤ)) : M2) 1 0 := fun γ => gamma0_lowerLeft_dvd_level γ
+  have hG : ∀ γ : Gamma0 (N * l), ((N * l : ℕ) : ℤ) ∣ ((γ : SL(2, ℤ)) : M2) 1 0 := fun γ => GlobalTheory.EisM.gamma0_lower_dvd γ
   have hGdet : ∀ γ : Gamma0 (N * l), ((γ : SL(2, ℤ)) : M2).det = 1 := fun γ => (γ : SL(2, ℤ)).2
   let ψG : Gamma0 (N * l) → Gamma0 (N * l) := fun γ => toG0 (N * l) (alConjInv N l a b c d ((γ : SL(2, ℤ)) : M2))
     (by rw [alConjInv_det h hN hl _ (hG γ), hGdet]) (alConjInv_mem _)
@@ -683,7 +680,6 @@ theorem slz_levelOne (k : ℕ) (a : ℕ → ℂ) (a₀ b₀ c₀ d₀ : ℤ) (h 
 
 end GlobalTheory.EisM.AtkinLehnerForm
 
-
 open GlobalTheory.EisM.AtkinLehnerForm in
 theorem GlobalTheory.EisM.atkinLehner_MF : ∀ (k N l : ℕ) (χ : DirichletCharacter ℂ N) (a : ℕ → ℂ) (a₀ b₀ c₀ d₀ : ℤ), N * a₀ * d₀ - l * b₀ * c₀ = 1 → 1 ≤ k → 0 < N → MF k (N * l) (ch χ) a → ∃ a' : ℕ → ℂ, MF k (N * l) (ch χ⁻¹) a' ∧ qs a' = slz k !![(N : ℤ) * a₀, b₀; N * l * c₀, N * d₀] (qs a) := by
   intro k N l χ a a₀ b₀ c₀ d₀ h hk hN ha
@@ -899,7 +895,6 @@ open scoped MatrixGroups Real ComplexConjugate Manifold ModularForm
 
 namespace GlobalTheory
 
-
 open Classical in
 theorem lam_extend_by_zero : ∀ (k L N : ℕ) (χ₀ : DirichletCharacter ℂ N) (B : ℕ) (c : ℕ → ℂ), 0 < L → N ∣ L →
     ∃ (B' : ℕ) (c' : ℕ → ℂ), (∀ a, MF k L (ch χ₀) a → lam B' c' a = lam B c a) ∧
@@ -991,18 +986,8 @@ open scoped MatrixGroups Real ComplexConjugate Manifold ModularForm
 
 namespace GlobalTheory.EisM
 
-theorem lam_add' (B : ℕ) (c a b : ℕ → ℂ) : lam B c (a + b) = lam B c a + lam B c b := by
-  simp only [lam, Pi.add_apply, mul_add, Finset.sum_add_distrib]
-
-theorem lam_smul' (B : ℕ) (c a : ℕ → ℂ) (z : ℂ) : lam B c (z • a) = z * lam B c a := by
-  simp only [lam, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
-  exact Finset.sum_congr rfl fun _ _ => by ring
-
 theorem slz_add' (k : ℕ) (δ : M2) (f g : ℍ → ℂ) : slz k δ (f + g) = slz k δ f + slz k δ g := by
   funext τ; simp only [slz, Pi.add_apply]; ring
-
-theorem slz_smul' (k : ℕ) (δ : M2) (z : ℂ) (f : ℍ → ℂ) : slz k δ (z • f) = z • slz k δ f := by
-  funext τ; simp only [slz, Pi.smul_apply, smul_eq_mul]; ring
 
 theorem eigAll_of_atkinLehner : ∀ (k N l : ℕ) (χ : DirichletCharacter ℂ N) (g : ℕ → ℂ) (α : ℂ) (B : ℕ) (c : ℕ → ℂ)
     (a₀ b₀ c₀ d₀ : ℤ), N * a₀ * d₀ - l * b₀ * c₀ = 1 → 1 ≤ k → 0 < N → l.Prime → ¬ l ∣ N →
@@ -1038,14 +1023,14 @@ theorem eigAll_of_atkinLehner : ∀ (k N l : ℕ) (χ : DirichletCharacter ℂ N
       obtain ⟨hab', hqab'⟩ := hadd2 a' b' ha' hb'
       refine ⟨hab, ?_⟩
       rw [hφ a a' ha' ea, hφ b b' hb' eb, hφ (a + b) (a' + b') hab' (by rw [hqab', hqab, slz_add', ea, eb]),
-        lam_add'])
+        GlobalTheory.DepletedValue.lam_add])
     (by
       intro z a ha
       obtain ⟨a', ha', ea⟩ := hex a ha
       obtain ⟨hza, hqza⟩ := hsm1 z a ha
       obtain ⟨hza', hqza'⟩ := hsm2 z a' ha'
       refine ⟨hza, ?_⟩
-      rw [hφ a a' ha' ea, hφ (z • a) (z • a') hza' (by rw [hqza', hqza, slz_smul', ea]), lam_smul'])
+      rw [hφ a a' ha' ea, hφ (z • a) (z • a') hza' (by rw [hqza', hqza, GlobalTheory.ZMVal.slz_smul', ea]), GlobalTheory.DepletedValue.lam_smul])
     (fun a ha h => hB₀ a ha h)
   obtain ⟨B', c', hagree, hkill⟩ := _root_.GlobalTheory.lam_extend_by_zero k (N * l) N χ B₀ c₁ hL (dvd_mul_right N l)
   have key : ∀ a a', MF k (N * l) (ch χ) a → MF k (N * l) (ch χ⁻¹) a' → qs a' = slz k δ (qs a) →
@@ -1062,7 +1047,7 @@ theorem eigAll_of_atkinLehner : ∀ (k N l : ℕ) (χ : DirichletCharacter ℂ N
     have hTa' : MF k (N * l) (ch χ⁻¹) (To k (ch χ⁻¹ q) q a') :=
       GlobalTheory.T.isModularFormCoeffSeq_heckeT_of_prime_not_dvd k (N * l) N q χ⁻¹ a' hk (dvd_mul_right N l) hq hqNl ha'
     obtain ⟨hs, hqs⟩ := hsm2 (ch χ q) _ hTa'
-    rw [key _ _ hTa hs (by rw [hqs, hT q hq hqNl]), lam_smul', hE.T a' ha' q hq hqNl, key a a' ha ha' ea]
+    rw [key _ _ hTa hs (by rw [hqs, hT q hq hqNl]), GlobalTheory.DepletedValue.lam_smul, hE.T a' ha' q hq hqNl, key a a' ha ha' ea]
     have hunit : IsUnit ((q : ℕ) : ZMod N) := by
       rw [ZMod.isUnit_iff_coprime]
       exact (Nat.Prime.coprime_iff_not_dvd hq).mpr hqN
@@ -1080,7 +1065,7 @@ theorem eigAll_of_atkinLehner : ∀ (k N l : ℕ) (χ : DirichletCharacter ℂ N
     have hUa := (_root_.GlobalTheory.depletion_mf k (N * l) l (ch χ) a hk hl (dvd_mul_left l N) (hper χ) ha).1
     have hUa' := (_root_.GlobalTheory.depletion_mf k (N * l) l (ch χ⁻¹) a' hk hl (dvd_mul_left l N) (hper χ⁻¹) ha').1
     obtain ⟨hs, hqs⟩ := hsm2 (ch χ l) _ hUa'
-    rw [key _ _ hUa hs (by rw [hqs, hU]), lam_smul', hE.U a' ha', key a a' ha ha' ea]
+    rw [key _ _ hUa hs (by rw [hqs, hU]), GlobalTheory.DepletedValue.lam_smul, hE.U a' ha', key a a' ha ha' ea]
     simp only [ch, Int.cast_natCast]
     ring
 

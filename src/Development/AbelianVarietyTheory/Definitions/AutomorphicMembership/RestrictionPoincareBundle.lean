@@ -248,7 +248,6 @@ theorem ofPull_iso {A B : LB Y} (hA : A.IsLB) (hB : B.IsLB) (h : LBIso A B) : (o
 
 end FLB
 
-
 variable (i) in
 structure FLBOn (κ : Type) : Type where
 
@@ -270,7 +269,6 @@ instance small_quotient : Small.{0} (Quotient (FLB.setoid (i := i))) := by
   choose j hj using fun x : Σ e, X e => exists_chart (L.isLB x.1) x.2
   have h : ∀ e (x : X e), ∃ k, x ∈ L.U e (j k) := fun e x => ⟨⟨e, x⟩, hj ⟨e, x⟩⟩
   exact ⟨(L.reindex j h).toOn, Quotient.sound (L.reindex_iso j h)⟩
-
 
 variable (i) in
 def FPic : Type := Shrink.{0} (Quotient (FLB.setoid (i := i)))
@@ -348,17 +346,14 @@ def RigPic : Type := {c : SmallPic G.left // IsRigCls G c}
 
 variable {G}
 
-
 omit [GrpObj G] [IsCommMonObj G] in
 theorem smallCls_eq_zero_iff {X : Scheme.{0}} {L : LB X} (hL : L.IsLB) : smallCls L hL = 0 ↔ ∃ t : LB.Gen L, t.IsGen :=
   (smallPicEquiv X).symm.map_eq_zero_iff.trans (cls_eq_zero_iff hL)
-
 
 omit [GrpObj G] [IsCommMonObj G] in
 theorem smallPull_comp {X Y Z : Scheme.{0}} (g : Z ⟶ Y) (f : Y ⟶ X) (c : SmallPic X) :
     smallPull (g ≫ f) c = smallPull g (smallPull f c) := by
   simp [smallPull, pull_comp]
-
 
 omit [IsCommMonObj G] in
 theorem isRigCls_iff {L : LB G.left} (hL : L.IsLB) : IsRigCls G (smallCls L hL) ↔ Out.Rigidified G L := by
@@ -389,14 +384,9 @@ omit [IsCommMonObj G] [IsCommMonObj G'] in
 @[reassoc] theorem sqMap_snd : sqMap h ≫ (snd G G).left = (snd G' G').left ≫ φ :=
   congrArg (fun q => q.left) (lift_snd (pushHom h _ (fst G' G')) (pushHom h _ (snd G' G')))
 
-
-omit [GrpObj G] [IsCommMonObj G] in
-theorem sq_hom_ext {T : Scheme.{0}} {a b : T ⟶ (G ⊗ G).left} (h₁ : a ≫ (fst G G).left = b ≫ (fst G G).left)
-    (h₂ : a ≫ (snd G G).left = b ≫ (snd G G).left) : a = b := pullback.hom_ext h₁ h₂
-
 theorem eSec_sqMap : eSec (G' ⊗ G') ≫ sqMap h = f ≫ eSec (G ⊗ G) := by
   have e : η[G'].left ≫ φ = f ≫ η[G].left := (cubeMapOf h).e_comm
-  refine sq_hom_ext ?_ ?_
+  refine GlobalTheory.GrpDescent.sq_ext ?_ ?_
   · rw [Category.assoc, sqMap_fst, eSec, eSec, ← Over.comp_left_assoc, Category.assoc, ← Over.comp_left,
       IsMonHom.one_hom, IsMonHom.one_hom, e]
   · rw [Category.assoc, sqMap_snd, eSec, eSec, ← Over.comp_left_assoc, Category.assoc, ← Over.comp_left,
@@ -410,7 +400,7 @@ def sqPull (P : RigPic (G ⊗ G)) : RigPic (G' ⊗ G') :=
 theorem smallPull_diagCls {w : G ⟶ G} {w' : G' ⟶ G'} (hw : w'.left ≫ φ = φ ≫ w.left) (P : RigPic (G ⊗ G)) :
     smallPull φ (diagCls w P) = diagCls w' (sqPull h P) := by
   refine (smallPull_comp _ _ _).symm.trans (Eq.trans (congrArg (smallPull · P.1) ?_) (smallPull_comp _ _ _))
-  refine sq_hom_ext ?_ ?_
+  refine GlobalTheory.GrpDescent.sq_ext ?_ ?_
   · rw [Category.assoc, Category.assoc, sqMap_fst, ← Over.comp_left, ← Over.comp_left_assoc, lift_fst, lift_fst]
     simp
   · rw [Category.assoc, Category.assoc, sqMap_snd, ← Over.comp_left, ← Over.comp_left_assoc, lift_snd, lift_snd, hw]
@@ -597,7 +587,6 @@ def completePt (L : SmallPic (gPt A Λ).left) : GtPic A Λ :=
   fpull (fun _ => pullback.fst _ _) (fun e => thickMap_fst _ e _) L
 
 variable {X : Scheme.{0}} {π : X ⟶ Y.X} {t : SAB H X} (m : SABMap t Y.t π) (z : Sp ↥(intO ↥C.S) ⟶ X) (hz : z ≫ π = P.yt)
-
 
 include hz in
 theorem isGrpPullback_gPt_base : IsGrpPullback (gPt A Λ) (tens Y.t Λ).G (z ≫ π) (pullback.fst _ _ ≫ (tens.map Λ A.m).φ) :=

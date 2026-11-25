@@ -540,8 +540,6 @@ open IsLocalRing
 
 namespace GlobalTheory.DomDVR
 
-
-
 theorem exists_dominating_dvr : ∀ (F : Type) [Field F] [CharZero F] (T' : Subring F), IsDiscreteValuationRing T' → ∀ (s : Finset F), (1 : F) ∈ Submodule.span T' (s : Set F) → (∀ x ∈ s, ∀ y ∈ s, x * y ∈ Submodule.span T' (s : Set F)) → ∃ T'' : Subring F, IsDiscreteValuationRing T'' ∧ T' ≤ T'' ∧ (∀ x ∈ s, x ∈ T'') ∧ (∀ x ∈ T', (∃ y ∈ T'', x * y = 1) → ∃ y ∈ T', x * y = 1) ∧ (∀ y ∈ T'', ∃ d ∈ T', d ≠ 0 ∧ d * y ∈ Submodule.span T' (s : Set F)) := by
   intro F _ _ T' hT s h1 hmul
   classical
@@ -928,10 +926,6 @@ theorem pow_left_congr {S X : Scheme.{0}} {G : Over S} [GrpObj G] {a b : X ⟶ S
   subst h
   rw [Over.OverMorphism.ext hx]
 
-private theorem spMap_comp {A B C : Type} [CommRing A] [CommRing B] [CommRing C]
-    (f : A →+* B) (g : B →+* C) : spMap g ≫ spMap f = spMap (g.comp f) :=
-  (Spec.map_comp (CommRingCat.ofHom f) (CommRingCat.ofHom g)).symm
-
 private theorem fixed_of_jointlyMonic_over {S S' : Scheme.{0}} (f : S' ⟶ S)
     (T : Over S') (b : T.left ⟶ S) (hb : T.hom ≫ f = b)
     (s : T.left ⟶ T.left) (hs : s ≫ T.hom = T.hom)
@@ -976,11 +970,11 @@ theorem fixed_of_jointlyMonic : ∀ (V W : Type) [CommRing V] [IsDomain V] [Comm
   have hT : spMap σ.toRingHom ≫ (TF (R := W) F).hom = (TF (R := W) F).hom := by
     have e : σ.toRingHom.comp (w₂.comp w₁) = w₂.comp w₁ := RingHom.ext hσ
     change spMap σ.toRingHom ≫ spMap w₂ ≫ spMap w₁ = spMap w₂ ≫ spMap w₁
-    simp only [spMap_comp, e]
+    simp only [GlobalTheory.spMap_comp_ring, e]
   have hV : (TF (R := W) F).hom ≫ spMap io = (TF (R := V) F).hom := by
     have e : (w₂.comp w₁).comp io = v₂.comp v₁ := RingHom.ext hF
     change (spMap w₂ ≫ spMap w₁) ≫ spMap io = spMap v₂ ≫ spMap v₁
-    simp only [spMap_comp, e]
+    simp only [GlobalTheory.spMap_comp_ring, e]
   exact fixed_of_jointlyMonic_over (spMap io) (TF (R := W) F) (TF (R := V) F).hom hV
     (spMap σ.toRingHom) hT G H r hr (hmono _) m hfix x hx
 

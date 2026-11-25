@@ -66,31 +66,3 @@ noncomputable section
 
 open Complex Matrix Filter Topology
 open scoped BigOperators Real
-
-namespace GlobalTheory.AHWeilFactor
-
-theorem im_hermForm_int {A : Over (Sp ℂ)} [GrpObj A] {L : LB A.left} (hL : L.IsLB) {n : ℕ} (u : HolUnif A L n)
-    {Hm : Matrix (Fin n) (Fin n) ℂ} {χ : u.Λ → ℂ} (h : GlobalTheory.TorusRM.IsFactorAH u Hm χ) (l m : u.Λ) :
-    ∃ e : ℤ, (e : ℝ) = ((l : Fin n → ℂ) ⬝ᵥ Hm.mulVec (star (m : Fin n → ℂ))).im := by
-  exact GlobalTheory.AHWeilAny.im_hermForm_int_of_isFactorAH hL u h l m
-
-theorem thetaGrp_in_frame {A : Over (Sp ℂ)} [GrpObj A] {L : LB A.left} (hL : L.IsLB) {n : ℕ} (u : HolUnif A L n)
-    {Hm : Matrix (Fin n) (Fin n) ℂ} {χ : u.Λ → ℂ} (hAH : GlobalTheory.TorusRM.IsFactorAH u Hm χ) (k : ℕ) (a : u.Λ) (hk : 0 < k)
-    (T : Over (Sp ℂ)) (p : 𝟙_ (Over (Sp ℂ)) ⟶ T) (θ : Out.ThetaGrp A L k T)
-    (hθ : p ≫ θ.pt = u.ex ((k : ℂ)⁻¹ • (a : Fin n → ℂ))) :
-    ∃ C : ℂ, ∀ (j : Fin 2 → L.ι) z, ⊤ ≤ (u.ex z).left ⁻¹ᵁ L.U (j 0) →
-      ⊤ ≤ (u.ex (z + (k : ℂ)⁻¹ • (a : Fin n → ℂ))).left ⁻¹ᵁ L.U (j 1) →
-      valAt' (lift p (u.ex z)).left _ (θ.φ.s j).val * u.fr (j 1) (z + (k : ℂ)⁻¹ • (a : Fin n → ℂ)) ^ k =
-        C * cexp (-(Real.pi * (z ⬝ᵥ Hm.mulVec (star (a : Fin n → ℂ))))) * u.fr (j 0) z ^ k := by
-  exact GlobalTheory.AHWeilAny.thetaGrp_in_frame_of_isFactorAH hL u hAH k a hk T p θ hθ
-
-open GlobalTheory.WeilExp in
-theorem weilIs_exp_riemannForm : ∀ (A : Over (Sp ℂ)) [GrpObj A] [IsCommMonObj A], IsAbelianScheme A →
-    ∀ (L : LB A.left), L.IsLB →
-    ∀ (n : ℕ) (u : HolUnif A L n) (Hm : Matrix (Fin n) (Fin n) ℂ) (χ : u.Λ → ℂ), GlobalTheory.TorusRM.IsFactorAH u Hm χ →
-      ∀ (k : ℕ) (a b : Fin n → ℂ) (c : ℂˣ), 0 < k → a ∈ u.Λ → b ∈ u.Λ →
-        (c : ℂ) = Complex.exp (-(2 * Real.pi * Complex.I) * (((a ⬝ᵥ Hm.mulVec (star b)).im : ℝ) : ℂ) / k) →
-        Out.WeilIs A L k (u.ex ((k : ℂ)⁻¹ • a)) (u.ex ((k : ℂ)⁻¹ • b)) (unitOn c) := by
-  exact GlobalTheory.AHWeilAny.weilIs_exp_riemannForm_of_isFactorAH
-
-end GlobalTheory.AHWeilFactor

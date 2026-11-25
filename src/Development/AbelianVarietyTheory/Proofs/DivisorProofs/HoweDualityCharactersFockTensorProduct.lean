@@ -598,7 +598,6 @@ end GlobalTheory.HoweR.TensAlg
 
 namespace GlobalTheory.HoweR
 
-
 open GlobalTheory.HoweR.TensAlg in
 theorem howeAlg_tensAny : ∀ (T : Type) [Fintype T] [DecidableEq T] (V : T → Type) [∀ w, AddCommGroup (V w)]
     [∀ w, Module ℂ (V w)], ∀ (R S : T → ℕ) (a : ∀ w, Mat (R w) (S w) →ₗ[ℂ] Module.End ℂ (V w))
@@ -646,11 +645,6 @@ open Formalism.BasicNotions.TH GlobalTheory.FockAlg GlobalTheory.RealLift Global
 
 namespace GlobalTheory.HoweR
 
-theorem pcTrace_eq_zero {p q : ℕ} {Z : Mat p q} (hZ : IsPC Z) : Z.trace = 0 := by
-  simp only [Matrix.trace, Matrix.diag]
-  refine Finset.sum_eq_zero fun a _ => hZ a a ?_
-  rcases a with a | a <;> simp [sameBlock]
-
 theorem span_harm2_sup_coinv_eq_univ : ∀ (P Q R S : ℕ) (x : ℂ),
     Submodule.span ℂ (harm2 P Q R S) ⊔ coinv P Q R S x = ⊤ := by
   intro P Q R S x
@@ -659,7 +653,7 @@ theorem span_harm2_sup_coinv_eq_univ : ∀ (P Q R S : ℕ) (x : ℂ),
     intro Z hZ g
     rw [Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero]
     refine Submodule.subset_span ⟨Z, g, ?_⟩
-    rw [pcTrace_eq_zero hZ, mul_zero, zero_smul, sub_zero]
+    rw [GlobalTheory.HarmLift.trace_PC hZ, mul_zero, zero_smul, sub_zero]
   obtain ⟨h, hh, he⟩ := GlobalTheory.FockAlg.HarmLift.exists_harm2_rep P Q R S _ (coinv P Q R S x).mkQ hpr f
   have hd : f - h ∈ coinv P Q R S x := by
     rw [← Submodule.Quotient.eq]; exact he.symm
@@ -1129,19 +1123,13 @@ def charSub (p q r s : ℕ) (x : ℚ) : Submodule ℂ (Pol p q r s) where
   zero_mem' := fun Y _ => by simp
   smul_mem' := fun c _ ha Y hY => by rw [map_smul, ha Y hY, smul_comm]
 
-theorem isKC_Eab {a b : Ix p q} (hab : sameBlock a b) : IsKC (Eab a b) := by
-  intro c d hcd
-  rw [Eab, Matrix.single_apply, if_neg]
-  rintro ⟨rfl, rfl⟩
-  exact hcd hab
-
 theorem isHW_of_mem {x : ℚ} {f : Pol p q r s} (h0 : f ≠ 0) (hf : f ∈ charSub p q r s x) :
     IsHW (fockAct1 p q r s) (fun _ => x) f := by
   refine ⟨h0, ?_, ?_⟩
   · simp only [wtSub, SetLike.mem_coe, Submodule.mem_iInf, LinearMap.mem_ker, LinearMap.sub_apply,
       LinearMap.smul_apply, LinearMap.id_apply]
     intro a
-    rw [hf _ (isKC_Eab (by rcases a with a | a <;> trivial))]
+    rw [hf _ (GlobalTheory.TensorHW.isKC_Eab (by rcases a with a | a <;> trivial))]
     simp [Eab]
   · simp only [SetLike.mem_coe, Submodule.mem_iInf, LinearMap.mem_ker]
     intro a b hab
@@ -1150,7 +1138,7 @@ theorem isHW_of_mem {x : ℚ} {f : Pol p q r s} (h0 : f ≠ 0) (hf : f ∈ charS
     have h2 : a ≠ b := by
       rintro rfl
       rcases a with a | a <;> simp [posC] at hab
-    rw [hf _ (isKC_Eab h1), Eab, Matrix.trace_single_eq_of_ne _ _ _ h2]
+    rw [hf _ (GlobalTheory.TensorHW.isKC_Eab h1), Eab, Matrix.trace_single_eq_of_ne _ _ _ h2]
     simp
 
 theorem comm_parts {Y : Mat p q} (hY : IsKC Y) {Z : Mat r s} (hZ : IsPC Z) {d : ℕ}
@@ -1236,7 +1224,6 @@ theorem fockHarmonicsSecondMember_of_jointShape_highestWeight {x : ℚ} {μ' : I
 end GlobalTheory.HoweR.MultOne
 
 namespace GlobalTheory.HoweR
-
 
 open GlobalTheory.HoweR.MultOne in
 theorem hw_le_span_sup_coinv : ∀ (P Q R S : ℕ) (x : ℚ) (μ' : Ix R S → ℚ), JointShape P Q R S (fun _ => x) μ' →

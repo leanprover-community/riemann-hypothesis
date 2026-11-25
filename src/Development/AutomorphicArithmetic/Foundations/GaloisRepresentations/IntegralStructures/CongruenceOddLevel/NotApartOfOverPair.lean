@@ -243,7 +243,6 @@ theorem exists_powOp {w : HeightOneSpectrum (𝓞 E)} (hw : IsSplitAt w) (n : �
     rw [PowSatU, dif_pos h, ← hz σ _ hB]
     exact hact U hU σ hσ φ hφ hx
 
-
 open UpperTheory.Gal.Gen in
 theorem exists_testOp (K : Subgroup (UA E a)) {w : HeightOneSpectrum (𝓞 E)} (hw : IsSplitAt w) (hK : HypAt K w)
     (Φ : MvPolynomial (Fin a) ℂ) : ∃ (f : UA E a →₀ ℂ) (η : Submodule ℂ (UA E a → ℂ) → ℂ),
@@ -290,7 +289,6 @@ theorem exists_testOp (K : Subgroup (UA E a)) {w : HeightOneSpectrum (𝓞 E)} (
         rw [hm]
         exact h2
       exact hgen _ hs
-
 
 open UpperTheory.Gal.Gen in
 theorem exists_scale {l : ℕ} [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (lam : (E →+* ℂ) → DomWeight a) (f : UA E a →₀ ℂ)
@@ -745,7 +743,6 @@ noncomputable section
 
 namespace GlobalTheory.Cong.AdaptLevFix
 
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {a : ℕ}
 
 theorem eq_one_of_forall_cLoc {x : UA E a} (hx : x ∈ finU (E := E) (n := a)) (h : ∀ u, cLoc u x = 1) : x = 1 := by
@@ -853,7 +850,6 @@ theorem peel (φ : UA E a → ℂ) (S : Set (HeightOneSpectrum (𝓞 E)))
     rw [hxe, map_mul, Module.End.mul_apply, key, hyφ]
 
 end GlobalTheory.Cong.AdaptLevFix
-
 
 open GlobalTheory.Cong.AdaptLevFix in
 theorem GlobalTheory.Cong.AdaptLev.fixed_of_levelOf : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (a : ℕ) (w₀ : HeightOneSpectrum (𝓞 E)) (H : HeightOneSpectrum (𝓞 E) → Subgroup (UA E a)), (∀ w, H w ≤ locU a w) → (∀ w u, ¬ Apart w u → H w = H u) → (∀ w, IsCompact (H w : Set (UA E a))) → (∀ w, IsOpen (((H w).subgroupOf (locU a w)) : Set (locU a w))) → (∀ᶠ w in Filter.cofinite, H w = GlobalTheory.Cong.AdaptLev.intU a w) → ∀ φ : UA E a → ℂ, IsAutFormU φ → (∀ w, Apart w w₀ → ∀ x ∈ H w, RU E a x φ = φ) → ∀ x ∈ GlobalTheory.Cong.AdaptLev.levelOf a w₀ H, RU E a x φ = φ := by
@@ -1334,7 +1330,6 @@ def EllSt : Prop :=
         ∀ (σ : SmIrr (GL (Fin a) (w₀.adicCompletion E))) (v : σ.V), v ≠ 0 →
           (∀ g : J, σ.ρ g v = ((χ (θ g) : ℂˣ) : ℂ) • v) → GlobalTheory.SmGL.IsCuspidal σ.ρ
 
-
 open UpperTheory.Gal.Gen in
 def StepSt : Prop :=
   ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (a : ℕ), 1 ≤ a →
@@ -1359,7 +1354,6 @@ theorem not_apart_of_overPair {E : Type} [Field E] [NumberField E] [IsCMField E]
     fun z hz => z.isMaximal.eq_of_le (PlaceEmb.smallIdeal_isPrime _).ne_top fun b hb => hz b hb
   obtain rfl : x = y := HeightOneSpectrum.ext ((key x hx).trans (key y hy).symm)
   exact GlobalTheory.Cong.AdaptLev.not_apart_trans (GlobalTheory.Cong.AdaptLev.not_apart_symm hxu) hyv
-
 
 open UpperTheory.Gal.Gen in
 theorem intL_congr {E : Type} [Field E] [NumberField E] [IsCMField E] {l : ℕ} [Fact l.Prime] (ι : Qbar l ≃+* ℂ) {a : ℕ}
@@ -1417,7 +1411,7 @@ theorem congUWG_of (H : StepSt) (hFin : FinU) (D : ∀ a : ℕ, MvPolynomial (Fi
   classical
   intro E _ _ _ l _ ι a ha T _ U hU w₀ v' hw₀ hs₀ hv' hsv hap
   obtain ⟨K, Kw, Kv, hK, hKvo, hfix, hKwv, hoc, hsph, hns, hKs⟩ := exists_level hU hs₀ hsv hap
-  obtain ⟨lam, hlam⟩ := GlobalTheory.T.exists_algebraicWeight_definiteUnitaryAutRep E a U hU.1
+  obtain ⟨lam, hlam⟩ := GlobalTheory.Cong.exists_weight_of_isAutRepU E a U hU.1
   set K' := K ⊓ Kv.comap (cLoc v') with hK'def
   have hK' : IsLevelAway w₀ K' := isLevelAway_inf hK v' hKvo
   have hOf : OfType lam K' U := ⟨hU.1, hlam, hfix⟩

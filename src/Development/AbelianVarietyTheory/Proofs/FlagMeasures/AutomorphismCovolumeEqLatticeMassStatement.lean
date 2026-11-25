@@ -546,8 +546,6 @@ end GlobalTheory.HL.StabIntCoord
 
 namespace GlobalTheory.HL.StabIntCoord
 
-
-
 theorem integralStabiliser_iff_rational_coords_alt : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word), Formalism.MainNotions.S.Cnt.Stand D u u' → 4 * D.R.rS + 7 ≤ D.R.k → ∀ (w : Point D.host.E (D.R.rS + 1)) (F00 : LFlag (D.sp.Y 0) D.R.rS (((D.mem u).A.T : ℕ) : D.host.E)) (F'0 : LFlag (D.sp.Y 0) D.R.rS (((D.mem u').A.T : ℕ) : D.host.E)) (FP : ∀ p : PlF D, LocNG.FPair (locH (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D) p) D.R.rS), ZhatOM (ZhatL F00 F'0) = ptMat w → Gval F00 F'0 ≠ 0 → (∀ p, AtBase (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D) p F00 F'0 (Tu D u) (Tu D u') (FP p) ∧ (FP p).RelG (LocNG.theta (Y.M p))) → ∀ (G : GFrames (placesOf (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D)) D.R.rS D.R.k) (c : GCoord (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D) F00 F'0 FP G), ∀ x ∈ G.St, ∀ B : Formalism.L2.SG.PairVal.MatR D, (∀ b, x (G.f' b) = ∑ a, B a b • G.f' a) → (x ∈ G.K0 ↔ ∀ a b : Fin (D.R.rS + 1), a < b → B a b ∈ ((ddS D ^ (-((b : ℤ) - (a : ℤ))) : FractionalIdeal (nonZeroDivisors (𝓞 D.host.E)) D.host.E))) := by
   intro D X Y u u' _ _ w F00 F'0 FP _ _ _ G c x hx B hB
   obtain ⟨s, s', hs, hs', hsf, hsf'⟩ := _root_.GlobalTheory.HL.StTri.stab_unitriangular _ _ _ G x hx
@@ -760,7 +758,6 @@ noncomputable section
 
 namespace GlobalTheory.HL.Cov0
 
-
 open Formalism.L2.SG.RealObj Formalism.L2.S.Pv.Chart Formalism.MainNotions.S.ThB Formalism.L2.SG.LocWSOf in
 theorem chart_of {D : D7} (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word) (t : TauC Y u u')
     (w : Point D.host.E (D.R.rS + 1)) (γw s s' : X.B.I.Ginf) (hrep : IsPtRep X u u' w γw) (hs : s ∈ X.SinfU u)
@@ -893,7 +890,6 @@ end
 
 noncomputable section
 namespace GlobalTheory.HL.Cov0
-
 
 open Formalism.L2.SG.NGCut.SplitEmbedding Formalism.L2.SG.NGCut.StabilizerCovolume Formalism.L2.SG.RealObj in
 theorem covolume_integralStabiliser_normalisedHaar_alt : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word), Formalism.MainNotions.S.Cnt.Stand D u u' → 4 * D.R.rS + 7 ≤ D.R.k → ∀ (w : Point D.host.E (D.R.rS + 1)) (F00 : LFlag (D.sp.Y 0) D.R.rS (((D.mem u).A.T : ℕ) : D.host.E)) (F'0 : LFlag (D.sp.Y 0) D.R.rS (((D.mem u').A.T : ℕ) : D.host.E)) (FP : ∀ p : PlF D, LocNG.FPair (locH (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D) p) D.R.rS), ZhatOM (ZhatL F00 F'0) = ptMat w → Gval F00 F'0 ≠ 0 → (∀ p, AtBase (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D) p F00 F'0 (Tu D u) (Tu D u') (FP p) ∧ (FP p).RelG (LocNG.theta (Y.M p))) → ∀ (G : GFrames (placesOf (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D)) D.R.rS D.R.k) (c : GCoord (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D) F00 F'0 FP G), ∀ (t₀ : TauC Y u u') (ρ : ((VS D).V ≃ₗ[D.host.E] (VS D).V)) (U U' : Formalism.L2.SG.PairVal.MatR D), MovesTo F00 F'0 (lf D (X.Fu u)) t₀.frame ρ U U' → t₀.relevant → ∀ μR, Formalism.L2.SG.VolPin.IsPinnedR t₀ w μR → ∃ K : Set X.B.I.Ginf, (MeasurableSet K ∧ ∀ y ∈ Formalism.L2.SG.TermOp.Vanish.Rset t₀, ∃! s, s ∈ realPts X {σ | c.grp ρ σ ∈ G.K0} ∧ s * y ∈ K) ∧ μR K = ENNReal.ofReal (((X.B.g : ℝ) ^ (D.R.f * Fintype.card (Formalism.L2.SG.RealObj.FreeE w)))⁻¹) := by
@@ -1309,20 +1305,10 @@ theorem nlam_iff (Λ : Submodule (𝓞 D.host.E) (VS D).V) {T : D.host.E} (F : L
   simp only [NLam, NRat, IsAutLam, Set.mem_ofPred_eq]
   tauto
 
-theorem gmap_mul (a b : (VS D).V ≃ₗ[D.host.E] (VS D).V) (Λ : Submodule (𝓞 D.host.E) (VS D).V) :
-    Formalism.HermitianLatticesTheory.gmap (a * b) Λ = Formalism.HermitianLatticesTheory.gmap a (Formalism.HermitianLatticesTheory.gmap b Λ) := by
-  ext x
-  simp only [Formalism.HermitianLatticesTheory.gmap, Submodule.mem_map, LinearMap.coe_restrictScalars, LinearEquiv.coe_coe]
-  constructor
-  · rintro ⟨y, hy, rfl⟩
-    exact ⟨b y, ⟨y, hy, rfl⟩, rfl⟩
-  · rintro ⟨_, ⟨y, hy, rfl⟩, rfl⟩
-    exact ⟨y, hy, rfl⟩
-
 theorem gmap_inv_of (a : (VS D).V ≃ₗ[D.host.E] (VS D).V) {Λ Λ' : Submodule (𝓞 D.host.E) (VS D).V}
     (h : Formalism.HermitianLatticesTheory.gmap a Λ' = Λ) : Formalism.HermitianLatticesTheory.gmap a⁻¹ Λ = Λ' := by
   subst h
-  rw [← gmap_mul, inv_mul_cancel]
+  rw [← Formalism.L2.SG.Pf.gmap_mul', inv_mul_cancel]
   ext x
   simp [Formalism.HermitianLatticesTheory.gmap]
 
@@ -1368,7 +1354,6 @@ section Key
 variable {D : D7} {Z : LocDat D} {T T' : D.host.E} {F0 : LFlag (D.sp.Y 0) D.R.rS T} {F0' : LFlag (D.sp.Y 0) D.R.rS T'}
   {FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R.rS} {G : GFrames (placesOf Z) D.R.rS D.R.k}
   (c : GCoord Z F0 F0' FP G)
-
 
 theorem mem_rat_stab_iff (L : G.Lt) (hL : Submodule.IsFullLattice D.host.E L) (σ : G.GLV)
     (hx : ∀ p, ∃ g', (placesOf Z).Ext p σ g') :
@@ -1434,7 +1419,7 @@ theorem key {Tu Tu' : D.host.E} (F : LFlag (D.sp.Y 0) D.R.rS Tu) (F' : LFlag (D.
   rw [hS, nlam_iff Λ F n, nlam_iff Λ' F' (l⁻¹ * n * l), ← hN, ← grp_conj c ρ l n, ← hN']
   have hl' : Formalism.HermitianLatticesTheory.gmap l⁻¹ Λ = Λ' := gmap_inv_of l hl
   have e : Formalism.HermitianLatticesTheory.gmap (l⁻¹ * n * l) Λ' = Formalism.HermitianLatticesTheory.gmap l⁻¹ (Formalism.HermitianLatticesTheory.gmap n Λ) := by
-    rw [gmap_mul, gmap_mul, hl]
+    rw [Formalism.L2.SG.Pf.gmap_mul', Formalism.L2.SG.Pf.gmap_mul', hl]
   rw [e]
   constructor
   · rintro ⟨⟨h₁, h₂⟩, h₃, -⟩
@@ -1448,7 +1433,7 @@ end GlobalTheory.RoEq
 
 theorem GlobalTheory.RoEq.roinf_eq_realPts : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word), Formalism.MainNotions.S.Cnt.Stand D u u' → 4 * D.R.rS + 7 ≤ D.R.k → ∀ (w : Point D.host.E (D.R.rS + 1)) (F00 : LFlag (D.sp.Y 0) D.R.rS (((D.mem u).A.T : ℕ) : D.host.E)) (F'0 : LFlag (D.sp.Y 0) D.R.rS (((D.mem u').A.T : ℕ) : D.host.E)) (FP : ∀ p : PlF D, LocNG.FPair (locH (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D) p) D.R.rS), ZhatOM (ZhatL F00 F'0) = ptMat w → Gval F00 F'0 ≠ 0 → (∀ p, AtBase (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D) p F00 F'0 (Tu D u) (Tu D u') (FP p) ∧ (FP p).RelG (LocNG.theta (Y.M p))) → ∀ (G : GFrames (placesOf (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D)) D.R.rS D.R.k) (c : GCoord (⟨Y.δ, Y.M, Y.agree⟩ : LocDat D) F00 F'0 FP G), ∀ (t₀ : TauC Y u u') (ρ : ((VS D).V ≃ₗ[D.host.E] (VS D).V)) (U U' : Formalism.L2.SG.PairVal.MatR D), MovesTo F00 F'0 (lf D (X.Fu u)) t₀.frame ρ U U' → Formalism.L2.SG.TermOp.ROinf t₀ = realPts X {σ | c.grp ρ σ ∈ G.stabL (c.lat ρ t₀.lam)} := by
   intro D X Y u u' hst hk w F00 F'0 FP hZ hG hAt G c t₀ ρ U U' hmv
-  obtain ⟨hN, hN', -⟩ := GlobalTheory.T.rational_unipotent_groups_lattices_global_coordinates D X Y u u' hst hk w F00 F'0 FP hZ hG hAt G c t₀ ρ U U' hmv
+  obtain ⟨hN, hN', -⟩ := GlobalTheory.HL.GrpCoord.grp_coords D X Y u u' hst hk w F00 F'0 FP hZ hG hAt G c t₀ ρ U U' hmv
   have hrow : Submodule.IsFullLattice D.host.E t₀.lam := ((Y.rowsOK u).1 t₀.lam t₀.mem).1.1
   have hT : Submodule.IsFullLattice D.host.E (c.lat ρ t₀.lam) := by
     haveI : Submodule.IsLattice D.host.E (c.lat ρ t₀.lam) :=
@@ -1561,7 +1546,7 @@ theorem GlobalTheory.CovMass.covol_eq_mass : ∀ (D : D7) (X : HidaSetting D) (Y
   intro D X Y u u' hSt hk w F00 F'0 FP hZ hG hAt G c t₀ ρ U U' hMv hrel μR hPin K hK
   obtain ⟨hKm, hKu⟩ := hK
   have hlink := GlobalTheory.RatIsomPoint.ratLink_points D X
-  have hgrp := GlobalTheory.T.rational_unipotent_groups_lattices_global_coordinates D X Y u u' hSt hk w F00 F'0 FP hZ hG hAt G c t₀ ρ U U' hMv
+  have hgrp := GlobalTheory.HL.GrpCoord.grp_coords D X Y u u' hSt hk w F00 F'0 FP hZ hG hAt G c t₀ ρ U U' hMv
   have hterm := (GlobalTheory.T.movedTermLattice_isGlobalTerm_phase D X Y u u' hSt hk w F00 F'0 FP hZ hG hAt G c t₀ ρ U U' hMv).1
   obtain ⟨KA, ⟨hKAm, hKAu⟩, hKA⟩ :=
     GlobalTheory.T.covolume_integralStabiliser_normalisedHaar D X Y u u' hSt hk w F00 F'0 FP hZ hG hAt G c t₀ ρ U U' hMv hrel μR hPin

@@ -72,7 +72,6 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 namespace GlobalTheory.HeckeAverage
 
-
 open Classical in
 theorem finsum_translate_eq {G : Type} [Group G] (J J' : Subgroup G) (h : G)
     (hconj : ∀ κ ∈ J', h⁻¹ * κ * h ∈ J)
@@ -189,7 +188,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT NumberField IsDedekindDomain Polynomial GlobalTheory.HeightCounting GlobalTheory.RowTie GlobalTheory.SplitRead GlobalTheory.NPin
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-
 theorem _root_.GlobalTheory.T.doubleCosetOperator_translate_deeper_level_eq_smul : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) (J J' : Subgroup (GAf L n)) (h : GAf L n), J' ≤ J → (∀ κ ∈ J', h⁻¹ * κ * h ∈ J) → {c : GAf L n ⧸ J' | ∃ x ∈ (J : Set (GAf L n)), (x : GAf L n ⧸ J') = c}.Finite → ∃ m : ℕ, 0 < m ∧ ∀ (W : Type) [AddCommGroup W] [Module ℂ W] (f : GAf L n → W), (∀ κ ∈ J, NG.rt L n κ f = f) → NG.heckeD J' (J : Set (GAf L n)) (NG.rt L n h f) = (m : ℂ) • NG.heckeD J {x | ∃ u ∈ J, ∃ u' ∈ J, x = u * h * u'} f := by
   first | exact @GlobalTheory.HeckeAverage.heckeD_rt_eq_smul
 end -- clump:auto
@@ -204,9 +202,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host Formalism.L2.NT NumberField IsDedekindDomain Polynomial GlobalTheory.HeightCounting GlobalTheory.RowTie GlobalTheory.SplitRead GlobalTheory.NPin
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-
-theorem _root_.GlobalTheory.T.exists_deeper_congruence_conj_into_congruence : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n N : ℕ) (g : GAf L n), 0 < N → ∃ M : ℕ, 0 < M ∧ ∀ κ, NG.Cong L n (N * M) κ → NG.Cong L n N (g⁻¹ * κ * g) := by
-  first | exact @GlobalTheory.ConjCong.exists_cong_conj
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsDeeperCongruenceConjIntoCongruenceStatement =====
@@ -370,7 +365,7 @@ theorem recon : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ)
   have hWG : W ≤ Good := by
     rw [Submodule.span_le]
     rintro _ ⟨h, f, hf, hfix, rfl⟩
-    obtain ⟨M, hM, hMc⟩ := GlobalTheory.T.exists_deeper_congruence_conj_into_congruence L n N h hN
+    obtain ⟨M, hM, hMc⟩ := GlobalTheory.ConjCong.exists_cong_conj L n N h hN
     refine ⟨M, hM, fun M' hM' hd => ?_⟩
     obtain ⟨k, rfl⟩ := hd
     have hconj : ∀ κ ∈ GlobalTheory.IsotOrth.congSub L n (N * (M * k)), h⁻¹ * κ * h ∈ J := by

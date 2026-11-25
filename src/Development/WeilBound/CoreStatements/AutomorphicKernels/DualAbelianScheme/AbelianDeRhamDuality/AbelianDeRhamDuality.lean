@@ -209,13 +209,9 @@ theorem allPrim_of_abelianDeRhamFree (h : GlobalTheory.Published.AbelianDeRhamFr
     rw [map_add (f := _), pullOver_pullOver, pullOver_pullOver, pullOver_pullOver, lift_fst, lift_snd, e2,
       one0, id0, zero_add]
 
-theorem abelianDeRhamFree_toFree (h : GlobalTheory.Published.AbelianDeRhamFree) :
-    GlobalTheory.Published.AbelianDeRham.Free := fun R _ A _ g hA hg =>
-  ⟨allPrim_of_abelianDeRhamFree h R A g hA hg, h R A g hA hg⟩
-
 theorem abelianDeRhamStructure_toFree (h : GlobalTheory.Published.AbelianDeRhamStructure) :
     GlobalTheory.Published.AbelianDeRham.Free :=
-  abelianDeRhamFree_toFree h.1
+  GlobalTheory.AbelianPrim.abelianDeRham_free h.1
 
 end GlobalTheory
 end -- clump:auto

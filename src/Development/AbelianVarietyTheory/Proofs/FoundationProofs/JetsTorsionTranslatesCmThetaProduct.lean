@@ -446,11 +446,6 @@ theorem lattice_torsion_two_mul {Λ : AddSubgroup ℂ} {v : ℂ} (hv : InRationa
   obtain ⟨m, hm, hmv⟩ := hv
   exact ⟨m, hm, by rw [show (m : ℂ) * (2 * v) = (m * v) + (m * v) by ring]; exact add_mem hmv hmv⟩
 
-theorem sigmaStarTranslate_zero_ne_zero_off_lattice {Λ : AddSubgroup ℂ} (h : IsLat Λ) {v : ℂ} (hv : v ∉ Λ) :
-    U1 Λ v (sgStar Λ) 0 ≠ 0 := by
-  simp only [U1, zero_add]
-  exact mul_ne_zero ((h.sg_eq_zero v).not.2 hv) (Complex.exp_ne_zero _)
-
 theorem dbl_complex {Λ : AddSubgroup ℂ} (h : IsLat Λ) {v : ℂ} (hv : v ∉ Λ) (h2v : 2 * v ∉ Λ) :
     wpF Λ (2 * v) * (4 * wpF Λ v ^ 3 - g2 Λ * wpF Λ v - g3 Λ) =
       (wpF Λ v ^ 2 + g2 Λ / 4) ^ 2 + 2 * g3 Λ * wpF Λ v := by
@@ -525,7 +520,7 @@ theorem mu_two_tors (D : D7) (p : ℕ) [Fact p.Prime] (cc : Ideal (𝓞 D.host.K
     rw [hlat.sg_law h2v 0, (hlat.sg_eq_zero 0).2 (zero_mem _), mul_zero]
   have hD0 : wpD g.abelian₂ v = 0 := by
     rw [h0] at hdup
-    have hne := pow_ne_zero 4 (sigmaStarTranslate_zero_ne_zero_off_lattice hlat hv0)
+    have hne := pow_ne_zero 4 (GlobalTheory.ThetaUnit.thetaTranslate_sigmaStar_at_zero_ne_zero_of_not_mem_lattice hlat hv0)
     have : wpD g.abelian₂ v * U1 g.abelian₂ v (sgStar g.abelian₂) 0 ^ 4 = 0 := by linear_combination hdup
     exact (mul_eq_zero.1 this).resolve_right hne
   have hf : 4 * wpF g.abelian₂ v ^ 3 - g2 g.abelian₂ * wpF g.abelian₂ v - g3 g.abelian₂ = 0 := by
@@ -597,7 +592,7 @@ theorem mu_pos (D : D7) (p : ℕ) [Fact p.Prime] (cc : Ideal (𝓞 D.host.K)) (�
   · exact one_pos
   · have hc : GlobalTheory.ThetaTransl.cval g v ≠ 0 := by
       rw [GlobalTheory.ThetaTransl.cval, lamC_eq hι (hU v hv)]
-      exact (map_ne_zero ι).2 (sigmaStarTranslate_zero_ne_zero_off_lattice hlat hv0)
+      exact (map_ne_zero ι).2 (GlobalTheory.ThetaUnit.thetaTranslate_sigmaStar_at_zero_ne_zero_of_not_mem_lattice hlat hv0)
     exact mul_pos (pow_pos (norm_pos_iff.2 hc) 2) (lt_of_lt_of_le one_pos (le_max_left _ _))
 
 theorem eq_one_of_pow_eq {a : ℝ} (ha : 0 < a) {m n : ℕ} (hmn : m < n) (h : a ^ m = a ^ n) : a = 1 := by

@@ -148,25 +148,9 @@ theorem vl_le_of_mem_hatId' {I : Ideal (𝓞 D.host.E)} {PP : HeightOneSpectrum 
   | add a b _ _ ha hb => exact (Valuation.map_add _ _ _).trans (max_le ha hb)
   | neg a _ ha => rwa [Valuation.map_neg]
 
-
-open GlobalTheory.Mem.Col2.SplitChar in
-theorem sgA_mem_hatId' {I : Ideal (𝓞 D.host.E)} {x : AE D} (hx : x ∈ hatId D I) :
-    sgA D x ∈ hatId D (D.host.conj • I) := by
-  induction hx using AddSubgroup.closure_induction with
-  | mem y hy =>
-    obtain ⟨b, hb, s, hs, rfl⟩ := hy
-    refine AddSubgroup.subset_closure ⟨D.host.conj • b, Ideal.smul_mem_pointwise_smul _ _ _ hb, sgA D s,
-      GlobalTheory.NormSum.UnramHecke.sgA_mem D hs, ?_⟩
-    rw [map_mul, GlobalTheory.Mem.Col2.SplitChar.sgA_inc]
-    rfl
-  | zero => simp
-  | add a b _ _ ha hb => rw [map_add]; exact add_mem ha hb
-  | neg a _ ha => rw [map_neg]; exact neg_mem ha
-
 theorem conj_conj_smul (𝔪 : Ideal (𝓞 D.host.E)) : D.host.conj • D.host.conj • 𝔪 = 𝔪 := by
   have h : D.host.conj * D.host.conj = 1 := AlgEquiv.ext fun z => GlobalTheory.NormSum.UnramHecke.conj_conj D z
   rw [smul_smul, h, one_smul]
-
 
 open GlobalTheory.Mem.Col2.SplitChar in
 theorem vl_sub_le' {T : Type} {L : LevCh D T} (P : Places L) {y : AE D}
@@ -183,12 +167,11 @@ theorem vl_sub_le' {T : Type} {L : LevCh D T} (P : Places L) {y : AE D}
   · have e : c.toRingEquiv = D.host.conj.toRingEquiv := RingEquiv.ext hc
     rw [e] at h
     rw [← GlobalTheory.NormSum.UnramHecke.sgA_sgA D y, vl_sgA h]
-    have h3 := sgA_mem_hatId' h2
+    have h3 := GlobalTheory.FunObj.StdDatum.DetCong.sgA_mem_hatId h2
     rw [conj_conj_smul] at h3
     exact vl_le_of_mem_hatId' hle h3
 
 end GlobalTheory.NuTrivSq
-
 
 open GlobalTheory.Mem.Col2.SplitChar Formalism.L2.Host GlobalTheory.NuTrivSq in
 theorem GlobalTheory.NuTrivSq.nuH_finIdl_eq_one : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} (G : GridData L sc) (i j : Fin D.R.m) {μ₀ : T},
@@ -268,8 +251,6 @@ theorem zeroAt_zero (q : ℕ) : ZeroAt D q 0 :=
 
 theorem trivAt_one {N : ℕ} (q : ℕ) : TrivAt D q ((1 : GA D N) : GL (Fin N) (AE D)) := fun i j => by
   simpa using zeroAt_zero (D := D) q
-
-
 
 theorem fix_of_prop {δ t0 : ℂ} {Q : ℕ} (P : Pair D ⊤ δ t0 Q) (hT : P.e0 ∈ TT D (tor0 D ⊤ δ) P.a P.d) {g' : GA D P.d}
     {H : VC D P.a P.d → ℂ} {c : ℂ} (hc' : P.W.Om 1 g' P.e0 = c • H) :

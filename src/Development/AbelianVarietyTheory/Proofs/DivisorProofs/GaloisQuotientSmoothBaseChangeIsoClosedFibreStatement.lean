@@ -766,8 +766,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
-theorem _root_.GlobalTheory.T.galois_transitive_on_fibres_flat_baseChange : ∀ (R R' : Type) [CommRing R] [CommRing R'] [Algebra R R'], Function.Injective (algebraMap R R') → IsGal (algebraMap R R') → ∀ (Y : Over (Sp R)), Flat Y.hom → ∀ (Z : Scheme.{0}) (p : Z ⟶ Y.left) (s : Z ⟶ Sp R'), IsPullback p s Y.hom (spMap (algebraMap R R')) → ∀ z z' : Z, p z = p z' → ∃ (σ : Gal (algebraMap R R')) (h : Z ⟶ Z), h ≫ p = p ∧ h ≫ s = s ≫ spMap (Gal.hom σ) ∧ h z = z' := by
-  first | exact @GlobalTheory.Mum.gal_transitive_on_fibres
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.GaloisTransitiveOnFibresFlatBaseChangeStatement =====
@@ -894,7 +892,7 @@ theorem exists_act_eq_of_apply_eq {R R' : Type} [CommRing R] [CommRing R'] [Alge
     refine IsPullback.of_bot (v₂₁ := pullback.fst _ _) ?_ hu₂.symm (IsPullback.of_hasPullback _ _).flip
     rw [hu₁]; exact hφ.flip
   have : IsClosedImmersion u := MorphismProperty.of_isPullback (P := @IsClosedImmersion) hu inferInstance
-  obtain ⟨σ, h, h₁, h₂, h₃⟩ := GlobalTheory.T.galois_transitive_on_fibres_flat_baseChange R R' hinj hG Y hY _ _ _ (IsPullback.of_hasPullback _ _) (u p) (u q) (by
+  obtain ⟨σ, h, h₁, h₂, h₃⟩ := GlobalTheory.Mum.gal_transitive_on_fibres R R' hinj hG Y hY _ _ _ (IsPullback.of_hasPullback _ _) (u p) (u q) (by
     rw [← Scheme.Hom.comp_apply, ← Scheme.Hom.comp_apply, hu₁, e])
   obtain ⟨k, k₁, k₂⟩ := hinv σ
   have hk : k ≫ u = u ≫ h := by

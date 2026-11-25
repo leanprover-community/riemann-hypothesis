@@ -132,7 +132,6 @@ theorem card_lagr [Nontrivial K] {JB : Matrix β β K} {Cy : Matrix β ν K} (h 
       (by rw [← Matrix.toLin'_mul, h1, Matrix.toLin'_one])
   rw [card_eq_of_linearEquiv K f, Fintype.card_sum, two_mul]
 
-
 omit [Invertible (2 : k)] [Fintype α] [DecidableEq α] in
 theorem indep {Cy Cx : Matrix β ν K} {M : Matrix (ν ⊕ ν) β K} (h2 : M * fromCols Cy Cx = 1) {z z' : Matrix ν α K}
     (h : Cy * z + Cx * z' = 0) : z = 0 ∧ z' = 0 := by
@@ -165,7 +164,6 @@ theorem lagY_dim [Nontrivial K] {ξ₀ : K} (hq : IsQuad c ξ₀) {ξ : K} {JA :
     have h3 : Cy * (z - z') + Cx * (0 : Matrix ν α K) = 0 := by
       rw [Matrix.mul_sub, hz', sub_self, Matrix.mul_zero, add_zero]
     exact sub_eq_zero.1 (indep hM h3).1
-
 
 omit [Invertible (2 : k)] in
 theorem exists_coord {ξ₀ : K} (hq : IsQuad c ξ₀) (ν α : Type) [Fintype ν] [Fintype α] [DecidableEq α] :
@@ -211,7 +209,6 @@ theorem exists_coord {ξ₀ : K} (hq : IsQuad c ξ₀) (ν α : Type) [Fintype �
     rw [LinearMap.det_toMatrix', LinearMap.det_conj, LinearMap.det_restrictScalars, hdetK, map_pow]
     simp
 
-
 omit [DecidableEq α] [DecidableEq β] in
 theorem schr_box (ψ : AddChar k ℂ) {κ' : Type} [Fintype κ'] (w : (κ ⊕ κ' → k) × (κ ⊕ κ' → k)) (φ₁ : (κ → k) → ℂ)
     (φ₂ : (κ' → k) → ℂ) : schr ψ w (boxFun φ₁ φ₂) =
@@ -251,21 +248,11 @@ namespace PositivityTheory.ThK.LinAct
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [Invertible (2 : k)]
   {κ ι : Type} [Fintype κ] [Fintype ι] {ψ : AddChar k ℂ}
 
-
-omit [Invertible (2 : k)] in
-theorem norm_char (hc : Continuous ψ) (x : k) : ‖ψ x‖ = 1 := by
-  apply PositivityTheory.KCo.Mod.norm_one <;> assumption
-
-theorem eventually_fix (hc : Continuous ψ) {φ : (κ → k) → ℂ} (hφ : φ ∈ SB (κ → k)) :
-    ∀ᶠ w in 𝓝 (0 : (κ → k) × (κ → k)), schr ψ w φ = φ := by
-  apply PositivityTheory.KCo.Mod.small <;> assumption
-
-
 omit [Invertible (2 : k)] in
 theorem exists_compact_ann (hc : Continuous ψ) (h1 : ψ ≠ 1) {U : Set (ι → k)} (hU : U ∈ 𝓝 (0 : ι → k)) :
     ∃ C : Set (ι → k), IsCompact C ∧ ∀ x, (∀ y ∈ U, ψ (x ⬝ᵥ y) = 1) → x ∈ C := by
   classical
-  obtain ⟨u, hu⟩ := (GlobalTheory.CompanionTheory.VacLoc.GoodInh.exists_goodChar k).2 ψ hc (norm_char hc) h1
+  obtain ⟨u, hu⟩ := (GlobalTheory.CompanionTheory.VacLoc.GoodInh.exists_goodChar k).2 ψ hc (PositivityTheory.KCo.Mod.norm_one hc) h1
   have : ∀ i, ∃ v : kˣ, ∀ y ∈ 𝒪[k], Pi.single i ((v : k) * y) ∈ U := fun i =>
     hu.basis ((fun t => (Pi.single i t : ι → k)) ⁻¹' U)
       ((continuous_single (A := fun _ => k) i).continuousAt.preimage_mem_nhds (by simpa using hU))
@@ -289,7 +276,6 @@ theorem schr_comm (w w' : (κ → k) × (κ → k)) (φ : (κ → k) → ℂ) :
   congr 2
   have h2 : ⅟(2 : k) * 2 = 1 := invOf_mul_self _
   linear_combination (w.1 ⬝ᵥ w'.2 - w'.1 ⬝ᵥ w.2) * h2
-
 
 omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [Invertible (2 : k)] in
 theorem exists_section (large₂ : Submodule k ((κ → k) × (κ → k)))
@@ -326,7 +312,7 @@ theorem coeff_mem (hc : Continuous ψ) (h1 : ψ ≠ 1) (l : ((κ → k) → ℂ)
   have := t2Space_local_field_bis (k := k)
   have cX : Continuous X := X.continuous_on_pi
   have cS : Continuous S := S.continuous_on_pi
-  have hf := eventually_fix (ψ := ψ) hc hφ
+  have hf := PositivityTheory.KCo.Mod.small (ψ := ψ) hc hφ
   constructor
   · rw [IsLocallyConstant.iff_eventually_eq]
     intro x
@@ -380,7 +366,7 @@ theorem exists_avg [DecidableEq ι] (hc : Continuous ψ) (h1 : ψ ≠ 1) (large�
   · by_contra hcon
     push Not at hcon
     obtain ⟨φ, hφ, h0⟩ := hne
-    have hz := cyc hc (norm_char hc) h1 (hF φ hφ) (fun h => h0 (by
+    have hz := cyc hc (PositivityTheory.KCo.Mod.norm_one hc) h1 (hF φ hφ) (fun h => h0 (by
       have e0 : schr ψ 0 φ = φ := by funext z; simp [schr]
       simpa [e0] using congrFun h 0)) I fun w => by
       have e := hcon _ (schr_mem hc (S w.2) (schr_mem hc (X w.1) hφ))
@@ -448,7 +434,7 @@ theorem dbl_fix (hc : Continuous ψ) (h1 : ψ ≠ 1) (hq : IsQuad c ξ₀) (hA :
   have hiso := lagY_iso dd hL.1
   have hdim := lagY_dim hq dd hL
   have hcard := card_lagr hL
-  have hn := norm_char hc
+  have hn := PositivityTheory.KCo.Mod.norm_one hc
   have key : ∀ g, ∃ a : ℂ, ∀ φ ∈ SB (κ → k), l (om g φ) = a * l φ := fun g =>
     line hc hn h1 _ hiso hdim l (l ∘ₗ om g) hl (by
       rintro _ ⟨z, rfl⟩ φ hφ
@@ -516,7 +502,7 @@ theorem weilB_fix (hc : Continuous ψ) (h1 : ψ ≠ 1) (hq : IsQuad c ξ₀) (hA
     (l : ((κ → k) → ℂ) →ₗ[ℂ] ℂ) (hl : ∀ w ∈ lagY d Cy, ∀ φ ∈ SB (κ → k), l (schr ψ w φ) = l φ)
     (hne : ∃ φ ∈ SB (κ → k), l φ ≠ 0) : ∀ g, ∀ φ ∈ SB (κ → k), l (om g φ) = l φ := by
   obtain ⟨hs₀, dd, omd, hdd, hs, hr, hb⟩ := hW
-  have hn := norm_char hc
+  have hn := PositivityTheory.KCo.Mod.norm_one hc
   obtain ⟨l₂, hne₂, hl₂⟩ := GlobalTheory.CompanionTheory.LagFun.exists_invariant_form k _ ψ hc h1 _ (lagY_iso dd hL.1)
   have hfix := dbl_fix hc h1 hq hA hL dd omd hs hr l₂ hl₂ hne₂
   obtain ⟨φ₁, h₁, φ₂, h₂, h₁₂⟩ : ∃ φ₁ ∈ SB (κ → k), ∃ φ₂ ∈ SB (κ → k), l₂ (boxFun φ₁ φ₂) ≠ 0 := by

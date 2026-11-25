@@ -19,8 +19,6 @@ open NumberField IsDedekindDomain Neutral.B1 Formalism.L2.Host Formalism.Conjuga
 open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory.LocLanglands GlobalTheory.HeckeGal GlobalTheory.LocGL GlobalTheory.GalOfCusp UpperTheory.V UpperTheory.V.Af UpperTheory.V.Published UpperTheory.V.Af.Bc GlobalTheory.RealGal
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-theorem _root_.GlobalTheory.T.galois_rep_tower_restriction : ∀ (F Ω : Type) [Field F] [NumberField F] [IsTotallyReal F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (K : Type) [Field K] [NumberField K] [Algebra F K] [Algebra K Ω] [IsScalarTower F K Ω] [IsAlgClosure K Ω] (M : Type) [Field M] [NumberField M] [Algebra F M] [Algebra M Ω] [IsScalarTower F M Ω] [IsAlgClosure M Ω] [Algebra K M] [IsScalarTower F K M] [IsScalarTower K M Ω] (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (a : ℕ) (π : TR.CuspSub F a) (r : G K Ω →* GL (Fin a) (Qbar l)), AttRes π ι K r → AttRes π ι M (r.comp (res K Ω M)) := by
-  first | exact @GlobalTheory.AttResTower.attRes_comp_res
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: PositivityTheory.AutomorphicForms.PublishedInputs.RealGaloisRepresentations.IwahoriSphericalTransfer.GaloisRepTowerRestriction =====
@@ -80,13 +78,13 @@ theorem GlobalTheory.RealGalCompat.trace_eq : ∀ (F Ω : Type) [Field F] [Numbe
   haveI : IsScalarTower Q.K M Ω := IsScalarTower.of_algebraMap_eq fun x => rfl
   haveI : IsScalarTower Q'.K M Ω := IsScalarTower.of_algebraMap_eq fun x => rfl
 
-  have hA := GlobalTheory.T.galois_rep_tower_restriction F Ω Q.K M l ι a π r ha
-  have hA' := GlobalTheory.T.galois_rep_tower_restriction F Ω Q'.K M l ι a π r' ha'
+  have hA := GlobalTheory.AttResTower.attRes_comp_res F Ω Q.K M l ι a π r ha
+  have hA' := GlobalTheory.AttResTower.attRes_comp_res F Ω Q'.K M l ι a π r' ha'
   have hS := UpperTheory.semisimple_restriction_to_normal_subgroup _ _ _ a r (res Q.K Ω M) (range_res_normal (F := F)) hs
   have hS' := UpperTheory.semisimple_restriction_to_normal_subgroup _ _ _ a r' (res Q'.K Ω M) (range_res_normal (F := F)) hs'
   have hC := hr.comp (UpperTheory.V.Af.continuous_restrictScalarsHom Q.K M Ω)
   have hC' := hr'.comp (UpperTheory.V.Af.continuous_restrictScalarsHom Q'.K M Ω)
-  obtain ⟨g, hg⟩ := GlobalTheory.T.attached_galois_rep_unique F Ω M l ι a π _ _ hC hC' hS hS' hA hA'
+  obtain ⟨g, hg⟩ := GlobalTheory.AttUniq.attRes_repIso F Ω M l ι a π _ _ hC hC' hS hS' hA hA'
 
   set σ : G F Ω := res F Ω Q.K s with hσ
   have hfix : σ ∈ M.fixingSubgroup := by

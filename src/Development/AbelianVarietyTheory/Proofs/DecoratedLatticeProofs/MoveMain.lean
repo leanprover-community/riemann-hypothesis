@@ -198,7 +198,7 @@ theorem move_main : ∀ {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : Form
     let M : ∀ i : {PP // PP ∈ (pk W).Pg ∨ QAll W PP}, GL (Fin (Yc D j).rank) (l i.1 i.2).k :=
       fun i => frameGL (FY i.1 i.2 j _ (hsj i.1 i.2)) (bas i.1 i.2 j _ (hsj i.1 i.2)) (σ i.1 i.2)
     have hsd := GlobalTheory.T.self_dual_lattice_frame_chain W hW j hj
-    obtain ⟨t, ht, Lt, hLt, hMv, hAgree, hMT⟩ := GlobalTheory.T.exists_base_point_carrying_lattice_and_frames D (Yc D j) ((pk W).ΛY j) (N j) ((pk W).βY j)
+    obtain ⟨t, ht, Lt, hLt, hMv, hAgree, hMT⟩ := GlobalTheory.FinPl.BasePoint.exists_move D (Yc D j) ((pk W).ΛY j) (N j) ((pk W).βY j)
       hsd.1 (hN j hj) {PP // PP ∈ (pk W).Pg ∨ QAll W PP} (fun i => (l i.1 i.2).k)
       (fun i => (l i.1 i.2).q) hinj M
     refine ⟨t, ht, ?_, ?_⟩

@@ -129,20 +129,6 @@ theorem isVBOn_of_eqOn {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommR
   obtain ⟨U, hU, b, hb, hf⟩ := h p trivial
   exact ⟨U, hU, b, hb, fun q hq hqU => ⟨(hf q trivial hqU).1, (he q hq).trans (hf q trivial hqU).2⟩⟩
 
-theorem genMap_germ {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X} (p : Cpt ξ)
-    {U : X.Opens} (hpU : p.1 ∈ U) (heU : genPt ξ ∈ U) (s : Γ(X, U)) :
-    genMap ξ p ((X.presheaf.germ U p.1 hpU).hom s) =
-      (Scheme.stalkClosedPointTo ξ).hom ((X.presheaf.germ U (genPt ξ) heU).hom s) := by
-  have e : (X.presheaf.stalkSpecializes p.2).hom ((X.presheaf.germ U p.1 hpU).hom s) =
-      (X.presheaf.germ U (genPt ξ) heU).hom s :=
-    ConcreteCategory.congr_hom (X.presheaf.germ_stalkSpecializes hpU p.2) s
-  exact congrArg (fun t : X.presheaf.stalk (genPt ξ) => (Scheme.stalkClosedPointTo ξ).hom t) e
-
-theorem exists_eq_div_genMap {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X}
-    (hξ : IsCptGen ξ) (p : Cpt ξ) (a : Ω) :
-    ∃ u v : X.presheaf.stalk p.1, genMap ξ p v ≠ 0 ∧ a = genMap ξ p u / genMap ξ p v := by
-  apply _root_.GlobalTheory.CompanionTheory.Ar.XR.exists_eq_div_genMap <;> assumption
-
 theorem normalCpt_of_isCptGen {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X}
     (hξ : IsCptGen ξ)
     (hX : ∀ x : X, IsDomain (X.presheaf.stalk x) ∧ IsIntegrallyClosed (X.presheaf.stalk x)) : Flat.NormalCpt ξ := by
@@ -231,27 +217,6 @@ namespace GlobalTheory.CompanionTheory.Ar.Num.FamEx.SandPt
 
 variable {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X}
 
-theorem integers_regular {F : Type} [Field F] [NumberField F] (hN : Flat.NormalCpt ξ) (σ : 𝓞 F →+* Ω) (q : Cpt ξ)
-    (a : 𝓞 F) : σ a ∈ regAt ξ q := by
-  refine hN q _ ?_
-  have h : IsIntegral ℤ (σ a) := (Algebra.IsIntegral.isIntegral (R := ℤ) a).map σ.toIntAlgHom
-  exact h.tower_top
-
-theorem unitAt_nat {q : Cpt ξ} [CharZero Ω] (n : ℕ) (hn : n ≠ 0)
-    (h : ∀ p : ℕ, p.Prime → p ∣ n → unitAt ξ q (p : Ω)) : unitAt ξ q (n : Ω) :=
-  _root_.GlobalTheory.CompanionTheory.Ar.HcVb.unitAt_nat n hn h
-
-theorem unitAt_natAbs_discr {F : Type} [Field F] [NumberField F] {q : Cpt ξ} [CharZero Ω]
-    (h : ∀ p : ℕ, p.Prime → (p : ℤ) ∣ discr F → unitAt ξ q (p : Ω)) :
-    unitAt ξ q (((discr F).natAbs : ℕ) : Ω) :=
-  unitAt_nat _ (Int.natAbs_ne_zero.2 (discr_ne_zero F)) fun p hp hd =>
-    h p hp (Int.natCast_dvd.2 hd)
-
-theorem natAbs_discr_mem_different (F : Type) [Field F] [NumberField F] :
-    (((discr F).natAbs : ℕ) : 𝓞 F) ∈ differentIdeal ℤ (𝓞 F) := by
-  have h := Ideal.absNorm_mem (differentIdeal ℤ (𝓞 F))
-  rwa [absNorm_differentIdeal F] at h
-
 theorem htW_eq_htDual {G : Over X} [GrpObj G] {Li : Type} [AddCommGroup Li] [Module Ω Li] (M : LieModel G ξ Li)
     (L : Semi.LB G.left) (n : ℕ) {F : Type} [Field F] [NumberField F] (ρ : 𝓞 F →+* Module.End Ω Li)
     (σ : 𝓞 F →+* Ω) (q : Cpt ξ) (hσ : ∀ a, σ a ∈ regAt ξ q)
@@ -259,7 +224,7 @@ theorem htW_eq_htDual {G : Over X} [GrpObj G] {Li : Type} [AddCommGroup Li] [Mod
     M.htW L n ρ σ (differentIdeal ℤ (𝓞 F)) q = M.htDual L n ρ σ q := by
   apply le_antisymm
   · refine Submodule.span_le.2 fun e he => ?_
-    have h1 := he.2 _ (natAbs_discr_mem_different F)
+    have h1 := he.2 _ (GlobalTheory.CompanionTheory.Ar.HcVb.natAbs_discr_mem_different F)
     rw [map_natCast] at h1
     have h2 := Submodule.smul_mem _ (⟨_, hu.2.2⟩ : regAt ξ q) h1
     have h3 : (⟨_, hu.2.2⟩ : regAt ξ q) • (((discr F).natAbs : ℕ) : Ω) • e = e := by
@@ -291,13 +256,13 @@ theorem sandwich_at_point : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
     have h' : 𝔐.cst (a : c.F) = 𝔐.cst (b : c.F) := by rw [map_natCast, map_natCast, h]
     exact Nat.cast_injective (𝔐.cst.injective h')⟩
   have hN : Flat.NormalCpt 𝔐.ξ := GlobalTheory.CompanionTheory.Ar.XR.normalCpt_of_isCptGen 𝔐.tie.gen 𝔐.normal
-  have hu : unitAt 𝔐.ξ q (((discr E).natAbs : ℕ) : Ω) := unitAt_natAbs_discr fun r hr hrd => by
+  have hu : unitAt 𝔐.ξ q (((discr E).natAbs : ℕ) : Ω) := GlobalTheory.CompanionTheory.Ar.HcVb.unitAt_natAbs_discr fun r hr hrd => by
     by_contra hn
     have : r = p := GlobalTheory.CompanionTheory.Ar.inFibre_unique hp.out hr hq hn
     exact hd (this ▸ hrd)
   have hHT : 𝔐.HT p t q = 𝔐.M.htDual 𝔐.t.PP.L (p ^ 𝔐.R p) 𝔐.ρ (𝔐.emb t) q := by
     cases t with
-    | inl τ => exact htW_eq_htDual 𝔐.M _ _ 𝔐.ρ _ q (integers_regular hN _ q) hu
+    | inl τ => exact htW_eq_htDual 𝔐.M _ _ 𝔐.ρ _ q (GlobalTheory.CompanionTheory.Ar.HcVb.integers_regular hN _ q) hu
     | inr τ => rfl
   obtain ⟨-, -, -, hs⟩ := hS q hq
   obtain ⟨h1, h3⟩ := hs t
@@ -603,77 +568,12 @@ open GlobalTheory.CompanionTheory.Ar.Num.FamEx GlobalTheory.CompanionTheory.Ar.B
 
 namespace PositivityTheory.Xgn.LatticeHeightUnit
 
-theorem genMap_germ {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X} (p : Cpt ξ)
-    {U : X.Opens} (hpU : p.1 ∈ U) (heU : genPt ξ ∈ U) (s : Γ(X, U)) :
-    genMap ξ p ((X.presheaf.germ U p.1 hpU).hom s) =
-      (Scheme.stalkClosedPointTo ξ).hom ((X.presheaf.germ U (genPt ξ) heU).hom s) := by
-  exact congrArg (fun f => (CommRingCat.Hom.hom f) s)
-    (TopCat.Presheaf.germ_stalkSpecializes_assoc X.presheaf hpU p.2 (Scheme.stalkClosedPointTo ξ))
-
-theorem exists_eq_div_genMap {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X}
-    (hξ : IsCptGen ξ) (p : Cpt ξ) (a : Ω) :
-    ∃ u v : X.presheaf.stalk p.1, genMap ξ p v ≠ 0 ∧ a = genMap ξ p u / genMap ξ p v := by
-  apply GlobalTheory.CompanionTheory.Ar.XR.exists_eq_div_genMap <;> assumption
-
 theorem normalCpt_of_isCptGen {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X}
     (hξ : IsCptGen ξ) (hX : IsNormalScheme X) : Flat.NormalCpt ξ := by
   apply GlobalTheory.CompanionTheory.Ar.XR.normalCpt_of_isCptGen <;> assumption
 
-theorem epiSp {Ω K : Type} [Field Ω] [Field K] (a : Ω →+* K) : Epi (spMap a) :=
-  _root_.GlobalTheory.CompanionTheory.Ar.HtEnd.epiSp a
-
-theorem pow_descend {X : Scheme.{0}} {G : Over X} [GrpObj G] {Ω K : Type} [Field Ω] [Field K]
-    {ξ : Spec (CommRingCat.of Ω) ⟶ X} {N : ℕ} (a : Ω →+* K)
-    {g₀ : Over.mk ξ ⟶ G} {g : Over.mk (spMap a ≫ ξ) ⟶ G} (e : g.left = spMap a ≫ g₀.left) (hg : g ^ N = 1) :
-    g₀ ^ N = 1 :=
-  _root_.GlobalTheory.CompanionTheory.Ar.HtEnd.powDescend a e hg
-
 variable {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Sp Ω ⟶ X}
   {Li : Type} [AddCommGroup Li] [Module Ω Li]
-
-theorem isVBOn_of_isVB {L : Lat ξ Li} {r : ℕ} {V : Submodule Ω Li} (h : L.IsVB r V) (T : Set (Cpt ξ)) :
-    L.IsVBOn T r V := by
-  intro p _
-  obtain ⟨U, hpU, b, hb, hf⟩ := h p (Set.mem_univ _)
-  exact ⟨U, hpU, b, hb, fun q _ hq => hf q (Set.mem_univ _) hq⟩
-
-theorem integers_regular {F : Type} [Field F] [NumberField F] (hN : Flat.NormalCpt ξ) (σ : 𝓞 F →+* Ω) (q : Cpt ξ)
-    (a : 𝓞 F) : σ a ∈ regAt ξ q := by
-  apply hN q
-  have h1 : IsIntegral ℤ a := NumberField.RingOfIntegers.isIntegral a
-  have h2 : IsIntegral ℤ (σ a) := h1.map σ.toIntAlgHom
-  exact h2.tower_top
-
-theorem unitAt_nat {q : Cpt ξ} [CharZero Ω] (n : ℕ) (hn : n ≠ 0)
-    (h : ∀ p : ℕ, p.Prime → p ∣ n → unitAt ξ q (p : Ω)) : unitAt ξ q (n : Ω) := by
-  induction n using Nat.recOnMul with
-  | zero => exact absurd rfl hn
-  | one => exact ⟨by simp, by simp, by simp⟩
-  | prime p hp => exact h p hp dvd_rfl
-  | mul a b iha ihb =>
-    have ha0 : a ≠ 0 := by rintro rfl; simp at hn
-    have hb0 : b ≠ 0 := by rintro rfl; simp at hn
-    obtain ⟨a1, a2, a3⟩ := iha ha0 (fun p hp hpa => h p hp (dvd_mul_of_dvd_left hpa b))
-    obtain ⟨b1, b2, b3⟩ := ihb hb0 (fun p hp hpb => h p hp (dvd_mul_of_dvd_right hpb a))
-    refine ⟨?_, ?_, ?_⟩
-    · push_cast
-      exact mul_ne_zero a1 b1
-    · push_cast
-      exact Subring.mul_mem _ a2 b2
-    · push_cast
-      rw [mul_inv]
-      exact Subring.mul_mem _ a3 b3
-
-theorem unitAt_natAbs_discr {F : Type} [Field F] [NumberField F] {q : Cpt ξ} [CharZero Ω]
-    (h : ∀ p : ℕ, p.Prime → (p : ℤ) ∣ discr F → unitAt ξ q (p : Ω)) :
-    unitAt ξ q (((discr F).natAbs : ℕ) : Ω) := by
-  exact unitAt_nat _ (Int.natAbs_ne_zero.mpr (NumberField.discr_ne_zero F))
-    fun p hp hpd => h p hp (Int.ofNat_dvd_left.mpr hpd)
-
-theorem natAbs_discr_mem_different (F : Type) [Field F] [NumberField F] :
-    (((discr F).natAbs : ℕ) : 𝓞 F) ∈ differentIdeal ℤ (𝓞 F) := by
-  rw [← NumberField.absNorm_differentIdeal F (𝓞 F)]
-  exact Ideal.absNorm_mem _
 
 theorem htOm_eq_omLat {G : Over X} [GrpObj G] (M : LieModel G ξ Li) (L : LB G.left) (n : ℕ) (q : Cpt ξ)
     (hu : unitAt ξ q (n : Ω))
@@ -705,7 +605,7 @@ theorem PositivityTheory.Xgn.lattice_height_unit : ∀ (E : Type) [Field E] [Num
   have hgen : IsCptGen 𝔐.ξ := 𝔐.tie.gen
   obtain ⟨_, hsm, -, -, -, -⟩ := 𝔐.t.semi
   have hvb : 𝔐.M.lat.IsVBOn {q} (Module.finrank Ω 𝔐.Li) ⊤ :=
-    isVBOn_of_isVB (lieLat_isVB_of_smooth 𝔐.X Ω 𝔐.ξ 𝔐.t.G 𝔐.Li 𝔐.M hgen hsm).1 {q}
+    GlobalTheory.CompanionTheory.Ar.HcVb.isVBOn_of_isVB (lieLat_isVB_of_smooth 𝔐.X Ω 𝔐.ξ 𝔐.t.G 𝔐.Li 𝔐.M hgen hsm).1 {q}
   have hunit : ∀ r : ℕ, r.Prime → unitAt 𝔐.ξ q (r : Ω) := fun r hr => not_not.1 (hq r hr)
   have hchar : CharZero Ω := by
     rcases CharP.char_is_prime_or_zero Ω (ringChar Ω) with h | h
@@ -727,7 +627,7 @@ theorem PositivityTheory.Xgn.lattice_height_unit : ∀ (E : Type) [Field E] [Num
         Out.WeilIs 𝔐.t.G 𝔐.t.PP.L ((p ^ 𝔐.R p : ℕ) : ℤ) xk g (unitOn c) → (c : k) = 1 := by
     intro k _ _ i xk g c hxk hgn hW
     obtain ⟨x, hx⟩ := 𝔐.tors p hpS k i g hgn
-    have hxn : x ^ (p ^ 𝔐.R p) = 1 := pow_descend i hx hgn
+    have hxn : x ^ (p ^ 𝔐.R p) = 1 := GlobalTheory.CompanionTheory.Ar.HtEnd.powDescend i hx hgn
     obtain ⟨τ, hτ⟩ := (gt.t₂.onto x).1 hxn
     obtain ⟨x', hx'⟩ : ∃ x' : Fin (D.p + D.q) → 𝓞 E, qmk (p ^ 𝔐.R p) x' = τ := by
       refine ⟨fun j => (Ideal.Quotient.mk_surjective (Multiplicative.toAdd τ j)).choose, ?_⟩
@@ -763,10 +663,10 @@ theorem PositivityTheory.Xgn.lattice_height_unit : ∀ (E : Type) [Field E] [Num
       𝔐.M.eigLat 𝔐.ρ (𝔐.emb (Sum.inl τ)) q
     apply key.2
     · intro a
-      exact integers_regular (normalCpt_of_isCptGen hgen 𝔐.normal) (𝔐.emb (Sum.inl τ)) q a
-    · refine ⟨((discr E).natAbs : 𝓞 E), natAbs_discr_mem_different E, ?_⟩
+      exact GlobalTheory.CompanionTheory.Ar.HcVb.integers_regular (normalCpt_of_isCptGen hgen 𝔐.normal) (𝔐.emb (Sum.inl τ)) q a
+    · refine ⟨((discr E).natAbs : 𝓞 E), GlobalTheory.CompanionTheory.Ar.HcVb.natAbs_discr_mem_different E, ?_⟩
       rw [map_natCast]
-      exact unitAt_natAbs_discr (fun r hr _ => hunit r hr)
+      exact GlobalTheory.CompanionTheory.Ar.HcVb.unitAt_natAbs_discr (fun r hr _ => hunit r hr)
   · have key := LieModel.htDual_htW_eq_eigLat_of_htOm_eq_omLat 𝔐.X Ω 𝔐.ξ 𝔐.t.G 𝔐.Li 𝔐.M 𝔐.t.PP.L
       (p ^ 𝔐.R p) (Module.finrank Ω 𝔐.Li) (𝓞 E) 𝔐.ρ (𝔐.emb (Sum.inr τ)) q hvb hom
     exact key.1

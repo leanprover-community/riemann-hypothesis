@@ -148,45 +148,27 @@ theorem mem_orth_sup {U U' : Submodule E S.V} {v : S.V} :
     obtain ⟨a, ha, b, hb, rfl⟩ := Submodule.mem_sup.mp hx
     rw [map_add (f := _), LinearMap.add_apply, h1 a ha, h2 b hb, add_zero]
 
-theorem mem_orth_span {s : Set S.V} {v : S.V} :
-    v ∈ orth S (Submodule.span E s) ↔ ∀ x ∈ s, S.hT x v = 0 := by
-  rw [mem_orth]
-  refine ⟨fun h x hx => h x (Submodule.subset_span hx), fun h x hx => ?_⟩
-  induction hx using Submodule.span_induction with
-  | mem x hx => exact h x hx
-  | zero => simp
-  | add x y _ _ hx hy => rw [map_add (f := _), LinearMap.add_apply, hx, hy, add_zero]
-  | smul c x _ hx => rw [LinearMap.map_smulₛₗ, LinearMap.smul_apply, hx, smul_zero]
-
 theorem mem_orth_span_singleton {z v : S.V} :
     v ∈ orth S (Submodule.span E {z}) ↔ S.hT z v = 0 := by
-  rw [mem_orth_span]; simp
+  rw [PI.ScalarPairDr.W.mem_orth_span]; simp
 
 theorem Xsp_le_orth {r : ℕ} {T : E} (F : LFlag S r T) : Xsp F ≤ orth S (Xsp F) := by
   show Submodule.span E (Set.range F.fl.e) ≤ orth S (Submodule.span E (Set.range F.fl.e))
   rw [Submodule.span_le]
   rintro _ ⟨b, rfl⟩
-  rw [SetLike.mem_coe, mem_orth_span]
+  rw [SetLike.mem_coe, PI.ScalarPairDr.W.mem_orth_span]
   rintro _ ⟨a, rfl⟩
   exact F.fl.e_iso a b
 
 theorem z_mem_orth {r : ℕ} {T : E} (F : LFlag S r T) : F.fl.z ∈ orth S (Xsp F) := by
   show F.fl.z ∈ orth S (Submodule.span E (Set.range F.fl.e))
-  rw [mem_orth_span]
+  rw [PI.ScalarPairDr.W.mem_orth_span]
   rintro _ ⟨a, rfl⟩
   exact F.fl.z_orth a
 
 theorem finrank_Xsp {r : ℕ} {T : E} (F : LFlag S r T) : finrank E (Xsp F) = r := by
   show finrank E (Submodule.span E (Set.range F.fl.e)) = r
   rw [finrank_span_eq_card F.fl.e_indep]; simp
-
-theorem Xflag_r {r : ℕ} {T : E} (F : LFlag S r T) : Xflag F r = Xsp F := by
-  show Submodule.span E (F.fl.e '' {i | i.1 < r}) = Submodule.span E (Set.range F.fl.e)
-  congr 1
-  rw [← Set.image_univ]
-  congr 1
-  ext i
-  simp
 
 theorem inf_span_eq_bot {P : Submodule E S.V} {v : S.V} (hv : v ∉ P) :
     P ⊓ Submodule.span E {v} = ⊥ := by
@@ -322,9 +304,9 @@ theorem line_reduction_holds : LineReduce' := by
       omega
 
   have hX'' : Xsp F'' = X'.map (β₁ : S.V →ₗ[E] S.V) := by
-    rw [← Xflag_r F'', ← hf1 r, Xflag_r F']
+    rw [← PI.UnitaryGroupMassFormula.BetaLUniq.EigB.Xflag_r F'', ← hf1 r, PI.UnitaryGroupMassFormula.BetaLUniq.EigB.Xflag_r F']
   have hX''2 : Xsp F'' = X'.map (β₂ : S.V →ₗ[E] S.V) := by
-    rw [← Xflag_r F'', ← hf2 r, Xflag_r F']
+    rw [← PI.UnitaryGroupMassFormula.BetaLUniq.EigB.Xflag_r F'', ← hf2 r, PI.UnitaryGroupMassFormula.BetaLUniq.EigB.Xflag_r F']
   have hγX : ∀ x ∈ X', β₁.symm (β₂ x) ∈ X' := by
     intro x hx
     have : β₂ x ∈ Xsp F'' := by rw [hX''2]; exact Submodule.mem_map_of_mem hx

@@ -424,8 +424,6 @@ theorem vanMod_smul {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R] {D : De
   rw [map_mul, GlobalTheory.ThickDiv.resTop_scal, GlobalTheory.ThickDiv.app_constFn_eq_zero _ 0 _ _ (by rwa [zero_add, pow_one]),
     zero_mul]
 
-
-
 theorem exists_lead_members {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R] (hB : Base R)
     (D : DegData R (maximalIdeal R)) {k : ℕ} (hk : 1 ≤ k) (b : D.toPre.SecB k 0) :
     ∃ (Φ : Fam D.toPre (FractionRing R) k) (f : ∀ α : D.toPre.X, D.toPre.SecB k α),
@@ -721,17 +719,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
-theorem _root_.GlobalTheory.T.section_nonzero_of_expansion_mod_maximalIdeal : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R]
-    (D : DegData R (maximalIdeal R)) (A : PolAV (Sp (FractionRing R))) (G : Over (Sp R)) [GrpObj G]
-      [IsCommMonObj G] (U : UnifPre (maximalIdeal R) D A G) (k : ℕ) (s : H0 U.LG.L k)
-      (f : ∀ α : D.toPre.X, D.toPre.SecB k α), U.ExpandsAt 0 k s f →
-      (∀ α, α ≠ 0 → ∀ j : Fin 4 → D.toPre.P.L.ι, ((U.gt 0).pG.left.app _).hom ((f α).f j) = 0) →
-      ∀ y : (thickObj R (maximalIdeal R) 0 G).left,
-      (∃ j : Fin 4 → D.toPre.P.L.ι, y ∈ (thickObj R (maximalIdeal R) 0 G).left.basicOpen
-          (((U.gt 0).pG.left.app _).hom ((f 0).f j))) →
-      ∃ i : Fin 1 → U.LG.L.ι, y ∈ (thickObj R (maximalIdeal R) 0 G).left.basicOpen
-        (((fstG (maximalIdeal R) 0 G).left.app (secChart U.LG.L i)).hom (s.f i)) := by
-  first | exact @GlobalTheory.Mum.ExpandNonzero.nonzero_of_expandsAt_zero
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.SectionNonzeroOfExpansionModMaximalIdealStatement =====
@@ -775,7 +762,7 @@ theorem exists_sec_ne_zero_at : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLoca
     simp only [Scheme.Hom.comp_base, TopCat.comp_app] at h
     exact h.trans (thick_zero_apply R _))
   obtain ⟨s, f, hf0, hfα, hexp⟩ := GlobalTheory.T.exists_section_expansion_weightZero_coefficient R hB D A G hG U k (by omega) σ
-  obtain ⟨i, hi⟩ := GlobalTheory.T.section_nonzero_of_expansion_mod_maximalIdeal R D A G U.toUnifPre k s f hexp hfα y ⟨j, by
+  obtain ⟨i, hi⟩ := GlobalTheory.Mum.ExpandNonzero.nonzero_of_expandsAt_zero R D A G U.toUnifPre k s f hexp hfα y ⟨j, by
     subst hf0
     rw [← Scheme.preimage_basicOpen]
     exact hx⟩

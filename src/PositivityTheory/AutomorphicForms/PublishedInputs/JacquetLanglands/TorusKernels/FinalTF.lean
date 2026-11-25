@@ -304,7 +304,6 @@ theorem pres_prod (μ : Measure X) [SigmaFinite μ] (hμ : Pres G μ) :
     Pres G ((Measure.count : Measure Ω).prod μ) := fun g =>
   (count_pres g).prod (hμ g)
 
-
 open Classical in
 def cut (R : Set Ω) (β : Ω → X → ℝ) (p : Ω × X) : ℝ := by
   classical
@@ -892,10 +891,6 @@ theorem kap_nonneg (z w : P) : 0 ≤ kap z w := by
   · exact div_nonneg (mul_nonneg (by norm_num) h.le) (by positivity)
   · exact le_rfl
 
-theorem Kap_nonneg {I : Type} [Fintype I] (k : I → ℕ) (z w : X I) : 0 ≤ Kap k z w := by
-  unfold Kap
-  exact Finset.prod_nonneg fun v _ => Real.rpow_nonneg (kap_nonneg _ _) _
-
 variable {F I Gf ι : Type} [Field F] [Group Gf] [Fintype I] [Fintype ι]
 
 theorem bound (D : Dat F I Gf) (k : I → ℕ) (a : ι → Gf) (C₀ : ℝ)
@@ -919,7 +914,7 @@ theorem bound (D : Dat F I Gf) (k : I → ℕ) (a : ι → Gf) (C₀ : ℝ)
       calc ‖D.kk k a γ y‖ₑ = ENNReal.ofReal ‖D.kk k a γ y‖ := (ofReal_norm _).symm
         _ ≤ ENNReal.ofReal (C₀ * Kap k y.2 (γ • y.2 : D.Xs)) := ENNReal.ofReal_le_ofReal (hk γ y)
         _ = ENNReal.ofReal C₀ * ENNReal.ofReal (Kap k y.2 (γ • y.2 : D.Xs)) :=
-            ENNReal.ofReal_mul' (Kap_nonneg k _ _)
+            ENNReal.ofReal_mul' (UpperTheory.Esk.MultivariableReproducingLemmas.Kap_nonneg k _ _)
         _ = Set.indicator {γ : PG F | γ • y.1 = ((D.rep y.1 * a i : Gf) : Gf ⧸ D.H)}
           (fun γ => ENNReal.ofReal C₀ * ENNReal.ofReal (Kap k y.2 (γ • y.2 : D.Xs))) γ :=
             (Set.indicator_of_mem
@@ -1019,7 +1014,6 @@ open scoped ENNReal NNReal
 namespace UpperTheory.Esk.OrbitCoverLemmas
 
 variable {G Y : Type} [Group G] [Countable G] [MeasurableSpace Y] [MulAction G Y]
-
 
 omit [Countable G] [MeasurableSpace Y] in
 theorem orbit_tsum_smul (u : Y → ℝ) (g : G) (y : Y) :

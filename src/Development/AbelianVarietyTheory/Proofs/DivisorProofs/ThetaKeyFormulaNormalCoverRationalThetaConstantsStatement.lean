@@ -190,8 +190,6 @@ open GlobalTheory GlobalTheory.ZM GlobalTheory.ZH GlobalTheory.UMin GlobalTheory
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.abelianLocus_eq_preimage_moduli_and_principal : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (Y : Model Xo c (RingHom.id c.F)) (T : Scheme.{0}) (π : T ⟶ Y.X) (t : SAB H T), Nonempty (SABMap t Y.t π) → abLocus t.G = π ⁻¹' Set.range Y.j ∧ IsOpen (abLocus t.G) ∧ ∀ W : T.Opens, (W : Set T) ⊆ abLocus t.G → RelAmple ((Over.pullback W.ι).obj t.G) (t.PP.L.pull (pullback.fst t.G.hom W.ι)) ∧ KTriv ((Over.pullback W.ι).obj t.G) (t.PP.L.pull (pullback.fst t.G.hom W.ι)) := by
-  first | exact @GlobalTheory.ModelAbLocus.abLocus_eq_and_pol
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbelianLocusEqPreimageModuliAndPrincipalStatement =====
@@ -463,57 +461,9 @@ theorem norm_toF_unit {V : Type} [CommRing V] [IsDomain V] {I : Ideal V} {C : Ty
   have h4 : ‖toF V C u‖ * ‖toF V C ↑u⁻¹‖ = 1 := by rw [← norm_mul, h3, norm_one]
   nlinarith [norm_nonneg (toF V C u), norm_nonneg (toF V C ↑u⁻¹)]
 
-theorem level_labels : ∀ (K C : Type) [Field K] [Field C] [IsAlgClosed C] (f : K →+* C) (P : PolAV (Sp K))
-    (P' : PolAV (Sp C)) (io : (Over.mk (spMap f) ⟶ P.A) ≃* (baseOver (Sp C) ⟶ P'.A)),
-    (∀ (k : ℕ) a b (z : Γ(Sp C, ⊤)ˣ), WeilIs P'.A P'.L k (io a) (io b) z → WeilIs P.A P.L k a b z) →
-    ∀ (g k : ℕ) (hg : P'.g = g) (ζ : Cˣ) (lev : Out.Level P' k (unitOn ζ)), 2 ≤ k →
-      IsPrimitiveRoot ζ k ∧
-      (∀ a b, io.symm (levelPoint lev hg (a + b)) = io.symm (levelPoint lev hg a) * io.symm (levelPoint lev hg b)) ∧
-      Function.Injective (fun a => io.symm (levelPoint lev hg a)) ∧
-      (∀ z : Over.mk (spMap f) ⟶ P.A, z ^ k = 1 → ∃ a, io.symm (levelPoint lev hg a) = z) ∧
-      ∀ i j, WeilIs P.A P.L k (io.symm (levelPoint lev hg (Pi.single i 1))) (io.symm (levelPoint lev hg (Pi.single j 1)))
-        (unitOn (ζ ^ stdSymp g i j)) := GlobalTheory.T.levelStructure_baseChange_labels_torsion
-
-theorem jc_smul : ∀ {R : Type} [CommRing R] [IsDomain R] {D : DegPre R} {F : Type} [Field F] [Algebra (FractionRing R) F]
-    {N : NumD F} (ν : NumOf D F N) {k : ℕ} (s : Fam D F k) (a : F) (gm : GtPt D (TE R F)) (α : N.X),
-    jc ν (a • s) gm α = TrivSqZeroExt.inl a * jc ν s gm α := GlobalTheory.T.torusExtDualNumberTermValue_smul
-
-theorem fst_indep : ∀ (K C : Type) [Field K] [Field C] [Algebra K C] (P : PolAV (Sp K))
-    (ρ : LB.Gen (P.L.pull (eSec P.A))) (k : ℕ) (t : LB.Sec (LPow P.A P.L (k : ℤ) (Over.mk (spMap (algebraMap K C)))))
-    (i₀ : P.L.ι), ⊤ ≤ (spMap (algebraMap K C) ≫ eSec P.A) ⁻¹ᵁ P.L.U i₀ →
-    ∀ (v w : epsR K ⟶ P.A), IsTangent v → IsTangent w →
-    ∀ (yv yw : Sp (DualNumber C) ⟶ (Over.mk (spMap (algebraMap K C)) ⊗ P.A).left),
-      yv ≫ (fst (Over.mk (spMap (algebraMap K C))) P.A).left = spMap (algebraMap C (DualNumber C)) →
-      yv ≫ (snd (Over.mk (spMap (algebraMap K C))) P.A).left = spMap (dualMap (algebraMap K C)) ≫ v.left →
-      yw ≫ (fst (Over.mk (spMap (algebraMap K C))) P.A).left = spMap (algebraMap C (DualNumber C)) →
-      yw ≫ (snd (Over.mk (spMap (algebraMap K C))) P.A).left = spMap (dualMap (algebraMap K C)) ≫ w.left →
-    ∀ (a b a' b' : C),
-      valR yv ((LPow P.A P.L (k : ℤ) (Over.mk (spMap (algebraMap K C)))).U fun _ => i₀) (t.f fun _ => i₀) =
-        TrivSqZeroExt.inl (valR (spMap (algebraMap K C)) ((P.L.pull (eSec P.A)).U fun _ => i₀) (ρ.s fun _ => i₀).val ^ k) *
-          (TrivSqZeroExt.inl a + TrivSqZeroExt.inr b) →
-      valR yw ((LPow P.A P.L (k : ℤ) (Over.mk (spMap (algebraMap K C)))).U fun _ => i₀) (t.f fun _ => i₀) =
-        TrivSqZeroExt.inl (valR (spMap (algebraMap K C)) ((P.L.pull (eSec P.A)).U fun _ => i₀) (ρ.s fun _ => i₀).val ^ k) *
-          (TrivSqZeroExt.inl a' + TrivSqZeroExt.inr b') → a = a' := GlobalTheory.T.section_value_eq_at_first_order_of_tangents
-
-theorem deform_of_series : ∀ (κ : Rule) (C : Type) [NontriviallyNormedField C] [IsUltrametricDist C] [CompleteSpace C]
-    [CharZero C] (e : C →+* ℂ) (x : KeyIn C) (g : ℕ) (hg : x.P.g = g) (m : ℕ) (ζ : Cˣ)
-    (lev : Out.Level x.P (m ^ 2) (unitOn ζ)) (k : C) (X : Type) (n : X → ℕ) (π : C) (B : ℝ)
-    (a : (Fin (2 * g) → ZMod (m ^ 2)) → X → C) (b : (Fin (2 * g) → ZMod (m ^ 2)) → Fin g → X → C),
-    π ≠ 0 → ‖π‖ < 1 → (∀ i, {α | n α = i}.Finite) → (∀ i α, ‖a i α‖ ≤ B * ‖π‖ ^ n α) →
-    (∀ i j α, ‖b i j α‖ ≤ B * ‖π‖ ^ n α) →
-    ThJet x hg m (levelPoint lev hg) (fun i => ∑' α, a i α) (fun i j => ∑' α, b i j α) →
-    (∃ ε : ℝ, 0 < ε ∧ ∀ u : ℂ, u ≠ 0 → ‖u‖ < ε →
-      ((∀ i, Summable fun α => ‖e (a i α) * u ^ n α‖) ∧ ∀ i j, Summable fun α => ‖e (b i j α) * u ^ n α‖) ∧
-      ∃ (x₀ : KeyIn ℂ) (hg₀ : x₀.P.g = g) (lev₀ : Out.Level x₀.P (m ^ 2) (unitOn (Units.map e.toMonoidHom ζ))),
-        ThJet x₀ hg₀ m (levelPoint lev₀ hg₀) (fun i => ∑' α, e (a i α) * u ^ n α)
-          (fun i j => ∑' α, e (b i j α) * u ^ n α) ∧ (κ ℂ x₀ : ℂ) = e k) →
-    Deform κ e x hg m ζ lev k := GlobalTheory.T.powerSeriesDeformation_of_boundedLatticeSeries
-
 end GlobalTheory.UMin.KeySmall
 
 namespace GlobalTheory.UMin.KeySmall
-
-
 
 theorem norm_key_eq_one : ∀ κ : Rule, Rule4 κ → ∀ (V : Type) [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] [CharZero V],
     IsAdicComplete (IsLocalRing.maximalIdeal V) V →
@@ -554,7 +504,7 @@ theorem norm_key_eq_one : ∀ κ : Rule, Rule4 κ → ∀ (V : Type) [CommRing V
   obtain ⟨hv', u, hu⟩ := GlobalTheory.T.thetaKeyRule_lieBasisChange_unit_factor κ hHom V (FractionRing V) (algebraMap V (FractionRing V)) x G _ hgp y y' v' hy hy' hyv hv'o
   set x' : KeyIn (FractionRing V) := ⟨x.P, x.g_pos, x.rig, x.rig_gen, x.th, x.th_ne, v', hv'⟩ with hx'
 
-  obtain ⟨xC, hgC, io, hPB, hW, hJ⟩ := GlobalTheory.T.exists_keyDatumBaseChange_thetaJets (FractionRing V) C (algebraMap (FractionRing V) C) x'
+  obtain ⟨xC, hgC, io, hPB, hW, hJ⟩ := GlobalTheory.MBLow.exists_keyPB_thJet (FractionRing V) C (algebraMap (FractionRing V) C) x'
   have hκC : (κ C xC : C) = algebraMap (FractionRing V) C (κ (FractionRing V) x') := hFun _ _ _ x' xC hPB
   obtain ⟨ζ, ⟨lev⟩⟩ := GlobalTheory.T.exists_symplecticLevel_algClosed_charZero C xC.P (m ^ 2) (by omega)
   obtain ⟨hprim, hadd, hinj, hsurj, hweil⟩ :=
@@ -600,7 +550,7 @@ theorem norm_key_eq_one : ∀ κ : Rule, Rule4 κ → ∀ (V : Type) [CommRing V
   have hJC := hJ m th _ pt yA (fun a => Sf a j₁) Ss hOn (fun j => ⟨(hyA j).1, hyAs j⟩) hTJ
   have hio : (fun a => io (pt a)) = levelPoint lev hgC := funext fun a => io.apply_symm_apply _
   rw [hio] at hJC
-  obtain ⟨th'', hth'', hsc, hJsc⟩ := GlobalTheory.T.thetaKeyRule_scale_section_pow_eight κ hHom C xC c⁻¹ (inv_ne_zero hc)
+  obtain ⟨th'', hth'', hsc, hJsc⟩ := GlobalTheory.MBLow.ScaleJet.scale_key κ hHom C xC c⁻¹ (inv_ne_zero hc)
   have hJ'' := hJsc x.P.g hgC m _ (levelPoint lev hgC) _ _ hJC
   set x'' : KeyIn C := ⟨xC.P, xC.g_pos, xC.rig, xC.rig_gen, th'', hth'', xC.v, xC.basis⟩ with hx''
 
@@ -624,7 +574,7 @@ theorem norm_key_eq_one : ∀ κ : Rule, Rule4 κ → ∀ (V : Type) [CommRing V
     (le_abs_self _).trans ((Finset.single_le_sum (f := fun j => |bd a j|) (fun _ _ => abs_nonneg _)
       (Finset.mem_univ j)).trans (Finset.single_le_sum (f := fun a => ∑ j, |bd a j|)
         (fun _ _ => Finset.sum_nonneg fun _ _ => abs_nonneg _) (Finset.mem_univ a)))
-  obtain ⟨k₀, hBK, hk₀⟩ := GlobalTheory.T.exists_abelianKeyValue_norm_one κ hR4 V D.toPre C hCE N ν hInt vB hAd.1
+  obtain ⟨k₀, hBK, hk₀⟩ := GlobalTheory.MBLow.AbKey.exists_bKey κ hR4 V D.toPre C hCE N ν hInt vB hAd.1
   have hAF := GlobalTheory.T.archimedeanExistence_of_complex_isomorphic_field κ hFun (GlobalTheory.T.keyRule_complex_existence_jets_key_value κ hR4)
   obtain ⟨ε, hε, hAε⟩ := hAF V D.toPre D.psi_even D.tau_bimult C e N ν x.P.g r m (m ^ 2) x.g_pos hmOdd dvd_rfl β ζ Q hQL
     s' (fun a => ⟨ff a, hs'V a, (hfam a).2.2.2.1⟩) vB bX σ gm hAd k₀ hBK
@@ -678,7 +628,6 @@ theorem norm_key_eq_one : ∀ κ : Rule, Rule4 κ → ∀ (V : Type) [CommRing V
 end GlobalTheory.UMin.KeySmall
 
 namespace GlobalTheory.UMin.KeySmall
-
 
 open Cardinal IsLocalRing GlobalTheory.RatNorm in
 
@@ -749,7 +698,6 @@ theorem exists_cExt_complex : ∀ (V : Type) [CommRing V] [IsDomain V] [IsDiscre
       (by rw [hC]; exact Cardinal.aleph0_lt_continuum)
       (Cardinal.eq.1 (by rw [hC, Cardinal.mk_complex]))
 
-
 open Cardinal GlobalTheory.KeyEven in
 theorem key_unit_unif (κ : Rule) (hR : Rule4 κ) (V : Type) [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] [CharZero V]
     (hcpl : IsAdicComplete (IsLocalRing.maximalIdeal V) V) (hcV : #V ≤ 𝔠)
@@ -789,7 +737,6 @@ theorem dualMapR_eq_of_map {R R' : Type} [CommRing R] [CommRing R'] (f : R →+*
     rw [map_add (f := _), map_mul, h1, h1, h2]
   rw [hF, ← Algebra.smul_def, ← DualNumber.inr_eq_smul_eps, TrivSqZeroExt.algebraMap_eq_inl]
   rfl
-
 
 open Cardinal GlobalTheory.KeyEven in
 theorem key_unit_trait (κ : Rule) (hR : Rule4 κ) (V : Type) [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] [CharZero V]
@@ -1099,7 +1046,6 @@ noncomputable section
 
 namespace GlobalTheory.UMin.KeySmall
 
-
 open Cardinal in
 theorem mk_adicCompletion_le {D : Type} [CommRing D] (I : Ideal D) (h : #D ≤ 𝔠) : #(AdicCompletion I D) ≤ 𝔠 := by
   have hs : ∀ a : AdicCompletion I D, ∃ s : ℕ → D, ∀ n, a.val n = Submodule.Quotient.mk (s n) := fun a => by
@@ -1110,7 +1056,6 @@ theorem mk_adicCompletion_le {D : Type} [CommRing D] (I : Ideal D) (h : #D ≤ �
   refine (Cardinal.mk_le_of_injective hinj).trans ?_
   rw [← Cardinal.power_def, Cardinal.mk_nat]
   exact (Cardinal.power_le_power_right h).trans_eq Cardinal.continuum_power_aleph0
-
 
 open Cardinal in
 theorem dvd_of_forall_small : ∀ (R : Type) [CommRing R] [IsDomain R] [IsNoetherianRing R] [IsIntegrallyClosed R] [CharZero R],
@@ -1176,7 +1121,6 @@ theorem dvd_of_map_dvd {V W : Type} [CommRing V] [IsDomain V] [ValuationRing V] 
   obtain ⟨u, rfl⟩ := isUnit_of_map_unit g c hu
   exact ⟨↑u⁻¹, by rw [hc, _root_.mul_assoc, Units.mul_inv, _root_.mul_one]⟩
 
-
 open Cardinal in
 theorem mem_range_of_small_traits {A : Type} [CommRing A] [IsDomain A] [IsNoetherianRing A] [IsIntegrallyClosed A] [CharZero A]
     (hA : #A ≤ 𝔠) (f : A) (hf : f ≠ 0) (b : Localization.Away f)
@@ -1215,24 +1159,6 @@ theorem mem_range_of_small_traits {A : Type} [CommRing A] [IsDomain A] [IsNoethe
   refine (hsu.mul_left_inj).1 ?_
   rw [hs, hn', mul_comm]
 
-theorem polAt_of_fibre {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {S : Scheme.{0}} (t : SAB H S)
-    (g : ℕ) {K : Type} [Field K] (x : Sp K ⟶ S) (h : PolFib t.G t.PP.L g x) : GlobalTheory.LN.PolAt t x := by
-  obtain ⟨P, α, -, hc, hL⟩ := h
-  have g₁ := isGrpPullback_pullback t.G x
-  have w : pullback.fst t.G.hom x ≫ t.G.hom = (pullback.snd t.G.hom x ≫ 𝟙 _) ≫ x := by
-    rw [Category.comp_id]; exact pullback.condition
-  obtain ⟨ψ, h₁, h₂⟩ : ∃ ψ : pullback t.G.hom x ⟶ P.A.left,
-      ψ ≫ α = pullback.fst t.G.hom x ∧ ψ ≫ P.A.hom = pullback.snd t.G.hom x ≫ 𝟙 _ :=
-    ⟨_, hc.1.lift_fst _ _ w, hc.1.lift_snd _ _ w⟩
-  have g₂ : IsGrpPullback ((Over.pullback x).obj t.G) P.A (𝟙 _) ψ :=
-    hc.cancel (g₁.congr (Category.id_comp _).symm h₁.symm) h₂
-  have hM := pull_isLB t.PP.isLB (pullback.fst t.G.hom x)
-  have e : LBIso (t.PP.L.pull (pullback.fst t.G.hom x)) (P.L.pull ψ) :=
-    (GlobalTheory.LN.GenericPoint.lbIso_pull hL ψ h₁.symm).symm
-  have hq := amplePt (Sp K) K (𝟙 _) P.A ((Over.pullback x).obj t.G) ψ g₂ P.L
-    (t.PP.L.pull (pullback.fst t.G.hom x)) P.isLB hM e P.ample P.ktriv
-  exact ⟨MorphismProperty.of_isPullback (P := @IsProper) g₂.1 P.isAb.proper, hq.1, hq.2⟩
-
 section Triples
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
@@ -1261,7 +1187,6 @@ theorem pullT_iso {S S' : Scheme.{0}} (f : S' ⟶ S) (t : SAB H S) {L : LB t.G.l
   have e'' := LBIso.trans i₁ i₂ hL' e' h'
   exact LBIso.trans i₀ i₁ hL' e e''
 
-
 open Cardinal in
 theorem key_unit_split (κ : Rule) (hR : Rule4 κ) (W : Type) [CommRing W] [IsDomain W] [IsDiscreteValuationRing W] [CharZero W]
     (hc : IsAdicComplete (IsLocalRing.maximalIdeal W) W) (hW : #W ≤ 𝔠) (t : SAB H (Sp W))
@@ -1277,11 +1202,10 @@ theorem key_unit_split (κ : Rule) (hR : Rule4 κ) (W : Type) [CommRing W] [IsDo
     (CechPic.cls_eq_iff x.P.isLB (pull_isLB t.PP.isLB _)).1 (by
       rw [(CechPic.cls_eq_iff x.P.isLB (pull_isLB L.isLB φ)).2 e₁, CechPic.cls_pull t.PP.isLB, CechPic.cls_pull L.isLB,
         (CechPic.cls_eq_iff t.PP.isLB L.isLB).2 hL])
-  have hp : GlobalTheory.LN.PolAt t (jK W) := polAt_of_fibre t x.P.g _ ⟨x.P, φ, rfl, hpb, e₂⟩
+  have hp : GlobalTheory.LN.PolAt t (jK W) := GlobalTheory.UMin.polAt_of_polFib t x.P.g _ ⟨x.P, φ, rfl, hpb, e₂⟩
   have hW' : GlobalTheory.LN.CDvr W := (GlobalTheory.LN.cDvr_iff W).2 ⟨inferInstance, hc, inferInstance⟩
   obtain ⟨U, -⟩ := GlobalTheory.LN.uDvrSt_holds E H W hW' t hp hS
   exact key_unit_trait κ hR W hc hW t.G L σ x y t.semi ⟨U.D, U.A, U.U, by rw [U.bundle]; exact hL⟩ hy hσ hk0
-
 
 open Cardinal in
 theorem key_unit_normal (κ : Rule) (hR : Rule4 κ) (A : Type) [CommRing A] [IsDomain A] [IsNoetherianRing A]
@@ -1304,14 +1228,14 @@ theorem key_unit_normal (κ : Rule) (hR : Rule4 κ) (A : Type) [CommRing A] [IsD
     isIntegrallyClosed_of_isLocalization (Localization.Away f) (Submonoid.powers f) hle
   have hinj : Function.Injective (algebraMap A (Localization.Away f)) := IsLocalization.injective _ hle
   haveI : CharZero (Localization.Away f) := charZero_of_injective_algebraMap hinj
-  obtain ⟨xB, hgB, hkB⟩ := GlobalTheory.T.exists_keyDatum_abelianLocus_point A (Localization.Away f) (algebraMap A _) t.G L σ x.P.g y x.g_pos t.semi hsm hopen
+  obtain ⟨xB, hgB, hkB⟩ := GlobalTheory.KeyDatumAb.exists_keyOn A (Localization.Away f) (algebraMap A _) t.G L σ x.P.g y x.g_pos t.semi hsm hopen
     hsym hpol hy hσ hfab
   obtain ⟨u, hu⟩ := hR.2.2.2 (Localization.Away f) xB
   have hfu : IsUnit ((algebraMap A (FractionRing A)) f) :=
     isUnit_iff_ne_zero.2 ((map_ne_zero_iff _ (IsFractionRing.injective A (FractionRing A))).2 hf0)
   have hc := IsLocalization.Away.lift_comp (S := Localization.Away f) f hfu
   have hpbx : KeyPB x xB (IsLocalization.Away.lift (S := Localization.Away f) f hfu) :=
-    GlobalTheory.T.keyDatum_fibre_of_composable_baseChange A (Localization.Away f) (FractionRing A) (algebraMap A _) _ t.G L σ x.P.g y xB x hgB rfl hkB
+    GlobalTheory.KeyEven.keyPB_of_keyOn_comp A (Localization.Away f) (FractionRing A) (algebraMap A _) _ t.G L σ x.P.g y xB x hgB rfl hkB
       (by rw [hc]; exact hkey0)
   have hval := hu _ _ x hpbx
   have trait : ∀ (V : Type) [CommRing V] [IsDomain V] [IsLocalRing V], GlobalTheory.LN.CDvr V → #V ≤ 𝔠 →
@@ -1335,10 +1259,10 @@ theorem key_unit_normal (κ : Rule) (hR : Rule4 κ) (A : Type) [CommRing A] [IsD
       rw [← hh]
       rintro _ ⟨p, rfl⟩
       exact hfab ⟨spMap h p, rfl⟩
-    obtain ⟨xV, hgV, hkV⟩ := GlobalTheory.T.exists_keyDatum_abelianLocus_point A (FractionRing W) ((algebraMap W _).comp (g.comp a)) t.G L σ x.P.g y x.g_pos
+    obtain ⟨xV, hgV, hkV⟩ := GlobalTheory.KeyDatumAb.exists_keyOn A (FractionRing W) ((algebraMap W _).comp (g.comp a)) t.G L σ x.P.g y x.g_pos
       t.semi hsm hopen hsym hpol hy hσ hrange
     have hpbV : KeyPB xV xB h :=
-      GlobalTheory.T.keyDatum_fibre_of_composable_baseChange A (Localization.Away f) (FractionRing W) (algebraMap A _) h t.G L σ x.P.g y xB xV hgB hgV hkB
+      GlobalTheory.KeyEven.keyPB_of_keyOn_comp A (Localization.Away f) (FractionRing W) (algebraMap A _) h t.G L σ x.P.g y xB xV hgB hgV hkB
         (by rw [hh]; exact hkV)
     have hvalV := hu _ h xV hpbV
     haveI : IsCommMonObj ((Over.pullback (spMap a)).obj t.G) := (pullT (spMap a) t).comm
@@ -1387,7 +1311,6 @@ theorem germ_lbPow_g' {S : Scheme.{0}} (M : LB S) (n : ℕ) (j j' : (lbPow M n).
   congr 1
   erw [Units.coe_map, Units.coe_map]
   exact TopCat.Presheaf.germ_res_apply _ _ _ _ _
-
 
 open Cardinal in
 theorem key_sab {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} (S : Scheme.{0}) [IsIntegral S]
@@ -1439,7 +1362,6 @@ theorem cls_det_zero {X : Scheme.{0}} (F : X.Modules) (h : (VB.det F 0).IsLB) : 
     rfl)
   simp [e]
 
-
 open Cardinal in
 theorem mk_le_of_lft {k A : Type} [Field k] [CommRing A] (hk : #k ≤ 𝔠) (s : Sp A ⟶ Sp k) [LocallyOfFiniteType s] :
     #A ≤ 𝔠 := by
@@ -1486,9 +1408,6 @@ open GlobalTheory GlobalTheory.ZM GlobalTheory.ZH GlobalTheory.UMin GlobalTheory
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-
-theorem _root_.GlobalTheory.T.homogeneousCoords_in_standardChart_ratio : ∀ (o K : Type) [CommRing o] [Field K] (n : ℕ) (x : Sp K ⟶ PSpace o n) (v : Fin (n + 1) → K) (a : Fin (n + 1)), PCrd x v → ⊤ ≤ x ⁻¹ᵁ ProjSpace.chart o n a → v a ≠ 0 ∧ ∀ b, valR x (ProjSpace.chart o n a) (ProjSpace.ratio o n a b) = v b / v a := by
-  first | exact @GlobalTheory.UMin.CrdChart.pCrd_chart
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.HomogeneousCoordsInStandardChartRatioStatement =====
@@ -1556,7 +1475,6 @@ open GlobalTheory GlobalTheory.ZM GlobalTheory.ZH GlobalTheory.UMin GlobalTheory
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-
 theorem _root_.GlobalTheory.T.thetaSymmetricFunctions_div_pow_factorial_isUnit : ∀ (k Ω : Type) [CommRing k] [Field Ω] [Algebra k Ω] (A : Subalgebra k Ω) [IsLocalRing A] (N : ℕ) (c : Fin N → Ω) (a j : Fin N), c a ≠ 0 → (∀ b, c b / c a ∈ A) → symTup c j ≠ 0 → (∀ b, symTup c b / symTup c j ∈ A) → symTup c j / c a ^ N.factorial ≠ 0 ∧ symTup c j / c a ^ N.factorial ∈ A ∧ (symTup c j / c a ^ N.factorial)⁻¹ ∈ A := by
   first | exact @GlobalTheory.UMin.symTup_div_pow_isUnit_of_dvd
 end -- clump:auto
@@ -1585,7 +1503,7 @@ theorem div_mem_O {o : Type} [CommRing o] {M : RatModel k Ω} {n : ℕ} {h : M.Z
     {c : Fin (n + 1) → Ω} (hc : PCrd (M.pt ≫ h) c) {a : Fin (n + 1)} {z : M.Z}
     (hz : z ∈ h ⁻¹ᵁ ProjSpace.chart o n a) : c a ≠ 0 ∧ ∀ b, c b / c a ∈ M.O z := by
   have hW : ⊤ ≤ M.pt ⁻¹ᵁ (h ⁻¹ᵁ ProjSpace.chart o n a) := M.top_le_preimage_pt ⟨z, hz⟩
-  obtain ⟨h0, hv⟩ := GlobalTheory.T.homogeneousCoords_in_standardChart_ratio o Ω n (M.pt ≫ h) c a hc (le_preimage_comp M.pt h le_rfl hW)
+  obtain ⟨h0, hv⟩ := GlobalTheory.UMin.CrdChart.pCrd_chart o Ω n (M.pt ≫ h) c a hc (le_preimage_comp M.pt h le_rfl hW)
   refine ⟨h0, fun b => ?_⟩
   have e : valF M.pt (h ⁻¹ᵁ ProjSpace.chart o n a) (ProjSpace.pullRatio h _ a le_rfl b) = c b / c a :=
     (Points.valR_appLE M.pt h le_rfl hW _).trans (hv b)
@@ -1600,8 +1518,7 @@ theorem valR_pullO1_g {L : Type} [Field L] {X : Scheme.{0}} {o : Type} [CommRing
       (LB.wchart_le (ProjSpace.O1 o r) (fun _ => π) j PUnit.unit)) h
   refine (TuplePoint.valR_linComb_g y0 (ProjSpace.O1 o r) π 1 i j h).trans ((zpow_one _).trans ?_)
   refine (valR_res (y0 ≫ π) inf_le_left h1 (ProjSpace.ratio o r (i PUnit.unit) (j PUnit.unit))).trans ?_
-  exact (GlobalTheory.T.homogeneousCoords_in_standardChart_ratio o L r (y0 ≫ π) t _ ht (le_preimage_mono _ inf_le_left h1)).2 _
-
+  exact (GlobalTheory.UMin.CrdChart.pCrd_chart o L r (y0 ≫ π) t _ ht (le_preimage_mono _ inf_le_left h1)).2 _
 
 open Classical in
 def unitOf (M : RatModel k Ω) (U : M.Z.Opens) (x : Ω) (hx : ∀ z ∈ U, x ≠ 0 ∧ x ∈ M.O z ∧ x⁻¹ ∈ M.O z) :
@@ -1644,9 +1561,9 @@ theorem lbIso_symTup : ∀ (k Ω o : Type) [CommRing k] [Field Ω] [Algebra k Ω
     obtain ⟨h4, h5⟩ := div_mem_O he (hL j hzj)
     exact GlobalTheory.T.thetaSymmetricFunctions_div_pow_factorial_isUnit k Ω (M.O z) (n + 1) c _ _ h1 h3 h4 h5
   have nzh : ∀ a : L'.ι, ⊤ ≤ M.pt ⁻¹ᵁ L'.U a → c (a PUnit.unit PUnit.unit) ≠ 0 := fun a ha =>
-    (GlobalTheory.T.homogeneousCoords_in_standardChart_ratio k Ω n (M.pt ≫ h) c _ hc (le_preimage_comp M.pt h (hL' a) ha)).1
+    (GlobalTheory.UMin.CrdChart.pCrd_chart k Ω n (M.pt ≫ h) c _ hc (le_preimage_comp M.pt h (hL' a) ha)).1
   have nzg : ∀ j : L.ι, ⊤ ≤ M.pt ⁻¹ᵁ L.U j → symTup c (j PUnit.unit) ≠ 0 := fun j hj =>
-    (GlobalTheory.T.homogeneousCoords_in_standardChart_ratio o Ω n (M.pt ≫ g) (symTup c) _ he (le_preimage_comp M.pt g (hL j) hj)).1
+    (GlobalTheory.UMin.CrdChart.pCrd_chart o Ω n (M.pt ≫ g) (symTup c) _ he (le_preimage_comp M.pt g (hL j) hj)).1
   let w : LB.Iso L L' := ⟨fun p => unitOf M ((LB.div L' L).U p) (x p) (hx p)⟩
   refine ⟨w, ?_⟩
   rintro ⟨a, j⟩ ⟨a', j'⟩
@@ -1724,12 +1641,12 @@ theorem hasTh_of_sabMap (mm : SABMap t' t f) (m : ℕ) {K : Type} [Field K] (x :
     (c : Fin N → K) :
     HasTh t'.G t'.PP.L t'.PP.rig m x c ↔ HasTh t.G t.PP.L t.PP.rig m (x ≫ f) c := by
   rw [hasTh_iff, hasTh_iff]
-  exact GlobalTheory.T.hasThetaConstantsTwoLevels_move_cartesian S t.G t.PP.L t.PP.rig t.PP.isLB t.PP.rigGen S' t'.G t'.PP.L t'.PP.rig f mm.φ t'.PP.isLB
+  exact GlobalTheory.UMin.ThMove.hasTh₂_move S t.G t.PP.L t.PP.rig t.PP.isLB t.PP.rigGen S' t'.G t'.PP.L t'.PP.rig f mm.φ t'.PP.isLB
     t'.PP.rigGen mm.cart (GlobalTheory.ModelSum.lbIso_of_map mm) m m N N K x c c
 
 theorem polFib_of_sabMap (mm : SABMap t' t f) (g : ℕ) {R : Type} [CommRing R] (x : Sp R ⟶ S') :
     PolFib t'.G t'.PP.L g x ↔ PolFib t.G t.PP.L g (x ≫ f) :=
-  (GlobalTheory.T.principallyPolarisedFibre_iff_of_grpPullback S S' t.G t.PP.L t'.G t'.PP.L f mm.φ t.PP.isLB t'.PP.isLB mm.cart
+  (GlobalTheory.UMin.FibMove.polFib_move S S' t.G t.PP.L t'.G t'.PP.L f mm.φ t.PP.isLB t'.PP.isLB mm.cart
     (GlobalTheory.ModelSum.lbIso_of_map mm) g R x).1
 
 end Moves
@@ -1737,7 +1654,6 @@ end Moves
 end GlobalTheory.UMin
 
 namespace GlobalTheory.UMin
-
 
 open GlobalTheory.CechPic in
 theorem key_on_cover : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (o : Type) [CommRing o] (m n : ℕ) (f : Xo.XF c ⟶ PSpace o n), Odd m → 3 ≤ m → IsUnit (m : o) → n + 1 = m ^ (4 * (Module.finrank ℚ E / 2 * (Dw.p + Dw.q))) → ThMap Xo.univ.t.G Xo.univ.t.PP.L Xo.univ.t.PP.rig m (pullback.fst _ _ : Xo.XF c ⟶ Xo.X) f → ∀ (Y : Model Xo c (RingHom.id c.F)) (g : Y.X ⟶ PSpace o n), Y.j ≫ g = f → ∀ (Ω : Type) [Field Ω] [CharZero Ω] [Algebra c.F Ω] (M : RatModel c.F Ω) (π : M.Z ⟶ Y.X) (y : Sp Ω ⟶ Xo.XF c) (d : Fin (n + 1) → Ω), Geo.Tor.IsNormalScheme M.Z → M.pt ≫ π = y ≫ Y.j → HasTh Xo.univ.t.G Xo.univ.t.PP.L Xo.univ.t.PP.rig m (y ≫ pullback.fst _ _) d → LBIso ((lbPow ((ProjSpace.O1 o n).pull g) 8).pull π) ((lbPow (GlobalTheory.SiegelTor.hodge Y.t.G (Module.finrank ℚ E / 2 * (Dw.p + Dw.q))) (4 * (n + 1).factorial)).pull π) := by
@@ -1755,13 +1671,13 @@ theorem key_on_cover : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H
     rw [hpt]; exact (hasTh_of_sabMap Y.m m y d).1 hThO
   have hTh : HasTh t.G t.PP.L t.PP.rig m M.pt d := (hasTh_of_sabMap mt m M.pt d).2 hThY
   have hPolO : PolFib Y.oF.t.G Y.oF.t.PP.L (Module.finrank ℚ E / 2 * (Dw.p + Dw.q)) y :=
-    (polFib_of_sabMap Y.m0.toSABMap _ y).2 (GlobalTheory.T.universalTriple_fibre_principallyPolarised_dimension E H Dw l Xo c Ω _)
+    (polFib_of_sabMap Y.m0.toSABMap _ y).2 (GlobalTheory.UMin.polFib_univ E H Dw l Xo c Ω _)
   have hPolY : PolFib Y.t.G Y.t.PP.L (Module.finrank ℚ E / 2 * (Dw.p + Dw.q)) (M.pt ≫ π) := by
     rw [hpt]; exact (polFib_of_sabMap Y.m _ y).1 hPolO
   have hPol : PolFib t.G t.PP.L (Module.finrank ℚ E / 2 * (Dw.p + Dw.q)) M.pt := (polFib_of_sabMap mt _ M.pt).2 hPolY
   have hmk : IsUnit (m : c.F) := isUnit_iff_ne_zero.2 (Nat.cast_ne_zero.2 (by omega))
   obtain ⟨σ, hσ⟩ := GlobalTheory.T.theta_coordinates_section_exists E H c.F Ω M t _ m n d h hZ hm hm3 hmk hPol hTh hhP
-  obtain ⟨hab, hop, hamp⟩ := GlobalTheory.T.abelianLocus_eq_preimage_moduli_and_principal E H Dw l Xo c Y M.Z π t ⟨mt⟩
+  obtain ⟨hab, hop, hamp⟩ := GlobalTheory.ModelAbLocus.abLocus_eq_and_pol E H Dw l Xo c Y M.Z π t ⟨mt⟩
   obtain ⟨hsmY, hvY⟩ := GlobalTheory.T.modelSemiAbelian_relDim_cotangent_vectorBundle E H Dw l Xo c Y
   have hsm : SmoothOfRelativeDimension (Module.finrank ℚ E / 2 * (Dw.p + Dw.q)) t.G.hom :=
     (smoothOfRelativeDimension_isStableUnderBaseChange _).of_isPullback mt.cart.1 hsmY

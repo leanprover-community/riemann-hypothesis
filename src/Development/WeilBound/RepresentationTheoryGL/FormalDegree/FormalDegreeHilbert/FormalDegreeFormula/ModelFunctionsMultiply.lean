@@ -84,31 +84,19 @@ theorem cK_eq_f0K (hM : CkModel) (hT : CkTwist) {ε : Fin n → Bool} {Λ : Fin 
   subst e
   rw [cK_transport T T' k, hT' k, hM n ε m hm k]
 
-theorem exists_shift {ε : Fin n → Bool} {Λ : Fin n → ℝ} (hint : ∀ a, ∃ m : ℤ, Λ a = m)
-    (hdom : ∀ a b, a < b → ε a = ε b → Λ b ≤ Λ a) :
-    ∃ (m : Fin n → ℤ) (c : ℤ), NonnegDom ε m ∧ ∀ a, Λ a = (m a : ℝ) + c := by
-  apply CompanionTheory.RgFd.exists_shift <;> assumption
-
 theorem coefMul_dom (hM : CkModel) (hT : CkTwist) (hF : ModelFunctionsMultiply) {ε : Fin n → Bool} {Λ₁ Λ₂ : Fin n → ℝ}
     (h1 : (∀ a, ∃ m : ℤ, Λ₁ a = m) ∧ ∀ a b, a < b → ε a = ε b → Λ₁ b ≤ Λ₁ a)
     (h2 : (∀ a, ∃ m : ℤ, Λ₂ a = m) ∧ ∀ a b, a < b → ε a = ε b → Λ₂ b ≤ Λ₂ a)
     (T₁ : KType ε Λ₁) (T₂ : KType ε Λ₂) (T₃ : KType ε (Λ₁ + Λ₂)) (k : KG ε) :
     cK T₃ k = cK T₁ k * cK T₂ k := by
-  obtain ⟨m₁, c₁, hm₁, e₁⟩ := exists_shift h1.1 h1.2
-  obtain ⟨m₂, c₂, hm₂, e₂⟩ := exists_shift h2.1 h2.2
+  obtain ⟨m₁, c₁, hm₁, e₁⟩ := CompanionTheory.RgFd.exists_shift h1.1 h1.2
+  obtain ⟨m₂, c₂, hm₂, e₂⟩ := CompanionTheory.RgFd.exists_shift h2.1 h2.2
   have hm : NonnegDom ε (m₁ + m₂) :=
     ⟨fun a b hab he => by simp only [Pi.add_apply]; linarith [hm₁.1 a b hab he, hm₂.1 a b hab he],
       fun a => by simp only [Pi.add_apply]; linarith [hm₁.2 a, hm₂.2 a]⟩
   rw [cK_eq_f0K hM hT T₁ m₁ hm₁ c₁ e₁, cK_eq_f0K hM hT T₂ m₂ hm₂ c₂ e₂,
     cK_eq_f0K hM hT T₃ (m₁ + m₂) hm (c₁ + c₂) (fun a => by simp [e₁, e₂]; push_cast; ring),
     hF n ε m₁ m₂ hm₁ hm₂ k, norm_mul]
-
-theorem dvec_int_dom (ε : Fin n → Bool) :
-    (∀ a, ∃ m : ℤ, Dvec n a = m) ∧ ∀ a b, a < b → ε a = ε b → Dvec n b ≤ Dvec n a := by
-  refine ⟨fun a => ⟨(n : ℤ) - 1 - (a : ℕ), by simp [Dvec]⟩, fun a b hab _ => ?_⟩
-  simp only [Dvec]
-  have : ((a : ℕ) : ℝ) < ((b : ℕ) : ℝ) := by exact_mod_cast hab
-  linarith
 
 theorem coefPow_of (hM : CkModel) (hT : CkTwist) (hF : ModelFunctionsMultiply) : CoefPow := by
   apply CompanionTheory.RgFd.coefPow_of <;> assumption

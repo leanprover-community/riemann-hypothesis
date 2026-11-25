@@ -216,7 +216,6 @@ section
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {Ψ : Type} [Fintype Ψ] {j j' n g : ℕ} {Λ : Type}
   [AddCommGroup Λ] [Module (𝓞 E) Λ] {F : UnivFam E Ψ j j' n g Λ} (C : LatEmb F) (R : RiemLat E g Λ)
 
-
 open Classical in
 theorem perExt_I_of_pBar {τ : Ψ} {y : Fin (j + j') → ℂ} (h : C.pBar R τ y = 0) :
     C.perExt R (Pi.single τ (Complex.I • y)) = Complex.I • C.perExt R (Pi.single τ y) := by
@@ -226,7 +225,6 @@ theorem perExt_I_of_pBar {τ : Ψ} {y : Fin (j + j') → ℂ} (h : C.pBar R τ y
   linear_combination (-2 * Complex.I) * hk +
     ((C.perExt R (Pi.single τ (Complex.I • y))) k) * Complex.I_mul_I
 
-
 open Classical in
 theorem pPart_of_pBar {τ : Ψ} {y : Fin (j + j') → ℂ} (h : C.pBar R τ y = 0) :
     C.pPart R τ y = C.perExt R (Pi.single τ y) := by
@@ -234,7 +232,6 @@ theorem pPart_of_pBar {τ : Ψ} {y : Fin (j + j') → ℂ} (h : C.pBar R τ y = 
   ext k
   simp only [LatEmb.pPart, h1, Pi.smul_apply, Pi.sub_apply, smul_eq_mul]
   linear_combination (-(1 / 2 : ℂ) * (C.perExt R (Pi.single τ y)) k) * Complex.I_mul_I
-
 
 open Classical in
 theorem Fm_single (τ : Ψ) (y x : Fin (j + j') → ℂ) :
@@ -350,7 +347,6 @@ section
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {Ψ : Type} [Fintype Ψ] {j j' n g : ℕ} {Λ : Type}
   [AddCommGroup Λ] [Module (𝓞 E) Λ] {F : UnivFam E Ψ j j' n g Λ} (C : LatEmb F) (R : RiemLat E g Λ)
 
-
 omit [IsCMField E] in
 theorem embOf_coe (s : 𝓞 E →+* ℂ) (a : 𝓞 E) : embOf s (a : E) = s a :=
   IsFractionRing.lift_algebraMap (intEmb_injective s) a
@@ -378,10 +374,6 @@ def vecHom : Λ →+ (Ψ → Fin (j + j') → ℂ) where
     ext τ i
     simp [LatEmb.vec]
 
-theorem vec_lam (k : Fin (2 * g)) : C.vec (C.lam k) = C.bas k := by
-  ext τ i
-  exact (C.bas_eq k τ i).symm
-
 theorem perExt_bas (k : Fin (2 * g)) : C.perExt R (C.bas k) = R.P (C.lam k) := by
   simp [LatEmb.perExt]
 
@@ -389,7 +381,7 @@ theorem perExt_vec (x : Λ) : C.perExt R (C.vec x) = R.P x := by
   have h : ((C.perExt R).toAddMonoidHom.comp (vecHom C)).toIntLinearMap = R.P.toIntLinearMap := by
     refine C.lam.ext fun k => ?_
     change C.perExt R (C.vec (C.lam k)) = R.P (C.lam k)
-    rw [vec_lam, perExt_bas]
+    rw [GlobalTheory.CompanionTheory.Ar.Cusp.Dict.AdaptedLen.vec_lam, perExt_bas]
   exact congrArg (fun f : Λ →ₗ[ℤ] (Fin g → ℂ) => f x) h
 
 theorem perExt_mulPt (a : 𝓞 E) (y : Ψ → Fin (j + j') → ℂ) :
@@ -397,7 +389,7 @@ theorem perExt_mulPt (a : 𝓞 E) (y : Ψ → Fin (j + j') → ℂ) :
   have h : (C.perExt R).comp (mulPt (F := F) a) = ((R.B a).restrictScalars ℝ).comp (C.perExt R) := by
     refine C.bas.ext fun k => ?_
     change C.perExt R (mulPt (F := F) a (C.bas k)) = R.B a (C.perExt R (C.bas k))
-    rw [← vec_lam, ← vec_smul, perExt_vec, perExt_vec, R.act]
+    rw [← GlobalTheory.CompanionTheory.Ar.Cusp.Dict.AdaptedLen.vec_lam, ← vec_smul, perExt_vec, perExt_vec, R.act]
   exact congrArg (fun f : (Ψ → Fin (j + j') → ℂ) →ₗ[ℝ] (Fin g → ℂ) => f y) h
 
 open Classical in
@@ -677,7 +669,6 @@ theorem one_sub_mul_eq {a : Matrix (Fin j) (Fin j) ℂ} {b : Matrix (Fin j) (Fin
   simpa only [Matrix.nonsing_inv_mul_cancel_left _ _ hdH] using this
 
 end GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Chart.SgBlocks
-
 
 open GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Chart.SgBlocks in
 theorem GlobalTheory.CompanionTheory.Ar.Cusp.Dict.Chart.sgU_blocks : ∀ (j j' : ℕ) (u : Matrix (Sg j j') (Sg j j') ℂ), IsSgU u → IsUnit u.toBlocks₁₁.det ∧ IsUnit u.toBlocks₂₂.det ∧ (1 - moebW u 0 * (moebW u 0)ᴴ) * (u.toBlocks₂₂ * u.toBlocks₂₂ᴴ) = 1 ∧ (1 - moebW u 0 * (moebW u 0)ᴴ).PosDef := by

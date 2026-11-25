@@ -174,8 +174,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open Formalism.UG
 
-theorem _root_.GlobalTheory.T.inertHeckeOperator_comp_spherical_convolution : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) (v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))) (w : HeightOneSpectrum (𝓞 L)) (Dv : InertDatum L n v w) (U : Subgroup (GAf L n)), (∀ κ, TrivOutside {v} κ → (κ ∈ U ↔ κ ∈ Umax L n)) → ∀ (W : Type) [AddCommGroup W] [Module ℂ W], ∀ h ∈ Hecke ℂ (KU Dv.σw n), ∀ h' ∈ Hecke ℂ (KU Dv.σw n), ∀ f : GAf L n → W, (∀ κ ∈ U, NG.rt L n κ f = f) → heckeFunI L n U Dv (conv (KU Dv.σw n) h h') f = heckeFunI L n U Dv h (heckeFunI L n U Dv h' f) := by
-  first | exact @GlobalTheory.InertConv.heckeFunI_conv
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.SatakeParameters.InertHeckeOperatorCompSphericalConvolutionStatement =====
@@ -189,8 +187,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open Formalism.UG
 
-theorem _root_.GlobalTheory.T.inertHeckeOperator_preserves_levelInvariants : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) (v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))) (w : HeightOneSpectrum (𝓞 L)) (Dv : InertDatum L n v w) (U : Subgroup (GAf L n)), (∀ κ, TrivOutside {v} κ → (κ ∈ U ↔ κ ∈ Umax L n)) → (∀ u ∈ U, ∃ a b : GAf L n, u = a * b ∧ a ∈ U ∧ TrivOutside {v} a ∧ b ∈ U ∧ ∀ x : GAf L n, TrivOutside {v} x → x * b = b * x) → ∀ (W : Type) [AddCommGroup W] [Module ℂ W], ∀ h ∈ Hecke ℂ (KU Dv.σw n), ∀ f : GAf L n → W, (∀ κ ∈ U, NG.rt L n κ f = f) → ∀ κ ∈ U, NG.rt L n κ (heckeFunI L n U Dv h f) = heckeFunI L n U Dv h f := by
-  first | exact @GlobalTheory.heckeFunI_rt_invariant
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.SatakeParameters.InertHeckeOperatorPreservesLevelInvariantsStatement =====
@@ -279,14 +275,6 @@ namespace GlobalTheory.OneAct
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
   {v : HeightOneSpectrum (𝓞 (maximalRealSubfield L))} {w : HeightOneSpectrum (𝓞 L)}
 
-theorem compAt_conjAL (z : AL L) :
-    compAt L v (conjAL L z) = Formalism.UG.sigR (IsCMField.complexConj L).toAlgHom
-      (v.adicCompletion (maximalRealSubfield L)) (compAt L v z) := by
-  induction z using TensorProduct.induction_on with
-  | zero => simp
-  | tmul a b => rfl
-  | add a b ha hb => simp only [map_add (f := _), ha, hb]
-
 theorem compAt_mem_tensInt {z : AL L} (hz : z ∈ ALint L) :
     compAt L v z ∈ tensInt (F := maximalRealSubfield L) (v.adicCompletion (maximalRealSubfield L))
       (intOE L) (Formalism.UG.Ov (maximalRealSubfield L) v) := by
@@ -305,7 +293,7 @@ theorem compAt_mem_tensInt {z : AL L} (hz : z ∈ ALint L) :
 theorem loc_mem_GU (Dv : InertDatum L n v w) (x : GAf L n) : Dv.loc x ∈ GU Dv.σw n := by
   set φ : AL L →+* w.adicCompletion L := (Dv.e : _ →+* _).comp (compAt L v) with hφdef
   have hφ : ∀ z, φ (conjAL L z) = Dv.σw (φ z) := fun z => by
-    simp only [φ, RingHom.comp_apply, compAt_conjAL]
+    simp only [φ, RingHom.comp_apply, GlobalTheory.InertInvar.compAt_conjAL]
     exact Dv.comm _
   have hX : ((x.1 : GL (Fin n) (AL L)) : Matrix (Fin n) (Fin n) (AL L)) *
       conjT (conjAL L) ((x.1 : GL (Fin n) (AL L)) : Matrix (Fin n) (Fin n) (AL L)) = 1 := x.2
@@ -556,14 +544,14 @@ theorem exists_satAt : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n
   let T : Hecke ℂ (KU Dv.σw n) → Module.End ℂ V := fun h =>
     { toFun := fun f => ⟨heckeFunI L n U Dv h.1 f.1,
         GlobalTheory.T.inertHeckeOperator_preserves_rightTranslationStable L n v w Dv U hUv π.W π.S π.irrS.1.stable h.1 h.2 f.1 f.2.1,
-        GlobalTheory.T.inertHeckeOperator_preserves_levelInvariants L n v w Dv U hUv hdec π.W h.1 h.2 f.1 f.2.2⟩
+        GlobalTheory.heckeFunI_rt_invariant L n v w Dv U hUv hdec π.W h.1 h.2 f.1 f.2.2⟩
       map_add' := fun f f' => Subtype.ext ((GlobalTheory.T.inertHeckeOperator_bilinear L n v w Dv U hUv π.W h.1 h.2 h.1 h.2 1 f.1 f'.1).2.2.1)
       map_smul' := fun c f => Subtype.ext ((GlobalTheory.T.inertHeckeOperator_bilinear L n v w Dv U hUv π.W h.1 h.2 h.1 h.2 c f.1 f.1).2.2.2) }
   have hT : ∀ h (f : V), ((T h f : V) : GAf L n → π.W) = heckeFunI L n U Dv h.1 f.1 := fun _ _ => rfl
   have hcomm : ∀ a b, T a * T b = T b * T a := fun a b => LinearMap.ext fun f => Subtype.ext (by
     change heckeFunI L n U Dv a.1 (heckeFunI L n U Dv b.1 f.1) = heckeFunI L n U Dv b.1 (heckeFunI L n U Dv a.1 f.1)
-    rw [← GlobalTheory.T.inertHeckeOperator_comp_spherical_convolution L n v w Dv U hUv π.W a.1 a.2 b.1 b.2 f.1 f.2.2,
-      ← GlobalTheory.T.inertHeckeOperator_comp_spherical_convolution L n v w Dv U hUv π.W b.1 b.2 a.1 a.2 f.1 f.2.2,
+    rw [← GlobalTheory.InertConv.heckeFunI_conv L n v w Dv U hUv π.W a.1 a.2 b.1 b.2 f.1 f.2.2,
+      ← GlobalTheory.InertConv.heckeFunI_conv L n v w Dv U hUv π.W b.1 b.2 a.1 a.2 f.1 f.2.2,
       GlobalTheory.UnitarySwap.heckeCommU _ Dv.ϖ Dv.σw _ n ℂ Dv.unram a.1 a.2 b.1 b.2])
   obtain ⟨f, hf0, hμ⟩ := _root_.GlobalTheory.UnimodularLatticeLemma.main T hcomm
   choose μ hμ using hμ
@@ -590,7 +578,7 @@ theorem exists_satAt : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n
       change μ _ • f.1 = (μ h * μ h') • f.1
       rw [← ev]
       change heckeFunI L n U Dv (conv (KU Dv.σw n) h.1 h'.1) f.1 = _
-      rw [GlobalTheory.T.inertHeckeOperator_comp_spherical_convolution L n v w Dv U hUv π.W h.1 h.2 h'.1 h'.2 f.1 f.2.2, ev h',
+      rw [GlobalTheory.InertConv.heckeFunI_conv L n v w Dv U hUv π.W h.1 h.2 h'.1 h'.2 f.1 f.2.2, ev h',
         (GlobalTheory.T.inertHeckeOperator_bilinear L n v w Dv U hUv π.W h.1 h.2 h.1 h.2 (μ h') f.1 f.1).2.2.2, ev h, smul_smul, mul_comm]))
   refine ⟨fun i => (α i : ℂ), f.1, f.2.1, hf'0, U, f.2.2, hUv, fun h hh => ?_⟩
   rw [ev ⟨h, hh⟩]

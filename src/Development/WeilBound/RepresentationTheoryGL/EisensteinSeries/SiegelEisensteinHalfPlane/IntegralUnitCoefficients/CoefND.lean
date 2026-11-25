@@ -522,8 +522,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.nondegenerate_of_whittaker : PositivityTheory.PfSWUS.NDOfWhit := by
-  first | exact @GlobalTheory.CompanionTheory.SWGlue.ndOfWhit
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -540,8 +538,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.theta_coefficient_of_convergence : GlobalTheory.Published.WeilThetaConvergence → PositivityTheory.PfSWUS.ThetaCoef := by
-  first | exact @GlobalTheory.CompanionTheory.ThetaCoefND.thetaCoef
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -558,8 +554,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.whittaker_additivity : PositivityTheory.PfSWUS.WhitTAdd := by
-  first | exact @GlobalTheory.CompanionTheory.WhitAdd.whitTAdd
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -698,10 +692,6 @@ theorem npow_inv' {r : ℝ≥0} (hr : 0 < r) (t : ℂ) : npow r⁻¹ t = npow r 
 theorem npow_zero' (r : ℝ≥0) (hr : 0 < r) : npow r 0 = 1 := by
   rw [npow_eq_exp hr]; simp
 
-theorem upperLeft_blockMatrix {R : Type} (x y z t : Matrix (Fin n) (Fin n) R) : blkA (blk4 x y z t) = x := by
-  ext i j
-  simp [blkA, blk4, Matrix.toBlocks₁₁]
-
 theorem det_ad (a : GL (Fin n) (AE D)) :
     (Matrix.GeneralLinearGroup.det (ad a) : (AE D)ˣ) =
       conjUnit (R := AF D.host.F) D.sp.cm.sig (Matrix.GeneralLinearGroup.det a⁻¹ : (AE D)ˣ) := by
@@ -800,7 +790,6 @@ namespace GlobalTheory.CompanionTheory.IwaAd
 open GlobalTheory.StdUnn GlobalTheory.StdUnn.Model GlobalTheory.StdUnn.LeftInvSect PositivityTheory.GramSchwartzFunctions PositivityTheory.GramSchwartzFunctions.BC PositivityTheory.PfSWUS
 variable {D : D7} {n : ℕ}
 
-
 theorem whit_step (hK : WhitKA) {D : D7} {n : ℕ} {V : HSp D} {ψ : AddChar (AF D.host.F) ℂ} {χ : (AE D)ˣ →* Circle}
     {θ : InfFam D} {μ : Measure (Mx D V.rank n)} {ω : G D n →* Module.End ℂ (schwartzA θ V.rank n)} {H : G D n → ℝ≥0}
     {l : D.what₂.Tau → ℝ} {s : D.what₂.Tau → Matrix (Fin V.rank) (Fin V.rank) ℂ} {ν : Measure (GA D V)}
@@ -823,7 +812,7 @@ theorem whit_step (hK : WhitKA) {D : D7} {n : ℕ} {V : HSp D} {ψ : AddChar (AF
   have hA : 0 < A := absA_pos _
   obtain ⟨m', hm'P, hm'⟩ := exists_ad a
   have hwm : w * m = m' * w := weyl_mul hw a hm hm'
-  have hblk : blkA (mat m') = (ad a).1 := by rw [hm', upperLeft_blockMatrix]; rfl
+  have hblk : blkA (mat m') = (ad a).1 := by rw [hm', GlobalTheory.CompanionTheory.SwUnf.SmallCell.blkA_blk4]; rfl
   set φ0 : schwartzA θ V.rank n := ω k Φ with hφ0
   have hωe : ω (m * u * k) Φ = ω (m * u) φ0 := by
     rw [map_mul (f := ω) (m * u) k]; rfl
@@ -922,7 +911,6 @@ open scoped Matrix NNReal ENNReal ComplexConjugate TensorProduct
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.Pj Formalism.IndefR.Datum MeasureTheory
 open GlobalTheory.AutomorphicL2Unitary GlobalTheory.AdelicU GlobalTheory.Doubling GlobalTheory.Cont GlobalTheory.MixModel
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 theorem _root_.GlobalTheory.T.whittaker_nondegenerate_of_iwasawa : GlobalTheory.CompanionTheory.IwaAd.WhitKA → PositivityTheory.PfSWUS.WhitNDg := by
   first | exact @GlobalTheory.CompanionTheory.IwaAd.iwaRedA
@@ -1119,8 +1107,6 @@ end Abstract
 
 variable {D : D7}
 
-
-
 theorem ifrB_finset_sum {V : HSp D} {ν : Measure (GA D V)} (hν : ν.IsHaarMeasure) {r : ℕ} (β : HermE D r)
     {N : ℕ} (φs : Fin N → Mx D V.rank r → ℂ) (hc : ∀ j, Continuous (φs j))
     (habs : ∀ j, GlobalTheory.SiegelFormula.absThetaInt V ν (φs j) < ⊤) :
@@ -1235,8 +1221,6 @@ theorem ifrBAdd_of_weilThetaConvergence (hW : GlobalTheory.Published.WeilThetaCo
   simp only [Finset.sum_apply]
   exact map_sum (Pi.evalAddMonoidHom (fun _ : Mx D V.rank n => ℂ) _) φs Finset.univ
 
-
-
 end PositivityTheory.PfSWUS.HandIAdd
 
 end
@@ -1286,7 +1270,7 @@ theorem siegelWeilUnitarySchrodinger_of_lit :
   have hS := GlobalTheory.StdUnn.SiegelSection.fock_mem_degenerate D n V ψ hψ χ hχ hη θ hθ μ 𝓕 hμ ω hω l hl s hs Φ hΦ
   have e : ∀ z, sect ω H Φ z = stdSec H (fun g : G D n => (ω g Φ).1 0) (s0 V n) z :=
     fun z => funext fun g => mul_comm _ _
-  refine ⟨fun g => GlobalTheory.T.integrable_standardPair_theta_weilRange hW D n V hn a3 θ hθ ω ν hν Φ g, fun z hz => ⟨?_, fun g => ?_⟩,
+  refine ⟨fun g => GlobalTheory.StdThetaInt.integrable_theta hW D n V hn a3 θ hθ ω ν hν Φ g, fun z hz => ⟨?_, fun g => ?_⟩,
     hL D n V a1 a2 a3 ψ hψ χ hχ hη θ hθ μ 𝓕 hμ ω hω H hH l hl s hs ν hν Φ hΦ⟩
   · exact GlobalTheory.StdUnn.LeftInvSect.leftInv_sect D n (GlobalTheory.StdUnn.Iwasawa.exists_mul D n) V ψ χ θ μ ω hχ hω H hH Φ z
   · rw [e]; exact GlobalTheory.StdUnn.PolesModel.cosetConv_stdSec hH hS hz g
@@ -1310,8 +1294,8 @@ namespace PositivityTheory.SiegelWeilCoefficients
 open PositivityTheory.Rg.Sw.Glob PositivityTheory.PfSWUS
 
 theorem coefND : CoefND :=
-  GlobalTheory.T.nondegenerate_of_whittaker GlobalTheory.T.unfolding_holds (GlobalTheory.T.theta_coefficient_of_convergence wtc)
-    (GlobalTheory.T.whittaker_nondegenerate_of_iwasawa (GlobalTheory.T.whittaker_maximal_compact_general whitGenLt (GlobalTheory.T.dictionary_maximal_compact_parts GlobalTheory.T.fock_splitting_maximal_compact GlobalTheory.T.whittaker_additivity
+  GlobalTheory.CompanionTheory.SWGlue.ndOfWhit GlobalTheory.CompanionTheory.SwUnf.unfold (GlobalTheory.CompanionTheory.ThetaCoefND.thetaCoef wtc)
+    (GlobalTheory.T.whittaker_nondegenerate_of_iwasawa (GlobalTheory.T.whittaker_maximal_compact_general whitGenLt (GlobalTheory.T.dictionary_maximal_compact_parts GlobalTheory.T.fock_splitting_maximal_compact GlobalTheory.CompanionTheory.WhitAdd.whitTAdd
       (PositivityTheory.PfSWUS.HandIAdd.ifrBAdd_of_weilThetaConvergence wtc) PositivityTheory.PfSWUS.SwMatch.matchMono)
       GlobalTheory.T.anisotropy_of_range))
 

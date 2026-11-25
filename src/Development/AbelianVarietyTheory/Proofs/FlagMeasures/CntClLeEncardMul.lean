@@ -86,13 +86,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 namespace GlobalTheory.LoopC.SizeQ
 
-theorem one_le_size (D : D7) (b C : ℝ) (Z : GramM D) : 1 ≤ sizeZ D b C Z := by
-  unfold sizeZ
-  refine Finset.prod_induction _ (fun x : ℝ => 1 ≤ x)
-    (fun x y hx hy => one_le_mul_of_one_le_of_one_le hx hy) le_rfl (fun τ _ => ?_)
-  exact Finset.prod_induction _ (fun x : ℝ => 1 ≤ x)
-    (fun x y hx hy => one_le_mul_of_one_le_of_one_le hx hy) le_rfl (fun l _ => le_max_left _ _)
-
 private lemma one_add_logb_two_mul_le_of_log_le_sqrt (f r : ℕ) (hf : 1 ≤ f) (hr : 1 ≤ r)
     (hlog : Real.log f ≤ Real.sqrt r) : 1 + Real.logb 2 (2 * (f : ℝ)) ≤ 2 * (r : ℝ) + 2 := by
   have hf0 : (0 : ℝ) < f := by exact_mod_cast hf
@@ -229,7 +222,7 @@ theorem main : ∀ Cg cb Cu cT CT C0 A : ℝ, ∃ C₀ : ℝ, ∀ C ≥ C₀, �
     calc (e1 + D.R.m + 5) * D.R.f ≤ C * (D.R.m : ℝ) ^ 2 * (C * D.R.m) * D.R.f :=
           mul_le_mul_of_nonneg_right h3 hf0
       _ = C * (D.R.m : ℝ) ^ 2 * D.R.f * (C * D.R.m) := by ring
-  have hsz := one_le_size D b C Z
+  have hsz := GlobalTheory.LoopC.TermsOver.one_le_sizeZ D b C Z
   unfold HHZ
   rw [← Real.rpow_mul hb0.le]
   calc _ ≤ b ^ ((e1 + D.R.m + 5) * D.R.f) := hprod

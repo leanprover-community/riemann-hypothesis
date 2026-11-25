@@ -211,7 +211,6 @@ theorem exists_idemSum (P : Finset (Pl D.host.E))
     fun Q hQ Q' hQ' e => (GlobalTheory.IdemSupport.eq_or_eq_cP e).resolve_right fun e' =>
       h Q' hQ' Q hQ ((GlobalTheory.IdemSupport.isConjPl_iff Q' Q).2 e')
 
-
 end Adelic
 
 open AlgebraicGeometry CategoryTheory NumberField Matrix MeasureTheory
@@ -221,7 +220,6 @@ open GlobalTheory.SW hiding Level
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.IndefR.Datum Formalism.L2.Pj
 open scoped TensorProduct ComplexConjugate
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 end GlobalTheory.MuLift
 
@@ -302,8 +300,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 open GlobalTheory.Mem.Col2.MemChart GlobalTheory.Mem.Col2.TC.Chart0
 attribute [local instance] GlobalTheory.Mem.Col2.starE
 
-
-
 theorem stepCh_zero {B : Base} {X : PreX B.toPre} (I : TC B X) (hI : I.Ok) (hP : TC.Pins B X) (l : I.Laws) (Z : TC.Later B (I.cols l))
     (u : B.Word) (a : I.ι) : StepCh I l Z u a 0 := by
   have hPr := l.pr
@@ -375,8 +371,6 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 open GlobalTheory.Mem.Col2.MemChart
 attribute [local instance] GlobalTheory.Mem.Col2.starE
 
-
-
 theorem stepCh_mid {B : Base} {X : PreX B.toPre} (I : TC B X) (hI : I.Ok) (hP : TC.Pins B X) (l : I.Laws) (Z : TC.Later B (I.cols l))
     (u : B.Word) (a : I.ι) (i : ℕ) (h1 : 1 ≤ i) (h2 : i < B.R.m) : StepCh I l Z u a i := by
   classical
@@ -392,8 +386,6 @@ theorem stepCh_mid {B : Base} {X : PreX B.toPre} (I : TC B X) (hI : I.Ok) (hP : 
     fun _ => K, fun _ => kStd X u (B.R.N i), fun _ => hK, fun _ => hfin,
     fun _ _ => ⟨kStd_pt I hI u a i, fun P hP _ => kStd_at_SQ I hI u _ P hP⟩,
     fun _ v hv => hv.imp id (hQ v).1, fun h => absurd h (by omega), fun h => absurd h (by omega), fun _ _ => rfl⟩
-
-
 
 theorem stepCh_top {B : Base} {X : PreX B.toPre} (I : TC B X) (hI : I.Ok) (hP : TC.Pins B X) (l : I.Laws) (Z : TC.Later B (I.cols l))
     (u : B.Word) (a : I.ι) : StepCh I l Z u a B.R.m := by
@@ -446,7 +438,7 @@ theorem levData {B : Base} {X : PreX B.toPre} (I : TC B X) (l : I.Laws) (Z : TC.
       (∀ g, g ∈ U ↔ g ∈ GfC _ ∧ ∃ κ : K.lev.U, κ.1.1 = finM _ (rankN (I.rec7 l Z) i hi) g) ∧
       (∀ (g : U) (κ : K.lev.U), κ.1.1 = finM _ (rankN (I.rec7 l Z) i hi) g.1 → chi g = K.lev.chi κ) ∧
       (∀ c, h c ∈ GfC _ ∧ finM _ (rankN (I.rec7 l Z) i hi) (h c) = (K.y c).1.1) :=
-  GlobalTheory.T.chartLevelCharacterReps_on_adelicUnitaryPoints I l Z i hi K
+  GlobalTheory.ChartLevRead.levData I l Z i hi K
 
 theorem pointOf {B : Base} {X : PreX B.toPre} (I : TC B X) (hI : I.Ok) (hP : TC.Pins B X) (l : I.Laws) (u : B.Word) (a : I.ι) (i : ℕ)
     (hi : i ≤ B.R.m) {C : Type} (chOf : (I.stp u a i).Cl → C) (Lb : C → Submodule (𝓞 B.host.E) (Fin (B.R.N i) → B.host.E))
@@ -457,8 +449,6 @@ theorem pointOf {B : Base} {X : PreX B.toPre} (I : TC B X) (hI : I.Ok) (hP : TC.
       TC.PtOf (k β) (extTo I.SQ p0.1.1) ∧ p0.1.1.deco.1.N = Formalism.L2.Col.stdLat B.fields.E (B.R.N i) ∧
       ∀ c, chOf c = β → c.1 = b0 ∧ cosetIn ((I.stp u a i).rep c) = cosetIn p0 :=
   _root_.GlobalTheory.KxPoint.pointOf_base I hI hP u a i hi chOf Lb U chi y st k hR β hb.1 hb.2
-
-
 
 theorem comp {B : Base} {X : PreX B.toPre} (I : TC B X) (hI : I.Ok) (hP : TC.Pins B X) (l : I.Laws) (Z : TC.Later B (I.cols l))
     (u : B.Word) (a : I.ι) (i : ℕ) (hi : i ≤ B.R.m) {C : Type} {bad : Set (HeightOneSpectrum (𝓞 B.host.F))} (chOf : (I.stp u a i).Cl → C)
@@ -538,8 +528,6 @@ theorem exists_idem {B : Base} {X : PreX B.toPre} (I : TC B X) (hI : I.Ok) (l : 
   exact h2 (h4 ▸ hQ')
 
 end GlobalTheory.AdForm.TupEx
-
-
 
 theorem GlobalTheory.AdForm.exists_twDat : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)), ∀ (u : B.Word) (a : I.ι), ∃ (Ch : ℕ → Type) (_ : ∀ i, Fintype (Ch i)) (A : TwDat I l Z u a Ch), A.Is ∧ Nonempty (Unique (Ch B.R.m)) ∧ ∀ i, i < B.R.m → ∀ β, A.kb i β = TC.kStd X u (B.R.N i) := by
   intro B X I hI hP l Z u a

@@ -53,8 +53,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
-theorem _root_.GlobalTheory.T.isProper_uniformisedSemiAbelian_over_open_in_abLocus : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], Base R → ∀ (D : DegData R (maximalIdeal R)) (A : PolAV (Sp (FractionRing R))) (G : Over (Sp R)) [GrpObj G] [IsCommMonObj G], IsSemiAbelian G → Unif (maximalIdeal R) D A G → ∀ W : (Sp R).Opens, (W : Set (Sp R)) ⊆ abLocus G → IsProper (G.hom ∣_ W) := by
-  first | exact @GlobalTheory.UnifProperOpen.isProper_restrict
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsProperUniformisedSemiAbelianOverOpenInAbLocusStatement =====
@@ -74,7 +72,7 @@ namespace GlobalTheory.Mum
 
 theorem abelian_and_proper_of_psiUnitOn : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], Base R → ∀ (D : DegData R (maximalIdeal R)) (A : PolAV (Sp (FractionRing R))) (G : Over (Sp R)) [GrpObj G] [IsCommMonObj G], IsSemiAbelian G → ∀ U : Unif (maximalIdeal R) D A G, ∀ W : (Sp R).Opens, (∀ y, PsiUnitOn D.toPre y W) → (W : Set (Sp R)) ⊆ abLocus G ∧ IsProper (G.hom ∣_ W) := by
   intro R _ _ _ hB D A G _ _ hG U W hW
-  exact ⟨GlobalTheory.T.uniformised_group_abelian_where_trivialisations_units R hB D A G hG U W hW, GlobalTheory.T.isProper_uniformisedSemiAbelian_over_open_in_abLocus R hB D A G hG U W (GlobalTheory.T.uniformised_group_abelian_where_trivialisations_units R hB D A G hG U W hW)⟩
+  exact ⟨GlobalTheory.T.uniformised_group_abelian_where_trivialisations_units R hB D A G hG U W hW, GlobalTheory.UnifProperOpen.isProper_restrict R hB D A G hG U W (GlobalTheory.T.uniformised_group_abelian_where_trivialisations_units R hB D A G hG U W hW)⟩
 
 end GlobalTheory.Mum
 end -- clump:auto

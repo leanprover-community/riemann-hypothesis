@@ -872,13 +872,6 @@ open GlobalTheory.RowEx MeasureTheory
 
 namespace GlobalTheory.BotDictAlg
 
-theorem applyAt0_isAlgebraic {D : D7} {N N' : ℕ} {P : MvPolynomial (GL3Theta.Idx D N N') ℂ} {G : TaylorLogMetric.VC D N N' → ℂ}
-    (hP : ∀ α, IsAlgebraic ℚ (P.coeff α)) (hG : TaylorLogMetric.CoefIn D G TaylorLogMetric.Qbar) : IsAlgebraic ℚ (GL3Theta.applyAt0 D P G) := by
-  rw [← mem_algebraicClosure_iff]
-  unfold GL3Theta.applyAt0
-  refine sum_mem fun α _ => mul_mem (mul_mem ((mem_algebraicClosure_iff).2 (hP α)) ?_) (hG α)
-  exact prod_mem fun _ _ => natCast_mem _ _
-
 theorem even_bot {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil}
     {i j : Fin D.R.m} {A A' WW : HSp D} {X : Tri T A A' WW} (hX : IsBottomTri W i j X) : Even (A'.rank * WW.rank) := by
   refine Even.mul_left ?_ _
@@ -1162,13 +1155,6 @@ theorem exists_den_dualCoord {A' WW : HSp D} {ΛS : Submodule (𝓞 D.host.E) (F
         ∀ i j, (M : EAf D) * dualCoord A' WW βA' βW u i j ∈ Formalism.L2.Herm.intAf D.host.F D.host.E :=
   GlobalTheory.CompanionTheory.StdSndTheta.exists_den_dualCoord hS hT βA' βW
 
-theorem exists_mul_dualCoord {A' WW : HSp D} {ΛS : Submodule (𝓞 D.host.E) (Fin A'.rank → D.host.E)}
-    {ΛT : Submodule (𝓞 D.host.E) (Fin WW.rank → D.host.E)} (hS : Submodule.IsFullLattice D.host.E ΛS)
-    (hT : Submodule.IsFullLattice D.host.E ΛT) {a : AE D} (hinf : infPart D a = 0) (βA' : GL (Fin A'.rank) (EAf D))
-    (βW : GL (Fin WW.rank) (EAf D)) : ∃ K : ℕ, 0 < K ∧ ∀ t : WO A' WW, IsHalf a t → IsIntM (dualCoord A' WW βA' βW t) →
-      K • t ∈ latO A' WW (ΛS : Set (Fin A'.rank → D.host.E)) (ΛT : Set (Fin WW.rank → D.host.E)) (fun _ => True) :=
-  GlobalTheory.CompanionTheory.StdSndTheta.exists_mul_dualCoord hS hT hinf βA' βW
-
 theorem stdSnd_isSB {ν : (AE D)ˣ →* Circle} (hν : Continuous ν) {e : AE D} {S : Finset (Pl D.host.E)} (he : IsIdemSum e S)
     {I : Ideal (𝓞 D.host.E)} (hI : I ≠ ⊥) (a : ℕ) (A' WW : HSp D) (βA' : GL (Fin A'.rank) (EAf D))
     (βW : GL (Fin WW.rank) (EAf D)) (Λ : AddSubgroup (WO A' WW))
@@ -1191,7 +1177,7 @@ theorem finDatum'_isAlgComb : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Cons
   exact isAlgComb_of_isThetaAt hI.isVac'.1 hSd hWd (by rw [← RingHom.map_mul, hee]) hinf
     (stdSnd_isSB hν.1 he (GlobalTheory.ConstRatio.ideal_ne_bot X (locPl G) t) _ A' WW X.rA'.β X.rW.β _
       (exists_den_dualCoord hSd.1.fg hWd.1.fg X.rA'.β X.rW.β)
-      (exists_mul_dualCoord (GlobalTheory.ProjXCols.selfDual_isFullLattice A' _ hSd)
+      (GlobalTheory.CompanionTheory.StdSndTheta.exists_mul_dualCoord (GlobalTheory.ProjXCols.selfDual_isFullLattice A' _ hSd)
         (GlobalTheory.ProjXCols.selfDual_isFullLattice WW _ hWd) hinf X.rA'.β X.rW.β))
     (fun x => stdSnd_mem hν.1 he _ _ A' WW X.rA'.β X.rW.β x) (hI.snd t)
 
@@ -1453,7 +1439,7 @@ theorem kernel_div_period_isAlgebraic_alt : ∀ {D : D7} {T : Type} [Finite T] {
   obtain ⟨cc, δ, t0, e0, k, c, s, hc, ht0, he0, hca, hs, hU⟩ := H t x hx h hh
   obtain ⟨Q, hQ, heq⟩ := hU U
   rw [heq, mul_div_cancel_left₀ _ hΩ]
-  refine applyAt0_isAlgebraic hQ ?_
+  refine GlobalTheory.BotTransJet.applyAt0_isAlgebraic hQ ?_
   exact ((hI D).alg cc δ hc t0 ht0 A'.rank WW.rank (StandardLatticesGL3.stdL D A'.rank) (StandardLatticesGL3.stdL D WW.rank)
     (GlobalTheory.MovedVacuum.sd_stdL D _) (GlobalTheory.MovedVacuum.sd_stdL D _) (even_bot hX) e0 he0.2.2.2.1).2.2.1 k c s
     (fun l => (mem_algebraicClosure_iff).2 (hca l)) hs

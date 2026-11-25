@@ -178,10 +178,6 @@ noncomputable section
 
 namespace GlobalTheory.FlagFibre
 
-theorem measurePreserving_curry (ι κ : Type) [Fintype ι] [Fintype κ] :
-    MeasurePreserving (MeasurableEquiv.curry ι κ ℂ) volume volume := by
-  apply _root_.GlobalTheory.IntBall.measurePreserving_curry_lowCoord
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r j : ℕ} (X : Data E r) (hj : j ≤ r) {Tau : Type}
   [Fintype Tau] (κ : Tau ≃ X.Ψ)
 
@@ -225,7 +221,7 @@ theorem muF_preimage (hp : X.p0 = r - j) {S : Set (Tau × Fin j × Fin (r - j) �
     (hφm.comp (Measurable.of_eval fun t => (measurable_base _).comp (measurable_pi_apply t))).mul
       (Finset.measurable_prod _ fun t _ => hDm.comp (measurable_pi_apply t))
   rw [← (_root_.GlobalTheory.FlagFibre.measurePreserving_coords_sorted E r X Tau κ).lintegral_comp hm,
-    ← (measurePreserving_curry Tau (Fin j × Fin (r - j))).lintegral_comp_emb c.measurableEmbedding] at key
+    ← (GlobalTheory.IntBall.measurePreserving_curry_lowCoord Tau (Fin j × Fin (r - j))).lintegral_comp_emb c.measurableEmbedding] at key
   rw [muF, muD, withDensity_apply _ hS', withDensity_apply _ hS, Measure.restrict_restrict hS',
     Measure.restrict_restrict hS, Set.inter_eq_left.2 hD,
     inter_OmF X hj κ hp hD, ← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top,

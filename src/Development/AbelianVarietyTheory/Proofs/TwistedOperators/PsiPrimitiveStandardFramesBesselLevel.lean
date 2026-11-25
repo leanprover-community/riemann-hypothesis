@@ -77,8 +77,6 @@ open GlobalTheory.MixModel GlobalTheory.ChiGrid
 open scoped TensorProduct nonZeroDivisors
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.fractionalIdealCompletion_mul_modulus_offExceptional : ∀ {D : D7} {T : Type} {L : LevCh D T} (P : GlobalTheory.ChiGrid.Places L) (sc : GlobalTheory.ChiGrid.Consts) (v : GlobalTheory.FinPl.Pl D), v ∉ P.S0 → ∀ 𝔞 : GlobalTheory.SeeSaw.FI D, GlobalTheory.SeeSaw.idV (𝔞 * ((P.modul sc : Ideal (𝓞 D.host.E)) : GlobalTheory.SeeSaw.FI D)) v = GlobalTheory.SeeSaw.idV 𝔞 v ∧ GlobalTheory.SeeSaw.idV (𝔞 * ((P.modulBar sc : Ideal (𝓞 D.host.E)) : GlobalTheory.SeeSaw.FI D)) v = GlobalTheory.SeeSaw.idV 𝔞 v := by
-  first | exact @GlobalTheory.ChiGrid.Places.idV_mul_modul
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.FractionalIdealCompletionMulModulusOffExceptionaStatement =====
@@ -109,7 +107,6 @@ theorem modulBar_ne_bot {D : D7} {T : Type} {L : LevCh D T} (P : Places L) (sc :
   simpa [smul_smul] using this
 
 end GlobalTheory.AscFin.PrimStd
-
 
 open GlobalTheory.SeeSaw (idV FI dI) in
 open GlobalTheory.AscFin.PrimStd in
@@ -181,7 +178,7 @@ theorem GlobalTheory.AscFin.primAt_std_bessel : OnStd fun {D} _ _ {sc} {G} W F =
     rw [hneg]
     unfold Places.stA Places.stAbar dI
     field_simp
-  have hL := GlobalTheory.T.fractionalIdealCompletion_mul_modulus_offExceptional G.pl sc v hv
+  have hL := GlobalTheory.ChiGrid.Places.idV_mul_modul G.pl sc v hv
   have e3 : idV (FractionalIdeal.spanSingleton (𝓞 D.host.E)⁰ (-D.host.xi0) * (G.pl.stA sc * G.pl.stAbar sc)) v = idV (dI D) v := by
     rw [← hsplit, (hL _).2, (hL _).1]
   rw [hrat, e3]

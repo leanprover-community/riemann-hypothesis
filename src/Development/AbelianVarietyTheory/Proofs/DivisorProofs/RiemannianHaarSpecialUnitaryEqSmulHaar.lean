@@ -113,14 +113,6 @@ theorem gram_eq_mul (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (x : Matri
   refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => ?_
   ring
 
-theorem det_ne_zero_of_orth (X : Data E r) {x : Frame X.Ψ r} (hx : IsOrth X x) (τ : X.Ψ) :
-    (mat x τ).det ≠ 0 := by
-  intro h
-  have h1 := congrArg Matrix.det (hx τ)
-  rw [gram_eq_mul, Matrix.det_mul, Matrix.det_transpose, h, zero_mul, Matrix.det_diagonal] at h1
-  refine (Finset.prod_ne_zero_iff.2 fun a _ => ?_) h1.symm
-  exact_mod_cast sgn_ne X.p0 (a : ℕ)
-
 theorem densF_orth (X : Data E r) {x : Frame X.Ψ r} (hx : IsOrth X x) :
     densF X x = fun w => ∏ τ, ∏ i : Fin r, ‖lminor (Gw X w τ) i.castSucc‖ ^ (-2 : ℤ) := by
   funext w
@@ -131,7 +123,7 @@ theorem dens_one : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : �
     (x : Frame X.Ψ r), IsOrth X x → ContinuousAt (densF X x) 0 ∧ densF X x 0 = 1 ∧
       ∀ τ, (mat x τ).det ≠ 0 := by
   intro E _ _ _ r X x hx
-  refine ⟨?_, ?_, det_ne_zero_of_orth X hx⟩
+  refine ⟨?_, ?_, GlobalTheory.SUChartSection.det_ne_of_orth X hx⟩
   · rw [densF_orth X hx]
     refine tendsto_finsetProd _ fun τ _ => tendsto_finsetProd _ fun i _ => ?_
     refine ((cont_lminor X τ i.castSucc).norm.continuousAt).zpow₀ _ (Or.inl ?_)
@@ -346,10 +338,6 @@ theorem torusDer_sum_angles (φ : Fin (r - 1) → ℝ) : ∑ a : Fin r, angles �
     rw [add_neg_eq_zero]
     exact Fintype.sum_equiv (finCongr (by simp)) _ _ (fun i => rfl)
 
-theorem torusDer_hermC_dot (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (u w : Fin r → ℂ) :
-    hermC τ G u w = u ⬝ᵥ (G.map τ *ᵥ fun b => conj (w b)) := by
-  simp [hermC, dotProduct, mulVec, Finset.mul_sum, mul_assoc]
-
 theorem torusDer_conj_mulVec (Y : Matrix (Fin r) (Fin r) ℂ) (w : Fin r → ℂ) :
     (fun b => conj ((Y *ᵥ w) b)) = Y.map (starRingEnd ℂ) *ᵥ fun b => conj (w b) := by
   ext b; simp [mulVec, dotProduct, map_sum]
@@ -357,7 +345,7 @@ theorem torusDer_conj_mulVec (Y : Matrix (Fin r) (Fin r) ℂ) (w : Fin r → ℂ
 theorem torusDer_skew_of_mat (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (Y : Matrix (Fin r) (Fin r) ℂ)
     (hK : Yᵀ * G.map τ + G.map τ * Y.map (starRingEnd ℂ) = 0) (u w : Fin r → ℂ) :
     hermC τ G (Y *ᵥ u) w + hermC τ G u (Y *ᵥ w) = 0 := by
-  rw [torusDer_hermC_dot, torusDer_hermC_dot, torusDer_conj_mulVec, ← vecMul_transpose, ← dotProduct_mulVec, mulVec_mulVec,
+  rw [GlobalTheory.SUChartSection.hermC_eq_dot, GlobalTheory.SUChartSection.hermC_eq_dot, torusDer_conj_mulVec, ← vecMul_transpose, ← dotProduct_mulVec, mulVec_mulVec,
     mulVec_mulVec, ← dotProduct_add, ← add_mulVec, hK, zero_mulVec, dotProduct_zero]
 
 end GlobalTheory.TorusFrame
@@ -742,8 +730,6 @@ theorem lintegral_box_translate (ι κ : Type) [Fintype ι] [Fintype κ] (f : (�
     _ = ∫⁻ u, g u := lintegral_add_left_eq_self g (e θ0)
     _ = ∫⁻ θ in {θ : ι → κ → ℝ | ∀ i k, θ i k ∈ Set.Ioc (-Real.pi) Real.pi}, g (e θ) := (hmp.lintegral_comp hg).symm
     _ = _ := lintegral_congr fun θ => hge θ
-
-
 
 theorem haar_chart_formula : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r) (x : Frame X.Ψ r) [MeasurableSpace (realSU X.Ψ X.Gm)] [BorelSpace (realSU X.Ψ X.Gm)] (ν : Measure (realSU X.Ψ X.Gm)) (σ : V (nd X) → realSU X.Ψ X.Gm) (t : (X.Ψ → Fin (r - 1) → ℝ) → realSU X.Ψ X.Gm) (ρ : ℝ), 1 ≤ r → IsOrth X x → ν.IsHaarMeasure → (∀ φ : Frame X.Ψ r → ℝ≥0∞, Measurable φ → (∀ y ∈ X.dom, ∀ b ∈ Bor X.Ψ r, φ (rmul y b) = φ y) → ∫⁻ g, φ (X.lmulC (fun τ => (((g : realSU X.Ψ X.Gm) : X.Ψ → GL (Fin r) ℂ) τ : Matrix (Fin r) (Fin r) ℂ)) x) ∂ν = ∫⁻ z, φ (cpt X x z) ∂muF X x) → 0 < ρ → ContinuousOn σ (Metric.ball 0 ρ) → (∀ z ∈ Metric.ball (0 : V (nd X)) ρ, ∃ b ∈ Bor X.Ψ r, X.lmulC (fun τ => ((((σ z : realSU X.Ψ X.Gm) : X.Ψ → GL (Fin r) ℂ) τ : GL (Fin r) ℂ) : Matrix (Fin r) (Fin r) ℂ)) x = rmul (cpt X x z) b) → (∀ θ, X.lmulC (fun τ => ((((t θ : realSU X.Ψ X.Gm) : X.Ψ → GL (Fin r) ℂ) τ : GL (Fin r) ℂ) : Matrix (Fin r) (Fin r) ℂ)) x = rmul x (phaseFrame θ)) → (∀ θ θ', t (θ + θ') = t θ * t θ') → Continuous t → (∀ g : realSU X.Ψ X.Gm, (∃ b ∈ Bor X.Ψ r, X.lmulC (fun τ => ((((g : realSU X.Ψ X.Gm) : X.Ψ → GL (Fin r) ℂ) τ : GL (Fin r) ℂ) : Matrix (Fin r) (Fin r) ℂ)) x = rmul x b) → ∃ θ, g = t θ) → ∀ A : Set (ChartSp X), MeasurableSet A → A ⊆ Metric.ball 0 (min ρ Real.pi) → ν ((fun w : ChartSp X => σ w.1 * t w.2) '' A) = ∫⁻ w in A, ENNReal.ofReal (densF X x w.1 / (2 * Real.pi) ^ ((r - 1) * X.Ψ.card)) ∂(volume : Measure (ChartSp X)) := by
   intro E _ _ _ r X x _ _ ν σ t ρ hr hx hν hH hρ hσc hσ ht tadd tc hstab A hA hAsub

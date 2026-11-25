@@ -219,7 +219,6 @@ theorem val_mem_eig {s : CMType H ⊕ CMType H} {σ : 𝓞 E →+* R} (hσ : ∀
   rw [mem_eigSp.1 he a] at h1
   exact MC.inj (h1.unique 𝔐.tie.gen h2)
 
-
 include hact in
 theorem off_S (σ : CMType H ⊕ CMType H → (𝓞 E →+* R)) (hσ : ∀ s a, ValAt 𝔐.ξ z (𝔐.emb s a) (σ s a))
     (hinj : Function.Injective fun s => (algebraMap R C).comp (σ s)) (hS : ∀ p ∈ S, IsUnit (p : R))
@@ -284,7 +283,6 @@ theorem off_S (σ : CMType H ⊕ CMType H → (𝓞 E →+* R)) (hσ : ∀ s a, 
   obtain ⟨x', h1, h2⟩ := key e (hs1 ▸ he)
   rwa [MC.inj (hw.unique hξ h2)]
 
-
 include hact in
 theorem on_S {p : ℕ} (hpS : p ∈ S) (κ : Ω) (hfree : HT.HTFree 𝔐 p) (hsand : HT.Sandwich 𝔐 p κ)
     (v : Valuation C NNReal) (hv : v.Integers R) (hvp : v (p : C) < 1) (s : CMType H ⊕ CMType H)
@@ -296,7 +294,7 @@ theorem on_S {p : ℕ} (hpS : p ∈ S) (κ : Ω) (hfree : HT.HTFree 𝔐 p) (hsa
   have hp : p.Prime := 𝔐.S_prime p hpS
   haveI : Fact p.Prime := ⟨hp⟩
   have h : genPt 𝔐.ξ ⤳ centre z := 𝔐.all _
-  obtain ⟨h1, h2, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.HT.hodge_tate_model_point_sandwich E H D l Xo c _ _ Y S Ω K J y 𝔐 p hpS κ hfree hsand C v R hv hvp z EC MC ρC s σ κz
+  obtain ⟨h1, h2, -⟩ := _root_.PositivityTheory.HtPt.Gh.hodge_tate_free_sandwich E H D l Xo c _ _ Y S Ω K J y 𝔐 p hpS κ hfree hsand C v R hv hvp z EC MC ρC s σ κz
     hact hσ hκ
   have hpu : ¬ IsUnit (p : R) := fun hu => by
     have := hv.one_of_isUnit hu

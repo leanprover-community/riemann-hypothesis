@@ -69,9 +69,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (RealMat IsFock
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (swSec sZero)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
-theorem _root_.GlobalTheory.T.cartanInvolution_eq_of_commute : ∀ (k : ℕ) (G s s' : Matrix (Fin k) (Fin k) ℂ), IsCartanInv G s → IsCartanInv G s' → s * s' = s' * s → s = s' := by
-  first | exact @GlobalTheory.StdUnn.isCartanInv_eq_of_commute
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.CartanInvolutionEqOfCommuteStatement =====
@@ -89,9 +86,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (RealMat IsFock
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (swSec sZero)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
-theorem _root_.GlobalTheory.T.exists_maximalCompactUnn_component_standardCartanInv : ∀ (D : D7) (θ : InfFam D), IsInfFam θ → ∀ (n : ℕ) (μ : D.host.E), IsSkew μ → ∃ k ∈ K D n, ∀ τ, compAt θ τ (mat k) = stdInv n μ τ := by
-  first | exact @GlobalTheory.CartanPt.exists_mem_K_compAt_eq_stdInv
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ExistsMaximalCompactUnnComponentStandardCartanInStatement =====
@@ -109,9 +103,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalVolumeLift (RealMat IsFock
 open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (swSec sZero)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
-theorem _root_.GlobalTheory.T.isCartanInv_standardInvolution_doubledGram : ∀ (D : D7) (A : HSp D) (μ : D.host.E), IsSkew μ → ∀ s : RealMat (dblSp A), IsStdInv A μ s → ∀ τ, IsCartanInv (gramAt D (dblSp A) τ) (s τ) := by
-  first | exact @GlobalTheory.CartStd.isCartanInv_stdInv
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.IsCartanInvStandardInvolutionDoubledGramStatement =====
@@ -182,7 +173,7 @@ open scoped ComplexOrder
 
 theorem cartan_move_std : ∀ (D : D7) (A : HSp D) (μ : D.host.E), IsSkew μ → ∀ κ : GA D (dblSp A) ≃* G D A.rank, IsChart A μ κ → ∀ (a : GL (Fin A.rank) (AE D)) (p : siegel A), IsConj A a κ p → ∀ θ : InfFam D, IsInfFam θ → ∀ sS : RealMat (dblSp A), (∀ τ, IsCartanInv (gramAt D (dblSp A) τ) (sS τ)) → (∀ k ∈ Khat A a, ∀ τ, compAt θ τ (mt (dblSp A) k) * sS τ = sS τ * compAt θ τ (mt (dblSp A) k)) → ∃ s' : RealMat (dblSp A), IsStdInv A μ s' ∧ ∀ τ, s' τ * compAt θ τ (mt (dblSp A) (p : GA D (dblSp A))⁻¹) = compAt θ τ (mt (dblSp A) (p : GA D (dblSp A))⁻¹) * sS τ := by
   intro D A μ hμ κ hκ a p hp θ hθ sS hsS hcomm
-  obtain ⟨k₀, hk₀K, hk₀⟩ := GlobalTheory.T.exists_maximalCompactUnn_component_standardCartanInv D θ hθ A.rank μ hμ
+  obtain ⟨k₀, hk₀K, hk₀⟩ := GlobalTheory.CartanPt.exists_mem_K_compAt_eq_stdInv D θ hθ A.rank μ hμ
   have hstd : IsStdInv A μ (fun τ => compAt θ τ (Formalism.L2.Theta.mt (dblSp A) (κ.symm k₀))) := by
     intro τ
     have h := hκ (κ.symm k₀)
@@ -210,14 +201,14 @@ theorem cartan_move_std : ∀ (D : D7) (A : HSp D) (μ : D.host.E), IsSkew μ �
   rw [_root_.GlobalTheory.RatAut.compAt_mul, _root_.GlobalTheory.RatAut.compAt_mul] at hc
   have hcar' : IsCartanInv (gramAt D (dblSp A) τ) (Pi * sS τ * P) :=
     isCartanInv_conj (hsS τ) hPi hPPi (compAt_isom hθ _ _ τ)
-  have hcar : IsCartanInv (gramAt D (dblSp A) τ) S1 := GlobalTheory.T.isCartanInv_standardInvolution_doubledGram D A μ hμ _ hstd τ
+  have hcar : IsCartanInv (gramAt D (dblSp A) τ) S1 := GlobalTheory.CartStd.isCartanInv_stdInv D A μ hμ _ hstd τ
   have hcm : S1 * (Pi * sS τ * P) = Pi * sS τ * P * S1 := by
     calc S1 * (Pi * sS τ * P) = (Pi * P) * S1 * Pi * sS τ * P := by rw [hPi, Matrix.one_mul]; simp only [Matrix.mul_assoc]
       _ = Pi * (P * S1 * Pi * sS τ) * P := by simp only [Matrix.mul_assoc]
       _ = Pi * (sS τ * (P * S1 * Pi)) * P := by rw [hc]
       _ = Pi * sS τ * P * S1 * (Pi * P) := by simp only [Matrix.mul_assoc]
       _ = Pi * sS τ * P * S1 := by rw [hPi, Matrix.mul_one]
-  have heq : S1 = Pi * sS τ * P := GlobalTheory.T.cartanInvolution_eq_of_commute _ _ _ _ hcar hcar' hcm
+  have heq : S1 = Pi * sS τ * P := GlobalTheory.StdUnn.isCartanInv_eq_of_commute _ _ _ _ hcar hcar' hcm
   rw [heq, Matrix.mul_assoc (Pi * sS τ) P Pi, hPPi, Matrix.mul_one]
 
 end GlobalTheory.StdUnn.CartanMove

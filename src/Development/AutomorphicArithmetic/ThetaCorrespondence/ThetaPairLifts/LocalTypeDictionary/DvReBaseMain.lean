@@ -170,7 +170,6 @@ open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNo
 noncomputable section
 namespace GlobalTheory.ConjCartan
 
-
 open scoped ComplexOrder in
 theorem exists_conj_cartan_matrix : ∀ (n : ℕ) (M θ₁ θ₂ : Matrix (Fin n) (Fin n) ℂ), Mᴴ = M → IsCartan M θ₁ → IsCartan M θ₂ →
     ∃ u v : Matrix (Fin n) (Fin n) ℂ, u * v = 1 ∧ uᵀ * M * u.map star = M ∧ u * θ₁ = θ₂ * u := by
@@ -264,7 +263,6 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 
 theorem piInf_inclR {w : InfinitePlace F} (τ : EmbOver E w) (x : E) : piInf τ (inclR (F := F) (AF F) x) = τ.1 x := by
   simp [piInf, inclR, compInf, infEmb_tmul]
-
 
 variable (F E) in
 def archIdeal : Ideal (AE F E) where
@@ -424,11 +422,6 @@ open scoped Matrix
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-theorem incM_map_piInf {n m : Type} (J : Matrix n m E) {w : InfinitePlace F} (τ : EmbOver E w) :
-    (incM F J).map (piInf τ) = J.map τ.1 := by
-  ext i j
-  simp [incM, piInf, compInf, inclR, infEmb_tmul]
-
 theorem exists_mat_at {σ : E →ₐ[F] E} (hcm : IsCMExt F E σ) (τ : ∀ w : InfinitePlace F, EmbOver E w)
     {m k : Type} (z : InfinitePlace F → Matrix m k ℂ) :
     ∃ u : Matrix m k (AE F E), At (evI F) u ∧ ∀ w, u.map (piInf (τ w)) = z w := by
@@ -452,10 +445,6 @@ theorem mat_eq_zero {σ : E →ₐ[F] E} (hcm : IsCMExt F E σ) (τ : ∀ w : In
 theorem at_add {m k : Type} {D D' : Matrix m k (AE F E)} (hD : At (evI F) D) (hD' : At (evI F) D') :
     At (evI F) (D + D') := by
   intro u hu; rw [smul_add, hD u hu, hD' u hu, add_zero]
-
-theorem at_mul_left {m k l : Type} [Fintype k] {D : Matrix m k (AE F E)} (hD : At (evI F) D) (N : Matrix k l (AE F E)) :
-    At (evI F) (D * N) := by
-  intro u hu; rw [← Matrix.smul_mul, hD u hu, Matrix.zero_mul]
 
 theorem at_mul_right {m k l : Type} [Fintype k] {D : Matrix k l (AE F E)} (hD : At (evI F) D) (N : Matrix m k (AE F E)) :
     At (evI F) (N * D) := by
@@ -538,7 +527,7 @@ theorem conj_skew : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Number
     have h0 : (1 + G) * (1 + H) - 1 = 0 := by
       apply mat_eq_zero hcm B.emb
       · have e : (1 + G) * (1 + H) - 1 = G + H + G * H := by noncomm_ring
-        rw [e]; exact at_add (at_add hGat hHat) (at_mul_left hGat H)
+        rw [e]; exact at_add (at_add hGat hHat) (GlobalTheory.FockCompactW.at_mul_right hGat H)
       · intro w
         rw [Matrix.map_sub _ (map_sub _), Matrix.map_mul, hgmap, hhmap, hmap1, huv, sub_self]
     exact sub_eq_zero.1 h0
@@ -553,11 +542,11 @@ theorem conj_skew : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Number
           rw [Matrix.map_add _ (map_add _), Matrix.map_one _ (map_zero _) (map_one _), Matrix.transpose_add, Matrix.transpose_one]
           noncomm_ring
         rw [e]
-        exact at_add (at_add (at_mul_left (at_transpose hGat) _) (at_mul_right (at_map_cA σ hGat) _))
+        exact at_add (at_add (GlobalTheory.FockCompactW.at_mul_right (at_transpose hGat) _) (at_mul_right (at_map_cA σ hGat) _))
           (at_mul_right (at_map_cA σ hGat) _)
       · intro w
         rw [Matrix.map_sub _ (map_sub _), Matrix.map_mul, Matrix.map_mul, Matrix.transpose_map, map_cA_piInf hcm, hgmap,
-          incM_map_piInf, hu, sub_self]
+          GlobalTheory.RealLift.Main.incM_map_piInf, hu, sub_self]
     exact sub_eq_zero.1 h0
   refine ⟨⟨g0, hmem⟩, ?_, fun w => ?_⟩
   · show At (evI F) ((1 + G) - 1)
@@ -670,7 +659,6 @@ end Proj
 open GlobalTheory.WeilSchUnique
 
 variable {F : Type} [Field F] [NumberField F] {E : Type} [Field E] [NumberField E] [Algebra F E]
-
 
 variable (F) in
 def eInf : AF F := ((1 : InfiniteAdeleRing F), (0 : FiniteAdeleRing (𝓞 F) F))

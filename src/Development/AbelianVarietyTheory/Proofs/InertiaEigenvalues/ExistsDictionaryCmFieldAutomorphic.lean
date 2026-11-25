@@ -70,8 +70,6 @@ section -- clump:auto
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.ConjugateSelfDual ReciprocityTheory.Gal ReciprocityTheory.Aut Formalism.AUTREP Formalism.L2 Formalism.L2.Host GlobalTheory.HeightCounting NumberField IsDedekindDomain GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.FormDict GlobalTheory.DefiniteBC
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-theorem _root_.GlobalTheory.T.exists_adelic_extension_of_algebraicWeight_definiteUnitary : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) (a : NG.AlgWt L n), ∃ R : UA L n →* Module.End ℂ a.W, (∀ k ∈ finU (E := L) (n := n), R k = 1) ∧ (∀ (γ : UA L n) (γQ : GQ L n) (γ₀ : GL (Fin n) L), γ.1 = ratGL L n γ₀ → (((γQ : GAf L n) : GL (Fin n) (AL L)) : Matrix (Fin n) (Fin n) (AL L)) = (γ₀ : Matrix (Fin n) (Fin n) L).map Algebra.TensorProduct.includeLeftRingHom → R γ = a.ρ γQ) ∧ ∀ (v : a.W) (μ : Module.Dual ℂ a.W), Continuous fun g : UA L n => μ (R g v) := by
-  first | exact @GlobalTheory.WeightRealExt.exists_extension
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsAdelicExtensionOfAlgebraicWeightDefiniteUnStatement =====
@@ -684,7 +682,7 @@ theorem exists_dict : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (n 
     ∃ U, Dict F π U := by
   intro L _ _ _ n F π
   haveI : FiniteDimensional ℂ π.W := π.alg.1
-  obtain ⟨R, hfin, hrat, hcont⟩ := GlobalTheory.T.exists_adelic_extension_of_algebraicWeight_definiteUnitary L n π.toAlgWt
+  obtain ⟨R, hfin, hrat, hcont⟩ := GlobalTheory.WeightRealExt.exists_extension L n π.toAlgWt
   exact ⟨_, dict_span F π.ρ R π.irr π.S π.irrS hfin hrat hcont⟩
 
 end GlobalTheory.FormDictEx

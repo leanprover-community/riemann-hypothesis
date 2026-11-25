@@ -895,7 +895,7 @@ theorem chart_levi_split (D : ComponentData II Ψ K J Ω W) (S : Finset ℕ) (hS
   have hγ : AnalyticAt ℂ (D.chart a).γ t := (D.chart a).analytic t hb
   have hz : ∀ k, ∃ i, (D.chart a).γ t ⟨k, i⟩ ≠ 0 := ((D.chart a).mem t hb).1
   obtain ⟨G, hG, hGe⟩ := exists_analytic_sum S (fun r s => Real.log (D.vertFactor r ((D.chart a).γ s))) t
-    fun r hr => (_root_.GlobalTheory.CompanionTheory.Relay.vertical_factor_smooth_hermitian_metric K J II Ψ Ω W D r (hS hr)).2 a t hb
+    fun r hr => (_root_.LevelTowerAlt.vertical_factor_smooth_line K J II Ψ Ω W D r (hS hr)).2 a t hb
   refine levi_split (G := G) (by exact_mod_cast hq) (contDiffAt_logH hA hγ hz)
     (contDiffAt_logH D.A'_pos.1 hγ hz) hG ?_ v
   filter_upwards [hGe, Metric.isOpen_ball.mem_nhds hb] with s h₁ h₂

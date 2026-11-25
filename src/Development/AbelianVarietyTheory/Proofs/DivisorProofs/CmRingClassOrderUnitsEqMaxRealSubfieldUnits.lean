@@ -61,10 +61,6 @@ open NumberField IsDedekindDomain GlobalTheory.CMVal
 
 namespace GlobalTheory.CMVal.OrderUnits
 
-theorem prime_not_mem_sq {E : Type} [Field E] [NumberField E] {p : ℕ} (hp : p.Prime) (hd : ¬ (p : ℤ) ∣ discr E)
-    (w : HeightOneSpectrum (𝓞 E)) (hv : (p : 𝓞 E) ∈ w.asIdeal) : (p : 𝓞 E) ∉ w.asIdeal ^ 2 := by
-  apply GlobalTheory.LamTie.ExpCond.not_mem_sq_of_not_dvd_discr <;> assumption
-
 theorem pow_first_order {R : Type} [CommRing R] (t : R) (i : ℕ) : ∃ r, (1 + t) ^ i = 1 + i * t + t ^ 2 * r := by
   induction i with
   | zero => exact ⟨0, by simp⟩
@@ -164,7 +160,7 @@ theorem orderC_units (E : Type) [Field E] [NumberField E] [IsCMField E] (𝔣 c 
       linear_combination h3
     rw [this]
     exact P.asIdeal.mul_mem_right _ (hcP (sub_mem hb hbc))
-  have hone : ζ = 1 := Units.ext (root_of_unity_eq_one P.isPrime.ne_top hl hl2 hlP (prime_not_mem_sq hl hd P hlP) hfin' hζ)
+  have hone : ζ = 1 := Units.ext (root_of_unity_eq_one P.isPrime.ne_top hl hl2 hlP (GlobalTheory.LamTie.ExpCond.not_mem_sq_of_not_dvd_discr hl hd P hlP) hfin' hζ)
   have hreal := (IsCMField.unitsComplexConj_eq_self_iff E u).1 (mul_inv_eq_one.1 hone).symm
   obtain ⟨v, hv⟩ := (IsCMField.mem_realUnits_iff E u).1 hreal
   refine ⟨v, ?_⟩

@@ -78,8 +78,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.HTLat GlobalTheory.Published GlobalTheory.Published.AbVarRed IsLocalRing
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.exists_inertia_element_restricting_to_finite_galois : ∀ (R K Ω : Type) [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [Field K] [Algebra R K] [IsFractionRing R K] [Field Ω] [Algebra K Ω] [IsSepClosure K Ω] (V : ValuationSubring Ω), IsAbove R K V.toSubring → ∀ (L : IntermediateField K Ω) [FiniteDimensional K L] [IsGalois K L] (τ : L ≃ₐ[K] L), τ ∈ inertia K (V.comap (algebraMap L Ω)) → ∃ σ ∈ inertia K V, ∀ y : L, σ (y : Ω) = (τ y : Ω) := by
-  first | exact @GlobalTheory.InertiaRestrict.exists_mem_inertia_eq_on
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsInertiaElementRestrictingToFiniteGaloisStatement =====
@@ -512,7 +510,7 @@ theorem div_uniformizer_mem : ∀ (R K Ω : Type) [CommRing R] [IsDomain R] [IsD
   let y : L := ⟨x, hxL⟩
   have hfix : ∀ τ ∈ inertia K W, τ y = y := by
     intro τ hτ
-    obtain ⟨σ, hσ, he⟩ := GlobalTheory.T.exists_inertia_element_restricting_to_finite_galois R K Ω V hV L τ hτ
+    obtain ⟨σ, hσ, he⟩ := GlobalTheory.InertiaRestrict.exists_mem_inertia_eq_on R K Ω V hV L τ hτ
     apply Subtype.ext
     rw [← he y]
     exact (IntermediateField.mem_fixedField_iff _ _).1 hx σ hσ

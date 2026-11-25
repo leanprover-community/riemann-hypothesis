@@ -187,7 +187,7 @@ theorem product_moment_first_gap : GlobalTheory.GapIn.Hyp → ∀ (k r : ℕ) (W
     rw [h1]
     have h2 : ‖(w : (R ν).H)‖ = 1 := hw1
     rw [h2, one_pow, ENNReal.ofReal_one]
-  obtain ⟨hae, -, hlenM, hbesM⟩ := GlobalTheory.T.quotientMeasure_ae_mem_and_measurable_besselModel hKS k r _ _ (R ν) Wp z π u μW μN μG νq (hDS ν hν0) hSd
+  obtain ⟨hae, -, hlenM, hbesM⟩ := GlobalTheory.quotMeas_ae_mem_and_measurable hKS k r _ _ (R ν) Wp z π u μW μN μG νq (hDS ν hν0) hSd
   obtain ⟨hIsBes, -⟩ := (hSF ν hν0).1
   have hPhM : AEMeasurable (fun x : Formalism.QuantumDeterminants.Mt k r => dg ν * ‖lb ν ((R ν).σ (Matrix.of x) w)‖ ^ 2) νq :=
     ((hbesM (lb ν) hIsBes (w : (R ν).H) w.2).norm.aemeasurable.pow_const 2).const_mul (dg ν)
@@ -764,8 +764,6 @@ theorem amp_eq (hH : GlobalTheory.GapIn.Hyp) (D : D7) {τ w w' θ} {W : LocW D.R
   subst hR
   exact _root_.GlobalTheory.AmpNormalGap.amp_eq_smul_normalised_gap hH D τ w w' θ W lam A h l l' hθ hka hT hT' hW hA hg hok b1 b2 e1 e2
 
-
-
 theorem line_of_tens (hH : GlobalTheory.GapIn.Hyp) (hKF : GlobalTheory.GapIn.AmpKF0) (hCC : CellConv) (D : D7) {τ w w' θ}
     {W : LocW D.R.k D.R.rS}
     [CompleteSpace W.Wp] [CompleteSpace W.Wq] (hcd : cdScaleTie D)
@@ -850,7 +848,7 @@ theorem line_of_tens (hH : GlobalTheory.GapIn.Hyp) (hKF : GlobalTheory.GapIn.Amp
       positivity
   intro μsec K hK hM hMI γ p hγ θ' hθ' νR hν
   obtain ⟨g₀, μR, ν₀, ν, s, hcell, hν₀, hD, hs⟩ :=
-    GlobalTheory.T.amplitudes_relevant_cell_monomial_rep D τ w w' θ W hW lam A₀ hA₀ hT hT' hθ hka γ p hγ θ' hθ' νR hν
+    GlobalTheory.CellRed.amp_at_monomial D τ w w' θ W hW lam A₀ hA₀ hT hT' hθ hka γ p hγ θ' hθ' νR hν
   have hμ : W.μN = (toBessel D τ w w' θ W lam A₀ hW hA₀ hT hT').μN := hW.2.2.2.2.2.2.2.2.2.2.2.1
   rw [hμ] at e1 e2 eI1 eI2
   have hc0 : ((2 * D.host.ka / ((D.host.g 0 : ℝ) * (D.host.g 1 : ℝ)) : ℝ) : ℂ) ≠ 0 := by
@@ -1042,8 +1040,6 @@ theorem exists_fams (hH : GlobalTheory.GapIn.Hyp) {lam : Fin (2 * r + k + 1) →
         · exact h0
         · exact hX I.1 I.2) R₀
     exact ⟨F, F, hF, hF, h1 none, fun I hI => h1 (some ⟨I, hI⟩), Or.inr rfl⟩
-
-
 
 theorem minor_line : GlobalTheory.GapIn.Hyp → GlobalTheory.GapIn.AmpKF0 → CellConv → ∀ Cg cb Cu cT CT C0 C1 : ℝ, ∃ C : ℝ, ∀ Cn : ℝ, ∃ m₀ : ℝ, ∀ (D : D7) (large₂ : SizeData₂ D) (C' Cl : ℝ), 1000 ≤ Cl → Big D large₂ Cl m₀ → cdScaleTie D → HypZ D large₂ C' Cl Cg cb Cu cT CT C0 → ∀ τ w w', HypTT D w w' → ∀ θ, normWin D large₂ C1 θ → ∀ W, GoodW D τ w w' θ W → ∀ lam', l1dist lam' (lamD D τ) ≤ Cn * D.R.k * (D.R.m : ℝ) ^ 3 → ∀ A₀ : LocS W, GoodS D lam' A₀ → ∀ l : ℕ, l ≤ D.R.rS + 1 → ∃ s : ℝ, (s = 1 ∨ s = -1) ∧ ∀ AI : Finset (Fin (2 * D.R.rS + D.R.k + 1)) → LocS W, (∀ I, I.card = l → (∃ A : LocS W, GoodS D (lam' + s • epsI I) A) → GoodS D (lam' + s • epsI I) (AI I)) → ∃ a : Finset (Fin (2 * D.R.rS + D.R.k + 1)) → ℂ, (∀ I, I.card = l → (¬ ∃ A : LocS W, GoodS D (lam' + s • epsI I) A) → a I = 0) ∧ (∑ I ∈ univ.filter (fun I => I.card = l), ‖a I‖) ≤ large₂.sc.b ^ (C * (D.R.m : ℝ) ^ 2) ∧ ∀ μsec, IsSection D.R.k D.R.rS W.z W.z' μsec → ∀ γ p, RelPt D W.z W.z' γ p → ∀ θ', normWin D large₂ C1 θ' → ∀ νR, RMeas D W γ θ' νR → DminN W.z W.z' γ l • jhUnit D w w' A₀ μsec νR γ = ∑ I ∈ univ.filter (fun I => I.card = l), a I • jhUnit D w w' (AI I) μsec νR γ := by
   intro hH hKF hCC Cg cb Cu cT CT C0 C1

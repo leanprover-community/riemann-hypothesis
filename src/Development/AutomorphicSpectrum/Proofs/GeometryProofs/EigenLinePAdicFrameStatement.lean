@@ -333,14 +333,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.CompanionTheory.Ar.Flat.CPoint
 
-theorem _root_.GlobalTheory.T.component_specialization_lattice_basis : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (β : O →+* c.F) (Y : Model Xo c β) (U : Set (Xo.XF c)) (Z : CptOver Y U) (K : Type) [Field K] (y : Sp K ⟶ Xo.XF c) (h₁ : genPt (Z.ξ₀ ≫ Y.j) ⤳ centre (y ≫ Y.j))
-    (ψ : regAt (Z.ξ₀ ≫ Y.j) ⟨_, h₁⟩ →+* K) (g : ℕ) (ℓ : Fin g → Z.V) (ρK : 𝓞 E →+* Module.End K (Fin g → K)),
-    (∀ a : regAt (Z.ξ₀ ≫ Y.j) ⟨_, h₁⟩, ValAt (Z.ξ₀ ≫ Y.j) (y ≫ Y.j) (a : Z.Ω) (ψ a)) → Z.M.lat.IsFrameAt ℓ ⟨_, h₁⟩ → Tied ℓ ψ Z.ρ ρK →
-    ∃ (MU : LieModel Xo.univ.t.G (under y) (Fin g → K)) (MY : LieModel Y.t.G (y ≫ Y.j) (Fin g → K)),
-      (∀ e, SameVec Y y (MU.pt e) (MY.pt e)) ∧
-      (∀ x : Fin g → regAt (Z.ξ₀ ≫ Y.j) ⟨_, h₁⟩, Z.M.ValAt (y ≫ Y.j) (comb ℓ x) (MY.pt (fun i => ψ (x i)))) ∧
-      MU.IsActOf Xo.univ.t.act.act ρK ∧ MY.IsActOf Y.t.act.act ρK := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Flat.CPoint.tangent_coords
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComponentSpecializationLatticeBasisStatement =====
@@ -479,7 +471,6 @@ variable {X : Scheme.{0}} {Ω : Type} [Field Ω]
 def baseFn {O : Type} [CommRing O] (s : X ⟶ Sp O) (o : O) : Γ(X, ⊤) :=
   s.appTop.hom ((Scheme.ΓSpecIso (CommRingCat.of O)).inv.hom o)
 
-
 set_option backward.isDefEq.respectTransparency false in
 theorem baseFn_value {O R : Type} [CommRing O] [CommRing R] [IsLocalRing R] (s : X ⟶ Sp O) (f : Sp R ⟶ X)
     (φ : O →+* R) (hf : f ≫ s = spMap φ) (o : O) :
@@ -496,7 +487,6 @@ theorem baseFn_value {O R : Type} [CommRing O] [CommRing R] [IsLocalRing R] (s :
   rw [← e] at e2
   exact congrArg (fun q => q.hom o) e2
 
-
 set_option backward.isDefEq.respectTransparency false in
 theorem genMap_germ (ξ : Sp Ω ⟶ X) (p : Cpt ξ) (g : Γ(X, ⊤)) :
     genMap ξ p (X.presheaf.germ ⊤ p.1 trivial g) =
@@ -504,7 +494,6 @@ theorem genMap_germ (ξ : Sp Ω ⟶ X) (p : Cpt ξ) (g : Γ(X, ⊤)) :
   have e := TopCat.Presheaf.germ_stalkSpecializes X.presheaf (U := ⊤) (x := genPt ξ) (y := p.1) trivial p.2
   have e2 := congrArg (fun q => (q ≫ Scheme.stalkClosedPointTo ξ).hom g) e
   exact e2
-
 
 set_option backward.isDefEq.respectTransparency false in
 theorem genMap_specializes (ξ : Sp Ω ⟶ X) (p q : Cpt ξ) (h : p.1 ⤳ q.1) (s : X.presheaf.stalk q.1) :
@@ -750,8 +739,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.CompanionTheory.Ar.Flat.CPoint
 
-theorem _root_.GlobalTheory.T.generic_point_component_local_ring : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X), IsCptGen ξ → ∀ q : Cpt ξ, IsLocalRing (regAt ξ q) := by
-  first | exact @GlobalTheory.CompanionTheory.Ar.Flat.CPoint.isLocalRing_regAt
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenericPointComponentLocalRingStatement =====
@@ -1636,8 +1623,6 @@ theorem norm_eq_one_of {F : Type} [NormedField F] (x y : F) (hx : ‖x‖ ≤ 1)
   rw [norm_mul, norm_one] at h4
   nlinarith [norm_nonneg x, norm_nonneg y]
 
-
-
 theorem value_at_point : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (β : O →+* c.F) (Y : Model Xo c β) (U : Set (Xo.XF c)) (Z : CptOver Y U) (τ : E →+* ℂ) (ϖ : O) (p : Nat.Primes) (κ : c.F →+* ℂ_[p]) (φ : FrameFn Xo c) (𝓗 : HodgeLat Z.M.lat Z.ρ H.bar (D.p + D.q)) (σ : E →+* Z.Ω) (v : Fin D.p → Z.V) (w : Fin D.q → Z.V) (u : Fin (D.p + D.q) → Z.V × Module.Dual Z.Ω Z.V) (α κ' : Z.Ω) (M : ℕ) (a : ℤ), τ (H.rt : E) = H.rt0 → Irreducible ϖ → Function.Injective β → (∀ x : c.F, ‖κ x‖ ≤ 1 ↔ x ∈ β.range) → (∀ b : 𝓞 E, σ (b : E) = Z.inc (tauIn c τ b)) → LinearIndependent Z.Ω v → Submodule.span Z.Ω (Set.range v) = HT.eigSp Z.ρ σ → LinearIndependent Z.Ω w → Submodule.span Z.Ω (Set.range w) = eigSp Z.ρ (Z.inc.comp (tauIn c (ComplexEmbedding.conjugate τ))) → IsAdapted 𝓗.ρH σ v w u → 0 < M → (∀ x, OrderAt (detLat (𝓗.quot σ) u) (α / κ') (Z.inc (β ϖ)) M a x) → κ' ≠ 0 → Represents Y U τ Z.M (α • exteriorPower.ιMulti Z.Ω D.p v) (κ' • exteriorPower.ιMulti Z.Ω D.q w) φ → IsLineFn U τ φ → ∃ t : ℝ, HasFinNorm U τ φ p κ t := by
   intro E _ _ _ H D l Xo c O _ _ _ β Y U Z τ ϖ p κ φ 𝓗 σ v w u α κ' M a hτ hϖ hinj hr hσ hv hvs hw hws had hM hord hκ' hrep hφ
   haveI : CharZero Z.Ω := charZero_of_injective_ringHom Z.inc.injective
@@ -1692,7 +1677,7 @@ theorem value_at_point : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
     (GlobalTheory.T.hodge_lattice_extend_scalars E Z.Ω Z.V Z.ρ 𝓗.ρH H.bar _ _ hle _ _ ℓ t (𝓗.HL ⟨_, h₂⟩) (𝓗.HL ⟨_, h₁⟩) K V ψ
       𝓗.act_fst 𝓗.act_inr hLI hℓs hHx hHy hmemK)
 
-  haveI : IsLocalRing (regAt (Z.ξ₀ ≫ Y.j) ⟨_, h₁⟩) := GlobalTheory.T.generic_point_component_local_ring _ _ _ Z.gen _
+  haveI : IsLocalRing (regAt (Z.ξ₀ ≫ Y.j) ⟨_, h₁⟩) := GlobalTheory.CompanionTheory.Ar.Flat.CPoint.isLocalRing_regAt _ _ _ Z.gen _
   have hcarry : ∀ (τ₀ : E →+* ℂ) (e : E), ∃ h : Z.inc.comp (inE c τ₀) e ∈ regAt (Z.ξ₀ ≫ Y.j) ⟨_, h₁⟩,
       ψ ⟨_, h⟩ = βK.comp (inE c τ₀) e := fun τ₀ e => hinc _
   have hcarryC : ∀ (τ₀ : E →+* ℂ) (e : E), ∃ h : Z.inc.comp (inE c τ₀) e ∈ regAt (Z.ξ₀ ≫ Y.j) ⟨_, h₁⟩,
@@ -1730,7 +1715,7 @@ theorem value_at_point : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
     (hcarry τ) hx₁ hb₁ hs₁ hrk
   obtain ⟨hK₂, hK₂s⟩ := GlobalTheory.T.reduce_lattice_coords_to_residue E Z.Ω Z.V K Z.ρ _ _ _ ℓ ψ ρK _ (βK.comp (inE c (ComplexEmbedding.conjugate τ))) b₂ x₂ hLI hℓs hρst hTK
     (hcarry _) hx₂ hb₂ hs₂ hrk'
-  obtain ⟨MU, MY, hSV, hVal, hAU, hAY⟩ := GlobalTheory.T.component_specialization_lattice_basis E H D l Xo c O β Y U Z K y h₁ ψ _ ℓ ρK hval
+  obtain ⟨MU, MY, hSV, hVal, hAU, hAY⟩ := GlobalTheory.CompanionTheory.Ar.Flat.CPoint.tangent_coords E H D l Xo c O β Y U Z K y h₁ ψ _ ℓ ρK hval
     (hℓ ⟨_, h₁⟩ trivial hy₂) hTK
 
   have hfrK : ∀ {n : ℕ} (σ₀ : E →+* K) (σi : 𝓞 E →+* K) (bK : Fin n → Fin _ → K), (∀ a : 𝓞 E, σi a = σ₀ (a : E)) →

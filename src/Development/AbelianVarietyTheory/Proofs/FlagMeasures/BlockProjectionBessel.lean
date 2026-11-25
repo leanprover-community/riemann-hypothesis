@@ -94,12 +94,9 @@ theorem herm_inv {ι : Type} [Fintype ι] [DecidableEq ι]
   rw [Matrix.star_mulVec, ← Matrix.dotProduct_mulVec, Matrix.mulVec_mulVec, Matrix.mulVec_mulVec,
     Matrix.mulVec_mulVec, ← Matrix.mul_assoc, hinv a ha]
 
-theorem one_mem_UH : (1 : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) ∈ UH (Hpk k r) := by
-  simp [UH]
-
 theorem mem_Sset_of_UW {z : Fin (2 * r + k + 1) → ℂ} {g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (hg : g ∈ UWset k r z) : g ∈ Sset k r z := by
-  refine ⟨g, hg, 1, ⟨one_mem_UH, fun a i _ => ?_, fun i j _ _ _ => ?_⟩, (Matrix.mul_one g).symm⟩ <;>
+  refine ⟨g, hg, 1, ⟨Formalism.QuantumDeterminants.WeylGroupFacts.uh_one, fun a i _ => ?_, fun i j _ _ _ => ?_⟩, (Matrix.mul_one g).symm⟩ <;>
     exact Matrix.one_apply
 
 theorem herm_cell {ι : Type} [Fintype ι] [DecidableEq ι]

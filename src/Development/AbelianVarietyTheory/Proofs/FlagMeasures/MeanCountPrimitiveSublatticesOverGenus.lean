@@ -311,7 +311,6 @@ open GlobalTheory.Mass.DiscOrder
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
 
-
 omit [StarRing K] [Module K V] [IsScalarTower (𝓞 K) K V] in
 theorem idxN_span (x : V) (S : Submodule (𝓞 K) V) :
     idxN (Submodule.span (𝓞 K) {x}) S =
@@ -324,19 +323,6 @@ theorem idxN_span (x : V) (S : Submodule (𝓞 K) V) :
   rw [hr, ← AddSubgroup.relIndex_comap, AddSubgroup.relIndex_top_right, Ideal.absNorm_apply,
     Submodule.cardQuot_apply]
   rfl
-
-omit [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] in
-theorem nondeg (h : V →ₗ⋆[K] V →ₗ[K] K) (hp : PD h) : h.Nondegenerate := by
-  obtain ⟨τ⟩ : Nonempty (K →+* ℂ) := inferInstance
-  refine And.intro (fun x hx => ?_) (fun y hy => ?_)
-  · by_contra h0
-    have hpos := hp τ x h0
-    rw [hx x, map_zero, Complex.zero_re] at hpos
-    exact lt_irrefl _ hpos
-  · by_contra h0
-    have hpos := hp τ y h0
-    rw [hy y, map_zero, Complex.zero_re] at hpos
-    exact lt_irrefl _ hpos
 
 omit [StarRing K] in
 theorem span_isLattice (h1 : Module.finrank K V = 1) {x : V} (hx : x ≠ 0) :
@@ -447,7 +433,7 @@ theorem exists_gen [FiniteDimensional K V] (h : V →ₗ⋆[K] V →ₗ[K] K) (h
 
 theorem main : ∀ (K V : Type) [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] (h : V →ₗ⋆[K] V →ₗ[K] K), IsCMUnram K → h.IsSymm → PD h → Module.finrank K V = 1 → ∀ M : Submodule (𝓞 K) V, IsIntLat h M → ∃ x ∈ M, x ≠ 0 ∧ ∀ τ : K →+* ℂ, (τ (h x x)).re ≤ (2 * vInv K) * (discN h M : ℝ) ^ ((1 : ℝ) / (2 * fDeg K)) := by
   intro K V _ _ _ _ _ _ _ _ h hK hs hp h1 M hM
-  have hn := nondeg h hp
+  have hn := GlobalTheory.Mass.SameBad.nondeg_of_PD h hp
   obtain ⟨x₀, b, I, hx0, hb, hI, hIM, hnorm⟩ := exists_gen h hs hn h1 M hM
   have hTC : IsTotallyComplex K := hK.1
   have hstar := hK.2.1
@@ -747,7 +733,6 @@ section General
 
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [FiniteDimensional K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
-
 
 omit [FiniteDimensional K V] in
 theorem disc_of_equiv (h : V →ₗ⋆[K] V →ₗ[K] K) (N : Submodule (𝓞 K) V) (T : ℕ)

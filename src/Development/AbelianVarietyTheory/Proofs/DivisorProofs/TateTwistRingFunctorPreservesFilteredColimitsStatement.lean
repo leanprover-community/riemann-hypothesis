@@ -44,6 +44,3 @@ import Mathlib.Tactic.NormNum.RealSqrt
 @[expose] public section
 
 open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex TensorProduct GlobalTheory.EtC
-
-theorem _root_.GlobalTheory.T.tateTwistRingFunctor_preservesFilteredColimits : ∀ (q : ℕ) (i : ℤ), PreservesFilteredColimitsOfSize.{0, 0} (twF q i) := by
-  first | (exact @GlobalTheory.EtC.TwistFiltered.twF_preservesFilteredColimits)

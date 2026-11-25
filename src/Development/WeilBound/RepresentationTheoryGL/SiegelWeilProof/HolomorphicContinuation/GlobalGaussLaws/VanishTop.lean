@@ -162,11 +162,6 @@ theorem inv_JJ : (JJ n)⁻¹ = -JJ n :=
 theorem inv_nU (x : Matrix (Fin n) (Fin n) ℂ) : (nU x)⁻¹ = nU (-x) :=
   Matrix.inv_eq_left_inv (by unfold nU; simp [Matrix.fromBlocks_multiply])
 
-theorem inG_nU {b : Matrix (Fin n) (Fin n) ℂ} (hb : bᴴ = b) : InG (nU b) := by
-  unfold InG nU JJ
-  rw [Matrix.fromBlocks_conjTranspose]
-  simp [Matrix.fromBlocks_multiply, hb]
-
 theorem inG_lev {a : Matrix (Fin n) (Fin n) ℂ} (ha : IsUnit a.det) : InG (fromBlocks a 0 0 (a⁻¹)ᴴ) := by
   have haH : IsUnit aᴴ.det := by rw [Matrix.det_conjTranspose]; exact ha.star
   have h1 : aᴴ * a⁻¹ᴴ = 1 := by rw [← Matrix.conjTranspose_mul, Matrix.nonsing_inv_mul _ ha, Matrix.conjTranspose_one]
@@ -184,7 +179,7 @@ theorem inG_JJ : InG (JJ n) := by
   unfold InG
   rw [hH, Matrix.neg_mul, JJ_mul_JJ, neg_neg, Matrix.one_mul]
 
-def nEl (b : Matrix (Fin n) (Fin n) ℂ) (hb : bᴴ = b) : GR n := mkGR (nU b) (inG_nU hb)
+def nEl (b : Matrix (Fin n) (Fin n) ℂ) (hb : bᴴ = b) : GR n := mkGR (nU b) (PositivityTheory.Rg.Sw.LVs.ts_inG_nU hb)
 
 def mEl (a : Matrix (Fin n) (Fin n) ℂ) (ha : IsUnit a.det) : GR n := mkGR (fromBlocks a 0 0 (a⁻¹)ᴴ) (inG_lev ha)
 
@@ -429,10 +424,6 @@ namespace PositivityTheory.Rg.Sw.Glob.DenseP
 
 variable {n : ℕ}
 
-theorem inG_nUh {b : Matrix (Fin n) (Fin n) ℂ} (hb : bᴴ = b) : InG (nU b) := by
-  simp only [InG, nU, JJ, Matrix.fromBlocks_conjTranspose, Matrix.fromBlocks_multiply, hb]
-  simp
-
 theorem inG_mL {A : Matrix (Fin n) (Fin n) ℂ} (hA : IsUnit A.det) : InG (fromBlocks A 0 0 (A⁻¹)ᴴ) := by
   have h1 : Aᴴ * (A⁻¹)ᴴ = 1 := by
     rw [← Matrix.conjTranspose_mul, Matrix.nonsing_inv_mul _ hA, Matrix.conjTranspose_one]
@@ -452,7 +443,7 @@ theorem hpart_herm (A : Matrix (Fin n) (Fin n) ℂ) : (hpart A)ᴴ = hpart A := 
 theorem hpart_of_herm {b : Matrix (Fin n) (Fin n) ℂ} (hb : bᴴ = b) : hpart b = b := by
   rw [hpart, hb, ← two_smul ℂ b, smul_smul]; norm_num
 
-def nuE (A : Matrix (Fin n) (Fin n) ℂ) : GR n := mkGR (nU (hpart A)) (inG_nUh (hpart_herm A))
+def nuE (A : Matrix (Fin n) (Fin n) ℂ) : GR n := mkGR (nU (hpart A)) (PositivityTheory.Rg.Sw.LVs.ts_inG_nU (hpart_herm A))
 
 theorem continuous_hpart : Continuous (hpart (n := n)) := by
   have h : Continuous fun A : Matrix (Fin n) (Fin n) ℂ => A + Aᴴ :=
@@ -475,7 +466,6 @@ theorem continuous_nuE : Continuous (nuE (n := n)) := by
       exact Matrix.inv_eq_right_inv (nU_mul_neg _)
     rw [e]
     exact continuous_nU.comp continuous_hpart.neg
-
 
 open Classical in
 def mlE (A : Matrix (Fin n) (Fin n) ℂ) : GR n :=
@@ -710,7 +700,7 @@ theorem gens_mem (τ : D.what₂.Tau) (h : GR n) (hh : IsNElt h ∨ IsMElt h ∨
     h ∈ (gam D n τ).topologicalClosure := by
   rcases hh with ⟨b, hb, e⟩ | ⟨A, hA, e⟩ | e
   · have hh : h = nuE b := by
-      rw [mkGR_ext (inG_nUh (hpart_herm b)) (show mR h = nU (hpart b) by rw [hpart_of_herm hb]; exact e)]; rfl
+      rw [mkGR_ext (PositivityTheory.Rg.Sw.LVs.ts_inG_nU (hpart_herm b)) (show mR h = nU (hpart b) by rw [hpart_of_herm hb]; exact e)]; rfl
     rw [hh]
     refine closure_mono ?_ (nuE_mem_closure (tauE D τ) (denseRange_tauE τ) b)
     rintro _ ⟨e', rfl⟩
@@ -718,7 +708,7 @@ theorem gens_mem (τ : D.what₂.Tau) (h : GR n) (hh : IsNElt h ∨ IsMElt h ∨
         hpart (e'.map (tauE D τ)) := by
       rw [map_smul_E, Matrix.map_add _ (map_add (tauE D τ)), cT_map_tauE, map_inv₀, map_ofNat, hpart, one_div]
     obtain ⟨γ, hγ, he⟩ := ratPt_of τ (blk4 1 ((2 : D.host.E)⁻¹ • (e' + Formalism.UG.cT (D.sp.cm.sig : D.host.E →+* D.host.E) e')) 0 1)
-      (nU (hpart (e'.map (tauE D τ)))) (inG_nUh (hpart_herm _)) (by
+      (nU (hpart (e'.map (tauE D τ)))) (PositivityTheory.Rg.Sw.LVs.ts_inG_nU (hpart_herm _)) (by
         rw [block_matrix_map, map0, map1, hβ]
         rfl)
     exact ⟨γ, hγ, he⟩

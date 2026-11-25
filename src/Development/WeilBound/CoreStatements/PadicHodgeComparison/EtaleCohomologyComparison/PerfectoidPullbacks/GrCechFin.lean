@@ -64,20 +64,6 @@ open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris Divided
 
 namespace GlobalTheory.CompanionTheory.CupdR
 
-theorem dividedPowerFiltration_mul {B : Type} [CommRing B] {J : Ideal B} (δ : DividedPowers J) (r s : ℕ) :
-    pdP δ r * pdP δ s ≤ pdP δ (r + s) := by
-  unfold pdP
-  rw [Ideal.span_mul_span']
-  refine Ideal.span_le.2 ?_
-  rintro _ ⟨_, ⟨l, hl, hr, rfl⟩, _, ⟨l', hl', hr', rfl⟩, rfl⟩
-  refine Ideal.subset_span ⟨l ++ l', ?_, ?_, ?_⟩
-  · intro q hq
-    rcases List.mem_append.1 hq with h | h
-    exacts [hl q h, hl' q h]
-  · simp only [List.map_append, List.sum_append]
-    omega
-  · simp [List.map_append, List.prod_append]
-
 theorem term_mem {b : Base} {L : b.Fun} {p n r : ℕ} (t : ComposableArrows (Thick L) n)
     (f : CH.Cn (CH.modF (thA L)) p) (hf : ∀ s, (show (s.obj (Fin.last p)).B from f s) ∈ (s.obj (Fin.last p)).pdPow r)
     (g : Fin (p + 1) → Fin (n + 1)) (hg : Monotone g) :
@@ -112,7 +98,7 @@ theorem cup_bilinear_filtered {K : Type} [CommRing K] {X : Scheme.{0}} (q : X �
     rw [cup_eq_local]
     exact CrystallineSemistableComparison.P.cxcup_cls Q (rfl : i + j = i + j) z.1 w.1 z.2 w.2 hc
   refine ⟨⟨_, hc⟩, e.symm, fun t => ?_⟩
-  exact dividedPowerFiltration_mul _ r s (Ideal.mul_mem_mul
+  exact GlobalTheory.CompanionTheory.DPFil.dividedPowerFiltration_mul_le _ r s (Ideal.mul_mem_mul
     (term_mem t z.1 hz (CH.front rfl) (CH.front_mono rfl)) (term_mem t w.1 hw (CH.back rfl) (CH.back_mono rfl)))
 
 end GlobalTheory.CompanionTheory.CupdR
@@ -132,7 +118,6 @@ noncomputable section
 open CategoryTheory AlgebraicGeometry TensorProduct GlobalTheory.LogCris DividedPowers
 
 namespace CrystallineSemistableComparison.Pb
-
 
 theorem gr_cech_fin_pf : KH.GrCechFin :=
   @_root_.GlobalTheory.CompanionTheory.GrCech.main_thm locGr_h polyTf_h globSerreSt_h globVanSt_h

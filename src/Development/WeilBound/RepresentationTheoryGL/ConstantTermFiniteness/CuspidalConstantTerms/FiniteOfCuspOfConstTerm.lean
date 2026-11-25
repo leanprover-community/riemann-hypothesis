@@ -292,7 +292,6 @@ open GlobalTheory.AutomorphicL2Unitary GlobalTheory.Cusp
 variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [SecondCountableTopology G]
   [MeasurableSpace G] [BorelSpace G] {Γ N : Subgroup G} [DiscreteTopology Γ] [LocallyCompactSpace N]
 
-
 omit [SecondCountableTopology G] [DiscreteTopology Γ] [LocallyCompactSpace N] in
 theorem aestronglyMeasurable_out {E : Type} [NormedAddCommGroup E] [SecondCountableTopology E]
     {Φ : G → E} (hΦ : Continuous Φ) (hinv : ∀ γ ∈ Γ, ∀ x, Φ (γ * x) = Φ x) (g : G)
@@ -310,7 +309,6 @@ theorem aestronglyMeasurable_out {E : Type} [NormedAddCommGroup E] [SecondCounta
       hl.lift_descend
     rw [e]; exact hm
   exact hq.aestronglyMeasurable
-
 
 omit [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G] [DiscreteTopology Γ] [LocallyCompactSpace N] in
 theorem exists_bound {T E : Type} [TopologicalSpace T] [NormedAddCommGroup E] (hc : Cocompact Γ N)
@@ -350,7 +348,6 @@ theorem hasFDerivAt_param {k : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpa
     (.of_forall fun q t ht => hC _ t (Metric.ball_subset_closedBall ht)) (integrable_const C)
     (.of_forall fun q t _ => (hd _ t).hasFDerivAt)
 
-
 omit [TopologicalSpace G] [IsTopologicalGroup G] [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G] in
 theorem iteratedFDeriv_fderiv_eq {k : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
     (f : (Fin k → ℝ) → E) (m : ℕ) (t : Fin k → ℝ) :
@@ -358,7 +355,6 @@ theorem iteratedFDeriv_fderiv_eq {k : ℕ} {E : Type} [NormedAddCommGroup E] [No
       (continuousMultilinearCurryRightEquiv' ℝ m (Fin k → ℝ) E) (iteratedFDeriv ℝ (m + 1) f t) := by
   rw [iteratedFDeriv_succ_eq_comp_right]
   simp
-
 
 omit [TopologicalSpace G] [IsTopologicalGroup G] [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G] in
 theorem continuous_of_iteratedFDeriv_zero {X : Type} [TopologicalSpace X] {k : ℕ} {E : Type} [NormedAddCommGroup E]
@@ -466,7 +462,6 @@ theorem commute_prod_realLine {k : ℕ} {γ : Fin k → ℝ → GAd σ J} (hγ :
   exact commute_embArch σ J y (mem_finPts_iff_forall.1 hu w)
 
 end GlobalTheory.UAut.JointDer
-
 
 open GlobalTheory.UAut.JointDer in
 theorem GlobalTheory.UAut.continuous_iteratedFDeriv_prod_realLine : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (n : ℕ) (J : Matrix (Fin n) (Fin n) E), IsHermND σ J → ∀ (d : ℕ) (δ : Fin d → ℝ → GAd σ J), (∀ a, IsRealLine σ J (δ a)) → (∀ U ∈ 𝓝 (1 : GAd σ J), ∃ W ∈ 𝓝 (1 : GAd σ J), ∃ s : GAd σ J → (Fin d → ℝ), ContinuousAt s 1 ∧ ∀ y ∈ W, ∃ u ∈ U, u ∈ finPts σ J ∧ y = (List.ofFn fun a => δ a (s y a)).prod * u) → ∀ φ : GAd σ J → ℂ, (∃ U : Subgroup (GAd σ J), IsOpen (U : Set (GAd σ J)) ∧ ∀ k ∈ U, k ∈ finPts σ J → ∀ g, φ (g * k) = φ g) → IsSm σ J φ → ∀ (k : ℕ) (γ : Fin k → ℝ → GAd σ J), (∀ i, IsRealLine σ J (γ i)) → ∀ m : ℕ, Continuous fun p : GAd σ J × (Fin k → ℝ) => iteratedFDeriv ℝ m (fun t : Fin k → ℝ => φ (p.1 * (List.ofFn fun i => γ i (t i)).prod)) p.2 := by
@@ -1373,8 +1368,6 @@ open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Published GlobalTheory.Published.AutFin GlobalTheory.StdPar GlobalTheory.ThK.SmoothLev GlobalTheory.CompanionTheory.Hypotheses₂.ConstFin
 
-theorem _root_.GlobalTheory.T.rational_unipotent_le_parabolic : ∀ (D : D7) (V : HSp D) (m : ℕ) (X Y : Matrix (Fin V.rank) (Fin m) D.host.E), GlobalTheory.SiegelSet.IsWittFrame D.sp.cm.sig V.gram X Y → ∀ S T : Finset (Fin m), S ⊆ T → GQ V ⊓ unip D.sp.cm.sig V.gram X T ≤ leftSub V X Y S := by
-  first | exact @GlobalTheory.CompanionTheory.Hypotheses₂.ConstFin.ratPts_unip_le_leftSub
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GlobalProofs.RationalUnipotentLeParabolicStatement =====
@@ -1428,7 +1421,7 @@ theorem constAlong_mem_formsOn [∀ τ, FiniteDimensional ℂ (W τ)] (hθ : IsI
   obtain ⟨m1, m2⟩ := GlobalTheory.T.constant_term_moderate_growth_inherited D V m X Y hW S T hST hT φ a h1 ha
   obtain ⟨-, μ, 𝓕, b1, b2, b3⟩ := st.1 T
   have hleft : IsSmModOn D.sp.cm.sig V.gram ((GQ V ⊓ unip D.sp.cm.sig V.gram X T : Subgroup (GA D V)) : Set (GA D V)) φ :=
-    ⟨fun γ hγ g => h1.left γ (GlobalTheory.T.rational_unipotent_le_parabolic D V m X Y hW S T hST hγ) g, h1.level, h1.cont, h1.smooth, h1.growth⟩
+    ⟨fun γ hγ g => h1.left γ (GlobalTheory.CompanionTheory.Hypotheses₂.ConstFin.ratPts_unip_le_leftSub D V m X Y hW S T hST hγ) g, h1.level, h1.cont, h1.smooth, h1.growth⟩
   refine ⟨m1, fun u hu hu' g => ?_, fun τ => GlobalTheory.T.constant_term_parabolic_K_finite D θ V m X Y hW S T hST τ (ε τ) (fr τ) (W τ) (ρ τ) φ a h1 (h3 τ) ha,
     fun τ k => ?_⟩
   · rw [ha μ 𝓕 b1 b2 b3 (g * u), ha μ 𝓕 b1 b2 b3 g]
@@ -1457,7 +1450,7 @@ theorem finite_formsOn [∀ τ, FiniteDimensional ℂ (W τ)] (hθ : IsInfFam θ
   have hmem : ∀ f : A, f.1 ∈ formsOn θ V X Y T U ε fr ρ c := fun f => mem_formsOn_of_mem_span hθ f.2
   have hl : ∀ f : A, ∀ T' : Finset (Fin m), T ⊆ T' → GlobalTheory.AutomorphicL2Unitary.LeftInv
       (GlobalTheory.AdelicU.ratPts D.sp.cm.sig V.gram ⊓ unip D.sp.cm.sig V.gram X T') f.1 := fun f T' h γ hγ g =>
-    (hmem f).1.left γ (GlobalTheory.T.rational_unipotent_le_parabolic D V m X Y hW T T' h hγ) g
+    (hmem f).1.left γ (GlobalTheory.CompanionTheory.Hypotheses₂.ConstFin.ratPts_unip_le_leftSub D V m X Y hW T T' h hγ) g
 
   have key : ∀ k : {k // k ∉ T}, ∃ L : A →ₗ[ℂ] Submodule.span ℂ (formsOn θ V X Y (insert k.1 T) U ε fr ρ c),
       ∀ f : A, IsConstAlong D.sp.cm.sig V.gram X (insert k.1 T) f.1 (L f).1 := by
@@ -1660,7 +1653,6 @@ theorem finite_of_cusp_of_constTerm {D : D7} (θ : D.what₂.Tau → (Ainf D.hos
 end GlobalTheory.CompanionTheory.Hypotheses₂.HCF.Rg
 
 namespace GlobalTheory.CompanionTheory.Hypotheses₂
-
 
 open GlobalTheory.Published.AutFin in
 theorem _root_.PositivityTheory.RgHf.harishChandraFinite : GlobalTheory.Published.HarishChandraFinite := by

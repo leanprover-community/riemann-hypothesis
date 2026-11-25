@@ -776,12 +776,6 @@ theorem herm3 (v w : Fin (2 * r + k + 1) → ℂ) : herm (Hpk k r) v w =
   rw [dotProduct, sum3]
   simp [GlobalTheory.Amp.NCoord.H_e, H_w, GlobalTheory.Amp.NCoord.H_es, rE, rW, rS, dotProduct]
 
-theorem herm_e (v : Fin (2 * r + k + 1) → ℂ) (a : Fin r) :
-    herm (Hpk k r) v (bvec (eI k r a)) = v (esI k r a) := by
-  unfold herm
-  rw [← GlobalTheory.Amp.NCoord.H_e v a]
-  simp [bvec, dotProduct, Pi.single_apply, apply_ite]
-
 theorem HH : Hpk k r * Hpk k r = 1 := by
   ext x y
   rw [Matrix.mul_apply, sum3]
@@ -794,12 +788,6 @@ theorem HbHb : Hb k * Hb k = 1 := by
   unfold Hb; rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
   congr 1; funext j; split_ifs <;> simp
 
-theorem unit_of_UH {n : ℕ} {H g : Matrix (Fin n) (Fin n) ℂ} (hH : H * H = 1) (hg : g ∈ UH H) : IsUnit g.det := by
-  have hm' : gᴴ * H * g = H := hg
-  have h1 : (H * gᴴ * H) * g = 1 := by
-    rw [← hH]; nth_rewrite 4 [← hm']; simp only [Matrix.mul_assoc]
-  exact Matrix.isUnit_det_of_left_inverse h1
-
 theorem herm_iso {n : ℕ} {H g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ UH H) (v w : Fin n → ℂ) :
     herm H (g *ᵥ v) (g *ᵥ w) = herm H v w := by
   have hm' : gᴴ * H * g = H := hg
@@ -808,11 +796,11 @@ theorem herm_iso {n : ℕ} {H g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ UH H) 
 
 theorem herm_inv {g : Mat k r} (hg : g ∈ GG k r) (v w : Fin (2 * r + k + 1) → ℂ) :
     herm (Hpk k r) v (g⁻¹ *ᵥ w) = herm (Hpk k r) (g *ᵥ v) w := by
-  rw [← herm_iso hg, Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ (unit_of_UH HH hg), Matrix.one_mulVec]
+  rw [← herm_iso hg, Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ (GlobalTheory.Amp.Iwa.UH_det HH hg), Matrix.one_mulVec]
 
 theorem herm_inv' {g : Mat k r} (hg : g ∈ GG k r) (v w : Fin (2 * r + k + 1) → ℂ) :
     herm (Hpk k r) (g⁻¹ *ᵥ v) w = herm (Hpk k r) v (g *ᵥ w) := by
-  rw [← herm_iso hg, Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ (unit_of_UH HH hg), Matrix.one_mulVec]
+  rw [← herm_iso hg, Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ (GlobalTheory.Amp.Iwa.UH_det HH hg), Matrix.one_mulVec]
 
 theorem of_Xst {v : Fin (2 * r + k + 1) → ℂ} (hv : v ∈ Xst k r) : rE k r v = 0 ∧ rW k r v = 0 := by
   induction hv using Submodule.span_induction with
@@ -998,7 +986,7 @@ theorem mem_Hcom (hn : IsNormal k r β g) (hC : (Cm k r g).det ≠ 0) (w : Fin (
       herm (Hb k) (rW k r w) (rW k r (g⁻¹ *ᵥ z)) = 0 := by
   show (∀ a : Fin (r + 1), _ ∧ _) ↔ _
   rw [Fin.forall_fin_succ']
-  simp only [fvec_cast, fvec_last, herm_e, herm_Cm hn]
+  simp only [fvec_cast, fvec_last, GlobalTheory.Amp.NfMid.herm_e, herm_Cm hn]
   constructor
   · rintro ⟨h1, h2, h3⟩
     have hS : rS k r w = 0 := funext fun a => (h1 a).1
@@ -1050,7 +1038,7 @@ theorem gram_ne (ht : TwoFl k r z z' g) (hn : IsNormal k r β g) :
     funext a
     obtain ⟨h1, h2⟩ := of_Xst (hn.2.1 a).2
     show (g⁻¹ *ᵥ z) (esI k r a) = 0
-    rw [← herm_e (g⁻¹ *ᵥ z) a, herm_inv' hg, herm3, h1, h2, z1]
+    rw [← GlobalTheory.Amp.NfMid.herm_e (g⁻¹ *ᵥ z) a, herm_inv' hg, herm3, h1, h2, z1]
     simp [herm]
   have real : ∀ v : Fin (k + 1) → ℂ, herm (Hb k) v v = ((herm (Hb k) v v).re : ℂ) := fun v =>
     (Complex.conj_eq_iff_re.1 (herm_star v v)).symm
@@ -1058,7 +1046,7 @@ theorem gram_ne (ht : TwoFl k r z z' g) (hn : IsNormal k r β g) :
     rw [real, Tz, herm3, z1', z2']; simp
   have e2 : herm (Hb k) (rW k r (g⁻¹ *ᵥ z)) (rW k r (g⁻¹ *ᵥ z)) = -(Tz k r z : ℂ) := by
     have : herm (Hpk k r) z z = herm (Hpk k r) (g⁻¹ *ᵥ z) (g⁻¹ *ᵥ z) := by
-      rw [herm_inv hg, Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ (unit_of_UH HH hg), Matrix.one_mulVec]
+      rw [herm_inv hg, Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ (GlobalTheory.Amp.Iwa.UH_det HH hg), Matrix.one_mulVec]
     rw [real, Tz, this, herm3, hy]; simp
   have e3 : herm (Hb k) (rW k r z') (rW k r (g⁻¹ *ᵥ z)) = herm (Hpk k r) (g *ᵥ z') z := by
     rw [← herm_inv hg, herm3, z1', z2']; simp
@@ -1141,7 +1129,7 @@ theorem mem_pos (p : Fin (2 * r + k + 1) → ℂ) : p ∈ LinearMap.ker (Matrix.
 
 theorem Yv_normal : ∀ (k r : ℕ) (z z' : (Fin (2 * r + k + 1) → ℂ)) (g₀ : Mat k r) (β : Fin r → ℕ), 2 ≤ k → TwoFl k r z z' g₀ → IsNormal k r β g₀ → ∀ m ∈ UH (Hb k), ∃ P₀ : Submodule ℂ (EuclideanSpace ℂ (Fin (k + 1))), (Module.finrank ℂ P₀ = k - 2 ∨ Module.finrank ℂ P₀ = k - 1) ∧ ∀ (u : UT r → ℂ) (q : PPar k r) (a : Fin r → ℝ), (∀ b, 0 < a b) → Yv k r z z' g₀ (uEmb k r (upper u) * pOf k r q * uEmb k r (Matrix.diagonal fun b => (a b : ℂ)) * mEmb k r m) = gramProj P₀ fun b => m⁻¹ *ᵥ q.1 b := by
   intro k r z z' g β _ ht hn m hm
-  have hmu := unit_of_UH HbHb hm
+  have hmu := GlobalTheory.Amp.Iwa.UH_det HbHb hm
   obtain ⟨hD, hC⟩ := Cm_det ht hn
   refine ⟨Pz m (rW k r z') (rW k r (g⁻¹ *ᵥ z)), finrank_Pz hmu (gram_ne ht hn), fun u q a ha => ?_⟩
   obtain ⟨-, -, hU, hup⟩ := GlobalTheory.Amp.UEmb.uEmb_hom k r
@@ -1155,8 +1143,8 @@ theorem Yv_normal : ∀ (k r : ℕ) (z z' : (Fin (2 * r + k + 1) → ℂ)) (g₀
   set x := uEmb k r U * pOf k r q * uEmb k r A * mEmb k r m with hx
   have hxu : IsUnit x.det := by
     simp only [hx, Matrix.det_mul]
-    exact (((unit_of_UH HH (hU U hUu).1).mul (unit_of_UH HH (pEl_mem_UH _ _ (skewM_skew _ _)))).mul
-      (unit_of_UH HH (hU A hAu).1)).mul (unit_of_UH HH (mEmb_mem m hm))
+    exact (((GlobalTheory.Amp.Iwa.UH_det HH (hU U hUu).1).mul (GlobalTheory.Amp.Iwa.UH_det HH (pEl_mem_UH _ _ (skewM_skew _ _)))).mul
+      (GlobalTheory.Amp.Iwa.UH_det HH (hU A hAu).1)).mul (GlobalTheory.Amp.Iwa.UH_det HH (mEmb_mem m hm))
   have xS : ∀ v, rS k r (x *ᵥ v) = (U⁻¹)ᴴ *ᵥ ((A⁻¹)ᴴ *ᵥ rS k r v) := fun v => by
     simp only [hx, ← Matrix.mulVec_mulVec, pOf, rS_u, rS_p, rS_m]
   have xW : ∀ v, rW k r (x *ᵥ v) = m *ᵥ rW k r v + ∑ b, ((A⁻¹)ᴴ *ᵥ rS k r v) b • q.1 b := fun v => by
@@ -1531,12 +1519,6 @@ variable {k r : ℕ}
 theorem hpk_unit : IsUnit (Hpk k r).det :=
   Matrix.isUnit_det_of_right_inverse (hpkFacts k r).2.1
 
-theorem GG_mul {a b : Mat k r} (ha : a ∈ GG k r) (hb : b ∈ GG k r) : a * b ∈ GG k r :=
-  (uHGroup _ (Hpk k r) hpk_unit).2.1 a ha b hb
-
-theorem GG_unit {a : Mat k r} (ha : a ∈ GG k r) : IsUnit a.det :=
-  ((uHGroup _ (Hpk k r) hpk_unit).2.2 a ha).1
-
 theorem GG_inv {a : Mat k r} (ha : a ∈ GG k r) : a⁻¹ ∈ GG k r :=
   ((uHGroup _ (Hpk k r) hpk_unit).2.2 a ha).2
 
@@ -1596,7 +1578,7 @@ theorem fibre_volume : ∀ (k r : ℕ) (z z' : (Fin (2 * r + k + 1) → ℂ)) (�
     rw [← hDmin] at hne ⊢
     exact hDe.2 l hl hne
 
-  obtain ⟨n', hn', a, ha, m, hm, κ, hκ, hdec⟩ := GlobalTheory.Amp.Iwa.iwasawa k r (n₂ * g₁) (GG_mul hn₂G hg₁)
+  obtain ⟨n', hn', a, ha, m, hm, κ, hκ, hdec⟩ := GlobalTheory.Amp.Iwa.iwasawa k r (n₂ * g₁) (GlobalTheory.Amp.YInv.mul_mem hn₂G hg₁)
   have hB := _root_.GlobalTheory.Amp.FibNf.fibre_bound k r z z' g₀ β De hr hk hTF0 hNorm hDe0 m hm a ha
   set A := uEmb k r (Matrix.diagonal fun b => (a b : ℂ)) * mEmb k r m with hA
   have hn'G : n' ∈ GG k r := hn'.1
@@ -1610,7 +1592,7 @@ theorem fibre_volume : ∀ (k r : ℕ) (z z' : (Fin (2 * r + k + 1) → ℂ)) (�
   have hl2 : (lebN k r).map (lmulM n₂) = lebN k r := (_root_.GlobalTheory.Amp.NHaar.isHaarOn_lebN k r).2.2.2 n₂ hn₂
   have hr2 : (lebN k r).map (rmulM (n₂⁻¹ * n')) = lebN k r :=
     ((_root_.GlobalTheory.SgInf.unimodular_S_N_UW k r z hz hT (lebN k r)).2.1 (_root_.GlobalTheory.Amp.NHaar.isHaarOn_lebN k r)).1.1 _ ((nSubgroup k r).2.1 _ hn₂i _ hn')
-  have hu' : IsUnit (n₂⁻¹ * n').det := GG_unit (GG_mul (GG_inv hn₂G) hn'G)
+  have hu' : IsUnit (n₂⁻¹ * n').det := GlobalTheory.SgInf.isUnit_det_of_mem_GG (GlobalTheory.Amp.YInv.mul_mem (GG_inv hn₂G) hn'G)
   obtain ⟨e, he_map, he⟩ : ∃ e : Mt k r ≃ᵐ Mt k r, (lebN k r).map e = lebN k r ∧
       ∀ n, Matrix.of (e n) = n₂ * Matrix.of n * (n₂⁻¹ * n') :=
     ⟨twoEquiv n₂ (n₂⁻¹ * n') hu2 hu', map_twoEquiv hu2 hu' hl2 hr2, fun _ => rfl⟩
@@ -1736,7 +1718,7 @@ namespace GlobalTheory.Amp.AbsSide
 
 variable {k r : ℕ}
 
-alias continuous_conj := _root_.GlobalTheory.Amp.OnePiece.continuous_conj
+alias continuous_conj := _root_.Formalism.FourierDecayAlt.P.B2x1.conjM_cont
 
 theorem continuous_mulPair :
     Continuous fun p : Mt k r × Mt k r => lmulM (Matrix.of p.1) p.2 :=

@@ -1154,7 +1154,6 @@ end GlobalTheory.HoweR.SubQuot
 
 namespace GlobalTheory.HoweR
 
-
 open SubQuot in
 theorem exists_hwSub_of_quadMod : ∀ (p q : ℕ) (α β α' β' : ℂ), ∃ B : ℚ, ∀ (V : Type) [AddCommGroup V] [Module ℂ V]
     (act : Mat p q →ₗ[ℂ] Module.End ℂ V), Good act → ∀ N N' : Submodule ℂ V, N < N' → Stab act N →

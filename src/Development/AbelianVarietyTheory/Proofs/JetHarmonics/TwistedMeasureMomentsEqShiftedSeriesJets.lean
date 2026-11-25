@@ -62,11 +62,6 @@ theorem norm_zc (a : ℤ_[q]) : ‖zc a‖ = ‖a‖ := by
 
 theorem zc_natCast (m : ℕ) : zc (m : ℤ_[q]) = (m : ℂ_[q]) := by simp [zc]
 
-theorem continuous_zc : Continuous (zc : ℤ_[q] → ℂ_[q]) := by
-  refine (Isometry.of_dist_eq fun a b => ?_).continuous
-  rw [dist_eq_norm, dist_eq_norm, ← norm_zc]
-  simp [zc]
-
 theorem norm_sub_one_lt_of_root {ζ : ℂ_[q]} {n : ℕ} (h : ζ ^ (q ^ n) = 1) : ‖ζ - 1‖ < 1 := by
   apply GlobalTheory.MomOne.ShiftComp.norm_sub_one_lt_of_root <;> assumption
 
@@ -140,7 +135,7 @@ theorem twisted_moments : ∀ (q : ℕ) [Fact q.Prime] (S : ℂ_[q]⟦X⟧) (ζ 
   intro q _ S ζ n k hS h
   have hζ := norm_sub_one_lt_of_root h
   refine ⟨⟨fun a => ζ ^ (PadicInt.toZModPow n a).val * zc a ^ k,
-    (continuous_redFun n fun x => ζ ^ x.val).mul (continuous_zc.pow k)⟩, fun _ => rfl, ?_⟩
+    (continuous_redFun n fun x => ζ ^ x.val).mul (GlobalTheory.MomOne.ShiftComp.continuous_zc.pow k)⟩, fun _ => rfl, ?_⟩
   have := hasSum_coeff_iter hζ hS k 0
   rw [coeff_zero_eq_constantCoeff] at this
   convert this using 3 with m

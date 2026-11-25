@@ -933,21 +933,12 @@ open CategoryTheory AlgebraicGeometry GlobalTheory.LogCris ReciprocityTheory.Cha
 
 namespace CrystallineSemistableComparison.Pb
 
-theorem wch_mem : ∀ {K : Type} [Field K] {X : Scheme.{0}} (D : E.LineData X) (N : ℕ) (i : X ⟶ PSpace K N),
-    IsTautologicalLineAt D N i → ∀ j, wch i j ∈ 𝒱D D := _root_.GlobalTheory.CompanionTheory.ConeWchMem.main
-
 theorem wK_rel : ∀ {K : Type} [Field K] {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of K)) {N m : ℕ}
     (i : X ⟶ PSpace K N) (y : Fin m → MvPolynomial (Fin (N + 1)) K) (s : ℕ) (k : Fin m) ⦃T T' : Thick (smFun X q)⦄,
     (T ⟶ T') → wK q i y s k T → (∃ β, wK q i y s β T') → wK q i y s k T' := _root_.GlobalTheory.CompanionTheory.ConeSite.wK_rel
 
 theorem wU_le : ∀ {K : Type} [Field K] {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of K)) (D : E.LineData X) {N m : ℕ}
     (i : X ⟶ PSpace K N) (y : Fin m → MvPolynomial (Fin (N + 1)) K) (s : ℕ), IsTautologicalLineAt D N i → wU q i y s ≤ KS q s (𝒱D D) := _root_.GlobalTheory.CompanionTheory.ConeSite.wU_le_KS
-
-theorem zar_capS : ∀ {K : Type} [Field K] {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of K)) {N m : ℕ}
-    (i : X ⟶ PSpace K N) (y : Fin m → MvPolynomial (Fin (N + 1)) K) (s : ℕ) (S : Finset (Fin m)) (hS : S.Nonempty)
-    (r r' : ℤ) (j : ℕ),
-    ∃ h : capS (wK q i y s) S ≤ KS q s {⨅ k ∈ S, uy i y k},
-      Function.Bijective ((resU (sq (thFil (smFun X q) r) (thFil (smFun X q) r')) h).pull j) := _root_.GlobalTheory.CompanionTheory.ConeZarCap.main
 
 theorem isFil_th : ∀ {b : Base} (L : b.Fun), IsFil (thP L) (thFil L) := _root_.GlobalTheory.CompanionTheory.DPFil.isFil_thFil
 
@@ -981,10 +972,6 @@ theorem mem_pdP_one {B : Type} [CommRing B] {J : Ideal B} (δ : DividedPowers J)
   have := _root_.GlobalTheory.CompanionTheory.DPFil.dpow_mem_pdP δ 1 hx
   rwa [δ.dpow_one hx] at this
 
-theorem plogK_mem' {B : Type} [CommRing B] {J : Ideal B} (δ : DividedPowers J) (s : ℕ) {x : B} (hx : x ∈ J) :
-    plogK δ s x ∈ J :=
-  Ideal.sum_mem _ fun k _ => Ideal.mul_mem_left _ _ (δ.dpow_mem (Nat.succ_ne_zero k) hx)
-
 theorem g_rel {K : Type} [Field K] {X : Scheme.{0}} {N n e : ℕ} (i : X ⟶ PSpace K N)
     (y : Fin (n + 2) → MvPolynomial (Fin (N + 1)) K) (hy : ∀ k, (y k).IsHomogeneous e) (V W : X.Opens) (hVW : V ≤ W)
     (hW : ∀ b, W ≤ uy i y b) (t : Fin (n + 1) → Γ(X, V)ˣ)
@@ -1013,7 +1000,6 @@ theorem g_rel {K : Type} [Field K] {X : Scheme.{0}} {N n e : ℕ} (i : X ⟶ PSp
   · rw [dite_eq_right hk]
     have e1 : (⟨(k : ℕ) - 1, by omega⟩ : Fin (n + 1)).succ = k.castSucc := Fin.ext (by simp; omega)
     rw [htA, e1, ← hinv k, hA]
-
 
 theorem powK_ne_zero_of (hG : LocalCohomologySetup.GeoSetupP) (hR : LocalCohomologySetup.ResidAlgP) (hL : LocalCohomologySetup.LocExactP)
     {K : Type} [Field K] [CharZero K] {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of K)) [ConnectedSpace X] (d : ℕ) [SmoothOfRelativeDimension d q] (D : E.LineData X) (hD : IsTautologicalLine q D) (c : HdR q 2)
@@ -1074,7 +1060,7 @@ theorem powK_ne_zero_of (hG : LocalCohomologySetup.GeoSetupP) (hR : LocalCohomol
     have hze : CH.d _ 2 (e • zK Λ (n + 2)) = 0 := by rw [map_nsmul, hz, smul_zero]
     have hz1 : ∀ σ, (e • zK Λ (n + 2)) σ ∈ (thFil (smFun X q) 1).S _ := fun σ => by
       have h := mem_pdP_one ((wU q i y (n + 2)).ι.obj (σ.obj (Fin.last 2))).δ
-        (plogK_mem' ((wU q i y (n + 2)).ι.obj (σ.obj (Fin.last 2))).δ (n + 2) (_root_.GlobalTheory.CompanionTheory.ConeUnit.r_sub_one Λ σ))
+        (GlobalTheory.CompanionTheory.RepLifts.plogK_mem ((wU q i y (n + 2)).ι.obj (σ.obj (Fin.last 2))).δ (n + 2) (_root_.GlobalTheory.CompanionTheory.ConeUnit.r_sub_one Λ σ))
       exact nsmul_mem h e
     have hzero : ∀ h, (CH.cx _).cls (cupPowC ((ObjectProperty.ι fun T => ∃ α, W α T) ⋙ thA (smFun X q))
         (e • zK Λ (n + 2)) (n + 1)) h = 0 := by

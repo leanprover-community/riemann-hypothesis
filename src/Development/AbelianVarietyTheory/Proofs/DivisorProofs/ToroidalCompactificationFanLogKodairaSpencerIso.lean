@@ -233,10 +233,6 @@ noncomputable section
 
 namespace GlobalTheory.LogKSUp
 
-theorem chart_res' {X : Scheme.{0}} (U W : X.affineOpens) (h : W.1 ≤ U.1) :
-    spMap (X.presheaf.map (homOfLE h).op).hom ≫ GlobalTheory.LogKS.chart U = GlobalTheory.LogKS.chart W :=
-  U.2.map_fromSpec W.2 (homOfLE h).op
-
 theorem exists_factor {X : Scheme.{0}} (U W : X.affineOpens) (h : W.1 ≤ U.1) {S : Type} [CommRing S]
     (φ : Γ(X, U.1) →+* S) (hr : ∀ z, (spMap φ ≫ GlobalTheory.LogKS.chart U) z ∈ W.1) :
     ∃ φ' : Γ(X, W.1) →+* S, φ = φ'.comp (X.presheaf.map (homOfLE h).op).hom := by
@@ -253,7 +249,7 @@ theorem exists_factor {X : Scheme.{0}} (U W : X.affineOpens) (h : W.1 ≤ U.1) {
   have hfac : spMap (Spec.preimage ψ).hom ≫ GlobalTheory.LogKS.chart W = spMap φ ≫ GlobalTheory.LogKS.chart U := by
     simp only [spMap, CommRingCat.ofHom_hom, Spec.map_preimage]
     exact hψ
-  rw [← chart_res' U W h, ← Category.assoc, _root_.GlobalTheory.spMap_comp_ring] at hfac
+  rw [← GlobalTheory.LogKSLoc.spMap_res_chart U W h, ← Category.assoc, _root_.GlobalTheory.spMap_comp_ring] at hfac
   have h2 := Spec.map_inj.1 ((cancel_mono (GlobalTheory.LogKS.chart U)).1 hfac)
   simpa using (congrArg CommRingCat.Hom.hom h2).symm
 
@@ -280,7 +276,7 @@ theorem isKS_of_inf : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H 
       exact hWW i (inf_le_left (a := Wc i) (b := Wc i') (hO hz))
     obtain ⟨φ', hfac⟩ := exists_factor U W hWU φ hr
     have hg₀' : g₀ ≫ t.G.hom = spMap φ' ≫ GlobalTheory.LogKS.chart W := by
-      rw [hg₀, hfac, ← _root_.GlobalTheory.spMap_comp_ring, Category.assoc, chart_res']
+      rw [hg₀, hfac, ← _root_.GlobalTheory.spMap_comp_ring, Category.assoc, GlobalTheory.LogKSLoc.spMap_res_chart]
     have := htest i i' O hO f S φ' g₀ w hg₀' hO' fun a => by
       obtain ⟨g', v', h₁, h₂, h₃⟩ := hw a
       refine ⟨g', v', h₁, ?_, h₃⟩
@@ -305,8 +301,6 @@ open AlgebraicGeometry CategoryTheory Limits NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.LogKS Formalism.L2.Pj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.chartPullback_lineBundle_transition_eq_appLE : ∀ (Y Y' : Scheme.{0}) (A' : LB Y') (A : LB Y) (h : Y' ⟶ Y) (cp : ChartPull A' A h) (i j : A'.ι), ((A'.g i j : Γ(Y', A'.U i ⊓ A'.U j)ˣ) : Γ(Y', A'.U i ⊓ A'.U j)) = (h.appLE (A.U (cp.idx i) ⊓ A.U (cp.idx j)) (A'.U i ⊓ A'.U j) (le_inf (inf_le_left.trans (cp.le i)) (inf_le_right.trans (cp.le j)))).hom ((A.g (cp.idx i) (cp.idx j) : Γ(Y, A.U (cp.idx i) ⊓ A.U (cp.idx j))ˣ) : Γ(Y, A.U (cp.idx i) ⊓ A.U (cp.idx j))) := by
-  first | exact @GlobalTheory.chartPull_g_appLE
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ChartPullbackLineBundleTransitionEqAppLEStatement =====
@@ -320,8 +314,6 @@ open AlgebraicGeometry CategoryTheory Limits NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.LogKS Formalism.L2.Pj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.exists_vectorField_image_openImmersion : ∀ (Z Z' : Scheme.{0}) (φ : Z' ⟶ Z) [IsOpenImmersion φ] (W₀ : Z'.Opens) (d : ∀ O : Z'.Opens, Γ(Z', O) → Γ(Z', O)), IsField W₀ d → ∃ d₂ : ∀ O : Z.Opens, Γ(Z, O) → Γ(Z, O), IsField (φ ''ᵁ W₀) d₂ ∧ ∀ (O : Z.Opens), O ≤ φ ''ᵁ W₀ → ∀ f : Γ(Z, O), (φ.app O).hom (d₂ O f) = d (φ ⁻¹ᵁ O) ((φ.app O).hom f) := by
-  first | exact @GlobalTheory.LogKS.isField_image
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsVectorFieldImageOpenImmersionStatement =====
@@ -391,8 +383,6 @@ open AlgebraicGeometry CategoryTheory Limits NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.LogKS Formalism.L2.Pj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.reduction_eq_basePoint : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (X : Scheme.{0}) (t : SAB H X) (R S : Type) [CommRing R] [CommRing S] (φ : R →+* S) (x : Sp R ⟶ X) (g₀ : Sp S ⟶ t.G.left) (v : Sp (DualNumber R) ⟶ t.G.left) (w : Sp (DualNumber S) ⟶ t.G.left), g₀ ≫ t.G.hom = spMap φ ≫ x → IsTanAtG t x v → IsTranslate t φ g₀ v w → spMap (TrivSqZeroExt.fstHom S S S).toRingHom ≫ w = g₀ := by
-  first | exact @GlobalTheory.LogKS.IsTranslate.fst_comp
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ReductionEqBasePointStatement =====
@@ -421,8 +411,6 @@ open AlgebraicGeometry CategoryTheory Limits NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.LogKS Formalism.L2.Pj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.tangentBasis_moves_along_semiAbelianTripleMap : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (X X' : Scheme.{0}) (t : SAB H X) (t' : SAB H X') (j : X' ⟶ X) (m : SABMap t' t j) (S T : Type) [CommRing S] [CommRing T] (ψ : S →+* T) (x : Sp S ⟶ X) (x' : Sp T ⟶ X'), x' ≫ j = spMap ψ ≫ x → ∀ (n : ℕ) (v : Fin n → (Sp (DualNumber S) ⟶ t.G.left)), (∀ i, IsTanAtG t x (v i)) → (∀ w, IsTanAtG t x w → ∃! cf : Fin n → S, IsCombAtG t x v cf w) → ∃ v' : Fin n → (Sp (DualNumber T) ⟶ t'.G.left), (∀ i, v' i ≫ m.φ = spMap (dualMap ψ) ≫ v i) ∧ (∀ i, IsTanAtG t' x' (v' i)) ∧ ∀ w, IsTanAtG t' x' w → ∃! cf : Fin n → T, IsCombAtG t' x' v' cf w := by
-  first | exact @GlobalTheory.SabTan.tanBasis_sabMap
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.TangentBasisMovesAlongSemiAbelianTripleMapStatement =====
@@ -475,16 +463,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.KSInterior
 
-variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
-
-theorem exists_sab_chartPull {S S' : Scheme.{0}} (f : S' ⟶ S) (t : SAB H S) :
-    ∃ (t' : SAB H S') (m : SABMap t' t f), Nonempty (ChartPull t'.PP.L t.PP.L m.φ) :=
-  _root_.GlobalTheory.KSOpen.exists_pull_chart f t
-
-end GlobalTheory.KSInterior
-
-namespace GlobalTheory.KSInterior
-
 theorem exists_derivation_transport {A B : Type} [CommRing A] [CommRing B] (e : A ≃+* B) (D : Derivation ℤ A A) :
     ∃ D' : Derivation ℤ B B, ∀ r, D' (e r) = e (D r) := by
   let f : B →ₗ[ℤ] B :=
@@ -509,7 +487,7 @@ theorem isKS_transport : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
     (IsAffineOpen.SpecMap_appLE_fromSpec j W.2 W'.2 hW'.le).symm
   have hWc : ∀ i, Wc i ≤ t'.G.hom ⁻¹ᵁ W'.1 := fun i =>
     (le_iSup Wc i).trans (hsup.le.trans (t'.G.hom.preimage_mono inf_le_left))
-  choose d₂ hd₂F hd₂ using fun i => GlobalTheory.T.exists_vectorField_image_openImmersion _ _ m.φ (Wc i) (d i) (hfld i)
+  choose d₂ hd₂F hd₂ using fun i => GlobalTheory.LogKS.isField_image _ _ m.φ (Wc i) (d i) (hfld i)
   have hpi : ∀ i, m.φ ⁻¹ᵁ (m.φ ''ᵁ Wc i) = Wc i := fun i => m.φ.preimage_image_eq (Wc i)
   have cong : ∀ {A B : Scheme.{0}} {f g : A ⟶ B} (_ : f = g) (U : B.Opens) (U' : A.Opens) (p₁ : U' ≤ f ⁻¹ᵁ U)
       (p₂ : U' ≤ g ⁻¹ᵁ U), f.appLE U U' p₁ = g.appLE U U' p₂ := by
@@ -560,7 +538,7 @@ theorem isKS_transport : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
       rw [← cancel_mono j, Category.assoc, ← sq, ← Category.assoc, hg₀'φ, hg₀, Category.assoc, hx,
         ← Category.assoc, spc, hφS]
     have hw' : ∀ a, ∃ w', w' ≫ m.φ = w a ∧ IsTranslate t' φS' g₀' (v' a) w' := fun a =>
-      GlobalTheory.T.tangentTranslate_lifts_semiAbelianTripleMap E H X X' t t' j m _ _ ψ.hom (chart W) (chart W') hx (v a) (v' a) (hv a) (hv't a) (hvv a) S φS'
+      GlobalTheory.TransLift.lift_isTranslate E H X X' t t' j m _ _ ψ.hom (chart W) (chart W') hx (v a) (v' a) (hv a) (hv't a) (hvv a) S φS'
         g₀' hg₀' (w a) (by rw [hφS, hg₀'φ]; exact hw a)
     choose w' hw'φ hw'T using hw'
     have hOi : m.φ ⁻¹ᵁ O ≤ Wc i ⊓ Wc i' :=
@@ -574,7 +552,7 @@ theorem isKS_transport : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
       hd₂ i' O (hO.trans inf_le_right), key]
     have hU' : ⊤ ≤ g₀' ⁻¹ᵁ (t'.PP.L.U (jj i) ⊓ t'.PP.L.U (jj i')) :=
       hO''.trans (g₀'.preimage_mono (hOi.trans (inf_le_inf (hj i) (hj i'))))
-    have hgp := GlobalTheory.T.chartPullback_lineBundle_transition_eq_appLE _ _ t'.PP.L t.PP.L m.φ cp (jj i) (jj i')
+    have hgp := GlobalTheory.chartPull_g_appLE _ _ t'.PP.L t.PP.L m.φ cp (jj i) (jj i')
     set le₀ : t'.PP.L.U (jj i) ⊓ t'.PP.L.U (jj i') ≤ m.φ ⁻¹ᵁ (t.PP.L.U (cp.idx (jj i)) ⊓ t.PP.L.U (cp.idx (jj i'))) :=
       le_inf (inf_le_left.trans (cp.le (jj i))) (inf_le_right.trans (cp.le (jj i')))
     have hgi : ((t'.PP.L.g (jj i) (jj i'))⁻¹ : Γ(t'.G.left, _)ˣ).val =
@@ -582,7 +560,7 @@ theorem isKS_transport : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
       refine Units.inv_eq_of_mul_eq_one_right ?_
       rw [hgp, ← map_mul, Units.mul_inv, map_one]
     refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
-    have hred := GlobalTheory.T.reduction_eq_basePoint E H X' t' _ _ φS' (chart W') g₀' (v' b) (w' b) hg₀' (hv't b) (hw'T b)
+    have hred := GlobalTheory.LogKS.IsTranslate.fst_comp E H X' t' _ _ φS' (chart W') g₀' (v' b) (w' b) hg₀' (hv't b) (hw'T b)
     have hwU : ⊤ ≤ w' b ⁻¹ᵁ (t'.PP.L.U (jj i) ⊓ t'.PP.L.U (jj i')) := GlobalTheory.CechKS.le_preimage_of_red hred hU'
     rw [hgp, hgi, vpull _ _ _ le₀ hwU, vpull _ _ _ le₀ hU', hw'φ, hg₀'φ, ← hw'φ a, ← GlobalTheory.CechKS.valR_comp_app]
     rfl
@@ -593,7 +571,7 @@ namespace GlobalTheory.KSInterior
 
 theorem exists_isKS_interior : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (Y : Model Xo c (RingHom.id c.F)) (W : Y.X.affineOpens), W.1 ≤ interior Y → ∀ (n : ℕ) (v : Fin n → (Sp (DualNumber Γ(Y.X, W.1)) ⟶ Y.t.G.left)), (∀ i, IsTanAtG Y.t (chart W) (v i)) → (∀ w, IsTanAtG Y.t (chart W) w → ∃! cf : Fin n → Γ(Y.X, W.1), IsCombAtG Y.t (chart W) v cf w) → ∀ D : Derivation ℤ Γ(Y.X, W.1) Γ(Y.X, W.1), ∃ Θ, IsKS Y.t (interior Y) W v D Θ := by
   intro E _ _ _ H Dw l Xo c Y W hW n v hv hb D
-  obtain ⟨t', m, hcp⟩ := exists_sab_chartPull Y.j Y.t
+  obtain ⟨t', m, hcp⟩ := GlobalTheory.KSOpen.exists_pull_chart Y.j Y.t
   obtain ⟨m', -⟩ := GlobalTheory.ArcChartExt.exists_sab_cancel_id Y.m m
   obtain ⟨hP, hA, hK⟩ := GlobalTheory.KSObj.proper_ample_kTriv Y.oF m'
   have hWr : W.1 ≤ Y.j.opensRange := hW
@@ -608,7 +586,7 @@ theorem exists_isKS_interior : ∀ (E : Type) [Field E] [NumberField E] [IsCMFie
       rw [Scheme.Hom.appIso_hom', Scheme.Hom.map_appLE]
     rw [key]
     exact ConcreteCategory.bijective_of_isIso _
-  obtain ⟨v', hv'φ, hv't, hv'b⟩ := GlobalTheory.T.tangentBasis_moves_along_semiAbelianTripleMap E H _ _ Y.t t' Y.j m _ _ ψ.hom (chart W) (chart W') hx n v hv hb
+  obtain ⟨v', hv'φ, hv't, hv'b⟩ := GlobalTheory.SabTan.tanBasis_sabMap E H _ _ Y.t t' Y.j m _ _ ψ.hom (chart W) (chart W') hx n v hv hb
   obtain ⟨D', hD'⟩ := exists_derivation_transport (RingEquiv.ofBijective ψ.hom hbij) D
   obtain ⟨Θ', hΘ'⟩ := _root_.GlobalTheory.KSExists.exists_isKS E H _ t' hP hA hK W' n v' hv't hv'b D'
   exact isKS_transport E H _ _ Y.t t' Y.j m hcp (interior Y) W W' hW' hbij hW hWr n v v' hv hv't hv'φ D D'
@@ -826,7 +804,7 @@ theorem exists_isKS_regular : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
   obtain ⟨DW, hDW⟩ := exists_der_res U W hWU D.1
   obtain ⟨hv', hb'⟩ := GlobalTheory.LocM.FrameBase.tanBasis_baseChange Y.t (Y.X.presheaf.map (homOfLE hWU).op).hom
     (chart U) n v hv hb
-  rw [GlobalTheory.LogKSDiv.GenChange.chart_res U W hWU] at hv' hb'
+  rw [GlobalTheory.LogKSLoc.spMap_res_chart U W hWU] at hv' hb'
   obtain ⟨ΘW, hΘW⟩ := GlobalTheory.T.exists_kodairaSpencer_interior_affine_open E H Dw l Xo c Y W (hW.le.trans inf_le_right) n _ hv' hb' DW
   have key := fun (m : Ideal Γ(Y.X, U.1)) (hm : m.IsMaximal) hx =>
     GlobalTheory.T.kodairaSpencer_regular_near_rigid_boundary_point E H Dw l Xo c Y hpq hsm hsnc hrig U W hW n v hv hb D DW ΘW hDW hΘW m hm hx
@@ -879,8 +857,6 @@ open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.RigChart GlobalTheory.Heat
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.exists_logVectorField_basis_toroidalModel_snc : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (Y : Model Xo c (RingHom.id c.F)), 1 ≤ Dw.p + Dw.q → SmoothOfRelativeDimension Dw.dim (genStr Y) → ReciprocityTheory.AnForm.R.FinalTheorems.Snc (genBdIdeal Y) → ∀ (U : Y.X.affineOpens) (x : Y.X), x ∈ U.1 → ∃ (f : Γ(Y.X, U.1)) (W : Y.X.affineOpens) (hW : W.1 ≤ U.1) (m : ℕ) (t : Fin m → Γ(Y.X, W.1)) (b : Module.Basis (Fin Dw.dim) Γ(Y.X, W.1) (logDer Y.s (Scheme.IdealSheafData.vanishingIdeal (interior Y).compl) W)), x ∈ W.1 ∧ W.1 = Y.X.basicOpen f ∧ (∀ g ∈ (Scheme.IdealSheafData.vanishingIdeal (interior Y).compl).ideal W, g ∈ Ideal.span {∏ i, t i}) ∧ ∏ i, t i ∈ (Scheme.IdealSheafData.vanishingIdeal (interior Y).compl).ideal W ∧ ∀ (i : Fin m) (k : Fin Dw.dim), ((b k).1 : Derivation ℤ Γ(Y.X, W.1) Γ(Y.X, W.1)) (t i) = if (k : ℕ) = i then t i else 0 := by
-  first | exact @GlobalTheory.LogBasis.exists_logDer_basis
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLogVectorFieldBasisToroidalModelSncStatement =====
@@ -984,8 +960,6 @@ theorem finrank_fibre : ∀ {R M : Type} [CommRing R] [AddCommGroup M] [Module R
 
 end GlobalTheory.LogDerProj
 
-
-
 theorem GlobalTheory.LogDerProj.main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (Y : Model Xo c (RingHom.id c.F)), 1 ≤ Dw.p + Dw.q → SmoothOfRelativeDimension Dw.dim (genStr Y) → ReciprocityTheory.AnForm.R.FinalTheorems.Snc (genBdIdeal Y) → ∀ U : Y.X.affineOpens, Module.Finite Γ(Y.X, U.1) (logDer Y.s (Scheme.IdealSheafData.vanishingIdeal (interior Y).compl) U) ∧ Module.Projective Γ(Y.X, U.1) (logDer Y.s (Scheme.IdealSheafData.vanishingIdeal (interior Y).compl) U) ∧ ∀ m : Ideal Γ(Y.X, U.1), m.IsMaximal → Module.finrank (Γ(Y.X, U.1) ⧸ m) ((Γ(Y.X, U.1) ⧸ m) ⊗[Γ(Y.X, U.1)] (logDer Y.s (Scheme.IdealSheafData.vanishingIdeal (interior Y).compl) U)) = Dw.dim := by
   intro E _ _ _ H Dw l Xo c Y h1 hsm hsnc U
   haveI : SmoothOfRelativeDimension Dw.dim Y.s := smooth_gen_iff.1 hsm
@@ -1007,7 +981,7 @@ theorem GlobalTheory.LogDerProj.main : ∀ (E : Type) [Field E] [NumberField E] 
       change _ ∈ (U.1 : Set Y.X)
       rw [← hU.range_fromSpec]
       exact ⟨q, rfl⟩
-    have key := GlobalTheory.T.exists_logVectorField_basis_toroidalModel_snc E H Dw l Xo c Y h1 hsm hsnc U (hU.fromSpec q) hxU
+    have key := GlobalTheory.LogBasis.exists_logDer_basis E H Dw l Xo c Y h1 hsm hsnc U (hU.fromSpec q) hxU
     obtain ⟨f, W, hW, m, t, b, hxW, hWf, -⟩ := key
     have hq : f ∉ q.asIdeal := by
       have : q ∈ hU.fromSpec ⁻¹ᵁ Y.X.basicOpen f := by rw [← hWf]; exact hxW
@@ -1093,8 +1067,6 @@ theorem exists_equiv {R L : Type} [CommRing R] [AddCommGroup L] [Module R L] [Mo
   refine ⟨LinearEquiv.ofBijective f hf, fun D Θ' => ⟨fun h => huniq D Θ' (Θ D) h (hΘ D), fun h => ?_⟩⟩
   rw [h]
   exact hΘ D
-
-
 
 theorem hasLogKS : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (Y : Model Xo c (RingHom.id c.F)), 1 ≤ Dw.p + Dw.q → SmoothOfRelativeDimension Dw.dim (genStr Y) → ReciprocityTheory.AnForm.R.FinalTheorems.Snc (genBdIdeal Y) → (∀ x ∈ genBd Y, IsClosed ({x} : Set (gen Y)) → HasRigidChart Y x) → HasLogKS Y.t Y.s (interior Y) := by
   intro E _ _ _ H Dw l Xo c Y hr hsm hsnc hrig

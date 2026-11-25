@@ -1080,7 +1080,6 @@ private theorem pj_tr {L L' : IntermediateField k Ω} (h : L ≤ L') :
       ← CommRingCat.ofHom_comp, pj_snd]
     rfl
 
-
 variable (k Ω) in
 private def Gd : (FI k Ω)ᵒᵖ ⥤ Scheme.{0} where
   obj L := geom L.unop.1 p
@@ -1100,7 +1099,6 @@ private def Gd : (FI k Ω)ᵒᵖ ⥤ Scheme.{0} where
       rw [Category.assoc, tr_snd, ← Category.assoc, tr_snd, Category.assoc, ← Spec.map_comp,
         ← CommRingCat.ofHom_comp]
       rfl
-
 
 variable (k Ω) in
 private def cn : Cone (Gd k Ω p) where

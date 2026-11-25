@@ -102,11 +102,6 @@ variable {M : Model F E} {V : Type} [AddCommGroup V] [Module E V]
 theorem R_eq_O' (hs : M.split = none) : M.R = M.L.O := by
   simp only [Formalism.MainNotions.S.Loc.Model.R, hs]
 
-theorem dl_full' (H : HermSp M V) {r : ℕ} (f f' : Fin (r + 1) → V) :
-    H.Dl f f' (r + 1) = (H.Zhat f f').det := by
-  rw [Formalism.MainNotions.S.Loc.HermSp.Dl, dite_eq_left le_rfl]
-  simp [Fin.castLE_rfl]
-
 theorem locCntUL_of
     (h1 : Formalism.MainNotions.ThinScalesBound.AllLoc (fun M => ∀ r n, ThetaMbeU M r n false))
     (h2 : Formalism.MainNotions.ThinScalesBound.AllLoc (fun M => ∀ r, MbeU M r))
@@ -137,18 +132,18 @@ theorem locCntUL_of
   let Z₁ : M.Mat (r + 1) := ⟨Matrix.of fun a b => ⟨H.Zhat t₁.f t₁.f' a b, hint₁ a b⟩, by
     have : (Matrix.of fun a b => (⟨H.Zhat t₁.f t₁.f' a b, hint₁ a b⟩ : M.R)).map M.R.subtype =
       H.Zhat t₁.f t₁.f' := rfl
-    rw [this, ← dl_full']; exact hU1⟩
+    rw [this, ← Formalism.L2.SG.LocalCountModules.LocCntCommon.dl_full]; exact hU1⟩
   have hdet : headDet M Z₁.Z * (H.Zhat f₂ f₂').det =
       ((H.Zhat f₂ f₂').submatrix Fin.castSucc Fin.castSucc).det * (Z₁.Z.map M.R.subtype).det := by
     show ((H.Zhat t₁.f t₁.f').submatrix Fin.castSucc Fin.castSucc).det * (H.Zhat f₂ f₂').det =
       ((H.Zhat f₂ f₂').submatrix Fin.castSucc Fin.castSucc).det * (H.Zhat t₁.f t₁.f').det
-    rw [← dl_eq_det, ← dl_eq_det, ← dl_full', ← dl_full']
+    rw [← dl_eq_det, ← dl_eq_det, ← Formalism.L2.SG.LocalCountModules.LocCntCommon.dl_full, ← Formalism.L2.SG.LocalCountModules.LocCntCommon.dl_full]
     exact hrel
   by_cases hint : ∀ a b, H.Zhat f₂ f₂' a b ∈ M.R
   · let Z₂ : M.Mat (r + 1) := ⟨Matrix.of fun a b => ⟨H.Zhat f₂ f₂' a b, hint a b⟩, by
       have : (Matrix.of fun a b => (⟨H.Zhat f₂ f₂' a b, hint a b⟩ : M.R)).map M.R.subtype =
         H.Zhat f₂ f₂' := rfl
-      rw [this, ← dl_full']; exact hU2⟩
+      rw [this, ← Formalism.L2.SG.LocalCountModules.LocCntCommon.dl_full]; exact hU2⟩
     have e₁ : Z₁.Z.map M.R.subtype = H.ZZplus t₁ := by rw [z₁]; rfl
     have e₂ : Z₂.Z.map M.R.subtype = HermSp.ZZplusOf M (H.Zhat f₂ f₂') t₁.T t₁.T' := by rw [z₂]; rfl
     rw [h1 F E M hOK r n hmode V H hn t₁ f₂ f₂' φ φ' hyp hD Z₁ Z₂ e₁ e₂]
@@ -906,7 +901,6 @@ variable (hcj : ∀ x, cj (cj x) = x) (hO : ∀ x ∈ O, cj x ∈ O) (t t' : O)
   (hκ : kap O Z₂ = kap O Z₁)
   (hG₁ : IsUnit (gramC cj (Z₁.map O.subtype) t t').det)
   (hG₂ : IsUnit (gramC cj (Z₂.map O.subtype) t t').det)
-
 
 include hcj hu₁ hu₂ hκ hG₁ hG₂ in
 theorem form_diff (p : PairSet O cj hO Z₁ Z₂) (Y Y₂ W W₂ : Ix r → O)

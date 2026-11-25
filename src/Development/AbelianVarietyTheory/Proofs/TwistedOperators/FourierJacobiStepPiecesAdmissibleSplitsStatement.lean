@@ -94,8 +94,6 @@ open GlobalTheory.FinPl (Lat idAt idOff intAt grpAt grpOff MxAt latV latA InK Mo
 open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
 
-theorem _root_.GlobalTheory.T.depthLatticeRow_mulVec_mem_modulus_scaledCompletion : All fun {D} _ _ _ {G} _ _ => ∀ i, i < D.R.m → ∀ e : AE D, IsIdemSum e G.pl.W0 → ∀ Y ∈ latRow G i, ∀ (v : GlobalTheory.FinPl.Pl D) (y : Fin (G.V (.grid (i + 1) 0)).rank → AE D), y ∈ latV _ (G.Λ (.grid (i + 1) 0)) (· = v) → (e • Y) *ᵥ y ∈ GlobalTheory.FinPl.latMul _ {a | a ∈ ((G.modul : Ideal (𝓞 D.host.E)) : GlobalTheory.SeeSaw.FI D)} (G.Λ (.grid i 0)) (· = v) := by
-  first | exact @GlobalTheory.DepthRowLem.latRow_mulVec
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.DepthLatticeRowMulVecMemModulusScaledCompletionStatement =====
@@ -114,8 +112,6 @@ open scoped nonZeroDivisors ContDiff
 open GlobalTheory.AscFin
 
 noncomputable section
-
-
 
 namespace GlobalTheory.DepthIdeal
 
@@ -561,8 +557,6 @@ theorem lineV (F : GlobalTheory.Asc.Frames G) (hF : Std F) (ρ : ℕ) (h : 2 * �
   exact (GlobalTheory.StairLine.line_mem_iff _ _ _ _ (by simp only [Fin.coe_castLE]; omega)
     (pow_ne_zero _ (neg_ne_zero.2 cmHost_imaginaryGenerator_ne_zero)) v a).2 ha
 
-
-
 theorem lineW (F : GlobalTheory.Asc.Frames G) (hF : Std F) (σ : ℕ) (h' : 2 * σ + 2 ≤ D.R.m) (v : Pl D)
     (hm : MonoAt (F.dB σ h') (G.Λ (.grid (2 * σ + 2) 0)) (lat0 F σ h') v) (p : Fin σ) (I : FI D) (hI : I ≠ 0)
     (y : Fin (G.V (.grid (2 * σ + 2) 0)).rank → AE D) (hy : y ∈ latMul _ {a | a ∈ I} (G.Λ (.grid (2 * σ + 2) 0)) (· = v)) :
@@ -610,8 +604,6 @@ namespace GlobalTheory.UniStepFB
 
 open GlobalTheory.FinPl GlobalTheory.FinPlLoc GlobalTheory.SeeSaw
 open scoped Pointwise
-
-
 
 theorem unipotent_character_trivial_at_S0 : OnStd fun {D} _ _ {sc} {G} W F => ∀ σ (h : 2 * (σ + 1) + 2 ≤ D.R.m) (h' : 2 * σ + 2 ≤ D.R.m), ∀ u : UX D (σ + 1), MxAt (fun _ => True) (u.1.1 - 1) → xFB F σ h' ⬝ u.1.1 - xFB F σ h' ∈ (pcFB W F σ h h').A₁ → ∀ v ∈ G.pl.S0, ∀ i j : Fin (σ + 1), j.1 = i.1 + 1 → psiE W.ψ (GlobalTheory.FinPlLoc.idem D (· = v) * u.1.1 i j) = 1 := by
   intro D hq T L μ0 hL sc G W M hM F hF σ h h' u hu hA1 v hv i j hij
@@ -662,7 +654,7 @@ theorem unipotent_character_trivial_at_S0 : OnStd fun {D} _ _ {sc} {G} W F => �
     show (xFB F σ h' ⬝ u.1.1 - xFB F σ h') ⬝ (F.dJ (σ + 1) h).pX = _
     rw [Matrix.mul_sub, Matrix.mul_one]
 
-  have hloc := GlobalTheory.T.integralAdele_smul_depthLatticeGridRow_mem_latO D hq T L μ0 hL sc G W M hM (2 * σ + 2) (by omega) v _ (idem_mem_intAt (· = v)) _ hrow
+  have hloc := GlobalTheory.RowInt.smul_mem_latO_at D hq T L μ0 hL sc G W M hM (2 * σ + 2) (by omega) v _ (idem_mem_intAt (· = v)) _ hrow
   have sdV : IsSelfDualC (G.V (.grid (2 * σ + 2 + 1) 0)) (G.Λ (.grid (2 * σ + 2 + 1) 0)) :=
     (G.isV (X := .grid (2 * σ + 2 + 1) 0) ⟨by omega, by omega⟩ fun j e => by cases e).sd
   have sdW : IsSelfDualC (G.V (.grid (2 * σ + 2) 0)) (G.Λ (.grid (2 * σ + 2) 0)) :=
@@ -687,7 +679,7 @@ theorem unipotent_character_trivial_at_S0 : OnStd fun {D} _ _ {sc} {G} W F => �
       (xFB F σ h' ⬝ (e • N) ⬝ (F.dJ (σ + 1) h).pX) *ᵥ y ∈
         latMul _ {a | a ∈ ((G.pl.modul sc : Ideal (𝓞 D.host.E)) : FI D)} (G.Λ (.grid (2 * σ + 2) 0)) (· = v) := by
     intro y hy
-    have h1 := GlobalTheory.T.depthLatticeRow_mulVec_mem_modulus_scaledCompletion D hq T L μ0 hL sc G W M hM (2 * σ + 2) (by omega) e he _ hrow v y hy
+    have h1 := GlobalTheory.DepthRowLem.latRow_mulVec D hq T L μ0 hL sc G W M hM (2 * σ + 2) (by omega) e he _ hrow v y hy
     rwa [eY, ← Matrix.smul_mul, ← Matrix.mul_smul] at h1
   have r2 := mul_mem_idV_of_lines (F.dJ (σ + 1) h) (F.dB σ h') _ _ _ 𝔟V 𝔟W2
     ⟨i.1, hiσ⟩ j hV (fun y hy => lineW F hF σ h' v hmW ⟨i.1, hiσ⟩ _ hN0 y hy) (e • N) hY2
@@ -733,7 +725,7 @@ theorem unipotent_character_trivial_off_S0 : OnStd fun {D} _ _ {sc} {G} W F => �
   intro D hq T L μ0 hL sc G W M hM F hF σ h h' u hA v hv i j hij
   obtain ⟨hgood, -⟩ := GlobalTheory.T.standard_frames_successive_levels D hq T L μ0 hL sc G W M hM F hF σ h h' v hv
   have hrow : (F.dJ (σ + 1) h).extX _ (xFB F σ h' ⬝ u.1.1 - xFB F σ h') ∈ latRow G (2 * σ + 2) := hA
-  have hloc := GlobalTheory.T.integralAdele_smul_depthLatticeGridRow_mem_latO D hq T L μ0 hL sc G W M hM (2 * σ + 2) (by omega) v _ (idem_mem_intAt (· = v)) _ hrow
+  have hloc := GlobalTheory.RowInt.smul_mem_latO_at D hq T L μ0 hL sc G W M hM (2 * σ + 2) (by omega) v _ (idem_mem_intAt (· = v)) _ hrow
   have sdV : IsSelfDualC (G.V (.grid (2 * σ + 2 + 1) 0)) (G.Λ (.grid (2 * σ + 2 + 1) 0)) :=
     (G.isV (X := .grid (2 * σ + 2 + 1) 0) ⟨by omega, by omega⟩ fun j e => by cases e).sd
   have sdW : IsSelfDualC (G.V (.grid (2 * σ + 2) 0)) (G.Λ (.grid (2 * σ + 2) 0)) :=
@@ -868,7 +860,7 @@ theorem pcFB_vac : OnStd fun {D} _ _ {sc} {G} W F => ∀ σ (h : 2 * (σ + 1) + 
     (node_isV G hL (X := .core (2 * (σ + 1) + 1)) (show 2 * (σ + 1) + 1 ≤ D.R.m by omega)).sd
   have sdV : IsSelfDualC (G.V (.grid (2 * (σ + 1) + 1) 0)) (G.Λ (.grid (2 * (σ + 1) + 1) 0)) :=
     (node_isV G hL (X := .grid (2 * (σ + 1) + 1) 0) (show 2 * (σ + 1) + 1 ≤ D.R.m ∧ 0 ≤ D.R.m by omega)).sd
-  refine GlobalTheory.T.exists_ne_zero_latticeVacuum_selfDual D W.ψ W.ψ_std _ _ (G.Λ (.core (2 * (σ + 1) + 1))) (lat0 F σ h') sdS sdT _ ?_
+  refine GlobalTheory.AscFin.VacSub.exists_vacG_ne_zero D W.ψ W.ψ_std _ _ (G.Λ (.core (2 * (σ + 1) + 1))) (lat0 F σ h') sdS sdT _ ?_
   intro u hu
   have hw := (GlobalTheory.FinPl.LatMem.mem_latO_iff D _ _ _ _ sdC.1 sdC.2 (fun _ => True) _).1 hu.1
   rw [GlobalTheory.FinPl.LatMem.mem_latO_iff D _ _ _ _ sdS sdT]

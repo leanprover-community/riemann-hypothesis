@@ -65,8 +65,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 open Formalism.L2.FormalSeriesBounds IsLocalRing GlobalTheory.AlphaPair
 open scoped CategoryTheory.Obj
 
-theorem _root_.GlobalTheory.T.jetRing_hom_exists_unique_spec : ∀ (V Ω A : Type) [CommRing V] [CommRing Ω] [CommRing A] [Algebra Ω A] (β : V →+* Ω) (κ : Type) [Fintype κ] [DecidableEq κ] (m : ℕ), (∀ a : κ → A, Ideal.span (Set.range a) ^ (m + 1) = ⊥ → ∃! ψ : Jet V κ m →+* A, (∀ v : V, ψ (algebraMap V _ v) = algebraMap Ω A (β v)) ∧ ∀ i, ψ (Ideal.Quotient.mk _ (MvPolynomial.X i)) = a i) ∧ ∀ ψ : Jet V κ m →+* A, (∀ v : V, ψ (algebraMap V _ v) = algebraMap Ω A (β v)) → Ideal.span (Set.range fun i => ψ (Ideal.Quotient.mk _ (MvPolynomial.X i))) ^ (m + 1) = ⊥ ∧ (∀ i, IsNilpotent (ψ (Ideal.Quotient.mk _ (MvPolynomial.X i)))) ∧ ∀ f : MvPowerSeries κ V, ψ (psJet m f) = nEval (MvPowerSeries.map β f) (fun i => ψ (Ideal.Quotient.mk _ (MvPolynomial.X i))) := by
-  first | exact @GlobalTheory.AlphaPair.JetEv.jet_hom_spec
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.JetRingHomExistsUniqueSpecStatement =====
@@ -116,7 +114,7 @@ theorem map_psIn {n n' : ℕ} (ψ : Jet V (Fin n' × Fin d) m →+* A)
       evP (fun i j => ψ (Ideal.Quotient.mk _ (MvPolynomial.X (r i, j)))) (MvPowerSeries.map β f) := by
   let g : Jet V (Fin n × Fin d) m →ₐ[V] Jet V (Fin n' × Fin d) m :=
     jetMap (fun p => MvPolynomial.X (r p.1, p.2)) fun _ => X_mem_orig _
-  have h := ((GlobalTheory.T.jetRing_hom_exists_unique_spec V Ω A β (Fin n × Fin d) m).2 (ψ.comp g) (fun v => by
+  have h := ((GlobalTheory.AlphaPair.JetEv.jet_hom_spec V Ω A β (Fin n × Fin d) m).2 (ψ.comp g) (fun v => by
     simp only [RingHom.comp_apply, RingHom.coe_coe, AlgHom.commutes, hψ])).2.2 f
   simp only [g, psJet, RingHom.comp_apply, RingHom.coe_coe, Formalism.MainNotions.ModuliIntegralCharts.H1.GermD.jetMap_mk, MvPolynomial.aeval_X] at h
   rw [evP, ← h, psIn, MvPolynomial.rename_eq_aeval]
@@ -194,7 +192,7 @@ theorem isPtCube_of_isFrame : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
   have hm' : I ^ (m + 1) = ⊥ := by rw [pow_succ, hm, zero_mul]; rfl
   obtain ⟨e', he'⟩ := exists_val (A := A) β (e m) z J
   refine ⟨e', fun a b u ha hb hu => ?_⟩
-  obtain ⟨ψ, ⟨hψ, hX⟩, -⟩ := (GlobalTheory.T.jetRing_hom_exists_unique_spec V Ω A β (Fin 3 × Fin d) m).1 (fun q => ![a, b, u] q.1 q.2) (by
+  obtain ⟨ψ, ⟨hψ, hX⟩, -⟩ := (GlobalTheory.AlphaPair.JetEv.jet_hom_spec V Ω A β (Fin 3 × Fin d) m).1 (fun q => ![a, b, u] q.1 q.2) (by
     refine le_bot_iff.1 (le_trans (Ideal.pow_right_mono (Ideal.span_le.2 ?_) _) hm'.le)
     rintro _ ⟨⟨i, j⟩, rfl⟩
     fin_cases i
@@ -222,7 +220,7 @@ theorem isPtCube_of_isFrame : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
   have hsc : ∀ (ph : PS V 3 d) (w : (Jet V (Fin 3 × Fin d) m)ˣ), (w : Jet V (Fin 3 × Fin d) m) = psJet m ph →
       (gm (spMap ψ) z ⊤ (unitΓ w)).val =
         gs (𝟙 (Sp A)) z ⊤ (toΓ A (evP ![a, b, u] (MvPowerSeries.map β ph))) := fun ph w hw => by
-    rw [gm_unit, hw, ((GlobalTheory.T.jetRing_hom_exists_unique_spec V Ω A β (Fin 3 × Fin d) m).2 ψ hψ).2.2 ph, evP]
+    rw [gm_unit, hw, ((GlobalTheory.AlphaPair.JetEv.jet_hom_spec V Ω A β (Fin 3 × Fin d) m).2 ψ hψ).2.2 ph, evP]
     simp only [hX]
   constructor
   · obtain ⟨w, hw, hc⟩ := hfr.ph1 m

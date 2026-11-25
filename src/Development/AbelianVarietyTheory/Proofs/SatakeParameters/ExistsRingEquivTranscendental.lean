@@ -178,25 +178,6 @@ namespace GlobalTheory.InertGenusOne
 
 open Formalism.MainNotions.GL3Theta Formalism.L2.G.Pend PowerSeries
 
-section Gen
-
-variable {p : ℕ} [Fact p.Prime]
-
-theorem datum_of_short (h5 : 5 ≤ p) (lam : Formalism.MainNotions.TaylorLogMetric.Qbar →+* ℂ_[p]) (Λ : AddSubgroup ℂ)
-    (C : WeierstrassCurve.VariableChange ℂ_[p]) (g2 g3 : ℂ_[p])
-    (hW : C • Formalism.MainNotions.TaylorLogMetric.wModel lam Λ = Formalism.L2.Th1.A.shortW g2 g3)
-    (k2 : g2 ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p) (k3 : g3 ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p) (n2 : ‖g2‖ ≤ 1) (n3 : ‖g3‖ ≤ 1)
-    (nd : ‖g2 ^ 3 - 27 * g3 ^ 2‖ = 1) (ε : ℂ_[p]) (hε1 : ‖ε‖ = 1)
-    (hint : ∀ n : ℕ,
-      PowerSeries.coeff n ((Formalism.L2.Th1.CM.uSer g2 g3).subst (PowerSeries.C ε * Formalism.L2.Th1.CM.ltLog ℂ_[p] p)) ∈
-          Formalism.L2.Th1.CM.MaximalUnramifiedExtension p ∧
-        ‖PowerSeries.coeff n ((Formalism.L2.Th1.CM.uSer g2 g3).subst
-          (PowerSeries.C ε * Formalism.L2.Th1.CM.ltLog ℂ_[p] p))‖ ≤ 1) :
-    ∃ g : G1 p, g.lam = lam ∧ g.abelian₂ = Λ ∧ g.C = C ∧ g.Ok ∧ ModelOverW g.lam g.abelian₂ g.C ∧ LTIso g := by
-  apply _root_.Formalism.L2.KerInert.GenusOneDatumExistence.datum_of_short <;> assumption
-
-end Gen
-
 section Lattice
 
 open NumberField Formalism.BasicNotions
@@ -284,7 +265,7 @@ theorem datum_exists_coprime (hGood : Formalism.L2.Th1.CM.CM2) (hHt : Formalism.
       WeierstrassCurve.variableChange_a₂, WeierstrassCurve.variableChange_a₃, WeierstrassCurve.variableChange_a₄,
       WeierstrassCurve.variableChange_a₆] <;> ring
   obtain ⟨g, hgl, hgL, -, hOk, hM, hLT⟩ :=
-    datum_of_short h5 lam (Formalism.MainNotions.TaylorLogMetric.lamOf D cc δ) C g2' g3' hW k2 k3 n2 n3 nd ε hε1 hεint
+    Formalism.L2.KerInert.GenusOneDatumExistence.datum_of_short h5 lam (Formalism.MainNotions.TaylorLogMetric.lamOf D cc δ) C g2' g3' hW k2 k3 n2 n3 nd ε hε1 hεint
   exact ⟨g, hgl, ⟨hcurve, hcop, hδ12, hgL, hOk⟩, hM, hLT⟩
 
 theorem datum_exists_lattice : Formalism.L2.Th1.CM.CM2 → Formalism.L2.Th1.CM.CM3 → Formalism.L2.Th1.CM.CM4 →

@@ -118,8 +118,6 @@ open GlobalTheory.CharDepth TensorProduct
 attribute [local instance] Over.cartesianMonoidalCategory
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out
 
-theorem _root_.GlobalTheory.T.exists_universalJetCoordinates_pullback : ∀ (V V' : Type) [CommRing V] [IsLocalRing V] [CommRing V'] (φ : V →+* V') (G : Over (Sp V)) [GrpObj G] (G' : Over (Sp V')) [GrpObj G'] (F : G'.left ⟶ G.left), IsGrpPullback G' G (spMap φ) F → ∀ (κ : Type) (z : GlobalTheory.PowGerm.JetPts G κ), GlobalTheory.PowGerm.IsUnivJ G κ z → ∃ z' : GlobalTheory.PowGerm.JetPts G' κ, GlobalTheory.PowGerm.IsUnivJ G' κ z' ∧ ∀ m, (z' m).left ≫ F = spMap (jetCoef φ κ m) ≫ (z m).left := by
-  first | exact @GlobalTheory.UnivJetBaseChange.exists_univ_pullback
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsUniversalJetCoordinatesPullbackStatement =====
@@ -402,14 +400,13 @@ end Geo
 
 end GlobalTheory.ChartBaseChange
 
-
 open GlobalTheory.ChartBaseChange in
 theorem GlobalTheory.integralChart_baseChange : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l), letI := H.starRing; ∀ (T : CDVR) (io : c.F →+* T.Fr) (y : IntFr Xo c T io) (Ch : IntegralChartA3 Xo c T io y) (T' : CDVR) (φ : T.V →+* T'.V) (t' : SAB H (Sp T'.V)) (_ : SABMap t' Ch.I.G (spMap φ)), ∃ (F' : FGLaw T'.V (chD Ch.ch)) (x' : ∀ m : ℕ, algOver T'.V (JetR T'.V (Fin 1 × Fin (chD Ch.ch)) m) ⟶ t'.G) (act' : Germ.OAct (𝓞 E) F'), F'.F = (fun i => MvPowerSeries.map φ (Ch.FT i)) ∧ (∀ a, act'.act a = fun i => MvPowerSeries.map φ (Ch.actT a i)) ∧ IsChartJ t'.G F' x' ∧ ChartActs t'.G x' t'.act.toRingAct act' := by
   intro E _ _ _ H Dw l Xo c T io y Ch T' φ t' mp
   letI := H.starRing
   obtain ⟨BT, hF, hA, -⟩ := GlobalTheory.integralChart_formalBiext E H Dw l Xo c T io y Ch
   have hU := GlobalTheory.PowGerm.univSt_holds E H Dw l Xo c T io y Ch
-  obtain ⟨z', hU', hz⟩ := GlobalTheory.T.exists_universalJetCoordinates_pullback T.V T'.V φ Ch.I.G.G t'.G mp.cm.F mp.cart _ Ch.xT hU
+  obtain ⟨z', hU', hz⟩ := GlobalTheory.UnivJetBaseChange.exists_univ_pullback T.V T'.V φ Ch.I.G.G t'.G mp.cm.F mp.cart _ Ch.xT hU
   obtain ⟨u1, u2, u3⟩ := univ_toAlg t'.G _ z' hU'
   refine ⟨Formalism.MainNotions.ModuliIntegralCharts.H1.FBMap.mapG φ BT.G, fun m => toAlg (z' m), Formalism.MainNotions.ModuliIntegralCharts.H1.FBMap.mapA φ BT.A,
     ?_, fun a => ?_, ⟨u1, u2, u3, fun m => ?_⟩, fun m a => ?_⟩

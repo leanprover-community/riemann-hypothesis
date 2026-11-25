@@ -77,8 +77,6 @@ noncomputable section
 
 namespace GlobalTheory.RatFrame
 
-
-
 theorem frame_rat : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a =>
     ∀ i (hi : i ≤ D.R.m) (β : (St i hi).Ch) (x x₁ : UA D i hi) (γ : GL (Fin (D.R.N i)) D.host.E),
       γ ∈ UJ (sigD D : D.host.E →+* D.host.E) (gramN D i hi) → x₁.1 = ratA D.host.F γ * x.1 →
@@ -149,7 +147,6 @@ section Gen
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
   (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) {w : Pr.Word}
 
-
 open Classical in
 theorem frsF_mem {j : ℕ} (p : ChPt (R := R) sel mu w j) (P : rowSG Pr sel mu) (x : Sp X.E (R.N j)) :
     frsF sel mu p P x ∈ p.deco.1.at P.1 ↔ x ∈ stdAt X.E (R.N j) P.1 := by
@@ -177,7 +174,6 @@ private theorem mem_stdAt_iff_forall_intAt {n : ℕ} (P : HeightOneSpectrum (�
     simp only [Pi.smul_apply, Algebra.smul_def, map_mul, map_prod]
     rw [← e l]
     ring
-
 
 open Classical in
 theorem sameCoset_iff {j : ℕ} (p : ChPt (R := R) sel mu w j) (P : rowSG Pr sel mu) (z y : Sp X.E (R.N j)) :
@@ -239,7 +235,6 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks}
   {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} {S : Set ℕ} {mu : Tup X.F X.E X.K S}
   {cst : LocCst X (rowSG Pr sel mu)} {u : Pr.Word} {j : ℕ}
 
-
 open Classical in
 theorem exists_pass_rat (p : ChPt (R := R) sel mu u j) (g : UF X.E (R.N j)) :
     ∃ κ : GLQ X.E (R.N j) (rowSG Pr sel mu),
@@ -285,7 +280,6 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks}
   {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} {S : Set ℕ} {mu : Tup X.F X.E X.K S}
   {cst : LocCst X (rowSG Pr sel mu)} {u : Pr.Word} {j : ℕ}
 
-
 open Classical in
 theorem sameCoset_pass (hX : X.Ok) (hPr : Pr.Ok) {n : ℕ} (P : rowSG Pr sel mu) (k : GLint X.E n P.1)
     (hr : GlobalTheory.TopStep.redGL n P.1 k = 1) (h1 : P.1 ∉ Pr.vGs → k = 1) (y0 : Sp X.E n)
@@ -300,7 +294,6 @@ theorem sameCoset_pass (hX : X.Ok) (hPr : Pr.Ok) {n : ℕ} (P : rowSG Pr sel mu)
       (fun l => by simpa using GlobalTheory.TopStep.intAt_zero) v
   · obtain rfl := h1 hP
     exact Iff.rfl
-
 
 open Classical in
 theorem coset_image (hX : X.Ok) (hPr : Pr.Ok) {n : ℕ} (fp fq : rowSG Pr sel mu → (Sp X.E n ≃ₗ[X.E] Sp X.E n))
@@ -325,7 +318,6 @@ theorem coset_image (hX : X.Ok) (hPr : Pr.Ok) {n : ℕ} (fp fq : rowSG Pr sel mu
   · rintro ⟨z, hz, rfl⟩ P
     rw [LinearEquiv.symm_apply_apply]
     exact (sameCoset_pass hX hPr P (κ P) (hr P) (h1 P) (y0 P) (hy0 P) _).2 (hz P)
-
 
 open Classical in
 theorem coset_mem_ybSet (p : ChPt (R := R) sel mu u j) (y0 : rowSG Pr sel mu → Sp X.E (R.N j))
@@ -800,15 +792,9 @@ variable {E : Type} [Field E] [NumberField E] [StarRing E] {N : ℕ}
 theorem coordRat_toLE_mul (g k : GL (Fin N) E) (v : Fin N → E) : toLE (g * k) v = toLE g (toLE k v) := by
   rw [toLE_apply, toLE_apply, toLE_apply, Units.val_mul, Matrix.mulVec_mulVec]
 
-theorem coordRat_toLE_inv_apply (g : GL (Fin N) E) (v : Fin N → E) : toLE g⁻¹ (toLE g v) = v := by
-  rw [← coordRat_toLE_mul, inv_mul_cancel, toLE_apply, Units.val_one, Matrix.one_mulVec]
-
-theorem coordRat_toLE_apply_inv (g : GL (Fin N) E) (v : Fin N → E) : toLE g (toLE g⁻¹ v) = v := by
-  rw [← coordRat_toLE_mul, mul_inv_cancel, toLE_apply, Units.val_one, Matrix.one_mulVec]
-
 theorem coordRat_toLE_symm (g : GL (Fin N) E) (v : Fin N → E) : (toLE g).symm v = toLE g⁻¹ v := by
   apply (toLE g).injective
-  rw [LinearEquiv.apply_symm_apply, coordRat_toLE_apply_inv]
+  rw [LinearEquiv.apply_symm_apply, Formalism.MainNotions.G.KAat.toLE_inv_apply]
 
 theorem coordRat_inFr {a b : ℕ} (σ : E →+* E) (J : Matrix (Fin a) (Fin a) E) (J' : Matrix (Fin b) (Fin b) E)
     (co γ : GL (Fin a) E) (co' γ' : GL (Fin b) E) (z : (Fin a → E) →ₗ[E] (Fin b → E)) (v : Fin a → E) :
@@ -816,7 +802,7 @@ theorem coordRat_inFr {a b : ℕ} (σ : E →+* E) (J : Matrix (Fin a) (Fin a) E
       toLE (co' * γ' * co'⁻¹)⁻¹ (inFr (toStdCo σ J co) (toStdCo σ J' co') z (toLE (co * γ * co⁻¹) v)) := by
   simp only [inFr, toStdCo, stdG, LinearMap.comp_apply, LinearEquiv.coe_coe, LinearEquiv.trans_apply,
     LinearEquiv.symm_trans_apply, LinearEquiv.symm_symm, coordRat_toLE_symm, LinearEquiv.symm_apply_apply,
-    _root_.mul_inv_rev, inv_inv, coordRat_toLE_mul, coordRat_toLE_inv_apply]
+    _root_.mul_inv_rev, inv_inv, coordRat_toLE_mul, Formalism.MainNotions.G.KAat.toLE_inv_apply']
 
 end Alg
 
@@ -845,7 +831,7 @@ theorem seamHom_inFr_stdG : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A 
       (fun l => t.seam.iE (h.symm v l)) = toLE (seamGL t.seam h)⁻¹ (fun l => t.seam.iE (v l)) := by
     intro n h v
     apply (toLE (seamGL t.seam h)).injective
-    rw [← hG, LinearEquiv.apply_symm_apply, coordRat_toLE_apply_inv]
+    rw [← hG, LinearEquiv.apply_symm_apply, Formalism.MainNotions.G.KAat.toLE_inv_apply]
   refine LinearMap.ext fun w => funext fun l => ?_
   have key : (fun l => t.seam.iE (seamHom t.seam (inFr
         (toStdCo (D.sp.cm.sig : D.host.E →+* D.host.E) (gramN D i (Nat.le_of_succ_le hi)) (A.crd i (Nat.le_of_succ_le hi)))
@@ -855,7 +841,7 @@ theorem seamHom_inFr_stdG : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A 
         (toStdCo (D.sp.cm.sig : D.host.E →+* D.host.E) (gramN D (i + 1) hi) (A.crd (i + 1) hi))
         (inFr (stdG (D.sp.cm.sig : D.host.E →+* D.host.E) (gramN D i (Nat.le_of_succ_le hi)) γ)
           (stdG (D.sp.cm.sig : D.host.E →+* D.host.E) (gramN D (i + 1) hi) γ') z)) (g.1.symm w)) l)) := by
-    rw [hG, hS, hS, hw, hg, hg', coordRat_inFr, coordRat_toLE_apply_inv, coordRat_toLE_apply_inv]
+    rw [hG, hS, hS, hw, hg, hg', coordRat_inFr, Formalism.MainNotions.G.KAat.toLE_inv_apply, Formalism.MainNotions.G.KAat.toLE_inv_apply]
   exact t.seam.iE.injective (congrFun key l)
 
 end GlobalTheory.TwV
@@ -897,8 +883,6 @@ theorem seam_lat_gmap {D : D7} {X : Fields} (s : Seam D X) {n : ℕ} (g : Sp X.E
     · rw [Formalism.L2.Col.mem_gmap, LinearEquiv.symm_apply_apply]; exact hx0
     · show (fun l => s.iE (g x0 l)) = (seamGL s g : Matrix (Fin n) (Fin n) D.host.E) *ᵥ (fun l => s.iE (x0 l))
       rw [seamGL_mulVec]
-
-
 
 theorem lat_moved : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a =>
     ∀ i (hi : i ≤ D.R.m) (β : (St i hi).Ch) (x x₁ : UA D i hi) (γ : GL (Fin (D.R.N i)) D.host.E),

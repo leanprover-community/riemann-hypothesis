@@ -140,23 +140,6 @@ namespace GlobalTheory.MovedJetNZ
 
 open GlobalTheory.Grid (neg ofSgn)
 
-theorem std_eq_colLat_one' {D : D7} {n : ℕ} (L : Submodule (𝓞 D.host.E) (Fin n → D.host.E))
-    (hL : ∀ y, y ∈ L ↔ ∀ i, ∃ b : 𝓞 D.host.E, (b : D.host.E) = y i) :
-    (L : Set (Fin n → D.host.E)) = (colLat (1 : GL (Fin n) D.host.E) : Set _) := by
-  ext y
-  simp only [SetLike.mem_coe, hL, lc_mem_colLat_one, Submodule.mem_one]
-
-theorem even_bot' {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil}
-    {i j : Fin D.R.m} {A A' WW : HSp D} {X : Tri T A A' WW} (hX : IsBottomTri W i j X) : Even (A.rank * WW.rank) := by
-  refine Even.mul_left ?_ _
-  have h1 := hX.rank
-  have h2 := hX.rank'
-  have h3 := hX.is.rank
-  have h4 := SqNum.ranks_exact D i j
-  rw [← h3, h1, h2]
-  refine ⟨SqNum.halfRank D i j - (D.R.m - (j.1 + 1)) / 2 - (D.R.m - j.1) / 2, ?_⟩
-  omega
-
 theorem vac_jet_ne_zero {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil}
     {i j : Fin D.R.m} {A A' WW : HSp D} {X : Tri T A A' WW} (hI : ∀ D, GlobalTheory.NormSum.Inp D) (hX : IsBottomTri W i j X) :
     ∃ k : FVar D WW.rank A.rank →₀ ℕ, pureTensorO W.ψ W.θ (neg A) WW (fun τ => -X.rA.s τ) X.rW.s X.rA.B X.rW.B X.vac
@@ -170,7 +153,7 @@ theorem vac_jet_ne_zero {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : G
     GlobalTheory.VacConj.isVacO_conj_negSp W.ψ W.θ A WW X.rA.s X.rW.s _ _ X.vac hIs.isVac
   have hf : IsVacO W.ψ W.θ A WW X.rA.s X.rW.s (colLat (1 : GL (Fin A.rank) D.host.E) : Set _)
       (colLat (1 : GL (Fin WW.rank) D.host.E) : Set _) f := by
-    rw [← std_eq_colLat_one' X.rA.Λ hX.std.2.1, ← std_eq_colLat_one' X.rW.Λ hX.stdW.2.1]
+    rw [← GlobalTheory.BotTransJet.std_eq_colLat_one X.rA.Λ hX.std.2.1, ← GlobalTheory.BotTransJet.std_eq_colLat_one X.rW.Λ hX.stdW.2.1]
     exact hf0
   have hS : Formalism.UG.cT (D.sp.cm.sig : D.host.E →+* D.host.E) (1 : GL (Fin A.rank) D.host.E).1 * A.gram *
       (1 : GL (Fin A.rank) D.host.E).1 = 1 := by
@@ -192,7 +175,7 @@ theorem vac_jet_ne_zero {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : G
     simp
   obtain ⟨δ, hC, hδ⟩ := GlobalTheory.FunObj.exists_delta D
   obtain ⟨t0, ht0⟩ := ((hI D).t0Ex D.host.ccK δ hC).1
-  obtain ⟨e0, he0, he0ne⟩ := GlobalTheory.Vacuum.exists_vacuum D D.host.ccK δ hC t0 ht0 A.rank WW.rank (even_bot' hX)
+  obtain ⟨e0, he0, he0ne⟩ := GlobalTheory.Vacuum.exists_vacuum D D.host.ccK δ hC t0 ht0 A.rank WW.rank (GlobalTheory.BotTransJet.even_bot hX)
   obtain ⟨c, hc⟩ := GlobalTheory.FockPos.fock_jets_eq_unit_mul_period_jets W.ψ W.θ A WW X.rA.s X.rW.s 1 1 hS hW hcA hcW δ t0 hC hδ
     ht0 e0 he0 f hf
   obtain ⟨α, hα⟩ := GlobalTheory.NatFamily.exists_taylor_ne D he0.1.1 he0ne
@@ -426,10 +409,6 @@ theorem isAlgebraic_compAt_of_mem_GQ {D : D7} {θ : InfFam D} (hθ : IsInfFam θ
   first
     | exact h0.algHom (tauE D τ).toRatAlgHom
 
-theorem isAlgebraic_conj {z : ℂ} (h : IsAlgebraic ℚ z) : IsAlgebraic ℚ (starRingEnd ℂ z) := by
-  first
-    | exact h.algHom (starRingEnd ℂ).toRatAlgHom
-
 end GlobalTheory.MovedJet
 
 end
@@ -499,7 +478,7 @@ theorem jet_moved_vacuum_algebraic : ∀ {D : D7} {T : Type} [Finite T] {L : Lev
     have e : U τ a b = starRingEnd ℂ (compAt W.θ τ (Formalism.L2.Theta.mt A γ) b a) := by
       simp [hU, hu, Matrix.conjTranspose_apply]
     rw [e]
-    exact isAlgebraic_conj (isAlgebraic_compAt_of_mem_GQ hθ hγ τ b a)
+    exact GlobalTheory.BotTransJet.conj_isAlgebraic (isAlgebraic_compAt_of_mem_GQ hθ hγ τ b a)
   let e := Q.support.equivFin
   refine ⟨Q.support.card, fun p => AddMonoidAlgebra.coeff Q (e.symm p).1, fun p => (e.symm p).1, fun p => ?_, fun p => ?_, ?_⟩
   · exact (GlobalTheory.SubstCoeff.coeff_substF_monomial_continuous_algebraic k (e.symm p).1).2 H U hHalg hUalg
@@ -967,8 +946,6 @@ namespace GlobalTheory.StabVacSplit
 
 open GlobalTheory.Grid (neg)
 
-
-
 theorem stab_vac_split : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil}
     {i j : Fin D.R.m} {A A' WW : HSp D} {X : Tri T A A' WW} (hX : IsBottomTri W i j X) (t : T) (e : AE D) (he : IsSplitIdem D e)
     (k : GA D WW), k ∈ KsphC (GlobalTheory.SplitVacAlg.stdLatSp WW hX.stdW.1) ∅ → Formalism.L2.Theta.SuppAt e WW k →
@@ -1263,7 +1240,6 @@ theorem isAlgComb_self : IsAlgComb ψ S T f₀ f₀ := by
 
 end Comb
 
-
 end GlobalTheory.SplitVacAlg
 
 end
@@ -1417,7 +1393,6 @@ theorem isAlgebraic_loc {E : Type} [Field E] [NumberField E] {I : Type} [Fintype
   rw [e2] at hx
   have hint : IsIntegral ℚ (((⟨_, hx⟩ : M) : ℂ)) := (IsIntegral.of_finite ℚ (⟨_, hx⟩ : M)).map M.val
   exact IsAlgebraic.of_pow two_pos hint.isAlgebraic
-
 
 open GlobalTheory.AdelicU GlobalTheory.AdelicU.Supp GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels in
 theorem exists_locIdele {D : D7} {e : AE D} (he : IsSplitIdem D e) (x : (AE D)ˣ) (hx : (x : AE D) = e * x + (1 - e)) :
@@ -1649,7 +1624,6 @@ open GlobalTheory.RowEx MeasureTheory
 noncomputable section
 namespace GlobalTheory.LevelVac
 variable {D : D7}
-
 
 theorem level_vacuum_vector_algebraic : ∀ {D : D7} {T : Type} [Finite T] {L : LevCh D T} {μ₀ : T} {sc : Consts} {G : GridData L sc} {W : G.Weil}
     {i j : Fin D.R.m} {A A' WW : HSp D} {X : Tri T A A' WW}, _root_.GlobalTheory.FunPr.ThetaLocalInputs → (∀ D, GlobalTheory.NormSum.Inp D) → L.Is μ₀ →

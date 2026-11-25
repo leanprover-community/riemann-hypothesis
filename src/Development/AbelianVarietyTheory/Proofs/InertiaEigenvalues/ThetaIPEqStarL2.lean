@@ -119,7 +119,6 @@ theorem mulL_one : GlobalTheory.SplitIdx.mulL (n := 1) (1 : Matrix (Fin n) (Fin 
 
 end GlobalTheory.LocKerMod.FrameIdx
 
-
 open GlobalTheory.LocKerMod.FrameIdx in
 theorem GlobalTheory.LocKerMod.FrameIdx.idxAt_eq_pow : ∀ (D : D7) (T : HSp D) (v : HeightOneSpectrum (𝓞 D.host.F)) (w : HeightOneSpectrum (𝓞 D.host.E)) (h : w.under (𝓞 D.host.F) = v) (a : GL (Fin T.rank) (w.adicCompletion D.host.E)), GlobalTheory.LFun.IsFrameAt w (frameLat T) a → ∀ ϖ, IsUnifV D.host.E w ϖ → ∀ (d : Fin T.rank → ℤ) (t : GL (Fin T.rank) (w.adicCompletion D.host.E)), t.1 = Matrix.diagonal (fun i => ϖ ^ d i) → ∀ k₁ ∈ KGL w (n := T.rank), ∀ k₂ ∈ KGL w (n := T.rank), ∀ g : GlobalTheory.FinZeta.Gv T v, GlobalTheory.LFun.locMat D.sp.cm.sig T.gram h g = a * (k₁ * t * k₂) * a⁻¹ → GlobalTheory.LocKerMod.idxAt T w h g = qV D.host.E w ^ (∑ i, max (d i) 0).toNat := by
   intro D T v w h a ha ϖ hϖ d t ht k₁ hk₁ k₂ hk₂ g hg
@@ -210,7 +209,6 @@ open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LFun (IsSplitChart IsInertChart KGL)
 open GlobalTheory.AdelicU
 
-
 theorem _root_.GlobalTheory.T.localLatticeIndex_cartanDecomposition_eq_normPow : ∀ (D : D7) (T : HSp D) (v : HeightOneSpectrum (𝓞 D.host.F)) (w : HeightOneSpectrum (𝓞 D.host.E)) (h : w.under (𝓞 D.host.F) = v) (a : GL (Fin T.rank) (w.adicCompletion D.host.E)), GlobalTheory.LFun.IsFrameAt w (frameLat T) a → ∀ ϖ, IsUnifV D.host.E w ϖ → ∀ (d : Fin T.rank → ℤ) (t : GL (Fin T.rank) (w.adicCompletion D.host.E)), t.1 = Matrix.diagonal (fun i => ϖ ^ d i) → ∀ k₁ ∈ KGL w (n := T.rank), ∀ k₂ ∈ KGL w (n := T.rank), ∀ g : GlobalTheory.FinZeta.Gv T v, GlobalTheory.LFun.locMat D.sp.cm.sig T.gram h g = a * (k₁ * t * k₂) * a⁻¹ → GlobalTheory.LocKerMod.idxAt T w h g = qV D.host.E w ^ (∑ i, max (d i) 0).toNat := by
   first | exact @GlobalTheory.LocKerMod.FrameIdx.idxAt_eq_pow
 end -- clump:auto
@@ -271,8 +269,6 @@ theorem relIndex_map_of_proj_left {X Y : Type} [AddCommGroup X] [AddCommGroup Y]
     _ = x := by rw [h2, h1]; abel
 
 end GlobalTheory.LocKerMod
-
-
 
 open GlobalTheory.LFun in
 theorem GlobalTheory.LocKerMod.latIndex_embV_inert : ∀ (D : D7) (T : HSp D) (v : HeightOneSpectrum (𝓞 D.host.F))
@@ -365,7 +361,6 @@ open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LFun (IsSplitChart IsInertChart KGL)
 open GlobalTheory.AdelicU
 
-
 theorem _root_.GlobalTheory.T.selfDualLatticeIndex_inertPlace_eq_localIndex : ∀ (D : D7) (T : HSp D) (v : HeightOneSpectrum (𝓞 D.host.F)) (w : HeightOneSpectrum (𝓞 D.host.E)) (h : w.under (𝓞 D.host.F) = v), IsInertAt D.host.F D.host.E v w → ∀ g : GlobalTheory.FinZeta.Gv T v, latIndex T (GlobalTheory.FinZeta.embV T v g) = GlobalTheory.LocKerMod.idxAt T w h g := by
   first | exact @GlobalTheory.LocKerMod.latIndex_embV_inert
 end -- clump:auto
@@ -420,8 +415,6 @@ theorem relIndex_map_of_proj {X Y : Type} [AddCommGroup X] [AddCommGroup Y] (A :
 end GlobalTheory.SplitLatIdx
 
 namespace GlobalTheory.SplitLatIdx
-
-
 
 theorem latIndex_split : ∀ (D : D7) (T : HSp D) (v : HeightOneSpectrum (𝓞 D.host.F)) (w w' : HeightOneSpectrum (𝓞 D.host.E)) (h : w.under (𝓞 D.host.F) = v) (h' : w'.under (𝓞 D.host.F) = v), IsSplit (E := D.host.E) v → w ≠ w' → ∀ g : GlobalTheory.FinZeta.Gv T v, latIndex T (GlobalTheory.FinZeta.embV T v g) = GlobalTheory.LocKerMod.idxAt T w h g * GlobalTheory.LocKerMod.idxAt T w' h' g := by
   intro D T v w w' h h' hv hne g
@@ -579,7 +572,6 @@ open Formalism.UG (IsUnifV qV IsUnramInv GU KU IsInertAt)
 open Formalism.MainNotions.SchurIrreducible (IsSplit)
 open GlobalTheory.LFun (IsSplitChart IsInertChart KGL)
 open GlobalTheory.AdelicU
-
 
 end -- clump:auto
 end -- clump:auto
@@ -849,7 +841,7 @@ theorem goodMod : ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (
   obtain ⟨a, rfl⟩ := GlobalTheory.T.exists_local_preimage_of_supportedAtPlace D (Wc D i) v f hf k hk
   have hW := hL.thP.ωP i t
   have hvac := GlobalTheory.T.pairFixedVector_latticeVacuum_offLevels D G Pl0 T A Ks R F hL i t v f hf hoff
-  have hunr := GlobalTheory.T.weilDatumCharacters_unramified_offLevels D G Pl0 T A Ks R F hL i t v f hf hoff
+  have hunr := GlobalTheory.GoodModUnr.chrTh_unrAt D G Pl0 T A Ks R F hL i t v f hf hoff
   obtain ⟨φ, hφ, hc⟩ := GlobalTheory.VacCoef.vac_coef D R.ψ (Vc D i) (Wc D i) _ _ (R.ωP i t) hW μ 𝓕 hμ v hunr
   have hmod := GlobalTheory.T.sphericalKernel_normSq_mul_latticeIndex_eq_one D (Wc D i) (Vc D i).rank _ v φ hφ (fun w h => (hunr w h).1) a
   have h1 := hc a (R.vP i t) (R.vP i t) hvac hvac

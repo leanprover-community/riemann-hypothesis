@@ -69,7 +69,7 @@ theorem satU_of_fixed : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (
   have hf₀S' : f₀ ∈ S := hf₀S
   have hK : ∀ κ : GAf L n, κ ∈ Umax L n → TrivOutside {v} κ → ∃ hκ : Dv.loc κ ∈ Formalism.UG.GU Dv.σw n,
       (⟨Dv.loc κ, hκ⟩ : Formalism.UG.GU Dv.σw n) ∈ Formalism.UG.KU Dv.σw n :=
-    fun κ hκ _ => ⟨GlobalTheory.T.inertDatum_local_mem_unitaryGroup_antidiagonal L n v w Dv κ, GlobalTheory.T.inertDatum_local_stdLatticeStabilizer_mem_maxCompact L n v w Dv κ hκ _⟩
+    fun κ hκ _ => ⟨GlobalTheory.T.inertDatum_local_mem_unitaryGroup_antidiagonal L n v w Dv κ, GlobalTheory.InertKU.loc_mem_KU L n v w Dv κ hκ _⟩
   have hUmax : ∀ κ : GAf L n, TrivOutside {v} κ → (κ ∈ Umax L n ↔ κ ∈ Umax L n) := fun _ _ => Iff.rfl
   let ρ : GAf L n →* Module.End ℂ (GAf L n → a.W) :=
     { toFun := fun g => NG.rt L n g
@@ -97,7 +97,7 @@ theorem satU_of_fixed : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (
     show φ (y * x * b) = φ (y * (x * b))
     rw [mul_assoc]
 
-  have hloc := fun x (hx : TrivOutside {v} x) => GlobalTheory.T.inertDoubleCosetOperator_eq_inertHeckeOperator L n v w Dv (GlobalTheory.T.inertDatum_local_mem_unitaryGroup_antidiagonal L n v w Dv) (GlobalTheory.T.inertDatum_local_stdLatticeStabilizer_mem_maxCompact L n v w Dv)
+  have hloc := fun x (hx : TrivOutside {v} x) => GlobalTheory.InertDCOp.dcOp_eq_heckeFunI L n v w Dv (GlobalTheory.T.inertDatum_local_mem_unitaryGroup_antidiagonal L n v w Dv) (GlobalTheory.InertKU.loc_mem_KU L n v w Dv)
     (GlobalTheory.T.exists_trivOutside_inertDatum_local_eq L n v w Dv) (GlobalTheory.T.inertDatum_local_injective_on_trivOutside L n v w Dv) x hx
   choose! R ha hR hha hA using hloc
   have hχ : ∀ x, TrivOutside {v} x → ∑ γ ∈ R x, NG.rt L n γ f₀ =

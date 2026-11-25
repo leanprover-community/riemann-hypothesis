@@ -370,7 +370,6 @@ variable {C : Type} [Field C] {V : VF C}
 
 end FrobP
 
-
 namespace FrobP
 
 variable {C : Type} [Field C] {V : VF C}
@@ -381,7 +380,6 @@ theorem mm_l : V.MM (V.l : C) := by
   exact zero_lt_one
 
 end FrobP
-
 
 end Formalism.L2.FormalSeriesBounds
 end -- clump:auto
@@ -585,11 +583,6 @@ private lemma ge0_add_lemma_4 {x y : C} (hx : V.Ge 0 x) (hy : V.Ge 0 y) : V.Ge 0
   simp only [VF.Ge] at hx hy ⊢
   exact le_trans (le_min hx hy) (V.v.map_add x y)
 
-private lemma mm_mul_lemma_5 {x y : C} (hx : V.MM x) (hy : V.Ge 0 y) : V.MM (x * y) := by
-  simp only [VF.MM, VF.Ge, AddValuation.map_mul] at hx hy ⊢
-  have hy' : (0 : WithTop ℝ) ≤ V.v y := by simpa using hy
-  exact lt_of_lt_of_le hx (le_add_of_nonneg_right hy')
-
 private lemma ge0_mul_lemma_6 {x y : C} (hx : V.Ge 0 x) (hy : V.Ge 0 y) : V.Ge 0 (x * y) := by
   simp only [VF.Ge, AddValuation.map_mul] at hx hy ⊢
   have hx' : (0 : WithTop ℝ) ≤ V.v x := by simpa using hx
@@ -616,7 +609,7 @@ theorem mm_mul_series {σ : Type} {A B : MvPowerSeries σ C} (hA : ∀ μ, V.MM 
   intro μ
   rw [MvPowerSeries.coeff_mul]
   exact Finset.sum_induction _ (fun x => V.MM x) (fun a b ha hb => _root_.Formalism.L2.FormalSeriesBounds.ValuationNonnegativity.mm_add ha hb) _root_.Formalism.L2.FormalSeriesBounds.ValuationNonnegativity.mm_zero
-    (fun p _ => mm_mul_lemma_5 (hA p.1) (hB p.2))
+    (fun p _ => Formalism.L2.FormalSeriesBounds.mm_mul_ge (hA p.1) (hB p.2))
 
 theorem root_one {ζ : C} (hζ : ζ ^ V.l = 1) : V.MM (ζ - 1) := by
   rcases V with ⟨v, l, hp, hv⟩
@@ -707,7 +700,7 @@ theorem rootsProd : ∀ (C : Type) [Field C] (V : VF C) (ζ : C), ζ ^ V.l = 1 �
       (MvPowerSeries.rescale (fun i => if i = j then ζ ^ k else 1) f - f)) := by
     intro k μ
     rw [map_sub, hcoef, ← sub_one_mul]
-    exact RootsP.mm_mul_lemma_5 (RootsP.root_one (hc k μ)) (hf μ)
+    exact Formalism.L2.FormalSeriesBounds.mm_mul_ge (RootsP.root_one (hc k μ)) (hf μ)
   have hG : ∀ k : ℕ, IntS V (MvPowerSeries.rescale (fun i => if i = j then ζ ^ k else 1) f) := by
     intro k μ
     rw [hcoef]
@@ -1146,10 +1139,6 @@ section MM
 
 variable {V : VF C}
 
-theorem mmA_add {a b : C} (ha : V.MM a) (hb : V.MM b) : V.MM (a + b) := by
-  unfold VF.MM at *
-  exact lt_of_lt_of_le (lt_min ha hb) (V.v.map_add a b)
-
 theorem mmA_zero : V.MM (0 : C) := by
   unfold VF.MM
   simp
@@ -1260,7 +1249,7 @@ theorem good_curve_closed : GoodCurveClosed := by
         simp only [hT2]
         linear_combination key
       rw [e]
-      refine mmA_add (mmA_sum _ _ fun c _ => ?_) (MaximalIdealCongruence.mm_neg (MaximalIdealCongruence.mm_l_mul ((hlam q).2 _)))
+      refine Formalism.L2.FormalSeriesBounds.mm_add (mmA_sum _ _ fun c _ => ?_) (MaximalIdealCongruence.mm_neg (MaximalIdealCongruence.mm_l_mul ((hlam q).2 _)))
       split_ifs with hm
       · exact mmA_zero
       · exact mmA_mul_int (hV2 c) (hB.hmis g c q hm)
@@ -1380,7 +1369,6 @@ theorem rescale_HH (X : RawChart C d I κ) (x z : κ → PowerSeries C) (hx : �
 
 end SelfConjPoints
 
-
 open SelfConjPoints in
 theorem r1sHResc (C : Type) [Field C] (d : ℕ) (I : Fin 2 → Type) [∀ g, Fintype (I g)] (κ : Type) [Fintype κ]
     (X : RawChart C d I κ) (x z : κ → PowerSeries C) (hx : ∀ i, PowerSeries.constantCoeff (x i) = 0)
@@ -1447,10 +1435,6 @@ section GenPieces
 
 variable {V : VF C}
 
-theorem gen_mm_add {a b : C} (ha : V.MM a) (hb : V.MM b) : V.MM (a + b) := by
-  unfold VF.MM at *
-  exact lt_of_lt_of_le (lt_min ha hb) (V.v.map_add a b)
-
 theorem gen_mm_zero : V.MM (0 : C) := by
   unfold VF.MM
   simp
@@ -1462,7 +1446,7 @@ theorem GenLow.mul {N : ℕ} {A R : MvPowerSeries (Fin 2) C} (hA : GenLow V N A)
     GenLow V N (A * R) := by
   intro μ hμ
   rw [MvPowerSeries.coeff_mul]
-  refine Finset.sum_induction _ (fun x => V.MM x) (fun _ _ => gen_mm_add) gen_mm_zero ?_
+  refine Finset.sum_induction _ (fun x => V.MM x) (fun _ _ => Formalism.L2.FormalSeriesBounds.mm_add) gen_mm_zero ?_
   rintro ⟨a, b⟩ hab
   have hab' : a + b = μ := Finset.HasAntidiagonal.mem_antidiagonal.1 hab
   have ha0 : a 0 ≤ N := by
@@ -1693,7 +1677,7 @@ theorem generic_point_unit_congruence : GenericPointUnitCongruence := by
     exact (BI μ).sub (IntS.one μ)
   have hFV := gen_van_exp hEV
   rw [hG, MvPowerSeries.coeff_subst (MvPowerSeries.hasSubst_of_constantCoeff_zero hΦ0)]
-  refine finsum_induction (fun x => V.MM x) gen_mm_zero (fun _ _ => gen_mm_add) fun e => ?_
+  refine finsum_induction (fun x => V.MM x) gen_mm_zero (fun _ _ => Formalism.L2.FormalSeriesBounds.mm_add) fun e => ?_
   rw [smul_eq_mul]
   by_cases h : ∀ s ∈ e.support, s ∉ Set.range (Sum.inl : κ → κ ⊕ Unit)
   · rw [hFV e h, zero_mul]

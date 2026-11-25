@@ -421,7 +421,6 @@ end GlobalTheory.CompanionTheory.Ar.Flat.LinePointFrame
 
 namespace GlobalTheory.CompanionTheory.Ar.Flat
 
-
 open LinePointFrame in
 theorem line_function_norm_zero_away : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (U : Set (Xo.XF c)) (τ : E →+* ℂ) (φ : FrameFn Xo c), τ (H.rt : E) = H.rt0 → IsOpen U → U.Nonempty → IsLineFn U τ φ → ∃ n : ℕ, 0 < n ∧ ∀ (p : Nat.Primes) (κ : c.F →+* ℂ_[p]) (t : ℝ), ¬ (p : ℕ) ∣ n → HasFinNorm U τ φ p κ t → t = 0 := by
   intro E _ _ _ H D l Xo c U τ φ hτ hU hne hφ
@@ -483,12 +482,6 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
 open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Fl GlobalTheory.CompanionTheory.Ar.Flat Filter Topology Metric
 
-namespace GlobalTheory.CompanionTheory.Ar.Flat
-
-theorem isGeom_of_period : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (O : Type) [CommRing O] (β : O →+* c.F) (Y : Model Xo c β) (U : Set (Xo.XF c)) (Z : CptOver Y U) (g : ℕ) (ty : Fin g → (E →+* ℂ)) (FU : FamilyUnif Xo (algebraMap (KA l) ℂ) ty) (i : Fin FU.n), IsTypeFn H D.p D.q ty → (∀ y : Sp ℂ ⟶ Xo.XF c, y ≫ pullback.snd _ _ = spMap (algebraMap c.F ℂ) → Set.range y ⊆ U → ∃ P, IsPeriod (FU.Di i) ty P ∧ under y = FU.u i P) → Z.IsGeom := by
-  exact @PositivityTheory.Xgn.geometric_of_periods
-
-end GlobalTheory.CompanionTheory.Ar.Flat
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenericFibreUniformisedFrame =====
@@ -562,7 +555,7 @@ theorem local_gen (hA0 : FlatLineGenerator) (hA1 : FlatLineGeneratorComponent) (
     ∃ φ : FrameFn Xo c, IsFlatGen U τ φ FU i ∧ (∀ s : c.F →+* ℂ, ∃ t, HasInfNorm U τ φ s t) ∧
       ∃ t, HasFinNorm U τ φ p κ t := by
   obtain ⟨Z⟩ := exists_cpt Xo c Y (model_hyp (c.V W)) hU hUi
-  have hG : Z.IsGeom := _root_.GlobalTheory.CompanionTheory.Ar.Flat.isGeom_of_period E H D l Xo c _ _ Y U Z g ty FU i hty (fun y hy hr => (hP y hy).1 hr)
+  have hG : Z.IsGeom := _root_.PositivityTheory.Xgn.geometric_of_periods E H D l Xo c _ _ Y U Z g ty FU i hty (fun y hy hr => (hP y hy).1 hr)
   obtain ⟨φ, hl, hf, -⟩ := hA0 E H D l Xo c _ _ Y U Z τ (model_hyp (c.V W)) hpq hτ hG
   obtain ⟨hinf, hfg⟩ := hA1 E H D l Xo c _ _ Y U Z τ φ (model_hyp (c.V W)) hpq hτ hG hl hf
   refine ⟨φ, hfg g ty FU i hty (fun P y hPer hu hy => (hP y hy).2 ⟨P, hPer, hu⟩), fun s => ?_, ?_⟩
@@ -587,7 +580,6 @@ theorem hasFinNorm_of_eq {D : Datum H} {l : Level H} {Xo : Moduli D l} {c : Coef
 end GlobalTheory.CompanionTheory.Ar.Flat.TopA
 
 namespace GlobalTheory.CompanionTheory.Ar.Flat
-
 
 open GlobalTheory.CompanionTheory.Ar.Flat.TopA in
 theorem thmFlatA_of_parts : PartI → FlatLineGenerator → FlatLineGeneratorComponent → FinConst → ThmFlatA := by
@@ -618,7 +610,7 @@ theorem thmFlatA_of_parts : PartI → FlatLineGenerator → FlatLineGeneratorCom
     exact (hfin p κ).choose_spec⟩
   refine ⟨φ, N, hφ, hN, ?_⟩
   obtain ⟨n, hn, hn0⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Flat.line_function_norm_zero_away E H D l (Xo l) c U τ φ hτ hU.isOpen hUi.nonempty hφ.line
-  have hS := _root_.GlobalTheory.CompanionTheory.Ar.Fl.finite_logIdeal_ne_zero E (differentIdeal ℤ (𝓞 E)) differentIdeal_ne_bot
+  have hS := _root_.PositivityTheory.Xgf.logIdeal_support_finite E (differentIdeal ℤ (𝓞 E)) differentIdeal_ne_bot
   refine (((finite_primes_dvd hn.ne').union (finite_primes_dvd H.d_prime.ne_zero)).union hS).subset ?_
   rintro p ⟨ι₀, hι⟩
   by_contra hcon

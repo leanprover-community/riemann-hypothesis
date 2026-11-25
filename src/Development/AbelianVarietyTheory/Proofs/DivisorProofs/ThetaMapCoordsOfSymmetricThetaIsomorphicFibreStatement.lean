@@ -65,16 +65,16 @@ theorem pCrd_of_symAt : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] [IsCommMonO
   intro S G _ _ L ρ hL hρ g m n o _ X q f S' A _ _ L' ρ' Ω _ _ x x' P α α' θ e hm hn hf hL' hρ' hg hα hw hα' hw' hθ he
   have hpol : PolFib A L' g x' := ⟨P, α', hg, hα', hw'⟩
   obtain ⟨Ω', _, _, pt, c, -, -, -, hl, -⟩ := GlobalTheory.T.theta_constants_listed_finite_galois_extension S' A L' ρ' hL' hρ' g m (n + 1) Ω x' θ hm hn hpol
-  have hgen := (GlobalTheory.T.principallyPolarisedFibre_exists_generator_stable S' A L' hL' g Ω x' hpol).2 θ hθ Ω' (algebraMap Ω Ω')
+  have hgen := (GlobalTheory.UMin.gen_of_polFib S' A L' hL' g Ω x' hpol).2 θ hθ Ω' (algebraMap Ω Ω')
   have h₁ : HasTh₂ A L' ρ' m m (spMap (algebraMap Ω Ω') ≫ x') c c := hasTh_iff.1 ⟨_, pt, hgen, hl⟩
   obtain ⟨w, hw₀⟩ := id hw
   obtain ⟨ρP, hρP, -⟩ := exists_rigidificationPullbackCompatibleIso hα hw₀ hL P.isLB hρ
   haveI : IsCommMonObj P.A := P.isAb.comm
-  have h₂ := (GlobalTheory.T.hasThetaConstantsTwoLevels_move_cartesian S' A L' ρ' hL' hρ' _ P.A P.L ρP x' α' P.isLB hρP hα' hw' m m _ _ Ω' _ c c).2 h₁
-  have h₃ := (GlobalTheory.T.hasThetaConstantsTwoLevels_move_cartesian S G L ρ hL hρ _ P.A P.L ρP (x ≫ q) α P.isLB hρP hα hw m m _ _ Ω' _ c c).1 h₂
+  have h₂ := (GlobalTheory.UMin.ThMove.hasTh₂_move S' A L' ρ' hL' hρ' _ P.A P.L ρP x' α' P.isLB hρP hα' hw' m m _ _ Ω' _ c c).2 h₁
+  have h₃ := (GlobalTheory.UMin.ThMove.hasTh₂_move S G L ρ hL hρ _ P.A P.L ρP (x ≫ q) α P.isLB hρP hα hw m m _ _ Ω' _ c c).1 h₂
   rw [← Category.assoc] at h₃
   have h₄ := hf Ω' _ c (hasTh_iff.2 h₃)
-  refine GlobalTheory.T.projectiveHomogeneousCoords_field_determine_descend.2.2 o Ω Ω' n _ e (algebraMap Ω Ω') ?_
+  refine GlobalTheory.UMin.CrdUniq.main.2.2 o Ω Ω' n _ e (algebraMap Ω Ω') ?_
   rw [← Category.assoc, funext (he Ω' _ pt c hl)]
   exact h₄
 

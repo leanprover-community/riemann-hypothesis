@@ -44,8 +44,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 
 @[expose] public section
 
-
-
 section
 section
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formalism.L2 Formalism.L2.Host Formalism.L2.NT Formalism.IndefR.NX NumberField IsDedekindDomain GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Top GlobalTheory.Mem.Top.GroupRetwisting GlobalTheory.Mem.Top.Bl GlobalTheory.Mem.R3 GlobalTheory.Mem.R3.Rw GlobalTheory.HeightCounting GlobalTheory.HeightCounting.Up
@@ -55,7 +53,7 @@ theorem conjDualParam_stable_of_prime_not_dividing_level_alt : _root_.GlobalTheo
   intro hN hM hL
   have hlift := _root_.GlobalTheory.LiftRef.baseChange_local_compatible_all_places_alt hN hL
   have hloc := _root_.GlobalTheory.T.local_component_of_par_in_third_layer hN hL
-  have hsz := GlobalTheory.T.eventually_sizes_congruences_hostFacts_columnChoices
+  have hsz := GlobalTheory.HeightCounting.Up.sizes_host_at_record
   refine Step.trans (Step.and (Step.and (Step.and (Step.of_evLgG (KP := KPx) (p := fun _ _ _ _ => True) hlift)
     (Step.of_evLgG hloc)) (Step.of_evLgG hsz)) hM) (Step.of_all ?_)
   rintro K B f T - hKP - ⟨⟨⟨h1, h2⟩, h3⟩, h4⟩ w hS P x l

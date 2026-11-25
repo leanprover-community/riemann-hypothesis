@@ -590,8 +590,6 @@ open GlobalTheory.RayEv (Ray)
 open GlobalTheory.Toroidal GlobalTheory.LogKS GlobalTheory.LogKSChart GlobalTheory.Heat
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.torusInvariant_lifts_sub_eq_sum_invariantFields : ∀ (R : Type) [CommRing R] [IsDomain R] (Q : DegPre R) (O : Type) [CommRing O] [StarRing O] [Module O Q.X] (oa : Q.OAct O) (Y : Ray oa) (n : ℕ) (v : Module.Basis (Fin n) R (TanM (𝟙 (Sp R)) Y.H)) (dd : Fin n → Fld Y.H.left), (∀ a, IsInv Y.H (v a) (dd a)) → ∀ (V : Q.P.A.left.Opens) (D : Derivation ℤ R R) (d d' : Fld Y.H.left), IsLift Y.H ⇑D (Y.q.left ⁻¹ᵁ V) d → IsLift Y.H ⇑D (Y.q.left ⁻¹ᵁ V) d' → (∀ (α : Q.X) (V' : Q.P.A.left.Opens), V' ≤ V → ∀ f, IsWt Y α (Y.q.left ⁻¹ᵁ V') f → IsWt Y α (Y.q.left ⁻¹ᵁ V') (d _ f)) → (∀ (α : Q.X) (V' : Q.P.A.left.Opens), V' ≤ V → ∀ f, IsWt Y α (Y.q.left ⁻¹ᵁ V') f → IsWt Y α (Y.q.left ⁻¹ᵁ V') (d' _ f)) → ∃ h : Fin n → Γ(Y.H.left, Y.q.left ⁻¹ᵁ V), (∀ a, IsWt Y 0 _ (h a)) ∧ ∀ (O' : Y.H.left.Opens), O' ≤ Y.q.left ⁻¹ᵁ V → ∀ f, d O' f - d' O' f = ∑ a, rsT (h a) O' * dd a O' f := by
-  first | exact @GlobalTheory.VertCoeff.lifts_sub_eq_sum_invFields
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.TorusInvariantLiftsSubEqSumInvariantFieldsStatement =====
@@ -741,7 +739,7 @@ theorem main : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R] [IsNoeth
 
   have ex : ∀ k : K, ∃ c : Fin n → Γ(Y.H.left, Wk k), (∀ a, IsWt Y 0 _ (c a)) ∧ ∀ Wo, Wo ≤ Wk k → ∀ f,
       h.d k.1 Wo f - h'.d k.2 Wo f = ∑ a, rsT (c a) Wo * dd a Wo f := fun k =>
-    GlobalTheory.T.torusInvariant_lifts_sub_eq_sum_invariantFields R Q O oa Y n v dd hinv (V k.1 ⊓ V' k.2) D (h.d k.1) (h'.d k.2) (isLift_mono (h.lift _) (l1 k))
+    GlobalTheory.VertCoeff.lifts_sub_eq_sum_invFields R Q O oa Y n v dd hinv (V k.1 ⊓ V' k.2) D (h.d k.1) (h'.d k.2) (isLift_mono (h.lift _) (l1 k))
       (isLift_mono (h'.lift _) (l2 k))
       (fun α V'' hV'' f hf => (hB k.1).2.2.2 α V'' ((Y.q.left.preimage_mono hV'').trans (l1 k)) f hf)
       (fun α V'' hV'' f hf => (hB' k.2).2.2.2 α V'' ((Y.q.left.preimage_mono hV'').trans (l2 k)) f hf)

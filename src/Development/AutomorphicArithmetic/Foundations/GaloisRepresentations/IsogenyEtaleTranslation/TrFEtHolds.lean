@@ -1159,9 +1159,6 @@ private theorem ev_nsmul {G : GDatum} {k : Type} [Field k] {Q : Type} [Group Q] 
   | zero => rw [zero_smul, pow_zero, h0]
   | succ d ih => rw [succ_nsmul, I.add, ih, pow_succ]
 
-private theorem pow_comp_hom {S : Scheme.{0}} {A B Z : Over S} [MonObj A] [MonObj B] (f : A ⟶ B) [IsMonHom f]
-    (x : Z ⟶ A) (n : ℕ) : (x ^ n) ≫ f = (x ≫ f) ^ n := MonObj.pow_comp x n f
-
 theorem UpperTheory.Gal.FixZ.witScal_of :
     UpperTheory.Gal.G3.RelComp → UpperTheory.Gal.FixZ.WitScal := by
   intro hR p _ D G L gb N X d z hd hdp hz
@@ -1174,7 +1171,7 @@ theorem UpperTheory.Gal.FixZ.witScal_of :
   have hcomm : ∀ c : D.O, X.univ.act.act c ≫ ((𝟙 X.univ.A) ^ d) = ((𝟙 X.univ.A) ^ d) ≫ X.univ.act.act c := by
     intro c
     haveI := X.univ.act.hom c
-    rw [MonObj.comp_pow, pow_comp_hom, Category.comp_id, Category.id_comp]
+    rw [MonObj.comp_pow, GlobalTheory.DrinLev.HT.MulModel.pow_comp', Category.comp_id, Category.id_comp]
   refine ⟨Category.id_comp _, X.univ, (𝟙 X.univ.A) ^ d, m, ?_, by rw [hm]; simp⟩
   refine ⟨hmon, hcomm, ⟨𝟙 _, d, inferInstance, fun c => ?_, Category.comp_id _, Category.id_comp _, hdp⟩,
     ⟨d ^ 2, hdp.pow_left 2, ⟨_root_.GlobalTheory.BirigidPow.birigidified_pullback_mulPair_iso_tensorPowSq _ _ X.univ.ab X.univ.P X.univ.isLB X.univ.rig₁ X.univ.rig₂ X.univ.ample d⟩, hmul⟩,

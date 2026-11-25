@@ -193,7 +193,6 @@ open CompanionTheory.RgExh
 
 variable {m : ℕ} {X : GMod (m + 1)} {χ : Fin (m + 1) → ℂ} {s : Fin (m + 1)}
 
-
 variable (X χ s) in
 def toS (g : (step X (χ s)).V) : ↥(stepSub X (χ s)) := g
 
@@ -242,7 +241,6 @@ theorem coe_pow (β : ℂ) (k : ℕ) (G : Fin (m + 1) → (step X (χ s)).V) :
     rw [pow_succ, Module.End.mul_apply, ih, pow_succ, Module.End.mul_apply]
     congr 1
     simp only [LinearMap.sub_apply, LinearMap.smul_apply, Module.End.one_apply, coeY_sub, coeY_smul, coe_omD]
-
 
 variable (χ s) in
 def phi0 (hS : ScalChar X χ) : X.V →ₗ[ℂ] (Fin (m + 1) → (step X (χ s)).V) where
@@ -335,7 +333,6 @@ theorem right_casimir_mem_submodule {H} (h : H ∈ Isub X) : y2 X H ∈ Isub X :
     have := mem_Isub (X := X) (k + 1) v
     rwa [pow_succ, Module.End.mul_apply] at this
   · intro x y hx hy; rw [map_add]; exact add_mem hx hy
-
 
 variable (X) in
 def Om' : Module.End ℂ (Fin (m + 1) → Fin (m + 1) → X.V) := y2 X + (eta X).comp (psi X)
@@ -556,7 +553,6 @@ theorem tw_tens (X : GMod n) (a b : Fin n) (y : Fin n → X.V) :
   rw [ReciprocityTheory.ChartRestriction.DS.Lap.Capelli.tensVd_apply']
   exact e3 (X.E a b (y i)) (if i = b then y a else 0)
 
-
 theorem iso_back (X : GMod n) (z : ℂ) (hB : ∀ a b, ∀ x ∈ backSub X z, (tensD X).E a b x ∈ backSub X z) :
     Iso (tw (step (tw X) (-z))) (back X z hB) := by
   let S : Submodule ℂ (Fin n → X.V) := stepSub (tw X) (-z)
@@ -664,7 +660,6 @@ theorem coeY_mem_Isub
   rw [← e, aeval_CH, Om'_CH K hK, LinearMap.zero_apply, map_zero, zero_add, aeval_lin]
   exact aeval_mem_Isub B hI
 
-
 variable (χ s) in
 def phiB (hS : ScalChar X χ) : X.V →ₗ[ℂ] ↥(backSub (step X (χ s)) (χ s + 1)) :=
   (phi0 χ s hS).codRestrict (backSub (step X (χ s)) (χ s + 1)) fun v => mem_of_eig' (omega_projection_scalar_character hS v)
@@ -695,7 +690,6 @@ theorem phiB_surj (hS : ScalChar X χ) (hsimp : ∀ r, r ≠ s → χ r ≠ χ s
   change Pr X χ s (Pi.single c v) = coeY G c
   rw [← hv c]
   exact Pr_step hS hsimp _ (hom _ (show ↥(stepSub X (χ s)) from G c).2)
-
 
 variable (χ s) in
 def phiBk (hS : ScalChar X χ) (hB : BackStable) :
@@ -961,11 +955,6 @@ theorem fsb_omD_apply (M : GMod n) (g : Fin n → M.V) (a : Fin n) : omD M g a =
   simp only [omD, eeVd, LinearMap.pi_apply, LinearMap.neg_apply, LinearMap.sum_apply,
     LinearMap.comp_apply, LinearMap.proj_apply]
 
-theorem fsb_tensVd_apply (M : GMod n) (a b : Fin n) (g : Fin n → M.V) (d : Fin n) :
-    tensVd M.E a b g d = M.E a b (g d) - if d = b then g a else 0 := by
-  simp only [tensVd, LinearMap.pi_apply, LinearMap.sub_apply, LinearMap.comp_apply, LinearMap.proj_apply]
-  split_ifs <;> simp
-
 theorem fsb_omD_map (M1 M2 : GMod n) (f : M1.V →ₗ[ℂ] M2.V) (hf : ∀ a b v, f (M1.E a b v) = M2.E a b (f v))
     (g : Fin n → M1.V) : f.compLeft (Fin n) (omD M1 g) = omD M2 (f.compLeft (Fin n) g) := by
   funext a
@@ -1079,7 +1068,7 @@ private theorem apply_mem_of_mem_backSub_of_iso_simple (hD : DualFacts) (X S : G
     have hx : ∀ d, (x : Fin n → S.V) d ∈ Z := (hWmem x).mp hx
     refine (hWmem ((back S z hB).E a b x)).mpr fun d => ?_
     show (tensVd S.E a b (x : Fin n → S.V)) d ∈ Z
-    rw [fsb_tensVd_apply S a b]
+    rw [GlobalTheory.CompanionTheory.RgHeckeBack.tensVd_apply S a b]
     split_ifs
     · exact Z.sub_mem (hZ a b _ (hx d)) (hx a)
     · simpa using hZ a b _ (hx d)

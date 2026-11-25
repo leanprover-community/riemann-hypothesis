@@ -67,8 +67,6 @@ open NumberField Module Matrix Formalism.BasicNotions Formalism.MainNotions.S Fo
 open scoped ENNReal Classical
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.definiteLattice_discriminantModule_card_det_sq : ∀ (D : D7) (M : LatW D), M.FG → IsPosDef (D.sp.X 0).hT → Formalism.HermitianLatticesTheory.IsIntegralLat (D.sp.X 0).hT M → 1 ≤ idxW D (dualInH (D.sp.X 0).hT M) M ∧ (idxW D (dualInH (D.sp.X 0).hT M) M : ℝ) = detW D M ^ 2 ∧ ∀ P : LatW D, P ≤ M → rkW D P = rkW D M → 1 ≤ idxW D M P ∧ detW D P = detW D M * idxW D M P := by
-  first | exact @GlobalTheory.LoopC.DetCard.main
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.FlagMeasures.DefiniteLatticeDiscriminantModuleCardDetSqStatement =====
@@ -783,7 +781,7 @@ theorem subOK_of (D : D7) (L P : LatW D) (hL : L.FG) (hpos : IsPosDef (D.sp.X 0)
     rw [hspan]
   have hintS : Formalism.HermitianLatticesTheory.IsIntegralLat (D.sp.X 0).hT (sat D L P) :=
     fun x hx y hy => hint x (hsatL hx) y (hsatL hy)
-  obtain ⟨hd1, hd2, hsub⟩ := GlobalTheory.T.definiteLattice_discriminantModule_card_det_sq D (sat D L P) hfg hpos hintS
+  obtain ⟨hd1, hd2, hsub⟩ := GlobalTheory.LoopC.DetCard.main D (sat D L P) hfg hpos hintS
   obtain ⟨hi1, hdet⟩ := hsub P hPsat hrk
   have hdS0 : 0 ≤ detW D (sat D L P) := Real.sqrt_nonneg _
   have hdS1 : 1 ≤ detW D (sat D L P) := by

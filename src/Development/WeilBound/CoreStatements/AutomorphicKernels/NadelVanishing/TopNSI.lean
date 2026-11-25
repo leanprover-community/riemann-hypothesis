@@ -115,15 +115,6 @@ open GlobalTheory.Discrepancy GlobalTheory.Cartier GlobalTheory.QCoh
 
 noncomputable section
 open GlobalTheory.Adelic.LinSys
-namespace GlobalTheory.BoundaryFibre
-
-theorem eff_nsmul {X : Scheme.{0}} [IsIntegral X] {D : CartierDiv X} (h : D.Eff) (n : ℕ) :
-    (n • D).Eff := by
-  induction n with
-  | zero => rw [zero_nsmul]; exact CartierDiv.eff_zero
-  | succ n ih => rw [succ_nsmul]; exact ih.add h
-
-end GlobalTheory.BoundaryFibre
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -147,7 +138,7 @@ theorem sum_eq : ∀ (X : Scheme.{0}) [IsIntegral X] [IsLocallyNoetherian X] (p 
   intro X _ _ p hp
   letI := algebraΓOfHom p
   intro D E a b ha hb hD hE
-  refine ⟨(BoundaryFibre.eff_nsmul hD b).add (BoundaryFibre.eff_nsmul hE a), ?_, ?_⟩
+  refine ⟨(GlobalTheory.PairStep.eff_nsmul_of_qadd hD b).add (GlobalTheory.PairStep.eff_nsmul_of_qadd hE a), ?_, ?_⟩
   · funext z
     simp only [qWeil, Pi.add_apply, CartierDiv.mult_add, SmallSecHeight.mult_nsmul]
     have ha' : (a : ℚ) ≠ 0 := by exact_mod_cast ha.ne'
@@ -424,7 +415,6 @@ theorem generatesAt_add_vanishesAt {D : CartierDiv X} {x : X} {f u : X.functionF
 variable [IsLocallyNoetherian X]
 
 end GlobalTheory.AmpleStep
-
 
 open GlobalTheory.AmpleStep in
 theorem GlobalTheory.AmpleStep.exists_divisor : GlobalTheory.Published.Principalisation → ∀ (X : Scheme.{0}) [IsIntegral X] [IsLocallyNoetherian X] [GlobalTheory.IsNormalScheme X]
@@ -713,8 +703,6 @@ open ReciprocityTheory.ChartRestriction.G.DVR.FlatBC (algX)
 open GlobalTheory GlobalTheory.CechPic GlobalTheory.Cartier GlobalTheory.TopForm GlobalTheory.QCoh GlobalTheory.Discrepancy GlobalTheory.PairStep GlobalTheory.FieldPair
 
 namespace GlobalTheory.PairStep
-
-
 
 theorem exists_ample_eff_kltAt_start : GlobalTheory.Published.Principalisation → ∀ (X : Scheme.{0}) [IsIntegral X] [IsLocallyNoetherian X] [GlobalTheory.IsNormalScheme X]
     (p : X ⟶ Sp ℂ) (n : ℕ), IsProjOver p → topologicalKrullDim X = n →

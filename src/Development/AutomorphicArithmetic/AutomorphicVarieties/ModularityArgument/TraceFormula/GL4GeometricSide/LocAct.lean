@@ -139,17 +139,6 @@ section SlopeTestRemainingChoices
 
 variable {n : ℕ} {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V]
 
-private theorem eu_loc (s : Bool) (a b : Fin n) {f f' : Mat n → V} (h : Set.EqOn f f' (GLs n)) :
-    Set.EqOn (Eu s a b f) (Eu s a b f') (GLs n) := by
-  intro x hx
-  have h1 := (UpperTheory.RealTr.rdcalc n V).1 f f' h
-  simp only [Eu, Pi.smul_apply, Pi.add_apply, h1 _ hx]
-
-private theorem eu_smo (s : Bool) (a b : Fin n) {f : Mat n → V} (h : ContDiffOn ℝ ∞ f (GLs n)) :
-    ContDiffOn ℝ ∞ (Eu s a b f) (GLs n) := by
-  have h1 := ((UpperTheory.RealTr.rdcalc n V).2 f h).1
-  exact ((h1 _).add ((h1 _).const_smul _)).const_smul _
-
 private theorem rd_smul (c : ℂ) {f : Mat n → V} (h : ContDiffOn ℝ ∞ f (GLs n)) (X : Mat n) :
     Set.EqOn (Rd X (fun y => c • f y)) (fun y => c • Rd X f y) (GLs n) := by
   intro g hg
@@ -177,7 +166,7 @@ private theorem epow_loc (s : Bool) (m : ℕ) (a b : Fin n) {f f' : Mat n → V}
   | succ m ih =>
     intro x hx
     simp only [Epow.eq_2, Finset.sum_apply]
-    exact Finset.sum_congr rfl fun d _ => eu_loc s a d (ih d b) hx
+    exact Finset.sum_congr rfl fun d _ => PositivityTheory.Rg.BcB.CG.Eu_congr s a d (ih d b) hx
 
 private theorem epow_smo (s : Bool) (m : ℕ) (a b : Fin n) {f : Mat n → V} (h : ContDiffOn ℝ ∞ f (GLs n)) :
     ContDiffOn ℝ ∞ (Epow s m a b f) (GLs n) := by
@@ -190,7 +179,7 @@ private theorem epow_smo (s : Bool) (m : ℕ) (a b : Fin n) {f : Mat n → V} (h
   | succ m ih =>
     simp only [Epow.eq_2]
     rw [Finset.sum_fn]
-    exact ContDiffOn.sum fun d _ => eu_smo s a d (ih d b)
+    exact ContDiffOn.sum fun d _ => PositivityTheory.Rg.BcB.CG.contDiffOn_Eu s a d (ih d b)
 
 private theorem epow_smul (s : Bool) (m : ℕ) (a b : Fin n) (c : ℂ) {f : Mat n → V}
     (h : ContDiffOn ℝ ∞ f (GLs n)) :
@@ -204,7 +193,7 @@ private theorem epow_smul (s : Bool) (m : ℕ) (a b : Fin n) (c : ℂ) {f : Mat 
     intro x hx
     simp only [Epow.eq_2, Finset.sum_apply, Finset.smul_sum]
     refine Finset.sum_congr rfl fun d _ => ?_
-    rw [eu_loc s a d (ih d b) hx]
+    rw [PositivityTheory.Rg.BcB.CG.Eu_congr s a d (ih d b) hx]
     exact eu_smul s a d c (epow_smo s m d b h) hx
 
 private theorem gel_loc (s : Bool) (m : ℕ) {f f' : Mat n → V} (h : Set.EqOn f f' (GLs n)) :

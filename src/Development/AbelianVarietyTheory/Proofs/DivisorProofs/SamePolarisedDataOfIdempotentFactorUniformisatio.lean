@@ -73,8 +73,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT GlobalTheory.Mum GlobalTheory.Mum.Two
 
-theorem _root_.GlobalTheory.T.cubeBundleIso_uniformisedGroup_genericFibre : ∀ (R : Type) [CommRing R] [IsDomain R] (I : Ideal R) (D₁ D₂ : DegData R I) (A₁ A₂ : PolAV (Sp (FractionRing R))) (G₁ G₂ : Over (Sp R)) [GrpObj G₁] [IsCommMonObj G₁] [GrpObj G₂] [IsCommMonObj G₂] (U₁ : UnifPre I D₁ A₁ G₁) (U₂ : UnifPre I D₂ A₂ G₂) (f g : G₁ ⟶ G₂) (f' g' : G₁ ⟶ G₁) (fA gA : A₁.A ⟶ A₂.A) (fA' gA' : A₁.A ⟶ A₁.A), Gen₀ U₁ U₂ f fA → Gen₀ U₁ U₂ g gA → Gen₀ U₁ U₁ f' fA' → Gen₀ U₁ U₁ g' gA' → LBIso (cubeLB G₂ ![fst G₁ G₁ ≫ f, snd G₁ G₁ ≫ g] U₂.LG.L) (cubeLB G₁ ![fst G₁ G₁ ≫ f', snd G₁ G₁ ≫ g'] U₁.LG.L) → LBIso (cubeLB A₂.A ![fst A₁.A A₁.A ≫ fA, snd A₁.A A₁.A ≫ gA] A₂.L) (cubeLB A₁.A ![fst A₁.A A₁.A ≫ fA', snd A₁.A A₁.A ≫ gA'] A₁.L) := by
-  first | exact @GlobalTheory.Mum.Two.lbIso_cubeLB_generic
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.CubeBundleIsoUniformisedGroupGenericFibreStatement =====
@@ -90,8 +88,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT GlobalTheory.Mum GlobalTheory.Mum.Two
 
-theorem _root_.GlobalTheory.T.exists_abelianPart_hom_uniformisedGroups : ∀ (R : Type) [CommRing R] [IsDomain R] (I : Ideal R), AdmBase R I → ∀ (D₁ D₂ : DegData R I) (A₁ A₂ : PolAV (Sp (FractionRing R))) (G₁ G₂ : Over (Sp R)) [GrpObj G₁] [IsCommMonObj G₁] [GrpObj G₂] [IsCommMonObj G₂] (U₁ : UnifPre I D₁ A₁ G₁) (U₂ : UnifPre I D₂ A₂ G₂) (a : G₁ ⟶ G₂), IsMonHom a → ∃ b : D₁.toPre.P.A ⟶ D₂.toPre.P.A, IsMonHom b ∧ Over₀ U₁ U₂ a b := by
-  first | exact @GlobalTheory.Mum.Two.exists_abelian_hom
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAbelianPartHomUniformisedGroupsStatement =====
@@ -107,8 +103,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT GlobalTheory.Mum GlobalTheory.Mum.Two
 
-theorem _root_.GlobalTheory.T.exists_algClosedField_torsionMaps_commute_hom : ∀ (R : Type) [CommRing R] [IsDomain R] [CharZero R] (I : Ideal R), AdmBase R I → ∀ (D₁ D₂ : DegData R I) (A₁ A₂ : PolAV (Sp (FractionRing R))) (G₁ G₂ : Over (Sp R)) [GrpObj G₁] [IsCommMonObj G₁] [GrpObj G₂] [IsCommMonObj G₂], IsSemiAbelian G₁ → IsSemiAbelian G₂ → ∀ (U₁ : Unif I D₁ A₁ G₁) (U₂ : Unif I D₂ A₂ G₂) (a : G₁ ⟶ G₂) (c : A₁.A ⟶ A₂.A) (b : D₁.toPre.P.A ⟶ D₂.toPre.P.A) (h : D₂.toPre.X →+ D₁.toPre.X), IsMonHom c → Gen₀ U₁.toUnifPre U₂.toUnifPre a c → Lin U₁.toUnifPre U₂.toUnifPre a b h → Coord U₁.toUnifPre U₂.toUnifPre a b h → Function.Injective h → ∃ (F : Type) (_ : Field F) (_ : IsAlgClosed F) (_ : Algebra (FractionRing R) F), Key U₁.toUnifPre U₂.toUnifPre c b h F := by
-  first | exact @GlobalTheory.Mum.Two.exists_key
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAlgClosedFieldTorsionMapsCommuteHomStatement =====
@@ -124,8 +118,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT GlobalTheory.Mum GlobalTheory.Mum.Two
 
-theorem _root_.GlobalTheory.T.factor_periods_projection_period_points : ∀ (R : Type) [CommRing R] [IsDomain R] (D₀ D' : DegPre R), D'.TauBimult → ∀ (O : Type) [Ring O] [StarRing O] [Module O D'.X] (o : D'.OAct O) (e f : O) (inc : D₀.P.A ⟶ D'.P.A) (pr : D'.P.A ⟶ D₀.P.A) (h : D₀.X →+ D'.X) (φ : D'.X →+ D₀.X), IsMonHom inc → IsMonHom pr → pr ≫ inc = o.onB.act e → (∀ χ, ∃ u : LB.Gen (CmpLB D' D₀ pr (h χ) χ), Nrm u) → LBIso (abelian₂ D₀.P.A D₀.P.L) ((abelian₂ D'.P.A D'.P.L).pull (lift (fst D₀.P.A D₀.P.A ≫ inc) (snd D₀.P.A D₀.P.A ≫ inc ≫ o.onB.act f) : G2 D₀.P.A ⟶ G2 D'.P.A).left) → ∀ (F : Type) [Field F] [Algebra (FractionRing R) F], (∀ (y : D'.X) (g : GtPtF D' F), GtPtF.IsIota y g → ∃ g' : GtPtF D₀ F, Act D' D₀ pr h g g' ∧ GtPtF.IsIota (φ y) g') → (∀ y, h (φ y) = star e • f • e • y) → (∀ y, D₀.c (φ y) = D'.c y ≫ pr) ∧ ∃ w : LB.Iso (abelian₂ D₀.P.A D₀.P.L) ((abelian₂ D'.P.A D'.P.L).pull (lift (fst D₀.P.A D₀.P.A ≫ inc) (snd D₀.P.A D₀.P.A ≫ inc ≫ o.onB.act f) : G2 D₀.P.A ⟶ G2 D'.P.A).left), w.IsGen ∧ ∀ y y' z J J', Good D'.P.L z J → Good D₀.P.L z J' → val (D₀.tau (φ y) (φ y')) (𝟙 _) z J' = GlobalTheory.PolDeg.lamVal w (lift (toUnit (TK R) ≫ D₀.c (φ y)) (toUnit (TK R) ≫ D₀.c (φ y'))).left z J J' * val (D'.tau (e • y) (f • e • y')) (𝟙 _) z J := by
-  first | exact @GlobalTheory.Mum.Two.Fac.periods_of_factor
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.FactorPeriodsProjectionPeriodPointsStatement =====
@@ -310,8 +302,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT GlobalTheory.Mum GlobalTheory.Mum.Two
 
-theorem _root_.GlobalTheory.T.semiAbelianHom_torsionCompatible_periods_lattices : ∀ (R : Type) [CommRing R] [IsDomain R] [CharZero R] (I : Ideal R), AdmBase R I → ∀ (D₁ D₂ : DegData R I) (A₁ A₂ : PolAV (Sp (FractionRing R))) (G₁ G₂ : Over (Sp R)) [GrpObj G₁] [IsCommMonObj G₁] [GrpObj G₂] [IsCommMonObj G₂], IsSemiAbelian G₁ → IsSemiAbelian G₂ → ∀ (U₁ : Unif I D₁ A₁ G₁) (U₂ : Unif I D₂ A₂ G₂) (a : G₁ ⟶ G₂) (c : A₁.A ⟶ A₂.A) (b : D₁.toPre.P.A ⟶ D₂.toPre.P.A) (h : D₂.toPre.X →+ D₁.toPre.X), IsMonHom c → Gen₀ U₁.toUnifPre U₂.toUnifPre a c → Lin U₁.toUnifPre U₂.toUnifPre a b h → Coord U₁.toUnifPre U₂.toUnifPre a b h → ∀ E E' : EndU U₁.toUnifPre, LBIso (cubeLB G₁ ![fst G₁ G₁ ≫ E.aG, snd G₁ G₁] U₁.LG.L) (cubeLB G₁ ![fst G₁ G₁, snd G₁ G₁ ≫ E'.aG] U₁.LG.L) → LBIso (cubeLB A₂.A ![fst A₁.A A₁.A ≫ c, snd A₁.A A₁.A ≫ c] A₂.L) (cubeLB A₁.A ![fst A₁.A A₁.A ≫ E.aA, snd A₁.A A₁.A ≫ 𝟙 A₁.A] A₁.L) → ∀ (F : Type) [Field F] [IsAlgClosed F] [Algebra (FractionRing R) F], Key U₁.toUnifPre U₂.toUnifPre c b h F → ∃ φ : D₁.toPre.X →+ D₂.toPre.X, (∀ (y : D₁.toPre.X) (g : GtPtF D₁.toPre F), GtPtF.IsIota y g → ∃ g' : GtPtF D₂.toPre F, Act D₁.toPre D₂.toPre b h g g' ∧ GtPtF.IsIota (φ y) g') ∧ ∀ y, h (φ y) = E.h y := by
-  first | exact @GlobalTheory.Mum.Two.periods_of_key
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.SemiAbelianHomTorsionCompatiblePeriodsLatticesStatement =====
@@ -327,8 +317,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT GlobalTheory.Mum GlobalTheory.Mum.Two
 
-theorem _root_.GlobalTheory.T.uniformisedGroupHom_characterMap_constant : ∀ (R : Type) [CommRing R] [IsDomain R] (I : Ideal R), AdmBase R I → ∀ (D₁ D₂ : DegData R I) (A₁ A₂ : PolAV (Sp (FractionRing R))) (G₁ G₂ : Over (Sp R)) [GrpObj G₁] [IsCommMonObj G₁] [GrpObj G₂] [IsCommMonObj G₂] (U₁ : UnifPre I D₁ A₁ G₁) (U₂ : UnifPre I D₂ A₂ G₂) (a : G₁ ⟶ G₂), IsMonHom a → ∃ h : D₂.toPre.X →+ D₁.toPre.X, OnTorus U₁ U₂ a h := by
-  first | exact @GlobalTheory.Mum.Two.unifPre_hom_character_const
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.UniformisedGroupHomCharacterMapConstantStatement =====
@@ -344,8 +332,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT GlobalTheory.Mum GlobalTheory.Mum.Two
 
-theorem _root_.GlobalTheory.T.uniformisedGroupHom_induced_maps_unique : ∀ (R : Type) [CommRing R] [IsDomain R] (I : Ideal R), AdmBase R I → ∀ (D₁ D₂ : DegData R I) (A₁ A₂ : PolAV (Sp (FractionRing R))) (G₁ G₂ : Over (Sp R)) [GrpObj G₁] [IsCommMonObj G₁] [GrpObj G₂] [IsCommMonObj G₂] (U₁ : UnifPre I D₁ A₁ G₁) (U₂ : UnifPre I D₂ A₂ G₂) (a : G₁ ⟶ G₂), (∀ b b' : D₁.toPre.P.A ⟶ D₂.toPre.P.A, Over₀ U₁ U₂ a b → Over₀ U₁ U₂ a b' → b = b') ∧ ∀ h h' : D₂.toPre.X → D₁.toPre.X, OnTorus U₁ U₂ a h → OnTorus U₁ U₂ a h' → h = h' := by
-  first | exact @GlobalTheory.Mum.Two.over₀_onTorus_unique
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.UniformisedGroupHomInducedMapsUniqueStatement =====
@@ -366,9 +352,6 @@ noncomputable section
 namespace GlobalTheory.Mum.FactorPol
 
 open GlobalTheory.CechPic GlobalTheory.ZH.EndoExtend GlobalTheory.Mum.Two GlobalTheory.UT
-
-theorem lbIso_star : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], AdmBase R (maximalIdeal R) → ∀ (D : DegData R (maximalIdeal R)) (A : PolAV (Sp (FractionRing R))) (G : Over (Sp R)) [GrpObj G] [IsCommMonObj G], IsSemiAbelian G → ∀ U : Unif (maximalIdeal R) D A G, ∀ (O : Type) [Ring O] [StarRing O] [Module O D.toPre.X] (o : D.toPre.OAct O) (oA : A.OAct O) (oG : RingAct G O), U.toUnifPre.OLinear O o oA oG → ∀ a : O, LBIso (cubeLB G ![fst G G ≫ oG.act a, snd G G] U.LG.L) (cubeLB G ![fst G G, snd G G ≫ oG.act (star a)] U.LG.L) := by
-  exact _root_.GlobalTheory.Mum.UnifAdjoint.lbIso_cubeLB_star_ring
 
 section Comp
 
@@ -430,20 +413,18 @@ theorem lbIso_proj {S : Scheme.{0}} {G G' : Over S} [GrpObj G] [IsCommMonObj G] 
   exact (cls_eq_iff (LB.isLB_linComb hL _ _) (LB.isLB_linComb hL' _ _)).1
     ((cls_cubeLB G _ hL).trans (e₃.trans (e₄.symm.trans (cls_cubeLB G' _ hL').symm)))
 
-
-
 theorem samePol_of_unif_factor : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], Base R → ∀ (D D' : DegData R (maximalIdeal R)) (F : Factor D.toPre D'.toPre) (A' : PolAV (Sp (FractionRing R))) (G' : Over (Sp R)) [GrpObj G'] [IsCommMonObj G'], IsSemiAbelian G' → ∀ (U' : Unif (maximalIdeal R) D' A' G') (oA : A'.OAct F.O) (oG : RingAct G' F.O), U'.toUnifPre.OLinear F.O F.o oA oG → ∀ (G : Over (Sp R)) [GrpObj G] [IsCommMonObj G], IsSemiAbelian G → ∀ (inc : G ⟶ G') (pr : G' ⟶ G), IsMonHom inc → IsMonHom pr → inc ≫ pr = 𝟙 G → pr ≫ inc = oG.act F.e → ∀ (D₀ : DegData R (maximalIdeal R)) (A : PolAV (Sp (FractionRing R))) (U : Unif (maximalIdeal R) D₀ A G), LBIso (abelian₂ G U.LG.L) ((abelian₂ G' U'.LG.L).pull (lift (fst G G ≫ inc) (snd G G ≫ inc ≫ oG.act F.f) : G2 G ⟶ G2 G').left) → SamePol D.toPre D₀.toPre := by
   intro R _ _ _ hR D D' F A' G' _ _ hG' U' oA oG lin G _ _ hG inc pr hinc hpr ip pi D₀ A U H
   have := hR.2
   have hA := hR.1
   have := U.gen_hom
   have := U'.gen_hom
-  obtain ⟨prB, hprB, qpr⟩ := GlobalTheory.T.exists_abelianPart_hom_uniformisedGroups R _ hA D' D₀ A' A G' G U'.toUnifPre U.toUnifPre pr hpr
-  obtain ⟨incB, hincB, qinc⟩ := GlobalTheory.T.exists_abelianPart_hom_uniformisedGroups R _ hA D₀ D' A A' G G' U.toUnifPre U'.toUnifPre inc hinc
-  obtain ⟨h, th⟩ := GlobalTheory.T.uniformisedGroupHom_characterMap_constant R _ hA D' D₀ A' A G' G U'.toUnifPre U.toUnifPre pr hpr
-  obtain ⟨k, tk⟩ := GlobalTheory.T.uniformisedGroupHom_characterMap_constant R _ hA D₀ D' A A' G G' U.toUnifPre U'.toUnifPre inc hinc
-  have un := GlobalTheory.T.uniformisedGroupHom_induced_maps_unique R _ hA D₀ D₀ A A G G U.toUnifPre U.toUnifPre
-  have un' := GlobalTheory.T.uniformisedGroupHom_induced_maps_unique R _ hA D' D' A' A' G' G' U'.toUnifPre U'.toUnifPre
+  obtain ⟨prB, hprB, qpr⟩ := GlobalTheory.Mum.Two.exists_abelian_hom R _ hA D' D₀ A' A G' G U'.toUnifPre U.toUnifPre pr hpr
+  obtain ⟨incB, hincB, qinc⟩ := GlobalTheory.Mum.Two.exists_abelian_hom R _ hA D₀ D' A A' G G' U.toUnifPre U'.toUnifPre inc hinc
+  obtain ⟨h, th⟩ := GlobalTheory.Mum.Two.unifPre_hom_character_const R _ hA D' D₀ A' A G' G U'.toUnifPre U.toUnifPre pr hpr
+  obtain ⟨k, tk⟩ := GlobalTheory.Mum.Two.unifPre_hom_character_const R _ hA D₀ D' A A' G G' U.toUnifPre U'.toUnifPre inc hinc
+  have un := GlobalTheory.Mum.Two.over₀_onTorus_unique R _ hA D₀ D₀ A A G G U.toUnifPre U.toUnifPre
+  have un' := GlobalTheory.Mum.Two.over₀_onTorus_unique R _ hA D' D' A' A' G' G' U'.toUnifPre U'.toUnifPre
   have ql : ∀ x, Over₀ U'.toUnifPre U'.toUnifPre (oG.act x) (F.o.onB.act x) := fun x e => lin.q_lin e x
   have il : ∀ x, OnTorus U'.toUnifPre U'.toUnifPre (oG.act x) (fun χ => star x • χ) := fun x e => lin.i_lin e x
   have ipB : incB ≫ prB = 𝟙 _ := (un _).1 _ _ (ip ▸ over_comp qinc qpr) over_id
@@ -452,10 +433,10 @@ theorem samePol_of_unif_factor : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLoc
   have hk : ∀ χ, h (k χ) = star F.e • χ := congrFun ((un' _).2 _ _ (pi ▸ onTorus_comp th tk) (il _))
   have hinj : Function.Injective h := Function.LeftInverse.injective kh
   have L : Lin U'.toUnifPre U.toUnifPre pr prB h := ⟨hpr, hprB, qpr, th⟩
-  have C := GlobalTheory.T.torusCoordinates_compare_normalisedGenerators R _ hA D' D₀ A' A G' G U'.toUnifPre U.toUnifPre pr prB h L
+  have C := GlobalTheory.Mum.Two.coord_of_lin R _ hA D' D₀ A' A G' G U'.toUnifPre U.toUnifPre pr prB h L
   obtain ⟨c, hc, gc⟩ : ∃ c : A'.A ⟶ A.A, IsMonHom c ∧ Gen₀ U'.toUnifPre U.toUnifPre pr c :=
     ⟨U'.gen.inv ≫ (Over.pullback (jK R)).map pr ≫ U.gen.hom, inferInstance, by simp [Gen₀]⟩
-  have adj := lbIso_star R hA D' A' G' hG' U' F.O F.o oA oG lin
+  have adj := GlobalTheory.Mum.UnifAdjoint.lbIso_cubeLB_star_ring R hA D' A' G' hG' U' F.O F.o oA oG lin
   have ex := fun x => (functorial_of_unif R _ hA D' A' G' hG' U').1 (oG.act x) (oA.act x) (oG.hom x) (oA.hom x) (lin.ext x)
   obtain ⟨E, eG, eA⟩ := ex (star (F.f * F.e) * F.e)
   obtain ⟨E', eG', -⟩ := ex (star (star (F.f * F.e) * F.e))
@@ -465,17 +446,17 @@ theorem samePol_of_unif_factor : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLoc
   have H₁ := lbIso_proj U.LG.isLB U'.LG.isLB inc pr (oG.act F.f) (oG.act (star (star (F.f * F.e))))
     (oG.act (star (F.f * F.e))) (by rw [star_star, oG.map_mul, ← pi, Category.assoc]) H (adj _)
   rw [pi, ← oG.map_mul, ← eG] at H₁
-  have H₂ := GlobalTheory.T.cubeBundleIso_uniformisedGroup_genericFibre R _ D' D₀ A' A G' G U'.toUnifPre U.toUnifPre pr pr E.aG (𝟙 _) c c E.aA (𝟙 _) gc gc E.ext
+  have H₂ := GlobalTheory.Mum.Two.lbIso_cubeLB_generic R _ D' D₀ A' A G' G U'.toUnifPre U.toUnifPre pr pr E.aG (𝟙 _) c c E.aA (𝟙 _) gc gc E.ext
     (by simp [Gen₀]) H₁
-  obtain ⟨Ω, _, _, _, K⟩ := GlobalTheory.T.exists_algClosedField_torsionMaps_commute_hom R _ hA D' D₀ A' A G' G hG' hG U' U pr c prB h hc gc L C hinj
-  obtain ⟨φ, hφ, hhφ⟩ := GlobalTheory.T.semiAbelianHom_torsionCompatible_periods_lattices R _ hA D' D₀ A' A G' G hG' hG U' U pr c prB h hc gc L C E E'
+  obtain ⟨Ω, _, _, _, K⟩ := GlobalTheory.Mum.Two.exists_key R _ hA D' D₀ A' A G' G hG' hG U' U pr c prB h hc gc L C hinj
+  obtain ⟨φ, hφ, hhφ⟩ := GlobalTheory.Mum.Two.periods_of_key R _ hA D' D₀ A' A G' G hG' hG U' U pr c prB h hc gc L C E E'
     (by rw [eG, eG']; exact adj _) H₂ Ω K
   have := oG.hom F.f
   have := F.o.onB.hom F.f
   have H₃ := GlobalTheory.T.mumfordBundle_iso_along_homs_descends_abelianPart R hA D₀ D' A A' G G' hG hG' U U' inc (inc ≫ oG.act F.f) incB (incB ≫ F.o.onB.act F.f) hinc
     inferInstance hincB inferInstance qinc (over_comp qinc (ql _)) H
   have hφ' : ∀ y, h (φ y) = star F.e • F.f • F.e • y := fun y => (hhφ y).trans (eh y)
-  obtain ⟨cφ, w, hw, ht⟩ := GlobalTheory.T.factor_periods_projection_period_points R D₀.toPre D'.toPre D'.tau_bimult F.O F.o F.e F.f incB prB h φ hincB hprB piB
+  obtain ⟨cφ, w, hw, ht⟩ := GlobalTheory.Mum.Two.Fac.periods_of_factor R D₀.toPre D'.toPre D'.tau_bimult F.O F.o F.e F.f incB prB h φ hincB hprB piB
     (fun χ => (C χ).imp fun _ => And.left) H₃ Ω hφ hφ'
   have ex : ∀ y, F.e • F.xi y = F.xi y := fun y => by rw [← F.xi_xp, F.xp_xi]
   let ε : D.toPre.X ≃+ D₀.toPre.X := AddEquiv.ofBijective (φ.comp F.xi) ⟨fun y y' e => F.inj (by

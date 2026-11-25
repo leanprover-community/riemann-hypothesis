@@ -609,19 +609,19 @@ theorem cmp_trait : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : 
   set x : Sp K ⟶ Xo.X := spMap io ≫ y ≫ pullback.fst _ _ with hx
   have ex : spMap io' ≫ T.y ≫ pullback.fst _ _ = x := by rw [hx, hTy, ← hio', _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp]; simp only [Category.assoc]
   set g := Module.finrank ℚ E / 2 * (Dw.p + Dw.q) with hg
-  have hPx : PolFib Xo.univ.t.G Xo.univ.t.PP.L g x := GlobalTheory.T.universalTriple_fibre_principallyPolarised_dimension E H Dw l Xo c K x
+  have hPx : PolFib Xo.univ.t.G Xo.univ.t.PP.L g x := GlobalTheory.UMin.polFib_univ E H Dw l Xo c K x
   obtain ⟨wK, hwK, -⟩ := mK.lin
   obtain ⟨wx, hwx, -⟩ := mx.lin
   have hPK : PolFib tK.G tK.PP.L g (spMap io') :=
-    ((GlobalTheory.T.principallyPolarisedFibre_iff_of_grpPullback _ _ _ _ _ _ _ _ Xo.univ.t.PP.isLB tK.PP.isLB mx.cart ⟨wx, hwx⟩ g K (spMap io')).1).2 (ex ▸ hPx)
+    ((GlobalTheory.UMin.FibMove.polFib_move _ _ _ _ _ _ _ _ Xo.univ.t.PP.isLB tK.PP.isLB mx.cart ⟨wx, hwx⟩ g K (spMap io')).1).2 (ex ▸ hPx)
   have hP₁ : PolFib T.t.G T.t.PP.L g x₁ :=
-    ex₁ ▸ ((GlobalTheory.T.principallyPolarisedFibre_iff_of_grpPullback _ _ _ _ _ _ _ _ T.t.PP.isLB tK.PP.isLB mK.cart ⟨wK, hwK⟩ g K (spMap io')).1).1 hPK
+    ex₁ ▸ ((GlobalTheory.UMin.FibMove.polFib_move _ _ _ _ _ _ _ _ T.t.PP.isLB tK.PP.isLB mK.cart ⟨wK, hwK⟩ g K (spMap io')).1).1 hPK
   set θ := SecAt.pull T.t.G T.t.PP.L σ i with hθdef
   have hθnz : NZ T.t.G T.t.PP.L x₁ θ := hσ K i x₁ rfl
   have hθ : IsGenSec T.t.G T.t.PP.L _ θ := isGenSec_of_nz T.t.PP.isLB hP₁ hθnz
-  obtain ⟨pt, cc, hc⟩ := GlobalTheory.T.exists_thetaConstantList_algClosed _ T.t.G T.t.PP.L T.t.PP.rig T.t.PP.isLB T.t.PP.rigGen g m _ K x₁ θ hmo (hmK hmu)
+  obtain ⟨pt, cc, hc⟩ := GlobalTheory.UMin.exists_thList _ T.t.G T.t.PP.L T.t.PP.rig T.t.PP.isLB T.t.PP.rigGen g m _ K x₁ θ hmo (hmK hmu)
     rfl hP₁
-  obtain ⟨pt', cc', hc'⟩ := GlobalTheory.T.exists_thetaConstantList_algClosed _ T.t.G T.t.PP.L T.t.PP.rig T.t.PP.isLB T.t.PP.rigGen g m' _ K x₁ θ hmo'
+  obtain ⟨pt', cc', hc'⟩ := GlobalTheory.UMin.exists_thList _ T.t.G T.t.PP.L T.t.PP.rig T.t.PP.isLB T.t.PP.rigGen g m' _ K x₁ θ hmo'
     (hmK hmu') rfl hP₁
   have hpr : Prim i cc := GlobalTheory.T.thetaConstants_primitive_at_uniformisedTrait E H (Sp T.V) T.t T.V T.cdvr (𝟙 _) T.t ⟨m0⟩ ⟨T.P⟩ σ hnz m _ hmo hm3 (hmT hmu)
     K i pt cc hinj hc
@@ -629,10 +629,10 @@ theorem cmp_trait : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : 
     (hmT hmu') K i pt' cc' hinj hc'
   have h₁ : HasTh₂ T.t.G T.t.PP.L T.t.PP.rig m m' x₁ cc cc' := ⟨θ, pt, pt', hθ, hc, hc'⟩
   have hK : HasTh₂ tK.G tK.PP.L tK.PP.rig m m' (spMap io') cc cc' :=
-    (GlobalTheory.T.hasThetaConstantsTwoLevels_move_cartesian _ T.t.G T.t.PP.L T.t.PP.rig T.t.PP.isLB T.t.PP.rigGen _ tK.G tK.PP.L tK.PP.rig (jK T.V) mK.φ
+    (GlobalTheory.UMin.ThMove.hasTh₂_move _ T.t.G T.t.PP.L T.t.PP.rig T.t.PP.isLB T.t.PP.rigGen _ tK.G tK.PP.L tK.PP.rig (jK T.V) mK.φ
       tK.PP.isLB tK.PP.rigGen mK.cart ⟨wK, hwK⟩ m m' _ _ K (spMap io') cc cc').2 (ex₁ ▸ h₁)
   have hX : HasTh₂ Xo.univ.t.G Xo.univ.t.PP.L Xo.univ.t.PP.rig m m' x cc cc' :=
-    ex ▸ (GlobalTheory.T.hasThetaConstantsTwoLevels_move_cartesian _ Xo.univ.t.G Xo.univ.t.PP.L Xo.univ.t.PP.rig Xo.univ.t.PP.isLB Xo.univ.t.PP.rigGen _ tK.G
+    ex ▸ (GlobalTheory.UMin.ThMove.hasTh₂_move _ Xo.univ.t.G Xo.univ.t.PP.L Xo.univ.t.PP.rig Xo.univ.t.PP.isLB Xo.univ.t.PP.rigGen _ tK.G
       tK.PP.L tK.PP.rig (T.y ≫ pullback.fst _ _) mx.φ tK.PP.isLB tK.PP.rigGen mx.cart ⟨wx, hwx⟩ m m' _ _ K (spMap io')
       cc cc').1 hK
   have eN : N = m ^ (4 * g) := by
@@ -718,7 +718,6 @@ end GlobalTheory.UMin.ThInt
 
 namespace GlobalTheory.UMin
 
-
 open GlobalTheory.UMin.ThInt in
 theorem thetaInt_hasDiv : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Geo.Tor.Level H) (Xo : Moduli Dw l) (c : Coeff l) (o : Type) [CommRing o] (m n : ℕ) (f : Xo.XF c ⟶ PSpace o n), Odd m → 3 ≤ m → IsUnit (m : o) → n + 1 = m ^ (4 * (Module.finrank ℚ E / 2 * (Dw.p + Dw.q))) → ThMap Xo.univ.t.G Xo.univ.t.PP.L Xo.univ.t.PP.rig m (pullback.fst _ _ : Xo.XF c ⟶ Xo.X) f → ∀ (o' Ω : Type) [CommRing o'] [Field Ω] [Algebra o' Ω] [ArithBase o' Ω] (S : ThetaSys o' Ω) (ρ : S.Real) (u : Sp (ratHull S.R) ⟶ Xo.XF c), UOver Xo c ρ.P (toRat S.R) u → ∀ (M : RatModel o' Ω) (g : M.Z ⟶ PSpace o n), Geo.Tor.IsNormalScheme M.Z → M.pt ≫ g = spMap (ratHull S.R).val.toRingHom ≫ u ≫ f → M.HasDiv S.th := by
   intro E _ _ _ H Dw l Xo c o _ m n f hm hm3 hmu hn hf o' Ω _ _ _ _ S ρ u hu M g hnorm hg
@@ -741,9 +740,9 @@ theorem thetaInt_hasDiv : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
   have hUr := Xo.univ.t.PP.rigGen
 
   have hdim := GlobalTheory.UMin.polFib_univ E H Dw l Xo c Ω (spMap vH ≫ u ≫ pullback.fst _ _)
-  have hmv1 := GlobalTheory.T.principallyPolarisedFibre_iff_of_grpPullback Xo.X (Sp (ratHull S.R)) Xo.univ.t.G Xo.univ.t.PP.L G (ρ.P.L.pull α) (u ≫ pullback.fst _ _) β
+  have hmv1 := GlobalTheory.UMin.FibMove.polFib_move Xo.X (Sp (ratHull S.R)) Xo.univ.t.G Xo.univ.t.PP.L G (ρ.P.L.pull α) (u ≫ pullback.fst _ _) β
     hU hLG hβ hL gd Ω (spMap vH)
-  have hmv2 := GlobalTheory.T.principallyPolarisedFibre_iff_of_grpPullback (Sp S.R) (Sp (ratHull S.R)) ρ.P.A ρ.P.L G (ρ.P.L.pull α) (spMap (toRat S.R)) α
+  have hmv2 := GlobalTheory.UMin.FibMove.polFib_move (Sp S.R) (Sp (ratHull S.R)) ρ.P.A ρ.P.L G (ρ.P.L.pull α) (spMap (toRat S.R)) α
     ρ.P.isLB hLG hα (PolBaseChange.lbIso_refl hLG) gd Ω (spMap vH)
   have hPG : PolFib G (ρ.P.L.pull α) gd (spMap vH) := hmv1.1.2 hdim
   have hPF : PolFib ρ.P.A ρ.P.L gd x₀ := by
@@ -780,7 +779,7 @@ theorem thetaInt_hasDiv : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
     have h2 : 2 ≤ S.r * S.N := le_trans S.N_ge (Nat.le_mul_of_pos_left _ S.r_pos)
     obtain ⟨t, ht⟩ := hkodd
     omega
-  refine GlobalTheory.T.hasDivisor_of_forall_complete_dvr_points o' Ω M S.Gam (Fin (n + 1)) S.th e (n + 1).factorial (Nat.factorial_pos _) hnorm hdiv ?_
+  refine GlobalTheory.ValCmp.hasDiv_of_forall_cDvr o' Ω M S.Gam (Fin (n + 1)) S.th e (n + 1).factorial (Nat.factorial_pos _) hnorm hdiv ?_
   intro V _ _ _ hV ξ emb _ j₀ hj₀ hej
   haveI : IsDiscreteValuationRing V := hV.1
   let K := AlgebraicClosure (FractionRing V)
@@ -795,12 +794,12 @@ theorem thetaInt_hasDiv : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
     simpa using S.unit.map (Spec.preimage (ξ ≫ M.s)).hom
 
   have hPK : PolFib ρ.P.A ρ.P.L gd (spMap i ≫ x₀) :=
-    (GlobalTheory.T.principallyPolarisedFibre_iff_of_grpPullback (Sp S.R) (Sp S.R) ρ.P.A ρ.P.L ρ.P.A ρ.P.L (𝟙 _) (𝟙 _) ρ.P.isLB ρ.P.isLB (grpPullback_self' _)
+    (GlobalTheory.UMin.FibMove.polFib_move (Sp S.R) (Sp S.R) ρ.P.A ρ.P.L ρ.P.A ρ.P.L (𝟙 _) (𝟙 _) ρ.P.isLB ρ.P.isLB (grpPullback_self' _)
       (ThetaAffineGlue.lbIso_pull_id ρ.P.isLB) gd Ω x₀).2 K i hPF
-  have hθK := (GlobalTheory.T.principallyPolarisedFibre_exists_generator_stable (Sp S.R) ρ.P.A ρ.P.L ρ.P.isLB gd Ω x₀ hPF).2 θ hθ K i
-  obtain ⟨pt, d, hd⟩ := GlobalTheory.T.exists_thetaConstantList_algClosed (Sp S.R) ρ.P.A ρ.P.L ρ.rig ρ.P.isLB ρ.rig_gen gd m (n + 1) K (spMap i ≫ x₀)
+  have hθK := (GlobalTheory.UMin.gen_of_polFib (Sp S.R) ρ.P.A ρ.P.L ρ.P.isLB gd Ω x₀ hPF).2 θ hθ K i
+  obtain ⟨pt, d, hd⟩ := GlobalTheory.UMin.exists_thList (Sp S.R) ρ.P.A ρ.P.L ρ.rig ρ.P.isLB ρ.rig_gen gd m (n + 1) K (spMap i ≫ x₀)
     (SecAt.pull ρ.P.A ρ.P.L θ i) hm (hcast m hm.pos.ne') hn hPK
-  obtain ⟨pt', d', hd'⟩ := GlobalTheory.T.exists_thetaConstantList_algClosed (Sp S.R) ρ.P.A ρ.P.L ρ.rig ρ.P.isLB ρ.rig_gen gd (S.r * S.N)
+  obtain ⟨pt', d', hd'⟩ := GlobalTheory.UMin.exists_thList (Sp S.R) ρ.P.A ρ.P.L ρ.rig ρ.P.isLB ρ.rig_gen gd (S.r * S.N)
     ((S.r * S.N) ^ (4 * gd)) K (spMap i ≫ x₀) (SecAt.pull ρ.P.A ρ.P.L θ i) hkodd (hcast _ (NeZero.ne _)) rfl hPK
   have hsym : ∀ j, io (emb (e j)) = symTup d j := he K i pt d hd
   obtain ⟨pt'', hd''⟩ := thList_pull_pull ρ.P.isLB (𝟙 (Sp S.R)) ρ.th₁ v i hd'
@@ -813,9 +812,9 @@ theorem thetaInt_hasDiv : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
   have hxV : spMap i ≫ x₀ = xV ≫ spMap (toRat S.R) := by
     simp only [xV, x₀, i, Category.comp_id, spMap_comp_ring', ← hv, RingHom.comp_assoc]
   rw [hxV] at h₁
-  have h₂ := (GlobalTheory.T.hasThetaConstantsTwoLevels_move_cartesian (Sp S.R) ρ.P.A ρ.P.L ρ.rig ρ.P.isLB ρ.rig_gen (Sp (ratHull S.R)) G (ρ.P.L.pull α) ρG
+  have h₂ := (GlobalTheory.UMin.ThMove.hasTh₂_move (Sp S.R) ρ.P.A ρ.P.L ρ.rig ρ.P.isLB ρ.rig_gen (Sp (ratHull S.R)) G (ρ.P.L.pull α) ρG
     (spMap (toRat S.R)) α hLG hρG hα (PolBaseChange.lbIso_refl hLG) m (S.r * S.N) (n + 1) _ K xV d d').2 h₁
-  have h₃ := (GlobalTheory.T.hasThetaConstantsTwoLevels_move_cartesian Xo.X Xo.univ.t.G Xo.univ.t.PP.L Xo.univ.t.PP.rig hU hUr (Sp (ratHull S.R)) G (ρ.P.L.pull α) ρG
+  have h₃ := (GlobalTheory.UMin.ThMove.hasTh₂_move Xo.X Xo.univ.t.G Xo.univ.t.PP.L Xo.univ.t.PP.rig hU hUr (Sp (ratHull S.R)) G (ρ.P.L.pull α) ρG
     (u ≫ pullback.fst _ _) β hLG hρG hβ hL m (S.r * S.N) (n + 1) _ K xV d d').1 h₂
   let y : Sp (FractionRing V) ⟶ Xo.XF c := spMap emb ≫ spMap vH ≫ u
   have h₄ : HasTh₂ Xo.univ.t.G Xo.univ.t.PP.L Xo.univ.t.PP.rig m (S.r * S.N) (spMap io ≫ y ≫ pullback.fst _ _) d d' := by
@@ -825,7 +824,7 @@ theorem thetaInt_hasDiv : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
     exact h₃
   obtain ⟨a, ha, hPa, hPa'⟩ := GlobalTheory.T.thetaConstants_two_levels_same_scale_at_trait E H Dw l Xo c V hV y K io m (S.r * S.N) (n + 1) _ d d' hm hm3 hmV hkodd hk3
     hkV h₄
-  have hP := GlobalTheory.T.primitive_families_thetaSymmetric_min_member_compare V K io (n + 1) _ ((S.r * S.N) ^ 2) S.Gam d d' a (fun j => emb (e j)) (fun b => emb (S.th b)) ha
+  have hP := GlobalTheory.UMin.prim_symTup_cmp V K io (n + 1) _ ((S.r * S.N) ^ 2) S.Gam d d' a (fun j => emb (e j)) (fun b => emb (S.th b)) ha
     (Nat.one_le_iff_ne_zero.2 (pow_ne_zero _ (NeZero.ne _))) hPa hPa' hsym hT.1 hT.2 j₀ ((map_ne_zero emb).2 hj₀)
     (fun j => by simpa [map_div₀] using hej j)
   refine ⟨fun b => by simpa [map_div₀, map_pow] using hP.1 b, ?_⟩
@@ -969,7 +968,6 @@ open GlobalTheory GlobalTheory.ZM GlobalTheory.ZH GlobalTheory.UMin GlobalTheory
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-
 theorem _root_.GlobalTheory.T.exists_affineOpen_normal_noetherian_charZero : ∀ (X : Scheme.{0}), Geo.Tor.IsNormalScheme X → IsLocallyNoetherian X → (∀ x : X, CharZero (X.residueField x)) → ∀ x : X,
     ∃ U : X.affineOpens, x ∈ (U : X.Opens) ∧ IsDomain Γ(X, U) ∧ IsNoetherianRing Γ(X, U) ∧ IsIntegrallyClosed Γ(X, U) ∧ CharZero Γ(X, U) := by
   first | exact @GlobalTheory.exists_affineOpen_isIntegrallyClosed_charZero
@@ -988,8 +986,6 @@ open GlobalTheory GlobalTheory.ZM GlobalTheory.ZH GlobalTheory.UMin GlobalTheory
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.glue_projectiveSpace_maps_of_agree_geometric_points : ∀ (o : Type) [CommRing o] (n : ℕ) (X : Scheme.{0}) [IsReduced X] (s : X ⟶ Sp o) (I : Type) (W : I → X.Opens) (f : ∀ i, (W i).toScheme ⟶ PSpace o n), (⨆ i, W i) = ⊤ → (∀ i, f i ≫ PSpace.str o n = (W i).ι ≫ s) → (∀ i j (K : Type) [Field K] [IsAlgClosed K] (y : Sp K ⟶ (W i).toScheme) (y' : Sp K ⟶ (W j).toScheme), y ≫ (W i).ι = y' ≫ (W j).ι → y ≫ f i = y' ≫ f j) → ∃ g : X ⟶ PSpace o n, g ≫ PSpace.str o n = s ∧ ∀ i, (W i).ι ≫ g = f i := by
-  first | exact @GlobalTheory.ThetaGlue.glue_geom
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.GlueProjectiveSpaceMapsOfAgreeGeometricPointsStatement =====
@@ -1012,15 +1008,15 @@ theorem agree_at_geom : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] [IsCommMonO
     Odd m → IsUnit (m : o) → n + 1 = m ^ (4 * g) → PolFib G L g z → f₁ ≫ PSpace.str o n = f₂ ≫ PSpace.str o n →
     (∀ c : Fin (n + 1) → K, HasTh G L ρ m z c → PCrd f₁ (symTup c)) → (∀ c : Fin (n + 1) → K, HasTh G L ρ m z c → PCrd f₂ (symTup c)) → f₁ = f₂ := by
   intro S G _ _ L ρ hL hρ g m n o K _ _ _ z f₁ f₂ hm hu hn hP hs h₁ h₂
-  obtain ⟨⟨θ, hθ⟩, -⟩ := GlobalTheory.T.principallyPolarisedFibre_exists_generator_stable S G L hL g K z hP
+  obtain ⟨⟨θ, hθ⟩, -⟩ := GlobalTheory.UMin.gen_of_polFib S G L hL g K z hP
   have hmK : (m : K) ≠ 0 := by
     let φ : o →+* K := (Spec.preimage (f₁ ≫ PSpace.str o n)).hom
     have := hu.map φ
     rw [map_natCast] at this
     exact this.ne_zero
-  obtain ⟨pt, c, hc⟩ := GlobalTheory.T.exists_thetaConstantList_algClosed S G L ρ hL hρ g m (n + 1) K z θ hm hmK hn hP
+  obtain ⟨pt, c, hc⟩ := GlobalTheory.UMin.exists_thList S G L ρ hL hρ g m (n + 1) K z θ hm hmK hn hP
   have hH : HasTh G L ρ m z c := ⟨θ, pt, hθ, hc⟩
-  exact (GlobalTheory.T.projectiveHomogeneousCoords_field_determine_descend).1 o K n f₁ f₂ (symTup c) hs (h₁ c hH) (h₂ c hH)
+  exact (GlobalTheory.UMin.CrdUniq.main).1 o K n f₁ f₂ (symTup c) hs (h₁ c hH) (h₂ c hH)
 
 theorem main : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] [IsCommMonObj G] (L : LB G.left) (ρ : LB.Gen (L.pull (eSec G))), L.IsLB → ρ.IsGen → ∀ (g m n : ℕ) (o : Type) [CommRing o] (X : Scheme.{0}) (s : X ⟶ Sp o) (q : X ⟶ S), Odd m → 3 ≤ m → IsUnit (m : o) → n + 1 = m ^ (4 * g) → Geo.Tor.IsNormalScheme X → IsLocallyNoetherian X → (∀ x : X, CharZero (X.residueField x)) → (∀ (R : Type) [CommRing R] (x : Sp R ⟶ X), PolFib G L g (x ≫ q)) → ∃ f : X ⟶ PSpace o n, f ≫ PSpace.str o n = s ∧ ThMap G L ρ m q f := by
   intro S G _ _ L ρ hL hρ g m n o _ X s q hm h3 hu hn hN hLN h0 hP
@@ -1036,7 +1032,7 @@ theorem main : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] [IsCommMonObj G] (L 
   have hcov : (⨆ x, W x) = ⊤ := by
     rw [eq_top_iff]; intro x _
     exact TopologicalSpace.Opens.mem_iSup.2 ⟨x, hxW x⟩
-  obtain ⟨f, hf, hfW⟩ := GlobalTheory.T.glue_projectiveSpace_maps_of_agree_geometric_points o n X s X W h hcov hs (by
+  obtain ⟨f, hf, hfW⟩ := GlobalTheory.ThetaGlue.glue_geom o n X s X W h hcov hs (by
     intro i j K _ _ y y' hyy
     refine agree_at_geom S G L ρ hL hρ g m n o K (y ≫ (W i).ι ≫ q) _ _ hm hu hn (by rw [← Category.assoc]; exact hP K _) ?_ ?_ ?_
     · rw [Category.assoc, hs, Category.assoc, hs, ← Category.assoc, hyy, Category.assoc]
@@ -1256,7 +1252,7 @@ theorem isGenSec_of_symAt : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] [IsComm
     have hmK : (m : K) ≠ 0 := by
       have : m ≠ 0 := by rintro rfl; exact (Nat.not_odd_zero hm)
       exact_mod_cast this
-    obtain ⟨pt, c, hl⟩ := GlobalTheory.T.exists_thetaConstantList_algClosed S G L ρ hL hρ g m N K (spMap i ≫ x) (SecAt.pull G L θ₁ i) hm hmK hN hpol'
+    obtain ⟨pt, c, hl⟩ := GlobalTheory.UMin.exists_thList S G L ρ hL hρ g m N K (spMap i ≫ x) (SecAt.pull G L θ₁ i) hm hmK hN hpol'
     have h0 : SecM.ofSec G (SecAt.pull G L θ i) = (0 : Γ((Over.mk (spMap i ≫ x)).left, ⊤)) •
         SecM.ofSec G (SecAt.pull G L θ₁ i) := by
       have q := congrArg (pl i rfl) hr
@@ -1309,8 +1305,6 @@ open GlobalTheory GlobalTheory.ZM GlobalTheory.ZH GlobalTheory.UMin GlobalTheory
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.thetaConstants_primitive_principallyPolarised_trait : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (S : Scheme.{0}) (t : SAB H S) (g : ℕ) (V : Type) [CommRing V] [IsDomain V] [IsLocalRing V], GlobalTheory.LN.CDvr V → ∀ (χ : Sp V ⟶ S), PolFib t.G t.PP.L g (jK V ≫ χ) → ∀ (σ : SecAt t.G t.PP.L χ), NZ t.G t.PP.L χ σ → ∀ (m N : ℕ), Odd m → 3 ≤ m → IsUnit (m : V) → ∀ (K : Type) [Field K] (i : V →+* K) (pt : Fin N → (Over.mk (spMap i ≫ χ) ⟶ t.G)) (c : Fin N → K), Function.Injective i → ThList t.G t.PP.L t.PP.rig m (spMap i ≫ χ) (SecAt.pull t.G t.PP.L σ i) pt c → Prim i c := by
-  first | exact @GlobalTheory.UMin.prim_of_polFib
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaConstantsPrimitivePrincipallyPolarisedTraitStatement =====
@@ -1397,14 +1391,14 @@ theorem at_cdvr (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) 
   have hid : IsGrpPullback t.G t.G (𝟙 _) (𝟙 t.G.left) := isGrpPullback_of_iso (Iso.refl t.G)
   have hmove : ∀ (R' : Type) [CommRing R'] (x : Sp R' ⟶ S), ∀ (R'' : Type) [CommRing R''] (j : R' →+* R''),
       PolFib t.G t.PP.L g x → PolFib t.G t.PP.L g (spMap j ≫ x) := fun R' _ x =>
-    (GlobalTheory.T.principallyPolarisedFibre_iff_of_grpPullback S S t.G t.PP.L t.G t.PP.L (𝟙 S) (𝟙 t.G.left) t.PP.isLB t.PP.isLB hid
+    (GlobalTheory.UMin.FibMove.polFib_move S S t.G t.PP.L t.G t.PP.L (𝟙 S) (𝟙 t.G.left) t.PP.isLB t.PP.isLB hid
       (GlobalTheory.ThetaAffineGlue.lbIso_pull_id t.PP.isLB) g R' x).2
   have hPK : PolFib t.G t.PP.L g (spMap i' ≫ spMap (algebraMap R (FractionRing R)) ≫ χ) :=
     hmove _ _ _ i' hP
   have hmK : ((m : ℕ) : AlgebraicClosure (FractionRing V)) ≠ 0 := by
     have := (hmu.map (i'.comp (algebraMap R (FractionRing R)))).ne_zero
     simpa using this
-  obtain ⟨pt, c, hT⟩ := GlobalTheory.T.exists_thetaConstantList_algClosed S t.G t.PP.L t.PP.rig t.PP.isLB t.PP.rigGen g m N
+  obtain ⟨pt, c, hT⟩ := GlobalTheory.UMin.exists_thList S t.G t.PP.L t.PP.rig t.PP.isLB t.PP.rigGen g m N
     (AlgebraicClosure (FractionRing V)) _
     (SecAt.pull t.G t.PP.L (SecAt.pull t.G t.PP.L σ (algebraMap R (FractionRing R))) i') hm hmK hN hPK
   have hsym := hS _ i' pt c hT
@@ -1426,7 +1420,7 @@ theorem at_cdvr (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) 
     rw [hi, RingHom.coe_comp]
     exact (algebraMap (FractionRing V) (AlgebraicClosure (FractionRing V))).injective.comp
       (IsFractionRing.injective V (FractionRing V))
-  have hprim := GlobalTheory.T.thetaConstants_primitive_principallyPolarised_trait E H S t g V hV (spMap φ ≫ χ) hPV (SecAt.pull t.G t.PP.L σ φ) hNZV m N hm hm3 hmV
+  have hprim := GlobalTheory.UMin.prim_of_polFib E H S t g V hV (spMap φ ≫ χ) hPV (SecAt.pull t.G t.PP.L σ φ) hNZV m N hm hm3 hmV
     (AlgebraicClosure (FractionRing V)) i pt' c hinj hT'
   rw [hi] at hprim
   refine GlobalTheory.T.thetaSymmetricFunctionsDegreeFactorial_primitive_unit V (AlgebraicClosure (FractionRing V)) (algebraMap (FractionRing V) _) N c (fun j => F (e j))
@@ -1527,7 +1521,7 @@ theorem genericFibre_polAV : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
   have hw₂ : LBIso tK.PP.L (Xo.univ.t.PP.L.pull m₂.cm.F) := by
     obtain ⟨w, hw, -⟩ := m₂.lin; exact ⟨w, hw⟩
   have hd := GlobalTheory.UMin.polFib_univ E H Dw l Xo c (FractionRing R) (𝟙 _ ≫ y ≫ pullback.fst _ _)
-  obtain ⟨P, α₀, hgP, hpb₀, hL₀⟩ := ((GlobalTheory.T.principallyPolarisedFibre_iff_of_grpPullback _ _ Xo.univ.t.G Xo.univ.t.PP.L tK.G tK.PP.L
+  obtain ⟨P, α₀, hgP, hpb₀, hL₀⟩ := ((GlobalTheory.UMin.FibMove.polFib_move _ _ Xo.univ.t.G Xo.univ.t.PP.L tK.G tK.PP.L
     (y ≫ pullback.fst _ _) m₂.cm.F Xo.univ.t.PP.isLB tK.PP.isLB m₂.cart hw₂ _ (FractionRing R) (𝟙 _)).1).2 hd
   refine ⟨P, α₀ ≫ m₂.cm.F, α₀ ≫ m₁.cm.F, hgP, ?_, ?_, ?_, ?_⟩
   · have h := hpb₀.comp m₂.cart
@@ -1572,7 +1566,7 @@ theorem extend_theta : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H
     have := (GlobalTheory.T.projectiveHomogeneousCoords_basic_properties).1 o R (FractionRing R) n ξ e' (algebraMap R (FractionRing R)) hξ2
     have ee : (fun j => algebraMap R (FractionRing R) (e' j)) = e := funext he'
     rw [ee] at this; exact this
-  refine (GlobalTheory.T.projectiveHomogeneousCoords_field_determine_descend).1 o (FractionRing R) n (jK R ≫ ξ) (y ≫ f) e ?_ hc1 hcrd
+  refine (GlobalTheory.UMin.CrdUniq.main).1 o (FractionRing R) n (jK R ≫ ξ) (y ≫ f) e ?_ hc1 hcrd
   rw [Category.assoc, hξ1, hβ, Category.assoc, hb]; exact hσ
 
 end GlobalTheory.UMin.ExtP
@@ -1662,8 +1656,6 @@ theorem integral_normal_model_dense : ∀ (o F : Type) [CommRing o] [IsDomain o]
 end GlobalTheory.UMinTop
 
 namespace GlobalTheory
-
-
 
 theorem umin_theta_compactification_exists : UMinSt := by
   have h_dim := @GlobalTheory.UMin.polFib_univ

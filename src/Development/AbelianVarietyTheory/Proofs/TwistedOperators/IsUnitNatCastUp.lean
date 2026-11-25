@@ -266,8 +266,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.HkIntegral
 
-theorem _root_.GlobalTheory.T.exists_fibreMap_baseChange_and_isogenyPair_iff : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (K L : Type) [Field K] [Field L] (φ : K →+* L) (x x' : Sp K ⟶ Xo.X) (w w' : Sp L ⟶ Xo.X), (w = spMap φ ≫ x → w' = spMap φ ≫ x' → ∀ f : Fib Xo x ⟶ Fib Xo x', ∃ g : Fib Xo w ⟶ Fib Xo w', IsBC φ f g) ∧ ∀ (f : Fib Xo x ⟶ Fib Xo x') (f' : Fib Xo x' ⟶ Fib Xo x) (g : Fib Xo w ⟶ Fib Xo w') (g' : Fib Xo w' ⟶ Fib Xo w) (N : ℕ), IsBC φ f g → IsBC φ f' g' → (IsPair N f f' ↔ IsPair N g g') := by
-  first | exact @GlobalTheory.HkIntegral.PairBC.exists_isBC_and_isPair_iff
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsFibreMapBaseChangeAndIsogenyPairIffStatement =====
@@ -284,8 +282,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.HkIntegral
 
-theorem _root_.GlobalTheory.T.exists_isRigIso_of_baseChange' : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (K L : Type) [Field K] [Field L] (φ : K →+* L) (x x' : Sp K ⟶ Xo.X) (w w' : Sp L ⟶ Xo.X) (f : Fib Xo x ⟶ Fib Xo x') (g : Fib Xo w ⟶ Fib Xo w') (k : ℤ), IsBC φ f g → IsMonHom f → (∃ β, IsRigIso Xo.univ.t.G Xo.univ.t.PP (conj w w' g.left) k β) → ∃ β, IsRigIso Xo.univ.t.G Xo.univ.t.PP (conj x x' f.left) k β := by
-  first | exact @GlobalTheory.RigIsoDescent.exists_isRigIso_of_baseChange
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsIsRigIsoOfBaseChangeStatement =====
@@ -436,8 +432,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.HkIntegral
 
-theorem _root_.GlobalTheory.T.ringHom_finite_and_isIntegral_of_valuation_scaled : ∀ (T T' : CDVR) (i : T.Fr →+* T'.Fr) (r : ℕ), 0 < r → (∀ a : T.Fr, vV T'.V (i a) = (r : ℤ) * vV T.V a) → T'.FinRes → i.Finite ∧ ∀ b : T'.V, (i.comp (algebraMap T.V T.Fr)).IsIntegralElem (algebraMap T'.V T'.Fr b) := by
-  first | exact @GlobalTheory.CompleteValExt.finite_and_integral
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.FiniteAndIntegralStatement =====
@@ -590,8 +584,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.HkIntegral
 
-theorem _root_.GlobalTheory.T.integralFrameExtension_of_rank_zero_signature : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l), Dw.p + Dw.q = 0 → IntFrExt Xo c := by
-  first | exact @GlobalTheory.RankZeroFrames.intFrExt_of_rank_zero
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.IntegralFrameExtensionOfRankZeroSignatureStatement =====
@@ -681,8 +673,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.HkIntegral
 
-theorem _root_.GlobalTheory.T.isThetaTrace_conj_iff_of_rigIso : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (K L : Type) [Field K] [Field L] [Algebra c.F K] [Algebra c.F L] (φ : K →ₐ[c.F] L) (y z : FrPt Xo c K) (y' z' : FrPt Xo c L) (f : Fib Xo y.x ⟶ Fib Xo z.x) (f' : Fib Xo z.x ⟶ Fib Xo y.x) (g : Fib Xo y'.x ⟶ Fib Xo z'.x) (p : ℕ), 0 < p → FrMap φ y y' → FrMap φ z z' → IsPair (p ^ 2) f f' → IsBC φ.toRingHom f g → AllRat Xo y.x (p ^ 2) → (∃ β, IsRigIso Xo.univ.t.G Xo.univ.t.PP (conj y.x z.x f.left) ((p : ℤ) ^ 2) β) → (IsThetaTrace Xo.univ.t.G Xo.univ.t.PP (conj y.x z.x f.left) p y.s z.s ↔ IsThetaTrace Xo.univ.t.G Xo.univ.t.PP (conj y'.x z'.x g.left) p y'.s z'.s) := by
-  first | exact @GlobalTheory.ThetaTraceBC.isThetaTrace_baseChange_iff
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsThetaTraceBaseChangeIffStatement =====
@@ -702,10 +692,6 @@ attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.HkIntegral
 
 namespace GlobalTheory.LieImageBC
-
-theorem sp_comp {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
-    spMap g ≫ spMap f = spMap (g.comp f) :=
-  (Spec.map_comp (CommRingCat.ofHom f) (CommRingCat.ofHom g)).symm
 
 theorem epi_of_local {A B : Type} [CommRing A] [CommRing B] [IsLocalRing A] [IsLocalRing B] (d : A →+* B)
     [IsLocalHom d] (hd : Function.Injective d) : Epi (spMap d) := by
@@ -742,7 +728,7 @@ theorem epi_dualMap {K L : Type} [Field K] [Field L] (φ : K →+* L) : Epi (spM
 
 theorem dual_eps {S T : Type} [CommRing S] [CommRing T] (ψ : S →+* T) (a : S) :
     spMap (dualMap ψ) ≫ spMap (epsMul a) = spMap (epsMul (ψ a)) ≫ spMap (dualMap ψ) := by
-  rw [sp_comp, sp_comp]
+  rw [GlobalTheory.spMap_comp_ring, GlobalTheory.spMap_comp_ring]
   congr 1
   ext s <;> simp [dualMap, epsMul, TrivSqZeroExt.algebraMap_eq_inl]
 
@@ -994,8 +980,6 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.HkIntegral
 
-theorem _root_.GlobalTheory.T.moduliPoint_integralFrame_after_finiteExtension : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l), 1 ≤ Dw.p + Dw.q → IntFrExt Xo c := by
-  first | exact @GlobalTheory.AnyLevelFrame.intFrExt
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ModuliPointIntegralFrameAfterFiniteExtensionStatement =====
@@ -1154,12 +1138,12 @@ theorem hkWith_iff {K L : Type} [Field K] [Field L] [Algebra c.F K] [Algebra c.F
     {f : Fib Xo y.x ⟶ Fib Xo z.x} {f' : Fib Xo z.x ⟶ Fib Xo y.x} {g : Fib Xo y'.x ⟶ Fib Xo z'.x}
     {g' : Fib Xo z'.x ⟶ Fib Xo y'.x} (h : IsBC φ.toRingHom f g) (h' : IsBC φ.toRingHom f' g')
     (hR : AllRat Xo y.x (p ^ 2)) : HkWith p y z f f' ↔ HkWith p y' z' g g' := by
-  have e₁ := (GlobalTheory.T.exists_fibreMap_baseChange_and_isogenyPair_iff E H Dw l Xo K L φ.toRingHom y.x z.x y'.x z'.x).2 f f' g g' (p ^ 2) h h'
+  have e₁ := (GlobalTheory.HkIntegral.PairBC.exists_isBC_and_isPair_iff E H Dw l Xo K L φ.toRingHom y.x z.x y'.x z'.x).2 f f' g g' (p ^ 2) h h'
   have e₂ : ∀ τ j, IsLieImageH p f.left (y.u τ j) (z.u τ j) ↔ IsLieImageH p g.left (y'.u τ j) (z'.u τ j) :=
     fun τ j => by
       rw [hy.2.1, hz.2.1]
       exact GlobalTheory.T.lie_image_compatible_with_base_change E H Dw l Xo K L φ.toRingHom y.x z.x y'.x z'.x f g p _ _ h (y.tan τ j)
-  have e₃ := fun a b => GlobalTheory.T.isThetaTrace_conj_iff_of_rigIso E H Dw l Xo c K L φ y z y' z' f f' g p hp hy hz a h hR b
+  have e₃ := fun a b => GlobalTheory.ThetaTraceBC.isThetaTrace_baseChange_iff E H Dw l Xo c K L φ y z y' z' f f' g p hp hy hz a h hR b
   constructor
   · rintro ⟨a, b, d⟩
     have ⟨β, _, _, _, _, _, hβ, _⟩ := d
@@ -1168,7 +1152,7 @@ theorem hkWith_iff {K L : Type} [Field K] [Field L] [Algebra c.F K] [Algebra c.F
     have ⟨β, _, _, _, _, _, hβ, _⟩ := d
     have a' := e₁.2 a
     exact ⟨a', fun τ j => (e₂ τ j).2 (b τ j),
-      (e₃ a' (GlobalTheory.T.exists_isRigIso_of_baseChange' E H Dw l Xo K L φ.toRingHom y.x z.x y'.x z'.x f g _ h a'.1 ⟨β, hβ⟩)).2 d⟩
+      (e₃ a' (GlobalTheory.RigIsoDescent.exists_isRigIso_of_baseChange E H Dw l Xo K L φ.toRingHom y.x z.x y'.x z'.x f g _ h a'.1 ⟨β, hβ⟩)).2 d⟩
 
 theorem allRat_up {K L : Type} [Field K] [Field L] (φ : K →+* L) {x : Sp K ⟶ Xo.X} {w : Sp L ⟶ Xo.X} {M : ℕ}
     (hM : 0 < M) (hw : w = spMap φ ≫ x) (h : AllRat Xo x M) : AllRat Xo w M :=
@@ -1178,8 +1162,8 @@ theorem HkOver.up {K L : Type} [Field K] [Field L] [Algebra c.F K] [Algebra c.F 
     (hp : 0 < p) {y z : FrPt Xo c K} {y' z' : FrPt Xo c L} (hy : FrMap φ y y') (hz : FrMap φ z z')
     (h : HkOver p y z) : HkOver p y' z' := by
   obtain ⟨h₁, h₂, f, f', h⟩ := h
-  obtain ⟨g, hg⟩ := (GlobalTheory.T.exists_fibreMap_baseChange_and_isogenyPair_iff E H Dw l Xo K L φ.toRingHom y.x z.x y'.x z'.x).1 hy.1 hz.1 f
-  obtain ⟨g', hg'⟩ := (GlobalTheory.T.exists_fibreMap_baseChange_and_isogenyPair_iff E H Dw l Xo K L φ.toRingHom z.x y.x z'.x y'.x).1 hz.1 hy.1 f'
+  obtain ⟨g, hg⟩ := (GlobalTheory.HkIntegral.PairBC.exists_isBC_and_isPair_iff E H Dw l Xo K L φ.toRingHom y.x z.x y'.x z'.x).1 hy.1 hz.1 f
+  obtain ⟨g', hg'⟩ := (GlobalTheory.HkIntegral.PairBC.exists_isBC_and_isPair_iff E H Dw l Xo K L φ.toRingHom z.x y.x z'.x y'.x).1 hz.1 hy.1 f'
   exact ⟨allRat_up _ (pow_pos hp _) hy.1 h₁, allRat_up _ (pow_pos hp _) hz.1 h₂, g, g',
     (hkWith_iff φ hp hy hz hg hg' h₁).1 h⟩
 
@@ -1415,7 +1399,7 @@ theorem exists_frBor_unit (hpp : p.Prime) (hp : IsUnit (p : T.V)) (hT : T.FinRes
 end Frame
 
 theorem intFrExt (Xo : Moduli Dw l) (c : Coeff l) : IntFrExt Xo c :=
-  (Nat.eq_zero_or_pos (Dw.p + Dw.q)).elim (GlobalTheory.T.integralFrameExtension_of_rank_zero_signature E H Dw l Xo c) (GlobalTheory.T.moduliPoint_integralFrame_after_finiteExtension E H Dw l Xo c)
+  (Nat.eq_zero_or_pos (Dw.p + Dw.q)).elim (GlobalTheory.RankZeroFrames.intFrExt_of_rank_zero E H Dw l Xo c) (GlobalTheory.AnyLevelFrame.intFrExt E H Dw l Xo c)
 
 theorem heckeFrameInt (cls : PtClass Xo c)
     (hcls : ∀ T io y T' io' y', cls T io y → (GlobalTheory.GoodPts.Good y → GlobalTheory.GoodPts.Good y') → cls T' io' y') :
@@ -1445,7 +1429,7 @@ theorem heckeFrameInt (cls : PtClass Xo c)
   have hv : ∀ a, vV T₂.V (i a) = ((r₂ * r₁ : ℕ) : ℤ) * vV T.V a := fun a => by
     rw [RingHom.comp_apply, hv₂, hv₁, Nat.cast_mul, _root_.mul_assoc]
   have hr : 0 < r₂ * r₁ := Nat.mul_pos hr₂ hr₁
-  obtain ⟨j, hj⟩ := exists_lift (j₁.toRingHom.comp ψ.symm.toRingHom) i₂ (GlobalTheory.T.ringHom_finite_and_isIntegral_of_valuation_scaled T₁ T₂ i₂ r₂ hr₂ hv₂ hT₂).1
+  obtain ⟨j, hj⟩ := exists_lift (j₁.toRingHom.comp ψ.symm.toRingHom) i₂ (GlobalTheory.CompleteValExt.finite_and_integral T₁ T₂ i₂ r₂ hr₂ hv₂ hT₂).1
   have hj' : ∀ a : L, j (i₂ (ψ a)) = j₁ a := fun a => by simpa using DFunLike.congr_fun hj (ψ a)
   letI := (i.comp io).toAlgebra
   let b : L →ₐ[c.F] T₂.Fr := ⟨i₂.comp ψ.toRingHom, fun a =>
@@ -1462,7 +1446,7 @@ theorem heckeFrameInt (cls : PtClass Xo c)
     (hz₂.1.trans (hx₀.trans (by rw [← Category.assoc, TorsionRat.sp_comp])).symm)
     (h₁.up b hpp.pos (frMap_of_comp hy₁ hy₂ hφ) hz₂)
   obtain ⟨w', hw'⟩ := exists_frMap J y'.1
-  refine ⟨T₂, i, ⟨(GlobalTheory.T.ringHom_finite_and_isIntegral_of_valuation_scaled T T₂ i _ hr hv hT₂).1, _, hr, hv⟩, J, RingHom.ext hjk, y', hT₂,
+  refine ⟨T₂, i, ⟨(GlobalTheory.CompleteValExt.finite_and_integral T T₂ i _ hr hv hT₂).1, _, hr, hv⟩, J, RingHom.ext hjk, y', hT₂,
     hcls T io y T₂ _ y' hc fun h => hg (GlobalTheory.T.goodReduction_stable_valuationRing_extension E H Dw l Xo c T T₂ io _ y y₂ i _ hr hv hy₂.1 h), w', u, hw', ?_⟩
   exact frBor_map J hb hw' (frMap_of_comp hz₂ hz₁ hj')
 
@@ -1488,7 +1472,7 @@ theorem heckeValueInt (cls : PtClass Xo c) (h : HeckeFrameInt Xo c cls) : HeckeV
     rw [e₁, e₂, map_mul, map_mul]
     congr 1
     simp [wchar]
-  obtain ⟨q, hq, hq'⟩ := (GlobalTheory.T.ringHom_finite_and_isIntegral_of_valuation_scaled T T' i r hr hi hy').2 (wchar (ex Dw a m) u * b)
+  obtain ⟨q, hq, hq'⟩ := (GlobalTheory.CompleteValExt.finite_and_integral T T' i r hr hi hy').2 (wchar (ex Dw a m) u * b)
   refine ⟨q, hq, ?_⟩
   rw [e₃, ← hj, RingHom.comp_assoc]
   exact (Polynomial.hom_eval₂ q _ j.toRingHom _).symm.trans ((congrArg j.toRingHom hq').trans (map_zero _))

@@ -140,18 +140,6 @@ open GlobalTheory.CMVal (modUnits unitRel)
 
 namespace GlobalTheory.HilbFam.BrVal
 
-theorem card_realEmb (F : Type) [Field F] [NumberField F] [IsTotallyReal F] :
-    Fintype.card (Emb F) = Module.finrank ℚ F := by
-  rw [← NumberField.Embeddings.card F ℂ]
-  refine Fintype.card_of_bijective (f := fun τ : F →+* ℝ ↦ (Complex.ofRealHom.comp τ : F →+* ℂ)) ⟨?_, ?_⟩
-  · intro τ τ' hτ
-    ext y
-    have := DFunLike.congr_fun hτ y
-    simpa using this
-  · intro φ
-    have hr : NumberField.ComplexEmbedding.IsReal φ := IsTotallyReal.complexEmbedding_isReal φ
-    exact ⟨hr.embedding, by ext y; simp⟩
-
 theorem prod_cpow_ofReal {J : Type} (s : Finset J) (f : J → ℝ) (hf : ∀ i, 0 ≤ f i) (r : ℂ) :
     ∏ i ∈ s, ((f i : ℝ) : ℂ) ^ r = (((∏ i ∈ s, f i : ℝ)) : ℂ) ^ r := by
   classical
@@ -224,7 +212,7 @@ theorem isGVal_of_isEisValue : ∀ (E : Type) [Field E] [NumberField E] [IsCMFie
   set a : Emb (FR E) → ℂ := fun j ↦ 1 + z (e.symm j) * 1 with ha
   set d := Module.finrank ℚ (FR E) with hd
   have hcard : Fintype.card I = d := by
-    rw [Fintype.card_congr e, hd, ← card_realEmb (FR E)]
+    rw [Fintype.card_congr e, hd, ← GlobalTheory.HilbFam.EisCmp.card_realEmb (FR E)]
   have hprod : ∀ x, ∏ j, coord b a x j = ((n : ℂ) ^ d) * ∏ i, defCoord φ z (B x) i := by
     intro x
     rw [← Equiv.prod_comp e]

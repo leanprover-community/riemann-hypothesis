@@ -70,8 +70,6 @@ open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.Un
 open scoped TensorProduct
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.quotientIntegral_finitelyManyCells_weightedSum : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [SecondCountableTopology G] [LocallyCompactSpace G] [T2Space G] [MeasurableSpace G] [BorelSpace G] (R K : Subgroup G), IsClosed (R : Set G) → IsCompact (K : Set G) → IsOpen (K : Set G) → ∀ (ρ : Measure R) (μ : Measure G), ρ.IsHaarMeasure → ρ.IsInvInvariant → μ.IsHaarMeasure → μ.IsMulRightInvariant → ∀ T : Finset G, ∃ (T' : Finset G) (w : G → ℂ), T' ⊆ T ∧ ∀ f : G → ℂ, (∀ r ∈ R, ∀ g, f (r * g) = f g) → (∀ k ∈ K, ∀ g, f (g * k) = f g) → (∀ g, f g ≠ 0 → ∃ q ∈ T, ∃ r ∈ R, ∃ k ∈ K, g = r * q * k) → IsQuotIntL1 ρ μ f (∑ q ∈ T', w q * f q) := by
-  first | exact @GlobalTheory.CellInt.quotInt_finiteCells
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.QuotientIntegralFinitelyManyCellsWeightedSumStatement =====
@@ -203,7 +201,7 @@ theorem nested_vanish : ∀ (ι : Type) [DecidableEq ι] (H : ι → Type) [∀ 
       have hq' : g = pb * ⟨s i, hsB⟩ * ⟨k, hkB⟩ := congrArg Prod.snd (e.injective key)
       exact ⟨⟨s i, hsB⟩, Finset.mem_subtype.2 (Finset.mem_image_of_mem _ hs), pb, Subgroup.mem_subgroupOf.2 hpR.2,
         ⟨k, hkB⟩, Subgroup.mem_subgroupOf.2 hk, hq'⟩
-    obtain ⟨T', w, -, hW⟩ := GlobalTheory.T.quotientIntegral_finitelyManyCells_weightedSum (B i) ((R i).subgroupOf (B i)) ((K i).subgroupOf (B i)) hRB hKbc sp.opn
+    obtain ⟨T', w, -, hW⟩ := GlobalTheory.CellInt.quotInt_finiteCells (B i) ((R i).subgroupOf (B i)) ((K i).subgroupOf (B i)) hRB hKbc sp.opn
       (ρ' i) (μ' i) hρ' inferInstance hμ' inferInstance T
     simp only [NIter] at hN
     obtain ⟨f, hfz, hfg⟩ := hN
@@ -224,7 +222,7 @@ theorem nested_vanish : ∀ (ι : Type) [DecidableEq ι] (H : ι → Type) [∀ 
       by_contra hno
       apply hg
       have h0 : NIter ρ μ (fun _ => (0:ℂ)) l 1 (f g) := by
-        refine (GlobalTheory.T.isIteratedInvariantIntegral_linear_and_congr ι H R ρ μ l 1).2 (fun x => q (Function.update x i g)) _ _ ?_ (hf' g)
+        refine (GlobalTheory.RowVal.niter_lin_congr ι H R ρ μ l 1).2 (fun x => q (Function.update x i g)) _ _ ?_ (hf' g)
         intro x hx
         by_contra hq
         obtain ⟨s, hs, hc⟩ := hsupp (Function.update x i g) (fun j hj => by
@@ -250,7 +248,7 @@ theorem nested_vanish : ∀ (ι : Type) [DecidableEq ι] (H : ι → Type) [∀ 
     suffices hsum : ∑ t ∈ T', w t * f (a * t.1) = 0 by rw [hsum] at h1; exact h1
     let q' : (∀ j, H j) → ℂ := fun x => ∑ t ∈ T', w t * q (Function.update x i (a * t.1))
     have hq'N : NIter ρ μ q' l 1 (∑ t ∈ T', w t * f (a * t.1)) :=
-      (GlobalTheory.T.isIteratedInvariantIntegral_linear_and_congr ι H R ρ μ l 1).1 (B i) T' w (fun t => f (a * t.1))
+      (GlobalTheory.RowVal.niter_lin_congr ι H R ρ μ l 1).1 (B i) T' w (fun t => f (a * t.1))
         (fun t x => q (Function.update x i (a * t.1))) (fun t _ => hf' _)
     refine ih hnd' (fun j hj => hsp j (List.mem_cons_of_mem _ hj)) ρ μ ρ' μ'
       (fun j hj => hhaar j (List.mem_cons_of_mem _ hj)) S q' _ hSB ?_ ?_ hq'N ?_
@@ -321,7 +319,7 @@ theorem nested_vanish : ∀ (ι : Type) [DecidableEq ι] (H : ι → Type) [∀ 
         by_contra hno
         apply hg
         have h0 : NIter ρ' μ' (fun _ => (0:ℂ)) l 1 (f₁ g) := by
-          refine (GlobalTheory.T.isIteratedInvariantIntegral_linear_and_congr ι (fun j => B j) (fun j => (R j).subgroupOf (B j)) ρ' μ' l 1).2 _ _ _ ?_ (hf₁' g)
+          refine (GlobalTheory.RowVal.niter_lin_congr ι (fun j => B j) (fun j => (R j).subgroupOf (B j)) ρ' μ' l 1).2 _ _ _ ?_ (hf₁' g)
           intro b hb
           by_contra hq
           rw [hQu] at hq
@@ -336,7 +334,7 @@ theorem nested_vanish : ∀ (ι : Type) [DecidableEq ι] (H : ι → Type) [∀ 
         exact niter_unique ρ' μ' _ l huB 1 _ _ h0 (niter_zero ρ' μ' l 1)
       have hf₁W := hW f₁ (fun r hr g => f₁L r hr g) (fun k hk g => f₁K g k hk) (fun g hg => cell a ha g (f₁S g hg))
       have hz := IsQuotIntL1.unique hRB hf₁W hf₁0
-      have hlin := (GlobalTheory.T.isIteratedInvariantIntegral_linear_and_congr ι (fun j => B j) (fun j => (R j).subgroupOf (B j)) ρ' μ' l 1).1 (B i) T' w f₁
+      have hlin := (GlobalTheory.RowVal.niter_lin_congr ι (fun j => B j) (fun j => (R j).subgroupOf (B j)) ρ' μ' l 1).1 (B i) T' w f₁
         (fun t b => Qa (Function.update b i t)) (fun t _ => hf₁' t)
       rw [hz] at hlin
       have e : (fun b : ∀ j, B j => q' fun j => a' j * (b j).1) = fun b => ∑ t ∈ T', w t * Qa (Function.update b i t) := by
@@ -589,12 +587,11 @@ end GlobalTheory.CellVanishing
 
 namespace GlobalTheory.RowVal
 
-
 open GlobalTheory.CellVanishing in
 theorem cellVan_holds : CellVan := by
   intro ι _ H _ _ _ _ _ _ _ _ A B R K l hl hS ρ μ ρ' μ' hM X S b w q z α hw hdist hinv hsupp hz hrel
   haveI := Classical.decEq (∀ i, H i)
-  have hQ := (GlobalTheory.T.isIteratedInvariantIntegral_linear_and_congr ι H R ρ μ l 1).1 (Fin 2) Finset.univ α z q (fun n _ => hz n)
+  have hQ := (GlobalTheory.RowVal.niter_lin_congr ι H R ρ μ l 1).1 (Fin 2) Finset.univ α z q (fun n _ => hz n)
   refine GlobalTheory.T.isIteratedInvariantIntegral_vanish_of_inner_vanish ι H A B R K l hl hS ρ μ ρ' μ' hM
     ((S 0).image (b 0) ∪ (S 1).image (b 1)) (fun g => ∑ n ∈ Finset.univ, α n * q n g) _ ?_ ?_ ?_ hQ ?_
   · intro c hc i
@@ -724,7 +721,7 @@ theorem cellVan_holds : CellVan := by
         show (g j).1 = r₀ * 1 * (bb n β j.1).1 * k
         rw [hv β hβ, hr₀]
         group
-    have hlin := (GlobalTheory.T.isIteratedInvariantIntegral_linear_and_congr (Subtype p) (fun j => B j.1) (fun j => (R j.1).subgroupOf (B j.1)) (fun j => ρ' j.1)
+    have hlin := (GlobalTheory.RowVal.niter_lin_congr (Subtype p) (fun j => B j.1) (fun j => (R j.1).subgroupOf (B j.1)) (fun j => ρ' j.1)
       (fun j => μ' j.1) l.attach 1).1 (Fin 2) Finset.univ α (fun n => ∑ β ∈ S n, w n β * q n (a * b n β)) qn
       (fun n _ => hcell n)
     rw [hrel a ha ha1] at hlin

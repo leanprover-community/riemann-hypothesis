@@ -103,9 +103,6 @@ open GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundl
 open Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open GlobalTheory.CompanionTheory.Ar.Num.FamEx GlobalTheory.CompanionTheory.Ar.BT
 
-
-theorem _root_.GlobalTheory.CompanionTheory.Relay.arith_variety_prime_relay : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (O₀ : Type) [CommRing O₀] (β : O₀ →+* c.F) (Y : Model Xo c β) (S : Finset ℕ) (Ω : Type) [Field Ω] (K : Type) [Fintype K] [DecidableEq K] (J : K → Type) [∀ k, Fintype (J k)] (y : (Σ k, J k) → Ω) (𝔐 : HodgeCpt Y S y) (d : ℕ), IsArithVar (mCoordIdeal y) (d + 1) → ∀ (p : ℕ) [Fact p.Prime], p ∈ S → ∀ (A : Type) [CommRing A] [Algebra A Ω] [IsIntegralClosure A ℤ Ω] (m : Ideal A) [m.IsPrime], (p : A) ∈ m → ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Algebra A O] [IsLocalization.AtPrime O m] [Algebra O Ω] [IsScalarTower A O Ω] (c' : ∀ k, J k), mseg y c' ≠ 0 → CharZero Ω ∧ IsNoetherianRing (CR O y c') ∧ IsIntegrallyClosed (CR O y c') ∧ IsFractionRing (CR O y c') Ω := by
-  first | exact @PositivityTheory.Xgn.function_family_chart_facts
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.ArithVarietyPrimeRelay =====
@@ -184,7 +181,6 @@ end GlobalTheory.CompanionTheory.Ar.Num.FamEx.Idemp
 
 namespace GlobalTheory.CompanionTheory.Ar.Num.FamEx
 
-
 open Idemp in
 theorem btOrder_stable_of_section : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (O₀ : Type) [CommRing O₀] (β : O₀ →+* c.F) (Y : Model Xo c β) (S : Finset ℕ) (Ω : Type) [Field Ω] (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (y : (Σ k, J k) → Ω) (𝔐 : HodgeCpt Y S y) (p : ℕ) (G : GenTors 𝔐 p) (O : Type) [CommRing O] [Algebra O Ω] (c' : ∀ k, J k) [IsNoetherianRing (CR O y c')] [IsIntegrallyClosed (CR O y c')] [IsFractionRing (CR O y c') Ω] (P : ChartPack G O c') (F : Type) [Field F] (pq : (𝓞 E ⧸ Ideal.span {(p : 𝓞 E)}) →+* F) (sc : F →+ (𝓞 E ⧸ Ideal.span {(p : 𝓞 E)})), Function.Surjective pq → IsSec pq sc → ∀ a ∈ P.Γ₁.btOrder ⊤, (fun t => a (toN sc (fromN pq t))) ∈ P.Γ₁.btOrder ⊤ := by
   intro E _ _ _ H D l Xo c O₀ _ β Y S Ω _ K _ J _ y 𝔐 p G O _ _ c' _ _ _ P F _ pq sc _ hsec f hf
@@ -222,12 +218,6 @@ open GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.NumbersDVR.Bundl
 open Limits MonoidalCategory CartesianMonoidalCategory MonObj
 open GlobalTheory.CompanionTheory.Ar.Num.FamEx GlobalTheory.CompanionTheory.Ar.BT
 
-namespace GlobalTheory.CompanionTheory.Ar.Num.FamEx
-
-theorem coordTie_points_eq : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) (κ : Type) (x : κ → Ω), CoordTie ℤ ξ x → ∀ c : κ, x c ≠ 0 → ∀ (B : Type) [CommRing B] [IsDomain B] [Algebra B Ω], Function.Injective (algebraMap B Ω) → (∀ c', x c' / x c ∈ (algebraMap B Ω).range) → ∀ z z' : Spec (CommRingCat.of B) ⟶ X, Spec.map (CommRingCat.ofHom (algebraMap B Ω)) ≫ z = ξ → Spec.map (CommRingCat.ofHom (algebraMap B Ω)) ≫ z' = ξ → z = z' :=
-  @PositivityTheory.Xgn.same_generic_point_charts
-
-end GlobalTheory.CompanionTheory.Ar.Num.FamEx
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntegralPointsEqOfGeneric =====
@@ -278,10 +268,6 @@ def pullSec {A : Type} [CommRing A] {X : Scheme.{0}} (j : X ⟶ Spec (CommRingCa
 theorem valAt_sub' {B : Type} [CommRing B] {X : Scheme.{0}} (x : Spec (CommRingCat.of B) ⟶ X)
     (a b : Γ(X, ⊤)) : valAt x ⊤ le_top (a - b) = valAt x ⊤ le_top a - valAt x ⊤ le_top b := by
   simp only [valAt_top, map_sub]
-
-theorem valAt_mul {B : Type} [CommRing B] {X : Scheme.{0}} (x : Spec (CommRingCat.of B) ⟶ X) (U : X.Opens)
-    (h : ⊤ ≤ x ⁻¹ᵁ U) (a b : Γ(X, U)) : valAt x U h (a * b) = valAt x U h a * valAt x U h b := by
-  simp [valAt]
 
 end GlobalTheory.CompanionTheory.Ar.BT.TranslateEq
 end -- clump:auto
@@ -391,11 +377,6 @@ theorem pre_inj {X : Scheme.{0}} {A B : Over X} (u : A ⟶ B) (hu : Epi u.left) 
   rw [← cancel_epi u.left]
   exact congrArg (fun m : A ⟶ G => m.left) e
 
-theorem spec_comp {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
-    Spec.map (CommRingCat.ofHom g) ≫ Spec.map (CommRingCat.ofHom f) =
-      Spec.map (CommRingCat.ofHom (g.comp f)) := by
-  rw [← Spec.map_comp, CommRingCat.ofHom_comp]
-
 end PositivityTheory.Xgn.TorsionGroupExtension
 
 open PositivityTheory.Xgn.TorsionGroupExtension in
@@ -411,7 +392,7 @@ theorem PositivityTheory.Xgn.exists_torsion_group_extension : ∀ (R' : Type) [C
   have hcb : c.comp b = RingHom.id Ω := RingHom.ext fun r => e.apply_symm_apply r
   have hu : Spec.map (CommRingCat.ofHom b) ≫ ξ =
       Spec.map (CommRingCat.ofHom (algebraMap R' (FractionRing R'))) ≫ x' := by
-    rw [← hξ, ← Category.assoc, spec_comp, hb]
+    rw [← hξ, ← Category.assoc, GlobalTheory.CompanionTheory.Ar.LieTangent.spec_comp, hb]
   let u : Over.mk ((BT.genPt R').hom ≫ x') ⟶ Over.mk ξ :=
     Over.homMk (Spec.map (CommRingCat.ofHom b)) hu
   let τ : T →* (Over.mk ((BT.genPt R').hom ≫ x') ⟶ G) := (pre u G).comp pt
@@ -426,7 +407,7 @@ theorem PositivityTheory.Xgn.exists_torsion_group_extension : ∀ (R' : Type) [C
           Spec.map (CommRingCat.ofHom a) ≫ (BT.genPt R').hom ≫ x' := by
         change Spec.map (CommRingCat.ofHom (a.comp b)) ≫ ξ = Spec.map (CommRingCat.ofHom a) ≫
           Spec.map (CommRingCat.ofHom (algebraMap R' (FractionRing R'))) ≫ x'
-        rw [← hu, ← Category.assoc, spec_comp]
+        rw [← hu, ← Category.assoc, GlobalTheory.CompanionTheory.Ar.LieTangent.spec_comp]
       let v : Over.mk (spMap (a.comp b) ≫ ξ) ⟶
           Over.mk (Spec.map (CommRingCat.ofHom a) ≫ (BT.genPt R').hom ≫ x') :=
         Over.homMk (𝟙 _) (by simpa using hv.symm)
@@ -441,13 +422,13 @@ theorem PositivityTheory.Xgn.exists_torsion_group_extension : ∀ (R' : Type) [C
       refine ⟨t, ?_⟩
       have hx' : g.left = Spec.map (CommRingCat.ofHom (a.comp b)) ≫ (pt t).left :=
         (Category.id_comp _).symm.trans hx
-      rw [hx', ← spec_comp, Category.assoc]
+      rw [hx', ← GlobalTheory.CompanionTheory.Ar.LieTangent.spec_comp, Category.assoc]
       rfl)
   refine ⟨Γ, i, h1, fun a ha t => ?_⟩
   have hac : a = c := IsLocalization.ringHom_ext (nonZeroDivisors R') (ha.trans hc.symm)
   have h3 : (Γ.pt t).left ≫ i = Spec.map (CommRingCat.ofHom b) ≫ (pt t).left := h2 t
   have h4 : Spec.map (CommRingCat.ofHom c) ≫ Spec.map (CommRingCat.ofHom b) ≫ (pt t).left = (pt t).left := by
-    rw [← Category.assoc, spec_comp, hcb]
+    rw [← Category.assoc, GlobalTheory.CompanionTheory.Ar.LieTangent.spec_comp, hcb]
     erw [Spec.map_id]
     exact Category.id_comp _
   rw [hac]
@@ -495,14 +476,6 @@ theorem pow_congr {S Y : Scheme.{0}} {G : Over S} [GrpObj G] {f f' : Y ⟶ S} (h
   subst h
   have : g = g' := Over.OverMorphism.ext hg
   rw [this]
-
-theorem mul_congr {S Y : Scheme.{0}} {G : Over S} [GrpObj G] {f f' : Y ⟶ S} (h : f = f')
-    (u v : Over.mk f ⟶ G) (u' v' : Over.mk f' ⟶ G) (hu : u.left = u'.left) (hv : v.left = v'.left) :
-    (u * v).left = (u' * v').left := by
-  subst h
-  have h1 : u = u' := Over.OverMorphism.ext hu
-  have h2 : v = v' := Over.OverMorphism.ext hv
-  rw [h1, h2]
 
 def Kill {S Y : Scheme.{0}} (G : Over S) [GrpObj G] (N : ℕ) (g : Y ⟶ G.left) : Prop :=
   (Over.homMk g rfl : Over.mk (g ≫ G.hom) ⟶ G) ^ N = 1
@@ -583,7 +556,7 @@ theorem PositivityTheory.Xgn.torsion_group_base_change : ∀ (R R' : Type) [Comm
       have e0 := h.mul (Over.mk (S'.hom ≫ Spec.map (CommRingCat.ofHom (algebraMap R R')))) u₀ v₀ U₀ V₀ rfl rfl
       have e1 := h'.mul S' u v U₁ V₁ rfl rfl
       have e2 : (U₀ * V₀).left = (U₁ * V₁).left :=
-        mul_congr (by simp [hx]) U₀ V₀ U₁ V₁ (by simp [U₀, U₁, hu, hF2]) (by simp [V₀, V₁, hv, hF2])
+        ReciprocityTheory.ChartRestriction.G.Geo.Tor.mul_left_congr (by simp [hx]) U₀ V₀ U₁ V₁ (by simp [U₀, U₁, hu, hF2]) (by simp [V₀, V₁, hv, hF2])
       rw [← e0, e2, e1, Category.assoc, hF2]
   · refine ⟨FractionRing R, inferInstance, algebraMap R (FractionRing R), RingHom.id _, a,
       fun t => (Γ.pt t).left, fun _ _ e => e, RingHom.id_comp _, ha, fun t => ?_, fun t => ?_, fun t => ?_⟩
@@ -643,12 +616,12 @@ theorem isDerAtOne_smul (Γ : QFGroup R T) {S : Scheme.{0}} {G : Over S} [GrpObj
   refine ⟨TranslateEq.pullSec Γ.G.hom a * s, fun t => ?_, fun e => ?_⟩
   · have h1 : valAt (Γ.pt t).left ⊤ le_top (TranslateEq.pullSec Γ.G.hom a) = algebraMap R (FractionRing R) a :=
       ValEmb.valAt_pull Γ.G.hom (Γ.pt t).left _ (Over.w (Γ.pt t)) _
-    refine (TranslateEq.valAt_mul (Γ.pt t).left ⊤ le_top _ s).trans ?_
+    refine (PositivityTheory.HtPt.Htat.ValuationInjectivePi.valAt_mul (Γ.pt t).left ⊤ le_top _ s).trans ?_
     rw [h1, hs t, ← map_mul]
   · obtain ⟨v, h₁, h₂, h₃⟩ := hv e
     refine ⟨v, h₁, h₂, ?_⟩
     have h1 : valAt v ⊤ le_top (TranslateEq.pullSec Γ.G.hom a) = _ := ValEmb.valAt_pull Γ.G.hom v _ h₁ a
-    refine (TranslateEq.valAt_mul v ⊤ le_top _ s).trans ?_
+    refine (PositivityTheory.HtPt.Htat.ValuationInjectivePi.valAt_mul v ⊤ le_top _ s).trans ?_
     rw [h₃, h1]
     ext <;> simp [TrivSqZeroExt.algebraMap_eq_inl, map_mul]
 
@@ -937,7 +910,6 @@ section Chart
 variable {O : Type} [CommRing O] {Ω : Type} [Field Ω] [Algebra O Ω] {K : Type} [Fintype K] {J : K → Type}
   (y : (Σ k, J k) → Ω) (s t : ∀ k, J k)
 
-
 variable (O) in
 abbrev ovl : Subalgebra O Ω := CR O y s ⊔ CR O y t
 
@@ -1076,7 +1048,7 @@ theorem tied_overlap (hs : mseg y s ≠ 0) (P₁ : ChartPack G O s) (P₂ : Char
     spMap (algebraMap (CR O y t) (ovl O y s t)) ≫ P₂.x = spMap (algebraMap (CR O y s) (ovl O y s t)) ≫ P₁.x := by
   have hr : ∀ c', mseg y c' / mseg y s ∈ (algebraMap (ovl O y s t) Ω).range := fun c' =>
     ⟨⟨_, (le_sup_left : CR O y s ≤ ovl O y s t) (ratio_mem c' s)⟩, rfl⟩
-  exact _root_.GlobalTheory.CompanionTheory.Ar.Num.FamEx.coordTie_points_eq 𝔐.X Ω 𝔐.ξ (∀ k, J k) (mseg y) (tie' 𝔐) s hs (ovl O y s t) Subtype.val_injective hr _ _ h2 h1
+  exact _root_.PositivityTheory.Xgn.same_generic_point_charts 𝔐.X Ω 𝔐.ξ (∀ k, J k) (mseg y) (tie' 𝔐) s hs (ovl O y s t) Subtype.val_injective hr _ _ h2 h1
 
 theorem algL_coe (r : CR O y s) : ((algebraMap (CR O y s) (ovl O y s t) r : ovl O y s t) : Ω) = r :=
   Subalgebra.coe_inclusion le_sup_left r
@@ -1358,7 +1330,7 @@ theorem funfam_holds : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H
     _ _ _ _ _ t₀ Sg _ e φ' F _ _ _ pq sc w σ horb hsec G P i
   have hp : p.Prime := Fact.out
   have inst := fun (c' : ∀ k, J k) (h : mseg y c' ≠ 0) =>
-    _root_.GlobalTheory.CompanionTheory.Relay.arith_variety_prime_relay E H D l Xo c O₀ β Y S Ω K J y 𝔐 d hvar p hpS A m hpm O c' h
+    _root_.PositivityTheory.Xgn.function_family_chart_facts E H D l Xo c O₀ β Y S Ω K J y 𝔐 d hvar p hpS A m hpm O c' h
   haveI : Finite (𝓞 E ⧸ Ideal.span {(p : 𝓞 E)}) :=
     Ideal.finiteQuotientOfFreeOfNeBot _ (by simpa using hp.ne_zero)
   haveI : Finite (TorsT E (D.p + D.q) p) := inferInstanceAs (Finite (Multiplicative (Fin (D.p + D.q) → _)))

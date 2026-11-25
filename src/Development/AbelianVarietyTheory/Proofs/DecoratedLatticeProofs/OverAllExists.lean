@@ -135,7 +135,7 @@ theorem overAll_last (hstd : IsStdChar D ψ (-1)) (hunit : ∀ i, (p i).UnitAA) 
     · have hil : i ∈ l := by simpa [hij] using hi
       obtain ⟨g₁, hg₁, hv₁⟩ := ih hl.2 f g₀ hf hg₀ i hil
       have hjv : Vac ψ S T LS LT (· = (p j).v) g₁ := hv₁ j (Or.inr hl.1)
-      obtain ⟨g', hg'1, hg'2⟩ := GlobalTheory.T.splitPlaceData_distinct_places_commute D k (p i) (p j) n n' n n' ψ hstd (hunit i) (hunit j)
+      obtain ⟨g', hg'1, hg'2⟩ := GlobalTheory.FinPl.overSwap D k (p i) (p j) n n' n n' ψ hstd (hunit i) (hunit j)
         (fun e => hij (hinj e)) S T (α i) (β i) (α j) (β j) LS LT g₁ g₀ f' (Ψ i) (Ψ j) hjv hg₁ hf'
       refine ⟨g', hg'2, fun j' hj' => ?_⟩
       have hne : j' ≠ j := by

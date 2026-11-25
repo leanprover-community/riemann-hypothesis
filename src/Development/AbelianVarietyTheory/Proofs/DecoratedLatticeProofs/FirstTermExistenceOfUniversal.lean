@@ -56,7 +56,7 @@ variable {D : D7}
 theorem hasIw_of_good {T T₀ : HSp D} {r : ℕ} (d : HypDec T T₀ r) {l : Lvl T} (hl : l.Good) :
     HasIw d l.K ∧ IsCompact (l.K : Set (GA D T)) := by
   have h := GlobalTheory.T.goodMajorantLevel_conj_unitaryAdelicMaximalCompact D T T₀ r d l.c hl.2.2
-    (GlobalTheory.T.adelic_iwasawa_decomposition_wittIsotropicStabilizer D T T₀ r d l.c GlobalTheory.Core.Rk.IP.Model.isSplit_two hl.2.2) l hl
+    (GlobalTheory.Core.Rk.IwAd.hasIw_Kmax D T T₀ r d l.c GlobalTheory.Core.Rk.IP.Model.isSplit_two hl.2.2) l hl
   exact ⟨h.1, h.2.1⟩
 
 end GlobalTheory.RegSch.FirstTermCompare

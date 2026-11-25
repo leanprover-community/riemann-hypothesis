@@ -823,9 +823,6 @@ theorem red_mulVec (M : Matrix (Ix g) (Ix g) ℤ_[p]) (t : TT p g) :
 
   simp [red, Matrix.mulVec, dotProduct, map_sum, map_mul]
 
-theorem red_surj (y : Nb p g) : ∃ t : TT p g, red p g t = y := by
-  exact ⟨fun i => ((y i).val : ℤ_[p]), funext fun i => by simp [red]⟩
-
 theorem u_psi (D : Lifts H U X) (j : Ix g) (k : Fin D.s) (y : Nb p g) :
     D.u j (psi (H := H) (D.b k) y) = algebraMap R C (U.sg (D.κ j) (D.b k)) * D.u j y := by
   obtain ⟨t, rfl⟩ := red_surj y

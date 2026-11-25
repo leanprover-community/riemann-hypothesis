@@ -104,9 +104,6 @@ open GlobalTheory.Core.Rk.SW (sch)
 open GlobalTheory.Mem.AutSpace (SmFun)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-
-theorem _root_.GlobalTheory.T.compactAverageProjection_theta_schrodinger : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (A B : HSp D) (χ : (AE D)ˣ →* Circle) (om : GA D (dblSp A) × GA D B →* Module.End ℂ (WO (dblSp A) B → ℂ)), IsWeilDatumO ψ (dblSp A) B 1 χ om → ∀ (ν : Measure (WO A B)) (𝓨 : Set (WO A B)), IsCovolOne (ratL B A) ν 𝓨 → ∀ K : Subgroup (GA D B), IsCompact (K : Set (GA D B)) → ∀ νK : Measure K, IsProbabilityMeasure νK → ∀ φ, IsThetaFunO ψ (dblSp A) B φ → IsThetaFunO ψ (dblSp A) B (projK om νK φ) ∧ sch ψ A B ν 𝓨 (projK om νK φ) = projS νK (sch ψ A B ν 𝓨 φ) := by
-  first | exact @GlobalTheory.RegSchProj.projK_theta_sch
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.CompactAverageProjectionThetaSchrodingerStatement =====
@@ -349,9 +346,6 @@ theorem hasSum_recon (hψ : IsStdChar D ψ (-1)) (v : GlobalTheory.Unf.VolM D T.
     ψ (symplO S T (e.extX T (rat η + x)) (e.extY T y)) * e.mixS T ψ v.μ v.𝓕 f (rat η + x) 0) _
   simpa only [heisO, map_zero, symplOH_zero_left, AddChar.map_zero_eq_one, one_mul, zero_add] using h5
 
-theorem symplO_add_right (x y y' : WO S T) : symplO S T x (y + y') = symplO S T x y + symplO S T x y' := by
-  simp only [← Check.symplOH_add_self, GlobalTheory.OrientedHeis.symplOH_add_right]; ring
-
 theorem iso_pair (ξ ξ' : Mx D t S.rank) (w : WO S T') : symplOH S T (d.jX ⬝ ξ) (d.jX ⬝ ξ' + d.j0 ⬝ w) = 0 := by
   rw [GlobalTheory.OrientedHeis.symplOH_add_right]
   exact (congrArg₂ (· + ·) (d.symplOH_incX_incX S ξ ξ') (d.wittDecomp_sympl_inclIsotropic_inclAnisotropic S ξ w)).trans (add_zero 0)
@@ -375,7 +369,6 @@ theorem tsum_reindex (G : Matrix (Fin T.rank) (Fin ρ) D.host.E → ℂ) :
     have := congrArg (· * η) d.sum_eq_one_rat
     simpa only [Matrix.add_mul, HypDec.q0, HypDec.qY, Matrix.mul_assoc d.e, Matrix.mul_assoc d.i₀, Matrix.mul_assoc d.e',
       Matrix.mul_assoc T'.gram⁻¹, hY, h0, Matrix.mul_zero, add_zero, Matrix.one_mul] using this
-
 
 set_option maxHeartbeats 1000000 in
 theorem inner_mean (hψ : IsStdChar D ψ (-1)) (v : GlobalTheory.Unf.VolM D T.rank ρ) {f : WO S T → ℂ} (hf : IsThetaFunO ψ S T f)
@@ -401,7 +394,7 @@ theorem inner_mean (hψ : IsStdChar D ψ (-1)) (v : GlobalTheory.Unf.VolM D T.ra
         Matrix.mul_add, add_assoc]
     rw [← e1, ← h]
     refine tsum_congr fun η => ?_
-    rw [← mul_assoc, ← AddChar.map_add_eq_mul, ← symplO_add_right, ← map_add (f := _), add_comm (rat d.i₀ ⬝ b),
+    rw [← mul_assoc, ← AddChar.map_add_eq_mul, ← GlobalTheory.PlaceModel.symplO_add_right, ← map_add (f := _), add_comm (rat d.i₀ ⬝ b),
       map_add (e.extX T), ← Check.symplOH_add_self, ← Check.symplOH_add_self, GlobalTheory.OrientedHeis.symplOH_add_left, h0,
       add_zero]
     rfl
@@ -488,7 +481,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero (swSec sZero IsKFinVe
 open GlobalTheory.Core.Rk.SW (sch)
 open GlobalTheory.Mem.AutSpace (SmFun)
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
 
 theorem _root_.GlobalTheory.T.ikedaMap_schrodinger_partialIntegral : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D ψ (-1) → ∀ (A T T' : HSp D) (t : ℕ) (d : HypDec T T' t) (ν : Measure (WO A T)) (𝓨 : Set (WO A T)), IsCovolOne (ratL T A) ν 𝓨 → ∀ (ν' : Measure (WO A T')) (𝓨' : Set (WO A T')), IsCovolOne (ratL T' A) ν' 𝓨' → ∀ (μ₁ : Measure (Mx D t (dblSp A).rank)) (𝓕₁ : Set (Mx D t (dblSp A).rank)), IsCovolOne (ratMx D t (dblSp A).rank) μ₁ 𝓕₁ → ∀ (μ₂ : Measure (Mx D t A.rank)) (𝓕₂ : Set (Mx D t A.rank)), IsCovolOne (ratMx D t A.rank) μ₂ 𝓕₂ → ∀ φ, IsThetaFunO ψ (dblSp A) T φ → IsThetaFunO ψ (dblSp A) T' (ikeda ψ d μ₁ 𝓕₁ φ) ∧ sch ψ A T' ν' 𝓨' (ikeda ψ d μ₁ 𝓕₁ φ) = ikS d μ₂ (sch ψ A T ν 𝓨 φ) := by
   first | exact @GlobalTheory.IkedaSch.sch_ikeda
@@ -631,7 +623,7 @@ theorem main (D : D7) (A : HSp D) (t : ℕ) (B W : HSp D) (d : HypDec B W t) (ψ
   obtain ⟨𝓕₂, hμ₂⟩ := I.cov₁
   have hK := LIkSch.isCompact_K d I.good
   have := I.probK
-  have hP := GlobalTheory.T.compactAverageProjection_theta_schrodinger D ψ₀ A B χ⁻¹ omB homB μB 𝓕B hμB I.l.K hK I.νK I.probK
+  have hP := GlobalTheory.RegSchProj.projK_theta_sch D ψ₀ A B χ⁻¹ omB homB μB 𝓕B hμB I.l.K hK I.νK I.probK
   have hI := GlobalTheory.T.ikedaMap_schrodinger_partialIntegral D ψ₀ h₀ A B W t d μB 𝓕B hμB μW 𝓕W hμW μ₁ 𝓕₁ hμ₁ I.μ₁ 𝓕₂ hμ₂
   have hgf := homB.om_pres (g, 1) f hf
   have e1 : ∀ φ, IsThetaFunO ψ₀ (dblSp A) B φ →

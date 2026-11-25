@@ -514,13 +514,6 @@ namespace GlobalTheory.HL.Gluing
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E]
 
-theorem resQ_ne_zero [IsNonarchimedeanLocalField F] (ϖ : 𝒪[F]) (h : Irreducible ϖ) :
-    resQ ϖ ≠ 0 := by
-  unfold resQ
-  rw [← (IsDiscreteValuationRing.irreducible_iff_uniformizer ϖ).1 h]
-  have : Finite (𝒪[F] ⧸ IsLocalRing.maximalIdeal 𝒪[F]) := inferInstanceAs (Finite 𝓀[F])
-  exact Nat.card_pos.ne'
-
 theorem encard_le [IsNonarchimedeanLocalField F] [CharZero F] {L : LocE F E} {n : ℕ}
     {Hm : Matrix (Fin n) (Fin n) E} (h : IsHermND L Hm) {m : ℕ} {y : Fin m → Fin n → E}
     (hy : LinearIndependent E y) {Y : Submodule E (Fin n → E)}
@@ -637,7 +630,7 @@ theorem gluing_count : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpa
     (fun x hx z hz => (hΛ₁.1.2 z).2 ((hMh z).1 hz).1 x ((hMh x).1 hx).1)
     (fun x => by rw [hsp]; rfl)
   rw [hca] at hidx
-  have hq : resQ S.ϖ ^ (2 * S.a.toNat) ≠ 0 := pow_ne_zero _ (resQ_ne_zero _ S.ϖ_irr)
+  have hq : resQ S.ϖ ^ (2 * S.a.toNat) ≠ 0 := pow_ne_zero _ (GlobalTheory.HL.UniCount.resQ_ne_zero _ S.ϖ_irr)
   have hN : Mh.toAddSubgroup.relIndex Md.toAddSubgroup ≠ 0 := fun h => hq (by rw [← hidx, h, zero_mul])
   have hNle : Mh.toAddSubgroup.relIndex Md.toAddSubgroup ≤ S.q ^ (2 * S.a.toNat) :=
     Nat.le_of_dvd (Nat.pos_of_ne_zero hq) (Dvd.intro _ hidx)
@@ -777,7 +770,6 @@ namespace GlobalTheory.HL.MassGlue
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [CharZero F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E]
 variable {L : LocE F E} {r k : ℕ}
-
 
 omit [IsNonarchimedeanLocalField F] [CharZero F] in
 theorem sumCls_le (S : Frames L r k) (φ : Set S.FrP → ℝ≥0∞) (c : ℝ≥0∞) (h : ∀ C, φ C ≤ c) :

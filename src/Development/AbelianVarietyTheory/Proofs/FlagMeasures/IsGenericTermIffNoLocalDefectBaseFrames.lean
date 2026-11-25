@@ -326,7 +326,7 @@ theorem rank_loc (p : PlF D) : Module.finrank (D.s.atP p).Ep (Vp D p) = D.R.k + 
 
 theorem generic_iff_local : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word), ∀ (F : LFlag (D.sp.Y 0) D.R.rS (((D.mem u).A.T : ℕ) : D.host.E)) (F' : LFlag (D.sp.Y 0) D.R.rS (((D.mem u').A.T : ℕ) : D.host.E)) (w : Point D.host.E (D.R.rS + 1)), ZhatOM (ZhatL F F') = ptMat w → Gval F F' ≠ 0 → ∀ (Z : LocDat D) (FP : ∀ p : PlF D, LocNG.FPair (locH Z p) D.R.rS), Based Z FP (Tu D u) (Tu D u') F F' → (∀ p, (FP p).RelG (LocNG.theta (Z.M p))) → ∀ (t : TauC Y u u') (Λ : LV D), TG F F' t Λ → (t.generic ↔ ∀ p d τ, LocNG.IsTermOver (FP p) d τ → τ.abelian₂ = lattice₂ D Z.M p Λ → ¬ LocNG.BBne (H := locH Z p) τ) := by
   intro D X Y u u' F F' w hZw hGv Z FP hB hRel t Λ hTG
-  have hC := GlobalTheory.T.term_at_base_point_of_frames D X Y u u' F F' w hZw hGv t Λ hTG
+  have hC := GlobalTheory.Unfold.BasePt.term_at_base_point D X Y u u' F F' w hZw hGv t Λ hTG
   have hPD : Formalism.L2.SG.TermDef.PD D t.lam (lf D (X.Fu u)) u' (GTerm.frame t) := (Quot.out t.cls).2.2.2.2
   have hR : IsRowLat D (X.Fu u) t.lam := (Y.rowsOK u).1 _ t.mem
   have hgf := (_root_.term_function_const D u u' (X.Fu u) t.lam hR).1

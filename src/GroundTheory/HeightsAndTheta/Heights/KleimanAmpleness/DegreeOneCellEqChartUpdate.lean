@@ -76,18 +76,8 @@ section Eval
 
 variable {Ω : Type} [Field Ω] [Algebra S Ω] (y : (Σ k, ι k) → Ω)
 
-theorem mConeMapOver_homog {g : MRingOver S ι} {d : K → ℕ} (hg : IsMultiHomog g d) :
-    mConeMapOver S y g = C (aeval y g) * ∏ k, (X k : MvPolynomial K Ω) ^ d k := by
-  apply GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.CellLocEval.mConeMapOver_homog <;> assumption
-
 theorem aeval_eq_zero_of_mem {f : MRingOver S ι} (hf : f ∈ mIdealOver S y) : aeval y f = 0 := by
   apply GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.CellLocEval.aeval_eq_zero_of_mem <;> assumption
-
-theorem mk_eq_zero_of_aeval {g : MRingOver S ι} {d : K → ℕ} (hg : IsMultiHomog g d) (h0 : aeval y g = 0) :
-    Ideal.Quotient.mk (mIdealOver S y) g = 0 := by
-  rw [Ideal.Quotient.eq_zero_iff_mem]
-  show g ∈ RingHom.ker (mConeMapOver S y)
-  rw [RingHom.mem_ker, mConeMapOver_homog y hg, h0, map_zero, zero_mul]
 
 def ev0 : (MRingOver S ι ⧸ mIdealOver S y) →ₐ[S] Ω :=
   Ideal.Quotient.liftₐ (mIdealOver S y) (aeval y) (fun _ hf => aeval_eq_zero_of_mem y hf)
@@ -155,7 +145,6 @@ def evLin (I : ∀ k, Finset (ι k)) (hI : Good y I) :
     | h m t =>
       rw [LocalizedModule.smul'_mk, ev_mk, ev_mk, map_smul, smul_div_assoc, RingHom.id_apply]
 
-
 open Classical in
 def evMap (I : ∀ k, Finset (ι k)) :
     LocalizedModule (cellMon S I) (MRingOver S ι ⧸ mIdealOver S y) →ₗ[S] Ω :=
@@ -170,69 +159,6 @@ theorem evMap_mk {I : ∀ k, Finset (ι k)} (hI : Good y I) (g : MRingOver S ι)
 
 end Eval
 
-section Rep
-
-variable {V : Ideal (MRingOver S ι)}
-
-theorem exists_homog_of_mem_quotPart {d : K → ℤ} {m : MRingOver S ι ⧸ V} (hm : m ∈ quotPart S V d) :
-    ∃ g : MRingOver S ι, IsMultiHomog g (fun k => (d k).toNat) ∧ ((∀ k, 0 ≤ d k) ∨ g = 0) ∧
-      Ideal.Quotient.mk V g = m := by
-  apply GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.CellLocEval.exists_homog_of_mem_quotPart <;> assumption
-
-theorem exists_rep {T : Submonoid (MRingOver S ι)} {β : K → ℤ}
-    {x : LocalizedModule T (MRingOver S ι ⧸ V)} (hx : x ∈ locPart ι (quotPart S V) T β) :
-    ∃ (g : MRingOver S ι) (t : T) (a : K → ℕ), IsMultiHomog (t : MRingOver S ι) a ∧
-      IsMultiHomog g (fun k => (β k + a k).toNat) ∧ ((∀ k, 0 ≤ β k + a k) ∨ g = 0) ∧
-      x = LocalizedModule.mk (Ideal.Quotient.mk V g) t := by
-  induction hx using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨m, t, a, ht, hm, rfl⟩ := hx
-    obtain ⟨g, hg, hd, rfl⟩ := exists_homog_of_mem_quotPart hm
-    exact ⟨g, t, a, ht, hg, hd, rfl⟩
-  | zero =>
-    refine ⟨0, 1, 0, ?_, CellLocEval.isMultiHomog_zero _, Or.inr rfl, ?_⟩
-    · simpa using CellLocEval.isMultiHomog_C (S := S) (ι := ι) 1
-    · rw [map_zero, LocalizedModule.zero_mk]
-  | add x x' _ _ h h' =>
-    obtain ⟨g, t, a, ht, hg, hd, rfl⟩ := h
-    obtain ⟨g', t', a', ht', hg', hd', rfl⟩ := h'
-    rcases hd with hd | rfl
-    swap
-    · exact ⟨g', t', a', ht', hg', hd', by rw [map_zero, LocalizedModule.zero_mk, zero_add]⟩
-    rcases hd' with hd' | rfl
-    swap
-    · exact ⟨g, t, a, ht, hg, Or.inl hd, by rw [map_zero, LocalizedModule.zero_mk, add_zero]⟩
-    refine ⟨(t' : MRingOver S ι) * g + (t : MRingOver S ι) * g', t * t', a + a', ?_, ?_, Or.inl ?_, ?_⟩
-    · simpa using CellLocEval.isMultiHomog_mul ht ht'
-    · have e1 : (fun k => (β k + ((a + a') k : ℕ)).toNat) = a' + (fun k => (β k + a k).toNat) := by
-        funext k
-        have := hd k
-        simp only [Pi.add_apply, Nat.cast_add]
-        omega
-      have e2 : (fun k => (β k + ((a + a') k : ℕ)).toNat) = a + (fun k => (β k + a' k).toNat) := by
-        funext k
-        have := hd' k
-        simp only [Pi.add_apply, Nat.cast_add]
-        omega
-      refine CellLocEval.isMultiHomog_add ?_ ?_
-      · rw [e1]; exact CellLocEval.isMultiHomog_mul ht' hg
-      · rw [e2]; exact CellLocEval.isMultiHomog_mul ht hg'
-    · intro k
-      have := hd k
-      simp only [Pi.add_apply, Nat.cast_add]
-      omega
-    · rw [LocalizedModule.mk_add_mk]
-      congr 1
-  | smul s x _ h =>
-    obtain ⟨g, t, a, ht, hg, hd, rfl⟩ := h
-    refine ⟨s • g, t, a, ht, CellLocEval.isMultiHomog_smul s hg, ?_, ?_⟩
-    · rcases hd with hd | rfl
-      · exact Or.inl hd
-      · exact Or.inr (smul_zero s)
-    · rw [LocalizedModule.smul'_mk, ← Ideal.Quotient.mkₐ_eq_mk S, map_smul]
-
-end Rep
-
 variable {Ω : Type} [Field Ω] [Algebra S Ω] (y : (Σ k, ι k) → Ω)
 
 theorem evMap_injOn {I : ∀ k, Finset (ι k)} (hI : Good y I) (β : K → ℤ) :
@@ -241,11 +167,11 @@ theorem evMap_injOn {I : ∀ k, Finset (ι k)} (hI : Good y I) (β : K → ℤ) 
   rw [← sub_eq_zero]
   have hs : x - x' ∈ locPart ι (quotPart S (mIdealOver S y)) (cellMon S I) β := sub_mem hx hx'
   have h0 : evMap y I (x - x') = 0 := by rw [map_sub, hxx', sub_self]
-  obtain ⟨g, t, a, -, hg, -, he⟩ := exists_rep hs
+  obtain ⟨g, t, a, -, hg, -, he⟩ := GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.CellLocEval.exists_rep hs
   rw [he] at h0 ⊢
   rw [evMap_mk y hI, div_eq_zero_iff] at h0
   rcases h0 with h0 | h0
-  · rw [mk_eq_zero_of_aeval y hg h0, LocalizedModule.zero_mk]
+  · rw [GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.CellLocEval.mk_eq_zero_of_aeval y hg h0, LocalizedModule.zero_mk]
   · exact absurd h0 (aeval_ne_zero_of_mem hI t.2)
 
 def chart (c : ∀ k, ι k) : ∀ k, Finset (ι k) := fun k => {c k}
@@ -683,7 +609,6 @@ end Main
 
 end HZeroRowPlaceData
 
-
 open HZeroRowPlaceData in
 theorem HZeroRowPlaceData.full : GlobalSectionsComparisonStatement := by
   intro S _ K _ _ ι _ _ Ω _ _ y n hy
@@ -722,7 +647,7 @@ theorem HZeroRowPlaceData.full : GlobalSectionsComparisonStatement := by
         Subalgebra.mem_toSubmodule]
       intro c hc
       rw [hagree z c hc]
-      obtain ⟨g, t, a, ht, hg, hd, he⟩ := exists_rep ((hZ z).1 (cell0 c))
+      obtain ⟨g, t, a, ht, hg, hd, he⟩ := GroundTheory.Heights₂.Heights.Kleiman.SectionsOverLocalization.CellLocEval.exists_rep ((hZ z).1 (cell0 c))
       rw [he, evMap_mk y (I := (cell0 c).1) (good_chart hc)]
       rcases hd with hd | rfl
       · have ht1 : aeval y (t : MRingOver S ι) = ∏ k, y ⟨k, c k⟩ ^ a k := by
