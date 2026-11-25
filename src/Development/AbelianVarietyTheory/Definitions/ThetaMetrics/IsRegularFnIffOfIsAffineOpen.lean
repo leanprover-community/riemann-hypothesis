@@ -143,14 +143,6 @@ theorem isRegularFn_iff_germ {U : X.Opens} {a : Γ(X, U)} :
     rw [map_zero]
     exact mem_nonZeroDivisors_iff_right.1 (h x (hV hx)) _ this
 
-theorem isRegularFn_of_locally {U : X.Opens} {a : Γ(X, U)}
-    (h : ∀ x ∈ U, ∃ (V : X.Opens) (hV : V ≤ U), x ∈ V ∧ IsRegularFn (resG X hV a)) :
-    IsRegularFn a := by
-  refine isRegularFn_iff_germ.2 fun x hx => ?_
-  obtain ⟨V, hV, hxV, hr⟩ := h x hx
-  have := isRegularFn_iff_germ.1 hr x hxV
-  rwa [germ_resG] at this
-
 theorem isRegularFn_iff_of_isAffineOpen {U : X.Opens} (hU : IsAffineOpen U) {a : Γ(X, U)} :
     IsRegularFn a ↔ a ∈ nonZeroDivisors Γ(X, U) := by
   refine ⟨IsRegularFn.mem, fun ha => isRegularFn_iff_germ.2 fun x hx => ?_⟩
@@ -331,18 +323,6 @@ theorem SecMaps.nonzeroLocus_eq {A B : LB X} (hA : A.IsLB) (hB : B.IsLB) {w : LB
   rw [IsUnit.mul_iff]
   exact ⟨fun h => ⟨(Units.isUnit _).map _, h⟩, fun h => h.2⟩
 
-theorem isRegularSec_of_ne_zero [IsIntegral X] {L : LB X} (s : L.Sec) {i : L.ι} (hi : s.f i ≠ 0) :
-    IsRegularSec s := fun j => isRegularFn_iff_germ.2 fun x hx => by
-  have hne : (L.U i : Set X).Nonempty := by
-    by_contra h
-    exact hi (ext_germ fun y hy => (h ⟨y, hy⟩).elim)
-  obtain ⟨y, hy⟩ := nonempty_preirreducible_inter (L.U i).isOpen (L.U j).isOpen hne ⟨x, hx⟩
-  have hj : s.f j ≠ 0 := fun h0 => hi (germ_injective_of_isIntegral X y hy.1 (by
-    have e := congrArg (X.presheaf.germ (L.U i ⊓ L.U j) y hy).hom (s.compat i j)
-    rw [map_mul, germ_resG, germ_resG, h0, map_zero, mul_zero] at e
-    exact e.trans (map_zero _).symm))
-  exact isRegularFn_iff_germ.1 (isRegularFn_of_ne_zero hj) x hx
-
 theorem pull_U (L : LB X) (φ : Y ⟶ X) (j : PUnit → L.ι) : (L.pull φ).U j = φ ⁻¹ᵁ L.U (j ⟨⟩) :=
   le_antisymm (LB.wchart_le L (fun _ => φ) j ⟨⟩) fun _ hy => Set.mem_iInter.2 fun _ => hy
 
@@ -405,13 +385,6 @@ variable [IsIntegral X]
 theorem genericPoint_mem (W : X.Opens) [h : Nonempty W] : genericPoint X ∈ W :=
   ((genericPoint_spec X).mem_open_set_iff W.isOpen).mpr (by simpa using h)
 
-theorem ext_germK {U : X.Opens} {a b : Γ(X, U)}
-    (h : ∀ hU : genericPoint X ∈ U, (X.presheaf.germ U _ hU).hom a = (X.presheaf.germ U _ hU).hom b) :
-    a = b := by
-  by_cases hU : Nonempty U
-  · exact germ_injective_of_isIntegral X _ (genericPoint_mem U) (h _)
-  · exact ext_germ fun x hx => (hU ⟨⟨x, hx⟩⟩).elim
-
 def genericChart {L : LB X} (hL : L.IsLB) : L.ι := (LB.mem_of_cover hL (genericPoint X)).choose
 
 theorem mem_genericChart {L : LB X} (hL : L.IsLB) : genericPoint X ∈ L.U (genericChart hL) :=
@@ -425,15 +398,6 @@ def ratOf {L : LB X} (hL : L.IsLB) (s : L.Sec) (V : X.Opens) [Nonempty V] :
       ((X.presheaf.germ _ (genericPoint X) (mem_genericChart hL)).hom (s.f _)))⁻¹
   map_zero' := by rw [Pi.zero_apply, map_zero, zero_mul]
   map_add' t t' := by rw [Pi.add_apply, map_add (f := _), add_mul]
-
-theorem ratOf_smul {L : LB X} (hL : L.IsLB) (s : L.Sec) (V : X.Opens) [Nonempty V] (c : Γ(X, V))
-    (t : ∀ i, Γ(X, V ⊓ L.U i)) :
-    ratOf hL s V (fun i => resG X inf_le_left c * t i) = c • ratOf hL s V t := by
-  have hm : genericPoint X ∈ V ⊓ L.U (genericChart hL) :=
-    ⟨genericPoint_mem V, mem_genericChart hL⟩
-  change (X.presheaf.germ _ _ hm).hom (resG X inf_le_left c * t _) * _ = _
-  rw [map_mul, germ_resG, mul_assoc]
-  rfl
 
 end Rational
 

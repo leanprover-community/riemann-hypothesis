@@ -177,22 +177,6 @@ def rangeSub {X : Scheme.{0}} {F G : X.Modules} (θ : F ⟶ G) [Mono θ] : VB.Su
     exact ⟨r, Twist.sec_ext_of_cover U hU hc fun x =>
       (app_resM θ _ r).symm.trans ((congrArg _ (hr x)).trans (ht' x))⟩
 
-theorem isIso_lift_rangeSub {X : Scheme.{0}} {F G : X.Modules} (θ : F ⟶ G) [Mono θ] :
-    IsIso ((rangeSub θ).lift θ fun _ s => ⟨s, rfl⟩) := by
-  set φ := (rangeSub θ).lift θ fun _ s => ⟨s, rfl⟩
-  have hfac : φ ≫ (rangeSub θ).incl = θ := (rangeSub θ).lift_incl θ _
-  have hsurj (V : X.Opens) (s : Γ((rangeSub θ).toMod, V)) : ∃ r, φ.app V r = s := by
-    obtain ⟨r, hr⟩ := (rangeSub θ).incl_app_mem s
-    refine ⟨r, (rangeSub θ).incl_app_injective V ?_⟩
-    rw [QCoh.app_app, hfac]
-    simpa using hr
-  have : Mono φ := mono_of_mono_fac hfac
-  have : Epi φ := ⟨fun {Z} g₁ g₂ h => by
-    ext V s
-    obtain ⟨r, rfl⟩ := hsurj V s
-    rw [QCoh.app_app, QCoh.app_app, h]⟩
-  exact isIso_of_mono_of_epi φ
-
 namespace Lat
 
 variable {B : Mdl Y i₀}
@@ -207,21 +191,13 @@ def ofBundle {F : B.X.Modules} (θ : F ⟶ B.om) [Mono θ]
     ⟨V, n, _, hx, hm.map_iso ((rangeSub θ).lift θ fun _ s => ⟨s, rfl⟩)⟩
   gen V h := LinearMap.range_eq_top.2 (hθ V h)
 
-
 variable (B) in
 def top : Lat B :=
   ofBundle (𝟙 _) (have := B.t.semi; have := B.t.semi.smooth; exists_isFrame_omega B.t.G) fun _ _ s => ⟨s, rfl⟩
 
 def IsTop (L : Lat B) : Prop := ∀ V, L.N.sec V = ⊤
 
-theorem ext {L L' : Lat B} (h : ∀ V, L.N.sec V = L'.N.sec V) : L = L' := by
-  obtain ⟨⟨N, r, m⟩, f, g⟩ := L
-  obtain ⟨⟨N', r', m'⟩, f', g'⟩ := L'
-  obtain rfl : N = N' := funext h
-  rfl
-
 end Lat
-
 
 variable (Y i₀) in
 structure Step : Type where
@@ -236,22 +212,9 @@ structure Step : Type where
 
   le : k ≤ Dw.mult σ
 
-
-
-
 open Classical in
 def allSteps {B : Mdl Y i₀} (L : Lat B) : Finset (Step Y i₀) :=
   Finset.univ.image fun q : Σ σ : E →+* ℂ, Fin (Dw.mult σ + 1) => ⟨B, L, q.1, q.2, Nat.lt_succ_iff.1 q.2.2⟩
-
-theorem mem_allSteps {B : Mdl Y i₀} {L : Lat B} {t : Step Y i₀} :
-    t ∈ allSteps L ↔ ∃ σ r hr, t = ⟨B, L, σ, r, hr⟩ := by
-  classical
-  constructor
-  · rintro h
-    obtain ⟨⟨σ, r⟩, -, rfl⟩ := Finset.mem_image.1 h
-    exact ⟨σ, r, _, rfl⟩
-  · rintro ⟨σ, r, hr, rfl⟩
-    exact Finset.mem_image.2 ⟨⟨σ, ⟨r, Nat.lt_succ_iff.2 hr⟩⟩, Finset.mem_univ _, rfl⟩
 
 def Step.admitted (P : ∀ B : Mdl Y i₀, Lat B → Prop) (Z : Mdl Y i₀) (t : Step Y i₀) : Prop :=
   (t.B = Z ∨ ∃ f, IsMap Z t.B f) ∧ (t.L.IsTop ∨ P t.B t.L)
@@ -275,6 +238,5 @@ end FlagFam
 end Free
 
 variable {D : D7} {A : Amb D} {N j : ℕ} {S : Sig A N j} {κ : Lv A} {p : ℕ}
-
 
 end GlobalTheory.LocM

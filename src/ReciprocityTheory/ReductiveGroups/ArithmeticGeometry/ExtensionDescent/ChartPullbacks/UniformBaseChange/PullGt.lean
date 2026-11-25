@@ -51,63 +51,6 @@ def hMap (Y : Over (Spec (CommRingCat.of R))) (Y' : Over (Spec (CommRingCat.of R
         show b.left ≫ pullback.snd Y.hom (specOf φ) = Y'.hom from Over.w b, ← Category.assoc,
         pullback.condition, Category.assoc, Category.assoc, sE_thick])
 
-lemma hMap_fst (Y : Over (Spec (CommRingCat.of R))) (Y' : Over (Spec (CommRingCat.of R')))
-    (b : Y' ⟶ (Over.pullback (specOf φ)).obj Y) :
-    hMap (hφ := hφ) (e := e) Y Y' b ≫ pullback.fst Y.hom (thick R I e) =
-      pullback.fst Y'.hom (thick R' I' e) ≫ b.left ≫ pullback.fst Y.hom (specOf φ) := by
-  first
-  | exact pullback.lift_fst _ _ _
-
-lemma hMap_snd (Y : Over (Spec (CommRingCat.of R))) (Y' : Over (Spec (CommRingCat.of R')))
-    (b : Y' ⟶ (Over.pullback (specOf φ)).obj Y) :
-    hMap (hφ := hφ) (e := e) Y Y' b ≫ pullback.snd Y.hom (thick R I e) =
-      pullback.snd Y'.hom (thick R' I' e) ≫ sE φ hφ e := by
-  first
-  | exact pullback.lift_snd _ _ _
-
-lemma sE_trans : thickTrans R' I' e ≫ sE φ hφ (e + 1) = sE φ hφ e ≫ thickTrans R I e := by
-  simp only [sE, thickTrans, ← Spec.map_comp]
-  congr 1
-  all_goals first | rfl | (ext x; simp [φe])
-
-lemma hMap_thick (Y : Over (Spec (CommRingCat.of R))) (Y' : Over (Spec (CommRingCat.of R')))
-    (b : Y' ⟶ (Over.pullback (specOf φ)).obj Y) :
-    thickMap R' I' e Y' ≫ hMap (hφ := hφ) (e := e + 1) Y Y' b =
-      hMap (hφ := hφ) (e := e) Y Y' b ≫ thickMap R I e Y := by
-  have hthick (Z : Over (Spec (CommRingCat.of R))) :
-      thickMap R I e Z ≫ pullback.fst Z.hom (thick R I (e + 1)) =
-        pullback.fst Z.hom (thick R I e) := by
-    simp only [thickMap, pullback.map]
-    rw [pullback.lift_fst]
-    simp
-  have hthick' (Z : Over (Spec (CommRingCat.of R'))) :
-      thickMap R' I' e Z ≫ pullback.fst Z.hom (thick R' I' (e + 1)) =
-        pullback.fst Z.hom (thick R' I' e) := by
-    simp only [thickMap, pullback.map]
-    rw [pullback.lift_fst]
-    simp
-  apply pullback.hom_ext
-  · simp only [Category.assoc, hMap_fst]
-    rw [← Category.assoc, hthick' Y']
-    rw [hthick Y, hMap_fst]
-  · rw [Category.assoc, Category.assoc, hMap_snd]
-    simp only [thickMap, pullback.map]
-    erw [pullback.lift_snd_assoc, pullback.lift_snd]
-    simp only [Category.assoc, sE_trans]
-    simp only [← Category.assoc]
-    rw [hMap_snd]
-
-lemma isGrpPullback_hMap (Y : Over (Spec (CommRingCat.of R))) [GrpObj Y]
-    (Y' : Over (Spec (CommRingCat.of R'))) [GrpObj Y']
-    (b : Y' ≅ (Over.pullback (specOf φ)).obj Y) [IsMonHom b.hom] :
-    IsGrpPullback (thickObj R' I' e Y') (thickObj R I e Y) (sE φ hφ e) (hMap (hφ := hφ) Y Y' b.hom) := by
-  have A := isGrpPullback_pullback Y' (thick R' I' e)
-  have B := ((isGrpPullback_of_iso b).comp (isGrpPullback_pullback Y (specOf φ))).congr
-    (Category.id_comp _) rfl
-  have C := A.comp B
-  have D := isGrpPullback_pullback Y (thick R I e)
-  exact D.cancel (C.congr (sE_thick φ hφ e).symm (by rw [hMap_fst])) (hMap_snd Y Y' b.hom)
-
 section MonHom
 
 variable {S S' : Scheme.{0}} {f : S' ⟶ S}
@@ -148,7 +91,6 @@ variable {D : DegPre R} {D' : DegPre R'} (eB : D'.P.A ≅ (Over.pullback (specOf
   {G : Over (Spec (CommRingCat.of R))} [GrpObj G] [IsCommMonObj G]
   {G' : Over (Spec (CommRingCat.of R'))} [GrpObj G'] [IsCommMonObj G']
   (bc : G' ≅ (Over.pullback (specOf φ)).obj G) [IsMonHom bc.hom]
-
 
 variable {e} (g : GtCoord I D e G)
 
@@ -206,15 +148,6 @@ lemma eψ_hom : (eψ xe).hom = specψ xe := by
   | rfl
 
 instance : IsMonHom (eψ xe).hom := by rw [eψ_hom]; infer_instance
-
-lemma grpT : IsGrpPullback (splitTorus (Spec (CommRingCat.of (R' ⧸ I' ^ (e + 1)))) X')
-    (splitTorus (Spec (CommRingCat.of (R ⧸ I ^ (e + 1)))) X) (sE φ hφ e) (hT hφ e xe) := by
-  have A := isGrpPullback_pullback (splitTorusAff ZU X') (toZ (Spec (CommRingCat.of (R' ⧸ I' ^ (e + 1)))))
-  have B := isGrpPullback_of_iso (eψ xe)
-  have C := A.comp B
-  have D := isGrpPullback_pullback (splitTorusAff ZU X) (toZ (Spec (CommRingCat.of (R ⧸ I ^ (e + 1)))))
-  exact D.cancel (C.congr (specULiftZIsTerminal.hom_ext _ _) ((pullback.lift_fst _ _ _).trans
-    (congrArg (pullback.fst _ _ ≫ ·) (specψ_left xe).symm)).symm) (pullback.lift_snd _ _ _)
 
 end Torus
 

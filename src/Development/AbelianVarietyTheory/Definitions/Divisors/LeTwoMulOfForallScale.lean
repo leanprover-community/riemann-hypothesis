@@ -106,11 +106,6 @@ theorem conj_form {H : Matrix n n ℂ} (hH : H.IsHermitian) (v w : n → ℂ) :
   refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
   rw [← hH.apply a b]; simp; ring
 
-theorem form_mulVec (K : Matrix n n ℂ) (A : Matrix n m ℂ) (B : Matrix n l ℂ) (u : m → ℂ)
-    (w : l → ℂ) : form K (A *ᵥ u) (B *ᵥ w) = u ⬝ᵥ (Aᵀ * K * Bᴴᵀ) *ᵥ star w := by
-  rw [form, star_mulVec, ← mulVec_transpose, ← vecMul_transpose, ← dotProduct_mulVec]
-  simp only [mulVec_mulVec, Matrix.mul_assoc]
-
 theorem posDef_iff {H : Matrix n n ℂ} :
     H.PosDef ↔ H.IsHermitian ∧ ∀ v, v ≠ 0 → 0 < form H v v := by
   constructor
@@ -354,10 +349,8 @@ def quotGram (H : Matrix (m ⊕ l) (m ⊕ l) ℂ) : Matrix l l ℂ :=
 
 def orthCoeff (H : Matrix (m ⊕ l) (m ⊕ l) ℂ) : Matrix m l ℂ := H.toBlocks₁₁ᵀ⁻¹ * H.toBlocks₂₁ᵀ
 
-
 variable (m l) in
 def incl : Matrix (m ⊕ l) m ℂ := fromRows 1 0
-
 
 variable (m l) in
 def quotMap : Matrix l (m ⊕ l) ℂ := fromCols 0 1
@@ -367,10 +360,6 @@ def orthLift (H : Matrix (m ⊕ l) (m ⊕ l) ℂ) : Matrix (m ⊕ l) l ℂ := fr
 def orthProj (H : Matrix (m ⊕ l) (m ⊕ l) ℂ) : Matrix m (m ⊕ l) ℂ := fromCols 1 (orthCoeff H)
 
 variable {H : Matrix (m ⊕ l) (m ⊕ l) ℂ}
-
-theorem quotMap_mul_orthLift (H : Matrix (m ⊕ l) (m ⊕ l) ℂ) :
-    quotMap (m := m) (l := l) * orthLift H = 1 := by
-  simp [quotMap, orthLift, fromCols_mul_fromRows]
 
 theorem orthLift_transpose_mul (hu : IsUnit (subGram H).det) :
     (orthLift H)ᵀ * H = fromCols 0 (quotGram H) := by
@@ -383,12 +372,6 @@ theorem orthLift_transpose_mul (hu : IsUnit (subGram H).det) :
   · rw [Matrix.neg_mul, nonsing_inv_mul_cancel_right H.toBlocks₁₁ _ hu]; simp
   · rw [quotGram]; simp [sub_eq_neg_add]
 
-theorem form_orthLift (hu : IsUnit (subGram H).det) (q q' : l → ℂ) :
-    form H (orthLift H *ᵥ q) (orthLift H *ᵥ q') = form (quotGram H) q q' := by
-  rw [form_mulVec, orthLift_transpose_mul hu, form]
-  simp [orthLift, conjTranspose_fromRows_eq_fromCols_conjTranspose, transpose_fromCols,
-    fromCols_mul_fromRows]
-
 theorem det_eq_det_subGram_mul (hu : IsUnit (subGram H).det) :
     H.det = (subGram H).det * (quotGram H).det := by
   letI : Invertible H.toBlocks₁₁ := invertibleOfIsUnitDet _ hu
@@ -398,15 +381,12 @@ theorem det_eq_det_subGram_mul (hu : IsUnit (subGram H).det) :
 theorem isUnit_det_quotGram (h : IsUnit H.det) (hu : IsUnit (subGram H).det) :
     IsUnit (quotGram H).det := isUnit_of_mul_isUnit_right (det_eq_det_subGram_mul hu ▸ h)
 
-
 omit [Fintype m] [Fintype l] [DecidableEq m] [DecidableEq l] in
 theorem isHermitian_subGram (h : H.IsHermitian) : (subGram H).IsHermitian := h.submatrix Sum.inl
-
 
 omit [Fintype m] [Fintype l] [DecidableEq m] [DecidableEq l] in
 theorem conjTranspose_toBlocks₁₂ (h : H.IsHermitian) : H.toBlocks₁₂ᴴ = H.toBlocks₂₁ := by
   ext i j; exact h.apply _ _
-
 
 omit [Fintype l] [DecidableEq l] in
 theorem isHermitian_quotGram (h : H.IsHermitian) : (quotGram H).IsHermitian := by
@@ -417,17 +397,9 @@ theorem isHermitian_quotGram (h : H.IsHermitian) : (quotGram H).IsHermitian := b
   rw [IsHermitian, conjTranspose_mul, conjTranspose_mul, conjTranspose_conjTranspose, h1.inv.eq,
     Matrix.mul_assoc]
 
-
 omit [DecidableEq m] [DecidableEq l] in
 theorem posDef_subGram (h : H.PosDef) : (subGram H).PosDef :=
   h.submatrix Sum.inl_injective
-
-theorem posDef_quotGram (h : H.PosDef) : (quotGram H).PosDef := by
-  have hu : IsUnit (subGram H).det := (isUnit_iff_isUnit_det _).1 (posDef_subGram h).isUnit
-  refine posDef_iff.2 ⟨isHermitian_quotGram h.isHermitian, fun q hq => ?_⟩
-  rw [← form_orthLift hu]
-  refine (posDef_iff.1 h).2 _ fun h0 => hq ?_
-  rw [← one_mulVec q, ← quotMap_mul_orthLift H, ← mulVec_mulVec, h0, mulVec_zero]
 
 end Blocks
 

@@ -152,8 +152,6 @@ def canonical : D.lb.Sec where
   f := D.f
   compat := D.trans_spec
 
-theorem isRegularSec_canonical : IsRegularSec D.canonical := D.regular
-
 theorem associated_germ (i j : D.ι) (x : X) (hi : x ∈ D.U i) (hj : x ∈ D.U j) :
     Associated ((X.presheaf.germ _ x hi).hom (D.f i)) ((X.presheaf.germ _ x hj).hom (D.f j)) := by
   have hm : x ∈ D.U i ⊓ D.U j := ⟨hi, hj⟩
@@ -165,7 +163,6 @@ section LocIdeal
 variable {κ : Type} (V : κ → X.Opens) (g : ∀ c, Γ(X, V c)) (hV : ∀ x : X, ∃ c, x ∈ V c)
   (hg : ∀ c c' (x : X) (hx : x ∈ V c) (hx' : x ∈ V c'),
     Associated ((X.presheaf.germ _ x hx).hom (g c)) ((X.presheaf.germ _ x hx').hom (g c')))
-
 
 include hg in
 theorem exists_unit_germ (c c' : κ) (x : X) (hx : x ∈ V c) (hx' : x ∈ V c') :
@@ -261,19 +258,6 @@ theorem dense_nonzeroLocus_canonical : Dense (Out.nonzeroLocus D.canonical : Set
   have : Nonempty W.1 := ⟨⟨x, hxW⟩⟩
   exact (((D.regular i).resG hWi).pow n).ne_zero hn
 
-theorem associated_of_idealSheaf_eq (h : D.idealSheaf = D'.idealSheaf) (p : D'.ι) (q : D.ι) :
-    Associated (resG X (inf_le_right : D'.U p ⊓ D.U q ≤ D.U q) (D.f q))
-      (resG X (inf_le_left : D'.U p ⊓ D.U q ≤ D'.U p) (D'.f p)) :=
-  ((D.regular q).resG _).associated_of_germ ((D'.regular p).resG _) fun x hx => by
-    rw [germ_resG, germ_resG, ← stalkId_idealSheaf, ← stalkId_idealSheaf, h]
-
-theorem existsUnique_iso_of_idealSheaf_eq (h : D.idealSheaf = D'.idealSheaf) :
-    ∃! w : LB.Iso D.lb D'.lb, w.IsGen ∧ SecMaps w D.canonical D'.canonical :=
-  existsUnique_secMaps D.regular (D.associated_of_idealSheaf_eq D' h)
-
-theorem lbIso_of_idealSheaf_eq (h : D.idealSheaf = D'.idealSheaf) : LBIso D.lb D'.lb :=
-  (D.existsUnique_iso_of_idealSheaf_eq D' h).exists.imp fun _ hw => hw.1
-
 theorem exists_idealSheaf_eq {I : X.IdealSheafData} (hI : FinalTheorems.EffCartier I) :
     ∃ D : EffCartierData X, D.idealSheaf = I := by
   choose W g hx hg hI using hI
@@ -300,14 +284,6 @@ def ofSec {L : LB X} (hL : L.IsLB) (s : L.Sec) (hs : IsRegularSec s) : EffCartie
   regular := hs
   assoc i j := (congrArg (Associated · _) (s.compat i j)).mpr
     (associated_unit_mul_left _ _ (L.g i j).isUnit)
-
-theorem existsUnique_iso_ofSec' {L : LB X} (hL : L.IsLB) (s : L.Sec) (hs : IsRegularSec s) :
-    ∃! w : LB.Iso (ofSec hL s hs).lb L, w.IsGen ∧ SecMaps w (ofSec hL s hs).canonical s :=
-  existsUnique_secMaps (A := (ofSec hL s hs).lb) hs fun p q => ((ofSec hL s hs).assoc p q).symm
-
-theorem lbIso_ofSec {L : LB X} (hL : L.IsLB) (s : L.Sec) (hs : IsRegularSec s) :
-    LBIso (ofSec hL s hs).lb L :=
-  (existsUnique_iso_ofSec' hL s hs).exists.imp fun _ hw => hw.1
 
 def KeepsRegular (φ : Y ⟶ X) : Prop := ∀ i, IsRegularFn ((φ.app (D.U i)).hom (D.f i))
 
@@ -348,51 +324,8 @@ theorem comap_idealSheaf (φ : Y ⟶ X) : D.idealSheaf.comap φ =
       (W y) (hW y)
     rwa [app_resG, resG_resG] at this
 
-theorem ideal_comap_idealSheaf (φ : Y ⟶ X) (W : Y.affineOpens) (i : D.ι)
-    (h : W.1 ≤ φ ⁻¹ᵁ D.U i) :
-    (D.idealSheaf.comap φ).ideal W = Ideal.span {resG Y h ((φ.app (D.U i)).hom (D.f i))} := by
-  rw [comap_idealSheaf]
-  exact ideal_locIdeal _ _ _ _ W i h
-
-theorem keepsRegular_iff_effCartier (φ : Y ⟶ X) :
-    D.KeepsRegular φ ↔ FinalTheorems.EffCartier (D.idealSheaf.comap φ) := by
-  constructor
-  · intro h y
-    obtain ⟨i, hi⟩ := D.exists_mem (φ y)
-    obtain ⟨W, hyW, hW⟩ := exists_affine_le (V := φ ⁻¹ᵁ D.U i) (x := y) hi
-    exact ⟨W, _, hyW, h i _ hW, D.ideal_comap_idealSheaf φ W i hW⟩
-  · intro h i
-    refine isRegularFn_of_locally fun y hy => ?_
-    obtain ⟨W, g, hyW, hg, hI⟩ := h y
-    obtain ⟨W', hyW', hW'⟩ := exists_affine_le (V := W.1 ⊓ φ ⁻¹ᵁ D.U i) (x := y) ⟨hyW, hy⟩
-    have h₁ : W'.1 ≤ W.1 := hW'.trans inf_le_left
-    refine ⟨W'.1, hW'.trans inf_le_right, hyW', ?_⟩
-    refine (((isRegularFn_iff_of_isAffineOpen W.2).2 hg).resG h₁).of_dvd ?_
-    rw [← Ideal.mem_span_singleton, ← D.ideal_comap_idealSheaf φ W' i]
-    exact (D.idealSheaf.comap φ).ideal_le_comap_ideal (U := W') (V := W) h₁
-      (by rw [hI]; exact Ideal.mem_span_singleton_self _)
-
-theorem keepsRegular_iff_isRegularSec (φ : Y ⟶ X) :
-    D.KeepsRegular φ ↔ IsRegularSec (secPull D.canonical φ) := by
-  refine ⟨fun h j => (h (j ⟨⟩)).resG _, fun h i => ?_⟩
-  have := (h fun _ => i).resG (pull_U D.lb φ fun _ => i).ge
-  exact (congrArg IsRegularFn ((resG_resG _ _ _).trans (resG_self _ _))).mp this
-
 theorem keepsRegular_of_flat (φ : Y ⟶ X) [Flat φ] : D.KeepsRegular φ :=
   fun i => (D.regular i).app_of_flat φ
-
-theorem keepsRegular_of_notMem_support [IsIntegral Y] (φ : Y ⟶ X) {y : Y}
-    (hy : φ y ∉ D.idealSheaf.support) : D.KeepsRegular φ := by
-  obtain ⟨i, hi⟩ := D.exists_mem (φ y)
-  refine (D.keepsRegular_iff_isRegularSec φ).2
-    (isRegularSec_of_ne_zero _ (i := fun _ => i) fun h0 => ?_)
-  have h1 : φ y ∈ Out.nonzeroLocus D.canonical := D.coe_nonzeroLocus_canonical.ge hy
-  have h2 : y ∈ Out.nonzeroLocus (secPull D.canonical φ) :=
-    (nonzeroLocus_secPull D.canonical φ).ge h1
-  have h3 := (mem_nonzeroLocus_iff (secPull D.canonical φ) (fun _ => i)
-    ((pull_U D.lb φ fun _ => i).ge hi)).1 h2
-  rw [h0, Scheme.basicOpen_zero] at h3
-  exact h3
 
 def pull (φ : Y ⟶ X) (h : D.KeepsRegular φ) : EffCartierData Y where
   ι := D.ι
@@ -442,105 +375,12 @@ def add : EffCartierData X where
     rw [map_mul, map_mul, resG_resG, resG_resG, resG_resG, resG_resG]
     exact h₁.mul_mul h₂
 
-theorem resG_add_f (i : D.ι) (j : D'.ι) {W : X.Opens} (h : W ≤ D.U i ⊓ D'.U j) :
-    resG X h ((D.add D').f (i, j)) =
-      resG X (h.trans inf_le_left) (D.f i) * resG X (h.trans inf_le_right) (D'.f j) := by
-  refine (map_mul (resG X h) _ _).trans ?_
-  rw [resG_resG, resG_resG]
-
-theorem idealSheaf_add : (D.add D').idealSheaf = D.idealSheaf * D'.idealSheaf := by
-  refine ((D.add D').eq_idealSheaf fun x => ?_).symm
-  obtain ⟨i, hi⟩ := D.exists_mem x
-  obtain ⟨j, hj⟩ := D'.exists_mem x
-  obtain ⟨W, hxW, hW⟩ := exists_affine_le (V := D.U i ⊓ D'.U j) ⟨hi, hj⟩
-  refine ⟨W, (i, j), hW, hxW, ?_⟩
-  change D.idealSheaf.ideal W * D'.idealSheaf.ideal W = _
-  rw [D.ideal_idealSheaf W i (hW.trans inf_le_left), D'.ideal_idealSheaf W j (hW.trans inf_le_right),
-    Ideal.span_singleton_mul_span_singleton]
-  exact congrArg (fun a => Ideal.span {a}) (D.resG_add_f D' i j hW).symm
-
 def addGen : LB.Gen (LB.div (LB.div (D.add D').lb D.lb) D'.lb) where
   s := fun p : ((D.ι × D'.ι) × D.ι) × D'.ι =>
     (res (le_inf (inf_le_left.trans (inf_le_left.trans inf_le_left))
         (inf_le_left.trans inf_le_right)) (D.trans p.1.1.1 p.1.2) *
       res (le_inf (inf_le_left.trans (inf_le_left.trans inf_le_right)) inf_le_right)
         (D'.trans p.1.1.2 p.2) : Γ(X, D.U p.1.1.1 ⊓ D'.U p.1.1.2 ⊓ D.U p.1.2 ⊓ D'.U p.2)ˣ)
-
-theorem res_addGen (i j : D.ι) (i' j' : D'.ι) {W : X.Opens}
-    (h : W ≤ D.U i ⊓ D'.U i' ⊓ D.U j ⊓ D'.U j') :
-    res h ((D.addGen D').s (((i, i'), j), j')) =
-      res (le_inf (h.trans (inf_le_left.trans (inf_le_left.trans inf_le_left)))
-        (h.trans (inf_le_left.trans inf_le_right))) (D.trans i j) *
-      res (le_inf (h.trans (inf_le_left.trans (inf_le_left.trans inf_le_right)))
-        (h.trans inf_le_right)) (D'.trans i' j') := by
-  refine (map_mul (res h) _ _).trans ?_
-  rw [LB.res_res, LB.res_res]
-
-theorem addGen_canonical (i j : D.ι) (i' j' : D'.ι) {W : X.Opens}
-    (h : W ≤ D.U i ⊓ D'.U i' ⊓ D.U j ⊓ D'.U j') :
-    resG X (h.trans (inf_le_left.trans inf_le_left)) ((D.add D').canonical.f (i, i')) =
-      (res h ((D.addGen D').s (((i, i'), j), j')) : Γ(X, W)ˣ) *
-        (resG X (h.trans (inf_le_left.trans inf_le_right)) (D.canonical.f j) *
-          resG X (h.trans inf_le_right) (D'.canonical.f j')) := by
-  refine (D.resG_add_f D' i i' _).trans ?_
-  rw [res_addGen, D.trans_spec_on i j _ (h.trans (inf_le_left.trans inf_le_right)),
-    D'.trans_spec_on i' j' _ (h.trans inf_le_right), mul_mul_mul_comm]
-  rfl
-
-theorem isGen_of_mul {N L M : LB X} {a : L.Sec} {b : M.Sec} {c : N.Sec} (ha : IsRegularSec a)
-    (hb : IsRegularSec b) (w : LB.Gen (LB.div (LB.div N L) M))
-    (H : ∀ (i : N.ι) (j : L.ι) (k : M.ι) {W : X.Opens} (h : W ≤ N.U i ⊓ L.U j ⊓ M.U k),
-      resG X (h.trans (inf_le_left.trans inf_le_left)) (c.f i) =
-        (res h (w.s ((i, j), k)) : Γ(X, W)ˣ) *
-          (resG X (h.trans (inf_le_left.trans inf_le_right)) (a.f j) *
-            resG X (h.trans inf_le_right) (b.f k))) : w.IsGen := by
-  rintro ⟨⟨i, j⟩, k⟩ ⟨⟨i', j'⟩, k'⟩
-  have key : ∀ {W : X.Opens} (h : W ≤ N.U i ⊓ L.U j ⊓ M.U k) (h' : W ≤ N.U i' ⊓ L.U j' ⊓ M.U k'),
-      res h (w.s ((i, j), k)) =
-        res (le_inf (h.trans (inf_le_left.trans inf_le_left))
-          (h'.trans (inf_le_left.trans inf_le_left))) (N.g i i') *
-        (res (le_inf (h.trans (inf_le_left.trans inf_le_right))
-          (h'.trans (inf_le_left.trans inf_le_right))) (L.g j j'))⁻¹ *
-        (res (le_inf (h.trans inf_le_right) (h'.trans inf_le_right)) (M.g k k'))⁻¹ *
-        res h' (w.s ((i', j'), k')) := by
-    intro W h h'
-    rw [mul_right_comm, mul_right_comm _ _⁻¹, eq_mul_inv_iff_mul_eq, eq_mul_inv_iff_mul_eq]
-    refine Units.ext ((((ha j').resG (h'.trans (inf_le_left.trans inf_le_right))).mul
-      ((hb k').resG (h'.trans inf_le_right))).mul_right_cancel ?_)
-    have e₁ := H i j k h
-    have e₂ := H i' j' k' h'
-    rw [sec_compat c i i' _ (h'.trans (inf_le_left.trans inf_le_left)), e₂,
-      sec_compat a j j' _ (h'.trans (inf_le_left.trans inf_le_right)),
-      sec_compat b k k' _ (h'.trans inf_le_right)] at e₁
-    simp only [Units.val_mul, val_res] at e₁ ⊢
-    linear_combination -e₁
-  refine (key inf_le_left inf_le_right).trans (congrArg (· * _) (congrArg (· * _) ?_))
-  exact (LB.res_dg N L (i, j) (i', j') _).symm
-
-theorem isGen_addGen : (D.addGen D').IsGen :=
-  isGen_of_mul (c := (D.add D').canonical) D.isRegularSec_canonical D'.isRegularSec_canonical _
-    fun i j j' _ h => D.addGen_canonical D' i.1 j i.2 j' h
-
-theorem lbIso_add : LBIso D'.lb (LB.div (D.add D').lb D.lb) := ⟨D.addGen D', D.isGen_addGen D'⟩
-
-theorem app_add_f (φ : Y ⟶ X) (p : D.ι × D'.ι) :
-    (φ.app ((D.add D').U p)).hom ((D.add D').f p) =
-      resG Y (φ.preimage_mono inf_le_left) ((φ.app (D.U p.1)).hom (D.f p.1)) *
-        resG Y (φ.preimage_mono inf_le_right) ((φ.app (D'.U p.2)).hom (D'.f p.2)) :=
-  (map_mul (φ.app (D.U p.1 ⊓ D'.U p.2)).hom _ _).trans
-    (congrArg₂ (· * ·) (app_resG φ _ _) (app_resG φ _ _))
-
-theorem KeepsRegular.add {D D' : EffCartierData X} {φ : Y ⟶ X} (h : D.KeepsRegular φ)
-    (h' : D'.KeepsRegular φ) : (D.add D').KeepsRegular φ := fun p =>
-  (congrArg IsRegularFn (D.app_add_f D' φ p)).mpr (((h p.1).resG _).mul ((h' p.2).resG _))
-
-theorem pull_add (φ : Y ⟶ X) (h : D.KeepsRegular φ) (h' : D'.KeepsRegular φ) :
-    (D.add D').pull φ (h.add h') = (D.pull φ h).add (D'.pull φ h') := by
-  have key : ∀ (A : EffCartierData Y) (f : ∀ i, Γ(Y, A.U i)) (r) (a), f = A.f →
-      EffCartierData.mk A.ι A.U f A.cover r a = A := by
-    rintro A f r a rfl
-    rfl
-  exact key ((D.pull φ h).add (D'.pull φ h')) _ _ _ (funext (D.app_add_f D' φ))
 
 def nsmul (n : ℕ) : EffCartierData X where
   ι := D.ι
@@ -551,16 +391,6 @@ def nsmul (n : ℕ) : EffCartierData X where
   assoc i j := by
     rw [map_pow, map_pow]
     exact (D.assoc i j).pow_pow
-
-theorem lb_principal (a : Γ(X, ⊤)) (ha : IsRegularFn a) : (principal a ha).lb = LB.triv X := by
-  have : (principal a ha).trans = fun _ _ => 1 := funext fun i => funext fun j =>
-    ((principal a ha).eq_trans i j (u := 1) (one_mul _).symm).symm
-  exact congrArg (LB.mk PUnit fun _ => ⊤) this
-
-theorem idealSheaf_zero : (zero X).idealSheaf = ⊤ := by
-  ext W : 2
-  rw [(zero X).ideal_idealSheaf W ⟨⟩ le_top]
-  exact Ideal.span_singleton_eq_top.2 (isUnit_one.map _)
 
 section Rational
 

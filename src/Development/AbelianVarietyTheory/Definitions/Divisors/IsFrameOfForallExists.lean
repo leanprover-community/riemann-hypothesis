@@ -297,7 +297,6 @@ theorem isFrame_one (U : X.Opens) :
   isFrame_of_basis (fun V _ => Module.Basis.singleton (Fin 1) Γ(X, V)) fun V h i =>
     (Module.Basis.singleton_apply (Fin 1) Γ(X, V) i).trans (map_one (resG X h)).symm
 
-
 variable (X) in
 def freeFrame (ι : Type) (i : ι) : Γ(freeModule X ι, ⊤) :=
   Scheme.Modules.Hom.app (M := structureModule X) (N := freeModule X ι)
@@ -317,7 +316,6 @@ theorem isFrame_biproduct (ι : Type) [Fintype ι] [HasBiproduct fun _ : ι => s
   · exact (congrArg _ (Pi.single_eq_of_ne hj _)).trans (map_zero _)
   · exact congrArg _ ((Pi.single_eq_same _ _).trans (map_one (resG X h)).symm)
 
-
 variable (X) in
 theorem isFrame_freeFrame (ι : Type) [Fintype ι] : IsFrame (freeFrame X ι) := by
   have := Abelian.hasFiniteBiproducts (C := X.Modules)
@@ -333,7 +331,6 @@ theorem isFrame_freeFrame (ι : Type) [Fintype ι] : IsFrame (freeFrame X ι) :=
   rw [funext e] at this
   exact this
 
-
 variable (F) in
 def IsVB (r : ℕ) : Prop := ∀ x : X, ∃ (U : X.Opens) (e : Fin r → Γ(F, U)), x ∈ U ∧ IsFrame e
 
@@ -347,12 +344,9 @@ theorem isVB_of_frames (hr : Fintype.card ι = r)
 theorem IsFrame.isVB {e : ι → Γ(F, ⊤)} (he : IsFrame e) : IsVB F (Fintype.card ι) :=
   isVB_of_frames rfl fun _ => ⟨⊤, e, trivial, he⟩
 
-
 variable (X) in
 theorem isVB_freeModule (ι : Type) [Fintype ι] : IsVB (freeModule X ι) (Fintype.card ι) :=
   (isFrame_freeFrame X ι).isVB
-
-
 
 variable (X) in
 theorem isVB_structureModule : IsVB (structureModule X) 1 :=
@@ -392,7 +386,6 @@ theorem isFiniteQC (h : IsVB F r) : IsFiniteQC F :=
     have ⟨U, _, hU, hx, _, he⟩ := h.exists_affine (V := ⊤) (x := x) trivial
     ⟨U, hU, hx, Module.Finite.of_basis (he.basis le_rfl)⟩
 
-
 theorem nonempty_basis_stalk (h : IsVB F r) (x : X) :
     Nonempty (Module.Basis (Fin r) (X.presheaf.stalk x) (F.presheaf.stalk x :)) :=
   have ⟨_, _, hx, he⟩ := h x
@@ -411,16 +404,6 @@ theorem pullback (h : IsVB F r) (f : Y ⟶ X) : IsVB ((Scheme.Modules.pullback f
     have ⟨_, _, hx, he⟩ := h (f y)
     ⟨_, _, hx, he.pullback f⟩
 
-theorem restrict (h : IsVB F r) (g : Y ⟶ X) [IsOpenImmersion g] : IsVB (F.restrict g) r :=
-  (h.pullback g).of_iso ((Scheme.Modules.restrictFunctorIsoPullback g).app F).symm
-
-theorem twist (h : IsVB F r) {L : LB X} (hL : L.IsLB) : IsVB (twist F L) r := fun x => by
-  obtain ⟨i, hi⟩ := Semi.LB.mem_of_cover hL x
-  obtain ⟨U, e, -, hx, hle, he⟩ := h.exists_affine hi
-  refine ⟨U, fun j => (Twist.chartEquiv hL i hle).symm (e j), hx,
-    he.map_of_linearEquiv (fun V hV => (Twist.chartEquiv hL i (hV.trans hle)).symm) ?_⟩
-  exact fun V hV j => (Twist.resM_chartEquiv_symm hL i hle hV _).symm
-
 theorem biprod (hF : IsVB F r) (hG : IsVB G s) : IsVB (F ⊞ G) (r + s) := by
   refine isVB_of_frames (ι := Fin r ⊕ Fin s) (by simp) fun x => ?_
   obtain ⟨U, e, hx, he⟩ := hF x
@@ -438,15 +421,6 @@ theorem biprod (hF : IsVB F r) (hG : IsVB G s) : IsVB (F ⊞ G) (r + s) := by
     simp
 
 end IsVB
-
-theorem isVB_zero_iff : IsVB F 0 ↔ IsZero F := by
-  refine ⟨fun h => QCoh.support_eq_empty_iff.1 (Set.eq_empty_of_forall_notMem fun x =>
-    QCoh.notMem_support_iff.2 ?_), fun h x => ⟨⊤, Fin.elim0, trivial, fun V _ => ?_⟩⟩
-  · obtain ⟨b⟩ := h.nonempty_basis_stalk x
-    exact b.equivFun.injective.subsingleton
-  · have := QCoh.subsingleton_sections_of_isZero h V
-    exact ⟨fun _ _ _ => Subsingleton.elim _ _, fun _ => ⟨0, Subsingleton.elim _ _⟩⟩
-
 
 variable (F) in
 structure Sub where
@@ -506,18 +480,12 @@ theorem incl_app_injective (V : X.Opens) : Function.Injective (N.incl.app V) := 
 
 theorem incl_app_mem (s : Γ(N.toMod, V)) : N.incl.app V s ∈ N.sec V := (show N.sec V from s).2
 
-theorem mem_sec_iff {s : Γ(F, V)} : s ∈ N.sec V ↔ ∃ t, N.incl.app V t = s :=
-  ⟨fun h => ⟨N.mkSec s h, rfl⟩, fun ⟨t, ht⟩ => ht ▸ N.incl_app_mem t⟩
-
 instance mono_incl : Mono N.incl :=
   QCoh.mono_of_locally_app_injective _ fun W _ hx => ⟨W, hx, le_rfl, N.incl_app_injective W⟩
 
 def lift (φ : G ⟶ F) (h : ∀ V s, φ.app V s ∈ N.sec V) : G ⟶ N.toMod :=
   homOfLinear (G := N.toMod) (fun V => (appLinear φ V).codRestrict (N.sec V) (h V))
     fun hW s => Subtype.ext (app_resM φ hW s)
-
-@[reassoc (attr := simp)] theorem lift_incl (φ : G ⟶ F) (h : ∀ V s, φ.app V s ∈ N.sec V) :
-    N.lift φ h ≫ N.incl = φ := rfl
 
 theorem isQuasicoherent [F.IsQuasicoherent]
     (h : ∀ (U : X.Opens), IsAffineOpen U → ∀ (f : Γ(X, U)) (t : Γ(F, U)),
