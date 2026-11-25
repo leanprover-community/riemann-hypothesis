@@ -92,7 +92,7 @@ open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.T
 private theorem formPull_ι_bijective {k : Type} [CommRing k] {Z : Scheme.{0}} (s : Z ⟶ Sp k)
     (V W : Z.Opens) (h : W ≤ V) (a : ℕ) :
     Function.Bijective (formPull (f := V.ι) (s' := V.ι ≫ s) rfl W a) := by
-  haveI := isIso_ι_app V W h
+  have := isIso_ι_app V W h
   have hsα := semiHom_appSec (s := s) (s' := V.ι ≫ s) (f := V.ι) rfl W
   let α := appSec s (V.ι ≫ s) V.ι W
   let β : Sec (V.ι ≫ s) (V.ι ⁻¹ᵁ W) →+* Sec s W := (inv (V.ι.app W)).hom
@@ -143,11 +143,11 @@ private theorem isIso_restrict_omegaPull {k : Type} [CommRing k] {Z : Scheme.{0}
 theorem UpperTheory.hodgeCohomology_open_restriction_equiv :
     ∀ (Z : Scheme.{0}) (s : Z ⟶ Sp ℂ) (V : Z.Opens) (a b : ℕ), ∃ e : cohOn (Omega s a) V b ≃ hodgeH (V.ι ≫ s) a b, ∀ x : hodgeH s a b, e (cohOn.res ℤ (Omega s a) (le_top : V ≤ ⊤) b x) = hodgePull (f := V.ι) (s' := V.ι ≫ s) rfl a b x := by
   intro Z s V a b
-  haveI := isIso_restrict_omegaPull s V a
+  have := isIso_restrict_omegaPull s V a
   let θ : (Omega s a).restrict V.ι ⟶ Omega (V.ι ≫ s) a :=
     (Scheme.Modules.restrictFunctor V.ι).map (omegaPull (f := V.ι) (s' := V.ι ≫ s) rfl a) ≫
       (Scheme.Modules.restrictAdjunction V.ι).counit.app _
-  haveI : IsIso θ := by
+  have : IsIso θ := by
     dsimp only [θ]
     infer_instance
   have hZ : ∀ r : ℤ, (ConcreteCategory.hom (Scheme.Hom.appTop V.ι)) ((algebraMap ℤ Γ(Z, ⊤)) r) =
@@ -196,15 +196,15 @@ open CategoryTheory AlgebraicGeometry ReciprocityTheory.ChartRestriction.G.Geo.T
 theorem UpperTheory.Cb.exists_finite_etale_restrict_clopen :
     ∀ (Y Z : Scheme.{0}) (c : Y ⟶ Z) (V : Z.Opens) (W : Y.Opens), IsClosed (W : Set Y) → W ≤ c ⁻¹ᵁ V → IsFinite c → Etale c → ∃ c' : W.toScheme ⟶ V.toScheme, c' ≫ V.ι = W.ι ≫ c ∧ IsFinite c' ∧ Etale c' := by
   intro Y Z c V W hWc hWV hfin het
-  haveI := het
-  haveI := hfin
+  have := het
+  have := hfin
   refine ⟨c.resLE V W hWV, c.resLE_comp_ι hWV, ?_, inferInstance⟩
-  haveI hWι : IsClosedImmersion W.ι := .of_isPreimmersion _ (by rw [Scheme.Opens.range_ι]; exact hWc)
-  haveI h1 : IsClosedImmersion (Y.homOfLE hWV ≫ (c ⁻¹ᵁ V).ι) := by
+  have hWι : IsClosedImmersion W.ι := .of_isPreimmersion _ (by rw [Scheme.Opens.range_ι]; exact hWc)
+  have h1 : IsClosedImmersion (Y.homOfLE hWV ≫ (c ⁻¹ᵁ V).ι) := by
     rw [Scheme.homOfLE_ι]
     exact hWι
-  haveI h2 : IsClosedImmersion (Y.homOfLE hWV) := .of_comp _ ((c ⁻¹ᵁ V).ι)
-  haveI h3 : IsFinite (c ∣_ V) := by infer_instance
+  have h2 : IsClosedImmersion (Y.homOfLE hWV) := .of_comp _ ((c ⁻¹ᵁ V).ι)
+  have h3 : IsFinite (c ∣_ V) := by infer_instance
   show IsFinite (Y.homOfLE hWV ≫ c ∣_ V)
   infer_instance
 end -- clump:auto
@@ -224,9 +224,9 @@ private theorem algTrace_algEquiv {B B' C' : Type} [CommRing B] [CommRing B'] [C
     [Algebra B B'] [Algebra B C'] [Module.Finite B B'] [Module.Projective B B']
     [Module.Finite B C'] [Module.Projective B C'] (e : B' ≃ₐ[B] C') (b : B') :
     algTrace B C' (e b) = algTrace B B' b := by
-  letI : Algebra B' C' := (e : B' →+* C').toAlgebra
-  haveI : IsScalarTower B B' C' := .of_algebraMap_eq fun r ↦ (e.commutes r).symm
-  haveI : Algebra.IsPushout B B B' C' :=
+  let : Algebra B' C' := (e : B' →+* C').toAlgebra
+  have : IsScalarTower B B' C' := .of_algebraMap_eq fun r ↦ (e.commutes r).symm
+  have : Algebra.IsPushout B B B' C' :=
     ⟨by
       have := IsBaseChange.ofEquiv (R := B) e.toLinearEquiv
       exact this⟩
@@ -240,14 +240,14 @@ private theorem secTrace_iso (e : A ⟶ B) [IsIso e] (g : B ⟶ Z) [IsFinite g] 
     (b : Sec sB (g ⁻¹ᵁ U)) :
     secTrace (f := e ≫ g) sZ sA hU (appSec sB sA e (g ⁻¹ᵁ U) b) =
       secTrace (f := g) sZ sB hU b := by
-  letI := secAlg sZ sB g U
-  letI := secAlg sZ sA (e ≫ g) U
-  haveI := sec_finite (s := sZ) (s' := sB) (f := g) hU
-  haveI := sec_etale (s := sZ) (s' := sB) (f := g) hU
-  haveI := sec_finite (s := sZ) (s' := sA) (f := e ≫ g) hU
-  haveI := sec_etale (s := sZ) (s' := sA) (f := e ≫ g) hU
-  haveI := projective_of_etale (Sec sZ U) (Sec sB (g ⁻¹ᵁ U))
-  haveI := projective_of_etale (Sec sZ U) (Sec sA ((e ≫ g) ⁻¹ᵁ U))
+  let := secAlg sZ sB g U
+  let := secAlg sZ sA (e ≫ g) U
+  have := sec_finite (s := sZ) (s' := sB) (f := g) hU
+  have := sec_etale (s := sZ) (s' := sB) (f := g) hU
+  have := sec_finite (s := sZ) (s' := sA) (f := e ≫ g) hU
+  have := sec_etale (s := sZ) (s' := sA) (f := e ≫ g) hU
+  have := projective_of_etale (Sec sZ U) (Sec sB (g ⁻¹ᵁ U))
+  have := projective_of_etale (Sec sZ U) (Sec sA ((e ≫ g) ⁻¹ᵁ U))
   have hbij : Function.Bijective (appSec sB sA e (g ⁻¹ᵁ U)) :=
     ConcreteCategory.bijective_of_isIso (e.app (g ⁻¹ᵁ U))
   let E : Sec sB (g ⁻¹ᵁ U) ≃ₐ[Sec sZ U] Sec sA ((e ≫ g) ⁻¹ᵁ U) :=
@@ -276,7 +276,7 @@ private theorem hodgeTrace_iso (e : A ⟶ B) [IsIso e] (g : B ⟶ Z) [IsFinite g
     (hg : g ≫ sZ = sB) (hga : g' ≫ sZ = sA) (j q : ℕ) (x : hodgeH sB j q) :
     hodgeTrace hga j q (hodgePull he j q x) = hodgeTrace hg j q x := by
   subst hgg
-  letI := algΓ sZ; letI := algΓ sA; letI := algΓ sB
+  let := algΓ sZ; let := algΓ sA; let := algΓ sB
   obtain ⟨y, rfl⟩ := (coh.pushforwardEquiv k (appTop_algebraMap hg) (Omega sB j) q).surjective x
   have e1 : hodgeTrace hg j q (coh.pushforwardEquiv k (appTop_algebraMap hg) (Omega sB j) q y) =
       cohOn.map k (omegaTrace hg j) ⊤ q y :=
@@ -317,7 +317,7 @@ private theorem exists_iso_open {Y : Scheme.{0}} (T A : Y.Opens) (hA : A ≤ T) 
     rw [Scheme.Hom.image_preimage_eq_opensRange_inf, Scheme.Opens.opensRange_ι]
     exact inf_eq_right.2 hA
   refine ⟨(T.ι.isoImage (T.ι ⁻¹ᵁ A)).hom ≫ (Y.isoOfEq hEq).hom, inferInstance, ?_⟩
-  rw [Category.assoc, Scheme.isoOfEq_hom_ι, Scheme.Hom.isoImage_hom_ι]
+  simp
 
 private theorem preimage_disjoint {Y : Scheme.{0}} (T : Y.Opens) {M : Type} (W : M → Y.Opens)
     (hd : ∀ i j, i ≠ j → W i ⊓ W j = ⊥) (i j : M) (hij : i ≠ j) :
@@ -349,24 +349,24 @@ theorem UpperTheory.Cb.hodgePull_hodgeTrace_eq_sum_restrict_open :
     rw [← h, ← Category.assoc, morphismRestrict_ι, Category.assoc]
   have hf' : ∀ m, IsFinite (((c ⁻¹ᵁ V).ι ⁻¹ᵁ W m).ι ≫ c ∣_ V) := fun m ↦ by
     rw [← hsq m]
-    haveI := hiso m
-    haveI := hf m
+    have := hiso m
+    have := hf m
     infer_instance
   have he' : ∀ m, Etale (((c ⁻¹ᵁ V).ι ⁻¹ᵁ W m).ι ≫ c ∣_ V) := fun m ↦ by
     rw [← hsq m]
-    haveI := hiso m
-    haveI := he m
+    have := hiso m
+    have := he m
     infer_instance
   rw [hodgePull_hodgeTrace_ι h V a b w]
   refine (UpperTheory.Cb.hodgeTrace_eq_sum_clopen_decomposition V.toScheme (c ⁻¹ᵁ V).toScheme (V.ι ≫ s) ((c ⁻¹ᵁ V).ι ≫ s') (c ∣_ V) hg M
     (fun m ↦ (c ⁻¹ᵁ V).ι ⁻¹ᵁ W m) (UpperTheory.Cb.TraceBlocks.preimage_disjoint _ W hd)
     (UpperTheory.Cb.TraceBlocks.preimage_iSup_top _ W hW) hf' he' a b _).trans ?_
   refine Finset.sum_congr rfl fun m _ ↦ ?_
-  haveI := hf m
-  haveI := he m
-  haveI := hf' m
-  haveI := he' m
-  haveI := hiso m
+  have := hf m
+  have := he m
+  have := hf' m
+  have := he' m
+  have := hiso m
   have hes : e m ≫ (W m).ι ≫ s' = ((c ⁻¹ᵁ V).ι ⁻¹ᵁ W m).ι ≫ (c ⁻¹ᵁ V).ι ≫ s' := by
     rw [← Category.assoc, hfac m, Category.assoc]
   have hc₁ : (((c ⁻¹ᵁ V).ι ⁻¹ᵁ W m).ι ≫ (c ⁻¹ᵁ V).ι) ≫ s' =
@@ -447,11 +447,11 @@ theorem UpperTheory.Cb.holomorphic_lefschetz_finiteEtale_correspondence :
           ∑ y ∈ F, (Matrix.det (1 + (Polynomial.X : Polynomial ℂ) • (A y).map Polynomial.C)).coeff a / (1 - A y).det := by
   intro Z _ s d _ hP Y s' c1 c2 h1 h2 _ _ hf2 he2 F hF A hA a
   classical
-  haveI := hf2
-  haveI := he2
-  haveI cZ : CompactSpace Z := UpperTheory.Cb.compactSpace_of_projective_and_of_finite.1 Z s hP
-  haveI cY : CompactSpace Y := UpperTheory.Cb.compactSpace_of_projective_and_of_finite.2 Y Z c1 inferInstance cZ
-  haveI sm : SmoothOfRelativeDimension d s' := UpperTheory.Cb.smoothOfRelativeDimension_comp_etale Z Y s s' c1 h1 d inferInstance
+  have := hf2
+  have := he2
+  have cZ : CompactSpace Z := UpperTheory.Cb.compactSpace_of_projective_and_of_finite.1 Z s hP
+  have cY : CompactSpace Y := UpperTheory.Cb.compactSpace_of_projective_and_of_finite.2 Y Z c1 inferInstance cZ
+  have sm : SmoothOfRelativeDimension d s' := UpperTheory.Cb.smoothOfRelativeDimension_comp_etale Z Y s s' c1 h1 d inferInstance
   obtain ⟨J, _, W, hdis, hsup, hint⟩ := _root_.GlobalTheory.SmoothComponents.main Y s' d
   have hcov : ∀ y : Y, ∃ i, y ∈ W i := fun y => by
     have : y ∈ iSup W := by rw [hsup]; trivial
@@ -466,7 +466,7 @@ theorem UpperTheory.Cb.holomorphic_lefschetz_finiteEtale_correspondence :
     intro m
     have e : ((W m : Set Y))ᶜ = ⋃ i ∈ {i | i ≠ m}, (W i : Set Y) := by
       ext y
-      simp only [Set.mem_compl_iff, Set.mem_iUnion, Set.mem_setOf_eq, exists_prop]
+      simp only [Set.mem_compl_iff, Set.mem_iUnion, Set.mem_ofPred_eq, exists_prop]
       constructor
       · intro hy
         obtain ⟨i, hi⟩ := hcov y
@@ -475,12 +475,12 @@ theorem UpperTheory.Cb.holomorphic_lefschetz_finiteEtale_correspondence :
         exact him (hne hi hy)
     rw [← isOpen_compl_iff, e]
     exact isOpen_biUnion fun i _ => (W i).isOpen
-  haveI instI : ∀ m, IsClosedImmersion (W m).ι := fun m =>
+  have instI : ∀ m, IsClosedImmersion (W m).ι := fun m =>
     IsClosedImmersion.of_isPreimmersion _ (by rw [Scheme.Opens.range_ι]; exact hcl m)
-  haveI instF1 : ∀ m, IsFinite ((W m).ι ≫ c1) := fun m => inferInstance
-  haveI instF2 : ∀ m, IsFinite ((W m).ι ≫ c2) := fun m => inferInstance
-  haveI instE1 : ∀ m, Etale ((W m).ι ≫ c1) := fun m => inferInstance
-  haveI instE2 : ∀ m, Etale ((W m).ι ≫ c2) := fun m => inferInstance
+  have instF1 : ∀ m, IsFinite ((W m).ι ≫ c1) := fun m => inferInstance
+  have instF2 : ∀ m, IsFinite ((W m).ι ≫ c2) := fun m => inferInstance
+  have instE1 : ∀ m, Etale ((W m).ι ≫ c1) := fun m => inferInstance
+  have instE2 : ∀ m, Etale ((W m).ι ≫ c2) := fun m => inferInstance
   have hm1 : ∀ m, ((W m).ι ≫ c1) ≫ s = (W m).ι ≫ s' := fun m => by rw [Category.assoc, h1]
   have hm2 : ∀ m, ((W m).ι ≫ c2) ≫ s = (W m).ι ≫ s' := fun m => by rw [Category.assoc, h2]
   let φ : ∀ m, CxPts ((W m).ι ≫ s') (RingHom.id ℂ) → CxPts s' (RingHom.id ℂ) := fun m y' =>
@@ -500,7 +500,7 @@ theorem UpperTheory.Cb.holomorphic_lefschetz_finiteEtale_correspondence :
     intro m y' hy'
     obtain ⟨hT, hD⟩ := hA (φ m y') (Finset.mem_preimage.1 hy')
     refine ⟨?_, hD⟩
-    haveI : IsIso (⊤ : Z.Opens).ι := by rw [← Scheme.topIso_hom]; infer_instance
+    have : IsIso (⊤ : Z.Opens).ι := by rw [← Scheme.topIso_hom]; infer_instance
     have e1 : (((W m).ι ≫ c1) ≫ inv (⊤ : Z.Opens).ι) ≫ (⊤ : Z.Opens).ι = (W m).ι ≫ c1 := by simp
     have e2 : (((W m).ι ≫ c2) ≫ inv (⊤ : Z.Opens).ι) ≫ (⊤ : Z.Opens).ι = (W m).ι ≫ c2 := by simp
     have hT' := (UpperTheory.Cb.isTangentMatrix_iff_restrict_open Z Y s s' d c1 c2 h1 h2 ⊤ (W m) _ _ e1 e2 (φ m y') y' rfl (A (φ m y'))).1 hT
@@ -510,7 +510,7 @@ theorem UpperTheory.Cb.holomorphic_lefschetz_finiteEtale_correspondence :
   have key : ∀ m, (∀ b, FiniteDimensional ℂ (hodgeH s a b)) ∧
       ∑ b ∈ Finset.range (d + 1), (-1 : ℂ) ^ b * LinearMap.trace ℂ _ (hodgeTrace (hm1 m) a b ∘ₗ hodgePull (hm2 m) a b) =
         ∑ y ∈ Fm m, g (φ m y) := fun m => by
-    haveI := hint m
+    have := hint m
     exact UpperTheory.Cb.holomorphic_lefschetz_finiteEtale_integral Z s d hP (W m).toScheme ((W m).ι ≫ s') ((W m).ι ≫ c1) ((W m).ι ≫ c2) (hm1 m) (hm2 m)
       inferInstance inferInstance (Fm m) (hFm m) (fun y' => A (φ m y')) (hAm m) a
   have hFD : ∀ b, FiniteDimensional ℂ (hodgeH s a b) := by
@@ -588,7 +588,7 @@ private theorem isClosed_part {X : Scheme.{0}} {M : Type} (W : M → X.Opens)
   rw [← isOpen_compl_iff]
   have h : (W j : Set X)ᶜ = ⋃ i ∈ {i | i ≠ j}, (W i : Set X) := by
     ext x
-    simp only [Set.mem_compl_iff, Set.mem_iUnion, SetLike.mem_coe, Set.mem_setOf_eq]
+    simp only [Set.mem_compl_iff, Set.mem_iUnion, SetLike.mem_coe, Set.mem_ofPred_eq]
     constructor
     · intro hx
       have hx' : x ∈ iSup W := by rw [hc]; trivial
@@ -626,8 +626,7 @@ private theorem sum_part {J T : Type} [Fintype J] (F : Finset T) (R : J → Set 
   · simp [hj]
   · intro k _ hk
     simp [show y ∉ R k from fun h' => hk (hu k h')]
-  · intro h
-    exact absurd (Finset.mem_univ j) h
+  · simp
 
 private theorem glue_trace {J : Type} [Fintype J] [DecidableEq J] {M : Type} [AddCommGroup M]
     [Module ℂ M] {N : J → Type} [∀ j, AddCommGroup (N j)] [∀ j, Module ℂ (N j)]
@@ -636,7 +635,7 @@ private theorem glue_trace {J : Type} [Fintype J] [DecidableEq J] {M : Type} [Ad
     (key : ∀ j x, P j (u x) = ∑ k, T j k (P k x)) :
     FiniteDimensional ℂ M ∧ LinearMap.trace ℂ M u = ∑ j, LinearMap.trace ℂ (N j) (T j j) := by
   let e := LinearEquiv.ofBijective (LinearMap.pi P) hP
-  haveI : FiniteDimensional ℂ M := LinearEquiv.finiteDimensional e.symm
+  have : FiniteDimensional ℂ M := LinearEquiv.finiteDimensional e.symm
   refine ⟨this, ?_⟩
   rw [trace_block e u]
   refine Finset.sum_congr rfl fun j _ => ?_
@@ -651,8 +650,7 @@ private theorem glue_trace {J : Type} [Fintype J] [DecidableEq J] {M : Type} [Ad
   · rw [hx, Pi.single_eq_same]
   · intro k _ hk
     rw [hx, Pi.single_eq_of_ne hk, map_zero]
-  · intro h
-    exact absurd (Finset.mem_univ j) h
+  · simp
 
 open Classical in
 private theorem final_sum {J T : Type} [Fintype J] (D : Finset ℕ) (t : ℕ → ℂ)
@@ -735,7 +733,7 @@ private theorem block_fixed {Z Y : Scheme.{0}} {s : Z ⟶ Sp ℂ} {s' : Y ⟶ Sp
       ∑ y ∈ F with y ∈ Set.range (ptIn (s' := s') W),
         (Matrix.det (1 + (Polynomial.X : Polynomial ℂ) • (A y).map Polynomial.C)).coeff a /
           (1 - A y).det := by
-  haveI hsm : SmoothOfRelativeDimension d (V.ι ≫ s) := by
+  have hsm : SmoothOfRelativeDimension d (V.ι ≫ s) := by
     have := smoothOfRelativeDimension_comp (n := 0) (m := d) V.ι s
     simpa using this
   have hF' : ∀ y : CxPts (W.ι ≫ s') (RingHom.id ℂ),
@@ -802,7 +800,7 @@ theorem UpperTheory.Cb.lefschetz_fixedPoint_finite_etale_correspondence :
           ∑ y ∈ F, (Matrix.det (1 + (Polynomial.X : Polynomial ℂ) • (A y).map Polynomial.C)).coeff a / (1 - A y).det := by
   intro Z s d _ hproj Y s' c1 c2 h1 h2 _ _ f2 t2 F hF A hA a
   classical
-  haveI : CompactSpace Z := UpperTheory.Cb.compactSpace_of_projective_and_of_finite.1 Z s hproj
+  have : CompactSpace Z := UpperTheory.Cb.compactSpace_of_projective_and_of_finite.1 Z s hproj
   obtain ⟨J, _, V, hVd, hVc, hVi⟩ := _root_.GlobalTheory.SmoothComponents.main Z s d
   have hVd' : ∀ i j (z : Z), z ∈ V i → z ∈ V j → i = j := by
     intro i j z hi hj
@@ -875,21 +873,21 @@ theorem UpperTheory.Cb.lefschetz_fixedPoint_finite_etale_correspondence :
         (Matrix.det (1 + (Polynomial.X : Polynomial ℂ) • (A y).map Polynomial.C)).coeff a /
           (1 - A y).det := by
     intro j
-    haveI := hVi j
-    haveI := f1 j j
-    haveI := t1 j j
+    have := hVi j
+    have := f1 j j
+    have := t1 j j
     exact UpperTheory.Core.block_fixed h1 h2 d hproj (V j) (hVcl j) (W j j) (c1' j j) (c2' j j) (e1 j j) (e2 j j)
       (f2' j j) (t2' j j) (g1 j j) (g2 j j) F hF A hA a
   have hglue : ∀ b, FiniteDimensional ℂ (hodgeH s a b) ∧
       LinearMap.trace ℂ _ (hodgeTrace h1 a b ∘ₗ hodgePull h2 a b) =
         ∑ j, LinearMap.trace ℂ _ (hodgeTrace (g1 j j) a b ∘ₗ hodgePull (g2 j j) a b) := by
     intro b
-    haveI : ∀ j, FiniteDimensional ℂ (hodgeH ((V j).ι ≫ s) a b) := fun j => (hblock j).1 b
+    have : ∀ j, FiniteDimensional ℂ (hodgeH ((V j).ι ≫ s) a b) := fun j => (hblock j).1 b
     refine UpperTheory.Core.glue_trace (fun j => hodgePull (f := (V j).ι) (s' := (V j).ι ≫ s) rfl a b)
       (UpperTheory.Core.pull_bij s V hVd hVc a b) _
       (fun j k => hodgeTrace (g1 j k) a b ∘ₗ hodgePull (g2 j k) a b) ?_
     intro j x
-    haveI := f1 j
+    have := f1 j
     exact UpperTheory.Core.key_id h1 h2 V W j (hWd j) (hWr j) (c1' j) (c2' j) (e1 j) (e2 j) (f1 j) (t1 j)
       (g1 j) (g2 j) a b x
   refine ⟨fun b => (hglue b).1, ?_⟩
