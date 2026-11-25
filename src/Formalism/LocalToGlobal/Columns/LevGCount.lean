@@ -51,10 +51,6 @@ theorem lamGen_nil (ψ : AddChar κ K) (χ : ℕ → κˣ →* Kˣ) (n a : ℕ) 
   unfold lamGen detChar
   simp
 
-theorem lamJ_zero (ψ : AddChar κ K) (χ : ℕ → κˣ →* Kˣ) (r t : ℕ) : lamJ ψ χ r r t 0 = psiU ψ r := by
-  unfold lamJ psiU
-  exact lamGen_nil ψ χ r r _
-
 theorem diagEmb_mem_fixCol {s : ℕ} (h : s ≤ n) {c : ℕ} (hc : s ≤ c) (g : GL (Fin s) κ) : diagEmb κ h g ∈ fixCol n κ c := by
   show ∀ i j : Fin n, j.val = c → ((diagEmb κ h g : GL (Fin n) κ) : Matrix (Fin n) (Fin n) κ) i j = (1 : Matrix (Fin n) (Fin n) κ) i j
   intro i j hj
@@ -250,11 +246,6 @@ instance finite_res (E : Type) [Field E] [NumberField E] (w : HeightOneSpectrum 
 
 instance finite_GLs (E : Type) [Field E] [NumberField E] (SG : Finset (HeightOneSpectrum (𝓞 E))) (n : ℕ) : Finite (GLs E SG n) :=
   Pi.finite
-
-theorem stdAddChar_ne_one : (ZMod.stdAddChar (N := 3)) ≠ 1 := by
-  have hp := ZMod.isPrimitive_stdAddChar 3
-  have h := hp (a := 1) (by decide)
-  rwa [AddChar.mulShift_one] at h
 
 section DiagChar
 

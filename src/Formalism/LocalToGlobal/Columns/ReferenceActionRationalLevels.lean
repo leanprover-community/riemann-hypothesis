@@ -189,36 +189,6 @@ section Glue
 
 variable {K : Type} [Field K] [NumberField K]
 
-section
-variable {V V' : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
-  [AddCommGroup V'] [Module K V'] [Module (𝓞 K) V'] [IsScalarTower (𝓞 K) K V']
-
-theorem mem_localization_iff (w : HeightOneSpectrum (𝓞 K)) (L : Submodule (𝓞 K) V) (x : V) :
-    x ∈ Formalism.HermitianLatticesTheory.localization₂ w.asIdeal L ↔ ∃ s : 𝓞 K, s ∉ w.asIdeal ∧ s • x ∈ L := by
-  rw [← atW_restrictScalars]
-  exact mem_atW_iff
-
-theorem locP_map_equiv (e : V ≃ₗ[K] V') (w : HeightOneSpectrum (𝓞 K)) (L : Submodule (𝓞 K) V) :
-    Formalism.HermitianLatticesTheory.localization₂ w.asIdeal (L.map (e.toLinearMap.restrictScalars (𝓞 K))) =
-      (Formalism.HermitianLatticesTheory.localization₂ w.asIdeal L).map (e.toLinearMap.restrictScalars (𝓞 K)) := by
-  ext y
-  rw [mem_localization_iff]
-  constructor
-  · rintro ⟨s, hs, x, hx, e1⟩
-    refine ⟨e.symm y, (mem_localization_iff w L _).2 ⟨s, hs, ?_⟩, e.apply_symm_apply y⟩
-    have e2 : e x = s • y := e1
-    have e3 : s • e.symm y = x := by
-      rw [← algebraMap_smul K s (e.symm y), ← map_smul, algebraMap_smul, ← e2, e.symm_apply_apply]
-    rw [e3]
-    exact hx
-  · rintro ⟨x, hx, rfl⟩
-    obtain ⟨s, hs, h1⟩ := (mem_localization_iff w L x).1 hx
-    refine ⟨s, hs, s • x, h1, ?_⟩
-    show e (s • x) = s • e x
-    rw [← algebraMap_smul K s x, map_smul, algebraMap_smul]
-
-end
-
 variable {V : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] [FiniteDimensional K V]
 
 theorem exists_smul_le_of_lattice {M N : Submodule (𝓞 K) V} (hM : M.FG) (hN : Submodule.IsFullLattice K N) :
@@ -387,15 +357,8 @@ structure ColArg where
 
 variable {W Ch} (hX : X.Ok) (A : ColArg W Ch)
 
-
 open Classical in
 def ColArg.tau (w : HeightOneSpectrum (𝓞 X.K)) : ℝ := if prW w ∈ A.served then (A.tauP (prW w) : ℝ) else 0
-
-
-
-
-
-
 
 end Conc
 

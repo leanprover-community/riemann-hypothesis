@@ -199,27 +199,8 @@ section Rows
 variable {C : Type} [Field C] {I : Fin 2 → Type} [∀ g, Fintype (I g)] {ι ι' : Type} [Fintype ι]
   [Fintype ι']
 
-theorem one_sub_ne (g : Fin 2) : 1 - g ≠ g := by revert g; decide
-
-theorem toW_same (g : Fin 2) (u : I g → C) (x : I g) : toW g u (⟨g, x⟩ : WV I) = u x := by
-  simp [toW]
-
-theorem toW_other (g g' : Fin 2) (h : g' ≠ g) (u : I g → C) (x : I g') :
-    toW g u (⟨g', x⟩ : WV I) = 0 := by
-  simp [toW, h]
-
 def rowM (g : Fin 2) (e : ι → I g → C) (v' : ι' → I (1 - g) → C) : ι ⊕ ι' → WV I → C :=
   Sum.elim (fun c => toW g (e c)) (fun b => toW (1 - g) (v' b))
-
-theorem hPullW_eq (H : MvPowerSeries (WV I) C) (g : Fin 2) (e : ι → I g → C)
-    (v' : ι' → I (1 - g) → C) :
-    hPullW H (fun c => toW g (e c)) (fun b => toW (1 - g) (v' b)) = subst (linS (rowM g e v')) H := by
-  unfold hPullW
-  congr 1
-  funext w
-  unfold linS rowM
-  rw [Fintype.sum_sum_type]
-  rfl
 
 theorem rename_subst_linS {σ τ τ' : Type} [Fintype σ] [Fintype τ] (f : τ ↪ τ') (M : τ → σ → C)
     (F : MvPowerSeries σ C) :
@@ -239,18 +220,6 @@ variable {C : Type} [Field C] {V : VF C} {d : ℕ} {I J : Type} [Fintype I] [Fin
 variable {τ : Type} [Fintype τ]
 
 end Bridge
-
-section Pull
-
-variable {C : Type} [Field C] {I : Fin 2 → Type} [∀ g, Fintype (I g)] {ι ι' : Type} [Fintype ι]
-  [Fintype ι']
-
-theorem constantCoeff_upG (g : Fin 2) {F : MvPowerSeries (I g) C} (hF : constantCoeff F = 0) :
-    constantCoeff (upG g F : MvPowerSeries (WV I) C) = 0 := by
-  unfold upG
-  exact (ordGE_one_iff _).1 (ordGE_subst (fun x => Formalism.BaseCaseIdentities.OrdGE.X _) ((ordGE_one_iff _).2 hF))
-
-end Pull
 
 section RowDataPull
 

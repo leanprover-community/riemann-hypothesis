@@ -39,16 +39,6 @@ variable {K : Type} [Field K]
 
 end Res
 
-section Chars
-
-variable {X : Fields} {Pr : Primes X}
-
-theorem card_quotient_eq_prime (hPr : Pr.Ok) (u : Pr.Word) (P : {P // P ∈ Pr.vT u}) :
-    Nat.card (𝓞 X.E ⧸ P.1.asIdeal) = Pr.T u := by
-  rw [← hPr.vT_norm u P.1 P.2, Ideal.absNorm_apply, Submodule.cardQuot_apply]
-
-end Chars
-
 section Weil
 
 variable {X : Fields} {Pr : Primes X}
@@ -56,17 +46,6 @@ variable {X : Fields} {Pr : Primes X}
 def CharT.psiC (Ps : CharT X Pr) (σ₀ : X.K →+* ℂ) (u : Pr.Word) (P : {P // P ∈ Pr.vT u}) :
     AddChar (𝓞 X.E ⧸ P.1.asIdeal) ℂ :=
   (σ₀ : X.K →* ℂ).compAddChar (Ps.psiT u P)
-
-theorem CharT.psiC_apply (Ps : CharT X Pr) (σ₀ : X.K →+* ℂ) (u : Pr.Word) (P : {P // P ∈ Pr.vT u})
-    (c : 𝓞 X.E ⧸ P.1.asIdeal) : Ps.psiC σ₀ u P c = σ₀ (Ps.psiT u P c) := rfl
-
-theorem CharT.Ok.psiC_ne {Ps : CharT X Pr} (h : Ps.Ok) (σ₀ : X.K →+* ℂ) (u : Pr.Word) (P : {P // P ∈ Pr.vT u}) :
-    Ps.psiC σ₀ u P ≠ 1 := by
-  intro h1
-  apply h.ne u P
-  ext c
-  apply σ₀.injective
-  rw [← CharT.psiC_apply, h1, AddChar.one_apply, AddChar.one_apply, map_one]
 
 end Weil
 

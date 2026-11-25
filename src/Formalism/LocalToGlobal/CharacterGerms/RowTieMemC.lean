@@ -99,21 +99,6 @@ def selfConjTuplesInLattice : Set (∀ o, MvPolynomial (Fin N × WV fun _ => IIs
 
 variable {J : Orb → Fin 2 → Type} [∀ o g, Fintype (J o g)]
 
-theorem block_membership_self_conj_first (h1 : IsotropicToStdSubstHarmonic) (h2 : IsotropicToStdSubstLineInvariant) (h3 : IsotropicToStdSubstLineDegree) (h4 : IsotropicToStdSubstIntegral)
-    (X : ∀ o, RowData C V 2 (fun _ => IIs r tau o) (J o)) (F : ∀ o, Flag (X o)) (gaC : Orb → ZMod 2 → ℕ → ℕ)
-    (inj : Function.Injective fun x : Orb × ZMod 2 => tau x.1 x.2) (conj : ∀ o t, cc (tau o t) = tau o (t + 1))
-    (gm_hyp : ∀ o t (s s' : Fin 2), ∑ q, gm o (t + 1) q s * gm o t q s' = if s = s' then 0 else 1)
-    (gm_int : ∀ o t q s, gm o t q s ∈ O)
-    (hty : ∀ o g (x : IIs r tau o), ((X o).G g).ty (Sum.inl x) = if g = 0 then x.1 else x.1 + 1)
-    (std : ∀ o g t (c : Fin ((X o).rkF g t)), ((F o).en g t c).2.val = c.val)
-    (alt : ∀ o, (X o).Alt) (hj : ∀ o, (X o).j' < (X o).n)
-    (supp : ∀ o s k, gaC o s k ≠ 0 → 1 ≤ k ∧ k ≤ (X o).rkF 0 s) (tie : WtTieC r tau gaC a) :
-    BlockMembershipSelfConjugate X N F (selfConjTuplesInLattice r cc isX a tau gm O plc) gaC := by
-  intro L mon wt pl plinj
-  have H : SelfConjugatePlaceSetting r cc a tau gm X F gaC N L pl := ⟨inj, conj, gm_hyp, hty, std, alt, hj, supp, mon, wt, tie, plinj⟩
-  exact ⟨⟨h1 C V T r cc a Orb tau gm J X F gaC N L pl H n plc isX, h2 C V T r cc a Orb tau gm J X F gaC N L pl H n plc,
-    h3 C V T r cc a Orb tau gm J X F gaC N L pl H n plc⟩, h4 C V T r Orb tau gm J X F N L pl n plc O gm_int⟩
-
 end Mem
 
 def OP {C : Type} [Field C] (O : Subring C) (σ : Type) : Subring (MvPolynomial σ C) :=
@@ -139,14 +124,5 @@ theorem aeval_mem_OP {C : Type} [Field C] {O : Subring C} {σ τ : Type} (f : σ
   · rename_i p x hp
     rw [map_mul, map_mul, MvPolynomial.map_X, MvPolynomial.aeval_X]
     exact mul_mem hp (hf x)
-
-theorem first_chern_integral : IsotropicToStdSubstIntegral := by
-  intro C _ V T r Orb _ tau gm J _ X F N L pl n plc O hO m
-  apply coeff_mem_of_OP
-  unfold subG
-  refine aeval_mem_OP _ (fun x => ?_) (blkProd_mem_ZP X F N L pl)
-  refine sum_mem fun col _ => mul_mem ?_ ?_
-  · exact RingHom.mem_range.2 ⟨MvPolynomial.C ⟨_, hO _ _ _ _⟩, by rw [MvPolynomial.map_C]; rfl⟩
-  · exact RingHom.mem_range.2 ⟨MvPolynomial.X _, MvPolynomial.map_X _ _⟩
 
 end Formalism.L2.FormalSeriesBounds.RF

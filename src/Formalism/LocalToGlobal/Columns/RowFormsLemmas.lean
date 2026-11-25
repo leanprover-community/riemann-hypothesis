@@ -322,7 +322,6 @@ section Split
 
 variable {κ K : Type} [CommRing κ] [Field K] {n r : ℕ}
 
-
 open Classical in
 def Lev.ev (l : Lev κ K n) (M : GL (Fin n) κ) : Kˣ := if h : M ∈ l.H then l.lam ⟨M, h⟩ else 1
 
@@ -427,17 +426,6 @@ theorem Lev.inv_ev (l : Lev κ K n) (M : GL (Fin n) κ) : l.inv.ev M = (l.ev M)�
   · unfold Lev.ev
     rw [dif_neg h, dif_neg (show M ∉ l.inv.H from h), inv_one]
 
-theorem Lev.Split.inv {e : GL (Fin r) κ →* GL (Fin n) κ} {lP lK : Lev κ K n} {l0 : Lev κ K r}
-    (H : Lev.Split e lP lK l0) : Lev.Split e lP.inv lK.inv l0.inv := by
-  refine { fac := ?_, emb := ?_, sub := ?_ }
-  · intro M hM
-    obtain ⟨a, ha, k, hk, e1, e2⟩ := H.fac M hM
-    exact ⟨a, ha, k, hk, e1, by rw [Lev.inv_ev, Lev.inv_ev, Lev.inv_ev, e2, mul_inv]⟩
-  · intro a ha
-    exact ⟨(H.emb a ha).1, by rw [Lev.inv_ev, Lev.inv_ev, (H.emb a ha).2]⟩
-  · intro k hk
-    exact ⟨(H.sub k hk).1, by rw [Lev.inv_ev, Lev.inv_ev, (H.sub k hk).2]⟩
-
 end Split
 
 section SplitFam
@@ -460,7 +448,6 @@ structure LevFam.Split {SG0 SG : Finset (HeightOneSpectrum (𝓞 X.E))} (ι : GL
 
 variable {SG0 Q : Finset (HeightOneSpectrum (𝓞 X.E))}
 
-
 open Classical in
 def inlSG (w : SG0) : uSG SG0 Q := ⟨w.1, Finset.mem_union_left _ w.2⟩
 
@@ -478,7 +465,6 @@ theorem prod_uSG {M : Type} [CommMonoid M] (f : SG0 → M) :
   · intro w
     rw [dif_pos (show (inlSG (Q := Q) w).1 ∈ SG0 from w.2)]
     rfl
-
 
 open Classical in
 theorem LevFam.glue_split (h : r ≤ n) (TP TK : LevFam X.E X.K n SG0) (P : LevFam X.E X.K r SG0)

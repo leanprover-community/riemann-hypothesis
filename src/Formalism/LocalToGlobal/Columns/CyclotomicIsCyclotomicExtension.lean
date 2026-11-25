@@ -69,12 +69,6 @@ theorem condN_eq_q : H.condN = H.QS * H.d * H.q := by
   rw [HostRaw.condN]
   ring
 
-theorem condN_div_d : H.condN / H.d = H.QS * H.q := by
-  obtain ⟨-, hd, -, -, -⟩ := H.hyp
-  rw [HostRaw.condN, Nat.mul_div_cancel _ hd.pos]
-
-variable {H}
-
 end HostRaw
 
 namespace HostAx
@@ -144,12 +138,6 @@ variable {φ₁ : Formalism.HC.Frame} (H : Formalism.HC.HostRaw φ₁) (ι : Qb 
 
 def hwQb (d : ℕ) : Qb := Classical.choose (exists_sqrt (-(d : ℤ)))
 
-theorem hwQb_mem (d : ℕ) : hwQb d ∈ sqrts (-(d : ℤ)) := Classical.choose_spec (exists_sqrt (-(d : ℤ)))
-
-theorem hwQb_sq (d : ℕ) : hwQb d ^ 2 = -(d : Qb) := by
-  have h : hwQb d ^ 2 = ((-(d : ℤ) : ℤ) : Qb) := hwQb_mem d
-  rw [h]; simp
-
 theorem hwQb_mem_EQ : hwQb H.d ∈ H.EQ :=
   H.KQ_le_EQ (sqrts_sub _ (hwQb_mem H.d))
 
@@ -182,7 +170,6 @@ section Hecke
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks}
 
-
 end Hecke
 
 def nd2N : ℕ := 204572886511813553061037407562329625995783655411690436542768105489192394035355663504895707466548678171695054788500010062488923813826764064938234928730947196464262768270018653110228498338042697795156970159903677022807129186961004810571117527615229822789011462114279289419559348825463524785325415815445950503458435921145728668675289394505621558664460319354973532563002004291054537384997546176343222140701606270894674242774158138205418672187221164903157007908864
@@ -203,11 +190,9 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Ch
 
 end Gen
 
-
 section Inst
 
 variable (LL : Fld) [FiniteDimensional ℚ LL] [Normal ℚ LL] (hLL : cycQ nd2N ≤ LL)
-
 
 end Inst
 

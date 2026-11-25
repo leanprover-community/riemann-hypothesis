@@ -55,24 +55,6 @@ theorem cc_ev {m n : ℕ} (a : Fin m → Pt R n d) (ha : ∀ j i, constantCoeff 
     (MvPowerSeries.hasSubst_of_constantCoeff_zero fun p : Fin m × Fin d => ha p.1 p.2)
     (fun p => ha p.1 p.2) hf
 
-omit [CommRing S] in
-@[simp] theorem cc_pt {n : ℕ} (j : Fin n) (i : Fin d) : constantCoeff (pt R d j i) = 0 := by
-  simp [pt]
-
-
-omit [CommRing S] in
-@[simp] theorem cc_comp1 {n : ℕ} (ψ : Pt R 1 d) (hψ : ∀ i, constantCoeff (ψ i) = 0)
-    (a : Pt R n d) (ha : ∀ i, constantCoeff (a i) = 0) (i : Fin d) :
-    constantCoeff (comp1 ψ a i) = 0 := cc_ev ![a] (by intro j i; fin_cases j; simp [ha]) (ψ i) (hψ i)
-
-@[simp] theorem mpt_pt {n : ℕ} (j : Fin n) : mpt φ (pt R d j) = pt S d j := by
-  funext i
-  simp [mpt, pt]
-
-@[simp] theorem mpt_zero {n : ℕ} : mpt φ (0 : Pt R n d) = 0 := by
-  funext i
-  simp [mpt]
-
 end Formalism.L2.FormalSeriesBounds.MapFB
 
 namespace Formalism.L2.FormalSeriesBounds
