@@ -75,7 +75,11 @@ the workflow does").
      such as `Left out because they conflict with a PR earlier in the batch:`, are not told
      anything from the description: the conflict-labels workflow finds conflicts from the
      branches and tells them itself (see below). Those listed under any other heading, such as
-     `Included:`, are included.
+     `Included:`, are included: the batch carries their changes. A pull request listed as
+     included is never told it conflicts with the batch or with `main`, even when its own head
+     is not in the branch, as when `main` was merged into it for the batch and the push to its
+     branch was refused. The description check still names it, since GitHub will not mark it
+     merged.
    - Each one is a list entry starting with `- ` and then a link to the pull request, either
      `#123` or its full URL. The rest of the entry is the reason. Lines indented under an entry,
      and entries that don't start with a link, are not read.

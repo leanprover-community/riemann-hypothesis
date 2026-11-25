@@ -315,6 +315,18 @@ def run(gh, number=None, table=None):
         return labels.sync(gh, number, compare=comparing(table or {}))
 
 
+class Included(unittest.TestCase):
+    def test_only_headings_that_include_count(self):
+        batches = {900: dict(batch(900), body="Included:\n\n- #1 a\n\nThese can be dropped:\n\n- #2 b\n\n"
+                                              "Left out:\n\n- #3 c\n\nA paragraph.\n- #4 d\n"),
+                   901: dict(batch(901, building=False), body="Included:\n\n- #5 e\n")}
+        self.assertEqual(labels.included_in(batches, REPO), {1: {900}, 2: {900}})
+
+    def test_included_gets_neither_label(self):
+        found = labels.decide(dict(pr(1, mergeable="CONFLICTING"), included={900}), "main", {900: batch(900)}, {900: CONFLICT})
+        self.assertEqual((found["main"], found["batch"]), (False, False))
+
+
 class Runs(unittest.TestCase):
     def scene(self, **options):
         gh = Fake(**options)
@@ -323,6 +335,24 @@ class Runs(unittest.TestCase):
         gh.add(2, mergeable="CONFLICTING")
         gh.add(3, labels_=[MEMBER])
         return gh
+
+    def test_a_pull_request_the_batch_lists_as_included_is_not_compared_or_labelled(self):
+        # Its changes are in the batch, merged with `main` for it, though its own head is not.
+        gh = Fake()
+        gh.add(900, ref="batch/b9", own=True, labels_=[BUILDING],
+               body="Included:\n\n- #1 a (@x): main merged into the branch for this batch\n\n"
+                    "Left out for other reasons:\n\n- #2 b (@y): too big\n")
+        gh.add(1, mergeable="CONFLICTING", labels_=[MAIN_CONFLICT, BATCH_CONFLICT])
+        gh.add(2, mergeable="CONFLICTING")
+        compare = comparing({(1, 900): CONFLICT, (2, 900): CONFLICT})
+        with contextlib.redirect_stdout(io.StringIO()):
+            log = labels.sync(gh, None, compare=compare)
+        self.assertEqual(compare.seen, [([900], [2])])
+        self.assertEqual(gh.pulls[1]["labels"], set())
+        self.assertEqual(gh.told_about(1), [])
+        self.assertIn("the description of #900 lists it as included", " ".join(log))
+        # One the description leaves out is compared as before.
+        self.assertEqual(gh.pulls[2]["labels"], {MAIN_CONFLICT, BATCH_CONFLICT, WAITING})
 
     def test_stacked_batches_are_compared_through_the_outermost_one(self):
         gh = self.scene()
