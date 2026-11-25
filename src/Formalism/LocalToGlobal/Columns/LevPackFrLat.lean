@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.Columns.RecLevelLocT
 import Formalism.LocalToGlobal.Columns.RecLevelLocF
-import Formalism.LocalToGlobal.Columns.RecLevelLocK
 public import Formalism.LocalToGlobal.Columns.LocalLevelIsKOneAtT
 
 @[expose] public section

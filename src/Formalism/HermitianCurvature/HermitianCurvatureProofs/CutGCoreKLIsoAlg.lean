@@ -3,7 +3,6 @@ module
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTKLineCut
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CommonEigenvectors
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IrreducibleCapelliModules
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.WeightMonotonicity
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.RingTheory.Coalgebra.IsFrobenius

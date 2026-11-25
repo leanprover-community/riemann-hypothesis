@@ -1,7 +1,6 @@
 module
 
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GlueApplyOfNotInFibre
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EtaleLocalizationAtPrimeTensorOfLowHeight
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DominatesOfCoordsRegular
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.MaBase
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueDominatingMap

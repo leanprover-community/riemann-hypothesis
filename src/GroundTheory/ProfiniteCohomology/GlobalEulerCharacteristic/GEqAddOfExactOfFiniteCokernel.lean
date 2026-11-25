@@ -3,10 +3,7 @@ module
 public import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.UnitsDefs
 public import GroundTheory.GlobalFields.HerbrandQuotients.UnitsHerbrand
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.AdditiveDefs
-import GroundTheory.GlobalFields.HerbrandQuotients.Lattice
 public import GroundTheory.GlobalFields.HerbrandQuotients.SUnits
-import GroundTheory.GlobalFields.HerbrandQuotients.UnitsHerbrandValue
-import GroundTheory.GlobalFields.SUnits
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.Additive
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.ModNEquivOfSurjectiveApplyModNRep
 

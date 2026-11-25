@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.LemmasUnramifiedOfRingCondition
 public import Formalism.SharpRestriction.LevelLetterCocycles.KillerLevCoreOf
-import Mathlib.RingTheory.PowerSeries.Inverse
 import Mathlib.Tactic.Lemma
 
 @[expose] public section

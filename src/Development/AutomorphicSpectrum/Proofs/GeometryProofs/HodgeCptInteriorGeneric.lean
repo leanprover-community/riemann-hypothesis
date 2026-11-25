@@ -1,8 +1,6 @@
 module
 
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
-public import Mathlib.NumberTheory.NumberField.Basic
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenspaceDecompositionInternal
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenPtSpecializes
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj

@@ -1,14 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.TiedValLatG
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.LatticeBasisExistsHolds
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.PairBDual
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.TauLatticeLatticeHolds
-import Formalism.LocalToGlobal.Columns.PolyFnLemmas
-import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocGen
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

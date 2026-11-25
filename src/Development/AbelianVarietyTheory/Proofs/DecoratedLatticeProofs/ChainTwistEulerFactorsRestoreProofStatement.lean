@@ -39,10 +39,6 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ValuationOfMemNotMemSq
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HeckeRatioPosOfPublished
-import Formalism.LocalToGlobal.IndefiniteReal.HeckeNonvanishing.InputsHecke
-import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.ReduceModChar

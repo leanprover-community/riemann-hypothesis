@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.PolyAp
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsNotCongPow
 public import Formalism.ConjugateSelfDual.Statement
 import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
-import ReciprocityTheory.GaloisValuations.GlobalA
 
 @[expose] public section
 

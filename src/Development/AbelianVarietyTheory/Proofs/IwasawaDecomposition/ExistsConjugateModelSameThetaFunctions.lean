@@ -6,13 +6,8 @@ public import Mathlib.Analysis.Complex.Exponential
 public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DifferentiableOnOfTendstoLocallyUniformlyOn
 public import Mathlib.Analysis.Normed.Affine.Convex
-public import Mathlib.Algebra.Group.End
-public import Mathlib.Data.Fintype.Card
-public import Mathlib.Tactic.Continuity
-public import Mathlib.Data.Fintype.EquivFin
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.GCauchyStatement
 public import Mathlib.Analysis.Analytic.IteratedFDeriv
-public import Mathlib.Analysis.Normed.Affine.AddTorsorBases
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FibExtMarked
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ThetaKernelOrthonormalFrameInDomainPeriodLinear
 import Mathlib.Algebra.Order.Floor.Extended

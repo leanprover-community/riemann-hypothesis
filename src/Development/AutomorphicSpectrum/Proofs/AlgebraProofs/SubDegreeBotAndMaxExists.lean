@@ -2,9 +2,7 @@ module
 
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsSplitGaussChars
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.DegLeOfEquiv
-public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.BundleDegreeEqSumValuations
 public import Mathlib.Order.Int.LeastGreatest
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SubAndQuotientBundles
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SubDegreeBotAndMaxExists

@@ -9,27 +9,19 @@ public import GroundTheory.GlobalFields.TateThesis.LatticePoisson
 public import Mathlib.Analysis.Matrix.Spectrum
 public import Mathlib.Analysis.Matrix.PosDef
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsGrass
-public import Mathlib.Analysis.Complex.Exponential
 public import Mathlib.Algebra.MvPolynomial.Funext
-public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 public import Mathlib.RingTheory.RootsOfUnity.Complex
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsTheta
 public import Mathlib.MeasureTheory.Integral.Pi
-public import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
-public import Mathlib.MeasureTheory.Function.LocallyIntegrable
-public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
-public import Mathlib.MeasureTheory.Integral.DominatedConvergence
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.ThetaGauss
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCauchyBinet
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PThetaFirstCoordSplit
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Monotonicity.Lemmas
 import Mathlib.Topology.Sheaves.Presheaf
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.PiTensorProduct
 

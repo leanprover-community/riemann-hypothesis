@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsOrt
 public import Development.AbelianVarietyTheory.Statements.HeckeThetaIntegrals.FormulaAt
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsBplusNeZero
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PathConvergenceDownChain
-import Formalism.LocalToGlobal.Divisibility.DefGroupLemmas
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

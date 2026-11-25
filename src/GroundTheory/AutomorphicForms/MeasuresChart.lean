@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.AutomorphicForms.MeasuresModulus
 public import Mathlib.MeasureTheory.Group.ModularCharacter
-import GroundTheory.AutomorphicForms.GLnLocal
 public import GroundTheory.AutomorphicForms.LocallyProfinite
 public import Mathlib.Topology.LocallyConstant.Basic
 

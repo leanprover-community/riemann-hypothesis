@@ -1,7 +1,6 @@
 module
 
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ProdUpdateDiv
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsCptGen
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GermGenPtInjectiveRangeRegAt
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtIsLocalRingIsFractionRingStalk
 

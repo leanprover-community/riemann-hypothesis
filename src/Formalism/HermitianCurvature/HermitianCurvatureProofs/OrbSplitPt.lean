@@ -8,10 +8,8 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquili
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IntegrableUnipotentNormRpowNeg
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.MajorantEstimate
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormDiagonalEntryDilationGeneratorLeOne
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalIntegralAeConvergenceContinuity
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.PolynomialMapProper
-import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

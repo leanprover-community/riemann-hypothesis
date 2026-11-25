@@ -3,9 +3,7 @@ module
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.EulerZetaGammaInvIdentity
 public import Formalism.HermitianCurvature.StatementM
 import Mathlib.Algebra.Order.Star.Real
-public import Mathlib.Algebra.Polynomial.RingDivision
 public import Mathlib.Basic.Complex.BigOperators
-public import Mathlib.RingTheory.Coprime.Lemmas
 
 @[expose] public section
 

@@ -3,7 +3,6 @@ module
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Algebra.Polynomial.Roots
 public import Mathlib.NumberTheory.NumberField.Basic
-import Mathlib.RingTheory.RootsOfUnity.Basic
 
 @[expose] public section
 

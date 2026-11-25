@@ -20,11 +20,7 @@ import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
 public import ReciprocityTheory.CommutativeAlgebra.PolynomialHeights.HeightAddRingKrullDimQuotientMvPolynomialField
 public import Mathlib.Algebra.Algebra.ZMod
-public import Mathlib.RingTheory.AlgebraicIndependent.Basic
-public import Mathlib.RingTheory.AlgebraicIndependent.TranscendenceBasis
 public import Mathlib.RingTheory.Int.Basic
-public import Mathlib.RingTheory.MvPolynomial.Tower
-public import Mathlib.RingTheory.Spectrum.Prime.RingHom
 
 @[expose] public section
 

@@ -1,14 +1,10 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.DifBijectiveOfParam
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsLieBasis
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ToFirst
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsIsChartGOfBasis
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FBIdAd
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermBPf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.ChartLaw
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.ChartLawPf
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FrTanAlg
 
 -- This file was produced by scripts/clump.py from the modules listed below.

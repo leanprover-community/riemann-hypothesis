@@ -6,27 +6,13 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.LiftSLMap
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsCuspFunctionalValueModPrimePowDiamondIndepende
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaLatticeDiamondAction
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ApplyEqOfMemAdjoin
-public import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
-public import Mathlib.RingTheory.Flat.TorsionFree
-public import Mathlib.RingTheory.Henselian
-public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsOfEmbedding
 public import Mathlib.Data.Nat.Choose.Dvd
-public import Mathlib.Data.Nat.Prime.Defs
 public import Mathlib.NumberTheory.Multiplicity
-public import Mathlib.Algebra.Order.GroupWithZero.Basic
-public import Mathlib.Algebra.Ring.Defs
-public import Mathlib.Algebra.Ring.Parity
-public import Mathlib.Data.Nat.Factorization.Basic
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUniqueNormalizedCyclotomicTrace
-public import ReciprocityTheory.GaloisValuations.Global
-public import Development.AbelianVarietyTheory.Definitions.Foundations.IsTopWTopWOfExists
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FiniteIndexStabilizer
 public import Mathlib.RingTheory.ZMod.UnitsCyclic
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
 public import Mathlib.RingTheory.AdicCompletion.Noetherian
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CuspFunctionalValueModPrimePowUniqueOddWeightStatement
-public import Development.AbelianVarietyTheory.Definitions.Foundations.Letter
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GalBMemKummerInvariantSet
 public import Development.AbelianVarietyTheory.Definitions.Foundations.EeProd
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsCuspFunctionalValueGalBEquivariant
@@ -34,22 +20,14 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ThetaBasi
 public import Development.AutomorphicArithmetic.Foundations.IwahoriReduction.SiegelFixedPoints.IntCastEqZeroOfDvd
 public import Development.AutomorphicArithmetic.Foundations.IwahoriReduction.SiegelFixedPoints.Witalg
 public import Development.AbelianVarietyTheory.Definitions.Foundations.PieceEqPieceT
-public import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsRootOfIsAlgClosed
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsCuspFunctionalOddWeightOddPrime
 public import Development.AutomorphicArithmetic.Foundations.IwahoriReduction.SiegelFixedPoints.Mackey
 public import Development.AutomorphicArithmetic.Foundations.IwahoriReduction.SiegelFixedPoints.NotDvdOfCoprime
 public import Development.AutomorphicArithmetic.Foundations.IwahoriReduction.SiegelFixedPoints.TwistColumnZero
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DiamondCommutesHeckeU
-public import Mathlib.RingTheory.Coalgebra.IsFrobenius
-public import Mathlib.RingTheory.HopfAlgebra.Basic
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GalBActCommGamma0CapGamma0LevelShimuraReciprocit
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsLamOfLSmulIff
 public import Development.AbelianVarietyTheory.Definitions.Foundations.AdmissibleHodgeTateZetaClassParams
 public import Development.AbelianVarietyTheory.Definitions.Foundations.KumValUnique
-import Development.AbelianVarietyTheory.Definitions.Foundations.Integral
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.KummerTowerQqPowLevelEqQ
-import Development.AutomorphicArithmetic.Foundations.IwahoriReduction.SiegelFixedPoints.WcocEdge0
-import Development.AutomorphicArithmetic.Foundations.IwahoriReduction.SiegelFixedPoints.OrderOfTranslationMod
 
 section -- clump:auto
 @[expose] public section

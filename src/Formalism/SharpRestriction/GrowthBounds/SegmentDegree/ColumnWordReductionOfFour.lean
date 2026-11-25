@@ -1,7 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.DiscriminantNeZeroOfResidueNeZero
-public import Formalism.SharpRestriction.GrowthBounds.ValuationLowestDegreeMapFractionField
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.SegmentDegree.SegmentReductionOfColumnWords, Formalism.SharpRestriction.GrowthBounds.SegmentDegree.ColumnWordReductionOfFour

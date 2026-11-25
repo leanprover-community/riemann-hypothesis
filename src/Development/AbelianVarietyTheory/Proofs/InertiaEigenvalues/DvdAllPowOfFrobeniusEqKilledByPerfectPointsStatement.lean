@@ -7,8 +7,6 @@ public import Mathlib.Algebra.BigOperators.Group.Finset.Sigma
 public import Mathlib.Algebra.BigOperators.Ring.Finset
 public import Mathlib.Algebra.CharP.Lemmas
 public import Mathlib.Algebra.Ring.NonZeroDivisors
-public import Mathlib.Algebra.Ring.Defs
-public import Mathlib.Data.Nat.Prime.Defs
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.RingTheory.Valuation.ValuationSubring
 public import Mathlib.RingTheory.Valuation.LocalSubring

@@ -39,10 +39,6 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Development.AbelianVarietyTheory.Definitions.Jets.JetsOnCopiesCompatibleFrames
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndSt
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpBijectiveUniformisation
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.LemmaBStatement
 import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 import Mathlib.Tactic.ReduceModChar
 

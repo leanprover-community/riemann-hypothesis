@@ -3,9 +3,7 @@ module
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LocOrbSumPf
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LsDatumBCut
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LocalOrbitGerms
-import Formalism.DoubleCosetMeasures.LatticeCoset
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CharacterOrthogonalityDual
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.FirstKernelPropertiesOfHypotheses
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LocModel
 
 @[expose] public section

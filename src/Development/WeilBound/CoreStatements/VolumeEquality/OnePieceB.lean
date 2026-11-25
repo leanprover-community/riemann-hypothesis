@@ -7,7 +7,6 @@ import Development.AbelianVarietyTheory.Proofs.ModuliProofs.FiniteImageOfLocally
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GagaLineGeneratorEmbedding
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenPtSpecializesOfSpecializes
 public import Development.WeilBound.CoreStatements.VolumeEquality.OnePieceA
-import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 

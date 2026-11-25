@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ReadsMove
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ChartsReadingStepMoveBasePointsOneOffLevelPrime
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FunKilled
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InclMulInvMul
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

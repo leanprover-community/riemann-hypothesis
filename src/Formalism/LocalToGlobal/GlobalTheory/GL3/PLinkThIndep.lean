@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
 import Formalism.LocalToGlobal.KernelLattices.ColumnData.LinkThIndep
-import Mathlib.NumberTheory.NumberField.ClassNumber
 public import Mathlib.RingTheory.ClassGroup.Basic
 
 @[expose] public section

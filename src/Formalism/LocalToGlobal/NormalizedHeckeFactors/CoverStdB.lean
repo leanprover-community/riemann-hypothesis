@@ -3,8 +3,6 @@ module
 public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs
 public import Mathlib.RingTheory.Valuation.Integral
-public import Mathlib.Algebra.Polynomial.Lifts
-public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
 public import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverStd
 public import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverAct
 public import Formalism.LocalToGlobal.NormalizedHeckeFactors.HeckeStdTwOfStd

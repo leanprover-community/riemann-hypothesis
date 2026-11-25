@@ -14,7 +14,6 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CapelliOperator
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.GlRelationsDerivativePreserved
 import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
 import Mathlib.Algebra.AffineMonoid.UniqueSums
-import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Tactic.TypeStar
 import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.HasCharSub
 

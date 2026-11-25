@@ -2,7 +2,6 @@ module
 
 public import Formalism.HermitianCurvature.StatementB
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.BesselUnitaryEquivHolds
-public import Mathlib.Analysis.InnerProductSpace.Adjoint
 public import Mathlib.LinearAlgebra.Trace
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.BFCell
 import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds

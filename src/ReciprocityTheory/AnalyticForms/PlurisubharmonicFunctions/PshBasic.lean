@@ -7,7 +7,6 @@ public import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 public import Mathlib.MeasureTheory.Integral.Prod
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.IsPshLocallyIntegrableStatement
 public import Mathlib.RingTheory.Complex
-public import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.Lemma

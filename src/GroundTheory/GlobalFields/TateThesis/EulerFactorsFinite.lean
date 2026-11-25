@@ -1,8 +1,6 @@
 module
 
 public import GroundTheory.GlobalFields.TateThesis.GlobalZetaFinite
-public import GroundTheory.GlobalFields.TateThesis.HeckeLFunction
-public import GroundTheory.GlobalFields.TateThesis.SchwartzBruhatFinite
 
 @[expose] public section
 

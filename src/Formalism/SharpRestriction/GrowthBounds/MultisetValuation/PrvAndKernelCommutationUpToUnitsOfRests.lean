@@ -1,7 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.EaGeCOfNorm
-public import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.SmulUpdate
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.IntegralSpanCoordinates
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.LatAtZeroUpd
@@ -11,20 +10,14 @@ public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.PrimeCas
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.AofUpdate
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.KernelProductForm
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.ExpansionAllPlacesOfPlace
-public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.DworkExponentialRestrictions
-public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.RamifiedLatticeOfChainEstimates
-public import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.GShiftRowGenMonomial
-public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.KernelSumOfClassData
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.CommonEigenvectorThird
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.FirstTheoremPlaceBound
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.SmulPsiGUp
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.AuxUOfFirstTheoremPlaceBound
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style
-import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.GaussElementarySymmetric
 import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.TheoremOfAlternateForm
-import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.NatCastInvMemRp
 import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.RelativePresentationOfD7
 
 -- This file was produced by scripts/clump.py from the modules listed below.

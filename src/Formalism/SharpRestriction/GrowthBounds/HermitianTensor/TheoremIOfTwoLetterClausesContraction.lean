@@ -8,9 +8,6 @@ public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.CloudIso
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.MemInvariantSectionsIffIntegral
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.MemInvariantSectionsTwoWeightIff
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.LamPolySmulRight
-public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.Tensor
-public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.CloudIsoDef
-public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.TensorKP
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.CloudDefs
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.FunctorComparisonOfSingleWeight
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.CloudPropOfMapsRetractionBasis
@@ -21,9 +18,6 @@ import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.RhoLowerBoundOfEdgeCount
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LBidetLemmas
-import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.FinrankLetter
-import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.FactorizationBoundMonoLattices
 import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.LatticeCountPrimeMonoLevel
 
 -- This file was produced by scripts/clump.py from the modules listed below.

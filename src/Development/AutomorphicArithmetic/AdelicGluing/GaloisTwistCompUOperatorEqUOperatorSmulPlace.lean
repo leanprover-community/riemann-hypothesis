@@ -8,15 +8,11 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.Convolut
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.LocEmb
 public import GroundTheory.GlobalFields.IdeleGroups.SIdeleGroups.Places
 public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.SelmerRankBounds.IsNormAlong
-public import GroundTheory.AutomorphicForms.MultiplicityOne.FiniteLevelGroups
 public import Development.AutomorphicArithmetic.AdelicQuotients.CentralSectionBaseChange
-public import GroundTheory.GlobalFields.IdeleGroups.GaloisOnAdeles
 public import Development.AutomorphicArithmetic.Foundations.Convolution.TensFun
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.CommPrj
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.HopBasic
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.TwistUnitary
-import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.CuspidalMultiplicityOneTotallyComplex
-import GroundTheory.AutomorphicForms.SphericalLaurent
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 

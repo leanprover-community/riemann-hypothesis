@@ -2,7 +2,6 @@ module
 
 public import Formalism.EllipticTorsion.WSeriesUnique
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.MvPowerSeries.NoZeroDivisors
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 

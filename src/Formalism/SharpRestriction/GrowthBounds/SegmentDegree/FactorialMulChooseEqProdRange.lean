@@ -4,7 +4,6 @@ public import Mathlib.Algebra.Order.Antidiag.Pi
 public import Mathlib.Basic.Real.Basic
 public import Mathlib.Algebra.Order.Antidiag.FinsuppEquiv
 import Mathlib.NumberTheory.Height.NumberField
-public import Mathlib.Algebra.Order.Antidiag.Finsupp
 public import Mathlib.Algebra.Order.BigOperators.Group.Finset
 public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
 public import Mathlib.Algebra.Order.Ring.Pow

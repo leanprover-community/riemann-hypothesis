@@ -5,14 +5,8 @@ public import ReciprocityTheory.AnalyticForms.LeviForms.RegChartB
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PMollifierLowerBound
 public import Mathlib.Analysis.Convex.Continuous
 public import ReciprocityTheory.AnalyticForms.LeviForms.RegChartC
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshMoll
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.IsPshLocallyIntegrableStatement
 public import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.AnalyticForms.LeviForms.RegChartA
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshBasic
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshMollA
-import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.MetricProofs.LocalPshRegularizationLogBound, Development.AutomorphicSpectrum.Proofs.MetricProofs.LocalRegularizationGradientBound, Development.AutomorphicSpectrum.Proofs.MetricProofs.MollifyConvergesC2Rate, Development.AutomorphicSpectrum.Proofs.MetricProofs.LocalLeviPshRegularization

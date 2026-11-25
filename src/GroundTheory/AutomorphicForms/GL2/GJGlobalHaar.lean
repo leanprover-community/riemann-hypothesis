@@ -4,8 +4,6 @@ public import GroundTheory.AutomorphicForms.ReductionMeasure
 public import GroundTheory.AutomorphicForms.ReductionSplitting
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.Unimodular
 import GroundTheory.AutomorphicForms.RealIwasawaIntegration
-import GroundTheory.AutomorphicForms.Reduction
-import GroundTheory.GlobalFields.Adele.Topology
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

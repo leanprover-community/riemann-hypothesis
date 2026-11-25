@@ -9,7 +9,6 @@ import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.Fractional
 import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.MemHomLatticeCompletionIffSupportedMaps
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemMulInvIff
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ModulusIdealOffS0Trivial
-import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

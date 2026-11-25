@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.GlobalFields.CyclotomicCharacters.PadicUnitsLog
-public import GroundTheory.GlobalFields.CyclotomicCharacters.ProfinitePadic
 import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Topology.Separation.Connected
 

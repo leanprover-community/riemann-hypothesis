@@ -17,8 +17,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Exist
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdjointIntertwines
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OneMapOfOneOfSerOf
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsGenReadsOfUnitAt
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MultValueLeftContLevel
-import Formalism.LocalToGlobal.ProjectiveLattices.SpMapAlgHomId
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsHalfOfBasePins
 

@@ -2,7 +2,6 @@ module
 
 public import Development.WeilBound.ThetaLifts.FrameEstimates.TowerRallisLemma
 public import Development.WeilBound.ThetaLifts.FrameEstimates.LevelA
-import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaDistributionNonzeroAdmissible
 public import Development.AutomorphicSpectrum.Proofs.TwistedProofs.EqZeroOfPiInf
 public import Development.WeilBound.CoreStatements.LocalThetaKernels.LinearIndependentOfNotMem
 public import Development.WeilBound.ThetaLifts.FrameEstimates.Parity

@@ -1,7 +1,6 @@
 module
 
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsImg
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelBaseProjectionPoints
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticThird
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.SameOrbitRefl

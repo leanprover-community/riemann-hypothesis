@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IdTower
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.OmegaPullOmegaTraceOfSecTraceOne
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.AnnihilatorModels.GenericMulOfProd
-public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import Mathlib.RingTheory.Valuation.AlgebraInstances
 
 @[expose] public section

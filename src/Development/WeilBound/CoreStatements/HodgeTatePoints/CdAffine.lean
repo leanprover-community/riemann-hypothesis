@@ -5,7 +5,6 @@ public import Development.WeilBound.CoreStatements.HodgeTatePoints.CdChart
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.CdFrame
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FBIdAd
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.GermComp1ZeroPointLeft
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsSplitGaussChars
 
 @[expose] public section
 

@@ -7,11 +7,6 @@ public import Formalism.LocalToGlobal.Divisibility.Inputs
 public import Formalism.LocalToGlobal.Divisibility.DivisionHeightBoundStatement
 public import Formalism.MirabolicMackeyTheory.MirabolicIsMackey
 public import Formalism.QuotientMetricDivisors.FinalW
-public import Formalism.LocalRingCardinality.Params
-public import Formalism.LocalToGlobal.Columns.AbelianHostFieldConditions
-import Formalism.LocalToGlobal.IndefiniteForms.IndefUse
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.DescendedNorm
-import Formalism.QuotientMetricDivisors.ReductionLemmaZero
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

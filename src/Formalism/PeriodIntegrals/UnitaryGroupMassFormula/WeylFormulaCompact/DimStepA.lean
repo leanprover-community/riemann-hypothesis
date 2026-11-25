@@ -7,7 +7,6 @@ public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 
 @[expose] public section
 

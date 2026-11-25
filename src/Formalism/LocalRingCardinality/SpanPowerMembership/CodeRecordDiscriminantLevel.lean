@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalRingCardinality.SpanPowerMembership.ClassRecordRowDimensionZero
-public import Formalism.LocalRingCardinality.SpanPowerMembership.RankRecordRowDimensionZero
 
 @[expose] public section
 

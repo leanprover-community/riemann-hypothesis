@@ -3,7 +3,6 @@ module
 public import GroundTheory.TateCohomology.CupCochains
 public import GroundTheory.ProfiniteCohomology.ContinuousCochains
 public import GroundTheory.ProfiniteCohomology.Bridge
-import GroundTheory.ProfiniteCohomology.DiscreteModules.IsDiscreteRepIffForallExistsOpenNormalSubgroup
 import Mathlib.Algebra.Homology.ShortComplex.ModuleCat
 import Mathlib.Tactic.TypeStar
 

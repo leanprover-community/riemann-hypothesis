@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.Divisibility.CoefMod
-import Formalism.GradedWeylDivisibility.FinalD
 import Mathlib.RingTheory.SimpleRing.Principal
 import Formalism.LocalRingCardinality.Params
 

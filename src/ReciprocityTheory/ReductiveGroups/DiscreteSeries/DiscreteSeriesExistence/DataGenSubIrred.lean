@@ -6,7 +6,6 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.CFCoreA
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.SchurA
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.RorthFunctionalEqZero
-public import Mathlib.Analysis.InnerProductSpace.Orthogonal
 
 @[expose] public section
 

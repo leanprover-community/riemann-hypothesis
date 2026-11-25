@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.StatementC
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FinalS
-import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TopsChoicePartA
 import Mathlib.Tactic.Lemma
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated

@@ -6,7 +6,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.CrystallineLiftingI
 public import Formalism.JumpKernelCokernel.LengthTheoremsWithEarlier
 public import Formalism.SharpRestriction.LevelLetterCocycles.ExistsPosConstLagrangeCondition
 import Mathlib.Tactic.Linter.Style
-import Formalism.TruncatedSeriesCounting.EtaDeterminantPolynomialIdentities
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

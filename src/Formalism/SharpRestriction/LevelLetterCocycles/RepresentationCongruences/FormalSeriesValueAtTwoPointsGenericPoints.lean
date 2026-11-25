@@ -4,10 +4,8 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongr
 public import Mathlib.Data.Nat.PadicValNat
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 public import Mathlib.NumberTheory.Padics.PadicVal.Basic
-import Mathlib.RingTheory.LocalRing.ResidueField.Basic
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.NormNum.GCD
-import Mathlib.Tactic.Positivity.Finset
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

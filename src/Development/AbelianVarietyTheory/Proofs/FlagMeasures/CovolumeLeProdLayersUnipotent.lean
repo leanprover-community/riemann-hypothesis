@@ -3,10 +3,6 @@ module
 public import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IpLEqZeroOfMemSpan
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.DefClassNum
-public import Mathlib.MeasureTheory.Constructions.Pi
-public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
-public import Mathlib.Analysis.Normed.Lp.MeasurableSpace
-public import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.GaugeMeasureMatrixAlgebraSubgroupLocalAsymptotic
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -49,11 +45,8 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
 import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactExponentialSurjective

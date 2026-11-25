@@ -2,11 +2,7 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsTestRep
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EtaleHermitianPairStructureFacts
-public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
-public import Mathlib.Analysis.Normed.Field.ProperSpace
 public import Mathlib.Analysis.Calculus.FDeriv.CompCLM
-public import Mathlib.Analysis.Calculus.FDeriv.Congr
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.QuadraticStarStructure
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SelfDualIffLatticeVolumeAndPlancherel
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsSelfDualMeasuresAndAbsKScale
 public import Mathlib.Analysis.CStarAlgebra.Classes

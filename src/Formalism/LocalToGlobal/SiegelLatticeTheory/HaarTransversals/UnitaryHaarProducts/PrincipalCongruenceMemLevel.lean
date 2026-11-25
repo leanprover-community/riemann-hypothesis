@@ -3,10 +3,8 @@ module
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.UnipStmt
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.UnipLatStmt
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ExistsDifferentialLattice
-import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.ConcreteLevelAdelicSubset
 import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.InHHAlg
 import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.UnipReal
-import Formalism.RealPlaceAnalysis.FinalF
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.TypeStar
 

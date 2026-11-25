@@ -1,11 +1,9 @@
 module
 
 public import GroundTheory.AutomorphicForms.TensorProductTheorem.CuspidalRep
-public import GroundTheory.AutomorphicForms.HeckeAlgebraLevel
 public import GroundTheory.AutomorphicForms.StrongApproximationSLDense
 public import GroundTheory.AutomorphicForms.GL2.GJGlobalDefs
 public import GroundTheory.AutomorphicForms.GL2.GJStandardLDefs
-import GroundTheory.AutomorphicForms.GL2.GJFEInducedLevi
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.AutomorphicForms.TensorProductTheorem.CuspidalRepBasic, GroundTheory.AutomorphicForms.GL2.GJStandardLCuspidalGen

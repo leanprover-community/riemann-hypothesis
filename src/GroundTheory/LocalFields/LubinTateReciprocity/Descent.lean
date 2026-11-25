@@ -1,8 +1,6 @@
 module
 
 public import GroundTheory.LocalFields.MaximalUnramifiedIntegers
-public import GroundTheory.LocalFields.SeparableClosure
-public import GroundTheory.LocalFields.UnramifiedGalois
 public import Mathlib.RingTheory.AdicCompletion.LocalRing
 public import GroundTheory.PowerSubgroups.CountableNeighbourhoods.UnitMulPowAdic
 public import GroundTheory.LocalFields.LubinTateTorsion
@@ -10,7 +8,6 @@ public import Mathlib.RingTheory.Polynomial.Eisenstein.Distinguished
 public import GroundTheory.LocalFields.Eisenstein
 public import GroundTheory.LocalFields.LubinTateReciprocity.TwistedPoint
 public import GroundTheory.PowerSubgroups.CountableNeighbourhoods.DescentPowerSubgroups
-public import GroundTheory.LocalFields.LubinTateReciprocity.RootEval
 import GroundTheory.LocalFields.UnitsPowers
 import GroundTheory.LocalFields.ExamplesLaurent
 

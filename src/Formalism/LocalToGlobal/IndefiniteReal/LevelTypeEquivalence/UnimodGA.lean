@@ -2,7 +2,6 @@ module
 
 public import Formalism.PeriodIntegrals.AdUnimod
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.AdIndexEq
-public import Formalism.RealPlaceAnalysis.InstMeasurableSpaceUJ
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ModularCharacterEqOneOnExpHermitian
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.UnimodInst
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.PeterssonNormOfUpLift

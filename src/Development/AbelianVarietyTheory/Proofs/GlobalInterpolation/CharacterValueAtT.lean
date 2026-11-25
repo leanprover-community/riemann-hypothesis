@@ -2,9 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MaxVSpanSingleton
 public import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.CharacterValuation
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
-public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import Development.AbelianVarietyTheory.Definitions.Foundations.AbsCharNotUnitary
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.AbsNormSpanInvol
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsPowLocKMulInf
@@ -60,7 +57,6 @@ import Mathlib.Data.Nat.Choose.Multinomial
 import Formalism.LocalToGlobal.Columns.BaseLemmas
 import Mathlib.Algebra.AffineMonoid.Basic
 import Mathlib.Algebra.Order.Star.Rat
-import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI

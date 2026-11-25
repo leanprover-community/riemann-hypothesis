@@ -8,7 +8,6 @@ public import Development.WeilBound.ThetaLifts.FrameEstimates.LeHeightOfIsTorusE
 public import Development.WeilBound.ThetaLifts.Reductions.SiegelAbs
 public import Development.WeilBound.ThetaLifts.Reductions.SiegelGood
 import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsUniqueIsProdMeasureFinAway
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 import Formalism.LocalToGlobal.ProjectiveLattices.UnifDom
 

@@ -1,7 +1,6 @@
 module
 
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.FiniteDimensionalOfOrtho
-public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.MassSt
 public import Formalism.HermitianLattices.StatementMass
 public import Formalism.HermitianLattices.HermitianLatticesProofs.MassBasic
 import Mathlib.Tactic.Linter.HaveILetI

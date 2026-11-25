@@ -13,7 +13,6 @@ import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 public import Mathlib.Topology.Homotopy.Lifting
-public import Mathlib.Analysis.Complex.Circle
 
 @[expose] public section
 

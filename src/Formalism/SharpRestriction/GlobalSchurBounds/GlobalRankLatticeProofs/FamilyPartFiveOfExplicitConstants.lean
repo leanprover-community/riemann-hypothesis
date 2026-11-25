@@ -1,7 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.GlobalSchurBounds.TheoremThreeOfExplicitAndCompact
-import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Formalism.SharpRestriction.GlobalSchurBounds.JointsL
 
 @[expose] public section

@@ -15,7 +15,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsHomogeneousCompIdeal
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsImageHeightUnique
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.HodgeBundleWeights.ToKnownTheoremsOf
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CovolXOfCovol
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.HodgeBundleWeights.VolumeEstimateHypotheses
 public import Development.AbelianVarietyTheory.Definitions.Divisors.BudgetAt
@@ -56,7 +55,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Development.AbelianVarietyTheory.Definitions.Divisors.FirstChernLeviEqConstant
-import Development.AbelianVarietyTheory.Definitions.Divisors.SlopeTestRemainingChoices
 import Development.AbelianVarietyTheory.Proofs.GenericRegularity.GenFrExAndGenFromTest
 import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
 import Mathlib.Algebra.Order.Star.Int
@@ -81,19 +79,7 @@ import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.UniformSpace.Uniformizable
 import ReciprocityTheory.SemistableReduction.AeBlockSphereEvalNeZero
-import ReciprocityTheory.SemistableReduction.LagrangeIdealLiftsFact
-import ReciprocityTheory.SemistableReduction.SphereTorusA
-import ReciprocityTheory.SemistableReduction.SphereTorusC
-import ReciprocityTheory.SemistableReduction.TorusL2CauchyInequality
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.LocalRingCardinality.HeightBoundGeFourthPowerRank
-import Development.AbelianVarietyTheory.Definitions.Divisors.AevalEqZeroOfMemConeIdeal
-import Development.AbelianVarietyTheory.Definitions.Divisors.TupleReadBaseTupleEqFamily
-import Development.AbelianVarietyTheory.Definitions.Foundations.IsProbabilityMeasureMuPart
-import Formalism.LocalRingCardinality.DataTheta
-import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
-import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.OnbPerp
 
 -- This file was produced by scripts/clump.py from the modules listed below.

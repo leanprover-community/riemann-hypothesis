@@ -8,7 +8,6 @@ import Development.ResolutionOfSingularities.Foundations.Schemes.AffineOpens
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 public import Development.ResolutionOfSingularities.Foundations.Blowup.AffineBlowup
-public import Development.ResolutionOfSingularities.Foundations.Blowup.AffineBlowupCartier
 
 @[expose] public section
 

@@ -2,13 +2,11 @@ module
 
 public import Formalism.RealPlaceAnalysis.StatementE
 public import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.HeckeAlgebraActions.BackStable
-public import Mathlib.GroupTheory.Perm.Option
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.HeckeRankOne
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.OmegaMinor
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.QuantumDeterminantTensor
 public import Mathlib.LinearAlgebra.Dual.Lemmas
 import Mathlib.Tactic.TypeStar
-import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RingTheory.SimpleRing.Principal
 

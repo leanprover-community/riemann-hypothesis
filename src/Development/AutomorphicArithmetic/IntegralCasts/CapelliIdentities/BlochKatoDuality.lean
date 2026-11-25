@@ -1,7 +1,6 @@
 module
 
 public import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic
-public import Mathlib.MeasureTheory.Measure.Typeclasses.SFinite
 public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 public import Mathlib.MeasureTheory.Constructions.BorelSpace.Complex
 public import Mathlib.Topology.Instances.Matrix

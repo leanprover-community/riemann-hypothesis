@@ -1,7 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.CuspSpanNormBounds.SGauge
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 
 @[expose] public section
 

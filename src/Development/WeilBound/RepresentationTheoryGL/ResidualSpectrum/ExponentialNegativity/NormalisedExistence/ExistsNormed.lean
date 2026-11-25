@@ -6,7 +6,6 @@ import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitar
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsAddHaarMeasureUnipMeasure
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsLeftInvariantOfIsAutForm
 import GroundTheory.AutomorphicForms.CuspidalDiscreteness.ExistsLintegralConstantTermL2SqLe
-import GroundTheory.GlobalFields.Adele.Topology
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

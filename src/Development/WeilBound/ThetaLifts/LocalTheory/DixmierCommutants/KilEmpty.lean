@@ -3,8 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfSurj
 public import Mathlib.Topology.LocallyConstant.Algebra
-public import Development.AbelianVarietyTheory.Definitions.Divisors.RankEqCardIffExistsFrameMatrixFirstColumnBlock
-public import Mathlib.Analysis.CStarAlgebra.CStarMatrix
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

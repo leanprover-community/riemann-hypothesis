@@ -11,19 +11,10 @@ public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsCharact
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MvExpLinearPartIntegralCharMemIntegralGerm
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.IsIntegralGaugedFormalGroupLawSelfConjugateSquar
 public import Formalism.LocalToGlobal.CharacterGerms.ValNonnegLeadingCoeffOfMemTySet
-public import Formalism.LocalToGlobal.CharacterGerms.HostTraceIdentity
-public import Development.AbelianVarietyTheory.Definitions.TeichmullerDepth.HasTeich
-public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CmEmbeddingsIntegralAndDistinctModMaximal
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsIdempotentFrobeniusOrbitUnramified
-public import Formalism.LocalToGlobal.CharacterGerms.Interface
-public import Mathlib.Algebra.Field.ZMod
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.SeparatedEmbeddingsDirectionsTypedBasis
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieTop
-public import Formalism.LocalToGlobal.CharacterGerms.RowTieAxes
-public import Mathlib.RingTheory.MvPowerSeries.Rename
-public import Formalism.LocalToGlobal.CharacterGerms.NondegenerateCharts
-public import Formalism.LocalToGlobal.CharacterGerms.RowTieSelf
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.RawChartTangentMaximalIdealOfNonDegenerate
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.HasGaugeAdjointLieProjectorsSelfConjugatePlace
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.CartHypOfIntegralGaugedFormalGroupLaw
@@ -32,7 +23,6 @@ public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.GaugedForm
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.HasGaugeAdjointTeichmullerEndSelfConjugatePlace
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.IntegralGermsIndependentOfCurveSystem
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ChartValuesBoundProductsOnPlanes
-public import Formalism.LocalToGlobal.CharacterGerms.ContentZeroAt
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.FlagOfLetterNumberingRowData
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.BiextensionNondegenerateModMaximalIdealIntegralC
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.NuLocCLeNuPlEBaseChange
@@ -80,16 +70,9 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.GroupTheory.Nilpotent
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.LocalToGlobal.Divisibility.Numbers
-import Formalism.LocalToGlobal.CharacterGerms.RowTieLab
 import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.JetAt0ProdRename
 import Formalism.LocalToGlobal.CharacterGerms.RowTieAdm
 

@@ -7,7 +7,6 @@ import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.Lemma
-public import Mathlib.Analysis.InnerProductSpace.Calculus
 
 @[expose] public section
 

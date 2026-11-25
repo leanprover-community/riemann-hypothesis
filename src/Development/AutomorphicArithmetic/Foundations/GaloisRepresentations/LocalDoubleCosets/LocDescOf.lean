@@ -8,7 +8,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTool
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.JacquetBorelNontrivialOfCharacterSupport
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.FockModels.GlnMixed
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsSatakeParameterOfIsSubquotientOfInjective
-import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 

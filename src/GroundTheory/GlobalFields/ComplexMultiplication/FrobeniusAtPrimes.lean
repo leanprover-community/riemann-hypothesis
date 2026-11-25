@@ -23,8 +23,6 @@ public import GroundTheory.GlobalFields.TateThesis.DegreeOnePrimes
 public import Mathlib.RingTheory.Frobenius
 public import GroundTheory.GlobalFields.ComplexMultiplication.BadPrimesFinite
 public import GroundTheory.GlobalFields.ComplexMultiplication.FrobeniusAtPrimesIsogeny
-import GroundTheory.GlobalFields.ComplexMultiplication.BaseChangeDescent
-import GroundTheory.GlobalFields.ComplexMultiplication.JInvariantSurjective
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.GlobalFields.ComplexMultiplication.AlgebraicityDescent, GroundTheory.GlobalFields.ComplexMultiplication.FrobeniusAtPrimesLocal, GroundTheory.GlobalFields.ComplexMultiplication.FrobeniusAtPrimes

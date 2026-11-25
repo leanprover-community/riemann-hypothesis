@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinet
 public import GroundTheory.GlobalFields.Adele.Approximation
 public import GroundTheory.AutomorphicForms.GL2.GJMatrixInfinite
 public import GroundTheory.GlobalFields.TateThesis.AdelePoissonUniform
-import Mathlib.Algebra.Module.ZLattice.Summable
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.ENatToNat

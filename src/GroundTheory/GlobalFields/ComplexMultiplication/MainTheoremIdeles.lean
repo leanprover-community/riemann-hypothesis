@@ -3,7 +3,6 @@ module
 public import GroundTheory.GlobalFields.NormResidueSymbol.RangeIdeleNormLeKerIdeleSymbol
 public import GroundTheory.GlobalFields.IdeleClassGroup.InvariantsGalois
 public import GroundTheory.GlobalFields.NormResidueSymbol.RestrictNormalInfiniteLocalSymbol
-public import GroundTheory.GlobalFields.IdeleClassGroup.IdeleClassMapIdeleClassMap
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.IdeleLimits
 public import GroundTheory.GlobalFields.ClassFieldConsequences.RayClassField
 public import GroundTheory.GlobalFields.ComplexMultiplication.IdeleActionQuotient
@@ -11,8 +10,6 @@ public import GroundTheory.GlobalFields.GlobalArtinMap.ArtinMap
 public import GroundTheory.GlobalFields.Artin.OneDim
 public import GroundTheory.GlobalFields.ComplexMultiplication.HilbertClassFieldArtin
 import Mathlib.Tactic.TypeStar
-import GroundTheory.GlobalFields.CompletionAtPlace.Inertia
-import GroundTheory.GlobalFields.GlobalReciprocity.Frobenius
 import Mathlib.Algebra.Order.Star.Int
 
 -- This file was produced by scripts/clump.py from the modules listed below.

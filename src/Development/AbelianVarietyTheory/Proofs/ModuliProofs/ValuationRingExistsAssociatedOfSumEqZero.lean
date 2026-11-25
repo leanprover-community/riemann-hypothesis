@@ -12,7 +12,6 @@ public import Mathlib.RingTheory.DedekindDomain.Basic
 public import Mathlib.RingTheory.Etale.Basic
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ValuationRingOfFlatOfFormallyUnramified
 public import Mathlib.RingTheory.Regular.IsSMulRegular
-public import Mathlib.Algebra.GroupWithZero.Action.Regular
 public import Mathlib.RingTheory.Ideal.GoingDown
 public import Mathlib.RingTheory.QuasiFinite.Basic
 import Mathlib.Algebra.Order.Floor.Extended

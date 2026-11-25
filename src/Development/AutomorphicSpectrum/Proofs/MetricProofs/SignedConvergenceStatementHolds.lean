@@ -4,10 +4,8 @@ import Development.AutomorphicSpectrum.Proofs.MetricProofs.GlobalRegularizationS
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LocalDensityInclusionExclusion
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.PotentialContDiffAt
-public import Mathlib.MeasureTheory.Integral.Bochner.Set
 public import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LoglogQuotNonneg
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ConvergenceStatementHoldsStatement
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.MixedDensityNonnegOffNullSet

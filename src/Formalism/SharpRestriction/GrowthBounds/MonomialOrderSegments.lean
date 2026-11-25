@@ -3,9 +3,7 @@ module
 public import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.BrBase
 public import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.SecondValuationOfAdmitted
 public import Formalism.SharpRestriction.GrowthBounds.ProjectionOfIsotypicDecomposition
-public import Formalism.SharpRestriction.GrowthBounds.CovariantDegrees
 public import Formalism.SharpRestriction.GrowthBounds.GLWeightTheory
-public import Formalism.SharpRestriction.GrowthBounds.Lemma5aAt
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardFilterValLt
 public import Formalism.SharpRestriction.GrowthBounds.Joints
 public import Formalism.SharpRestriction.GrowthBounds.ValuationLowestDegreeMapFractionField

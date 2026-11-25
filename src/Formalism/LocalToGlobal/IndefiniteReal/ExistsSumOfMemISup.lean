@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.IndefiniteReal.PrimitiveStatementsWithPassage
 import Formalism.LocalToGlobal.IndefiniteReal.CxLemmas
 public import Formalism.LocalToGlobal.IndefiniteReal.PackageFromPrimitiveStatements
-import Mathlib.RingTheory.SimpleRing.Principal
 public import Formalism.LocalToGlobal.IndefiniteReal.CxCoreRG
 
 @[expose] public section

@@ -6,7 +6,6 @@ public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentation
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.Prelims.ExpSecond
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.Prelims.ExpSum
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.Prelims.Frames
-public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.BlockDeterminants.ExponentialEntries.RightSub
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.BlockDeterminants.ExponentialEntries.TprodNe
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.TPGDecomp
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFactorPureTensorComponentAtPlace
@@ -18,19 +17,12 @@ public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentation
 public import Development.AutomorphicArithmetic.AdelicQuotients.InvariantSesquilinearFormEqSmulOfIrreducible
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.Prelims.IrreducibleHermitianFormUnique
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.Prelims.MeasurableOfSeparatingFunctionals
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.MeasureTheory.Constructions.BorelSpace.Complex
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.Prelims.RieszRepresentationSesquilinear
-public import Mathlib.Algebra.Module.LinearMap.Star
-public import Mathlib.Basic.Complex.Basic
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.MeasurableSetIntF
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.TensOfEval
-public import Development.WeilBound.ThetaLifts.LatticeBasics.EulerProd
 public import Development.WeilBound.ThetaLifts.LatticeBasics.LocUnrInert
-public import Development.WeilBound.ThetaLifts.LatticeBasics.ThetaBox
 public import Development.WeilBound.ThetaLifts.LocalTheory.ArchimedeanBumps.ArchHeisOf
 public import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.ActsRhoFin
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
 
 /-! # GRPFockOf: Consolidated global theta-kernel definitions and proofs (GRPFockOf). -/
 @[expose] public section

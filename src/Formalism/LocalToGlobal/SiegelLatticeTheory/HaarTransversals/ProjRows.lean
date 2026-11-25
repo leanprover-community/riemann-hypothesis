@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 public import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSchur
-import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 

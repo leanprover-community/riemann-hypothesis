@@ -1,14 +1,10 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.ChainOneB
-import Formalism.LocalToGlobal.Columns.ChainInst
 public import Formalism.LocalToGlobal.Columns.FirstUnfoldingEqZeroOfNotIntegral
 public import Formalism.LocalToGlobal.Columns.OcbPhiFIdxFPos
 public import Formalism.LocalToGlobal.Columns.OcbTIntOfStab
 import Formalism.LocalToGlobal.Divisibility.DefGroupLemmas
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

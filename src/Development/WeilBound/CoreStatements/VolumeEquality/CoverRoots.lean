@@ -6,7 +6,6 @@ public import Development.WeilBound.CoreStatements.VolumeEquality.RootBranches
 public import Development.WeilBound.CoreStatements.VolumeEquality.CoverRootsSch
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenPtSpecializesOfSpecializes
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
-import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtFractionNoetherianClosed
 import Mathlib.Tactic.Linter.Style
 

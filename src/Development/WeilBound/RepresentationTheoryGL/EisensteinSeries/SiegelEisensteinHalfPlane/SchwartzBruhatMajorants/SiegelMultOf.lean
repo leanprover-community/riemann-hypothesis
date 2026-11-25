@@ -2,33 +2,14 @@ module
 
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.EisensteinGrowthForms.GrowForms
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousDerivFamily
-public import Development.WeilBound.ThetaLifts.LatticeBasics.HypothesesE
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EisensteinSeriesContinuation
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EisensteinVerticalBound
 public import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.Descend
-public import Mathlib.Analysis.Calculus.FDeriv.Basic
-public import Mathlib.Analysis.Calculus.FDeriv.Comp
-public import Mathlib.Analysis.Calculus.FDeriv.Mul
-public import Mathlib.Analysis.Complex.Trigonometric
-public import Mathlib.Analysis.SpecialFunctions.Exp
-public import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.StripEntire
-public import Mathlib.Analysis.Analytic.Uniqueness
-public import Mathlib.Analysis.Complex.CauchyIntegral
 public import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.DictInf
 public import Development.WeilBound.ThetaLifts.SmallCones.TateAbs
-public import Mathlib.Algebra.Group.Subgroup.Defs
-public import Mathlib.Topology.Algebra.Group.Defs
-public import Mathlib.Topology.Compactness.Compact
-public import Mathlib.Topology.Maps.Proper.Basic
-public import Mathlib.Analysis.Normed.Operator.BoundedLinearMaps
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CorrESymmCoe
-public import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.ConvGrOf
 public import Development.AutomorphicArithmetic.LocalEmbeddings.OppLagr
-public import Mathlib.Analysis.Normed.Group.InfiniteSum
 public import Mathlib.Analysis.Complex.PhragmenLindelof
-public import Mathlib.Analysis.Analytic.Basic
-public import Mathlib.Analysis.Calculus.DiffContOnCl
-public import Mathlib.Analysis.Calculus.FDeriv.CompCLM
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.EisensteinSeriesG2.SiegelGrowthForms.SiegelMult
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConvergenceGroupOfBlockDet
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GalleryOfTubesAndCrossing
@@ -90,14 +71,8 @@ import Mathlib.Tactic.Polynomial.Basic
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExtensionEmbeddingAlgebraMapOfTotallyReal
 import Development.WeilBound.CoreStatements.AutomorphicKernels.EisensteinSeriesG2.AdelicHomeomorphisms.IsTopologicalGroupG2
 import Formalism.LocalToGlobal.IndefiniteReal.PHeisFC
-import Mathlib.Topology.Algebra.Group.Units
-import Mathlib.Topology.Separation.CompletelyRegular
-import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
-import Mathlib.Analysis.Convex.Contractible
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BlockDeterminantLaw
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConstantMultiplierMirabolic
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CrossingOfWallsAndHeights
-import Development.WeilBound.RepresentationTheoryGL.EisensteinSeries.SiegelEisensteinContinuation.IsEpCont
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SphericalTestFunctionExists
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StandardSectionGood
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TubeChainHolds

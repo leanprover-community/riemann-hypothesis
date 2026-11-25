@@ -10,7 +10,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComponentSpe
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordDegreeBoundOfFlag
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenFrameFieldExtension
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenvectorLinearCombination
-public import Mathlib.LinearAlgebra.ExteriorPower.Basic
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IotaMultiChangeOfBasisDet
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IotaMultiNeZeroOfLinIndep
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsCombIdentityMatrix
@@ -18,11 +17,8 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsCombMatrix
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieLatticeEvalFractionField
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.MemSpanOfIotaMultiProportional
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.WedgeEqSpanOfIsFrameAt
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsLineGenOn
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PullbackFramesComplexPoint
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsFlatAnIffIsConstMul
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenLatticeVectorBundle
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

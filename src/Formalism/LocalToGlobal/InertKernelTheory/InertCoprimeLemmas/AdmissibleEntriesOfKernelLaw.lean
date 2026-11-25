@@ -4,8 +4,6 @@ public import Formalism.LocalToGlobal.InertKernelTheory.StatementAdmAt
 public import Formalism.LocalToGlobal.InertKernelTheory.TranslatesOfInertKernelAtPlace
 public import Formalism.LocalToGlobal.InertKernelTheory.SecondKernelCoupledLastLift
 public import Formalism.LocalToGlobal.PairingIndexBounds.OrthogonalChartLevels.FrecAt
-public import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
-public import Formalism.LocalToGlobal.GroupLattices.FockModels.OperatorsPreserveLattices
 public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.OrbitSumStabilizer
 public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.SecondKernelInstances
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.CoupledSumOfEntries
@@ -14,9 +12,6 @@ public import Formalism.LocalToGlobal.InertKernelTheory.AdmissibleEleventhInert
 public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.FirstKernelSmallOfFrameTwist
 public import Formalism.LocalToGlobal.PairingIndexBounds.RowActionCoefficients.LatticeShapeMiddleHolds
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.PositivityConditionHolds
-import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.SecondKernelNonzeroUnit
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PeriodLatticeFinitelyGenerated
-import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.LowestInvariantLeDelta
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.InertKernelTheory.ThetaSeriesDataHypothesesBelowMaximalLevel, Formalism.LocalToGlobal.InertKernelTheory.AdmissibleAllLevels, Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.SecondKernelCoupled, Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.AdmissibleEntriesOfKernelLaw

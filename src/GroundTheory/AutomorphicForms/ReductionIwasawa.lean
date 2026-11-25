@@ -4,7 +4,6 @@ public import GroundTheory.AutomorphicForms.ReductionHeight
 public import GroundTheory.AutomorphicForms.Iwasawa
 public import GroundTheory.AutomorphicForms.RealGroupsIwasawa
 import GroundTheory.GlobalFields.IdeleGroups.UnitBound
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

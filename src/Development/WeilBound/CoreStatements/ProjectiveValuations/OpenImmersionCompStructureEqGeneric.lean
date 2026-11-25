@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.OffZero
 public import Development.WeilBound.CoreStatements.ProjectiveValuations.NV
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsFramesOfHolPeriods
-import Development.AbelianVarietyTheory.Proofs.GenericRegularity.FrameBorelGroupoidProperties
 public import Development.WeilBound.CoreStatements.ProjectiveValuations.ExistsChartFrBor
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.PoinStatementPfD
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsVanBdOfMemExtVanZ

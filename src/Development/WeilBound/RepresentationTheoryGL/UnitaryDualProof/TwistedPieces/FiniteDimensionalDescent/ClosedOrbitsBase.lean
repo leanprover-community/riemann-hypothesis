@@ -1,8 +1,6 @@
 module
 
 public import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.TwistedPieces.TraceForm
-public import Mathlib.Algebra.CharP.Algebra
-public import Mathlib.LinearAlgebra.Matrix.Rank
 
 @[expose] public section
 set_option linter.unusedSectionVars false

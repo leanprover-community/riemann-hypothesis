@@ -5,8 +5,6 @@ public import Mathlib.Analysis.InnerProductSpace.Calculus
 public import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.MatrixCoefficientDecay.InfinitesimalCharacterPaths.TensDecomp
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MapStarMul
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.ConjTransposeEqOfInG
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DiscreteSeriesExistence.CayleyChartDomainIsOpen
 
 -- This file was produced by scripts/clump.py from the modules listed below.

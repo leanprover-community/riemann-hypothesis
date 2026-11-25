@@ -3,12 +3,8 @@ module
 public import Mathlib.NumberTheory.NumberField.Completion.InfinitePlace
 public import GroundTheory.AutomorphicForms.GL2.GodementSectionFactor
 public import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.AdFormOf
-public import Mathlib.NumberTheory.NumberField.InfiniteAdeleRing
-import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Archimedean
 import GroundTheory.AutomorphicForms.GL2.FiniteIdeleDecomp
-import GroundTheory.AutomorphicForms.LocallyProfinite
 import GroundTheory.GlobalFields.HerbrandQuotients.RationalForm
-import GroundTheory.LocalFields.FilteredSurj
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.EulerProducts.GenStable, PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.EulerProducts.EulDefs

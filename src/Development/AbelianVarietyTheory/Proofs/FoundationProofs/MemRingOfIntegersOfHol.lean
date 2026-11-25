@@ -9,7 +9,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SiegelFun
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SiegelFunctionNeZero
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SiegelUnitInTowerAnEqSiegelUnitOnComplex
 public import Development.AbelianVarietyTheory.Definitions.Foundations.SgC
-public import Mathlib.RingTheory.SimpleRing.Principal
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SiegelUnitInTowerNeZero
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

@@ -8,7 +8,6 @@ public import Mathlib.MeasureTheory.Integral.Pi
 public import Mathlib.MeasureTheory.Measure.Lebesgue.Complex
 public import Mathlib.Analysis.Matrix.Spectrum
 public import Mathlib.RingTheory.Complex
-public import Mathlib.Algebra.Star.UnitaryStarAlgAut
 public import Mathlib.RingTheory.Norm.Transitivity
 public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.MollifiedIntegrability.GaussS
 

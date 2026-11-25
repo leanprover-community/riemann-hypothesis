@@ -3,9 +3,7 @@ module
 public import GroundTheory.LocalFields.LubinTatePoints
 public import GroundTheory.LocalFields.LubinTateReciprocity.Descent
 public import GroundTheory.LocalFields.LubinTateTowerMaps
-public import GroundTheory.LocalFields.SeparableClosureValuation
 public import GroundTheory.LocalFields.HerbrandFunction
-public import GroundTheory.LocalFields.SeparableClosure
 public import GroundTheory.LocalFields.Different
 public import GroundTheory.LocalFields.LubinTateLimitGalois
 public import GroundTheory.LocalFields.Monogenic
@@ -14,7 +12,6 @@ public import GroundTheory.LocalFields.LubinTateReciprocity
 public import GroundTheory.LocalFields.ConductorTransport
 public import GroundTheory.LocalFields.KroneckerWeber
 import Mathlib.Tactic.TypeStar
-import GroundTheory.LocalFields.Eisenstein
 import Mathlib.Algebra.Order.Star.Rat
 import GroundTheory.LocalFields.Existence
 import GroundTheory.LocalFields.LubinTateUnramified

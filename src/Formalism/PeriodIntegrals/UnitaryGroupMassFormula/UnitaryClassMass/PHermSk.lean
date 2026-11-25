@@ -3,8 +3,6 @@ module
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryClassMass.PSurjS
 public import Formalism.PeriodIntegrals.UnitaryApprox
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.UnitaryApproxFin
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryClassMass.CardStepOf
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryClassMass.PSurjH
 
 @[expose] public section
 

@@ -10,13 +10,11 @@ public import Development.EtaleCohomology.EtaleSheaves.ArchimedeanComparison
 public import Development.EtaleCohomology.EtaleSheaves.SHSectionPf
 public import Development.EtaleCohomology.EtaleSheaves.AlgResPropsPf
 public import Development.EtaleCohomology.EtaleSheaves.EtaleSpreading.EtSpreadsOf
-public import Development.EtaleCohomology.EtaleSheaves.EtaleSpreading.FPProof
 public import Development.EtaleCohomology.EtaleSheaves.StrictLocalStalks
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FiniteMaximalSpectrumOfFiniteOfIsLocalRing
 public import Development.EtaleCohomology.EtaleSheaves.CokernelKilling.KillCokOf
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsDiscreteValuationRingOfMaximalIdealEqSpa
 public import Development.EtaleCohomology.EtaleSheaves.SHTensorPf
-public import Development.EtaleCohomology.EtaleSheaves.StrictHenselColimits
 public import Development.EtaleCohomology.WeilConjectures.AbsorbPf
 public import Development.EtaleCohomology.EtaleSheaves.CechSqPf
 public import Development.EtaleCohomology.EtaleSheaves.DomCoverPf
@@ -52,7 +50,6 @@ import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.CategoryTheory.Limits.Preserves.Over
 import Mathlib.CategoryTheory.WithTerminal.Lemmas
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -88,12 +85,9 @@ import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.TypeStar
-import Mathlib.RingTheory.Unramified.LocalStructure
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.CategoryTheory.Sites.Adjunction
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.Linter.Style
 import Mathlib.Algebra.Homology.GrothendieckAbelian
 import Mathlib.Tactic.Basify
 import Std.Tactic.BVDecide.Normalize.Prop

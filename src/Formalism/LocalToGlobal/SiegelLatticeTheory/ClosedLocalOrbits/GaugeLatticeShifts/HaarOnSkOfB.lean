@@ -5,8 +5,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HaarUniquene
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OppositeWeylSubgroupClosed
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentHeisenbergDecomposition
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.BigCellDiagIff
-import Formalism.RealPlaceAnalysis.FinalF
-import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

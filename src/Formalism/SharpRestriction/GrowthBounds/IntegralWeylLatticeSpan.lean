@@ -9,8 +9,6 @@ public import Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.Co
 public import Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.SelfDualCongr
 public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.BlockRationalityField
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.BlockRatReal
-public import Formalism.LocalToGlobal.GroupLattices.CloudFilling.ExistsPowOrbRep
-public import Formalism.LocalToGlobal.GroupLattices.CloudFilling.FillInstRecEqWj
 public import Formalism.LocalToGlobal.GroupLattices.PerfectRings.ExistsSqEqIntCast
 public import Formalism.LocalToGlobal.GroupLattices.PerfectRings.ExtWRec
 import Formalism.LocalRingCardinality.DataKerI

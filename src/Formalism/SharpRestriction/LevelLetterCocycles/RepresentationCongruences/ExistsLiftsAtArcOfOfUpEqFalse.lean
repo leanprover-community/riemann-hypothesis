@@ -8,7 +8,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongr
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.LemGBInImgIff
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.LiftsAtThinLetterType
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.RepVVSmulA
-import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.Pi0MemADelta
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.PiTensorProduct
 

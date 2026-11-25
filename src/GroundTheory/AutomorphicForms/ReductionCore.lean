@@ -4,7 +4,6 @@ public import GroundTheory.AutomorphicForms.ReductionIwasawa
 public import GroundTheory.AutomorphicForms.ReductionBlock
 public import GroundTheory.AutomorphicForms.ReductionDirichlet
 public import GroundTheory.AutomorphicForms.ReductionFinite
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Presheaf
 

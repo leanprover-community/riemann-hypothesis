@@ -10,7 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsInt
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ReferenceTupleLiftFormsPassToCoeffEnlargement
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TameCharactersTypePrimesEqOfExtension
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ClassPresBasic
-import Formalism.LocalToGlobal.Columns.RowFormsAdelic
 import Formalism.LocalToGlobal.Columns.RowFormsGood
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

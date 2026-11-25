@@ -4,7 +4,6 @@ public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermBPrim
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermBSer
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermBPf
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDJet
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermFunPf
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -45,7 +44,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 
 @[expose] public section
 

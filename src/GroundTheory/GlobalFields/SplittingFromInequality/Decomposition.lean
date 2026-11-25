@@ -3,14 +3,11 @@ module
 public import GroundTheory.GlobalFields.SemilocalAlgebras.Galois
 public import GroundTheory.GlobalFields.FirstInequalityStatement
 public import GroundTheory.GlobalFields.KummerTheory.Splitting
-public import Mathlib.FieldTheory.Galois.IsGaloisGroup
 public import Mathlib.RingTheory.Frobenius
 public import GroundTheory.GlobalFields.CompletionAtPlace.Inertia
-import GroundTheory.GlobalFields.CompletionAtPlace.Integers
 public import GroundTheory.GlobalFields.SplittingFromInequality.Galois
 public import GroundTheory.LocalFields.UnramifiedGalois
 import Mathlib.Tactic.TypeStar
-public import GroundTheory.GlobalFields.CompletionAtPlace.Galois
 
 @[expose] public section
 

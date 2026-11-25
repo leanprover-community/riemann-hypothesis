@@ -12,16 +12,13 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUnique
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueTangentDualNumber
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RelOfTorsion
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.MiTors
-public import Mathlib.AlgebraicGeometry.Morphisms.Proper
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.TranslateMemIndOrder
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HopfOrderScalarExtension
 public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BtOrderBaseChangeGeneric
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BtOrderComapHomStatement
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BtOrderEmbeddingIsoFinite
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BtOrderEmbeddingOpenImmersion
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.GeometryProofs.BtOrderEqTopOfEtale, Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsDualToInvariantDifferentials, Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorsionGroupEtaleOfUnit, Development.AutomorphicSpectrum.Proofs.GeometryProofs.LemmaBTHolds

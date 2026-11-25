@@ -5,14 +5,10 @@ public import Formalism.PeriodIntegrals.SzCt
 public import Formalism.PeriodIntegrals.SzEatI
 public import Development.AutomorphicArithmetic.OrbitLabellings.SzEatIFree
 public import Formalism.SharpRestriction.Divisibility.OrbitPlaces
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
-public import Formalism.SharpRestriction.GrowthBounds.WeilJacquetShalikaLaw
-public import Formalism.LocalRingCardinality.HostCls
 public import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 public import Formalism.SharpRestriction.GrowthBounds.TopChoiceBounds
 public import Formalism.SharpRestriction.GrowthBounds.AdmissibleIntegers.FirstTermSizeBound
 public import Formalism.SharpRestriction.GrowthBounds.Joints
-public import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.NdBNonneg
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.PriceLinearCombinationLe
 public import Formalism.LocalRingCardinality.CoeNeZeroOfNotMem
@@ -27,8 +23,6 @@ public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.PrvAndKe
 public import Formalism.SharpRestriction.GrowthBounds.PlaneCountTheoremWithConstants
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SizeAbsorption.SizeDel
 import Formalism.SharpRestriction.CuspSpanNormBounds.SBridge
 import Aesop.Frontend.Tactic
 

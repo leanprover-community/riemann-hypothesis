@@ -8,7 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.Expansion
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.RelationsAreFunctions
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsAutomorphismOfMultiplicativeSectionFamilyStatement
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.SvalOfIsTwistPull
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.IsNsmulIffEq
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

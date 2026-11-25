@@ -1,7 +1,6 @@
 module
 
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.TeichmullerCharacterOrderGenerates
-public import Mathlib.Algebra.Field.ZMod
 public import Mathlib.NumberTheory.MulChar.Lemmas
 public import Mathlib.RingTheory.Valuation.Integral
 import Mathlib.Tactic.Linter.HaveILetI

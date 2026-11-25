@@ -5,10 +5,8 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJfSSymExp
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermZeroOfTrace
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermSumRight
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermSelfNeZero
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermZeroRight
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedLocSec
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerPairs.IsUnitDetOfMemGV
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJfSSymbolW, Formalism.HermitianCurvature.HermitianCurvatureProofs.FltZeroEq, Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJfSSymbolLevi

@@ -5,20 +5,12 @@ public import Mathlib.Analysis.CStarAlgebra.Classes
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordsAtSmul
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LocRatio
-public import Mathlib.Analysis.InnerProductSpace.Defs
-public import Mathlib.Analysis.SpecialFunctions.Log.Basic
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EigLat
-public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieLatticeEvalAtLocalRing
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieMetricFrameProjection
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieLatticeVectorBundleOfSmooth
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComplexPointsClosureCoords
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GradedSandwichDegreeBound
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsCptGen
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SmoothGroupRelDimGeneric
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.CompactGapsGE
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Linter.HaveILetI

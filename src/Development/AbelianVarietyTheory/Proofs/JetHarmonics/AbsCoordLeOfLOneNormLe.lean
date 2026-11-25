@@ -47,7 +47,6 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.FlagUnipotentLattices.UnipotentStabiliserCharacterisation
 import Formalism.FormalDegreeBessel.FormalDegreeRatio.DSFdeg
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.BitVec

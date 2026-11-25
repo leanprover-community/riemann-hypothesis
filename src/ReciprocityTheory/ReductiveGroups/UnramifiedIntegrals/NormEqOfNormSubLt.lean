@@ -2,7 +2,6 @@ module
 
 public import Mathlib.Analysis.Normed.Field.Instances
 public import Mathlib.NumberTheory.Padics.Complex
-import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Multiset
 
 @[expose] public section
 

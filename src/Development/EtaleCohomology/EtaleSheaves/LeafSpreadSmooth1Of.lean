@@ -4,7 +4,6 @@ public import Development.EtaleCohomology.EtaleSheaves.LeafSpreadSmoothPf
 public import Development.EtaleCohomology.EtaleSheaves.SpreadingOutQuasiFiniteness
 public import Mathlib.RingTheory.Etale.Descent
 import Mathlib.AlgebraicGeometry.QuasiAffine
-import Development.EtaleCohomology.EtaleSheaves.LeafDescendChainPf
 import Development.EtaleCohomology.EtaleSheaves.PropertyDescent.BaseChange
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

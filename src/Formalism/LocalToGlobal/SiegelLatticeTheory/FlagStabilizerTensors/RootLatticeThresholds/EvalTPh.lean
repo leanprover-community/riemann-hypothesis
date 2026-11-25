@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.Concr
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.CoefWeightedLocHolds
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.WuDecayAll
 import Formalism.LocalToGlobal.SiegelLatticeTheory.WeightedGaugeFactors.FactsDS
-public import Formalism.LocalRingCardinality.DataTheta
-public import Formalism.LocalToGlobal.BesselHermitianTheta.IsAutFunDef
 import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
 import Formalism.LocalToGlobal.IndefiniteReal.AutomorphicEvaluation
 public import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull

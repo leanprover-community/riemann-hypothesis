@@ -6,7 +6,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsCombBaseCh
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginComponentGenericPointStatement
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TowerComponentsCompatibleLaws
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ModelSmall
-public import Development.AbelianVarietyTheory.Definitions.RegularCharts.Reframe
 public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.GoodOrigin
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIntegerExponentSectionOfChartRegular
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AllWeightSectionsCompat
@@ -14,9 +13,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LabelSigBije
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginGenericFrameRelayStatement
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TowerComponentsEquivOfGivenStatement
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.RootOriginWeightIdentity
-import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.AbelianSchemeLawsUnconditional
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsFramedPointBaseChangeAlgebraMap
-import Formalism.LocalToGlobal.ProjectiveLattices.GenFrPf
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -53,12 +49,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.DefiniteFormStabilizerFiniteAwayFromP
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.ArakelovInstances.CoeffMatrixZeroCorrectedLineGramPoly
 import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
-import Development.AbelianVarietyTheory.Proofs.GenericRegularity.EvaluationLawsGenericFramesAtlasHold
-import Development.AbelianVarietyTheory.Proofs.GenericRegularity.FrameBorelGroupoidProperties
-import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsDomainAndIsIntegrallyClosedAtPrimeOfSmoothOfCo
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootOriginGenericFrame
-import Formalism.LocalToGlobal.ProjectiveLattices.FrameCharts
-import Mathlib.RingTheory.Valuation.LocalSubring
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Algebra.Azumaya.Basic

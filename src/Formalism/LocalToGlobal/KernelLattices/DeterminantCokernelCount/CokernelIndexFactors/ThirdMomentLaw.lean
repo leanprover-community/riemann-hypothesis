@@ -8,7 +8,6 @@ public import Mathlib.LinearAlgebra.Matrix.Adjugate
 public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 public import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
 public import Mathlib.RingTheory.LocalRing.ResidueField.Basic
-public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
 public import Mathlib.Analysis.Normed.Field.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.

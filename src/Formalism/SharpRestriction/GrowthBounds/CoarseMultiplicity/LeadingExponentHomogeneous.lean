@@ -7,7 +7,6 @@ public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.FactorsOfPer
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.MemIntPolOfCoeff
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.SymbolVariableLowerLetter
 import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SegmentStatementHolds
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

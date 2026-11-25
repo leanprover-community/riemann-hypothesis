@@ -1,8 +1,6 @@
 module
 
 public import Development.AutomorphicArithmetic.Foundations.Convolution.IntegrableConvolution.TensSmooth
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsDiff
-public import GroundTheory.AutomorphicForms.CuspidalProjection.OrthogonalProjectionOntoCompSubtypeL
 public import GroundTheory.AutomorphicForms.L2LocalComponents.ArchBump
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

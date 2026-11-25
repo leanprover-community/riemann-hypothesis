@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.GlobalFields.ComplexMultiplication.ReductionIsogenyMap
 public import GroundTheory.GlobalFields.ComplexMultiplication.BaseChangeField
-import GroundTheory.GlobalFields.ComplexMultiplication.ReductionComp
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

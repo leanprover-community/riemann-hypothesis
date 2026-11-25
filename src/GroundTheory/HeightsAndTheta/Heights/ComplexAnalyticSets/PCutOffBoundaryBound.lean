@@ -8,7 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCutOff
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCutOffGradient
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFibreBound
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetSumMeasurable
-import Mathlib.Algebra.Order.Star.Real
 public import Mathlib.Analysis.Calculus.FDeriv.Pi
 import Mathlib.Topology.UniformSpace.Uniformizable
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens

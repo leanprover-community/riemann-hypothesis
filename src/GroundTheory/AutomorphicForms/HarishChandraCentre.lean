@@ -7,11 +7,8 @@ public import GroundTheory.AutomorphicForms.HarishChandraCentre.Projection
 public import Mathlib.Algebra.MvPolynomial.Funext
 public import GroundTheory.AutomorphicForms.HarishChandraCentre.Capelli
 public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.RingTheory.MvPolynomial.Homogeneous
 public import Mathlib.RingTheory.MvPolynomial.Symmetric.FundamentalTheorem
 public import Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities
-public import Mathlib.Algebra.MvPolynomial.CommRing
 public import GroundTheory.AutomorphicForms.HarishChandraCentre.VermaCoordEqZeroOfMemNPlusU
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Analysis.CStarAlgebra.Classes
@@ -20,7 +17,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.TypeStar
 

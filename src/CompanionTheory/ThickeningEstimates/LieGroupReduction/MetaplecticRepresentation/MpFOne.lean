@@ -2,7 +2,6 @@ module
 
 public import CompanionTheory.ThickeningEstimates.LieGroupReduction.MetaplecticRepresentation.ContinuousOm
 import Mathlib.Analysis.Convex.Contractible
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 public import Mathlib.Topology.Homotopy.Lifting
 
 @[expose] public section

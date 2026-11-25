@@ -13,9 +13,6 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.PositiveOrbitOpen
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.SandwichRhoAction
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.WordIntegralScaling
-import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

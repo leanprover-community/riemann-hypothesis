@@ -4,8 +4,6 @@ public import ReciprocityTheory.L2DbarEstimates.IsLocalHomeomorph
 public import Mathlib.Analysis.Calculus.ContDiff.WithLp
 public import Mathlib.Analysis.Calculus.FDeriv.Star
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.HoloSmooth
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
 public import Mathlib.Analysis.Calculus.FDeriv.Mul
 public import Mathlib.Analysis.InnerProductSpace.Calculus
 public import Mathlib.Analysis.Calculus.FDeriv.CompCLM

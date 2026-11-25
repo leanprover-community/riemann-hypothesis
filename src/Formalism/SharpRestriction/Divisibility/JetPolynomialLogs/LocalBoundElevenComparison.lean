@@ -5,8 +5,6 @@ public import Formalism.IncomingBounds.WeightIdentities
 public import Formalism.SharpRestriction.Divisibility.JetPolynomialLogs.DworkPowerSeriesWeights
 public import Formalism.SharpRestriction.Divisibility.JetPolynomialLogs.LetterLogIntegrality
 public import Formalism.SharpRestriction.Divisibility.JetPolynomialLogs.OneLetterJetKernel
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.Lemma
 
 -- This file was produced by scripts/clump.py from the modules listed below.

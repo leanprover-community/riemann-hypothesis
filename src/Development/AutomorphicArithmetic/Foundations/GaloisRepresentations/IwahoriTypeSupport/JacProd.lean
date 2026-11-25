@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IwahoriTypeSupport.TorusScalar
 public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.NonzeroBasicTwistOfSpecialForm
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.NotInSupportOfSubsingleton
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsEquivProdIrrTw
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HasSupportOfIsSubquotientProdIrr
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsSubquotientUnramPrinSeriesOfHasSupport
@@ -28,7 +27,6 @@ public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.PSp
 public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.ProductIrreducible2
 public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.Subquotient2
 public import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.Tensor2
-import PositivityTheory.AutomorphicForms.PublishedInputs.NonzeroTypes.TensorVector
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

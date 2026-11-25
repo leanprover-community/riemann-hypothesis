@@ -69,7 +69,6 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SplitPrimeAdditi
 import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments.BrData
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaGridCharactersArchExponentsGapGtRank
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.LiftsAtAndSeedFacts
-import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasChr
 import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic

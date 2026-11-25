@@ -45,7 +45,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.SelmerCrystallineCocycles
-import Formalism.SharpRestriction.LevelLetterCocycles.BlochKatoPhases
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.RowsExhaust
 
 -- This file was produced by scripts/clump.py from the modules listed below.

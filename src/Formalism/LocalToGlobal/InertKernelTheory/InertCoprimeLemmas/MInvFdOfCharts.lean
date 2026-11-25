@@ -5,7 +5,6 @@ public import Formalism.LocalRingCardinality.DataKerP
 import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.IsComplRatCompl
 import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.WittFractionToCpAlgebraMap
 import Formalism.LocalToGlobal.InertKernelTheory.SecondKernelEntrywiseLastLevel
-import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
 public import Formalism.LocalToGlobal.PairingIndexBounds.OrthogonalChartLevels.FdOfCharts
 import Formalism.LocalToGlobal.PairingIndexBounds.OrthogonalChartLevels.LtCNeZero
 public import Formalism.SharpRestriction.GrowthBounds.ChartComparison

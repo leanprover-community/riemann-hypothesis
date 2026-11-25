@@ -12,8 +12,6 @@ public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.RelatedPairsO
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenMapGermEqGenMapGerm
 public import Mathlib.NumberTheory.NumberField.Discriminant.Different
 import Mathlib.Tactic.Linter.HaveILetI
-public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LatNormGrLatNeZeroOfSpan
-public import Mathlib.LinearAlgebra.Dimension.OrzechProperty
 
 @[expose] public section
 

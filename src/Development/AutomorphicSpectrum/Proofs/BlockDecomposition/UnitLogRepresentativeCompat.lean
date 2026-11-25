@@ -6,9 +6,7 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CupListR
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeCocycleClassIndependent
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SheafFiltrationProperty
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StCocycle
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.DpZeroRight
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RepUnique
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.TotPairing
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CechDOneZero, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitLogRepresentativeCompat

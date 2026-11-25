@@ -12,7 +12,6 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.NotIsSpli
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAdeleEquivOfLocal
 public import Mathlib.NumberTheory.Padics.HeightOneSpectrum
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsCongrIffTraceFormsIsometricCm
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.PAdicHensel.PSplitCongr
 
 -- This file was produced by scripts/clump.py from the modules listed below.

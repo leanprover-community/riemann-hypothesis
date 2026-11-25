@@ -5,7 +5,6 @@ public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LDlatLemmas
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.RowActMul
 public import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 public import Formalism.GradedWeylDivisibility.FinalC
-public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LCassemLemmas
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LDbasisLemmas
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs

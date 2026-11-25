@@ -1,38 +1,19 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.Jets.WigMap
-public import Mathlib.Analysis.InnerProductSpace.Adjoint
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.FormSubRight
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.HpkConjTranspose
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IsPolyDegStar
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IntegrableUnipotentNormRpowNeg
-public import Mathlib.Analysis.Complex.Basic
-public import Mathlib.Analysis.InnerProductSpace.Defs
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
-public import Formalism.HermitianCurvature.CapelliDeterminantAndBranching
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsLinearEquivOfIrreducibleIsHW
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CommonEigenvectors
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HighestWeightPolynomials
-public import Formalism.HermitianCurvature.FrameExists2
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DifferentialOperatorBracket
-public import Formalism.HermitianCurvature.StatementQ
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsShiftedTypesLowerBound
-public import Formalism.HermitianCurvature.StatementB
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ConjugationContinuousOnInvertible
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OppositeWeylSubgroupClosed
 public import Development.AbelianVarietyTheory.Statements.DiscreteSeriesShifts.AmapsShExists
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.OmgEquivariant
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.OmgMulLeft
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSetting
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormDiagonalEntryDilationGeneratorLeOne
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
@@ -68,19 +49,11 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Mathlib.Analysis.CStarAlgebra.Module.Constructions
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.ExistsFrameTwo
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.GroupGeneratedByExp
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermitianFormRankFour
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
 import Mathlib.Tactic.Linter.Style
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.FrameExtension
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.WigMapComp
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.WigMapZeroOfContraction
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar

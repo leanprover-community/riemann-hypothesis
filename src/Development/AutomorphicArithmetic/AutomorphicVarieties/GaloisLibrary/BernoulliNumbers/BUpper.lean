@@ -5,8 +5,6 @@ public import Mathlib.NumberTheory.BernoulliPolynomials
 public import Mathlib.Analysis.Real.Pi.Bounds
 public import Mathlib.NumberTheory.ZetaValues
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.BernoulliNumbers.MapGenBChar
-public import Mathlib.Analysis.Complex.Circle
-public import Mathlib.Analysis.Fourier.AddCircle
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.BernoulliNumbers.Polybound, Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.BernoulliNumbers.BUpper

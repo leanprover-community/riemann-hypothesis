@@ -11,7 +11,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormDiagonal
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PairAtTAdjCpt
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SumPairAtStarMul
 public import Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts
-public import Formalism.HermitianCurvature.CompositeFormulaLevelZero
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.MeasurableOfContinuousOnZero
 public import Mathlib.Analysis.Calculus.FDeriv.Pi
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSERDSCoordAdj

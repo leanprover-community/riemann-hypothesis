@@ -1,7 +1,6 @@
 module
 
 public import Formalism.HermitianCurvature.StatementQ
-public import Mathlib.CategoryTheory.Category.Basic
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

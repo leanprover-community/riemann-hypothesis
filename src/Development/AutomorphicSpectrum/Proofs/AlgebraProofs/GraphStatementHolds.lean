@@ -7,11 +7,9 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArith
 public import GroundTheory.HeightsAndTheta.Heights.SemipositiveHeights.FibreDimB
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.ContractMixedFieldStatement
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FibreDim
-import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PIntDomainDim
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.LengthLocQuotEqZero
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ExistsPrimeFiltrationOfIsMultiHomogIdeal
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.GraphIdealArithmeticVarietyImage, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.GraphIdealFibreChartDegree, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.GraphStatementHolds

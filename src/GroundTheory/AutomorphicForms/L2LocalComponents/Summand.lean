@@ -7,12 +7,10 @@ public import GroundTheory.AutomorphicForms.HarishChandraRegularity
 public import Mathlib.Analysis.Analytic.Order
 public import GroundTheory.AutomorphicForms.L2LocalComponents.CuspSmooth
 public import GroundTheory.AutomorphicForms.TensorProductTheorem.CuspidalRep
-public import GroundTheory.AutomorphicForms.TensorProductTheorem.CentralCuspSplit
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsAreCuspForms
 public import GroundTheory.AutomorphicForms.L2LocalComponents.ArchPolar
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Mathlib.Tactic.TypeStar
-import GroundTheory.AutomorphicForms.UnitaryAdmissible.CuspFinite
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.AutomorphicForms.L2LocalComponents.Analytic, GroundTheory.AutomorphicForms.L2LocalComponents.Summand

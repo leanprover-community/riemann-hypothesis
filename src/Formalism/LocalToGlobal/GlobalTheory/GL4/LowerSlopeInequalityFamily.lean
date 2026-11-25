@@ -6,8 +6,6 @@ public import Formalism.GradedWeylDivisibility.FinalC
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.WeTransposeWordTransposeWord
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StandardSlopeBound.GramMatrixDuality
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StandardSlopeBound.StdSlopeLowOf
-public import Formalism.GradedWeylDivisibility.StatementE
-public import Formalism.PeriodIntegrals.HookBound
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StandardSlopeBound.NablaOperatorBasis
 public import Formalism.SharpRestriction.GlobalSchurBounds.SlopeMaxOpenOfHookTwoLeV
 public import Formalism.LocalToGlobal.GlobalTheory.GL4.ColumnLatticeExactSlope

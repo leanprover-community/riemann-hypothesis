@@ -4,7 +4,6 @@ public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThetaOpenMirabolic
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirabolicCharacterEq
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirabolicFiltrationExhaustive
-public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.TwistedKernels.TwKerLeComapOf
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TwistedJacquetExactSmooth
 public import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.LeibnizOrders.ProdGPn
 public import Mathlib.Algebra.Order.PUnit

@@ -9,7 +9,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutEnFibMem
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutEnTrSmooth
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalIntegralAeConvergenceContinuity
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SquareIntegrableGammaZetabarInv
-import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

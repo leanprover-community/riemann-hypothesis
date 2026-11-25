@@ -9,8 +9,6 @@ public import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic
 public import Mathlib.RingTheory.FractionalIdeal.Norm
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.PhiMapAdd
 public import Mathlib.NumberTheory.NumberField.Discriminant.Basic
-public import Mathlib.Algebra.Module.ZLattice.Covolume
-import Mathlib.NumberTheory.NumberField.CanonicalEmbedding.Basic
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
 import Mathlib.Analysis.CStarAlgebra.Classes

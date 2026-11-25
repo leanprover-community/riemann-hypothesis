@@ -4,7 +4,6 @@ import all ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.Clo
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.ExceptionalGroupG2.StdGap
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.MultOne
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Closure
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.ExceptionalGroupG2.RigidityG2.MultOne
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.RigidityTheorems.IrredA
 

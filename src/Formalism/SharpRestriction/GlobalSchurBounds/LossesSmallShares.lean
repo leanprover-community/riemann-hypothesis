@@ -2,9 +2,7 @@ module
 
 public import Formalism.SharpRestriction.GlobalSchurBounds.WeightVectorSmallSharesSeven
 public import Formalism.SharpRestriction.GlobalSchurBounds.QuadraticLogDerivCongr
-import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Formalism.LocalToGlobal.GlobalTheory.PlacesP
-import Formalism.SharpRestriction.GlobalSchurBounds.FrameCodeOfAdditive
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

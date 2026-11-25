@@ -4,11 +4,8 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RightStabili
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.MeasMOfCont
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermitianFormRankZeroApply
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialProperness.ZhatNormLinearBound
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.MatExtMulVec
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.HermitianCurvature.HermitianCurvatureProofs.MeasMUpper, Formalism.HermitianCurvature.HermitianCurvatureProofs.MeasurePreservingProdRearrange, Formalism.HermitianCurvature.HermitianCurvatureProofs.MeasurableCoordinateMap

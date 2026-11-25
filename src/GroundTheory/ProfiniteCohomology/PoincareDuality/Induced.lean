@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.ProfiniteCohomology.PoincareDuality.NsmulEqZeroOfNonemptyAddEquiv
-public import GroundTheory.ProfiniteCohomology.CupProducts.Cocycles
 public import GroundTheory.ProfiniteCohomology.CartierDual
 public import GroundTheory.ProfiniteCohomology.Characters
 public import GroundTheory.ProfiniteCohomology.CupProducts.Projection

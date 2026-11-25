@@ -3,8 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.ThetaValues.IsBlockProd
 public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.SumFinsuppAntidiagProdPowDivMultiFactorial
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsIntegralHarmonicNeZeroAndIsHomogeneous
-public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MinorMonomials
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsLastEntryPosNotLastPos
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -53,7 +51,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.ThetaValues.ThConst
 import Development.AbelianVarietyTheory.Definitions.TorusSections.IsTorusOf
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndRaw
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.HolJetA
 
 @[expose] public section
 

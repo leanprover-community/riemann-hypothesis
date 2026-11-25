@@ -12,7 +12,6 @@ public import ReciprocityTheory.CommutativeAlgebra.ChainConnInDim
 public import Mathlib.RingTheory.KrullDimension.Polynomial
 public import ReciprocityTheory.CommutativeAlgebra.CohenMacaulay.LocDim
 public import ReciprocityTheory.CommutativeAlgebra.SaturatedChains.RingKrullDimLocalizationQuotientEqHeight
-public import Mathlib.RingTheory.Localization.Submodule
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic

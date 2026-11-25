@@ -2,11 +2,9 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LatAtLattice
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExtUHInjective
-public import Formalism.LocalToGlobal.Columns.DecoFin
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnChainsSatisfyConditions
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnSpacesStandardInFrameCoords
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MoveDownLevelPrimeKeepsChart
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseFieldsPrimesOk
 public import Formalism.LocalToGlobal.Columns.DecoratedFrameDiagonalTwistDecoration
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.AbsNormEqOfSplit
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BcPrVEqOneOfAdAt
@@ -52,12 +50,10 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Formalism.HermitianLattices.HermitianLatticesProofs.NeighbourConstruct
 import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.NarrowJetMoments
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseFieldsDefiniteLaws
-import Formalism.LocalToGlobal.Columns.CoefColLemmas
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CosetInMvUp, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsNotMemConjMem, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InvMapMulMapMulCancelComplexEmbedding, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.StepGamMemUJ, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UpKeepsChart, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InvSmulMem

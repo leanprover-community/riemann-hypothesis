@@ -12,7 +12,6 @@ import GroundTheory.AutomorphicForms.LocallyProfinite
 public import GroundTheory.AutomorphicForms.SmoothRepSchur
 public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
 import Mathlib.Tactic.Linter.HaveILetI
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 
 @[expose] public section
 

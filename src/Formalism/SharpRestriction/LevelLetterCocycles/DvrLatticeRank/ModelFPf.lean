@@ -4,12 +4,9 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.ExpansionFormAll
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelFPfA
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelFPfB
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelFPfC
-public import Formalism.SharpRestriction.LevelLetterCocycles.DownSlotProposition
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.DvdCondition
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelFPfG
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.NinLamPf
-import Formalism.SharpRestriction.LevelLetterCocycles.MapCompZero
-import Formalism.SharpRestriction.LevelLetterCocycles.FrobeniusPowUniformizerFactorisation
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelFPfD, Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelFPfE, Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelFPfF, Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelFPf

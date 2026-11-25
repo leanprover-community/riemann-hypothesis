@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeIndexAndWeightTheory
 public import Formalism.FlagUnipotentLattices.AutBoundOfMinkowskiBound
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
-import Formalism.FlagUnipotentLattices.SignaturePreservingEntryNorms
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.Minkowski
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CellGeo

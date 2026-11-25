@@ -3,25 +3,16 @@ module
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LocRatio
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GradedSandwichDegreeBound
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EigLat
-public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatticeRegularAtLocalPoint
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsCocharLie
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsOrthFull
 public import GroundTheory.HeightsAndTheta.Heights.ArithDegree
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.LinearIndependentSumElimOfExact
-public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Slopes
-public import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.DenseHeight
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.FieldChange
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ArchBetween
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordDegreeBoundCharZero
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordDegreeBoundOfFlag
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.NumberTheory.NumberField.Basic
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordsAtComplexEmbedding
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FlagLabelBasesExist
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HermitianLineMetricBound
@@ -29,15 +20,8 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelValu
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LocalRatioProductFormula
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ValAtComplexEmbedding
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.LatticeRationalEmbedding
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieLatticeEvalAtLocalRing
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelExistsUniqueSemilinear
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelIsBaseChange
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
-import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.CompactGapsGE
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GrGenOfIsFlagVBOn
 
 -- This file was produced by scripts/clump.py from the modules listed below.

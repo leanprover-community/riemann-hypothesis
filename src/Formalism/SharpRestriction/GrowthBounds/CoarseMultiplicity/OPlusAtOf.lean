@@ -1,7 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.SymbolFormOfOrthogonality
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SegmentStatementHolds
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

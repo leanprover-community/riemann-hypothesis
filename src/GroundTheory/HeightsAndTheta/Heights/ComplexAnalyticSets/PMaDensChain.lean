@@ -2,7 +2,6 @@ module
 
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsSt
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PMaDensLeibniz
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Statements
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsAlg
 import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsPiola

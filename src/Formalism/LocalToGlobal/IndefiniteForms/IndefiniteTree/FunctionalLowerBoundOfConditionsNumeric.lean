@@ -10,8 +10,6 @@ public import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
 public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SlopeIneqMean
 public import Formalism.LocalToGlobal.LatticeGeometry.OperatorNormFibers.PDescentCutA
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.PairingDivisors.PairingDivisorProofs.Height
-import Formalism.PairingDivisors.PairingDivisorProofs.SumValuationNat
 import Formalism.HarderNarasimhan.HarderNarasimhanProofs.TwistFinrankEq
 import Mathlib.Tactic.Linter.Style
 

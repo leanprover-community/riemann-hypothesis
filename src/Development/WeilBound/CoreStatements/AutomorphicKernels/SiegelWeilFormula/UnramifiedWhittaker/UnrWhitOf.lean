@@ -2,7 +2,6 @@ module
 
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnramifiedWhittaker.BasisSet
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnramifiedWhittaker.AlmostGoodOf
-public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnramifiedWhittaker.TraceDual
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BasicCharacterLocalComponent
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CharacterConductorCondition
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FixedFieldStructure

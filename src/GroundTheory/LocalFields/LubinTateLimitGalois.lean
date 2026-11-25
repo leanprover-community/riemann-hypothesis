@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.LocalFields.LubinTateTowerMaps
-public import GroundTheory.LocalFields.UnitsBasic
 public import Mathlib.FieldTheory.KrullTopology
 public import Mathlib.Order.CompletePartialOrder
 import GroundTheory.LocalFields.ExamplesLaurent

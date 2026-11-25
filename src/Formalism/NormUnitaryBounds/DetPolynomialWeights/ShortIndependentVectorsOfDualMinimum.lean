@@ -7,7 +7,6 @@ public import Formalism.LatticeSlopes.LatticeSlopesProofs.ShortVector
 public import Formalism.LatticeSlopes.LatticeSlopesProofs.DegQuot
 public import Formalism.LatticeSlopes.LatticeSlopesProofs.SaturationProperties
 public import Formalism.LatticeSlopes.CovolAntiSameRank
-import Formalism.LatticeSlopes.LatticeSlopesProofs.CovolEqGram
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

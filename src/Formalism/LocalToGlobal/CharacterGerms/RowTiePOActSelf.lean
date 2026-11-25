@@ -4,9 +4,6 @@ public import Formalism.LocalToGlobal.CharacterGerms.RowTieFB
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePOActLog
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePOActSg
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePPTSelf
-import Formalism.LocalToGlobal.CharacterGerms.RowTiePGerm
-import Formalism.LocalToGlobal.CharacterGerms.RowTiePLogExSt
-import Formalism.FormalGroupLog.FormalGroupLogProofs.ChainRule
 import Formalism.LocalToGlobal.CharacterGerms.ConstMemTypeSetOfNonneg
 import Formalism.LocalToGlobal.CharacterGerms.RowTieCartAdd
 import Formalism.LocalToGlobal.CharacterGerms.RowTieCartFB

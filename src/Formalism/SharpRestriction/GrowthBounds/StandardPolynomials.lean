@@ -4,7 +4,6 @@ public import Formalism.SharpRestriction.GrowthBounds.ObjSeg
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.RestAssumptionsOfThreeInterfaces
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.ColTop
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.ColumnPolynomialCovectorZero
-public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.TCoreDef
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.RestSegCoreOfNum
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.TCGlue
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.TCNumDef
@@ -23,26 +22,17 @@ public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.BFFinal
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.FamilyFourthBound
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SegmentStatementHolds
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.KapCore
-public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.TopDegreeLeTwoB
-public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.ExtendedStatementOfParts
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.TotalDegreeEplus
-public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.FirstCoefficientFacts
-public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.LeAndHalfLeProdOneSubExpNegOfBounds
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.FinrankTensor
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SegLow
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.RankOnDigitsCast
-public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CardEqChainSum
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.StWeyl
-public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.FactorsOfPerturb
-public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.ChainDim
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.UpperCountOfTopRows
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CountLow
-public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.BlockInj
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.AiAddMulLeA0
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.BlockFG
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.ThresholdStandardLarge
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CoarseDegreeRatioConsecutive
-public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.PairLift
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.PairCount
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.NotKept
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.WtBound
@@ -50,14 +40,8 @@ public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.KeptBlocksOf
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.Bracket
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CoarseDegreesLargeOfStd
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CoarseThresholdRatioConsecutive
-public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SymInt
-public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.WittPNe
-public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.FinalTheorems
-public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SettingCharZeroAt
-public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SettingCZ
 public import Formalism.SharpRestriction.GrowthBounds.GLWeightTheory
 import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.TwoLatLeTwoSp
-import Formalism.LocalToGlobal.GroupLattices.FockModels.TransposeWords.FockR
 import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TensorOfPairLift
 

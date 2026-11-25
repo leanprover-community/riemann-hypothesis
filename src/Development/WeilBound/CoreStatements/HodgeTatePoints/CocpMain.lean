@@ -10,21 +10,13 @@ public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PowerSeriesPo
 public import Mathlib.CategoryTheory.Monoidal.Cartesian.Over
 public import Formalism.LocalToGlobal.ProjectiveLattices.SubConstMemOrig
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TranslDiffEq
-public import Mathlib.RingTheory.MvPowerSeries.Derivative
-public import Mathlib.Algebra.MvPolynomial.CommRing
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ToFirst
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FormalGermJetLiftStatement
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.UnitsMulRelationRearrangeCommRing
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.IsPullbackWhisker
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.QamCore
-import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.NatCastMulCoeffOfPderivEq
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermCut
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsSplitGaussChars
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.PairEvaluation
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.QuadTie
 
 -- This file was produced by scripts/clump.py from the modules listed below.

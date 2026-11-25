@@ -3,8 +3,6 @@ module
 public import Mathlib.LinearAlgebra.FreeModule.Finite.Basic
 public import Mathlib.LinearAlgebra.TensorProduct.Associator
 public import ReciprocityTheory.DualLattices.HtLinStatement
-public import ReciprocityTheory.DualLattices.NsetExpInjectiveSurjective
-public import Mathlib.LinearAlgebra.Isomorphisms
 public import Mathlib.LinearAlgebra.TensorProduct.RightExactness
 public import ReciprocityTheory.DualLattices.SeriesState
 public import ReciprocityTheory.DualLattices.IsHeightUnique

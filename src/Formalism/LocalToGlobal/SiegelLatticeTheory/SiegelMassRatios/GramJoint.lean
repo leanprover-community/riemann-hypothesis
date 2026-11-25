@@ -3,7 +3,6 @@ module
 import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.SplittingAdmissibleOfTermData
 public import Formalism.SharpRestriction.CuspSpanNormBounds.IsPrimitiveSub
 public import Formalism.FlagUnipotentLattices.SignaturePreservingEntryNorms
-import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

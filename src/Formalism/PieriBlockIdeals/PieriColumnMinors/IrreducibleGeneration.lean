@@ -5,7 +5,6 @@ public import Formalism.PieriBlockIdeals.StatementLR
 public import Mathlib.LinearAlgebra.BilinearForm.Orthogonal
 public import Mathlib.LinearAlgebra.Eigenspace.Minpoly
 public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
-public import Mathlib.CategoryTheory.Category.Basic
 public import Formalism.PieriBlockIdeals.PieriColumnMinors.Symmetrization
 public import Formalism.PieriBlockIdeals.PieriColumnMinors.DividedPowerZeroZeroVector
 public import Formalism.PieriBlockIdeals.PieriColumnMinors.HighestWeightMemWZero
@@ -13,8 +12,6 @@ import Mathlib.Tactic.TypeStar
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Algebra.Order.Star.Int
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.GradedWeylDivisibility.FinalB
 import Mathlib.Data.Finsupp.Interval
 
 -- This file was produced by scripts/clump.py from the modules listed below.

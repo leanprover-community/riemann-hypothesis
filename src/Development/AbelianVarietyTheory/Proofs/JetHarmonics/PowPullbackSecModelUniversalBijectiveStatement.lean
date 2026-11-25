@@ -37,7 +37,6 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
 import Development.AbelianVarietyTheory.Definitions.Jets.JetsOnCopiesCompatibleFrames
 import Development.AbelianVarietyTheory.Definitions.TwoChartAtlas.TwoChartSt
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndSt

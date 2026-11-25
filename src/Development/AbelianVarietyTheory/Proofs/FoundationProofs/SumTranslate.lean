@@ -2,10 +2,8 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.Foundations.HTPresNuOfPolys
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
-public import Mathlib.RingTheory.AdicCompletion.Noetherian
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ExpUpper
 public import Development.AbelianVarietyTheory.Definitions.Foundations.PieceEqPieceT
-public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
 public import Development.AbelianVarietyTheory.Definitions.Foundations.HtCoLOfEq
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HtCoLSum
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsPrimitiveRootEOmLevel
@@ -15,7 +13,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CoefPosEq
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DropConst
 public import Development.AbelianVarietyTheory.Definitions.Foundations.SumMulCoPtSbEqSumInv
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ShCocOn
-public import ReciprocityTheory.GaloisValuations.Global
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsZetaSystemFixedExponent
 public import Development.AbelianVarietyTheory.Definitions.Foundations.AdmissibleNewformZetaData
 public import Development.AbelianVarietyTheory.Definitions.Foundations.AdmissibleHodgeTateZetaClassParams
@@ -47,7 +44,6 @@ import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
 import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.NormNum.Irrational
 import Mathlib.Tactic.NormNum.IsCoprime
 import Mathlib.Tactic.NormNum.IsSquare
@@ -67,15 +63,10 @@ import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Topology.Sheaves.Init
 import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
-import Development.AbelianVarietyTheory.Definitions.Foundations.Integral
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Definitions.Foundations.Mdl
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
 

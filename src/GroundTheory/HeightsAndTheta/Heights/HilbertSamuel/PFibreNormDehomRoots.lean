@@ -24,7 +24,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullGradedAlge
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullRatiosAlgebraic
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullSectionIntegral
 import Mathlib.Algebra.Order.Star.Rat
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.Tactic.TypeStar
 

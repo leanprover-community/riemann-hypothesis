@@ -4,7 +4,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.UnitAtOfMulR
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CharZeroCentreOfComplex
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsUnitIffUnitAt
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtIffChartLocalization
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SncChartOfSmoothCoords
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsSncModel
@@ -12,7 +11,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ChartPrimeGi
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegularRingDeterminesComponent
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtIsLocalRingIsFractionRingStalk
 import Mathlib.Tactic.Linter.Style
 

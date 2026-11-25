@@ -2,7 +2,6 @@ module
 
 public import Development.WeilBound.CoreStatements.OrbitDecayEstimates.CurveDerivativeDecay.IntegrableOfDec
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.HeBranching
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.FrobeniusBoundOfMulNearOne
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

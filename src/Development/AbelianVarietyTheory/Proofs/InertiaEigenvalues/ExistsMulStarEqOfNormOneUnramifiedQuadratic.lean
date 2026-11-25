@@ -5,7 +5,6 @@ public import Mathlib.Analysis.Normed.Field.Basic
 public import Mathlib.RingTheory.Ideal.Quotient.Basic
 public import Mathlib.Topology.MetricSpace.Ultra.Basic
 public import Mathlib.FieldTheory.ChevalleyWarning
-public import Mathlib.Algebra.CharP.Defs
 public import Mathlib.Analysis.Normed.Group.Ultra
 public import Mathlib.Analysis.Normed.Module.FiniteDimension
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.FourierMatch

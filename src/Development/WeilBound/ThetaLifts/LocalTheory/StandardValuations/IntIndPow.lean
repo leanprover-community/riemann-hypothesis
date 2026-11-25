@@ -6,7 +6,6 @@ public import Development.WeilBound.CoreStatements.LocalThetaKernels.EvlLoc
 public import Mathlib.MeasureTheory.Integral.Pi
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.PairwiseDisjointCell
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

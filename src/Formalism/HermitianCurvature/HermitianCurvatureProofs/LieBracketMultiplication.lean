@@ -3,13 +3,10 @@ module
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselDecayBounds.BesselUnitNorm.BesselNormSteps.BesselLine.ConvGrp
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.LieListProducts
 public import Formalism.HermitianCurvature.FrameExists2
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FrameEntries
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LeftDerivativeCurves
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CartanInvolutionConjTransposeMul
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

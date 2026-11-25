@@ -10,7 +10,6 @@ import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LBidetLemmas
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LBidetMinor
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 
 @[expose] public section
 

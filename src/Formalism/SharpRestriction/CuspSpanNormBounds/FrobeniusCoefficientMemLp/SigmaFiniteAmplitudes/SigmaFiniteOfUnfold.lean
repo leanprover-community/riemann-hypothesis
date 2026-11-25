@@ -5,7 +5,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerm
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdjointOfIso
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSB
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeLemma3
-public import Formalism.SharpRestriction.CuspSpanNormBounds.LowestKTypeMultiplicity
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

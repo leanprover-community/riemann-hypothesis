@@ -9,7 +9,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EigIdxFin
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TupPinsOfMuIsW
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NonemptyAgreeRealOfReadGalois
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.JumpsCardOfBuilt
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NonzeroPlacesOverPrimes
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsStagesClauses
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsExplicitParameters
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SzRowNumAt
@@ -56,11 +55,8 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Basify
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.LocalToGlobal.GaloisLevelStructure.Checks
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RowsRestWordColumnUnitBaseTupleAlt
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.StrictHenselianAcyclic
 import Mathlib.Algebra.Order.Star.Rat
 
 -- This file was produced by scripts/clump.py from the modules listed below.

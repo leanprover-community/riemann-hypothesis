@@ -3,7 +3,6 @@ module
 public import Mathlib.GroupTheory.Index
 public import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.MemPowSub
 public import Mathlib.RingTheory.Polynomial.Eisenstein.IsIntegral
-public import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
 public import Mathlib.RingTheory.Polynomial.Cyclotomic.Eval
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.PowIndexTorsionKerRangeMul
 import Mathlib.Algebra.Order.Floor.Extended
@@ -50,7 +49,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.SqSubLeNormSub
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.HaveILetI

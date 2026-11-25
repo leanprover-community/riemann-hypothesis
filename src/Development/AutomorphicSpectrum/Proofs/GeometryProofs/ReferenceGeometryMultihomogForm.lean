@@ -7,7 +7,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LocalRingPoi
 public import Development.WeilBound.CoreStatements.VolumeEquality.ChartMeetsPoint
 public import Development.WeilBound.CoreStatements.VolumeEquality.CoverRootsSch
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PFibreNormDehomRoots
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

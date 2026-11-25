@@ -5,8 +5,6 @@ public import GroundTheory.AutomorphicForms.GKModules.Garding
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableConv
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableLaplacian
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.ExistsIsOpenForallCuspRepTFinOneEq
-public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableCartan
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.DecayUniform
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsArchConv
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsMeasure
 import Mathlib.Tactic.TypeStar

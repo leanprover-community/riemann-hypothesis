@@ -8,8 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Statement
 public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.StatementsConeTrdeg
 public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PConeTrdeg
 public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PIntDomainDim
-import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PFibreCompDim
-import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PFibreCompDimZ, GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Assembly

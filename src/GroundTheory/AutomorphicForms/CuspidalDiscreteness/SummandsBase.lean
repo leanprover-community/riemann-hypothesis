@@ -1,8 +1,6 @@
 module
 
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsDecay
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.Smoothing
-public import GroundTheory.AutomorphicForms.GKModules.SmoothVectors
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

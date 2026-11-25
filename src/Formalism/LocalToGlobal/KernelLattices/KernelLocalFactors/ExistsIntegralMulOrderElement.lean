@@ -8,10 +8,8 @@ public import Formalism.LocalToGlobal.Columns.RecLevelLocP
 public import Formalism.LocalToGlobal.Columns.RowFormsSel
 import Formalism.LocalToGlobal.Divisibility.TuplesLemmas
 import Formalism.LocalToGlobal.GlobalTheory.GL3.PLinkThU
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.IsAdmissibleFlagPairOfUnitriangularLeftAutomorph
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PeriodLatticeFinitelyGenerated
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.SelfDualLatticeNorms.SelfDualComap
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.StdOK
 public import Formalism.LocalToGlobal.Columns.RecLevel
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.NarrowJetMoments
 

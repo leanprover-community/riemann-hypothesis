@@ -13,11 +13,8 @@ public import Mathlib.Analysis.Calculus.Deriv.Shift
 public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 public import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
-public import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic
-public import Mathlib.MeasureTheory.Group.Defs
 public import Mathlib.RingTheory.DedekindDomain.FiniteAdeleRing
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FiniteAdeleStrongApproximationModNat
-public import Mathlib.MeasureTheory.Group.Measure
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.GrowDef
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.GrowSplit
 import Std.Tactic.BVDecide.Normalize.Prop

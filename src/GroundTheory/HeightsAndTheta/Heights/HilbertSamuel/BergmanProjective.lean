@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.HeightsAndTheta.Heights.FubiniStudyChern
-public import Mathlib.Topology.Algebra.Module.FiniteDimension
 public import Mathlib.RingTheory.Complex
 public import Mathlib.RingTheory.Norm.Transitivity
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
@@ -13,7 +12,6 @@ import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Lemma
-import Mathlib.Algebra.Order.Star.Real
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.HeightsAndTheta.Heights.FubiniStudyTransition, GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.BergmanProjective

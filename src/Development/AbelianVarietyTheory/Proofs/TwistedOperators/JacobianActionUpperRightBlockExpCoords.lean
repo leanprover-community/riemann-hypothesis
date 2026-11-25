@@ -6,14 +6,6 @@ public import Mathlib.LinearAlgebra.Determinant
 public import Mathlib.LinearAlgebra.UnitaryGroup
 public import Mathlib.RingTheory.Complex
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContinuousExptPY
-public import Mathlib.RingTheory.Norm.Transitivity
-public import Mathlib.Analysis.Calculus.FDeriv.Defs
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.Analysis.Asymptotics.Arith
-public import Mathlib.Analysis.Asymptotics.Lemmas
-public import Mathlib.Analysis.Calculus.FDeriv.Basic
-public import Mathlib.Analysis.Calculus.FDeriv.Comp
-public import Mathlib.Topology.Algebra.Module.FiniteDimension
 public import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Order.Floor.Extended
@@ -37,7 +29,6 @@ import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Echelon.Zsqrtd
@@ -62,9 +53,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-import Formalism.LocalRingCardinality.DataTheta
 import Formalism.SharpRestriction.Divisibility.SchurIrreducible
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style

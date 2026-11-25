@@ -5,22 +5,15 @@ public import Mathlib.CategoryTheory.Monoidal.Cartesian.Over
 public import Mathlib.NumberTheory.NumberField.CMField
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.PushInvertible
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NormPowLeNormFactorial
-public import Mathlib.RingTheory.AdicCompletion.Basic
-public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Defs
 public import Mathlib.RingTheory.SimpleRing.Principal
-public import Mathlib.Analysis.Normed.Module.FiniteDimension
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.HasMultiplier
 public import Formalism.LocalRingCardinality.DataHost
 public import Mathlib.Topology.Algebra.Valued.LocallyCompact
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Formalism.SharpRestriction.Divisibility.WeightAlgebra
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import Mathlib.Topology.Sheaves.Presheaf
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.QuadTie
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.NonzeroLocus
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.FFVMap
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.NumberTheory.Padics.LocalField
 import Mathlib.RingTheory.Henselian

@@ -10,7 +10,6 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficien
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.ExpInPPosDef
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PhiFacts
 public import Mathlib.Analysis.InnerProductSpace.Positive
-public import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.DecALogLower
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.ToMKMulInv
 import Mathlib.Tactic.ENatToNat
@@ -20,8 +19,6 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Analysis.InnerProductSpace.StarOrder
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.KFacts
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.Minors
 

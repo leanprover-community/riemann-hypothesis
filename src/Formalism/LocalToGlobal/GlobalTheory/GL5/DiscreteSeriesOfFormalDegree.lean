@@ -6,7 +6,6 @@ public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepre
 public import Formalism.LocalToGlobal.GlobalTheory.GL5.PClassDecomp
 public import Formalism.SharpRestriction.GlobalSchurBounds.FlipTwoThree
 public import Formalism.SharpRestriction.GlobalSchurBounds.TheoremThreeOfExplicitAndCompact
-import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.GL3MeanSquares.MassLowerBoundClosed, Formalism.GL3MeanSquares.HookFormulaTorsion.MassUpperBoundClosed, Formalism.LocalToGlobal.GlobalTheory.GL5.DiscreteSeriesOfFormalDegree

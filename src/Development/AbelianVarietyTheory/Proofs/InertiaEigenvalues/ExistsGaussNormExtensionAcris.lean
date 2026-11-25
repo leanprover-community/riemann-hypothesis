@@ -4,11 +4,8 @@ public import Formalism.LocalRingCardinality.AdicCompletionLocal.InstIsAdicCompl
 public import Development.AbelianVarietyTheory.CrystallinePeriods.RingBasics
 public import Development.AbelianVarietyTheory.CrystallinePeriods.RingIface
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UntiltNormUltrametricEqZero
-public import Mathlib.Analysis.SpecialFunctions.Pow.Real
-public import Mathlib.RingTheory.WittVector.Defs
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WittVectorGaussNormMul
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Acris0TorsionFree
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WittVectorGaussNormUltrametric
 
 @[expose] public section
 

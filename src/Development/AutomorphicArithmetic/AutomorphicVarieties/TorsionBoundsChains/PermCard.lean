@@ -2,8 +2,6 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.TorsionBoundsChains.FaceDSingle
 public import Mathlib.Combinatorics.Quiver.ReflQuiver
-public import Mathlib.RepresentationTheory.Coinduced
-public import Mathlib.RepresentationTheory.Homological.GroupHomology.Basic
 public import Mathlib.RepresentationTheory.Homological.GroupHomology.Functoriality
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.TorsionBoundsChains.Shapiro
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.TorsionBoundsChains.Transport

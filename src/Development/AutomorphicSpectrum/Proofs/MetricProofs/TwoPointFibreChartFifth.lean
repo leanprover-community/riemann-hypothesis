@@ -3,9 +3,7 @@ module
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsFibreChartIff
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ElementaryFactorProperties
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAnalyticOrbitOffBoundary
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.MetricsProjectionFormulaNef
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LocalHolomorphicLiftRealisation
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.RealisationBijectiveDegreeOne
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.TwoPointFibreChartFirst
 
 @[expose] public section

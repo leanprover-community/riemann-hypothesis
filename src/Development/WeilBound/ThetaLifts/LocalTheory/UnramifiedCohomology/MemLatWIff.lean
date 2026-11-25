@@ -12,7 +12,6 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsInteger
 public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.Inertof
 public import Development.WeilBound.CoreStatements.LocalThetaKernels.IwasAd
 public import Development.WeilBound.ThetaLifts.LocalTheory.UnramifiedCohomology.ExistsSelfDual
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsDualFamilyOfIsLattice
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

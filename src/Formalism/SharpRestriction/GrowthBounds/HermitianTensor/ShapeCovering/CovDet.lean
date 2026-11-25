@@ -5,7 +5,6 @@ import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
-public import Mathlib.LinearAlgebra.Matrix.Block
 public import Mathlib.RingTheory.AlgebraicIndependent.Basic
 
 @[expose] public section

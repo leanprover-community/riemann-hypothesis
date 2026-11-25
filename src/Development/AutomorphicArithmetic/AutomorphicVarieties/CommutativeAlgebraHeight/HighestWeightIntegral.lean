@@ -5,15 +5,11 @@ public import Mathlib.RingTheory.AlgebraicIndependent.Basic
 public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
 public import ReciprocityTheory.CommutativeAlgebra.CohenMacaulay.LocDim
 public import ReciprocityTheory.CommutativeAlgebra.PolynomialHeights.HeightAddRingKrullDimQuotientMvPolynomialField
-public import Mathlib.RingTheory.AlgebraicIndependent.TranscendenceBasis
 public import Mathlib.RingTheory.MvPolynomial.Localization
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.IsLocalHom
-public import Mathlib.RingTheory.DiscreteValuationRing.Basic
-public import Mathlib.RingTheory.FiniteType
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.ClCmquot
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.ClQuot
 import Mathlib.Tactic.Linter.HaveILetI
-import ReciprocityTheory.CommutativeAlgebra.PolynomialHeights.PolyCM
 import Mathlib.RingTheory.Finiteness.Quotient
 
 -- This file was produced by scripts/clump.py from the modules listed below.

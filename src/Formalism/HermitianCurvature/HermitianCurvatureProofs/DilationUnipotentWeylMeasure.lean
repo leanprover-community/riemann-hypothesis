@@ -10,7 +10,6 @@ import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 public import Mathlib.Analysis.Calculus.Deriv.CompMul
 public import Mathlib.Analysis.Calculus.Deriv.Shift
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.JInvCCA
 
 @[expose] public section
 

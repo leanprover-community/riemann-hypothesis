@@ -1,8 +1,6 @@
 module
 
 public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.LocalBaseChange.TwistedIndependenceLemma.TwistedIndependence
-public import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
-public import Mathlib.Basic.Complex.Basic
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactFixedVectorProjection
 import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IwahoriFactorisation.StrictDominance.JointGeneralisedEigenvectors.IsJointGenEig
 

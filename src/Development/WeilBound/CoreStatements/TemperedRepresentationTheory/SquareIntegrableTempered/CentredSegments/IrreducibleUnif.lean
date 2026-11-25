@@ -1,7 +1,6 @@
 module
 
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.SquareIntegrableTempered.CasselmanNecTemp
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 
 @[expose] public section
 

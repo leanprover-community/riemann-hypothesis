@@ -8,7 +8,6 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LinearChangeOfVa
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.CompactOrbits.ModulusInduction
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.TwistedPieces.IntegralParts.FibresAndCosets
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.TwistedPieces.IntegralParts.ModulusAndOrbits
-import GroundTheory.AutomorphicForms.MeasuresModulus
 
 @[expose] public section
 set_option linter.unusedSectionVars false

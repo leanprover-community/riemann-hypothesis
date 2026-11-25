@@ -2,7 +2,6 @@ module
 
 public import Development.WeilBound.CoreStatements.ProjectiveValuations.NV
 public import Development.AbelianVarietyTheory.Definitions.Divisors.BarCompSubsetClosure
-import Development.AbelianVarietyTheory.Proofs.GenericRegularity.EvaluationLawsGenericFramesAtlasHold
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.OntoStatementPfS
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsVanBdOfMemExtVanZ
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.OffZero

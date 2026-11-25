@@ -7,13 +7,11 @@ public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsGrouped
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.InvariantDerivAlongEndo
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.NabValPullbackMonomial
 public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.FormalSecondPointDerivativeSecondCoordinate
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CoeffProdLeadingMinors
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ConstantCoeffDmonOfProdLinear
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.SumProdConstantCoeffDmonOfCols
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.SumProdNabValLeadingMinors
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.DofDApply
 public import Development.AbelianVarietyTheory.Definitions.Jets.ColValMonomial
 public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.ExistsFormalBiextMap
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.BilinPartEigenMemRange
@@ -59,9 +57,7 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.NabTrans
 import Mathlib.Tactic.ReduceModChar
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.ConnectionKillsSeries
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat

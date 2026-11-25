@@ -4,20 +4,12 @@ public import Development.WeilBound.ThetaLifts.SphericalLattices.LocModSt
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
 public import Development.WeilBound.CoreStatements.LocalThetaKernels.IwasLoc
 public import Development.WeilBound.ThetaLifts.SphericalLattices.ChartSt
-public import Formalism.SatakeDualWeyl.StatementF
 public import Development.WeilBound.ThetaLifts.SphericalLattices.LocCommSt
-public import Mathlib.Basic.Real.Basic
-public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsHermND
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HaarInvVolumeConjModularCharacter
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.GlobalUnitScalingHaarProductFormula
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.OrdLEqNegLog
-public import Development.AbelianVarietyTheory.Definitions.Foundations.T2SpaceTensorProductFiniteExtension
 public import Development.WeilBound.ThetaLifts.SphericalLattices.FunDefs
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUniqueIsConjAt
-import Development.WeilBound.CoreStatements.LocalThetaKernels.IwasFrame
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InvMemDoubleCosetAndComm
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FSatakeA
 
 section -- clump:auto
 @[expose] public section

@@ -2,17 +2,14 @@ module
 
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.MaxUnramifiedOutside
 public import ReciprocityTheory.GaloisValuations.Global
-public import ReciprocityTheory.GaloisValuations.GlobalB
 public import GroundTheory.ProfiniteCohomology.GaloisModules.FixedField
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.IsUnramifiedOutsideIffLeMaxUnramifiedOutside
 import GroundTheory.ProfiniteCohomology.RestrictedRamification.Unramified
 import Mathlib.FieldTheory.Galois.Profinite
-import Mathlib.RingTheory.Invariant.Profinite
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.GaloisValuations.GlobalA
 
 @[expose] public section
 

@@ -3,7 +3,6 @@ module
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GNonneg
 public import Formalism.HermitianCurvature.FiniteOrderIntersectionInSmooth
 public import Formalism.FormalDegreeBessel.FinalG
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.ReverseCauchySchwarzHolds
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermitianFormBasics
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.MajorantEstimate
 import Mathlib.RingTheory.Etale.Weakly

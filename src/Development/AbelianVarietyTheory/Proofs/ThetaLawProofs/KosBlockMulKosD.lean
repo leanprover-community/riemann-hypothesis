@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.KeyFormula.DegProd
 public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HDiscAA
-public import Mathlib.LinearAlgebra.Matrix.Block
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

@@ -8,8 +8,6 @@ public import Formalism.SharpRestriction.GlobalSchurBounds.StandardIntegralLatti
 public import Formalism.SharpRestriction.GlobalSchurBounds.LinkGLOBAL7Tied4
 public import Formalism.LocalToGlobal.GlobalTheory.GL4.PColFin
 public import Formalism.LocalToGlobal.GlobalTheory.MemIffOfLocBasisG
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
-import Formalism.LocalToGlobal.HermitianColumns.InLocalDiscriminantKernel
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.GlobalTheory.LevelZeroClassLatticeIntegral, Formalism.LocalToGlobal.GlobalTheory.ColValS, Formalism.LocalToGlobal.GlobalTheory.ClassesLevelZeroNonempty

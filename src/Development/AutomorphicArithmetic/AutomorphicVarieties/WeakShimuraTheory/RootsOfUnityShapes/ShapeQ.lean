@@ -4,8 +4,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeakShimura
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.RestrictionMemInvariantH1
 import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.DirichletPrimeToLPartMulLPowerPart
 import Formalism.ConjugateSelfDual.Statement
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ZsmulGeneratorEqZeroOfProjection
-import ReciprocityTheory.GaloisValuations.GlobalA
 
 @[expose] public section
 

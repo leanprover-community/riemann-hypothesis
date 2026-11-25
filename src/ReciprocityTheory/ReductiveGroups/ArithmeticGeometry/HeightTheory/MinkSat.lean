@@ -4,10 +4,8 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.OrthogonalProjectorMulVecConjugate
 public import ReciprocityTheory.SemistableReduction.DegAddHolds
 public import ReciprocityTheory.SemistableReduction.SemiDegB
-public import Mathlib.Analysis.InnerProductSpace.GramMatrix
 public import Mathlib.Algebra.Module.ZLattice.Covolume
 public import Mathlib.MeasureTheory.Group.GeometryOfNumbers
-public import Mathlib.Algebra.Module.ZLattice.Basic
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.TheoremA
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.Qdist
 public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
@@ -16,11 +14,9 @@ import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.SemistableReduction.ExistsIntSmulMemSpan
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.SingleMemStandardLattice, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.ExistsNeZeroMemNormSqLeGramDetDivRelIndex, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.ExistsSmallSaturatingVector, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.MinkSat

@@ -16,7 +16,6 @@ public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.MaMeasureB
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StRegSection
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StTailShift
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StLemmaETailMass
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StListTailLog
@@ -30,7 +29,6 @@ import Mathlib.Algebra.Ring.IsFormallyReal
 import ReciprocityTheory.AnalyticForms.PotentialTheory.Partition
 import Mathlib.Algebra.Order.Star.Real
 import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
-import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Topology.Baire.LocallyCompactRegular
 import Mathlib.Topology.UniformSpace.Uniformizable
 import Mathlib.Tactic.TypeStar

@@ -10,18 +10,15 @@ public import Development.WeilBound.ThetaLifts.LeviDeterminants.CharacterAdmissi
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.DoubledUnitaryCharacterTrivialOfSiegel
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.MixedModels.ExistsAdaptedIndexHermitian
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.MixedModels.PlaneAd
-public import Development.WeilBound.ThetaLifts.LeviDeterminants.CharacterAdmissibility.SchrodingerApplyZeroOfFst
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.MixedModels.RealSt
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAdelicSchwartzNeZeroAtOrigin
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExtendByZeroMemSchA
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ProductFunctionOnSumCoordsMemAdelicSchwartzSpace
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
-public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaDistributionNonzeroAdmissible
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.LagrangianUniqueness.LagLine
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.MixedModels.AdelicEstimatesHolds
 import Development.WeilBound.ThetaLifts.LeviDeterminants.EvFrame
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
-import Development.WeilBound.ThetaLifts.LeviDeterminants.EqZeroOfTheta
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.ThetaLifts.LeviDeterminants.CharacterAdmissibility.DetNeHerm, Development.WeilBound.ThetaLifts.LeviDeterminants.CharacterAdmissibility.LeavesX, Development.WeilBound.ThetaLifts.LeviDeterminants.MixedModels.ThetaTowerHermitianSecondHolds

@@ -5,7 +5,6 @@ public import GroundTheory.LocalFields.LowerIndex
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.MinpolyProductMap
 public import GroundTheory.LocalFields.LowerIndexQuotient
 public import GroundTheory.LocalFields.Monogenic
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

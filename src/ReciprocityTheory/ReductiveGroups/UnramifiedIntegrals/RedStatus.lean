@@ -6,16 +6,13 @@ public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.RedKur
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.RedKurOmega
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.RedValA
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.RedValB
-public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.EllipticOnePole
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.Interface
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.Tactic.Linter.Style
-import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.SemiChar
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.Norm1728EqOneOfFiveLe, ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.G2EqZeroOfHasCMByThree, ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.NormWeierstrassCoeffSmallJ, ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.RedModel, ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.RedStatus

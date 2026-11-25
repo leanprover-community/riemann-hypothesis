@@ -2,12 +2,9 @@ module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatOpA
 public import Formalism.FormalDegreeBessel.FinalG
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.UsCompose
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentComposition.Development
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar

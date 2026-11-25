@@ -11,9 +11,6 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LocPDe
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PlaceOverPInducedByAlgebraicPadicEmbedding
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SubHalfRankInt
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ValuationLeOneOfMemZmu
-public import Formalism.LocalToGlobal.Columns.AtTOwedS
-public import Formalism.LocalToGlobal.Columns.CoefficientsModP.BaseCh
-public import Formalism.LocalToGlobal.Columns.CoefColLemmas
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MoveStep
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.JetsInIffStepField
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.JetsAllOfColIn
@@ -21,12 +18,6 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RatSte
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RatTermOfRatStep
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SubAddLeSpread
 public import Formalism.LocalToGlobal.Columns.TiedAtT
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.PredMemGamRanks
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.MemExtLatOfMemLocP
-import Formalism.LocalToGlobal.Columns.BaseLemmas
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.TauLatticeLatticeHolds
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.AlternatingFormStandardHermitian
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ColInst
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -52,7 +43,6 @@ import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
 import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.NormNum.Irrational
 import Mathlib.Tactic.NormNum.IsCoprime
 import Mathlib.Tactic.NormNum.IsSquare
@@ -69,7 +59,6 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.LocalRingCardinality.CoeNeZeroOfNotMem
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Std.Tactic.BVDecide.Normalize.BitVec
 

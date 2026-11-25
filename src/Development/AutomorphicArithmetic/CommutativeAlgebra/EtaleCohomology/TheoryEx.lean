@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.TPullTMap
 public import Mathlib.GroupTheory.FreeAbelianGroup
-public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.OfNatTrans
 public import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.TestFacts
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.MapHComp
 import Mathlib.Algebra.Category.Grp.Abelian

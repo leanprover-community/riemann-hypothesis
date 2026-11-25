@@ -1,7 +1,6 @@
 module
 
 public import Mathlib.RingTheory.MvPolynomial.WeightedHomogeneous
-public import Mathlib.Data.Fintype.BigOperators
 
 @[expose] public section
 

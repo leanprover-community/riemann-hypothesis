@@ -8,18 +8,7 @@ public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.Differentia
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.StarInvMulVecDotProductMulVecInvMulVec
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogPeriodsSubframeDetBounds
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ContDiffUncentre
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.PeriodMatrixLocalTrivialization
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.SubframeDetLogGrowth
-import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.PAnalyticDerivBound
-import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.PGramEntryDeriv
-import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.PInvEntryBound
-import GroundTheory.HeightsAndTheta.Heights.Regularisation.Assembly
-import GroundTheory.HeightsAndTheta.Heights.Regularisation.PHodgeDerivative
-import GroundTheory.HeightsAndTheta.Heights.Regularisation.PLogCoverDescent
-import GroundTheory.HeightsAndTheta.Heights.Regularisation.PPuncturedExpOrder
-import GroundTheory.HeightsAndTheta.Heights.Regularisation.PRiemannExtensionSlices
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AutomorphicSpectrum.Definitions.MetricPeriods.ExistsIntSmulIsAdicIntegralInTensorBasis
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals.FubiniLevi
 
 -- This file was produced by scripts/clump.py from the modules listed below.

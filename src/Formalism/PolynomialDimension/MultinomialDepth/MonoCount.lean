@@ -1,7 +1,6 @@
 module
 
 public import Formalism.MahlerMeasure.MahlerMeasureProofs.WeightSpaceDimensionMonotone
-public import Formalism.MahlerMeasure.MahlerMeasureProofs.FreezeBij
 public import Mathlib.CategoryTheory.Category.Basic
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

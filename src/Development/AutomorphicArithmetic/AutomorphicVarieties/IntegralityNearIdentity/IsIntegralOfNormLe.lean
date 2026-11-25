@@ -2,8 +2,6 @@ module
 
 public import Mathlib.NumberTheory.Padics.Complex
 public import Mathlib.NumberTheory.Padics.PadicIntegers
-public import Mathlib.Algebra.Field.Defs
-public import Mathlib.Algebra.Module.Submodule.Defs
 public import Mathlib.Data.Matrix.Mul
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

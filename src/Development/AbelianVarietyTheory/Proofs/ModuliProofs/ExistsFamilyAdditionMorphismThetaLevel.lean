@@ -9,7 +9,6 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsFamilyM
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsSegreCoordinates
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsProjProperRelAmpleOfProjectiveCoordinateRep
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.SecCoordBcScaleUnique
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.SectionCoordinatesPullIsoNonzeroLocus
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

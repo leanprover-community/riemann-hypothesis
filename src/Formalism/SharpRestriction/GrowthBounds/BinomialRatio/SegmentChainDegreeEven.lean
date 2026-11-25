@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CountUp
 import Mathlib.Algebra.Order.Star.Int
 import Std.Tactic.BVDecide.Normalize.BitVec
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.ThresholdLowerBounds
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.BinomialRatio.KLettersDegEven, Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SegmentChainDegreeEven

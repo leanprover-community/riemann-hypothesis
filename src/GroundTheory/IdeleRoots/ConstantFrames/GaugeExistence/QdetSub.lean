@@ -5,8 +5,6 @@ public import Mathlib.Analysis.Calculus.FDeriv.Defs
 public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 import Formalism.FormalDegreeBessel.StatementWR
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreCut
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGaugeCut
-import Formalism.HermitianCurvature.StatementI
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.IdeleRoots.ConstantFrames.GaugeExistence.RotationOfDiagonalGenerator, GroundTheory.IdeleRoots.ConstantFrames.GaugeExistence.QdetSub

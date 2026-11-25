@@ -6,7 +6,6 @@ public import Mathlib.RingTheory.PowerSeries.Substitution
 public import Mathlib.RingTheory.PowerSeries.WeierstrassPreparation
 import Formalism.PadicSubsetSums.CentralIdempotents.WindowSums
 public import Mathlib.RingTheory.LocalRing.ResidueField.Basic
-public import Mathlib.RingTheory.PowerSeries.Inverse
 
 @[expose] public section
 

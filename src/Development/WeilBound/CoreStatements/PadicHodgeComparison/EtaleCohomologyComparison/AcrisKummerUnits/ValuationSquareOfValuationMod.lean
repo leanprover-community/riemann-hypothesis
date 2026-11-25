@@ -2,22 +2,16 @@ module
 
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.AcrisKummerUnits.Splits
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LiftIdempotentAdicComplete
-public import Mathlib.Algebra.Divisibility.Basic
-public import Mathlib.Algebra.Ring.Defs
 public import Mathlib.RingTheory.DividedPowers.DPMorphism
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MemIdempotentComplementIff
-public import Mathlib.RingTheory.Ideal.Maximal
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IdempotentLocalInduction
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DividedPowerQuotientExists
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegralLocalizationAwayInRing
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NewtonApproximationOfDichotomy
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SurjectivePreservesClosednessComparability
 public import Mathlib.RingTheory.Unramified.LocalStructure
-public import Mathlib.RingTheory.Etale.StandardEtale
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NewtonPolygonSlopeExistence
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PolynomialRootsOfClosedQuotient
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

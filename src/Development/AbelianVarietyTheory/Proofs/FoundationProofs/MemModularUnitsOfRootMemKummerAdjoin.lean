@@ -12,7 +12,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsInerti
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InertFixesRootOfUnitRatio
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCongOfCongOnFixed
 public import Development.AbelianVarietyTheory.Definitions.Foundations.Letter
-public import Mathlib.FieldTheory.RatFunc.Basic
 public import Development.AbelianVarietyTheory.Definitions.Foundations.HahnPowOrderLeadingCoeff
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InertiaPowResidueCardSubOneApplyOfPowMem
 import Mathlib.Algebra.Order.Floor.Extended
@@ -64,7 +63,6 @@ import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
-import Mathlib.RingTheory.Valuation.LocalSubring
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DiagMod
 

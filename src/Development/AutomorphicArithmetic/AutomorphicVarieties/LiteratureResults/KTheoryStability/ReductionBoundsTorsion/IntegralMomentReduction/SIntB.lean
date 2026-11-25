@@ -2,16 +2,11 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.KTheoryStability.ReductionBoundsTorsion.MomentEntryBounds.UnitaryConeEstimates.OmG
 public import Mathlib.Analysis.CStarAlgebra.Matrix
-public import Mathlib.Analysis.Complex.Exponential
-public import Mathlib.LinearAlgebra.Matrix.Block
-public import Mathlib.LinearAlgebra.UnitaryGroup
 public import Mathlib.Analysis.Normed.Unbundled.RingSeminorm
 public import Mathlib.LinearAlgebra.Matrix.AbsoluteValue
-public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.MeasureTheory.Group.Measure
 public import Mathlib.Topology.Algebra.Group.Matrix
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.KTheoryStability.ReductionBoundsTorsion.MomentEntryBounds.UnitaryConeEstimates.ContVal
-public import Mathlib.Analysis.SpecificLimits.Basic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.KTheoryStability.ReductionBoundsTorsion.MomentEntryBounds.InstLCSL
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

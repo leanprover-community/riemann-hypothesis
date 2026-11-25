@@ -3,7 +3,6 @@ module
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentCorrectionU1.CoreStar
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
 import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

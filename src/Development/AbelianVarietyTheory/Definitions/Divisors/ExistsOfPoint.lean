@@ -18,7 +18,6 @@ public import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.Exi
 public import Mathlib.Tactic.Polynomial.Basic
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsTauLattice
 import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ForallGeometricallyIntegralOfSmoothOfGeometrical
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocalC
 import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.LocGenOfTrivial
 
 -- This file was produced by scripts/clump.py from the modules listed below.

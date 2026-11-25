@@ -9,7 +9,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ColumnOperat
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.KernelQuotientFinite
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Formalism.DoubleCosetMeasures.LowerUnipotentOrbits.MulInvBlockDiagApplySameBlock
 
 @[expose] public section
 

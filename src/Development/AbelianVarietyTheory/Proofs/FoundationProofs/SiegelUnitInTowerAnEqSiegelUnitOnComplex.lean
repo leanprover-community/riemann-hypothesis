@@ -9,9 +9,7 @@ public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import Development.AbelianVarietyTheory.Definitions.Foundations.SiegelNeZeroIff
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SiegelFunctionHolomorphic
-public import Mathlib.Analysis.Complex.UpperHalfPlane.MoebiusAction
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SiegelFunctionTransformation
-public import Development.AbelianVarietyTheory.Definitions.Foundations.CthFac
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SmoothedSiegelUnitIndexAddIntVector
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HasQIff
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SmoothedSiegelUnitQExpansionCoeffsIntegral

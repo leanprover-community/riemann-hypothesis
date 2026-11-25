@@ -6,7 +6,6 @@ public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpTieAlg
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpTieGerm
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FBIdJet
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDVal
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermFunPf
 import Mathlib.Tactic.Linter.Style
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.CalcExp
 

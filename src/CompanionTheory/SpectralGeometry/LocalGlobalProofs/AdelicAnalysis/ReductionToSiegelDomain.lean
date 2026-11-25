@@ -5,13 +5,8 @@ public import Mathlib.NumberTheory.NumberField.Basic
 public import Mathlib.RingTheory.ClassGroup.Basic
 public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.CountData
-public import Mathlib.NumberTheory.NumberField.Norm
-public import Mathlib.CategoryTheory.Category.Basic
-public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
 public import Mathlib.MeasureTheory.Group.GeometryOfNumbers
 public import Mathlib.NumberTheory.NumberField.CanonicalEmbedding.Basic
-public import Mathlib.Algebra.Module.ZLattice.Basic
-public import Mathlib.NumberTheory.NumberField.Units.Basic
 public import Mathlib.NumberTheory.NumberField.Units.DirichletTheorem
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.MobiusActionUpperHalfPlane
 import Mathlib.NumberTheory.NumberField.ClassNumber
@@ -19,7 +14,6 @@ import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Analysis.CStarAlgebra.Classes
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.CuspRepresentativesFinite, CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.ExistsCuspReductionBound, CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.UnitBalancingImaginaryParts, CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.ReductionToSiegelDomain

@@ -12,9 +12,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.PointSide
 public import Mathlib.GroupTheory.Commensurable
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KottwitzPointCountOneClassCommensurable
 public import Development.AbelianVarietyTheory.Definitions.Divisors.NormSub
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.Analysis.Complex.Norm
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.Embeddings
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SimilitudePairAdelicProdUnramifiedEmbeddingInjec
 public import Mathlib.NumberTheory.Padics.HeightOneSpectrum

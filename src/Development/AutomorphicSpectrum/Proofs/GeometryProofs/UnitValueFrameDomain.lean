@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.Metric
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeCompDescentFourth
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ValAtIffValueAt
 import Development.AutomorphicSpectrum.Definitions.MetricPeriods.ExistsIntSmulIsAdicIntegralInTensorBasis
 

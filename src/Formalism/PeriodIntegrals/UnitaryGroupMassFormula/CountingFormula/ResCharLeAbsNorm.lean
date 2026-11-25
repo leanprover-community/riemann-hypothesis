@@ -8,9 +8,6 @@ public import Formalism.LocalRingCardinality.DataHost
 public import Mathlib.Analysis.PSeries
 public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.CntLocal
-import Formalism.SharpRestriction.CuspSpanNormBounds.IsPrimitiveSub
-import Formalism.SharpRestriction.CuspSpanNormBounds.LocalGroupInFamilyNontrivial
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.DensMultOf, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.ResCharLeAbsNorm

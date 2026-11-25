@@ -4,7 +4,6 @@ public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.NumberTheory.NumberField.CanonicalEmbedding.Basic
 public import Mathlib.Analysis.Calculus.BumpFunction.Convolution
 public import Mathlib.Analysis.SpecialFunctions.Complex.LogDeriv
-public import Mathlib.Analysis.Calculus.BumpFunction.Basic
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HeckeLEntireAndNonzeroAtOne
 public import Mathlib.Topology.Homotopy.Lifting
 import Mathlib.Algebra.Order.Floor.Extended
@@ -55,8 +54,6 @@ import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-public import Mathlib.Topology.Homotopy.Lifting
-import Mathlib.Topology.Sheaves.Init
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.GrowSplit
 
 -- This file was produced by scripts/clump.py from the modules listed below.

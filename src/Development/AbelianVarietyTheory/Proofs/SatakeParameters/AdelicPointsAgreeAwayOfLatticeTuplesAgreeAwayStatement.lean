@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.SameOffRefl
 public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.EqOneOfPh
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsUnifAt
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Afsplit
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -40,8 +39,6 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.LocSpBot
-import Formalism.SharpRestriction.GrowthBounds.ChartedClasses.ToLEInvApply
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.SatakeParameters.SameOffOfIsPt, Development.AbelianVarietyTheory.Proofs.SatakeParameters.AdelicPointsAgreeAwayOfLatticeTuplesAgreeAway, Development.AbelianVarietyTheory.Proofs.SatakeParameters.AdelicPointsAgreeAwayOfLatticeTuplesAgreeAwayStatement

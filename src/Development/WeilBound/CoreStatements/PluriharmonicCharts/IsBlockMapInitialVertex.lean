@@ -3,11 +3,9 @@ module
 public import Development.WeilBound.CoreStatements.PluriharmonicCharts.MCoordIdealLeOfHomog
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverTransferIdealEq
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.PullbackPullback
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelBaseProjectionPoints
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PFnFieldTrdeg
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PDiagFormDiv
-import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Assembly
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

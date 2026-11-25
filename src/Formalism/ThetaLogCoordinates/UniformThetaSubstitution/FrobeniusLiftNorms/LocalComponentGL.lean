@@ -4,7 +4,6 @@ public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.CyclicPower
 public import Formalism.FormalGroupWitt.FormalGroupWittProofs.SolveV
 public import Formalism.GaussJetBounds.GaussJetProofs.NormNatCastEqPowPadicValNat
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TopsChoicePartB
-public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.TopsChoicePartA
 
 @[expose] public section
 

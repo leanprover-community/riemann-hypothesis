@@ -11,7 +11,6 @@ public import GroundTheory.PAdicHodge.BCrisPlusInvariants
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.TypeStar
 import GroundTheory.PAdicHodge.ACrisBdRInj
-import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.NormNatCastPrime
 import Mathlib.RingTheory.RegularLocalRing.Defs
 
 -- This file was produced by scripts/clump.py from the modules listed below.

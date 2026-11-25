@@ -3,16 +3,11 @@ module
 public import Development.AbelianVarietyTheory.Definitions.Foundations.T2SpaceAdeleRing
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsHeightLeTwoMulQuotHeight
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.Unfold0K
-public import Development.AutomorphicSpectrum.Proofs.AdelicProofs.HasSatOfFamily
-public import Development.AutomorphicSpectrum.Proofs.AdelicProofs.LocGram
-public import Development.AutomorphicSpectrum.Proofs.AdelicProofs.MemKFinOfFrameIntegral
 public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.IsUnitDetOfCartan
-public import Development.WeilBound.CoreStatements.LocalThetaKernels.IwasFrame
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.ActsFormula
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.LmOfLinBar
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfActs
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictAd
-public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictDef
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictMod
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictSec
 public import Development.WeilBound.ThetaLifts.LatticeBasics.BoxFinC
@@ -21,21 +16,8 @@ public import Development.WeilBound.ThetaLifts.LatticeBasics.CartanBound2
 public import Development.WeilBound.ThetaLifts.LatticeBasics.CompactBound
 public import Development.WeilBound.ThetaLifts.LatticeBasics.FinLevel
 public import Development.WeilBound.ThetaLifts.LatticeBasics.HgtExA
-public import Development.WeilBound.ThetaLifts.LatticeBasics.HgtFin
 public import Development.WeilBound.ThetaLifts.LatticeBasics.HgtIntOf
 public import Development.WeilBound.ThetaLifts.LatticeBasics.SiegelWeilAnisoOf
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsLatticeFrameIsMajorantFrame
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsSiegelHProjArchEq
-public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.KdMulRight
-public import Development.WeilBound.ThetaLifts.LatticeBasics.FarRight
-public import Development.WeilBound.ThetaLifts.LatticeBasics.HgtArch
-public import Development.WeilBound.ThetaLifts.LatticeBasics.HgtCount
-public import Development.WeilBound.ThetaLifts.LatticeBasics.HgtWitt
-public import Development.WeilBound.ThetaLifts.LatticeBasics.IsCompactOfUnits
-public import Development.WeilBound.ThetaLifts.LatticeBasics.ThetaBox
-public import Development.WeilBound.ThetaLifts.LatticeBasics.UnfoldA
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
-public import Development.WeilBound.ThetaLifts.LatticeBasics.ContinuousFlat
 
 /-! # Stab2CptK: Consolidated global theta-kernel definitions and proofs (Stab2CptK). -/
 @[expose] public section

@@ -40,8 +40,6 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.LocSpBot
-import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.HkLatTupUpdate
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.SatakeParameters.LatKRatMulLev, Development.AbelianVarietyTheory.Proofs.SatakeParameters.KernelLatticeMovedLatticeTuple, Development.AbelianVarietyTheory.Proofs.SatakeParameters.KernelLatticeMovedLatticeTupleStatement

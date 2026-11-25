@@ -10,7 +10,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.StalkClosedP
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.FinitenessStep
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.FormalFunctions
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.ZariskiSplit
-public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.TwistingSheaf
 public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.

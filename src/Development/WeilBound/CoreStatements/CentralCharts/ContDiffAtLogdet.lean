@@ -4,12 +4,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ContDiffUnce
 public import Development.WeilBound.CoreStatements.CentralCharts.PshAt0
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PeriodGramComparisonBound
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PeriodGramSmoothPunctured
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Calculus.FDeriv.Defs
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.Analysis.Normed.Operator.Basic
-public import Mathlib.Analysis.SpecialFunctions.Log.Basic
-public import Mathlib.LinearAlgebra.Matrix.PosDef
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.GramMatrixSubScalarPosSemidef
 public import Development.WeilBound.CoreStatements.CentralCharts.ContDiffAtLogNorm
 public import Development.WeilBound.CoreStatements.CentralCharts.TraceMulReNonneg

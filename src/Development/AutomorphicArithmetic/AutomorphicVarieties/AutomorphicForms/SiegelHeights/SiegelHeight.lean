@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.SiegelHeights.InfEmbGrpEq
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.ConstantTerm
-public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Uniform
 public import GroundTheory.AutomorphicForms.ReductionSiegel
 
 @[expose] public section

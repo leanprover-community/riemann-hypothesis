@@ -2,9 +2,6 @@ module
 
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.SUnits
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.SPicDefs
-import GroundTheory.GlobalFields.KummerTheory.Unramified
-import GroundTheory.ProfiniteCohomology.RestrictedRamification.IsUnramifiedOutsideIffLeMaxUnramifiedOutside
-import GroundTheory.ProfiniteCohomology.RestrictedRamification.Ramification
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.ValuationTransport
 import Mathlib.Algebra.Lie.OfAssociative
 import Mathlib.RingTheory.Henselian

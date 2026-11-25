@@ -41,7 +41,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.IndexExponentDegree
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.EmbHInjective
-import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
 
 @[expose] public section
 

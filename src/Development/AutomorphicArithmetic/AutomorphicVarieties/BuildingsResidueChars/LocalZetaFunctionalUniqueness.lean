@@ -2,8 +2,6 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.GammaLaurentFactors.LaurentBlockInduction.LdDefs
 import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
-import Formalism.DoubleCosetMeasures.Statement
-import GroundTheory.AutomorphicForms.AdmissibleInduction
 import GroundTheory.AutomorphicForms.GL2.ExistsEqPowMulOfValuationLe
 import GroundTheory.AutomorphicForms.SmoothRepContragredient
 import GroundTheory.AutomorphicForms.SmoothRepSchur

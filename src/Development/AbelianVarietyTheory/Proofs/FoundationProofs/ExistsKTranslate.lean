@@ -6,9 +6,7 @@ public import Formalism.LocalRingCardinality.DataTheta
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.FiniteDimKStableSubspaceKFiniteLie
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.TorusWeightVectorIffCartanWeightVector
 public import Mathlib.Analysis.Real.Pi.Irrational
-public import Development.AbelianVarietyTheory.Definitions.Foundations.IsFockIPOfFockData
 public import Formalism.SharpRestriction.Divisibility.SchurIrreducible
-public import Formalism.RealPlaceAnalysis.StatementB
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsLinearEquivOfIrreducibleIsHW
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemISupInfWeightSubmoduleOfDiagonalStable
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EqZeroOfFactorialBound
@@ -18,14 +16,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CompactCo
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PairKEquivariantOfLieAlgebraCompat
 public import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.FockSingularValues
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AbsSubOfDisjoint
-public import Mathlib.Analysis.Complex.Basic
-public import Mathlib.Analysis.InnerProductSpace.Defs
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.Order.CompletePartialOrder
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.Analysis.InnerProductSpace.LinearMap
-public import Mathlib.Analysis.InnerProductSpace.Orthogonal
-public import Mathlib.Analysis.InnerProductSpace.Projection.Basic
 public import Development.AbelianVarietyTheory.BlockTheory.TorsionBlocks.CartanCoshPower
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsGrpDataMapHaar
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsMinf
@@ -85,18 +75,13 @@ import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.Tactic.ENatToNat
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Polynomial.Basic
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsStableSubmoduleTopWeightLine
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.DoubleCoverUpqKsetGeneratedByExp
-import Mathlib.Analysis.CStarAlgebra.Module.Constructions
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InstSecondCountable
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.HaarUpqEqOfOmegaDensity
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HighestWeightTensor
 import Mathlib.Topology.Compactness.Paracompact
 

@@ -2,8 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.TestSideLat
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.TestSideDef
-public import Formalism.LocalToGlobal.GroupLattices.FockModels.TestSideEdge
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 import Formalism.GradedWeylDivisibility.FinalD
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LDlatLemmas
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional

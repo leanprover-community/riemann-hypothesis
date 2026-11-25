@@ -5,7 +5,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsHermF
 public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.ChartGramHess
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PChartDensityIntegrable
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.Tactic.TypeStar

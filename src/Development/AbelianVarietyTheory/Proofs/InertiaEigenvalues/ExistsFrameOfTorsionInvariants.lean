@@ -3,15 +3,7 @@ module
 public import Mathlib.Algebra.Field.Defs
 public import Mathlib.LinearAlgebra.Span.Defs
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardLeOfSpan
-public import Mathlib.Algebra.BigOperators.GroupWithZero.Action
-public import Mathlib.Algebra.Module.Submodule.Basic
-public import Mathlib.Algebra.Module.Submodule.Ker
-public import Mathlib.LinearAlgebra.Basis.VectorSpace
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MkMemAdmissibleAtIffCocycle
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.JSmul
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ResBound
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.TwistedModelAdmissibleCocycles
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.StableLeSpanInvariantsOfSemilinearFamily, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFrameOfTorsionInvariants

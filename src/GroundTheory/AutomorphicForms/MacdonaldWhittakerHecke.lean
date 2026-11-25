@@ -2,8 +2,6 @@ module
 
 public import GroundTheory.AutomorphicForms.MacdonaldWhittaker
 public import GroundTheory.AutomorphicForms.MacdonaldFormula
-import GroundTheory.AutomorphicForms.SatakeTriangular
-import GroundTheory.LocalFields.LocalFourierHaar
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar

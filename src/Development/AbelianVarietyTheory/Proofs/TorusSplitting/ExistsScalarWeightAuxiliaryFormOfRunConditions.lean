@@ -6,35 +6,23 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.RegularityR1ValuedPoint
 public import Formalism.LocalToGlobal.ProjectiveLattices.Adm3OfExtension
 public import Development.AbelianVarietyTheory.Definitions.TorusSections.IsTorusOf
 public import Development.AbelianVarietyTheory.Definitions.TorusSections.ExistsSecTie
-public import Formalism.SharpRestriction.Divisibility.ModuliIntegralCharts
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.WchartLePreimage
 public import Development.AbelianVarietyTheory.Proofs.TorusSplitting.CardMulPhiLeValuationProductForm
-public import Formalism.LocalToGlobal.ProjectiveLattices.DataAtPointN3
 public import Development.AbelianVarietyTheory.Proofs.TorusSplitting.DegenerationDataAtModelPointOfUniformisation
-public import Formalism.LocalToGlobal.ProjectiveLattices.OneLtAbsNormReal
-public import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.IsOpenPart
 public import Development.AbelianVarietyTheory.Proofs.TorusSplitting.FiniteExtensionRamificationEmbedding
 public import Development.AbelianVarietyTheory.Proofs.TorusSplitting.IntegralThetaSectionExistsAndBaseChange
-public import Formalism.SharpRestriction.Divisibility.WeightAlgebra
 public import Formalism.LocalToGlobal.ProjectiveLattices.CrudeVal
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.SpanResCharNeBot
 public import Development.AbelianVarietyTheory.Proofs.TorusSplitting.PhiCSmulPull
-public import Formalism.LocalToGlobal.ProjectiveLattices.BetaAtSymm
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion
 public import Development.AbelianVarietyTheory.Proofs.TorusSplitting.ValuationFormPsiBalancedSymmetricPeriodForm
-public import Formalism.LocalToGlobal.ProjectiveLattices.LiesOverBaseChange
-public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsFramedPointBaseChangeAlgHom
 public import Development.AbelianVarietyTheory.Proofs.TorusSplitting.EtaProductRuleValueEqProductFormOfTestRing
-public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.AllUniformizationLawsHold
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsOpenOfRangeGenericSubset
-public import Formalism.LocalToGlobal.ProjectiveLattices.AllTest
 public import Formalism.LocalToGlobal.ProjectiveLattices.NormsFree
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SquareIntegrability.TorusAt
 public import Development.AbelianVarietyTheory.Proofs.TorusSplitting.ExistsProductCuspFormNeZeroArchSupNormBounds
 public import Formalism.LocalToGlobal.ProjectiveLattices.EtArch
 public import Formalism.LocalToGlobal.ProjectiveLattices.FreeBridge
 public import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.Signature
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FactPrincipalDatum
 public import Formalism.LocalToGlobal.ProjectiveLattices.HostInt
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.HasseNormTheoremQuadraticExtension
@@ -82,7 +70,6 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Development.AbelianVarietyTheory.Definitions.ThetaValues.IsNullVal
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.AbelianAt
 import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
@@ -91,7 +78,6 @@ import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Formalism.LocalToGlobal.ProjectiveLattices.PhiSetPullSub
 import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Lemma

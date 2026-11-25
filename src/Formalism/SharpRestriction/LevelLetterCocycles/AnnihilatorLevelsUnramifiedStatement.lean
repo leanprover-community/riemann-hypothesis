@@ -4,14 +4,12 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.FiltrationSaturatio
 public import Formalism.SharpRestriction.LevelLetterCocycles.KillerLevCoreOf
 public import Formalism.SharpRestriction.LevelLetterCocycles.AnnihilatorGeneralOfRingCondition
 public import Formalism.SharpRestriction.LevelLetterCocycles.PsCoprimeOf
-public import Formalism.SharpRestriction.LevelLetterCocycles.LemmasUnramifiedOfRingCondition
 public import Mathlib.RingTheory.PowerSeries.Binomial
 public import Formalism.SharpRestriction.LevelLetterCocycles.ExistsPosConstLagrangeCondition
 public import Formalism.SharpRestriction.LevelLetterCocycles.LevelClauseOfOpenTool
 public import Mathlib.NumberTheory.Basic
 import Formalism.SharpRestriction.LevelLetterCocycles.RingConditionOfDeltaInvariants
 import Mathlib.NumberTheory.Padics.MahlerBasis
-import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.LevelLetterCocycles.AnnihilatorLevelsOfGrading, Formalism.SharpRestriction.LevelLetterCocycles.AnnihilatorLevelsUnramifiedStatement

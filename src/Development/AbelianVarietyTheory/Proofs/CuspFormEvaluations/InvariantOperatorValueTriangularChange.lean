@@ -47,7 +47,6 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndRaw
-public import Mathlib.Algebra.MvPolynomial.Funext
 
 @[expose] public section
 

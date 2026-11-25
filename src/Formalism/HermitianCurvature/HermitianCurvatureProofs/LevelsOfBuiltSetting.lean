@@ -6,8 +6,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.InvariantOpe
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.QNFAsm
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelImageArithmetic.GlevImageOf
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelLiftBasics.LevelGroupUnitaryHermitian
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelTransfer.ExpLz
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelTransfer.LzConjTranspose
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelTransfer.SecondCapelliMinorLevel
 import Mathlib.Analysis.Matrix.MeasurableSpace
 import Mathlib.Tactic.Linter.Style

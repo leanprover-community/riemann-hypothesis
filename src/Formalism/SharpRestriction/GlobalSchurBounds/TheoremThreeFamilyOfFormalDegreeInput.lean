@@ -2,14 +2,11 @@ module
 
 public import Formalism.SharpRestriction.GlobalSchurBounds.MainSup
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.MassLandSt
-public import Formalism.SharpRestriction.GlobalSchurBounds.FlipTwoThree
 public import Formalism.SharpRestriction.GlobalSchurBounds.TheoremThreeOfExplicitAndCompact
 public import Formalism.LocalToGlobal.GlobalTheory.GL5.DiscreteSeriesOfFormalDegree
 public import Formalism.LocalToGlobal.GlobalTheory.GL5.LocalEndomorphismContinuous
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.FamilyPartFiveOfExplicitConstants
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.DivisionRationalLattice
-import Formalism.SharpRestriction.GlobalSchurBounds.Joints
-import Formalism.SharpRestriction.GlobalSchurBounds.JointsL
 public import Formalism.SharpRestriction.GlobalSchurBounds.LinkMin
 
 @[expose] public section

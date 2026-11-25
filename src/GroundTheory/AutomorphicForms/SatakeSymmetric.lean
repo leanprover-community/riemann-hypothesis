@@ -1,9 +1,7 @@
 module
 
 public import GroundTheory.AutomorphicForms.SphericalLaurent
-public import Mathlib.Data.Fintype.Perm
 public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
-public import Mathlib.Tactic.Continuity
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Analysis.CStarAlgebra.Classes

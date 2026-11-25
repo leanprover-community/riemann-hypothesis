@@ -14,8 +14,6 @@ public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.LocBasis
 public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ProdFormula
 public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.RatHerm
 public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ReductionSecondStep
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ValBasic
 import Formalism.SizeWindowBrackets.ChainSlopeWindows.TruncatedLatticeHolds
 import Mathlib.Tactic.Lemma

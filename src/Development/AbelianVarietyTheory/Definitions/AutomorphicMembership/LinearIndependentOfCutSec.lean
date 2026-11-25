@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RingKrullDimIntegers
 public import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.ConjSymm
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsTangent, Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LinearIndependentOfCutSec

@@ -7,10 +7,7 @@ public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 public import Formalism.ZeroFreeRegion.SmallHeightLogDeriv
 public import Formalism.ZeroFreeRegion.ZetaLogDerivativeBounds.NormIntegralComplLe
 public import Mathlib.Analysis.Real.Pi.Bounds
-public import Formalism.StatementOC
 public import Mathlib.NumberTheory.Harmonic.ZetaAsymp
-public import Mathlib.Analysis.Complex.Norm
-public import Mathlib.Analysis.Normed.Field.Basic
 public import Formalism.ZeroFreeRegion.ZetaLogDerivativeBounds.ZfoGrowthBall
 public import Mathlib.NumberTheory.LSeries.Nonvanishing
 public import Formalism.ZeroFreeRegion.FinalZFR

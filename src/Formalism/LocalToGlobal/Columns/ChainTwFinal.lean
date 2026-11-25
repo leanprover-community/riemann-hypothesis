@@ -2,17 +2,10 @@ module
 
 public import Formalism.LocalToGlobal.Columns.ChainTwZero
 public import Formalism.LocalToGlobal.Columns.ChainLawXi
-public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.KerHypAll
 public import Formalism.LocalToGlobal.Columns.ChainTwAn
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnfoldingEquivalence.ExtractFreeFillMatrix
-public import Formalism.LocalToGlobal.Columns.BlockTriangularMulVecMemPartialFlag
-public import Formalism.LocalToGlobal.Columns.FirstUnfoldingEqZeroOfNotIntegral
-public import Formalism.LocalToGlobal.Columns.ChainTwOk
 public import Formalism.LocalToGlobal.Columns.ChainTwAux
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
-import Formalism.LocalToGlobal.Columns.ChainInst
-import Mathlib.RingTheory.SimpleRing.Principal
 import Formalism.LocalToGlobal.Columns.ChainTwCst
 
 -- This file was produced by scripts/clump.py from the modules listed below.

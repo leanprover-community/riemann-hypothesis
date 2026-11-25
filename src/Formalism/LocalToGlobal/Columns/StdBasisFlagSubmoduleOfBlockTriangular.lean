@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.ChainInstS
-import Formalism.LocalToGlobal.Columns.ChainInst
 public import Formalism.LocalToGlobal.Columns.ColumnsProofs.ChainCounts
 
 @[expose] public section

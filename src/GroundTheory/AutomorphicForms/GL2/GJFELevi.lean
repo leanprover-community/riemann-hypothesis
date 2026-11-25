@@ -3,15 +3,12 @@ module
 public import Aesop.BuiltinRules
 public import GroundTheory.AutomorphicForms.GL2.IsAddHaarMeasureMatrixMeasureFinSq
 public import GroundTheory.AutomorphicForms.GL2.GJFELeviMulti
-import GroundTheory.AutomorphicForms.GL2.GJLocalZeta
-import GroundTheory.AutomorphicForms.LocallyProfinite
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.CategoryTheory.Countable
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.ExtremallyDisconnected
 import Mathlib.Topology.UniformSpace.Uniformizable
-public import GroundTheory.AutomorphicForms.GL2.GJFELeviConv
 
 @[expose] public section
 

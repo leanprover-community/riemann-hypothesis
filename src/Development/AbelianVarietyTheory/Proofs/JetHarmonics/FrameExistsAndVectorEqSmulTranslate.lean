@@ -2,9 +2,6 @@ module
 
 public import Formalism.FormalDegreeBessel.StatementG
 public import Formalism.HermitianCurvature.StatementQ
-public import Formalism.RealPlaceAnalysis.StatementA
-public import Formalism.RealPlaceAnalysis.StatementB
-public import Formalism.RealPlaceAnalysis.StatementE
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FrameCompletion
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FrameExtension
@@ -48,7 +45,6 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Formalism.HermitianCurvature.StatementQr
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat

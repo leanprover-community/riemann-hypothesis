@@ -2,23 +2,17 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DvdSubOfDvdSubX
 public import Mathlib.RingTheory.AdicCompletion.Algebra
-public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Mathlib.RingTheory.AdicCompletion.Completeness
 public import Mathlib.RingTheory.Localization.Away.Basic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.OneAddXMulDerivativeBin
 public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsAlgEquivXAddC
-public import Mathlib.NumberTheory.Padics.RingHoms
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsCosetRepresentativesOfFiniteSubgroupPadicI
 public import Mathlib.FieldTheory.KummerExtension
 public import Mathlib.RingTheory.RootsOfUnity.CyclotomicUnits
 public import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
-public import Mathlib.RingTheory.Polynomial.Eisenstein.Distinguished
 public import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
 public import Mathlib.RingTheory.ZMod.UnitsCyclic
-public import Mathlib.FieldTheory.Finite.Basic
-public import Mathlib.FieldTheory.Separable
-public import Mathlib.Algebra.CharP.Algebra
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MapCSmulMulVec
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PadicIntAlgebraMapInjectiveOfCharZero
 public import Mathlib.NumberTheory.Basic

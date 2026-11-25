@@ -50,8 +50,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SlopeIneqMean
-import Formalism.MeanHeightDescent.AverageDegreeBounds.GoodBadCut
 import Formalism.MeanHeightDescent.AverageDegreeBounds.SpanMuMin
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat

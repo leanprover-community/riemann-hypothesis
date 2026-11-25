@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicSpectrum.Statements.GeometryStatements.AgreementPos
 public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.RefLinked
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterNamed
 public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.RealTowerArithAgreement
 import Mathlib.Tactic.Linter.Style
 

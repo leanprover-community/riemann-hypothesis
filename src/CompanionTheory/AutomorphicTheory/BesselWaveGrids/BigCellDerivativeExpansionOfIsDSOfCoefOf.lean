@@ -3,11 +3,9 @@ module
 public import Formalism.HermitianCurvature.StatementTBB
 public import Development.AbelianVarietyTheory.Definitions.Jets.SideFam
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.AemeasurableBesselNormIntegrandBigCell
-public import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPrAlt
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.BesselDatumBothSidesAreSides
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.BesselNormSqEqBigCellNormSq
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CapelliKFiniteCoefficient
-public import Formalism.HermitianCurvature.StatementJF
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsRegularRepBesselBigCellVectorEqBessel
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.HermCmpWedgeEqDet
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.HsqNonneg
@@ -18,14 +16,11 @@ public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.BaseRepCapell
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.BigCellExpansionOfBesselFunctionZero
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.BigCellExpansionSmul
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.TopNum
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.DiscreteSeriesUnitarySmoothBasic
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.FixesWedgeAndForm
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.HaarEqSmul
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IsFRepExteriorPowerStandardRep
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.NumericalFamilyShapeGaps
-import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPr
 import Mathlib.Algebra.Order.Star.Int
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormSqUnitNormalizationLe
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.AbsCoordLeOfLOneNormLe
 
 -- This file was produced by scripts/clump.py from the modules listed below.

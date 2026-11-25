@@ -1,7 +1,6 @@
 module
 
 public import Formalism.HermitianCurvature.StatementTBB
-public import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section

@@ -4,7 +4,6 @@ public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.RankDefs
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.FamilyFourthBound
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CoarseDegreeAlternative
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.OtherStart
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.ThresholdLowerBounds
 
 @[expose] public section
 

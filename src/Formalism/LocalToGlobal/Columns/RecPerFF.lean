@@ -2,10 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.Columns.ChainInstY
 public import Formalism.LocalToGlobal.Columns.RecChainUnfOne
-public import Formalism.LocalToGlobal.Columns.RowForms
-public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
-public import Formalism.LocalToGlobal.Columns.Record
-import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.Columns.XiRef, Formalism.LocalToGlobal.Columns.RefXi1Above, Formalism.LocalToGlobal.Columns.FirstKernelEqLastComponentKernel, Formalism.LocalToGlobal.Columns.RecPerFF

@@ -10,31 +10,23 @@ public import Mathlib.CategoryTheory.Limits.Shapes.Countable
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.SheafH
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.MapExtPrecomp
 public import Mathlib.Algebra.Category.Grp.FilteredColimits
-public import Mathlib.Algebra.Homology.DerivedCategory.Ext.Map
 public import Mathlib.Algebra.FiveLemma
 public import Mathlib.Algebra.Homology.ShortComplex.ExactFunctor
 public import Mathlib.CategoryTheory.Sites.EpiMono
 public import Mathlib.Algebra.Category.Grp.AB
-public import Mathlib.Algebra.Category.Grp.Limits
 public import Mathlib.CategoryTheory.Abelian.GrothendieckCategory.EnoughInjectives
 public import Mathlib.CategoryTheory.Abelian.GrothendieckCategory.HasExt
-public import Mathlib.CategoryTheory.Sites.ConcreteSheafification
-public import Mathlib.CategoryTheory.Sites.LeftExact
 public import Mathlib.Topology.Sheaves.Abelian
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.CechSeparated
 public import Mathlib.Algebra.Homology.DerivedCategory.Ext.MapBijective
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.CechNaturality.NaturalLeray
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.ImmersionCech
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.QcohLocal
-public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.ImmersionPush
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.RelSerreAffine
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.TwistingSheaf
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.HasExtInstances
-public import Mathlib.AlgebraicGeometry.Morphisms.Separated
 public import Mathlib.AlgebraicGeometry.Noetherian
-import Mathlib.Algebra.Category.Grp.Abelian
 import Mathlib.Algebra.Category.Grp.Zero
-import Mathlib.Algebra.Homology.ShortComplex.Exact
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -43,8 +35,6 @@ import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.CategoryTheory.Monoidal.Mon
-import Mathlib.CategoryTheory.Sites.Abelian
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
@@ -76,10 +66,6 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.CategoryTheory.Abelian.GrothendieckAxioms.Sheaf
-import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.CategoryTheory.Sites.LocalSite
 import Mathlib.Tactic.TypeStar
 import Mathlib.Tactic.Linter.Style
 import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.Immersion

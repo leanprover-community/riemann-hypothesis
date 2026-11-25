@@ -5,11 +5,8 @@ public import Mathlib.Algebra.Order.Floor.Semifield
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ChebyshevPrimeBounds.PrimeCountBoundOf
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Mathlib.Analysis.Complex.ExponentialBounds
-public import Mathlib.Algebra.Group.Nat.Defs
-public import Mathlib.Tactic.ToDual
 public import Mathlib.Analysis.Real.Pi.Bounds
 public import Mathlib.Analysis.SpecialFunctions.Stirling
-public import Formalism.PeriodIntegrals.PrimeCount
 public import Formalism.PieriBlockIdeals.PieriColumnMinors.CorollaryOfParamsSevenLinkage
 import Aesop.Main
 import Mathlib.Tactic.Linter.Style

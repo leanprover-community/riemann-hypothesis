@@ -1,8 +1,6 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.IsInfUnitary
-public import Mathlib.Algebra.Module.LinearMap.End
-public import Mathlib.Basic.Complex.Basic
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.Gelfand
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.GelfandSeries
 import Mathlib.Tactic.TypeStar

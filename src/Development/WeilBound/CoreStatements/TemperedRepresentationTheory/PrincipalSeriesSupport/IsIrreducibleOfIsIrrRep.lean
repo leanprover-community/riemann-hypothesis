@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsCharLab
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsComp
-import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 

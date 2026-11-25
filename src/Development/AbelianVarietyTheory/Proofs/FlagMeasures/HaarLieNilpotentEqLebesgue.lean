@@ -5,11 +5,9 @@ public import Mathlib.Data.Matrix.Mul
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.UpperOff
 public import Formalism.PeriodIntegrals.QuotInv
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.MatrixOfBesselTwoSidedAction
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ClosedSubgroupBesselUnitaryHaarUnique
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.DensityInChart
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FlagUnipotentLebesgueMeasureIsHaarOn
-public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HaarLieIsHaarOnUnipotentRadical
 public import Mathlib.Analysis.Calculus.Deriv.Star
 public import Mathlib.Analysis.SpecialFunctions.Gaussian.FourierTransform
@@ -55,10 +53,8 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsotropicLeviEmbeddingHomomorphismProperties
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.UnipotentLeviRadicalCoordsHomeomorph
-import Formalism.FormalDegreeBessel.FinalG
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.CategoryTheory.Countable
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Basify

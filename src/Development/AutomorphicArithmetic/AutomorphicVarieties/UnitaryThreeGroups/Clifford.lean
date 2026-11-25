@@ -6,7 +6,6 @@ public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 public import Mathlib.LinearAlgebra.Trace
 
 @[expose] public section

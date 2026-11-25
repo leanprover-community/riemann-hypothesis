@@ -10,7 +10,6 @@ public import GroundTheory.GlobalFields.ComplexMultiplication.JugendtraumUniform
 public import GroundTheory.GlobalFields.ComplexMultiplication.MainTheoremIdeles
 public import GroundTheory.GlobalFields.GlobalArtinMap.Kernel
 import Mathlib.Tactic.TypeStar
-public import GroundTheory.GlobalFields.ComplexMultiplication.ClassGroupAction
 
 @[expose] public section
 

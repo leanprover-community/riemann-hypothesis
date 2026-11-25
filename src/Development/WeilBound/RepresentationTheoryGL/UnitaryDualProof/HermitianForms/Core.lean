@@ -2,10 +2,6 @@ module
 
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.UnipotentDerivatives.DerUnipLeUnipB
 public import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.BernsteinExponentBounds.IsInvForm
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Complex.Circle
-public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
-public import Mathlib.NumberTheory.LocalField.Basic
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormalizedAbsCharacterization
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.ComapMulVecCompactOpenStatement
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.CosetSumTranslateInvariantStatement
@@ -14,8 +10,6 @@ import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.Exi
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.HermitianSemidefiniteNullRadicalStatement
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.IsCompactSupAddSubgroupStatement
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.IsOpenAdditiveCharacterKernelStatement
-import Mathlib.GroupTheory.Index
-import Mathlib.Topology.Algebra.Group.Defs
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RelIndexOpenCompactNeZero
 
 noncomputable section

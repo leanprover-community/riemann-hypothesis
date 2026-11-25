@@ -5,9 +5,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.MulVecBvecAp
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.StrictUpperNeg
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdjugateBlockSingleLastColumn
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BigCellDiagonalMap
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.DirectionsInParabolic
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.HeisenbergLeviConjugationMeasure
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.LowerParabolicCoordinates
 
 @[expose] public section
 

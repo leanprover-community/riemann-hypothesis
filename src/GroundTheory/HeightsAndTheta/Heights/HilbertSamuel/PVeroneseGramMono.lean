@@ -4,13 +4,9 @@ public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjSpace
 public import Mathlib.AlgebraicGeometry.Morphisms.ClosedImmersion
 public import GroundTheory.HeightsAndTheta.Heights.FubiniStudy
 public import Mathlib.Analysis.Complex.Isometry
-public import Mathlib.Analysis.Complex.Circle
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsVeroneseChiParts
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.CSandwichStD
 import Mathlib.Tactic.Lemma
-import Mathlib.Topology.Algebra.MvPolynomial
-import GroundTheory.ArithmeticGeometry.SchemeCohomology.ConsCompSuccAboveZero
-import Mathlib.Topology.Sheaves.Presheaf
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.HeightsAndTheta.Heights.ComplexPoints, GroundTheory.HeightsAndTheta.Heights.HomogeneousLocalization.IntegralMonoInnerEqZero, GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PVeroneseGramMono

@@ -3,31 +3,20 @@ module
 public import Development.AbelianVarietyTheory.Definitions.Jets.DepthNumbersThresholdEq
 public import Formalism.LocalToGlobal.CharacterGerms.SelfConjugateRowData
 public import Development.AutomorphicArithmetic.OrbitLabellings.RowLab
-public import Development.AutomorphicArithmetic.OrbitLabellings.RowDefs
 public import Formalism.LocalToGlobal.CharacterGerms.ValBlocksCChart
 public import Formalism.LocalToGlobal.CharacterGerms.FinTwoNeOneSub
 public import Formalism.LocalToGlobal.CharacterGerms.IsWHLetterMinorK
 public import Formalism.LocalToGlobal.CharacterGerms.PderivSubGOff
-public import Formalism.LocalToGlobal.CharacterGerms.RowTieAdm
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieMemCHarm
-public import Formalism.LocalToGlobal.CharacterGerms.BlockMembershipNormOne
-public import Formalism.LocalToGlobal.CharacterGerms.NormOneIntegral
-public import Formalism.LocalToGlobal.CharacterGerms.NormOneRowInvariant
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieUpFBrI
-public import Formalism.LocalToGlobal.ProjectiveLattices.PlaceBelow
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsFormalGroupJetsChart
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.StarRingExtOfStar
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.ExistsFiniteExtPelUnif
-public import Formalism.LocalToGlobal.ProjectiveLattices.OneLtAbsNormReal
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsLocalHomValuationExtension
-public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.StChartF
 public import Formalism.LocalToGlobal.CharacterGerms.CharacterHypothesisUnramified
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieUpFBrFin
-public import Formalism.LocalToGlobal.CharacterGerms.HostTraceIdentity
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.SeparatedEmbeddingsDirectionsTypedBasis
-public import Formalism.LocalToGlobal.CharacterGerms.RowTieLab
-public import Formalism.LocalToGlobal.CharacterGerms.RowTieJet
 public import Formalism.LocalToGlobal.CharacterGerms.NondegenerateCharts
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.BiextensionNondegenerateModMaximalIdealIntegralC
 public import Formalism.LocalToGlobal.CharacterGerms.RankMaximalSelfUnconditional
@@ -45,18 +34,7 @@ public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.GapParts
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.RealPlaceLabellingInertFrobeniusNotConj
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.CmHostIdempotentTraceEqOne
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.IsCanonGaugeMapFB
-import Formalism.LocalToGlobal.CharacterGerms.NormOneRowDegrees
-import Formalism.LocalToGlobal.CharacterGerms.RowTieMemCInv
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.IncomingBounds.IncomingBound
-import Formalism.LocalToGlobal.CharacterGerms.RowTiePEmbIntSt
-import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.LocalToGlobal.CharacterGerms.ContentZeroAt
-import Formalism.LocalToGlobal.ProjectiveLattices.SubConstMemOrig
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
-import Formalism.LocalToGlobal.CharacterGerms.RowTiePAddCvSelf
-import Formalism.LocalToGlobal.CharacterGerms.RowTiePAxesSelfSt
-import Formalism.LocalToGlobal.CharacterGerms.UncurryLogConstantCoeff
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

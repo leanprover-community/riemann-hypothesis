@@ -4,13 +4,10 @@ public import GroundTheory.GlobalFields.ComplexMultiplication.AnalyticAlgebraicP
 public import Mathlib.NumberTheory.Real.Irrational
 public import GroundTheory.GlobalFields.ComplexMultiplication.RespectsAddUniversal
 public import GroundTheory.GlobalFields.ComplexMultiplication.DifferentialConstant
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.IsogenyPoints
 public import Mathlib.Analysis.Complex.Polynomial.Basic
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DualWeil
 import Mathlib.Tactic.TypeStar
 import GroundTheory.GlobalFields.ComplexMultiplication.EllipticRational
-import GroundTheory.GlobalFields.ComplexMultiplication.UniformizationAddition
-import Mathlib.Analysis.Meromorphic.IsolatedZeros
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.GlobalFields.ComplexMultiplication.AnalyticAlgebraicIndependent, GroundTheory.GlobalFields.ComplexMultiplication.AnalyticAlgebraicUnivAdd, GroundTheory.GlobalFields.ComplexMultiplication.AnalyticAlgebraicIsogeny, GroundTheory.GlobalFields.ComplexMultiplication.AnalyticAlgebraicConverse

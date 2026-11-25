@@ -6,10 +6,8 @@ public import Formalism.HermitianCurvature.StatementQ
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.GeneratorCommutatorQuantumDet
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.WeylCellConjTransposeMulApply
 public import Mathlib.Analysis.Calculus.LineDeriv.Basic
-import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 
 @[expose] public section
 

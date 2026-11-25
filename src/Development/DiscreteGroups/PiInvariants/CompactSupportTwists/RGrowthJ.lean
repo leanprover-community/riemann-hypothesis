@@ -4,8 +4,6 @@ public import Development.DiscreteGroups.PiInvariants.CompactSupportTwists.Uncut
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsFundamentalDomainRangeProdMap
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ThetaCellCovers.AdmissibleLeHolds
 public import Development.DiscreteGroups.PiInvariants.CompactSupportTwists.CutTailC
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.T2SpaceAdelicGeneralLinearGroupNumberField
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.DiscreteGroups.PiInvariants.CompactSupportTwists.DomOneMeasure, Development.DiscreteGroups.PiInvariants.CompactSupportTwists.KerSplitLIntSub, Development.DiscreteGroups.PiInvariants.CompactSupportTwists.RGrowthJ

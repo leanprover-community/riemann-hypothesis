@@ -10,8 +10,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTool
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwJqTheta
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwMemIwC
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwThetaEx
-import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ValuationDetOfMemKO
 
 @[expose] public section
 

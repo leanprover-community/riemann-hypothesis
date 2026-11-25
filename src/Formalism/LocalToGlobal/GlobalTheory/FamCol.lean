@@ -10,7 +10,6 @@ import Formalism.SizeWindowBrackets.GrowthBoundGivesRiemannHypothesis
 import Formalism.SizeWindowBrackets.QuotientSlopeBoundsWith
 import Formalism.SizeWindowBrackets.RealSlopeBoundsSplit
 import Formalism.SizeWindowBrackets.SChain
-import Formalism.ThickAverageLoss.PartnersToFactorsAt
 
 @[expose] public section
 

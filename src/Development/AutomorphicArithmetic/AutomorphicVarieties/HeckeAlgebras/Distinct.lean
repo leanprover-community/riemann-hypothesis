@@ -6,7 +6,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCh
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.GaloisRepOfPolarizedCuspidal
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.SemisimpleLevels.AbW
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.FiniteCohomology
-public import Mathlib.RingTheory.AdicCompletion.Noetherian
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.OrdinaryHeckeCharacters.DivMono, Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.Distinct

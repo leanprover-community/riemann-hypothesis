@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.LocalFields.MaximalUnramified
-import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Separation.CompletelyRegular
 

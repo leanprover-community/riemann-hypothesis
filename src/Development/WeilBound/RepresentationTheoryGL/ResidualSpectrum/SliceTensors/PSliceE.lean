@@ -12,9 +12,7 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsAddHaa
 public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.NormalisedExistence.ExistsNormed
 public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.SliceTensors.PSliceA
 public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.SliceTensors.PSliceB
-import GroundTheory.GlobalFields.Adele.Topology
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOfIsOpenStab
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsLeftInvariantOfIsAutForm
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.SliceTensors.PSliceC, Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.SliceTensors.EContJoin, Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.SliceTensors.ConstantTermZeroEq, Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.SliceTensors.PSliceE

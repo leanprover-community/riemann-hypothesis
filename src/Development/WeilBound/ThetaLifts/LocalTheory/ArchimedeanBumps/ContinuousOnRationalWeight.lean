@@ -5,7 +5,6 @@ public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
 public import GroundTheory.GlobalFields.TateThesis.GaussianComplexFourier
 public import Mathlib.Analysis.Real.Pi.Bounds
 public import Mathlib.RingTheory.Complex
-public import GroundTheory.GlobalFields.TateThesis.GaussianComplex
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

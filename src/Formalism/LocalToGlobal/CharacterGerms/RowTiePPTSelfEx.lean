@@ -3,15 +3,8 @@ module
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePAllSet
 public import Formalism.LocalToGlobal.CharacterGerms.NegMem
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePPTAvg
-public import Mathlib.RingTheory.PowerSeries.Substitution
-public import Formalism.LocalToGlobal.CharacterGerms.ConstMemTypeSetOfNonneg
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePLimTy
-public import Formalism.LocalToGlobal.CharacterGerms.CoeffSubstEqSum
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePPTSelf
-public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
-public import Formalism.LocalToGlobal.CharacterGerms.GeOfPowEqOne
-public import Mathlib.FieldTheory.Finite.Basic
-import Mathlib.RingTheory.SimpleRing.Principal
 import Formalism.LocalToGlobal.CharacterGerms.RowTiePAddCvSelf
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 

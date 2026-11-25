@@ -8,7 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsUni
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsUniqueSecPull
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExpandsAtTransport
 import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.SecTieBaseChange
-import Formalism.LocalToGlobal.ProjectiveLattices.ThetaFramePf
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -27,9 +26,7 @@ import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core

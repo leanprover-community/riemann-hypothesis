@@ -16,7 +16,6 @@ import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.TypeStar
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Topology.UniformSpace.Uniformizable
-import Mathlib.Topology.Separation.CompletelyRegular
 import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.CayleyGaussianIntegrals.GaussSumEighthPower
 import Mathlib.Algebra.Ring.IsFormallyReal
 

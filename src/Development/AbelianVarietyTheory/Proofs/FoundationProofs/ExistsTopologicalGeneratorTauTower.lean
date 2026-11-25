@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.NotCoboun
 public import Mathlib.RingTheory.Smooth.Basic
 public import Mathlib.Algebra.TrivSqZeroExt.Basic
 public import Mathlib.RingTheory.Etale.Field
-public import Mathlib.RingTheory.Etale.Basic
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.SndDualLiftAlgebraMap
 public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.CompInv
 public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.WeierstrassSubstitution.Laurent

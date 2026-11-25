@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.GlobalTheory.GL4.PColInf
-public import Formalism.LocalToGlobal.GlobalTheory.GL4.PColFin
 public import Formalism.LocalToGlobal.GlobalTheory.GL4.PDetAll
 public import Formalism.SharpRestriction.GlobalSchurBounds.SlopeMaxOpenOfHookTwoLeV
 

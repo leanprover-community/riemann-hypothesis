@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.CrRootMem
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.FirstStatementB
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.IsotypicComponentLeLowerWeights
-import Formalism.SharpRestriction.GrowthBounds.RootWeights.HighestWeightModuleBounds
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
 import Formalism.SharpRestriction.GrowthBounds.CovariantDegrees

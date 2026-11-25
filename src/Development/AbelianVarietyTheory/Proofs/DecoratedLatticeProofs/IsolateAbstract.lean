@@ -14,7 +14,6 @@ public import Mathlib.Algebra.Module.Submodule.LinearMap
 public import Mathlib.LinearAlgebra.Finsupp.LinearCombination
 import Mathlib.Algebra.Algebra.Operations
 import Mathlib.GroupTheory.QuotientGroup.ModEq
-import Mathlib.Tactic.Abel
 import Mathlib.Tactic.FieldSimp
 
 @[expose] public section

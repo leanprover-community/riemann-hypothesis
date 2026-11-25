@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.HasLenOfLatLen
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InvMemDoubleCosetAndComm
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Cartan
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

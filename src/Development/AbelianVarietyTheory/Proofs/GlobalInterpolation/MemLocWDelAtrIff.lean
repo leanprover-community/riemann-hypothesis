@@ -1,9 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.TiedValBwG
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.LatticeBasisExistsHolds
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.PairBDual
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.TauLatticeLatticeHolds
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

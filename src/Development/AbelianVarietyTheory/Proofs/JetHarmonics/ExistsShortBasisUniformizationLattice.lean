@@ -15,14 +15,11 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.CrudeVal
 public import Formalism.LocalToGlobal.ProjectiveLattices.HostSize
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ConjugateMinimaInstance
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GramSpace
-public import Development.AbelianVarietyTheory.Definitions.Degenerations.AdmissiblePadicIntMaximalIdeal
 public import Development.AbelianVarietyTheory.Definitions.Jets.ExistsSecTieFOfTies
 public import Formalism.LocalToGlobal.ProjectiveLattices.RecPJThAllNeBot
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.NumericalConsequencesOfPins
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsMulEqSmulOne
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.SpanResCharNeBot
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsGoodIntegral
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.PsiCoordExistsUniqueUpToUnitLocal
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -60,16 +57,8 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocalC
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.UnifAt
 import Development.AbelianVarietyTheory.Definitions.Jets.JetsOnCopiesCompatibleFrames
 import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.AbelianAt
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.BidegreeTwoJet
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.BoxTuple
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpBijectiveUniformisation
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.LemmaBStatement
 import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.ExistsPowSmulMemBall
 

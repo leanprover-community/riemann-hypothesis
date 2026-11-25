@@ -9,10 +9,6 @@ public import Formalism.LocalToGlobal.UnitaryNorms.AdjoinCycZeta
 public import Formalism.LocalToGlobal.Columns.NonDeg
 public import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
 public import Formalism.LocalToGlobal.Divisibility.CoeffLemmas
-import Mathlib.GroupTheory.Nilpotent
-import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
-import Mathlib.RingTheory.SimpleRing.Principal
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Development.AutomorphicArithmetic.PrimeDiscriminants.CycImage

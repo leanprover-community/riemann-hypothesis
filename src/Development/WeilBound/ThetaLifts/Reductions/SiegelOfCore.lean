@@ -2,7 +2,6 @@ module
 
 public import Development.WeilBound.ThetaLifts.Reductions.SiegelPar
 import Aesop.Main
-import Development.WeilBound.ThetaLifts.FrameEstimates.LeHeightOfIsTorusElt
 public import Development.WeilBound.ThetaLifts.FrameEstimates.LintegralLeOfCover
 import Development.WeilBound.ThetaLifts.Reductions.SiegelHaar
 public import Mathlib.MeasureTheory.Integral.Pi

@@ -13,7 +13,6 @@ public import Formalism.SharpRestriction.GrowthBounds.PathWeight.MdWeightMapDoma
 public import Formalism.SharpRestriction.GrowthBounds.PathWeight.SymbolGeneratorData
 public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.TestSideExplicitIdentification
 public import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.SymbolRealisableIffGeneralRank
-import Formalism.PolynomialDimension.DetMulEqSumAdjugate
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

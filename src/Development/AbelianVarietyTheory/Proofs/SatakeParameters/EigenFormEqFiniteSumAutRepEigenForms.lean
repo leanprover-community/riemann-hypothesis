@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIrr
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsAutRepUSpanValues
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NontrivialOfNeBot
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SmoothAdmissibleUnitaryMemSupIsotypicParts
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsFiniteClass
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

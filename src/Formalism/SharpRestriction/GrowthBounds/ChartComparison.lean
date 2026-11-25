@@ -8,7 +8,6 @@ public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.SpanImageOfSu
 public import Formalism.LocalRingCardinality.Lemmas
 public import Formalism.SharpRestriction.GrowthBounds.LatticeMultiplicityLemmas.LatticeMultiplicityCheck.Retype
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.CompFintype
-public import Formalism.LocalRingCardinality.DataGatTies
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.CmpCMemFunMod
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.Sandwich
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.StabilizerCount

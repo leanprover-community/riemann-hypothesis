@@ -1,8 +1,6 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IsOpenBigCellSet
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentComposition.DegPderivMul
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentComposition.Development
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar

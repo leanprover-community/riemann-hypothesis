@@ -4,7 +4,6 @@ public import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.DescentCore
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.ValuationBoundAdd
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.PlaceB
-import Mathlib.RingTheory.WittVector.DiscreteValuationRing
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

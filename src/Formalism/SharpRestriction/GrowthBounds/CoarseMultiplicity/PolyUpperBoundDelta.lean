@@ -3,8 +3,6 @@ module
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.CoarseMultiplicityAtIdentity
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.TopDegreeLeTwoB
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CoarseDegreeAlternative
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SegmentStatementHolds
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.ThresholdLowerBounds
 public import Mathlib.Algebra.Order.Field.GeomSum
 import Mathlib.Tactic.Linter.Style
 

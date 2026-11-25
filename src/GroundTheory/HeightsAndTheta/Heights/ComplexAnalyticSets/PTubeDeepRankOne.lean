@@ -6,11 +6,9 @@ public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsSt
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PMaDensLeibniz
 import Mathlib.Algebra.Ring.IsFormallyReal
 public import Mathlib.Analysis.Analytic.Polynomial
-import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
 import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.CovLog
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
 import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PartsAlg
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.HessCIsHermitian
 

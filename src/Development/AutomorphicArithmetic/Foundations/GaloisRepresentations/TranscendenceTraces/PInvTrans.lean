@@ -4,9 +4,6 @@ public import Mathlib.Algebra.Field.Defs
 public import Mathlib.Basic.Finite.Defs
 public import Mathlib.RingTheory.Invariant.Defs
 public import Mathlib.RingTheory.Invariant.Basic
-public import Mathlib.Algebra.BigOperators.GroupWithZero.Finset
-public import Mathlib.Algebra.Polynomial.Eval.Coeff
-public import Mathlib.Algebra.Polynomial.Lifts
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TranscendenceTraces.IsolateSpec
 import Mathlib.Tactic.Linter.HaveILetI
 

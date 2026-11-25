@@ -1,12 +1,9 @@
 module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-public import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
 public import ReciprocityTheory.ClassFieldTheory.LocalClassField.ExistsIntEKMulVbar
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 public import ReciprocityTheory.ClassFieldTheory.LocalClassField.ExistsDvdQKPowSubOne
-import ReciprocityTheory.ClassFieldTheory.LocalClassField.UnrExtC
 
 @[expose] public section
 

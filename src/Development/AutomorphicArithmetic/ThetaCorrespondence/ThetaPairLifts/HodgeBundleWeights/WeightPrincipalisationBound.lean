@@ -4,18 +4,11 @@ public import Mathlib.Basic.Complex.Basic
 public import Mathlib.RingTheory.FiniteType
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsNeZeroForallComplexPointExtend
 public import Mathlib.RingTheory.Adjoin.FG
-public import Mathlib.Algebra.Algebra.Defs
 public import Mathlib.Algebra.Field.Defs
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsEmbeddingsAgreeOnSubfieldNe
 public import Development.AbelianVarietyTheory.Definitions.Divisors.GenRatios
 public import Development.AbelianVarietyTheory.Definitions.Divisors.NormNegCmConstantEqAtAllEmbeddings
-public import Mathlib.Data.Matrix.Mul
-public import Mathlib.LinearAlgebra.Matrix.Block
-public import Formalism.LocalToGlobal.ProjectiveLattices.IsGenFrGenFr
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsFramedPointBaseChangeAlgebraMap
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsCombAtGMulVec
-public import Formalism.LocalToGlobal.ProjectiveLattices.FrameCharts
-public import Formalism.LocalToGlobal.ProjectiveLattices.GenFrPf
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CuspIso
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AsIdealSpMapClosedPoint
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CommonRestrIsoTens
@@ -95,8 +88,6 @@ import Development.AbelianVarietyTheory.Proofs.GenericRegularity.FrameBorelGroup
 import Mathlib.Algebra.Order.Star.Int
 import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.NonemptyIsLimitBaseChange
 import Development.AbelianVarietyTheory.Proofs.GenericRegularity.FnFGFnTrdeg
-import Development.AbelianVarietyTheory.Proofs.GenericRegularity.GenFrExAndGenFromTest
-import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.HodgeBundleWeights.KodairaSpencerIsoFlagTangentPsiSet
 import Formalism.LocalRingCardinality.HostCls
 import Mathlib.Algebra.Azumaya.Basic
 import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.HodgeBundleWeights.GloballyGeneratedOnOpenOfWeightGapGe

@@ -14,7 +14,6 @@ public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsMem
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsPrincipalLevelSubgroupOpen
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsUniformisationDictionaryCharacterLaws
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.NonemptyFrPtComplex
-import Formalism.LocalRingCardinality.ConjSqrtMinusD
 import Mathlib.Tactic.NormNum.LegendreSymbol
 import Mathlib.Tactic.NormNum.Prime
 

@@ -7,8 +7,6 @@ public import Mathlib.LinearAlgebra.Determinant
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PGermFiniteProjection
 public import Mathlib.Analysis.Complex.AbsMax
 import Mathlib.Tactic.Linter.Style
-public import Mathlib.Analysis.Analytic.Constructions
-public import Mathlib.Analysis.Calculus.DiffContOnCl
 
 @[expose] public section
 

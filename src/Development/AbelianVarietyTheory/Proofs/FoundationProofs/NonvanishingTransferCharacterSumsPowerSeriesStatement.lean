@@ -3,23 +3,12 @@ module
 public import Development.AbelianVarietyTheory.Definitions.Foundations.HTLawAt
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ChSumSubCMul
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NormSubOnePowThreeLe
-public import Mathlib.NumberTheory.DirichletCharacter.Basic
-public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
-public import Mathlib.NumberTheory.DirichletCharacter.GaussSum
-public import Mathlib.Algebra.Field.GeomSum
-public import Formalism.ConjugateSelfDual.Statement
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SeriesEqZeroOfValsTendstoZero
 public import Mathlib.RingTheory.ZMod.UnitsCyclic
-public import Mathlib.NumberTheory.GaussSum
-public import Mathlib.Algebra.Field.ZMod
-public import Mathlib.Data.Nat.Totient
-public import Mathlib.FieldTheory.Finite.Basic
 public import Mathlib.NumberTheory.Basic
 public import Mathlib.NumberTheory.Padics.Hensel
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.AlgebraMapPadicIntQbarContinuous
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsIntegralOfNormLeOne
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PowerSeriesEqOfCongruentValuesAtPrimitiveRoots
-import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -33,7 +22,6 @@ import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.AdicCompletion.Noetherian
 import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
@@ -66,20 +54,14 @@ import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Foundations.PetIPSmulRight
-import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.Newform
-import Mathlib.NumberTheory.ModularForms.CongruenceSubgroups
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GaussSumMulGaussSumInvOfIsPrimitive
 import Development.AbelianVarietyTheory.Definitions.Foundations.CyclotomicDvdExpandOfCoprime
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.UnramifiedCocycleKillsRoots
 import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.CoefSup
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StImageDimLe
 public import ReciprocityTheory.CommutativeAlgebra.PolynomialHeights.HeightAddRingKrullDimQuotientMvPolynomialField
-public import Mathlib.RingTheory.AlgebraicIndependent.Basic
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StIsolatedFibreOpen
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StIsolatedFibreOpenPoly
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Assembly

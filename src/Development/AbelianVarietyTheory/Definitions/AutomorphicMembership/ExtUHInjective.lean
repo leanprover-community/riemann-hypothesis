@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.PredMemGamRanks
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 public import Formalism.LocalToGlobal.Columns.CoefColLemmas
 import Formalism.LocalToGlobal.Columns.PolyFnLemmas
 import Mathlib.Tactic.Linter.Style

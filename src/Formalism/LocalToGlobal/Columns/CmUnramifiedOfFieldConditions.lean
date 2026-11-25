@@ -9,7 +9,6 @@ import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 public import Formalism.LocalToGlobal.Columns.CoefCol
 public import Formalism.LocalToGlobal.Columns.ColForms
 

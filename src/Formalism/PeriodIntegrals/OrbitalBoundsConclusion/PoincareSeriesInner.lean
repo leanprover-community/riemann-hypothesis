@@ -5,8 +5,6 @@ public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.FoldDCUnfold
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.FoldMult
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.PoincareSeriesSquareIntegrable
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ComplexDoubleCosets.ComplexDoubleCoset
-import Formalism.PeriodIntegrals.FoldUnfold
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnfoldingIdentity.FoldUnfoldMain
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

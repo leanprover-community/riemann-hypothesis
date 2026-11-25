@@ -2,12 +2,6 @@ module
 
 public import Development.WeilBound.RepresentationTheoryGL.JacquetShalikaBounds.AbsoluteRigidity.NewtonLow
 public import Mathlib.Analysis.Complex.LocallyUniformLimit
-public import Mathlib.Algebra.BigOperators.Field
-public import Mathlib.Analysis.Analytic.Composition
-public import Mathlib.Analysis.Analytic.Constructions
-public import Mathlib.Analysis.Analytic.Uniqueness
-public import Mathlib.Analysis.Calculus.FDeriv.Basic
-public import Mathlib.Analysis.Complex.CauchyIntegral
 
 @[expose] public section
 

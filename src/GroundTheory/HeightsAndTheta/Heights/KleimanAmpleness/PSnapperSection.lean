@@ -13,8 +13,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PCutZeroNotL
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PIdealTwistFamily
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PSnapper
 import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PStepThreeAway
-import Mathlib.RingTheory.KrullDimension.Field
-import Mathlib.RingTheory.KrullDimension.Polynomial
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar

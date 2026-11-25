@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalRingCardinality.DataHost
 public import Development.AutomorphicArithmetic.CyclotomicBounds.RootsOfUnity.NuRecord
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
 
 @[expose] public section
 

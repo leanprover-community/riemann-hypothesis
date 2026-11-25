@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.FockRAddRight
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.TestSideEdge
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSystems
-import Formalism.LocalToGlobal.GroupLattices.FockModels.ElementaryDivisorBasis
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.FlatModels.EdgeLatOfG
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.FlatModels.LetterWtAnti
 

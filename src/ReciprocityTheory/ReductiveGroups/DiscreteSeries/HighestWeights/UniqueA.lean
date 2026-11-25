@@ -20,7 +20,6 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
 public import Mathlib.Analysis.InnerProductSpace.ProdL2
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 
 @[expose] public section
 

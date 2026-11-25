@@ -1,10 +1,8 @@
 module
 
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.HasStepCharts
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockDiagonalMinorVanishing
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagPotentialBlockDecomposition
-public import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsClosedSectionBoundary
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsBaseChart
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.UpVApply
@@ -14,7 +12,6 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.HoloMapOfLocal
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogResolutionFromOrbitCharts
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.MinorMulSelf
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.UpVSmul
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FiniteMinimalPrimes
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.CardPIdxEqChoose
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameDataLocalDegreeBound
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameDataLocalNormComparison
@@ -24,24 +21,12 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.PartialFlagBlo
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.EvalNeZeroOfNotMem
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagGapPullbackThird
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelAnalyticDataExists
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagGapHolomorphicPullbackSecond
 import Mathlib.Tactic.Linter.Style
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameDataLocalDegreeEstimate
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameDataLocalIntegrability
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameDataLocalResolutionOpen
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogResolutionFunctorialHolomorphic
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncResolutionCompactEmbedded
-import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar
 import Mathlib.Tactic.Linter.HaveILetI
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterMinor
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagBundlePartialBlockMap
 import Development.WeilBound.CoreStatements.FlagImmersions.IsHolToOfLocal
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogResolutionFubiniStudyPositive
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.SingularWeightMonotoneRegularization
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncAdaptedAtlasProjection
-import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PHFlProdLinear
-import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.PluriharmonicCharts.MinorIJOneSelf, Development.WeilBound.CoreStatements.PluriharmonicCharts.NotMemTop, Development.WeilBound.CoreStatements.PluriharmonicCharts.XCFlAn

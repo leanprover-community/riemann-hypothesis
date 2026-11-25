@@ -3,9 +3,6 @@ module
 public import Mathlib.NumberTheory.Padics.PadicIntegers
 public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs
 public import Mathlib.Analysis.Normed.Unbundled.SpectralNorm
-public import Mathlib.Algebra.Polynomial.AlgebraMap
-public import Mathlib.Algebra.Polynomial.EraseLead
-public import Mathlib.Algebra.Polynomial.Lifts
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.LocalPublishedTheorems
 public import Mathlib.RingTheory.Finiteness.NilpotentKer

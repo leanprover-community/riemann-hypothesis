@@ -4,7 +4,6 @@ public import ReciprocityTheory.AnalyticForms.RegularLocalRings.FinalTheorems
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 import Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Proper
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.Monomial
-import ReciprocityTheory.AnalyticForms.RegularLocalRings.RegDom
 
 @[expose] public section
 

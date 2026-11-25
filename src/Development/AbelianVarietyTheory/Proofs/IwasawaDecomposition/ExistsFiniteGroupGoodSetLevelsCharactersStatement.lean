@@ -4,17 +4,12 @@ public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership
 public import Formalism.LocalToGlobal.IndefiniteReal.FrameExistence.InitialDataUntwistedOfModelChoice
 public import Formalism.LocalToGlobal.Columns.RecLevelSym
 public import Formalism.LocalToGlobal.Columns.ExistsUnitOfPowEqOne
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsAbsIrrCharCompIff
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseFieldsPrimesOk
-public import Formalism.LocalToGlobal.Columns.GoodXgFin
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IrreducibleFinrankOne.IrrOfFinrankOne
-public import Formalism.LocalToGlobal.NormalizedHeckeFactors.TypesDefs
-public import Formalism.LocalToGlobal.Divisibility.GoodPartHermitianSpec
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AbsIrrCharRealiseOfPrimitiveRootCard
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CyclicSplitting.IrrDecomp
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.MemLevelOfLocalDepth
-public import Formalism.LocalToGlobal.Divisibility.PsiWeilOfAbsNorm
 public import Formalism.LocalToGlobal.IndefiniteReal.LinksExistW
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

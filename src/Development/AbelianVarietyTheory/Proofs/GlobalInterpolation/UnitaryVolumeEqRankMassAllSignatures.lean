@@ -5,11 +5,9 @@ public import Formalism.LocalToGlobal.GlobalTheory.GL5.PNamed
 public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLattice
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.DetNeZeroOfHasSignature
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.VolIndep
-public import Formalism.SharpRestriction.GlobalSchurBounds.ThickPlacesCorollaryOfAnyTranslate
 public import Formalism.LocalToGlobal.GlobalTheory.GL5.PClassDecomp
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousGrpHom
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.NegGram
-public import Formalism.LocalToGlobal.GlobalTheory.GL5.FamilyMassVolumeIdentityOfClassDecomp
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.HermitianSpaceOppositeFormSignatureConditionStatement
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LatticeStabilizerDoubleCosetsClassRestMassStatement
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DoubleCosetsMassLevel
@@ -50,7 +48,6 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Formalism.LocalToGlobal.GlobalTheory.GL5.Statement
 import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.ReduceModChar

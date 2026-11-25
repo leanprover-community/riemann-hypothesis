@@ -2,9 +2,7 @@ module
 
 public import Formalism.PeriodIntegrals.ScalPairs
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaUniqueness.GramNondeg
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaUniqueness.Lemmas
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ScalarPairOrthogonal.XLeOrthXplus
 
 @[expose] public section
 

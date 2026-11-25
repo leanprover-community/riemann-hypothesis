@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.GlobalFields.ComplexMultiplication.AnalyticUniformization
 import GroundTheory.GlobalFields.ComplexMultiplication.AnalyticAlgebraicConverse
-import GroundTheory.GlobalFields.ComplexMultiplication.JInvariantSurjective
 
 @[expose] public section
 

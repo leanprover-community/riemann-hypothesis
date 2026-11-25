@@ -9,11 +9,9 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelNablaSt
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ModelLevelMultiplier
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.MultiplicationOpHom
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.QuasiDeterminantFromEntries
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TransferRtt
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.WeightedSumDifferenceIdentity
 public import Mathlib.Analysis.Calculus.FDeriv.Star
-import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Bool

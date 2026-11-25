@@ -7,7 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.Abe
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ChartCoverFOfSectionBaseChange
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedPointReducedFromTestRing
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.BlockTheory.ExistenceTori.SectionBaseChange, Development.AbelianVarietyTheory.Proofs.UnitaryExistence.SecBCIffSecBCTest, Development.AbelianVarietyTheory.Definitions.ThetaValues.IoOverLeftUnique

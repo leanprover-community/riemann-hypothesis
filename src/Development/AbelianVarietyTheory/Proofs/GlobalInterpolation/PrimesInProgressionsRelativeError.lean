@@ -4,7 +4,6 @@ public import Formalism.GL3MeanSquares.SmoothedRemainderRealIntegralFormula
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Mathlib.NumberTheory.Chebyshev
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.ZerosDisc
-public import Mathlib.NumberTheory.AbelSummation
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ChebyshevPsiProgressionRelativeError
 import Aesop.Main
 import Mathlib.Algebra.Order.Floor.Extended
@@ -50,7 +49,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExceptionalDirichletZeroUniqueZeroFreeRegion
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.PrimeCountRelativeErrorOfPsiRelativeError, Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.PrimesInProgressionsRelativeError

@@ -1,8 +1,6 @@
 module
 
 public import GroundTheory.AutomorphicForms.MeasuresChart
-public import GroundTheory.AutomorphicForms.GLnLocal
-public import Mathlib.Topology.Algebra.Group.Units
 public import GroundTheory.AutomorphicForms.RealGroupsHaar
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.Henselian

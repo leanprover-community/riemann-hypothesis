@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.FolnerS2
-public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.EnergyAbs
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.BesselFrame
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.BesselLevi
 public import Formalism.PeriodIntegrals.BesselLevi
@@ -14,12 +13,9 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MeasureInverseContraction.AmatInvMul
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MeasureInverseContraction.Development
 public import Formalism.PeriodIntegrals.NMeasInv
-public import Mathlib.MeasureTheory.Measure.Prod
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
 import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MeasureDecomposition.HJMulVecGen
 import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.RightRegularIsometricMultiplicative
 
 -- This file was produced by scripts/clump.py from the modules listed below.

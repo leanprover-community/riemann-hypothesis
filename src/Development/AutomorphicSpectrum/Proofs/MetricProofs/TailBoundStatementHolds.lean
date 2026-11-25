@@ -10,12 +10,9 @@ import ReciprocityTheory.AnalyticForms.LeviForms.TailCut
 import ReciprocityTheory.AnalyticForms.LeviForms.TailCutA
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffAtOfIsPotential
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffOnFubiniStudyProfileInvNormSqFirst
-import ReciprocityTheory.AnalyticForms.PotentialTheory.IntegrableOnTargetOfTsupport
-import ReciprocityTheory.AnalyticForms.PotentialTheory.LogInt
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.MaMeasure
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.PLLocalStatement
 import ReciprocityTheory.AnalyticForms.PotentialTheory.PotentialContDiffAt
-import ReciprocityTheory.AnalyticForms.PotentialTheory.SNCAtlas
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.Stokes
 
 @[expose] public section

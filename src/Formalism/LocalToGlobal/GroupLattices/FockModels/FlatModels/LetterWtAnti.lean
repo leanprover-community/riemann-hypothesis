@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.FlatModels.LaTwTranspose
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSystems
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.EdgePlane
-import Formalism.LocalToGlobal.GroupLattices.FockModels.ElementaryDivisorBasis
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.FlatModels.EdgeLatOfG
 import Mathlib.Algebra.Order.Star.Int
 import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.TwoLatLeTwoSp

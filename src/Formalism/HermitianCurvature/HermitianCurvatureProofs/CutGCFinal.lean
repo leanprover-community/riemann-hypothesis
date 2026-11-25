@@ -3,8 +3,6 @@ module
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreCut
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ActualAdjointnessFromHermitian
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGaugeVLem
-public import Mathlib.Analysis.Calculus.Deriv.Add
-public import Mathlib.Analysis.Calculus.Deriv.Mul
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCAsm
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCGenToQQ
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCRadSpSmooth

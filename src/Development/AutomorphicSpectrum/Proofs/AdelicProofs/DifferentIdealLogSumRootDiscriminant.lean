@@ -5,7 +5,6 @@ public import Mathlib.Algebra.AffineMonoid.Basic
 public import Mathlib.NumberTheory.NumberField.Discriminant.Basic
 public import Mathlib.RingTheory.DedekindDomain.Different
 public import Development.AutomorphicSpectrum.Proofs.AdelicProofs.RatProductFormula
-public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import Development.AutomorphicSpectrum.Proofs.AdelicProofs.SumLogIdealEqLogAbsNorm
 public import Mathlib.NumberTheory.NumberField.Discriminant.Different
 

@@ -12,16 +12,7 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.NotInFibreOf
 public import Development.WeilBound.CoreStatements.PlurisubharmonicCones.ComponentDataHeightIdentity
 public import Development.WeilBound.CoreStatements.PlurisubharmonicCones.DeterminantLatticeGenerator
 public import Development.WeilBound.CoreStatements.PlurisubharmonicCones.DeterminantLatticeGradedTensor
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Development.AutomorphicSpectrum.Definitions.MetricPeriods.ExistsIntSmulIsAdicIntegralInTensorBasis
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PairLatticeSumComap
-import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SegreChartBundle
-import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.IsFrameOverLine
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SumLatticeWedgeComap
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TensorWedgeDetChange
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.PlurisubharmonicCones.ExistsUnitOfSum, Development.WeilBound.CoreStatements.PlurisubharmonicCones.DetLatticeTensorIsDegOnMuTwDeg, Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntersectionDatumDegreeSum

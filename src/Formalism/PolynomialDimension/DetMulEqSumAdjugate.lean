@@ -3,10 +3,6 @@ module
 public import Formalism.PolynomialDimension.FrameSum
 public import Mathlib.Algebra.CharP.Algebra
 public import Mathlib.Algebra.CharP.Frobenius
-public import Mathlib.Algebra.CharP.Defs
-public import Mathlib.Algebra.Field.Defs
-public import Mathlib.Data.Matrix.Mul
-public import Mathlib.Algebra.CharP.Lemmas
 public import Mathlib.LinearAlgebra.Matrix.Rank
 public import Mathlib.Analysis.SpecificLimits.Basic
 public import Mathlib.FieldTheory.Finite.Basic

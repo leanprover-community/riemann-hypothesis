@@ -3,7 +3,6 @@ module
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.IntMuCD
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.AdKMeasurePreserving
 import Mathlib.Analysis.Matrix.MeasurableSpace
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.CategoryTheory.Countable
 import Mathlib.MeasureTheory.Measure.RegularityCompacts
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.KSchur

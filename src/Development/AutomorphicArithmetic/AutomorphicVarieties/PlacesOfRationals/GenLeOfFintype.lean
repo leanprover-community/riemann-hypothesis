@@ -6,7 +6,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.Kumm
 import Formalism.ConjugateSelfDual.Statement
 public import Mathlib.Algebra.Algebra.Defs
 public import Mathlib.NumberTheory.NumberField.Basic
-import ReciprocityTheory.GaloisValuations.GlobalA
 
 @[expose] public section
 

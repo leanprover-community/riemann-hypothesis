@@ -10,7 +10,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingMod
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.CornerCoc
 public import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.ThetaCoefficientMapEq
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.GroupTheory.Nilpotent

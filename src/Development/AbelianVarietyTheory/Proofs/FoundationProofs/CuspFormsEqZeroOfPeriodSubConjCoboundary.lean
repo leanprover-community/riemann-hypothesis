@@ -9,24 +9,13 @@ public import Mathlib.Analysis.Calculus.FDeriv.Add
 public import Mathlib.MeasureTheory.Integral.DivergenceTheorem
 public import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.LeviCivita
 public import Mathlib.NumberTheory.ModularForms.QExpansion
-public import Mathlib.Analysis.Complex.UpperHalfPlane.Manifold
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EichlerIntegralFromISlashChangeOfVariables
 public import Mathlib.Analysis.Calculus.Deriv.Polynomial
 public import Mathlib.NumberTheory.ModularForms.Basic
 public import Mathlib.NumberTheory.ModularForms.Bounds
-public import Mathlib.Analysis.Calculus.Deriv.Basic
-public import Mathlib.Analysis.Calculus.FDeriv.Mul
-public import Mathlib.Analysis.Calculus.FDeriv.RestrictScalars
-public import Mathlib.MeasureTheory.Integral.Bochner.Basic
-public import Mathlib.MeasureTheory.Integral.IntegrableOn
-public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 public import Mathlib.MeasureTheory.Integral.ExpDecay
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PolyDegreeSlashActionRightActionProperties
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EvalPolyDegreeSlashAction
-public import Mathlib.NumberTheory.Modular
-public import Mathlib.Analysis.SpecialFunctions.Pow.Real
-public import Mathlib.RingTheory.Polynomial.Basic
-public import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EichlerPeriodCocycleMemCocyclesAndEq
 public import Mathlib.NumberTheory.ModularForms.CuspFormSubmodule
 import Mathlib.Algebra.Order.Floor.Extended
@@ -70,7 +59,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-import Mathlib.Geometry.Manifold.StructureGroupoid
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.Basify

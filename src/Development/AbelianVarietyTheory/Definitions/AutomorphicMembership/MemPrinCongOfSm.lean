@@ -1,11 +1,7 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ValuedLtOfMem
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
-import Formalism.LocalRingCardinality.CoeNeZeroOfNotMem
-import Formalism.LocalToGlobal.Columns.AdelicLemmas
 public import Formalism.LocalToGlobal.Columns.RecLevelTop
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlob
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

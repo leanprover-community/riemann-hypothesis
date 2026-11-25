@@ -3,9 +3,6 @@ module
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAPRhoCut
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJABddKapNrmW
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJASSnGeomAtGq
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.FrameCompletion
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
-import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 

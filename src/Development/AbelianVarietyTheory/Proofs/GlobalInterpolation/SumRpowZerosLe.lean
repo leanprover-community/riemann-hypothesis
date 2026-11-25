@@ -3,22 +3,13 @@ module
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.ZerosDisc
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IteratedDerivLogDerivDirichletLViaNearbyZeros
 public import Mathlib.NumberTheory.Chebyshev
-public import Mathlib.Analysis.SpecialFunctions.Pow.Real
-public import Mathlib.NumberTheory.ArithmeticFunction.VonMangoldt
 public import Mathlib.NumberTheory.LSeries.PrimesInAP
-public import Mathlib.NumberTheory.LSeries.Basic
-public import Mathlib.NumberTheory.LSeries.Convergence
 public import Mathlib.MeasureTheory.Function.Floor
-public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-public import Mathlib.NumberTheory.SumPrimeReciprocals
-public import Mathlib.Data.Nat.Prime.Int
-public import Mathlib.NumberTheory.DirichletCharacter.Orthogonality
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsLargeVonMangoldtLogPowerSeriesNearZero
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.PrimeMeanValueCharactersTwistIntegralLe
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ZeroFreePrincipal
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DirichletLZerosInWindowFiniteAndPosOrder
-public import Mathlib.Data.FunLike.Fintype
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -33,7 +24,6 @@ import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LSeries.Nonvanishing
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Radical.NatInt
@@ -67,7 +57,6 @@ import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
 import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.NumberTheory.DirichletCharacter.Basic
 import Std.Tactic.BVDecide.Normalize.Prop
 import Aesop.Main
 import Mathlib.Tactic.Linter.Style

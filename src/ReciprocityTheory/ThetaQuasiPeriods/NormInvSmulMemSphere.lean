@@ -3,7 +3,6 @@ module
 public import ReciprocityTheory.ThetaQuasiPeriods.ThetaQuasiPeriodStatement
 public import Mathlib.Topology.Instances.Matrix
 public import Mathlib.NumberTheory.ModularForms.JacobiTheta.TwoVariable
-public import Mathlib.Analysis.Normed.Module.FiniteDimension
 
 @[expose] public section
 

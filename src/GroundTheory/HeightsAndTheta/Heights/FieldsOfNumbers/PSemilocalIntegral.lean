@@ -5,9 +5,7 @@ public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsVal
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PContractRelDimLe
 import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PExistsForm
 import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PPFContracted
-import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PPFDegree
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.TableDegreeThreeBase
-import Mathlib.Order.CompletePartialOrder
 public import Mathlib.RingTheory.Valuation.LocalSubring
 
 @[expose] public section

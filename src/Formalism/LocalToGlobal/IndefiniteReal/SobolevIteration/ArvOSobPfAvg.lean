@@ -10,10 +10,7 @@ public import Formalism.LocalToGlobal.IndefiniteReal.SobolevIteration.ArvOSobPfA
 public import Formalism.LocalToGlobal.IndefiniteReal.SobolevIteration.ArvOSobPfAs
 public import Formalism.LocalToGlobal.IndefiniteReal.SobolevIteration.ArvOSobPfK
 public import Formalism.LocalToGlobal.IndefiniteReal.SobolevIteration.ArvOSobPfSt
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
-import Formalism.LocalToGlobal.IndefiniteReal.SobolevIteration.MemSpanSmoothVec
 import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
 
 -- This file was produced by scripts/clump.py from the modules listed below.

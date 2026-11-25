@@ -1,7 +1,6 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RadicalUnipotentFirstBasisEqOne
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentCoordinatesMeasurePreserving
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PointStep
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LinearFormRadicalRankOne
 public import Formalism.HermitianCurvature.RealInputsClosedAdmissibleSettings

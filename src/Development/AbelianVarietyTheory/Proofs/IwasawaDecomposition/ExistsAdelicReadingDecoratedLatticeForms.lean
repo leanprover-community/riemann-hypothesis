@@ -56,11 +56,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsDiscriminantTwelfthRootOfIdealLatticeIffDelta1
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.StableIffCarrierEq
-import Development.AbelianVarietyTheory.Definitions.Foundations.RayPrimes
-import Formalism.LocalToGlobal.HilbertRowConditions.CenterIdempotentAction
-import Formalism.LocalToGlobal.IndefiniteReal.RecTie
 import Formalism.LocalToGlobal.Columns.HeckeSpCount
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemSum
 import Mathlib.RingTheory.Etale.Weakly

@@ -49,12 +49,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
-import Formalism.HermitianLattices.HermitianLatticesProofs.IndexBasic
-import Formalism.LocalToGlobal.Columns.CoefColLemmas
-import Formalism.LocalToGlobal.Divisibility.ClassSumLemmas
-import Formalism.LocalToGlobal.Divisibility.ProjLemmas
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ClassSumDualGeOfFamily
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Tactic.Linter.HaveILetI
 

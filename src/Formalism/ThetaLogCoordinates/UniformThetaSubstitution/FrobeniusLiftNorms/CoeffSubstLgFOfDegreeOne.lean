@@ -2,7 +2,6 @@ module
 
 public import Formalism.FormalGroupWitt.SubstInjectiveV
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FirstDeriv
-public import Formalism.FormalGroupLog.Statement
 public import Formalism.FormalGroupLog.FormalGroupLogProofs.ConstantCoeffSubstOfZero
 public import Formalism.FormalGroupLog.LogDeterminesLaw
 public import Formalism.TorsionNormIteration.InverseIntegralClasses.SolveExistsProof

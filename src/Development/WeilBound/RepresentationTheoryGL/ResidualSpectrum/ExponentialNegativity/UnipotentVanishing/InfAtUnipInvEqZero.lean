@@ -3,7 +3,6 @@ module
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic
 public import Mathlib.RingTheory.DedekindDomain.FiniteAdeleRing
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.Counting
-public import Mathlib.Analysis.Complex.Exponential
 public import Development.WeilBound.RepresentationTheoryGL.ResidualSpectrum.ExponentialNegativity.L2DecayOfCountEscape
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExponentMemFinset
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SiegelCount

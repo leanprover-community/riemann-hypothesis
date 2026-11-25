@@ -2,7 +2,6 @@ module
 
 public import Mathlib.Analysis.Complex.Basic
 public import Mathlib.Topology.ContinuousMap.CompactlySupported
-import Mathlib.Analysis.Normed.Group.Bounded
 
 @[expose] public section
 

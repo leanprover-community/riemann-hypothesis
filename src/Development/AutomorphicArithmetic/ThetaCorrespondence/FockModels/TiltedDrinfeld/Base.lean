@@ -8,11 +8,8 @@ public import Development.WeilBound.RepresentationTheoryGL.PeriodRingBases.Perio
 public import Development.WeilBound.RepresentationTheoryGL.PeriodRingBases.FixedBaseSurjectivity.GaloisPeriodCyclotomic
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLocalPrimeAinf
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.KummerNotFrac
-public import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.CrystallineComparison.LocalComparisonFromAlternative
-public import Development.WeilBound.CoreStatements.CrystallinePeriodRings.AinfMapSurjective
 public import GroundTheory.PAdicHodge.BCrisEigen
-public import Development.WeilBound.CoreStatements.CrystallinePeriodRings.ExistsMapEqOfPowMul
 public import Development.WeilBound.CoreStatements.CrystallinePeriodRings.PhiGalCris
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

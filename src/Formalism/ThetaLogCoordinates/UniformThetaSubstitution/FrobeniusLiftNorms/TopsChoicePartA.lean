@@ -3,7 +3,6 @@ module
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.OddLogRelation
 public import Mathlib.RingTheory.MvPowerSeries.Expand
 public import Formalism.GaussJetBounds.GaussJetProofs.NormNatCastEqPowPadicValNat
-import Formalism.GaussJetBounds.GaussJetProofs.SubstitutionWeightBound
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Data.Finsupp.Pointwise

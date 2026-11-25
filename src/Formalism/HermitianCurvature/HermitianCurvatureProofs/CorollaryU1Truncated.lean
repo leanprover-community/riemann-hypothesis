@@ -4,14 +4,7 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentCost.Le
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DirectionsInParabolic
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.Block3MulBlocks
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Calculus.ContDiff.Defs
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.Topology.Algebra.Module.FiniteDimension
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentCost.ZIterA
-public import Mathlib.Analysis.Calculus.FDeriv.Mul
-public import Mathlib.Topology.Instances.Matrix
-public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixMul
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentCost.DerivA
 public import Formalism.HermitianCurvature.StatementU
@@ -19,16 +12,11 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentCost.Co
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentCost.Smooth
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CoordinateSizesOfHypotheses
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixTranspose
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Calculus.FDeriv.Symmetric
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
-import Mathlib.Analysis.Calculus.ContDiff.Bounds
 import Mathlib.RingTheory.RegularLocalRing.Defs
 
 -- This file was produced by scripts/clump.py from the modules listed below.

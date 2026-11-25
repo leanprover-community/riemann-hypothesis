@@ -5,7 +5,6 @@ public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.FrobMulInertia
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Galois
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Inertia
 public import Formalism.FrobeniusOrbits.RealSubfieldLeCompositum
-import Mathlib.RingTheory.Ideal.Int
 public import Mathlib.RingTheory.Ideal.NatInt
 import Mathlib.RingTheory.PicardGroup
 

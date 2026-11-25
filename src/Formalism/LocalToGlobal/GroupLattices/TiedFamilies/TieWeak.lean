@@ -5,9 +5,6 @@ public import Formalism.PeriodIntegrals.WeakApproxDVR
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.MRatSpanOfWeak
 public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.TieLat
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
 

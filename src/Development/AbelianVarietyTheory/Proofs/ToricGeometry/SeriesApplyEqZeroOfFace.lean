@@ -5,10 +5,6 @@ public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.Complex.Exponential
 public import Mathlib.Analysis.Complex.Schwarz
 public import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
-public import Mathlib.Analysis.Analytic.ChangeOrigin
-public import Mathlib.Analysis.Analytic.Composition
-public import Mathlib.Analysis.Analytic.Constructions
-public import Mathlib.Analysis.Calculus.Deriv.Mul
 
 @[expose] public section
 

@@ -9,8 +9,6 @@ public import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinui
 public import GroundTheory.AutomorphicForms.GL2.GodementSection
 public import GroundTheory.AutomorphicForms.GL2.GodementSectionSplit
 import Mathlib.Tactic.TypeStar
-import GroundTheory.AutomorphicForms.LocallyProfinite
-import GroundTheory.LocalFields.FilteredSurj
 import GroundTheory.AutomorphicForms.GL2.FiniteIdeleDecomp
 
 -- This file was produced by scripts/clump.py from the modules listed below.

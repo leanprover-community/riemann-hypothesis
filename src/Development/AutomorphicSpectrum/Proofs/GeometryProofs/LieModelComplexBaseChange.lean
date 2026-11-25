@@ -4,8 +4,6 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsCocha
 public import GroundTheory.HeightsAndTheta.Heights.HermitianLattice
 public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelIsBaseChange
 import Mathlib.Tactic.Linter.Style
 

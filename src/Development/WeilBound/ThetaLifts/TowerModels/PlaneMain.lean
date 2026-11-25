@@ -9,7 +9,6 @@ public import Development.WeilBound.ThetaLifts.TowerModels.PlaneBas
 public import Development.WeilBound.ThetaLifts.TowerModels.PlaneComp
 public import Development.WeilBound.ThetaLifts.TowerModels.PlaneIso
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.WeilBound.ThetaLifts.TowerModels.PlaneReal
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 

@@ -10,43 +10,20 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCritical
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFibreBound
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFiniteMapOpen
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PLinearNoetherNormalization
-public import Mathlib.Topology.Algebra.MvPolynomial
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StBranchGermDimOne
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StZeroSetOpenMass
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StZeroDimIsolated
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLocalDimComponentBound
-public import Mathlib.Topology.MetricSpace.HausdorffDimension
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCentredDiscCoverCurve
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPuncturedCoverCycles
 public import Mathlib.Analysis.Complex.RemovableSingularity
-public import Mathlib.Analysis.Calculus.FDeriv.Add
-public import Mathlib.Analysis.Calculus.FDeriv.Equiv
-public import Mathlib.Analysis.Calculus.FDeriv.Prod
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCurveMinimalPrimeQuotient
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StDominantFibreBound
-public import Mathlib.RingTheory.AlgebraicIndependent.Basic
-public import Mathlib.RingTheory.Algebraic.Defs
-public import Mathlib.RingTheory.Algebraic.Integral
-public import Mathlib.RingTheory.AlgebraicIndependent.TranscendenceBasis
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLelongLimitOffZero
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StChartMassCompact
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCutOff
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PCutOffGradient
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PHessCCompPluri
-public import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.LintegralImageEqLintegralNormSqDetMul
-public import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StatementsSheetMeasurable
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StChartMassCompare
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StVarSlabMeasure
 public import Mathlib.MeasureTheory.Integral.Layercake
-public import Mathlib.MeasureTheory.Integral.ExpDecay
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPlaceOnComponent
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StReducedNormalisationPlace
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.CurveNormalisationFiniteLemmas
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PMinimalPrimePlace
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StVarMassNearSmall
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNullSmaller
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetSumMeasurable
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StBranchOffHypersurface
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StDiscriminantSheetCover
@@ -57,9 +34,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PDiscrimi
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PHolomorphicFibreInfinite
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PVarIntAdd
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.AssemblyBase
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PVanishNearPoint
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.CovLog
-import GroundTheory.HeightsAndTheta.Heights.ChowForms.PChartLocalOrder
 
 section -- clump:auto
 @[expose] public section

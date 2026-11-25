@@ -4,7 +4,6 @@ public import Formalism.PeriodIntegrals.FlagSubmonoid
 public import Formalism.LocalToGlobal.Columns.ScaledRamifiedLattice
 public import Formalism.LocalToGlobal.Columns.RowForms
 public import Formalism.LocalToGlobal.Columns.CoefModB
-public import Formalism.LocalToGlobal.Columns.AlgebraMapMemMaximalIdealPowIff
 public import Formalism.LocalToGlobal.Columns.LevGSym
 import Mathlib.Tactic.Linter.Style
 

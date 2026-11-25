@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.GlobalFields.ComplexMultiplication.Algebraicity
-public import GroundTheory.GlobalFields.ComplexMultiplication.AlgebraicityHom
 
 @[expose] public section
 

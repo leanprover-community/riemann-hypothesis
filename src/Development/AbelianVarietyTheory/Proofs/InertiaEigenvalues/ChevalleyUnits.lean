@@ -8,10 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.Chebota
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsPowDescentCyclotomic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsFrobFixesRootOfOneModPlace
 import Mathlib.Algebra.AffineMonoid.UniqueSums
-import Mathlib.NumberTheory.NumberField.Units.DirichletTheorem
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 import Mathlib.RingTheory.PicardGroup

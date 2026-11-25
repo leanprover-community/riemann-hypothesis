@@ -9,7 +9,6 @@ import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
 import Formalism.FormalDegreeBessel.StatementWR
 import Formalism.HermitianCurvature.StatementQ
-import Formalism.RealPlaceAnalysis.StatementA
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.PositionInsertionDiagonalCompat
 
 -- This file was produced by scripts/clump.py from the modules listed below.

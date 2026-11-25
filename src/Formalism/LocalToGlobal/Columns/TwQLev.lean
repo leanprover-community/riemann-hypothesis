@@ -2,15 +2,8 @@ module
 
 public import Formalism.LocalToGlobal.Columns.RecLevelTop
 public import Formalism.LocalToGlobal.Columns.TwQDefs
-public import Formalism.LocalToGlobal.Columns.RecLevelCls
 public import Formalism.LocalToGlobal.Columns.RecLevelLocF
-public import Formalism.LocalToGlobal.HermitianForms.IsLocBasis
-import Formalism.LocalToGlobal.Columns.RecLevelLocK
 public import Formalism.LocalToGlobal.Columns.RecLevelLocP
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 

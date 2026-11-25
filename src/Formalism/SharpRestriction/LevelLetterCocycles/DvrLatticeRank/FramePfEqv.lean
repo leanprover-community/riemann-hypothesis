@@ -5,7 +5,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.DownSlotProposition
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfNat
 import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.GradNPfA
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.GradNPfB
-import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.InvLiftPfA
 import Formalism.SharpRestriction.LevelLetterCocycles.FrobeniusPowUniformizerFactorisation
 import Formalism.SharpRestriction.LevelLetterCocycles.MapCompZero
 

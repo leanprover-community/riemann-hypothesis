@@ -3,10 +3,6 @@ module
 public import Mathlib.Analysis.Complex.Order
 public import Mathlib.LinearAlgebra.Matrix.PosDef
 public import Mathlib.Analysis.Matrix.PosDef
-public import Mathlib.Algebra.Star.Unitary
-public import Mathlib.Algebra.Star.UnitaryStarAlgAut
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.Analysis.InnerProductSpace.PiL2
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.KTheoryStability.ReductionBoundsTorsion.PartitionUnitySmooth.Smoothing
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.KTheoryStability.ReductionBoundsTorsion.PartitionUnitySmooth.ReNonnegPsd
 public import Mathlib.NumberTheory.NumberField.Units.Basic

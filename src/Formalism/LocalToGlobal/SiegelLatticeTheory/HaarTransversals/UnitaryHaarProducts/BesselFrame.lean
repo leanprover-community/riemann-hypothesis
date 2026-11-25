@@ -4,9 +4,7 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.DensityLemma.PFibreBoun
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.SettingBlocks
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.WuDecayPf
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
 public import Formalism.SharpRestriction.CuspSpanNormBounds.NonemptyParameterModels.NumericSettingWithGapSatisfiable
-import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 

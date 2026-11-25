@@ -4,7 +4,6 @@ public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
 public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Mathlib.Analysis.InnerProductSpace.Spectrum
 import Mathlib.Tactic.TypeStar
-public import Mathlib.Analysis.InnerProductSpace.Dual
 
 @[expose] public section
 

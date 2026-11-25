@@ -2,7 +2,6 @@ module
 
 public import Formalism.FormalDegreeBessel.StatementG
 public import Mathlib.Analysis.Matrix.Spectrum
-public import Mathlib.Algebra.Star.UnitaryStarAlgAut
 
 @[expose] public section
 

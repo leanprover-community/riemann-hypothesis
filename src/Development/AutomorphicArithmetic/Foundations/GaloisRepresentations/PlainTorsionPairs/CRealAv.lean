@@ -19,7 +19,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeT
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.FiniteFieldEnoughRootsOfUnity
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.MuNone
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.ResidualDiagonalDeterminantIsPolar
-import Mathlib.GroupTheory.Nilpotent
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CurveDVRSpecialization.CrDefs
 
 @[expose] public section

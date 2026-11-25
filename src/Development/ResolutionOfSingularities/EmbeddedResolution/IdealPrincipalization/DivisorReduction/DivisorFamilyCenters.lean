@@ -2,7 +2,6 @@ module
 
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.DivisorReduction.AmbientBlowupSequence
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipalization.CanonicalPrincipalization
-import Development.ResolutionOfSingularities.Foundations.Schemes.IdealSheafData
 
 @[expose] public section
 

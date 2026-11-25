@@ -5,11 +5,9 @@ public import Mathlib.Analysis.Calculus.FDeriv.Defs
 public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.EnormPowLeInvMeasureMulLintegralBall
 public import Mathlib.NumberTheory.DirichletCharacter.Basic
-public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 public import Mathlib.NumberTheory.ArithmeticFunction.Moebius
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.HybridLargeSieve
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.DifferentiableAtFractInt
-public import Mathlib.NumberTheory.LSeries.RiemannZeta
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SumTruncConv
 public import Mathlib.NumberTheory.Harmonic.Bounds
 public import Mathlib.NumberTheory.LSeries.DirichletContinuation
@@ -22,8 +20,6 @@ import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -61,8 +57,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-import Mathlib.NumberTheory.DirichletCharacter.Orthogonality
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style

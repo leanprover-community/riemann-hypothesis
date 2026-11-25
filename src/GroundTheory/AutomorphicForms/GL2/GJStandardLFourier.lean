@@ -4,13 +4,10 @@ public import Mathlib.Analysis.InnerProductSpace.Basic
 public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 public import Mathlib.Topology.Algebra.RestrictedProduct.TopologicalSpace
 public import Mathlib.MeasureTheory.Integral.Pi
-public import Mathlib.MeasureTheory.Integral.Bochner.Set
 public import Mathlib.MeasureTheory.Measure.Haar.Unique
 public import GroundTheory.AutomorphicForms.GL2.GJStandardLTensor
-public import GroundTheory.AutomorphicForms.GL2.GJMatrixLocal
 public import GroundTheory.GlobalFields.TateThesis.EulerFactorsFourierFinite
 public import GroundTheory.GlobalFields.TateThesis.RootNumberLocalPlace
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.Tactic.TypeStar
 import GroundTheory.AutomorphicForms.GL2.IsAddHaarMeasureMatrixMeasureFinSq
 import GroundTheory.AutomorphicForms.ReductionMeasure

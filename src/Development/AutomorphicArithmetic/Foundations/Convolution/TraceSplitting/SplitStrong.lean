@@ -8,9 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.Unramifie
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.IsoEq
 public import Development.AutomorphicArithmetic.Foundations.Convolution.NormCharacterPowers.NormCharPowHolds
 public import Development.AutomorphicArithmetic.Foundations.Convolution.TraceSplitting.Places
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HeckeCharacterUnramifiedAeAndExistsLevel
-import GroundTheory.GlobalFields.NormResidueSymbol.FunctorialFinite
-import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.GelfandKazhdanReal
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.Foundations.Convolution.TraceSplitting.NormCharSplitAlt, Development.AutomorphicArithmetic.Foundations.Convolution.TraceSplitting.SplitStrong

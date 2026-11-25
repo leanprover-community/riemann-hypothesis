@@ -25,8 +25,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PMahlerInteg
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.AssemblyBase
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PChartDivisorComponents
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PChartSectionNotMem
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFibreBound
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetSumMeasurable
 
 section -- clump:auto
 @[expose] public section

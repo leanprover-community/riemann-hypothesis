@@ -7,7 +7,6 @@ public import Formalism.SharpRestriction.GrowthBounds.BinomialPolynomialIdentiti
 import Formalism.SharpRestriction.GrowthBounds.BinomialPolynomialIdentities.ExtendByZeroRestrictOfVanish
 import Formalism.SharpRestriction.GrowthBounds.BinomialPolynomialIdentities.IndexOffRange
 import Formalism.SharpRestriction.GrowthBounds.BinomialPolynomialIdentities.KcolEqPathWord
-import Formalism.SharpRestriction.GrowthBounds.BinomialPolynomialIdentities.PeBnOfLt
 public import Formalism.SharpRestriction.GrowthBounds.PolBridge
 import Formalism.SharpRestriction.GrowthBounds.RootWeights.DescendingProdEqFactorialChoose
 import Formalism.SharpRestriction.GrowthBounds.RootWeights.HighestWeightModuleBounds
@@ -17,7 +16,6 @@ import Formalism.SharpRestriction.GrowthBounds.RootWeights.MonomialsAreWeightVec
 import Formalism.SharpRestriction.GrowthBounds.RootWeights.PolynomialOperatorsGlRelations
 import Formalism.SharpRestriction.GrowthBounds.RootWeights.V2repResIsGLRep
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.WeightConditionFromIntegralForm
-import Formalism.ThetaLogCoordinates.JacobiPathWeights.JacobiMinorProofs.LeIffLtColHeight
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

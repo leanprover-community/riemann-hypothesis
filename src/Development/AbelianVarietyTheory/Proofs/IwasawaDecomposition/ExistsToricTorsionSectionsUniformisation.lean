@@ -7,13 +7,7 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.FinFlatEtSpli
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.FinitePartOfIsFinitePart
 public import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ValueAtUnitSection
 public import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.AllTorsMap
-public import Development.AbelianVarietyTheory.Counterexamples.JetSurvey.ExistsUniquePairIff
-public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.AbelianSchemeLawsUnconditional
-public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IsFiniteFlatTorsionOfIsGt
-public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.IsPointOfIffThick
-public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.TorusExtensionOverCompleteLocalDvr
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.FinitePartImageGeneric
-public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CharBundlePrimitive
 public import Development.AbelianVarietyTheory.Definitions.Uniformization.TXFrame
 import Development.AbelianVarietyTheory.Definitions.Uniformization.IsCPPullback
 import Mathlib.Algebra.Order.Floor.Extended
@@ -53,14 +47,6 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsGtPtGenRelRField
-import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.PmapsOfGenRelR
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.AllUniformizationLawsHold
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.EqOfIsPullF
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.UniformisationEndomorphismsToCompleteDvr
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsUnitNatCastSections
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Linter.Style
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 

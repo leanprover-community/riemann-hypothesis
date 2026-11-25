@@ -5,8 +5,6 @@ public import Mathlib.RingTheory.Nilpotent.Basic
 public import Mathlib.RingTheory.Artinian.Defs
 public import Mathlib.RingTheory.Noetherian.Defs
 public import Mathlib.RingTheory.Artinian.Module
-public import Mathlib.Algebra.Module.LinearMap.End
-public import Mathlib.Algebra.Module.Prod
 public import Mathlib.Algebra.FreeAlgebra
 public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.MonodromyZeroOfWeilDeligneRepClassIff
@@ -54,8 +52,6 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.GlobalFields.ClassFieldConsequences.CongruenceSubgroupLeStandardOpenSubgroup
 public import GroundTheory.GlobalFields.TateThesis.HeckeCharRayClass
-import Mathlib.Analysis.Complex.Convex
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

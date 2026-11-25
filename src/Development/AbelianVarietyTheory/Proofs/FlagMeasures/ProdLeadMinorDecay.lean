@@ -3,12 +3,9 @@ module
 public import Formalism.RealPlaceAnalysis.Complexify
 public import Mathlib.Analysis.Matrix.Spectrum
 public import Mathlib.Algebra.Order.Chebyshev
-public import Mathlib.Analysis.SpecialFunctions.Log.Basic
-public import Mathlib.Analysis.Convex.SpecificFunctions.Basic
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import ReciprocityTheory.GeometryOfNumbers.PluriharmonicAnalysis.LogDetSt
-public import Formalism.FormalDegreeBessel.StatementDS
 public import Mathlib.Data.Set.PowersetCard
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.MulConjTransposeEqOneOfOrthonormal
 import Mathlib.Algebra.Order.Floor.Extended
@@ -59,10 +56,7 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.FormalDegreeBessel.StatementWR
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.Tactic.TypeStar
 import Mathlib.Tactic.Lemma
 

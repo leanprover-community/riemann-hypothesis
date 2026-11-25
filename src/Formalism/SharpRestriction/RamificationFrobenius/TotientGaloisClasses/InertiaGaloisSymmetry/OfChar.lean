@@ -4,7 +4,6 @@ public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.EqZeroOfNegEq
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ConjEMemHostFIff
 public import Mathlib.NumberTheory.NumberField.Cyclotomic.Galois
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ArtinMapSecondEqJacobiSym
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

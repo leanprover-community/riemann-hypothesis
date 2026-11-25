@@ -5,18 +5,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Continuo
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsCIndValue
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirProjEqOneOfMem
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsOpenRightInvarianceLocalCoefficient
-public import Mathlib.Algebra.Group.Subgroup.Defs
-public import Mathlib.Topology.Algebra.Group.Defs
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AvgVanish
-public import Mathlib.Algebra.Group.Pointwise.Set.Basic
-public import Mathlib.Algebra.Group.Subgroup.Basic
-public import Mathlib.Algebra.Group.Subgroup.Pointwise
-public import Mathlib.GroupTheory.Index
-public import Mathlib.Topology.Algebra.Group.ClosedSubgroup
-public import Mathlib.Topology.Algebra.OpenSubgroup
-public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.UnipApplyCastSuccLast
-public import Mathlib.NumberTheory.LocalField.Basic
-public import Mathlib.Topology.Instances.Matrix
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothVectorFixedNearIdentity
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EvaluationMapsLinear
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirabolicCellStructureData
@@ -24,14 +12,8 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OpenCell
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OpenEvaluationInduced
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.LeviEmbMemNormalizerLower
-import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.LeibnizDerivatives.EPGFalseEqLastIff
-import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.TwistedKernels.TwKerLeComapOf
-import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.LeibnizOrders.ProdGPn
 import GroundTheory.AutomorphicForms.GLnLocal
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsOpenFixedOfSubgroup
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocallyConstantCompactSupportUnipotent
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothIntegralLinear
 import Std.Tactic.BVDecide.Normalize.Prop
 

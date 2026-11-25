@@ -2,23 +2,16 @@ module
 
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsFlatAnIffIsConstMul
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.StalkClosedPointToGermTop
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EigLat
-public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsGrpPullback
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieLatticeEvalAtLocalRing
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LevelSectionsExactKernelLocusOpen
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsGenericFlag
-public import Mathlib.AlgebraicGeometry.Morphisms.Proper
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LineLatticeGenericSections
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieMultIffExistsFrame
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenLatticeVectorBundle
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUnitWedge
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.UniversalLieModelPullback
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Development.AutomorphicSpectrum.Definitions.AdelicLattices.FactPrimes
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsGenOfIsVBOne
 
 -- This file was produced by scripts/clump.py from the modules listed below.

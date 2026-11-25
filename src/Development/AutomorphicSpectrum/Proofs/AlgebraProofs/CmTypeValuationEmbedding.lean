@@ -2,27 +2,13 @@ module
 
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.EigCoordApply
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ProjSumSumEmbeddingsEqTrace
-public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LatNormGrLatNeZeroOfSpan
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LinearIndependentEigProj
-public import Mathlib.Algebra.Exact.Basic
-public import Mathlib.LinearAlgebra.LinearIndependent.Defs
-public import Mathlib.RingTheory.Valuation.ValuationRing
-public import Mathlib.Algebra.Module.FinitePresentation
-public import Mathlib.Algebra.Module.Torsion.Basic
-public import Mathlib.RingTheory.Flat.TorsionFree
-public import Mathlib.RingTheory.LocalRing.Module
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.NumberTheory.NumberField.Basic
 public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 public import Mathlib.FieldTheory.Finite.Basic
-public import Mathlib.RingTheory.DedekindDomain.Ideal.Basic
-public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
-public import Mathlib.RingTheory.Nakayama
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ValuationLatticeMatrixReduction
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsGenOfIsVBOne
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.QuotientEigenDifference
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

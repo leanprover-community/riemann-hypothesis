@@ -4,7 +4,6 @@ public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FontaineFormalismOfRegular
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.EqOfPowEqOneOfNormSubLt
 public import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
-public import Mathlib.LinearAlgebra.Matrix.ToLin
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TensorProductBasisCoordinates
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.KummerNotFrac
 import Mathlib.Tactic.Linter.HaveILetI

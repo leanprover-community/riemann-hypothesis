@@ -2,22 +2,14 @@ module
 
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.DefsObj
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.CapZcMemOfE
-public import GroundTheory.AutomorphicForms.GKModules.Garding
-public import GroundTheory.AutomorphicForms.GKModules.RightRegular
 public import GroundTheory.AutomorphicForms.ArchimedeanWhittaker.Density
-public import GroundTheory.AutomorphicForms.GKModules.KernelCalculus
 public import GroundTheory.AutomorphicForms.L2LocalComponents.CenterCommute
-public import GroundTheory.AutomorphicForms.ArchimedeanWhittaker.ContinuousMultilinearOfFiniteDimensional
-public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableConv
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.LactSpec
-public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.LocalRepresentationL2
-public import Development.AutomorphicArithmetic.Foundations.Convolution.TensFun
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.ClsBasic
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.DiracSep
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.FormsIrr
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.ExpGen
 import Mathlib.Tactic.Linter.Style
-import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Archimedean
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.InfZcCoeff, Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.CentralIntegrated, Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.LactSpec, Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.LactCenGen, Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.SInfIff

@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsMultOfFintype
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BumpConvolutionSupport
 public import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.IsMultZero
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.WaveSt
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ActEqSumOfKernel
@@ -11,7 +10,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Eventual
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CenterOperatorCommutesIntegral
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CenterOperatorPreservesWave
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WaveTimeAverageIsWave
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ZOpSmooth
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WaveKernelDecomposition
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -54,7 +52,6 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.UniformSpace.Uniformizable
 import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Tactic.TypeStar
 import Mathlib.Tactic.ENatToNat
 

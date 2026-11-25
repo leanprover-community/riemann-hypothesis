@@ -4,7 +4,6 @@ public import Formalism.LocalToGlobal.GlobalTheory.GL6.BwAValIntegralNonneg
 public import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
 public import Formalism.LocalToGlobal.UnitaryNorms.UnramT
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IntegralityAtPrimeLattices.RootOfUnityInt
-import Formalism.LocalToGlobal.GlobalTheory.GL6.Statement
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IntegralityAtPrimeLattices.SeenZero, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IntegralityAtPrimeLattices.NatNotMemPv, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IntegralityAtPrimeLattices.IntInvOfLoc

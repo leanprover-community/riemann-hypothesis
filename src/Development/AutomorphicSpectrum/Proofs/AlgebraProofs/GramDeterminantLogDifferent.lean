@@ -4,12 +4,8 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsTrans
 public import Development.AutomorphicSpectrum.Definitions.AdelicLattices.FactPrimes
 public import Mathlib.Algebra.AffineMonoid.Basic
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.IdealPadicGeneratorLogNorm
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeGram
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SesqSesquilinearSkewHermitian
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SesqUnimodularDual
-public import Mathlib.Analysis.Normed.Field.Basic
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-public import Mathlib.Topology.MetricSpace.Ultra.Basic
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.UltrametricDetNormLe
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.NormLeOneOfIntegralInt
 

@@ -4,11 +4,9 @@ public import GroundTheory.AutomorphicForms.GL2.GJGlobalDefs
 public import GroundTheory.AutomorphicForms.GL2.GJMatrixSchwartz
 public import GroundTheory.AutomorphicForms.GL2.GJStandardLDefs
 public import GroundTheory.AutomorphicForms.GL2.GJUnramified
-import GroundTheory.AutomorphicForms.GL2.GJFEInducedLevi
 public import GroundTheory.AutomorphicForms.GL2.GJStandardLBump
 public import GroundTheory.AutomorphicForms.GL2.GJStandardLEuler
 public import GroundTheory.AutomorphicForms.GL2.GJStandardLPartial
-import GroundTheory.AutomorphicForms.GL2.GJStandardLTensor
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

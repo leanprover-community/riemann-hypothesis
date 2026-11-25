@@ -8,7 +8,6 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.Exponen
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PeriodHolomorphicContinuation
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PeriodLatticeDiscreteFree
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PeriodSetClosed
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorsionSectionEqOfConnected
 import Mathlib.Tactic.Linter.Style
 

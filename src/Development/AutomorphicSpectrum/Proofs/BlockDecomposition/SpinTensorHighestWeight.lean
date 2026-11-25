@@ -7,11 +7,6 @@ public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 public import Mathlib.Algebra.BigOperators.GroupWithZero.Action
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ActEqZeroOfMem
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutBPEqWigMapsValueECas
-public import Mathlib.Data.Fintype.Basic
-public import Mathlib.Algebra.BigOperators.Group.Finset.Piecewise
-public import Mathlib.Algebra.BigOperators.Group.Finset.Sigma
-public import Mathlib.Order.Interval.Finset.Basic
-public import Mathlib.Order.Interval.Finset.Fin
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.RealDescent.RealLeviDescent.IsCoreMod
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsCliff
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SpinGlRelationsAdjoint

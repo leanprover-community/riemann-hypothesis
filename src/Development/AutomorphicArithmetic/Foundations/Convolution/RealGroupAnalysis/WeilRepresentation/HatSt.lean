@@ -6,9 +6,6 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGrou
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.ThetaReindexing.HatN
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.Smooth
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.ThetaReindexing.IntegralScale
-import GroundTheory.GlobalFields.TateThesis.AdeleScaling
-import GroundTheory.HeightsAndTheta.Theta.AdelicFourierCoord
-import GroundTheory.HeightsAndTheta.Theta.Weil.PartialFourierCoordinates
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Linter.HaveILetI
 

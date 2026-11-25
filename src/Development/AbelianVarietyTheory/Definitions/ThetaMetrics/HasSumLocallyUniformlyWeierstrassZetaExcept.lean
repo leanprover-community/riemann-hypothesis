@@ -7,10 +7,7 @@ public import Mathlib.Analysis.Calculus.LogDerivUniformlyOn
 public import Mathlib.Analysis.Normed.Module.Connected
 public import Mathlib.NumberTheory.ModularForms.EisensteinSeries.E2.Transform
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Mathlib.Analysis.Calculus.UniformLimitsDeriv
 public import Mathlib.Analysis.Complex.Liouville
-public import Mathlib.Analysis.Normed.Module.MultipliableUniformlyOn
-public import Mathlib.NumberTheory.ModularForms.EisensteinSeries.E2.Summable
 
 @[expose] public section
 

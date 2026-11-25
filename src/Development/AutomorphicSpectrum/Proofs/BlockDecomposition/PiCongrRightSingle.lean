@@ -3,12 +3,7 @@ module
 public import Mathlib.LinearAlgebra.ExteriorPower.Basic
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsAlgHomOfIsBaseChange
 public import Development.AbelianVarietyTheory.Proofs.HermitianTraceForms.ExistsDetEquivOfSubsingleton
-public import Mathlib.LinearAlgebra.ExteriorAlgebra.Basis
 public import Mathlib.LinearAlgebra.CliffordAlgebra.Prod
-public import Mathlib.RingTheory.Kaehler.Basic
-public import Mathlib.RingTheory.Kaehler.TensorProduct
-public import Mathlib.LinearAlgebra.DFinsupp
-public import Mathlib.RingTheory.IsTensorProduct
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivity.FormLaws
 import Mathlib.Tactic.Linter.HaveILetI
 

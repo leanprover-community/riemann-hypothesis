@@ -44,11 +44,8 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.FieldTheory.Galois.IsGaloisGroup
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.AbelianVarietyTheory.Definitions.TeichmullerDepth.HasTeich
-import Formalism.LocalToGlobal.Divisibility.Numbers
 import Development.AbelianVarietyTheory.Proofs.JetHarmonics.RealPlaceLabellingInertFrobeniusNotConj
 import Formalism.LocalToGlobal.CharacterGerms.RowTieLab
 import Mathlib.Algebra.Order.Star.Real

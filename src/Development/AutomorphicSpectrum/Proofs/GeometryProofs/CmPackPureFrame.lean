@@ -8,7 +8,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CmPackEigenP
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CurveZNeZero
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TangentVectorsBaseChange
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.PsiCover
-import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.CMLattices.IsCyclotomicExtensionCyclotomicField28
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelEigenvectorsAction

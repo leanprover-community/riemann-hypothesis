@@ -6,12 +6,9 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsDeRhamFilGradedSymbolToTateTwist
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExpStar
-public import Mathlib.RingTheory.Finiteness.Defs
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteJumpsInfFiltration
-public import Formalism.WeaklyAdmissibleFiltrations.Statement
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DeRhamInvariantsCoordinatesFinrankEq
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsDeRhamTensorCoordinatesOfBasis
-public import Mathlib.LinearAlgebra.Dimension.Finrank
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFamilyAdaptedToSeparatedFiltration
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GoodCoefficientRingPadicIntegersFinExt
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsCrystallineCyclotomicLevelOfFinrankInvariants
@@ -73,8 +70,6 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsBasisOfF
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Data.Nat.Choose.Multinomial
 import Formalism.SharpRestriction.LevelLetterCocycles.LocalTheoremOfUnramifiedLifting
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsCrisP
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.Basify
 import Mathlib.Algebra.Order.Star.Real

@@ -6,9 +6,7 @@ public import Mathlib.RingTheory.Ideal.AssociatedPrime.Finiteness
 public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
 public import ReciprocityTheory.CommutativeAlgebra.CohenMacaulay.Bridge
 public import ReciprocityTheory.CommutativeAlgebra.CohenMacaulay.Unmixed
-public import Mathlib.RingTheory.KrullDimension.Regular
 public import Mathlib.RingTheory.Regular.Flat
-public import Mathlib.RingTheory.KrullDimension.Module
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic

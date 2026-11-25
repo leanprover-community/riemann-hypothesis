@@ -3,7 +3,6 @@ module
 public import Formalism.PeriodIntegrals.HwFixedLine
 import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.HwIrred
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GelfandTsetlinBranching.ExtremalFactsProofA
 import Mathlib.RingTheory.SimpleRing.Principal
 import Formalism.LocalRingCardinality.Params
 

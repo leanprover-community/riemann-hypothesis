@@ -4,7 +4,6 @@ import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.DataInst
 public import Mathlib.Algebra.Order.Field.GeomSum
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 
 @[expose] public section
 

@@ -4,7 +4,6 @@ public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseDefs
 public import GroundTheory.ProfiniteCohomology.PoincareDuality
 public import GroundTheory.ProfiniteCohomology.LocalTateDuality.MainDefs
 public import GroundTheory.ProfiniteCohomology.LocalTateDuality.TensorHomDualRepRootsOfUnityIsoCartierPairing
-import GroundTheory.ProfiniteCohomology.PoincareDuality.Induced
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 import Mathlib.Tactic.TypeStar
 

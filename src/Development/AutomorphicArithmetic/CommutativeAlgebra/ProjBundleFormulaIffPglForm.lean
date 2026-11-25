@@ -7,7 +7,6 @@ public import Development.AutomorphicArithmetic.CommutativeAlgebra.IsIsoOfBiject
 public import Development.AutomorphicArithmetic.CommutativeAlgebra.LerayHirschOfIsoSquare
 public import Development.AutomorphicArithmetic.CommutativeAlgebra.PullCupPowEqCupPowPull
 import Development.AutomorphicArithmetic.WhittakerHecke.ExistsUniqueSimplexPullbackOfMapEq
-import Development.AutomorphicArithmetic.CupPullbacks.ConstCompSingle
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.CommutativeAlgebra.SimplicesPullbackExistsUniqueOfMapEq, Development.AutomorphicArithmetic.CommutativeAlgebra.ProjBundleFormulaIffPglForm

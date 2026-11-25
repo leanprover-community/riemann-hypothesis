@@ -4,7 +4,6 @@ public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepre
 public import Mathlib.RingTheory.DedekindDomain.Different
 public import Mathlib.NumberTheory.NumberField.Discriminant.Different
 import Mathlib.Tactic.Linter.HaveILetI
-public import Mathlib.NumberTheory.NumberField.Discriminant.Basic
 
 @[expose] public section
 

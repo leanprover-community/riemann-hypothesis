@@ -2,16 +2,12 @@ module
 
 public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Mathlib.Topology.Algebra.Nonarchimedean.Bases
-public import Mathlib.LinearAlgebra.Matrix.Defs
-public import Mathlib.RingTheory.Localization.FractionRing
 public import Formalism.AdmissibleDesigns.NonemptyPl
 public import Formalism.SharpRestriction.LevelLetterCocycles.GoodCongruenceDataOf
-public import Formalism.WachLatticeTwists.RamifiedBlockRings.DistinctEigenvalueCornerPerturbation
 public import Formalism.WachLatticeTwists.RealClassMaps.RealClassMapTheorem
 public import Development.AutomorphicArithmetic.CyclotomicBounds.FactorizationConductorLeLocalLevel
 public import Formalism.AdicCompletionExports.AdicCompleteRingEquiv.IsAdicCompleteOfRingEquiv
 public import Formalism.SharpRestriction.LevelLetterCocycles.ExistsInertiaCharpolyFactorOfTameType
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Formalism.PeriodIntegrals.FinExtTop
 import Mathlib.NumberTheory.Padics.ProperSpace
 

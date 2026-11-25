@@ -8,9 +8,7 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBCutInside
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RealWeightedForms
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SupremumAIsMajorant
 import Mathlib.Tactic.Lemma
-import Formalism.HermitianCurvature.PositionExpansionTopCoefficients
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Algebra.Order.Star.Real
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelOneWordEstimate, Formalism.HermitianCurvature.HermitianCurvatureProofs.CutIntervalLong

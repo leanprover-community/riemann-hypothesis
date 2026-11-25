@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.Kernel
 public import Mathlib.RingTheory.AdicCompletion.LocalRing
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Mathlib.RingTheory.AdicCompletion.Completeness
 
 @[expose] public section
 

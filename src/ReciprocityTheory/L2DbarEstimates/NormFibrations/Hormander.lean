@@ -2,30 +2,16 @@ module
 
 public import ReciprocityTheory.L2DbarEstimates.BasicIdentity.BasicIdentityStatement
 public import Mathlib.Analysis.Calculus.FDeriv.Symmetric
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.FDeriv.Mul
 public import ReciprocityTheory.L2DbarEstimates.BasicIdentity.HasCompactSupportDTw
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.IntegralFderivApplyEqZero
-public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.TsupportDbSubset
-public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
-public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.ChartSymmEventuallyEq
 public import ReciprocityTheory.L2DbarEstimates.BasicIdentity.HalfSumNormSubSq
 public import ReciprocityTheory.L2DbarEstimates.BasicIdentity.TstarNormSq
 public import ReciprocityTheory.L2DbarEstimates.LeviForms.HoloClosedNeed
 public import ReciprocityTheory.L2DbarEstimates.LeviForms.BergmanExistsStatement
 public import Mathlib.MeasureTheory.Function.L2Space
 public import ReciprocityTheory.L2DbarEstimates.JacobianInterpolationStatement
-public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
-public import Mathlib.Topology.Separation.CompletelyRegular
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.DifferentiableAtChart
 public import ReciprocityTheory.L2DbarEstimates.LeviForms.DetUpdateColEq
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.MeasureTheory.Function.LocallyIntegrable
-public import Mathlib.MeasureTheory.Integral.Bochner.Set
-public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
-public import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
-public import Mathlib.MeasureTheory.Integral.Prod
 public import ReciprocityTheory.L2DbarEstimates.Mollifiers.MollifierL2LocTendsto
 public import Mathlib.MeasureTheory.Function.ContinuousMapDense
 public import ReciprocityTheory.L2DbarEstimates.Localization.UnweightBackStatement
@@ -34,11 +20,9 @@ public import ReciprocityTheory.L2DbarEstimates.HormanderEstimate.HStatementOf
 public import ReciprocityTheory.L2DbarEstimates.NormFibrations.Imports
 public import ReciprocityTheory.L2DbarEstimates.SkodaWeights.VolProdFinApply
 public import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.RegBall
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.CStarAlgebra.Module.Constructions
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Topology.UniformSpace.Uniformizable
 import ReciprocityTheory.L2DbarEstimates.HormanderEstimate.RegMDbEqZeroOfNotMem

@@ -50,7 +50,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import ReciprocityTheory.GaloisValuations.GlobalB
 import Mathlib.FieldTheory.Galois.Profinite
-import Mathlib.RingTheory.Invariant.Profinite
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 

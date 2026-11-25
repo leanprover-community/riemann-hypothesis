@@ -5,25 +5,11 @@ public import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
 public import Mathlib.RingTheory.Flat.TorsionFree
 public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.RegularLocalRing.Defs
-public import Development.AbelianVarietyTheory.Definitions.Foundations.NotCoboundaryConstantOne
-public import Mathlib.RingTheory.SimpleRing.Principal
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.AlgebraicElementApproximation
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsGaloisInvariantValuationIntegersEqIntegral
-public import Mathlib.FieldTheory.KrullTopology
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.FieldTheory.Minpoly.IsConjRoot
-public import Mathlib.Algebra.Field.ZMod
-public import Mathlib.RingTheory.LaurentSeries
 public import Mathlib.RingTheory.HahnSeries.Valuation
 public import Mathlib.RingTheory.Valuation.IsTrivialOn
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CompletedLaurentIsDVRStatement
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.UnramifiedIntegersAdicComplete
-public import Mathlib.Basic.NNReal.Defs
-public import Mathlib.RingTheory.Algebraic.Defs
-public import Mathlib.RingTheory.DiscreteValuationRing.Basic
-public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ValuationLeOneIffIsIntegralOfCompleteDvr
-public import Mathlib.RingTheory.Valuation.ValuationSubring
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsConjOverPrime
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -69,8 +55,6 @@ import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
-import Development.AbelianVarietyTheory.Definitions.Foundations.EeProd
-import Development.AbelianVarietyTheory.Definitions.Foundations.ExpUpper
 import Mathlib.FieldTheory.Galois.Profinite
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Polynomial.Basic
@@ -78,7 +62,6 @@ import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsCompletedLaurentQuotPrimeEquivLaurentFp
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 
 -- This file was produced by scripts/clump.py from the modules listed below.

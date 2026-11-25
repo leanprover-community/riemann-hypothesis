@@ -1,11 +1,8 @@
 module
 
 public import GroundTheory.LocalFields.LubinTatePoints
-public import Mathlib.FieldTheory.IsSepClosed
 public import Mathlib.RingTheory.Polynomial.Eisenstein.Basic
-import GroundTheory.LocalFields.SeparableClosure
 import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.Tactic.TypeStar
 public import Mathlib.RingTheory.Ideal.Norm.AbsNorm

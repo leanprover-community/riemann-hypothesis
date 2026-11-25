@@ -7,12 +7,8 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.CyclotomicPowerSeri
 public import Formalism.SharpRestriction.LevelLetterCocycles.CyclotomicPowerSeries.CycloSimple
 public import Formalism.SharpRestriction.LevelLetterCocycles.CyclotomicPowerSeries.PiSeries
 public import Formalism.SharpRestriction.LevelLetterCocycles.CyclotomicPowerSeries.PsCycloStatement
-public import Mathlib.RingTheory.Polynomial.Cyclotomic.Expand
 public import Formalism.SharpRestriction.LevelLetterCocycles.MapEvalPsPi
 public import Formalism.SharpRestriction.LevelLetterCocycles.CyclotomicPowerSeries.PsCoprimeDvdSub
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
 

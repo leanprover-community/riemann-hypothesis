@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.GlobalFields.TateThesis.SchwartzBruhatDual
-import GroundTheory.GlobalFields.TateThesis.AdelicCharDual
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
 

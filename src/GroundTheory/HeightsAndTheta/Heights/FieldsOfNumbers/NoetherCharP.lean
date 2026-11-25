@@ -6,7 +6,6 @@ public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.MvPolynomial.Expand
 public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Mathlib.RingTheory.SimpleRing.Principal
-public import Mathlib.RingTheory.Ideal.GoingUp
 public import Mathlib.FieldTheory.PurelyInseparable.Exponent
 public import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
 public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure

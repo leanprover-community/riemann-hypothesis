@@ -4,8 +4,6 @@ public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CountLow
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SegmentChainDegreeEven
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CoarseDegreeAlternative
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.LeAndHalfLeProdOneSubExpNegOfBounds
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SegmentStatementHolds
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.ThresholdLowerBounds
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.BitVec
 

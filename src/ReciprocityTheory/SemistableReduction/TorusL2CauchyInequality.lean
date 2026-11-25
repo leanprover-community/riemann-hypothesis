@@ -4,30 +4,19 @@ public import ReciprocityTheory.SemistableReduction.SphereLogIntegrableStatement
 public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
 public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 public import ReciprocityTheory.SemistableReduction.DetGramEqProdGramSchmidt
-public import Mathlib.Analysis.InnerProductSpace.GramMatrix
 public import ReciprocityTheory.SemistableReduction.LogNormCoeffSubLeBlockSphereLogMean
 public import ReciprocityTheory.SemistableReduction.IntCoresA
-public import Mathlib.Topology.Algebra.MvPolynomial
 public import ReciprocityTheory.SemistableReduction.SJCoreA
 public import ReciprocityTheory.SemistableReduction.SJCoreB
 public import ReciprocityTheory.SemistableReduction.SJCoreD
 public import Mathlib.MeasureTheory.Integral.CircleAverage
-public import Mathlib.RingTheory.MvPolynomial.Homogeneous
 public import Mathlib.Analysis.Complex.JensenFormula
-public import Mathlib.Analysis.Calculus.Deriv.Polynomial
-public import Mathlib.Analysis.Complex.CauchyIntegral
-public import Mathlib.Analysis.SpecialFunctions.Integrability.Log
 public import ReciprocityTheory.SemistableReduction.MeasurePreservingSphereMap
-public import Mathlib.Analysis.Meromorphic.Basic
 public import ReciprocityTheory.SemistableReduction.SphereTorusA
 public import Mathlib.Algebra.MvPolynomial.Funext
 public import ReciprocityTheory.SemistableReduction.SphereTorusC
 public import Mathlib.Data.FunLike.Fintype
-public import Mathlib.MeasureTheory.Integral.Pi
-public import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 public import ReciprocityTheory.SemistableReduction.TorusMeanC
-public import ReciprocityTheory.SemistableReduction.TorusMeanA
-public import ReciprocityTheory.SemistableReduction.TorusMeanB
 public import ReciprocityTheory.SemistableReduction.LagrangeIdealLiftsFact
 
 -- This file was produced by scripts/clump.py from the modules listed below.

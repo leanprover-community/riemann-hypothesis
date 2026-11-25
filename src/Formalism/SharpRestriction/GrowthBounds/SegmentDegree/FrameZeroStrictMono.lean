@@ -7,8 +7,6 @@ public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.SumPosOfPer
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.ThresholdPowerBoundOfCounts
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.TopOccursInAtMostTwoSegments
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.ReflectionMemGlevCastSucc
-public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.StrictMonoIntExists
-public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.TopCountLowerBoundsOfOccurrence
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.SegmentDegree.SumTotalLoss, Formalism.SharpRestriction.GrowthBounds.SegmentDegree.FrameZeroStrictMono

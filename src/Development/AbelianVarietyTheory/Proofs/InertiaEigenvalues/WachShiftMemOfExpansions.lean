@@ -4,7 +4,6 @@ public import Mathlib.RingTheory.MvPowerSeries.Inverse
 public import Mathlib.RingTheory.PowerSeries.Basic
 public import Mathlib.RingTheory.PowerSeries.Inverse
 public import Mathlib.Data.List.GetD
-public import Mathlib.LinearAlgebra.Dual.Defs
 public import Mathlib.LinearAlgebra.Dual.Lemmas
 public import Mathlib.Order.Int.LeastGreatest
 public import Formalism.SharpRestriction.LevelLetterCocycles.ExpRules

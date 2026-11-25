@@ -1,8 +1,6 @@
 module
 
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseKummerDefs
-public import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.SDivisor
 public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology.ConePairing
 import GroundTheory.ProfiniteCohomology.CupProducts.ExistsCocycleMapFEqD
 import GroundTheory.ProfiniteCohomology.InflationRestriction.DegreeOne

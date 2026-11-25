@@ -3,9 +3,7 @@ module
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.LamIdealOfNotPrimePow
 public import Mathlib.Analysis.Analytic.Order
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.NormOneSubConjMul
-public import Mathlib.NumberTheory.LSeries.Basic
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RayClassFamilyLogDerivReGtOne
-public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RayClassLFunctionFamilyContinuationGrowth
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

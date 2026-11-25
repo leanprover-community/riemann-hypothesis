@@ -4,7 +4,6 @@ public import Formalism.UnipotentAdelicQuotients.SWXSDefs
 public import Formalism.LocalToGlobal.NumberFieldFamilies.ThetaCJ
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.TraceEqAdd
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.WhitGenOf
-import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitarySchrodingerModel.LocalDefs
 import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.IsSingTest
 
 -- This file was produced by scripts/clump.py from the modules listed below.

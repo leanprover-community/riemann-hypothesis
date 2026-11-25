@@ -7,7 +7,6 @@ public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeil
 import Development.WeilBound.ThetaLifts.LatticeBasics.UnfoldB
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnfoldingCompactness.IncMTranspose
 
 @[expose] public section
 

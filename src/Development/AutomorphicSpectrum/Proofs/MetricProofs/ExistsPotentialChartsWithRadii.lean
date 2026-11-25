@@ -10,8 +10,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PParametr
 public import Mathlib.Analysis.Calculus.FDeriv.Star
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
 public import Mathlib.Logic.Equiv.Bool
-public import Mathlib.Order.CompletePartialOrder
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ChartLocalAnalyticTrivialization
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PInjectiveHolomorphicInverse
 import Development.AutomorphicSpectrum.Definitions.MetricPeriods.ExistsIntSmulIsAdicIntegralInTensorBasis

@@ -4,7 +4,6 @@ public import Mathlib.Algebra.Polynomial.Basic
 public import Mathlib.NumberTheory.Padics.PadicVal.Basic
 public import Mathlib.RingTheory.Ideal.Span
 public import Formalism.LagrangeIdealLifts.LiftLagrangeIdealInt
-public import Mathlib.RingTheory.Length
 public import Formalism.FrobeniusContraction.FrobeniusContractionProofs.LenBound
 public import Formalism.PadicSubsetSums.CentralIdempotents.WindowSums
 import Mathlib.NumberTheory.Height.NumberField

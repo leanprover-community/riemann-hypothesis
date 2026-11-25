@@ -7,8 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsKodai
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ExistsLinearIndependentOfGenerates
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PLiftBirationalNef
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PNefPlusAmpleDegree
-import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PCutRegular
-import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.HodgeTatePoints.SiuSegre, Development.WeilBound.CoreStatements.HodgeTatePoints.SiuaKodOf, Development.WeilBound.CoreStatements.HodgeTatePoints.SiuKodaira

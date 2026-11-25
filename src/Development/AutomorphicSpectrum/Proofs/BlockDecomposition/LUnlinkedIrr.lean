@@ -19,8 +19,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetM
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetSubLeftOfAdmissible
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProductIrreducibleFiniteLength
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SegmentProductJacquetShuffleCount
-import Mathlib.Tactic.Linter.HaveILetI
-import GroundTheory.LocalFields.PadicLogSeries
 import Std.Tactic.BVDecide.Normalize.BitVec
 import Std.Tactic.BVDecide.Normalize.Prop
 

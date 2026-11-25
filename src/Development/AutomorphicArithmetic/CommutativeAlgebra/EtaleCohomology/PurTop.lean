@@ -12,9 +12,7 @@ public import Development.EtaleCohomology.CohomologicalPurity.PresSheafify
 public import Development.EtaleCohomology.CohomologicalPurity.LeafIndExc
 public import Development.EtaleCohomology.CohomologicalPurity.LeafTubeCut
 public import Development.EtaleCohomology.CohomologicalPurity.LeafSumPf
-public import Development.EtaleCohomology.CohomologicalPurity.InrFold
 public import Development.EtaleCohomology.CohomologicalPurity.LeafPrdAffPf
-public import Development.EtaleCohomology.CohomologicalPurity.LeafTubeCutHoc
 public import Development.EtaleCohomology.CohomologicalPurity.LeafExcLevelPf
 public import Development.EtaleCohomology.CohomologicalPurity.LeafHsSumPfR
 public import Mathlib.RingTheory.MvPolynomial.Ideal

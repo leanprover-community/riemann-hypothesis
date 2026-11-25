@@ -5,7 +5,6 @@ public import Formalism.LocalToGlobal.KernelLattices.ThDistC
 public import Formalism.LocalToGlobal.Columns.WordFin
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.Statement
 public import Formalism.PeriodIntegrals.KerIso
-import Mathlib.NumberTheory.Padics.ProperSpace
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.GlobalTheory.JetPositivity.DeltaPowTwelveEqDiscr, Formalism.LocalToGlobal.KernelLattices.ColumnData

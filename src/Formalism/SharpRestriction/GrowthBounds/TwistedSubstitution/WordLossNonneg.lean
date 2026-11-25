@@ -2,8 +2,6 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.TwistedSubstitution.MemLin
 public import Formalism.SharpRestriction.GrowthBounds.TwistedSubstitution.MemRed
-import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.IsMultiHom
-import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.DvdOfAdd
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.TwistedSubstitution.MemAtDZeroIff, Formalism.SharpRestriction.GrowthBounds.TwistedSubstitution.WordLossNonneg

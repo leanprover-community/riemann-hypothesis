@@ -6,22 +6,16 @@ public import Development.WeilBound.CoreStatements.HodgeTatePoints.LieMultComp
 public import GroundTheory.HeightsAndTheta.Heights.KernelsLattice
 public import Development.AutomorphicSpectrum.Proofs.AdelicProofs.GramMat
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Slopes
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PIdealIndexPlaces
 public import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.StatementsBundles
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsThetaMeanSquareNorm
 public import Development.AutomorphicSpectrum.Proofs.AdelicProofs.GramMatrixPosDefConjugate
-public import Mathlib.Basic.Real.Basic
 public import Development.AutomorphicSpectrum.Proofs.AdelicProofs.IdealNormPrincipalInExtension
 public import GroundTheory.HeightsAndTheta.Heights.LatticeLemmas.BaseChangeIndex
 public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PLineDegreeBundle
 public import Development.AutomorphicSpectrum.Statements.GeometryStatements.ZhangDimensionPushDownGrassmannianHeightBounds
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LineOfKeyDegree
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.KeyDegreeOfBadReduction
-import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.PermFinTwoUniv
-import Mathlib.Tactic.Linter.HaveILetI
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PolarizedDataFieldExtension
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

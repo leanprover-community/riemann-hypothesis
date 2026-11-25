@@ -6,7 +6,6 @@ public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerLoca
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.ExistsUnitsToIdelesEqOfIdelesSumInvEqZero
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerSplit
 import Mathlib.Algebra.Order.Star.Rat
-public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.EqZeroOfBrauerLocalApplyEqZero
 
 @[expose] public section
 

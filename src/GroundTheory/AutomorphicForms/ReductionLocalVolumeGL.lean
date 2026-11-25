@@ -1,23 +1,18 @@
 module
 
 public import GroundTheory.AutomorphicForms.RealIwasawaSubgroups
-public import Mathlib.MeasureTheory.Constructions.Pi
-public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 public import Mathlib.MeasureTheory.Integral.Pi
 public import Mathlib.MeasureTheory.Integral.ExpDecay
 public import GroundTheory.AutomorphicForms.RealIwasawaUnipotentHaar
 public import GroundTheory.AutomorphicForms.RealIwasawaIntegration
 import Aesop.Main
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.Group.Units
-import Mathlib.Topology.Algebra.Star.Unitary
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.AutomorphicForms.ReductionLocalVolumeTorus, GroundTheory.AutomorphicForms.ReductionLocalVolumeGL

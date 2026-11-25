@@ -8,7 +8,6 @@ public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
 
 import Mathlib.LinearAlgebra.Dimension.OrzechProperty
-import Mathlib.LinearAlgebra.LinearIndependent.Basic
 import Mathlib.RingTheory.FiniteType
 
 @[expose] public section

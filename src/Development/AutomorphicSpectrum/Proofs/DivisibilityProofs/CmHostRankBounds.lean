@@ -6,8 +6,6 @@ public import Mathlib.NumberTheory.NumberField.Discriminant.Different
 import Mathlib.Tactic.Linter.HaveILetI
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FlagIndices
-import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.PermFinTwoUniv
-public import Mathlib.NumberTheory.NumberField.Discriminant.Basic
 
 @[expose] public section
 

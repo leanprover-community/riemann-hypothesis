@@ -5,9 +5,7 @@ public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisorsPic
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisorsPullback
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.IsogenySeparable
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DualIsogenyExists
-import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisorsValuation
 import GroundTheory.ArithmeticGeometry.AbelianVarieties.KernelCard
-import GroundTheory.ArithmeticGeometry.AbelianVarieties.WeilTranslate
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.ArithmeticGeometry.AbelianVarieties.IsogenyValuation, GroundTheory.ArithmeticGeometry.AbelianVarieties.WeilPairing, GroundTheory.ArithmeticGeometry.AbelianVarieties.IsogenyRamification

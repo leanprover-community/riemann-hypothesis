@@ -4,15 +4,8 @@ public import GroundTheory.HeightsAndTheta.Heights.ChowForms.ImportsAlt
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsChartPointTrdeg
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsDerivSpanTrdeg
 public import Mathlib.RingTheory.Derivation.MapCoeffs
-public import Mathlib.FieldTheory.IntermediateField.Adjoin.Algebra
 public import Mathlib.FieldTheory.SeparablyGenerated
-public import Mathlib.RingTheory.Kaehler.Basic
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsGenericFormsKer
-public import Mathlib.Data.Matrix.Basic
-public import Mathlib.LinearAlgebra.Basis.VectorSpace
-public import Mathlib.LinearAlgebra.Dimension.Constructions
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-public import Mathlib.LinearAlgebra.Matrix.Nondegenerate
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PSpecChartIso
 public import Mathlib.RingTheory.RingHom.Flat
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsChart
@@ -34,8 +27,6 @@ import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.TotallySplit
-import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PSpecMax
-import Mathlib.RingTheory.Smooth.Flat
 import GroundTheory.HeightsAndTheta.Heights.ChowForms.PConeDimOfChowForm
 import GroundTheory.HeightsAndTheta.Heights.ChowForms.PIncIdealDim
 import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PGenSecSeparable

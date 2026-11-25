@@ -4,7 +4,6 @@ public import Formalism.PeriodIntegrals.OrbJetBase
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitPowerSeriesCoefficients.ExpSum
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitPowerSeriesCoefficients.JetRen
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitJetLogarithm.ProdMonomialOne
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitPowerSeriesCoefficients.JetMul
 public import Formalism.PeriodIntegrals.OrbAddOne
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitJetDegreeBound.JetTdegEqDegree
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitJetDegreeBound.ProdMonomialOne
@@ -25,7 +24,6 @@ import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Std.Tactic.BVDecide.Normalize.BitVec
 import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.LocalRingCardinality.DataDIV
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitJetLogarithm.LogInv, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitJetLogarithm.ConstantCoeffZeroOfBoundTwo, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitJetLogarithm.ProdRenameExpJetSeries, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitJetLogarithm.ApplyAt0EqZeroOfOrder, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitJetLogarithm.OrbitsAddAtConjugate, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitJetDegreeBound.UnivEqBiUnion, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitJetDegreeBound.ConstantCoeffZeroOfBoundGeneral, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitValuationBounds.PrvFOfOrbitLetterBounds, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitSumCount.TauPlBijective, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitSumCount.SizeGe, Formalism.PeriodIntegrals.OrbitalBoundsConclusion.SumOrbC, Formalism.SharpRestriction.Divisibility.ChainOperators.OrbitEntryBounds

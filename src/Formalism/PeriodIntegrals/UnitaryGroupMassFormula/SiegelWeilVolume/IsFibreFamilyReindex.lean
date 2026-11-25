@@ -5,7 +5,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitV
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.EqZeroOfSetIntegral
 import Aesop.Main
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Order.CompletePartialOrder
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.TensAll
 
 @[expose] public section

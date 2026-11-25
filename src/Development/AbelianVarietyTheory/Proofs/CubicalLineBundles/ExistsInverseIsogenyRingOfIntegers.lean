@@ -49,7 +49,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Definitions.CMLattices.IsCyclotomicExtensionCyclotomicField28
 import Development.AbelianVarietyTheory.Definitions.CMLattices.LamLetters
 import Formalism.LocalToGlobal.CMDeterminantIdeals.DetIdeal
-import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.ConjSymm
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsInverseIsogenyPolAV, Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsInverseIsogenyRingOfIntegers

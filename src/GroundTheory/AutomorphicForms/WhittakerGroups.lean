@@ -6,11 +6,9 @@ public import GroundTheory.AutomorphicForms.FiniteBruhat
 public import GroundTheory.AutomorphicForms.Iwasawa
 public import GroundTheory.AutomorphicForms.LocallyProfinite
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.CStarAlgebra.Classes
 import GroundTheory.AutomorphicForms.MeasuresModulus
 import Mathlib.RingTheory.Henselian
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.Group.Units
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.PowerSubgroups.CountableNeighbourhoods.NormZpow, GroundTheory.AutomorphicForms.WhittakerGroups

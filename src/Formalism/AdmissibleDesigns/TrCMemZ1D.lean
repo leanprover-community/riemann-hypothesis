@@ -2,7 +2,6 @@ module
 
 public import Formalism.AdmissibleDesigns.NonemptyPl
 public import Formalism.SharpRestriction.LevelLetterCocycles.GoodCongruenceDataOf
-public import Formalism.WachLatticeTwists.RamifiedBlockRings.DistinctEigenvalueCornerPerturbation
 public import Formalism.WachLatticeTwists.ShapeRowIsomorphisms.Statement
 
 @[expose] public section

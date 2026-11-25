@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.SmulSAddLeft
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArcCoordinatesOfMembership
-import Mathlib.RingTheory.PowerSeries.Inverse
 
 @[expose] public section
 

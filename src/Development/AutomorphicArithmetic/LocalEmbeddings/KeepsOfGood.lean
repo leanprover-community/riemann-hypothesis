@@ -15,7 +15,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Finra
 public import Development.AbelianVarietyTheory.Definitions.Divisors.CongModRefl
 public import Development.AbelianVarietyTheory.Definitions.Divisors.MemLevEigenIffTransl
 public import Development.AbelianVarietyTheory.Definitions.Divisors.NormNegCmConstantEqAtAllEmbeddings
-public import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
 public import Development.AbelianVarietyTheory.Counterexamples.LevelGroupExamples.OrthonormalBaseFrameNeg
 public import Development.AbelianVarietyTheory.Definitions.Foundations.CanonicalExponents
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BaseLevelCharacterEqProdSuperdiagonalSum
@@ -23,8 +22,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralCusp
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PrincipalLevelLiftModuliLawsOfCore
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.KeepsCuspOfIsUnifAt
 public import Development.AutomorphicArithmetic.LocalEmbeddings.RootInCore
-public import Development.AbelianVarietyTheory.Definitions.Divisors.UnifOfSpaceEq
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

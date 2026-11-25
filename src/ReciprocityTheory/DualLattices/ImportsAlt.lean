@@ -9,8 +9,6 @@ public import ReciprocityTheory.DualLattices.ValuationDetEqOfSpanEq
 public import ReciprocityTheory.DualLattices.ValuationFourierLeOne
 public import ReciprocityTheory.DualLattices.NearIdentityColengthStatement
 public import Mathlib.LinearAlgebra.Matrix.Permutation
-public import Mathlib.Basic.PEquiv
-public import Mathlib.Data.Matrix.PEquiv
 public import Mathlib.NumberTheory.LegendreSymbol.AddCharacter
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs

@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.AutomorphicForms.SphericalMinuscule
 public import GroundTheory.AutomorphicForms.MacdonaldHecke
-public import GroundTheory.AutomorphicForms.AffineBruhat
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

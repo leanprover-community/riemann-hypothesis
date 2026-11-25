@@ -3,10 +3,8 @@ module
 import Formalism.LocalToGlobal.NumberFieldFamilies.ThetaCF
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.AdelicDataRowMeasureScaleTrivialTuple
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ChainWideTwistTransport
-import Formalism.LocalRingCardinality.SpanPowerMembership.Spaces
 import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SignatureExists
-import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -22,8 +20,6 @@ import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core

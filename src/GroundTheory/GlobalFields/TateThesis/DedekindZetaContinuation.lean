@@ -3,10 +3,8 @@ module
 public import GroundTheory.GlobalFields.TateThesis.HeckeTheoremFE
 public import GroundTheory.GlobalFields.TateThesis.HeckeTheorem
 public import Mathlib.Analysis.Meromorphic.Basic
-import GroundTheory.GlobalFields.TateThesis.HeckeTheoremTrivial
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.TypeStar
-import Mathlib.Analysis.Complex.RemovableSingularity
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.GlobalFields.TateThesis.DedekindContinuation, GroundTheory.GlobalFields.TateThesis.DedekindZetaContinuation

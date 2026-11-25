@@ -6,8 +6,6 @@ public import Mathlib.RingTheory.DedekindDomain.PID
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.DimensionQuotientBound
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.PrimeAvoidanceFibre
 public import Mathlib.FieldTheory.Separable
-public import Mathlib.RingTheory.DedekindDomain.Basic
-public import Mathlib.RingTheory.DedekindDomain.Dvr
 public import Mathlib.RingTheory.DedekindDomain.IntegralClosure
 public import Mathlib.RingTheory.Flat.TorsionFree
 public import Mathlib.RingTheory.Localization.Finiteness

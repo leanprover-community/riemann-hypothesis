@@ -2,9 +2,6 @@ module
 
 import Development.AutomorphicSpectrum.Proofs.AdelicProofs.LocalValuationLogNormsExistence
 public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Completion
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

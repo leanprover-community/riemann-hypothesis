@@ -4,10 +4,8 @@ public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsC
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.HasValues
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatHt
 public import Development.AutomorphicSpectrum.Statements.GeometryStatements.HTChartExists
-public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsHodgeTateFunctional
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeTateFunctionalUnique
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFiniteBaseChange
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Linter.HaveILetI

@@ -3,15 +3,7 @@ module
 public import Formalism.MirabolicMackeyTheory.StatementL
 public import Formalism.MirabolicMackeyTheory.MirabolicMackeyProofs.Mirabolic
 public import Formalism.MirabolicMackeyTheory.MirabolicMackeyProofs.OnLocal
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
-public import Mathlib.Basic.Real.Basic
-public import Mathlib.Order.Interval.Finset.Nat
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-public import Mathlib.Algebra.BigOperators.Intervals
-public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
-public import Mathlib.Algebra.Ring.GeomSum
 public import Formalism.PeriodIntegrals.MirabIndex
-public import Mathlib.LinearAlgebra.Matrix.Block
 public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Card
 public import Formalism.PeriodIntegrals.UnipVal
 public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
@@ -22,7 +14,6 @@ import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Tactic.TypeStar
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
 

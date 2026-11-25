@@ -6,7 +6,6 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.OppositeWeylSubgrou
 public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-public import Mathlib.Topology.Algebra.Group.Units
 import Std.Tactic.BVDecide.Normalize.Prop
 public import Mathlib.MeasureTheory.Measure.Haar.Unique
 

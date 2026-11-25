@@ -1,25 +1,16 @@
 module
 
 public import GroundTheory.AutomorphicForms.GL2.GJFEBlockConv
-public import GroundTheory.AutomorphicForms.SmoothRepContragredient
-public import Mathlib.RepresentationTheory.Irreducible
 public import GroundTheory.AutomorphicForms.CompactModCentre
 public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
-public import Mathlib.Analysis.SpecialFunctions.Log.Base
-import GroundTheory.AutomorphicForms.GL2.ExistsEqPowMulOfValuationLe
-import GroundTheory.AutomorphicForms.GL2.GJInducedZeta
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Algebra.Nonarchimedean.TotallyDisconnected
 import Mathlib.Topology.Compactness.Paracompact
 import Mathlib.Topology.Separation.Connected
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.RingTheory.SimpleRing.Principal
-import GroundTheory.AutomorphicForms.GL2.GJZetaCore
 import Mathlib.Dynamics.Ergodic.Action.Regular
 import Mathlib.RingTheory.PiTensorProduct
-import GroundTheory.AutomorphicForms.GL2.GJLocalZeta
 import GroundTheory.AutomorphicForms.LocallyProfinite
 import GroundTheory.AutomorphicForms.SmoothRepSchur
 import Mathlib.Algebra.Order.Star.Real

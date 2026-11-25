@@ -10,9 +10,7 @@ public import Formalism.PeriodIntegrals.HookBound
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HookLengthBound.CapelliDefs
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HookLengthBound.CapelliAbs
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HookLengthBound.CapelliMain
-public import Mathlib.RingTheory.Derivation.Lie
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ProdFactorialSupportSubSingle
 import Mathlib.Tactic.Linter.Style
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ArchimedeanSchwartz.ArchimedeanDerivatives.ContDiffFderivApply
 import Formalism.LocalToGlobal.Divisibility.BrJoint

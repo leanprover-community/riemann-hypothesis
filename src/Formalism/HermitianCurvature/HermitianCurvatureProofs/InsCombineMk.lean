@@ -3,7 +3,6 @@ module
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BlockTwist
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdmissibleRecOfAdmissibleWord
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FrameOfAdmissibleWord
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.FreeOf2RmatrixTranspose
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.RingTheory.PiTensorProduct

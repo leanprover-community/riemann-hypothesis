@@ -5,10 +5,6 @@ public import Mathlib.RingTheory.LocalRing.Defs
 public import Mathlib.LinearAlgebra.Matrix.Block
 public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Basic
 public import Mathlib.RingTheory.LocalRing.ResidueField.Basic
-public import Mathlib.Data.Matrix.Mul
-public import Mathlib.Algebra.BigOperators.Fin
-public import Mathlib.RingTheory.Ideal.Nonunits
-public import Mathlib.RingTheory.LocalRing.Basic
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IwahoriFactorisation.StrictDominance.JointGeneralisedEigenvectors.CasselmanStrictlyDominantExample
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.HaveILetI

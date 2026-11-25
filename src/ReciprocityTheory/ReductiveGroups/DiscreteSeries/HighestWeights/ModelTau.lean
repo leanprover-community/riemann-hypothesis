@@ -5,20 +5,8 @@ public import Mathlib.Algebra.MvPolynomial.Monad
 public import Mathlib.RingTheory.MvPolynomial.Basic
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IsClosedKset
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.KFacts
-public import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IsClosedEmbeddingToM
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.HasDerivAtRealOfComplex
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.OpEqExp
-public import Mathlib.Analysis.Calculus.Deriv.Comp
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.Analysis.Calculus.Deriv.Shift
-public import Mathlib.Analysis.Calculus.MeanValue
-public import Mathlib.Analysis.Matrix.Normed
-public import Mathlib.Analysis.Normed.Algebra.MatrixExponential
-public import Mathlib.Analysis.SpecialFunctions.Exponential
-public import Formalism.RealPlaceAnalysis.StatementKT
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PsiExistsStatement
-public import Formalism.RealPlaceAnalysis.QuotientSettingHolds
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.SingleMulJmComm
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsPolyEntriesConjLeftRightMul
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
@@ -27,7 +15,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.PiTensorProduct
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.OneParam
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.ModelSpace, ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.ModelInner, ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.ModelGenA, ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.ModelGen, ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.ModelTau

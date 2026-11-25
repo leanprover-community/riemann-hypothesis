@@ -11,20 +11,7 @@ public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.CharacterE
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.ExistsIsCharEqAddOfPairNeZero
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.FiniteGroupFunctionPairingAddNatPosSymm
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.MemVirtualCharactersIffSubCharacters
-public import Mathlib.Data.Nat.Prime.Defs
-public import Mathlib.GroupTheory.GroupAction.Defs
-public import Mathlib.SetTheory.Cardinal.Finite
-public import Mathlib.GroupTheory.GroupAction.FixedPoints
-public import Mathlib.GroupTheory.Perm.Cycle.Type
-public import Mathlib.GroupTheory.OrderOfElement
-public import Mathlib.Data.Nat.Factorization.Basic
-public import Mathlib.GroupTheory.Index
 public import Mathlib.GroupTheory.Sylow
-public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.InducedClassFunctionFromSubgroupEqFinsumCosets
-public import Mathlib.Algebra.Group.Pi.Basic
-public import Mathlib.Algebra.Group.Subgroup.Defs
-public import Mathlib.Algebra.Ring.Int.Defs
-public import Mathlib.Basic.Finite.Defs
 public import Development.AbelianVarietyTheory.Proofs.CharacterTheory.OneMemOfMulMemOfForallPrimeNotDvd
 public import Formalism.LocalToGlobal.Columns.GoodXgFin
 import Mathlib.Algebra.Order.Floor.Extended

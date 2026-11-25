@@ -1,9 +1,7 @@
 module
 
 public import GroundTheory.GlobalFields.ClassFieldConsequences.ConductorLocal
-public import GroundTheory.GlobalFields.NormResidueSymbol.RangeIdeleNormLeKerIdeleSymbol
 public import GroundTheory.GlobalFields.GlobalReciprocity.General
-import GroundTheory.GlobalFields.IdeleGroups.LocalConditionIndex
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

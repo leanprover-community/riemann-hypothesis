@@ -15,18 +15,11 @@ public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.HomGMo
 public import Formalism.SharpRestriction.GrowthBounds.FrobeniusPaths.LatticeCountingFormula
 public import Formalism.SharpRestriction.GrowthBounds.FrobeniusPaths.LiftedColumnCongruence
 public import Formalism.SharpRestriction.GrowthBounds.FrobeniusPaths.WedgeSplitTan
-public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.ColXRen
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.ColDef
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.ColsDef
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SegmentStatementHolds
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.ThresholdLowerBounds
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Std.Tactic.BVDecide.Normalize.BitVec
-import Formalism.SharpRestriction.GrowthBounds.FrobeniusPaths.DividedPowerZeroOfGlActionZero
-import Formalism.SharpRestriction.GrowthBounds.ProjectionOfIsotypicDecomposition
-import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.Lemma44IdentityOfRawTail
-import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.KGShift
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.ColXNum, Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.ColXPH, Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.ColXSum, Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.IoDChain, Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.MonomialSumEqProd, Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.ColTop

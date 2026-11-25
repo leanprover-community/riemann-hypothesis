@@ -2,14 +2,9 @@ module
 
 public import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.ArtinDefs
 public import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.GlobalEulerFormulaInf
-public import Mathlib.NumberTheory.Padics.PadicVal.Basic
 public import Development.WeilBound.CoreStatements.PublishedTheorems.GlobalEulerCharacteristic.Reduce
 public import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.ShapiroReal
 public import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.ToFunEqZeroOfForallIsCyclic
-import GroundTheory.ProfiniteCohomology.PoitouTate.RealOdd
-import GroundTheory.ProfiniteCohomology.RestrictedRamification.Finite
-import GroundTheory.ProfiniteCohomology.RestrictedRamification.FiniteOpen
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

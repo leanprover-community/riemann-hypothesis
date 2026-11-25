@@ -9,7 +9,6 @@ public import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTra
 public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionDescent.BlowupSequenceFlatBaseChange
 public import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionDescent.PullbackBlowupSequenceComposition
 public import Mathlib.CategoryTheory.Functor.OfSequence
-import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupBasic
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

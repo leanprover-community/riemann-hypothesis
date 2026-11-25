@@ -7,7 +7,6 @@ public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexificationHolds
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.RingTheory.Complex
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Lemma

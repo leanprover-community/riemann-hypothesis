@@ -2,9 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NormPowLeNormFactorial
 public import Mathlib.RingTheory.PowerSeries.WellKnown
-public import Mathlib.Topology.MetricSpace.Pseudo.Defs
-public import Mathlib.Analysis.SpecificLimits.Basic
-public import Mathlib.Analysis.SpecificLimits.Normed
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ConnPhiExtensionGeneratorEqZeta
 import Mathlib.Tactic.Linter.Style
 

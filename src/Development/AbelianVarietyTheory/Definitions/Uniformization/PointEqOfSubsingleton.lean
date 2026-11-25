@@ -5,8 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.LocallyO
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.CubicalSymmetryTransport
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.WeilIsGrpPullbackIff
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.RosVal
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 
 @[expose] public section
 

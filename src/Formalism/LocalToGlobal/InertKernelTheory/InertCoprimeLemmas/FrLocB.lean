@@ -4,12 +4,8 @@ import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsEmbeddingP
 public import Formalism.LocalToGlobal.InertKernelTheory.DefsFrONB
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.IsometryLinkageTrivialLevel
 import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
-import Formalism.LocalToGlobal.GlobalTheory.GL3.PHfTrace
 import Formalism.LocalToGlobal.GlobalTheory.GL3.PSelfDual
 public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.IntBasis
-import Mathlib.Algebra.AffineMonoid.Basic
-import Mathlib.Algebra.Order.Star.Real
-public import Mathlib.RingTheory.DedekindDomain.PID
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
 

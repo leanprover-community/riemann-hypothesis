@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.AddSub
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsLiftHalfLatticeRational
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ThetaMovedCosetIndicatorVacuumShape
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.PerLatticeFacts
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.WeylHeisenbergOperatorCalculusRational
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

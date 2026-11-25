@@ -2,7 +2,6 @@ module
 
 public import Development.WeilBound.CoreStatements.LocalThetaKernels.IwasAd
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.BigCellLocal
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUniqueIsConjAt
 public import Development.WeilBound.CoreStatements.LocalThetaKernels.IwasFrame
 public import Development.WeilBound.CoreStatements.LocalThetaKernels.IwasLoc
 import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.FinSplit

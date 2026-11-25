@@ -7,7 +7,6 @@ public import Mathlib.Tactic.ENatToNat
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsAlgHomOfIsBaseChange
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ToConeSurjective
 public import Mathlib.RingTheory.TensorProduct.IsBaseChangeFree
-public import Mathlib.LinearAlgebra.ExteriorPower.Basis
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MonomialFormInRelativeImage
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RelativeFormsMapMemSpan
 import Mathlib.Tactic.Linter.HaveILetI

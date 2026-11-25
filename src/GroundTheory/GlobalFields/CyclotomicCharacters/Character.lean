@@ -12,7 +12,6 @@ public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import GroundTheory.GlobalFields.CyclotomicCharacters.Frobenius
 import Mathlib.FieldTheory.Galois.Profinite
-import Mathlib.NumberTheory.NumberField.Cyclotomic.Galois
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Connected.Separation

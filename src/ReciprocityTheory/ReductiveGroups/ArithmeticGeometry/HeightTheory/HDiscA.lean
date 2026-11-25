@@ -12,8 +12,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.
 import Mathlib.Algebra.MvPolynomial.Nilpotent
 import Mathlib.RingTheory.LocalProperties.Reduced
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.OpIsDVR
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.ValNorm
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HDiscAG, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HDiscA

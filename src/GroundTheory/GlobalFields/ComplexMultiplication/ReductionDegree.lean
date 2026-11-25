@@ -1,9 +1,6 @@
 module
 
 public import GroundTheory.GlobalFields.ComplexMultiplication.ReductionIsogenyMap
-import GroundTheory.GlobalFields.ComplexMultiplication.DualDescent
-import GroundTheory.GlobalFields.ComplexMultiplication.ReductionComp
-import GroundTheory.GlobalFields.ComplexMultiplication.ReductionIsogeny
 
 @[expose] public section
 

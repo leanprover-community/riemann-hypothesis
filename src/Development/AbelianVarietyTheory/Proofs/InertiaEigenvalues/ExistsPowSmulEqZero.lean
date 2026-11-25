@@ -4,14 +4,11 @@ public import Mathlib.RingTheory.AdicCompletion.Basic
 public import Mathlib.Topology.Algebra.Monoid.Defs
 public import ReciprocityTheory.BasicDefinitions.AdRep
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MkMemAdmissibleAtIffCocycle
-public import Mathlib.Topology.Algebra.Module.ModuleTopology
-public import Mathlib.Topology.Algebra.GroupWithZero
 public import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.InvariantsVanishing
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteResidueField
 public import Mathlib.Algebra.Module.Lattice.Full
 public import Mathlib.RingTheory.AdicCompletion.AsTensorProduct
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsDiscreteValuationRingIntegralClosurePadicInt
-public import Mathlib.Algebra.Module.Lattice.Basic
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.BasicDefinitions.ExistsUnique
 import Std.Tactic.BVDecide.Normalize.Prop

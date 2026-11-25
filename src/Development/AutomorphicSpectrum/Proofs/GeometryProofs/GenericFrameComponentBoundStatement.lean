@@ -8,7 +8,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.StrictWeight
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.DegreeGenericOfDegree
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.NefPolarization
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterNamed
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.HasMultiplier
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.WeightThresholdLimitCoefficients
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PFibreNormDehomRoots
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PLiftBirationalAmple
@@ -16,9 +15,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSectionSupBoun
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.IsHomogeneousGrL
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.IsMultiHomogX
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDerived
-import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.AssemblyBridgeFull
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PNefAmpleGeneric
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PNefOnGenericOfSemipos
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

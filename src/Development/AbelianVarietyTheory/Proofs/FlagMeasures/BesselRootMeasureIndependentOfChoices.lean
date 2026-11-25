@@ -2,8 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RootMeasureTransportDoubleCoset
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.MatrixOfBesselTwoSidedAction
-public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GroupFactorizationHolds
-import Formalism.FormalDegreeBessel.FinalG
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

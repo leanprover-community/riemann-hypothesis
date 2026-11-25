@@ -3,8 +3,6 @@ module
 public import GroundTheory.AutomorphicForms.ReductionMahler
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.Counting
 public import GroundTheory.AutomorphicForms.NormDetDiagUnitsPosRealToUnits
-import GroundTheory.AutomorphicForms.ReductionFinite
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

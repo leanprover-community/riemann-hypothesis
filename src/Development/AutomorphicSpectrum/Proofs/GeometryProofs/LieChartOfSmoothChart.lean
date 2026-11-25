@@ -2,8 +2,6 @@ module
 
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieChart
 public import Mathlib.RingTheory.RingHom.Smooth
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TangentVectorOfDualHom
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TangentVectorSumDualNumber
 import Mathlib.AlgebraicGeometry.Modules.Sheaf

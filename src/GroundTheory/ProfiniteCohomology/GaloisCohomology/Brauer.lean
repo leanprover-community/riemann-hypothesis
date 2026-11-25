@@ -3,7 +3,6 @@ module
 public import GroundTheory.ProfiniteCohomology.GaloisCohomology.IsZeroGroupCohomologyQuotientToInvariantsGalAdd
 public import GroundTheory.ProfiniteCohomology.ColimitDefs
 import GroundTheory.ProfiniteCohomology.Colimit
-import Mathlib.FieldTheory.Galois.Profinite
 
 @[expose] public section
 

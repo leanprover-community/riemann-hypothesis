@@ -5,7 +5,6 @@ public import GroundTheory.AutomorphicForms.InductionParabolicGroups
 public import GroundTheory.AutomorphicForms.SmoothRep
 public import Mathlib.RepresentationTheory.Irreducible
 public import GroundTheory.AutomorphicForms.AdmissibleInduction
-import GroundTheory.AutomorphicForms.GLnLattice
 public import GroundTheory.AutomorphicForms.LeviCartan
 public import GroundTheory.AutomorphicForms.SmoothRepSchur
 import Mathlib.Algebra.Order.Star.Int

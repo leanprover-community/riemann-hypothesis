@@ -10,17 +10,12 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CmTypeLattic
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComponentGenericIsGenericPoint
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordOverIntOfFiniteOrder
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenLatticeVectorBundle
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsFlatAnIffIsConstMul
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsClopenIrreducibleCpt
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExteriorCoeffBaseChangeCompat
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FlagCmTypeLatticeComparison
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsCptGen
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.PushInvertible
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenericPointFactorsOpen
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeComponentMatchesModelComponent
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
 public import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.HodgeComponentFlagDegree
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsGenericFlag
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.WedgeLineLatticeVectorBundle
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGenOnFibres
 public import Development.WeilBound.CoreStatements.AmpleLineBundles.ExistsPointsBoundedLineHeights
@@ -55,21 +50,12 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.PRFormula
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PWWArithVar
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PCurveRatSectionSum
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedF
-public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitCenterMemIff
-public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitChartMax
-public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightOrbitChartQuot
-public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.CompactGapsGE
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DominantWeightGapShift
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootHeightDifferenceBound
 public import Mathlib.Analysis.Complex.ExponentialBounds
 public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.GoodOrigin
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IntegralClosureHeightEqOneOfLiesOver
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HasReferenceOfSandwichAllPrimes
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.SlopeBoundSt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HeckeKer
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.BlowupProjections.BlowupProjStatement
-public import Development.AbelianVarietyTheory.PublishedTheorems.SemiabelianTori.GeometricallyConnectedSplitTorusAff
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootModelFlagHeight
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TowerI5OfFibreInput
 public import Development.AutomorphicSpectrum.Statements.TowerExistence.GoodTowerExistsX
@@ -94,11 +80,8 @@ import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
@@ -109,7 +92,6 @@ import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
 import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.NormNum.Irrational
 import Mathlib.Tactic.NormNum.IsCoprime
@@ -127,26 +109,6 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PrimeChartExistsUniquePoint
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtIffChartLocalization
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ValuationCoordsComplexPoint
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PCoordArithOfFnField
-import Mathlib.RingTheory.Spectrum.Prime.Chevalley
-import Mathlib.RingTheory.TotallySplit
-import GroundTheory.HeightsAndTheta.Heights.HeightComparison.PHeightRecR
-import GroundTheory.HeightsAndTheta.Heights.HeightComparison.PLocalQuotCard
-import GroundTheory.HeightsAndTheta.Heights.HeightComparison.PLocalQuotCentred
-import GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitCenterMemIff
-import GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitChartMax
-import GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitChartQuot
-import GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitChartResidue
-import GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitCurve
-import GroundTheory.HeightsAndTheta.Heights.HeightComparison.POrbitDegree
-import GroundTheory.HeightsAndTheta.Heights.HeightComparison.PSubringPrimeMaximal
-import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.FieldChange
-import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Reading
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsVerticalBound, Development.AutomorphicSpectrum.Proofs.GeometryProofs.FlatUnitOfSplitRootLines, Development.AutomorphicSpectrum.Proofs.GeometryProofs.BoundedHeightPointsDense, Development.WeilBound.CoreStatements.AmpleLineBundles.ExistsPointsOverNumberFields, Development.AutomorphicSpectrum.Proofs.GeometryProofs.JoinModelPointsLift, Development.AutomorphicSpectrum.Proofs.GeometryProofs.NumberFieldPointHeight, Development.AutomorphicSpectrum.Proofs.GeometryProofs.TowerI6OfReference, Development.AutomorphicSpectrum.Proofs.GeometryProofs.TowerIntersectionOfSandwichSplit, Development.WeilBound.CoreStatements.FlagImmersions.EqOfSpecializesGenPt, Development.WeilBound.CoreStatements.FlagImmersions.GlobalModelTowerFifthCondition

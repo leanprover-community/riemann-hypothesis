@@ -6,22 +6,14 @@ public import Mathlib.Algebra.Group.End
 public import Mathlib.LinearAlgebra.Dimension.Constructions
 public import Mathlib.LinearAlgebra.Dimension.Finite
 public import Mathlib.NumberTheory.LegendreSymbol.AddCharacter
-public import Mathlib.Basic.NNReal.Defs
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.NumberTheory.MulChar.Basic
-public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
-public import Mathlib.RingTheory.Valuation.Integers
 public import ReciprocityTheory.DualLattices.SumInvMulTrace
 public import Mathlib.RingTheory.RootsOfUnity.EnoughRootsOfUnity
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.StepOrderRes
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.TeichmullerCharacterOrderGenerates
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.RiRank
 public import ReciprocityTheory.DualLattices.ImportsAlt
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
-public import Mathlib.Data.Fintype.Pi
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-public import Mathlib.Algebra.Order.BigOperators.Group.Finset
-public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.CharacterIdealPrincipalEigen
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

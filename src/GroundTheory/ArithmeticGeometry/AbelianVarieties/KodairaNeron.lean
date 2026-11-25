@@ -2,9 +2,6 @@ module
 
 public import Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Formula
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.FormalGroupReduction
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

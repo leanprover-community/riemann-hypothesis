@@ -7,9 +7,7 @@ public import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTra
 public import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformCharts.CoordinateDivisorBlowup
 import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupBasic
 import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupCoproduct
-import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupOpenCover
 import Mathlib.Tactic.Linter.Style
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.Saturation
 public import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformCharts.BlowupChart
 
 @[expose] public section

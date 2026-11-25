@@ -5,12 +5,8 @@ public import Mathlib.Analysis.SpecialFunctions.Log.Base
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.MemPairOfMemSingle
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.DvdCoeffsOfMemSpanDistinguished
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.FormalSeriesValueAtTwoPointsGenericPoints
-import Mathlib.NumberTheory.Padics.PadicVal.Basic
-import Mathlib.RingTheory.Ideal.BigOperators
-import Mathlib.RingTheory.PowerSeries.Inverse
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.NormNum.GCD
-import Mathlib.Tactic.Positivity.Finset
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

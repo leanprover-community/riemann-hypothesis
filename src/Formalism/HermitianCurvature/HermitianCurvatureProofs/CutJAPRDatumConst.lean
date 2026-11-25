@@ -2,7 +2,6 @@ module
 
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJASSnRepDatumUnit
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAPolyRadialCut
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TwoByOneBlock
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJAPRhoFrameLoc
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TheSectionStab
 

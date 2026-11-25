@@ -4,13 +4,8 @@ public import Formalism.LocalToGlobal.Columns.OcbBEntEntB
 public import Formalism.LocalToGlobal.Columns.ChainInst
 public import Formalism.LocalToGlobal.Columns.ChainInstS
 public import Formalism.LocalToGlobal.Columns.ChainOneOkL
-import Formalism.LocalToGlobal.Columns.OcbPhiFIdxFPos
 public import Formalism.LocalToGlobal.Columns.RecLevelSym
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-public import Formalism.LocalToGlobal.Columns.ChainOneB
 
 @[expose] public section
 

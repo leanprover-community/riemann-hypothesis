@@ -9,10 +9,7 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.IsPrimiti
 public import Development.AbelianVarietyTheory.Definitions.Foundations.LiftSL
 public import Development.AbelianVarietyTheory.Definitions.Foundations.ShCocOn
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
-public import Mathlib.RingTheory.AdicCompletion.Noetherian
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SlMulToRingEquiv
-import Development.AbelianVarietyTheory.Definitions.Foundations.CobOn
-import Development.AbelianVarietyTheory.Definitions.Foundations.IsFirstChernClassOfLineBundle
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 

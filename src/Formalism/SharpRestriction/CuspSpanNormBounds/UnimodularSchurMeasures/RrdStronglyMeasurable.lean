@@ -12,8 +12,6 @@ public import Mathlib.MeasureTheory.Function.L2Space
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
-public import Mathlib.Analysis.InnerProductSpace.Orthogonal
-public import Mathlib.Analysis.InnerProductSpace.Projection.Submodule
 public import Mathlib.MeasureTheory.Group.Integral
 public import Mathlib.MeasureTheory.Integral.DominatedConvergence
 

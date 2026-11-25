@@ -4,7 +4,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlock
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSupBoundBlock
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.SupBoundCountLattice
 public import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.DetIneq
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.TypeStar
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.SupBoundCountIntegrals
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSupBoundCount

@@ -8,7 +8,6 @@ public import Mathlib.MeasureTheory.Integral.IntegrableOn
 public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 public import Mathlib.RingTheory.MvPolynomial.WeightedHomogeneous
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LogIntCircle
-import Mathlib.Analysis.Complex.Isometry
 public import Mathlib.Analysis.SpecialFunctions.Log.NegMulLog
 public import Mathlib.MeasureTheory.Constructions.HaarToSphere
 public import Mathlib.MeasureTheory.Integral.Pi

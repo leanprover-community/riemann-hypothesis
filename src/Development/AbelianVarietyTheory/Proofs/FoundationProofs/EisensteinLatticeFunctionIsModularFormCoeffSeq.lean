@@ -2,13 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.Foundations.PetIPSmulRight
 public import Mathlib.NumberTheory.ModularForms.EisensteinSeries.QExpansion
-public import Mathlib.Analysis.Complex.UpperHalfPlane.Exp
-public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Cotangent
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.PSeries
-public import Mathlib.Analysis.Normed.Group.InfiniteSum
-public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
-public import Mathlib.Analysis.Complex.IntegerCompl
 public import Mathlib.Order.Filter.AtTopBot.Interval
 public import Development.AbelianVarietyTheory.Definitions.Foundations.RepL
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CoeffEisensteinSeriesTwistedQExpansionDouble
@@ -58,16 +51,10 @@ import Mathlib.Topology.Sheaves.Init
 import Mathlib.Topology.UniformSpace.Uniformizable
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.Newform
 import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Tactic.Linter.Style
-import Mathlib.NumberTheory.ModularForms.CongruenceSubgroups
 import Mathlib.Tactic.Lemma
-import Mathlib.Order.Interval.Finset.Box
-import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Analysis.SpecialFunctions.RegularizedHypergeometric
 import Std.Tactic.BVDecide.Normalize.Prop
 

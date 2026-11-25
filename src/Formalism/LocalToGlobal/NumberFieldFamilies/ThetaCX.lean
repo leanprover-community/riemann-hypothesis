@@ -7,7 +7,6 @@ public import Formalism.LocalToGlobal.NumberFieldFamilies.ThetaCI
 public import Formalism.LocalToGlobal.JointCharacters.LocEMulLocE
 public import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 public import Formalism.LocalToGlobal.UnitaryNorms.CharTied
-import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasSign
 import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 
 -- This file was produced by scripts/clump.py from the modules listed below.

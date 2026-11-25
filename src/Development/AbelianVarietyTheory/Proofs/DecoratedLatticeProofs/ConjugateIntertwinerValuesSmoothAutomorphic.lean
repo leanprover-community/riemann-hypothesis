@@ -6,8 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PiCongrLe
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ConjIntertwinerPointValueSobolevContinuousStatement
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.ConjugateEvaluationMapIntertwinesRealPlacesStatement
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CuspidalFrame
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MeasurePreservingReindex
-public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.DerivativeClosedClassBoundedByInverseLeastSize
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HeightBoundByInfinityNorm
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AdelicIdentificationRespectsRealFinite
@@ -18,9 +16,7 @@ import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TruncatedLeastLattic
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Calculus.Deriv.Star
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal

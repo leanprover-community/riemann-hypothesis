@@ -1,43 +1,24 @@
 module
 
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EventuallyLineUnit
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.InnerProductSpace.PiL2
-public import Mathlib.RepresentationTheory.Basic
-public import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.HermitianFormUnitaryOneOne
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousCoeffRowAct
-public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.DiscreteSeriesTopClasses.IsInvOne
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-public import Mathlib.Analysis.Normed.Algebra.Exponential
-public import Mathlib.Topology.Instances.Matrix
-public import Mathlib.Analysis.Calculus.Deriv.Comp
-public import Mathlib.Analysis.SpecialFunctions.Exponential
-public import Mathlib.Topology.Algebra.Module.FiniteDimension
 public import Formalism.GelfandTransference.GelfandCentral
-public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.LeftEquivariantFunctions.ComplexMatrixCalculus.InstBorelUK
-public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.IsMultZero
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsCliff
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.RealDescent.RealLeviDescent.IsCoreMod
-public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IntegralConjInnerMulInnerOfIsEmptyEquiv
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SumMemOfStable
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WeylCharEqGtChar
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.HwIrred
 public import Mathlib.Analysis.Calculus.Deriv.Prod
-public import Mathlib.Analysis.InnerProductSpace.Calculus
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WtRInjective
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DerivativeUnitaryAction
-public import Formalism.RealPlaceAnalysis.StatementA
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HighestWeightTensorDecomposition
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntertwinerEqZeroOfVanishOnHighest
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DualOperatorCommutesLie
-public import Mathlib.Analysis.Calculus.Deriv.Basic
-public import Mathlib.LinearAlgebra.UnitaryGroup
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsCompactLieAction
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HighestWeightAntitoneOfFiniteDimensionalStable
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryEuclideanModel
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -82,27 +63,17 @@ import Mathlib.Topology.Sheaves.Init
 import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Data.Nat.Choose.Multinomial
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.PosPartUnitaryMul
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
 import Development.AbelianVarietyTheory.Definitions.Divisors.LocallyCompactUnipFlag
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
-import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyNormFinLeOne
 import Development.AbelianVarietyTheory.Definitions.Foundations.NormEulerPolySubOneLe
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToGAdMat
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsSmoothModerateOfIsAutFunSm
 import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.RingTheory.MvPolynomial
-import Mathlib.Analysis.Matrix.Normed
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.Star.Unitary
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.RingTheory.PicardGroup
 

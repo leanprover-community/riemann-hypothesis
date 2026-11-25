@@ -4,7 +4,6 @@ public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.Lie
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.Imports
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LatticeGoodBaseChange
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LocFreeMapMkQIff
-public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.FlagMinor
 public import Mathlib.RingTheory.IsTensorProduct
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LocallyFreeBaseChangeQuotient
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SmulMemSpanOver

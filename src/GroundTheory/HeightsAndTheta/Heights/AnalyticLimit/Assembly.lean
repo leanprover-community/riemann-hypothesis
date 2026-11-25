@@ -8,8 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.GreenMassStep
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.GreenMassReplace
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.GreenMassError
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PGreenMassZero
-import Mathlib.Algebra.Order.Star.Real
-import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.PermFinTwoUniv
 
 -- This file was produced by scripts/clump.py from the modules listed below.

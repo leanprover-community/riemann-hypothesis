@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AutPointLatti
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FiniteAdelicUnitaryCongruenceTopology
 public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SatBasic
 public import Formalism.HarderNarasimhan.ShiftInvariance
-import Formalism.LatticeSlopes.ExistsSaturatedSlopeEqMuMax
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

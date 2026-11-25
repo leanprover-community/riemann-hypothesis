@@ -1,7 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.MultMk
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SegmentStatementHolds
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.SgKSPowP
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

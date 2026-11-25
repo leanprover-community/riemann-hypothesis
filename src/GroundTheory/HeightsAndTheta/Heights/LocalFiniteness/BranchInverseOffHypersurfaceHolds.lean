@@ -9,7 +9,6 @@ public import Mathlib.Analysis.Calculus.FDeriv.Linear
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCMLengthParameters
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCMRegularElement
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLengthLocalizedQuotient
-public import Mathlib.Algebra.Module.SpanRank
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.RegularLocalDomain
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCMLocusOpen
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCMProjDimCriterion
@@ -30,15 +29,8 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticInt
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StGenericFibreRadical
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StGenericFibreTor
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StGenericFibreRadicalPrime
-public import Mathlib.RingTheory.Ideal.MinimalPrime.Basic
-public import Mathlib.RingTheory.Ideal.MinimalPrime.Noetherian
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StInjectiveHolomorphicOpen
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StInvarianceOfDomain
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.LinearAlgebra.Dimension.Finrank
-public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
-public import Mathlib.LinearAlgebra.Dimension.Constructions
-public import Mathlib.Topology.Algebra.Module.FiniteDimension
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModelDisc
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalCurveRegularPoint
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNormalModelOpenMapping
@@ -47,13 +39,9 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PNormalCu
 public import Mathlib.Algebra.Category.ModuleCat.Localization
 public import Mathlib.Algebra.Category.ModuleCat.Projective
 public import Mathlib.RingTheory.Spectrum.Prime.FreeLocus
-public import Mathlib.Algebra.Module.FinitePresentation
 public import Mathlib.CategoryTheory.Preadditive.Projective.Preserves
-public import Mathlib.RingTheory.LocalRing.Module
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceCMUnmixed
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StCMQuotientUnmixed
-public import Mathlib.RingTheory.KrullDimension.Field
-public import Mathlib.RingTheory.LocalRing.RingHom.Basic
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StUniformiserLocallyInjective
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StUniformiserGradientIndependent
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StRegularOffHypersurface

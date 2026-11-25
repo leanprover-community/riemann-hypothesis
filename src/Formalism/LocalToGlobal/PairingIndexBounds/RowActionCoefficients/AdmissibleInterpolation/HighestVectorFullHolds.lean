@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.PairingIndexBounds.RowActionCoefficients.ColHLe
 public import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 public import Formalism.LocalToGlobal.PairingIndexBounds.RowActionCoefficients.AdmissibleInterpolation.EvalIdFrameRowAct
-import Formalism.LocalToGlobal.GroupLattices.FockModels.TransposeWords.FockR
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LSatLemmas
 import Mathlib.Tactic.TypeStar
 

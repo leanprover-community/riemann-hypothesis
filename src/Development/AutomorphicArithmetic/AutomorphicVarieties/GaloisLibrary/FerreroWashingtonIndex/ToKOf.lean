@@ -6,21 +6,11 @@ public import Mathlib.RingTheory.Adjoin.Polynomial.Basic
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.GroupTheory.FiniteAbelian.Duality
 public import Mathlib.Algebra.Algebra.ZMod
-public import Mathlib.LinearAlgebra.Basis.VectorSpace
 public import Mathlib.NumberTheory.MulChar.Basic
 public import Mathlib.NumberTheory.Basic
-public import Mathlib.Data.ZMod.Basic
-public import Mathlib.RingTheory.Coprime.Basic
-public import Mathlib.RingTheory.Coprime.Lemmas
-public import Mathlib.RingTheory.Nilpotent.Basic
-public import Mathlib.NumberTheory.Padics.RingHoms
-public import Mathlib.Algebra.MonoidAlgebra.Defs
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.FerreroWashingtonIndex.SinMap
-public import Mathlib.CategoryTheory.Category.Basic
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.FerreroWashingtonIndex.EvenTot
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.FerreroWashingtonIndex.GcNeg
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.FerreroWashingtonIndex.ToZModPowOneEqZeroIff
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.FerreroWashingtonIndex.GamGen
 public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
 import Mathlib.Tactic.Linter.HaveILetI

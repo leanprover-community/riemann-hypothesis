@@ -1,7 +1,6 @@
 module
 
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsBlkCover
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelBaseProjectionPoints
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsValueAtOfTorus
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsImg
@@ -12,9 +11,7 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverFrame
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverFramesAtPoint
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverFramesValueAtPoint
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverTwoFramesComparison
-import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.SameOrbitRefl
 
 -- This file was produced by scripts/clump.py from the modules listed below.

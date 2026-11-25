@@ -19,7 +19,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormLiftF
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSmoothVecLowKSub
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.StableIffCarrierEq
 public import Formalism.SharpRestriction.Divisibility.LiftErrorLocal
-import Formalism.LocalToGlobal.IndefiniteReal.MemRangeAdjointOfKerStable
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -60,7 +59,6 @@ import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContDiffDeri
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LevelGroupActionEqZeroOfNoLift
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MultValueLeftContLevel
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.RealLowestKTypeCoeffSquareIntegrable

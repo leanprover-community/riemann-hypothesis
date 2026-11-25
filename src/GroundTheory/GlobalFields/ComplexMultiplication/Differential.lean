@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DualIsogeny
 public import GroundTheory.FunctionField.PlaceDefs
-public import Mathlib.RingTheory.Kaehler.Basic
 import GroundTheory.ArithmeticGeometry.AbelianVarieties.KernelCard
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.KaehlerPlace
 import Mathlib.Tactic.TypeStar

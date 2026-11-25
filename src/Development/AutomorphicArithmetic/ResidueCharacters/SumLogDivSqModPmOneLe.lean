@@ -3,9 +3,7 @@ module
 public import Mathlib.Analysis.SpecialFunctions.Log.Basic
 public import Mathlib.Analysis.Complex.ExponentialBounds
 public import Mathlib.NumberTheory.Harmonic.Bounds
-public import Mathlib.Data.Nat.Factorization.Basic
 public import Mathlib.Data.Nat.Prime.Int
-public import Mathlib.Data.Nat.Totient
 public import Mathlib.FieldTheory.Finite.Basic
 public import Mathlib.NumberTheory.Padics.PadicVal.Basic
 

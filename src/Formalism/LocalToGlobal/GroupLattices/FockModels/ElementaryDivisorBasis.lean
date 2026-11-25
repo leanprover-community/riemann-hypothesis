@@ -3,7 +3,6 @@ module
 import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.ScaleNegMono
 public import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 public import Formalism.SharpRestriction.GrowthBounds.ObjBridge
-import Formalism.GradedWeylDivisibility.FinalD
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.MkP
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.Etale.Weakly

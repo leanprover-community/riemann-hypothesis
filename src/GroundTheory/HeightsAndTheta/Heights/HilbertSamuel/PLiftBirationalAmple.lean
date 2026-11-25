@@ -4,9 +4,7 @@ import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ReferenceGeometryMu
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsLiftBirationalAmple
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGeneratedNonzeroSection
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PGenOnFibres
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

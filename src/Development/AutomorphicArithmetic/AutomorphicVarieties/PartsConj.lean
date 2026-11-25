@@ -2,7 +2,6 @@ module
 
 public import Formalism.GaloisCohomology.Statement
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.GaloisValuations.GlobalA
 
 @[expose] public section
 

@@ -5,7 +5,6 @@ public import Development.WeilBound.ThetaLifts.SmallCones.SoDefs
 public import Development.WeilBound.ThetaLifts.SmallCones.FormSwapZero
 public import Development.WeilBound.ThetaLifts.SmallCones.KerPol
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
-public import Development.WeilBound.ThetaLifts.SmallCones.KerGeo
 
 @[expose] public section
 

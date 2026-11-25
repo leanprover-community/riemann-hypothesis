@@ -12,7 +12,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PNefOnGenericOf
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSectionOrderAtPoint
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSmallSectionPointHeight
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PTopConstantTwist
-public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightPtsIntegralPoints
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDerived
 
 -- This file was produced by scripts/clump.py from the modules listed below.

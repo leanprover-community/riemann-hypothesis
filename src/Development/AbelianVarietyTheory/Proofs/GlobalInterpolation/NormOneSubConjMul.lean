@@ -2,16 +2,7 @@ module
 
 public import Formalism.ZeroFreeRegion.ZetaLogDerivativeBounds.LogDerivBound
 public import Mathlib.Analysis.Analytic.Order
-public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.SpecialFunctions.Log.Basic
-public import Mathlib.Analysis.Complex.BorelCaratheodory
-public import Mathlib.Analysis.Complex.HasPrimitives
-public import Mathlib.Analysis.Calculus.Deriv.Inv
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.Analysis.Calculus.DiffContOnCl
-public import Mathlib.Analysis.Calculus.LogDeriv
-public import Mathlib.Analysis.Complex.AbsMax
-public import Mathlib.Analysis.Complex.Liouville
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -58,7 +49,6 @@ import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.NumberTheory.DirichletCharacter.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsFactorOrder, Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.NormOneSubConjMul

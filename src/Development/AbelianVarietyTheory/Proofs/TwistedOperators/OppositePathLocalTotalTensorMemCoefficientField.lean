@@ -12,7 +12,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnderMemAndP
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FlatIntegrandFlippedTensorLocallyConstantCompact
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemMatLatSmulBlockLat
 import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsMatchOver
-import Formalism.LocalToGlobal.IndefiniteReal.WeilFull
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

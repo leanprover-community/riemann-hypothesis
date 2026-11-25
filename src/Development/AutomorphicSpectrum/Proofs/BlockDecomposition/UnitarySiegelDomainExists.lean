@@ -6,16 +6,7 @@ public import GroundTheory.AutomorphicForms.ReductionMahler
 public import GroundTheory.AutomorphicForms.HermitianExistenceLocal
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.Assembly
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ZeroMemBoxF
-public import GroundTheory.GlobalFields.Adele.Compact
-public import Mathlib.RingTheory.Henselian
-public import Mathlib.RingTheory.RegularLocalRing.Defs
-public import Mathlib.RingTheory.SimpleRing.Principal
-public import GroundTheory.GlobalFields.Adele.Discrete
-public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
-public import GroundTheory.AutomorphicForms.ReductionHeight
-public import GroundTheory.AutomorphicForms.ReductionFinite
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CvecSurjective
-public import Development.WeilBound.ThetaLifts.Reductions.SiegelCore
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsCompactIwasawa
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProjArchOfInfEmbArchPi
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryAdelicIwasawaCompact
@@ -59,9 +50,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-import Development.WeilBound.ThetaLifts.Reductions.SiegelAbs
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
@@ -71,7 +59,6 @@ import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsSmoothMo
 import Development.WeilBound.ThetaLifts.Reductions.SiegelHaar
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.TypeStar
-import Development.WeilBound.ThetaLifts.FrameEstimates.LeHeightOfIsTorusElt
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Polynomial.Basic

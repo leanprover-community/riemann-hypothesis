@@ -1,7 +1,6 @@
 module
 
 public import Formalism.SatakeDualWeyl.StatementW
-public import Mathlib.RingTheory.Localization.AtPrime.Basic
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Lemma
 

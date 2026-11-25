@@ -4,9 +4,6 @@ public import Formalism.LocalToGlobal.InertKernelTheory.DefsMMOnb
 public import Formalism.LocalToGlobal.InertKernelTheory.DefsMM
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.IsometryLinkageTrivialLevel
-import Formalism.LocalToGlobal.GlobalTheory.GL3.PHfTrace
-import Formalism.LocalToGlobal.GlobalTheory.GL3.PSelfDual
-import Mathlib.NumberTheory.SumFourSquares
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
 

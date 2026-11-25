@@ -3,17 +3,11 @@ module
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticSeventh
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PtsOverPt
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticFourth
-public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.Calculus.ImplicitContDiff
-public import Mathlib.Analysis.Calculus.Deriv.Pow
-public import Mathlib.Analysis.Analytic.Basic
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsSmoothHermTrivLine
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AlgebraicElementHomogRelation
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ArithVarietyReindexed
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HomogRelationRatioReindex
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialPullbackStatement
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRes
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogResolutionCompatiblePullback
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.DegreeInhab
 import Mathlib.Tactic.Linter.HaveILetI

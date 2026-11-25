@@ -2,10 +2,6 @@ module
 
 public import Mathlib.Topology.Sets.Opens
 public import Development.EtaleCohomology.EtaleSheaves.ChowGraphCut
-public import Mathlib.AlgebraicGeometry.Morphisms.Proper
-public import Mathlib.Combinatorics.Quiver.ReflQuiver
-import Development.EtaleCohomology.EtaleSheaves.ChowLCut
-import Development.EtaleCohomology.EtaleSheaves.LineHigh
 import Mathlib.Tactic.Linter.Style
 import Mathlib.AlgebraicGeometry.Morphisms.Immersion
 

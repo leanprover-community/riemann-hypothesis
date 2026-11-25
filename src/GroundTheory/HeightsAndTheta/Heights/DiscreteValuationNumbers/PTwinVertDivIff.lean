@@ -9,7 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PMin
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PRepresentative
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.IsVerticalDivOfIsVerticalDivisor
 import Mathlib.Algebra.Order.Sub.Prod
-import Mathlib.RingTheory.GradedAlgebra.Radical
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

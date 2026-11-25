@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.ExpUpper
 public import Mathlib.LinearAlgebra.Matrix.Integer
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HasQIff
 public import Development.AbelianVarietyTheory.Definitions.Foundations.MemRingOfInR
-public import Mathlib.NumberTheory.ModularForms.EisensteinSeries.Basic
-public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModDefs
 public import Mathlib.Analysis.Complex.UpperHalfPlane.MoebiusAction
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.QAllQConjOfDvd
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.QExpansionCoeffsInSubringRingClosed
@@ -52,7 +50,6 @@ import Mathlib.Tactic.NormNum.NatFib
 import Mathlib.Tactic.NormNum.NatLog
 import Mathlib.Tactic.NormNum.NatSqrt
 import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
@@ -60,11 +57,8 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.Divisors.ZetaActRefl
-import Mathlib.Geometry.Manifold.StructureGroupoid
-import Mathlib.NumberTheory.ModularForms.SlashActions
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.Lemma
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GlTwoPosRatMobiusUpperHalfPlaneProperties
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FoundationProofs.GlTwoPosRatConjPrincipalCongruence, Development.AbelianVarietyTheory.Proofs.FoundationProofs.GlTwoPosRatHermiteNormalFormMobius, Development.AbelianVarietyTheory.Proofs.FoundationProofs.QExpansionAllCoeffsCompUpperTriangular, Development.AbelianVarietyTheory.Proofs.FoundationProofs.QExpansionAllCoeffsDeltaPowAffineSubst, Development.AbelianVarietyTheory.Proofs.FoundationProofs.HasSomeLevelOverCompGLTwoPosRat

@@ -4,8 +4,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureR
 public import Mathlib.LinearAlgebra.Alternating.Uncurry.Fin
 public import Mathlib.MeasureTheory.Integral.Bochner.Set
 public import Mathlib.Analysis.Calculus.DifferentialForm.Basic
-public import Mathlib.MeasureTheory.Function.LocallyIntegrable
-public import Mathlib.MeasureTheory.Integral.IntegrableOn
 public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 public import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 public import Mathlib.MeasureTheory.Integral.Prod

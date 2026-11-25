@@ -4,9 +4,7 @@ public import GroundTheory.AutomorphicForms.ReductionSplitting
 public import GroundTheory.AutomorphicForms.ReductionMeasure
 public import GroundTheory.AutomorphicForms.QuotientMeasure
 public import GroundTheory.AutomorphicForms.NormDetDiagUnitsPosRealToUnits
-import GroundTheory.AutomorphicForms.ReductionFinite
 public import GroundTheory.AutomorphicForms.ReductionLocalVolume
-import GroundTheory.GlobalFields.Adele.Topology
 import Mathlib.RingTheory.Henselian
 import Mathlib.Tactic.TypeStar
 

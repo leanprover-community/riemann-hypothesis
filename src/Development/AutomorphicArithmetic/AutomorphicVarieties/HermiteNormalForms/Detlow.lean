@@ -6,7 +6,6 @@ public import Mathlib.LinearAlgebra.Matrix.Kronecker
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HermiteNormalForms.SmulNeZeroLat
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
 public import Mathlib.NumberTheory.NumberField.Discriminant.Basic
-public import Mathlib.NumberTheory.NumberField.CanonicalEmbedding.Basic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HermiteNormalForms.SmulStrictMono
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HermiteNormalForms.Grampd
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HermiteNormalForms.RealVec

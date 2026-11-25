@@ -2,11 +2,7 @@ module
 
 public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.HermitianFormBaseVectorRight
-public import Mathlib.Analysis.SpecialFunctions.Pow.Real
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.MeasureTheory.Group.Measure
 public import Mathlib.Analysis.SpecialFunctions.JapaneseBracket
-public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 public import Mathlib.MeasureTheory.Measure.Haar.NormedSpace
 public import Mathlib.MeasureTheory.Constructions.HaarToSphere
 public import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals

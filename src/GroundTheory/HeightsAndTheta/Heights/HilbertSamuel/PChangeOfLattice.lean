@@ -4,7 +4,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsNeste
 public import Mathlib.GroupTheory.FiniteAbelian.Basic
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.Tactic.Linter.Style
-import Mathlib.RingTheory.Localization.Integer
 
 @[expose] public section
 

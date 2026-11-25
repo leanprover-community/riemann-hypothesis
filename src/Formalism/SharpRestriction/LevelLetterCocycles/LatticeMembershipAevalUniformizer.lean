@@ -4,7 +4,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.KillerLevCoreOf
 public import Formalism.SharpRestriction.LevelLetterCocycles.LemmasUnramifiedOfRingCondition
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvOZeroHigh
 public import Formalism.SharpRestriction.LevelLetterCocycles.InId0OfMem
-import Formalism.SharpRestriction.LevelLetterCocycles.LatticeMembershipPolynomialGamma
 import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section

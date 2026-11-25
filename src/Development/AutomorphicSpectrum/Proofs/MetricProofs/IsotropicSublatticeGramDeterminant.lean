@@ -9,9 +9,7 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.RiemannLattice
 public import GroundTheory.HeightsAndTheta.Heights.Covolume
 import Mathlib.Tactic.Linter.Style
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsOver
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
-import Development.WeilBound.CoreStatements.PlurisubharmonicCones.EmbEquivSymmApply
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

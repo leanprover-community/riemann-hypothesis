@@ -7,9 +7,6 @@ import GroundTheory.Brauer.TensorSimple
 public import Mathlib.RingTheory.SimpleModule.WedderburnArtin
 public import Mathlib.LinearAlgebra.Dimension.Constructions
 public import Mathlib.LinearAlgebra.Dimension.Finite
-public import Mathlib.RingTheory.Artinian.Defs
-public import Mathlib.RingTheory.Artinian.Module
-public import Mathlib.RingTheory.SimpleModule.Isotypic
 
 @[expose] public section
 

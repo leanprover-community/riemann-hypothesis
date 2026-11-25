@@ -6,7 +6,6 @@ import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGene
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
 import Mathlib.Algebra.Order.Star.Rat
-import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 public import Mathlib.NumberTheory.RamificationInertia.Inertia
 
 @[expose] public section

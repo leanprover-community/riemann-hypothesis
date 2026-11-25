@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.ProjectiveLattices.IsThRule
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Formalism.SharpRestriction.Divisibility.WeightAlgebra
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 @[expose] public section
 

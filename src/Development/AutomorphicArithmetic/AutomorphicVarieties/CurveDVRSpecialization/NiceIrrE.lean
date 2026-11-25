@@ -11,7 +11,6 @@ import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.RingTheory.AdicCompletion.Noetherian
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.PowerSeries.Inverse
 import Mathlib.Tactic.Lemma
 public import Mathlib.Topology.Algebra.Group.ClosedSubgroup
 

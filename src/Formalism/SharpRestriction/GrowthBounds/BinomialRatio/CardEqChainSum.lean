@@ -4,7 +4,6 @@ public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CountDefs
 public import Formalism.SharpRestriction.GrowthBounds.PolBridge
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.GlOperatorPreservesMultidegree
 import Formalism.SharpRestriction.GrowthBounds.RootWeights.IntegralEnvelopingPreservesStable
-import Formalism.SharpRestriction.GrowthBounds.ValuationLowestDegreeMapFractionField
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Presheaf

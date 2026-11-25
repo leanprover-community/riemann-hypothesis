@@ -4,16 +4,10 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.HasValu
 public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 public import Mathlib.RingTheory.Henselian
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsUnitFormLocalizationEtaleNbhd
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueTangentDualNumber
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatHopfChar
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatHopfLin
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatLie
-public import Mathlib.RingTheory.Flat.Basic
-public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
-public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ExistsHenselianFlatOverPrime
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsBaseChangeGroup
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegularAtBaseChangeStatement
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatBcPull
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatHens
 import Mathlib.Algebra.Order.Floor.Extended

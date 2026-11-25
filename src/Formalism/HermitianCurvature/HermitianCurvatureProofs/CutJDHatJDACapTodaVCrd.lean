@@ -5,10 +5,7 @@ public import Mathlib.Tactic.ToDual
 public import Mathlib.Algebra.Group.Basic
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDACapTodaVCut
 import Mathlib.Tactic.TypeStar
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.QxChain
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
-import Mathlib.Order.CompletePartialOrder
 import Formalism.FormalDegreeBessel.FormalDegreeRatio.WRPres
 import Formalism.FormalDegreeBessel.FormalDegreeRatio.WRWeyl
 

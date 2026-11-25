@@ -6,7 +6,6 @@ public import Formalism.HermitianCurvature.OperatorsCommuteTranslations
 import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LeadingTermVectorIdentity
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBGLet
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RightSingleRule.EllSingleZero
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

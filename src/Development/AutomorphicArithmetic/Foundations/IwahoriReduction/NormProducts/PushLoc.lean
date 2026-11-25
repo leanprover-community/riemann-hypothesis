@@ -19,7 +19,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.KmapSubMe
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.KatoQuadraticCharacters.EulerFactorBounds.KatoTwistedClassNormCompatibleCyclotomic
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.KummerCompletionNoPrimeTorsion
 public import Development.AutomorphicArithmetic.Foundations.IwahoriReduction.NormProducts.MemAOfPow
-import Development.AbelianVarietyTheory.Definitions.Foundations.Mdl
 
 section -- clump:auto
 @[expose] public section

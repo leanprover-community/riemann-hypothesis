@@ -6,7 +6,6 @@ public import GroundTheory.GlobalFields.KummerTheory.Splitting
 public import GroundTheory.GlobalFields.Adele.WeakApproxUnits
 public import GroundTheory.GlobalFields.IdeleGroups.LocalNormGroups
 public import GroundTheory.GlobalFields.IdeleGroups.LocalNormsEverywhere
-import GroundTheory.GlobalFields.LocalFieldAtPlace
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

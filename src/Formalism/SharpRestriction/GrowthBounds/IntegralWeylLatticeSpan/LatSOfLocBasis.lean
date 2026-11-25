@@ -5,7 +5,6 @@ public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.SplitStab
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PRLocV
 public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.IntSplitOf
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Bridge
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsDual
 
 @[expose] public section
 

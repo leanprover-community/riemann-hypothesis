@@ -3,23 +3,8 @@ module
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataN
 public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.FiniteResidueFieldPadicInt
-public import Mathlib.Algebra.Module.Torsion.Basic
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.RingTheory.LocalRing.ResidueField.Basic
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.QBinomialSumCardQuotientSubspaces
-public import Mathlib.RingTheory.PowerSeries.Basic
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.HeckeOperatorAlternatingSeriesIdentity
-public import Mathlib.Analysis.Complex.Norm
-public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
-public import Mathlib.Algebra.Polynomial.Basic
-public import Mathlib.Algebra.Polynomial.Eval.Defs
-public import Mathlib.Analysis.Normed.Field.Basic
-public import Mathlib.Analysis.Normed.Ring.InfiniteSum
-public import Mathlib.Analysis.SpecificLimits.Normed
-public import Mathlib.RingTheory.Polynomial.Vieta
-public import Mathlib.Analysis.SpecialFunctions.Pow.Real
-public import Mathlib.RepresentationTheory.Basic
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.HeckeSplitOne
 public import Formalism.SatakeDualWeyl.StatementE
 public import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
@@ -29,7 +14,6 @@ import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -61,17 +45,10 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style

@@ -7,7 +7,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SumDualVecto
 public import Mathlib.Analysis.Analytic.IsolatedZeros
 public import Mathlib.Analysis.Complex.CauchyIntegral
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BaseIndexConstantInjective
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CkOnInCCCongrOnGroup
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.QminorIntertwiningApply

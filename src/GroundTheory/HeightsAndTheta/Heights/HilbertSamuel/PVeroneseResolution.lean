@@ -5,7 +5,6 @@ public import GroundTheory.HeightsAndTheta.Heights.FubiniStudy
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.BergmanObjects
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSecondVeroneseParts
 import Mathlib.Tactic.Lemma
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.LintegralImageEqLintegralNormSqDetMul
 import Mathlib.RingTheory.SimpleRing.Principal
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -4,7 +4,6 @@ public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.ArchSliceUActi
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.Smoothing
 public import GroundTheory.AutomorphicForms.GKModules.Garding
 public import GroundTheory.AutomorphicForms.GKModules.KernelCalculus
-public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableConv
 import GroundTheory.AutomorphicForms.CuspidalDiscreteness.Counting
 import GroundTheory.AutomorphicForms.QuotientMeasure
 

@@ -4,7 +4,6 @@ public import ReciprocityTheory.AnalyticForms.RegularLocalRings.StalkLoc
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.IsOpenAlt
 public import Mathlib.AlgebraicGeometry.Noetherian
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ExistsMulMemOfAlgebraMapLocRingEqZero
-public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ClosureFromSpecMemCompsH
 
 @[expose] public section
 

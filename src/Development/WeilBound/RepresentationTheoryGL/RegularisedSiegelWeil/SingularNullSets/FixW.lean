@@ -8,8 +8,6 @@ public import Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil
 public import Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.SingularNullSets.LFixWB
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ContinuousCharacterFiniteOrderIntegralUnits
 import Mathlib.Tactic.Linter.Style
-import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CharacterConductorCondition
 import Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.SingularNullSets.LIdemEx
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EventuallyAlgebraMapMemIntegers
 import Std.Tactic.BVDecide.Normalize.Prop

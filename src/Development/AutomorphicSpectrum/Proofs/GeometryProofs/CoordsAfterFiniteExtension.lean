@@ -10,7 +10,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AdjoinCoords
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BirationalOfTranscendenceDegree
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordsCompatibleAlongMap
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsJoinModelDominatesStatement
-public import Mathlib.AlgebraicGeometry.Morphisms.Finite
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsNormalisation
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsVBOneOfChartGenerators
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.NormalIsoOfIntegrallyClosed
@@ -19,9 +18,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SmoothGeneri
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenMapStalkMap
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenMapStalkSpecializes
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntegralOverLocalizationScaled
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtIffChartLocalization
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

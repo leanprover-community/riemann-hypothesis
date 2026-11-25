@@ -3,7 +3,6 @@ module
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IsOpenDomP
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UpperMinorOfLevelPoint
 import Mathlib.CategoryTheory.Countable
-import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section
 

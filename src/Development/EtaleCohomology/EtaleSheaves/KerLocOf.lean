@@ -6,8 +6,6 @@ public import Development.EtaleCohomology.EtaleSheaves.LocalDescent
 public import Development.EtaleCohomology.EtaleSheaves.CokernelKilling.AssembleOf
 public import Development.EtaleCohomology.EtaleSheaves.CokernelKilling.KillCokOf
 public import Development.EtaleCohomology.EtaleSheaves.TruncKerPf
-import Development.EtaleCohomology.EtaleSheaves.StalkCut
-import Development.EtaleCohomology.EtaleSheaves.CokernelKilling.FiniteSubcover
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.EtaleCohomology.EtaleSheaves.PushColim, Development.EtaleCohomology.EtaleSheaves.BijOfIso, Development.EtaleCohomology.EtaleSheaves.KerLocOf

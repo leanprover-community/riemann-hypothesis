@@ -3,10 +3,7 @@ module
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OpenFns
 public import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.BernsteinExponentBounds.IsInvForm
 public import GroundTheory.AutomorphicForms.GLnLocal
-public import Mathlib.NumberTheory.LocalField.Basic
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.LeviEmbMemNormalizerLower
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OpenCellJacquetMapSurjectiveWhittaker
-import GroundTheory.AutomorphicForms.MeasuresModulus
 
 noncomputable section
 

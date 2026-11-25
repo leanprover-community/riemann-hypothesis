@@ -2,14 +2,7 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.Divisors.SimpleTwistedTraceFormulaStable
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ThetaNormCommutation.LocalComparisonSplitting.EulerFactorLevels.EulerFinOf
-public import Mathlib.Algebra.BigOperators.Finprod
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.GroupTheory.DoubleCoset
-public import Mathlib.GroupTheory.Index
-public import Mathlib.Algebra.BigOperators.Ring.Finset
-public import Development.AbelianVarietyTheory.Definitions.Divisors.IsUnifAt
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FinsumOutOfLe
-public import Mathlib.Topology.Algebra.Group.Defs
 public import Mathlib.Topology.Algebra.OpenSubgroup
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TwistedOrbitalIntegralEqSumSmallerLevel
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeIntegralFiniteSum

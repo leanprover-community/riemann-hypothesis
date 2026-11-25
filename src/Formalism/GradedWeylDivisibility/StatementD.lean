@@ -1,7 +1,6 @@
 module
 
 public import Formalism.GradedWeylDivisibility.StatementC
-public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

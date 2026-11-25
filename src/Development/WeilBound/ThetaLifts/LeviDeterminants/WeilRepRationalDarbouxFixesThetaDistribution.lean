@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaSumTensorProduct
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.EqZeroOfTheta
 

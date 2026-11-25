@@ -1,12 +1,10 @@
 module
 
 public import GroundTheory.AutomorphicForms.GL2.GJZetaDefs
-public import Mathlib.FieldTheory.RatFunc.AsPolynomial
 public import GroundTheory.AutomorphicForms.GL2.ExistsEqPowMulOfValuationLe
 public import GroundTheory.AutomorphicForms.GL2.GJLocalZeta
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.Tactic.TypeStar
-public import GroundTheory.AutomorphicForms.GL2.GJLaurentIdeal
 
 @[expose] public section
 

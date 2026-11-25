@@ -18,10 +18,7 @@ public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.AdelicFunc
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.TotallySplit
-import Formalism.LocalToGlobal.HermitianForms.IsLocBasis
 import Mathlib.RingTheory.PiTensorProduct
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.RationalPointsLeHolds
-import Formalism.LocalToGlobal.GlobalTheory.GL6.PKerAtP
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.GlobalTheory.GL6.CongruenceNoKernelOfLevelZeroIdentities, Formalism.LocalToGlobal.GlobalTheory.GL6.AdelicFunctionExtendsFromClasses, Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.NaturalTranslateAdelicFunction

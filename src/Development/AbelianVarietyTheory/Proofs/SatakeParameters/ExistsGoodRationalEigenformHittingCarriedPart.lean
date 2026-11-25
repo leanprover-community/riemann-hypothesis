@@ -62,11 +62,8 @@ import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsSphericalDoubl
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.Basify
-import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SphericalOperatorsFormsOnRankSpaceNormalStatement
-import Formalism.LocalToGlobal.Divisibility.InertPartitionLePartF
-import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
 

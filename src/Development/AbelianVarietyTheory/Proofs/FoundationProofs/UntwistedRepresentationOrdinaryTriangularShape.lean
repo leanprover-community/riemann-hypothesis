@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.Foundations.FinalTheorems
 public import Development.AbelianVarietyTheory.Definitions.Foundations.Letter
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.BlochKatoSelmerVanishes
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsZetaTW
 public import Development.AbelianVarietyTheory.Statements.CuspidalUnitaryTwists.ZetaUr
 public import Development.AbelianVarietyTheory.Definitions.Foundations.OpLDOneSubMemTriv

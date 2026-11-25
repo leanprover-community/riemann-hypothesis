@@ -3,7 +3,6 @@ module
 public import Mathlib.FieldTheory.Galois.Abelian
 public import Mathlib.Topology.Algebra.Group.TopologicalAbelianization
 public import Mathlib.FieldTheory.Galois.Profinite
-import Mathlib.GroupTheory.Abelianization.Defs
 
 @[expose] public section
 

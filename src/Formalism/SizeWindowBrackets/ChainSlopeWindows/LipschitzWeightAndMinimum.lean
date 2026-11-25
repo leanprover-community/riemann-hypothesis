@@ -55,7 +55,6 @@ import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Polynomial.Basic
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Analysis.SpecialFunctions.Log.Sum
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.ThickAverageLoss.ThickAverageProofs.Balance, Formalism.StatementU, Formalism.ZetaNonvanishing.GzLipschitz, Formalism.SizeWindowBrackets.ChainSlopeWindows.LipschitzWeightAndMinimum

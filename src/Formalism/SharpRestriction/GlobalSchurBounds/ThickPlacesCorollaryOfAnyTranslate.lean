@@ -20,7 +20,6 @@ public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Formalism.LocalRingCardinality.SpanPowerMembership.Spaces
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.InclusionInjective
 import Mathlib.Tactic.Linter.Style
-import Formalism.HermitianLattices.HermitianLatticesProofs.MassBasic
 import Formalism.LogVandermondeBounds.LogVandermondeProofs.CardStabilizerVector
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.BitVec

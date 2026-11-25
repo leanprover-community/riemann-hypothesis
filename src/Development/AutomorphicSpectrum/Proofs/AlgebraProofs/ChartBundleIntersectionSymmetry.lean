@@ -10,14 +10,12 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Stat
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FlagIndependence
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PSubQuotient
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.SameGenericSymm
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.GenericFibreKerTarget
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ChartBundleBaseExtension
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.TrivFlagMod
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ChartBundleBaseExtensionUnique
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Inhabit
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ChernClassOnFlagPair
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SameGenericBaseExtension
-public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SameGenericBundleChain
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ChartBundleProduct
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DvrBundleStatementA
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.Imports
@@ -25,8 +23,6 @@ public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LatticeFamili
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Objects
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SameGenericFlagComparison
-import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.ClassListMapDomainPerm
 import Mathlib.Tactic.Linter.HaveILetI
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PTwinJoinPull
 

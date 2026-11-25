@@ -6,7 +6,6 @@ public import GroundTheory.TateCohomology.AugmentationSES
 public import GroundTheory.TateCohomology.CohTrivialBasic
 public import GroundTheory.TateCohomology.DimensionShift
 public import GroundTheory.TateCohomology.DeltaMap
-import GroundTheory.TateCohomology.InducedNorm
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.TateCohomology.PullbackExtension, GroundTheory.TateCohomology.AugTrivial, GroundTheory.TateCohomology.SplittingModule

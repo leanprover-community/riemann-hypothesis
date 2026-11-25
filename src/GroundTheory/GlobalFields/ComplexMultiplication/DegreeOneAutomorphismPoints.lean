@@ -7,14 +7,10 @@ public import GroundTheory.GlobalFields.ComplexMultiplication.BaseChangeDescent
 public import GroundTheory.GlobalFields.ComplexMultiplication.DifferentialConstantField
 public import GroundTheory.GlobalFields.ComplexMultiplication.DualDescentBase
 public import GroundTheory.GlobalFields.ComplexMultiplication.IsogenyDegreeOne
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisorsOrd
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisorsTranslate
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.IsogenyPoints
 public import GroundTheory.GlobalFields.ComplexMultiplication.ClassGroupActionIso
 public import GroundTheory.GlobalFields.ComplexMultiplication.DifferentialBaseChange
 public import GroundTheory.GlobalFields.ComplexMultiplication.WeberFunctionAutomorphisms
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.SupersingularPowField
-import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisorsValuation
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

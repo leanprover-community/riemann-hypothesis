@@ -54,8 +54,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init

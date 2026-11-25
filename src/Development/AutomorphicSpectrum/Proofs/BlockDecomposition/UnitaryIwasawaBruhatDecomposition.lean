@@ -4,7 +4,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsPermWO
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.IwahoriFactorisation.StrictDominance.UnitaryExtremality.IsStrictDom
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MemIwUIff
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FSatakeB
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.FSatakeC
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

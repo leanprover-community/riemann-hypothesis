@@ -6,14 +6,8 @@ public import GroundTheory.GlobalFields.IdeleClassGroup.IdeleClassEquivIdeleClas
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LevelCyclic
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.OrderBound
 public import GroundTheory.TateCohomology.ResCores
-public import Mathlib.Tactic.Continuity
 public import GroundTheory.TateCohomology.CoresRes
-public import Mathlib.RepresentationTheory.Homological.TateCohomology.Basic
 import Mathlib.Algebra.Lie.OfAssociative
-import Mathlib.GroupTheory.Nilpotent
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.CategoryTheory.Monoidal.Mon
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar

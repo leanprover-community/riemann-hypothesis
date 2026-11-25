@@ -2,23 +2,15 @@ module
 
 public import GroundTheory.HeightsAndTheta.Heights.FlagBundles.Statements
 public import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
-public import Mathlib.Analysis.Calculus.Deriv.Basic
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-public import Mathlib.Analysis.Calculus.Deriv.Add
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 public import GroundTheory.HeightsAndTheta.Heights.FlagBundles.StatementsZonalReduction
 public import GroundTheory.HeightsAndTheta.Heights.FlagBundles.StatementsZonalPairing
 public import GroundTheory.HeightsAndTheta.Heights.FlagBundles.StatementsSphereLongitude
-public import Mathlib.Analysis.SpecialFunctions.Integrability.Basic
 public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Periodic
 public import Mathlib.Topology.Algebra.Polynomial
 public import Mathlib.Analysis.SpecialFunctions.Complex.CircleMap
 public import Mathlib.Analysis.SpecialFunctions.Integrals.PosLog
-public import Mathlib.Analysis.SpecialFunctions.Integrability.Log
 public import Mathlib.Analysis.Calculus.Deriv.Polynomial
-public import Mathlib.Analysis.SpecialFunctions.Log.Deriv
-public import Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts
 public import GroundTheory.HeightsAndTheta.Heights.FlagBundles.PFibreIntegralInvariant
 public import GroundTheory.HeightsAndTheta.Heights.FlagBundles.PSphereLongitudeCoordinates
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsFibreLocal

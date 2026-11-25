@@ -5,7 +5,6 @@ public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermCut
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermBGen
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDJet
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermFunPf
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 
 @[expose] public section

@@ -2,9 +2,7 @@ module
 
 import Formalism.LocalToGlobal.CharacterGerms.RowTiePLogSt
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePCEqOf
-public import Formalism.LocalToGlobal.CharacterGerms.RowTieCartAdd
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePCEqSum2
-public import Formalism.LocalToGlobal.CharacterGerms.RowTiePGerm
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePCEqDer
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePCEqM2
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePAddCvSelf
@@ -13,8 +11,6 @@ import Formalism.LocalToGlobal.CharacterGerms.ConstMemTypeSetOfNonneg
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.LocalToGlobal.CharacterGerms.RowTiePOActLog
-import Formalism.FormalGroupLog.FormalGroupLogProofs.ChainRule
-import Formalism.LocalToGlobal.CharacterGerms.RowTieCartFB
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.ExponentialPartialDerivatives.SumAtOf, Formalism.LocalToGlobal.CharacterGerms.RowTiePCEqEx, Formalism.SharpRestriction.GrowthBounds.ExponentialPartialDerivatives.UnshiftEvalEqSubstRawUnit, Formalism.SharpRestriction.GrowthBounds.ExponentialPartialDerivatives

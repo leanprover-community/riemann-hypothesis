@@ -4,15 +4,9 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.MlLift
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsGenOfIsVBOne
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsCptGenResidueFieldGeneric
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ProjectiveOverCoordsExist
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ProjectiveOverRestrictInt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
-import Mathlib.AlgebraicGeometry.QuasiAffine
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Proper
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

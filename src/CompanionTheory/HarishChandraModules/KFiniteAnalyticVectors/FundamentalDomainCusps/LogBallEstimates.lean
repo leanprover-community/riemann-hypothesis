@@ -4,7 +4,6 @@ public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.Fundam
 public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.FundamentalDomainCusps.HeightBoundSetup
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CoveringRadius.CoverRad
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

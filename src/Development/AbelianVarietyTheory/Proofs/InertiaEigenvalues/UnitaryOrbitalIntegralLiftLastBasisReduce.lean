@@ -4,9 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.Four
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.JacquetRallisBorderedMatrixNormalFormInvariants
 public import Mathlib.Analysis.Normed.Module.FiniteDimension
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FullToGlIsSelfAdjoint
-public import Mathlib.Analysis.Normed.Field.Basic
-public import Mathlib.LinearAlgebra.Matrix.Hermitian
-public import Mathlib.Topology.MetricSpace.Ultra.Basic
 public import Mathlib.Analysis.Normed.Group.Ultra
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsMulStarEqOfNormOneUnramifiedQuadratic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnramifiedQuadraticIntegralTraceFormPerfect

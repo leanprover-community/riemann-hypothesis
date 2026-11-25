@@ -11,7 +11,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwHkN
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwMemIwC
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwPermCard
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsSubquotientDetRepParInd
 
 @[expose] public section
 

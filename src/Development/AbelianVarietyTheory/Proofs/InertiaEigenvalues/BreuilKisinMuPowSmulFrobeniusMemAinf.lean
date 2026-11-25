@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.Exis
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FrobeniusIntegralityTensorAinfCoefficients
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsPotential
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TeichmullerSubOneAinfPropertiesCompatibleRoots
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FrobeniusIntegralityWittTiltAinf
 import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.Kernel
 
 -- This file was produced by scripts/clump.py from the modules listed below.

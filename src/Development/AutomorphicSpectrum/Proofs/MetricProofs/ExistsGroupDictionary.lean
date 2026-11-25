@@ -9,7 +9,6 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.AdaptedFrameCh
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.AdaptedFrameDeterminesLattice
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.AdaptedFrameInverseProperties
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.AdaptedFrameOfEquivalent
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsFundSet
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BallAutomorphismInverseExists
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BallMobiusHolomorphicPotentialChange
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BallMobiusMul
@@ -19,8 +18,6 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsAdaptedF
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsLatticeEmbedding
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsTranslatedRiemannLattice
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.HolomorphicAdaptedFrameOnBall
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.NormSqEqAdaptedFrameSum
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

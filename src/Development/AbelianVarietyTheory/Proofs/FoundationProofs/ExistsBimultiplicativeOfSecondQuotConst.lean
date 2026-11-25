@@ -48,12 +48,6 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 public import Mathlib.Topology.Algebra.Module.FiniteDimensionBilinear
 import Mathlib.Topology.Sheaves.Init
-public import Mathlib.Algebra.Order.Floor.Defs
-public import Mathlib.Algebra.Order.Floor.Ring
-public import Mathlib.Analysis.Normed.Group.Defs
-public import Mathlib.Analysis.Normed.Module.Basic
-public import Mathlib.Order.Filter.AtTopBot.Archimedean
-public import Mathlib.Topology.Algebra.Module.FiniteDimension
 public import Mathlib.Topology.Algebra.Order.Floor
 
 @[expose] public section

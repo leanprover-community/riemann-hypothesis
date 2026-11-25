@@ -3,16 +3,12 @@ module
 public import Formalism.ThetaLogCoordinates.JacobiPathWeights.CorA3primeB
 public import Formalism.ThetaLogCoordinates.JacobiPathWeights.JacobiMinorProofs.ExistsSuppOfEvalNe
 public import Mathlib.Algebra.MvPolynomial.Supported
-public import Formalism.ThetaLogCoordinates.JacobiPathWeights.IndexWeightsDominance
 public import Mathlib.Algebra.Field.ZMod
 public import Formalism.ThetaLogCoordinates.JacobiPathWeights.JacobiMinorProofs.LeIffLtColHeight
 public import Formalism.ThetaLogCoordinates.JacobiPathWeights.JacobiMinorProofs.PathProductHighestWeight
 public import Formalism.ThetaLogCoordinates.JacobiPathWeights.FinalP
 public import Formalism.ThetaLogCoordinates.JacobiPathWeights.JacobiMinorProofs.IndexWeightsDominance
 public import Formalism.ThetaLogCoordinates.JacobiPathWeights.JacobiMinorProofs.JacobiMinorProof
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 import Mathlib.GroupTheory.Nilpotent
 import Mathlib.RingTheory.Coalgebra.IsFrobenius

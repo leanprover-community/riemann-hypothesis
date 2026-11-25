@@ -7,7 +7,6 @@ import Mathlib.Order.CompletePartialOrder
 public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
 import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSupp
-public import Mathlib.RingTheory.Ideal.Height
 
 @[expose] public section
 

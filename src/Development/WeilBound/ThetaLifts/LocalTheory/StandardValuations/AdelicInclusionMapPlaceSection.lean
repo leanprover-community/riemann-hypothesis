@@ -12,13 +12,11 @@ public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.P
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.TensOfEval
 public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.PfDict
 public import Development.WeilBound.ThetaLifts.LocalTheory.StandardValuations.ValIffNorm
-public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.LmOfLinBar
 import Development.WeilBound.CoreStatements.LocalThetaKernels.EvlLoc
 import GroundTheory.LocalFields.PadicLogSeries
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
-import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.VaceigenDual
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.ThetaLifts.LocalTheory.StandardValuations.LocalSplittingLinearSkew, Development.WeilBound.ThetaLifts.LocalTheory.StandardValuations.AdelicInclusionMapPlaceSection

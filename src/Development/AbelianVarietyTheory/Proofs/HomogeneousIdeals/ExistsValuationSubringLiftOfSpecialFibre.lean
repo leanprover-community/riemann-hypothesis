@@ -53,7 +53,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
-public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 import Mathlib.Topology.Sheaves.Presheaf
 
 @[expose] public section

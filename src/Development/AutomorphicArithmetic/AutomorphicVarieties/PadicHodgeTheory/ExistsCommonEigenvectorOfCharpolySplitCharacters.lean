@@ -14,11 +14,7 @@ import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LocalP
 import Development.AutomorphicArithmetic.AutomorphicVarieties.HeckeAlgebras.ContinuousTorusCharacter
 import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.RepAlg
 import Formalism.ConjugateSelfDual.Statement
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
-public import Mathlib.LinearAlgebra.Charpoly.ToMatrix
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
-import ReciprocityTheory.GaloisValuations.GlobalA
 
 @[expose] public section
 

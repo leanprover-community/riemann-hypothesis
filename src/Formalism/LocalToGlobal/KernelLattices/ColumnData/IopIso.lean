@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.LinkThU
-import Mathlib.GroupTheory.FiniteAbelian.Basic
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
 

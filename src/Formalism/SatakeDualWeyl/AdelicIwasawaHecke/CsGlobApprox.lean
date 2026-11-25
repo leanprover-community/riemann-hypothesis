@@ -2,7 +2,6 @@ module
 
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsApprox
 public import Formalism.SatakeDualWeyl.DefsCS
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelaf
 
 @[expose] public section
 

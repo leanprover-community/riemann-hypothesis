@@ -6,7 +6,6 @@ public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.AtPiEqRe
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.DworkExponentialRestrictions
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.ExpansionAllPlacesOfPlace
 import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.NatCastInvMemRp
-import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.LogarithmEquivalence
 import Mathlib.Algebra.Order.Star.Int
 import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.IntRPsubst
 

@@ -13,13 +13,9 @@ public import Development.EtaleCohomology.EtaleSheaves.IECompPf
 public import Development.EtaleCohomology.EtaleSheaves.SHExistsPf
 public import Development.EtaleCohomology.EtaleSheaves.EtStagePf
 public import Development.EtaleCohomology.EtaleSheaves.EtaleSpreading.FPProof
-import Mathlib.Algebra.Category.Ring.FilteredColimits
-import Mathlib.CategoryTheory.Limits.Filtered
-import Mathlib.CategoryTheory.WithTerminal.Cone
 import Mathlib.CategoryTheory.WithTerminal.Lemmas
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.TotallySplit
-import Mathlib.Algebra.Category.Ring.FinitePresentation
 import Mathlib.CategoryTheory.Comma.LocallySmall
 
 -- This file was produced by scripts/clump.py from the modules listed below.

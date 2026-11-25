@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.LevelLetterCocycles.FiltrationSaturationKiller
 public import Formalism.SharpRestriction.LevelLetterCocycles.AnnihilatorGeneralOfRingCondition
 public import Formalism.SharpRestriction.LevelLetterCocycles.RingConditionOfDeltaInvariants
-import Mathlib.RingTheory.PowerSeries.WeierstrassPreparation
 
 @[expose] public section
 

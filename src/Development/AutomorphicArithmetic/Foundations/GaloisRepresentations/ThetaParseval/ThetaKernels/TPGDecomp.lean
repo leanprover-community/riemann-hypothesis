@@ -5,8 +5,6 @@ public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentation
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.LatAtVSelfDualK
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.Stab2CptK
 public import Development.WeilBound.ThetaLifts.LatticeBasics.CommuteTheta
-public import Development.WeilBound.ThetaLifts.LatticeBasics.HodgeTateFromSandwich
-public import Development.WeilBound.ThetaLifts.LatticeBasics.SchrUnit
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.CharacterAdmissibility.AdelInt
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdeleEqZeroOfComp
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BcCompFinAwayPtOfNotMem
@@ -14,9 +12,7 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EigenIntertw
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqOfComponentTensorAdelicFunctionEq
 public import Development.WeilBound.ThetaLifts.EigenvalueEndgame.UnipotentGroups.ContinuousExpG
 public import Development.WeilBound.ThetaLifts.LatticeBasics.BadFactor
-public import Development.WeilBound.ThetaLifts.LatticeBasics.EulerProd
 public import Development.WeilBound.ThetaLifts.LocalTheory.ArchimedeanBumps.TracePiReal
-public import Development.WeilBound.ThetaLifts.LatticeBasics.ContinuousFlat
 
 /-! # TPGDecomp: Consolidated global theta-kernel definitions and proofs (TPGDecomp). -/
 @[expose] public section

@@ -1,7 +1,6 @@
 module
 
 public import Development.WeilBound.CoreStatements.MinimalPrimeDimensions.GenIdeal
-public import Development.AbelianVarietyTheory.Definitions.Divisors.LineBundleGlobalSectionsDimCongrPicardClass
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

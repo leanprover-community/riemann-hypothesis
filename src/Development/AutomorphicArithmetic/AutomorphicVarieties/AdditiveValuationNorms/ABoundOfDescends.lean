@@ -7,12 +7,9 @@ public import Mathlib.NumberTheory.Padics.Complex
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AdditiveValuationNorms.LteNorm
 public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AdditiveValuationNorms.NormVal
-public import Mathlib.Algebra.CharP.Lemmas
-public import Mathlib.Algebra.Polynomial.AlgebraMap
 public import Mathlib.RingTheory.Nakayama
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AdditiveValuationNorms.CokLen
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.LenComp
-public import Mathlib.RingTheory.Length
 public import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.SelmerDuality.LengthDet
 public import Formalism.GaloisCohomology.Statement
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AdditiveValuationNorms.QzInj

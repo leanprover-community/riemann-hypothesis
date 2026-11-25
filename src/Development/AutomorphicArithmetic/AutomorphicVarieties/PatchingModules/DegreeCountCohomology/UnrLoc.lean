@@ -20,15 +20,12 @@ public import Mathlib.RingTheory.Invariant.Profinite
 public import Mathlib.FieldTheory.Finite.Basic
 public import Mathlib.FieldTheory.Galois.Infinite
 public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Valuation
-public import Mathlib.RingTheory.Invariant.Defs
 public import Mathlib.RingTheory.RootsOfUnity.EnoughRootsOfUnity
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DegreeCountCohomology.IsDualPair
 public import ReciprocityTheory.GaloisValuations.Global
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.TaylorWilesObstructionBound
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
-import Mathlib.RingTheory.Valuation.LocalSubring
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

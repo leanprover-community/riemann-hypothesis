@@ -11,13 +11,11 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsGermSy
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsHodgeLatticeGermSystemStatement
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GermSystemHeightFreeStatement
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeLatticeTransportEquivStatement
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelExistsUniqueEquiv
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ModelFibresPowerFreeStatement
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PowFnsOfAbelianGenericStatement
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ProperNormalCompactificationStatement
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.GermComp1ZeroPointLeft
-import Development.AutomorphicSpectrum.Definitions.AdelicLattices.FactPrimes
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.GenericPartDenseProOpen
 
 -- This file was produced by scripts/clump.py from the modules listed below.

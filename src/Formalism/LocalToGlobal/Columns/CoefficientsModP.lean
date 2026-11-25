@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.Columns.CoefModB
 public import Formalism.LocalToGlobal.Columns.CoefModX
-public import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.BaseCh
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.TauLatticeLatticeHolds
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.FkMapInitMinor
@@ -14,9 +13,6 @@ public import Formalism.LocalToGlobal.Columns.CoefficientsModP.NablaRoundFreeHol
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.WeTransposeWordTransposeWord
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.PairBDual
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.StdDual
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.Columns.CoefficientsModP.NabDual, Formalism.LocalToGlobal.Columns.CoefficientsModP

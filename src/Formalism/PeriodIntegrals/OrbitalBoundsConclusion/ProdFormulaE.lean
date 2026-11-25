@@ -7,11 +7,7 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ProductFormulaHa
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ProductFormulaHaar.BasisEApply
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ProductFormulaHaar.DenEqOneOfForallPadicNormLeOne
 public import Mathlib.NumberTheory.NumberField.ProductFormula
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.NumberTheory.Padics.PadicNumbers
-public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Valuation
 public import Mathlib.NumberTheory.Padics.RingHoms
-public import Mathlib.Topology.Algebra.Module.FiniteDimension
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ProductFormulaHaar.TrSumOf
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ProductFormulaHaar.NormSt
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ProductFormulaHaar.HaarAlg

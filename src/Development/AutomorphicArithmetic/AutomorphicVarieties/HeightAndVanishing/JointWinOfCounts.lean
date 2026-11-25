@@ -1,8 +1,6 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.StmtFields
-public import Mathlib.Analysis.SpecialFunctions.Pow.Real
-public import Development.AutomorphicArithmetic.CharacterBoxes.ExistsPageN
 public import Development.AutomorphicArithmetic.QuadraticCharacters.GaussRoot
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PrimeSetBoundDataOfPrimitiveChar
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CharacterLevelBounds.ShaFamMono
@@ -21,7 +19,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVa
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.HostOdd
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.LossLe
 public import Formalism.GaloisCohomology.GaloisCohomologyProofs.LdataNonempty
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.CharacterLevelBounds.ClsOnto
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CharacterLevelBounds.EigV
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CharacterLevelBounds.PartModel
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CharacterLevelBounds.SignLe
@@ -33,13 +30,10 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVa
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.HostLevel
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.ExistsPrimitiveRootPow
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GeneratorCountTuples.LemmaK
-public import Formalism.GaloisCohomology.LocalTateDualityK
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.CountVs
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.FinalLe
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ZsmulGeneratorEqZeroOfProjection
-import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.HostIndex
 import Mathlib.GroupTheory.Nilpotent
 import Std.Tactic.BVDecide.Normalize.Prop
 

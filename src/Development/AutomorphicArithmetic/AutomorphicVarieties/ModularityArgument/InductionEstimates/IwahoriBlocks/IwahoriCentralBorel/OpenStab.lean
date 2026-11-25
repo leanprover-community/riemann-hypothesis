@@ -5,9 +5,6 @@ public import Mathlib.MeasureTheory.Group.Defs
 public import Mathlib.MeasureTheory.Measure.QuasiMeasurePreserving
 public import Mathlib.Dynamics.Ergodic.MeasurePreserving
 public import Mathlib.MeasureTheory.Group.Measure
-public import Mathlib.Algebra.Group.Subgroup.Defs
-public import Mathlib.Topology.Algebra.Group.Defs
-public import Mathlib.Algebra.Group.Subgroup.Map
 public import Mathlib.Topology.Algebra.OpenSubgroup
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.InnerProductSpace.Basic
@@ -57,7 +54,6 @@ import Mathlib.Topology.Sheaves.Init
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.RingTheory.PiTensorProduct
 import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.InductionEstimates.IwahoriBlocks.IwahoriCentralBorel.PiHomExt
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeilStabilizerVolume.UnfoldAbs
 import PositivityTheory.AutomorphicForms.PublishedInputs.CyclicBaseChange.PSConjSpaceR

@@ -7,12 +7,9 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeT
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.DefCob
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.DefCoc
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.TriLift
-import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.AdRepBaseLiftApply
 import Mathlib.NumberTheory.Padics.LocalField
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.RingTheory.AdicCompletion.Noetherian
-import Mathlib.RingTheory.Noetherian.Nilpotent
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.OrdDual, Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.ExistsEps

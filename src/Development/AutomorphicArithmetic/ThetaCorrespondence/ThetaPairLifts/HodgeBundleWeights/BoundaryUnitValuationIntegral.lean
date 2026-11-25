@@ -3,12 +3,10 @@ module
 public import Formalism.LocalToGlobal.ProjectiveLattices.VAtVNeBot
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.FramedFlatCoordinates
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsAbelianGaloisHost
-public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.EigenvectorLieDegree
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsProbabilityMeasureMuPart
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ReadsZero
 public import Development.AbelianVarietyTheory.Counterexamples.ModuliSurvey.PremisesOfProper
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BoundaryExtensionIndependentOfModel
-public import Formalism.LocalToGlobal.ProjectiveLattices.OneLtAbsNormReal
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.HodgeBundleWeights.ToKnownTheoremsOf
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DeterminantSectionRule
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FlatSectionAndDegree
@@ -58,7 +56,6 @@ import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Divisors.AevalEqZeroOfMemConeIdeal
 import Development.AbelianVarietyTheory.Definitions.Divisors.HtValOnSubset
-import Development.AbelianVarietyTheory.Definitions.Foundations.ExistsFlatSecRankZero
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralEigenBasisTransportPullbackDvr, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLieEigenBasisOfIntegralFramedPoint, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ImportsExtraTer, Development.AbelianVarietyTheory.Proofs.DivisorProofs.RuleSectionNowhereVanishingReal, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.HodgeBundleWeights.BoundaryUnitValuationIntegral

@@ -6,7 +6,6 @@ public import Mathlib.Topology.Algebra.Polynomial
 public import GroundTheory.PAdicHodge.AInfGalois
 public import GroundTheory.PAdicHodge.BdRAlg
 public import Mathlib.RingTheory.WittVector.FrobeniusFractionField
-public import Mathlib.RingTheory.WittVector.DiscreteValuationRing
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.RingTheory.Henselian

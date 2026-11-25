@@ -10,8 +10,6 @@ public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.FrobeniusBoundOfMulNea
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.IndefiniteUnitaryPreservesForm
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.MemUnitaryGroupIffMulConjTranspose
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ModularCharacterEqOneOnExpHermitian
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 

@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.LocalFields.LocalArtinFunctoriality
-public import GroundTheory.LocalFields.LocalArtinTransport
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

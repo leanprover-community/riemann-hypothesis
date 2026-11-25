@@ -5,7 +5,6 @@ public import Formalism.PieriBlockIdeals.StatementLR
 public import Formalism.PieriBlockIdeals.StatementLC
 public import Formalism.PieriBlockIdeals.PieriColumnMinors.Symmetrization
 public import Formalism.PieriBlockIdeals.PieriColumnMinors.BinaryFormsExample
-public import Formalism.PieriBlockIdeals.IntegralQuotient
 public import Formalism.PieriBlockIdeals.PieriColumnMinors.XiOfDepth2
 public import Formalism.PieriBlockIdeals.PieriColumnMinors.HighestWeightMemWZero
 public import Formalism.PieriBlockIdeals.PieriColumnMinors.LowerTriangularIntegral
@@ -14,10 +13,6 @@ public import Formalism.PieriBlockIdeals.PieriColumnMinors.IrreducibleGeneration
 public import Formalism.PieriBlockIdeals.PieriColumnMinors.WeightBounds
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LClosedeqLemmas
-import Formalism.PieriBlockIdeals.PieriColumnMinors.DividedPowerZeroZeroVector
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LRowdivLemmas
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PieriBlockIdeals.HidaLatticeInclusionAtCoarseWeightBound, Formalism.PieriBlockIdeals.StatementDown, Formalism.PieriBlockIdeals.LemmaDGradedOfPieriReal, Formalism.PieriBlockIdeals.PieriColumnMinors.AntitoneShapes, Formalism.PieriBlockIdeals.PieriColumnMinors.MeasureSwapInvariant, Formalism.PieriBlockIdeals.PieriColumnMinors.PathEqOfContentSequence, Formalism.PieriBlockIdeals.PieriColumnMinors.PermutationWeightInvariant, Formalism.PieriBlockIdeals.PieriColumnMinors.LemmaDSkeletonFour, Formalism.PieriBlockIdeals.PieriColumnMinors.ColumnsPieriSkeleton, Formalism.PieriBlockIdeals.PieriColumnMinors.FsDivMem, Formalism.PieriBlockIdeals.PieriColumnMinors.LriEVPowCoe, Formalism.PieriBlockIdeals.PieriColumnMinors.LrjTransposeLift, Formalism.PieriBlockIdeals.PieriColumnMinors.RealOfSkeleton, Formalism.PieriBlockIdeals.PieriColumnMinors.CorollaryOfParamsLinkage, Formalism.PieriBlockIdeals.PieriColumnMinors.CorollaryOfParamsSevenLinkage

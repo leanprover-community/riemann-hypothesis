@@ -3,7 +3,6 @@ module
 import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.InPCommutatorOfInK
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FormalDegreeSquareIntegrable.FormalDegreeFromOrthogonality
 public import Mathlib.MeasureTheory.Group.ModularCharacter
-public import Mathlib.Topology.Algebra.Group.Units
 public import Mathlib.Analysis.Matrix.Order
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style

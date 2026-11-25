@@ -1,9 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.Jets.CmQuadraticFormEqAlternatingForm
-public import Mathlib.Analysis.SpecialFunctions.Log.Base
-public import Mathlib.Analysis.Complex.ExponentialBounds
-public import Formalism.LocalRingCardinality.DataParams
 public import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.ONPage
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.DegreeWeightKappaLePageBound
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.RunWeightsSum
@@ -43,7 +40,6 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic

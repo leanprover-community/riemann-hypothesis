@@ -3,14 +3,11 @@ module
 import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelFPfB
 public import Formalism.SharpRestriction.LevelLetterCocycles.DeltaInvariantLattices
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.U3upPfFilCAnti
-public import Formalism.SharpRestriction.LevelLetterCocycles.DownSlotProposition
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfPt
-public import Mathlib.RingTheory.PowerSeries.Inverse
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelLPfG
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelLPfF
 public import Formalism.SharpRestriction.LevelLetterCocycles.ModelKStep
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelLPfH
-public import Formalism.SharpRestriction.LevelLetterCocycles.LamPS
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfLoc
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ConstantCoeffQZeroEqP
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.DvdCondition
@@ -20,8 +17,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.Mode
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelFPfG
 public import Formalism.SharpRestriction.LevelLetterCocycles.DivisibilityInvariantMulLinear
 import Mathlib.Tactic.Linter.Style
-import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelLPfB
-import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelLPfE
 import Mathlib.Tactic.Linter.HaveILetI
 import Formalism.SharpRestriction.LevelLetterCocycles.FrobeniusPowUniformizerFactorisation
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.LevelValueSmul

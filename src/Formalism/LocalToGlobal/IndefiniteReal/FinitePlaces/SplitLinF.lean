@@ -5,17 +5,7 @@ public import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.CharLem
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FourUniq
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.PlaceAt
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.PlaceInst
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FourModel
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.IsThetaFunOPull
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.SmulSubMulLe
-public import Mathlib.Algebra.Module.LinearMap.End
-public import Mathlib.LinearAlgebra.Span.Defs
-public import Mathlib.Algebra.BigOperators.GroupWithZero.Action
-public import Mathlib.Algebra.Module.BigOperators
-public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
-public import Mathlib.LinearAlgebra.Finsupp.LinearCombination
-public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.PlaceHeis
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.LatLevel
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.PlaceS
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.LatSelf
@@ -24,9 +14,6 @@ import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.GrowthNorm
 import Mathlib.Tactic.Linter.HaveILetI
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.ActsLinOfSplitLin
 import Mathlib.Tactic.Linter.Style
-import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FourExist
-import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.PlaceSum
-import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.IpTheta
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -6,8 +6,6 @@ public import Mathlib.Algebra.Field.Subfield.Defs
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.PublishedIntClosHolds
 public import ReciprocityTheory.SemistableReduction.ComapInclusionIsLocalHom
 public import ReciprocityTheory.SemistableReduction.AlgAll
-public import Mathlib.Algebra.BigOperators.Field
-public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.ExistsPowSmulMemBall
 public import Formalism.LocalToGlobal.ProjectiveLattices.LocRingPf
 public import Formalism.LocalToGlobal.ProjectiveLattices.CurveAsm
 public import Formalism.LocalToGlobal.ProjectiveLattices.CurveLoc
@@ -15,8 +13,6 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.CurveOpen
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsRatioFormsAtPoints
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.FinrankHostDivTwo
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.GenericSectionPointsInequivalentValuations
-public import Mathlib.Algebra.Field.Subfield.Basic
-public import Mathlib.RingTheory.AlgebraicIndependent.Basic
 public import Formalism.LocalToGlobal.ProjectiveLattices.CurveSec
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.EfRankSum
 import Mathlib.Algebra.Order.Floor.Extended
@@ -48,7 +44,6 @@ import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
 import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.NormNum.Irrational
 import Mathlib.Tactic.NormNum.IsCoprime
 import Mathlib.Tactic.NormNum.IsSquare
@@ -63,14 +58,7 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Mathlib.Tactic.ReduceModChar
-import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
-import Mathlib.Order.CompletePartialOrder
-import Formalism.SharpRestriction.Divisibility.WeightAlgebra
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Formalism.LocalToGlobal.ProjectiveLattices.CurveLocInst
 import Formalism.LocalToGlobal.ProjectiveLattices.SecPtRed
 import Mathlib.RingTheory.Coalgebra.IsFrobenius

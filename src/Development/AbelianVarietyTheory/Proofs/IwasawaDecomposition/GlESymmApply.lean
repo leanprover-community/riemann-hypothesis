@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.HermitianForms.PrkSmul
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLcInt
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PRLocV
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsScale
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

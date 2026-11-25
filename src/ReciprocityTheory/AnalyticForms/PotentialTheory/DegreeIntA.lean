@@ -6,7 +6,6 @@ public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.Lintegra
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.Partition
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.PotentialContDiffAt
-public import Mathlib.MeasureTheory.Integral.Bochner.Set
 
 @[expose] public section
 

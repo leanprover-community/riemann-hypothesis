@@ -43,7 +43,6 @@ import Mathlib.Topology.Sheaves.Init
 import Aesop.Main
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemLpLiftL2DiscreteQuotientOnCompact
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.MeasureTheory.Function.AEEqOfIntegral
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Polynomial.Basic

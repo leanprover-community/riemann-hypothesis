@@ -4,8 +4,6 @@ public import Mathlib.Algebra.CharP.Defs
 public import Mathlib.RingTheory.Finiteness.Defs
 public import Mathlib.FieldTheory.Finite.Extension
 public import Mathlib.GroupTheory.FiniteAbelian.Basic
-public import Mathlib.Algebra.Algebra.ZMod
-public import Mathlib.Algebra.CharP.Algebra
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Development.AbelianVarietyTheory.Definitions.Foundations.HTBasis
 

@@ -4,10 +4,8 @@ public import Formalism.LocalToGlobal.CharacterGerms.LatticeInclusionFormsInject
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.ConstantCoeffSubstSame
 public import Formalism.LocalToGlobal.CharacterGerms.CartesianBoundOnCurves
 public import Formalism.LocalToGlobal.CharacterGerms.CoeffIterateZero
-public import Mathlib.RingTheory.MvPowerSeries.Rename
 public import Formalism.LocalToGlobal.CharacterGerms.ContentLargeFromSupplies
 public import Formalism.LocalToGlobal.CharacterGerms.ContentZeroAt
-public import Formalism.LocalToGlobal.CharacterGerms.BiadditiveInSingleVariables
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.BlockValueOnRowsEq
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.RowDataMainTermNormalFormAndLevelOne
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.SumEqOfIsHomogeneous

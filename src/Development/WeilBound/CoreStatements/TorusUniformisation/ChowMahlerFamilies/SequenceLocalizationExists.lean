@@ -8,12 +8,7 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsDualBC
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsHTAtIff
 public import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.ExistsFunctionAtPoint
 public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
-import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsStalkFractionOfGeneric
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFiniteBaseChange
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsUnitFormLocalizationEtaleNbhd
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SectionEqZeroOfValues
 import Mathlib.Tactic.Linter.Style
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.CompactGapsGE
 

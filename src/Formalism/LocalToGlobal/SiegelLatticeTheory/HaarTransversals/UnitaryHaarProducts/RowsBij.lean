@@ -8,7 +8,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasu
 public import Mathlib.MeasureTheory.Integral.Pi
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Topology.Separation.CompletelyRegular
 
 @[expose] public section

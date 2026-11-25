@@ -5,9 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CountTermsGra
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsPartnerLift
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsUniquePlace
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IdxNOneMulAbsNorm
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MemOfPerpPerp
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StandardBaseFlagComplementIntegralLattice
-import Formalism.SharpRestriction.CuspSpanNormBounds.AbsoluteAmplitudeSecondOfSource
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

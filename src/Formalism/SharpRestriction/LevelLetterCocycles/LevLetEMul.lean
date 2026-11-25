@@ -2,7 +2,6 @@ module
 
 import Formalism.SharpRestriction.LevelLetterCocycles.SaturationPullbackOfRingCondition
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArcCoordinatesOfLevelZeroParts
-import Mathlib.RingTheory.PowerSeries.WeierstrassPreparation
 
 @[expose] public section
 

@@ -3,11 +3,6 @@ module
 public import GroundTheory.GlobalFields.IdeleGroups.LocalNorms
 public import GroundTheory.GlobalFields.IdeleGroups.LocalNormsEverywhere
 public import GroundTheory.GlobalFields.SecondInequality.Cyclic
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-public import GroundTheory.GlobalFields.HerbrandQuotients.CycTate
-public import GroundTheory.GlobalFields.IdeleGroups.GaloisOnAdeles.Action
 
 @[expose] public section
 

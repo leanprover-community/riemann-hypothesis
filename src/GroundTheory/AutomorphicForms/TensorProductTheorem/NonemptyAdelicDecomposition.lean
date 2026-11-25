@@ -3,17 +3,10 @@ module
 public import GroundTheory.AutomorphicForms.TensorProductTheorem.GKTensor
 public import GroundTheory.AutomorphicForms.TensorProductTheorem.TwoFactorUnique
 public import GroundTheory.AutomorphicForms.AdelicGLn
-public import GroundTheory.AutomorphicForms.TensorProductTheorem.Restricted
-public import Mathlib.RepresentationTheory.Irreducible
 public import GroundTheory.AutomorphicForms.Satake
-public import GroundTheory.AutomorphicForms.TensorProductTheorem.Existence
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStable
-public import GroundTheory.GlobalFields.Adele.Topology
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
-import GroundTheory.LocalFields.LocalFourierHaar
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 

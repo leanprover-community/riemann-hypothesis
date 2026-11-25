@@ -5,8 +5,6 @@ public import Mathlib.RingTheory.LocalRing.ResidueField.Defs
 public import Mathlib.RingTheory.PowerSeries.Substitution
 public import GroundTheory.LocalFields.FormalGroups.Basics
 public import Mathlib.RingTheory.MvPowerSeries.Expand
-public import Mathlib.Algebra.CharP.Frobenius
-public import Mathlib.FieldTheory.Finite.Basic
 public import Mathlib.RingTheory.LocalRing.ResidueField.Basic
 import GroundTheory.LocalFields.FormalGroups.Truncation
 import Mathlib.Order.CompletePartialOrder

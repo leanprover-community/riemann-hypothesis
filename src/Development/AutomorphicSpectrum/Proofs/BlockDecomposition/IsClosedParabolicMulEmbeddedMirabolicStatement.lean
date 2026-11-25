@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsCIndValue
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousMatMir
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MulInvMemQOfRowQEq
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.LeibnizOrders.ProdGPn

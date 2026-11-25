@@ -2,14 +2,12 @@ module
 
 public import Formalism.LocalToGlobal.Columns.CoefCol
 public import Formalism.SatakeDualWeyl.StatementB
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 public import Formalism.LocalToGlobal.Columns.BaseLemmas
 public import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Bridge
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section

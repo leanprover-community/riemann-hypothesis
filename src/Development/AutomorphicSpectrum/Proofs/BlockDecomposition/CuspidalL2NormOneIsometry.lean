@@ -11,7 +11,6 @@ public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.ExistsLintegral
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspCompact
 import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.IsCompactOperatorOfIsHilbertSchmidt
 import GroundTheory.AutomorphicForms.CuspidalDiscreteness.Counting
-import GroundTheory.GlobalFields.Adele.Topology
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactSupportSplitCentreFactor, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CuspidalRestrictMemCuspidalL2, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FundamentalDomainSplitCentreProduct, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HaarMeasureNormOneProduct, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntegralSplitCentreInvariant, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CuspidalL2NormOneIsometry

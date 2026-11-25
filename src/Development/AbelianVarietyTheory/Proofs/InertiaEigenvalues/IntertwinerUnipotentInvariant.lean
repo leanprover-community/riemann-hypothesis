@@ -8,7 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HarishC
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HarishChandraSeriesCentralIdempotentLaws
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HarishChandraSeriesLabelMulOfConstituent
 public import Mathlib.Data.Matrix.PEquiv
-public import Mathlib.Basic.PEquiv
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HarishChandraSeriesLabelExistsUniqueGLn
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

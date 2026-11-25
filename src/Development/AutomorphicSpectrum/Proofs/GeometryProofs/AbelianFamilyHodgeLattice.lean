@@ -3,10 +3,7 @@ module
 public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 public import Mathlib.Combinatorics.Quiver.ReflQuiver
 public import Mathlib.Algebra.DualNumber
-public import Mathlib.RingTheory.RingHom.Smooth
-public import Mathlib.AlgebraicGeometry.Pullbacks
 public import Mathlib.CategoryTheory.Monoidal.Cartesian.Grp
-public import Mathlib.LinearAlgebra.Matrix.ToLin
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EigLat
 public import Mathlib.Basic.Complex.Basic
@@ -18,9 +15,7 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CuspCorrespo
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLinearLiftOfAdditiveFamily
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FamilyExpDerivativeLie
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeCptAwayFromPrimes
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelExistsUniqueSemilinear
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFiniteBaseChange
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelPushAlongMap

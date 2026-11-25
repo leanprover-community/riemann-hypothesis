@@ -11,8 +11,6 @@ public import Mathlib.Analysis.SpecialFunctions.Complex.Log
 public import Mathlib.RingTheory.RootsOfUnity.EnoughRootsOfUnity
 public import Development.AbelianVarietyTheory.Definitions.Foundations.SiegelNeZeroIff
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ConstOfSlTwoIntInvariantBoundedUpperHalfPlane
-public import Mathlib.Algebra.Order.Ring.Rat
-public import Mathlib.RingTheory.HahnSeries.Multiplication
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HahnSeriesPowOfLeadingQInv
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ModularTowerFunctionSlTwoIntInvariant
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ModularTowerFunctionTendstoConstTermExponential

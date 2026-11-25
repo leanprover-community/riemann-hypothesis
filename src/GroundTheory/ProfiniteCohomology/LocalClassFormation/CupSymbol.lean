@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbolPrime
-import GroundTheory.ProfiniteCohomology.CyclicCupBrauer
 
 @[expose] public section
 

@@ -9,7 +9,6 @@ public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.P
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictMod
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.MixedModels.PsiUnrOfNotLe
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.MixedModels.RealSt
-public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.ExistsNhdsInvariant
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.IndicatorMem
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.MixedModels.MCPure
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts

@@ -6,11 +6,8 @@ public import GroundTheory.AutomorphicForms.GL2.GJMatrixSchwartz
 public import GroundTheory.AutomorphicForms.GL2.GJGlobalLatticeBounds
 public import GroundTheory.AutomorphicForms.GL2.GJGlobalMellin
 public import GroundTheory.AutomorphicForms.GL2.GJGlobalTheta
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.MellinTransform
 import Aesop.Main
 import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Uniform
-import GroundTheory.AutomorphicForms.GL2.GJGlobalHaar
 import GroundTheory.AutomorphicForms.GL2.GJGlobalLatticeCont
 
 -- This file was produced by scripts/clump.py from the modules listed below.

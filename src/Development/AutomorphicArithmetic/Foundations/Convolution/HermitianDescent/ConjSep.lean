@@ -5,7 +5,6 @@ public import Mathlib.Algebra.Module.PID
 public import Mathlib.FieldTheory.IsAlgClosed.Spectrum
 public import Mathlib.LinearAlgebra.Lagrange
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
-public import Mathlib.Algebra.Algebra.Spectrum.Basic
 public import Mathlib.Algebra.Polynomial.Module.AEval
 public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
 public import Development.AutomorphicArithmetic.Foundations.Convolution.HermitianDescent.NormAlmostAll

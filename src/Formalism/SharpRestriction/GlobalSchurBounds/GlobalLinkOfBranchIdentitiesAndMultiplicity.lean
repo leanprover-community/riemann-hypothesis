@@ -3,24 +3,14 @@ module
 public import Formalism.LocalToGlobal.GlobalTheory.ClassesLevelZeroNonempty
 public import Formalism.LocalToGlobal.GlobalTheory.ActAllCancelInv
 public import Formalism.LocalToGlobal.GlobalTheory.GramNDetNe
-public import Formalism.LocalToGlobal.GroupLattices.Joint0
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.BwAValIntegralNonneg
-public import Formalism.SharpRestriction.GlobalSchurBounds.FlipTwoThree
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.LatticeInclusionFamilyOf
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.LatticeInclusionOfDecompGlob
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocGen
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocInd
-public import Formalism.LocalToGlobal.GlobalTheory.SigDEqStar
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocGlob
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocBases
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.ExistsPrimeToLe
-public import Formalism.SharpRestriction.GlobalSchurBounds.LinkGLOBAL7Tied4
-import Formalism.LocalToGlobal.GlobalTheory.GL4.PColInf
-import Formalism.LocalToGlobal.GlobalTheory.MemIffOfLocBasisG
-import Formalism.LocalToGlobal.GlobalTheory.NfAllSmulSelfRe
-import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
-import Formalism.LocalToGlobal.Columns.PolyFn
-import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.RankConditionsOfLayerTwo
 import Formalism.SharpRestriction.GlobalSchurBounds.QuadraticLogDerivCongr
 
 -- This file was produced by scripts/clump.py from the modules listed below.

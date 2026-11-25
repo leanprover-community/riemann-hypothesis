@@ -5,7 +5,6 @@ public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods
 public import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.ExistsFactorialMulEqPow
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.EqZeroOfPMulEqZero
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.DeRhamLog, Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.Comparison

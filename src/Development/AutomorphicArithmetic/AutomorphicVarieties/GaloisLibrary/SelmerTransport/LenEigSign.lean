@@ -4,14 +4,11 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibra
 public import Mathlib.RingTheory.Length
 public import Mathlib.RingTheory.RootsOfUnity.EnoughRootsOfUnity
 public import Mathlib.GroupTheory.FiniteAbelian.Duality
-public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.LenComp
 public import Mathlib.FieldTheory.KummerExtension
 public import Mathlib.NumberTheory.LegendreSymbol.AddCharacter
-public import Mathlib.GroupTheory.FiniteAbelian.Basic
 public import Mathlib.LinearAlgebra.Eigenspace.Basic
 import Mathlib.Tactic.Linter.HaveILetI
-import ReciprocityTheory.GaloisValuations.SeparatedDvrSecondCohomologyMem
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

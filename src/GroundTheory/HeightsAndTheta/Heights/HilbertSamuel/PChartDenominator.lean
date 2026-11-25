@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsChartDenominator
-import Mathlib.RingTheory.Localization.Finiteness
 
 @[expose] public section
 

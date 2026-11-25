@@ -9,7 +9,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.Rationality.Q
 public import Formalism.FilteredPoleLength.ReducedBasisBounds.LengthBaseChangeLocal
 public import Formalism.FilteredPoleLength.LocalDescentLevels.LengthBaseChange
 public import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.TieLDB
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.Rationality.QuotSt
 public import Formalism.FilteredPoleLength.ReducedBasisBounds.ReductionQuotient
 public import Formalism.FilteredPoleLength.LocalDescentLevels.MemSpanBasisFun
 public import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.QatOfBridge

@@ -4,7 +4,6 @@ public import GroundTheory.AutomorphicForms.LeviCartan
 public import GroundTheory.AutomorphicForms.SmoothRep
 public import Mathlib.RepresentationTheory.Irreducible
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 

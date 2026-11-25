@@ -57,10 +57,6 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.Analysis.Calculus.MeanValue
-public import Mathlib.Analysis.Fourier.AddCircle
 public import Mathlib.MeasureTheory.Measure.Haar.Unique
 
 @[expose] public section

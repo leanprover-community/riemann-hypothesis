@@ -5,9 +5,7 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardAdel
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.AdelicCharacterRationalDual
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.HeisenbergCommutingOperatorScalar
-public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaSumAdmissibility
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.WeilRepresentationThetaEquivariance
-import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaDistributionNonzeroAdmissible
 
 @[expose] public section
 

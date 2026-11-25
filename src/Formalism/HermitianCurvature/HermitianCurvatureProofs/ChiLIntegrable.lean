@@ -1,7 +1,6 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.StrictUpperNeg
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SubMulRight
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.MulVecBvecApply
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermitianFormRankZeroApply
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LowerCoordinateProd
@@ -9,14 +8,10 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BigCellDiago
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BlkUUMapMuPRn
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SigmaFiniteOfHaar
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SliceContOn
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.LowerParabolicCoordinates
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixMul
 import Mathlib.Tactic.Linter.Style
 import Aesop.Main
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.HermitianCurvature.HermitianCurvatureProofs.UTransEMp, Formalism.HermitianCurvature.HermitianCurvatureProofs.MeasurePreservingProdPermThree, Formalism.HermitianCurvature.HermitianCurvatureProofs.PsiCStarMul, Formalism.HermitianCurvature.HermitianCurvatureProofs.ChiLIntegrable

@@ -5,14 +5,10 @@ public import Formalism.LocalToGlobal.UnitaryNorms.CharTransport
 public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.CuspDecayHeights.HeightLe
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.AdBasic
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.QmapPres
-public import Mathlib.MeasureTheory.Group.Measure
-public import Mathlib.MeasureTheory.Measure.Haar.Unique
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.GalTwistEx
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.CommProj
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.GalEquiv
-import GroundTheory.GlobalFields.Adele.Topology
 import Mathlib.Tactic.Linter.HaveILetI
-import GroundTheory.AutomorphicForms.CuspidalProjection.Global
 import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspCompact
 
 -- This file was produced by scripts/clump.py from the modules listed below.

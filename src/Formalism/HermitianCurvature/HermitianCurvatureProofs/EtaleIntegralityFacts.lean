@@ -13,7 +13,6 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.RemainderNormLeStri
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.StandardCharacterExists
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.WeakApproximationGL
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.WhittakerVanishingImpliesZero
-import Mathlib.Analysis.Calculus.ContDiff.Bounds
 public import Mathlib.Analysis.Calculus.ContDiff.RestrictScalars
 import Mathlib.Analysis.Complex.OperatorNorm
 import Mathlib.Tactic.Linter.Style

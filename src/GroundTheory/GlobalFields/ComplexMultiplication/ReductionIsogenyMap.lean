@@ -4,12 +4,8 @@ public import GroundTheory.GlobalFields.ComplexMultiplication.ReductionMap
 public import GroundTheory.GlobalFields.ComplexMultiplication.RespectsAddUniversal
 public import GroundTheory.GlobalFields.ComplexMultiplication.ReductionComp
 public import GroundTheory.GlobalFields.ComplexMultiplication.ReductionEval
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DualIsogeny
 public import GroundTheory.GlobalFields.ComplexMultiplication.DifferentialConstantField
-public import GroundTheory.GlobalFields.ComplexMultiplication.DifferentialBaseChange
-public import GroundTheory.GlobalFields.ComplexMultiplication.ReductionRespectsAdd
 public import GroundTheory.GlobalFields.ComplexMultiplication.DualDescent
-import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisorsTranslate
 import GroundTheory.GlobalFields.ComplexMultiplication.ReductionIsogeny
 
 -- This file was produced by scripts/clump.py from the modules listed below.

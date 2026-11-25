@@ -8,8 +8,6 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.DatumOfRecordSignature
 public import Formalism.LocalToGlobal.ProjectiveLattices.DatTheta
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FactPrincipalDatum
 public import Formalism.LocalToGlobal.ProjectiveLattices.SumEmbeddingsEq
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.TotallySplit
 import Formalism.LocalRingCardinality.ConjSqrtMinusD
 import Formalism.LocalToGlobal.ProjectiveLattices.HostRank

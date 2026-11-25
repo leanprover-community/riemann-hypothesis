@@ -5,7 +5,6 @@ public import Mathlib.NumberTheory.ModularForms.EisensteinSeries.E2.Defs
 import Mathlib.Algebra.Order.Star.Int
 public import Mathlib.NumberTheory.ModularForms.EisensteinSeries.E2.Transform
 import Mathlib.Tactic.Lemma
-public import Mathlib.Analysis.Complex.UpperHalfPlane.Exp
 
 @[expose] public section
 

@@ -5,10 +5,6 @@ public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.Calculus.FDeriv.Defs
 public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
-public import Mathlib.Analysis.Analytic.Composition
-public import Mathlib.Analysis.Analytic.Linear
-public import Mathlib.Analysis.Calculus.ContDiff.Defs
-public import Mathlib.Analysis.Calculus.ContDiff.RCLike
 public import Mathlib.Topology.Algebra.Module.FiniteDimension
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SameOrbitRefl
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.DifferentiableOnOfTendstoLocallyUniformlyOn

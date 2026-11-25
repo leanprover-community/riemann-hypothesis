@@ -4,7 +4,6 @@ public import GroundTheory.AutomorphicForms.GeometricLemmaFiltration
 public import GroundTheory.AutomorphicForms.AdmissibleInduction
 public import GroundTheory.AutomorphicForms.GeometricLemmaOrbit
 public import GroundTheory.AutomorphicForms.GeometricLemmaAverage
-import GroundTheory.AutomorphicForms.GLnLattice
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -4,10 +4,7 @@ public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SettingConstruction
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.Choice
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.QuotSetU
-import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSB
-import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeLemma3
 public import Formalism.SharpRestriction.CuspSpanNormBounds.NonemptyParameterModels.AmpTensorDSdNonemptyOfSubsingleton
-import Formalism.SharpRestriction.CuspSpanNormBounds.NonemptyParameterModels.TopsChoicePartA
 
 @[expose] public section
 

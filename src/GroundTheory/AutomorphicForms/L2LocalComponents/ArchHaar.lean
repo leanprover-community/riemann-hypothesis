@@ -3,7 +3,6 @@ module
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.Smoothing
 public import GroundTheory.AutomorphicForms.GKModules.Garding
 public import GroundTheory.AutomorphicForms.GL2.GJGlobalHaar
-import GroundTheory.GlobalFields.Adele.Topology
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

@@ -3,15 +3,12 @@ module
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GlESymmApply
 public import Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.GramInvIntV
 public import Formalism.SharpRestriction.GrowthBounds.IntegralWeylLatticeSpan.RestGramW
-public import Formalism.LocalToGlobal.GlobalTheory.EqGlobOfHat
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLcInt
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocBases
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocGlob
-import Formalism.LocalToGlobal.GlobalTheory.GL6.PRLocV
 public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.SelfDualPI
 import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.IntSplitOf
 public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.TiePtOneRec
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Afsplit
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsScale
 import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.LocIdFr
 

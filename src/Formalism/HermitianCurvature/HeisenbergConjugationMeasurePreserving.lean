@@ -8,7 +8,6 @@ public import Formalism.LatticeTheta.LatticeThetaProofs.UnfoldCoeff
 public import Mathlib.MeasureTheory.Integral.Pi
 public import Mathlib.Analysis.SpecialFunctions.JapaneseBracket
 public import Formalism.HermitianCurvature.StatementJ
-public import Formalism.HermitianCurvature.StatementSz
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaFactorisation
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CriticalThresholdLowerBound
 public import Formalism.HermitianCurvature.StatementJF
@@ -37,7 +36,6 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselScaling
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CorollaryAOfPropositionA
-import Mathlib.Analysis.Complex.ExponentialBounds
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ChebyshevToThreshold
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ConjugationContinuousOnInvertible

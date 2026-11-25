@@ -5,7 +5,6 @@ public import GroundTheory.LocalFields.NormalLattice
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.AdditiveSnake
 public import GroundTheory.LocalFields.UnitsPowers
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.UnitsPower
-public import Mathlib.Algebra.Field.ZMod
 public import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeAndRangePowLe
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.Additive
 import Mathlib.Tactic.TypeStar

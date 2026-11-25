@@ -4,7 +4,6 @@ public import Mathlib.Basic.NNReal.Defs
 public import Mathlib.Data.Nat.Prime.Defs
 public import Mathlib.RingTheory.Valuation.Basic
 public import Development.AbelianVarietyTheory.Definitions.Foundations.CosetTrace
-public import Mathlib.Algebra.CharP.Lemmas
 public import Mathlib.RingTheory.Valuation.Integers
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CosetRepresentativeTraceFixedProperties
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsPthPowerScaleThinShell
@@ -14,9 +13,7 @@ public import Mathlib.GroupTheory.PGroup
 public import Mathlib.GroupTheory.IndexNormal
 public import Mathlib.GroupTheory.Sylow
 public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
-public import Mathlib.LinearAlgebra.LinearIndependent.Basic
 public import Mathlib.Data.Nat.Choose.Dvd
-public import Mathlib.Algebra.Field.Subfield.Defs
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ValuationSubOnePowEqPrime
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FixedFieldAlmostEtaleOfMovesIntegers
 public import Mathlib.RingTheory.Invariant.Basic

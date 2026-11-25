@@ -19,7 +19,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.LMe
 import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.OnCompMap
 import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.OnCompSelf
 import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.SgnMulSelf
-import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.Topology.Connected.Separation
 
 -- This file was produced by scripts/clump.py from the modules listed below.

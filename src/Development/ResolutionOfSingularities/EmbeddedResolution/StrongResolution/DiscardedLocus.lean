@@ -9,7 +9,6 @@ public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedB
 import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupCoproduct
 import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupOpenCover
 import Development.ResolutionOfSingularities.Foundations.Schemes.SchemeCoproduct
-import Development.ResolutionOfSingularities.Foundations.Schemes.SchemeMorphismProperties
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

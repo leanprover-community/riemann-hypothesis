@@ -3,7 +3,6 @@ module
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IntegerSubgroupIntersection.IntInter
 public import Formalism.PeriodIntegrals.StdCharTR
 public import Mathlib.Analysis.SpecialFunctions.Complex.Circle
-public import Mathlib.Analysis.Complex.Circle
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

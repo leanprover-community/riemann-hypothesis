@@ -8,7 +8,6 @@ public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RootSubgroupBasics.TriShear
 public import Mathlib.Analysis.Complex.Isometry
 import Mathlib.CategoryTheory.Countable
-public import Mathlib.Analysis.Complex.Circle
 public import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 
 @[expose] public section

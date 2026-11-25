@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.DataG
 import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 @[expose] public section
 

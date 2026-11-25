@@ -4,13 +4,9 @@ public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.LamIde
 public import Mathlib.Analysis.Analytic.Order
 public import Mathlib.NumberTheory.LSeries.Basic
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RayClassFamilyLogDerivReGtOne
-public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RayClassLFunctionFamilyContinuationGrowth
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RayClassLFunctionLogDerivLocalFormula
 public import Mathlib.NumberTheory.Chebyshev
-public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
-public import Mathlib.NumberTheory.ArithmeticFunction.VonMangoldt
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TruncatedPerronPsi
-public import Mathlib.Analysis.Complex.ExponentialBounds
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.AnalyticAtDslope
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -26,7 +22,6 @@ import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LSeries.Dirichlet
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Radical.NatInt
@@ -61,8 +56,6 @@ import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Development.AbelianVarietyTheory.Definitions.Foundations.RayPrimes
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Formalism.SharpRestriction.InertJacobiLevels.AsmIface
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.BdIntEqZeroOfPrimitive
 import Mathlib.Tactic.ENatToNat
 import Std.Tactic.BVDecide.Normalize.Prop
 

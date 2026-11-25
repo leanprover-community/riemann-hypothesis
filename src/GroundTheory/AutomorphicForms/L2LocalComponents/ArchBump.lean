@@ -3,7 +3,6 @@ module
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableCartan
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.Smoothing
 public import GroundTheory.AutomorphicForms.GKModules.Garding
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 import Mathlib.Geometry.Manifold.Algebra.Structures

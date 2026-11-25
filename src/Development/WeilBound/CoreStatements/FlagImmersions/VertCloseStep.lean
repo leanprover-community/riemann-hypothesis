@@ -17,17 +17,10 @@ public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.RootOrig
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LogResolutionReindexed
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.MemAbLocusIff
 public import Development.WeilBound.CoreStatements.FlagImmersions.SamePotTransRsmul
-public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.BundleChernComparison
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsSmoothHermTrivLine
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PLocalRep
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSectionOrderAtPoint
-import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals.MemMCoordIdealOfAevalEqZero
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.MemDivSuppOfDivCycleNeZero
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FlagLabelBasesExist
 import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff
-import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.FlagImmersions.DivCycleEqZeroOfNotMemZ, Development.WeilBound.CoreStatements.FlagImmersions.VertCloseStep

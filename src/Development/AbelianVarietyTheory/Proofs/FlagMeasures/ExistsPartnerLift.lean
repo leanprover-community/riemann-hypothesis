@@ -45,7 +45,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermitianLatticeDiscriminantOrderNeZeroUnimodula
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsLatticeLatIn
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 import Formalism.SharpRestriction.CuspSpanNormBounds.AbsoluteAmplitudeSecondOfSource
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat

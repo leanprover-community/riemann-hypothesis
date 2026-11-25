@@ -1,7 +1,6 @@
 module
 
 public import Formalism.RealPlaceAnalysis.FockPairGl
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

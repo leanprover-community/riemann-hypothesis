@@ -6,7 +6,6 @@ public import GroundTheory.AutomorphicForms.Cartan
 public import GroundTheory.AutomorphicForms.CuspidalAdmissible
 public import GroundTheory.AutomorphicForms.GeometricLemmaCharacters
 public import GroundTheory.AutomorphicForms.GeometricLemmaModular
-public import GroundTheory.LocalFields.PadicLogSeries
 public import GroundTheory.AutomorphicForms.GeometricLemmaCellSurjective
 
 -- This file was produced by scripts/clump.py from the modules listed below.

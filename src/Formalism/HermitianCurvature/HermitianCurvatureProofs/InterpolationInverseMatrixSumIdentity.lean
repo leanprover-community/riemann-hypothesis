@@ -2,7 +2,6 @@ module
 
 public import Formalism.HermitianCurvature.StatementNF
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ActualAdjointnessFromHermitian
-public import Mathlib.CategoryTheory.Category.Basic
 public import Mathlib.LinearAlgebra.Vandermonde
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.InterlaceSignTwo
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelCoordinatesCommute

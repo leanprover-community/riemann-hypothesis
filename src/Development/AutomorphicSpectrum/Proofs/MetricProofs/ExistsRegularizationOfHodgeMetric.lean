@@ -6,11 +6,8 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.Potenti
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.HessCEqZeroOfEventuallyEqZero
 public import Development.WeilBound.CoreStatements.PlurisubharmonicCones.SymmetricChartsCutoffFamily
 public import Mathlib.Analysis.Calculus.FDeriv.Star
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshExt
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.CpRegPhRegOfNonneg
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsPotentialChartsWithRadii
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsSmoothConjInvariantMetric
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgeMetricFrameProperties
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.HodgePotentialSmoothOffBoundary
@@ -20,15 +17,11 @@ public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PMollifierLowe
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PPolyMaxLowerBound
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PTruncPsh
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PTruncTransfer
-import GroundTheory.HeightsAndTheta.Heights.Regularisation.PRiemannExtensionSlices
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicSpectrum.Definitions.MetricPeriods.ExistsIntSmulIsAdicIntegralInTensorBasis
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 import Aesop.Main
-import GroundTheory.HeightsAndTheta.Heights.Regularisation.PCutoffs
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshBasic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.PlurisubharmonicCones.ProdEqZeroIffCoordDiv, Development.WeilBound.CoreStatements.PlurisubharmonicCones.AdaptedChartsRegularization, Development.WeilBound.CoreStatements.PlurisubharmonicCones.ExpLeLogR, Development.WeilBound.CoreStatements.PlurisubharmonicCones.ExistsTiedRegularSetting, Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsRegularizationOfHodgeMetric

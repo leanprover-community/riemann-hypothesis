@@ -4,9 +4,6 @@ public import Formalism.DistinguishedUnitIdeals.ExistsConstOfInvariantMod
 public import Formalism.DistinguishedUnitIdeals.DistinguishedOrderProofs.Graded
 public import Formalism.SharpRestriction.LevelLetterCocycles.MapEvalPsPi
 import Formalism.SharpRestriction.LevelLetterCocycles.ArcParametersShiftInvariant
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import Formalism.SharpRestriction.LevelLetterCocycles.WachCoordinates
-import Formalism.WeaklyAdmissibleFiltrations.Statement
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.TensorSumSingleEval, Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.EvaluationExpansionAtRoot

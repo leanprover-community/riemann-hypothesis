@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNo
 public import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.CompactOrbits.BaseOrbits
 public import GroundTheory.AutomorphicForms.ContragredientTranspose.GelfandKazhdan
 public import GroundTheory.AutomorphicForms.GL2.GJFELevi
-import GroundTheory.AutomorphicForms.MeasuresModulus
 
 @[expose] public section
 noncomputable section

@@ -1,8 +1,6 @@
 module
 
 public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.LocalBaseChange.StrictDominanceCasselman.IsStrictlyDominant
-public import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
-public import Mathlib.Basic.Complex.Basic
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactFixedVectorProjection
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FixedVectorZeroOfDual
 

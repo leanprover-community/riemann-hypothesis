@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.AdmissibleCasimirScalars.CompactDerivativesBounded
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeCSchur
-import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

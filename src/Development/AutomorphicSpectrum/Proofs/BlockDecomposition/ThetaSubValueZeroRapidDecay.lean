@@ -5,17 +5,7 @@ public import GroundTheory.GlobalFields.TateThesis.IdeleMeasureNormOne
 public import GroundTheory.GlobalFields.TateThesis.AdelePoisson
 public import GroundTheory.GlobalFields.TateThesis.AdelePoissonUniform
 public import GroundTheory.GlobalFields.TateThesis.TateThetaDecay
-public import GroundTheory.GlobalFields.TateThesis.AdeleIdealMeasure
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.Topology.Algebra.InfiniteSum.Defs
-public import Mathlib.Topology.MetricSpace.Pseudo.Defs
-public import Mathlib.Topology.Algebra.InfiniteSum.Order
-public import Mathlib.Topology.Algebra.InfiniteSum.Real
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.EisensteinSeriesG2.HeisenbergTheta.HeisenbergThetaConstant.ThetaC
-import GroundTheory.GlobalFields.TateThesis.AdeleScaling
-import GroundTheory.AutomorphicForms.GL2.SummableNormIffAndTsumEqCoset2
-import GroundTheory.AutomorphicForms.LocallyProfinite
-import GroundTheory.AutomorphicForms.GL2.GodementSection
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NormLeNormInfCModuleSectionMul, Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsTailFurther, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ThetaSubValueZeroRapidDecay

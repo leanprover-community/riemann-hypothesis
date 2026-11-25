@@ -8,14 +8,12 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FixOfSt
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsRhoPtOfSplitting
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsWildInertiaCyclotomicElement
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CharacterValuesInjectiveLength
-import Development.AutomorphicArithmetic.CyclotomicBounds.FactorizationConductorLeLocalLevel
 import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.ClopenNhdofOne
 import Mathlib.Topology.Sheaves.Presheaf
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.CentralIdemCoeff
 import Mathlib.Algebra.AffineMonoid.Basic

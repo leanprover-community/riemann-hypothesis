@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.TwistingSheaf
-public import Mathlib.AlgebraicGeometry.Modules.Tilde
 public import Mathlib.AlgebraicGeometry.Noetherian
 public import Mathlib.Tactic.Linter.HaveILetI
 public import Mathlib.Algebra.Module.LocalizedModule.Away

@@ -6,12 +6,9 @@ public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.HighUnits
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.Brauer
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.CohomologyMapAlongInvariantsGsKernelMorCompGsBra
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerDivisor
-import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerSplit
-import GroundTheory.ProfiniteCohomology.RestrictedRamification.EqZeroOfCohomologyInflThreeEqZero
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.CategoryTheory.EffectiveEpi.Comp
 import Mathlib.CategoryTheory.ExtremalEpi
-import Mathlib.NumberTheory.NumberField.Cyclotomic.Embeddings
 import Mathlib.Tactic.TypeStar
 import GroundTheory.ProfiniteCohomology.Colimit
 

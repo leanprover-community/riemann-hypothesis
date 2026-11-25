@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DltEqZe
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardLatticesIdempotentPositionBounded
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsLatticeIdempotentPositionInvolutionStable
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DiscrMulMemOfIsIntegral
-import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 

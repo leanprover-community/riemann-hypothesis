@@ -4,7 +4,6 @@ public import Formalism.SizeWindowBrackets.ErrorFormsWeakWindowsFalse
 import Formalism.SizeWindowBrackets.FirstPrimeNeSecondPrime
 import Formalism.SizeWindowBrackets.GrowthBoundGivesRiemannHypothesis
 import Formalism.SizeWindowBrackets.QuotientSlopeBoundsWith
-import Formalism.ThickAverageLoss.PartnersToFactorsAt
 public import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 
 @[expose] public section

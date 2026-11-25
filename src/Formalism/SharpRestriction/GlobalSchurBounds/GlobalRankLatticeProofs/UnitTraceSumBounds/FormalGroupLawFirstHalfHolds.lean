@@ -5,7 +5,6 @@ public import Formalism.PeriodIntegrals.AddIntG
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdditiveIntegralGroups.FormalGroupLawExists
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdditiveIntegralGroups.GlueHoldsVar
 public import Formalism.PeriodIntegrals.BiaddOfCube
-public import Mathlib.Analysis.Normed.Field.Instances
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.ModelShortOf
 import Mathlib.Tactic.TypeStar
 

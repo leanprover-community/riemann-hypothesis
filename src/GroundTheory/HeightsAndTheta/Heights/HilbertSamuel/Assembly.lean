@@ -4,33 +4,22 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlock
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlockGraphImage
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockImageTop
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PResChiIndex
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ResSymGram
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ABridgeSt
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPullFSExtension
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsProjFrameBasePtFree
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ArithModel
 public import Mathlib.Analysis.SpecialFunctions.SmoothTransition
-public import Mathlib.Topology.Algebra.MvPolynomial
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.CNormSt
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsRealGramComparison
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsResolutionSup
-public import ReciprocityTheory.GeometryOfNumbers.PluriharmonicAnalysis.BergmanDefs
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsDefectMetricChange
 public import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.DetIneq
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.CSandwichStB
-public import ReciprocityTheory.GeometryOfNumbers.SphericalMonomials.MonoNormSq
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.HSClosing
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.IsBergDensity
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ProjDefs
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PProjectionBounds
 public import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.HadZSt
-public import ReciprocityTheory.GeometryOfNumbers.PluriharmonicAnalysis.BergmanSt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.CSandwichStC
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.CSandwichStE
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.CSandwichStF
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.CSandwichStA
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.CSandwichStD
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsResChiBounds
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsVeroneseChiParts
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSectionsRank
@@ -43,7 +32,6 @@ import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
@@ -58,7 +46,6 @@ import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
 import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
@@ -82,20 +69,9 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ABridgeStA
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Analysis.InnerProductSpace.Calculus
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.GeometryOfNumbers.PluriharmonicAnalysis.BergmanDerivSt
-import ReciprocityTheory.GeometryOfNumbers.SphericalMonomials.ChiPSt
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ChooseLePowDivFactorial
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ExistsNatMulMemConeRingIntFin
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.SectionModuleEqSpanPow
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.FibreSt
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockImageChi, GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullFSExtension, GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PRealGramComparison, GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ResChiSandwichLower, GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ResChiSandwichUpper, GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PResChiBounds, GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PVeroneseMonoBasis, GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.Assembly

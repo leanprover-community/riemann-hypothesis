@@ -9,12 +9,10 @@ public import GroundTheory.ProfiniteCohomology.InflationRestriction
 import Mathlib.CategoryTheory.EffectiveEpi.Comp
 import Mathlib.CategoryTheory.ExtremalEpi
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.ClopenNhdofOne
 import Mathlib.Topology.Compactness.Paracompact
 import Mathlib.Topology.Separation.Connected
 public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality.QuotientToInvariantsFunctorPreservesZeroMorphism
 public import GroundTheory.ProfiniteCohomology.CoinducedModules
-public import GroundTheory.ProfiniteCohomology.CupProducts
 
 @[expose] public section
 

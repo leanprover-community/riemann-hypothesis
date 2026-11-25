@@ -2,8 +2,6 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CoarseDegreeRatioConsecutive
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.PairFacts
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.ThresholdLowerBounds
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CoarseDegreeAlternative
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.BinomialRatio.KeptBlocksOfUSLines, Formalism.SharpRestriction.GrowthBounds.BinomialRatio.KeptBlocksOfSLine

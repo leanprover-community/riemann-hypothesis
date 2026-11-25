@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 public import Lemmata.MiscLemmasM.Imports
-public import Mathlib.Topology.Algebra.Group.Units
 import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 
 @[expose] public section

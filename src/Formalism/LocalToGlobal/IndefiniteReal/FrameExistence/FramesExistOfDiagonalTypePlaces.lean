@@ -5,7 +5,6 @@ public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLattice
 import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
 import Formalism.LocalToGlobal.Divisibility.CoefMod
 import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
-import Formalism.LocalToGlobal.IndefiniteReal.LocalNewformFunction
 import Formalism.LocalToGlobal.IndefiniteReal.RealSeparation.NormFr
 
 @[expose] public section

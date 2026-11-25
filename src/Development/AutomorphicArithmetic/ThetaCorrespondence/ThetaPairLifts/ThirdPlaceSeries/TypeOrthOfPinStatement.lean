@@ -2,8 +2,6 @@ module
 
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.CharacterChoiceData
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.TypeOrthOfAvTied
-import Formalism.AlgebraicWeights.IsAlgWeight
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteDoubleCosetsDefiniteUnitaryMaximalLevel
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FiniteDimensionalForms
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

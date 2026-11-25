@@ -13,7 +13,6 @@ public import Development.WeilBound.ThetaLifts.LatticeBasics.PolDense
 public import Development.WeilBound.ThetaLifts.LeviDeterminants.ActsEx
 public import Development.WeilBound.ThetaLifts.TowerModels.LeviEx
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.ExistsBeta
-import Development.WeilBound.ThetaLifts.CartanFactorisation.TensOfEval
 import Development.WeilBound.ThetaLifts.CartanFactorisation.Unimod
 
 -- This file was produced by scripts/clump.py from the modules listed below.

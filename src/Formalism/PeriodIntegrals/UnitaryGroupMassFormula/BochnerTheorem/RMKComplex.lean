@@ -8,7 +8,6 @@ public import Mathlib.MeasureTheory.Integral.RieszMarkovKakutani.Real
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.ContinuousMap.Lattice
-public import Mathlib.MeasureTheory.Function.LocallyIntegrable
 public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 
 @[expose] public section

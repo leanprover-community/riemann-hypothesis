@@ -6,7 +6,6 @@ public import Development.EtaleCohomology.CohomologicalPurity.LeafRootPf
 public import Mathlib.RingTheory.Etale.StandardEtale
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Algebra.Category.Ring.FilteredColimits
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.EtaleCohomology.CohomologicalPurity.LeafCoeqPf, Development.EtaleCohomology.CohomologicalPurity.LeafColHensPf, Development.EtaleCohomology.CohomologicalPurity.LeafColUnivPf, Development.EtaleCohomology.CohomologicalPurity.LeafCompPf, Development.EtaleCohomology.CohomologicalPurity.LeafDiagPf, Development.EtaleCohomology.CohomologicalPurity.LeafHensCut, Development.EtaleCohomology.CohomologicalPurity.LeafInvPf, Development.EtaleCohomology.CohomologicalPurity.LeafRootHensPf, Development.EtaleCohomology.CohomologicalPurity.LeafRootStdPf, Development.EtaleCohomology.CohomologicalPurity.LeafStagePf, Development.EtaleCohomology.CohomologicalPurity.LeafSupPf, Development.EtaleCohomology.CohomologicalPurity.FinLeafHens

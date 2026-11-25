@@ -8,7 +8,6 @@ public import Formalism.WachLatticeTwists.LagrangeExtensionCocycles.StatementTop
 public import Mathlib.RingTheory.Polynomial.Eisenstein.Distinguished
 public import Formalism.GaussValuationBounds.GaussValueContraction.PhiIterXProof
 public import Formalism.GaussValuationBounds.GaussValueContraction.ScaledPowMemSpanCeil
-import Formalism.GaussValuationBounds.GaussValueContraction.TruncationExponentBounds
 public import Formalism.WachLatticeTwists.LagrangeExtensionCocycles.DualWByLettersExtended
 public import Formalism.WeaklyAdmissibleFiltrations.CrystallineStableLifts.ExLattice
 public import Formalism.WeaklyAdmissibleFiltrations.CrystallineStableLifts.TrivCrys
@@ -19,7 +18,6 @@ public import Mathlib.Data.Nat.Choose.Dvd
 public import Mathlib.RingTheory.PowerSeries.WeierstrassPreparation
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Mathlib.RingTheory.PowerSeries.Inverse
 
 @[expose] public section
 

@@ -11,9 +11,6 @@ public import Formalism.LocalToGlobal.GlobalTheory.GL3.PHfTrace
 public import Development.AutomorphicArithmetic.OrbitLabellings.ColDefs
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.TrDual
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.KummerThetaLogarithms.TraceDualExists
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PrimeOfLiesOver
-import Formalism.GaussJetBounds.GaussJetProofs.NormNatCastEqPowPadicValNat
-import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.TransportFirstLevel
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.Columns.SliceIntegralDeltaNeBot
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.RamifiedLatticePropsOfModel
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.GroupActionMulSingleEqDilation
-import Formalism.LocalToGlobal.GlobalTheory.HLatOpsP
 import Mathlib.Algebra.Order.Star.Int
 
 @[expose] public section

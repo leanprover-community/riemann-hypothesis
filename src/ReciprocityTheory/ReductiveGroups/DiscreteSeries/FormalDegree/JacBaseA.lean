@@ -11,14 +11,12 @@ public import Mathlib.RingTheory.Complex
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PolarAct
 public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.TotallySplit
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PolarBasic
 
 -- This file was produced by scripts/clump.py from the modules listed below.

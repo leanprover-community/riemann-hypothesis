@@ -10,9 +10,7 @@ public import Mathlib.RingTheory.Coalgebra.IsFrobenius
 public import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
 public import Mathlib.RingTheory.Spectrum.Prime.FreeLocus
 public import Mathlib.RingTheory.TensorProduct.IsBaseChangeFree
-public import Mathlib.LinearAlgebra.TensorProduct.Pi
 public import Mathlib.RingTheory.Flat.FaithfullyFlat.Algebra
-public import Mathlib.RingTheory.LocalRing.Module
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GermSys
 public import Mathlib.RingTheory.TotallySplit
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.GermComp1ZeroPointLeft
@@ -20,7 +18,6 @@ public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FormalHermiti
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FormalIsomorphismTransport
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FormalGermBaseChangeStatement
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HeightCharFreeGeometricStatement
-import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicSpectrum.Definitions.AdelicLattices.FactPrimes
 
 -- This file was produced by scripts/clump.py from the modules listed below.

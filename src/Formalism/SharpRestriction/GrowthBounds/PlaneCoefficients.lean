@@ -6,26 +6,20 @@ public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.FrMemLette
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.MembDd
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.PosTLSurj
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.SlackBoundJoint
-public import Formalism.SharpRestriction.GrowthBounds.ObjPol
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.SharpRestriction.GrowthBounds.GLWeightTheory
-public import Formalism.SharpRestriction.GrowthBounds.CovariantDegrees
 public import Formalism.SharpRestriction.GrowthBounds.PolynomialLevels.TlNonempty
 public import Formalism.SharpRestriction.GrowthBounds.PlaneCoefficients.PlaneCoeffOneTTens
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.ValuationOneEqZero
 public import Formalism.SharpRestriction.GrowthBounds.TwistedSubstitution.CommPresIsoSub
-public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.MembDefs
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.MemSupportSumMonomial
 public import Formalism.SharpRestriction.GrowthBounds.PolynomialLevels.LowestWeightNonposOffSet
 public import Formalism.SharpRestriction.GrowthBounds.TwistedSubstitution.JointEIntList
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.LeCubeMul
 public import Formalism.SharpRestriction.GrowthBounds.PlaneCoefficients.RestPlOf
 public import Formalism.SharpRestriction.GrowthBounds.PlaneCoefficients.TensZeroRight
-public import Formalism.SharpRestriction.GrowthBounds.ValuationLowestDegreeMapFractionField
 public import Formalism.SharpRestriction.GrowthBounds.AevalValuation.ValGen
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.PosULeIff
 public import Formalism.SharpRestriction.GrowthBounds.PlaneCoefficients.ProdRangeZmod
-public import Formalism.SharpRestriction.GrowthBounds.PolynomialLevels.FrRevInj
 public import Formalism.SharpRestriction.GrowthBounds.PlaneCoefficients.RestOneOpOf
 public import Formalism.SharpRestriction.GrowthBounds.PlaneCoefficients.DoubleMonomialApply
 public import Formalism.SharpRestriction.GrowthBounds.PlaneCoefficients.XXgZeroP
@@ -35,11 +29,8 @@ public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport
 public import Formalism.SharpRestriction.GrowthBounds.MonomialSupport.GeZSum
 public import Formalism.SharpRestriction.GrowthBounds.MonomialSupport.Lam1SPderivAndXMulLeAddIndicator
 import Std.Tactic.BVDecide.Normalize.BitVec
-import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.SlackBoundReal
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.SharpRestriction.GrowthBounds.RootWeights.ValuationBoundDetPowerFactor
-import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.TwiceValuationFactorialProduct
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

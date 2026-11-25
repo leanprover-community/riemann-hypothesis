@@ -9,25 +9,9 @@ public import Mathlib.Data.Nat.Prime.Infinite
 public import Mathlib.NumberTheory.NumberField.Ideal.KummerDedekind
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.SiegelKlingenDeligneRibet
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.AbelContinuation
-public import Formalism.SharpRestriction.GlobalSchurBounds.ShortIntervalPrimes
-public import Mathlib.RingTheory.Adjoin.PowerBasis
-public import Mathlib.RingTheory.Discriminant
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Calculus.FDeriv.Defs
-public import Mathlib.Analysis.SpecialFunctions.Pow.Complex
-public import Mathlib.Analysis.Analytic.Basic
-public import Mathlib.Analysis.Analytic.Uniqueness
-public import Mathlib.Analysis.Calculus.Deriv.Inv
-public import Mathlib.Analysis.Calculus.FDeriv.Add
-public import Mathlib.Analysis.Calculus.FDeriv.Mul
-public import Mathlib.Analysis.Calculus.FDeriv.Pow
-public import Mathlib.Analysis.Complex.CauchyIntegral
 public import ReciprocityTheory.Chebotarev.EulerSum
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.AbelContinuationAlt
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.ExistsShintaniConeDomain
-public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.PartialZetaTwistedEntireDifference
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.RayClassConeParametrization
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.RayClassGroupFiniteRepresentatives
 import Mathlib.Tactic.Linter.Style

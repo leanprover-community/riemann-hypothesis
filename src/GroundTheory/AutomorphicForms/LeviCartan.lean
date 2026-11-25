@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.AutomorphicForms.Cartan
 public import GroundTheory.AutomorphicForms.InductionParabolicGroups
-import GroundTheory.AutomorphicForms.GLnLattice
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.TypeStar

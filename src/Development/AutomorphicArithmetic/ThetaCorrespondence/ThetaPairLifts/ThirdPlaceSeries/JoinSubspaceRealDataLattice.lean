@@ -7,12 +7,8 @@ public import Formalism.LocalToGlobal.IndefiniteReal.CxLemmas
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RangeOpEqSpanOfFormsTie
 public import Formalism.SharpRestriction.Divisibility.PrimeDegreeVariant
 public import Formalism.LocalToGlobal.IndefiniteReal.SpOfRwRange
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.DFinsupp
-public import Formalism.LocalRingCardinality.DataHost
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InnerEqIntegralOfAe
 public import Formalism.LocalToGlobal.Divisibility.DivisionCompatibleToSub2Indef2
-public import Formalism.LocalToGlobal.IndefiniteReal.EvalTieTOne
 public import Formalism.LocalToGlobal.IndefiniteReal.LinksStage
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RowsJoinPinned
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RangeGoodProjectorEqRangeGoodCoordinates
@@ -62,11 +58,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Formalism.LocalToGlobal.Divisibility.TrivialExtensionSideWellFormed
-import Formalism.LocalToGlobal.IndefiniteReal.EqZeroOfMemRangeAdjoint
-import Formalism.LocalToGlobal.IndefiniteReal.EvTieP
-import Formalism.LocalToGlobal.IndefiniteReal.LiftCoordinatesInGoodPartFamily
-import Formalism.LocalToGlobal.IndefiniteReal.MemRangeAdjointOfKerStable
-import Formalism.LocalToGlobal.IndefiniteReal.RationalAdjoints.RangeAdjointRat
 import Formalism.LocalToGlobal.IndefiniteReal.CxPass
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
@@ -81,14 +72,6 @@ import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Data.Nat.Choose.Multinomial
 import Formalism.LocalToGlobal.Divisibility.CoefMod
-import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
-import Formalism.LocalToGlobal.IndefiniteReal.PartsOrth
-import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.ColDict
-import Mathlib.Tactic.Linter.HaveILetI
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ConcreteLevelAdelicSubset
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.StableIffCarrierEq
-import Formalism.LocalToGlobal.HilbertRowConditions.IsHilbertCF
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ChainTieAndV0Onto, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CxFactsOfPrims, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsImNeZeroOfTotallyComplex, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsReadOfMatrixTie, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InnerTwOfSmul, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.GoodOperatorSpectrum, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ICCptEq, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.KernelJoinOnV0Three, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SeamExLinCpt, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ThetaMapReferenceTupleGoodPartOntoRows, Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.JoinSubspaceRealDataExists, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.JoinSubspaceRealDataLattice

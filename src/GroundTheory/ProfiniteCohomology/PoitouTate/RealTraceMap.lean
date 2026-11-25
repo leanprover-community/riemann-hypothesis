@@ -2,11 +2,6 @@ module
 
 public import GroundTheory.ProfiniteCohomology.PoitouTate.RealOdd
 public import GroundTheory.ProfiniteCohomology.RealPlaces.VanishingUnits
-import GroundTheory.ProfiniteCohomology.CupProducts.Projection
-import GroundTheory.ProfiniteCohomology.GlobalClassFormation.RealPlaces
-import GroundTheory.ProfiniteCohomology.GlobalClassFormation.SumInvariants
-import GroundTheory.ProfiniteCohomology.RealPlaces.LocalDualityPlace
-import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerSplit
 import GroundTheory.ProfiniteCohomology.TorsionDualFinite
 
 -- This file was produced by scripts/clump.py from the modules listed below.

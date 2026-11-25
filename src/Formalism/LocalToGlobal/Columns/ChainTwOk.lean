@@ -11,12 +11,7 @@ public import Formalism.LocalToGlobal.Columns.ChainOneB
 public import Formalism.LocalToGlobal.Columns.BlockTriangularMulVecMemPartialFlag
 public import Formalism.LocalToGlobal.Columns.ChainOneOk
 public import Formalism.LocalToGlobal.Columns.ReductionExistsInLatticeStabilizerHolds
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
-import Formalism.LocalToGlobal.Columns.ChainOneOkL
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.Columns.ChainTwL, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.projection2.EmbedMatrixBasisVecApplyOfNotFree, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.projection2.EntryEmbedMatrix, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.projection2.GaStep, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.projection2.KappaZeroAlt, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.projection2.Assemble, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.projection2.OneCosetSharpOfPatClosed, Formalism.PeriodIntegrals.OrbitalBoundsConclusion.OneCosetSharp, Formalism.LocalToGlobal.Columns.ResidueFieldUnfoldingClaimsHold, Formalism.LocalToGlobal.Columns.ChainTwOk

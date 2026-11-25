@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.SmulMemTrpSet
-public import Formalism.LocalToGlobal.Columns.AlgebraMapMemMaximalIdealPowIff
 public import Formalism.LocalToGlobal.Columns.LocWLemmas
 import Formalism.LogVandermondeBounds.FinrankFiberSumZero
 

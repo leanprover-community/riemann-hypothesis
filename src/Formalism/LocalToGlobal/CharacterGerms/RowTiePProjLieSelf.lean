@@ -9,11 +9,8 @@ public import Formalism.LocalToGlobal.CharacterGerms.RowTiePSplitDef
 public import Mathlib.LinearAlgebra.Lagrange
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePStartSelf
 import Mathlib.Tactic.Lemma
-import Formalism.LocalToGlobal.CharacterGerms.RowTiePGerm
-import Formalism.LocalToGlobal.CharacterGerms.RowTiePLSmallCv
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.TotallySplit
 

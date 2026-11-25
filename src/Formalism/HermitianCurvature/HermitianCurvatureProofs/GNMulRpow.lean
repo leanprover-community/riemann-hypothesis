@@ -3,8 +3,6 @@ module
 public import Formalism.HermitianCurvature.BesselNonvanishingReduction
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContinuousMulMt
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.L1QuotientIntegralBound
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.UhMeasurableSet
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.UhMemMeasurableSet
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

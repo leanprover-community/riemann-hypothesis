@@ -14,7 +14,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SplitCo
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TrivOutsideMul
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsComp
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.ThirdPlaceSeries.PublishedInputsThirdLayer
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SplitPlacesInjective
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

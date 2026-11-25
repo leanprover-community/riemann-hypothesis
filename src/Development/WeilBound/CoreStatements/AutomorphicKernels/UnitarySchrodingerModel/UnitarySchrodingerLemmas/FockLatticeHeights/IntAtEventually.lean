@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ResidueRingStructure
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MultiplicityLevelFormula
-public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.UnramifiedWhittaker.BasisSet
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnramifiedFiniteIntegral
 import Mathlib.Tactic.Linter.Style
 

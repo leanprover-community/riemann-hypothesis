@@ -1,10 +1,7 @@
 module
 
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.RootOnFund
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsCptGen
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.GenericPointFieldIso
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
 public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.HodgeComponentFactorPoint
 import Mathlib.Tactic.Linter.HaveILetI
 

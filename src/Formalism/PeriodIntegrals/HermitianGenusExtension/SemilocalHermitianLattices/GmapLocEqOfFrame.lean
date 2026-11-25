@@ -2,7 +2,6 @@ module
 
 public import Formalism.PeriodIntegrals.HermitianGenusExtension.SemilocalHermitianLattices.ExistsIsomFrame
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.AlgebraMapNeZeroOfMemHcompl
-public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExistsSqAbsNormOfInert
 import Formalism.HermitianLattices.HermitianLatticesProofs.LocDual
 public import Formalism.HermitianLattices.HermitianLatticesProofs.TraceReal
 import Mathlib.Tactic.Linter.Style

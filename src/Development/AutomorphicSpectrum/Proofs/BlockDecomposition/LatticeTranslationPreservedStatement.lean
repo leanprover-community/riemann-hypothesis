@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.SiegelWeil₂.A
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.BlockMatrixInjective
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FourierZeroHolds
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PartialConstantTermBound
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsTopologicalRingAE
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

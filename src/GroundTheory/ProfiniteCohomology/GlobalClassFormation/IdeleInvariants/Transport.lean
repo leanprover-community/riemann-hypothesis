@@ -3,7 +3,6 @@ module
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.ResLocal
 public import GroundTheory.LocalFields.MainTheorem
 import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbolUnramified
-public import GroundTheory.LocalFields.LocalArtinTransport
 
 @[expose] public section
 

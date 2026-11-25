@@ -7,7 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Compl
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsAuxiliaryHyperbolicVectors
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsEqMulOfResSNeOne
 public import Formalism.LocalRingCardinality.IntCastDvdOfDvdIntegers
-import Formalism.LocalToGlobal.UnitaryNorms.CharUniq
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

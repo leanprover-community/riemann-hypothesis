@@ -5,18 +5,13 @@ public import Formalism.AdmissibleDesigns.SelmerInequalityOfInputs
 public import Formalism.AdmissibleDesigns.CharacterTrivialWhereLattice
 public import Formalism.AdmissibleDesigns.EKSymmCont
 public import Formalism.AdmissibleDesigns.MemIntegralSpanIffImage
-public import Formalism.AdmissibleDesigns.KernelLengthHigherColumns
 public import Formalism.AdmissibleDesigns.LengthSemilinear
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
-public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientHomNonvanishingBound
-public import Formalism.AdmissibleDesigns.FiniteClassesContinuousLattice
 public import Formalism.AdmissibleDesigns.CoboundaryMemFiniteClasses
 public import Formalism.AdmissibleDesigns.FgTopContinuousLinearMap
 public import Formalism.WachLatticeTwists.RealDisplaySplitting.RealDisplayProofs.SurjectionOfRankOneIdempotent
 public import Formalism.AdmissibleDesigns.GlobalIndexTheoremPlacesOfRNAdm
 public import Formalism.SharpRestriction.LevelLetterCocycles.LargeLevelLemmas
 import Mathlib.Tactic.Linter.Style
-import Formalism.WeaklyAdmissibleFiltrations.CrystallineStableLifts.Galois
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

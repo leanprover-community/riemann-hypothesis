@@ -1,11 +1,6 @@
 module
 
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IntegralStructures.GeometricFlagBases.FinModel
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
-public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
-public import Mathlib.FieldTheory.Finite.Basic
-public import Development.AbelianVarietyTheory.Definitions.Divisors.NotCompactOfMEqOne
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsCyclotomicExtensionQI
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLatticeVectorEqNsmulOfAdelicNsmulStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntDvdOfEqNatMulIntegralAdeleAwayFromPStatement
@@ -21,9 +16,7 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.PowerOfAb
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BiholomorphicLiftSystem
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegersSurjectiveOfRankOne
 public import Mathlib.AlgebraicGeometry.Morphisms.Finite
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsProjOverCompFinite
-public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IntegralStructures.GeometricFlagBases.IntegOfMem
 public import Development.AutomorphicArithmetic.CommutativeAlgebra.ExistsGenericModuliPoint
 public import Development.AutomorphicArithmetic.CommutativeAlgebra.HeckeCorrespondenceIsogenyOfTraceCrt
 public import Development.AutomorphicArithmetic.CommutativeAlgebra.HeckeCorrespondenceLiesInTowerOfLiftCount
@@ -41,7 +34,6 @@ public import Development.AutomorphicArithmetic.CommutativeAlgebra.TraceEtaIdent
 public import Development.AutomorphicArithmetic.CommutativeAlgebra.TraceIdentityOfTjElement
 public import Development.AutomorphicArithmetic.CommutativeAlgebra.TracePullbackIdentity
 public import Development.AutomorphicArithmetic.CommutativeAlgebra.TraceUnitOfPullbackMultiplier
-import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.LevelMapFibreSimplyTransitive
 import Mathlib.Tactic.Linter.Style
 

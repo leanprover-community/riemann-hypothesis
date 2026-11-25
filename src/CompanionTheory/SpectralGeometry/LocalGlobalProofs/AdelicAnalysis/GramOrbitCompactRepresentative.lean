@@ -4,8 +4,6 @@ public import Mathlib.Topology.Algebra.Group.Defs
 public import Mathlib.Topology.Separation.Hausdorff
 public import Mathlib.Topology.Algebra.Group.OpenMapping
 public import Mathlib.Topology.Baire.LocallyCompactRegular
-public import Mathlib.Algebra.Group.Action.Defs
-public import Mathlib.Algebra.Group.Action.Pretransitive
 public import Formalism.UnipotentAdelicQuotients.SWXSDefs
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.DiagHermitian
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd

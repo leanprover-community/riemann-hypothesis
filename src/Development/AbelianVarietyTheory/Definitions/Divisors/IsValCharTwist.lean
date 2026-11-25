@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.FinitePrimes
 import Development.AbelianVarietyTheory.BlockTheory.HeightDefect.TotallyPositiveExponents
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntValuationEqOfMem
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HeckeCharacterIdeleCharacterMatchUnique
-import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
 import Formalism.LocalToGlobal.UnitaryNorms.CharUniq
 import Mathlib.Tactic.Linter.Style
 

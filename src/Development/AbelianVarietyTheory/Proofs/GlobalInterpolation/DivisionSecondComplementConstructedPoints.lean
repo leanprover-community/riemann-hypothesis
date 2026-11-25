@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.LevelLoss
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.OneLeLetterBlockLength
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FockDegreeGapBound
 public import Formalism.SharpRestriction.Divisibility.WeightDegreeSizes
-public import Formalism.LocalRingCardinality.DataErr
 public import Formalism.SharpRestriction.ElevenLe
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemHeightOneIdealIffAdditiveValuationPos
 public import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
@@ -47,21 +46,15 @@ import Mathlib.Tactic.NormNum.NatFib
 import Mathlib.Tactic.NormNum.NatLog
 import Mathlib.Tactic.NormNum.NatSqrt
 import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.LocalRingCardinality.DataAmbForm
 import Mathlib.Tactic.ReduceModChar
-import Formalism.LocalRingCardinality.SpanPowerMembership.Places
 import Formalism.LocalRingCardinality.CoeNeZeroOfNotMem
 import Formalism.SharpRestriction.GlobalSchurBounds.TheoremThreeUnderScaleOfGeneral
 

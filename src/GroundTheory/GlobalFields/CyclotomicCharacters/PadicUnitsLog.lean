@@ -10,7 +10,6 @@ public import Mathlib.RingTheory.ZMod.UnitsCyclic
 import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
-public import GroundTheory.GlobalFields.CyclotomicCharacters.Character
 
 @[expose] public section
 

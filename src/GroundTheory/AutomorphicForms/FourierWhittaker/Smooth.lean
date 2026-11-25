@@ -3,7 +3,6 @@ module
 public import GroundTheory.AutomorphicForms.FourierWhittaker.PartialCoeffDiagonalBlockGLEqVecCoeff
 public import GroundTheory.AutomorphicForms.FourierWhittaker.AlgebraMapIntegerMemIntegralFiniteAdeles
 import GroundTheory.AutomorphicForms.ReductionMeasure
-import GroundTheory.GlobalFields.Adele.Topology
 import Mathlib.Algebra.Module.Torsion.Prod
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Henselian

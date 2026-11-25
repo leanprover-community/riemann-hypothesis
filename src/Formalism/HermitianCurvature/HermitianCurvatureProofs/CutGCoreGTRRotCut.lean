@@ -4,7 +4,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTCR
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTCRefCut
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTCLocal
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TheSectionStab
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 
 @[expose] public section
 

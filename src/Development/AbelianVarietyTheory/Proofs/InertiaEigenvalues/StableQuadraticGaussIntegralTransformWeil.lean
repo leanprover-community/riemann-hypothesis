@@ -3,25 +3,17 @@ module
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsTestRep
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DistribHaarCharTransport
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NonemptyMeasAndReps
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.QuadraticStarStructure
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsStableGauss
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.EtaleHermitianPairStructureFacts
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnramifiedStandardAddCharConductorProperties
 public import Mathlib.RingTheory.RegularLocalRing.Defs
-public import Mathlib.RingTheory.SimpleRing.Principal
-public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.Normed.Unbundled.SpectralNorm
 public import Mathlib.NumberTheory.LocalField.Basic
-public import Mathlib.Analysis.Normed.Module.FiniteDimension
 public import GroundTheory.LocalFields.Interface
 public import Mathlib.RingTheory.RamificationInertia.Ramification
 public import GroundTheory.LocalFields.UnitsPowers
 public import GroundTheory.LocalFields.UnramifiedGalois
-public import Mathlib.Analysis.Normed.Field.ProperSpace
-public import Mathlib.RingTheory.Trace.Defs
 public import GroundTheory.LocalFields.UnramifiedNormSurj
-public import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeRangeNormUnits
-public import GroundTheory.LocalFields.UnramifiedDefs
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormGroupSignMulAndNegOne
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.StableQuadraticGaussIntegralMulNorm
 import Mathlib.Algebra.Order.Floor.Extended
@@ -62,9 +54,7 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Topology.Compactness.Paracompact
 import Mathlib.Topology.Sheaves.Init
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat

@@ -3,7 +3,6 @@ module
 public import Formalism.DistinguishedUnitIdeals.GammaCongruentArcFromStart
 public import Formalism.DistinguishedUnitIdeals.DistinguishedOrderProofs.GoodOf
 public import Formalism.DistinguishedUnitIdeals.DistinguishedOrderProofs.Graded
-import Formalism.DistinguishedUnitIdeals.DistinguishedOrderProofs.RhoMapFunctorial
 
 @[expose] public section
 

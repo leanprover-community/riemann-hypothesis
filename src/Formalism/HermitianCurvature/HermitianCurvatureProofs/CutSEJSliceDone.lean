@@ -1,22 +1,15 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSEJSliceCut
-public import Formalism.HermitianCurvature.StatementNF
-public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSEPairAtDeriv
 public import Mathlib.Algebra.Order.Chebyshev
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSE2
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSELeibnizClsC
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.MeasurableOfContinuousOnZero
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormDiagonalEntryDilationGeneratorLeOne
 import Mathlib.CategoryTheory.Countable
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.FsvMulFsvNeg
 import Mathlib.Tactic.TypeStar
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.SfiniteOfIsHaarOn
 import Mathlib.Algebra.Order.Star.Real
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.HasFDerivAtFsvSelf
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermMulVecMulVec
-import Mathlib.Order.CompletePartialOrder
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSEJSMeas, Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSEJSWordNF, Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSEJSliceAsm, Formalism.HermitianCurvature.HermitianCurvatureProofs.JslHsInnerSelfNorm, Formalism.HermitianCurvature.HermitianCurvatureProofs.SpectralSobolevSecondOrder, Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSEJSliceDone

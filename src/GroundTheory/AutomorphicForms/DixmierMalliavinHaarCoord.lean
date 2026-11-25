@@ -7,7 +7,6 @@ public import Mathlib.Analysis.Calculus.FDeriv.OfCompLeft
 public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Compactness.DeltaGeneratedSpace
-public import Mathlib.Analysis.Calculus.FDeriv.Mul
 public import Mathlib.Analysis.Calculus.ParametricIntegral
 
 @[expose] public section

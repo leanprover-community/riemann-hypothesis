@@ -2,16 +2,10 @@ module
 
 public import Formalism.LocalToGlobal.Columns.CoefModX
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.NablaIndependenceHolds
-import Formalism.GradedWeylDivisibility.FinalC
 import Formalism.GradedWeylDivisibility.FinalD
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LClosedeqLemmas
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.FkMapInitMinor
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.LatticeBasisExistsHolds
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.TauLatticeLatticeHolds
-import Formalism.LocalToGlobal.Columns.PolyFnLemmas
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

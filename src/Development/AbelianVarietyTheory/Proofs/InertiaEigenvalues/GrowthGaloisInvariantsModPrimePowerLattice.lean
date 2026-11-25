@@ -1,7 +1,6 @@
 module
 
 public import Formalism.WeaklyAdmissibleFiltrations.Statement
-public import Mathlib.RingTheory.Localization.FractionRing
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CoefficientRingIntegersCompactAdicProperties

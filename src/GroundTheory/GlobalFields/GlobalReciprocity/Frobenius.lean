@@ -2,10 +2,7 @@ module
 
 public import GroundTheory.GlobalFields.NormResidueSymbol.RangeIdeleNormLeKerIdeleSymbol
 public import GroundTheory.LocalFields.MaximalUnramifiedIntegers
-public import GroundTheory.GlobalFields.SemilocalAlgebras.Galois
-public import GroundTheory.LocalFields.Uniqueness
 public import GroundTheory.LocalFields.UnramifiedHensel
-public import Mathlib.FieldTheory.Galois.IsGaloisGroup
 public import Mathlib.RingTheory.Frobenius
 public import GroundTheory.GlobalFields.CompletionAtPlace.Inertia
 public import GroundTheory.GlobalFields.NormResidueSymbol.FunctorialLocal

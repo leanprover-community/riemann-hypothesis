@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLattice
 public import Formalism.LocalRingCardinality.SpanPowerMembership.Adelic
-import Mathlib.RingTheory.Valuation.Integral
 import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
 
 @[expose] public section

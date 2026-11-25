@@ -4,7 +4,6 @@ public import Formalism.LagrangeIdealLifts.Statement
 public import Mathlib.Algebra.Polynomial.Roots
 public import Formalism.WindowSums.AnnihilatorPolynomials.ZpowVal
 public import Formalism.WindowSums.AnnihilatorPolynomials.ValProd
-public import Mathlib.Algebra.Polynomial.Div
 import Mathlib.Tactic.Lemma
 
 -- This file was produced by scripts/clump.py from the modules listed below.

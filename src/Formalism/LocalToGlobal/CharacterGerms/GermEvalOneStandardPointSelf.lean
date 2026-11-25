@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.CharacterGerms.RankMaximalOfNondegenerateOfUnitSeriesIntegral
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePGerm
-import Formalism.FormalGroupLog.FormalGroupLogProofs.ChainRule
 public import Formalism.LocalToGlobal.CharacterGerms.ConstantZeroDoubleMultiplicationPair
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePGmExLem
 

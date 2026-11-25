@@ -2,11 +2,7 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.KeyFormula.KeyRootOfKeyFormula
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsKeyPBPair
-public import Mathlib.RingTheory.Valuation.ValuationSubring
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsIntegralOfForallMemDiscreteValuationSubring
-public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.DualNumberRingHomExt
-public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ExistsKeyPBRing
-public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.StalkOfAppLEEq
 public import Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.FamUnit
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExactKeyFormulaProofStatement
 import Mathlib.Algebra.Order.Floor.Extended
@@ -47,8 +43,6 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.FamHomogOfHomog, Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ValueMemValuationSubring, Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.ThetaKeyRuleValuationUnitOfFunctorial, Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.KeyFamOfKeyFormula, Development.AbelianVarietyTheory.Proofs.ThetaLawProofs.KeyFamOne

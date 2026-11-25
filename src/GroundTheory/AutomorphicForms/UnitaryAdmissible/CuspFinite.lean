@@ -1,10 +1,8 @@
 module
 
 public import GroundTheory.AutomorphicForms.UnitaryAdmissible.CuspCentral
-public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableLaplacian
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsContRep
-import Mathlib.Analysis.InnerProductSpace.Spectrum
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

@@ -1,12 +1,8 @@
 module
 
 public import Development.AutomorphicSpectrum.Definitions.NonGaloisLines.TopLine
-public import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
-public import Mathlib.Basic.Finite.Defs
 public import Mathlib.CategoryTheory.CofilteredSystem
 public import Mathlib.CategoryTheory.Functor.OfSequence
-public import Mathlib.Basic.Opposite
-public import Mathlib.CategoryTheory.Category.Preorder
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsAdicCompleteSpanAlgebraMapOfFreeFinite
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.H2EquivOfTorsionCharacter
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsIntegralOfNormLeOne
@@ -14,12 +10,9 @@ public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.CupFlip
 public import Development.AbelianVarietyTheory.Definitions.Foundations.HTBasis
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Formalism.ConjugateSelfDual.Statement
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TateH2PeriodDatum
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicCharacterPadicBasicProperties
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsCycCycChar
-import Development.AutomorphicSpectrum.Proofs.NonGaloisProofs.GoodOAdicCompleteCompactBasis
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsMore, Development.AutomorphicSpectrum.Proofs.NonGaloisProofs.ExistsLimitOfCauchyAdicFiltration, Development.AutomorphicSpectrum.Proofs.GlobalProofs.TateDualityH2FiniteCoefficients

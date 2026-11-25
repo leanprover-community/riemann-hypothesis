@@ -2,33 +2,16 @@ module
 
 public import Formalism.WeaklyAdmissibleFiltrations.StatementTor
 public import Development.AutomorphicSpectrum.Definitions.NonGaloisLines.TopLine
-public import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
-public import Formalism.GaloisCohomology.LocalTateDualityK
 public import Development.AbelianVarietyTheory.Definitions.Foundations.HTBasis
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ContinuousFixingSubgroupEquiv
-public import Mathlib.Topology.LocallyConstant.Basic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardCocyclesMulInvariantsDiscrete
-public import Mathlib.Algebra.Module.Torsion.Basic
-public import Mathlib.NumberTheory.Padics.RingHoms
-public import Mathlib.RingTheory.Ideal.Quotient.Index
-public import Mathlib.Algebra.Module.CharacterModule
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.RingTheory.Localization.FractionRing
-public import Mathlib.Topology.Algebra.Module.ModuleTopology
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsBasisOfFullLattice
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsIntegralOfNormLeOne
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsIntegralCyclotomicChar
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsOpenOfFgOfSpanEqTop
-public import Mathlib.NumberTheory.Padics.PadicIntegers
 public import Development.AutomorphicSpectrum.Proofs.NonGaloisProofs.GoodOAdicCompleteCompactBasis
 import Mathlib.Tactic.ReduceModChar
-import Formalism.ConjugateSelfDual.Statement
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI

@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.
 public import Formalism.PeriodIntegrals.UJClassFin
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.Matrix.Order
-public import Mathlib.Analysis.Matrix.Hermitian
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.ArchimedeanDenseStabilizers.DenseRangeOfNotIsReal

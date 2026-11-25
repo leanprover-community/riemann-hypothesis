@@ -2,14 +2,12 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.AtypicalPathSmallWeight
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.GoodPathWeight
-public import Formalism.SharpRestriction.GrowthBounds.ValuationLowestDegreeRename
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.CardFinRange
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.DiscriminantNeZeroOfResidueNeZero
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.FourHundredSixteenLeA
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.ReflectionMemGlevCastSucc
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.TypicalPathOrdersSmall
 import Std.Tactic.BVDecide.Normalize.BitVec
-import Formalism.SharpRestriction.GrowthBounds.ValuationLowestDegreeMapFractionField
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.SegmentDegree.GoodPathWeightOfParts, Formalism.SharpRestriction.GrowthBounds.SegmentDegree.SortGetDSpec, Formalism.SharpRestriction.GrowthBounds.SegmentDegree.DistAddTwoLeOfSameVec

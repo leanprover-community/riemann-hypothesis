@@ -8,16 +8,10 @@ public import GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.FieldNumbersL
 public import GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.FieldNumbersSemilocalMaxIdeals
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsSemilocalLength
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PDivCycleMinimal
-public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PFibreRelDim
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PSemilocalLength
-public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsDivPushForwardLocal
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PDivPushForwardLocal
-public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsDivPushForward
-public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PContractRelDimLe
-public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PDivPushForward
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Statements
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Assembly
-import GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.HilbertSamuelIrreducibleBasicOpenConnected
 import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PPFDegree
 
 section -- clump:auto

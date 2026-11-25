@@ -18,7 +18,6 @@ public import Mathlib.MeasureTheory.Integral.Pi
 public import Mathlib.Topology.Algebra.MvPolynomial
 public import Mathlib.Analysis.Complex.TaylorSeries
 public import Mathlib.Analysis.SpecialFunctions.Gaussian.FourierTransform
-public import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
 public import Mathlib.LinearAlgebra.Vandermonde
 public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.InvariantPolynomialEqAevalPairings
 public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.NullSec
@@ -68,10 +67,8 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Tactic.TypeStar
 import Mathlib.Tactic.Basify
 import Std.Tactic.BVDecide.Normalize.Prop

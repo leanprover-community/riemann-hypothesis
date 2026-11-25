@@ -8,10 +8,8 @@ public import Development.WeilBound.ThetaLifts.SmallCones.ConeAB
 public import Development.WeilBound.ThetaLifts.SmallCones.GenAnisoOf
 import Development.WeilBound.ThetaLifts.SmallCones.ConeBasic
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
-import Development.WeilBound.ThetaLifts.TowerModels.PlaneHerm
 import Development.WeilBound.ThetaLifts.SmallCones.ConeLawAB
 import Development.WeilBound.ThetaLifts.SmallCones.ExpAlg
-import Development.WeilBound.ThetaLifts.SmallCones.ThetaKernelGeneralIdentity
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.ThetaLifts.SmallCones.IsoActFree, Development.WeilBound.ThetaLifts.SmallCones.GenSmallOf

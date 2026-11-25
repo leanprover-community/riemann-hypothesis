@@ -10,9 +10,7 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.DenseLift
 public import Mathlib.RingTheory.NoetherNormalization
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Comparison
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.DegreeTopEqArithDegree
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 

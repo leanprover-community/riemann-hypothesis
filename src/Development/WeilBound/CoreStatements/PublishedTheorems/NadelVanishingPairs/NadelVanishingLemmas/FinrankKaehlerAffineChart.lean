@@ -1,7 +1,6 @@
 module
 
 public import Mathlib.RingTheory.Kaehler.Basic
-public import Mathlib.GroupTheory.GroupAction.Ring
 public import Mathlib.RingTheory.LocalRing.ResidueField.Ideal
 public import Mathlib.CategoryTheory.Monoidal.Cartesian.Over
 public import Mathlib.Algebra.Module.FinitePresentation
@@ -16,7 +15,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsHolFormConst
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SymplecticGenerators.StTransl
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsQuasicoherentOfForallExistsAffine

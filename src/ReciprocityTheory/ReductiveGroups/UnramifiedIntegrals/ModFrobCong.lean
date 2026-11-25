@@ -9,21 +9,13 @@ public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModEvalMF
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.IsIntegralOfRoot
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModGDefs
 public import ReciprocityTheory.NeutralLocalFields.HilbertClassField
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.RingTheory.ClassGroup.Basic
 public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import Mathlib.NumberTheory.NumberField.Norm
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModCMPoint
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModGBasic
 public import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModJTau
-public import Mathlib.RingTheory.RootsOfUnity.Minpoly
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModEvalSer
 import Mathlib.RingTheory.SimpleRing.Principal
-import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModFacSer
-import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModGmForm
-import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModGmQ
-import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModQPrin
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Data.Finsupp.Pointwise
 import ReciprocityTheory.ReductiveGroups.UnramifiedIntegrals.ModLatTau

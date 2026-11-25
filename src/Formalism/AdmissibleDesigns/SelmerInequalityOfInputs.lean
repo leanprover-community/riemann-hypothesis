@@ -6,7 +6,6 @@ public import Formalism.AdmissibleDesigns.FiniteClassesContinuousLattice
 public import Formalism.AdmissibleDesigns.InertiaActsTrivially
 public import Formalism.AdmissibleDesigns.RealDisplayAllK
 public import Formalism.WachLatticeTwists.RealDisplaySplitting.RealDisplayProofs.SurjectionOfRankOneIdempotent
-import Formalism.WachLatticeTwists.SplitLocalLifts.Statement
 import Formalism.WachLatticeTwists.SplitClassesAll.Statement
 
 -- This file was produced by scripts/clump.py from the modules listed below.

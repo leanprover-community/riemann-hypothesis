@@ -5,19 +5,14 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedA
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.cut_GCore_GTConnCut
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCRadSpSmooth
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CoordinateCommuteRaisingConstant
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutEnTrSmooth
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTConnGaugeA
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTConnGaugeB
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedF
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NfRadOrder0OfRadRed
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGaugeVLem
 public import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
-public import Mathlib.LinearAlgebra.Lagrange
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTCLRadT
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Tactic.TypeStar
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.PiTensorProduct

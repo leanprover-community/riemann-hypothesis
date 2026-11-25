@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.GlobalFields.CyclotomicCharacters.Degree
-import GroundTheory.GlobalFields.CyclotomicCharacters.Frobenius
 import Mathlib.FieldTheory.Galois.Profinite
 public import Mathlib.NumberTheory.NumberField.Cyclotomic.Basic
 public import Mathlib.RingTheory.Invariant.Profinite

@@ -3,7 +3,6 @@ module
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IntegralityAtPrimeLattices.RootOfUnityInt
 import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.ComplexSpanBlockActionStable
 import Formalism.LocalToGlobal.GlobalTheory.GL6.LatticeInclusionFamilyOf
-import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocInd
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

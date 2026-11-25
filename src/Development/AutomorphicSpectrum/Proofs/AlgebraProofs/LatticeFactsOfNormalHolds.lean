@@ -8,7 +8,6 @@ public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HodgeAnnihila
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.KernelGraphBaseChangeHolds
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LatticeGoodBaseChange
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LatticeSecondGoodness
-public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.FlagMinor
 public import Mathlib.RingTheory.IsTensorProduct
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LocallyFreeBaseChangeQuotient
 public import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.ImageLatticeBaseChange

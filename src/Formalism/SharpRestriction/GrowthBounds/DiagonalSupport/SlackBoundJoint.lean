@@ -6,8 +6,6 @@ public import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.FramesOf
 public import Formalism.SharpRestriction.GrowthBounds.TwistedSubstitution.PlaneCoeff
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.SlackBoundReal
 public import Mathlib.Algebra.Order.Field.GeomSum
-import Formalism.SharpRestriction.GrowthBounds.SourceCleaning
-import Formalism.SharpRestriction.GrowthBounds.WittFrameLocaliserOrders
 import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.IsMultiHom
 import Formalism.SharpRestriction.GrowthBounds.PathWeight.GeneratorImageIsSymbol
 import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.DvdOfAdd

@@ -6,7 +6,6 @@ public import Mathlib.AlgebraicGeometry.Noetherian
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.SetTheory.ZFC.PSet
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.AnalyticForms.RegularLocalRings.RegDom
 import Mathlib.Tactic.Lemma
 
 -- This file was produced by scripts/clump.py from the modules listed below.

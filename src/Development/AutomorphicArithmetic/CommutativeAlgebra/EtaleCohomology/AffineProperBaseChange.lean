@@ -3,7 +3,6 @@ module
 public import Development.EtaleCohomology.EtaleSheaves.CechLevels.CechLevelsOf
 public import Development.EtaleCohomology.EtaleSheaves.SpectrumLimits
 public import Mathlib.RingTheory.PiTensorProduct
-public import Mathlib.LinearAlgebra.PiTensorProduct.Basic
 public import Development.EtaleCohomology.EtaleSheaves.DescentInduction
 public import Development.EtaleCohomology.EtaleSheaves.stupidPf
 public import Development.EtaleCohomology.EtaleSheaves.longPf
@@ -64,19 +63,14 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Development.EtaleCohomology.EtaleSheaves.CechLevels
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Lemma
-import Mathlib.CategoryTheory.Abelian.GrothendieckCategory.EnoughInjectives
 import Mathlib.Tactic.Linter.Style
 import Mathlib.CategoryTheory.EffectiveEpi.Comp
 import Mathlib.CategoryTheory.ExtremalEpi
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MonicPolynomialsHaveRootsIntegralClosureAlgClosu
 import Mathlib.Algebra.AffineMonoid.Basic
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleCohomologyNegativeVanishingDegreeZero
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LevelwiseEquivalenceIsEquivalenceStatement

@@ -6,7 +6,6 @@ public import GroundTheory.AutomorphicForms.HaarCosets
 import GroundTheory.AutomorphicForms.LocallyConstantCompact
 public import GroundTheory.AutomorphicForms.SmoothRepContragredient
 import GroundTheory.LocalFields.LocalFourierHaar
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

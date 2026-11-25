@@ -9,7 +9,6 @@ import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 
 @[expose] public section
 

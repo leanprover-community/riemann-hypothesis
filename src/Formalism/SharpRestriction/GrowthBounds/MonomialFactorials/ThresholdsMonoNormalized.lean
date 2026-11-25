@@ -4,9 +4,6 @@ public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.BlockBo
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.Imports
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.CoarseCLower
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.DigitsOKOfCompat
-public import Formalism.SharpRestriction.GrowthBounds.ObjSeg
-public import Formalism.SharpRestriction.GrowthBounds.RootWeights.ValuationNonnegIffIntegral
-public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.MemIntPolIff
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.PadicIntegersEmbeddingMapPrime
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.DimYOvr
@@ -20,7 +17,6 @@ public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.RestPlu
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.BlockValuationOverZpHolds
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.RestRankLProved
 import Mathlib.Tactic.TypeStar
-import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.KappaZeroNonneg
 import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.RingTheory.LocalProperties.Reduced

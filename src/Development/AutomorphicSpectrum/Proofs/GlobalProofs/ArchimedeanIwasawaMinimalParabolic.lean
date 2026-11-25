@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IsC
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OfIsSmoothModerate
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.HarishChandraFinite
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.FiniteDimensionalOfSlices
-import Development.AutomorphicSpectrum.Proofs.GlobalProofs.MemFormsOnOfMemSpan
 
 @[expose] public section
 

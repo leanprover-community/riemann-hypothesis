@@ -4,34 +4,24 @@ public import Mathlib.Analysis.SpecialFunctions.Log.Basic
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.TauDegreeOnPathBound
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.DiscriminantNonzeroModUniformiser
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.DistAddTwoLeOfSameVec
-public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.FourHundredSixteenLeA
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.FrameZeroStrictMono
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.StrictMonoIntExists
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.RestLamOfRests
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.FiniteRestrictSupport
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.SelIsComplRestrictSupport
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.LamMZero
-public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.AllowedLettersOfLateRows
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.DiscPowerTimesMonomial
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.DiscPowerMonomialMemSupported
-public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.SegmentProductDegreeDetermined
-public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.CardFinRange
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.DminusLeBeS
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.SumSingleApplyZero
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.DivMulSubLeDivSubDiv
-public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.LamImgApply
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.NonemptyDvrSettingOfStandard
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.Coarse
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.RestCountOf
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.GoodPathWeight
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.GoodPathWeightAlt
-import Mathlib.Algebra.Order.Star.Real
-import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.PsiCutSupported
-import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.ReflectionMemGlevCastSucc
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.TotallySplit
-import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.DplusLeBeS
-import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.SumPosOfPer
 import Mathlib.Algebra.Order.Star.Int
 
 -- This file was produced by scripts/clump.py from the modules listed below.

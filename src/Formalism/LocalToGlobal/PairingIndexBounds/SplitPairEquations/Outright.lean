@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.KernelLattices.LateralTheory
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.ColumnDataEquations.SplitPairOfGen
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ColDatK
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.Outright

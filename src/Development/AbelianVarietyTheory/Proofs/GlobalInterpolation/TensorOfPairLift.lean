@@ -5,7 +5,6 @@ public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CoarseDegree
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.TCNumDef
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.Cartan
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.DualInclusionLattices
-import Formalism.LocalToGlobal.GroupLattices.FockModels.ElementaryDivisorBasis
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.FlatModels.LetterWtAnti
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.LoBlockActComp
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.TestSideFinal
@@ -27,7 +26,6 @@ import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.PairFacts
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.RankOnDigitsCast
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SegLow
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.StWeyl
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.ThresholdLowerBounds
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.TotalDegreeEplus
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.BFFinal
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.KeyMinorDvd
@@ -39,7 +37,6 @@ public import Formalism.SharpRestriction.GrowthBounds.FockGramWindow
 import Formalism.SharpRestriction.GrowthBounds.GLWeightTheory
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor
 public import Formalism.SharpRestriction.GrowthBounds.InitialMinorTransposeMemHighestWeight
-import Formalism.SharpRestriction.GrowthBounds.PolBridge
 import Formalism.SharpRestriction.GrowthBounds.RootWeights.WeightConditionFromIntegralForm
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.ColTop
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.ColumnPolynomialCovectorZero

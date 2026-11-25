@@ -4,15 +4,9 @@ import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.XiExistsOf
 public import Mathlib.Analysis.Complex.Basic
 public import Mathlib.Analysis.Matrix.Normed
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DerivativeRulesA1
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DilationUnipotentWeylMeasure
-public import Formalism.HermitianCurvature.FiniteOrderIntersectionInSmooth
 public import Formalism.HermitianCurvature.StatementD
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
-import Formalism.FormalDegreeBessel.StatementWR
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.PhiBoundPartsOfRadicalParametrisation
-import Formalism.HermitianCurvature.StatementB
-import Formalism.RealPlaceAnalysis.StatementA
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.SimpleRing.Principal

@@ -1,12 +1,9 @@
 module
 
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpChartActionPoint
-public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ScaleGenIsGen
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GmHomAt
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.BqOriginSt
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.PhOneValSt
-public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.UnitIdSt
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FBIdAd
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.CalcExp
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.GaugeTrans
@@ -14,13 +11,8 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscrim
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBCorr
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpAct
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ESecToUnit
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDJet
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.JetSubstPSTrunc
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDPf
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.HasSubstActPS
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.JetSubstPSEqJetMap
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpSActPS, Formalism.SharpRestriction.Divisibility.GeneratorPowers.CocChart, Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpGJAd, Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpGOPf, Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpGUPf, Formalism.SharpRestriction.Divisibility.GeneratorPowers.PhTwoValHolds, Formalism.SharpRestriction.Divisibility.GeneratorPowers.SubstCoeRename, Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpGauge

@@ -3,19 +3,14 @@ module
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDiscreteSpaceCocycleVanishingPos
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.MemSplitSeqIff
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.TensorHomCubes.StabDirectedSystem
-public import Mathlib.Combinatorics.Quiver.ReflQuiver
-public import Mathlib.RepresentationTheory.Coinduced
-public import Mathlib.RepresentationTheory.Homological.GroupHomology.Functoriality
 public import Mathlib.Algebra.Homology.HomologySequenceLemmas
 public import Mathlib.RepresentationTheory.Homological.GroupHomology.LongExactSequence
-public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.PermRepSingle
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.KTheoryStability.HomologicalStability.LinkExactnessStability.ExistsFreeResolutionShortExact
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.KTheoryStability.HomologicalStability.LinkExactnessStability.ProjectiveRepGroupHomologyPosVanishes
 public import Mathlib.Tactic.Continuity
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.KTheoryStability.HomologicalStability.LinkExactnessStability.GroupHomologyMapEqOfInnerConj
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.RepresentationTheory.Rep.Iso
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -9,7 +9,6 @@ public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality.Naturalit
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.InnerConj
 public import GroundTheory.ProfiniteCohomology.MackeyFormula
 public import GroundTheory.ProfiniteCohomology.Shapiro
-public import GroundTheory.ProfiniteCohomology.ContinuousCochains.LongExactSequence
 public import GroundTheory.ProfiniteCohomology.MackeyFormula.ConjHomotopy
 public import GroundTheory.ProfiniteCohomology.MackeyFormula.ConeHomotopy
 public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology.HomologyMapPiLiftPiHomologyIsoHom

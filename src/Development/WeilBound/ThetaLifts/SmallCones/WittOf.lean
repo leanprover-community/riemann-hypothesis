@@ -5,7 +5,6 @@ public import Development.WeilBound.ThetaLifts.CartanFactorisation.Unimod
 public import Development.WeilBound.ThetaLifts.EigenvalueEndgame.UnipotentGroups.ContinuousExpG
 public import Development.WeilBound.ThetaLifts.EigenvalueEndgame.UnipotentGroups.IsFrPlane
 public import Development.WeilBound.ThetaLifts.SmallCones.MatCancel
-import Development.WeilBound.ThetaLifts.TowerModels.LeviAd
 public import Development.WeilBound.ThetaLifts.TowerModels.PlaneReal
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 

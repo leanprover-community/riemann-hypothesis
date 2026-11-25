@@ -6,7 +6,6 @@ public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LeadingTermIdentity
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LieDecompositionLocal
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RightDerivativeRulePsi
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.SumDualVectorEqZeta
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

@@ -1,7 +1,6 @@
 module
 
 public import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
-public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.DenseCoordinateTorus
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncBoundaryCoordinateChart
 

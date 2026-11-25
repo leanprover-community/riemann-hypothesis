@@ -4,26 +4,15 @@ public import ReciprocityTheory.GaloisValuations.SeparatedDvrSecondCohomologyMem
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BijectiveOfRetract
 public import ReciprocityTheory.ReductiveGroups.TraceFormulas.LatDefs
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.H2EquivOfTorsionCharacter
-public import Mathlib.LinearAlgebra.Dual.Defs
-public import Mathlib.SetTheory.Cardinal.Finite
-public import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
-public import Mathlib.Analysis.SpecialFunctions.Complex.CircleAddChar
-public import Mathlib.Algebra.Group.AddChar
 public import Formalism.GaloisCohomology.LocalTateDualityK
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteH1H2Local
-public import Mathlib.Topology.Algebra.ContinuousMonoidHom
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ContinuousCyclotomicCharacterLocalGalois
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.QuotPowMaximalIdealDiscreteFinite
-public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Mathlib.Algebra.Module.PID
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FactorMemCocyclesPowQuot
-public import Mathlib.Topology.Algebra.Ring.Ideal
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicCoboundaryOfDivisible
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ContinuousTwoCocycleMultipleOfFundamental
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteCocyclesQuotientPowSmulModule
-public import Mathlib.RingTheory.Finiteness.Defs
-public import Mathlib.Topology.Algebra.MulAction
-public import Mathlib.RingTheory.Finiteness.Cardinality
 public import Mathlib.Topology.Algebra.Module.Basic
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -66,7 +55,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Formalism.WachLatticeTwists.LatticeDualFibres.Statement
 import Mathlib.Tactic.Linter.HaveILetI
-import ReciprocityTheory.GaloisValuations.GlobalA
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed

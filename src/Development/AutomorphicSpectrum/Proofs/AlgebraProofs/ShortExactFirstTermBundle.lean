@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsSplitGaussChars
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DegreeAdditiveSubQuotient
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DegreeInvariantLinearEquiv
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SubAndQuotientBundles
 
 @[expose] public section
 

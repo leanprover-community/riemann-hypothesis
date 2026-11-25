@@ -4,9 +4,6 @@ public import Formalism.SharpRestriction.Divisibility.ModuliIntegralCharts
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.PhiCMinB
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.PhiCMinSt
 public import Mathlib.Analysis.Matrix.PosDef
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.Analysis.InnerProductSpace.Orthonormal
-public import Mathlib.Analysis.InnerProductSpace.PiL2
 public import Mathlib.NumberTheory.NumberField.Discriminant.Different
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.PhiCSt
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.PhiCMinC

@@ -3,7 +3,6 @@ module
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.HermitianFormBaseVectorRight
 public import Formalism.HermitianCurvature.StatementB
 import Mathlib.Tactic.TypeStar
-import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
 
 @[expose] public section
 

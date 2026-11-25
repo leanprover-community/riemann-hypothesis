@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.ChainOneB
-public import Formalism.LocalToGlobal.Columns.ChainInst
 public import Formalism.LocalToGlobal.Columns.StdBasisFlagSubmoduleOfBlockTriangular
 public import Formalism.LocalToGlobal.Columns.ChainTwOk
 public import Formalism.LocalToGlobal.Columns.ChainTwCst
@@ -11,12 +10,7 @@ public import Formalism.LocalToGlobal.Columns.ChainTwPsi
 public import Formalism.LocalToGlobal.Columns.ChainTwZero
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TwistedNormLattice.UniformContinuityGaloisGroup
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TwistedNormLattice.CombinationEquivInvMemUnipotentFlagGroup
-public import Formalism.PeriodIntegrals.TwNormLat
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.TwChrOne
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Formalism.LocalToGlobal.Columns.ChainOneOk
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.TotallySplit
 

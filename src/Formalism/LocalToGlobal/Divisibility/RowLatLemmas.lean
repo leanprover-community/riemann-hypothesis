@@ -4,16 +4,11 @@ public import Formalism.LocalToGlobal.Divisibility.RowLat
 public import Formalism.LocalToGlobal.Divisibility.ClassSumLemmas
 public import Formalism.LocalToGlobal.Divisibility.FramesLemmas
 public import Formalism.LocalToGlobal.Divisibility.ProjLemmas
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.AuxStatement14
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ClassSumDualGeOfFamily
 import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.LocBasis
 import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ReductionLemmaFirst
 public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.SecondStepGluing
 import Mathlib.Algebra.AffineMonoid.UniqueSums
-import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

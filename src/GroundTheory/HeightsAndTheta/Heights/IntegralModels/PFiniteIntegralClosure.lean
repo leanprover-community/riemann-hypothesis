@@ -8,10 +8,7 @@ public import Mathlib.RingTheory.MvPolynomial.Basic
 public import Mathlib.FieldTheory.PurelyInseparable.Exponent
 public import Mathlib.RingTheory.NoetherNormalization
 public import Mathlib.Algebra.Algebra.ZMod
-public import Mathlib.Algebra.CharP.Algebra
 public import Mathlib.FieldTheory.Finite.Basic
-public import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
-public import Mathlib.FieldTheory.PurelyInseparable.Basic
 public import Mathlib.RingTheory.DedekindDomain.IntegralClosure
 public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.Statements
 public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.FiniteIntegralClosureCharZero

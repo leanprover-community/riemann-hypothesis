@@ -7,11 +7,9 @@ public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SmoothingFinite
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.DiffBound
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SiegelCount
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SiegelFinite
-import GroundTheory.GlobalFields.Adele.Topology
 import Mathlib.CategoryTheory.Countable
 import Mathlib.Dynamics.Ergodic.Action.Regular
 import Mathlib.Tactic.TypeStar
-import Mathlib.Order.CompletePartialOrder
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.AutomorphicForms.CuspidalDiscreteness.TorusReduction, GroundTheory.AutomorphicForms.CuspidalDiscreteness.ExistsNormRconvLeSiegel

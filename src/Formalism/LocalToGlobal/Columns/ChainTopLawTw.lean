@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.TopLawQ
 public import Formalism.LocalToGlobal.Columns.KOneCharacterTrivialNearOne
-import Formalism.LocalToGlobal.Columns.ChainInst
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.KerHypAll
 import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PenultimateKernelDiamondInvariant
 

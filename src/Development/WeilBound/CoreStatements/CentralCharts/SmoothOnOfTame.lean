@@ -1,7 +1,6 @@
 module
 
 public import Development.WeilBound.CoreStatements.CentralCharts.ExistsPermFirst
-import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
 
 @[expose] public section
 

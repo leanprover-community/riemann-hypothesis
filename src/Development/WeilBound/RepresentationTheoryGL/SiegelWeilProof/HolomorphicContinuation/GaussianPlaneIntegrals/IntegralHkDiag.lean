@@ -6,7 +6,6 @@ public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 public import Mathlib.Analysis.Complex.Isometry
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Mathlib.Analysis.Complex.Circle
 public import Mathlib.Analysis.SpecialFunctions.JapaneseBracket
 public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 public import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace

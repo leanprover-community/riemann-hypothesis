@@ -56,7 +56,6 @@ import Mathlib.Analysis.Matrix.Order
 import Formalism.LocalRingCardinality.HostCls
 import Mathlib.Algebra.Order.Star.Real
 import Development.AbelianVarietyTheory.Definitions.Divisors.TupleReadBaseTupleEqFamily
-import Development.AbelianVarietyTheory.Definitions.Divisors.TwistedPlaceChoiceLiesOverPair
 import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.IndefiniteTreeX
 import Mathlib.Tactic.Linter.Style
 

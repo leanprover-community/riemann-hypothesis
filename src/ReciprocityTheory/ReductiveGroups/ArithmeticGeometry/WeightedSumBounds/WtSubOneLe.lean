@@ -5,9 +5,7 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBo
 public import Mathlib.Algebra.Order.Star.Basic
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.TangentEqLcZero
 public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
-public import ReciprocityTheory.DualLattices.VEqZeroOfPowEqOne
 public import Mathlib.Algebra.Field.GeomSum
-public import Mathlib.RingTheory.PowerSeries.Expand
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.TypicalCurveStructureConstants
 public import Mathlib.RingTheory.RootsOfUnity.EnoughRootsOfUnity
 import Mathlib.Topology.Sheaves.Presheaf

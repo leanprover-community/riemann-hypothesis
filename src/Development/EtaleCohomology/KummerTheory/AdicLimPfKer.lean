@@ -3,8 +3,6 @@ module
 public import Mathlib.Basic.Finite.Defs
 public import Mathlib.CategoryTheory.CofilteredSystem
 public import Mathlib.CategoryTheory.Functor.OfSequence
-public import Mathlib.Basic.Opposite
-public import Mathlib.CategoryTheory.Category.Preorder
 public import Development.EtaleCohomology.KummerTheory.AdicLimPf
 import Mathlib.Tactic.Linter.HaveILetI
 

@@ -2,7 +2,6 @@ module
 
 public import Mathlib.NumberTheory.NumberField.CMField
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.WchartLePreimage
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.NonzeroLocus
 
 @[expose] public section
 

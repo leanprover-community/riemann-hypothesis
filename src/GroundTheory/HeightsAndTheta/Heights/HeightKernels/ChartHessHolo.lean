@@ -5,7 +5,6 @@ import Mathlib.Algebra.Module.StablyFree.Basic
 public import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.Complex
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.TypeStar

@@ -8,8 +8,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeCocy
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsConeLift
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.ConeSectionRestriction.IsTautologicalLineAt
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConeLiftRatioMemIdeal
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

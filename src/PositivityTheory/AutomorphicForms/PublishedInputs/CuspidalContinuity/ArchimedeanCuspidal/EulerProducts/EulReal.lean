@@ -1,7 +1,6 @@
 module
 
 public import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.EulerProducts.EulDefs
-public import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.AdFormOf
 import GroundTheory.AutomorphicForms.GL2.FiniteIdeleDecomp
 
 @[expose] public section

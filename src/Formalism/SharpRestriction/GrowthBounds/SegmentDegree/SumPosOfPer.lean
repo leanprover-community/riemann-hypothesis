@@ -5,7 +5,6 @@ import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.CoarseLabelFactoris
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.RestCountOf
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.StrictMonoIntExists
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.TopDegreeComparison
-import Formalism.SharpRestriction.GrowthBounds.ValuationLowestDegreeMapFractionField
 import Mathlib.Algebra.Order.Star.Int
 import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.OldestLetterInSegment
 

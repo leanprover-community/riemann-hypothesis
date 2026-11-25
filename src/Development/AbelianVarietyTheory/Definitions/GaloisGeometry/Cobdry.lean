@@ -3,8 +3,6 @@ module
 public import Mathlib.NumberTheory.Padics.Complex
 public import Mathlib.RingTheory.MvPowerSeries.Substitution
 import Formalism.SharpRestriction.GlobalSchurBounds.GL3Theta
-import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 
 @[expose] public section
 

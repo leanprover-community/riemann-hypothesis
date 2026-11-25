@@ -4,8 +4,6 @@ public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.BaseO
 public import GroundTheory.GlobalFields.TateThesis.IdeleMeasureQuotient
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.Dynamics.Ergodic.Action.Regular
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 

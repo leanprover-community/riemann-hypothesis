@@ -3,8 +3,6 @@ module
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsDiff
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.ExistsNormRconvLeSiegel
 import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStable
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SiegelFinite
-import GroundTheory.GlobalFields.Adele.Topology
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicArithmetic.IntegralCasts.IsOpenStabOfMemNhds
 

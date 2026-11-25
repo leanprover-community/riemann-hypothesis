@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsAlgClosedF
 public import Mathlib.RingTheory.Smooth.IntegralClosure
 public import Development.EtaleCohomology.EtaleSheaves.LCSurjPf
 public import Development.EtaleCohomology.EtaleSheaves.CoverPf
-public import Development.EtaleCohomology.EtaleSheaves.EtaleDegreeZeroCohomologyEquivLocallyConstantFun
 public import Development.EtaleCohomology.EtaleSheaves.FinEtSectionPf
 public import Development.EtaleCohomology.EtaleSheaves.ZarLocalPf
 public import Development.EtaleCohomology.EtaleSheaves.LPrimLocPf
@@ -13,14 +12,12 @@ public import Development.EtaleCohomology.EtaleSheaves.AcycQAPf
 public import Development.EtaleCohomology.EtaleSheaves.TorEtPf
 public import Development.EtaleCohomology.EtaleSheaves.PullInjOfIso
 public import Development.EtaleCohomology.EtaleSheaves.LCBijPf
-public import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
 public import Development.EtaleCohomology.EtaleSheaves.EtAICPf
 public import Development.EtaleCohomology.EtaleSheaves.LeafMVVanishPf
 public import Development.EtaleCohomology.EtaleSheaves.ProjFPf
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Order.CompletePartialOrder
@@ -28,7 +25,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Algebra.Category.ModuleCat.FilteredColimits
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
 import Mathlib.Tactic.Lemma
-import Mathlib.CategoryTheory.Limits.Types.Pushouts
 import Mathlib.CategoryTheory.Presentable.Type
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Development.EtaleCohomology.EtaleSheaves.DomOpenPf

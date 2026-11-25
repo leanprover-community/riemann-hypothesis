@@ -11,7 +11,6 @@ public import Development.AbelianVarietyTheory.Proofs.HeightProofs.HaarUpqEqOfOm
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsCuspFunIffConstTerm
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DiagSingleSingle
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsInfFamFamily
-public import Development.AbelianVarietyTheory.BlockTheory.HeightDefect.AdelicUnitaryGroups
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsSubmoduleThetaFunctions
 import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 import Std.Tactic.BVDecide.Normalize.Prop

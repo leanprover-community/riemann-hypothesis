@@ -3,20 +3,10 @@ module
 public import GroundTheory.GlobalFields.SemilocalAlgebras.Galois
 public import Mathlib.RingTheory.Frobenius
 public import GroundTheory.GlobalFields.TateThesis.Chebotarev
-public import GroundTheory.GlobalFields.KummerTheory.Splitting
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
 public import GroundTheory.GlobalFields.ClassFieldConsequences.RayClassField
-public import Mathlib.NumberTheory.Cyclotomic.Basic
 public import Mathlib.NumberTheory.NumberField.Cyclotomic.Ideal
-public import Mathlib.Algebra.CharP.IntermediateField
-public import Mathlib.FieldTheory.Galois.Abelian
-public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
-import GroundTheory.GlobalFields.TateThesis.DegreeOneDensity
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.ClassFieldRamification.IsClassFieldHilbert
 import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.KummerTheory.Mk0IdMapCongr
-import GroundTheory.GlobalFields.SplittingFromInequality.Decomposition
-import Mathlib.NumberTheory.RamificationInertia.Galois
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 

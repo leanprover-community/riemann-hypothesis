@@ -1,10 +1,6 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.NormLineSectionPow
-public import Mathlib.Algebra.MvPolynomial.Eval
-public import Mathlib.Algebra.Polynomial.Basic
-public import Mathlib.Algebra.Polynomial.AlgebraMap
-public import Mathlib.Algebra.Polynomial.Degree.Lemmas
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.Qdist
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.GaussAbsMulSupportFinite
 public import ReciprocityTheory.SemistableReduction.LatSemiSt
@@ -17,7 +13,6 @@ import Mathlib.Tactic.TypeStar
 import Mathlib.Algebra.Order.Antidiag.FinsuppEquiv
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import ReciprocityTheory.SemistableReduction.GaussAbsMulOfMonomialOrder
 import ReciprocityTheory.SemistableReduction.TorusL2CauchyInequality
 
 -- This file was produced by scripts/clump.py from the modules listed below.

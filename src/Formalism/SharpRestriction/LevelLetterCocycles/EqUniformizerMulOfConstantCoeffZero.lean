@@ -5,13 +5,10 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.LemmasUnramifiedOfR
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArcCoordinatesOfMembership
 public import Formalism.SharpRestriction.LevelLetterCocycles.LatticeMembershipPolynomialGamma
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.CmpOfMemX
-public import Formalism.SharpRestriction.LevelLetterCocycles.KillerLevCoreOf
 public import Formalism.SharpRestriction.LevelLetterCocycles.HermFlagUnipotentAnisotropicVectorSubMem
 public import Mathlib.RingTheory.Binomial
 public import Formalism.SharpRestriction.LevelLetterCocycles.AnnihilatorLevelsUnramifiedStatement
 public import Formalism.SharpRestriction.LevelLetterCocycles.CompleteOfPow
-import Formalism.SharpRestriction.LevelLetterCocycles.SaturationPullbackOfRingCondition
-import Mathlib.RingTheory.PowerSeries.Inverse
 import Mathlib.NumberTheory.Padics.MahlerBasis
 
 -- This file was produced by scripts/clump.py from the modules listed below.

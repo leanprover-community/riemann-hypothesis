@@ -5,9 +5,7 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TensorIde
 public import Development.WeilBound.ThetaLifts.EigenvalueEndgame.UnipotentGroups.ContinuousExpG
 public import Development.WeilBound.ThetaLifts.EigenvalueEndgame.UnipotentGroups.IsFrPlane
 public import Development.WeilBound.ThetaLifts.SmallCones.MatCancel
-import Development.WeilBound.ThetaLifts.TowerModels.LeviAd
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
-public import Development.WeilBound.ThetaLifts.SmallCones.ColsOfMul
 
 @[expose] public section
 

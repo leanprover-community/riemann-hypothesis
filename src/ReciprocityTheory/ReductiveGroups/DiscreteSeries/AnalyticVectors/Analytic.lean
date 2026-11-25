@@ -4,11 +4,6 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DefsRep
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.ConjTransposeEqOfInG
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.LayerBasic
-public import Mathlib.Topology.Algebra.InfiniteSum.Defs
-public import Mathlib.Topology.MetricSpace.Pseudo.Defs
-public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
-public import Mathlib.Analysis.Normed.Group.Real
-public import Mathlib.Analysis.SpecificLimits.Normed
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.NcBound
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Taylor
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.Unitary

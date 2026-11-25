@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.TorsionIntegrality.WeierstrassTwoTorsion.StatementG
-public import Formalism.EllipticTorsion.EllipticTorsionProofs.WChord
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

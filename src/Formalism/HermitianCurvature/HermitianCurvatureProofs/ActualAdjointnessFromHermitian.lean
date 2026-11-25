@@ -9,7 +9,6 @@ import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CartanInvolutionConjTranspose
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexifiedDerivativeCommutator
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ShiftedGeneratorEqIteSmulAdd
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
-import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 public import Mathlib.Data.Fin.Parity
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

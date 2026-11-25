@@ -6,11 +6,8 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DecayPairEst
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.HasFDerivAtFsvOther
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.LiftMemMatrixAlgebra
 import Mathlib.Tactic.Linter.Style
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.PositionInsertionDiagonalCompat
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.ScalarCommuteTransposedRMatrixEntry
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.LiftMatrixTransferConjTransposeCommute
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.PairOperatorCommute
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSEBTCls, Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSEIbTInv, Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSEWdExpand, Formalism.HermitianCurvature.HermitianCurvatureProofs.ExpansionSiteZeroInduction, Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSETop

@@ -8,7 +8,6 @@ public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
 public import ReciprocityTheory.CommutativeAlgebra.CohenMacaulay.Bridge
 public import ReciprocityTheory.CommutativeAlgebra.CohenMacaulay.LocDim
 public import ReciprocityTheory.CommutativeAlgebra.PolynomialHeights.HeightAddRingKrullDimQuotientMvPolynomialField
-public import Mathlib.RingTheory.Ideal.Height
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Bernstein
@@ -20,7 +19,6 @@ import Mathlib.Topology.Sheaves.Init
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.CommutativeAlgebra.PolynomialHeights.PolyCM
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.CommutativeAlgebra.SaturatedChains.DimFormulaOfSurjective, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.AlgDimA, ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.KleimanNefness.AlgDim

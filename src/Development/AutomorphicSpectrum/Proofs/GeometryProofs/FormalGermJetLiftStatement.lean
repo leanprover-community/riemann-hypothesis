@@ -4,7 +4,6 @@ public import Mathlib.RingTheory.MvPowerSeries.Equiv
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.LawsChart
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.PredMulSumPadicValNatFactorialAddCardLe
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.TopLimitModules.LimJMemSmulTop
-public import Mathlib.Algebra.Field.Subfield.Basic
 public import Mathlib.FieldTheory.Minpoly.Basic
 public import Mathlib.RingTheory.Derivation.Basic
 public import Mathlib.RingTheory.Henselian
@@ -18,8 +17,6 @@ public import Mathlib.FieldTheory.Perfect
 public import Mathlib.RingTheory.Kaehler.Basic
 public import Mathlib.RingTheory.MvPowerSeries.Derivative
 public import Mathlib.RingTheory.MvPowerSeries.Expand
-public import Mathlib.Algebra.CharP.Algebra
-public import Mathlib.RingTheory.Localization.Submodule
 public import Formalism.LocalToGlobal.ProjectiveLattices.IsCombAt
 public import Formalism.LocalToGlobal.ProjectiveLattices.SubConstMemOrig
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsUnitCharts
@@ -31,15 +28,8 @@ public import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.IsOp
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.IsIntegralOfSmoothFieldOfConnectedSpace
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.CdUniv
 import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.TopLeAlgOverHom
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.NonzeroLocus
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PlaceDivisors.StChartF
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.GermComp1ZeroPointLeft
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsSplitGaussChars
-import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsDomainAndIsIntegrallyClosedAtPrimeOfSmoothOfCo
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.TjEqZeroIff, Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.ExistsPthRootOfDerivationZero, Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.ExistsPowEqFractionRingOfPderivEqZero, Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.IsLocalRingOfAug, Development.WeilBound.CoreStatements.HodgeTatePoints.JetOfMono, Development.WeilBound.CoreStatements.HodgeTatePoints.CgTaylor, Development.AutomorphicSpectrum.Proofs.GeometryProofs.FormalGermJetLiftStatement

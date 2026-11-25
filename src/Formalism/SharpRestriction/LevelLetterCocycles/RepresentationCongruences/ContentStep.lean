@@ -6,9 +6,7 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongr
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.FormalSeriesValueAtTwoPointsGenericPoints
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.RingDataOfCaseAOfP9
 import Mathlib.Algebra.Order.Star.Rat
-import Mathlib.RingTheory.PowerSeries.Inverse
 import Mathlib.Tactic.TypeStar
-public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.GammaPi0EqPi0MulUnit
 
 @[expose] public section
 

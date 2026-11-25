@@ -4,7 +4,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.RootMeasBig
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitQuotientTopology.IsClosedRStab
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitQuotientTopology.MeasurableStabActOne
 public import Formalism.PeriodIntegrals.AmpOrbQ
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RootSubgroupBasics.FlagMatLower
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.LaplaceOperators.LaplaceFoundations.IsCompactUnitaryMat
 
 -- This file was produced by scripts/clump.py from the modules listed below.

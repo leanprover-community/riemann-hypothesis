@@ -4,11 +4,8 @@ public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForm
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.LocallyConvex.WithSeminorms
 public import Mathlib.Analysis.LocallyConvex.Barrelled
-public import Mathlib.Basic.Complex.Basic
 public import Mathlib.CategoryTheory.Category.Basic
-public import Mathlib.LinearAlgebra.BilinearMap
 public import Mathlib.LinearAlgebra.Multilinear.Basic
-public import Mathlib.LinearAlgebra.Basis.VectorSpace
 public import Mathlib.Analysis.LocallyConvex.Separation
 public import Formalism.LocalToGlobal.IndefiniteReal.ScalarOnPartsFull
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOfInnerSmooth
@@ -63,7 +60,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.ENatToNat
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.Tactic.Polynomial.Basic
 import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 

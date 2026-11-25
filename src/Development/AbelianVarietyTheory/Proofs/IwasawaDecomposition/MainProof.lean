@@ -4,16 +4,10 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Incre
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IsometryDerivative.ExistsOePerm
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.FockQHW
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.FockQRowAct
-public import Formalism.GradedWeylDivisibility.StatementE
-public import Formalism.LocalToGlobal.Columns.CoefModB
 public import Formalism.UnipotentAdelicQuotients.WeylLatDual
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.DualWeylEqSpanColProd
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.StandardWeylLatticesFockDual
 public import Formalism.PeriodIntegrals.WwCauchyBinet
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CauchyBinet.WwCauchyBinetMain
-public import Mathlib.Analysis.Normed.Field.Instances
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.GradedWeylDivisibility.FinalB
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -57,8 +51,6 @@ import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.GradedWeylDivisibility.FinalD
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.FkMapInitMinor
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
 

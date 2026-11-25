@@ -4,7 +4,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FubiniHeadLa
 public import Mathlib.Tactic.Linter.HaveILetI
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContinuousInvUpper
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.StabilizerBlockPoint
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.SymmetricScalarBlockMatrixMul
 import Mathlib.CategoryTheory.Countable
 
 @[expose] public section

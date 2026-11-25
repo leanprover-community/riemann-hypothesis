@@ -9,8 +9,6 @@ public import Development.WeilBound.CoreStatements.HodgeTatePoints.TwhopfDiv
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.TwhopfFin
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.TwhopfInd
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.TwhopfSec
-import Mathlib.Tactic.Linter.HaveILetI
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsFinitePartMulConstant, Development.WeilBound.CoreStatements.HodgeTatePoints.TwhopfMain

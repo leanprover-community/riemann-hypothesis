@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.GlobalFields.ComplexMultiplication.DifferentialBaseChange
-import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisorsTranslate
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

@@ -2,9 +2,6 @@ module
 
 public import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.OEOsInjective
 public import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.WindowsAllowOffCentre
-public import Mathlib.Data.Nat.Choose.Basic
-public import Mathlib.Tactic.ToAdditive
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.FourthHypothesisOfParams
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.PageOKRun
@@ -58,8 +55,6 @@ import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.RingTheory.WittVector.IsPoly
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Polynomial.Basic
 

@@ -3,10 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.GFrames
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MemSpanSingleIff
 public import Mathlib.RingTheory.Valuation.Integral
-public import Mathlib.Algebra.Module.Lattice.Basic
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.Algebra.Algebra.Basic
-public import Mathlib.LinearAlgebra.Span.Defs
 public import Mathlib.RingTheory.DedekindDomain.Factorization
 public import Mathlib.Algebra.Module.Lattice.Full
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NumberFieldLatticeDeterminedByLocalLattices
@@ -54,7 +50,6 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat

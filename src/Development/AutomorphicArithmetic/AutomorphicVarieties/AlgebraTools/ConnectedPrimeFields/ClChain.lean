@@ -5,31 +5,11 @@ public import Mathlib.RingTheory.Regular.Flat
 public import ReciprocityTheory.CommutativeAlgebra.SaturatedChains.Integral
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.ConnectedPrimeFields.IsWeaklyRegularPairModOneLeft
 public import Mathlib.FieldTheory.Minpoly.IsIntegrallyClosed
-public import Mathlib.Algebra.Algebra.Operations
-public import Mathlib.LinearAlgebra.Dual.Defs
-public import Mathlib.RingTheory.Noetherian.Defs
-public import Mathlib.LinearAlgebra.Basis.Basic
-public import Mathlib.LinearAlgebra.LinearIndependent.Lemmas
 public import Mathlib.RingTheory.Filtration
-public import Mathlib.RingTheory.Finiteness.Defs
-public import Mathlib.Algebra.BigOperators.Ring.Finset
-public import Mathlib.Data.Fintype.BigOperators
 public import Mathlib.LinearAlgebra.Dual.Lemmas
-public import Mathlib.RingTheory.Localization.FractionRing
-public import Mathlib.RingTheory.Localization.Integer
 public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
 public import ReciprocityTheory.CommutativeAlgebra.CohenMacaulay.RingKrullDimQuotientOfMemAssociatedPrimes
-public import Mathlib.RingTheory.HopkinsLevitzki
-public import Mathlib.RingTheory.Ideal.Height
-public import Mathlib.RingTheory.AdicCompletion.Basic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.ConnectedPrimeFields.CplFinite
-public import Mathlib.RingTheory.IntegralClosure.Algebra.Defs
-public import Mathlib.RingTheory.KrullDimension.Basic
-public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Defs
-public import Mathlib.RingTheory.KrullDimension.Regular
-public import Mathlib.RingTheory.Ideal.GoingUp
-public import Mathlib.RingTheory.Ideal.MinimalPrime.Noetherian
-public import Mathlib.RingTheory.KrullDimension.Module
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.ConnectedPrimeFields.CompDim
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.ConnectedPrimeFields.DimLeOfForall
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.ConnectedPrimeFields.Bridge
@@ -39,7 +19,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTool
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
 import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
 import Mathlib.RingTheory.Etale.Weakly
 

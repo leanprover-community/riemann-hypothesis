@@ -1,7 +1,6 @@
 module
 
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GlueApplyOfNotInFibre
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt
 public import Mathlib.AlgebraicGeometry.Morphisms.Proper
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsProperIntegralModel
 import Mathlib.RingTheory.RegularLocalRing.Defs

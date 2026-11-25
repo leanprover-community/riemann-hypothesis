@@ -2,23 +2,10 @@ module
 
 public import Formalism.LocalToGlobal.NormalizedHeckeFactors.HeckeStdTwOfStd
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.RowsExhaust
-public import Mathlib.RingTheory.Length
-public import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverAlg
-public import Mathlib.Algebra.Module.Submodule.Lattice
-public import Mathlib.Order.SupIndep
-public import Mathlib.LinearAlgebra.Span.Defs
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.LengthLocalizedModuleEqZeroOfNotAnnihilatorLe
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.SharpRestriction.LevelLetterCocycles.CongruenceSingleEndomorphism
 public import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverLen
 public import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverEta
-public import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverThm
-public import Mathlib.RingTheory.FractionalIdeal.Basic
-public import Mathlib.RingTheory.FractionalIdeal.Inverse
-public import Formalism.LocalToGlobal.Columns.AlgebraMapMemMaximalIdealPowIff
-public import Formalism.SharpRestriction.LevelLetterCocycles.DataN
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.LengthBaseChangeQuotientOfMapMaximalIdeal
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.MapSpanBaseChangeEquivSubmoduleOf
 public import Mathlib.Data.ENat.BigOperators
@@ -70,7 +57,6 @@ import Mathlib.Tactic.Linter.Style
 import Mathlib.RingTheory.KrullDimension.PID
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.AlgebraicWeights.IsAlgWeight
 import ReciprocityTheory.Automorphisms.PlaceA
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.SimpleRing.Principal

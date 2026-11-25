@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.IsScaleStable
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.BallAverageFibreCount
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.IsSigmaCompactConeInter
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.MeasurableFibreCountOver
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Assembly
 import Mathlib.Tactic.Linter.Style
 

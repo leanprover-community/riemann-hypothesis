@@ -18,9 +18,6 @@ public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PLenSq
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PMajorantBound
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsLineIndex
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsTerExtra
-public import Mathlib.Analysis.Matrix.Spectrum
-public import Mathlib.Algebra.Star.UnitaryStarAlgAut
-public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.Statements
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsUnfoldingTorus
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsTorusIntegral
 public import Mathlib.Topology.Algebra.Group.Units
@@ -58,7 +55,6 @@ public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PUnfoldingToru
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PVectorOrbitsFinite
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PWeightedIndexBound
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PWittPartner
-import GroundTheory.AutomorphicForms.HermitianOrthogonal
 
 section -- clump:auto
 @[expose] public section

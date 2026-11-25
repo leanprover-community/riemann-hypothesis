@@ -2,21 +2,14 @@ module
 
 public import Mathlib.LinearAlgebra.LinearIndependent.Defs
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.TorsionBoundsChains.FaceDSingle
-public import Mathlib.LinearAlgebra.Dimension.Constructions
-public import Mathlib.LinearAlgebra.Dimension.Finite
 public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
 public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 public import Mathlib.LinearAlgebra.Determinant
 public import Mathlib.LinearAlgebra.FreeModule.Finite.CardQuotient
-public import Mathlib.LinearAlgebra.LinearIndependent.Lemmas
-public import Mathlib.LinearAlgebra.Span.Defs
 public import Mathlib.Combinatorics.Quiver.ReflQuiver
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.TorsionBoundsChains.L1MapDomainLeAndL1FaceDSingleLe
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.TorsionBoundsChains.QuotientsEquivOfKerEq
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.TorsionBoundsChains.Transport
-public import Mathlib.Algebra.Exact.Basic
-public import Mathlib.GroupTheory.Torsion
 public import Mathlib.Analysis.SpecialFunctions.Log.Basic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.TorsionBoundsChains.GroupHomologyLongExact
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.TorsionBoundsChains.ImageRep

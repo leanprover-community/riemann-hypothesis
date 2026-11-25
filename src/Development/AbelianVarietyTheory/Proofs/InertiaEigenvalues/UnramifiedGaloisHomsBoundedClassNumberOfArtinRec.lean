@@ -4,12 +4,10 @@ public import ReciprocityTheory.NeutralLocalFields.HilbertClassField
 public import Formalism.ConjugateSelfDual.Statement
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic
 public import ReciprocityTheory.GaloisValuations.Global
-public import Mathlib.Topology.LocallyConstant.Basic
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InertiaElementEqOneOrLiesAboveFinitePlace
 public import ReciprocityTheory.GaloisValuations.ArithOfA
 public import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HilbertClassFieldA
 public import Formalism.CharacterColumnKernels.Statement
-public import Mathlib.NumberTheory.Padics.PadicIntegers
 public import ReciprocityTheory.ReductiveGroups.TraceFormulas.LatDefs
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsUniqueHcharOfFiniteOrder
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.HilbertClassFieldOfGlobalArtinReciprocity

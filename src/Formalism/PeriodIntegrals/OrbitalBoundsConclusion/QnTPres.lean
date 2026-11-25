@@ -3,7 +3,6 @@ module
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MinorSmoothness.ExpSecondHermitianMemLevel
 public import Formalism.HermitianCurvature.StatementQ
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.QnTInv
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
 import Mathlib.Tactic.Lemma
 
 -- This file was produced by scripts/clump.py from the modules listed below.

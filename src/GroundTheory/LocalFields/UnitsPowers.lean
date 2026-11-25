@@ -3,7 +3,6 @@ module
 public import GroundTheory.LocalFields.UnitsBasic
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ExistsRootOfAdicComplete
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.RingTheory.Henselian
 import Mathlib.Tactic.TypeStar
 public import Mathlib.FieldTheory.Finite.Basic
 

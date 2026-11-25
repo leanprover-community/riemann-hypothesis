@@ -7,15 +7,10 @@ public import Mathlib.RingTheory.DedekindDomain.Basic
 public import Mathlib.RingTheory.DedekindDomain.Ideal.Basic
 public import Mathlib.NumberTheory.NumberField.CMField
 public import Mathlib.RingTheory.SimpleRing.Principal
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.Analysis.Complex.Norm
-public import Mathlib.Analysis.Normed.Ring.Basic
-public import Mathlib.NumberTheory.NumberField.Norm
 public import Development.WeilBound.CoreStatements.EqualVolumeCompactOpens.EqVolSDOf
 public import Development.WeilBound.CoreStatements.EqualVolumeCompactOpens.LevelIdeal
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.MultilinearSubMem
 public import Development.WeilBound.CoreStatements.EqualVolumeCompactOpens.DiagMulVecTmul
-import Development.WeilBound.CoreStatements.EqualVolumeCompactOpens.InclAdInjective
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.ArakelovInstances.IsStrictDom
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.LiftFactorization

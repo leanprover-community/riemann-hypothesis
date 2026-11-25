@@ -5,10 +5,8 @@ public import Formalism.SharpRestriction.GrowthBounds.ChartedClasses.ToLEInvAppl
 public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.TiePtOne
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemLatSLatAdIff
 public import Formalism.LocalToGlobal.GlobalTheory.EqGlobOfHat
-public import Formalism.LocalToGlobal.PairingIndexBounds.OrthogonalChartLevels.IsOrthCo
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsLatDlOfIsOrthCo
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LocSpCompanEq
-import Formalism.LocalRingCardinality.DataHost
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -26,7 +24,6 @@ import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.Valuation.LocalSubring
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
 import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit

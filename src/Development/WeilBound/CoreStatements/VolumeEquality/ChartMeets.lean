@@ -19,7 +19,6 @@ public import Development.WeilBound.CoreStatements.VolumeEquality.ChartMeetsForm
 public import Development.WeilBound.CoreStatements.VolumeEquality.ChartMeetsPoint
 public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PIntDomainDim
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.VolumeEquality.ChartMeetsAlg, Development.WeilBound.CoreStatements.VolumeEquality.ChartMeets

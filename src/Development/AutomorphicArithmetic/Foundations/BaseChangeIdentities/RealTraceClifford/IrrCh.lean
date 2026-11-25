@@ -5,7 +5,6 @@ public import Development.AutomorphicArithmetic.Foundations.BaseChangeIdentities
 public import Development.AutomorphicArithmetic.Foundations.BaseChangeIdentities.RealTraceClifford.TrOnBot
 public import Development.AutomorphicArithmetic.Foundations.BaseChangeIdentities.RealTraceClifford.TraceRestrictSupDisjoint
 public import Development.AutomorphicArithmetic.Foundations.BaseChangeIdentities.RealTraceClifford.WcfIso
-import Formalism.RealPlaceAnalysis.QuotientSettingHolds
 import Development.AutomorphicArithmetic.Foundations.BaseChangeIdentities.RealTraceClifford.RealTrOfAll
 
 @[expose] public section

@@ -1,14 +1,8 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FormSmulL
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.BlockOfCauchySchwarz
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.BlockOfChoices
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSettingBis
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBFVnice
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBGWave
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SizeAtMinusW
-import Mathlib.Algebra.Order.Star.Real
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdmissibleAtOfAdmissibleList
 
 @[expose] public section
 

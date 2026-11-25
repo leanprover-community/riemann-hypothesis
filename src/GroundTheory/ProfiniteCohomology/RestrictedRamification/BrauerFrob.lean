@@ -6,13 +6,10 @@ public import GroundTheory.GlobalFields.CompletionAtPlace.Integers
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.CupSymbolBridge
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.DivisorModule
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.MulDistribMulActionGalUnitsFiniteSubfield
-public import Mathlib.FieldTheory.Galois.Profinite
 public import GroundTheory.LocalFields.LocalArtinTransport
 public import GroundTheory.LocalFields.TameExtension
-import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality.Naturality
 import GroundTheory.ProfiniteCohomology.CupProducts.Cocycles
 import GroundTheory.ProfiniteCohomology.CupProducts.ExistsCocycleMapFEqD
-import GroundTheory.ProfiniteCohomology.CyclicCupBrauer
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerOrd
 import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.Topology.Separation.CompletelyRegular

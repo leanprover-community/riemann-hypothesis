@@ -5,7 +5,6 @@ public import Formalism.SharpRestriction.GrowthBounds.ChartComparison.NrmAMemAdF
 public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.TiePtOne
 public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.BlockRationalityField
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.RecAct
-public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.EqOneOfPh
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.TotallySplit

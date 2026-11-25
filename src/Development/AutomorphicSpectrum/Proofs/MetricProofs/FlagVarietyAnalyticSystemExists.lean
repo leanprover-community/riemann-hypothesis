@@ -3,15 +3,11 @@ module
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsPeriodOn
 public import Development.WeilBound.CoreStatements.PluriharmonicCharts.XCFlAn
 public import Development.AutomorphicSpectrum.Statements.MetricStatements.AgreementIffGuarded
-public import GroundTheory.HeightsAndTheta.Heights.Antisymmetric.Statements
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAnalyticDataUniformised
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverDegreeOneRealisation
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GeometricAbelianConnected
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverRealisationPullback
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FlagIndices.InstFintypeFlIdx
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagVarietyArithmetic
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagVarietyModelBaseMetric
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagVarietyAnalyticSystemExists

@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Definitions.TeichmullerDepth.HasT
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieAxes
 public import Mathlib.RingTheory.MvPowerSeries.Rename
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.NatCastMulCoeffOfPderivEq
-import Formalism.LocalToGlobal.CharacterGerms.ConstMemTypeSetOfNonneg
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

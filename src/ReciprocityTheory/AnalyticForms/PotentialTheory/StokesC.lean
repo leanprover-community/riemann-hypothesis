@@ -9,11 +9,6 @@ public import ReciprocityTheory.AnalyticForms.PotentialTheory.IntegrableOnTarget
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.Partition
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.StokesA
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.StokesB
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.MeasureTheory.Integral.Bochner.Set
-public import Mathlib.Topology.UrysohnsLemma
 
 @[expose] public section
 

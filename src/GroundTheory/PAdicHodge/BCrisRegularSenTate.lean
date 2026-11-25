@@ -7,15 +7,10 @@ public import GroundTheory.PAdicHodge.FieldOfNormsTower
 public import GroundTheory.PAdicHodge.FieldOfNormsUpper
 public import GroundTheory.PAdicHodge.FieldOfNormsCyclBase
 public import GroundTheory.PAdicHodge.NormalizedTrace
-public import GroundTheory.LocalFields.Examples
-public import GroundTheory.LocalFields.SeparableClosure
 public import Mathlib.Data.Nat.Choose.Dvd
 public import GroundTheory.PAdicHodge.SenTateCharLevels
 public import GroundTheory.PAdicHodge.SenTateCharClosure
-public import GroundTheory.LocalFields.PadicLogSeries
 public import GroundTheory.PAdicHodge.SenTateCharUnitPow
-public import GroundTheory.LocalFields.ConductorMatch
-public import GroundTheory.PAdicHodge.FieldOfNormsRam
 public import GroundTheory.PAdicHodge.BCrisEigen
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -29,18 +24,13 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.Padics.LocalField
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
 import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
@@ -63,14 +53,9 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Algebra.Group.Units
-import Mathlib.Topology.Sheaves.Init
-import GroundTheory.LocalFields.LocalAxiomDictionary
 import Mathlib.Algebra.AffineMonoid.Basic
 import Mathlib.Algebra.AffineMonoid.UniqueSums
-import Mathlib.RingTheory.PicardGroup
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop

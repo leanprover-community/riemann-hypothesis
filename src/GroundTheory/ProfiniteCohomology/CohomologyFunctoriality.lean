@@ -2,8 +2,6 @@ module
 
 public import GroundTheory.ProfiniteCohomology.ContinuousCochains
 public import Mathlib.RepresentationTheory.Homological.GroupCohomology.Functoriality
-public import Mathlib.Topology.Algebra.Group.Quotient
-public import Mathlib.Topology.Algebra.Group.Subgroup
 
 @[expose] public section
 

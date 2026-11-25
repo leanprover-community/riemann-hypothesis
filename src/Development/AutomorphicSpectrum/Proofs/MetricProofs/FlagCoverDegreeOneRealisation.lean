@@ -4,19 +4,14 @@ import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagAdjacentTwoFrames
 
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.MinorIJMap
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockDiagonalMinorVanishing
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverFramesAtPoint
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameChangeScalarFactor
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameChangeUnderFieldMap
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsPeriodOn
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockDiagFrameAtGoodPointStatement
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticFifth
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelBaseProjectionPoints
-import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.Values
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticFirst
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.SameOrbitRefl
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.PluriharmonicCharts.MinorSingle, Development.WeilBound.CoreStatements.PluriharmonicCharts.XCCovSelf, Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverDegreeOneRealisation

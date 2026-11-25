@@ -4,8 +4,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.ContinuousCjIT
 public import Formalism.SharpRestriction.CuspSpanNormBounds.DMiMulVecApply
 import Formalism.SharpRestriction.CuspSpanNormBounds.OnePlaceEstimates
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.RingTheory.PiTensorProduct
 
 -- This file was produced by scripts/clump.py from the modules listed below.

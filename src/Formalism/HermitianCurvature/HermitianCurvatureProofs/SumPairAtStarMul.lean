@@ -1,7 +1,6 @@
 module
 
 public import Formalism.HermitianCurvature.CompositeFormulaLevelZero
-public import Mathlib.CategoryTheory.Category.Basic
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LiftMemMatrixAlgebra
 public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 

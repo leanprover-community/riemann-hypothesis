@@ -3,7 +3,6 @@ module
 public import Mathlib.RepresentationTheory.Basic
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeGroups.BaseRepGL3NormalisedOfPsiEqOne
 public import Mathlib.LinearAlgebra.Charpoly.ToMatrix
 import Mathlib.Tactic.Linter.Style

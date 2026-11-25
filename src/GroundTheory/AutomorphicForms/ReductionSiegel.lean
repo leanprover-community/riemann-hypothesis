@@ -5,7 +5,6 @@ public import GroundTheory.AutomorphicForms.ReductionIwasawa
 public import GroundTheory.AutomorphicForms.ReductionCore
 import GroundTheory.GlobalFields.Adele.Compact
 import GroundTheory.GlobalFields.Adele.Discrete
-import GroundTheory.GlobalFields.IdeleGroups.NormOneCompact
 import Mathlib.RingTheory.Henselian
 import Mathlib.Tactic.TypeStar
 

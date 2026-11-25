@@ -8,13 +8,7 @@ public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.Selmer
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsHeight
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SiegelConj
 public import GroundTheory.GlobalFields.IdeleGroups.GaloisOnAdeles.Action
-public import GroundTheory.GlobalFields.IdeleGroups.GaloisOnAdeles
-import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.CuspDecayHeights.HeightLe
-import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.SelmerRankBounds.IsNormAlong
 import GroundTheory.AutomorphicForms.CuspidalDiscreteness.AltSum
-import GroundTheory.AutomorphicForms.ReductionBlock
-import GroundTheory.GlobalFields.Adele.BaseChange.FiniteMap
-import GroundTheory.GlobalFields.KummerTheory.LocalIndex
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 

@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CountDefs
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.LeAndHalfLeProdOneSubExpNegOfBounds
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.ThresholdLowerBounds
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

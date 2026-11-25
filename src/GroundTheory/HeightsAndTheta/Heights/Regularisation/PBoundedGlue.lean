@@ -3,8 +3,6 @@ module
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.BoundedStatements
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.GlueCharts
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.RegMaxReindex
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshBasic
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshMoll
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshRegMax
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
 

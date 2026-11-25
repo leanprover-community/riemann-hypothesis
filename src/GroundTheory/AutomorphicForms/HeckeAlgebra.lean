@@ -7,7 +7,6 @@ public import Mathlib.Analysis.InnerProductSpace.Basic
 public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Aesop.Main
 public import GroundTheory.AutomorphicForms.HaarCosets
-import GroundTheory.AutomorphicForms.LocallyProfinite
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar

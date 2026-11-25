@@ -2,7 +2,6 @@ module
 
 public import Mathlib.Algebra.MvPolynomial.Degrees
 public import Mathlib.FieldTheory.ChevalleyWarning
-public import Mathlib.Algebra.CharP.Defs
 public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Completion
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsUniqueIdeleOfLinearEquivQuotientLocal
 public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient

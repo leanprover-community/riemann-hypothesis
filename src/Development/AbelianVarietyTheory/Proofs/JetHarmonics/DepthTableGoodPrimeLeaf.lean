@@ -2,31 +2,20 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.Jets.DepthNumbersThresholdEq
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.CharacterBlocksAttainBound
-public import Formalism.LocalToGlobal.CharacterGerms.ContentLargeFromSupplies
-public import Formalism.LocalToGlobal.CharacterGerms.ContentZeroAt
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.MonomialBlockSupplyBothTypings
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.OddLevelBlockBoundAttained
-public import Mathlib.NumberTheory.Chebyshev
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsCutIntoBoundedGroupsFinset
-public import Formalism.LocalToGlobal.CharacterGerms.RestNonneg
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.LevelsUsedBalancedValueOrbitSums
-public import Mathlib.Analysis.Complex.ExponentialBounds
-public import Development.AutomorphicArithmetic.OrbitLabellings.RowDefs
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ErealLeMulOfForallLe
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ForcedContentBoundsProgrammeValueGoodPrime
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.InertPrimeDepthContentBoundProof
 public import Development.AutomorphicArithmetic.OrbitLabellings.RowBoundLeFnumSumAddError
-public import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.ExampleSatisfiesConditionsAtFive
-public import Formalism.LocalToGlobal.ProjectiveLattices.PlaceBelow
 public import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.DepthTie
-public import Formalism.DropLevelBounds.ThBounds
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -60,16 +49,8 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Lemma
-import Mathlib.Topology.Sheaves.Init
-import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.WittVector.IsPoly
-import Formalism.LocalToGlobal.ProjectiveLattices.CrudeVal
 import Formalism.MirabolicMackeyTheory.MirabolicMackeyProofs.RamBasic
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ValBasic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.JetHarmonics.ComplexConjFrobeniusDepthContentBoundProof, Development.AbelianVarietyTheory.Proofs.JetHarmonics.LargePrimePackagesDepthNonpos, Development.AbelianVarietyTheory.Proofs.JetHarmonics.LevelLe, Development.AbelianVarietyTheory.Proofs.JetHarmonics.SplitPrimeDepthContentBoundProof, Development.AutomorphicArithmetic.OrbitLabellings.FMulLeastAdmissibleLevelRowsLe, Development.AutomorphicArithmetic.OrbitLabellings.PkgZeroCsNuNonposOfMonSupply, Development.AbelianVarietyTheory.Proofs.JetHarmonics.GoodPlaceDepthBoundProof, Development.AbelianVarietyTheory.Proofs.JetHarmonics.NormalizedLatticeExponentEqRoundedDepthGoodPlace, Development.AbelianVarietyTheory.Proofs.JetHarmonics.SumLevelTailMulLogPrimesLe, Development.AbelianVarietyTheory.Proofs.JetHarmonics.DepthTableGoodPrimeLeaf

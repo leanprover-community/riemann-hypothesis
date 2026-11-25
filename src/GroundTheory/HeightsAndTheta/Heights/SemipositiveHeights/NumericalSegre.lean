@@ -7,10 +7,8 @@ public import Mathlib.LinearAlgebra.Dual.Lemmas
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsFlagBundleForms
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PFlagBundleSectionFormsTools
 public import Mathlib.RingTheory.AlgebraicIndependent.Basic
-public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.Statements
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsFlagLineDegree
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PFlagLineSectionForms
-public import Mathlib.LinearAlgebra.Dimension.OrzechProperty
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsFlagLineSection
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Cartier
 public import Mathlib.RingTheory.AlgebraicIndependent.Transcendental
@@ -20,8 +18,6 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Stat
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.JacobianSmoothness.RingKrullDimLeRingKrullDimQuotientAddOne
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PCutRegular
 public import Mathlib.LinearAlgebra.Matrix.Rank
-public import Mathlib.RingTheory.AlgebraicIndependent.TranscendenceBasis
-public import Mathlib.FieldTheory.IntermediateField.Adjoin.Defs
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsBundles
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsDivPushForwardLocal
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.AssemblyBundles
@@ -69,7 +65,6 @@ public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PSemilocalMax
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PSemilocalResidueLength
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.PValuativeCentre
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsSemipositiveOn
 import Mathlib.Algebra.Order.Sub.Prod
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Algebra.Lie.OfAssociative

@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ExpansionLowCoeffsIntegral
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.PiNSOfPi
-public import Formalism.SharpRestriction.LevelLetterCocycles.SplitROfSteps
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.DescentValuation
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.ModelFPfB
 public import Formalism.SharpRestriction.LevelLetterCocycles.UpPositionOfModels

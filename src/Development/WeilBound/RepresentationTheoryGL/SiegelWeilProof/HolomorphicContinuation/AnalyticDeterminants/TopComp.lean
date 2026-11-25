@@ -7,15 +7,7 @@ public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.Holom
 public import Mathlib.Analysis.Calculus.ContDiff.Basic
 public import Mathlib.Analysis.Calculus.ContDiff.Comp
 public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Complex.Exponential
-public import Mathlib.Topology.Algebra.Module.Multilinear.Basic
 public import Mathlib.Analysis.Real.Pi.Bounds
-public import Mathlib.Algebra.Polynomial.Basic
-public import Mathlib.Algebra.Polynomial.Coeff
-public import Mathlib.Algebra.Polynomial.Eval.Defs
-public import Mathlib.Algebra.Polynomial.Roots
-public import Mathlib.Analysis.Complex.Trigonometric
 public import Mathlib.CategoryTheory.Category.Basic
 public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.AnalyticDeterminants.TCCalc
 import Std.Tactic.BVDecide.Normalize.Prop

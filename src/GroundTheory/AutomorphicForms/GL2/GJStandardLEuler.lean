@@ -5,18 +5,14 @@ public import Mathlib.Analysis.InnerProductSpace.Basic
 public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 public import Mathlib.Topology.Algebra.RestrictedProduct.TopologicalSpace
 public import Mathlib.MeasureTheory.Integral.Pi
-public import Mathlib.MeasureTheory.Integral.Bochner.Set
 public import Mathlib.MeasureTheory.Measure.Haar.Unique
 public import GroundTheory.AutomorphicForms.GL2.GJStandardLDefs
 public import GroundTheory.AutomorphicForms.GL2.GJGlobalDefs
 public import GroundTheory.AutomorphicForms.GL2.GJUnramified
 public import GroundTheory.AutomorphicForms.GL2.GodementSectionFactor
-public import GroundTheory.GlobalFields.Adele.Topology
 public import GroundTheory.AutomorphicForms.GL2.GJStandardLBump
 public import GroundTheory.AutomorphicForms.GL2.GJStandardLTensor
 import Mathlib.Tactic.TypeStar
-import GroundTheory.AutomorphicForms.GL2.ExistsEqPowMulOfValuationLe
-import GroundTheory.AutomorphicForms.GL2.GJFEInducedLevi
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.AutomorphicForms.RestrictedHaarProduct, GroundTheory.AutomorphicForms.GL2.GJStandardLEuler

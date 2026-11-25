@@ -4,7 +4,6 @@ public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology.ConePair
 public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology.CupLeibniz
 public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology
 public import GroundTheory.ProfiniteCohomology.PoincareDuality.DeltaPairing
-import GroundTheory.ProfiniteCohomology.FilteredHomology
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.ProfiniteCohomology.CompactSupportCohomology.ConeSymmetry, GroundTheory.ProfiniteCohomology.CompactSupportCohomology.CompactCupEqCompactCupRight

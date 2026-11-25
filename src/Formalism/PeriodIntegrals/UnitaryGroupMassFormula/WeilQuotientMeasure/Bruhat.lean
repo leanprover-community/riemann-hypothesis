@@ -1,8 +1,6 @@
 module
 
 public import Mathlib.MeasureTheory.Group.Measure
-public import Mathlib.MeasureTheory.Group.Defs
-public import Mathlib.MeasureTheory.Integral.Lebesgue.Basic
 public import Mathlib.MeasureTheory.Group.LIntegral
 
 -- This file was produced by scripts/clump.py from the modules listed below.

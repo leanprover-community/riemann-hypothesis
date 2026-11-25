@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.Exis
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.IsTriangularReframeExistsAndUnique
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AmplePointsLocalizedModel
 public import Formalism.LocalRingCardinality.DataHost
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.DefiniteFormStabilizerFiniteAwayFromP
 import Formalism.LocalRingCardinality.DataTheta

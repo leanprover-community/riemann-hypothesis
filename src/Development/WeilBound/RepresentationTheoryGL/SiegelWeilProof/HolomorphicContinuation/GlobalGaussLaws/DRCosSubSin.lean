@@ -4,13 +4,6 @@ public import Mathlib.Analysis.Complex.Norm
 public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Mathlib.Analysis.Matrix.Spectrum
 public import Mathlib.Analysis.Real.Pi.Bounds
-public import Mathlib.Algebra.Polynomial.Degree.Defs
-public import Mathlib.Algebra.Polynomial.Eval.Defs
-public import Mathlib.Algebra.Polynomial.Roots
-public import Mathlib.Algebra.Star.UnitaryStarAlgAut
-public import Mathlib.Analysis.Complex.Basic
-public import Mathlib.Analysis.Complex.Exponential
-public import Mathlib.Analysis.Complex.Trigonometric
 public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.GlobalGaussLaws.DRConjTranspose
 import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.GlobalGaussLaws.GaussB
 

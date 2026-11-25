@@ -9,7 +9,6 @@ import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.MetricSpace.Contracting
 
 @[expose] public section
 

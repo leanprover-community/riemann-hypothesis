@@ -2,12 +2,8 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.TailTGlueT
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.CountFromEqFilterLength
-public import Formalism.SharpRestriction.GrowthBounds.ValuationLowestDegreeRename
-public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.NegDminusLeMu
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.TypicalPathOrdersSmall
-public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.WindowSmall
 public import Formalism.ThetaLogCoordinates.ResidueClassEstimates.FinalT
-public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.AtypicalPathSmallWeight
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.DiscriminantNeZeroOfResidueNeZero
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.GoodPathWeight
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.DistAddTwoLeOfSameVec

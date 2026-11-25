@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.Divisors.SecClass
 public import Development.AutomorphicArithmetic.BlowupCategories.SpanScale
-import Development.AutomorphicArithmetic.CupPullbacks.ConstCompSingle
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.CommutativeAlgebra.IsPullbackOfUniqueSimplicesPullback, Development.AutomorphicArithmetic.CommutativeAlgebra.StackProductIsPullbackOfActionPullback

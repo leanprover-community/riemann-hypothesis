@@ -4,7 +4,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CharacterOrt
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FirstKernelPropertiesOfHypotheses
 public import Aesop.BuiltinRules
 public import Formalism.DoubleCosetMeasures.LatticeCoset
-import Formalism.DoubleCosetMeasures.LowerUnipotentOrbits.LowUniMulVecELast
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AddedBlockKernelSupport
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.KernelQuotientFinite
 import Mathlib.RingTheory.Coalgebra.CoassocSimps

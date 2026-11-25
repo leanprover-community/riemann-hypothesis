@@ -5,48 +5,25 @@ public import Mathlib.Algebra.Field.Defs
 public import Mathlib.Data.Matrix.Mul
 public import Mathlib.LinearAlgebra.Span.Defs
 public import Mathlib.RingTheory.Henselian
-public import Mathlib.Algebra.Algebra.Subalgebra.Basic
-public import Mathlib.Algebra.Algebra.Subalgebra.Lattice
 public import Mathlib.Data.Matrix.Basic
 public import Mathlib.Data.Matrix.Basis
-public import Mathlib.Algebra.Module.Submodule.Equiv
 public import Mathlib.LinearAlgebra.Matrix.ToLin
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.PairedDualFirstOrderDualMatrixSpace
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IrredIffSpan
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.SpanDesc
 public import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.UniversalOrdinaryDeterminantRing
 public import Mathlib.RingTheory.Filtration
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
-public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
-public import Mathlib.RingTheory.MvPowerSeries.Inverse
-public import Mathlib.RingTheory.PowerSeries.Basic
 public import Mathlib.RingTheory.PowerSeries.Inverse
-public import Mathlib.RingTheory.Ideal.BigOperators
-public import Mathlib.RingTheory.Localization.Integer
-public import Mathlib.RingTheory.Finiteness.Defs
 public import Mathlib.RingTheory.PowerSeries.Expand
 public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsOfValILeOne
 public import Mathlib.Algebra.Polynomial.FieldDivision
-public import Mathlib.Algebra.Polynomial.Splits
-public import Mathlib.FieldTheory.SplittingField.Construction
-public import Mathlib.Algebra.Algebra.Defs
-public import Mathlib.Algebra.Group.Finsupp
-public import Mathlib.Data.Finsupp.SMulWithZero
-public import Mathlib.LinearAlgebra.Basis.Defs
-public import Mathlib.LinearAlgebra.Basis.VectorSpace
-public import Mathlib.RingTheory.Localization.FractionRing
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.TaylorWilesObstructionBound
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.DGext
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.TwoBlock
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.ZlUniq
-import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.RingTheory.AdicCompletion.Noetherian
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.RingTheory.PowerSeries.Ideal
-import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.RepAlg
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.DensityProd, Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IntertwinerIso, Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.BlockForm, Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.ClosedOfComb, Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.ConjCont, Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.FiniteOfGeneratedByOneElement, Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.ExistsIntegralBlockIwasawaDecomposition, Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.FlagFDiagonalise, Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.FlagBasis, Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.ResSqField, Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.SolBase, Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.SpanImageDenominators, Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.DeterminantPadicFree.SpanInt, Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.AutomorphicDetection.ConjugationDescendsToSubring

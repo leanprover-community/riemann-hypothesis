@@ -3,9 +3,7 @@ module
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GeneralLinearLevel.ExpMulVecFix
 public import Formalism.HermitianCurvature.StatementQ
 public import Formalism.FormalDegreeBessel.FinalG
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.Tactic.Lemma
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexifiedDerivativeCommutator
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GeneralLinearLevel.HpartUnique, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GeneralLinearLevel.ElementaryGeneratorsLevelGroup, Formalism.PeriodIntegrals.OrbitalBoundsConclusion.QnEabGl

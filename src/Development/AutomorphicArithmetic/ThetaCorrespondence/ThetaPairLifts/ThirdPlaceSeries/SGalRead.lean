@@ -10,7 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsLat
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.NormEqOneOfCompact
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.NotMemPlacesOverOfNe
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SplitPlaceGoodSignature
-public import Development.AbelianVarietyTheory.BlockTheory.ThetaLiftGeometry.NoLocalInvariants
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TypeConditions.IsPotCrysAtOfMono0
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsPlaceOverMoveValCc
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TypeConditions.Triple
@@ -63,27 +62,15 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.WeightRegularOfExt
-import Formalism.SharpRestriction.LevelLetterCocycles.JointConditionsZpowers.ResidualIrreducibleOfTheorem
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.FieldTheory.Galois.Profinite
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Polynomial.Basic
-import Development.AbelianVarietyTheory.Definitions.Foundations.MatrixMeasurableSpace
-import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
-import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.RankOneUnitary
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.LeviEmbMemNormalizerLower
-import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ExistsReadingLaws
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.GoodIdempotentFixesMemGoodTypeSpace
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DepthZeroLabelsOfLabelLaws
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemMaximalIdealIff
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InertialOrderFifteenCharAuxiliaryPrimeSpec
 import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.TypeConditions.GalRead
 import Mathlib.Tactic.Basify
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsSplitOfMemAdmissibleConjugatePairPlaces
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NoFormsOff
-import Formalism.LocalToGlobal.IndefiniteReal.LinksDefs
 import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.HCFFromRecipA
 
 -- This file was produced by scripts/clump.py from the modules listed below.

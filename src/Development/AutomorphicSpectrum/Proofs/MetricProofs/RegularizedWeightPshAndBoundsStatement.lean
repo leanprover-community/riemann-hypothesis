@@ -9,10 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PChartLeviThGe
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PChartMollifiedBounds
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PTruncPsh
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshBasic
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshExt
-import ReciprocityTheory.AnalyticForms.PotentialTheory.HessCEqZeroOfEventuallyEqZero
-import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularizedWeightPshAndBounds, Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularizedWeightPshAndBoundsStatement

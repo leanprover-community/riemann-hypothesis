@@ -5,7 +5,6 @@ public import Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Basic
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjSpace
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.CechSeparated
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Combinatorics.Quiver.ReflQuiver
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
 

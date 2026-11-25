@@ -7,8 +7,6 @@ public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 public import Formalism.CyclotomicNorms.StatementTW
 public import Formalism.PadicSubsetSums.CentralIdempotents.CentralIdempotentIntegral
 import Mathlib.FieldTheory.Galois.Profinite
-import Mathlib.RingTheory.Invariant.Profinite
-import Mathlib.RingTheory.Valuation.LocalSubring
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

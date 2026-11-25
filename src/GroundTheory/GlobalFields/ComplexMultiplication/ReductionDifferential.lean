@@ -3,7 +3,6 @@ module
 public import GroundTheory.GlobalFields.ComplexMultiplication.DifferentialConstantField
 public import GroundTheory.GlobalFields.ComplexMultiplication.ReductionIsogenyMap
 public import Mathlib.Algebra.TrivSqZeroExt.Basic
-import GroundTheory.GlobalFields.ComplexMultiplication.ReductionComp
 public import GroundTheory.GlobalFields.ComplexMultiplication.ReductionDegree
 
 @[expose] public section

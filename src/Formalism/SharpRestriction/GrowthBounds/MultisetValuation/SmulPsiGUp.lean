@@ -3,17 +3,12 @@ module
 import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.EdgePlane
 public import Formalism.SharpRestriction.GrowthBounds.UnramifiedQuadraticSetting
 public import Mathlib.LinearAlgebra.FreeModule.PID
-public import Mathlib.RingTheory.Localization.Module
 public import Mathlib.FieldTheory.Finiteness
-public import Mathlib.LinearAlgebra.Dimension.RankNullity
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.CountLoc
 public import Formalism.SubspaceCounting.SubspaceCountingProofs.TypeIIDown
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.TypeStar
 

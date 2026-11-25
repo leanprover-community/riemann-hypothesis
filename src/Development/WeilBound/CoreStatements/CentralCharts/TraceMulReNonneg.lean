@@ -3,7 +3,6 @@ module
 public import Mathlib.Analysis.SpecialFunctions.Log.Basic
 public import Mathlib.LinearAlgebra.Matrix.PosDef
 public import Mathlib.Analysis.Matrix.Order
-public import Mathlib.Algebra.BigOperators.Field
 
 @[expose] public section
 

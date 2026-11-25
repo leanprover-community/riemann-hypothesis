@@ -4,17 +4,11 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.DownSlotProposition
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfL
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfAlpha
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfPhi
-public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.GradNPfA
-public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfDict
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfNat
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfDat
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfHyp
 public import Formalism.SharpRestriction.LevelLetterCocycles.ClassMapStep
-import Formalism.SharpRestriction.LevelLetterCocycles.FrobeniusPowUniformizerFactorisation
-import Formalism.SharpRestriction.LevelLetterCocycles.MapCompZero
 import Mathlib.RingTheory.PiTensorProduct
-import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfEqv
-import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfPt
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfBeta, Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfAB, Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfBA, Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfRec, Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePf

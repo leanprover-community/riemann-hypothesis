@@ -7,10 +7,8 @@ public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeLogBoun
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StConeSheetGramLintegral
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeSheetArea
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PConeChartGram
-public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Statements
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PChartHomogenise
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.MeasurableOfContinuousOnNeZero
-public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.EqZeroOfMemZeroLocusLineOriginIdeal
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StSliceMassFinite
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.Statements
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StatementsArea
@@ -20,12 +18,8 @@ import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
-import Mathlib.RingTheory.KrullDimension.Field
-import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
-import Mathlib.RingTheory.KrullDimension.Polynomial
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Statements
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PConePolar, GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSliceAbsIndep, GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSliceMassFinite, GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSliceMassFiniteDirect

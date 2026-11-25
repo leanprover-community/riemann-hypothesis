@@ -5,11 +5,9 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HermitianHaarMea
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 public import Formalism.FormalDegreeBessel.FinalG
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CartanInvolutionConjTransposeMul
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
-import Mathlib.Topology.UniformSpace.Matrix
 public import Mathlib.Analysis.Calculus.Deriv.Shift
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.SumDualVectorEqZeta
 

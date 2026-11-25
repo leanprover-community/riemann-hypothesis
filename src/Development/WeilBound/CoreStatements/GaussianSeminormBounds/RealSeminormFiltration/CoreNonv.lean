@@ -3,7 +3,6 @@ module
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockJointMultiplicity.LoweringPartRightActionInlInr
 public import Formalism.LocalToGlobal.ThetaOperatorCommutation.RealTh
 public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.CoreDefs
-public import Mathlib.Analysis.InnerProductSpace.Orthogonal
 public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.CoreCyc
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.FockRaiseLow
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockDegreeOne.FockOperatorsKernel

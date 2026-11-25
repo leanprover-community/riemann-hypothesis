@@ -5,29 +5,19 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsCon
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.SpanOrbitStab
 public import Mathlib.Analysis.InnerProductSpace.Dual
 public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Mathlib.LinearAlgebra.Quotient.Bilinear
 public import Development.WeilBound.ThetaLifts.LatticeBasics.FdEqZero
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.IntegrableOnRight
 public import Development.WeilBound.ThetaLifts.ConeHypotheses.PureEqPureA
 public import Development.WeilBound.ThetaLifts.LatticeBasics.NonZero
 import Development.WeilBound.ThetaLifts.LatticeBasics.PairsB
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.SetTheory.ZFC.PSet
-import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-import Development.AbelianVarietyTheory.Definitions.Foundations.EventuallyNormFinLeOne
-import Development.AbelianVarietyTheory.Definitions.Foundations.NormEulerPolySubOneLe
 import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.PureEqPureA
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Topology.Baire.LocallyCompactRegular
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
-import Mathlib.RingTheory.PiTensorProduct
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.CountableCompactOpen, Development.WeilBound.ThetaLifts.LatticeBasics.HermAbs, Development.WeilBound.ThetaLifts.LatticeBasics.FinOrbit, Development.WeilBound.ThetaLifts.LatticeBasics.RankPolData

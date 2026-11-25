@@ -1,8 +1,6 @@
 module
 
 public import Development.WeilBound.CoreStatements.CrystallinePeriodRings.ExistsMapEqOfPowMul
-import GroundTheory.PAdicHodge.ACrisPhi
-import GroundTheory.PAdicHodge.BCrisPlusInvariants
 
 @[expose] public section
 

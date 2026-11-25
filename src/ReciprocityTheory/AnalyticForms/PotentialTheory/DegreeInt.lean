@@ -12,8 +12,6 @@ public import ReciprocityTheory.AnalyticForms.PotentialTheory.IntegrableOnTarget
 import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
 import ReciprocityTheory.AnalyticForms.PotentialTheory.Partition
 import ReciprocityTheory.AnalyticForms.PotentialTheory.PotentialContDiffAt
-public import Mathlib.MeasureTheory.Function.LocallyIntegrable
-public import Mathlib.MeasureTheory.Integral.Bochner.Set
 
 @[expose] public section
 

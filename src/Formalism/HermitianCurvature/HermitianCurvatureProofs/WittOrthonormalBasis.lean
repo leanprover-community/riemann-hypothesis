@@ -2,16 +2,12 @@ module
 
 public import Formalism.HermitianCurvature.FiniteOrderIntersectionInSmooth
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FlagSpanVanishing
-public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GNonneg
-public import Formalism.HermitianCurvature.StatementB
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FixedPointsGramVector
 public import Mathlib.Analysis.Matrix.PosDef
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermitianFormFlagVector
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.LinearChangeOfVariablesBis
 import Mathlib.Tactic.Lemma
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.HermitianFormBasics
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.MajorantEstimate
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentUpperFacts
 import Mathlib.RingTheory.Coalgebra.IsFrobenius

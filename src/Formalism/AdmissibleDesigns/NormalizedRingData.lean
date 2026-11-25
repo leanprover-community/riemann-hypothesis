@@ -8,11 +8,7 @@ public import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
 public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
 public import Mathlib.FieldTheory.PrimitiveElement
 public import Mathlib.RingTheory.DiscreteValuationRing.TFAE
-public import Formalism.WachLatticeTwists.RamifiedBlockRings.ChainFromPrimitiveData
 public import Formalism.WachLatticeTwists.RamifiedBlockRings.RamifiedBlockProofs.IdempotentImageSurjective
-public import Formalism.CharacterColumnKernels.IdempotentNormalForms.LengthKerOfDetEqZero
-public import Formalism.CharacterColumnKernels.IdempotentNormalForms.GlobalConcreteOf
-public import Formalism.CharacterColumnKernels.IdempotentNormalForms.CupKillAdm
 public import Formalism.WachLatticeTwists.RamifiedBlockRings.RamifiedBlockProofs.AbsIrrOfSpan
 public import Formalism.WachLatticeTwists.RamifiedBlockRings.RamifiedBlockProofs.RingObjectsExist
 public import Formalism.WachLatticeTwists.RamifiedBlockRings.DistinctEigenvalueCornerPerturbation
@@ -25,18 +21,10 @@ public import Formalism.AdmissibleDesigns.RealDisplayAllKOf
 public import Formalism.SharpRestriction.LevelLetterCocycles.DistinctEigenvalueCornerPerturbationOfBlocks
 public import Formalism.SharpRestriction.LevelLetterCocycles.EndomorphismIndexBound
 public import Formalism.WachLatticeTwists.RealDisplaySplitting.RealDisplayProofs.IdempotentRankOneAtPoint
-import Formalism.CharacterColumnKernels.Statement
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.TypeStar
-import Formalism.WachLatticeTwists.CoprimeLiftBounds.Statement
-import Formalism.CharacterColumnKernels.IdempotentNormalForms.GenFin
-import Formalism.CharacterColumnKernels.IdempotentNormalForms.SingleEqSmul
-import Formalism.WachLatticeTwists.RamifiedBlockRings.RamifiedBlockProofs.FinrankRangeEq
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.WachLatticeTwists.RamifiedBlockRings.RamifiedBlockProofs.SplitExt, Formalism.WachLatticeTwists.RamifiedBlockRings.RamifiedBlockProofs.BigRes, Formalism.WachLatticeTwists.RamifiedBlockRings.RamifiedBlockProofs.ExistsSigma, Formalism.WachLatticeTwists.RamifiedBlockRings.RamifiedBlockProofs.KerEqOfFactor, Formalism.WachLatticeTwists.RamifiedBlockRings.RamifiedBlockProofs.SpanSingle, Formalism.WachLatticeTwists.RamifiedBlockRings.RamifiedBlockProofs.LemmaFiveThreeExtensionOfModule, Formalism.WachLatticeTwists.RamifiedBlockRings.RamifiedBlockProofs.CompositeOfChainHolds, Formalism.AdmissibleDesigns.NormalizedRingData

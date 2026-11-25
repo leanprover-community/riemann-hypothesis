@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePOActLog
-public import Formalism.LocalToGlobal.CharacterGerms.RowTieFB
 import Formalism.FormalGroupLog.FormalGroupLogProofs.ChainRule
 import Formalism.LocalToGlobal.CharacterGerms.RowTiePLogSt
 

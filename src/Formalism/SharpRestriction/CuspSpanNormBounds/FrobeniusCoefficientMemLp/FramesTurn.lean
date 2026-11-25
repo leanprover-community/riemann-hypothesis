@@ -6,7 +6,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficient
 public import Formalism.SharpRestriction.CuspSpanNormBounds.FrobeniusCoefficientMemLp.FramesPt
 public import Mathlib.RingTheory.Complex
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.CategoryTheory.Countable
 import Mathlib.Tactic.TypeStar

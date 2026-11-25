@@ -2,13 +2,8 @@ module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CornerBZero
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.BlockTwoDiagonalZeroSize
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContDiffBumpG
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentCoordinatesMeasurePreserving
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.CategoryTheory.Countable
-import Mathlib.Topology.Separation.CompletelyRegular
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.AutomorphicInSphericalLevel
 
 @[expose] public section

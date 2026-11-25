@@ -10,8 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.Differentia
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ExistsLinearOfIsMonHom
 public import Development.AbelianVarietyTheory.Statements.PrincipalLattices.PrimeSpectrumDualEq
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ChartPshPhMu
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComplexPointsIffCentres
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComponentDataHodgeFourth
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComponentDataIntersectionBound
@@ -19,9 +17,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.Intersection
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SncChartLocalNormalForm
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GramMatrixChangeFrame
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeInnerProductAdjoint
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ContDiffUncentre
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.InteriorPointPolarised
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CuspIntersectionPositive
 @[expose] public section

@@ -14,10 +14,7 @@ public import Formalism.RealPlaceAnalysis.QuotientSettingHolds
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactExponentialSurjective
 public import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 public import Mathlib.Analysis.ODE.ExistUnique
-public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 public import Mathlib.Analysis.InnerProductSpace.JointEigenspace
-public import Mathlib.Analysis.InnerProductSpace.Spectrum
 public import CompanionTheory.HarishChandraModules.LowKTypeMultiplicity.DiscreteSeriesCharacters.CapelliDeterminantBlockProduct
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.NotCdomAddRoot
 public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.EqSmulOfWeight

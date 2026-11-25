@@ -3,9 +3,6 @@ module
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerFlagSplitting.SubFlag
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
 public import Formalism.FormalDegreeBessel.FinalG
-public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
-public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GroupFactorizationHolds
-public import Mathlib.Algebra.Star.Basic
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerFlagSplitting.MulVecColOfMul
 public import Formalism.HermitianCurvature.FiniteOrderIntersectionInSmooth
 import Mathlib.Tactic.Linter.Style

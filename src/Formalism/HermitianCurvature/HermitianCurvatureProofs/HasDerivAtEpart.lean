@@ -1,7 +1,6 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HasDerivAtInvpow
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentComposition.HasDerivAtInvpow
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
 

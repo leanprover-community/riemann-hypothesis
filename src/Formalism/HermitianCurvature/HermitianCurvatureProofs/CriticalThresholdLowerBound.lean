@@ -3,7 +3,6 @@ module
 public import Formalism.HermitianCurvature.StatementSz
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CorollaryAOfPropositionA
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SumInvSqLeSub
-import Mathlib.Analysis.Complex.ExponentialBounds
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

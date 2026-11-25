@@ -2,18 +2,10 @@ module
 
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.GaNonneg
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.HeisenbergFactsOfInductiveInput
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.Phi2
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.FixOfPerp
-public import Mathlib.Analysis.Matrix.PosDef
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.HermitianFormBaseVectorRight
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.UHMulInv
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.InductiveHeisenbergInputs
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.EIntBound
 import Mathlib.Tactic.Lemma
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.DetEqMulMinorOfColZero
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.HeisenbergRankOneDecomposition
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.RankOneLeviComm
 import Mathlib.Algebra.Order.Star.Real
 
 -- This file was produced by scripts/clump.py from the modules listed below.

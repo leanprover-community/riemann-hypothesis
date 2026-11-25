@@ -2,9 +2,7 @@ module
 
 public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.CoreDefs
 public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.CoreHarm
-public import Formalism.PeriodIntegrals.FockDegreeTwoParts
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockHarmonicSplitting.MinusPartOfMem
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockWeightDegree.ExistsMonomialWeight
 import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.CoreLie
 import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.FockRaiseLow
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockDegreeOne.RedOps

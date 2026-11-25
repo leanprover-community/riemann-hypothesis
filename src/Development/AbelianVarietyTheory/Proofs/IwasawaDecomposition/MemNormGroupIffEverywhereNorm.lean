@@ -9,7 +9,6 @@ public import Development.AbelianVarietyTheory.Proofs.HeightProofs.QuadraticForm
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.UnitNormFormAtOddPlace
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AlmostNormFinDiag
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EtaProdEqOfEverywhereNormDiv
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsSquareMulInfinite
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

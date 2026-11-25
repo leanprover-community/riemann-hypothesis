@@ -6,11 +6,7 @@ public import Formalism.LocalToGlobal.Columns.Record
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnSpacesStandardInFrameCoords
 public import Formalism.LocalToGlobal.Columns.TiedLv
 public import Formalism.LocalToGlobal.Columns.TiedUpDnA
-public import Formalism.LocalToGlobal.Columns.BtExistsSmulLeOfFg
-public import Formalism.LocalToGlobal.Columns.RecLevelCls
-public import Formalism.LocalToGlobal.Columns.SmulMemTrpSet
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ReductionModPrimeLevelPrimeSmulEq
-public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.InvSmulMemOfRedL
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MoveDownLevelPrimeAdelicFactorisation
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MoveDownLevelPrimeKeepsChart
 import Mathlib.Algebra.Order.Floor.Extended

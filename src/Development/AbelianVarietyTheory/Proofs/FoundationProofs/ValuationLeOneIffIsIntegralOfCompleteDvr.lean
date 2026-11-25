@@ -3,7 +3,6 @@ module
 public import Mathlib.Analysis.Normed.Field.WithAbs
 public import Mathlib.RingTheory.Valuation.Basic
 public import Mathlib.Analysis.Normed.Unbundled.SpectralNorm
-public import Mathlib.Analysis.Normed.Group.Ultra
 public import Mathlib.Basic.NNReal.Defs
 public import Mathlib.RingTheory.Algebraic.Defs
 public import Mathlib.RingTheory.DiscreteValuationRing.Basic

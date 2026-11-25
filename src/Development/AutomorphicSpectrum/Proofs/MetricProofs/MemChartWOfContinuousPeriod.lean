@@ -1,7 +1,6 @@
 module
 
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsIsChart
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SiegelLimitImagBound
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.ImLowerOnKernel
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.MulVecEqZeroOfPair
 import Mathlib.Tactic.Linter.Style

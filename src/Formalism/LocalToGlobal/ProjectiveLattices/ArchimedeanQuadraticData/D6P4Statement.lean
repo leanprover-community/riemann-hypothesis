@@ -2,15 +2,8 @@ module
 
 public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
 public import Mathlib.NumberTheory.NumberField.Discriminant.Different
-public import Mathlib.Analysis.Normed.Lp.PiLp
-public import Mathlib.Analysis.InnerProductSpace.PiL2
-public import Mathlib.LinearAlgebra.LinearIndependent.Defs
-public import Mathlib.LinearAlgebra.Basis.Basic
-public import Mathlib.LinearAlgebra.Dimension.StrongRankCondition
-public import Mathlib.NumberTheory.NumberField.Basic
 public import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.HQsmulRight
 public import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.RhoDotSelf
-public import Mathlib.NumberTheory.NumberField.InfinitePlace.Embeddings
 public import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.FinrankCmType
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.CoveringRadiusStatement
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.PhiCMinF

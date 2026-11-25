@@ -17,7 +17,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DiscrepancyF
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DivisorCenterProperLift
 public import Development.WeilBound.CoreStatements.PublishedTheorems.NadelVanishingPairs.NadelVanishingLemmas.KltOfSncCoefficients
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GeometricallyIntegralIffGeometricallyConnectedOf
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsEtCoord
 
 -- This file was produced by scripts/clump.py from the modules listed below.

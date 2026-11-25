@@ -6,7 +6,6 @@ public import Mathlib.Analysis.Matrix.Normed
 public import Mathlib.Analysis.MeanInequalitiesPow
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.DecMomentsA
 public import Mathlib.LinearAlgebra.Matrix.Rank
-public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.PsiExistsStatement
 public import Mathlib.Analysis.Matrix.Spectrum
 public import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 public import Mathlib.Analysis.SpecialFunctions.Exponential

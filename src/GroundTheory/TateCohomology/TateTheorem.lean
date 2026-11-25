@@ -5,8 +5,6 @@ public import GroundTheory.TateCohomology.CohTrivial
 public import GroundTheory.TateCohomology.TateConnecting
 public import Mathlib.Tactic.Continuity
 public import GroundTheory.TateCohomology.TateLow
-import GroundTheory.TateCohomology.CupProduct
-import GroundTheory.TateCohomology.InducedNorm
 import GroundTheory.TateCohomology.TateGroupIso
 
 -- This file was produced by scripts/clump.py from the modules listed below.

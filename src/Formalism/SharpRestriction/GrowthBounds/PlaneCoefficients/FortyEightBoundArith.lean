@@ -5,9 +5,6 @@ public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.FrMemLette
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.LeCubeMul
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.PosULeIff
 import Mathlib.Topology.Sheaves.Presheaf
-import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.TwiceValuationFactorialProduct
-import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.SlackBoundJoint
-import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.SlackBoundReal
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.PlaneCoefficients.OldestFar, Formalism.SharpRestriction.GrowthBounds.PlaneCoefficients.FortyEightBoundArith

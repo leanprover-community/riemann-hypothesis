@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsMirClass
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsColReduced
 public import Mathlib.Algebra.Group.End
-public import Mathlib.Order.WellFounded
 public import Mathlib.GroupTheory.Nilpotent
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BlockParabolicUnitriangularSubgroupsGLnPrimeFiel
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CardDoubleCosetMulCardInter

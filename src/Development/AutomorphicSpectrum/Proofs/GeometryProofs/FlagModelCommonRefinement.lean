@@ -17,7 +17,6 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsG
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.MbLNormExists
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsCptGen
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.HodgeTatePoints.McCramer, Development.WeilBound.CoreStatements.HodgeTatePoints.MbLFlatten, Development.WeilBound.CoreStatements.HodgeTatePoints.MbLJoinIso, Development.WeilBound.CoreStatements.HodgeTatePoints.MbLJoinMany, Development.WeilBound.CoreStatements.HodgeTatePoints.MbLPullEq, Development.WeilBound.CoreStatements.HodgeTatePoints.MbLTopCommon, Development.AutomorphicSpectrum.Proofs.GeometryProofs.FlagModelCommonRefinement

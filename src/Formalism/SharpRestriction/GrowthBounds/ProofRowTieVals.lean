@@ -12,17 +12,7 @@ public import Formalism.LocalToGlobal.CharacterGerms.RowTiePProjLieSelf
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieValK
 public import Formalism.SharpRestriction.GrowthBounds.ProofRowTieValsE
 public import Formalism.LocalToGlobal.CharacterGerms.ValuationEqSelfOfUnitGerm
-import Formalism.LocalToGlobal.CharacterGerms.AbstractGermZeroCondition
-import Formalism.LocalToGlobal.CharacterGerms.CoeffSingleSubstOfLowDegree
-import Formalism.LocalToGlobal.CharacterGerms.ConstMemTypeSetOfNonneg
-import Formalism.LocalToGlobal.CharacterGerms.RowTieCartAdd
 import Mathlib.Tactic.Linter.Style
-import Formalism.LocalToGlobal.CharacterGerms.EndomorphismLimitIntegral
-import Formalism.LocalToGlobal.CharacterGerms.RowTiePLSmallMain
-import Formalism.LocalToGlobal.CharacterGerms.IntSProd
-import Formalism.LocalToGlobal.CharacterGerms.LogCoordOfDpull
-import Formalism.LocalToGlobal.CharacterGerms.SubstSubst
-import Formalism.LocalToGlobal.CharacterGerms.TripleSubstSecondCoordinate
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

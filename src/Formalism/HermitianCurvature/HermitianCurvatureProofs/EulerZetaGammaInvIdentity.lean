@@ -1,7 +1,6 @@
 module
 
 public import Formalism.HermitianCurvature.StatementM
-public import Mathlib.Algebra.Order.Group.PiLex
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.RingTheory.PiTensorProduct

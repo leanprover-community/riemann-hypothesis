@@ -3,7 +3,6 @@ module
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsArith
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSupBoundBlock
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Topology.Algebra.MvPolynomial
 
 @[expose] public section
 

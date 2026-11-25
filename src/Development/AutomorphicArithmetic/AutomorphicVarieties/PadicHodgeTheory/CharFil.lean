@@ -16,7 +16,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.O
 import Mathlib.NumberTheory.Padics.LocalField
 import Mathlib.Topology.Algebra.Group.Units
 public import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.DualExactSequence
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormSubLtOneOfFix
 
 @[expose] public section
 

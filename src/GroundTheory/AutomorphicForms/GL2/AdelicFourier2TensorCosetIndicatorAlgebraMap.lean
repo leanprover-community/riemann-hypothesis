@@ -3,15 +3,11 @@ module
 public import GroundTheory.GlobalFields.TateThesis.SchwartzBruhatFinite
 public import Mathlib.MeasureTheory.Integral.Pi
 public import GroundTheory.AutomorphicForms.ReductionIwasawa
-public import GroundTheory.GlobalFields.TateThesis.AdeleMeasure
 public import GroundTheory.AutomorphicForms.NormDetDiagUnitsPosRealToUnits
-public import GroundTheory.GlobalFields.TateThesis.AdeleScaling
 public import GroundTheory.AutomorphicForms.GL2.SummableNormIffAndTsumEqCoset2
 public import GroundTheory.GlobalFields.TateThesis.AdelePoisson
 import GroundTheory.AutomorphicForms.ReductionMeasure
 import Mathlib.Tactic.TypeStar
-import GroundTheory.GlobalFields.Adele.Topology
-import GroundTheory.GlobalFields.IdeleGroups.UnitBound
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.RingTheory.PiTensorProduct
 

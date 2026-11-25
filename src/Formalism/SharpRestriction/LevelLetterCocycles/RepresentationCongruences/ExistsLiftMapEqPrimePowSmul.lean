@@ -14,7 +14,6 @@ public import Mathlib.RingTheory.PowerSeries.Inverse
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.SaturationFractionModule
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.TruncatedCoefficientPoly
 import Mathlib.Algebra.Order.Star.Rat
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 import Mathlib.Algebra.Order.Star.Int
 

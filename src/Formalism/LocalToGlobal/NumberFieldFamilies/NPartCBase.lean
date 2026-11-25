@@ -6,7 +6,6 @@ public import Formalism.LocalToGlobal.GroupLattices.PerfectRings.IsLocalRingOfCo
 public import Formalism.LocalRingCardinality.DataHost
 import Formalism.ConjugateSelfDual.Statement
 import Formalism.LocalRingCardinality.SpanPowerMembership.NDLocA
-import ReciprocityTheory.GaloisValuations.GlobalA
 import Formalism.AlgebraicWeights.IsAlgWeight
 import ReciprocityTheory.Automorphisms.PlaceA
 

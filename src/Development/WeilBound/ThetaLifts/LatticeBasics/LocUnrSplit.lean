@@ -9,33 +9,20 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsS
 public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.VaceigenDual
 public import Development.WeilBound.ThetaLifts.LatticeBasics.LocUnrInertA
 public import Development.WeilBound.ThetaLifts.LocalTheory.UnramifiedCohomology.ExistsSelfDual
-public import GroundTheory.LocalFields.PadicLogSeries
-public import Development.WeilBound.CoreStatements.LocalThetaKernels.IwasAd
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.InstBorelGL
-public import Mathlib.MeasureTheory.Group.Measure
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.GeneralLinearIntegralCompactOpen
 public import GroundTheory.AutomorphicForms.MeasuresGL
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.MeasureTheory.Integral.Bochner.Basic
-public import Mathlib.MeasureTheory.Integral.IntegrableOn
-public import Mathlib.MeasureTheory.Integral.Bochner.Set
 public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsOfValILeOne
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.LocalFieldUniformizerNormProperties
-public import Mathlib.Data.Matrix.ColumnRowPartitioned
 public import Development.WeilBound.ThetaLifts.LatticeBasics.LocUnr
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnramifiedCharacterAtUniformizer
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NormUniformiserEqInvAbsNorm
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormSatakeLeOfUnitarySphericalGL
 public import Development.WeilBound.CoreStatements.LocalThetaKernels.IwasMain
-import Development.WeilBound.CoreStatements.LocalThetaKernels.Locrep
-import GroundTheory.GlobalFields.LocalFieldAtPlace
 import Mathlib.Tactic.Linter.HaveILetI
 import Aesop.Main
 import Mathlib.Tactic.Linter.Style
-import GroundTheory.AutomorphicForms.GLnLocal
-import GroundTheory.LocalFields.LocalFourierHaar
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsSplitChartSplitChart
 import Std.Tactic.BVDecide.Normalize.Prop
 

@@ -1,8 +1,6 @@
 module
 
 public import GroundTheory.ProfiniteCohomology.RealPlaces.InducedDefs
-import GroundTheory.ProfiniteCohomology.CompactSupportCohomology.Pairing
-import Mathlib.Algebra.Homology.HomologicalComplexAbelian
 
 @[expose] public section
 

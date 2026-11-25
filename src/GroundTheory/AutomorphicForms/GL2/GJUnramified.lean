@@ -5,9 +5,7 @@ public import GroundTheory.AutomorphicForms.SatakeNormalized
 public import GroundTheory.AutomorphicForms.GL2.ExistsEqPowMulOfValuationLe
 public import GroundTheory.AutomorphicForms.GL2.GJLeviZetaBlocks
 public import GroundTheory.AutomorphicForms.GL2.GJLocalZeta
-public import GroundTheory.AutomorphicForms.GL2.GJLeviZeta
 public import GroundTheory.AutomorphicForms.Satake
-import Mathlib.RingTheory.Henselian
 import Mathlib.Tactic.TypeStar
 import GroundTheory.AutomorphicForms.GL2.GJZetaCore
 import GroundTheory.AutomorphicForms.SmoothRepContragredient

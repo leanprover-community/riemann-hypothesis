@@ -4,19 +4,11 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PowMulMem
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CupProductCoboundaryMod
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.NormO
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsQuotientMapToGSProd
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.DirichletPrimeToLPartMulLPowerPart
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
 public import Mathlib.RingTheory.AdicCompletion.Noetherian
 public import Development.AbelianVarietyTheory.Definitions.Foundations.FinalTheorems
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CoboundaryInertiaIndependent
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemIntegersOfNormLeOne
-public import Mathlib.Basic.Finite.Defs
-public import Mathlib.Data.Nat.Prime.Defs
-public import Formalism.ConjugateSelfDual.Statement
-public import Mathlib.Algebra.Group.Action.Defs
-public import Mathlib.Algebra.GroupWithZero.Action.Defs
-public import Mathlib.Data.Fintype.EquivFin
-public import Mathlib.Data.Set.Finite.Lattice
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ResPlaneSmulEqZero
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntegralGaloisRepLocallyConstantModPrimePow
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.Brauer
@@ -62,21 +54,13 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.NormNatCastOfCoprime
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.TrivialOnInertiaOfUnr
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.Newform
-import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
-import ReciprocityTheory.GaloisValuations.GlobalA
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

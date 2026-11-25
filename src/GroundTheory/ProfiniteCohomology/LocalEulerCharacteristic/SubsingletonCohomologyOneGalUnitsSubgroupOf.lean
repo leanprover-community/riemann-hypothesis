@@ -9,7 +9,6 @@ public import GroundTheory.ProfiniteCohomology.ClassFormations.Corestriction
 public import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
 public import GroundTheory.ProfiniteCohomology.LocalClassFormationAlt
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.ConjAction
-import Mathlib.FieldTheory.Galois.Profinite
 
 @[expose] public section
 

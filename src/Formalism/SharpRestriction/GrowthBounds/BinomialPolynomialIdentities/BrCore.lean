@@ -11,9 +11,7 @@ public import Formalism.ThetaLogCoordinates.DualWeylCoordinates.DualWeylProofs.T
 public import Formalism.GradedWeylDivisibility.StatementE
 public import Mathlib.Tactic.Monotonicity.Lemmas
 public import Mathlib.Topology.Sheaves.Presheaf
-public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LHwlineLemmas
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.FockQHW
-public import Formalism.GradedWeylDivisibility.StatementC
 public import Formalism.GradedWeylDivisibility.FinalD
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.NablaLKBasis
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LClosedeqLemmas
@@ -22,14 +20,7 @@ import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.Lemma
 import Mathlib.Order.Interval.Finset.Box
 import Mathlib.Tactic.TypeStar
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.BideterminantMem
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LBidetLemmas
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LHwrowLemmas
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.GradedWeylDivisibility.FinalB
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LEhwLemmas
 import Mathlib.Algebra.Order.Star.Rat
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LCassemLemmas
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.ThetaLogCoordinates.DualWeylCoordinates.DualWeylProofs.QhCountAll, Formalism.ThetaLogCoordinates.DualWeylCoordinates.DualWeylProofs.QhEquivOfCount, Formalism.ThetaLogCoordinates.DualWeylCoordinates.DualWeylProofs.QhMemDualWeyl, Formalism.ThetaLogCoordinates.DualWeylCoordinates.DualWeylProofs.InducedSectionsSpanStatement, Formalism.ThetaLogCoordinates.DualWeylCoordinates.DualWeylProofs.ABridge, Formalism.ThetaLogCoordinates.DualWeylCoordinates.DualWeylProofs.EvalIdBracketCanonical, Formalism.ThetaLogCoordinates.DualWeylCoordinates.DualWeylProofs.CoeffTransposeVariables, Formalism.ThetaLogCoordinates.DualWeylCoordinates.DualWeylProofs.QnFactRowDivDiag, Formalism.ThetaLogCoordinates.DualWeylCoordinates.DualWeylProofs.QnInterlacedLowerTri, Formalism.ThetaLogCoordinates.DualWeylCoordinates.DualWeylProofs.QnPtEmpty, Formalism.ThetaLogCoordinates.DualWeylCoordinates.DualWeylProofs.QnEvalMap, Formalism.ThetaLogCoordinates.DualWeylCoordinates.DualWeylProofs.RationalBitableauLatticeStatement, Formalism.SharpRestriction.GrowthBounds.BinomialPolynomialIdentities.BrCore

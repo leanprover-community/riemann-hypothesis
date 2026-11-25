@@ -7,7 +7,6 @@ public import Mathlib.Analysis.CStarAlgebra.Matrix
 public import Mathlib.Analysis.Calculus.Deriv.Abs
 public import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import CompanionTheory.ThickeningEstimates.LieGroupReduction.IsoOfIntegral
-import Development.WeilBound.ThetaLifts.CartanFactorisation.EqOfInner
 import CompanionTheory.ThickeningEstimates.LieGroupReduction.HasDerivAtSchwartzToL2
 import CompanionTheory.ThickeningEstimates.LieGroupReduction.NormExpSubLe
 import CompanionTheory.ThickeningEstimates.LieGroupReduction.LocalLift

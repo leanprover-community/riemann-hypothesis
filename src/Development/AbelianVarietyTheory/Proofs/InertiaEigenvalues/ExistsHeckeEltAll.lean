@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.IndefiniteReal.BaseLiftsPackageOfPrimitiveLinks
-public import Formalism.LocalToGlobal.IndefiniteReal.LinksLemmas
 public import Formalism.LocalToGlobal.IndefiniteReal.LinksExistW
 public import Formalism.LocalToGlobal.IndefiniteReal.RationalAdjoints.RatZOfTests
 public import Formalism.LocalToGlobal.IndefiniteReal.OneMapEq
@@ -11,7 +10,6 @@ public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.HeckeSupportLattices
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.OffRange
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.HeckeSplitOne
-public import Formalism.LocalToGlobal.IndefiniteReal.GramCEqTranspose
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsSmulMemSupLattice
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsPlaceOfValuationRing
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ZeroDegreeOfPinFor

@@ -4,9 +4,7 @@ public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermBSer
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndFrFixAsm
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermBGen
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDJet
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermFunPf
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 
 @[expose] public section
 

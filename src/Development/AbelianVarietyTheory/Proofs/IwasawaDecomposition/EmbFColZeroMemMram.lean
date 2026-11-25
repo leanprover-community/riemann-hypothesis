@@ -60,7 +60,6 @@ import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Mathlib.Algebra.Azumaya.Basic
 import Formalism.LocalToGlobal.Divisibility.ClassSumLemmas
-import Formalism.LocalToGlobal.Divisibility.FramesLemmas
 import Formalism.LocalToGlobal.GlobalTheory.HLatOpsP
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar

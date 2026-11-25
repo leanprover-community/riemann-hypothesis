@@ -2,7 +2,6 @@ module
 
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.TheoremPIntegralOfPlaces
 public import Formalism.HermitianCurvature.StatementTBB
-public import Mathlib.Analysis.InnerProductSpace.Adjoint
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TriangleInequalityAtPlace
 import Mathlib.Tactic.Linter.Style
 

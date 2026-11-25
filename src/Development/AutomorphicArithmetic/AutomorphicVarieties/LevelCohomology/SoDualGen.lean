@@ -1,8 +1,6 @@
 module
 
 public import Mathlib.NumberTheory.Padics.PadicIntegers
-public import Mathlib.LinearAlgebra.Dual.Defs
-public import Mathlib.SetTheory.Cardinal.Finite
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CardDualZmodModuleEqCard
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.SoLevFacts
 public import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.SelmerDuality.ZModInj

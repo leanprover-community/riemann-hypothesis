@@ -6,24 +6,15 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsEigenCom
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsIsChart
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsEigFrames
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.RiemannLatticeEigenProjection
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Topology.Instances.Matrix
-public import Mathlib.Analysis.Complex.Order
-public import Mathlib.LinearAlgebra.Matrix.PosDef
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ChartQContinuousAtAndLocalSolution
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ChartQHermitianAndRealPairing
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ChartWSaturatedAndContinuousSection
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsIsKerProj
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.Matrix.Hermitian
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsotropicSublatticeCovolumePositive
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.MemChartWOfContinuousPeriod
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LogPeriodLimit
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals.FubiniLevi
-import GroundTheory.HeightsAndTheta.Heights.Regularisation.StPuncturedExpOrder
 import Mathlib.Tactic.Linter.Style
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SymplecticUnipotentShape
-import GroundTheory.HeightsAndTheta.Heights.Regularisation.PosSemidefOfIntQuadNonneg
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.MetricProofs.EigenComponentAppendIndependentSpan, Development.AutomorphicSpectrum.Proofs.MetricProofs.EigenComponentSpanRelIndexCriterion, Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsContinuousChangeOfFrame, Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsFamilyInIdealOfIsOFamily, Development.AutomorphicSpectrum.Proofs.MetricProofs.GramDetImEqZero, Development.AutomorphicSpectrum.Proofs.MetricProofs.GramDetMulNormSqDet, Development.AutomorphicSpectrum.Proofs.MetricProofs.GramDetPosOfSemidefiniteTransversal, Development.AutomorphicSpectrum.Proofs.MetricProofs.PeriodDecompositionNearBoundary

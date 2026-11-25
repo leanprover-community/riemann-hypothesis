@@ -2,9 +2,6 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
 public import ReciprocityTheory.Hypotheses.GalCohDefs
-import Mathlib.GroupTheory.QuotientGroup.Finite
-import Mathlib.Topology.Algebra.Group.Quotient
-import Mathlib.Tactic.Group
 
 public section
 

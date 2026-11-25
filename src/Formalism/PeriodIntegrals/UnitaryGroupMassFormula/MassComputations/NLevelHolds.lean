@@ -2,7 +2,6 @@ module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MassComputations.FmatInvMul
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MassComputations.StrongApproxN
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelStructures.FrameStd
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MassComputations.SigROneTmul
 
 -- This file was produced by scripts/clump.py from the modules listed below.

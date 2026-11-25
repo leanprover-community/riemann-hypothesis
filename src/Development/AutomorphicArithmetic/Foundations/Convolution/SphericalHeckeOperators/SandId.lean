@@ -4,7 +4,6 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.Spherica
 public import GroundTheory.AutomorphicForms.IwahoriFactorization
 public import GroundTheory.AutomorphicForms.MacdonaldSpherical
 public import Development.AutomorphicArithmetic.Foundations.Convolution.SphericalHeckeOperators.DcoShape
-public import GroundTheory.AutomorphicForms.WhittakerGroups
 public import GroundTheory.AutomorphicForms.MacdonaldNormalization
 public import Development.AutomorphicArithmetic.Foundations.Convolution.SphericalHeckeOperators.GapDom
 public import Development.AutomorphicArithmetic.Foundations.Convolution.SphericalHeckeOperators.IntegralConv
@@ -13,7 +12,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 import Aesop.Main
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicArithmetic.Foundations.Convolution.SphericalHeckeOperators.ThPMul
-import GroundTheory.LocalFields.LocalFourierHaar
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.Foundations.Convolution.SphericalHeckeOperators.ConstTerm, Development.AutomorphicArithmetic.Foundations.Convolution.SphericalHeckeOperators.SetIntegralCosets, Development.AutomorphicArithmetic.Foundations.Convolution.SphericalHeckeOperators.SandId

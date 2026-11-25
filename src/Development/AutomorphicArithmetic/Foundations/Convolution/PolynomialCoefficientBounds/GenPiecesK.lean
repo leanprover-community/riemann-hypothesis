@@ -8,7 +8,6 @@ public import Mathlib.Analysis.Complex.Norm
 public import Mathlib.Data.Finsupp.Weight
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PolynomialCoefficientBounds.MatrixEntryAbsSumUnitaryLieCoordinatesSplit
 public import Mathlib.RingTheory.Polynomial.Vieta
-public import Mathlib.RingTheory.MvPolynomial.Homogeneous
 public import Mathlib.Analysis.Normed.Field.Basic
 public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.AffineCharacterGenerators.AffChar
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PolynomialCoefficientBounds.PieceAdd

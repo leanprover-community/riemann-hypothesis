@@ -9,7 +9,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.UniqueA
-public import Mathlib.LinearAlgebra.Dimension.Finite
 
 @[expose] public section
 

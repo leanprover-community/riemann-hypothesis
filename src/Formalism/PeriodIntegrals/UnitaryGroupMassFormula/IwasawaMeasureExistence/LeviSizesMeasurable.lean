@@ -1,13 +1,11 @@
 module
 
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirVolumeRatios.DetNorm
-public import Mathlib.RingTheory.DedekindDomain.FiniteAdeleRing
 public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 public import Mathlib.Topology.Algebra.Valued.LocallyCompact
-public import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IwasawaMeasureExistence.T2SpaceFiniteAdelesExt
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicUnimodularity.CartierFrobeniusFormLocal
 import Mathlib.Tactic.Linter.Style

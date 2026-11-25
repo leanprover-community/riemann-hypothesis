@@ -10,9 +10,7 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSc
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.TwhopfInd
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.TwhopfMain
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.Twpdiv
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Development.WeilBound.CoreStatements.HodgeTatePoints.TwhopfSec
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.HodgeTatePoints.GiResAlg, Development.WeilBound.CoreStatements.HodgeTatePoints.GiResGeo, Development.WeilBound.CoreStatements.HodgeTatePoints.ExistsIncl, Development.AutomorphicSpectrum.Proofs.GeometryProofs.SemiabelianAdicTorsionTwo

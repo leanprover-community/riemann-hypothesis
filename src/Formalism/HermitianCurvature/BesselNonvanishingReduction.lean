@@ -5,7 +5,6 @@ public import Formalism.PeriodIntegrals.KFinSmooth
 public import Formalism.PeriodIntegrals.BesselPeriodGGP
 public import Formalism.PeriodIntegrals.BesselMapUniq
 public import Formalism.HermitianCurvature.StatementJF
-public import Mathlib.Analysis.InnerProductSpace.Adjoint
 
 @[expose] public section
 

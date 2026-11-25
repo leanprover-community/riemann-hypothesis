@@ -3,9 +3,6 @@ module
 public import Formalism.SharpRestriction.LevelLetterCocycles.SplittingOfExactnessAndData
 public import Formalism.SharpRestriction.LevelLetterCocycles.RelayGeneralCaseOfAdmissible
 public import Formalism.SharpRestriction.LevelLetterCocycles.BaseChangePreservesUnitaryOf
-import Formalism.SharpRestriction.LevelLetterCocycles.JumpsLetOfWin
-import Formalism.SharpRestriction.LevelLetterCocycles.SaturationPullbackOfRingCondition
-import Formalism.SharpRestriction.LevelLetterCocycles.WachFrobeniusLatticeUnramifiedFunctor
 import Mathlib.Algebra.Order.Star.Int
 
 @[expose] public section

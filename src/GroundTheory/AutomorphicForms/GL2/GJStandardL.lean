@@ -2,16 +2,11 @@ module
 
 public import GroundTheory.AutomorphicForms.GL2.GJStandardLFourier
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.ConstantTerm
-public import GroundTheory.AutomorphicForms.GL2.GJFEInducedLevi
 public import GroundTheory.AutomorphicForms.GL2.GJGlobalDefs
 public import GroundTheory.AutomorphicForms.SmoothRepContragredient
 public import GroundTheory.AutomorphicForms.GL2.GJGlobal
 public import GroundTheory.AutomorphicForms.GL2.GJStandardLDual
 public import GroundTheory.AutomorphicForms.GL2.GJStandardLEngine
-import GroundTheory.AutomorphicForms.GL2.GJStandardLEuler
-import GroundTheory.AutomorphicForms.GL2.GJStandardLPartial
-import GroundTheory.AutomorphicForms.GL2.GJStandardLUnramified
-import GroundTheory.GlobalFields.TateThesis.RootNumberLocalPlace
 
 @[expose] public section
 

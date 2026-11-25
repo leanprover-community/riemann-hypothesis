@@ -5,8 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.Standa
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RelIndexMulVec
 public import Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.IndexExponentDegree
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IntegralDensEqZero
-public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
-public import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsSdLatTwOExpS
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.PerOComponents
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SmulMemLocPPerO
@@ -64,7 +62,6 @@ import Mathlib.Tactic.TypeStar
 import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Tactic.Basify
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
@@ -75,7 +72,6 @@ import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Algebra.Order.Star.Real
 import Formalism.LocalToGlobal.Columns.BaseLemmas
 
 -- This file was produced by scripts/clump.py from the modules listed below.

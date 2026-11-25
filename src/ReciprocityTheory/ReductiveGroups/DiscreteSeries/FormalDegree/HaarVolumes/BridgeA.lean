@@ -9,7 +9,6 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.Haar
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.CategoryTheory.Countable
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Lemma
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional

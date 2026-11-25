@@ -1,7 +1,6 @@
 module
 
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.CayleyTransform.CompFinFinOne
-import Development.WeilBound.ThetaLifts.TowerModels.LeviAd
 
 @[expose] public section
 

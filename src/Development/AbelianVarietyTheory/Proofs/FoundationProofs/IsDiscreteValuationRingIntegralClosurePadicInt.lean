@@ -3,8 +3,6 @@ module
 public import Mathlib.RingTheory.LocalRing.MaximalIdeal.Defs
 public import Mathlib.RingTheory.Noetherian.Defs
 public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
-public import Mathlib.Order.SuccPred.ENat
-public import Mathlib.RingTheory.Ideal.Height
 public import Mathlib.AlgebraicGeometry.Morphisms.FiniteType
 public import Mathlib.AlgebraicGeometry.Morphisms.Flat
 public import Mathlib.Combinatorics.Quiver.ReflQuiver
@@ -19,7 +17,6 @@ public import Mathlib.RingTheory.AdicCompletion.Noetherian
 public import Mathlib.RingTheory.Ideal.Quotient.Index
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.IntToRatA
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.FiniteAlgebraLocalCompletion
-public import Mathlib.Algebra.Algebra.ZMod
 public import Mathlib.FieldTheory.Minpoly.IsIntegrallyClosed
 public import Mathlib.RingTheory.DedekindDomain.IntegralClosure
 import Mathlib.Algebra.Order.Floor.Extended

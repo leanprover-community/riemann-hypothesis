@@ -8,7 +8,6 @@ public import GroundTheory.GlobalFields.Adele.IdeleBasis
 public import GroundTheory.GlobalFields.TateThesis.ArchChars
 public import GroundTheory.GlobalFields.TateThesis.NoSmallSubgroups
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
 

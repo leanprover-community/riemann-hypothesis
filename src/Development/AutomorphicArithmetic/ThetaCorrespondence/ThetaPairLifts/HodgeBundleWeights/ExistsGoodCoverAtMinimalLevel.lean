@@ -61,8 +61,6 @@ import Mathlib.Tactic.TypeStar
 import Development.AbelianVarietyTheory.Definitions.Divisors.BadElt
 import Development.AbelianVarietyTheory.Definitions.Divisors.CuspIso
 import Development.AbelianVarietyTheory.Definitions.Divisors.GenRatios
-import Development.AbelianVarietyTheory.Definitions.Divisors.IsRightActFunPull
-import Development.AbelianVarietyTheory.Definitions.Divisors.IsoOverOfIsOpenImmersion
 import Development.AbelianVarietyTheory.Definitions.Divisors.Multiplier
 import Formalism.MeanHeightDescent.AverageDegreeBounds.GlobalBoundRefinements
 import Mathlib.Algebra.Order.Star.Int
@@ -71,11 +69,6 @@ import Development.AbelianVarietyTheory.Counterexamples.LevelGroupExamples.Induc
 import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ShortValTotOfPinned
 import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.ChartIndependenceUnconditional
 import Development.AbelianVarietyTheory.Proofs.ModuliProofs.LevelMapsClosed
-import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.AllUniformizationLawsHold
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedModuliAlgebraicLawsChartWeightIntegrality
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedPointReducedFromTestRing
-import Formalism.LocalToGlobal.ProjectiveLattices.DatProofs
-import Formalism.SharpRestriction.GlobalSchurBounds.ThickPlacesCorollaryOfAnyTranslate
 import Std.Tactic.BVDecide.Normalize.Prop
 
 attribute [-instance]

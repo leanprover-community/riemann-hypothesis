@@ -11,7 +11,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeo
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSuppAC
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGoodA
 public import Mathlib.Algebra.Algebra.ZMod
-public import Mathlib.RingTheory.KrullDimension.PID
 import Mathlib.Tactic.TypeStar
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsRegularOfSupportDimQuotientAddLengthLe
 import Mathlib.RingTheory.RegularLocalRing.Polynomial

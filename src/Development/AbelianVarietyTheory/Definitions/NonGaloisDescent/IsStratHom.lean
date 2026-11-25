@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsAdicCompleteOfPowLe
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MemBallOfGaugeLt
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsCrisP
 
 @[expose] public section
 

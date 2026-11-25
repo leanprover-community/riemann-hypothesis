@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Foundations.ForallEve
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteDimensionalFixed
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ApplyEqOfMemHomFinDS
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.EllipticPartTestData
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsIntertwinerOfInvariantPairingAdmissible
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

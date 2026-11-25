@@ -6,7 +6,6 @@ public import Formalism.LocalRingCardinality.DataIdx
 public import Formalism.HermitianLattices.HermitianLatticesProofs.LocBasic
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 public import Formalism.LocalToGlobal.Columns.LocWLemmas
-public import Formalism.LocalToGlobal.Columns.AlgebraMapMemMaximalIdealPowIff
 
 @[expose] public section
 

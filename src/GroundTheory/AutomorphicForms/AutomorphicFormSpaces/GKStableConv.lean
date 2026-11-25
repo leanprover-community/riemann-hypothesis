@@ -8,7 +8,6 @@ import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.Group.Units
 public import GroundTheory.AutomorphicForms.DixmierMalliavinBasic
 
 @[expose] public section

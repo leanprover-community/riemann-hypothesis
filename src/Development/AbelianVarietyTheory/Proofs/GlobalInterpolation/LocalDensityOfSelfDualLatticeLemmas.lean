@@ -6,11 +6,7 @@ public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.Exists
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.FiniteResidueFieldAdicCompletionIntegers
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.DisjointSpanPerpLat
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsSelfDualLatticeIff
-public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
 public import Mathlib.MeasureTheory.Function.AEEqOfIntegral
-public import Mathlib.Basic.Real.Basic
-public import Mathlib.Data.Set.Card
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.EqIdOfIsUnramifiedAt
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsResidueEqZeroIff
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsFieldIffNoResidualRoot
@@ -66,7 +62,6 @@ import Mathlib.Topology.Sheaves.Init
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.ENatToNat
-import Mathlib.RingTheory.SimpleRing.Principal
 import Std.Tactic.BVDecide.Normalize.Prop
 import Aesop.Main
 import Mathlib.Algebra.Ring.IsFormallyReal

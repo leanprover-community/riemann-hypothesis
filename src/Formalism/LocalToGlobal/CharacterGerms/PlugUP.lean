@@ -4,15 +4,8 @@ public import Formalism.LocalToGlobal.CharacterGerms.ExistsStrictMonoMinor
 public import ReciprocityTheory.DualLattices.CotangentSurjective
 public import ReciprocityTheory.DualLattices.BlockOneMulMulBlockOne
 public import ReciprocityTheory.DualLattices.MatEquivApply
-public import Mathlib.Basic.PEquiv
-public import Mathlib.Data.Matrix.PEquiv
-public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
-public import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
-public import Mathlib.RingTheory.Ideal.BigOperators
 public import Formalism.LocalToGlobal.CharacterGerms.GeNatCast
 public import Mathlib.Analysis.SpecialFunctions.Log.Base
-import ReciprocityTheory.DualLattices.ProdDvdOfIso
-import ReciprocityTheory.DualLattices.UpSmith
 import Formalism.IncomingBounds.IncomingBound
 import Formalism.LocalToGlobal.CharacterGerms.CharacteristicFromRanks
 

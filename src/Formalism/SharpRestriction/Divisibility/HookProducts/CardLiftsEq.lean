@@ -6,7 +6,6 @@ public import Formalism.SharpRestriction.Divisibility.WeightDegreeSizes
 public import Formalism.SharpRestriction.GrowthBounds.JointsLit
 public import Formalism.SharpRestriction.GrowthBounds.LogarithmicSums.NotSingularOfCentral
 public import Formalism.SharpRestriction.GrowthBounds.TopChoiceBounds
-public import Formalism.SharpRestriction.GrowthBounds.LogarithmicSums.Conclusion1OfGainBoundAll
 
 @[expose] public section
 

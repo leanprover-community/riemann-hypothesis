@@ -1,7 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.PathWeight.GeneratorImageIsSymbol
-import Formalism.PolynomialDimension.DetMulEqSumAdjugate
 public import Formalism.SharpRestriction.GrowthBounds.PathWeight.PhProdShift
 import Mathlib.Tactic.TypeStar
 

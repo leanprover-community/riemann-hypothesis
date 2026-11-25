@@ -2,13 +2,7 @@ module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.EichLApply
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.EichESymmApply
-public import Formalism.SharpRestriction.CuspSpanNormBounds.BlockEnds
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.LocalTheoryWindows
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
-public import Mathlib.Algebra.Order.Floor.Defs
-public import Mathlib.Algebra.Order.Ring.Abs
-public import Mathlib.Algebra.Order.Round
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountPositivity.CardLeOfNegFamily
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.OFDefs
 public import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice
@@ -20,10 +14,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.TransMemUnipotentIntegral
 import Mathlib.Tactic.TypeStar
 import Mathlib.Algebra.Order.Star.Rat
-import Mathlib.RingTheory.SimpleRing.Principal
-import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.CntLocal
-import Formalism.SharpRestriction.CuspSpanNormBounds.IsPrimitiveSub
-import Formalism.SharpRestriction.CuspSpanNormBounds.LocalGroupInFamilyNontrivial
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Formalism.HermitianLattices.HermitianLatticesProofs.UnimodularSpan
 

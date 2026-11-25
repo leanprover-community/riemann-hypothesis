@@ -3,7 +3,6 @@ module
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTCCurvCut
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTCCurvPolyCut
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTCTheta
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormalFormOrderZeroOfParts
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

@@ -8,8 +8,6 @@ public import Formalism.LocalToGlobal.GroupLattices.FockModels.TestSideFinal
 public import Formalism.PeriodIntegrals.AdmissibleModel.WeylDim
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.Tensor
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.MemInvariantSectionsIffIntegral
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Formalism.GradedWeylDivisibility.FinalD
 import Mathlib.Order.Interval.Finset.Box
 

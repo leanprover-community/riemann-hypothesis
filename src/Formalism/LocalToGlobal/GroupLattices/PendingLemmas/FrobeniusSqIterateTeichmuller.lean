@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
 import Mathlib.GroupTheory.Nilpotent
-import Mathlib.RingTheory.WittVector.DiscreteValuationRing
 
 @[expose] public section
 

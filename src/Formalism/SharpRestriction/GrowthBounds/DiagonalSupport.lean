@@ -3,10 +3,7 @@ module
 public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.OneSidedLemma4Realisable
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.TestSideEdge
 public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.FockRAddRight
-public import Formalism.LocalToGlobal.GroupLattices.FockModels.TransposeWords.TransposeWordsProofs.ProdBlockEmbMonomial
 public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.LaTwInvT
-public import Formalism.LocalToGlobal.GroupLattices.FockModels.TransposeWords.FockR
-public import Formalism.LocalToGlobal.GroupLattices.FockModels.TransposeWords.TransposeWordsProofs.FockPairingRowAction
 public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.RestCloudBOfThree
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ProductFirstParts
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.Cartan
@@ -27,16 +24,7 @@ public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.Propositio
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.GramExponentArithmetic
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.LeOfOneLeMul
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.MembFinal
-import Formalism.LocalToGlobal.GroupLattices.FockModels.ElementaryDivisorBasis
-import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.EvensBeforePairwise
-import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.ScaleNegMono
-import Formalism.LocalToGlobal.GroupLattices.FockModels.FlatModels.LetterWtAnti
-import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.FockRLinDual
-import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.EdgePlane
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.EdgeLatticeMulOfWeightSum
-import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.RankMulConductorDivLeOne
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.DualFockLinear.FockSumRight, Formalism.SharpRestriction.GrowthBounds.DualFockLinear.PairFormula, Formalism.SharpRestriction.GrowthBounds.DualFockLinear.ScaleZeroIff, Formalism.SharpRestriction.GrowthBounds.DualFockLinear.RestCloudBOfTwo, Formalism.SharpRestriction.GrowthBounds.DualFockLinear.LogSizeBoundLe, Formalism.SharpRestriction.GrowthBounds.DualFockLinear, Formalism.SharpRestriction.GrowthBounds.TwistedSubstitution, Formalism.SharpRestriction.GrowthBounds.DiagonalSupport

@@ -6,11 +6,9 @@ public import Mathlib.LinearAlgebra.FreeModule.Basic
 public import Mathlib.RingTheory.Localization.Away.Basic
 public import Mathlib.Algebra.Module.LocalizedModule.Exact
 public import Mathlib.RingTheory.LocalProperties.Projective
-public import Mathlib.Algebra.Module.Projective
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StGenericFreeness
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StGenericNoetherNormalisation
 public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
-public import Mathlib.RingTheory.Spectrum.Prime.Defs
 public import Mathlib.RingTheory.Ideal.AssociatedPrime.Finiteness
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ProofSimp
 import Mathlib.Algebra.Module.StablyFree.Basic

@@ -1,9 +1,7 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.JfSmoothBuiltOfLeaves
-import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 public import Mathlib.Analysis.Calculus.LineDeriv.IntegrationByParts
-import Mathlib.Order.CompletePartialOrder
 
 @[expose] public section
 

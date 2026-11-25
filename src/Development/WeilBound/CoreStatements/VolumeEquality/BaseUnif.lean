@@ -10,10 +10,7 @@ public import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnifGood
 public import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnifConj
 public import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnifCoord
 public import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnifVec
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.HolPairA
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.UnLocal
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.VolumeEquality.BaseUnifAsm, Development.WeilBound.CoreStatements.VolumeEquality.BaseUnif

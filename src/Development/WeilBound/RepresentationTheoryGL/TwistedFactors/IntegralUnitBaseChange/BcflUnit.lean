@@ -4,11 +4,8 @@ public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.Integr
 public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import Mathlib.Algebra.MvPolynomial.Funext
-public import Mathlib.RingTheory.Nakayama
 public import GroundTheory.LocalFields.Uniqueness
 public import Mathlib.Topology.Algebra.Group.Units
-public import Mathlib.NumberTheory.LocalField.Basic
-public import Mathlib.Topology.Instances.Matrix
 public import Mathlib.MeasureTheory.Measure.Haar.Unique
 public import GroundTheory.LocalFields.Integers
 public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.IntegralUnitBaseChange.InvTransposeGLInvTransposeGL
@@ -19,7 +16,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NormMapT
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SeparableNormCommuting
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitFundamentalLemmaFirstHolds
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnramifiedDualFamilyHolds
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnramifiedExtensionIntegralBasis
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup

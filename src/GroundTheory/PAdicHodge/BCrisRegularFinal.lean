@@ -4,7 +4,6 @@ public import GroundTheory.PAdicHodge.BCrisGalois
 public import GroundTheory.PAdicHodge.BCrisPlusInvariants
 public import GroundTheory.PAdicHodge.BCrisRegularSenTate
 import Mathlib.Tactic.TypeStar
-public import GroundTheory.PAdicHodge.BCrisEigen
 
 @[expose] public section
 

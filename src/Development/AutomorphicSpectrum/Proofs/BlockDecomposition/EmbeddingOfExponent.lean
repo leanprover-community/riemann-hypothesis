@@ -1,27 +1,15 @@
 module
 
 public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.LocalBaseChange.StrictDominanceCasselman.IsStrictlyDominant
-public import Mathlib.Basic.Complex.Basic
 public import Mathlib.LinearAlgebra.Eigenspace.Basic
-public import Mathlib.Order.CompletePartialOrder
-public import Mathlib.RepresentationTheory.Basic
 public import Mathlib.LinearAlgebra.Eigenspace.Pi
 public import Mathlib.RingTheory.Finiteness.Nilpotent
-public import Mathlib.Algebra.Polynomial.Div
-public import Mathlib.Algebra.Polynomial.RingDivision
-public import Mathlib.Topology.Algebra.Group.Defs
-public import Mathlib.Topology.Compactness.Compact
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UniformizerPowTendstoZero
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DominantIwahoriCosetReps
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeOperatorCosetSum
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactFixedVectorProjection
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ModulusTrivialOnLeviCompact
-public import Mathlib.RingTheory.PiTensorProduct
-public import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FixedVectorZeroOfDual
 public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.LocalBaseChange.GenericPrincipalSeries.GenericPrincipalSeries
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivMultiProdOne
-public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.SquareIntegrableTempered.CentredSegments.IrreducibleUnif
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CongruenceSubgroupBasisNhds
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeckeOperatorExists
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsJLeviMulJPlus
@@ -44,8 +32,6 @@ import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
 import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
@@ -68,19 +54,9 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
-import Mathlib.RingTheory.Henselian
-import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivOfRangeEq
-import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.LeviEmbMemNormalizerLower
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DeepLevelSubgroupsFiltration, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GeneralizedEigenvectorExists, Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ExistsFixedLift, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CentralStrictlyDominantExists, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetHeckeCompatHolds, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetHeckeConditionHolds, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetFixedVectorLift, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetProjectionFixedSurjective, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsDominantOneAndMul, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetFixedFirstCondition, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StrictlyDominantContractsUnipotent, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StrictlyDominantHeckeKernel, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ImportsBisTer, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetCuspidalSupportOfFunctional, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetModuleAdmissibleFixed, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetVectorFixedDeepLevel, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LeviEmbLeviProjMemKm, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SupportOfExponentOfCasselman, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EmbeddingOfExponent

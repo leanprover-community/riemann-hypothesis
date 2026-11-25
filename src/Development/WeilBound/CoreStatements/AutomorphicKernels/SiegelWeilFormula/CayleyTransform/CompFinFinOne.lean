@@ -4,8 +4,6 @@ public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeil
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ExistsHeightLeTwoMulQuotHeight
 public import Development.WeilBound.ThetaLifts.LatticeBasics.ExistsIsGauss
 public import Development.WeilBound.ThetaLifts.LatticeBasics.IsCompactOfUnits
-import Development.WeilBound.ThetaLifts.TowerModels.LeviAd
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
 
 @[expose] public section
 

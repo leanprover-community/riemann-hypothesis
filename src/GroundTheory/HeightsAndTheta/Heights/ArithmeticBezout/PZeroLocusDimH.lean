@@ -7,7 +7,6 @@ public import Mathlib.Topology.Algebra.MvPolynomial
 public import Mathlib.Analysis.Calculus.ContDiff.Basic
 public import Mathlib.Analysis.Calculus.ContDiff.Operations
 public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
-public import Mathlib.Basic.Complex.Basic
 public import Mathlib.FieldTheory.Minpoly.Basic
 public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
 public import Mathlib.RingTheory.KrullDimension.Basic
@@ -16,7 +15,6 @@ public import Mathlib.RingTheory.KrullDimension.Field
 public import Mathlib.RingTheory.KrullDimension.Polynomial
 public import Mathlib.RingTheory.NoetherNormalization
 public import Mathlib.FieldTheory.Minpoly.IsIntegrallyClosed
-public import Mathlib.RingTheory.Ideal.GoingUp
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsZeroLocusDimH
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.LeOfAddOneLeSucc
 public import Mathlib.RingTheory.KrullDimension.NonZeroDivisors

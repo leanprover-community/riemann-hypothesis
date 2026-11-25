@@ -7,7 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CoordinateLat
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsHermND
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HaarInvVolumeRelIndexPiUnivEqFinprod
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NumberFieldLatticeDeterminedByLocalLattices
-public import Mathlib.GroupTheory.Index
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RelIndexComapPairOfDenseImage
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StrongApproxStab
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RationalExtend

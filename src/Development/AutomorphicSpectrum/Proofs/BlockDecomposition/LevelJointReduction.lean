@@ -9,8 +9,6 @@ import Aesop.Main
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.WeilBound.CoreStatements.AutomorphicKernels.UnitarySchrodingerModel.LocalDefs
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnramifiedQuotientCard
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SelfDualVol, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LatticeVolumeUnramified, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LevelJointReduction

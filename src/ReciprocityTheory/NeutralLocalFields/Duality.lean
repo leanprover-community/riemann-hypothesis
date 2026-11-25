@@ -3,14 +3,10 @@ module
 public import ReciprocityTheory.NeutralLocalFields.Reciprocity
 public import ReciprocityTheory.GaloisValuations.SeparatedDvrSecondCohomologyMem
 public import Formalism.ConjugateSelfDual.Statement
-public import Mathlib.NumberTheory.Cyclotomic.CyclotomicCharacter
-public import Mathlib.NumberTheory.Padics.Complex
 public import Mathlib.Order.CompletePartialOrder
-public import Mathlib.RepresentationTheory.Invariants
 public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Mathlib.RingTheory.SimpleRing.Principal
-public import Mathlib.RingTheory.Valuation.RamificationGroup
 public import Mathlib.Topology.Instances.ZMod
 public import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 

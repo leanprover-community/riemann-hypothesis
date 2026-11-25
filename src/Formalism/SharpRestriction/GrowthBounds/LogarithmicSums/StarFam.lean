@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.LogarithmicSums.PartnerCountOfCentral
 public import Formalism.SharpRestriction.GrowthBounds.LogarithmicSums.NumData
-public import Formalism.SharpRestriction.GrowthBounds.SmallOrderPrimes
 public import Formalism.SharpRestriction.GrowthBounds.LogarithmicSums.Conclusion1OfGainBoundAll
 public import Formalism.SharpRestriction.GrowthBounds.LogarithmicSums.MeanNum
 

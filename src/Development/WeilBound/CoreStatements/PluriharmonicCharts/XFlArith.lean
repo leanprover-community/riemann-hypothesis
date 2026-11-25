@@ -5,14 +5,12 @@ public import GroundTheory.HeightsAndTheta.Heights.Antisymmetric.Statements
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PFlagRatioTrdeg
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PGenLeadMinorNeZero
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.ImageCoord
-import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Assembly
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicSpectrum.Definitions.MetricPeriods.PairRelationOfScaledRatio
 import GroundTheory.HeightsAndTheta.Heights.Intersections.IsSmoothHermFubiniStudyO1
 import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
-import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
 import ReciprocityTheory.AnalyticForms.RegularLocalRings.IntToRatA
 
 @[expose] public section

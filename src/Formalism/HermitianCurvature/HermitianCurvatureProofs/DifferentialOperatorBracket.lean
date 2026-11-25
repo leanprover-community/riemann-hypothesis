@@ -15,7 +15,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IrreducibleC
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LieBracketMultiplication
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LieListProducts
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ProductIntervalFrames
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.LemmaDDeterminantIdentity
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.HermitianCurvature.HermitianCurvatureProofs.RadialDecompositionSpectralOfBranching, Formalism.HermitianCurvature.HermitianCurvatureProofs.DifferentialOperatorBracket

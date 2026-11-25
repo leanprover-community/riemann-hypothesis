@@ -8,8 +8,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.cut_JA_LocLe
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSERDIdentOfAB
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.BXiAsm
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.BigCellHermitian
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelFormSesquilinearFiniteClass
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentComposition.Development
 

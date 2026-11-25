@@ -3,7 +3,6 @@ module
 public import GroundTheory.AutomorphicForms.GL2.GJGlobalLattice
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.ConstantTerm
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsDecay
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsSiegel
 
 @[expose] public section
 

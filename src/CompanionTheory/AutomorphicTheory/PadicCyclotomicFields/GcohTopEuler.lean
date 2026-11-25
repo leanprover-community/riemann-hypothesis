@@ -3,7 +3,6 @@ module
 public import CompanionTheory.AutomorphicTheory.PadicCyclotomicFields.GcohDefs
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.EulerCharGaloisOfCardEq
 public import GroundTheory.ProfiniteCohomology.LocalTateDuality.TensorHomDualRepRootsOfUnityIsoCartierPairing
-public import Formalism.GaloisCohomology.LocalTateDualityK
 public import CompanionTheory.AutomorphicTheory.PadicCyclotomicFields.GcohCmp
 public import CompanionTheory.AutomorphicTheory.PadicCyclotomicFields.GcohField
 

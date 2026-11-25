@@ -8,9 +8,7 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCRadSpSm
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTConnGaugeA
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedA
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedF
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedLocSec
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NfRadOrder0OfRadRed
-import Mathlib.Analysis.InnerProductSpace.Calculus
 
 @[expose] public section
 

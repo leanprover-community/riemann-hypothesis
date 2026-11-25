@@ -4,7 +4,6 @@ public import Mathlib.Algebra.Field.Subfield.Defs
 public import Mathlib.Basic.NNReal.Defs
 public import Mathlib.RingTheory.Valuation.Basic
 public import Development.AbelianVarietyTheory.Definitions.Foundations.CosetTrace
-public import Mathlib.Algebra.BigOperators.Fin
 public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
 public import Mathlib.Topology.Algebra.Monoid
 public import Mathlib.Topology.Order.Basic

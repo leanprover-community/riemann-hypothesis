@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.AutomorphicForms.MacdonaldAlternant
-public import GroundTheory.AutomorphicForms.SatakeNormalized
 public import GroundTheory.AutomorphicForms.WhittakerGroups
 
 @[expose] public section

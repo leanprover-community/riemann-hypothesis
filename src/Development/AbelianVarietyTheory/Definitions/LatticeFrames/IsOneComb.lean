@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ToOneSucc
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsCombAt
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ValLastX
-public import Formalism.DoubleCosetMeasures.StatementZ
 
 @[expose] public section
 

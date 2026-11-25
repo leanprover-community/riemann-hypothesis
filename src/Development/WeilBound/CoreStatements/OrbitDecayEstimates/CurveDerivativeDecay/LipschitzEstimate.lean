@@ -4,12 +4,7 @@ public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.HeBranch
 public import Development.WeilBound.CoreStatements.OrbitDecayEstimates.CurveDerivativeDecay.HIntegrability
 public import Development.WeilBound.CoreStatements.OrbitDecayEstimates.CurveDerivativeDecay.KFiniteWordBoundIndefUnitary
 public import Development.WeilBound.CoreStatements.OrbitDecayEstimates.CurveDerivativeDecay.OrbitDeriv
-public import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
-public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Development.WeilBound.CoreStatements.OrbitDecayEstimates.CurveDerivativeDecay.HasDerivAtCurve
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexificationHolds
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.FrobeniusBoundOfMulNearOne
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IntegrableOfDecayVG
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.OrbitDecayEstimates.CurveDerivativeDecay.DerivativeUpperBound, Development.WeilBound.CoreStatements.OrbitDecayEstimates.CurveDerivativeDecay.LipschitzEstimate

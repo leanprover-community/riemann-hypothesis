@@ -4,27 +4,16 @@ import Lemmata.CharpolySmul
 public import GroundTheory.AutomorphicForms.ReductionHeight
 public import GroundTheory.AutomorphicForms.ReductionIwasawa
 public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.SelmerRankBounds.IsNormAlong
-public import GroundTheory.GlobalFields.SemilocalAlgebras.ContinuousCompletionMap
 public import GroundTheory.GlobalFields.SemilocalAlgebras.Galois
 public import GroundTheory.AutomorphicForms.AffineBruhat
 public import Development.AutomorphicArithmetic.AdelicQuotients.NormGaloisSmulAdeleComponentAtSmulPlace
-public import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
-public import Mathlib.NumberTheory.NumberField.Completion.InfinitePlace
 public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.SelmerRankBounds.EllipticityFromProductFormula
 public import Development.AutomorphicArithmetic.AdelicQuotients.TwNormConjDiagonalEqConjNormGL
-import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.CuspDecayHeights.HeightLe
-import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.IntegralUnitBaseChange.InvTransposeGLInvTransposeGL
-import GroundTheory.GlobalFields.Adele.BaseChange.FiniteMap
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
 import GroundTheory.AutomorphicForms.CuspidalDiscreteness.AltSum
-import GroundTheory.AutomorphicForms.ReductionBlock
 import Mathlib.Tactic.TypeStar
 import Mathlib.RingTheory.Valuation.LocalSubring
-import GroundTheory.GlobalFields.KummerTheory.LocalIndex
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.Tactic.Lemma
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Std.Tactic.BVDecide.Normalize.Prop

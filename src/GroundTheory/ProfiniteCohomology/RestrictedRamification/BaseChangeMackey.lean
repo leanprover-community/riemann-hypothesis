@@ -4,9 +4,7 @@ public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseChange
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseChangePlaces
 public import GroundTheory.ProfiniteCohomology.MackeyFormula.CompactSupport
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.LocalMaps
-import GroundTheory.GlobalFields.CompletionAtPlace.Integers
 public import Mathlib.FieldTheory.Galois.Profinite
-import Mathlib.RingTheory.Henselian
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Connected.Separation
 

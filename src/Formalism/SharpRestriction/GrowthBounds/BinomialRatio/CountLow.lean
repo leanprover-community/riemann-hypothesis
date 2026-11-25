@@ -1,11 +1,8 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CountUp
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CoarseDegreeAlternative
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.FirstCoefficientFacts
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.LeAndHalfLeProdOneSubExpNegOfBounds
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SegmentStatementHolds
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.ThresholdLowerBounds
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.Tactic.TypeStar

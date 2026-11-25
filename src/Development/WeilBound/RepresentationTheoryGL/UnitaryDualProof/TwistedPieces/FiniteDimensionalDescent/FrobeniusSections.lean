@@ -1,7 +1,6 @@
 module
 
 public import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.TwistedPieces.FiniteDimensionalDescent.ClosedOrbitsBase
-import Mathlib.FieldTheory.KummerPolynomial
 import Mathlib.FieldTheory.Relrank
 import Mathlib.RingTheory.Idempotents
 

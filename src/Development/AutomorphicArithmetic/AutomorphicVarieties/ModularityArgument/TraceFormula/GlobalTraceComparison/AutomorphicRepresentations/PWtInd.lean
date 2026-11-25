@@ -9,7 +9,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityA
 public import Development.DiscreteGroups.PiInvariants.CompactSupportTwists.SplitCentreMulTor
 import Development.DiscreteGroups.PiInvariants.CompactSupportTwists.LogAbsEqLogIdeleNorm
 import Development.DiscreteGroups.PiInvariants.CompactSupportTwists.PiClosT
-import GroundTheory.AutomorphicForms.QuotientMeasure
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

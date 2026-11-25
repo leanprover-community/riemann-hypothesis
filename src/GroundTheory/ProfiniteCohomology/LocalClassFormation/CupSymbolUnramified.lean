@@ -5,7 +5,6 @@ public import GroundTheory.LocalFields.MaximalUnramified
 public import GroundTheory.ProfiniteCohomology.CyclicCupProf
 import GroundTheory.LocalFields.AbstractLocalReciprocity.ExistsEqNsmulOfProjEqZero
 public import GroundTheory.ProfiniteCohomology.CyclicCupBrauer
-import Mathlib.FieldTheory.Galois.Profinite
 
 @[expose] public section
 

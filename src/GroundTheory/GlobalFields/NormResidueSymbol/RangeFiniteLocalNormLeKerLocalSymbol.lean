@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.GlobalFields.CompletionAtPlace.Galois
 public import GroundTheory.LocalFields.LocalReciprocityUniversal
-public import GroundTheory.GlobalFields.CompletionAtPlace.Integers
 public import GroundTheory.GlobalFields.IdeleGroups.LocalNorms
 public import GroundTheory.GlobalFields.KummerTheory.Splitting
 public import GroundTheory.GlobalFields.IdeleGroups.LocalNormGroups

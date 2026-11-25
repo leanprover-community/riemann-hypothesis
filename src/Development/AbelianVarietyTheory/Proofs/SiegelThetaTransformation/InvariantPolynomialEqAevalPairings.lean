@@ -56,7 +56,6 @@ import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IMemSiegel
 public import Mathlib.Algebra.MvPolynomial.Funext
-public import Mathlib.Analysis.Analytic.Constructions
 public import Mathlib.Analysis.Analytic.IsolatedZeros
 public import Mathlib.Analysis.Calculus.FDeriv.Mul
 public import Mathlib.Analysis.Complex.CauchyIntegral

@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.MemColRangeOfLeEntry
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.NegDminusLeMu
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.PsiCutSupported
-import Formalism.SharpRestriction.GrowthBounds.ValuationLowestDegreeMapFractionField
 
 @[expose] public section
 

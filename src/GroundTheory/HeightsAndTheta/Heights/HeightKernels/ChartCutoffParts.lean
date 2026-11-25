@@ -5,11 +5,6 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeome
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.ChartMassAffine
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PChartDensityIntegrable
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PChartEnergyCocycle
-import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PChartHessCompare
-import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PHermFormCompare
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.InnerProductSpace.Calculus
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.UniformSpace.Uniformizable
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.HessCRestrictThm

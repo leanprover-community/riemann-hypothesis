@@ -5,10 +5,6 @@ public import Mathlib.Algebra.TrivSqZeroExt.Basic
 public import Mathlib.Order.CompletePartialOrder
 public import Mathlib.RingTheory.Derivation.Basic
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsEulerContraction
-public import Mathlib.Algebra.CharP.Frobenius
-public import Mathlib.Algebra.CharP.Reduced
-public import Mathlib.Algebra.Field.Subfield.Basic
-public import Mathlib.FieldTheory.KummerPolynomial
 public import Mathlib.Data.Nat.Choose.Dvd
 public import Mathlib.RingTheory.Derivation.Lie
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LogCoordinateWedgeLinearIndependentSpanEqTop

@@ -2,14 +2,10 @@ module
 
 public import Development.AutomorphicSpectrum.Statements.GeometryStatements.FlatDegree
 public import Mathlib.Algebra.AffineMonoid.Basic
-public import Development.AutomorphicSpectrum.Definitions.AdelicLattices.FactPrimes
-public import Mathlib.NumberTheory.NumberField.Discriminant.Basic
-public import Mathlib.RingTheory.DedekindDomain.Different
 public import Development.AutomorphicSpectrum.Proofs.AdelicProofs.DifferentIdealLogSumRootDiscriminant
 public import Development.AutomorphicSpectrum.Proofs.AdelicProofs.LogIdealSupportFinite
 public import Development.AutomorphicSpectrum.Proofs.AdelicProofs.LogNormsOfNonzeroAdelic
 public import Development.AutomorphicSpectrum.Proofs.AdelicProofs.ProductFormulaLogNorms
-public import Mathlib.NumberTheory.NumberField.InfinitePlace.Embeddings
 public import Development.AutomorphicSpectrum.Proofs.AdelicProofs.SumEmbeddingsBaseChange
 
 @[expose] public section

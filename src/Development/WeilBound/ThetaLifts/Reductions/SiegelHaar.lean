@@ -2,12 +2,8 @@ module
 
 public import Mathlib.MeasureTheory.Measure.Haar.MulEquivHaarChar
 public import Formalism.UnipotentAdelicQuotients.HaarProductClosedCompact
-public import Mathlib.MeasureTheory.Measure.Regular
 public import Mathlib.RingTheory.WittVector.IsPoly
 public import Mathlib.Tactic.ReduceModChar
-public import Mathlib.MeasureTheory.Constructions.Polish.Basic
-public import Mathlib.MeasureTheory.Group.LIntegral
-public import Mathlib.MeasureTheory.Measure.Haar.Basic
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 import Batteries.Tactic.Lint.Basic

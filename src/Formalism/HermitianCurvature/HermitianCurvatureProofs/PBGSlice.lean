@@ -3,11 +3,9 @@ module
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.TopFirstOfParts
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBGWave
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.JfBetaAdjCOfLemmaBNorm
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelFormSesquilinearFiniteClass
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OpApplyZeroNear
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBGInt
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SliceCompactSupportCoefficient
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

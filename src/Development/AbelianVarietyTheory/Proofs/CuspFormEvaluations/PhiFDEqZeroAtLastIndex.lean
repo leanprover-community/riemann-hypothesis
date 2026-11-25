@@ -45,13 +45,9 @@ import Development.AbelianVarietyTheory.Definitions.ThetaValues.IsBlockProd
 import Development.AbelianVarietyTheory.Definitions.ThetaValues.ThConst
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.CIndRaw
 import Mathlib.Algebra.AffineMonoid.Basic
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
@@ -59,12 +55,8 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.ThetaValues.GamAt
-import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.AbelianAt
-import Formalism.SharpRestriction.Divisibility.WeightAlgebra
 import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.QuotientParamNonneg
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
 import Mathlib.Tactic.Linter.Style
 

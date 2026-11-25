@@ -1,9 +1,7 @@
 module
 
 public import GroundTheory.AutomorphicForms.GL2.GJFEInducedParabolic
-import GroundTheory.AutomorphicForms.GL2.ExistsEqPowMulOfValuationLe
 public import GroundTheory.AutomorphicForms.GL2.GJFEInducedLevi
-import GroundTheory.AutomorphicForms.MeasuresGL
 
 @[expose] public section
 

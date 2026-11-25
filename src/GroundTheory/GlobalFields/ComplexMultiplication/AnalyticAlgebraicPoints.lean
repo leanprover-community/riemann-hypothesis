@@ -9,7 +9,6 @@ public import GroundTheory.GlobalFields.ComplexMultiplication.UniformizationGrou
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DualIsogeny
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
 import Mathlib.Analysis.Convex.Contractible
-import Mathlib.RingTheory.SimpleRing.Principal
 import GroundTheory.GlobalFields.ComplexMultiplication.EllipticRational
 
 -- This file was produced by scripts/clump.py from the modules listed below.

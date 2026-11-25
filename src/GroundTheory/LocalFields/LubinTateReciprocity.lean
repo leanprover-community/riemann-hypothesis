@@ -7,8 +7,6 @@ public import GroundTheory.LocalFields.LubinTateTower
 public import Mathlib.Tactic.ENatToNat
 public import Mathlib.Topology.Sheaves.Presheaf
 import GroundTheory.LocalFields.AbstractLocalReciprocity.NormFormula
-import GroundTheory.LocalFields.Eisenstein
-import GroundTheory.LocalFields.LubinTateReciprocity.TwistedPoint
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.Tactic.TypeStar
 

@@ -51,7 +51,6 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 public import Mathlib.Topology.MetricSpace.ProperSpace.Lemmas
 import Mathlib.Topology.Sheaves.Init
-public import Mathlib.Analysis.Complex.CauchyIntegral
 import Mathlib.Geometry.Manifold.StructureGroupoid
 
 @[expose] public section

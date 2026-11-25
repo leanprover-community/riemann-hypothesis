@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.OneLeftSpMap
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ChartPullbacks.UniversalCharts.DualLiftInjective
-import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TangentBijectionOfValues
 import Mathlib.Tactic.Linter.Style
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsLieBasisBaseChange
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.PushRProdPtsResP

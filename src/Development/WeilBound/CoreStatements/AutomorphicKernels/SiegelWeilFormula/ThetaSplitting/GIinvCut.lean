@@ -5,7 +5,6 @@ public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeil
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.ThetaSplitting.GIinvA
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.IntegrableOnRight
 import Development.WeilBound.ThetaLifts.CartanFactorisation.Unimod
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
 import Mathlib.Tactic.Linter.Style
 public import Mathlib.RingTheory.MvPolynomial
 

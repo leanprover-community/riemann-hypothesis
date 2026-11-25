@@ -10,7 +10,6 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.OperatorPreservesFu
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RightDerivativeRulePsi
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.WCellMemOmPlus
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.WeylCellMulVecBasis
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.QuantumDetHighestWeightHolds
 
 @[expose] public section
 

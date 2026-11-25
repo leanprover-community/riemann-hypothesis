@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.AdmissibleParameterJoins.DIVfromGLm
 public import Formalism.SharpRestriction.Divisibility.SlopeExcess.ConstRankBaseLePolyFourth
-public import Formalism.SharpRestriction.Divisibility.LocalQuadraticParts
 public import Formalism.SharpRestriction.GlobalSchurBounds.FlipTwoThree
 public import Formalism.LocalToGlobal.GlobalTheory.GL4.LowerSlopeInequalityFamily
 public import Formalism.LocalToGlobal.GlobalTheory.GL4.PStmtFree

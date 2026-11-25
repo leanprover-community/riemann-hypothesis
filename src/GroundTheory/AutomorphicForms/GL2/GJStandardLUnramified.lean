@@ -1,13 +1,9 @@
 module
 
 public import GroundTheory.AutomorphicForms.GL2.GJUnramified
-import GroundTheory.AutomorphicForms.GL2.GJZetaCore
 public import Mathlib.Analysis.Complex.LocallyUniformLimit
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Tactic.TypeStar
-public import Mathlib.Analysis.Analytic.Uniqueness
-public import Mathlib.Analysis.Calculus.FDeriv.Pow
-public import Mathlib.Analysis.Complex.CauchyIntegral
 
 @[expose] public section
 

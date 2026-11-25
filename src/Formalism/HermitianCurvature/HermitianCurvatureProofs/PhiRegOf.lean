@@ -4,8 +4,6 @@ public import Formalism.HermitianCurvature.BesselNonvanishingReduction
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.L1QuotientIntegralBound
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbConvDDOfDecDD
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SmoothAdd
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.UhMeasurableSet
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.UhMemMeasurableSet
 
 @[expose] public section
 

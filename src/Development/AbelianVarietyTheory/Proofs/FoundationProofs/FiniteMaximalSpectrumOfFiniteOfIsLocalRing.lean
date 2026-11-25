@@ -51,8 +51,6 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Mathlib.RingTheory.Etale.StandardEtale
-public import Mathlib.RingTheory.Unramified.Finite
 
 @[expose] public section
 

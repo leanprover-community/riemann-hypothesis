@@ -2,7 +2,6 @@ module
 
 public import Mathlib.RingTheory.WittVector.Teichmuller
 public import Mathlib.RingTheory.WittVector.Complete
-public import Mathlib.RingTheory.AdicCompletion.Basic
 public import Mathlib.RingTheory.Valuation.ValuationRing
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.WittVectorTeichmullerIsAdicCompleteOfPerfect
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsStratHom

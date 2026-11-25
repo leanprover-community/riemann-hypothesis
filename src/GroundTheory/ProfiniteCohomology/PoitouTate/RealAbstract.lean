@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.ProfiniteCohomology.PoitouTate.RealDefs
-import GroundTheory.ProfiniteCohomology.CohomologicalDimension.SubsingletonCohomologyOfPrimaryOfFinite
 public import GroundTheory.ProfiniteCohomology.PoitouTate.Abstract
 public import GroundTheory.ProfiniteCohomology.RealPlaces.DevissageNatural
 import GroundTheory.ProfiniteCohomology.TorsionDualFinite

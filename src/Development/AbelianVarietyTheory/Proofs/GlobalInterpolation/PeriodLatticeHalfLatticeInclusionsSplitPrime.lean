@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.Transl
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.HeisenbergCocycleFormIntegralSelfDual
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.PerLatticeFacts
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.StandardRankOneLatticeOfLocal
-import Formalism.LocalToGlobal.Columns.BaseLemmas
-import Mathlib.Algebra.AffineMonoid.Basic
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

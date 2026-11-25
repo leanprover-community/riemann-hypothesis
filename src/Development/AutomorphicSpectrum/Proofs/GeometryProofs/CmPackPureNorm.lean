@@ -9,20 +9,16 @@ public import Mathlib.Algebra.Polynomial.SpecificDegree
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ProjSumSumEmbeddingsEqTrace
 public import Development.WeilBound.CoreStatements.SesquilinearFractions.DOkBasis
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeGram
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsConstMul
 public import Development.WeilBound.CoreStatements.SesquilinearFractions.GModel
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsCMFrame
-public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Development.AutomorphicSpectrum.Proofs.AdelicProofs.PadicEmbeddingDiscreteValuationRing
-public import Mathlib.RingTheory.DedekindDomain.Different
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DifferentTwistedGeneratorExists
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PureFamilyDecomposition
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CmLieModelAction
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CmPackProductFrame
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CmPackPureFrame
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PeriodsSpanPureDecomposition
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelEigenvectorsAction

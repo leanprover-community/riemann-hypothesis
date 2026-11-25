@@ -16,10 +16,7 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsStdCharNeg
 public import Development.WeilBound.ThetaLifts.LatticeBasics.IsCompactIntV
 public import GroundTheory.GlobalFields.TateThesis.AdelicCharDual
 public import GroundTheory.GlobalFields.TateThesis.SchwartzBruhatFinite
-public import GroundTheory.GlobalFields.TateThesis.AdeleIdealMeasure
 public import GroundTheory.GlobalFields.TateThesis.SchwartzBruhatDual
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Tactic
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 import Mathlib.RingTheory.PiTensorProduct

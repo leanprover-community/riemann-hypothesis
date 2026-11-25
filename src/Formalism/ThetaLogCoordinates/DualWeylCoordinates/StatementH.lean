@@ -1,7 +1,6 @@
 module
 
 public import Formalism.ThetaLogCoordinates.DualWeylCoordinates.DefsMod
-public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 
 @[expose] public section
 

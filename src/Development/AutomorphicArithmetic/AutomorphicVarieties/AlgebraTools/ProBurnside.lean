@@ -2,9 +2,7 @@ module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.ClassFieldRamification.IsClassFieldHilbert
 public import Mathlib.GroupTheory.Nilpotent
-public import Mathlib.Algebra.Group.Subgroup.Order
 public import Mathlib.Algebra.Field.ZMod
-public import Mathlib.GroupTheory.PGroup
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.ProfDefs
 public import Mathlib.Topology.Algebra.ClopenNhdofOne
 import Mathlib.Tactic.Linter.Style

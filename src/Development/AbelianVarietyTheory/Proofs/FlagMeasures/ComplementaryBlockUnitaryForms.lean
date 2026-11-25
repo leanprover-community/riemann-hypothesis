@@ -2,13 +2,8 @@ module
 
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsotropicFlagLeviMaxCompactClosedSubgroups
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.SigmaFiniteOfRealSmul
-public import Formalism.SharpRestriction.CuspSpanNormBounds.GlobAut
 public import Mathlib.Analysis.Matrix.Order
-public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.DefClassNum
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
-public import Mathlib.Analysis.InnerProductSpace.Orthonormal
-public import Mathlib.Analysis.Normed.Lp.WithLp
-public import Mathlib.Analysis.InnerProductSpace.GramSchmidtOrtho
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HasEuclideanBallVolumeSublevelAsymptoticsProd
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.PoissonSummationInfinitePlaceGaussianLattice
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HaarComplexGLMatricesConjAndSingularNull
@@ -55,23 +50,17 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsLatMeasurableConst
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
-import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
 import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Analysis.CStarAlgebra.Module.Constructions
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Order.Sigma
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Polynomial.Basic
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Mathlib.Algebra.Order.Star.Real
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactExponentialSurjective
 import Mathlib.RingTheory.Coalgebra.IsFrobenius

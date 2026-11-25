@@ -6,9 +6,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.PEvalKerKrullDi
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PFibreMultiHomog
 public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PIntDomainDim
 import Mathlib.Algebra.Lie.OfAssociative
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 
 @[expose] public section

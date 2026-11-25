@@ -6,8 +6,6 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSp
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.SInfEx
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.SSatIff
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CuspidalSatakeAlmostAll
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.CmBridge
-public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.SliceShift
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.NearBlo
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.ResTyp
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.KillComp
@@ -15,7 +13,6 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHec
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.RhoLe
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ASmooth
 public import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.KillCore
-import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.SInfIff
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.DatDatum, Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.NearDat, Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.CuspidalNormBounds.FunKill, Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.Imports

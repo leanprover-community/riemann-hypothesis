@@ -56,9 +56,6 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Mathlib.Algebra.Module.FinitePresentation
-public import Mathlib.RingTheory.Flat.EquationalCriterion
-public import Mathlib.RingTheory.Flat.TorsionFree
 public import Mathlib.RingTheory.Localization.Finiteness
 
 @[expose] public section

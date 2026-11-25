@@ -4,7 +4,6 @@ public import Mathlib.Combinatorics.Quiver.ReflQuiver
 public import Mathlib.RepresentationTheory.Coinduced
 public import Mathlib.RepresentationTheory.Homological.GroupCohomology.Functoriality
 public import GroundTheory.TateCohomology.DimensionShift
-import Mathlib.RepresentationTheory.Homological.GroupCohomology.Shapiro
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

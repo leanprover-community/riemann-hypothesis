@@ -5,7 +5,6 @@ public import Formalism.QuotientMetricDivisors.Statement
 public import Formalism.HermitianLattices.HermitianLatticesProofs.IndexBasic
 import Formalism.HermitianLattices.HermitianLatticesProofs.LocBasic
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 

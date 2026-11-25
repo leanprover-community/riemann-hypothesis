@@ -5,10 +5,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFam
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CorollaryU1Plain
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OpApplySub
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PositiveDensityModerateGrowth
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.SeminormCompletion
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.SlicesFiniteRegularityBuilt
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelFormSesquilinearFiniteClass
 
 @[expose] public section
 

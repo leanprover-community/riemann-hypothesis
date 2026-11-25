@@ -6,18 +6,11 @@ public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProo
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.FamilyLogGammaSmallHolds
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.LemmaTwoThreeOfSiegelBound
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.TestVectorMemSchwartzBruhat
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.Algebra.Algebra.Hom.Rat
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.InertPrimeTeichmuller.NormLeOneOfIntegralInt
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.InertPrimeTeichmuller.DvdPowQSub
-public import Mathlib.Analysis.Normed.Field.Instances
-public import Mathlib.NumberTheory.Padics.Complex
 public import Formalism.PeriodIntegrals.OkpInert
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.InertPrime
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Algebra.Order.Star.Int
 
 -- This file was produced by scripts/clump.py from the modules listed below.

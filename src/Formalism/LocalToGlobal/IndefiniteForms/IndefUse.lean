@@ -6,7 +6,6 @@ import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ImageLcv
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section

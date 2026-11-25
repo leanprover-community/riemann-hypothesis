@@ -43,11 +43,8 @@ public import Mathlib.Tactic.NormNum.Prime
 public import Mathlib.Tactic.NormNum.RealSqrt
 public import Mathlib.Topology.Sheaves.Init
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
-public import Development.AbelianVarietyTheory.Definitions.Foundations.NormEulerPolySubOneLe
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.SchurStep
 public import Development.WeilBound.ThetaLifts.LatticeBasics.EulerA
-public import Mathlib.MeasureTheory.Measure.Haar.Unique
 /-! # HaarMeasureTripleProductDecomposition: Preliminary helper declarations for global theta kernels. -/
 
 @[expose] public section

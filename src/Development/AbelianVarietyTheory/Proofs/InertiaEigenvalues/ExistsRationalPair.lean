@@ -9,7 +9,6 @@ public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.AllUn
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.QkToAkUInvariantUnderFieldEmbedding
 import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.UniformisationTorsionMapsCompatibleInLevel
 import Mathlib.Tactic.Linter.Style
-public import Development.AbelianVarietyTheory.Definitions.Uniformization.TXFrame
 
 @[expose] public section
 

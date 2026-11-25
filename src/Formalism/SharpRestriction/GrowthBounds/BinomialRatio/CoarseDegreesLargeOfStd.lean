@@ -2,12 +2,9 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.WtBound
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CoarseDegreesLargeBeyond
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CoarseDegreeAlternative
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CoarseDegreeRatioConsecutive
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.LeAndHalfLeProdOneSubExpNegOfBounds
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.PairFacts
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SegmentStatementHolds
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.ThresholdLowerBounds
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

@@ -17,12 +17,9 @@ import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Data.Finsupp.Pointwise
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
-import GroundTheory.ArithmeticGeometry.SchemeCohomology.CechOrdered
 import Mathlib.CategoryTheory.Monoidal.Mon
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic

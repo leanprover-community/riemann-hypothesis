@@ -6,18 +6,11 @@ public import Mathlib.Basic.Complex.Basic
 public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordOverIntOfFiniteOrder
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordsJoinBlocks
 public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.CompactGapsGE
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LabelEmbeddingInjective
-public import Mathlib.AlgebraicGeometry.Morphisms.Proper
-public import Mathlib.RingTheory.Valuation.ValuationSubring
 public import Mathlib.AlgebraicGeometry.ValuativeCriterion
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsGenericFlag
-public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DominatesOfCoordsRegular
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsProperIntegralModel
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordTieCompEquiv
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsTwistedGenerators
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FlagFramesGenericModelLeft
@@ -27,53 +20,23 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FrameViaTwis
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FunctionFieldRatioGenerators
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenericFlagOverGenericField
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BirationalOfTranscendenceDegree
-public import Mathlib.Algebra.Algebra.Rat
-public import Mathlib.Algebra.Algebra.Subalgebra.Lattice
-public import Mathlib.RingTheory.Localization.Away.Basic
-public import Mathlib.RingTheory.Smooth.Basic
-public import Mathlib.RingTheory.Kaehler.JacobiZariski
-public import Mathlib.RingTheory.TensorProduct.Free
-public import Mathlib.Algebra.MvPolynomial.Rename
-public import Mathlib.RingTheory.Ideal.Maps
-public import Mathlib.RingTheory.RingHom.Smooth
-public import Mathlib.RingTheory.Kaehler.Basic
-public import Mathlib.RingTheory.Localization.FractionRing
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.KaehlerFinrankFractionField
-public import Mathlib.RingTheory.Smooth.StandardSmoothOfFree
-public import Mathlib.RingTheory.Smooth.StandardSmooth
-public import Mathlib.FieldTheory.IntermediateField.Adjoin.Defs
-public import Mathlib.RingTheory.AlgebraicIndependent.Defs
 public import Mathlib.RingTheory.TensorProduct.IsBaseChangeFree
-public import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
-public import Mathlib.RingTheory.Etale.Basic
-public import Mathlib.RingTheory.Etale.Kaehler
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SncModelReindexedCoords
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DominantSmoothMapCoords
-public import Mathlib.LinearAlgebra.Dimension.Finrank
-public import Mathlib.LinearAlgebra.Matrix.Defs
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsSncModel
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsCoordsForComponent
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FlagBundleUnderEquiv
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelConstantsExtension
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.TwoWeightEqOneAddRoot
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelPullbackActionRing
-public import Mathlib.LinearAlgebra.DFinsupp
-public import Mathlib.LinearAlgebra.TensorProduct.Defs
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TensorEquivOfBasisExtension
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.CompRightEqZero
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGoodD
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.HodgeIPIffHodgeFormConj
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenMapStalkMap
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegAtIffChartLocalization
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenericCoordsDescendSubfield
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EigLat
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelDominantHodge
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelExistsUniqueAct
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.LawsProved

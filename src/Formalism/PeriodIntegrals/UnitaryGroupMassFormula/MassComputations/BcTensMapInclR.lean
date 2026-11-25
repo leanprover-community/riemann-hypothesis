@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.Measures
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.PosNear
 import Mathlib.Tactic.Linter.Style
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeColumns.IdxCount
 
 @[expose] public section

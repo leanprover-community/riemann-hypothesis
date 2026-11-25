@@ -10,11 +10,9 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.H
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.StDiagExists
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.StSchurW
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.TransposeUnitary
-import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
 import Mathlib.Tactic.TypeStar
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TailIntegrals.UHMulInv
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Mathlib.MeasureTheory.Function.StronglyMeasurable.Inner
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.SigIntIntegrable
 import Mathlib.Algebra.Order.Star.Real
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.MultiplicityOne.HpkMulVecMulVec

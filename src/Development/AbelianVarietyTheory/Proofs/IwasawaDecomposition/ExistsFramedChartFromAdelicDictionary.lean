@@ -8,9 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsPoi
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LatAtLattice
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.MemPrinCongOfSm
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NeZeroTop
-public import Formalism.LocalToGlobal.Divisibility.Tuples
-public import Formalism.LocalToGlobal.HermitianForms.IsLocBasis
-public import Formalism.LocalToGlobal.Columns.RecLevelTop
 public import Formalism.LocalToGlobal.Columns.TiedCls
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemFramedLevelIffTwoAdelicPointsStatement
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PlaceProjectionZeroIntegralIffComponentsAbove

@@ -7,7 +7,6 @@ import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.MulVec
 import Development.AbelianVarietyTheory.Definitions.Foundations.InFrameStabilizer
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.CmStarOfIsCMUnram
 import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.FractionFieldToGenericStalkAlgebraMapEq
-import Formalism.FlagUnipotentLattices.MemOfOrthogonalAnisotropic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Definitions.SemilocalFrames.SymmetricFlagBasisVectorsApplyCentre, Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.CoordinatesFlagVector

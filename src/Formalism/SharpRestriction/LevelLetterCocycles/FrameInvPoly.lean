@@ -1,15 +1,12 @@
 module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.LemmasUnramifiedOfRingCondition
-public import Formalism.SharpRestriction.LevelLetterCocycles.RingConditionOfDeltaInvariants
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArcCoordinatesOfMembership
 public import Formalism.SharpRestriction.LevelLetterCocycles.CoprimeFrobeniusUniformizerPowers
 public import Formalism.SharpRestriction.LevelLetterCocycles.HorTrExists
 public import Formalism.SharpRestriction.LevelLetterCocycles.HorTrUnique
 public import Formalism.SharpRestriction.LevelLetterCocycles.IndepStep
-import Formalism.SharpRestriction.LevelLetterCocycles.SaturationPullbackOfRingCondition
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Formalism.SharpRestriction.LevelLetterCocycles.ArcCoordinatesOfFrame
 
 @[expose] public section
 

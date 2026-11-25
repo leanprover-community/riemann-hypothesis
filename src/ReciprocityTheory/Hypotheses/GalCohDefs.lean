@@ -3,7 +3,6 @@ module
 public import ReciprocityTheory.GaloisValuations.ContinuousConstSMulQuotient
 public import ReciprocityTheory.GaloisValuations.Global
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic
-public import Mathlib.Order.CompletePartialOrder
 public import Mathlib.RingTheory.RamificationInertia.Inertia
 public import Mathlib.RingTheory.RamificationInertia.Ramification
 import Mathlib.Tactic.TypeStar

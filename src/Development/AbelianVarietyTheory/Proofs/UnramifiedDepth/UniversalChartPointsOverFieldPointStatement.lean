@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.CubWeilOfInjective
 public import Development.AbelianVarietyTheory.Definitions.Jets.JetsOnCopiesCompatibleFrames
 public import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.GermEvalOneStandardPointSelf
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDJet
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

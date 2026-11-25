@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.Moor
 public import Mathlib.Topology.MetricSpace.Contracting
 public import Mathlib.Analysis.Normed.Group.Ultra
 public import GroundTheory.PAdicHodge.SemilinearResidue
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.FieldTheory.Finite.GaloisField
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsUniqueIntegralAdditiveSystemFrobeniusPower
 public import Mathlib.CategoryTheory.Category.Basic

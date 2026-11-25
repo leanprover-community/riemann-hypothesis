@@ -1,9 +1,6 @@
 module
 
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
-public import Mathlib.Algebra.Algebra.Operations
-public import Mathlib.Algebra.Module.LinearMap.Star
-public import Mathlib.LinearAlgebra.DFinsupp
 public import Mathlib.Algebra.Module.Lattice.Basic
 import Mathlib.Tactic.TypeStar
 

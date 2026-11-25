@@ -3,7 +3,6 @@ module
 import CompanionTheory.AutomorphicTheory.JacobiDiagonalBounds.NFModel
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SquareIntegrableGammaZetabarInv
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-public import Mathlib.CategoryTheory.Category.Basic
 public import Mathlib.LinearAlgebra.Lagrange
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.PolyInMul
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.AdmissibleRecOfAdmissibleWord

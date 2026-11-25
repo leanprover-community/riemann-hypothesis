@@ -12,8 +12,6 @@ public import Formalism.SharpRestriction.GlobalSchurBounds.TopDensityNGeSixteen
 public import Formalism.GL3MeanSquares.HookFormulaTorsion.OneAddInvPowLeExpOne
 public import Formalism.SharpRestriction.GlobalSchurBounds.JointsL
 import Mathlib.Tactic.Linter.Style
-import Formalism.LandauZeroFreeBounds.SiegelWalfiszAPOfSiegelLower
-import Mathlib.Tactic.Linter.HaveILetI
 import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 
 -- This file was produced by scripts/clump.py from the modules listed below.

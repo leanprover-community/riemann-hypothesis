@@ -6,20 +6,13 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.AnResBridgeAnal
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSheet
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.AnResBridgeProj
 public import Mathlib.Analysis.Calculus.FDeriv.OfCompLeft
-public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.LintegralImageEqLintegralNormSqDetMul
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeF
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.AnResBridgeNull
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeA
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Topology.Separation.CompletelyRegular
-import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSheetA
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.AnResBridgeSheetCore
-import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.AnResBridgeIntegrable, GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.AnResBridgeSheet, GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.AnResBridge

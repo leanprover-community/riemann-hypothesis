@@ -6,7 +6,6 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySett
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContinuousInvUpper
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.KloostermanDensityOfParts
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SecondDefectNonneg
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.StandardCharacterExists
 import Mathlib.Algebra.Order.Star.Int
 
 @[expose] public section

@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 public import Development.AutomorphicSpectrum.Definitions.NonGaloisLines.TopLine
-public import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
 public import Formalism.GaloisCohomology.LocalTateDualityK
 public import CompanionTheory.AutomorphicTheory.PadicCyclotomicFields.GcohDefs
 public import GroundTheory.ProfiniteCohomology.LocalTateDuality.InjectiveCohomologyMapKummerSeqOpenFTwo
@@ -15,13 +14,9 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.Finrank
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TateDualDeRhamAndFilZeroDimAll
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.CupFlip
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.TateDualityH2FiniteCoefficients
-public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Development.WeilBound.CoreStatements.EulerCharacteristicCounts.BkMain
 public import CompanionTheory.AutomorphicTheory.PadicCyclotomicFields.GcohTopEuler
 public import Development.AbelianVarietyTheory.Definitions.Foundations.HTBasis
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import Development.AutomorphicSpectrum.Proofs.NonGaloisProofs.GoodOAdicCompleteCompactBasis
-import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsCycCycChar
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BlochKatoExactAnnihilatorsPeriodDatum
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BlochKatoLocalAllPrimesOfBlochKato

@@ -19,7 +19,6 @@ public import GroundTheory.HeightsAndTheta.Heights.LocalFiniteness.TargetsProjRe
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeFsLogIntegrable
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Assembly
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.ChowDegree
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LogIntSphere

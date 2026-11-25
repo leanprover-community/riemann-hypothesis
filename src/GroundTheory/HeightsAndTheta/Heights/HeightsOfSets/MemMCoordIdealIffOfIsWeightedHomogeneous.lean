@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.IsSaturatedFirstCoordinateLine
 public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Reading
-public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.DenseChart
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Statements
 import Mathlib.Tactic.Linter.Style
 

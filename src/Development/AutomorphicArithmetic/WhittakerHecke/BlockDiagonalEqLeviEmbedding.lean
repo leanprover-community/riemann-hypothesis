@@ -4,7 +4,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.Automorphic
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OneMemGoodCT
 import Development.AbelianVarietyTheory.Definitions.Foundations.NormEulerPolySubOneLe
 import Development.AutomorphicArithmetic.Foundations.Convolution.BlockHeckeSlices.Summand
-import GroundTheory.AutomorphicForms.QuotientMeasure
 
 @[expose] public section
 

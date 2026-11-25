@@ -4,7 +4,6 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsGener
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ProdUpdateDiv
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PieceLocalizationAtElement
 public import Mathlib.Data.Fintype.Order
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordsJoinBlocks
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal

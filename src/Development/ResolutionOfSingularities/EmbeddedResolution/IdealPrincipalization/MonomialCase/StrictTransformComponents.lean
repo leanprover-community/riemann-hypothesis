@@ -6,7 +6,6 @@ import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.
 import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.StrictTransform
 import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupBasic
 import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupIsoOffCenter
-import Development.ResolutionOfSingularities.Foundations.Blowup.BlowupOpenCover
 
 @[expose] public section
 

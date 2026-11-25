@@ -7,13 +7,9 @@ public import Formalism.SizeWindowBrackets.ChainSlopeWindows.LipschitzWeightAndM
 public import Formalism.SizeWindowBrackets.ChainSlopeWindows.PChain
 public import Formalism.ThickAverageLoss.ThickAverageProofs.ThickAverage
 public import Formalism.SizeWindowBrackets.ChainSlopeWindows.LevelOfCongruence
-public import Formalism.SizeWindowBrackets.ChainSlopeWindows.SubThreeMulLogTwoLe
 public import Development.AutomorphicArithmetic.PrimitiveCosets.CoreAtH
 public import Development.AutomorphicArithmetic.PrimitiveCosets.ToEBij
 public import Development.AutomorphicArithmetic.DedekindLFunctions.CharFamily
-public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.Analytic
-public import Formalism.StatementOC
-public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ExplicitFormulaErrorOfHostConditions
 public import Development.AutomorphicArithmetic.PrimitiveCosets.PrimRead
 public import Development.AutomorphicArithmetic.PrimitiveCosets.CardPsiA
 public import Development.AutomorphicArithmetic.PrimitiveCosets.charsA
@@ -21,11 +17,7 @@ public import Development.AutomorphicArithmetic.PrimitiveCosets.hostFactsS
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.TopWin
 public import Formalism.SharpRestriction.GlobalSchurBounds.TieGlobal
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.SizeWindowBrackets.ErrorFormsWeakWindowsFalse
-import Formalism.SizeWindowBrackets.GrowthBoundGivesRiemannHypothesis
-import Formalism.SizeWindowBrackets.QuotientSlopeBoundsWith
 import Mathlib.Tactic.Linter.Style
-import Development.AutomorphicArithmetic.PrimitiveCosets.RecH
 import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
 
 -- This file was produced by scripts/clump.py from the modules listed below.

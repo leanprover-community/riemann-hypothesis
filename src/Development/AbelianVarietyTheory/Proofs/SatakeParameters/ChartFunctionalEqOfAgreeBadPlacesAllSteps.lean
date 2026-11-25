@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Unita
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.MemLatSLatAdIff
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.UnderTie
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocBases
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlob
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

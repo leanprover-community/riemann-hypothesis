@@ -3,7 +3,6 @@ module
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.StatementE
 public import Formalism.GaussJetBounds.GaussJetProofs.ConstantCoeffAevalLinP
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Analysis.Normed.Ring.Ultra
 import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 import Mathlib.Tactic.Lemma
 

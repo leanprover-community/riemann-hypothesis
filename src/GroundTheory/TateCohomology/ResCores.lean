@@ -4,11 +4,8 @@ public import Mathlib.Combinatorics.Quiver.ReflQuiver
 public import Mathlib.RepresentationTheory.Coinduced
 public import Mathlib.RepresentationTheory.Homological.Resolution
 public import GroundTheory.TateCohomology.InducedNorm
-public import Mathlib.RepresentationTheory.FiniteIndex
-public import Mathlib.RepresentationTheory.Homological.GroupCohomology.Shapiro
 public import GroundTheory.TateCohomology.DimensionShift
 import Mathlib.Tactic.Lemma
-import Mathlib.RepresentationTheory.Homological.GroupCohomology.Basic
 import Mathlib.CategoryTheory.Monoidal.Mon
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
 

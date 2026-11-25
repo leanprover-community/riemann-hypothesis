@@ -3,15 +3,12 @@ module
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LagrInt
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.DoubledThetaLiftConvergence
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.ExistsFinsetAnnLeK
-public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.DCdE
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.LamFormula
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicSchwartzSpaceTranslateMem
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
-public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
 public import Development.AbelianVarietyTheory.Definitions.Foundations.NormEulerPolySubOneLe
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicSymplecticTraceFormAlternatingSwap
 public import Formalism.LocalToGlobal.IndefiniteReal.DatumF
-public import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 public import Development.AbelianVarietyTheory.Definitions.Foundations.T2SpaceTensorProductFiniteExtension
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqZeroOfAdelicFourierSeparatingCharsVanish
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsHaarFundamentalDomainRationalMatricesTower
@@ -21,15 +18,10 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LintegralAde
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RationalMatricesDiscreteCocompactAdelicMatrixSpa
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchurLemmaHeisenbergCommutingThetaOperator
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.MeanSquareAddFundamentalDomainOfCocompact
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
-public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.RedWpAutProdA
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.DiagonalLagrangianIntegralSiegelParabolicTransfoBis
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.IntegralMul
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.MapHaar
-public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.Mfac
 public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.MfacInvMul
-public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.PrSingle
-public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.ProjFacts
 
 /-! # DoubledLagrangianUnitary: Consolidated global theta-kernel definitions and proofs (DoubledLagrangianUnitary). -/
 @[expose] public section

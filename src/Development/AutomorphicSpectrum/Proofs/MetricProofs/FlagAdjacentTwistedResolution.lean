@@ -1,10 +1,8 @@
 module
 
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsLocSec
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ElementaryTwistMinorScalar
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverTwoFramesComparison
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.PullbackPullback
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.TwistedAtlasCompatibility
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsBlkCover
 import Mathlib.Tactic.Linter.Style

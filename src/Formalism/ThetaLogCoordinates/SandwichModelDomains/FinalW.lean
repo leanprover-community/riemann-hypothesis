@@ -11,18 +11,11 @@ public import Mathlib.NumberTheory.Padics.RingHoms
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LRowdivLemmas
 public import Formalism.ThetaLogCoordinates.TraceIsometryWeights.SchurTraceProofs.FischerAdjointnessHolds
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LDrowLemmas
-public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LHwrowLemmas
-public import Formalism.ThetaLogCoordinates.TraceIsometryWeights.HasLatBasis
 public import Formalism.PolynomialDimension.MultinomialDepth.MonoCount
 public import Formalism.ThetaLogCoordinates.TraceIsometryWeights.DischargeHeightBound
 public import Formalism.ThetaLogCoordinates.TraceIsometryWeights.FinalP
 import Mathlib.Tactic.Linter.Style
-import Formalism.MahlerMeasure.MahlerMeasureProofs.FreezeBij
-import Formalism.MahlerMeasure.MahlerMeasureProofs.FreezeInto
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LDbasisLemmas
-import Formalism.ThetaLogCoordinates.TraceIsometryWeights.SchurTraceProofs.LatData
-import Formalism.ThetaLogCoordinates.TraceIsometryWeights.SchurTraceProofs.ZpClosedToAddSubgroup
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

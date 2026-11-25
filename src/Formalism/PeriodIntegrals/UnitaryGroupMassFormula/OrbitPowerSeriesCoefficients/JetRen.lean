@@ -1,7 +1,6 @@
 module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitPowerSeriesCoefficients.JetMul
-public import Mathlib.RingTheory.MvPowerSeries.Rename
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

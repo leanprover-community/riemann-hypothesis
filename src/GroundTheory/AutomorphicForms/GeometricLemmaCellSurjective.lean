@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.AutomorphicForms.GeometricLemmaJacquetCell
-import GroundTheory.AutomorphicForms.AdmissibleInduction
 import GroundTheory.AutomorphicForms.GeometricLemmaCount
 import GroundTheory.AutomorphicForms.GeometricLemmaOrbit
 import Mathlib.Tactic.TypeStar

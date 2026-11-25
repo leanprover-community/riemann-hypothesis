@@ -4,14 +4,9 @@ public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsT
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.CntCoord
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.HasLenOfEquiv
-public import Development.WeilBound.CoreStatements.HodgeTatePoints.FormMemLin
 public import ReciprocityTheory.DualLattices.CotangentSurjective
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.DetUpdateRowDiagonal
 public import Development.AutomorphicSpectrum.Statements.AlgebraStatements.PolarisedAFStatement
-public import Mathlib.Basic.NNReal.Defs
-public import Mathlib.Data.Matrix.ColumnRowPartitioned
-public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
-public import Mathlib.RingTheory.Valuation.Integers
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SymplecticPeriodMatrixIntegrality
 public import ReciprocityTheory.DualLattices.HasLenCokerDet
 public import ReciprocityTheory.DualLattices.MemAugIdeal

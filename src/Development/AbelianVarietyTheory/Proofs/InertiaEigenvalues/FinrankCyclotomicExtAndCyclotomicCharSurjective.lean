@@ -5,8 +5,6 @@ public import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicCharacterPadicBasicProperties
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormEqZpowOfMemMaxUnramifiedSubfield
-public import Mathlib.NumberTheory.Padics.Complex
-public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NormPrimitiveRootPrimePowSubOnePadicComplex
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.FieldTheory.Galois.Profinite

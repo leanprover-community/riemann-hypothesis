@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.LocalFields.AbstractLocalReciprocity.Frobenius
-public import GroundTheory.LocalFields.AbstractLocalReciprocity.Valuation
 import GroundTheory.LocalFields.AbstractLocalReciprocity.UniqueQuotientSubgroupOfSelf
 public import GroundTheory.LocalFields.AbstractLocalReciprocity.Unramified
 

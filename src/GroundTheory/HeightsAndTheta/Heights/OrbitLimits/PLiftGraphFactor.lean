@@ -6,7 +6,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPowerBlockMetr
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PLiftGraphMetric
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA

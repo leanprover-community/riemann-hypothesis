@@ -2,14 +2,11 @@ module
 
 public import Mathlib.NumberTheory.Cyclotomic.Basic
 public import Formalism.MirabolicMackeyTheory.StatementT
-public import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic
 public import Formalism.QuotientMetricDivisors.RatHermLcvTwist
 public import Formalism.HarderNarasimhan.QuotRealize
 public import Formalism.LogFactorialIndices.StatementSize
-public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 public import Formalism.QuotientMetricDivisors.StatementK
 public import Formalism.QuotientMetricDivisors.ScalarLiftLowerBoundFull
-public import Mathlib.NumberTheory.NumberField.Basic
 public import Formalism.ThetaSupremumBounds.StatementCB
 public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.DescendedNorm
 public import Formalism.LocalToGlobal.Divisibility.Inputs
@@ -17,14 +14,8 @@ public import Formalism.LocalToGlobal.Columns.ToHLat
 public import Formalism.LocalToGlobal.KernelLattices.ThDistC
 public import Formalism.LocalToGlobal.Divisibility.LiftLat
 public import Formalism.LocalToGlobal.IndefiniteForms.IndefUse
-import Formalism.QuotientMetricDivisors.Statement
-import Mathlib.NumberTheory.NumberField.CMField
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Lemma
 import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ConjugateWeightLatticeOfGeneral
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.RatHerm
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ReductionSecondStep
-import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SlopeIneqMean
 import Mathlib.Algebra.Ring.IsFormallyReal
 
 -- This file was produced by scripts/clump.py from the modules listed below.

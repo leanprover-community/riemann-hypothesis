@@ -3,7 +3,6 @@ module
 public import Mathlib.Data.Nat.Prime.Defs
 public import Mathlib.RingTheory.Ideal.Operations
 public import Mathlib.FieldTheory.IsPerfectClosure
-public import Mathlib.Algebra.CharP.Basic
 public import Mathlib.RingTheory.Ideal.Quotient.Nilpotent
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.WittExactSequences.IsCompl
 import Mathlib.Tactic.Linter.HaveILetI

@@ -2,10 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.Divisibility.JetBounds.IsExpansion
 public import Formalism.GaussJetBounds.StatementS
-public import Mathlib.Data.Nat.Notation
-public import Formalism.GaussJetBounds.Statement
-public import Formalism.GaussJetBounds.StatementP
-public import Formalism.GaussJetBounds.StatementW
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.CyclicPowerClassOfExpEquiv
 public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.IsLawOfLog
 public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.UniformGaussModelCondition
@@ -13,8 +9,6 @@ public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.Unif
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.IsPairFrame
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.StatementC
 public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementW
-import Formalism.GaussJetBounds.StatementH
-import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.OddLogRelation
 import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.StatementG
 
 -- This file was produced by scripts/clump.py from the modules listed below.

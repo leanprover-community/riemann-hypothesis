@@ -2,11 +2,6 @@ module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.PolarCut
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.PushSupp
-public import Mathlib.Analysis.Calculus.FDeriv.Defs
-public import Mathlib.MeasureTheory.Group.Measure
-public import Mathlib.Topology.Algebra.Module.Determinant
-public import Mathlib.Analysis.Calculus.FDeriv.Basic
-public import Mathlib.MeasureTheory.Function.Jacobian
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.T2SpaceTensorProductFiniteExtension
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.PushInv
 import Mathlib.Tactic.Linter.HaveILetI

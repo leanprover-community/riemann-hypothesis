@@ -52,7 +52,6 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.FaceMapCompSuccAboveCastSucc
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MapHClsEq, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PullCup, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PullFrob, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RedHcCup, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RedHcOneH, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmulFil, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SquarePull, Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.ZariskiEtaleLifting.FirstChernCompatibleL

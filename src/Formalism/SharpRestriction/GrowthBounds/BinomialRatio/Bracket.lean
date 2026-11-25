@@ -5,8 +5,6 @@ public import Mathlib.Algebra.BigOperators.Fin
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CoarseDegreesLargeBeyond
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.NotKept
 public import Mathlib.Analysis.Complex.ExponentialBounds
-import Mathlib.Algebra.Order.Star.Real
-import Formalism.SharpRestriction.GrowthBounds.UnramifiedQuadraticSetting
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.BinomialRatio.NkExponent, Formalism.SharpRestriction.GrowthBounds.BinomialRatio.Bracket

@@ -4,7 +4,6 @@ public import Formalism.QuotientMetricDivisors.StatementACE
 public import Formalism.QuotientMetricDivisors.RatHermLcvTwist
 public import Formalism.QuotientMetricDivisors.ProdFormula
 public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ImageLcv
-public import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 public import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice
 public import Formalism.HermitianLattices.HermitianLatticesProofs.IndexBasic
 public import Formalism.HermitianLattices.HermitianLatticesProofs.LocDual
@@ -16,7 +15,6 @@ public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ProdFormul
 public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.RatHerm
 public import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ReductionSecondStep
 public import Formalism.QuotientMetricDivisors.ReductionLemmaZero
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ValBasic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.QuotientMetricDivisors.HermitianTwistDivisors.BoundsSum, Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ConjugateWeightLatticeOfGeneral

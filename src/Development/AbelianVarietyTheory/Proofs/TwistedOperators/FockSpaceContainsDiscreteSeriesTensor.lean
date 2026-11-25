@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EqZeroOfF
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SameBlockOfPosC
 public import Formalism.SharpRestriction.Divisibility.SchurIrreducible
 public import Mathlib.Analysis.InnerProductSpace.Calculus
-public import Mathlib.Analysis.Calculus.Deriv.Basic
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsUnitaryHarishChandraDiscreteSeries
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsFockIPOfFockData

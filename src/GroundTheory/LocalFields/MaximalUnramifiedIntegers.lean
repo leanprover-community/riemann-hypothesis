@@ -2,8 +2,6 @@ module
 
 public import GroundTheory.LocalFields.MaximalUnramified
 public import GroundTheory.LocalFields.IntermediateField
-public import Mathlib.RingTheory.Flat.TorsionFree
-public import Mathlib.RingTheory.Henselian
 public import GroundTheory.LocalFields.SeparableClosure
 public import GroundTheory.LocalFields.SeparableClosureValuation
 import GroundTheory.LocalFields.UnramifiedGalois

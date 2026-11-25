@@ -4,7 +4,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume
 public import ReciprocityTheory.ResidueCardinality.ArtinOntoB
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.LocDensHI
 import Mathlib.Topology.Compactification.OnePoint.ProjectiveLine
-import ReciprocityTheory.Automorphisms.InstMainA
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.LocDensIdxA
 
 -- This file was produced by scripts/clump.py from the modules listed below.

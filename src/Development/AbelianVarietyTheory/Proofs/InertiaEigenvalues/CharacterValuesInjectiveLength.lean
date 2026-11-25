@@ -6,16 +6,10 @@ public import Mathlib.LinearAlgebra.Matrix.ToLin
 public import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.ResidualConstruction
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CoeffDetGenericSumMemHeckeAlgebra
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsIdempotentSubMemOfPowSubMem
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemSpanRingCornerIdealModuleIff
-public import Mathlib.FieldTheory.Separable
 public import Mathlib.LinearAlgebra.Charpoly.ToMatrix
-public import Formalism.SharpRestriction.LevelLetterCocycles.DataN
-public import Mathlib.LinearAlgebra.Charpoly.Basic
-public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientHomNonvanishingBound
 public import Mathlib.RingTheory.Polynomial.Resultant.Basic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IdempotentBlockCharPolyEqCharpolyImage
 public import Mathlib.Data.Nat.Choose.Dvd
-public import Mathlib.LinearAlgebra.Matrix.Rank
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BlockDetMemHeckeAlgebraOfHeckeSpan
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsBlockAction
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsMonomialsSpan
@@ -30,7 +24,6 @@ public import Development.AutomorphicArithmetic.CyclotomicBounds.FactorizationCo
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.HaveILetI
 import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

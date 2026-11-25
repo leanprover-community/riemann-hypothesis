@@ -1,9 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.StdBasisFlagSubmoduleOfBlockTriangular
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

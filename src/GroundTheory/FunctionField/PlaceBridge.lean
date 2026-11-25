@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.FunctionField.PlaceDefs
-public import Mathlib.FieldTheory.Separable
 public import GroundTheory.FunctionField.PlaceBasic
 public import GroundTheory.FunctionField.PlaceSum
 public import Mathlib.FieldTheory.RatFunc.Defs

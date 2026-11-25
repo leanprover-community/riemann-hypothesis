@@ -7,13 +7,11 @@ public import Formalism.LocalToGlobal.KernelLattices.ColumnData.ColumnDataEquati
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.IsAdmissibleFlagPairOfUnitriangularLeftAutomorph
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.SelfDualCovolume
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.ColumnDataEquations.JArith
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData.IopIso
 public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.TripleSumIndependence.TripleSumIndep
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.ColumnDataEquations.SecondConstantHolds
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.ColumnDataEquations.SqFacts
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.WeightThresholdDefs
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.ColumnDataEquations.SqLMat
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData.ColumnDataEquations.GMConjTranspose
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.ColumnDataEquations.SqLInput
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.BaseLinkOfNonzeroDelta
 public import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.SplitPairGen
@@ -22,8 +20,6 @@ public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.SplitPairGen
 import Formalism.LocalToGlobal.PairingIndexBounds.SplitPairEquations.IntegralSquareRoots.HenselQuad
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.LocalToGlobal.KernelLattices.ColumnData.ThIndep
-import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.QuadraticSemicharacterIdentityReformulated2
 import Mathlib.Tactic.Linter.HaveILetI
 import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
 

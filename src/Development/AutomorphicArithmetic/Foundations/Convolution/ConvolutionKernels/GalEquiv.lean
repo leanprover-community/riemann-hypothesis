@@ -3,7 +3,6 @@ module
 public import GroundTheory.AutomorphicForms.ReductionMahler
 public import Formalism.LocalToGlobal.UnitaryNorms.CharTransport
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.AdBasic
-public import Mathlib.NumberTheory.NumberField.Basic
 public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.CuspDecayHeights.HeightLe
 import Mathlib.Tactic.Linter.Style
 import GroundTheory.AutomorphicForms.CuspidalProjection.Global

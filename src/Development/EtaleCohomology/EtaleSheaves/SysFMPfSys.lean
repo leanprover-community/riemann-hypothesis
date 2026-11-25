@@ -2,7 +2,6 @@ module
 
 public import Development.EtaleCohomology.EtaleSheaves.BuildCut
 public import Development.EtaleCohomology.EtaleSheaves.SysFMPf
-import Mathlib.AlgebraicGeometry.Morphisms.Immersion
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 

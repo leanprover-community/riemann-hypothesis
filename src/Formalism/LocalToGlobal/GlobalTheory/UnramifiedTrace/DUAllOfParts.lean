@@ -5,9 +5,6 @@ public import Mathlib.FieldTheory.Finiteness
 public import Mathlib.LinearAlgebra.Dual.Lemmas
 public import Formalism.LocalToGlobal.GlobalTheory.UnramifiedTrace.EopUEq
 import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

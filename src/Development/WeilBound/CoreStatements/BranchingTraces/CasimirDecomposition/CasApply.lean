@@ -2,8 +2,6 @@ module
 
 public import CompanionTheory.AutomorphicTheory.ZuckermanCommutation.ZuckermanFunctors.ShiftApply
 public import CompanionTheory.AutomorphicTheory.ZuckermanCommutation.ZuckermanFunctors.ZuckermanIngredients
-import CompanionTheory.AutomorphicTheory.ZuckermanCommutation.ZuckermanFunctors.IsSimpleFam
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.StandardDifferential
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

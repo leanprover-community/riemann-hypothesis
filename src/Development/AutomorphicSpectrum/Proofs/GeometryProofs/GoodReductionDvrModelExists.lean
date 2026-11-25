@@ -3,12 +3,9 @@ module
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.HasBareNormDisc
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsModuliSchemePolarizedAbelianLevel
-public import Development.AutomorphicSpectrum.Definitions.AdelicLattices.FactPrimes
-public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Development.AutomorphicSpectrum.Proofs.AdelicProofs.PadicEmbeddingDiscreteValuationRing
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PadicEmbeddingValuationSubring
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PartIHolds
-import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsGenOfIsVBOne
 
 -- This file was produced by scripts/clump.py from the modules listed below.

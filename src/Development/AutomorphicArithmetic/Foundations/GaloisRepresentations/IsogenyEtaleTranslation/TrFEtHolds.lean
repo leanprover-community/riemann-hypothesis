@@ -48,8 +48,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.TypeStar
 import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
-import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.FormallyUnramifiedOfTangentMapInjective
-import Mathlib.AlgebraicGeometry.ZariskisMainTheorem
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Basify
 import Std.Tactic.BVDecide.Normalize.Prop

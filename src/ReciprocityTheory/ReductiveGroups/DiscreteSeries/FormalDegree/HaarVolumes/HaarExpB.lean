@@ -30,7 +30,6 @@ import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Topology.Sheaves.Presheaf
 
 public import Formalism.LocalRingCardinality.SpanPowerMembership.ExistsDensity

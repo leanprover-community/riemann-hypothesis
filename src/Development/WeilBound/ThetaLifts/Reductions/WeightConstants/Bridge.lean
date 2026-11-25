@@ -5,9 +5,7 @@ public import GroundTheory.GlobalFields.TateThesis.EulerFactorsArch
 public import GroundTheory.GlobalFields.TateThesis.HeckeLFunction
 public import GroundTheory.GlobalFields.TateThesis.EulerFactorsInverse
 public import GroundTheory.GlobalFields.TateThesis.HeckeTheorem
-import GroundTheory.GlobalFields.TateThesis.HeckeTheoremTrivial
 public import GroundTheory.GlobalFields.TateThesis.Nonvanishing
-import GroundTheory.GlobalFields.TateThesis.NonvanishingPrimes
 public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms
 public import GroundTheory.GlobalFields.TateThesis.EulerFactors
 

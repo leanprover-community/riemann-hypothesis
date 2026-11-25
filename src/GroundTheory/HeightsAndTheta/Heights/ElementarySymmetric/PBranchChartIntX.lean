@@ -8,14 +8,8 @@ public import Mathlib.Analysis.Calculus.FDeriv.Pi
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StRankDeficientFibreInfinite
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StDiscriminantSheetCover
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.LintegralImageEqLintegralNormSqDetMul
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetOnlyNull
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StWeightedAreaFormula
-public import Mathlib.Analysis.Calculus.FDeriv.Basic
-public import Mathlib.Analysis.Calculus.FDeriv.Measurable
-public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ApproximatesLinearOn
-public import Mathlib.MeasureTheory.Function.Jacobian
-public import Mathlib.MeasureTheory.Integral.DominatedConvergence
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PDiscriminantCover
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PDiscriminantSheetCover
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFibreBound
@@ -23,13 +17,7 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PPrimitiv
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PRankDeficientFibreInfinite
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.Topology.Separation.CompletelyRegular
-import Mathlib.Analysis.Calculus.FDeriv.OfCompLeft
-import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import ReciprocityTheory.AnalyticForms.AnalyticCharts.NullZero
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Order.CompletePartialOrder
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PBranchChartInt, GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PBranchSheetAE, GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PHolomorphicFibreSumInt, GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PWeightedAreaFormula, GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PBranchChartIntX

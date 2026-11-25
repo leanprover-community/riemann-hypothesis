@@ -3,7 +3,6 @@ module
 public import GroundTheory.AutomorphicForms.L2LocalComponents.CuspSmooth
 public import GroundTheory.AutomorphicForms.L2LocalComponents.Summand
 public import GroundTheory.AutomorphicForms.L2LocalComponents.NonEmpty
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

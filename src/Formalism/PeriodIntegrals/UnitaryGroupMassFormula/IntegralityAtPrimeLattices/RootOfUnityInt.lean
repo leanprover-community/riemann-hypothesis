@@ -5,8 +5,6 @@ public import Formalism.LocalToGlobal.GlobalTheory.GL6.BwAValIntegralNonneg
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.FrobeniusNoKernelOfFrobeniusSimilitude
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.NaturalTranslateAdelicFunction
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.LatticeInclusionFamilyOf
-import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocBases
-import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocGen
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocInd
 import Mathlib.Tactic.Linter.Style
 

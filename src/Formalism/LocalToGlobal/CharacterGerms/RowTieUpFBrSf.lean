@@ -13,14 +13,8 @@ public import Formalism.DropLevelBounds.ConstantCoeffVanishing.UbintConstantCoef
 public import Formalism.LocalToGlobal.CharacterGerms.AbstractGermZeroCondition
 public import Formalism.LocalToGlobal.CharacterGerms.IntSProd
 public import Formalism.LocalToGlobal.CharacterGerms.UncurryLogConstantCoeff
-public import Formalism.LocalToGlobal.CharacterGerms.GeneralGermZero
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieUpFBr
-import Formalism.LocalToGlobal.CharacterGerms.SubstSubst
-import Formalism.LocalToGlobal.ProjectiveLattices.SubConstMemOrig
-import Formalism.LocalToGlobal.CharacterGerms.LemmaMLin
-import Formalism.LocalToGlobal.CharacterGerms.RowTieCartFB
 import Mathlib.Tactic.Linter.Style
-import Formalism.LocalToGlobal.CharacterGerms.RowTieCartAdd
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.CharacterGerms.ChartHypothesisOfCharacters, Formalism.LocalToGlobal.CharacterGerms.ConstantCoeffPderivUncurry, Formalism.LocalToGlobal.CharacterGerms.RowTieCharS, Formalism.LocalToGlobal.CharacterGerms.RowTieUpFBrSf

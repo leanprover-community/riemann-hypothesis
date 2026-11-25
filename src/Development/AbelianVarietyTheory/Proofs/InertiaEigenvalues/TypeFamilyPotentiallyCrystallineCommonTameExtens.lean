@@ -3,19 +3,14 @@ module
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.InertiaThroughOfPoly
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.CentralIdemCoeff
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
-public import Mathlib.RingTheory.RootsOfUnity.Basic
 public import Mathlib.Tactic.Polynomial.Basic
 public import Mathlib.Tactic.ReduceModChar
 public import Mathlib.Algebra.Order.Star.Int
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.StepJumpDirect
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.InerDecomp
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsPotentialPhiSub
-public import Formalism.SharpRestriction.LevelLetterCocycles.PairedCharacterCondition
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PotentiallyCrystallineModuleEqCrystallineRestric
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ConjPlMemPlacesOver
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsCrysLatOfTrivial
 public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Card
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ContinuousLoc
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFrobStableInertiaThrough
@@ -64,8 +59,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Formalism.ConjugateSelfDual.Statement
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 import ReciprocityTheory.GaloisValuations.GlobalA
 import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Tactic.Linter.Style

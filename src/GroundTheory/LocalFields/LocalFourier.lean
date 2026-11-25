@@ -1,10 +1,7 @@
 module
 
 public import GroundTheory.LocalFields.LocalFourierChar
-public import GroundTheory.LocalFields.LocalFourierHaar
-public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Topology.LocallyConstant.Basic
-public import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeAndRangePowLe
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
@@ -12,7 +9,6 @@ import Mathlib.Topology.Algebra.Nonarchimedean.TotallyDisconnected
 import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Topology.Separation.Connected
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.RingTheory.Henselian
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.LocalFields.LocalFourierSchwartz, GroundTheory.LocalFields.LocalFourier

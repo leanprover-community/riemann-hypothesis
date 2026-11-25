@@ -1,9 +1,7 @@
 module
 
 public import GroundTheory.GlobalFields.NormResidueSymbol.RangeFiniteLocalNormLeKerLocalSymbol
-public import GroundTheory.GlobalFields.SemilocalAlgebras.Galois
 public import GroundTheory.LocalFields.UnramifiedHensel
-public import Mathlib.FieldTheory.Galois.IsGaloisGroup
 public import Mathlib.RingTheory.Frobenius
 public import GroundTheory.GlobalFields.GlobalReciprocity.Frobenius
 public import GroundTheory.GlobalFields.GlobalReciprocity.LocalSurjective

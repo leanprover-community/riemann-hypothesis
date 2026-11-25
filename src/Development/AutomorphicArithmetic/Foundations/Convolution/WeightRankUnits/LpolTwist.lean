@@ -9,11 +9,7 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.SimpleTwiste
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PlaceConjugationPropertiesCmField
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousInvolutiveLocalTransposeInverse
 public import Development.AutomorphicArithmetic.Foundations.Convolution.HermitianDescent.IsHerm
-public import Mathlib.RingTheory.Ideal.Quotient.Defs
-public import Mathlib.RingTheory.Ideal.Span
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FiniteInvolutionFixedUnitEqMulConj
-public import Mathlib.RingTheory.Ideal.Maps
-public import Mathlib.RingTheory.Ideal.Quotient.Operations
 public import Development.AutomorphicArithmetic.Foundations.Convolution.HermitianDescent.UniformExportStatement
 public import Development.AutomorphicArithmetic.Foundations.Convolution.HermitianDescent.Descent
 public import Development.AutomorphicArithmetic.Foundations.Convolution.HermitianDescent.GalBase
@@ -74,15 +70,8 @@ import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.ENatToNat
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.WittVector.IsPoly
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Tjcosets
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.Foundations.Convolution.OrbitNormCounting.CptInt, Development.AutomorphicArithmetic.Foundations.Convolution.OrbitNormCounting.Transl, Development.AutomorphicArithmetic.UnitaryInvolutions.EventuallyMapMemMaximalCompactGL, Development.AutomorphicArithmetic.UnitaryInvolutions.EventuallySeparableOfIntegralModel, Development.AutomorphicArithmetic.UnitaryInvolutions.ExistsLocalQuadraticGaloisDataAtNonsplitPlace, Development.AutomorphicArithmetic.UnitaryInvolutions.ExistsMulInvolutionEqFixedUnitOfComplete, Development.AutomorphicArithmetic.UnitaryInvolutions.NormInOfFreeAlgebraOfCompleteQuadratic, Development.AutomorphicArithmetic.Foundations.Convolution.HermitianDescent.ModelEx, Development.AutomorphicArithmetic.Foundations.Convolution.HermitianDescent.ReflectCpInv, Development.AutomorphicArithmetic.Foundations.Convolution.HermitianDescent.TBase, Development.AutomorphicArithmetic.Foundations.Convolution.HermitianDescent.TClass, Development.AutomorphicArithmetic.UnitaryInvolutions.TwistedConjOfCharpolyMulGalConjEqOfSeparable, Development.AutomorphicArithmetic.UnitaryInvolutions.UnitaryInvolutionStabilizesIntegralAtNonsplit, Development.AutomorphicArithmetic.Foundations.Convolution.OrbitNormCounting.IntUniq, Development.AutomorphicArithmetic.Foundations.Convolution.OrbitNormCounting.OrbUnit, Development.AutomorphicArithmetic.Foundations.Convolution.OrbitNormCounting.UnitAe, Development.AutomorphicArithmetic.Foundations.Convolution.WeightRankUnits.LpolTwist

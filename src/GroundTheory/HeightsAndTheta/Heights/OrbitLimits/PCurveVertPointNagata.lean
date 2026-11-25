@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIde
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.CurveCountObjects
 import Mathlib.Algebra.MvPolynomial.Nilpotent
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSupp

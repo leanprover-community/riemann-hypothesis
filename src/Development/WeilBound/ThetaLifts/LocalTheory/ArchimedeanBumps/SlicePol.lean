@@ -9,7 +9,6 @@ public import Development.WeilBound.ThetaLifts.LeviDeterminants.MixedModels.Plan
 public import Development.WeilBound.ThetaLifts.LocalTheory.ArchimedeanBumps.SliceAn
 public import Development.WeilBound.ThetaLifts.LocalTheory.ArchimedeanBumps.SliceLine
 public import Development.WeilBound.ThetaLifts.LocalTheory.ArchimedeanBumps.SliceMain
-import Development.WeilBound.ThetaLifts.SmallCones.ExpAlg
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 

@@ -2,12 +2,7 @@ module
 
 public import Mathlib.RingTheory.MvPowerSeries.Basic
 public import Mathlib.RingTheory.MvPowerSeries.Derivative
-public import Mathlib.RingTheory.Derivation.Basic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.TheoremsMuLinked.OrdinaryHeckeAlgebraIntegral
-public import Mathlib.RingTheory.Ideal.Maps
-public import Mathlib.Algebra.MonoidAlgebra.Basic
-public import Mathlib.Algebra.Module.Projective
-public import Mathlib.Algebra.Module.BigOperators
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

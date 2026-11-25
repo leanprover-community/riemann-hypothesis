@@ -5,7 +5,6 @@ public import Formalism.AdmissibleDesigns.CoboundaryMemFiniteClasses
 public import Formalism.AdmissibleDesigns.SelmerInequalityOfInputs
 public import Formalism.AdmissibleDesigns.CycMatchRec
 public import Formalism.AdmissibleDesigns.EKSymmCont
-public import Formalism.AdmissibleDesigns.FiniteClassesContinuousLattice
 public import Formalism.AdmissibleDesigns.LiftMapEquivariant
 public import Formalism.AdmissibleDesigns.LenComapSurj
 public import Formalism.AdmissibleDesigns.RowTopOf

@@ -6,7 +6,6 @@ public import Development.WeilBound.CoreStatements.HodgeTatePoints.Invres
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.RangeSubtypeEq
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.DualLattices.PowMemCarrier
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

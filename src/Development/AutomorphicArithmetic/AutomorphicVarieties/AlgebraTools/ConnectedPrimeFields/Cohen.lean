@@ -10,22 +10,12 @@ public import Mathlib.RingTheory.AdicCompletion.Topology
 public import Mathlib.RingTheory.MvPowerSeries.Equiv
 public import ReciprocityTheory.CommutativeAlgebra.CohenMacaulay.Bridge
 public import ReciprocityTheory.CommutativeAlgebra.CohenMacaulay.RingKrullDimQuotientOfMemAssociatedPrimes
-public import Mathlib.RingTheory.IntegralClosure.Algebra.Defs
-public import Mathlib.RingTheory.KrullDimension.Basic
-public import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.IsLocalHom
-public import Mathlib.Algebra.Polynomial.Eval.Coeff
-public import Mathlib.Algebra.Polynomial.Monic
-public import Mathlib.RingTheory.Ideal.GoingUp
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.ClMvps
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.CmOfRegular
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.ClQuot
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.RingTheory.PowerSeries.Ideal
-import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
 import ReciprocityTheory.CommutativeAlgebra.ChainConnInDim
-import Mathlib.RingTheory.AdicCompletion.Noetherian
-import Mathlib.RingTheory.KrullDimension.Regular
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.ConnectedPrimeFields.DvrBase, Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.ConnectedPrimeFields.PsBase, Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.InjDim, Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.InjOfFinite, Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.ConnectedPrimeFields.Cohen

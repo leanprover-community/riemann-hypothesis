@@ -6,7 +6,6 @@ public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentation
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleLocallyIffAffineEtalePointCoverStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SecSigmaBijectiveStatement
 public import Mathlib.AlgebraicGeometry.ZariskisMainTheorem
-public import Mathlib.AlgebraicGeometry.Morphisms.QuasiFinite
 public import Mathlib.RingTheory.Etale.QuasiFinite
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleLocalPropertyCalculusRulesStatement
 public import Mathlib.RingTheory.TensorProduct.Nontrivial

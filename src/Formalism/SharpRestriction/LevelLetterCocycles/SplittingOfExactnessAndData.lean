@@ -5,8 +5,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.FiltrationSaturatio
 public import Formalism.SharpRestriction.LevelLetterCocycles.JumpsLetOfWin
 public import Formalism.SharpRestriction.LevelLetterCocycles.WachFrobeniusLatticeUnramifiedFunctor
 import Mathlib.Tactic.Linter.Style
-public import Formalism.SharpRestriction.LevelLetterCocycles.CoordHomMapTrace
-public import Formalism.SharpRestriction.LevelLetterCocycles.RingConditionOfDeltaInvariants
 
 @[expose] public section
 

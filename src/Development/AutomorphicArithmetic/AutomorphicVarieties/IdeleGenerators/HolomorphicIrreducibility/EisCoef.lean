@@ -49,9 +49,6 @@ import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.NumberTheory.ModularForms.EisensteinSeries.IsBoundedAtImInfty
-import Mathlib.NumberTheory.TsumDivisorsAntidiagonal
-import Mathlib.Order.Interval.Finset.Box
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Topology.UniformSpace.Uniformizable
 

@@ -8,8 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.Matrix
 public import Mathlib.Analysis.CStarAlgebra.Matrix
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.TensorActionHermitianExpFixedOfMinNorm
 public import Mathlib.Analysis.Matrix.PosDef
-public import Mathlib.Algebra.BigOperators.Field
-public import Mathlib.Algebra.Star.UnitaryStarAlgAut
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsRealTranslateIsMinNormTensorInOrbit
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SiegelCover
 import Mathlib.Algebra.Order.Floor.Extended
@@ -58,10 +56,8 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.TensorPowerSumRightActionNormAndContinuity
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.Lemma
-import Mathlib.Analysis.Matrix.Order
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

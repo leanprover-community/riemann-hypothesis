@@ -46,7 +46,6 @@ public import Mathlib.Tactic.NormNum.Parity
 public import Mathlib.Tactic.NormNum.Prime
 public import Mathlib.Tactic.NormNum.RealSqrt
 public import Mathlib.Topology.Sheaves.Init
-public import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 /-! # RieszRepresentationSesquilinear: Preliminary helper declarations for global theta kernels. -/
 
 @[expose] public section

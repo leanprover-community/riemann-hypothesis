@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedWeil
-public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLattice
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -39,7 +38,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-import Formalism.LocalToGlobal.BesselHermitianTheta.NoncompactGapAtLeastRange
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.BlockTheory.HeightDefect.ShiftMapsUpDown, Development.AbelianVarietyTheory.Proofs.HeightProofs.MemHermitianStandardLatticeIffPairingIntegral

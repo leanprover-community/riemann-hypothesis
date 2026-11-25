@@ -1,8 +1,6 @@
 module
 
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseKummerDefs
-import GroundTheory.ProfiniteCohomology.CupProducts.Cocycles
-import GroundTheory.ProfiniteCohomology.RestrictedRamification.Brauer
 import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerSplit
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 import Mathlib.Tactic.TypeStar

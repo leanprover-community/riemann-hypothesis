@@ -3,25 +3,19 @@ module
 public import Mathlib.Analysis.InnerProductSpace.Harmonic.Basic
 public import ReciprocityTheory.AnalyticForms.MaIntEmpty
 public import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
 public import Mathlib.Analysis.Complex.AbsMax
 public import Mathlib.Analysis.Complex.Harmonic.Analytic
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IntegralAngMeas
 public import Mathlib.Analysis.InnerProductSpace.Harmonic.Constructions
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshPoisson
 public import Mathlib.Analysis.InnerProductSpace.Calculus
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.DenseCoordinateTorus
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SectionBoundaryClosedAndCodense
 public import Mathlib.Geometry.Manifold.IsManifold.Basic
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SingularPotentialLogGrowthPsh
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffAtOfIsPotential
 import Mathlib.Tactic.Linter.Style
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncBoundaryCoordinateChart
 import GroundTheory.HeightsAndTheta.Heights.Antisymmetric.Statements
 import ReciprocityTheory.AnalyticForms.LeviForms.TailCutA
 

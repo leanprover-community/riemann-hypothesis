@@ -7,7 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsHermIsometr
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.AdaptSelf
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FlagFramesSameGradedDefinitePartLatticeEq
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.HermFramePairNormalFormGeometrySummary
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.LeOfLatMod
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

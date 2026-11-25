@@ -4,9 +4,6 @@ public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSe
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockJointMultiplicity.JointMultOfSteps
 public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.CoreLie
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.FockJointMult
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockDegreeOne.ExistsMonomialWeight
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockJointMultiplicity.LoweringPartRightActionInlInr
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FockJointMultiplicity.MinDeg
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

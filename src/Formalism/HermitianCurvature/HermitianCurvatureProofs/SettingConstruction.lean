@@ -6,7 +6,6 @@ public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 public import Mathlib.Analysis.Calculus.BumpFunction.Normed
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Mathlib.Analysis.Calculus.BumpFunction.Basic
 public import Mathlib.Analysis.InnerProductSpace.Calculus
 
 @[expose] public section

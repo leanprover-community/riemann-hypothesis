@@ -4,8 +4,6 @@ public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.Quadrati
 public import Mathlib.RingTheory.Nakayama
 public import Mathlib.RingTheory.Henselian
 public import Mathlib.Algebra.CharP.Frobenius
-public import Mathlib.Algebra.Polynomial.AlgebraMap
-public import Mathlib.Algebra.Polynomial.Derivative
 public import Mathlib.Algebra.Polynomial.Div
 public import Mathlib.Algebra.Polynomial.RingDivision
 public import Mathlib.Algebra.Polynomial.Roots

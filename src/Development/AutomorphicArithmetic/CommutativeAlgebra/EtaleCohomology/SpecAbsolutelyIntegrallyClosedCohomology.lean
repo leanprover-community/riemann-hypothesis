@@ -18,17 +18,14 @@ public import Development.EtaleCohomology.EtaleSheaves.NbIsoPf
 public import Mathlib.AlgebraicGeometry.Morphisms.FlatMono
 public import Development.EtaleCohomology.EtaleSheaves.HensCut
 public import Development.EtaleCohomology.EtaleSheaves.SysFMPfSys
-public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsIsoNormalizationPullbackOfToIntegralClosure
 public import Development.EtaleCohomology.EtaleSheaves.ChowCut
 public import Development.EtaleCohomology.EtaleSheaves.NormACPf
 public import Development.EtaleCohomology.EtaleSheaves.IntegralNormalization.NormAICOf
 public import Development.EtaleCohomology.EtaleSheaves.ChowLCut
 public import Development.EtaleCohomology.EtaleSheaves.NoetherianLocalChartOverlapFiniteComplement
-public import Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Basic
 public import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
 public import Development.EtaleCohomology.EtaleSheaves.PartCPf
 public import Development.EtaleCohomology.EtaleSheaves.KummerInduction
-public import Mathlib.AlgebraicGeometry.AffineTransitionLimit
 public import Development.EtaleCohomology.EtaleSheaves.FibreEqvPf
 public import Development.EtaleCohomology.EtaleSheaves.FibStalkPf
 public import Development.EtaleCohomology.EtaleSheaves.AICAcycPf
@@ -103,19 +100,10 @@ public import Development.EtaleCohomology.EtaleSheaves.TowerFinPf
 public import Development.EtaleCohomology.EtaleSheaves.TruncBijPf
 public import Development.EtaleCohomology.EtaleSheaves.Truncation
 public import Development.EtaleCohomology.EtaleSheaves.ZCovPf
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.CategoryTheory.Limits.FunctorCategory.Shapes.Products
-import Mathlib.AlgebraicGeometry.QuasiAffine
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style
 import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.FlatImageOfOverFractionFieldOfValuationRing
-import Development.EtaleCohomology.EtaleSheaves.IntegralNormalization.OpenPf
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Proper
 import Mathlib.RingTheory.TotallySplit

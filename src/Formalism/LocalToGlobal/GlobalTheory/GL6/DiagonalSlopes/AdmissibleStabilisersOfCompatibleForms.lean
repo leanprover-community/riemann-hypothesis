@@ -5,7 +5,6 @@ public import Formalism.LocalToGlobal.GroupLattices.DownNaturalLevelZero
 public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.FiniteClassSetOfFiniteIndex
 public import Formalism.LocalToGlobal.GroupLattices.TrivialTransfer.GenCoprime
 public import Formalism.LocalToGlobal.GroupLattices.TrivialTransfer.GramTotallyDefinite
-import Formalism.LocalToGlobal.GroupLattices.TrivialTransfer.OneAddPowOfSq
 
 @[expose] public section
 

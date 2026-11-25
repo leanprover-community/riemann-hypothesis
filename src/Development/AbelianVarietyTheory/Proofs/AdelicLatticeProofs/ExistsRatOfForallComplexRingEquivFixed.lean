@@ -4,10 +4,6 @@ public import Mathlib.Algebra.Algebra.Rat
 public import Mathlib.Basic.Complex.Basic
 public import Mathlib.RingTheory.Algebraic.Defs
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsRingEquivOfIsTranscendenceBasis
-public import Mathlib.FieldTheory.IsAlgClosed.Classification
-public import Mathlib.Algebra.MvPolynomial.Basic
-public import Mathlib.Algebra.MvPolynomial.Eval
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

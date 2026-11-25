@@ -3,14 +3,12 @@ module
 public import Development.EtaleCohomology.EtaleSheaves.KummerSequence.KummerH0Surjection
 public import Development.EtaleCohomology.EtaleSheaves.KummerSequence.LeafKumMuInjPf
 public import Development.EtaleCohomology.TateTwists.EtaleLocalPropertyBasicClosureProperties
-public import Development.EtaleCohomology.EtaleSheaves.KummerSequence.LeafKumMuUnitsPf
 public import Development.EtaleCohomology.EtaleSheaves.KummerSequence.LeafKumMuSurjPf
 public import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
 public import Mathlib.RingTheory.Etale.StandardEtale
 public import Development.EtaleCohomology.EtaleSheaves.KummerSequence.LeafKumSecSurjPf
 public import Development.EtaleCohomology.EtaleSheaves.KummerSequence.TwLocGenPfSec
 public import Development.EtaleCohomology.EtaleSheaves.KummerSequence.LeafKumMuPf
-import Mathlib.CategoryTheory.Abelian.GrothendieckCategory.EnoughInjectives
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Algebra.Category.ModuleCat.FilteredColimits
 import Mathlib.RingTheory.Etale.Weakly

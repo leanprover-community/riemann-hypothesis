@@ -1,8 +1,6 @@
 module
 
 public import Mathlib.Analysis.SpecialFunctions.Pow.Real
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.Ring
 
 /-! # Bounds for the Perron kernel away from its poles -/
 

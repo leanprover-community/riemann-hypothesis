@@ -9,7 +9,6 @@ public import GroundTheory.GlobalFields.Adele.Topology
 import Mathlib.Tactic.TypeStar
 import GroundTheory.GlobalFields.Adele.Compact
 import GroundTheory.GlobalFields.Adele.Discrete
-import GroundTheory.GlobalFields.TateThesis.AdelicCharDual
 import Mathlib.Order.CompletePartialOrder
 
 -- This file was produced by scripts/clump.py from the modules listed below.

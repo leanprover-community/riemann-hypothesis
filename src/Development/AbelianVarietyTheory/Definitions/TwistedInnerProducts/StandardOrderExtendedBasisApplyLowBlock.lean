@@ -1,13 +1,10 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.ValuationDetOfMemKO
-public import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
-public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
 public import Mathlib.GroupTheory.DoubleCoset
 public import Mathlib.RingTheory.PicardGroup
 import Development.AbelianVarietyTheory.Definitions.Foundations.SimpleSumRowCol
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
 public import Mathlib.Topology.LocallyConstant.Algebra
 import Std.Tactic.BVDecide.Normalize.Prop
 

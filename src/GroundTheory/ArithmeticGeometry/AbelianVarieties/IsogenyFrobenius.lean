@@ -5,10 +5,7 @@ public import Mathlib.AlgebraicGeometry.EllipticCurve.DivisionPolynomial.Basic
 public import Mathlib.FieldTheory.Perfect
 public import Mathlib.FieldTheory.Relrank
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.Isogeny
-import GroundTheory.ArithmeticGeometry.AbelianVarieties.KernelCard
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.AlgebraicGeometry.EllipticCurve.DivisionPolynomial.Degree
-import Mathlib.FieldTheory.RatFunc.IntermediateField
 import Mathlib.RingTheory.LocalProperties.Reduced
 import Mathlib.Tactic.TypeStar
 

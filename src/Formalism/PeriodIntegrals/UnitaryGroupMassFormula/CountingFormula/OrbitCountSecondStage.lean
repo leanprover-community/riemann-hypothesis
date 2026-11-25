@@ -1,7 +1,6 @@
 module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.UnipotentIntegralPreservesLattice
-public import Mathlib.NumberTheory.NumberField.Basic
 public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.EichLApply
 import Std.Tactic.BVDecide.Normalize.Prop

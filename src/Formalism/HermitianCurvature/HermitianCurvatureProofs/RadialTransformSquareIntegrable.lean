@@ -7,7 +7,6 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.MeasurableOfContinu
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormDiagonalEntryDilationGeneratorLeOne
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ThmPActualCptOfOuter
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ThmPActualCptOfStepForm
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.PiTensorProduct
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.TriangleInequalityAtPlace
 

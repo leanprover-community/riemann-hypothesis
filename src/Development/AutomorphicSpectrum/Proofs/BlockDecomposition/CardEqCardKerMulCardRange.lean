@@ -3,7 +3,6 @@ module
 public import Mathlib.Algebra.Exact.Basic
 public import Mathlib.Algebra.Module.Submodule.Range
 public import Mathlib.SetTheory.Cardinal.Finite
-public import Mathlib.Data.Fintype.BigOperators
 import Mathlib.Tactic.NormNum.RealSqrt
 public import Mathlib.GroupTheory.Coset.Card
 public import Mathlib.LinearAlgebra.Isomorphisms

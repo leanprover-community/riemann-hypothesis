@@ -18,8 +18,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PLinearFo
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PPrimitiveElementFibres
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PRiemannExtensionAnalytic
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PVanishNearPoint
-import Mathlib.RingTheory.KrullDimension.Field
-import Mathlib.RingTheory.KrullDimension.Polynomial
 public import Mathlib.RingTheory.Polynomial.Resultant.Basic
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.TypeStar

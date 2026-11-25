@@ -1,7 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.CrystallineLiftingBounds
-public import Formalism.LocalRingCardinality.AdicCompletionLocal.LocTied
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsJumpVIffOfExactCrystallineLattices
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

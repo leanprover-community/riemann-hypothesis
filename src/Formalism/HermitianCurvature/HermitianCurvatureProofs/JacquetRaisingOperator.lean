@@ -2,8 +2,6 @@ module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RadAATopOfParts
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CapelliWordSumExpansion
-import Formalism.FormalDegreeBessel.FinalG
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BigCellZetaMinors
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LiftClosedUnderOperations
@@ -12,7 +10,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalInteg
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.SandwichRhoAction
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

@@ -1,10 +1,7 @@
 module
 
 public import Development.EtaleCohomology.CohomologicalPurity.OffContStepPf
-public import Development.EtaleCohomology.CohomologicalPurity.LeafHsContPf
 public import Development.EtaleCohomology.CohomologicalPurity.LeafExcDegPf
-public import Development.EtaleCohomology.CohomologicalPurity.LeafIndExcPf
-public import Development.EtaleCohomology.CohomologicalPurity.LeafOffContPf
 public import Development.EtaleCohomology.CohomologicalPurity.FreePMapMk
 public import Development.EtaleCohomology.CohomologicalPurity.LeafDeltaPf
 public import Development.EtaleCohomology.CohomologicalPurity.LeafExactPf

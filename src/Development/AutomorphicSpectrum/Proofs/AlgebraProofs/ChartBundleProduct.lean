@@ -4,7 +4,6 @@ public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.Tri
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.FlagMinor
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.AffineHilbertIdealSheafOfQuotientIdealTop
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SumMemLoc
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ExistsUniformDenominator
 import Std.Tactic.BVDecide.Normalize.Prop
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Objects
 

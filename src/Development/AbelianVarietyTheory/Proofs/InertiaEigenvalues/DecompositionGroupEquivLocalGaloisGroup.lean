@@ -12,7 +12,6 @@ public import Mathlib.RingTheory.Valuation.RamificationGroup
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FixingSubgroupEquivBicontinuous
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FiniteDimensionalAdjoinRange
 public import Formalism.GaloisCohomology.StatementLoc
-public import ReciprocityTheory.GaloisValuations.Global
 public import ReciprocityTheory.ReductiveGroups.TraceFormulas.LatDefs
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataN
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CompletionDegrees.ExistsDen

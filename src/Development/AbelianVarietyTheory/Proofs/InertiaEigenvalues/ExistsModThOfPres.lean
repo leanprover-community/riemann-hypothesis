@@ -10,7 +10,6 @@ public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.Latt
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GmultTransport
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NabBijectiveWindow
 public import Mathlib.LinearAlgebra.Eigenspace.Zero
-public import Mathlib.LinearAlgebra.Charpoly.ToMatrix
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsDiscreteValuationRingIntegralClosurePadicInt
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsQuotOfAdmissible
 import Mathlib.Algebra.Order.Floor.Extended

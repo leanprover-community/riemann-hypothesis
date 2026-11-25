@@ -6,12 +6,7 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.HolomorphicCon
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LoglogQuotNonneg
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.PullbackStatementHolds
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.Pullback
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularFamilyC2PullbackOfSection
-import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.TendstoLocallyUniformlyOnOfNhds
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.AnalyticForms.LeviForms.TailBoundA
-import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffAtOfIsPotential
-import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
 import Development.AutomorphicSpectrum.Definitions.MetricPeriods.PairRelationOfScaledRatio
 
 -- This file was produced by scripts/clump.py from the modules listed below.

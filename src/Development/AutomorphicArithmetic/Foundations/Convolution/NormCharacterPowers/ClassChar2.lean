@@ -8,10 +8,7 @@ public import CompanionTheory.AutomorphicTheory.PlaceSeparation.IsOpenQuotientMa
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.BcDefs
 public import Development.AutomorphicArithmetic.Foundations.Convolution.NormCharacterPowers.Decomp
 public import Development.AbelianVarietyTheory.BlockTheory.AdelicCMFields.UnitaryHeckeCharacterIdele
-import Development.AutomorphicArithmetic.IntegralCasts.IsOpenStabOfMemNhds
-import Development.WeilBound.RepresentationTheoryGL.JacquetShalikaBounds.AbsoluteRigidity.NewtonLow
 import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.GaloisGenerators.IsGalGen
-import Formalism.ConjugateSelfDual.Statement
 import Formalism.LocalToGlobal.Columns.StdLatUnimodular
 
 -- This file was produced by scripts/clump.py from the modules listed below.

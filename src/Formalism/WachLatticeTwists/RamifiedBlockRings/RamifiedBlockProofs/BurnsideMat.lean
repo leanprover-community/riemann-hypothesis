@@ -2,10 +2,7 @@ module
 
 public import Formalism.CharacterColumnKernels.StatOntoLattice
 public import Mathlib.LinearAlgebra.Matrix.Rank
-public import Mathlib.Algebra.Module.Projective
-public import Mathlib.LinearAlgebra.Basis.Prod
 public import Mathlib.LinearAlgebra.Matrix.Basis
-public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 public import Mathlib.RingTheory.LocalRing.Module
 public import Formalism.WachLatticeTwists.RamifiedBlockRings.RightIdealImageOfSurjective
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.AbsolutelyIrreducibleSpan

@@ -8,7 +8,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsDvrThr
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.ClopenCondOnto
 public import Development.AbelianVarietyTheory.Definitions.Uniformization.PointEqOfSubsingleton
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLogPeriodFamily
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExponentialFamilyPeriods
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FamilyExpLogCoverBound
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsAbLift
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HolUnifPeriodMatrixLeft

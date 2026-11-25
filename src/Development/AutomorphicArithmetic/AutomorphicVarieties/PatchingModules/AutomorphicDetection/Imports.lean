@@ -4,20 +4,15 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTool
 public import Mathlib.Topology.Algebra.ClopenNhdofOne
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.ThetaCoefficientMapEq
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.FiniteHomOfTopFG
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.PairedDualFirstOrderDualMatrixSpace
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.QuotProf
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SeparableMatrixStability.HomlDesc
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SeparableMatrixStability.PlGen
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SeparableMatrixStability.PlMap
 public import Mathlib.Topology.Algebra.Category.ProfiniteGrp.Completion
-public import Mathlib.Algebra.Category.Grp.Basic
-public import Mathlib.GroupTheory.FreeGroup.Basic
-public import Mathlib.Topology.Algebra.Category.ProfiniteGrp.Basic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.PatchedSupportCompletions
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Topology.Compactness.Paracompact
-import Mathlib.Topology.Separation.Connected
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SeparableMatrixStability.PlProps
 import Mathlib.Combinatorics.Quiver.ReflQuiver
 import Std.Tactic.BVDecide.Normalize.Prop

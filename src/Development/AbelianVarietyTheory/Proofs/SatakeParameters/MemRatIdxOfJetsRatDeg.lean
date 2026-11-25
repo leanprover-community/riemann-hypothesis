@@ -7,7 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.Valuation
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LatticeFactsAt
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ChainWideTwistTransport
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.LastTwoStepsGuarded
-import Formalism.LocalToGlobal.Columns.CoefColLemmas
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

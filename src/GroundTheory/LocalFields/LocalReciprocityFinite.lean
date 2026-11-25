@@ -3,7 +3,6 @@ module
 public import GroundTheory.LocalFields.LocalAxiom
 public import GroundTheory.LocalFields.AbstractLocalReciprocity.Isomorphism
 public import Mathlib.Tactic.ENatToNat
-import GroundTheory.LocalFields.AbstractLocalReciprocity.UniqueQuotientSubgroupOfSelf
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

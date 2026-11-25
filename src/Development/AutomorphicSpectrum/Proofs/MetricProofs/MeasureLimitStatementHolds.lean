@@ -4,20 +4,14 @@ import Development.AutomorphicSpectrum.Proofs.MetricProofs.LocalSectionVerticalF
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagGapHolomorphicPullbackSecond
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsMuMeasureLimit
 public import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FlagIndices
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsMeasurableDominatingFunction
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.Weights
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LocalHolomorphicSectionOfPotential
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LocalSectionOfPotentialOnModel
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsPtsBddConv
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.MixedIntegralModelFormula
-public import GroundTheory.HeightsAndTheta.Heights.Regularisation.Statements
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.MixedIntegralTendstoOffDivisor
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularizedWeightPshAndBoundsStatement
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.CpRegPhRegOfNonneg
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularizedWeightTendstoC2
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PMuMeasureLimit
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularChartDataProperties
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PMuRegSmooth
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PTopNPoly
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PVertFactorPos
@@ -26,7 +20,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
 import ReciprocityTheory.AnalyticForms.PotentialTheory.MaMeasureA
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
 import Std.Tactic.BVDecide.Normalize.Prop
 
 @[expose] public section

@@ -1,7 +1,6 @@
 module
 
 public import Development.EtaleCohomology.EtaleSheaves.NeighbourhoodKilling
-public import Development.EtaleCohomology.EtaleSheaves.GlueRelPf
 public import Development.EtaleCohomology.EtaleSheaves.BridgeYfiPf
 public import Development.EtaleCohomology.EtaleSheaves.GlueRelPfNat
 public import Development.EtaleCohomology.KummerTheory.DictNormalPf
@@ -19,12 +18,9 @@ public import Development.EtaleCohomology.KummerTheory.ISupFinSuccEq
 public import Development.EtaleCohomology.KummerTheory.LimOfIso
 public import Development.EtaleCohomology.KummerTheory.MVnatPf
 public import Development.EtaleCohomology.KummerTheory.NrmMkPf
-public import Development.EtaleCohomology.KummerTheory.InjSlice
 public import Development.EtaleCohomology.KummerTheory.SHenCutPf
 public import Development.EtaleCohomology.EtaleSheaves.GeoProof
 public import Development.EtaleCohomology.EtaleSheaves.SecondDegreeKilling.LeafKill2Of
-import Development.EtaleCohomology.EtaleSheaves.SecondDegreeKilling.HkpullComp
-import Development.EtaleCohomology.KummerTheory.DictPfEv
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 

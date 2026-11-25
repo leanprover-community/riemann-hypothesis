@@ -7,14 +7,11 @@ public import ReciprocityTheory.DualLattices.LenIdBStatement
 public import ReciprocityTheory.DualLattices.HasLenCokerDet
 public import ReciprocityTheory.DualLattices.BlockOneMulMulBlockOne
 public import ReciprocityTheory.DualLattices.ProdDvdOfIso
-public import Mathlib.Basic.PEquiv
-public import Mathlib.Data.Matrix.PEquiv
 public import Mathlib.LinearAlgebra.Quotient.Pi
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Lemma
 import Mathlib.RingTheory.SimpleRing.Principal
-import ReciprocityTheory.DualLattices.UpSmith
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.DualLattices.ExistsFromRowsMulVecIff, ReciprocityTheory.DualLattices.DualLenStatement, ReciprocityTheory.DualLattices.MatEquivApply

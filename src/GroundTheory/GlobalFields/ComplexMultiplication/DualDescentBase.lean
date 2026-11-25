@@ -5,7 +5,6 @@ public import Mathlib.FieldTheory.LinearDisjoint
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DualIsogenyExists
 public import GroundTheory.GlobalFields.ComplexMultiplication.BaseChangeDegree
 public import GroundTheory.GlobalFields.ComplexMultiplication.BaseChange
-import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisorsTranslate
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

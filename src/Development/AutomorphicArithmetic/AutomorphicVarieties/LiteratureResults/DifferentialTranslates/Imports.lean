@@ -4,7 +4,6 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EntriesWellDefin
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.DifferentialTranslates.SecondFromFirstStatement
 public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms
 public import GroundTheory.GlobalFields.TateThesis.ConductorIdeal
-import Mathlib.Topology.Algebra.Group.Matrix
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.Newform
 
 -- This file was produced by scripts/clump.py from the modules listed below.

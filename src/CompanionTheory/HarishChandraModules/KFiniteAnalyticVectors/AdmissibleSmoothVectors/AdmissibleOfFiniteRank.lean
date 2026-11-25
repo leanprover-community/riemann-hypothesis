@@ -6,7 +6,6 @@ public import Formalism.PeriodIntegrals.KFinSmooth
 import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.InPCommutatorOfInK
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Topology.Algebra.Group.Units
 public import Mathlib.Analysis.Calculus.ContDiff.Basic
 public import Mathlib.Analysis.Calculus.ContDiff.Comp
 public import Mathlib.MeasureTheory.Function.LocallyIntegrable

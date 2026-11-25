@@ -5,7 +5,6 @@ public import Development.EtaleCohomology.EtaleSheaves.LeafReducedSmooth
 public import Development.EtaleCohomology.EtaleSheaves.LeafInclDescendPf
 public import Development.EtaleCohomology.EtaleSheaves.LeafPairRelPf
 public import Development.EtaleCohomology.EtaleSheaves.LeafDescendMapPf
-import Mathlib.AlgebraicGeometry.QuasiAffine
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.EtaleCohomology.EtaleSheaves.DgMapIsPullback, Development.EtaleCohomology.EtaleSheaves.DiagramDescent

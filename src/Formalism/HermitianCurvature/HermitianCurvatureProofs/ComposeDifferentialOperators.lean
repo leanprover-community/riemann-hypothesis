@@ -2,12 +2,10 @@ module
 
 import CompanionTheory.AutomorphicTheory.LocalBesselUniqueness.OpLocal
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HasDerivAtEpart
-import Formalism.FormalDegreeBessel.FinalG
 import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ListMapSumApply
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentComposition.Expand
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar

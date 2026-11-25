@@ -4,10 +4,8 @@ public import ReciprocityTheory.GaloisValuations.Global
 public import Mathlib.FieldTheory.Galois.IsGaloisGroup
 public import Mathlib.RingTheory.Frobenius
 public import Mathlib.RingTheory.RamificationInertia.Ramification
-public import ReciprocityTheory.GaloisValuations.GlobalB
 import Mathlib.FieldTheory.Galois.Profinite
 public import Mathlib.NumberTheory.RamificationInertia.Galois
-import Mathlib.RingTheory.Invariant.Profinite
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 

@@ -4,7 +4,6 @@ public import Development.EtaleCohomology.EtaleSheaves.LeafPairRelPf
 public import Development.EtaleCohomology.EtaleSheaves.LeafDescendMapPf
 public import Mathlib.AlgebraicGeometry.AffineTransitionLimit
 public import Development.EtaleCohomology.EtaleSheaves.LeafGeoCut
-public import Development.EtaleCohomology.EtaleSheaves.LeafDescendVCut
 public import Mathlib.RingTheory.QuasiFinite.Basic
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.RingKrullDimQuotientEqOfMemMinimalPrimes
 public import Mathlib.RingTheory.RegularLocalRing.Defs
@@ -16,7 +15,6 @@ public import Development.EtaleCohomology.EtaleSheaves.LeafMapFPPf
 public import Mathlib.AlgebraicGeometry.ValuativeCriterion
 public import Development.EtaleCohomology.EtaleSheaves.LeafSHSysPf
 public import Development.EtaleCohomology.EtaleSheaves.LeafObjFPPf
-public import Development.EtaleCohomology.EtaleSheaves.H0TwistOverClosedField
 public import Development.EtaleCohomology.EtaleSheaves.LeafSHPtPf
 public import Development.EtaleCohomology.EtaleSheaves.A9OfA0A1EigenbasisA6
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.BijectiveRestrictPointsOfEtaleOfHenselian
@@ -27,14 +25,11 @@ public import Development.EtaleCohomology.EtaleSheaves.SpreadingOutLocallyQuasiF
 public import Development.EtaleCohomology.EtaleSheaves.LeafSpreadSmooth1Of
 public import Development.EtaleCohomology.EtaleSheaves.LeafSmoothOfNormalPf
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SpanFinrankMaximalIdealLeNcardOfLeSupSq
-public import Mathlib.AlgebraicGeometry.Scheme
-public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsDomainAndIsIntegrallyClosedAtPrimeOfSmoothOfCo
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.KrullDimSmoothSurjectiveTotal
 public import Development.EtaleCohomology.EtaleSheaves.LeafCurveVCut
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsNeZeroForallComplexPointExtend
 public import Development.EtaleCohomology.EtaleSheaves.SecondDegreeKilling.LeafKill2Of
-public import Development.EtaleCohomology.EtaleSheaves.LeafReducedSmooth
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsReducedAlgebraOfSmoothOfIsNoetherianRing
 public import Development.EtaleCohomology.EtaleSheaves.SheafIsomorphism.LeafSheafIsoOf
 public import Development.EtaleCohomology.EtaleSheaves.LeafVanStalk
@@ -102,10 +97,8 @@ public import Development.EtaleCohomology.EtaleSheaves.StrictHenselianLocalizati
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleDescentPicardGroupStatement
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Tactic.Linter.HaveILetI
 import Aesop.Frontend.Tactic
 import Aesop.Main
-import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.IsOpenOfMemIrreducibleComponentsOfFinite
 import Development.EtaleCohomology.EtaleSheaves.PropertyDescent.BaseChange
 
 -- This file was produced by scripts/clump.py from the modules listed below.

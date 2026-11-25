@@ -8,7 +8,6 @@ public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpTiePf
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FBIdJet
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FBIdLB
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDPf
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermFunPf
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.JetSubstPSTrunc
 import Mathlib.Tactic.Linter.Style
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBCorr

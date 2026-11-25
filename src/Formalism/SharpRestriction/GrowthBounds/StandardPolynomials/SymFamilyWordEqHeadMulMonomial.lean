@@ -11,13 +11,9 @@ public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.IoDSca
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.MultMk
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.RestRoom
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.YcondFactor
-public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.DegSplit
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.TopKeyFormSelfSoft
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.ColsDef
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.MonomialWeightedHomogeneous
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SegmentStatementHolds
-import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.IoBlockMonomial
-import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.Lemma44IdentityOfRawTail
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.LocalProperties.Reduced
 

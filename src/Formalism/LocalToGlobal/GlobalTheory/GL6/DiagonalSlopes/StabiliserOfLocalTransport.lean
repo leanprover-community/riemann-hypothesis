@@ -7,9 +7,6 @@ public import Formalism.LocalToGlobal.GlobalTheory.EqGlobOfHat
 public import Formalism.LocalToGlobal.HermitianForms.PrkSmul
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLcInt
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PKerAtP
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Formalism.LocalToGlobal.GlobalTheory.GL4.PFrCore
 import Formalism.LocalToGlobal.HermitianColumns.InLocalDiscriminantKernel
 import Formalism.LocalToGlobal.GlobalTheory.GL6.PRLocV
 import Formalism.LocalToGlobal.GlobalTheory.GL6.PRLocW

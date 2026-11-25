@@ -5,7 +5,6 @@ public import Mathlib.RingTheory.Frobenius
 import Mathlib.FieldTheory.Galois.IsGaloisGroup
 public import Mathlib.NumberTheory.NumberField.Cyclotomic.Galois
 import Mathlib.Tactic.TypeStar
-public import Mathlib.NumberTheory.Cyclotomic.PrimitiveRoots
 
 @[expose] public section
 

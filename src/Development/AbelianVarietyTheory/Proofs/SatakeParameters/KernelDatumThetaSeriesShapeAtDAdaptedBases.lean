@@ -3,29 +3,17 @@ module
 public import Formalism.LocalToGlobal.KernelLattices.ThDistC
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.NormPadicEmbeddingLeOneOfMemInverseHalfDifferent
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ColR
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.IsPairFrame
 public import Formalism.LocalToGlobal.AlgebraicTheory.StatementKer
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SpanRangeEmb4EqTop
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.GramFrameComposition.Tensor
-public import Formalism.LocalRingCardinality.DataHost
-public import Development.AutomorphicArithmetic.PrimeDiscriminants.CycImage
-public import Formalism.LocalRingCardinality.DataForced
-public import Formalism.LocalToGlobal.TorsionIntegrality.CMGoodModels.Statement
-public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
 public import Formalism.LocalRingCardinality.FactDelDualNabla
-public import Formalism.GaussJetBounds.StatementN
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.StatementC
-public import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.StatementW
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.LocPAAAndPrimesNe
-public import Formalism.SharpRestriction.GrowthBounds.IsResidueClassZero
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.GramFrameComposition.Inertia
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.StatementJ
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.StdBases
 public import Formalism.LocalToGlobal.KernelLattices.KerStd
 public import Formalism.LocalToGlobal.InertKernelTheory.StatementIota
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IntegralEigenCombination
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.StatementE
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.NatCastMemPrimeOf
 public import Formalism.SharpRestriction.Divisibility.OrbitPlaces
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ThetaZJetsThree
@@ -39,12 +27,10 @@ public import Formalism.LocalRingCardinality.CoeNeZeroOfNotMem
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.AtLinAdaptedCoefEqStandardSeries
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CombOfTied
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsStandardBasesLatticeAtPlaceOfAdaptedBases
-import Development.AutomorphicArithmetic.CyclotomicBounds.SmallFacts
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -79,35 +65,14 @@ import Mathlib.Topology.Sheaves.Init
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.ReduceModChar
-import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.AnalyticIdentityTheorems.QuasiPeriodConstUniqueOf
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Data.Nat.Choose.Multinomial
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
 import Std.Tactic.BVDecide.Normalize.Bool
-import Formalism.GaussJetBounds.StatementH
-import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
-import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.StatementG
-import Formalism.LocalToGlobal.TorsionIntegrality.TorsionTranslationPowers.IsTransSys
 import Mathlib.Tactic.TypeStar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.RingTheory.Valuation.Integral
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.PiTensorProduct
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MulVSubRight
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.NumberTheory.RamificationInertia.Galois
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.IntEasy
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.IsAdmissibleFlagPairOfUnitriangularLeftAutomorph
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.SelfDualLatticeNorms.HalfPeriodStandardCM
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.SelfDualLatticeNorms.LocNormAmbOfOf
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.SatakeParameters.NormDgenEqOne, Development.AbelianVarietyTheory.Proofs.SatakeParameters.DualFrameColumnsScaledStandardVectors, Development.AbelianVarietyTheory.Proofs.SatakeParameters.DualFrameHermitianFormTraceRealPlaces, Development.AbelianVarietyTheory.Proofs.SatakeParameters.DualFramePairedBlocksDiagonalModRoot, Development.AbelianVarietyTheory.Proofs.SatakeParameters.DualLocalBasesPairDualModRootMinusD, Development.AutomorphicArithmetic.CyclotomicBounds.RamifiedDiscriminants.FixedIod, Development.AbelianVarietyTheory.Proofs.SatakeParameters.InertiaInvolutionRealPlacePairs, Development.AbelianVarietyTheory.Proofs.SatakeParameters.NormNatCastOfCoprime, Development.AbelianVarietyTheory.Proofs.SatakeParameters.PadicNormLeOneHostBaseModuleAtD, Development.AbelianVarietyTheory.Proofs.SatakeParameters.PairEmbeddingsCongrModRootMinusD, Development.AbelianVarietyTheory.Proofs.SatakeParameters.DualLocalBasesEigenframeAtRamifiedPrime, Development.AbelianVarietyTheory.Proofs.SatakeParameters.NormLeOfMemSq, Development.AbelianVarietyTheory.Proofs.SatakeParameters.ShapeNormalisedThetaCombinationsDualBasesAtD, Development.AbelianVarietyTheory.Proofs.SatakeParameters.KernelDatumThetaSeriesShapeAtDAdaptedBases

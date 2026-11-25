@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.SmulCo
 public import Mathlib.NumberTheory.NumberField.Cyclotomic.Galois
 public import Mathlib.NumberTheory.NumberField.Ideal.Basic
 import Mathlib.Tactic.Linter.HaveILetI
-public import Mathlib.NumberTheory.NumberField.Cyclotomic.Basic
 
 @[expose] public section
 

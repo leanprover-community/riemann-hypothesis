@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.UniqG
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CellDataSupport
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BlockProjectionBessel
 public import CompanionTheory.AutomorphicTheory.PieriRules.ThetaBesselIsometries.HaarEqSmul
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.SigmaContOn
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PolynomialProperness.ZhatNormLinearBound
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

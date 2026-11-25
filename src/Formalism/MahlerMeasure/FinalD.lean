@@ -3,10 +3,6 @@ module
 public import Formalism.MahlerMeasure.StatementD
 public import Mathlib.Analysis.Normed.Group.Ultra
 public import Formalism.MahlerMeasure.LieRoots
-public import Mathlib.NumberTheory.Padics.PadicNorm
-public import Mathlib.RingTheory.Polynomial.Pochhammer
-public import Mathlib.Algebra.Ring.Subring.Defs
-public import Mathlib.Algebra.Ring.Subring.Basic
 public import Mathlib.Algebra.CharP.Algebra
 public import Formalism.MahlerMeasure.MahlerMeasureProofs.SmithZp
 import Formalism.MahlerMeasure.MahlerMeasureProofs.LieMat

@@ -1,7 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.ScaleSCoeffZero
-import Formalism.SharpRestriction.GrowthBounds.ValuationLowestDegreeMapFractionField
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.SegmentDegree.KillKcolTau, Formalism.SharpRestriction.GrowthBounds.SegmentDegree.MemColRangeOfLeEntry

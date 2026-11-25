@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.PairingIndexBounds.RowActionCoefficients.WeylComplementInDetCoeffSpan
 public import Formalism.GradedWeylDivisibility.StatementE
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.TransposeWords.FormCoreSK
 import Mathlib.Tactic.TypeStar
 

@@ -3,7 +3,6 @@ module
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Slopes
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.FiniteSupportHeight
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.LinearIndependentSumElimOfExact
-public import GroundTheory.HeightsAndTheta.Heights.ArithDegree
 public import Mathlib.LinearAlgebra.Dimension.Torsion.Finite
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.SimpleRing.Principal

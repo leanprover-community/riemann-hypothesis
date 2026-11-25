@@ -3,17 +3,10 @@ module
 public import ReciprocityTheory.AnalyticForms.MaIntEmpty
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreSheetFormCompare
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.BergmanProjective
-public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.LintegralImageEqLintegralNormSqDetMul
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PSheetFormCompare
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSheet
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreChartSheetCompare
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PTubeFormCompare
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
-import ReciprocityTheory.AnalyticForms.PotentialTheory.HessCIsHermitian
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PlaneIdealTwoOne, GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreSheetFormCompare, GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreChartSheetCompare

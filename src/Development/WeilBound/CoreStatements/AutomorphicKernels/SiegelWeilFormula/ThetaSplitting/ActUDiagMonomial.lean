@@ -4,7 +4,6 @@ public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.Holom
 public import Mathlib.Analysis.Matrix.Spectrum
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.IsSingTest
-public import Mathlib.Algebra.Star.UnitaryStarAlgAut
 
 @[expose] public section
 

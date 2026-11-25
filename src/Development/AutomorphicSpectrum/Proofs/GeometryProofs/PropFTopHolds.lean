@@ -3,29 +3,19 @@ module
 public import Mathlib.Analysis.SpecialFunctions.Log.Basic
 public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.PMertensUpper
 public import Mathlib.Analysis.Complex.ExponentialBounds
-public import Mathlib.Topology.Algebra.InfiniteSum.Defs
-public import Mathlib.Topology.MetricSpace.Pseudo.Defs
-public import Mathlib.Analysis.SpecificLimits.Basic
 public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.CompactGapsGE
-public import Mathlib.CategoryTheory.Category.Basic
 public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.Proportional
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.RationalSections.IsRatSectionOn
-public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.Birational
-public import Mathlib.NumberTheory.NumberField.InfinitePlace.Basic
 public import Mathlib.NumberTheory.NumberField.Units.DirichletTheorem
-public import Mathlib.NumberTheory.NumberField.Units.Basic
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsPowSubMemSpanOfIsUnitModOfIsAlgClosed
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.MemOfAevalEqZero
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSt
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComplexPointExistsUniqueEmbedding
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDerived
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterFib
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsPlaceWeightConjInvariant
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntersectionFamilyFlatTwist
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.RationalSections.ThmISt
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.NumberField
 public import Development.AutomorphicSpectrum.Statements.GeometryStatements.PropFTop
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGoodD
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

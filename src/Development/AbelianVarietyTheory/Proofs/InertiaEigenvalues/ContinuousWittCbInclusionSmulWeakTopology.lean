@@ -3,11 +3,6 @@ module
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ZlTowerGen
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsWeakTopologyWittTiltTensor
-public import Mathlib.RingTheory.WittVector.Defs
-public import Mathlib.RingTheory.WittVector.Domain
-public import Mathlib.RingTheory.WittVector.Teichmuller
-public import Mathlib.RingTheory.WittVector.Truncated
-public import Mathlib.RingTheory.WittVector.Basic
 public import Mathlib.NumberTheory.Padics.PadicIntegers
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

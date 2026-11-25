@@ -1,13 +1,11 @@
 module
 
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseDefs
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.Brauer
 import GroundTheory.ProfiniteCohomology.CohomologicalDimension.SubsingletonCohomologyOfPrimaryOfFinite
 import GroundTheory.ProfiniteCohomology.Colimit
 import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
 import GroundTheory.ProfiniteCohomology.GlobalClassFormation.ExistsUnitsToIdelesEqOfIdelesSumInvEqZero
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseLocal
-import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerSplit
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.TypeStar

@@ -6,14 +6,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ActualAdjoin
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DiagonalTransferAction
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.InvMemOfKappa
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SmoothGConst
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.WeylCellConjTransposeMulApply
-public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.QNFAsm
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.SignedCoordinateEqSignSmul
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CartanInvolutionConjTransposeMul
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexifiedDerivativeCommutator
-import Mathlib.Analysis.Calculus.Deriv.Prod
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.HermitianCurvature.HermitianCurvatureProofs.CutFP, Formalism.HermitianCurvature.HermitianCurvatureProofs.HasDerivAtRightDerivativeCurve, Formalism.HermitianCurvature.HermitianCurvatureProofs.SmoothGOfSf, Formalism.HermitianCurvature.HermitianCurvatureProofs.GoodAlt, Formalism.HermitianCurvature.HermitianCurvatureProofs.FrameParameterRegularity

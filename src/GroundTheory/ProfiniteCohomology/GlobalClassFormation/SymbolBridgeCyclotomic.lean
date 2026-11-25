@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.GlobalFields.NormResidueSymbol.Infinite
-public import GroundTheory.GlobalFields.NormResidueSymbol.RangeFiniteLocalNormLeKerLocalSymbol
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalRestriction
 public import GroundTheory.GlobalFields.NormResidueSymbol.RangeIdeleNormLeKerIdeleSymbol
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.LocalSymbol

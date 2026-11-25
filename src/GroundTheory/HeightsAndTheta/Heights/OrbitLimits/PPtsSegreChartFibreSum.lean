@@ -3,13 +3,11 @@ module
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StPtsSegreChartFibreSum
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreChartZeroSet
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StSegreChartProjFinite
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSheetA
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Assembly
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PDiscriminantSheetCover
 import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PFibreBound
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PSegreChartDim
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.MvPolynomial
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterFib
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterSheet
 

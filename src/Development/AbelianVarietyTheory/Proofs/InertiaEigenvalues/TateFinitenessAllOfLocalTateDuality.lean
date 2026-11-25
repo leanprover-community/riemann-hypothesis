@@ -2,8 +2,6 @@ module
 
 public import Formalism.AdmissibleDesigns.RestrictedSevenEightOfFull
 public import Formalism.GaloisCohomology.LocalTateDualityK
-public import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
-public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteH1PeriodDatum
 public import Formalism.SharpRestriction.LevelLetterCocycles.JointConditionsZpowers.GaloisConditionFiveExtraOf
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PadicIntegersFiniteExtGoodCoefficientRing

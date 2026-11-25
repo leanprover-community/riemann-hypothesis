@@ -6,7 +6,6 @@ public import Formalism.PeriodIntegrals.WwInjective
 public import Formalism.PeriodIntegrals.WwCauchyBinet
 public import Mathlib.Algebra.MvPolynomial.Funext
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LFunctionMinors.FintypeColChoice
-public import Formalism.PeriodIntegrals.WwMain
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LFunctionMinors.InfinitePadicComplex
 public import Formalism.SharpRestriction.GlobalSchurBounds.GL3Columns
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CauchyBinet.WwCauchyBinetMain
@@ -14,7 +13,6 @@ import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Tactic.TypeStar
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.PiTensorProduct
 
 -- This file was produced by scripts/clump.py from the modules listed below.

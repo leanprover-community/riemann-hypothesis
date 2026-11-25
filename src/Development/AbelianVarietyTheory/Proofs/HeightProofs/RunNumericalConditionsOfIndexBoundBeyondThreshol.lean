@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.HeightFunctions.ConclOfInputs4
 public import Formalism.LocalToGlobal.ProjectiveLattices.HostSize
 import Formalism.LocalRingCardinality.HeightBoundGeFourthPowerRank
-import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.LiftIndexPowFourLeDegree
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -38,7 +37,6 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.ModulusPosOfThirdHypothesis
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.Linter.Style
 

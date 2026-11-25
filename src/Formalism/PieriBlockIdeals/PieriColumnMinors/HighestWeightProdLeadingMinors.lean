@@ -1,22 +1,18 @@
 module
 
 public import Formalism.PieriBlockIdeals.BranchingBoundLastGradedOneRow
-public import Mathlib.LinearAlgebra.Matrix.Adjugate
 public import Formalism.PieriBlockIdeals.PieriColumnMinors.HighestWeightShiftEqDetMul
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LBidetMinor
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LGradedLemmas
-public import Mathlib.LinearAlgebra.Matrix.Transvection
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LDrowLemmas
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LEhwLemmas
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LRowdivLemmas
 public import Formalism.PieriBlockIdeals.PieriColumnMinors.LastGradedImpliesOneBlock
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 import Formalism.GradedWeylDivisibility.FinalC
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.HWRaise
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LBidetLemmas
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LBidetdomLemmas
 import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LHwrowLemmas
-import Formalism.PieriBlockIdeals.PieriColumnMinors.ProdInitialMinorsMemDetSpan
 import Mathlib.Algebra.AffineMonoid.Basic
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.Algebra.Order.Star.Int

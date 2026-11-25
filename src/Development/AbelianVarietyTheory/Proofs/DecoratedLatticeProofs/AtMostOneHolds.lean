@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.OnesRep
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EntriesWellDefined
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.ExponentTerms
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ScaledBasisMemChainLattice
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.UnipotentRadicalBasic
-public import Mathlib.CategoryTheory.Category.Basic
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsEqActStdLat
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsLatticeChainLatAndComap
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.SymmetricChainSupportOneOfPattern
@@ -50,17 +48,14 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
 import Mathlib.RingTheory.Henselian
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.Valuation.Extension
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

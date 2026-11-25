@@ -7,8 +7,6 @@ public import Mathlib.RepresentationTheory.Irreducible
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsSideLast
 public import GroundTheory.AutomorphicForms.SatakeTriangular
 import Mathlib.Tactic.TypeStar
-import GroundTheory.AutomorphicForms.HeckeIrreducible
-import GroundTheory.LocalFields.LocalFourierHaar
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.AutomorphicForms.Spherical, GroundTheory.AutomorphicForms.Satake

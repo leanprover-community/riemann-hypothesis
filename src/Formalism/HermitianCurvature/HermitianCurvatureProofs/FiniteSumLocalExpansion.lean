@@ -5,7 +5,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LieDecomposi
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ShiftedGeneratorEqIteSmulAdd
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CvRhoOfParts
 import Mathlib.Tactic.Linter.Style
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.HermitianCurvature.HermitianCurvatureProofs.FourTermExpansion, Formalism.HermitianCurvature.HermitianCurvatureProofs.FiniteSumLocalExpansion

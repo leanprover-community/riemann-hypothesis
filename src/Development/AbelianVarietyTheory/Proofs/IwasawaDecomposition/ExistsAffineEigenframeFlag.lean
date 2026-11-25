@@ -41,9 +41,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.FirstIndexEqOfUnfolded
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.HPInvEqForm
-import Formalism.LocalToGlobal.LatticeGeometry.DegFlLApply
-import Formalism.LocalToGlobal.ProjectiveLattices.JFDFree
 import Formalism.MoebiusJetDuality.StatementU
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Tactic.Basify

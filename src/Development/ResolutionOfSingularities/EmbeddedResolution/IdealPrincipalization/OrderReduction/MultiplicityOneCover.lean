@@ -16,7 +16,6 @@ import Development.ResolutionOfSingularities.EmbeddedResolution.IdealPrincipaliz
 import Development.ResolutionOfSingularities.EmbeddedResolution.MaximalContactHypersurfaces.TunedSheafBasic
 import Development.ResolutionOfSingularities.EmbeddedResolution.ResolutionDescent.PullbackBlowupSequenceComposition
 public import Development.ResolutionOfSingularities.EmbeddedResolution.StrongResolution.SequenceIsomorphism
-import Development.ResolutionOfSingularities.Foundations.Schemes.IdealSheafData
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

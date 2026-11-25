@@ -6,9 +6,7 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.FirstKernelE
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.GramKernelHermitian
 import Formalism.DoubleCosetMeasures.LowerUnipotentOrbits.IsIntOfLatOfLe
 import Formalism.DoubleCosetMeasures.LowerUnipotentOrbits.IsOpenIsIntSet
-import Formalism.DoubleCosetMeasures.LowerUnipotentOrbits.MulInvBlockDiagApplySameBlock
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.IntegralLatticeRefinementIdentity
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.KernelQuotientFinite
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

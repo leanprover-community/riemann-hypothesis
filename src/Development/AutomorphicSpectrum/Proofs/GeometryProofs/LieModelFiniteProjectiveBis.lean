@@ -7,17 +7,9 @@ public import Mathlib.RingTheory.Localization.Module
 public import Mathlib.RingTheory.Finiteness.Basic
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DualMapSOfIdToRingHom
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
-public import Mathlib.Algebra.Module.LocalizedModule.Basic
-public import Mathlib.RingTheory.Ideal.Span
-public import Mathlib.Algebra.Order.BigOperators.Group.Finset
 public import Mathlib.RingTheory.LocalProperties.FinitePresentation
-public import Mathlib.Algebra.Module.FinitePresentation
-public import Mathlib.RingTheory.Flat.EquationalCriterion
-public import Mathlib.RingTheory.Flat.Localization
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsCocharLie
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieChart
-public import Mathlib.RingTheory.OreLocalization.Ring
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelExistsUniqueSemilinear
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LocalizedModuleBaseChange
 import Mathlib.Tactic.Linter.Style

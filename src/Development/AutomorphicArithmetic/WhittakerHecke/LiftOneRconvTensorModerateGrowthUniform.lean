@@ -3,7 +3,6 @@ module
 public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.Height
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsMeasure
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.AdelicNormDetLeHeightPow
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspFormsHeight
 public import Development.AutomorphicArithmetic.Foundations.Convolution.TensFun
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsAreCuspForms
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.HtCompact
@@ -11,8 +10,6 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.Convolut
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.RconvSlice
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.PolyBdAll
 public import GroundTheory.AutomorphicForms.DixmierMalliavin
-import GroundTheory.AutomorphicForms.CuspidalDiscreteness.Counting
-import GroundTheory.AutomorphicForms.QuotientMeasure
 import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.LactSpec
 import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.TensApply
 

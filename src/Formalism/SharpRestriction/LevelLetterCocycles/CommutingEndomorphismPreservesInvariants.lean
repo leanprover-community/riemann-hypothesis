@@ -4,10 +4,6 @@ public import Formalism.PadicSubsetSums.CentralIdempotents.CentralIdempotentInte
 public import Mathlib.LinearAlgebra.Matrix.Trace
 public import Mathlib.FieldTheory.IsAlgClosed.Spectrum
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
-public import Mathlib.Algebra.Algebra.Spectrum.Basic
-public import Mathlib.Algebra.Polynomial.AlgebraMap
-public import Mathlib.Algebra.Polynomial.Monic
-public import Mathlib.Algebra.Polynomial.Roots
 public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
 public import Mathlib.RepresentationTheory.Basic
 public import Formalism.SharpRestriction.LevelLetterCocycles.IntegralHeckeForms

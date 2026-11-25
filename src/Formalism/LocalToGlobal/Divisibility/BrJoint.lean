@@ -12,13 +12,7 @@ public import Mathlib.MeasureTheory.Group.Integral
 public import Mathlib.MeasureTheory.Measure.Haar.Basic
 public import Mathlib.MeasureTheory.Measure.Haar.Unique
 public import Mathlib.Topology.Algebra.MvPolynomial
-public import Mathlib.MeasureTheory.Function.LocallyIntegrable
-public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
-public import Formalism.LocalRingCardinality.DataCoeff
-public import Mathlib.Algebra.MvPolynomial.Monad
-public import Mathlib.Algebra.MvPolynomial.Funext
 public import Mathlib.Analysis.Matrix.PosDef
-public import Mathlib.Algebra.Star.UnitaryStarAlgAut
 public import Formalism.PeriodIntegrals.HwIrred
 public import Formalism.GradedWeylDivisibility.FinalD
 public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
@@ -28,12 +22,8 @@ public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.GTBranch
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GelfandTsetlinLowering.GTLowerOf
 public import Formalism.SharpRestriction.Divisibility.PrimeDegreeVariant
 public import Formalism.LocalRingCardinality.FactDelDualNabla
-import Formalism.LocalRingCardinality.Params
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LHwinLemmas
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IntegralConjInnerMulInnerOfIsEmptyEquiv
-import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LFocksLemmas
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

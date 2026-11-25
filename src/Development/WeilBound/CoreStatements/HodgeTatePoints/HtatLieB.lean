@@ -5,9 +5,6 @@ public import Mathlib.RingTheory.RingHom.Smooth
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieChartOfSmoothChart
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieLatticeVectorBundleOfSmooth
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TangentVectorOfDualHom
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TangentVectorSumDualNumber
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

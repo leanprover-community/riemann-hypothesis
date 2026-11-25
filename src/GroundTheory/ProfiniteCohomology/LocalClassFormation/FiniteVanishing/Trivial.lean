@@ -7,10 +7,8 @@ public import Mathlib.FieldTheory.KrullTopology
 public import Mathlib.NumberTheory.LocalField.Basic
 public import GroundTheory.ProfiniteCohomology.CartierDual
 public import GroundTheory.ProfiniteCohomology.CohomologicalDimension.SubsingletonCohomologyOfPrimaryOfFinite
-import GroundTheory.ProfiniteCohomology.ContinuousCochains.LongExactSequence
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.FiniteVanishing.Devissage
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.FiniteVanishing.KummerOpen
-import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.AdditiveSnake
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 import Mathlib.Tactic.TypeStar
 

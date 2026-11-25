@@ -8,8 +8,6 @@ public import Development.WeilBound.ThetaLifts.LatticeBasics.UnfoldC
 public import Development.WeilBound.ThetaLifts.EigenvalueEndgame.OrthogonalDecomposition.SigThConst
 public import Development.WeilBound.ThetaLifts.LatticeBasics.SchToPol
 public import Development.WeilBound.ThetaLifts.LatticeBasics.ConvOfCpt
-import Development.WeilBound.ThetaLifts.LatticeBasics.FarRight
-import Development.WeilBound.ThetaLifts.LatticeBasics.UnfoldA
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 

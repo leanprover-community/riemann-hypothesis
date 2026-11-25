@@ -3,7 +3,6 @@ module
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeColumns.LocRed
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeColumns.LevelComponentsSurjective
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeColumns.PrincipalCongruenceLeLevel
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeColumns.IdxProd
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeColumns.HBlock
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.GlRedEqOneIff
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeColumns.HAdapt

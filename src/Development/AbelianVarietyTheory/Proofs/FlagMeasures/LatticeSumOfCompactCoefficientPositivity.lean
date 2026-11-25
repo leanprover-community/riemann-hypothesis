@@ -5,9 +5,7 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.KloostDensOf
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBCSplit
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PbGermRateLowBOfParts
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.AestronglyMeasurableGermIntegrand
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.AverageOne
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.BaseCutoffIsTruncation
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.BlockOfChoices
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CcCoefMMono
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSettingBis
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutEX_UwTop
@@ -25,7 +23,6 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.MeanBoundsLimits
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormSumLeOfForm
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.NormSumLeOfGram
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OneSubPowLe
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.OpApplyZeroNear
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBCBlk
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBCLoc
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBGCongr
@@ -34,9 +31,6 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.ParametersUPrimeFor
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.PositivityBoundOfActual
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PtEntryAppendStart
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RadialExhaustion
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.SliceCompactSupportCoefficient
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.SlicesFiniteRegularityBuilt
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.StandardCharacterExists
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.StandardPairingDecay
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.StandardPairingOfHeads
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ThetaCompactSupport
@@ -45,15 +39,12 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.WeightProduc
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
@@ -89,7 +80,6 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Presheaf
 import Std.Tactic.BVDecide.Normalize.Prop
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.Lam1
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SecondDefectNonneg
 
 @[expose] public section
 

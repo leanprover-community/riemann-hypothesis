@@ -1,19 +1,12 @@
 module
 
 public import GroundTheory.AutomorphicForms.PartialDifferential.Sobolev
-public import Mathlib.Analysis.InnerProductSpace.Defs
-public import Mathlib.Analysis.SpecialFunctions.Pow.Real
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic
 public import Lean.Elab.MutualDef
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Distribution.SchwartzSpace.Fourier
 public import GroundTheory.AutomorphicForms.HilbertSchmidtKernel
 public import GroundTheory.AutomorphicForms.PartialDifferential.SobolevMollifier
 public import Mathlib.Analysis.Distribution.Support
 import Mathlib.Tactic.TypeStar
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Distribution.TemperedDistribution
 import Mathlib.Order.CompletePartialOrder
 
 -- This file was produced by scripts/clump.py from the modules listed below.

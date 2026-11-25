@@ -4,10 +4,7 @@ import GroundTheory.GlobalFields.TateThesis.GlobalZetaFinite
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.GammaLaurentFactors.LaurentBlockInduction.LdDefs
 import Development.AbelianVarietyTheory.Definitions.Divisors.LineOppositeParabolicUnitaryLeviSectionEq
 import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
-import Formalism.DoubleCosetMeasures.Statement
 public import GroundTheory.AutomorphicForms.AffineBruhat
-import GroundTheory.AutomorphicForms.GL2.ExistsEqPowMulOfValuationLe
-import GroundTheory.AutomorphicForms.GL2.GJInducedZeta
 import GroundTheory.AutomorphicForms.WhittakerGroups
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

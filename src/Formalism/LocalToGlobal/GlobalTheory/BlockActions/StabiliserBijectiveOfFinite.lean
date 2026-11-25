@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.HermitianForms.TiedSym
 public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.InJSymRestrict
 public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.TilEqLevel
-public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.MulLatMulLat
 public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.ClassMapEstimateOfPartial
 public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.ClassInjectiveOfDegree
 public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.ClassInjectiveOfSelfDual
@@ -11,7 +10,6 @@ import Mathlib.Tactic.Linter.Style
 import Formalism.LocalToGlobal.GlobalTheory.BlockActions.DefNOfFact
 import Formalism.LocalToGlobal.GlobalTheory.BlockActions.FixOrthogonalVector
 import Formalism.LocalToGlobal.GlobalTheory.BlockActions.LengthInverseBound
-import Formalism.LocalToGlobal.HermitianForms.TiedBrUnit
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.GlobalTheory.BlockActions.StabRestrict, Formalism.LocalToGlobal.GlobalTheory.BlockActions.StabiliserBijectiveOfInjection, Formalism.LocalToGlobal.GlobalTheory.BlockActions.StabiliserBijectiveOfFixed, Formalism.LocalToGlobal.GlobalTheory.BlockActions.StabiliserBijectiveOfFinite

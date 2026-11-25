@@ -4,12 +4,9 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaUniqueness.S
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaUniqueness.Lemmas
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StandardBaseFlagComplementIntegralLattice
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaUniqueness.GramNondeg
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaUniqueness.FlagVectorMemLocalization
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaUniqueness.WAniso
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaUniqueness.EqZeroOfNormLtOne
 public import Formalism.PeriodIntegrals.BetaLUniq
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Order.Star.Int
 

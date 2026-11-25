@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.IndefiniteReal.SobolevIteration.ArvOSobPfSt
 public import Formalism.LocalToGlobal.IndefiniteReal.SobolevIteration.ArvOSobPfA
 import Mathlib.RingTheory.PiTensorProduct
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ChainRuleSmooth.ExpIntertwine
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.IndefiniteReal.SobolevIteration.HasStrictFDerivAtCay, Formalism.LocalToGlobal.IndefiniteReal.SobolevIteration.HasStrictFDerivAtOneProd, Formalism.LocalToGlobal.IndefiniteReal.SobolevIteration.ArvOSobPfChart

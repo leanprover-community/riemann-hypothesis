@@ -4,8 +4,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSecti
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSectionBounded
 public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Mathlib.Topology.Algebra.MvPolynomial
-public import Mathlib.RingTheory.Length
-public import Mathlib.RingTheory.Localization.AtPrime.Basic
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Points
 public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Objects
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsAddBlockIsometric

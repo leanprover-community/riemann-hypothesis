@@ -3,10 +3,8 @@ module
 public import Development.WeilBound.ThetaLifts.LatticeBasics.HypothesesE
 public import Development.WeilBound.ThetaLifts.LatticeBasics.UnfoldC
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EisensteinSeriesConvergent
-public import Development.WeilBound.ThetaLifts.LatticeBasics.Hypotheses2
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FlatSectionGrowthBound
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeightContinuousPos
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsCompactStandardMaximal
 
 @[expose] public section
 

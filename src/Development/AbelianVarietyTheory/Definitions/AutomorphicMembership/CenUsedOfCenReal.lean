@@ -20,7 +20,6 @@ import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.NotBas
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FunKilled
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.PositionOfIntro
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.RowsRestWordColumnUnitBaseTupleAlt
-import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.StableIffCarrierEq
 
 @[expose] public section
 

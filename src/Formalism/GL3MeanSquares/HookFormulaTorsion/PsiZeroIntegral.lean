@@ -3,12 +3,9 @@ module
 public import Formalism.GL3MeanSquares.SmoothedRemainderRealIntegralFormula
 public import Formalism.LandauZeroFreeBounds.SiegelWalfiszAPOfSiegelLower
 public import Mathlib.NumberTheory.LSeries.SumCoeff
-public import Formalism.LandauZeroFreeBounds.SiegelWalfiszAP
-public import Mathlib.NumberTheory.AbelSummation
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.MeasureTheory.Function.Floor
-import Mathlib.NumberTheory.LSeries.Nonvanishing
 import Mathlib.Tactic.Lemma
 
 -- This file was produced by scripts/clump.py from the modules listed below.

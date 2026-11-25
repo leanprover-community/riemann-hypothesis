@@ -30,19 +30,8 @@ public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.Eig
 public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.LinearAct
 public import Development.WeilBound.CoreStatements.LocalThetaKernels.Locpair
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HasSatakeGLOfIsSatVecGL
-public import Development.WeilBound.CoreStatements.LocalThetaKernels.IwasFrame
-public import Development.WeilBound.CoreStatements.LocalThetaKernels.IwasAd
 public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.SiegelTransport
-public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.BigCellLocal
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.FinPartIdemMulMemIff
-import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.FinSplit
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC
-import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictDef
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
-import GroundTheory.GlobalFields.CompletionAtPlace.Integers
-import GroundTheory.GlobalFields.LocalAtPlace
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.InvMemDoubleCosetAndComm
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Cartan
 
 section -- clump:auto
 @[expose] public section

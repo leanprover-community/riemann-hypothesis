@@ -2,16 +2,12 @@ module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TensorOperator.Development
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TensorOperator.FockLin
-public import Formalism.PeriodIntegrals.FockRBlock
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RowDerivationChainRule.Development
-public import Formalism.PeriodIntegrals.RowLetter
 public import Formalism.PeriodIntegrals.RowWtSpan
-public import Mathlib.RingTheory.MvPolynomial.EulerIdentity
 public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.FRSmulRight
 public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.MemHdIff
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.TransposeWords.FormCoreSK
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.FlatModels.PolynomialThetaProduct
-public import Mathlib.LinearAlgebra.Dual.Lemmas
 public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.FirstWeightLeConductor
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.OpWords
 public import Mathlib.Data.Fin.Tuple.Sort

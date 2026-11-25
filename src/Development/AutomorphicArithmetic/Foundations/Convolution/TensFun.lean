@@ -9,7 +9,6 @@ public import GroundTheory.AutomorphicForms.HarishChandraCentre
 public import GroundTheory.AutomorphicForms.AffineBruhat
 public import GroundTheory.AutomorphicForms.Cartan
 public import Mathlib.Algebra.MvPolynomial.Expand
-public import Mathlib.RingTheory.MvPolynomial.Symmetric.FundamentalTheorem
 
 @[expose] public section
 

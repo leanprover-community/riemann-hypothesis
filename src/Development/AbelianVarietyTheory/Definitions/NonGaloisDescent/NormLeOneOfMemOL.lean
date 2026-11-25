@@ -9,9 +9,7 @@ public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.Acri
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NilpotentOfNotIsUnit
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCompatibleRootsOfUnityAndTiltPadic
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FontaineThetaEqZeroIffFontaineXiElementDvd
-import Development.AutomorphicArithmetic.IntegralCasts.CrystallinePeriods.Kernel
 public import Mathlib.RingTheory.Finiteness.Descent
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsCrisP
 
 @[expose] public section
 

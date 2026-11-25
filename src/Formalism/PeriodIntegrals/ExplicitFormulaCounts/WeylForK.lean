@@ -4,17 +4,12 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeylFormulaCompa
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeylFormulaCompact.TrivKtype
 public import Formalism.PeriodIntegrals.WeylForU
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeylFormulaCompact.DimStepA
-public import Mathlib.Analysis.InnerProductSpace.Projection.FiniteDimensional
 public import Lemmata.GeneralBFactLeftVariant.Imports
-public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 public import Formalism.PeriodIntegrals.WeylForK
 public import Formalism.PeriodIntegrals.ExplicitFormulaCounts.WeylForU
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Topology.Sheaves.Presheaf
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.RingTheory.PiTensorProduct
 
 -- This file was produced by scripts/clump.py from the modules listed below.

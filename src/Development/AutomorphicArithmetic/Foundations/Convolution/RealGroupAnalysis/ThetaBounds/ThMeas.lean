@@ -4,7 +4,6 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGrou
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.WeilRepresentation.HatSt
 import GroundTheory.AutomorphicForms.ReductionMeasure
 import Mathlib.Tactic.Linter.HaveILetI
-public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.Smooth
 
 @[expose] public section
 

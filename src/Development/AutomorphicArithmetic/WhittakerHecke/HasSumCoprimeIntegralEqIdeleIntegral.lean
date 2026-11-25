@@ -9,8 +9,6 @@ import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeIndices.CharZero
 import Mathlib.Tactic.Linter.Style
 public import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.EulerProducts.EulReal
 import Std.Tactic.BVDecide.Normalize.Prop
-public import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.AdFormOf
-public import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.EulerProducts.EulDefs
 
 @[expose] public section
 

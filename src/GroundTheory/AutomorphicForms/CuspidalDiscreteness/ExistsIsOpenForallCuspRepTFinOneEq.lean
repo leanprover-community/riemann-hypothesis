@@ -5,14 +5,8 @@ public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SmoothingFinite
 public import Mathlib.Analysis.Convex.Integral
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.CuspCompact
 public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsContRep
-public import GroundTheory.AutomorphicForms.CuspidalDiscreteness.SummandsBase
 public import GroundTheory.AutomorphicForms.GKModules.Garding
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.ClopenNhdofOne
-import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStable
-import GroundTheory.GlobalFields.Adele.Topology
-import Mathlib.MeasureTheory.Function.AEEqOfIntegral
-import Mathlib.Topology.Compactness.Paracompact
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.AutomorphicForms.CuspidalDiscreteness.FixedOpen, GroundTheory.AutomorphicForms.CuspidalDiscreteness.ExistsIsOpenForallCuspRepTFinOneEq

@@ -3,7 +3,6 @@ module
 public import Formalism.GradedWeylDivisibility.StatementB
 public import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 public import Formalism.GradedWeylDivisibility.FinalB
-import Mathlib.RingTheory.Derivation.Lie
 
 @[expose] public section
 

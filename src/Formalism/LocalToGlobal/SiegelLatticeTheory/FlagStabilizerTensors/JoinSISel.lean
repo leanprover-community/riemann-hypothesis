@@ -6,7 +6,6 @@ public import Formalism.LocalRingCardinality.DataExtra
 public import Formalism.LocalToGlobal.ClassOfRecordOfChoice
 public import Formalism.LocalToGlobal.IndefiniteRealisationChoice
 import Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.JoinSI
-import Formalism.LocalToGlobal.SiegelLatticeTheory.PtEquivApply
 
 @[expose] public section
 

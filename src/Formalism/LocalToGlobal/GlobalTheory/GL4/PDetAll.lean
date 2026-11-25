@@ -2,7 +2,6 @@ module
 
 public import Formalism.LocalToGlobal.Columns.BrpAevalScaleMonomial
 public import Formalism.LocalToGlobal.Divisibility.CoefMod
-import Formalism.GradedWeylDivisibility.FinalD
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal

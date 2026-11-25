@@ -2,9 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.TripleAtt
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.InertiaCompatibleConjugationRepresentation
-public import Formalism.LocalRingCardinality.Params
-public import Formalism.ConjugateSelfDual.Statement
-public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CoeffProdOneSubCMulX
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.Eps0UnramFrob
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.HodgeOfAttached

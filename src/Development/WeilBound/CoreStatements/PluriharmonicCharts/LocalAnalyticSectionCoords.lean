@@ -7,17 +7,11 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArith
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogPeriodStatement
 public import Development.WeilBound.CoreStatements.PluriharmonicCharts.PullDegSome
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticFirst
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticThird
-import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsPeriodOn
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverBasePointInPoints
-import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverFramesAtPoint
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelBaseProjectionPoints
-import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.SameOrbitRefl
 import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.GenericComplexPoint
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
 
 @[expose] public section
 

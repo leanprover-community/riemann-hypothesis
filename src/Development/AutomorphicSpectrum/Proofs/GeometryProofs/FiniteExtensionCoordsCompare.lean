@@ -7,7 +7,6 @@ public import Mathlib.AlgebraicGeometry.Morphisms.Finite
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsNormalisation
 public import Development.WeilBound.CoreStatements.VolumeEquality.PrimeIdealOfFromSpec
 public import Development.WeilBound.CoreStatements.VolumeEquality.RegularFunctionChartAdjoin
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueDominatingMap
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenMapStalkMap
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ProjectiveModelNonempty
 import Mathlib.Tactic.Linter.HaveILetI

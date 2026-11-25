@@ -39,10 +39,6 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.Realises
-import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.Reframe
-import Formalism.LocalToGlobal.InertKernelTheory.DelPolOfTies
-import Formalism.LocalToGlobal.InertKernelTheory.SubBSplit
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.SatakeParameters.StepTwistAtClassRepEqCharPowDet, Development.AbelianVarietyTheory.Proofs.SatakeParameters.RealAtSuccIffDecompositionValues, Development.AbelianVarietyTheory.Proofs.SatakeParameters.RealAtSuccIffDecompositionValuesStatement

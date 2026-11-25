@@ -3,7 +3,6 @@ module
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaModuloX.MemOrth
 public import Formalism.HermitianLattices.HermitianLatticesProofs.AutFinite
 public import Lemmata.GeneralBFactThirdRest.Imports
-public import Mathlib.NumberTheory.NumberField.Basic
 public import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.IdealsOfNormEqIndexSet
 public import Formalism.HermitianLattices.HermitianLatticesProofs.ThetaSummable
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaModuloX.Skeleton

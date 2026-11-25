@@ -12,9 +12,7 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Differen
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConjGelfValOfIsHerm
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GelfandOperatorAdjointStatement
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryMemGLs
-public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WaveCptBoundedTime
-public import Mathlib.Analysis.Calculus.Deriv.Prod
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WaveTimeAverageIsWave
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ActEqSumOfKernel
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.InnerIntegralLeft

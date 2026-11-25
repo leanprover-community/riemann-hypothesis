@@ -6,7 +6,6 @@ import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.HighestWeights.OneParam
-public import Mathlib.Analysis.Matrix.Normed
 
 @[expose] public section
 

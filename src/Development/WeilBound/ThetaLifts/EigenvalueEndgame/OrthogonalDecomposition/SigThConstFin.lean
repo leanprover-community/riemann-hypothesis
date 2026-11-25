@@ -27,8 +27,6 @@ public import Development.WeilBound.ThetaLifts.FrameEstimates.HodgeTateFromSandw
 public import Development.WeilBound.ThetaLifts.TowerModels.PlaneHerm
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDict
 import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.LocalToGlobal.IndefiniteReal.PHeisFC
-import Development.WeilBound.ThetaLifts.EigenvalueEndgame.OrthogonalDecomposition.RapidBound
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.ThetaLifts.EigenvalueEndgame.OrthogonalDecomposition.Imports, Development.WeilBound.ThetaLifts.EigenvalueEndgame.OrthogonalDecomposition.LocDecompOf, Development.WeilBound.ThetaLifts.EigenvalueEndgame.OrthogonalDecomposition.PairLocOf, Development.WeilBound.ThetaLifts.EigenvalueEndgame.OrthogonalDecomposition.SigThConstOf, Development.WeilBound.ThetaLifts.EigenvalueEndgame.OrthogonalDecomposition.SigThConstFin

@@ -15,8 +15,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsFinOpenSub
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatHopfFlat
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatHopfSub
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatHopfTop
-public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ExistsHenselianFlatOverPrime
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsBaseChangeGroup
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegularAtBaseChangeStatement
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

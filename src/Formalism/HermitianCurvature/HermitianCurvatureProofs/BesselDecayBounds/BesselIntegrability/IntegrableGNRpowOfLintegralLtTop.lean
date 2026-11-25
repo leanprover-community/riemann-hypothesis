@@ -4,7 +4,6 @@ import Development.AbelianVarietyTheory.Proofs.JetHarmonics.GrowthUnitaryGroupRp
 public import Formalism.HermitianCurvature.BesselNonvanishingReduction
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SettingExistence
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BridgeLemma3
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.Matrix.MeasurableSpace
 
 @[expose] public section

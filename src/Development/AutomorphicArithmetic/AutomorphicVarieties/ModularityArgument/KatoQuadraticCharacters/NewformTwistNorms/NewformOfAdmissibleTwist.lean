@@ -50,7 +50,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing
 import Formalism.ConjugateSelfDual.Statement
 import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.RkMultVOfNotJump
 public import Mathlib.Algebra.Module.Torsion.Field
-import ReciprocityTheory.GaloisValuations.GlobalA
 
 @[expose] public section
 

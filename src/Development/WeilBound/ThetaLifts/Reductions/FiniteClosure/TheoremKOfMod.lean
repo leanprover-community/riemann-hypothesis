@@ -14,7 +14,6 @@ public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.Eig
 public import Development.WeilBound.ThetaLifts.LatticeBasics.HypothesesS
 public import Development.WeilBound.ThetaLifts.SphericalLattices.FunDefs
 public import Development.WeilBound.CoreStatements.AbelianHeightsDuality.PublishedTheoremStatements.SiegelSetUnitaryHolds
-public import Development.WeilBound.CoreStatements.GaussianSeminormBounds.RealSeminormFiltration.EvIHalfTrace
 public import Development.WeilBound.CoreStatements.LocalThetaKernels.Locrep
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.BernsteinNarrowness.BernsteinClosure.RamifiedMultiplicityOne
 public import Development.WeilBound.ThetaLifts.Reductions.LocalLift
@@ -26,10 +25,7 @@ public import Development.WeilBound.ThetaLifts.SphericalLattices.HoweDuality
 public import Development.WeilBound.ThetaLifts.SphericalLattices.ModSt2
 public import Development.WeilBound.ThetaLifts.SphericalLattices.SphericalClosure.CloseSph
 public import Development.WeilBound.ThetaLifts.SphericalSplitting.SphSplitGeo
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Development.WeilBound.ThetaLifts.CartanFactorisation.ExistsCharNe
-import Development.WeilBound.ThetaLifts.Reductions.SiegelOfCore
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.ThetaLifts.Reductions.ExistsSmoothFun, Development.WeilBound.ThetaLifts.Reductions.ArchLie, Development.WeilBound.ThetaLifts.Reductions.KReal, Development.WeilBound.ThetaLifts.SphericalLattices.FinInert, Development.WeilBound.ThetaLifts.Reductions.FiniteClosure.TheoremKOfMod

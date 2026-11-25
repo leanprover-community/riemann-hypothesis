@@ -4,8 +4,6 @@ public import Mathlib.Analysis.Complex.Order
 public import Mathlib.LinearAlgebra.Matrix.Block
 public import Mathlib.LinearAlgebra.Matrix.PosDef
 public import Mathlib.Analysis.Matrix.Spectrum
-public import Mathlib.Algebra.Star.Unitary
-public import Mathlib.Algebra.Star.UnitaryStarAlgAut
 public import Development.WeilBound.ThetaLifts.Reductions.SiegelCore
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsUnitaryCommuting
 import Mathlib.Tactic.Linter.HaveILetI

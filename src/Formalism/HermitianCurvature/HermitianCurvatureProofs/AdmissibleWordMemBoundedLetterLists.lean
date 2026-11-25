@@ -7,7 +7,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PeriodLattic
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PoissonJointFirstReduction
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TheoremPIntegralOfPlaces
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentCoordinatesMeasurePreserving
-import Mathlib.MeasureTheory.Integral.Pi
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBJoint

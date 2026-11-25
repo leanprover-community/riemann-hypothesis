@@ -3,8 +3,6 @@ module
 public import ReciprocityTheory.SemistableReduction.ComapInclusionIsLocalHom
 public import ReciprocityTheory.SemistableReduction.GaussIndepOfLeTrdeg
 public import ReciprocityTheory.SemistableReduction.ExistsDualDerivations
-public import Mathlib.RingTheory.Length
-public import Mathlib.RingTheory.RamificationInertia.Inertia
 public import Mathlib.NumberTheory.RamificationInertia.Inertia
 public import ReciprocityTheory.SemistableReduction.DetSubtypeCompAssociatedProd
 public import ReciprocityTheory.SemistableReduction.IntegralClosureRankAndResidueTrdegLe

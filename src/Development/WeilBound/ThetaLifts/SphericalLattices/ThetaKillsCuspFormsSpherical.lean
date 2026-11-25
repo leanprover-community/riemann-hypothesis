@@ -19,7 +19,6 @@ public import Development.WeilBound.ThetaLifts.CartanFactorisation.Kills0Of
 public import Development.WeilBound.ThetaLifts.SphericalLattices.ThetaSubSup
 import Development.WeilBound.ThetaLifts.CartanFactorisation.SpanOrbitStab
 import Development.WeilBound.ThetaLifts.ConeHypotheses.PureEqPureA
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
 import Development.WeilBound.ThetaLifts.CartanFactorisation.RinfZero
 import Development.WeilBound.ThetaLifts.CartanFactorisation.TensOfEval
 import Formalism.LocalToGlobal.IndefiniteReal.PHeisFC

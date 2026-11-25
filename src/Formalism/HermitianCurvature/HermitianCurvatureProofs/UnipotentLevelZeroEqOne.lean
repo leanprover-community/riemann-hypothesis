@@ -1,12 +1,9 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HeadCorrespondenceOfParts
-public import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.OppositeWeylSubgroupClosed
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.ParametersUPrimeForULower
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SupportPhiZeroSubset
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.WittOrthonormalBasis
-import Mathlib.Analysis.InnerProductSpace.Trace
 
 @[expose] public section
 

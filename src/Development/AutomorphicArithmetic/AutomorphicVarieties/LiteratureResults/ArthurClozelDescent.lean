@@ -4,8 +4,6 @@ public import Mathlib.NumberTheory.NumberField.AdeleRing
 import Development.AutomorphicArithmetic.AutomorphicVarieties.PublishedTheorems.GelfandKazhdanReal
 import Development.AutomorphicArithmetic.IntegralCasts.IsOpenStabOfMemNhds
 import Formalism.ConjugateSelfDual.Statement
-import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
-import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
 import ReciprocityTheory.NeutralLocalFields.Reciprocity
 

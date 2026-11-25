@@ -7,11 +7,9 @@ public import Mathlib.MeasureTheory.Measure.Haar.Unique
 public import Mathlib.NumberTheory.LocalField.Basic
 public import GroundTheory.AutomorphicForms.GL2.GJParabolicFubini
 public import GroundTheory.AutomorphicForms.GL2.GJLeviZeta
-public import GroundTheory.AutomorphicForms.InductionParabolic
 public import GroundTheory.AutomorphicForms.HaarCosets
 import Mathlib.Tactic.TypeStar
 import GroundTheory.AutomorphicForms.AdmissibleInduction
-import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeRangeNormUnits
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.CategoryTheory.Countable

@@ -1,8 +1,6 @@
 module
 
 public import Mathlib.Algebra.MvPolynomial.PDeriv
-public import Mathlib.Data.Nat.Factorial.Basic
-import Mathlib.Tactic.Ring
 
 /-!
 # Coefficient Fock pairing

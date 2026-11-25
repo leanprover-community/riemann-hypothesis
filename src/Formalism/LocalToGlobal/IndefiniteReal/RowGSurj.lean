@@ -6,14 +6,8 @@ public import Formalism.LocalToGlobal.Divisibility.RowLatLemmas
 public import Formalism.LocalToGlobal.IndefiniteReal.CxPassSk
 public import Formalism.LocalToGlobal.IndefiniteReal.InBlock
 public import Formalism.LocalToGlobal.IndefiniteReal.EqZeroOfMemRangeAdjoint
-import Formalism.HermitianLattices.HermitianLatticesProofs.LocBasic
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.SecondStepGluing
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.RingTheory.PicardGroup
-import Formalism.LocalToGlobal.IndefiniteReal.CxLemmas
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.AuxStatement14
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.IndefiniteReal.CxPassSand, Formalism.LocalToGlobal.IndefiniteReal.RowGSurj

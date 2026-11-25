@@ -5,10 +5,8 @@ import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCauchyBinet
 public import Formalism.PeriodIntegrals.ExpTri
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ExponentialTriangular.SortedSpec
 public import Mathlib.Analysis.Matrix.Spectrum
-public import Mathlib.Analysis.Complex.Exponential
 public import Mathlib.Analysis.Matrix.PosDef
 public import Mathlib.Analysis.Normed.Algebra.MatrixExponential
-public import Mathlib.Algebra.Star.UnitaryStarAlgAut
 public import Mathlib.Analysis.SpecialFunctions.Exponential
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeCountingBound.IndexDefs
 public import Formalism.PeriodIntegrals.LatCountG
@@ -18,9 +16,7 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MultiplicityMeas
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.FoldMult
 public import Formalism.PeriodIntegrals.FoldUnfold
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnfoldingIdentity.FoldUnfoldMain
-public import Formalism.PeriodIntegrals.SymDist
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexificationHolds
-public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.IndefiniteUnitaryPreservesForm
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.ExplicitFormulaBoundHolds
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.RowsProj
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.RowsBij

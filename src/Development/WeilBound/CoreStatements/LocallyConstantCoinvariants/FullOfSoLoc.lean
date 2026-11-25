@@ -13,7 +13,6 @@ public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.E
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfSurj
 public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.SoStatement
 public import Development.AbelianVarietyTheory.BlockTheory.TwistedDiscreteSeries.OpenClosedSequences
-import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.TopOfMap
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

@@ -2,7 +2,6 @@ module
 
 public import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.CompactOrbits.LocStep
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.DualCountBound.MatIdxB
-public import Mathlib.MeasureTheory.Group.ModularCharacter
 public import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.ImportsBisExtra
 public import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.CompactOrbits.BaseOrbits
 public import GroundTheory.AutomorphicForms.MeasuresModulus

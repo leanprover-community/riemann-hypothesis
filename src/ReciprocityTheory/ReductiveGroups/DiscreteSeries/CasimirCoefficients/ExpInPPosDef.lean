@@ -12,7 +12,6 @@ import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.AnalyticVectors.PolarJmConjTranspose
-public import Mathlib.Analysis.Matrix.Normed
 
 @[expose] public section
 

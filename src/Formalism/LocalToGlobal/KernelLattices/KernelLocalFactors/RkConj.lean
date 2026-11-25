@@ -10,7 +10,6 @@ public import Formalism.LocalToGlobal.KernelLattices.ColumnData.ColumnDataEquati
 import Formalism.LocalToGlobal.KernelLattices.ColumnData.IsAdmissibleFlagPairOfUnitriangularLeftAutomorph
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThetaLocalEquivalence.ThIndEqAmbOfOf
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.VacEntire
-public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThetaLocalEquivalence.ThEquivPOf
 
 @[expose] public section
 

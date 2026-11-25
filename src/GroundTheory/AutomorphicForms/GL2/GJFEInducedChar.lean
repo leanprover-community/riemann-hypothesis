@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.AutomorphicForms.GL2.GJFEDefs
-import GroundTheory.AutomorphicForms.GL2.ExistsEqPowMulOfValuationLe
 public import GroundTheory.AutomorphicForms.LeviStagesJacquet
 
 @[expose] public section

@@ -5,13 +5,10 @@ public import Mathlib.Basic.NNReal.Defs
 public import Mathlib.RingTheory.Valuation.Integers
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.IsAbFactorTens
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsTight
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.GroupTheory.FiniteAbelian.Duality
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.StepOrderRes
-public import Mathlib.LinearAlgebra.Dimension.OrzechProperty
 public import ReciprocityTheory.DualLattices.CharTableIsUnit
 public import ReciprocityTheory.DualLattices.PowMemCarrier
-public import Mathlib.FieldTheory.Finite.Basic
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.ReBase
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.ReTens
 public import Development.AutomorphicSpectrum.Statements.AlgebraStatements.HodgeTateDatumStatement
@@ -23,12 +20,8 @@ import ReciprocityTheory.DualLattices.CotangentSurjective
 import ReciprocityTheory.DualLattices.TensorSpan
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import ReciprocityTheory.DualLattices.SqIdeal
 import ReciprocityTheory.DualLattices.VIntCastLtOneOfDvd
 import Mathlib.RingTheory.PiTensorProduct
 

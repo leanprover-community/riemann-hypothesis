@@ -8,11 +8,7 @@ public import Mathlib.LinearAlgebra.DFinsupp
 public import Mathlib.LinearAlgebra.Dimension.Basic
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.OperatorStablePiTensorPureKernelSpan
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SimpleOverStableSubmoduleTensorPureKernelSpan
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.PiTensorProduct.Basic
-public import Mathlib.LinearAlgebra.TensorProduct.Map
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.HoweDuality.FactorApply
-public import Mathlib.Algebra.Algebra.Subalgebra.Lattice
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.HoweDuality.PartStable
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -32,7 +28,6 @@ import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat

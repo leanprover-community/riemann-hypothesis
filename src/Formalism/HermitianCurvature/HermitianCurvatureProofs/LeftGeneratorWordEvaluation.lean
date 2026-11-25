@@ -1,12 +1,8 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CapRWordsOfParts
-public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
 import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CartanInvolutionConjTransposeMul
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexifiedDerivativeCommutator
-import Mathlib.Order.CompletePartialOrder
 
 @[expose] public section
 

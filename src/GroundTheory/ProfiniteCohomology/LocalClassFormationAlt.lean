@@ -1,16 +1,11 @@
 module
 
 public import GroundTheory.ProfiniteCohomology.LocalClassFormation.InvariantSplit
-public import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality
-public import GroundTheory.ProfiniteCohomology.LocalClassFormation.UnramifiedRes
 public import GroundTheory.Brauer.BaseChangeRestriction
 public import GroundTheory.ProfiniteCohomology.ClassFormationDefs
-import GroundTheory.LocalFields.MaximalUnramified
-import GroundTheory.LocalFields.UnitsPowers
 import GroundTheory.ProfiniteCohomology.ClassFormations.IsIsoCohomologyMapAlongResSubgroupOfHom
 import Mathlib.CategoryTheory.EffectiveEpi.Comp
 import Mathlib.CategoryTheory.ExtremalEpi
-import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.Topology.Connected.Separation
 
 -- This file was produced by scripts/clump.py from the modules listed below.

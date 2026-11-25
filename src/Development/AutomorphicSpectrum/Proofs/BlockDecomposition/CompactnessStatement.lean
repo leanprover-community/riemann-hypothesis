@@ -5,9 +5,7 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JpUnif
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UniformBoundednessStatement
 public import Mathlib.RingTheory.LocalRing.ResidueField.Basic
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
-public import Mathlib.LinearAlgebra.Matrix.Rank
 public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Card
-public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

@@ -5,7 +5,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquili
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatPolyOK
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutNFTopDomEmpty
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.HomogeneityNaturalDegree
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.TriangleInequalityAtPlace
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

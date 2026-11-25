@@ -3,8 +3,6 @@ module
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BaseLengthBound.YmDerivSt
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BaseLengthBound.TaylorRep
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.HasseJidPow
-import Formalism.PeriodIntegrals.HassePresH
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HasseDerivativeFiltration.HasseMemHfr
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

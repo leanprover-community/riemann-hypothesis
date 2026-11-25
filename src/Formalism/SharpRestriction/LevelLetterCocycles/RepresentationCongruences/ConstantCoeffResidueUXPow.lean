@@ -1,11 +1,8 @@
 module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.ConstantLeRpowOfThreeLe
-import Mathlib.RingTheory.LocalRing.ResidueField.Basic
-import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.NormNum.GCD
-import Mathlib.Tactic.Positivity.Finset
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

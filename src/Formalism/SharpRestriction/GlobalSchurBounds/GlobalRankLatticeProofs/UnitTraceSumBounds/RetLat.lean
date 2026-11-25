@@ -4,9 +4,7 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ThetaSeriesExist
 public import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ThetaSeriesExistence.ThetaDerivNe
 public import Mathlib.NumberTheory.Modular
-public import Mathlib.Analysis.Complex.UpperHalfPlane.MoebiusAction
 public import Mathlib.Analysis.Real.Pi.Bounds
-public import Formalism.PeriodIntegrals.SigmaStarEx
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.SigmaStarUniq
 public import Formalism.PeriodIntegrals.DiscrNe
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.NonzeroDiscriminants.DiscMain

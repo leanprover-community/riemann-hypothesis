@@ -2,17 +2,11 @@ module
 
 public import Formalism.LocalToGlobal.CharacterGerms.CartesianBoundOnCurves
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.TwoMulChainStartIndexAddOneOfOdd
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.LinearAlgebra.Dimension.Constructions
-public import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
-public import Formalism.LocalToGlobal.CharacterGerms.Interface
 public import Mathlib.RingTheory.LocalRing.ResidueField.Defs
 public import Mathlib.RingTheory.LocalRing.ResidueField.Basic
 public import Mathlib.RingTheory.Valuation.ValuationSubring
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.FormalGroupCoordinatesPullbackLinearTangentBasis
 public import Formalism.FrobeniusBaseCase.FrobeniusBaseCaseProofs.HasUniqueFixedPoint
-public import Formalism.LocalToGlobal.CharacterGerms.GeNatCast
-public import Mathlib.RingTheory.MvPowerSeries.Substitution
 public import Formalism.LocalToGlobal.CharacterGerms.LatticeInclusionFormsInjective
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.CoeffLeafGaugeSubMainTermEqZeroOnFirstAxis
 public import Mathlib.RingTheory.MvPowerSeries.Rename
@@ -76,11 +70,9 @@ import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import ReciprocityTheory.DualLattices.VEqZeroOfPowEqOne
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.WeightedSumBounds.PtOrderProdSub
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Formalism.IncomingBounds.IncomingBound
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Algebra.Order.Star.Real

@@ -7,8 +7,6 @@ public import ReciprocityTheory.GeometryOfNumbers.SphericalMonomials.MonoNormSq
 import Mathlib.Algebra.Order.Star.Real
 import ReciprocityTheory.GeometryOfNumbers.SphericalMonomials.GaussSt
 public import ReciprocityTheory.GeometryOfNumbers.SphericalMonomials.MonomSt
-import ReciprocityTheory.GeometryOfNumbers.SphericalMonomials.MonomStA
-public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 
 @[expose] public section
 

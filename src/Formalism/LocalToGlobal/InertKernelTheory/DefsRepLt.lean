@@ -2,13 +2,10 @@ module
 
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.LocalToGlobal.InertKernelTheory.DefsRepFrame
-public import Formalism.SharpRestriction.GrowthBounds.DataGChain
-public import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
 public import Formalism.LocalToGlobal.InertKernelTheory.DefsRep
 public import Formalism.LocalToGlobal.InertKernelTheory.ScalG
 public import Formalism.LocalToGlobal.InertKernelTheory.FrameInt
 import Mathlib.Tactic.TypeStar
-import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
 import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.DescentCore
 
 -- This file was produced by scripts/clump.py from the modules listed below.

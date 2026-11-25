@@ -4,7 +4,6 @@ import all Formalism.LocalToGlobal.Columns.DecoFin
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CardKerSubspacesAndHeckePolyOfConvolution
 public import Formalism.LocalToGlobal.Columns.HeckeSp
 public import Formalism.LocalToGlobal.Columns.AlgebraMapMemMaximalIdealPowIff
-import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
 public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Card
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

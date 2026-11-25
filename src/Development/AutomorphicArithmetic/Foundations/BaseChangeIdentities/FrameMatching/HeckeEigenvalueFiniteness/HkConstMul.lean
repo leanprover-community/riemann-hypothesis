@@ -1,15 +1,10 @@
 module
 
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.SubOfEig
-public import Mathlib.NumberTheory.LocalField.Basic
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.JhMultSubAddQuot
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.NontrivialOfIrreducible
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.SatakeExponents.UniformizerValuations.SubOfNonNil
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.RingTheory.SimpleModule.Basic
 public import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FinsumOutTranslate
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HkMemFixed
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.IrreducibleSmoothAdmissibleGL
@@ -18,7 +13,6 @@ public import Development.AutomorphicArithmetic.Foundations.BaseChangeIdentities
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FiniteLengthOfProducts
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LocalAlgebraHolds
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SplitDictionaryHolds
-import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Topology.Order.Hom.Esakia
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.HasSatakeGLOfIsSatVecGL
 import GroundTheory.LocalFields.PadicLogSeries

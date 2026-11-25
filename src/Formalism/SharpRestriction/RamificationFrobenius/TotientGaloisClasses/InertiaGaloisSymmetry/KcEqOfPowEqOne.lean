@@ -4,9 +4,7 @@ import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGene
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.DecompTypeI
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.MuCardLeTwo
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.KcBase
-import Formalism.TameInertiaTowers.CentralOrderTwo.OddEqOneOfSubOneMem
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.Ideal.Int
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.TypeStar
 

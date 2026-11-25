@@ -1,7 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.IdentityLiftWeightedHomog
-import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.HookKeyOrderGeOne
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.KeyMinorDvd
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.PsiRes0Ne
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.LiftSubstStart

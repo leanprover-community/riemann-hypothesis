@@ -4,12 +4,7 @@ public import Formalism.LocalRingCardinality.DataParams₂
 public import Formalism.LocalToGlobal.Divisibility.ConstantGeTwentyEight
 public import Formalism.LocalToGlobal.Divisibility.LinkDef
 public import Formalism.LocalToGlobal.IndefiniteReal.FaceOf3
-import Formalism.DivisorInequality.DivisorInequalityProofs.BaseLevelBoundsWithCovolumeHolds
-import Formalism.LocalToGlobal.Divisibility.LiftLatLemmas
-import Formalism.LocalToGlobal.Divisibility.RowLatLemmas
 public import Formalism.LocalToGlobal.Divisibility.TrivialExtensionSideWellFormed
-import Formalism.LocalToGlobal.IndefiniteForms.IndefUse
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.PlaceSumSquares
 
 @[expose] public section
 

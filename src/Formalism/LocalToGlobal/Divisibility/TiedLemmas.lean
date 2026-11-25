@@ -3,7 +3,6 @@ module
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.QuotientMetricDivisors.Statement
 public import Formalism.LocalToGlobal.Divisibility.LiftLat
-import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
 
 @[expose] public section
 

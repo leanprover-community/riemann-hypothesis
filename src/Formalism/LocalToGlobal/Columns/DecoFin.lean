@@ -3,8 +3,6 @@ module
 import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExistsSqAbsNormOfInert
 public import Formalism.LocalToGlobal.Columns.StdLatUnimodular
 public import Formalism.HermitianLattices.FinalNeighbourConstruct
-public import Formalism.HermitianLattices.HermitianLatticesProofs.ClassSetAssembly
-public import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice
 public import Formalism.HermitianLattices.HermitianLatticesProofs.GenusCovolBound
 public import Formalism.HermitianLattices.HermitianLatticesProofs.NeighbourConstruct
 public import Formalism.LocalToGlobal.Columns.BaseLemmas

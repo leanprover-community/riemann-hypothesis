@@ -3,8 +3,6 @@ module
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCharacters.ContinuousResP
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.ExistsCoprimePowOfMemIneKer
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.V00
-import Mathlib.FieldTheory.Galois.Profinite
-import Mathlib.Topology.Algebra.ClopenNhdofOne
 import Mathlib.Topology.Connected.Separation
 import ReciprocityTheory.GaloisValuations.GlobalA
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.TrivialOnInertiaOfUnr

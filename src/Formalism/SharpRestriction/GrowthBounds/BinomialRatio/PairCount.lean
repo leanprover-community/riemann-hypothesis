@@ -1,9 +1,7 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.ThresholdStandardLarge
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.CoarseDegreeAlternative
 import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SegmentStatementHolds
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.ThresholdLowerBounds
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.TopDegreeLeTwoB
 import Mathlib.Tactic.Linter.Style
 

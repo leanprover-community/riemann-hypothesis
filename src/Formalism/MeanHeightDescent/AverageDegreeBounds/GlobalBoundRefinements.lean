@@ -8,7 +8,6 @@ public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SizeMu
 public import Formalism.MeanHeightDescent.AverageDegreeBounds.MuMaxMinkowski
 public import Formalism.MeanHeightDescent.AverageDegreeBounds.SpanMuMin
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.NumberTheory.NumberField.Discriminant.Basic
 import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section

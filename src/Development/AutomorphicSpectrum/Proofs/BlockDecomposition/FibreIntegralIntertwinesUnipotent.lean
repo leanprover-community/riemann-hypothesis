@@ -1,19 +1,12 @@
 module
 
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsUMOfMem
-public import Mathlib.MeasureTheory.Measure.Haar.DistribChar
-public import Mathlib.NumberTheory.LocalField.Basic
-public import Development.AbelianVarietyTheory.Definitions.Foundations.SecondCountableAndT2LocalField
 public import GroundTheory.AutomorphicForms.MeasuresModulus
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OpenFns
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FibreFunctionLocallyConstantCompact
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LeviBlockMemParabolic
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothIntegralLinear
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnipotentTopMemParabolic
-import Development.WeilBound.RepresentationTheoryGL.GenericUnitaryGL.LeibnizOrders.ProdGPn
 import Mathlib.Tactic.Linter.Style
-import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.LeibnizDerivatives.EPGFalseEqLastIff
-import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.UnipApplyCastSuccLast
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MulVecMidBlockDecomp, Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntegralCompSymm, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SmoothIntegralLinearChange, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FibreIntegralIntertwinesUnipotent

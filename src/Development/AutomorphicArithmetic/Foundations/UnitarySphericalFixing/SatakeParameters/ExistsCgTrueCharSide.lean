@@ -10,7 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InfCh
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsFixedIff
 import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsSteinberg
 import Formalism.SharpRestriction.CuspSpanNormBounds.BlockEstimateWords
-import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
 

@@ -4,14 +4,9 @@ public import GroundTheory.AutomorphicForms.PartialDifferential.Sobolev
 public import GroundTheory.AutomorphicForms.PartialDifferential.EllipticOperators
 public import GroundTheory.AutomorphicForms.PartialDifferential.EllipticLocalRegularity
 public import Mathlib.Topology.MetricSpace.ProperSpace.Lemmas
-public import GroundTheory.AutomorphicForms.PartialDifferential.EllipticLocal
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Distribution.SchwartzSpace.Basic
-public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 public import GroundTheory.AutomorphicForms.PartialDifferential.EllipticDiffOp
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
-import Mathlib.Analysis.Distribution.TemperedDistribution
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.AutomorphicForms.PartialDifferential.SobolevEmbedding, GroundTheory.AutomorphicForms.PartialDifferential.EllipticSmooth, GroundTheory.AutomorphicForms.PartialDifferential.EllipticSolutions, GroundTheory.AutomorphicForms.PartialDifferential.EllipticParametrix

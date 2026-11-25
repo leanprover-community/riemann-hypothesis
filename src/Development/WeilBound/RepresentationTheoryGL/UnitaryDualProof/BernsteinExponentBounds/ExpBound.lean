@@ -21,7 +21,6 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ReverseOrderedP
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.StdQuotGenericOfStdSubGeneric
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnlinkedCommuteOfIrreducible
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.BernsteinZelevinskyGL.TopAdm
-import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZelevinskyJacquet.ZelevinskyCosocles.GKLocal
 
 noncomputable section
 

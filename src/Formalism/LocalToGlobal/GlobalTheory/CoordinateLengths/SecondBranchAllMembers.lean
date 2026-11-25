@@ -8,17 +8,11 @@ public import Formalism.LocalToGlobal.GlobalTheory.CoordinateLengths.SecondBranc
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocBases
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocGen
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PKerAtP
-public import Formalism.LocalToGlobal.HermitianForms.TiedStep
-public import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
-public import Formalism.LocalToGlobal.GlobalTheory.GL6.LatticeInclusionFamilyOf
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocInd
 public import Formalism.LocalToGlobal.GlobalTheory.CoordinateLengths.IntSpanLeRat
 public import Formalism.LocalToGlobal.GlobalTheory.CoordinateLengths.DuCount
-public import Formalism.SharpRestriction.GlobalSchurBounds.LemmaBSecondBranchOfLength
 public import Formalism.LocalToGlobal.GlobalTheory.CoordinateLengths.RatStab
 import Mathlib.Tactic.Linter.Style
-import Formalism.LocalToGlobal.UnitaryNorms.UnramT
-import Formalism.LocalToGlobal.GlobalTheory.GL6.CoordMapInjective
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.GlobalTheory.CoordinateLengths.ValuationDetBasisChangeZero, Formalism.LocalToGlobal.GlobalTheory.CoordinateLengths.SecondBranchCoordinatesOfSurjectivity, Formalism.LocalToGlobal.GlobalTheory.CoordinateLengths.MixedChange, Formalism.LocalToGlobal.GlobalTheory.CoordinateLengths.SecondBranchOfRationality, Formalism.LocalToGlobal.GlobalTheory.CoordinateLengths.SecondBranchAllMembers

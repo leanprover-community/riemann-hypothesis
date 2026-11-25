@@ -5,7 +5,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasu
 public import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.UnimodF
 public import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.RrdStronglyMeasurable
 import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.RrsSecondCountableAbs
-import Mathlib.Topology.Algebra.Group.Units
 import Formalism.SharpRestriction.CuspSpanNormBounds.PlaceDegreeData
 
 @[expose] public section

@@ -2,7 +2,6 @@ module
 
 public import Formalism.TorsionNormIteration.InvIntegralOfClass
 public import Mathlib.RingTheory.PowerSeries.Expand
-public import Formalism.FormalGroupLog.Statement
 public import Formalism.TorsionNormIteration.InverseIntegralClasses.InvInt
 public import Formalism.TorsionNormIteration.InverseIntegralClasses.MemSpanOfNormLe
 public import Formalism.TorsionNormIteration.InverseIntegralClasses.NormSigmaLeOne

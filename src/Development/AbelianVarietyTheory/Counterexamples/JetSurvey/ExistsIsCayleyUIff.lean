@@ -49,7 +49,6 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.BitVec
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Mathlib.Algebra.Star.UnitaryStarAlgAut
 
 @[expose] public section
 

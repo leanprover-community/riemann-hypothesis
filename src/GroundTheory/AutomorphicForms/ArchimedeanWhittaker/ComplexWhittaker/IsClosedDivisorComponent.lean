@@ -1,11 +1,7 @@
 module
 
 public import GroundTheory.AutomorphicForms.ArchimedeanWhittaker.ComplexWhittaker.InstMeasurableSpaceU2
-public import GroundTheory.AutomorphicForms.UnitaryRepresentations.IsInvariantIffCommuteStarProjection
-import GroundTheory.AutomorphicForms.RealGroupsIwasawa
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
-public import Mathlib.MeasureTheory.Function.L2Space
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

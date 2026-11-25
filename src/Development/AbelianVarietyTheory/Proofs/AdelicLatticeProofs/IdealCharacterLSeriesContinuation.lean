@@ -4,10 +4,8 @@ public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.MellinTransform
 public import Mathlib.NumberTheory.NumberField.CanonicalEmbedding.Basic
 public import Mathlib.Algebra.Module.ZLattice.Covolume
-public import Mathlib.Analysis.Calculus.ContDiff.Defs
 public import Mathlib.Analysis.Fourier.FourierTransform
 public import Formalism.LatticeTheta.ThetaShiftInversion
-public import Formalism.LatticeTheta.Statement
 public import Mathlib.Analysis.InnerProductSpace.EuclideanDist
 public import Mathlib.RingTheory.ClassGroup.Basic
 public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
@@ -61,8 +59,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-import Mathlib.Algebra.Module.ZLattice.Summable
-import Mathlib.Analysis.Distribution.SchwartzSpace.Fourier
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
@@ -71,7 +67,6 @@ import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Topology.Separation.CompletelyRegular
-import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Topology.Sheaves.Presheaf
 import Mathlib.Topology.UniformSpace.Uniformizable
 import Std.Tactic.BVDecide.Normalize.Prop

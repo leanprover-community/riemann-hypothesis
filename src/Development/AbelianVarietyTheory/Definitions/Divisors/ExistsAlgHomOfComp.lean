@@ -8,7 +8,6 @@ import Development.AbelianVarietyTheory.Proofs.GenericRegularity.LieBasisCoordin
 import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ModelChartLiftCoordsGeneratorIndep
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.NonemptyLift
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.LieBridgeG
 
 @[expose] public section
 

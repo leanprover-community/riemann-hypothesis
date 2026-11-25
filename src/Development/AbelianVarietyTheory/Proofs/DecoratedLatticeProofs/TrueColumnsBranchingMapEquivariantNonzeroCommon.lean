@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.RealOf
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.NonnegSubOfLt
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.StatementWithTransposeOfBranching
 public import Formalism.LocalToGlobal.Divisibility.BrJoint
-import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -47,7 +46,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.TensorMapDescent
 import Formalism.LocalToGlobal.Columns.PolyFnLemmas
 import Mathlib.RingTheory.Etale.Weakly

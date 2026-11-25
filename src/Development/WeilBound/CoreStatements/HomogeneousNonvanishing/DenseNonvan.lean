@@ -2,27 +2,16 @@ module
 
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsSncModel
 public import Development.WeilBound.CoreStatements.HomogeneousNonvanishing.ContinuousAtOfClosedRel
-public import Mathlib.Analysis.Calculus.ContDiff.Defs
-public import ReciprocityTheory.AnalyticForms.MaIntEmpty
 public import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 public import Mathlib.MeasureTheory.Integral.CurveIntegral.Poincare
 public import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.FDeriv.Mul
-public import Mathlib.Analysis.Calculus.FDeriv.RestrictScalars
-public import Mathlib.Analysis.RCLike.Extend
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsTwiceDifferentiableAt
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.IsFieldIntersection
 public import Development.WeilBound.CoreStatements.HomogeneousNonvanishing.IsOpenHoloPreimage
 public import Development.WeilBound.CoreStatements.HomogeneousNonvanishing.JPull
 public import Development.WeilBound.CoreStatements.HomogeneousNonvanishing.NonvanishingDense
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffAtOfIsPotential
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedB
 import Mathlib.Tactic.Linter.Style
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ConjugateHermitianLineIsometries
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MixedFieldContraction.GenericFibreKerTarget
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.RationalSections.IsRatSectionOn
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.HomogeneousNonvanishing.RHolmap, Development.WeilBound.CoreStatements.HomogeneousNonvanishing.CPluri, Development.WeilBound.CoreStatements.HomogeneousNonvanishing.RPluri, Development.WeilBound.CoreStatements.HomogeneousNonvanishing.DenseNonvan

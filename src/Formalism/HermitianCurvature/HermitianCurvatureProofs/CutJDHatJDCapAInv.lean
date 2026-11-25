@@ -1,10 +1,8 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJDHatJDCapAGrp
-public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CvRhoOfParts
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DetRowsZero
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RepIntCastMul
-import Formalism.FormalDegreeBessel.FinalG
 import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.BigCellZetaMinors
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BridgeQminor
@@ -15,11 +13,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdjointInverseTr
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdjointInverseTranslate.LyQminorLeft
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdjointInverseTranslate.OfFnProdIntertwine
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdjointInverseTranslate.OfFnProdSmul
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdjointInverseTranslate.SubsetUpperHessenberg
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.GeneratorCommutatorQuantumDet
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.QuantumDetHighestWeightHolds
-import Mathlib.Data.Fin.Tuple.Sort
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

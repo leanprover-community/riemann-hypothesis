@@ -6,10 +6,6 @@ public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.NormIteratedFDe
 public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.PPropertyF
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.GlueCharts
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.RegMaxReindex
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshExt
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshMoll
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshMollA
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshMollB
 import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.Objects
 
 @[expose] public section

@@ -10,13 +10,9 @@ public import Formalism.SharpRestriction.GrowthBounds.TwistedSubstitution.MemLin
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.LeCubeMul
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.ValuationOneEqZero
 public import Formalism.SharpRestriction.GrowthBounds.TwistedSubstitution.JointEIntList
-import Formalism.SharpRestriction.GrowthBounds.RootWeights.ValuationNonnegIffIntegral
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Std.Tactic.BVDecide.Normalize.Bool
-import Formalism.SharpRestriction.GrowthBounds.RootWeights.WeightConditionFromIntegralForm
 import Mathlib.Algebra.Order.Star.Rat
-import Formalism.SharpRestriction.GrowthBounds.RootWeights.DerivativeValuationBounds
-import Formalism.SharpRestriction.GrowthBounds.FlipOneThree
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.BinomCombFOnFinset, Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.PickVal, Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.PickCore, Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.SizeStepAlt, Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.FactorLeProductSeven, Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.VBBMonomialOne, Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.GramExponentArithmetic

@@ -1,15 +1,10 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.Foundations.Letter
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
 public import Mathlib.RingTheory.Flat.TorsionFree
 public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.RegularLocalRing.Defs
-public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
-public import Mathlib.RingTheory.SimpleRing.Principal
-public import Development.AbelianVarietyTheory.Definitions.Foundations.ExpUpper
-public import Mathlib.Algebra.CharP.Algebra
 public import Mathlib.RingTheory.Polynomial.Cyclotomic.Basic
 public import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.SlMulToRingEquiv
@@ -74,7 +69,6 @@ import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Topology.Compactification.OnePoint.ProjectiveLine
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsIsDiamondMatrixGamma1Gamma0OfCoprime, Development.AbelianVarietyTheory.Proofs.FoundationProofs.GalAlgClosureRatPrimitiveRootEqPow, Development.AbelianVarietyTheory.Proofs.FoundationProofs.GalBActDiagNatOneComm, Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExpUpperInt, Development.AbelianVarietyTheory.Proofs.FoundationProofs.GaloisActionUpperTriangularHeckeReindexOnB, Development.AbelianVarietyTheory.Proofs.FoundationProofs.HeckeOperatorCommGaloisActionModularTower

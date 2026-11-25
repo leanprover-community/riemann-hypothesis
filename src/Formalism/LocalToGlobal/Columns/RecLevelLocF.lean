@@ -1,11 +1,7 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.RecLevelLocT
-import Formalism.LocalToGlobal.Columns.AdelicLemmas
 public import Formalism.LocalToGlobal.Columns.RecLevelLocK
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

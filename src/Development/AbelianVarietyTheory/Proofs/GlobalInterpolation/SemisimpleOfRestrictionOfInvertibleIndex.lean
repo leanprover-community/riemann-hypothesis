@@ -1,7 +1,6 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ColRepSemisimple
-public import Mathlib.GroupTheory.Index
 
 @[expose] public section
 

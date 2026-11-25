@@ -5,16 +5,13 @@ public import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.PureIte
 public import Development.WeilBound.ThetaLifts.EigenvalueEndgame.EigenKilling.ConeIntegralFactorisation
 public import Development.WeilBound.ThetaLifts.LocalTheory.UnramifiedDeterminedBySpherical
 public import Development.WeilBound.ThetaLifts.ConeHypotheses.PureEqPureA
-public import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.ArchCone
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IdeleCongruenceUnitCriterion
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqOfComponentTensorAdelicFunctionEq
 public import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.FinStmt
 public import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.FubMain
 public import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.IdealId0
 public import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.KAtCompact
-public import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.ExtendByZeroOnSubsetApplyCoe
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ContinuousAtPlace

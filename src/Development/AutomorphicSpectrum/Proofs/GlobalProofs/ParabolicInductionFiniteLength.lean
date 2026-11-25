@@ -9,7 +9,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.Normalize
 public import GroundTheory.AutomorphicForms.FiniteLength
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import GroundTheory.LocalFields.PadicLogSeries
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.LeviBlocksParabolicInductionFiniteLength, Development.AutomorphicSpectrum.Proofs.GlobalProofs.ParabolicInductionFiniteLength

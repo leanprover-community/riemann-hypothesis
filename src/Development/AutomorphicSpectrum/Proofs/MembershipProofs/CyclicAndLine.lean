@@ -1,9 +1,6 @@
 module
 
 public import Development.AutomorphicSpectrum.Definitions.MembershipCriteria.GoodChar
-public import Development.AutomorphicSpectrum.Definitions.MembershipCriteria.LaEqSqrtSmulLam
-public import Mathlib.Algebra.Module.BigOperators
-public import Mathlib.LinearAlgebra.Finsupp.LinearCombination
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

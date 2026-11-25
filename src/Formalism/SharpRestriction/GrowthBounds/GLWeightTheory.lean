@@ -2,12 +2,8 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.EBeta
 public import Mathlib.LinearAlgebra.Matrix.Permutation
-public import Mathlib.Basic.PEquiv
-public import Mathlib.Data.Matrix.PEquiv
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.IsotypicProjectorFixedMem
-public import Mathlib.Algebra.Module.Lattice.Basic
 public import Lemmata.GeneralBFactLeftVersion.Imports
-public import Mathlib.Algebra.Module.Lattice.Full
 public import Formalism.SharpRestriction.GrowthBounds.CovariantDegrees
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.EnvelopingMonoidPreservesStable
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.IsotypicStableUnderOperators
@@ -26,7 +22,6 @@ public import Formalism.SharpRestriction.GrowthBounds.RootWeights.MahPadicGeOfDv
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.MemBoundedDegreeExponentsIff
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.WeightConditionFromIntegralForm
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.SharpRestriction.GrowthBounds.RootWeights.ExistsHighestWeightVectorFindim
 import Formalism.SharpRestriction.GrowthBounds.RootWeights.DvrFractionFieldCharZeroPrime
 import Formalism.SharpRestriction.GrowthBounds.RootWeights.GenericMatrixEvaluationDet
 import Mathlib.Tactic.Linter.HaveILetI

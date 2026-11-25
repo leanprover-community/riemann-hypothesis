@@ -6,10 +6,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArith
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsCurveClosedPointChart
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PClosedPointChart
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PClosedPointUnitSection
-import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.PCoordCurveAlgebraic
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.HeightsAndTheta.Heights.OrbitLimits.SegreChart, GroundTheory.HeightsAndTheta.Heights.OrbitLimits.PCurveClosedPointChart

@@ -3,7 +3,6 @@ module
 public import PositivityTheory.AutomorphicForms.PublishedInputs.CuspidalContinuity.ArchimedeanCuspidal.VerticalStrips.UnramifiedEulerProductIntegral
 public import GroundTheory.AutomorphicForms.GL2.GodementSectionLocal
 import GroundTheory.GlobalFields.CompletionAtPlace.Integers
-import GroundTheory.LocalFields.SeparableClosureValuation
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

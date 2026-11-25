@@ -1,14 +1,9 @@
 module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TwistedEisensteinCoset.JacobianTransformationLaw
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TwistedEisensteinCoset.Development
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TwistedEisensteinCoset.WeightedSumScaling
 public import Mathlib.CategoryTheory.Category.Basic
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TwistedEisensteinCoset.SumSliceEq
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TwistedEisensteinCoset.IaDivDown
-public import Mathlib.Algebra.BigOperators.Field
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TwistedEisensteinCoset.IntegralApproximationByInteger
-public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TwistedEisensteinCoset.IsUnitRedP
 public import Formalism.PeriodIntegrals.TwistedEisensteinNonvanishing
 public import Formalism.LocalToGlobal.Columns.ChainTwAux
 public import Formalism.LocalToGlobal.Columns.ChainTwFinal

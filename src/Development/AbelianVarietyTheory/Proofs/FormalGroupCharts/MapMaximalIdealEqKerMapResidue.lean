@@ -53,8 +53,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsWeaklyRegularIffIsQuasiRegularSeqOfIsLocalRing
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.MvPowerSeries.Equiv
 import Mathlib.Tactic.Linter.HaveILetI
 

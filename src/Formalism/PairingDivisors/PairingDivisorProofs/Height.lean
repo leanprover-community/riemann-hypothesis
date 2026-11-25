@@ -3,7 +3,6 @@ module
 public import Formalism.PairingDivisors.StatementH
 public import Formalism.PairingDivisors.PairingDivisorProofs.SumValuationNat
 import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ProdFormula
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ValBasic
 import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section

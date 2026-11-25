@@ -7,22 +7,14 @@ public import ReciprocityTheory.DualLattices.CokernelLengthComparisonOf
 public import ReciprocityTheory.DualLattices.SmallLevelClassSet
 public import ReciprocityTheory.DualLattices.InvolutionPermApplyZero
 public import ReciprocityTheory.DualLattices.EigenQuotientSmithStatement
-public import ReciprocityTheory.DualLattices.BlockOneMulMulBlockOne
-public import ReciprocityTheory.DualLattices.MatEquivApply
 public import ReciprocityTheory.DualLattices.PowMemCarrier
 public import ReciprocityTheory.DualLattices.SumValCoord
 public import ReciprocityTheory.DualLattices.VDetEqOneOfIntegral
-public import Mathlib.RingTheory.LocalRing.Module
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Lemma
-import ReciprocityTheory.DualLattices.StdJForm
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.TotallySplit
-import ReciprocityTheory.DualLattices.ProdDvdOfIso
-import ReciprocityTheory.DualLattices.ThmAUses
-import ReciprocityTheory.DualLattices.UnramifiedCokernelLowerBoundOf
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.DualLattices.BasechangeProjectorIdempotentAction, ReciprocityTheory.DualLattices.RestrictHopfOrderLength, ReciprocityTheory.DualLattices.StdJForm4, ReciprocityTheory.DualLattices.SmithNormalFormStatement, ReciprocityTheory.DualLattices.WdetDegreeOfSmithRestrict, ReciprocityTheory.DualLattices.LengthDegreeOfFrobenius

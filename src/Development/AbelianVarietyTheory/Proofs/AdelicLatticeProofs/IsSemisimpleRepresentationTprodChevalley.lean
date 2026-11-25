@@ -6,17 +6,11 @@ public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.Normed.Unbundled.RingSeminorm
 public import Mathlib.LinearAlgebra.Matrix.AbsoluteValue
 public import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.AdelicPair
-public import Mathlib.Analysis.Normed.Ring.Basic
 public import Mathlib.Topology.Instances.Matrix
 public import Mathlib.Analysis.CStarAlgebra.Matrix
-public import Mathlib.Analysis.Complex.Basic
 public import Mathlib.CategoryTheory.Category.Basic
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsIsHermitianLogOfPosDefGram
-public import Mathlib.Analysis.SpecialFunctions.Log.Basic
 public import Mathlib.LinearAlgebra.Lagrange
-public import Mathlib.LinearAlgebra.Matrix.Hermitian
-public import Mathlib.Analysis.Matrix.Spectrum
-public import Mathlib.Algebra.BigOperators.Field
 public import Mathlib.Basic.Complex.Basic
 public import Mathlib.RepresentationTheory.Irreducible
 public import Mathlib.RepresentationTheory.Semisimple

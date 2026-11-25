@@ -5,20 +5,13 @@ public import Mathlib.Data.Nat.GCD.Prime
 public import Mathlib.Algebra.AffineMonoid.Basic
 public import Mathlib.NumberTheory.NumberField.Cyclotomic.Basic
 public import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.InertiaRamification.BridgeDefs
-public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
-public import Mathlib.LinearAlgebra.Matrix.Charpoly.Minpoly
-public import Mathlib.NumberTheory.NumberField.Norm
 public import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.InertiaRamification.FieldDefs
-public import Mathlib.NumberTheory.NumberField.Discriminant.Basic
 public import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.InertiaRamification.CycInertia
 import Mathlib.Tactic.Lemma
-import Mathlib.NumberTheory.MulChar.Duality
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.NumberTheory.DirichletCharacter.Basic
 import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 import Mathlib.Tactic.Linter.HaveILetI

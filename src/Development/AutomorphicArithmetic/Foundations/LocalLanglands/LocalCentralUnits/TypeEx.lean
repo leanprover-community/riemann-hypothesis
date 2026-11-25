@@ -16,8 +16,6 @@ public import Development.WeilBound.RepresentationTheoryGL.GaloisPermutationReps
 public import Development.DiscreteGroups.GlobalIrreducibility.DzIsoRes
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CentralIdempotentsSimpleFDRepFiniteFinsumEqOne
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SubsingletonJacquetOfPerm
-import Development.DiscreteGroups.GlobalIrreducibility.ExistsOfMemKOne
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

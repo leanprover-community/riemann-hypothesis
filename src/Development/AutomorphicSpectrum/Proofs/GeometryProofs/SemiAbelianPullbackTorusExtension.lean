@@ -8,17 +8,11 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CharValMulti
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.KillsOverOfAdicCompletion
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.KillsOverSquareZeroLift
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorusKernelPrimeQuotient
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsCocharLieLieModel
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsCocharacterLieModel
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelExistsUniqueSemilinear
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
-public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFiniteProjective
-public import Mathlib.RingTheory.DedekindDomain.Basic
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsUniqueHomExtensionSemiAbelian
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsExcisionNbhdAway
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFunctorialMap
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelPullbackEquivalence
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SemiabelianHomLieExtends
@@ -28,10 +22,7 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelIsBa
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorusExtensionTangentExact
 public import Mathlib.NumberTheory.NumberField.Basic
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelPullbackCorrespondence
-import Mathlib.Tactic.Linter.HaveILetI
-import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.HomBaseChangeBijectiveOfLeNilradical
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.BCTools
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.SabPull
 
 -- This file was produced by scripts/clump.py from the modules listed below.

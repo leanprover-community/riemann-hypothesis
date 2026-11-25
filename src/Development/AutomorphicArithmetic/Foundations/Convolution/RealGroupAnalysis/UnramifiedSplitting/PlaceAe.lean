@@ -4,7 +4,6 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGrou
 import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsTwoPlacesOverOfIsSquareLocal
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IsSquareOneAddFourMul
 public import Development.AutomorphicArithmetic.Foundations.Convolution.RealGroupAnalysis.UnramifiedSplitting.SgLaws
-import GroundTheory.GlobalFields.CompletionAtPlace.Integers
 import GroundTheory.GlobalFields.SemilocalAlgebras.LocalDegree
 import Mathlib.Tactic.Linter.HaveILetI
 

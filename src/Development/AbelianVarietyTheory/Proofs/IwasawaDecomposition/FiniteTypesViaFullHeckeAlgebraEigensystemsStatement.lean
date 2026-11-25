@@ -46,7 +46,6 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Formalism.LocalToGlobal.IndefiniteReal.FinrankISupLeSum
 import Mathlib.Tactic.Basify
 import Std.Tactic.BVDecide.Normalize.Prop
 

@@ -17,9 +17,7 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.Commutative
 import Mathlib.Tactic.NormNum.LegendreSymbol
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.RingTheory.AdicCompletion.Noetherian
 import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebraHeight.IsLocalHom
-import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.PairedDualFirstOrderDualMatrixSpace
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -6,8 +6,6 @@ public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.CaCotExtend
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.CaCotOfSpan
 public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
-public import Mathlib.RingTheory.Ideal.GoingDown
-public import Mathlib.RingTheory.Ideal.Height
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.DetLocus
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.CaCotQuot
 import Mathlib.Tactic.Linter.HaveILetI

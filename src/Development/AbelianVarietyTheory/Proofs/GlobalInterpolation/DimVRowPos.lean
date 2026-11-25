@@ -10,10 +10,7 @@ public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ScaleP
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.HostCmData
 public import Formalism.GL3MeanSquares.HookFormulaTorsion.DimensionMassJointBound
 import Formalism.LocalRingCardinality.HostCls
-import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
-import Formalism.LogVandermondeBounds.LogVandermondeProofs.CardStabilizerVector
 public import Formalism.SharpRestriction.GlobalSchurBounds.ThickPlacesCorollaryOfAnyTranslate
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -53,7 +50,6 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.SetUnipotentTranslate
-public import Formalism.HermitianLattices.HermitianLatticesProofs.MassTelescope
 import Formalism.LocalToGlobal.GlobalTheory.IsResidueClassZero
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsExplicitParameters
 

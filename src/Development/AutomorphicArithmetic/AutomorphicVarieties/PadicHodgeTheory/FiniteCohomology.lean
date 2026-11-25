@@ -2,8 +2,6 @@ module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLocalPrimeAinf
-public import Mathlib.NumberTheory.Cyclotomic.CyclotomicCharacter
-public import ReciprocityTheory.GaloisValuations.SeparatedDvrSecondCohomologyMem
 
 @[expose] public section
 

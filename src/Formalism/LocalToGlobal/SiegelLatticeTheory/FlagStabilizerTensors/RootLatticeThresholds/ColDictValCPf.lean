@@ -2,7 +2,6 @@ module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CayleyIrreducibility.DivClosedOf
 public import Mathlib.Algebra.MvPolynomial.Funext
-public import Mathlib.LinearAlgebra.Matrix.SchurComplement
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LHwrowLemmas
 public import Mathlib.Tactic.Monotonicity.Lemmas
 public import Mathlib.Topology.Sheaves.Presheaf
@@ -15,8 +14,6 @@ import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Tactic.Lemma
 import Formalism.LocalRingCardinality.Params
 import Mathlib.Tactic.TypeStar
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.RowDivStable
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.SumIcoTsubTelescope
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CayleyIrreducibility.CayleyIsometry, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CayleyIrreducibility.DivisorClosedHolds, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CayleyIrreducibility.HighExistenceHolds, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CayleyIrreducibility.HighestWeightVectorUnique, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CayleyIrreducibility.IsUnitDetOfUnitary, Formalism.LocalToGlobal.SiegelLatticeTheory.FlagStabilizerTensors.RootLatticeThresholds.ColDictValCPf

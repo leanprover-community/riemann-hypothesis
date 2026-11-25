@@ -6,7 +6,6 @@ public import Formalism.LandauZeroFreeBounds.LogDerivRegionChiOf
 public import Formalism.LFunctionBounds.LFunctionBoundsProofs.RectResidue
 public import Mathlib.NumberTheory.LSeries.Nonvanishing
 import Mathlib.Tactic.Lemma
-public import Formalism.LFunctionBounds.ExpSumLowerBound
 
 @[expose] public section
 

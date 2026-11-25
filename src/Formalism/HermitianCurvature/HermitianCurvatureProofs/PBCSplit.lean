@@ -1,8 +1,6 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBCLim
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Matrix.PosDef
 import Mathlib.Tactic.Lemma
 
 @[expose] public section

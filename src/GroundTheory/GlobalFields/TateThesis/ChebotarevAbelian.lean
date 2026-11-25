@@ -4,24 +4,17 @@ public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms
 public import GroundTheory.GlobalFields.TateThesis.HeckeLFunction
 public import GroundTheory.GlobalFields.TateThesis.HeckeTheorem
 public import GroundTheory.GlobalFields.TateThesis.Nonvanishing
-public import GroundTheory.GlobalFields.TateThesis.NonvanishingPrimes
 public import Mathlib.Analysis.Complex.CoveringMap
 public import Mathlib.Analysis.Fourier.FiniteAbelian.Orthogonality
 public import Mathlib.NumberTheory.NumberField.DirichletDensity
 public import GroundTheory.GlobalFields.TateThesis.DegreeOneDensity
 public import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
-public import GroundTheory.GlobalFields.LocalFieldAtPlace
-public import GroundTheory.GlobalFields.SemilocalAlgebras.Galois
 public import GroundTheory.LocalFields.UnitsBasic
-public import Mathlib.FieldTheory.Galois.IsGaloisGroup
 public import Mathlib.RingTheory.Frobenius
 public import GroundTheory.GlobalFields.GlobalReciprocity.Frobenius
 public import GroundTheory.GlobalFields.GlobalReciprocity.General
-public import GroundTheory.GlobalFields.TateThesis.HeckeChar
-import Mathlib.Analysis.SpecialFunctions.Log.Summable
 import Mathlib.Tactic.TypeStar
 import Batteries.Tactic.OpenPrivate
-import GroundTheory.GlobalFields.TateThesis.PrimeZetaPole
 import GroundTheory.GlobalFields.NormResidueSymbol.Surjective
 import Mathlib.Algebra.Order.Star.Int
 

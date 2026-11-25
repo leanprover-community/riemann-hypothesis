@@ -7,7 +7,6 @@ public import GroundTheory.PAdicHodge.BdRInvariants
 public import GroundTheory.PAdicHodge.UnramifiedClosure
 import GroundTheory.PAdicHodge.ACrisBdRInj
 public import GroundTheory.PAdicHodge.BCrisPlusInvariants
-import GroundTheory.PAdicHodge.ThetaBDeRhamPlusFieldCycloUnitBdRZpow
 
 @[expose] public section
 

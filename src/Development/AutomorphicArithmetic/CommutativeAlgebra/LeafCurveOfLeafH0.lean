@@ -9,7 +9,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsMayerV
 public import Development.EtaleCohomology.EtaleTrace.LocalSplitting.Cover2
 public import Development.AutomorphicArithmetic.CommutativeAlgebra.IsDedekindDomainAffineSectionsOfIsCurve
 public import Development.EtaleCohomology.EtaleSheaves.LeafAffCoverVanishPfEmpty
-import Development.AbelianVarietyTheory.Definitions.Divisors.GalMapMul
 import Development.EtaleCohomology.EtaleTrace.LDblPf
 import Mathlib.Tactic.Linter.HaveILetI
 

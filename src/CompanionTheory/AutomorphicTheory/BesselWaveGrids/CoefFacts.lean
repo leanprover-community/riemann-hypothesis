@@ -5,9 +5,6 @@ public import Mathlib.Tactic.ToAdditive
 public import Mathlib.Analysis.Matrix.Normed
 public import CompanionTheory.AutomorphicTheory.SchurLimitBounds.ZuckermanDuality.Assemble
 public import Formalism.HermitianCurvature.StatementJF
-import Formalism.FormalDegreeBessel.StatementWR
-import Formalism.HermitianCurvature.StatementI
-import Formalism.RealPlaceAnalysis.StatementA
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.LevelFormSesquilinearFiniteClass
 import Mathlib.Algebra.Order.Star.Real
 

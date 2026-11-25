@@ -3,11 +3,7 @@ module
 public import Formalism.LocalToGlobal.Columns.ChainTopLawTw
 public import Formalism.LocalToGlobal.Columns.XtPhiTopGCongr
 public import Formalism.LocalToGlobal.Columns.BlockTriangularMulVecMemPartialFlag
-import Formalism.LocalToGlobal.Columns.ChainInst
 public import Formalism.LocalToGlobal.Columns.ChainTopLaw
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.MemGoodPrimesOfNoExceptional
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PenultimateKernelDiamondInvariant
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

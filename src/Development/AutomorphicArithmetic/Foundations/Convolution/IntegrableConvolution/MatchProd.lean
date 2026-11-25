@@ -11,7 +11,6 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.Integrab
 import Development.AbelianVarietyTheory.Definitions.Divisors.LineOppositeParabolicUnitaryLeviSectionEq
 import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
 import GroundTheory.GlobalFields.LocalAtPlace
-import GroundTheory.LocalFields.LocalFourierHaar
 import Std.Tactic.BVDecide.Normalize.Prop
 import GroundTheory.AutomorphicForms.WhittakerGroups
 import Mathlib.Tactic.Linter.HaveILetI

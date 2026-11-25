@@ -7,7 +7,6 @@ public import GroundTheory.AutomorphicForms.GL2.GJGlobalDefs
 public import GroundTheory.AutomorphicForms.GL2.GJStandardLFourier
 public import GroundTheory.AutomorphicForms.SmoothRepContragredient
 public import Formalism.DoubleCosetMeasures.Statement
-import GroundTheory.AutomorphicForms.GL2.GJFEInducedLevi
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

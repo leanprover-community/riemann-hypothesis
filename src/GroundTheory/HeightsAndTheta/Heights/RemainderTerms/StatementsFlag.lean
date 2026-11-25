@@ -4,7 +4,6 @@ public import Lean.Meta.Basic
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.Statements
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PowerSums
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.FlagBasic
-import Mathlib.Algebra.CharP.Algebra
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsFlag

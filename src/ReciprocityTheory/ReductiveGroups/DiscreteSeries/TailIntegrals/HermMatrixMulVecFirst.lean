@@ -3,7 +3,6 @@ module
 public import Formalism.FormalDegreeBessel.StatementRP
 import Formalism.HermitianCurvature.StatementB
 import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
-public import Mathlib.LinearAlgebra.Matrix.SchurComplement
 
 @[expose] public section
 

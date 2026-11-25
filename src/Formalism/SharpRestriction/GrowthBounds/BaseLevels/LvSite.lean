@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.GrowthBounds.BaseLevels.LevelsGEmpty
 public import Formalism.SharpRestriction.GrowthBounds.ChartComparison
 public import Formalism.SharpRestriction.GrowthBounds.TwistedLevelAgreement.StepInTwK
-import Formalism.LocalToGlobal.GroupLattices.LevelCharts.LevelWithoutExtraPlaces
 import Formalism.SharpRestriction.GrowthBounds.ChartedClasses.OrbitOfPts
 
 @[expose] public section

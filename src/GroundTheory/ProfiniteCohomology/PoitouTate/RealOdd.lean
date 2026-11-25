@@ -5,7 +5,6 @@ public import GroundTheory.ProfiniteCohomology.PoincareDuality.Torsion
 public import GroundTheory.ProfiniteCohomology.PoitouTate.BrauerInvZOfIsSepClosureCohomologyULiftIntAddEqu
 public import GroundTheory.ProfiniteCohomology.RealPlaces.GSDefs
 public import GroundTheory.ProfiniteCohomology.RealPlaces.LocalCohomologyIsoHomologyMapNormCochains
-public import GroundTheory.ProfiniteCohomology.RealPlaces.LocalDualityDefs
 public import GroundTheory.ProfiniteCohomology.PoitouTate.RealDefs
 public import GroundTheory.ProfiniteCohomology.RealPlaces.LocalDualityPlace
 public import GroundTheory.ProfiniteCohomology.PoitouTate.Deduction
@@ -15,18 +14,10 @@ public import GroundTheory.ProfiniteCohomology.RealPlaces.InducedDefs
 public import GroundTheory.ProfiniteCohomology.PoitouTate.PoitouTateNineTermGs
 public import GroundTheory.ProfiniteCohomology.PoitouTate.RealCup
 public import GroundTheory.ProfiniteCohomology.RealPlaces.InducedDropOut
-import GroundTheory.ProfiniteCohomology.GaloisCohomology.Kummer
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
-import GroundTheory.ProfiniteCohomology.FilteredHomology
-import GroundTheory.ProfiniteCohomology.LocalTateDuality.TensorHomDualRepRootsOfUnityIsoCartierPairing
 import GroundTheory.ProfiniteCohomology.CohomologicalDimension.SubsingletonCohomologyOfPrimaryOfFinite
 import GroundTheory.ProfiniteCohomology.Colimit
 import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.H0IsoHomCohomologyClassZero
-import GroundTheory.ProfiniteCohomology.RealPlaces.OrderTwo
-import GroundTheory.ProfiniteCohomology.RestrictedRamification.Finite
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.ProfiniteCohomology.RealPlaces.LocalDualityCup, GroundTheory.ProfiniteCohomology.RealPlaces.LocalDuality, GroundTheory.ProfiniteCohomology.PoitouTate.RealLocal, GroundTheory.ProfiniteCohomology.PoitouTate.RealOdd

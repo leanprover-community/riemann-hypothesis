@@ -5,9 +5,7 @@ public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseDefs
 public import Mathlib.RingTheory.PicardGroup
 public import ReciprocityTheory.Hypotheses.GalCoh
 public import GroundTheory.ProfiniteCohomology.CartierDual
-import GroundTheory.ProfiniteCohomology.RestrictedRamification.SUnits
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

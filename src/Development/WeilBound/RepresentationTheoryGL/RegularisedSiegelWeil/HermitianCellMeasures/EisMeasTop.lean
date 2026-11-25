@@ -15,7 +15,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Schwartz
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermitianMeasureConjugation
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AddHaarCharLeftRightMatrixMulAdeleTensor
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MulVecCEApply
-public import Mathlib.MeasureTheory.Measure.Haar.MulEquivHaarChar
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousHermPart
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IdelesCompactOfLocalBounds
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.UnitIdelesOpen
@@ -35,10 +34,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AddEquivAddHaarCharProdCongr
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsRestrictScalarsMatrixLeftRightMulAdeleTens
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WhitKA
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsTopologicalRingAE
-import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemElt
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.ContinuousOfHeisenbergLevelAndSmooth
-import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.GinfCSecondCountable
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IntOffOfSmul, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousMulLeftFin, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousSmulH, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermScaleMain, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MapEqOne, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MeasurableSetBox, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MeasurableRight, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ContinuousIpFst, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TestAlg, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OrbEx, Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TopX, Development.WeilBound.RepresentationTheoryGL.RegularisedSiegelWeil.HermitianCellMeasures.EisMeasTop

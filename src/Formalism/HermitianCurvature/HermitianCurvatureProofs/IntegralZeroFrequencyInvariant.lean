@@ -3,7 +3,6 @@ module
 public import Formalism.HermitianCurvature.StatementB
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.SimpleRing.Principal
 public import Mathlib.Analysis.Calculus.Deriv.Mul

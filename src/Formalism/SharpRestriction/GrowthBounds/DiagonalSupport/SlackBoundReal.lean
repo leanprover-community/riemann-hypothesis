@@ -4,7 +4,6 @@ public import Formalism.SharpRestriction.GrowthBounds.TwistedSubstitution.PlaneC
 import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.IsMultiHom
 import Formalism.SharpRestriction.GrowthBounds.PathWeight.GeneratorImageIsSymbol
 import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.DvdOfAdd
-import Formalism.SharpRestriction.GrowthBounds.WittFrameLocaliserOrders
 
 @[expose] public section
 

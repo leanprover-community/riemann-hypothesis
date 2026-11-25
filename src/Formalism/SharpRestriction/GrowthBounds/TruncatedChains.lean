@@ -3,17 +3,12 @@ module
 public import Formalism.SharpRestriction.GrowthBounds.TruncatedChains.RestPair
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.FiltrationAdjointStable
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.MemWeightSpaceIffDiagonalEigen
-public import Formalism.SharpRestriction.GrowthBounds.RootWeights.NontrivialIsotypicWeightZeroKilled
 public import Formalism.SharpRestriction.GrowthBounds.TruncatedChains.PfTrunc
-public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.SharpRestriction.GrowthBounds.TruncatedChains.RestTruncOfNil
 public import Formalism.SharpRestriction.GrowthBounds.TruncatedChains.CnNOOfNormal
-public import Formalism.SharpRestriction.GrowthBounds.TruncatedChains.CnStepsTail
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Tactic.TypeStar
-import Formalism.SharpRestriction.GrowthBounds.CovariantDegrees
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Lemma
 
 -- This file was produced by scripts/clump.py from the modules listed below.

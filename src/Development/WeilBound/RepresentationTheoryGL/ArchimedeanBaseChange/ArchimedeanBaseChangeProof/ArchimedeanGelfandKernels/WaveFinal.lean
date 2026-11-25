@@ -17,7 +17,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LengthFu
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RightDerivativeCalculusHolds
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WaveKernelExistence
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WaveKernelUniqueness
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.WaveSolutionExistence
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ArchimedeanGelfandKernels.FriedrichsKernels.AsmKerOne
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop

@@ -4,7 +4,6 @@ public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.SharpRestriction.GrowthBounds.ObjSeg
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.MapFloorMono
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.DivDerZero
-public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.CthMonomial
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.BlockWithThresholds, Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.LettersAtUpdate, Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.ChainEmbInj

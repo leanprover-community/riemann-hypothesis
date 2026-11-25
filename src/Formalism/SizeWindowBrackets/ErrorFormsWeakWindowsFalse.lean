@@ -4,7 +4,6 @@ public import Formalism.RankGapBounds.MeanBoundSecondForm
 import Formalism.SizeWindowBrackets.FirstPrimeNeSecondPrime
 import Formalism.SizeWindowBrackets.GrowthBoundGivesRiemannHypothesis
 import Formalism.SizeWindowBrackets.QuotientSlopeBoundsWith
-import Formalism.ThickAverageLoss.PartnersToFactorsAt
 
 @[expose] public section
 

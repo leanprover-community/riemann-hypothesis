@@ -1,7 +1,6 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.DefsRep
-public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.MeasureTheory.Measure.Haar.Basic
 public import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Tactic.Lemma

@@ -8,7 +8,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVa
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.ExistsStrictHenselianAbsolutelyClosedLocalRing
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.PsiBar
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.IneLeFixingSubgroup
-import Mathlib.RingTheory.Valuation.LocalSubring
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 

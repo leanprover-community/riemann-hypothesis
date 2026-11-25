@@ -8,17 +8,13 @@ public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.ConjReal
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Galois
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.RealCyclotomicSubfield
 public import Formalism.FrobeniusOrbits.RealSubfieldLeCompositum
-public import Mathlib.RingTheory.DedekindDomain.Different
-public import Mathlib.NumberTheory.NumberField.Cyclotomic.Basic
 public import Formalism.FrobeniusOrbits.HostDiffSupport
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Inertia
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.MuCardLeTwo
 public import Formalism.GL3MeanSquares.HookFormulaTorsion.DifferentIdealConditions
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ArtinMapSecondEqJacobiSym
-public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Decomp
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.NcardEqTwoIff
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.OrdUnimod
-public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Principal
 public import Formalism.FrobeniusOrbits.HostCorollaries
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.ArtinMapSecondEqJacobiSymOfModEq
 public import Formalism.LocalRingCardinality.DataHost
@@ -43,7 +39,6 @@ import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.NumberField.Discriminant.Different
 import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.Radical.NatInt
@@ -77,15 +72,9 @@ import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Algebra.AffineMonoid.Basic
 import Mathlib.Algebra.Order.Star.Rat
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.TypeStar
-import Formalism.TameInertiaTowers.CentralOrderTwo.OddEqOneOfSubOneMem
-import Mathlib.RingTheory.Ideal.Int
-import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.CoprimeTwoPow
-import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.SplitK
-import Formalism.TameInertiaTowers.CentralOrderTwo.Galois
 import Mathlib.Algebra.Order.Star.Real
 
 -- This file was produced by scripts/clump.py from the modules listed below.

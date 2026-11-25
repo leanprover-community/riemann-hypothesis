@@ -6,13 +6,8 @@ public import Mathlib.Order.CompletePartialOrder
 public import Mathlib.RingTheory.Derivation.Basic
 public import Mathlib.LinearAlgebra.Eigenspace.Semisimple
 public import Mathlib.FieldTheory.Finite.GaloisField
-public import Mathlib.LinearAlgebra.Dimension.Finrank
-public import Mathlib.RingTheory.Finiteness.Defs
 public import Mathlib.Data.Nat.Prime.Factorial
-public import Mathlib.LinearAlgebra.Dimension.Constructions
-public import Mathlib.Algebra.CharP.Defs
 public import Mathlib.RingTheory.HopfAlgebra.Basic
-public import Mathlib.Data.Nat.Choose.Sum
 public import Mathlib.LinearAlgebra.Dual.Lemmas
 public import Mathlib.GroupTheory.CosetCover
 public import Development.AbelianVarietyTheory.Definitions.ShimuraVarieties.MemPrimitiveTensorsIffIsPrimitiveElem

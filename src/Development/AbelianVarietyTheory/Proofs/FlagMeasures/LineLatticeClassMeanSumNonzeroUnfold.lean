@@ -2,15 +2,9 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.DefClassNum
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.GlVolEqTsumSlabVol
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CovolEqOfAedisjoint
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.TranslatedLatticeAtInfinityFullCovolumeDual
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MeasurePreservingOfBall
-public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsLatMeasurableConst
-public import Mathlib.Analysis.Calculus.Deriv.Basic
-public import Mathlib.Analysis.Calculus.Deriv.Inv
-public import Mathlib.Analysis.Calculus.Deriv.Mul
-public import Mathlib.MeasureTheory.Function.JacobianOneDim
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsCoordinatesInverseFirstColumnInfiniteGL
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ExistsScalarStableLatticeAutomorphismFundamental
 public import Mathlib.Algebra.Module.Lattice.Full
@@ -22,7 +16,6 @@ public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.ExistsIsFun
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.ImportsLast
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MeasurableSetDetNormPos
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MeasurableTranslatedLatticeFunctions
-public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MeasurePreservingMulLeft
 public import Mathlib.Algebra.BigOperators.Ring.Nat
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

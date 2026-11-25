@@ -5,7 +5,6 @@ import GroundTheory.ProfiniteCohomology.CupProducts.Projection
 public import GroundTheory.ProfiniteCohomology.EulerChar
 public import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.DefsForms
 public import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.RealHerbrand
-import GroundTheory.ProfiniteCohomology.RestrictedRamification.Finite
 
 @[expose] public section
 

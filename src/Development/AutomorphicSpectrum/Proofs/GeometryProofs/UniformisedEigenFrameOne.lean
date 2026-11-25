@@ -1,11 +1,7 @@
 module
 
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsConstMul
-public import Mathlib.Data.Matrix.ColumnRowPartitioned
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ThetaUnifAV
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HermitianPeriodLinearAlgebra
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeGram
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PeriodEigenFrame
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.PeriodHermitianTypeCompatibility
 import Mathlib.Tactic.Linter.Style

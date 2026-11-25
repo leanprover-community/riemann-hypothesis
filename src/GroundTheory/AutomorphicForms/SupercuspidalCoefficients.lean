@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.AutomorphicForms.CuspidalAdmissible
-public import GroundTheory.AutomorphicForms.InductionParabolic
 import GroundTheory.AutomorphicForms.GLnLattice
 public import GroundTheory.AutomorphicForms.SmoothRepContragredient
 import Mathlib.Algebra.Order.Star.Int

@@ -2,9 +2,6 @@ module
 
 public import Development.AutomorphicArithmetic.Foundations.Convolution.LocalGroupAnalysis.SelmerRankBoundLaurent
 public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.SelmerRankBounds.EllipticityFromProductFormula
-public import Development.AutomorphicArithmetic.Foundations.Convolution.LocalGroupAnalysis.SplitEquiv
-public import Mathlib.MeasureTheory.Measure.Haar.Unique
-public import Mathlib.MeasureTheory.Constructions.Pi
 public import Development.AutomorphicArithmetic.Foundations.Convolution.LocalGroupAnalysis.NormEx
 public import Development.AutomorphicArithmetic.Foundations.Convolution.LocalGroupAnalysis.QuotEq
 public import Development.AutomorphicArithmetic.AdelicQuotients.AdeleBaseChangeLocalIsClosedEmbedding
@@ -22,7 +19,6 @@ import Mathlib.Tactic.Linter.Style
 import GroundTheory.AutomorphicForms.MeasuresModulus
 import GroundTheory.GlobalFields.Adele.Topology
 import GroundTheory.GlobalFields.LocalAtPlace
-import GroundTheory.AutomorphicForms.ReductionFinite
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -6,7 +6,6 @@ public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClas
 public import Formalism.SharpRestriction.GenusPolyhedralBounds.RelativeIndexClassSets.TheoremZeroOfReducedInputs
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.SupBoundPageRows
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ThExprUniqOfChartIndep2
-public import Formalism.LocalToGlobal.ProjectiveLattices.RecPJThAllNeBot
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ExistsShortFiniteGeneratorsThetaLattice
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.LogLeOfLePowMulPow
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.PageRowsOfLe
@@ -14,8 +13,6 @@ public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.PageTw
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ScaledFamily
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ThetaLatticeWeightScalarNeZeroAndLogBounds
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.WeightsBelow
-import Formalism.SharpRestriction.Divisibility.WeightAlgebra
-import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.SupBoundsLeGeneratorConstantMulSize
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

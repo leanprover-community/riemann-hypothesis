@@ -3,11 +3,6 @@ module
 public import Formalism.IncomingBounds.StatementThmP
 public import Mathlib.Algebra.MvPolynomial.PDeriv
 public import Mathlib.LinearAlgebra.Matrix.Adjugate
-public import Formalism.IncomingBounds.IncomingBound
-public import Mathlib.Algebra.BigOperators.Group.Finset.Sigma
-public import Mathlib.Algebra.BigOperators.Ring.Finset
-public import Mathlib.Algebra.Order.BigOperators.Group.Finset
-public import Mathlib.Data.ZMod.Basic
 public import Formalism.IncomingBounds.FlowDegreeBounds.MaxFlowValueAttained
 import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.ProdIccMulFactorial
 import Std.Tactic.BVDecide.Normalize.Prop

@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfDict
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.DvdCondition
 public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.GradNPfB
-import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.GradNPfC
 
 @[expose] public section
 

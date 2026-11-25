@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.PAdicHodge.AInfXi
-public import Mathlib.RingTheory.AdicCompletion.Basic
 public import GroundTheory.PAdicHodge.FactorizationFactorialLe
 public import GroundTheory.PAdicHodge.ACrisFrobFixed
 public import GroundTheory.PAdicHodge.ACrisBdRGalois

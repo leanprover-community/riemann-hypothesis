@@ -2,7 +2,6 @@ module
 
 import Formalism.SharpRestriction.CuspSpanNormBounds.StandingHypothesesHoldFamily
 public import Formalism.SharpRestriction.LevelLetterCocycles.MemPrimesOverOfMem
-import Development.AutomorphicArithmetic.ResidueCharacters.SumLogDivSqModPmOneLe
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
 import Mathlib.Tactic.Linter.Style
 

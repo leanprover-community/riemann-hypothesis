@@ -2,20 +2,10 @@ module
 
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ContDiffAtFrameEntry
 public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
-public import Mathlib.MeasureTheory.Integral.Bochner.Basic
-public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.LintegralImageEqLintegralNormSqDetMul
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Calculus.ContDiff.Defs
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.LinearAlgebra.Matrix.PosDef
 public import Development.WeilBound.CoreStatements.PluriharmonicCharts.TripleDeriv
-public import Mathlib.Analysis.Matrix.Order
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.InFlagDomainOne
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsHolomorphicNormalFrame
-public import Mathlib.RingTheory.Complex
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.AnalyticAtMobiusDetJacobianEq
-public import Mathlib.Analysis.Calculus.Deriv.Prod
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.StatementsFibreLocal
 public import ReciprocityTheory.AnalyticForms.MaIntEmpty
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogSineMongeAmpereNormalized

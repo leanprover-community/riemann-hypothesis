@@ -5,14 +5,7 @@ public import ReciprocityTheory.L2DbarEstimates.LeviForms.LogNormSq
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.ChartSymmEventuallyEq
 public import ReciprocityTheory.L2DbarEstimates.SkodaWeights.Matrix
 public import ReciprocityTheory.L2DbarEstimates.IsLocalHomeomorph
-public import Mathlib.Analysis.InnerProductSpace.Calculus
 public import ReciprocityTheory.L2DbarEstimates.LeviForms.EventuallyDifferentiableAtOfContDiffAt
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.Analysis.Calculus.Deriv.Inv
-public import Mathlib.Analysis.Calculus.FDeriv.Mul
-public import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 
 @[expose] public section
 

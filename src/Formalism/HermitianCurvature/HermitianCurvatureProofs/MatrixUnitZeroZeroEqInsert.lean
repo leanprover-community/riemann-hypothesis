@@ -6,7 +6,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.LiftMatrixTr
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.FreeOf2RmatrixTranspose
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PairOperatorCommute
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.PositionInsertionDiagonalCompat
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.ScalarCommuteTransposedRMatrixEntry
 import Mathlib.RingTheory.PiTensorProduct
 
 @[expose] public section

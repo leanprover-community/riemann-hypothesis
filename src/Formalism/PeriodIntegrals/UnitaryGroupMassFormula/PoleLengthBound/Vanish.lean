@@ -2,8 +2,6 @@ module
 
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.PoleLengthBound.AssembleAlt
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.HasseJidPow
-import Formalism.PeriodIntegrals.HassePresH
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HasseDerivativeFiltration.HasseMemHfr
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HasseJacobsonPowers.SfrMulMemJHfr
 
 @[expose] public section

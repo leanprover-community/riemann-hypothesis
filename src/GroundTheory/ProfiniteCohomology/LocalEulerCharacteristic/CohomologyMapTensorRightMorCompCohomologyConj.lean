@@ -5,7 +5,6 @@ public import GroundTheory.ProfiniteCohomology.CohomologicalDimension.Subsinglet
 public import Mathlib.Algebra.Homology.ShortComplex.Linear
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.ConjAction
 public import GroundTheory.ProfiniteCohomology.LocalEulerCharacteristic.Descent
-import GroundTheory.ProfiniteCohomology.ClassFormations.IsIsoCohomologyMapAlongResSubgroupOfHom
 import GroundTheory.ProfiniteCohomology.CohomologyFunctoriality.Naturality
 
 -- This file was produced by scripts/clump.py from the modules listed below.

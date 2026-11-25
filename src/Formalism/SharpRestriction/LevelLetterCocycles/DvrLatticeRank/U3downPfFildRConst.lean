@@ -6,7 +6,6 @@ public import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.U3up
 import Formalism.SharpRestriction.LevelLetterCocycles.FrobeniusPowUniformizerFactorisation
 import Formalism.SharpRestriction.LevelLetterCocycles.MapCompZero
 import Mathlib.Order.Interval.Finset.Box
-import Mathlib.RingTheory.PowerSeries.Inverse
 import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.UnivLinkPfA
 
 @[expose] public section

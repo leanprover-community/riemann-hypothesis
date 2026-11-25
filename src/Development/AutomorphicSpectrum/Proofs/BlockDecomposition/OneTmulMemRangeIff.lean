@@ -3,15 +3,10 @@ module
 public import Mathlib.LinearAlgebra.TensorProduct.Defs
 public import Mathlib.RingTheory.Finiteness.Defs
 public import Mathlib.RingTheory.TensorProduct.DirectLimitFG
-public import Mathlib.Algebra.BigOperators.Pi
 public import Mathlib.Algebra.Colimit.Finiteness
-public import Mathlib.Algebra.Exact.Basic
-public import Mathlib.LinearAlgebra.TensorProduct.Basic
-public import Mathlib.LinearAlgebra.TensorProduct.DirectLimit
 public import Mathlib.LinearAlgebra.TensorProduct.Finiteness
 public import Mathlib.LinearAlgebra.TensorProduct.Pi
 public import Mathlib.LinearAlgebra.TensorProduct.RightExactness
-public import Mathlib.RingTheory.Finiteness.Cardinality
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.WittExactSequences.IsCompl
 public import Mathlib.Data.Nat.Prime.Defs
 import Mathlib.Tactic.Linter.HaveILetI

@@ -6,7 +6,6 @@ public import GroundTheory.LocalFields.FilteredSurj
 public import Mathlib.RingTheory.RootsOfUnity.Basic
 import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
 import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.Henselian
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

@@ -5,8 +5,6 @@ import Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.PfLvF
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Formalism.SharpRestriction.LevelLetterCocycles.LevelKernelDetection.PfLvBasisPhi
 public import Formalism.SharpRestriction.LevelLetterCocycles.RingConditionOfDeltaInvariants
-import Formalism.DistinguishedUnitIdeals.ExistsConstOfInvariantMod
-public import Formalism.SharpRestriction.LevelLetterCocycles.CoordHomMapTrace
 
 @[expose] public section
 

@@ -5,7 +5,6 @@ public import GroundTheory.AutomorphicForms.ReductionMeasure
 public import GroundTheory.AutomorphicForms.L2LocalComponents.ArchHaar
 public import GroundTheory.AutomorphicForms.MultiplicityOne.FiniteAdelicHaar
 public import GroundTheory.AutomorphicForms.TraceFormulaWeil
-import GroundTheory.GlobalFields.Adele.Topology
 import Mathlib.Tactic.Linter.HaveILetI
 import GroundTheory.AutomorphicForms.CuspidalDiscreteness.Counting
 

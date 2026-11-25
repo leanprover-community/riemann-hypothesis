@@ -6,9 +6,6 @@ public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.Calculus.FDeriv.Defs
 public import Mathlib.Analysis.Complex.TaylorSeries
 import Mathlib.Tactic.Lemma
-public import Mathlib.Algebra.Polynomial.BigOperators
-public import Mathlib.Analysis.Calculus.DiffContOnCl
-public import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
 public import Mathlib.Analysis.Complex.Liouville
 
 @[expose] public section

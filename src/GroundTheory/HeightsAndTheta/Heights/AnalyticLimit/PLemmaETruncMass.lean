@@ -9,7 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.AnalyticLimit.StLemmaETruncMa
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffAtOfIsPotential
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.HessCEqZeroOfEventuallyEqZero
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.Stokes
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Compactness.Paracompact
 import Mathlib.Topology.Separation.CompletelyRegular

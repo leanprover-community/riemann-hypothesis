@@ -5,7 +5,6 @@ public import Formalism.LocalToGlobal.Divisibility.CoefMod
 public import Formalism.SharpRestriction.GlobalSchurBounds.FlipTwoThree
 import Formalism.LocalToGlobal.Columns.CoefficientsModP.WeTransposeWordTransposeWord
 import Formalism.LocalToGlobal.GlobalTheory.HLatOps
-import Formalism.LocalRingCardinality.Lemmas
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Mathlib.RingTheory.PicardGroup
 

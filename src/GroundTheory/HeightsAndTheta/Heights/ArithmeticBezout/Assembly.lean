@@ -4,7 +4,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.ConeBall
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Characterised
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.ChowFormHomog
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Imports
-public import Mathlib.RingTheory.Nullstellensatz
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeMass
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PAreaMultiplicityWeight
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PBaseChangeAvoid
@@ -41,8 +40,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Assembly
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PConormalGenerationGeneric
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PFrameJacobianGeneric
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PJacobianRankGeneric
-import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.Topology.Separation.CompletelyRegular
 import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.Imports
 
 -- This file was produced by scripts/clump.py from the modules listed below.

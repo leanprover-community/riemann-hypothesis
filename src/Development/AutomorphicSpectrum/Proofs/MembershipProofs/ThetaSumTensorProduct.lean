@@ -4,9 +4,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinet
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.AdelicCharacterRationalDual
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.RationalUnitsHaarCharacterOne
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.SplitQuadraticAlgebraOrder
-public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaDistributionNonzeroAdmissible
-public import Mathlib.MeasureTheory.Measure.Haar.DistribChar
-public import Mathlib.NumberTheory.NumberField.AdeleRing
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaHeisenbergTranslatesSeparate
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaSumAdmissibility
 public import Mathlib.LinearAlgebra.Charpoly.BaseChange

@@ -7,13 +7,10 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsCompl
 public import Mathlib.Analysis.Matrix.PosDef
 public import Mathlib.RingTheory.Complex
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.HessCIsHermitian
-public import Mathlib.Algebra.Star.UnitaryStarAlgAut
 public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 public import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 public import Mathlib.RingTheory.Norm.Transitivity
-public import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.BergmanNorms
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBergmanIntegrable
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBergmanDensIntegrable

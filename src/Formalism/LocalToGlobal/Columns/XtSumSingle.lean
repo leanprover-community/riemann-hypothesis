@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.XtPhiTopGCongr
-import Formalism.LocalToGlobal.Columns.ChainInst
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.MemGoodPrimesOfNoExceptional
 
 @[expose] public section

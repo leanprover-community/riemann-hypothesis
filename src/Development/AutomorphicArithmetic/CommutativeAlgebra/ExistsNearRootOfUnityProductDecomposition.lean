@@ -7,24 +7,8 @@ public import Mathlib.RingTheory.Ideal.BigOperators
 public import Mathlib.RingTheory.Etale.Basic
 public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.Unramified.LocalStructure
-public import Mathlib.RingTheory.Etale.StandardEtale
-public import Mathlib.RingTheory.Extension.Presentation.Submersive
-public import Mathlib.Algebra.MvPolynomial.PDeriv
-public import Mathlib.Algebra.Polynomial.Laurent
 public import Mathlib.RingTheory.IntegralClosure.Algebra.Ideal
-public import Mathlib.Algebra.Polynomial.Lifts
-public import Mathlib.Algebra.Polynomial.Monic
-public import Mathlib.RingTheory.Ideal.Quotient.Defs
-public import Mathlib.RingTheory.IntegralClosure.Algebra.Basic
-public import Mathlib.RingTheory.IntegralClosure.IsIntegralClosure.Basic
-public import Mathlib.RingTheory.AdjoinRoot
-public import Mathlib.Algebra.Group.Units.Defs
-public import Mathlib.Algebra.GroupWithZero.Basic
-public import Mathlib.Algebra.Ring.Defs
 public import Mathlib.Dynamics.Newton
-public import Mathlib.Algebra.Group.Commute.Units
-public import Mathlib.Algebra.Polynomial.AlgebraMap
-public import Mathlib.Algebra.Polynomial.Derivative
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -69,7 +53,6 @@ import Mathlib.Tactic.Linter.Style
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.RingTheory.Smooth.StandardSmoothCotangent
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.RingTheory.WittVector.IsPoly

@@ -2,7 +2,6 @@ module
 
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LieLatticeData
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsTight
-public import Mathlib.LinearAlgebra.StdBasis
 public import Development.AutomorphicSpectrum.Statements.AlgebraStatements.PolarisedFlagStatement
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.FromNAdd
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsLatFlagPair
@@ -27,11 +26,8 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ChartDThSqId
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.OrdinaryCurveModelRelayStatement
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.CharacterLatticeKernelLocallyFree
 import Mathlib.Tactic.Linter.Style
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PolarisedAugmentationTheorem
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SymplecticPeriodMatrixIntegrality
 import Mathlib.Tactic.Linter.HaveILetI
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.CompactGapsGE
-import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.XGraphRestrictBc
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.XPtSeqLin, Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.MemFlagSubIff, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.MemFirstLatticeIff, Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.TestLeafLattice, Development.AutomorphicSpectrum.Proofs.GeometryProofs.ArithVarietyPrimeGlobalRelay, Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.TestLiftExists, Development.AutomorphicSpectrum.Proofs.GeometryProofs.OrdinaryCurveHodgePrime

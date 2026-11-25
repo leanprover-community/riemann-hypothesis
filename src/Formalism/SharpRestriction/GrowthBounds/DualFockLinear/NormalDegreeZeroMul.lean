@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.NormDegUniv
 public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.SubstSPtrue
-public import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.SymbolRealisableIffGeneralRank
 import Mathlib.Tactic.Lemma
 import Std.Tactic.BVDecide.Normalize.BitVec
 

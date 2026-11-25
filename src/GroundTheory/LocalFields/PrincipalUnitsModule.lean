@@ -2,12 +2,9 @@ module
 
 public import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeAndRangePowLe
 public import GroundTheory.LocalFields.PadicLogSeries
-public import Mathlib.NumberTheory.Padics.RingHoms
 public import GroundTheory.LocalFields.PadicExp
-import GroundTheory.LocalFields.PadicLogHom
 import Mathlib.Algebra.Order.Star.Int
 public import Mathlib.Data.Nat.Choose.Dvd
-import Mathlib.RingTheory.Henselian
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Algebra.Group.Units
 

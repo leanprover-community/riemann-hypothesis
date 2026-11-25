@@ -1,7 +1,6 @@
 module
 
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ArchBetween
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.HasMultiplier
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ArchimedeanValueBound
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HeightLowerBoundChartNorm
 public import Mathlib.Analysis.InnerProductSpace.Calculus
@@ -9,19 +8,11 @@ public import ReciprocityTheory.SemistableReduction.LogNormCoeffSubLeBlockSphere
 public import Mathlib.Order.CompletePartialOrder
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.VerticalBoundHeightCompare
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRedA
-public import Mathlib.Analysis.SpecialFunctions.Log.Basic
 public import Mathlib.Analysis.Complex.ExponentialBounds
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsOrthFull
-public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Slopes
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.NormalizedDegreeFullRankSublattice
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.NormalizedDegreeOrthogonalSum
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
-public import Mathlib.Basic.Real.Basic
-public import Mathlib.Data.Fintype.Basic
-public import Mathlib.Algebra.BigOperators.Fin
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.FiniteSupportHeight
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.FieldChange
-public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.CompactGapsGE
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DominantWeightGapShift
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HeightOfZeroDimVariety
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.JoinModelPointsProject
@@ -30,7 +21,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RootHeightDi
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LocalRatioProductFormula
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
-import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PBoundedSectionTransfer
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

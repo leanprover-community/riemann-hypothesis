@@ -4,8 +4,6 @@ public import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.
 public import Formalism.LocalToGlobal.ProjectiveLattices.ThShort
 public import Mathlib.GroupTheory.FiniteAbelian.Basic
 import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.IsLocalizedModuleSubtype
-import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IMemSiegel
-import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.RationalSchwartzBruhatAlgebraIntegralLinear
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.TensorLatticeSelfDualSemicharacterIndex
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

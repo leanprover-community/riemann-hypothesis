@@ -2,8 +2,6 @@ module
 
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.WeilSiegelTheta.EisCellsDefs
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsBlockMatrixTwoByTwoFinEq
-public import Mathlib.Data.Matrix.Mul
-public import Mathlib.LinearAlgebra.LinearIndependent.Defs
 import Development.AbelianVarietyTheory.PublishedTheorems.SiegelWeil₂.SiegelWeilUnitarySchrodinger
 
 -- This file was produced by scripts/clump.py from the modules listed below.

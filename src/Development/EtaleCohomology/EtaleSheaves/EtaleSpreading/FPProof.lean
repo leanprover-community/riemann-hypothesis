@@ -7,7 +7,6 @@ public import Mathlib.Combinatorics.Quiver.ReflQuiver
 public import Mathlib.CategoryTheory.Limits.Preserves.Basic
 public import Mathlib.CategoryTheory.Limits.Types.Colimits
 public import Development.EtaleCohomology.EtaleSheaves.EtaleSpreading.EtSpreadsOf
-import Mathlib.Algebra.Category.Ring.FilteredColimits
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.EtaleCohomology.EtaleSheaves.EtaleSpreading.LiftPolys, Development.EtaleCohomology.EtaleSheaves.EtaleSpreading.FPProof

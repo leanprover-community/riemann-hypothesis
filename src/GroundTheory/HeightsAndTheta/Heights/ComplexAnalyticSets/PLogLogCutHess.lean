@@ -6,7 +6,6 @@ public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.CovLog
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StLogLogCutHess
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StHessCCompPluri
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.LintegralImageEqLintegralNormSqDetMul
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Analysis.InnerProductSpace.Calculus
 

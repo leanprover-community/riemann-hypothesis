@@ -2,7 +2,6 @@ module
 
 public import Development.WeilBound.ThetaLifts.Reductions.SiegelHaar
 public import Formalism.SatakeDualWeyl.Statement
-public import Mathlib.MeasureTheory.Measure.Haar.MulEquivHaarChar
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AddEquivAddHaarCharEqOfIsOpenEmbeddingRestrict
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MulVecCEApply
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AddEquivAddHaarCharProdCongr

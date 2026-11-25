@@ -20,7 +20,6 @@ public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.WittExtensionThe
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountingFormula.TransMemUnipotentIntegral
 public import Formalism.SharpRestriction.CuspSpanNormBounds.CayleyDegreeNondegeneracy.GenusMassPosOfMassLowerBound
 import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.CellDef
-import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

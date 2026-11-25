@@ -5,7 +5,6 @@ public import Mathlib.Order.Defs.LinearOrder
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.WittExactSequences.IsCompl
 public import Mathlib.Data.Nat.Prime.Defs
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.WittExactSequences.TensCompl
-public import Mathlib.Algebra.Polynomial.AlgebraMap
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.WittExactSequences.CechTens
 public import Mathlib.RingTheory.Valuation.ValuationRing
 import Mathlib.Tactic.Linter.HaveILetI

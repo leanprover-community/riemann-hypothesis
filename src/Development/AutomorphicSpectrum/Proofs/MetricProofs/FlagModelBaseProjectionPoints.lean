@@ -9,8 +9,6 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockDiagonalM
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.GenericFlagAlgebraicallyIndependent
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.MinorSumIdentityBaseChange
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.StepRowsInverseNonzeroEntry
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.RingTheory.Valuation.ValuationSubring
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ValuationRingExtensionSpecialization
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.Values
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PChartNormPtsA

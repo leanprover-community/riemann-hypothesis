@@ -5,7 +5,6 @@ public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.EnInPara
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.FacEmbDomain
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.ExpansionAllPlacesOfPlace
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.KernelProductForm
-public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.DworkExponentialRestrictions
 public import Formalism.LocalToGlobal.InertKernelTheory.StatementAlgT
 public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.AlgKleinPf
 public import Mathlib.NumberTheory.LSeries.PrimesInAP
@@ -17,13 +16,7 @@ public import Formalism.LocalToGlobal.PairingIndexBounds.OrthogonalChartLevels.F
 public import Formalism.LocalToGlobal.PairingIndexBounds.OrthogonalChartLevels.LtCNeZero
 public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.RepFrob
 public import Formalism.LocalToGlobal.InertKernelTheory.FirstKernelGeneratorOfOrthogonal
-public import Formalism.GL3MeanSquares.LegendreCoefficient
-public import Formalism.GL3MeanSquares.HookFormulaTorsion.ExpSeries
-public import Formalism.LocalToGlobal.TorsionIntegrality.GaussSumParity.BiextensionHypothesesOfLevelOne
-public import Formalism.LocalToGlobal.TorsionIntegrality.UniformGaussModels.OneLetterGaussSharpTranslateHolds
 public import Formalism.LocalToGlobal.InertKernelTheory.DefsRepDict
-public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
-public import Formalism.SharpRestriction.GrowthBounds.FormalGroupSystem
 public import Formalism.LocalToGlobal.InertKernelTheory.DefsRepLt
 public import Formalism.LocalToGlobal.InertKernelTheory.DefsRepRec
 public import Formalism.LocalToGlobal.InertKernelTheory.StatementInt
@@ -39,16 +32,7 @@ public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.JetsO
 public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.RepDataRec
 public import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.RepDict
 public import Formalism.LocalToGlobal.InertKernelTheory.KernelsIntegralInert
-import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.NatCastInvMemRp
-import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FinalS
-import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.LogarithmEquivalence
-import Formalism.LocalToGlobal.KernelLattices.LateralTheory
-import Formalism.LocalToGlobal.KernelLattices.XiIndCClass
 import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.DescentCore
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PeriodLatticeFinitelyGenerated
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.SelfDualLatticeNorms.SelfDualComap
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.StdOK
-import Mathlib.RingTheory.PiTensorProduct
 import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.LocalLevelIsKOneAtT
 
 -- This file was produced by scripts/clump.py from the modules listed below.

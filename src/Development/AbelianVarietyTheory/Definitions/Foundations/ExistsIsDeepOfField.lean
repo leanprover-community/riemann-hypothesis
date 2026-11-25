@@ -5,7 +5,6 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.LiftLaSpec
 public import Formalism.LocalToGlobal.Divisibility.GoodPartHermitianSpec
 public import Formalism.LocalToGlobal.ProjectiveLattices.IsLevMove
 public import Formalism.LocalToGlobal.ProjectiveLattices.RhoWApply
-public import Mathlib.NumberTheory.NumberField.Discriminant.Basic
 public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 public import Formalism.LocalToGlobal.ProjectiveLattices.CuspidalL2Subspace
 public import Formalism.LocalToGlobal.ProjectiveLattices.FamilyUniformisationBasePointOrthogonalBis
@@ -48,10 +47,8 @@ import Mathlib.Tactic.NormNum.NatFib
 import Mathlib.Tactic.NormNum.NatLog
 import Mathlib.Tactic.NormNum.NatSqrt
 import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Formalism.LocalToGlobal.ProjectiveLattices.CompFin
 
 attribute [-instance]
   NormedSpace.toModule Submodule.normedSpace Submodule.seminormedAddCommGroup

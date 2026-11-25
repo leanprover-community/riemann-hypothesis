@@ -3,8 +3,6 @@ module
 public import Formalism.MahlerMeasure.LevelSum
 public import Formalism.MahlerMeasure.LevelLattice
 public import Formalism.MahlerMeasure.MahlerMeasureProofs.RemoveS
-import Formalism.MahlerMeasure.GoodCount
-import Formalism.MahlerMeasure.MahlerMeasureProofs.LevelAct
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

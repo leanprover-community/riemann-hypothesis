@@ -5,12 +5,10 @@ public import Mathlib.RingTheory.MvPowerSeries.Inverse
 public import Mathlib.RingTheory.PowerSeries.Substitution
 public import GroundTheory.LocalFields.FormalGroups.Inverse
 public import Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Point
-public import Mathlib.RingTheory.FormalGroup.Basic
 public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import GroundTheory.LocalFields.FormalGroups.Basics
-import GroundTheory.LocalFields.FormalGroups.Truncation
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
 import Mathlib.Algebra.AffineMonoid.Basic

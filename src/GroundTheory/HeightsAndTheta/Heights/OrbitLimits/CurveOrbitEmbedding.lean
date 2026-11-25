@@ -8,7 +8,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.NotMemOfNonZero
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.CurveCountObjects
 public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.PConeTrdeg
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.SimpleRing.Principal
 import GroundTheory.HeightsAndTheta.Heights.Intersections.Statements
 import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff
 

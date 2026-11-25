@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ReferenceCharactersFactorTame
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.H90USurjective
 public import Formalism.LocalToGlobal.HermitianForms.BothSym
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.StandardBaseFlagComplementIntegralLattice
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

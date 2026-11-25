@@ -4,34 +4,16 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.GermSys
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FamilyGivesConjugateLieData
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.TwistApply
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ShortExactFirstTermBundle
-public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsSplitGaussChars
-public import Mathlib.RingTheory.Ideal.Maps
-public import Mathlib.LinearAlgebra.Dual.Defs
-public import Mathlib.LinearAlgebra.Dual.Lemmas
-public import Mathlib.RingTheory.Finiteness.Nakayama
-public import Mathlib.LinearAlgebra.Charpoly.Basic
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.Coalgebra.IsFrobenius
-public import Mathlib.RingTheory.HopfAlgebra.Basic
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LinearIndependentMapVec
 public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
-public import Mathlib.FieldTheory.Finite.Basic
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsSubMemEigW
-public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.BundleDegreeEqSumValuations
-public import Mathlib.Order.CompletePartialOrder
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.GermComp1ZeroPointLeft
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.AlphaBetaIsomorphismTransport
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.AlphaEquivariantFrobenius
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.BetaEquivariantFrobenius
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FormalGroupActionRingHom
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FormalHermitianActionPairing
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FormalIsomorphismTransport
 import Development.AutomorphicSpectrum.Definitions.AdelicLattices.FactPrimes
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsGenOfIsVBOne
-import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SubAndQuotientBundles
 import Mathlib.Tactic.Linter.Style
 import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.GapCondExample
-import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

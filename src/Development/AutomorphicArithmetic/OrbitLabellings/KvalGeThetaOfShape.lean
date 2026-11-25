@@ -11,10 +11,6 @@ public import Formalism.GaussJetBounds.GaussJetProofs.SubstitutionWeightBound
 public import Formalism.GaussJetBounds.OneLetterRadius
 public import Formalism.SharpRestriction.Divisibility.OrbitPlaces
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.GaussJetBounds.GaussJetProofs.AsmRDotAddRight
-import Formalism.GaussJetBounds.GaussJetProofs.LogarithmWeightComparison
-import Formalism.GaussJetBounds.GaussJetProofs.NormNatCastEqPowPadicValNat
-import Formalism.IncomingBounds.FlowDegreeBounds.ProdRangeEqFactorialMulProdIco
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

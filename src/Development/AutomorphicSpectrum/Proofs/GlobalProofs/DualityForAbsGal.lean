@@ -3,7 +3,6 @@ module
 public import ReciprocityTheory.Hypotheses.GalCoh
 public import ReciprocityTheory.NeutralLocalFields.LocalFieldComparison.Transport
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.ExistsPrimeMemAsIdeal
-import CompanionTheory.AutomorphicTheory.PadicCyclotomicFields.GcohCmp
 import CompanionTheory.AutomorphicTheory.PadicCyclotomicFields.GcohField
 public import CompanionTheory.AutomorphicTheory.PadicCyclotomicFields.GcohTate
 import GroundTheory.ProfiniteCohomology.LocalTateDuality.MainDefs

@@ -4,7 +4,6 @@ public import Formalism.SharpRestriction.Divisibility.WeightAlgebra
 public import Development.AutomorphicArithmetic.CyclotomicBounds.RamifiedDiscriminants.CondLam
 public import Development.AutomorphicArithmetic.CyclotomicBounds.RamifiedDiscriminants.FourMulQLeCondN
 public import Development.AutomorphicArithmetic.CyclotomicBounds.RamifiedDiscriminants.TwoFmLeRdE
-import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.EqZeroOfNegEq
 public import Formalism.LocalRingCardinality.CoeNeZeroOfNotMem
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

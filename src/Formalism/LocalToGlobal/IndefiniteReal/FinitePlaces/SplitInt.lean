@@ -7,8 +7,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.FinPartPhiE
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemSplit
 public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.LatMod
 import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.TwoSplit
-import Formalism.LocalToGlobal.SiegelLatticeTheory.TraceIntegralEstimates.PsiTrCoreApprox
-import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.EqOfLeOfAbsNormEq
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

@@ -4,7 +4,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SncPts
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsSncModel
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.CoordOverIntOfFiniteOrder
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsSncPatchRat
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsSncModelOfPatches
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HomogeneousFormNonvanishingPoint
 import Mathlib.Tactic.Linter.HaveILetI

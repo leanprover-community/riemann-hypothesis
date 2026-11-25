@@ -4,22 +4,15 @@ public import Formalism.SharpRestriction.GrowthBounds.ProofRowTieValsDef
 public import Formalism.LocalToGlobal.CharacterGerms.FirstPartialLawAtPoints
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieValCr
 public import Formalism.LocalToGlobal.CharacterGerms.PullbackLogCoordsEvalZero
-public import Formalism.LocalToGlobal.CharacterGerms.TripleSubstSecondCoordinate
 public import Formalism.LocalToGlobal.CharacterGerms.ValuationEqPairOfLogUnitGerm
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 public import Formalism.LocalToGlobal.CharacterGerms.ConstantCoeffSinglePointZero
-public import Formalism.LocalToGlobal.CharacterGerms.ConstantCoeffTripleSubstitution
 public import Formalism.LocalToGlobal.CharacterGerms.ValuationEqPairOfUnitGerm
 public import Formalism.LocalToGlobal.CharacterGerms.ValueEquationOfProjectors
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieValL
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieValK
 import Formalism.LocalToGlobal.CharacterGerms.IntSProd
-import Formalism.LocalToGlobal.CharacterGerms.RowTieCartAdd
-import Formalism.LocalToGlobal.CharacterGerms.RowTieJet
 import Formalism.LocalToGlobal.CharacterGerms.SubstSubst
-import Formalism.LocalToGlobal.CharacterGerms.LemmaMLin
 import Mathlib.Tactic.Linter.Style
-import Formalism.LocalToGlobal.ProjectiveLattices.SubConstMemOrig
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.ProofRowTieValsCg, Formalism.LocalToGlobal.CharacterGerms.LinearCoeffSubstChainRule, Formalism.LocalToGlobal.CharacterGerms.RowTieValBr, Formalism.LocalToGlobal.CharacterGerms.CoordinateChangeComp1IntertwinesAction, Formalism.LocalToGlobal.CharacterGerms.LinearCoeffExponentialEqIte, Formalism.SharpRestriction.GrowthBounds.ProofRowTieValsE

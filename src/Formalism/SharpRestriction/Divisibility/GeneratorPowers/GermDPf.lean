@@ -4,7 +4,6 @@ public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermCut
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDJet
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermDVal
-import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermFunPf
 import Mathlib.Tactic.Lemma
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 

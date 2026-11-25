@@ -17,22 +17,16 @@ public import Formalism.SharpRestriction.GrowthBounds.AevalValuation.ValGen
 public import Formalism.SharpRestriction.GrowthBounds.MonomialSupport.GeZSum
 public import Formalism.SharpRestriction.GrowthBounds.PlaneCoefficients
 public import Formalism.SharpRestriction.GrowthBounds.PlaneCountTheoremWithConstants
-public import Formalism.SharpRestriction.GrowthBounds.Joints
-public import Formalism.LocalToGlobal.GroupLattices.FockModels.Cartan
-public import Formalism.LocalToGlobal.GroupLattices.FockModels.DualInclusionLattices
-public import Formalism.LocalToGlobal.GroupLattices.FockModels.FlatModels.LetterWtAnti
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.LoBlockActComp
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.OperatorsPreserveLattices
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.Sandwich
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.TestSideFinal
 public import Formalism.PeriodIntegrals.AdmissibleModel.WeylDim
-public import Formalism.SharpRestriction.GlobalSchurBounds.CMFieldLemmas
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.ThickExists
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.GenericFramesLetters
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.LemmaOneEightHolds
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.PointsPropertyOfD7
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.RamificationTwoAndConjugationAtQAndD
-public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.SecondPropositionEveryLocalisation
 public import Formalism.SharpRestriction.GrowthBounds.FockGramWindow
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor
 public import Formalism.SharpRestriction.GrowthBounds.InitialMinorTransposeMemHighestWeight
@@ -48,17 +42,9 @@ public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.YvRatOfValRat
 public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.TiedRec
 public import Formalism.LocalToGlobal.GroupLattices.StdSubAtOfRing
 public import Formalism.LocalToGlobal.GroupLattices.TrivialTransfer.GramTotallyDefinite
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LDlatLemmas
-import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.Tensor
 import Mathlib.Tactic.Linter.Style
-import Formalism.SharpRestriction.GrowthBounds.PolynomialLevels.FrRevInj
-import Formalism.SharpRestriction.GrowthBounds.RootWeights.DerivativeValuationBounds
-import Formalism.SharpRestriction.GrowthBounds.ValuationLowestDegreeMapFractionField
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.SharpRestriction.GrowthBounds.AevalValuation.RestSpec
-import Formalism.SharpRestriction.GrowthBounds.PlaneCoefficients.TensZeroRight
-import Formalism.LocalToGlobal.GroupLattices.FockModels.ElementaryDivisorBasis
-import Formalism.LocalToGlobal.GroupLattices.FockModels.MulMemRiemannRochSpaceAdd
 import Formalism.SharpRestriction.GrowthBounds.TopChoiceBounds
 
 -- This file was produced by scripts/clump.py from the modules listed below.

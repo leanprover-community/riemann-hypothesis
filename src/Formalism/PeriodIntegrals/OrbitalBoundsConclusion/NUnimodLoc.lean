@@ -4,7 +4,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnimodularL
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryQuotientCompactness.SBasic
 public import Formalism.PeriodIntegrals.NUnimodLoc
 import Mathlib.Tactic.Linter.Style
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnimodularLattice.FrameC, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnimodularLattice.Transf, Formalism.PeriodIntegrals.OrbitalBoundsConclusion.NUnimodLoc

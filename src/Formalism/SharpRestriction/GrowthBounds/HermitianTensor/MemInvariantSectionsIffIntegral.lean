@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.CloudADef
 public import Mathlib.Tactic.Monotonicity.Lemmas
 public import Mathlib.Topology.Sheaves.Presheaf
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.Tensor
 import Mathlib.Algebra.Order.Star.Int
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Wlocal

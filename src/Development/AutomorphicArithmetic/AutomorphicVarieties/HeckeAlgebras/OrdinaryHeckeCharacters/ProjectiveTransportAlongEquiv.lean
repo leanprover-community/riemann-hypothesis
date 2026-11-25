@@ -14,7 +14,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.WeilGroupCh
 import Development.AutomorphicArithmetic.IntegralCasts.IsOpenStabOfMemNhds
 import Formalism.ConjugateSelfDual.Statement
 import Formalism.LocalRingCardinality.SpanPowerMembership.NZTypeD
-import ReciprocityTheory.GaloisValuations.GlobalA
 
 @[expose] public section
 

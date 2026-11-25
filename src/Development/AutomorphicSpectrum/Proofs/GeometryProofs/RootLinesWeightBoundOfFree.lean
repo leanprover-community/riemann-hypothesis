@@ -3,7 +3,6 @@ module
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.GfForms
 public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.GeoNum
 public import GroundTheory.HeightsAndTheta.Heights.IntegralModels.PSectionNef
-public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.InstFintypeSumElim
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
 public import Development.AutomorphicSpectrum.PublishedTheorems.Algebra₂.FarguesHodgeTate
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.TrivFlagMod
@@ -12,9 +11,6 @@ public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.Bir
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IntegralClosureHeightEqOneOfLiesOver
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeTateFreeTrivialFlagMod
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TrivFlagModOfDvd
-import GroundTheory.HeightsAndTheta.Heights.HeightComparison.IsMultiHomogIdealIff
-import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.TranslateMemIndOrder
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.HaveILetI
 

@@ -9,10 +9,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.HermiteNorm
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HermiteNormalForms.RealVec
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HermiteNormalForms.Realsurj
 public import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
-public import Mathlib.Analysis.Complex.Norm
-public import Mathlib.Data.Matrix.Mul
-public import Mathlib.Analysis.CStarAlgebra.Basic
-public import Mathlib.Basic.Complex.BigOperators
 public import Mathlib.Algebra.Order.Chebyshev
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.KTheoryStability.ReductionBoundsTorsion.SBridgeAlt
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.KTheoryStability.ReductionBoundsTorsion.PartitionUnitySmooth.GProdScale

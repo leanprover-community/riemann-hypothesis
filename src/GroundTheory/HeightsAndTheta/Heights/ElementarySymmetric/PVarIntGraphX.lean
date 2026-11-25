@@ -18,12 +18,6 @@ public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StLelongPolyLimit
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StLelongWeightLimit
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StLocalMultComap
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.AssemblyBase
-import Mathlib.Topology.Separation.CompletelyRegular
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.CovLog
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
-import Mathlib.Order.CompletePartialOrder
-import Mathlib.Topology.Algebra.MvPolynomial
 import Mathlib.Topology.UniformSpace.Uniformizable
 
 -- This file was produced by scripts/clump.py from the modules listed below.

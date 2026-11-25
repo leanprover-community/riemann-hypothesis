@@ -1,14 +1,11 @@
 module
 
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.AuxiliaryPrimeFunction
-public import Development.WeilBound.ThetaLifts.LatticeBasics.HypothesesE
 public import Development.WeilBound.ThetaLifts.LatticeBasics.UnfoldC
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EisensteinSeriesConvergent
-public import Development.WeilBound.ThetaLifts.LatticeBasics.Hypotheses2
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.FlatSectionGrowthBound
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HeightContinuousPos
 public import Development.WeilBound.ThetaLifts.LatticeBasics.ContinuousFlat
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsCompactStandardMaximal
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

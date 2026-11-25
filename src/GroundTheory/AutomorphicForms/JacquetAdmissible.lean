@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.AutomorphicForms.CuspidalAdmissible
-public import GroundTheory.AutomorphicForms.InductionParabolic
 import GroundTheory.AutomorphicForms.AdmissibleInduction
 import GroundTheory.AutomorphicForms.GLnLattice
 import GroundTheory.AutomorphicForms.SmoothRepSchur

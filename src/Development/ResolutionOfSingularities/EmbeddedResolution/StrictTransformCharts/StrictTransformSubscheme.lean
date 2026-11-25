@@ -10,7 +10,6 @@ public import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTra
 import Development.ResolutionOfSingularities.Foundations.Schemes.IdealSheafData
 import Mathlib.Tactic.Linter.Style
 public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.ChartRing
-public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.StrictTransform
 public import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformCharts.BlowupChart
 public import Development.ResolutionOfSingularities.EmbeddedResolution.StrictTransformCharts.CoordinateDivisorBlowup
 

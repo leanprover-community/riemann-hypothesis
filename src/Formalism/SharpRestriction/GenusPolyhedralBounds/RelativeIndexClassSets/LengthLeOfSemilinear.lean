@@ -2,10 +2,6 @@ module
 
 public import Formalism.FilteredPoleLength.ReducedBasisBounds.ReductionQuotient
 public import Formalism.FilteredPoleLength.ReducedBasisBounds.LengthBaseChangeLocal
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
-public import Mathlib.Algebra.Order.Archimedean.Real.Basic
-public import Mathlib.Algebra.BigOperators.Ring.Finset
-public import Mathlib.Algebra.Order.BigOperators.Group.Finset
 public import Formalism.LogFactorialIndices.StatementIdx
 public import Formalism.LogFactorialIndices.SignedSubspaceIndex.IdxBase
 public import Formalism.LogFactorialIndices.SignedSubspaceIndex.IdxDet

@@ -6,7 +6,6 @@ import GroundTheory.HeightsAndTheta.Heights.Intersections.AvoidRing
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PBlockRatioAlg
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.PProjBundleMultiHomogGrad
 import Mathlib.RingTheory.LocalProperties.Reduced
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

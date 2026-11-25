@@ -2,7 +2,6 @@ module
 
 public import Formalism.GradedWeylDivisibility.StatementE
 public import Formalism.GradedWeylDivisibility.StatementC
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 public import Formalism.GradedWeylDivisibility.FinalC
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LCassemLemmas
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LDlatLemmas

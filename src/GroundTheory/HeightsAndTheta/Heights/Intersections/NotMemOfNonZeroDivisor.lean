@@ -4,7 +4,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.ExistsFunFieldM
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ArithVarZero
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.NotIsHorizontalOfDimOne
 import Mathlib.RingTheory.LocalProperties.Reduced
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

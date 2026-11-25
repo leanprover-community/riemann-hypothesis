@@ -2,16 +2,8 @@ module
 
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ClozelPurity.EopV
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LieOperatorVectorEq
-public import Mathlib.Algebra.BigOperators.Group.Multiset.Defs
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.Algebra.BigOperators.Group.Multiset.Basic
-public import Mathlib.Algebra.Polynomial.Basic
-public import Mathlib.Algebra.Polynomial.Eval.Defs
-public import Mathlib.Algebra.Polynomial.Roots
-public import Formalism.RealPlaceAnalysis.StatementE
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.QuantumDetAdjointForm
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.T2SpaceAdelicGeneralLinearGroupNumberField
-import Formalism.RealPlaceAnalysis.StatementA
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

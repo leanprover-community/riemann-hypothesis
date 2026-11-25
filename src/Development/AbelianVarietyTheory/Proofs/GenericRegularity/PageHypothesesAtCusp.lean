@@ -2,8 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.UpperBounds.PhRec
 public import Formalism.LocalToGlobal.ProjectiveLattices.CurveInstSt
-public import Formalism.LocalToGlobal.ProjectiveLattices.IntAtExtExtAll
-public import Formalism.LocalToGlobal.ProjectiveLattices.IsGenFrGenFr
 public import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.TranscendenceDegreeRatiosCuspFormsComponents
 public import Development.AbelianVarietyTheory.Definitions.HeightFunctions.GrowthConstantBoundGcR
 public import Formalism.LocalToGlobal.ProjectiveLattices.CurveAsm

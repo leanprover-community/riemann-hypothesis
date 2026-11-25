@@ -4,7 +4,6 @@ public import GroundTheory.GlobalFields.ComplexMultiplication.EllipticFunctions
 public import GroundTheory.GlobalFields.ComplexMultiplication.EllipticConstant
 import GroundTheory.GlobalFields.ComplexMultiplication.EllipticRational
 public import GroundTheory.GlobalFields.ComplexMultiplication.Uniformization
-public import GroundTheory.GlobalFields.ComplexMultiplication.EllipticDegree
 
 @[expose] public section
 

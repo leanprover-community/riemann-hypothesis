@@ -1,13 +1,7 @@
 module
 
 public import GroundTheory.TateCohomology.CohTrivialBasic
-public import GroundTheory.TateCohomology.DimensionShift
 public import Mathlib.GroupTheory.PGroup
-public import Mathlib.RepresentationTheory.Coinvariants
-public import Mathlib.Combinatorics.Quiver.ReflQuiver
-public import Mathlib.RepresentationTheory.Coinduced
-public import Mathlib.RepresentationTheory.Homological.GroupHomology.LowDegree
-public import Mathlib.RepresentationTheory.Homological.TateCohomology.Basic
 public import Mathlib.Algebra.Field.ZMod
 public import Mathlib.Algebra.Module.ZMod
 public import GroundTheory.TateCohomology.Annihilation
@@ -15,8 +9,6 @@ public import Mathlib.GroupTheory.Sylow
 public import GroundTheory.TateCohomology.CoresRes
 public import GroundTheory.TateCohomology.TateGroupIso
 import Mathlib.Tactic.TypeStar
-import GroundTheory.TateCohomology.InducedNorm
-import Mathlib.RepresentationTheory.FiniteIndex
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.TateCohomology.PGroupCohTrivial, GroundTheory.TateCohomology.PGroupFixed, GroundTheory.TateCohomology.PGroupFree, GroundTheory.TateCohomology.TateAddEquivAbelianizationTateClass, GroundTheory.TateCohomology.PGroupCohTrivialInt, GroundTheory.TateCohomology.CohTrivialPGroup, GroundTheory.TateCohomology.CohTrivial

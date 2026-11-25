@@ -20,10 +20,7 @@ public import Formalism.LocalToGlobal.Columns.RowFormsGood
 public import Formalism.LocalToGlobal.Columns.ToHLatLemmas
 import Formalism.LocalToGlobal.Columns.HeckeSpCount
 import Formalism.LocalToGlobal.Columns.AdelicLemmas
-import Formalism.LocalToGlobal.Columns.CoefColLemmas
 import Formalism.LocalToGlobal.Columns.PolyFnLemmas
-import Formalism.LocalToGlobal.Divisibility.ClassSumLemmas
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ClassSumDualGeOfFamily
 import Mathlib.RingTheory.PiTensorProduct
 
 -- This file was produced by scripts/clump.py from the modules listed below.

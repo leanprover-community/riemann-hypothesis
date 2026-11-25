@@ -10,8 +10,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.HDiscAA
 public import ReciprocityTheory.SemistableReduction.AlgAll
-public import Mathlib.RingTheory.DedekindDomain.IntegralClosure
-public import Mathlib.RingTheory.Discriminant
 public import Mathlib.RingTheory.Localization.NormTrace
 
 @[expose] public section

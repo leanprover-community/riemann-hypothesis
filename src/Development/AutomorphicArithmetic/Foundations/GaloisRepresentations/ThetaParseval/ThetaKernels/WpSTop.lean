@@ -34,22 +34,10 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsOpenIntegr
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LagrangianEvaluationTranslation
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemTensorCongruenceOfSupportedAtInfinity
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.QuadraticExtNormFormOverAlgebra
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUnitaryCharOfOpenSubgroupAndHom
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemNormGroupIffEverywhereNorm
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.ThkEstCoefBd
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.TensOfEval
-public import Development.WeilBound.ThetaLifts.ConeHypotheses.PureEqPureA
-public import Development.WeilBound.ThetaLifts.EigenvalueEndgame.UnipotentGroups.ContinuousExpG
 public import Development.WeilBound.ThetaLifts.EigenvalueEndgame.UnipotentGroups.TendstoIndMul
-public import Development.WeilBound.ThetaLifts.FrameEstimates.CoefReal
-public import Development.WeilBound.ThetaLifts.FrameEstimates.FourierInj
-public import Development.WeilBound.ThetaLifts.FrameEstimates.LatMeas
-public import Development.WeilBound.ThetaLifts.FrameEstimates.LevelA
-public import Development.WeilBound.ThetaLifts.FrameEstimates.Parity
-public import Development.WeilBound.ThetaLifts.FrameEstimates.SchrAddPt
 public import Development.WeilBound.ThetaLifts.LatticeBasics.PairsB
-public import Development.WeilBound.ThetaLifts.LatticeBasics.PairsD
-public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.EqOneOfPowNear
 
 /-! # WpSTop: Global Weil-pair existence (`weilEx_k`) and automorphic bump-function descent. -/
 @[expose] public section

@@ -7,9 +7,6 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsLatFl
 public import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.FunctionFamilyChartFacts
 public import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.IsDerAtOneCompOfIsDiffOf
 public import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.TestCharacterExists
-import Development.AutomorphicSpectrum.Statements.GeometryStatements.NonemptyEquivOfCardHom
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LemmaBTHolds
-import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.CompactGapsGE
 

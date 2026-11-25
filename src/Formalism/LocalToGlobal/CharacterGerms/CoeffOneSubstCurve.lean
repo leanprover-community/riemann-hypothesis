@@ -4,7 +4,6 @@ public import Formalism.LocalToGlobal.CharacterGerms.IntSubst
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieDefs
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 public import Formalism.LocalToGlobal.CharacterGerms.CoeffLMulCvFrob
-import Formalism.LocalToGlobal.CharacterGerms.MaximalOfValuationGeOne
 
 @[expose] public section
 

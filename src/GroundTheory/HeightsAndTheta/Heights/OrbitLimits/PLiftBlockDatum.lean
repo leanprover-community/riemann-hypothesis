@@ -7,9 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.AvoidRing
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsLiftGraphPoints
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.StatementsLiftGraphMetric
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsResVolume
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.ArithModel
 
 -- This file was produced by scripts/clump.py from the modules listed below.

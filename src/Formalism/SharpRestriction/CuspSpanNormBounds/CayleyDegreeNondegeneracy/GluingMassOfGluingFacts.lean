@@ -2,15 +2,6 @@ module
 
 public import Formalism.SharpRestriction.CuspSpanNormBounds.CayleyDegreeNondegeneracy.ForPrimeFlagLattice
 public import Formalism.HermitianLattices.HermitianLatticesProofs.MassBasic
-public import Mathlib.Algebra.Group.Subgroup.Actions
-public import Mathlib.Basic.Real.Basic
-public import Mathlib.Data.Set.Card
-public import Mathlib.GroupTheory.GroupAction.Defs
-public import Mathlib.Algebra.BigOperators.Field
-public import Mathlib.GroupTheory.Coset.Card
-public import Mathlib.GroupTheory.GroupAction.Basic
-public import Mathlib.GroupTheory.GroupAction.Quotient
-import Formalism.ThetaLiftIndependence.ThetaOrbitSums.ClassRepsDefinite
 import Formalism.HermitianLattices.FinalNeighbourConstruct
 import Formalism.HermitianLattices.HermitianLatticesProofs.IsomAct
 import Formalism.ThetaLiftIndependence.ThetaOrbitSums.LatLiftIndep

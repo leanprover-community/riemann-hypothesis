@@ -6,7 +6,6 @@ public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiagonalSlopes.CharacterF
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.DiamondPreservesRationalFormZero
 public import Formalism.LocalToGlobal.Columns.CoefficientsModP.LatticeBasisExistsHolds
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocGlob
-import Formalism.LocalRingCardinality.Lemmas
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IntegralityAtPrimeLattices.Development, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.IntegralityAtPrimeLattices.IntegralityAtFormsOfIncrements

@@ -1,9 +1,6 @@
 module
 
 public import GroundTheory.AutomorphicForms.GL2.IsAddHaarMeasureMatrixMeasureFinSq
-import GroundTheory.AutomorphicForms.GL2.ExistsEqPowMulOfValuationLe
-import GroundTheory.AutomorphicForms.GL2.GJInducedZeta
-import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeRangeNormUnits
 
 @[expose] public section
 

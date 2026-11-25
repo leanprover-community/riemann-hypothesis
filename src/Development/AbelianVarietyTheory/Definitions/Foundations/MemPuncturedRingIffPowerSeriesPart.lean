@@ -7,7 +7,6 @@ public import Mathlib.Order.CompletePartialOrder
 public import Mathlib.Order.Filter.Germ.Basic
 public import Mathlib.RingTheory.LaurentSeries
 public import Mathlib.Analysis.Complex.TaylorSeries
-public import Mathlib.Analysis.Analytic.IsolatedZeros
 public import Mathlib.Analysis.Calculus.Deriv.Polynomial
 import Mathlib.Topology.Sheaves.Presheaf
 

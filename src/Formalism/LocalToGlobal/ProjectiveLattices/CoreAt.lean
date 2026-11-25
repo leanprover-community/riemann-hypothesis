@@ -5,7 +5,6 @@ public import Formalism.LocalToGlobal.ProjectiveLattices.CoreProofs
 public import Formalism.LocalToGlobal.ProjectiveLattices.ExistsParameterConditions
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.HeckeKer
 public import Formalism.LocalToGlobal.ProjectiveLattices.DatProofs
-import Formalism.LocalToGlobal.ProjectiveLattices.HostRank
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.ProjectiveLattices.CoreExists, Formalism.LocalToGlobal.ProjectiveLattices.CoreAt

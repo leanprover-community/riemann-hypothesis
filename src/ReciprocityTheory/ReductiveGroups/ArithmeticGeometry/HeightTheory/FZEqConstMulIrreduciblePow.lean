@@ -8,9 +8,6 @@ import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.Topology.Separation.CompletelyRegular
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.NormByPlaces
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.HeightTheory.ValUFD
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import ReciprocityTheory.SemistableReduction.RestBlockSubstIsMultiHomogeneous

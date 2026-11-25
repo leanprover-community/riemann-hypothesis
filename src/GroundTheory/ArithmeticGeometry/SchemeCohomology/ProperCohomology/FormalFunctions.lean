@@ -4,9 +4,7 @@ public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.CechNaturality.CechFunctor
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.FormalDegree
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.FormalBounds
-public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.CechFamily
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.FormalCompare
-import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.FormalCechSmul
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.FormalIdealMul, GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.FormalVanish, GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.FormalFunctions

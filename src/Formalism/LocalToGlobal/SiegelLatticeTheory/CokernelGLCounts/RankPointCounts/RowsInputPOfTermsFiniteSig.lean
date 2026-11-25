@@ -4,8 +4,6 @@ public import Formalism.SharpRestriction.CuspSpanNormBounds.BlockEnds
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DataCut
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LocModel
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.TermsAtPtFinite
-import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermDef
-import Formalism.SharpRestriction.CuspSpanNormBounds.IsPrimitiveSub
 import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedVolumeStatements.GenericRatioOfBoundHolds
 
 -- This file was produced by scripts/clump.py from the modules listed below.

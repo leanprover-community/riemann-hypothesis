@@ -12,7 +12,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeCptInte
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PrimitiveRootHodgeCpt
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TateIsoPullbackEquiv
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.WeilSt
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.CompEqIdOfTwists
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.CompactGapsGE

@@ -4,12 +4,9 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureR
 public import Mathlib.Analysis.InnerProductSpace.Projection.Basic
 public import Mathlib.Analysis.InnerProductSpace.Projection.Submodule
 public import Mathlib.Combinatorics.SimpleGraph.Basic
-public import Mathlib.LinearAlgebra.Matrix.SpecialLinearGroup
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
 public import Mathlib.NumberTheory.NumberField.CanonicalEmbedding.ConvexBody
-public import Mathlib.Algebra.Module.ZLattice.Basic
-public import Mathlib.NumberTheory.NumberField.CanonicalEmbedding.Basic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LiteratureResults.KTheoryStability.ReductionBoundsTorsion.ArithmeticGapBounds.Arith
 public import Mathlib.MeasureTheory.Measure.ContinuousPreimage
 public import Mathlib.Dynamics.Ergodic.Action.Basic

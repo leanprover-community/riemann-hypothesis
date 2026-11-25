@@ -2,7 +2,6 @@ module
 
 public import Mathlib.RingTheory.Etale.Basic
 public import Mathlib.RingTheory.MvPolynomial.Ideal
-public import Mathlib.Algebra.MvPolynomial.CommRing
 
 @[expose] public section
 

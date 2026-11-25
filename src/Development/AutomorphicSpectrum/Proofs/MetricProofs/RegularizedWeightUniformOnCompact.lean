@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.CpRegPhRegOfNonneg
-public import GroundTheory.HeightsAndTheta.Heights.Regularisation.Statements
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularChartDataProperties
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularizedWeightTendstoC2
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogRatio

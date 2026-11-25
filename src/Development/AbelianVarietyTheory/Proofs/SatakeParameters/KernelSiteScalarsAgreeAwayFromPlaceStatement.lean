@@ -3,8 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.SameOffRefl
 public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.TiePtOne
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.LocSpBot
-public import Formalism.LocalToGlobal.GroupLattices.TiedFamilies.EqOneOfPh
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AfsplitA
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.ExistsMidLevIff
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.IsUnifAt
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.AdelicPointsAgreeAwayOfLatticeTuplesAgreeAwayStatement
@@ -59,13 +57,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Formalism.LocalToGlobal.GlobalTheory.ExistsUnitaryOneDetEq
 import Mathlib.Tactic.Basify
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsApprox
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsSpan
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PeriodLatticeFinitelyGenerated
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.RationalPointsLeHolds
-import Formalism.SharpRestriction.AdmissibleParameterJoins.GandSp
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

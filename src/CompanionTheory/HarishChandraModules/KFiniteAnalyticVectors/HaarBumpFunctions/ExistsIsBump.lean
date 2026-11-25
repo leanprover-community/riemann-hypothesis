@@ -10,9 +10,7 @@ import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmo
 import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.AdmissibleSmoothVectors.GardingBump
 public import CompanionTheory.HarishChandraModules.KFiniteAnalyticVectors.HaarBumpFunctions.ExistsOpOfForm
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Normed.Module.HahnBanach
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Topology.UniformSpace.Matrix
 import Mathlib.Topology.UniformSpace.Uniformizable
 
 @[expose] public section

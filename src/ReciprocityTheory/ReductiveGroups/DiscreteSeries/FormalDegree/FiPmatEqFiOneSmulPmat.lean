@@ -8,7 +8,6 @@ public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.Eige
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
-import ReciprocityTheory.ReductiveGroups.DiscreteSeries.CasimirCoefficients.IsClosedEmbeddingToM
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.PSpecB
 
 -- This file was produced by scripts/clump.py from the modules listed below.

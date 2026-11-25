@@ -5,8 +5,6 @@ public import Formalism.DistinguishedUnitIdeals.ExistsConstOfInvariantMod
 public import Mathlib.RingTheory.TensorProduct.Free
 public import Mathlib.RingTheory.LaurentSeries
 import Mathlib.Tactic.Linter.Style
-public import Mathlib.LinearAlgebra.Basis.VectorSpace
-public import Mathlib.LinearAlgebra.TensorProduct.RightExactness
 
 @[expose] public section
 

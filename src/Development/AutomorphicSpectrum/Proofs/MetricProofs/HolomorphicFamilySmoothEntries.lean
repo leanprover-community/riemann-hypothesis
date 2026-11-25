@@ -9,7 +9,6 @@ public import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshExtA
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsEigFrames
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.PshPoisson
 import Mathlib.Tactic.Linter.HaveILetI
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -3,7 +3,6 @@ module
 public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 public import Formalism.SharpRestriction.CuspSpanNormBounds.KTwoMinorIntegrality
 import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.Tactic.Lemma
 
 -- This file was produced by scripts/clump.py from the modules listed below.

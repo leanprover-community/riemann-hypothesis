@@ -4,7 +4,6 @@ public import Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass
 public import Formalism.PeriodIntegrals.GoodTwo
 public import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.MulStableIntegral
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.DyadicStableLattices.ChainPB
-import Mathlib.Analysis.CStarAlgebra.Classes
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.UnitaryGroupMassFormula.DyadicStableLattices.ChainPA, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.DyadicStableLattices.ChainPC

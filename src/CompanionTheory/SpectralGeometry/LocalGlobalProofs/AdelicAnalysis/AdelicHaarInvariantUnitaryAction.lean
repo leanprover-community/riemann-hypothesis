@@ -1,10 +1,6 @@
 module
 
 public import Mathlib.NumberTheory.NumberField.AdeleRing
-public import Mathlib.LinearAlgebra.Matrix.Transvection
-public import Mathlib.RingTheory.Coprime.Basic
-public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
-public import Mathlib.CategoryTheory.Category.Basic
 public import Mathlib.MeasureTheory.Measure.Haar.MulEquivHaarChar
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRing
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd

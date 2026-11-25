@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.HasBaseDegreeSetting
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterNamed
 public import Development.WeilBound.CoreStatements.FlagImmersions.ExistsWord
-import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PHFlProdLinear
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.FlagImmersions.FlagHeightPowerSumZero, Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.FlagHeightPowerSumOneZero

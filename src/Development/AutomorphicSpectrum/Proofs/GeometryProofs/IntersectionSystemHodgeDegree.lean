@@ -1,22 +1,13 @@
 module
 
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsUniqueLeftBasisCoordsAdicCompletion
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsPeriodAtRestrict
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComponentDataHodgeSecond
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ContDiffUncentre
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GramMatrixTwoFrames
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.InteriorPointPolarised
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EtaleLocalizationAtPrimeTensorOfLowHeight
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.IsFrameOverLine
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SumLatticeWedgeComap
-public import Mathlib.LinearAlgebra.ExteriorPower.Basic
-public import Mathlib.LinearAlgebra.PiTensorProduct.Basic
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TensorWedgeDetChange
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.CoordsAt
-public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.Metric
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.UnitValueFrameDomain
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeCptInteriorGeneric
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

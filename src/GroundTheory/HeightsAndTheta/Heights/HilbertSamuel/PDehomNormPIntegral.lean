@@ -5,7 +5,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullFormsGener
 public import Mathlib.NumberTheory.Padics.PadicNumbers
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PDehomCharpolyForms
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.LinearAlgebra.Charpoly.BaseChange
 public import Mathlib.RingTheory.Polynomial.IsIntegral
 import Mathlib.RingTheory.Valuation.AlgebraInstances
 import Mathlib.RingTheory.Valuation.LocalSubring

@@ -12,7 +12,6 @@ public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpAct
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ExpTieAlg
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.FBIdJet
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.CalcExp
 import Formalism.SharpRestriction.Divisibility.GeneratorPowers.EvalSinglePointId
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.TaylorDiscriminants.WickVanishing.ExpLaw
 

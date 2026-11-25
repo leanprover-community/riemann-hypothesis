@@ -11,7 +11,6 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.FamilyUniform
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.LevelLabelExtendsOfOrthogonalToExtended
 public import Development.AbelianVarietyTheory.Statements.HyperbolicHypotheses.HypothesesInhabitedHyperbolic
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.BoundaryChartHodgeMatrix
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExponentialFamilyPeriods
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsFamilyExponentialLocally
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PeriodHolomorphicContinuation
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PeriodLatticeDiscreteFree
@@ -19,7 +18,6 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PeriodLattic
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PeriodLatticeSpans
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PeriodSetClosed
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorsionPeriodsFiniteQuotient
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorsionSectionEqOfConnected
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.Style

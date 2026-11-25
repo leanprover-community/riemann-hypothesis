@@ -4,9 +4,6 @@ public import GroundTheory.AutomorphicForms.RealIwasawaUnipotentHaar
 public import GroundTheory.AutomorphicForms.RealGroups
 import Mathlib.CategoryTheory.Countable
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.Group.Units
-import Mathlib.Topology.Algebra.Star.Real
-import Mathlib.Topology.Algebra.Star.Unitary
 
 @[expose] public section
 

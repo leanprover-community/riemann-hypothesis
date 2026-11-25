@@ -2,9 +2,7 @@ module
 
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.TransPtBase
 public import Development.WeilBound.CoreStatements.PluriharmonicCharts.LocalAnalyticSectionCoords
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsImg
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticEighth
-public import GroundTheory.HeightsAndTheta.Heights.Intersections.PtsOverPt
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticFifth
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsPeriodOn
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticFourth
@@ -12,8 +10,6 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArith
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticSeventh
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticSixth
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.IsMultiHomogIdealMap
-public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialPullbackStatement
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRes
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogResolutionCompatiblePullback
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogResolutionMapLocallyAnalytic
 public import Development.WeilBound.CoreStatements.PluriharmonicCharts.BlockFnFieldCompLe

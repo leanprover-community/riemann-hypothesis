@@ -1,7 +1,6 @@
 module
 
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProperCohomology.Support
-public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.QcohLocal
 public import Mathlib.AlgebraicGeometry.IdealSheaf.Basic
 public import GroundTheory.ArithmeticGeometry.SchemeCohomology.ProjectiveCohomology.TwistingSheaf
 public import Mathlib.AlgebraicGeometry.IdealSheaf.Subscheme

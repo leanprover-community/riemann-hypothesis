@@ -5,7 +5,6 @@ public import Development.WeilBound.ThetaLifts.LatticeBasics.BoxFinB
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.WeilRepresentationPreservesSchwartz
 import Development.AutomorphicSpectrum.Proofs.TwistedProofs.EqZeroOfPiInf
 public import Development.WeilBound.ThetaLifts.LatticeBasics.ExistsIsGauss
-import Development.WeilBound.ThetaLifts.LatticeBasics.IsCompactIntV
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

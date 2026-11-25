@@ -4,7 +4,6 @@ public import GroundTheory.ArithmeticGeometry.AbelianVarieties.FunctionFieldPoin
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Valuation
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisorsNorm
-public import GroundTheory.ArithmeticGeometry.AbelianVarieties.Divisors
 
 @[expose] public section
 

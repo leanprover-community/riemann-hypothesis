@@ -2,7 +2,6 @@ module
 
 public import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.StrictTransformOffCenter
 import Development.ResolutionOfSingularities.EmbeddedResolution.IteratedBlowups.StrictTransform
-import Development.ResolutionOfSingularities.Foundations.Schemes.SchemeMorphismProperties
 
 @[expose] public section
 

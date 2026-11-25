@@ -4,7 +4,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.OverExt
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsIntegralBasisUnramifiedInvolutionExt
 public import Mathlib.RingTheory.Norm.Defs
 public import Mathlib.RingTheory.Norm.Basic
-public import Mathlib.RingTheory.Trace.Defs
 public import Mathlib.RingTheory.Norm.Transitivity
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsLocalRingOfIdem
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsUnitTraceFormDiscrUnramifiedExt

@@ -14,11 +14,9 @@ public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.HodgeTateCons
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsLieModel
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelExistsUniqueAct
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelRankEqGeneric
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.NonemptyLinearEquivOfPiFinPowFinite
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TateIsoTorsionTower
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TorsionTowerWeilPairing
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.HtatBcTors
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

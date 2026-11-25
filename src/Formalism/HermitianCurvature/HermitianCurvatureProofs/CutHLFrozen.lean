@@ -1,13 +1,11 @@
 module
 
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutHL2
-public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HeisenbergLeviConjugationMeasure
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.MajorantEstimate
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.StandardCharacterExists
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentCoordinatesMeasurePreserving
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UpperMinorOfLevelPoint
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

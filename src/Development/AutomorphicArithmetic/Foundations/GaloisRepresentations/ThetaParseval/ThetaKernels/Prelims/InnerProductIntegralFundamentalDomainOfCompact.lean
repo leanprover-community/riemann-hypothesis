@@ -46,7 +46,6 @@ public import Mathlib.Tactic.NormNum.Prime
 public import Mathlib.Tactic.NormNum.RealSqrt
 public import Mathlib.Tactic.ReduceModChar
 public import Mathlib.Topology.Sheaves.Init
-public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 /-! # InnerProductIntegralFundamentalDomainOfCompact: Preliminary helper declarations for global theta kernels. -/
 
 @[expose] public section

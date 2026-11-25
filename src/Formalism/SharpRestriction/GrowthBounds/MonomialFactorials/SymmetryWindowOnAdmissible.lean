@@ -2,17 +2,7 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.SymmetryFinitenessWindowLevelDimOnAdmissible
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.RestDecompProved
-public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.BePhiAddLeft
-public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.RestRankLProved
-public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.FinrankLjjSpan
-public import Formalism.MahlerMeasure.MahlerMeasureProofs.SSDirect
-public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.BePhiSmulRight
-public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.RestSumSpan
-public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.SumFinrankLeOfIndep
-import Formalism.MahlerMeasure.MahlerMeasureProofs.TheoremM
 import Mathlib.Algebra.AffineMonoid.UniqueSums
-import Mathlib.RingTheory.SimpleRing.Principal
-import Formalism.PolynomialDimension.MultinomialDepth.PartnerM
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.TotallySplit
 

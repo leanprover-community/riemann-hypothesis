@@ -3,8 +3,6 @@ module
 public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.MollifiedIntegrability.ClsGainSt
 public import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
 import Mathlib.Tactic.Linter.Style
-public import Mathlib.Analysis.Calculus.FDeriv.CompCLM
-public import Mathlib.Analysis.Calculus.FDeriv.RestrictScalars
 import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.MollifiedIntegrability.ClsBoundA
 
 @[expose] public section

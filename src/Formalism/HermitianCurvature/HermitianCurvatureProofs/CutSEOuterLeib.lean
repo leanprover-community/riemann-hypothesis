@@ -3,7 +3,6 @@ module
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutSELeib
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.SfiniteOfIsHaarOn
 public import Mathlib.Analysis.Complex.OperatorNorm
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
 

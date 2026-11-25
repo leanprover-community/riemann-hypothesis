@@ -4,12 +4,8 @@ public import Mathlib.NumberTheory.NumberField.Basic
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AutPointLatticeIntersectionSelfDualProperties
-public import Mathlib.Analysis.Complex.Norm
 public import Mathlib.NumberTheory.NumberField.House
-public import Mathlib.Analysis.Normed.Ring.Basic
-public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
 public import ReciprocityTheory.L2DbarEstimates.PlurisubharmonicCharts.UniNilp
-public import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
 public import Development.AbelianVarietyTheory.Statements.CuspFrameWeights.ConvolutionSmoothL2
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LamXEquivariant
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NormExpSubOneLeExpNorm
@@ -34,11 +30,8 @@ import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
@@ -66,10 +59,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.PosPartUnitaryMul
-import Formalism.FormalDegreeBessel.StatementWR
-import Formalism.RealPlaceAnalysis.StatementA
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 
 -- This file was produced by scripts/clump.py from the modules listed below.

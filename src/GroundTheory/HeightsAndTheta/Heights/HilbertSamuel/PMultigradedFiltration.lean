@@ -6,7 +6,6 @@ public import Mathlib.Algebra.Module.LocalizedModule.Exact
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsHilbert
 public import Mathlib.RingTheory.GradedAlgebra.Radical
 import Mathlib.Tactic.TypeStar
-import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Objects
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 

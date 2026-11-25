@@ -1,9 +1,6 @@
 module
 
 public import Development.WeilBound.RepresentationTheoryGL.ArchimedeanBaseChange.ArchimedeanBaseChangeProof.ThetaNormCommutation.LocalComparisonSplitting.EulerFactorLevels.EulerFinOf
-public import Mathlib.Algebra.BigOperators.Finprod
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.GroupTheory.DoubleCoset
 public import Mathlib.GroupTheory.Index
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinsumDoubleCosetRegroupCommutative
 import Mathlib.Tactic.Linter.Style

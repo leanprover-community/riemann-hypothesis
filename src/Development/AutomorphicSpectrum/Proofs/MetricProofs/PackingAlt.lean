@@ -7,8 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPullC
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullConeNullModP
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsFibreNormPullback
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGridSeparation
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPullFormsGeneric
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPullRatiosAlgebraic
 public import GroundTheory.HeightsAndTheta.Heights.ElementarySymmetric.PFibreNormPullbackX
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PAvoidFormFinite
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PChartPrimePowerInverse
@@ -37,12 +35,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSmallPacking
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSmallSectionsSeparated
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
 import Mathlib.Tactic.Linter.Style
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PFibreRepresentatives
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullConeDegree
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullConeNull
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullGradedAlgebraic
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullRatiosAlgebraic
-import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PPullSectionIntegral
 import Development.AutomorphicSpectrum.Definitions.MetricPeriods.HasMultiplier
 
 -- This file was produced by scripts/clump.py from the modules listed below.

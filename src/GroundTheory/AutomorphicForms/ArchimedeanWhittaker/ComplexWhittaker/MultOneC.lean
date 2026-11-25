@@ -3,11 +3,7 @@ module
 public import GroundTheory.AutomorphicForms.ArchimedeanWhittaker.ComplexWhittaker.IsClosedDivisorComponent
 import GroundTheory.AutomorphicForms.RealGroupsIwasawa
 import GroundTheory.AutomorphicForms.RealGroupsKAK
-import Mathlib.Analysis.CStarAlgebra.Matrix
 import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Algebra.Star.Unitary
-import GroundTheory.AutomorphicForms.ArchimedeanWhittaker.FiltrationCocycleLiftCriterion
-public import GroundTheory.AutomorphicForms.ArchimedeanWhittaker.MultOne
 
 @[expose] public section
 

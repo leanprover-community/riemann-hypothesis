@@ -3,20 +3,15 @@ module
 public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.IsMultiHom
 public import Formalism.GradedWeylDivisibility.FinalC
 public import Formalism.LocalToGlobal.GroupLattices.FockModels.FlatModels.LetterB
-public import Formalism.GradedWeylDivisibility.FinalD
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.TensorBasis
 public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.DvdOfCompl
 public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.RestrictedWeightFirstTwoEq
 public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.TestSideCounting
-public import Formalism.PeriodIntegrals.AdmissibleModel.WeylDim
 public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.OneSidedLemma4
 public import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.EdgeLatticeMulOfWeightSum
 public import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.SourcePrimitiveIntegrality
 public import Formalism.SharpRestriction.GrowthBounds.DualFockLinear.SubstSPtrue
-public import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.ManyEdges
 public import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.GoodRankOfPrim
-public import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.ScaleNegMono
-public import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.NumericProductInequality
 public import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.InitialLevelMonoWeights
 public import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.SymbolRealisableIffGeneralRank
 public import Formalism.SharpRestriction.GrowthBounds.Joints
@@ -24,12 +19,6 @@ public import Formalism.SharpRestriction.GrowthBounds.MonomialOrderSegments
 public import Formalism.SharpRestriction.GrowthBounds.PathWeight
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.LocalToGlobal.GroupLattices.FockModels.MkP
-import Formalism.SharpRestriction.GrowthBounds.ScaleEdges.RankMulConductorDivLeOne
-import Formalism.LocalToGlobal.GroupLattices.FockModels.ElementaryDivisorBasis
-import Formalism.LocalToGlobal.GroupLattices.FockModels.FlatModels.EdgeLatOfG
-import Formalism.LocalToGlobal.GroupLattices.FockModels.FlatModels.LetterWtAnti
-import Mathlib.Tactic.Linter.HaveILetI
 import Formalism.SharpRestriction.GrowthBounds.ProjectionOfIsotypicDecomposition
 import Formalism.SharpRestriction.GrowthBounds.RootWeights.WeightConditionFromIntegralForm
 

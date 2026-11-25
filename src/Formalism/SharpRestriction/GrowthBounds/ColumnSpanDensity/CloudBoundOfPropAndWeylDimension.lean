@@ -8,7 +8,6 @@ public import Formalism.PolynomialDimension.MultinomialDepth.WeylDimPosOfAntiton
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.FinrankLetter
 import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.FinrankTensor
 public import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.LatticeCountPrimeMonoLevel
-import Formalism.SharpRestriction.GrowthBounds.ColumnSpanDensity.RhoLowerBoundOfEdgeCount
 
 @[expose] public section
 

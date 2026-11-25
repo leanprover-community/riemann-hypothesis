@@ -7,7 +7,6 @@ public import Formalism.LocalRingCardinality.SpanPowerMembership.Spaces
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.MemberDatumOfFlagTie
 public import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.AdelicDataRowMeasureScaleTrivialTuple
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Stdform
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.HeightProofs.IsSplitIdemIff, Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsBesPosOfBesselTied

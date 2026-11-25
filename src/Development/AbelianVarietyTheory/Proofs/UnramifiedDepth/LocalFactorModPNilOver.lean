@@ -46,7 +46,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 public import ReciprocityTheory.DualLattices.ATowerInh
 public import ReciprocityTheory.DualLattices.AinfFacts
-public import Mathlib.RingTheory.Ideal.GoingUp
 
 @[expose] public section
 

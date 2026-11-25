@@ -4,15 +4,10 @@ public import ReciprocityTheory.L2DbarEstimates.Localization.UnweightBackStateme
 public import Mathlib.MeasureTheory.Function.L2Space
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.MeasurableSetImageOfIsLocalHomeomorph
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.TsupportDbSubset
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 public import ReciprocityTheory.L2DbarEstimates.JacobianInterpolationStatement
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.ChartSymmEventuallyEq
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.IntegralFderivApplyEqZero
 public import ReciprocityTheory.L2DbarEstimates.MinimalSolutions.MinimalSolution
-public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.L2DbarEstimates.HormanderEstimate.GmSingleIsTestForm, ReciprocityTheory.L2DbarEstimates.HormanderEstimate.Hormander

@@ -3,8 +3,6 @@ module
 public import Mathlib.NumberTheory.LocalField.Basic
 public import Mathlib.RingTheory.Norm.Defs
 public import GroundTheory.LocalFields.UnramifiedNormSurj
-public import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeRangeNormUnits
-public import GroundTheory.LocalFields.UnramifiedDefs
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsStableGauss
 public import GroundTheory.AutomorphicForms.HermitianClassification
 public import Mathlib.LinearAlgebra.Charpoly.BaseChange

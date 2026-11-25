@@ -3,29 +3,15 @@ module
 public import Formalism.SharpRestriction.LevelLetterCocycles.InvLevCoreOfParts
 public import Formalism.SharpRestriction.LevelLetterCocycles.IsUnitOfMk
 public import Mathlib.Tactic.Linter.Style
-public import Mathlib.NumberTheory.Padics.PadicIntegers
-public import Formalism.SharpRestriction.LevelLetterCocycles.MapEvalPsPi
-public import Formalism.SharpRestriction.LevelLetterCocycles.ArcLiftingSetup
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.EvAtApply
 public import Mathlib.NumberTheory.Padics.MahlerBasis
-public import Mathlib.RingTheory.PowerSeries.Binomial
-public import Formalism.SharpRestriction.LevelLetterCocycles.AnnihilatorLevelsUnramifiedStatement
 public import Mathlib.Tactic.Linter.HaveILetI
-public import Formalism.SharpRestriction.LevelLetterCocycles.AnnihilatorGeneralOfRingCondition
-public import Formalism.SharpRestriction.LevelLetterCocycles.LocalizationQuotientSeparatedDvd
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.IsAdicCompleteOfLe
 public import Mathlib.NumberTheory.Padics.Hensel
 public import Formalism.SharpRestriction.LevelLetterCocycles.KillWinFromCut
 public import Formalism.SharpRestriction.LevelLetterCocycles.UniversalGeneralOfLevelInverse
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
-import Formalism.WeaklyAdmissibleFiltrations.Statement
-import Formalism.SharpRestriction.LevelLetterCocycles.NatCastEqZeroOfNotDvd
-import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.EvROnePow
 import Mathlib.Algebra.Order.Star.Int
-import Formalism.SharpRestriction.LevelLetterCocycles.BaseChangePreservesUnitaryOf
 import Formalism.SharpRestriction.LevelLetterCocycles.IsobaricMultiplicityOne
-import Formalism.SharpRestriction.LevelLetterCocycles.QuotientImageDivisibility.LMemMaxOL
-import Mathlib.NumberTheory.Multiplicity
 import Formalism.SharpRestriction.LevelLetterCocycles.WachFrobeniusLatticeUnramifiedFunctor
 
 -- This file was produced by scripts/clump.py from the modules listed below.

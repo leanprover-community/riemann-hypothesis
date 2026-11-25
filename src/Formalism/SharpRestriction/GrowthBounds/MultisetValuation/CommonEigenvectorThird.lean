@@ -12,7 +12,6 @@ public import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLi
 public import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.BiadditiveSecondVariable
 import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.SubstZOfXCoordZA
 import Mathlib.Tactic.Linter.Style
-import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.OddLogRelation
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.ExpansionAllPlacesOfPlace

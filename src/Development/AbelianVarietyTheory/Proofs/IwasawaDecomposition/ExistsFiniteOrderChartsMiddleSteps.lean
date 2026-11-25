@@ -3,25 +3,15 @@ module
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemCutQGrp
 public import Formalism.LocalToGlobal.Columns.TwQExact
 public import Formalism.LocalToGlobal.Columns.TwQLev
-public import Formalism.LocalToGlobal.Columns.TwQDefs
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CouplingCosetMovesWithFrameChange
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ValuationLeOneOfPow
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CouplingCosetsInFramesEqIffReductions
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ReferenceCharactersFactorTame
 public import Formalism.LocalToGlobal.Columns.TwQLat
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LatAtLattice
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DiamondElementIntegralSupportLastRow
-public import Formalism.LocalToGlobal.Columns.Adelic
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DecoratedLatticeDiagonalBasePointMul
 public import Formalism.LocalToGlobal.Columns.TwQLevU
-public import Formalism.LocalToGlobal.Columns.TwQThetaOpen
 public import Formalism.LocalToGlobal.Columns.QthExistsBound
 public import Formalism.LocalToGlobal.Columns.QthPrincInv
 public import Formalism.LocalToGlobal.Columns.ThetaOpenTwLevQ
-public import Formalism.LocalToGlobal.Columns.ChainInst
-public import Formalism.LocalToGlobal.Columns.ChainTwOk
-public import Formalism.LocalToGlobal.Columns.ChainTwZero
-public import Formalism.LocalToGlobal.Columns.QthConjClose
 public import Formalism.LocalToGlobal.Columns.TwQBridge
 public import Formalism.LocalToGlobal.Columns.ChainTwFin
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemberLevelPrimeNotUnderTwistPrime
@@ -67,12 +57,9 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCouplingCosetWithGivenReduction
 import Mathlib.Tactic.Basify
 import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SetStab
 import Mathlib.Tactic.ENatToNat
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ColumnPointEqOfDecoAndCosetReduction
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseFieldsDefiniteLaws
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsAdelicPointDecoratedLatticeAllTwistsStatement
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TrueColumnSpacesStandardInFrameCoordsStatement

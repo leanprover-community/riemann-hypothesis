@@ -11,7 +11,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeT
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.IsInertiaInfiniteCyclotomic
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsUniqueFixedPointOfAdicContraction
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.ChartChange
-public import Mathlib.NumberTheory.Padics.PadicIntegers
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoExt
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoRes
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.CoSpan
@@ -22,12 +21,9 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.Commutative
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.SmoothCompl
 public import Mathlib.RingTheory.DualNumber
 import Mathlib.NumberTheory.Padics.LocalField
-import Mathlib.RingTheory.AdicCompletion.Noetherian
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.DirichletPrimeToLPartMulLPowerPart
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.RingTheory.Finiteness.NilpotentKer
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.ExistsLiftFactorCompactSubalgebra, Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.GradedChart, Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.HomExt, Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.LiftChart

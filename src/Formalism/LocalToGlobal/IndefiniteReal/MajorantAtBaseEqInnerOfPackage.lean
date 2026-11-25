@@ -8,9 +8,7 @@ public import Formalism.LocalToGlobal.IndefiniteReal.CxLemmas
 public import Formalism.LocalToGlobal.IndefiniteReal.InBlock
 public import Formalism.LocalToGlobal.Divisibility.InertPartitionLePartF
 public import Formalism.LocalToGlobal.Divisibility.TrivialExtensionSideWellFormed
-import Formalism.LocalToGlobal.Divisibility.ProjLemmas
 import Formalism.LocalToGlobal.Divisibility.RowLatLemmas
-import Formalism.LocalToGlobal.GlobalTheory.DivPassage
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.LocalToGlobal.IndefiniteReal.CxPassMet, Formalism.LocalToGlobal.IndefiniteReal.MajorantAtBaseEqInnerOfPackage

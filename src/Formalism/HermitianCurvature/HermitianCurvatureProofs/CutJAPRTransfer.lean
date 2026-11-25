@@ -7,8 +7,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTSS
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJABddKapNrmW
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutJATCDtrSIo
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedA
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.NFRadRedS
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.TheSectionStab
 
 @[expose] public section

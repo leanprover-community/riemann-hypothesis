@@ -3,12 +3,9 @@ module
 public import GroundTheory.AutomorphicForms.CuspidalSplittingCoeff
 public import GroundTheory.AutomorphicForms.SmoothRepContragredient
 public import GroundTheory.AutomorphicForms.JacquetAdmissible
-import GroundTheory.AutomorphicForms.LocallyProfinite
 import GroundTheory.AutomorphicForms.SmoothRepSchur
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Basic
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
 import Mathlib.RingTheory.PiTensorProduct

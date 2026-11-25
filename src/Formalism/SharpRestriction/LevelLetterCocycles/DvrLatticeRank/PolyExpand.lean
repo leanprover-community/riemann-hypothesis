@@ -3,7 +3,6 @@ module
 public import Mathlib.Analysis.SpecialFunctions.Log.Base
 public import Mathlib.RingTheory.PowerSeries.Basic
 public import Mathlib.RingTheory.PowerSeries.Inverse
-public import Mathlib.Algebra.Polynomial.Inductions
 public import Mathlib.Data.Nat.Choose.Factorization
 public import Mathlib.NumberTheory.Padics.PadicVal.Basic
 

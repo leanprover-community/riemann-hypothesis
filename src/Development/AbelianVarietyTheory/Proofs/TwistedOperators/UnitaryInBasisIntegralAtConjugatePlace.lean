@@ -7,7 +7,6 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.InvVolConjLe
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AuxiliaryVectorDecompositionEqZero
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MemGLintOfEntries
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.PadOneMemSecondBlockTriangular
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsDual
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

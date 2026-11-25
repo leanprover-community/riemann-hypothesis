@@ -7,7 +7,6 @@ public import Mathlib.Topology.MetricSpace.ProperSpace.Lemmas
 public import Mathlib.Analysis.Calculus.BumpFunction.Basic
 public import Mathlib.MeasureTheory.Integral.Prod
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
-import Mathlib.Tactic.Finiteness
 
 @[expose] public section
 

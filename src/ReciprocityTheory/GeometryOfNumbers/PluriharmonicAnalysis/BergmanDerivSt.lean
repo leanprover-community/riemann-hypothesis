@@ -6,7 +6,6 @@ public import ReciprocityTheory.GeometryOfNumbers.PluriharmonicAnalysis.BergmanD
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.GeometryOfNumbers.PluriharmonicAnalysis.BergmanSt
-public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 
 @[expose] public section
 

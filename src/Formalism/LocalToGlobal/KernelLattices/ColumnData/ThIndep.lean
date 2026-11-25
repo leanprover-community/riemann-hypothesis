@@ -3,7 +3,6 @@ module
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.HfArith
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.LinkThIndep
 public import Lemmata.GeneralBFactThirdBis.Imports
-public import Formalism.LocalToGlobal.KernelLattices.ColumnData.IopNorm
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.TypeStar
 

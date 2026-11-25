@@ -53,13 +53,7 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Formalism.LocalToGlobal.IndefiniteForms.IndefSide
-import Formalism.LocalToGlobal.IndefiniteForms.IndefiniteTree.IndefiniteTreeX
-import Formalism.HarderNarasimhan.HarderNarasimhanProofs.QuotRealize
-import Formalism.HarderNarasimhan.ShiftInvariance
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Formalism.LocalToGlobal.IndefiniteReal.CxLemmas
-import Formalism.LocalToGlobal.IndefiniteForms.IndefUse
 import Formalism.PadicSubsetSums.StableGradedCounts.ZBrauerNesbittAlg
 import Mathlib.RingTheory.Etale.Weakly
 

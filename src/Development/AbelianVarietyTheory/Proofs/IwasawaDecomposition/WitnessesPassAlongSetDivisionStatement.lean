@@ -2,7 +2,6 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ColsReTo0S
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ColumnLocalDataTransportDivision
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsIsBIffCoreB
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.DsigEq
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InstBack
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ThetaChr

@@ -7,7 +7,6 @@ public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseChange
 public import GroundTheory.ProfiniteCohomology.RealPlaces.VanishingMackeyPlaces
 public import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.ShapiroCoind
 public import GroundTheory.ProfiniteCohomology.GlobalEulerCharacteristic.ShapiroReal
-public import GroundTheory.ProfiniteCohomology.RestrictedRamification.Brauer
 public import GroundTheory.ProfiniteCohomology.RealPlaces.VanishingMackeyTransfer
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -19,7 +18,6 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
@@ -46,7 +44,6 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import GroundTheory.ProfiniteCohomology.EulerChar
 import Mathlib.Algebra.Ring.IsFormallyReal
 
 -- This file was produced by scripts/clump.py from the modules listed below.

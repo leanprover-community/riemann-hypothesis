@@ -2,7 +2,6 @@ module
 
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ExistsAtlas
 import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
-import Mathlib.Topology.Algebra.MvPolynomial
 import Mathlib.Topology.Separation.CompletelyRegular
 public import Mathlib.Analysis.Calculus.FDeriv.RestrictScalars
 public import Mathlib.MeasureTheory.Function.Jacobian

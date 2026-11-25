@@ -7,8 +7,6 @@ public import Mathlib.RingTheory.Henselian
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.IsPrecompleteOfBasis
-public import Mathlib.Algebra.Algebra.ZMod
-public import Mathlib.FieldTheory.Finite.Basic
 
 @[expose] public section
 

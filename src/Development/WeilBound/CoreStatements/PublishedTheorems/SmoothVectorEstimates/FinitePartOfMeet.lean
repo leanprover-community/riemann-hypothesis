@@ -15,10 +15,6 @@ public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.Invarian
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.NormalisedCuspFormL2Bounded
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LieDerivativeL2InnerProduct
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ContinuousOfIsOpenStab
-import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ExistsIsOpenIsCompact
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CuspidalConvolutionCompact
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CuspidalKTypeFinite
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsNonnegBump
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IrreducibleCuspidalFormL2Mem
 
 -- This file was produced by scripts/clump.py from the modules listed below.

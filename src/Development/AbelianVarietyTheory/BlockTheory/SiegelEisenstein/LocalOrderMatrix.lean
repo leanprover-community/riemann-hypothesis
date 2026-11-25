@@ -6,7 +6,6 @@ public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.OnesRep
 public import Formalism.LocalToGlobal.Columns.AbelianHostFieldConditions
 import Formalism.LocalToGlobal.Columns.AlgebraMapMemMaximalIdealPowIff
 public import Formalism.LocalToGlobal.Columns.FiniteSumNonzeroLargeDepth
-import Formalism.LocalToGlobal.Divisibility.CoefMod
 
 @[expose] public section
 

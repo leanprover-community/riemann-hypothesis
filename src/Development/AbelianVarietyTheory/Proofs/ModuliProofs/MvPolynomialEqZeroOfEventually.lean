@@ -57,13 +57,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 public import Mathlib.Topology.Algebra.Module.Cardinality
 import Mathlib.Topology.Sheaves.Init
 public import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
-public import Mathlib.Algebra.MvPolynomial.Degrees
-public import Mathlib.Analysis.Calculus.ContDiff.Basic
-public import Mathlib.Analysis.Calculus.ContDiff.Comp
-public import Mathlib.Analysis.Calculus.ContDiff.Operations
-public import Mathlib.Analysis.Calculus.ContDiff.RCLike
-public import Mathlib.Analysis.Calculus.Implicit
-public import Mathlib.LinearAlgebra.Dual.Lemmas
 
 @[expose] public section
 

@@ -3,7 +3,6 @@ module
 public import Development.AbelianVarietyTheory.BlockTheory.CMModuli.ProjectiveSpaceOverSpec
 public import Mathlib.Algebra.Category.Ring.FinitePresentation
 public import Mathlib.RingTheory.Unramified.LocalRing
-import Mathlib.Algebra.Category.Ring.FilteredColimits
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

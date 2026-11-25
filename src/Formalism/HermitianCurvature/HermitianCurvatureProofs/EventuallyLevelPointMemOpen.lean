@@ -11,7 +11,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RdVOfEq
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RootVectorActionCutoff
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.UpperMinorOfLevelPoint
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UwClosedSubgroup
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.WeylCellConjTransposeMulApply
 
 @[expose] public section
 

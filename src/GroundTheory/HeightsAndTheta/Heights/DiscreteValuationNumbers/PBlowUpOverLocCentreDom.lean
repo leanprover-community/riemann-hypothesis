@@ -6,7 +6,6 @@ public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PBlo
 public import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.ContractRelevant
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsBlowUpOverLocMaxCentreCut
 public import Mathlib.RingTheory.Valuation.LocalSubring
-import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.LiftFormNotMemBlowUpOf
 import Mathlib.RingTheory.LocalProperties.Reduced
 import Mathlib.Tactic.TypeStar
 

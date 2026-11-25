@@ -9,7 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsElem
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsCoinv
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsSchur
 public import Mathlib.RingTheory.RootsOfUnity.Complex
-public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.ImportsAlt
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCharacterBound
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCoinvAboveTop
@@ -85,7 +84,6 @@ import Mathlib.Tactic.TypeStar
 import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.FlagBasic
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.Algebra.Ring.IsFormallyReal

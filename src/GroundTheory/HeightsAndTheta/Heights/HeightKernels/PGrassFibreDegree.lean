@@ -11,9 +11,7 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.GeoNum
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ConservationDegreeFormOfExistence
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArithmeticIntersection.MultihomogeneousIdeals.InhDivCycleOfSuppEmpty
 import Mathlib.Order.CompletePartialOrder
-import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
 import Mathlib.RingTheory.KrullDimension.Polynomial
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.IntNumRelabel
 import GroundTheory.HeightsAndTheta.Heights.FieldsOfNumbers.StatementsExamples
 import Mathlib.RingTheory.KrullDimension.Field

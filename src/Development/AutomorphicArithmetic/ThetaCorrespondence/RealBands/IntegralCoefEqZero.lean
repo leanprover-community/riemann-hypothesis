@@ -6,21 +6,12 @@ public import Mathlib.MeasureTheory.Function.LocallyIntegrable
 public import Mathlib.MeasureTheory.Group.Integral
 public import Mathlib.MeasureTheory.Integral.Bochner.Set
 public import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 public import Mathlib.Analysis.Fourier.Inversion
-public import Mathlib.Analysis.Fourier.FourierTransform
-public import Mathlib.Analysis.InnerProductSpace.Basic
-public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
-public import Mathlib.Topology.UrysohnsLemma
-public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
-public import Mathlib.MeasureTheory.Integral.DominatedConvergence
 public import Mathlib.MeasureTheory.Function.LpSpace.DomAct.Basic
 public import Mathlib.Topology.Algebra.Constructions.DomMulAct
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.RealBands.ConvAssoc
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.RealBands.ConvEig
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.RealBands.BandCc
-public import Mathlib.MeasureTheory.Integral.Prod
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.RealBands.DecaysZero
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.HermitianFormUnitaryOneOne
 public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexificationHolds
@@ -28,7 +19,6 @@ public import Formalism.RealPlaceAnalysis.RealPlaceTaylor.FrobeniusBoundOfMulNea
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.DefClassNum
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.ExistsStandardIndModule
 public import Development.AutomorphicArithmetic.ThetaCorrespondence.RealBands.IsCompactBall
-public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.SchurOrthogonalityIndefiniteUnitaryGroup
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -83,21 +73,13 @@ import Mathlib.Tactic.ENatToNat
 import Mathlib.Dynamics.Ergodic.Action.Regular
 import Mathlib.MeasureTheory.Function.LpSpace.DomAct.Continuous
 import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Topology.Algebra.Group.Units
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.TotallySplit
-import Mathlib.Topology.Sheaves.Presheaf
 import Mathlib.RingTheory.PicardGroup
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IwasawaDecompositionUnitaryIsotropicFlag
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.KoszulLowersPower
 import Mathlib.RingTheory.PiTensorProduct
-import Development.AbelianVarietyTheory.Proofs.FlagMeasures.IsotropicFlagUnipotentRadicalClosedSubgroupKeeps
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.ThetaCorrespondence.RealBands.EigBand, Development.AutomorphicArithmetic.ThetaCorrespondence.RealBands.Fourier, Development.AutomorphicArithmetic.ThetaCorrespondence.RealBands.BandKill, Development.AutomorphicArithmetic.ThetaCorrespondence.RealBands.EqZeroOfTest, Development.AutomorphicArithmetic.ThetaCorrespondence.RealBands.ExistsCompactTail, Development.AutomorphicArithmetic.ThetaCorrespondence.RealBands.Transl, Development.AutomorphicArithmetic.ThetaCorrespondence.RealBands.OpLeHalf, Development.AutomorphicArithmetic.ThetaCorrespondence.RealBands.KillsOfIdem, Development.AutomorphicArithmetic.ThetaCorrespondence.RealBands.Unfold, Development.AutomorphicArithmetic.ThetaCorrespondence.RealBands.Abstract, Development.AutomorphicArithmetic.ThetaCorrespondence.RealBands.Weight, Development.AutomorphicArithmetic.ThetaCorrespondence.RealBands.ContinuousAverage, Development.AutomorphicArithmetic.ThetaCorrespondence.RealBands.ConvCoef, Development.AutomorphicArithmetic.ThetaCorrespondence.RealBands.FlagNW, Development.AutomorphicArithmetic.ThetaCorrespondence.RealBands.Imports, Development.AutomorphicArithmetic.ThetaCorrespondence.RealBands.InvMemFlagN, Development.AutomorphicArithmetic.ThetaCorrespondence.RealBands.IntegralCoefEqZero

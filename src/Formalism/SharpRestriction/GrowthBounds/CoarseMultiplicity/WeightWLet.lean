@@ -3,9 +3,7 @@ module
 public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.FinalTheorems
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.DegSplit
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.SymbolVariableLowerLetter
-public import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SegmentChainDegreeEven
 import Std.Tactic.BVDecide.Normalize.Bool
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SegmentStatementHolds
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.IoBlockWh, Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.WeightWLet

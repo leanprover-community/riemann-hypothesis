@@ -6,9 +6,6 @@ public import Formalism.WachLatticeTwists.LatticeDualFibres.Statement
 public import Mathlib.LinearAlgebra.FreeModule.PID
 public import Mathlib.RingTheory.Localization.Module
 public import Formalism.WachLatticeTwists.CoprimeLiftBounds.StatBridgeChiOne
-public import Mathlib.Data.Nat.PadicValNat
-public import Formalism.CharacterColumnKernels.StatementPsi
-public import Formalism.WachLatticeTwists.CoprimeLiftBounds.Statement
 public import Formalism.WachLatticeTwists.CoprimeLiftBounds.CoprimeLiftProofs.SmulYGenEqZero
 public import Formalism.CharacterColumnKernels.IdempotentNormalForms.LengthKerOfDetEqZero
 public import Mathlib.NumberTheory.Multiplicity
@@ -19,18 +16,14 @@ public import Formalism.WachLatticeTwists.RealClassMaps.StatClassMapReal
 public import Formalism.WachLatticeTwists.RealClassMaps.Statement
 public import Formalism.WachLatticeTwists.RealClassMaps.RealClassMapProofs.ClsRowVOfMem
 public import Formalism.WachLatticeTwists.CupProductVanishing.H2MapInjective
-public import Formalism.WachLatticeTwists.ShapeRowIsomorphisms.StatClause5Row
 public import Formalism.WachLatticeTwists.ShapeRowIsomorphisms.ShapeRowProofs.BkInRow
 public import Formalism.CharacterColumnKernels.CharacterColumnKernelEqualityForm
-public import Formalism.WachLatticeTwists.ShapeRowIsomorphisms.Statement
 public import Formalism.WachLatticeTwists.SplitLocalLifts.Cocycles1MapOfEquivariant
 public import Formalism.AdmissibleDesigns.RealDisplayAllK
 public import Formalism.WachLatticeTwists.RamifiedBlockRings.DistinctEigenvalueCornerPerturbation
 public import Formalism.WachLatticeTwists.RamifiedBlockRings.LocalToDisplayFree
 public import Formalism.WachLatticeTwists.SplitClassesAll.Statement
 import Mathlib.Tactic.TypeStar
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Formalism.CharacterColumnKernels.IdempotentNormalForms.LengthEqKerAddRange
 import Mathlib.Tactic.Lemma
 

@@ -34,7 +34,6 @@ import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
 import Mathlib.Tactic.Linter.Style
-import Formalism.AdmissibleDesigns.EKSymmCont
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Formalism.AdmissibleDesigns.MsContW

@@ -8,11 +8,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsSecReading
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsEvenSecEvRNeZero
 public import Development.WeilBound.CoreStatements.ProjectiveValuations.FrequentlyNeZero
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsVanBdOfMemExtVanZ
-public import Development.AbelianVarietyTheory.Definitions.Divisors.NoCommonZeroCombVal
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.FiniteDimensional.Defs
-public import Mathlib.LinearAlgebra.Dimension.Finite
-public import Mathlib.RingTheory.Trace.Basic
 public import Development.AbelianVarietyTheory.Definitions.Divisors.BarCompSubsetClosure
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagCellFrameChangeTriangular
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CompactificationComponentIntegralSmoothProjectiv
@@ -36,7 +31,6 @@ public import Development.WeilBound.CoreStatements.ProjectiveValuations.FlagMode
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LineModel
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagSpaceComponentSmoothProjectiveConnected
 public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Analysis.Calculus.FDeriv.Defs
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PRiemannExtensionAnalytic
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MonoSpMapRingOfIntegersAlt
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsLieEigenspaceFrameFlagCoverChartDomain
@@ -71,7 +65,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HasFibrewise
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PushInvertibleOfHasTheta
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ToroidalFlagNonempty
 import Development.AbelianVarietyTheory.Proofs.GenericRegularity.EvaluationLawsGenericFramesAtlasHold
-import Development.AbelianVarietyTheory.Proofs.GenericRegularity.FrameBorelGroupoidProperties
 import Formalism.LocalToGlobal.ProjectiveLattices.FamilyUniformisationBasePointOrthogonal
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -107,36 +100,25 @@ import Mathlib.Tactic.NormNum.NatFib
 import Mathlib.Tactic.NormNum.NatLog
 import Mathlib.Tactic.NormNum.NatSqrt
 import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Topology.Sheaves.Init
 import Mathlib.Tactic.ReduceModChar
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FlagCellFramesLastStepEigenmodules
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.CocycleTrivialOnProjectiveCover
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbProj
 import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.ExistsUniqueSpecializes
-import Mathlib.Analysis.Complex.RemovableSingularity
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Tactic.ENatToNat
 import Development.AbelianVarietyTheory.Definitions.Divisors.CuspIso
-import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsChartLieBasisMatrices
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.IsReducedIsNormalSchemeIsLocallyNoetherianOfSmoo
 import Mathlib.Algebra.Azumaya.Basic
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.MemSuppOnIffIdemMulOfNatural
 import Development.AbelianVarietyTheory.Definitions.Divisors.SlopeTestRemainingChoices
-import Development.AbelianVarietyTheory.Proofs.GenericRegularity.GenFrExAndGenFromTest
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.CoreStatements.HomogeneousNonvanishing.VuOntoA, Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsResidueEval, Development.AutomorphicSpectrum.Proofs.GeometryProofs.LinIndepDescent, Development.AutomorphicSpectrum.Proofs.GeometryProofs.ComplexSectionFiniteCombination, Development.WeilBound.CoreStatements.ProjectiveValuations.HolomorphicExtensionSections, Development.AutomorphicSpectrum.Proofs.GeometryProofs.ToroidalFlagSmoothProjective, Development.AutomorphicSpectrum.Proofs.GeometryProofs.ToroidalFlagSmoothProjectiveStatement, Development.WeilBound.CoreStatements.ProjectiveValuations.DifferentiableAtOfLines, Development.WeilBound.CoreStatements.ProjectiveValuations.ExistsFrBorOfMatches, Development.WeilBound.CoreStatements.HomogeneousNonvanishing.VuOntoB, Development.WeilBound.CoreStatements.HomogeneousNonvanishing.VuOntoC, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.HodgeBundleWeights.LocalUnitMapSurjective, Development.WeilBound.CoreStatements.CommonZeroEvaluation.CuspFormExtensionVanishing, Development.WeilBound.CoreStatements.NefModelVolumes.NormGenValLe, Development.WeilBound.CoreStatements.ProjectiveValuations.NonemptyToroidalFlagBundle, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.HodgeBundleWeights.WeilHeightArchimedeanContribution

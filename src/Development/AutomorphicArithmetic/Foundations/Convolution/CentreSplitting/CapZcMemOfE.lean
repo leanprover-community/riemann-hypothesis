@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.DefsObj
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.BuildingsResidueChars.HarishChandraProjQuantumDetEqProd
 public import Development.AutomorphicArithmetic.Foundations.Convolution.CentreSplitting.JGenLinLie
-import Formalism.RealPlaceAnalysis.ThirdArithmeticHolds
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.SiegelHeights.MultiCentre
 
 -- This file was produced by scripts/clump.py from the modules listed below.

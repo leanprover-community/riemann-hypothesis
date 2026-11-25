@@ -9,9 +9,6 @@ import Mathlib.Topology.Separation.CompletelyRegular
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.MaMeasureA
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.Partition
-public import Mathlib.Analysis.Calculus.FDeriv.RestrictScalars
-public import Mathlib.MeasureTheory.Function.Jacobian
-public import Mathlib.RingTheory.Norm.Transitivity
 
 @[expose] public section
 

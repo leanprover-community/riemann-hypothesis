@@ -12,7 +12,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MuCoeffZeroN
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MuDvdOfDvdIterates
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AinfGhostThetaFrobIterValuesXiMuPadic
 public import Development.AbelianVarietyTheory.Definitions.Divisors.XiMulNu
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HodgeTateLatticeEqRowSpaceOfSandwichDatum
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SmulMemRange
@@ -24,11 +23,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HodgeTatePai
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PDivisibleGroupLatticeFreeRankHeight
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.InjectiveOfSmulMemRange
 public import Mathlib.Algebra.Category.ModuleCat.Basic
-public import Mathlib.Combinatorics.Quiver.ReflQuiver
-public import Mathlib.RingTheory.Ideal.Maps
-public import Mathlib.Algebra.Category.ModuleCat.ChangeOfRings
-public import Mathlib.Algebra.Exact.Basic
-public import Mathlib.LinearAlgebra.TensorProduct.RightExactness
 public import Mathlib.Algebra.Module.LinearMap.Defs
 public import Development.AutomorphicSpectrum.PublishedTheorems.Algebra₂.FarguesExact
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HodgeTateSandwichOfPrismaticDieudonne
@@ -80,7 +74,6 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Development.AbelianVarietyTheory.Definitions.Divisors.FormalCoboundarySmul
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FontaineXiPowSaturatedQuotientComplete
@@ -88,7 +81,6 @@ import Mathlib.Tactic.Linter.Style
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.PiTensorProduct
 import ReciprocityTheory.DualLattices.AinfFacts
-import Mathlib.Topology.Sheaves.Init
 import Mathlib.RingTheory.WittVector.IsPoly
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.PrismaticDieudonneAt
 import ReciprocityTheory.DualLattices.ExistsPrimitiveRoot

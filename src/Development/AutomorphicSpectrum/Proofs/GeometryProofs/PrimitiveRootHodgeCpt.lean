@@ -10,7 +10,6 @@ public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsPushEqu
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.WeilIsGrpPullbackOfCommute
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsGenericWeilPairing
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.TateIsoPullbackEquiv
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -3,8 +3,6 @@ module
 public import GroundTheory.GlobalFields.NormResidueSymbol.RationalLocal
 public import GroundTheory.GlobalFields.NormResidueSymbol.RangeIdeleNormLeKerIdeleSymbol
 public import GroundTheory.GlobalFields.IdeleGroups.Rational
-public import Mathlib.NumberTheory.Cyclotomic.Basic
-import GroundTheory.LocalFields.ExplicitQp
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

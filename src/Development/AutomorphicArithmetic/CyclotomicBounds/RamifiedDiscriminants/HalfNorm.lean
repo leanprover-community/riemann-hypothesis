@@ -9,10 +9,7 @@ public import Development.AutomorphicArithmetic.FrobeniusLocalisation.VdFormula
 public import Development.AutomorphicArithmetic.FrobeniusLocalisation.VdLe
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
 public import Mathlib.Algebra.AffineMonoid.Basic
-public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
-public import Mathlib.RingTheory.DedekindDomain.Different
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.PadicValNatAbsNormEqZero
-public import Development.AutomorphicArithmetic.PrimeDiscriminants.SlopeTestRemainingChoices
 public import Development.AutomorphicArithmetic.FrobeniusLocalisation.VdTameWild
 public import Development.AutomorphicArithmetic.FrobeniusLocalisation.DiscrK
 public import Development.AutomorphicArithmetic.FrobeniusLocalisation.MemRam
@@ -22,7 +19,6 @@ public import Development.AutomorphicArithmetic.FrobeniusLocalisation.RamEq
 public import Development.AutomorphicArithmetic.PrimeDiscriminants.RamDiscr
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.Linter.HaveILetI
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.KcDiffSmulMem
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.FrobeniusLocalisation.CondRd, Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsDifferentExponentDenominator, Development.AutomorphicArithmetic.FrobeniusLocalisation.ArtLSpec, Development.AutomorphicArithmetic.FrobeniusLocalisation.GrpBridge, Development.AutomorphicArithmetic.FrobeniusLocalisation.DiffMult, Development.AutomorphicArithmetic.FrobeniusLocalisation.DiffEKSupp, Development.AutomorphicArithmetic.FrobeniusLocalisation.halfSupp, Development.AutomorphicArithmetic.CyclotomicBounds.RamifiedDiscriminants.HalfNorm

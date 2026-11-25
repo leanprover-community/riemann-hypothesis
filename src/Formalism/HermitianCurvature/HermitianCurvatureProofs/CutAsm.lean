@@ -3,7 +3,6 @@ module
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutMP2
 import Mathlib.RingTheory.PiTensorProduct
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.IsAdmissibleSplittingCharPairMulTwist
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.SquareIntegrableGammaZetabarInv
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnipotentComposition.Development
 import CompanionTheory.AutomorphicTheory.JacobiDiagonalBounds.TieRad
 

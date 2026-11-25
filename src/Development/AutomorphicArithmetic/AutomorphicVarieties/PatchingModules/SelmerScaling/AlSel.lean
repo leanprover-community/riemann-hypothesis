@@ -9,7 +9,6 @@ public import Mathlib.Algebra.DualNumber
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SelmerScaling.SelmerSpannedByKappaLaurent
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.SelmerScaling.DefUTest
 import Mathlib.RingTheory.AdicCompletion.Noetherian
-import Mathlib.RingTheory.PowerSeries.Inverse
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 

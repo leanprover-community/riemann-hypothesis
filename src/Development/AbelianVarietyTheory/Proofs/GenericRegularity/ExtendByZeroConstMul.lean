@@ -7,16 +7,12 @@ public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.ExistsSe
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.IsIntegrallyClosedQuotientOfMemMinimalPrimes
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.NaturalRuleValueBaseChangeOfIsReduced
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.SectionEqZeroOfGenericFramedPointValues
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.ModerateCoefficientPositivity
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.BddSecMulAndConstTermMul
-public import Mathlib.RingTheory.MvPolynomial.Homogeneous
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.SiegelSpaceAlgebraHolds
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.BddOfMemHolSub
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.BddSecCuspCongr
-public import Formalism.LocalToGlobal.ProjectiveLattices.AllTest
 public import Formalism.LocalToGlobal.ProjectiveLattices.CuspFree
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FiniteDimensionalOfLeHolSub
-public import Formalism.LocalToGlobal.ProjectiveLattices.IsGenFrGenFr
 public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.EvaluationLawsGenericFramesAtlasHold
 public import Formalism.LocalToGlobal.ProjectiveLattices.IsAlgebraicOfTrdegEq
 public import Formalism.LocalToGlobal.ProjectiveLattices.FreeBridge
@@ -38,7 +34,6 @@ import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.PicardGroup
 import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify

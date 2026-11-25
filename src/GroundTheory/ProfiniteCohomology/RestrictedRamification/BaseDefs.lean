@@ -3,17 +3,13 @@ module
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseChangeMackey
 public import GroundTheory.ProfiniteCohomology.CompactSupportCohomology
 public import GroundTheory.ProfiniteCohomology.PoincareDuality.Torsion
-public import GroundTheory.GlobalFields.CompletionAtPlace.Integers
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.EqZeroOfBrauerLocalApplyEqZero
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerDefs
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerLocalDefs
-public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
 public import GroundTheory.ProfiniteCohomology.CohomologicalDimension.SubsingletonCohomologyOfPrimaryOfFinite
-import GroundTheory.ProfiniteCohomology.CupProducts.Cocycles
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.RealPlaces
 public import GroundTheory.ProfiniteCohomology.GlobalClassFormation.SumInvariants
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.Brauer
-import GroundTheory.ProfiniteCohomology.RestrictedRamification.BrauerSplit
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

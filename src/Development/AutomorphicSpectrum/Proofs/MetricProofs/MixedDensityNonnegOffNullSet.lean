@@ -5,7 +5,6 @@ public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.Lintegra
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.MaMeasureB
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LocDensAddOfFunContinuousOn
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.MdiscSt
 import ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens
 import ReciprocityTheory.AnalyticForms.PotentialTheory.MaMeasureA
 import ReciprocityTheory.AnalyticForms.PotentialTheory.Partition

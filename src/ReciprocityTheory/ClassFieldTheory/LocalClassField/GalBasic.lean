@@ -4,7 +4,6 @@ public import ReciprocityTheory.ClassFieldTheory.LocalClassField.ExistsIntEKMulV
 import Mathlib.FieldTheory.Galois.Profinite
 public import Mathlib.Topology.Connected.Separation
 public import ReciprocityTheory.GroupCohomology.DEqZeroOfMemB
-public import Mathlib.FieldTheory.Galois.Infinite
 
 @[expose] public section
 

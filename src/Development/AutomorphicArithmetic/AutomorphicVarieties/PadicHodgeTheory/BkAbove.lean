@@ -3,8 +3,6 @@ module
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.IotaSpec
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.BlochKatoSelmerVanishes
 public import Formalism.LocalRingCardinality.SpanPowerMembership.NDLocD
-public import Formalism.LocalRingCardinality.SpanPowerMembership.NDLocB
-public import Formalism.LocalRingCardinality.SpanPowerMembership.NDLocC
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.FieldTheory.Galois.Profinite
 public import Formalism.SharedLemmas.CocycleFiniteIndex

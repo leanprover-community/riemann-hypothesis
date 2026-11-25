@@ -9,7 +9,6 @@ public import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStableConv
 public import GroundTheory.AutomorphicForms.GKModules.Garding
 import GroundTheory.AutomorphicForms.AutomorphicFormSpaces.GKStable
 import GroundTheory.AutomorphicForms.CuspidalDiscreteness.ExistsLintegralConstantTermL2SqLe
-import GroundTheory.GlobalFields.Adele.Topology
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

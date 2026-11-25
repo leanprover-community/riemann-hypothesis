@@ -1,9 +1,6 @@
 module
 
 public import Mathlib.RingTheory.Henselian
-public import Mathlib.Algebra.Group.Units.Defs
-public import Mathlib.Algebra.Ring.Hom.Defs
-public import Mathlib.Basic.Finite.Defs
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FiniteInvolutionFixedUnitEqMulConj
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

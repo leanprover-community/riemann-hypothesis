@@ -9,12 +9,10 @@ public import GroundTheory.AutomorphicForms.GL2.FiniteIdeleDecomp
 public import GroundTheory.AutomorphicForms.GL2.GodementSectionFactor
 public import GroundTheory.LocalFields.LocalZetaEpsilon
 public import GroundTheory.LocalFields.LocalZeta
-import GroundTheory.GlobalFields.ClassFieldConsequences.RayClassFieldLocal
 import Mathlib.Tactic.TypeStar
 import GroundTheory.GlobalFields.KummerTheory.LocalIndexAtPlace
 import GroundTheory.GlobalFields.LocalAtPlace
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.RingTheory.Henselian
 import Mathlib.Topology.UniformSpace.Uniformizable
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -1,7 +1,6 @@
 module
 
 public import Formalism.HermitianCurvature.CompositeFormulaLevelZero
-public import Mathlib.CategoryTheory.Category.Basic
 
 @[expose] public section
 

@@ -3,20 +3,15 @@ module
 public import Formalism.PadicSubsetSums.CentralIdempotents.EigenbasisOfDistinctRoots
 public import Mathlib.NumberTheory.Padics.PadicVal.Basic
 public import Formalism.PadicSubsetSums.StableGradedCounts.LocalEstimateIVOfTypeSetWeight
-public import Mathlib.RingTheory.SimpleRing.Principal
 public import Formalism.PadicSubsetSums.StableGradedCounts.ProdPowFactorizationLe
-public import Formalism.PadicSubsetSums.CentralIdempotents.GaloisIrreducibility
 public import Formalism.PadicSubsetSums.StableGradedCounts.IRRPrimeToPartSpec
 public import Formalism.PadicSubsetSums.StableGradedCounts.CoeffZeroNeZeroOfIrreducible
 public import Mathlib.Algebra.Order.Field.GeomSum
 import Mathlib.Algebra.Order.Star.Int
-import Formalism.PadicSubsetSums.StableGradedCounts.IRRIrredCountUpper
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.Tactic.TypeStar
-import Formalism.PadicSubsetSums.StableGradedCounts.IRRSamePartCount
-import Mathlib.Analysis.Complex.ExponentialBounds
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PadicSubsetSums.StableGradedCounts.FourMulSumLeProduct, Formalism.PadicSubsetSums.StableGradedCounts.LocalEstimateThird, Formalism.PadicSubsetSums.StableGradedCounts.IRRPrimeToPartEqIff, Formalism.PadicSubsetSums.StableGradedCounts.CrossFactorCount, Formalism.PadicSubsetSums.StableGradedCounts.SquareSetMemExceptionalUnion, Formalism.PadicSubsetSums.StableGradedCounts.PropertyWOfEstimates

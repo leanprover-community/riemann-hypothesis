@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.LocalFields.PadicLogSeries
 public import Mathlib.MeasureTheory.Measure.Haar.DistribChar
-import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeAndRangePowLe
 public import GroundTheory.LocalFields.SeparableClosureValuation
 import GroundTheory.LocalFields.Uniqueness
 import Mathlib.Algebra.Order.Star.Real

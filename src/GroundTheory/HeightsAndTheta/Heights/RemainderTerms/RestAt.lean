@@ -9,7 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.FlagIntegralRe
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.IsPowerSumDecompositionHomogeneousComponent
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.FlagIntegralRealRootRingToRealAlt
 public import Mathlib.LinearAlgebra.Dual.Lemmas
-public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.StatementsCoinv
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCoinvIdealComponent
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCoinvIdealRepresentation
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCoinvMonomialReduction
@@ -17,7 +16,6 @@ public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCoinvPolynomi
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCoinvStaircaseComponent
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCoinvStaircaseDegree
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PCoinvStepReduction
-public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PHomogeneousComponentMul
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.CoeffRenameProdCongrRight
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Order.Star.Rat

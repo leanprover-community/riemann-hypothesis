@@ -5,14 +5,10 @@ public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Mathlib.RingTheory.Valuation.Integers
 public import ReciprocityTheory.DualLattices.IsUnitDetOfSpanEq
 public import ReciprocityTheory.DualLattices.ValuationDetEqOfSpanEq
-public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 public import Mathlib.LinearAlgebra.Vandermonde
-public import ReciprocityTheory.DualLattices.TensorSpan
 public import ReciprocityTheory.DualLattices.PrimeHopfOrderStatement
 public import ReciprocityTheory.DualLattices.FourierMapSmulLambdaWeight
 public import ReciprocityTheory.DualLattices.ImportsAlt
-public import Mathlib.Analysis.Real.Sqrt
-public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal

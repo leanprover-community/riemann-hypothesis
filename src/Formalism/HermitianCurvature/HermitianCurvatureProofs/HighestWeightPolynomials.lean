@@ -2,9 +2,6 @@ module
 
 public import Formalism.HermitianCurvature.CapelliDeterminantAndBranching
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.QuantumMinorCommutation
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.GeneratorCommutatorQuantumDet
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.QuantumDetHighestWeightHolds
-import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ShiftedGeneratorEqIteSmulAdd
 public import Lemmata.GeneralBFactSecondTerForm.Imports
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar

@@ -2,7 +2,6 @@ module
 
 import Development.AutomorphicSpectrum.Proofs.MetricProofs.FrameChangeUnderFieldMap
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsBlkCover
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockDiagonalMinorVanishing
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.MinorIJMap
 import Std.Tactic.BVDecide.Normalize.Prop

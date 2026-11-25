@@ -1,7 +1,6 @@
 module
 
 public import Formalism.ThetaLogCoordinates.JacobiPathWeights.StatementE
-public import Formalism.ThetaLogCoordinates.JacobiPathWeights.DetLetters
 public import Formalism.ThetaLogCoordinates.JacobiPathWeights.JacobiMinorProofs.ExistsSuppOfEvalNe
 public import Formalism.SharpRestriction.GrowthBounds.BinomialPolynomialIdentities.RestSplit
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.PropertySubmoduleWeightEntryComponent
@@ -15,10 +14,6 @@ public import Formalism.SharpRestriction.GrowthBounds.RootWeights.SumFinsuppAnti
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.WeightEntryRestrictionMem
 public import Formalism.ThetaLogCoordinates.JacobiPathWeights.JacobiMinorProofs.LemmaA2indepOf
 import Mathlib.Tactic.TypeStar
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Formalism.SharpRestriction.GrowthBounds.BinomialPolynomialIdentities.PeBnOfLt
 import Mathlib.Order.Interval.Finset.Box
 
 -- This file was produced by scripts/clump.py from the modules listed below.

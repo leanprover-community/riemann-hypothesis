@@ -3,8 +3,6 @@ module
 public import Formalism.SharpRestriction.GrowthBounds.TwistedSubstitution.CommPresIsoSub
 public import Formalism.SharpRestriction.GrowthBounds.GLWeightTheory
 public import Formalism.SharpRestriction.GrowthBounds.ProjectionOfIsotypicDecomposition
-import Formalism.SharpRestriction.GrowthBounds.RootWeights.ValuationNonnegIffIntegral
-import Formalism.SharpRestriction.GrowthBounds.RootWeights.WeightConditionFromIntegralForm
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Presheaf
 

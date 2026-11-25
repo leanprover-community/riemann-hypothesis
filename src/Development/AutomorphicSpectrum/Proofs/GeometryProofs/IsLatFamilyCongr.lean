@@ -6,7 +6,6 @@ public import Development.AutomorphicSpectrum.Statements.GeometryStatements.None
 public import Development.AutomorphicSpectrum.Statements.GeometryStatements.HTChartExists
 import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.CompactGapsGE
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.BundleObjects
-import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Objects
 
 @[expose] public section
 

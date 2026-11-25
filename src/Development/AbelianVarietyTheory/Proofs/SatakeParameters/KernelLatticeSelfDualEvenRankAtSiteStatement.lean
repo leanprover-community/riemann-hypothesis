@@ -7,7 +7,6 @@ public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.Exists
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsLatDlOfIsOrthCo
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsOrthCoToLEOfCTMulSelf
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsSDLatLatK
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SpanRangeEmb4EqTop
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.JointCmpEmbeddingY
 public import Formalism.SharpRestriction.Divisibility.ProductZerothFirstParts
 import Mathlib.Algebra.Order.Floor.Extended
@@ -47,12 +46,8 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.LocSpBot
-import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.MemMoveLevUloc
-import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.WittFractionToCpAlgebraMap
-import Formalism.LocalToGlobal.InertKernelTheory.SecondKernelEntrywiseLastLevel
 import Formalism.LocalToGlobal.InertKernelTheory.StatementInt
 import Formalism.LocalToGlobal.KernelLattices.TopLawQ
-import Formalism.SharpRestriction.GrowthBounds.ChartComparison.NrmAMemAdForms
 import Formalism.SharpRestriction.GrowthBounds.MultisetValuation.CoeffProdRename
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -3,7 +3,6 @@ module
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GoodConstOfAniso
 public import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.AdelicUnitaryEveryPointHasCuspScale
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TorusConjugateUnipotentBounded
-public import Development.AbelianVarietyTheory.Definitions.Divisors.LocallyCompactUnipFlag
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnipotentRadicalCompactFundamentalDomain
 import Development.WeilBound.ThetaLifts.Reductions.SiegelCore
 

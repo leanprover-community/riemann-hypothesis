@@ -3,26 +3,13 @@ module
 public import Development.WeilBound.CoreStatements.MinimalPrimeDimensions.IntegralBallPow
 public import Development.WeilBound.CoreStatements.MinimalPrimeDimensions.EvaluationGenEqZero
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.ConeBall
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.RingTheory.RegularLocalRing.Defs
-public import Mathlib.RingTheory.SimpleRing.Principal
-public import Mathlib.Topology.Separation.CompletelyRegular
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.Assembly
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeLogBound
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeMeetNull
-public import Development.WeilBound.CoreStatements.MinimalPrimeDimensions.GenIdeal
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnderEqGenericPoint
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PFsLogSmul
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeMapAreaOne
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LocalMultRadical
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PBaseChangeAvoid
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PRadicalBaseChange
-import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PZeroLocusDimH
-import GroundTheory.HeightsAndTheta.Heights.ChowForms.Assembly
-import GroundTheory.HeightsAndTheta.Heights.ChowForms.PConeDimOfChowForm
-import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.Assembly
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PConeFsLogIntegrable
 import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsConeTangentAverage
 

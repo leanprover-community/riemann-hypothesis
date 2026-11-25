@@ -6,7 +6,6 @@ public import Formalism.HermitianCurvature.StatementU
 public import Mathlib.Analysis.Normed.Lp.lpSpace
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.CayleyForm
 public import Formalism.FormalDegreeBessel.FinalG
-import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BetaSesquilinearity
 import Mathlib.Algebra.Order.Archimedean.Real.Hom
 public import Mathlib.Analysis.Calculus.UniformLimitsDeriv

@@ -6,8 +6,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.DerivativeBo
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.InnerAveragingInputOfSliceData
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.KloostermanDensityOfParts
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OmLongContinuousOn
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 

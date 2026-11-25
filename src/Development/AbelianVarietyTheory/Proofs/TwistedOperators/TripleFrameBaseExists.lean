@@ -37,8 +37,6 @@ public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.Symplecti
 public import Development.AbelianVarietyTheory.Statements.HaarFundamentalDomain.ExistsHaarFundDom
 import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleWeightMiddleEntries
 import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasChr
-import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasSign
-import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

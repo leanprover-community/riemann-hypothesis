@@ -2,11 +2,7 @@ module
 
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.ClopenCondOnto
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ExistsAdaptedUnimodular
-public import Mathlib.Analysis.Complex.Norm
-public import Mathlib.LinearAlgebra.Matrix.PosDef
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RiemannFormHermitianLattice
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import Mathlib.Topology.Instances.Matrix
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SiegelLimitImagBound
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SymplecticPolydiscPeriodBasis
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ImLowerOnKernel
@@ -17,7 +13,6 @@ import GroundTheory.HeightsAndTheta.Heights.Regularisation.PLogCoverDescent
 import GroundTheory.HeightsAndTheta.Heights.Regularisation.PPuncturedExpOrder
 import GroundTheory.HeightsAndTheta.Heights.Regularisation.PRiemannExtensionSlices
 import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.NormNum.LegendreSymbol
@@ -25,7 +20,6 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.CategoryTheory.Monoidal.Cartesian.Basic
-import Mathlib.CategoryTheory.Monoidal.Category
 import Mathlib.Topology.Sheaves.Presheaf
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst

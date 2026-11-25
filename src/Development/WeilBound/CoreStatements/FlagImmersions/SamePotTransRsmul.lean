@@ -9,7 +9,6 @@ public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogResolutionF
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IsSmoothHermTrivLine
 
 @[expose] public section
 

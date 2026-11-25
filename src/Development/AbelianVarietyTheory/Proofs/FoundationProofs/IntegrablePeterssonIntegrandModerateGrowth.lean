@@ -49,7 +49,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Topology.Sheaves.Init
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.Newform
-import Mathlib.NumberTheory.ModularForms.CongruenceSubgroups
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify

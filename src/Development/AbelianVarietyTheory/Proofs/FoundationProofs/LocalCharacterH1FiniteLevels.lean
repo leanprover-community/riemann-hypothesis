@@ -3,8 +3,6 @@ module
 public import ReciprocityTheory.Hypotheses.GalCohDefs
 public import Mathlib.RingTheory.Ideal.Int
 public import ReciprocityTheory.GaloisValuations.ArithOfA
-public import Mathlib.NumberTheory.Padics.PadicIntegers
-public import Mathlib.RingTheory.LocalRing.ResidueField.Defs
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.LocalRingsCompletion.dvrFinite
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.DvrFacts
@@ -57,8 +55,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Formalism.SharpRestriction.ValuationFrobeniusEpsilon.ScaledValuations.ValuationApplyLtOneIff
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.SoLevFacts
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat

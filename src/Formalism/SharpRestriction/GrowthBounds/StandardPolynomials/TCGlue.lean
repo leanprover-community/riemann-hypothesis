@@ -5,7 +5,6 @@ public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.DegSpli
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.SymbolVariableLowerLetter
 public import Formalism.SharpRestriction.GrowthBounds.StandardPolynomials.TgProdPlaces
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.WeightWLet
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.SegmentStatementHolds
 import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.Lemma44IdentityOfRawTail
 import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.TopOddNeEnd
 

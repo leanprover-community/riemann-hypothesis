@@ -5,7 +5,6 @@ public import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.Pa
 public import Formalism.LocalToGlobal.TorsionIntegrality.GaussianEigenFrames.StatementA
 public import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.PairedSquareJets.Several
 public import Formalism.LocalToGlobal.TorsionIntegrality.RamifiedCurveKernels.FinalA
-import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.BinomialSeriesCoefficients.CoeffPowEqZeroOfCc
 import Formalism.EllipticTorsion.EllipticTorsionProofs.NDeriv
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Bool

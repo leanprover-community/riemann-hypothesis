@@ -6,7 +6,6 @@ public import Formalism.BranchSandwichDivisors.BranchIsometryProofs.Transfer
 public import Formalism.LocalToGlobal.GlobalTheory.HLatOpsP
 public import Lemmata.GeneralBFactThirdAlt.Imports
 import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 public import Formalism.LocalRingCardinality.DataArith
 public import Formalism.LocalToGlobal.GlobalTheory.HLatOps

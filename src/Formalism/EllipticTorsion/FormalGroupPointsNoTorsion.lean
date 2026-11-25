@@ -5,12 +5,6 @@ public import Formalism.EllipticTorsion.Statement
 public import Mathlib.NumberTheory.Padics.RingHoms
 public import Mathlib.Topology.Algebra.Polynomial
 public import Formalism.EllipticTorsion.IsoExpand
-public import Mathlib.GroupTheory.QuotientGroup.Defs
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-public import Mathlib.Algebra.BigOperators.Group.Finset.Sigma
-public import Mathlib.Algebra.Group.Submonoid.BigOperators
-public import Mathlib.Algebra.Module.BigOperators
-public import Mathlib.Data.Finset.Max
 public import Formalism.EllipticTorsion.EllipticTorsionProofs.LegendreInvariant
 public import Formalism.EllipticTorsion.UnitCancel
 public import Formalism.FormalGroupLog.FormalGroupLogProofs.ConstantCoeffSubstOfZero

@@ -6,7 +6,6 @@ public import Development.AutomorphicArithmetic.Foundations.Convolution.Convolut
 public import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.KernelTransforms.RrTens
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.FixLev
 public import Development.AutomorphicArithmetic.Foundations.Convolution.PowerSumTraces.OpBasics
-import GroundTheory.AutomorphicForms.ReductionFinite
 import Mathlib.Tactic.Linter.Style
 
 @[expose] public section

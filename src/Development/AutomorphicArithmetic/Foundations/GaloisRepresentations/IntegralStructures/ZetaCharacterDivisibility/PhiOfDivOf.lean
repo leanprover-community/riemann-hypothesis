@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsCommon
 public import Development.AbelianVarietyTheory.Definitions.Divisors.GenOf
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.LimWPhi
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.CocharacterLieDivisors.StGalW
-public import Formalism.SharpRestriction.LevelLetterCocycles.SumRepresentations
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.TripleAtt
 
 @[expose] public section

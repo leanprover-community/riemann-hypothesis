@@ -16,23 +16,15 @@ public import Mathlib.Algebra.AffineMonoid.Basic
 public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.PushInvertibleIffOfIsReduced
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenLatticeConstantRank
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.MemEigSpOfMemHtDual
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsGenericWeilPairing
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeTateEigenLatticeEq
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HodgeTateOmegaCoherent
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LabelEmbeddingInjective
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
-public import Mathlib.Order.CompletePartialOrder
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatticeEigenVectorBundle
-public import Mathlib.AlgebraicGeometry.Noetherian
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LatticeGlueOverPrimes
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.NotInFibreOfIsUnit
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.LawsProved
-import Mathlib.Tactic.Linter.HaveILetI
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.CubicalStructures.CubeSymmetricSwapFirst
 import Mathlib.Tactic.Linter.Style
-import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EigLat
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieOmegaLatticeVectorBundle
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.GeometryProofs.IdealSaturatedVectorBundle, Development.AutomorphicSpectrum.Proofs.GeometryProofs.PredualVectorBundle, Development.AutomorphicSpectrum.Proofs.GeometryProofs.EigenLatticeDedekindTwist

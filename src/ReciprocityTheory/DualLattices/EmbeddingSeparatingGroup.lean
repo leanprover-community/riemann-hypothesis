@@ -4,12 +4,8 @@ public import Mathlib.NumberTheory.Padics.PadicIntegers
 public import Mathlib.RingTheory.AdjoinRoot
 public import Mathlib.NumberTheory.Padics.RingHoms
 public import Mathlib.RingTheory.Henselian
-public import Mathlib.Algebra.Polynomial.AlgebraMap
 public import ReciprocityTheory.DualLattices.IsUnitOfNotMem
 public import ReciprocityTheory.DualLattices.EigPowEqOne
-public import Mathlib.Algebra.CharP.Frobenius
-public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
-public import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
 public import ReciprocityTheory.DualLattices.EmbeddingSeparatingGroupStatement
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.AdicCompletion.Noetherian

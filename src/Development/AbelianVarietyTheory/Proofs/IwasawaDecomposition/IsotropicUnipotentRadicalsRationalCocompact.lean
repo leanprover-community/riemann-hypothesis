@@ -3,7 +3,6 @@ module
 import Development.AbelianVarietyTheory.Proofs.FlagMeasures.CocompactOfMemIffAdelic
 public import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsCuspFunIffConstTerm
 public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedBessel
-import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.EmbRelExistsUnique
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.TwoStepUnipotentCompactModSubring
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
 import Mathlib.Algebra.Order.Floor.Extended

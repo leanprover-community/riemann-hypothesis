@@ -5,7 +5,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Regularisation.StRiemannSlice
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Topology.Compactness.CompactlyGeneratedSpace
 public import Mathlib.Topology.ContinuousMap.Units
-import ReciprocityTheory.AnalyticForms.AnalyticCharts.OsgoodA
 
 @[expose] public section
 

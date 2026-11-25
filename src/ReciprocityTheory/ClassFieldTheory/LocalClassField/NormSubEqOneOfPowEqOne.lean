@@ -1,7 +1,6 @@
 module
 
 public import ReciprocityTheory.ClassFieldTheory.LocalClassField.UnrDefs
-import Mathlib.Analysis.Normed.Ring.Finite
 import Mathlib.NumberTheory.Padics.LocalField
 
 @[expose] public section

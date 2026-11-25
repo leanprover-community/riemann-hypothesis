@@ -15,7 +15,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SumDualVecto
 public import Mathlib.LinearAlgebra.Lagrange
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CmHalfIntegralGeneratorMemAlgebraicClosure
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentHeisenbergDecomposition
-public import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 public import Formalism.HermitianCurvature.StatementJF
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ActualAdjointnessFromHermitian
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.BigCellHermitian
@@ -29,8 +28,6 @@ public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OperatorPres
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.QxChain
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.SmoothWordsAll
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeylConjugationFixedColumn.ReflectionScalarDualIsotropic
-import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Tactic.Linter.Style
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.InterlaceSignTwo
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator

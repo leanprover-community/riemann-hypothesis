@@ -8,14 +8,9 @@ public import Formalism.LocalRingCardinality.HostCls
 public import Formalism.SharpRestriction.GlobalSchurBounds.Joints
 public import Formalism.SharpRestriction.GlobalSchurBounds.TopDensityNGeSixteen
 public import Formalism.SharpRestriction.Divisibility.LocalQuadraticParts
-import Development.AutomorphicArithmetic.PrimitiveCosets.ToEBij
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
-import Formalism.SizeWindowBrackets.ChainSlopeWindows.GaloisMapComplexConjugation
-import Formalism.SizeWindowBrackets.ChainSlopeWindows.StronglyIrreducible
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.SharpRestriction.GlobalSchurBounds.RamificationTwoAndConjugationAtQAndD, Formalism.SharpRestriction.GlobalSchurBounds.FrameCodeOfAdditive

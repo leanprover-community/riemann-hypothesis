@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.PickDefs
 public import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.LeOfOneLeMul
-import Formalism.PolynomialDimension.MultinomialDepth.FockGaussComparisonHolds
 import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.SlackBoundReal
 import Formalism.SharpRestriction.GrowthBounds.DiagonalSupport.SlackBoundJoint
 

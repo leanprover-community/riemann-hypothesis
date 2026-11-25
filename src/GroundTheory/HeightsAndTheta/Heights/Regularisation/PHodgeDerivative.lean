@@ -4,13 +4,10 @@ public import Mathlib.Analysis.SpecialFunctions.Log.Basic
 public import Mathlib.LinearAlgebra.Matrix.PosDef
 public import Mathlib.LinearAlgebra.Matrix.Rank
 public import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.Statements
-public import Mathlib.Basic.Complex.Basic
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.BoundsY
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.Statements
 public import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.StatementsBounds
 public import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.DetIneq
-public import Mathlib.Analysis.InnerProductSpace.Calculus
 public import Mathlib.Analysis.Real.Pi.Bounds
 import Mathlib.RingTheory.Etale.Weakly
 

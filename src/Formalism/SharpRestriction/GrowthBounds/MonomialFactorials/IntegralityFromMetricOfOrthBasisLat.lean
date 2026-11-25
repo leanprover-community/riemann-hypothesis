@@ -3,12 +3,6 @@ module
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.RestDecompProved
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.SymmetryWindowOnAdmissible
 public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.OrthCountOf
-public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.BePhiAddLeft
-public import Formalism.SharpRestriction.GrowthBounds.MonomialFactorials.BlockValuationZpOfLatticeInclusion
-public import Formalism.MahlerMeasure.LevelSum
-public import Mathlib.NumberTheory.Padics.PadicNumbers
-public import Formalism.MahlerMeasure.MahlerMeasureProofs.PhiInt
-import Formalism.MahlerMeasure.MahlerMeasureProofs.GamDeg
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

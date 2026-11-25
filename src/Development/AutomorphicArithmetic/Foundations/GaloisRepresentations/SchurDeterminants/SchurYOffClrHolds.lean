@@ -4,9 +4,7 @@ public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentation
 public import Mathlib.CategoryTheory.Category.Basic
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.SchurDeterminants.PairSplit
 public import Mathlib.Algebra.MvPolynomial.Funext
-public import Mathlib.RingTheory.MvPolynomial.Homogeneous
 public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.PSchSchurHomogeneous
-public import GroundTheory.HeightsAndTheta.Heights.RemainderTerms.JacobiTrudi
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.SchurDeterminants.PSpanE
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

@@ -14,8 +14,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.SumSu
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NatCastMulCoeffCharpolyRev
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.AevalDualModel
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PolynomialMatrixFamilyRepLieTensorProduct
-public import Mathlib.Basic.Real.Basic
-public import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ChernPolyTopDensityEqZeroOfWeightedDegreeNeDim
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.GoodTopChernForm
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.MumfordProportionality
@@ -58,10 +56,7 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.HoloSmooth
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.RingTheory.PiTensorProduct

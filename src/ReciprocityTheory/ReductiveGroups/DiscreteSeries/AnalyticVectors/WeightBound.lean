@@ -4,11 +4,8 @@ import all ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.Nu
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.CasValK
 public import Mathlib.Analysis.InnerProductSpace.JointEigenspace
 public import Mathlib.Analysis.InnerProductSpace.Spectrum
-public import Mathlib.Analysis.Normed.Lp.PiLp
-public import Mathlib.LinearAlgebra.Eigenspace.Minpoly
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.KUnitB
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.LayerBasic
-public import Mathlib.Analysis.InnerProductSpace.PiL2
 public import Mathlib.LinearAlgebra.Eigenspace.Basic
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.IsKUnitaryOfIsInfUnitary
 import Mathlib.Tactic.TypeStar

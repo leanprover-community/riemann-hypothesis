@@ -3,9 +3,6 @@ module
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.IsArithVarBotDualBlocksUnit
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.PCoordCurveAlgebraic
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ProjLineRankTwoPushforwardHypotheses
-public import Mathlib.RingTheory.Henselian
-public import Mathlib.RingTheory.RegularLocalRing.Defs
-public import Mathlib.RingTheory.SimpleRing.Principal
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.PCoordCurveDegree
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.PCurveComplexPoint
@@ -15,7 +12,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.DualProjApply
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.ScaledExample
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualGeomDegCharts
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsGrassGeomDegChart
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsLineDegreeDual
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ArithVarZero
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.NotIsHorizontalOfDimOne
 public import GroundTheory.HeightsAndTheta.Heights.KernelsLattice
@@ -30,7 +26,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualT
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualTopStacked
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsDualStackedDegree
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PDualEmbBijective
-public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsGrassHeight
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRes
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.ExistsIsSheetFinZero
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.StatementsPointVertRSteps
@@ -56,9 +51,7 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PRootHeightNE
 public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PTelescope
 public import GroundTheory.HeightsAndTheta.Heights.WeightedHomogeneous.Assembly
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.AnalyticForms.RegularLocalRings.IntToRatA
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGood
 import Std.Tactic.BVDecide.Normalize.Prop
 
 -- This file was produced by scripts/clump.py from the modules listed below.

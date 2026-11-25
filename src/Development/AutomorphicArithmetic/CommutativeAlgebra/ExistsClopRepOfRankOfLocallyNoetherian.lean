@@ -17,14 +17,9 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AffineHilber
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsAffineHilbertChartBasicNeighbourhoodStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsOpenAffineHilbertChartBasicLocusStatement
 public import Mathlib.AlgebraicGeometry.Morphisms.Proper
-public import Mathlib.RingTheory.Flat.Basic
 public import Mathlib.RingTheory.Valuation.ValuationRing
 public import Mathlib.Algebra.Module.Torsion.Basic
 public import Mathlib.RingTheory.Flat.TorsionFree
-public import Mathlib.AlgebraicGeometry.AffineScheme
-public import Mathlib.RingTheory.RingHom.Flat
-public import Mathlib.AlgebraicGeometry.Morphisms.Affine
-public import Mathlib.AlgebraicGeometry.IdealSheaf.Subscheme
 public import Mathlib.AlgebraicGeometry.ValuativeCriterion
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IdealSheafDataComapIdealTopOfIsAffine
 public import Mathlib.AlgebraicGeometry.Morphisms.FlatRank

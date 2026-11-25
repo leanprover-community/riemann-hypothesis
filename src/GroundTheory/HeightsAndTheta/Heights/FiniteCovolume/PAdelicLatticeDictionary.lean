@@ -1,13 +1,9 @@
 module
 
 public import GroundTheory.AutomorphicForms.DefiniteClassNumber.AdelicLattice
-public import Mathlib.NumberTheory.NumberField.Basic
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsAdelicSplit
 public import Mathlib.GroupTheory.IndexNSmul
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.StatementsAdelicLattices
-import GroundTheory.GlobalFields.Adele.Compact
-import GroundTheory.GlobalFields.Adele.Topology
-import GroundTheory.GlobalFields.TateThesis.AdelicCharDual
 import GroundTheory.AutomorphicForms.HermitianOrthogonal
 
 section -- clump:auto

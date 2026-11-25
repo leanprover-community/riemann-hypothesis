@@ -1,7 +1,6 @@
 module
 
 public import Formalism.PeriodIntegrals.ScMuExists
-import Mathlib.Topology.Algebra.Group.Units
 
 @[expose] public section
 

@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.AutomorphicForms.Iwasawa
 public import GroundTheory.AutomorphicForms.MeasuresChart
-public import Mathlib.Topology.Algebra.Group.Units
 public import GroundTheory.AutomorphicForms.MeasuresGL
 import Mathlib.Tactic.TypeStar
 

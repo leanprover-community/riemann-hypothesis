@@ -7,10 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CoveringO
 public import Mathlib.AlgebraicGeometry.Morphisms.UniversallyInjective
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SplitByBaseChange
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FibrePointsLEId
-public import Mathlib.AlgebraicGeometry.Morphisms.Etale
-public import Mathlib.AlgebraicGeometry.Morphisms.Finite
-public import Mathlib.AlgebraicGeometry.Sites.Etale
-public import Mathlib.Combinatorics.Quiver.ReflQuiver
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -54,7 +50,6 @@ import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.Linter.Style
 import Mathlib.AlgebraicGeometry.Morphisms.Immersion
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.RegularLocalRing.Defs

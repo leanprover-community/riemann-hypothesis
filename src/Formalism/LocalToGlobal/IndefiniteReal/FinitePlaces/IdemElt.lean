@@ -4,7 +4,6 @@ public import Formalism.LocalToGlobal.IndefiniteReal.FinitePlaces.IdemLoc
 public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedWeil
 public import Formalism.LocalToGlobal.IndefiniteReal.SubgroupCharExtensionOneApply
 import Mathlib.RingTheory.PicardGroup
-import Mathlib.RingTheory.Valuation.LocalSubring
 
 @[expose] public section
 

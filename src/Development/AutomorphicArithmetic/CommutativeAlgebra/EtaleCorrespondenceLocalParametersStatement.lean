@@ -2,28 +2,14 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ComparisonMemCechHodgeFiltration
 public import Mathlib.Basic.Complex.Basic
-public import Mathlib.RingTheory.Kaehler.Basic
 public import Mathlib.LinearAlgebra.Dimension.OrzechProperty
-public import Mathlib.RingTheory.Localization.Away.Basic
-public import Mathlib.Algebra.Module.LocalizedModule.Basic
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.TcoMem
-public import Mathlib.RingTheory.FiniteType
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
-public import Mathlib.RingTheory.Jacobson.Ideal
-public import Mathlib.RingTheory.Jacobson.Ring
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsAffCoverSpec
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.OmegaPullOmegaTraceOfSecTraceOne
-public import Mathlib.RingTheory.Etale.Basic
-public import Mathlib.Algebra.TrivSqZeroExt.Basic
-public import Mathlib.RingTheory.Localization.AtPrime.Basic
-public import Mathlib.RingTheory.Etale.Kaehler
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsGaloisCover
 public import Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.EFam
 public import Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.IsIntegralRBIff
-import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.CoeEqAlgebraMapZeroEquiv
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Development.AbelianVarietyTheory.Definitions.Divisors.CupPair
 import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.Edge1
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsAddEquivOfSurjectiveOfKerIff
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd

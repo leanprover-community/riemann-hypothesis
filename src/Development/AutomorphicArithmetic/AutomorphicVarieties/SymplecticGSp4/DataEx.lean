@@ -5,19 +5,7 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomo
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.DecompSigmaOrd
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.HcSpKer
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.HcVanOf
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.HcDefs
-public import Mathlib.NumberTheory.DirichletCharacter.Basic
-public import Mathlib.NumberTheory.MulChar.Lemmas
-public import Mathlib.FieldTheory.Finite.Basic
-public import Mathlib.RingTheory.RootsOfUnity.EnoughRootsOfUnity
 public import Mathlib.NumberTheory.DirichletCharacter.Orthogonality
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.CommutativeAlgebra.ResMapBijective
-public import Mathlib.Topology.Algebra.Group.Defs
-public import Mathlib.Topology.Connected.TotallyDisconnected
-public import Mathlib.Topology.Algebra.ClopenNhdofOne
-public import Mathlib.Data.Nat.Factorization.Basic
-public import Mathlib.Data.Nat.Totient
-public import Mathlib.RingTheory.Filtration
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicCharInertiaSurjective
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.ExistsStrictHenselianAbsolutelyClosedLocalRing
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PrimitiveFrobeniusFixed.PlaceBasic
@@ -38,7 +26,6 @@ public import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomo
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.HcPrimProd
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.Th1Facts
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.TwoPowLtSqMulOfPrimitiveCharPowEqOne
-import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.DvrFacts
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -86,13 +73,6 @@ import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Topology.Compactness.Paracompact
-import Mathlib.Topology.Separation.Connected
-import Development.AutomorphicArithmetic.AutomorphicVarieties.GaloisLibrary.SelmerTransport.RestrictionMemInvariantH1
-import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.DirichletPrimeToLPartMulLPowerPart
-import Development.AutomorphicArithmetic.AutomorphicVarieties.SymplecticGSp4.MapRepApply
-import Formalism.ConjugateSelfDual.Statement
-import ReciprocityTheory.GaloisValuations.GlobalA
-import Development.AutomorphicArithmetic.AutomorphicVarieties.PartsSign
 import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.Topology.Connected.Separation
 import Development.AutomorphicArithmetic.AutomorphicVarieties.HeightAndVanishing.OrdProjNDvd

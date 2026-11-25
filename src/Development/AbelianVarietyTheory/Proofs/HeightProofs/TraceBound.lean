@@ -50,7 +50,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 import Mathlib.Tactic.ENatToNat
 import Std.Tactic.BVDecide.Normalize.Bool
 import Mathlib.Tactic.TypeStar
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InnerKAvgNeZero
 import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Lemma

@@ -4,8 +4,6 @@ public import Development.AutomorphicSpectrum.Definitions.AdelicLattices.FactPri
 public import Mathlib.Algebra.AffineMonoid.Basic
 public import Mathlib.RingTheory.DedekindDomain.Different
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.TwoWeightEqOneAddRoot
-public import Mathlib.NumberTheory.NumberField.CMField
-public import Mathlib.RingTheory.SimpleRing.Principal
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.ExistsRealDifferentGenerator
 import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsCoprimeTwoSubRtTwoAddRt
 

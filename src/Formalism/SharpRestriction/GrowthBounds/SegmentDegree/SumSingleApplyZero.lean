@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.MemColRangeOfLeEntry
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.LeIffLtColH
-public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.ScaleSCoeffZero
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.DplusLeBeS
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.PsiCutSupported

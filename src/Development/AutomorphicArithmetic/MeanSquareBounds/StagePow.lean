@@ -5,7 +5,6 @@ public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.JacobiCharacterSums.
 public import Development.AutomorphicArithmetic.MeanSquareBounds.TailKExp
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.JacobiCharacterSums.TailMertens
 public import Formalism.GL3MeanSquares.HookFormulaTorsion.WeightedVonMangoldtSumIdentity
-public import Formalism.GL3MeanSquares.SecondEstimateOfIntervalHypothesis
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.JacobiCharacterSums.CountSt
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.JacobiCharacterSums.MSqJac
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.JacobiCharacterSums.MSqMain
@@ -20,13 +19,11 @@ public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.JacobiCharacterSums.
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.JacobiCharacterSums.MSqTwistB
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.JacobiCharacterSums.MSqTwistC
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.JacobiCharacterSums.PNTFinal
-public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.JacobiCharacterSums.MSqTwistA
 public import Development.AutomorphicArithmetic.MeanSquareBounds.IndUnique
 public import Development.AutomorphicArithmetic.MeanSquareBounds.TwistPrim
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsBoundRight
 import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ReLtOneOfZero
-import Formalism.GL3MeanSquares.GenusMeanAsymptotics.JacobiCharacterSums.MSqDiagA
 import Formalism.LandauZeroFreeBounds.SiegelWalfiszAPOfSiegelLower
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Linter.HaveILetI

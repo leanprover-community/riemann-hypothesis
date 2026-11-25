@@ -5,13 +5,11 @@ public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.Lagrangian
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLocallyConstantAddChar
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.DualNumberGraphFiltrationIsotropicOfSkew
 public import Development.WeilBound.CoreStatements.LocalThetaKernels.EvlLoc
-public import Development.AutomorphicSpectrum.Definitions.MembershipCriteria.GoodChar
 public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.LocalDef
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.DblCoordUnique
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ExistsInvariantForm
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.SplitQuadraticAlgebraOrder
 import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictMod
-import Development.AbelianVarietyTheory.Proofs.FoundationProofs.PadicIsNonarchimedeanLocalField
 import Mathlib.Tactic.Linter.Style
 
 -- This file was produced by scripts/clump.py from the modules listed below.

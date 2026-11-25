@@ -14,7 +14,6 @@ public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.HwIrred
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CompactGroupIntegrability.IsPositiveDefiniteMatrixCoefficientOfMemAlgA
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.UnitaryDense
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeylProduct.WeylProd
-import Formalism.LocalRingCardinality.Params
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Formalism.PeriodIntegrals.OrbitalBoundsConclusion.ModelIso, Formalism.PeriodIntegrals.UnitaryGroupMassFormula.WeylFormulaUnitary.NatWCastReal, Formalism.PeriodIntegrals.OrbitalBoundsConclusion.WeylForU, Formalism.PeriodIntegrals.ExplicitFormulaCounts.WeylForU

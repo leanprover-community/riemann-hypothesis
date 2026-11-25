@@ -2,7 +2,6 @@ module
 
 public import ReciprocityTheory.AnalyticForms.RegularLocalRings.ProjHyp
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Mathlib.RingTheory.KrullDimension.NonZeroDivisors
 public import Mathlib.RingTheory.MvPolynomial.EulerIdentity
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.TypeStar

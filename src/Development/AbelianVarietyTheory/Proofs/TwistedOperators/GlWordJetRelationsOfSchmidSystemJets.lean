@@ -3,10 +3,6 @@ module
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.FunJetApply
 public import Mathlib.Analysis.CStarAlgebra.Matrix
 public import Mathlib.Analysis.Calculus.FDeriv.Symmetric
-public import Mathlib.Analysis.Analytic.Composition
-public import Mathlib.Analysis.Analytic.Constructions
-public import Mathlib.Analysis.Calculus.ContDiff.Defs
-public import Mathlib.Analysis.Calculus.FDeriv.CompCLM
 public import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

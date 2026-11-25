@@ -5,12 +5,10 @@ public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsPro
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PMuRegSmooth
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PNbarSmooth
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PTopNPoly
-import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PVertFactorPos
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PVertFactorSmooth
 public import GroundTheory.HeightsAndTheta.Heights.Intersections.RegularizedCurvature
 import Mathlib.Tactic.TypeStar
 import ReciprocityTheory.AnalyticForms.PotentialTheory.PshShiftA
-import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB
 
 @[expose] public section
 

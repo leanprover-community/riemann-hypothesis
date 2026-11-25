@@ -5,8 +5,6 @@ import Formalism.LocalToGlobal.Columns.DecoFin
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AdelstabL
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Bridge
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsApprox
-public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsDual
-import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsGlob
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsScale
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsSpan
 import Mathlib.RingTheory.PiTensorProduct

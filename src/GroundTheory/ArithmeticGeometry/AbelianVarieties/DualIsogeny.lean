@@ -2,7 +2,6 @@ module
 
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.Isogeny
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.DivisorsTranslate
-import Mathlib.FieldTheory.Relrank
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

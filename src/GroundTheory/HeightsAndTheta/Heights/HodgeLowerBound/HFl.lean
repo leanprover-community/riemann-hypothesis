@@ -5,17 +5,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightKernels.Assembly
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FlagIndices
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsFlagGrassPush
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsFSGeomDegPos
-import GroundTheory.HeightsAndTheta.Heights.HeightKernels.AssemblyAnalytic
-import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PFsConjInvariant
-import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PFsLineSmooth
-import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PGrassLeRoot
-import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PMultiHomogMemCoord
-import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PNefOfNonneg
-import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PPtsIntegralZeroLowerNE
-import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PRootAnchorNonzero
-import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PRootDivSuppEmpty
-import GroundTheory.HeightsAndTheta.Heights.HeightKernels.PRootHeightNE
-import Mathlib.Algebra.Order.Star.Real
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsGrassHeightE, GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PGrassHeightE, GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.HFl

@@ -6,12 +6,6 @@ public import Mathlib.Data.Fintype.EquivFin
 public import Mathlib.Logic.Equiv.Fin.Basic
 public import Mathlib.Analysis.Real.Sqrt
 public import Mathlib.Algebra.BigOperators.Fin
-public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
-public import Mathlib.Data.Fintype.Basic
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-public import Mathlib.Algebra.Order.BigOperators.Group.Finset
-public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
-public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OnePointBasisFundamentalDomainVolume
 public import CompanionTheory.AutomorphicTheory.BesselWaveGrids.NqMovedExample
 import Mathlib.Tactic.Lemma

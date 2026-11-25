@@ -4,15 +4,6 @@ public import Mathlib.Algebra.Field.Subfield.Basic
 public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Mathlib.RingTheory.SimpleRing.Principal
-public import Mathlib.LinearAlgebra.Basis.VectorSpace
-public import Mathlib.LinearAlgebra.TensorProduct.Associator
-public import Mathlib.RingTheory.TensorProduct.Basic
-public import Mathlib.Algebra.GroupWithZero.NonZeroDivisors
-public import Mathlib.RingTheory.Ideal.Maps
-public import Mathlib.RingTheory.Ideal.Quotient.Defs
-public import Mathlib.RingTheory.Ideal.Quotient.Operations
-public import Mathlib.RingTheory.Localization.Defs
-public import Mathlib.RingTheory.Localization.FractionRing
 public import Mathlib.AlgebraicGeometry.Properties
 public import Mathlib.AlgebraicGeometry.Stalk
 public import Mathlib.Combinatorics.Quiver.ReflQuiver

@@ -60,7 +60,6 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Std.Tactic.BVDecide.Normalize.Bool
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsIsGridFr
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.FstIsFinFFrames, Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFinFSndFrames, Development.AbelianVarietyTheory.Proofs.DivisorProofs.GridFramesDoublingPolynomialExists, Development.AutomorphicArithmetic.ThetaCorrespondence.ThetaPairLifts.LocalTypeDictionary.ThetaParameterDictionaryBijective

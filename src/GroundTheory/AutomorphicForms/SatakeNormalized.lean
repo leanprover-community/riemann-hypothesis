@@ -4,7 +4,6 @@ public import GroundTheory.AutomorphicForms.SphericalIntegral
 public import GroundTheory.AutomorphicForms.SatakeSymmetric
 public import GroundTheory.LocalFields.PadicLogSeries
 public import GroundTheory.LocalFields.LocalFourierHaar
-import Mathlib.RingTheory.Henselian
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

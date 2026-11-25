@@ -5,14 +5,10 @@ public import Formalism.PieriBlockIdeals.StatementLD
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.FockQHW
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LRowstLemmas
 public import Formalism.PieriBlockIdeals.PieriColumnMinors.DividedPowerZeroZeroVector
-public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.ColSums
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.FockQWordAdj
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LClosedeqLemmas
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LRowdivLemmas
-public import Mathlib.Data.Nat.Prime.Int
 public import Formalism.PieriBlockIdeals.StatementLR
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.GradedWeylDivisibility.FinalB
 import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.Tactic.TypeStar
 import Mathlib.RingTheory.PiTensorProduct

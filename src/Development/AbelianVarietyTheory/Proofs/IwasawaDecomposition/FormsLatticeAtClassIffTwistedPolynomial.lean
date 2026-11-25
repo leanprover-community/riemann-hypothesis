@@ -4,31 +4,15 @@ public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.KerEntHyp
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FormsSharpAtOfValTied
 public import Formalism.LocalToGlobal.KernelLattices.ColumnData.DiagramFitsSourceRank
-public import Formalism.LocalToGlobal.HermitianForms.IsLocBasis
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PolFunApply
-public import Mathlib.Algebra.MvPolynomial.Funext
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.LatAtLattice
-public import Formalism.LocalToGlobal.KernelLattices.FirstKernelLawReading
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.TrueWeightConsecutiveStepsPartition
 public import Formalism.UnipotentAdelicQuotients.WeylLatDual
-public import Mathlib.Analysis.Normed.Field.Instances
-public import Mathlib.Algebra.CharZero.Infinite
-public import Formalism.LocalRingCardinality.SpanPowerMembership.EntPlNonempty
-public import Formalism.LocalToGlobal.HermitianForms.TiedStep
-public import Formalism.SharpRestriction.Divisibility.OrbitPlaces
-public import Formalism.SharpRestriction.GlobalSchurBounds.GL3Columns
-public import Formalism.LocalToGlobal.HermitianForms.FormsTied
 public import Formalism.LocalToGlobal.GlobalTheory.CoordinateLengths.RatStab
-public import Formalism.LocalToGlobal.GroupLattices.ComparisonMaps.TiedRec
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EvalTwSubK
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ClosedBallValuationSubringToSubring
-public import Formalism.GradedWeylDivisibility.StatementA
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.WeylRowActionMemWeylLatticeSquare
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DominantWeightPolynomialFunctionalMinorsStatement
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MainProof
-import Development.AbelianVarietyTheory.PublishedTheorems.GlobalTheta.WeylDualWeylLatticesAgreeOfLowestAlcove
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.PeriodLatticeFinitelyGenerated
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -66,28 +50,18 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
-import Formalism.LocalToGlobal.Columns.PolyFn
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
 import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Topology.Sheaves.Init
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.RingTheory.Henselian
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Algebra.AffineMonoid.Basic
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
 import Mathlib.RingTheory.Valuation.Integral
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsPowEqSpanNormOne
-import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LClosedeqLemmas
-import Mathlib.RingTheory.PiTensorProduct
 import Formalism.LocalRingCardinality.FactDelDualNabla
 
 -- This file was produced by scripts/clump.py from the modules listed below.

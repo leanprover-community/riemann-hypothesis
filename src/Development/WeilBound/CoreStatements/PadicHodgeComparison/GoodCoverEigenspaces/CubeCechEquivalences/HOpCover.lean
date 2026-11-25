@@ -1,10 +1,7 @@
 module
 
 public import Development.AbelianVarietyTheory.Statements.PlaceShiftStatements.HTSpecAllHodge
-public import Mathlib.LinearAlgebra.Eigenspace.Basic
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.GoodCoverEigenspaces.MemRangeOfSol
-public import Mathlib.RingTheory.Flat.Basic
-public import Mathlib.RingTheory.TensorProduct.Free
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.GoodCoverEigenspaces.JumpStepOf
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsNormalProjectiveModel
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.HodgePullHodgePull

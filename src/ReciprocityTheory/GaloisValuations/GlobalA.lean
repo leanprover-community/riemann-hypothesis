@@ -5,7 +5,6 @@ public import Mathlib.NumberTheory.NumberField.Basic
 public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
 public import Mathlib.RingTheory.Valuation.ValuationSubring
 public import Mathlib.RingTheory.Valuation.LocalSubring
-public import Mathlib.RingTheory.LocalRing.LocalSubring
 
 @[expose] public section
 

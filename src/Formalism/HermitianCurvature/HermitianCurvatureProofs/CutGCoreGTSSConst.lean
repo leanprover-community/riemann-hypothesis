@@ -7,7 +7,6 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTConnGauge
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGTSSTr
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.CutGCoreGenTransferFn
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.EulerZetaGammaInvIdentity
-import Mathlib.Algebra.Order.Star.Real
 
 @[expose] public section
 

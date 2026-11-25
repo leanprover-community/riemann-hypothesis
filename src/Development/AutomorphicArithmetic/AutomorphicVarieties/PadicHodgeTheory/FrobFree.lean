@@ -3,11 +3,8 @@ module
 public import Mathlib.NumberTheory.Padics.Complex
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.FiniteCohomology
 public import Development.AutomorphicArithmetic.CyclotomicBounds.ClassNumberBounds.IdealValuations.LocRootsY
-import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import Mathlib.Topology.Algebra.ClopenNhdofOne
-import Mathlib.Topology.Separation.Connected
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.RootEqOne, Development.AutomorphicArithmetic.AutomorphicVarieties.PadicHodgeTheory.FrobFree

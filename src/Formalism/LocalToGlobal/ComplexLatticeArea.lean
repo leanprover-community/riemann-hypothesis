@@ -1,8 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
-import Mathlib.Tactic.Positivity
-import Mathlib.Tactic.Ring
 
 /-! # The least positive area in a complex lattice -/
 

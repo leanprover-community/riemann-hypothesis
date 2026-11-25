@@ -63,7 +63,6 @@ import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.StepBoxIffSte
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BaseFieldsPrimesOk
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsSmulOfDecoEq
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IntAtNatCast
-import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.Basify
 

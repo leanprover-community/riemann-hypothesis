@@ -3,15 +3,10 @@ module
 public import Formalism.GL3MeanSquares.RationalMatrixPrimeOrderBound
 public import Formalism.GL3MeanSquares.HookFormulaTorsion.LengthQuotientBoundGeneral
 public import Formalism.LogVandermondeBounds.FinrankFiberSumZero
-public import Mathlib.CategoryTheory.Category.Basic
-public import Mathlib.LinearAlgebra.Dimension.Constructions
-public import Mathlib.Algebra.Group.AddChar
-public import Mathlib.Basic.Complex.Basic
 public import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.Pc
 public import Formalism.BranchSandwichDivisors.BranchIsometryProofs.OrthSum
 public import Formalism.LocalRingCardinality.Lemmas
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Std.Tactic.BVDecide.Normalize.Prop
 

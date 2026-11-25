@@ -4,14 +4,6 @@ public import Mathlib.Algebra.Algebra.Basic
 public import Mathlib.LinearAlgebra.BilinearMap
 public import Mathlib.SetTheory.Cardinal.Finite
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CardDualZmodModuleEqCard
-public import Mathlib.Algebra.Module.Submodule.Range
-public import Mathlib.LinearAlgebra.Isomorphisms
-public import Mathlib.Data.ZMod.Defs
-public import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
-public import Mathlib.Analysis.SpecialFunctions.Complex.CircleAddChar
-public import Mathlib.Algebra.Group.AddChar
-public import Mathlib.Algebra.Group.Subgroup.Finite
-public import Mathlib.Analysis.Complex.Circle
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CardEqCardKerMulCardRange
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.PoitouTateNormalised
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.PairSums.SumPair
@@ -21,8 +13,6 @@ public import Mathlib.Algebra.Algebra.ZMod
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GaloisCohomologyLocalGlobalDual
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PoitouTateEulerCharacteristic
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SelmerGroupDualExact
-public import ReciprocityTheory.Hypotheses.GalCoh
-public import ReciprocityTheory.Hypotheses.GalCohDefs
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocalDegreeSum
 public import Mathlib.Data.Fintype.BigOperators
 import Mathlib.Algebra.Order.Floor.Extended

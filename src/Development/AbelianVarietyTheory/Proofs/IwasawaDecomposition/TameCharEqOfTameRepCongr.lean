@@ -5,7 +5,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocalGl
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemZpowersOfTameGen
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.RootEqOfClose
 public import ReciprocityTheory.GaloisValuations.Global
-public import Mathlib.Topology.Algebra.Nonarchimedean.AdicTopology
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsTameGenAtOfValuationSubring
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.InertiaActsOnTameRoot
 public import Formalism.LocalToGlobal.NormalizedHeckeFactors.RingHomOfBaseOrderToFraction
@@ -48,7 +47,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-import ReciprocityTheory.GaloisValuations.GlobalA
 import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
@@ -56,10 +54,6 @@ import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
-import ReciprocityTheory.GaloisValuations.GlobalB
-import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
-import Formalism.SharpRestriction.CuspSpanNormBounds.Point
-import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 import Mathlib.Tactic.Linter.Style
 

@@ -5,7 +5,6 @@ import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.MvPolynomial.WeightedHomogeneous
 import Mathlib.Tactic.TypeStar
 
 @[expose] public section

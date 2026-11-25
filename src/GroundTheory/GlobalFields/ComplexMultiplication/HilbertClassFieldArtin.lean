@@ -8,7 +8,6 @@ public import GroundTheory.GlobalFields.Artin.OneDim
 public import GroundTheory.GlobalFields.TateThesis.Chebotarev
 import Mathlib.Tactic.TypeStar
 import GroundTheory.GlobalFields.CompletionAtPlace.Inertia
-import GroundTheory.GlobalFields.TateThesis.DegreeOneDensity
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: GroundTheory.GlobalFields.Artin.InflationTower, GroundTheory.GlobalFields.ComplexMultiplication.HilbertClassFieldArtin

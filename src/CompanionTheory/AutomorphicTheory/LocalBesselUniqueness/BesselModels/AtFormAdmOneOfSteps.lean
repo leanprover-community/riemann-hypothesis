@@ -3,7 +3,6 @@ module
 public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.BesselOrbitConvolutions.BesselNonvanishingReduction
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.L2NormScaling
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.SmoothAdd
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.UhMeasurableSet
 import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section

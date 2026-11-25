@@ -3,10 +3,7 @@ module
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.GaXiSplit
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.Imports
 public import Formalism.HermitianCurvature.StatementJF
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.CompactGroupHaarExists
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.RegularisedPairingViaPhase
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RightCosetActionMeasurePreserving
-import Formalism.HermitianCurvature.HermitianCurvatureProofs.UnipotentCoordinatesMeasurePreserving
 
 @[expose] public section
 

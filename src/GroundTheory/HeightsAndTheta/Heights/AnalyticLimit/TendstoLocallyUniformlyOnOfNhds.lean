@@ -3,8 +3,6 @@ module
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.IsOpenKappaOpenNeighbourhood
 public import GroundTheory.HeightsAndTheta.Heights.Regularisation.PChartLeviThGe
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Tactic.TypeStar
 
 -- This file was produced by scripts/clump.py from the modules listed below.

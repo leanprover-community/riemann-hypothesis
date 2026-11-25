@@ -7,13 +7,10 @@ public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.StabiliserBiject
 public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.DualLStable
 public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.FiniteAdeleRingNontrivial
 public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.PrVTensInt
-public import Formalism.LocalToGlobal.HermitianForms.TiedSym
-public import Formalism.LocalToGlobal.GlobalTheory.EqGlobOfHat
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocGen
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwLocGlob
 public import Formalism.LocalToGlobal.GroupLattices.LevelCharts.FiniteClassSetOfFiniteIndex
 public import Formalism.LocalToGlobal.GlobalTheory.BlockActions.ClsCrdEqGlob
-import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
 import Formalism.LocalToGlobal.GlobalTheory.BlockActions.ClassInjectiveOfSelfDual
 
 -- This file was produced by scripts/clump.py from the modules listed below.

@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.KillWinFromCut
 import Formalism.SharpRestriction.LevelLetterCocycles.PsCoprimeOf
-import Formalism.SharpRestriction.LevelLetterCocycles.RingConditionOfDeltaInvariants
 import Formalism.SharpRestriction.LevelLetterCocycles.SaturationPullbackOfRingCondition
 import Mathlib.Tactic.TypeStar
 

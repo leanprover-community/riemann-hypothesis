@@ -10,7 +10,6 @@ import Formalism.HermitianCurvature.HermitianCurvatureProofs.PBTAsm
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PtEntryAppendStart
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.StandardPairingDecay
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.WeightProductGermIndep
-import Mathlib.RingTheory.SimpleRing.Principal
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.GermRateSplit
 
 @[expose] public section

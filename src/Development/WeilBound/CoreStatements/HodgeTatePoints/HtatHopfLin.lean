@@ -4,7 +4,6 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.HasValu
 public import Development.WeilBound.CoreStatements.HodgeTatePoints.TwhopfSec
 public import Mathlib.Tactic.ENatToNat
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsUnitFormLocalizationEtaleNbhd
-public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueTangentDualNumber
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield

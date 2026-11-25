@@ -7,8 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.RingOfI
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.DedekindZetaEqSumRealEisenstein
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PrimeIdealsCountingBounds
 public import Mathlib.NumberTheory.NumberField.Completion.FinitePlace
-public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
-public import Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex
 public import Mathlib.Algebra.Polynomial.SpecificDegree
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ClassNumberLeAbsDiscrOfFinrankEqTwo
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.RayCountThetaFibreCount
@@ -20,7 +18,6 @@ public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.ZerosD
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.PrimesAPIntervalOfPrimesRel
 public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.PrimesInProgressionsRelativeError
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsBasisEmbedding
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ConvRealChar, Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.FiniteIdealsIn, Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.SumLamIdealLe, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsImagQuadIntegers, Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsLFamRay, Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.NormPrimesImagQuadShortIntervalLowerBound, Development.AutomorphicArithmetic.ShortNorms.SmallOneOf, Development.AutomorphicArithmetic.ShortNorms.Primes

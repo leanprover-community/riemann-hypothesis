@@ -2,10 +2,8 @@ module
 
 public import Formalism.FrobeniusOrbits.HostThickExists
 public import Formalism.FrobeniusOrbits.RealSubfieldLeCompositum
-public import Mathlib.RingTheory.SimpleRing.Principal
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Decomp
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.FrobMulInertia
-import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Galois
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Inertia
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.Henselian

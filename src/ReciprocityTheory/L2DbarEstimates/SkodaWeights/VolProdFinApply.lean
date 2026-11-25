@@ -8,17 +8,11 @@ public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.ChartSymmEventu
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.IsLocalHomeomorphCompFst
 public import ReciprocityTheory.L2DbarEstimates.SkodaWeights.SmoothRLog
 public import ReciprocityTheory.L2DbarEstimates.SkodaWeights.WeightedIntegralEqLintegral
-public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.MeasurableSetImageOfIsLocalHomeomorph
 public import Mathlib.Analysis.InnerProductSpace.Adjoint
 public import ReciprocityTheory.L2DbarEstimates.SkodaWeights.NeedBergmanClosed
-public import Mathlib.Topology.Connected.Separation
-public import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Tactic.TypeStar
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Lemma
-import ReciprocityTheory.L2DbarEstimates.WeakHolomorphy.HoloContDiffAtComplex
-import Mathlib.Analysis.CStarAlgebra.Module.Constructions
-import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.TsupportDbSubset
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: ReciprocityTheory.L2DbarEstimates.MinimalSolutions.OntoWithBoundTop, ReciprocityTheory.L2DbarEstimates.SkodaWeights.HlinVsqPos, ReciprocityTheory.L2DbarEstimates.SkodaWeights.NearContinuousOfSmoothR, ReciprocityTheory.L2DbarEstimates.SkodaWeights.IntegrableSliceProdFin, ReciprocityTheory.L2DbarEstimates.SkodaWeights.SkodaOps, ReciprocityTheory.L2DbarEstimates.SkodaWeights.VolProdFinApply

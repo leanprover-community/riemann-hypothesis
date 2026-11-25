@@ -10,7 +10,6 @@ import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwMem
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AlgebraTools.IwThetaEx
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.NilpotentLevelLowering.IsoFix
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.PatchingModules.NilpotentLevelLowering.ThetaLoc
-import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
 
 @[expose] public section
 

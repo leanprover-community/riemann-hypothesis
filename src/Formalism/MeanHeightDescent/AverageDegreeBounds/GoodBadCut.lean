@@ -8,7 +8,6 @@ import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SatBasic
 public import Formalism.HarderNarasimhan.HarderNarasimhanProofs.SizeMu
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.CStarAlgebra.Module.Constructions
-import Mathlib.Analysis.Matrix.Hermitian
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal

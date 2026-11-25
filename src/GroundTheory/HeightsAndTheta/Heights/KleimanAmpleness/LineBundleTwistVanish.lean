@@ -7,7 +7,6 @@ public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsMoreL
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.PBundlePair
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsSnapper
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.StatementsTwistSplit
-public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.Statements
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ImportsRestExtra
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.AssemblyBase
 public import GroundTheory.HeightsAndTheta.Heights.KleimanAmpleness.ChartRingOverOneBlockBase

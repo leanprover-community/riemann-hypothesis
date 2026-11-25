@@ -4,32 +4,14 @@ public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.SharpRestriction.LevelLetterCocycles.QuotientHomNonvanishingBound
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CycZBridge
 public import Mathlib.RingTheory.OrderOfVanishing.Basic
-public import ReciprocityTheory.GaloisValuations.SeparatedDvrSecondCohomologyMem
-public import Formalism.GaloisCohomology.StatementLoc
-public import Mathlib.Topology.LocallyConstant.Basic
-public import Mathlib.RingTheory.RootsOfUnity.EnoughRootsOfUnity
-public import Mathlib.RingTheory.RootsOfUnity.Minpoly
-public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Formalism.CharacterColumnKernels.Statement
-public import Mathlib.RepresentationTheory.Invariants
-public import Mathlib.RingTheory.LocalRing.ResidueField.Defs
-public import Mathlib.RepresentationTheory.Basic
 public import Formalism.GaloisCohomology.LocalTateDualityK
 public import ReciprocityTheory.ReductiveGroups.TraceFormulas.LatDefs
 public import Development.AbelianVarietyTheory.Definitions.Foundations.PowLtFirstRadius
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.CardPowEqOneLeOfIsCyclicUnits
 public import ReciprocityTheory.ClassFieldTheory.LocalClassField.ExistsDvdQKPowSubOne
 public import ReciprocityTheory.GroupCohomology.CupConnRightStatement
-public import Mathlib.Algebra.Module.Injective
-public import Mathlib.GroupTheory.Index
-public import Mathlib.GroupTheory.OrderOfElement
-public import Mathlib.GroupTheory.SpecificGroups.Cyclic.Subgroup
-public import Mathlib.Topology.Algebra.ClopenNhdofOne
-public import Mathlib.Topology.Separation.Hausdorff
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteH1H2Local
-public import Mathlib.Topology.Algebra.Nonarchimedean.AdicTopology
-public import Formalism.WachLatticeTwists.CharacterSplitJumps.Statement
-public import ReciprocityTheory.Hypotheses.GalCohDefs
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ValuationLtOneIff
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PadicIntegersFiniteExtGoodCoefficientRing
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DualLatFiniteFree
@@ -37,30 +19,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FinIsoD
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IntegralLocalDualityOfLocalTateDuality
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.InvIsoOfLocalTateDuality
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SpanOfLocalCohomologyShape
-public import Mathlib.NumberTheory.NumberField.Basic
-public import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
-public import Mathlib.RingTheory.Flat.TorsionFree
-public import Mathlib.RingTheory.Henselian
-public import Mathlib.RingTheory.RegularLocalRing.Defs
-public import Mathlib.RingTheory.SimpleRing.Principal
-public import Mathlib.RingTheory.Valuation.ValuationSubring
-public import ReciprocityTheory.GaloisValuations.GlobalB
-public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
-public import Mathlib.NumberTheory.Padics.RingHoms
-public import Mathlib.Algebra.Polynomial.Monomial
-public import Mathlib.NumberTheory.Padics.PadicIntegers
-public import Mathlib.Algebra.CharP.Defs
-public import Mathlib.Algebra.Field.Defs
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-public import Mathlib.Algebra.BigOperators.GroupWithZero.Finset
-public import Mathlib.Algebra.CharP.Frobenius
-public import Mathlib.Algebra.MonoidAlgebra.Defs
-public import Mathlib.Algebra.Polynomial.Basic
-public import Mathlib.Algebra.Polynomial.Degree.Operations
-public import Mathlib.Algebra.Polynomial.Eval.Coeff
-public import Mathlib.Algebra.Polynomial.Roots
-public import Mathlib.Data.ZMod.Basic
-public import Mathlib.FieldTheory.Finite.Basic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFrobeniusAndExponentModEq
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsUniqueHcharOfFiniteOrder
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DecompositionGroupEquivLocalGaloisGroup
@@ -84,9 +42,6 @@ import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.KrullDimension.PID
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.RingTheory.Radical.NatInt
 import Mathlib.Tactic.Basify
@@ -119,19 +74,13 @@ import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Tactic.Linter.Style
-import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
-import ReciprocityTheory.GaloisValuations.GlobalA
 import Mathlib.FieldTheory.Galois.Profinite
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.NumberTheory.Padics.ProperSpace
-import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Tactic.TypeStar
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.NumberTheory.Padics.LocalField
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NatInvIsoOfLocalTateDualityCyclotomicTwist
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FiniteLengthInvariantsNegTwistKmodO, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocalCohomologySevenElementaryFacts, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RationalLocalDualityOfLocalTateDuality, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFrobAtPlaceOverPrime, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsPadicIntOfCompatibleZmodPow, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.PadicIntContinuousHomNormalizeOne, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RingHomApplyEqPow, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnramifiedPadicDecompositionHomExists, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocalDualityClassFieldFactsOfArtinTateEuler, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocalDualityClassFieldFactsOfArtinTateEulerStatement, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SelmerLengthBoundAtPoint

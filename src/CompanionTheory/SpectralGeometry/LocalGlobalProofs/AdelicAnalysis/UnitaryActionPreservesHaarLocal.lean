@@ -1,17 +1,10 @@
 module
 
 public import Mathlib.MeasureTheory.Measure.Haar.MulEquivHaarChar
-public import Mathlib.LinearAlgebra.Matrix.Transvection
-public import Mathlib.MeasureTheory.Constructions.Pi
-public import Mathlib.MeasureTheory.Measure.Haar.Basic
-public import Mathlib.MeasureTheory.Measure.Haar.Unique
 public import Mathlib.MeasureTheory.Measure.Haar.DistribChar
-public import Mathlib.MeasureTheory.Group.Measure
-public import Mathlib.RingTheory.Artinian.Defs
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.MatrixTransvectionDiagonalDecomposition
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorInvolutionAlgebraProperties
-public import Formalism.UnipotentAdelicQuotients.SWXSDefs
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRing
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Topology.Compactness.Paracompact

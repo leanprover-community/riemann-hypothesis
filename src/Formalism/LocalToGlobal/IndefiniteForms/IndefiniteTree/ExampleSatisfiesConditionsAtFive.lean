@@ -3,12 +3,8 @@ module
 public import Formalism.MirabolicMackeyTheory.StatementC
 public import Formalism.MirabolicMackeyTheory.StatementT
 public import Mathlib.NumberTheory.Chebyshev
-public import Mathlib.Analysis.SpecialFunctions.Log.Basic
 public import Mathlib.Analysis.Complex.ExponentialBounds
 public import Mathlib.Data.Nat.Choose.Dvd
-public import Mathlib.Algebra.BigOperators.Associated
-public import Mathlib.Algebra.BigOperators.Field
-public import Mathlib.Data.Nat.Choose.Central
 public import Formalism.PeriodIntegrals.PrimeSums
 public import Formalism.MirabolicMackeyTheory.MirabolicMackeyProofs.RamBasic
 public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.PrimeLogOverP
@@ -22,7 +18,6 @@ import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
@@ -55,18 +50,15 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
-import Formalism.QuotientMetricDivisors.Statement
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.ReduceModChar
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ValBasic
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style

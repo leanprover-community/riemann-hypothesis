@@ -3,7 +3,6 @@ module
 public import Formalism.FormalDegreeBessel.StatementIO
 public import Formalism.RealPlaceAnalysis.StatementE
 public import Formalism.RealPlaceAnalysis.QuotientSettingHolds
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 import Mathlib.Tactic.Lemma
 import Mathlib.Tactic.TypeStar
 

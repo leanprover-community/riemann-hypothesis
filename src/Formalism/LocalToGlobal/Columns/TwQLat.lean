@@ -1,7 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.Columns.TwQDCls
-import Formalism.LocalToGlobal.Columns.CoefColLemmas
 public import Formalism.LocalToGlobal.Columns.HeckeSpCount
 public import Formalism.LocalToGlobal.Columns.MemLocPOfSmul
 import Formalism.LocalToGlobal.Columns.RecLevelCls

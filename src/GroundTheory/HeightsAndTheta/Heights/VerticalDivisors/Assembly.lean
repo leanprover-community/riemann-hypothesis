@@ -5,14 +5,9 @@ public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.LogGaussNorm
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsChowNorm
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsFibreCut
 public import GroundTheory.ArithmeticGeometry.AbelianVarieties.JacobianSmoothness.RingKrullDimLeRingKrullDimQuotientAddOne
-public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
-public import Mathlib.RingTheory.FinitePresentation
-public import Mathlib.RingTheory.Localization.Away.AdjoinRoot
 public import Mathlib.RingTheory.OrderOfVanishing.Noetherian
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.Statements
-public import Mathlib.RingTheory.MvPolynomial.Localization
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.ComapMaximalIdealParDVR
-public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.Statements
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsSpecFirst
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsFibreCompDim
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.PMinimalPrimeHomog
@@ -20,7 +15,6 @@ public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.StatementsIn
 public import Mathlib.Algebra.MvPolynomial.Funext
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsChart
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsOrd
-public import Mathlib.RingTheory.Ideal.Height
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.StatementsGenSecKer
 public import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PIncidenceZeroLocus
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.Assembly
@@ -37,8 +31,6 @@ public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PSecBTorsion
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PSecIdealOfPrime
 public import GroundTheory.HeightsAndTheta.Heights.VerticalDivisors.PSpecMax
 import Mathlib.Tactic.Linter.Style
-import Mathlib.RingTheory.KrullDimension.Field
-import Mathlib.RingTheory.KrullDimension.PID
 import Mathlib.Tactic.Linter.HaveILetI
 import GroundTheory.HeightsAndTheta.Heights.ChowForms.PChowFormExists
 import GroundTheory.HeightsAndTheta.Heights.ChowForms.PConeDimOfChowForm

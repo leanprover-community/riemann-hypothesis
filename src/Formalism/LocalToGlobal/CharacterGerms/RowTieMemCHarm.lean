@@ -5,7 +5,6 @@ public import Formalism.LocalToGlobal.CharacterGerms.IsWHLetterMinorK
 public import Formalism.LocalToGlobal.CharacterGerms.GramMatrixMulRight
 public import Formalism.LocalToGlobal.CharacterGerms.FinTwoNeOneSub
 public import Formalism.LocalToGlobal.CharacterGerms.PderivSubGOff
-import Formalism.LocalToGlobal.CharacterGerms.NormOneRowDegrees
 import Formalism.LocalToGlobal.CharacterGerms.RowTieAdm
 
 -- This file was produced by scripts/clump.py from the modules listed below.

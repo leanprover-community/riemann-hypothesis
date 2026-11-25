@@ -3,7 +3,6 @@ module
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.SphericalFunctionIntegrableOfLocal
 public import Formalism.SharpRestriction.CuspSpanNormBounds.UnimodularSchurMeasures.RightRegularIsometricMultiplicative
 import Mathlib.MeasureTheory.Measure.SeparableMeasure
-import Mathlib.Topology.Algebra.Group.Units
 import Formalism.SharpRestriction.CuspSpanNormBounds.PlaceDegreeData
 
 @[expose] public section

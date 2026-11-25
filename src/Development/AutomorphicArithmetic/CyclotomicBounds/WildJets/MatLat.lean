@@ -6,17 +6,10 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.StdWeylLa
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsMulAddEqOneOfNotMem
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.TensorLatSpan
 public import Development.AutomorphicArithmetic.CyclotomicBounds.WildJets.BvvInt
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DualLatticeIsLatticeAndHermitianDual
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LatticeExtensionAlongFieldEmbeddingDuals
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TransportedLatticeLocalizationFreeLeCoefficientS
 public import Formalism.MirabolicMackeyTheory.MirabolicMackeyProofs.ThreeForms
 public import Formalism.PairingDivisors.PairingDivisorProofs.ValAdd
 import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.ValBasic
 import Std.Tactic.BVDecide.Normalize.Prop
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.GradedWeylDivisibility.FinalD
-import Formalism.LocalToGlobal.Columns.CoefficientsModP.FkMapInitMinor
-import Formalism.QuotientMetricDivisors.HermitianTwistDivisors.IdxChange
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicArithmetic.CyclotomicBounds.WildJets.LatCoordA, Development.AutomorphicArithmetic.CyclotomicBounds.WildJets.LatCoordB, Development.AutomorphicArithmetic.CyclotomicBounds.WildJets.MatLat

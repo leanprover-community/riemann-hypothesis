@@ -1,8 +1,6 @@
 module
 
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.SiegelDensities.SWMeasCAll
-public import GroundTheory.GlobalFields.IdeleGroups.IdeleNorms
-public import GroundTheory.GlobalFields.TateThesis.IdeleMeasure
 
 @[expose] public section
 

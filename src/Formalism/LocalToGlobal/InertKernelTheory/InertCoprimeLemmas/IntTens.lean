@@ -1,15 +1,12 @@
 module
 
 public import Formalism.LocalToGlobal.InertKernelTheory.StatementIota
-public import Mathlib.RingTheory.MvPowerSeries.Rename
-public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.IsDiscriminantTwelfthRootOfIdealLattice
 public import Formalism.LocalToGlobal.InertKernelTheory.DefsInt
 public import Formalism.LocalToGlobal.AlgebraicTheory.StatementKer
 public import Formalism.LocalToGlobal.AlgebraicTheory.AlgebraicTheoryProofs.KerJet
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
 public import Formalism.LocalToGlobal.TorsionIntegrality.QuadraticSemicharacters.QuadraticSemicharacterIdentityReformulated2
 import Mathlib.Tactic.TypeStar
-import Formalism.LocalToGlobal.KernelLattices.LateralTheory
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Formalism.LocalToGlobal.GlobalTheory.GL3.IntegralityIffAwayAtD

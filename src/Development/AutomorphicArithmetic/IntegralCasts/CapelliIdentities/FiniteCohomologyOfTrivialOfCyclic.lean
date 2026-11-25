@@ -6,15 +6,7 @@ public import Mathlib.RepresentationTheory.Homological.GroupCohomology.Basic
 public import Mathlib.Topology.LocallyConstant.Basic
 public import Mathlib.Algebra.Homology.HomologicalComplexAbelian
 public import Mathlib.RepresentationTheory.Homological.GroupCohomology.Functoriality
-public import Mathlib.Algebra.Homology.ShortComplex.ModuleCat
-public import Mathlib.Algebra.Category.ModuleCat.Abelian
-public import Mathlib.Algebra.Homology.ShortComplex.HomologicalComplex
-public import Mathlib.Algebra.Homology.ShortComplex.ShortExact
-public import Mathlib.RingTheory.Noetherian.Defs
 public import Mathlib.Algebra.Category.Grp.IsFinite
-public import Mathlib.Algebra.Homology.HomologySequence
-public import Mathlib.RingTheory.Finiteness.Finsupp
-public import Mathlib.RingTheory.Noetherian.Basic
 public import GroundTheory.ProfiniteCohomology.ContinuousCochains
 import Mathlib.Tactic.Linter.HaveILetI
 import GroundTheory.ProfiniteCohomology.DiscreteModules.IsDiscreteRepIffForallExistsOpenNormalSubgroup

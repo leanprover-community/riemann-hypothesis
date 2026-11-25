@@ -10,7 +10,6 @@ public import Development.EtaleCohomology.EtaleSheaves.LeafNegPf
 import Mathlib.Algebra.Category.ModuleCat.FilteredColimits
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Linter.HaveILetI
-import Development.EtaleCohomology.EtaleSheaves.H0TwistOverClosedField
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.EtaleCohomology.EtaleSheaves.LeafOfRingsLocInjPf, Development.EtaleCohomology.EtaleSheaves.LeafOfRingsLocSurjPf, Development.EtaleCohomology.EtaleSheaves.LeafTwAdjPf, Development.EtaleCohomology.EtaleSheaves.LeafTwFieldZPf, Development.EtaleCohomology.EtaleSheaves.LeafTwGenPf, Development.EtaleCohomology.EtaleSheaves.LeafTwPtPf, Development.EtaleCohomology.EtaleSheaves.PointDetect0Of, Development.EtaleCohomology.EtaleSheaves.ResZeroOfRange

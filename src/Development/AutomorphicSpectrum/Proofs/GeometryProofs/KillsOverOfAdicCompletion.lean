@@ -2,7 +2,6 @@ module
 
 public import Mathlib.AlgebraicGeometry.Morphisms.Separated
 public import Mathlib.Combinatorics.Quiver.ReflQuiver
-public import Mathlib.Algebra.MonoidAlgebra.Basic
 public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Mathlib.RingTheory.Filtration
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsCocharLie

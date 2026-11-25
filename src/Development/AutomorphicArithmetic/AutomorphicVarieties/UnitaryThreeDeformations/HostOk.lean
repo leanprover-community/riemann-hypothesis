@@ -2,7 +2,6 @@ module
 
 public import Mathlib.NumberTheory.NumberField.Basic
 public import Mathlib.RingTheory.DedekindDomain.Ideal.Lemmas
-public import Mathlib.Algebra.Group.Subgroup.Ker
 public import Mathlib.Topology.Algebra.Group.Defs
 public import Mathlib.Topology.LocallyConstant.Basic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.UnitaryThreeDeformations.IsHostFrame

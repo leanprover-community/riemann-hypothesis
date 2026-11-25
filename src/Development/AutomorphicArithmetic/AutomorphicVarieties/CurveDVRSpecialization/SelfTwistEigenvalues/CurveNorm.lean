@@ -9,7 +9,6 @@ public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IsDiscret
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.StalkGenericPointSpecializesOfSpecializes
 public import Mathlib.RingTheory.Ideal.Quotient.Index
 public import Mathlib.RingTheory.KrullDimension.Field
-public import Mathlib.RingTheory.DiscreteValuationRing.Basic
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.CurveDVRSpecialization.SelfTwistEigenvalues.CompleteDVRExt
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.CurveDVRPrecompleteFinite
 public import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsRingEquivPowerSeriesOfComplete

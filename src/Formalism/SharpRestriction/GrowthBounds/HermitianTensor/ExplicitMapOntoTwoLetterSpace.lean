@@ -1,7 +1,6 @@
 module
 
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.TieDefs
-public import Formalism.PolynomialDimension.MultinomialDepth.SqrtFockGaussLatticeComparisonHolds
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.ShapeCovering.CovDet
 public import Formalism.SharpRestriction.GrowthBounds.HermitianTensor.ShapeCovering.CovWeyl
 import Mathlib.Order.Interval.Finset.Box

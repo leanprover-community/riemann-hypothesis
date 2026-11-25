@@ -3,8 +3,6 @@ module
 public import Formalism.HermitianLattices.StatementLat
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryClassMass.Development
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.UnitaryClassMass.UJClassMassOfDeep
-import Formalism.PeriodIntegrals.UJClassFin
-import Formalism.PeriodIntegrals.UJClassMass
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.RegularLocalRing.Defs

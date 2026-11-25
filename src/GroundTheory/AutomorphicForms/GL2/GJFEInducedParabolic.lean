@@ -2,11 +2,7 @@ module
 
 public import GroundTheory.AutomorphicForms.GL2.GJFEDefs
 public import GroundTheory.AutomorphicForms.GL2.GJFEInducedChar
-public import GroundTheory.AutomorphicForms.MeasuresChart
-public import Mathlib.Analysis.CStarAlgebra.Classes
-public import GroundTheory.AutomorphicForms.GL2.GJInducedZeta
 import GroundTheory.AutomorphicForms.ReductionMeasure
-import GroundTheory.AutomorphicForms.LocallyProfinite
 import GroundTheory.AutomorphicForms.GL2.ExistsEqPowMulOfValuationLe
 
 -- This file was produced by scripts/clump.py from the modules listed below.

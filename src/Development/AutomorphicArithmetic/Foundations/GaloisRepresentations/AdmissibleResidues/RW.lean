@@ -6,7 +6,6 @@ import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CommuteInvLeft
 import Development.AutomorphicArithmetic.AutomorphicVarieties.AutomorphicForms.FormsFiniteness.FormsFiniteAlt
 import Formalism.LocalRingCardinality.SpanPowerMembership.NZTypeD
 import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
-import ReciprocityTheory.GaloisValuations.GlobalA
 
 @[expose] public section
 

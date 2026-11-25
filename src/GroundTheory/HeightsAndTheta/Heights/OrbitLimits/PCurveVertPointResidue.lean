@@ -9,7 +9,6 @@ public import GroundTheory.HeightsAndTheta.Heights.Intersections.NotIsUnitOfNumM
 public import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.CurveCountObjects
 import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.LittleWedderburn
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterDivSupp

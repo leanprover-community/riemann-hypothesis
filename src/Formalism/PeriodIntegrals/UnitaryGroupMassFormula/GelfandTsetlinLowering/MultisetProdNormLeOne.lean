@@ -8,11 +8,8 @@ public import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
 import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
-public import Mathlib.Algebra.Polynomial.Roots
 public import Mathlib.Analysis.Normed.Ring.Basic
 public import Mathlib.Basic.Complex.BigOperators
-public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
-public import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
 
 @[expose] public section
 

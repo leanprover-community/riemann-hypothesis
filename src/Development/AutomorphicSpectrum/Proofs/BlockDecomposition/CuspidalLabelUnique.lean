@@ -8,7 +8,6 @@ import Std.Tactic.BVDecide.Normalize.Prop
 import Development.WeilBound.CoreStatements.FiniteTypeHarishChandra.FiniteDimensionalHcSpace
 public import Mathlib.FieldTheory.Finite.Basic
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Minpoly
-public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
 public import Mathlib.RingTheory.Norm.Basic
 public import Mathlib.RingTheory.Polynomial.Vieta
 

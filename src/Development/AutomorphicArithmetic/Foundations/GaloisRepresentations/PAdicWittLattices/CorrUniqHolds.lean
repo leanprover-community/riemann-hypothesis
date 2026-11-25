@@ -13,19 +13,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleSheafOf
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HypercohomologyCoefficientMapFunctorialAdditive
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.PAdicWittLattices.IsAdmissibleIntegralBasisChangeOne
 public import Mathlib.AlgebraicGeometry.ZariskisMainTheorem
-public import Mathlib.AlgebraicGeometry.Morphisms.QuasiFinite
-public import Development.AbelianVarietyTheory.Definitions.Divisors.GalMapMul
-public import Mathlib.RingTheory.Ideal.Maximal
-public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs
-public import Mathlib.Algebra.Algebra.Subalgebra.Basic
-public import Mathlib.Algebra.Algebra.Subalgebra.Lattice
-public import Mathlib.Algebra.MvPolynomial.Eval
-public import Mathlib.RingTheory.Algebraic.Defs
-public import Mathlib.RingTheory.Algebraic.Integral
-public import Mathlib.RingTheory.AlgebraicIndependent.Defs
-public import Mathlib.RingTheory.AlgebraicIndependent.TranscendenceBasis
-public import Mathlib.FieldTheory.IsAlgClosed.Basic
-public import Mathlib.RingTheory.Ideal.GoingUp
 public import Development.AbelianVarietyTheory.Definitions.Divisors.DivisorSupportCondition
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.IsAlgClosedResidueFieldOfAic
 public import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomology.AffineProperBaseChange
@@ -36,8 +23,6 @@ public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentation
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.PAdicWittLattices.PEtnGood
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.PAdicWittLattices.PFEtBasic
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.PAdicWittLattices.PPtsOfSplits
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FreeHomExtOfCovering
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SplitByBaseChange
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -79,18 +64,12 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsZeroChains
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.TypeStar
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.Tactic.Linter.Style
-import Mathlib.AlgebraicGeometry.Morphisms.LocalFlatDescent
 import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
-import Mathlib.RingTheory.PicardGroup
-import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.WittVector.IsPoly
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.RingTheory.Henselian
 import Mathlib.Topology.Sheaves.Init
 
 -- This file was produced by scripts/clump.py from the modules listed below.

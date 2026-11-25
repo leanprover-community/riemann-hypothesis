@@ -6,7 +6,6 @@ public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentation
 public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.InertDef
 public import Development.WeilBound.CoreStatements.LocalThetaKernels.LinearIndependentOfNotMem
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.ArchimedeanEvaluationVector
-public import Development.WeilBound.ThetaLifts.CartanFactorisation.CartanConj
 public import Development.WeilBound.ThetaLifts.FrameEstimates.CoefBd
 public import Development.WeilBound.ThetaLifts.FrameEstimates.CoefEq
 public import Development.WeilBound.ThetaLifts.FrameEstimates.CoefReal
@@ -15,10 +14,7 @@ public import Development.WeilBound.ThetaLifts.FrameEstimates.LatMeas
 public import Development.WeilBound.ThetaLifts.FrameEstimates.LevelA
 public import Development.WeilBound.ThetaLifts.FrameEstimates.Parity
 public import Development.WeilBound.ThetaLifts.FrameEstimates.SchrAddPt
-public import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
 public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.FinSplit
-public import Development.WeilBound.ThetaLifts.CartanFactorisation.ExistsCharNe
-public import Development.WeilBound.ThetaLifts.FrameEstimates.LatCpt
 public import Development.WeilBound.ThetaLifts.LatticeBasics.PairsD
 public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.EqOneOfPowNear
 

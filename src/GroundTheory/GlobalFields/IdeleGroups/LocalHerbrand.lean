@@ -9,7 +9,6 @@ import GroundTheory.GlobalFields.CompletionAtPlace.Integers
 public import GroundTheory.LocalFields.HerbrandCyclic
 public import GroundTheory.LocalFields.HerbrandLocal
 public import GroundTheory.LocalFields.UnramifiedNorms
-public import GroundTheory.LocalFields.CompleteTrivial
 
 @[expose] public section
 

@@ -2,7 +2,6 @@ module
 
 public import Development.WeilBound.RepresentationTheoryGL.TwistedFactors.CuspDecayHeights.HeightLe
 public import GroundTheory.AutomorphicForms.CuspidalProjection.Global
-import GroundTheory.AutomorphicForms.RealIwasawaIntegration
 import Development.AutomorphicArithmetic.Foundations.Convolution.ConvolutionKernels.GalTwistEx
 
 @[expose] public section

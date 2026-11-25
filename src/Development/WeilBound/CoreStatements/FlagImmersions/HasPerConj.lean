@@ -3,13 +3,11 @@ module
 public import Development.WeilBound.CoreStatements.FlagImmersions.Transport
 public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsDifferentiableOnTransfer
 public import Development.AbelianVarietyTheory.Statements.HyperbolicHypotheses.HypothesesInhabitedHyperbolic
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.HolomorphicFamilyConjugate
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.InducedModelMorphismCompStructureMap
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RingOfIntegersHomInjective
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.Rt0NeZero
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ConjugateUniversalFamily
-public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsEigFrames
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsRiemannLatticeOfPeriod
 public import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnifConj
 public import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnifCoord
@@ -17,7 +15,6 @@ public import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnifGood
 public import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnifVec
 public import Development.WeilBound.CoreStatements.VolumeEquality.Pieces
 import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnifConjA
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.OneArc
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.HolPairA

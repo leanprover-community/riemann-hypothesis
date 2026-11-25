@@ -6,7 +6,6 @@ public import Mathlib.NumberTheory.LocalField.Basic
 public import Mathlib.Topology.Algebra.Group.Units
 public import Mathlib.Topology.Instances.Matrix
 public import GroundTheory.AutomorphicForms.ContragredientTranspose.MatrixSimilarity
-import GroundTheory.AutomorphicForms.LocallyProfinite
 public import GroundTheory.AutomorphicForms.WhittakerDistribution
 import Mathlib.RingTheory.Henselian
 import Mathlib.SetTheory.ZFC.PSet

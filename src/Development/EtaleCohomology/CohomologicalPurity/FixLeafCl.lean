@@ -7,7 +7,6 @@ public import Development.EtaleCohomology.CohomologicalPurity.LeafDescPf
 public import Development.EtaleCohomology.CohomologicalPurity.LeafDictPf
 public import Development.EtaleCohomology.KummerTheory.FlasquePf
 public import Mathlib.AlgebraicGeometry.IdealSheaf.Functorial
-public import Development.EtaleCohomology.KummerTheory.ContCut
 public import Development.EtaleCohomology.KummerTheory.GluePf
 public import Mathlib.Order.CompletePartialOrder
 public import Development.EtaleCohomology.CohomologicalPurity.LeafIndExc

@@ -14,10 +14,6 @@ public import Mathlib.Analysis.Normed.Unbundled.SpectralNorm
 public import Mathlib.NumberTheory.Ostrowski
 public import Mathlib.RingTheory.Valuation.Discrete.IsDiscreteValuationRing
 public import Mathlib.RingTheory.Valuation.Integral
-public import Mathlib.Algebra.CharP.Algebra
-public import Mathlib.Analysis.Normed.Ring.WithAbs
-public import Mathlib.Data.Int.WithZero
-public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Valuation
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

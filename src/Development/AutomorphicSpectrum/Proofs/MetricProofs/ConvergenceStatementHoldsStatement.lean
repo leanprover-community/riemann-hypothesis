@@ -9,13 +9,8 @@ public import ReciprocityTheory.AnalyticForms.LeviForms.ConvExpandStatement
 public import ReciprocityTheory.AnalyticForms.LeviForms.TailBoundB
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.AnalyticSubsetChartLocal
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.TailBoundStatementHolds
-import ReciprocityTheory.AnalyticForms.LeviForms.TailCut
-import ReciprocityTheory.AnalyticForms.LeviForms.TailCutA
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
-import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffAtOfIsPotential
-import ReciprocityTheory.AnalyticForms.PotentialTheory.MaMeasure
-import ReciprocityTheory.AnalyticForms.PotentialTheory.Stokes
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.MetricProofs.MixedEnergyRegularizationBound, Development.AutomorphicSpectrum.Proofs.MetricProofs.ConvergenceStatementHolds, Development.AutomorphicSpectrum.Proofs.MetricProofs.ConvergenceStatementHoldsStatement

@@ -8,7 +8,6 @@ public import Formalism.LocalRingCardinality.DataParams₂
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.MulFlowValLe
 public import Development.AbelianVarietyTheory.Definitions.Jets.DepthNumbersThresholdEq
 public import Formalism.LocalToGlobal.CharacterGerms.ContentLargeFromSupplies
-public import Formalism.LocalToGlobal.CharacterGerms.ContentZeroAt
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.CharacterBlocksAttainBound
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.MonomialBlockSupplyBothTypings
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.OddLevelBlockBoundAttained

@@ -1,8 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.Divisibility.CoefMod
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
-import Formalism.GradedWeylDivisibility.FinalD
 public import Formalism.LocalToGlobal.Divisibility.CoefModLemmas
 import Mathlib.Data.Finsupp.Interval
 import Formalism.LocalToGlobal.GlobalTheory.HLatOps

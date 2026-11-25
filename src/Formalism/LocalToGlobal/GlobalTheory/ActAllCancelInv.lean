@@ -7,7 +7,6 @@ public import Formalism.LocalToGlobal.Columns.PolyFnLemmas
 public import Formalism.LocalToGlobal.Columns.TiedValRat
 public import Formalism.LocalToGlobal.GlobalTheory.GL4.PColStd
 public import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.UnitTraceSumBounds.RankConditionsOfLayerTwo
-public import Formalism.LocalToGlobal.Columns.PolyFn
 public import Formalism.LocalToGlobal.GlobalTheory.MemIffOfLocBasisG
 import Formalism.LocalToGlobal.GlobalTheory.GL4.PColFin
 

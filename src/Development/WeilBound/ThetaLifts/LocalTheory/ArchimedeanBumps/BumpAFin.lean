@@ -2,20 +2,14 @@ module
 
 public import Development.WeilBound.ThetaLifts.LocalTheory.ArchimedeanBumps.ContinuousOnRationalWeight
 public import Development.WeilBound.ThetaLifts.LocalTheory.ArchimedeanBumps.HeisenbergActionAddOfOrthogonal
-public import Development.WeilBound.ThetaLifts.LocalTheory.ArchimedeanBumps.ArchSlice
 public import Development.WeilBound.ThetaLifts.LocalTheory.UnramifiedDeterminedBySpherical
 public import Development.WeilBound.ThetaLifts.ConeHypotheses.PureEqPureA
 public import Development.WeilBound.ThetaLifts.FrameEstimates.GrpTop
-public import Development.WeilBound.ThetaLifts.LocalTheory.ArchimedeanBumps.ArchHeisOf
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.CartanConj
-public import Development.WeilBound.ThetaLifts.SmallCones.ThetaUniq
 public import Development.WeilBound.ThetaLifts.LocalTheory.ArchimedeanBumps.SliceMain
 import Mathlib.Tactic.Linter.HaveILetI
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.WeilBound.ThetaLifts.SmallCones.MatCancel
-import Development.WeilBound.ThetaLifts.TowerModels.LeviAd
 import Development.AbelianVarietyTheory.Definitions.Divisors.MatchingOfParts
-import Development.WeilBound.ThetaLifts.LocalTheory.ArchimedeanBumps.TracePiReal
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.WeilBound.ThetaLifts.LocalTheory.ArchimedeanBumps.RationalWeightSuccMulInvNorm, Development.WeilBound.ThetaLifts.LocalTheory.ArchimedeanBumps.FormYx, Development.WeilBound.ThetaLifts.LocalTheory.ArchimedeanBumps.BumpAOf, Development.WeilBound.ThetaLifts.LocalTheory.ArchimedeanBumps.BumpAFin

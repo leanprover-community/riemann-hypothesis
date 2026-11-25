@@ -5,11 +5,6 @@ public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.Pro
 public import Mathlib.LinearAlgebra.BilinearForm.TensorProduct
 public import Mathlib.NumberTheory.Padics.PadicIntegers
 public import Mathlib.NumberTheory.Padics.RingHoms
-public import Mathlib.Data.Nat.Prime.Defs
-public import Mathlib.Data.Nat.Factorization.Induction
-public import Mathlib.LinearAlgebra.Quotient.Defs
-public import Mathlib.RingTheory.Coprime.Lemmas
-public import Mathlib.LinearAlgebra.Determinant
 public import Mathlib.NumberTheory.NumberField.CMField
 public import Mathlib.RingTheory.SimpleRing.Principal
 public import Mathlib.RingTheory.Unramified.Basic
@@ -17,13 +12,9 @@ public import Development.WeilBound.CoreStatements.HomogeneousNonvanishing.TwGDi
 public import Development.WeilBound.CoreStatements.HomogeneousNonvanishing.TwGTheta
 public import Mathlib.RingTheory.DedekindDomain.Different
 public import Mathlib.RingTheory.Henselian
-public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Formalism.HermitianLattices.HermitianLatticesProofs.UnimodUnramUnique
 public import Mathlib.Dynamics.Newton
 public import Mathlib.RingTheory.AdicCompletion.AsTensorProduct
-public import Mathlib.LinearAlgebra.BilinearForm.Basic
-public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
-public import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
 public import Development.WeilBound.CoreStatements.HomogeneousNonvanishing.TwGFree
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.AdelicGroupAlgebraActionInjective
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.TwistedModuleFiniteProjectiveRank
@@ -34,7 +25,6 @@ import Mathlib.Algebra.Order.Star.Int
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.AdicCompletion.Noetherian
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FreeIntOfProjectiveRingOfIntegers, Development.WeilBound.CoreStatements.HomogeneousNonvanishing.TwLift, Development.WeilBound.CoreStatements.HomogeneousNonvanishing.CrtGood, Development.AutomorphicSpectrum.Proofs.AlgebraProofs.RealOfFixedByConjugations, Development.WeilBound.CoreStatements.HomogeneousNonvanishing.TwGXi, Development.WeilBound.CoreStatements.HomogeneousNonvanishing.TwGLam, Development.WeilBound.CoreStatements.HomogeneousNonvanishing.TwGSemi, Development.WeilBound.CoreStatements.HomogeneousNonvanishing.TwGHerm, Development.WeilBound.CoreStatements.HomogeneousNonvanishing.TwGStd, Development.WeilBound.CoreStatements.HomogeneousNonvanishing.TwGPadic, Development.WeilBound.CoreStatements.HomogeneousNonvanishing.Imports

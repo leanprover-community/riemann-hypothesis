@@ -8,9 +8,6 @@ public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.Smoo
 public import Mathlib.Geometry.Manifold.PartitionOfUnity
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Tactic.TypeStar
-public import Mathlib.Geometry.Manifold.ContMDiff.Basic
-public import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
-public import Mathlib.Geometry.Manifold.ContMDiffMap
 
 @[expose] public section
 

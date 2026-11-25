@@ -2,7 +2,6 @@ module
 
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.ChainEmbInj
 public import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.BFDefs
-import Formalism.SharpRestriction.GrowthBounds.BinomialRatio.MapFloorMono
 import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.DivDerZero
 import Formalism.SharpRestriction.GrowthBounds.CoarseMultiplicity.TopOddNeEnd
 import Std.Tactic.BVDecide.Normalize.BitVec

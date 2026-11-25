@@ -7,10 +7,6 @@ public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ProductFunct
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardAddCharSymplecticLocalLatticeEqOne
 public import Development.WeilBound.ThetaLifts.TowerModels.TwistedSums.StandardTraceAdelicAddCharLocalComponentNeOne
 public import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.ThetaParseval.ThetaKernels.ThkBaseEisCont
-public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaDistributionNonzeroAdmissible
-public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.InertDef
-public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.Inertof
-public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.VaceigenDual
 public import Development.WeilBound.CoreStatements.LocalThetaKernels.ExistsSmallSubgroups
 public import Development.WeilBound.CoreStatements.LocalThetaKernels.LinearIndependentOfNotMem
 public import Development.WeilBound.CoreStatements.LocalThetaKernels.Locrep
@@ -19,13 +15,6 @@ public import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.StarMemSch
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicHeisenbergActsByLocalSchrodinger
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TensorLatticeInertPlaceSelfDual
 public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.FinSplit
-public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.Vaceigen
-public import Development.WeilBound.CoreStatements.CompactAveragingSplitting.EigenvectorLifting.VaceigenAlg
-public import Development.WeilBound.CoreStatements.LocalThetaKernels.LocrepAd
-public import Development.WeilBound.ThetaLifts.LatticeBasics.SchrUnit
-public import Development.WeilBound.ThetaLifts.LatticeBasics.SkewTwo
-public import Development.WeilBound.ThetaLifts.LocalTheory.ConeShifts.PresOfHat
-public import GroundTheory.LocalFields.LocalFourierHaar
 
 /-! # LatAtVSelfDualK: Consolidated global theta-kernel definitions and proofs (LatAtVSelfDualK). -/
 @[expose] public section

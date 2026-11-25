@@ -13,13 +13,10 @@ public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.P
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.ExistsBeta
 public import Development.WeilBound.ThetaLifts.CartanFactorisation.Unimod
 public import Development.WeilBound.ThetaLifts.EigenvalueEndgame.TowerCodimensionTwo
-public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.KdExistsInv
-public import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.LmOfLinBar
 import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.KdMulRight
 import Development.WeilBound.CoreStatements.LocallyConstantCoinvariants.PfDictSec
 import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
 import Formalism.LocalToGlobal.IndefiniteReal.PHeisFC
-import GroundTheory.LocalFields.PadicLogSeries
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.WeilBound.ThetaLifts.ConeHypotheses.IsLocallyConstantFinprodEvalV
 

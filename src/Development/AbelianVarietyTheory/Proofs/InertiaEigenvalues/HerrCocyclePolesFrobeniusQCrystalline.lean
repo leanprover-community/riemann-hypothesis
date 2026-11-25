@@ -15,9 +15,6 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MapMulL
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemRangeOfFrob
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NBasisLoc
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ZgFormula
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicPowerSeriesAlgHomActionLaws
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsInvariantBasis
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.GeomSumOneAddPrime
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic

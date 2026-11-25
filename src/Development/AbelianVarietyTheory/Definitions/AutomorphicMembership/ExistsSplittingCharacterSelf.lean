@@ -23,7 +23,6 @@ public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.Split
 public import Development.AutomorphicArithmetic.CyclotomicBounds.RootsOfUnity.ResidueEisenstein
 public import Mathlib.NumberTheory.PrimesCongruentOne
 public import Development.AbelianVarietyTheory.Definitions.GlobalTwisting.DisjointExceptional
-public import Formalism.LocalToGlobal.Columns.DecoFin
 public import Formalism.LocalToGlobal.HeckeThetaElements.IsHeckeElt
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinPartConjMem
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.AbsNormEqOfNcardPlacesOver
@@ -77,19 +76,12 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.FrameBasisMatrixOrthogonalProperties
-import Development.AbelianVarietyTheory.Definitions.Foundations.RootOfUnityEightQMemCoeffGaloisSubfield
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.EqNegOfCommute
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsIsInfFamFamily
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.UnderEqIffConjPl
-import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.HostFacts
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.ReduceModChar
 import Formalism.LocalToGlobal.GlobalTheory.IsResidueClassZero
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.EvalVAlgebraMapMem
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
-import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.Tactic.Polynomial.Basic
@@ -97,9 +89,7 @@ import Mathlib.Tactic.TypeStar
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsCuspFunIffConstTerm
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCmAdeleUnitCharacterReadingHeckeChar
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUnramifiedHeckeCharHalfExponentRestrictQua
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemNormGroupIffEverywhereNorm
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.TendstoInfMulProd
-import Formalism.LocalToGlobal.UnitaryNorms.CharUniq
 
 -- This file was produced by scripts/clump.py from the modules listed below.
 -- Members: Development.AbelianVarietyTheory.Proofs.HeightProofs.ExistsSignatureDecompositionDiagonal, Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.SplitFacTwistRight, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsSplitPlace, Development.AbelianVarietyTheory.BlockTheory.GlobalSignature.FewBadPrimes, Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ObjOnNarrowOfObjectsExist, Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.NonemptyBesselPeriodPositionOneData, Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsSplittingCharacterSelf

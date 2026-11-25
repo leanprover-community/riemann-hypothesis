@@ -2,7 +2,6 @@ module
 
 public import Mathlib.RepresentationTheory.Coinduced
 public import GroundTheory.ProfiniteCohomology.EulerCharDefs
-public import Mathlib.GroupTheory.Index
 public import Mathlib.Topology.Algebra.ContinuousMonoidHom
 public import GroundTheory.ProfiniteCohomology.RestrictedRamification.BaseChangeModules
 import Mathlib.Tactic.TypeStar

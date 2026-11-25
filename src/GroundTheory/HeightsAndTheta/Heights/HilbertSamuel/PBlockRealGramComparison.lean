@@ -6,10 +6,8 @@ public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSupBo
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSupBoundCount
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.SupBoundCountLattice
 public import GroundTheory.HeightsAndTheta.Heights.MatrixCharts.DetIneq
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Tactic.TypeStar
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.CSandwichStB
-public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.SupBoundCountIntegrals
 
 @[expose] public section
 
