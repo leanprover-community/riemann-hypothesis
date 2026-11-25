@@ -1,11 +1,9 @@
 # riemann-hypothesis
 
-[![checks](https://github.com/leanprover-community/riemann-hypothesis/actions/workflows/checks.yml/badge.svg)](https://github.com/leanprover-community/riemann-hypothesis/actions/workflows/checks.yml)
-
 A community-led effort to clean up and maintain a Lean formalization of the 2026 proofs of the Riemann Hypothesis and of GRH for Dirichlet L-functions.
 
 > [!CAUTION]
-> This repo moved suddenly to a highly condensed version recently, on November 25, 2026. Prior progress is preserved on the `alpoge` branch.
+> This repo recently moved to a highly condensed version on November 25, 2026. Prior progress is preserved on the `alpoge` branch.
 
 The purpose of this repo is to create an artifact that is:
 
@@ -36,7 +34,7 @@ It keeps the published Lean source unchanged and provides a prebuilt cache for i
 | Theorem | Statement |
 |---|---|
 | `riemannHypothesis` | Mathlib's `RiemannHypothesis` |
-| `riemannZeta_eq_zero_re` | the same statement as `riemannHypothesis`, spelled out without Mathlib |
+| `riemannZeta_eq_zero_re` | the same statement as `riemannHypothesis` but spelled out without Mathlib's definition of the statement |
 | `LFunction_ne_zero_of_half_lt_re` | L(χ, s) ≠ 0 for Re s > 1/2, for every modulus and every Dirichlet character, except the trivial character at s = 1 |
 | `LFunction_eq_zero_re` | every zero of L(χ, s) with 0 < Re s < 1 has Re s = 1/2 |
 | `LFunction_eq_zero_re_of_isPrimitive` | the special case of `LFunction_eq_zero_re` for primitive characters |
@@ -56,50 +54,9 @@ This needs Python 3.11 or newer and curl 7.71 or newer. (No credentials are nece
 
 See [`CACHE.md`](CACHE.md) for details.
 
-## Checking the proof yourself
-
-Take a fresh clone on a Linux machine with
-[bubblewrap](https://github.com/containers/bubblewrap) installed and run:
-
-```bash
-MATHLIB_CACHE_GET_URL=https://cache.mathlib.org/mathlib4 lake exe mathlib/cache get
-lake comparator
-```
-
-The first command fetches Mathlib's compiled files and nothing of ours. Don't use
-`lake exe cache get` here, because that also downloads our prebuilt copy of the submission. The
-second reads `comparator.json`, builds `Challenge` and `Main` in a sandbox with no network, and
-makes the checks described under [Theorem Statements](#theorem-statements).
-
-Compiling the submission runs its code, so you may want to do it in a VM or your own sandbox. To do that, fetch Mathlib's cache as above, then run the check in three steps:
-
-```bash
-export LEAN_ABORT_ON_PANIC=1        # as Comparator does
-export LAKE_ARTIFACT_CACHE=false    # compile everything; read nothing from a Lake cache
-
-# in a clone where the submission has not been compiled
-lake build Challenge
-lake env leanexport Challenge -- $(cat export-targets.txt) > challenge.export
-
-# wherever you build the submission
-lake build Main
-lake env leanexport Main -- $(cat export-targets.txt) > solution.export
-
-# from an empty directory, with the same Lean release and comparator.json from the first clone
-lake comparator --config comparator.json \
-  --challenge-from-export challenge.export --solution-from-export solution.export
-```
-
-## CI
-
-To lend a Linux machine with plenty of memory and disk, see
-[CI-RUNNERS.md](verification/CI-RUNNERS.md). To assemble a batch of pull requests by hand, or
-to resolve a pull request's conflict with the batch being built (`batch-conflict`), see
-[BATCHES.md](verification/BATCHES.md). The CI scripts are in [`scripts/`](scripts/).
-
 ## Layout
 
-*For now, this section is copied from https://github.com/lsernau/grh-lean. It is subject to change.*
+*For now, this section is copied from https://github.com/lsernau/grh-lean. It may be out of date and is subject to change.*
 
 About 300,000 lines of code; 433,000 non-blank lines with comments; 477,000 lines in all.
 - `src/Lib` (495 files): background results, classed as known in the literature, that Mathlib lacks, with the steps of their proofs. It imports nothing from `src/New`.
@@ -110,9 +67,9 @@ About 300,000 lines of code; 433,000 non-blank lines with comments; 477,000 line
 
 ## License
 
-The proof belongs to its author Levent Alpöge with Claude and was originally published without a license. The repo https://github.com/lsernau/grh-lean uses Apache 2.0, and so does this repo; see [`LICENSE`](LICENSE.md), [`NOTICE`](NOTICE.md) and [`ATTRIBUTION.md`](ATTRIBUTION.md).
+The proof belongs to its author Levent Alpöge with Claude and was originally published without a license. The repo https://github.com/lsernau/grh-lean uses Apache 2.0, and so does this repo; see [`LICENSE`](LICENSE), [`NOTICE`](NOTICE) and [`ATTRIBUTION.md`](ATTRIBUTION.md).
 
-*Soon, we will re-integrate Formal Conjectures.*
+*Soon, we will re-integrate Formal Conjectures. This is out of date.*
 
 The declarations in `comparator/` that will be copied from
 [formal-conjectures](https://github.com/google-deepmind/formal-conjectures) are copyright The Formal
