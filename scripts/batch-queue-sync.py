@@ -1234,7 +1234,8 @@ def tell_members(gh, batch, pulls, main, log):
     new head has the commit in the note in it, the new head becomes the member's commit in the
     note, and no new comment is posted: if it was told it is frozen at the old one, that comment is
     edited to name the new head, and so is a comment of `pushed` about the old one, which also
-    takes off the `awaiting-author` it put on (see `retell`). If they cannot be edited, the member stays at the old commit until the next run."""
+    takes off the `awaiting-author` it put on (see `retell`). If they cannot be edited, the member
+    stays at the old commit until the next run."""
     note, number, since = batch["note"], batch["number"], 0
     found, told, pushed, waiting = note["members"], note["told"], note["pushed"], note["waiting"]
     for key, commit in sorted(found.items(), key=lambda entry: int(entry[0])):
