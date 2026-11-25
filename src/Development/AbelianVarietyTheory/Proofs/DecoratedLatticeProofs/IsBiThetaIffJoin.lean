@@ -274,9 +274,6 @@ theorem levR_of_join (h : IsThetaFunO ψ W S (join d S C)) : ∃ U : AddSubgroup
 theorem isBiTheta_of_join (h : IsThetaFunO ψ W S (join d S C)) : IsBiTheta ψ A S A' C :=
   ⟨cont_of_join d h, smooth_of_join d h, quasiL_of_join d h, quasiR_of_join d h, levL_of_join d h, levR_of_join d h⟩
 
-theorem isBiTheta_iff_join : IsBiTheta ψ A S A' C ↔ IsThetaFunO ψ W S (join d S C) :=
-  ⟨isThetaFunO_join d, isBiTheta_of_join d⟩
-
 end GlobalTheory.BiTransfer
 
 end

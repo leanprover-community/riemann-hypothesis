@@ -64,13 +64,6 @@ def intAfter (c : Af E) : Set (Af E) := {y | ∀ v, (c * y) v ∈ v.adicCompleti
 theorem isOpen_intAfter (c : Af E) : IsOpen (intAfter E c) :=
   (GlobalTheory.AdLat.OpenLat.isOpen_integral E).preimage (continuous_const.mul continuous_id)
 
-theorem nat_mul_integral (k : ℕ) {x : Af E} (hx : ∀ v, x v ∈ v.adicCompletionIntegers E) (v) :
-    ((k : Af E) * x) v ∈ v.adicCompletionIntegers E := by
-  have hk : ((k : Af E)) v ∈ v.adicCompletionIntegers E := by
-    rw [show ((k : Af E)) v = (k : v.adicCompletion E) from rfl]
-    exact natCast_mem _ k
-  exact mul_mem hk (hx v)
-
 theorem exists_nat_mul_integral (a : Af E) :
     ∃ N : ℕ, 0 < N ∧ ∀ v, ((N : Af E) * a) v ∈ v.adicCompletionIntegers E := by
   obtain ⟨N, hN, h⟩ := _root_.GlobalTheory.LocalNormBound.main E (intAfter E a)
@@ -79,19 +72,6 @@ theorem exists_nat_mul_integral (a : Af E) :
   have h1 := h 1 (fun v => one_mem _) v
   rw [nsmul_eq_mul, mul_one, mul_comm] at h1
   exact h1
-
-theorem mem_intAfter_of_dvd {d m : ℕ} (h : d ∣ m) {y : Af E} (hy : y ∈ intAfter E (d : Af E)) :
-    y ∈ intAfter E (m : Af E) := by
-  obtain ⟨k, rfl⟩ := h
-  intro v
-  have e : (((d * k : ℕ)) : Af E) * y = (k : Af E) * ((d : Af E) * y) := by
-    rw [Nat.cast_mul]; ring
-  rw [e]
-  exact nat_mul_integral E k hy v
-
-theorem intAfter_mono {n m : ℕ} (h : n ≤ m) :
-    intAfter E ((n.factorial : ℕ) : Af E) ⊆ intAfter E ((m.factorial : ℕ) : Af E) :=
-  fun _ hy => mem_intAfter_of_dvd E (Nat.factorial_dvd_factorial h) hy
 
 theorem exists_common_denom : ∀ (E : Type) [Field E] [NumberField E] (Kf : Set (Af E)), IsCompact Kf →
     ∃ n : ℕ, 0 < n ∧ ∀ ξ : E, algebraMap E (Af E) ξ ∈ Kf → IsIntegral ℤ ((n : E) * ξ) := by

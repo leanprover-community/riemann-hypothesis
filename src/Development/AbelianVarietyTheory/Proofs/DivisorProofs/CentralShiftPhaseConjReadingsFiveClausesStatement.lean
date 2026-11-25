@@ -198,7 +198,6 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 abbrev sndT (F E : Type) [Field F] [NumberField F] [Field E] [Algebra F E] : AF F ⊗[F] E →+* Af F ⊗[F] E :=
   (Algebra.TensorProduct.map (sndA F) (AlgHom.id F E)).toRingHom
 
-
 omit [NumberField E] in
 theorem dense_ratFin : Dense {x : AF F ⊗[F] E | ∃ a : E, sndT F E (x - inclR (F := F) (AF F) a) = 0} := by
   have : IsModuleTopology (AF F) (AF F ⊗[F] E) := ⟨rfl⟩
@@ -514,65 +513,6 @@ noncomputable section
 
 open NumberField IsDedekindDomain
 
-namespace GlobalTheory.GeoActCompare
-
-open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Mult Formalism.IndefR.Lev Formalism.L2.Pj
-  Formalism.IndefR.FWT
-open GlobalTheory.IndefiniteRowSideFullHecke.GeometricConstantEquiv (Cusp IsLift IsGeo ReadTwist KeepsIntegral IsIntegralForm ConstEquiv IsKappa GeoActAt)
-
-attribute [local instance] Formalism.BasicNotions.Host.cmStar
-
-variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m}
-
-section Model
-
-variable {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks)
-
-theorem levChi_flag (i : Fin D.R.m) (k : GA D (Wc D i)) : levChi _ (R.βW i) (flagL (R.datWp i R.triv)) k = 1 := by
-  simp [levChi, Formalism.L2.DIV.levFn, flagL, withP, LevCh.datWp, datY, LevelP.full]
-  first
-    | exact subgroupCharExtension_one_apply _ _
-
-private theorem wall_apply_mul_eq_levChi_mul_of_mem_levS {i : Fin D.R.m} {σ : D.what₂.LL →+* ℂ} {T : MMap (R.MW i σ)} (hT : T ∈ R.Wall i σ)
-    (v : (R.MW i σ).Vec) {k : GA D (Wc D i)} (hk : k ∈ levS _ (R.βW i) (R.datWp i R.triv)) (g : GA D (Wc D i)) :
-    T v (g * k) = levChi _ (R.βW i) (R.datWp i R.triv) k * T v g := by
-  unfold RealDat.Wall Formalism.IndefR.Mult.Mult at hT
-  induction hT using Submodule.span_induction with
-  | mem x hx =>
-    have hx' : IsMultMap R.θ (R.MW i σ) (levS _ (R.βW i) (R.datWp i R.triv))
-        (levChi _ (R.βW i) (R.datWp i R.triv)) x := hx
-    exact hx'.lev v k hk g
-  | zero => simp
-  | add x y _ _ hx hy =>
-    simp only [MultilinearMap.add_apply, Pi.add_apply, hx, hy]
-    ring
-  | smul a x _ hx =>
-    simp only [MultilinearMap.smul_apply, Pi.smul_apply, smul_eq_mul, hx]
-    ring
-
-theorem hasType_e (he : R.models_HW) (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ) (y : (R.HW i σ).H) (v : (R.MW i σ).Vec) :
-    HasType (Wc D i) (R.βW i) (flag1L (R.datWp i R.triv)) ((R.HW i σ).e y v) := by
-  have hm : (R.HW i σ).e y ∈ R.Wall i σ := by
-    rw [← (he i σ).2.1]
-    exact LinearMap.mem_range_self _ y
-  intro k hk h
-  exact wall_apply_mul_eq_levChi_mul_of_mem_levS R hm v hk h
-
-theorem actW_apply (he : R.models_HW) {i : Fin D.R.m} (σ : D.what₂.LL →+* ℂ) {g : G} {k : GA D (Wc D i)}
-    (hk : IsLevelLift (Wc D i) (R.βW i) (R.datWp i R.triv) (R.eG g) k) (y : (R.HW i σ).H) (v : (R.MW i σ).Vec)
-    (x : GA D (Wc D i)) : actW R i σ g ((R.HW i σ).e y) v x = (R.HW i σ).e y v (x * k) := by
-  have hs := level_action_spec (hasType_e R he i σ y v) ⟨k, hk⟩ k hk x
-  rw [levChi_flag R i k, inv_one, one_mul] at hs
-  exact hs
-
-end Model
-
-variable (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F) (κ : ∀ i : Fin D.R.m, WeightFamilies.Wt D ((i : ℕ) + 1))
-  (v₀ : ∀ (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (R.MW i σ).Vec)
-
-variable {T R κ v₀}
-
-end GlobalTheory.GeoActCompare
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -610,8 +550,6 @@ theorem GlobalTheory.CompPhase.exists_isCompPhase_five : ∀ {D : D7} {G : Type}
   exact ⟨U, hu.1, hu.2.1, hu.2.2.1, hu.2.2.2, fun y v h => congrFun (DFunLike.congr_fun (hU y) v) h⟩
 
 namespace GlobalTheory.ConjInner
-
-
 
 theorem inner_reading_conj_five : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 T0 : Type} {A : FamIn D.what₂.LL G Pl0 T0 D.R.m} (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (R : RealDat D A T.Q.c.F) (F : Face D A) (κw : ∀ i : Fin D.R.m, WeightFamilies.Wt D ((i : ℕ) + 1)) (v₀ : ∀ (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (R.MW i σ).Vec), GlobalTheory.Core5 R F → ∀ (fw : FWTie T R κw v₀) (i : Fin D.R.m), JEvExists T R κw v₀ → JEvBar T R κw → BarTie fw → ∀ (σ : D.what₂.LL →+* ℂ), ¬ GoodEmb T.Q.c (res T σ) → ∀ y y', ⟪(R.FW i).j σ y, (R.FW i).j σ y'⟫_ℂ = starRingEnd ℂ ⟪(R.FW i).j ((starRingEnd ℂ).comp σ) y, (R.FW i).j ((starRingEnd ℂ).comp σ) y'⟫_ℂ := by
   intro D G _ _ Pl0 T0 A T _ R F κw v₀ hC fw i hE hB hT σ hσ

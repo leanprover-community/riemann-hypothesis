@@ -81,16 +81,8 @@ theorem radX_sup_lv : radX d ⊔ (lv d).range = flagN d := by
   exact mul_mem (Subgroup.mem_sup_right ⟨⟨u, hu⟩, rfl⟩)
     (Subgroup.mem_sup_left (mul_mem (nB_mem_radX d b) (nC_mem_radX d c)))
 
-theorem blockX_mul_lv {n : GA D S} (hn : n ∈ radX d) (u : UX D ρ) : blockX d (n * lv d u) = u.1.1 := by
-  change d.pX ⬝ (mt S (n * d.levi u.1) ⬝ d.jX) = _
-  rw [mt_mul, Matrix.mul_assoc, d.levi_jX, ← Matrix.mul_assoc (mt S n), mem_fixer.1 hn.2, ← Matrix.mul_assoc, d.pX_jX,
-    Matrix.one_mul]
-
 theorem exists_rad_lv {n : GA D S} (hn : n ∈ flagN d) : ∃ n₀ ∈ radX d, ∃ u, n = n₀ * lv d u :=
   exists_mul_of_mem_sup_range (radX d) (lv d) (lv_conj d) (by rw [radX_sup_lv]; exact hn)
-
-theorem continuous_blockX : Continuous (blockX d) :=
-  continuous_const.matrix_mul ((continuous_mt S).matrix_mul continuous_const)
 
 theorem isClosed_stabX : IsClosed (stabX d : Set (GA D S)) := by
   haveI := (lattice_Mx D S.rank ρ).2.2.2.1

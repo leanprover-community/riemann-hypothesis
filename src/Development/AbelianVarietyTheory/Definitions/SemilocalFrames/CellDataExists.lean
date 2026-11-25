@@ -55,27 +55,6 @@ open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.
 
 open MeasureTheory Matrix in
 open scoped InnerProductSpace ENNReal in
-private theorem inv_mul_conj_mul_cancel {n : Type*} [Fintype n] [DecidableEq n] (A B C D γ a : Matrix n n ℂ)
-    (hγ : IsUnit γ.det) (ha : IsUnit a.det) :
-    A⁻¹ * (a * B)⁻¹ * γ * (γ⁻¹ * a * γ * C) * D = A⁻¹ * B⁻¹ * γ * C * D := by
-  rw [Matrix.mul_inv_rev]
-  have h1 : γ * γ⁻¹ = 1 := Matrix.mul_nonsing_inv γ hγ
-  have h2 : a⁻¹ * a = 1 := Matrix.nonsing_inv_mul a ha
-  calc A⁻¹ * (B⁻¹ * a⁻¹) * γ * (γ⁻¹ * a * γ * C) * D
-      = A⁻¹ * B⁻¹ * (a⁻¹ * ((γ * γ⁻¹) * a)) * γ * C * D := by
-        simp only [Matrix.mul_assoc]
-    _ = _ := by rw [h1, Matrix.one_mul, h2, Matrix.mul_one]
-
-
-open MeasureTheory Matrix in
-open scoped InnerProductSpace ENNReal in
-theorem _root_.GlobalTheory.CellAmp.Model.pairMaj_stabAct {k r : ℕ} (γ a : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) (hγ : IsUnit γ.det)
-    (ha : IsUnit a.det) (b : ℝ) (p : _root_.Formalism.MainNotions.S.PairSp k r) : _root_.GlobalTheory.CellAmp.pairMaj γ b (_root_.Formalism.MainNotions.S.stabAct γ a p) = _root_.GlobalTheory.CellAmp.pairMaj γ b p :=
-  congrArg (fun M => _root_.Formalism.FourierDecayAlt.B.gN M ^ (-b))
-    (inv_mul_conj_mul_cancel (of p.1.1) (of p.1.2) (of p.2.2) (of p.2.1) γ a hγ ha)
-
-open MeasureTheory Matrix in
-open scoped InnerProductSpace ENNReal in
 theorem _root_.GlobalTheory.CellAmp.Model.ell_one (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) (hz : _root_.Formalism.QuantumDeterminants.inWb k r z) : _root_.Formalism.QuantumDeterminants.ell k r z 1 = 0 := by
   unfold _root_.Formalism.QuantumDeterminants.ell
   refine Finset.sum_eq_zero fun a _ => ?_
@@ -86,7 +65,6 @@ theorem _root_.GlobalTheory.CellAmp.Model.ell_one (k r : ℕ) (z : Fin (2 * r + 
     simp [_root_.Formalism.QuantumDeterminants.eI] at this
   · rw [Matrix.one_mulVec]
     exact hz _ (Or.inl (by simp [_root_.Formalism.QuantumDeterminants.eI]))
-
 
 open MeasureTheory Matrix in
 open scoped InnerProductSpace ENNReal in

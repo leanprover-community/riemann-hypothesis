@@ -105,23 +105,6 @@ theorem combAt_single {u : WO S T} (hu : MxAt P u) (a : ℂ) : CombAt P (Finsupp
 
 end Comb
 
-section Rd
-variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-  {p : SplitPt D k} {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] {S T : HSp D}
-
-theorem rd_add (α : Frame p S n') (β : Frame p T n) (t s : WO S T) : rd α β (t + s) = rd α β t + rd α β s := by
-  unfold rd
-  rw [Matrix.map_add p.pr (map_add p.pr), Matrix.mul_add, Matrix.add_mul]
-
-theorem rd_nsmul (α : Frame p S n') (β : Frame p T n) (N : ℕ) (t : WO S T) : rd α β (N • t) = (N : k) • rd α β t := by
-  unfold rd
-  have : (N • t).map p.pr = (N : k) • t.map p.pr := by
-    ext i j
-    simp [Matrix.map_apply, nsmul_eq_mul, map_mul, map_natCast]
-  rw [this, Matrix.mul_smul, Matrix.smul_mul]
-
-end Rd
-
 theorem isSBHalf_extFun : ∀ (D : D7) (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     (p : SplitPt D k) (n n' : Type) [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] (S T : HSp D)
     (α : Frame p S n') (β : Frame p T n) (LS : Lat S) (LT : Lat T), IsSelfDualC S LS → IsSelfDualC T LT →

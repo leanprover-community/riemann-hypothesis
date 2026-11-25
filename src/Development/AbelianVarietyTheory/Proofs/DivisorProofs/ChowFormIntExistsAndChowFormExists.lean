@@ -120,21 +120,6 @@ theorem ringKrullDim_of_isChowFormInt {P : Ideal (MvPolynomial (Fin N) K)} [hp :
     (not_lt.1 (not_lt_of_isChowFormInt h' h))
   exact he
 
-theorem exists_eq_coneIdeal {P : Ideal (MvPolynomial (Fin N) K)} [hp : P.IsPrime]
-    (hP : ∀ g ∈ P, ∀ n : ℕ, homogeneousComponent n g ∈ P) {δ : ℕ}
-    {f : MvPolynomial (Fin (0 + 1) × Fin N) K} (h : IsChowFormInt P 0 δ f) :
-    ∃ (y : Fin N → AlgebraicClosure K) (j : Fin N), y j = 1 ∧ P = coneIdeal K y := by
-  apply _root_.GlobalTheory.ConeDeg.exists_eq_coneIdeal <;> assumption
-
-theorem coeff_sub_comp {H : Polynomial ℚ} {D : ℕ} (h : H.natDegree ≤ D + 1) :
-    (H - H.comp (Polynomial.X - Polynomial.C ((1 : ℕ) : ℚ))).coeff D = (D + 1) * H.coeff (D + 1) := by
-  have e : H.comp (Polynomial.X - Polynomial.C ((1 : ℕ) : ℚ)) = Polynomial.taylor (-1) H := by
-    rw [Polynomial.taylor_apply]; simp [sub_eq_add_neg]
-  have h1 : (Polynomial.hasseDeriv D H).natDegree ≤ 1 :=
-    (Polynomial.natDegree_hasseDeriv_le _ _).trans (by omega)
-  rw [e, Polynomial.coeff_sub, Polynomial.taylor_coeff, Polynomial.eq_X_add_C_of_natDegree_le_one h1]
-  simp [Polynomial.hasseDeriv_coeff, add_comm 1 D]
-
 theorem degree_eq_coeff (D : ℕ) : ∀ (K : Type) [Field K] [CharZero K] (P : Ideal (MvPolynomial (Fin N) K))
     [P.IsPrime], (∀ g ∈ P, ∀ n : ℕ, homogeneousComponent n g ∈ P) → ∀ (δ : ℕ)
     (f : MvPolynomial (Fin (D + 1) × Fin N) K), IsChowFormInt P D δ f →

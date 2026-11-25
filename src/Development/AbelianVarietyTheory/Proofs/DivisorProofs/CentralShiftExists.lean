@@ -68,11 +68,6 @@ section Generic
 
 variable {A : Type} [CommRing A] {n : ℕ}
 
-theorem glued_idempotent_units_mul_eq_one {e e' a ai b bi : A} (h1 : e * e = e) (h2 : e * e' = 0) (h3 : e' * e' = e') (ha : a * ai = 1)
-    (hb : b * bi = 1) : (e * a + e' * bi + (1 - e - e')) * (e' * b + e * ai + (1 - e - e')) = 1 := by
-  linear_combination (a * ai - a - ai + 1) * h1 + (a * b + bi * ai - a - bi - b - ai + 2) * h2 +
-    (bi * b - bi - b + 1) * h3 + e * ha + e' * hb
-
 def scal (n : ℕ) {u v : A} (h : u * v = 1) : GL (Fin n) A where
   val := u • (1 : Matrix (Fin n) (Fin n) A)
   inv := v • (1 : Matrix (Fin n) (Fin n) A)

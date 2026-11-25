@@ -116,17 +116,9 @@ open GlobalTheory.FinPl
 
 noncomputable section
 
-
-
 namespace GlobalTheory.FinPl.OrbitCoset
 
 variable {D : D7}
-
-theorem mem_congGrp_iff' (V : HSp D) (I : Ideal (AE D)) (g : GA D V) :
-    g ∈ congGrp V I ↔ (mt V g).map (Ideal.Quotient.mk I) = 1 := by
-  unfold congGrp
-  rw [MonoidHom.mem_ker, MonoidHom.comp_apply, Units.ext_iff]
-  rfl
 
 theorem wittCoreEmbedding_mem_supportedSubgroup {S S₀ : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ) (P : Pl D → Prop) {h : GA D S₀}
     (hh : h ∈ grpAt S₀ P) : d.emb0 h ∈ grpAt S P := by

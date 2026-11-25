@@ -177,10 +177,6 @@ def dil (k r : ℕ) (τ : ℝ) : Mat k r := Matrix.diagonal fun i =>
 
 theorem of_invM (x : Mt k r) : (Matrix.of (invM x) : Mat k r) = (Matrix.of x : Mat k r)⁻¹ := rfl
 
-theorem invM_invM (x : Mt k r) (h : IsUnit (Matrix.of x : Mat k r).det) : invM (invM x) = x := by
-  show ((((Matrix.of x : Mat k r)⁻¹ : Mat k r))⁻¹ : Mat k r) = Matrix.of x
-  exact Matrix.nonsing_inv_nonsing_inv _ h
-
 theorem measurable_invM : Measurable (invM : Mt k r → Mt k r) := by
   have hc : Continuous fun x : Mt k r => (Matrix.of x : Mat k r) := by exact continuous_id
   have hdet : Measurable fun x : Mt k r => ((Matrix.of x : Mat k r).det)⁻¹ :=

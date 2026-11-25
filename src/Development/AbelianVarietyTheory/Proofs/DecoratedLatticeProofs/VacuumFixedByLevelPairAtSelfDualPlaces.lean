@@ -53,13 +53,6 @@ noncomputable section
 
 namespace GlobalTheory.VacFixP
 
-theorem idAt_eq_bot {D : D7} {P : Pl D → Prop} (hP : ∀ v, ¬ P v) : idAt D P = ⊥ := by
-  rw [eq_bot_iff]
-  intro x hx
-  rw [Ideal.mem_bot]
-  refine GlobalTheory.FinPlLoc.eq_zero_of_comp x hx.1 fun w => ?_
-  exact (Submodule.mem_iInf _).1 hx.2 ⟨w, hP w⟩
-
 theorem eq_one_of_grpAt {D : D7} {S : HSp D} {P : Pl D → Prop} (hP : ∀ v, ¬ P v) {κ : GA D S}
     (h : κ ∈ grpAt S P) : κ = 1 := by
   first | exact _root_.GlobalTheory.QRed.grpAt_eq_one | exact @_root_.GlobalTheory.QRed.grpAt_eq_one | apply _root_.GlobalTheory.QRed.grpAt_eq_one <;> assumption

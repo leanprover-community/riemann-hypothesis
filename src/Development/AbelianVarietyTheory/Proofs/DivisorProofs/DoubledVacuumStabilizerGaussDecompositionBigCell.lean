@@ -56,10 +56,6 @@ open GlobalTheory.DblVac
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-theorem evFin_invOf_two_mem (v : Pl (F := F)) (h : (2 : 𝓞 F) ∉ v.asIdeal) :
-    evFin F v (⅟(2 : AF F)) ∈ v.adicCompletionIntegers F := by
-  apply _root_.GlobalTheory.DblVacFactor.evFin_half_mem <;> assumption
-
 theorem invOf_two_smul_mem_latAt {d : ℕ} (W : Spc F E d) (v : Pl (F := F)) (h : (2 : 𝓞 F) ∉ v.asIdeal)
     {z : Fin d → _root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E)} (hz : z ∈ GlobalTheory.InertSph.latAt W v) : (⅟(2 : AF F)) • z ∈ GlobalTheory.InertSph.latAt W v := by
   apply _root_.GlobalTheory.DblVacFactor.half_smul_mem <;> assumption

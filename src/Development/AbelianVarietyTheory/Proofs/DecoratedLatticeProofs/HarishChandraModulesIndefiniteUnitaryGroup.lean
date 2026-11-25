@@ -72,27 +72,3 @@ noncomputable section
 theorem GlobalTheory.HcPort.kfinDense_UJC {n : ℕ} {ε : Fin n → Bool} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
   {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} (hσ : Formalism.MainNotions.S.IsURepOn (Formalism.MainNotions.S.UJset ε) σ) : Dense {v : H | Formalism.MainNotions.S.IsKFin ε σ v} :=
   _root_.GlobalTheory.CompactRep.dense_isKFin n ε H σ hσ
-
-section
-
-open Matrix Topology Filter
-open scoped InnerProductSpace ComplexOrder
-
-namespace GlobalTheory.HcPort
-open CompanionTheory.D.gk.HC
-
-open ReciprocityTheory.ChartRestriction.DS
-
-attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
-
-variable {n : ℕ} {ε : Fin n → Bool} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-  {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)}
-
-theorem exists_kfin_near_A [CompleteSpace H] (hσ : Formalism.MainNotions.S.IsURepOn (Formalism.MainNotions.S.UJset ε) σ) {w : H}
-    (_hw : w ∈ smD ε σ) {δ : ℝ} (hδ : 0 < δ) : ∃ a : H, Formalism.MainNotions.S.IsKFin ε σ a ∧ ‖a - w‖ < δ := by
-  obtain ⟨a, ha, hK⟩ := Metric.dense_iff.1 (kfinDense_UJC hσ) w δ hδ
-  exact ⟨a, hK, by rwa [Metric.mem_ball, dist_eq_norm] at ha⟩
-
-end GlobalTheory.HcPort
-
-end

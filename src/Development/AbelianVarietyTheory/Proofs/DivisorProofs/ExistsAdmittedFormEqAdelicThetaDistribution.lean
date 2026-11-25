@@ -62,20 +62,6 @@ open scoped Classical
 
 namespace GlobalTheory.ThetaAdmitted
 
-theorem summable_one_add_norm_inv_pow {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-    (L : Submodule ℤ E) [DiscreteTopology L] {k : ℕ} (hk : Module.finrank ℤ L < k) :
-    Summable fun z : L => ((1 + ‖z‖)⁻¹) ^ k := by
-  refine Summable.of_nonneg_of_le (fun z => by positivity) (fun z => ?_)
-    ((ZLattice.summable_norm_pow_inv L k hk).add (hasSum_ite_eq (0 : L) (1 : ℝ)).summable)
-  by_cases hz : z = 0
-  · subst hz
-    simp only [norm_zero, add_zero, inv_one, one_pow]
-    exact le_add_of_nonneg_left (by positivity)
-  · have h0 : 0 < ‖z‖ := norm_pos_iff.2 hz
-    simp only [hz, if_false, add_zero]
-    gcongr
-    linarith
-
 variable (F : Type) [Field F] [NumberField F]
 
 theorem norm_thetaSum_pureA_le {κ : Type} [Fintype κ] {g : (κ → FiniteAdeleRing (𝓞 F) F) → ℂ}

@@ -92,13 +92,6 @@ theorem map_trace_tens {R R' : Type} [CommRing R] [Algebra F R] [CommRing R'] [A
   | tmul r x => rw [Algebra.TensorProduct.map_tmul, AlgHom.id_apply, h1, h1, map_mul, AlgHom.commutes]
   | add y y' hy hy' => simp only [map_add (f := _), hy, hy']
 
-theorem finPartF_sigR (σ : E →ₐ[F] E) (z : AEF F E) :
-    finPartF F E (sigR (AF F) σ z) = sigR (Af F) σ (finPartF F E z) := by
-  induction z using TensorProduct.induction_on with
-  | zero => simp
-  | tmul a x => rfl
-  | add a b ha hb => simp only [map_add (f := _), ha, hb]
-
 variable (σ : E →ₐ[F] E) {nS nT : ℕ} (JS : Matrix (Fin nS) (Fin nS) E) (JT : Matrix (Fin nT) (Fin nT) E)
 
 theorem sndA_symplOHF (ξ₀ : E) (w y : WOF F E nS nT) (hy : y.map (finPartF F E) = 0) :
@@ -141,4 +134,3 @@ theorem exists_log {Tau : Type} [Fintype Tau] {tauE : Tau → (E →+* ℂ)} {ψ
     exact hc
 
 end GlobalTheory.HeisLineDiffF
-

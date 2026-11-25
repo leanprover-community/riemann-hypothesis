@@ -65,11 +65,6 @@ theorem finrank_AE (D : D7) : Module.finrank (AF D.host.F) (AE D) = 2 := by
   haveI := nontrivial_AF D
   rw [Module.finrank_baseChange]; exact D.sp.cm.deg2
 
-theorem cA_tmul (D : D7) (a : AF D.host.F) (e : D.host.E) :
-    cA D (a ⊗ₜ[D.host.F] e) = a ⊗ₜ[D.host.F] star e := rfl
-
-
-
 theorem trace_mem (D : D7) (y : AE D) :
     ∃ b : AF D.host.F, algebraMap (AF D.host.F) (AE D) b = y + cA D y := by
   first | exact _root_.GlobalTheory.PlaceModelSum.exists_add_conj | exact @_root_.GlobalTheory.PlaceModelSum.exists_add_conj | apply _root_.GlobalTheory.PlaceModelSum.exists_add_conj <;> assumption
@@ -97,7 +92,6 @@ theorem fixed_unit (D : D7) (x : (AE D)ˣ) (hx : cA D (x : AE D) = x) :
   rw [← hb, ← ha]; rfl
 
 end GlobalTheory.CharConjFixed
-
 
 open GlobalTheory.CharConjFixed in
 theorem GlobalTheory.char_conj_fixed_eq_one : ∀ (D : D7) (μ : (AE D)ˣ →* Circle) (n : ℕ), ResEta D μ n → Even n →

@@ -199,8 +199,6 @@ open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv G
 
 namespace GlobalTheory.QLog
 
-
-
 theorem exists_series_of_cobOne_dvd : ∀ (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] (G : PDivGroup p O) (d : ℕ) (c : QLog.Chart G d), ∀ (b : G.A 1) (z : G.A 1 ⊗[O] G.A 1), cobOne O (G.A 1) b = (p : O) • z → ∃ (κ : MvPowerSeries (Fin d ⊕ Fin d) O) (B : MvPowerSeries (Fin d) O) (y : G.A 1), constantCoeff κ = 0 ∧ (∀ α, (p : O) ∣ coeff α (cob2 c.μ κ)) ∧ (∀ α, (p : O) ∣ coeff α (Katz.swap κ - κ)) ∧ (∀ α, (p : O) ∣ coeff α (cob1 c.μ B - pull2 (nmul c.μ p) κ)) ∧ c.ev 1 B = b + (p : O) • y := by
   intro p _ O _ G d c b z hbz
   let I : Ideal O := Ideal.span {(p : O)}
@@ -800,8 +798,6 @@ section -- clump:auto
 @[expose] public section
 
 open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv GlobalTheory.Katz GlobalTheory.QLog GlobalTheory.PDivGroup
-
-
 
 theorem GlobalTheory.Katz.exists_coboundary_of_pullback_nmul_coboundary' : ∀ (p : ℕ) [Fact p.Prime] (k : Type) [CommRing k] (d : ℕ) (G : PDivGroup p k) (c : Katz.Chart G d) (μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) k), c.IsLawOf μ → ∀ (κ : MvPowerSeries (Fin d ⊕ Fin d) k) (B : MvPowerSeries (Fin d) k), IsCoc μ κ → cob1 μ B = pull2 (nmul μ p) κ → c.ev 1 B = 0 → ∃ s, κ = cob1 μ s := by
   intro p _ k _ d G c μ hμ κ B hκ hB h1
@@ -1404,22 +1400,11 @@ theorem cobL_apply (h : ∀ i, constantCoeff (μ i) = 0) (f : MvPowerSeries (Fin
 
 variable {μ}
 
-theorem in_top_add {σ : Type} {f g : MvPowerSeries σ E} (hf : In (⊤ : Ideal O) f)
-    (hg : In (⊤ : Ideal O) g) : In (⊤ : Ideal O) (f + g) := fun α => by
-  obtain ⟨a, -, ha⟩ := hf α
-  obtain ⟨b, -, hb⟩ := hg α
-  exact ⟨a + b, trivial, by rw [map_add (f := _), ha, hb, map_add (f := _)]⟩
-
 theorem in_top_sub {σ : Type} {f g : MvPowerSeries σ E} (hf : In (⊤ : Ideal O) f)
     (hg : In (⊤ : Ideal O) g) : In (⊤ : Ideal O) (f - g) := fun α => by
   obtain ⟨a, -, ha⟩ := hf α
   obtain ⟨b, -, hb⟩ := hg α
   exact ⟨a - b, trivial, by rw [map_sub, ha, hb, map_sub]⟩
-
-theorem in_top_smul {σ : Type} {f : MvPowerSeries σ E} (a : O) (hf : In (⊤ : Ideal O) f) :
-    In (⊤ : Ideal O) (algebraMap O E a • f) := fun α => by
-  obtain ⟨b, -, hb⟩ := hf α
-  exact ⟨a * b, trivial, by rw [map_smul, hb, smul_eq_mul, map_mul]⟩
 
 theorem in_top_map {σ : Type} {f : MvPowerSeries σ E} (hf : In (⊤ : Ideal O) f) :
     ∃ s : MvPowerSeries σ O, f = map (algebraMap O E) s := by
