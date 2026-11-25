@@ -94,11 +94,6 @@ def inX : (Fin n → k) →ₗ[k] (Fin (n + c) → k) :=
 def R1cond (r : (Fin (n + c) → k) ≃ₗ[k] (Fin (n + c) → k)) : Prop :=
   r ∈ PI.flagSubmonoid (Ufl k n c) (eN k (n + c)) n
 
-variable {k n c} in
-theorem R1cond.mul {r s : (Fin (n + c) → k) ≃ₗ[k] (Fin (n + c) → k)} (hr : R1cond k n c r) (hs : R1cond k n c s) :
-    R1cond k n c (r * s) :=
-  (PI.flagSubmonoid (Ufl k n c) _ _).mul_mem hr hs
-
 def R1 : Subgroup ((Fin (n + c) → k) ≃ₗ[k] (Fin (n + c) → k)) :=
   (PI.flagSubmonoid (Ufl k n c) (eN k (n + c)) n).mulSupport
 
@@ -126,7 +121,6 @@ variable {E K : Type} [Field E] [NumberField E] [StarRing E] [Field K] (P : Heig
 variable {P} in
 open Classical in
 def unitV (χ : (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) (a : E) : K := if h : IsUnit (redP P a) then ((χ h.unit : Kˣ) : K) else 0
-
 
 def sclLat (N : ℕ) (e : ℕ → ℤ) : Submodule (𝓞 E) (Sp E N) :=
   (stdAt E N P).comap

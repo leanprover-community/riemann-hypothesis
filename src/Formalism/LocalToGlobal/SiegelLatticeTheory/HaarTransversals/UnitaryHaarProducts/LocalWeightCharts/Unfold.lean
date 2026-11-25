@@ -17,35 +17,7 @@ namespace Grp
 def sig (k r : ℕ) (i : Fin (2 * r + k + 1)) : Fin (2 * r + k + 1) :=
   if i.val < r ∨ r + k < i.val then ⟨2 * r + k - i.val, by omega⟩ else i
 
-lemma sig_val (k r : ℕ) (i : Fin (2 * r + k + 1)) :
-    (sig k r i).val = if i.val < r ∨ r + k < i.val then 2 * r + k - i.val else i.val := by
-  unfold sig; split_ifs <;> rfl
-
-lemma sig_sig (k r : ℕ) (i : Fin (2 * r + k + 1)) : sig k r (sig k r i) = i := by
-  apply Fin.ext
-  have hi := i.isLt
-  have h1 := sig_val k r i
-  have h2 := sig_val k r (sig k r i)
-  split_ifs at h1 h2 <;> omega
-
 def sgn (k r : ℕ) (i : Fin (2 * r + k + 1)) : ℂ := if i.val = r + k then -1 else 1
-
-lemma sgn_sig (k r : ℕ) (i : Fin (2 * r + k + 1)) : sgn k r (sig k r i) = sgn k r i := by
-  have hi := i.isLt
-  have h1 := sig_val k r i
-  unfold sgn
-  split_ifs at h1 ⊢ <;> first | rfl | (exfalso; omega)
-
-lemma Hpk_eq (k r : ℕ) (i j : Fin (2 * r + k + 1)) :
-    Formalism.QuantumDeterminants.Hpk k r i j = if j = sig k r i then sgn k r i else 0 := by
-  have hi := i.isLt
-  have hj := j.isLt
-  have hs := sig_val k r i
-  have e1 : (j = sig k r i) ↔ j.val = (sig k r i).val := Fin.ext_iff
-  have e2 : (i = j) ↔ i.val = j.val := Fin.ext_iff
-  unfold Formalism.QuantumDeterminants.Hpk sgn
-  simp only [e1, e2]
-  split_ifs at * <;> first | rfl | (exfalso; omega)
 
 variable {k r : ℕ}
 

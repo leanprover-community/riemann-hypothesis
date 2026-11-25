@@ -627,20 +627,6 @@ theorem wblk_core (hQK : QuotProdK) (hHN : LocHNProps) (hNU : NUnimodLoc) (hTens
 
 end Main
 
-section Final
-
-theorem weighted_block_exists_of_local_data (hQK : QuotProdK) (hHN : LocHNProps) (hNU : NUnimodLoc) (D : D7)
-    (hB : BesselNVGap) (hCW : CoefWeightedLoc) (hWl : WlocExists) (hGB : GapBigOfGapHyp D) :
-    GapHyp D → ∀ (A : UnitaryGroupInstance D) (L : UnitaryLatticeData D) (Ps : AdditiveCharacterData A)
-      (Rf : ReferenceFrame A L) (Bu : AutomorphicBundle A Ps Rf) (Pi : RepresentationData A L)
-      (Mu : MuBlocks A L), Nonempty (WBlk A L Bu Pi Mu) := by
-  intro hG A L Ps Rf Bu Pi Mu
-  obtain ⟨I, ιE, ιE_conj, ιE_F, bas, J_eq, L_eq, pl, φ_eq, n_eq, eps_eq⟩ := A
-  exact wblk_core hQK hHN hNU Formalism.L2.SG.Pf.WuDec.integrable_and_integral_pi_apply hB hCW hWl hGB hG I ιE ιE_conj ιE_F bas J_eq L_eq pl
-    φ_eq n_eq eps_eq L Ps Rf Bu Pi Mu
-
-end Final
-
 end Formalism.L2.SG.Pf.WFL
 end -- clump:auto
 end -- clump:auto

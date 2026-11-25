@@ -362,25 +362,6 @@ theorem tf : Module.IsTorsionFree 𝒪[K] L := by
   first
     | exact Module.IsTorsionFree.trans_faithfulSMul 𝒪[K] K L
 
-theorem dd : IsDedekindDomain C := integralClosure.isDedekindDomain 𝒪[K] K L
-theorem fr : IsFractionRing C L := integralClosure.isFractionRing_of_finite_extension K L
-theorem mf : Module.Finite 𝒪[K] C := IsIntegralClosure.finite 𝒪[K] K L C
-theorem tfC : Module.IsTorsionFree 𝒪[K] C := by
-  have hf : FaithfulSMul 𝒪[K] L := Module.isTorsionFree_iff_faithfulSMul.1 (tf K L)
-  rw [Module.isTorsionFree_iff_faithfulSMul, faithfulSMul_iff_algebraMap_injective]
-  intro a b h
-  have h' := congrArg (algebraMap C L) h
-  rw [← IsScalarTower.algebraMap_apply, ← IsScalarTower.algebraMap_apply] at h'
-  exact (FaithfulSMul.algebraMap_injective 𝒪[K] L) h'
-
-attribute [local instance] dd fr mf tfC
-
-theorem sepFR : Algebra.IsSeparable (FractionRing 𝒪[K]) (FractionRing C) := by
-  first
-    | infer_instance
-
-attribute [local instance] sepFR
-
 end PI.LocDualGen.EpF
 end -- clump:auto
 end -- clump:auto

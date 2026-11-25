@@ -43,15 +43,6 @@ theorem takeD_setTies_update (LL : Letters N) (T : TieData) (n : Fin T.t → ℕ
   · rfl
   · rfl
 
-theorem setTies_deg_eta (LL : Letters N) (T : TieData) (hT : StrictMono T.pos) (n : Fin T.t → ℕ) (i : Fin T.t)
-    (h : T.pos i + 1 < N) : (LL.setTies T n).deg ⟨T.pos i + 1, h⟩ = n i := by
-  unfold Letters.setTies
-  have hex : ∃ j, T.pos j + 1 = ((⟨T.pos i + 1, h⟩ : Fin N) : ℕ) := ⟨i, rfl⟩
-  simp only [dif_pos hex]
-  congr 1
-  have := Classical.choose_spec hex
-  exact hT.injective (by simpa using this)
-
 theorem setTies_deg_mono (LL : Letters N) (T : TieData) (n n' : Fin T.t → ℕ) (hn : ∀ i, n i ≤ n' i) (a : Fin N) :
     (LL.setTies T n).deg a ≤ (LL.setTies T n').deg a := by
   unfold Letters.setTies

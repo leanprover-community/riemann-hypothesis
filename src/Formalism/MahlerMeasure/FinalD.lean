@@ -37,9 +37,6 @@ lemma gaussR_term_le (ρ : NNReal) (P : K[X]) (k : ℕ) :
   · have h0 : P.coeff k = 0 := by simpa using hk
     simp [h0]
 
-lemma gaussR_le_iff (ρ : NNReal) (P : K[X]) (c : NNReal) :
-    gaussR ρ P ≤ c ↔ ∀ k, ‖P.coeff k‖₊ * ρ ^ k ≤ c := ⟨fun h k => (gaussR_term_le ρ P k).trans h, fun h => Finset.sup_le fun k _ => h k⟩
-
 lemma gaussR_attained (ρ : NNReal) (P : K[X]) (hP : P ≠ 0) :
     ∃ k, ‖P.coeff k‖₊ * ρ ^ k = gaussR ρ P := by
   obtain ⟨k, -, hk⟩ := Finset.exists_mem_eq_sup P.support (Polynomial.support_nonempty.2 hP)

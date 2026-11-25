@@ -1080,7 +1080,6 @@ namespace Formalism.L2.SG.Pf
 
 theorem WB.rhsWLim' [Fact Formalism.L2.SG.Pf.WB.RhsWLim] : WB.RhsWLim := Fact.out
 
-
 variable [Fact Formalism.L2.SG.Pf.WB.RhsWLim] in
 theorem jacGauge : JacGauge := jacGauge_of_rhsW WB.rhsWLim'
 
@@ -1445,8 +1444,6 @@ def lmulP (Z : Matrix (Fin n) (Fin n) ℂ) : MP n →L[ℝ] MP n :=
       map_smul' := fun c X => by
         funext i j
         simp [Matrix.mul_apply, Finset.smul_sum, mul_left_comm] }
-
-theorem lmulP_apply (Z : Matrix (Fin n) (Fin n) ℂ) (X : MP n) : lmulP Z X = Matrix.of.symm (Z * Matrix.of X) := rfl
 
 theorem of_sum_smul (c : Fin N → ℝ) (X : Fin N → MP n) :
     Matrix.of (∑ k, c k • X k) = ∑ k, c k • Matrix.of (X k) := by

@@ -130,9 +130,6 @@ def mkI (c : ∀ v : HeightOneSpectrum (𝓞 F), v.adicCompletion F)
     (hc : ∀ v, c v ∈ v.adicCompletionIntegers F) : Af F :=
   ⟨c, Filter.Eventually.of_forall hc⟩
 
-theorem mkI_apply (c : ∀ v : HeightOneSpectrum (𝓞 F), v.adicCompletion F)
-    (hc : ∀ v, c v ∈ v.adicCompletionIntegers F) (v : HeightOneSpectrum (𝓞 F)) : mkI c hc v = c v := rfl
-
 theorem mkI_mem (c : ∀ v : HeightOneSpectrum (𝓞 F), v.adicCompletion F)
     (hc : ∀ v, c v ∈ v.adicCompletionIntegers F) : mkI c hc ∈ Formalism.UG.intAd F := by
   exact hc
@@ -146,7 +143,6 @@ def ev (v : HeightOneSpectrum (𝓞 F)) : Af F →+* v.adicCompletion F where
 
 theorem comp_mul (a b : Af F) (v : HeightOneSpectrum (𝓞 F)) : (a * b) v = a v * b v := rfl
 theorem comp_add (a b : Af F) (v : HeightOneSpectrum (𝓞 F)) : (a + b) v = a v + b v := rfl
-
 
 open Classical in
 def eT (T : Set (HeightOneSpectrum (𝓞 F))) : Af F :=

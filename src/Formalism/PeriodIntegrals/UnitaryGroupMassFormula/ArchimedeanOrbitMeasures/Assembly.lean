@@ -673,7 +673,6 @@ private theorem card_true_ge_lemma_2 {k : ℕ} (u : Fin k → Fin n → ℂ)
   rw [LinearMap.map_smulₛₗ, LinearMap.smul_apply, card_true_ge_lemma ε u huo c l, smul_eq_mul,
     starRingEnd_apply]
 
-
 open Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.Cut in
 theorem card_true_ge {k : ℕ} (u : Fin k → Fin n → ℂ) (huo : ∀ i j, BJ ε (u i) (u j) = if i = j then 1 else 0) :
     k ≤ (univ.filter fun i => ε i = true).card := by
@@ -1173,9 +1172,6 @@ theorem continuous_bAdd : Continuous (bAdd X) := by
 def bL : EuclideanSpace ℝ (KapI X) →L[ℝ] EuclideanSpace ℝ (BrI X) :=
   (bAdd X).toRealLinearMap (continuous_bAdd X)
 
-theorem bL_apply (x : EuclideanSpace ℝ (KapI X)) : bL X x = reimV (fun v => betaV X v ((tupCoord X).symm x)) :=
-  rfl
-
 def qD (p : BrI X) : ℝ := 2 * (if X.B.I.ε p.1 p.2.1 then 1 else -1)
 
 theorem betaI_q (x y : EuclideanSpace ℝ (KapI X)) : betaI X x y = ∑ p : BrI X, qD X p * bL X x p * bL X y p := by
@@ -1206,7 +1202,6 @@ def fK : EuclideanSpace ℝ (KapI X) →ₗ[ℝ] EuclideanSpace ℝ (KapI X) :=
 
 theorem fK_apply (x : EuclideanSpace ℝ (KapI X)) (k : KapI X) : fK X x k = bL X x ((eI X).symm k) := by
   simp [fK, U, Equiv.piCongrLeft'_apply]
-
 
 open Classical in
 def Bq : Matrix (KapI X) (KapI X) ℝ := fun k l => bL X (EuclideanSpace.single l 1) ((eI X).symm k)

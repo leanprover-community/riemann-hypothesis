@@ -116,7 +116,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-theorem weylForU_of : PI.ModelIso → PI.NablaDim → PI.WeylForU := PI.WeylForUWork.weylForU_of
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Formalism.PeriodIntegrals.OrbitalBoundsConclusion.WeylForU =====

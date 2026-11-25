@@ -25,10 +25,6 @@ theorem rescale_fExp (a : K) {f : PowerSeries K} (hf : constantCoeff f = 0) :
     simp
   exact subst_fExp (φ := fun _ => (a • PowerSeries.X : PowerSeries K)) hφ hf
 
-theorem coeff_prim_succ (f : PowerSeries K) (n : ℕ) :
-    coeff (n + 1) (prim f) = coeff n f / ((n + 1 : ℕ) : K) := by
-  simp [prim, PowerSeries.coeff_mk]
-
 theorem coeff_zero_prim (f : PowerSeries K) : coeff 0 (prim f) = 0 := by
   simp [prim, PowerSeries.coeff_mk]
 

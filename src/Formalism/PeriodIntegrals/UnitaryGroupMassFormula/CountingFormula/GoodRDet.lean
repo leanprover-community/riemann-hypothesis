@@ -163,15 +163,6 @@ theorem det_Ga (D : Formalism.BasicNotions.D7) (T T' : D.host.E) (Z : MatZ D) :
 
 end PI.UnitaryGroupMassFormula.CntFormula.DetGa
 
-namespace PI.UnitaryGroupMassFormula.CntFormula
-
-theorem gram_determinant_ne_zero : DetGaNe := by
-  intro D T T' Z hG
-  rw [DetGa.det_Ga]
-  exact mul_ne_zero (Int.cast_ne_zero.mpr (Units.ne_zero
-    (Equiv.Perm.sign (Equiv.sumComm (Fin (D.R.rS + 1)) (Fin (D.R.rS + 1)))))) hG
-
-end PI.UnitaryGroupMassFormula.CntFormula
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

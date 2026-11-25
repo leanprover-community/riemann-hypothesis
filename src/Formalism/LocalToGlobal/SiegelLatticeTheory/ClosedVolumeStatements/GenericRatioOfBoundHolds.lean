@@ -1412,8 +1412,6 @@ section -- clump:auto
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem term_carrier_stable (D : Formalism.BasicNotions.D7) (u u' : D.what₂.Word) : Formalism.L2.SG.TermDef.TermStable D u u' :=
-  PI.TCS.termStable_holds D u u'
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Formalism.PeriodIntegrals.OrbitalBoundsConclusion.TermCarrierStable =====
@@ -1431,10 +1429,6 @@ section Terms
 
 variable (D : D7) (u u' : D.what₂.Word)
 
-theorem TermEqIff_holds : Formalism.L2.SG.TermDef.TermEqIff D u u' := term_eq_iff_relation D u u'
-theorem TermStable_holds : Formalism.L2.SG.TermDef.TermStable D u u' := term_carrier_stable D u u'
-theorem TermFun_holds : Formalism.L2.SG.TermDef.TermFun D u u' := term_function_const D u u'
-
 theorem ScalarEquiv_holds : Formalism.L2.SG.Corank.ScalarEquiv D u u' := Formalism.L2.SG.Corank.scalarEquiv_of_G (D := D) _root_.PI.UnitaryGroupMassFormula.ScalEquivGen.scalarEquivG_holds u u'
 theorem ScalarRepFree_holds : Formalism.L2.SG.Corank.ScalarRepFree D u u' := scalar_rep_free D u u'
 theorem BetaFree_holds : Formalism.L2.SG.Corank.BetaFree D u u' := scalPairs_betaFree D u u'
@@ -1446,7 +1440,6 @@ theorem ScalarDr_holds : Formalism.L2.SG.Corank.ScalarDr D u u' := by
 
 end Terms
 
-theorem CorankPosG_holds : PI.PairCorankPos.CorankPosG := pair_corank_pos
 theorem ScalarEquivG_holds : Formalism.L2.SG.Corank.ScalarEquivG := _root_.PI.UnitaryGroupMassFormula.ScalEquivGen.scalarEquivG_holds
 
 theorem GelfandGraevMultOne_holds : Formalism.L2.SG.GGMirabolic.GelfandGraevMultOne := _root_.PI.WhitFunctDualWork.whitFunctDual_main Formalism.IrreducibleCountingLemmas.GaloisIrreducibility.gelfand_graev_multiplicity_one

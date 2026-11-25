@@ -11,8 +11,6 @@ public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.HeckeLocalProduc
 section -- clump:auto
 @[expose] public section
 
-theorem hecke_product_rule : ∀ (L : Type) [Field L] [NumberField L] (χ : Formalism.L2.Host.HChar L), χ.ProductRule :=
-  fun _ _ _ χ => PI.HeckeProdW.productRule χ
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Formalism.PeriodIntegrals.OrbitalBoundsConclusion.HeckeProd =====

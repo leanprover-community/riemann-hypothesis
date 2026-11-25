@@ -76,27 +76,6 @@ theorem sum_eb_apply {g : ℕ} (e : Fin g ≃ Σ τ : E →+* ℂ, Fin (Dw.mult 
 
 end Lin
 
-section Der
-
-theorem isDerivAt0_comp {g : ℕ} {X : Scheme.{0}} {e1 e2 : (Fin g → ℂ) → (Sp ℂ ⟶ X)}
-    (h : (Fin g → ℂ) ≃ₗ[ℂ] (Fin g → ℂ)) (he : ∀ z, e2 (h z) = e1 z) {w : Fin g → ℂ}
-    {v : Sp (DualNumber ℂ) ⟶ X} (hv : IsDerivAt0 e1 w v) : IsDerivAt0 e2 (h w) v := by
-  unfold IsDerivAt0 at hv ⊢
-  obtain ⟨h1, h2⟩ := hv
-  have h0 : h 0 = 0 := map_zero h
-  have h3 : e2 0 = e1 0 := by simpa [h0] using he 0
-  refine ⟨h1.trans h3.symm, ?_⟩
-  intro U hU f
-  refine (h2 U hU f).trans ?_
-  have hfun : (fun z => valAt' (e1 z) U f) =
-      (fun y => valAt' (e2 y) U f) ∘ (LinearEquiv.toContinuousLinearEquiv h) := by
-    funext z
-    simp [he]
-  rw [hfun, ContinuousLinearEquiv.comp_right_fderiv]
-  simp [h0]
-
-end Der
-
 section Fam
 
 open MonoidalCategory CartesianMonoidalCategory MonObj
@@ -181,7 +160,6 @@ section Per
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 
-
 end Per
 
 section Fam
@@ -206,7 +184,6 @@ abbrev GenSec : Type :=
 abbrev IsGenSec (s : GenSec e F M) : Prop :=
   ∀ k (x : (M.X k).dom) (s' : LB.Sec (PPx (S := CAt σ) (F.u k (pmOf e M k x.1)))),
     ∃! a : CAt σ, ∀ i, s'.f i = scal (S := CAt σ) (F.u k (pmOf e M k x.1)) a i * (s k x).f i
-
 
 end Fam
 
@@ -245,7 +222,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheo
   {e : Fin g ≃ Σ τ : E →+* ℂ, Fin (Dw.mult τ)}
   {F : FamilyUnif Xo (σ.comp (IntermediateField.inclusion c.le).toRingHom) (fun j => relab c σ (e j).1)}
   {M : ModelsOf F r}
-
 
 end GamL
 

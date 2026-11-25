@@ -106,14 +106,6 @@ def Compat (S : C.HidaSetting D.host.E Wp Wq) (u u' : D.what₂.Word) : Prop :=
   S.G.r = D.R.rS ∧ S.G.k = D.R.k ∧ S.G.g1 = D.host.g 0 ∧ S.G.g2 = D.host.g 1 ∧
   S.T = ((D.mem u).A.T : ℝ) ∧ S.T' = ((D.mem u').A.T : ℝ) ∧ S.f = D.R.f
 
-theorem dOf_Kr (S : C.HidaSetting D.host.E Wp Wq) (δ : ∀ p : PlF D, (D.s.atP p).Fp)
-    (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep) (u u' : D.what₂.Word) :
-    (dOf S δ M u u').Kr = KrOf δ M (D.mem u).A.T (D.mem u').A.T := rfl
-
-theorem dOf_e (S : C.HidaSetting D.host.E Wp Wq) (δ : ∀ p : PlF D, (D.s.atP p).Fp)
-    (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep) (u u' : D.what₂.Word) (i : ℕ) :
-    (dOf S δ M u u').e i = 0 := rfl
-
 theorem dOf_r (S : C.HidaSetting D.host.E Wp Wq) (δ : ∀ p : PlF D, (D.s.atP p).Fp)
     (M : ∀ p : PlF D, Loc.Model (D.s.atP p).Fp (D.s.atP p).Ep) (u u' : D.what₂.Word) :
     (dOf S δ M u u').r = S.G.r := rfl

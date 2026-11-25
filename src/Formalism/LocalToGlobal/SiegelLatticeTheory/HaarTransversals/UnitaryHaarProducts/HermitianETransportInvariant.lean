@@ -1013,11 +1013,6 @@ theorem nxt_rv (v : InfinitePlace X.B.I.F) (a : Fin D.R.rS) :
   first
   | (unfold nxt; split_ifs <;> rfl)
 
-theorem nxt_incl (a : Fin D.R.rS) :
-    incl X.B.I (nxt X.eR (X.zR u) a) = nxt (fun b => incl X.B.I (X.eR b)) (incl X.B.I (X.zR u)) a := by
-  first
-  | (unfold nxt; split_ifs <;> rfl)
-
 theorem algebraMap_tens (x : X.B.I.F) :
     algebraMap X.B.I.F (X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) x =
       Formalism.UG.inclE (F := X.B.I.F) (Af X.B.I.F) (algebraMap X.B.I.F X.B.I.E x) := by

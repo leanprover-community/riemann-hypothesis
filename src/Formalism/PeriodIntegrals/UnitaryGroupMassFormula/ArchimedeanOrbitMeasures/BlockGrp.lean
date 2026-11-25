@@ -91,10 +91,6 @@ theorem embed_pow_succ (e : Fin k ≃ S) (X : Matrix (Fin k) (Fin k) ℂ) (m : �
   | zero => simp only [zero_add, pow_one]
   | succ m ih => rw [pow_succ, embed_mul, ih, ← pow_succ]
 
-private theorem emb0Add_apply (e : Fin k ≃ S) (X : Matrix (Fin k) (Fin k) ℂ) :
-    blockEmbeddingAddHom e X = emb0 e X :=
-  rfl
-
 private theorem emb0_smul (e : Fin k ≃ S) (c : ℂ) (X : Matrix (Fin k) (Fin k) ℂ) :
     emb0 e (c • X) = c • emb0 e X := by
   ext i j
@@ -114,7 +110,6 @@ theorem continuous_embed (e : Fin k ≃ S) : Continuous (emb0 e) := by
     exact continuous_id.matrix_elem _ _
   · simp only [emb0, dif_neg h]
     exact continuous_const
-
 
 set_option backward.isDefEq.respectTransparency false in
 theorem exp_embed (e : Fin k ≃ S) (X : Matrix (Fin k) (Fin k) ℂ) :

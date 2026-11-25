@@ -52,8 +52,6 @@ variable (v : HeightOneSpectrum (𝓞 F))
 
 theorem sc_eq (c : Fv F v) : sc (E := E) v c = algebraMap (Fv F v) (Fv F v ⊗[F] E) c := rfl
 
-theorem inclR_mem' (a : 𝓞 E) : inclR (F := F) (Fv F v) (a : E) ∈ OEv (E := E) v := Submodule.subset_span ⟨a, Set.mem_univ _, rfl⟩
-
 theorem oev_smul' {c : Fv F v} (hc : c ∈ v.adicCompletionIntegers F) {x : Fv F v ⊗[F] E}
     (hx : x ∈ OEv (E := E) v) : c • x ∈ OEv (E := E) v := by
   change x ∈ Submodule.span (v.adicCompletionIntegers F)
@@ -62,18 +60,10 @@ theorem oev_smul' {c : Fv F v} (hc : c ∈ v.adicCompletionIntegers F) {x : Fv F
     ((fun x : 𝓞 E => inclR (F := F) (Fv F v) (x : E)) '' Set.univ)
   exact Submodule.smul_mem _ (⟨c, hc⟩ : v.adicCompletionIntegers F) hx
 
-theorem one_mem : (1 : Fv F v ⊗[F] E) ∈ OEv (E := E) v := by
-  simpa using inclR_mem' (F := F) (E := E) v (1 : 𝓞 E)
-
 theorem alg_mem {c : Fv F v} (hc : c ∈ v.adicCompletionIntegers F) :
     algebraMap (Fv F v) (Fv F v ⊗[F] E) c ∈ OEv (E := E) v := by
   rw [Algebra.algebraMap_eq_smul_one]
   exact oev_smul' v hc (one_mem v)
-
-theorem inclR_alg (a : F) : inclR (F := F) (Fv F v) (algebraMap F E a) =
-    algebraMap (Fv F v) (Fv F v ⊗[F] E) (algebraMap F (Fv F v) a) := by
-  change (Algebra.TensorProduct.includeRight : E →ₐ[F] Fv F v ⊗[F] E) (algebraMap F E a) = _
-  rw [AlgHom.commutes, ← IsScalarTower.algebraMap_apply F (Fv F v) (Fv F v ⊗[F] E)]
 
 theorem int_mem (r : 𝓞 F) : algebraMap F (Fv F v) (r : F) ∈ v.adicCompletionIntegers F := by
   exact v.coe_mem_adicCompletionIntegers r
@@ -98,36 +88,6 @@ theorem trace_mem {x : Fv F v ⊗[F] E} (hx : x ∈ OEv (E := E) v) :
     show Algebra.trace (Fv F v) (Fv F v ⊗[F] E) ((c : Fv F v) • x) ∈ _
     rw [map_smul, smul_eq_mul]
     exact MulMemClass.mul_mem c.2 hx
-
-theorem trace_v (σ : E →ₐ[F] E) (hinv : ∀ y, σ (σ y) = y) (hnt : ∃ x, σ x ≠ x)
-    (hfin : Module.finrank F E = 2) (w : Fv F v ⊗[F] E) :
-    algebraMap (Fv F v) (Fv F v ⊗[F] E) (Algebra.trace (Fv F v) (Fv F v ⊗[F] E) w) =
-      w + sigR (Fv F v) σ w := by
-  haveI : FiniteDimensional F E := Module.finite_of_finrank_pos (by omega)
-  have h1 : ∀ e : E, algebraMap (Fv F v) (Fv F v ⊗[F] E)
-      (Algebra.trace (Fv F v) (Fv F v ⊗[F] E) ((1 : Fv F v) ⊗ₜ e)) =
-      (1 : Fv F v) ⊗ₜ e + (1 : Fv F v) ⊗ₜ σ e := by
-    intro e
-    have ht : Algebra.trace (Fv F v) (Fv F v ⊗[F] E) ((1 : Fv F v) ⊗ₜ e) =
-        algebraMap F (Fv F v) (Algebra.trace F E e) := by
-      rw [Algebra.trace_apply, Algebra.trace_apply]
-      have h : Algebra.lmul (Fv F v) (Fv F v ⊗[F] E) ((1 : Fv F v) ⊗ₜ e) =
-          (Algebra.lmul F E e).baseChange (Fv F v) := by
-        ext k
-        simp
-      rw [h, LinearMap.trace_baseChange]
-    rw [ht, ← inclR_alg v, trace_eq_add σ hinv hnt hfin e, map_add (f := _)]
-    rfl
-  have hL : (Algebra.linearMap (Fv F v) (Fv F v ⊗[F] E)) ∘ₗ
-        (Algebra.trace (Fv F v) (Fv F v ⊗[F] E)) =
-      LinearMap.id + σ.toLinearMap.baseChange (Fv F v) := by
-    ext e
-    simpa using h1 e
-  have hw := LinearMap.congr_fun hL w
-  simp only [LinearMap.comp_apply, Algebra.linearMap_apply, LinearMap.add_apply,
-    LinearMap.id_apply] at hw
-  rw [hw]
-  congr 1
 
 theorem dual_mem (σ : E →ₐ[F] E) (hinv : ∀ y, σ (σ y) = y) (hnt : ∃ x, σ x ≠ x)
     (hfin : Module.finrank F E = 2) (θ t : 𝓞 E) (ht : σ (θ : E) = (t : E)) (e : 𝓞 F)
@@ -174,7 +134,6 @@ theorem dual_mem (σ : E →ₐ[F] E) (hinv : ∀ y, σ (σ y) = y) (hnt : ∃ x
 end Gen
 
 end TrW
-
 
 open TrW in
 theorem annX_of {D : D7} (X : HidaSetting D) (ψ : AddChar (AF X.B.I.F) ℂ) (hC : CondAll) : AnnX X ψ := by

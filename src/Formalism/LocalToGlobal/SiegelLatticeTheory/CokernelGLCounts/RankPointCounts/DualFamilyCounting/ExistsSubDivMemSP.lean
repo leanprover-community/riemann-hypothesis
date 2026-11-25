@@ -121,8 +121,6 @@ theorem exists_sub_div_mem_SP {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) {
   rw [e]
   exact Subring.mul_mem _ hr h1
 
-theorem star_jK (w : 𝓞 K) : ∃ w' : 𝓞 K, jK w' = star (jK w) := StandardSymmetricSums.star_int w
-
 alias star_jK_ι := _root_.Formalism.HermitianLattices.Ext.L3.localizedQuotients.star_ι
 
 end Formalism.L2.SG.Pf.G2

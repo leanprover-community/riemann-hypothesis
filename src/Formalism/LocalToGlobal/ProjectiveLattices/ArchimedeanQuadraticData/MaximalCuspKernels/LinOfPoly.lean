@@ -66,16 +66,3 @@ theorem evR_smul (a : c.F) (f : Rul Xo c) {S : Type} [CommRing S] [Algebra c.F S
   | exact evalAt_smul (K := c.F) (fun S _ _ => FrPt Xo c S) (fun φ y z => FrMap φ y z) a f y
 
 end Formalism.L2.Pj.QAt.LinOfPoly
-
-namespace Formalism.L2.Pj.QAt
-
-open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj Formalism.MainNotions Formalism.MainNotions.WeightAlgebra Formalism.BasicNotions ReciprocityTheory.ChartRestriction.G.FreeQuotientRank
-
-variable {D : D7} {T : Core D}
-
-theorem hcomp (j : ℕ) (K₁ : Type) [Field K₁] [Algebra T.Q.c.F K₁] (a : T.Q.c.F) :
-    algebraMap T.Q.c.F (ArcS (T.Q.Dw j) K₁) a =
-      algebraMap (MvPolynomial (ArcLt (T.Q.Dw j)) (LaurentSeries K₁)) (ArcS (T.Q.Dw j) K₁)
-        (algebraMap T.Q.c.F (MvPolynomial (ArcLt (T.Q.Dw j)) (LaurentSeries K₁)) a) := rfl
-
-end Formalism.L2.Pj.QAt

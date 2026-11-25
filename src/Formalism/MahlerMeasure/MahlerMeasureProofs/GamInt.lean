@@ -339,18 +339,10 @@ noncomputable def wf (m : σ →₀ ℕ) : ℚ_[p] := ∏ x, ((m x).factorial : 
 theorem prod_eq_wf (m : σ →₀ ℕ) : (m.prod fun _ k => (k.factorial : ℚ_[p])) = wf (p := p) m := by
   unfold wf; exact Finsupp.prod_fintype _ _ (by simp)
 
-theorem wf_add_single (m : σ →₀ ℕ) (i : σ) :
-    (wf (p := p) (m + Finsupp.single i 1)) = ((m i + 1 : ℕ) : ℚ_[p]) * wf m := by
-  simpa only [prod_eq_wf] using factorial_prod_add_single (R := ℚ_[p]) m i
-
 theorem fock_def' (F G : MvPolynomial σ ℚ_[p]) :
     Formalism.GM.M.fock p F G = ∑ m ∈ F.support, F.coeff m * G.coeff m * wf m := by
   unfold Formalism.GM.M.fock
   exact Finset.sum_congr rfl (fun m _ => by rw [prod_eq_wf])
-
-theorem fock_eq_sum (F G : MvPolynomial σ ℚ_[p]) (s : Finset (σ →₀ ℕ)) (h : F.support ⊆ s) :
-    Formalism.GM.M.fock p F G = ∑ m ∈ s, F.coeff m * G.coeff m * wf m := by
-  simpa only [M.fock_eq_pair, cast_fock_weight, prod_eq_wf] using FockPairing.pair_eq_sum F G s h
 
 theorem fock_symm (F G : MvPolynomial σ ℚ_[p]) : Formalism.GM.M.fock p F G = Formalism.GM.M.fock p G F := by
   simpa only [M.fock_eq_pair] using FockPairing.pair_comm F G

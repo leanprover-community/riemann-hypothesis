@@ -338,12 +338,6 @@ lemma exists_not_mem_intOE : ∃ t : E, t ∉ intOE E := by
   have h5 : (2 : ℤ) * z = 1 := by exact_mod_cast h4
   omega
 
-lemma hform_smul_right (σ : E →+* E) (J : Matrix (Fin n) (Fin n) E) (x y : Fin n → E) (c : E) :
-    hform σ J x (c • y) = c * hform σ J x y := by
-  simp only [hform, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-  ring
-
 end PI.SelfDualLoc.W.ND
 
 namespace PI.SelfDualLoc.W

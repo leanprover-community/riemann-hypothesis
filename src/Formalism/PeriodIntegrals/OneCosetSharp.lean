@@ -78,11 +78,6 @@ def inX : (Fin n → k) →ₗ[k] (Fin (n + c) → k) :=
 def R1cond (r : (Fin (n + c) → k) ≃ₗ[k] (Fin (n + c) → k)) : Prop :=
   r ∈ PI.flagSubmonoid (Ufl k n c) (eN k (n + c)) n
 
-variable {k n c} in
-theorem R1cond.mul {r s : (Fin (n + c) → k) ≃ₗ[k] (Fin (n + c) → k)} (hr : R1cond k n c r) (hs : R1cond k n c s) :
-    R1cond k n c (r * s) :=
-  (PI.flagSubmonoid (Ufl k n c) _ _).mul_mem hr hs
-
 def R1 : Subgroup ((Fin (n + c) → k) ≃ₗ[k] (Fin (n + c) → k)) :=
   (PI.flagSubmonoid (Ufl k n c) (eN k (n + c)) n).mulSupport
 
@@ -145,7 +140,6 @@ def Allow (k₀ m t N p p' : ℕ) : Prop :=
   if p' < k₀ then p < p' ∨ (k₀ ≤ p ∧ p < k₀ + (m / 2 - 1))
   else if p' < k₀ + m - 1 then (k₀ ≤ p ∧ p < p') ∨ (m / 2 < p' + 1 - k₀ ∧ p < k₀)
   else p < k₀ + m - 1 ∨ (p < N ∧ (p - (k₀ + m - 1)) / t ≤ (p' - (k₀ + m - 1)) / t)
-
 
 open Classical in
 def PhiS {k : Type} [Field k] (ψ₀ : AddChar k ℂ) (χ : ℕ → kˣ →* ℂˣ) (k₀ m t j n' c n : ℕ) : SF k ℂ (n' + (c + 1)) (n + c) := by

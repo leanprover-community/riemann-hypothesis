@@ -75,10 +75,6 @@ def HG : Subgroup (UJ ε) where
     by rw [uMat_mul, ← mulVec_mulVec, hh.2.2, hg.2.2]⟩
   inv_mem' {g} hg := ⟨fun a => inv_fix ε (hg.1 a), fun a => inv_fix ε (hg.2.1 a), inv_fix ε hg.2.2⟩
 
-theorem coe_NG : (NG ε e z : Set (UJ ε)) = NLoc ε e z := rfl
-
-theorem coe_HG : (HG ε e p z : Set (UJ ε)) = HLoc ε e p z := rfl
-
 theorem NG_closed : IsClosed (NG ε e z : Set (UJ ε)) := by
   have hc : ∀ v : Fin n → ℂ, Continuous (fun g : UJ ε => (Formalism.MainNotions.S.uMat g - 1) *ᵥ v) := fun v =>
     ((UnitaryIsometries.RI.continuous_uMat ε).sub continuous_const).matrix_mulVec continuous_const

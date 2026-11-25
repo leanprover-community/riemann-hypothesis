@@ -286,22 +286,6 @@ lemma emb_cont : Continuous fun x : Fin (k + 1) → Fin (k + 1) → ℂ => (embW
   exact (Continuous.matrix_mul (Continuous.matrix_mul continuous_const continuous_id) continuous_const).add
     continuous_const
 
-lemma hb_form (v w : Fin (k + 1) → ℂ) :
-    star w ⬝ᵥ (Hb k *ᵥ v) =
-      (∑ i : Fin k, star (w i.castSucc) * v i.castSucc) - star (w (Fin.last k)) * v (Fin.last k) := by
-  unfold Hb
-  simp only [dotProduct, Matrix.mulVec_diagonal, Fin.sum_univ_castSucc, Pi.star_apply, if_true]
-  have h : ∀ i : Fin k, (if i.castSucc = Fin.last k then (-1 : ℂ) else 1) = 1 := fun i =>
-    if_neg (Fin.castSucc_lt_last i).ne
-  simp only [h, one_mul]
-  ring
-
-lemma hb_self_re (v : Fin (k + 1) → ℂ) :
-    (star v ⬝ᵥ (Hb k *ᵥ v)).re = (∑ i : Fin k, ‖v i.castSucc‖ ^ 2) - ‖v (Fin.last k)‖ ^ 2 := by
-  rw [hb_form]
-  simp only [Formalism.FourierDecayAlt.P.B2x3.normsq_eq]
-  rw [← Complex.ofReal_sum, ← Complex.ofReal_sub, Complex.ofReal_re]
-
 lemma col_bound (z : Fin (k + 1) → ℂ) (hT : (star z ⬝ᵥ (Hb k *ᵥ z)).re < 0) :
     ∃ R : ℝ, ∀ μ : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ, μᴴ * Hb k * μ = Hb k → μ *ᵥ z = z → ∀ i j, ‖μ i j‖ ≤ R := by
   apply Formalism.FourierDecayAlt.P.B2x3.col_bound <;> assumption

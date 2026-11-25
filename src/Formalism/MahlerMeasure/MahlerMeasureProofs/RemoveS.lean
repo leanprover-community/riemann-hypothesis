@@ -19,16 +19,9 @@ variable {k σ : Type} [Field k]
 
 noncomputable def mfac (m : σ →₀ ℕ) : k := m.prod fun _ j => (j.factorial : k)
 
-theorem fockK_eq (F G : MvPolynomial σ k) :
-    M.fockK F G = ∑ m ∈ F.support, F.coeff m * G.coeff m * mfac m := rfl
-
 private theorem mvPolynomial_coeff_eq_zero_of_not_mem_support {p : MvPolynomial σ k} {m : σ →₀ ℕ} (h : m ∉ p.support) :
     AddMonoidAlgebra.coeff p m = 0 := by
   simpa [MvPolynomial.mem_support_iff] using h
-
-theorem fockK_superset (F G : MvPolynomial σ k) (s : Finset (σ →₀ ℕ)) (hs : F.support ⊆ s) :
-    M.fockK F G = ∑ m ∈ s, F.coeff m * G.coeff m * mfac m := by
-  simpa only [M.fockK_eq_pair, cast_fock_weight, mfac] using FockPairing.pair_eq_sum F G s hs
 
 theorem fockK_symm (F G : MvPolynomial σ k) : M.fockK F G = M.fockK G F := by
   simpa only [M.fockK_eq_pair] using FockPairing.pair_comm F G
@@ -62,11 +55,6 @@ theorem fockK_sum_right {ι : Type} (s : Finset ι) (f : ι → MvPolynomial σ 
 
 theorem fockK_zero_right (F : MvPolynomial σ k) : M.fockK F 0 = 0 := by
   rw [fockK_symm, fockK_zero_left]
-
-theorem mfac_add_single (m : σ →₀ ℕ) (v : σ) :
-    (mfac (m + Finsupp.single v 1) : k) = mfac m * ((m v : k) + 1) := by
-  rw [mul_comm (mfac m : k)]
-  simpa only [mfac, Nat.cast_add, Nat.cast_one] using factorial_prod_add_single (R := k) m v
 
 private theorem coeff_pderiv_eq_coeff_add_single_mul' (v : σ) (h : MvPolynomial σ k) (m : σ →₀ ℕ) :
     AddMonoidAlgebra.coeff (pderiv v h) m = AddMonoidAlgebra.coeff h (m + Finsupp.single v 1) * ((m v : k) + 1) := by

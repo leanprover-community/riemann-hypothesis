@@ -112,14 +112,6 @@ theorem norm_root {ζ : ℂ} {m : ℕ} (hm : 0 < m) (h : ζ ^ m = 1) : ‖ι ζ�
     rw [← norm_pow, ← map_pow, h, map_one, norm_one]
   exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) hm.ne').1 h1
 
-private theorem iteratedDeriv_const_mul_fun (a : ℂ) (f : ℂ → ℂ) (n : ℕ) :
-    iteratedDeriv n (fun z => a * f z) = fun z => a * iteratedDeriv n f z := by
-  induction n with
-  | zero => simp
-  | succ n ih =>
-    rw [iteratedDeriv_succ, iteratedDeriv_succ, ih]
-    exact deriv_const_mul_field' a
-
 theorem inW_const_mul (a : ℂ) (f : ℂ → ℂ) :
     inW l ι W (fun z => a * f z) = C (ι a) * inW l ι W f := by
   have ht : Formalism.L2.Th1.F.taylor0 (fun z => a * f z) = C a * Formalism.L2.Th1.F.taylor0 f := by
@@ -135,7 +127,6 @@ theorem inW_const_mul (a : ℂ) (f : ℂ → ℂ) :
   rw [ht, map_mul, PowerSeries.map_C, ← PowerSeries.smul_eq_C_mul, ← PowerSeries.smul_eq_C_mul,
     PowerSeries.subst_smul hs]
   rfl
-
 
 open Classical in
 def piW (hA : PtWAdd) (hU : Unif l L ι W) : ℂ →+ W.toAffine.Point :=
@@ -161,7 +152,6 @@ theorem sub_ptW (hA : PtWAdd) (hU : Unif l L ι W) (s t : ℂ) :
   have h := map_sub (piW l L ι W hA hU) s t
   simpa [piW] using h
 
-
 open Classical in
 theorem ptW_int (hA : PtWAdd) (hZ : PtWZero) (hU : Unif l L ι W) (hW : IntCurve W) (t : ℂ) (N : ℕ)
     (hlN : ¬ l ∣ N) (hNt : (N : ℂ) * t ∈ L.lattice) (ht : t ∉ L.lattice) :
@@ -169,7 +159,6 @@ theorem ptW_int (hA : PtWAdd) (hZ : PtWZero) (hU : Unif l L ι W) (hW : IntCurve
   _root_.Formalism.L2.Th1.E.torsion_integral ℂ_[l] W hW _ N (Tor.norm_natCast l hlN)
     (by rw [nsmul_ptW hA hU]; exact (hZ l L ι W hU _).2 hNt)
     (fun h => ht ((hZ l L ι W hU t).1 h))
-
 
 open Classical in
 theorem restrict (hS : AnalyticSysW) (hA : PtWAdd) (hZ : PtWZero) (hU : Unif l L ι W)
@@ -362,7 +351,6 @@ theorem hW_sim_hW (t₀ a b : ℂ) (M : ℕ) (hM : 0 < M) (ha : (M : ℂ) * a �
 
 variable {l L ι W}
 
-
 open Classical in
 theorem eW_prod (hS : AnalyticSysW) (hA : PtWAdd) (hU : Unif l L ι W) (P Q : ℂ) (hP : P ∉ L.lattice)
     (hQ : ptW l L ι W Q ≠ 0) :
@@ -390,7 +378,6 @@ theorem eW_prod (hS : AnalyticSysW) (hA : PtWAdd) (hU : Unif l L ι W) (P Q : �
     mul_ne_zero (pow_ne_zero _ PowerSeries.X_ne_zero) (pow_ne_zero _ hE)
   apply mul_left_cancel₀ hX
   linear_combination key
-
 
 open Classical in
 theorem hW_prod (hS : AnalyticSysW) (hA : PtWAdd) (hU : Unif l L ι W) (t₀ : ℂ) (M : ℕ) (hM : 0 < M)
@@ -434,7 +421,6 @@ end TransW
 
 open TransW
 
-
 open Classical in
 theorem AnalyticTransW_of (hS : AnalyticSysW) (hA : PtWAdd) (hZ : PtWZero) : AnalyticTransW := by
   intro l _ L ι W hU hW t N _ hlN hNt ht
@@ -469,7 +455,6 @@ theorem two_mem {t : ℂ} {N : ℕ} (h : (N : ℂ) * t ∈ L.lattice) : ((2 * N 
     ring
   rw [h2]
   exact nsmul_mem h 2
-
 
 open Classical in
 theorem oddCase (hS : AnalyticSysW) (hA : PtWAdd) (hZ : PtWZero) (hU : Unif l L ι W) (hW : IntCurve W)
@@ -510,7 +495,6 @@ theorem oddCase (hS : AnalyticSysW) (hA : PtWAdd) (hZ : PtWZero) (hU : Unif l L 
   refine Tor.gaussOne_C_mul (by rw [norm_inv, hc1, inv_one]) ?_
   rw [eW_eq]
   exact _root_.Formalism.L2.Th1.E.gauss_multiplicative ℂ_[l] _ _ (gaussOne_of_oneUnit hE') (gW_gauss hS hA hZ hU hW _ (2 * N) hN2 m3)
-
 
 open Classical in
 theorem shiftCase (hS : AnalyticSysW) (hA : PtWAdd) (hZ : PtWZero) (hU : Unif l L ι W) (hW : IntCurve W)

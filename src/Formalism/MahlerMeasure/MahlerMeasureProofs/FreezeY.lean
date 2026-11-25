@@ -252,9 +252,6 @@ theorem snoc_vec_castSucc (LL : Letters N) (n : ℕ) (i : Fin N) :
     (LL.snoc n).vec (Fin.castSucc i) = LL.vec i := by
   simp [Formalism.GM.M.Letters.snoc]
 
-theorem snoc_vec_last (LL : Letters N) (n : ℕ) : (LL.snoc n).vec (Fin.last N) = false := by
-  simp [Formalism.GM.M.Letters.snoc]
-
 theorem snoc_deg_castSucc (LL : Letters N) (n : ℕ) (i : Fin N) :
     (LL.snoc n).deg (Fin.castSucc i) = LL.deg i := by
   simp [Formalism.GM.M.Letters.snoc]

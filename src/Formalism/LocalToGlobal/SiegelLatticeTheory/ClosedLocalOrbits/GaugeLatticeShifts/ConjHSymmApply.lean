@@ -41,8 +41,6 @@ theorem HG_compact {w : Fin k → Fin n → ℂ} (Fw : Frm ε e p z w T) (hdim :
 
 def conjH (h : UJ ε) : UJ ε ≃ₜ UJ ε := (Homeomorph.mulLeft h).trans (Homeomorph.mulRight h⁻¹)
 
-theorem conjH_apply (h x : UJ ε) : conjH h x = h * x * h⁻¹ := rfl
-
 section Conj
 
 theorem map_conj_isHaarS {μ : Measure (UJ ε)} (hμ : IsHaarS (NLoc ε e z) μ) {h : UJ ε}

@@ -13,12 +13,6 @@ open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S
 
 namespace Formalism.L2.SG.Pf.CarrierSz
 
-theorem unram_host (D : D7) :
-    haveI : IsCMField D.host.E := D.host.isCMField_hostE
-    Formalism.FourierDecayAlt.S6.Unram D.host.E := by
-  have : IsCMField D.host.E := D.host.isCMField_hostE
-  exact Formalism.MainNotions.LocalModelPeriodLattices.unramE D
-
 theorem g_pos (D : D7) : 0 < D.host.g 0 ∧ 0 < D.host.g 1 :=
   ⟨(D.host.g_prime 0).pos, (D.host.g_prime 1).pos⟩
 

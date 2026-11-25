@@ -183,9 +183,6 @@ variable {m : ℕ}
 def realifyE (X : Matrix (Fin m) (Fin m) ℂ) : EuclideanSpace ℝ (Fin m × Fin m × Bool) :=
   (WithLp.equiv 2 _).symm (realifyFun X)
 
-theorem realifyE_apply (X : Matrix (Fin m) (Fin m) ℂ) (p : Fin m × Fin m × Bool) :
-    (realifyE X).ofLp p = realifyFun X p := rfl
-
 theorem unrealify_realifyE (X : Matrix (Fin m) (Fin m) ℂ) : unrealify (realifyE X) = X := by
   funext i j
   apply Complex.ext

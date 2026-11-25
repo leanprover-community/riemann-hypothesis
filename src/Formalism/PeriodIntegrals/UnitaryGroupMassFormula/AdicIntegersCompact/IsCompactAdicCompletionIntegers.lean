@@ -21,9 +21,6 @@ theorem valued_algebraMap (k : F) :
     Valued.v (algebraMap F (v.adicCompletion F) k) = v.valuation F k :=
   IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_eq_valuation' v k
 
-theorem denseRange : DenseRange (algebraMap F (v.adicCompletion F)) := by
-  exact denseRange_algebraMap F v
-
 theorem exists_close (x : v.adicCompletion F) (hx : Valued.v x ≤ 1) :
     ∃ a : 𝓞 F, Valued.v (x - algebraMap F (v.adicCompletion F) (algebraMap (𝓞 F) F a)) < 1 := by
   apply PI.WAU.exists_int_near <;> assumption

@@ -78,8 +78,6 @@ def embVHom : D.host.E →+ (InfinitePlace X.B.I.F → ℂ) where
   map_zero' := by funext v; simp [embV]
   map_add' := fun a b => by funext v; simp [embV]
 
-theorem embVHom_apply (t : D.host.E) : embVHom X t = fun v => embS D (X.pl v) t := rfl
-
 theorem embVHom_injective : Function.Injective (embVHom X) := by
   intro a b h
   obtain ⟨v⟩ : Nonempty (InfinitePlace X.B.I.F) := inferInstance

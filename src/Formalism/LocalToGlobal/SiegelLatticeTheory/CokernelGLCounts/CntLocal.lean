@@ -152,13 +152,6 @@ def hL (y : V) : V →+ E := AddMonoidHom.mk' (fun x => H.h x y) (fun x x' => H.
 theorem h_sum_left {ι : Type} (s : Finset ι) (x : ι → V) (y : V) :
     H.h (∑ i ∈ s, x i) y = ∑ i ∈ s, H.h (x i) y := map_sum (hL H y) x s
 
-theorem h_sum_right {ι : Type} (s : Finset ι) (x : V) (y : ι → V) :
-    H.h x (∑ i ∈ s, y i) = ∑ i ∈ s, H.h x (y i) := by
-
-  rw [H.h_herm, h_sum_left, map_sum]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rw [← H.h_herm]
-
 end
 
 theorem gz_eq (D : Formalism.BasicNotions.D7) {T T' : D.host.E} (F : LFlag (D.sp.Y 0) D.R.rS T) (F' : LFlag (D.sp.Y 0) D.R.rS T') :

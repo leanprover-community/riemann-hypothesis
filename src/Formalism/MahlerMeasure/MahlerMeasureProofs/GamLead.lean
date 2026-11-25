@@ -25,10 +25,6 @@ noncomputable def wf (m : σ →₀ ℕ) : K := ∏ x, ((m x).factorial : K)
 theorem prod_eq_wf (m : σ →₀ ℕ) : (m.prod fun _ k => (k.factorial : K)) = wf m := by
   unfold wf; exact Finsupp.prod_fintype _ _ (by simp)
 
-theorem wf_add_single (m : σ →₀ ℕ) (i : σ) :
-    (wf (m + Finsupp.single i 1) : K) = ((m i + 1 : ℕ) : K) * wf m := by
-  simpa only [prod_eq_wf] using factorial_prod_add_single (R := K) m i
-
 noncomputable def fk (F G : MvPolynomial σ K) : K :=
   ∑ m ∈ F.support, F.coeff m * G.coeff m * wf m
 
@@ -74,9 +70,6 @@ theorem fk_zero_right (F : MvPolynomial σ K) : fk F 0 = 0 := by rw [fk_symm, fk
 theorem fk_sum_right {ι : Type} (t : Finset ι) (F : MvPolynomial σ K) (G : ι → MvPolynomial σ K) :
     fk F (∑ i ∈ t, G i) = ∑ i ∈ t, fk F (G i) := by
   simpa only [fk_eq_pair] using FockPairing.pair_sum_right t F G
-
-theorem fk_X_mul (i : σ) (g h : MvPolynomial σ K) : fk (X i * g) h = fk g (pderiv i h) := by
-  simpa only [fk_eq_pair, mul_comm (X i) g] using FockPairing.pair_mul_X i g h
 
 end
 
@@ -1733,9 +1726,6 @@ theorem map_tiePhi (o n z : ℕ) (g : MvPolynomial σ ℚ) :
   rw [map_smul', map_tieE_pow, map_tieF_pow]
   congr 1
   simp [map_div₀]
-
-theorem map_wf (m : σ →₀ ℕ) : ι (wf m) = (wf m : K) := by
-  simp [wf, map_prod]
 
 theorem fk_map (F G : MvPolynomial σ ℚ) : fk (map ι F) (map ι G) = ι (fk F G) := by
   simpa only [fk_eq_pair] using FockPairing.pair_map ι F G

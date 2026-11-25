@@ -21,12 +21,6 @@ theorem cast_fock_weight {σ R : Type*} [CommSemiring R] (m : σ →₀ ℕ) :
     (FockPairing.weight m : R) = m.prod fun _ n => (n.factorial : R) :=
   Nat.cast_prod (fun i => (m i).factorial) m.support
 
-theorem factorial_prod_add_single {σ R : Type*} [CommSemiring R] (m : σ →₀ ℕ) (v : σ) :
-    (m + Finsupp.single v 1).prod (fun _ n => (n.factorial : R)) =
-      ((m v + 1 : ℕ) : R) * m.prod (fun _ n => (n.factorial : R)) := by
-  simpa only [Nat.cast_mul, cast_fock_weight] using
-    congrArg (Nat.cast : ℕ → R) (FockPairing.weight_add_single m v)
-
 theorem M.fockK_eq_pair {k σ : Type} [Field k] (f g : MvPolynomial σ k) :
     M.fockK f g = FockPairing.pair f g := by
   simp only [M.fockK, FockPairing.pair, cast_fock_weight]

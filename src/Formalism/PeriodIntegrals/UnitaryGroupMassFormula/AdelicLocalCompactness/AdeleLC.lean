@@ -20,12 +20,6 @@ open scoped RestrictedProduct
 
 variable (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F))
 
-theorem algebraMap_mem_integer (r : 𝓞 F) :
-    algebraMap (𝓞 F) (v.adicCompletion F) r ∈ Valued.integer (v.adicCompletion F) := by
-  have h := v.coe_mem_adicCompletionIntegers (K := F) r
-  rw [IsScalarTower.algebraMap_apply (𝓞 F) F (v.adicCompletion F)]
-  exact h
-
 theorem finite_residueField :
     Finite (IsLocalRing.ResidueField (Valued.integer (v.adicCompletion F))) := by
   apply PI.WAU.finite_residue

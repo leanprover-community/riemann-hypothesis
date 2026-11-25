@@ -91,36 +91,12 @@ variable (p : ℕ) [Fact p.Prime] {σ : Type} [Fintype σ] [DecidableEq σ]
 
 noncomputable def fw (m : σ →₀ ℕ) : ℚ_[p] := m.prod fun _ k => (k.factorial : ℚ_[p])
 
-theorem fw_eq (m : σ →₀ ℕ) : fw p m = ∏ x, ((m x).factorial : ℚ_[p]) := by
-  rw [fw, Finsupp.prod_fintype _ _ (fun _ => by simp)]
-
-theorem fw_add_single (m : σ →₀ ℕ) (v : σ) :
-    fw p (m + Finsupp.single v 1) = fw p m * ((m v + 1 : ℕ) : ℚ_[p]) := by
-  rw [mul_comm (fw p m)]
-  exact factorial_prod_add_single m v
-
-theorem fock_eq_sum (F G : MvPolynomial σ ℚ_[p]) (s : Finset (σ →₀ ℕ)) (hs : F.support ⊆ s) :
-    M.fock p F G = ∑ m ∈ s, F.coeff m * G.coeff m * fw p m := by
-  simpa only [M.fock_eq_pair, cast_fock_weight, fw] using FockPairing.pair_eq_sum F G s hs
-
 theorem fock_comm (F G : MvPolynomial σ ℚ_[p]) : M.fock p F G = M.fock p G F := by
   simpa only [M.fock_eq_pair] using FockPairing.pair_comm F G
-
-theorem fock_eq_sum' (F G : MvPolynomial σ ℚ_[p]) (s : Finset (σ →₀ ℕ)) (hs : G.support ⊆ s) :
-    M.fock p F G = ∑ m ∈ s, F.coeff m * G.coeff m * fw p m := by
-  rw [fock_comm, fock_eq_sum p G F s hs]
-  exact Finset.sum_congr rfl fun m _ => by ring
-
-theorem fock_add_left (F F' G : MvPolynomial σ ℚ_[p]) :
-    M.fock p (F + F') G = M.fock p F G + M.fock p F' G := by
-  simpa only [M.fock_eq_pair] using FockPairing.pair_add_left F F' G
 
 theorem fock_smul_left (c : ℚ_[p]) (F G : MvPolynomial σ ℚ_[p]) :
     M.fock p (c • F) G = c * M.fock p F G := by
   simpa only [M.fock_eq_pair] using FockPairing.pair_smul_left c F G
-
-theorem fock_zero_left (G : MvPolynomial σ ℚ_[p]) : M.fock p 0 G = 0 := by
-  simpa only [M.fock_eq_pair] using FockPairing.pair_zero_left G
 
 theorem fock_sum_left {ι : Type} (t : Finset ι) (F : ι → MvPolynomial σ ℚ_[p]) (G : MvPolynomial σ ℚ_[p]) :
     M.fock p (∑ i ∈ t, F i) G = ∑ i ∈ t, M.fock p (F i) G := by
@@ -147,14 +123,6 @@ theorem fock_X_pow_mul (v : σ) (k : ℕ) (a b : MvPolynomial σ ℚ_[p]) :
     rw [h1, pow_succ, mul_assoc, ih, fock_X_mul, Dp_apply]
 
 variable {r : ℕ} (w e : Fin r → σ)
-
-theorem fock_E (a b : MvPolynomial σ ℚ_[p]) :
-    M.fock p (tieE w e a) b = M.fock p a (tieF w e b) := by
-  have hF : tieF w e b = ∑ c, pderiv (w c) (pderiv (e c) b) := by simp [tieF, LinearMap.sum_apply]
-  simp only [tieE, LinearMap.mulLeft_apply, Finset.sum_mul, fock_sum_left]
-  rw [hF, fock_sum_right]
-  refine Finset.sum_congr rfl fun c _ => ?_
-  rw [mul_assoc, fock_X_mul, fock_X_mul, pderiv_comm (e c) (w c)]
 
 theorem fock_E_pow (j : ℕ) (a b : MvPolynomial σ ℚ_[p]) :
     M.fock p ((tieE w e ^ j) a) b = M.fock p a ((tieF w e ^ j) b) := by

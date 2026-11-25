@@ -1002,14 +1002,6 @@ section LapFormsSec
 
 variable {H : Type} {N0 N1 : ℕ}
 
-lemma der_sum_apply {ι : Type} (s : Finset ι)
-    (D : ι → Derivation ℤ (PolyXZ H N0 N1) (PolyXZ H N0 N1)) (x : PolyXZ H N0 N1) :
-    (∑ i ∈ s, D i) x = ∑ i ∈ s, D i x := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert i s hi ih => rw [Finset.sum_insert hi, Finset.sum_insert hi, Derivation.add_apply, ih]
-
 lemma pderiv_comm' (i j : XZ (Bool × H) N0 N1) (P : PolyXZ H N0 N1) :
     pderiv i (pderiv j P) = pderiv j (pderiv i P) := by
   have h : ⁅(pderiv (R := ℤ) i : Derivation ℤ (PolyXZ H N0 N1) (PolyXZ H N0 N1)), pderiv (R := ℤ) j⁆ = 0 := by

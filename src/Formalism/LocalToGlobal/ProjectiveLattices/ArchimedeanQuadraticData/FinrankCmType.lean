@@ -50,28 +50,4 @@ def cmEquiv {K : Type} [Field K] {ι : Type} (σ : ι → K →+* ℂ) (hinj : F
         refine ⟨Sum.inr i, ?_⟩
         simp only [Sum.elim_inr, hi, conj_conj_emb])
 
-theorem sum_re_cmType {K : Type} [Field K] [NumberField K] {ι : Type} [Fintype ι] (σ : ι → K →+* ℂ)
-    (hinj : Function.Injective σ)
-    (hcm : ∀ τ : K →+* ℂ, (∃ i, σ i = τ) ↔ ¬ ∃ i, σ i = ComplexEmbedding.conjugate τ) (z : K) :
-    ∑ i, (σ i z).re = (1 / 2 : ℝ) * ((Algebra.trace ℚ K z : ℚ) : ℝ) := by
-  have h1 : (algebraMap ℚ ℂ) (Algebra.trace ℚ K z) = ∑ τ : K →+* ℂ, τ z := by
-    rw [trace_eq_sum_embeddings ℂ (x := z)]
-    exact Fintype.sum_equiv (RingHom.equivRatAlgHom (R := K) (S := ℂ)).symm _ _ (fun _ => rfl)
-  have h2 : ∑ τ : K →+* ℂ, τ z = ∑ i, σ i z + ∑ i, conj (σ i z) := by
-    rw [← Equiv.sum_comp (cmEquiv σ hinj hcm), Fintype.sum_sum_type]
-    rfl
-  have h3 := congrArg Complex.re (h1.trans h2)
-  simp only [Complex.add_re, Complex.re_sum, Complex.conj_re] at h3
-  have h4 : ((algebraMap ℚ ℂ) (Algebra.trace ℚ K z)).re = ((Algebra.trace ℚ K z : ℚ) : ℝ) := by
-    simp
-  rw [h4] at h3
-  linarith
-
-theorem finrank_cmType {K : Type} [Field K] [NumberField K] {ι : Type} [Fintype ι] (σ : ι → K →+* ℂ)
-    (hinj : Function.Injective σ)
-    (hcm : ∀ τ : K →+* ℂ, (∃ i, σ i = τ) ↔ ¬ ∃ i, σ i = ComplexEmbedding.conjugate τ) :
-    Module.finrank ℚ K = 2 * Fintype.card ι := by
-  rw [← NumberField.Embeddings.card K ℂ, ← Fintype.card_congr (cmEquiv σ hinj hcm), Fintype.card_sum]
-  ring
-
 end Formalism.L2.Pj.FundamentalDomainD5
