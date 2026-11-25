@@ -7,14 +7,12 @@ import unittest
 SCRIPTS = Path(__file__).resolve().parents[1]
 
 
-def load(name, filename):
-    spec = importlib.util.spec_from_file_location(name, SCRIPTS / filename)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
-deps = load("pr_dependencies", "pr-dependencies.py")
+# `pr-dependencies.py` is loaded the way the scripts load it, through `load` in `github-rest.py`,
+# which registers it in `sys.modules`: its dataclass needs that up to Python 3.14.
+spec = importlib.util.spec_from_file_location("github_rest", SCRIPTS / "github-rest.py")
+rest = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(rest)
+deps = rest.load("pr-dependencies.py")
 
 REPO = "o/r"
 
@@ -34,12 +32,31 @@ class Dependencies(unittest.TestCase):
                 self.assertEqual(self.read(line), {7})
 
     def test_other_common_wordings(self):
-        for line in ("blocked by #7", "- [ ] Blocked by: #7", "requires #7", "Requires: #7", "needs #7",
+        for line in ("- blocked by #7", "- [ ] Blocked by: #7", "* requires #7", "+ Requires: #7", "[ ] needs #7",
                      "- [x] needs: #7", "> depends on #7", "> - [ ] blocked by #7", "-depends on #7",
                      "[ ] depends on #7", "[] depends on #7", "**Depends on** #7", "depends\ton\t#7",
-                     "- [ ]depends on #7"):
+                     "- [ ]depends on #7", "  -\tneeds #7", "[x]requires #7"):
             with self.subTest(line=line):
                 self.assertEqual(self.read(line), {7})
+
+    def test_needs_requires_and_blocked_by_only_on_a_list_or_task_line(self):
+        for line in ("Needs review from the authors of #1234.", "needs #7", "Requires: #7", "blocked by #7",
+                     "> blocked by #7", "-needs #7", "**Needs** #7", "*requires #7"):
+            with self.subTest(line=line):
+                self.assertEqual(self.read(line), set())
+
+    def test_code_indented_by_four_spaces_is_not_read(self):
+        self.assertEqual(self.read("Text.\n\n    depends on #1\n    - [ ] needs #2\n\ndepends on #3\n"), {3})
+        self.assertEqual(self.read("    depends on #1\n\tdepends on #2\n"), set())
+        # Blank lines inside the block keep it going.
+        self.assertEqual(self.read("\n    x = 1\n\n    depends on #1\ndepends on #2\n"), {2})
+
+    def test_indented_lines_that_are_not_code_are_read(self):
+        # A paragraph's next line, however far it is indented, continues the paragraph.
+        self.assertEqual(self.read("Some text\n    depends on #1\n"), {1})
+        # Within a list, indenting nests a list item or continues one.
+        self.assertEqual(self.read("- [ ] depends on #1\n\n    - [ ] depends on #2\n"), {1, 2})
+        self.assertEqual(self.read("1. First\n\n    depends on #3\n"), {3})
 
     def test_several_on_one_line_and_several_lines(self):
         self.assertEqual(self.read("- [ ] depends on: #1, #2\n- [x] depends on: #3\n"), {1, 2, 3})
@@ -85,7 +102,7 @@ class Dependencies(unittest.TestCase):
         self.assertEqual(self.read("depends on #5 ` and #6\n"), {5, 6})
 
     def test_a_comment_before_the_line_is_not_in_the_way(self):
-        self.assertEqual(self.read("<!-- note --> - [ ] depends on #5\n<!-- a\nlonger note --> needs #6\n"), {5, 6})
+        self.assertEqual(self.read("<!-- note --> - [ ] depends on #5\n<!-- a\nlonger note --> - needs #6\n"), {5, 6})
 
     def test_windows_line_ends(self):
         self.assertEqual(self.read("text\r\n- [ ] depends on: #9\r\n```\r\ndepends on #10\r\n```\r\n"), {9})
@@ -96,7 +113,8 @@ class Dependencies(unittest.TestCase):
 
 class Declarations(unittest.TestCase):
     def test_what_each_line_says(self):
-        body = "Text.\n- [ ] depends on: #3, #1, #3\n- [x] needs #2\n* blocked by #4\nrequires Lean\n[] needs #5\n"
+        body = ("Text.\n- [ ] depends on: #3, #1, #3\n- [x] needs #2\n* blocked by #4\n- requires Lean\n[] needs #5\n"
+                "requires #6\n")
         found = deps.declarations(body, REPO)
         self.assertEqual([(line.index, line.box, line.numbers) for line in found],
                          [(1, " ", (3, 1)), (2, "x", (2,)), (3, None, (4,)), (4, None, ()), (5, "", (5,))])
