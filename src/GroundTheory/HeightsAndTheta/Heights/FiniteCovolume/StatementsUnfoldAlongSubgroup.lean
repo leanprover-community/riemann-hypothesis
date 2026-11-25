@@ -23,15 +23,6 @@ def UnfoldAlongSubgroup.Statement (G Y : Type*) [Group G] [MeasurableSpace G] [M
     ∀ f : G → ℝ≥0∞, Measurable f → (∀ x : H, ∀ g, f (x * g) = f g) →
       ∫⁻ g in FD, f g ∂μ = ν FD₀ * ∫⁻ y, f (s y) ∂ρ
 
-section Inhabitants
-
-theorem measurableSingletonClass_cyclicTwo : MeasurableSingletonClass C2 :=
-  ⟨fun _ => MeasurableSpace.measurableSet_top⟩
-
-attribute [local instance] measurableSingletonClass_cyclicTwo
-
-end Inhabitants
-
 end
 
 end GroundTheory.Heights₂.Heights.FiniteCovolume

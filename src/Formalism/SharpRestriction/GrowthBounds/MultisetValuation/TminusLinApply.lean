@@ -103,10 +103,6 @@ def TmLin (v : X.Pl) (i j : ℕ) : X.Fm j →ₗ[X.G.Kf] X.Fm j where
 def TtLin (v : X.Pl) (i j : ℕ) : X.Fm j →ₗ[X.G.Kf] X.Fm j :=
   if i = 0 then LinearMap.id else ((p : X.G.Kf) ^ (Nprime (X.G.P.lam0 v) (X.w v) j i)) • TmLin X v i j
 
-@[simp] theorem TtLin_apply (v : X.Pl) (i j : ℕ) (F : X.Fm j) : TtLin X v i j F = X.Tt v i j F := by
-  unfold TtLin Sys.Tt
-  split_ifs <;> rfl
-
 theorem yv_eq (v : X.Pl) (F : X.Fm 0) : X.yv v F = ((p : X.G.Kf) ^ X.G.P.ArV v) • X.Tm v X.G.P.r 0 F := rfl
 
 def yvLin (v : X.Pl) : X.Fm 0 →ₗ[X.G.Kf] X.Fm 0 := ((p : X.G.Kf) ^ X.G.P.ArV v) • TmLin X v X.G.P.r 0

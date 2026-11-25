@@ -76,7 +76,6 @@ theorem exists_good : ∃ m, Good Ξ e m := by
   have h2 : u = 1 := Units.ext (by rw [h1, Units.val_one])
   rw [h2, map_one]
 
-
 open Classical in
 def QS : ℕ := Nat.find (exists_good Ξ e)
 
@@ -133,7 +132,6 @@ theorem dvd_of_dvd_QS {l : ℕ} (hl : l.Prime) (h2 : l ≠ 2) (h : l ∣ QS Ξ e
   · exact absurd ((Nat.prime_dvd_prime_iff_eq hl Nat.prime_two).mp (hl.dvd_of_dvd_pow h1)) h2
   · exact h1
 
-
 theorem exact_data_aux (he : 1 ≤ e) (l : ℕ) (hl : l.Prime) (hd : l ∣ QS Ξ e) :
     ∃ v : (ZMod (QS Ξ e))ˣ, (v : ZMod (QS Ξ e)).val ≡ 1 [MOD QS Ξ e / l] ∧
       ((((QuotientGroup.mk' _ : (ZMod (2 ^ (e + 2)))ˣ →* HGrp e).comp (ZMod.unitsMap (good_QS Ξ e).2.1)).prod (xi Ξ e)) v) ≠ 1 := by
@@ -183,10 +181,6 @@ theorem exact_data_aux (he : 1 ≤ e) (l : ℕ) (hl : l.Prime) (hd : l ∣ QS Ξ
         have h8 : 4 ∣ 2 ^ (k + 2) * c := ⟨2 ^ k * c, by ring⟩
         omega
 
-theorem exact_data (he : 1 ≤ e) (l : ℕ) (hl : l.Prime) (hd : l ∣ QS Ξ e) :
-    ∃ v : (ZMod (QS Ξ e))ˣ, (v : ZMod (QS Ξ e)).val ≡ 1 [MOD QS Ξ e / l] ∧ (data Ξ e hev).eta v ≠ 1 :=
-  exact_data_aux Ξ e he l hl hd
-
 def thetaB (χ : DirichletCharacter ℂ M) (hχ : χ ∈ Ξ) : B Ξ →* ℂˣ :=
   QuotientGroup.lift (ann Ξ) χ.toUnitHom fun u hu =>
     Units.ext ((MulChar.coe_toUnitHom χ u).trans ((mem_ann Ξ u).mp hu χ hχ))
@@ -209,11 +203,6 @@ theorem coprime_QS : Nat.Coprime (QS Ξ e) (q * d) := by
 def host : HostRaw (frame Ξ e hev) :=
   (data Ξ e hev).host hH (coprime_QS Ξ e hH hc) he fun l hl h2 h => hs l hl h2 (dvd_of_dvd_QS Ξ e hl h2 h)
 
-theorem exact : (host Ξ e hev hH hc he hs).Exact := by
-  apply (data Ξ e hev).exact
-  intro l hl hd
-  exact exact_data Ξ e hev (by omega) l hl hd
-
 end Host
 
 end EvenGrp
@@ -234,8 +223,6 @@ def data : ModData where
 
 abbrev frame : Frame := (data Ξ e).frame
 
-theorem frame_e : (frame Ξ e).e = e := rfl
-
 theorem o_eq : (frame Ξ e).o = Nat.card Ξ := by
   show (data Ξ e).frame.o = _
   rw [ModData.o_eq]
@@ -243,21 +230,12 @@ theorem o_eq : (frame Ξ e).o = Nat.card Ξ := by
   rw [MonoidHom.range_eq_top.mpr (EvenGrp.xi_surj Ξ e), Subgroup.card_top]
   exact EvenGrp.card_B Ξ
 
-theorem twoGroup (h : ∃ j : ℕ, Nat.card Ξ = 2 ^ j) : (frame Ξ e).TwoGroup := by
-  obtain ⟨j, hj⟩ := h
-  apply ModData.twoGroup
-  refine ⟨j, fun u => ?_⟩
-  have h2 : Nat.card (B Ξ) = 2 ^ j := (EvenGrp.card_B Ξ).trans hj
-  rw [← h2]
-  exact pow_card_eq_one'
-
 theorem QS_le (h : 4 * M ≤ 2 ^ e) : QS Ξ e ≤ (frame Ξ e).ord ^ 2 := by
   have h1 := Nat.le_of_dvd (Nat.mul_pos (by positivity) (Nat.pos_of_ne_zero (NeZero.ne M))) (QS_dvd_mul Ξ e)
   have h2 : 2 ^ e ≤ (frame Ξ e).ord := (frame Ξ e).two_pow_le_ord
   calc QS Ξ e ≤ 2 ^ e * (4 * M) := by rw [pow_add] at h1; linarith
     _ ≤ 2 ^ e * 2 ^ e := Nat.mul_le_mul_left _ h
     _ ≤ _ := by rw [sq]; exact Nat.mul_le_mul h2 h2
-
 
 theorem exact_data (he : 1 ≤ e) (l : ℕ) (hl : l.Prime) (hd : l ∣ QS Ξ e) :
     ∃ v : (ZMod (QS Ξ e))ˣ, (v : ZMod (QS Ξ e)).val ≡ 1 [MOD QS Ξ e / l] ∧ (data Ξ e).eta v ≠ 1 :=
@@ -289,10 +267,6 @@ variable {q d : ℕ} (hH : HostHyp q d) (hc : Nat.Coprime M (q * d)) (he : 2 ≤
 def host : HostRaw (frame Ξ e) :=
   (data Ξ e).host hH (coprime_QS Ξ e hH hc) he fun l hl h2 h => hs l hl h2 (dvd_of_dvd_QS Ξ e hl h2 h)
 
-theorem host_q : (host Ξ e hH hc he hs).q = q := rfl
-theorem host_d : (host Ξ e hH hc he hs).d = d := rfl
-theorem host_QS : (host Ξ e hH hc he hs).QS = QS Ξ e := rfl
-
 theorem psQ : (host Ξ e hH hc he hs).PsQ := by
   unfold host
   apply ModData.psQ
@@ -302,15 +276,6 @@ theorem exact : (host Ξ e hH hc he hs).Exact := by
   apply ModData.exact
   intro l hl hd
   exact exact_data Ξ e (by omega) l hl hd
-
-theorem muPM (hq : q ≠ 3) (hmu : ∀ k : ℕ, k ∣ QS Ξ e →
-    (∀ v : (ZMod (QS Ξ e))ˣ, (data Ξ e).eta v = 1 → (v : ZMod (QS Ξ e)).val ≡ 1 [MOD k]) → k ∣ 2) :
-    (host Ξ e hH hc he hs).MuPM := by
-  unfold host
-  apply ModData.muPM (hq := hq) (hmu := hmu)
-
-theorem coprimeFifteen_of_coprime (h : Nat.Coprime M 15) : (host Ξ e hH hc he hs).CoprimeFifteen :=
-  (Nat.Coprime.mul_left (Nat.Coprime.pow_left _ (by norm_num)) h).coprime_dvd_left (QS_dvd_mul Ξ e)
 
 theorem exists_sqq : ∃ s : (host Ξ e hH hc he hs).E, s ^ 2 = -((host Ξ e hH hc he hs).q : (host Ξ e hH hc he hs).E) ∧
     ∀ σ : (host Ξ e hH hc he hs).E ≃ₐ[ℚ] (host Ξ e hH hc he hs).E,
@@ -366,10 +331,6 @@ theorem exceptional_character_condition : (host Ξ e hH hc he hs).ExceptionalCha
   have h5 : (1 : ℂ) = (((((data Ξ e).art hH u).1.1 : ℤˣ) : ℤ) : ℂ) := congrArg Units.val (h3.symm.trans h2)
   rw [h4] at h5
   norm_num at h5
-
-theorem o_eq_level : (frame Ξ e).o = (Level.ofSub Ξ).o := by
-  rw [o_eq]
-  rfl
 
 end Host
 

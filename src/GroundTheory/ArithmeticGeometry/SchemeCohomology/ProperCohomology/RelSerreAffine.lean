@@ -37,11 +37,9 @@ namespace RelSerre
 
 variable {A : Type u} [CommRing A] {X X' : Scheme.{u}} [X.Over (Spec (.of A))] {N : ℕ}
 
-
 variable (A) in
 def baseHom {V : X.Opens} (hV : IsAffineOpen V) : CommRingCat.of A ⟶ Γ(X, V) :=
   Spec.preimage (hV.fromSpec ≫ (X ↘ Spec (.of A)))
-
 
 variable (A) in
 abbrev baseAlgebra {V : X.Opens} (hV : IsAffineOpen V) : Algebra A Γ(X, V) :=
@@ -67,7 +65,6 @@ instance isClosedImmersion_graph [IsClosedImmersion i] [IsSeparated (X ↘ Spec 
     rw [pullback.lift_fst]
     infer_instance
   exact IsClosedImmersion.of_comp _ (pullback.fst _ _)
-
 
 variable (A) in
 abbrev overV {V : X.Opens} (hV : IsAffineOpen V) :
@@ -107,7 +104,6 @@ lemma restrictIso_hom_fst {V : X.Opens} (hV : IsAffineOpen V) :
     (restrictIso (N := N) i ψ h hV).hom ≫ pullback.fst _ _ = (ψ ⁻¹ᵁ V).ι := by
   simp only [restrictIso, Iso.trans_hom, Iso.symm_hom, asIso_inv, Category.assoc,
     inv_restrictT_fst, pullbackRestrictIsoRestrict_inv_fst, Scheme.isoOfEq_hom_ι]
-
 
 variable (A) in
 def pasteIso {V : X.Opens} (hV : IsAffineOpen V) :
@@ -186,12 +182,10 @@ namespace ProjSpace
 
 variable {A B : Type u} [CommRing A] [CommRing B] [Algebra A B] {n : ℕ}
 
-
 variable (A) in
 abbrev cmap :
     C(ProjectiveSpectrum.top (grading B n), ProjectiveSpectrum.top (grading A n)) :=
   ProjectiveSpectrum.comap (gradedMap A B n) (irrelevant_le_map A B n)
-
 
 variable (A) in
 abbrev pt (y : ProjectiveSpectrum (grading B n)) : ProjectiveSpectrum (grading A n) :=
@@ -317,7 +311,6 @@ instance isIso_pullbackTwistingSheafMap :
   rw [key]
   exact ProjTwist.isBasisOn_upow _ _ k
 
-
 variable (A B n) in
 def pullbackTwistingSheafIso :
     (Scheme.Modules.pullback (baseChangeMap A B n)).obj (twistingSheaf (grading A n) k) ≅
@@ -352,20 +345,11 @@ namespace ProjSpace
 
 variable {A B : Type u} [CommRing A] [CommRing B] [Algebra A B] {n : ℕ} {Y : Scheme.{u}}
 
-
 variable (A B n) in
 def baseChangeIso :
     projectiveSpace B n ≅
       pullback (toSpecBase A n) (Spec.map (CommRingCat.ofHom (algebraMap A B))) :=
   (isPullback_baseChange A B n).isoPullback
-
-lemma baseChangeIso_inv_baseChangeMap :
-    (baseChangeIso A B n).inv ≫ baseChangeMap A B n = pullback.fst _ _ :=
-  (isPullback_baseChange A B n).isoPullback_inv_fst
-
-lemma baseChangeIso_inv_toSpecBase :
-    (baseChangeIso A B n).inv ≫ toSpecBase B n = pullback.snd _ _ :=
-  (isPullback_baseChange A B n).isoPullback_inv_snd
 
 def toBaseChange (ι : Y ⟶ pullback (toSpecBase A n) (Spec.map (CommRingCat.ofHom (algebraMap A B)))) :
     Y ⟶ projectiveSpace B n :=
@@ -376,29 +360,11 @@ instance (ι : Y ⟶ pullback (toSpecBase A n) (Spec.map (CommRingCat.ofHom (alg
   rw [toBaseChange]
   infer_instance
 
-lemma toBaseChange_baseChangeMap
-    (ι : Y ⟶ pullback (toSpecBase A n) (Spec.map (CommRingCat.ofHom (algebraMap A B)))) :
-    toBaseChange ι ≫ baseChangeMap A B n = ι ≫ pullback.fst _ _ := by
-  rw [toBaseChange]
-  calc
-    _ = ι ≫ ((baseChangeIso A B n).inv ≫ baseChangeMap A B n) := by rw [Category.assoc]
-    _ = _ := congrArg (fun f => ι ≫ f) (baseChangeIso_inv_baseChangeMap (A := A) (B := B) (n := n))
-
-lemma toBaseChange_toSpecBase
-    (ι : Y ⟶ pullback (toSpecBase A n) (Spec.map (CommRingCat.ofHom (algebraMap A B)))) :
-    toBaseChange ι ≫ toSpecBase B n = ι ≫ pullback.snd _ _ := by
-  rw [toBaseChange]
-  calc
-    _ = ι ≫ ((baseChangeIso A B n).inv ≫ toSpecBase B n) := by rw [Category.assoc]
-    _ = _ := congrArg (fun f => ι ≫ f) (baseChangeIso_inv_toSpecBase (A := A) (B := B) (n := n))
-
-
 variable (A) in
 def twistingSheafBaseChangeIso (g : Y ⟶ projectiveSpace B n) (k : ℤ) :
     ProjScheme.twistingSheaf (g ≫ baseChangeMap A B n) k ≅ ProjScheme.twistingSheaf g k :=
   ((Scheme.Modules.pullbackComp g (baseChangeMap A B n)).app _).symm ≪≫
     (Scheme.Modules.pullback g).mapIso (pullbackTwistingSheafIso A B n k)
-
 
 variable (A) in
 def twistBaseChangeIso (g : Y ⟶ projectiveSpace B n) (F : Y.Modules) (k : ℤ) :
@@ -603,12 +569,10 @@ def sheafifyIso : (sheafifyMod X).obj ((preMod X).obj (M.restrict f) ⊗ (preMod
 
 end RestrictTensor
 
-
 open RestrictTensor in
 def restrictTensorIso {X Y : Scheme.{u}} (f : X ⟶ Y) [IsOpenImmersion f] (M N : Y.Modules) :
     (M ⊗ N).restrict f ≅ M.restrict f ⊗ N.restrict f :=
   (sheafifyIso f M N).symm ≪≫ tensorIso (M.restrict f) (N.restrict f)
-
 
 attribute [local instance] MvPolynomial.gradedAlgebra in
 def restrictTwistIso {A : Type u} [CommRing A] {n : ℕ} {U X : Scheme.{u}} (f : U ⟶ X)

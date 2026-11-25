@@ -366,7 +366,6 @@ theorem sep_ext {O : Type} [CommRing O] [IsDomain O] {F : Type} [Field F] (f : O
   rw [← hκ, ← Polynomial.map_map, Polynomial.separable_map]
   exact h
 
-
 theorem stageC : StatStageC := by
   intro O O' _ _ _ _ _ _ _ _ _ e he X _ T d _ _ G _ r π t bl χ₁ ε hP hA eB e₁ hI g₀ s hsm hes hse hsπ
     hsep hspl
@@ -475,23 +474,6 @@ theorem stageC : StatStageC := by
     exact h3 (hpoly ▸ hsep') (hpoly ▸ hspl x)
   · intro Z
     exact vccBaseChange O O' e he X T (bcT O' T) (bcSpan O O' X T) Z π
-
-theorem deltaO_eq {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] {X d G : Type}
-    [Fintype d] [DecidableEq d] [Group G] {t : ℕ} {bl : d → Fin (t + 1)} {T : Subalgebra O (X → O)}
-    {r₀ : G →* (X → Matrix d d O)} {π : X} {χ₁ ε : G →* Oˣ} {g₀ : G} {eB e₁ s : X → Matrix d d O}
-    {D : RingData O X d G t bl} (hD : RingDef O T r₀ π χ₁ ε g₀ eB e₁ s D) :
-    D.δO = ∏ i ∈ Finset.Ioo 0 t, ((χ₁ g₀ : O) - (χ₁ g₀ : O) * (((ε g₀)⁻¹ ^ i : Oˣ) : O)) := by
-  obtain ⟨-, -, -, -, -, hrr, -⟩ := hD
-  have h2 : D.δO = ∏ i ∈ Finset.Ioo 0 t,
-      ((D.rr 0 : D.X' → O) D.π' - (D.rr i : D.X' → O) D.π') := by
-    show ((Pi.evalRingHom (fun _ : D.X' => O) D.π').comp D.T'.val.toRingHom) D.δ = _
-    unfold RingData.δ
-    rw [map_prod]; rfl
-  rw [h2]
-  refine Finset.prod_congr rfl fun i hi => ?_
-  rw [Finset.mem_Ioo] at hi
-  rw [hrr 0 (by omega), hrr i hi.2]
-  simp
 
 end Formalism.RepresentationBoundsCohomology.ringDataObjects
 end -- clump:auto

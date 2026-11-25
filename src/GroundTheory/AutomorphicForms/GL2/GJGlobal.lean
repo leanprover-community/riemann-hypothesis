@@ -225,35 +225,6 @@ local notation "Γ₁" => rationalGLOne (K := K) (n := n)
 
 variable (μ : Measure (normOneGL (K := K) (n := n))) [μ.IsHaarMeasure]
 
-theorem norm_thetaPairing_le {φ₁ φ₂ Ξ : AdelicGLn.AdelicGL K n → ℂ} (t : {r : ℝ // 0 < r}) {b : ℝ}
-    (hb : ∀ x y : normOneGL (K := K) (n := n),
-      Summable (fun γ : GL (Fin n) K => ‖Ξ (centralSection K n t * (x : AdelicGLn.AdelicGL K n)⁻¹ *
-        AdelicGLn.diagonal K n γ * (y : AdelicGLn.AdelicGL K n))‖) ∧
-      ‖φ₂ (x : AdelicGLn.AdelicGL K n)‖ * ‖φ₁ (y : AdelicGLn.AdelicGL K n)‖ *
-        ∑' γ : GL (Fin n) K, ‖Ξ (centralSection K n t * (x : AdelicGLn.AdelicGL K n)⁻¹ *
-          AdelicGLn.diagonal K n γ * (y : AdelicGLn.AdelicGL K n))‖ ≤ b) :
-    ‖thetaPairing μ φ₁ φ₂ Ξ t‖ ≤ (μ (fundamentalDomain Γ₁)).toReal ^ 2 * b := by
-  have hF : μ (fundamentalDomain Γ₁) < ⊤ := measure_fundamentalDomain_rationalGLOne_lt_top μ
-  have hT : ∀ x y : normOneGL (K := K) (n := n), ‖conj (φ₂ (x : AdelicGLn.AdelicGL K n)) *
-      φ₁ (y : AdelicGLn.AdelicGL K n) * ∑' γ : GL (Fin n) K,
-        Ξ (centralSection K n t * (x : AdelicGLn.AdelicGL K n)⁻¹ *
-          AdelicGLn.diagonal K n γ * (y : AdelicGLn.AdelicGL K n))‖ ≤ b := by
-    intro x y
-    obtain ⟨hs, hle⟩ := hb x y
-    rw [norm_mul, norm_mul, Complex.norm_conj]
-    exact le_trans (mul_le_mul_of_nonneg_left (norm_tsum_le_tsum_norm hs)
-      (mul_nonneg (norm_nonneg _) (norm_nonneg _))) hle
-  unfold thetaPairing
-  have hin : ∀ x : normOneGL (K := K) (n := n), ‖∫ y in fundamentalDomain Γ₁,
-      conj (φ₂ (x : AdelicGLn.AdelicGL K n)) * φ₁ (y : AdelicGLn.AdelicGL K n) *
-        ∑' γ : GL (Fin n) K, Ξ (centralSection K n t * (x : AdelicGLn.AdelicGL K n)⁻¹ *
-          AdelicGLn.diagonal K n γ * (y : AdelicGLn.AdelicGL K n)) ∂μ‖ ≤
-        b * (μ (fundamentalDomain Γ₁)).toReal := fun x =>
-    norm_setIntegral_le_of_norm_le_const hF fun y _ => hT x y
-  calc _ ≤ (b * (μ (fundamentalDomain Γ₁)).toReal) * (μ (fundamentalDomain Γ₁)).toReal :=
-        norm_setIntegral_le_of_norm_le_const hF fun x _ => hin x
-    _ = _ := by ring
-
 end GJGlobal
 
 end
@@ -481,8 +452,6 @@ theorem continuous_tsum_inv {Φ : Matrix (Fin n) (Fin n) 𝔸[K] → ℂ}
   rw [inv_inv] at e
   simp only [Equiv.inv_apply]
   rw [e]
-
-
 
 theorem globalZeta_entire_functionalEquation (hn : 2 ≤ n) (μ : Measure (normOneGL (K := K) (n := n)))
     [μ.IsHaarMeasure] (ν : Measure (AdelicGLn.AdelicGL K n)) [ν.IsHaarMeasure]

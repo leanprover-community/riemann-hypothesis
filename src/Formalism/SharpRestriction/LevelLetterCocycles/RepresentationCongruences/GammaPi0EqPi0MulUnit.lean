@@ -195,9 +195,6 @@ theorem γA_mem (g : W.Gam) {a : LetA O n} (ha : a ∈ W.AΔ) : W.γA g a ∈ W.
   intro δ hδ
   rw [γA_comm, ha δ hδ]
 
-theorem delF_iff (g : W.Gam) : g ∈ W.DelF ↔ IsOfFinOrder g := by
-  rw [W.DelF_def, isOfFinOrder_iff_pow_eq_one]
-
 theorem π₀_mem : W.π₀ ∈ W.AΔ := by
   apply Formalism.MainNotions.N.FrobeniusPowerSeries.TypesA.pi0_mem_ADelta
 

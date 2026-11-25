@@ -806,7 +806,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     [CommRing O] [Algebra O LL] {v : AddValuation LL (WithTop ℚ)} {n : ℕ}
     {ℓ : ℕ} [Fact ℓ.Prime] [Algebra ℤ_[ℓ] O]
 
-
 open Polynomial Formalism.CoboundaryTransfers in
 theorem lifta_core (ℓ : ℕ) [Fact ℓ.Prime] (hℓ : ℓ ≠ 2) (A : Type) [CommRing A] [Algebra ℤ_[ℓ] A]
     (B : Base ℤ_[ℓ] A) (M : ℕ) (u : ℤ_[ℓ]ˣ) (jumps : Finset ℤ) (c : ℤ → ℤ_[ℓ])
@@ -1365,7 +1364,6 @@ theorem lone_map_injective :
     (algebraMap K₀ B).injective
   exact Module.Flat.lTensor_preserves_injective_linearMap (M := V) _ hi
 
-
 include hρ in
 theorem lone_isCrys [FiniteDimensional Qp V] [FiniteDimensional LL V] : IsCrys PD ρ := by
   have := PD.finK₀
@@ -1376,18 +1374,15 @@ theorem lone_isCrys [FiniteDimensional Qp V] [FiniteDimensional LL V] : IsCrys P
 include PD in
 theorem lone_Fil_anti : Antitone PD.Fil := antitone_int_of_succ_le PD.Fil_anti
 
-
 include PD in
 theorem lone_K_mem (c : K) (a : ℤ) (ha : a ≤ 0) : algebraMap K BdR c ∈ PD.Fil a := by
   apply lone_Fil_anti PD ha
   rw [Algebra.algebraMap_eq_smul_one]
   exact (PD.Fil 0).smul_mem c PD.one_mem
 
-
 include PD in
 theorem lone_one_notMem : (1 : BdR) ∉ PD.Fil 1 := by
   apply PI.HodgeOfFon.W.Triv.one_not_mem_fil_one
-
 
 include PD in
 theorem lone_K_inter (c : K) (a : ℤ) (ha : 1 ≤ a) (h : algebraMap K BdR c ∈ PD.Fil a) : c = 0 := by
@@ -1408,7 +1403,6 @@ theorem lone_coord_FilV {ι : Type} (b : Basis ι Qp V) (i : ι) (a : ℤ) (x : 
   | add y z hy hz =>
     rw [map_add (f := _), map_add (f := _)]
     exact (PD.Fil a).add_mem hy hz
-
 
 include hρ in
 theorem lone_coord_DdR {ι : Type} (b : Basis ι Qp V) (i : ι) (x : V ⊗[Qp] BdR)
@@ -1441,7 +1435,6 @@ theorem lone_DdR_inf [FiniteDimensional Qp V] (a : ℤ) (ha : 1 ≤ a) (x : V �
   obtain ⟨c, hc⟩ := lone_coord_DdR PD ρ hρ b i x hx
   have h0 : c = 0 := lone_K_inter PD c a ha (by rw [hc]; exact lone_coord_FilV PD b i a x hx')
   rw [← hc, h0, map_zero, TensorProduct.tmul_zero]
-
 
 include hρ in
 theorem lone_jump [FiniteDimensional Qp V] (τ : K →ₐ[Qp] LL) (a : ℤ) (h : IsJumpV PD ρ τ a) :
@@ -3194,19 +3187,6 @@ theorem hstr_A (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (a9 : adm9
 
 end Formalism.MainNotions.LiftingTheory
 
-namespace Formalism.MainNotions.CrystallineLiftingBounds
-
-open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations
-
-theorem baseChange_preserves_unitary_of (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h2 : adm2 D HW F) (h9 : adm9 D HW F) (h16 : adm16 D HW F) : Conclusion1 D HW F :=
-  ⟨Formalism.MainNotions.LiftingTheory.wach_first_claim_of_lemma D HW F h16, Formalism.MainNotions.LiftingTheory.wach_statement_case_B D HW F h2 h16, Formalism.MainNotions.LiftingTheory.wach_statement_case_A D HW F h9 h16⟩
-
-theorem wach_lemma_of_admitted (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (h : admitted D HW F Cm) : Conclusion1 D HW F := by
-  obtain ⟨-, h2, -, -, -, -, -, -, h9, -, -, -, -, -, -, h16, -⟩ := h
-  exact baseChange_preserves_unitary_of D HW F h2 h9 h16
-
-end Formalism.MainNotions.CrystallineLiftingBounds
-
 namespace Formalism.MainNotions.LiftingTheory
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
@@ -4124,19 +4104,3 @@ theorem local_theory_of_admitted (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.l
 theorem frobenius_lifting (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) : Stmt D HW F Cm 10 23 32 32 := fun h => local_theory_of_admitted D HW F Cm h
 
 end Formalism.MainNotions.LiftingTheory
-
-namespace Formalism.MainNotions.CrystallineLiftingBounds
-
-open Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations
-
-theorem admitted_iff_base_admitted (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (h : admitted D HW F Cm) : Formalism.MainNotions.LiftingTheory.admitted D HW F Cm := h
-
-theorem lifting_theorem_of_admitted (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (h : admitted D HW F Cm) : Conclusion2 D HW F 23 32 32 :=
-  Formalism.MainNotions.LiftingTheory.lifting_all_parts_of_admitted D HW F Cm (admitted_iff_base_admitted D HW F Cm h)
-
-theorem local_theory_of_admitted (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (h : admitted D HW F Cm) : aux₃ D HW F 23 32 32 :=
-  ⟨wach_lemma_of_admitted D HW F Cm h, lifting_theorem_of_admitted D HW F Cm h⟩
-
-theorem frobenius_lifting (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) : Stmt D HW F Cm 23 32 32 := fun h => local_theory_of_admitted D HW F Cm h
-
-end Formalism.MainNotions.CrystallineLiftingBounds

@@ -22,20 +22,6 @@ open Formalism.FrobeniusOrbits Formalism.TwoAdicCyclotomicDecomposition
 
 variable {φ : Frame} (H : HostRaw φ)
 
-theorem kc_sqd_ne_zero : H.sqd ≠ 0 := by
-  intro h
-  have h1 := H.sqd_sq
-  rw [h] at h1
-  have hd : (H.d : H.E) = 0 := by linear_combination h1
-  have hd0 : H.d = 0 := by exact_mod_cast hd
-  have hc := H.QS_coprime
-  rw [hd0, mul_zero, Nat.coprime_zero_right] at hc
-  have ht := H.tower_dvd
-  rw [hc] at ht
-  have h2 : 2 ^ (φ.e + 2) ≤ 1 := Nat.le_of_dvd one_pos ht
-  have h3 : 2 ^ 1 ≤ 2 ^ (φ.e + 2) := Nat.pow_le_pow_right (by norm_num) (by omega)
-  omega
-
 theorem kc_mem_Psi_iff (σ : H.E ≃ₐ[ℚ] H.E) : H.gal σ ∈ φ.Psi ↔ σ H.sqd = H.sqd := by
   apply Formalism.HC.Der.gal_mem_Psi_iff
 

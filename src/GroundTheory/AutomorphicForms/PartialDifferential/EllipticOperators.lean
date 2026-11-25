@@ -154,7 +154,6 @@ variable {s N : ℝ} (χ : 𝓢(E, ℂ))
 
 end Identity
 
-
 end
 
 end GroundTheory.Automorphic.Sobolev
@@ -532,7 +531,6 @@ theorem norm_ofSchwartz_commRem_le (r a : ℝ) (φ : 𝓢(E, ℂ)) :
     _ = _ := by
         rw [ENNReal.toReal_mul, ENNReal.toReal_ofReal
           (mul_nonneg (commConst_nonneg r a) (wInt_nonneg _ _))]
-
 
 open Classical in
 def sob (s : ℝ) (u : 𝓢'(E, ℂ)) : ℝ≥0∞ := by
@@ -950,8 +948,6 @@ theorem comp (h₁ : IsLocal T₁) (h₂ : IsLocal T₂) : IsLocal (T₁ ∘L T�
   h₁ U hU _ (h₂ U hU u hu)
 
 theorem zero : IsLocal (0 : 𝓢'(E, ℂ) →L[ℂ] 𝓢'(E, ℂ)) := fun U _ _ _ ↦ isVanishingOn_zero U
-
-theorem id : IsLocal (ContinuousLinearMap.id ℂ 𝓢'(E, ℂ)) := fun _ _ _ hu ↦ hu
 
 theorem sum {ι : Type*} (S : Finset ι) {T : ι → 𝓢'(E, ℂ) →L[ℂ] 𝓢'(E, ℂ)}
     (h : ∀ i ∈ S, IsLocal (T i)) : IsLocal (∑ i ∈ S, T i) := by

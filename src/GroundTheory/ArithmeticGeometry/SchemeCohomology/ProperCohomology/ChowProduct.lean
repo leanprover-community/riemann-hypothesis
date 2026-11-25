@@ -90,8 +90,6 @@ lemma pr_toSpecBase : (k : ℕ) → (n : Fin (k + 1) → ℕ) → (i : Fin (k + 
 
 variable {A}
 
-@[simp] lemma pr_zero_zero (n : Fin 1 → ℕ) : pr A 0 n 0 = 𝟙 _ := rfl
-
 @[simp] lemma pr_succ_succ (k : ℕ) (n : Fin (k + 2) → ℕ) (j : Fin (k + 1)) :
     pr A (k + 1) n j.succ =
       pullback.snd (toSpecBase A (n 0)) (mpStr A k (Fin.tail n)) ≫ pr A k (Fin.tail n) j := rfl
@@ -131,21 +129,6 @@ lemma lift_pr : (k : ℕ) → (n : Fin (k + 1) → ℕ) → {T : Scheme.{u}} →
       change pullback.lift _ _ _ ≫ pullback.snd _ _ ≫ pr A k (Fin.tail n) j = _
       rw [pullback.lift_snd_assoc]
       exact lift_pr k (Fin.tail n) t _ _ j
-
-lemma hom_ext : (k : ℕ) → (n : Fin (k + 1) → ℕ) → {T : Scheme.{u}} → (f g : T ⟶ MP A k n) →
-    (∀ i, f ≫ pr A k n i = g ≫ pr A k n i) → f = g := by
-  intro k
-  induction k with
-  | zero =>
-    intro n T f g h
-    have h₀ : f ≫ 𝟙 (MP A 0 n) = g ≫ 𝟙 (MP A 0 n) := h 0
-    exact (Category.comp_id f).symm.trans (h₀.trans (Category.comp_id g))
-  | succ k ih =>
-    intro n T f g h
-    apply pullback.hom_ext
-    · exact h 0
-    · refine ih (Fin.tail n) _ _ fun j => ?_
-      exact (Category.assoc _ _ _).trans ((h j.succ).trans (Category.assoc _ _ _).symm)
 
 end ProjSpace
 

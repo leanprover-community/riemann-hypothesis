@@ -46,10 +46,4 @@ def LitBNIrr (Γ : Type) [Group Γ] : Prop :=
       ((ρ' g : GL _ _) : Matrix (Fin a) (Fin a) (Formalism.CyclotomicNorms.Fbar ℓ)).charpoly) →
     Formalism.CyclotomicNorms.IrredOn ρ' ⊤ → Formalism.CyclotomicNorms.IrredOn ρ ⊤
 
-theorem charpoly_mapRep {Γ : Type} [Group Γ] {A B : Type} [CommRing A] [CommRing B] {a : ℕ}
-    (f : A →+* B) (ρ : Γ →* GL (Fin a) A) (g : Γ) :
-    ((mapRep f ρ g : GL _ _) : Matrix (Fin a) (Fin a) B).charpoly =
-      (((ρ g : GL _ _) : Matrix (Fin a) (Fin a) A).charpoly).map f :=
-  Matrix.charpoly_map _ f
-
 end Formalism.MainNotions.N

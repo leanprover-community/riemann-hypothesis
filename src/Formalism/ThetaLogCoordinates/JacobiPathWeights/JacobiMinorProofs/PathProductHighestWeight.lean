@@ -19,15 +19,6 @@ namespace Formalism.InvariantFactorPaths.GelfandTsetlinBases
 
 namespace A1hw
 
-theorem mem_can {n : ℕ} {μN : Fin n → ℤ} (h : Antitone μN) (c : ℤ) (m : Fin n) :
-    m ∈ canIdx μN c ↔ if 1 ≤ c then c ≤ μN m else μN m < c := by
-  unfold canIdx
-  split_ifs with hc
-  · simp only [mem_filter, mem_univ, true_and]
-    exact (Paths.le_iff_lt_colHeight h c m).symm
-  · simp only [mem_filter, mem_univ, true_and]
-    rw [← not_le, Paths.le_iff_lt_colHeight h c m, not_lt]
-
 theorem isIndex_can {n : ℕ} (μN : Fin n → ℤ) : IsIndex μN (canIdx μN) := by
   apply Formalism.InvariantFactorPaths.GelfandTsetlinBases.SignTwistStarLemmas.canIdx_isIndex
 

@@ -150,40 +150,6 @@ theorem exists_sqq (h : D.toHostRaw.PsQ) : ∃ s : D.toHostRaw.E, s ^ 2 = -(D.to
     ∀ σ : D.toHostRaw.E ≃ₐ[ℚ] D.toHostRaw.E, σ s = ((((D.toHostRaw.gal σ).1.1 : ℤˣ) : ℤ) : D.toHostRaw.E) * s :=
   D.exists_root D.hyp.1 (by have := D.hyp.2.2.1; omega) (Dvd.dvd.mul_right (dvd_mul_left _ _) _) φ.chQ h
 
-theorem muPM (h : ∀ k : ℕ, k ∣ D.QS * D.q * D.d →
-    (∀ u : (ZMod (D.QS * D.q * D.d))ˣ, D.art u = 1 → (u : ZMod (D.QS * D.q * D.d)).val ≡ 1 [MOD k]) → k ∣ 2) :
-    D.toHostRaw.MuPM := by
-  have hz := Cond.z_spec (D.QS * D.q * D.d)
-  have key : ∀ y : D.E, (y : D.L) ^ (D.QS * D.q * D.d) = 1 → y = 1 ∨ y = -1 := by
-    intro y hy
-    have h2 : orderOf (y : D.L) ∣ 2 := by
-      refine h _ (orderOf_dvd_of_pow_eq_one hy) fun u hu => ?_
-      have hfin : IsOfFinOrder (y : D.L) := isOfFinOrder_iff_pow_eq_one.2 ⟨_, Nat.pos_of_ne_zero (NeZero.ne _), hy⟩
-      have h1 := (mem_fixedField_iff _ _).mp y.2 (D.cyc.symm u)
-        (by rw [MonoidHom.mem_ker, res_apply, MulEquiv.apply_symm_apply, hu])
-      rw [D.cyc_apply _ _ hy, MulEquiv.apply_symm_apply] at h1
-      exact hfin.pow_eq_pow_iff_modEq.mp (h1.trans (pow_one _).symm)
-    have h3 : (y : D.L) ^ 2 = 1 := orderOf_dvd_iff_pow_eq_one.mp h2
-    have h4 : y ^ 2 = 1 := Subtype.ext (by push_cast; exact h3)
-    exact sq_eq_one_iff.mp h4
-  rintro (x : D.E) ⟨m, hm, hx⟩
-  have hfin : IsOfFinOrder (x : D.L) :=
-    isOfFinOrder_iff_pow_eq_one.2 ⟨m, hm, congrArg (fun t : D.E => (t : D.L)) hx⟩
-  have hprim : IsPrimitiveRoot (x : D.L) (orderOf (x : D.L)) := IsPrimitiveRoot.orderOf _
-  have hdvd := hprim.dvd_of_isCyclotomicExtension (D.QS * D.q * D.d) (orderOf_pos_iff.2 hfin).ne'
-  have h2 := key (x ^ 2) (by
-    have h3 : (x : D.L) ^ (2 * (D.QS * D.q * D.d)) = 1 := orderOf_dvd_iff_pow_eq_one.mp hdvd
-    rw [pow_mul] at h3
-    exact h3)
-  rcases h2 with h2 | h2
-  · exact sq_eq_one_iff.mp h2
-  · refine key x ?_
-    have h4 : x ^ 2 ^ 2 = 1 := by rw [show (2 : ℕ) ^ 2 = 2 * 2 by norm_num, pow_mul, h2]; simp
-    have h5 : (x : D.L) ^ 2 ^ 2 = 1 := congrArg (fun t : D.E => (t : D.L)) h4
-    have hc : 2 ^ 2 ∣ D.QS * D.q * D.d :=
-      (((pow_dvd_pow 2 (by omega)).trans D.tower_dvd).mul_right _).mul_right _
-    exact orderOf_dvd_iff_pow_eq_one.mp ((orderOf_dvd_of_pow_eq_one h5).trans hc)
-
 end CharData
 
 end Formalism.HC

@@ -509,7 +509,6 @@ theorem equation_of_zwPoly {z w : K} (h : zwPoly V z w = 0) (hw : w ≠ 0) :
 
 variable [V.IsElliptic]
 
-
 open scoped Classical in
 open Classical in
 noncomputable def zwPoint (z w : K) : V.toAffine.Point :=
@@ -773,7 +772,6 @@ theorem pointOf_injective {u u' : MvPowerSeries τ R} (hu : MvPowerSeries.consta
   rw [e, div_left_inj' hw'] at h1
   exact hι h1
 
-
 open scoped Classical in
 open Classical in
 theorem pointOf_add [Nonempty τ] {u₁ u₂ : MvPowerSeries τ R}
@@ -937,7 +935,6 @@ variable {R : Type*} [CommRing R] [IsDomain R] (W : WeierstrassCurve R) [Fact (W
 
 attribute [local instance] isDomain_mvPowerSeries
 
-
 open scoped Classical in
 open Classical in
 theorem pointOf_add_of_coeff {τ : Type*} [Nonempty τ] {u₁ u₂ : MvPowerSeries τ R}
@@ -1075,9 +1072,6 @@ def formalGroup : FormalGroup R where
   assoc := by
     have := (univFormalGroup.map (univMap W)).assoc
     rwa [FormalGroup.map_toPowerSeries, univFormalGroup, ← addSeries_eq_map] at this
-
-@[simp]
-theorem formalGroup_toPowerSeries : (formalGroup W).toPowerSeries = addSeries W := rfl
 
 instance : (formalGroup W).IsComm where
   comm := by

@@ -49,7 +49,6 @@ theorem exists_unit_three {a b c : ℕ} [NeZero (a * b * c)] (hab : Nat.Coprime 
   · exact ((hm.of_mul_right c).of_mul_left a).trans htb
   · exact (hm.of_mul_left (a * b)).trans h2c
 
-
 structure ModData where
   e : ℕ
   m : ℕ
@@ -457,17 +456,11 @@ abbrev isoA : D.frame.A ≃+ Additive D.R := D.toModData.isoA
 abbrev iso : D.frame.MA ≃* D.R := D.toModData.iso
 abbrev toA : (ZMod D.m)ˣ →* D.frame.MA := D.toModData.toA
 
-theorem eta_neg_one : D.eta (-1) = 1 := Prod.ext D.toModData.cl_neg_one D.even
-
 section Host
 variable {q d : ℕ} (hH : HostHyp q d) (hc : Nat.Coprime D.m (q * d)) (he : 2 ≤ D.e)
   (hs : ∀ l : ℕ, l.Prime → l ≠ 2 → l ∣ D.m → jacobiSym (-(d : ℤ)) l = 1)
 
 abbrev host : HostRaw D.frame := D.toModData.host hH hc he hs
-
-theorem exact (h : ∀ l : ℕ, l.Prime → l ∣ D.m → ∃ v : (ZMod D.m)ˣ, (v : ZMod D.m).val ≡ 1 [MOD D.m / l] ∧ D.eta v ≠ 1) :
-    (D.host hH hc he hs).Exact :=
-  D.toModData.exact hH hc he hs h
 
 end Host
 end EvenData

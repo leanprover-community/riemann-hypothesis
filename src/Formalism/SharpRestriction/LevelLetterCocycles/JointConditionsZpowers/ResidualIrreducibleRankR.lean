@@ -174,11 +174,6 @@ theorem span_descent {k L : Type} [Field k] [Field L] (φ : k →+* L) {n : ℕ}
     exact (map_eq_zero_iff φ φ.injective).mp this.symm
   simp [hc]
 
-theorem conj_mem_Ine_smul {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω]
-    (A : ValuationSubring Ω) (τ σ : G F Ω) (hσ : σ ∈ Ine (F := F) A) :
-    τ * σ * τ⁻¹ ∈ Ine (F := F) (τ • A) := by
-  apply GlobalTheory.TameMove.conj_mem_Ine_smul <;> assumption
-
 theorem placesOver_disj (E : Type) [Field E] [NumberField E] {p q : ℕ} (hp : p.Prime) (hq : q.Prime)
     (hpq : p ≠ q) (v : HeightOneSpectrum (𝓞 E)) (h1 : v ∈ placesOver E p) : v ∉ placesOver E q := by
   intro h2

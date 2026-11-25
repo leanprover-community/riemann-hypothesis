@@ -160,12 +160,6 @@ theorem val_mem (x : MaxIdealPoint F) : x.val ∈ IsLocalRing.maximalIdeal 𝒪 
 
 def mk (x : 𝒪) (hx : x ∈ IsLocalRing.maximalIdeal 𝒪) : MaxIdealPoint F := ⟨x, hx⟩
 
-omit [IsAdicComplete (IsLocalRing.maximalIdeal 𝒪) 𝒪] in
-@[simp] theorem val_mk (x : 𝒪) (hx : x ∈ IsLocalRing.maximalIdeal 𝒪) :
-    (mk x hx : MaxIdealPoint F).val = x := rfl
-
-
-
 instance : Zero (MaxIdealPoint F) := ⟨mk 0 (zero_mem _)⟩
 
 omit [IsAdicComplete (IsLocalRing.maximalIdeal 𝒪) 𝒪] in
@@ -270,11 +264,6 @@ noncomputable section
 open IsLocalRing
 
 variable {𝒪 : Type*} [CommRing 𝒪] [IsDomain 𝒪] [IsDiscreteValuationRing 𝒪]
-
-theorem infinite_of_isDiscreteValuationRing : Infinite 𝒪 := by
-  obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible 𝒪
-  refine Infinite.of_injective (fun n : ℕ => ϖ ^ n) fun m n h => ?_
-  exact pow_injective_of_not_isUnit hϖ.not_isUnit hϖ.ne_zero h
 
 end
 
@@ -511,7 +500,6 @@ theorem add_of_residue_eq {x₁ y₁ x₂ y₂ : 𝒪} (h₁ : (curveK K W).Nons
   obtain ⟨h₃, n₃, e, e'⟩ := add_some_integral K W h₁ h₂ n₁ n₂ hxy hxy' hs hs'
   exact ⟨_, _, h₃, n₃, e, e'⟩
 
-
 omit [DecidableEq K] [DecidableEq (ResidueField 𝒪)] in
 theorem addX_notMem_range {x₁ x₂ s : 𝒪} (hs : s ∈ maximalIdeal 𝒪) (hs0 : s ≠ 0) :
     (curveK K W).addX (ι x₁) (ι x₂) (ι s)⁻¹ ∉ Set.range ι := by
@@ -710,7 +698,6 @@ theorem reducePoint_some_notMem {X Y : K} (h : (curveK K W).Nonsingular X Y)
     (hX : X ∉ Set.range (algebraMap 𝒪 K)) : reducePoint K W (.some _ _ h) = 0 := by
   rw [reducePoint, dite_eq_right (fun h' => hX h'.1)]
 
-
 omit [IsAdicComplete (maximalIdeal 𝒪) 𝒪] [(W.map (algebraMap 𝒪 K)).IsElliptic] in
 theorem point_cases (P : (curveK K W).Point) :
     P = 0 ∨ (∃ (X Y : K) (h : (curveK K W).Nonsingular X Y), P = .some _ _ h ∧
@@ -756,7 +743,6 @@ theorem zero_mem_E0Set : (0 : (curveK K W).Point) ∈ E0Set K W := by
   exact absurd hP.symm (WeierstrassCurve.Affine.Point.some_ne_zero h)
 
 variable [DecidableEq K] [DecidableEq (ResidueField 𝒪)]
-
 
 omit [IsAdicComplete (maximalIdeal 𝒪) 𝒪] [(W.map (algebraMap 𝒪 K)).IsElliptic] in
 theorem add_mem_and_reduce_of_exists {P Q : (curveK K W).Point}

@@ -18,21 +18,6 @@ section Places
 
 variable (D : D7)
 
-theorem natCast_mem_of_val_pos (w : D.what₂.places.Pl) (n : ℕ) (hn : n ≠ 0)
-    (h : (0 : WithTop ℤ) < D.what₂.places.val w (n : D.what₂.LL)) :
-    (n : 𝓞 D.what₂.LL) ∈ (D.plEq w).asIdeal := by
-  by_contra hnm
-  have hn0 : (n : D.what₂.LL) ≠ 0 := Nat.cast_ne_zero.2 hn
-  rw [D.val_eq w _ hn0] at h
-  have hv : (D.plEq w).valuation D.what₂.LL (n : D.what₂.LL) = 1 := by
-    have e : algebraMap (𝓞 D.what₂.LL) D.what₂.LL (n : 𝓞 D.what₂.LL) = (n : D.what₂.LL) := map_natCast _ n
-    rw [← e, IsDedekindDomain.HeightOneSpectrum.valuation_of_algebraMap]
-    exact le_antisymm ((D.plEq w).intValuation_le_one _)
-      (not_lt.mp (fun hlt => hnm (((D.plEq w).intValuation_lt_one_iff_mem _).1 hlt)))
-  unfold vAdd at h
-  rw [hv, WithZero.log_one, neg_zero] at h
-  norm_num at h
-
 theorem eq_resChar_of_mem (w : D.what₂.places.Pl) (p : ℕ) (hp : p.Prime)
     (h : (p : 𝓞 D.what₂.LL) ∈ (D.plEq w).asIdeal) : D.what₂.places.resChar w = p := by
   by_contra hne
@@ -50,13 +35,6 @@ theorem eq_resChar_of_mem (w : D.what₂.places.Pl) (p : ℕ) (hp : p.Prime)
     exact this
   rw [h2] at h1
   exact (D.plEq w).isPrime.ne_top ((Ideal.eq_top_iff_one _).2 h1)
-
-theorem resChar_conj (w : D.what₂.places.Pl) :
-    D.what₂.places.resChar (D.what₂.places.conj w) = D.what₂.places.resChar w := by
-  apply eq_resChar_of_mem D _ _ (D.what₂.places.resChar_prime w)
-  apply natCast_mem_of_val_pos D _ _ (D.what₂.places.resChar_prime w).ne_zero
-  rw [D.conj_val, star_natCast, D.what₂.places.val_resChar]
-  exact_mod_cast D.what₂.places.ramIdx_pos w
 
 end Places
 
@@ -172,7 +150,6 @@ alias ord_nsmul_A := _root_.Formalism.MainNotions.Inhab.ord_nsmul_eq_zero
 
 end BaseA
 
-
 section InstW
 
 variable (D : D7)
@@ -184,12 +161,6 @@ theorem plGG_false (t : G.HH D) : G.plGG D (false, t) = D.R.tau1 t := by
 theorem plGG_true (t : G.HH D) : G.plGG D (true, t) = D.R.tau2 t := by
   unfold G.plGG
   simp
-
-theorem plGG_mem_Psi (z : Bool × G.HH D) : G.plGG D z ∈ D.R.Psi := by
-  unfold G.plGG Formalism.HC.Frame.Psi
-  rw [MonoidHom.mem_ker]
-  split <;> first
-    | rfl
 
 def tauOf (z : Bool × G.HH D) : D.what₂.Tau := D.eTau.symm ⟨G.plGG D z, plGG_mem_Psi D z⟩
 
@@ -218,15 +189,11 @@ theorem plGG_top_iff (z : Bool × G.HH D) : G.plGG D z ∈ D.host.topPlaces ↔ 
 
 variable {D} (L : SizeData₂ D)
 
-
 end InstW
 
 section Comparison₂
 
 variable {D : D7} (L0 : SizeData₂ D) (X0 : G.Inst D L0) (K : G.Consts)
-
-
-
 
 variable (dr : Set ℕ) (len : D.what₂.Word → D.what₂.places.Pl → ℚ) (hw : 1 ≤ L0.sc.w'' D.R.n)
     (hg : ∀ i, ¬ (G.IsResidueClassZero D (D.host.g i) ∨ G.IsSg D (D.host.g i)))

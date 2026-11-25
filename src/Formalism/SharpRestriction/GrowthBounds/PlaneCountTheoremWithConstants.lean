@@ -470,24 +470,6 @@ variable {A K : Type} [CommRing A] [IsDedekindDomain A] [Field K] [Algebra A K] 
 
 abbrev locW : Subalgebra A K := Localization.subalgebra.ofField K _ w.asIdeal.primeCompl_le_nonZeroDivisors
 
-include b in
-theorem cmp_expand (hs : ∀ a x, cmp (a • x) = φ a • cmp x) (x : V) :
-    cmp x = ∑ a, φ (b.repr x a) • cmp (b a) := by
-  conv_lhs => rw [← b.sum_repr x]
-
-  rw [map_sum]
-  exact Finset.sum_congr rfl fun a _ => hs _ _
-
-theorem cmp_inj (hs : ∀ a x, cmp (a • x) = φ a • cmp x) (hli : LinearIndependent Kf (fun a => cmp (b a))) :
-    Function.Injective cmp := by
-  rw [injective_iff_map_eq_zero]
-  intro x hx
-  rw [cmp_expand b φ cmp hs x] at hx
-  have h := Fintype.linearIndependent_iff.1 hli _ hx
-  apply b.repr.injective
-  ext a
-  simpa using h a
-
 alias descent := _root_.Bl.general_b_fact_upper_bis.goal1
 
 end Descent
@@ -820,7 +802,6 @@ def FirstTheoremAtFamily {eps : ℝ} (Fm : FamP eps) : Prop :=
 
 section Tools
 
-
 structure ExtremalProjectorTools : Prop where
 
   extremalProjectorAlt : ∀ D : D7, CovariantDegrees.adm5 D
@@ -833,7 +814,6 @@ theorem tool_statements_hold (h : ExtremalProjectorTools) (D : D7) : CovariantDe
 end Tools
 
 section TheoremII
-
 
 def SecondTheoremReduced (D : D7) : Prop :=
   ∀ CLa Ck Crk Cdeg : ℝ, tableLineDegreeFive.admitted D CLa Ck Crk Cdeg →
@@ -957,7 +937,6 @@ theorem second_theorem_absolute_constant (h70 : ExtremalProjectorTools) (h : Loc
 end TheoremII
 
 section TheoremI
-
 
 structure Loc8All : Prop where
 
@@ -1156,7 +1135,6 @@ theorem loc8All_of (h70 : ExtremalProjectorTools) (h6 : Loc6) (h : Loc8) : Loc8A
 end TheoremI
 
 section Sizes
-
 
 theorem log_cube_le (M δ : ℝ) (hδ : 0 < δ) : ∃ x0 : ℝ, ∀ x ≥ x0, M * Real.log x ^ 3 ≤ x ^ δ := by
   have h := (isLittleO_log_rpow_rpow_atTop (3 : ℝ) hδ).def (c := 1 / (|M| + 1)) (by positivity)
@@ -1376,7 +1354,6 @@ theorem eventually_large_scale_bound {eps : ℝ} (Fm : FamP eps) : Ev Fm fun x i
   rw [h5, Real.rpow_one] at h4
   rw [Real.rpow_neg hx0.le, one_div]
   exact inv_anti₀ (by norm_num) h4
-
 
 theorem windows_of (K : Consts) (P : ParameterChoice' D L) (hLa : La K L.sc = L.LaG) (p : ℕ) (t0 : HH D) :
     ∀ s ∈ topsPos D p t0, wPos D p t0 (aL L) s ∈ winA D L.sc ∧ wPos D p t0 (bL L) s ∈ winB D K L.sc := by

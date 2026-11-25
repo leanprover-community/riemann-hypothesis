@@ -74,9 +74,6 @@ theorem ConeDimComponent.proof_closed : ConeDimComponent.Statement := by
   rw [← Nat.cast_succ e, ← hform, add_comm (W'.height : WithBot ℕ∞), ← WithBot.coe_one]
   exact add_le_add le_rfl (WithBot.coe_le_coe.mpr hht)
 
-theorem ConeDimComponent.proof (_h₁ : MinimalPrimeHomog.Statement) : ConeDimComponent.Statement :=
-  ConeDimComponent.proof_closed
-
 end
 
 end GroundTheory.Heights₂.Heights

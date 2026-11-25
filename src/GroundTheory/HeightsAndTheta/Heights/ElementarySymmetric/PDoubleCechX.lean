@@ -95,33 +95,6 @@ def shift (X : DblData R) : DblData R where
 
 def up (X : DblData R) (n : ℕ) : X.D 0 n →ₗ[R] X.shift.C n := (X.v 0 n).rangeRestrict
 
-namespace Good
-
-theorem shift {X : DblData R} (hX : X.Good) : X.shift.Good :=
-  { ha := fun p => hX.ha (p + 1)
-    hc := fun _ => LinearMap.ext fun _ => rfl
-    ka := fun p => hX.ka (p + 1)
-    ra := fun p => hX.ra (p + 1)
-    rh := fun p q => hX.rh (p + 1) q
-    kc := fun _ => Submodule.ker_subtype _
-    rc := fun q => by
-      show LinearMap.ker (X.v 1 q) = LinearMap.range (LinearMap.range (X.v 0 q)).subtype
-      rw [Submodule.range_subtype]
-      exact hX.rv 0 q
-    rv := fun p q => hX.rv (p + 1) q }
-
-theorem hh {X : DblData R} (hX : X.Good) (p q : ℕ) (z : X.D p q) : X.h p (q + 1) (X.h p q z) = 0 := by
-  have hm : X.h p q z ∈ LinearMap.ker (X.h p (q + 1)) := by
-    rw [hX.rh p q]; exact LinearMap.mem_range_self _ z
-  exact LinearMap.mem_ker.mp hm
-
-theorem ha0 {X : DblData R} (hX : X.Good) (p : ℕ) (x : X.A p) : X.h p 0 (X.a p x) = 0 := by
-  have hm : X.a p x ∈ LinearMap.ker (X.h p 0) := by
-    rw [hX.ra p]; exact LinearMap.mem_range_self _ x
-  exact LinearMap.mem_ker.mp hm
-
-end Good
-
 def Rel : (n : ℕ) → (X : DblData R) → X.A n → X.C n → Prop
   | 0, X => fun x y => X.a 0 x = X.c 0 y
   | n + 1, X => fun x y => ∃ z : X.D 0 n, X.h 0 n z = X.c (n + 1) y ∧ Rel n X.shift x (X.up n z)
@@ -434,16 +407,13 @@ section Double
 variable {F : Type} [Field F] {K : Type} [Fintype K] [LinearOrder K] {ι : K → Type} [∀ k, LinearOrder (ι k)]
   {Ω : Type} [Field Ω] [Algebra F Ω] {N : ℕ} {x : Fin (N + 1) → Ω}
 
-
 variable (K ι Ω x) in
 abbrev DoubleCech.Amb (q p : ℕ) : Type :=
   Kleiman.Cech.Cochain (fun _ : Kleiman.Chart x => ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.Cell K ι q → Ω) p
 
-
 variable (F K ι Ω x) in
 def DoubleCech.vert (q p : ℕ) : DoubleCech.Amb K ι Ω x q p →ₗ[F] DoubleCech.Amb K ι Ω x q (p + 1) :=
   Kleiman.Cech.d (fun _ : Kleiman.Chart x => ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.Cell K ι q → Ω) (fun _ _ _ => LinearMap.id) p
-
 
 variable (F) in
 def DoubleCech.horiz (y : (Σ k, ι k) → Ω) (q p : ℕ) :
@@ -474,7 +444,6 @@ theorem DoubleCech.vert_apply {q p : ℕ} (s : DoubleCech.Amb K ι Ω x q p) (J 
   rw [Kleiman.Cech.d_apply]
   simp only [Finset.sum_apply, Pi.smul_apply, LinearMap.id_apply]
 
-
 omit [LinearOrder K] [∀ k, LinearOrder (ι k)] in
 theorem DoubleCech.d_eval {q p : ℕ} (s : DoubleCech.Amb K ι Ω x q p) (c : ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.Cell K ι q) :
     Kleiman.Cech.d (fun _ : Kleiman.Chart x => Ω) (omegaRes F x) p (fun J => s J c) =
@@ -498,7 +467,6 @@ def DoubleCech.hD (y : (Σ k, ι k) → Ω) (M : Kleiman.Chart x → (∀ k, Fin
   (DoubleCech.horiz F y q p).restrict fun s hs => by
     rw [DoubleCech.mem_dsub'] at hs ⊢
     exact fun J => cellD_mem (M J.1) (fun I I' _ _ h h' => hMI J.1 I I' h h') (hs J)
-
 
 open Classical in
 def DoubleCech.aug (y : (Σ k, ι k) → Ω) (T : Kleiman.SubSystem F x Ω)
@@ -696,7 +664,6 @@ theorem DoubleCech.col_succ (hMJ : ∀ (J J' : Kleiman.Chart x) I, J.1 ⊆ J'.1 
     exact Subtype.ext (Kleiman.CechDSq.proof (N + 1) (Kleiman.support x) F
       (fun _ : Kleiman.Chart x => ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.Cell K ι q → Ω) (fun _ _ _ => LinearMap.id)
       (fun _ _ _ _ _ => LinearMap.id_comp _) p t.1)
-
 
 omit [Fintype K] [LinearOrder K] [∀ k, LinearOrder (ι k)] in
 theorem DoubleCech.B_mono {B : (∀ k, Finset (ι k)) → Submodule F Ω}

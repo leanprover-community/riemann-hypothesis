@@ -72,19 +72,13 @@ section Signed
 variable {D : ℕ} {X : Type} [TopologicalSpace X] [CompactSpace X] [T2Space X] [MeasurableSpace X]
   [BorelSpace X]
 
-
 end Signed
 
 section Inhabitants
 
-
 @[instance_reducible] def projectiveLineBorel : MeasurableSpace (OnePoint ℂ) := borel _
 
 attribute [local instance] projectiveLineBorel
-
-theorem projectiveLine_borelSpace : BorelSpace (OnePoint ℂ) := ⟨rfl⟩
-
-attribute [local instance] projectiveLine_borelSpace
 
 end Inhabitants
 

@@ -60,11 +60,6 @@ theorem norm_chi (j : ℤ) (a : ℝ) : ‖chi j a‖ = 1 := by
   rw [chi, Complex.norm_exp]
   simp
 
-theorem conj_chi (j : ℤ) (a : ℝ) : (starRingEnd ℂ) (chi j a) = chi j (-a) := by
-  rw [chi, chi, ← Complex.exp_conj]
-  congr 1
-  simp [map_mul, Complex.conj_ofReal, Complex.conj_I]
-
 def weightSpace (j : ℤ) : Submodule ℂ H where
   carrier := {v | ∀ θ : ℝ, σ (kMat θ) v = chi j θ • v}
   add_mem' {v w} hv hw θ := by simp [map_add (f := _), hv θ, hw θ, smul_add]
@@ -102,16 +97,6 @@ theorem wProj_mem (j : ℤ) (x : H) : wProj σ j x ∈ weightSpace σ j := by
     exact this
   unfold wProj
   rw [map_smul, h1, intervalIntegral.integral_smul, h2, smul_comm]
-
-theorem inner_wProj (j : ℤ) (x y : H) :
-    ⟪y, wProj σ j x⟫_ℂ = ((2 * π : ℝ)⁻¹ : ℂ) *
-      ∫ θ in (0 : ℝ)..(2 * π), chi j (-θ) * ⟪y, σ (kMat θ) x⟫_ℂ := by
-  rw [wProj, inner_smul_right]
-  congr 1
-  have hint := (continuous_wIntegrand σ j x).intervalIntegrable (μ := volume) 0 (2 * π)
-  have := (innerSL ℂ y).intervalIntegral_comp_comm hint
-  simp only [innerSL_apply_apply, inner_smul_right] at this
-  exact this.symm
 
 theorem norm_wProj_le (j : ℤ) (x : H) : ‖wProj σ j x‖ ≤ ‖x‖ := by
   rw [wProj, norm_smul]
@@ -314,20 +299,6 @@ theorem eq_zero_of_forall_inner_map {G : Type*} [Group G] [TopologicalSpace G]
 
 variable (σ : UnitaryRep FiltrationCocycleLiftCriterion H)
 
-theorem inner_map_kMat_of_mem {j : ℤ} {y : H} (hy : y ∈ weightSpace σ j) (θ : ℝ) (u : H) :
-    ⟪y, σ (kMat θ) u⟫_ℂ = chi j θ * ⟪y, u⟫_ℂ := by
-  rw [UnitaryRep.inner_map_right, kMat_inv, hy (-θ), inner_smul_left, conj_chi, neg_neg]
-
-theorem inner_wProj_of_mem {j : ℤ} {y : H} (hy : y ∈ weightSpace σ j) (u : H) :
-    ⟪y, wProj σ j u⟫_ℂ = ⟪y, u⟫_ℂ := by
-  rw [inner_wProj]
-  have : (fun θ : ℝ => chi j (-θ) * ⟪y, σ (kMat θ) u⟫_ℂ) = fun _ => ⟪y, u⟫_ℂ := by
-    funext θ
-    rw [inner_map_kMat_of_mem σ hy, ← mul_assoc, mul_comm (chi j (-θ)), chi_mul_chi_neg, one_mul]
-  rw [this, intervalIntegral.integral_const, sub_zero, Complex.real_smul, ← mul_assoc]
-  have hπ : ((2 * π : ℝ) : ℂ) ≠ 0 := by exact_mod_cast (by positivity : (2 * π : ℝ) ≠ 0)
-  rw [inv_mul_cancel₀ hπ, one_mul]
-
 theorem wProj_add (j : ℤ) (x y : H) : wProj σ j (x + y) = wProj σ j x + wProj σ j y := by
   simp only [wProj, map_add (f := _), smul_add]
   rw [intervalIntegral.integral_add ((continuous_wIntegrand σ j x).intervalIntegrable _ _)
@@ -346,52 +317,6 @@ noncomputable def wProjL (j : ℤ) : H →L[ℂ] H :=
 noncomputable def compr (j : ℤ) (g : FiltrationCocycleLiftCriterion) : weightSpace σ j →L[ℂ] weightSpace σ j :=
   ((wProjL σ j).comp ((σ g).comp (weightSpace σ j).subtypeL)).codRestrict (weightSpace σ j)
     (fun x => wProj_mem σ j _)
-
-@[simp] theorem coe_compr_apply (j : ℤ) (g : FiltrationCocycleLiftCriterion) (v : weightSpace σ j) :
-    ((compr σ j g v : weightSpace σ j) : H) = wProj σ j (σ g v) := rfl
-
-theorem inner_compr (j : ℤ) (g : FiltrationCocycleLiftCriterion) (v w : weightSpace σ j) :
-    ⟪(w : H), (compr σ j g v : H)⟫_ℂ = ⟪(w : H), σ g v⟫_ℂ := by
-  rw [coe_compr_apply, inner_wProj_of_mem σ w.2]
-
-theorem inner_map_iotaG {j : ℤ} {x y : H} (hx : x ∈ weightSpace σ j) (hy : y ∈ weightSpace σ j)
-    (u : FiltrationCocycleLiftCriterion) : ⟪y, σ (iotaG u) x⟫_ℂ = ⟪y, σ u x⟫_ℂ := by
-  have key : ∀ (a b : ℝ) (D : FiltrationCocycleLiftCriterion), ⟪y, σ (kMat a * D * kMat b) x⟫_ℂ =
-      chi j a * chi j b * ⟪y, σ D x⟫_ℂ := by
-    intro a b D
-    rw [UnitaryRep.map_mul_apply, UnitaryRep.map_mul_apply, hx b, map_smul, map_smul,
-      inner_smul_right, inner_map_kMat_of_mem σ hy]
-    ring
-  obtain ⟨α, β, D, hD, rfl⟩ := exists_kak u
-  rw [iotaG_mul, iotaG_mul, iotaG_kMat, iotaG_kMat, hD, ← mul_assoc, key, key]
-  ring
-
-theorem inner_compr_compr (j : ℤ) (g h : FiltrationCocycleLiftCriterion) (v w : weightSpace σ j) :
-    ⟪(w : H), (compr σ j g (compr σ j h v) : H)⟫_ℂ = ((2 * π : ℝ)⁻¹ : ℂ) *
-      ∫ θ in (0 : ℝ)..(2 * π), chi j (-θ) * ⟪(w : H), σ (g * kMat θ * h) v⟫_ℂ := by
-  rw [inner_compr, coe_compr_apply, UnitaryRep.inner_map_right, inner_wProj]
-  congr 1
-  congr 1; funext θ
-  rw [UnitaryRep.inner_map_left, inv_inv, ← UnitaryRep.map_mul_apply, ← UnitaryRep.map_mul_apply,
-    mul_assoc]
-
-theorem compr_iotaG (j : ℤ) (g : FiltrationCocycleLiftCriterion) : compr σ j (iotaG g) = compr σ j g := by
-  ext1 v
-  apply ext_inner_left ℂ
-  intro w
-  rw [Submodule.coe_inner, Submodule.coe_inner, inner_compr, inner_compr,
-    inner_map_iotaG σ v.2 w.2]
-
-theorem compr_comm (j : ℤ) (g h : FiltrationCocycleLiftCriterion) : compr σ j g * compr σ j h = compr σ j h * compr σ j g := by
-  ext1 v
-  apply ext_inner_left ℂ
-  intro w
-  rw [Submodule.coe_inner, Submodule.coe_inner, ContinuousLinearMap.mul_apply,
-    ContinuousLinearMap.mul_apply, inner_compr_compr, ← compr_iotaG σ j h, ← compr_iotaG σ j g,
-    inner_compr_compr]
-  congr 1
-  congr 1; funext θ
-  rw [← inner_map_iotaG σ v.2 w.2 (g * kMat θ * h), iotaG_mul, iotaG_mul, iotaG_kMat, mul_assoc]
 
 end GroundTheory.Automorphic.ArchWhittaker
 end -- clump:auto

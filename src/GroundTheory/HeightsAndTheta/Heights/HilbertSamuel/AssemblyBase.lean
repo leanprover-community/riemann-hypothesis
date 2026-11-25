@@ -723,7 +723,6 @@ theorem ptsIntegral_zero {e : ℕ} (P : Ideal (MRing (GlobalTheory (Fin 1))))
 
 end PointHeightFSAux
 
-
 open PointHeightFSAux in
 theorem PointHeightFS.proof : PointHeightFS.Statement := by
   intro I hI
@@ -1074,7 +1073,6 @@ theorem coneEval_graphMap (x : Ix κ → Ω) (e : Fin (D + 1) → Ix κ) (f : MR
     simp [graphMap, inrV, coneEval, coneMap, linForm_projMat]
 
 end ProjFrameImage
-
 
 open ProjFrameImage in
 theorem ProjFrameImage.proof : ProjFrameImage.Statement := by
@@ -1723,9 +1721,6 @@ alias ShiftIntersectionPolynomial.full := _root_.GroundTheory.Heights₂.Heights
 
 theorem SmallSectionPointHeight.full : GroundTheory.Heights₂.Heights.HilbertSamuel.SmallSectionPointHeight.Statement :=
   GroundTheory.Heights₂.Heights.HilbertSamuel.SmallSectionPointHeight.proof SectionOrderAtPoint.full
-
-theorem SublatticeDegree.full : GroundTheory.Heights₂.Heights.HilbertSamuel.SublatticeDegree.Statement :=
-  GroundTheory.Heights₂.Heights.Targets.SublatticeDegree.full
 
 alias SupBoundCount.full := _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.SupBoundCount.proof
 
